@@ -16,7 +16,7 @@
 					<td>{{ member.user.firstname }}</td>
 					<td>{{ member.user.lastname }}</td>
 					<td>{{ member.user.email }}</td>
-					<td translate="{{'enum.researcherrole.'+member.role}}"></td>
+					<td>{{ member.role.roleName }}</td>
 					<td>
 						<button type="button" ng-show="member.member != user._id" ng-click="removePerson(member)" class="close" aria-label="Delete">
 							<span aria-hidden="true">&times;</span>
@@ -29,8 +29,17 @@
 			  <formrow myid="person" label="studyteam.person">
 			    <select name="person" id="person" class="form-control" ng-model="add.person" ng-options="person as person.email for person in persons"></select>
 			  </formrow>
-			  <formrow myid="role" label="studyteam.role">
-			    <select name="role" id="role" class="form-control" ng-model="add.role" ng-options="role as 'enum.researcherrole.'+role | translate for role in roles"></select>
+			  <formrow myid="roleName" label="studyteam.role">
+			    <input type="text" class="form-control" id="roleName" name="roleName" ng-model="add.role.roleName">
+			    <!--  <select name="role" id="role" class="form-control" ng-model="add.role" ng-options="role as 'enum.researcherrole.'+role | translate for role in roles"></select>  -->
+			  </formrow>
+			  <formrow myid="rights" label="studyteam.rights">
+			     <div class="checkbox" ng-repeat="req in rights">
+		    <label>
+		        <input type="checkbox" ng-model="add.role[req]">
+		        <span translate="{{ 'studyteam.right.'+req }}"></span>
+		    </label>
+		 </div>
 			  </formrow>
 			  <button ng-disabled="status.action == 'add'" ng-click="addPerson()" class="btn btn-primary" translate="studyteam.addperson_btn"></button>
 			</form>						

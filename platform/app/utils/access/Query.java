@@ -408,10 +408,13 @@ public class Query {
 				 } else {
 					 if (owner.equals("self")) {
 						 resolved.add(cache.getAccountOwner().toString());
+					 } else if (owner.equals("all")) {
+						 properties.remove("owner");
+						 resolved = null;break;
 					 } else resolved.add(owner);
 				 }
 			 }
-			 properties.put("owner", resolved);
+			 if (resolved != null) properties.put("owner", resolved);
 		 }
 		 
 		 if (properties.containsKey("code") && !properties.containsKey("content")) {

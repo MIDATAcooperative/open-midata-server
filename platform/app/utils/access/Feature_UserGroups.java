@@ -63,7 +63,7 @@ public class Feature_UserGroups extends Feature {
 		newprops.putAll(q.getProperties());
 		newprops.put("usergroup", ugm.userGroup);
 		APSCache subcache = q.getCache().getSubCache(group); 
-		if (ugm.role == null) ugm.role = ResearcherRole.HC;
+		if (ugm.role == null) ugm.role = ResearcherRole.HC();
 		
 		if (q.restrictedBy("export") && !ugm.role.mayExportData()) throw new AuthException("error.notauthorized.export", "You are not allowed to export this data.");
 		
@@ -72,10 +72,10 @@ public class Feature_UserGroups extends Feature {
 		if (ugm.role.pseudonymizedAccess()) {
 			
 			 if (q.restrictedBy("owner")) {
-				   Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroupsAndParticipant(q.getMidataIdRestriction("study"), q.getRestriction("study-group"), group, q.getMidataIdRestriction("owner"), Sets.create("name", "order", "owner", "ownerName", "type"), false);
-				   Set<MidataId> owners = new HashSet<MidataId>();
+				   Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroupsAndIds(q.restrictedBy("study") ? q.getMidataIdRestriction("study") : null, q.restrictedBy("study-group") ? q.getRestriction("study-group") : null, group, q.getMidataIdRestriction("owner"), Sets.create("name", "order", "owner", "ownerName", "type"));
+				   Set<String> owners = new HashSet<String>();
 				   for (StudyParticipation part : parts) {
-					  owners.add(part.owner);
+					  owners.add(part.owner.toString());
 				   }
 				   newprops.put("owner", owners);
 		    }		

@@ -34,25 +34,36 @@ public class Feature_Pseudonymization extends Feature {
 		List<DBRecord> result = next.query(q);
 
 		boolean oname = q.returns("ownerName");
-		if (q.returns("owner") || oname) {
+		if (q.returns("owner") || oname || q.returns("data") || q.returns("name")) {
 			for (DBRecord r : result) {
-				//AccessLog.log("onyes="+oname+" must="+r.context.mustPseudonymize()+" on="+r.context.getOwnerName());
+				AccessLog.log("onyes="+oname+" must="+r.context.mustPseudonymize()+" on="+r.context.getOwnerName());				
 				if (r.context.mustPseudonymize()) {
+					
+										
 					r.owner = r.context.getTargetAps();
+					
 
 					String name = r.context.getOwnerName();
 					if (oname && name != null) {
 						QueryEngine.fetchFromDB(q, r);
 						RecordEncryption.decryptRecord(r);
 						r.meta.put("ownerName", name);
-
-						// Bugfix for older records
-						String creator = r.meta.getString("creator");
-						if (creator != null && creator.equals(r.owner.toString()))
-							r.meta.remove("creator");
+						
 					}
+					
+					// Bugfix for older records
+					String creator = r.meta.getString("creator");
+					if (creator != null && creator.equals(r.context.getOwner().toString())) {
+						r.meta.remove("creator");
+					}
+					
+						
+					String ct = r.meta.getString("content");
+					if (ct.equals("Patient")) r.meta = null;
 
-				} else r.owner = r.context.getOwner();
+				} else {					
+					r.owner = r.context.getOwner();					
+				}
 				
 				//AccessLog.log("on2="+r.meta.get("ownerName"));
 			}

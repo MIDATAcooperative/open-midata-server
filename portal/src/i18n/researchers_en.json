@@ -147,6 +147,16 @@
   "studyteam" : {
     "person" : "Team member",
     "role" : "Role",
-    "addperson_btn" : "Add Person"
+    "addperson_btn" : "Add Person",
+    "rights" : "Rights",
+    "right" : {
+      "readData" : "Read data records",
+      "writeData" : "Write/Update data records",
+      "unpseudo" : "Unpseudonymized participants", 
+      "export" : "Export data",
+      "changeTeam" : "Change team",
+      "auditLog" : "View audit log",
+      "participants" : "Manage participants"
+    }
   }
 }

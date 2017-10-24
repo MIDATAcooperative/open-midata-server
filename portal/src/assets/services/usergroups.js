@@ -26,7 +26,7 @@ angular.module('services')
 	
 	service.addMembersToUserGroup = function(group, members, role) {
 		var data = {"group": group, "members" : members };
-		if (role) data.role = role;
+		if (role) angular.extend(data, role);
 		return server.post(jsRoutes.controllers.UserGroups.addMembersToUserGroup().url, JSON.stringify(data));
 	};
 

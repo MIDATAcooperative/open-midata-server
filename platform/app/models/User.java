@@ -256,6 +256,11 @@ public class User extends Model implements Comparable<User> {
 	 * Study that has been the reason for the user to register
 	 */
 	public MidataId initialStudy;
+	
+	/**
+	 * old email address (if changed)
+	 */
+	public String previousEMail;
 
 	@Override
 	public int compareTo(User other) {

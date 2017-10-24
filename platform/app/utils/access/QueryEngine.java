@@ -409,6 +409,7 @@ class QueryEngine {
     		if (!check.isEmpty()) {
     			for (DBRecord record : result) {
     				boolean fetch = false;
+    				if (record.meta == null) continue;
     				for (String k : check) if (!record.meta.containsField(k)) {
     					AccessLog.log("need: "+k);
     					fetch = true; 

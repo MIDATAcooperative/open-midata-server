@@ -501,8 +501,9 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
         PatientResourceProvider.setExecutionInfo(inf);
         
         Patient patient = generatePatientForStudyParticipation(part, member);
-    	Record record = PatientResourceProvider.newRecord("fhir/Patient");
+    	Record record = PatientResourceProvider.newRecord("fhir/Patient");    	
     	patientProvider.prepare(record, patient);		
+    	record.content = "PseudonymizedPatient";
     	patientProvider.insertRecord(record, patient);
     	
     	RecordManager.instance.share(executor, member._id, part._id, Collections.singleton(record._id), false);

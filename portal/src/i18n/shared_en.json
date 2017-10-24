@@ -38,13 +38,11 @@
      "noconsent" : "No active consent that allows to add data for target person.",
      "unsupported" : "Operation not supported",
      "notrialuser_title" : "Full membership required!",
-
-	//TODO: username -> name
+	
      "notrialuser_detail" : "In order to use this feature you need to complete your registration. Request a written copy of the AGB and return it signed. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
 
      "mustbemember_title" : "MIDATA cooperative membership required!",
-
-	//TODO: username -> name
+	
      "mustbemember_detail" : "In order to use this feature you must be member of the MIDATA cooperative. Click on your username on the top right and check the 'Account Status' section for more information.",
 
      "notauthorized" : {
@@ -86,7 +84,7 @@
      },
 
      "missing" : {
-	//TODO username? (email)
+	
        "credentials" : "Please provide a username and a password.",
 
        "email" : "Please fill out your email address.",
@@ -233,7 +231,7 @@
 	   "consent-deleted" : "Consent deleted",
 	   "study-participation-requested" : "Study participation requested",
 	   "study-participation-member-rejected" : "Study participation rejected by member",
-	   "study-participation-member-rejected" : "Study participation rejected by research",
+	   "study-participation-research-rejected" : "Study participation rejected by research",
 	   "study-participation-approved" :"Study participation approved",
 	   "study-participation-group-assigned" : "Study participation group assigned",
 	   "study-validation-requested" : "Study validation requested",
@@ -253,9 +251,10 @@
        "contract-send" : "Contract send to user",
        "internal-comment" : "Internal comment",
        "user-terms-of-use-agreed" : "Agreed to terms of use",
-       "audit-log-used" : "Audit Log Used"		   
-	   
-	   
+       "audit-log-used" : "Audit Log Used",		   
+	   "added-as-team-member" : "Added as team member",
+	   "updated-role-in-team" :  "Updated role in team",
+	   "removed-from-team" : "Removed from team"	   
 	 },
 	 "userfeature" : {
 	   "EMAIL_ENTERED" : "Email address of user must be known to the platform",
@@ -666,6 +665,7 @@
     "action" : "More...",
     "change_password_btn" : "Change Password",
  	"change_passphrase_btn" : "Change Passphrase",
+ 	"change_email_btn" : "Change EMail",
  	"auditlog_btn" : "View Log",
 	"repair_account_btn" : "Repair Account",
 	"reset_spaces_btn" : "Reset Portal",

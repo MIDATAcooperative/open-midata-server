@@ -11,8 +11,9 @@ angular.module('portal')
 	  	 startingDay: 1
 	};
 	$scope.members = [];
-    $scope.roles = studies.roles;	
-    $scope.add = {};
+    $scope.roles = studies.roles;
+    $scope.rights = ["readData", "writeData", "unpseudo", "export", "changeTeam", "auditLog", "participants" ];
+    $scope.add = { roles:{} };
 	
 	$scope.init = function() {
 		

@@ -86,6 +86,7 @@ import utils.collections.CMaps;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.fhir.FHIRServlet;
@@ -171,7 +172,7 @@ public class Studies extends APIController {
 		member.userGroup = userGroup._id;
 		member.status = ConsentStatus.ACTIVE;
 		member.startDate = new Date();		
-		member.role = ResearcherRole.PI;
+		member.role = ResearcherRole.INVESTIGATOR();
 		Map<String, Object> accessData = new HashMap<String, Object>();
 		accessData.put("aliaskey", KeyManager.instance.generateAlias(userGroup._id, member._id));
 		RecordManager.instance.createPrivateAPS(userId, member._id);
@@ -180,7 +181,10 @@ public class Studies extends APIController {
 				
 		RecordManager.instance.createPrivateAPS(userGroup._id, userGroup._id);
 				
-		Study.add(study);			
+		Study.add(study);	
+		
+		AuditManager.instance.addAuditEvent(AuditEventType.ADDED_AS_TEAM_MEMBER, null, userId, userId, null, study._id);
+		AuditManager.instance.success();
 		
 		return ok(JsonOutput.toJson(study, "Study", Study.ALL));
 	}
@@ -1042,6 +1046,11 @@ public class Studies extends APIController {
 		if (participation.pstatus != ParticipationStatus.REQUEST) throw new BadRequestException("error.invalid.status_transition", "Wrong participant status.");
 		if (participation.group == null) throw new BadRequestException("error.missing.study_group", "No group assigned to participant.");		
 		
+		UserGroupMember self = UserGroupMember.getByGroupAndMember(studyId, userId);
+		if (self == null) throw new AuthException("error.notauthorized.action", "User not member of study group");
+		if (!self.role.manageParticipants()) throw new BadRequestException("error.notauthorized.action", "User is not allowed to manage participants.");
+	
+		
 		//participation.addHistory(new History(EventType.PARTICIPATION_APPROVED, user, comment));
 		joinSharing(userId, study, participation.group, true, Collections.singletonList(participation));
 		participation.setPStatus(ParticipationStatus.ACCEPTED);
@@ -1081,7 +1090,11 @@ public class Studies extends APIController {
 		AuditManager.instance.addAuditEvent(AuditEventType.STUDY_PARTICIPATION_RESEARCH_REJECTED, userId, participation, study);
 		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new BadRequestException("error.closed.study", "Study participant search already closed.");
 		if (participation.pstatus != ParticipationStatus.REQUEST) return badRequest("Wrong participation status.");
-					
+		
+		UserGroupMember self = UserGroupMember.getByGroupAndMember(studyId, userId);
+		if (self == null) throw new AuthException("error.notauthorized.action", "User not member of study group");
+		if (!self.role.manageParticipants()) throw new BadRequestException("error.notauthorized.action", "User is not allowed to manage participants.");
+	
 		//participation.addHistory(new History(EventType.PARTICIPATION_REJECTED, user, comment));
 		Circles.consentStatusChange(userId, participation, ConsentStatus.REJECTED);
 		participation.setPStatus(ParticipationStatus.RESEARCH_REJECTED);
@@ -1118,8 +1131,14 @@ public class Studies extends APIController {
 		if (study == null) throw new BadRequestException("error.unknown.study", "Unknown Study");
 		if (participation == null) throw new BadRequestException("error.unknown.participant", "Member does not participate in study");
 		
+		
 		AuditManager.instance.addAuditEvent(AuditEventType.STUDY_PARTICIPATION_GROUP_ASSIGNED, userId, participation, study);
-		if (study.executionStatus != StudyExecutionStatus.PRE && participation.pstatus == ParticipationStatus.ACCEPTED) throw new BadRequestException("error.no_alter.group", "Study is already running.");	
+		if (study.executionStatus != StudyExecutionStatus.PRE && participation.pstatus == ParticipationStatus.ACCEPTED) throw new BadRequestException("error.no_alter.group", "Study is already running.");
+		
+		UserGroupMember self = UserGroupMember.getByGroupAndMember(studyId, userId);
+		if (self == null) throw new AuthException("error.notauthorized.action", "User not member of study group");
+		if (!self.role.manageParticipants()) throw new BadRequestException("error.notauthorized.action", "User is not allowed to manage participants.");
+	
 						
 		participation.group = JsonValidation.getString(json, "group");
 		//participation.addHistory(new History(EventType.GROUP_ASSIGNED, user, comment));
@@ -1257,6 +1276,9 @@ public class Studies extends APIController {
 	}
 	
 	public static void deleteStudy(MidataId userId, MidataId studyId, boolean force) throws AppException {
+		Study study = Study.getByIdFromMember(studyId, Study.ALL);
+		
+		AuditManager.instance.addAuditEvent(AuditEventType.STUDY_DELETED, userId, null, study);
 		
 		Set<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(studyId, Sets.create("_id", "owner"));
 		for (StudyParticipation part : participants) {
@@ -1279,5 +1301,7 @@ public class Studies extends APIController {
 		}
 		
 		Study.delete(studyId);
+		
+		AuditManager.instance.success();
 	}
 }

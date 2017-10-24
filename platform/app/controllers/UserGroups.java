@@ -17,6 +17,7 @@ import models.MidataId;
 import models.User;
 import models.UserGroup;
 import models.UserGroupMember;
+import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.ResearcherRole;
 import models.enums.UserGroupType;
@@ -25,6 +26,7 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.access.RecordManager;
+import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.KeyManager;
 import utils.auth.Rights;
@@ -233,9 +235,20 @@ public class UserGroups extends APIController {
 		Set<MidataId> targetUserIds = JsonExtraction.extractMidataIdSet(json.get("members"));
 		
 		UserGroupMember self = UserGroupMember.getByGroupAndMember(groupId, executorId);
-		if (self == null) throw new AuthException("error.internal", "User not member of group");
+		if (self == null) throw new AuthException("error.notauthorized.action", "User not member of group");
+		if (!self.role.mayChangeTeam()) throw new BadRequestException("error.notauthorized.action", "User is not allowed to change team.");
 		
-		ResearcherRole role = json.has("role") ? JsonValidation.getEnum(json, "role", ResearcherRole.class) : null;
+		ResearcherRole role = null;
+		if (json.has("roleName")) {
+			role = new ResearcherRole();
+			role.readData = JsonValidation.getBoolean(json, "readData");
+			role.writeData = JsonValidation.getBoolean(json, "writeData");
+			role.auditLog = JsonValidation.getBoolean(json, "auditLog");
+			role.changeTeam = JsonValidation.getBoolean(json, "changeTeam");
+			role.export = JsonValidation.getBoolean(json, "export");
+			role.pseudo = !JsonValidation.getBoolean(json, "unpseudo");
+			role.roleName = JsonValidation.getString(json, "roleName");
+		}
 		
 		BSONObject meta = RecordManager.instance.getMeta(executorId, self._id, "_usergroup");
 		byte[] key = (byte[]) meta.get("aliaskey");
@@ -243,7 +256,9 @@ public class UserGroups extends APIController {
 		
 		for (MidataId targetUserId : targetUserIds) {
 			UserGroupMember old = UserGroupMember.getByGroupAndMember(groupId, targetUserId);
-			if (old == null) {			
+			if (old == null) {	
+				AuditManager.instance.addAuditEvent(AuditEventType.ADDED_AS_TEAM_MEMBER, null, executorId, targetUserId, null, groupId);
+				
 				UserGroupMember member = new UserGroupMember();
 				member._id = new MidataId();
 				member.member = targetUserId;
@@ -259,6 +274,8 @@ public class UserGroups extends APIController {
 				
 				member.add();
 			} else {
+				AuditManager.instance.addAuditEvent(AuditEventType.UPDATED_ROLE_IN_TEAM, null, executorId, targetUserId, null, groupId);
+				
 				old.status = ConsentStatus.ACTIVE;
 				old.startDate = new Date();
 				old.endDate = null;
@@ -269,7 +286,8 @@ public class UserGroups extends APIController {
 				UserGroupMember.set(old._id, "role", old.role);
 			}
 		}
-				 
+				
+		AuditManager.instance.success();
 		return ok();
 	}
 	
@@ -284,17 +302,20 @@ public class UserGroups extends APIController {
 		MidataId groupId = JsonValidation.getMidataId(json, "group");
 		MidataId targetUserId = JsonValidation.getMidataId(json, "member");
 		
+		AuditManager.instance.addAuditEvent(AuditEventType.REMOVED_FROM_TEAM, null, executorId, targetUserId, null, groupId);
+		
 		if (targetUserId.equals(executorId)) throw new BadRequestException("error.invalid.user", "You cannot remove yourself from group.");
 		UserGroupMember self = UserGroupMember.getByGroupAndMember(groupId, executorId);
 		if (self == null) throw new AuthException("error.internal", "User not member of group");
-		
+						
 		UserGroupMember target = UserGroupMember.getByGroupAndMember(groupId, targetUserId);
 		if (target == null) throw new BadRequestException("error.invalid.user", "User is not member of group");
 		target.status = ConsentStatus.EXPIRED;
 		target.endDate = new Date();
 		UserGroupMember.set(target._id, "status", target.status);
 		UserGroupMember.set(target._id, "endDate", target.endDate);
-			
+
+		AuditManager.instance.success();
 		return ok();
 	}
 		

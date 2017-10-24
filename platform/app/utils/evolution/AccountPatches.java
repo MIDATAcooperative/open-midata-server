@@ -175,7 +175,7 @@ public class AccountPatches {
 						member.userGroup = userGroup._id;
 						member.status = ConsentStatus.ACTIVE;
 						member.startDate = new Date();		
-						member.role = ResearcherRole.PI;
+						member.role = ResearcherRole.INVESTIGATOR();
 						Map<String, Object> accessData = new HashMap<String, Object>();
 						accessData.put("aliaskey", KeyManager.instance.generateAlias(userGroup._id, member._id));
 						RecordManager.instance.createPrivateAPS(ru._id, member._id);

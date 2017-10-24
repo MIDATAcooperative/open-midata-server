@@ -44,6 +44,7 @@ import models.enums.UserStatus;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
 import utils.access.RecordManager;
@@ -52,6 +53,7 @@ import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
+import utils.auth.PasswordResetToken;
 import utils.auth.PortalSessionToken;
 import utils.auth.ResearchSecured;
 import utils.auth.Rights;
@@ -275,14 +277,37 @@ public class Administration extends APIController {
 			throw new BadRequestException("error.exists.user", "A person with this email already exists.");
 		}
 		
+		String oldEmail = targetUser.email;								
+		
+		PasswordResetToken token = new PasswordResetToken(targetUser._id, targetUser.role.toString(), true);
+		targetUser.set("resettoken", token.token);
+		targetUser.set("resettokenTs", System.currentTimeMillis());
+		String encrypted = token.encrypt();
+			
+		String site = "https://" + InstanceConfig.getInstance().getPortalServerDomain();
+		Map<String,String> replacements = new HashMap<String, String>();
+		replacements.put("old-email", oldEmail);
+		replacements.put("new-email", email);
+		replacements.put("confirm-url", site + "/#/portal/confirm/" + encrypted);
+		replacements.put("reject-url", site + "/#/portal/reject/" + encrypted);
+		replacements.put("token", token.token);
+		   		
+		if (oldEmail != null) Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.EMAIL_CHANGED_OLDADDRESS, null, Collections.singleton(targetUser._id), null, replacements);
+		
 		targetUser.email = email;
 		targetUser.emailLC = email.toLowerCase();
 		targetUser.emailStatus = EMailStatus.UNVALIDATED;
 		
+		if (oldEmail != null) targetUser.set("previousEMail", oldEmail);
 		targetUser.set("email", targetUser.email);
 		targetUser.set("emailLC", targetUser.emailLC);
 		targetUser.set("emailStatus", targetUser.emailStatus);
-		Application.sendWelcomeMail(targetUser);
+		
+		if (oldEmail != null) {
+			Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.EMAIL_CHANGED_NEWADDRESS, null, Collections.singleton(targetUser._id), null, replacements);		
+		} else { 			
+ 		    Application.sendWelcomeMail(targetUser);
+		}
 		
 		AuditManager.instance.success();
 		//targetUser.addHistory(new History(EventType.INTERNAL_COMMENT, admin, comment));

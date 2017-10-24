@@ -360,6 +360,7 @@ public class Studies extends APIController {
 		if (study.termsOfUse != null) user.agreedToTerms(study.termsOfUse, usingApp);		
 		if (study.requiredInformation.equals(InformationType.RESTRICTED)) {
 			PatientResourceProvider.createPatientForStudyParticipation(executor, participation, user);
+			Circles.autosharePatientRecord(executor, participation);
 		} else {
 			Circles.autosharePatientRecord(executor, participation);
 		}

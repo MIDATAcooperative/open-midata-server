@@ -251,7 +251,7 @@ public class Application extends APIController {
 		}
 		
 		
-		User user = User.getById(userId, Sets.create("firstname", "lastname", "email","status", "role", "subroles", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "resettoken","password","resettokenTs", "registeredAt", "confirmedAt", "developer"));
+		User user = User.getById(userId, Sets.create("firstname", "lastname", "email","status", "role", "subroles", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "resettoken","password","resettokenTs", "registeredAt", "confirmedAt", "developer", "previousEMail"));
 		
 		if (user!=null && password != null) {				
 			 AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE, userId);
@@ -277,9 +277,18 @@ public class Application extends APIController {
 				   
 			    	   
 			    	   if (wanted == EMailStatus.REJECTED) {
-			    		   AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_REJECTED, user);
-			    		   user.status = UserStatus.BLOCKED;
-				    	   user.set("status", user.status);
+			    		   if (user.previousEMail != null) {
+			    			   AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_REJECTED, user);
+			    			   user.email = user.previousEMail;
+			    			   user.emailLC = user.email.toLowerCase();
+			    			   wanted = EMailStatus.VALIDATED;
+			    			   user.set("email", user.email);
+			    			   user.set("emailLC", user.emailLC);
+			    		   } else {
+				    		   AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_REJECTED, user);
+				    		   user.status = UserStatus.BLOCKED;
+					    	   user.set("status", user.status);
+			    		   }
 				       } else {
 				    	   AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_CONFIRMED, user);
 				       }
