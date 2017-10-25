@@ -166,10 +166,8 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	 */
 	public BSONObject data; 
 	
-	/**
-	 * Other records that are referenced by this record
-	 */
-	public Set<MidataId> dependencies;
+	
+	//public Set<MidataId> dependencies;
 
 	@Override
 	public int compareTo(Record other) {

@@ -332,7 +332,8 @@ public class Circles extends APIController {
 	
 	public static void addConsent(MidataId executorId, Consent consent, boolean patientRecord, String passcode, boolean force) throws AppException {
 		consent._id = new MidataId();
-		consent.dateOfCreation = new Date();				
+		consent.dateOfCreation = new Date();	
+		consent.dataupdate = System.currentTimeMillis();
 			
 		AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_CREATE, executorId, consent);
 		
@@ -413,7 +414,7 @@ public class Circles extends APIController {
 	 * @throws AppException
 	 */
 	public static void autosharePatientRecord(MidataId executorId, Consent consent) throws AppException {
-		List<Record> recs = RecordManager.instance.list(executorId, consent.owner, CMaps.map("owner", "self").map("format", "fhir/Patient").map("data", CMaps.map("id", consent.owner.toString())), Sets.create("_id", "data"));
+		List<Record> recs = RecordManager.instance.list(executorId, consent.owner, CMaps.map("owner", consent.owner).map("format", "fhir/Patient").map("data", CMaps.map("id", consent.owner.toString())), Sets.create("_id", "data"));
 		if (recs.size()>0) {
 		  RecordManager.instance.share(executorId, consent.owner, consent._id, Collections.singleton(recs.get(0)._id), true);
 		} else throw new InternalServerException("error.internal", "Patient Record not found!");

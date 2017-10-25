@@ -85,6 +85,7 @@ import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.PasswordHash;
 import utils.RuntimeConstants;
+import utils.access.AccessContext;
 import utils.access.AccountCreationAccessContext;
 import utils.access.ConsentAccessContext;
 import utils.access.RecordManager;
@@ -444,12 +445,13 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
     }
     
     public void updatePatientForAccount(Member member) throws AppException {
-    	List<Record> allExisting = RecordManager.instance.list(info().executorId, member._id, CMaps.map("format", "fhir/Patient").map("owner", "self").map("data", CMaps.map("id", member._id.toString())), Record.ALL_PUBLIC);
+    	List<Record> allExisting = RecordManager.instance.list(info().executorId, member._id, CMaps.map("format", "fhir/Patient").map("owner", member._id).map("data", CMaps.map("id", member._id.toString())), Record.ALL_PUBLIC);
     	
     	if (allExisting.isEmpty()) {    	
     	  Patient patient = generatePatientForAccount(member);
     	  Record record = newRecord("fhir/Patient");
-		  prepare(record, patient);		
+		  prepare(record, patient);	
+		  record.owner = member._id;
 		  insertRecord(record, patient);
     	} else {
     	  Patient patient = generatePatientForAccount(member);    	  
@@ -494,8 +496,8 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 		return p;    	    			
     }
     
-    public static void createPatientForStudyParticipation(MidataId executor, StudyParticipation part, Member member) throws AppException {
-        ExecutionInfo inf = info(member._id);       
+    public static void createPatientForStudyParticipation(ExecutionInfo inf, StudyParticipation part, Member member) throws AppException {
+        
         
         PatientResourceProvider patientProvider = (PatientResourceProvider) FHIRServlet.myProviders.get("Patient");
         PatientResourceProvider.setExecutionInfo(inf);
@@ -503,14 +505,14 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
         Patient patient = generatePatientForStudyParticipation(part, member);
     	Record record = PatientResourceProvider.newRecord("fhir/Patient");    	
     	patientProvider.prepare(record, patient);		
-    	record.content = "PseudonymizedPatient";
+    	record.content = "PseudonymizedPatient";    	
     	patientProvider.insertRecord(record, patient);
     	
-    	RecordManager.instance.share(executor, member._id, part._id, Collections.singleton(record._id), false);
+    	RecordManager.instance.share(inf.executorId, member._id, part._id, Collections.singleton(record._id), false);
     }
     
     public void prepare(Record record, Patient thePatient) {
-    	record.content = "Patient";    	
+    	record.content = "Patient";     	
     	record.name=thePatient.getName().get(0).getNameAsSingleString();
     	if (record.name == null || record.name.length() == 0) record.name = thePatient.getName().get(0).getText();
     }
@@ -652,6 +654,16 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 		thePatient.getExtension().clear();
 		
 		Member existing = user.email != null ? Member.getByEmail(user.email, Member.ALL_USER) : null;
+		MidataId executorId = info().executorId;
+		ExecutionInfo info = info();
+		
+		BSONObject query = null;
+		Plugin plugin = Plugin.getById(info().pluginId);
+		if (plugin.targetUserRole.equals(UserRole.RESEARCH)) {
+			AccessLog.log("is researcher app");
+			query = RecordManager.instance.getMeta(info().executorId, info().context.getTargetAps(), "_query");
+			AccessLog.log("q="+query.toString());
+		}
 		
 		if (existing == null) {
 			
@@ -668,12 +680,21 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 			Member.add(user);			
 			KeyManager.instance.unlock(user._id, null);
 			
+			RecordManager.instance.clearCache();
+			executorId = user._id;
+			RecordManager.instance.setAccountOwner(user._id, user._id);
+			
 			user.myaps = RecordManager.instance.createPrivateAPS(user._id, user._id);
 			Member.set(user._id, "myaps", user.myaps);
-									
-	     	
-										
-			//Circles.fetchExistingConsents(info().executorId, user.emailLC);			
+				
+			
+			Record record = newRecord("fhir/Patient");
+	     	record.owner = user._id;	     	
+			prepare(record, thePatient);	
+			info = new ExecutionInfo(user._id); 
+			insertRecord(info, record, thePatient, info.context);
+						
+			//if (user.emailLC!=null) Circles.fetchExistingConsents(user._id, user.emailLC);			
 		} else {
 			user = existing;
 			
@@ -681,7 +702,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 			if (!exist.isEmpty()) throw new UnprocessableEntityException("Already exists.");
 		}																		    							    							    			    		
 				
-		Plugin plugin = Plugin.getById(info().pluginId);
+		
 		String consentName = plugin.name;
 		HPUser hpuser = HPUser.getById(info().ownerId, Sets.create("provider", "firstname", "lastname"));
 		if (hpuser != null) {
@@ -704,7 +725,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 			consent.sharingQuery.put("owner", "self");
 			consent.sharingQuery.put("app", plugin.filename);
 					
-			Circles.addConsent(info().executorId, consent, false, null, true);
+			Circles.addConsent(executorId, consent, false, null, true);
 		}
 		
 		for (Extension ext : thePatient.getExtensionsByUrl("http://midata.coop/extensions/join-study")) {
@@ -714,16 +735,13 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 				
 			 Set<UserFeature> studyReq = controllers.members.Studies.precheckRequestParticipation(null, study._id);
 			 if (existing == null) {
-			    controllers.members.Studies.requestParticipation(info().executorId, user._id, study._id, plugin._id);
+			    controllers.members.Studies.requestParticipation(info, user._id, study._id, plugin._id);
 			 } else {
-			    controllers.members.Studies.match(info().executorId, user._id, study._id, plugin._id);
+			    controllers.members.Studies.match(executorId, user._id, study._id, plugin._id);
 			 }
 		}
 		
-		if (plugin.targetUserRole.equals(UserRole.RESEARCH)) {
-			AccessLog.log("is researcher app");
-			BSONObject query = RecordManager.instance.getMeta(info().executorId, info().context.getTargetAps(), "_query");
-			AccessLog.log("q="+query.toString());
+		
 			if (query != null && query.containsField("link-study")) {
 				Map<String, Object> q = query.toMap(); 
 				MidataId studyId = MidataId.from(q.get("link-study"));
@@ -731,20 +749,17 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 				Set<UserFeature> studyReq = controllers.members.Studies.precheckRequestParticipation(null, studyId);
 				AccessLog.log("request part");	
 				if (existing == null) {
-				  controllers.members.Studies.requestParticipation(info().executorId, user._id, studyId, plugin._id);
+				  controllers.members.Studies.requestParticipation(info, user._id, studyId, plugin._id);
 				} else {
-			      controllers.members.Studies.match(info().executorId, user._id, studyId, plugin._id);
+			      controllers.members.Studies.match(executorId, user._id, studyId, plugin._id);
 				}
 				AccessLog.log("end request part");
 			}
-		}
+		
 				
+		
 		if (existing == null) {
-			Record record = newRecord("fhir/Patient");
-	     	record.owner = user._id;	     	
-			prepare(record, thePatient);		
-			insertRecord(record, thePatient, new AccountCreationAccessContext(info().context));
-			
+			RecordManager.instance.clearCache();
 			Application.sendWelcomeMail(info().pluginId, user);
 			//if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) Application.sendAdminNotificationMail(user);
 		}

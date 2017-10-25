@@ -43,6 +43,7 @@ import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
+import utils.auth.ExecutionInfo;
 import utils.auth.MemberSecured;
 import utils.auth.Rights;
 import utils.collections.Sets;
@@ -227,6 +228,7 @@ public class Studies extends APIController {
 		part.name = "Study: "+study.name;
 		part.owner = member._id;
 		part.dateOfCreation = new Date();
+		part.dataupdate = System.currentTimeMillis();
 		
 		String userName;
 		
@@ -271,7 +273,11 @@ public class Studies extends APIController {
 		Circles.prepareConsent(part);
 		StudyParticipation.add(part);
 		Circles.setQuery(executor, member._id, part._id, study.recordQuery);
-		RecordManager.instance.applyQuery(executor, study.recordQuery, member._id, part._id, study.requiredInformation.equals(InformationType.DEMOGRAPHIC));
+		
+		// Query can only be applied if patient is doing it himself
+		if (executor.equals(member._id)) {
+		  RecordManager.instance.applyQuery(executor, study.recordQuery, member._id, part._id, study.requiredInformation.equals(InformationType.DEMOGRAPHIC));
+		}
 		
 		return part;
 		
@@ -330,11 +336,11 @@ public class Studies extends APIController {
 		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, requirements);
 		if (notok != null && !notok.isEmpty()) requireUserFeature(notok.iterator().next());
 		
-		requestParticipation(userId, userId, studyId, null);		
+		requestParticipation(new ExecutionInfo(userId), userId, studyId, null);		
 		return ok();
 	}
 	
-	public static void requestParticipation(MidataId executor, MidataId userId, MidataId studyId, MidataId usingApp) throws AppException {
+	public static void requestParticipation(ExecutionInfo inf, MidataId userId, MidataId studyId, MidataId usingApp) throws AppException {
 		
 		
 		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country"));		
@@ -347,7 +353,7 @@ public class Studies extends APIController {
 		if (participation == null) {
 			if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new JsonValidationException("error.closed.study", "code", "notsearching", "Study is not searching for participants.");
 			
-			participation = createStudyParticipation(executor, study, user, null);
+			participation = createStudyParticipation(inf.executorId, study, user, null);
 										
 		}
 		AuditManager.instance.addAuditEvent(AuditEventType.STUDY_PARTICIPATION_REQUESTED, userId, participation, study);
@@ -359,13 +365,13 @@ public class Studies extends APIController {
 		//participation.addHistory(new History(EventType.PARTICIPATION_REQUESTED, participation, user, null));
 		if (study.termsOfUse != null) user.agreedToTerms(study.termsOfUse, usingApp);		
 		if (study.requiredInformation.equals(InformationType.RESTRICTED)) {
-			PatientResourceProvider.createPatientForStudyParticipation(executor, participation, user);
-			Circles.autosharePatientRecord(executor, participation);
+			PatientResourceProvider.createPatientForStudyParticipation(inf, participation, user);
+			Circles.autosharePatientRecord(inf.executorId, participation);
 		} else {
-			Circles.autosharePatientRecord(executor, participation);
+			Circles.autosharePatientRecord(inf.executorId, participation);
 		}
 		
-		Circles.consentStatusChange(executor, participation, ConsentStatus.ACTIVE);				
+		Circles.consentStatusChange(inf.executorId, participation, ConsentStatus.ACTIVE);				
 
 		AuditManager.instance.success();
 	}

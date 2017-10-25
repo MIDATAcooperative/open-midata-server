@@ -30,6 +30,7 @@ import models.MobileAppInstance;
 import models.Record;
 import models.RecordsInfo;
 import models.Space;
+import models.UserGroupMember;
 import models.enums.APSSecurityLevel;
 import models.enums.AggregationType;
 import models.enums.ConsentStatus;
@@ -259,14 +260,20 @@ public class RecordManager {
 	public void share(MidataId who, MidataId fromAPS, MidataId toAPS, MidataId toAPSOwner,
 			Set<MidataId> records, boolean withOwnerInformation)
 			throws AppException {
+		share(who, getCache(who), fromAPS, toAPS, toAPSOwner, records, withOwnerInformation);
+	}
+	
+	protected void share(MidataId who, APSCache cache, MidataId fromAPS, MidataId toAPS, MidataId toAPSOwner,
+			Set<MidataId> records, boolean withOwnerInformation)
+			throws AppException {
 		if (fromAPS.equals(toAPS)) return;
         AccessLog.logBegin("begin share: who="+who.toString()+" from="+fromAPS.toString()+" to="+toAPS.toString()+" count="+(records!=null ? records.size() : "?"));
-		APS apswrapper = getCache(who).getAPS(toAPS, toAPSOwner);
-		List<DBRecord> recordEntries = QueryEngine.listInternal(getCache(who), fromAPS, null,
+		APS apswrapper = cache.getAPS(toAPS, toAPSOwner);
+		List<DBRecord> recordEntries = QueryEngine.listInternal(cache, fromAPS, null,
 				records != null ? CMaps.map("_id", records) : RecordManager.FULLAPS_FLAT,
 				Sets.create("_id", "key", "owner", "format", "content", "created", "name", "isStream", "stream"));
 		
-		List<DBRecord> alreadyContained = QueryEngine.isContainedInAps(getCache(who), toAPS, recordEntries);
+		List<DBRecord> alreadyContained = QueryEngine.isContainedInAps(cache, toAPS, recordEntries);
 		AccessLog.log("to-share: "+recordEntries.size()+" already="+alreadyContained.size());
         if (alreadyContained.size() == recordEntries.size()) {
         	AccessLog.logEnd("end share");
@@ -458,11 +465,12 @@ public class RecordManager {
 	 */
 	public void addRecord(MidataId executingPerson, Record record) throws AppException {
 		DBRecord dbrecord = RecordConversion.instance.toDB(record);
-		byte[] enckey = addRecordIntern(executingPerson, dbrecord, false, null, false);	
-		createAndShareDependend(executingPerson, dbrecord, record.dependencies, enckey);
+		byte[] enckey = addRecordIntern(createContextFromAccount(executingPerson), dbrecord, false, null, false);	
+		//createAndShareDependend(executingPerson, dbrecord, record.dependencies, enckey);
 		
 	}
 	
+	/*
 	protected void createAndShareDependend(MidataId executingPerson, DBRecord record, Set<MidataId> dependencies, byte[] enckey) throws AppException {
 		if (dependencies != null && !dependencies.isEmpty()) {
 			createAPSForRecord(executingPerson, record.owner, record._id, enckey, false);
@@ -486,7 +494,7 @@ public class RecordManager {
 			}
 			AccessLog.logEnd("end applying queries");			
 		}
-	}
+	}*/
 	
 	/**
 	 * Add a new record containing an attachment to the database
@@ -498,15 +506,15 @@ public class RecordManager {
 	 * @param contentType the mime type of the attached file	
 	 * @throws AppException
 	 */
-	public void addRecord(MidataId executingPerson, Record record, MidataId alternateAps, InputStream data, String fileName, String contentType) throws AppException {
+	public void addRecord(AccessContext context, Record record, MidataId alternateAps, InputStream data, String fileName, String contentType) throws AppException {
 		DBRecord dbrecord = RecordConversion.instance.toDB(record);
-		byte[] kdata = addRecordIntern(executingPerson, dbrecord, false, alternateAps, false);	
+		byte[] kdata = addRecordIntern(context, dbrecord, false, alternateAps, false);	
 		try {
 		FileStorage.store(EncryptionUtils.encryptStream(kdata, data), record._id, fileName, contentType);
 		} catch (DatabaseException e) {
 			throw new InternalServerException("error.internal", e);
 		}
-		createAndShareDependend(executingPerson, dbrecord, record.dependencies, kdata);
+		//createAndShareDependend(executingPerson, dbrecord, record.dependencies, kdata);
 	}
 	
 	/**
@@ -521,10 +529,10 @@ public class RecordManager {
 	 * @param alternateAps an APS where the executing person has access to. (a consent APS for example)
 	 * @throws AppException
 	 */
-	public void addRecord(MidataId executingPerson, Record record, MidataId alternateAps) throws AppException {
+	public void addRecord(AccessContext context, Record record, MidataId alternateAps) throws AppException {
 		DBRecord dbrecord = RecordConversion.instance.toDB(record);
-		byte[] kdata = addRecordIntern(executingPerson, dbrecord, false, alternateAps, false);	
-		createAndShareDependend(executingPerson, dbrecord, record.dependencies, kdata);
+		byte[] kdata = addRecordIntern(context, dbrecord, false, alternateAps, false);	
+		//createAndShareDependend(executingPerson, dbrecord, record.dependencies, kdata);
 	}
 	
 	
@@ -677,11 +685,11 @@ public class RecordManager {
 		AccessLog.logEnd("end wipe #records="+recs.size());				
 	}
 
-	private byte[] addRecordIntern(MidataId executingPerson, DBRecord record, boolean documentPart, MidataId alternateAps, boolean upsert) throws AppException {		
+	private byte[] addRecordIntern(AccessContext context, DBRecord record, boolean documentPart, MidataId alternateAps, boolean upsert) throws AppException {		
 		
-		if (!documentPart) Feature_Streams.placeNewRecordInStream(executingPerson, record, alternateAps);
+		if (!documentPart) Feature_Streams.placeNewRecordInStream(context, record, alternateAps);
 		 		
-		AccessLog.logBegin("Begin Add Record execPerson="+executingPerson.toString()+" format="+record.meta.get("format")+" stream="+(record.stream != null ? record.stream.toString() : "null"));	
+		AccessLog.logBegin("Begin Add Record execPerson="+context.getOwner().toString()+" format="+record.meta.get("format")+" stream="+(record.stream != null ? record.stream.toString() : "null"));	
 		byte[] usedKey = null;
 		if (record.meta.get("created") == null) throw new InternalServerException("error.internal", "Missing creation date");
 		
@@ -690,7 +698,7 @@ public class RecordManager {
 		if (record.owner.equals(record.meta.get("creator"))) record.meta.removeField("creator");
 																	
 		if (!documentPart) {
-			APS apswrapper = getCache(executingPerson).getAPS(record.stream, record.owner);	
+			APS apswrapper = context.getCache().getAPS(record.stream, record.owner);	
 			
 			apswrapper.provideRecordKey(record);
 			
@@ -704,7 +712,7 @@ public class RecordManager {
 		    if (upsert) { DBRecord.upsert(record); } else { DBRecord.add(record); }	  
 		    
 		    if (!unencrypted.direct && !documentPart) apswrapper.addPermission(unencrypted, false);
-			else getCache(executingPerson).touchAPS(apswrapper.getId());
+			else context.getCache().touchAPS(apswrapper.getId());
 		    
 		    //Feature_Expiration.check(getCache(executingPerson), apswrapper);
 			
@@ -768,18 +776,18 @@ public class RecordManager {
 		
 	}
 	
-	protected void applyQueries(MidataId executingPerson, MidataId userId, DBRecord record, MidataId useAps) throws AppException {
+	protected void applyQueries(AccessContext context, MidataId userId, DBRecord record, MidataId useAps) throws AppException {
 		AccessLog.logBegin("start applying queries");
 		Member member = Member.getById(userId, Sets.create("queries"));
 		if (member.queries!=null) {
 			for (String key : member.queries.keySet()) {
 				try {
 				Map<String, Object> query = member.queries.get(key);
-				if (QueryEngine.isInQuery(getCache(executingPerson), query, record)) {
+				if (QueryEngine.isInQuery(context.getCache(), query, record)) {
 					try {
 					  MidataId targetAps = new MidataId(key);
-					  getCache(executingPerson).getAPS(targetAps, userId);
-					  RecordManager.instance.share(executingPerson, useAps, targetAps, Collections.singleton(record._id), true);
+					  context.getCache().getAPS(targetAps, userId);
+					  RecordManager.instance.share(context.getCache().getExecutor(), context.getCache(), useAps, targetAps, null, Collections.singleton(record._id), true);
 					} catch (APSNotExistingException e) {
 						
 					}
@@ -1157,6 +1165,10 @@ public class RecordManager {
 	
 	public AppAccessContext createContextFromApp(MidataId executorId, MobileAppInstance app) throws InternalServerException {
 		return new AppAccessContext(app, getCache(executorId), null);
+	}
+	
+	public UserGroupAccessContext createContextForUserGroup(UserGroupMember ugm, AccessContext parent) throws AppException {
+		return new UserGroupAccessContext(ugm, Feature_UserGroups.findApsCacheToUse(parent.getCache(), ugm), parent);
 	}
 
 }

@@ -81,8 +81,8 @@ public class Feature_UserGroups extends Feature {
 		    }		
 			
 		}
-		
-		Query qnew = new Query(newprops, q.getFields(), subcache, group, new UserGroupAccessContext(ugm, subcache, q.getContext()));
+		MidataId aps = q.getApsId().equals(ugm.member) ? group : q.getApsId();
+		Query qnew = new Query(newprops, q.getFields(), subcache, aps, new UserGroupAccessContext(ugm, subcache, q.getContext()));
 		List<DBRecord> result = next.query(qnew);
 		AccessLog.logEnd("end user group query for group="+group.toString());
 		
@@ -111,12 +111,15 @@ public class Feature_UserGroups extends Feature {
 	
 	protected static APSCache findApsCacheToUse(APSCache cache, MidataId targetAps) throws AppException {
 		UserGroupMember ugm = identifyUserGroupMember(cache, targetAps);
+		return findApsCacheToUse(cache, ugm);			
+	}
+	
+	protected static APSCache findApsCacheToUse(APSCache cache, UserGroupMember ugm) throws AppException {		
 		if (ugm == null) return cache;		
 		
 		BasicBSONObject obj = cache.getAPS(ugm._id, ugm.member).getMeta("_usergroup");
 		KeyManager.instance.unlock(ugm.userGroup, ugm._id, (byte[]) obj.get("aliaskey"));		
-		return cache.getSubCache(ugm.userGroup);
-				
+		return cache.getSubCache(ugm.userGroup);				
 	}
 		
 }

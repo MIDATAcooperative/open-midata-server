@@ -167,31 +167,31 @@ public class Feature_Streams extends Feature {
 	}
 	
 
-	public static void placeNewRecordInStream(MidataId executingPerson, DBRecord record, MidataId alternateAps) throws AppException {
+	public static void placeNewRecordInStream(AccessContext context, DBRecord record, MidataId alternateAps) throws AppException {
 		 Map<String, Object> props = new HashMap<String, Object>();
 		 if (record.stream == null) {
 			  for (String field : streamFields) props.put(field, record.meta.get(field));
-			  if (RecordManager.instance.getCache(executingPerson).getAPS(record.owner, record.owner).isAccessible()) {		 
-			     record.stream = getStreamByProperties(executingPerson, record.owner, props, true, true);
+			  if (context.getCache().getAPS(record.owner, record.owner).isAccessible()) {		 
+			     record.stream = getStreamByProperties(context, record.owner, props, true, true);
 			  } else if (alternateAps != null) {
-				 record.stream = getStreamByProperties(executingPerson, alternateAps, props, true, true);
+				 record.stream = getStreamByProperties(context, alternateAps, props, true, true);
 			  }
 		  }
 		  if (record.stream == null) {
 			 ContentInfo content = ContentInfo.getByName((String) record.meta.get("content"));
-			 if (RecordManager.instance.getCache(executingPerson).getAPS(record.owner, record.owner).isAccessible()) {
-			    DBRecord stream = createStream(executingPerson, record.owner, record.owner, props, content.security.equals(APSSecurityLevel.MEDIUM));			 			
+			 if (context.getCache().getAPS(record.owner, record.owner).isAccessible()) {
+			    DBRecord stream = createStream(context, record.owner, record.owner, props, content.security.equals(APSSecurityLevel.MEDIUM));			 			
 			    record.stream = stream._id;
 			 } else if (alternateAps != null) {
-			    DBRecord stream = createStream(executingPerson, record.owner, alternateAps, props, content.security.equals(APSSecurityLevel.MEDIUM));
+			    DBRecord stream = createStream(context, record.owner, alternateAps, props, content.security.equals(APSSecurityLevel.MEDIUM));
 				record.stream = stream._id;				
 			 }
 		  }
 	}
 	
-	private static DBRecord createStream(MidataId executingPerson, MidataId owner, MidataId targetAPS, Map<String, Object> properties,
+	private static DBRecord createStream(AccessContext context, MidataId owner, MidataId targetAPS, Map<String, Object> properties,
 			boolean direct) throws AppException {
-		AccessLog.logBegin("begin create Stream: who="+executingPerson.toString()+" direct="+direct+" into="+targetAPS);
+		AccessLog.logBegin("begin create Stream: who="+context.getCache().getExecutor().toString()+" direct="+direct+" into="+targetAPS);
 		DBRecord result = new DBRecord();
 		result._id = new MidataId();
 		result.owner = owner;
@@ -210,8 +210,8 @@ public class Feature_Streams extends Feature {
 		
 		if (targetAPS != null && targetAPS.equals(owner)) targetAPS = null; // That is what we expect anyway
 		
-		if (targetAPS != null) apswrapper = RecordManager.instance.getCache(executingPerson).getAPS(targetAPS);
-		else apswrapper = RecordManager.instance.getCache(executingPerson).getAPS(result.owner, result.owner);
+		if (targetAPS != null) apswrapper = context.getCache().getAPS(targetAPS);
+		else apswrapper = context.getCache().getAPS(result.owner, result.owner);
 
 		boolean apsDirect = direct;
 		
@@ -233,25 +233,25 @@ public class Feature_Streams extends Feature {
 
 	    AccessLog.log("create aps for stream");
 	    
-		RecordManager.instance.createAPSForRecord(executingPerson, unecrypted.owner, unecrypted._id, unecrypted.key, apsDirect);
+		RecordManager.instance.createAPSForRecord(context.getCache().getExecutor(), unecrypted.owner, unecrypted._id, unecrypted.key, apsDirect);
 		
 		apswrapper.addPermission(unecrypted, targetAPS != null && !targetAPS.equals(unecrypted.owner));
 		
 		if (targetAPS != null) {
 			AccessLog.log("add permission for owner");
 			unecrypted.isReadOnly = true;
-			RecordManager.instance.getCache(executingPerson).getAPS(result.owner, result.owner).addPermission(unecrypted, false);
+			context.getCache().getAPS(result.owner, result.owner).addPermission(unecrypted, false);
 		}
 				
-		RecordManager.instance.applyQueries(executingPerson, unecrypted.owner, unecrypted, targetAPS != null ? targetAPS : unecrypted.owner);
+		RecordManager.instance.applyQueries(context, unecrypted.owner, unecrypted, targetAPS != null ? targetAPS : unecrypted.owner);
 				
 		AccessLog.logEnd("end create stream");
 		return result;
 	}
 
-	private static MidataId getStreamByProperties(MidataId who, MidataId apsId, Map<String, Object> properties, boolean writeableOnly, boolean doNotify)
+	private static MidataId getStreamByProperties(AccessContext context, MidataId apsId, Map<String, Object> properties, boolean writeableOnly, boolean doNotify)
 			throws AppException {
-		List<DBRecord> result = QueryEngine.listInternal(RecordManager.instance.getCache(who), apsId, null,
+		List<DBRecord> result = QueryEngine.listInternal(context.getCache(), apsId, null,
 				CMaps.map(properties)				     
 					 .map("streams", "only")
 					 .map("owner", "self")
@@ -259,8 +259,8 @@ public class Feature_Streams extends Feature {
 		if (result.isEmpty())
 			return null;
 		DBRecord streamRec = result.get(0);		
-		if (doNotify) RecordLifecycle.notifyOfChange(streamRec, RecordManager.instance.getCache(who));
-		RecordManager.instance.getCache(who).getAPS(streamRec._id, streamRec.key, streamRec.owner);
+		if (doNotify) RecordLifecycle.notifyOfChange(streamRec, context.getCache());
+		context.getCache().getAPS(streamRec._id, streamRec.key, streamRec.owner);
 		return streamRec._id;
 	}	
     

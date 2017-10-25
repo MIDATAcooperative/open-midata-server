@@ -489,35 +489,33 @@ public class PluginsAPI extends APIController {
 			if (query != null && query.containsField("link-study")) {
 				MidataId groupId = MidataId.from(query.get("link-study"));
                 UserGroupMember ugm = UserGroupMember.getByGroupAndMember(groupId, inf.executorId);
-                if (ugm != null) context = new UserGroupAccessContext(ugm, context.getCache().getSubCache(groupId), context);
+                if (ugm != null) context = RecordManager.instance.createContextForUserGroup(ugm, context);
 				consent = Consent.getHealthcareOrResearchActiveByAuthorizedAndOwner(groupId, record.owner);
 			} else {
 			    consent = Consent.getHealthcareOrResearchActiveByAuthorizedAndOwner(inf.executorId, record.owner);
 			}
 									
 			if (consent == null || consent.isEmpty()) throw new BadRequestException("error.noconsent", "No active consent that allows to add data for target person.");
-			
+			AccessContext contextWithConsent = null;
 			for (Consent c : consent) {
 				ConsentAccessContext cac = new ConsentAccessContext(c, context);
 				if (cac.mayCreateRecord(dbrecord)) {
-					context = cac;
+					contextWithConsent = cac;
 					break;
 				}
 			}
-			
-		}
-		
-		
-		if (!context.mayCreateRecord(dbrecord)) {
+			if (contextWithConsent == null) throw new InternalServerException("error.internal", "Record may not be created!");
+			context = contextWithConsent;
+		} else if (!context.mayCreateRecord(dbrecord)) {
 			throw new InternalServerException("error.internal", "Record may not be created!");			
 		}
 		
 		//MidataId targetAPS = targetConsent != null ? targetConsent : inf.targetAPS;
 		
 		if (fileData != null) {
-			  RecordManager.instance.addRecord(inf.executorId, record, context.getTargetAps(), fileData, fileName, contentType);
+			  RecordManager.instance.addRecord(context, record, context.getTargetAps(), fileData, fileName, contentType);
 		} else {
-			  RecordManager.instance.addRecord(inf.executorId, record, context.getTargetAps());
+			  RecordManager.instance.addRecord(context, record, context.getTargetAps());
 		}
 		
 		Set<MidataId> records = Collections.singleton(record._id);

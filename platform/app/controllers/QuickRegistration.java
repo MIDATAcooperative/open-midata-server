@@ -36,6 +36,7 @@ import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.CodeGenerator;
+import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -166,7 +167,7 @@ public class QuickRegistration extends APIController {
 		
 		if (notok == null || notok.isEmpty()) {
 		
-			if (study != null) controllers.members.Studies.requestParticipation(user._id, user._id, study._id, user.initialApp);
+			if (study != null) controllers.members.Studies.requestParticipation(new ExecutionInfo(user._id), user._id, study._id, user.initialApp);
 			
 			if (device != null) {
 			   MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, device, true, confirmStudy);
