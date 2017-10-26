@@ -46,11 +46,11 @@ public class Feature_AccountQuery extends Feature {
 
 		
 
-			if ((sets.contains("self") || sets.contains("all") || sets.contains(q.getApsId().toString())) && !q.restrictedBy("consent-after") && !q.restrictedBy("usergroup") && !q.restrictedBy("study")) {
+			if ((sets.contains("self") || sets.contains("all") || sets.contains(q.getApsId().toString())) && !q.restrictedBy("consent-after") && !q.restrictedBy("usergroup") && !q.restrictedBy("study") && !q.restrictedBy("shared-after")) {
 				result = next.query(q);
 				setIdAndConsentField(q, q.getContext(), q.getApsId(), result);						
 			} else {
-				result = new ArrayList<DBRecord>();
+				result = Collections.emptyList();
 			}
 
 			Set<Consent> consents = getConsentsForQuery(q);
@@ -63,8 +63,10 @@ public class Feature_AccountQuery extends Feature {
 			   AccessLog.logBegin("start query for consent id="+circle._id);
 			   List<DBRecord> consentRecords = next.query(new Query(q.getProperties(), q.getFields(), q.getCache(), circle._id, new ConsentAccessContext(circle, q.getContext())));
 			   //setOwnerField(q, circle, consentRecords);
-			   setIdAndConsentField(q, new ConsentAccessContext(circle, q.getContext()), circle._id, consentRecords);							
-			   result.addAll(consentRecords);
+			   if (!consentRecords.isEmpty()) {
+				   setIdAndConsentField(q, new ConsentAccessContext(circle, q.getContext()), circle._id, consentRecords);							
+				   result = QueryEngine.combine(result, consentRecords);
+			   }
 			   AccessLog.logEnd("end query for consent");
 			}				
 				
@@ -75,7 +77,7 @@ public class Feature_AccountQuery extends Feature {
 			
 			List<DBRecord> result = next.query(q);
 
-			setIdAndConsentField(q, q.getContext(), q.getApsId(), result);
+			if (!result.isEmpty()) setIdAndConsentField(q, q.getContext(), q.getApsId(), result);
 			
 			return result;
 		}
@@ -138,6 +140,17 @@ public class Feature_AccountQuery extends Feature {
 		return consents;
 	}
 	
+	private static Set<Consent> applyLimit(Set<Consent> consents, long limit) throws AppException {
+		if (limit > 0 && !consents.isEmpty()) {
+		   Set<Consent> filtered = new HashSet<Consent>(consents.size());
+		   for (Consent c : consents) {
+			   if (c.dataupdate > limit) filtered.add(c);
+		   }
+		   return filtered;
+		}
+		return consents;
+	}
+	
 	private static Set<Consent> applyWriteFilters(Query q, Set<Consent> consents) throws AppException {
 		if (q.restrictedBy("updatable") && !consents.isEmpty()) {			
 			Set<Consent> filtered = new HashSet<Consent>(consents.size());
@@ -151,8 +164,8 @@ public class Feature_AccountQuery extends Feature {
 	
 	protected static boolean mainApsIncluded(Query q) throws AppException {
 		if (!q.restrictedBy("owner")) return true;
-		Set<String> sets = q.getRestriction("owner");
-		return sets.contains("self") || sets.contains("all") || sets.contains(q.getApsId().toString());
+		Set<String> sets = q.getRestrictionOrNull("owner");
+		return sets == null || sets.contains("self") || sets.contains("all") || sets.contains(q.getApsId().toString());
 	}
 	
 	protected static boolean allApsIncluded(Query q) throws BadRequestException {
@@ -187,7 +200,7 @@ public class Feature_AccountQuery extends Feature {
 	    	
 	    		    		
 	    	consents =  new HashSet<Consent>(StudyParticipation.getActiveParticipantsByStudyAndGroupsAndParticipant(studies, studyGroups, q.getCache().getAccountOwner(), sets.contains("all") ? null : owners, Sets.create("name", "order", "owner", "ownerName", "type"), true));
-	    		    
+            q.getCache().cache(consents);	    		    
 	    	AccessLog.log("found: "+consents.size());
 	    } else if (sets.contains("all") || sets.contains("other") || sets.contains("shared")) {			
 			if (sets.contains("shared"))
@@ -199,6 +212,7 @@ public class Feature_AccountQuery extends Feature {
 				if (q.restrictedBy("shared-after")) limit = q.getMinSharedTimestamp();
 
 				consents = new HashSet<Consent>(q.getCache().getAllActiveConsentsByAuthorized(limit));
+				consents = applyLimit(consents, limit);
 			}
 		} else {
 			Set<MidataId> owners = new HashSet<MidataId>();
@@ -215,13 +229,14 @@ public class Feature_AccountQuery extends Feature {
 				if (q.restrictedBy("shared-after")) limit = q.getMinSharedTimestamp();
 				
 				consents = q.getCache().getAllActiveByAuthorizedAndOwners(owners, limit);
+				consents = applyLimit(consents, limit);
 				//if (consents.size() < owners.size()) consents.addAll(Consent.getByIdsAndAuthorized(owners, q.getCache().getAccountOwner(), Sets.create("name", "order", "owner", "type", "ownerName")));
 			}
 		}
 		consents = applyConsentTimeFilter(q, consents);
-		
-		q.getCache().cache(consents);
-		
+				
+		if (consents.size() < MAX_CONSENTS_IN_QUERY) q.getCache().prefetch(consents);
+				
 		consents = applyWriteFilters(q, consents);
 		return consents;
 	}			

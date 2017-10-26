@@ -1,5 +1,6 @@
 package models;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -113,6 +114,15 @@ public abstract class Model implements JsonSerializable {
 			Map<String, ? extends Object> properties, Set<String> fields, int limit) throws InternalServerException {
 		try {
 			return DBLayer.getAll(modelClass, collection, properties, fields, limit);
+		} catch (DatabaseException e) {
+			throw new InternalServerException("error.internal_db", e);
+		}
+	}
+	
+	protected static <T extends Model> List<T> getAllList(Class<T> modelClass, String collection,
+			Map<String, ? extends Object> properties, Set<String> fields, int limit) throws InternalServerException {
+		try {
+			return DBLayer.getAllList(modelClass, collection, properties, fields, limit);
 		} catch (DatabaseException e) {
 			throw new InternalServerException("error.internal_db", e);
 		}

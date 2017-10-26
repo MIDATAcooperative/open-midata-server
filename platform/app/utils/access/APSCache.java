@@ -143,8 +143,33 @@ public class APSCache {
 		return consent;
 	}
 	
-	public void cache(Collection<? extends Consent> consents) throws InternalServerException {		
-		for (Consent consent : consents) consentCache.put(consent._id, consent);		
+	public boolean cache(Collection<? extends Consent> consents) throws InternalServerException {		
+		boolean hasnew = false;
+		for (Consent consent : consents) hasnew = consentCache.put(consent._id, consent) == null || hasnew;
+		return hasnew;
+	}
+	
+	public void prefetch(Collection<? extends Consent> consents) throws AppException {	
+		if (consents.size() > 1) {			
+			int end = 0;
+			Map<MidataId, Consent> ids = new HashMap<MidataId, Consent>(consents.size());
+			for (Consent consent : consents) {			  			
+			  if (!cache.containsKey(consent._id.toString())) {
+				  ids.put(consent._id, consent);
+			  }	else {
+				  end++;
+				  if (end > 3) return; 
+			  }
+			}
+   		  if (ids.isEmpty()) return;
+		  Map<String, Set<MidataId>> properties = Collections.singletonMap("_id", ids.keySet());
+		  Set<AccessPermissionSet> rsets = AccessPermissionSet.getAll(properties, AccessPermissionSet.ALL_FIELDS);
+		  for (AccessPermissionSet set : rsets) {
+			  Consent r = ids.get(set._id);				
+			  getAPS(r._id, null, r.owner, set);
+		  }	
+			
+		}
 	}
 	
 	public Set<UserGroupMember> getAllActiveByMember() throws InternalServerException {

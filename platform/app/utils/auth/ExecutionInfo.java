@@ -86,6 +86,8 @@ public class ExecutionInfo {
 			result.targetAPS = authToken.spaceId;
 			result.recordId = authToken.recordId;			
 			result.ownerId = authToken.userId;
+						
+			
 		} else if (authToken.pluginId == null) {							
 			Space space = Space.getByIdAndOwner(authToken.spaceId, authToken.userId, Sets.create("visualization", "app", "aps", "autoShare", "sharingQuery", "writes"));
 			if (space == null) throw new BadRequestException("error.unknown.space", "The current space does no longer exist.");
@@ -106,6 +108,7 @@ public class ExecutionInfo {
 			result.pluginId = authToken.pluginId;
 			result.targetAPS = consent._id;
 			result.ownerId = consent.owner;
+			result.context = RecordManager.instance.createContextFromConsent(result.executorId, consent);
 		}
 	   AccessLog.logEnd("end check 'space' type session token");
 	   return result;	

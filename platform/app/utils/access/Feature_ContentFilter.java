@@ -20,8 +20,8 @@ public class Feature_ContentFilter extends Feature {
 	@Override
 	protected List<DBRecord> query(Query q) throws AppException {		
 		List<DBRecord> result = next.query(q);
-		if (q.restrictedBy("format")) result = QueryEngine.filterByMetaSet(result, "format", q.getRestriction("format"));
-		if (q.restrictedBy("content")) result = QueryEngine.filterByMetaSet(result, "content", q.getRestriction("content"));
+		if (q.restrictedBy("format")) result = QueryEngine.filterByMetaSet(result, "format", q.getRestrictionOrNull("format"));
+		if (q.restrictedBy("content")) result = QueryEngine.filterByMetaSet(result, "content", q.getRestrictionOrNull("content"));
 		if (q.restrictedBy("app")) result = QueryEngine.filterByMetaSet(result, "app", q.getIdRestrictionDB("app"));	
 		return result;
 	}

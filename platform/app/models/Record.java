@@ -25,6 +25,9 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	public @NotMaterialized final static Set<String> ALL_PUBLIC = Sets.create("_id", "id", "version", "owner",
 			"app", "creator", "created", "name", "format", "content", "code", "description", "data", "group");
 
+	public @NotMaterialized final static Set<String> ALL_PUBLIC_WITHNAMES = Sets.create("_id", "id", "version", "owner", "ownerName",
+			"app", "creator", "creatorName", "created", "name", "format", "content", "code", "description", "data", "group");
+
 		
 	
 	public MidataId stream;

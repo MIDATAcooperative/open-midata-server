@@ -1,6 +1,7 @@
 package utils.access;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -43,7 +44,7 @@ public class Feature_Streams extends Feature {
 	@Override
 	protected List<DBRecord> query(Query q) throws AppException {		
 		APS next = q.getCache().getAPS(q.getApsId());
-		List<DBRecord> records = new ArrayList<DBRecord>();
+		List<DBRecord> records = Collections.emptyList();
 		boolean restrictedByStream = q.restrictedBy("stream");
 		
 		if (restrictedByStream) {
@@ -61,11 +62,12 @@ public class Feature_Streams extends Feature {
 				
 			  for (DBRecord r : streams) {
 				  if (r.isStream) {
+					  
 					  try {
 						  APS myAps = q.getCache().getAPS(r._id, r.key, r.owner);						 
 						  List<DBRecord> rs = myAps.query(q);
 						  for (DBRecord r2 : rs) { r2.owner = r.owner;r2.stream = r._id; }
-					      records.addAll(rs);
+					      records = QueryEngine.combine(records, rs);
 					      
 					      if (myAps.getSecurityLevel().equals(APSSecurityLevel.MEDIUM)) {
 					    	  for (DBRecord r2 : records) {
@@ -85,11 +87,14 @@ public class Feature_Streams extends Feature {
 		}
         		
 		AccessLog.logBegin("start query on target APS");
-		records.addAll(next.query(q));
-		AccessLog.logEnd("end query on target APS #res="+records.size());
+		List<DBRecord> recs = next.query(q);
+		
+		AccessLog.logEnd("end query on target APS #res="+recs.size());
+		if (recs.isEmpty()) return recs;
 		boolean includeStreams = q.includeStreams();
 		boolean streamsOnly = q.isStreamOnlyQuery();
 		if (streamsOnly) {
+			records = recs;
 			List<DBRecord> filtered = new ArrayList<DBRecord>(records.size());
 			if (q.restrictedBy("writeable") && q.getProperties().get("writeable").equals("true")) {
 				for (DBRecord r : records) {
@@ -103,6 +108,7 @@ public class Feature_Streams extends Feature {
 			return filtered;
 		} else
 		if (q.deepQuery()) {
+			records = recs;
 			List<DBRecord> filtered = new ArrayList<DBRecord>(records.size());
 			List<DBRecord> streams = new ArrayList<DBRecord>();
 			Map<MidataId, DBRecord> streamsToFetch = new HashMap<MidataId, DBRecord>();
@@ -145,12 +151,13 @@ public class Feature_Streams extends Feature {
 			}
 			records = filtered;
 		} else if (!includeStreams) {
+			records = recs;
 			List<DBRecord> filtered = new ArrayList<DBRecord>(records.size());
 			for (DBRecord record : records) {
 				if (!record.isStream) filtered.add(record);
 			}
 			records = filtered;
-		}  
+		} else return recs;
 							
 		return records;
 		

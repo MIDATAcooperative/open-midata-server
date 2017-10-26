@@ -55,7 +55,7 @@ public class Query {
 		this.apsId = apsId;
 		this.context = context;
 		process();
-		//AccessLog.logQuery(properties, fields);
+		//AccessLog.logQuery(apsId, properties, fields);
 	}
 	
 	public Query(Query q, Map<String, Object> properties) throws AppException {
@@ -70,7 +70,7 @@ public class Query {
 		this.apsId = aps;			
 		this.context = context;
 		process();
-		//AccessLog.logQuery(properties, fields);
+		//AccessLog.logQuery(apsId, properties, fields);
 	}		
 	
 	public Map<String, Object> getProperties() {
@@ -113,14 +113,23 @@ public class Query {
 	
 	public boolean isRestrictedToSelf() throws AppException {
 		if (!restrictedBy("owner")) return false;
-		Set<String> owner = getRestriction("owner");
-		if (owner.size() == 1 && (owner.contains("self") || owner.contains(cache.getAccountOwner().toString()))) return true;
+		Set<String> owner = getRestrictionOrNull("owner");
+		if (owner!=null && owner.size() == 1 && (owner.contains("self") || owner.contains(cache.getAccountOwner().toString()))) return true;
 		return false;
 	}
 	
 	public Set<String> getRestriction(String name) throws AppException {
 		Object v = properties.get(name);
 		return getRestriction(v, name);		
+	}
+	
+	public Set<String> getRestrictionOrNull(String name) throws AppException {
+		Object v = properties.get(name);
+		if (v == null) return null;
+		if (v instanceof Set) return (Set) v;
+		Set<String> result = getRestriction(v, name);
+		properties.put(name, result);
+		return result;
 	}
 	
 	public static Set<String> getRestriction(Object v, String name) throws AppException {		
@@ -171,6 +180,7 @@ public class Query {
 	
 	public Set<String> getIdRestrictionAsString(String name) throws BadRequestException {
 		Object v = properties.get(name);
+		if (v == null) return null;
 		if (v instanceof MidataId) {
 			return Collections.singleton(((MidataId) v).toString());
 		/*} else if (v instanceof Set) {

@@ -23,7 +23,7 @@ angular.module('portal')
 			if (_.has($scope.record.data, "type") && $scope.record.data.type === "file") {
 				$scope.downloadLink = true;
 			}
-			loadUserNames();
+			//loadUserNames();
 			loadAppName();										    	    	
 									
 		});

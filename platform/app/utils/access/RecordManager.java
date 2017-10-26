@@ -689,7 +689,7 @@ public class RecordManager {
 		
 		if (!documentPart) Feature_Streams.placeNewRecordInStream(context, record, alternateAps);
 		 		
-		AccessLog.logBegin("Begin Add Record execPerson="+context.getOwner().toString()+" format="+record.meta.get("format")+" stream="+(record.stream != null ? record.stream.toString() : "null"));	
+		AccessLog.logBegin("Begin Add Record execPerson="+context.getCache().getAccountOwner().toString()+" format="+record.meta.get("format")+" stream="+(record.stream != null ? record.stream.toString() : "null"));	
 		byte[] usedKey = null;
 		if (record.meta.get("created") == null) throw new InternalServerException("error.internal", "Missing creation date");
 		
@@ -1157,6 +1157,10 @@ public class RecordManager {
 	
 	public SpaceAccessContext createContextFromSpace(MidataId executorId, Space space) throws InternalServerException {
 		return new SpaceAccessContext(space, getCache(executorId), null);
+	}
+	
+	public ConsentAccessContext createContextFromConsent(MidataId executorId, Consent consent) throws AppException {
+		return new ConsentAccessContext(consent, getCache(executorId), null);
 	}
 	
 	public AccountAccessContext createContextFromAccount(MidataId executorId) throws InternalServerException {

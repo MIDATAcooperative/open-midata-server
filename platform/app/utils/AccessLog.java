@@ -62,13 +62,14 @@ public class AccessLog {
 	 * @param properties restrictions of query
 	 * @param fields fields to be queries
 	 */
-	public static void logQuery(Map<String,Object> properties, Set<String> fields) {	 
+	public static void logQuery(MidataId aps, Map<String,Object> properties, Set<String> fields) {	 
 		
 	   StringBuilder s = new StringBuilder();
-	   boolean first = true;
+	   
+	   s.append("aps="+aps.toString());
 	   for (Map.Entry<String,Object> entry : properties.entrySet()) {
 		   Object v = entry.getValue();
-		   if (first) first = false; else s.append(",");
+		   s.append(",");
 		   s.append(entry.getKey());
 		   s.append("=");
 		   s.append(v != null ? v.toString() : "null");		   

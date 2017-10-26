@@ -230,14 +230,14 @@ class QueryEngine {
       if (properties.containsKey("$or")) {
     	  qm = new Feature_SortAndLimit(qm);
     	  Collection<Map<String, Object>> col = (Collection<Map<String, Object>>) properties.get("$or");
-    	  List<DBRecord> result = new ArrayList<DBRecord>();
+    	  List<DBRecord> result = Collections.emptyList();
     	  for (Map<String, Object> prop : col) {
-    		  AccessLog.logQuery(prop, fields);
-    		  result.addAll(qm.query(new Query(prop, fields, cache, apsId, context)));
+    		  AccessLog.logQuery(apsId, prop, fields);
+    		  result = QueryEngine.combine(result,  qm.query(new Query(prop, fields, cache, apsId, context)));
     	  }
     	  return result;
       } else {
-    	  AccessLog.logQuery(properties, fields);
+    	  AccessLog.logQuery(apsId, properties, fields);
     	  return qm.query(new Query(properties, fields, cache, apsId, context));
       }
     }
@@ -245,11 +245,11 @@ class QueryEngine {
     protected static List<DBRecord> combine(Query query, Map<String, Object> properties, Feature qm) throws AppException {
     	if (properties.containsKey("$or")) {
       	  Collection<Map<String, Object>> col = (Collection<Map<String, Object>>) properties.get("$or");
-      	  List<DBRecord> result = new ArrayList<DBRecord>();
+      	  List<DBRecord> result = Collections.emptyList();
       	  for (Map<String, Object> prop : col) {
       		  Map<String, Object> comb = Feature_QueryRedirect.combineQuery(prop, query.getProperties());
       		  if (comb != null) {
-      		    result.addAll(qm.query(new Query(comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext())));
+      			result = QueryEngine.combine(result, qm.query(new Query(comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext())));
       		  }
       	  }
       	  return result;
@@ -260,7 +260,7 @@ class QueryEngine {
     	  } else {
     		  AccessLog.log("empty combine");
     	  }
-      	  return new ArrayList<DBRecord>();
+      	  return Collections.emptyList();
         }
     }
     
@@ -272,7 +272,7 @@ class QueryEngine {
     
     protected static List<DBRecord> scanForRecordsInMultipleAPS(Query q, Set<APS> apses, List<DBRecord> result) throws AppException {
     	for (APS aps : apses) {
-    		result.addAll(aps.query(q));
+    		result = QueryEngine.combine(result, aps.query(q));
     	}
     	return result;
     }       
@@ -317,7 +317,7 @@ class QueryEngine {
 	    	
     	}
     	if (!idMap.isEmpty()) {
-	    	Collection<DBRecord> fromDB = DBRecord.getAll(CMaps.map("_id", idMap.keySet()), DATA_ONLY);
+	    	Collection<DBRecord> fromDB = DBRecord.getAllList(CMaps.map("_id", idMap.keySet()), DATA_ONLY);
 	    	for (DBRecord r2 : fromDB) {
 	    	   idMap.get(r2._id).encryptedData = r2.encryptedData;	    	   
 	    	}
@@ -329,9 +329,11 @@ class QueryEngine {
     
     protected static List<DBRecord> duplicateElimination(List<DBRecord> input) {
     	int size = input.size();
+    	if (size<2) return input;
         int out = 0;
         {
             final Set<DBRecord> encountered = new HashSet<DBRecord>();
+            input = QueryEngine.modifyable(input);
             for (int in = 0; in < size; in++) {
                 final DBRecord t = input.get(in);
                 final boolean first = encountered.add(t);
@@ -595,9 +597,27 @@ class QueryEngine {
 			queryFields.addAll(q.getFieldsFromDB());
 			query.put("_id", ids);
 			q.addMongoTimeRestriction(query, true);			
-			return new ArrayList<DBRecord>(DBRecord.getAll(query, queryFields));		
+			return DBRecord.getAllList(query, queryFields);		
     }
         
+    public final static List<DBRecord> combine(List<DBRecord> list1, List<DBRecord> list2) {
+    	if (list1 == null || list1.isEmpty()) return list2;
+    	if (list2 == null || list2.isEmpty()) return list1;
+    	if (list1 instanceof ArrayList) {
+    		list1.addAll(list2);
+    		return list1;
+    	}
+    	ArrayList<DBRecord> result = new ArrayList<DBRecord>();
+    	result.addAll(list1);
+    	result.addAll(list2);
+    	return result;
+    }
+    
+    public final static List<DBRecord> modifyable(List<DBRecord> list) {
+    	if (list == null || list.isEmpty()) return new ArrayList<DBRecord>();
+    	if (list instanceof ArrayList) return list;
+    	return new ArrayList<DBRecord>(list);
+    }
     
     /*protected static List<DBRecord> lookupRecordsByDocument(Query q) throws InternalServerException {    	
 			Map<String, Object> query = new HashMap<String, Object>();

@@ -40,7 +40,7 @@ public class Feature_Pseudonymization extends Feature {
 				if (r.context.mustPseudonymize()) {
 					
 										
-					r.owner = r.context.getTargetAps();
+					r.owner = r.context.getOwnerPseudonymized();
 					
 
 					String name = r.context.getOwnerName();

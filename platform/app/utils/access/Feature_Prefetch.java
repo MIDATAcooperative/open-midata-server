@@ -47,9 +47,9 @@ public class Feature_Prefetch extends Feature {
 		  
 		  
 		  
-		  if (results == null) results = partResult; else results.addAll(partResult);
+		  results = QueryEngine.combine(results,  partResult);
 		}
-		if (results==null) results = new ArrayList<DBRecord>();
+		if (results==null) results = Collections.emptyList();
 									
 		//Feature_AccountQuery.setOwnerField(q, results);			
 						

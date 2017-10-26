@@ -45,7 +45,7 @@ public class Feature_UserGroups extends Feature {
 				if (!isMemberOfGroups.isEmpty()) {
 					List<DBRecord> results = next.query(q);
 					for (UserGroupMember ugm : isMemberOfGroups) {
-						results.addAll(doQueryAsGroup(ugm, q));
+						results = QueryEngine.combine(results, doQueryAsGroup(ugm, q));
 					}
 					return results;
 				}
@@ -67,12 +67,12 @@ public class Feature_UserGroups extends Feature {
 		
 		if (q.restrictedBy("export") && !ugm.role.mayExportData()) throw new AuthException("error.notauthorized.export", "You are not allowed to export this data.");
 		
-		if (!ugm.role.mayReadData()) return new ArrayList<DBRecord>();
+		if (!ugm.role.mayReadData()) return Collections.emptyList();
 		
 		if (ugm.role.pseudonymizedAccess()) {
 			
 			 if (q.restrictedBy("owner")) {
-				   Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroupsAndIds(q.restrictedBy("study") ? q.getMidataIdRestriction("study") : null, q.restrictedBy("study-group") ? q.getRestriction("study-group") : null, group, q.getMidataIdRestriction("owner"), Sets.create("name", "order", "owner", "ownerName", "type"));
+				   Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroupsAndIds(q.restrictedBy("study") ? q.getMidataIdRestriction("study") : null, q.getRestrictionOrNull("study-group"), group, q.getMidataIdRestriction("owner"), Sets.create("name", "order", "owner", "ownerName", "type"));
 				   Set<String> owners = new HashSet<String>();
 				   for (StudyParticipation part : parts) {
 					  owners.add(part.owner.toString());
@@ -81,7 +81,7 @@ public class Feature_UserGroups extends Feature {
 		    }		
 			
 		}
-		MidataId aps = q.getApsId().equals(ugm.member) ? group : q.getApsId();
+		MidataId aps = (q.getApsId().equals(ugm.member) || q.getContext() instanceof DummyAccessContext) ? group : q.getApsId();
 		Query qnew = new Query(newprops, q.getFields(), subcache, aps, new UserGroupAccessContext(ugm, subcache, q.getContext()));
 		List<DBRecord> result = next.query(qnew);
 		AccessLog.logEnd("end user group query for group="+group.toString());

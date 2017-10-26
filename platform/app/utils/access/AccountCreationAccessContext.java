@@ -48,4 +48,9 @@ public class AccountCreationAccessContext extends AccessContext {
 		return parent.getOwner();
 	}
 
+	@Override
+	public MidataId getOwnerPseudonymized() {		
+		return parent.getOwnerPseudonymized();
+	}
+
 }
