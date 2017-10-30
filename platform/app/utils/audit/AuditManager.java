@@ -59,7 +59,7 @@ public class AuditManager {
 	public void addAuditEvent(AuditEventType type, MidataId app, MidataId who, MidataId modifiedUser, String message, MidataId userGroupId) throws AppException {
 		User executingUser = User.getById(who, User.ALL_USER);
 		User modifiedUserObj = User.getById(modifiedUser, User.ALL_USER);
-		Study study = Study.getByIdFromMember(userGroupId, Study.ALL);		
+		Study study = Study.getById(userGroupId, Study.ALL);		
 		addAuditEvent(type, app, executingUser, modifiedUserObj, null, message, study);
 	}
 	

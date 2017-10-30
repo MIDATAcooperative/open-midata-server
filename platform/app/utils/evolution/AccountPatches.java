@@ -38,13 +38,14 @@ import utils.fhir.PatientResourceProvider;
 
 public class AccountPatches {
 
-	public static final int currentAccountVersion = 20161205;
+	public static final int currentAccountVersion = 20171020;
 	
 	public static void check(User user) throws AppException {		
 		if (user.accountVersion < 20160324) { formatPatch20160324(user); }	
 		if (user.accountVersion < 20160407) { formatPatch20160407(user); }
 		if (user.accountVersion < 20160902) { formatPatch20160902(user); }
 		if (user.accountVersion < 20161205) { formatPatch20161205(user); }
+		if (user.accountVersion < 20171020) { formatPatch20171020(user); }
 		//if (user.accountVersion < 20170206) { formatPatch20170206(user); }
 	}
 	

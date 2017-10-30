@@ -169,7 +169,7 @@ public class Study extends Model {
 		return Model.get(Study.class, collection, CMaps.map("_id", studyid).map("owner",  owner), fields);
 	}
     
-    public static Study getByIdFromMember(MidataId studyid, Set<String> fields) throws InternalServerException {
+    public static Study getById(MidataId studyid, Set<String> fields) throws InternalServerException {
 		return Model.get(Study.class, collection, CMaps.map("_id", studyid), fields);
 	}
     

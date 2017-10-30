@@ -418,7 +418,7 @@ public class Administration extends APIController {
 		MidataId studyid = new MidataId(id);
 		
 		
-		Study study = Study.getByIdFromMember(studyid, Sets.create("name", "owner","executionStatus", "participantSearchStatus","validationStatus", "createdBy", "code"));
+		Study study = Study.getById(studyid, Sets.create("name", "owner","executionStatus", "participantSearchStatus","validationStatus", "createdBy", "code"));
 		
 		if (study == null) throw new BadRequestException("error.missing.study", "Study not found.");
 		if (study.executionStatus != StudyExecutionStatus.PRE && study.executionStatus != StudyExecutionStatus.ABORTED) throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");

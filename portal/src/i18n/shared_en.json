@@ -278,7 +278,8 @@
 	   "ACTIVE" : "Active",
 	   "EXPIRED" : "Expired",
 	   "REJECTED" : "Rejected",
-	   "UNCONFIRMED" : "Unconfirmed"
+	   "UNCONFIRMED" : "Unconfirmed",
+	   "FROZEN" : "Frozen"
 	 },
 	 "consenttype" : {
 	   "CIRCLE" : "Other Account Holders",
@@ -312,7 +313,8 @@
 	   "MATCH" : "Possible match",
 	   "MEMBER_REJECTED" : "Account holder rejected",
 	   "REQUEST" : "Participation requested",
-	   "RESEARCH_REJECTED" : "Rejected by researcher"
+	   "RESEARCH_REJECTED" : "Rejected by researcher",
+	   "MEMBER_RETREATED" : "Participant has retreated"
 	 },
 	 "studyexecutionstatus" : {
 	   "ABORTED" : "Execution aborted",

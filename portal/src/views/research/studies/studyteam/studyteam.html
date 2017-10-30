@@ -31,7 +31,8 @@
 			
 			<form class="form-horizontal">
 			  <formrow myid="person" label="studyteam.person">
-			    <select name="person" id="person" class="form-control" ng-model="add.person" ng-options="person as person.email for person in persons"></select>
+  			    <input type="text" class="form-control" id="person" name="person" ng-model="add.personemail" ng-model-options="{ debounce: 50 }" uib-typeahead="person.email for person in persons | filter:{email:$viewValue}">
+			    
 			  </formrow>
 			  <formrow myid="role" label="studyteam.role">
 			    <select name="role" id="role" class="form-control" ng-model="add.roleTemplate" ng-options="role as 'enum.researcherrole.'+role.id | translate for role in roles" ng-change="updateRole()"></select>			    			    

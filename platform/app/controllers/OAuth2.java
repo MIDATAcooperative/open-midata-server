@@ -108,7 +108,7 @@ public class OAuth2 extends Controller {
 		Set<UserFeature> requirements = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(role);
 		if (app.requirements != null) requirements.addAll(app.requirements);
 		if (app.linkedStudy != null && confirmStudy) {
-			Study study = Study.getByIdFromMember(app.linkedStudy, Sets.create("requirements"));			
+			Study study = Study.getById(app.linkedStudy, Sets.create("requirements"));			
 			if (study.requirements != null) requirements.addAll(study.requirements);
 		}
 		

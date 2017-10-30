@@ -69,12 +69,22 @@ angular.module('portal')
 	};
 	
 	$scope.addPerson = function() {			
-								
-		$scope.status.doAction("add", usergroups.addMembersToUserGroup($scope.groupId, [ $scope.add.person._id ], $scope.add.role)).
-		then(function() {
-			$scope.add = {};
-			$scope.init();
-		});				
+        $scope.error = null;				
+		$scope.status.doAction("add", users.getMembers({ email : $scope.add.personemail, role : "RESEARCH" },["email", "role"]))
+		.then(function(result) {
+			if (result.data && result.data.length) {
+				$scope.add.person = result.data[0];
+			
+			
+				$scope.status.doAction("add", usergroups.addMembersToUserGroup($scope.groupId, [ $scope.add.person._id ], $scope.add.role)).
+				then(function() {
+					$scope.add = {};
+					$scope.init();
+				});
+			} else {
+				$scope.error = { code : "error.unknown.user" };
+			}
+		});
 	};
 	
 	$scope.matrix = function(role) {
