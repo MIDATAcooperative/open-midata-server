@@ -75,6 +75,10 @@ angular.module('portal')
 		return $scope.participation != null && ( $scope.participation.pstatus == "MATCH" || $scope.participation.pstatus == "CODE" || $scope.participation.pstatus == "REQUEST" );
 	};
 	
+	$scope.mayRetreatParticipation = function() {
+		return $scope.participation != null && $scope.participation.pstatus == "ACCEPTED";
+	};
+	
 	$scope.requestParticipation = function() {
 		$scope.error = null;
 		
@@ -91,6 +95,18 @@ angular.module('portal')
 		$scope.error = null;
 		
 		server.post(jsRoutes.controllers.members.Studies.noParticipation($scope.studyid).url).
+		success(function(data) { 				
+		    $scope.reload();
+		}).
+		error(function(err) {
+			$scope.error = err;			
+		});
+	};
+	
+	$scope.retreatParticipation = function() {
+		$scope.error = null;
+		
+		server.post(jsRoutes.controllers.members.Studies.retreatParticipation($scope.studyid).url).
 		success(function(data) { 				
 		    $scope.reload();
 		}).

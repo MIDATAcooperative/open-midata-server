@@ -26,11 +26,11 @@ angular.module('portal')
 	};
 	
 	$scope.readyForValidation = function() {
-		return $scope.study.validationStatus == "DRAFT" || $scope.study.validationStatus == "REJECTED";
+		return $scope.study.myRole.setup && ($scope.study.validationStatus == "DRAFT" || $scope.study.validationStatus == "REJECTED");
 	};
 	
 	$scope.readyForParticipantSearch = function() {
-		return $scope.study.validationStatus == "VALIDATED" &&
+		return $scope.study.myRole.setup && $scope.study.validationStatus == "VALIDATED" &&
 		       $scope.study.executionStatus == "PRE" &&
 		       (
 				 $scope.study.participantSearchStatus == "PRE" ||
@@ -39,15 +39,15 @@ angular.module('portal')
 	};
 	
 	$scope.readyForEndParticipantSearch = function() {
-		return $scope.study.validationStatus == "VALIDATED" && $scope.study.participantSearchStatus == "SEARCHING";
+		return $scope.study.myRole.setup && $scope.study.validationStatus == "VALIDATED" && $scope.study.participantSearchStatus == "SEARCHING";
 	};
 	
 	$scope.readyForDelete = function() {
-		return $scope.study.executionStatus == "PRE" || $scope.study.executionStatus == "ABORTED";
+		return $scope.study.myRole.setup && ($scope.study.executionStatus == "PRE" || $scope.study.executionStatus == "ABORTED");
 	};
 	
 	$scope.readyForAbort = function() {
-		return $scope.study.validationStatus == "VALIDATED" && $scope.study.executionStatus != "ABORTED" && $scope.study.participantSearchStatus != "SEARCHING";
+		return $scope.study.myRole.setup && ($scope.study.validationStatus == "VALIDATED" && $scope.study.executionStatus != "ABORTED" && $scope.study.participantSearchStatus != "SEARCHING");
 	};
 	
 	$scope.readyForStartExecution = function() {
@@ -57,7 +57,7 @@ angular.module('portal')
 	};
 	
 	$scope.readyForFinishExecution = function() {
-		return $scope.study.validationStatus == "VALIDATED" && 
+		return $scope.study.myRole.setup && $scope.study.validationStatus == "VALIDATED" && 
 		       $scope.study.participantSearchStatus == "CLOSED" &&
 		       $scope.study.executionStatus == "RUNNING";
 	};

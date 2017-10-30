@@ -248,7 +248,9 @@ public class UserGroups extends APIController {
 			role.export = JsonValidation.getBoolean(json, "export");
 			role.pseudo = !JsonValidation.getBoolean(json, "unpseudo");
 			role.participants = JsonValidation.getBoolean(json, "participants");
-			role.roleName = JsonValidation.getString(json, "roleName");			
+			role.setup = JsonValidation.getBoolean(json, "setup");
+			role.roleName = JsonValidation.getString(json, "roleName");
+			role.id = JsonValidation.getString(json, "id");	
 		}
 		
 		BSONObject meta = RecordManager.instance.getMeta(executorId, self._id, "_usergroup");

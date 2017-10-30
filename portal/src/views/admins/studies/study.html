@@ -15,7 +15,7 @@
 	  </tr>
 	  <tr>
         <td translate="admin_study.created_at"></td>
-        <td>{{ study.createdAt | date }}</td>
+        <td>{{ study.createdAt | date : 'dd.MM.yy' }}</td>
       </tr>
        <tr>
         <td translate="admin_study.created_by"></td>
@@ -28,7 +28,19 @@
       <tr>
 	    <td translate="admin_study.code"></td>
 	    <td>{{ study.code }}</td>
-	  </tr>    
+	  </tr>
+	  <tr>
+	    <td translate="admin_study.startDate"></td>
+	    <td>{{ study.startDate | date : 'dd.MM.yy' }}</td>
+	  </tr>       
+	  <tr>
+	    <td translate="admin_study.endDate"></td>
+	    <td>{{ study.endDate | date : 'dd.MM.yy'}}</td>
+	  </tr>
+	  <tr>
+	    <td translate="admin_study.dataCreatedBefore"></td>
+	    <td>{{ study.dataCreatedBefore | date }}</td>
+	  </tr>
     </table>	
     </loader>
     </div>

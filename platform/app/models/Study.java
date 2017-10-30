@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import models.enums.AssistanceType;
 import models.enums.InformationType;
 import models.enums.ParticipantSearchStatus;
+import models.enums.ResearcherRole;
 import models.enums.StudyExecutionStatus;
 import models.enums.StudyValidationStatus;
 import models.enums.UserFeature;
@@ -30,7 +31,7 @@ public class Study extends Model {
 	/**
 	 * constant set containing all fields
 	 */
-	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "owner", "createdBy", "createdAt", "description", "infos", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse");
+	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "owner", "createdBy", "createdAt", "description", "infos", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore");
 	
 	/**
 	 * name of study
@@ -56,6 +57,21 @@ public class Study extends Model {
 	 * date of creation of the study
 	 */
 	public Date createdAt;	 
+	
+	/**
+	 * start date of study
+	 */
+	public Date startDate;
+	
+	/**
+	 * end date of study
+	 */
+	public Date endDate;
+	
+	/**
+	 * do not share data created after
+	 */
+	public Date dataCreatedBefore;
 	
 	/**
 	 * textual description of the study
@@ -118,6 +134,11 @@ public class Study extends Model {
      * Requirements to user account to participate in study
      */
     public Set<UserFeature> requirements;
+    
+    /**
+     * Role of current researcher
+     */
+    public @NotMaterialized ResearcherRole myRole;
     
     /**
      * Terms of use for study
@@ -194,6 +215,21 @@ public class Study extends Model {
     public void setTermsOfUse(String termsOfUse) throws InternalServerException {
     	this.termsOfUse = termsOfUse;
     	Model.set(Study.class, collection, this._id, "termsOfUse", termsOfUse);
+    }
+    
+    public void setStartDate(Date startDate) throws InternalServerException {
+    	this.startDate = startDate;
+    	Model.set(Study.class, collection, this._id, "startDate", startDate);
+    }
+    
+    public void setEndDate(Date endDate) throws InternalServerException {
+    	this.endDate = endDate;
+    	Model.set(Study.class, collection, this._id, "endDate", endDate);
+    }
+    
+    public void setDataCreatedBefore(Date dataCreatedBefore) throws InternalServerException {
+    	this.dataCreatedBefore = dataCreatedBefore;
+    	Model.set(Study.class, collection, this._id, "dataCreatedBefore", dataCreatedBefore);
     }
         
     

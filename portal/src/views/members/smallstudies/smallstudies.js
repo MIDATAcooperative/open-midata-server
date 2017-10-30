@@ -21,7 +21,7 @@ angular.module('views')
 			return study.pstatus == "ACCEPTED" && study.executionStatus == "FINISHED";
 		},
 		function(study) {
-			return study.pstatus == "MEMBER_REJECTED" || study.pstatus == "RESEARCH_REJECTED" || study.executionStatus == "ABORTED";
+			return study.pstatus == "MEMBER_REJECTED" || study.pstatus == "RESEARCH_REJECTED" || study.executionStatus == "ABORTED" || study.pstatus == "MEMBER_RETREATED";
 		}		
 	];
 	

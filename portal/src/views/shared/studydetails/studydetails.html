@@ -18,7 +18,13 @@
 	<div class="row">
 		<div class="col-sm-4 infopanel">
 
+          <div class="panel panel-primary">
+				<div class="panel-heading" translate="studydetails.duration"></div>
+				<div class="panel-body">
 
+					<div class="lead">{{ study.startDate | date : 'dd.MM.yy' }} - {{ study.endDate | date: 'dd.MM.yy' }}</div>					
+				</div>
+			</div>
 
 
 
@@ -80,7 +86,8 @@
 		                translate="studydetails.request_participation_btn"></button>
 	                <button ng-show="mayDeclineParticipation()" ng-click="noParticipation()" class="btn btn-danger"
 		                translate="studydetails.do_not_participate_btn"></button>
-				
+				    <button ng-show="mayRetreatParticipation()" ng-click="retreatParticipation()" class="btn btn-danger"
+		                translate="studydetails.retreat_btn"></button>
 
            
 
@@ -109,10 +116,10 @@
 		</div>
 	</div>
 
-	<div class="panel panel-primary" ng-show="participation">
+	<div class="panel panel-primary" ng-if="participation">
 		<div class="panel-heading" translate="studydetails.participation_history"></div>
 		<div class="panel-body">
-			<auditlog entity="{{ studyid }}"></auditlog>
+			<auditlog entity="{{ participation._id }}"></auditlog>
 		</div>
 	</div>
 

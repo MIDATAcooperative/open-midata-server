@@ -133,6 +133,9 @@
   "studyrules" : {
     "title" : "Study Rules",
     "no_change_warning" : "This setup cannot be changed anymore after Study has been validated.",
+    "startDate" : "Official start date",
+    "endDate" : "Official end date",
+    "dataCreatedBefore" : "Data freeze date",
     "sharing_query" : "Sharing Query (JSON)",
     "terms_of_use" : "Terms",
     "show_terms" : "Show Terms",
@@ -147,6 +150,7 @@
   "studyteam" : {
     "person" : "Team member",
     "role" : "Role",
+    "roleName" : "Role Name",
     "addperson_btn" : "Add Person",
     "rights" : "Rights",
     "right" : {
@@ -156,7 +160,8 @@
       "export" : "Export data",
       "changeTeam" : "Change team",
       "auditLog" : "View audit log",
-      "participants" : "Manage participants"
+      "participants" : "Manage participants",
+      "setup" : "Setup Study"
     }
   }
 }

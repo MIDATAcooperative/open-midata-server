@@ -11,7 +11,9 @@ public class ResearcherRole implements JsonSerializable {
 	public boolean export;
 	public boolean auditLog;
 	public boolean participants;
+	public boolean setup;
 	public String roleName;
+	public String id;
 	
 	public boolean mayWriteData() {
 		return writeData;//return this == STUDYNURSE || this == HC;
@@ -41,7 +43,11 @@ public class ResearcherRole implements JsonSerializable {
 		return participants;
 	}
 	
-	public static ResearcherRole INVESTIGATOR() {
+	public boolean maySetup() {
+		return setup;
+	}
+	
+	public static ResearcherRole SPONSOR() {
 		ResearcherRole result = new ResearcherRole();
 		result.changeTeam = true;
 		result.auditLog = true;
@@ -49,7 +55,9 @@ public class ResearcherRole implements JsonSerializable {
 		result.pseudo = true;
 		result.export = true;
 		result.participants = true;
-		result.roleName = "Investigator";
+		result.setup = true;
+		result.roleName = "Sponsor";
+		result.id = "SPONSOR";
 		return result;
 	}
 	
@@ -62,7 +70,9 @@ public class ResearcherRole implements JsonSerializable {
 		result.participants = false;
 		result.pseudo = false;
 		result.export = false;
+		result.setup = false;
 		result.roleName = "HC";
+		result.id = "HC";
 		return result;
 	}
 }

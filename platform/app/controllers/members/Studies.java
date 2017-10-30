@@ -243,6 +243,7 @@ public class Studies extends APIController {
 		part.setOwnerName(userName);
 		part.status = ConsentStatus.ACTIVE;
 		part.writes = WritePermissionType.UPDATE_AND_CREATE;
+		part.createdBefore = study.dataCreatedBefore;
 		if (code != null) {
 			part.group = code.group;
 			part.recruiter = code.recruiter;		
@@ -271,8 +272,9 @@ public class Studies extends APIController {
 		} */
 		
 		Circles.prepareConsent(part);
-		StudyParticipation.add(part);
+		StudyParticipation.add(part);		
 		Circles.setQuery(executor, member._id, part._id, study.recordQuery);
+		Circles.consentSettingChange(executor, part);
 		
 		// Query can only be applied if patient is doing it himself
 		if (executor.equals(member._id)) {
@@ -296,7 +298,7 @@ public class Studies extends APIController {
 	   MidataId userId = new MidataId(request().username());	
 	   MidataId studyId = new MidataId(id);
 	   	   
-	   Set<String> studyFields = Sets.create("_id", "createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","infos","owner","participantRules","recordQuery","studyKeywords","requiredInformation","assistance");
+	   Set<String> studyFields = Sets.create("_id", "createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","infos","owner","participantRules","recordQuery","studyKeywords","requiredInformation","assistance", "startDate", "endDate", "dataCreatedBefore");
 	   Set<String> consentFields = Sets.create("_id", "pstatus", "providers");
 	   Set<String> researchFields = Sets.create("_id", "name", "description");
 	   
@@ -439,6 +441,37 @@ public class Studies extends APIController {
 		participation.setPStatus(ParticipationStatus.MEMBER_REJECTED);		
 		//participation.addHistory(new History(EventType.NO_PARTICIPATION, participation, user, null));
 		Circles.consentStatusChange(userId, participation, ConsentStatus.REJECTED);
+		
+		AuditManager.instance.success();
+		return ok();
+	}
+	
+	/**
+	 * reject study participation (by member)
+	 * @param id ID of study
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws AppException
+	 */
+	@APICall
+	@Security.Authenticated(MemberSecured.class)
+	public static Result retreatParticipation(String id) throws JsonValidationException, AppException {
+		MidataId userId = new MidataId(request().username());		
+		MidataId studyId = new MidataId(id);
+		
+		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country"));
+		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create(Consent.ALL, "status", "pstatus", "ownerName", "owner", "authorized"));		
+		Study study = Study.getByIdFromMember(studyId, Sets.create("name", "executionStatus", "participantSearchStatus", "createdBy", "code"));
+		
+		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
+		if (participation == null) throw new BadRequestException("error.blocked.participation", "Member does not participate in study.");
+		
+		AuditManager.instance.addAuditEvent(AuditEventType.STUDY_PARTICIPATION_MEMBER_RETREAT, userId, participation, study);
+		if (participation.pstatus != ParticipationStatus.ACCEPTED) throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");
+		
+		participation.setPStatus(ParticipationStatus.MEMBER_RETREATED);		
+		//participation.addHistory(new History(EventType.NO_PARTICIPATION, participation, user, null));
+		Circles.consentStatusChange(userId, participation, ConsentStatus.FROZEN);
 		
 		AuditManager.instance.success();
 		return ok();

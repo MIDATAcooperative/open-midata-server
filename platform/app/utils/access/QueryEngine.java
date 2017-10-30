@@ -466,9 +466,11 @@ class QueryEngine {
 		
 		result = filterByDateRange(result, "created", q.getMinDateCreated(), q.getMaxDateCreated());			
 		result = filterByDateRange(result, "lastUpdated", q.getMinDateUpdated(), q.getMaxDateUpdated());
+		
+		if (q.restrictedBy("history-date")) result = Feature_Versioning.historyDate(q, result);
 		AccessLog.logEnd("end process filters size="+result.size());
 	    
-    	}
+    	} 
 	    	    	    
 		return result;
     }

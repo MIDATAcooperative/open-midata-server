@@ -122,7 +122,7 @@ public class Plugins extends APIController {
 		
 		String name = JsonValidation.getString(json, "name");
 		
-		Set<String> fields = Sets.create("name", "description", "i18n", "defaultQuery", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "termsOfUse", "requirements", "orgName", "unlockCode");
+		Set<String> fields = Sets.create("name", "description", "i18n", "defaultQuery", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "termsOfUse", "requirements", "orgName", "unlockCode", "targetUserRole");
 		Plugin plugin = Plugin.get(CMaps.map("filename", name).map("type", "mobile"), fields);
 		if (plugin != null && plugin.unlockCode != null) plugin.unlockCode = "true";	
 		

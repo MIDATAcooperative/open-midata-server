@@ -189,7 +189,7 @@ public class Circles extends APIController {
 					BasicBSONObject obj = (BasicBSONObject) RecordManager.instance.getMeta(executor, consent._id, "_filter");
 					if (obj != null) {
 						consent.validUntil = obj.getDate("valid-until");
-						consent.createdBefore = obj.getDate("created-before");
+						consent.createdBefore = obj.getDate("history-date");
 					}				
 				}
 				
@@ -616,8 +616,8 @@ public class Circles extends APIController {
 	public static void consentStatusChange(MidataId executor, Consent consent, ConsentStatus newStatus, boolean patientRecord) throws AppException {
 		
 		ConsentStatus oldStatus = consent.status;
-		boolean wasActive = oldStatus.equals(ConsentStatus.ACTIVE);
-		boolean active = (newStatus == null) ? wasActive : newStatus.equals(ConsentStatus.ACTIVE);
+		boolean wasActive = oldStatus.equals(ConsentStatus.ACTIVE) || oldStatus.equals(ConsentStatus.FROZEN);
+		boolean active = (newStatus == null) ? wasActive : (newStatus.equals(ConsentStatus.ACTIVE) || newStatus.equals(ConsentStatus.FROZEN));
 						
 		if (newStatus == null) {
 		  wasActive = false;
@@ -646,6 +646,14 @@ public class Circles extends APIController {
 			if (auth.contains(consent.owner)) { auth.remove(consent.owner); }
 			RecordManager.instance.unshareAPSRecursive(consent._id, consent.owner, consent.authorized);
 		}
+		if (newStatus.equals(ConsentStatus.FROZEN)) {
+			Date now = new Date();
+			if (consent.createdBefore == null || consent.createdBefore.after(now)) {				
+				consent.createdBefore = now;
+				consent.set(consent._id, "createdBefore", consent.createdBefore);
+				consentSettingChange(executor, consent);
+			}
+		}
 		
 		prepareConsent(consent);
 	}
@@ -658,7 +666,7 @@ public class Circles extends APIController {
 	 * @throws AppException
 	 */
 	public static void consentSettingChange(MidataId executor, Consent consent) throws AppException {
-		if (consent.status == ConsentStatus.ACTIVE || executor.equals(consent.owner)) {
+		if (consent.status == ConsentStatus.ACTIVE || consent.status == ConsentStatus.FROZEN || executor.equals(consent.owner)) {
 			BasicBSONObject dat = (BasicBSONObject) RecordManager.instance.getMeta(executor, consent._id, "_filter");
 			Map<String, Object> restrictions = (dat == null) ? new HashMap<String, Object>() : dat.toMap();
 			if (consent.validUntil != null) {
@@ -667,9 +675,9 @@ public class Circles extends APIController {
 				restrictions.remove("valid-until");
 			}
 			if (consent.createdBefore != null) {
-				restrictions.put("created-before", consent.createdBefore);
+				restrictions.put("history-date", consent.createdBefore);
 			} else {
-				restrictions.remove("created-before");
+				restrictions.remove("history-date");
 			}
 			
 			RecordManager.instance.setMeta(executor, consent._id, "_filter", restrictions);

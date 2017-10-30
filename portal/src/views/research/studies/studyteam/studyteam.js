@@ -12,8 +12,8 @@ angular.module('portal')
 	};
 	$scope.members = [];
     $scope.roles = studies.roles;
-    $scope.rights = ["readData", "writeData", "unpseudo", "export", "changeTeam", "auditLog", "participants" ];
-    $scope.add = { roles:{} };
+    $scope.rights = ["setup", "readData", "writeData", "unpseudo", "export", "changeTeam", "participants", "auditLog" ];
+    $scope.add = { role:{} };
 	
 	$scope.init = function() {
 		
@@ -23,6 +23,11 @@ angular.module('portal')
 		
 		
 		$scope.groupId = $scope.studyId;
+		
+		$scope.status.doBusy(server.get(jsRoutes.controllers.research.Studies.get($scope.studyId).url))
+		.then(function(data) { 				
+				$scope.study = data.data;			
+		});
 						
 		$scope.status.doBusy(usergroups.listUserGroupMembers($scope.studyId))
 		.then(function(data) {
@@ -53,6 +58,16 @@ angular.module('portal')
 		
 	};
 	
+	$scope.updateRole = function() {
+		console.log($scope.add);
+		var role =$scope.add.roleTemplate;
+		$scope.add.role.roleName = role.roleName;
+		$scope.add.role.id = role.id;
+		for (var i in $scope.rights) {
+			$scope.add.role[$scope.rights[i]] = role[$scope.rights[i]];
+		}
+	};
+	
 	$scope.addPerson = function() {			
 								
 		$scope.status.doAction("add", usergroups.addMembersToUserGroup($scope.groupId, [ $scope.add.person._id ], $scope.add.role)).
@@ -61,9 +76,23 @@ angular.module('portal')
 			$scope.init();
 		});				
 	};
+	
+	$scope.matrix = function(role) {
+	   var r = "";
+	   r += role.setup ? "S" : "-";
+	   r += role.readData ? "R" : "-";
+	   r += role.writeData ? "W" : "-";
+	   r += role.unpseudo ? "U" : "-";
+	   r += role["export"] ? "E" : "-";
+	   r += role.changeTeam ? "T" : "-";
+	   r += role.participants ? "P" : "-";
+	   r += role.auditLog ? "L" : "-";	   
+	   return r;
+	};
 		
 	session.currentUser.then(function(userId) {	 
 	  $scope.init();
 	});
 }]);
 	
+

@@ -2,7 +2,65 @@ angular.module('services')
 .factory('studies', ['server', function(server) {
 	var service = {};
 	
-	service.roles = ["PI","MONITOR"];
+	service.roles = [
+		{ id :"SPONSOR",
+		  roleName : "Sponsor",
+		  readData : true,
+		  writeData : false,
+		  unpseudo : false,
+		  "export" : true,
+		  changeTeam : true,
+		  auditLog : true,
+		  participants : true,
+		  setup : true
+		},
+		{ id :"INVESTIGATOR",
+			  roleName : "Investigator",
+			  readData : true,
+			  writeData : true,
+			  unpseudo : true,
+			  "export" : false,
+			  changeTeam : false,
+			  auditLog : true,
+			  participants : true,
+			  setup : false
+		},
+		{ id :"MONITOR",
+			  roleName : "Monitor",
+			  readData : true,
+			  writeData : false,
+			  unpseudo : true,
+			  "export" : false,
+			  changeTeam : false,
+			  auditLog : true,
+			  participants : false,
+			  setup : false
+		},
+		{ id :"AUDITOR",
+			  roleName : "Auditor",
+			  readData : true,
+			  writeData : false,
+			  unpseudo : false,
+			  "export" : true,
+			  changeTeam : false,
+			  auditLog : true,
+			  participants : false,
+			  setup : false
+		},
+		{ id :"OTHER",
+			  roleName : "",
+			  readData : false,
+			  writeData : false,
+			  unpseudo : false,
+			  "export" : false,
+			  changeTeam : false,
+			  auditLog : false,
+			  participants : false,
+			  setup : false
+		}
+		
+		
+	];
 	
 	service.search = function(properties, fields) {
 		var data = {"properties": properties, "fields": fields };

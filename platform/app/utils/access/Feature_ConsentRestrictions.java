@@ -32,6 +32,8 @@ public class Feature_ConsentRestrictions extends Feature {
 				  return Collections.emptyList();
 			  }
 		  }
+		  Date historyDate = filter.getDate("history-date");
+		  if (historyDate != null && historyDate.after(new Date())) filter.remove("history-date");
 		  if (!filter.isEmpty()) {
 			 AccessLog.log("Applying consent filter");
 			 return QueryEngine.combine(q, filter.toMap(), new Feature_ProcessFilters(next));

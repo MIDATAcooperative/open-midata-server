@@ -232,6 +232,7 @@
 	   "study-participation-requested" : "Study participation requested",
 	   "study-participation-member-rejected" : "Study participation rejected by member",
 	   "study-participation-research-rejected" : "Study participation rejected by research",
+	   "study-participation-member-retreat" : "Member retreated from study participation",
 	   "study-participation-approved" :"Study participation approved",
 	   "study-participation-group-assigned" : "Study participation group assigned",
 	   "study-validation-requested" : "Study validation requested",
@@ -351,8 +352,11 @@
 	   "MEMBEROFCOOPERATIVE" : "Member of Cooperative"
 	 },
 	 "researcherrole" : {
-	   "PI" : "Pi",
-	   "MONITOR" : "Monitor"
+	   "SPONSOR" : "Sponsor",
+	   "INVESTIGATOR" : "Investigator",
+	   "AUDITOR" : "Auditor",
+	   "MONITOR" : "Monitor",
+	   "OTHER" : "Other"
 	 },
 	 "userstatus" : {
 	   "ACTIVE" : "Active",
@@ -638,6 +642,7 @@
     "no_providers" : "None",
     "provider_remove_btn" : "Remove",
     "provider_add_btn" : "Add",
+    "duration" : "Duration",
     "information_that_needs_sharing" : "Required data",
     "information_restricted" : "Your gender, year of birth and country of residence",
     "information_demographic" : "Your complete demographic data (name, birthday, address, ...)",
@@ -654,6 +659,7 @@
 	"history_comment" : "Comment",
 	"request_participation_btn" : "Request Participation",
 	"do_not_participate_btn" : "Do not participate",
+	"retreat_btn" : "Retreat from participation",
 	"status" : "Status"
   },
 

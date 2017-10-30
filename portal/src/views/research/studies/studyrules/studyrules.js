@@ -5,6 +5,11 @@ angular.module('portal')
    $scope.status = new status(false, $scope);
    $scope.error = null;
    $scope.requirements = apps.userfeatures;
+   $scope.datePickers = {  };
+   $scope.dateOptions = {
+	  	 formatYear: 'yy',
+	  	 startingDay: 1
+   };
    
    $scope.reload = function() {
 	   	  
@@ -23,7 +28,7 @@ angular.module('portal')
 	     $scope.study.recordQuery = JSON.parse($scope.study.recordQueryStr);
    	   } catch (e) { console.log(e); $scope.error = e.message;return; }
 	  
-	   var data = { recordQuery : $scope.study.recordQuery, termsOfUse : $scope.study.termsOfUse, requirements: $scope.study.requirements };
+	   var data = { recordQuery : $scope.study.recordQuery, termsOfUse : $scope.study.termsOfUse, requirements: $scope.study.requirements, startDate : $scope.study.startDate, endDate : $scope.study.endDate, dataCreatedBefore : $scope.study.dataCreatedBefore };
 	   $scope.status.doAction("update", server.put(jsRoutes.controllers.research.Studies.update($scope.studyid).url, JSON.stringify(data)))
 	  .then(function(data) { 				
 		    $scope.reload();
@@ -31,7 +36,7 @@ angular.module('portal')
    };
    
    $scope.studyLocked = function() {
-	 return (!$scope.study) || ($scope.study.validationStatus !== "DRAFT" && $scope.study.validationStatus !== "REJECTED");    
+	 return (!$scope.study) || ($scope.study.validationStatus !== "DRAFT" && $scope.study.validationStatus !== "REJECTED") || !$scope.study.myRole.setup;    
    };
    
    $scope.toggle = function(array,itm) {

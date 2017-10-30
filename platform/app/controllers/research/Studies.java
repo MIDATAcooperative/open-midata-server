@@ -172,7 +172,7 @@ public class Studies extends APIController {
 		member.userGroup = userGroup._id;
 		member.status = ConsentStatus.ACTIVE;
 		member.startDate = new Date();		
-		member.role = ResearcherRole.INVESTIGATOR();
+		member.role = ResearcherRole.SPONSOR();
 		Map<String, Object> accessData = new HashMap<String, Object>();
 		accessData.put("aliaskey", KeyManager.instance.generateAlias(userGroup._id, member._id));
 		RecordManager.instance.createPrivateAPS(userId, member._id);
@@ -360,7 +360,7 @@ public class Studies extends APIController {
 	   	   
 	   JsonNode json = request().body().asJson();
 	   Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
-	   Set<String> fields = Sets.create("createdAt","createdBy","description","name");
+	   Set<String> fields = Sets.create("createdAt","createdBy","description","name", "startDate", "endDate", "dataCreatedBefore");
 	   Set<Study> studies = Study.getAll(null, properties, fields);
 	   
 	   return ok(JsonOutput.toJson(studies, "Study", fields));
@@ -378,11 +378,15 @@ public class Studies extends APIController {
 	public static Result get(String id) throws JsonValidationException, InternalServerException {
        
 	   MidataId studyid = new MidataId(id);
+	   MidataId userid = MidataId.from(request().username());
 	   MidataId owner = PortalSessionToken.session().getOrg();
 
-	   Set<String> fields = Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","infos","owner","participantRules","recordQuery","studyKeywords","code","groups","requiredInformation", "assistance", "termsOfUse", "requirements"); 
+	   Set<String> fields = Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","infos","owner","participantRules","recordQuery","studyKeywords","code","groups","requiredInformation", "assistance", "termsOfUse", "requirements", "startDate", "endDate", "dataCreatedBefore", "myRole"); 
 	   Study study = Study.getByIdFromOwner(studyid, owner, fields);
 	   	   	   
+	   UserGroupMember ugm = UserGroupMember.getByGroupAndMember(studyid, userid);
+	   if (ugm != null) study.myRole = ugm.role;
+	   
 	   return ok(JsonOutput.toJson(study, "Study", fields));
 	}
 	
@@ -399,7 +403,7 @@ public class Studies extends APIController {
        
 	   MidataId studyid = new MidataId(id);
 	   
-	   Set<String> fields = Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","infos","owner","participantRules","recordQuery","studyKeywords","code","groups","requiredInformation", "assistance", "termsOfUse", "requirements"); 
+	   Set<String> fields = Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","infos","owner","participantRules","recordQuery","studyKeywords","code","groups","requiredInformation", "assistance", "termsOfUse", "requirements", "startDate", "endDate", "dataCreatedBefore"); 
 	   Study study = Study.getByIdFromMember(studyid, fields);
 	   	   	   
 	   ObjectNode result = Json.newObject();
@@ -741,7 +745,12 @@ public class Studies extends APIController {
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.STUDY_ABORTED, userId, null, study);
 		//if (study.executionStatus != StudyExecutionStatus.RUNNING) throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
-				
+		
+		UserGroupMember self = UserGroupMember.getByGroupAndMember(studyid, userId);
+		if (self == null) throw new AuthException("error.notauthorized.action", "User not member of study group");
+		if (!self.role.maySetup()) throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
+	
+		
 		//study.addHistory(new History(EventType.STUDY_ABORTED, user, null));
 		study.setExecutionStatus(StudyExecutionStatus.ABORTED);
 				
@@ -1210,12 +1219,18 @@ public class Studies extends APIController {
 		MidataId studyid = new MidataId(id);
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
-		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("name", "owner","executionStatus", "participantSearchStatus","validationStatus", "requiredInformation", "code"));
+		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("name", "owner","executionStatus", "participantSearchStatus","validationStatus", "requiredInformation", "code", "startDate", "endDate", "dataCreatedBefore"));
 			
 		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 		if (study.validationStatus != StudyValidationStatus.DRAFT) return badRequest("Setup can only be changed as long as study is in draft phase.");
         			
 		AuditManager.instance.addAuditEvent(AuditEventType.STUDY_SETUP_CHANGED, userId, null, study);
+		
+		UserGroupMember self = UserGroupMember.getByGroupAndMember(studyid, userId);
+		if (self == null) throw new AuthException("error.notauthorized.action", "User not member of study group");
+		if (!self.role.maySetup()) throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
+	
+		
 		if (json.has("groups")) {
 			List<StudyGroup> groups = new ArrayList<StudyGroup>();
 			for (JsonNode group : json.get("groups")) {
@@ -1242,6 +1257,16 @@ public class Studies extends APIController {
 		} 
 		if (json.has("requirements")) {
 			study.setRequirements(JsonExtraction.extractEnumSet(json, "requirements", UserFeature.class));
+		}
+		if (json.has("startDate")) {
+			study.setStartDate(JsonValidation.getDate(json, "startDate"));			
+		}
+		if (json.has("endDate")) {
+			study.setEndDate(JsonValidation.getDate(json, "endDate"));			
+		}
+		
+		if (json.has("dataCreatedBefore")) {
+			study.setDataCreatedBefore(JsonValidation.getDate(json, "dataCreatedBefore"));			
 		}
 				
 		AuditManager.instance.success();
@@ -1270,6 +1295,11 @@ public class Studies extends APIController {
 		//if (study.participantSearchStatus != ParticipantSearchStatus.CLOSED) return badRequest("Participant search must be closed before.");
 		if (study.executionStatus != StudyExecutionStatus.PRE && study.executionStatus != StudyExecutionStatus.ABORTED) throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
 	
+		UserGroupMember self = UserGroupMember.getByGroupAndMember(studyid, userId);
+		if (self == null) throw new AuthException("error.notauthorized.action", "User not member of study group");
+		if (!self.role.maySetup()) throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
+	
+		
 		deleteStudy(userId, study._id, false);
 		
 		return ok();

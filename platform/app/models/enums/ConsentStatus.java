@@ -29,5 +29,10 @@ public enum ConsentStatus {
    /**
     * the consent has been rejected by the member
     */
-   REJECTED
+   REJECTED,
+   
+   /**
+    * the consents data is frozen
+    */
+   FROZEN
 }
