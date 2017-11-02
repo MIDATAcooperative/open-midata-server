@@ -3,8 +3,8 @@
     "researcher_registration" : {
         "sign_up" : "Registrierung als Forscher",
         "research_organization" : "Forschungseinrichtung",
-        "name" : "Name*",
-        "description" : "Beschreibung*",
+        "name" : "Name",
+        "description" : "Beschreibung",
         "research_user" : "Forschungsbenutzer"
     },
 
@@ -52,8 +52,8 @@
         "plugin" : "Forschungsapplikation",
         "device" : "Code des Gerätes",
         "restrict" : "Lesen auf diese Studiengruppe beschränken",
-        "add_application_btn" : "Studiendaten liefernde Anwendung hinzufügen.",       
-        "linked_apps" : "Anwendungsnutzungs-Zustimmungen"
+        "add_application_btn" : "Studiendaten liefernde Anwendung hinzufügen.",
+        "linked_apps" : "Zustimmungen für Anwendungen"
     },
 
     "studyfields" : {
@@ -96,7 +96,7 @@
         "end_participant_search_btn" : "Suche nach Teilnehmer beenden",
         "start_study_execution_btn" : "Durchführung der Studie starten",
         "finish_study_btn" : "Studie beenden",
-        "delete_study_btn" : "Studie löschen",        
+        "delete_study_btn" : "Studie löschen",
         "abort_study_btn" : "Studie abbrechen"
     },
 

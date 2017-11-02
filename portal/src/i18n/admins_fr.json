@@ -2,6 +2,7 @@
 
     "admin_navbar" : {
         "members" : "Membres",
+        "auditlog" : "Audit",
         "news" : "News",
         "plugins" : "Plugins",
         "content" : "Contenu",
@@ -103,6 +104,7 @@
         "title" : "Étude",
         "name" : "Nom",
         "created_at" : "Créée le",
+        "created_by" : "Créée par",
         "description" : "Description",
         "code" : "Code",
         "required_information" : "Informations requises",
@@ -115,6 +117,7 @@
         "group_description" : "Description",
         "history" : "Historique",
         "end_validation_btn" : "Finaliser la validation",
+        "back_to_draft_btn" : "Revenir à l'ébauche",
         "delete_study_btn" : "Effacer l'étude"
     }
 }

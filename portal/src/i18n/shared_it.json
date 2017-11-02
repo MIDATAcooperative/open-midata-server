@@ -823,9 +823,6 @@
 
     "instance" : {
 
-        // TODO NEW: 
-        "rules" : "",
-
         // TODO NEW: Purpose of this MIDATA instance
         "purpose" : "Purpose of this MIDATA instance",
 
