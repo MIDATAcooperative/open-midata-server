@@ -54,7 +54,7 @@
             "CONSENT_CONFIRM_OWNER" : "Zustimmungsannahme (Geber)",
             "CONSENT_CONFIRM_AUTHORIZED" : "Zustimmungsannahme (Empfänger)",
             "CONSENT_REJECT_OWNER" : "Zustimmungsablehnung (Geber)",
-            "CONSENT_REJECT_AUTHORIZED" : "Zustimmungsablehnung (Empfänger)",            
+            "CONSENT_REJECT_AUTHORIZED" : "Zustimmungsablehnung (Empfänger)",
             "ACCOUNT_UNLOCK" : "Konto vom Administrator freigeschaltet"
         }
     },

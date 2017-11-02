@@ -102,5 +102,15 @@
         "entercode" : "Sie sollten einen Brief mit einem Registrierungscode erhalten haben. Geben Sie bitte den Code hier ein, sobald Sie ihn erhalten haben:",
         "email_unvalidated" : "Ihre E-Mail-Adresse wurde bisher noch nicht bestätigt. Klicken Sie bitten auf dem Link den Sie in der Bestätigungs-E-Mail erhalten haben!",
         "request_membership_btn" : "Vertrag anfordern"
+    },
+
+    "smallstudies" : {
+        "greeting" : "Wollen Sie helfen und Ihre Daten für eine Studie teilen?",
+        "studies" : "Studien",
+        "status" : "Anmeldung",
+        "recruiting" : "Rekrutierung",
+        "ongoing" : "Laufend",
+        "completed" : "Abgeschlossen",
+        "stopped" : "Gestoppt"
     }
 }

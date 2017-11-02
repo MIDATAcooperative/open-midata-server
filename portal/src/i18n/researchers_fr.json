@@ -3,8 +3,8 @@
     "researcher_registration" : {
         "sign_up" : "Enregistrement en tant que chercheur",
         "research_organization" : "Organisation de recherche",
-        "name" : "Nom*",
-        "description" : "Description*",
+        "name" : "Nom",
+        "description" : "Description",
         "research_user" : "Utilisateur"
     },
 
@@ -51,10 +51,8 @@
         "add_task_btn" : "Ajouter une tâche pour les participants",
         "plugin" : "Application pour la recherche",
         "device" : "Code de l'appareil",
-        // TODO ?!?
         "restrict" : "Restreindre la lecture à ce groupe",
         "add_application_btn" : "Ajouter les applications fournissant des données à l'étude",
-        // TODO ?!?
         "linked_apps" : "Consentements pour les applications"
     },
 

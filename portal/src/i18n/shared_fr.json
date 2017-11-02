@@ -16,13 +16,17 @@
         "login" : "Connexion",
         "sign_up" : "Inscription",
         "sign_out" : "Déconnexion",
+        "edit_profile" : "Modifier le profil",
+        "app_count" : "Applications autorisées",
+        "study_count" : "Inscriptions à des études",
         "me" : "Moi",
         "view" : "Examiner",
         "overview" : "Vue d'ensemble",
         "messages" : "Messages",
         "my_data" : "Mes données",
         "consents" : "Partage",
-        "research" : "News",
+        "research" : "Recherche",
+        "apps" : "Apps",
         "config" : "Configuration",
         "help" : "Aide"
     },
@@ -48,7 +52,8 @@
 
         "invalid" : {
             "email" : "Veuillez entrer une adresse e-mail valide",
-            "credentials" : "Nom d'utilisateur ou mot de passe invalide.",
+            "credentials" : "Adresse e-mail ou mot de passe invalide.",
+            "credentials_hint" : "Adresse e-mail ou mot de passe invalide. Vous essayez de vous connecter avec un compte personnel. Êtes-vous ",
             "password_repetition" : "La répétition du mot de passe ne concorde pas avec le mot de passe entré!",
             "passphrase_repetition" : "La répétition de la phrase secrète ne concorde pas avec la phrase secrète entrée!",
             "passphrase_old" : "Ancienne phrase secrète incorrecte.",
@@ -73,17 +78,18 @@
         },
 
         "missing" : {
-            "credentials" : "Veuillez entrer un nom d'utilisateur et un mot de passe.",
-            "email" : "Veuillez entrer votre adresse e-mail",
+            "credentials" : "Veuillez saisir votre adresse e-mail et mot de passe.",
+            "email" : "Veuillez saisir votre adresse e-mail",
             "input_field" : "Veuillez compléter ce champ de saisie.",
-            "newpassword" : "Veuillez entrer un nouveau mot de passe!",
+            "newpassword" : "Veuillez saisir un nouveau mot de passe!",
             "passphrase" : "Veuillez fournir votre phrase secrète.",
             "groupsystem" : "Le système de groupe doit être fourni.",
             "token" : "Jeton manquant ou invalide.",
             "agb" : "Conditions Générales d'Utilisation (CGU) pas acceptées.",
             "privacypolicy" : "La déclaration de confidentialité doit être acceptée.",
             "study_accept" : "La participation à l'étude doit être acceptée.",
-            "study_group" : "Le participant doit d'abord être assigné à un groupe."
+            "study_group" : "Le participant doit d'abord être assigné à un groupe.",
+            "confirmation" : "Confirmation par l'utilisateur requise en premier."
         },
 
         "unknown" : {
@@ -193,7 +199,51 @@
             "ADMIN_ACCOUNT_CHANGE" : "Compte modifié par l'administrateur",
             "ACCOUNT_DELETED" : "Compte supprimé",
             "INTERNAL_COMMENT" : "Commentaire interne",
-            "TERMS_OF_USE_AGREED" : "Conditions Générales d'Utilisation acceptées"
+            "TERMS_OF_USE_AGREED" : "Conditions Générales d'Utilisation acceptées",
+
+            "user-registration" : "Inscription de l'utilisateur",
+            "110122" : "Connexion",
+            "user-password-change" : "Mot de passe modifié",
+            "user-passphrase-change" : "Passphrase modifiée",
+            "user-address-change" : "Adresse postale modifiée",
+            "user-email-change" : "Adresse e-mail modifié",
+            "user-status-change" : "État du compte de l'utilisateur modifié",
+            "user-email-confirmed" : "E-mail confirmé par l'utilisateur",
+            "user-email-rejected" : "E-mail rejeté par l'utilisateur",
+            "user-account-change-by-admin" : "Compte utilisateur modifié par un administrateur",
+            "user-account-deleted" : "Compte utilisateur effacé",
+            "app-first-use" : "Première utilisation de l'application",
+            "app-rejected" : "Autorisation de l'application rejetée",
+            "app-deleted" : "Autorisation de l'application supprimée",
+            "consent-create" : "Consentement créé",
+            "consent-persons-change" : "Bénéficiaires du consentement modifiés",
+            "consent-change" : "Consentement modifié",
+            "consent-approved" : "Consentement approuvé",
+            "consent-rejected" : "Consentement rejeté",
+            "consent-deleted" : "Consentement effacé",
+            "study-participation-requested" : "Participation à l'étude demandée",
+            "study-participation-member-rejected" : "Participation à l'étude rejetée par le participant",
+            "study-participation-research-rejected" : "Participation à l'étude rejetée par le chercheur",
+            "study-participation-approved" : "Participation à l'étude approuvée",
+            "study-participation-group-assigned" : "Assignation à un groupe de participants à l'étude",
+            "study-validation-requested" : "Validation de l'étude requise",
+            "study-validated" : "Étude validée",
+            "study-rejected" : "Étude rejetée",
+            "study-participant-search-started" : "Recherche de participants à l'étude débutée",
+            "study-participant-search-closed" : "Recherche de participants à l'étude terminée",
+            "study-started" : "Étude lancée",
+            "study-finished" : "Étude achevée",
+            "study-aborted" : "Étude interrompue",
+            "110105" : "Étude complète supprimée",
+            "study-setup-changed" : "Étude modifiée",
+            "data-deletion" : "Données effacées",
+            "data-export" : "Données exportées",
+            "data-import" : "Données importées",
+            "contract-requested" : "Contrat requis par l'utilisateur",
+            "contract-send" : "Contrat envoyé à l'utilisateur",
+            "internal-comment" : "Commentaire administrateur",
+            "user-terms-of-use-agreed" : "Conditions d'utilisation acceptées",
+            "audit-log-used" : "Audit Log consulté"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "L'adresse e-mail de l'utilisateur doit être renseigné sur la plateforme",
@@ -205,6 +255,12 @@
             "PASSPORT_VERIFIED" : "La carte d'identité de l'utilisateur doit avoir été vérifiée.",
             "MIDATA_COOPERATIVE_MEMBER" : "L'utilisateur doit être membre de la cooperative.",
             "ADMIN_VERIFIED" : "Le compte doit avoir été validé par un administrateur MIDATA"
+        },
+        "writepermissiontype" : {
+            "NONE" : "Aucunes données ne peuvent être enregistrées.",
+            "UPDATE_EXISTING" : "Les données existantes peuvent être mises à jour.",
+            "UPDATE_AND_CREATE" : "Les données couvertes par ce consentement peuvent être enregistrées ou mises à jour.",
+            "WRITE_ANY" : "Tout type de données peut être enregistré au travers de ce consentement."
         },
         "consentstatus" : {
             "ACTIVE" : "Actif",
@@ -230,7 +286,8 @@
         "emailstatus" : {
             "REJECTED" : "Rejeté",
             "UNVALIDATED" : "Pas encore confirmé",
-            "VALIDATED" : "Confirmé"
+            "VALIDATED" : "Confirmé",
+            "EXTERN_VALIDATED" : "Confirmé par un tiers"
         },
         "participantsearchstatus" : {
             "CLOSED" : "Fermé",
@@ -320,8 +377,7 @@
             "Import" : "Importer",
             "Planning" : "Planification",
             "Tools" : "Outils",
-            "Fitbit" : "Fitbit",
-            "Jawbone" : "Jawbone",
+            "Protocol" : "Protocole",
             "Available" : "Plugins disponibles"
         },
         "plugintype" : {
@@ -343,7 +399,7 @@
         "view_btn" : "Aperçu",
         "submit_btn" : "Envoyer",
         "delete_btn" : "Supprimer",
-
+        "or" : "ou",
         "user" : {
             "lastname" : "Nom",
             "firstname" : "Prénom",
@@ -354,11 +410,9 @@
             "mobile_phone" : "Mobile",
             "email" : "E-mail"
         }
-
     },
 
     "instance" : {
-        "rules" : "",
         "purpose" : "Raison d'être de cette instance MIDATA",
         "access" : "Accès à cette instance MIDATA",
         "uptime" : "Disponibilité et plages de maintenance",
@@ -529,7 +583,7 @@
     "market" : {
         "categories" : "Catégories",
         "plugins" : "Plugins",
-        "no_spotlighted_plugins" : "?TODO? There are no spotlighted plugins yet. ! spotlighted = sichtbar auf Marktplatz !",
+        "no_spotlighted_plugins" : "Aucun plugin n'a encore été publié.",
         "plugins_you_may_like" : "Plugins qui pourraient vous intéresser",
         "no_recommendations" : "Nous n'avons pas encore de recommendations pour vous.",
         "install_now_btn" : "Utiliser maintenant"
@@ -561,14 +615,12 @@
 
     "studydetails" : {
         "study" : "Étude",
-        "participant_search_status" : "Recherche de participants:",
-        "execution_status" : "Déroulement de l'étude:",
-        "organization" : "Organisation",
+        "organization" : "Organisme de recherche",
         "providers_monitoring" : "Professionnels de la santé qui encadrent l'étude",
         "no_providers" : "Aucun",
         "provider_remove_btn" : "supprimer",
         "provider_add_btn" : "Ajouter",
-        "information_that_needs_sharing" : "Informations devant être partagées pour participer",
+        "information_that_needs_sharing" : "Données requises",
         "information_restricted" : "Votre sexe, année de naissance et pays de résidence",
         "information_demographic" : "L'ensemble de vos données démographiques (nom, date de naissance, adresse, ...)",
         "records_with_format" : "Enregistrements au format:",
@@ -583,7 +635,8 @@
         "history_when" : "Quand",
         "history_comment" : "Commentaire",
         "request_participation_btn" : "Demande de participation",
-        "do_not_participate_btn" : "Ne participez pas"
+        "do_not_participate_btn" : "Ne participez pas",
+        "status" : "État"
     },
 
     "user" : {
@@ -591,8 +644,10 @@
         "user" : "Utilisateur",
         "name" : "Prénom:",
         "email" : "E-mail:",
+        "action" : "Plus...",
         "change_password_btn" : "Changer le mot de passe",
         "change_passphrase_btn" : "Modifier la phrase de passe",
+        "auditlog_btn" : "Afficher l'Audit Log",
         "repair_account_btn" : "Réparer le compte",
         "reset_spaces_btn" : "Réinitialiser le portail",
         "delete_records_btn" : "Supprimer les enregistrements",
@@ -608,6 +663,7 @@
         "searchable_info" : "Ce réglage n'a aucun effet sur les partages que vous avez déjà accordés.",
         "change_settings_btn" : "Modifier les paramètres",
         "change_settings_success" : "Les paramètres ont été mis à jour"
+
     },
 
     "visualization" : {
@@ -649,6 +705,8 @@
         "add_yourself_btn" : "S'ajouter soi-même",
         "add_person_btn" : "Ajouter une nouvelle personne",
         "add_usergroup_btn" : "Ajouter une nouvelle équipe",
+        "writes" : "Droits en écriture",
+        "writes2" : "Les personnes autorisées par ce consentement peuvent enregistrer ou mettre à jour des données correspondant à ce consentement.",
         "reshare" : "Accès aux tiers?",
         "reshare2" : "Les personnes autorisées par ce consentement peuvent partager les données concernées avec d'autres.",
         "expiration_date" : "Date d'expiration du consentement:",
@@ -671,6 +729,7 @@
         "add_usergroup_btn" : "Ajouter une équipe",
         "reshare" : "@:newconsent.reshare",
         "reshare2" : "@:newconsent.reshare2",
+        "writes" : "Droits en écriture",
         "expiration_date" : "Date d'expiration du consentement:",
         "created_before" : "Ne partager que les données créées avant le:",
         "what_is_shared" : "Quelles données sont-elles partagées?",
@@ -806,7 +865,7 @@
         "providers" : "Vos consentements",
         "providers_teaser" : "Recherchez des professionnels de la santé et ajoutez les à votre liste, afin de pouvoir partager des données avec eux.",
         "providersearch" : "Rechercher des professionnels de la santé",
-        "providersearch_text" : "Fonction de recherche pour professionnels de la santé.", // TODO -> pour les pro ou poru rechercher les pros !?!
+        "providersearch_text" : "Fonction de recherche de professionnels de la santé.",
         "usergroupsearch" : "Rechercher une équipe",
         "hcrecords" : "Nouveaux enregistrements provenants de vos professionnels de la santé",
         "records" : "Enregistrements",
@@ -833,7 +892,8 @@
         "view_btn" : "Afficher",
         "install_btn" : "Ajouter plus",
         "observations" : "Valeurs mesurées",
-        "calendar" : "Calendrier"
+        "calendar" : "Calendrier",
+        "smallstudies" : "Études"
     },
 
     "measure" : {
@@ -926,5 +986,34 @@
 
     "terms" : {
         "close_btn" : "<< Back"
+    },
+
+    "auditlog" : {
+        "event" : "Événement",
+        "actor" : "Actor",
+        "entity" : "Entity",
+        "recorded" : "Heure",
+        "outcome" : "Résultat",
+        "empty" : "Aucun enregistrement.",
+        "title" : "Audit Log",
+        "refresh_btn" : "Actualiser",
+        "via" : "par",
+        "CIRCLE" : "Consentement",
+        "ResearchStudy" : "Étude",
+        "EXTERNALSERVICE" : "App",
+        "STUDYPARTICIPATION" : "Participation",
+        "HEALTHCARE" : "Consentement (Professionnel de la santé)",
+        "MEMBER" : "Compte",
+        "PROVIDER" : "Compte (Professionnel de la santé)",
+        "RESEARCH" : "Compte (Chercheur)"
+    },
+
+    "apps" : {
+        "greeting" : "Connectez vos apps pour collecter des données",
+        "title" : "Applications",
+        "description" : "Applications autorisées",
+        "count" : "Vous avez {{count}} apps autorisées:",
+        "services" : "Services",
+        "connect_btn" : "Autoriser"
     }
 }

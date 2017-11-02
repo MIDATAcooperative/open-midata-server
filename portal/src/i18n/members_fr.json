@@ -102,5 +102,15 @@
         "entercode" : "Une lettre contenant un code d'enregistrement vous a été envoyée. Veuillez saisir le code ici dès que vous l'avez reçu :",
         "email_unvalidated" : "Votre adresse e-mail n'a pas encore été validée. Veuillez cliquer sur le lien que vous avez reçu dans l'e-mail de confirmation !",
         "request_membership_btn" : "Demander un contrat"
+    },
+
+    "smallstudies" : {
+        "greeting" : "Voulez-vous venir en aide et partager vos données pour une étude?",
+        "studies" : "Études",
+        "status" : "Inscription",
+        "recruiting" : "Recrutement",
+        "ongoing" : "En cours",
+        "completed" : "Achevée",
+        "stopped" : "Stoppée"
     }
 }

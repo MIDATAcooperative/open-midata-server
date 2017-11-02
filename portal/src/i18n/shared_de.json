@@ -16,13 +16,17 @@
         "login" : "Anmelden",
         "sign_up" : "Registrieren",
         "sign_out" : "Abmelden",
+        "edit_profile" : "Profil ändern",
+        "app_count" : "Autorisierte Apps",
+        "study_count" : "Studienteilnahmen",
         "me" : "Mich",
         "view" : "Ansehen",
         "overview" : "Übersicht",
         "messages" : "Nachrichten",
         "my_data" : "Meine Daten",
         "consents" : "Teilen",
-        "research" : "News",
+        "research" : "Forschung",
+        "apps" : "Apps",
         "config" : "Konfiguration",
         "help" : "Hilfe"
     },
@@ -47,8 +51,9 @@
         },
 
         "invalid" : {
-            "email" : "Bitte eine gültige E-Mail-Addresse eingeben.",
-            "credentials" : "Ungültiger Benutzername oder Kennwort!",
+            "email" : "Bitte eine gültige E-Mail-Adresse eingeben.",
+            "credentials" : "Ungültiger E-Mail-Adresse oder Kennwort!",
+            "credentials_hint" : "Ungültiger E-Mail-Adresse oder Kennwort. Sie versuchen sich als Kontoinhabende anzumelden. Sind Sie ",
             "password_repetition" : "Kennwort und Kennwortwiederholung stimmen nicht überein!",
             "passphrase_repetition" : "Passphrase und Passphrase-Wiederholung stimmen nicht überein!",
             "passphrase_old" : "Alte Passphrase nicht korrekt.",
@@ -58,9 +63,9 @@
             "appcode" : "Unbekannter App-Code.",
             "status_transition" : "Ungültiger Zustandswechsel",
             "date" : "Ungültiger Wert für ein Datumsfeld",
-            "day" : "Geben Sie einen gültigen Montastag ein (1 - 31)", // TODO !?!
-            "year" : "Geben Sie ein gültiges Jahr ein (4 Ziffern)", // TODO !?!
-            "month" : "Wählen Sie einen gültigen Monat", // TODO !?!
+            "day" : "Geben Sie einen gültigen Montastag ein (1 - 31)",
+            "year" : "Geben Sie ein gültiges Jahr ein (4 Ziffern)",
+            "month" : "Wählen Sie einen gültigen Monat",
             "string" : "Dieses Feld muss vom Typ string sein",
             "token" : "Ungültiger Authorisierungs-Token. Bitte neu anmelden.",
             "json" : "Ungültiges JSON",
@@ -73,7 +78,7 @@
         },
 
         "missing" : {
-            "credentials" : "Bitte Benutzernamen und Kennwort eingeben!",
+            "credentials" : "Bitte Ihre E-Mail-Adresse und Kennwort eingeben.",
             "email" : "Geben Sie bitte Ihre E-Mail-Adresse ein.",
             "input_field" : "Füllen Sie bitte dieses Eingabefeld.",
             "newpassword" : "Geben Sie bitte ein neues Kennwort ein!",
@@ -83,7 +88,8 @@
             "agb" : "Allgemeine Geschäftsbedingungen (AGB) nicht akzeptiert.",
             "privacypolicy" : "Die Datenschutzerklärung muss akzeptiert werden.",
             "study_accept" : "Die Studienteilnahme muss akzeptiert werden.",
-            "study_group" : "Der Teilnehmer muss zuerst zu einer Gruppe zugeordnet werden."
+            "study_group" : "Der Teilnehmer muss zuerst zu einer Gruppe zugeordnet werden.",
+            "confirmation" : "Bestätigung durch Benutzer zuerst erforderlich."
         },
 
         "unknown" : {
@@ -140,8 +146,8 @@
         },
 
         "expired" : {
-            "token" : "Dieses Token ist bereits abgelaufen. Fordern Sie bitte ein neues.",
-            "tokenresent" : "Dieses Token ist bereits abgelaufen. Ein neues Token wurde soeben an Ihrer E-Mail-Adresse gesendet. Bitte bestätigen Sie ihre E-Mail-Adresse innerhalb von 24 Stunden mit dem neuen Token.",
+            "token" : "Dieses Aktivierungs-Token ist bereits abgelaufen. Fordern Sie bitte ein neues.",
+            "tokenresent" : "Dieses Aktivierungs-Token ist bereits abgelaufen. Ein neues Token wurde soeben an Ihrer E-Mail-Adresse gesendet. Bitte bestätigen Sie ihre E-Mail-Adresse innerhalb von 24 Stunden mit dem neuen Token.",
             "code" : "Dieser Teilnahmecode ist abgelaufen."
         },
 
@@ -166,7 +172,7 @@
         "country" : {
             "CH" : "Schweiz",
             "DE" : "Deutschland",
-            "NL" : "Niederlande",            
+            "NL" : "Niederlande",
             "GB" : "Großbritannien"
         },
         "eventtype" : {
@@ -193,7 +199,51 @@
             "ADMIN_ACCOUNT_CHANGE" : "Konto geändert durch admin",
             "ACCOUNT_DELETED" : "Konto gelöscht",
             "INTERNAL_COMMENT" : "Interne Bemerkung",
-            "TERMS_OF_USE_AGREED" : "Allgemeine Geschäftsbedingungen zugestimmt"
+            "TERMS_OF_USE_AGREED" : "Allgemeine Geschäftsbedingungen zugestimmt",
+
+            "user-registration" : "Benutzerregistrierung ",
+            "110122" : "Anmeldung",
+            "user-password-change" : "Kennwort geändert",
+            "user-passphrase-change" : "Passphrase geändert",
+            "user-address-change" : "Adresse des Benutzers geändert",
+            "user-email-change" : "E-Mail des Benutzers geändert",
+            "user-status-change" : "Status Benutzeraccount geändert",
+            "user-email-confirmed" : "E-Mail bestätigt durch Benutzer",
+            "user-email-rejected" : "E-Mail verworfen durch Benutzer",
+            "user-account-change-by-admin" : "Benutzerkonto geändert durch einen Administrator",
+            "user-account-deleted" : "Benutzerkonto gelöscht",
+            "app-first-use" : "Erstbenutzung der Applikation",
+            "app-rejected" : "Autorisierung der Applikation verworfen",
+            "app-deleted" : "Autorisierung der Applikation gelöscht",
+            "consent-create" : "Zustimmung erstellt",
+            "consent-persons-change" : "Zustimmungsempfänger geändert",
+            "consent-change" : "Zustimmung geändert",
+            "consent-approved" : "Zustimmung genehmigt",
+            "consent-rejected" : "Zustimmung verworfen",
+            "consent-deleted" : "Zustimmung gelöscht",
+            "study-participation-requested" : "Studienteilnahme angefordert",
+            "study-participation-member-rejected" : "Studienteilnahme verworfen durch Teilnehmer",
+            "study-participation-research-rejected" : "Studienteilnahme verworfen durch Forscher",
+            "study-participation-approved" : "Studienteilnahme genehmigt",
+            "study-participation-group-assigned" : "Studienteilnehmergruppe zugewiesen",
+            "study-validation-requested" : "Studienvalidierung angefordert",
+            "study-validated" : "Studie validiert",
+            "study-rejected" : "Studie verworfen",
+            "study-participant-search-started" : "Suche nach Studienteilnehmer gestartet",
+            "study-participant-search-closed" : "Suche nach Studienteilnehmer abgeschlossen",
+            "study-started" : "Studie gestartet",
+            "study-finished" : "Studie abgeschlossen",
+            "study-aborted" : "Studie abgebrochen",
+            "110105" : "Gesamte Studie gelöscht",
+            "study-setup-changed" : "Studie geändert",
+            "data-deletion" : "Daten gelöscht",
+            "data-export" : "Daten exportiert",
+            "data-import" : "Daten importiert",
+            "contract-requested" : "Vertrag durch Benutzer angefordert",
+            "contract-send" : "Vertrag geschickt an Benutzer",
+            "internal-comment" : "Anmerkung Administrator",
+            "user-terms-of-use-agreed" : "Nutzungsbedingungen angenommen",
+            "audit-log-used" : "Audit Log konsultiert"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "Die E-Mail-Adresse des Benutzers muss der Plattform bekannt sein",
@@ -205,6 +255,12 @@
             "PASSPORT_VERIFIED" : "Die ID-Karte des Benutzers muss geprüft worden sein",
             "MIDATA_COOPERATIVE_MEMBER" : "Der Benutzer muss Mitglied der Genossenschaft sein",
             "ADMIN_VERIFIED" : "Der Account muss von einem MIDATA Administrator freigeschaltet worden sein"
+        },
+        "writepermissiontype" : {
+            "NONE" : "Keine Daten können geschrieben werden.",
+            "UPDATE_EXISTING" : "Bestehende Daten können aktualisiert werden.",
+            "UPDATE_AND_CREATE" : "Daten unter dieser Zustimmung können geschrieben und aktualisiert werden.",
+            "WRITE_ANY" : "Jede Art von Daten können durch diese Zustimmung geschrieben werden."
         },
         "consentstatus" : {
             "ACTIVE" : "Aktiv",
@@ -230,7 +286,8 @@
         "emailstatus" : {
             "REJECTED" : "Verworfen",
             "UNVALIDATED" : "Noch nicht bestätigt",
-            "VALIDATED" : "Angenommen"
+            "VALIDATED" : "Bestätigt",
+            "EXTERN_VALIDATED" : "Bestätigt durch Drittpartei"
         },
         "participantsearchstatus" : {
             "CLOSED" : "Abgeschlossen",
@@ -320,8 +377,7 @@
             "Import" : "Import",
             "Planning" : "Planung",
             "Tools" : "Instrumente",
-            "Fitbit" : "Fitbit",
-            "Jawbone" : "Jawbone",
+            "Protocol" : "Protokoll",
             "Available" : "Verfügbare Plugins"
         },
         "plugintype" : {
@@ -343,7 +399,7 @@
         "view_btn" : "Vorschau",
         "submit_btn" : "Abschicken",
         "delete_btn" : "Löschen",
-
+        "or" : "oder",
         "user" : {
             "lastname" : "Name",
             "firstname" : "Vorname",
@@ -354,11 +410,9 @@
             "mobile_phone" : "Mobiltelefon",
             "email" : "E-Mail"
         }
-
     },
 
     "instance" : {
-        "rules" : "", // TODO !?! -> DELETE
         "purpose" : "Zweck dieser MIDATA-Instanz",
         "access" : "Zugriff zu dieser MIDATA-Instanz",
         "uptime" : "Verfügbarkeit und Ausfallzeiten",
@@ -529,7 +583,7 @@
     "market" : {
         "categories" : "Kategorien",
         "plugins" : "Plugins",
-        "no_spotlighted_plugins" : "Es wurde noch kein Plugin auf dem Markplatz veröffentlicht.",
+        "no_spotlighted_plugins" : "Es wurde noch kein Plugin veröffentlicht.",
         "plugins_you_may_like" : "Plugins die Ihnen gefallen könnten",
         "no_recommendations" : "Wir haben noch keine Empfehlung für Sie.",
         "install_now_btn" : "Sofort anwenden"
@@ -561,14 +615,12 @@
 
     "studydetails" : {
         "study" : "Studie",
-        "participant_search_status" : "Suche nach Teilnehmer:",
-        "execution_status" : "Durchführung der Studie:",
-        "organization" : "Einrichtung",
+        "organization" : "Forschungseinrichtung:",
         "providers_monitoring" : "Betreuende Fachpersonen der Studie",
         "no_providers" : "Keine",
         "provider_remove_btn" : "Entfernen",
         "provider_add_btn" : "Hinzufügen",
-        "information_that_needs_sharing" : "Informationen die geteilt werden müssen um teilnehmen zu können",
+        "information_that_needs_sharing" : "Geforderte Daten",
         "information_restricted" : "Ihr Geschlecht, Geburtsjahr und Wohnsitzland",
         "information_demographic" : "Ihre kompletten demographischen Daten (Name, Geburtsdatum, Adresse, ...)",
         "records_with_format" : "Datensätze im Format:",
@@ -583,7 +635,8 @@
         "history_when" : "Wann",
         "history_comment" : "Bemerkung",
         "request_participation_btn" : "Teilnahme anfordern",
-        "do_not_participate_btn" : "Nicht teilnehmen"
+        "do_not_participate_btn" : "Nicht teilnehmen",
+        "status" : "Status"
     },
 
     "user" : {
@@ -591,8 +644,10 @@
         "user" : "Benutzer",
         "name" : "Name:",
         "email" : "E-Mail:",
+        "action" : "Mehr...",
         "change_password_btn" : "Kennwort ändern",
         "change_passphrase_btn" : "Passphrase ändern",
+        "auditlog_btn" : "Audit Log anschauen",
         "repair_account_btn" : "Account reparieren",
         "reset_spaces_btn" : "Reset Portal zurücksetzen",
         "delete_records_btn" : "Datensätze löschen",
@@ -650,8 +705,10 @@
         "add_yourself_btn" : "Sie selbst hinzufügen",
         "add_person_btn" : "Neue Person hinzufügen",
         "add_usergroup_btn" : "Neues Team hinzufügen",
+        "writes" : "Schreibrechte",
+        "writes2" : "Die durch diese Zustimmung ermächtigten Personen dürfen der Zustimmung passenden Daten in Ihrem Account speichern oder aktualisieren.",
         "reshare" : "Zugriff für Drittpartei?",
-        "reshare2" : "Die durch diese Zustimmung berechtigten Personen dürfen die entsprechenden Daten weiter teilen.",
+        "reshare2" : "Die durch diese Zustimmung ermächtigten Personen dürfen die entsprechenden Daten weiter teilen.",
         "expiration_date" : "Ablaufdatum der Zustimmung:",
         "created_before" : "Daten nicht teilen, die erstellt wurden nach dem:",
         "share_what" : "Welche Daten wollen Sie teilen?",
@@ -672,6 +729,7 @@
         "add_usergroup_btn" : "Team hinzufügen",
         "reshare" : "@:newconsent.reshare",
         "reshare2" : "@:newconsent.reshare2",
+        "writes" : "Schreibrechte",
         "expiration_date" : "Ablaufdatum der Zustimmung:",
         "created_before" : "Teilt keine Daten, die erstellt wurden nach dem:",
         "what_is_shared" : "Welche Daten sind geteilt?",
@@ -807,7 +865,7 @@
         "providers" : "Ihre Zustimmungen",
         "providers_teaser" : "Suchen Sie nach Gesundheitsfachpersonen und fügen Sie sie in Ihrer Liste hinzu, um Daten mit sie teilen zu können.",
         "providersearch" : "Suche nach Gesundheitsfachpersonen",
-        "providersearch_text" : "Suchfunktion für Gesundheitsfachpersonen.",
+        "providersearch_text" : "Suchfunktion nach Gesundheitsfachpersonen.",
         "usergroupsearch" : "Suche nach Teams",
         "hcrecords" : "Neue Einträge von Ihren Gesundheitsfachpersonen",
         "records" : "Datensätze",
@@ -834,7 +892,8 @@
         "view_btn" : "Ansehen",
         "install_btn" : "Neues Plugin installieren",
         "observations" : "Messwerte",
-        "calendar" : "Kalender"
+        "calendar" : "Kalender",
+        "smallstudies" : "Studien"
     },
 
     "measure" : {
@@ -927,5 +986,34 @@
 
     "terms" : {
         "close_btn" : "<< Zurück"
+    },
+
+    "auditlog" : {
+        "event" : "Ereignis",
+        "actor" : "Actor",
+        "entity" : "Entity",
+        "recorded" : "Zeit",
+        "outcome" : "Ergebnis",
+        "empty" : "Noch keinen Eintrag.",
+        "title" : "Audit Log",
+        "refresh_btn" : "Aktualisieren",
+        "via" : "durch",
+        "CIRCLE" : "Zustimmung",
+        "ResearchStudy" : "Studie",
+        "EXTERNALSERVICE" : "App",
+        "STUDYPARTICIPATION" : "Teilnahme",
+        "HEALTHCARE" : "Zustimmung (Gesundheitsfachperson)",
+        "MEMBER" : "Account",
+        "PROVIDER" : "Account (Gesundheitsfachperson)",
+        "RESEARCH" : "Account (Forscher)"
+    },
+
+    "apps" : {
+        "greeting" : "Verknüpfen Sie Ihre Apps um Daten zu sammeln",
+        "title" : "Apps",
+        "description" : "Autorisierte Apps",
+        "count" : "Sie haben {{count}} autorisierte Apps:",
+        "services" : "Services",
+        "connect_btn" : "Autorisieren"
     }
 }

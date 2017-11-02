@@ -38,16 +38,14 @@
 	"code" : "Code",
     "languages" : "Languages",
     "empty" : "There are no app specfic messages defined yet.",
-    
     "lang" : "Language",
     "msgtitle" : "Message Title",
     "text" : "Message Text",
     "available_tags" : "Available variables",
-    
     "reasons" : {
        "REGISTRATION" : "Registration of new user",
 	   "FIRSTUSE_ANYUSER" : "First use of app",
-	   "FIRSTUSE_EXISTINGUSER" : "First use of app (if no registration mail sent)",
+	   "FIRSTUSE_EXISTINGUSER" : "First use of app (if no registration email sent)",
 	   "CONSENT_REQUEST_OWNER_INVITED" : "Proposed consent (Grantor, Invitation)",
 	   "CONSENT_REQUEST_OWNER_EXISTING" : "Proposed consent (Grantor, Account Holder)",
 	   "CONSENT_REQUEST_AUTHORIZED_INVITED" : "Proposed consent (Grantee, Invitation)",
@@ -56,7 +54,7 @@
 	   "CONSENT_CONFIRM_AUTHORIZED" : "Consent confirmation (Grantee)",
 	   "CONSENT_REJECT_OWNER" : "Consent rejection (Grantor)",
 	   "CONSENT_REJECT_AUTHORIZED" : "Consent rejection (Grantee)",
-	   "ACCOUNT_UNLOCK" : "Account unlocked by admin"	   
+	   "ACCOUNT_UNLOCK" : "Account unlocked by the administrator"	   
     }		      
   },
   
@@ -88,7 +86,7 @@
        "defaultQuery_extra" : "Look for valid values for 'code', 'content' or 'format' on the 'Format/Content' list of the developer guide. As a first version you may start with access to all data. For that use { \"group\" : \"all\", \"group-system\" : \"v1\" }. Please refine query before plugin or app goes in production.",
        "secret" : "Your app will need this 'secret' during login. Choose whatever you like.",
        "mustParticipateInStudy" : "User must participate in study in order to use app.",
-       "unlock_code" : "If filled out this code word must be entered by the user in order to login or register to the app. (not case sensitive)"
+       "unlock_code" : "If filled out, this code must be entered by the user in order to sign up or log in the first time to MIDATA using the app. The code is not case sensitive."
     }
   },
   
