@@ -38,12 +38,12 @@
      "noconsent" : "No active consent that allows to add data for target person.",
      "unsupported" : "Operation not supported",
      "notrialuser_title" : "Full membership required!",
-	 //TODO: ?! 'Account Status' does not exist anymore !?
+	
      "notrialuser_detail" : "In order to use this feature you need to complete your registration. Request a written copy of the AGB and return it signed. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
 
      "mustbemember_title" : "MIDATA cooperative membership required!",
 
-	 //TODO: ?! 'Account Status' does not exist anymore !?
+	
      "mustbemember_detail" : "In order to use this feature you must be member of the MIDATA cooperative. Click on your username on the top right and check the 'Account Status' section for more information.",
 
      "notauthorized" : {
@@ -250,8 +250,7 @@
        "contract-send" : "Contract send to user",
        "internal-comment" : "Administrator's comment",
        "user-terms-of-use-agreed" : "Agreed to terms of use",
-       "audit-log-used" : "Audit Log consulted"
-	   
+       "audit-log-used" : "Audit Log consulted",	   
 	   "added-as-team-member" : "Added as team member",
 	   "updated-role-in-team" :  "Updated role in team",
 	   "removed-from-team" : "Removed from team"	   
@@ -1029,7 +1028,7 @@
     "HEALTHCARE" : "Consent (Health Provider)",
     "MEMBER" : "Account",
     "PROVIDER" : "Account (Health Provider)",
-    "RESEARCH" : "Account (Researcher)"
+    "RESEARCH" : "Account (Researcher)",
     "ADMIN" : "Account (Admin)"
 
   },
