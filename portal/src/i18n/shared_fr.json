@@ -17,7 +17,15 @@
         "sign_up" : "Inscription",
         "sign_out" : "Déconnexion",
         "edit_profile" : "Modifier le profil",
+
+        // TODO CHANGED
+        // OLD: connected apps
+        // NEW: Authorized apps
         "app_count" : "Applications autorisées",
+
+        // TODO CHANGED
+        // OLD: studies enrollments
+        // NEW: Studies enrollments
         "study_count" : "Inscriptions à des études",
         "me" : "Moi",
         "view" : "Examiner",
@@ -39,9 +47,14 @@
         "noconsent" : "Il n'y a pas de consentement actif permettant l'ajout de donnée à cette personne.",
         "unsupported" : "Opération non supportée",
         "notrialuser_title" : "Inscription requise!",
+
         "notrialuser_detail" : "Pour utiliser cette fonctionnalité, vous devez compléter votre inscription. Veuillez demander une copie écrite des conditions générales d'utilisation et la retourner signée. Vous recevrez également un code d'activation permettant de vérifier votre adresse postale. Si vous désirez vérifier le status de votre compte, cliquez sur votre nom d'utilisateur en haut à droite et rendez-vous à la section 'Etat du compte'.",
+
         "mustbemember_title" : "Inscription à la copperative MIDATA requise!",
+
+
         "mustbemember_detail" : "Pour utiliser cette fonctionnalité, vous devez être membre de la coopérative MIDATA. Cliquez sur votre nom d'utilisateur en haut à droite et rendez-vous à la section 'Etat du compte' pour plus d'informations.",
+
         "notauthorized" : {
             "action" : "Vous n'êtes pas autorisé à entreprendre cette action",
             "fields" : "Vous n'êtes pas autorisé à consulter les champs demandés",
@@ -50,9 +63,18 @@
             "not_plugin_owner" : "Ce n'est pas votre plugin"
         },
 
+
         "invalid" : {
             "email" : "Veuillez entrer une adresse e-mail valide",
+
+            // TODO CHANGED
+            // OLD: Invalid username or password.
+            // NEW: Invalid email address or password.
             "credentials" : "Adresse e-mail ou mot de passe invalide.",
+
+            // TODO CHANGED
+            // OLD: Invalid username or password. You are trying to log in as account holder. Are you 
+            // NEW: Invalid email address or password. You are trying to log in as account holder. Are you 
             "credentials_hint" : "Adresse e-mail ou mot de passe invalide. Vous essayez de vous connecter avec un compte personnel. Êtes-vous ",
             "password_repetition" : "La répétition du mot de passe ne concorde pas avec le mot de passe entré!",
             "passphrase_repetition" : "La répétition de la phrase secrète ne concorde pas avec la phrase secrète entrée!",
@@ -78,6 +100,11 @@
         },
 
         "missing" : {
+
+
+            // TODO CHANGED
+            // OLD: Please provide a username and a password.
+            // NEW: Please provide your email address and password.
             "credentials" : "Veuillez saisir votre adresse e-mail et mot de passe.",
             "email" : "Veuillez saisir votre adresse e-mail",
             "input_field" : "Veuillez compléter ce champ de saisie.",
@@ -201,29 +228,80 @@
             "INTERNAL_COMMENT" : "Commentaire interne",
             "TERMS_OF_USE_AGREED" : "Conditions Générales d'Utilisation acceptées",
 
+
+            // TODO CHANGED
+            // OLD: User registration
+            // NEW: User sign up
             "user-registration" : "Inscription de l'utilisateur",
             "110122" : "Connexion",
             "user-password-change" : "Mot de passe modifié",
             "user-passphrase-change" : "Passphrase modifiée",
+
+            // TODO CHANGED
+            // OLD: User address changed
+            // NEW: User's address changed
             "user-address-change" : "Adresse postale modifiée",
+
+            // TODO CHANGED
+            // OLD: Email changed
+            // NEW: User's email changed
             "user-email-change" : "Adresse e-mail modifié",
+
+            // TODO CHANGED
+            // OLD: User status changed
+            // NEW: Status of user account changed
             "user-status-change" : "État du compte de l'utilisateur modifié",
+
+            // TODO CHANGED
+            // OLD: User email confirmed
+            // NEW: Email confirmed by user
             "user-email-confirmed" : "E-mail confirmé par l'utilisateur",
+
+            // TODO CHANGED
+            // OLD: User email rejected
+            // NEW: Email rejected by user
             "user-email-rejected" : "E-mail rejeté par l'utilisateur",
+
+            // TODO CHANGED
+            // OLD: User account changed by admin
+            // NEW: User account changed by an administrator
             "user-account-change-by-admin" : "Compte utilisateur modifié par un administrateur",
             "user-account-deleted" : "Compte utilisateur effacé",
             "app-first-use" : "Première utilisation de l'application",
+
+            // TODO CHANGED
+            // OLD: Application rejected
+            // NEW: Application authorization rejected
             "app-rejected" : "Autorisation de l'application rejetée",
+
+            // TODO CHANGED
+            // OLD: Application consent deleted
+            // NEW: Application authorization deleted
             "app-deleted" : "Autorisation de l'application supprimée",
             "consent-create" : "Consentement créé",
+
+            // TODO CHANGED
+            // OLD: Consent persons changed
+            // NEW: Consent's recipients changed
             "consent-persons-change" : "Bénéficiaires du consentement modifiés",
             "consent-change" : "Consentement modifié",
             "consent-approved" : "Consentement approuvé",
             "consent-rejected" : "Consentement rejeté",
             "consent-deleted" : "Consentement effacé",
             "study-participation-requested" : "Participation à l'étude demandée",
+
+            // TODO CHANGED
+            // OLD: Study participation rejected by research
+            // NEW: Study participation rejected by member
             "study-participation-member-rejected" : "Participation à l'étude rejetée par le participant",
+
+            // TODO CHANGED
+            // OLD: undefined
+            // NEW: Study participation rejected by researcher
             "study-participation-research-rejected" : "Participation à l'étude rejetée par le chercheur",
+
+            // TODO NEW: Account holder retreated from study participation
+            "study-participation-member-retreat" : "Account holder retreated from study participation",
             "study-participation-approved" : "Participation à l'étude approuvée",
             "study-participation-group-assigned" : "Assignation à un groupe de participants à l'étude",
             "study-validation-requested" : "Validation de l'étude requise",
@@ -234,16 +312,46 @@
             "study-started" : "Étude lancée",
             "study-finished" : "Étude achevée",
             "study-aborted" : "Étude interrompue",
+
+            // TODO CHANGED
+            // OLD: Entire Study has been deleted
+            // NEW: Entire Study deleted
             "110105" : "Étude complète supprimée",
+
+            // TODO CHANGED
+            // OLD: Study has been changed
+            // NEW: Study changed
             "study-setup-changed" : "Étude modifiée",
+
+            // TODO CHANGED
+            // OLD: Data has been deleted
+            // NEW: Data deleted
             "data-deletion" : "Données effacées",
             "data-export" : "Données exportées",
             "data-import" : "Données importées",
             "contract-requested" : "Contrat requis par l'utilisateur",
             "contract-send" : "Contrat envoyé à l'utilisateur",
+
+            // TODO CHANGED
+            // OLD: Internal comment
+            // NEW: Administrator's comment
             "internal-comment" : "Commentaire administrateur",
             "user-terms-of-use-agreed" : "Conditions d'utilisation acceptées",
-            "audit-log-used" : "Audit Log consulté"
+
+            // TODO CHANGED
+            // OLD: Audit Log Used
+            // NEW: Audit Log consulted
+            "audit-log-used" : "Audit Log consulté",
+
+            // TODO NEW: Added as team member
+            "added-as-team-member" : "Added as team member",
+
+            // TODO NEW: Updated role in team
+            "updated-role-in-team" : "Updated role in team",
+
+            // TODO NEW: Removed from team
+            "removed-from-team" : "Removed from team"
+
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "L'adresse e-mail de l'utilisateur doit être renseigné sur la plateforme",
@@ -266,7 +374,10 @@
             "ACTIVE" : "Actif",
             "EXPIRED" : "Expiré",
             "REJECTED" : "Rejeté",
-            "UNCONFIRMED" : "non confirmé"
+            "UNCONFIRMED" : "non confirmé",
+
+            // TODO NEW: Frozen
+            "FROZEN" : "Frozen"
         },
         "consenttype" : {
             "CIRCLE" : "Autres détenteurs de compte",
@@ -300,7 +411,10 @@
             "MATCH" : "Concordance possible",
             "MEMBER_REJECTED" : "Utilisateur rejeté",
             "REQUEST" : "Participation demandée",
-            "RESEARCH_REJECTED" : "Rejeté par le chercheur"
+            "RESEARCH_REJECTED" : "Rejeté par le chercheur",
+
+            // TODO NEW: Participant has retreated
+            "MEMBER_RETREATED" : "Participant has retreated"
         },
         "studyexecutionstatus" : {
             "ABORTED" : "Exécution annulée",
@@ -338,6 +452,23 @@
             "APPUSER" : "Utilisateur de l'application",
             "NONMEMBERUSER" : "Titulaire de compte validé",
             "MEMBEROFCOOPERATIVE" : "Membre de la cooperative"
+        },
+        "researcherrole" : {
+
+            // TODO NEW: Sponsor
+            "SPONSOR" : "Sponsor",
+
+            // TODO NEW: Investigator
+            "INVESTIGATOR" : "Investigator",
+
+            // TODO NEW: Auditor
+            "AUDITOR" : "Auditor",
+
+            // TODO NEW: Monitor
+            "MONITOR" : "Monitor",
+
+            // TODO NEW: Other
+            "OTHER" : "Other"
         },
         "userstatus" : {
             "ACTIVE" : "actif",
@@ -620,6 +751,9 @@
         "no_providers" : "Aucun",
         "provider_remove_btn" : "supprimer",
         "provider_add_btn" : "Ajouter",
+
+        // TODO NEW: Duration
+        "duration" : "Duration",
         "information_that_needs_sharing" : "Données requises",
         "information_restricted" : "Votre sexe, année de naissance et pays de résidence",
         "information_demographic" : "L'ensemble de vos données démographiques (nom, date de naissance, adresse, ...)",
@@ -636,6 +770,9 @@
         "history_comment" : "Commentaire",
         "request_participation_btn" : "Demande de participation",
         "do_not_participate_btn" : "Ne participez pas",
+
+        // TODO NEW: Retreat from participation
+        "retreat_btn" : "Retreat from participation",
         "status" : "État"
     },
 
@@ -647,7 +784,14 @@
         "action" : "Plus...",
         "change_password_btn" : "Changer le mot de passe",
         "change_passphrase_btn" : "Modifier la phrase de passe",
+
+        // TODO CHANGED
+        // OLD: View Log
+        // NEW: View Audit Log
         "auditlog_btn" : "Afficher l'Audit Log",
+
+        // TODO NEW: Change EMail
+        "change_email_btn" : "Change EMail",
         "repair_account_btn" : "Réparer le compte",
         "reset_spaces_btn" : "Réinitialiser le portail",
         "delete_records_btn" : "Supprimer les enregistrements",
@@ -708,6 +852,10 @@
         "writes" : "Droits en écriture",
         "writes2" : "Les personnes autorisées par ce consentement peuvent enregistrer ou mettre à jour des données correspondant à ce consentement.",
         "reshare" : "Accès aux tiers?",
+
+        // TODO CHANGED
+        // OLD: The persons authorized with this consent may reshare the data I gave them access to.
+        // NEW: The persons authorized by this consent may reshare the data I gave them access to.
         "reshare2" : "Les personnes autorisées par ce consentement peuvent partager les données concernées avec d'autres.",
         "expiration_date" : "Date d'expiration du consentement:",
         "created_before" : "Ne partager les données qui ont ete créées après le:",
@@ -994,6 +1142,10 @@
         "entity" : "Entity",
         "recorded" : "Heure",
         "outcome" : "Résultat",
+
+        // TODO CHANGED
+        // OLD: No entries yet.
+        // NEW: No entry yet.
         "empty" : "Aucun enregistrement.",
         "title" : "Audit Log",
         "refresh_btn" : "Actualiser",
@@ -1002,18 +1154,74 @@
         "ResearchStudy" : "Étude",
         "EXTERNALSERVICE" : "App",
         "STUDYPARTICIPATION" : "Participation",
+
+        // TODO CHANGED
+        // OLD: Consent (Healthcare)
+        // NEW: Consent (Health Provider)
         "HEALTHCARE" : "Consentement (Professionnel de la santé)",
         "MEMBER" : "Compte",
+
+        // TODO CHANGED
+        // OLD: Account (Healthcare)
+        // NEW: Account (Health Provider)
         "PROVIDER" : "Compte (Professionnel de la santé)",
-        "RESEARCH" : "Compte (Chercheur)"
+        "RESEARCH" : "Compte (Chercheur)",
+
+        // TODO NEW: Account (Admin)
+        "ADMIN" : "Account (Admin)"
+
     },
 
     "apps" : {
+
+        // TODO CHANGED
+        // OLD: Connect your apps to collect your datas
+        // NEW: Connect your apps to collect data
         "greeting" : "Connectez vos apps pour collecter des données",
         "title" : "Applications",
+
+        // TODO CHANGED
+        // OLD: Connected Apps
+        // NEW: Authorized Apps
         "description" : "Applications autorisées",
+
+        // TODO CHANGED
+        // OLD: You have {{count}} connected apps:
+        // NEW: You have {{count}} authorized apps:
         "count" : "Vous avez {{count}} apps autorisées:",
         "services" : "Services",
+
+        // TODO CHANGED
+        // OLD: Connect
+        // NEW: Authorize
         "connect_btn" : "Autoriser"
+
+    },
+
+    "changeemail" : {
+
+        // TODO NEW: Change Account eMail Address
+        "title" : "Change Account eMail Address",
+
+        // TODO NEW: Midata ID
+        "midataId" : "Midata ID",
+
+        // TODO NEW: Name
+        "name" : "Name",
+
+        // TODO NEW: Current eMail Address
+        "old_email" : "Current eMail Address",
+
+        // TODO NEW: New eMail Address
+        "new_email" : "New eMail Address",
+
+        // TODO NEW: None
+        "none" : "None",
+
+        // TODO NEW: Change
+        "change_btn" : "Change",
+
+        // TODO NEW: EMail address successfully changed!
+        "success" : "EMail address successfully changed!"
     }
 }

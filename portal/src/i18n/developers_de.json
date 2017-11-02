@@ -55,7 +55,13 @@
             "CONSENT_CONFIRM_AUTHORIZED" : "Zustimmungsannahme (Empfänger)",
             "CONSENT_REJECT_OWNER" : "Zustimmungsablehnung (Geber)",
             "CONSENT_REJECT_AUTHORIZED" : "Zustimmungsablehnung (Empfänger)",
-            "ACCOUNT_UNLOCK" : "Konto vom Administrator freigeschaltet"
+            "ACCOUNT_UNLOCK" : "Konto vom Administrator freigeschaltet",
+
+            // TODO NEW: Login email changed (sent to old email address)
+            "EMAIL_CHANGED_OLDADDRESS" : "Login email changed (sent to old email address)",
+
+            // TODO NEW: Login email changed (sent to new email address)
+            "EMAIL_CHANGED_NEWADDRESS" : "Login email changed (sent to new email address)"
         }
     },
 

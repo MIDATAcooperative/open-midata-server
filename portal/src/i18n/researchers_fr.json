@@ -15,7 +15,10 @@
     "researcher_navbar" : {
         "studies" : "Études",
         "workspace" : "Workspace",
-        "data" : "Données"
+        "data" : "Données",
+
+        // TODO NEW: Add Researcher
+        "addresearcher" : "Add Researcher"
     },
 
     "createstudy" : {
@@ -31,7 +34,10 @@
         "actions" : "Actions",
         "participants" : "Participants",
         "records" : "Enregistrements",
-        "results" : "Résultats"
+        "results" : "Résultats",
+
+        // TODO NEW: Team
+        "team" : "Team"
     },
 
     "studies" : {
@@ -51,7 +57,18 @@
         "add_task_btn" : "Ajouter une tâche pour les participants",
         "plugin" : "Application pour la recherche",
         "device" : "Code de l'appareil",
+
+        // TODO CHANGED
+        // OLD: Restrict Read to Group
+        // NEW: Restrict read to group
         "restrict" : "Restreindre la lecture à ce groupe",
+
+        // TODO NEW: Application shares data to participant group
+        "shareback" : "Application shares data to participant group",
+
+        // TODO CHANGED
+        // OLD: Add Study Data Providing Application
+        // NEW: Add Research Application
         "add_application_btn" : "Ajouter les applications fournissant des données à l'étude",
         "linked_apps" : "Consentements pour les applications"
     },
@@ -131,9 +148,71 @@
     "studyrules" : {
         "title" : "Règles de l'étude",
         "no_change_warning" : "Cette configuration ne peut plus être modifiée une fois l'étude validée.",
+
+        // TODO NEW: Official start date
+        "startDate" : "Official start date",
+
+        // TODO NEW: Official end date
+        "endDate" : "Official end date",
+
+        // TODO NEW: Data freeze date
+        "dataCreatedBefore" : "Data freeze date",
         "sharing_query" : "Sharing Query (JSON)",
         "terms_of_use" : "Dispositions",
         "show_terms" : "Afficher les dispositions",
         "requirements" : "Exigences"
+    },
+
+    "addresearcher" : {
+
+        // TODO NEW: Sign Up Researcher
+        "sign_up" : "Sign Up Researcher",
+
+        // TODO NEW: A new researcher has been added to your organization.
+        "success" : "A new researcher has been added to your organization."
+    },
+
+    "studyteam" : {
+
+        // TODO NEW: Team member
+        "person" : "Team member",
+
+        // TODO NEW: Role
+        "role" : "Role",
+
+        // TODO NEW: Role Name
+        "roleName" : "Role Name",
+
+        // TODO NEW: Add Person
+        "addperson_btn" : "Add Person",
+
+        // TODO NEW: Rights
+        "rights" : "Rights",
+        "right" : {
+
+            // TODO NEW: Read data records
+            "readData" : "Read data records",
+
+            // TODO NEW: Write/Update data records
+            "writeData" : "Write/Update data records",
+
+            // TODO NEW: Unpseudonymized participants
+            "unpseudo" : "Unpseudonymized participants",
+
+            // TODO NEW: Export data
+            "export" : "Export data",
+
+            // TODO NEW: Change team
+            "changeTeam" : "Change team",
+
+            // TODO NEW: View audit log
+            "auditLog" : "View audit log",
+
+            // TODO NEW: Manage participants
+            "participants" : "Manage participants",
+
+            // TODO NEW: Setup Study
+            "setup" : "Setup Study"
+        }
     }
 }

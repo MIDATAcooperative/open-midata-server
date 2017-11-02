@@ -44,7 +44,10 @@
         "email_confirm_btn" : "Confirmer l'adresse e-mail",
         "comment" : "Commentaire",
         "add_comment_btn" : "Ajouter un commentaire",
-        "wipe_btn" : "Supprimer le compte"
+        "wipe_btn" : "Supprimer le compte",
+
+        // TODO NEW: Change eMail
+        "change_email_btn" : "Change eMail"
     },
 
     "admin_news" : {
@@ -107,6 +110,15 @@
         "created_by" : "Créée par",
         "description" : "Description",
         "code" : "Code",
+
+        // TODO NEW: Start Date
+        "startDate" : "Start Date",
+
+        // TODO NEW: End Date
+        "endDate" : "End Date",
+
+        // TODO NEW: Data freeze date
+        "dataCreatedBefore" : "Data freeze date",
         "required_information" : "Informations requises",
         "required_assistance" : "Médecin agréé requis",
         "termsOfUse" : "Dispositions",
@@ -115,6 +127,12 @@
         "groups" : "Groupes",
         "group_name" : "Nom du groupe",
         "group_description" : "Description",
+
+        // TODO NEW: Team
+        "team" : "Team",
+
+        // TODO NEW: Role
+        "role" : "Role",
         "history" : "Historique",
         "end_validation_btn" : "Finaliser la validation",
         "back_to_draft_btn" : "Revenir à l'ébauche",
