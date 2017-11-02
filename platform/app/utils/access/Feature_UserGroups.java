@@ -99,7 +99,7 @@ public class Feature_UserGroups extends Feature {
 		if (target.isAccessible()) {
 			return null;
 		}
-		Set<UserGroupMember> isMemberOfGroups = UserGroupMember.getAllActiveByMember(cache.getAccountOwner());
+		Set<UserGroupMember> isMemberOfGroups = cache.getAllActiveByMember();
 		if (!isMemberOfGroups.isEmpty()) {
 			
 			for (UserGroupMember ugm : isMemberOfGroups) {
