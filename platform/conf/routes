@@ -108,6 +108,7 @@ DELETE  /api/shared/users/wipe                           controllers.Users.accou
 # Research
 
 POST    /api/research/register                           controllers.research.Researchers.register()
+POST    /api/research/addresearcher                      controllers.research.Researchers.registerOther()
 POST    /api/research/login                              controllers.research.Researchers.login()
 
 POST    /api/research/studies                            controllers.research.Studies.create()
@@ -136,6 +137,7 @@ GET     /api/research/studies/:study/participants        controllers.research.St
 GET     /api/research/studies/:study/participants/:participant controllers.research.Studies.getParticipant(study: String, participant: String)
 POST    /api/research/studies/:study/approve             controllers.research.Studies.approveParticipation(study: String)
 POST    /api/research/studies/:study/reject              controllers.research.Studies.rejectParticipation(study: String)
+POST    /api/members/studies/:study/freeze              controllers.members.Studies.retreatParticipation(study: String)
 POST    /api/research/studies/:study/update              controllers.research.Studies.updateParticipation(study: String)
 POST    /api/research/studies/:study/share/:group        controllers.research.Studies.shareWithGroup(study: String, group:String)
 POST    /api/research/studies/:study/addapp/:group       controllers.research.Studies.addApplication(study: String, group:String)
@@ -192,6 +194,7 @@ POST    /api/developers/testuser/resetpw                  controllers.Developers
 # Admins
 POST    /api/admins/register                             controllers.admin.Administration.register()
 POST    /api/admins/changeStatus                         controllers.admin.Administration.changeStatus()
+POST    /api/admins/changeUserEmail                      controllers.admin.Administration.changeUserEmail()
 POST    /api/admins/addcomment                           controllers.admin.Administration.addComment()
 POST    /api/admins/wipeaccount                          controllers.admin.Administration.adminWipeAccount()
 

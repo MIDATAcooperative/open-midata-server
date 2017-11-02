@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.bson.BSONObject;
 import org.hl7.fhir.dstu3.model.Address;
 import org.hl7.fhir.dstu3.model.ContactPoint;
 import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointSystem;
@@ -66,6 +67,7 @@ import models.MemberKey;
 import models.MidataId;
 import models.Plugin;
 import models.Record;
+import models.Study;
 import models.StudyParticipation;
 import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
@@ -74,6 +76,8 @@ import models.enums.EMailStatus;
 import models.enums.EntityType;
 import models.enums.Gender;
 import models.enums.SubUserRole;
+import models.enums.UserFeature;
+import models.enums.UserRole;
 import models.enums.UserStatus;
 import models.enums.WritePermissionType;
 import play.Play;
@@ -81,6 +85,9 @@ import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.PasswordHash;
 import utils.RuntimeConstants;
+import utils.access.AccessContext;
+import utils.access.AccountCreationAccessContext;
+import utils.access.ConsentAccessContext;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.ExecutionInfo;
@@ -427,9 +434,9 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 		p.addName().setFamily(member.lastname).addGiven(member.firstname);
 		p.setBirthDate(member.birthday);
 		p.addIdentifier().setSystem("http://midata.coop/identifier/midata-id").setValue(member.midataID);
-		p.addIdentifier().setSystem("http://midata.coop/identifier/patient-login").setValue(member.emailLC);
+		if (member.email != null) p.addIdentifier().setSystem("http://midata.coop/identifier/patient-login").setValue(member.emailLC);
 		p.setGender(AdministrativeGender.valueOf(member.gender.toString()));
-		p.addTelecom().setSystem(ContactPointSystem.EMAIL).setValue(member.email);
+		if (member.email != null) p.addTelecom().setSystem(ContactPointSystem.EMAIL).setValue(member.email);
 		if (member.phone != null && member.phone.length()>0) {
 			p.addTelecom().setSystem(ContactPointSystem.PHONE).setValue(member.phone);
 		}
@@ -438,12 +445,13 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
     }
     
     public void updatePatientForAccount(Member member) throws AppException {
-    	List<Record> allExisting = RecordManager.instance.list(info().executorId, member._id, CMaps.map("format", "fhir/Patient").map("owner", "self").map("data", CMaps.map("id", member._id.toString())), Record.ALL_PUBLIC);
+    	List<Record> allExisting = RecordManager.instance.list(info().executorId, member._id, CMaps.map("format", "fhir/Patient").map("owner", member._id).map("data", CMaps.map("id", member._id.toString())), Record.ALL_PUBLIC);
     	
     	if (allExisting.isEmpty()) {    	
     	  Patient patient = generatePatientForAccount(member);
     	  Record record = newRecord("fhir/Patient");
-		  prepare(record, patient);		
+		  prepare(record, patient);	
+		  record.owner = member._id;
 		  insertRecord(record, patient);
     	} else {
     	  Patient patient = generatePatientForAccount(member);    	  
@@ -488,22 +496,23 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 		return p;    	    			
     }
     
-    public static void createPatientForStudyParticipation(StudyParticipation part, Member member) throws AppException {
-        ExecutionInfo inf = new ExecutionInfo(member._id);       
+    public static void createPatientForStudyParticipation(ExecutionInfo inf, StudyParticipation part, Member member) throws AppException {
+        
         
         PatientResourceProvider patientProvider = (PatientResourceProvider) FHIRServlet.myProviders.get("Patient");
         PatientResourceProvider.setExecutionInfo(inf);
         
         Patient patient = generatePatientForStudyParticipation(part, member);
-    	Record record = PatientResourceProvider.newRecord("fhir/Patient");
+    	Record record = PatientResourceProvider.newRecord("fhir/Patient");    	
     	patientProvider.prepare(record, patient);		
+    	record.content = "PseudonymizedPatient";    	
     	patientProvider.insertRecord(record, patient);
     	
-    	RecordManager.instance.share(member._id, member._id, part._id, Collections.singleton(record._id), false);
+    	RecordManager.instance.share(inf.executorId, member._id, part._id, Collections.singleton(record._id), false);
     }
     
     public void prepare(Record record, Patient thePatient) {
-    	record.content = "Patient";    	
+    	record.content = "Patient";     	
     	record.name=thePatient.getName().get(0).getNameAsSingleString();
     	if (record.name == null || record.name.length() == 0) record.name = thePatient.getName().get(0).getText();
     }
@@ -609,7 +618,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 		
 		if (user.firstname == null) throw new UnprocessableEntityException("Patient 'given' name not given.");
 		if (user.lastname == null) throw new UnprocessableEntityException("Patient family name not given.");
-		if (user.email == null) throw new UnprocessableEntityException("Patient email not given.");
+		//if (user.email == null) throw new UnprocessableEntityException("Patient email not given.");
 		if (user.country == null) throw new UnprocessableEntityException("Patient country not given.");
 		if (user.gender == null) throw new UnprocessableEntityException("Patient gender not given.");
 		if (user.birthday == null) throw new UnprocessableEntityException("Patient birth date not given.");
@@ -618,9 +627,9 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 		for (Extension ext : thePatient.getExtensionsByUrl("http://midata.coop/extensions/account-password")) {
 		  password = ext.getValue().primitiveValue();
 		}
-		if (password == null) throw new UnprocessableEntityException("Patient account password not given.");
+		//if (password == null) throw new UnprocessableEntityException("Patient account password not given.");
 		
-		user.password = Member.encrypt(password);				
+		if (password != null) user.password = Member.encrypt(password);				
 		
 		String terms = "midata-terms-of-use--"+Play.application().configuration().getString("versions.midata-terms-of-use","1.0");
 		String ppolicy = "midata-privacy-policy--"+Play.application().configuration().getString("versions.midata-privacy-policy","1.0");	
@@ -635,22 +644,32 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 		
 		if (!termsOk || !ppolicyOk) throw new UnprocessableEntityException("Patient must approve terms of use and privacy policy");
 		
-		if (!foundEmail) {
+		if (!foundEmail && user.email != null) {
 			thePatient.addTelecom().setSystem(ContactPointSystem.EMAIL).setValue(user.email);
 		}
-		if (!foundLoginId) {
+		if (!foundLoginId && user.email != null) {
 			thePatient.addIdentifier().setSystem("http://midata.coop/identifier/patient-login").setValue(user.emailLC);
 		}
 		
 		thePatient.getExtension().clear();
 		
-		Member existing = Member.getByEmail(user.email, Member.ALL_USER);
+		Member existing = user.email != null ? Member.getByEmail(user.email, Member.ALL_USER) : null;
+		MidataId executorId = info().executorId;
+		ExecutionInfo info = info();
+		
+		BSONObject query = null;
+		Plugin plugin = Plugin.getById(info().pluginId);
+		if (plugin.targetUserRole.equals(UserRole.RESEARCH)) {
+			AccessLog.log("is researcher app");
+			query = RecordManager.instance.getMeta(info().executorId, info().context.getTargetAps(), "_query");
+			AccessLog.log("q="+query.toString());
+		}
 		
 		if (existing == null) {
 			
 			Application.registerSetDefaultFields(user);
 			
-			user.emailStatus = EMailStatus.EXTERN_VALIDATED;
+			user.emailStatus = user.emailStatus != null ? EMailStatus.EXTERN_VALIDATED : EMailStatus.UNVALIDATED;
 			user.status = UserStatus.ACTIVE;
 			
 			thePatient.setId(user._id.toString());
@@ -661,12 +680,21 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 			Member.add(user);			
 			KeyManager.instance.unlock(user._id, null);
 			
+			RecordManager.instance.clearCache();
+			executorId = user._id;
+			RecordManager.instance.setAccountOwner(user._id, user._id);
+			
 			user.myaps = RecordManager.instance.createPrivateAPS(user._id, user._id);
 			Member.set(user._id, "myaps", user.myaps);
-									
-	     	
-										
-			//Circles.fetchExistingConsents(info().executorId, user.emailLC);			
+				
+			
+			Record record = newRecord("fhir/Patient");
+	     	record.owner = user._id;	     	
+			prepare(record, thePatient);	
+			info = new ExecutionInfo(user._id); 
+			insertRecord(info, record, thePatient, info.context);
+						
+			//if (user.emailLC!=null) Circles.fetchExistingConsents(user._id, user.emailLC);			
 		} else {
 			user = existing;
 			
@@ -674,7 +702,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 			if (!exist.isEmpty()) throw new UnprocessableEntityException("Already exists.");
 		}																		    							    							    			    		
 				
-		Plugin plugin = Plugin.getById(info().pluginId);
+		
 		String consentName = plugin.name;
 		HPUser hpuser = HPUser.getById(info().ownerId, Sets.create("provider", "firstname", "lastname"));
 		if (hpuser != null) {
@@ -685,25 +713,53 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 		   }
 		}
 		
-		Consent consent = new MemberKey();
-		consent.writes = WritePermissionType.WRITE_ANY;							
-		consent.owner = user._id;
-		consent.name = consentName;		
-		consent.authorized = new HashSet<MidataId>();
-		consent.status = existing == null ? ConsentStatus.ACTIVE : ConsentStatus.UNCONFIRMED;				
-		consent.authorized.add(info().ownerId);
-		consent.sharingQuery = new HashMap<String, Object>();
-		consent.sharingQuery.put("owner", "self");
-		consent.sharingQuery.put("app", plugin.filename);
+		if (plugin.targetUserRole.equals(UserRole.PROVIDER)) {
+			Consent consent = new MemberKey();
+			consent.writes = WritePermissionType.WRITE_ANY;							
+			consent.owner = user._id;
+			consent.name = consentName;		
+			consent.authorized = new HashSet<MidataId>();
+			consent.status = existing == null ? ConsentStatus.ACTIVE : ConsentStatus.UNCONFIRMED;				
+			consent.authorized.add(info().ownerId);
+			consent.sharingQuery = new HashMap<String, Object>();
+			consent.sharingQuery.put("owner", "self");
+			consent.sharingQuery.put("app", plugin.filename);
+					
+			Circles.addConsent(executorId, consent, false, null, true);
+		}
+		
+		for (Extension ext : thePatient.getExtensionsByUrl("http://midata.coop/extensions/join-study")) {
+			 String studyName = ext.getValue().primitiveValue();
+			 Study study = Study.getByCodeFromMember(studyName, Study.ALL);			
+			 if (study == null) throw new BadRequestException("error.invalid.code", "Unknown code for study.");
 				
-		Circles.addConsent(info().executorId, consent, false, null, true);		
+			 Set<UserFeature> studyReq = controllers.members.Studies.precheckRequestParticipation(null, study._id);
+			 if (existing == null) {
+			    controllers.members.Studies.requestParticipation(info, user._id, study._id, plugin._id);
+			 } else {
+			    controllers.members.Studies.match(executorId, user._id, study._id, plugin._id);
+			 }
+		}
+		
+		
+			if (query != null && query.containsField("link-study")) {
+				Map<String, Object> q = query.toMap(); 
+				MidataId studyId = MidataId.from(q.get("link-study"));
+				AccessLog.log("found linked study:"+studyId);	
+				Set<UserFeature> studyReq = controllers.members.Studies.precheckRequestParticipation(null, studyId);
+				AccessLog.log("request part");	
+				if (existing == null) {
+				  controllers.members.Studies.requestParticipation(info, user._id, studyId, plugin._id);
+				} else {
+			      controllers.members.Studies.match(executorId, user._id, studyId, plugin._id);
+				}
+				AccessLog.log("end request part");
+			}
+		
+				
 		
 		if (existing == null) {
-			Record record = newRecord("fhir/Patient");
-	     	record.owner = user._id;	     	
-			prepare(record, thePatient);		
-			insertRecord(record, thePatient);
-			
+			RecordManager.instance.clearCache();
 			Application.sendWelcomeMail(info().pluginId, user);
 			//if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) Application.sendAdminNotificationMail(user);
 		}

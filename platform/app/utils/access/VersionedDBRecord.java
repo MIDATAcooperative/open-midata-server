@@ -19,7 +19,7 @@ public class VersionedDBRecord extends DBRecord {
 	
 	@NotMaterialized
 	public String version;
-	
+			
 	public VersionedDBRecord() {}
 	
 	public VersionedDBRecord(DBRecord rec) {	

@@ -1,0 +1,60 @@
+<div ng-controller="StudyTeamCtrl" ng-cloak>
+	<div class="tab-content">
+		<div class="tab-pane active">
+			<loader busy="status.isBusy !== false">
+			<p ng-show="error && !error.field" translate="{{ error.code || error }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	   
+	        </p>
+			<table class="table table-striped">
+			    <tr>
+			      <th translate="common.user.firstname"></th>
+			      <th translate="common.user.lastname"></th>
+			      <th translate="common.user.email"></th>
+			      <th translate="studyteam.role"></th>
+			      <th></th>
+			      <th></th>
+			    </tr>
+				<tr ng-repeat="member in members|filter:{status:'ACTIVE'}|orderBy:'lastname'">
+					<td>{{ member.user.firstname }}</td>
+					<td>{{ member.user.lastname }}</td>
+					<td>{{ member.user.email }}</td>
+					<td>{{ member.role.roleName }}</td>
+					<td>
+					  {{ matrix(member.role) }}
+					</td>
+					<td>
+						<button type="button" ng-show="member.member != user._id && study.myRole.changeTeam" ng-click="removePerson(member)" class="close" aria-label="Delete">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</td>
+				</tr>				
+			</table>
+			
+			<form class="form-horizontal">
+			  <formrow myid="person" label="studyteam.person">
+  			    <input type="text" class="form-control" id="person" name="person" autocomplete="off" ng-model="add.personemail" ng-model-options="{ debounce: 50 }" uib-typeahead="person.email for person in persons | filter:{email:$viewValue}">
+			    
+			  </formrow>
+			  <formrow myid="role" label="studyteam.role">
+			    <select name="role" id="role" class="form-control" ng-model="add.roleTemplate" ng-options="role as 'enum.researcherrole.'+role.id | translate for role in roles" ng-change="updateRole()"></select>			    			    
+			  </formrow>
+			  <div ng-show="add.roleTemplate.id == 'OTHER'">
+				  <formrow myid="roleName" label="studyteam.roleName">			    
+				    <input type="text" class="form-control" id="roleName" name="roleName" ng-model="add.role.roleName">			    
+				  </formrow>
+			  </div>
+			  <formrow myid="rights" label="studyteam.rights">
+			     <div class="checkbox" ng-repeat="req in rights">
+		    <label>
+		        <input type="checkbox" ng-model="add.role[req]" ng-disabled="add.roleTemplate.id != 'OTHER'">
+		        <span translate="{{ 'studyteam.right.'+req }}"></span>
+		    </label>
+		 </div>
+			  </formrow>
+			  <button ng-disabled="status.action == 'add' || !study.myRole.changeTeam" ng-click="addPerson()" class="btn btn-primary" translate="studyteam.addperson_btn"></button>
+			</form>						
+
+			</loader>
+		</div>
+	</div>
+
+</div>

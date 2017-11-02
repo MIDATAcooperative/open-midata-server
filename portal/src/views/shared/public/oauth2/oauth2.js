@@ -59,7 +59,7 @@ angular.module('portal')
 			return;
 		}
 		
-		oauth.setUser($scope.login.email, $scope.login.password);
+		oauth.setUser($scope.login.email, $scope.login.password, $scope.login.role);
 				
 		$scope.status.doAction("login", oauth.login(false))
 		.then(function(result) {

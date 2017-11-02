@@ -13,6 +13,17 @@
 						<p ng-show="codeSuccess" class="alert alert-success" translate="postregister.address_success"></p>
 						<p ng-show="mailSuccess" class="alert alert-success" translate="postregister.email_success"></p>
 						<p ng-show="error" class="alert alert-danger" translate="{{ error.code }}"></p>
+						
+						<div ng-show="progress.PASSWORD_SET">
+						   <p translate="setpw.enter_new"></p>
+						   <form ng-submit="pwsubmit()" role="form">
+								<input type="password" class="form-control" translate translate-attr-placeholder="setpw.new_password" ng-model="setpw.password" style="margin-bottom:5px;" autofocus>								
+								<input type="password" class="form-control" translate trnaslate-attr-placeholder="setpw.new_password_repetition" ng-model="setpw.passwordRepeat" style="margin-bottom:5px;">
+								<button type="submit" ng-disabled="status.action=='setpw'" class="btn btn-primary btn-block" translate="setpw.set_new_btn"></button>
+						   </form>
+						</div>
+						
+						<div ng-hide="progress.PASSWORD_SET">
 						<div ng-show="progress.EMAIL_VERIFIED">
 							<p translate="postregister.email_instructions"></p>
 							<button class="btn btn-default" ng-click="resend()" translate="postregister.resend_btn"></button>
@@ -27,6 +38,8 @@
 							</div>
 							<hr>
 						</div>
+						
+						
 
                         <div ng-show="progress.ADMIN_VERIFIED">
                           <p translate="postregister.admin_verified"></p>
@@ -108,7 +121,7 @@
 							</form>
 
 						</div>
-
+                     </div>
 
 
 					</div>

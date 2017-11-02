@@ -39,7 +39,8 @@ angular.module('portal')
 	$scope.changedGroup = function() {
 		$scope.consents = null;
 		$scope.crit.device = "";
-		$scope.group = null;
+		$scope.group = $scope.crit.group;
+		$scope.updateConsents();
 	};
 	
 	
@@ -48,7 +49,7 @@ angular.module('portal')
 	};		
 	
 	$scope.updateConsents = function() {
-		$scope.status.doBusy(circles.listConsents({ "sharingQuery.target-study" : $scope.studyId, "sharingQuery.target-study-group" : $scope.crit.group }, [ "name", "authorized", "type", "status", "records" ]))
+		$scope.status.doBusy(circles.listConsents({ "sharingQuery.link-study" : $scope.studyId, "sharingQuery.link-study-group" : $scope.crit.group }, [ "name", "authorized", "type", "status", "records" ]))
 		.then(function(data) {
 			$scope.consents = data.data;						
 		});

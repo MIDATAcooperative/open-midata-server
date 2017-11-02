@@ -49,6 +49,21 @@ public class AppAccessContext extends AccessContext {
 		if (instance.writes == null) return false;
 		return !QueryEngine.listFromMemory(cache, instance.sharingQuery, Collections.singletonList(record)).isEmpty();
 	}
+
+	@Override
+	public String getOwnerName() {		
+		return null;
+	}
+
+	@Override
+	public MidataId getOwner() {		
+		return cache.getAccountOwner();
+	}
+
+	@Override
+	public MidataId getOwnerPseudonymized() {
+		return cache.getAccountOwner();
+	}
 	
 
 }

@@ -1,6 +1,7 @@
 package utils.db;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -187,6 +188,15 @@ public class DBLayer {
 			Set<String> fields, int limit) throws DatabaseException {
 		Stats.reportDb("read N", collection);
 		return getDatabaseForCollection(collection).getAll(modelClass, collection, properties, fields, limit);
+	}
+	
+	/**
+	 * Return the given fields of all objects that have the given properties.
+	 */
+	public static <T extends Model> List<T> getAllList(Class<T> modelClass, String collection, Map<String, ? extends Object> properties,
+			Set<String> fields, int limit) throws DatabaseException {
+		Stats.reportDb("read N", collection);
+		return getDatabaseForCollection(collection).getAllList(modelClass, collection, properties, fields, limit);
 	}
 
 	/**

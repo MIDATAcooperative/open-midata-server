@@ -25,43 +25,32 @@ class APSEntry {
 	public static final Set<String> groupingFields = Sets.create("format", "content", "app");
 	
 	public static List<BasicBSONObject> findMatchingRowsForQuery(Map<String, Object> permissions, Query q) throws AppException {
-		List<BasicBSONObject> result = new ArrayList<BasicBSONObject>();
+		List<BasicBSONObject> result = null;// = new ArrayList<BasicBSONObject>();
 		
 		BasicBSONList lst = (BasicBSONList) permissions.get("p");
 		//AccessLog.debug("ALL:"+lst.toString());
 		
-		Set<String> formats = q.restrictedBy("format") ? q.getRestriction("format") : null;
-		//Set<String> formatsWC = q.restrictedBy("format/*") ? q.getRestriction("format/*") : null;
-		Set<String> contents = q.restrictedBy("content") ? q.getRestriction("content") : null;
-		//Set<String> contentsWC = q.restrictedBy("content/*") ? q.getRestriction("content/*") : null;
-		Set<String> apps = q.restrictedBy("app") ? q.getIdRestrictionAsString("app") : null;
+		Set<String> formats = q.getRestrictionOrNull("format");	
+		Set<String> contents = q.getRestrictionOrNull("content");	
+		Set<String> apps = q.getIdRestrictionAsString("app");
 		
 		for (Object row : lst) {
 			BasicBSONObject crit = (BasicBSONObject) row;
-			boolean match = true;
+			
 			if (formats != null) {
 			  String fmt = crit.getString("format");
-			  if (fmt != null && !formats.contains(fmt)) match = false; 
+			  if (fmt != null && !formats.contains(fmt)) continue; 
 			}
 			if (contents != null) {
 			  String fmt = crit.getString("content");
-			  if (fmt != null && !contents.contains(fmt)) match = false;  
+			  if (fmt != null && !contents.contains(fmt)) continue;  
 			}
 			if (apps != null) {
 				String fmt = crit.getString("app");
-				if (fmt != null && !apps.contains(fmt)) { match = false;  
-				//AccessLog.log("fmt:"+fmt.getClass().getName()+" vs:"+apps.iterator().next().getClass().getName()+" match="+match);
-				}
-			}
-			/*if (contentsWC != null) {
-  			  String fmt = crit.getString("content");
-			  if (fmt != null && !contentsWC.contains(ContentInfo.getWildcardName(fmt))) match = false;
-			}
-			if (formatsWC != null) {
-	  			  String fmt = crit.getString("format");
-				  if (fmt != null && !formatsWC.contains(ContentInfo.getWildcardName(fmt))) match = false;
-		    }*/
-			if (match) result.add(crit);			
+				if (fmt != null && !apps.contains(fmt)) continue;
+			}	
+			if (result == null) result = new ArrayList<BasicBSONObject>();
+			result.add(crit);			
 		}
 		
 		return result;

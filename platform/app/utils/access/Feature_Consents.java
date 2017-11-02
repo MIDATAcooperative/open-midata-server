@@ -1,6 +1,7 @@
 package utils.access;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -25,21 +26,15 @@ public class Feature_Consents extends Feature {
 			List<DBRecord> recs = q.getCache().getAPS(q.getApsId()).historyQuery(after.getTime(), false);			
 			
 			recs = Feature_Prefetch.lookup(q, recs, next);
-			List<DBRecord> result = new ArrayList<DBRecord>(recs.size());
+			List<DBRecord> result = Collections.emptyList();
 			AccessLog.log("found "+recs.size()+" history entries");
-			if (recs.size() > 0) {
-			/*  Set<MidataId> ids = new HashSet<MidataId>();
-			  for (DBRecord r : recs) ids.add(r._id);
-			  Query q2 = new Query(q, CMaps.map(q.getProperties()).map("_id", ids));
-			  result = next.query(q2); //next.lookup(recs, q);
-			}*/
-			
+			if (recs.size() > 0) {				
 			
 				boolean onlyStreams = q.isStreamOnlyQuery();
 				for (DBRecord r : recs) {
 					if (r.isStream) {
 						Query q2 = new Query(q, CMaps.map("stream", r._id));
-	                    result.addAll(QueryEngine.onlyWithKey(next.query(q2)));
+	                    result = QueryEngine.combine(result ,QueryEngine.onlyWithKey(next.query(q2)));
 					} else if (!onlyStreams) result.add(r);
 				}
 			}

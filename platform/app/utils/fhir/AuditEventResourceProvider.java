@@ -299,7 +299,15 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent> imp
 			User current = info().cache.getUserById(info().ownerId);
 			boolean authrestricted = false;
 			if (!current.role.equals(UserRole.ADMIN)) {
-			  query.putAccount("authorized", info.executorId);
+			  Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByMember(info().executorId);
+			  if (ugms.isEmpty()) {
+			    query.putAccount("authorized", info.executorId);
+			  } else {
+				Set<MidataId> allowedIds = new HashSet<MidataId>();
+				allowedIds.add(info.executorId);
+				for (UserGroupMember ugm : ugms) if (ugm.role.auditLogAccess()) allowedIds.add(ugm.userGroup);
+				query.putAccount("authorized", allowedIds);
+			  }
 			  authrestricted = true;
 			}
 			
@@ -412,7 +420,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent> imp
 					actor.setReference(new Reference("Practitioner/"+actorUser._id.toString()));
 				}
 				actor.setName(actorUser.firstname+" "+actorUser.lastname);
-				actor.setUserId(new Identifier().setValue(actorUser.email));
+				actor.setUserId(new Identifier().setValue(actorUser.getPublicIdentifier()));
 			}
 		}
 		if (modifiedUser != null) {
@@ -431,7 +439,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent> imp
 			}
 			
 			aeec.setName(modifiedUser.firstname+" "+modifiedUser.lastname);
-			aeec.setIdentifier(new Identifier().setValue(modifiedUser.email));
+			aeec.setIdentifier(new Identifier().setValue(modifiedUser.getPublicIdentifier()));
 		}
 				
 		if (affectedConsent != null) {

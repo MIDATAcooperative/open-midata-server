@@ -21,10 +21,7 @@ public class Member extends User {
 	 */
 	public Set<MidataId> news;
 		
-	/**
-	 * the public id of this member. The member may give this ID (together with the birthday) to a healthcare professional for identification.
-	 */
-	public String midataID;
+	
 	
 	/**
 	 * the birthday of this member.

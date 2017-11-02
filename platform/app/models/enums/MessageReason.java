@@ -60,5 +60,15 @@ public enum MessageReason {
 	/**
 	 * Message sent because account has been unlocked by admin
 	 */
-	ACCOUNT_UNLOCK
+	ACCOUNT_UNLOCK,
+	
+	/**
+	 * Account email has been changed (sent to old address)
+	 */
+	EMAIL_CHANGED_OLDADDRESS,
+	
+	/**
+	 * Account email has been changed (sent to new address)
+	 */
+	EMAIL_CHANGED_NEWADDRESS
 }

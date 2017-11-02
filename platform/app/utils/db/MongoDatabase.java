@@ -3,6 +3,7 @@ package utils.db;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -203,6 +204,23 @@ public class MongoDatabase extends Database {
 			throw new DatabaseException(e);
 		}
 	}
+	
+	public <T extends Model> List<T> getAllList(Class<T> modelClass, String collection, Map<String, ? extends Object> properties,
+			Set<String> fields, int limit) throws DatabaseException {		
+		try {
+			DBObject query = toDBObject(modelClass, properties);
+			DBObject projection = toDBObject(fields);
+			if (logQueries) AccessLog.logDB("all "+collection+" "+query.toString());
+			DBCursor cursor = getCollection(collection).find(query, projection);
+			if (limit!=0) cursor = cursor.limit(limit);			
+			return conversion.toModelList(modelClass, cursor.iterator());
+		} catch (MongoException e) {
+			throw new DatabaseException(e);
+		} catch (DatabaseConversionException e) {
+			throw new DatabaseException(e);
+		}
+	}
+
 
 	/**
 	 * Set the given field of the object with the given id.

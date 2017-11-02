@@ -34,5 +34,10 @@ public enum ParticipationStatus {
     /**
      * The research organization rejected participation of the member in the study.
      */
-    RESEARCH_REJECTED
+    RESEARCH_REJECTED,
+    
+    /**
+     * Member retreated from participation
+     */
+    MEMBER_RETREATED
 }

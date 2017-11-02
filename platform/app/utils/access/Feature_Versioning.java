@@ -25,7 +25,7 @@ public class Feature_Versioning extends Feature {
 	
 	@Override
 	protected List<DBRecord> query(Query q) throws AppException {
-		List<DBRecord> result = next.query(q);
+		List<DBRecord> result = next.query(q);		
 		if (q.restrictedBy("version")) {
 			List<DBRecord> finalResult = new ArrayList<DBRecord>();
 			String version = q.getStringRestriction("version");
@@ -70,6 +70,40 @@ public class Feature_Versioning extends Feature {
 		}
 		return result;
 		
+	}
+
+
+	public static List<DBRecord> historyDate(Query q, List<DBRecord> input) throws AppException {
+		Date historyDate = q.getDateRestriction("history-date");
+		List<DBRecord> result = new ArrayList<DBRecord>(input.size());
+		for (DBRecord record : input) {
+			Date lu = record.meta.getDate("lastUpdated");
+			if (lu != null && lu.after(historyDate)) {
+				Set<VersionedDBRecord> recs = VersionedDBRecord.getAllById(record._id, q.getFieldsFromDB());
+				VersionedDBRecord bestRecord = null;
+				Date bestDate = null;
+				for (VersionedDBRecord rec : recs) {	
+                    rec.merge(record);					
+					RecordEncryption.decryptRecord(rec);
+					Date vlastUpdate = rec.meta.getDate("lastUpdated");
+					if (vlastUpdate == null) vlastUpdate = record._id.getCreationDate();
+					if (!vlastUpdate.after(historyDate)) {
+						if (bestRecord == null) {
+							bestRecord = rec;
+							bestDate = vlastUpdate;
+						} else if (vlastUpdate.after(bestDate)) {
+							bestRecord = rec;
+							bestDate = vlastUpdate;
+						}
+				    }
+				}
+				if (bestRecord != null) {
+					bestRecord.meta.put("ownerName", record.meta.get("ownerName"));
+					result.add(bestRecord);
+				}
+			} else result.add(record);
+		}
+		return result;
 	}
 	
 		

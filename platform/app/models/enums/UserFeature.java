@@ -52,7 +52,12 @@ public enum UserFeature {
 	/**
 	 * the user account has been unlocked by an MIDATA admin
 	 */
-	ADMIN_VERIFIED;
+	ADMIN_VERIFIED,
+	
+	/**
+	 * the user account has a password
+	 */
+	PASSWORD_SET;
 		
 	/**
 	 * Does a user satisfy this feature?
@@ -70,6 +75,7 @@ public enum UserFeature {
 			case PASSPORT_VERIFIED: return false;
 			case MIDATA_COOPERATIVE_MEMBER: return user.contractStatus.equals(ContractStatus.SIGNED);
 			case ADMIN_VERIFIED: return user.status.equals(UserStatus.ACTIVE);
+			case PASSWORD_SET: return user.password != null;
 		}
 		return false;
 	}

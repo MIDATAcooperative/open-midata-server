@@ -1,6 +1,7 @@
 package utils.access;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -28,9 +29,11 @@ public class Feature_ConsentRestrictions extends Feature {
 			  if (until.before(new Date(System.currentTimeMillis()))) {
 				  AccessLog.log("consent not valid anymore");			
 				  Circles.consentExpired(q.getCache().getExecutor(), q.getApsId());
-				  return new ArrayList<DBRecord>();
+				  return Collections.emptyList();
 			  }
 		  }
+		  Date historyDate = filter.getDate("history-date");
+		  if (historyDate != null && historyDate.after(new Date())) filter.remove("history-date");
 		  if (!filter.isEmpty()) {
 			 AccessLog.log("Applying consent filter");
 			 return QueryEngine.combine(q, filter.toMap(), new Feature_ProcessFilters(next));
