@@ -91,7 +91,7 @@ public class Users extends APIController {
 		
 		// check authorization
 		
-		if (!getRole().equals(UserRole.ADMIN) && !properties.containsKey("_id") && !properties.containsKey("developer") && !properties.containsKey("organization")) properties.put("searchable", true);
+		if (!getRole().equals(UserRole.ADMIN) && !(getRole().equals(UserRole.RESEARCH) && properties.containsKey("role") && properties.get("role").equals("RESEARCH")) && !properties.containsKey("_id") && !properties.containsKey("developer") && !properties.containsKey("organization")) properties.put("searchable", true);
 		boolean postcheck = false;		
 		if (!getRole().equals(UserRole.ADMIN) && !properties.containsKey("email") && !properties.containsKey("midataID") && !properties.containsKey("_id") && !properties.containsKey("developer") && !properties.containsKey("organization")) {
 			throw new AuthException("error.notauthorized.action", "Search must be restricted");

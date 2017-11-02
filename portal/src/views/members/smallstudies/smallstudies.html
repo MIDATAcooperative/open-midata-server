@@ -19,7 +19,7 @@
 	    </tr>
 	  </thead>
 	  <tbody>
-	    <tr class="clickable" ng-repeat="study in filteredStudies = (results|filter : selection)" ui-sref="^.studydetails({ studyId : study.study })">
+	    <tr class="clickable" ng-repeat="study in filteredStudies = (results|filter : selection | orderBy : 'createdAt' : true )" ui-sref="^.studydetails({ studyId : study.study })">
 	      <td>
 	         <b>{{ study.studyName }}</b>
 	         <p>{{ study.description }}</p>

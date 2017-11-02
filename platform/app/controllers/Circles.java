@@ -646,7 +646,7 @@ public class Circles extends APIController {
 			if (auth.contains(consent.owner)) { auth.remove(consent.owner); }
 			RecordManager.instance.unshareAPSRecursive(consent._id, consent.owner, consent.authorized);
 		}
-		if (newStatus.equals(ConsentStatus.FROZEN)) {
+		if (newStatus != null && newStatus.equals(ConsentStatus.FROZEN)) {
 			Date now = new Date();
 			if (consent.createdBefore == null || consent.createdBefore.after(now)) {				
 				consent.createdBefore = now;

@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('AdminStudyCtrl', ['$scope', '$state', 'server', 'status', 'users', function($scope, $state, server, status, users) {
+.controller('AdminStudyCtrl', ['$scope', '$state', 'server', 'status', 'users', 'usergroups',  function($scope, $state, server, status, users, usergroups) {
 	
 	$scope.studyid = $state.params.studyId;
 	$scope.study = {};
@@ -15,6 +15,12 @@ angular.module('portal')
 			.then(function(data2) {
 				$scope.creator = data2.data[0];
 			});
+			
+			$scope.status.doBusy(usergroups.listUserGroupMembers($scope.studyid))
+			.then(function(data) {
+				$scope.members = data.data;
+			});
+			
 		});
 	};
 	
@@ -56,6 +62,19 @@ angular.module('portal')
 			$scope.error = err;			
 		});
 	};
+	
+	$scope.matrix = function(role) {
+		   var r = "";
+		   r += role.setup ? "S" : "-";
+		   r += role.readData ? "R" : "-";
+		   r += role.writeData ? "W" : "-";
+		   r += role.unpseudo ? "U" : "-";
+		   r += role["export"] ? "E" : "-";
+		   r += role.changeTeam ? "T" : "-";
+		   r += role.participants ? "P" : "-";
+		   r += role.auditLog ? "L" : "-";	   
+		   return r;
+		};
 	
 	$scope.readyForDelete = function() {
 		return true;

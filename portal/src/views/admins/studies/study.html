@@ -77,6 +77,32 @@
          </table>
 		</div>
 	</div>
+	
+	<div class="panel panel-primary">
+		<div class="panel-heading" translate="admin_study.team"></div>
+		<div class="body">
+	
+		<table class="table table-striped">
+			    <tr>
+			      <th translate="common.user.firstname"></th>
+			      <th translate="common.user.lastname"></th>
+			      <th translate="common.user.email"></th>
+			      <th translate="admin_study.role"></th>
+			      <th></th>
+			     
+			    </tr>
+				<tr ng-repeat="member in members|filter:{status:'ACTIVE'}|orderBy:'lastname'">
+					<td>{{ member.user.firstname }}</td>
+					<td>{{ member.user.lastname }}</td>
+					<td>{{ member.user.email }}</td>
+					<td>{{ member.role.roleName }}</td>
+					<td>
+					  {{ matrix(member.role) }}
+					</td>					
+				</tr>				
+			</table>
+      </div>
+	</div>
     
     <div class="panel panel-primary">
     <div class="panel-heading" translate="admin_study.history"></div>

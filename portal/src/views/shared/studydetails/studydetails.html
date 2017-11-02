@@ -32,28 +32,13 @@
 				<div class="panel-heading" translate="studydetails.information_that_needs_sharing"></div>
 				<div class="panel-body">
 
+                    <span ng-repeat="label in labels">
+					   {{ label }}, 
+					</span>
+					<span ng-show="needs('RESTRICTED')" translate="studydetails.information_restricted"></span>
+					<span ng-show="needs('DEMOGRAPHIC')" translate="studydetails.information_demographic"></span>
 
-					<div ng-show="needs('RESTRICTED')" translate="studydetails.information_restricted"></div>
-					<div ng-show="needs('DEMOGRAPHIC')" translate="studydetails.information_demographic"></div>
-
-					<div ng-repeat="(rule, params) in study.recordQuery">
-						<span ng-if="rule == 'format'"><span translate="studydetails.records_with_format"></span>
-							<ul>
-								<li ng-repeat="format in params">{{ format }}</li>
-							</ul> </span> <span ng-if="rule == 'owner'"><span translate="studydetails.records_with_owner"></span>
-							<ul>
-								<li ng-repeat="owner in params" translate="{{ 'studydetails.owner_'+ owner }}"></li>
-							</ul> </span> <span ng-if="rule == 'content'"><span translate="studydetails.records_with_content"></span>
-							<ul>
-								<li ng-repeat="content in params">{{ content }}</li>
-							</ul> </span> <span ng-if="rule == 'content/*'"><span translate="studydetails.records_with_content"></span>
-							<ul>
-								<li ng-repeat="content in params">{{ content }}</li>
-							</ul> </span> <span ng-if="rule == 'group'"><span translate="studydetails.records_with_group"></span>
-							<ul>
-								<li ng-repeat="group in params">{{ group }}</li>
-							</ul> </span>
-					</div>
+					
 
 
 				</div>
@@ -62,8 +47,9 @@
 			<div class="panel panel-primary">
 				<div class="panel-heading" translate="studydetails.status"></div>
 				<div class="panel-body">
-
-					<div class="lead" translate="{{ 'enum.participantsearchstatus.'+study.participantSearchStatus }}"></div>
+                    
+                    <div class="lead" ng-hide="participation.pstatus == 'MATCH'" translate="{{ 'enum.participationstatus.'+participation.pstatus }}"></div>
+					<div class="lead" ng-show="!participation.pstatus || participation.pstatus == 'MATCH'" translate="{{ 'enum.participantsearchstatus.'+study.participantSearchStatus }}"></div>
 					<div class="lead" translate="{{ 'enum.studyexecutionstatus.'+study.executionStatus }}"></div>
 				</div>
 			</div>

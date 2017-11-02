@@ -31,7 +31,7 @@
 			
 			<form class="form-horizontal">
 			  <formrow myid="person" label="studyteam.person">
-  			    <input type="text" class="form-control" id="person" name="person" ng-model="add.personemail" ng-model-options="{ debounce: 50 }" uib-typeahead="person.email for person in persons | filter:{email:$viewValue}">
+  			    <input type="text" class="form-control" id="person" name="person" autocomplete="off" ng-model="add.personemail" ng-model-options="{ debounce: 50 }" uib-typeahead="person.email for person in persons | filter:{email:$viewValue}">
 			    
 			  </formrow>
 			  <formrow myid="role" label="studyteam.role">

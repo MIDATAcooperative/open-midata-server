@@ -747,7 +747,7 @@ public class Studies extends APIController {
 		MidataId studyid = new MidataId(id);
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
-		Study study = Study.getById(studyid, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "createdBy", "code"));
+		Study study = Study.getById(studyid, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "createdBy", "code", "dataCreatedBefore"));
 		
 		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 		
@@ -759,11 +759,27 @@ public class Studies extends APIController {
 		if (self == null) throw new AuthException("error.notauthorized.action", "User not member of study group");
 		if (!self.role.maySetup()) throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 	
+		closeStudy(userId, study);
 		//study.addHistory(new History(EventType.STUDY_FINISHED, user, null));
 		study.setExecutionStatus(StudyExecutionStatus.FINISHED);
 		AuditManager.instance.success();
 						
 		return ok();
+	}
+	
+	public static void closeStudy(MidataId executor, Study study) throws AppException {
+		Date now = new Date();
+		if (study.dataCreatedBefore != null && study.dataCreatedBefore.before(now)) return;
+		study.dataCreatedBefore = now;
+		
+		Set<StudyParticipation> participants = StudyParticipation.getActiveParticipantsByStudy(study._id, Sets.create("_id", "type", "status", "pstatus", "owner", "authorized", "createdBefore"));
+        for (StudyParticipation participant : participants) {
+        	if (participant.status.equals(ConsentStatus.ACTIVE)) {
+        		Circles.consentStatusChange(executor, participant, ConsentStatus.FROZEN);
+        	}
+        }
+		
+		study.setDataCreatedBefore(now);
 	}
 	
 	/**
@@ -792,6 +808,7 @@ public class Studies extends APIController {
 		if (self == null) throw new AuthException("error.notauthorized.action", "User not member of study group");
 		if (!self.role.maySetup()) throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 	
+		closeStudy(userId, study);
 		
 		//study.addHistory(new History(EventType.STUDY_ABORTED, user, null));
 		study.setExecutionStatus(StudyExecutionStatus.ABORTED);
