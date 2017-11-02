@@ -47,6 +47,10 @@ public class CompareCaseInsensitive implements Condition {
 
 	@Override
 	public Condition indexValueExpression() {
+		if (val instanceof String) {
+			if (op == CompareCaseInsensitiveOperator.EQUALS) return new IndexCompare(val, CompareCaseInsensitiveOperator.EQUALS);
+			else if (op == CompareCaseInsensitiveOperator.STARTSWITH) return new IndexCompare(val, CompareCaseInsensitiveOperator.STARTSWITH);
+		}
 		return this;
 	}
 

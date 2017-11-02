@@ -6,6 +6,7 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonFilter;
 
 import models.enums.ConsentStatus;
+import models.enums.ResearcherRole;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
@@ -19,7 +20,7 @@ import utils.exceptions.InternalServerException;
 public class UserGroupMember extends Model {
 	
 	protected static final @NotMaterialized String collection = "groupmember";
-	public static final @NotMaterialized Set<String> ALL = Sets.create("userGroup", "member", "status", "user", "startDate", "endDate");
+	public static final @NotMaterialized Set<String> ALL = Sets.create("userGroup", "member", "status", "user", "startDate", "endDate", "role");
 
 	/**
 	 * Id of user group a group member belongs to
@@ -45,6 +46,11 @@ public class UserGroupMember extends Model {
 	 * End date of membership
 	 */
 	public Date endDate;
+	
+	/**
+	 * Role for study access
+	 */
+	public ResearcherRole role;
 	
 	
 	@NotMaterialized

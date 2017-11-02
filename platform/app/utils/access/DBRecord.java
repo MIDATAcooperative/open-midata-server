@@ -1,6 +1,7 @@
 package utils.access;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -172,8 +173,8 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 		return Model.get(DBRecord.class, collection, CMaps.map("_id", id), fields);
 	}
 
-	public static Set<DBRecord> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
-		return Model.getAll(DBRecord.class, collection, properties, fields);
+	public static List<DBRecord> getAllList(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
+		return Model.getAllList(DBRecord.class, collection, properties, fields, 0);
 	}
 	
 	public static Set<DBRecord> getAllByIds(Set<MidataId> ids, Set<String> fields) throws InternalServerException {

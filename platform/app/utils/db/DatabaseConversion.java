@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -167,6 +168,21 @@ public class DatabaseConversion {
 		while (dbObjects.hasNext()) {		
 		  models.add(toModel(modelClass, conv, dbObjects.next()));
 		}
+		return models;
+	}
+	
+	/**
+	 * Converts a set of database objects to models.
+	 */
+	public <T extends Model> List<T> toModelList(Class<T> modelClass, Iterator<DBObject> dbObjects)
+			throws DatabaseConversionException {
+		Converter[] conv = transformations.get(modelClass);
+		if (conv == null) conv = build(modelClass);
+		if (!dbObjects.hasNext()) return Collections.emptyList();
+		List<T> models = new ArrayList<T>();
+		do {		
+		  models.add(toModel(modelClass, conv, dbObjects.next()));
+		} while (dbObjects.hasNext());
 		return models;
 	}
 

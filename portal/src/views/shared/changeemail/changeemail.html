@@ -1,0 +1,33 @@
+
+<div ng-controller="ChangeEmailCtrl">
+
+	<div ng-cloak class="panel panel-primary">
+		<div class="panel-heading" translate="changeemail.title"></div>
+		<div class="panel-body">
+			<p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	            
+	        </p>	
+	        <div class="alert alert-success" ng-show="success" translate="changeemail.success">			   
+			</div>
+			<form name="myform" novalidate class="css-form form-horizontal" ng-submit="changeEmail()" role="form">
+
+				<formrow myid="midataId" label="changeemail.midataId">
+				  <p class="form-control-static">{{ member.midataId }}<span ng-hide="member.midataId" translate="changeemail.none"></span></p>
+                </formrow>
+			    <formrow myid="name" label="changeemail.name">
+				  <p class="form-control-static">{{ member.firstname }} {{ member.lastname }}</p>
+                </formrow>			  
+				<formrow myid="oldEmail" label="changeemail.old_email">
+				  <p class="form-control-static">{{ member.email }}<span ng-hide="member.email" translate="changeemail.none"></span></p>
+                </formrow>
+				<formrow myid="email" label="changeemail.new_email"> 
+				   <input type="text" class="form-control" id="email" name="email"
+					translate translate-attr-placeholder="changeemail.new_email" ng-model="pw.email" required autocomplete="off">				   
+			    </formrow>
+				
+				<button type="submit" ng-disabled="status.action=='changeEmail'" class="btn btn-primary" translate="changeemail.change_btn"></button>				
+				
+			</form>
+
+		</div>
+	</div>
+</div>

@@ -108,7 +108,7 @@ public class OAuth2 extends Controller {
 		Set<UserFeature> requirements = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(role);
 		if (app.requirements != null) requirements.addAll(app.requirements);
 		if (app.linkedStudy != null && confirmStudy) {
-			Study study = Study.getByIdFromMember(app.linkedStudy, Sets.create("requirements"));			
+			Study study = Study.getById(app.linkedStudy, Sets.create("requirements"));			
 			if (study.requirements != null) requirements.addAll(study.requirements);
 		}
 		
@@ -216,7 +216,7 @@ public class OAuth2 extends Controller {
 			if (!verifyAppInstance(appInstance, refreshToken.ownerId, refreshToken.appId)) throw new BadRequestException("error.internal", "Bad refresh token.");
 			
 			Plugin app = Plugin.getById(appInstance.applicationId);
-			User user = User.getById(appInstance.owner, User.ALL_USER);
+			User user = User.getById(appInstance.owner, User.ALL_USER_INTERNAL);
 			Set<UserFeature> req = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(user.role);
 			if (app.requirements != null) req.addAll(app.requirements);
 			Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, req);

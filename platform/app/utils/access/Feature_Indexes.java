@@ -96,7 +96,7 @@ private Feature next;
 				}
 			}
 						
-			List<DBRecord> result = new ArrayList<DBRecord>();
+			List<DBRecord> result = Collections.emptyList();
 			
 									
 			
@@ -135,9 +135,13 @@ private Feature next;
 				   if (ids.size() > INDEX_REVERSE_USE) {
 					   Query q4 = new Query(q, CMaps.map(), aps, context);
 					   List<DBRecord> unindexed = next.query(q4);
+					   int size = unindexed.size();
+					   if (size > 0) {
+						   result = QueryEngine.modifyable(result); 
 					   for (DBRecord candidate : unindexed) {
 						   candidate.consentAps = aps;
 						   if (ids.contains(candidate._id)) result.add(candidate);
+					   }
 					   }
 					   AccessLog.log("add unindexed ="+unindexed.size());
 					   //result.addAll(unindexed);
@@ -149,6 +153,7 @@ private Feature next;
 						    Map<String, Object> props = new HashMap<String, Object>();
 							props.putAll(q.getProperties());
 							props.put("streams", "only");
+							props.put("owner", "self");
 							List<DBRecord> matchStreams = next.query(new Query(props, Sets.create("_id"), q.getCache(), aps, context));
 							AccessLog.log("index query streams "+matchStreams.size()+" matches.");
 							if (matchStreams.isEmpty()) directQuery = false;
@@ -157,20 +162,20 @@ private Feature next;
 								for (DBRecord r : matchStreams) streams.add(r._id);
 								readRecs.put("stream", streams);
 							}
-							add = true;
+							if (!aps.equals(q.getCache().getAccountOwner())) add = true;
 					   }
 					   readRecs.put("_id", ids);
 					
 					   int directSize = 0;
 					   if (directQuery) {
 						   long time = System.currentTimeMillis();
-						   List<DBRecord> partresult = new ArrayList(DBRecord.getAll(readRecs, queryFields));
+						   List<DBRecord> partresult = DBRecord.getAllList(readRecs, queryFields);
 						   AccessLog.log("db time:"+(System.currentTimeMillis() - time));
 						   
 						   Query q3 = new Query(q, CMaps.map("strict", "true"), aps, context);
 						   partresult = Feature_Prefetch.lookup(q3, partresult, next);
 						   for (DBRecord record : partresult) record.consentAps = aps;
-						   result.addAll(partresult);
+						   result = QueryEngine.combine(result, partresult);
 						   directSize = partresult.size();
 					   }
 						
@@ -178,7 +183,7 @@ private Feature next;
 			              Query q2 = new Query(q, CMaps.map(q.getProperties()).map("_id", ids), aps, context);
 			              List<DBRecord> additional = next.query(q2);
 			              for (DBRecord record : additional) record.consentAps = aps;
-			              result.addAll(additional);
+			              result = QueryEngine.combine(result, additional);
 			              AccessLog.log("looked up directly="+directSize+" additionally="+additional.size());
 						} else {
 			              AccessLog.log("looked up directly="+directSize);
@@ -197,30 +202,34 @@ private Feature next;
 			
 			AccessLog.logBegin("start to look for new entries");
 			if (targetAps != null) {
-			for (MidataId id : targetAps) {
-				long v = myAccess.version(id);
-												
-				AccessContext context = getContextForAps(q, id);
-				if (context != null) {
-					if (context instanceof ConsentAccessContext && ((ConsentAccessContext) context).getConsent().dataupdate <= v) continue;
-					List<DBRecord> add;				
-					add = QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.map("updated-after", v), id, context)), indexQueryParsed, null);
-					AccessLog.log("found new updated entries aps="+id+": "+add.size());
-				    result.addAll(add);
-				    add = QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.map("shared-after", v), id, context)), indexQueryParsed, null);
-				    AccessLog.log("found new shared entries aps="+id+": "+add.size());
-				    result.addAll(add);				    
+				for (MidataId id : targetAps) {
+					long v = myAccess.version(id);
+													
+					AccessContext context = getContextForAps(q, id);
+					if (context != null) {
+						if (context instanceof ConsentAccessContext && ((ConsentAccessContext) context).getConsent().dataupdate <= v) continue;
+						List<DBRecord> add;				
+						add = QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.mapPositive("updated-after", v), id, context)), indexQueryParsed, null);
+						AccessLog.log("found new updated entries aps="+id+": "+add.size());
+					    result = QueryEngine.combine(result, add);
+					    if (v>0) {
+						    add = QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.mapPositive("shared-after", v), id, context)), indexQueryParsed, null);
+						    AccessLog.log("found new shared entries aps="+id+": "+add.size());
+						    result = QueryEngine.combine(result, add);
+					    }
+					}
 				}
-			}
 			} else {
 				long v = myAccess.version(null);
 				List<DBRecord> add;
-				add = QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.map("updated-after", v ))), indexQueryParsed, null);
+				add = QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.mapPositive("updated-after", v ))), indexQueryParsed, null);
 				AccessLog.log("found new updated entries: "+add.size());
-				result.addAll(add);
-				add = QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.map("shared-after", v))), indexQueryParsed, null);
-				AccessLog.log("found new shared entries: "+add.size());
-				result.addAll(add);
+				result = QueryEngine.combine(result, add);
+				if (v > 0) {
+					add = QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.mapPositive("shared-after", v))), indexQueryParsed, null);
+					AccessLog.log("found new shared entries: "+add.size());
+					result = QueryEngine.combine(result, add);
+				}
 			}
 			AccessLog.logEnd("end to look for new entries");
 			long endTime2 = System.currentTimeMillis();

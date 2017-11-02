@@ -122,6 +122,16 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 	}
 	
 	/**
+	 * Retrives ExecutionInfo for current thread or default instance
+	 * @return ExecutionInfo
+	 */
+	public static ExecutionInfo info(MidataId executor) throws InternalServerException {
+		ExecutionInfo inf = tinfo.get();
+		if (inf == null) return new ExecutionInfo(executor);
+		return inf;
+	}
+	
+	/**
 	 * Returns the class of FHIR resources provided by this resource provider
 	 * @return Subclass of BaseResource 
 	 */
@@ -460,11 +470,15 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 	}
 	
 	public static void insertRecord(Record record, IBaseResource resource, AccessContext targetConsent) throws AppException {
+ 		insertRecord(info(), record, resource, targetConsent);
+	}
+	
+	public static void insertRecord(ExecutionInfo info, Record record, IBaseResource resource, AccessContext targetConsent) throws AppException {
 		AccessLog.logBegin("begin insert FHIR record");		    
 			String encoded = ctx.newJsonParser().encodeResourceToString(resource);			
 			record.data = (DBObject) JSON.parse(encoded);	
 			try {
-			  PluginsAPI.createRecord(info(), record, targetConsent);			
+			  PluginsAPI.createRecord(info, record, targetConsent);			
 			} finally {
 		      AccessLog.logEnd("end insert FHIR record");
 			}

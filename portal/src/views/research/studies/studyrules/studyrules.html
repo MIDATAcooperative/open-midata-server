@@ -9,12 +9,43 @@
 	<p class="alert alert-info" ng-hide="error" translate="studyrules.no_change_warning"></p>
 	<p class="alert alert-danger" ng-show="error" translate="{{ error.code || error }}"></p>
 	<form name="myform" novalidate class="css-form form-horizontal" ng-submit="submit()" role="form">
+	
+	
+	
 	  <formrow myid="recordQuery" label="studyrules.sharing_query">
 	     <textarea class="form-control" ng-model="study.recordQueryStr"></textarea>
       </formrow>
+    
+      <formrow myid="startDate" label="studyrules.startDate">
+	    <div class="input-group">
+          <input id="startDate" type="text" class="form-control" placeholder="" uib-datepicker-popup="dd.MM.yyyy" ng-model="study.startDate" is-open="datePickers.startDate" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+          <span class="input-group-btn">
+             <button type="button"  class="btn btn-default" ng-click="datePickers.startDate=true;"><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+        </div>
+	  </formrow>
+	  
+	  <formrow myid="endDate" label="studyrules.endDate">
+	    <div class="input-group">
+          <input id="endDate" type="text" class="form-control" placeholder="" uib-datepicker-popup="dd.MM.yyyy" ng-model="study.endDate" is-open="datePickers.endDate" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+          <span class="input-group-btn">
+             <button type="button"  class="btn btn-default" ng-click="datePickers.endDate=true;"><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+        </div>
+	  </formrow>
+	  
+	  <formrow myid="dataCreatedBefore" label="studyrules.dataCreatedBefore">
+	    <div class="input-group">
+          <input id="dataCreatedBefore" type="text" class="form-control" placeholder="" uib-datepicker-popup="dd.MM.yyyy" ng-model="study.dataCreatedBefore" is-open="datePickers.dataCreatedBefore" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+          <span class="input-group-btn">
+             <button type="button"  class="btn btn-default" ng-click="datePickers.dataCreatedBefore=true;"><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+        </div>
+	  </formrow>
+    
       
       <formrow myid="termsOfUse" label="studyrules.terms_of_use" >	    
-	    <input id="termsOfUse" type="text" name="termsOfUse" class="form-control" ng-model="study.termsOfUse" autocomplete="off" uib-typeahead="term.id as term.fullname for term in terms">		    
+	    <input id="termsOfUse" type="text" name="termsOfUse" class="form-control" ng-model="study.termsOfUse" autocomplete="off" uib-typeahead="term.id as term.fullname for term in terms | filter:{fullname:$viewValue}">		    
 	    <p class="help-block" ng-show="study.termsOfUse"><a ui-sref="research.terms({ which:study.termsOfUse })" translate="studyrules.show_terms"></a></p> 
 	  </formrow>
        

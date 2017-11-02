@@ -10,7 +10,7 @@
         <div><b style="min-width:40px;display:inline-block;">{{circles.apps}}</b><span translate="navbar.app_count"></span></div>
         <div><b style="min-width:40px;display:inline-block;">{{circles.studies}}</b><span translate="navbar.study_count"></span></div>
         <div class="extraspace"></div>
-        <a href="javascript:" ui-sref=".user({ userId : user._id})" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> <span translate="navbar.edit_profile"></span></a>
+        <a href="javascript:" ui-sref="member.user({ userId : user._id})" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> <span translate="navbar.edit_profile"></span></a>
         <a href="javascript:" ng-click="logout()" class="btn btn-default"><span class="glyphicon glyphicon-off"></span> <span translate="navbar.sign_out"></span></a>
        </div>
      </script>
@@ -27,7 +27,7 @@
 			<div class="collapse navbar-collapse navbar-ex1-collapse">
 				<ul class="hidden-xs nav navbar-nav navbar-right" ng-cloak>
 
-					<li><a href="javascript:" uib-popover-template="'userinfo.html'" popover-trigger="focus" popover-placement="left-bottom">{{user.name}}</a></li>
+					<li><a href="javascript:" tabindex="0" uib-popover-template="'userinfo.html'" popover-trigger="'focus'" popover-append-to-body="true" popover-placement="auto bottom-left">{{user.name}}</a></li>
 
 				</ul>
 				<div class="hidden-md hidden-sm hidden-lg">

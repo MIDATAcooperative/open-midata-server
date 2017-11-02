@@ -13,7 +13,7 @@
       <tr ng-repeat="info in infos">        
 	      <td>{{ info.group }}</td>      
 	      <td>{{ info.count }}</td>
-	      <td><button ng-disabled="status.action == 'download'" ng-click="fhirDownload(info)" href="javascript:" class="btn btn-xs btn-primary" translate="studyrecords.fhir_download_btn"></button>
+	      <td><button ng-disabled="status.action == 'download' || !study.myRole.export" ng-click="fhirDownload(info)" href="javascript:" class="btn btn-xs btn-primary" translate="studyrecords.fhir_download_btn"></button>
       </tr>
       </table>
       <!-- 

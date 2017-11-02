@@ -67,9 +67,15 @@ public enum AuditEventType {
 	STUDY_PARTICIPATION_MEMBER_REJECTED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "study-participation-member-rejected", "Study participation rejected by member"), AuditEventAction.U),
 	
 	/**
+	 * user will not participate in a study
+	 */
+	STUDY_PARTICIPATION_MEMBER_RETREAT(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "study-participation-member-retreat", "Account holder retreated from study"), AuditEventAction.U),
+	
+	
+	/**
 	 * study participation of a user has been rejected
 	 */
-	STUDY_PARTICIPATION_RESEARCH_REJECTED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "study-participation-member-rejected", "Study participation rejected by research"), AuditEventAction.U),
+	STUDY_PARTICIPATION_RESEARCH_REJECTED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "study-participation-research-rejected", "Study participation rejected by research"), AuditEventAction.U),
 	
 	/**
 	 * study participation of a user has been approved
@@ -157,8 +163,13 @@ public enum AuditEventType {
 	 */
 	USER_TERMS_OF_USE_AGREED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "user-terms-of-use-agreed", "Agreed to terms of use"), AuditEventAction.E),
 	
-	AUDIT_LOG_USE(new Coding(System.DCM,"110101","Audit Log Used"), new Coding(System.MIDATA, "audit-log-used", "Audit Log Used"), AuditEventAction.R);
+	AUDIT_LOG_USE(new Coding(System.DCM,"110101","Audit Log Used"), new Coding(System.MIDATA, "audit-log-used", "Audit Log Used"), AuditEventAction.R),
 	
+	ADDED_AS_TEAM_MEMBER(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "added-as-team-member", "Added as team member"), AuditEventAction.C),
+	
+	UPDATED_ROLE_IN_TEAM(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "updated-role-in-team", "Updated role in team"), AuditEventAction.U),
+	
+	REMOVED_FROM_TEAM(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "removed-from-team", "Removed from team"), AuditEventAction.D);
 	
 	
 	private AuditEventAction action;

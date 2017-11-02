@@ -24,6 +24,7 @@ import models.StudyParticipation;
 import models.User;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
+import models.enums.EntityType;
 import models.enums.EventType;
 import models.enums.InformationType;
 import models.enums.InstanceType;
@@ -42,6 +43,7 @@ import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
+import utils.auth.ExecutionInfo;
 import utils.auth.MemberSecured;
 import utils.auth.Rights;
 import utils.collections.Sets;
@@ -138,11 +140,11 @@ public class Studies extends APIController {
 			code.status != ParticipationCodeStatus.SHARED && 
 			code.status != ParticipationCodeStatus.REUSEABLE) return inputerror("code","alreadyused","Participation code has expired.");
 		
-		Study study = Study.getByIdFromMember(code.study, Sets.create("name", "participantSearchStatus", "owner", "createdBy", "recordQuery", "code"));
+		Study study = Study.getById(code.study, Sets.create("name", "participantSearchStatus", "owner", "createdBy", "recordQuery", "code"));
 				
 		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) return inputerror("code", "notsearching", "Study is not searching for participants.");
 		
-		StudyParticipation part = createStudyParticipation(study, user, code);
+		StudyParticipation part = createStudyParticipation(userId, study, user, code);
 				
 		if (code.status != ParticipationCodeStatus.REUSEABLE) {
 		   code.setStatus(ParticipationCodeStatus.USED);
@@ -218,7 +220,7 @@ public class Studies extends APIController {
 	 * @throws InternalServerException
 	 */
 	
-	public static StudyParticipation createStudyParticipation(Study study, Member member, ParticipationCode code) throws AppException {
+	public static StudyParticipation createStudyParticipation(MidataId executor, Study study, Member member, ParticipationCode code) throws AppException {
 		StudyParticipation part = new StudyParticipation();
 		part._id = new MidataId();
 		part.study = study._id;
@@ -226,6 +228,7 @@ public class Studies extends APIController {
 		part.name = "Study: "+study.name;
 		part.owner = member._id;
 		part.dateOfCreation = new Date();
+		part.dataupdate = System.currentTimeMillis();
 		
 		String userName;
 		
@@ -239,7 +242,8 @@ public class Studies extends APIController {
 				
 		part.setOwnerName(userName);
 		part.status = ConsentStatus.ACTIVE;
-		part.writes = WritePermissionType.NONE;
+		part.writes = WritePermissionType.UPDATE_AND_CREATE;
+		part.createdBefore = study.dataCreatedBefore;
 		if (code != null) {
 			part.group = code.group;
 			part.recruiter = code.recruiter;		
@@ -256,10 +260,11 @@ public class Studies extends APIController {
 		part.country = member.country;
 			
 		part.providers = new HashSet<MidataId>();
+		part.entityType = EntityType.USERGROUP;
 		part.authorized = new HashSet<MidataId>();		
-		part.authorized.add(study.createdBy);
+		part.authorized.add(study._id);
 		
-		RecordManager.instance.createAnonymizedAPS(member._id, study.createdBy, part._id, true);
+		RecordManager.instance.createAnonymizedAPS(member._id, study._id, part._id, true);
 		
 		/*if (code != null) {
 		  History codedentererd = new History(EventType.CODE_ENTERED, part, member, null); 
@@ -267,9 +272,14 @@ public class Studies extends APIController {
 		} */
 		
 		Circles.prepareConsent(part);
-		StudyParticipation.add(part);
-		Circles.setQuery(member._id, member._id, part._id, study.recordQuery);
-		RecordManager.instance.applyQuery(member._id, study.recordQuery, member._id, part._id, study.requiredInformation.equals(InformationType.DEMOGRAPHIC));
+		StudyParticipation.add(part);		
+		Circles.setQuery(executor, member._id, part._id, study.recordQuery);
+		Circles.consentSettingChange(executor, part);
+		
+		// Query can only be applied if patient is doing it himself
+		if (executor.equals(member._id)) {
+		  RecordManager.instance.applyQuery(executor, study.recordQuery, member._id, part._id, study.requiredInformation.equals(InformationType.DEMOGRAPHIC));
+		}
 		
 		return part;
 		
@@ -288,11 +298,11 @@ public class Studies extends APIController {
 	   MidataId userId = new MidataId(request().username());	
 	   MidataId studyId = new MidataId(id);
 	   	   
-	   Set<String> studyFields = Sets.create("_id", "createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","infos","owner","participantRules","recordQuery","studyKeywords","requiredInformation","assistance");
+	   Set<String> studyFields = Sets.create("_id", "createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","infos","owner","participantRules","recordQuery","studyKeywords","requiredInformation","assistance", "startDate", "endDate", "dataCreatedBefore");
 	   Set<String> consentFields = Sets.create("_id", "pstatus", "providers");
 	   Set<String> researchFields = Sets.create("_id", "name", "description");
 	   
-	   Study study = Study.getByIdFromMember(studyId, studyFields);
+	   Study study = Study.getById(studyId, studyFields);
 	   StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, consentFields);
 	   Research research = Research.getById(study.owner, researchFields);
 	   
@@ -322,22 +332,22 @@ public class Studies extends APIController {
 		MidataId userId = new MidataId(request().username());		
 		MidataId studyId = new MidataId(id);	
 		
-		User user = Member.getById(userId, Member.ALL_USER);
+		User user = Member.getById(userId, Member.ALL_USER_INTERNAL);
 		
 		Set<UserFeature> requirements = precheckRequestParticipation(userId, studyId);
 		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, requirements);
 		if (notok != null && !notok.isEmpty()) requireUserFeature(notok.iterator().next());
 		
-		requestParticipation(userId, studyId, null);		
+		requestParticipation(new ExecutionInfo(userId), userId, studyId, null);		
 		return ok();
 	}
 	
-	public static void requestParticipation(MidataId userId, MidataId studyId, MidataId usingApp) throws AppException {
+	public static void requestParticipation(ExecutionInfo inf, MidataId userId, MidataId studyId, MidataId usingApp) throws AppException {
 		
 		
 		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country"));		
 		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "pstatus", "ownerName", "owner", "authorized", "sharingQuery", "validUntil", "createdBefore"));		
-		Study study = Study.getByIdFromMember(studyId, Sets.create("name", "executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "termsOfUse", "code"));
+		Study study = Study.getById(studyId, Sets.create("name", "executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "termsOfUse", "code"));
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
 		
@@ -345,7 +355,7 @@ public class Studies extends APIController {
 		if (participation == null) {
 			if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new JsonValidationException("error.closed.study", "code", "notsearching", "Study is not searching for participants.");
 			
-			participation = createStudyParticipation(study, user, null);
+			participation = createStudyParticipation(inf.executorId, study, user, null);
 										
 		}
 		AuditManager.instance.addAuditEvent(AuditEventType.STUDY_PARTICIPATION_REQUESTED, userId, participation, study);
@@ -357,21 +367,41 @@ public class Studies extends APIController {
 		//participation.addHistory(new History(EventType.PARTICIPATION_REQUESTED, participation, user, null));
 		if (study.termsOfUse != null) user.agreedToTerms(study.termsOfUse, usingApp);		
 		if (study.requiredInformation.equals(InformationType.RESTRICTED)) {
-			PatientResourceProvider.createPatientForStudyParticipation(participation, user);
+			PatientResourceProvider.createPatientForStudyParticipation(inf, participation, user);
+			Circles.autosharePatientRecord(inf.executorId, participation);
 		} else {
-			Circles.autosharePatientRecord(userId, participation);
+			Circles.autosharePatientRecord(inf.executorId, participation);
 		}
 		
-		Circles.consentStatusChange(userId, participation, ConsentStatus.ACTIVE);				
+		Circles.consentStatusChange(inf.executorId, participation, ConsentStatus.ACTIVE);				
 
 		AuditManager.instance.success();
+	}
+	
+    public static void match(MidataId executor, MidataId userId, MidataId studyId, MidataId usingApp) throws AppException {
+		
+		
+		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country"));		
+		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "pstatus", "ownerName", "owner", "authorized", "sharingQuery", "validUntil", "createdBefore"));		
+		Study study = Study.getById(studyId, Sets.create("name", "executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "termsOfUse", "code"));
+		
+		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
+		
+		
+		if (participation == null) {
+			if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new JsonValidationException("error.closed.study", "code", "notsearching", "Study is not searching for participants.");
+			
+			participation = createStudyParticipation(executor, study, user, null);
+										
+		}		
+		
 	}
 	
    public static Set<UserFeature> precheckRequestParticipation(MidataId userId, MidataId studyId) throws AppException {
 				
 		Member user = userId != null ? Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country")) : null;		
 		StudyParticipation participation = userId != null ? StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "pstatus", "ownerName", "owner", "authorized", "sharingQuery", "validUntil", "createdBefore")) : null;		
-		Study study = Study.getByIdFromMember(studyId, Sets.create("executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "requirements", "code"));
+		Study study = Study.getById(studyId, Sets.create("executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "requirements", "code"));
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
 		if (participation == null) {
@@ -400,7 +430,7 @@ public class Studies extends APIController {
 		
 		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country"));
 		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create(Consent.ALL, "status", "pstatus", "ownerName", "owner", "authorized"));		
-		Study study = Study.getByIdFromMember(studyId, Sets.create("name", "executionStatus", "participantSearchStatus", "createdBy", "code"));
+		Study study = Study.getById(studyId, Sets.create("name", "executionStatus", "participantSearchStatus", "createdBy", "code"));
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
 		if (participation == null) throw new BadRequestException("error.blocked.participation", "Member is not allowed to participate in study.");
@@ -411,6 +441,37 @@ public class Studies extends APIController {
 		participation.setPStatus(ParticipationStatus.MEMBER_REJECTED);		
 		//participation.addHistory(new History(EventType.NO_PARTICIPATION, participation, user, null));
 		Circles.consentStatusChange(userId, participation, ConsentStatus.REJECTED);
+		
+		AuditManager.instance.success();
+		return ok();
+	}
+	
+	/**
+	 * reject study participation (by member)
+	 * @param id ID of study
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws AppException
+	 */
+	@APICall
+	@Security.Authenticated(MemberSecured.class)
+	public static Result retreatParticipation(String id) throws JsonValidationException, AppException {
+		MidataId userId = new MidataId(request().username());		
+		MidataId studyId = new MidataId(id);
+		
+		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country"));
+		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create(Consent.ALL, "status", "pstatus", "ownerName", "owner", "authorized"));		
+		Study study = Study.getById(studyId, Sets.create("name", "executionStatus", "participantSearchStatus", "createdBy", "code"));
+		
+		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
+		if (participation == null) throw new BadRequestException("error.blocked.participation", "Member does not participate in study.");
+		
+		AuditManager.instance.addAuditEvent(AuditEventType.STUDY_PARTICIPATION_MEMBER_RETREAT, userId, participation, study);
+		if (participation.pstatus != ParticipationStatus.ACCEPTED) throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");
+		
+		participation.setPStatus(ParticipationStatus.MEMBER_RETREATED);		
+		//participation.addHistory(new History(EventType.NO_PARTICIPATION, participation, user, null));
+		Circles.consentStatusChange(userId, participation, ConsentStatus.FROZEN);
 		
 		AuditManager.instance.success();
 		return ok();

@@ -14,12 +14,19 @@
 	       		   		   			  
 		   <!--  <button class="btn btn-default" ng-click="addTask();" translate="studyactions.add_task_btn"></button> -->
            
-           <div ng-show="group != null">
+           <div >
              <formrow myid="plugin" label="studyactions.plugin">
                <select name="plugin" id="plugin" ng-model="crit.plugin" class="form-control" ng-options="plugin._id as plugin.name for plugin in plugins" required></select>
              </formrow>
              <formrow myid="device" label="studyactions.device">
                <input type="text" id="device" name="device" ng-model="crit.device" class="form-control" required>
+             </formrow>
+              <formrow myid="shareback" label="studyactions.shareback">
+               <div class="checkbox">
+                 <label>
+                   <input type="checkbox" name="shareback" id="shareback" ng-model="crit.shareback">
+                 </label> 
+               </div>
              </formrow>
              <formrow myid="restrictread" label="studyactions.restrict">
                <div class="checkbox">
@@ -30,8 +37,8 @@
              </formrow>
             </div>
             
-            <button type="button" class="btn btn-default" ng-click="setGroup();" translate="studyactions.select_group_btn"></button>
-            <button type="submit" class="btn btn-default" ng-show="group != null" translate="studyactions.add_application_btn"></button>          
+            <!-- <button type="button" class="btn btn-default" ng-click="setGroup();" translate="studyactions.select_group_btn"></button> -->
+            <button type="submit" class="btn btn-default" ng-disabled="group == null" translate="studyactions.add_application_btn"></button>          
      
            </form>                   
                       

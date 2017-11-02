@@ -48,7 +48,7 @@ angular.module('portal')
    };
    
    $scope.studyLocked = function() {
-		 return (!$scope.study) || ($scope.study.validationStatus !== "DRAFT" && $scope.study.validationStatus !== "REJECTED");    
+		 return (!$scope.study) || ($scope.study.validationStatus !== "DRAFT" && $scope.study.validationStatus !== "REJECTED") || !$scope.study.myRole.setup;
    };
    
    $scope.reload();

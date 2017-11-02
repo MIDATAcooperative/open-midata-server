@@ -39,9 +39,9 @@ public class User extends Model implements Comparable<User> {
 
 	protected static final @NotMaterialized String collection = "users";
 	public static final @NotMaterialized Set<String> NON_DELETED = Sets.create(UserStatus.ACTIVE.toString(), UserStatus.NEW.toString(), UserStatus.BLOCKED.toString(), UserStatus.TIMEOUT.toString());
-	public static final @NotMaterialized Set<String> ALL_USER = Sets.create("email", "emailLC", "name", "role", "subroles", "accountVersion", "registeredAt",  "status", "contractStatus", "agbStatus", "emailStatus", "confirmedAt", "firstname", "lastname",	"gender", "city", "zip", "country", "address1", "address2", "phone", "mobile", "language", "searchable", "developer");
-	public static final @NotMaterialized Set<String> ALL_USER_INTERNAL = Sets.create("email", "emailLC", "name", "role", "subroles", "accountVersion", "registeredAt",  "status", "contractStatus", "agbStatus", "emailStatus", "confirmedAt", "firstname", "lastname",	"gender", "city", "zip", "country", "address1", "address2", "phone", "mobile", "language", "searchable", "developer", "initialApp", "password", "apps");
-	public static final @NotMaterialized Set<String> PUBLIC = Sets.create("email", "role", "status", "firstname", "lastname", "gender");
+	public static final @NotMaterialized Set<String> ALL_USER = Sets.create("email", "emailLC", "name", "role", "subroles", "accountVersion", "registeredAt",  "status", "contractStatus", "agbStatus", "emailStatus", "confirmedAt", "firstname", "lastname",	"gender", "city", "zip", "country", "address1", "address2", "phone", "mobile", "language", "searchable", "developer", "midataID");
+	public static final @NotMaterialized Set<String> ALL_USER_INTERNAL = Sets.create("email", "emailLC", "name", "role", "subroles", "accountVersion", "registeredAt",  "status", "contractStatus", "agbStatus", "emailStatus", "confirmedAt", "firstname", "lastname",	"gender", "city", "zip", "country", "address1", "address2", "phone", "mobile", "language", "searchable", "developer", "initialApp", "password", "apps", "midataID");
+	public static final @NotMaterialized Set<String> PUBLIC = Sets.create("email", "role", "status", "firstname", "lastname", "gender", "midataID");
 	
 			
 	/**
@@ -55,6 +55,11 @@ public class User extends Model implements Comparable<User> {
 	 * Email address of the user in lower case
 	 */
 	public String emailLC;
+	
+	/**
+	 * the public id of this member. The member may give this ID (together with the birthday) to a healthcare professional for identification.
+	 */
+	public String midataID;
 	
 	/**
 	 * firstname lastname of the user
@@ -251,11 +256,18 @@ public class User extends Model implements Comparable<User> {
 	 * Study that has been the reason for the user to register
 	 */
 	public MidataId initialStudy;
+	
+	/**
+	 * old email address (if changed)
+	 */
+	public String previousEMail;
 
 	@Override
 	public int compareTo(User other) {
-		if (this.email != null && other.email != null) {
-			return this.email.compareTo(other.email);
+		String me = getPublicIdentifier();
+		String ot = other.getPublicIdentifier();
+		if (me != null && ot != null) {
+			return me.compareTo(ot);
 		} else {
 			return super.compareTo(other);
 		}
@@ -266,6 +278,7 @@ public class User extends Model implements Comparable<User> {
 	 */
 	public static boolean authenticationValid(String givenPassword, String savedPassword) throws InternalServerException {
 		try {
+			if (givenPassword == null || savedPassword == null) return false;
 			return PasswordHash.validatePassword(givenPassword, savedPassword);
 		} catch (NoSuchAlgorithmException e) {
 			throw new InternalServerException("error.internal", e);
@@ -290,6 +303,12 @@ public class User extends Model implements Comparable<User> {
 	
 	public UserRole getRole() {
 		return role;
+	}
+	
+	public String getPublicIdentifier() {
+		if (this.email != null) return this.email;
+		if (this.midataID != null) return this.midataID;
+		return "?";
 	}
 	
 	public static boolean exists(Map<String, ? extends Object> properties) throws InternalServerException {

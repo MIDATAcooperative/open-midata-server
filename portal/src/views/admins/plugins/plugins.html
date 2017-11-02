@@ -6,7 +6,7 @@
     <div class="body">
        <form class="css-form form-horizontal">		   
 		   <formrow myid="developer" label="admin_plugins.developer">
-		      <input type="text" class="form-control" id="developer" typeahead-on-select="reload()" ng-change="reload();" ng-model="search.criteria.creatorLogin" ng-model-options="{ debounce: 500 }" uib-typeahead="developer.email for developer in developers">
+		      <input type="text" class="form-control" id="developer" autocomplete="off" typeahead-on-select="reload()" ng-change="reload();" ng-model="search.criteria.creatorLogin" ng-model-options="{ debounce: 500 }" uib-typeahead="developer.email for developer in developers | filter:{email:$viewValue}">
 		      
 		      
 		   </formrow>		      

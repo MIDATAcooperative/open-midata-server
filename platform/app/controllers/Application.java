@@ -176,6 +176,7 @@ public class Application extends APIController {
 	
 	public static void sendWelcomeMail(MidataId sourcePlugin, User user) throws AppException {
 	   if (user.developer == null) {
+		   if (user.email == null) return;
 		   PasswordResetToken token = new PasswordResetToken(user._id, user.role.toString(), true);
 		   user.set("resettoken", token.token);
 		   user.set("resettokenTs", System.currentTimeMillis());
@@ -205,10 +206,10 @@ public class Application extends APIController {
 	public static void sendAdminNotificationMail(User user) throws InternalServerException {
 	   if (user.status == UserStatus.NEW) {		   
 		   String site = "https://" + InstanceConfig.getInstance().getPortalServerDomain();
-		   String email = user.email;
+		   String email = user.getPublicIdentifier();
 		   String role = user.role.toString();
 		   
-		   AccessLog.log("send admin notification mail: "+user.email);	   
+		   AccessLog.log("send admin notification mail: "+user.getPublicIdentifier());	   
 	  	   Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), user.firstname+" "+user.lastname, "New MIDATA User", adminnotify.render(site, email, role).toString());
 	   }
 	}
@@ -222,17 +223,18 @@ public class Application extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public static Result confirmAccountEmail() throws AppException {
+						
 		// validate 
 		JsonNode json = request().body().asJson();		
 		
-		EMailStatus wanted = JsonValidation.getEnum(json, "mode", EMailStatus.class);
+		EMailStatus wanted = json.has("mode") ? JsonValidation.getEnum(json, "mode", EMailStatus.class) : null;
+		String password = json.has("password") ? JsonValidation.getPassword(json, "password") : null;
 		
 		MidataId userId;
 		String token;
 		String role;
 		
-		if (json.has("token")) {	
-			JsonValidation.validate(json, "token" ,"mode");
+		if (json.has("token")) {				
 			// check status
 			PasswordResetToken passwordResetToken = PasswordResetToken.decrypt(json.get("token").asText());
 			if (passwordResetToken == null) throw new BadRequestException("error.missing.token", "Missing or bad token.");
@@ -242,49 +244,77 @@ public class Application extends APIController {
 			token = passwordResetToken.token;
 			role = passwordResetToken.role;		
 		} else {
-			JsonValidation.validate(json, "userId", "code", "role" ,"mode");
+			JsonValidation.validate(json, "userId", "code", "role");
 			userId = JsonValidation.getMidataId(json, "userId");
 			token = JsonValidation.getString(json, "code");
 			role = JsonValidation.getString(json, "role");
 		}
 		
 		
-		User user = User.getById(userId, Sets.create("firstname", "lastname", "email","status", "role", "subroles", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "resettoken","password","resettokenTs", "registeredAt", "confirmedAt", "developer"));
+		User user = User.getById(userId, Sets.create("firstname", "lastname", "email","status", "role", "subroles", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "resettoken","password","resettokenTs", "registeredAt", "confirmedAt", "developer", "previousEMail"));
 		
-		if (user!=null && !user.emailStatus.equals(EMailStatus.VALIDATED)) {							
+		if (user!=null && password != null) {				
+			 AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE, userId);
 		       if (user.resettoken != null 		    		    
 		    		   && user.resettoken.equals(token)
 		    		   && System.currentTimeMillis() - user.resettokenTs < EMAIL_TOKEN_LIFETIME) {	   
 			   
-		    	   
-		    	   if (wanted == EMailStatus.REJECTED) {
-		    		   AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_REJECTED, user);
-		    		   user.status = UserStatus.BLOCKED;
-			    	   user.set("status", user.status);
-			       } else {
-			    	   AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_CONFIRMED, user);
-			       }
-		    	   
-		           user.set("resettoken", null);	
-		           user.emailStatus = wanted;
-			       user.set("emailStatus", wanted);				       
-			       
-		       } else if (user!=null && user.emailStatus.equals(EMailStatus.UNVALIDATED) && user.resettoken != null 
-		    		   && user.resettoken.equals(token)) {
-		    	     sendWelcomeMail(user);
-		    	     throw new BadRequestException("error.expired.tokenresent", "Token has already expired. A new one has been requested.");
-		       } else throw new BadRequestException("error.expired.token", "Token has already expired. Please request a new one.");
-		       
-		       checkAccount(user);
-		       AuditManager.instance.success();
-		       
-		       return loginHelper(user);
-		} else if (user != null) {
-			throw new BadRequestException("error.already_done.email_verification", "E-Mail has already been verified.");
+		           		       
+		    	   user.password = Member.encrypt(password);
+			       user.set("password", user.password);
+		       } else throw new BadRequestException("error.expired.token", "Password reset token has already expired.");
 		}
-					
-		// response
-		return ok();		
+		
+		
+		if (wanted != null) {
+			if (user!=null && !user.emailStatus.equals(EMailStatus.VALIDATED)) {
+				if (user.password == null) {					
+					return loginHelper(user);
+				}
+			       if (user.resettoken != null 		    		    
+			    		   && user.resettoken.equals(token)
+			    		   && System.currentTimeMillis() - user.resettokenTs < EMAIL_TOKEN_LIFETIME) {	   
+				   
+			    	   
+			    	   if (wanted == EMailStatus.REJECTED) {
+			    		   if (user.previousEMail != null) {
+			    			   AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_REJECTED, user);
+			    			   user.email = user.previousEMail;
+			    			   user.emailLC = user.email.toLowerCase();
+			    			   wanted = EMailStatus.VALIDATED;
+			    			   user.set("email", user.email);
+			    			   user.set("emailLC", user.emailLC);
+			    		   } else {
+				    		   AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_REJECTED, user);
+				    		   user.status = UserStatus.BLOCKED;
+					    	   user.set("status", user.status);
+			    		   }
+				       } else {
+				    	   AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_CONFIRMED, user);
+				       }
+			    	   		          
+			           user.emailStatus = wanted;
+				       user.set("emailStatus", wanted);				       
+				       
+			       } else if (user!=null && user.emailStatus.equals(EMailStatus.UNVALIDATED) && user.resettoken != null 
+			    		   && user.resettoken.equals(token)) {
+			    	     sendWelcomeMail(user);
+			    	     throw new BadRequestException("error.expired.tokenresent", "Token has already expired. A new one has been requested.");
+			       } else throw new BadRequestException("error.expired.token", "Token has already expired. Please request a new one.");
+			       
+			       checkAccount(user);
+			       
+			       
+			       
+			} else if (user != null) {
+				throw new BadRequestException("error.already_done.email_verification", "E-Mail has already been verified.");
+			}
+		}
+		
+		user.set("resettoken", null);		
+		AuditManager.instance.success();		
+		return loginHelper(user);	
+				
 	}
 	
 	/**
@@ -381,41 +411,7 @@ public class Application extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public static Result setPasswordWithToken() throws JsonValidationException, AppException {
-		// validate 
-		JsonNode json = request().body().asJson();		
-		JsonValidation.validate(json, "token", "password");
-		
-		// check status
-		PasswordResetToken passwordResetToken = PasswordResetToken.decrypt(json.get("token").asText());
-		if (passwordResetToken == null) throw new BadRequestException("error.missing.token", "Missing or bad password token.");
-		
-		// execute
-		MidataId userId = passwordResetToken.userId;
-		String token = passwordResetToken.token;
-		String role = passwordResetToken.role;
-		String password = JsonValidation.getPassword(json, "password");
-		
-		User user = null;
-		switch (role) {
-		case "member" : user = Member.getById(userId, Sets.create("resettoken","password","resettokenTs"));break;
-		case "research" : user = ResearchUser.getById(userId, Sets.create("resettoken","password","resettokenTs"));break;
-		case "provider" : user = HPUser.getById(userId, Sets.create("resettoken","password","resettokenTs"));break;
-		case "developer" : user = Developer.getById(userId, Sets.create("resettoken","password","resettokenTs"));break;
-		default: break;		
-		}
-		if (user!=null) {				
-			 AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE, userId);
-		       if (user.resettoken != null 		    		    
-		    		   && user.resettoken.equals(token)
-		    		   && System.currentTimeMillis() - user.resettokenTs < EMAIL_TOKEN_LIFETIME) {	   
-			   
-		           user.set("resettoken", null);		       
-			       user.set("password", Member.encrypt(password));
-		       } else throw new BadRequestException("error.expired.token", "Password reset token has already expired.");
-		}
-		AuditManager.instance.success();		
-		// response
-		return ok();		
+		return confirmAccountEmail();				
 	}
 	
 	/**
@@ -905,6 +901,7 @@ public class Application extends APIController {
 				
 				//Research
 				controllers.research.routes.javascript.Researchers.register(),
+				controllers.research.routes.javascript.Researchers.registerOther(),
 				controllers.research.routes.javascript.Researchers.login(),
 				controllers.research.routes.javascript.Studies.create(),
 				controllers.research.routes.javascript.Studies.list(),
@@ -929,7 +926,7 @@ public class Application extends APIController {
 				controllers.research.routes.javascript.Studies.listParticipants(),
 				controllers.research.routes.javascript.Studies.getParticipant(),
 				controllers.research.routes.javascript.Studies.approveParticipation(),
-				controllers.research.routes.javascript.Studies.rejectParticipation(),
+				controllers.research.routes.javascript.Studies.rejectParticipation(),	
 				controllers.research.routes.javascript.Studies.shareWithGroup(),
 				controllers.research.routes.javascript.Studies.addApplication(),
 				controllers.research.routes.javascript.Studies.addTask(),
@@ -943,6 +940,7 @@ public class Application extends APIController {
 				controllers.members.routes.javascript.Studies.requestParticipation(),
 				controllers.members.routes.javascript.Studies.updateParticipation(),
 				controllers.members.routes.javascript.Studies.noParticipation(),
+				controllers.members.routes.javascript.Studies.retreatParticipation(),
 				controllers.members.routes.javascript.HealthProvider.list(),
 				controllers.members.routes.javascript.HealthProvider.search(),
 				controllers.members.routes.javascript.HealthProvider.confirmConsent(),
@@ -964,6 +962,7 @@ public class Application extends APIController {
 				
 				controllers.admin.routes.javascript.Administration.register(),
 				controllers.admin.routes.javascript.Administration.changeStatus(),
+				controllers.admin.routes.javascript.Administration.changeUserEmail(),
 				controllers.admin.routes.javascript.Administration.addComment(),
 				controllers.admin.routes.javascript.Administration.adminWipeAccount(),
 				controllers.admin.routes.javascript.Administration.deleteStudy(),

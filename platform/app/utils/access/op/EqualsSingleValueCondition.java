@@ -2,6 +2,8 @@ package utils.access.op;
 
 import java.util.Map;
 
+import utils.access.op.CompareCaseInsensitive.CompareCaseInsensitiveOperator;
+
 /**
  * check if object is equal to a fixed value
  *
@@ -34,7 +36,8 @@ public class EqualsSingleValueCondition implements Condition {
 
 	@Override
 	public Condition indexValueExpression() {
-		return this;
+		if (((Object) val) instanceof String) return new IndexCompare(val.toString(), CompareCaseInsensitiveOperator.EQUALS);
+		else return this;
 	}
 
 	@Override
