@@ -18,3 +18,5 @@
 {"_id":{"$oid":"55ae59d0f351efda91eadc78"},"format":"jawbone/summary","comment":"Deprecated. Do not use.","visName":"Jawbone Activity Clock","visualization":{"$oid":"543d2c14e4b0f34f43670afa"}}
 {"_id":{"$oid":"55ae59d0f351efda91eadc79"},"format":"jawbone/ticks","comment":"Deprecated. Do not use.","visName":"Jawbone Activity Clock","visualization":{"$oid":"543d2c14e4b0f34f43670afa"}}
 {"_id":{"$oid":"55ae59d0f351efda91eadc7b"},"format":"training-app","comment":"Demo only. Do not use.","visName":"Training Editor","visualization":{"$oid":"554c867de4b08413ff37d6f5"}}
+{"_id":{"$oid":"59fb36eaffe9fb139ff977e3"},"format":"fhir/EpisodeOfCare","comment":"FHIR Episode Of Care Resource","visName":"Episode Viewer"}
+{"_id":{"$oid":"59fb36eaffe9fb139ff977e4"},"format":"fhir/Procedure","comment":"FHIR Procedure Resource","visName":"Procedure Viewer"}
