@@ -20,12 +20,12 @@ angular.module('portal')
 	
 	
 	$scope.mayApproveParticipation = function(participation) {
-	   return participation.pstatus == "REQUEST";
+	   return $scope.study && $scope.study.myRole.participants && participation.pstatus == "REQUEST";
 	
 	};
 	
     $scope.mayRejectParticipation = function(participation) {
-      return participation.pstatus == "REQUEST";
+      return $scope.study && $scope.study.myRole.participants && participation.pstatus == "REQUEST";
 	};
 	
 	

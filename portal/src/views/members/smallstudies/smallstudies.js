@@ -21,7 +21,7 @@ angular.module('views')
 			return study.pstatus == "ACCEPTED" && study.executionStatus == "FINISHED";
 		},
 		function(study) {
-			return study.pstatus == "MEMBER_REJECTED" || study.pstatus == "RESEARCH_REJECTED" || study.executionStatus == "ABORTED";
+			return study.pstatus == "MEMBER_REJECTED" || study.pstatus == "RESEARCH_REJECTED" || study.executionStatus == "ABORTED" || study.pstatus == "MEMBER_RETREATED";
 		}		
 	];
 	
@@ -39,7 +39,7 @@ angular.module('views')
 		    	ids.push(study.study);
 		    });
 		    
-		    $scope.status.doBusy(studies.search({ participantSearchStatus : "SEARCHING" }, ["name", "description", "participantSearchStatus", "executionStatus"])).
+		    $scope.status.doBusy(studies.search({ participantSearchStatus : "SEARCHING" }, ["name", "description", "participantSearchStatus", "executionStatus", "createdAt"])).
 			then(function (result) {
 				angular.forEach(result.data, function(study) {
 					var part = studyById[study._id];
@@ -53,7 +53,7 @@ angular.module('views')
 						part.description = study.description;
 						part.participantSearchStatus = study.participantSearchStatus;
 						part.executionStatus = study.executionStatus;
-						
+						part.createdAt = study.createdAt;
 					}
 				});				 
 			});

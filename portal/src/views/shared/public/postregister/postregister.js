@@ -3,8 +3,9 @@ angular.module('portal')
 	
 	// init
 	$scope.passphrase = {};
+	$scope.setpw = {};
 	$scope.error = null;
-	$scope.progress = $stateParams.progress;
+	$scope.progress = $stateParams.progress || {};
 	$scope.status = new status(false, $scope);
 	$scope.status.isBusy = false;
 	$scope.mailSuccess = false;
@@ -29,13 +30,15 @@ angular.module('portal')
 	};
 	$scope.init();
 		
+	$scope.setFlags = function() {
 	if ($scope.progress && $scope.progress.requirements) {
 		for (var i in $scope.progress.requirements) {
 			$scope.progress[$scope.progress.requirements[i]] = true;
 		}
 		$scope.registration = $scope.progress.user;
 	}
-	
+	};
+	$scope.setFlags();
 		
 	$scope.resend = function() {	
 		$scope.resentSuccess = $scope.codeSuccess = $scope.mailSuccess = false;
@@ -79,9 +82,13 @@ angular.module('portal')
 		var data = { token : $stateParams.token, mode : $state.current.data.mode };
 	    $scope.status.doAction('email', server.post(jsRoutes.controllers.Application.confirmAccountEmail().url, JSON.stringify(data) ))
 	    .then(function(result) {
-	    	$scope.progress = result.data;	    	
-	    	$scope.mailSuccess = true;	  
-	    	session.postLogin(result, $state);
+	    	$scope.progress = result.data;	 
+	    	if (result.data.emailStatus !== "UNVALIDATED") {
+	    	  $scope.mailSuccess = true;	  
+	    	  session.postLogin(result, $state);
+	    	} else {
+	    		$scope.setFlags();
+	    	}
 	    });	    
 	};
 	
@@ -93,6 +100,25 @@ angular.module('portal')
 	    .then(function(result) {
 	    	$scope.retry(result);	    	
 	    });	    
+	};
+	
+	$scope.pwsubmit = function() {
+		// check user input
+		if (!$scope.setpw.password) {
+			$scope.error = { code : "error.missing.newpassword" };
+			return;
+		}
+		if (!$scope.setpw.passwordRepeat || $scope.setpw.passwordRepeat !== $scope.setpw.password) {
+			$scope.error = { code : "error.invalid.password_repetition" };
+			return;
+		}
+		$scope.error = null;
+		// send the request
+		var data = { token : $stateParams.token, mode : $state.current.data.mode,"password" : $scope.setpw.password };		
+		$scope.status.doAction('setpw', server.post(jsRoutes.controllers.Application.confirmAccountEmail().url, JSON.stringify(data)))
+		.then(function(result) {
+		   	$scope.retry(result);	    	
+		});
 	};
 	
 	$scope.retry = function(funcresult) {

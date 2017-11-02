@@ -61,6 +61,7 @@ angular.module('services')
 				//session.storedCookie = userId;
 				//userId = { "$oid" : userId };			
 				var data = {"properties": { "_id" : userId }, "fields": ["email", "firstname", "lastname", "visualizations", "apps", "midataID", "name", "role", "subroles"] };
+				session.org = result.org;
 				server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data))
 				.then(function(data) {
 				   session.user = data.data[0];				 
@@ -75,6 +76,7 @@ angular.module('services')
 			console.log("Session ended");
 			session.currentUser = null;
 			sessionStorage.token = null;
+			session.org = null;
 			session.cache = {};
 			_states = {};
 		},

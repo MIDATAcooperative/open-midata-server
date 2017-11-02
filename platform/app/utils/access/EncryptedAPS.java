@@ -65,7 +65,7 @@ public class EncryptedAPS {
 		this.aps = set;
 		this.acc_aps = this.aps;
 		isValidated = false;
-		keyProvided = true;
+		keyProvided = enckey != null;
 	}
 
 	public EncryptedAPS(MidataId apsId, MidataId who, MidataId owner, APSSecurityLevel lvl, boolean consent) throws InternalServerException {

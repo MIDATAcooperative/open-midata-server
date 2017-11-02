@@ -1,6 +1,11 @@
 package utils.evolution;
 
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import models.AccessPermissionSet;
@@ -9,26 +14,38 @@ import models.Consent;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.Record;
+import models.ResearchUser;
 import models.Space;
+import models.Study;
+import models.StudyParticipation;
 import models.User;
+import models.UserGroup;
+import models.UserGroupMember;
+import models.enums.ConsentStatus;
 import models.enums.ConsentType;
+import models.enums.ResearcherRole;
+import models.enums.UserGroupType;
 import models.enums.UserRole;
+import models.enums.UserStatus;
 import utils.AccessLog;
 import utils.access.RecordManager;
+import utils.auth.KeyManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.fhir.GroupResourceProvider;
 import utils.fhir.PatientResourceProvider;
 
 public class AccountPatches {
 
-	public static final int currentAccountVersion = 20161205;
+	public static final int currentAccountVersion = 20171020;
 	
 	public static void check(User user) throws AppException {		
 		if (user.accountVersion < 20160324) { formatPatch20160324(user); }	
 		if (user.accountVersion < 20160407) { formatPatch20160407(user); }
 		if (user.accountVersion < 20160902) { formatPatch20160902(user); }
 		if (user.accountVersion < 20161205) { formatPatch20161205(user); }
+		if (user.accountVersion < 20171020) { formatPatch20171020(user); }
 		//if (user.accountVersion < 20170206) { formatPatch20170206(user); }
 	}
 	
@@ -127,6 +144,67 @@ public class AccountPatches {
 		makeCurrent(user, 20170206);
 						
 		AccessLog.logEnd("end patch 2017 02 06");
+	}
+	
+	public static void formatPatch20171020(User user) throws AppException {
+		AccessLog.logBegin("start patch 2017 10 20");
+		
+		if (user.role.equals(UserRole.RESEARCH)) {
+			ResearchUser ru = ResearchUser.getById(user._id, Sets.create("organization"));
+			Set<Study> studies = Study.getByOwner(ru.organization, Sets.create("_id", "name", "createdAt"));
+			for (Study study : studies) {
+				UserGroup grp = UserGroup.getById(study._id, Sets.create("_id"));
+				if (grp == null) {
+					
+					  UserGroup userGroup = new UserGroup();
+						
+						userGroup.name = study.name;		
+						userGroup.type = UserGroupType.RESEARCHTEAM;
+						userGroup.status = UserStatus.ACTIVE;
+						userGroup.creator = ru._id;		
+						userGroup._id = study._id;
+						userGroup.nameLC = userGroup.name.toLowerCase();	
+						userGroup.keywordsLC = new HashSet<String>();
+						userGroup.registeredAt = study.createdAt;		
+						userGroup.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(userGroup._id, null);				
+						GroupResourceProvider.updateMidataUserGroup(userGroup);		
+						userGroup.add();
+								
+						UserGroupMember member = new UserGroupMember();
+						member._id = new MidataId();
+						member.member = ru._id;
+						member.userGroup = userGroup._id;
+						member.status = ConsentStatus.ACTIVE;
+						member.startDate = new Date();		
+						member.role = ResearcherRole.SPONSOR();
+						Map<String, Object> accessData = new HashMap<String, Object>();
+						accessData.put("aliaskey", KeyManager.instance.generateAlias(userGroup._id, member._id));
+						RecordManager.instance.createPrivateAPS(ru._id, member._id);
+						RecordManager.instance.setMeta(ru._id, member._id, "_usergroup", accessData);						
+						member.add();
+								
+						RecordManager.instance.createPrivateAPS(userGroup._id, userGroup._id);
+					
+						Set<StudyParticipation> parts = StudyParticipation.getParticipantsByStudy(study._id, StudyParticipation.ALL);
+						
+						for (StudyParticipation part : parts) {
+							part.authorized.add(study._id);
+							part.authorized.remove(ru._id);
+							StudyParticipation.set(part._id, "authorized", part.authorized);
+							if (part.status == ConsentStatus.ACTIVE) {
+							  RecordManager.instance.shareAPS(part._id, ru._id, Collections.singleton(study._id));
+							  RecordManager.instance.unshareAPS(part._id, ru._id, Collections.singleton(ru._id));
+						    }
+						}
+						
+					
+				}
+			}
+		}
+				
+		makeCurrent(user, 20171020);
+						
+		AccessLog.logEnd("end patch 2017 10 20");
 	}
 	
 	public static void accountReset(User user) throws AppException {

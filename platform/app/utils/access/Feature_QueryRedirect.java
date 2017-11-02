@@ -37,7 +37,7 @@ public class Feature_QueryRedirect extends Feature {
 			List<DBRecord> result;
 			
 			if (q.restrictedBy("redirect-only") || target.hasNoDirectEntries()) {
-			  result = new ArrayList<DBRecord>();	
+			  result = Collections.emptyList();	
 			} else {
 			  result = next.query(q);
 			}
@@ -46,10 +46,10 @@ public class Feature_QueryRedirect extends Feature {
 				if (query.containsField("$or")) {
 					Collection queryparts = (Collection) query.get("$or");
 					for (Object part : queryparts) {
-						query(q, (BasicBSONObject) part, result);
+						result = query(q, (BasicBSONObject) part, result);
 					}
 				} else {
-					query(q, query, result);
+					result = query(q, query, result);
 				}
 			}
 						
@@ -60,11 +60,11 @@ public class Feature_QueryRedirect extends Feature {
 		return next.query(q);		
 	}
 	
-	private void query(Query q, BasicBSONObject query, List<DBRecord> results) throws AppException {
+	private List<DBRecord> query(Query q, BasicBSONObject query, List<DBRecord> results) throws AppException {
 		Map<String, Object> combined = combineQuery(q.getProperties(), query);
 		if (combined == null) {
 			AccessLog.log("combine empty:");			
-			return;
+			return results;
 		}
 		Object targetAPSId = query.get("aps");
 		AccessLog.logBegin("begin redirect to Query:");
@@ -75,8 +75,10 @@ public class Feature_QueryRedirect extends Feature {
             result.removeAll(excluded);						
 		}*/
 		
-		results.addAll(result);
+		results = QueryEngine.combine(results, result);
+		
 		AccessLog.logEnd("end redirect");
+		return results;
 	}
 	
 	private List<DBRecord> memoryQuery(Query q, BasicBSONObject query, List<DBRecord> results) throws AppException {

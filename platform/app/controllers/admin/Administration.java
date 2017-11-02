@@ -28,6 +28,7 @@ import models.ResearchUser;
 import models.Space;
 import models.Study;
 import models.User;
+import models.UserGroupMember;
 import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
 import models.enums.ConsentType;
@@ -43,13 +44,16 @@ import models.enums.UserStatus;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.AdminSecured;
+import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
+import utils.auth.PasswordResetToken;
 import utils.auth.PortalSessionToken;
 import utils.auth.ResearchSecured;
 import utils.auth.Rights;
@@ -240,6 +244,77 @@ public class Administration extends APIController {
 		return ok();
 	}
 	
+	/**
+	 * change email address for user
+	 * @return 200 ok
+	 * @throws AppException
+	 */
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public static Result changeUserEmail() throws AppException {
+		
+		
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "user", "email");
+							
+		MidataId userId = JsonValidation.getMidataId(json, "user");
+		String email = JsonValidation.getEMail(json, "email");
+		
+		MidataId executorId = new MidataId(request().username());
+		
+		//Check authorization except for change self
+		if (!executorId.equals(userId)) {
+		  requireSubUserRole(SubUserRole.USERADMIN);
+		}
+		
+		User targetUser = User.getById(userId, User.ALL_USER);
+		if (targetUser.email != null && targetUser.email.equals(email)) return ok();
+		
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_CHANGE, null, executorId, targetUser, targetUser.email + " -> "+email);
+		
+		if (User.exists(CMaps.map("emailLC", email.toLowerCase()).map("role", targetUser.role))) {
+			throw new BadRequestException("error.exists.user", "A person with this email already exists.");
+		}
+		
+		String oldEmail = targetUser.email;								
+		
+		PasswordResetToken token = new PasswordResetToken(targetUser._id, targetUser.role.toString(), true);
+		targetUser.set("resettoken", token.token);
+		targetUser.set("resettokenTs", System.currentTimeMillis());
+		String encrypted = token.encrypt();
+			
+		String site = "https://" + InstanceConfig.getInstance().getPortalServerDomain();
+		Map<String,String> replacements = new HashMap<String, String>();
+		replacements.put("old-email", oldEmail);
+		replacements.put("new-email", email);
+		replacements.put("confirm-url", site + "/#/portal/confirm/" + encrypted);
+		replacements.put("reject-url", site + "/#/portal/reject/" + encrypted);
+		replacements.put("token", token.token);
+		   		
+		if (oldEmail != null) Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.EMAIL_CHANGED_OLDADDRESS, null, Collections.singleton(targetUser._id), null, replacements);
+		
+		targetUser.email = email;
+		targetUser.emailLC = email.toLowerCase();
+		targetUser.emailStatus = EMailStatus.UNVALIDATED;
+		
+		if (oldEmail != null) targetUser.set("previousEMail", oldEmail);
+		targetUser.set("email", targetUser.email);
+		targetUser.set("emailLC", targetUser.emailLC);
+		targetUser.set("emailStatus", targetUser.emailStatus);
+		
+		if (oldEmail != null) {
+			Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.EMAIL_CHANGED_NEWADDRESS, null, Collections.singleton(targetUser._id), null, replacements);		
+		} else { 			
+ 		    Application.sendWelcomeMail(targetUser);
+		}
+		
+		AuditManager.instance.success();
+		//targetUser.addHistory(new History(EventType.INTERNAL_COMMENT, admin, comment));
+		
+		return ok();
+	}
+	
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
@@ -251,7 +326,7 @@ public class Administration extends APIController {
 							
 		MidataId userId = JsonValidation.getMidataId(json, "user");
 		
-		User selected = User.getById(userId, Sets.create("status"));
+		User selected = User.getById(userId, User.ALL_USER);
 		if (!selected.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.invalid.status",  "User must have status deleted to be wiped.");
 		
 		Set<Space> spaces = Space.getAllByOwner(userId, Space.ALL);
@@ -273,16 +348,21 @@ public class Administration extends APIController {
 			Consent.set(consent._id, "authorized", consent.authorized);			
 		}
 		
+		Set<UserGroupMember> ugs = UserGroupMember.getAllByMember(userId);
+		for (UserGroupMember ug : ugs) {
+			AccessPermissionSet.delete(ug._id);
+			ug.delete();
+		}
 		
-		
+				
 		if (getRole().equals(UserRole.RESEARCH)) {
-			Set<Study> studies = Study.getByOwner(PortalSessionToken.session().org, Sets.create("_id"));
+			/*Set<Study> studies = Study.getByOwner(PortalSessionToken.session().org, Sets.create("_id"));
 			
 			for (Study study : studies) {
 				controllers.research.Studies.deleteStudy(userId, study._id, true);
-			}
+			}*/
 			
-			Research.delete(PortalSessionToken.session().org);			
+			
 			
 		}
 		
@@ -292,6 +372,11 @@ public class Administration extends APIController {
 		
 		KeyManager.instance.deleteKey(userId);
 		User.delete(userId);
+		
+		/*if (!User.exists(CMaps.map("organization", PortalSessionToken.session().org))) {
+			  Research.delete(PortalSessionToken.session().org);			
+		}*/
+		
 		return ok();
 	}
 	
@@ -333,7 +418,7 @@ public class Administration extends APIController {
 		MidataId studyid = new MidataId(id);
 		
 		
-		Study study = Study.getByIdFromMember(studyid, Sets.create("name", "owner","executionStatus", "participantSearchStatus","validationStatus", "createdBy", "code"));
+		Study study = Study.getById(studyid, Sets.create("name", "owner","executionStatus", "participantSearchStatus","validationStatus", "createdBy", "code"));
 		
 		if (study == null) throw new BadRequestException("error.missing.study", "Study not found.");
 		if (study.executionStatus != StudyExecutionStatus.PRE && study.executionStatus != StudyExecutionStatus.ABORTED) throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");

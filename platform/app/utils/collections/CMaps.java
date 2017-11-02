@@ -73,4 +73,10 @@ public class CMaps {
 		if (value != null && ! "".equals(value.toString())) result.put(key, value);
 		return result;
 	}
+	
+	public static NChainedMap<String, Object> mapPositive(String key, long value) {		
+		NChainedMap<String,Object> result = new NChainedMap<String,Object>();
+		if (value > 0) result.put(key, value);
+		return result;
+	}
 }

@@ -239,15 +239,17 @@ public class IndexRoot {
 				BasicBSONList lst = (BasicBSONList) res;
 				if (lst.size() == 0) return;
 				for (Object obj : lst) {
-					if (obj instanceof Comparable) {					
-					  inf.key[keyIdx] = (Comparable) obj;
+					if (obj instanceof Comparable) {
+					  if (obj instanceof String) inf.key[keyIdx] = (Comparable) ((String) obj).toUpperCase();
+					  else inf.key[keyIdx] = (Comparable) obj;
 					  extract(keyIdx+1, inf, null, null, null, 0, remove);
 					} else {
 					  AccessLog.log("Cannot extract path:"+path);
 					}					
 				}				
 			} else if (res != null) {
-			  inf.key[keyIdx] = (Comparable) res;
+			  if (res instanceof String) inf.key[keyIdx] = (Comparable) ((String) res).toUpperCase();
+			  else inf.key[keyIdx] = (Comparable) res;
 			  extract(keyIdx+1, inf, null, null, null, 0, remove);
 			} else {
 			  extract(keyIdx, inf, null, null, allpath, pathIdx, remove);

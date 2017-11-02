@@ -160,7 +160,7 @@
 		  <hr ng-show="app.type == 'mobile'">
 		  <p class="alert alert-info" ng-show="app.type == 'mobile'" translate="manageapp.admin_only"></p>
 		  <formrow myid="termsOfUse" label="manageapp.terms_of_use">
-		    <input id="termsOfUse" type="text" ng-disabled="!allowStudyConfig" name="termsOfUse" class="form-control" ng-model="app.termsOfUse" autocomplete="off" uib-typeahead="term.id as term.fullname for term in terms">
+		    <input id="termsOfUse" type="text" ng-disabled="!allowStudyConfig" name="termsOfUse" class="form-control" ng-model="app.termsOfUse" autocomplete="off" uib-typeahead="term.id as term.fullname for term in terms | filter:{fullname:$viewValue}">
 		    
 		     <p class="help-block" ng-show="app.termsOfUse"><a ui-sref="^.terms({ which:app.termsOfUse })" translate="manageapp.show_terms"></a></p> 
 		  </formrow>

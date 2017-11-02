@@ -1,10 +1,11 @@
 angular.module('portal')
-.controller('StudyDetailCtrl', ['$scope', '$state', 'server', 'views', 'session', 'users', 'studies', '$window', function($scope, $state, server, views, session, users, studies, $window) {
+.controller('StudyDetailCtrl', ['$scope', '$state', 'server', 'views', 'session', 'users', 'studies', 'labels', '$window', '$translate', function($scope, $state, server, views, session, users, studies, labels, $window, $translate) {
 	
 	$scope.studyid = $state.params.studyId;
 	$scope.study = {};
 	$scope.participation = {};
 	$scope.providers = [];
+	$scope.labels = [];
 	$scope.loading = true;
 	$scope.error = null;
 		
@@ -35,6 +36,26 @@ angular.module('portal')
 				  views.setView("shared_with_study", { aps : $scope.participation._id, properties : { } , type:"participations", allowAdd : true, allowRemove : false, fields : [ "ownerName", "created", "id", "name" ]});
 				} else {
 				  views.disableView("shared_with_study");
+				}
+				
+				var sq = $scope.study.recordQuery;
+				
+				if (sq) {
+					$scope.labels = [];
+					if (sq.content) {
+						angular.forEach(sq.content, function(r) {
+						  labels.getContentLabel($translate.use(), r).then(function(lab) {
+							 $scope.labels.push(lab); 
+						  });
+						});
+					}
+					if (sq.group) {
+						angular.forEach(sq.group, function(r) {
+							  labels.getGroupLabel($translate.use(), r).then(function(lab) {
+								 $scope.labels.push(lab); 
+							  });
+						});
+					}
 				}
 			}).
 			error(function(err) {
@@ -75,6 +96,10 @@ angular.module('portal')
 		return $scope.participation != null && ( $scope.participation.pstatus == "MATCH" || $scope.participation.pstatus == "CODE" || $scope.participation.pstatus == "REQUEST" );
 	};
 	
+	$scope.mayRetreatParticipation = function() {
+		return $scope.participation != null && $scope.participation.pstatus == "ACCEPTED";
+	};
+	
 	$scope.requestParticipation = function() {
 		$scope.error = null;
 		
@@ -91,6 +116,18 @@ angular.module('portal')
 		$scope.error = null;
 		
 		server.post(jsRoutes.controllers.members.Studies.noParticipation($scope.studyid).url).
+		success(function(data) { 				
+		    $scope.reload();
+		}).
+		error(function(err) {
+			$scope.error = err;			
+		});
+	};
+	
+	$scope.retreatParticipation = function() {
+		$scope.error = null;
+		
+		server.post(jsRoutes.controllers.members.Studies.retreatParticipation($scope.studyid).url).
 		success(function(data) { 				
 		    $scope.reload();
 		}).

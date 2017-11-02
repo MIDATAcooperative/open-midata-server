@@ -37,7 +37,7 @@ public class Feature_Prefetch extends Feature {
 		
 		  if (record.stream != null) {
 		    APS stream = q.getCache().getAPS(record.stream);
-		    if (stream.isAccessible() && !q.restrictedBy("study")) {
+		    if (stream.isAccessible()) {
 		    	MidataId owner = stream.getStoredOwner();
 		    	partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("flat", "true").map("stream", record.stream).map("owner", owner).map("quick",  record), next);
 		    } else {
@@ -47,11 +47,11 @@ public class Feature_Prefetch extends Feature {
 		  
 		  
 		  
-		  if (results == null) results = partResult; else results.addAll(partResult);
+		  results = QueryEngine.combine(results,  partResult);
 		}
-		if (results==null) results = new ArrayList<DBRecord>();
+		if (results==null) results = Collections.emptyList();
 									
-		Feature_AccountQuery.setOwnerField(q, results);			
+		//Feature_AccountQuery.setOwnerField(q, results);			
 						
 		AccessLog.logEnd("end lookup #found="+results.size()+" time="+(System.currentTimeMillis() - time));
 		return results;

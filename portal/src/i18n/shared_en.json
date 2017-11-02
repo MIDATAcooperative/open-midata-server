@@ -38,13 +38,11 @@
      "noconsent" : "No active consent that allows to add data for target person.",
      "unsupported" : "Operation not supported",
      "notrialuser_title" : "Full membership required!",
-
-	//TODO: username -> name
+	
      "notrialuser_detail" : "In order to use this feature you need to complete your registration. Request a written copy of the AGB and return it signed. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
 
      "mustbemember_title" : "MIDATA cooperative membership required!",
-
-	//TODO: username -> name
+	
      "mustbemember_detail" : "In order to use this feature you must be member of the MIDATA cooperative. Click on your username on the top right and check the 'Account Status' section for more information.",
 
      "notauthorized" : {
@@ -86,7 +84,7 @@
      },
 
      "missing" : {
-	//TODO username? (email)
+	
        "credentials" : "Please provide a username and a password.",
 
        "email" : "Please fill out your email address.",
@@ -233,7 +231,8 @@
 	   "consent-deleted" : "Consent deleted",
 	   "study-participation-requested" : "Study participation requested",
 	   "study-participation-member-rejected" : "Study participation rejected by member",
-	   "study-participation-member-rejected" : "Study participation rejected by research",
+	   "study-participation-research-rejected" : "Study participation rejected by research",
+	   "study-participation-member-retreat" : "Member retreated from study participation",
 	   "study-participation-approved" :"Study participation approved",
 	   "study-participation-group-assigned" : "Study participation group assigned",
 	   "study-validation-requested" : "Study validation requested",
@@ -253,9 +252,10 @@
        "contract-send" : "Contract send to user",
        "internal-comment" : "Internal comment",
        "user-terms-of-use-agreed" : "Agreed to terms of use",
-       "audit-log-used" : "Audit Log Used"		   
-	   
-	   
+       "audit-log-used" : "Audit Log Used",		   
+	   "added-as-team-member" : "Added as team member",
+	   "updated-role-in-team" :  "Updated role in team",
+	   "removed-from-team" : "Removed from team"	   
 	 },
 	 "userfeature" : {
 	   "EMAIL_ENTERED" : "Email address of user must be known to the platform",
@@ -278,7 +278,8 @@
 	   "ACTIVE" : "Active",
 	   "EXPIRED" : "Expired",
 	   "REJECTED" : "Rejected",
-	   "UNCONFIRMED" : "Unconfirmed"
+	   "UNCONFIRMED" : "Unconfirmed",
+	   "FROZEN" : "Frozen"
 	 },
 	 "consenttype" : {
 	   "CIRCLE" : "Other Account Holders",
@@ -312,7 +313,8 @@
 	   "MATCH" : "Possible match",
 	   "MEMBER_REJECTED" : "Account holder rejected",
 	   "REQUEST" : "Participation requested",
-	   "RESEARCH_REJECTED" : "Rejected by researcher"
+	   "RESEARCH_REJECTED" : "Rejected by researcher",
+	   "MEMBER_RETREATED" : "Participant has retreated"
 	 },
 	 "studyexecutionstatus" : {
 	   "ABORTED" : "Execution aborted",
@@ -350,6 +352,13 @@
 	   "APPUSER" : "App User",
 	   "NONMEMBERUSER" : "Validated Account Holder",
 	   "MEMBEROFCOOPERATIVE" : "Member of Cooperative"
+	 },
+	 "researcherrole" : {
+	   "SPONSOR" : "Sponsor",
+	   "INVESTIGATOR" : "Investigator",
+	   "AUDITOR" : "Auditor",
+	   "MONITOR" : "Monitor",
+	   "OTHER" : "Other"
 	 },
 	 "userstatus" : {
 	   "ACTIVE" : "Active",
@@ -635,6 +644,7 @@
     "no_providers" : "None",
     "provider_remove_btn" : "Remove",
     "provider_add_btn" : "Add",
+    "duration" : "Duration",
     "information_that_needs_sharing" : "Required data",
     "information_restricted" : "Your gender, year of birth and country of residence",
     "information_demographic" : "Your complete demographic data (name, birthday, address, ...)",
@@ -651,6 +661,7 @@
 	"history_comment" : "Comment",
 	"request_participation_btn" : "Request Participation",
 	"do_not_participate_btn" : "Do not participate",
+	"retreat_btn" : "Retreat from participation",
 	"status" : "Status"
   },
 
@@ -662,6 +673,7 @@
     "action" : "More...",
     "change_password_btn" : "Change Password",
  	"change_passphrase_btn" : "Change Passphrase",
+ 	"change_email_btn" : "Change EMail",
  	"auditlog_btn" : "View Log",
 	"repair_account_btn" : "Repair Account",
 	"reset_spaces_btn" : "Reset Portal",
@@ -1020,7 +1032,8 @@
     "HEALTHCARE" : "Consent (Healthcare)",
     "MEMBER" : "Account",
     "PROVIDER" : "Account (Healthcare)",
-    "RESEARCH" : "Account (Researcher)"
+    "RESEARCH" : "Account (Researcher)",
+    "ADMIN" : "Account (Admin)"
   },
   
   "apps" : {
@@ -1030,6 +1043,17 @@
     "count" : "You have {{count}} connected apps:",
     "services" : "Services",
     "connect_btn" : "Connect"       
+  },
+  
+  "changeemail" : {
+    "title" : "Change Account eMail Address",
+    "midataId" : "Midata ID",
+    "name" : "Name",
+    "old_email" : "Current eMail Address",
+    "new_email" : "New eMail Address",
+    "none" : "None",
+    "change_btn" : "Change",
+    "success" : "EMail address successfully changed!"
   }
     
 }

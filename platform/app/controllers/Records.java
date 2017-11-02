@@ -108,8 +108,8 @@ public class Records extends APIController {
 		
 		// execute
 		Record target = RecordManager.instance.fetch(userId, tk);
-						
-		return ok(JsonOutput.toJson(target, "Record", Record.ALL_PUBLIC));
+		ReferenceTool.resolveOwners(Collections.singleton(target), true, true);		
+		return ok(JsonOutput.toJson(target, "Record", Record.ALL_PUBLIC_WITHNAMES));
 	}		
 	
 	/**

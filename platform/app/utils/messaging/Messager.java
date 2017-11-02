@@ -80,6 +80,7 @@ public class Messager {
 	
 	public static void sendMessage(MessageDefinition messageDefinition, Map<String, String> footers, User member, Map<String, String> replacements) {				
 		String email = member.email;
+		if (email == null) return;
 		String fullname = member.firstname+" "+member.lastname;
 		String subject = messageDefinition.title.get(member.language);
 		if (subject == null) subject = messageDefinition.title.get(InstanceConfig.getInstance().getDefaultLanguage());

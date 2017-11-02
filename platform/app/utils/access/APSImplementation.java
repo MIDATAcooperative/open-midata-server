@@ -2,6 +2,7 @@ package utils.access;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -220,12 +221,12 @@ class APSImplementation extends APS {
 		merge();		 
 		// AccessLog.logLocalQuery(eaps.getId(), q.getProperties(),
 		// q.getFields() );
-		List<DBRecord> result = new ArrayList<DBRecord>();
+		List<DBRecord> result = null;
 		boolean withOwner = q.returns("owner");
 
 		if (eaps.isDirect()) {
 			if (q.isStreamOnlyQuery())
-				return result;
+				return Collections.emptyList();
 			
 			if (q.restrictedBy("quick")) {					
 				DBRecord record = (DBRecord) q.getProperties().get("quick");															
@@ -233,10 +234,8 @@ class APSImplementation extends APS {
 				record.security = eaps.getSecurityLevel();
 				if (withOwner)
 					record.owner = eaps.getOwner(); 
-
-				result.add(record);
-				
-				return result;
+							
+				return Collections.singletonList(record);
 			}
 			
 			Map<String, Object> query = new HashMap<String, Object>();
@@ -253,11 +252,11 @@ class APSImplementation extends APS {
 			List<DBRecord> directResult;
 			
 			if (useCache && cachedRecords != null) {
-				result.addAll(cachedRecords);
-				return result;
+				//result.addAll(cachedRecords);
+				return Collections.unmodifiableList(cachedRecords);
 			}
 			
-			directResult = new ArrayList<DBRecord>(DBRecord.getAll(query, q.getFieldsFromDB()));
+			directResult = DBRecord.getAllList(query, q.getFieldsFromDB());
 			for (DBRecord record : directResult) {
 				record.key = eaps.getAPSKey() != null ? eaps.getAPSKey() : null;
 				record.security = eaps.getSecurityLevel();
@@ -266,8 +265,8 @@ class APSImplementation extends APS {
 			}
 			AccessLog.log("direct query stream=" + eaps.getId()+" #size="+directResult.size());
 			if (useCache && withOwner) cachedRecords = directResult;
-			result.addAll(directResult);
-			return result;
+			//result.addAll(directResult);
+			return Collections.unmodifiableList(directResult);
 		}
 
 		// 4 restricted by time? has APS time restriction? load other APS -> APS
@@ -276,7 +275,8 @@ class APSImplementation extends APS {
 		// 5 Create list format -> Permission List (maybe load other APS)
 		Map<String, Object> permissions = eaps.getPermissions();
 		List<BasicBSONObject> rows = APSEntry.findMatchingRowsForQuery(permissions, q);
-
+        if (rows == null) return Collections.emptyList();
+        result = new ArrayList<DBRecord>();
 		// 6 Each permission list : apply filters -> Records
 		boolean restrictedById = q.restrictedBy("_id");
 		if (restrictedById) {
@@ -548,7 +548,7 @@ class APSImplementation extends APS {
     
 	public List<DBRecord> historyQuery(long minUpd, boolean removes) throws AppException {
 		BasicBSONList history = (BasicBSONList) eaps.getPermissions().get("_history");
-		if (history == null) return new ArrayList<DBRecord>();
+		if (history == null) return Collections.emptyList();
 		List<DBRecord> result = new ArrayList<DBRecord>();		
 		for (Object entry1 : history) {
 			BasicBSONObject entry = (BasicBSONObject) entry1;

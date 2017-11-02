@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import actions.APICall;
+import models.AccessPermissionSet;
 import models.Circle;
 import models.Consent;
 import models.Developer;
@@ -20,9 +21,11 @@ import models.HealthcareProvider;
 import models.Member;
 import models.MidataId;
 import models.Research;
+import models.ResearchUser;
 import models.Space;
 import models.Study;
 import models.User;
+import models.UserGroupMember;
 import models.enums.AuditEventType;
 import models.enums.ContractStatus;
 import models.enums.EventType;
@@ -83,14 +86,14 @@ public class Users extends APIController {
 		
 		// get parameters
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
-		ObjectIdConversion.convertMidataIds(properties, "_id", "developer");
+		ObjectIdConversion.convertMidataIds(properties, "_id", "developer", "organization");
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 		
 		// check authorization
 		
-		if (!getRole().equals(UserRole.ADMIN) && !properties.containsKey("_id") && !properties.containsKey("developer")) properties.put("searchable", true);
+		if (!getRole().equals(UserRole.ADMIN) && !(getRole().equals(UserRole.RESEARCH) && properties.containsKey("role") && properties.get("role").equals("RESEARCH")) && !properties.containsKey("_id") && !properties.containsKey("developer") && !properties.containsKey("organization")) properties.put("searchable", true);
 		boolean postcheck = false;		
-		if (!getRole().equals(UserRole.ADMIN) && !properties.containsKey("email") && !properties.containsKey("midataID") && !properties.containsKey("_id") && !properties.containsKey("developer")) {
+		if (!getRole().equals(UserRole.ADMIN) && !properties.containsKey("email") && !properties.containsKey("midataID") && !properties.containsKey("_id") && !properties.containsKey("developer") && !properties.containsKey("organization")) {
 			throw new AuthException("error.notauthorized.action", "Search must be restricted");
 		}
 		UserRole role = null;
@@ -124,9 +127,11 @@ public class Users extends APIController {
 			properties.remove("email");
 		}				
 		
-		List<User> users;
+		List<User> users;		
 		if (role != null && role == UserRole.DEVELOPER) {
 		  users = new ArrayList<User>(Developer.getAll(properties, fields, 100));
+		} else if (role != null && role == UserRole.RESEARCH) {
+		  users = new ArrayList<User>(ResearchUser.getAll(properties, fields, 100));		
 		} else {
 		  users = new ArrayList<User>(Member.getAll(properties, fields, 100));
 		}
@@ -157,9 +162,11 @@ public class Users extends APIController {
 	@APICall
 	public static Result getCurrentUser() {
 						
-		ObjectNode obj = Json.newObject();								
-		obj.put("role", PortalSessionToken.session().getRole().toString());
-		obj.put("user", PortalSessionToken.session().getUserId().toString());
+		ObjectNode obj = Json.newObject();	
+		PortalSessionToken session = PortalSessionToken.session();
+		obj.put("role", session.getRole().toString());
+		obj.put("user", session.getUserId().toString());
+		if (session.org != null) obj.put("org", session.org.toString());
 																
 		return ok(obj);
 	}
@@ -398,12 +405,18 @@ public class Users extends APIController {
 			Consent.set(consent._id, "authorized", consent.authorized);			
 		}
 		
+		Set<UserGroupMember> ugs = UserGroupMember.getAllByMember(userId);
+		for (UserGroupMember ug : ugs) {
+			AccessPermissionSet.delete(ug._id);
+			ug.delete();
+		}
+		
 		RecordManager.instance.clearIndexes(userId);
 		
 		RecordManager.instance.wipe(userId, CMaps.map("owner", "self"));
 		RecordManager.instance.wipe(userId, CMaps.map("owner", "self").map("streams", "true"));
 		
-		if (getRole().equals(UserRole.RESEARCH)) {
+		/*if (getRole().equals(UserRole.RESEARCH)) {
 			Set<Study> studies = Study.getByOwner(PortalSessionToken.session().org, Sets.create("_id"));
 			
 			for (Study study : studies) {
@@ -412,11 +425,11 @@ public class Users extends APIController {
 			
 			Research.delete(PortalSessionToken.session().org);			
 			
-		}
+		}*/
 		
-		if (getRole().equals(UserRole.PROVIDER)) {
+		/*if (getRole().equals(UserRole.PROVIDER)) {
 			HealthcareProvider.delete(PortalSessionToken.session().org);
-		}
+		}*/
 		
 		KeyManager.instance.deleteKey(userId);
 		User.delete(userId);

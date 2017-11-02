@@ -37,4 +37,19 @@ public class AccountAccessContext extends AccessContext {
 		return true;
 	}
 
+	@Override
+	public String getOwnerName() {		
+		return null;
+	}
+
+	@Override
+	public MidataId getOwner() {
+		return cache.getAccountOwner();
+	}
+
+	@Override
+	public MidataId getOwnerPseudonymized() {
+		return cache.getAccountOwner();
+	}
+
 }

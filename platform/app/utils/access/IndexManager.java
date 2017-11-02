@@ -164,7 +164,8 @@ public class IndexManager {
 		    if (targetAps == null) {
 		    	updateAllTs = System.currentTimeMillis() - 2000;
 		    	long limit = index.getAllVersion();
-		    	Set<Consent> consents = Consent.getAllActiveByAuthorized(executor, limit);		    							  
+		    	Set<Consent> consents = Consent.getAllActiveByAuthorized(executor, limit);	
+		    	cache.prefetch(consents);
 				targetAps = new HashSet<MidataId>();
 				targetAps.add(executor);
 				for (Consent consent : consents) targetAps.add(consent._id);				
@@ -181,15 +182,16 @@ public class IndexManager {
 				
 			    AccessLog.log("Checking aps:"+aps.toString());
 				// Records that have been updated or created
-				Date limit = new Date(index.getVersion(aps) - UPDATE_TIME);
+			    long v = index.getVersion(aps);
+				Date limit = v>0 ? new Date(v - UPDATE_TIME) : null;
 				long now = System.currentTimeMillis();
 				 
-				restrictions.put("updated-after", limit);								
+				if (limit != null) restrictions.put("updated-after", limit);								
 				List<DBRecord> recs = QueryEngine.listInternal(cache, aps, null, restrictions, Sets.create("_id"));
 				addRecords(index, aps, recs);
 				boolean updateTs = recs.size() > 0;
 				// Records that have been freshly shared
-				if (limit.getTime() > 0) {
+				if (limit != null) {
 					restrictions.remove("updated-after");
 					restrictions.put("shared-after", limit);
 					List<DBRecord> recs2 = QueryEngine.listInternal(cache, aps, null, restrictions, Sets.create("_id", "key"));
