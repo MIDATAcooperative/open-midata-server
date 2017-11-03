@@ -74,6 +74,7 @@ public class IndexRoot {
 	}
 	
 	public void setVersion(MidataId aps, long now) {
+		rootPage.changed = true;
 		rootPage.ts.put(aps.toString(), now);
 		
 	}
@@ -84,6 +85,8 @@ public class IndexRoot {
 	}
 	
 	public void setAllVersion(long now) {
+		AccessLog.log("setAllVersion="+now);
+		rootPage.changed = true;
 		rootPage.ts.put("all", now);			
 	}
 	

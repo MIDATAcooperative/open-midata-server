@@ -56,10 +56,11 @@ public class RecordConversion {
 	}
 	
 	public List<Record> currentVersionFromDB(List<DBRecord> dbrecords) {
+		long now = System.currentTimeMillis();
 		AccessLog.log("start convert");
 		List<Record> result = new ArrayList<Record>(dbrecords.size());
 		for (DBRecord dbrecord : dbrecords) result.add(currentVersionFromDB(dbrecord));
-		AccessLog.log("end convert");
+		AccessLog.log("end convert time="+(System.currentTimeMillis() - now));
 		return result;
 	}
 	

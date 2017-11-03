@@ -221,6 +221,7 @@ private Feature next;
 				}
 			} else {
 				long v = myAccess.version(null);
+				//AccessLog.log("vx="+v);
 				List<DBRecord> add;
 				add = QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.mapPositive("updated-after", v ))), indexQueryParsed, null);
 				AccessLog.log("found new updated entries: "+add.size());
