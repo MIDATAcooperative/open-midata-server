@@ -10,7 +10,8 @@ angular.module('portal')
 	$scope.labels = [];
 	$scope.roles = [
 		{ value : "MEMBER", name : "enum.userrole.MEMBER" },
-		{ value : "PROVIDER" , name : "enum.userrole.PROVIDER "}
+		{ value : "PROVIDER" , name : "enum.userrole.PROVIDER"},
+		{ value : "RESEARCH" , name : "enum.userrole.RESEARCH"}
     ];
 	
 	$scope.offline = (window.jsRoutes === undefined) || (window.jsRoutes.controllers === undefined);
@@ -59,7 +60,7 @@ angular.module('portal')
 			return;
 		}
 		
-		oauth.setUser($scope.login.email, $scope.login.password, $scope.login.role);
+		oauth.setUser($scope.login.email, $scope.login.password, $scope.login.role, $scope.login.studyLink);
 				
 		$scope.status.doAction("login", oauth.login(false))
 		.then(function(result) {
@@ -67,7 +68,9 @@ angular.module('portal')
 			  $scope.acceptConsent = true;
 			  $scope.prepareConfirm();
 		  } else if (result !== "ACTIVE") {
-			  if (result.istatus) { $scope.pleaseConfirm = true; }
+			  if (result.studies) {
+				  $scope.studies = result.studies;
+			  } else if (result.istatus) { $scope.pleaseConfirm = true; }
 			  else {
 				  session.postLogin({ data : result}, $state);  
 			  }
