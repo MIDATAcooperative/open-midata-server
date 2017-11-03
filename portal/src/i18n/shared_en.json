@@ -518,6 +518,7 @@
   "login" : {
     "email_address" : "Email address",
     "password" : "Password",
+    "study" : "Study",
     "remember_me" : "Remember me",
     "sign_in_btn" : "Log in",
     "forgot_your_password" : "Forgot your password?",
