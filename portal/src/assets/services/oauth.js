@@ -48,9 +48,10 @@ angular.module('services')
 	   cred.device = devId || getDeviceId();
 	};
 	
-	service.setUser = function(email, password, role) {
+	service.setUser = function(email, password, role, studyLink) {
 	   cred.username = email;
 	   cred.password = password;
+	   cred.studyLink = studyLink;
 	   cred.role = role || "MEMBER";
 	};
 	

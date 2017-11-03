@@ -185,7 +185,7 @@ public class IndexPage {
 	protected void encrypt() throws InternalServerException {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		try {
-			AccessLog.log("encrypt:"+mIsLeaf+" "+mCurrentKeyNum); //+" ts="+ts);
+			AccessLog.log("encrypt:"+mIsLeaf+" "+mCurrentKeyNum);// +" ts="+ts);
 			ObjectOutputStream oos = new ObjectOutputStream(bos);
 			oos.writeBoolean(mIsLeaf);
 			oos.writeInt(mCurrentKeyNum);			

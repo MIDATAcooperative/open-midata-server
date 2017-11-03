@@ -183,6 +183,7 @@ public class IndexManager {
 			    AccessLog.log("Checking aps:"+aps.toString());
 				// Records that have been updated or created
 			    long v = index.getVersion(aps);
+			    //AccessLog.log("v="+v);
 				Date limit = v>0 ? new Date(v - UPDATE_TIME) : null;
 				long now = System.currentTimeMillis();
 				 
@@ -208,6 +209,7 @@ public class IndexManager {
 				
 			}
 			
+			AccessLog.log("updateAllTs="+updateAllTs+" modCount="+modCount+" ts="+targetAps.size());
 			if (updateAllTs != 0 && (modCount>0 || targetAps.size() > 3)) index.setAllVersion(updateAllTs);
 			index.flush();
 		} catch (LostUpdateException e) {

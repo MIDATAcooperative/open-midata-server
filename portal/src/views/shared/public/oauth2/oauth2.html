@@ -26,9 +26,15 @@
 	                        <p ng-show="offline" class="alert alert-danger" translate="error.offline"></p>
 							<form ng-submit="dologin()" role="form" ng-hide="offline">
 							    
-								<input type="email" class="form-control" translate translate-attr-placeholder="login.email_address" ng-model="login.email" style="margin-bottom:5px;" autofocus>
-								<input type="password" class="form-control" translate translate-attr-placeholder="login.password" ng-model="login.password" style="margin-bottom:5px;">
-								<select class="form-control" ng-show="app.targetUserRole=='ANY'" ng-model="login.role" ng-options="role.value as role.name | translate for role in roles"></select>
+								<input type="email" ng-disabled="studies" class="form-control" translate translate-attr-placeholder="login.email_address" ng-model="login.email" style="margin-bottom:5px;" autofocus>
+								<input type="password" ng-disabled="studies" class="form-control" translate translate-attr-placeholder="login.password" ng-model="login.password" style="margin-bottom:5px;">
+								<div class="form-group" ng-show="app.targetUserRole=='ANY'">
+								<select class="form-control" ng-disabled="studies" ng-model="login.role" ng-options="role.value as role.name | translate for role in roles"></select>
+								</div>
+								<div class="form-group" ng-show="studies">
+								  <label for="study" translate="login.study"></label>
+								  <select class="form-control" id="study" name="study" ng-model="login.studyLink" ng-options="study._id as study.name for study in studies"></select>
+								</div>
 								<div class="extraspace"></div>
 								<button type="submit" ng-disabled="status.action=='login'" class="btn btn-lg btn-primary btn-block" translate="oauth2.sign_in_btn"></button>
 								<div class="margin-top">

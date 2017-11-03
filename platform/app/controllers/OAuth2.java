@@ -1,9 +1,13 @@
 package controllers;
 
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.bson.BSONObject;
+import org.bson.BasicBSONObject;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -18,6 +22,7 @@ import models.Plugin;
 import models.ResearchUser;
 import models.Study;
 import models.User;
+import models.UserGroupMember;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.UserFeature;
@@ -36,10 +41,12 @@ import utils.auth.MobileAppSessionToken;
 import utils.auth.MobileAppToken;
 import utils.auth.OAuthCodeToken;
 import utils.auth.TokenCrypto;
+import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 
@@ -124,15 +131,33 @@ public class OAuth2 extends Controller {
 		User user = null;
 		switch (role) {
 		case MEMBER : user = Member.getByEmail(username, User.ALL_USER_INTERNAL);break;
-		case PROVIDER : user = HPUser.getByEmail(username, User.ALL_USER_INTERNAL);break;
-		
-		// Currently no OAuth2 support for RESEARCH Apps
-		//case RESEARCH : user = ResearchUser.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
+		case PROVIDER : user = HPUser.getByEmail(username, User.ALL_USER_INTERNAL);break; 
+		case RESEARCH : user = ResearchUser.getByEmail(username, User.ALL_USER_INTERNAL);break; 
 		}
 		if (user == null) throw new BadRequestException("error.invalid.credentials", "Unknown user or bad password");
+        boolean authenticationValid =  Member.authenticationValid(password, user.password);   
+		MidataId studyContext = null;
+		if (role.equals(UserRole.RESEARCH) && authenticationValid) {
+			studyContext = json.has("studyLink") ? JsonValidation.getMidataId(json, "studyLink") : null;
+			
+			if (studyContext == null) {
+			  Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByMember(user._id);
+			  if (ugms.size() == 1) studyContext = ugms.iterator().next().userGroup;
+			  else if (ugms.size() > 1) {
+				  
+				  Set<MidataId> ids = new HashSet<MidataId>();
+				  for (UserGroupMember ugm : ugms) ids.add(ugm.userGroup);				  
+				  Set<Study> studies = Study.getAll(null, CMaps.map("_id", ids), Sets.create("_id", "name"));
+				  ObjectNode obj = Json.newObject();								
+				  obj.put("studies", JsonOutput.toJsonNode(studies, "Study", Sets.create("_id", "name")));					
+			   
+				  return ok(obj);
+			  }
+			}
+		}
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user, app._id);
-		if (!Member.authenticationValid(password, user.password)) {
+		if (!authenticationValid) {
 			throw new BadRequestException("error.invalid.credentials",  "Unknown user or bad password");
 		}
 		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, requirements);
@@ -141,7 +166,7 @@ public class OAuth2 extends Controller {
 		appInstance = MobileAPI.getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode", "appVersion"));		
 		
 		KeyManager.instance.login(60000l);
-		
+		MidataId executor = null;
 		if (appInstance == null) {		
 			if (!confirmed) {
 				AuditManager.instance.fail(0, "Confirmation required", "error.missing.confirmation");
@@ -158,7 +183,7 @@ public class OAuth2 extends Controller {
 			}
 			
 			boolean autoConfirm = KeyManager.instance.unlock(user._id, null) == KeyManager.KEYPROTECTION_NONE;
-			MidataId executor = autoConfirm ? user._id : null;
+			executor = autoConfirm ? user._id : null;
 			appInstance = MobileAPI.installApp(executor, app._id, user, phrase, autoConfirm, confirmStudy);				
 			if (executor == null) executor = appInstance._id;
    		    meta = RecordManager.instance.getMeta(executor, appInstance._id, "_app").toMap();
@@ -167,7 +192,8 @@ public class OAuth2 extends Controller {
 				return ok("CONFIRM");
 			}
 			KeyManager.instance.unlock(appInstance._id, phrase);
-			meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();				
+			meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
+			executor = appInstance._id;
 		}
 		
 		if (notok != null) {
@@ -176,6 +202,15 @@ public class OAuth2 extends Controller {
 					
 		if (!phrase.equals(meta.get("phrase"))) throw new InternalServerException("error.internal", "Internal error while validating consent");
 		
+		if (role.equals(UserRole.RESEARCH) && studyContext != null) {
+			BasicBSONObject m = (BasicBSONObject) RecordManager.instance.getMeta(executor, appInstance._id, "_query");
+			String old = m.getString("study-link");
+			if (old != null && old.equals(studyContext.toString())) { }
+			else {
+			  m.put("study-link", studyContext.toString());
+			  RecordManager.instance.setMeta(executor, appInstance._id, "_query", m.toMap());
+			}
+		}
 		OAuthCodeToken tk = new OAuthCodeToken(appInstance._id, phrase, System.currentTimeMillis(), state, code_challenge, code_challenge_method);
 									
 		ObjectNode obj = Json.newObject();								

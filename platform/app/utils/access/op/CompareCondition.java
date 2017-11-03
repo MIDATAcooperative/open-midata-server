@@ -85,7 +85,7 @@ public class CompareCondition implements Condition {
 			  if (high!=null) high = ISODateTimeFormat.dateTimeParser().parseDateTime(high.toString()).toDate();
 		  }
 		  if (isNumber && low!=null && !(low instanceof Double)) low = new Double(low.toString());
-		  if (isNumber && high!=null && !(high instanceof Double)) high = new Double(low.toString());
+		  if (isNumber && high!=null && !(high instanceof Double)) high = new Double(high.toString());
 		} catch (IllegalArgumentException e) { return false; }
 		
 		
