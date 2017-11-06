@@ -211,3 +211,4 @@
 {"_id":{"$oid":"59802514aed6450a5c70f845"},"content":"MiSensSmellThreshold","defaultCode":"http://midata.coop MiSensSmellThreshold","security":"MEDIUM","label":{"en":"Smell concentration threshold of a specific substance"}}
 {"_id":{"$oid":"59802674aed6450a5c70f847"},"content":"loinc/63582-1","defaultCode":"http://loinc.org 63582-1","security":"MEDIUM","label":{"en":"Smoking Behavior"}}
 {"_id":{"$oid":"59a3fa4eaed645237854253c"},"content":"profile/picture","defaultCode":"http://midata.coop profile/picture","security":"HIGH","label":{"de":"Profilbild","en":"Profile Picture"}}
+{"_id":{"$oid":"5a0047dcaed64509266edf1f"},"content":"PseudonymizedPatient","defaultCode":"http://midata.coop PseudonymizedPatient","security":"HIGH","label":{"en":"Patient (Pseudonymized)"}}

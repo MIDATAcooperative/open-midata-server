@@ -93,7 +93,7 @@ public class Query {
 			accountCriteria.put("sort", String.join(",", sorts));
 		}
 		
-		List<Record> result = RecordManager.instance.list(info.executorId, info.targetAPS, accountCriteria, Sets.create("owner", "ownerName", "version", "created", "lastUpdated", "data"));
+		List<Record> result = RecordManager.instance.list(info.executorId, info.context, accountCriteria, Sets.create("owner", "ownerName", "version", "created", "lastUpdated", "data"));
 		
 		return result;
 	}

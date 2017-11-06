@@ -24,6 +24,11 @@ angular.module('portal')
 	
 	};
 	
+	$scope.mayAddParticipants = function() {
+		   return $scope.study && $scope.study.myRole.participants && $scope.study.participantSearchStatus == "SEARCHING";
+		
+	};
+	
     $scope.mayRejectParticipation = function(participation) {
       return $scope.study && $scope.study.myRole.participants && participation.pstatus == "REQUEST";
 	};
