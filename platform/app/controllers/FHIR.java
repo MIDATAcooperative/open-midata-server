@@ -152,9 +152,19 @@ public class FHIR extends Controller {
 		String param = req.getHeader("Authorization");
 				
 		if (param != null && param.startsWith("Bearer ")) {
-          ExecutionInfo info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()), false);
-          Stats.setPlugin(info.pluginId);
-          ResourceProvider.setExecutionInfo(info);
+	          ExecutionInfo info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()), false);
+	          Stats.setPlugin(info.pluginId);
+	          ResourceProvider.setExecutionInfo(info);
+		} else {
+		 	 String portal = req.getHeader("X-Session-Token");
+			 if (portal != null) {
+				PortalSessionToken tk = PortalSessionToken.decrypt(request());
+			    if (tk == null || tk.getRole() == UserRole.ANY) return null;
+			    try {
+				      KeyManager.instance.continueSession(tk.getHandle());
+			    } catch (AuthException e) { return null; }	
+			    ResourceProvider.setExecutionInfo(new ExecutionInfo(tk.getUserId()));
+			 }
 		}
         
 		AccessLog.logBegin("begin FHIR post request: "+req.getRequestURI());

@@ -474,7 +474,7 @@ public class MobileAPI extends Controller {
 			properties.put("content", add);
 		}*/
 		
-		records = RecordManager.instance.list(executor, appInstance._id, properties, fields);		  
+		records = RecordManager.instance.list(executor, RecordManager.instance.createContextFromApp(executor, appInstance), properties, fields);		  
 				
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
 		
