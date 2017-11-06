@@ -14,6 +14,7 @@ import java.util.Set;
 
 import org.bson.BSONObject;
 import org.hl7.fhir.dstu3.model.Address;
+import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.ContactPoint;
 import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointSystem;
 import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
@@ -125,7 +126,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
     	MidataId targetId = new MidataId(id);
     	
     	ExecutionInfo info = info();
-    	List<Record> allRecs = RecordManager.instance.list(info.executorId, info.targetAPS, CMaps.map("owner", targetId).map("format",  "fhir/Patient").map("data", CMaps.map("id",targetId.toString())), RecordManager.COMPLETE_DATA);
+    	List<Record> allRecs = RecordManager.instance.list(info.executorId, info.context, CMaps.map("owner", targetId).map("format",  "fhir/Patient").map("data", CMaps.map("id",targetId.toString())), RecordManager.COMPLETE_DATA);
     	
     	if (allRecs == null || allRecs.size() == 0) return null;
     	
@@ -143,7 +144,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
     	String id = theId.getIdPart();
     	MidataId targetId = new MidataId(id);
     	
-	   List<Record> records = RecordManager.instance.list(info().executorId, info().targetAPS, CMaps.map("owner", targetId).map("format",  "fhir/Patient").map("history", true).map("sort","lastUpdated desc"), RecordManager.COMPLETE_DATA);
+	   List<Record> records = RecordManager.instance.list(info().executorId, info().context, CMaps.map("owner", targetId).map("format",  "fhir/Patient").map("history", true).map("sort","lastUpdated desc"), RecordManager.COMPLETE_DATA);
 	   if (records.isEmpty()) throw new ResourceNotFoundException(theId); 
 	   
 	   List<Patient> result = new ArrayList<Patient>(records.size());
@@ -651,6 +652,17 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 			thePatient.addIdentifier().setSystem("http://midata.coop/identifier/patient-login").setValue(user.emailLC);
 		}
 		
+		MidataId studyId = null;
+		for (Extension ext : thePatient.getExtensionsByUrl("http://midata.coop/extensions/join-study")) {
+			
+			 String studyName = ((Coding) ext.getValue()).getCode();
+			 Study study = Study.getByCodeFromMember(studyName, Study.ALL);			
+			 if (study == null) throw new BadRequestException("error.invalid.code", "Unknown code for study.");
+			
+			 studyId = study._id;
+		}			 
+				
+		
 		thePatient.getExtension().clear();
 		
 		Member existing = user.email != null ? Member.getByEmail(user.email, Member.ALL_USER) : null;
@@ -728,24 +740,13 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 			Circles.addConsent(executorId, consent, false, null, true);
 		}
 		
-		for (Extension ext : thePatient.getExtensionsByUrl("http://midata.coop/extensions/join-study")) {
-			 String studyName = ext.getValue().primitiveValue();
-			 Study study = Study.getByCodeFromMember(studyName, Study.ALL);			
-			 if (study == null) throw new BadRequestException("error.invalid.code", "Unknown code for study.");
-				
-			 Set<UserFeature> studyReq = controllers.members.Studies.precheckRequestParticipation(null, study._id);
-			 if (existing == null) {
-			    controllers.members.Studies.requestParticipation(info, user._id, study._id, plugin._id);
-			 } else {
-			    controllers.members.Studies.match(executorId, user._id, study._id, plugin._id);
-			 }
-		}
-		
-		
+	
 			if (query != null && query.containsField("link-study")) {
 				Map<String, Object> q = query.toMap(); 
-				MidataId studyId = MidataId.from(q.get("link-study"));
-				AccessLog.log("found linked study:"+studyId);	
+				studyId = MidataId.from(q.get("link-study"));				
+				AccessLog.log("found linked study:"+studyId);
+			}
+			if (studyId != null) {
 				Set<UserFeature> studyReq = controllers.members.Studies.precheckRequestParticipation(null, studyId);
 				AccessLog.log("request part");	
 				if (existing == null) {

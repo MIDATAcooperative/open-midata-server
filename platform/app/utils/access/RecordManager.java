@@ -846,7 +846,20 @@ public class RecordManager {
 	public List<Record> list(MidataId who, MidataId apsId,
 			Map<String, Object> properties, Set<String> fields)
 			throws AppException {
-		return QueryEngine.list(getCache(who), apsId, null, properties, fields);
+		AccessContext context = null;
+		if (who.equals(apsId)) context = createContextFromAccount(who);
+		else {
+          Consent consent = Consent.getByIdUnchecked(apsId, Consent.ALL);
+          if (consent != null) context =  createContextFromConsent(who, consent);
+		}
+		AccessLog.log("context="+context);
+		return QueryEngine.list(getCache(who), apsId, context, properties, fields);
+	}
+	
+	public List<Record> list(MidataId who, AccessContext context,
+			Map<String, Object> properties, Set<String> fields)
+			throws AppException {
+		return QueryEngine.list(getCache(who), context.getTargetAps(), context, properties, fields);
 	}
 	
 	/**

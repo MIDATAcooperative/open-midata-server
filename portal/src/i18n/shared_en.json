@@ -1030,8 +1030,8 @@
     "MEMBER" : "Account",
     "PROVIDER" : "Account (Health Provider)",
     "RESEARCH" : "Account (Researcher)",
-    "ADMIN" : "Account (Admin)"
-
+    "ADMIN" : "Account (Admin)",
+    "DEVELOPER" : "Account (Developer)"
   },
   
   "apps" : {

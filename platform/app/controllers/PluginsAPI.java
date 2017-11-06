@@ -315,7 +315,7 @@ public class PluginsAPI extends APIController {
 				
 		AccessLog.log("NEW QUERY");
 		
-		records = RecordManager.instance.list(inf.executorId, inf.targetAPS, properties, fields);		  
+		records = RecordManager.instance.list(inf.executorId, inf.context, properties, fields);		  
 						
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
 		
@@ -338,12 +338,13 @@ public class PluginsAPI extends APIController {
 		JsonValidation.validate(json, "authToken", "properties", "summarize");
 		
 		// decrypt authToken 
-		SpaceToken authToken = SpaceToken.decryptAndSession(request(), json.get("authToken").asText());
+		ExecutionInfo authToken = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());
+		//SpaceToken authToken = SpaceToken.decryptAndSession(request(), json.get("authToken").asText());
 		if (authToken == null) {
 			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
 		Stats.setPlugin(authToken.pluginId);		
-		MidataId targetAps = authToken.spaceId;
+		MidataId targetAps = authToken.targetAPS;
 		
 		Collection<RecordsInfo> result;
 
@@ -351,7 +352,7 @@ public class PluginsAPI extends APIController {
 		Set<String> fields = json.has("fields") ? JsonExtraction.extractStringSet(json.get("fields")) : Sets.create();
 		
 		if (authToken.recordId != null) {
-			Collection<Record> record = RecordManager.instance.list(authToken.executorId, authToken.spaceId, CMaps.map("_id", authToken.recordId), Sets.create("owner", "content", "format", "group"));
+			Collection<Record> record = RecordManager.instance.list(authToken.executorId, authToken.context, CMaps.map("_id", authToken.recordId), Sets.create("owner", "content", "format", "group"));
 			result = new ArrayList<RecordsInfo>();
 			for (Record r : record) result.add(new RecordsInfo(r));			
 		} else {

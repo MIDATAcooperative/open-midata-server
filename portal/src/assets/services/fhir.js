@@ -16,7 +16,11 @@ angular.module('services')
 		return server.get("/fhir/"+resource+(p?("?"+p):"")).then(function(result) {
 			return service.unwrap(result);
 		});
-	};	 	
+	};	
+	
+	service.post = function(resource, data) {
+		return server.post("/fhir/"+resource, JSON.stringify(data));
+	};
 		
 	return service;
 	

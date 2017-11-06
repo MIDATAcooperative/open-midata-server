@@ -201,7 +201,7 @@ class QueryEngine {
 	}
 	
     public static List<DBRecord> fullQuery(Map<String, Object> properties, Set<String> fields, MidataId aps, AccessContext context, APSCache cache) throws AppException {
-    	AccessLog.logBegin("begin full query");
+    	AccessLog.logBegin("begin full query on aps="+aps.toString());
     	long queryStart = System.currentTimeMillis();
     	if (context == null) context = new DummyAccessContext(cache);
     	Feature qm = null;
@@ -357,7 +357,7 @@ class QueryEngine {
     }
     
     protected static List<DBRecord> postProcessRecords(Map<String, Object> properties, List<DBRecord> result) throws AppException {
-    	if (result.size() > 0) {
+    	if (result.size() > 1) {
     	   result = duplicateElimination(result); 
     	   
     	   if (properties.containsKey("sort")) {

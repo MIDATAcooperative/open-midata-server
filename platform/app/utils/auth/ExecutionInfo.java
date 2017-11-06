@@ -86,7 +86,7 @@ public class ExecutionInfo {
 			result.targetAPS = authToken.spaceId;
 			result.recordId = authToken.recordId;			
 			result.ownerId = authToken.userId;
-						
+			result.context = RecordManager.instance.createContextFromAccount(authToken.executorId);
 			
 		} else if (authToken.pluginId == null) {							
 			Space space = Space.getByIdAndOwner(authToken.spaceId, authToken.userId, Sets.create("visualization", "app", "aps", "autoShare", "sharingQuery", "writes"));

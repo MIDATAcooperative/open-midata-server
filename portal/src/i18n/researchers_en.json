@@ -119,6 +119,7 @@
     "recruiter" : "Recruiter",
     "accept_btn" : "Accept",
     "reject_btn" : "Reject",
+    "add_participant_btn" : "Add Participant",
     "empty" : "This study does not have any participants yet."
   },
   
@@ -145,6 +146,13 @@
   "addresearcher" : {
     "sign_up" : "Sign Up Researcher",
     "success" : "A new researcher has been added to your organization."
+  },
+  
+  "addparticipant" : {
+    "sign_up" : "Sign Up Participant",
+    "study" : "Study",
+    "hasaccepted" : "Participant has accepted",
+    "success" : "A new participant has been added to your study."
   },
   
   "studyteam" : {
