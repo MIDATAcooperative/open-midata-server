@@ -55,7 +55,7 @@ public class Query {
 		this.apsId = apsId;
 		this.context = context;
 		process();
-		//AccessLog.logQuery(apsId, properties, fields);
+		AccessLog.logQuery(apsId, properties, fields);
 	}
 	
 	public Query(Query q, Map<String, Object> properties) throws AppException {
@@ -70,7 +70,7 @@ public class Query {
 		this.apsId = aps;			
 		this.context = context;
 		process();
-		//AccessLog.logQuery(apsId, properties, fields);
+		AccessLog.logQuery(apsId, properties, fields);
 	}		
 	
 	public Map<String, Object> getProperties() {
@@ -422,7 +422,7 @@ public class Query {
 					 resolved.add(owner);
 				 } else {
 					 if (owner.equals("self")) {
-						 resolved.add(cache.getAccountOwner().toString());
+						 resolved.add(context.getSelf().toString());
 					 } else if (owner.equals("all")) {
 						 properties.remove("owner");
 						 resolved = null;break;

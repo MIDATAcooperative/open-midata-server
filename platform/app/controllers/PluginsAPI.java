@@ -59,6 +59,7 @@ import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.RuntimeConstants;
 import utils.ServerTools;
 import utils.access.AccessContext;
 import utils.access.AccountCreationAccessContext;
@@ -358,7 +359,7 @@ public class PluginsAPI extends APIController {
 		} else {
 							
 			AggregationType aggrType = JsonValidation.getEnum(json, "summarize", AggregationType.class);		
-		    result = RecordManager.instance.info(authToken.executorId, targetAps, properties, aggrType);
+		    result = RecordManager.instance.info(authToken.executorId, targetAps, authToken.context, properties, aggrType);
 
 		    
 
@@ -484,7 +485,7 @@ public class PluginsAPI extends APIController {
 		
 		DBRecord dbrecord = RecordConversion.instance.toDB(record);
         	
-		if (!record.owner.equals(inf.ownerId) && !(context instanceof ConsentAccessContext) && !(context instanceof AccountCreationAccessContext)) {
+		if (!record.owner.equals(inf.executorId) && !inf.executorId.equals(RuntimeConstants.instance.autorunService) && !(context instanceof ConsentAccessContext) && !(context instanceof AccountCreationAccessContext)) {
 			BSONObject query = RecordManager.instance.getMeta(inf.executorId, inf.targetAPS, "_query");
 			Set<Consent> consent = null;
 			if (query != null && query.containsField("link-study")) {

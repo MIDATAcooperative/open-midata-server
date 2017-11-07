@@ -1,20 +1,44 @@
 angular.module('portal')
-.controller('ListParticipantsCtrl', ['$scope', '$state', 'server', 'status', function($scope, $state, server, status) {
+.controller('ListParticipantsCtrl', ['$scope', '$state', 'server', 'status', 'session', 'paginationService', function($scope, $state, server, status, session, paginationService) {
 	
 	$scope.studyid = $state.params.studyId;
 	$scope.results =[];
-    $scope.status = new status(false, $scope);
-	
-	$scope.reload = function() {
+    $scope.status = new status(false, $scope);    
+    $scope.searches = [ 
+  	  { 
+  		name : "studyparticipants.all",
+  		criteria : {  }
+  	  },
+  	  {
+  		name : "studyparticipants.request",
+  		criteria : { pstatus : "REQUEST"  }
+  	  },	 
+  	  {
+  		name : "studyparticipants.rejected",
+  		criteria : { pstatus : ["MEMBER_REJECTED", "RESEARCH_REJECTED"] }
+  	  },
+  	  {
+  		name : "studyparticipants.retreated",
+  		criteria : { pstatus : "MEMBER_RETREATED" }
+  	  },  	  
+  	];
+    $scope.page = { nr : 1 };
+	$scope.search = $scope.searches[0];
+    
+	$scope.reload = function(searchName, comeback) {
 			
+		if (searchName) $scope.search = session.map($scope.searches, "name")[searchName];
+		
 		$scope.status.doBusy(server.get(jsRoutes.controllers.research.Studies.get($scope.studyid).url))
 		.then(function(data) { 				
 			$scope.study = data.data;	
 		});
 		
-		$scope.status.doBusy(server.get(jsRoutes.controllers.research.Studies.listParticipants($scope.studyid).url))
-		.then(function(data) { 				
+		$scope.status.doBusy(server.post(jsRoutes.controllers.research.Studies.listParticipants($scope.studyid).url, JSON.stringify({ properties : $scope.search.criteria })))
+		.then(function(data) { 	
+			if (!comeback) paginationService.setCurrentPage("membertable", 1);
 			$scope.results = data.data;		
+			console.log($scope.results);
 		});
 	};
 	
@@ -63,6 +87,8 @@ angular.module('portal')
 		});
 	};
 	
-	$scope.reload();
+	session.load("ListParticipantsCtrl", $scope, ["search", "page"]);
+	$scope.searchName = $scope.search.name;
+	$scope.reload(undefined, true);
 	
 }]);

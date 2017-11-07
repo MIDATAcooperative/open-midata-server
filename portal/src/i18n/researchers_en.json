@@ -120,7 +120,12 @@
     "accept_btn" : "Accept",
     "reject_btn" : "Reject",
     "add_participant_btn" : "Add Participant",
-    "empty" : "This study does not have any participants yet."
+    "empty" : "This study does not have any participants matching your search criteria yet.",
+    "search_type" : "Search",
+    "all" : "All participants",
+    "request" : "Candidates that need decision",
+    "rejected" : "Rejected candidates",
+    "retreated" : "Participants that have retreated"
   },
   
   "studyrecords" : {

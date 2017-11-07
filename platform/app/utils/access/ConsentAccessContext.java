@@ -92,4 +92,9 @@ public class ConsentAccessContext extends AccessContext{
 		return consent._id;
 	}
 
+	@Override
+	public MidataId getSelf() {
+		return parent != null ? parent.getSelf() : cache.getAccountOwner();
+	}
+
 }

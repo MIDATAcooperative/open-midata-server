@@ -662,7 +662,7 @@ public class MobileAPI extends Controller {
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		AggregationType aggrType = JsonValidation.getEnum(json, "summarize", AggregationType.class);
 		
-	    Collection<RecordsInfo> result = RecordManager.instance.info(executor, targetAps, properties, aggrType);
+	    Collection<RecordsInfo> result = RecordManager.instance.info(executor, targetAps, RecordManager.instance.createContextFromApp(executor, appInstance), properties, aggrType);
 						
 		return ok(Json.toJson(result));
 	}

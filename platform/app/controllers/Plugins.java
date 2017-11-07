@@ -5,6 +5,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -196,8 +197,16 @@ public class Plugins extends APIController {
 					if (json.has("query")) {
 					  Map<String, Object> query = JsonExtraction.extractMap(json.get("query"));
 					  RecordManager.instance.shareByQuery(userId, userId, space._id, query);
-					} else {					
-					  RecordManager.instance.shareByQuery(userId, userId, space._id, visualization.defaultQuery);
+					} else {			
+					  MidataId study = json.has("study") ? JsonValidation.getMidataId(json, "study") : null;
+					  if (study != null) {
+						  Map<String, Object> query = new HashMap<String, Object>(visualization.defaultQuery);
+						  query.put("link-study", study.toString());
+						  query.put("usergroup", study.toString());
+						  RecordManager.instance.shareByQuery(userId, userId, space._id, query);
+					  } else {
+					    RecordManager.instance.shareByQuery(userId, userId, space._id, visualization.defaultQuery);
+					  }
 					  
 					}
 			}

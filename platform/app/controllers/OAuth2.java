@@ -204,10 +204,10 @@ public class OAuth2 extends Controller {
 		
 		if (role.equals(UserRole.RESEARCH) && studyContext != null) {
 			BasicBSONObject m = (BasicBSONObject) RecordManager.instance.getMeta(executor, appInstance._id, "_query");
-			String old = m.getString("study-link");
+			String old = m.getString("link-study");
 			if (old != null && old.equals(studyContext.toString())) { }
 			else {
-			  m.put("study-link", studyContext.toString());
+			  m.put("link-study", studyContext.toString());
 			  RecordManager.instance.setMeta(executor, appInstance._id, "_query", m.toMap());
 			}
 		}

@@ -871,7 +871,7 @@ public class RecordManager {
 	 * @return list of RecordsInfo objects containing a summary of the records
 	 * @throws AppException
 	 */
-	public Collection<RecordsInfo> info(MidataId who, MidataId aps, Map<String, Object> properties, AggregationType aggrType) throws AppException {
+	public Collection<RecordsInfo> info(MidataId who, MidataId aps, AccessContext context, Map<String, Object> properties, AggregationType aggrType) throws AppException {
 		// Only allow specific properties as results are materialized
 		Map<String, Object> nproperties = new HashMap<String, Object>();
 		nproperties.put("streams", "true");
@@ -900,7 +900,7 @@ public class RecordManager {
 		}
 		
 		try {
-		    Collection<RecordsInfo> result = QueryEngine.info(getCache(who), aps, nproperties, aggrType);
+		    Collection<RecordsInfo> result = QueryEngine.info(getCache(who), aps, context, nproperties, aggrType);
 		    
 		    if (properties.containsKey("include-records")) {
 			    for (RecordsInfo inf : result) {
@@ -1168,8 +1168,8 @@ public class RecordManager {
 		IndexManager.instance.clearIndexes(RecordManager.instance.getCache(userId), userId);		
 	}
 	
-	public SpaceAccessContext createContextFromSpace(MidataId executorId, Space space) throws InternalServerException {
-		return new SpaceAccessContext(space, getCache(executorId), null);
+	public SpaceAccessContext createContextFromSpace(MidataId executorId, Space space, MidataId self) throws InternalServerException {
+		return new SpaceAccessContext(space, getCache(executorId), null, self);
 	}
 	
 	public ConsentAccessContext createContextFromConsent(MidataId executorId, Consent consent) throws AppException {

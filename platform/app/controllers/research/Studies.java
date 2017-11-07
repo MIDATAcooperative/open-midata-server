@@ -1015,11 +1015,12 @@ public class Studies extends APIController {
 	 * @throws InternalServerException
 	 */
 	@APICall
+	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(ResearchSecured.class)
 	public static Result listParticipants(String id) throws JsonValidationException, AppException {
-	   MidataId userId = new MidataId(request().username());
-	   MidataId owner = PortalSessionToken.session().getOrg();
+	   MidataId userId = new MidataId(request().username());	   
 	   MidataId studyid = new MidataId(id);
+	   JsonNode json = request().body().asJson();		
 	   
 	   Study study = Study.getById(studyid, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus"));
 	   if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
@@ -1027,8 +1028,9 @@ public class Studies extends APIController {
 	   UserGroupMember ugm = UserGroupMember.getByGroupAndMember(studyid, userId);
 	   if (ugm == null) throw new BadRequestException("error.notauthorized.study", "Not member of study team");
 	   
-       Set<String> fields = Sets.create("owner", "ownerName", "group", "recruiter", "recruiterName", "pstatus", "gender", "country", "yearOfBirth"); 
-	   Set<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(studyid, fields);
+       Set<String> fields = Sets.create("owner", "ownerName", "group", "recruiter", "recruiterName", "pstatus", "gender", "country", "yearOfBirth");
+       Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+	   Set<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(studyid, properties, fields);
 	   if (!ugm.role.pseudonymizedAccess()) {
 		   for (StudyParticipation part : participants) part.ownerName = null;
 	   }

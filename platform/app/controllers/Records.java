@@ -161,7 +161,7 @@ public class Records extends APIController {
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));			
 		
 		AggregationType aggrType = json.has("summarize") ? JsonValidation.getEnum(json, "summarize", AggregationType.class) : AggregationType.GROUP;
-	    Collection<RecordsInfo> result = RecordManager.instance.info(userId, aps, properties, aggrType);	
+	    Collection<RecordsInfo> result = RecordManager.instance.info(userId, aps, null, properties, aggrType);	
 						
 		return ok(Json.toJson(result));
 	}
@@ -201,7 +201,7 @@ public class Records extends APIController {
 		if (readRecords) {
 			Set<String> recordsIds = RecordManager.instance.listRecordIds(userId, apsId);		
 			Map<String, Object> props = new HashMap<String, Object>();
-			Collection<RecordsInfo> infos = RecordManager.instance.info(userId, apsId, props, AggregationType.CONTENT);
+			Collection<RecordsInfo> infos = RecordManager.instance.info(userId, apsId, null, props, AggregationType.CONTENT);
 								
 			result.set("records", Json.toJson(recordsIds));		
 			result.set("summary", Json.toJson(infos));

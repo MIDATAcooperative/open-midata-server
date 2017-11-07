@@ -64,6 +64,11 @@ public class AppAccessContext extends AccessContext {
 	public MidataId getOwnerPseudonymized() {
 		return cache.getAccountOwner();
 	}
+
+	@Override
+	public MidataId getSelf() {
+		return cache.getAccountOwner();
+	}
 	
 
 }
