@@ -11,6 +11,7 @@ import models.Circle;
 import models.Consent;
 import models.MidataId;
 import models.StudyParticipation;
+import models.StudyRelated;
 import models.enums.ConsentType;
 import utils.AccessLog;
 import utils.collections.Sets;
@@ -199,7 +200,8 @@ public class Feature_AccountQuery extends Feature {
 	    	//consents = new HashSet<Consent>(StudyParticipation.getActiveParticipantsByStudyAndGroupsAndIds(studies, studyGroups, q.getCache().getAccountOwner(), sets.contains("all") ? null : owners, Sets.create("name", "order", "owner", "ownerName", "type")));
 	    	
 	    		    		
-	    	consents =  new HashSet<Consent>(StudyParticipation.getActiveParticipantsByStudyAndGroupsAndParticipant(studies, studyGroups, q.getCache().getAccountOwner(), sets.contains("all") ? null : owners, Sets.create("name", "order", "owner", "ownerName", "type"), true));
+	    	consents =  new HashSet<Consent>(StudyParticipation.getActiveParticipantsByStudyAndGroupsAndParticipant(studies, studyGroups, q.getCache().getAccountOwner(), sets.contains("all") ? null : owners, Consent.SMALL, true));
+	    	consents.addAll(StudyRelated.getActiveByAuthorizedGroupAndStudy(q.getCache().getAccountOwner(), studyGroups, studies, Consent.SMALL));
             q.getCache().cache(consents);	    		    
 	    	AccessLog.log("found: "+consents.size());
 	    } else if (sets.contains("all") || sets.contains("other") || sets.contains("shared")) {			

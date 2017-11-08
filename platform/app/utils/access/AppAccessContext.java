@@ -21,7 +21,7 @@ public class AppAccessContext extends AccessContext {
 		if (!instance.writes.isCreateAllowed()) return false;
 		
 		if (instance.writes.isUnrestricted()) return parent==null || parent.mayCreateRecord(record);
-		return !QueryEngine.listFromMemory(cache, instance.sharingQuery, Collections.singletonList(record)).isEmpty() && (parent==null || parent.mayCreateRecord(record));
+		return !QueryEngine.listFromMemory(this, instance.sharingQuery, Collections.singletonList(record)).isEmpty() && (parent==null || parent.mayCreateRecord(record));
 		
 	}
 
@@ -47,7 +47,7 @@ public class AppAccessContext extends AccessContext {
 	@Override
 	public boolean isIncluded(DBRecord record) throws AppException {
 		if (instance.writes == null) return false;
-		return !QueryEngine.listFromMemory(cache, instance.sharingQuery, Collections.singletonList(record)).isEmpty();
+		return !QueryEngine.listFromMemory(this, instance.sharingQuery, Collections.singletonList(record)).isEmpty();
 	}
 
 	@Override

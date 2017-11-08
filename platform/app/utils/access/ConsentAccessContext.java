@@ -8,6 +8,7 @@ import models.Consent;
 import models.MidataId;
 import models.enums.ConsentType;
 import models.enums.WritePermissionType;
+import utils.AccessLog;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
@@ -39,14 +40,23 @@ public class ConsentAccessContext extends AccessContext{
 			  sharingQuery = true;
 		}
 		
-		return !QueryEngine.listFromMemory(cache, consent.sharingQuery, Collections.singletonList(record)).isEmpty() && (parent==null || parent.mayCreateRecord(record));
+		return !QueryEngine.listFromMemory(this, consent.sharingQuery, Collections.singletonList(record)).isEmpty() && (parent==null || parent.mayCreateRecord(record));
 		
 	}
 
 	@Override
 	public boolean mayUpdateRecord() {
+		AccessLog.log("called");
 		if (consent.writes == null) return false;
 		if (!consent.writes.isUpdateAllowed()) return false;
+		AccessLog.log("called 2");
+		if (consent.type.equals(ConsentType.STUDYRELATED)) {
+			AccessLog.log("called 3");
+			if (parent != null && parent instanceof UserGroupAccessContext && parent.parent != null) {
+				AccessLog.log("called 4");
+				return parent.parent.mayUpdateRecord();
+			}
+		}
 		if (parent != null) return parent.mayUpdateRecord();
 		return true;
 	}
@@ -71,7 +81,7 @@ public class ConsentAccessContext extends AccessContext{
 		}
 		
 		if (consent.sharingQuery == null) return false;
-		return !QueryEngine.listFromMemory(cache, consent.sharingQuery, Collections.singletonList(record)).isEmpty();
+		return !QueryEngine.listFromMemory(this, consent.sharingQuery, Collections.singletonList(record)).isEmpty();
 	}
 	
 	public Consent getConsent() {

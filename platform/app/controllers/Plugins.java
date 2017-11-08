@@ -202,7 +202,7 @@ public class Plugins extends APIController {
 					  if (study != null) {
 						  Map<String, Object> query = new HashMap<String, Object>(visualization.defaultQuery);
 						  query.put("link-study", study.toString());
-						  query.put("usergroup", study.toString());
+						  query.put("study", study.toString());
 						  RecordManager.instance.shareByQuery(userId, userId, space._id, query);
 					  } else {
 					    RecordManager.instance.shareByQuery(userId, userId, space._id, visualization.defaultQuery);

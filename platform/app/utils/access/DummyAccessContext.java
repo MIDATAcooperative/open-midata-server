@@ -5,8 +5,17 @@ import utils.exceptions.AppException;
 
 public class DummyAccessContext extends AccessContext {
 
+	private MidataId selfUser;
+	
+	
 	DummyAccessContext(APSCache cache) {
 		super(cache, null);
+		selfUser = cache.getAccountOwner();
+	}
+	
+	DummyAccessContext(APSCache cache, MidataId selfUser) {
+		super(cache, null);
+		this.selfUser = selfUser;
 	}
 	
 	@Override
@@ -51,7 +60,7 @@ public class DummyAccessContext extends AccessContext {
 
 	@Override
 	public MidataId getSelf() {
-		return cache.getAccountOwner();
+		return selfUser;
 	}
 
 }

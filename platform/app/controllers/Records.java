@@ -407,7 +407,7 @@ public class Records extends APIController {
         		  consent.set(consent._id, "sharingQuery", query);
         		  if (consent.status == ConsentStatus.ACTIVE) {
         		    Circles.setQuery(userId, apsOwner, start, query);        		          		  
-	        	    if (hasAccess) RecordManager.instance.applyQuery(userId, query, userId, start, withMember);
+	        	    if (hasAccess) RecordManager.instance.applyQuery(RecordManager.instance.createContextFromAccount(userId), query, userId, start, withMember);
         		  }
         		}
         	}
@@ -450,7 +450,7 @@ public class Records extends APIController {
         		  consent.set(consent._id, "sharingQuery", query);
           		  if (consent.status == ConsentStatus.ACTIVE) {
           		    Circles.setQuery(userId, apsOwner, start, query);        		          		  
-  	        	    if (hasAccess) RecordManager.instance.applyQuery(userId, query, userId, start, withMember);
+  	        	    if (hasAccess) RecordManager.instance.applyQuery(RecordManager.instance.createContextFromAccount(userId), query, userId, start, withMember);
           		  }        		        	  
         		}
         	}

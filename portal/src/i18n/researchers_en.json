@@ -49,13 +49,15 @@
   "studyactions" : {
     "description" : "When the study is running you can share data with participants and have them complete tasks. (Like fill out a form)",
     "select_group_btn" : "Select Group",
+    "allgroups" : "<All Groups>",
     "add_task_btn" : "Add Task for Participants",
     "plugin" : "Research Application",
     "device" : "Device Code",
     "restrict" : "Restrict read to group",
-    "shareback" : "Application shares data to participant group",
+    "shareback" : "Application shares data with participant group(s)",
     "add_application_btn" : "Add Research Application",
-    "linked_apps" : "Applications Consents"
+    "linked_apps" : "Applications Consents",
+    "linked_spaces" : "Research Plugins"
   },
   
   "studyfields" : {

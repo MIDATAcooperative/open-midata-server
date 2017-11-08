@@ -56,18 +56,18 @@ class QueryEngine {
 		return result;						
 	}
 		
-	public static boolean isInQuery(APSCache cache, Map<String, Object> properties, DBRecord record) throws AppException {
+	public static boolean isInQuery(AccessContext context, Map<String, Object> properties, DBRecord record) throws AppException {
 		List<DBRecord> results = new ArrayList<DBRecord>(1);
 		results.add(record);
-		return listFromMemory(cache, properties, results).size() > 0;		
+		return listFromMemory(context, properties, results).size() > 0;		
 	}
 	
-	public static List<DBRecord> listFromMemory(APSCache cache, Map<String, Object> properties, List<DBRecord> records) throws AppException {
+	public static List<DBRecord> listFromMemory(AccessContext context, Map<String, Object> properties, List<DBRecord> records) throws AppException {
 		if (AccessLog.detailedLog) AccessLog.logBegin("Begin list from memory #recs="+records.size());
 		APS inMemory = new Feature_InMemoryQuery(records);
-		cache.addAPS(inMemory);
+		context.getCache().addAPS(inMemory);
 		Feature qm = new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_ContentFilter(inMemory)));
-		Query query = new Query(properties, Sets.create("_id"), cache, inMemory.getId(), null);
+		Query query = new Query(properties, Sets.create("_id"), context.getCache(), inMemory.getId(), context);
 		List<DBRecord> recs = qm.query(query);
 		AccessLog.log("list from memory pre postprocess size = "+recs.size());
 		List<DBRecord> result = postProcessRecords(query.getProperties(), recs);		

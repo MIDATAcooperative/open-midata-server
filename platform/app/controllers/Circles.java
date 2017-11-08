@@ -636,7 +636,7 @@ public class Circles extends APIController {
 				  RecordManager.instance.shareByQuery(executor, consent.owner, consent._id, query);				  
 				} else {
 				  Circles.setQuery(executor, consent.owner, consent._id, query);
-				  RecordManager.instance.applyQuery(executor, query, consent.owner, consent._id, true);
+				  RecordManager.instance.applyQuery(executor, consent.owner, query, consent.owner, consent._id, true);
 				}
 			}
 			
