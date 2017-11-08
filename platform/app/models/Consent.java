@@ -37,6 +37,8 @@ public class Consent extends Model {
 	 */
 	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "ownerName", "name", "authorized", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "dateOfCreation", "sharingQuery", "externalOwner", "externalAuthorized", "writes", "dataupdate");
 	
+	public @NotMaterialized final static Set<String> SMALL = Sets.create("owner", "ownerName", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "dateOfCreation", "sharingQuery", "externalOwner", "writes", "dataupdate");
+	
 	/**
 	 * constant for all FHIR fields of a consent
 	 */
@@ -169,11 +171,11 @@ public class Consent extends Model {
 	}
 	
 	public static Set<Consent> getAllActiveByAuthorized(MidataId member) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("status", Sets.createEnum(ConsentStatus.ACTIVE, ConsentStatus.FROZEN)), Sets.create("name", "order", "owner", "ownerName", "type", "writes", "sharingQuery"));
+		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("status", Sets.createEnum(ConsentStatus.ACTIVE, ConsentStatus.FROZEN)), Consent.SMALL);
 	}
 	
 	public static Set<Consent> getAllActiveByAuthorized(MidataId member, long since) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("status", Sets.createEnum(ConsentStatus.ACTIVE, ConsentStatus.FROZEN)).map("dataupdate", CMaps.map("$gte", since)), Sets.create("name", "order", "owner", "ownerName", "type", "writes", "sharingQuery"));
+		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("status", Sets.createEnum(ConsentStatus.ACTIVE, ConsentStatus.FROZEN)).map("dataupdate", CMaps.map("$gte", since)), Consent.SMALL);
 	}
 	
 	public static Set<Consent> getAllByAuthorized(MidataId member, Map<String, Object> properties, Set<String> fields) throws InternalServerException {
@@ -185,15 +187,15 @@ public class Consent extends Model {
 	}
 	
 	public static Set<Consent> getAllByAuthorized(MidataId member) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member), Sets.create("name", "order", "owner", "ownerName", "type", "status", "writes", "sharingQuery"));
+		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member), Consent.SMALL);
 	}
 	
 	public static Set<Consent> getAllActiveByAuthorizedAndOwners(MidataId member, Set<MidataId> owners) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("owner", owners).map("status",  Sets.createEnum(ConsentStatus.ACTIVE, ConsentStatus.FROZEN)), Sets.create("name", "order", "owner", "ownerName", "type", "writes", "sharingQuery"));
+		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("owner", owners).map("status",  Sets.createEnum(ConsentStatus.ACTIVE, ConsentStatus.FROZEN)), Consent.SMALL);
 	}
 	
 	public static Set<Consent> getHealthcareOrResearchActiveByAuthorizedAndOwner(MidataId member, MidataId owner) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("owner", owner).map("status",  Sets.createEnum(ConsentStatus.ACTIVE, ConsentStatus.FROZEN)).map("type",  EnumSet.of(ConsentType.HEALTHCARE, ConsentType.STUDYPARTICIPATION)), Sets.create("name", "order", "owner", "type", "writes", "sharingQuery"));
+		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("owner", owner).map("status",  Sets.createEnum(ConsentStatus.ACTIVE, ConsentStatus.FROZEN)).map("type",  EnumSet.of(ConsentType.HEALTHCARE, ConsentType.STUDYPARTICIPATION)), Consent.SMALL);
 	}
 	
 	public static Set<Consent> getByExternalEmail(String emailLC) throws InternalServerException {
@@ -205,7 +207,7 @@ public class Consent extends Model {
 	}
 	
 	public static Consent getMessagingActiveByAuthorizedAndOwner(MidataId member, MidataId owner) throws InternalServerException {
-		return Model.get(Consent.class, collection, CMaps.map("authorized", member).map("owner", owner).map("status",  ConsentStatus.ACTIVE).map("type",  ConsentType.IMPLICIT), Sets.create("name", "order", "owner", "ownerName", "type", "writes"));
+		return Model.get(Consent.class, collection, CMaps.map("authorized", member).map("owner", owner).map("status",  ConsentStatus.ACTIVE).map("type",  ConsentType.IMPLICIT), Consent.SMALL);
 	}
 		
 	public static void set(MidataId consentId, String field, Object value) throws InternalServerException {

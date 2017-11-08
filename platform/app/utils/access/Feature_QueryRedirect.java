@@ -80,7 +80,7 @@ public class Feature_QueryRedirect extends Feature {
 		AccessLog.logEnd("end redirect");
 		return results;
 	}
-	
+	/*
 	private List<DBRecord> memoryQuery(Query q, BasicBSONObject query, List<DBRecord> results) throws AppException {
 		Map<String, Object> combined = combineQuery(q.getProperties(), query);
 		if (combined == null) {
@@ -90,13 +90,10 @@ public class Feature_QueryRedirect extends Feature {
 		
 		List<DBRecord> result = QueryEngine.listFromMemory(q.getCache(), combined, results); 
 									
-		/*if (query.containsField("_exclude") && result.size() > 0) {			
-			List<DBRecord> excluded = QueryEngine.listFromMemory(q.getCache(), (Map<String, Object>) query.get("_exclude"), result);
-            result.removeAll(excluded);						
-		}*/ 
+		
 		
 		return result;
-	}
+	}*/
 	
 	public static Map<String, Object> combineQuery(Map<String,Object> properties, Map<String,Object> query) throws InternalServerException {
 		

@@ -49,6 +49,10 @@ public class StudyParticipation extends Consent {
 		return Model.getAll(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("study", study).map("pstatus", Sets.createEnum(ParticipationStatus.ACCEPTED, ParticipationStatus.REQUEST, ParticipationStatus.RESEARCH_REJECTED, ParticipationStatus.MEMBER_RETREATED)), fields);
 	}
 	
+	public static Set<StudyParticipation> getParticipantsByStudy(MidataId study, Map<String, Object> properties, Set<String> fields) throws InternalServerException {
+		return Model.getAll(StudyParticipation.class, collection, CMaps.map(properties).map("type", ConsentType.STUDYPARTICIPATION).map("study", study), fields);
+	}
+	
 	public static Set<StudyParticipation> getParticipantsByStudyAndGroup(MidataId study, String group, Set<String> fields) throws InternalServerException {
 		return Model.getAll(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("study", study).map("group", group).map("pstatus", Sets.createEnum(ParticipationStatus.ACCEPTED, ParticipationStatus.REQUEST, ParticipationStatus.RESEARCH_REJECTED, ParticipationStatus.MEMBER_RETREATED)), fields);
 	}

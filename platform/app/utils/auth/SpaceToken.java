@@ -38,6 +38,8 @@ public class SpaceToken {
 	 */
 	public MidataId pluginId;
 	
+	public boolean autoimport;
+	
 	/**
 	 * Creation time of token
 	 */
@@ -62,6 +64,14 @@ public class SpaceToken {
 		this.recordId = null;
 	}
 	
+	public SpaceToken(String handle, MidataId spaceId, MidataId executorId, MidataId userId, boolean dummy) {
+		this.handle = handle;
+		this.spaceId = spaceId;
+		this.userId = userId;
+		this.executorId = executorId;
+		this.recordId = null;
+	}
+	
 	public SpaceToken(String handle, MidataId spaceId, MidataId userId, MidataId recordId, MidataId pluginId) {
 		this.handle = handle;
 		this.spaceId = spaceId;
@@ -77,10 +87,11 @@ public class SpaceToken {
 		this.recordId = recordId;
 		this.pluginId = pluginId;
 		this.executorId = executorId;	
+		this.autoimport = true;
 		this.created = System.currentTimeMillis();
 	}
 	
-	public SpaceToken(String handle, MidataId spaceId, MidataId userId, MidataId recordId, MidataId pluginId, MidataId executorId, long created, String remoteAddr) {
+	public SpaceToken(String handle, MidataId spaceId, MidataId userId, MidataId recordId, MidataId pluginId, MidataId executorId, long created, String remoteAddr, boolean autoimport) {
 		this.handle = handle;
 		this.spaceId = spaceId;
 		this.userId = userId;
@@ -89,6 +100,7 @@ public class SpaceToken {
 		this.executorId = executorId;
 		this.created = created;
 		this.remoteAddress = remoteAddr;
+		this.autoimport = autoimport;
 	}
 	
 	public SpaceToken(String handle, MidataId spaceId, MidataId userId, MidataId recordId) {
@@ -117,6 +129,7 @@ public class SpaceToken {
 		if (recordId != null) map.put("r", recordId.toString());
 		if (pluginId != null) map.put("p", pluginId.toString());
 		if (executorId != null && !executorId.equals(userId)) map.put("e", executorId.toString());
+		if (autoimport) map.put("a", "1");
 		map.put("c", Long.toString(this.created));
 		map.put("i", this.remoteAddress);
 		map.put("h", handle);
@@ -161,7 +174,7 @@ public class SpaceToken {
 			  if (!remoteAddr(request).equals(remoteAddr)) return null;
 			}
 			
-			return new SpaceToken(handle, spaceId, userId, recordId, pluginId, executorId, created, remoteAddr);
+			return new SpaceToken(handle, spaceId, userId, recordId, pluginId, executorId, created, remoteAddr, json.has("a"));
 		} catch (Exception e) {
 			return null;
 		}

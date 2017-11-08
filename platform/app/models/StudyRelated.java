@@ -25,8 +25,12 @@ public class StudyRelated extends Consent {
 		Model.insert(collection, this);	
 	}
 	
-	public static Set<StudyRelated> getActiveByGroupAndStudy(String group, MidataId studyId, Set<String> fields) throws InternalServerException {
-		return Model.getAll(StudyRelated.class, collection, CMaps.map("type", ConsentType.STUDYRELATED).map("group", group).map("study", studyId).map("status", ConsentStatus.ACTIVE), fields);
+	public static Set<StudyRelated> getActiveByOwnerGroupAndStudy(MidataId owner, String group, MidataId studyId, Set<String> fields) throws InternalServerException {
+		return Model.getAll(StudyRelated.class, collection, CMaps.map("owner", owner).map("type", ConsentType.STUDYRELATED).mapNotEmpty("group", group).map("study", studyId).map("status", ConsentStatus.ACTIVE), fields);
+	}
+	
+	public static Set<StudyRelated> getActiveByAuthorizedGroupAndStudy(MidataId authorized, Set<String> group, Set<MidataId> studyId, Set<String> fields) throws InternalServerException {
+		return Model.getAll(StudyRelated.class, collection, CMaps.map("authorized", authorized).map("type", ConsentType.STUDYRELATED).mapNotEmpty("group", group).map("study", studyId).map("status", ConsentStatus.ACTIVE), fields);
 	}
 	
 	public static Set<StudyRelated> getByStudy(MidataId studyId, Set<String> fields) throws InternalServerException {

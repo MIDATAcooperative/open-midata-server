@@ -9,10 +9,12 @@ import utils.exceptions.AppException;
 public class SpaceAccessContext extends AccessContext {
 
 	private Space space;
+	private MidataId self;
 	
-	public SpaceAccessContext(Space space, APSCache cache, AccessContext parent) {
+	public SpaceAccessContext(Space space, APSCache cache, AccessContext parent, MidataId self) {
 		super(cache, parent);
 		this.space = space;
+		this.self = self;
 	}
 	@Override
 	public boolean mayCreateRecord(DBRecord record) throws AppException {
@@ -34,7 +36,7 @@ public class SpaceAccessContext extends AccessContext {
 	}
 	@Override
 	public boolean isIncluded(DBRecord record) throws AppException {
-		return false;
+		return record.owner.equals(cache.getAccountOwner());
 	}
 	@Override
 	public String getOwnerName() {		
@@ -47,6 +49,10 @@ public class SpaceAccessContext extends AccessContext {
 	@Override
 	public MidataId getOwnerPseudonymized() {
 		return cache.getAccountOwner();
+	}
+	@Override
+	public MidataId getSelf() {
+		return self;
 	}
 
 }

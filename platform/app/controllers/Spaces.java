@@ -277,19 +277,20 @@ public class Spaces extends Controller {
 	}
 	
 	@APICall
-	public static Promise<Result> getUrl(String spaceIdString) throws AppException {
-		return getUrl(spaceIdString, true);
+	public static Promise<Result> getUrl(String spaceIdString, String userId) throws AppException {
+		return getUrl(spaceIdString, true, userId);
 	}
 	
 	@APICall
 	public static Promise<Result> regetUrl(String spaceIdString) throws AppException {
-		return getUrl(spaceIdString, false);
+		return getUrl(spaceIdString, false, null);
 	}
 	
 		
-	public static Promise<Result> getUrl(String spaceIdString, boolean auth) throws AppException {
+	public static Promise<Result> getUrl(String spaceIdString, boolean auth, String targetUser) throws AppException {
 		MidataId userId = new MidataId(request().username());
 		MidataId spaceId = new MidataId(spaceIdString);
+		MidataId targetUserId = (targetUser != null) ? MidataId.from(targetUser) : userId;		
 		
 		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps", "visualization", "type", "name"));
 		
@@ -302,7 +303,7 @@ public class Spaces extends Controller {
 		boolean testing = (visualization.creator.equals(PortalSessionToken.session().getDeveloper()) || visualization.creator.equals(userId)) && visualization.developmentServer != null && visualization.developmentServer.length()> 0; 
 		
 		
-	    SpaceToken spaceToken = new SpaceToken(PortalSessionToken.session().handle, space._id, userId);
+	    SpaceToken spaceToken = new SpaceToken(PortalSessionToken.session().handle, space._id, userId, targetUserId, true);
 			
 		String visualizationServer = "https://" + Play.application().configuration().getString("visualizations.server") + "/" + visualization.filename;
 		if (testing) visualizationServer = visualization.developmentServer;
@@ -315,7 +316,7 @@ public class Spaces extends Controller {
 		obj.put("main", visualization.url);
 		obj.put("type", visualization.type);
 		obj.put("name", space.name);
-		obj.put("owner", userId.toString());
+		obj.put("owner", targetUserId.toString());
 		
 		if (visualization.type != null && visualization.type.equals("oauth2")) {
   		  BSONObject oauthmeta = RecordManager.instance.getMeta(userId, new MidataId(spaceIdString), "_oauth");  		  

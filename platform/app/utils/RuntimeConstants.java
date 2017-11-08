@@ -1,5 +1,6 @@
 package utils;
 
+import models.Admin;
 import models.MidataId;
 import models.Plugin;
 import utils.collections.Sets;
@@ -11,6 +12,7 @@ public class RuntimeConstants {
 	
 	public final MidataId portalPlugin = Plugin.getByFilename("portal", Sets.create("_id"))._id;
 	public final MidataId commonPlugin = Plugin.getByFilename("common", Sets.create("_id"))._id;
+	public final MidataId autorunService = Admin.getByEmail("autorun-service", Sets.create("_id"))._id;
 	
 	public RuntimeConstants() throws InternalServerException {		
 	}

@@ -278,7 +278,7 @@ public class Studies extends APIController {
 		
 		// Query can only be applied if patient is doing it himself
 		if (executor.equals(member._id)) {
-		  RecordManager.instance.applyQuery(executor, study.recordQuery, member._id, part._id, study.requiredInformation.equals(InformationType.DEMOGRAPHIC));
+		  RecordManager.instance.applyQuery(RecordManager.instance.createContextFromAccount(executor), study.recordQuery, member._id, part._id, study.requiredInformation.equals(InformationType.DEMOGRAPHIC));
 		}
 		
 		return part;

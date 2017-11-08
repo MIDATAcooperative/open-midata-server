@@ -459,7 +459,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		if (content != null) properties.put("code", content);
 		
 		
-		Collection<RecordsInfo> groups = RecordManager.instance.info(inf.executorId, inf.targetAPS, properties, AggregationType.CONTENT);
+		Collection<RecordsInfo> groups = RecordManager.instance.info(inf.executorId, inf.targetAPS, inf.context, properties, AggregationType.CONTENT);
 		
         // For each found content type...						
 		for (RecordsInfo code : groups) {

@@ -66,7 +66,7 @@ POST    /api/members/spaces                              controllers.Spaces.add(
 POST    /api/members/spaces/get                          controllers.Spaces.get()
 DELETE  /api/members/spaces/:id                          controllers.Spaces.delete(id: String)
 POST    /api/members/spaces/:id/records                  controllers.Spaces.addRecords(id: String)
-GET     /api/members/spaces/:id/url                      controllers.Spaces.getUrl(id: String)
+GET     /api/members/spaces/:id/url                      controllers.Spaces.getUrl(id: String, user:String ?= null)
 GET     /api/members/spaces/:id/url/noauth               controllers.Spaces.regetUrl(id: String)
 DELETE  /api/members/spaces                              controllers.Spaces.reset()
 
@@ -133,7 +133,7 @@ POST    /api/research/studies/:study/status/finish       controllers.research.St
 POST    /api/research/studies/:study/status/abort        controllers.research.Studies.abortExecution(study: String)
 POST    /api/research/studies/:study/status/delete       controllers.research.Studies.delete(study: String)
 POST    /api/admin/studies/:study/status/delete       controllers.admin.Administration.deleteStudy(study: String)
-GET     /api/research/studies/:study/participants        controllers.research.Studies.listParticipants(study: String)
+POST    /api/research/studies/:study/participants        controllers.research.Studies.listParticipants(study: String)
 GET     /api/research/studies/:study/participants/:participant controllers.research.Studies.getParticipant(study: String, participant: String)
 POST    /api/research/studies/:study/approve             controllers.research.Studies.approveParticipation(study: String)
 POST    /api/research/studies/:study/reject              controllers.research.Studies.rejectParticipation(study: String)
