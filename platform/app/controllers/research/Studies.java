@@ -23,6 +23,7 @@ import actions.APICall;
 import controllers.APIController;
 import controllers.Circles;
 import controllers.MobileAPI;
+import controllers.Spaces;
 import controllers.members.HealthProvider;
 import models.AccessPermissionSet;
 import models.Admin;
@@ -36,6 +37,7 @@ import models.ParticipationCode;
 import models.Plugin;
 import models.Record;
 import models.ResearchUser;
+import models.Space;
 import models.Study;
 import models.StudyGroup;
 import models.StudyParticipation;
@@ -280,8 +282,8 @@ public class Studies extends APIController {
 		 
 		 setAttachmentContentDisposition("study.json");
 				 		 		
-		 final Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(study._id, studyGroup, Sets.create("owner"));			    
-		 
+		 final Set<Consent> parts = new HashSet<Consent>(StudyParticipation.getActiveParticipantsByStudyAndGroup(study._id, studyGroup, Sets.create("owner")));			    
+		 parts.addAll(StudyRelated.getActiveByAuthorizedGroupAndStudy(study._id, Collections.singleton(studyGroup), Collections.singleton(study._id), Consent.SMALL));
 		 				 
 		 final String handle = PortalSessionToken.session().handle;
 		 
@@ -296,7 +298,7 @@ public class Studies extends APIController {
 		        		out.write("{ \"resourceType\" : \"Bundle\", \"type\" : \"searchset\", \"entry\" : [ ");
 
 		        		boolean first = true;
-		        		for (StudyParticipation part : parts) {
+		        		for (Consent part : parts) {
 		        		List<Record> allRecords = RecordManager.instance.list(executorId, part._id, CMaps.map(), Sets.create("_id"));
 		        		Iterator<Record> recordIterator = allRecords.iterator();
 
@@ -772,7 +774,7 @@ public class Studies extends APIController {
 		if (study.dataCreatedBefore != null && study.dataCreatedBefore.before(now)) return;
 		study.dataCreatedBefore = now;
 		
-		Set<StudyParticipation> participants = StudyParticipation.getActiveParticipantsByStudy(study._id, Sets.create("_id", "type", "status", "pstatus", "owner", "authorized", "createdBefore"));
+		Set<StudyParticipation> participants = StudyParticipation.getActiveParticipantsByStudy(study._id, Consent.ALL);
         for (StudyParticipation participant : participants) {
         	if (participant.status.equals(ConsentStatus.ACTIVE)) {
         		Circles.consentStatusChange(executor, participant, ConsentStatus.FROZEN);
@@ -817,13 +819,33 @@ public class Studies extends APIController {
 		return ok();
 	}
 	
-	public static StudyRelated findFreeSharingConsent(Study study, String group, boolean ifDataShared) throws AppException {
-		MidataId ownerId = study.createdBy;
-		Set<StudyRelated> consents = StudyRelated.getActiveByGroupAndStudy(group, study._id, Consent.ALL);
+	public static StudyRelated findFreeSharingConsent(MidataId executor, Study study, String group, boolean ifDataShared) throws AppException {
+		MidataId ownerId = executor;
+		Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudy(executor, group, study._id, Consent.ALL);
 		if (consents.isEmpty() && ifDataShared) return null;
 		
+		
+		if (consents.isEmpty()) {
+			StudyRelated consent = new StudyRelated();
+			consent._id = new MidataId();
+			consent.study = study._id;
+			consent.group = group;			
+			consent.owner = ownerId;
+			consent.name = "Study:"+study.name;		
+			consent.authorized = new HashSet<MidataId>();			
+			consent.entityType = EntityType.USERGROUP;
+			consent.dateOfCreation = new Date();		
+			consent.status = ConsentStatus.ACTIVE;
+			consent.writes = WritePermissionType.UPDATE_EXISTING;
+			
+			RecordManager.instance.createAnonymizedAPS(ownerId, ownerId, consent._id, true);
+			Circles.prepareConsent(consent);
+			consent.add();
+			Circles.addUsers(ownerId, EntityType.USERGROUP, consent, Collections.singleton(study._id));
+		}
+		
 		for (StudyRelated sr : consents) {
-			if (sr.authorized.size() < STUDY_CONSENT_SIZE) {
+			if (sr.authorized.size() < STUDY_CONSENT_SIZE && sr.entityType.equals(EntityType.USER)) {
 				return sr;
 			}
 		}		
@@ -845,7 +867,7 @@ public class Studies extends APIController {
 	}
 	
 	public static void joinSharing(MidataId executor, Study study, String group, boolean ifDataShared, List<StudyParticipation> part) throws AppException {
-		StudyRelated sr = findFreeSharingConsent(study, group, ifDataShared);
+		StudyRelated sr = findFreeSharingConsent(executor, study, group, ifDataShared);
 		if (sr == null) return;
 		
 		Set<MidataId> ids = new HashSet<MidataId>();
@@ -855,7 +877,7 @@ public class Studies extends APIController {
 			for (int i=0;i<STUDY_CONSENT_SIZE - sr.authorized.size();i++) { ids.add(it.next().owner);remaining--; }
 			Circles.addUsers(executor, EntityType.USER, sr, ids);
 			ids.clear();
-			sr = findFreeSharingConsent(study, group, ifDataShared);
+			sr = findFreeSharingConsent(executor, study, group, ifDataShared);
 		}
 		while (it.hasNext()) ids.add(it.next().owner);
 		Circles.addUsers(executor, EntityType.USER, sr, ids);				
@@ -874,8 +896,10 @@ public class Studies extends APIController {
 		MidataId userId = new MidataId(request().username());
 		MidataId owner = PortalSessionToken.session().getOrg();
 		MidataId studyid = new MidataId(id);
+		if (group != null && (group.equals("undefined") || group.equals("null"))) group = null; 
 		
-		Study study = Study.getById(studyid, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "name", "createdBy", "code"));
+		
+		Study study = Study.getById(studyid, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "name", "createdBy", "code", "groups"));
 		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 		if (study.validationStatus != StudyValidationStatus.VALIDATED) throw new BadRequestException("error.notvalidated.study", "Study must be validated before.");
 		if (study.executionStatus != StudyExecutionStatus.RUNNING) throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
@@ -883,15 +907,30 @@ public class Studies extends APIController {
 		UserGroupMember self = UserGroupMember.getByGroupAndMember(studyid, userId);
 		if (self == null) throw new AuthException("error.notauthorized.action", "User not member of study group");
 		
-		
-		Set<StudyRelated> consents = StudyRelated.getActiveByGroupAndStudy(group, study._id, Sets.create("authorized"));
-		
-		if (consents.isEmpty()) {
-		   Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyid, group, Sets.create());
-		   joinSharing(userId, study, group, false, new ArrayList<StudyParticipation>(parts));
+		if (group == null) {
+			for (StudyGroup grp : study.groups) {
+            Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudy(userId, grp.name, study._id, Sets.create("authorized"));
+			
+			if (consents.isEmpty()) {
+			   Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyid, grp.name, Sets.create());
+			   joinSharing(userId, study, grp.name, false, new ArrayList<StudyParticipation>(parts));
+			}
+			}
+			
+			return ok();
+			
+		} else {
+			Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudy(userId, group, study._id, Sets.create("authorized"));
+			
+			if (consents.isEmpty()) {
+			   Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyid, group, Sets.create());
+			   joinSharing(userId, study, group, false, new ArrayList<StudyParticipation>(parts));
+			}
+			
+			return ok(JsonOutput.toJson(consents, "Consent", Sets.create("_id", "authorized")));
 		}
 		
-		return ok(JsonOutput.toJson(consents, "Consent", Sets.create("_id", "authorized")));		
+				
 	}
 	
 	/**
@@ -907,17 +946,16 @@ public class Studies extends APIController {
 		MidataId userId = new MidataId(request().username());
 		MidataId owner = PortalSessionToken.session().getOrg();
 		MidataId studyId = new MidataId(id);
+		if (group != null && (group.equals("undefined") || group.equals("null"))) group = null;
 		
-		Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "name", "code", "createdBy"));
+		Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "name", "code", "createdBy", "groups"));
 		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 		if (study.validationStatus != StudyValidationStatus.VALIDATED) throw new BadRequestException("error.notvalidated.study", "Study must be validated before.");
 		if (study.executionStatus != StudyExecutionStatus.RUNNING) throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
 		
 		// validate json
 		JsonNode json = request().body().asJson();	
-		JsonValidation.validate(json, "plugin", "device");
 		
-		String device = JsonValidation.getString(json, "device");
 		MidataId pluginId = JsonValidation.getMidataId(json, "plugin");
 		boolean restrictRead = JsonValidation.getBoolean(json, "restrictread");
 		boolean shareBack = JsonValidation.getBoolean(json, "shareback");
@@ -927,33 +965,76 @@ public class Studies extends APIController {
 		if (plugin.status == PluginStatus.DELETED) if (plugin.status == PluginStatus.DELETED) throw new BadRequestException("error.invalid.plugin", "Plugin not found.");
 		if (plugin.targetUserRole != UserRole.RESEARCH) throw new BadRequestException("error.invalid.plugin", "Wrong target role.");
 				
+		
+        
 		User researcher = User.getById(userId, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));
 
 		if (shareBack) {
-	        Set<StudyRelated> consents = StudyRelated.getActiveByGroupAndStudy(group, study._id, Sets.create("_id"));		
-			if (consents.isEmpty()) {
-			   Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyId, group, Sets.create());
-			   joinSharing(userId, study, group, false, new ArrayList<StudyParticipation>(parts));
-			}
-		}
-		
-		MobileAppInstance appInstance = MobileAPI.installApp(userId, plugin._id, researcher, device, false, false);
-		Map<String,Object> query = appInstance.sharingQuery;
-		query.put("study", studyId.toString());
-		if (restrictRead) query.put("study-group", group);
-		
-		if (shareBack) {
-		  query.put("target-study", studyId.toString());
-		  query.put("target-study-group", group);
-		}
-		query.put("link-study", studyId.toString());
-		query.put("link-study-group", group);
-		
-		appInstance.set(appInstance._id, "sharingQuery", query);
-		
-		HealthProvider.confirmConsent(appInstance.owner, appInstance._id);
-		appInstance.status = ConsentStatus.ACTIVE;
 			
+			if (group == null) {
+				for (StudyGroup grp : study.groups) {
+	            Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudy(userId, grp.name, study._id, Sets.create("authorized"));
+				
+				if (consents.isEmpty()) {
+				   Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyId, grp.name, Sets.create());
+				   joinSharing(userId, study, grp.name, false, new ArrayList<StudyParticipation>(parts));
+				}
+				}
+				
+			
+				
+			} else {
+				Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudy(userId, group, study._id, Sets.create("authorized"));
+				
+				if (consents.isEmpty()) {
+				   Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyId, group, Sets.create());
+				   joinSharing(userId, study, group, false, new ArrayList<StudyParticipation>(parts));
+				}
+							
+			}
+										      
+		}
+		
+		if (plugin.type.equals("mobile")) {
+			JsonValidation.validate(json, "device");			
+			String device = JsonValidation.getString(json, "device");
+				
+			MobileAppInstance appInstance = MobileAPI.installApp(userId, plugin._id, researcher, device, false, false);
+			Map<String,Object> query = appInstance.sharingQuery;
+			query.put("study", studyId.toString());
+			if (restrictRead && group != null) query.put("study-group", group);
+			
+			if (shareBack) {
+			  query.put("target-study", studyId.toString());
+			  if (group != null) query.put("target-study-group", group);
+			}
+			query.put("link-study", studyId.toString());
+			if (group != null) query.put("link-study-group", group);
+			
+			appInstance.set(appInstance._id, "sharingQuery", query);
+			
+			HealthProvider.confirmConsent(appInstance.owner, appInstance._id);
+			appInstance.status = ConsentStatus.ACTIVE;
+				
+		} else {
+			
+			Space space = null;
+			space = Spaces.add(userId, plugin.defaultSpaceName, plugin._id, plugin.type, study.code+":"+(group != null ? group : ""));
+								
+			Map<String, Object> query = new HashMap<String, Object>(plugin.defaultQuery);
+			query.put("study", studyId.toString());
+			if (restrictRead && group != null) query.put("study-group", group);
+			
+			if (shareBack) {
+			  query.put("target-study", studyId.toString());
+			  if (group != null) query.put("target-study-group", group);
+			}
+			query.put("link-study", studyId.toString());
+			if (group != null) query.put("link-study-group", group);
+			
+			RecordManager.instance.shareByQuery(userId, userId, space._id, query);
+															
+		}
 		AuditManager.instance.success();
 		return ok();
 	}
@@ -1015,11 +1096,12 @@ public class Studies extends APIController {
 	 * @throws InternalServerException
 	 */
 	@APICall
+	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(ResearchSecured.class)
 	public static Result listParticipants(String id) throws JsonValidationException, AppException {
-	   MidataId userId = new MidataId(request().username());
-	   MidataId owner = PortalSessionToken.session().getOrg();
+	   MidataId userId = new MidataId(request().username());	   
 	   MidataId studyid = new MidataId(id);
+	   JsonNode json = request().body().asJson();		
 	   
 	   Study study = Study.getById(studyid, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus"));
 	   if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
@@ -1027,8 +1109,9 @@ public class Studies extends APIController {
 	   UserGroupMember ugm = UserGroupMember.getByGroupAndMember(studyid, userId);
 	   if (ugm == null) throw new BadRequestException("error.notauthorized.study", "Not member of study team");
 	   
-       Set<String> fields = Sets.create("owner", "ownerName", "group", "recruiter", "recruiterName", "pstatus", "gender", "country", "yearOfBirth"); 
-	   Set<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(studyid, fields);
+       Set<String> fields = Sets.create("owner", "ownerName", "group", "recruiter", "recruiterName", "pstatus", "gender", "country", "yearOfBirth");
+       Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+	   Set<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(studyid, properties, fields);
 	   if (!ugm.role.pseudonymizedAccess()) {
 		   for (StudyParticipation part : participants) part.ownerName = null;
 	   }

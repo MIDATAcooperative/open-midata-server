@@ -41,8 +41,8 @@ class QueryEngine {
 		return fullQuery(properties, fields, aps, context, cache);
 	}
 	
-	public static Collection<RecordsInfo> info(APSCache cache, MidataId aps, Map<String, Object> properties, AggregationType aggrType) throws AppException {		
-		return infoQuery(new Query(properties, Sets.create("group", "content", "format", "owner", "app"), Feature_UserGroups.findApsCacheToUse(cache,aps), aps, new DummyAccessContext(cache)), aps, false, aggrType, null);
+	public static Collection<RecordsInfo> info(APSCache cache, MidataId aps, AccessContext context, Map<String, Object> properties, AggregationType aggrType) throws AppException {		
+		return infoQuery(new Query(properties, Sets.create("group", "content", "format", "owner", "app"), Feature_UserGroups.findApsCacheToUse(cache,aps), aps, context != null ? context : new DummyAccessContext(cache)), aps, false, aggrType, null);
 	}
 	
 	public static List<DBRecord> isContainedInAps(APSCache cache, MidataId aps, List<DBRecord> candidates) throws AppException {
@@ -56,18 +56,18 @@ class QueryEngine {
 		return result;						
 	}
 		
-	public static boolean isInQuery(APSCache cache, Map<String, Object> properties, DBRecord record) throws AppException {
+	public static boolean isInQuery(AccessContext context, Map<String, Object> properties, DBRecord record) throws AppException {
 		List<DBRecord> results = new ArrayList<DBRecord>(1);
 		results.add(record);
-		return listFromMemory(cache, properties, results).size() > 0;		
+		return listFromMemory(context, properties, results).size() > 0;		
 	}
 	
-	public static List<DBRecord> listFromMemory(APSCache cache, Map<String, Object> properties, List<DBRecord> records) throws AppException {
+	public static List<DBRecord> listFromMemory(AccessContext context, Map<String, Object> properties, List<DBRecord> records) throws AppException {
 		if (AccessLog.detailedLog) AccessLog.logBegin("Begin list from memory #recs="+records.size());
 		APS inMemory = new Feature_InMemoryQuery(records);
-		cache.addAPS(inMemory);
+		context.getCache().addAPS(inMemory);
 		Feature qm = new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_ContentFilter(inMemory)));
-		Query query = new Query(properties, Sets.create("_id"), cache, inMemory.getId(), null);
+		Query query = new Query(properties, Sets.create("_id"), context.getCache(), inMemory.getId(), context);
 		List<DBRecord> recs = qm.query(query);
 		AccessLog.log("list from memory pre postprocess size = "+recs.size());
 		List<DBRecord> result = postProcessRecords(query.getProperties(), recs);		

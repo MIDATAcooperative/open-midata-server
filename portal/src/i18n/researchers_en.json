@@ -28,7 +28,7 @@
     "overview" : "Overview",
     "details" : "Details",
     "rules" : "Rules",
-    "actions" : "Actions",
+    "actions" : "Applications",
     "participants" : "Participants",
     "records" : "Records",
     "results" : "Results",
@@ -47,15 +47,17 @@
   },
   
   "studyactions" : {
-    "description" : "When the study is running you can share data with participants and have them complete tasks. (Like fill out a form)",
+    "description" : "After the study has been validated you can link plugins and external apps to your study. The plugin or app must be used by the researcher who added it.",
     "select_group_btn" : "Select Group",
+    "allgroups" : "<All Groups>",
     "add_task_btn" : "Add Task for Participants",
     "plugin" : "Research Application",
     "device" : "Device Code",
     "restrict" : "Restrict read to group",
-    "shareback" : "Application shares data to participant group",
+    "shareback" : "Application shares data with participant group(s)",
     "add_application_btn" : "Add Research Application",
-    "linked_apps" : "Applications Consents"
+    "linked_apps" : "Applications Consents",
+    "linked_spaces" : "Research Plugins"
   },
   
   "studyfields" : {
@@ -120,7 +122,12 @@
     "accept_btn" : "Accept",
     "reject_btn" : "Reject",
     "add_participant_btn" : "Add Participant",
-    "empty" : "This study does not have any participants yet."
+    "empty" : "This study does not have any participants matching your search criteria yet.",
+    "search_type" : "Search",
+    "all" : "All participants",
+    "request" : "Candidates that need decision",
+    "rejected" : "Rejected candidates",
+    "retreated" : "Participants that have retreated"
   },
   
   "studyrecords" : {

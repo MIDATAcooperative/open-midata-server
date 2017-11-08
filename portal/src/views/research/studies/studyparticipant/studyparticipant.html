@@ -24,6 +24,20 @@
     </div>
     <p><span translate="studyparticipant.status"></span> <span translate="{{ 'enum.participationstatus.'+participation.pstatus }}"></span></p>
     <p><span translate="studyparticipant.group"></span>{{ participation.group }}</p>
+    
+    <div class="btn-group">
+     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Action <span class="caret"></span>
+     </button>
+						<ul class="dropdown-menu">
+							<li ng-hide="me_menu.length"><a href="javascript:" ng-click="showApp('fhir-observation');" translate="dashboard.observations"></a></li>							
+							<li ng-repeat="entry in me_menu"><a href="javascript:" ng-click="showSpace(entry)" translate="{{entry.name}}"></a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="javascript:" ng-click="addSpace()"  translate="dashboard.install_btn"></a></li>
+						</ul>
+	</div>
+    
+    
     </div>
     </div>	
     <div class="panel panel-primary">

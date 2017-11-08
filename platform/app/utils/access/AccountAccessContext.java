@@ -52,4 +52,9 @@ public class AccountAccessContext extends AccessContext {
 		return cache.getAccountOwner();
 	}
 
+	@Override
+	public MidataId getSelf() {
+		return parent != null ? parent.getSelf() : cache.getAccountOwner();
+	}
+
 }

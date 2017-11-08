@@ -48,7 +48,7 @@ angular.module('portal')
 	
 	// show visualization details
 	$scope.showVisualizationDetails = function(visualization) {
-		$state.go("^.visualization", { visualizationId : visualization._id, context : $state.params.context, next : $state.params.next });		
+		$state.go("^.visualization", { visualizationId : visualization._id, context : $state.params.context, next : $state.params.next, study : $state.params.study, user : $state.params.user });		
 	};
 	
 	$scope.setTag = function(tag) {
@@ -67,24 +67,24 @@ angular.module('portal')
 	$scope.install = function(app) {
 		
 		
-	  spaces.get({ "owner": $scope.userId, "visualization" : app._id }, ["_id", "type"])
+	  spaces.get({ "owner": $scope.userId, "visualization" : app._id, "context" : $state.params.context }, ["_id", "type"])
 	  .then(function(spaceresult) {
 		 if (spaceresult.data.length > 0) {
 			 var target = spaceresult.data[0];
 			 if (target.type === "oauth1" || target.type === "oauth2") {
 				 $state.go("^.importrecords", { "spaceId" : target._id, params : $state.params.params });
 			 } else { 
-			     $state.go("^.spaces", { spaceId : target._id, params : $state.params.params });
+			     $state.go("^.spaces", { spaceId : target._id, params : $state.params.params, user : $state.params.user });
 			 }
 		 } else {	  				
-			$scope.status.doAction("install", apps.installPlugin(app._id, { applyRules : true }))
+			$scope.status.doAction("install", apps.installPlugin(app._id, { applyRules : true, context : $state.params.context, study : $state.params.study }))
 			.then(function(result) {				
 				session.login();
 				if (result.data && result.data._id) {
 				  if (app.type === "oauth1" || app.type === "oauth2") {
 					 $state.go("^.importrecords", { "spaceId" : result.data._id, params : JSON.stringify(data.params) });
 				  } else { 
-				     $state.go('^.spaces', { spaceId : result.data._id });
+				     $state.go('^.spaces', { spaceId : result.data._id, user : $state.params.user });
 				  }
 				} else {
 				  $state.go('^.dashboard', { dashId : $scope.options.context });

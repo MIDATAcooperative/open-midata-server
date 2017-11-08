@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import controllers.Circles;
 import controllers.MobileAPI;
 import models.Consent;
 import models.Member;
@@ -89,17 +90,24 @@ public class ExecutionInfo {
 			result.context = RecordManager.instance.createContextFromAccount(authToken.executorId);
 			
 		} else if (authToken.pluginId == null) {							
-			Space space = Space.getByIdAndOwner(authToken.spaceId, authToken.userId, Sets.create("visualization", "app", "aps", "autoShare", "sharingQuery", "writes"));
+			Space space = Space.getByIdAndOwner(authToken.spaceId, authToken.autoimport ? authToken.userId : authToken.executorId, Sets.create("visualization", "app", "aps", "autoShare", "sharingQuery", "writes"));
 			if (space == null) throw new BadRequestException("error.unknown.space", "The current space does no longer exist.");
 				
 			result.pluginId = space.visualization;
 			result.targetAPS = space._id;
 			result.ownerId = authToken.userId;
 			result.space = space;
-			result.context = RecordManager.instance.createContextFromSpace(result.executorId, space);
+					
+			User targetUser = Member.getById(authToken.userId,Sets.create("myaps", "tokens"));
+			if (targetUser == null) {
+				Consent c = Circles.getConsentById(authToken.executorId, authToken.userId, Sets.create("owner", "authorized"));
+				if (c != null) {
+					result.ownerId = c.owner;
+				} else throw new BadRequestException("error.internal", "Invalid authToken.");
+			}
 			
-			User targetUser = Member.getById(authToken.userId, Sets.create("myaps", "tokens"));
-			if (targetUser == null) throw new BadRequestException("error.internal", "Invalid authToken.");
+			result.context = RecordManager.instance.createContextFromSpace(result.executorId, space, result.ownerId);
+			
 		} else {
 			
 			Consent consent = Consent.getByIdAndAuthorized(authToken.spaceId, authToken.userId, Sets.create("owner"));

@@ -10,7 +10,7 @@ angular.module('portal')
 	      templateUrl: 'views/shared/visualization/visualization.html'
 	    })
 	    .state('research.visualization', {
-	      url: '/visualization/:visualizationId?name&context&query&params',
+	      url: '/visualization/:visualizationId?name&context&query&params&study&user',
 	      templateUrl: 'views/shared/visualization/visualization.html'
 	    })
 	    .state('developer.visualization', {

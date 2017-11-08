@@ -48,7 +48,7 @@
 				<div class="panel-heading" translate="studydetails.status"></div>
 				<div class="panel-body">
                     
-                    <div class="lead" ng-hide="participation.pstatus == 'MATCH'" translate="{{ 'enum.participationstatus.'+participation.pstatus }}"></div>
+                    <div class="lead" ng-hide="!participation.pstatus || participation.pstatus == 'MATCH'" translate="{{ 'enum.participationstatus.'+participation.pstatus }}"></div>
 					<div class="lead" ng-show="!participation.pstatus || participation.pstatus == 'MATCH'" translate="{{ 'enum.participantsearchstatus.'+study.participantSearchStatus }}"></div>
 					<div class="lead" translate="{{ 'enum.studyexecutionstatus.'+study.executionStatus }}"></div>
 				</div>

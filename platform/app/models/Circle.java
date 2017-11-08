@@ -56,15 +56,15 @@ public class Circle extends Consent implements Comparable<Circle> {
 	}
 	
 	public static Set<Circle> getAllByOwner(MidataId owner) throws InternalServerException {
-		return Model.getAll(Circle.class, collection, CMaps.map("owner", owner).map("type",  ConsentType.CIRCLE), Sets.create("name", "authorized", "order", "writes"));
+		return Model.getAll(Circle.class, collection, CMaps.map("owner", owner).map("type",  ConsentType.CIRCLE), Consent.ALL);
 	}
 	
 	public static Set<Circle> getAllByMember(MidataId member) throws InternalServerException {
-		return Model.getAll(Circle.class, collection, CMaps.map("authorized", member).map("type",  ConsentType.CIRCLE), Sets.create("name", "order", "owner", "writes"));
+		return Model.getAll(Circle.class, collection, CMaps.map("authorized", member).map("type",  ConsentType.CIRCLE), Consent.ALL);
 	}
 	
 	public static Set<Circle> getAllActiveByMember(MidataId member) throws InternalServerException {
-		return Model.getAll(Circle.class, collection, CMaps.map("authorized", member).map("type",  ConsentType.CIRCLE).map("status", ConsentStatus.ACTIVE), Sets.create("name", "order", "owner", "writes"));
+		return Model.getAll(Circle.class, collection, CMaps.map("authorized", member).map("type",  ConsentType.CIRCLE).map("status", ConsentStatus.ACTIVE), Consent.SMALL);
 	}
 
 	public static void set(MidataId circleId, String field, Object value) throws InternalServerException {

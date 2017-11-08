@@ -49,5 +49,9 @@ public class UserGroupAccessContext extends AccessContext {
 	public MidataId getOwnerPseudonymized() {
 		return parent.getOwnerPseudonymized();
 	}
+	@Override
+	public MidataId getSelf() {
+		return parent.getSelf();
+	}
 
 }

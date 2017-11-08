@@ -19,8 +19,8 @@ angular.module('services')
 	   return server.post(jsRoutes.controllers.Spaces.get().url, JSON.stringify(data));
 	};
 	
-	service.getUrl = function(spaceId) {
-	   return server.get(jsRoutes.controllers.Spaces.getUrl(spaceId).url);
+	service.getUrl = function(spaceId, user) {
+	   return server.get(jsRoutes.controllers.Spaces.getUrl(spaceId, user).url);
 	};
 	
 	service.regetUrl = function(spaceId) {
@@ -68,26 +68,26 @@ angular.module('services')
 			  .then(function(result) {				
 				  if (result.data.length == 1) {
 					  var app = result.data[0];
-					  service.get({ "owner": userId, "visualization" : result.data[0]._id }, ["_id"])
+					  service.get({ "owner": userId, "visualization" : result.data[0]._id,  "context" : data.context }, ["_id"])
 					  .then(function(spaceresult) {
 						 if (spaceresult.data.length > 0) {
 							 var target = spaceresult.data[0];
 							 if (result.data[0].type === "oauth1" || result.data[0].type === "oauth2") {
 							   $state.go("^.importrecords", { "spaceId" : target._id, "params" : JSON.stringify(data.params) });
 							 } else {
-							   $state.go("^.spaces", { spaceId : target._id, params : JSON.stringify(data.params) });
+							   $state.go("^.spaces", { spaceId : target._id, params : JSON.stringify(data.params), user : data.user });
 							 }
 						 } else {
 							 
 							 
-							 apps.installPlugin(app._id, { applyRules : true })
+							 apps.installPlugin(app._id, { applyRules : true, context : data.context, study : data.study })
 								.then(function(result) {				
 									//session.login();
 									if (result.data && result.data._id) {
 									  if (app.type === "oauth1" || app.type === "oauth2") {
 										 $state.go("^.importrecords", { "spaceId" : result.data._id, params : JSON.stringify(data.params) });
 									  } else { 
-									     $state.go('^.spaces', { spaceId : result.data._id });
+									     $state.go('^.spaces', { spaceId : result.data._id, user : data.user });
 									  }
 									} else {
 									  $state.go('^.dashboard', { dashId : $scope.options.context });
