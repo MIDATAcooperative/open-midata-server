@@ -28,7 +28,7 @@
     "overview" : "Overview",
     "details" : "Details",
     "rules" : "Rules",
-    "actions" : "Actions",
+    "actions" : "Applications",
     "participants" : "Participants",
     "records" : "Records",
     "results" : "Results",
@@ -47,7 +47,7 @@
   },
   
   "studyactions" : {
-    "description" : "When the study is running you can share data with participants and have them complete tasks. (Like fill out a form)",
+    "description" : "After the study has been validated you can link plugins and external apps to your study. The plugin or app must be used by the researcher who added it.",
     "select_group_btn" : "Select Group",
     "allgroups" : "<All Groups>",
     "add_task_btn" : "Add Task for Participants",

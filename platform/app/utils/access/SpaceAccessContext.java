@@ -36,7 +36,7 @@ public class SpaceAccessContext extends AccessContext {
 	}
 	@Override
 	public boolean isIncluded(DBRecord record) throws AppException {
-		return true;
+		return record.owner.equals(cache.getAccountOwner());
 	}
 	@Override
 	public String getOwnerName() {		

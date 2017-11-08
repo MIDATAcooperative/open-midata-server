@@ -282,8 +282,8 @@ public class Studies extends APIController {
 		 
 		 setAttachmentContentDisposition("study.json");
 				 		 		
-		 final Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(study._id, studyGroup, Sets.create("owner"));			    
-		 
+		 final Set<Consent> parts = new HashSet<Consent>(StudyParticipation.getActiveParticipantsByStudyAndGroup(study._id, studyGroup, Sets.create("owner")));			    
+		 parts.addAll(StudyRelated.getActiveByAuthorizedGroupAndStudy(study._id, Collections.singleton(studyGroup), Collections.singleton(study._id), Consent.SMALL));
 		 				 
 		 final String handle = PortalSessionToken.session().handle;
 		 
@@ -298,7 +298,7 @@ public class Studies extends APIController {
 		        		out.write("{ \"resourceType\" : \"Bundle\", \"type\" : \"searchset\", \"entry\" : [ ");
 
 		        		boolean first = true;
-		        		for (StudyParticipation part : parts) {
+		        		for (Consent part : parts) {
 		        		List<Record> allRecords = RecordManager.instance.list(executorId, part._id, CMaps.map(), Sets.create("_id"));
 		        		Iterator<Record> recordIterator = allRecords.iterator();
 

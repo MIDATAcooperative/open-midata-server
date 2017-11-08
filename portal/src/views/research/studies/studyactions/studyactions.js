@@ -77,7 +77,7 @@ angular.module('portal')
 		if (! myform.$valid) return;
 		
       var c = $scope.crit;		
-	  $scope.status.doAction("addapplication", server.post(jsRoutes.controllers.research.Studies.addApplication($scope.studyId, $scope.group).url, { plugin : c.plugin._id, restricted : c.restricted, shareback : c.shareback, device : c.device }))
+	  $scope.status.doAction("addapplication", server.post(jsRoutes.controllers.research.Studies.addApplication($scope.studyId, $scope.group).url, { plugin : c.plugin._id, restrictread : c.restrictread, shareback : c.shareback, device : c.device }))
 		.then(function(result) {
 			$scope.submitted = false;
 			$scope.updateConsents();
@@ -93,6 +93,10 @@ angular.module('portal')
 	
 	$scope.showSpace = function(space) {
 		$state.go('^.spaces', { spaceId : space._id, study : $scope.study._id });
+	};
+	
+	$scope.deleteSpace = function(space) {
+		spaces.deleteSpace(space._id).then(function() { $scope.updateConsents(); });
 	};
 	
 	$scope.reload();
