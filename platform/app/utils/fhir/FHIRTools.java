@@ -36,6 +36,7 @@ public class FHIRTools {
 
 	private static Set<String> PERSON = Sets.create("person");
 	private static Set<String> REFERENCE = Sets.create("role", "firstname", "lastname");
+	public final static String BASE64_PLACEHOLDER_FOR_STREAMING = "RKNS56'LP";
 	
 	private static DateTimeFormatter titleTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 	

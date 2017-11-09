@@ -1,10 +1,14 @@
 package controllers.research;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -83,21 +87,26 @@ import utils.auth.CodeGenerator;
 import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
 import utils.auth.PortalSessionToken;
+import utils.auth.RecordToken;
 import utils.auth.ResearchSecured;
 import utils.collections.CMaps;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
+import utils.db.FileStorage.FileData;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.fhir.FHIRServlet;
+import utils.fhir.FHIRTools;
 import utils.fhir.GroupResourceProvider;
 import utils.fhir.ResourceProvider;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+
+import org.apache.commons.codec.binary.Base64InputStream;
 import org.hl7.fhir.dstu3.model.DomainResource;
 
 /**
@@ -317,7 +326,27 @@ public class Studies extends APIController {
 				            	DomainResource r = prov.parse(rec, prov.getResourceType());
 				            	String location = FHIRServlet.getBaseUrl()+"/"+prov.getResourceType().getSimpleName()+"/"+rec._id.toString()+"/_history/"+rec.version;
 				            	if (r!=null) {
-				            		out.write((first?"":",")+"{ \"fullUrl\" : \""+location+"\", \"resource\" : "+prov.serialize(r)+" } ");
+				            		String ser = prov.serialize(r);
+				            		int attpos = ser.indexOf(FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING);
+				            		if (attpos > 0) {
+				            			out.write((first?"":",")+"{ \"fullUrl\" : \""+location+"\", \"resource\" : "+ser.substring(0, attpos));
+				            			FileData fileData = RecordManager.instance.fetchFile(executorId, new RecordToken(rec._id.toString(), rec.stream.toString()));
+				            			
+				            			
+				            			int BUFFER_SIZE = 3 * 1024;
+
+				            			try ( InputStreamReader in = new InputStreamReader(new Base64InputStream(fileData.inputStream, true, -1, null)); ) {				            			    
+				            			    
+				            			    char[] chunk = new char[BUFFER_SIZE];
+				            			    int len = 0;
+				            			    while ( (len = in.read(chunk)) != -1 ) {				            			    	
+				            			         out.write(String.valueOf(chunk, 0, len));
+				            			    }
+				            			    
+				            			}
+				            							            							            			
+				            			out.write(ser.substring(attpos+FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING.length())+" } ");
+				            		} else out.write((first?"":",")+"{ \"fullUrl\" : \""+location+"\", \"resource\" : "+ser+" } ");
 				            	} else {
 				            		out.write((first?"":",")+"{ \"fullUrl\" : \""+location+"\" } ");
 				            	}

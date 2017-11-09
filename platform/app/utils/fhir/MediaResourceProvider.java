@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.hl7.fhir.dstu3.model.Appointment;
 import org.hl7.fhir.dstu3.model.Attachment;
+import org.hl7.fhir.dstu3.model.Base64BinaryType;
 import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Media;
@@ -37,8 +38,11 @@ import models.MidataId;
 import models.Record;
 import play.Play;
 import utils.ErrorReporter;
+import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
+import utils.auth.RecordToken;
 import utils.collections.Sets;
+import utils.db.FileStorage.FileData;
 import utils.exceptions.AppException;
 
 public class MediaResourceProvider extends ResourceProvider<Media> implements IResourceProvider {
@@ -242,5 +246,15 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 	public void clean(Media theMedia) {		
 		super.clean(theMedia);
 	}
+	
+	public String serialize(Media theMedia) {
+		Attachment att = theMedia.getContent();
+		if (att != null) {
+			
+			att.setUrl(null);
+			att.setDataElement(new Base64BinaryType(FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING));
+		}
+    	return ctx.newJsonParser().encodeResourceToString(theMedia);
+    }
 
 }
