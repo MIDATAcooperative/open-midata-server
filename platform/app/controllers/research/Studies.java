@@ -1138,11 +1138,14 @@ public class Studies extends APIController {
 	   UserGroupMember ugm = UserGroupMember.getByGroupAndMember(studyid, userId);
 	   if (ugm == null) throw new BadRequestException("error.notauthorized.study", "Not member of study team");
 	   
-       Set<String> fields = Sets.create("owner", "ownerName", "group", "recruiter", "recruiterName", "pstatus", "gender", "country", "yearOfBirth");
+       Set<String> fields = Sets.create("owner", "ownerName", "group", "recruiter", "recruiterName", "pstatus", "gender", "country", "yearOfBirth", "partName");
        Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 	   Set<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(studyid, properties, fields);
 	   if (!ugm.role.pseudonymizedAccess()) {
-		   for (StudyParticipation part : participants) part.ownerName = null;
+		   for (StudyParticipation part : participants) {
+			   part.partName = part.ownerName;
+			   part.ownerName = null;
+		   }
 	   }
 	   ReferenceTool.resolveOwners(participants, true);
 	   fields.remove("owner");
@@ -1161,7 +1164,6 @@ public class Studies extends APIController {
 	@Security.Authenticated(ResearchSecured.class)
 	public static Result getParticipant(String studyidstr, String partidstr) throws JsonValidationException, AppException {
 	   MidataId userId = new MidataId(request().username());	
-	   MidataId owner = PortalSessionToken.session().getOrg();
 	   MidataId studyId = new MidataId(studyidstr);
 	   MidataId partId = new MidataId(partidstr);
 	   	   
@@ -1172,14 +1174,15 @@ public class Studies extends APIController {
 	   if (ugm == null) throw new BadRequestException("error.notauthorized.study", "Not member of study team");
 	   
 	   
-	   Set<String> participationFields = Sets.create("pstatus", "status", "group","ownerName", "gender", "country", "yearOfBirth", "owner"); 
+	   Set<String> participationFields = Sets.create("pstatus", "status", "group","ownerName", "gender", "country", "yearOfBirth", "owner", "partName"); 
 	   StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, participationFields);
 	   if (participation == null) throw new BadRequestException("error.unknown.participant", "Member does not participate in study");
 	   if (participation.pstatus == ParticipationStatus.CODE || 
 		   participation.pstatus == ParticipationStatus.MATCH || 
 		   participation.pstatus == ParticipationStatus.MEMBER_REJECTED) throw new BadRequestException("error.unknown.participant", "Member does not participate in study");
 	   
-	   if (!ugm.role.pseudonymizedAccess()) {		   	   
+	   if (!ugm.role.pseudonymizedAccess()) {	
+		   participation.partName = participation.ownerName;
 		   participation.ownerName = null;		   
 	   }
 	   ReferenceTool.resolveOwners(Collections.singleton(participation), true);
