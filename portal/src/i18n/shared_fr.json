@@ -200,13 +200,12 @@
             "ACCOUNT_DELETED" : "Compte supprimé",
             "INTERNAL_COMMENT" : "Commentaire interne",
             "TERMS_OF_USE_AGREED" : "Conditions Générales d'Utilisation acceptées",
-
             "user-registration" : "Inscription de l'utilisateur",
             "110122" : "Connexion",
             "user-password-change" : "Mot de passe modifié",
             "user-passphrase-change" : "Passphrase modifiée",
             "user-address-change" : "Adresse postale modifiée",
-            "user-email-change" : "Adresse e-mail modifié",
+            "user-email-change" : "Adresse e-mail modifiée",
             "user-status-change" : "État du compte de l'utilisateur modifié",
             "user-email-confirmed" : "E-mail confirmé par l'utilisateur",
             "user-email-rejected" : "E-mail rejeté par l'utilisateur",
@@ -224,6 +223,7 @@
             "study-participation-requested" : "Participation à l'étude demandée",
             "study-participation-member-rejected" : "Participation à l'étude rejetée par le participant",
             "study-participation-research-rejected" : "Participation à l'étude rejetée par le chercheur",
+            "study-participation-member-retreat" : "Le participant à l'étude s'est retiré de l'étude",
             "study-participation-approved" : "Participation à l'étude approuvée",
             "study-participation-group-assigned" : "Assignation à un groupe de participants à l'étude",
             "study-validation-requested" : "Validation de l'étude requise",
@@ -243,7 +243,10 @@
             "contract-send" : "Contrat envoyé à l'utilisateur",
             "internal-comment" : "Commentaire administrateur",
             "user-terms-of-use-agreed" : "Conditions d'utilisation acceptées",
-            "audit-log-used" : "Audit Log consulté"
+            "audit-log-used" : "Audit Log consulté",
+            "added-as-team-member" : "Ajouté comme membre d'un team",
+            "updated-role-in-team" : "Rôle dans le team modifié",
+            "removed-from-team" : "Supprimé du team"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "L'adresse e-mail de l'utilisateur doit être renseigné sur la plateforme",
@@ -266,7 +269,8 @@
             "ACTIVE" : "Actif",
             "EXPIRED" : "Expiré",
             "REJECTED" : "Rejeté",
-            "UNCONFIRMED" : "non confirmé"
+            "UNCONFIRMED" : "Non confirmé",
+            "FROZEN" : "Gelé"
         },
         "consenttype" : {
             "CIRCLE" : "Autres détenteurs de compte",
@@ -300,7 +304,8 @@
             "MATCH" : "Concordance possible",
             "MEMBER_REJECTED" : "Utilisateur rejeté",
             "REQUEST" : "Participation demandée",
-            "RESEARCH_REJECTED" : "Rejeté par le chercheur"
+            "RESEARCH_REJECTED" : "Rejeté par le chercheur",
+            "MEMBER_RETREATED" : "Le participant s'est retiré"
         },
         "studyexecutionstatus" : {
             "ABORTED" : "Exécution annulée",
@@ -339,21 +344,28 @@
             "NONMEMBERUSER" : "Titulaire de compte validé",
             "MEMBEROFCOOPERATIVE" : "Membre de la cooperative"
         },
+        "researcherrole" : {
+            "SPONSOR" : "Sponsor",
+            "INVESTIGATOR" : "Investigator",
+            "AUDITOR" : "Auditor",
+            "MONITOR" : "Monitor",
+            "OTHER" : "Autre"
+        },
         "userstatus" : {
             "ACTIVE" : "actif",
-            "BLOCKED" : "Bloqué",
-            "DELETED" : "Supprimé",
-            "NEW" : "Nouveau"
+            "BLOCKED" : "bloqué",
+            "DELETED" : "supprimé",
+            "NEW" : "nouveau"
         },
         "frequency" : {
-            "ONCE" : "Une fois",
+            "ONCE" : "une fois",
             "DAILY" : "quotidien",
             "WEEKLY" : "hebdomadaire",
             "MONTHLY" : "mensuel",
             "YEARLY" : "annuel"
         },
         "language" : {
-            "EN" : "Anglais",
+            "EN" : "anglais",
             "DE" : "allemand",
             "IT" : "italien",
             "FR" : "français"
@@ -620,6 +632,7 @@
         "no_providers" : "Aucun",
         "provider_remove_btn" : "supprimer",
         "provider_add_btn" : "Ajouter",
+        "duration" : "Durée",
         "information_that_needs_sharing" : "Données requises",
         "information_restricted" : "Votre sexe, année de naissance et pays de résidence",
         "information_demographic" : "L'ensemble de vos données démographiques (nom, date de naissance, adresse, ...)",
@@ -636,6 +649,7 @@
         "history_comment" : "Commentaire",
         "request_participation_btn" : "Demande de participation",
         "do_not_participate_btn" : "Ne participez pas",
+        "retreat_btn" : "Participation rétractée",
         "status" : "État"
     },
 
@@ -647,7 +661,8 @@
         "action" : "Plus...",
         "change_password_btn" : "Changer le mot de passe",
         "change_passphrase_btn" : "Modifier la phrase de passe",
-        "auditlog_btn" : "Afficher l'Audit Log",
+        "auditlog_btn" : "Consulter l'Audit Log",
+        "change_email_btn" : "Changer l'adresse e-mail",
         "repair_account_btn" : "Réparer le compte",
         "reset_spaces_btn" : "Réinitialiser le portail",
         "delete_records_btn" : "Supprimer les enregistrements",
@@ -663,7 +678,6 @@
         "searchable_info" : "Ce réglage n'a aucun effet sur les partages que vous avez déjà accordés.",
         "change_settings_btn" : "Modifier les paramètres",
         "change_settings_success" : "Les paramètres ont été mis à jour"
-
     },
 
     "visualization" : {
@@ -1005,7 +1019,8 @@
         "HEALTHCARE" : "Consentement (Professionnel de la santé)",
         "MEMBER" : "Compte",
         "PROVIDER" : "Compte (Professionnel de la santé)",
-        "RESEARCH" : "Compte (Chercheur)"
+        "RESEARCH" : "Compte (Chercheur)",
+        "ADMIN" : "Compte (Administrateur)"
     },
 
     "apps" : {
@@ -1015,5 +1030,16 @@
         "count" : "Vous avez {{count}} apps autorisées:",
         "services" : "Services",
         "connect_btn" : "Autoriser"
+    },
+
+    "changeemail" : {
+        "title" : "Changer l'adresse e-mail du compte",
+        "midataId" : "ID MIDATA",
+        "name" : "Nom",
+        "old_email" : "Adresse e-mail actuelle",
+        "new_email" : "Nouvelle adresse e-mail",
+        "none" : "Aucune",
+        "change_btn" : "Changer",
+        "success" : "L'adresse e-mail a été changée avec succès!"
     }
 }

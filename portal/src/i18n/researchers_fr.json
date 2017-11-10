@@ -15,7 +15,8 @@
     "researcher_navbar" : {
         "studies" : "Études",
         "workspace" : "Workspace",
-        "data" : "Données"
+        "data" : "Données",
+        "addresearcher" : "Ajouter un chercheur"
     },
 
     "createstudy" : {
@@ -31,7 +32,8 @@
         "actions" : "Actions",
         "participants" : "Participants",
         "records" : "Enregistrements",
-        "results" : "Résultats"
+        "results" : "Résultats",
+        "team" : "Team"
     },
 
     "studies" : {
@@ -52,7 +54,8 @@
         "plugin" : "Application pour la recherche",
         "device" : "Code de l'appareil",
         "restrict" : "Restreindre la lecture à ce groupe",
-        "add_application_btn" : "Ajouter les applications fournissant des données à l'étude",
+        "shareback" : "L'application partage des données avec le groupe de participants",
+        "add_application_btn" : "Ajouter une application vouée à la recherche",
         "linked_apps" : "Consentements pour les applications"
     },
 
@@ -79,8 +82,8 @@
 
     "studyoverview" : {
         "name" : "Nom",
-        "created_at" : "Créé à :",
-        "created_by" : "Créé par :",
+        "created_at" : "Créé à:",
+        "created_by" : "Créé par:",
         "description" : "Description",
         "code" : "Code",
         "validation_status" : "État de la validation",
@@ -101,12 +104,12 @@
     },
 
     "studyparticipant" : {
-        "participant" : "Participant :",
-        "gender" : "Genre :",
-        "year" : "Année de naissance :",
-        "country" : "Pays :",
-        "status" : "État :",
-        "group" : "Groupe :",
+        "participant" : "Participant:",
+        "gender" : "Genre:",
+        "year" : "Année de naissance:",
+        "country" : "Pays:",
+        "status" : "État:",
+        "group" : "Groupe:",
         "history" : "Historique de participation"
     },
 
@@ -131,9 +134,35 @@
     "studyrules" : {
         "title" : "Règles de l'étude",
         "no_change_warning" : "Cette configuration ne peut plus être modifiée une fois l'étude validée.",
+        "startDate" : "Date de début officielle",
+        "endDate" : "Date de fin officielle",
+        "dataCreatedBefore" : "Données figées dès le",
         "sharing_query" : "Sharing Query (JSON)",
         "terms_of_use" : "Dispositions",
         "show_terms" : "Afficher les dispositions",
         "requirements" : "Exigences"
+    },
+
+    "addresearcher" : {
+        "sign_up" : "Inscrire un chercheur",
+        "success" : "Un nouveau chercher a été ajouté à votre organisation."
+    },
+
+    "studyteam" : {
+        "person" : "Membre du team",
+        "role" : "Rôle",
+        "roleName" : "Nom du rôle",
+        "addperson_btn" : "Ajouter une personne",
+        "rights" : "Droits",
+        "right" : {
+            "readData" : "Lire les données",
+            "writeData" : "Ecrire/modifier des données",
+            "unpseudo" : "Participants non pseudonymisés",
+            "export" : "Exporter les données",
+            "changeTeam" : "Modifier le team",
+            "auditLog" : "Consulter l'Audit Log",
+            "participants" : "Gérer les participants",
+            "setup" : "Configuration de l'étude"
+        }
     }
 }

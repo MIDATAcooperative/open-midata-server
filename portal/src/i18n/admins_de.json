@@ -44,7 +44,8 @@
         "email_confirm_btn" : "E-Mail-Adresse bestätigen",
         "comment" : "Bemerkung",
         "add_comment_btn" : "Bemerkung hinzufügen",
-        "wipe_btn" : "Account beseitigen"
+        "wipe_btn" : "Account beseitigen",
+        "change_email_btn" : "E-Mail-Adresse ändern"
     },
 
     "admin_news" : {
@@ -107,6 +108,9 @@
         "created_by" : "Erstellt von",
         "description" : "Beschreibung",
         "code" : "Code",
+        "startDate" : "Startdatum",
+        "endDate" : "Enddatum",
+        "dataCreatedBefore" : "Datenbestand eingefroren ab dem",
         "required_information" : "Benötigte Informationen",
         "required_assistance" : "Belegarzt benötigt",
         "termsOfUse" : "Bestimmungen",
@@ -115,6 +119,8 @@
         "groups" : "Gruppen",
         "group_name" : "Name der Gruppe",
         "group_description" : "Beschreibung",
+        "team" : "Team",
+        "role" : "Rolle",
         "history" : "Historie",
         "end_validation_btn" : "Validierung abschliessen",
         "back_to_draft_btn" : "Zurück zum Entwurf",

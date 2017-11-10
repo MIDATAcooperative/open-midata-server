@@ -15,7 +15,8 @@
     "researcher_navbar" : {
         "studies" : "Studien",
         "workspace" : "Workspace",
-        "data" : "Daten"
+        "data" : "Daten",
+        "addresearcher" : "Forscher hinzufügen"
     },
 
     "createstudy" : {
@@ -31,7 +32,8 @@
         "actions" : "Aktionen",
         "participants" : "Teilnehmer",
         "records" : "Einträge",
-        "results" : "Ergebnisse"
+        "results" : "Ergebnisse",
+        "team" : "Team"
     },
 
     "studies" : {
@@ -52,8 +54,9 @@
         "plugin" : "Forschungsapplikation",
         "device" : "Code des Gerätes",
         "restrict" : "Lesen auf diese Studiengruppe beschränken",
-        "add_application_btn" : "Studiendaten liefernde Anwendung hinzufügen.",
-        "linked_apps" : "Zustimmungen für Anwendungen"
+        "shareback" : "Die Applikation teilt Daten mit der Teilnehmergruppe",
+        "add_application_btn" : "Forschungs-Applikation hinzufügen",
+        "linked_apps" : "Zustimmungen für die Anwendungen"
     },
 
     "studyfields" : {
@@ -131,9 +134,35 @@
     "studyrules" : {
         "title" : "Regel der Studie",
         "no_change_warning" : "Diese Konfiguration kann nicht mehr geändert werden, sobald die Studie validiert wurde.",
+        "startDate" : "Offizielles Startdatum",
+        "endDate" : "Offizielles Enddatum",
+        "dataCreatedBefore" : "Datenbestand eingefroren ab dem",
         "sharing_query" : "Sharing Query (JSON)",
         "terms_of_use" : "Bestimmungen",
         "show_terms" : "Bestimmungen anzeigen",
         "requirements" : "Anforderungen"
+    },
+
+    "addresearcher" : {
+        "sign_up" : "Forscher registrieren",
+        "success" : "Ein neuer Forscher wurde Ihrer Organization hinzugefügt."
+    },
+
+    "studyteam" : {
+        "person" : "Teammitglied",
+        "role" : "Rolle",
+        "roleName" : "Name der Role",
+        "addperson_btn" : "Person hinzufügen",
+        "rights" : "Rechte",
+        "right" : {
+            "readData" : "Daten lesen",
+            "writeData" : "Daten schreiben/aktualisieren",
+            "unpseudo" : "Nicht pseudonymisierte Teilnehmer",
+            "export" : "Daten exportieren",
+            "changeTeam" : "Team ändern",
+            "auditLog" : "Audit Log anschauen",
+            "participants" : "Teilnehmer verwalten",
+            "setup" : "Einrichtung der Studie"
+        }
     }
 }

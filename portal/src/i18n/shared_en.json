@@ -38,14 +38,9 @@
      "noconsent" : "No active consent that allows to add data for target person.",
      "unsupported" : "Operation not supported",
      "notrialuser_title" : "Full membership required!",
-	
      "notrialuser_detail" : "In order to use this feature you need to complete your registration. Request a written copy of the AGB and return it signed. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
-
      "mustbemember_title" : "MIDATA cooperative membership required!",
-
-	
      "mustbemember_detail" : "In order to use this feature you must be member of the MIDATA cooperative. Click on your username on the top right and check the 'Account Status' section for more information.",
-
      "notauthorized" : {
        "action" : "You are not authorized to do this action",
        "fields" : "You are not authorized to query provided fields",
@@ -253,8 +248,7 @@
        "audit-log-used" : "Audit Log consulted",	   
 	   "added-as-team-member" : "Added as team member",
 	   "updated-role-in-team" :  "Updated role in team",
-	   "removed-from-team" : "Removed from team"	   
-
+	   "removed-from-team" : "Removed from team"
 	 },
 	 "userfeature" : {
 	   "EMAIL_ENTERED" : "Email address of user must be known to the platform",
@@ -666,12 +660,12 @@
     "account" : "User Account",
     "user" : "User",
     "name" : "Name:",
-    "email" : "EMail:",
+    "email" : "Email:",
     "action" : "More...",
     "change_password_btn" : "Change Password",
  	"change_passphrase_btn" : "Change Passphrase",
  	"auditlog_btn" : "View Audit Log",
-	"change_email_btn" : "Change EMail",
+	"change_email_btn" : "Change Email Address",
 	"repair_account_btn" : "Repair Account",
 	"reset_spaces_btn" : "Reset Portal",
 	"delete_records_btn" : "Delete Records",
@@ -687,7 +681,6 @@
 	"searchable_info" : "This setting has no effect on your existing data sharing consents.",
 	"change_settings_btn" : "Change Settings",
 	"change_settings_success" : "Settings have been updated"
-
   },
 
   "visualization" : {
@@ -1030,7 +1023,7 @@
     "MEMBER" : "Account",
     "PROVIDER" : "Account (Health Provider)",
     "RESEARCH" : "Account (Researcher)",
-    "ADMIN" : "Account (Admin)",
+    "ADMIN" : "Account (Administrator)",
     "DEVELOPER" : "Account (Developer)"
   },
   
@@ -1041,18 +1034,17 @@
     "count" : "You have {{count}} authorized apps:",
     "services" : "Services",
     "connect_btn" : "Authorize"       
-
   },
   
   "changeemail" : {
-    "title" : "Change Account eMail Address",
-    "midataId" : "Midata ID",
+    "title" : "Change Account Email Address",
+    "midataId" : "MIDATA ID",
     "name" : "Name",
-    "old_email" : "Current eMail Address",
-    "new_email" : "New eMail Address",
+    "old_email" : "Current Email Address",
+    "new_email" : "New Email Address",
     "none" : "None",
     "change_btn" : "Change",
-    "success" : "EMail address successfully changed!"
+    "success" : "Email address successfully changed!"
   }
     
 }

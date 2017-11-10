@@ -14,7 +14,8 @@
   "researcher_navbar" : {
     "studies" : "Studies",
     "workspace" : "Workspace",
-    "data" : "Data"
+    "data" : "Data",
+    "addresearcher" : "Add Researcher"
   },
   
   "createstudy" : {
@@ -30,7 +31,8 @@
     "actions" : "Actions",
     "participants" : "Participants",
     "records" : "Records",
-    "results" : "Results"
+    "results" : "Results",
+    "team" : "Team"
   },
   
   "studies" : {
@@ -50,8 +52,9 @@
     "add_task_btn" : "Add Task for Participants",
     "plugin" : "Research Application",
     "device" : "Device Code",
-    "restrict" : "Restrict Read to Group",
-    "add_application_btn" : "Add Study Data Providing Application",
+    "restrict" : "Restrict read to group",
+    "shareback" : "Application shares data to participant group",
+    "add_application_btn" : "Add Research Application",
     "linked_apps" : "Applications Consents"
   },
   
@@ -130,9 +133,35 @@
   "studyrules" : {
     "title" : "Study Rules",
     "no_change_warning" : "This setup cannot be changed anymore after Study has been validated.",
+    "startDate" : "Official start date",
+    "endDate" : "Official end date",
+    "dataCreatedBefore" : "Data freeze date",
     "sharing_query" : "Sharing Query (JSON)",
     "terms_of_use" : "Terms",
     "show_terms" : "Show Terms",
     "requirements" : "Requirements"
+  },
+  
+  "addresearcher" : {
+    "sign_up" : "Sign Up Researcher",
+    "success" : "A new researcher has been added to your organization."
+  },
+  
+  "studyteam" : {
+    "person" : "Team member",
+    "role" : "Role",
+    "roleName" : "Role Name",
+    "addperson_btn" : "Add Person",
+    "rights" : "Rights",
+    "right" : {
+      "readData" : "Read data records",
+      "writeData" : "Write/Update data records",
+      "unpseudo" : "Unpseudonymized participants", 
+      "export" : "Export data",
+      "changeTeam" : "Change team",
+      "auditLog" : "View audit log",
+      "participants" : "Manage participants",
+      "setup" : "Setup Study"
+    }
   }
 }
