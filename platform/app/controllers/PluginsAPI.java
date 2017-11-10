@@ -59,6 +59,7 @@ import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.RuntimeConstants;
 import utils.ServerTools;
 import utils.access.AccessContext;
 import utils.access.AccountCreationAccessContext;
@@ -315,7 +316,7 @@ public class PluginsAPI extends APIController {
 				
 		AccessLog.log("NEW QUERY");
 		
-		records = RecordManager.instance.list(inf.executorId, inf.targetAPS, properties, fields);		  
+		records = RecordManager.instance.list(inf.executorId, inf.context, properties, fields);		  
 						
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
 		
@@ -338,12 +339,13 @@ public class PluginsAPI extends APIController {
 		JsonValidation.validate(json, "authToken", "properties", "summarize");
 		
 		// decrypt authToken 
-		SpaceToken authToken = SpaceToken.decryptAndSession(request(), json.get("authToken").asText());
+		ExecutionInfo authToken = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());
+		//SpaceToken authToken = SpaceToken.decryptAndSession(request(), json.get("authToken").asText());
 		if (authToken == null) {
 			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
 		Stats.setPlugin(authToken.pluginId);		
-		MidataId targetAps = authToken.spaceId;
+		MidataId targetAps = authToken.targetAPS;
 		
 		Collection<RecordsInfo> result;
 
@@ -351,13 +353,13 @@ public class PluginsAPI extends APIController {
 		Set<String> fields = json.has("fields") ? JsonExtraction.extractStringSet(json.get("fields")) : Sets.create();
 		
 		if (authToken.recordId != null) {
-			Collection<Record> record = RecordManager.instance.list(authToken.executorId, authToken.spaceId, CMaps.map("_id", authToken.recordId), Sets.create("owner", "content", "format", "group"));
+			Collection<Record> record = RecordManager.instance.list(authToken.executorId, authToken.context, CMaps.map("_id", authToken.recordId), Sets.create("owner", "content", "format", "group"));
 			result = new ArrayList<RecordsInfo>();
 			for (Record r : record) result.add(new RecordsInfo(r));			
 		} else {
 							
 			AggregationType aggrType = JsonValidation.getEnum(json, "summarize", AggregationType.class);		
-		    result = RecordManager.instance.info(authToken.executorId, targetAps, properties, aggrType);
+		    result = RecordManager.instance.info(authToken.executorId, targetAps, authToken.context, properties, aggrType);
 
 		    
 
@@ -483,7 +485,7 @@ public class PluginsAPI extends APIController {
 		
 		DBRecord dbrecord = RecordConversion.instance.toDB(record);
         	
-		if (!record.owner.equals(inf.ownerId) && !(context instanceof ConsentAccessContext) && !(context instanceof AccountCreationAccessContext)) {
+		if (!record.owner.equals(inf.executorId) && !inf.executorId.equals(RuntimeConstants.instance.autorunService) && !(context instanceof ConsentAccessContext) && !(context instanceof AccountCreationAccessContext)) {
 			BSONObject query = RecordManager.instance.getMeta(inf.executorId, inf.targetAPS, "_query");
 			Set<Consent> consent = null;
 			if (query != null && query.containsField("link-study")) {
@@ -551,15 +553,18 @@ public class PluginsAPI extends APIController {
 		*/
 		
 		/* Publication of study results */ 
-		BSONObject query = RecordManager.instance.getMeta(inf.executorId, inf.targetAPS, "_query");
-		if (query != null && query.containsField("target-study")) {
-			Map<String, Object> q = query.toMap(); 
-			MidataId studyId = MidataId.from(q.get("target-study"));
-			String group = q.get("target-study-group").toString();
-			Set<StudyRelated> srs = StudyRelated.getActiveByGroupAndStudy(group, studyId, Sets.create("_id"));
-			if (!srs.isEmpty()) {
-				for (StudyRelated sr : srs ) {
-				  RecordManager.instance.share(inf.executorId, inf.ownerId, sr._id, records, false);
+		if (record.owner.equals(inf.executorId)) {
+			BSONObject query = RecordManager.instance.getMeta(inf.executorId, inf.targetAPS, "_query");
+			if (query != null && query.containsField("target-study")) {
+				Map<String, Object> q = query.toMap(); 
+				MidataId studyId = MidataId.from(q.get("target-study"));
+				Object groupObj = q.get("target-study-group");
+				String group = groupObj != null ? groupObj.toString() : null;
+				Set<StudyRelated> srs = StudyRelated.getActiveByOwnerGroupAndStudy(inf.executorId, group, studyId, Sets.create("_id"));
+				if (!srs.isEmpty()) {
+					for (StudyRelated sr : srs ) {
+					  RecordManager.instance.share(inf.executorId, inf.ownerId, sr._id, records, false);
+					}
 				}
 			}
 		}

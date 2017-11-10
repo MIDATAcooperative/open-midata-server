@@ -174,7 +174,7 @@ public class Circles extends APIController {
 			for (Consent consent : consents) {
 				if (consent.status.equals(ConsentStatus.ACTIVE)) {
 				  try {
-				    Collection<RecordsInfo> summary = RecordManager.instance.info(executor, consent._id, all, AggregationType.ALL);
+				    Collection<RecordsInfo> summary = RecordManager.instance.info(executor, consent._id, null, all, AggregationType.ALL);
 				    if (summary.isEmpty()) consent.records = 0; else consent.records = summary.iterator().next().count;
 				  } catch (RequestTooLargeException e) { consent.records = -1; }
 				} else consent.records = 0;
@@ -636,11 +636,11 @@ public class Circles extends APIController {
 				  RecordManager.instance.shareByQuery(executor, consent.owner, consent._id, query);				  
 				} else {
 				  Circles.setQuery(executor, consent.owner, consent._id, query);
-				  RecordManager.instance.applyQuery(executor, query, consent.owner, consent._id, true);
+				  RecordManager.instance.applyQuery(executor, consent.owner, query, consent.owner, consent._id, true);
 				}
 			}
 			
-			if (patientRecord && (consent.type.equals(ConsentType.CIRCLE) || consent.type.equals(ConsentType.HEALTHCARE))) autosharePatientRecord(executor, consent);
+			if (patientRecord && (consent.type.equals(ConsentType.CIRCLE) || consent.type.equals(ConsentType.HEALTHCARE) || consent.type.equals(ConsentType.STUDYPARTICIPATION))) autosharePatientRecord(executor, consent);
 		} else if (!active && wasActive) {
 			Set<MidataId> auth = consent.authorized;
 			if (auth.contains(consent.owner)) { auth.remove(consent.owner); }

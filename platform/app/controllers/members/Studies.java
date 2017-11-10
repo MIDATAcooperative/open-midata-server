@@ -241,7 +241,7 @@ public class Studies extends APIController {
 		}
 				
 		part.setOwnerName(userName);
-		part.status = ConsentStatus.ACTIVE;
+		part.status = ConsentStatus.UNCONFIRMED;
 		part.writes = WritePermissionType.UPDATE_AND_CREATE;
 		part.createdBefore = study.dataCreatedBefore;
 		if (code != null) {
@@ -278,7 +278,7 @@ public class Studies extends APIController {
 		
 		// Query can only be applied if patient is doing it himself
 		if (executor.equals(member._id)) {
-		  RecordManager.instance.applyQuery(executor, study.recordQuery, member._id, part._id, study.requiredInformation.equals(InformationType.DEMOGRAPHIC));
+		  RecordManager.instance.applyQuery(RecordManager.instance.createContextFromAccount(executor), study.recordQuery, member._id, part._id, study.requiredInformation.equals(InformationType.DEMOGRAPHIC));
 		}
 		
 		return part;
@@ -342,7 +342,7 @@ public class Studies extends APIController {
 		return ok();
 	}
 	
-	public static void requestParticipation(ExecutionInfo inf, MidataId userId, MidataId studyId, MidataId usingApp) throws AppException {
+	public static StudyParticipation requestParticipation(ExecutionInfo inf, MidataId userId, MidataId studyId, MidataId usingApp) throws AppException {
 		
 		
 		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country"));		
@@ -360,7 +360,7 @@ public class Studies extends APIController {
 		}
 		AuditManager.instance.addAuditEvent(AuditEventType.STUDY_PARTICIPATION_REQUESTED, userId, participation, study);
 		
-		if (participation.pstatus == ParticipationStatus.ACCEPTED || participation.pstatus == ParticipationStatus.REQUEST) return;				
+		if (participation.pstatus == ParticipationStatus.ACCEPTED || participation.pstatus == ParticipationStatus.REQUEST) return participation;				
 		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");
 		
 		participation.setPStatus(ParticipationStatus.REQUEST);						
@@ -376,9 +376,11 @@ public class Studies extends APIController {
 		Circles.consentStatusChange(inf.executorId, participation, ConsentStatus.ACTIVE);				
 
 		AuditManager.instance.success();
+		
+		return participation;
 	}
 	
-    public static void match(MidataId executor, MidataId userId, MidataId studyId, MidataId usingApp) throws AppException {
+    public static StudyParticipation match(MidataId executor, MidataId userId, MidataId studyId, MidataId usingApp) throws AppException {
 		
 		
 		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country"));		
@@ -394,6 +396,8 @@ public class Studies extends APIController {
 			participation = createStudyParticipation(executor, study, user, null);
 										
 		}		
+		
+		return participation;
 		
 	}
 	

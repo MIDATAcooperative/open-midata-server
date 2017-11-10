@@ -4,7 +4,7 @@ angular.module('portal')
 	$scope.error = null;
 	$scope.success = false;
 	$scope.visualization = {};
-	$scope.options = {};
+	$scope.options = { study : $state.params.options };
 	$scope.params = $state.params;
 	$scope.status = new status(true);
 	if ($state.params.context == "workspace") {

@@ -39,7 +39,9 @@ public class Feature_Streams extends Feature {
 	}
 		
 	
-	public final static Set<String> streamFields = Sets.create("content", "format", "app");					
+	public final static Set<String> streamFields = Sets.create("content", "format", "app");
+	
+	private final static Set<String> streamQueryFields = Sets.create("_id", "key", "owner");
 	
 	@Override
 	protected List<DBRecord> query(Query q) throws AppException {		
@@ -58,7 +60,7 @@ public class Feature_Streams extends Feature {
 			  
 			  AccessLog.logBegin("begin single stream query");
 			  
-			  List<DBRecord> streams = next.query(new Query(CMaps.map(q.getProperties()).map("_id", q.getProperties().get("stream")).removeKey("quick"), Sets.create("_id", "key", "owner"), q.getCache(), q.getApsId(), q.getContext() ));
+			  List<DBRecord> streams = next.query(new Query(CMaps.map(q.getProperties()).map("_id", q.getProperties().get("stream")).removeKey("quick"), streamQueryFields, q.getCache(), q.getApsId(), q.getContext() ));
 				
 			  for (DBRecord r : streams) {
 				  if (r.isStream) {

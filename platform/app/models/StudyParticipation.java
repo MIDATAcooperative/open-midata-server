@@ -12,6 +12,7 @@ import models.enums.Gender;
 import models.enums.ParticipationStatus;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
 
 /**
@@ -32,6 +33,8 @@ public class StudyParticipation extends Consent {
 	public int yearOfBirth;
 	public String country;
 	public Gender gender;
+	
+	public @NotMaterialized String partName;
 			
 	public StudyParticipation() {
 		this.type = ConsentType.STUDYPARTICIPATION;
@@ -47,6 +50,10 @@ public class StudyParticipation extends Consent {
 	
 	public static Set<StudyParticipation> getParticipantsByStudy(MidataId study, Set<String> fields) throws InternalServerException {
 		return Model.getAll(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("study", study).map("pstatus", Sets.createEnum(ParticipationStatus.ACCEPTED, ParticipationStatus.REQUEST, ParticipationStatus.RESEARCH_REJECTED, ParticipationStatus.MEMBER_RETREATED)), fields);
+	}
+	
+	public static Set<StudyParticipation> getParticipantsByStudy(MidataId study, Map<String, Object> properties, Set<String> fields) throws InternalServerException {
+		return Model.getAll(StudyParticipation.class, collection, CMaps.map(properties).map("type", ConsentType.STUDYPARTICIPATION).map("study", study), fields);
 	}
 	
 	public static Set<StudyParticipation> getParticipantsByStudyAndGroup(MidataId study, String group, Set<String> fields) throws InternalServerException {

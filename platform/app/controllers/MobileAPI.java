@@ -474,7 +474,7 @@ public class MobileAPI extends Controller {
 			properties.put("content", add);
 		}*/
 		
-		records = RecordManager.instance.list(executor, appInstance._id, properties, fields);		  
+		records = RecordManager.instance.list(executor, RecordManager.instance.createContextFromApp(executor, appInstance), properties, fields);		  
 				
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
 		
@@ -662,7 +662,7 @@ public class MobileAPI extends Controller {
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		AggregationType aggrType = JsonValidation.getEnum(json, "summarize", AggregationType.class);
 		
-	    Collection<RecordsInfo> result = RecordManager.instance.info(executor, targetAps, properties, aggrType);
+	    Collection<RecordsInfo> result = RecordManager.instance.info(executor, targetAps, RecordManager.instance.createContextFromApp(executor, appInstance), properties, aggrType);
 						
 		return ok(Json.toJson(result));
 	}

@@ -54,19 +54,19 @@
 							  <formrow myid="language" label="registration.language"><select class="form-control" id="language" ng-model="registration.language" ng-change="changeLanguage(registration.language);" ng-options="lang.value as lang.name | translate for lang in languages"></select></formrow>
 							  </div>
 							  <div ng-class="{ 'required' : addressNeeded() }">
-							  <formrow myid="address1" label="registration.address"><input type="text" class="form-control" id="address1" name="address1" translate translate-attr-placeholder="registration.address_line1" ng-model="registration.address1" ng-required="{{addressNeeded()}}"></formrow>
+							  <formrow myid="address1" label="registration.address"><input type="text" class="form-control" id="address1" name="address1" translate translate-attr-placeholder="registration.address_line1" ng-model="registration.address1" ng-required="addressNeeded()"></formrow>
 							  </div>
 							  <formrow myid="address2" label=""><input type="text" class="form-control" id="address2" name="address2" translate translate-attr-placeholder="registration.address_line2" ng-model="registration.address2"></formrow>
 							  <div ng-class="{ 'required' : addressNeeded() }">
-							  <formrow myid="city" label="registration.city"><input type="text" class="form-control" id="city" name="city" translate translate-attr-placeholder="registration.city" ng-model="registration.city" ng-required="{{addressNeeded()}}"></formrow>
-							  <formrow myid="zip" label="registration.zip"><input type="text" class="form-control" id="zip" name="zip" translate translate-attr-placeholder="registration.zip" ng-model="registration.zip" ng-required="{{addressNeeded()}}"></formrow>
+							  <formrow myid="city" label="registration.city"><input type="text" class="form-control" id="city" name="city" translate translate-attr-placeholder="registration.city" ng-model="registration.city" ng-required="addressNeeded()"></formrow>
+							  <formrow myid="zip" label="registration.zip"><input type="text" class="form-control" id="zip" name="zip" translate translate-attr-placeholder="registration.zip" ng-model="registration.zip" ng-required="addressNeeded()"></formrow>
 							  </div>
 							  <div class="required">
 							  <formrow myid="country" label="registration.country"><select class="form-control" id="country" name="country" ng-model="registration.country" required ng-options="country as ('enum.country.'+country)|translate for country in countries"></select></formrow>
 							  </div>                             
                               <formrow myid="phone" label="registration.phone"><input type="text" class="form-control" id="phone" name="phone" translate translate-attr-placeholder="registration.phone" ng-model="registration.phone"></formrow>
                               <div ng-class="{ 'required' : phoneNeeded() }">
-                              <formrow myid="mobile" label="registration.mobile_phone"><input type="text" class="form-control" id="mobile" name="mobile" translate translate-attr-placeholder="registration.mobile_phone" ng-model="registration.mobile" ng-required="{{phoneNeeded()}}"></formrow>
+                              <formrow myid="mobile" label="registration.mobile_phone"><input type="text" class="form-control" id="mobile" name="mobile" translate translate-attr-placeholder="registration.mobile_phone" ng-model="registration.mobile" ng-required="phoneNeeded()"></formrow>
                               </div>
                               <div class="required" ng-if="app.unlockCode">
                               <formrow myid="unlockCode" label="registration.unlock_code"><input type="text" class="form-control" id="unlockCode" name="unlockCode" translate translate-attr-placeholder="registration.unlock_code" ng-model="registration.unlockCode" required>

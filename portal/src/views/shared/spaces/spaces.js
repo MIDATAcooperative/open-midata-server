@@ -14,13 +14,13 @@ angular.module('portal')
 	session.currentUser
 	.then(function(userId) {
 			$scope.userId = userId;
-			getAuthToken($scope.space);
+			getAuthToken($scope.space, $state.params.user);
 	});
 			
 	// get the authorization token for the current space
 	getAuthToken = function(space) {
 		
-		spaces.getUrl(space._id)
+		spaces.getUrl(space._id, $state.params.user)
 		.then(function(result) {   
 			$scope.title = result.data.name;
 			var url = spaces.mainUrl(result.data, $translate.use(), $scope.params);			

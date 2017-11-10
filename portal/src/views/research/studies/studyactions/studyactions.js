@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('StudyActionsCtrl', ['$scope', '$state', 'server', 'views', 'apps', 'status', 'circles', function($scope, $state, server, views, apps, status, circles) {
+.controller('StudyActionsCtrl', ['$scope', '$state', 'server', 'views', 'apps', 'status', 'circles', 'spaces', function($scope, $state, server, views, apps, status, circles, spaces) {
 	
 	$scope.studyId = $state.params.studyId;
 	$scope.crit = { group : "" };
@@ -14,9 +14,12 @@ angular.module('portal')
 		$scope.status.doBusy(server.get(jsRoutes.controllers.research.Studies.get($scope.studyId).url))
 	    .then(function(data) { 				
 			$scope.study = data.data;	
+			
+			$scope.updateConsents();
+						
 		});
 		
-		apps.getApps({ "targetUserRole" : "RESEARCH" }, ["filename", "name"])
+		apps.getApps({ "targetUserRole" : "RESEARCH" }, ["filename", "name","type"])
 		.then(function(data) {
 			$scope.plugins = data.data;
 		});
@@ -27,9 +30,10 @@ angular.module('portal')
 		$scope.group = $scope.crit.group;
 		$scope.status.doBusy(server.post(jsRoutes.controllers.research.Studies.shareWithGroup($scope.studyId, $scope.group).url))
 		.then(function(result) {
-			
-		   $scope.aps = result.data[0]._id;
-		   views.setView("group_records", { aps : $scope.aps, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd : true, type : "studyrelated" });		   
+			if (result.data.length) {
+			   $scope.aps = result.data[0]._id;
+			   views.setView("group_records", { aps : $scope.aps, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd : true, type : "studyrelated" });
+			}
 		});
 		
 		$scope.updateConsents();
@@ -53,6 +57,11 @@ angular.module('portal')
 		.then(function(data) {
 			$scope.consents = data.data;						
 		});
+		
+		spaces.getSpacesOfUserContext($scope.userId, $scope.study.code + ":" + ($scope.crit.group ? $scope.crit.group : ""))
+    	.then(function(results) {
+    		$scope.me_menu = results.data;
+    	});	
 	};
 	
 	$scope.editConsent = function(consent) {
@@ -67,8 +76,8 @@ angular.module('portal')
 		$scope.error = null;
 		if (! myform.$valid) return;
 		
-		
-	  $scope.status.doAction("addapplication", server.post(jsRoutes.controllers.research.Studies.addApplication($scope.studyId, $scope.group).url, $scope.crit))
+      var c = $scope.crit;		
+	  $scope.status.doAction("addapplication", server.post(jsRoutes.controllers.research.Studies.addApplication($scope.studyId, $scope.group).url, { plugin : c.plugin._id, restrictread : c.restrictread, shareback : c.shareback, device : c.device }))
 		.then(function(result) {
 			$scope.submitted = false;
 			$scope.updateConsents();
@@ -80,6 +89,14 @@ angular.module('portal')
 		then(function() {
 			$scope.updateConsents();
 		});
+	};
+	
+	$scope.showSpace = function(space) {
+		$state.go('^.spaces', { spaceId : space._id, study : $scope.study._id });
+	};
+	
+	$scope.deleteSpace = function(space) {
+		spaces.deleteSpace(space._id).then(function() { $scope.updateConsents(); });
 	};
 	
 	$scope.reload();

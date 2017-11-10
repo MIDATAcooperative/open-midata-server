@@ -21,6 +21,8 @@ public abstract class AccessContext {
 	
 	public abstract boolean mustPseudonymize();
 	
+	public abstract MidataId getSelf();
+	
 	public abstract MidataId getTargetAps();
 	
 	public abstract MidataId getOwner();

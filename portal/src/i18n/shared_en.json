@@ -512,6 +512,7 @@
   "login" : {
     "email_address" : "Email address",
     "password" : "Password",
+    "study" : "Study",
     "remember_me" : "Remember me",
     "sign_in_btn" : "Log in",
     "forgot_your_password" : "Forgot your password?",
@@ -1022,7 +1023,8 @@
     "MEMBER" : "Account",
     "PROVIDER" : "Account (Health Provider)",
     "RESEARCH" : "Account (Researcher)",
-    "ADMIN" : "Account (Administrator)"
+    "ADMIN" : "Account (Administrator)",
+    "DEVELOPER" : "Account (Developer)"
   },
   
   "apps" : {

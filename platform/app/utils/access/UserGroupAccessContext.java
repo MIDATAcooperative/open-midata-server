@@ -39,7 +39,7 @@ public class UserGroupAccessContext extends AccessContext {
 	
 	@Override
 	public String getOwnerName() {		
-		return null;
+		return parent.getOwnerName();
 	}
 	@Override
 	public MidataId getOwner() {
@@ -48,6 +48,10 @@ public class UserGroupAccessContext extends AccessContext {
 	@Override
 	public MidataId getOwnerPseudonymized() {
 		return parent.getOwnerPseudonymized();
+	}
+	@Override
+	public MidataId getSelf() {
+		return parent.getSelf();
 	}
 
 }
