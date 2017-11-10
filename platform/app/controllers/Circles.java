@@ -640,7 +640,7 @@ public class Circles extends APIController {
 				}
 			}
 			
-			if (patientRecord && (consent.type.equals(ConsentType.CIRCLE) || consent.type.equals(ConsentType.HEALTHCARE))) autosharePatientRecord(executor, consent);
+			if (patientRecord && (consent.type.equals(ConsentType.CIRCLE) || consent.type.equals(ConsentType.HEALTHCARE) || consent.type.equals(ConsentType.STUDYPARTICIPATION))) autosharePatientRecord(executor, consent);
 		} else if (!active && wasActive) {
 			Set<MidataId> auth = consent.authorized;
 			if (auth.contains(consent.owner)) { auth.remove(consent.owner); }

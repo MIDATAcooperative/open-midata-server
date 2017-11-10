@@ -120,7 +120,13 @@ angular.module('portal')
 		$scope.status.doAction("register", fhir.post("Patient", data)).
 		then(function(data) { 
            $scope.success = true;
-           $state.go("^.participants");
+           var ids = data.data.identifier;
+           angular.forEach(ids, function(identifier) {
+        	   if (identifier.system == "http://midata.coop/identifier/participant-id") {
+        		   $state.go("^.participant", { participantId : identifier.value });
+        	   }
+           });
+           //$state.go("^.participants");
 		});
 	};
 		

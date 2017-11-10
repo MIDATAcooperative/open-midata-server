@@ -6,10 +6,12 @@ import java.util.Set;
 
 import org.hl7.fhir.dstu3.model.Appointment;
 import org.hl7.fhir.dstu3.model.Attachment;
+import org.hl7.fhir.dstu3.model.Base64BinaryType;
 import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.DocumentReference;
 import org.hl7.fhir.dstu3.model.DocumentReference.DocumentReferenceContentComponent;
 import org.hl7.fhir.dstu3.model.IdType;
+import org.hl7.fhir.dstu3.model.Media;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.instance.model.api.IBaseResource;
@@ -418,5 +420,17 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 		
 		super.clean(theDocumentReference);
 	}
+	
+	public String serialize(DocumentReference theDocumentReference) {
+		for (DocumentReferenceContentComponent component : theDocumentReference.getContent()) {
+			Attachment attachment = component.getAttachment();
+			if (attachment != null && attachment.getUrl() != null && attachment.getUrl().startsWith("https://"+Play.application().configuration().getString("platform.server"))) {	
+				attachment.setUrl(null);
+				attachment.setDataElement(new Base64BinaryType(FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING));
+			}
+		}
+		
+    	return ctx.newJsonParser().encodeResourceToString(theDocumentReference);
+    }
 
 }

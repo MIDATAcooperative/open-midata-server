@@ -494,6 +494,9 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 		p.setBirthDate(cal.getTime());		
 		p.setGender(AdministrativeGender.valueOf(member.gender.toString()));
 		
+		p.addIdentifier(new Identifier().setValue(part.ownerName).setSystem("http://midata.coop/identifier/participant-name"));
+		p.addIdentifier(new Identifier().setValue(part._id.toString()).setSystem("http://midata.coop/identifier/participant-id"));
+	
 		return p;    	    			
     }
     
@@ -522,7 +525,9 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
     	IdType old = resource.getIdElement();    	
     	super.processResource(record, resource);
     	resource.setIdElement(old);
-    	
+    	if (record.ownerName != null) {
+    		resource.addIdentifier(new Identifier().setValue(record.ownerName).setSystem("http://midata.coop/identifier/participant-name"));
+    	}
 		//resource.setId(record.owner.toString());		
 	}
     /*
@@ -653,6 +658,8 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 		}
 		
 		MidataId studyId = null;
+		StudyParticipation part = null;
+		
 		for (Extension ext : thePatient.getExtensionsByUrl("http://midata.coop/extensions/join-study")) {
 			
 			 String studyName = ((Coding) ext.getValue()).getCode();
@@ -750,9 +757,9 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 				Set<UserFeature> studyReq = controllers.members.Studies.precheckRequestParticipation(null, studyId);
 				AccessLog.log("request part");	
 				if (existing == null) {
-				  controllers.members.Studies.requestParticipation(info, user._id, studyId, plugin._id);
+				  part = controllers.members.Studies.requestParticipation(info, user._id, studyId, plugin._id);
 				} else {
-			      controllers.members.Studies.match(executorId, user._id, studyId, plugin._id);
+			      part = controllers.members.Studies.match(executorId, user._id, studyId, plugin._id);
 				}
 				AccessLog.log("end request part");
 			}
@@ -766,6 +773,14 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 		}
 		
 		thePatient.setId(user._id.toString());
+		
+		if (part != null) {
+			if (part.ownerName != null) {
+				thePatient.addIdentifier(new Identifier().setValue(part.ownerName).setSystem("http://midata.coop/identifier/participant-name"));
+				thePatient.addIdentifier(new Identifier().setValue(part._id.toString()).setSystem("http://midata.coop/identifier/participant-id"));
+			}			
+		}
+		
 		MethodOutcome retVal = new MethodOutcome(new IdType(thePatient.getResourceType().name(), user._id.toString()));    			
         retVal.setResource(thePatient);
 
