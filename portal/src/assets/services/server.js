@@ -7,9 +7,9 @@ angular.module('services')
 	};
 	
 	service.post = function(url, body) {
-		return $http.post(ENV.apiurl + url, body, { headers : { "X-Session-Token" : sessionStorage.token } });
+		return $http.post(ENV.apiurl + url, body, { headers : { "X-Session-Token" : sessionStorage.token, "Prefer" : "return=representation" } });
 	};
-	
+				
 	service.put = function(url, body) {
 		return $http.put(ENV.apiurl + url, body, { headers : { "X-Session-Token" : sessionStorage.token } });
 	};
