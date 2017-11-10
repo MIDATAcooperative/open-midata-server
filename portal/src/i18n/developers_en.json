@@ -55,8 +55,8 @@
 	   "CONSENT_REJECT_OWNER" : "Consent rejection (Grantor)",
 	   "CONSENT_REJECT_AUTHORIZED" : "Consent rejection (Grantee)",
 	   "ACCOUNT_UNLOCK" : "Account unlocked by the administrator",
-	   "EMAIL_CHANGED_OLDADDRESS" : "Login email changed (sent to old email address)",
-	   "EMAIL_CHANGED_NEWADDRESS" : "Login email changed (sent to new email address)"	   
+	   "EMAIL_CHANGED_OLDADDRESS" : "Login email changed (send to old email address)",
+	   "EMAIL_CHANGED_NEWADDRESS" : "Login email changed (send to new email address)"	   
     }		      
   },
   

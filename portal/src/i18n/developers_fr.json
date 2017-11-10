@@ -56,12 +56,8 @@
             "CONSENT_REJECT_OWNER" : "Refus de consentement (cédant)",
             "CONSENT_REJECT_AUTHORIZED" : "Refus de consentement (bénéficiaire)",
             "ACCOUNT_UNLOCK" : "Compte validé par l'administrateur",
-
-            // TODO NEW: Login email changed (sent to old email address)
-            "EMAIL_CHANGED_OLDADDRESS" : "Login email changed (sent to old email address)",
-
-            // TODO NEW: Login email changed (sent to new email address)
-            "EMAIL_CHANGED_NEWADDRESS" : "Login email changed (sent to new email address)"
+            "EMAIL_CHANGED_OLDADDRESS" : "Adresse e-mail changée (envoyer à l'ancienne adresse e-mail)",
+            "EMAIL_CHANGED_NEWADDRESS" : "Adresse e-mail changée (envoyer à la nouvelle adresse e-mail)"
         }
     },
 

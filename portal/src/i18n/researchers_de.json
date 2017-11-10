@@ -16,9 +16,7 @@
         "studies" : "Studien",
         "workspace" : "Workspace",
         "data" : "Daten",
-
-        // TODO NEW: Add Researcher
-        "addresearcher" : "Add Researcher"
+        "addresearcher" : "Forscher hinzufügen"
     },
 
     "createstudy" : {
@@ -35,8 +33,6 @@
         "participants" : "Teilnehmer",
         "records" : "Einträge",
         "results" : "Ergebnisse",
-
-        // TODO NEW: Team
         "team" : "Team"
     },
 
@@ -57,20 +53,10 @@
         "add_task_btn" : "Aufgabe für Teilnehmer hinzufügen",
         "plugin" : "Forschungsapplikation",
         "device" : "Code des Gerätes",
-
-        // TODO CHANGED
-        // OLD: Restrict Read to Group
-        // NEW: Restrict read to group
         "restrict" : "Lesen auf diese Studiengruppe beschränken",
-
-        // TODO NEW: Application shares data to participant group
-        "shareback" : "Application shares data to participant group",
-
-        // TODO CHANGED
-        // OLD: Add Study Data Providing Application
-        // NEW: Add Research Application
-        "add_application_btn" : "Studiendaten liefernde Anwendung hinzufügen.",
-        "linked_apps" : "Zustimmungen für Anwendungen"
+        "shareback" : "Die Applikation teilt Daten mit der Teilnehmergruppe",
+        "add_application_btn" : "Forschungs-Applikation hinzufügen",
+        "linked_apps" : "Zustimmungen für die Anwendungen"
     },
 
     "studyfields" : {
@@ -148,15 +134,9 @@
     "studyrules" : {
         "title" : "Regel der Studie",
         "no_change_warning" : "Diese Konfiguration kann nicht mehr geändert werden, sobald die Studie validiert wurde.",
-
-        // TODO NEW: Official start date
-        "startDate" : "Official start date",
-
-        // TODO NEW: Official end date
-        "endDate" : "Official end date",
-
-        // TODO NEW: Data freeze date
-        "dataCreatedBefore" : "Data freeze date",
+        "startDate" : "Offizielles Startdatum",
+        "endDate" : "Offizielles Enddatum",
+        "dataCreatedBefore" : "Datenbestand eingefroren ab dem",
         "sharing_query" : "Sharing Query (JSON)",
         "terms_of_use" : "Bestimmungen",
         "show_terms" : "Bestimmungen anzeigen",
@@ -164,55 +144,25 @@
     },
 
     "addresearcher" : {
-
-        // TODO NEW: Sign Up Researcher
-        "sign_up" : "Sign Up Researcher",
-
-        // TODO NEW: A new researcher has been added to your organization.
-        "success" : "A new researcher has been added to your organization."
+        "sign_up" : "Forscher registrieren",
+        "success" : "Ein neuer Forscher wurde Ihrer Organization hinzugefügt."
     },
 
     "studyteam" : {
-
-        // TODO NEW: Team member
-        "person" : "Team member",
-
-        // TODO NEW: Role
-        "role" : "Role",
-
-        // TODO NEW: Role Name
-        "roleName" : "Role Name",
-
-        // TODO NEW: Add Person
-        "addperson_btn" : "Add Person",
-
-        // TODO NEW: Rights
-        "rights" : "Rights",
+        "person" : "Teammitglied",
+        "role" : "Rolle",
+        "roleName" : "Name der Role",
+        "addperson_btn" : "Person hinzufügen",
+        "rights" : "Rechte",
         "right" : {
-
-            // TODO NEW: Read data records
-            "readData" : "Read data records",
-
-            // TODO NEW: Write/Update data records
-            "writeData" : "Write/Update data records",
-
-            // TODO NEW: Unpseudonymized participants
-            "unpseudo" : "Unpseudonymized participants",
-
-            // TODO NEW: Export data
-            "export" : "Export data",
-
-            // TODO NEW: Change team
-            "changeTeam" : "Change team",
-
-            // TODO NEW: View audit log
-            "auditLog" : "View audit log",
-
-            // TODO NEW: Manage participants
-            "participants" : "Manage participants",
-
-            // TODO NEW: Setup Study
-            "setup" : "Setup Study"
+            "readData" : "Daten lesen",
+            "writeData" : "Daten schreiben/aktualisieren",
+            "unpseudo" : "Nicht pseudonymisierte Teilnehmer",
+            "export" : "Daten exportieren",
+            "changeTeam" : "Team ändern",
+            "auditLog" : "Audit Log anschauen",
+            "participants" : "Teilnehmer verwalten",
+            "setup" : "Einrichtung der Studie"
         }
     }
 }
