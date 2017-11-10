@@ -45,8 +45,8 @@
         "available_tags" : "Verfügbare Variablen",
         "reasons" : {
             "REGISTRATION" : "Neue Benutzerregistrierung",
-            "FIRSTUSE_ANYUSER" : "Erste App-Anwendung",
-            "FIRSTUSE_EXISTINGUSER" : "Erst App-Anwendung (wenn kein Registrierungs-E-Mail versendet)",
+            "FIRSTUSE_ANYUSER" : "Erstanwendung App",
+            "FIRSTUSE_EXISTINGUSER" : "Erstanwendung App (wenn kein Registrierungs-E-Mail versendet)",
             "CONSENT_REQUEST_OWNER_INVITED" : "Vorgeschlagene Zustimmung (Geber, Einladung)",
             "CONSENT_REQUEST_OWNER_EXISTING" : "Vorgeschlagene Zustimmung (Geber, Nutzer)",
             "CONSENT_REQUEST_AUTHORIZED_INVITED" : "Vorgeschlagene Zustimmung (Empfänger, Einladung)",
@@ -55,7 +55,9 @@
             "CONSENT_CONFIRM_AUTHORIZED" : "Zustimmungsannahme (Empfänger)",
             "CONSENT_REJECT_OWNER" : "Zustimmungsablehnung (Geber)",
             "CONSENT_REJECT_AUTHORIZED" : "Zustimmungsablehnung (Empfänger)",
-            "ACCOUNT_UNLOCK" : "Konto vom Administrator freigeschaltet"
+            "ACCOUNT_UNLOCK" : "Konto vom Administrator freigeschaltet",
+            "EMAIL_CHANGED_OLDADDRESS" : "E-Mail-Adresse geändert (an alte E-Mail-Adresse senden)",
+            "EMAIL_CHANGED_NEWADDRESS" : "E-Mail-Adresse geändert (an neue E-Mail-Adresse senden)"
         }
     },
 

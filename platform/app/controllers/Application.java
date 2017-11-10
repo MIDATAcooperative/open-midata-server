@@ -652,7 +652,7 @@ public class Application extends APIController {
 		  throw new BadRequestException("error.invalid.passphrase", "Bad Passphrase");
 		}
 					
-		User user = User.getById(userId , Sets.create("status", "accountVersion"));
+		User user = User.getById(userId , Sets.create("firstname", "lastname", "email", "role", "password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer"));
 		AccountPatches.check(user);
 		
 		// response

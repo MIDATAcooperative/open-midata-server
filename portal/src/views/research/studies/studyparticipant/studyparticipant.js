@@ -60,6 +60,50 @@ angular.module('portal')
 		$state.go("research.market", { next : document.location.href , context : $scope.study.code, study : $scope.study._id, user : $scope.memberid });
 	};
 	
+	    $scope.mayApproveParticipation = function(participation) {
+		   return $scope.study && $scope.study.myRole.participants && participation.pstatus == "REQUEST";
+		
+		};
+		
+		$scope.mayAddParticipants = function() {
+			   return $scope.study && $scope.study.myRole.participants && $scope.study.participantSearchStatus == "SEARCHING";
+			
+		};
+		
+	    $scope.mayRejectParticipation = function(participation) {
+	      return $scope.study && $scope.study.myRole.participants && participation.pstatus == "REQUEST";
+		};
+		
+		
+		$scope.rejectParticipation = function(participation) {
+			$scope.error = null;
+			var params = { member : participation._id };
+			
+			$scope.status.doAction("reject", server.post(jsRoutes.controllers.research.Studies.rejectParticipation($scope.studyid).url, params))
+			.then(function(data) { 				
+			    $scope.reload();
+			});
+		};
+		
+		$scope.approveParticipation = function(participation) {
+			$scope.error = null;
+		
+			var params = { member : participation._id };
+			
+			$scope.status.doAction("approve", server.post(jsRoutes.controllers.research.Studies.approveParticipation($scope.studyid).url, params))
+			.then(function(data) { 				
+			    $scope.reload();
+			});
+		};
+		
+		$scope.changeGroup = function(participation) {
+			var params = { member : participation._id, group : participation.group };
+			$scope.status.doAction("change", server.post(jsRoutes.controllers.research.Studies.updateParticipation($scope.studyid).url, JSON.stringify(params)))
+			.then(function(data) { 				
+			    //$scope.reload();
+			});
+		};
+	
 	$scope.reload();
 	
 }]);

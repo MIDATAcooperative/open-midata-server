@@ -116,6 +116,7 @@
   
   "studyparticipants" : {
     "name" : "Name",
+    "partName" : "Pseudonymized",
     "group" : "Group",
     "status" : "Status",
     "recruiter" : "Recruiter",

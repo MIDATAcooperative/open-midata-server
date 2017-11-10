@@ -52,8 +52,8 @@
 
         "invalid" : {
             "email" : "Bitte eine gültige E-Mail-Adresse eingeben.",
-            "credentials" : "Ungültiger E-Mail-Adresse oder Kennwort!",
-            "credentials_hint" : "Ungültiger E-Mail-Adresse oder Kennwort. Sie versuchen sich als Kontoinhabende anzumelden. Sind Sie ",
+            "credentials" : "Ungültige E-Mail-Adresse oder Kennwort!",
+            "credentials_hint" : "Ungültige E-Mail-Adresse oder Kennwort. Sie versuchen sich als Kontoinhabende anzumelden. Sind Sie ",
             "password_repetition" : "Kennwort und Kennwortwiederholung stimmen nicht überein!",
             "passphrase_repetition" : "Passphrase und Passphrase-Wiederholung stimmen nicht überein!",
             "passphrase_old" : "Alte Passphrase nicht korrekt.",
@@ -200,7 +200,6 @@
             "ACCOUNT_DELETED" : "Konto gelöscht",
             "INTERNAL_COMMENT" : "Interne Bemerkung",
             "TERMS_OF_USE_AGREED" : "Allgemeine Geschäftsbedingungen zugestimmt",
-
             "user-registration" : "Benutzerregistrierung ",
             "110122" : "Anmeldung",
             "user-password-change" : "Kennwort geändert",
@@ -224,6 +223,7 @@
             "study-participation-requested" : "Studienteilnahme angefordert",
             "study-participation-member-rejected" : "Studienteilnahme verworfen durch Teilnehmer",
             "study-participation-research-rejected" : "Studienteilnahme verworfen durch Forscher",
+            "study-participation-member-retreat" : "Der Studienteilnehmer hat sich aus der Studie zurückgezogen",
             "study-participation-approved" : "Studienteilnahme genehmigt",
             "study-participation-group-assigned" : "Studienteilnehmergruppe zugewiesen",
             "study-validation-requested" : "Studienvalidierung angefordert",
@@ -243,7 +243,10 @@
             "contract-send" : "Vertrag geschickt an Benutzer",
             "internal-comment" : "Anmerkung Administrator",
             "user-terms-of-use-agreed" : "Nutzungsbedingungen angenommen",
-            "audit-log-used" : "Audit Log konsultiert"
+            "audit-log-used" : "Audit Log angeschaut",
+            "added-as-team-member" : "Hinzugefügt als Teammitglied",
+            "updated-role-in-team" : "Rolle im Team aktualisiert",
+            "removed-from-team" : "Aus Team entfernt"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "Die E-Mail-Adresse des Benutzers muss der Plattform bekannt sein",
@@ -266,7 +269,8 @@
             "ACTIVE" : "Aktiv",
             "EXPIRED" : "Abgelaufen",
             "REJECTED" : "Verworfen",
-            "UNCONFIRMED" : "Nicht bestätigt"
+            "UNCONFIRMED" : "Nicht bestätigt",
+            "FROZEN" : "Eingefroren"
         },
         "consenttype" : {
             "CIRCLE" : "Andere MIDATA Kontoinhabende",
@@ -300,7 +304,8 @@
             "MATCH" : "Mögliche Übereinstimmung",
             "MEMBER_REJECTED" : "Benutzer verworfen",
             "REQUEST" : "Teilnahme angefordert",
-            "RESEARCH_REJECTED" : "Verworfen durch Forscher"
+            "RESEARCH_REJECTED" : "Verworfen durch Forscher",
+            "MEMBER_RETREATED" : "Teilnehmer hat sich zurückgezogen"
         },
         "studyexecutionstatus" : {
             "ABORTED" : "Ausführung abgebrochen",
@@ -338,6 +343,13 @@
             "APPUSER" : "App-Benutzer",
             "NONMEMBERUSER" : "Validierter Benutzer",
             "MEMBEROFCOOPERATIVE" : "Mitglied der Genossenschaft"
+        },
+        "researcherrole" : {
+            "SPONSOR" : "Sponsor",
+            "INVESTIGATOR" : "Investigator",
+            "AUDITOR" : "Auditor",
+            "MONITOR" : "Monitor",
+            "OTHER" : "Andere"
         },
         "userstatus" : {
             "ACTIVE" : "Aktiv",
@@ -620,6 +632,7 @@
         "no_providers" : "Keine",
         "provider_remove_btn" : "Entfernen",
         "provider_add_btn" : "Hinzufügen",
+        "duration" : "Dauer",
         "information_that_needs_sharing" : "Geforderte Daten",
         "information_restricted" : "Ihr Geschlecht, Geburtsjahr und Wohnsitzland",
         "information_demographic" : "Ihre kompletten demographischen Daten (Name, Geburtsdatum, Adresse, ...)",
@@ -636,6 +649,7 @@
         "history_comment" : "Bemerkung",
         "request_participation_btn" : "Teilnahme anfordern",
         "do_not_participate_btn" : "Nicht teilnehmen",
+        "retreat_btn" : "Teilnahme zurückgezogen",
         "status" : "Status"
     },
 
@@ -648,6 +662,7 @@
         "change_password_btn" : "Kennwort ändern",
         "change_passphrase_btn" : "Passphrase ändern",
         "auditlog_btn" : "Audit Log anschauen",
+        "change_email_btn" : "E-Mail Adresse ändern",
         "repair_account_btn" : "Account reparieren",
         "reset_spaces_btn" : "Reset Portal zurücksetzen",
         "delete_records_btn" : "Datensätze löschen",
@@ -663,7 +678,6 @@
         "searchable_info" : "Diese Einstellung hat keinen Einfluss auf die Zustimmungen, die Sie bereits erteilt haben.",
         "change_settings_btn" : "Einstellungen ändern",
         "change_settings_success" : "Die Einstellungen wurde aktualisiert"
-
     },
 
     "visualization" : {
@@ -822,8 +836,8 @@
     },
 
     "oauth2" : {
-        "reshares_data" : "Die Anwendung darf Daten, auf die sie Zugriff hat, an Dritten weitergeben.",
-        "allows_user_search" : "Ihre Name und E-Mail-Adresse können von anderen Nutzern dieser Anwendung nachgeschlagen werden.",
+        "reshares_data" : "Die Applikation darf Daten, auf die sie Zugriff hat, an Dritten weitergeben.",
+        "allows_user_search" : "Ihre Name und E-Mail-Adresse können von anderen Nutzern dieser Applikation nachgeschlagen werden.",
         "requesting_app" : "Diese Applikation benötigt Zugriff auf:",
         "sign_in" : "MIDATA Anmeldung für:",
         "sign_in_btn" : "Anmelden",
@@ -1005,7 +1019,8 @@
         "HEALTHCARE" : "Zustimmung (Gesundheitsfachperson)",
         "MEMBER" : "Account",
         "PROVIDER" : "Account (Gesundheitsfachperson)",
-        "RESEARCH" : "Account (Forscher)"
+        "RESEARCH" : "Account (Forscher)",
+        "ADMIN" : "Account (Administrator)"
     },
 
     "apps" : {
@@ -1015,5 +1030,16 @@
         "count" : "Sie haben {{count}} autorisierte Apps:",
         "services" : "Services",
         "connect_btn" : "Autorisieren"
+    },
+
+    "changeemail" : {
+        "title" : "E-Mail Adresse des Accounts ändern",
+        "midataId" : "MIDATA ID",
+        "name" : "Name",
+        "old_email" : "Aktuelle E-Mail Adresse",
+        "new_email" : "Neue E-Mail Adresse",
+        "none" : "Keine",
+        "change_btn" : "Ändern",
+        "success" : "E-Mail Adresse erfolgreich geändert!"
     }
 }

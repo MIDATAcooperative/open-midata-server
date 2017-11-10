@@ -7,6 +7,9 @@
 	</p>
 	<div>
 	<span translate="studyparticipant.participant"></span> {{ participation.ownerName }}<br>
+	<div ng-show="participation.partName">
+	<span translate="studyparticipants.partName"></span>: {{ participation.partName}}<br>
+	</div>
 	<span translate="studyparticipant.gender"></span> {{ participation.gender }}<br>
 	<span translate="studyparticipant.year"></span> {{ participation.yearOfBirth }}<br>
 	<span translate="studyparticipant.country"></span> <span translate="{{ 'enum.country.'+participation.country }}"></span><br>
@@ -18,12 +21,24 @@
 	{{ member.address2 }}<br>
 	{{ member.zip }} {{ member.city }}<br>
 	{{ member.country }}<br>
+	
 	  <span ng-show="member.phone"><span translate="common.user.phone"></span>: {{ member.phone }}</span><br>
 	  <span ng-show="member.mobile"><span translate="common.user.mobile"></span>: {{ member.mobile }}</span><br>
     </address>		
     </div>
     <p><span translate="studyparticipant.status"></span> <span translate="{{ 'enum.participationstatus.'+participation.pstatus }}"></span></p>
+    <p><b>{{ member.email }}</b></p>
     <p><span translate="studyparticipant.group"></span>{{ participation.group }}</p>
+    
+    
+    <div class="col-xs-3" ng-show="mayApproveParticipation(participation)">
+    <select ng-model="participation.group" class="form-control" ng-change="changeGroup(participation)" ng-options="group.name as group.name for group in study.groups"></select>
+    </div>
+    
+	<button ng-show="mayApproveParticipation(participation)" ng-click="approveParticipation(participation)" class="btn btn-success" translate="studyparticipants.accept_btn"></button>
+	<button ng-show="mayRejectParticipation(participation)" ng-click="rejectParticipation(participation)" class="btn btn-danger" translate="studyparticipants.reject_btn"></button>
+    
+    
     
     <div class="btn-group">
      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

@@ -43,7 +43,8 @@
     "email_confirm_btn" : "Confirm email Address",
     "comment" : "Comment",
     "add_comment_btn" : "Add Comment",
-    "wipe_btn" : "Wipe Account"    
+    "wipe_btn" : "Wipe Account",
+    "change_email_btn" : "Change eMail"    
   },
   
   "admin_news" : {
@@ -106,6 +107,9 @@
      "created_by" : "Created by",
      "description" : "Description",
      "code" : "Code",
+     "startDate" : "Start Date",
+     "endDate" : "End Date",
+     "dataCreatedBefore" : "Data freeze date",
      "required_information" : "Required Information",
      "required_assistance" : "Required Assistance",
      "termsOfUse" : "Terms",
@@ -114,6 +118,8 @@
      "groups" : "Groups",
      "group_name" : "Group Name",
      "group_description" : "Description",
+     "team" : "Team",
+     "role" : "Role",
      "history" : "History",
      "end_validation_btn" : "Complete Validation",
      "back_to_draft_btn" : "Back to Draft",

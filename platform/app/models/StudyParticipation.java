@@ -12,6 +12,7 @@ import models.enums.Gender;
 import models.enums.ParticipationStatus;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
 
 /**
@@ -32,6 +33,8 @@ public class StudyParticipation extends Consent {
 	public int yearOfBirth;
 	public String country;
 	public Gender gender;
+	
+	public @NotMaterialized String partName;
 			
 	public StudyParticipation() {
 		this.type = ConsentType.STUDYPARTICIPATION;
