@@ -21,6 +21,8 @@ public abstract class AccessContext {
 	
 	public abstract boolean mustPseudonymize();
 	
+	public abstract boolean mayAccess(String content, String format) throws AppException;
+	
 	public abstract MidataId getSelf();
 	
 	public abstract MidataId getTargetAps();

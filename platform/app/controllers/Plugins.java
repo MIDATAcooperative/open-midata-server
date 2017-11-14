@@ -104,7 +104,7 @@ public class Plugins extends APIController {
 		if (!properties.containsKey("status")) {
 		    properties.put("status", EnumSet.of(PluginStatus.DEVELOPMENT, PluginStatus.BETA, PluginStatus.ACTIVE, PluginStatus.DEPRECATED));
 		}
-		ObjectIdConversion.convertMidataIds(properties, "_id", "creator", "recommendedPlugins");
+		ObjectIdConversion.convertMidataIds(properties, "_id", "creator", "recommendedPlugins", "linkedStudy");
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 		
 		Rights.chk("Plugins.get", getRole(), properties, fields);

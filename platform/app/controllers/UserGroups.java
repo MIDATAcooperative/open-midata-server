@@ -277,7 +277,15 @@ public class UserGroups extends APIController {
 				
 				member.add();
 			} else {
+								
 				AuditManager.instance.addAuditEvent(AuditEventType.UPDATED_ROLE_IN_TEAM, null, executorId, targetUserId, null, groupId);
+				
+				if (old.member.equals(self.member)) {
+					int size = UserGroupMember.getAllActiveByGroup(self.userGroup).size();
+					if (size > 1) throw new BadRequestException("error.notauthorized.action", "You may only change your rights as long as you are sole member.");
+					
+					if (!role.mayChangeTeam()) throw new BadRequestException("error.notauthorized.action", "You may not remove team management feature from yourself.");
+				}
 				
 				old.status = ConsentStatus.ACTIVE;
 				old.startDate = new Date();

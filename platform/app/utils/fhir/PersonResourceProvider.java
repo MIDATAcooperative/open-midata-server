@@ -107,6 +107,7 @@ public class PersonResourceProvider extends ResourceProvider<Person> implements 
 			p.addLink().setTarget(new Reference().setDisplay(getPersonName(userToConvert)).setReference("Patient/"+userToConvert._id.toString()));
 			break;
 		case PROVIDER:
+		case RESEARCH:
 			p.addLink().setTarget(new Reference().setDisplay(getPersonName(userToConvert)).setReference("Practitioner/"+userToConvert._id.toString()));
 			break;
 		default:

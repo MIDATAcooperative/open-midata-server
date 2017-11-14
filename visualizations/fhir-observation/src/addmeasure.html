@@ -1,0 +1,22 @@
+<div ng-controller="AddMeasureCtrl" style="min-height:300px">
+
+	<table class="table table-condensed table-hover" ng-hide="isEmpty">
+		<tbody ng-repeat="category in categories">
+			<tr>
+				<th colspan="2" style=""><br>{{ category.label }}</th>
+			</tr>
+			<tr ng-repeat="record in category.records | orderBy : 'label'">
+				<td>{{ getCodeableConcept(record.data.code) }}</td>
+				
+
+			
+				<td><button class="btn btn-default btn-xs" ng-click="showAddPopup(record)">
+						<span class="glyphicon glyphicon-plus"></span> add
+					</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+    <p ng-show="isEmpty" translate="empty"></p>
+</div>

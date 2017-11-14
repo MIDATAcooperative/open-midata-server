@@ -69,6 +69,10 @@ public class UserGroupMember extends Model {
 		return Model.getAll(UserGroupMember.class, collection, CMaps.map("userGroup", group), ALL);
 	}
 	
+	public static Set<UserGroupMember> getAllActiveByGroup(MidataId group) throws InternalServerException {
+		return Model.getAll(UserGroupMember.class, collection, CMaps.map("userGroup", group).map("status", ConsentStatus.ACTIVE), ALL);
+	}
+	
 	public static UserGroupMember getByGroupAndMember(MidataId group, MidataId member) throws InternalServerException {
 		return Model.get(UserGroupMember.class, collection, CMaps.map("userGroup", group).map("member", member), ALL);
 	}

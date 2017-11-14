@@ -980,7 +980,7 @@ public class Studies extends APIController {
 		Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "name", "code", "createdBy", "groups"));
 		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 		if (study.validationStatus != StudyValidationStatus.VALIDATED) throw new BadRequestException("error.notvalidated.study", "Study must be validated before.");
-		if (study.executionStatus != StudyExecutionStatus.RUNNING) throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
+		//if (study.executionStatus != StudyExecutionStatus.RUNNING) throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
 		
 		// validate json
 		JsonNode json = request().body().asJson();	
@@ -1452,6 +1452,12 @@ public class Studies extends APIController {
 		
 		if (json.has("dataCreatedBefore")) {
 			study.setDataCreatedBefore(JsonValidation.getDate(json, "dataCreatedBefore"));			
+		}
+		if (json.has("name")) {
+			study.setName(JsonValidation.getString(json, "name"));			
+		}
+		if (json.has("description")) {
+			study.setDescription(JsonValidation.getString(json, "description"));			
 		}
 				
 		AuditManager.instance.success();

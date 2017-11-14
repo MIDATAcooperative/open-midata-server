@@ -9,7 +9,9 @@
 	<table class="table">
 	  <tr>
 	    <td translate="studyoverview.name"></td>
-	    <td>{{ study.name }}</td>
+	    <td>{{ study.name }}
+	    <a ng-show="readyForValidation()" class="btn btn-default btn-xs" ui-sref="^.description" translate="studyoverview.edit_description_btn"></button>
+	    </td>
 	  </tr>
 	  <tr>
         <td translate="studyoverview.created_at"></td>
@@ -21,7 +23,9 @@
       </tr>
       <tr>
         <td translate="studyoverview.description"></td>
-        <td>{{ study.description }}</td>
+        <td>{{ study.description }}
+        <a ng-show="readyForValidation()" class="btn btn-default btn-xs" ui-sref="^.description" translate="studyoverview.edit_description_btn"></button>
+        </td>
       </tr>      
       <tr>
 	    <td translate="studyoverview.code"></td>
@@ -43,6 +47,25 @@
     </loader>
     </div>
     </div>
+    
+    <div class="panel panel-primary">
+    <div class="panel-heading" translate="studyoverview.checklist"></div>
+    <div class="panel-body">
+      <table class="table">
+        <tr ng-repeat="item in checklist" ng-class="{ 'success' : item.done, 'danger' : item.required && !item.done, 'warning' : !item.required && !item.done && !item.heading, 'heading' : item.heading }">
+          <td>
+            <span translate="{{item.title}}"></span>
+            <div class="pull-right">
+            <span ng-show="item.done" class="glyphicon glyphicon-ok"></span>
+            <span ng-show="!item.done && item.required" class="glyphicon glyphicon-exclamation-sign"></span>
+            <span ng-show="!item.done && !item.required && !item.heading" translate="study_checklist.optional"></span>
+            </div>  
+          </td>          
+        </tr>
+      </table>
+    </div>
+    </div>
+    
     <div class="panel panel-primary">
     <div class="panel-heading" translate="studyoverview.history"></div>
     <div class="panel-body">
@@ -51,7 +74,8 @@
     </div>
     
   
-    <a class="btn btn-default" ui-sref="research.studies" translate="common.back_btn"></a> 
+    <a class="btn btn-default" ui-sref="research.studies" translate="common.back_btn"></a>
+     
     <button ng-show="readyForValidation()" class="btn btn-primary" ng-click="startValidation()" translate="studyoverview.start_validation_btn"></button>
     <button ng-show="readyForParticipantSearch()" class="btn btn-primary" ng-click="startParticipantSearch()" translate="studyoverview.start_participant_search_btn"></button>
     <button ng-show="readyForEndParticipantSearch()" class="btn btn-primary" ng-click="endParticipantSearch()" translate="studyoverview.end_participant_search_btn"></button>

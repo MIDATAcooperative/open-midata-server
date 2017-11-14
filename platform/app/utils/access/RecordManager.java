@@ -438,7 +438,7 @@ public class RecordManager {
 	 */
 	public void setMeta(MidataId who, MidataId apsId, String key, Map<String,Object> data) throws AppException {
 		AccessLog.logBegin("begin setMeta who="+who.toString()+" aps="+apsId.toString()+" key="+key);
-		getCache(who).getAPS(apsId).setMeta(key, data);
+		Feature_UserGroups.findApsCacheToUse(getCache(who), apsId).getAPS(apsId).setMeta(key, data);
 		AccessLog.logEnd("end setMeta");
 	}
 	

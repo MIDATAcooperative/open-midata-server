@@ -33,6 +33,10 @@ angular.module('fhirObservation', [ 'midata', 'ui.router','ui.bootstrap', 'chart
 	      url: '/create?measure&authToken',	    
 	      templateUrl: 'create.html'
 	    })
+	    .state('addmeasure', {
+	      url : '/addmeasure',
+	      templateUrl : 'addmeasure.html'
+	    })
 	    .state('preview', {
 	      url: '/preview?lang&authToken',	   
 	      templateUrl: 'preview.html'
@@ -130,7 +134,13 @@ angular.module('fhirObservation', [ 'midata', 'ui.router','ui.bootstrap', 'chart
    
    result.getInfos = function(language, contentTypes) {	 
 	  console.log(contentTypes);
-	  return midataServer.searchContent(midataServer.authToken, { content : contentTypes }, [ "content", "label", "defaultCode", "resourceType", "subType", "defaultUnit", "category" ])
+	  var crit = {};
+	  if (contentTypes) crit.content = contentTypes;
+	  else {
+		  crit.resourceType = "fhir/Observation";
+		  crit.subType = ["Quantity", "component"];
+	  }
+	  return midataServer.searchContent(midataServer.authToken, crit, [ "content", "label", "defaultCode", "resourceType", "subType", "defaultUnit", "category" ])
 	  	 .then(function(res) {
 	  		var returnValues = [];
 	  		angular.forEach(res.data, function(d) {

@@ -78,7 +78,7 @@ angular.module('portal')
 			
 				$scope.status.doAction("add", usergroups.addMembersToUserGroup($scope.groupId, [ $scope.add.person._id ], $scope.add.role)).
 				then(function() {
-					$scope.add = {};
+					$scope.add = { role:{} };
 					$scope.init();
 				});
 			} else {

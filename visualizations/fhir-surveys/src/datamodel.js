@@ -351,7 +351,7 @@ angular.module('surveys')
 			ritem.answer = undefined;
 			break;
 		case "boolean":
-			ritem.answer = [ { "valueBoolean" : (qitem._answer ? true : false) } ];
+			ritem.answer = [ { "valueBoolean" : (qitem._answer == "true" ? true : false) } ];
 			break;
 		case "decimal":
 			ritem.answer = [ { "valueDecimal" : Number(qitem._answer) }];
