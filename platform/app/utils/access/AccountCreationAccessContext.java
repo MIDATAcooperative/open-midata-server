@@ -58,4 +58,9 @@ public class AccountCreationAccessContext extends AccessContext {
 		return parent.getSelf();
 	}
 
+	@Override
+	public boolean mayAccess(String content, String format) throws AppException {
+		return true;
+	}
+
 }

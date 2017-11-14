@@ -4,5 +4,9 @@ angular.module('portal')
 	    .state('research.createstudy', {
 	      url: '/createstudy',
 	      templateUrl: 'views/research/createstudy/createstudy.html'
+	    })
+	    .state('research.study.description', {
+	      url: '/description',
+	      templateUrl: 'views/research/createstudy/createstudy.html'	    
 	    });
 }]);

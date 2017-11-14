@@ -72,6 +72,7 @@ public class FHIRTools {
 		switch (user.role) {
 		case MEMBER : type = "Patient";break;
 		case PROVIDER : type = "Practitioner";break;
+		case RESEARCH : type = "Practitioner";break;
 		}
 		return new Reference().setDisplay(user.firstname+" "+user.lastname).setReference(type+"/"+user._id.toString());		
 	}

@@ -53,5 +53,9 @@ public class UserGroupAccessContext extends AccessContext {
 	public MidataId getSelf() {
 		return parent.getSelf();
 	}
+	@Override
+	public boolean mayAccess(String content, String format) throws AppException {
+		return false;
+	}
 
 }

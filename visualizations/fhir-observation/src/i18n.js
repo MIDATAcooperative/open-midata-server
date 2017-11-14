@@ -5,6 +5,7 @@ var en = {
 	"date" : "Date:",
 	"status" : "Status:",
 	"add_btn" : "Add",
+	"add_new_btn" : "Add new measure",
 	"back_btn" : "Timeline View",
 
 	"later" : ">>",
@@ -35,17 +36,42 @@ var en = {
 	}
 },
 de = {
+ 	"person" : "Person:",
+	"measure" : "Meßwert:",
+
 	"category" : "Kategorie:",
 	"date" : "Datum:",
 	"status" : "Status:",
-
+	"add_btn" : "Neu",
+	"add_new_btn" : "Neuer Wert",
+	"back_btn" : "Zeitverlauf",
+	
+	"later" : ">>",
+	"earlier" : "<<",
+	"change_btn" : "Ändern",
+	
+	"empty" : "Keine Meßwerte gefunden.",
+	"data_added" : "Beobachtung hinzugefügt",
+	
 	"registered" : "Registriert",
 	"preliminary" : "Vorläufig",
 	"final" : "Endgültig",
 	"amended" : "Angepasst",
 	"cancelled" : "Abgebrochen",
 	"entered-in-error" : "Fehlerhafte Eingabe",
-	"unknown" : "Unbekannter Status"
+	"unknown" : "Unbekannter Status",
+	
+	"category_names" : {
+		"social-history" : "Social History",
+		"vital-signs" : "Vitalzeichen",
+		"imaging" : "Bildgebende Verfahren",
+		"laboratory" : "Labor",
+		"procedure" : "Prozeduren",
+		"survey" : "Fragen",
+		"exam" : "Untersuchtungen",
+		"therapy" : "Therapie",
+		"fitness" : "Fitnessdaten"
+	}
 },
 it = {
 
