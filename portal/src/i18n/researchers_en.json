@@ -20,6 +20,7 @@
   
   "createstudy" : {
     "title" : "Create new study",
+    "title2" : "Change study description",
     "study_name" : "Study name",
     "study_description" : "Study description"
   },
@@ -90,11 +91,13 @@
     "validation_status" : "Validation Status",
     "participant_search_status" : "Participant Search Status",
     "execution_status" : "Execution Status",
+    "checklist" : "Checklist",
     "history" : "History",
     "event" : "Event",
     "who" : "Who",
     "when" : "When",
     "comment" : "Comment",
+    "edit_description_btn" : "Change",
     "start_validation_btn" : "Request Study Validation",
     "start_participant_search_btn" : "Start to search for participants",
     "end_participant_search_btn" : "End Participant Search",
@@ -179,5 +182,29 @@
       "participants" : "Manage participants",
       "setup" : "Setup Study"
     }
-  }
+  },
+  
+  "study_checklist" : {
+    "phase1" : "Phase 1 : Draft Phase",
+    "name" : "Study name and description provided",
+    "teamsetup" : "Researcher Team setup",
+    "groups" : "Participant groups defined",
+    "sharingQuery" : "Data sharing query provided",
+    "dates" : "Start and end dates set",
+    "terms" : "Terms and conditions provided",
+    "validation" : "Study validation requested",
+    "validation_passed" : "Study validated by Midata",
+    "phase2" : "Phase 2 : Preparation",
+    "applications" : "Research application added",
+    "applinked" : "App has been linked with study",
+    "partsearchstart" : "Started to search for participants",
+    "phase3" : "Phase 3 : Execution",
+    "executionstart" : "Execution started",
+    "acceptedpart" : "Participants assigned to groups and accepted",
+    "phase4" : "Phase 4 : ",
+    "partsearchend" : "Search for participants ended",
+    "execend" : "Study ended",
+    "exportdata" : "Data exported",
+    "optional" : "(optional)" 
+   }
 }

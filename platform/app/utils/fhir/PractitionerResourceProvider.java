@@ -32,9 +32,11 @@ import models.HPUser;
 import models.MidataId;
 import models.Record;
 import models.User;
+import models.enums.UserRole;
 import utils.ErrorReporter;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
 
 public class PractitionerResourceProvider extends ResourceProvider<Practitioner> implements IResourceProvider {
 
@@ -73,6 +75,7 @@ public class PractitionerResourceProvider extends ResourceProvider<Practitioner>
 	 * @throws AppException
 	 */
 	public Practitioner practitionerFromMidataUser(HPUser userToConvert) throws AppException {
+		if (!userToConvert.role.equals(UserRole.PROVIDER) && !userToConvert.role.equals(UserRole.RESEARCH)) throw new InternalServerException("error.internal", "Wrong role for practitioner");
 		Practitioner p = new Practitioner();
 		p.setId(userToConvert._id.toString());
 		p.addName().setFamily(userToConvert.lastname).addGiven(userToConvert.firstname);

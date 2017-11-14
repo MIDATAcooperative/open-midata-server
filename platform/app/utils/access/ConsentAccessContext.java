@@ -106,5 +106,15 @@ public class ConsentAccessContext extends AccessContext{
 	public MidataId getSelf() {
 		return parent != null ? parent.getSelf() : cache.getAccountOwner();
 	}
+	
+	@Override
+	public boolean mayAccess(String content, String format) throws AppException {
+		if (!sharingQuery && consent.sharingQuery == null) {
+			  consent.sharingQuery = Circles.getQueries(consent.owner, consent._id);
+			  sharingQuery = true;
+		}
+		
+		return Feature_FormatGroups.mayAccess(consent.sharingQuery, content, format);		
+	}
 
 }

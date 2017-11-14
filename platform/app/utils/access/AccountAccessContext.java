@@ -57,4 +57,9 @@ public class AccountAccessContext extends AccessContext {
 		return parent != null ? parent.getSelf() : cache.getAccountOwner();
 	}
 
+	@Override
+	public boolean mayAccess(String content, String format) throws AppException {
+		return true;
+	}
+
 }

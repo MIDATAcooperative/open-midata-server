@@ -84,6 +84,7 @@ import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.access.Feature_FormatGroups;
 import utils.audit.AuditManager;
+import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
@@ -347,7 +348,7 @@ public class ConsentResourceProvider extends ResourceProvider<org.hl7.fhir.dstu3
 	public List<IBaseResource> search(SearchParameterMap params) {
 		try {
 					
-			//ExecutionInfo info = info();
+			ExecutionInfo info = info();
 	
 			Query query = new Query();		
 			QueryBuilder builder = new QueryBuilder(params, query, null);
@@ -372,6 +373,9 @@ public class ConsentResourceProvider extends ResourceProvider<org.hl7.fhir.dstu3
 			if (authorized != null) {
 				properties.put("authorized", authorized);
 			}
+			
+			if (!info.context.mayAccess("Consent", "fhir/Consent")) properties.put("_id", info.context.getTargetAps());
+			
 			ObjectIdConversion.convertMidataIds(properties, "_id", "owner", "authorized");
 			
 			Set<models.Consent> consents = new HashSet<models.Consent>();						

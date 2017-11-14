@@ -231,6 +231,16 @@ public class Study extends Model {
     	this.dataCreatedBefore = dataCreatedBefore;
     	Model.set(Study.class, collection, this._id, "dataCreatedBefore", dataCreatedBefore);
     }
+    
+    public void setName(String name) throws InternalServerException {
+    	this.name = name;
+    	Model.set(Study.class, collection, this._id, "name", name);
+    }
+    
+    public void setDescription(String description) throws InternalServerException {
+    	this.description = description;
+    	Model.set(Study.class, collection, this._id, "description", description);
+    }
         
     
     public static void delete(MidataId studyId) throws InternalServerException {	

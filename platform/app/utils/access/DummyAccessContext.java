@@ -63,4 +63,9 @@ public class DummyAccessContext extends AccessContext {
 		return selfUser;
 	}
 
+	@Override
+	public boolean mayAccess(String content, String format) throws AppException {		
+		return false;
+	}
+
 }

@@ -54,5 +54,10 @@ public class SpaceAccessContext extends AccessContext {
 	public MidataId getSelf() {
 		return self;
 	}
+	
+	@Override
+	public boolean mayAccess(String content, String format) throws AppException {
+		return false;
+	}
 
 }

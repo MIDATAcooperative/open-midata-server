@@ -1,9 +1,12 @@
 
   
   <div ng-controller="CreateStudyCtrl" ng-cloak class="panel panel-primary">
-	<div class="panel-heading" translate="createstudy.title"></div>
+	<div class="panel-heading">
+	 <span ng-hide="studyId" translate="createstudy.title"></span>
+	 <span ng-show="studyId" translate="createstudy.title2"></span>
+	</div>
 	<div class="panel-body">
-	<p ng-show="error && !error.field" translate="{{error.code}}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	   
+	<p ng-show="error && !error.field" translate="{{error.code || error}}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	   
 	</p>
 	<form name="myform" novalidate class="css-form form-horizontal" ng-submit="createstudy()" role="form">
 	  <formrow myid="name" label="createstudy.study_name"> 
@@ -14,7 +17,7 @@
         <textarea class="form-control" id="description" name="description" rows="5" ng-model="study.description" ng-required="true"></textarea>
       </formrow>
       <formrow myid="x" label="">
-        <button type="submit" class="btn btn-primary" translate="common.create_btn"></button>
+        <button type="submit" class="btn btn-primary" translate="common.submit_btn"></button>
       </formrow>
     </form>	
     </div>

@@ -69,6 +69,11 @@ public class AppAccessContext extends AccessContext {
 	public MidataId getSelf() {
 		return cache.getAccountOwner();
 	}
+
+	@Override
+	public boolean mayAccess(String content, String format) throws AppException {
+		return Feature_FormatGroups.mayAccess(instance.sharingQuery, content, format);		
+	}
 	
 
 }

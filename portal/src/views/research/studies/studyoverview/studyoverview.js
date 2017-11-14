@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('StudyOverviewCtrl', ['$scope', '$state', 'server', 'status', function($scope, $state, server, status) {
+.controller('StudyOverviewCtrl', ['$scope', '$state', 'server', 'status', 'usergroups', 'apps', function($scope, $state, server, status, usergroups, apps) {
 	
 	$scope.studyid = $state.params.studyId;
 	$scope.study = {};
@@ -22,6 +22,54 @@ angular.module('portal')
 		.then(function(data) { 				
 				$scope.study = data.data;
 				loadUserNames();
+
+				$scope.tests = {};
+				
+				$scope.status.doBusy(usergroups.listUserGroupMembers($scope.studyid))
+				.then(function(data) {
+					console.log("X");
+					console.log(data);
+					$scope.tests.team = data.data.length > 1;
+				}).then(function() {
+				
+				apps.getApps( { "linkedStudy" : $scope.studyid }, [ "filename", "name" ])
+				.then(function(data) {
+					$scope.tests.applinked = data.data.length > 0;
+				}).then(function() {
+				
+				server.post(jsRoutes.controllers.research.Studies.listParticipants($scope.studyid).url, JSON.stringify({ properties : { pstatus : "REQUEST" } }))
+						.then(function(data) {
+							$scope.tests.allassigned = data.data.length === 0;
+						}).then(function()  {
+					
+					
+				$scope.checklist = [
+					{ title : "study_checklist.phase1", heading : true  },
+					{ title : "study_checklist.name", required : true, done : $scope.study.name && $scope.study.description },
+					{ title : "study_checklist.teamsetup", done : $scope.tests.team },
+                    { title : "study_checklist.groups", required : true, done : $scope.study.groups.length },
+                    { title : "study_checklist.sharingQuery", required : true, done : ($scope.study.recordQuery && ($scope.study.recordQuery.content || $scope.study.recordQuery.group)) },
+                    { title : "study_checklist.dates", done : $scope.study.startDate || $scope.study.endDate || $scope.study.dataCreatedBefore },
+                    { title : "study_checklist.terms", done : $scope.study.termsOfUse },
+                    { title : "study_checklist.validation", required : true, done : $scope.study.validationStatus !== "DRAFT" },
+                    { title : "study_checklist.validation_passed", required : true, done : $scope.study.validationStatus == "VALIDATED" },
+					{ title : "study_checklist.phase2", heading : true },
+					{ title : "study_checklist.applications" },
+					{ title : "study_checklist.applinked", done : $scope.tests.applinked },
+					{ title : "study_checklist.partsearchstart", required : true, done : $scope.study.participantSearchStatus != "PRE" },
+					{ title : "study_checklist.phase3", heading : true },
+					{ title : "study_checklist.executionstart", required : true, done : $scope.study.executionStatus != "PRE"  },
+					{ title : "study_checklist.acceptedpart", required : true, done : $scope.study.participantSearchStatus != "PRE" && $scope.tests.allassigned },
+					{ title : "study_checklist.phase4", heading : true },
+					{ title : "study_checklist.partsearchend", required : true, done : $scope.study.participantSearchStatus == "CLOSED" },
+					{ title : "study_checklist.execend", required : true, done : $scope.study.executionStatus == "FINISHED"  },
+					{ title : "study_checklist.exportdata" }
+				];
+				
+				});
+				});
+				});
+				
 		});
 	};
 	

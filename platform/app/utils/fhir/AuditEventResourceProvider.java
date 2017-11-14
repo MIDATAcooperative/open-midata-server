@@ -1,6 +1,7 @@
 package utils.fhir;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -293,6 +294,8 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent> imp
 					
 			ExecutionInfo info = info();			
 	
+			if (!info.context.mayAccess("AuditEvent", "fhir/AuditEvent")) return Collections.emptyList();
+						
 			Query query = new Query();		
 			QueryBuilder builder = new QueryBuilder(params, query, null);
 			

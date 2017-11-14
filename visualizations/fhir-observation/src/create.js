@@ -67,6 +67,9 @@ angular.module('fhirObservation')
 					midataPortal.doneNotification();
 					if ($scope.init) $scope.init();
 			   }, 2000); 
+			}, function(err) {
+				$scope.isBusy = false;
+				$scope.error = err.data;				
 			});			
 		};
 														
