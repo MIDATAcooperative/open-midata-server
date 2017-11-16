@@ -139,7 +139,8 @@
     "group" : "Data Group",
     "number_of_records" : "# Records",
     "download_btn" : "Download",
-    "fhir_download_btn" : "Download FHIR Bundle"
+    "fhir_download_btn" : "Download FHIR Bundle",
+    "fhir_download_original_btn" : "Download not pseudonymized"
   },
   
   "studyrules" : {
@@ -150,6 +151,7 @@
     "dataCreatedBefore" : "Data freeze date",
     "sharing_query" : "Sharing Query (JSON)",
     "terms_of_use" : "Terms",
+    "terms_of_use_hint" : "If you require terms and conditions to be shown and accepted by the user. Please send the text to midata, we upload the text in correct style for you and provide you with the terms ID to be entered here.",
     "show_terms" : "Show Terms",
     "requirements" : "Requirements"
   },

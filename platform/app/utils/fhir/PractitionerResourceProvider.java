@@ -74,7 +74,7 @@ public class PractitionerResourceProvider extends ResourceProvider<Practitioner>
 	 * @return FHIR person
 	 * @throws AppException
 	 */
-	public Practitioner practitionerFromMidataUser(HPUser userToConvert) throws AppException {
+	public static Practitioner practitionerFromMidataUser(User userToConvert) throws AppException {
 		if (!userToConvert.role.equals(UserRole.PROVIDER) && !userToConvert.role.equals(UserRole.RESEARCH)) throw new InternalServerException("error.internal", "Wrong role for practitioner");
 		Practitioner p = new Practitioner();
 		p.setId(userToConvert._id.toString());

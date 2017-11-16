@@ -8,12 +8,13 @@
       <tr>
         <th translate="studyrecords.group">Data Group</th>
         <th translate="studyrecords.number_of_records"># Records</th>
-        <th>&nbsp;</th>
+        <th colspan="2">&nbsp;</th>
       </tr>
       <tr ng-repeat="info in infos">        
 	      <td>{{ info.group }}</td>      
 	      <td>{{ info.count }}</td>
-	      <td><button ng-disabled="status.action == 'download' || !study.myRole.export" ng-click="fhirDownload(info)" href="javascript:" class="btn btn-xs btn-primary" translate="studyrecords.fhir_download_btn"></button>
+	      <td><button ng-disabled="status.action == 'download' || !study.myRole.export" ng-click="fhirDownload(info, 'pseudonymized')" href="javascript:" class="btn btn-xs btn-primary" translate="studyrecords.fhir_download_btn"></button>
+	      <td><button ng-show="!study.myRole.pseudo" ng-disabled="status.action == 'download' || !study.myRole.export" ng-click="fhirDownload(info, 'original')" href="javascript:" class="btn btn-xs btn-primary" translate="studyrecords.fhir_download_original_btn"></button>
       </tr>
       </table>
       <!-- 
