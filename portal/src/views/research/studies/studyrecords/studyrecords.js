@@ -34,10 +34,10 @@ angular.module('portal')
 		});
 	};
 	
-	$scope.fhirDownload = function(what) {
+	$scope.fhirDownload = function(what, mode) {
 		$scope.status.doAction("download", server.token())
 		.then(function(response) {
-		  document.location.href = ENV.apiurl + jsRoutes.controllers.research.Studies.downloadFHIR($scope.studyId, what.group).url + "?token=" + encodeURIComponent(response.data.token);
+		  document.location.href = ENV.apiurl + jsRoutes.controllers.research.Studies.downloadFHIR($scope.studyId, what.group, mode).url + "?token=" + encodeURIComponent(response.data.token);
 		});
 	};
 	

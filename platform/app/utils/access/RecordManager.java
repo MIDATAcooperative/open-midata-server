@@ -316,7 +316,7 @@ public class RecordManager {
         APS apswrapper = getCache(who).getAPS(toAPS);
         
         // Resolve "app" into IDs
-        Query q = new Query(query, Sets.create("_id"), getCache(who), toAPS, null);
+        Query q = new Query(query, Sets.create("_id"), getCache(who), toAPS, new DummyAccessContext(getCache(who), fromAPS));
         query = q.getProperties();
         
         query.remove("aps");
