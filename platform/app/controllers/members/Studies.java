@@ -236,7 +236,7 @@ public class Studies extends APIController {
 			userName = null; //member.lastname+", "+member.firstname;	
 		} else {
 			do {
-			  userName = "Part. " + CodeGenerator.nextUniqueCode();
+			  userName = "P-" + CodeGenerator.nextUniqueCode();
 			} while (StudyParticipation.existsByStudyAndMemberName(study._id, userName));
 		}
 				

@@ -65,7 +65,12 @@ public class Feature_UserGroups extends Feature {
 		APSCache subcache = q.getCache().getSubCache(group); 
 		if (ugm.role == null) ugm.role = ResearcherRole.HC();
 		
-		if (q.restrictedBy("export") && !ugm.role.mayExportData()) throw new AuthException("error.notauthorized.export", "You are not allowed to export this data.");
+		if (q.restrictedBy("export")) {
+			if (!ugm.role.mayExportData()) throw new AuthException("error.notauthorized.export", "You are not allowed to export this data.");
+			if (!ugm.role.pseudonymizedAccess()) {
+				if (q.getStringRestriction("export").equals("pseudonymized")) { ugm.role.pseudo = true; }
+			}
+		}
 		
 		if (!ugm.role.mayReadData()) return Collections.emptyList();
 		

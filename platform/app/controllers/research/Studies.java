@@ -100,6 +100,7 @@ import utils.exceptions.InternalServerException;
 import utils.fhir.FHIRServlet;
 import utils.fhir.FHIRTools;
 import utils.fhir.GroupResourceProvider;
+import utils.fhir.PractitionerResourceProvider;
 import utils.fhir.ResourceProvider;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
@@ -273,7 +274,7 @@ public class Studies extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result downloadFHIR(String id, final String studyGroup) throws AppException, IOException {
+	public static Result downloadFHIR(String id, final String studyGroup, final String mode) throws AppException, IOException {
 		 final MidataId studyid = new MidataId(id);
 		 MidataId owner = PortalSessionToken.session().getOrg();
 		 final MidataId executorId = new MidataId(request().username());
@@ -307,8 +308,21 @@ public class Studies extends APIController {
 		        		out.write("{ \"resourceType\" : \"Bundle\", \"type\" : \"searchset\", \"entry\" : [ ");
 
 		        		boolean first = true;
+		        		
+		        		Set<UserGroupMember> ugms = UserGroupMember.getAllByGroup(study._id);
+		        		Map<MidataId, UserGroupMember> idmap = new HashMap<MidataId, UserGroupMember>();
+		        		for (UserGroupMember member : ugms) idmap.put(member.member, member);
+		        		Set<User> users = User.getAllUser(CMaps.map("_id", idmap.keySet()), User.ALL_USER);
+
+		        		ResourceProvider<DomainResource> pprov = FHIRServlet.myProviders.get("Practitioner");
+		        		for (User user : users) {		        			
+		        			String location = FHIRServlet.getBaseUrl()+"/"+pprov.getResourceType().getSimpleName()+"/"+user._id.toString();			            	
+			            	String ser = pprov.serialize(PractitionerResourceProvider.practitionerFromMidataUser(user));
+		        			out.write((first?"":",")+"{ \"fullUrl\" : \""+location+"\", \"resource\" : "+ser+" } ");
+		        		}
+		        				        				        		
 		        		for (Consent part : parts) {
-		        		List<Record> allRecords = RecordManager.instance.list(executorId, part._id, CMaps.map(), Sets.create("_id"));
+		        		List<Record> allRecords = RecordManager.instance.list(executorId, part._id, CMaps.map("export", mode), Sets.create("_id"));
 		        		Iterator<Record> recordIterator = allRecords.iterator();
 
 		        		while (recordIterator.hasNext()) {
@@ -317,7 +331,7 @@ public class Studies extends APIController {
 				            while (i < 100 && recordIterator.hasNext()) {
 				            	ids.add(recordIterator.next()._id);i++;
 				            }
-				            List<Record> someRecords = RecordManager.instance.list(executorId, part._id, CMaps.map("_id", ids).map("export", "true"), RecordManager.COMPLETE_DATA);
+				            List<Record> someRecords = RecordManager.instance.list(executorId, part._id, CMaps.map("_id", ids).map("export", mode), RecordManager.COMPLETE_DATA);
 				            for (Record rec : someRecords) {
 				            	
 				            	String format = rec.format.startsWith("fhir/") ? rec.format.substring("fhir/".length()) : "Basic";

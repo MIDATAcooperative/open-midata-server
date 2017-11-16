@@ -49,7 +49,7 @@ angular.module('portal')
 					{ title : "study_checklist.teamsetup", done : $scope.tests.team },
                     { title : "study_checklist.groups", required : true, done : $scope.study.groups.length },
                     { title : "study_checklist.sharingQuery", required : true, done : ($scope.study.recordQuery && ($scope.study.recordQuery.content || $scope.study.recordQuery.group)) },
-                    { title : "study_checklist.dates", done : $scope.study.startDate || $scope.study.endDate || $scope.study.dataCreatedBefore },
+                    { title : "study_checklist.dates", required : true, done : $scope.study.startDate || $scope.study.endDate || $scope.study.dataCreatedBefore },
                     { title : "study_checklist.terms", done : $scope.study.termsOfUse },
                     { title : "study_checklist.validation", required : true, done : $scope.study.validationStatus !== "DRAFT" },
                     { title : "study_checklist.validation_passed", required : true, done : $scope.study.validationStatus == "VALIDATED" },
