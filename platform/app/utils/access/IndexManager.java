@@ -165,7 +165,7 @@ public class IndexManager {
 		    	updateAllTs = System.currentTimeMillis() - 2000;
 		    	long limit = index.getAllVersion();
 		    	Set<Consent> consents = Consent.getAllActiveByAuthorized(executor, limit);	
-		    	cache.prefetch(consents);
+		    	cache.prefetch(consents, null);
 				targetAps = new HashSet<MidataId>();
 				targetAps.add(executor);
 				for (Consent consent : consents) targetAps.add(consent._id);				

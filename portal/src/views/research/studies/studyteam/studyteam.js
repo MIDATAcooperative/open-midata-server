@@ -99,6 +99,11 @@ angular.module('portal')
 	   r += role.auditLog ? "L" : "-";	   
 	   return r;
 	};
+	
+	$scope.select = function(member) {
+	   $scope.add = { personemail : member.user.email, role : JSON.parse(JSON.stringify(member.role))  };
+	   angular.forEach($scope.roles, function(r) { if (r.id == member.role.id) $scope.add.roleTemplate = r; });	   
+	};
 		
 	session.currentUser.then(function(userId) {	 
 	  $scope.init();

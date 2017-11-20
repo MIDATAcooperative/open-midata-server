@@ -32,6 +32,7 @@ angular.module('services')
 			return server.post(jsRoutes.controllers.FormatAPI.searchContents().url, JSON.stringify({ "properties" : { "content" : name } , "fields" : ["content", "label"] }))
 			.then(function(result) {
 				console.log(result.data);
+				if (! result.data || ! result.data.length) return "? ("+name+")";
 				var content = result.data[0];
 				content_translations[content.content] = content.label[lang] || content.label.en || content.content;
 				return 	content_translations[content.content];

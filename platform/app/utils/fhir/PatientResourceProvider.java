@@ -423,7 +423,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 		for (Record record : recs) {			
 			if (record.data == null) continue;			
 			Object id = record.data.get("id");
-			AccessLog.log(id.toString()+" vs "+record.owner.toString());
+			//AccessLog.log(id.toString()+" vs "+record.owner.toString());
 			if (id.equals(record.owner.toString())) result.add(record);
 		}
 		return result;

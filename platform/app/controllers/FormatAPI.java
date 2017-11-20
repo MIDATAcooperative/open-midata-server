@@ -9,6 +9,7 @@ import java.util.Set;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import actions.APICall;
+import actions.MobileCall;
 import actions.VisualizationCall;
 import models.ContentCode;
 import models.ContentInfo;
@@ -264,6 +265,12 @@ public class FormatAPI extends Controller {
 	 * @throws JsonValidationException
 	 * @throws InternalServerException
 	 */
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	public static Result searchCodingPortal() throws JsonValidationException, InternalServerException {
+		return searchCoding();
+	}
+	
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
 	public static Result searchCoding() throws JsonValidationException, InternalServerException {

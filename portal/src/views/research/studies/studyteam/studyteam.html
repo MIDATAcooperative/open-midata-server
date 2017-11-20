@@ -4,16 +4,15 @@
 			<loader busy="status.isBusy !== false">
 			<p ng-show="error && !error.field" translate="{{ error.code || error }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	   
 	        </p>
-			<table class="table table-striped">
+	        <p ng-show="members.length < 2" translate="studyteam.defineself" class="alert alert-info"></p>
+			<table class="table table-striped table-hover">
 			    <tr>
 			      <th translate="common.user.firstname"></th>
 			      <th translate="common.user.lastname"></th>
 			      <th translate="common.user.email"></th>
-			      <th translate="studyteam.role"></th>
-			      <th></th>
-			      <th></th>
+			      <th colspan="3" translate="studyteam.rolehint"></th>			      
 			    </tr>
-				<tr ng-repeat="member in members|filter:{status:'ACTIVE'}|orderBy:'lastname'">
+				<tr class="clickable" ng-click="select(member)" ng-repeat="member in members|filter:{status:'ACTIVE'}|orderBy:'lastname'">
 					<td>{{ member.user.firstname }}</td>
 					<td>{{ member.user.lastname }}</td>
 					<td>{{ member.user.email }}</td>

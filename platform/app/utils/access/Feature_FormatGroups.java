@@ -229,11 +229,14 @@ public class Feature_FormatGroups extends Feature {
 	
 	public static boolean mayAccess(Map<String, Object> properties, String content, String format) throws AppException {
 		Object formatObj = properties.get("format");
-		if (formatObj != null) { 
+		if (formatObj != null && format != null) { 
 		  Set<String> fmts = Query.getRestriction(formatObj, "format");
 		  if (!fmts.contains(format)) return false;
 		}
-		convertQueryToContents(properties.get("group-system").toString(), properties);
+		if (content == null) return true;
+		Object gs =  properties.get("group-system");
+		if (gs == null) gs = "v1";
+		convertQueryToContents(gs.toString(), properties);
 		Object contentObj = properties.get("content");
 		if (contentObj != null) {
 			Set<String> contents = Query.getRestriction(contentObj, "content");

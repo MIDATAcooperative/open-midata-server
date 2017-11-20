@@ -386,6 +386,12 @@
 	   "11" : "Nov",
 	   "12" : "Dec"
 	 },
+	 "codesystems" : {
+	   "loinc" : "Loinc Code",
+	   "midata" : "Midata Code",
+	   "fhir" : "FHIR Resource Name",
+	   "snowmed" : "Snowmed" 
+	 },
 	 "tags" : {
 	   "Analysis" : "Analysis",
 	   "Import" : "Import",

@@ -16,62 +16,7 @@ angular.module('portal')
 			});
 	};
 	
-	$scope.reload = function() {
-			
-		$scope.status.doBusy(server.get(jsRoutes.controllers.research.Studies.get($scope.studyid).url))
-		.then(function(data) { 				
-				$scope.study = data.data;
-				loadUserNames();
-
-				$scope.tests = {};
-				
-				$scope.status.doBusy(usergroups.listUserGroupMembers($scope.studyid))
-				.then(function(data) {
-					console.log("X");
-					console.log(data);
-					$scope.tests.team = data.data.length > 1;
-				}).then(function() {
-				
-				apps.getApps( { "linkedStudy" : $scope.studyid }, [ "filename", "name" ])
-				.then(function(data) {
-					$scope.tests.applinked = data.data.length > 0;
-				}).then(function() {
-				
-				server.post(jsRoutes.controllers.research.Studies.listParticipants($scope.studyid).url, JSON.stringify({ properties : { pstatus : "REQUEST" } }))
-						.then(function(data) {
-							$scope.tests.allassigned = data.data.length === 0;
-						}).then(function()  {
-					
-					
-				$scope.checklist = [
-					{ title : "study_checklist.phase1", heading : true  },
-					{ title : "study_checklist.name", required : true, done : $scope.study.name && $scope.study.description },
-					{ title : "study_checklist.teamsetup", done : $scope.tests.team },
-                    { title : "study_checklist.groups", required : true, done : $scope.study.groups.length },
-                    { title : "study_checklist.sharingQuery", required : true, done : ($scope.study.recordQuery && ($scope.study.recordQuery.content || $scope.study.recordQuery.group)) },
-                    { title : "study_checklist.dates", required : true, done : $scope.study.startDate || $scope.study.endDate || $scope.study.dataCreatedBefore },
-                    { title : "study_checklist.terms", done : $scope.study.termsOfUse },
-                    { title : "study_checklist.validation", required : true, done : $scope.study.validationStatus !== "DRAFT" },
-                    { title : "study_checklist.validation_passed", required : true, done : $scope.study.validationStatus == "VALIDATED" },
-					{ title : "study_checklist.phase2", heading : true },
-					{ title : "study_checklist.applications" },
-					{ title : "study_checklist.applinked", done : $scope.tests.applinked },
-					{ title : "study_checklist.partsearchstart", required : true, done : $scope.study.participantSearchStatus != "PRE" },
-					{ title : "study_checklist.phase3", heading : true },
-					{ title : "study_checklist.executionstart", required : true, done : $scope.study.executionStatus != "PRE"  },
-					{ title : "study_checklist.acceptedpart", required : true, done : $scope.study.participantSearchStatus != "PRE" && $scope.tests.allassigned },
-					{ title : "study_checklist.phase4", heading : true },
-					{ title : "study_checklist.partsearchend", required : true, done : $scope.study.participantSearchStatus == "CLOSED" },
-					{ title : "study_checklist.execend", required : true, done : $scope.study.executionStatus == "FINISHED"  },
-					{ title : "study_checklist.exportdata" }
-				];
-				
-				});
-				});
-				});
-				
-		});
-	};
+	
 	
 	$scope.readyForValidation = function() {
 		return $scope.study.myRole && $scope.study.myRole.setup && ($scope.study.validationStatus == "DRAFT" || $scope.study.validationStatus == "REJECTED");
@@ -188,6 +133,19 @@ angular.module('portal')
 		});
 	};
 	
+	$scope.addProcessTag = function(tag) {
+		if (!$scope.study.processFlags) $scope.study.processFlags = [];
+		if ($scope.study.processFlags.indexOf(tag) < 0) {
+			$scope.study.processFlags.push(tag);
+			
+			var data = { processFlags : $scope.study.processFlags };
+			$scope.status.doAction("update", server.put(jsRoutes.controllers.research.Studies.update($scope.studyid).url, JSON.stringify(data)))
+			  .then(function(data) { 				
+				    $scope.reload();
+			   }); 
+		}
+	};
+	
 	$scope.delete = function() {
 		$scope.error = null;
 		
@@ -197,6 +155,72 @@ angular.module('portal')
 		}).
 		error(function(err) {
 			$scope.error = err;			
+		});
+	};
+	
+	$scope.reload = function() {
+		
+		$scope.status.doBusy(server.get(jsRoutes.controllers.research.Studies.get($scope.studyid).url))
+		.then(function(data) { 				
+				$scope.study = data.data;
+				loadUserNames();
+
+				$scope.tests = {};
+				
+				$scope.status.doBusy(usergroups.listUserGroupMembers($scope.studyid))
+				.then(function(data) {
+					console.log("X");
+					console.log(data);
+					$scope.tests.team = data.data.length > 1;
+				}).then(function() {
+				
+				apps.getApps( { "linkedStudy" : $scope.studyid }, [ "filename", "name" ])
+				.then(function(data) {
+					$scope.tests.applinked = data.data.length > 0;
+				}).then(function() {
+				
+				server.post(jsRoutes.controllers.research.Studies.listParticipants($scope.studyid).url, JSON.stringify({ properties : { pstatus : "REQUEST" } }))
+						.then(function(data) {
+							$scope.tests.allassigned = data.data.length === 0;
+						}).then(function()  {
+					
+
+				if (!$scope.study.processFlags) $scope.study.processFlags = [];
+				$scope.checklist = [
+					{ title : "study_checklist.phase1", page : ".", heading : true  },
+					{ title : "study_checklist.name", page : "^.description", required : true, done : $scope.study.name && $scope.study.description },
+					{ title : "study_checklist.teamsetup", page : "^.team", flag : "team", done : $scope.tests.team || $scope.study.processFlags.indexOf("team")>=0 },
+                    { title : "study_checklist.groups", page : "^.fields", required : true, done : $scope.study.groups.length },
+                    { title : "study_checklist.sharingQuery", page : "^.rules", required : true, done : ($scope.study.recordQuery && ($scope.study.recordQuery.content || $scope.study.recordQuery.group)) },
+                    { title : "study_checklist.dates", page : "^.rules", required : true, done : $scope.study.startDate || $scope.study.endDate || $scope.study.dataCreatedBefore },
+                    { title : "study_checklist.terms", page : "^.rules" , flag : "termsofuse", done : $scope.study.termsOfUse || $scope.study.processFlags.indexOf("termsofuse")>=0 },
+                    { title : "study_checklist.validation", action : $scope.startValidation, check : $scope.readyForValidation, page : ".", required : true, done : $scope.study.validationStatus !== "DRAFT" },
+                    { title : "study_checklist.validation_passed", page : ".", required : true, done : $scope.study.validationStatus == "VALIDATED" },
+					{ title : "study_checklist.phase2", page : ".", heading : true },
+					{ title : "study_checklist.applications", page : "^.actions", flag : "applications", done : $scope.study.processFlags.indexOf("applications") >= 0 },
+					{ title : "study_checklist.applinked", page : ".", flag : "applinked", done : $scope.tests.applinked || $scope.study.processFlags.indexOf("applinked") >= 0 },
+					{ title : "study_checklist.partsearchstart", action : $scope.startParticipantSearch, check : $scope.readyForParticipantSearch, page : ".", required : true, done : $scope.study.participantSearchStatus != "PRE" },
+					{ title : "study_checklist.phase3", page : ".", heading : true },
+					{ title : "study_checklist.executionstart", action : $scope.startExecution, check : $scope.readyForStartExecution, page : ".", required : true, done : $scope.study.executionStatus != "PRE"  },
+					{ title : "study_checklist.acceptedpart", page : "^.participants", required : true, done : $scope.study.participantSearchStatus != "PRE" && $scope.tests.allassigned },
+					{ title : "study_checklist.phase4", page : ".", heading : true },
+					{ title : "study_checklist.partsearchend", action : $scope.endParticipantSearch, check : $scope.readyForEndParticipantSearch, page : ".", required : true, done : $scope.study.participantSearchStatus == "CLOSED" },
+					{ title : "study_checklist.execend", action : $scope.finishExecution, check : $scope.readyForFinishExecution, page : ".", required : true, done : $scope.study.executionStatus == "FINISHED"  },
+					{ title : "study_checklist.exportdata", page : "^.records", flag : "export", done : $scope.study.processFlags.indexOf("export") >= 0 }
+				];
+				
+				for (var i = 0;i<$scope.checklist.length;i++) {
+					if (! $scope.checklist[i].done && ! $scope.checklist[i].heading) {
+						$scope.primaryCheck = $scope.checklist[i];
+						break;
+					}
+					$scope.lastCheck = $scope.checklist[i];
+				}
+				
+				});
+				});
+				});
+				
 		});
 	};
 	

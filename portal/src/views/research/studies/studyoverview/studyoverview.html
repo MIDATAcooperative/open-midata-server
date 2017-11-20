@@ -6,6 +6,25 @@
 	<loader busy="status.isBusy !== false">
 	<p ng-show="error && !error.field" translate="{{ error.code || error }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	   
 	</p>
+	
+	 <div class="alert alert-info">
+	  <p><strong translate="studyoverview.workflow"></strong></p>
+ 	  <div ng-if="lastCheck"> 	  
+ 	    <p><span translate="studyoverview.lastdone"></span>: <a ui-sref="{{ lastCheck.page }}" class="alert-link" translate="{{lastCheck.title}}"></a></p>
+ 	    <p><i translate="{{lastCheck.title + '_help' }}"></i></p>
+ 	                   
+ 	  </div>
+	  <div ng-if="primaryCheck">
+	  <p><span translate="studyoverview.nextstep"></span>: <a ui-sref="{{ primaryCheck.page }}" class="alert-link" translate="{{primaryCheck.title}}"></a></p>
+      <p><i translate="{{primaryCheck.title + '_help' }}"></i></p>
+      <a ng-show="primaryCheck.page != '.'" ui-sref="{{ primaryCheck.page }}" class="btn btn-default" translate="studyoverview.visitnow_btn" ></a>               
+      <button ng-show="primaryCheck.flag && !primaryCheck.done" ng-click="addProcessTag(primaryCheck.flag)" class="btn btn-default" translate="studyoverview.markdone_btn"></button>
+      <button ng-click="primaryCheck.action()" class="btn btn-default" ng-show="primaryCheck.action && primaryCheck.check()" translate="studyoverview.donow_btn"></button>
+      </div>
+      
+
+     </div>
+	
 	<table class="table">
 	  <tr>
 	    <td translate="studyoverview.name"></td>
@@ -51,11 +70,12 @@
     <div class="panel panel-primary">
     <div class="panel-heading" translate="studyoverview.checklist"></div>
     <div class="panel-body">
-      <table class="table">
-        <tr ng-repeat="item in checklist" ng-class="{ 'success' : item.done, 'danger' : item.required && !item.done, 'warning' : !item.required && !item.done && !item.heading, 'heading' : item.heading }">
-          <td>
-            <span translate="{{item.title}}"></span>
-            <div class="pull-right">
+      <table class="table table-hover">
+        <tr class="clickable"  ng-repeat="item in checklist" ng-class="{ 'success' : item.done, 'danger' : item.required && !item.done, 'warning' : !item.required && !item.done && !item.heading, 'heading' : item.heading }">
+          <td ui-sref="{{item.page}}">
+            <span uib-tooltip="{{item.title+'_help' | translate }}" translate="{{item.title}}"></span>
+          </td><td>
+            <div class="pull-right">           
             <span ng-show="item.done" class="glyphicon glyphicon-ok"></span>
             <span ng-show="!item.done && item.required" class="glyphicon glyphicon-exclamation-sign"></span>
             <span ng-show="!item.done && !item.required && !item.heading" translate="study_checklist.optional"></span>

@@ -59,5 +59,9 @@ public class SpaceAccessContext extends AccessContext {
 	public boolean mayAccess(String content, String format) throws AppException {
 		return false;
 	}
+	
+	public Space getInstance() {
+		return space;
+	}
 
 }
