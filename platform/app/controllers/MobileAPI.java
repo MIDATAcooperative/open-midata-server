@@ -32,6 +32,7 @@ import models.Plugin;
 import models.Record;
 import models.RecordsInfo;
 import models.ResearchUser;
+import models.Space;
 import models.Study;
 import models.User;
 import models.enums.AggregationType;
@@ -47,8 +48,12 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.InstanceConfig;
+import utils.access.AccessContext;
+import utils.access.AppAccessContext;
 import utils.access.Feature_FormatGroups;
+import utils.access.Query;
 import utils.access.RecordManager;
+import utils.access.SpaceAccessContext;
 import utils.audit.AuditManager;
 import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
@@ -56,8 +61,10 @@ import utils.auth.MobileAppSessionToken;
 import utils.auth.MobileAppToken;
 import utils.auth.RecordToken;
 import utils.auth.Rights;
+import utils.collections.CMaps;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
+import utils.db.LostUpdateException;
 import utils.db.FileStorage.FileData;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -448,33 +455,21 @@ public class MobileAPI extends Controller {
 		Rights.chk("getRecords", UserRole.ANY, fields);
 
 		// decrypt authToken
-		MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(json.get("authToken").asText());
-		if (authToken == null) return invalidToken(); 
-					
-		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "status"));
-        if (appInstance == null) return invalidToken(); 
-        Stats.setPlugin(appInstance.applicationId);
+		ExecutionInfo inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), true);		
+		if (inf == null) return invalidToken(); 
+							
+        Stats.setPlugin(inf.pluginId);
         
-        if (!appInstance.status.equals(ConsentStatus.ACTIVE)) {
+        if (!((AppAccessContext) inf.context).getAppInstance().status.equals(ConsentStatus.ACTIVE)) {
         	return ok(JsonOutput.toJson(Collections.EMPTY_LIST, "Record", fields));
         }
-        
-        MidataId executor = prepareMobileExecutor(appInstance, authToken);
+                
 		// get record data
 		Collection<Record> records = null;
 		
 		AccessLog.log("NEW QUERY");
-		
-		/*if (properties.containsKey("content")) {
-			Set<String> contents = Query.getRestriction(properties.get("content"), "content");
-			Set<String> add = new HashSet<String>();
-			for (String c : contents) {
-				add.add(ContentInfo.getNormalizedName(c));				
-			}			
-			properties.put("content", add);
-		}*/
-		
-		records = RecordManager.instance.list(executor, RecordManager.instance.createContextFromApp(executor, appInstance), properties, fields);		  
+					
+		records = RecordManager.instance.list(inf.executorId, inf.context, properties, fields);		  
 				
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
 		
@@ -576,7 +571,8 @@ public class MobileAPI extends Controller {
 		}
 		record.name = name;
 		record.description = description;
-								
+						
+		autoLearnAccessQuery(inf, record.format, record.content);
 		PluginsAPI.createRecord(inf, record, null, null,null, inf.context);
 		
 		Stats.finishRequest(request(), "200", Collections.EMPTY_SET);
@@ -699,5 +695,76 @@ public class MobileAPI extends Controller {
 		
 		
 		return ok(JsonOutput.toJson(consents, "Consent", fields));
+	}
+	
+	public static void autoLearnAccessQuery(ExecutionInfo info, String format, String content) throws AppException {
+		if (! InstanceConfig.getInstance().getInstanceType().allowQueryLearning()) return;
+		
+		AccessContext context = info.context;
+		if (context instanceof AppAccessContext) {
+			AppAccessContext appcontext = (AppAccessContext) context;
+			if (!appcontext.getAppInstance().sharingQuery.containsKey("learn")) return;
+			
+			if (!context.mayAccess(null, format)) {
+				addToSharingQuery(info, appcontext.getAppInstance(), format, null);
+			}
+    	
+			if (!context.mayAccess(content, null)) {
+				addToSharingQuery(info, appcontext.getAppInstance(), null, content);
+			}
+			            
+		}		
+	}
+	
+	private static void addToSharingQuery(ExecutionInfo info, MobileAppInstance instance, String format, String content) throws AppException {
+		Plugin plugin = Plugin.getById(instance.applicationId, Plugin.ALL_DEVELOPER);
+		if (!plugin.defaultQuery.containsKey("learn")) {
+			return;
+		}
+		if (format != null && plugin.defaultQuery.containsKey("format")) {
+			
+			((Collection) plugin.defaultQuery.get("format")).add(format);					
+			
+			if (!instance.sharingQuery.containsKey("format")) {
+				instance.sharingQuery.put("format", Collections.singleton(format));
+			} else {
+				((Collection) instance.sharingQuery.get("format")).add(format);		
+			}
+		}
+		if (content != null && plugin.defaultQuery.containsKey("content")) {
+			
+			((Collection) plugin.defaultQuery.get("content")).add(content);					
+			
+			if (!instance.sharingQuery.containsKey("content")) {
+				instance.sharingQuery.put("content", Collections.singleton(content));
+			} else {
+				((Collection) instance.sharingQuery.get("content")).add(content);		
+			}
+		}
+		try {
+		  plugin.pluginVersion = System.currentTimeMillis();
+		  plugin.update();
+		} catch (LostUpdateException e) {}
+		RecordManager.instance.shareByQuery(info.executorId, info.ownerId, info.targetAPS, instance.sharingQuery);
+		instance.appVersion = plugin.pluginVersion;
+		MobileAppInstance.set(instance._id, "appVersion", instance.appVersion);
+	}
+	
+	private static void addToSharingQuery(ExecutionInfo info, Space instance, String format, String content) throws AppException {
+		Plugin plugin = Plugin.getById(instance.visualization, Plugin.ALL_DEVELOPER);
+		if (!plugin.defaultQuery.containsKey("learn")) {
+			return;
+		}
+		if (format != null && plugin.defaultQuery.containsKey("format")) {			
+			((Collection) plugin.defaultQuery.get("format")).add(format);											
+		}
+		if (content != null && plugin.defaultQuery.containsKey("content")) {			
+			((Collection) plugin.defaultQuery.get("content")).add(content);								
+		}
+		try {
+		  plugin.pluginVersion = System.currentTimeMillis();
+		  plugin.update();
+		} catch (LostUpdateException e) {}
+		RecordManager.instance.shareByQuery(info.executorId, info.ownerId, info.targetAPS, plugin.defaultQuery);		
 	}
 }

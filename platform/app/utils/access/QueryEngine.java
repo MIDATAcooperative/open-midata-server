@@ -149,6 +149,8 @@ class QueryEngine {
 				
 		List<DBRecord> recs = qm.query(q);
 		recs = postProcessRecords(q.getProperties(), recs);
+		if (!cached) q.getCache().prefetch(recs);
+		
 		
 		for (DBRecord record : recs) {
 			if (record.isStream) {				

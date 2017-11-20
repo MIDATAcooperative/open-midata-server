@@ -158,6 +158,7 @@ GET     /api/common/codes                                controllers.FormatAPI.l
 POST    /api/common/codes                                controllers.FormatAPI.createCode()
 POST    /api/common/codes/:code                          controllers.FormatAPI.updateCode(code: String)
 DELETE  /api/common/codes/:code                          controllers.FormatAPI.deleteCode(code: String)
+POST    /api/common/coding/search                        controllers.FormatAPI.searchCodingPortal()
 
 GET     /api/members/participation                       controllers.members.Studies.list()
 GET     /api/members/participation/:study                controllers.members.Studies.get(study: String)

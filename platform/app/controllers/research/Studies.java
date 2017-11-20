@@ -442,7 +442,7 @@ public class Studies extends APIController {
 	   MidataId userid = MidataId.from(request().username());
 	   MidataId owner = PortalSessionToken.session().getOrg();
 
-	   Set<String> fields = Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","infos","owner","participantRules","recordQuery","studyKeywords","code","groups","requiredInformation", "assistance", "termsOfUse", "requirements", "startDate", "endDate", "dataCreatedBefore", "myRole"); 
+	   Set<String> fields = Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","infos","owner","participantRules","recordQuery","studyKeywords","code","groups","requiredInformation", "assistance", "termsOfUse", "requirements", "startDate", "endDate", "dataCreatedBefore", "myRole", "processFlags"); 
 	   Study study = Study.getById(studyid, fields);
 	   	   	   
 	   UserGroupMember ugm = UserGroupMember.getByGroupAndMember(studyid, userid);
@@ -1421,14 +1421,22 @@ public class Studies extends APIController {
 		Study study = Study.getById(studyid, Sets.create("name", "owner","executionStatus", "participantSearchStatus","validationStatus", "requiredInformation", "code", "startDate", "endDate", "dataCreatedBefore"));
 			
 		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
-		if (study.validationStatus != StudyValidationStatus.DRAFT) return badRequest("Setup can only be changed as long as study is in draft phase.");
-        			
+		   			
 		AuditManager.instance.addAuditEvent(AuditEventType.STUDY_SETUP_CHANGED, userId, null, study);
 		
 		UserGroupMember self = UserGroupMember.getByGroupAndMember(studyid, userId);
 		if (self == null) throw new AuthException("error.notauthorized.action", "User not member of study group");
 		if (!self.role.maySetup()) throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 	
+		if (json.has("processFlags")) {
+			study.setProcessFlags(JsonExtraction.extractStringSet(json.get("processFlags")));
+			AuditManager.instance.success();
+	        return ok();
+		}
+		
+		if (study.validationStatus != StudyValidationStatus.DRAFT) return badRequest("Setup can only be changed as long as study is in draft phase.");
+	     
+		
 		
 		if (json.has("groups")) {
 			List<StudyGroup> groups = new ArrayList<StudyGroup>();
@@ -1473,6 +1481,7 @@ public class Studies extends APIController {
 		if (json.has("description")) {
 			study.setDescription(JsonValidation.getString(json, "description"));			
 		}
+		
 				
 		AuditManager.instance.success();
         return ok();

@@ -26,7 +26,8 @@ import utils.exceptions.RequestTooLargeException;
  */
 public class Feature_AccountQuery extends Feature {
 
-	public final static int MAX_CONSENTS_IN_QUERY = 100;
+	public final static int MAX_CONSENTS_IN_QUERY = 100000;
+	public final static int MIN_FOR_ACCELERATION = 10;
 	
 	private Feature next;
 
@@ -236,8 +237,10 @@ public class Feature_AccountQuery extends Feature {
 			}
 		}
 		consents = applyConsentTimeFilter(q, consents);
-				
-		if (consents.size() < MAX_CONSENTS_IN_QUERY) q.getCache().prefetch(consents);
+		
+		if (consents.size() > MIN_FOR_ACCELERATION) {
+			FasterDecryptTool.accelerate(q, consents);
+		} else if (consents.size() < MAX_CONSENTS_IN_QUERY) q.getCache().prefetch(consents, null);
 				
 		consents = applyWriteFilters(q, consents);
 		return consents;
