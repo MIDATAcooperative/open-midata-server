@@ -31,7 +31,7 @@ public class Study extends Model {
 	/**
 	 * constant set containing all fields
 	 */
-	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "owner", "createdBy", "createdAt", "description", "infos", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore");
+	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "owner", "createdBy", "createdAt", "description", "infos", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags");
 	
 	/**
 	 * name of study
@@ -145,6 +145,11 @@ public class Study extends Model {
      */
     public String termsOfUse;
     
+    /**
+     * mark process steps as done/unnecessary
+     */
+    public Set<String> processFlags;
+    
     public static void add(Study study) throws InternalServerException {
 		Model.insert(collection, study);
 	 }
@@ -240,6 +245,11 @@ public class Study extends Model {
     public void setDescription(String description) throws InternalServerException {
     	this.description = description;
     	Model.set(Study.class, collection, this._id, "description", description);
+    }
+    
+    public void setProcessFlags(Set<String> processFlags) throws InternalServerException {
+    	this.processFlags = processFlags;
+    	Model.set(Study.class, collection, this._id, "processFlags", processFlags);
     }
         
     

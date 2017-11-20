@@ -75,5 +75,7 @@ public class AppAccessContext extends AccessContext {
 		return Feature_FormatGroups.mayAccess(instance.sharingQuery, content, format);		
 	}
 	
-
+    public MobileAppInstance getAppInstance() {
+    	return instance;
+    }
 }

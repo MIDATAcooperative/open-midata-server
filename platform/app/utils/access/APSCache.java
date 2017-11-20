@@ -97,11 +97,11 @@ public class APSCache {
 		return result;
 	}
 	
-	public APS getAPS(MidataId apsId, byte[] unlockKey, MidataId owner, AccessPermissionSet set) throws AppException, EncryptionNotSupportedException {
+	public APS getAPS(MidataId apsId, byte[] unlockKey, MidataId owner, AccessPermissionSet set, boolean addIfMissing) throws AppException, EncryptionNotSupportedException {
 		APS result = cache.get(apsId.toString());
 		if (result == null) { 
 			result = new APSImplementation(new EncryptedAPS(apsId, executorId, unlockKey, owner, set));
-			if (!result.isAccessible()) result.addAccess(Collections.<MidataId>singleton(executorId));
+			if (!result.isAccessible() && addIfMissing) result.addAccess(Collections.<MidataId>singleton(executorId));
 			cache.put(apsId.toString(), result);
 		}
 		return result;
@@ -149,7 +149,7 @@ public class APSCache {
 		return hasnew;
 	}
 	
-	public void prefetch(Collection<? extends Consent> consents) throws AppException {	
+	public void prefetch(Collection<? extends Consent> consents, Map<MidataId, byte[]> keys) throws AppException {	
 		if (consents.size() > 1) {			
 			int end = 0;
 			Map<MidataId, Consent> ids = new HashMap<MidataId, Consent>(consents.size());
@@ -166,10 +166,32 @@ public class APSCache {
 		  Set<AccessPermissionSet> rsets = AccessPermissionSet.getAll(properties, AccessPermissionSet.ALL_FIELDS);
 		  for (AccessPermissionSet set : rsets) {
 			  Consent r = ids.get(set._id);				
-			  getAPS(r._id, null, r.owner, set);
+			  getAPS(r._id, keys == null ? null : keys.get(r._id), r.owner, set, false);
 		  }	
 			
 		}
+	}
+	
+	public void prefetch(Collection<? extends DBRecord> streams) throws AppException {						
+			int end = 0;
+			Map<MidataId, DBRecord> ids = new HashMap<MidataId, DBRecord>(streams.size());
+			for (DBRecord rec : streams) {	
+			  if (rec.isStream) {
+				  if (!cache.containsKey(rec._id.toString())) {
+					  ids.put(rec._id, rec);
+				  }	else {
+					  end++;
+					  if (end > 3) return; 
+				  }
+			  }
+			}
+   		    if (ids.isEmpty()) return;
+		    Map<String, Set<MidataId>> properties = Collections.singletonMap("_id", ids.keySet());
+		    Set<AccessPermissionSet> rsets = AccessPermissionSet.getAll(properties, AccessPermissionSet.ALL_FIELDS);
+		    for (AccessPermissionSet set : rsets) {
+		    	DBRecord r = ids.get(set._id);				
+			    getAPS(r._id, r.key, r.owner, set, true);
+		    }  						
 	}
 	
 	public Set<UserGroupMember> getAllActiveByMember() throws InternalServerException {

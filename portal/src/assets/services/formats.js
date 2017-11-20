@@ -14,6 +14,10 @@ angular.module('services')
 		return server.post(jsRoutes.controllers.FormatAPI.searchContents().url, JSON.stringify({ properties : properties, fields : fields}));		
 	};
 	
+	service.searchCodes = function(properties, fields) {
+		return server.post(jsRoutes.controllers.FormatAPI.searchCodingPortal().url, JSON.stringify({ properties : properties, fields : fields}));		
+	};
+	
 	service.listFormats = function() {
 		return server.get(jsRoutes.controllers.FormatAPI.listFormats().url);		
 	};
@@ -57,6 +61,13 @@ angular.module('services')
 	service.deleteGroup = function(group) {
 		return server.delete(jsRoutes.controllers.FormatAPI.deleteGroup(group._id).url, JSON.stringify(group));
 	};
+	
+	service.codesystems = [
+		   { system : "http://loinc.org", label : "enum.codesystems.loinc"},
+		   { system : "http://snomed.info/sct", label : "enum.codesystems.snowmed" },
+		   { system : "http://midata.coop", label : "enum.codesystems.midata" },
+		   { system : "http://midata.coop", label : "enum.codesystems.fhir" }		   
+	];
 	
 		
 	return service;

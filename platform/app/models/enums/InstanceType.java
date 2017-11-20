@@ -139,6 +139,14 @@ public enum InstanceType {
 		return this == PERFTEST;
 	}
 	
+	/**
+	 * Is it allowed to use learn : true in access queries?
+	 * @return
+	 */
+	public boolean allowQueryLearning() {
+		return this == TEST || this == LOCAL || this == DEMO;
+	}
+	
 	public Set<UserFeature> defaultRequirementsPortalLogin(UserRole role) {
 		if (this == PERFTEST) return EnumSet.of(UserFeature.EMAIL_ENTERED);
 		if (role != UserRole.MEMBER) return EnumSet.of(UserFeature.EMAIL_VERIFIED, UserFeature.ADMIN_VERIFIED, UserFeature.PASSWORD_SET);

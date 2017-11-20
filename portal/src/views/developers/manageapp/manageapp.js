@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('ManageAppCtrl', ['$scope', '$state', '$translatePartialLoader', 'server', 'apps', 'status', 'studies', 'languages', 'terms', function($scope, $state, $translatePartialLoader, server, apps, status, studies, languages, terms) {
+.controller('ManageAppCtrl', ['$scope', '$state', '$translatePartialLoader', 'server', 'apps', 'status', 'studies', 'languages', 'terms', 'labels', '$translate', 'formats', function($scope, $state, $translatePartialLoader, server, apps, status, studies, languages, terms, labels, $translate, formats) {
 	
 	// init
 	$scope.error = null;
@@ -10,6 +10,8 @@ angular.module('portal')
 	$scope.languages = languages.array;
 	$scope.requirements = apps.userfeatures;
 	$scope.writemodes = apps.writemodes;
+	$scope.query = {};
+	$scope.codesystems = formats.codesystems;
 	
 	$scope.sel = { lang : 'de' };
 	$scope.targetUserRoles = [
@@ -42,6 +44,7 @@ angular.module('portal')
 			if (!$scope.app.i18n) { $scope.app.i18n = {}; }
 			if (!$scope.app.requirements) { $scope.app.requirements = []; }
 			$scope.app.defaultQueryStr = JSON.stringify($scope.app.defaultQuery);
+			$scope.updateQuery();
 			
 			if ($scope.app.linkedStudy) {
 				
@@ -53,6 +56,99 @@ angular.module('portal')
 					}
 				});
 				
+			}
+		});
+	};
+	
+	$scope.updateQuery = function() {
+		$scope.codeerror = null;
+		$scope.myform.queryadd.$invalid = false;
+		try {
+		  $scope.app.defaultQuery = JSON.parse($scope.app.defaultQueryStr);
+		var q = $scope.app.defaultQuery;
+		var is = function(f, v) {
+			return f && (f == v ||( f.length > 0 && f.indexOf(v) >= 0));
+		};
+		$scope.query.self = is(q.owner, "self");
+		$scope.query.ownapp = is(q.app, $scope.app.filename);
+		$scope.query.learn = is(q.learn, true);
+		$scope.query.all = is(q.group, "all");
+		
+		$scope.labels = [];
+		
+		if ($scope.app.defaultQuery.content) {
+			var patientFound = false;
+			angular.forEach($scope.app.defaultQuery.content, function(r) {
+			  if (r == "Patient") patientFound = true;
+			  labels.getContentLabel($translate.use(), r).then(function(lab) {
+				 $scope.labels.push({ type : "content", field : r, label : lab, selected : true }); 
+			  });
+			});
+			if (!patientFound) {
+				labels.getContentLabel($translate.use(), "Patient").then(function(lab) {
+					$scope.labels.push({ type : "content", field : "Patient", label : lab, selected : false }); 
+				});
+			}
+			
+		}
+		if ($scope.app.defaultQuery.group) {
+			angular.forEach($scope.app.defaultQuery.group, function(r) {
+				  labels.getGroupLabel($translate.use(), r).then(function(lab) {
+					 $scope.labels.push({ type : "group", field : r, label : lab, selected : true }); 
+				  });
+			});
+		}
+		} catch (e) {}	
+	};
+	
+	$scope.patchQuery = function(field, val) {
+		if (field == "owner") {
+			if ($scope.query.self) $scope.app.defaultQuery.owner = "self"; 
+			else $scope.app.defaultQuery.owner = undefined;
+		}
+		if (field == "app") {
+			if ($scope.query.ownapp) $scope.app.defaultQuery.app = $scope.app.filename; 
+			else $scope.app.defaultQuery.app = undefined;
+		}
+		if (field == "group") {
+			if ($scope.query.all) {
+				$scope.app.defaultQuery.group = ["all"]; 
+				$scope.app.defaultQuery["group-system"] = "v1";
+			}
+			else {
+				$scope.app.defaultQuery.group = undefined;
+				$scope.app.defaultQuery["group-system"] = undefined;
+			}
+		}
+		if (field == "learn") {
+			if ($scope.query.learn) {
+				$scope.app.defaultQuery.learn = true;
+				if (!$scope.app.defaultQuery.content) $scope.app.defaultQuery.content = [];
+			}
+			else $scope.app.defaultQuery.learn = undefined;
+		}
+		if (field == "content") {
+			if (!$scope.app.defaultQuery.content) $scope.app.defaultQuery.content = [];
+			if (val.selected) {
+				$scope.app.defaultQuery.content.push(val.field);
+			} else {
+				$scope.app.defaultQuery.content.splice($scope.app.defaultQuery.content.indexOf(val.field), 1);
+			}						
+		}
+		
+		$scope.app.defaultQueryStr = JSON.stringify($scope.app.defaultQuery);
+	};
+	
+	$scope.addCode = function() {	
+		
+		formats.searchCodes({ system : $scope.query.system.system, code : $scope.query.code }, ["content"])
+		.then(function(r) {
+			if (r.data && r.data.length == 1) {
+				$scope.patchQuery("content", { field : r.data[0].content, selected : true });
+				$scope.updateQuery();
+			} else {
+				$scope.codeerror = "error.unknown.code";
+				$scope.myform.queryadd.$invalid = true;
 			}
 		});
 	};

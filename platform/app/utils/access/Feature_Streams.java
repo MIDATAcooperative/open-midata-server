@@ -131,7 +131,7 @@ public class Feature_Streams extends Feature {
 				for (AccessPermissionSet set : rsets) {
 					DBRecord r = streamsToFetch.get(set._id);
 					streams.add(r);
-					q.getCache().getAPS(r._id, r.key, r.owner, set);
+					q.getCache().getAPS(r._id, r.key, r.owner, set, true);
 				}
 			}
 				
