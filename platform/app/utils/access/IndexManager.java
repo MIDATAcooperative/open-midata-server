@@ -254,6 +254,12 @@ public class IndexManager {
 		return matches;		
 	}
 	
+	public Collection<IndexMatch> queryIndex(IndexRoot root, Condition[] values, MidataId targetAps) throws AppException {						
+		Collection<IndexMatch> matches = root.lookup(values, targetAps);
+		if (matches == null) matches = new ArrayList<IndexMatch>();
+		return matches;		
+	}
+	
 	public void triggerUpdate(IndexPseudonym pseudo, APSCache cache, MidataId user, IndexDefinition idx, Set<MidataId> targetAps) throws AppException {			
 		indexSupervisor.tell(new IndexUpdateMsg(idx._id, user, pseudo, KeyManager.instance.currentHandle(), targetAps), null);		
 	}

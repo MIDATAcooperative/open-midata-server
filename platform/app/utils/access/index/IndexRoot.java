@@ -271,6 +271,18 @@ public class IndexRoot {
 			return lookup(key);
 		}
 	}
+	
+	public Collection<IndexMatch> lookup(Condition[] key, MidataId targetAps) throws InternalServerException {
+		try {
+		  return rootPage.lookup(key, targetAps);
+		} catch (LostUpdateException e) {
+			try {
+			   Thread.sleep(20);
+			} catch (InterruptedException e2) {}
+			rootPage.reload();
+			return lookup(key);
+		}
+	}
 
 	protected static IndexPage getRightSiblingAtIndex(IndexPage parentNode, int keyIdx) throws InternalServerException, LostUpdateException  {
 	    return getChildNodeAtIndex(parentNode, keyIdx, 1);

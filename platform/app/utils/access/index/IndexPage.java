@@ -8,6 +8,8 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -86,6 +88,19 @@ public class IndexPage {
 		return loaded;
 	}
 	
+	public void loadMultipleChilds(Collection<Integer> idxs) throws InternalServerException, LostUpdateException {
+		if (idxs.size() < 2) return;
+		Set<MidataId> toload = new HashSet<MidataId>(idxs.size());
+		for (Integer id : idxs) {
+			MidataId child = mChildren[id];
+			if (child == null) continue;
+			if (!root.loadedPages.containsKey(child)) toload.add(child);
+		}
+		if (toload.isEmpty()) return;
+		Set<IndexPageModel> result = IndexPageModel.getMultipleById(toload);
+		for (IndexPageModel r : result) root.loadedPages.put(r._id, new IndexPage(this.key, r, root));		
+	}
+	
 	public MidataId getId() {
 		return model._id;
 	}
@@ -135,7 +150,20 @@ public class IndexPage {
 		
 		Collection<IndexMatch> results = new ArrayList<IndexMatch>(entries.size());
 		for (IndexKey o : entries) {
-			results.add(new IndexMatch(MidataId.from(o.getId()), MidataId.from(o.value)));			
+			results.add(new IndexMatch(o.getId(), o.value));			
+		}
+		AccessLog.log("lookup:"+(System.currentTimeMillis() - t));
+		return results;
+	}
+	
+	public Collection<IndexMatch> lookup(Condition[] key, MidataId targetAps) throws InternalServerException, LostUpdateException  {
+        long t = System.currentTimeMillis();				
+		Collection<IndexKey> entries = findEntries(key);
+		if (entries == null) return null;
+		
+		Collection<IndexMatch> results = new ArrayList<IndexMatch>(entries.size());
+		for (IndexKey o : entries) {
+			if (o.value.equals(targetAps)) results.add(new IndexMatch(o.getId(), o.value));			
 		}
 		AccessLog.log("lookup:"+(System.currentTimeMillis() - t));
 		return results;
@@ -246,15 +274,28 @@ public class IndexPage {
 				}			
 			}
 		} else {
-				
+			List<Integer> ids = null;
+			int matchId = -1;
 			for (int i=0;i<=mCurrentKeyNum;i++) {	
 				
 				boolean match = conditionCompare(key, i==0 ? null : mKeys[i-1].getKey(), i == mCurrentKeyNum ? null : mKeys[i].getKey());						
 				if (match) {
+					if (matchId == -1) matchId = i;
+					else {
+						if (ids == null) {
+							ids = new ArrayList<Integer>();
+							ids.add(matchId);
+						}
+						ids.add(i);
+					}
 					IndexPage c = getChild(i);
 					result.addAll(c.findEntries(key));				
 				}
 			}
+			if (ids != null) {
+				loadMultipleChilds(ids);
+				for (Integer id : ids) result.addAll(getChild(id).findEntries(key));
+			} else if (matchId >= 0) result.addAll(getChild(matchId).findEntries(key));
 		}
 		return result;
 	}
