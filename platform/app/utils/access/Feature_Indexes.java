@@ -98,6 +98,10 @@ private Feature next;
 						
 			List<DBRecord> result = Collections.emptyList();
 			
+			if (targetAps != null && targetAps.isEmpty()) {
+				AccessLog.logEnd("end index query no target APS");
+				return result;
+			}
 									
 			
 			IndexUse myAccess = parse(pseudo, q.getRestriction("format"), indexQueryParsed);			
@@ -326,8 +330,12 @@ private Feature next;
 			  doupdate = true;
 			  cachedIndexRoots.put(index._id, root);
 			}
-			long t2 = System.currentTimeMillis();			
-			matches = IndexManager.instance.queryIndex(root, condition);
+			long t2 = System.currentTimeMillis();
+			if (targetAps != null && targetAps.size() == 1) {
+				matches = IndexManager.instance.queryIndex(root, condition, targetAps.iterator().next());
+			} else {
+			  matches = IndexManager.instance.queryIndex(root, condition);
+			}
 			if (doupdate) IndexManager.instance.triggerUpdate(pseudo, q.getCache(), q.getCache().getExecutor(), index, targetAps);
 			AccessLog.log("Index use: prep="+(t2-t1)+" query="+(System.currentTimeMillis() - t2));
 			return matches;
