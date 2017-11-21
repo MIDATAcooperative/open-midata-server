@@ -55,6 +55,10 @@ public class IndexPageModel extends Model {
 		return Model.get(IndexPageModel.class, collection, CMaps.map("_id", pageId), ALL_PAGE);
 	}
 	
+	public static Set<IndexPageModel> getMultipleById(Set<MidataId> pageIds) throws InternalServerException {
+		return Model.getAll(IndexPageModel.class, collection, CMaps.map("_id", pageIds), ALL_PAGE);
+	}
+	
 	public void update() throws InternalServerException, LostUpdateException {
 		try {
 		   DBLayer.secureUpdate(this, collection, "version", "lockTime", "enc");
