@@ -49,6 +49,10 @@
     },
 
     "accountdata" : {
+
+        // TODO CHANGED
+        // OLD: Midata ID:
+        // NEW: MIDATA ID:
         "midata_id" : "MIDATA ID:",
         "birthday" : "Geburtsdatum:",
         "change_btn" : "Ändern"

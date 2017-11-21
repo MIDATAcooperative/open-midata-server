@@ -41,10 +41,18 @@
         "registration_date" : "Date d'enregistrement:",
         "confirmation_date" : "Date de confirmation:",
         "last_login" : "Dernière connexion:",
+
+        // TODO CHANGED
+        // OLD: Confirm email Address
+        // NEW: Confirm Email Address
         "email_confirm_btn" : "Confirmer l'adresse e-mail",
         "comment" : "Commentaire",
         "add_comment_btn" : "Ajouter un commentaire",
         "wipe_btn" : "Supprimer le compte",
+
+        // TODO CHANGED
+        // OLD: Change eMail
+        // NEW: Change Email Address
         "change_email_btn" : "Changer l'adresse e-mail"
     },
 

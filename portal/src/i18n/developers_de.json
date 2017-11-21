@@ -56,7 +56,15 @@
             "CONSENT_REJECT_OWNER" : "Zustimmungsablehnung (Geber)",
             "CONSENT_REJECT_AUTHORIZED" : "Zustimmungsablehnung (Empfänger)",
             "ACCOUNT_UNLOCK" : "Konto vom Administrator freigeschaltet",
+
+            // TODO CHANGED
+            // OLD: Login email changed (sent to old email address)
+            // NEW: Login email changed (send to old email address)
             "EMAIL_CHANGED_OLDADDRESS" : "E-Mail-Adresse geändert (an alte E-Mail-Adresse senden)",
+
+            // TODO CHANGED
+            // OLD: Login email changed (sent to new email address)
+            // NEW: Login email changed (send to new email address)
             "EMAIL_CHANGED_NEWADDRESS" : "E-Mail-Adresse geändert (an neue E-Mail-Adresse senden)"
         }
     },
@@ -90,6 +98,32 @@
             "secret" : "Ihre App braucht dieses 'secret' um sich anmelden zu können. Wählen Sie es nach Belieben.",
             "mustParticipateInStudy" : "Benutzer müssen an der Studie teilnehmen um diese App benutzen zu können.",
             "unlock_code" : "Wenn ausgefüllt, muss dieser Code vom Benutzer eingegeben werden bei der Registrierung oder ersten Anmeldung bei MIDATA über die App. Der Code ist nicht 'case sensitiv'."
+        },
+
+        // TODO NEW: Access Query (Options)
+        "access_query_options" : "Access Query (Options)",
+
+        // TODO NEW: Access Query (Selection)
+        "access_query_selection" : "Access Query (Selection)",
+
+        // TODO NEW: Access Query (Add)
+        "access_query_add" : "Access Query (Add)",
+
+        // TODO NEW: Access Query (JSON)
+        "access_query_json" : "Access Query (JSON)",
+        "query" : {
+
+            // TODO NEW: App/Plugin may only access data of the person using it
+            "self" : "App/Plugin may only access data of the person using it",
+
+            // TODO NEW: App/Plugin may only access data created using this app or plugin.
+            "ownapp" : "App/Plugin may only access data created using this app or plugin.",
+
+            // TODO NEW: Add all types written by the app automatically to the Access Query. (MUST be turned off before app goes productive)
+            "learn" : "Add all types written by the app automatically to the Access Query. (MUST be turned off before app goes productive)",
+
+            // TODO NEW: During development allow to access all data of the user. (MUST be replaced with a proper query before plugin goes productive)
+            "all" : "During development allow to access all data of the user. (MUST be replaced with a proper query before plugin goes productive)"
         }
     },
 

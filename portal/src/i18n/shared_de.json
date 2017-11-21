@@ -50,6 +50,7 @@
             "not_plugin_owner" : "Dies ist nicht Ihr Plugin"
         },
 
+
         "invalid" : {
             "email" : "Bitte eine gültige E-Mail-Adresse eingeben.",
             "credentials" : "Ungültige E-Mail-Adresse oder Kennwort!",
@@ -78,6 +79,7 @@
         },
 
         "missing" : {
+
             "credentials" : "Bitte Ihre E-Mail-Adresse und Kennwort eingeben.",
             "email" : "Geben Sie bitte Ihre E-Mail-Adresse ein.",
             "input_field" : "Füllen Sie bitte dieses Eingabefeld.",
@@ -200,6 +202,7 @@
             "ACCOUNT_DELETED" : "Konto gelöscht",
             "INTERNAL_COMMENT" : "Interne Bemerkung",
             "TERMS_OF_USE_AGREED" : "Allgemeine Geschäftsbedingungen zugestimmt",
+
             "user-registration" : "Benutzerregistrierung ",
             "110122" : "Anmeldung",
             "user-password-change" : "Kennwort geändert",
@@ -384,6 +387,20 @@
             "11" : "Nov",
             "12" : "Dez"
         },
+        "codesystems" : {
+
+            // TODO NEW: Loinc Code
+            "loinc" : "Loinc Code",
+
+            // TODO NEW: Midata Code
+            "midata" : "Midata Code",
+
+            // TODO NEW: FHIR Resource Name
+            "fhir" : "FHIR Resource Name",
+
+            // TODO NEW: Snowmed
+            "snowmed" : "Snowmed"
+        },
         "tags" : {
             "Analysis" : "Analyse",
             "Import" : "Import",
@@ -510,6 +527,9 @@
     "login" : {
         "email_address" : "E-Mail Adresse",
         "password" : "Kennwort",
+
+        // TODO NEW: Study
+        "study" : "Study",
         "remember_me" : "Angemeldet bleiben",
         "sign_in_btn" : "Anmelden",
         "forgot_your_password" : "Kennwort vergessen?",
@@ -657,11 +677,19 @@
         "account" : "Account",
         "user" : "Benutzer",
         "name" : "Name:",
+
+        // TODO CHANGED
+        // OLD: EMail:
+        // NEW: Email:
         "email" : "E-Mail:",
         "action" : "Mehr...",
         "change_password_btn" : "Kennwort ändern",
         "change_passphrase_btn" : "Passphrase ändern",
         "auditlog_btn" : "Audit Log anschauen",
+
+        // TODO CHANGED
+        // OLD: Change EMail
+        // NEW: Change Email Address
         "change_email_btn" : "E-Mail Adresse ändern",
         "repair_account_btn" : "Account reparieren",
         "reset_spaces_btn" : "Reset Portal zurücksetzen",
@@ -1020,7 +1048,14 @@
         "MEMBER" : "Account",
         "PROVIDER" : "Account (Gesundheitsfachperson)",
         "RESEARCH" : "Account (Forscher)",
-        "ADMIN" : "Account (Administrator)"
+
+        // TODO CHANGED
+        // OLD: Account (Admin)
+        // NEW: Account (Administrator)
+        "ADMIN" : "Account (Administrator)",
+
+        // TODO NEW: Account (Developer)
+        "DEVELOPER" : "Account (Developer)"
     },
 
     "apps" : {
@@ -1033,13 +1068,33 @@
     },
 
     "changeemail" : {
+
+        // TODO CHANGED
+        // OLD: Change Account eMail Address
+        // NEW: Change Account Email Address
         "title" : "E-Mail Adresse des Accounts ändern",
+
+        // TODO CHANGED
+        // OLD: Midata ID
+        // NEW: MIDATA ID
         "midataId" : "MIDATA ID",
         "name" : "Name",
+
+        // TODO CHANGED
+        // OLD: Current eMail Address
+        // NEW: Current Email Address
         "old_email" : "Aktuelle E-Mail Adresse",
+
+        // TODO CHANGED
+        // OLD: New eMail Address
+        // NEW: New Email Address
         "new_email" : "Neue E-Mail Adresse",
         "none" : "Keine",
         "change_btn" : "Ändern",
+
+        // TODO CHANGED
+        // OLD: EMail address successfully changed!
+        // NEW: Email address successfully changed!
         "success" : "E-Mail Adresse erfolgreich geändert!"
     }
 }

@@ -50,6 +50,7 @@
             "not_plugin_owner" : "Ce n'est pas votre plugin"
         },
 
+
         "invalid" : {
             "email" : "Veuillez entrer une adresse e-mail valide",
             "credentials" : "Adresse e-mail ou mot de passe invalide.",
@@ -78,6 +79,7 @@
         },
 
         "missing" : {
+
             "credentials" : "Veuillez saisir votre adresse e-mail et mot de passe.",
             "email" : "Veuillez saisir votre adresse e-mail",
             "input_field" : "Veuillez compléter ce champ de saisie.",
@@ -200,6 +202,7 @@
             "ACCOUNT_DELETED" : "Compte supprimé",
             "INTERNAL_COMMENT" : "Commentaire interne",
             "TERMS_OF_USE_AGREED" : "Conditions Générales d'Utilisation acceptées",
+
             "user-registration" : "Inscription de l'utilisateur",
             "110122" : "Connexion",
             "user-password-change" : "Mot de passe modifié",
@@ -384,6 +387,20 @@
             "11" : "Nov.",
             "12" : "Dec."
         },
+        "codesystems" : {
+
+            // TODO NEW: Loinc Code
+            "loinc" : "Loinc Code",
+
+            // TODO NEW: Midata Code
+            "midata" : "Midata Code",
+
+            // TODO NEW: FHIR Resource Name
+            "fhir" : "FHIR Resource Name",
+
+            // TODO NEW: Snowmed
+            "snowmed" : "Snowmed"
+        },
         "tags" : {
             "Analysis" : "Analyse",
             "Import" : "Importer",
@@ -510,6 +527,9 @@
     "login" : {
         "email_address" : "Adresse e-mail",
         "password" : "Mot de passe",
+
+        // TODO NEW: Study
+        "study" : "Study",
         "remember_me" : "Rester connecté",
         "sign_in_btn" : "Se connecter",
         "forgot_your_password" : "Mot de passe oublié?",
@@ -657,11 +677,19 @@
         "account" : "Compte d'utilisateur",
         "user" : "Utilisateur",
         "name" : "Prénom:",
+
+        // TODO CHANGED
+        // OLD: EMail:
+        // NEW: Email:
         "email" : "E-mail:",
         "action" : "Plus...",
         "change_password_btn" : "Changer le mot de passe",
         "change_passphrase_btn" : "Modifier la phrase de passe",
         "auditlog_btn" : "Consulter l'Audit Log",
+
+        // TODO CHANGED
+        // OLD: Change EMail
+        // NEW: Change Email Address
         "change_email_btn" : "Changer l'adresse e-mail",
         "repair_account_btn" : "Réparer le compte",
         "reset_spaces_btn" : "Réinitialiser le portail",
@@ -1020,7 +1048,14 @@
         "MEMBER" : "Compte",
         "PROVIDER" : "Compte (Professionnel de la santé)",
         "RESEARCH" : "Compte (Chercheur)",
-        "ADMIN" : "Compte (Administrateur)"
+
+        // TODO CHANGED
+        // OLD: Account (Admin)
+        // NEW: Account (Administrator)
+        "ADMIN" : "Compte (Administrateur)",
+
+        // TODO NEW: Account (Developer)
+        "DEVELOPER" : "Account (Developer)"
     },
 
     "apps" : {
@@ -1033,13 +1068,33 @@
     },
 
     "changeemail" : {
+
+        // TODO CHANGED
+        // OLD: Change Account eMail Address
+        // NEW: Change Account Email Address
         "title" : "Changer l'adresse e-mail du compte",
+
+        // TODO CHANGED
+        // OLD: Midata ID
+        // NEW: MIDATA ID
         "midataId" : "ID MIDATA",
         "name" : "Nom",
+
+        // TODO CHANGED
+        // OLD: Current eMail Address
+        // NEW: Current Email Address
         "old_email" : "Adresse e-mail actuelle",
+
+        // TODO CHANGED
+        // OLD: New eMail Address
+        // NEW: New Email Address
         "new_email" : "Nouvelle adresse e-mail",
         "none" : "Aucune",
         "change_btn" : "Changer",
+
+        // TODO CHANGED
+        // OLD: EMail address successfully changed!
+        // NEW: Email address successfully changed!
         "success" : "L'adresse e-mail a été changée avec succès!"
     }
 }

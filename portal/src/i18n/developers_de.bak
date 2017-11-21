@@ -55,8 +55,8 @@
 	   "CONSENT_REJECT_OWNER" : "Consent rejection (Grantor)",
 	   "CONSENT_REJECT_AUTHORIZED" : "Consent rejection (Grantee)",
 	   "ACCOUNT_UNLOCK" : "Account unlocked by the administrator",
-	   "EMAIL_CHANGED_OLDADDRESS" : "Login email changed (sent to old email address)",
-	   "EMAIL_CHANGED_NEWADDRESS" : "Login email changed (sent to new email address)"	   
+	   "EMAIL_CHANGED_OLDADDRESS" : "Login email changed (send to old email address)",
+	   "EMAIL_CHANGED_NEWADDRESS" : "Login email changed (send to new email address)"	   
     }		      
   },
   
@@ -89,6 +89,16 @@
        "secret" : "Your app will need this 'secret' during login. Choose whatever you like.",
        "mustParticipateInStudy" : "User must participate in study in order to use app.",
        "unlock_code" : "If filled out, this code must be entered by the user in order to sign up or log in the first time to MIDATA using the app. The code is not case sensitive."
+    },
+    "access_query_options" : "Access Query (Options)",
+    "access_query_selection" : "Access Query (Selection)",
+    "access_query_add" : "Access Query (Add)",
+    "access_query_json" : "Access Query (JSON)",
+    "query" : {
+      "self" : "App/Plugin may only access data of the person using it",
+      "ownapp" : "App/Plugin may only access data created using this app or plugin.",
+      "learn" : "Add all types written by the app automatically to the Access Query. (MUST be turned off before app goes productive)",
+      "all" : "During development allow to access all data of the user. (MUST be replaced with a proper query before plugin goes productive)"
     }
   },
   
