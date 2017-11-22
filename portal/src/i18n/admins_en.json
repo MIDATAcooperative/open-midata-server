@@ -73,6 +73,7 @@
   "admin_plugins" : {
     "title" : "Plugins",
     "developer" : "Filter by Developer",
+    "name" : "Filter by Appname",
     "empty" : "There are no apps or plugins yet."
   },
   

@@ -9,7 +9,12 @@
 		      <input type="text" class="form-control" id="developer" autocomplete="off" typeahead-on-select="reload()" ng-change="reload();" ng-model="search.criteria.creatorLogin" ng-model-options="{ debounce: 500 }" uib-typeahead="developer.email for developer in developers | filter:{email:$viewValue}">
 		      
 		      
-		   </formrow>		      
+		   </formrow>
+		   <formrow myid="name" label="admin_plugins.name">
+		      <input type="text" class="form-control" id="name" ng-model="search.name" ng-model-options="{ debounce: 100 }">
+		      
+		      
+		   </formrow>			      
 	  </form>
     
     
@@ -25,7 +30,7 @@
           <th>Stats</th>
           <th>Status</th>
         </tr>
-        <tr dir-paginate="app in apps | itemsPerPage : 10" pagination-id="plugintable" current-page="page.nr">
+        <tr dir-paginate="app in apps | filter : { name : search.name } | itemsPerPage : 10" pagination-id="plugintable" current-page="page.nr">
           <td><a ui-sref="^.manageapp({ appId : app._id })">{{  app.name }}</a></td>
           <td><a ui-sref="^.address({ userId : app.creator })">{{ app.creatorLogin }}</a></td>
           <td translate="{{ 'enum.plugintype.'+app.type }}"></td>

@@ -100,7 +100,11 @@ angular.module('portal', [ 'ngCookies', 'ui.router', 'ui.bootstrap', 'services',
     	var $state = $injector.get("$state");
     	if ($state.current.nointerceptor) return $q.reject(response); 
         if (response.status === 401) {
-            $state.go("public.login");
+        	if ($state.includes("provider") || $state.includes("public_provider")) $state.go("public_provider.login");
+			else if ($state.includes("research") || $state.includes("public_research")) $state.go("public_research.login");
+			else if ($state.includes("admin") || $state.includes("developer") || $state.includes("public_developer")) $state.go("public_developer.login");
+			else $state.go("public.login");
+            
         } else if (response.status === 403) {
         	if (response.data && (response.data.requiredSubUserRole || response.data.requiredFeature)) {        		
         		$state.go("^.upgrade", { role : response.data.requiredSubUserRole, feature : response.data.requiredFeature });

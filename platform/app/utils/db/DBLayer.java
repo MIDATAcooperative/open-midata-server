@@ -1,5 +1,6 @@
 package utils.db;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -219,6 +220,16 @@ public class DBLayer {
 	public static <T extends Model> void set(Class<T> model, String collection, Map<String, Object> properties, String field, Object value) throws DatabaseException {
 		Stats.reportDb("update N",collection);
 		getDatabaseForCollection(collection).set(model, collection, properties, field, value);		
+	}
+	
+	
+	/**
+	 * Sets the given fields of the object (does not prevent lost update)
+	 * @return
+	 */
+	public static <T extends Model> void update(T model, String collection, Collection<String> fields) throws DatabaseException {
+		Stats.reportDb("update 1", collection);
+		getDatabaseForCollection(collection).update(model, collection, fields);
 	}
 	
 	/**

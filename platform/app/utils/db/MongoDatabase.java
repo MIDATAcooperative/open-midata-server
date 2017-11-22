@@ -252,6 +252,38 @@ public class MongoDatabase extends Database {
 	}
 	
 	/**
+	 * Set the given fields of the object with the given id.
+	 */
+	public <T extends Model> void update(T model, String collection, Collection<String> fields) throws DatabaseException {
+		try {
+			if (logQueries) AccessLog.logDB("update "+collection+ " "+model.to_db_id().toString());
+			DBObject query = new BasicDBObject();
+			query.put("_id", model.to_db_id());
+			
+			
+			
+			DBObject updateContent = new BasicDBObject();
+			for (String field : fields) {
+				updateContent.put(field, conversion.toDBObjectValue(model.getClass().getField(field).get(model)));
+			}
+			long ts = System.currentTimeMillis();
+			
+			DBObject update = new BasicDBObject("$set", updateContent);
+		
+			getCollection(collection).update(query, update, false, false);
+																	
+		} catch (MongoException e) {
+			throw new DatabaseException(e);
+		} catch (DatabaseConversionException e2) {
+			throw new DatabaseException(e2);
+		} catch (IllegalAccessException e3) {
+			throw new DatabaseException(e3);
+		} catch (NoSuchFieldException e4) {
+			throw new DatabaseException(e4);
+		}
+	}
+	
+	/**
 	 * Set the given field of the object with the given id.
 	 */
 	public <T extends Model> void secureUpdate(T model, String collection, String timestampField, String[] fields) throws LostUpdateException, DatabaseException {

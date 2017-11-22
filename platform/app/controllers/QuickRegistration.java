@@ -163,7 +163,7 @@ public class QuickRegistration extends APIController {
 		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, requirements);
 		
 		Circles.fetchExistingConsents(user._id, user.emailLC);
-		Application.sendWelcomeMail(app._id, user);
+		Application.sendWelcomeMail(app._id, user, null);
 		
 		if (notok == null || notok.isEmpty()) {
 		
