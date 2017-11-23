@@ -74,6 +74,7 @@
     "title" : "Plugins",
     "developer" : "Filter by Developer",
     "name" : "Filter by Appname",
+    "organisation" : "Filter by Organisation",
     "empty" : "There are no apps or plugins yet."
   },
   

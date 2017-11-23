@@ -15,6 +15,14 @@
 				<p class="col-sm-2" translate="user.email"></p>
 				<p class="col-sm-10">{{user.email}}</p>
 			</div> 
+			<div class="row" ng-show="user.birthday">
+				<p class="col-sm-2" translate="user.birthday"></p>
+				<p class="col-sm-10">{{user.birthday | date : 'dd.MM.yyyy' }}</p>
+			</div>
+			<div class="row" ng-show="user.midataID">
+				<p class="col-sm-2" translate="user.midataID"></p>
+				<p class="col-sm-10">{{user.midataID }}</p>
+			</div>
 			
 			<div class="row" ng-show="isSelf">
 			  <div class="col-sm-12">
