@@ -28,5 +28,10 @@ public enum UserStatus {
   /**
    * This user account has been deleted.
    */
-  DELETED
+  DELETED,
+  
+  /**
+   * This user account has been deleted and access keys have been destroyed
+   */
+  WIPED
 }

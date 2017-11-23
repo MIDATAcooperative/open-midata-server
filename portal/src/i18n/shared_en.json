@@ -667,6 +667,8 @@
     "user" : "User",
     "name" : "Name:",
     "email" : "Email:",
+    "birthday" : "Date of birth:",
+    "midataID" : "Account ID:",
     "action" : "More...",
     "change_password_btn" : "Change Password",
  	"change_passphrase_btn" : "Change Passphrase",

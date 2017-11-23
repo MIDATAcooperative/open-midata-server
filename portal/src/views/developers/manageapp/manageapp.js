@@ -223,6 +223,10 @@ angular.module('portal')
 		}
 	};
 	
+	$scope.checkStudyEmpty = function() {
+		if ($scope.app && !$scope.app.linkedStudyCode) $scope.app.mustParticipateInStudy = false;
+	};
+	
 	$translatePartialLoader.addPart("developers");
 	
 	terms.search({}, ["name", "version", "language", "title"])
