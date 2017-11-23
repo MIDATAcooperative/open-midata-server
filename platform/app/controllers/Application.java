@@ -158,7 +158,7 @@ public class Application extends APIController {
 		User user = User.getById(userId, Sets.create("firstname", "lastname", "email", "emailStatus", "status", "role"));
 		
 		if (user != null && (user.emailStatus.equals(EMailStatus.UNVALIDATED) || user.emailStatus.equals(EMailStatus.EXTERN_VALIDATED)) ) {							  
-		   sendWelcomeMail(user);
+		   sendWelcomeMail(user, null);
 		}
 			
 		// response
@@ -169,12 +169,12 @@ public class Application extends APIController {
 	 * Helper function to send welcome mail
 	 * @param user user record which sould receive the mail
 	 */
-	public static void sendWelcomeMail(User user) throws AppException {
-		sendWelcomeMail(RuntimeConstants.instance.portalPlugin, user);
+	public static void sendWelcomeMail(User user, User executingUser) throws AppException {
+		sendWelcomeMail(RuntimeConstants.instance.portalPlugin, user, executingUser);
 	}
 	
 	
-	public static void sendWelcomeMail(MidataId sourcePlugin, User user) throws AppException {
+	public static void sendWelcomeMail(MidataId sourcePlugin, User user, User executingUser) throws AppException {
 	   if (user.developer == null) {
 		   if (user.email == null) return;
 		   PasswordResetToken token = new PasswordResetToken(user._id, user.role.toString(), true);
@@ -189,10 +189,26 @@ public class Application extends APIController {
 		   replacements.put("reject-url", site + "/#/portal/reject/" + encrypted);
 		   replacements.put("token", token.token);
 		   
+		   if (executingUser != null) {
+			   replacements.put("executor-firstname", executingUser.firstname);
+			   replacements.put("executor-lastname", executingUser.lastname);
+			   replacements.put("executor-email", executingUser.email);
+		   }
+		   
 		   AccessLog.log("send welcome mail: "+user.email);
-		   if (!Messager.sendMessage(sourcePlugin, MessageReason.REGISTRATION, null, Collections.singleton(user._id), null, replacements)) {
-			   Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.REGISTRATION, null, Collections.singleton(user._id), null, replacements);
-		   }	  	   
+		   if (executingUser == null) {
+			   if (!Messager.sendMessage(sourcePlugin, MessageReason.REGISTRATION, null, Collections.singleton(user._id), null, replacements)) {
+				   Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.REGISTRATION, user.role.toString(), Collections.singleton(user._id), null, replacements);
+			   }	  	   
+		   } else {
+			   if (!Messager.sendMessage(sourcePlugin, MessageReason.REGISTRATION_BY_OTHER_PERSON, null, Collections.singleton(user._id), null, replacements)) {
+				   if (!Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.REGISTRATION_BY_OTHER_PERSON, user.role.toString(), Collections.singleton(user._id), null, replacements)) {
+					   if (!Messager.sendMessage(sourcePlugin, MessageReason.REGISTRATION, null, Collections.singleton(user._id), null, replacements)) {
+						   Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.REGISTRATION, user.role.toString(), Collections.singleton(user._id), null, replacements);
+					   }	
+				   }
+			   }	  	   
+		   }
 	   } else {
 		   user.emailStatus = EMailStatus.VALIDATED;
 		   User.set(user._id, "emailStatus", user.emailStatus);
@@ -298,7 +314,7 @@ public class Application extends APIController {
 				       
 			       } else if (user!=null && user.emailStatus.equals(EMailStatus.UNVALIDATED) && user.resettoken != null 
 			    		   && user.resettoken.equals(token)) {
-			    	     sendWelcomeMail(user);
+			    	     sendWelcomeMail(user, null);
 			    	     throw new BadRequestException("error.expired.tokenresent", "Token has already expired. A new one has been requested.");
 			       } else throw new BadRequestException("error.expired.token", "Token has already expired. Please request a new one.");
 			       
@@ -528,7 +544,7 @@ public class Application extends APIController {
 	*/
 	
 	public static Set<UserFeature> loginHelperPreconditionsFailed(User user, Set<UserFeature> required) throws AppException {
-        if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
+        if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.WIPED)) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
 		
 		if (user.emailStatus.equals(EMailStatus.UNVALIDATED) && user.registeredAt.before(new Date(System.currentTimeMillis() - MAX_TIME_UNTIL_EMAIL_CONFIRMATION)) && !InstanceConfig.getInstance().getInstanceType().disableEMailValidation()) {
 			user.status = UserStatus.TIMEOUT;			
@@ -712,7 +728,7 @@ public class Application extends APIController {
 		
 		Circles.fetchExistingConsents(user._id, user.emailLC);
 		
-		sendWelcomeMail(user);
+		sendWelcomeMail(user, null);
 		if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) sendAdminNotificationMail(user);
 		
 		return loginHelper(user);		

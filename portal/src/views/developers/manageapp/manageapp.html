@@ -208,14 +208,14 @@
 		     <p class="help-block" ng-show="app.termsOfUse"><a ui-sref="^.terms({ which:app.termsOfUse })" translate="manageapp.show_terms"></a></p> 
 		  </formrow>
 		  <formrow myid="linkedStudy" label="manageapp.linkedStudy" >
-		    <input type="text" id="linkedStudy" ng-disabled="!allowStudyConfig" name="linkedStudy" class="form-control" placeholder="Study" ng-model="app.linkedStudyCode">
+		    <input type="text" id="linkedStudy" ng-disabled="!allowStudyConfig" name="linkedStudy" class="form-control" ng-change="checkStudyEmpty()" placeholder="Study" ng-model="app.linkedStudyCode">
 		    <formerror myid="linkedStudy" type="invalid" message="error.unknown.study" ></formerror>
 		     <p class="help-block">{{ app.linkedStudyName }}</p> 
 		  </formrow>
 		   <formrow myid="mustParticipateInStudy" label="manageapp.mustParticipateInStudy">
 		    <div class="checkbox">
 		    <label>
-		      <input type="checkbox" id="mustParticipateInStudy" ng-disabled="!allowStudyConfig" name="mustParticipateInStudy" ng-model="app.mustParticipateInStudy" value="true">
+		      <input type="checkbox" id="mustParticipateInStudy" ng-disabled="!allowStudyConfig || !app.linkedStudyCode" name="mustParticipateInStudy" ng-model="app.mustParticipateInStudy" value="true">
 		      <span translate="manageapp.info.mustParticipateInStudy"></span>
 		    </label>
 		    </div>

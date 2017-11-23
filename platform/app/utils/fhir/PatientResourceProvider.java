@@ -70,6 +70,7 @@ import models.Plugin;
 import models.Record;
 import models.Study;
 import models.StudyParticipation;
+import models.User;
 import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
@@ -767,8 +768,9 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 				
 		
 		if (existing == null) {
+			User executorUser = info().cache.getUserById(info().ownerId);
 			RecordManager.instance.clearCache();
-			Application.sendWelcomeMail(info().pluginId, user);
+			Application.sendWelcomeMail(info().pluginId, user, executorUser);
 			//if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) Application.sendAdminNotificationMail(user);
 		}
 		

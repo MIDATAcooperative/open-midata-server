@@ -9,6 +9,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -40,6 +41,7 @@ import models.MobileAppInstance;
 import models.ParticipationCode;
 import models.Plugin;
 import models.Record;
+import models.RecordsInfo;
 import models.ResearchUser;
 import models.Space;
 import models.Study;
@@ -50,6 +52,7 @@ import models.Task;
 import models.User;
 import models.UserGroup;
 import models.UserGroupMember;
+import models.enums.AggregationType;
 import models.enums.AssistanceType;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
@@ -991,10 +994,15 @@ public class Studies extends APIController {
 		MidataId studyId = new MidataId(id);
 		if (group != null && (group.equals("undefined") || group.equals("null"))) group = null;
 		
-		Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "name", "code", "createdBy", "groups"));
+		Study study = Study.getById(studyId, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "name", "code", "createdBy", "groups"));
 		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 		if (study.validationStatus != StudyValidationStatus.VALIDATED) throw new BadRequestException("error.notvalidated.study", "Study must be validated before.");
 		//if (study.executionStatus != StudyExecutionStatus.RUNNING) throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
+		
+		UserGroupMember self = UserGroupMember.getByGroupAndMember(studyId, userId);
+		if (self == null) throw new AuthException("error.notauthorized.action", "User not member of study group");
+		//if (!self.role.maySetup()) throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
+	
 		
 		// validate json
 		JsonNode json = request().body().asJson();	
@@ -1188,8 +1196,9 @@ public class Studies extends APIController {
 	   if (ugm == null) throw new BadRequestException("error.notauthorized.study", "Not member of study team");
 	   
 	   
-	   Set<String> participationFields = Sets.create("pstatus", "status", "group","ownerName", "gender", "country", "yearOfBirth", "owner", "partName"); 
+	   Set<String> participationFields = Sets.create("pstatus", "status", "group","ownerName", "gender", "country", "yearOfBirth", "owner", "partName", "records"); 
 	   StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, participationFields);
+	   	  
 	   if (participation == null) throw new BadRequestException("error.unknown.participant", "Member does not participate in study");
 	   if (participation.pstatus == ParticipationStatus.CODE || 
 		   participation.pstatus == ParticipationStatus.MATCH || 
@@ -1200,6 +1209,13 @@ public class Studies extends APIController {
 		   participation.ownerName = null;		   
 	   }
 	   ReferenceTool.resolveOwners(Collections.singleton(participation), true);
+	   
+	   if (participation.status.equals(ConsentStatus.ACTIVE) || participation.status.equals(ConsentStatus.FROZEN)) {
+		   Collection<RecordsInfo> stats = RecordManager.instance.info(userId, participation._id, RecordManager.instance.createContextFromConsent(userId, participation), CMaps.map(), AggregationType.ALL);
+		   if (!stats.isEmpty()) participation.records = stats.iterator().next().count; 
+			  
+	   }
+	   
 	   
 	   ObjectNode obj = Json.newObject();
 	   obj.put("participation", JsonOutput.toJsonNode(participation, "Consent", participationFields));	   

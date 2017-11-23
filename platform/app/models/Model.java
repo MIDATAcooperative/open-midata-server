@@ -1,5 +1,6 @@
 package models;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -131,6 +132,14 @@ public abstract class Model implements JsonSerializable {
 	protected static void set(Class model, String collection, MidataId modelId, String field, Object value) throws InternalServerException {
 		try {
 			DBLayer.set(model, collection, modelId.toObjectId(), field, value);
+		} catch (DatabaseException e) {
+			throw new InternalServerException("error.internal_db", e);
+		}
+	}
+	
+	protected void setMultiple(String collection, Collection<String> fields) throws InternalServerException {
+		try {
+			DBLayer.update(this, collection, fields);
 		} catch (DatabaseException e) {
 			throw new InternalServerException("error.internal_db", e);
 		}

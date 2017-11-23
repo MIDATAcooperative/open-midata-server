@@ -26,12 +26,14 @@ angular.module('portal')
 		
 		$scope.status.doBusy(server.get(jsRoutes.controllers.research.Studies.get($scope.studyId).url))
 		.then(function(data) { 				
-				$scope.study = data.data;			
+				$scope.study = data.data;	
+				$scope.lockChanges = !$scope.study.myRole.changeTeam;
 		});
 						
 		$scope.status.doBusy(usergroups.listUserGroupMembers($scope.studyId))
 		.then(function(data) {
 			$scope.members = data.data;
+			angular.forEach($scope.members, function(member) { member.role.unpseudo = !member.role.pseudo; });
 		});
 		
 		$scope.status.doBusy(users.getMembers({ role : "RESEARCH", organization : session.org }, users.MINIMAL ))

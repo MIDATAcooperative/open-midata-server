@@ -27,6 +27,7 @@ import models.Study;
 import models.User;
 import models.UserGroupMember;
 import models.enums.AuditEventType;
+import models.enums.ConsentType;
 import models.enums.ContractStatus;
 import models.enums.EventType;
 import models.enums.Gender;
@@ -392,7 +393,7 @@ public class Users extends APIController {
 			Space.delete(userId, space._id);
 		}
 		
-		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map(), Consent.ALL, Integer.MAX_VALUE);
+		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map("type", Sets.createEnum(ConsentType.CIRCLE, ConsentType.EXTERNALSERVICE, ConsentType.HCRELATED, ConsentType.HEALTHCARE)), Consent.ALL, Integer.MAX_VALUE);
 		for (Consent consent : consents) {
 			RecordManager.instance.deleteAPS(consent._id, userId);
 			Circle.delete(userId, consent._id);
@@ -413,26 +414,13 @@ public class Users extends APIController {
 		
 		RecordManager.instance.clearIndexes(userId);
 		
-		RecordManager.instance.wipe(userId, CMaps.map("owner", "self"));
-		RecordManager.instance.wipe(userId, CMaps.map("owner", "self").map("streams", "true"));
-		
-		/*if (getRole().equals(UserRole.RESEARCH)) {
-			Set<Study> studies = Study.getByOwner(PortalSessionToken.session().org, Sets.create("_id"));
-			
-			for (Study study : studies) {
-				controllers.research.Studies.deleteStudy(userId, study._id, false);
-			}
-			
-			Research.delete(PortalSessionToken.session().org);			
-			
-		}*/
-		
-		/*if (getRole().equals(UserRole.PROVIDER)) {
-			HealthcareProvider.delete(PortalSessionToken.session().org);
-		}*/
-		
+		//RecordManager.instance.wipe(userId, CMaps.map("owner", "self"));
+		//RecordManager.instance.wipe(userId, CMaps.map("owner", "self").map("streams", "true"));
+						
 		KeyManager.instance.deleteKey(userId);
-		User.delete(userId);
+		
+		User user = User.getById(userId, User.ALL_USER_INTERNAL);
+		user.delete();
 		
 		AuditManager.instance.success();
 		return ok();

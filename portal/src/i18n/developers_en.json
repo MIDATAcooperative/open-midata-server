@@ -44,6 +44,7 @@
     "available_tags" : "Available variables",
     "reasons" : {
        "REGISTRATION" : "Registration of new user",
+       "REGISTRATION_BY_OTHER_PERSON" : "Registration of a new user by someone else",
 	   "FIRSTUSE_ANYUSER" : "First use of app",
 	   "FIRSTUSE_EXISTINGUSER" : "First use of app (if no registration email sent)",
 	   "CONSENT_REQUEST_OWNER_INVITED" : "Proposed consent (Grantor, Invitation)",

@@ -17,7 +17,7 @@ angular.module('portal')
 	
 	$scope.reload = function() {
 	   if ($scope.search.criteria.creatorLogin === "") $scope.search.criteria.creatorLogin = undefined;
-	   $scope.status.doBusy(apps.getApps( $scope.search.criteria, [ "creator", "creatorLogin", "filename", "version", "name", "description", "tags", "targetUserRole", "spotlighted", "type", "status"]))
+	   $scope.status.doBusy(apps.getApps( $scope.search.criteria, [ "creator", "creatorLogin", "filename", "version", "name", "description", "tags", "targetUserRole", "spotlighted", "type", "status", "orgName"]))
 	   .then(function(data) { $scope.apps = data.data; });
 	};
 	
@@ -25,6 +25,10 @@ angular.module('portal')
 		apps.updatePluginStatus(plugin)
 	    .then(function() { $scope.init(); });				
 	};	
+	
+	$scope.emptyIsUndefined = function(x) {
+	  return x === "" ? undefined : x;
+	};
 	
 	session.load("PluginsCtrl", $scope, ["search", "page"]);
 	session.currentUser.then(function(userId) { $scope.init(userId); });

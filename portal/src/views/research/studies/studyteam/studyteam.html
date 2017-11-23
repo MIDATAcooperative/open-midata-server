@@ -30,21 +30,21 @@
 			
 			<form class="form-horizontal">
 			  <formrow myid="person" label="studyteam.person">
-  			    <input type="text" class="form-control" id="person" name="person" autocomplete="off" ng-model="add.personemail" ng-model-options="{ debounce: 50 }" uib-typeahead="person.email for person in persons | filter:{email:$viewValue}">
+  			    <input type="text" class="form-control" id="person" ng-disabled="lockChanges" name="person" autocomplete="off" ng-model="add.personemail" ng-model-options="{ debounce: 50 }" uib-typeahead="person.email for person in persons | filter:{email:$viewValue}">
 			    
 			  </formrow>
 			  <formrow myid="role" label="studyteam.role">
-			    <select name="role" id="role" class="form-control" ng-model="add.roleTemplate" ng-options="role as 'enum.researcherrole.'+role.id | translate for role in roles" ng-change="updateRole()"></select>			    			    
+			    <select name="role" id="role" class="form-control" ng-disabled="lockChanges" ng-model="add.roleTemplate" ng-options="role as 'enum.researcherrole.'+role.id | translate for role in roles" ng-change="updateRole()"></select>			    			    
 			  </formrow>
 			  <div ng-show="add.roleTemplate.id == 'OTHER'">
 				  <formrow myid="roleName" label="studyteam.roleName">			    
-				    <input type="text" class="form-control" id="roleName" name="roleName" ng-model="add.role.roleName">			    
+				    <input type="text" class="form-control" id="roleName" ng-disabled="lockChanges" name="roleName" ng-model="add.role.roleName">			    
 				  </formrow>
 			  </div>
 			  <formrow myid="rights" label="studyteam.rights">
 			     <div class="checkbox" ng-repeat="req in rights">
 		    <label>
-		        <input type="checkbox" ng-model="add.role[req]" ng-disabled="add.roleTemplate.id != 'OTHER'">
+		        <input type="checkbox" ng-model="add.role[req]" ng-disabled="add.roleTemplate.id != 'OTHER' || lockChanges">
 		        <span translate="{{ 'studyteam.right.'+req }}"></span>
 		    </label>
 		 </div>
