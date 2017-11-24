@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 
@@ -49,6 +50,7 @@ import utils.AccessLog;
 import utils.PasswordHash;
 import utils.RuntimeConstants;
 import utils.access.APS;
+import utils.access.Feature_Streams;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
@@ -786,12 +788,22 @@ public class Circles extends APIController {
 	 * @throws AppException
 	 */
 	public static void setQuery(MidataId executor, MidataId userId, MidataId apsId, Map<String, Object> query) throws AppException {
-		Member member = Member.getById(userId, Sets.create("queries"));
-		if (member.queries==null) {
+		Member member = Member.getById(userId, Sets.create("queries", "rqueries"));
+		Pair<Map<String, Object>, Map<String, Object>> pair = Feature_Streams.convertToQueryPair(query);
+		if (pair.getLeft() != null && member.queries==null) {
 			member.queries = new HashMap<String, Map<String, Object>>();
 		}
-		member.queries.put(apsId.toString(), query);
-		Member.set(userId, "queries", member.queries);
+		if (pair.getRight() != null && member.rqueries==null) {
+			member.rqueries = new HashMap<String, Map<String, Object>>();
+		}
+		if (pair.getLeft() != null) {
+			member.queries.put(apsId.toString(), pair.getLeft());
+			Member.set(userId, "queries", member.queries);
+		}
+		if (pair.getRight() != null) {
+			member.rqueries.put(apsId.toString(), pair.getRight());
+			Member.set(userId, "rqueries", member.rqueries);
+		}				
 		if (query.containsKey("exclude-ids")) {
 			Map<String, Object> ids = new HashMap<String,Object>();
 			ids.put("ids", query.get("exclude-ids"));

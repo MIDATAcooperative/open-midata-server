@@ -38,7 +38,7 @@ angular.module('portal')
 				  views.disableView("shared_with_study");
 				}
 				
-				var sq = $scope.study.recordQuery;
+				var sq = labels.simplifyQuery($scope.study.recordQuery);
 				
 				if (sq) {
 					$scope.labels = [];

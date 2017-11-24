@@ -168,9 +168,7 @@ angular.module('portal')
 				$scope.tests = {};
 				
 				$scope.status.doBusy(usergroups.listUserGroupMembers($scope.studyid))
-				.then(function(data) {
-					console.log("X");
-					console.log(data);
+				.then(function(data) {					
 					$scope.tests.team = data.data.length > 1;
 				}).then(function() {
 				
@@ -186,12 +184,13 @@ angular.module('portal')
 					
 
 				if (!$scope.study.processFlags) $scope.study.processFlags = [];
+			
 				$scope.checklist = [
 					{ title : "study_checklist.phase1", page : ".", heading : true  },
 					{ title : "study_checklist.name", page : "^.description", required : true, done : $scope.study.name && $scope.study.description },
 					{ title : "study_checklist.teamsetup", page : "^.team", flag : "team", done : $scope.tests.team || $scope.study.processFlags.indexOf("team")>=0 },
                     { title : "study_checklist.groups", page : "^.fields", required : true, done : $scope.study.groups.length },
-                    { title : "study_checklist.sharingQuery", page : "^.rules", required : true, done : ($scope.study.recordQuery && ($scope.study.recordQuery.content || $scope.study.recordQuery.group)) },
+                    { title : "study_checklist.sharingQuery", page : "^.rules", required : true, done : ($scope.study.recordQuery && ( JSON.stringify($scope.study.recordQuery) !== "{}")  ) },
                     { title : "study_checklist.dates", page : "^.rules", required : true, done : $scope.study.startDate || $scope.study.endDate || $scope.study.dataCreatedBefore },
                     { title : "study_checklist.terms", page : "^.rules" , flag : "termsofuse", done : $scope.study.termsOfUse || $scope.study.processFlags.indexOf("termsofuse")>=0 },
                     { title : "study_checklist.validation", action : $scope.startValidation, check : $scope.readyForValidation, page : ".", required : true, done : $scope.study.validationStatus !== "DRAFT" },

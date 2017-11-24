@@ -339,14 +339,7 @@ public class Records extends APIController {
 		Set<MidataId> stopped = ObjectIdConversion.toMidataIds(JsonExtraction.extractStringSet(json.get("stopped")));
 		Set<String> recordIds = JsonExtraction.extractStringSet(json.get("records"));		
 		Map<String, Object> query = json.has("query") ? JsonExtraction.extractMap(json.get("query")) : null;
-		String groupSystem = null;
-		if (query != null) {
-			if (query.containsKey("group-system")) {
-			  groupSystem = query.get("group-system").toString();
-			} else {
-			  groupSystem = "v1";
-			}
-		}
+		
 		
 		if (query != null && query.isEmpty()) query = null;
 			
@@ -391,7 +384,7 @@ public class Records extends APIController {
         	
         	if (query != null) {
         		        		
-        		Feature_FormatGroups.convertQueryToContents(groupSystem, query);        		
+        		Feature_FormatGroups.convertQueryToContents(query);        		
         		        		
         		
         		if (consent == null || consent.type.equals(ConsentType.EXTERNALSERVICE)) {
@@ -442,7 +435,7 @@ public class Records extends APIController {
         	}
         	
         	if (query != null) {
-        		Feature_FormatGroups.convertQueryToContents(groupSystem, query);
+        		Feature_FormatGroups.convertQueryToContents(query);
         		
         		if (consent == null || consent.type.equals(ConsentType.EXTERNALSERVICE)) {
         		  RecordManager.instance.shareByQuery(userId, userId, start, query);

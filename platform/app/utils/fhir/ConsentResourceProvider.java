@@ -1,6 +1,7 @@
 package utils.fhir;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -451,23 +452,19 @@ public class ConsentResourceProvider extends ResourceProvider<org.hl7.fhir.dstu3
 	
 	private static boolean isSubQuery(Map<String, Object> masterQuery, Map<String, Object> subQuery) throws AppException {
 		
+		if (masterQuery.containsKey("$or")) {
+			Collection<Map<String, Object>> parts = (Collection<Map<String, Object>>) masterQuery.get("$or");			
+			for (Map<String, Object> part :parts) {
+				boolean match = isSubQuery(part, subQuery);
+				if (match) return true;
+			}
+		}
+		
 		masterQuery = new HashMap<String, Object>(masterQuery);
 		subQuery = new HashMap<String, Object>(subQuery);
-		
-		String groupSystem = null;
-		
-		if (masterQuery.containsKey("group-system")) {
-		  groupSystem = masterQuery.get("group-system").toString();
-		} else {
-		  groupSystem = "v1";
-		}
-		Feature_FormatGroups.convertQueryToContents(groupSystem, masterQuery);
-		if (subQuery.containsKey("group-system")) {
-		  groupSystem = subQuery.get("group-system").toString();
-		} else {
-		  groupSystem = "v1";
-		}
-		Feature_FormatGroups.convertQueryToContents(groupSystem, subQuery);
+								
+		Feature_FormatGroups.convertQueryToContents(masterQuery);		
+		Feature_FormatGroups.convertQueryToContents(subQuery);
 		
 		masterQuery.remove("group-system");
 		subQuery.remove("group-system");

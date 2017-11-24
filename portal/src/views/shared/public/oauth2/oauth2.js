@@ -80,7 +80,7 @@ angular.module('portal')
 	};	
 	
 	$scope.prepareConfirm = function() {
-		var sq = $scope.app.defaultQuery;
+		var sq = labels.simplifyQuery($scope.app.defaultQuery);
 		console.log(sq);
 		$scope.labels = [];
 		if (sq) {

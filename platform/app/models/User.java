@@ -246,6 +246,7 @@ public class User extends Model implements Comparable<User> {
 	 * Map consent id to query map.
 	 */
 	public Map<String, Map<String, Object>> queries;
+	public Map<String, Map<String, Object>> rqueries;
 	
 	/**
 	 * App that was used to register this person
