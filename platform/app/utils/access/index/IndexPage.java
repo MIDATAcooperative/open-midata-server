@@ -287,9 +287,7 @@ public class IndexPage {
 							ids.add(matchId);
 						}
 						ids.add(i);
-					}
-					IndexPage c = getChild(i);
-					result.addAll(c.findEntries(key));				
+					}							
 				}
 			}
 			if (ids != null) {

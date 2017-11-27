@@ -42,7 +42,7 @@ public class Feature_QueryRedirect extends Feature {
 			  result = next.query(q);
 			}
 			
-			if (!q.restrictedBy("ignore-redirect")) {
+			if (!q.restrictedBy("ignore-redirect")) {				
 				if (query.containsField("$or")) {
 					Collection queryparts = (Collection) query.get("$or");
 					for (Object part : queryparts) {
@@ -100,6 +100,7 @@ public class Feature_QueryRedirect extends Feature {
 		Map<String, Object> combined = new HashMap<String,Object>();
 		combined.putAll(properties);
 		for (String key : query.keySet()) {
+			if (key.equals("$or")) continue;
 			if (combined.containsKey(key)) {
 				Object val1 = combined.get(key);
 				Object val2 = query.get(key);

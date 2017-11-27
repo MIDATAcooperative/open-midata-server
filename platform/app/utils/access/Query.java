@@ -148,6 +148,20 @@ public class Query {
 		} else throw new InternalServerException("error.internal","Bad Restriction 1: "+name);
 	}
 	
+	public static Set<String> getAnyRestrictionFromQuery(Map<String, Object> properties, String name) throws AppException {
+		if (properties.containsKey("$or")) {
+			Set<String> result = new HashSet<String>();
+			for (Map<String, Object> part : ((Collection<Map<String, Object>>) properties.get("$or"))){
+				result.addAll(getAnyRestrictionFromQuery(part, name));
+			}
+			return result;
+		}
+		if (properties.containsKey(name)) {
+			return getRestriction(properties.get(name), name);
+		}
+		return Collections.emptySet();		
+	}
+	
 	public Set<MidataId> getMidataIdRestriction(String name) throws BadRequestException {
 		Object v = properties.get(name);
 		if (v instanceof MidataId) {
@@ -311,7 +325,8 @@ public class Query {
 	}
 	
 	private void process() throws AppException {
-		 if (fields.contains("group")) fields.add("content");
+		 if (properties.containsKey("$or")) throw new InternalServerException("error.internal", "Query may not contain or");
+		 if (fields.contains("group") && !fields.contains("content")) fields.add("content");
 		
 		 fetchFromDB = fields.contains("data") ||
 	              //fields.contains("app") || 
@@ -452,6 +467,18 @@ public class Query {
 	
 	public static void validate(Map<String, Object> query, boolean requiresContent) throws AppException {
 		boolean contentSet = false;
+		if (query.containsKey("$or")) {
+			if (query.size() > 1) throw new BadRequestException("error.invalid.access_query", "Access query with $or is not allowed to have other restriction.");
+			Object test = query.get("$or");
+			if (!(test instanceof Collection)) throw new BadRequestException("error.invalid.access_query", "Access query with $or needs array.");
+			Collection<Object> parts = (Collection<Object>) test;
+			for (Object part : parts) {
+				if (!(part instanceof Map)) throw new BadRequestException("error.invalid.access_query", "Access query with $or needs array with objects.");
+				Map<String, Object> part2 = (Map<String, Object>) part;
+				validate(part2, requiresContent);
+			}
+			return;
+		}
 		if (query.containsKey("group")) {
 			Object system = query.get("group-system");
 			if (system == null || ! (system instanceof String)) throw new BadRequestException("error.missing.groupsystem", "Missing group-system for query");

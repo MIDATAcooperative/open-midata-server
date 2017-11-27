@@ -75,7 +75,14 @@
     "developer" : "Filter by Developer",
     "name" : "Filter by Appname",
     "organisation" : "Filter by Organisation",
-    "empty" : "There are no apps or plugins yet."
+    "empty" : "There are no apps or plugins yet.",
+    "plugin_name" : "Name",
+    "plugin_developer" : "Developer",
+    "plugin_type" : "Type",
+    "plugin_role" : "Target Role",
+    "plugin_market" : "Market",
+    "plugin_stats" : "Stats",
+    "plugin_status" : "Status"
   },
   
   "admin_studies" : {

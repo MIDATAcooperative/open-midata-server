@@ -1,5 +1,6 @@
 package utils.access;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -82,8 +83,10 @@ public class Feature_FormatGroups extends Feature {
 		return resolveContentNames(groupSystem, groups);
 	}
     
-    public static void convertQueryToContents(String groupSystem, Map<String, Object> properties) throws BadRequestException, AppException {
+    public static void convertQueryToContents(Map<String, Object> properties) throws BadRequestException, AppException {
+    	
     	if (properties.containsKey("group")) {
+    		String groupSystem = properties.containsKey("group-system") ? properties.get("group-system").toString() : "v1";
     		Set<String> include = Query.getRestriction(properties.get("group"), "group");
     		Set<String> exclude;
     		if (properties.containsKey("group-exclude")) {
@@ -104,6 +107,10 @@ public class Feature_FormatGroups extends Feature {
 				 contents.add(content);
 			 }
 			 properties.put("content", contents);
+    	}
+    	if (properties.containsKey("$or")) {
+    		Collection<Map<String, Object>> parts = (Collection<Map<String, Object>>) properties.get("$or");
+    		for (Map<String, Object> part : parts) convertQueryToContents(part);
     	}
     }
     
@@ -228,15 +235,23 @@ public class Feature_FormatGroups extends Feature {
 	}	
 	
 	public static boolean mayAccess(Map<String, Object> properties, String content, String format) throws AppException {
+		if (properties.containsKey("$or")) {
+			Collection<Map<String, Object>> parts = (Collection<Map<String, Object>>) properties.get("$or");
+			boolean found = false;
+			for (Map<String, Object> part : parts) {
+				if (mayAccess(part, content, format)) found = true;;
+			}
+			if (!found) return false;
+		}
+		
 		Object formatObj = properties.get("format");
 		if (formatObj != null && format != null) { 
 		  Set<String> fmts = Query.getRestriction(formatObj, "format");
 		  if (!fmts.contains(format)) return false;
 		}
 		if (content == null) return true;
-		Object gs =  properties.get("group-system");
-		if (gs == null) gs = "v1";
-		convertQueryToContents(gs.toString(), properties);
+		
+		convertQueryToContents(properties);
 		Object contentObj = properties.get("content");
 		if (contentObj != null) {
 			Set<String> contents = Query.getRestriction(contentObj, "content");

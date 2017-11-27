@@ -66,11 +66,10 @@ class QueryEngine {
 		if (AccessLog.detailedLog) AccessLog.logBegin("Begin list from memory #recs="+records.size());
 		APS inMemory = new Feature_InMemoryQuery(records);
 		context.getCache().addAPS(inMemory);
-		Feature qm = new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_ContentFilter(inMemory)));
-		Query query = new Query(properties, Sets.create("_id"), context.getCache(), inMemory.getId(), context);
-		List<DBRecord> recs = qm.query(query);
+		Feature qm = new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_ContentFilter(inMemory)));		
+		List<DBRecord> recs = query(properties, Sets.create("_id"), inMemory.getId(),context, context.getCache(), qm);
 		AccessLog.log("list from memory pre postprocess size = "+recs.size());
-		List<DBRecord> result = postProcessRecords(query.getProperties(), recs);		
+		List<DBRecord> result = postProcessRecords(properties, recs);		
 		if (AccessLog.detailedLog) AccessLog.logEnd("End list from memory #recs="+result.size());
 		return result;
 	}
@@ -234,6 +233,7 @@ class QueryEngine {
     	  Collection<Map<String, Object>> col = (Collection<Map<String, Object>>) properties.get("$or");
     	  List<DBRecord> result = Collections.emptyList();
     	  for (Map<String, Object> prop : col) {
+    		  prop = Feature_QueryRedirect.combineQuery(prop, properties);
     		  AccessLog.logQuery(apsId, prop, fields);
     		  result = QueryEngine.combine(result,  qm.query(new Query(prop, fields, cache, apsId, context)));
     	  }

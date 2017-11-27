@@ -353,15 +353,8 @@ public class MobileAPI extends Controller {
     	appInstance.writes = app.writes;
 		
     	if (app.defaultQuery != null && !app.defaultQuery.isEmpty()) {
-			String groupSystem = null;
-			if (app.defaultQuery != null) {
-				if (app.defaultQuery.containsKey("group-system")) {
-				  groupSystem = app.defaultQuery.get("group-system").toString();
-				} else {
-				  groupSystem = "v1";
-				}
-			}
-		    Feature_FormatGroups.convertQueryToContents(groupSystem, app.defaultQuery);
+			
+		    Feature_FormatGroups.convertQueryToContents(app.defaultQuery);
 		    
 		    appInstance.sharingQuery = app.defaultQuery;						   
 		}

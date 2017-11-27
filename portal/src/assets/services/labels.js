@@ -56,6 +56,19 @@ angular.module('services')
 			return undefined;
 		} else return $q.when(existing);
 	};
+	
+	service.simplifyQuery = function(query) {
+	  if (query.$or) {
+		  
+	     var result = { content : [], group : [], format : [] };
+		 angular.forEach(query.$or, function(part) {
+			 if (part.content) result.content.push.apply(result.content, part.content);
+			 if (part.format) result.format.push.apply(result.format, part.format);
+			 if (part.group) result.group.push.apply(result.group, part.group);
+		 });
+		 return result;
+	  } else return query;
+	};
 		
 	return service;
 }]);
