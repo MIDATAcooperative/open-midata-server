@@ -1,0 +1,268 @@
+{
+
+    "member_login" : {
+
+        // TODO NEW: My data - Our health
+        "teaser" : "My data - Our health",
+
+        // TODO NEW: Register Now
+        "register_now" : "Register Now",
+
+        // TODO NEW: Sign in
+        "sign_in" : "Sign in"
+    },
+
+    "member_quickregistration" : {
+
+        // TODO NEW: Sign up
+        "sign_up" : "Sign up",
+
+        // TODO NEW: Study*
+        "study" : "Study*",
+
+        // TODO NEW: App to be used*
+        "app" : "App to be used*",
+
+        // TODO NEW: Password for app
+        "app_password" : "Password for app",
+
+        // TODO NEW: Account Password
+        "account_password" : "Account Password",
+
+        // TODO NEW: Repeat Account Password
+        "repeat_account_password" : "Repeat Account Password"
+    },
+
+    "help_welcome" : {
+
+        // TODO NEW: The menu above contains these links:
+        "menu" : "The menu above contains these links:",
+
+        // TODO NEW: Me
+        "menu_me" : "Me",
+
+        // TODO NEW: Your personal dashboard where you can place whatever functionality you need most.
+        "menu_me_text" : "Your personal dashboard where you can place whatever functionality you need most.",
+
+        // TODO NEW: Overview
+        "menu_overview" : "Overview",
+
+        // TODO NEW: An overview over all functions provided by the MIDATA platform.
+        "menu_overview_text" : "An overview over all functions provided by the MIDATA platform.",
+
+        // TODO NEW: Config
+        "menu_config" : "Config",
+
+        // TODO NEW: Configure your dashboard and data imports.
+        "menu_config_text" : "Configure your dashboard and data imports.",
+
+        // TODO NEW: News
+        "menu_research" : "News",
+
+        // TODO NEW: News and announcements about MIDATA, the platform and research projects
+        "menu_research_text" : "News and announcements about MIDATA, the platform and research projects",
+
+        // TODO NEW: Sharing
+        "menu_consents" : "Sharing",
+
+        // TODO NEW: Manage data sharing with others.
+        "menu_consents_text" : "Manage data sharing with others.",
+
+
+        // TODO NEW: Some ideas to start with MIDATA:
+        "starts" : "Some ideas to start with MIDATA:",
+
+
+        // TODO NEW: In order to get started we recommend that you answer us some questions. We will preconfigure your account based on your answers.
+        "answer_questions" : "In order to get started we recommend that you answer us some questions. We will preconfigure your account based on your answers.",
+
+        // TODO NEW: Thank you for answering the setup questions! You sould visit your dashboard now or change your answers if you need to.
+        "answered_questions" : "Thank you for answering the setup questions! You sould visit your dashboard now or change your answers if you need to.",
+
+        // TODO NEW: Answer Setup Questions Now
+        "answer_btn" : "Answer Setup Questions Now",
+
+        // TODO NEW: Visit 'me' page
+        "dashboard_btn" : "Visit 'me' page",
+
+        // TODO NEW: Change Answers to Setup Questions
+        "answer_again_btn" : "Change Answers to Setup Questions"
+    },
+
+    "help_setup" : {
+
+        // TODO NEW: The answers to the following questions are only used to setup your account according to your needs.
+        "description" : "The answers to the following questions are only used to setup your account according to your needs.",
+
+        // TODO NEW: Which measures do you want to view in the portal?
+        "question_measures" : "Which measures do you want to view in the portal?",
+
+        // TODO NEW: Do use any of these devices?
+        "question_devices" : "Do use any of these devices?",
+
+        // TODO NEW: Fitbit
+        "question_devices_answer1" : "Fitbit",
+
+        // TODO NEW: Jawbone
+        "question_devices_answer2" : "Jawbone",
+
+        // TODO NEW: Withings
+        "question_devices_answer3" : "Withings",
+
+        // TODO NEW: You can always come back and change these settings by visiting the "Help" page.
+        "come_back" : "You can always come back and change these settings by visiting the \"Help\" page.",
+
+        // TODO NEW: Done
+        "done_btn" : "Done"
+    },
+
+    "accountdata" : {
+
+        // TODO NEW: MIDATA ID:
+        "midata_id" : "MIDATA ID:",
+
+        // TODO NEW: Birthday:
+        "birthday" : "Birthday:",
+
+        // TODO NEW: Change
+        "change_btn" : "Change"
+    },
+
+    "member_circles" : {
+
+        // TODO NEW: Circles available:
+        "number_available" : "Circles available:",
+
+        // TODO NEW: You do not have any circles.
+        "empty" : "You do not have any circles.",
+
+        // TODO NEW: Add
+        "add_btn" : "Add",
+
+        // TODO NEW: Manage
+        "manage_btn" : "Manage"
+    },
+
+    "member_othercircles" : {
+
+        // TODO NEW: Circles available:
+        "number_available" : "Circles available:",
+
+        // TODO NEW: No MIDATA members share data with you.
+        "empty" : "No MIDATA members share data with you."
+    },
+
+    "yourstudies" : {
+
+        // TODO NEW: Study
+        "study" : "Study",
+
+        // TODO NEW: Status
+        "status" : "Status",
+
+        // TODO NEW: You do not participate in any study.
+        "empty" : "You do not participate in any study."
+    },
+
+    "entercode" : {
+
+        // TODO NEW: Join a research study by entering a participation code.
+        "title" : "Join a research study by entering a participation code.",
+
+        // TODO NEW: Join a study by entering a code:
+        "description" : "Join a study by entering a code:",
+
+        // TODO NEW: Participation Code
+        "code" : "Participation Code",
+
+        // TODO NEW: Continue
+        "continue_btn" : "Continue"
+    },
+
+    "providers" : {
+
+        // TODO NEW: Name
+        "name" : "Name",
+
+        // TODO NEW: Status
+        "status" : "Status",
+
+        // TODO NEW: Confirmation Date
+        "confirmation_date" : "Confirmation Date",
+
+        // TODO NEW: confirm
+        "confirm_btn" : "confirm",
+
+        // TODO NEW: reject
+        "reject_btn" : "reject",
+
+        // TODO NEW: You do not have a registered contact to a healthcare provider.
+        "empty" : "You do not have a registered contact to a healthcare provider."
+    },
+
+    "member_user" : {
+
+        // TODO NEW: Account Status
+        "account_status" : "Account Status",
+
+        // TODO NEW: Your account has been set up for participation in a study. Functionality is limited. You may upgrade your user account to a full account.
+        "studyparticipant" : "Your account has been set up for participation in a study. Functionality is limited. You may upgrade your user account to a full account.",
+
+        // TODO NEW: Your account has been registered by an external application. Functionality is limited. You may upgrade your user account to a full account.
+        "appuser" : "Your account has been registered by an external application. Functionality is limited. You may upgrade your user account to a full account.",
+
+        // TODO NEW: You are a member of the MIDATA cooperative.
+        "memberofcooperative" : "You are a member of the MIDATA cooperative.",
+
+        // TODO NEW: You have a full user account but you are no member of the MIDATA cooperative.
+        "nonmemberuser" : "You have a full user account but you are no member of the MIDATA cooperative.",
+
+        // TODO NEW: By clicking on the 'Request Contract' button the contract and AGB will be sent to you by letter. Please return the signed AGB to convert this trial account into a full account.
+        "agb_not_requested" : "By clicking on the 'Request Contract' button the contract and AGB will be sent to you by letter. Please return the signed AGB to convert this trial account into a full account.",
+
+        // TODO NEW: The AGB and contract have been requested by you. Your request has not been processed by the MIDATA office yet.
+        "agb_requested" : "The AGB and contract have been requested by you. Your request has not been processed by the MIDATA office yet.",
+
+        // TODO NEW: The AGB and contract have been requested by you and should arrive during the next days.
+        "agb_printed" : "The AGB and contract have been requested by you and should arrive during the next days.",
+
+        // TODO NEW: You have signed the AGB.
+        "agb_signed" : "You have signed the AGB.",
+
+        // TODO NEW: Your postal address has been confirmed.
+        "confirmed" : "Your postal address has been confirmed.",
+
+        // TODO NEW: The letter sent to you contains a registration code. Please enter your code here once you have received it:
+        "entercode" : "The letter sent to you contains a registration code. Please enter your code here once you have received it:",
+
+        // TODO NEW: Your email address has not been validated yet. Please click on the link in the validation email you received!
+        "email_unvalidated" : "Your email address has not been validated yet. Please click on the link in the validation email you received!",
+
+        // TODO NEW: Request Contract
+        "request_membership_btn" : "Request Contract"
+    },
+
+    "smallstudies" : {
+
+        // TODO NEW: Want to help studies by sharing your data?
+        "greeting" : "Want to help studies by sharing your data?",
+
+        // TODO NEW: Studies
+        "studies" : "Studies",
+
+        // TODO NEW: Enrollment
+        "status" : "Enrollment",
+
+        // TODO NEW: Recruiting
+        "recruiting" : "Recruiting",
+
+        // TODO NEW: Ongoing
+        "ongoing" : "Ongoing",
+
+        // TODO NEW: Completed
+        "completed" : "Completed",
+
+        // TODO NEW: Stopped
+        "stopped" : "Stopped"
+    }
+}
