@@ -415,11 +415,9 @@ public class Circles extends APIController {
 	 * @param consent consent with which the patient record should be shared
 	 * @throws AppException
 	 */
-	public static void autosharePatientRecord(MidataId executorId, Consent consent) throws AppException {
-		List<Record> recs = RecordManager.instance.list(executorId, consent.owner, CMaps.map("owner", consent.owner).map("format", "fhir/Patient").map("data", CMaps.map("id", consent.owner.toString())), Sets.create("_id", "data"));
-		if (recs.size()>0) {
-		  RecordManager.instance.share(executorId, consent.owner, consent._id, Collections.singleton(recs.get(0)._id), true);
-		} else throw new InternalServerException("error.internal", "Patient Record not found!");
+	public static void autosharePatientRecord(MidataId executorId, Consent consent) throws AppException {		
+		int recs = RecordManager.instance.share(executorId, consent.owner, consent._id, consent.owner, CMaps.map("owner", consent.owner).map("format", "fhir/Patient").map("data", CMaps.map("id", consent.owner.toString())), true);
+		if (recs == 0) throw new InternalServerException("error.internal", "Patient Record not found!");
 	}
 	
 	/**
@@ -647,6 +645,7 @@ public class Circles extends APIController {
 			Set<MidataId> auth = consent.authorized;
 			if (auth.contains(consent.owner)) { auth.remove(consent.owner); }
 			RecordManager.instance.unshareAPSRecursive(consent._id, consent.owner, consent.authorized);
+			Circles.removeQueries(consent.owner, consent._id);
 		}
 		if (newStatus != null && newStatus.equals(ConsentStatus.FROZEN)) {
 			Date now = new Date();
@@ -655,6 +654,7 @@ public class Circles extends APIController {
 				consent.set(consent._id, "createdBefore", consent.createdBefore);
 				consentSettingChange(executor, consent);
 			}
+			Circles.removeQueries(consent.owner, consent._id);
 		}
 		
 		prepareConsent(consent);
@@ -820,15 +820,21 @@ public class Circles extends APIController {
 	 * @throws InternalServerException
 	 */
 	protected static void removeQueries(MidataId userId, MidataId targetaps) throws InternalServerException {
-        Member member = Member.getById(userId, Sets.create("queries"));
-		
-		if (member.queries == null) return;
-		 
-		String key = targetaps.toString();
-	    if (member.queries.containsKey(key)) {
-	    	member.queries.remove(key);
-	    	Member.set(userId, "queries", member.queries);
-	    }
+        Member member = Member.getById(userId, Sets.create("queries", "rqueries"));
+        String key = targetaps.toString();
+        
+		if (member.queries != null) {		 	
+		    if (member.queries.containsKey(key)) {
+		    	member.queries.remove(key);
+		    	Member.set(userId, "queries", member.queries);
+		    }	    
+		}
+		if (member.rqueries != null) {
+			if (member.rqueries.containsKey(key)) {
+		    	member.rqueries.remove(key);
+		    	Member.set(userId, "rqueries", member.rqueries);
+		    }	
+		}
 	}
 		
 }

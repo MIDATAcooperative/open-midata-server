@@ -284,14 +284,28 @@ public class RecordManager {
         AccessLog.logEnd("end share");
 	}
 	
+	public int share(MidataId who, MidataId fromAPS, MidataId toAPS, MidataId toAPSOwner,
+			Map<String, Object> query, boolean withOwnerInformation) throws AppException {
+		
+		APSCache cache = getCache(who);
+		APS apswrapper = cache.getAPS(toAPS, toAPSOwner);
+		List<DBRecord> recordEntries = QueryEngine.listInternal(cache, fromAPS, null,
+				CMaps.map(query).map("owner", fromAPS),	RecordManager.SHARING_FIELDS);
+		
+		share(cache, toAPS, toAPSOwner, recordEntries, withOwnerInformation);
+		
+		return recordEntries.size();
+	}
+	
+	
 	protected void share(APSCache cache, MidataId toAPS, MidataId toAPSOwner,
 			List<DBRecord> recordEntries, boolean withOwnerInformation)
 			throws AppException {		
         
 		APS apswrapper = cache.getAPS(toAPS, toAPSOwner);
 		
-		List<DBRecord> alreadyContained = QueryEngine.isContainedInAps(cache, toAPS, recordEntries);
-		AccessLog.log("to-share: "+recordEntries.size()+" already="+alreadyContained.size());
+		AccessLog.log("check if contained in target aps");
+		List<DBRecord> alreadyContained = QueryEngine.isContainedInAps(cache, toAPS, recordEntries);		
 		
 		shareUnchecked(recordEntries, alreadyContained, apswrapper, withOwnerInformation);
         
@@ -299,10 +313,13 @@ public class RecordManager {
 	
 	protected void shareUnchecked(List<DBRecord> recordEntries, List<DBRecord> alreadyContained, APS apswrapper, boolean withOwnerInformation) throws AppException {
 		
+		withOwnerInformation = false; // Preparing to remove this feature completely
+		
 		if (alreadyContained.size() == recordEntries.size()) {
         	
         	return;
         }
+		AccessLog.log("to-share: count#="+recordEntries.size()+" already="+alreadyContained.size());
         if (alreadyContained.size() == 0) {		
 		    apswrapper.addPermission(recordEntries, withOwnerInformation);
 		    for (DBRecord rec : recordEntries) {		    	
@@ -824,7 +841,7 @@ public class RecordManager {
 	}
 	
 	protected void applyQueries(AccessContext context, MidataId userId, DBRecord record, MidataId useAps) throws AppException {
-		AccessLog.logBegin("start applying queries");
+		AccessLog.logBegin("start applying queries for targetUser="+userId.toString());
 		if (record.isStream) {
 		
 			Member member = Member.getById(userId, Sets.create("queries"));
