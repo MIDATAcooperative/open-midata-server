@@ -23,13 +23,13 @@
       <dir-pagination-controls pagination-id="plugintable" current-page="page.nr"></dir-pagination-controls>
       <table class="table" ng-show="apps.length > 0">
         <tr>
-          <th>Name</th>
-          <th>Developer</th>
-          <th>Type</th>
-          <th>Target Role</th>
-          <th>Market</th>
-          <th>Stats</th>
-          <th>Status</th>
+          <th translate="admin_plugins.plugin_name">Name</th>
+          <th translate="admin_plugins.plugin_developer">Developer</th>
+          <th translate="admin_plugins.plugin_type">Type</th>
+          <th translate="admin_plugins.plugin_role">Target Role</th>
+          <th translate="admin_plugins.plugin_market">Market</th>
+          <th translate="admin_plugins.plugin_stats">Stats</th>
+          <th translate="admin_plugins.plugin_status">Status</th>
         </tr>
         <tr dir-paginate="app in apps | filter : { name : search.name, orgName : emptyIsUndefined(search.organisation) } | itemsPerPage : 10" pagination-id="plugintable" current-page="page.nr">
           <td><a ui-sref="^.manageapp({ appId : app._id })">{{  app.name }}</a></td>

@@ -61,7 +61,11 @@ public class DatabaseConversion {
 		if (inp instanceof Map) {
 			Map result = new HashMap();
 			for (Object key : ((Map) inp).keySet()) {
-				result.put(key, todb(((Map) inp).get(key)));
+				if (key != null && key.toString().startsWith("$")) {
+				  result.put("_"+key.toString(), todb(((Map) inp).get(key)));
+				} else {
+				  result.put(key, todb(((Map) inp).get(key)));
+				}
 			}
 			return result;
 		}		
@@ -75,7 +79,7 @@ public class DatabaseConversion {
 		DBObject dbObject = new BasicDBObject();
 		Class model = modelObject.getClass();
 		for (Field field : model.getFields()) {
-			if (field.getAnnotation(NotMaterialized.class)!=null) continue;
+			if (field.getAnnotation(NotMaterialized.class)!=null) continue;			
 			try {
 				Object val = todb(field.get(modelObject));
 				if (val != null) dbObject.put(field.getName(), val);
@@ -305,6 +309,7 @@ public class DatabaseConversion {
 				Type valueType = ((ParameterizedType) genType).getActualTypeArguments()[1];
 				Class<?> cl = valueType instanceof Class ? (Class<?>) valueType : Object.class;
 				Converter subconv = build(cl, valueType);
+				if (subconv instanceof ConvertStd) subconv = new ConvertStdMap();
 				conv = new ConvertMap(subconv);
 			} else if (rawType.equals(Set.class)) {
 				Type valueType = ((ParameterizedType) genType).getActualTypeArguments()[0];
@@ -367,8 +372,11 @@ public class DatabaseConversion {
 			BasicDBObject dbObject = (BasicDBObject) input;
 			
 			Map<String, Object> map = new HashMap<String, Object>();
-			for (Map.Entry<String,Object> entry : dbObject.entrySet()) {										
-				map.put(entry.getKey(), conv.convert(entry.getValue()));
+			for (Map.Entry<String,Object> entry : dbObject.entrySet()) {
+				if (entry.getKey().startsWith("_$"))
+					map.put(entry.getKey().substring(1), conv.convert(entry.getValue()));
+				else 
+					map.put(entry.getKey(), conv.convert(entry.getValue()));
 			}
 			return map;			
 		}		
@@ -453,7 +461,39 @@ public class DatabaseConversion {
 		ConvertStd() {  }
 		
 		public Object convert(Object input) throws DatabaseConversionException {
+			if (input instanceof ObjectId) return new MidataId(input.toString());			
+			return input;
+		}		
+	}
+	
+	class ConvertStdMap extends Converter {
+		
+		ConvertStdMap() {  }
+		
+		public Object convert(Object input) throws DatabaseConversionException {
 			if (input instanceof ObjectId) return new MidataId(input.toString());
+			else if (input instanceof Map) {
+				Map<String, Object> map = new HashMap<String, Object>();
+				for (Map.Entry<String,Object> entry : ((Map<String, Object>) input).entrySet()) {
+					if (entry.getKey().startsWith("_$"))
+						map.put(entry.getKey().substring(1), convert(entry.getValue()));
+					else 
+						map.put(entry.getKey(), convert(entry.getValue()));
+				}
+				return map;
+			} else if (input instanceof List) {
+				List<Object> list = new ArrayList<Object>(((List) input).size());		
+				for (Object element : (List) input) {
+					list.add(convert(element));
+				}
+				return list;
+			} else if (input instanceof Set) {
+				Set<Object> list = new HashSet<Object>(((Set) input).size());		
+				for (Object element : (Set) input) {
+					list.add(convert(element));
+				}
+				return list;
+			}
 			return input;
 		}		
 	}

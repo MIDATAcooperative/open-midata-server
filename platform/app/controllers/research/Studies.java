@@ -590,15 +590,13 @@ public class Studies extends APIController {
 		
 		// Checks
 
-		if (study.requiredInformation.equals(InformationType.RESTRICTED)) {
-			String groupSystem = (String) study.recordQuery.get("group-system");
-			if (groupSystem == null) groupSystem = "v1";
+		if (study.requiredInformation.equals(InformationType.RESTRICTED)) {			
 			
 			Map<String, Object> properties = new HashMap<String, Object>(study.recordQuery);
-			Feature_FormatGroups.convertQueryToContents(groupSystem, properties);
+			Feature_FormatGroups.convertQueryToContents(properties);
 			
-			if (!properties.containsKey("content")) throw new BadRequestException("error.invalid.access_query", "Query does not restrict content."); 
-			if (Query.getRestriction(properties.get("content"), "content").contains("Patient")) throw new BadRequestException("error.invalid.sharing", "Restricted study may not share Patient records.");
+			//if (!properties.containsKey("content")) throw new BadRequestException("error.invalid.access_query", "Query does not restrict content."); 
+			if (Query.getAnyRestrictionFromQuery(properties, "content").contains("Patient")) throw new BadRequestException("error.invalid.sharing", "Restricted study may not share Patient records.");
 			
 		}
 		

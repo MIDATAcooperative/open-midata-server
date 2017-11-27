@@ -1,6 +1,7 @@
 package utils.access;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.bson.BasicBSONObject;
 import org.bson.types.ObjectId;
 
@@ -271,6 +273,32 @@ public class Feature_Streams extends Feature {
 		if (doNotify) RecordLifecycle.notifyOfChange(streamRec, context.getCache());
 		context.getCache().getAPS(streamRec._id, streamRec.key, streamRec.owner);
 		return streamRec._id;
-	}	
+	}
+	
+	public static Pair<Map<String, Object>, Map<String, Object>> convertToQueryPair(Map<String, Object> inputQuery) {
+		if (inputQuery.containsKey("$or")) {
+		   Collection<Map<String, Object>> col = (Collection<Map<String, Object>>) inputQuery.get("$or");
+	       List<Map<String, Object>> resultStream = new ArrayList<Map<String, Object>>();
+	       List<Map<String, Object>> resultRecord = new ArrayList<Map<String, Object>>();
+	       for (Map<String, Object> prop : col) {
+	      	  Pair<Map<String, Object>, Map<String, Object>> part = convertToQueryPair(prop);
+	      	  if (part.getLeft() != null) resultStream.add(part.getLeft());
+	      	  else resultRecord.add(part.getRight());
+	       }
+	       Map<String, Object> streamQuery = null;
+	       Map<String, Object> recordQuery = null;
+	       
+	       if (resultStream.size()==1) streamQuery = resultStream.iterator().next();
+	       else if (resultStream.size() > 1) streamQuery = CMaps.map("$or", resultStream);
+	       
+	       if (resultRecord.size()==1) recordQuery = resultRecord.iterator().next();
+	       else if (resultRecord.size() > 1) recordQuery = CMaps.map("$or", resultRecord);
+	       
+	       return Pair.of(streamQuery, recordQuery);
+		} else {
+			if (inputQuery.containsKey("data")) return Pair.of(null, inputQuery);		
+			return Pair.of(inputQuery, null);
+		}
+	}
     
 }

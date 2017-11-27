@@ -44,7 +44,7 @@ angular.module('portal')
    
    $scope.saveGroups = function() {
 	 $scope.groupschanged = false;
-	 $scope.status.doAction("groups", server.put(jsRoutes.controllers.research.Studies.update($scope.studyid).url, JSON.stringify($scope.study)));	 
+	 $scope.status.doAction("groups", server.put(jsRoutes.controllers.research.Studies.update($scope.studyid).url, JSON.stringify({ "groups" : $scope.study.groups })));	 
    };
    
    $scope.studyLocked = function() {
