@@ -1,0 +1,317 @@
+{
+
+    "developer_registration" : {
+
+        // TODO NEW: Developer Sign Up
+        "sign_up" : "Developer Sign Up",
+
+        // TODO NEW: To avoid longer waiting time until your account is validated please fill out contact person and purpose of registration carefully such that an administrator may decide quickly about your access request.
+        "reason_fillout" : "To avoid longer waiting time until your account is validated please fill out contact person and purpose of registration carefully such that an administrator may decide quickly about your access request.",
+
+        // TODO NEW: Developer Sign Up
+        "sign_up_btn" : "Developer Sign Up"
+    },
+
+    "developer_login" : {
+
+        // TODO NEW: Developer Login
+        "title" : "Developer Login",
+
+        // TODO NEW: Visit Developer Guide
+        "guide" : "Visit Developer Guide"
+    },
+
+    "developer_navbar" : {
+
+        // TODO NEW: Your Plugins
+        "yourapps" : "Your Plugins",
+
+        // TODO NEW: Sandbox
+        "sandbox" : "Sandbox",
+
+        // TODO NEW: Test Records
+        "records" : "Test Records",
+
+        // TODO NEW: Test User
+        "testusers" : "Test User"
+    },
+
+    "developer_testusers" : {
+
+        // TODO NEW: Test Users
+        "title" : "Test Users",
+
+        // TODO NEW: There are no test users registered for this account.
+        "empty" : "There are no test users registered for this account.",
+
+        // TODO NEW: Role
+        "role" : "Role",
+
+        // TODO NEW: New Password
+        "resetpw" : "New Password",
+
+        // TODO NEW: Using these buttons you can register additional users for testing your plugins. By test users, plugins are run locally (from 'localhost') and not on the server.
+        "description" : "Using these buttons you can register additional users for testing your plugins. By test users, plugins are run locally (from 'localhost') and not on the server.",
+
+        // TODO NEW: Register Account Holder
+        "register_member_btn" : "Register Account Holder",
+
+        // TODO NEW: Register Health Provider
+        "register_hp_btn" : "Register Health Provider",
+
+        // TODO NEW: Register Researcher
+        "register_researcher_btn" : "Register Researcher"
+    },
+
+    "developer_yourapps" : {
+
+        // TODO NEW: Your Plugins
+        "title" : "Your Plugins"
+    },
+
+    "appmessages" : {
+
+        // TODO NEW: Predefined Messages for App:
+        "title" : "Predefined Messages for App:",
+
+        // TODO NEW: Event (Trigger)
+        "reason" : "Event (Trigger)",
+
+        // TODO NEW: Code
+        "code" : "Code",
+
+        // TODO NEW: Languages
+        "languages" : "Languages",
+
+        // TODO NEW: There are no app specfic messages defined yet.
+        "empty" : "There are no app specfic messages defined yet.",
+
+        // TODO NEW: Language
+        "lang" : "Language",
+
+        // TODO NEW: Message Title
+        "msgtitle" : "Message Title",
+
+        // TODO NEW: Message Text
+        "text" : "Message Text",
+
+        // TODO NEW: Available variables
+        "available_tags" : "Available variables",
+        "reasons" : {
+
+            // TODO NEW: Registration of new user
+            "REGISTRATION" : "Registration of new user",
+
+            // TODO NEW: Registration of a new user by someone else
+            "REGISTRATION_BY_OTHER_PERSON" : "Registration of a new user by someone else",
+
+            // TODO NEW: First use of app
+            "FIRSTUSE_ANYUSER" : "First use of app",
+
+            // TODO NEW: First use of app (if no registration email sent)
+            "FIRSTUSE_EXISTINGUSER" : "First use of app (if no registration email sent)",
+
+            // TODO NEW: Proposed consent (Grantor, Invitation)
+            "CONSENT_REQUEST_OWNER_INVITED" : "Proposed consent (Grantor, Invitation)",
+
+            // TODO NEW: Proposed consent (Grantor, Account Holder)
+            "CONSENT_REQUEST_OWNER_EXISTING" : "Proposed consent (Grantor, Account Holder)",
+
+            // TODO NEW: Proposed consent (Grantee, Invitation)
+            "CONSENT_REQUEST_AUTHORIZED_INVITED" : "Proposed consent (Grantee, Invitation)",
+
+            // TODO NEW: Proposed consent (Grantee, Account Holder)
+            "CONSENT_REQUEST_AUTHORIZED_EXISTING" : "Proposed consent (Grantee, Account Holder)",
+
+            // TODO NEW: Consent confirmation (Grantor)
+            "CONSENT_CONFIRM_OWNER" : "Consent confirmation (Grantor)",
+
+            // TODO NEW: Consent confirmation (Grantee)
+            "CONSENT_CONFIRM_AUTHORIZED" : "Consent confirmation (Grantee)",
+
+            // TODO NEW: Consent rejection (Grantor)
+            "CONSENT_REJECT_OWNER" : "Consent rejection (Grantor)",
+
+            // TODO NEW: Consent rejection (Grantee)
+            "CONSENT_REJECT_AUTHORIZED" : "Consent rejection (Grantee)",
+
+            // TODO NEW: Account unlocked by the administrator
+            "ACCOUNT_UNLOCK" : "Account unlocked by the administrator",
+
+            // TODO NEW: Login email changed (send to old email address)
+            "EMAIL_CHANGED_OLDADDRESS" : "Login email changed (send to old email address)",
+
+            // TODO NEW: Login email changed (send to new email address)
+            "EMAIL_CHANGED_NEWADDRESS" : "Login email changed (send to new email address)"
+        }
+    },
+
+    "manageapp" : {
+
+        // TODO NEW: Edit Messages
+        "messages_btn" : "Edit Messages",
+
+        // TODO NEW: Debug Info
+        "stats_btn" : "Debug Info",
+
+        // TODO NEW: API Tester
+        "debug_btn" : "API Tester",
+
+        // TODO NEW: Study linked to App (Code)
+        "linkedStudy" : "Study linked to App (Code)",
+
+        // TODO NEW: Study Participation Required
+        "mustParticipateInStudy" : "Study Participation Required",
+
+        // TODO NEW: Only a MIDATA admin may change this section. Please request changes if required.
+        "admin_only" : "Only a MIDATA admin may change this section. Please request changes if required.",
+
+        // TODO NEW: Terms
+        "terms_of_use" : "Terms",
+
+        // TODO NEW: Show terms
+        "show_terms" : "Show terms",
+
+        // TODO NEW: Code for registration
+        "unlock_code" : "Code for registration",
+        "info" : {
+
+            // TODO NEW: This name is internally used to identify your app. Should be a valid identifier (a-z, A-Z, 0-9, _).
+            "filename" : "This name is internally used to identify your app. Should be a valid identifier (a-z, A-Z, 0-9, _).",
+
+            // TODO NEW: Is your app for a specific role only? Otherwise choose 'Any Role'.
+            "targetUserRole" : "Is your app for a specific role only? Otherwise choose 'Any Role'.",
+
+            // TODO NEW: Choose 'Plugin' if your app will run as MIDATA portal plugin. Choose 'Mobile App' for an external application. Choose 'OAuth1 Import' or 'OAuth2 Import' if you need to connect to an external server using OAuth1 or OAuth2.
+            "type" : "Choose 'Plugin' if your app will run as MIDATA portal plugin. Choose 'Mobile App' for an external application. Choose 'OAuth1 Import' or 'OAuth2 Import' if you need to connect to an external server using OAuth1 or OAuth2.",
+
+            // TODO NEW: The name of your app or plugin that will be presented to the end user.
+            "name" : "The name of your app or plugin that will be presented to the end user.",
+
+            // TODO NEW: A description of your plugin that will also be shown on the marked place.
+            "description" : "A description of your plugin that will also be shown on the marked place.",
+
+            // TODO NEW: App is allowed to reshare data it has access to to 3rd party.
+            "resharesData" : "App is allowed to reshare data it has access to to 3rd party.",
+
+            // TODO NEW: Users of the app are allowed to search for other users of the same app.
+            "allowsUserSearch" : "Users of the app are allowed to search for other users of the same app.",
+
+            // TODO NEW: Title of the tile for your plugin on the dashboard.
+            "defaultSpaceName" : "Title of the tile for your plugin on the dashboard.",
+
+            // TODO NEW: Categories on the market place for which your plugin should be listed.
+            "tags" : "Categories on the market place for which your plugin should be listed.",
+
+            // TODO NEW: URL of your plugins main page. If you use the template from MIDATA it is 'dist/index.html#?authToken=:authToken''
+            "url" : "URL of your plugins main page. If you use the template from MIDATA it is 'dist/index.html#?authToken=:authToken''",
+
+            // TODO NEW: URL of your plugins dashboard tile. Leave empty if you do not provide such a tile.
+            "previewUrl" : "URL of your plugins dashboard tile. Leave empty if you do not provide such a tile.",
+
+            // TODO NEW: Choose 'me' for the default dashboard. Choose 'config' if you write an import plugin.
+            "defaultSpaceContext" : "Choose 'me' for the default dashboard. Choose 'config' if you write an import plugin.",
+
+            // TODO NEW: Query restricting the access of the app to the database. Access must be restricted by 'code', 'content' or 'group' and may be restricted by 'format' or 'owner'. Valid example (all Observations): '{ "group" : "all", "group-system" : "v1", "format" : ["fhir/Observation" ] }'
+            "defaultQuery_mobile" : "Query restricting the access of the app to the database. Access must be restricted by 'code', 'content' or 'group' and may be restricted by 'format' or 'owner'. Valid example (all Observations): '{ \"group\" : \"all\", \"group-system\" : \"v1\", \"format\" : [\"fhir/Observation\" ] }'",
+
+            // TODO NEW: Query restricting the access of the plugin to the database. Access must be restricted by at least one of 'code', 'content', 'group', 'format' or 'owner'. Valid example (all Observations): '{ "format" : ["fhir/Observation" ] }'
+            "defaultQuery" : "Query restricting the access of the plugin to the database. Access must be restricted by at least one of 'code', 'content', 'group', 'format' or 'owner'. Valid example (all Observations): '{ \"format\" : [\"fhir/Observation\" ] }'",
+
+            // TODO NEW: Look for valid values for 'code', 'content' or 'format' on the 'Format/Content' list of the developer guide. As a first version you may start with access to all data. For that use { "group" : "all", "group-system" : "v1" }. Please refine query before plugin or app goes in production.
+            "defaultQuery_extra" : "Look for valid values for 'code', 'content' or 'format' on the 'Format/Content' list of the developer guide. As a first version you may start with access to all data. For that use { \"group\" : \"all\", \"group-system\" : \"v1\" }. Please refine query before plugin or app goes in production.",
+
+            // TODO NEW: Your app will need this 'secret' during login. Choose whatever you like.
+            "secret" : "Your app will need this 'secret' during login. Choose whatever you like.",
+
+            // TODO NEW: User must participate in study in order to use app.
+            "mustParticipateInStudy" : "User must participate in study in order to use app.",
+
+            // TODO NEW: If filled out, this code must be entered by the user in order to sign up or log in the first time to MIDATA using the app. The code is not case sensitive.
+            "unlock_code" : "If filled out, this code must be entered by the user in order to sign up or log in the first time to MIDATA using the app. The code is not case sensitive."
+        },
+
+        // TODO NEW: Access Query (Options)
+        "access_query_options" : "Access Query (Options)",
+
+        // TODO NEW: Access Query (Selection)
+        "access_query_selection" : "Access Query (Selection)",
+
+        // TODO NEW: Access Query (Add)
+        "access_query_add" : "Access Query (Add)",
+
+        // TODO NEW: Access Query (JSON)
+        "access_query_json" : "Access Query (JSON)",
+        "query" : {
+
+            // TODO NEW: App/Plugin may only access data of the person using it
+            "self" : "App/Plugin may only access data of the person using it",
+
+            // TODO NEW: App/Plugin may only access data created using this app or plugin.
+            "ownapp" : "App/Plugin may only access data created using this app or plugin.",
+
+            // TODO NEW: Add all types written by the app automatically to the Access Query. (MUST be turned off before app goes productive)
+            "learn" : "Add all types written by the app automatically to the Access Query. (MUST be turned off before app goes productive)",
+
+            // TODO NEW: During development allow to access all data of the user. (MUST be replaced with a proper query before plugin goes productive)
+            "all" : "During development allow to access all data of the user. (MUST be replaced with a proper query before plugin goes productive)"
+        }
+    },
+
+    "appstats" : {
+
+        // TODO NEW: Debug Information for
+        "title" : "Debug Information for",
+
+        // TODO NEW: Action
+        "action" : "Action",
+
+        // TODO NEW: First action recordet at
+        "first" : "First action recordet at",
+
+        // TODO NEW: Last executed
+        "lastrun" : "Last executed",
+
+        // TODO NEW: Statistics
+        "count" : "Statistics",
+
+        // TODO NEW: Number of times the action has been invoked.
+        "run" : "Number of times the action has been invoked.",
+
+        // TODO NEW: Number of times operations had to be repeated because of concurrency issues.
+        "retry" : "Number of times operations had to be repeated because of concurrency issues.",
+
+        // TODO NEW: Average number of internal database (MongoDB) queries executed per action invocation.
+        "db" : "Average number of internal database (MongoDB) queries executed per action invocation.",
+
+        // TODO NEW: Execution time
+        "time" : "Execution time",
+
+        // TODO NEW: Avg
+        "avgtime" : "Avg",
+
+        // TODO NEW: Last
+        "lasttime" : "Last",
+
+        // TODO NEW: Results and Warnings
+        "results" : "Results and Warnings",
+
+        // TODO NEW: Response
+        "result" : "Response",
+
+        // TODO NEW: No information has been recorded since debug information was last cleared.
+        "empty" : "No information has been recorded since debug information was last cleared.",
+
+        // TODO NEW: Refresh
+        "reload_btn" : "Refresh",
+
+        // TODO NEW: Clear
+        "reset_btn" : "Clear"
+    },
+
+    "appdebug" : {
+
+        // TODO NEW: API Tester
+        "title" : "API Tester"
+    }
+}
