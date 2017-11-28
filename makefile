@@ -1,9 +1,19 @@
 .PHONY: info
 info:
-	$(info Welcome to make)
-	$(info More text)
+	$(info Welcome to MIDATA)
+	$(info install-fullserver : Install a server with frontend and backend on one system)
+	$(info install-webserver : Install a frontend server that usess a separate database servers)
+	$(info install-dbserver : Install a backend server)
+	$(info install-local : Install a localhost instance)
+	$(info update : Update current instance)
 
-install: tasks/install-packages tasks/install-node tasks/check-config tasks/run-setup-script tasks/setup-nginx
+install-fullserver: tasks/install-packages tasks/install-node tasks/prepare-webserver tasks/check-config tasks/run-setup-script tasks/setup-nginx
+
+install-webserver: tasks/install-packages tasks/install-node tasks/prepare-webserver tasks/check-config tasks/run-setup-script tasks/setup-nginx tasks/configure-connection
+
+install-dbserver: tasks/install-dbserver-mongo
+
+install-local: tasks/install-packages tasks/install-node tasks/prepare-local tasks/check-config tasks/run-setup-script
 
 .PHONY: pull
 pull:
@@ -19,6 +29,18 @@ update: tasks/check-config tasks/setup-portal tasks/build-mongodb tasks/build-po
 .PHONY: reconfig
 reconfig:
 	rm tasks/check-config
+
+tasks/prepare-webserver:
+	touch switches/use-hotdeploy
+	cp config/instance-template.json config/instance.json
+	read -p "Enter domain name: " newdomain ; node scripts/replace.js domain $$newdomain ; node scripts/replace.js portal origin https://$$newdomain ; node scripts/replace.js portal backend https://$$newdomain ; 
+	node scripts/replace.js instanceType prod
+	touch tasks/prepare-webserver
+
+tasks/prepare-local:
+	touch switches/use-run
+	cp config/instance-template.json config/instance.json	
+	touch tasks/prepare-local
 		
 tasks/install-packages: trigger/install-packages
 	sudo apt-get install git curl openssl python openjdk-8-jdk nginx mcrypt sqlite3 unzip
@@ -102,3 +124,4 @@ tasks/install-dbserver-mongo:
 	echo "mongodb-org-shell hold" | sudo dpkg --set-selections
 	echo "mongodb-org-mongos hold" | sudo dpkg --set-selections
 	echo "mongodb-org-tools hold" | sudo dpkg --set-selections	
+	touch tasks/install-dbserver-mongo
