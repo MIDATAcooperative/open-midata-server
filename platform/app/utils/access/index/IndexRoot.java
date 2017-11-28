@@ -168,7 +168,7 @@ public class IndexRoot {
 	public void addEntry(MidataId aps, DBRecord record) throws InternalServerException, LostUpdateException {
 		modCount++;
 		//if (modCount > 100) lockIndex();
-		
+		if (record.data == null) throw new NullPointerException();
 		EntryInfo inf = new EntryInfo();
 		inf.aps = aps;
 		inf.record = record;
@@ -180,7 +180,7 @@ public class IndexRoot {
 	public void removeEntry(DBRecord record) throws InternalServerException, LostUpdateException {
 		modCount++;
 		//if (modCount > 100) lockIndex();
-		
+		if (record.data == null) throw new NullPointerException();
 		EntryInfo inf = new EntryInfo();		
 		inf.record = record;
 		inf.aps = record.consentAps;
