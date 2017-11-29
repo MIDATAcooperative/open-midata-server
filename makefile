@@ -24,11 +24,15 @@ restart:
 	if [ -e switches/use-hotdeploy ]; then ./hotdeploy.sh; fi;
 	if [ -e switches/use-run ]; then python main.py run; fi;
 
-update: tasks/check-config tasks/setup-portal tasks/build-mongodb tasks/build-portal tasks/build-plugins restart
+update: tasks/check-config start-mongo tasks/setup-portal tasks/build-mongodb tasks/build-portal tasks/build-plugins restart
 
 .PHONY: reconfig
 reconfig:
 	rm tasks/check-config
+
+.PHONY: start-mongo
+start-mongo:
+	test=`pgrep mongo`; if [ -e switches/local-mongo -a -z "$$test" ]; then python main.py start mongodb; fi 
 
 tasks/prepare-webserver:
 	touch switches/use-hotdeploy
@@ -39,6 +43,7 @@ tasks/prepare-webserver:
 
 tasks/prepare-local:
 	touch switches/use-run
+	touch switches/local-mongo
 	cp config/instance-template.json config/instance.json	
 	touch tasks/prepare-local
 		
@@ -89,6 +94,7 @@ tasks/reimport-mongodb: trigger/reimport-mongodb
 	touch tasks/reimport-mongodb
 	
 tasks/build-mongodb: trigger/build-mongodb tasks/reimport-mongodb
+	python main.py start mongodb
 	python main.py build mongodb
 	touch tasks/build-mongodb
 
