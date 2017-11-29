@@ -7,13 +7,13 @@ info:
 	$(info install-local : Install a localhost instance)
 	$(info update : Update current instance)
 
-install-fullserver: tasks/install-packages tasks/install-node tasks/prepare-webserver tasks/check-config tasks/run-setup-script tasks/setup-nginx
+install-fullserver: tasks/install-packages tasks/install-node tasks/prepare-webserver tasks/check-config tasks/install-localmongo tasks/install-activator tasks/setup-nginx tasks/configure-connection
 
-install-webserver: tasks/install-packages tasks/install-node tasks/prepare-webserver tasks/check-config tasks/run-setup-script tasks/setup-nginx tasks/configure-connection
+install-webserver: tasks/install-packages tasks/install-node tasks/prepare-webserver tasks/check-config tasks/install-localmongo tasks/install-activator tasks/setup-nginx tasks/configure-connection
 
 install-dbserver: tasks/install-dbserver-mongo
 
-install-local: tasks/install-packages tasks/install-node tasks/prepare-local tasks/check-config tasks/run-setup-script
+install-local: tasks/install-packages tasks/install-node tasks/prepare-local tasks/check-config tasks/install-dummycert tasks/install-localmongo tasks/install-lighttpd tasks/install-activator tasks/configure-connection
 
 .PHONY: pull
 pull:
@@ -56,12 +56,27 @@ tasks/check-config: trigger/check-config
 	nano config/instance.json
 	touch tasks/check-config
 	
-tasks/run-setup-script: trigger/run-setup-script
-	python main.py setup
-	touch tasks/run-setup-script
+tasks/install-activator: trigger/install-activator
+	python main.py setup activator
+	touch tasks/install-activator
+
+tasks/install-localmongo: trigger/install-localmongo
+	python main.py setup mongodb
+	touch tasks/install-localmongo
+
+tasks/install-dummycert: trigger/install-dummycert
+	python main.py setup sslcert
+	touch tasks/install-dummycert
+
+tasks/install-lighttpd: trigger/install-lighttpd
+	python main.py setup lighttpd
+	touch tasks/install-lighttpd
 	
+NEWSECRET := $(shell python main.py newsecret activator | grep 'new secret:' | sed 's/^.*: //')
 tasks/configure-connection: trigger/configure-connection
 	python main.py configure activator
+	sed -i '/application.secret/d' /dev/shm/secret.conf
+	echo "application.secret=\"$(NEWSECRET)\"" >> /dev/shm/secret.conf
 	nano /dev/shm/secret.conf
 	python main.py configure activator
 	touch tasks/configure-connection
@@ -109,10 +124,6 @@ tasks/install-ssl: reconfig tasks/check-config
 	sudo cp nginx/sites-available/* /etc/nginx/sites-available
 	sudo nginx -t && sudo service nginx reload	
 	
-tasks/install-mail: trigger/install-mail
-	sudo apt-get install ssmtp
-	sudo nano /etc/ssmtp/ssmtp.conf
-	touch tasks/install-mail
 
 tasks/install-dbserver-mongo:
 	sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
