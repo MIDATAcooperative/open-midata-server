@@ -72,11 +72,10 @@ tasks/install-lighttpd: trigger/install-lighttpd
 	python main.py setup lighttpd
 	touch tasks/install-lighttpd
 	
-NEWSECRET := $(shell python main.py newsecret activator | grep 'new secret:' | sed 's/^.*: //')
 tasks/configure-connection: trigger/configure-connection
 	python main.py configure activator
 	sed -i '/application.secret/d' /dev/shm/secret.conf
-	echo "application.secret=\"$(NEWSECRET)\"" >> /dev/shm/secret.conf
+	NEWSECRET=`python main.py newsecret activator | grep 'new secret:' | sed 's/^.*: //'` ; echo "application.secret=\"$$NEWSECRET\"" >> /dev/shm/secret.conf
 	nano /dev/shm/secret.conf
 	python main.py configure activator
 	touch tasks/configure-connection
