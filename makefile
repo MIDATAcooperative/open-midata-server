@@ -67,6 +67,7 @@ tasks/install-activator: trigger/install-activator
 
 tasks/install-localmongo: trigger/install-localmongo
 	python main.py setup mongodb
+	touch switches/local-mongo
 	touch tasks/install-localmongo
 
 tasks/install-dummycert: trigger/install-dummycert
@@ -80,7 +81,7 @@ tasks/install-lighttpd: trigger/install-lighttpd
 tasks/configure-connection: trigger/configure-connection
 	python main.py configure activator
 	sed -i '/application.secret/d' /dev/shm/secret.conf
-	NEWSECRET=`python main.py newsecret activator | grep 'new secret:' | sed 's/^.*: //'` ; echo "application.secret=\"$$NEWSECRET\"" >> /dev/shm/secret.conf
+	NEWSECRET=`python main.py newsecret activator | grep 'new secret:' | sed 's/^.*: //' | sed 's/[^[:print:]]//'` ; echo "application.secret=\"$$NEWSECRET\"" >> /dev/shm/secret.conf
 	nano /dev/shm/secret.conf
 	python main.py configure activator
 	touch tasks/configure-connection
@@ -128,7 +129,11 @@ tasks/install-ssl: reconfig tasks/check-config
 	python main.py setup nginx
 	sudo cp nginx/sites-available/* /etc/nginx/sites-available
 	sudo nginx -t && sudo service nginx reload	
-	
+
+tasks/bugfixes:
+	sudo chown -R $USER:$GROUP ~/.config	
+	sudo chown -R $USER:$GROUP ~/.npm
+	touch tasks/bugfixes
 
 tasks/install-dbserver-mongo:
 	sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
