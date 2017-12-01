@@ -5,16 +5,22 @@ info:
 	$(info install-webserver : Install a frontend server that uses separate database servers)
 	$(info install-local : Install a localhost instance)
 	$(info   )
+	$(info configure-connection : Reconfigure database connection)
+	$(info   )
 	$(info order-ssl : Generate new CSR to order a new certificate)
 	$(info install-ssl : Activate new certificate)
 	$(info   )
 	$(info update : Update current instance)
 
 install-fullserver: tasks/install-packages tasks/install-node tasks/prepare-webserver tasks/check-config tasks/install-localmongo tasks/install-activator tasks/setup-nginx tasks/configure-connection
+	$(info Please run "make order-ssl" to order SSL certificate)
+	$(info Please run "make install-ssl" to install SSL certificate that has been ordered before)
 	$(info Please run "make update" to build)
 
 install-webserver: tasks/install-packages tasks/install-node tasks/prepare-webserver tasks/check-config tasks/install-localmongo tasks/install-activator tasks/dhparams tasks/setup-nginx tasks/configure-connection
-	$(info Please run "make update" to build)
+	$(info Please run "make order-ssl" to order SSL certificate)
+	$(info Please run "make install-ssl" to install SSL certificate that has been ordered before)
+	$(info Please run "make update" to build after everything has been configured correctly)
 
 install-local: tasks/install-packages tasks/install-node tasks/prepare-local tasks/check-config tasks/install-dummycert tasks/install-localmongo tasks/install-lighttpd tasks/install-activator tasks/configure-connection
 	$(info Please run "make update" to build)
@@ -25,7 +31,7 @@ pull:
 
 .PHONY: restart
 restart:
-	if [ -e switches/use-hotdeploy ]; then ./hotdeploy.sh; fi;
+	if [ -e switches/use-hotdeploy ]; then sh ./hotdeploy.sh; fi;
 	if [ -e switches/use-run ]; then python main.py run; fi;
 
 update: tasks/check-config start-mongo tasks/setup-portal tasks/build-mongodb tasks/build-portal tasks/build-plugins restart
@@ -41,7 +47,7 @@ start-mongo:
 tasks/prepare-webserver:
 	touch switches/use-hotdeploy
 	cp config/instance-template.json config/instance.json
-	read -p "Enter domain name: " newdomain ; node scripts/replace.js domain $$newdomain ; node scripts/replace.js portal origin https://$$newdomain ; node scripts/replace.js portal backend https://$$newdomain ; 
+	read -p "Enter domain name: " newdomain ; node scripts/replace.js domain $$newdomain ; node scripts/replace.js portal origin https://$$newdomain ; node scripts/replace.js portal backend https://$$newdomain ; node scripts/replace.js portal plugins $$newdomain/plugins ;
 	node scripts/replace.js instanceType prod
 	touch tasks/prepare-webserver
 
@@ -89,12 +95,21 @@ tasks/install-lighttpd: trigger/install-lighttpd
 	touch tasks/install-lighttpd
 	
 tasks/configure-connection: trigger/configure-connection
+	rm -f /dev/shm/secret.conf*
 	python main.py configure activator
 	sed -i '/application.secret/d' /dev/shm/secret.conf
 	NEWSECRET=`python main.py newsecret activator | grep 'new secret:' | sed 's/^.*: //' | sed 's/[^[:print:]]//'` ; echo "application.secret=\"$$NEWSECRET\"" >> /dev/shm/secret.conf
 	nano /dev/shm/secret.conf
+	rm -f /dev/shm/secret.conf.gz.nc
 	python main.py configure activator
 	touch tasks/configure-connection
+
+configure-connection: 
+	rm -f /dev/shm/secret.conf*
+	python main.py configure activator
+	nano /dev/shm/secret.conf
+	rm -f /dev/shm/secret.conf.gz.nc
+	python main.py configure activator
 	
 tasks/setup-portal: trigger/setup-portal tasks/check-config config/instance.json
 	python main.py setup portal
@@ -123,10 +138,11 @@ tasks/reimport-build-mongodb: tasks/reimport-mongodb tasks/build-mongodb
 tasks/setup-nginx: tasks/check-config
 	python main.py setup nginx
 	sudo cp nginx/sites-available/* /etc/nginx/sites-available
-	sudo ln -s /etc/nginx/sites-available/sslredirect /etc/nginx/sites-enabled/sslredirect
-	sudo ln -s /etc/nginx/sites-available/*_plugins /etc/nginx/sites-enabled/
-	sudo ln -s /etc/nginx/sites-available/*_portal_api /etc/nginx/sites-enabled/
-	sudo ln -s /etc/nginx/sites-available/*_webpages /etc/nginx/sites-enabled/
+	sudo ln -s /etc/nginx/sites-available/sslredirect /etc/nginx/sites-enabled/sslredirect || true
+	sudo ln -s /etc/nginx/sites-available/*_plugins /etc/nginx/sites-enabled/ || true
+	sudo ln -s /etc/nginx/sites-available/*_portal_api /etc/nginx/sites-enabled/ || true
+	sudo ln -s /etc/nginx/sites-available/*_webpages /etc/nginx/sites-enabled/ || true
+	sudo rm -f /etc/nginx/sites-enabled/default
 	sudo nginx -t && sudo service nginx reload
 	touch tasks/setup-nginx
 	

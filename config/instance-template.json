@@ -10,6 +10,7 @@
   "portal" : {
      "origin" : "https://localhost:9002",
      "backend" : "https://localhost:9000",
+     "plugins" : "https://localhost:4000",
      "beta" : false,
      "languages" : "en,de,fr",
      "countries" : "CH"

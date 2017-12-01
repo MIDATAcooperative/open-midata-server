@@ -33,6 +33,7 @@ class Portal(Product):
 		with open(os.path.join(self.appconf, 'application.conf.template'), 'r') as configFile:				
 			config = configFile.read()			
 			config = config.replace('PORTAL_ORIGIN', instance['portal']['origin'])
+			config = config.replace('PLUGINS_SERVER', instance['portal']['plugins'])
 			config = config.replace('DOMAIN', instance['domain'])
 			config = config.replace('CERTIFICATE_PEM', instance['certificate']['pem'])
 			config = config.replace('CERTIFICATE_KEY', instance['certificate']['key'])			
