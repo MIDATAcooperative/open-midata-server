@@ -1,8 +1,10 @@
 .PHONY: info
 info:
+	$(info ------------------------------)
 	$(info Welcome to MIDATA)
-	$(info install-fullserver : Install a server with frontend and backend on one system)
-	$(info install-webserver : Install a frontend server that uses separate database servers)
+	$(info ------------------------------)
+	$(info   )
+	$(info install-webserver : Install a productive frontend server that may use separate database servers)
 	$(info install-local : Install a localhost instance)
 	$(info   )
 	$(info configure-connection : Reconfigure database connection)
@@ -12,17 +14,13 @@ info:
 	$(info   )
 	$(info update : Update current instance)
 
-install-fullserver: tasks/install-packages tasks/install-node tasks/prepare-webserver tasks/check-config tasks/install-localmongo tasks/install-activator tasks/setup-nginx tasks/configure-connection
+install-webserver: tasks/install-packages tasks/install-node tasks/bugfixes tasks/prepare-webserver tasks/install-localmongo tasks/install-activator tasks/dhparams tasks/configure-connection
 	$(info Please run "make order-ssl" to order SSL certificate)
 	$(info Please run "make install-ssl" to install SSL certificate that has been ordered before)
-	$(info Please run "make update" to build)
-
-install-webserver: tasks/install-packages tasks/install-node tasks/prepare-webserver tasks/check-config tasks/install-localmongo tasks/install-activator tasks/dhparams tasks/setup-nginx tasks/configure-connection
-	$(info Please run "make order-ssl" to order SSL certificate)
-	$(info Please run "make install-ssl" to install SSL certificate that has been ordered before)
+	$(info Please run "make configure-connection" to setup database connection)
 	$(info Please run "make update" to build after everything has been configured correctly)
 
-install-local: tasks/install-packages tasks/install-node tasks/prepare-local tasks/check-config tasks/install-dummycert tasks/install-localmongo tasks/install-lighttpd tasks/install-activator tasks/configure-connection
+install-local: tasks/install-packages tasks/install-node tasks/bugfixes tasks/prepare-local tasks/check-config tasks/install-dummycert tasks/install-localmongo tasks/install-lighttpd tasks/install-activator tasks/configure-connection
 	$(info Please run "make update" to build)
 
 .PHONY: pull
@@ -47,6 +45,9 @@ start-mongo:
 tasks/prepare-webserver:
 	touch switches/use-hotdeploy
 	cp config/instance-template.json config/instance.json
+	$(info ------------------------------)
+	$(info Basic configuration of Frontend)
+	$(info ------------------------------)
 	read -p "Enter domain name: " newdomain ; node scripts/replace.js domain $$newdomain ; node scripts/replace.js portal origin https://$$newdomain ; node scripts/replace.js portal backend https://$$newdomain ; node scripts/replace.js portal plugins $$newdomain/plugins ;
 	node scripts/replace.js instanceType prod
 	touch tasks/prepare-webserver
@@ -64,10 +65,16 @@ tasks/prepare-local:
 	touch tasks/prepare-local
 		
 tasks/install-packages: trigger/install-packages
+	$(info ------------------------------)
+	$(info Installing Packages... )
+	$(info ------------------------------)
 	sudo apt-get install git curl openssl python openjdk-8-jdk nginx mcrypt sqlite3 unzip
 	touch tasks/install-packages
 	
 tasks/install-node: tasks/install-packages trigger/install-node
+	$(info ------------------------------)
+	$(info Installing Node JS... )
+	$(info ------------------------------)
 	curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 	sudo apt-get install -y nodejs
 	sudo npm install -g bower grunt-cli
@@ -78,28 +85,44 @@ tasks/check-config: trigger/check-config
 	touch tasks/check-config
 	
 tasks/install-activator: trigger/install-activator
+	$(info ------------------------------)
+	$(info Installing Play Framework... )
+	$(info ------------------------------)
 	python main.py setup activator
+	python main.py newsecret activator
 	touch tasks/install-activator
 
 tasks/install-localmongo: trigger/install-localmongo
+	$(info ------------------------------)
+	$(info Installing Local Version of MongoDB... )
+	$(info ------------------------------)
 	python main.py setup mongodb
 	touch switches/local-mongo
 	touch tasks/install-localmongo
 
 tasks/install-dummycert: trigger/install-dummycert
+	$(info ------------------------------)
+	$(info Generating Dummy Certificate for Development Instance... )
+	$(info ------------------------------)
 	python main.py setup sslcert
 	touch tasks/install-dummycert
 
 tasks/install-lighttpd: trigger/install-lighttpd
+	$(info ------------------------------)
+	$(info Installing lighttpd Server for Development Instance.... )
+	$(info ------------------------------)
 	python main.py setup lighttpd
 	touch tasks/install-lighttpd
 	
 tasks/configure-connection: trigger/configure-connection
+	$(info ------------------------------)
+	$(info Preparing encrypted configuration file.... )
+	$(info ------------------------------)
+	$(info You will need a strong mantra to encrypt and decrypt the configuration file. )
 	rm -f /dev/shm/secret.conf*
 	python main.py configure activator
 	sed -i '/application.secret/d' /dev/shm/secret.conf
 	NEWSECRET=`python main.py newsecret activator | grep 'new secret:' | sed 's/^.*: //' | sed 's/[^[:print:]]//'` ; echo "application.secret=\"$$NEWSECRET\"" >> /dev/shm/secret.conf
-	nano /dev/shm/secret.conf
 	rm -f /dev/shm/secret.conf.gz.nc
 	python main.py configure activator
 	touch tasks/configure-connection
@@ -116,6 +139,9 @@ tasks/setup-portal: trigger/setup-portal tasks/check-config config/instance.json
 	touch tasks/setup-portal
 	
 tasks/reimport-mongodb: trigger/reimport-mongodb $(wildcard json/*.json)
+	$(info ------------------------------)
+	$(info Importing META-DATA into mongoDB.... )
+	$(info ------------------------------)
 	python main.py reimport mongodb
 	touch tasks/reimport-mongodb
 	
@@ -125,10 +151,16 @@ tasks/build-mongodb: trigger/build-mongodb tasks/reimport-mongodb
 	touch tasks/build-mongodb
 
 tasks/build-plugins: trigger/build-plugins $(shell find visualizations/*/src -type f | sed 's/ /\\ /g')
+	$(info ------------------------------)
+	$(info Building Plugins... )
+	$(info ------------------------------)
 	python main.py build plugins
 	touch tasks/build-plugins
 	
 tasks/build-portal: trigger/build-portal $(shell find portal -type f | sed 's/ /\\ /g')
+	$(info ------------------------------)
+	$(info Building Portal... )
+	$(info ------------------------------)
 	python main.py build portal
 	touch tasks/build-portal
 	
@@ -147,15 +179,25 @@ tasks/setup-nginx: tasks/check-config
 	touch tasks/setup-nginx
 	
 order-ssl:		    
+	$(info ------------------------------)
+	$(info Order SSL Certificate... )
+	$(info ------------------------------)
 	$(eval DOMAIN := $(shell cat config/instance.json | python -c "import sys, json; print json.load(sys.stdin)['domain']"))
 	$(eval YEAR := $(shell read -p "Enter Current Year (4digits): " pw ;printf $$pw;))
 	mkdir -p ../ssl
 	openssl req -new -nodes -keyout ../ssl/$(DOMAIN)_$(YEAR).key -out ../ssl/$(DOMAIN)_$(YEAR).csr -newkey rsa:2048;
+	@echo "----------------------"
+	@echo "Your certificate request CSR is here:"
+	@echo "$(abspath ../ssl/$(DOMAIN)_$(YEAR).csr)"
+	@echo
+	@echo "Please put the certificate once you have it here:"
+	@echo "$(abspath ../ssl/$(DOMAIN)_$(YEAR).crt)"
+	@echo
+	@echo "Append the CA-Chain to the certificate so that it is only one file."
+	@echo "Run make install-ssl when ready"
+	@echo "----------------------"
 		
-install-ssl: reconfig tasks/set-ssl-path tasks/check-config
-	python main.py setup nginx
-	sudo cp nginx/sites-available/* /etc/nginx/sites-available
-	sudo nginx -t && sudo service nginx reload	
+install-ssl: reconfig tasks/set-ssl-path tasks/check-config tasks/setup-nginx
 
 tasks/set-ssl-path:
 	$(eval DOMAIN := $(shell cat config/instance.json | python -c "import sys, json; print json.load(sys.stdin)['domain']"))
@@ -165,7 +207,7 @@ tasks/set-ssl-path:
 	node scripts/replace.js certificate key $(CERTPATH).key
 
 tasks/bugfixes:
-	sudo chown -R $USER:$GROUP ~/.config	
-	sudo chown -R $USER:$GROUP ~/.npm
+	sudo chown -R $$USER:$$GROUP ~/.config	
+	sudo chown -R $$USER:$$GROUP ~/.npm
 	touch tasks/bugfixes
 
