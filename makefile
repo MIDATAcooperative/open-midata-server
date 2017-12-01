@@ -146,9 +146,8 @@ tasks/setup-nginx: tasks/check-config
 	sudo nginx -t && sudo service nginx reload
 	touch tasks/setup-nginx
 	
-DOMAIN := $(shell cat config/instance.json | python -c "import sys, json; print json.load(sys.stdin)['domain']")
 order-ssl:		    
-	echo $(DOMAIN)
+	$(eval DOMAIN := $(shell cat config/instance.json | python -c "import sys, json; print json.load(sys.stdin)['domain']"))
 	$(eval YEAR := $(shell read -p "Enter Current Year (4digits): " pw ;printf $$pw;))
 	mkdir -p ../ssl
 	openssl req -new -nodes -keyout ../ssl/$(DOMAIN)_$(YEAR).key -out ../ssl/$(DOMAIN)_$(YEAR).csr -newkey rsa:2048;
@@ -159,6 +158,7 @@ install-ssl: reconfig tasks/set-ssl-path tasks/check-config
 	sudo nginx -t && sudo service nginx reload	
 
 tasks/set-ssl-path:
+	$(eval DOMAIN := $(shell cat config/instance.json | python -c "import sys, json; print json.load(sys.stdin)['domain']"))
 	$(eval YEAR := $(shell read -p "Enter Current Year (4digits): " pw ; printf $$pw))
 	$(eval CERTPATH := $(abspath ../ssl/$(DOMAIN)_$(YEAR)))
 	node scripts/replace.js certificate pem $(CERTPATH).crt
