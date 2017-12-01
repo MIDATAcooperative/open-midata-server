@@ -136,6 +136,8 @@ public class IndexManager {
 					} catch (InternalServerException e) {
 					  // We ignore error during index remove as this might be part of a delete operation
 					  AccessLog.logException("Error during index entry remove", e);
+					} catch (NullPointerException e2) {
+					  AccessLog.logException("Error during index entry remove", e2);
 					}
 					// Remove from memory
 					record.data = null;
