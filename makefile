@@ -7,6 +7,7 @@ info:
 	$(info install-webserver : Install a productive frontend server that may use separate database servers)
 	$(info install-local : Install a localhost instance)
 	$(info   )
+	$(info create-mongo-passwords : Run once after your mongoDB setup is ready and running. For webserver)
 	$(info configure-connection : Reconfigure database connection)
 	$(info   )
 	$(info order-ssl : Generate new CSR to order a new certificate)
@@ -133,6 +134,27 @@ configure-connection:
 	nano /dev/shm/secret.conf
 	rm -f /dev/shm/secret.conf.gz.nc
 	python main.py configure activator
+
+create-mongo-passwords:
+	rm -f /dev/shm/secret.conf*
+	python main.py configure activator	
+	$(eval PORT=$(shell read -p "Port of Mongo Instance:" pw ; echo $$pw))	
+	$(eval MASTERPW=$(shell read -p "Choose Admin Password:" pw ; echo $$pw))
+	$(eval MAPPINGPW=$(shell read -p "Password for 'mapping' database:" pw ; echo $$pw))
+	$(eval USERPW=$(shell read -p "Password for 'user' database:" pw ; echo $$pw))
+	$(eval ACCESSPW=$(shell read -p "Password for 'access' database:" pw ; echo $$pw))
+	$(eval RECORDPW=$(shell read -p "Password for 'record' database:" pw ; echo $$pw))
+	mongodb/bin/mongo --port $(PORT) --eval "db=db.getSiblingDB('admin');db.createUser({ user: 'midataAdmin', pwd: '$(MASTERPW)', roles: [ { role: 'userAdminAnyDatabase', db: 'admin' } ] } );"
+	mongodb/bin/mongo --port $(PORT) --eval "db=db.getSiblingDB('admin');db.auth('midataAdmin', '$(MASTERPW)');db=db.getSiblingDB('mapping');db.createUser({user: 'mapping',pwd:'$(MAPPINGPW)',roles: [ { role: 'dbAdmin', db: 'mapping' }, { role: 'readWrite', db: 'mapping' } ] });"
+	mongodb/bin/mongo --port $(PORT) --eval "db=db.getSiblingDB('admin');db.auth('midataAdmin', '$(MASTERPW)');db=db.getSiblingDB('user');db.createUser({user: 'user',pwd:'$(USERPW)',roles: [ { role: 'dbAdmin', db: 'user' }, { role: 'readWrite', db: 'user' } ] });"
+	mongodb/bin/mongo --port $(PORT) --eval "db=db.getSiblingDB('admin');db.auth('midataAdmin', '$(MASTERPW)');db=db.getSiblingDB('access');db.createUser({user: 'access',pwd:'$(ACCESSPW)',roles: [ { role: 'dbAdmin', db: 'access' }, { role: 'readWrite', db: 'access' } ] });"
+	mongodb/bin/mongo --port $(PORT) --eval "db=db.getSiblingDB('admin');db.auth('midataAdmin', '$(MASTERPW)');db=db.getSiblingDB('record');db.createUser({user: 'record',pwd:'$(RECORDPW)',roles: [ { role: 'dbAdmin', db: 'record' }, { role: 'readWrite', db: 'record' } ] });"
+	sed -i 's|PASSWORD_USER|$(USERPW)|' /dev/shm/secret.conf
+	sed -i 's|PASSWORD_ACCESS|$(ACCESSPW)|' /dev/shm/secret.conf
+	sed -i 's|PASSWORD_RECORD|$(RECORDPW)|' /dev/shm/secret.conf
+	sed -i 's|PASSWORD_MAPPING|$(MAPPINGPW)|' /dev/shm/secret.conf
+	sed -i 's|\# mongo\.|mongo\.|g' /dev/shm/secret.conf
+	python main.py configure activator	
 	
 tasks/setup-portal: trigger/setup-portal tasks/check-config config/instance.json
 	python main.py setup portal
