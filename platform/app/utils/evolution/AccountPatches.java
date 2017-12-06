@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import controllers.Circles;
 import models.AccessPermissionSet;
 import models.Circle;
 import models.Consent;
@@ -38,14 +39,14 @@ import utils.fhir.PatientResourceProvider;
 
 public class AccountPatches {
 
-	public static final int currentAccountVersion = 20171020;
+	public static final int currentAccountVersion = 20171206;
 	
 	public static void check(User user) throws AppException {		
 		if (user.accountVersion < 20160324) { formatPatch20160324(user); }	
 		if (user.accountVersion < 20160407) { formatPatch20160407(user); }
 		if (user.accountVersion < 20160902) { formatPatch20160902(user); }
 		if (user.accountVersion < 20161205) { formatPatch20161205(user); }
-		if (user.accountVersion < 20171020) { formatPatch20171020(user); }
+		if (user.accountVersion < 20171206) { formatPatch20171206(user); }
 		//if (user.accountVersion < 20170206) { formatPatch20170206(user); }
 	}
 	
@@ -146,8 +147,8 @@ public class AccountPatches {
 		AccessLog.logEnd("end patch 2017 02 06");
 	}
 	
-	public static void formatPatch20171020(User user) throws AppException {
-		AccessLog.logBegin("start patch 2017 10 20");
+	public static void formatPatch20171206(User user) throws AppException {
+		AccessLog.logBegin("start patch 2017 12 06");
 		
 		if (user.role.equals(UserRole.RESEARCH)) {
 			ResearchUser ru = ResearchUser.getById(user._id, Sets.create("organization"));
@@ -200,11 +201,17 @@ public class AccountPatches {
 					
 				}
 			}
+		} else if (user.role.equals(UserRole.MEMBER)) {
+			Set<Consent> parts = Consent.getAllByOwner(user._id, CMaps.map("type", ConsentType.STUDYPARTICIPATION), Sets.create("_id", "owner"), 0);
+			for (Consent c : parts) {
+			  Circles.autosharePatientRecord(user._id, c);
+			}
+			
 		}
 				
-		makeCurrent(user, 20171020);
+		makeCurrent(user, 20171206);
 						
-		AccessLog.logEnd("end patch 2017 10 20");
+		AccessLog.logEnd("end patch 2017 12 06");
 	}
 	
 	public static void accountReset(User user) throws AppException {
