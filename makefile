@@ -13,7 +13,9 @@ info:
 	$(info order-ssl : Generate new CSR to order a new certificate)
 	$(info install-ssl : Activate new certificate)
 	$(info   )
-	$(info update : Update current instance)
+	$(info update : Update and start current instance)
+	$(info start : Start current instance)
+	$(info stop : Stop current instance)
 
 install-webserver: tasks/install-packages tasks/install-node tasks/bugfixes tasks/prepare-webserver tasks/install-localmongo tasks/install-activator tasks/dhparams tasks/configure-connection
 	$(info Please run "make order-ssl" to order SSL certificate)
@@ -29,12 +31,12 @@ install-local: tasks/install-packages tasks/install-node tasks/bugfixes tasks/pr
 pull:
 	git pull
 
-.PHONY: restart
-restart:
+.PHONY: start
+start:
 	if [ -e switches/use-hotdeploy ]; then sh ./hotdeploy.sh; fi;
 	if [ -e switches/use-run ]; then python main.py run; fi;
 
-update: tasks/check-config start-mongo tasks/setup-portal tasks/build-mongodb tasks/build-portal tasks/build-plugins restart
+update: tasks/check-config start-mongo tasks/setup-portal tasks/build-mongodb tasks/build-portal tasks/build-plugins start
 
 .PHONY: stop
 stop:
