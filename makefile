@@ -18,6 +18,7 @@ info:
 install-webserver: tasks/install-packages tasks/install-node tasks/bugfixes tasks/prepare-webserver tasks/install-localmongo tasks/install-activator tasks/dhparams tasks/configure-connection
 	$(info Please run "make order-ssl" to order SSL certificate)
 	$(info Please run "make install-ssl" to install SSL certificate that has been ordered before)
+	$(info Please run "make skip-ssl" to continue with a fake SSL certificate that will trigger browser warnings)
 	$(info Please run "make configure-connection" to setup database connection)
 	$(info Please run "make update" to build after everything has been configured correctly)
 
@@ -35,9 +36,13 @@ restart:
 
 update: tasks/check-config start-mongo tasks/setup-portal tasks/build-mongodb tasks/build-portal tasks/build-plugins restart
 
+.PHONY: stop
+stop:
+	python main.py stop
+
 .PHONY: reconfig
 reconfig:
-	rm tasks/check-config
+	rm -f tasks/check-config
 
 .PHONY: start-mongo
 start-mongo:
@@ -138,7 +143,7 @@ configure-connection:
 create-mongo-passwords:
 	rm -f /dev/shm/secret.conf*
 	python main.py configure activator	
-	$(eval PORT=$(shell read -p "Port of Mongo Instance:" pw ; echo $$pw))	
+	$(eval PORT=$(shell read -p "Port of Mongo Instance [27017 for sharded instance]:" pw ; echo $$pw))	
 	$(eval MASTERPW=$(shell read -p "Choose Admin Password:" pw ; echo $$pw))
 	$(eval MAPPINGPW=$(shell read -p "Password for 'mapping' database:" pw ; echo $$pw))
 	$(eval USERPW=$(shell read -p "Password for 'user' database:" pw ; echo $$pw))
@@ -154,6 +159,7 @@ create-mongo-passwords:
 	sed -i 's|PASSWORD_RECORD|$(RECORDPW)|' /dev/shm/secret.conf
 	sed -i 's|PASSWORD_MAPPING|$(MAPPINGPW)|' /dev/shm/secret.conf
 	sed -i 's|\# mongo\.|mongo\.|g' /dev/shm/secret.conf
+	rm -f /dev/shm/secret.conf.gz.nc
 	python main.py configure activator	
 	
 tasks/setup-portal: trigger/setup-portal tasks/check-config config/instance.json
@@ -218,8 +224,19 @@ order-ssl:
 	@echo "Append the CA-Chain to the certificate so that it is only one file."
 	@echo "Run make install-ssl when ready"
 	@echo "----------------------"
+
+self-sign-ssl:
+	$(eval DOMAIN := $(shell cat config/instance.json | python -c "import sys, json; print json.load(sys.stdin)['domain']"))
+	$(eval YEAR := $(shell read -p "Enter Current Year (4digits): " pw ;printf $$pw;))
+	mkdir -p ../ssl
+	openssl req -x509 -nodes -newkey rsa:2048 -keyout ../ssl/$(DOMAIN)_$(YEAR).key -out ../ssl/$(DOMAIN)_$(YEAR).crt -days 365
 		
 install-ssl: reconfig tasks/set-ssl-path tasks/check-config tasks/setup-nginx
+
+skip-ssl: self-sign-ssl install-ssl
+
+sharding:
+	python main.py sharding mongodb
 
 tasks/set-ssl-path:
 	$(eval DOMAIN := $(shell cat config/instance.json | python -c "import sys, json; print json.load(sys.stdin)['domain']"))

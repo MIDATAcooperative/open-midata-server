@@ -153,7 +153,10 @@ class MongoDB(Product):
 	def stop(self):
 		print 'Shutting down MongoDB...'
 		Command.execute('pkill mongod')
-		
+
+	def reset(self):
+		pass
+				
 	def export(self):
 		MongoDB.readconf(self)
 		print 'Exporting metadata'
