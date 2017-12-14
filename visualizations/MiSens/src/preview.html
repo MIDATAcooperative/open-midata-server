@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>MiSens Statistics</title>
+
+	<!-- build:css assets/app.min.css -->
+	<link rel="stylesheet" href="components/bootstrap/css/bootstrap.css">
+	<link rel="stylesheet" href="components/midata/css/app.css">
+	<!-- endbuild -->
+
+	<!-- build:js assets/app.min.js -->
+	<script type="text/javascript" src="components/angular/angular.js" defer></script>
+	<script type="text/javascript" src="components/angular-translate/angular-translate.js" defer></script>
+	<script type="text/javascript" src="components/angular-bootstrap/ui-bootstrap-tpls.js" defer></script>
+	<script type="text/javascript" src="components/midata/js/midata.js" defer></script>
+	<script type="text/javascript" src="i18n.js" defer></script>
+	<script type="text/javascript" src="app.js" defer></script>
+	<script type="text/javascript" src="controller.js" defer></script>
+	<!-- endbuild -->
+</head>
+
+<body>
+
+	<div ng-app="MiSens" ng-controller="PreviewCtrl" ng-cloak>
+
+		<div class="body body-center" style="margin-top:5px;">
+			<div class="text-center">
+				<img style="width:100%; padding-bottom: 20px;" src="spider_plot.png" />
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

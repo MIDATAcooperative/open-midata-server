@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>MiSens Statistics</title>
+
+	<!-- build:css assets/app.min.css -->
+	<link rel="stylesheet" href="components/bootstrap/css/bootstrap.css">
+	<link rel="stylesheet" href="components/midata/css/app.css">
+	<!-- endbuild -->
+
+	<!-- build:js assets/app.min.js -->
+	<script type="text/javascript" src="components/angular/angular.js" defer></script>
+	<script type="text/javascript" src="components/angular-translate/angular-translate.js" defer></script>
+	<script type="text/javascript" src="components/angular-bootstrap/ui-bootstrap-tpls.js" defer></script>
+	<script type="text/javascript" src="components/midata/js/midata.js" defer></script>
+	<script type="text/javascript" src="i18n.js" defer></script>
+	<script type="text/javascript" src="app.js" defer></script>
+	<script type="text/javascript" src="controller.js" defer></script>
+	<!-- endbuild -->
+</head>
+
+<body>
+	<div ng-app="MiSens" ng-controller="ViewController" ng-cloak>
+		<canvas id="myCanvas" width="1000px" height="1000px"></canvas>
+	</div>
+</body>
+
+</html>
