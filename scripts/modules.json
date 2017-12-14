@@ -24,11 +24,6 @@
 		"class": "Lighttpd",
 		"startOrder": 1
 	},
-	"node": {
-		"module": "scripts.node",
-		"class": "Node",
-		"startOrder": 1
-	},
 	"nginx": {
 		"module": "scripts.nginx",
 		"class": "Nginx",
