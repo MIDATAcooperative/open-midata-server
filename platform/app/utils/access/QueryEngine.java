@@ -33,6 +33,9 @@ import utils.exceptions.InternalServerException;
  */
 class QueryEngine {
 
+	public final static Map<String, Object> NOTNULL = Collections.unmodifiableMap(Collections.singletonMap("$ne", null));
+
+	
 	public static List<Record> list(APSCache cache, MidataId aps, AccessContext context, Map<String, Object> properties, Set<String> fields) throws AppException {
 		return RecordConversion.instance.currentVersionFromDB(fullQuery(properties, fields, aps, context, cache));
 	}
@@ -319,7 +322,7 @@ class QueryEngine {
 	    	
     	}
     	if (!idMap.isEmpty()) {
-	    	Collection<DBRecord> fromDB = DBRecord.getAllList(CMaps.map("_id", idMap.keySet()), DATA_ONLY);
+	    	Collection<DBRecord> fromDB = DBRecord.getAllList(CMaps.map("_id", idMap.keySet()).map("encryptedData", NOTNULL), DATA_ONLY);
 	    	for (DBRecord r2 : fromDB) {
 	    	   idMap.get(r2._id).encryptedData = r2.encryptedData;	    	   
 	    	}
@@ -433,12 +436,20 @@ class QueryEngine {
 				DBRecord old = fetchIds.get(record._id);
 				fetchFromDB(old, record);
 			}
+			if (read.size() < fetchIds.size()) {
+				for (DBRecord record : fetchIds.values()) {
+					if (record.encrypted == null) record.meta = null;
+				}
+			}
     	}
+    	
+    	boolean checkDelete = !q.restrictedBy("deleted");
     	
 		for (DBRecord record : result) {
 			if (record.meta != null && (minTime == 0 || record.time ==0 || record.time >= minTime)) {
 			  RecordEncryption.decryptRecord(record);
 			  if (!record.meta.containsField("creator")) record.meta.put("creator", record.owner);
+			  if (checkDelete && record.meta.containsField("deleted")) { record.meta = null;compress++; }
 			} else {compress++;record.meta=null;}			
 		}
     	     	
@@ -600,7 +611,10 @@ class QueryEngine {
 			Set<String> queryFields = Sets.create("stream", "time", "document", "part", "direct");
 			queryFields.addAll(q.getFieldsFromDB());
 			query.put("_id", ids);
-			q.addMongoTimeRestriction(query, true);			
+			q.addMongoTimeRestriction(query, true);
+			if (!q.restrictedBy("deleted")) {
+				query.put("encryptedData", NOTNULL);
+			}
 			return DBRecord.getAllList(query, queryFields);		
     }
         

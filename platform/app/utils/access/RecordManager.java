@@ -732,6 +732,82 @@ public class RecordManager {
 				
 		AccessLog.logEnd("end wipe #records="+recs.size());				
 	}
+	
+	/**
+	 * "Delete" records from the system. This actually only hides records.
+	 * @param executingPerson id of executing person
+	 * @param query
+	 * @throws AppException
+	 */	
+	public void delete(MidataId executingPerson, Map<String, Object> query) throws AppException {
+		AccessLog.logBegin("begin deletingRecords executor="+executingPerson.toString());
+			
+		APSCache cache = getCache(executingPerson);
+		query.put("owner", "self");
+		List<DBRecord> recs = QueryEngine.listInternal(cache, executingPerson, null, query, COMPLETE_META);
+		
+		delete(executingPerson, recs);				
+		
+		AccessLog.logEnd("end deleteRecord");
+	}
+	
+	private void delete(MidataId executingPerson, List<DBRecord> recs) throws AppException {
+		APSCache cache = getCache(executingPerson);
+		if (recs.size() == 0) return;
+		
+		AccessLog.logBegin("begin delete #records="+recs.size());
+		Set<MidataId> streams = new HashSet<MidataId>();
+		
+		Iterator<DBRecord> it = recs.iterator();
+		while (it.hasNext()) {
+	   	   DBRecord record = it.next();			
+	       if (record.meta.getString("content").equals("Patient")) it.remove();
+		   if (record.owner == null) throw new InternalServerException("error.internal", "Owner of record is null.");
+		   if (!record.owner.equals(executingPerson)) throw new BadRequestException("error.internal", "Not owner of record!");
+		}
+		
+		IndexManager.instance.removeRecords(cache, executingPerson, recs);
+				
+		
+		for (DBRecord record : recs) {
+			if (record.stream != null) {		
+				streams.add(record.stream);
+			}
+		}
+		
+		Date now = new Date();		
+		for (DBRecord record : recs) { 			
+			
+			VersionedDBRecord vrec = new VersionedDBRecord(record);		
+			RecordEncryption.encryptRecord(vrec);			
+					
+			record.data = null;
+			record.meta.put("name", "deleted");
+			record.meta.put("deleted", true);
+		    record.meta.put("lastUpdated", now);
+		    record.time = Query.getTimeFromDate(now);		
+		    
+		    String version = Long.toString(System.currentTimeMillis());
+		    record.meta.put("version", version);
+			
+		    DBRecord clone = record.clone();
+		    
+			RecordEncryption.encryptRecord(record);	
+			
+			VersionedDBRecord.add(vrec);
+		    DBRecord.upsert(record); 	  			    
+		    RecordLifecycle.notifyOfChange(clone, getCache(executingPerson));									
+		}
+				
+		for (MidataId streamId : streams) {
+			try {
+				getCache(executingPerson).getAPS(streamId).removeMeta("_info");
+														
+			} catch (APSNotExistingException e) {}
+		}
+				
+		AccessLog.logEnd("end delete #records="+recs.size());				
+	}
 
 	private byte[] addRecordIntern(AccessContext context, DBRecord record, boolean documentPart, MidataId alternateAps, boolean upsert) throws AppException {		
 		

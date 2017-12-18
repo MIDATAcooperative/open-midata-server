@@ -38,6 +38,8 @@ private Feature next;
 	public final static int AUTOCREATE_INDEX_COUNT = 30;
 	public final static int NO_SECOND_INDEX_COUNT = 30;
 	
+	
+	
 	private AccessContext getContextForAps(Query q, MidataId aps) throws AppException {
 		 if (! q.getCache().getAPS(aps).isUsable()) return null;
 		 if (q.getApsId().equals(aps)) return q.getContext();
@@ -169,6 +171,7 @@ private Feature next;
 							if (!aps.equals(q.getCache().getAccountOwner())) add = true;
 					   }
 					   readRecs.put("_id", ids);
+					   readRecs.put("encryptedData", QueryEngine.NOTNULL);
 					
 					   int directSize = 0;
 					   if (directQuery) {

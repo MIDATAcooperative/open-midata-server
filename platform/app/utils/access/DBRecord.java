@@ -160,14 +160,15 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 		this.encWatches = null;
 	}
 
+	/*
 	public static boolean exists(Map<String, ? extends Object> properties) throws InternalServerException {
 		return Model.exists(DBRecord.class, collection, properties);
-	}
+	}*/
 
-	
+	/*
 	public static DBRecord get(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
 		return Model.get(DBRecord.class, collection, properties, fields);
-	}
+	}*/
 	
 	public static DBRecord getById(MidataId id, Set<String> fields) throws InternalServerException {
 		return Model.get(DBRecord.class, collection, CMaps.map("_id", id), fields);
@@ -177,9 +178,11 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 		return Model.getAllList(DBRecord.class, collection, properties, fields, 0);
 	}
 	
+	/*
 	public static Set<DBRecord> getAllByIds(Set<MidataId> ids, Set<String> fields) throws InternalServerException {
 		return Model.getAll(DBRecord.class, collection, CMaps.map("_id", ids), fields);
-	}		
+	}
+	*/		
 	
 	public static void set(MidataId recordId, String field, Object value) throws InternalServerException {
 		Model.set(DBRecord.class, collection, recordId, field, value);
@@ -193,9 +196,11 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 		Model.upsert(collection, record);
 	}
 
+	/*
 	public static void delete(MidataId ownerId, MidataId recordId) throws InternalServerException {			
 		Model.delete(DBRecord.class, collection, CMaps.map("_id", recordId));
 	}
+	*/
 	
 	public static void deleteMany(Set<MidataId> recordIds) throws InternalServerException {			
 		Model.delete(DBRecord.class, collection, CMaps.map("_id", recordIds));

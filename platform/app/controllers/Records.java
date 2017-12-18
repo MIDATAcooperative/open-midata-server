@@ -298,7 +298,7 @@ public class Records extends APIController {
 			String id = JsonValidation.getString(json, "_id");
 			RecordToken tk = getRecordTokenFromString(id);
 			AuditManager.instance.addAuditEvent(AuditEventType.DATA_DELETION, null, userId, null, "id="+tk.recordId);
-			RecordManager.instance.wipe(userId, CMaps.map("_id", tk.recordId));
+			RecordManager.instance.delete(userId, CMaps.map("_id", tk.recordId));
 		} else if (json.has("group") || json.has("content") || json.has("app")) {
 			
 			Map<String, Object> properties = new HashMap<String, Object>();
@@ -311,7 +311,7 @@ public class Records extends APIController {
 			}
 			
 			AuditManager.instance.addAuditEvent(AuditEventType.DATA_DELETION, null, userId, null, message);
-			RecordManager.instance.wipe(userId,  properties);			
+			RecordManager.instance.delete(userId,  properties);			
 		}
 		AuditManager.instance.success();
 		
