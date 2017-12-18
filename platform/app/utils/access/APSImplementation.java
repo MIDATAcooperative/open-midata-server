@@ -39,6 +39,7 @@ class APSImplementation extends APS {
 	public Random rand = new Random(System.currentTimeMillis());
 	
 	private List<DBRecord> cachedRecords;
+	private final static Map<String, Object> NOTNULL = Collections.unmodifiableMap(Collections.singletonMap("$ne", null));
 
 	public APSImplementation(EncryptedAPS eaps) {
 		this.eaps = eaps;
@@ -240,6 +241,9 @@ class APSImplementation extends APS {
 			
 			Map<String, Object> query = new HashMap<String, Object>();
 			query.put("stream", eaps.getId());
+			if (!q.restrictedBy("deleted")) {
+				query.put("encryptedData", NOTNULL);
+			}
 			boolean useCache = true;
 			if (q.restrictedBy("_id")) {
 				                				

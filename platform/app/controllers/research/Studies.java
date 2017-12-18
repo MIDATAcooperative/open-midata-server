@@ -325,7 +325,7 @@ public class Studies extends APIController {
 		        		}
 		        				        				        		
 		        		for (Consent part : parts) {
-		        		List<Record> allRecords = RecordManager.instance.list(executorId, part._id, CMaps.map("export", mode), Sets.create("_id"));
+		        		List<Record> allRecords = RecordManager.instance.list(executorId, part._id, CMaps.map("export", mode).map("deleted", true), Sets.create("_id"));
 		        		Iterator<Record> recordIterator = allRecords.iterator();
 
 		        		while (recordIterator.hasNext()) {

@@ -277,6 +277,7 @@ public class OAuth2 extends Controller {
             String client_id = data.get("client_id")[0];
     					
     		OAuthCodeToken tk = OAuthCodeToken.decrypt(code);
+    		if (tk == null) throw new BadRequestException("error.internal", "invalid_grant");
     		//AccessLog.log("cs:"+tk.codeChallenge);
     		//AccessLog.log("csm:"+tk.codeChallengeMethod);
     		

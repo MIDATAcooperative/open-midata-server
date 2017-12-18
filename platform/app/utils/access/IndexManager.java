@@ -179,7 +179,7 @@ public class IndexManager {
 				if (index.getModCount() > 5000) index.flush();
 				
 				Map<String, Object> restrictions = new HashMap<String, Object>();
-				restrictions.put("format", index.getFormats());
+				restrictions.put("format", index.getFormats());				
 				if (aps.equals(executor)) restrictions.put("owner", "self");
 				
 			    AccessLog.log("Checking aps:"+aps.toString());
