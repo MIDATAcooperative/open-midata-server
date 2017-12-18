@@ -34,7 +34,7 @@ MiSens.factory('information', ['$http', '$translate', 'midataServer', '$q', func
 			
 			//for (var i = 0; i < results.data.length; i++) {
 			//var _data = results.data[i];
-			for (var i = 0; i < results.entry.length; i++) {
+			for (var i = 0; i < results.data.entry.length; i++) {
 			var _data = results.entry[i].resource;
 	
 				for (var j = 0; j < _data.item.length; j++) {
