@@ -167,9 +167,8 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 					if (arrayWithValues[_positionOfFirstValue] != null) {
 						_firstValueInPosition = arrayWithValues[_positionOfFirstValue];
 						//ctx.moveTo(x + (_firstValueInPosition + 1) * r, y);
-						var _distance = (_firstValueInPosition + 1) * r;
-						ctx.moveTo(x + _distance * Math.cos(angleInRadian * _positionOfFirstValue), y + _distance * Math.sin(angleInRadian * _positionOfFirstValue));
-						ctx.fillRect(x + _distance * Math.cos(angleInRadian * _positionOfFirstValue) - (pointWidth/2), y + _distance * Math.sin(angleInRadian * _positionOfFirstValue) - (pointWidth/2), pointWidth, pointWidth);
+						ctx.moveTo(x + ((_firstValueInPosition + 1) * r) * Math.cos(angleInRadian * _positionOfFirstValue), y + ((_firstValueInPosition + 1) * r) * Math.sin(angleInRadian * _positionOfFirstValue));
+						ctx.fillRect(x + ((_firstValueInPosition + 1) * r) * Math.cos(angleInRadian * _positionOfFirstValue) - (pointWidth/2), y + ((_firstValueInPosition + 1) * r) * Math.sin(angleInRadian * _positionOfFirstValue) - (pointWidth/2), pointWidth, pointWidth);
 					}
 
 				} while (arrayWithValues[_positionOfFirstValue] != null && _positionOfFirstValue < numberOfElements);
