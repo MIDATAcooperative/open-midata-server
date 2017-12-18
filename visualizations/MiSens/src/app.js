@@ -29,10 +29,13 @@ MiSens.factory('information', ['$http', '$translate', 'midataServer', '$q', func
 	result.getInformation = function(authToken){
 		var toReturn = {};
 		var query = { "format" : "fhir/QuestionnaireResponse" };
-		return midataServer.getRecords(authToken, query, ["name", "created", "content", "data", "owner", "ownerName", "version"]).then(function(results){
-
-			for (var i = 0; i < results.data.length; i++) {
-				var _data = results.data[i];
+		///return midataServer.getRecords(authToken, query, ["name", "created", "content", "data", "owner", "ownerName", "version"]).then(function(results){
+		return midataServer.fhirSearch(authToken, "QuestionnaireResponse", null).then(function(results){
+			
+			//for (var i = 0; i < results.data.length; i++) {
+			//var _data = results.data[i];
+			for (var i = 0; i < results.entry.length; i++) {
+			var _data = results.entry[i].resource;
 	
 				for (var j = 0; j < _data.item.length; j++) {
 					var _item1 = _data.item[j];

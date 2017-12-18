@@ -143,22 +143,38 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 				var r = 21.7;
 				var numberOfElements = 8;
 				var angleInRadian = Math.PI * 2 / numberOfElements;
+				var pointWidth = 8;
 				
 				// draw point in the center to calibrate!
 				ctx.fillStyle = "#872233";
 				ctx.fillRect(x, y, 1, 1);
+				ctx.fillStyle = "green";
 
 				// center of the diagram is -1. The next point is 0, then 1, etc.
 				// the lines are going to be drawed in clockwise and start with angle 0°
 
-				ctx.lineWidth = 4;
+				ctx.lineWidth = 2;
 				ctx.beginPath();
 
 				// first point is a position, not a line
-				var _firstValueInPosition = arrayWithValues[0];
-				ctx.moveTo(x + (_firstValueInPosition + 1) * r, y);
+				var _firstValueInPosition;
 
-				for (var i = 1; i < numberOfElements; i++) {
+				var _positionOfFirstValue = -1;
+
+				do {
+					_positionOfFirstValue++;
+
+					if (arrayWithValues[_positionOfFirstValue] != null) {
+						_firstValueInPosition = arrayWithValues[_positionOfFirstValue];
+						//ctx.moveTo(x + (_firstValueInPosition + 1) * r, y);
+						var _distance = (_firstValueInPosition + 1) * r;
+						ctx.moveTo(x + _distance * Math.cos(angleInRadian * _positionOfFirstValue), y + _distance * Math.sin(angleInRadian * _positionOfFirstValue));
+						ctx.fillRect(x + _distance * Math.cos(angleInRadian * _positionOfFirstValue) - (pointWidth/2), y + _distance * Math.sin(angleInRadian * _positionOfFirstValue) - (pointWidth/2), pointWidth, pointWidth);
+					}
+
+				} while (arrayWithValues[_positionOfFirstValue] != null && _positionOfFirstValue < numberOfElements);
+
+				for (var i = _positionOfFirstValue + 1; i < numberOfElements; i++) {
 					var _valueInPosition = arrayWithValues[i];
 
 					if (_valueInPosition == null) {
@@ -167,10 +183,12 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 
 					var _distance = (_valueInPosition + 1) * r;
 					ctx.lineTo(x + _distance * Math.cos(angleInRadian * i), y + _distance * Math.sin(angleInRadian * i));
+					ctx.fillRect(x + _distance * Math.cos(angleInRadian * i) - (pointWidth/2), y + _distance * Math.sin(angleInRadian * i) - (pointWidth/2), pointWidth, pointWidth);
 				}
 
 				// close diagram
-				ctx.lineTo(x + (_firstValueInPosition + 1) * r, y);
+				ctx.lineTo(x + ((_firstValueInPosition + 1) * r) * Math.cos(angleInRadian * _positionOfFirstValue), y + ((_firstValueInPosition + 1) * r) * Math.sin(angleInRadian * _positionOfFirstValue));
+				//ctx.lineTo(x + (_firstValueInPosition + 1) * r, y);
 
 				ctx.strokeStyle = "green";//"#00ff00";
 				ctx.stroke();
