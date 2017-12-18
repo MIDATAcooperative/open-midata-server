@@ -399,7 +399,7 @@ class QueryEngine {
     	if (q.getFetchFromDB()) {	
     		//result = duplicateElimination(result);    		
 			for (DBRecord record : result) {
-				if (record.encrypted == null) {
+				if (record.encrypted == null && record.data == null) {
 					DBRecord old = fetchIds.put(record._id, record);
 					if (old != null) old.meta = null;
 				}
