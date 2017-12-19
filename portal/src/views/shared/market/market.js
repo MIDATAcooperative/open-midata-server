@@ -21,14 +21,31 @@ angular.module('portal')
 	var properties = {"spotlighted": true, "targetUserRole" : [ $scope.targetRole, "ANY"], "status" : stati };
 	var fields = ["name", "type", "description", "tags"];
 	var data = {"properties": properties, "fields": fields};
-	
+			
 	session.currentUser
 	.then(function(userId) {
 			$scope.userId = userId;
+			
+			if ($scope.tag == "developer") {
+				console.log(session);
+				
+				$scope.tag = undefined;
+			}
 				
 			$scope.status.doBusy(server.post(jsRoutes.controllers.Plugins.get().url, JSON.stringify(data))).
 			then(function(apps) { 
-				$scope.visualizations.spotlighted = apps.data;			
+				$scope.visualizations.spotlighted = apps.data;	
+				
+				if (session.user.developer) {
+					properties = { "type" : ["visualization", "oauth1", "oauth2"], "creator" : session.user.developer, "status" : ["ACTIVE", "BETA", "DEVELOPMENT"]  };
+					data = { "properties": properties, "fields": fields};
+					
+					$scope.status.doBusy(server.post(jsRoutes.controllers.Plugins.get().url, JSON.stringify(data))).
+					then(function(apps) {
+						$scope.visualizations.spotlighted = $scope.visualizations.spotlighted.concat(apps.data); 
+					});
+				}
+				
 			});
 			
 	});
