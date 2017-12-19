@@ -31,7 +31,17 @@ angular.module('portal')
 		
 		$scope.status.doBusy(server.post(jsRoutes.controllers.Plugins.get().url, JSON.stringify(data))).
 		then(function(apps) { 
-			$scope.services = apps.data;			
+			$scope.services = apps.data;
+			
+			if (session.user.developer) {
+				properties = { "type" : ["visualization", "oauth1", "oauth2"], "creator" : session.user.developer, "status" : ["ACTIVE", "BETA", "DEVELOPMENT"]  };
+				data = { "properties": properties, "fields": fields};
+				
+				$scope.status.doBusy(server.post(jsRoutes.controllers.Plugins.get().url, JSON.stringify(data))).
+				then(function(apps) {
+					$scope.services = $scope.services.concat(apps.data); 
+				});
+			}
 		});
 		
 		spaces.getSpacesOfUserContext($scope.userId, "config")
