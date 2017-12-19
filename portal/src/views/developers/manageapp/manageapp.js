@@ -3,7 +3,7 @@ angular.module('portal')
 	
 	// init
 	$scope.error = null;
-	$scope.app = { version:0, tags:[], i18n : {}, requirements:[] };
+	$scope.app = { version:0, tags:[], i18n : {}, requirements:[], defaultQuery:{}  };
 	$scope.status = new status(false, $scope);
 	$scope.allowDelete = $state.current.allowDelete;
 	$scope.allowStudyConfig = $state.current.allowStudyConfig;
@@ -233,7 +233,11 @@ angular.module('portal')
 	.then(function(result) {
 		$scope.terms = result.data;
 		if ($state.params.appId != null) { $scope.loadApp($state.params.appId); }
-		else { $scope.status.isBusy = false; }
+		else {
+			$scope.app.defaultQueryStr = JSON.stringify($scope.app.defaultQuery);
+			$scope.updateQuery();
+			$scope.status.isBusy = false;
+		}		
 	});
 	
 }]);
