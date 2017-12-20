@@ -171,7 +171,7 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 						ctx.fillRect(x + ((_firstValueInPosition + 1) * r) * Math.cos(angleInRadian * _positionOfFirstValue) - (pointWidth/2), y + ((_firstValueInPosition + 1) * r) * Math.sin(angleInRadian * _positionOfFirstValue) - (pointWidth/2), pointWidth, pointWidth);
 					}
 
-				} while (arrayWithValues[_positionOfFirstValue] != null && _positionOfFirstValue < numberOfElements);
+				} while (arrayWithValues[_positionOfFirstValue] == null && _positionOfFirstValue < numberOfElements);
 
 				for (var i = _positionOfFirstValue + 1; i < numberOfElements; i++) {
 					var _valueInPosition = arrayWithValues[i];
