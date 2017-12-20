@@ -61,9 +61,9 @@ MiSens.factory('information', ['$http', '$translate', 'midataServer', '$q', func
 									//(substanceFound == 'beta-ionone' || substanceFound == 'heptanone' || substanceFound == 'isobuteryl-aldehyde' || substanceFound == 'isovaleci-acid' || substanceFound == 'rotundone' || substanceFound == 'sucrose' || substanceFound == 'nacl' || substanceFound == 'prop')
 								 ) {
 									 if (_item2.answer && _item2.answer[0] && _item.answer[0].valueDecimal) {
-										toReturn[substanceFound] = _item2.answer[0].valueDecimal;	 
+										toReturn[substanceFound] = _item2.answer[0].valueDecimal;	
+										break; 
 									 }
-								break;
 							}
 						}
 	
