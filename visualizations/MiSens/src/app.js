@@ -26,15 +26,15 @@ MiSens.config(['$translateProvider', 'i18nc', function ($translateProvider, i18n
  */
 MiSens.factory('information', ['$http', '$translate', 'midataServer', '$q', function ($http, $translate, midataServer, $q) {
 	var result = {};
+
 	result.getInformation = function(authToken){
 		var toReturn = {};
 		var query = { "format" : "fhir/QuestionnaireResponse" };
 		///return midataServer.getRecords(authToken, query, ["name", "created", "content", "data", "owner", "ownerName", "version"]).then(function(results){
 		return midataServer.fhirSearch(authToken, "QuestionnaireResponse", null).then(function(results){
-			
 			//for (var i = 0; i < results.data.length; i++) {
 			//var _data = results.data[i];
-			for (var i = 0; i < results.data.entry.length; i++) {
+			for (var i = 0; results.data.entry && i < results.data.entry.length; i++) {
 				var _data = results.data.entry[i].resource;
 	
 				for (var j = 0; _data.item && j < _data.item.length; j++) {
@@ -60,7 +60,7 @@ MiSens.factory('information', ['$http', '$translate', 'midataServer', '$q', func
 									// && 
 									//(substanceFound == 'beta-ionone' || substanceFound == 'heptanone' || substanceFound == 'isobuteryl-aldehyde' || substanceFound == 'isovaleci-acid' || substanceFound == 'rotundone' || substanceFound == 'sucrose' || substanceFound == 'nacl' || substanceFound == 'prop')
 								 ) {
-									 if (_item2.answer && _item2.answer[0] && _item.answer[0].valueDecimal) {
+									 if (_item2.answer && _item2.answer[0] && _item2.answer[0].valueDecimal) {
 										toReturn[substanceFound] = _item2.answer[0].valueDecimal;	
 										break; 
 									 }
