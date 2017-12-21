@@ -19,6 +19,12 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 			var arrayWithValues = [null,null,null,null,null,null,null,null];
 			var _value;
 
+            // resize canvas
+            var newSize = 0.7;
+            canvas.width = canvas.width * newSize;
+            canvas.height = canvas.height * newSize;
+            ctx.scale(newSize, newSize);
+
 			if (result['isobuteryl-aldehyde']) {
 				_value = Math.round(result['isobuteryl-aldehyde']);
 				switch (_value) {
@@ -78,7 +84,10 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 				if (_value == 0) {
 					arrayWithValues[3] = 0;
 				} else {
-					arrayWithValues[3] = (60 - (_value % 60))/6;
+					if (_value > 60) {
+						_value = 60;
+					}
+					arrayWithValues[3] = _value/6;
 				}
 			}
 			if (result.nacl) {
@@ -86,7 +95,10 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 				if (_value == 0) {
 					arrayWithValues[4] = 0;
 				} else {
-					arrayWithValues[4] = (60 - (_value % 60))/6;
+					if (_value > 60) {
+						_value = 60;
+					}
+					arrayWithValues[4] = _value/6;
 				}
 			}
 			if (result.prop) {
@@ -94,7 +106,10 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 				if (_value == 0) {
 					arrayWithValues[5] = 0;
 				} else {
-					arrayWithValues[5] = (60 - (_value % 60))/6;
+					if (_value > 60) {
+						_value = 60;
+					}
+					arrayWithValues[5] = _value/6;
 				}
 			}
 			if (result['beta-ionone']) {
@@ -171,7 +186,7 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 						ctx.fillRect(x + ((_firstValueInPosition + 1) * r) * Math.cos(angleInRadian * _positionOfFirstValue) - (pointWidth/2), y + ((_firstValueInPosition + 1) * r) * Math.sin(angleInRadian * _positionOfFirstValue) - (pointWidth/2), pointWidth, pointWidth);
 					}
 
-				} while (arrayWithValues[_positionOfFirstValue] != null && _positionOfFirstValue < numberOfElements);
+				} while (arrayWithValues[_positionOfFirstValue] == null && _positionOfFirstValue < numberOfElements);
 
 				for (var i = _positionOfFirstValue + 1; i < numberOfElements; i++) {
 					var _valueInPosition = arrayWithValues[i];
@@ -194,6 +209,151 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 			};
 			
 			imageObj.src = "spider_plot.png";
+
+			/**
+			 * Draw bar diagrams
+			 * 
+			 */
+			
+            function generateBar(canvasId, chartLabels, chartData, chartLabel, chartLabelStringY, chartLabelStringX, selectedIndex) {
+				var defaultBackgroundColor = 'rgba(0, 0, 0, 0.2)';
+				var defaultBoderColor = 'rgba(0, 0, 0, 0.4)';
+
+				var selectedBackgroundColor = 'rgba(75, 192, 192, 0.2)';
+				var selectedBorderColor = 'rgba(75, 192, 192, 1)';
+
+				var _backgroundColor = [];
+				var _borderColor = [];
+				for (var iColor = 0; iColor < chartLabels.length; iColor++) {
+					_backgroundColor.push(defaultBackgroundColor);
+					_borderColor.push(defaultBoderColor);
+				}
+				if (selectedIndex != null && selectedIndex >= 0 && selectedIndex <= chartLabels.length) {
+					selectedIndex = Math.round(selectedIndex);
+					
+					if (selectedIndex == chartLabels.length) {
+						selectedIndex--;
+					}
+
+					_backgroundColor[selectedIndex] = selectedBackgroundColor;
+					_borderColor[selectedIndex] = selectedBorderColor;
+				}
+
+                var ctx = document.getElementById(canvasId).getContext('2d');
+
+                var chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: chartLabels,
+                        datasets: [{
+                            label: chartLabel,
+                            data: chartData,
+							backgroundColor: _backgroundColor,
+							/*[
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+								'rgba(255, 159, 64, 0.2)',
+								'rgba(0, 0, 0, 0.2)'
+							],*/
+							borderColor: _borderColor,
+							/*[
+                                'rgba(255,99,132,1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+								'rgba(255, 159, 64, 1)',
+								'rgba(0, 0, 0, 0.4)'
+                            ],*/
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero:true
+                                },
+                                scaleLabel:{
+                                    display: true,
+                                    labelString: chartLabelStringY//
+                                }
+                            }],
+                            xAxes: [{
+                                ticks: {
+                                    beginAtZero:true
+                                },
+                                scaleLabel:{
+                                    display: true,
+                                    labelString: chartLabelStringX//
+                                }
+                            }]
+						},
+						legend: {
+							display: false
+						}
+						//,
+						//title: {
+						//	display: true,
+						//	text: chartTitle
+						//}
+                    }
+                });
+            }
+
+            var chartLabel = '# Teilnehmer';
+            var chartLabelY = chartLabel;
+			var chartLabelX = 'Wahrnehmungsschwelle  (ppb)';
+			
+			$translate("chartLabelY").then(function (translation) { 
+				chartLabel = translation; 
+				chartLabelY = translation;
+			}).then(function () {
+				
+				generateBar('chart-beta-ionon',
+					["0.1", "0.46", "2.15", "10", "46", "215", "1'000", "4'600", "21'500", "100'000", ">100'0000"],
+					[6, 0, 5, 8, 2, 13, 10, 13, 8, 22, 21],
+					chartLabel, chartLabelY, chartLabelX, arrayWithValues[6]);
+
+				generateBar("chart-heptanone",
+					["1", "3.6", "13", "46", "167", "600", "2'154", "7'742", "27'825", "100'000", ">100'000"],
+					[1, 8, 2, 3, 3, 12, 9, 15, 12, 20, 21],
+					chartLabel, chartLabelY, chartLabelX, arrayWithValues[7]);
+
+				generateBar("chart-isobuteraldehyde",
+					["1", "3.6", "13", "46", "167", "600", "2'154", "7'742", "27'825", "100'000", ">100'000"],
+					[12, 4, 3, 4, 4, 8, 13, 14, 11, 17, 17],
+					chartLabel, chartLabelY, chartLabelX, arrayWithValues[0]);
+				
+				generateBar("chart-iso-valeric-acid",
+					["1", "3.6", "13", "46", "167", "600", "2'154", "7'742", "27'825", "100'000", ">100'000"],
+					[16, 3, 10, 6, 10, 13, 13, 5, 10, 16, 7],
+					chartLabel, chartLabelY, chartLabelX, arrayWithValues[1]);
+				
+				generateBar("chart-rotundone",
+					["0.001", "0.0036", "0.013", "0.046", "0.167", "0.6", "2.15", "7.7", "27.8", "100", ">100"],
+					[7, 3, 3, 5, 5, 13, 13, 18, 14, 19, 8],
+					chartLabel, chartLabelY, chartLabelX, arrayWithValues[2]);
+				
+				chartLabelX = "Intensitätsbewertung (gLMS Skala)";
+				generateBar("chart-prop",
+					["0-10", "11-20", "21-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90", "91-100"],
+					[32, 13, 7, 19, 18, 18, 5, 2, 2, 3],
+					chartLabel, chartLabelY, chartLabelX, arrayWithValues[5]);
+				
+				generateBar("chart-sugar",
+					["0-10", "11-20", "21-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90", "91-100"],
+					[1, 25, 25, 40, 10, 13, 3, 1, 0, 2],
+					chartLabel, chartLabelY, chartLabelX, arrayWithValues[3]);
+				
+				generateBar("chart-salt",
+					["0-10", "11-20", "21-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90", "91-100"],
+					[3, 22, 14, 34, 20, 19, 0, 0, 0, 0],
+					chartLabel, chartLabelY, chartLabelX, arrayWithValues[4]);
+			});
 		});
 	}
 ]);
