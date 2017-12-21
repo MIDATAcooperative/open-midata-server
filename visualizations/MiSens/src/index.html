@@ -15,6 +15,7 @@
 	<script type="text/javascript" src="components/angular-translate/angular-translate.js" defer></script>
 	<script type="text/javascript" src="components/angular-bootstrap/ui-bootstrap-tpls.js" defer></script>
 	<script type="text/javascript" src="components/midata/js/midata.js" defer></script>
+	<script type="text/javascript" src="components/chart.js/dist/Chart.js" defer></script>
 	<script type="text/javascript" src="i18n.js" defer></script>
 	<script type="text/javascript" src="app.js" defer></script>
 	<script type="text/javascript" src="controller.js" defer></script>
@@ -23,7 +24,16 @@
 
 <body>
 	<div ng-app="MiSens" ng-controller="ViewController" ng-cloak>
-		<canvas id="myCanvas" width="1000px" height="1000px"></canvas>
+		<div class="container">
+			<!--<p class="lead" translate="title"></p>-->
+			<h2 translate="title"></h2>
+			<hr>
+			<p translate="textStarDiagram"></p>
+			<canvas id="myCanvas" width="950px" height="950px"></canvas>
+			<br />
+			<h3 translate="GeschmackshistogrammeTitle"></h3>
+			<p translate="GeschmackshistogrammeText"></p>
+		</div>
 	</div>
 </body>
 
