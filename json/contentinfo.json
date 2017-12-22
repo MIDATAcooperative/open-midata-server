@@ -212,3 +212,7 @@
 {"_id":{"$oid":"59802674aed6450a5c70f847"},"content":"loinc/63582-1","defaultCode":"http://loinc.org 63582-1","security":"MEDIUM","label":{"en":"Smoking Behavior"}}
 {"_id":{"$oid":"59a3fa4eaed645237854253c"},"content":"profile/picture","defaultCode":"http://midata.coop profile/picture","security":"HIGH","label":{"de":"Profilbild","en":"Profile Picture"}}
 {"_id":{"$oid":"5a0047dcaed64509266edf1f"},"content":"PseudonymizedPatient","defaultCode":"http://midata.coop PseudonymizedPatient","security":"HIGH","label":{"en":"Patient (Pseudonymized)"}}
+{"_id":{"$oid":"5a3ce1a7aed64508a1f074b9"},"content":"SPScoreStep","defaultCode":"http://midata.coop SPScoreStep","security":"MEDIUM","label":{"de":"SensoPro Score Step Übung","en":"SensoPro Score Step Exercise"}}
+{"_id":{"$oid":"5a3ce1a7aed64508a1f074bc"},"content":"SPScoreOneLeg","defaultCode":"http://midata.coop SPScoreOneLeg","security":"MEDIUM","label":{"de":"SensoPro Score Einbeinstand Übung","en":"SensoPro Score One Leg Exercise"}}
+{"_id":{"$oid":"5a3ce220aed64508a1f074be"},"content":"SPScoreSprint","defaultCode":"http://midata.coop SPScoreSprint","security":"MEDIUM","label":{"de":"SensoPro Score Sprint Übung","en":"SensoPro Score Sprint Exercise"}}
+{"_id":{"$oid":"5a3ce220aed64508a1f074c0"},"content":"SPScoreWave","defaultCode":"http://midata.coop SPScoreWave","security":"MEDIUM","label":{"de":"SensoPro Score Wave Übung","en":"SensoPro Score Wave Exercise"}}
