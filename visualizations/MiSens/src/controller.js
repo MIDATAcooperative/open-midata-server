@@ -219,8 +219,8 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 				var defaultBackgroundColor = 'rgba(0, 0, 0, 0.2)';
 				var defaultBoderColor = 'rgba(0, 0, 0, 0.4)';
 
-				var selectedBackgroundColor = 'rgba(75, 192, 192, 0.2)';
-				var selectedBorderColor = 'rgba(75, 192, 192, 1)';
+				var selectedBackgroundColor = 'rgba(72, 136, 30, 0.2)';
+				var selectedBorderColor = 'rgba(72, 136, 30, 1)';
 
 				var _backgroundColor = [];
 				var _borderColor = [];
