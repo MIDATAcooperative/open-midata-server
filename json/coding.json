@@ -223,3 +223,7 @@
 {"_id":{"$oid":"59802674aed6450a5c70f848"},"system":"http://loinc.org","code":"63582-1","display":"Do you now smoke cigarettes every day, some days, or not at all","content":"loinc/63582-1"}
 {"_id":{"$oid":"59a3fa4eaed645237854253e"},"system":"http://midata.coop","code":"profile/picture","display":"Profile Picture","content":"profile/picture"}
 {"_id":{"$oid":"5a0047ddaed64509266edf20"},"system":"http://midata.coop","code":"PseudonymizedPatient","display":"Patient (Pseudonymized)","content":"PseudonymizedPatient","contentForSystemCode":{}}
+{"_id":{"$oid":"5a3ce1a7aed64508a1f074bb"},"system":"http://midata.coop","code":"SPScoreStep","display":"SensoPro Score Step Exercise","content":"SPScoreStep","contentForSystemCode":{}}
+{"_id":{"$oid":"5a3ce1a7aed64508a1f074ba"},"system":"http://midata.coop","code":"SPScoreOneLeg","display":"SensoPro Score One Leg Exercise","content":"SPScoreOneLeg","contentForSystemCode":{}}
+{"_id":{"$oid":"5a3ce220aed64508a1f074bd"},"system":"http://midata.coop","code":"SPScoreWave","display":"SensoPro Score Wave Exercise","content":"SPScoreWave","contentForSystemCode":{}}
+{"_id":{"$oid":"5a3ce220aed64508a1f074bf"},"system":"http://midata.coop","code":"SPScoreSprint","display":"SensoPro Score Sprint Exercise","content":"SPScoreSprint","contentForSystemCode":{}}
