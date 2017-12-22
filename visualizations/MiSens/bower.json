@@ -8,7 +8,8 @@
     "angular-route": "~1.5.9",
     "bootstrap": "3.3.5",
     "midata": "git://github.com/MIDATAcooperative/midata-plugin-library.git",
-    "angular-translate": "^2.11.0"
+    "angular-translate": "^2.11.0",
+    "chart.js": "latest"
   },
   "exportsOverride": {
     "bootstrap": {
