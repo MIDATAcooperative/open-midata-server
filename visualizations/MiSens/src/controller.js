@@ -342,7 +342,7 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 				generateBar("chart-prop",
 					["0-10", "11-20", "21-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90", "91-100"],
 					[32, 13, 7, 19, 18, 18, 5, 2, 2, 3],
-					chartLabel, chartLabelY, chartLabelX, 0/*arrayWithValues[5]*/);
+					chartLabel, chartLabelY, chartLabelX, arrayWithValues[5]);
 				
 				generateBar("chart-sugar",
 					["0-10", "11-20", "21-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90", "91-100"],
