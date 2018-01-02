@@ -15,6 +15,7 @@
 {"_id":{"$oid":"583d6a6350214afeeb296918"},"format":"fhir/Task","comment":"FHIR Task Resource","visName":"Task Viewer"}
 {"_id":{"$oid":"583dae4eea22922db7561fed"},"format":"fhir/Appointment","comment":"FHIR Appointment Resource","visName":"Appointment Viewer"}
 {"_id":{"$oid":"58ca6a188d4500b518e62bb6"},"format":"fhir/Device","comment":"FHIR Device Resource","visName":"Devices Viewer"}
+{"_id":{"$oid":"5a4b92c8222d3cc8f2ee17b8"},"format":"fhir/AllergyIntolerance","comment":"FHIR Allergy Intolerance","visName":"Allergies Viewer"}
 {"_id":{"$oid":"55ae59d0f351efda91eadc78"},"format":"jawbone/summary","comment":"Deprecated. Do not use.","visName":"Jawbone Activity Clock","visualization":{"$oid":"543d2c14e4b0f34f43670afa"}}
 {"_id":{"$oid":"55ae59d0f351efda91eadc79"},"format":"jawbone/ticks","comment":"Deprecated. Do not use.","visName":"Jawbone Activity Clock","visualization":{"$oid":"543d2c14e4b0f34f43670afa"}}
 {"_id":{"$oid":"55ae59d0f351efda91eadc7b"},"format":"training-app","comment":"Demo only. Do not use.","visName":"Training Editor","visualization":{"$oid":"554c867de4b08413ff37d6f5"}}
