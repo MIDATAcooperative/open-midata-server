@@ -1,6 +1,8 @@
 package controllers;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -9,8 +11,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonValueFormat;
+import com.mongodb.util.JSON;
 
 import actions.APICall;
 import models.Developer;
@@ -23,6 +28,7 @@ import models.Plugin_i18n;
 import models.Space;
 import models.Study;
 import models.TermsOfUse;
+import models.User;
 import models.enums.MessageReason;
 import models.enums.ParticipantSearchStatus;
 import models.enums.PluginStatus;
@@ -31,6 +37,8 @@ import models.enums.StudyValidationStatus;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.WritePermissionType;
+import play.api.libs.json.JsValue;
+import play.api.libs.json.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -223,8 +231,73 @@ public class Market extends APIController {
 		
 		return ok();
 	}
+		
+	@APICall
+	@Security.Authenticated(AdminSecured.class)
+	public static Result exportPlugin(String pluginIdStr) throws JsonValidationException, AppException {
+			
+		// validate request		
+		MidataId pluginId = new MidataId(pluginIdStr);
+		
+		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
+		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
+						
+		String json = JsonOutput.toJson(app, "Plugin", Plugin.ALL_DEVELOPER);
+		String base64 = Base64.getEncoder().encodeToString(json.getBytes());
+		return ok(base64);
+	}
 	
-	
+	@APICall
+	@BodyParser.Of(BodyParser.Json.class)
+	@Security.Authenticated(AdminSecured.class)
+	public static Result importPlugin() throws JsonValidationException, AppException {
+        JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "base64");
+		String base64 = JsonValidation.getString(json, "base64");
+		
+		byte[] decoded = Base64.getDecoder().decode(base64);
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode pluginJson = null;
+		try {
+	       pluginJson = mapper.readTree(decoded);
+		} catch (JsonProcessingException e) {
+		  throw new BadRequestException("error.invalid.json", "Invalid JSON provided");
+		} catch (IOException e) {
+		  throw new BadRequestException("error.invalid.json", "Invalid JSON provided");
+		}
+		    							     
+		MidataId pluginId = new MidataId(pluginJson.get("_id").asText());
+		
+		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
+		boolean isNew = false;
+		if (app == null) {
+			app = new Plugin();
+			app._id = pluginId;
+			isNew = true;
+			app.version = JsonValidation.getLong(json, "version");		
+			app.filename = JsonValidation.getStringOrNull(json, "filename");
+			app.name = JsonValidation.getStringOrNull(json, "name");
+			
+			app.creatorLogin = JsonValidation.getStringOrNull(json, "creatorLogin");
+			User u = Developer.getByEmail(app.creatorLogin, Sets.create("_id", "email"));
+			if (u != null) {
+			   app.creator = u._id;
+			}
+		}
+		parsePlugin(app, pluginJson);
+		
+		if (isNew) {
+			Plugin.add(app);				
+		} else {
+			try {
+			  app.update();
+			} catch (LostUpdateException e) {
+			  throw new BadRequestException("error.concurrent.update", "Concurrent updates. Reload page and try again.");
+			}
+		}								
+		return ok(JsonOutput.toJson(app, "Plugin", Plugin.ALL_DEVELOPER));
+	}
+		
 
 	/**
 	 * create a new plugin
@@ -366,6 +439,67 @@ public class Market extends APIController {
 			result.put(messageDef.reason.toString() + (messageDef.code != null ? "_"+messageDef.code : ""), messageDef);
 		}
 		return result;
+	}
+	
+	private static void parsePlugin(Plugin app, JsonNode json) throws JsonValidationException, AppException {
+		app.orgName = JsonValidation.getStringOrNull(json, "orgName");
+		app.description = JsonValidation.getStringOrNull(json, "description");		
+		app.type = JsonValidation.getString(json, "type");
+		app.url = JsonValidation.getStringOrNull(json, "url");
+		app.previewUrl = JsonValidation.getStringOrNull(json, "previewUrl");
+		app.addDataUrl = JsonValidation.getStringOrNull(json, "addDataUrl");
+		app.developmentServer = "https://localhost:9004/"+app.filename;
+		//app.developmentServer = JsonValidation.getStringOrNull(json, "developmentServer");
+		app.tags = JsonExtraction.extractStringSet(json.get("tags"));
+		app.requirements = JsonExtraction.extractEnumSet(json, "requirements", UserFeature.class);
+		app.targetUserRole = JsonValidation.getEnum(json, "targetUserRole", UserRole.class);
+		app.defaultSpaceName = JsonValidation.getStringOrNull(json, "defaultSpaceName");
+		app.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");
+		app.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
+		app.resharesData = JsonValidation.getBoolean(json, "resharesData");
+		app.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
+		app.unlockCode = JsonValidation.getStringOrNull(json, "unlockCode");
+		app.writes = JsonValidation.getEnum(json, "writes", WritePermissionType.class);
+		app.i18n = new HashMap<String, Plugin_i18n>();
+		app.pluginVersion = System.currentTimeMillis();				
+		
+		Map<String, MessageDefinition> predefinedMessages = parseMessages(json);
+		if (predefinedMessages != null) app.predefinedMessages = predefinedMessages;
+		
+		try {
+		  Query.validate(app.defaultQuery, app.type.equals("mobile"));
+		} catch (BadRequestException e) {
+			throw new JsonValidationException(e.getLocaleKey(), "defaultQuery", "invalid", e.getMessage());
+		}
+		if (json.has("i18n")) {
+			Map<String,Object> i18n = JsonExtraction.extractMap(json.get("i18n"));
+			for (String lang : i18n.keySet()) {
+				Map<String, Object> entry = (Map<String, Object>) i18n.get(lang);
+				Plugin_i18n plugin_i18n = new Plugin_i18n();
+				plugin_i18n.name = (String) entry.get("name");
+				plugin_i18n.description = (String) entry.get("description");
+				plugin_i18n.defaultSpaceName = (String) entry.get("defaultSpaceName");
+				app.i18n.put(lang, plugin_i18n);
+			}
+		}
+		
+
+		// fill in specific fields
+		if (app.type.equals("oauth1") || app.type.equals("oauth2")) {
+			app.authorizationUrl = JsonValidation.getStringOrNull(json, "authorizationUrl");
+			app.accessTokenUrl = JsonValidation.getStringOrNull(json, "accessTokenUrl");
+			app.consumerKey = JsonValidation.getStringOrNull(json, "consumerKey");
+			app.consumerSecret = JsonValidation.getStringOrNull(json, "consumerSecret");
+			if (app.type.equals("oauth1")) {
+				app.requestTokenUrl = JsonValidation.getStringOrNull(json, "requestTokenUrl");
+			} else if (app.type.equals("oauth2")) {
+				app.scopeParameters = JsonValidation.getStringOrNull(json, "scopeParameters");
+			}
+		}
+		if (app.type.equals("mobile")) {
+			app.secret = JsonValidation.getStringOrNull(json, "secret");
+			app.redirectUri = JsonValidation.getStringOrNull(json, "redirectUri");
+		}
 	}
 	
 	/**

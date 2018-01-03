@@ -448,7 +448,7 @@ class QueryEngine {
 		for (DBRecord record : result) {
 			if (record.meta != null && (minTime == 0 || record.time ==0 || record.time >= minTime)) {
 			  RecordEncryption.decryptRecord(record);
-			  if (!record.meta.containsField("creator")) record.meta.put("creator", record.owner);
+			  if (!record.meta.containsField("creator") && record.owner != null) record.meta.put("creator", record.owner.toDb());
 			  if (checkDelete && record.meta.containsField("deleted")) { record.meta = null;compress++; }
 			} else {compress++;record.meta=null;}			
 		}

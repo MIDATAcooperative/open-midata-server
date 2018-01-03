@@ -887,6 +887,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.Records.getRecordUrl(),
 				controllers.routes.javascript.Records.delete(),
 				controllers.routes.javascript.Records.fixAccount(),
+				controllers.routes.javascript.Records.downloadAccountData(),
 				// Circles
 				controllers.routes.javascript.Circles.get(),
 				controllers.routes.javascript.Circles.add(),

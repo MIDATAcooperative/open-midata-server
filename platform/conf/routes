@@ -51,6 +51,7 @@ POST    /api/admin/news/delete/:id                       controllers.News.delete
 POST    /api/members/records/get                         controllers.Records.get()
 POST    /api/members/records/delete                      controllers.Records.delete()
 POST    /api/members/records/list                        controllers.Records.getRecords()
+GET     /api/members/records/export                      controllers.Records.downloadAccountData()
 POST    /api/members/records/info                        controllers.Records.getInfo()
 GET     /api/members/records/:id/view                    controllers.Records.getRecordUrl(id: String)
 GET     /api/members/records/shared/:apsId               controllers.Records.getSharingDetails(apsId: String)
