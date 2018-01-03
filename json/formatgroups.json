@@ -41,7 +41,7 @@
 {"_id":{"$oid":"57ce9368aed6451f80bc8c80"},"system":"v1","name":"body/general","label":{"de":"Körper","en":"Body"},"parent":"qself","contents":["body/oxygen-saturation"]}
 {"_id":{"$oid":"583d69dcaed6451303c0586f"},"system":"v1","name":"tasks","label":{"de":"Aufgaben","en":"Tasks"},"parent":"other","contents":["Task","karegenda/entry","karegenda/task"]}
 {"_id":{"$oid":"585936c6aed6452afe49088b"},"system":"v1","name":"communication","label":{"de":"Kommunikation","en":"Communication"},"parent":"other","contents":["Communication"]}
-{"_id":{"$oid":"58594553aed6452afe49088c"},"system":"v1","name":"work","label":{"de":"Arbeit","en":"Work related"},"parent":"lifestyle","contents":["work/field-of-occupation","work/level-of-employment"]}
+{"_id":{"$oid":"58594553aed6452afe49088c"},"system":"v1","name":"work","label":{"de":"Arbeit","en":"Work related"},"parent":"lifestyle","contents":["work/field-of-occupation","work/level-of-employment","work/occupation"]}
 {"_id":{"$oid":"58773f8daed645135829ffbc"},"system":"v1","name":"condition","label":{"de":"Beschwerden","en":"Conditions"},"parent":"health","contents":["Condition","condition/icd-10-c9x"]}
 {"_id":{"$oid":"58773f8daed645135829ffbb"},"system":"v1","name":"goal","label":{"de":"Ziele","en":"Goals"},"parent":"health","contents":["Goal"]}
 {"_id":{"$oid":"5877408faed645135829ffbd"},"system":"v1","name":"milestones","label":{"de":"Meilensteine","en":"Milestones"},"parent":"lifestyle","contents":["milestones"]}
