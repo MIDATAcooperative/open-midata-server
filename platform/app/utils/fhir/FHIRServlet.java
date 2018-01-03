@@ -76,6 +76,7 @@ public class FHIRServlet extends RestfulServer {
       myProviders.put("AuditEvent", new AuditEventResourceProvider());
       myProviders.put("EpisodeOfCare", new EpisodeOfCareResourceProvider());
       myProviders.put("Procedure", new ProcedureResourceProvider());
+      myProviders.put("AllergyIntolerance", new AllergyIntoleranceResourceProvider());
       
       resourceProviders.addAll(myProviders.values());
       setResourceProviders(resourceProviders);

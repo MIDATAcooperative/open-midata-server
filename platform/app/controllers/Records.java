@@ -1,15 +1,20 @@
 package controllers;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.codec.binary.Base64InputStream;
 import org.bson.BSONObject;
+import org.hl7.fhir.dstu3.model.DomainResource;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -23,7 +28,11 @@ import models.Plugin;
 import models.Record;
 import models.RecordsInfo;
 import models.Space;
+import models.Study;
+import models.StudyParticipation;
+import models.StudyRelated;
 import models.User;
+import models.UserGroupMember;
 import models.enums.AggregationType;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
@@ -33,15 +42,22 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import play.mvc.Results.Chunks;
+import play.mvc.Results.StringChunks;
 import utils.AccessLog;
+import utils.ErrorReporter;
+import utils.ServerTools;
 import utils.access.APS;
 import utils.access.Feature_FormatGroups;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
+import utils.auth.ExecutionInfo;
+import utils.auth.KeyManager;
 import utils.auth.MemberSecured;
 import utils.auth.PortalSessionToken;
 import utils.auth.RecordToken;
+import utils.auth.ResearchSecured;
 import utils.auth.SpaceToken;
 import utils.collections.CMaps;
 import utils.collections.ReferenceTool;
@@ -49,8 +65,13 @@ import utils.collections.Sets;
 import utils.db.FileStorage.FileData;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
+import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.fhir.FHIRServlet;
+import utils.fhir.FHIRTools;
+import utils.fhir.PractitionerResourceProvider;
+import utils.fhir.ResourceProvider;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
@@ -519,5 +540,94 @@ public class Records extends APIController {
 		RecordManager.instance.fixAccount(userId);
 		
 		return ok();
+	}
+	
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public static Result downloadAccountData() throws AppException, IOException {
+		 
+		 final MidataId executorId = new MidataId(request().username());
+		   		 
+		 AuditManager.instance.addAuditEvent(AuditEventType.DATA_EXPORT, executorId);
+		 		 		 
+		 setAttachmentContentDisposition("yourdata.json");
+				 		 				 				
+		 final String handle = PortalSessionToken.session().handle;
+		 
+		 
+		 Chunks<String> chunks = new StringChunks() {
+                
+		        // Called when the stream is ready
+		        public void onReady(Chunks.Out<String> out) {
+		        	try {
+		        		KeyManager.instance.continueSession(handle);
+		        		ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId));
+		        		out.write("{ \"resourceType\" : \"Bundle\", \"type\" : \"searchset\", \"entry\" : [ ");
+
+		        		boolean first = true;
+		        		
+		        				        				        				        		
+		        
+		        		List<Record> allRecords = RecordManager.instance.list(executorId, executorId, CMaps.map("owner", "self").map("deleted", true), Sets.create("_id"));
+		        		Iterator<Record> recordIterator = allRecords.iterator();
+
+		        		while (recordIterator.hasNext()) {
+				            int i = 0;
+				            Set<MidataId> ids = new HashSet<MidataId>();		           
+				            while (i < 100 && recordIterator.hasNext()) {
+				            	ids.add(recordIterator.next()._id);i++;
+				            }
+				            List<Record> someRecords = RecordManager.instance.list(executorId, executorId, CMaps.map("owner", "self").map("_id", ids), RecordManager.COMPLETE_DATA);
+				            for (Record rec : someRecords) {
+				            	
+				            	String format = rec.format.startsWith("fhir/") ? rec.format.substring("fhir/".length()) : "Basic";
+				            	
+				            	ResourceProvider<DomainResource> prov = FHIRServlet.myProviders.get(format); 
+				            	DomainResource r = prov.parse(rec, prov.getResourceType());
+				            	String location = FHIRServlet.getBaseUrl()+"/"+prov.getResourceType().getSimpleName()+"/"+rec._id.toString()+"/_history/"+rec.version;
+				            	if (r!=null) {
+				            		String ser = prov.serialize(r);
+				            		int attpos = ser.indexOf(FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING);
+				            		if (attpos > 0) {
+				            			out.write((first?"":",")+"{ \"fullUrl\" : \""+location+"\", \"resource\" : "+ser.substring(0, attpos));
+				            			FileData fileData = RecordManager.instance.fetchFile(executorId, new RecordToken(rec._id.toString(), rec.stream.toString()));
+				            			
+				            			
+				            			int BUFFER_SIZE = 3 * 1024;
+
+				            			try ( InputStreamReader in = new InputStreamReader(new Base64InputStream(fileData.inputStream, true, -1, null)); ) {				            			    
+				            			    
+				            			    char[] chunk = new char[BUFFER_SIZE];
+				            			    int len = 0;
+				            			    while ( (len = in.read(chunk)) != -1 ) {				            			    	
+				            			         out.write(String.valueOf(chunk, 0, len));
+				            			    }
+				            			    
+				            			}
+				            							            							            			
+				            			out.write(ser.substring(attpos+FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING.length())+" } ");
+				            		} else out.write((first?"":",")+"{ \"fullUrl\" : \""+location+"\", \"resource\" : "+ser+" } ");
+				            	} else {
+				            		out.write((first?"":",")+"{ \"fullUrl\" : \""+location+"\" } ");
+				            	}
+			            		first = false;
+				            }
+		        		}
+		        				        		
+		        		out.write("] }");
+			        	out.close();
+		        	} catch (Exception e) {
+		        		AccessLog.logException("download", e);
+		        		ErrorReporter.report("Account export", null, e);		        		
+		        	} finally {
+		        		ServerTools.endRequest();		        		
+		        	}
+		        }
+
+		 };
+
+		 AuditManager.instance.success();
+		    // Serves this stream with 200 OK
+		  return ok(chunks);			    				 
 	}
 }
