@@ -227,3 +227,5 @@
 {"_id":{"$oid":"5a3ce1a7aed64508a1f074ba"},"system":"http://midata.coop","code":"SPScoreOneLeg","display":"SensoPro Score One Leg Exercise","content":"SPScoreOneLeg","contentForSystemCode":{}}
 {"_id":{"$oid":"5a3ce220aed64508a1f074bd"},"system":"http://midata.coop","code":"SPScoreWave","display":"SensoPro Score Wave Exercise","content":"SPScoreWave","contentForSystemCode":{}}
 {"_id":{"$oid":"5a3ce220aed64508a1f074bf"},"system":"http://midata.coop","code":"SPScoreSprint","display":"SensoPro Score Sprint Exercise","content":"SPScoreSprint","contentForSystemCode":{}}
+{"_id":{"$oid":"5a4c9ad8aed6450fbff7d2b7"},"system":"http://loinc.org","code":"85658-3","display":"Occupation","content":"work/occupation","contentForSystemCode":{}}
+{"_id":{"$oid":"5a4c9b44aed6450fbff7d2b8"},"system":"http://loinc.org","code":"85078-4","display":"Occupation industry","content":"work/field-of-occupation","contentForSystemCode":{}}
