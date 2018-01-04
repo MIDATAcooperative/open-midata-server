@@ -42,6 +42,7 @@ import play.api.libs.json.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.AccessLog;
 import utils.access.Query;
 import utils.access.RecordManager;
 import utils.auth.AdminSecured;
@@ -244,7 +245,7 @@ public class Market extends APIController {
 						
 		String json = JsonOutput.toJson(app, "Plugin", Plugin.ALL_DEVELOPER);
 		String base64 = Base64.getEncoder().encodeToString(json.getBytes());
-		return ok(base64);
+		return ok(json);
 	}
 	
 	@APICall
@@ -255,35 +256,36 @@ public class Market extends APIController {
 		JsonValidation.validate(json, "base64");
 		String base64 = JsonValidation.getString(json, "base64");
 		
-		byte[] decoded = Base64.getDecoder().decode(base64);
+		//byte[] decoded = Base64.getDecoder().decode(base64);
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode pluginJson = null;
 		try {
-	       pluginJson = mapper.readTree(decoded);
+	       pluginJson = mapper.readTree(base64);
 		} catch (JsonProcessingException e) {
+			AccessLog.logException("parse json", e);
 		  throw new BadRequestException("error.invalid.json", "Invalid JSON provided");
 		} catch (IOException e) {
 		  throw new BadRequestException("error.invalid.json", "Invalid JSON provided");
 		}
 		    							     
 		MidataId pluginId = new MidataId(pluginJson.get("_id").asText());
+		String pluginName = JsonValidation.getString(pluginJson, "filename");
 		
-		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
+		Plugin app = Plugin.getByFilename(pluginName, Plugin.ALL_DEVELOPER);
 		boolean isNew = false;
 		if (app == null) {
 			app = new Plugin();
 			app._id = pluginId;
 			isNew = true;
 			app.version = JsonValidation.getLong(json, "version");		
-			app.filename = JsonValidation.getStringOrNull(json, "filename");
-			app.name = JsonValidation.getStringOrNull(json, "name");
-			
+			app.filename = JsonValidation.getStringOrNull(json, "filename");						
 			app.creatorLogin = JsonValidation.getStringOrNull(json, "creatorLogin");
 			User u = Developer.getByEmail(app.creatorLogin, Sets.create("_id", "email"));
 			if (u != null) {
 			   app.creator = u._id;
 			}
 		}
+		app.name = JsonValidation.getStringOrNull(json, "name");
 		parsePlugin(app, pluginJson);
 		
 		if (isNew) {

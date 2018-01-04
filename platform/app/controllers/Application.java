@@ -993,6 +993,8 @@ public class Application extends APIController {
 				controllers.routes.javascript.Market.updatePluginStatus(),
 				controllers.routes.javascript.Market.getPluginStats(),
 				controllers.routes.javascript.Market.deletePluginStats(),
+				controllers.routes.javascript.Market.importPlugin(),
+				controllers.routes.javascript.Market.exportPlugin(),
 								
 				// UserGroups
 				controllers.routes.javascript.UserGroups.search(),

@@ -94,6 +94,9 @@ DELETE  /api/developers/plugins/:appId/stats             controllers.Market.dele
 PUT     /api/admins/plugins/:appId            	         controllers.Market.updatePluginStatus(appId: String)
 DELETE  /api/admins/plugins/:appId            	         controllers.Market.deletePlugin(appId: String)
 
+POST     /api/admins/importplugin                        controllers.Market.importPlugin()
+GET      /api/admins/exportplugin/:appId                 controllers.Market.exportPlugin(appId: String)
+
 # Users
 
 POST    /api/members/users/get                           controllers.Users.get()
