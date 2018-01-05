@@ -32,13 +32,24 @@ angular.module('fhirDebug')
     $scope.getTemplate = function(fielddef, resource) {
     	if (fielddef.min == 0 && $scope.isEmpty(resource, fielddef)) return "empty.html";
     	if (fielddef.type == "Period") return "Period.html";
-    	if (fielddef.type == "Quantity") {	    		
+    	if (fielddef.type == "Quantity" || fielddef.type == "Age" || fielddef.type == "Count" || fielddef.type == "Distance" || fielddef.type == "Duration" || fielddef.type == "Money") {	    		
     		return "Quantity.html";	    
     	}
     	//if (definitions[fielddef.type]) return "single.html";
     	var t = fielddef.type;
+    	if (fielddef.max == "*" && (t=="CodeableConcept" || t=="Reference")) return "multiLarge.html";
     	if (fielddef.max == "*" && (t=="string" || t=="uri" || t=="code" || t=="dateTime" || t == "date" || t=="instant" || t=="positiveInt" || t=="CodeableConcept" || t=="Reference")) return "multi.html";
     	return "single.html";
+    };
+    
+    $scope.child = function(def, name) {
+    	var f = $scope.getDefinition(def);
+
+    	f = f.fields;
+    	for (var i=0;i<f.length;i++) {
+    		if (f[i].field == name) return f[i];
+    	}
+    	return {};
     };
     		    
     $scope.getDetailTemplate = function(fielddef, resource) {	    	
@@ -103,11 +114,23 @@ angular.module('fhirDebug')
     $scope.followReference = function(access, fielddef) {
     	var id = access.reference;
     	$scope.returnStack.push($scope.resource);
-    	$scope.resource = fhirModule.pool[id];	
-    	
-    	access.display = fhirModule.makeHRName($scope.resource);
-    	
-    	$scope.currentDefinition = fhirModule.definitions[$scope.resource.resourceType];
+    	var r = fhirModule.pool[id];
+    	if (r) {
+    	  $scope.resource = r;
+    	  access.display = fhirModule.makeHRName($scope.resource);
+    	  $scope.currentDefinition = fhirModule.definitions[$scope.resource.resourceType];
+    	} else {
+    		var rt = id.split("/");
+    		midataServer.fhirRead(midataServer.authToken, rt[0], rt[1])
+    		.then(function(result) {
+    			r = result.data;
+    			fhirModule.addToPool(r);    			
+    			r.$$fhirUnchanged = true;
+    			$scope.resource = r;
+    	    	access.display = fhirModule.makeHRName($scope.resource);
+    	    	$scope.currentDefinition = fhirModule.definitions[$scope.resource.resourceType];
+    		});
+    	}
     };
     
     $scope.clearReference = function(access, fielddef) {
@@ -135,6 +158,15 @@ angular.module('fhirDebug')
     	}
     };
     
+    $scope.returnToTop = function() {
+    	
+    	  $scope.returnStack = fhirModule.returnStack = [];
+    	  $scope.resource = null;
+    	  $scope.currentDefinition = null;
+    	  $state.go("resources");
+    	
+    };
+    
     $scope.addCoding = function(cc, system) {
     	if (!cc.coding) cc.coding = [];
     	cc.coding.push({ system: (system || ""), value : "", display : "" });
@@ -152,13 +184,13 @@ angular.module('fhirDebug')
     }; 
     
     $scope.makeResource = function(def) {
-    	console.log(def);
+    	//console.log(def);
     	return fhirModule.createResource(def)
     	.then(function(newResource) {
 	    	$scope.resource = newResource;
     	    $scope.currentDefinition = fhirModule.definitions[$scope.resource.resourceType];
     	    fhirModule.addToPool($scope.resource);	    	    
-    	    console.log($scope.currentDefinition);
+    	    //console.log($scope.currentDefinition);
     	    return newResource;
     	});
     };
@@ -168,10 +200,10 @@ angular.module('fhirDebug')
     };
     
     $scope.searchCoding = function(field, fielddef, text) {
-    	console.log(fielddef);
+    	//console.log(fielddef);
     	var cs = fhirModule.getOptionCodeSystem(fielddef.valueSet);
-    	console.log(field.text);
-    	console.log(cs);
+    	//console.log(field.text);
+    	//console.log(cs);
     	midataServer.searchCoding(midataServer.authToken, { system : cs, "$text" : { "$search" : '"'+text.replace('"','')+'"' } }, ["system", "code", "version", "display"])
     	.then(function(res) {
     		field.$$fhirSearch = res.data;

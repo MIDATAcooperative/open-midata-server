@@ -4,6 +4,7 @@ angular.module('fhirDebug')
 	    var definitions = {};
 	    var uriCache = {};
 	    var fhirModule = {};
+	    var searches = {};
 	    			    	   	    	    
 	    fhirModule.pool = {};
 	    fhirModule.poolByType = {};	    
@@ -11,6 +12,7 @@ angular.module('fhirDebug')
 	    fhirModule.returnStack = [];
 	    fhirModule.definitions = definitions;
 	    fhirModule.uriCache = uriCache;
+	    fhirModule.searches = searches;
 	    	    	 
 	    fhirModule.makeLabel = function(val) {
 	      //console.log(val);
@@ -19,10 +21,17 @@ angular.module('fhirDebug')
 	      return l[0].toUpperCase()+l.substring(1);
 	    };
 	    	    
+	    fhirModule.makeLabelFromCoding = function(coding) {
+	    	if (coding.display) return coding.display;
+	    	return coding.code;
+	    };
+	    
 	    fhirModule.makeHRName = function(res) {
 	    	var name = res.id;
             if (res.code && res.code.text) {
 	    	  name = res.code.text;	
+	    	} else if (res.code && res.code.coding && res.code.coding.length > 0) {
+	          name = fhirModule.makeLabelFromCoding(res.code.coding[0]);		
 	    	}
 	    	if (res.name != null) {
 	    		var n = res.name;
@@ -71,6 +80,13 @@ angular.module('fhirDebug')
 	    	   if (add != null) r = r.concat(add);
 	    	});	    	
 	    	return r;
+	    };
+	    
+	    fhirModule.reset = function() {
+	    	fhirModule.pool = {};
+		    fhirModule.poolByType = {};	    
+		    fhirModule.allResources = [];
+		    fhirModule.returnStack = [];
 	    };
 	    
 	    fhirModule.processResource = function(res) {
@@ -151,13 +167,13 @@ angular.module('fhirDebug')
 	    	} else if (fielddef.defaultValue) {
 	    	    newResource = JSON.parse(JSON.stringify(fielddef.defaultValue));
 	    	} else
-	    	if (fielddef.type == "string" || fielddef.type == "code" || fielddef.type == "uri") {
+	    	if (fielddef.type == "string" || fielddef.type == "code" || fielddef.type == "uri" || fielddef.type == "markdown" || fielddef.type == "base64Binary" || fielddef.type == "id" || fielddef.type == "oid") {
 	    		newResource = "";
 	    	} else if (fielddef.type == "boolean") {
 	    		newResource = false;
 	    	} else if (fielddef.type == "positiveInt" || fielddef.type == "integer" || fielddef.type == "decimal" || fielddef.type == "unsignedInt") {
 	    		newResource = 1;
-	    	} else if (fielddef.type == "dateTime" || fielddef.type == "date" || fielddef.type == "instant") {
+	    	} else if (fielddef.type == "dateTime" || fielddef.type == "date" || fielddef.type == "instant" || fielddef.type == "time") {
 	    		newResource = "";
 	    	} else if (fielddef.type == "CodeableConcept" && fielddef.valueSet != null) {
 	    		var systems = fhirModule.getOptionCodeSystem(fielddef);
@@ -423,6 +439,34 @@ angular.module('fhirDebug')
     				/*if (proc.resource.codeSystem && proc.resource.codeSystem.system) {
     					uriCache[proc.resource.codeSystem.system] = proc.resource;
     				}*/
+    			} else if (proc.resource.resourceType == "SearchParameter") {    				
+    				
+    				angular.forEach(proc.resource.base, function(base) {
+    					if (!searches[base]) searches[base] = [];
+    					searches[base].push(proc.resource);
+    					switch(proc.resource.type) {
+    					case "string" :
+    						proc.resource.modifier = ["contains", "exact"];
+    						
+    						break;
+    					case "token" :
+    						proc.resource.modifier = ["text", "not", "in", "not-in"];
+    						break;
+    					case "date":
+    						
+    						proc.resource.comparator = ["eq", "ne", "gt", "lt", "ge", "le", "sa", "eb", "ap"];
+    						break;
+    					case "number":
+    						
+    						proc.resource.comparator = ["eq", "ne", "gt", "lt", "ge", "le", "sa", "eb", "ap"];
+    						break;
+    					case "quantity":
+    						
+    						proc.resource.comparator = ["eq", "ne", "gt", "lt", "ge", "le", "sa", "eb", "ap"];
+    						break;
+    					}
+    				});    				
+    				
     			}
     			//"resourceType": "StructureDefinition",
     		});
@@ -456,25 +500,31 @@ angular.module('fhirDebug')
 	    	.then(function(result) {
 	    		fhirModule.process(result);
 	    		finish++;
-	    		if (finish == 4) prom.resolve();
+	    		if (finish == 5) prom.resolve();
 	    	});
 	    	$http.get("profiles-resources.json")
 	    	.then(function(result) {
 	    		fhirModule.process(result);
 	    		finish++;
-	    		if (finish == 4) prom.resolve();
+	    		if (finish == 5) prom.resolve();
 	    	});
 	    	$http.get("valuesets.json")
 	    	.then(function(result) {
 	    		fhirModule.process(result);
 	    		finish++;
-	    		if (finish == 4) prom.resolve();
+	    		if (finish == 5) prom.resolve();
 	    	});
 	    	$http.get("v3-codesystems.json")
 	    	.then(function(result) {
 	    		fhirModule.process(result);
 	    		finish++;
-	    		if (finish == 4) prom.resolve();
+	    		if (finish == 5) prom.resolve();
+	    	});
+	    	$http.get("search-parameters.json")
+	    	.then(function(result) {
+	    		fhirModule.process(result);
+	    		finish++;
+	    		if (finish == 5) prom.resolve();
 	    	});
 	    	
 	    	return prom.promise;

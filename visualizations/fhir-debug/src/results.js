@@ -1,5 +1,5 @@
 angular.module('fhirDebug')
-.controller('ResourcesCtrl', ['$scope', '$state', '$filter', 'midataServer', 'midataPortal', 'fhirModule', 
+.controller('ResultsCtrl', ['$scope', '$state', '$filter', 'midataServer', 'midataPortal', 'fhirModule', 
  	function($scope, $state, $filter, midataServer, midataPortal, fhirModule) {
 	$scope.uriCache = fhirModule.uriCache;
 
@@ -26,8 +26,10 @@ angular.module('fhirDebug')
     $scope.pools = fhirModule.pools;
    	    
               
-    $scope.editResource = function(id) {    
-    	$state.go("resource", { id : id });    	
+    $scope.editResource = function(res) {      	    			
+		fhirModule.addToPool(res);    			
+		res.$$fhirUnchanged = true;			
+		$state.go("resource", { id : res.resourceType+"/"+res.id });			    	    
     };
     
            
@@ -44,28 +46,31 @@ angular.module('fhirDebug')
     };
     	            
     $scope.saveAllModified = function() {
-    	console.log("save all");
-    	$scope.error = null;
-    	midataServer.fhirTransaction(midataServer.authToken, $scope.transaction)
-    	.then(function(result) {
-    		console.log("success");
-    		fhirModule.reset();
-    		$scope.transaction = fhirModule.saveAllModified();
-    	}, function(error) {
-    		console.log("failed");
-    		$scope.error = error;
-    	});
+    	midataServer.fhirTransaction(midataServer.authToken, $scope.transaction);
     	
     };
     
-    $scope.clear = function() {
-    	$scope.error = null;
-    	fhirModule.reset();
-		$scope.transaction = fhirModule.saveAllModified();
+    $scope.init = function() {    
+    	$scope.query = fhirModule.query; // Hack
+    	$scope.queryStr = fhirModule.queryStr;
+    	$scope.resourceType = $state.params.type;
+    	$scope.runQuery();    	
     };
     
-    $scope.init = function() {
-    	$scope.transaction = fhirModule.saveAllModified();
+    $scope.runQuery = function() {
+    	midataServer.fhirSearch(midataServer.authToken, $scope.resourceType, $scope.query)
+    	.then(function(result) {
+    		$scope.bundle = result.data;
+    		$scope.results = [];
+    		angular.forEach(result.data.entry, function(entry) {
+    			$scope.results.push(entry.resource);
+    		});    		
+    	}, function(error, more) {
+    		console.log(error);
+    		console.log(more);
+    		$scope.bundle = error;
+    		$scope.results = [];
+    	});
     };
             
     $scope.init();

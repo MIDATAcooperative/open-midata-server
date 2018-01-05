@@ -34,29 +34,14 @@ angular.module('fhirDebug')
     
            
     $scope.makeResource = function(def) {
+    	
     	$state.go("resource", { type : def.resourceType });
-    	/*return fhirModule.createResource(def.resourceType)
-    	.then(function(newResource) {
-	    	$scope.resource = newResource;
-    	    $scope.currentDefinition = fhirModule.definitions[$scope.resource.resourceType];
-    	    fhirModule.addToPool($scope.resource);	    	    
-    	    console.log($scope.currentDefinition);
-    	    return newResource;
-    	});*/
+    	
+    	//$state.go("resource", { type : def.resourceType });
+    	    	
     };
     	            
     $scope.saveAllModified = fhirModule.saveAllModified;
-    
-    $scope.load = function() {
-    	/*midataServer.getRecords(midataServer.authToken, { "format/*" : "fhir" }, ["_id", "name", "created", "lastUpdated", "version", "data"])
-    	.then(function(results) {
-    		angular.forEach(results.data, function(rec) {		    			
-    			fhirModule.addToPool(rec.data, rec);
-    			//$scope.pool[rec._id] = rec.data;
-    			rec.data.$$fhirUnchanged = true;
-    		});
-    	});*/
-    };
         
     $scope.loadResources = function() {
     	fhirModule.loadResources()
@@ -65,8 +50,12 @@ angular.module('fhirDebug')
     		  ["AllergyIntolerance","Appointment","AppointmentRespone","CarePlan","Claim","ClaimResponse","ClinicalImpression","Communication","CommunicationRequest","Condition","Contract","Coverage","DetectedIssue","DeviceUseRequest","DeviceUseStatement","DiagnosticOrder","DiagnosticReport","DocumentReference","Encounter","EpisodeOfCare","FamilyMemberHistory","Flag","Goal","Immunization","ImmunizationRecommendation","Media","MedicationAdministration","MedicationDispense","MedicationOrder","MedicationStatement","NutritionOrder","Observation","Patient","Procedure","ProcedureRequest","Questionnaire","QuestionnaireResponse","ReferralRequest","RelatedPerson","Schedule","VisionPrescription"]
     		);		
     	});
-    };	    
+    };	 
+    
+    $scope.selectResource = function(def) {    	
+    	$state.go("query", { type : def.resourceType });    	    	    	    	
+    };
     
     $scope.loadResources();
-    $scope.load();
+    
 }]);

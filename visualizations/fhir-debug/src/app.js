@@ -21,17 +21,33 @@ angular.module('fhirDebug', [ 'midata', 'ui.router','ui.bootstrap', 'pascalprech
 	      url: '/list?authToken',	   
 	      templateUrl: 'list.html'
 	    })
+	    .state('welcome', {
+	      url: '/welcome?authToken',	   
+	      templateUrl: 'welcome.html'
+	    })
+	    .state('resourcepick', {
+	      url: '/resourcepick?authToken',	   
+	      templateUrl: 'resourcepick.html'
+	    })
 	    .state('resources', {
 	      url: '/resources?authToken',	   
 	      templateUrl: 'resources.html'
-	    })	  
+	    })
+	    .state('query', {
+	      url: '/query?authToken&type',	   
+	      templateUrl: 'query.html'
+	    })
+	    .state('results', {
+	      url: '/results?authToken&query&type',	   
+	      templateUrl: 'results.html'
+	    })	 
 	    .state('resource', {
 	      url: '/resource?id&type&authToken',	   
 	      templateUrl: 'resource.html'
 	    });
 	 
 	 $urlRouterProvider
-	 .otherwise('/list');  
+	 .otherwise('/welcome');  
 }])
 .run(['$translate', '$location', 'midataPortal', 'midataServer', function($translate, $location, midataPortal, midataServer) {
 	console.log("Language: "+midataPortal.language);
