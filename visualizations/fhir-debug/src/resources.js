@@ -50,6 +50,7 @@ angular.module('fhirDebug')
     	.then(function(result) {
     		console.log("success");
     		fhirModule.reset();
+    		$scope.pool = fhirModule.pool;
     		$scope.transaction = fhirModule.saveAllModified();
     	}, function(error) {
     		console.log("failed");
@@ -61,6 +62,7 @@ angular.module('fhirDebug')
     $scope.clear = function() {
     	$scope.error = null;
     	fhirModule.reset();
+    	$scope.pool = fhirModule.pool;
 		$scope.transaction = fhirModule.saveAllModified();
     };
     
