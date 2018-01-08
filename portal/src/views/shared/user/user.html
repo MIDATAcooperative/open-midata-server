@@ -39,6 +39,7 @@
 	<li><a href="javascript:" ng-disabled="msg" ng-click="fixAccount();" translate="user.repair_account_btn"></a></li>
 	<li><a href="javascript:" ng-disabled="msg" ng-click="resetSpaces();" translate="user.reset_spaces_btn"></a></li>
 	<li><a href="javascript:" ui-sref="^.delete_records" translate="user.delete_records_btn"></a></li>
+	<li><a href="javascript:" ng-click="exportAccount()" translate="user.export_btn"></a></li>
 	<li ng-show="beta && user.role=='MEMBER'"><a  href="javascript:" ng-click="askwipe()">test server: wipe account</a></li>
   </ul>
 </div>

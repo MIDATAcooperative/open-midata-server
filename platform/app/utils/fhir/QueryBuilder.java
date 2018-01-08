@@ -276,18 +276,21 @@ public class QueryBuilder {
 		if (param instanceof TokenParam) {
 			  TokenParam tokenParam = (TokenParam) param;
 			  String system = tokenParam.getSystem();
+			  String val = tokenParam.getValue();
+			  if (val == null) return;
 			  boolean isText = tokenParam.isText();
 			  if (type.equals(TYPE_CODEABLE_CONCEPT)) {
 				if (isText) {
 				  bld.add(
 						  OrCondition.or(
-						    FieldAccess.path(path+".text", new CompareCaseInsensitive(tokenParam.getValue(), CompareCaseInsensitiveOperator.CONTAINS)),
-						    FieldAccess.path(path+".coding.display", new CompareCaseInsensitive(tokenParam.getValue(), CompareCaseInsensitiveOperator.CONTAINS))
+						    FieldAccess.path(path+".text", new CompareCaseInsensitive(val, CompareCaseInsensitiveOperator.CONTAINS)),
+						    FieldAccess.path(path+".coding.display", new CompareCaseInsensitive(val, CompareCaseInsensitiveOperator.CONTAINS))
                           ));						  
 				} else 	if (system == null) {
-			      bld.addEq(path+".coding.code", tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
+				  
+			      bld.addEq(path+".coding.code", val, CompareCaseInsensitiveOperator.EQUALS);
 				} else {
-				  bld.addEq(path+".coding", "system", system, "code", tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
+				  bld.addEq(path+".coding", "system", system, "code", val, CompareCaseInsensitiveOperator.EQUALS);
 				}
 			    //if (tokenParam.getSystem() != null) bld.addEq(path+".coding.code", tokenParam.getValue());
 			  } else if (type.equals(TYPE_CODE)) {

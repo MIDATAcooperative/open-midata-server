@@ -171,7 +171,8 @@ private Feature next;
 							if (!aps.equals(q.getCache().getAccountOwner())) add = true;
 					   }
 					   readRecs.put("_id", ids);
-					   readRecs.put("encryptedData", QueryEngine.NOTNULL);
+					   //Deleted records may be needed if history version is queried!
+					   //readRecs.put("encryptedData", QueryEngine.NOTNULL);
 					
 					   int directSize = 0;
 					   if (directQuery) {

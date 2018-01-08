@@ -82,7 +82,13 @@
     "plugin_role" : "Target Role",
     "plugin_market" : "Market",
     "plugin_stats" : "Stats",
-    "plugin_status" : "Status"
+    "plugin_status" : "Status",
+    "add_definition_btn" : "Import Plugin Definition"
+  },
+  
+  "admin_defineplugin" : {
+    "title" : "Import Plugin Definition",
+    "definition" : "Definition (JSON)"  
   },
   
   "admin_studies" : {

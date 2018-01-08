@@ -1,0 +1,15 @@
+<div class="container" ng-controller="ListCtrl" ng-cloak>
+   <div >
+		     
+		     <h3>Select type of resource to Query</h3>
+		     <div class="row">
+		       <div class="col-sm-3" ng-repeat="res in allResources | orderBy : 'resourceType'"  uib-popover="{{ res.description }}"  popover-placement="auto top" popover-trigger="'mouseenter'" popover-title="{{ makeLabel(res.resourceType) }}">
+		         <div class="">
+		         <a href="javascript:"  ng-click="selectResource(res)">{{ res.resourceType }}</a>		      
+		         </div>
+		       </div>
+		     </div>
+  </div> 
+		     
+		   
+</div>

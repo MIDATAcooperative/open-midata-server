@@ -1,0 +1,23 @@
+{
+  "name": "plugin",
+  "description": "MIDATA Plugin",
+  "version": "1.0.0",
+  "dependencies": {
+    "angular": "~1.5.9",
+    "angular-ui-router": "~1.0.0-beta.2",
+    "angular-bootstrap": "~2.5.0",
+    "bootstrap": "3.3.5",
+    "angular-file-upload": "~2.3.4",
+    "midata": "git://github.com/MIDATAcooperative/midata-plugin-library.git",
+    "angular-translate": "^2.12.1"
+  
+  },
+
+  "exportsOverride": {
+    "bootstrap": {
+      "js": "dist/js/bootstrap.js",
+      "css": "dist/css/bootstrap.css",
+      "fonts": "dist/fonts/*"
+    }
+  }
+}

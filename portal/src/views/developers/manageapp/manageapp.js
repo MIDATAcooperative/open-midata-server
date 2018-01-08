@@ -1,11 +1,12 @@
 angular.module('portal')
-.controller('ManageAppCtrl', ['$scope', '$state', '$translatePartialLoader', 'server', 'apps', 'status', 'studies', 'languages', 'terms', 'labels', '$translate', 'formats', function($scope, $state, $translatePartialLoader, server, apps, status, studies, languages, terms, labels, $translate, formats) {
+.controller('ManageAppCtrl', ['$scope', '$state', '$translatePartialLoader', 'server', 'apps', 'status', 'studies', 'languages', 'terms', 'labels', '$translate', 'formats', 'ENV', function($scope, $state, $translatePartialLoader, server, apps, status, studies, languages, terms, labels, $translate, formats, ENV) {
 	
 	// init
 	$scope.error = null;
 	$scope.app = { version:0, tags:[], i18n : {}, requirements:[], defaultQuery:{}  };
 	$scope.status = new status(false, $scope);
 	$scope.allowDelete = $state.current.allowDelete;
+	$scope.allowExport = $state.current.allowExport;
 	$scope.allowStudyConfig = $state.current.allowStudyConfig;
 	$scope.languages = languages.array;
 	$scope.requirements = apps.userfeatures;
@@ -239,5 +240,12 @@ angular.module('portal')
 			$scope.status.isBusy = false;
 		}		
 	});
+	
+	$scope.exportPlugin = function() {
+		$scope.status.doAction("download", server.token())
+		.then(function(response) {
+		  document.location.href = ENV.apiurl + jsRoutes.controllers.Market.exportPlugin($scope.app._id).url + "?token=" + encodeURIComponent(response.data.token);
+		});
+	};
 	
 }]);

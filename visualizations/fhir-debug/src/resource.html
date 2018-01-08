@@ -1,0 +1,312 @@
+<div ng-controller="ResourceCtrl" ng-cloak>
+		<script type="text/ng-template"  id="empty.html"></script>
+		
+		<script type="text/ng-template"  id="single.html">
+           <label class="col-sm-2 control-label">{{ field.label }}</label>
+           <div class="col-sm-10" ng-init="access=resource;idx=field.field;" ng-include="getDetailTemplate(field)">                            
+           </div>
+        </script>
+		
+		<script type="text/ng-template"  id="multi.html">
+           <label class="col-sm-2 control-label">{{ field.label }}</label>
+           <div class="col-sm-10">
+              <div class="row">
+              <span class="col-sm-3" ng-repeat="entry in resource[field.field] track by $index">
+                <span ng-init="access=resource[field.field];idx=$index" ng-include="getDetailTemplate(field)"></span>              
+              </span>
+              <a class="btn btn-default" ng-click="addResource(resource, field)" popover-trigger="'mouseenter'"  popover-placement="auto top" popover-title="{{ field.label }}" uib-popover="{{ field.description }}">add {{ field.label }}</a>
+              </div>
+           </div>
+        </script>
+        
+        <script type="text/ng-template"  id="multiLarge.html">
+           <label class="col-sm-2 control-label">{{ field.label }}</label>
+           <div class="col-sm-10">
+              <div class="row extraspace" ng-repeat="entry in resource[field.field] track by $index">
+                <span class="col-sm-12">
+                  <span ng-init="access=resource[field.field];idx=$index" ng-include="getDetailTemplate(field)"></span>              
+                </span>
+              </div>
+              
+              <a class="btn btn-default btn-xs" ng-click="addResource(resource, field)" popover-trigger="'mouseenter'"  popover-placement="auto top" popover-title="{{ field.label }}" uib-popover="{{ field.description }}">add {{ field.label }}</a>
+              
+           </div>
+        </script>
+				
+		<script type="text/ng-template"  id="string.html">
+           <input type="text" class="form-control" ng-change="change()" ng-model="access[idx]"  popover-placement="auto top" popover-trigger="'mouseenter'" popover-title="{{ field.label }}" uib-popover="{{ field.description }}">                         
+        </script>
+                        
+        <script type="text/ng-template"  id="dateTime.html">
+           <input placeholder="YYYY, YYYY-MM, YYYY-MM-DD or YYYY-MM-DDThh:mm:ss+zz:zz" type="text" ng-change="change()"  popover-placement="auto top" popover-trigger="'mouseenter'" popover-title="{{ field.label }}" uib-popover="{{ field.description }}" class="form-control" ng-model="access[idx]">           
+        </script>
+        
+        <script type="text/ng-template"  id="date.html">           
+           <input placeholder="YYYY, YYYY-MM, or YYYY-MM-DD" type="text" ng-change="change()"  popover-placement="auto top" popover-trigger="'mouseenter'" popover-title="{{ field.label }}" uib-popover="{{ field.description }}" class="form-control" ng-model="access[idx]">           
+        </script>
+        
+        <script type="text/ng-template"  id="time.html">           
+           <input placeholder="hh:mm:ss" type="text" ng-change="change()"  popover-placement="auto top" popover-trigger="'mouseenter'" popover-title="{{ field.label }}" uib-popover="{{ field.description }}" class="form-control" ng-model="access[idx]">           
+        </script>
+        
+        <script type="text/ng-template"  id="codepopover.html">
+           <div>
+            <p>{{ field.description }}</p>
+            <table class="table table-condensed">
+              <tr ng-repeat="v in getOptions(field)" ng-show="v.definition">
+                <td><b>{{ v.display }}</b></td>
+                <td><small>{{ v.definition }}</small></td>
+              </tr>
+            </table>
+           </div>
+        </script>
+        
+        <script type="text/ng-template"  id="code.html">           
+           <select class="form-control" ng-change="change()" popover-placement="auto top" popover-trigger="'mouseenter'" popover-append-to-body="true" popover-title="{{ field.label }}" uib-popover-template="'codepopover.html'" ng-model="access[idx]" ng-options="v.code as v.display for v in getOptions(field)">
+           </select>           
+        </script>
+        
+        <script type="text/ng-template"  id="CodeableConceptVS.html">           
+           <select class="form-control"  popover-placement="auto top" popover-trigger="'mouseenter'" popover-append-to-body="true" popover-title="{{ field.label }}" uib-popover-template="'codepopover.html'"  ng-model="access[idx].$$fhirSelected" ng-init="initOption(access[idx], getOptions(field))" ng-change="chooseOption(access[idx]);change();" ng-options="v as v.display for v in getOptions(field)">
+           </select>          
+        </script>
+        
+        <script type="text/ng-template"  id="CodeableConceptFS.html">  
+           <div class="input-group">         
+             <span class="input-group-addon">{{ access[idx].coding[0].system }}:{{ access[idx].coding[0].code }}</span>           
+             <input type="text" class="form-control" ng-change="change()" ng-model="access[idx].text"  popover-placement="auto top" popover-trigger="'mouseenter'" popover-title="{{ field.label }}" uib-popover="{{ field.description }}">
+             <div class="input-group-btn">
+               <button class="btn btn-default" ng-click="searchCoding(access[idx], field);">search</button>
+             </div>
+           </div>
+           <ul>
+            <li ng-repeat="sel in access[idx].$$fhirSearch"><a href="javascript:" ng-click="chooseOption(access[idx], false, sel)">{{ sel.code }}</a>: {{ sel.display }}</li>
+           </ul>           
+        </script>
+        
+        <script type="text/ng-template"  id="CodeableConcept.html">
+           
+           <div ng-repeat="coding in access[idx].coding">
+             <div ng-if="coding.system=='http://loinc.org'" class="row extraspace">
+                <div class="col-xs-11">
+                  <div class="input-group">         
+                    <span class="input-group-addon">{{ coding.system }}:{{ coding.code }}</span>           
+                    <input type="text" class="form-control" ng-change="change()" ng-model="coding.display"  popover-placement="auto top" popover-trigger="'mouseenter'" popover-title="{{ field.label }}" uib-popover="{{ field.description }}">
+                    <div class="input-group-btn">
+                       <button class="btn btn-default" ng-click="searchCoding(access[idx], field, coding.display);">search</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xs-1">
+                   <button type="button" class="close" aria-label="Close" ng-click="removeCoding(access[idx].coding, coding);change();"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <ul>
+                  <li ng-repeat="sel in access[idx].$$fhirSearch"><a href="javascript:" ng-click="chooseOption(access[idx], false, sel)">{{ sel.code }}</a>: {{ sel.display }}</li>
+                </ul>
+             </div>
+             <div ng-if="coding.system!='http://loinc.org'">
+               <div class="row extraspace">
+                 <div class="form-group-sm">             
+                   <div class="col-xs-6">
+                     <div class="input-group">
+                       <span class="input-group-addon">System</span>
+                       <input type="text" placeholder="system" class="form-control" ng-change="change()" ng-model="coding.system">
+                     </div>
+                   </div>
+             
+                   <div class="col-xs-5">
+                     <div class="input-group">
+                       <span class="input-group-addon">Code</span>
+                       <input type="text" placeholder="code" class="form-control" ng-change="change()" ng-model="coding.code">
+                     </div>
+                   </div>
+                   <div class="col-xs-1">
+                     <button type="button" class="close" aria-label="Close" ng-click="removeCoding(access[idx].coding, coding);change();"><span aria-hidden="true">&times;</span></button>
+                   </div>
+                 </div>
+               </div>
+               <div class="row extraspace">
+                 <div class="col-xs-12">
+                   <div class="input-group">
+                     <span class="input-group-addon">Display</span>
+                     <input type="text" placeholder="display" class="form-control" ng-change="change()" ng-model="coding.display" popover-placement="auto top" popover-trigger="'mouseenter'" popover-title="{{ field.label }}" uib-popover="{{ field.description }}">
+                   </div>
+                 </div>             
+               </div>
+             </div>
+             <div class="row extraspace" ng-show="access[idx].text" style="margin-bottom:5px">
+               <div class="col-xs-12" >
+                 <input type="text" class="form-control" ng-change="change();" ng-model-debounce="1000" ng-model="access[idx].text"  popover-placement="auto top" popover-trigger="'mouseenter'" popover-title="{{ field.label }}" uib-popover="{{ field.description }}">
+               </div>
+             </div>
+           </div>
+           <div>
+              <button ng-click="addCoding(access[idx])" class="btn btn-default btn-xs">add coding</button>
+              <button ng-click="addText(access[idx])" class="btn btn-default btn-xs">add freetext</button>
+              <button ng-click="addCoding(access[idx], 'http://loinc.org')" class="btn btn-default btn-xs">add loinc code</button>             
+            </div>         
+        </script>
+        
+        <script type="text/ng-template"  id="Period.html">
+           <label class="col-sm-2 control-label">{{ field.label }}</label>
+           <div class="col-sm-5" >
+             <div class="input-group">
+                <span class="input-group-addon">Start</span>
+                <input type="text" popover-trigger="'mouseenter'"  popover-placement="auto top" popover-title="{{ field.label }}" uib-popover="{{ field.description }}" ng-change="change()" class="form-control" ng-model="resource[field.field].start">
+             </div>
+           </div><div class="col-sm-5">
+             <div class="input-group">
+                <span class="input-group-addon">End</span>
+                <input type="text" popover-trigger="'mouseenter'"  popover-placement="auto top" popover-title="{{ field.label }}" uib-popover="{{ field.description }}" ng-change="change()" class="form-control" ng-model="resource[field.field].end">
+             </div>              
+           </div>
+        </script>
+        
+         <script type="text/ng-template"  id="Quantity.html">
+           <label class="col-sm-2 control-label">{{ field.label }}</label>
+           <div class="col-sm-10">
+           <div class="row extraspace">
+           <div class="col-xs-4" >             
+             <select class="form-control" ng-change="change()"  popover-placement="auto top" popover-trigger="'mouseenter'" popover-title="{{ child(field, 'comparator').label }}" uib-popover="{{ child(field, 'comparator').description }}" ng-model="resource[field.field].comparator" ng-options="v.code as v.display for v in getOptions('http://hl7.org/fhir/ValueSet/quantity-comparator')">
+             </select> 
+           </div><div class="col-xs-4">
+             <input placeholder="value" type="text" popover-trigger="'mouseenter'"  popover-placement="auto top" popover-title="{{ field.label }}" uib-popover="{{ field.description }}" ng-change="change()" class="form-control" ng-model="resource[field.field].value">                          
+           </div><div class="col-xs-4">
+             <input placeholder="unit" type="text" popover-trigger="'mouseenter'"  popover-placement="auto top" popover-title="{{ child(field, 'unit').label }}" uib-popover="{{ child(field, 'unit').description }}" ng-change="change()" class="form-control" ng-model="resource[field.field].unit">                          
+           </div>
+           </div><div class="row">
+             <div class="form-group-sm">             
+             <div class="col-xs-6">
+                <div class="input-group">
+                <span class="input-group-addon">Unit System</span>
+                <input type="text" placeholder="system" class="form-control" popover-placement="auto top" popover-trigger="'mouseenter'" popover-title="{{ child(field, 'system').label }}" uib-popover="{{ child(field, 'system').description }}" ng-change="change()" ng-model="resource[field.field].system">
+                </div>
+             </div>
+             
+             <div class="col-xs-6">
+                <div class="input-group">
+                <span class="input-group-addon">Unit Code</span>
+                <input type="text" placeholder="code" class="form-control" ng-change="change()" ng-model="resource[field.field].code" popover-placement="auto top" popover-trigger="'mouseenter'" popover-title="{{ child(field, 'code').label }}" uib-popover="{{ child(field, 'code').description }}">
+                </div>
+             </div>
+             
+             </div>
+            </div>
+            </div>
+
+        </script>
+        
+        <script type="text/ng-template"  id="boolean.html">           
+           <div class="checkbox">
+             <label popover-trigger="'mouseenter'"  popover-placement="auto top" popover-title="{{ field.label }}" uib-popover="{{ field.description }}">
+                <input type="checkbox" ng-change="change()" ng-model="access[idx]">
+                {{ field.label }}
+             </label>
+           </div>                      
+        </script>
+        
+        <script type="text/ng-template"  id="subform.html">                     
+             <div class="form-horizontal">
+                <button type="button" class="close" aria-label="Close" ng-click="removeResource(resource, field);change();"><span aria-hidden="true">&times;</span></button>
+                <div class="clearfix"></div>
+                <div ng-init="currentDefinition = getDefinition(field); resource=getResource(resource, field)">
+                  <div ng-repeat="field in currentDefinition.fields">
+		            <div class="form-group" ng-if="!isEmpty(resource, field)" ng-include="getTemplate(field, resource)">                   
+                    </div>
+		          </div>
+                  <span ng-repeat="field in currentDefinition.fields">
+                    <button popover-trigger="'mouseenter'"  popover-placement="auto top" popover-title="{{ field.label }}" uib-popover="{{ field.description }}" ng-show="isEmpty(resource, field)" class="btn btn-default btn-xs" ng-click="addResource(resource, field)">{{ field.label }}</button> 
+                  </span> 
+                </div>
+             </div>
+        </script>
+        
+        <script type="text/ng-template"  id="msubform.html">          
+           <div ng-init="parentResource = resource">                        
+             <div ng-repeat="resource in resource[field.field]" class="well well-sm">           
+                <button type="button" class="close" aria-label="Close" ng-click="removeResource(parentResource, field, resource);change();"><span aria-hidden="true">&times;</span></button>
+                <div class="clearfix"></div>                              
+                <div class="form-horizontal" ng-init="currentDefinition = getDefinition(field)">                                                                           
+                  <div ng-repeat="field in currentDefinition.fields">
+		            <div class="form-group" ng-if="!isEmpty(resource, field)" ng-include="getTemplate(field, resource)">                   
+                    </div>
+		          </div>
+                  <span ng-repeat="field in currentDefinition.fields">
+                    <button popover-trigger="'mouseenter'"  popover-placement="auto top" popover-title="{{ field.label }}" uib-popover="{{ field.description }}" ng-show="isEmpty(resource, field)" class="btn btn-default btn-xs" ng-click="addResource(resource, field)">{{ field.label }}</button> 
+                  </span>
+                </div>
+             </div>
+             <p ng-show="mayAddResource(resource, field)"><button ng-click="addResource(resource, field);change();" popover-trigger="'mouseenter'"  popover-placement="auto top" popover-title="{{ field.label }}" uib-popover="{{ field.description }}" class="btn btn-default btn-xs">add {{ field.label }}</button></p>            
+           </div>
+        </script>
+        
+        <script type="text/ng-template"  id="inlinesubform.html">        
+           <div ng-init="parentResource = resource">                        
+             <div ng-repeat="resource in resource[field.field]" class="well well-sm">
+                <button type="button" class="close" aria-label="Close" ng-click="removeResource(parentResource, field, resource)"><span aria-hidden="true">&times;</span></button>                                         
+                <div class="form-inline" ng-init="currentDefinition = getDefinition(field)">                                 
+                  <span ng-repeat="field in currentDefinition.fields">
+		            <div class="form-group" ng-include="getTemplate(field, resource)">                   
+                    </div>
+		          </span>
+                  <div>
+                  <span ng-repeat="field in currentDefinition.fields">
+                    <button popover-trigger="'mouseenter'"  popover-placement="auto top" popover-title="{{ field.label }}" uib-popover="{{ field.description }}" ng-show="isEmpty(resource, field)" class="btn btn-default btn-xs" ng-click="addResource(resource, field)">{{ field.label }}</button> 
+                  </span>
+                  </div>
+                </div>
+             </div>
+             <p ng-show="mayAddResource(resource, field)"><button uib-uib-tooltip="test" ng-click="addResource(resource, field);change();" class="btn btn-default btn-xs">add more</button></p>            
+           </div>
+        </script>
+        
+        <script type="text/ng-template"  id="reference.html">           
+            
+              <div class="input-group" >
+                <span class="input-group-addon">{{ access[idx].reference }}</span>
+                <input type="text" class="form-control" ng-model="access[idx].display"  popover-placement="auto top" popover-trigger="'mouseenter'" popover-title="{{ field.label }}" uib-popover="{{ field.description }}">
+                <span class="input-group-btn">
+                  <button ng-show="access[idx].reference" ng-click="followReference(access[idx], field)" class="btn btn-default">follow</button>
+                  <button ng-show="access[idx].reference" ng-click="clearReference(access[idx], field);change();" class="btn btn-danger">clear</button>
+
+                  <div class="btn-group" uib-dropdown ng-hide="access[idx].reference">
+                     <button type="button" class="btn btn-default" uib-dropdown-toggle aria-expanded="false">
+                         Set Reference <span class="caret"></span>
+                     </button>
+                     <ul class="dropdown-menu" uib-dropdown-menu>
+                       <li class="dropdown-header">Create Resource of Type:</li>
+                       <li ng-repeat="type in field.resource"><a href="javascript:" ng-click="createReference(access[idx], field, type);change();">{{ makeLabel(uriCache[type].resourceType) }}</a></li>
+                       <li role="separator" class="divider"></li>
+                       <li class="dropdown-header">Refer to Known Resource:</li>
+                       <li ng-repeat="res in pools(field.resource)"><a href="javascript:" ng-click="setReference(access[idx], field, res.resourceType+'/'+res.id);change();">{{ makeHRName(res) }} ({{ makeLabel(res.resourceType) }})</a></li>                       
+                     </ul>
+                  </div>
+
+
+                </span>              
+              </div>
+          
+        </script>
+		
+		
+		   <div class="container">
+		    
+		     <h3>{{ makeLabel(currentDefinition.resourceType) }}</h3>
+		     <form class="form-horizontal">
+		       <div ng-repeat="field in currentDefinition.fields">
+		          <div class="form-group" ng-if="!isEmpty(resource, field)" ng-include="getTemplate(field, resource)">                   
+                  </div>                  
+		       </div>		    
+		       <span ng-repeat="field in currentDefinition.fields">
+                 <button uib-popover="{{ field.description }}"  popover-placement="auto top" popover-trigger="'mouseenter'" ng-show="isEmpty(resource, field)" class="btn btn-default btn-xs" ng-click="addResource(resource, field)" popover-title="{{ field.label }}">{{ field.label }}</button> 
+               </span>
+		     </form>
+		     <div class="extraspace"></div>
+		     <button class="btn btn-default" ng-show="returnStack.length" ng-click="returnToPrevious()">Back To Previous Resource</button>
+		     <button class="btn btn-default" ng-click="returnToTop()">Back To Main Menu</button>
+		     <div class="extraspace"></div>
+		     <pre>
+{{ getFHIR() | json }}
+		     </pre>
+		     
+		</div>

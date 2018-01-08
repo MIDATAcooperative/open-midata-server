@@ -38,7 +38,10 @@ public class ReferenceTool {
 			if (creators && (record.creator != null && record.creatorName == null)) {
 				String key = record.creator.toString();
 				String name = members.get(key);
-				if (name == null) {
+				if (name == null && record.owner != null && record.owner.equals(record.creator)) {
+					name = record.ownerName;
+				}
+				if (name == null) {					
 					Member member = Member.getById(record.creator, fullName);
 					if (member != null) {
 						name = member.lastname + ", " + member.firstname;

@@ -677,6 +677,7 @@
 	"change_email_btn" : "Change Email Address",
 	"repair_account_btn" : "Repair Account",
 	"reset_spaces_btn" : "Reset Portal",
+	"export_btn" : "Export your data",
 	"delete_records_btn" : "Delete Records",
 	"account_repaired" : "Your account has been repaired.",
 	"spaces_resetted" : "Your configuration has been resetted.",

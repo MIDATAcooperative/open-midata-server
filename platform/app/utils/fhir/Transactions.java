@@ -57,11 +57,13 @@ public class Transactions {
 		   if (verb == null) throw new UnprocessableEntityException("Missing HTTP Verb in transaction");
 		   if (verb.equals(HTTPVerb.POST)) {		   
 		     Resource res = nextEntry.getResource();
-		     ResourceProvider provider = FHIRServlet.myProviders.get(res.getResourceType().name());		   
+		     ResourceProvider provider = FHIRServlet.myProviders.get(res.getResourceType().name());
+		     if (provider == null) throw new UnprocessableEntityException("Resource Type not supported: "+res.getResourceType().name());
 		     steps.add(new CreateTransactionStep(provider, (DomainResource) res));
 		   } else if (verb.equals(HTTPVerb.PUT)) {
 			 Resource res = nextEntry.getResource();
-			 ResourceProvider provider = FHIRServlet.myProviders.get(res.getResourceType().name());		   
+			 ResourceProvider provider = FHIRServlet.myProviders.get(res.getResourceType().name());
+			 if (provider == null) throw new UnprocessableEntityException("Resource Type not supported: "+res.getResourceType().name());
 			 steps.add(new UpdateTransactionStep(provider, (DomainResource) res));
 		   } else if (verb.equals(HTTPVerb.DELETE)) {
 			   throw new NotImplementedOperationException("Currently no support for DELETE");

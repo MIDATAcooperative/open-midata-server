@@ -91,7 +91,8 @@ public class VersionedDBRecord extends DBRecord {
 		this.stream = record.stream; 
 		this.time = record.time;		
 		this.consentAps = record.consentAps;
-		this.createdFromAps = record.createdFromAps;		
+		this.createdFromAps = record.createdFromAps;
+		this.context = record.context;
 		this.id = record.id;
 		this.owner = record.owner;		
 		this.key = record.key;

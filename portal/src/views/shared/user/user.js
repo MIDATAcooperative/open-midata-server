@@ -61,6 +61,13 @@ angular.module('portal')
 		});
 	};
 	
+	$scope.exportAccount = function() {
+		$scope.status.doAction("download", server.token())
+		.then(function(response) {
+		  document.location.href = ENV.apiurl + jsRoutes.controllers.Records.downloadAccountData().url + "?token=" + encodeURIComponent(response.data.token);
+		});
+	};
+	
 	$scope.sendCode = function() {
 		//$scope.resentSuccess = $scope.codeSuccess = $scope.mailSuccess = false;
 		$scope.confirmation.error = null;
