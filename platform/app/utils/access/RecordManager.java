@@ -767,7 +767,8 @@ public class RecordManager {
 		}
 		
 		IndexManager.instance.removeRecords(cache, executingPerson, recs);
-				
+		
+		QueryEngine.loadDataAndWatches(recs);
 		
 		for (DBRecord record : recs) {
 			if (record.stream != null) {		
@@ -777,10 +778,11 @@ public class RecordManager {
 		
 		Date now = new Date();		
 		for (DBRecord record : recs) { 			
+			if (record.data == null) throw new NullPointerException();
+			VersionedDBRecord vrec = new VersionedDBRecord(record);
 			
-			VersionedDBRecord vrec = new VersionedDBRecord(record);		
 			RecordEncryption.encryptRecord(vrec);			
-					
+						
 			record.data = null;
 			record.meta.put("name", "deleted");
 			record.meta.put("deleted", true);
@@ -793,7 +795,7 @@ public class RecordManager {
 		    DBRecord clone = record.clone();
 		    
 			RecordEncryption.encryptRecord(record);	
-			
+						
 			VersionedDBRecord.add(vrec);
 		    DBRecord.upsert(record); 	  			    
 		    RecordLifecycle.notifyOfChange(clone, getCache(executingPerson));									

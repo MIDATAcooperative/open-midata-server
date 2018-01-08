@@ -1,0 +1,23 @@
+
+<div ng-controller="DefinePluginCtrl">
+		
+  <div class="panel panel-primary">
+    <div class="panel-heading" translate="admin_defineplugin.title"></div>
+    <div class="body">
+       <form name="myform" novalidate class="css-form form-horizontal" ng-submit="submit()">
+          <p ng-show="error && !error.field" translate="{{ error.code || error }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
+	      </p>		   
+		   <formrow myid="definition" label="admin_defineplugin.definition">
+		      <textarea class="form-control" name="definition" id="definition" ng-model="appdef.value" rows="20" required>	
+		      </textarea>	      		      
+		   </formrow>
+		   <button type="submit" class="btn btn-primary" translate="common.submit_btn"></button>
+	  </form>
+    
+    		
+    </div>
+  </div>		
+
+		  	
+</div>
+	

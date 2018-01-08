@@ -887,6 +887,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.Records.getRecordUrl(),
 				controllers.routes.javascript.Records.delete(),
 				controllers.routes.javascript.Records.fixAccount(),
+				controllers.routes.javascript.Records.downloadAccountData(),
 				// Circles
 				controllers.routes.javascript.Circles.get(),
 				controllers.routes.javascript.Circles.add(),
@@ -992,6 +993,8 @@ public class Application extends APIController {
 				controllers.routes.javascript.Market.updatePluginStatus(),
 				controllers.routes.javascript.Market.getPluginStats(),
 				controllers.routes.javascript.Market.deletePluginStats(),
+				controllers.routes.javascript.Market.importPlugin(),
+				controllers.routes.javascript.Market.exportPlugin(),
 								
 				// UserGroups
 				controllers.routes.javascript.UserGroups.search(),

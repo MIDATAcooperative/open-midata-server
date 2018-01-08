@@ -36,9 +36,12 @@ public class IndexKey implements Comparable<IndexKey>, Serializable {
 	public int compareTo(IndexKey arg0) {
 		for (int idx=0;idx<key.length;idx++) {
 			if (key[idx] != null) {
+			  if (arg0.key[idx] == null) return 1;
 			  int comp = key[idx].compareTo(arg0.key[idx]);
 			  if (comp != 0) return comp;
-			} else if (arg0.key[idx] != null) return -1;
+			} else {
+				if (arg0.key[idx] != null) return -1;
+			}
 		}
 		int r = id.compareTo(arg0.id);
 		return r == 0 ? value.compareTo(arg0.value) : r;
