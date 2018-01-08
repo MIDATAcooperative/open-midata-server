@@ -11,6 +11,7 @@ import org.bson.types.BasicBSONList;
 
 import models.MidataId;
 import models.enums.APSSecurityLevel;
+import utils.AccessLog;
 import utils.db.NotMaterialized;
 import utils.exceptions.AppException;
 
@@ -79,7 +80,7 @@ public class Feature_Versioning extends Feature {
 		for (DBRecord record : input) {
 			Date lu = record.meta.getDate("lastUpdated");
 			if (lu != null && lu.after(historyDate)) {
-				Set<VersionedDBRecord> recs = VersionedDBRecord.getAllById(record._id, q.getFieldsFromDB());
+				Set<VersionedDBRecord> recs = VersionedDBRecord.getAllById(record._id, QueryEngine.META_AND_DATA);
 				VersionedDBRecord bestRecord = null;
 				Date bestDate = null;
 				for (VersionedDBRecord rec : recs) {	
@@ -96,8 +97,9 @@ public class Feature_Versioning extends Feature {
 							bestDate = vlastUpdate;
 						}
 				    }
-				}
+				}				
 				if (bestRecord != null) {
+					
 					bestRecord.meta.put("ownerName", record.meta.get("ownerName"));
 					result.add(bestRecord);
 				}

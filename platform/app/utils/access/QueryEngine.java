@@ -301,6 +301,8 @@ class QueryEngine {
     }
     
     private static final Set<String> DATA_ONLY = Sets.create("_id", "encryptedData");
+    private static final Set<String> DATA_AND_WATCHES = Sets.create("_id", "encryptedData", "encWatches");
+    protected static final Set<String> META_AND_DATA = Sets.create("_id", "encryptedData", "encrypted");
     
     protected static DBRecord loadData(DBRecord input) throws AppException {
     	if (input.data == null && input.encryptedData == null) {
@@ -314,7 +316,7 @@ class QueryEngine {
     }
     
     protected static void loadData(Collection<DBRecord> records) throws AppException {
-    	Map<MidataId, DBRecord> idMap = new HashMap<MidataId,DBRecord>(records.size());
+    	Map<MidataId, DBRecord> idMap = new HashMap<MidataId,DBRecord>(records.size());    	
     	for (DBRecord rec : records) {    		    	
 	    	if (rec.data == null && rec.encryptedData == null) {
 	    	   idMap.put(rec._id, rec);
@@ -329,6 +331,26 @@ class QueryEngine {
     	}
     	for (DBRecord rec : records) {    		
 		   RecordEncryption.decryptRecord(rec);
+    	}		
+    }
+    
+    protected static void loadDataAndWatches(Collection<DBRecord> records) throws AppException {
+    	Map<MidataId, DBRecord> idMap = new HashMap<MidataId,DBRecord>(records.size());
+    	for (DBRecord rec : records) {    		    	
+	    	if ((rec.data == null && rec.encryptedData == null) || (rec.watches == null && rec.encWatches == null)) {
+	    	   idMap.put(rec._id, rec);
+	    	}
+	    	
+    	}
+    	if (!idMap.isEmpty()) {
+	    	Collection<DBRecord> fromDB = DBRecord.getAllList(CMaps.map("_id", idMap.keySet()), DATA_AND_WATCHES);	    	
+	    	for (DBRecord r2 : fromDB) {	    	
+	    	   idMap.get(r2._id).encryptedData = r2.encryptedData;	    	   
+	    	   idMap.get(r2._id).encWatches = r2.encWatches;
+	    	}
+    	}
+    	for (DBRecord rec : records) {      		
+		   RecordEncryption.decryptRecord(rec);		   
     	}		
     }
     
@@ -431,7 +453,7 @@ class QueryEngine {
     	}
     	if (!fetchIds.isEmpty()) {	
     		
-			List<DBRecord> read = lookupRecordsById(q, fetchIds.keySet());			
+			List<DBRecord> read = lookupRecordsById(q, fetchIds.keySet(), q.restrictedBy("deleted"));			
 			for (DBRecord record : read) {
 				DBRecord old = fetchIds.get(record._id);
 				fetchFromDB(old, record);
@@ -464,7 +486,8 @@ class QueryEngine {
 		//if (qm!=null) result = qm.postProcess(result, q);     	
 								
 		// 8 Post filter records if necessary		
-						
+    	if (q.restrictedBy("history-date")) result = Feature_Versioning.historyDate(q, result);
+    	
 		if (q.restrictedBy("creator")) result = filterByMetaSet(result, "creator", q.getIdRestrictionDB("creator"));
 		if (q.restrictedBy("app")) result = filterByMetaSet(result, "app", q.getIdRestrictionDB("app"), q.restrictedBy("no-postfilter-streams"));
 		if (q.restrictedBy("name")) result = filterByMetaSet(result, "name", q.getRestriction("name"));
@@ -480,7 +503,7 @@ class QueryEngine {
 		result = filterByDateRange(result, "created", q.getMinDateCreated(), q.getMaxDateCreated());			
 		result = filterByDateRange(result, "lastUpdated", q.getMinDateUpdated(), q.getMaxDateUpdated());
 		
-		if (q.restrictedBy("history-date")) result = Feature_Versioning.historyDate(q, result);
+		
 		AccessLog.logEnd("end process filters size="+result.size());
 	    
     	} 
@@ -603,16 +626,16 @@ class QueryEngine {
     }
     
     protected static List<DBRecord> lookupRecordsById(Query q) throws AppException {
-    	return lookupRecordsById(q, q.getMidataIdRestriction("_id"));
+    	return lookupRecordsById(q, q.getMidataIdRestriction("_id"), true);
     }
     	
-    protected static List<DBRecord> lookupRecordsById(Query q, Set<MidataId> ids) throws AppException {  
+    protected static List<DBRecord> lookupRecordsById(Query q, Set<MidataId> ids, boolean alsoDeleted) throws AppException {  
 			Map<String, Object> query = new HashMap<String, Object>();
 			Set<String> queryFields = Sets.create("stream", "time", "document", "part", "direct");
 			queryFields.addAll(q.getFieldsFromDB());
 			query.put("_id", ids);
 			q.addMongoTimeRestriction(query, true);
-			if (!q.restrictedBy("deleted")) {
+			if (!alsoDeleted) {
 				query.put("encryptedData", NOTNULL);
 			}
 			return DBRecord.getAllList(query, queryFields);		
