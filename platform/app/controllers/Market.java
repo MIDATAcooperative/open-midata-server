@@ -277,15 +277,15 @@ public class Market extends APIController {
 			app = new Plugin();
 			app._id = pluginId;
 			isNew = true;
-			app.version = JsonValidation.getLong(json, "version");		
-			app.filename = JsonValidation.getStringOrNull(json, "filename");						
-			app.creatorLogin = JsonValidation.getStringOrNull(json, "creatorLogin");
+			app.version = JsonValidation.getLong(pluginJson, "version");		
+			app.filename = JsonValidation.getStringOrNull(pluginJson, "filename");						
+			app.creatorLogin = JsonValidation.getStringOrNull(pluginJson, "creatorLogin");
 			User u = Developer.getByEmail(app.creatorLogin, Sets.create("_id", "email"));
 			if (u != null) {
 			   app.creator = u._id;
 			}
 		}
-		app.name = JsonValidation.getStringOrNull(json, "name");
+		app.name = JsonValidation.getStringOrNull(pluginJson, "name");
 		parsePlugin(app, pluginJson);
 		
 		if (isNew) {
