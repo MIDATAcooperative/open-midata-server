@@ -384,12 +384,14 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 		ArrayList<T> parsed = new ArrayList<T>();	
 	    IParser parser = ctx().newJsonParser();
 	    for (Record rec : result) {
-		  try {
-			T p = parser.parseResource(resultClass, rec.data.toString());
-	        processResource(rec, p);											
-			parsed.add(p);
-	  	  } catch (DataFormatException e) {
-		  }
+	    	if (rec.data != null) {
+	    		try {
+	    			T p = parser.parseResource(resultClass, rec.data.toString());
+	    			processResource(rec, p);											
+	    			parsed.add(p);
+	    		} catch (DataFormatException e) {
+	    		}
+	    	}
 	    }
 	    return parsed;
 	}
