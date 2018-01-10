@@ -314,29 +314,29 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 			}).then(function () {
 				
 				generateBar('chart-beta-ionon',
-					["0.1", "0.46", "2.15", "10", "46", "215", "1'000", "4'600", "21'500", "100'000", ">100'0000"],
+					["0.1", "0.46", "2.15", "10", "46", "215", "1'000", "4'600", "21'500", "100'000", ">100'000"],
 					[6, 0, 5, 8, 2, 13, 10, 13, 8, 22, 21],
-					chartLabel, chartLabelY, chartLabelX, arrayWithValues[6]);
+					chartLabel, chartLabelY, chartLabelX, 10 - arrayWithValues[6]);
 
 				generateBar("chart-heptanone",
 					["1", "3.6", "13", "46", "167", "600", "2'154", "7'742", "27'825", "100'000", ">100'000"],
 					[1, 8, 2, 3, 3, 12, 9, 15, 12, 20, 21],
-					chartLabel, chartLabelY, chartLabelX, arrayWithValues[7]);
+					chartLabel, chartLabelY, chartLabelX, 10 - arrayWithValues[7]);
 
 				generateBar("chart-isobuteraldehyde",
 					["1", "3.6", "13", "46", "167", "600", "2'154", "7'742", "27'825", "100'000", ">100'000"],
 					[12, 4, 3, 4, 4, 8, 13, 14, 11, 17, 17],
-					chartLabel, chartLabelY, chartLabelX, arrayWithValues[0]);
+					chartLabel, chartLabelY, chartLabelX, 10 - arrayWithValues[0]);
 				
 				generateBar("chart-iso-valeric-acid",
 					["1", "3.6", "13", "46", "167", "600", "2'154", "7'742", "27'825", "100'000", ">100'000"],
 					[16, 3, 10, 6, 10, 13, 13, 5, 10, 16, 7],
-					chartLabel, chartLabelY, chartLabelX, arrayWithValues[1]);
+					chartLabel, chartLabelY, chartLabelX, 10 - arrayWithValues[1]);
 				
 				generateBar("chart-rotundone",
 					["0.001", "0.0036", "0.013", "0.046", "0.167", "0.6", "2.15", "7.7", "27.8", "100", ">100"],
 					[7, 3, 3, 5, 5, 13, 13, 18, 14, 19, 8],
-					chartLabel, chartLabelY, chartLabelX, arrayWithValues[2]);
+					chartLabel, chartLabelY, chartLabelX, 10 - arrayWithValues[2]);
 				
 				chartLabelX = "Intensitätsbewertung (gLMS Skala)";
 				generateBar("chart-prop",
