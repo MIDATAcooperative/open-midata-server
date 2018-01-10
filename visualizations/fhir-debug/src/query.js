@@ -32,7 +32,22 @@ angular.module('fhirDebug')
   
     $scope.addToQuery = function(def) {
     	console.log(def);
-    	$scope.editQuery[def.code] = { def : def };
+    	$scope.editQuery[def.code] = { def : def , and : [ [ { } ] ] };
+    	$scope.change();
+    };
+    
+    $scope.addOr = function(row) {
+    	row.push({ });
+    	$scope.change();
+    };
+    
+    $scope.addAnd = function(def) {
+    	def.and.push([ { } ]);
+    	$scope.change();
+    };
+    
+    $scope.remove = function(key) {
+    	delete $scope.editQuery[key];
     	$scope.change();
     };
     
@@ -45,19 +60,34 @@ angular.module('fhirDebug')
     
     $scope.buildQuery = function() {
     	$scope.query = {};
-    	angular.forEach($scope.editQuery, function(v,k) {
-    		var res = v.value;
-    		var key = k;
-    		if (v.comparator) res = v.comparator+res;    		
-    		if (v.chain) key = k+"."+v.chain;
-    		if (v.modifier) key = key+":"+v.modifier;
-    		if (v.system) res = v.system+"|"+res;
-    		if (v.unitcode) {
-    			res = res + "|";
-    			if (v.unitsystem) res = res + v.unitsystem;
-    			res = res + "|" + unitcode;
-    		}
-    		$scope.query[key] = res;
+    	angular.forEach($scope.editQuery, function(v1,k) {
+    		
+    		angular.forEach(v1.and, function(v2) {
+    			var or = null;
+    			var key = k;
+    			angular.forEach(v2, function(v) {
+    				var res = v.value;
+    	    		
+    	    		if (v.comparator) res = v.comparator+res;    		
+    	    		if (v.chain) key = k+"."+v.chain;
+    	    		if (v.modifier) key = key+":"+v.modifier;
+    	    		if (v.system) res = v.system+"|"+res;
+    	    		if (v.unitcode) {
+    	    			res = res + "|";
+    	    			if (v.unitsystem) res = res + v.unitsystem;
+    	    			res = res + "|" + unitcode;
+    	    		}
+    	    		if (!or) or = res; else or = or + "," + res;    	    			
+    			});
+    			if (!$scope.query[key]) $scope.query[key] = or;
+    			else {
+    				if (!angular.isArray($scope.query[key])) $scope.query[key] = [ $scope.query[key] ];
+    				$scope.query[key].push(or);
+    			}
+    			
+    			
+    		});
+    		    		
     	});
     };
     

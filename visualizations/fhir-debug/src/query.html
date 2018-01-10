@@ -86,7 +86,23 @@
 		       <div ng-repeat="(key,val) in editQuery" class="row">
 		            <label class="col-sm-2 control-label">{{ key }}</label>
 		            <div class="col-sm-10">
-		              <div ng-include="getTemplate(val.def)" ng-init="access=val;def=val.def"></div>
+		              <div ng-repeat="op in val.and">
+		                
+		                <div ng-repeat="access in op">		                   
+                           <div class="extraspace" ng-include="getTemplate(val.def)" ng-init="def=val.def"></div>
+                           <div class="row extraspace">
+                           <div class="col-xs-12" ng-hide="$last">or..</div>
+                           <div class="col-xs-12" ng-show="$last">	
+                             <button ng-click="addOr(op)" ng-show="$parent.$last" class="btn btn-default btn-xs" >add or</button>                           
+                             <button ng-click="addAnd(val)" ng-show="$parent.$last" class="btn btn-default btn-xs"  >add and</button>
+                             <button ng-click="remove(key)" ng-show="$parent.$last" class="btn btn-default btn-xs"  >remove</button>
+                             <span ng-hide="$parent.$last">and..</span>
+                           </div>	        
+                           </div>          
+		                </div>
+		                		                
+		              </div>
+		              
 		            </div>                 
 		       </div>		    
 		       

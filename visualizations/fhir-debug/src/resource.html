@@ -206,8 +206,8 @@
         </script>
         
         <script type="text/ng-template"  id="subform.html">                     
-             <div class="form-horizontal">
-                <button type="button" class="close" aria-label="Close" ng-click="removeResource(resource, field);change();"><span aria-hidden="true">&times;</span></button>
+             <div class="form-horizontal" ng-init="oldres = resource;">
+                <button type="button" class="close" aria-label="Close" ng-click="removeResource(oldres, field);change();"><span aria-hidden="true">&times;</span></button>
                 <div class="clearfix"></div>
                 <div ng-init="currentDefinition = getDefinition(field); resource=getResource(resource, field)">
                   <div ng-repeat="field in currentDefinition.fields">
@@ -262,7 +262,7 @@
         
         <script type="text/ng-template"  id="reference.html">           
             
-              <div class="input-group" >
+              <div ng-if="!access[idx].identifier" class="input-group" >
                 <span class="input-group-addon">{{ access[idx].reference }}</span>
                 <input type="text" class="form-control" ng-model="access[idx].display"  popover-placement="auto top" popover-trigger="'mouseenter'" popover-title="{{ field.label }}" uib-popover="{{ field.description }}">
                 <span class="input-group-btn">
@@ -278,12 +278,17 @@
                        <li ng-repeat="type in field.resource"><a href="javascript:" ng-click="createReference(access[idx], field, type);change();">{{ makeLabel(uriCache[type].resourceType) }}</a></li>
                        <li role="separator" class="divider"></li>
                        <li class="dropdown-header">Refer to Known Resource:</li>
-                       <li ng-repeat="res in pools(field.resource)"><a href="javascript:" ng-click="setReference(access[idx], field, res.resourceType+'/'+res.id);change();">{{ makeHRName(res) }} ({{ makeLabel(res.resourceType) }})</a></li>                       
+                       <li ng-repeat="res in pools(field.resource)"><a href="javascript:" ng-click="setReference(access[idx], field, res.resourceType+'/'+res.id);change();">{{ makeHRName(res) }} ({{ makeLabel(res.resourceType) }})</a></li>
+                       <li role="separator" class="divider"></li>
+                       <li><a href="javascript:" ng-click="access[idx].identifier={}">Use Identifier</a></li> 
                      </ul>
                   </div>
 
-
                 </span>              
+              </div>
+
+              <div ng-if="access[idx].identifier">
+                <div ng-include="'subform.html'"></div>
               </div>
           
         </script>
@@ -299,6 +304,7 @@
 		       </div>		    
 		       <span ng-repeat="field in currentDefinition.fields">
                  <button uib-popover="{{ field.description }}"  popover-placement="auto top" popover-trigger="'mouseenter'" ng-show="isEmpty(resource, field)" class="btn btn-default btn-xs" ng-click="addResource(resource, field)" popover-title="{{ field.label }}">{{ field.label }}</button> 
+                 <button uib-popover="{{ field.description }}"  popover-placement="auto top" popover-trigger="'mouseenter'" ng-show="!isEmpty(resource, field)" class="btn btn-success btn-xs" ng-click="removeResource(resource, field)" popover-title="{{ field.label }}">{{ field.label }}</button>
                </span>
 		     </form>
 		     <div class="extraspace"></div>
