@@ -37,7 +37,12 @@
 <body>
 	<div ng-app="MiSens" ng-controller="ViewController" ng-cloak>
 		<div class="container">
-			<!--<p class="lead" translate="title"></p>-->
+			<div style="float:right; padding-top:15px;">
+				<select ng-model="information.datasetGroup" ng-change="UpdateInformation()"><!-- ng-options='i | translate for i in {scientifica: "selectOptionScientificaResultsText", current: "selectOptionCurrentResultsText"}'>-->
+					<option value="scientifica" translate="selectOptionScientificaResultsText"> </option>
+					<option value="current" translate="selectOptionCurrentResultsText"></option>
+				</select>
+			</div>
 			<h2 translate="title"></h2>
 			<hr>
 			<p translate="textStarDiagram"></p>
