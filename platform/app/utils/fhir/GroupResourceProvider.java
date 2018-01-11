@@ -70,7 +70,7 @@ import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.stats.Stats;
 
-public class GroupResourceProvider extends ResourceProvider<Group> implements IResourceProvider {
+public class GroupResourceProvider extends RecordBasedResourceProvider<Group> implements IResourceProvider {
 
 	public GroupResourceProvider() {
 		registerSearches("Group", getClass(), "getGroup");

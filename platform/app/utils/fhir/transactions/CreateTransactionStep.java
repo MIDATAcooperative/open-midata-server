@@ -6,8 +6,10 @@ import org.hl7.fhir.dstu3.model.Bundle.BundleEntryResponseComponent;
 import org.hl7.fhir.dstu3.model.DomainResource;
 
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
+import models.Model;
 import utils.exceptions.AppException;
 import utils.fhir.FHIRServlet;
+import utils.fhir.ReadWriteResourceProvider;
 import utils.fhir.ResourceProvider;
 
 /**
@@ -21,21 +23,19 @@ public class CreateTransactionStep extends TransactionStep {
 	 * @param provider the ResourceProvider to use
 	 * @param resource the DomainResource from the user request
 	 */
-	public CreateTransactionStep(ResourceProvider<DomainResource> provider, DomainResource resource) {
+	public CreateTransactionStep(ResourceProvider<DomainResource, Model> provider, DomainResource resource) {
 		this.provider = provider;
 		this.resource = resource;
 	}
 	
 	@Override
     public void init() {
-    	record = provider.init();
+    	record = ((ReadWriteResourceProvider) provider).init();
     }
 	
 	@Override
-	public void prepare() throws AppException { 
-		
-		provider.prepare(record, resource);
-		
+	public void prepare() throws AppException { 		
+		((ReadWriteResourceProvider) provider).createPrepare(record, resource);		
 	}
 	
 	@Override
@@ -43,13 +43,13 @@ public class CreateTransactionStep extends TransactionStep {
 		try {
 			if (result == null) {
 				try {
-				  provider.insertRecord(record, resource);
+					((ReadWriteResourceProvider) provider).createExecute(record, resource);
 				} catch (AppException e) {
 				  throw new InternalErrorException(e);
 				}
 				result = new BundleEntryComponent();
 				BundleEntryResponseComponent response = new BundleEntryResponseComponent();
-				response.setLastModified(record.created);
+				response.setLastModified(((ReadWriteResourceProvider) provider).getLastUpdated(record));
 				response.setStatus("201 Created");
 				response.setLocation(FHIRServlet.getBaseUrl()+"/"+provider.getResourceType().getSimpleName()+"/"+record._id.toString()+"/_history/0");
 				result.setResponse(response);

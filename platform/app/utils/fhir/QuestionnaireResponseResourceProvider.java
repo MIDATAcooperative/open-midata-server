@@ -45,7 +45,7 @@ import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
-public class QuestionnaireResponseResourceProvider extends ResourceProvider<QuestionnaireResponse> implements IResourceProvider {
+public class QuestionnaireResponseResourceProvider extends RecordBasedResourceProvider<QuestionnaireResponse> implements IResourceProvider {
 
 	public QuestionnaireResponseResourceProvider() {
 		searchParamNameToPathMap.put("QuestionnaireResponse:author", "author");
@@ -207,20 +207,7 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 	public MethodOutcome createResource(@ResourceParam QuestionnaireResponse theQuestionnaireResponse) {
 		return super.createResource(theQuestionnaireResponse);
 	}
-	
-	@Override
-	protected MethodOutcome create(QuestionnaireResponse theQuestionnaireResponse) throws AppException {
-
-		Record record = newRecord("fhir/QuestionnaireResponse");
-		prepare(record, theQuestionnaireResponse);
-		// insert
-		insertRecord(record, theQuestionnaireResponse);
-
-		processResource(record, theQuestionnaireResponse);				
 		
-		return outcome("QuestionnaireResponse", record, theQuestionnaireResponse);
-
-	}
 	
 	public Record init() { return newRecord("fhir/QuestionnaireResponse"); }
 
@@ -230,15 +217,6 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 		return super.updateResource(theId, theQuestionnaireResponse);
 	}
 	
-	@Override
-	protected MethodOutcome update(@IdParam IdType theId, @ResourceParam QuestionnaireResponse theQuestionnaireResponse) throws AppException {
-		Record record = fetchCurrent(theId);
-		prepare(record, theQuestionnaireResponse);		
-		updateRecord(record, theQuestionnaireResponse);		
-		processResource(record, theQuestionnaireResponse);
-		
-		return outcome("QuestionnaireResponse", record, theQuestionnaireResponse);
-	}
 
 	public void prepare(Record record, QuestionnaireResponse theQuestionnaireResponse) throws AppException {
 		// Set Record code and content

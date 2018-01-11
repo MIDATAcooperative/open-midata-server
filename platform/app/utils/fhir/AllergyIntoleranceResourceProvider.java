@@ -31,7 +31,7 @@ import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
-public class AllergyIntoleranceResourceProvider extends ResourceProvider<AllergyIntolerance> implements IResourceProvider {
+public class AllergyIntoleranceResourceProvider extends RecordBasedResourceProvider<AllergyIntolerance> implements IResourceProvider {
 
 	public AllergyIntoleranceResourceProvider() {
 		searchParamNameToPathMap.put("AllergyIntolerance:asserter", "asserter");

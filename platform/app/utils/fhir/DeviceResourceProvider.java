@@ -32,7 +32,7 @@ import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
-public class DeviceResourceProvider extends ResourceProvider<Device> implements IResourceProvider {
+public class DeviceResourceProvider extends RecordBasedResourceProvider<Device> implements IResourceProvider {
 
 	public DeviceResourceProvider() {
 		searchParamNameToPathMap.put("Device:location", "location");

@@ -45,7 +45,7 @@ import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
-public class CommunicationResourceProvider extends ResourceProvider<Communication> implements IResourceProvider {
+public class CommunicationResourceProvider extends RecordBasedResourceProvider<Communication> implements IResourceProvider {
 
 	public CommunicationResourceProvider() {
 		searchParamNameToPathMap.put("Communication:based-on", "basedOn");
@@ -205,21 +205,15 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 	public MethodOutcome createResource(@ResourceParam Communication theCommunication) {
 		return super.createResource(theCommunication);
 	}
-	
-	@Override
-	protected MethodOutcome create(Communication theCommunication) throws AppException {
-
-		Record record = newRecord("fhir/Communication");
+			
+	public void createPrepare(Record record, Communication theCommunication) throws AppException {		
 		prepareForSharing(theCommunication);
 		prepare(record, theCommunication);		
-		// insert
-		//insertRecord(record, theCommunication);
-        shareRecord(record, theCommunication);
-		processResource(record, theCommunication);				
-		
-		return outcome("Communication", record, theCommunication);
-
 	}
+	
+	public void createExecute(Record record, Communication theCommunication) throws AppException {
+		shareRecord(record, theCommunication);
+	}	
 	
 	public void prepareForSharing(Communication theCommunication) throws AppException {
 		if (theCommunication.getSender().isEmpty()) {

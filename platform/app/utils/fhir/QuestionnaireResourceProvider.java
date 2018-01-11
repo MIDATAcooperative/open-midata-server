@@ -34,7 +34,7 @@ import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
-public class QuestionnaireResourceProvider extends ResourceProvider<Questionnaire> implements IResourceProvider {
+public class QuestionnaireResourceProvider extends RecordBasedResourceProvider<Questionnaire> implements IResourceProvider {
 
 	public QuestionnaireResourceProvider() {
 		
@@ -180,20 +180,7 @@ public class QuestionnaireResourceProvider extends ResourceProvider<Questionnair
 	public MethodOutcome createResource(@ResourceParam Questionnaire theQuestionnaire) {
 		return super.createResource(theQuestionnaire);
 	}
-	
-	@Override
-	protected MethodOutcome create(Questionnaire theQuestionnaire) throws AppException {
-
-		Record record = newRecord("fhir/Questionnaire");
-		prepare(record, theQuestionnaire);
-		// insert
-		insertRecord(record, theQuestionnaire);
-
-		processResource(record, theQuestionnaire);				
 		
-		return outcome("Questionnaire", record, theQuestionnaire);
-
-	}
 	
 	public Record init() { return newRecord("fhir/Questionnaire"); }
 
@@ -203,15 +190,6 @@ public class QuestionnaireResourceProvider extends ResourceProvider<Questionnair
 		return super.updateResource(theId, theQuestionnaire);
 	}
 	
-	@Override
-	protected MethodOutcome update(@IdParam IdType theId, @ResourceParam Questionnaire theQuestionnaire) throws AppException {
-		Record record = fetchCurrent(theId);
-		prepare(record, theQuestionnaire);		
-		updateRecord(record, theQuestionnaire);		
-		processResource(record, theQuestionnaire);
-		
-		return outcome("Questionnaire", record, theQuestionnaire);
-	}
 
 	public void prepare(Record record, Questionnaire theQuestionnaire) throws AppException {
 		// Set Record code and content

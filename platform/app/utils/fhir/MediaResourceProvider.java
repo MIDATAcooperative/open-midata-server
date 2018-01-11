@@ -45,7 +45,7 @@ import utils.collections.Sets;
 import utils.db.FileStorage.FileData;
 import utils.exceptions.AppException;
 
-public class MediaResourceProvider extends ResourceProvider<Media> implements IResourceProvider {
+public class MediaResourceProvider extends RecordBasedResourceProvider<Media> implements IResourceProvider {
 
 	public MediaResourceProvider() {
 		searchParamNameToPathMap.put("Media:operator", "operator");
@@ -188,21 +188,11 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 	}
 	
 	@Override
-	protected MethodOutcome create(Media theMedia) throws AppException {
-
-		Record record = newRecord("fhir/Media");
-		prepare(record, theMedia);
-		// insert
-		Attachment attachment = null;
-				 		
-		attachment = theMedia.getContent();			
-				
-		insertRecord(record, theMedia, attachment);			
-	    processResource(record, theMedia);		
-		MethodOutcome out = outcome("Media", record, theMedia);		  	
-		return out;
-	
-	}
+	public void createExecute(Record record, Media theMedia) throws AppException {
+		Attachment attachment = null; 		
+		attachment = theMedia.getContent();						
+		insertRecord(record, theMedia, attachment);		
+	}	
 	
 	public Record init() { return newRecord("fhir/Media"); }
 

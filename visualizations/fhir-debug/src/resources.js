@@ -46,21 +46,25 @@ angular.module('fhirDebug')
     $scope.saveAllModified = function() {
     	console.log("save all");
     	$scope.error = null;
+    	$scope.response = null;
     	midataServer.fhirTransaction(midataServer.authToken, $scope.transaction)
     	.then(function(result) {
     		console.log("success");
     		fhirModule.reset();
     		$scope.pool = fhirModule.pool;
     		$scope.transaction = fhirModule.saveAllModified();
+    		$scope.response = result.data;
     	}, function(error) {
     		console.log("failed");
-    		$scope.error = error;
+    		$scope.error = error.data;
+    		$scope.status = error.status;
     	});
     	
     };
     
     $scope.clear = function() {
     	$scope.error = null;
+    	$scope.response = null;
     	fhirModule.reset();
     	$scope.pool = fhirModule.pool;
 		$scope.transaction = fhirModule.saveAllModified();

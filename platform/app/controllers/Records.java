@@ -24,6 +24,7 @@ import models.Consent;
 import models.FormatInfo;
 import models.Member;
 import models.MidataId;
+import models.Model;
 import models.Plugin;
 import models.Record;
 import models.RecordsInfo;
@@ -582,7 +583,7 @@ public class Records extends APIController {
 				            	
 				            	String format = rec.format.startsWith("fhir/") ? rec.format.substring("fhir/".length()) : "Basic";
 				            	
-				            	ResourceProvider<DomainResource> prov = FHIRServlet.myProviders.get(format); 
+				            	ResourceProvider<DomainResource, Model> prov = FHIRServlet.myProviders.get(format); 
 				            	DomainResource r = prov.parse(rec, prov.getResourceType());
 				            	String location = FHIRServlet.getBaseUrl()+"/"+prov.getResourceType().getSimpleName()+"/"+rec._id.toString()+"/_history/"+rec.version;
 				            	if (r!=null) {

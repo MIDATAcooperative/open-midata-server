@@ -38,6 +38,7 @@ import models.Info;
 import models.Member;
 import models.MidataId;
 import models.MobileAppInstance;
+import models.Model;
 import models.ParticipationCode;
 import models.Plugin;
 import models.Record;
@@ -317,7 +318,7 @@ public class Studies extends APIController {
 		        		for (UserGroupMember member : ugms) idmap.put(member.member, member);
 		        		Set<User> users = User.getAllUser(CMaps.map("_id", idmap.keySet()), User.ALL_USER);
 
-		        		ResourceProvider<DomainResource> pprov = FHIRServlet.myProviders.get("Practitioner");
+		        		ResourceProvider<DomainResource, Model> pprov = FHIRServlet.myProviders.get("Practitioner");
 		        		for (User user : users) {		        			
 		        			String location = FHIRServlet.getBaseUrl()+"/"+pprov.getResourceType().getSimpleName()+"/"+user._id.toString();			            	
 			            	String ser = pprov.serialize(PractitionerResourceProvider.practitionerFromMidataUser(user));
@@ -339,7 +340,7 @@ public class Studies extends APIController {
 				            	
 				            	String format = rec.format.startsWith("fhir/") ? rec.format.substring("fhir/".length()) : "Basic";
 				            	
-				            	ResourceProvider<DomainResource> prov = FHIRServlet.myProviders.get(format); 
+				            	ResourceProvider<DomainResource, Model> prov = FHIRServlet.myProviders.get(format); 
 				            	DomainResource r = prov.parse(rec, prov.getResourceType());
 				            	String location = FHIRServlet.getBaseUrl()+"/"+prov.getResourceType().getSimpleName()+"/"+rec._id.toString()+"/_history/"+rec.version;
 				            	if (r!=null) {
