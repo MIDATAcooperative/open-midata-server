@@ -15,10 +15,10 @@
 <script type="text/ng-template"  id="query-string.html">
    <div class="row">
    <div ng-if="def.modifier" class="col-xs-2">
-     <select class="form-control" ng-model="access.modifier" ng-options="x for x in def.modifier"></select>
+     <select class="form-control" ng-model="access.modifier" ng-change="change()" ng-options="x for x in def.modifier"></select>
    </div>
    <div ng-if="def.comparator" class="col-xs-2">
-     <select class="form-control" ng-model="access.comparator" ng-options="x for x in def.comparator"></select>
+     <select class="form-control" ng-model="access.comparator" ng-change="change()" ng-options="x for x in def.comparator"></select>
    </div>
    <div class="col-xs-8">
      <input type="text" class="form-control" ng-change="change()" ng-model="access.value"  popover-placement="auto top" popover-trigger="'mouseenter'" popover-title="{{ def.description }}" uib-popover="{{ def.code }}">
@@ -29,10 +29,10 @@
 <script type="text/ng-template"  id="query-quantity.html">
    <div class="row">
    <div ng-if="def.modifier" class="col-xs-2">
-     <select class="form-control" ng-model="access.modifier" ng-options="x for x in def.modifier"></select>
+     <select class="form-control" ng-model="access.modifier" ng-change="change()" ng-options="x for x in def.modifier"></select>
    </div>
    <div ng-if="def.comparator" class="col-xs-2">
-     <select class="form-control" ng-model="access.comparator" ng-options="x for x in def.comparator"></select>
+     <select class="form-control" ng-model="access.comparator" ng-change="change()" ng-options="x for x in def.comparator"></select>
    </div>
    <div class="col-xs-2">
      <input placeholder="value" type="text" class="form-control" ng-change="change()" ng-model="access.value"  popover-placement="auto top" popover-trigger="'mouseenter'" popover-title="{{ def.description }}" uib-popover="{{ def.code }}">
@@ -49,10 +49,10 @@
 <script type="text/ng-template"  id="query-token.html">
    <div class="row">
    <div ng-if="def.modifier" class="col-xs-2">
-     <select class="form-control" ng-model="access.modifier" ng-options="x for x in def.modifier"></select>
+     <select class="form-control" ng-model="access.modifier" ng-change="change()" ng-options="x for x in def.modifier"></select>
    </div>
    <div ng-if="def.comparator" class="col-xs-2">
-     <select class="form-control" ng-model="access.comparator" ng-options="x for x in def.comparator"></select>
+     <select class="form-control" ng-model="access.comparator" ng-change="change()" ng-options="x for x in def.comparator"></select>
    </div>
    <div class="col-xs-4">
      <input placeholder="system" type="text" class="form-control" ng-change="change()" ng-model="access.system"  popover-placement="auto top" popover-trigger="'mouseenter'" popover-title="{{ def.description }}" uib-popover="{{ def.code }}">
@@ -66,10 +66,10 @@
 <script type="text/ng-template"  id="query-reference.html">
    <div class="row">
    <div class="form-control" ng-if="def.modifier" class="col-xs-2">
-     <select ng-model="access.modifier" ng-options="x for x in def.modifier"></select>
+     <select ng-model="access.modifier" ng-change="change()" ng-options="x for x in def.modifier"></select>
    </div>
    <div class="form-control" ng-if="def.comparator" class="col-xs-2">
-     <select ng-model="access.comparator" ng-options="x for x in def.comparator"></select>
+     <select ng-model="access.comparator" ng-change="change()" ng-options="x for x in def.comparator"></select>
    </div>
    <div class="col-xs-4">
      <input placeholder="chain (optional)" type="text" class="form-control" ng-change="change()" ng-model="access.chain"  popover-placement="auto top" popover-trigger="'mouseenter'" popover-title="{{ def.description }}" uib-popover="{{ def.code }}">
