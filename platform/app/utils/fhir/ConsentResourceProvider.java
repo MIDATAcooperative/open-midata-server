@@ -3,6 +3,7 @@ package utils.fhir;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -92,7 +93,7 @@ import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 
-public class ConsentResourceProvider extends ResourceProvider<org.hl7.fhir.dstu3.model.Consent> implements IResourceProvider {
+public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.fhir.dstu3.model.Consent, Consent> implements IResourceProvider {
 
 	public ConsentResourceProvider() {
 		registerSearches("Consent", getClass(), "getConsent");
@@ -115,12 +116,7 @@ public class ConsentResourceProvider extends ResourceProvider<org.hl7.fhir.dstu3
 		if (consent == null) return null;
 		return readConsentFromMidataConsent(consent, true);
 	}
-	
-    @History()
-    @Override
-	public List<org.hl7.fhir.dstu3.model.Consent> getHistory(@IdParam IIdType theId) throws AppException {
-    	throw new ResourceNotFoundException("No history kept for Consent resource"); 
-    }
+	    
     
 	/**
 	 * Convert a MIDATA User object into a FHIR person object
@@ -341,63 +337,44 @@ public class ConsentResourceProvider extends ResourceProvider<org.hl7.fhir.dstu3
 	    }
 	
 	@Override
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {		
-		return null;
-	}
- 
-	@Override
-	public List<IBaseResource> search(SearchParameterMap params) {
-		try {
-					
-			ExecutionInfo info = info();
-	
-			Query query = new Query();		
-			QueryBuilder builder = new QueryBuilder(params, query, null);
-				
-			builder.handleIdRestriction();
-			builder.recordOwnerReference("patient", "Patient", null);
-			builder.restriction("category", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "fhirConsent.category");
-			builder.restriction("date", false, QueryBuilder.TYPE_DATETIME, "fhirConsent.dateTime");
-			builder.restriction("period", false, QueryBuilder.TYPE_DATETIME, "fhirConsent.period");
-			builder.restriction("status", false, QueryBuilder.TYPE_CODE, "fhirConsent.status");
+	public List<Consent> searchRaw(SearchParameterMap params) throws AppException {		
+		ExecutionInfo info = info();
+		
+		Query query = new Query();		
+		QueryBuilder builder = new QueryBuilder(params, query, null);
 			
-			Set<String> authorized = null;
-			if (params.containsKey("actor")) {
-				List<ReferenceParam> actors = builder.resolveReferences("actor", null);
-				if (actors != null) {
-					authorized = FHIRTools.referencesToIds(actors);				
-				}
+		builder.handleIdRestriction();
+		builder.recordOwnerReference("patient", "Patient", null);
+		builder.restriction("category", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "fhirConsent.category");
+		builder.restriction("date", false, QueryBuilder.TYPE_DATETIME, "fhirConsent.dateTime");
+		builder.restriction("period", false, QueryBuilder.TYPE_DATETIME, "fhirConsent.period");
+		builder.restriction("status", false, QueryBuilder.TYPE_CODE, "fhirConsent.status");
+		
+		Set<String> authorized = null;
+		if (params.containsKey("actor")) {
+			List<ReferenceParam> actors = builder.resolveReferences("actor", null);
+			if (actors != null) {
+				authorized = FHIRTools.referencesToIds(actors);				
 			}
-									
-			Map<String, Object> properties = query.retrieveAsNormalMongoQuery();
-				
-			if (authorized != null) {
-				properties.put("authorized", authorized);
-			}
+		}
+								
+		Map<String, Object> properties = query.retrieveAsNormalMongoQuery();
 			
-			if (!info.context.mayAccess("Consent", "fhir/Consent")) properties.put("_id", info.context.getTargetAps());
-			
-			ObjectIdConversion.convertMidataIds(properties, "_id", "owner", "authorized");
-			
-			Set<models.Consent> consents = new HashSet<models.Consent>();						
-			if (authorized == null || authorized.contains(info().ownerId.toString())) consents.addAll(Consent.getAllByAuthorized(info().ownerId, properties, Consent.FHIR));
-			if (!properties.containsKey("owner") || utils.access.Query.getRestriction(properties.get("owner"), "owner").contains(info().ownerId.toString())) consents.addAll(Consent.getAllByOwner(info().ownerId, properties, Consent.FHIR, Circles.RETURNED_CONSENT_LIMIT));
-			List<IBaseResource> result = new ArrayList<IBaseResource>();
-			for (models.Consent consent : consents) {
-				result.add(readConsentFromMidataConsent(consent, true));
-			}
-			
-			return result;
-			
-		 } catch (AppException e) {
-		       ErrorReporter.report("FHIR (search)", null, e);	       
-			   return null;
-		 } catch (NullPointerException e2) {
-		   	    ErrorReporter.report("FHIR (search)", null, e2);	 
-				throw new InternalErrorException(e2);
+		if (authorized != null) {
+			properties.put("authorized", authorized);
 		}
 		
-	}
+		if (!info.context.mayAccess("Consent", "fhir/Consent")) properties.put("_id", info.context.getTargetAps());
+		
+		ObjectIdConversion.convertMidataIds(properties, "_id", "owner", "authorized");
+		
+		Set<models.Consent> consents = new HashSet<models.Consent>();						
+		if (authorized == null || authorized.contains(info().ownerId.toString())) consents.addAll(Consent.getAllByAuthorized(info().ownerId, properties, Consent.FHIR));
+		if (!properties.containsKey("owner") || utils.access.Query.getRestriction(properties.get("owner"), "owner").contains(info().ownerId.toString())) {
+			consents.addAll(Consent.getAllByOwner(info().ownerId, properties, Consent.FHIR, Circles.RETURNED_CONSENT_LIMIT));
+		}
+		return new ArrayList<Consent>(consents);
+	} 	
 	
 	@Create
 	@Override
@@ -422,26 +399,7 @@ public class ConsentResourceProvider extends ResourceProvider<org.hl7.fhir.dstu3
 			throw new InternalErrorException(e4);
 		}	
 	}
-	
-	protected MethodOutcome update(IdType theId, org.hl7.fhir.dstu3.model.Consent theResource) throws AppException {
-		Consent consent = Circles.getConsentById(info().executorId, MidataId.from(theId.getIdPart()), Consent.FHIR);
-		if (consent == null) throw new ResourceNotFoundException(theId);
-		
-		if ((theResource.getStatus() == ConsentState.ACTIVE || theResource.getStatus() == ConsentState.REJECTED) && consent.status == ConsentStatus.UNCONFIRMED) {
-			mayShare(info().pluginId, consent.sharingQuery);
-						
-			if (theResource.getStatus() == ConsentState.ACTIVE) {
-				HealthProvider.confirmConsent(info().executorId, consent._id);
-			} else {
-				HealthProvider.rejectConsent(info().executorId, consent._id);
-			}
-		}
-		
-		MethodOutcome retVal = new MethodOutcome(new IdType("Consent", consent._id.toString(), null), true);	
-        retVal.setResource(theResource);
-        AuditManager.instance.success();
-		return retVal;		
-	}
+				
 	
 	private static void mayShare(MidataId pluginId, Map<String, Object> query) throws AppException {
 		Plugin plugin = Plugin.getById(pluginId);
@@ -477,20 +435,11 @@ public class ConsentResourceProvider extends ResourceProvider<org.hl7.fhir.dstu3
 	    }
 		return true;
 	}
-	
-	/**
-	 * Implementation for create
-	 * @param theResource
-	 * @return
-	 * @throws AppException
-	 */
-	protected MethodOutcome create(org.hl7.fhir.dstu3.model.Consent theResource) throws AppException {
-		models.Consent consent = new Consent();
 		
-		consent.creatorApp = info().pluginId;
-		consent.status = ConsentStatus.UNCONFIRMED;
-		consent.authorized = new HashSet<MidataId>();
-		consent.categoryCode = theResource.getCategoryFirstRep().getCodingFirstRep().getCode();
+
+	@Override
+	public void createPrepare(Consent consent, org.hl7.fhir.dstu3.model.Consent theResource) throws AppException {
+        consent.categoryCode = theResource.getCategoryFirstRep().getCodingFirstRep().getCode();
 		
 		consent.name = theResource.getCategoryFirstRep().getText();
 		for (Extension ext : theResource.getExtensionsByUrl("http://midata.coop/extensions/consent-name")) {
@@ -572,13 +521,79 @@ public class ConsentResourceProvider extends ResourceProvider<org.hl7.fhir.dstu3
 		}
 		
 		if (consent.type == ConsentType.IMPLICIT) throw new ForbiddenOperationException("consent type not supported for creation.");
-		Circles.addConsent(info().executorId, consent, true, null, false);
-        
-		theResource.setDateTime(consent.dateOfCreation);
 		
-		MethodOutcome retVal = new MethodOutcome(new IdType("Consent", consent._id.toString(), null), true);	
-        retVal.setResource(theResource);
-        
-		return retVal;			
 	}
+
+	@Override
+	public void createExecute(Consent consent, org.hl7.fhir.dstu3.model.Consent theResource) throws AppException {
+        Circles.addConsent(info().executorId, consent, true, null, false);        
+		theResource.setDateTime(consent.dateOfCreation);		
+	}
+
+	@Override
+	public Consent init() {
+		Consent consent = new Consent();
+		
+		consent.creatorApp = info().pluginId;
+		consent.status = ConsentStatus.UNCONFIRMED;
+		consent.authorized = new HashSet<MidataId>();
+		
+		return consent;
+	}
+
+	@Override
+	public void updatePrepare(Consent consent, org.hl7.fhir.dstu3.model.Consent theResource) throws AppException {
+        		
+		if ((theResource.getStatus() == ConsentState.ACTIVE || theResource.getStatus() == ConsentState.REJECTED) && consent.status == ConsentStatus.UNCONFIRMED) {
+			mayShare(info().pluginId, consent.sharingQuery);        									
+		}
+		
+	}
+
+	@Override
+	public void updateExecute(Consent consent, org.hl7.fhir.dstu3.model.Consent theResource) throws AppException {
+		if ((theResource.getStatus() == ConsentState.ACTIVE || theResource.getStatus() == ConsentState.REJECTED) && consent.status == ConsentStatus.UNCONFIRMED) {
+		        					
+			if (theResource.getStatus() == ConsentState.ACTIVE) {
+				HealthProvider.confirmConsent(info().executorId, consent._id);
+			} else {
+				HealthProvider.rejectConsent(info().executorId, consent._id);
+			}
+			
+			AuditManager.instance.success();
+		}
+		
+	}
+
+	@Override
+	public Consent fetchCurrent(IIdType theId) throws AppException {
+		return Circles.getConsentById(info().executorId, MidataId.from(theId.getIdPart()), Consent.ALL);	
+	}
+
+	@Override
+	public void processResource(Consent record, org.hl7.fhir.dstu3.model.Consent resource) throws AppException {		
+		
+	}
+
+	@Override
+	public List<org.hl7.fhir.dstu3.model.Consent> parse(List<Consent> consents, Class<org.hl7.fhir.dstu3.model.Consent> resultClass) throws AppException {
+		List<org.hl7.fhir.dstu3.model.Consent> result = new ArrayList<org.hl7.fhir.dstu3.model.Consent>();
+		for (models.Consent consent : consents) {
+			result.add(readConsentFromMidataConsent(consent, true));
+		}
+		
+		return result;
+	}
+
+	@Override
+	public String getVersion(Consent record) {
+		return "";
+	}
+
+	@Override
+	public Date getLastUpdated(Consent record) {
+		return record.dateOfCreation;
+	}	
+	
+	
 }

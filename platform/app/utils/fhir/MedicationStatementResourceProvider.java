@@ -40,7 +40,7 @@ import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
-public class MedicationStatementResourceProvider extends ResourceProvider<MedicationStatement> implements IResourceProvider {
+public class MedicationStatementResourceProvider extends RecordBasedResourceProvider<MedicationStatement> implements IResourceProvider {
 
 	public MedicationStatementResourceProvider() {
 		searchParamNameToPathMap.put("MedicationStatement:context", "context");

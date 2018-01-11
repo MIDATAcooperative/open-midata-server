@@ -7,6 +7,7 @@ import org.hl7.fhir.dstu3.model.DomainResource;
 import org.hl7.fhir.dstu3.model.Resource;
 
 import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
+import models.Model;
 import models.Record;
 import utils.ErrorReporter;
 import utils.exceptions.AppException;
@@ -28,12 +29,12 @@ public abstract class TransactionStep {
 	/**
 	 * the record that shall be worked with
 	 */
-	protected Record record;
+	protected Model record;
 	
 	/**
 	 * the resource provider belonging to the resource
 	 */
-	protected ResourceProvider<DomainResource> provider;
+	protected ResourceProvider<DomainResource, Model> provider;
 	
 	/**
 	 * The response created by this transaction step
@@ -52,14 +53,14 @@ public abstract class TransactionStep {
 	 * returns the record belonging to this action
 	 * @return record
 	 */
-	public Record getRecord() {
+	public Model getRecord() {
 		return record;
 	}
 
 	/**
 	 * initialize this action
 	 */
-	public void init() {}
+	public void init() throws AppException {}
 	
 	/**
 	 * prepare this action for execution

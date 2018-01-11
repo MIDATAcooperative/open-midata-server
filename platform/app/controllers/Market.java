@@ -280,6 +280,7 @@ public class Market extends APIController {
 			app.version = JsonValidation.getLong(pluginJson, "version");		
 			app.filename = JsonValidation.getStringOrNull(pluginJson, "filename");						
 			app.creatorLogin = JsonValidation.getStringOrNull(pluginJson, "creatorLogin");
+			app.status = JsonValidation.getEnum(pluginJson, "status", PluginStatus.class);
 			User u = Developer.getByEmail(app.creatorLogin, Sets.create("_id", "email"));
 			if (u != null) {
 			   app.creator = u._id;

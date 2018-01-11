@@ -50,7 +50,7 @@ import utils.exceptions.AppException;
  * Base class for FHIR resource providers. There is one provider subclass for each FHIR resource type.
  *
  */
-public class BasicResourceProvider extends ResourceProvider<Basic> implements IResourceProvider {
+public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> implements IResourceProvider {
  
     public BasicResourceProvider() {
     	searchParamNameToPathMap.put("Basic:author", "author");
@@ -277,6 +277,8 @@ public class BasicResourceProvider extends ResourceProvider<Basic> implements IR
  
 		}		
 	}
+
+    public Record init() { return newRecord("fhir/Basic"); }
    
 
 }

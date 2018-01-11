@@ -38,7 +38,7 @@ import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
-public class PractitionerResourceProvider extends ResourceProvider<Practitioner> implements IResourceProvider {
+public class PractitionerResourceProvider extends ResourceProvider<Practitioner, User> implements IResourceProvider {
 
 	public  PractitionerResourceProvider() {
 		registerSearches("Practitioner", getClass(), "getPractitioner");
@@ -61,13 +61,7 @@ public class PractitionerResourceProvider extends ResourceProvider<Practitioner>
 		if (member == null) return null;
 		return practitionerFromMidataUser(member);
 	}
-	
-	@History()
-    @Override
-	public List<Practitioner> getHistory(@IdParam IIdType theId) throws AppException {
-		throw new ResourceNotFoundException("No history kept for Person resource");
-    }
-	
+		
 	/**
 	 * Convert a MIDATA User object into a FHIR person object
 	 * @param userToConvert user to be converted into a FHIR object
@@ -168,48 +162,47 @@ public class PractitionerResourceProvider extends ResourceProvider<Practitioner>
 	    }
 	
 	@Override
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {		
-		return null;
+	public List<User> searchRaw(SearchParameterMap params) throws AppException {		
+		Query query = new Query();		
+		QueryBuilder builder = new QueryBuilder(params, query, null);
+		
+		builder.handleIdRestriction();
+		builder.restriction("name", true, QueryBuilder.TYPE_STRING, "firstname", "string", "lastname");
+		builder.restriction("email", true, QueryBuilder.TYPE_STRING, "emailLC");
+		builder.restrictionMany("address", true, QueryBuilder.TYPE_STRING, "address1", "address2", "city", "country", "zip");
+		builder.restriction("address-city", true, QueryBuilder.TYPE_STRING, "city");
+		builder.restriction("address-postalcode", true, QueryBuilder.TYPE_STRING, "zip");
+		builder.restriction("address-country", true, QueryBuilder.TYPE_STRING, "country");
+		builder.restriction("birthdate", false, QueryBuilder.TYPE_DATE, "birthdate");						
+		builder.restriction("gender", false, QueryBuilder.TYPE_CODE, "gender");
+		
+		Map<String, Object> properties = query.retrieveAsNormalMongoQuery();
+		Object keywords = query.retrieveIndexValues();
+		if (keywords != null) properties.put("keywordsLC", keywords);
+		properties.put("searchable", true);
+		properties.put("status", User.NON_DELETED);
+		Set<HPUser> users = HPUser.getAll(properties, Sets.create("firstname","lastname","birthday","gender","email","phone","city","country","zip","address1","address2","role"));
+        return new ArrayList<User>(users);
 	}
  
-	@Override
-	public List<IBaseResource> search(SearchParameterMap params) {
-		try {
-					
-			//ExecutionInfo info = info();
 	
-			Query query = new Query();		
-			QueryBuilder builder = new QueryBuilder(params, query, null);
-			
-			builder.handleIdRestriction();
-			builder.restriction("name", true, QueryBuilder.TYPE_STRING, "firstname", "string", "lastname");
-			builder.restriction("email", true, QueryBuilder.TYPE_STRING, "emailLC");
-			builder.restrictionMany("address", true, QueryBuilder.TYPE_STRING, "address1", "address2", "city", "country", "zip");
-			builder.restriction("address-city", true, QueryBuilder.TYPE_STRING, "city");
-			builder.restriction("address-postalcode", true, QueryBuilder.TYPE_STRING, "zip");
-			builder.restriction("address-country", true, QueryBuilder.TYPE_STRING, "country");
-			builder.restriction("birthdate", false, QueryBuilder.TYPE_DATE, "birthdate");						
-			builder.restriction("gender", false, QueryBuilder.TYPE_CODE, "gender");
-			
-			Map<String, Object> properties = query.retrieveAsNormalMongoQuery();
-			Object keywords = query.retrieveIndexValues();
-			if (keywords != null) properties.put("keywordsLC", keywords);
-			properties.put("searchable", true);
-			properties.put("status", User.NON_DELETED);
-			Set<HPUser> users = HPUser.getAll(properties, Sets.create("firstname","lastname","birthday","gender","email","phone","city","country","zip","address1","address2","role"));
-			List<IBaseResource> result = new ArrayList<IBaseResource>();
-			for (HPUser user : users) {
-				result.add(practitionerFromMidataUser(user));
-			}
-			return result;
-			
-		 } catch (AppException e) {
-		       ErrorReporter.report("FHIR (search)", null, e);	       
-			   return null;
-		 } catch (NullPointerException e2) {
-		   	    ErrorReporter.report("FHIR (search)", null, e2);	 
-				throw new InternalErrorException(e2);
-		}
+	@Override
+	public User fetchCurrent(IIdType theId) throws AppException {
+		return HPUser.getById(MidataId.from(theId.getIdPart()), User.ALL_USER);	
+	}
+
+	@Override
+	public void processResource(User record, Practitioner resource) throws AppException {
 		
+		
+	}
+
+	@Override
+	public List<Practitioner> parse(List<User> users, Class<Practitioner> resultClass) throws AppException {
+		List<Practitioner> result = new ArrayList<Practitioner>();
+		for (User user : users) {
+			result.add(practitionerFromMidataUser(user));
+		}
+		return result;
 	}
 }

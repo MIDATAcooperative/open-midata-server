@@ -33,7 +33,7 @@ import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
-public class ProcedureResourceProvider extends ResourceProvider<Procedure> implements IResourceProvider {
+public class ProcedureResourceProvider extends RecordBasedResourceProvider<Procedure> implements IResourceProvider {
 
 	public ProcedureResourceProvider() {
 						

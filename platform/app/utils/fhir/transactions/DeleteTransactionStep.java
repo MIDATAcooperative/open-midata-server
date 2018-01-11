@@ -3,6 +3,7 @@ package utils.fhir.transactions;
 import org.hl7.fhir.dstu3.model.DomainResource;
 
 import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
+import models.Model;
 import utils.fhir.ResourceProvider;
 
 /**
@@ -16,7 +17,7 @@ public class DeleteTransactionStep extends TransactionStep {
 	 * @param provider the ResourceProvider to use
 	 * @param resource the DomainResource from the user request
 	 */
-	public DeleteTransactionStep(ResourceProvider<DomainResource> provider, DomainResource resource) {
+	public DeleteTransactionStep(ResourceProvider<DomainResource, Model> provider, DomainResource resource) {
 		this.provider = provider;
 		this.resource = resource;
 	}

@@ -61,7 +61,7 @@ import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
-public class ObservationResourceProvider extends ResourceProvider<Observation> implements IResourceProvider {
+public class ObservationResourceProvider extends RecordBasedResourceProvider<Observation> implements IResourceProvider {
 
 	public ObservationResourceProvider() {
 		searchParamNameToPathMap.put("Observation:based-on", "basedOn");

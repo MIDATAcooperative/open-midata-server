@@ -31,7 +31,7 @@ import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
-public class GoalResourceProvider extends ResourceProvider<Goal> implements IResourceProvider {
+public class GoalResourceProvider extends RecordBasedResourceProvider<Goal> implements IResourceProvider {
 
 	public GoalResourceProvider() {		
 		searchParamNameToPathMap.put("Goal:patient", "subject");

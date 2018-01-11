@@ -29,6 +29,7 @@ import ca.uhn.fhir.rest.param.UriParamQualifierEnum;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
+import models.MidataId;
 import utils.AccessLog;
 import utils.access.op.AndCondition;
 import utils.access.op.CompareCaseInsensitive;
@@ -85,10 +86,14 @@ public class QueryBuilder {
 	
 	public void handleCommon() throws AppException {
 		if (params.getLastUpdated() != null) {
-			Date from = params.getLastUpdated().getLowerBoundAsInstant();
-			Date to = params.getLastUpdated().getUpperBoundAsInstant();
-			if (from != null) query.putAccount("updated-after", from);
-			if (to != null) query.putAccount("updated-before", to);
+			try {
+			    Date from = params.getLastUpdated().getLowerBoundAsInstant();
+			    Date to = params.getLastUpdated().getUpperBoundAsInstant();
+			    if (from != null) query.putAccount("updated-after", from);
+				if (to != null) query.putAccount("updated-before", to);
+			} catch (IllegalArgumentException e) {
+				throw new InvalidRequestException("Invalid _lastUpdated parameter!");
+			}			
 		}
 		if (params.getCount() != null) {
 			query.putAccount("limit", params.getCount());
@@ -100,7 +105,10 @@ public class QueryBuilder {
 	public void handleIdRestriction() throws AppException {
 		if (params.containsKey("_id")) {
 	           Set<String> ids = paramToStrings("_id");
-	           if (ids != null) query.putAccount("_id", ids);
+	           if (ids != null) {
+	        	   for (String id : ids) if (!MidataId.isValid(id)) throw new UnprocessableEntityException("Invalid value for _id in query");
+	        	   query.putAccount("_id", ids);
+	           }
 		}
 	}
 	
@@ -383,7 +391,7 @@ public class QueryBuilder {
 				
 				Calendar cal = dateParam.getValueAsDateTimeDt().getValueAsCalendar();
 				//cal.setTime(comp);
-				
+				if (cal == null) throw new UnprocessableEntityException("Invalid date in date restriction");
 				switch (precision) {					  
 				case SECOND: 
 					cal.set(Calendar.MILLISECOND, 0);

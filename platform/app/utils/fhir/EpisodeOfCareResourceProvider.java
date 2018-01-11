@@ -32,7 +32,7 @@ import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
-public class EpisodeOfCareResourceProvider extends ResourceProvider<EpisodeOfCare> implements IResourceProvider {
+public class EpisodeOfCareResourceProvider extends RecordBasedResourceProvider<EpisodeOfCare> implements IResourceProvider {
 
 	public EpisodeOfCareResourceProvider() {
 		
