@@ -48,7 +48,7 @@ import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
-public class AppointmentResourceProvider extends ResourceProvider<Appointment> implements IResourceProvider {
+public class AppointmentResourceProvider extends RecordBasedResourceProvider<Appointment> implements IResourceProvider {
 
 	public AppointmentResourceProvider() {
 		searchParamNameToPathMap.put("Appointment:actor", "participant.actor");
@@ -218,18 +218,12 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 		return super.createResource(theAppointment);
 	}
 	
-	@Override
-	protected MethodOutcome create(Appointment theAppointment) throws AppException {
-		Record record = newRecord("fhir/Appointment");
-		
-		prepare(record, theAppointment);				
-		insertRecord(record, theAppointment);
-        shareRecord(record, theAppointment);
-		processResource(record, theAppointment);				
-		
-		return outcome("Appointment", record, theAppointment);
 
-	}
+	@Override
+	public void createExecute(Record record, Appointment theAppointment) throws AppException {
+		insertRecord(record, theAppointment);
+		shareRecord(record, theAppointment);
+	}		
 	
 	@Update
 	@Override
@@ -237,15 +231,11 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 		return super.updateResource(theId, theAppointment);
 	}
 	
+	
 	@Override
-	protected MethodOutcome update(IdType theId, Appointment theAppointment) throws AppException {
-		Record record = fetchCurrent(theId);
-		prepare(record, theAppointment);		
+	public void updateExecute(Record record, Appointment theAppointment) throws AppException {
 		updateRecord(record, theAppointment);			
 		shareRecord(record, theAppointment);
-		processResource(record, theAppointment);
-		
-		return outcome("Appointment", record, theAppointment);
 	}
 			
 	public void shareRecord(Record record, Appointment theAppointment) throws AppException {

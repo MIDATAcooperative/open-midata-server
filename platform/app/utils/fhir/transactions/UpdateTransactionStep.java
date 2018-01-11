@@ -6,8 +6,10 @@ import org.hl7.fhir.dstu3.model.DomainResource;
 
 import ca.uhn.fhir.rest.server.exceptions.PreconditionFailedException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
+import models.Model;
 import utils.exceptions.AppException;
 import utils.fhir.FHIRServlet;
+import utils.fhir.ReadWriteResourceProvider;
 import utils.fhir.ResourceProvider;
 
 /**
@@ -21,21 +23,21 @@ public class UpdateTransactionStep extends TransactionStep {
 	 * @param provider the resource provider to use
 	 * @param resource the domain resource provided in the request
 	 */
-	public UpdateTransactionStep(ResourceProvider<DomainResource> provider, DomainResource resource) {
+	public UpdateTransactionStep(ResourceProvider<DomainResource, Model> provider, DomainResource resource) {
 		this.provider = provider;
 		this.resource = resource;
 	}
 	
 	@Override
-    public void init() {
-    	record = ResourceProvider.fetchCurrent(resource.getIdElement());
+    public void init() throws AppException {
+    	record = provider.fetchCurrent(resource.getIdElement());
     }
 	
 	@Override
 	public void prepare() throws AppException { 				  
-		  provider.prepare(record, resource);
+		((ReadWriteResourceProvider) provider).updatePrepare(record, resource);
 		  if (resource.getMeta() == null || resource.getMeta().getVersionId() == null) throw new PreconditionFailedException("Resource version missing!");
-		  if (!record.version.equals(resource.getMeta().getVersionId())) throw new ResourceVersionConflictException("Wrong resource version supplied!") ;
+		  if (!((ReadWriteResourceProvider) provider).getVersion(record).equals(resource.getMeta().getVersionId())) throw new ResourceVersionConflictException("Wrong resource version supplied!") ;
 		
 	}
 	
@@ -44,12 +46,12 @@ public class UpdateTransactionStep extends TransactionStep {
 		
 		try {
 		if (result == null) {
-			provider.updateRecord(record, resource);
+			((ReadWriteResourceProvider) provider).updateExecute(record, resource);
 			result = new BundleEntryComponent();
 			BundleEntryResponseComponent response = new BundleEntryResponseComponent();
-			response.setLastModified(record.lastUpdated);
+			response.setLastModified(((ReadWriteResourceProvider) provider).getLastUpdated(record));
 			response.setStatus("200 OK");
-			response.setLocation(FHIRServlet.getBaseUrl()+"/"+provider.getResourceType().getSimpleName()+"/"+record._id.toString()+"/_history/"+record.version);
+			response.setLocation(FHIRServlet.getBaseUrl()+"/"+provider.getResourceType().getSimpleName()+"/"+record._id.toString()+"/_history/"+((ReadWriteResourceProvider) provider).getVersion(record));
 			result.setResponse(response);
 		}
 		} catch (Exception e) {

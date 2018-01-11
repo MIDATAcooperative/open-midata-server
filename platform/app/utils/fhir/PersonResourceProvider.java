@@ -52,7 +52,7 @@ import utils.exceptions.AppException;
  * Creates, updates and deletes are not allowed.
  *
  */
-public class PersonResourceProvider extends ResourceProvider<Person> implements IResourceProvider {
+public class PersonResourceProvider extends ResourceProvider<Person, User> implements IResourceProvider {
 
 	public  PersonResourceProvider() {
 		registerSearches("Person", getClass(), "getPerson");
@@ -74,13 +74,7 @@ public class PersonResourceProvider extends ResourceProvider<Person> implements 
 		User member = User.getById(MidataId.from(theId.getIdPart()), User.ALL_USER);	
 		if (member == null) return null;
 		return personFromMidataUser(member);
-	}
-	
-	@History()
-    @Override
-	public List<Person> getHistory(@IdParam IIdType theId) throws AppException {
-		throw new ResourceNotFoundException("No history kept for Person resource");
-    }
+	}		
 	
 	/**
 	 * Convert a MIDATA User object into a FHIR person object
@@ -215,49 +209,48 @@ public class PersonResourceProvider extends ResourceProvider<Person> implements 
 	    }
 	
 	@Override
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {		
-		return null;
-	}
- 
-	@Override
-	public List<IBaseResource> search(SearchParameterMap params) {
-		try {
-					
-			//ExecutionInfo info = info();
-	
-			Query query = new Query();		
-			QueryBuilder builder = new QueryBuilder(params, query, null);
-			
-			builder.handleIdRestriction();
-			builder.restriction("name", true, QueryBuilder.TYPE_STRING, "firstname", QueryBuilder.TYPE_STRING, "lastname");
-			builder.restriction("email", true, QueryBuilder.TYPE_STRING, "emailLC");
-			builder.restrictionMany("address", true, QueryBuilder.TYPE_STRING, "address1", "address2", "city", "country", "zip");
-			builder.restriction("address-city", true, QueryBuilder.TYPE_STRING, "city");
-			builder.restriction("address-postalcode", true, QueryBuilder.TYPE_STRING, "zip");
-			builder.restriction("address-country", true, QueryBuilder.TYPE_STRING, "country");
-			builder.restriction("birthdate", false, QueryBuilder.TYPE_DATE, "birthdate");						
-			builder.restriction("gender", false, QueryBuilder.TYPE_CODE, "gender");
-			
-			Map<String, Object> properties = query.retrieveAsNormalMongoQuery();
-			
-			Object keywords = query.retrieveIndexValues();
-			if (keywords != null) properties.put("keywordsLC", keywords);
-			properties.put("searchable", true);
-			properties.put("status", User.NON_DELETED);
-			Set<User> users = User.getAllUser(properties, Sets.create("firstname","lastname","birthday","gender","email","phone","city","country","zip","address1","address2","role"));
-			List<IBaseResource> result = new ArrayList<IBaseResource>();
-			for (User user : users) {
-				result.add(personFromMidataUser(user));
-			}
-			return result;
-			
-		 } catch (AppException e) {
-		       ErrorReporter.report("FHIR (search)", null, e);	       
-			   return null;
-		 } catch (NullPointerException e2) {
-		   	    ErrorReporter.report("FHIR (search)", null, e2);	 
-				throw new InternalErrorException(e2);
-		}
+	public List<User> searchRaw(SearchParameterMap params) throws AppException {		
+		Query query = new Query();		
+		QueryBuilder builder = new QueryBuilder(params, query, null);
 		
+		builder.handleIdRestriction();
+		builder.restriction("name", true, QueryBuilder.TYPE_STRING, "firstname", QueryBuilder.TYPE_STRING, "lastname");
+		builder.restriction("email", true, QueryBuilder.TYPE_STRING, "emailLC");
+		builder.restrictionMany("address", true, QueryBuilder.TYPE_STRING, "address1", "address2", "city", "country", "zip");
+		builder.restriction("address-city", true, QueryBuilder.TYPE_STRING, "city");
+		builder.restriction("address-postalcode", true, QueryBuilder.TYPE_STRING, "zip");
+		builder.restriction("address-country", true, QueryBuilder.TYPE_STRING, "country");
+		builder.restriction("birthdate", false, QueryBuilder.TYPE_DATE, "birthdate");						
+		builder.restriction("gender", false, QueryBuilder.TYPE_CODE, "gender");
+		
+		Map<String, Object> properties = query.retrieveAsNormalMongoQuery();
+		
+		Object keywords = query.retrieveIndexValues();
+		if (keywords != null) properties.put("keywordsLC", keywords);
+		properties.put("searchable", true);
+		properties.put("status", User.NON_DELETED);
+		Set<User> users = User.getAllUser(properties, Sets.create("firstname","lastname","birthday","gender","email","phone","city","country","zip","address1","address2","role"));
+		return new ArrayList<User>(users);
+
+	} 	
+
+	@Override
+	public User fetchCurrent(IIdType theId) throws AppException {
+		return User.getById(MidataId.from(theId.getIdPart()), User.ALL_USER);
+	}
+
+	@Override
+	public void processResource(User record, Person resource) throws AppException {
+		
+		
+	}
+
+	@Override
+	public List<Person> parse(List<User> users, Class<Person> resultClass) throws AppException {
+		List<Person> result = new ArrayList<Person>();
+		for (User user : users) {
+			result.add(personFromMidataUser(user));
+		}
+		return result;
 	}
 }

@@ -49,7 +49,7 @@ import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
-public class DocumentReferenceProvider extends ResourceProvider<DocumentReference> implements IResourceProvider {
+public class DocumentReferenceProvider extends RecordBasedResourceProvider<DocumentReference> implements IResourceProvider {
 
 	public DocumentReferenceProvider() {
 		searchParamNameToPathMap.put("DocumentReference:authenticator", "authenticator");
@@ -344,12 +344,8 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 	}
 		
 	@Override
-	protected MethodOutcome create(DocumentReference theDocumentReference) throws AppException {
-
-		Record record = newRecord("fhir/DocumentReference");
-		prepare(record, theDocumentReference);
-		// insert
-		Attachment attachment = null;
+	public void createExecute(Record record, DocumentReference theDocumentReference) throws AppException {
+        Attachment attachment = null;
 		
 		List<DocumentReferenceContentComponent> contents = theDocumentReference.getContent(); 
 		if (contents != null && contents.size() == 1) {
@@ -357,11 +353,7 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 		}
 		
 		insertRecord(record, theDocumentReference, attachment);
-
-		processResource(record, theDocumentReference);
-		return outcome("DocumentReference", record, theDocumentReference);
-
-	}
+	}	
 	
 	public Record init() { return newRecord("fhir/DocumentReference"); }
 
@@ -371,16 +363,6 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 		return super.updateResource(theId, theDocumentReference);
 	}
 	
-	@Override
-	protected MethodOutcome update(@IdParam IdType theId, @ResourceParam DocumentReference theDocumentReference) throws AppException {
-		Record record = fetchCurrent(theId);
-		prepare(record, theDocumentReference);
-		updateRecord(record, theDocumentReference);
-		processResource(record, theDocumentReference);
-		
-		return outcome("DocumentReference", record, theDocumentReference);
-	}
-
 	public void prepare(Record record, DocumentReference theDocumentReference) throws AppException {
 		// Set Record code and content
 		setRecordCodeByCodeableConcept(record, theDocumentReference.getType(), "DocumentReference");		

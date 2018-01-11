@@ -50,7 +50,7 @@ import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
-public class TaskResourceProvider extends ResourceProvider<Task> implements IResourceProvider {
+public class TaskResourceProvider extends RecordBasedResourceProvider<Task> implements IResourceProvider {
 
 	public TaskResourceProvider() {
 		
@@ -299,19 +299,11 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 	}
 	
 	@Override
-	protected MethodOutcome create(Task theTask) throws AppException {
-
-		Record record = newRecord("fhir/Task");
-		
-		prepare(record, theTask);		
-		// insert
+	public void createExecute(Record record, Task theTask) throws AppException {
 		MidataId consent = insertMessageRecord(record, theTask);
         shareRecord(record, theTask, consent);
-		processResource(record, theTask);				
-		
-		return outcome("Task", record, theTask);
-
-	}
+	}	
+	
 			
 	public void shareRecord(Record record, Task theTask, MidataId consent) throws AppException {		
 		ExecutionInfo inf = info();
@@ -340,15 +332,11 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 		return super.updateResource(theId, theTask);
 	}
 	
+	
 	@Override
-	protected MethodOutcome update(@IdParam IdType theId, @ResourceParam Task theTask) throws AppException {
-		Record record = fetchCurrent(theId);
-		prepare(record, theTask);		
+	public void updateExecute(Record record, Task theTask) throws AppException {
 		updateRecord(record, theTask);
 		shareRecord(record, theTask, info().executorId); // XXX To be checked
-		processResource(record, theTask);
-		
-		return outcome("Task", record, theTask);
 	}
 
 	public void prepare(Record record, Task theTask) throws AppException {

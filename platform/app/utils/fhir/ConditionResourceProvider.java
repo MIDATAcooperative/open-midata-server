@@ -32,7 +32,7 @@ import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
-public class ConditionResourceProvider extends ResourceProvider<Condition> implements IResourceProvider {
+public class ConditionResourceProvider extends RecordBasedResourceProvider<Condition> implements IResourceProvider {
 
 	public ConditionResourceProvider() {		
 		searchParamNameToPathMap.put("Condition:asserter", "asserter");
