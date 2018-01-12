@@ -489,6 +489,18 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		if (record.ownerName != null) {
 			resource.addIdentifier(new Identifier().setValue(record.ownerName).setSystem("http://midata.coop/identifier/participant-name"));
 		}
+				
+		if (info().ownerId.equals(record.owner) && info().pluginId != null) {
+		  Plugin plugin = Plugin.getById(info().pluginId);		  
+		  if (plugin.linkedStudy != null) {
+			  StudyParticipation part = StudyParticipation.getByStudyAndMember(plugin.linkedStudy, record.owner, Sets.create("_id", "ownerName"));			  
+			  if (part != null && part.getOwnerName() != null) {
+				  resource.addIdentifier(new Identifier().setValue(part.getOwnerName()).setSystem("http://midata.coop/identifier/participant-name"));
+				  resource.addIdentifier(new Identifier().setValue(part._id.toString()).setSystem("http://midata.coop/identifier/participant-id"));
+			  }
+		  }
+		}
+		
 		// resource.setId(record.owner.toString());
 	}
 	/*
