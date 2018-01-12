@@ -58,10 +58,7 @@
                                 <textarea class="form-control" rows="5" id="reason" name="reason" ng-model="registration.reason" ng-required="true"></textarea>
                                 <p class="help-block" translate="developer_registration.reason_fillout"></p>
                               </formrow>
-                                                           
-                              <formrow myid="agb" label="registration.agb"><div class="checkbox"><label><input type="checkbox" id="agb" name="agb" ng-model="registration.agb"><span translate="registration.agb2"></span></label></div>
-                                <formerror myid="agb" type="mustaccept" message="error.missing.agb"></formerror>
-                              </formrow>
+                                                                                         
                               
                              <button type="submit" ng-disabled="status.action=='register'" class="btn btn-lg btn-primary btn-block" translate="developer_registration.sign_up_btn"></button>
                             </form>
