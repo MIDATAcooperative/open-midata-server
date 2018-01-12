@@ -110,6 +110,8 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.messaging.Messager;
+import views.txt.mails.studynotify;
 
 import org.apache.commons.codec.binary.Base64InputStream;
 import org.hl7.fhir.dstu3.model.DomainResource;
@@ -611,11 +613,27 @@ public class Studies extends APIController {
 		   //study.addHistory(new History(EventType.STUDY_VALIDATED, user, null));
 		   study.setValidationStatus(StudyValidationStatus.VALIDATED);
 		   AuditManager.instance.success();
+		} else {
+		   sendAdminNotificationMail(study);
 		}
 						
 		return ok();
 	}
 	
+	/**
+	 * Helper function to notification mail to admin
+	 * @param user new user record
+	 */
+	public static void sendAdminNotificationMail(Study study) throws InternalServerException {
+	   
+		 String site = "https://" + InstanceConfig.getInstance().getPortalServerDomain();
+		 String name = study.name;
+		 String code = study.code;
+		   
+		 AccessLog.log("send admin notification mail (study): "+code);	   
+	  	 Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), "Admin", "Study to Validate", studynotify.render(site, name, code).toString());
+	   
+	}
 	/**
 	 * end study validation
 	 * @param id ID of study

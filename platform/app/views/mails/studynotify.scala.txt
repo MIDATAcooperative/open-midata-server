@@ -1,0 +1,12 @@
+@(website: String)(name: String, code: String)
+Dear MIDATA Admin,
+
+a study is waiting for validation on @website
+
+Name: @name
+Code: @code
+
+Please validate as soon as possible.
+
+Regards,
+your MIDATA instance
