@@ -12,7 +12,7 @@ angular.module('views')
 			$scope.record = result.data;
 			$scope.record.json = JSON.stringify($scope.record.data, null, "\t");
 						
-			loadUserNames();
+			//loadUserNames();
 			
 			apps.getApps({"_id": $scope.record.app}, ["name"]).
 			then(function(result) { $scope.record.app = result.data[0].name; });
