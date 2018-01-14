@@ -366,17 +366,17 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 				generateBar("chart-prop",
 					["0-10", "11-20", "21-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90", "91-100"],
 					[32, 13, 7, 19, 18, 18, 5, 2, 2, 3],
-					chartLabel, chartLabelY, chartLabelX, GetTasteIntForBars(arrayWithValues[5]));
+					chartLabel, chartLabelY, chartLabelX, GetTasteIntForBars(result.prop));//GetTasteIntForBars(arrayWithValues[5]));
 				
 				generateBar("chart-sugar",
 					["0-10", "11-20", "21-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90", "91-100"],
 					[1, 25, 25, 40, 10, 13, 3, 1, 0, 2],
-					chartLabel, chartLabelY, chartLabelX, GetTasteIntForBars(arrayWithValues[3]));
+					chartLabel, chartLabelY, chartLabelX, GetTasteIntForBars(result.sucrose));//GetTasteIntForBars(arrayWithValues[3]));
 				
 				generateBar("chart-salt",
 					["0-10", "11-20", "21-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90", "91-100"],
 					[3, 22, 14, 34, 20, 19, 0, 0, 0, 0],
-					chartLabel, chartLabelY, chartLabelX, GetTasteIntForBars(arrayWithValues[4]));
+					chartLabel, chartLabelY, chartLabelX, GetTasteIntForBars(result.nacl));//GetTasteIntForBars(arrayWithValues[4]));
 			});
 		};
 
@@ -387,25 +387,25 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 		var GetTasteIntForBars = function(value){
 			if (value == null || value == undefined){
 				return null;
-			} else if (value < 1.1) {
+			} else if (value < 11) {
 				return 0;
-			} else if (value < 2.1) {
+			} else if (value < 21) {
 				return 1;
-			} else if (value < 3.1) {
+			} else if (value < 31) {
 				return 2;
-			} else if (value < 4.1) {
+			} else if (value < 41) {
 				return 3;
-			} else if (value < 5.1) {
+			} else if (value < 51) {
 				return 4;
-			} else if (value < 6.1) {
+			} else if (value < 61) {
 				return 5;
-			} else if (value < 7.1) {
+			} else if (value < 71) {
 				return 6;
-			} else if (value < 8.1) {
+			} else if (value < 81) {
 				return 7;
-			} else if (value < 9.1) {
+			} else if (value < 91) {
 				return 8;
-			} else if (value < 10.1) {
+			} else if (value < 101) {
 				return 9;
 			} else {
 				return null;
