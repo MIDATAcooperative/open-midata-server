@@ -243,7 +243,18 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 					_borderColor[selectedIndex] = selectedBorderColor;
 				}
 
-                var ctx = document.getElementById(canvasId).getContext('2d');
+				var canvasElement = $document[0].getElementById(canvasId);
+
+				if (canvasElement) {
+					var parentNode = canvasElement.parentNode;
+					parentNode.removeChild(canvasElement);
+					var newCanvas = $document[0].createElement("canvas");
+					newCanvas.id = canvasId;
+					parentNode.appendChild(newCanvas);
+					canvasElement = $document[0].getElementById(canvasId);
+				}
+
+                var ctx = canvasElement.getContext('2d');
 
                 var chart = new Chart(ctx, {
                     type: 'bar',
