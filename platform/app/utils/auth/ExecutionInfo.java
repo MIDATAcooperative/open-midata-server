@@ -155,6 +155,9 @@ public class ExecutionInfo {
 		} else {
 			RecordManager.instance.setAccountOwner(appInstance._id, appInstance.owner);
 		}
+		if (appInstance.sharingQuery == null) {
+			appInstance.sharingQuery = RecordManager.instance.getMeta(authToken.appInstanceId, authToken.appInstanceId, "_query").toMap();
+		}
                                                 
 		result.ownerId = appInstance.owner;
 		result.pluginId = appInstance.applicationId;
