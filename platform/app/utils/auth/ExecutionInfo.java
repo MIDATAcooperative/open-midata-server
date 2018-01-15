@@ -145,6 +145,10 @@ public class ExecutionInfo {
         ExecutionInfo result = new ExecutionInfo();
 		result.executorId = appInstance._id;
         
+		if (appInstance.sharingQuery == null) {
+			appInstance.sharingQuery = RecordManager.instance.getMeta(authToken.appInstanceId, authToken.appInstanceId, "_query").toMap();
+		}
+		
 		Map<String, Object> appobj = RecordManager.instance.getMeta(authToken.appInstanceId, authToken.appInstanceId, "_app").toMap();
 		if (appobj.containsKey("aliaskey") && appobj.containsKey("alias")) {
 			MidataId alias = new MidataId(appobj.get("alias").toString());
@@ -155,9 +159,7 @@ public class ExecutionInfo {
 		} else {
 			RecordManager.instance.setAccountOwner(appInstance._id, appInstance.owner);
 		}
-		if (appInstance.sharingQuery == null) {
-			appInstance.sharingQuery = RecordManager.instance.getMeta(authToken.appInstanceId, authToken.appInstanceId, "_query").toMap();
-		}
+		
                                                 
 		result.ownerId = appInstance.owner;
 		result.pluginId = appInstance.applicationId;
