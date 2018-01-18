@@ -2,16 +2,20 @@
 MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$location', 'midataServer', 'midataPortal', 'information',
 	function($scope, $document, $translate, $location, midataServer, midataPortal, information) {
 
+
+		var canvasWidth =$document[0].getElementById("myCanvas").width;
+		var canvasHeight = $document[0].getElementById("myCanvas").height;
 	    // Make layout fit into MIDATA page
 	    midataPortal.autoresize();
 
 	    // Use language from MIDATA portal
 		$translate.use(midataPortal.language);
 		
+		$scope.information = information;
 		midataServer.authToken = $location.search().authToken;
 
-		information.getInformation(midataServer.authToken).then(function (result) {
-			
+		var UpdateInformation = function() {
+			var result = information.GetInformationForVisualization();
 			// draw image
 			var canvas = $document[0].getElementById("myCanvas");
 			var ctx = canvas.getContext("2d");
@@ -21,11 +25,11 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 
             // resize canvas
             var newSize = 0.7;
-            canvas.width = canvas.width * newSize;
-            canvas.height = canvas.height * newSize;
+            canvas.width = canvasWidth * newSize;//canvas.width * newSize;
+            canvas.height = canvasHeight * newSize;//canvas.height * newSize;
             ctx.scale(newSize, newSize);
 
-			if (result['isobuteryl-aldehyde']) {
+			if (result['isobuteryl-aldehyde'] != null) {
 				_value = Math.round(result['isobuteryl-aldehyde']);
 				switch (_value) {
 					case Math.round(0.0): arrayWithValues[0] = 0; break;
@@ -43,7 +47,7 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 						break;
 				}
 			}
-			if (result['isovaleci-acid']) {
+			if (result['isovaleci-acid'] != null) {
 				_value = Math.round(result['isovaleci-acid']);
 				switch (_value) {
 					case Math.round(0.0): arrayWithValues[1] = 0; break;
@@ -61,7 +65,7 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 						break;
 				}
 			}
-			if (result.rotundone) {
+			if (result.rotundone != null) {
 				_value = Math.round(result.rotundone);
 				switch (_value) {
 					case Math.round(0.0): arrayWithValues[2] = 0; break;
@@ -79,7 +83,7 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 						break;
 				}
 			}
-			if (result.sucrose) {
+			if (result.sucrose != null) {
 				_value = result.sucrose;	
 				if (_value == 0) {
 					arrayWithValues[3] = 0;
@@ -90,7 +94,7 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 					arrayWithValues[3] = _value/6;
 				}
 			}
-			if (result.nacl) {
+			if (result.nacl != null) {
 				_value = result.nacl;	
 				if (_value == 0) {
 					arrayWithValues[4] = 0;
@@ -101,7 +105,7 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 					arrayWithValues[4] = _value/6;
 				}
 			}
-			if (result.prop) {
+			if (result.prop != null) {
 				_value = result.prop;	
 				if (_value == 0) {
 					arrayWithValues[5] = 0;
@@ -112,7 +116,7 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 					arrayWithValues[5] = _value/6;
 				}
 			}
-			if (result['beta-ionone']) {
+			if (result['beta-ionone'] != null) {
 				_value = Math.round(result['beta-ionone']);
 				switch (_value) {
 					case Math.round(0.0): arrayWithValues[6] = 0; break;
@@ -130,7 +134,7 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 						break;
 				}
 			}
-			if (result.heptanone) {
+			if (result.heptanone != null) {
 				_value = Math.round(result.heptanone);
 				switch (_value) {
 					case Math.round(0.0): arrayWithValues[7] = 0; break;
@@ -239,7 +243,18 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 					_borderColor[selectedIndex] = selectedBorderColor;
 				}
 
-                var ctx = document.getElementById(canvasId).getContext('2d');
+				var canvasElement = $document[0].getElementById(canvasId);
+
+				if (canvasElement) {
+					var parentNode = canvasElement.parentNode;
+					parentNode.removeChild(canvasElement);
+					var newCanvas = $document[0].createElement("canvas");
+					newCanvas.id = canvasId;
+					parentNode.appendChild(newCanvas);
+					canvasElement = $document[0].getElementById(canvasId);
+				}
+
+                var ctx = canvasElement.getContext('2d');
 
                 var chart = new Chart(ctx, {
                     type: 'bar',
@@ -312,49 +327,101 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 				chartLabel = translation; 
 				chartLabelY = translation;
 			}).then(function () {
-				
+				var selectedValue = null;
+				if (arrayWithValues[6] != null) {
+					selectedValue = 10 - arrayWithValues[6];
+				}
 				generateBar('chart-beta-ionon',
-					["0.1", "0.46", "2.15", "10", "46", "215", "1'000", "4'600", "21'500", "100'000", ">100'0000"],
+					["0.1", "0.46", "2.15", "10", "46", "215", "1'000", "4'600", "21'500", "100'000", ">100'000"],
 					[6, 0, 5, 8, 2, 13, 10, 13, 8, 22, 21],
-					chartLabel, chartLabelY, chartLabelX, arrayWithValues[6]);
-
+					chartLabel, chartLabelY, chartLabelX, selectedValue);
+					
+				selectedValue = null;
+				if (arrayWithValues[7] != null) {
+					selectedValue = 10 - arrayWithValues[7];
+				}
 				generateBar("chart-heptanone",
 					["1", "3.6", "13", "46", "167", "600", "2'154", "7'742", "27'825", "100'000", ">100'000"],
 					[1, 8, 2, 3, 3, 12, 9, 15, 12, 20, 21],
-					chartLabel, chartLabelY, chartLabelX, arrayWithValues[7]);
-
+					chartLabel, chartLabelY, chartLabelX, selectedValue);
+					
+				selectedValue = null;
+				if (arrayWithValues[0] != null) {
+					selectedValue = 10 - arrayWithValues[0];
+				}
 				generateBar("chart-isobuteraldehyde",
 					["1", "3.6", "13", "46", "167", "600", "2'154", "7'742", "27'825", "100'000", ">100'000"],
 					[12, 4, 3, 4, 4, 8, 13, 14, 11, 17, 17],
-					chartLabel, chartLabelY, chartLabelX, arrayWithValues[0]);
-				
+					chartLabel, chartLabelY, chartLabelX, selectedValue);
+					
+				selectedValue = null;
+				if (arrayWithValues[1] != null) {
+					selectedValue = 10 - arrayWithValues[1];
+				}
 				generateBar("chart-iso-valeric-acid",
 					["1", "3.6", "13", "46", "167", "600", "2'154", "7'742", "27'825", "100'000", ">100'000"],
 					[16, 3, 10, 6, 10, 13, 13, 5, 10, 16, 7],
-					chartLabel, chartLabelY, chartLabelX, arrayWithValues[1]);
+					chartLabel, chartLabelY, chartLabelX, selectedValue);
 				
+					
+					selectedValue = null;
+					if (arrayWithValues[2] != null) {
+						selectedValue = 10 - arrayWithValues[2];
+					}
 				generateBar("chart-rotundone",
 					["0.001", "0.0036", "0.013", "0.046", "0.167", "0.6", "2.15", "7.7", "27.8", "100", ">100"],
 					[7, 3, 3, 5, 5, 13, 13, 18, 14, 19, 8],
-					chartLabel, chartLabelY, chartLabelX, arrayWithValues[2]);
+					chartLabel, chartLabelY, chartLabelX, selectedValue);
 				
 				chartLabelX = "Intensitätsbewertung (gLMS Skala)";
 				generateBar("chart-prop",
 					["0-10", "11-20", "21-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90", "91-100"],
 					[32, 13, 7, 19, 18, 18, 5, 2, 2, 3],
-					chartLabel, chartLabelY, chartLabelX, arrayWithValues[5]);
+					chartLabel, chartLabelY, chartLabelX, GetTasteIntForBars(result.prop));//GetTasteIntForBars(arrayWithValues[5]));
 				
 				generateBar("chart-sugar",
 					["0-10", "11-20", "21-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90", "91-100"],
 					[1, 25, 25, 40, 10, 13, 3, 1, 0, 2],
-					chartLabel, chartLabelY, chartLabelX, arrayWithValues[3]);
+					chartLabel, chartLabelY, chartLabelX, GetTasteIntForBars(result.sucrose));//GetTasteIntForBars(arrayWithValues[3]));
 				
 				generateBar("chart-salt",
 					["0-10", "11-20", "21-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90", "91-100"],
 					[3, 22, 14, 34, 20, 19, 0, 0, 0, 0],
-					chartLabel, chartLabelY, chartLabelX, arrayWithValues[4]);
+					chartLabel, chartLabelY, chartLabelX, GetTasteIntForBars(result.nacl));//GetTasteIntForBars(arrayWithValues[4]));
 			});
-		});
+		};
+
+		$scope.UpdateInformation = UpdateInformation;
+
+		information.DownloadRecordsFromPortal(midataServer.authToken).then(UpdateInformation);
+
+		var GetTasteIntForBars = function(value){
+			if (value == null || value == undefined){
+				return null;
+			} else if (value < 11) {
+				return 0;
+			} else if (value < 21) {
+				return 1;
+			} else if (value < 31) {
+				return 2;
+			} else if (value < 41) {
+				return 3;
+			} else if (value < 51) {
+				return 4;
+			} else if (value < 61) {
+				return 5;
+			} else if (value < 71) {
+				return 6;
+			} else if (value < 81) {
+				return 7;
+			} else if (value < 91) {
+				return 8;
+			} else if (value < 101) {
+				return 9;
+			} else {
+				return null;
+			}
+		};
 	}
 ]);
 MiSens.controller('PreviewCtrl', ['$scope', '$translate', '$location', 'midataServer', 'midataPortal', 'information',
