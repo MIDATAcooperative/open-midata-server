@@ -25,7 +25,7 @@ public class FormatInfo extends Model {
 	/**
 	 * the default plugin to use when displaying records with this format
 	 */
-	public MidataId visualization;
+	public String visualization;
 	
 	/**
 	 * Used for comments

@@ -64,6 +64,10 @@ angular.module('portal')
 		       $scope.record.data.resourceType === "Media");
 	};
 	
+	$scope.openAppLink = function(data) {		
+		spaces.openAppLink($state, $scope.userId, data);	 
+	};
+	
 }]);
 
 
