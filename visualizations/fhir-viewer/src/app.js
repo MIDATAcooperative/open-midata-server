@@ -18,12 +18,16 @@ angular.module('fhirViewer', [ 'midata', 'ui.router','ui.bootstrap', 'pascalprec
 	
 	 $stateProvider	    
 	    .state('resource', {
-	      url: '/resource?id&type&authToken',	   
+	      url: '/resource?id&type&authToken&lang',	   
 	      templateUrl: 'resource.html'
+	    })
+	    .state('summary', {
+	      url: '/summary?authToken&lang',	   
+	      templateUrl: 'summary.html'
 	    });
 	 
 	 $urlRouterProvider
-	 .otherwise('/resource');  
+	 .otherwise('/summary');  
 }])
 .run(['$translate', '$location', 'midataPortal', 'midataServer', function($translate, $location, midataPortal, midataServer) {
 	console.log("Language: "+midataPortal.language);
@@ -32,6 +36,7 @@ angular.module('fhirViewer', [ 'midata', 'ui.router','ui.bootstrap', 'pascalprec
     midataPortal.autoresize();
 				
 	midataServer.authToken = $location.search().authToken;
+	midataServer.owner = $location.search().owner;
 	//var params = $location.search();
     
 }])

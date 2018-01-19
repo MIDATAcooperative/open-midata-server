@@ -25,7 +25,7 @@
     </script>
     
     <script type="text/ng-template"  id="ref.html">
-     <span><b>{{resource.display || resource.reference }}</b></span>
+     <span><b><a href="javascript:" ng-click="go(resource);">{{resource.display || resource.reference }}</a></b></span>
     </script>
     
     <script type="text/ng-template"  id="quantity.html">
@@ -84,7 +84,7 @@
     </script>
 		
 			
-	<div class="">	 
+	<div class="container">	 
 	 
 	  <p ng-hide="resource.code" class="lead">{{ makeLabel(resource.resourceType) | translate }}</p>
 	  <p ng-if="resource.code" class="lead">{{ makeLabelFromCC(resource.code) | translate }}</p>

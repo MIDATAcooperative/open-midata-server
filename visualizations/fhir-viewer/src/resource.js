@@ -23,13 +23,25 @@ angular.module('fhirViewer')
 	
   $scope.probe = function() {
 	midataServer.getRecords(midataServer.authToken, {}, ["_id", "format", "owner"]).then(function(result) {
-		var l = result.data[0];
-		$scope.loadResource(l.format, l.format == "fhir/Patient" ? l.owner : l._id);
+		if (result.data.length == 1) {
+		  var l = result.data[0];
+		  $scope.loadResource(l.format, l.format == "fhir/Patient" ? l.owner : l._id);
+		}
 	});  
   };
   
+  $scope.go = function(resource) {
+	if (resource.reference) {
+		var parts = resource.reference.split("/");
+		midataPortal.openApp("page", "fhir-viewer", { id : parts[1], type : parts[0], path :"/resource" });
+		//midataPortal.openLink("page", "dist/index.html#/resource?authToken=:authToken", { id : parts[1], type : parts[0] });
+		
+		//$state.go("resource", { id : parts[1], type : parts[0] });
+	}  
+  };
+  
   $scope.loadResource = function(type, id) {
-	  var resourceType = type.substring(5);
+	  var resourceType = type.startsWith("fhir/") ? type.substring(5) : type;
 	midataServer.fhirRead(midataServer.authToken, resourceType, id).then(function(result) {
 		$scope.resource = result.data;
 		$scope.convert($scope.resource);
@@ -186,6 +198,10 @@ angular.module('fhirViewer')
 	   return "?";
    };
   
-  $scope.probe();
+  if ($state.params.id && $state.params.type) {
+	$scope.loadResource($state.params.type, $state.params.id);  
+  } else {   
+    $scope.probe();
+  }
     
 }]);
