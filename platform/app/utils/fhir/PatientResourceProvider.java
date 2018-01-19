@@ -386,6 +386,12 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		}
 		return result;
 	}
+	
+	@Create
+	@Override
+	public MethodOutcome createResource(@ResourceParam Patient thePatient) {
+		return super.createResource(thePatient);
+	}
 
 	public Patient generatePatientForAccount(Member member) {
 		Patient p = new Patient();
@@ -554,6 +560,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		super.createPrepare(record, thePatient);
 	}
 
+	@Override
 	public void createExecute(Record record, Patient thePatient) throws AppException {
 
 		
