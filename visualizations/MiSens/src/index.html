@@ -23,8 +23,8 @@
         <style>
             .StyleDivForCanvas{
                 width: 50%;
-				/*text-align: center;
-				float: left;*/
+				text-align: center;
+				/*float: left;*/
             }
 /*
 			.StyleDivContainerForCanvas{
@@ -37,7 +37,12 @@
 <body>
 	<div ng-app="MiSens" ng-controller="ViewController" ng-cloak>
 		<div class="container">
-			<!--<p class="lead" translate="title"></p>-->
+			<div style="float:right; padding-top:15px;">
+				<select ng-model="information.datasetGroup" ng-change="UpdateInformation()"><!-- ng-options='i | translate for i in {scientifica: "selectOptionScientificaResultsText", current: "selectOptionCurrentResultsText"}'>-->
+					<option value="scientifica" translate="selectOptionScientificaResultsText"> </option>
+					<option value="current" translate="selectOptionCurrentResultsText"></option>
+				</select>
+			</div>
 			<h2 translate="title"></h2>
 			<hr>
 			<p translate="textStarDiagram"></p>
@@ -66,8 +71,8 @@
 			<p translate="SucrosseText1"></p>
 			<br /><br /><br />
 				
-			<h4 translate="SalzTitle"></h4>
 			<div class="StyleDivForCanvas">
+				<h4 translate="SalzTitle"></h4>
 				<canvas id="chart-salt"></canvas>
 			</div>
 			<br />
@@ -90,32 +95,32 @@
 			<p translate="BetaiononText1"></p>
 			<br /><br /><br />
 
-			<h4 translate="HeptanonTitle"></h4>
 			<div class="StyleDivForCanvas">
+				<h4 translate="HeptanonTitle"></h4>
 				<canvas id="chart-heptanone"></canvas>
 			</div>
 			<br />
 			<p translate="HeptanonText1"></p>
 			<br /><br /><br />
 				
-			<h4 translate="IsobutyraldehydTitle"></h4>
 			<div class="StyleDivForCanvas">
+				<h4 translate="IsobutyraldehydTitle"></h4>
 				<canvas id="chart-isobuteraldehyde"></canvas>
 			</div>
 			<br />
 			<p translate="IsobutyraldehydText1"></p>
 			<br /><br /><br />
 				
-			<h4 translate="IsovalericAcidTitle"></h4>
 			<div class="StyleDivForCanvas">
+				<h4 translate="IsovalericAcidTitle"></h4>
 				<canvas id="chart-iso-valeric-acid"></canvas>
 			</div>
 			<br />
 			<p translate="IsovalericAcidText"></p>
 			<br /><br /><br />
 				
-			<h4 translate="RotundonTitle"></h4>
 			<div class="StyleDivForCanvas">
+				<h4 translate="RotundonTitle"></h4>
 				<canvas id="chart-rotundone"></canvas>
 			</div>
 			<br />

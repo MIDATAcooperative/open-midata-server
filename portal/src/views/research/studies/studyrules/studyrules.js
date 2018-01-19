@@ -35,11 +35,16 @@ angular.module('portal')
 	   $scope.status.doAction("update", server.put(jsRoutes.controllers.research.Studies.update($scope.studyid).url, JSON.stringify(data)))
 	  .then(function(data) { 				
 		    $scope.reload();
+		    $scope.saveOk = true;
 	   }); 
    };
    
    $scope.studyLocked = function() {
 	 return (!$scope.study) || ($scope.study.validationStatus !== "DRAFT" && $scope.study.validationStatus !== "REJECTED") || !$scope.study.myRole.setup;    
+   };
+   
+   $scope.formChange = function() {
+	 $scope.saveOk = false;  
    };
    
    $scope.toggle = function(array,itm) {

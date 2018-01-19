@@ -69,6 +69,8 @@ public class ContentCode extends Model  {
 		  String system = systemCode.substring(0, p);
 		  String code = systemCode.substring(p+1);
 		  
+		  if (system.equals("http://midata.coop/codesystems/content")) return code;
+		  
 		  ContentCode result = Model.get(ContentCode.class, collection, CMaps.map("system", system).map("code", code), Sets.create("content"));
 		  if (result != null) {
 			  contentForSystemCode.put(systemCode, result.content);

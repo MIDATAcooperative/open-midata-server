@@ -421,6 +421,7 @@
     "submit_btn" : "Submit",
     "delete_btn" : "Delete",
     "or" : "or",
+    "save_ok" : "Successfully Saved",
     "user" : {
       "lastname" : "Surname",
 	  "firstname" : "Firstname",
