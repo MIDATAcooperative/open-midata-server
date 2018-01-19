@@ -489,7 +489,7 @@ public class Records extends APIController {
 		FormatInfo format = FormatInfo.getByName(record.format);
 		if (format == null || format.visualization == null) return ok();
 		
-		Plugin visualization = Plugin.getById(format.visualization);
+		Plugin visualization = Plugin.getByFilename(format.visualization, Plugin.ALL_PUBLIC);
 		if (visualization == null) return ok();
 					
 		// create encrypted authToken
