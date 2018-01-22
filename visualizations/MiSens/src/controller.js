@@ -162,7 +162,7 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 				var r = 21.7;
 				var numberOfElements = 8;
 				var angleInRadian = Math.PI * 2 / numberOfElements;
-				var pointWidth = 8;
+				var pointWidth = 10;
 				
 				// draw point in the center to calibrate!
 				ctx.fillStyle = "#872233";
@@ -210,6 +210,25 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 
 				ctx.strokeStyle = "green";//"#00ff00";
 				ctx.stroke();
+
+				var legendePX = 673, legendePY = 785, legendeW = 227, legendeH = 82, legendePaddingX = 20, legendePaddingY = 30;
+
+				ctx.fillStyle = "dimgrey";
+				ctx.font = "20px Arial";
+				ctx.fillText("0     nicht empfindlich", legendePX + legendePaddingX, legendePY + legendePaddingY); //not sensitive
+				ctx.fillText("10   sehr empfindlich", legendePX + legendePaddingX, legendePY + legendePaddingY + 30); //highly sensitive
+				ctx.fillStyle = "green";
+
+				ctx.strokeStyle = "dimgrey";//"#00ff00";
+				ctx.lineWidth = 1;
+				ctx.beginPath();
+				ctx.moveTo(legendePX, legendePY);
+				ctx.lineTo(legendePX, legendePY + legendeH);//870);
+				ctx.lineTo(legendePX + legendeW, legendePY + legendeH);
+				ctx.lineTo(legendePX + legendeW, legendePY);
+				ctx.lineTo(legendePX, legendePY);
+				ctx.stroke();
+				ctx.strokeStyle = "green";//"#00ff00";
 			};
 			
 			imageObj.src = "spider_plot.png";
@@ -316,7 +335,7 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 						//	text: chartTitle
 						//}
                     }
-                });
+				});
             }
 
             var chartLabel = '# Teilnehmer';
@@ -363,11 +382,10 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 					[16, 3, 10, 6, 10, 13, 13, 5, 10, 16, 7],
 					chartLabel, chartLabelY, chartLabelX, selectedValue);
 				
-					
-					selectedValue = null;
-					if (arrayWithValues[2] != null) {
-						selectedValue = 10 - arrayWithValues[2];
-					}
+				selectedValue = null;
+				if (arrayWithValues[2] != null) {
+					selectedValue = 10 - arrayWithValues[2];
+				}
 				generateBar("chart-rotundone",
 					["0.001", "0.0036", "0.013", "0.046", "0.167", "0.6", "2.15", "7.7", "27.8", "100", ">100"],
 					[7, 3, 3, 5, 5, 13, 13, 18, 14, 19, 8],
