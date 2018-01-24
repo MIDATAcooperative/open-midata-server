@@ -217,17 +217,17 @@ public class APSCache {
 		return consents;
 	}
 	
-	public Set<Consent> getAllActiveByAuthorizedAndOwners(Set<MidataId> owners, long limit) throws InternalServerException {
+	public List<Consent> getAllActiveByAuthorizedAndOwners(Set<MidataId> owners, long limit) throws InternalServerException {
 		if (owners.size() == 1) {
 			if (ownerToConsent == null) ownerToConsent = new HashMap<MidataId,MidataId[]>();
 			MidataId owner = owners.iterator().next();
 			MidataId[] consents = ownerToConsent.get(owner);
 			if (consents != null) {
-			  Set<Consent> result = new HashSet<Consent>(consents.length);
+			  List<Consent> result = new ArrayList<Consent>(consents.length);
 			  for (MidataId id : consents) result.add(getConsent(id));
 			  return result;
 			} else {
-			  Set<Consent> result = Consent.getAllActiveByAuthorizedAndOwners(getAccountOwner(), owners);
+			  List<Consent> result = new ArrayList<Consent>(Consent.getAllActiveByAuthorizedAndOwners(getAccountOwner(), owners));
 			  cache(result);
 			  MidataId[] ids = new MidataId[result.size()];
 			  int idx = 0;
@@ -237,7 +237,7 @@ public class APSCache {
 			}
 		}
 				
-		Set<Consent> result = Consent.getAllActiveByAuthorizedAndOwners(getAccountOwner(), owners);
+		List<Consent> result = new ArrayList<Consent>(Consent.getAllActiveByAuthorizedAndOwners(getAccountOwner(), owners));
 		cache(result);
 		return result;
 		

@@ -3,6 +3,7 @@ package utils.access;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.bson.BasicBSONObject;
@@ -19,9 +20,10 @@ public class Feature_ConsentRestrictions extends Feature {
 		this.next = next;
 	}
 
+	
 
 	@Override
-	protected List<DBRecord> query(Query q) throws AppException {
+	protected Iterator<DBRecord> iterator(Query q) throws AppException {
 		BasicBSONObject filter = q.getCache().getAPS(q.getApsId()).getMeta("_filter");
 		if (filter != null) {			
 		  if (filter.containsField("valid-until")) {
@@ -29,17 +31,17 @@ public class Feature_ConsentRestrictions extends Feature {
 			  if (until.before(new Date(System.currentTimeMillis()))) {
 				  AccessLog.log("consent not valid anymore");			
 				  Circles.consentExpired(q.getCache().getExecutor(), q.getApsId());
-				  return Collections.emptyList();
+				  return Collections.emptyIterator();
 			  }
 		  }
 		  Date historyDate = filter.getDate("history-date");
 		  if (historyDate != null && historyDate.after(new Date())) filter.remove("history-date");
 		  if (!filter.isEmpty()) {
 			 AccessLog.log("Applying consent filter");
-			 return QueryEngine.combine(q, filter.toMap(), new Feature_ProcessFilters(next));
+			 return QueryEngine.combineIterator(q, filter.toMap(), new Feature_ProcessFilters(next));
 		  }			
 		} 
-		return next.query(q);		
+		return next.iterator(q);
 	}
 	
 	

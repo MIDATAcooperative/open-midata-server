@@ -1,9 +1,11 @@
 package utils.access;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +13,7 @@ import org.bson.BasicBSONObject;
 
 import models.MidataId;
 import utils.AccessLog;
+import utils.collections.CMaps;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
@@ -27,6 +30,7 @@ public class Feature_QueryRedirect extends Feature {
 		this.next = next;
 	}
 	
+	/*
 	@Override
 	protected List<DBRecord> query(Query q) throws AppException {
 		
@@ -59,7 +63,64 @@ public class Feature_QueryRedirect extends Feature {
 		
 		return next.query(q);		
 	}
+	*/
 	
+	
+	@Override
+	protected Iterator<DBRecord> iterator(Query q) throws AppException {
+		APS target = q.getCache().getAPS(q.getApsId());
+		BasicBSONObject query = target.getMeta(APS.QUERY);    	
+    	// Ignores queries in main APS 
+		if (query != null && !q.getApsId().equals(q.getCache().getAccountOwner())) {			
+			return new RedirectIterator(target, query, next, q);						
+		}
+		
+		return next.iterator(q);	
+	}
+	
+	static class RedirectIterator extends Feature.MultiSource<Integer> {
+
+		private APS target;
+		private BasicBSONObject requery;
+		private Feature next;	
+		
+		RedirectIterator(APS target, BasicBSONObject query, Feature next, Query q) throws AppException {			
+			this.target = target;
+			this.requery = query;
+			this.next = next;
+			this.query = q;
+			
+			Integer[] steps = {1,2};
+			init(Arrays.asList(steps).iterator());
+		}
+		
+		@Override
+		public Iterator<DBRecord> advance(Integer step) throws AppException {
+            if (step == 1) {
+            	if (query.restrictedBy("redirect-only") || target.hasNoDirectEntries()) {
+      			  return Collections.emptyIterator();	
+      			} else {
+      			  return next.iterator(query);
+      			}	
+            } else if (step == 2) {            	            	
+            	if (!query.restrictedBy("ignore-redirect")) {
+            		Object targetAPSId = requery.get("aps");
+            		return QueryEngine.combineIterator(new Query(query, CMaps.map(), MidataId.from(targetAPSId), new AccountAccessContext(query.getCache(), query.getContext())).setFromRecord(query.getFromRecord()), requery.toMap(), next);            				    			
+    			}	
+            }
+			return null;
+		}
+
+		@Override
+		public String toString() {			
+			return (chain.hasNext() ? "noredirect(" : "redirect(")+current.toString()+")";
+		}
+		
+		
+		
+	}
+
+	/*
 	private List<DBRecord> query(Query q, BasicBSONObject query, List<DBRecord> results) throws AppException {
 		Map<String, Object> combined = combineQuery(q.getProperties(), query);
 		if (combined == null) {
@@ -68,18 +129,13 @@ public class Feature_QueryRedirect extends Feature {
 		}
 		Object targetAPSId = query.get("aps");
 		AccessLog.logBegin("begin redirect to Query:");
-		List<DBRecord> result = next.query(new Query(combined, q.getFields(), q.getCache(), new MidataId(targetAPSId.toString()), new AccountAccessContext(q.getCache(), q.getContext())));
-		
-		/*if (query.containsField("_exclude") && result.size() > 0) {			
-			List<DBRecord> excluded = QueryEngine.listFromMemory(q.getCache(), (Map<String, Object>) query.get("_exclude"), result);
-            result.removeAll(excluded);						
-		}*/
+		List<DBRecord> result = next.query(new Query(combined, q.getFields(), q.getCache(), new MidataId(targetAPSId.toString()), new AccountAccessContext(q.getCache(), q.getContext())));			
 		
 		results = QueryEngine.combine(results, result);
 		
 		AccessLog.logEnd("end redirect");
 		return results;
-	}
+	}*/
 	/*
 	private List<DBRecord> memoryQuery(Query q, BasicBSONObject query, List<DBRecord> results) throws AppException {
 		Map<String, Object> combined = combineQuery(q.getProperties(), query);

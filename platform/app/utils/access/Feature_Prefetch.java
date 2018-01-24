@@ -2,6 +2,7 @@ package utils.access;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import models.Consent;
@@ -19,6 +20,7 @@ public class Feature_Prefetch extends Feature {
 		this.next = next;		
 	}
 		
+	/*
 	@Override
 	protected List<DBRecord> query(Query q) throws AppException {						
 		if (q.restrictedBy("_id")) {
@@ -27,7 +29,19 @@ public class Feature_Prefetch extends Feature {
 			return lookup(q, prefetched, next);									
 		} else return next.query(q);
 	}
+	*/
 	
+	
+	@Override
+	protected Iterator<DBRecord> iterator(Query q) throws AppException {
+		if (q.restrictedBy("_id")) {
+			List<DBRecord> prefetched = QueryEngine.lookupRecordsById(q);
+			
+			return lookup(q, prefetched, next).iterator();									
+		} else return next.iterator(q);
+	}
+		
+
 	protected static List<DBRecord> lookup(Query q, List<DBRecord> prefetched, Feature next) throws AppException {
 		AccessLog.logBegin("start lookup #recs="+prefetched.size());
 		long time = System.currentTimeMillis();

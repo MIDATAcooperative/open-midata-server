@@ -2,6 +2,7 @@ package utils.access;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -14,6 +15,7 @@ import models.enums.APSSecurityLevel;
 import utils.AccessLog;
 import utils.db.NotMaterialized;
 import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
 
 public class Feature_Versioning extends Feature {
 
@@ -106,6 +108,70 @@ public class Feature_Versioning extends Feature {
 			} else result.add(record);
 		}
 		return result;
+	}
+	
+	public static class HistoryDate implements Iterator<DBRecord> {
+
+		private Iterator<DBRecord> chain;
+		private DBRecord next;
+		private Date historyDate;
+		
+		public HistoryDate(Iterator<DBRecord> chain, Query q) throws BadRequestException {
+			this.chain = chain;
+			historyDate = q.getDateRestriction("history-date");
+			advance();
+		}
+		
+		@Override
+		public boolean hasNext() {
+			return next != null;
+		}
+
+		private void advance() {
+			if (!chain.hasNext()) {
+				next = null;
+				return;
+			}
+			next = chain.next();
+			try {
+				Date lu = next.meta.getDate("lastUpdated");
+				if (lu != null && lu.after(historyDate)) {
+					Set<VersionedDBRecord> recs = VersionedDBRecord.getAllById(next._id, QueryEngine.META_AND_DATA);
+					VersionedDBRecord bestRecord = null;
+					Date bestDate = null;
+					for (VersionedDBRecord rec : recs) {	
+	                    rec.merge(next);					
+						RecordEncryption.decryptRecord(rec);
+						Date vlastUpdate = rec.meta.getDate("lastUpdated");
+						if (vlastUpdate == null) vlastUpdate = next._id.getCreationDate();
+						if (!vlastUpdate.after(historyDate)) {
+							if (bestRecord == null) {
+								bestRecord = rec;
+								bestDate = vlastUpdate;
+							} else if (vlastUpdate.after(bestDate)) {
+								bestRecord = rec;
+								bestDate = vlastUpdate;
+							}
+					    }
+					}				
+					if (bestRecord != null) {					
+						bestRecord.meta.put("ownerName", next.meta.get("ownerName"));
+						next = bestRecord;
+					} else advance();
+				} 
+			} catch (AppException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		
+		@Override
+		public DBRecord next() {
+            DBRecord result = next;
+            advance();
+			return result;
+		}
+		
+		
 	}
 	
 		

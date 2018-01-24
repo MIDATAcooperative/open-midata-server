@@ -96,8 +96,14 @@ public class QueryBuilder {
 			}			
 		}
 		if (params.getCount() != null) {
-			query.putAccount("limit", params.getCount());
-		}	
+			query.putAccount("limit", params.getCount() + 1); // We add 1 to see if there are more results available
+		}
+		if (params.getSkip() != null) {
+			query.putAccount("skip", params.getSkip());
+		}
+		if (params.getFrom() != null) {
+			query.putAccount("from", params.getFrom());
+		}
 		query.initSort(params.getSortNames());
 		
 	}

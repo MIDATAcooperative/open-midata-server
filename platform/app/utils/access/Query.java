@@ -58,6 +58,15 @@ public class Query {
 		AccessLog.logQuery(apsId, properties, fields);
 	}
 	
+	public Query(Map<String, Object> properties, Set<String> fields, APSCache cache, MidataId apsId, AccessContext context, boolean noinit) throws AppException {
+		this.properties = new HashMap<String, Object>(properties);
+		this.fields = fields;
+		this.cache = cache;
+		this.apsId = apsId;
+		this.context = context;	
+		
+	}
+	
 	public Query(Query q, Map<String, Object> properties) throws AppException {
 		this(q, properties, q.getApsId(), q.getContext());
 	}
@@ -270,6 +279,19 @@ public class Query {
 		return maxDateUpdated;
 	}
 	
+	public MidataId getFrom() {
+		return MidataId.from(properties.get("from"));		
+	}
+	
+	private DBRecord fromRecord;
+	public DBRecord getFromRecord() {
+		return fromRecord;		
+	}
+	public Query setFromRecord(DBRecord record) {
+		this.fromRecord = record;
+		return this;
+	}
+	
 	public boolean addMongoTimeRestriction(Map<String, Object> properties1, boolean allowZero) {
 		Map<String, Object> properties = properties1;		
 		if (minTime != 0 || maxTime != 0) {
@@ -325,7 +347,7 @@ public class Query {
 	}
 	
 	private void process() throws AppException {
-		 if (properties.containsKey("$or")) throw new InternalServerException("error.internal", "Query may not contain or");
+		 if (properties.containsKey("$or")) return; //throw new InternalServerException("error.internal", "Query may not contain or");
 		 if (fields.contains("group") && !fields.contains("content")) fields.add("content");
 		 if (properties.containsKey("history-date") || properties.containsKey("version") || properties.containsKey("history") || isStreamOnlyQuery()) properties.put("deleted", true);
 		

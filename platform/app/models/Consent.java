@@ -29,7 +29,7 @@ import utils.exceptions.InternalServerException;
  *
  */
 @JsonFilter("Consent")
-public class Consent extends Model {
+public class Consent extends Model implements Comparable<Consent> {
 
 	protected @NotMaterialized static final String collection = "consents";
 	/**
@@ -252,5 +252,11 @@ public class Consent extends Model {
 	
 	public String getOwnerName() {
 		return ownerName;
+	}
+
+	@Override
+	public int compareTo(Consent arg0) {
+		int r = owner.compareTo(arg0.owner);
+		return r != 0 ? r : _id.compareTo(arg0._id);
 	}
 }

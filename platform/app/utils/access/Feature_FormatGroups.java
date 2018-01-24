@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -40,19 +41,7 @@ public class Feature_FormatGroups extends Feature {
 			    }		
 			}
 	}
-		
-	/*private Set<String> resolveContentNames(Query q, Set<String> groups) throws AppException {
-		List<DBRecord> records = next.query(new Query(CMaps.map(q.getProperties()).map("streams", "true").map("flat", "true"), Sets.create("content"), q.getCache(), q.getApsId(), true ));
-		Set<String> result = new HashSet<String>();
-		for (DBRecord rec : records) {
-			String content = (String) rec.meta.get("content");
-			ContentInfo fi = ContentInfo.getByName(content);
-            if (groups.contains(fi.group)) {
-            	result.add(content);            	
-            }
-		}	
-		return result;
-	}*/
+			
 	
 	public static Set<String> resolveContentNames(String groupSystem, Set<String> groups) throws AppException {
 		
@@ -211,28 +200,62 @@ public class Feature_FormatGroups extends Feature {
 		return null;
 	}
 
+	
+	
 	@Override
-	protected List<DBRecord> query(Query q) throws AppException {
+	protected Iterator<DBRecord> iterator(Query q) throws AppException {
 		Set<String> contents = prepareFilter(q);
-		List<DBRecord> result = null;
+		Iterator<DBRecord> result = null;
 		if (contents != null) {
-			Map<String, Object> combined = Feature_QueryRedirect.combineQuery(q.getProperties(), CMaps.map("content", contents));
-			if (combined == null) return Collections.EMPTY_LIST;
-		  	result = next.query(new Query(q, combined));					
+		  	result = QueryEngine.combineIterator(q, CMaps.map("content", contents), next);					
 		} else {
-		   result = next.query(q);
+		   result = next.iterator(q);
 		}
 		
 		if (q.returns("group")) {
 			String system = q.getStringRestriction("group-system");
 			if (system == null) system = "v1";
 			
-			for (DBRecord record : result) {
-	    		record.group = RecordGroup.getGroupForSystemAndContent(system, (String) record.meta.get("content"));
-			}
+			return new SetRecordGroupIterator(result, system);			
 		}	
 		return result;
-	}	
+	}
+
+	static class SetRecordGroupIterator implements Iterator<DBRecord> {
+
+		private Iterator<DBRecord> chain;
+		private String system;
+		
+		SetRecordGroupIterator(Iterator<DBRecord> chain, String system) {
+			this.chain = chain;
+			this.system = system;
+		}
+		
+		@Override
+		public boolean hasNext() {
+			return chain.hasNext();
+		}
+
+		@Override
+		public DBRecord next() {
+			DBRecord record = chain.next();
+			try {
+			   record.group = RecordGroup.getGroupForSystemAndContent(system, (String) record.meta.get("content"));
+			} catch (AppException e) {
+				throw new RuntimeException(e);
+			}
+			return record;
+		}
+
+		@Override
+		public String toString() {
+			return "set-group("+chain.toString()+")";
+		}
+		
+		
+		
+	}
+	
 	
 	public static boolean mayAccess(Map<String, Object> properties, String content, String format) throws AppException {
 		if (properties.containsKey("$or")) {
