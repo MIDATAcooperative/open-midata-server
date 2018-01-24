@@ -14,6 +14,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.bson.BasicBSONObject;
 import org.bson.types.ObjectId;
 
+import com.google.common.collect.Iterators;
 import com.mongodb.BasicDBObject;
 
 import models.APSNotExistingException;
@@ -46,6 +47,7 @@ public class Feature_Streams extends Feature {
 	
 	private final static Set<String> streamQueryFields = Sets.create("_id", "key", "owner");
 	
+	/*
 	@Override
 	protected List<DBRecord> query(Query q) throws AppException {		
 		APS next = q.getCache().getAPS(q.getApsId());
@@ -167,47 +169,63 @@ public class Feature_Streams extends Feature {
 		return records;
 		
 	}
-	
+	*/
 	static class StreamCombineIterator extends Feature.MultiSource<DBRecord> {
 
 		private APS next;
 		private boolean includeStream;
-		private boolean includeReadonly;
+		private boolean includeOther;
+		private DBRecord thisrecord;
+		private int size;
 		
-		StreamCombineIterator(APS next, Iterator<DBRecord> streams, boolean includeStream, boolean includeReadonly) throws AppException {
+		StreamCombineIterator(APS next, Query query, Iterator<DBRecord> streams, boolean includeStream, boolean includeOther) throws AppException {
 		  	this.next = next;
 		  	this.includeStream = includeStream;
-		  	this.includeReadonly = includeReadonly;
+		  	this.includeOther = includeOther;
+		  	this.query = query;
+		  
 		  	init(streams);
 		}
 		
 		@Override
 		public Iterator<DBRecord> advance(DBRecord r) throws AppException {
+			thisrecord = r;
 			if (r.isStream) {
 				  
-				  try {
-					  APS myAps = query.getCache().getAPS(r._id, r.key, r.owner);						 
-					  List<DBRecord> rs = myAps.query(query);
-					  for (DBRecord r2 : rs) { r2.owner = r.owner;r2.stream = r._id; }
-				      
-				      
-				      if (myAps.getSecurityLevel().equals(APSSecurityLevel.MEDIUM)) {
-				    	  for (DBRecord r2 : rs) {
-				    		fromStream(r, r2, true);						    	
-				    	  }
-				      }
-				      
-				  } catch (EncryptionNotSupportedException e) { throw new InternalServerException("error.internal", "Encryption not supported."); }
+				
+				try {
+					  APS streamaps = query.getCache().getAPS(r._id, r.key, r.owner);
+					  boolean medium = streamaps.getSecurityLevel().equals(APSSecurityLevel.MEDIUM);
+					  if (query.getMinUpdatedTimestamp() <= streamaps.getLastChanged() && query.getMinCreatedTimestamp() <= streamaps.getLastChanged()) {
+//						AccessLog.logBegin("start query on stream APS:"+streamaps.getId());
+						 List<DBRecord> rs = streamaps.query(query);
+						 
+					    for (DBRecord r2 : rs) {
+					    	 r2.owner = r.owner;
+					    	fromStream(r, r2, medium);				    	
+					    	//filtered.add(r2);
+					    }
+					    size = rs.size();
+					    if (includeStream) {
+					    	size++;
+					    	return Iterators.concat(Collections.singletonList(r).iterator(), rs.iterator());
+					    }
+
+					    return rs.iterator();
+					  }
+					} catch (EncryptionNotSupportedException e) { throw new InternalServerException("error.internal", "Encryption not supported."); }					 	
 				  catch (APSNotExistingException e2) {
 					  next.removePermission(r);
 				  }
-			  } 
-			return null;
+			}
+			size = 1;	
+			return includeOther ? Collections.singletonList(r).iterator() : Collections.<DBRecord>emptyIterator();
 		}
 
 		@Override
 		public String toString() {
-			return "streams(aps)";
+			if (thisrecord == null) return "access-streams()";
+			return "access-streams(aps("+size+"@"+thisrecord._id.toString()+"))";
 		}
 		
 		
@@ -216,7 +234,7 @@ public class Feature_Streams extends Feature {
 	@Override
 	protected Iterator<DBRecord> iterator(Query q) throws AppException {
 		APS next = q.getCache().getAPS(q.getApsId());
-		Iterator<DBRecord> records = Collections.emptyIterator();
+		//Iterator<DBRecord> records = Collections.emptyIterator();
 		boolean restrictedByStream = q.restrictedBy("stream");
 		
 		if (restrictedByStream) {
@@ -224,47 +242,47 @@ public class Feature_Streams extends Feature {
 			 
 			  // optimization for record lookup queries 
 			  if (q.restrictedBy("quick")) {				  				  				  
-			      records = next.iterator(q);			    
+			      Iterator<DBRecord> records = next.iterator(q);			    
 			      if (records.hasNext()) return records; 
 			  }
 			  
-			  AccessLog.logBegin("begin single stream query");
+			  //AccessLog.logBegin("begin single stream query");
 			  
-			  List<DBRecord> streams = next.query(new Query(CMaps.map(q.getProperties()).map("_id", q.getProperties().get("stream")).removeKey("quick"), streamQueryFields, q.getCache(), q.getApsId(), q.getContext() ));
+			  Iterator<DBRecord> streams = next.iterator(new Query(CMaps.map(q.getProperties()).map("_id", q.getProperties().get("stream")).removeKey("quick"), streamQueryFields, q.getCache(), q.getApsId(), q.getContext() ));
 				
-			  return new StreamCombineIterator(next, streams.iterator());
+			  return new StreamCombineIterator(next, q, streams, false, false);
 			  
 		}
         		
-		AccessLog.logBegin("start query on target APS");
+		//AccessLog.logBegin("start query on target APS");
 		List<DBRecord> recs = next.query(q);
 		
-		AccessLog.logEnd("end query on target APS #res="+recs.size());
+		//AccessLog.logEnd("end query on target APS #res="+recs.size());
 		if (recs.isEmpty()) return Collections.emptyIterator();
 		
 		boolean includeStreams = q.includeStreams();
 		boolean streamsOnly = q.isStreamOnlyQuery();
 		if (streamsOnly) {
-			records = recs;
-			List<DBRecord> filtered = new ArrayList<DBRecord>(records.size());
+			
+			List<DBRecord> filtered = new ArrayList<DBRecord>(recs.size());
 			if (q.restrictedBy("writeable") && q.getProperties().get("writeable").equals("true")) {
-				for (DBRecord r : records) {
+				for (DBRecord r : recs) {
 				  if (r.isStream && !r.isReadOnly) filtered.add(r);
 				}
 			} else {
-				for (DBRecord r : records) {
+				for (DBRecord r : recs) {
 				  if (r.isStream) filtered.add(r);
 				}
 			}
-			return filtered;
+			return filtered.iterator();
 		} else
 		if (q.deepQuery()) {
-			records = recs;
-			List<DBRecord> filtered = new ArrayList<DBRecord>(records.size());
+			//records = recs;
+			List<DBRecord> filtered = new ArrayList<DBRecord>(recs.size());
 			List<DBRecord> streams = new ArrayList<DBRecord>();
 			Map<MidataId, DBRecord> streamsToFetch = new HashMap<MidataId, DBRecord>();
 			
-			for (DBRecord r : records) {
+			for (DBRecord r : recs) {
 				if (r.isStream) {
 					if (!q.getCache().hasAPS(r._id)) streamsToFetch.put(r._id, r);
 					else streams.add(r);
@@ -279,38 +297,23 @@ public class Feature_Streams extends Feature {
 				Set<AccessPermissionSet> rsets = AccessPermissionSet.getAll(restriction, AccessPermissionSet.ALL_FIELDS);
 				for (AccessPermissionSet set : rsets) {
 					DBRecord r = streamsToFetch.get(set._id);
-					streams.add(r);
+					//streams.add(r);
 					q.getCache().getAPS(r._id, r.key, r.owner, set, true);
 				}
 			}
 				
-			for (DBRecord r : streams) {										
-				try {
-				  APS streamaps = q.getCache().getAPS(r._id, r.key, r.owner);
-				  boolean medium = streamaps.getSecurityLevel().equals(APSSecurityLevel.MEDIUM);
-				  if (q.getMinUpdatedTimestamp() <= streamaps.getLastChanged() && q.getMinCreatedTimestamp() <= streamaps.getLastChanged()) {
-					AccessLog.logBegin("start query on stream APS:"+streamaps.getId());
-				    for (DBRecord r2 : streamaps.query(q)) {
-				    	fromStream(r, r2, medium);				    	
-				    	filtered.add(r2);
-				    }
-				    if (includeStreams) filtered.add(r);
-				    AccessLog.logEnd("end query on stream APS");
-				  }
-				} catch (EncryptionNotSupportedException e) { throw new InternalServerException("error.internal", "Encryption not supported."); }					 	
-			 				
-			}
-			records = filtered;
+			return new StreamCombineIterator(next, q, recs.iterator(), includeStreams, true);
+			
 		} else if (!includeStreams) {
-			records = recs;
-			List<DBRecord> filtered = new ArrayList<DBRecord>(records.size());
-			for (DBRecord record : records) {
+			
+			List<DBRecord> filtered = new ArrayList<DBRecord>(recs.size());
+			for (DBRecord record : recs) {
 				if (!record.isStream) filtered.add(record);
 			}
-			records = filtered;
-		} else return recs;
+			return filtered.iterator();
+		} else return recs.iterator();
 							
-		return records;
+		
 	}
 
 

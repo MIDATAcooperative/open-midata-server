@@ -42,7 +42,7 @@ class QueryEngine {
  		   return RecordConversion.instance.currentVersionFromDB(ProcessingTools.collect(fullQuery(properties, fields, aps, context, cache)));
 		} catch (RuntimeException e) {
 			if (e.getCause() instanceof AppException) throw (AppException) e.getCause();
-			throw e;
+			throw new InternalServerException("error.internal", e);
 		}
 	}
 	
@@ -51,7 +51,7 @@ class QueryEngine {
 		   return ProcessingTools.collect(fullQuery(properties, fields, aps, context, cache));
 		} catch (RuntimeException e) {
 			if (e.getCause() instanceof AppException) throw (AppException) e.getCause();
-			throw e;
+			throw new InternalServerException("error.internal", e);
 		}
 	}
 	
@@ -436,7 +436,7 @@ class QueryEngine {
 		return input;
     }
     
-            
+    /*        
     protected static List<DBRecord> postProcessRecordsFilter(Query q, List<DBRecord> result) throws AppException {
     	if (result.size() > 0) {
     	AccessLog.logBegin("begin process filters size="+result.size());    	
@@ -537,7 +537,7 @@ class QueryEngine {
 	    	    	    
 		return result;
     }
-    
+    */
     
     /*
     protected static List<DBRecord> filterByWCFormat(List<DBRecord> input, String name, Set<String> contentsWC) {

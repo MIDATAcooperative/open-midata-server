@@ -482,10 +482,8 @@ public class ProcessingTools {
 				DBRecord record = chain.next();
 				if (needsLoad(record)) {
 					DBRecord old = fetchIds.put(record._id, record);
-					if (old != null)
-						throw new NullPointerException();
-				}
-				work.add(record);
+					if (old == null) work.add(record);						
+				} else work.add(record);
 				current++;
 			}
 

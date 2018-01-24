@@ -1,5 +1,6 @@
 package utils.access;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,8 +20,9 @@ public abstract class Feature {
 	}
 	
 	protected Iterator<DBRecord> iterator(Query q) throws AppException {
-		List<DBRecord> result = query(q);
-		return result.iterator();
+		throw new NullPointerException();
+		/*List<DBRecord> result = query(q);
+		return result.iterator();*/
 	}
 	
 	
@@ -50,7 +52,8 @@ public abstract class Feature {
 		  if (chain.hasNext()) {
 			  B next = chain.next();
 			  current = advance(next);
-		  }
+			  AccessLog.log("init:"+this.toString());
+		  } else current = Collections.emptyIterator();
 		  advance();
 		}
 		
@@ -58,7 +61,8 @@ public abstract class Feature {
 			while (!current.hasNext() && chain.hasNext()) {				
 				B next = chain.next();
 				current = advance(next);
-			}            
+				if (current.hasNext()) AccessLog.log("advance:"+this.toString());
+			}  			
 		}
 		
 		public abstract Iterator<A> advance(B next) throws AppException;

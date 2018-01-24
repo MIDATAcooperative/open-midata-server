@@ -26,6 +26,114 @@ public class Feature_Versioning extends Feature {
 	}
 	
 	
+	
+	
+	@Override
+	protected Iterator<DBRecord> iterator(Query q) throws AppException {
+		Iterator<DBRecord> result = next.iterator(q);		
+		if (q.restrictedBy("version")) {
+			
+			String version = q.getStringRestriction("version");
+			
+			return new VersionIterator(result, version, q);			
+		} else if (q.restrictedBy("history")) {
+			
+			return new HistoryIterator(result, q);									
+		}
+		return result;
+	}
+	
+	class HistoryIterator extends Feature.MultiSource<DBRecord> {
+
+		private List<DBRecord> currentlist;
+		
+		HistoryIterator(Iterator<DBRecord> input, Query q) throws AppException {
+			this.query = q;
+			init(input);
+		}
+		
+		@Override
+		public Iterator<DBRecord> advance(DBRecord record) throws AppException {
+			Set<VersionedDBRecord> recs = VersionedDBRecord.getAllById(record._id, query.getFieldsFromDB());
+			for (VersionedDBRecord rec : recs) {				
+				rec.merge(record);
+				
+				RecordEncryption.decryptRecord(rec);
+				rec.meta.put("ownerName", record.meta.get("ownerName"));
+				
+                currentlist.add(rec);
+			}
+			
+			currentlist.add(record);
+			
+			return currentlist.iterator();
+		}
+
+		@Override
+		public String toString() {
+			return "history("+chain.toString()+")";
+		}
+		
+		
+		
+	}
+
+    class VersionIterator implements Iterator<DBRecord> {
+    	private Iterator<DBRecord> chain;
+    	private String version;
+    	private Query q;
+    	private DBRecord next;
+    	
+    	VersionIterator(Iterator<DBRecord> chain, String version, Query q) {
+    		this.chain = chain;
+    		this.version = version;
+    		this.q = q;
+    		next();
+    	}
+
+		@Override
+		public boolean hasNext() {
+			return next != null;
+		}
+
+		@Override
+		public DBRecord next() {
+			DBRecord result = next;
+			next = null;
+			try {
+			while (next == null && chain.hasNext()) {
+			
+			DBRecord record = chain.next();
+			VersionedDBRecord rec = VersionedDBRecord.getByIdAndVersion(record._id, version, q.getFieldsFromDB());
+			if (rec != null) {				
+				rec.merge(record);
+				
+				RecordEncryption.decryptRecord(rec);
+				rec.meta.put("ownerName", record.meta.get("ownerName"));
+				
+                next = rec;
+			} else {
+				QueryEngine.fetchFromDB(q, record);
+				RecordEncryption.decryptRecord(record);
+				String vers = record.meta.getString("version", VersionedDBRecord.INITIAL_VERSION);
+				if (vers.equals(version)) next = record;
+			}
+			}
+			return result;
+			
+			} catch (AppException e) {
+				throw new RuntimeException(e);
+			}
+		}
+    	
+		@Override
+		public String toString() {
+			return "version("+chain.toString()+")";
+		}
+    	
+    }
+
+/*
 	@Override
 	protected List<DBRecord> query(Query q) throws AppException {
 		List<DBRecord> result = next.query(q);		
@@ -74,8 +182,8 @@ public class Feature_Versioning extends Feature {
 		return result;
 		
 	}
-
-
+*/
+/*
 	public static List<DBRecord> historyDate(Query q, List<DBRecord> input) throws AppException {
 		Date historyDate = q.getDateRestriction("history-date");
 		List<DBRecord> result = new ArrayList<DBRecord>(input.size());
@@ -109,7 +217,7 @@ public class Feature_Versioning extends Feature {
 		}
 		return result;
 	}
-	
+	*/
 	public static class HistoryDate implements Iterator<DBRecord> {
 
 		private Iterator<DBRecord> chain;

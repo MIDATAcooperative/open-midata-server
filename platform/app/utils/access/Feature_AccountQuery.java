@@ -155,6 +155,7 @@ public class Feature_AccountQuery extends Feature {
 	static class ConsentIterator extends Feature.MultiSource<Consent> {
 
 		private Feature next;
+		private Consent thisconsent;
 		
 		ConsentIterator(Feature next, Query q, List<Consent> consents) throws AppException {	
 			this.next = next;
@@ -167,12 +168,13 @@ public class Feature_AccountQuery extends Feature {
 		public Iterator<DBRecord> advance(Consent circle) throws AppException {
 			ConsentAccessContext context = new ConsentAccessContext(circle, query.getContext());
 			Iterator<DBRecord> consentRecords = next.iterator(new Query(query.getProperties(), query.getFields(), query.getCache(), circle._id, context));
+			thisconsent = circle;
 			return new IdAndConsentFieldIterator(consentRecords, context, circle._id, query.returns("id"));
 		}
 
 		@Override
 		public String toString() {
-			return "consent("+current.toString()+")";
+			return "consent("+thisconsent._id.toString()+","+current.toString()+")";
 		}
 		
 		
