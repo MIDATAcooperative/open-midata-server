@@ -190,7 +190,7 @@ public class EpisodeOfCareResourceProvider extends RecordBasedResourceProvider<E
 		String date = "";		
 		if (theEpisodeOfCare.hasPeriod()) {
 			try {
-				date = FHIRTools.stringFromDateTime(theEpisodeOfCare.getPeriod().getStartElement())+" - "+FHIRTools.stringFromDateTime(theEpisodeOfCare.getPeriod().getEndElement());
+				date = FHIRTools.stringFromDateTime(theEpisodeOfCare.getPeriod());
 			} catch (Exception e) {
 				throw new UnprocessableEntityException("Cannot process period");
 			}

@@ -3,93 +3,238 @@
 angular.module('calendarApp')
   .factory('eventProvider', ['midataServer', function(midataServer) {
 	  var scope = {};
-	  var criteria = { content : [] };
-	  var tlb = {};
+	  var criteria = { cal : { "appointment" : true, "observation" : true }, tlb : {} };	  
+	  
 	  scope.setOwners = function(owners) {
-		criteria.owner = owners;  
+		//criteria.owner = owners;  
 	  };
 	  
-	  scope.setContents = function(contents) {
-		criteria.content = contents;
+	  scope.setCriteria = function(crit) {
+		if (crit && crit.cal) {
+		  criteria = crit;
+		}
 		scope.inited = true;
 	  };
 	  
+	  scope.getCriteria = function() {
+		  return criteria;
+	  };
+	  
 	  scope.setTlb = function(def) {
-		  tlb[def.id] = def;
+		  criteria.tlb[def.id] = def;
 	  };
 	  
 	  scope.clearTlb = function(id) {
-		  tlb[id] = undefined;
+		  criteria.tlb[id] = undefined;
 	  };
 	  
 	  scope.getTlb = function(id) {
-		  return tlb[id];
+		  return criteria.tlb[id];
 	  };
 	  
-	  scope.hasContent = function(id) {
-		  return criteria.content.indexOf(id) >= 0;
+	  scope.hasContent = function(cnt) {
+		  return criteria.cal[cnt] != null;
+	  };
+	  	  	  	  
+	  var shorten = function(title) {
+		  if (title == null) return null;
+		  if (title.length > 15) {
+			  var t = title.split(' ');
+			  title = t[t.length-1];
+		  }
+		  return title;
+	  };
+	  var shortStr = function(title) {
+		  if (title == null) return null;
+		  if (title.length > 15) {
+			 return title.substr(0,12)+"...";
+		  }
+		  return title;
 	  };
 	  
-	  scope.query = function(authToken, start, end, callback) {
-		  console.log(start);
-		  console.log(end);
-		  var shorten = function(title) {
-			  if (title.length > 15) {
-				  var t = title.split(' ');
-				  title = t[t.length-1];
-			  }
-			  return title;
-		  };
-		  var shortStr = function(title) {
-			  if (title.length > 15) {
-				 return title.substr(0,12)+"...";
-			  }
-			  return title;
-		  };
-		  
-		  if (criteria.content.length > 0) {
-		  midataServer.getRecords(authToken, { "format" : ["fhir/Observation"], content: criteria.content, "index" : { "effectiveDateTime" : { "$gt" : start.toDate(), "$lt" : end.toDate() } } }, ["created", "data", "content", "owner", "ownerName" ])
+	  var ccText = function(cc) {
+		if (cc == null) return null;
+		if (angular.isArray(cc)) {
+			if (cc.length == 0) return null;
+			return ccText(cc[0]);
+		}
+		if (cc.text) return cc.text;
+		if (cc.coding && cc.coding.length > 0) return codingText(cc.coding[0]);
+		return null;
+	  };
+	  
+	  var codingText = function(coding) {
+		if (coding == null) return null;
+		if (coding.display) return coding.display;
+		return coding.code;
+	  };
+	  
+	  var refText = function(ref) {
+		if (ref == null) return null;
+		if (ref.display) return ref.display;
+		if (ref.identifier) return ref.identifier.value;
+		return null;
+	  }; 
+	  
+	  var getCodeAndSystem = function(cc) {
+		  if (cc == null) return {};
+		  if (cc.code) return { code : cc.code, system : cc.system };
+		  if (cc.coding) return getCodeAndSystem(cc.coding[0]);
+		  if (angular.isArray(cc)) return getCodeAndSystem(cc[0]);
+		  return {};
+	  };
+	  
+	  var getCodeAndSystemStr = function(cc) {
+		 var result = getCodeAndSystem(cc);
+		 return result.system+"|"+result.code;
+	  };
+	  
+	  scope.getCodeAndSystem = getCodeAndSystem;
+	  scope.refText = refText;
+	  
+	  
+	  scope.queryObservations = function(authToken, start, end, callback) {
+		  				  
+		  if (criteria.cal.observation) {
+			  		     
+			 var crit = {
+			    "date" : [ "ge"+start.toISOString().split('T')[0], "le"+end.toISOString().split('T')[0] ],			 
+			 };
+			 //if (codes.length > 0 && codes.length < 1500) crit.code = codes.substr(1);
+			 
+		    midataServer.fhirSearch(authToken, "Observation", crit, true)
 	     	 .then(function(results) {
-	     		var entries = [];
-	     		var idx = 0;
+	     		var entries = [];	     		
 	     		 
-	     		angular.forEach(results.data, function(record) {
-	                var cdate = new Date(record.created).toISOString();
-	                if (record.data.resourceType == "Observation") {
+	     		angular.forEach(results, function(record) {
+	                	               
 	              	  var q = null;
 	              	  var u = "";
-	              	  if (record.data.valueQuantity) { q = record.data.valueQuantity.value; u = record.data.valueQuantity.unit } 
-	              	  if (record.data.valueString) q = shortStr(record.data.valueString); 
-	              	  if (record.data.valueCodeableConcept) q = shortStr(record.data.valueCodeableConcept.text || record.data.valueCodeableConcept.coding[0].display);
-	              	  var dateTime = record.data.effectiveDateTime || cdate;
-	              	  var title = record.data.code.text || record.data.code.coding[0].display; 
+	              	  if (record.valueQuantity) { q = record.valueQuantity.value; u = record.valueQuantity.unit } 
+	              	  if (record.valueString) q = shortStr(record.valueString); 
+	              	  if (record.valueCodeableConcept) q = shortStr(ccText(record.valueCodeableConcept));
+	              	  var start = record.effectiveDateTime;
+	              	  var end = undefined;
+	              	  if (record.effectivePeriod) {
+	              		  start = record.effectivePeriod.start;
+	              		  end = record.effectivePeriod.end;
+	              	  }
+	              	  var title = ccText(record.code); 
 	              	  var color = "#707070";
-	              	  var tlbdef = tlb[record.content];
+	              	  
+	              	  var tlbdef = criteria.tlb[getCodeAndSystemStr(record.code)];
 	              	  if (tlbdef) color = (tlbdef.operator) == ">" ? 
 	              			      ( (q > tlbdef.limit) ? "#00a000" : "#a00000" ) :
 	              			      ( (q < tlbdef.limit) ? "#00a000" : "#a00000" );
 	              	  if (q == "Yes") q = null;
+	              	  
+	              	  if (start || end) {
 	              	  var e = {
-	              		  id : record._id,
+	              		  id : record.id,
 	              	      title : shorten(title)+((q != null) ? (":"+q) : ""),
 	              	      allDay : true, 	
-	              	      start : dateTime,	              	       
+	              	      start : start,
+	              	      end : end,
 	              	      editable : false, 	
 	              	      color : color,
 	              	      what : title,
-	              	      who : record.ownerName,
+	              	      viewer : "fhir-observation",
+	              	      who : [ refText(record.subject) ],
+	              	      tlb : getCodeAndSystemStr(record.code),
 	              	      details : ((q!=null) ? q : "")+" "+u,
 	              	      textColor : "#ffffff"	                            
 	                  };
-	                  entries[idx++] = e;   
-	                } 
+	                  entries.push(e);
+	              	  }
+	                
 	            });
-	     		console.log(entries);   		      		      		      		 
+	     		//console.log(entries);   		      		      		      		 
 	     		callback(entries); 
 	     	 });
 		  } else { callback([]); }
 	  };
 	  
+	  scope.queryAppointments = function(authToken, start, end, callback) {
+		  if (!criteria.cal.appointment) {			  
+			  callback([]);
+			  return;
+		  }
+		   var crit = {
+				    "date" : [ "ge"+start.toISOString().split('T')[0], "le"+end.toISOString().split('T')[0] ],			 
+		   };
+							 
+		  midataServer.fhirSearch(authToken, "Appointment", crit, true)
+		     	 .then(function(results) {
+		     		var entries = [];
+		     				     		
+		     		angular.forEach(results, function(record) {
+		                	               
+		              	  var people = [];		              	  
+		              	  angular.forEach(record.participant, function(p) {
+		              		 if (p.actor) people.push(refText(p.actor));  
+		              	  });		              	  
+		              	  		              	  
+		              	  var title = record.description || "Appointment"; 
+		              	 		              	  		              	  		           
+		              	  var e = {
+		              		  id : record.id,
+		              	      title : shorten(title),
+		              	      allDay : false, 	
+		              	      start : record.start,
+		              	      end : record.end,
+		              	      editable : false, 	
+		              	      viewer : "data-viewer",
+		              	      what : title,
+		              	      who : people,
+		              	      details : record.description,
+		              	                       
+		                  };
+		                  entries.push(e);		              	  
+		                
+		            });
+		     		 		      		      		      		
+		     		callback(entries); 
+		     	 });			 
+	   };
+	   
+	   scope.queryMedicationStatements = function(authToken, start, end, callback) {
+			  if (!criteria.cal.medicationStatement) {			  
+				  callback([]);
+				  return;
+			  }
+			   var crit = {
+					    "effective" : [ "ge"+start.toISOString().split('T')[0], "le"+end.toISOString().split('T')[0] ],			 
+			   };
+								 
+			  midataServer.fhirSearch(authToken, "MedicationStatement", crit, true)
+			     	 .then(function(results) {
+			     		var entries = [];
+			     				     		
+			     		angular.forEach(results, function(record) {
+			                	               			              				              	  
+			              	  var title = ccText(record.medicationCodeableConcept) || refText(record.medicationReference) || "Medication"; 
+			              	 		              	  		              	  		           
+			              	  var e = {
+			              		  id : record.id,
+			              	      title : shorten(title),
+			              	      allDay : false, 	
+			              	      start : record.effectiveDateTime || (record.effectivePeriod || {}).start,
+			              	      end : (record.effectivePeriod || {}).end,
+			              	      editable : false, 	
+			              	      viewer : "data-viewer",
+			              	      what : title,
+			              	      who : [ refText(record.subject) ],
+			              	      details : record.description,
+			              	                       
+			                  };
+			                  entries.push(e);		              	  
+			                
+			            });
+			     		 		      		      		      		
+			     		callback(entries); 
+			     	 });			 
+		   };
+	  
 	  
 	  return scope;	  	  
-  }]); 
+  }])     
