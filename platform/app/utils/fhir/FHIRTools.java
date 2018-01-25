@@ -10,8 +10,10 @@ import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.DateTimeType;
 import org.hl7.fhir.dstu3.model.Identifier;
+import org.hl7.fhir.dstu3.model.Period;
 import org.hl7.fhir.dstu3.model.Person;
 import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.dstu3.model.Type;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 import com.mongodb.DBObject;
@@ -219,11 +221,18 @@ public class FHIRTools {
     	return defaultValue;
     }
     
-    public static String stringFromDateTime(DateTimeType date) {
+    public static String stringFromDateTime(Type date) {
     	if (date == null) return "";
-    	return date.getValue().toInstant()
+    	if (date instanceof Period) {
+    		Period p = (Period) date;
+    		return stringFromDateTime(p.getStartElement())+" - "+stringFromDateTime(p.getEndElement());
+    	}
+    	if (date instanceof DateTimeType) {
+    	return ((DateTimeType) date).getValue().toInstant()
                .atZone(ZoneId.systemDefault())
                .format(titleTimeFormatter);
+    	}
+    	return "";
     }
 	
 	/*

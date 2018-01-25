@@ -287,7 +287,9 @@ public class MobileAPI extends Controller {
 		}
 				
 		if (!phrase.equals(meta.get("phrase"))) return internalServerError("Internal error while validating consent");
-						
+				
+		
+		
 		return authResult(executor, appInstance, meta, phrase);
 	}
 	
@@ -315,6 +317,13 @@ public class MobileAPI extends Controller {
 		
         meta.put("created", refresh.created);
         RecordManager.instance.setMeta(executor, appInstance._id, "_app", meta);
+        
+        BSONObject q = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_query");
+        if (q.containsField("link-study")) {
+        	MidataId studyId = MidataId.from(q.get("link-study"));
+        	MobileAPI.prepareMobileExecutor(appInstance, session);
+        	controllers.research.Studies.autoApproveCheck(appInstance.applicationId, studyId, appInstance.owner);
+        }
         
 		// create encrypted authToken		
 		ObjectNode obj = Json.newObject();								
@@ -401,7 +410,7 @@ public class MobileAPI extends Controller {
 		return appInstance;
 	}
 	
-	private static MidataId prepareMobileExecutor(MobileAppInstance appInstance, MobileAppSessionToken tk) throws AppException {
+	protected static MidataId prepareMobileExecutor(MobileAppInstance appInstance, MobileAppSessionToken tk) throws AppException {
 		KeyManager.instance.login(1000l*60l);
 		KeyManager.instance.unlock(tk.appInstanceId, tk.passphrase);
 		Map<String, Object> appobj = RecordManager.instance.getMeta(tk.appInstanceId, tk.appInstanceId, "_app").toMap();

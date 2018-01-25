@@ -138,7 +138,10 @@
     "all" : "All participants",
     "request" : "Candidates that need decision",
     "rejected" : "Rejected candidates",
-    "retreated" : "Participants that have retreated"
+    "retreated" : "Participants that have retreated",
+    "acceptall" : "Accept all requests and assign new participants to participant group",
+    "autojoin" : "Auto-Accept",
+    "autojoin2" : "Always accept all participation requests and assign new participants to chosen group upon login of research application linked to this study."
   },
   
   "studyrecords" : {

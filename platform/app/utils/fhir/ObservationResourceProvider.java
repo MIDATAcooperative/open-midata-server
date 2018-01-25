@@ -398,9 +398,9 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 		// Set Record code and content
 		String display = setRecordCodeByCodeableConcept(record, theObservation.getCode(), null);		
 		String date = "No time";		
-		if (theObservation.hasEffectiveDateTimeType()) {
+		if (theObservation.hasEffective()) {
 			try {
-				date = FHIRTools.stringFromDateTime(theObservation.getEffectiveDateTimeType());
+				date = FHIRTools.stringFromDateTime(theObservation.getEffective());
 			} catch (Exception e) {
 				throw new UnprocessableEntityException("Cannot process effectiveDateTime");
 			}

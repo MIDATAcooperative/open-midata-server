@@ -121,6 +121,7 @@ POST    /api/admin/studies                               controllers.research.St
 GET     /api/research/studies/:study                     controllers.research.Studies.get(study: String)
 GET     /api/admin/studies/:study                        controllers.research.Studies.getAdmin(study: String)
 PUT     /api/research/studies/:study                     controllers.research.Studies.update(study: String)
+POST    /api/research/studies/:study/change              controllers.research.Studies.updateNonSetup(study: String)
 GET     /api/research/studies/:study/download            controllers.research.Studies.download(study: String)
 GET     /api/research/studies/:study/fhirdownload/:studyGroup/:mode  controllers.research.Studies.downloadFHIR(study: String, studyGroup : String, mode : String)
 GET     /api/research/studies/:study/codes               controllers.research.Studies.listCodes(study: String)

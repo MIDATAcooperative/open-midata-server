@@ -321,9 +321,10 @@ public class Spaces extends Controller {
 		if (visualization.type != null && visualization.type.equals("oauth2")) {
   		  BSONObject oauthmeta = RecordManager.instance.getMeta(userId, new MidataId(spaceIdString), "_oauth");  		  
 		  if (oauthmeta == null) return F.Promise.pure((Result) Plugins.oauthInfo(visualization, obj)); 
-			 		
-		  if (oauthmeta.containsField("refreshToken")) {					
-		    return Plugins.requestAccessTokenOAuth2FromRefreshToken(spaceIdString, oauthmeta.toMap(), obj);
+			 
+		  Map<String, Object> data = oauthmeta.toMap();
+		  if (data != null && data.get("refreshToken") != null) {					
+		    return Plugins.requestAccessTokenOAuth2FromRefreshToken(spaceIdString, data, obj);
 		  }
 		} 
 		if (visualization.type != null && visualization.type.equals("oauth1")) {

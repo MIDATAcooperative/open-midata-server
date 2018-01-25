@@ -527,8 +527,9 @@ public class Plugins extends APIController {
 		final Map<String, Object> tokens = tokens1;
 		final MidataId spaceId = new MidataId(spaceIdStr);
 		// get app details			
-		
-		String refreshToken = tokens.get("refreshToken").toString();
+		Object rt = tokens.get("refreshToken");
+		if (rt == null) AccessLog.log("tokens="+tokens.toString());
+		String refreshToken = rt.toString();
        
 		// request access token	
 		Promise<WSResponse> promise = WS

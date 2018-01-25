@@ -928,6 +928,7 @@ public class Application extends APIController {
 				controllers.research.routes.javascript.Studies.get(),
 				controllers.research.routes.javascript.Studies.getAdmin(),
 				controllers.research.routes.javascript.Studies.update(),
+				controllers.research.routes.javascript.Studies.updateNonSetup(),
 				controllers.research.routes.javascript.Studies.updateParticipation(),
 				controllers.research.routes.javascript.Studies.download(),
 				controllers.research.routes.javascript.Studies.downloadFHIR(),
