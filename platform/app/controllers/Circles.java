@@ -47,6 +47,7 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
+import utils.ErrorReporter;
 import utils.PasswordHash;
 import utils.RuntimeConstants;
 import utils.access.APS;
@@ -179,6 +180,11 @@ public class Circles extends APIController {
 				    Collection<RecordsInfo> summary = RecordManager.instance.info(executor, consent._id, null, all, AggregationType.ALL);
 				    if (summary.isEmpty()) consent.records = 0; else consent.records = summary.iterator().next().count;
 				  } catch (RequestTooLargeException e) { consent.records = -1; }
+				  catch (AppException e) {
+					ErrorReporter.report("consent info", null, e);
+					consent.records = -1;
+				  }
+				  
 				} else consent.records = 0;
 			}
 		}

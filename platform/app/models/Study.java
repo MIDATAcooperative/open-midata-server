@@ -31,7 +31,7 @@ public class Study extends Model {
 	/**
 	 * constant set containing all fields
 	 */
-	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "owner", "createdBy", "createdAt", "description", "infos", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags");
+	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "owner", "createdBy", "createdAt", "description", "infos", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup");
 	
 	/**
 	 * name of study
@@ -150,6 +150,11 @@ public class Study extends Model {
      */
     public Set<String> processFlags;
     
+    /**
+     * A StudyGroup new participants should automatically join
+     */
+    public String autoJoinGroup;
+    
     public static void add(Study study) throws InternalServerException {
 		Model.insert(collection, study);
 	 }
@@ -245,6 +250,11 @@ public class Study extends Model {
     public void setDescription(String description) throws InternalServerException {
     	this.description = description;
     	Model.set(Study.class, collection, this._id, "description", description);
+    }
+    
+    public void setAutoJoinGroup(String autoJoinGroup) throws InternalServerException {
+    	this.autoJoinGroup = autoJoinGroup;
+    	Model.set(Study.class, collection, this._id, "autoJoinGroup", autoJoinGroup);
     }
     
     public void setProcessFlags(Set<String> processFlags) throws InternalServerException {
