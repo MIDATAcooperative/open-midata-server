@@ -139,7 +139,7 @@ angular.module('portal')
 			$scope.study.processFlags.push(tag);
 			
 			var data = { processFlags : $scope.study.processFlags };
-			$scope.status.doAction("update", server.put(jsRoutes.controllers.research.Studies.update($scope.studyid).url, JSON.stringify(data)))
+			$scope.status.doAction("update", server.post(jsRoutes.controllers.research.Studies.updateNonSetup($scope.studyid).url, JSON.stringify(data)))
 			  .then(function(data) { 				
 				    $scope.reload();
 			   }); 

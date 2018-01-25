@@ -3,11 +3,16 @@ var en = {
 
   "add_data_btn" : "Add Data",
   "event" : "Event",
+  "tlb" : "Mark If",
   "persons" : "Person(s)",
   "date" : "Date",
   "details" : "Details",
   "close_btn" : "Close",
   "details_btn" : "Open Details",
+  
+  "appointment" : "Appointments",
+  "medicationStatement" : "Medication",
+  "observation" : "Observations and Measurements",
 
   "add_sources_title" : "Add Data Sources",
   "no_data_sources" : "Currently there is no data available that could be displayed in the calendar. Please come back after you have some data in your account.",
@@ -15,14 +20,19 @@ var en = {
 },
 de = {
   "todays_date" : "Heutiges Datum:",
-
+   
   "add_data_btn" : "Daten hinzufügen",
   "event" : "Ereignis",
+  "tlb" : "Markieren wenn",
   "persons" : "Person(en)",
   "date" : "Datum",
   "details" : "Details",
   "close_btn" : "Schließen",
   "details_btn" : "Details",
+  
+  "appointment" : "Termine",
+  "medicationStatement" : "Medikamente",
+  "observation" : "Beobachtungen und Messungen",
 
   "add_sources_title" : "Datenquellen hinzufügen",
   "no_data_sources" : "Derzeit haben Sie keine zur Anzeige geeigneten Daten in ihrem Account. Kommen Sie wieder auf diese Seite, wenn mehr Daten in ihrem Account verfügbar sind.",

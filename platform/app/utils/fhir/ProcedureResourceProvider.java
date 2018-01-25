@@ -238,19 +238,13 @@ public class ProcedureResourceProvider extends RecordBasedResourceProvider<Proce
 		setRecordCodeByCodings(record, null, "Procedure");		
 				
 		String date = "No time";		
-		if (theProcedure.hasPerformedDateTimeType()) {
+		if (theProcedure.hasPerformed()) {
 			try {
-				date = FHIRTools.stringFromDateTime(theProcedure.getPerformedDateTimeType());
+				date = FHIRTools.stringFromDateTime(theProcedure.getPerformed());
 			} catch (Exception e) {
 				throw new UnprocessableEntityException("Cannot process performedDateTime");
 			}
-		} else if (theProcedure.hasPerformedPeriod()) {
-			try {
-				date = FHIRTools.stringFromDateTime(theProcedure.getPerformedPeriod().getStartElement())+" - "+FHIRTools.stringFromDateTime(theProcedure.getPerformedPeriod().getEndElement());
-			} catch (Exception e) {
-				throw new UnprocessableEntityException("Cannot process performedPeriod");
-			}
-		}
+		} 
 		record.name = date;		
 
 		// clean
