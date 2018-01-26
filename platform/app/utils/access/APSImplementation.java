@@ -341,7 +341,7 @@ class APSImplementation extends APS {
 
 		@Override
 		public String toString() {
-			return "aps("+size+"@"+aps.toString()+")";
+			return "aps({ id: "+aps.toString()+", size: "+size+"})";
 		}
 		
 		

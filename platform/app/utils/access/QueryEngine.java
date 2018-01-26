@@ -307,7 +307,7 @@ class QueryEngine {
         } else {
           Map<String, Object> comb = Feature_QueryRedirect.combineQuery(properties, query.getProperties());
     	  if (comb != null) {
-    		  return qm.iterator(new Query(comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext()));
+    		  return qm.iterator(new Query(comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext()).setFromRecord(query.getFromRecord()));
     	  } else {
     		  AccessLog.log("empty combine");
     	  }

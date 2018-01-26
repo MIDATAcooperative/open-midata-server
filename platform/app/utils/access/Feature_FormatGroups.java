@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.bson.BasicBSONObject;
+
 import models.ContentCode;
 import models.RecordGroup;
 import utils.AccessLog;
@@ -240,7 +242,10 @@ public class Feature_FormatGroups extends Feature {
 		public DBRecord next() {
 			DBRecord record = chain.next();
 			try {
-			   record.group = RecordGroup.getGroupForSystemAndContent(system, (String) record.meta.get("content"));
+			   BasicBSONObject meta = record.meta;
+			   
+			   if (meta == null) AccessLog.log("NO META");
+			   record.group = RecordGroup.getGroupForSystemAndContent(system, (String) meta.get("content"));
 			} catch (AppException e) {
 				throw new RuntimeException(e);
 			}

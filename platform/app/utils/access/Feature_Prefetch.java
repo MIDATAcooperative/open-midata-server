@@ -37,7 +37,7 @@ public class Feature_Prefetch extends Feature {
 		if (q.restrictedBy("_id")) {
 			List<DBRecord> prefetched = QueryEngine.lookupRecordsById(q);
 			
-			return lookup(q, prefetched, next).iterator();									
+			return new LookupIterator(lookup(q, prefetched, next));									
 		} else return next.iterator(q);
 	}
 		
@@ -72,5 +72,35 @@ public class Feature_Prefetch extends Feature {
 	}
 		
 
+	static class LookupIterator implements Iterator<DBRecord> {
+		private Iterator<DBRecord> data;
+		private int size;
+		
+		
+		LookupIterator(List<DBRecord> data) {
+			data = QueryEngine.modifyable(data);
+			Collections.sort(data);
+			this.size = data.size();
+			this.data = data.iterator();			
+		}
+
+		@Override
+		public boolean hasNext() {
+			return data.hasNext();
+		}
+
+		@Override
+		public DBRecord next() {
+			return data.next();
+		}
+
+		@Override
+		public String toString() {
+			return "lookup({ size: "+size+"})";
+		}
+		
+		
+		
+	}
 
 }

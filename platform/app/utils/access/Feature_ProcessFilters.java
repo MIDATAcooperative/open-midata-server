@@ -27,7 +27,7 @@ public class Feature_ProcessFilters extends Feature {
 		if (!result.hasNext())
 			return result;
 
-		if (q.getFromRecord() != null) result = new ProcessingTools.FilterUntilFromRecord(q.getFromRecord(), result);
+		if (q.getFromRecord() != null) result = new ProcessingTools.FilterUntilFromRecord(q.getFromRecord(), ProcessingTools.noDuplicates(result));
 		int minTime = q.getMinTime();	
 
 		boolean indexQuery = q.restrictedBy("index") && !q.getApsId().equals(q.getCache().getAccountOwner());

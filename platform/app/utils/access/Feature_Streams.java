@@ -173,28 +173,35 @@ public class Feature_Streams extends Feature {
 	static class StreamCombineIterator extends Feature.MultiSource<DBRecord> {
 
 		private APS next;
-		private boolean includeStream;
-		private boolean includeOther;
-		private DBRecord thisrecord;
+		private APS thisrecord;
+		private MidataId owner;
 		private int size;
+		private List<DBRecord> direct;
 		
-		StreamCombineIterator(APS next, Query query, Iterator<DBRecord> streams, boolean includeStream, boolean includeOther) throws AppException {
-		  	this.next = next;
-		  	this.includeStream = includeStream;
-		  	this.includeOther = includeOther;
-		  	this.query = query;
-		  
-		  	init(streams);
+		StreamCombineIterator(APS next, Query query, Iterator<DBRecord> streams, List<DBRecord> direct) throws AppException {
+		  	this.next = next;		  			  
+		  	this.query = query;		  
+		  			  
+		  	if (direct != null && !direct.isEmpty()) {		  		
+		  		current = direct.iterator();
+		  		chain = streams;
+		  		thisrecord = next;
+		  		owner = next.getStoredOwner();
+		  		size = direct.size();
+		  	}
+		  	else init(streams);
 		}
 		
 		@Override
 		public Iterator<DBRecord> advance(DBRecord r) throws AppException {
-			thisrecord = r;
+			
 			if (r.isStream) {
 				  
 				
 				try {
 					  APS streamaps = query.getCache().getAPS(r._id, r.key, r.owner);
+					  thisrecord = streamaps;
+					  owner = thisrecord.getStoredOwner();
 					  boolean medium = streamaps.getSecurityLevel().equals(APSSecurityLevel.MEDIUM);
 					  if (query.getMinUpdatedTimestamp() <= streamaps.getLastChanged() && query.getMinCreatedTimestamp() <= streamaps.getLastChanged()) {
 //						AccessLog.logBegin("start query on stream APS:"+streamaps.getId());
@@ -205,11 +212,7 @@ public class Feature_Streams extends Feature {
 					    	fromStream(r, r2, medium);				    	
 					    	//filtered.add(r2);
 					    }
-					    size = rs.size();
-					    if (includeStream) {
-					    	size++;
-					    	return Iterators.concat(Collections.singletonList(r).iterator(), rs.iterator());
-					    }
+					    size = rs.size();					   
 
 					    return rs.iterator();
 					  }
@@ -217,15 +220,16 @@ public class Feature_Streams extends Feature {
 				  catch (APSNotExistingException e2) {
 					  next.removePermission(r);
 				  }
+				
+				return Collections.emptyIterator();
 			}
-			size = 1;	
-			return includeOther ? Collections.singletonList(r).iterator() : Collections.<DBRecord>emptyIterator();
+			return Collections.emptyIterator();			
 		}
 
 		@Override
 		public String toString() {
 			if (thisrecord == null) return "access-streams()";
-			return "access-streams(aps("+size+"@"+thisrecord._id.toString()+"))";
+			return "access-streams("+next.getId().toString()+", aps({ow:"+owner.toString()+", id:"+thisrecord.getId().toString()+", size:"+size+" }))";
 		}
 		
 		
@@ -238,8 +242,7 @@ public class Feature_Streams extends Feature {
 		boolean restrictedByStream = q.restrictedBy("stream");
 		
 		if (restrictedByStream) {
-			  
-			 
+			  			 
 			  // optimization for record lookup queries 
 			  if (q.restrictedBy("quick")) {				  				  				  
 			      Iterator<DBRecord> records = next.iterator(q);			    
@@ -248,9 +251,8 @@ public class Feature_Streams extends Feature {
 			  
 			  //AccessLog.logBegin("begin single stream query");
 			  
-			  Iterator<DBRecord> streams = next.iterator(new Query(CMaps.map(q.getProperties()).map("_id", q.getProperties().get("stream")).removeKey("quick"), streamQueryFields, q.getCache(), q.getApsId(), q.getContext() ));
-				
-			  return new StreamCombineIterator(next, q, streams, false, false);
+			  Iterator<DBRecord> streams = next.iterator(new Query(CMaps.map(q.getProperties()).map("_id", q.getProperties().get("stream")).removeKey("quick"), streamQueryFields, q.getCache(), q.getApsId(), q.getContext() ));				
+			  return new StreamCombineIterator(next, q, streams, null);
 			  
 		}
         		
@@ -297,12 +299,15 @@ public class Feature_Streams extends Feature {
 				Set<AccessPermissionSet> rsets = AccessPermissionSet.getAll(restriction, AccessPermissionSet.ALL_FIELDS);
 				for (AccessPermissionSet set : rsets) {
 					DBRecord r = streamsToFetch.get(set._id);
-					//streams.add(r);
+					streams.add(r);
+					if (includeStreams) filtered.add(r);
 					q.getCache().getAPS(r._id, r.key, r.owner, set, true);
 				}
 			}
 				
-			return new StreamCombineIterator(next, q, recs.iterator(), includeStreams, true);
+			
+			
+			return new StreamCombineIterator(next, q, streams.iterator(), filtered);
 			
 		} else if (!includeStreams) {
 			

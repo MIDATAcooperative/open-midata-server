@@ -72,11 +72,11 @@ public class Feature_UserGroups extends Feature {
 			if (!q.isRestrictedToSelf()) {
 				Set<UserGroupMember> isMemberOfGroups = q.getCache().getAllActiveByMember();
 				if (!isMemberOfGroups.isEmpty()) {
-					
+					q.setFromRecord(null);
 					List<UserGroupMember> members = new ArrayList<UserGroupMember>(isMemberOfGroups);
-					members.sort(null);
+					Collections.sort(members);
 					members.add(0, null);
-					return new UserGroupIterator(q, members);
+					return ProcessingTools.noDuplicates(new UserGroupIterator(q, members));
 					
 				}
 			}
@@ -145,7 +145,7 @@ public class Feature_UserGroups extends Feature {
 		
 		// AK : Removed instanceof DummyAccessContext : Does not work correctly when listing study participants records on portal
 		MidataId aps = (q.getApsId().equals(ugm.member) /*|| q.getContext() instanceof DummyAccessContext */) ? group : q.getApsId();
-		Query qnew = new Query(newprops, q.getFields(), subcache, aps, new UserGroupAccessContext(ugm, subcache, q.getContext()));
+		Query qnew = new Query(newprops, q.getFields(), subcache, aps, new UserGroupAccessContext(ugm, subcache, q.getContext())).setFromRecord(q.getFromRecord());
 		Iterator<DBRecord> result = next.iterator(qnew);
 		//AccessLog.logEnd("end user group query for group="+group.toString());
 		

@@ -100,13 +100,15 @@ public class Feature_QueryRedirect extends Feature {
             	if (query.restrictedBy("redirect-only") || target.hasNoDirectEntries()) {
       			  return Collections.emptyIterator();	
       			} else {
+      				query.setFromRecord(null);
       			  return next.iterator(query);
       			}	
             } else if (step == 2) {            	            	
             	if (!query.restrictedBy("ignore-redirect")) {
             		Object targetAPSId = requery.get("aps");
             		return QueryEngine.combineIterator(new Query(query, CMaps.map(), MidataId.from(targetAPSId), new AccountAccessContext(query.getCache(), query.getContext())).setFromRecord(query.getFromRecord()), requery.toMap(), next);            				    			
-    			}	
+    			}
+            	return Collections.emptyIterator();
             }
 			return null;
 		}

@@ -93,7 +93,7 @@ public class ProcessingTools {
 		public Iterator<DBRecord> advance(Map<String, Object> next) throws AppException {
 			Map<String, Object> comb = Feature_QueryRedirect.combineQuery(next, query.getProperties());
 			if (comb != null) {
-				return fchain.iterator(new Query(comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext()).setFromRecord(query.getFromRecord()));
+				return ProcessingTools.limit(comb, fchain.iterator(new Query(comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext()).setFromRecord(query.getFromRecord())));
 			} else
 				return Collections.emptyIterator();
 		}
@@ -125,13 +125,14 @@ public class ProcessingTools {
 
 		@Override
 		public A next() {
-			A result = next;
-			next = null;
+			A result = next;			
 			boolean condition = false;
+			A candidate = null;
 			while (!condition && chain.hasNext()) {
-				next = chain.next();
-				condition = contained(next);
+				candidate = chain.next();
+				condition = contained(candidate);
 			}
+			if (condition) next = candidate; else next = null;
 			return result;
 		}
 

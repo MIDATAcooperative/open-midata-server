@@ -25,7 +25,7 @@ public class Feature_Pseudonymization extends Feature {
 	protected Iterator<DBRecord> iterator(Query q) throws AppException {
 		// For researchers
 		if (q.restrictedBy("study")) {
-			q = new Query(q, CMaps.map());
+			q = new Query(q, CMaps.map()).setFromRecord(q.getFromRecord());
 			MidataId study = q.getMidataIdRestriction("study").iterator().next();
 
 			q.getProperties().put("usergroup", study);

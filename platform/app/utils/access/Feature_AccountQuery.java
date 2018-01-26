@@ -139,7 +139,7 @@ public class Feature_AccountQuery extends Feature {
             	if (consents.isEmpty()) return Collections.emptyIterator();
     									            	
             	
-            	return new ConsentIterator(next, query, consents);
+            	return ProcessingTools.noDuplicates(new ConsentIterator(next, query, consents));
     						
             }
 			return null;
@@ -161,6 +161,21 @@ public class Feature_AccountQuery extends Feature {
 			this.next = next;
 			this.query = q;
 						
+			if (q.getFromRecord() != null) {
+				DBRecord r = q.getFromRecord();
+				if (r.owner != null) {
+				  Iterator<Consent> it = consents.iterator();
+				  while (it.hasNext()) {					  
+					  Consent c = it.next();
+					  if (c.owner.equals(r.owner)) {
+						  init(c, it);
+						  return;
+					  }
+				  }
+				  init(it);
+				  return;
+				}
+			}
 			init(consents.iterator());
 		}
 		

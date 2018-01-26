@@ -39,7 +39,10 @@ public abstract class Feature {
 		@Override
 		public A next() {
 			try {			
-			  A result = current.next();			
+			  A result = current.next();
+			  
+			  if (result == null) throw new NullPointerException();
+			  
 			  advance();			
 			  return result;
 			} catch (AppException e) {
@@ -55,6 +58,13 @@ public abstract class Feature {
 			  AccessLog.log("init:"+this.toString());
 		  } else current = Collections.emptyIterator();
 		  advance();
+		}
+		
+		public void init(B first, Iterator<B> init) throws AppException {
+			  this.chain = init;
+			  current = advance(first);
+			  AccessLog.log("init:"+this.toString());			  
+			  advance();
 		}
 		
 		public void advance() throws AppException {

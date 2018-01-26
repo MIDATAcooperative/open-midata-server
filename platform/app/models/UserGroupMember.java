@@ -17,7 +17,7 @@ import utils.exceptions.InternalServerException;
  *
  */
 @JsonFilter("UserGroupMember")
-public class UserGroupMember extends Model {
+public class UserGroupMember extends Model implements Comparable<Model> {
 	
 	protected static final @NotMaterialized String collection = "groupmember";
 	public static final @NotMaterialized Set<String> ALL = Sets.create("userGroup", "member", "status", "user", "startDate", "endDate", "role");

@@ -55,7 +55,7 @@ public class Query {
 		this.apsId = apsId;
 		this.context = context;
 		process();
-		AccessLog.logQuery(apsId, properties, fields);
+		//AccessLog.logQuery(apsId, properties, fields);
 	}
 	
 	public Query(Map<String, Object> properties, Set<String> fields, APSCache cache, MidataId apsId, AccessContext context, boolean noinit) throws AppException {
@@ -79,7 +79,7 @@ public class Query {
 		this.apsId = aps;			
 		this.context = context;
 		process();
-		AccessLog.logQuery(apsId, properties, fields);
+		//AccessLog.logQuery(apsId, properties, fields);
 	}		
 	
 	public Map<String, Object> getProperties() {
@@ -456,7 +456,7 @@ public class Query {
 			 Set<String> owners = getRestriction("owner");
 			 Set<Object> resolved = new HashSet<Object>();
 			 for (Object owner : owners) {
-				 AccessLog.log("check owner:"+owner.toString());
+				 //AccessLog.log("check owner:"+owner.toString());
 				 if (MidataId.isValid(owner.toString())) {
 					 resolved.add(owner);
 				 } else {
