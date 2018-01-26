@@ -32,9 +32,9 @@ server {
           add_header 'X-XSS-Protection' "1; mode=block";
           add_header 'X-Content-Type-Options' 'nosniff';
           add_header 'Strict-Transport-Security' "max-age=31536000";             
-          add_header 'Content-Security-Policy' "default-src 'none'; script-src https://DOMAIN/components/ https://DOMAIN/api/ https://DOMAIN/; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; media-src 'none'; frame-src https://DOMAIN/plugin/ https://localhost:9004 https://DOMAIN/v1/plugin_api/records/file; font-src 'self'; connect-src 'self'";
-          add_header 'X-Content-Security-Policy' "default-src 'none'; script-src https://DOMAIN/components/ https://DOMAIN/api/ https://DOMAIN/; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; media-src 'none'; frame-src https://DOMAIN/plugin/ https://localhost:9004 https://DOMAIN/v1/plugin_api/records/file; font-src 'self'; connect-src 'self'";
-          add_header 'X-WebKit-CSP' "default-src 'none'; script-src https://DOMAIN/components/ https://DOMAIN/api/ https://DOMAIN/; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; media-src 'none'; frame-src https://DOMAIN/plugin/ https://localhost:9004 https://DOMAIN/v1/plugin_api/records/file; font-src 'self'; connect-src 'self'";            
+          add_header 'Content-Security-Policy' "default-src 'none'; script-src https://DOMAIN/components/ https://DOMAIN/api/ https://DOMAIN/; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; media-src 'none'; child-src https://DOMAIN/plugin/ https://localhost:9004 https://DOMAIN/v1/plugin_api/records/file; font-src 'self'; connect-src 'self'";
+          add_header 'X-Content-Security-Policy' "default-src 'none'; script-src https://DOMAIN/components/ https://DOMAIN/api/ https://DOMAIN/; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; media-src 'none'; child-src https://DOMAIN/plugin/ https://localhost:9004 https://DOMAIN/v1/plugin_api/records/file; font-src 'self'; connect-src 'self'";
+          add_header 'X-WebKit-CSP' "default-src 'none'; script-src https://DOMAIN/components/ https://DOMAIN/api/ https://DOMAIN/; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; media-src 'none'; child-src https://DOMAIN/plugin/ https://localhost:9004 https://DOMAIN/v1/plugin_api/records/file; font-src 'self'; connect-src 'self'";            
         }
 
         location /doc {
@@ -82,9 +82,9 @@ server {
            add_header 'X-XSS-Protection' "1; mode=block";
            add_header 'X-Content-Type-Options' 'nosniff';
            add_header 'Strict-Transport-Security' "max-age=31536000";             
-           add_header 'Content-Security-Policy' "default-src 'none'; script-src https://DOMAIN/plugin/; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; media-src 'none'; frame-src 'none'; font-src 'self'; connect-src 'self'";
-           add_header 'X-Content-Security-Policy' "default-src 'none'; script-src https://DOMAIN/plugin/; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; media-src 'none'; frame-src 'none'; font-src 'self'; connect-src 'self'";
-           add_header 'X-WebKit-CSP' "default-src 'none'; script-src https://DOMAIN/plugin/; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; media-src 'none'; frame-src 'none'; font-src 'self'; connect-src 'self'";                       
+           add_header 'Content-Security-Policy' "default-src 'none'; script-src https://DOMAIN/plugin/; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; media-src 'none'; child-src 'none'; font-src 'self'; connect-src 'self'";
+           add_header 'X-Content-Security-Policy' "default-src 'none'; script-src https://DOMAIN/plugin/; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; media-src 'none'; child-src 'none'; font-src 'self'; connect-src 'self'";
+           add_header 'X-WebKit-CSP' "default-src 'none'; script-src https://DOMAIN/plugin/; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; media-src 'none'; child-src 'none'; font-src 'self'; connect-src 'self'";                       
         }
                          
 }
