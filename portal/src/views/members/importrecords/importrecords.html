@@ -10,7 +10,7 @@
 		<loader busy="status.isBusy !== false">
 			<div class="alert alert-danger alert-dismissable" ng-show="error">
 				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-				<p translate="{{ error.code }}"></p>
+				<p translate="{{ error.code || error }}"></p>
 			</div>
 							
 				<p ng-hide="authorized">
