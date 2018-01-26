@@ -19,7 +19,7 @@
 		<!-- endbuild -->
 	</head>
 	<body>
-		<div class="container" ng-app="tracker" ng-controller="CreateCtrl" ng-cloak>		  
+		<div class="container" ng-app="tracker" ng-controller="CreateCtrl" ng-cloak ng-csp="no-unsafe-eval">		  
 		  <div class="alert alert-success alert-dismissable" ng-show="success">
 			<button type="button" class="close" ng-click="success=false" aria-hidden="true">&times;</button>
 			<span translate="data_added"></span>
