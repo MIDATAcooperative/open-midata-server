@@ -160,10 +160,11 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 	public List<IBaseResource> search(SearchParameterMap params) {
 		try {		
 			List<IBaseResource> results = new ArrayList<IBaseResource>();
-		   List<T> resources = parse(searchRaw(params), getResourceType());
+			List<M> raw = searchRaw(params);
+		    List<T> resources = parse(raw, getResourceType());
 		   
 		   if (params.getCount() != null && resources.size() == params.getCount() + 1) {
-			   params.setFrom(resources.get(resources.size() - 1).getIdElement().getIdPart());
+			   params.setFrom(raw.get(resources.size() - 1)._id.toString());
 			   resources = resources.subList(0, params.getCount());			   
 		   } else params.setFrom(null);
 		   

@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.bson.BasicBSONObject;
@@ -130,7 +132,7 @@ public class Feature_AccountQuery extends Feature {
     			}
             } else if (step == 2) {            	            	
             
-            	List<Consent> consents = getConsentsForQuery(query);
+            	List<Consent> consents = getConsentsForQuery(query, false);
     			
             	/*
     			if (!q.restrictedBy("consent-limit")) {
@@ -152,6 +154,58 @@ public class Feature_AccountQuery extends Feature {
 						
 	}
 	
+	static class BlockwiseConsentPrefetch implements Iterator<Consent> {
+
+		private int blocksize;
+		private int pos;
+		private int maxsize;
+		protected List<Consent> all;
+		protected Iterator<Consent> cache;	
+		private Query q;
+
+		public BlockwiseConsentPrefetch(Query q, List<Consent> consents, int blocksize) {
+			this.all = consents;
+			this.blocksize = blocksize;			
+			this.q = q;
+			this.cache = Collections.emptyIterator();
+			this.maxsize = consents.size();
+			this.pos = 0;		
+		}
+		
+		public BlockwiseConsentPrefetch(Query q, List<Consent> consents, int blocksize, int startpos) {
+			this.all = consents;
+			this.blocksize = blocksize;			
+			this.q = q;
+			this.cache = Collections.emptyIterator();
+			this.maxsize = consents.size();
+			this.pos = startpos;		
+		}
+
+		@Override
+		public boolean hasNext() {
+			return cache.hasNext() || pos < maxsize;
+		}
+				
+		@Override
+		public Consent next() {
+			if (cache.hasNext())
+				return cache.next();
+
+			int end = pos + blocksize;
+			if (end > maxsize) end = maxsize;
+			List<Consent> sublist = all.subList(pos, end);
+			try {
+			  FasterDecryptTool.accelerate(q, sublist);
+			} catch (AppException e) { throw new RuntimeException(e); }
+			AccessLog.log("get consent "+pos+" - "+end);
+			pos = end;
+			cache = sublist.iterator();			         
+			return cache.next();
+
+		}				
+
+	}
+	
 	static class ConsentIterator extends Feature.MultiSource<Consent> {
 
 		private Feature next;
@@ -160,23 +214,27 @@ public class Feature_AccountQuery extends Feature {
 		ConsentIterator(Feature next, Query q, List<Consent> consents) throws AppException {	
 			this.next = next;
 			this.query = q;
-						
+			AccessLog.log("INIT Consent Iterator fromrec="+q.getFromRecord());			
 			if (q.getFromRecord() != null) {
 				DBRecord r = q.getFromRecord();
 				if (r.owner != null) {
+					AccessLog.log("has owner");
+				  int pos = 0;
 				  Iterator<Consent> it = consents.iterator();
 				  while (it.hasNext()) {					  
 					  Consent c = it.next();
 					  if (c.owner.equals(r.owner)) {
-						  init(c, it);
+						  AccessLog.log("found, skipping "+pos+" consents");
+						  init(new BlockwiseConsentPrefetch(q, consents, 105, pos));
 						  return;
 					  }
+					  pos++;
 				  }
 				  init(it);
 				  return;
 				}
 			}
-			init(consents.iterator());
+			init(new BlockwiseConsentPrefetch(q, consents, 105));
 		}
 		
 		@Override
@@ -326,7 +384,7 @@ public class Feature_AccountQuery extends Feature {
 		return false;
 	}
 	
-	protected static List<Consent> getConsentsForQuery(Query q) throws AppException {
+	protected static List<Consent> getConsentsForQuery(Query q, boolean prefetch) throws AppException {
 		List<Consent> consents = Collections.emptyList();
 		Set<String> sets = q.restrictedBy("owner") ? q.getRestriction("owner") : Collections.singleton("all");
 		Set<MidataId> studies = q.restrictedBy("study") ? q.getMidataIdRestriction("study") : null;
@@ -389,10 +447,11 @@ public class Feature_AccountQuery extends Feature {
 		}
 		consents = applyConsentTimeFilter(q, consents);
 		
-		if (consents.size() > MIN_FOR_ACCELERATION) {
-			FasterDecryptTool.accelerate(q, consents);
-		} else if (consents.size() < MAX_CONSENTS_IN_QUERY) q.getCache().prefetch(consents, null);
-				
+		if (prefetch) {
+			if (consents.size() > MIN_FOR_ACCELERATION) {
+				FasterDecryptTool.accelerate(q, consents);
+			} else if (consents.size() < MAX_CONSENTS_IN_QUERY) q.getCache().prefetch(consents, null);
+		}
 		consents = applyWriteFilters(q, consents);
 		Collections.sort(consents);
 		return consents;

@@ -35,11 +35,11 @@ public class Feature_ProcessFilters extends Feature {
 		Map<MidataId, DBRecord> fetchIds = new HashMap<MidataId, DBRecord>();
 
 		if (q.getFetchFromDB() || indexQuery) {
-			result = new ProcessingTools.BlockwiseLoad(result, q, 100);
+			result = new ProcessingTools.BlockwiseLoad(result, q, 101);
 		} else {
 			Set<String> check = q.mayNeedFromDB();
 			if (!check.isEmpty())
-				result = new ProcessingTools.ConditionalLoad(result, q, 100);
+				result = new ProcessingTools.ConditionalLoad(result, q, 101);
 		}
 
 		boolean checkDelete = !q.restrictedBy("deleted");

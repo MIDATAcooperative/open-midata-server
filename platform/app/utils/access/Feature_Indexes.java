@@ -99,7 +99,7 @@ public class Feature_Indexes extends Feature {
 				if (allTarget) {
 					targetAps = null;
 				} else {
-					List<Consent> consents = Feature_AccountQuery.getConsentsForQuery(q);
+					List<Consent> consents = Feature_AccountQuery.getConsentsForQuery(q, true);
 					targetAps = new HashSet<MidataId>();
 					if (Feature_AccountQuery.mainApsIncluded(q))
 						targetAps.add(q.getApsId());

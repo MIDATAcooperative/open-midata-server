@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-
 import models.MidataId;
 import utils.AccessLog;
 import utils.collections.CMaps;
@@ -33,16 +32,17 @@ public class Feature_Pagination extends Feature {
 			DBRecord fromRecord = null;
 			if (findFrom.size() == 1) {
 				fromRecord = findFrom.get(0);
-			}
+			} else return Collections.emptyIterator();
 			
 			Iterator<DBRecord> result = next.iterator(new Query(q, props).setFromRecord(fromRecord));
 			boolean foundFrom = false;
 			while (!foundFrom && result.hasNext()) { DBRecord rec = result.next();if (rec._id.equals(from)) foundFrom = true; }
 			
 			AccessLog.log("foundFrom="+foundFrom);
-			if (!result.hasNext()) return Collections.emptyIterator();
+			if (!foundFrom) return Collections.emptyIterator();
+			if (!result.hasNext()) return Collections.singletonList(fromRecord).iterator();
 			
-			return ProcessingTools.limit(q.getProperties(), result);
+			return ProcessingTools.limit(q.getProperties(), new PaginationIterator(fromRecord, result));
 		}
 		
 		if (q.restrictedBy("skip")) {
@@ -63,6 +63,40 @@ public class Feature_Pagination extends Feature {
 		}				
 		
 		return ProcessingTools.limit(q.getProperties(), next.iterator(q));
+	}
+	
+	class PaginationIterator implements Iterator<DBRecord> {
+
+		private DBRecord first;
+		private Iterator<DBRecord> chain;
+		
+		public PaginationIterator(DBRecord first, Iterator<DBRecord> chain) {
+			this.first = first;
+			this.chain = chain;
+		}
+		
+		@Override
+		public boolean hasNext() {
+			return first != null || chain.hasNext();
+		}
+
+		@Override
+		public DBRecord next() {
+			if (first != null) {
+				DBRecord result = first;
+				first = null;
+				return result;
+			}
+			return chain.next();
+		}
+
+		@Override
+		public String toString() {
+			return "paginate("+chain.toString()+")";
+		}
+		
+		
+		
 	}
 	
 	

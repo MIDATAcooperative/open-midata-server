@@ -181,7 +181,7 @@ public class ProcessingTools {
 		@Override
 		public A next() {
 			current++;
-			AccessLog.log("LIMIT " + current);
+			//AccessLog.log("LIMIT " + current);
 			return chain.next();
 		}
 		
