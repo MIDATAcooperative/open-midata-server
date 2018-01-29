@@ -659,7 +659,7 @@ fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', '$translate', '
         $scope.importer = importer;	    
 					
 		// get authorization token
-		var authToken = $location.search().authToken;//.path().split("/")[1];
+		var authToken = $location.search().authToken;
 							
 		$scope.progress = function() {
 			var r = $scope.importer.requested > 0 ? $scope.importer.requested : 1;
@@ -681,7 +681,7 @@ fitbit.controller('PreviewCtrl', ['$scope', '$http', '$location', '$translate', 
         $scope.importer = importer;	    
 					
 		// get authorization token
-		var authToken = $location.search().authToken;//.path().split("/")[1];
+		var authToken = $location.search().authToken;
 
 		$scope.importer.initForm(authToken, true);
 		
