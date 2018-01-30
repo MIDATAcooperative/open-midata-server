@@ -18,7 +18,7 @@
 		<!-- endbuild -->
 	</head>
 	<body>
-		<div class="container" ng-app="recordList" ng-controller="RecordListCtrl" ng-cloak style="min-height:400px">
+		<div class="container" ng-csp="no-unsafe-eval" ng-app="recordList" ng-controller="RecordListCtrl" ng-cloak style="min-height:400px">
 			<div class="alert alert-danger alert-dismissable" ng-show="error">
 				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 				<p>{{error}}</p>
