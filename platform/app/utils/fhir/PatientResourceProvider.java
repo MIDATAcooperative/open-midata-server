@@ -449,7 +449,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			patientProvider.setExecutionInfo(inf);
 		}
 
-		Member member = Member.getById(who, Sets.create("firstname", "lastname", "birthday", "midataID", "gender", "email", "phone", "city", "country", "zip", "address1", "address2"));
+		Member member = Member.getById(who, Sets.create("firstname", "lastname", "birthday", "midataID", "gender", "email", "phone", "city", "country", "zip", "address1", "address2", "emailLC"));
 		patientProvider.updatePatientForAccount(member);
 	}
 

@@ -72,6 +72,7 @@ public class ProcessingTools {
 			AccessLog.log("Exception Query:"+input.toString());
 			throw e;
 		}
+		AccessLog.log("collected "+result.size()+" records");
 		return result;
 	}
 
@@ -100,7 +101,7 @@ public class ProcessingTools {
 
 		@Override
 		public String toString() {
-			return "multi("+current.toString()+")";
+			return "multi(["+passed+"] "+current.toString()+")";
 		}
 		
 		
@@ -111,6 +112,8 @@ public class ProcessingTools {
 
 		protected A next;
 		protected Iterator<A> chain;
+		protected int passed;
+		protected int filtered;
 
 		public FilterIterator(Iterator<A> chain) {
 			this.chain = chain;
@@ -131,6 +134,7 @@ public class ProcessingTools {
 			while (!condition && chain.hasNext()) {
 				candidate = chain.next();
 				condition = contained(candidate);
+				if (condition) passed++; else filtered++;
 			}
 			if (condition) next = candidate; else next = null;
 			return result;
@@ -152,12 +156,14 @@ public class ProcessingTools {
 
 		@Override
 		public boolean contained(A obj) {
-			return encountered.add(next);
+			boolean r = encountered.add(obj);
+			//if (!r) AccessLog.log("old: "+obj.toString()); else AccessLog.log("new: "+obj.toString()); 
+			return r;
 		}
 		
 		@Override
 		public String toString() {
-			return "distinct("+chain.toString()+")";
+			return "distinct(["+passed+"/"+filtered+"] "+chain.toString()+")";
 		}
 
 	}
@@ -198,6 +204,8 @@ public class ProcessingTools {
 
 		public FilterUntilFromRecord(DBRecord fromRecord, Iterator<DBRecord> chain) {
 			super(chain);
+			this.fromRecord = fromRecord;
+			this.found = false;
 			if (chain.hasNext())
 				next();
 		}
@@ -208,6 +216,7 @@ public class ProcessingTools {
 				return true;
 			if (obj._id.equals(fromRecord._id)) {
 				found = true;
+				AccessLog.log("found record "+fromRecord._id.toString());
 				return true;
 			}
 			return false;
@@ -215,7 +224,7 @@ public class ProcessingTools {
 		
 		@Override
 		public String toString() {
-			return "until("+chain.toString()+")";
+			return "until(["+passed+"/"+filtered+"] "+chain.toString()+")";
 		}
 
 	}
@@ -244,7 +253,7 @@ public class ProcessingTools {
 		
 		@Override
 		public String toString() {
-			return "filter("+property+","+chain.toString()+")";
+			return "filter(["+passed+"/"+filtered+"]"+property+","+chain.toString()+")";
 		}
 
 	}
@@ -264,7 +273,7 @@ public class ProcessingTools {
 		
 		@Override
 		public String toString() {
-			return "meta("+chain.toString()+")";
+			return "meta(["+passed+"/"+filtered+"] "+chain.toString()+")";
 		}
 
 	}
@@ -284,9 +293,10 @@ public class ProcessingTools {
 
 		@Override
 		public boolean contained(DBRecord record)  {
+			//AccessLog.log("rec meta="+record.meta+" enc="+record.encrypted+" dat="+record.data+" encdat="+record.encryptedData);
 			if (record.meta != null && (minTime == 0 || record.time ==0 || record.time >= minTime)) {
 				try {
-				   RecordEncryption.decryptRecord(record);
+				   RecordEncryption.decryptRecord(record);				   
 				} catch (AppException e) {
 					throw new RuntimeException(e);
 				}
@@ -298,7 +308,7 @@ public class ProcessingTools {
 
 		@Override
 		public String toString() {
-			return "decrypt("+minTime+","+filterDelete+","+chain.toString()+")";
+			return "decrypt(["+passed+"/"+filtered+"] "+minTime+","+filterDelete+","+chain.toString()+")";
 		}
 
 	}
@@ -341,7 +351,7 @@ public class ProcessingTools {
 
 		@Override
 		public String toString() {
-			return "filter("+property+","+chain.toString()+")";
+			return "filter(["+passed+"/"+filtered+"] "+property+","+chain.toString()+")";
 		}
 
 	}
@@ -376,7 +386,7 @@ public class ProcessingTools {
 		
 		@Override
 		public String toString() {
-			return "filter-date("+property+","+chain.toString()+")";
+			return "filter-date(["+passed+"/"+filtered+"] "+property+","+chain.toString()+")";
 		}
 
 	}
@@ -404,6 +414,7 @@ public class ProcessingTools {
 		@Override
 		public boolean contained(DBRecord record) {
 			Object accessVal = record.data;
+			//AccessLog.log("chk: "+accessVal.toString());
 			if (condition.satisfiedBy(accessVal)) {
 				return true;
 			} else if (nomatch != null)
@@ -413,7 +424,7 @@ public class ProcessingTools {
 		
 		@Override
 		public String toString() {
-			return "filter-data("+chain.toString()+")";
+			return "filter-data(["+passed+"/"+filtered+"] "+condition.toString()+", "+chain.toString()+")";
 		}
 
 	}
@@ -453,6 +464,8 @@ public class ProcessingTools {
 		protected Iterator<DBRecord> cache;
 		private List<DBRecord> work;
 		private Query q;
+		private int loaded;
+		private int notloaded;
 
 		public BlockwiseLoad(Iterator<DBRecord> chain, Query q, int blocksize) {
 			this.chain = chain;
@@ -483,8 +496,14 @@ public class ProcessingTools {
 				DBRecord record = chain.next();
 				if (needsLoad(record)) {
 					DBRecord old = fetchIds.put(record._id, record);
-					if (old == null) work.add(record);						
-				} else work.add(record);
+					if (old == null) {
+						work.add(record);
+						loaded++;
+					}
+				} else {
+					work.add(record);
+					notloaded++;
+				}
 				current++;
 			}
 
@@ -514,7 +533,7 @@ public class ProcessingTools {
 		
 		@Override
 		public String toString() {
-			return "load("+chain.toString()+")";
+			return "load([L:"+loaded+",S:"+notloaded+"] "+chain.toString()+")";
 		}
 
 	}

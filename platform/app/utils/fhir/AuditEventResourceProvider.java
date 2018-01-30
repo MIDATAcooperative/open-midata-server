@@ -45,12 +45,14 @@ import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.api.SummaryEnum;
+import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.param.CompositeAndListParam;
 import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
+import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.param.UriAndListParam;
@@ -277,8 +279,9 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 	    	paramMap.setCount(theCount);
 	    	paramMap.setElements(theElements);
 	    	paramMap.setSummary(theSummary);
-	    	    		    	
-	    	return search(paramMap);    	    	    	
+	    	
+			return search(paramMap);
+	    	    		    		    	  
 	    }
 	
 	 	

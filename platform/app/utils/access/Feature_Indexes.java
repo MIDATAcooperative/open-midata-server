@@ -118,7 +118,7 @@ public class Feature_Indexes extends Feature {
 			IndexUse myAccess = parse(pseudo, q.getRestriction("format"), indexQueryParsed);
 
 			Collection<IndexMatch> matches = myAccess.query(q, targetAps);		
-
+            AccessLog.log("index matches: "+matches.size());
 			Set<MidataId> allAps = new HashSet<MidataId>();
 
 			Map<MidataId, Set<MidataId>> filterMatches = new HashMap<MidataId, Set<MidataId>>();
@@ -188,6 +188,11 @@ public class Feature_Indexes extends Feature {
 			AccessLog.logEnd("end to look for new entries");
 			long endTime2 = System.currentTimeMillis();
 
+			if (allAps.size() > Feature_AccountQuery.MIN_FOR_ACCELERATION) {
+			  List<Consent> prefetched = new ArrayList<Consent>(Consent.getAllByAuthorized(q.getCache().getAccountOwner(), CMaps.map("_id", allAps), Consent.SMALL));
+			  q.getCache().cache(prefetched);
+			  FasterDecryptTool.accelerate(q, prefetched);
+			}
 			List<AccessContext> contexts = new ArrayList<AccessContext>(allAps.size());
 			for (MidataId aps : allAps) {
 				AccessContext context = getContextForAps(q, aps);
@@ -195,6 +200,7 @@ public class Feature_Indexes extends Feature {
 					contexts.add(context);
 			}
 			Collections.sort(contexts, new ContextComparator());
+			AccessLog.log("index matches "+contexts.size()+" contexts");
 
 			Set<String> queryFields = Sets.create("stream", "time", "document", "part", "direct", "encryptedData");
 			queryFields.addAll(q.getFieldsFromDB());
@@ -349,7 +355,7 @@ public class Feature_Indexes extends Feature {
 
 		@Override
 		public String toString() {
-			return "index-access({ ow:"+currentContext.getOwner().toString()+", id:"+currentContext.getTargetAps().toString()+", size:"+size+" })";
+			return "index-access(["+passed+"] { ow:"+currentContext.getOwner().toString()+", id:"+currentContext.getTargetAps().toString()+", size:"+size+" })";
 		}
 		
 		

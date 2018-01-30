@@ -71,7 +71,7 @@ public class Feature_Versioning extends Feature {
 
 		@Override
 		public String toString() {
-			return "history("+chain.toString()+")";
+			return "history(["+passed+"] "+chain.toString()+")";
 		}
 		
 		

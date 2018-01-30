@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.hl7.fhir.dstu3.model.Basic;
+import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.IdType;
@@ -29,10 +30,12 @@ import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.annotation.Search;
 import ca.uhn.fhir.rest.annotation.Sort;
 import ca.uhn.fhir.rest.api.SortSpec;
+import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
+import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
@@ -135,7 +138,7 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
     
     
     @Search()
-    public List<IBaseResource> getBasic(
+    public Bundle getBasic(
     		@Description(shortDefinition="The resource identity")
     		@OptionalParam(name="_id")
     		StringAndListParam theId, 
@@ -215,7 +218,12 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
     		SortSpec theSort,
     				
     		@ca.uhn.fhir.rest.annotation.Count
-    		Integer theCount	
+    		Integer theCount,
+    		
+    		@OptionalParam(name="_page")
+			StringParam _page,
+			
+			RequestDetails theDetails
     		) throws AppException {
     	
     	SearchParameterMap paramMap = new SearchParameterMap();
@@ -236,7 +244,9 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
     	paramMap.setSort(theSort);
     	paramMap.setCount(theCount);
     	
-    	return search(paramMap);    	    	    	
+    	paramMap.setFrom(_page != null ? _page.getValue() : null);
+
+		return searchBundle(paramMap, theDetails);	    	    	
     }
            
     @Override

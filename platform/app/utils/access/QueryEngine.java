@@ -226,6 +226,7 @@ class QueryEngine {
     	Feature qm = null;
     	MidataId userGroup = Feature_UserGroups.identifyUserGroup(cache, aps);
     	if (userGroup != null) {
+    		AccessLog.log("with usergroup");
     		properties = new HashMap<String, Object>(properties);
     		properties.put("usergroup", userGroup);
     		qm = new Feature_Pagination(new Feature_Sort(new Feature_Or(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams()))))))))))));

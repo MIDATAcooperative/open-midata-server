@@ -101,7 +101,7 @@ public class Feature_UserGroups extends Feature {
 
 		@Override
 		public String toString() {
-			return "usergroups("+current.toString()+")";
+			return "usergroups(["+passed+"] "+current.toString()+")";
 		}
 		
 		
@@ -139,6 +139,7 @@ public class Feature_UserGroups extends Feature {
 					  owners.add(part.owner.toString());
 				   }
 				   newprops.put("owner", owners);
+				   if (owners.isEmpty()) return Collections.emptyIterator();
 		    }		
 			
 		}

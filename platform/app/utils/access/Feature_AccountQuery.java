@@ -149,7 +149,7 @@ public class Feature_AccountQuery extends Feature {
 
 		@Override
 		public String toString() {			
-			return (chain.hasNext() ? "account(" : "acc-consents(")+current.toString()+")";
+			return (chain.hasNext() ? "account(" : "acc-consents(")+"["+passed+"] "+current.toString()+")";
 		}
 						
 	}
@@ -247,7 +247,7 @@ public class Feature_AccountQuery extends Feature {
 
 		@Override
 		public String toString() {
-			return "consent("+thisconsent._id.toString()+","+current.toString()+")";
+			return "consent(["+passed+"] "+thisconsent._id.toString()+","+current.toString()+")";
 		}
 		
 		

@@ -19,6 +19,7 @@ import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
 import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.annotation.Search;
+import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
@@ -138,7 +139,12 @@ public class PractitionerResourceProvider extends ResourceProvider<Practitioner,
 	    		 
 	    	@Description(shortDefinition="The person's date of birth")
 	    	@OptionalParam(name="birthdate")
-	    	DateAndListParam theBirthdate
+	    	DateAndListParam theBirthdate,
+	    	
+	    	@OptionalParam(name="_page")
+			StringParam _page,
+			
+			RequestDetails theDetails
 	    		   	    	
 	    		
 	    		) throws AppException {

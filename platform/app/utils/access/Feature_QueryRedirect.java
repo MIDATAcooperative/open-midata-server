@@ -115,7 +115,7 @@ public class Feature_QueryRedirect extends Feature {
 
 		@Override
 		public String toString() {			
-			return (chain.hasNext() ? "noredirect(" : "redirect(")+current.toString()+")";
+			return (chain.hasNext() ? "noredirect(" : "redirect(")+"["+passed+"] "+current.toString()+")";
 		}
 		
 		

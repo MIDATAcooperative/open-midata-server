@@ -163,9 +163,11 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 			List<M> raw = searchRaw(params);
 		    List<T> resources = parse(raw, getResourceType());
 		   
-		   if (params.getCount() != null && resources.size() == params.getCount() + 1) {
-			   params.setFrom(raw.get(resources.size() - 1)._id.toString());
-			   resources = resources.subList(0, params.getCount());			   
+		   if (params.getCount() != null && raw.size() == params.getCount() + 1) {
+			   params.setFrom(raw.get(raw.size() - 1)._id.toString());
+			   if (resources.size() > params.getCount()) {
+			     resources = resources.subList(0, params.getCount());
+			   }
 		   } else params.setFrom(null);
 		   
 		   results.addAll(resources);

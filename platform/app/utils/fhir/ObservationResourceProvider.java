@@ -264,12 +264,12 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 			}) 
 			Set<Include> theIncludes,
 								
-			@Sort SortSpec theSort,
-
-			@OptionalParam(name="_page")
-			StringParam _page,
+			@Sort SortSpec theSort,		
 			
 			@ca.uhn.fhir.rest.annotation.Count Integer theCount,
+			
+			@OptionalParam(name="_page")
+			StringParam _page,
 			
 			RequestDetails theDetails
 

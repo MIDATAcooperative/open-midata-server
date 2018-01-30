@@ -363,6 +363,7 @@ public class Query {
 	              (!properties.containsKey("deleted")) ||
 	              //properties.containsKey("app") ||
 	              properties.containsKey("creator") ||
+	              properties.containsKey("data") ||
 	              properties.containsKey("code") ||
 	              properties.containsKey("name");
 		 
@@ -389,7 +390,7 @@ public class Query {
          
          if (restrictedOnTime) fieldsFromDB.add("time");
 		 //if (fetchFromDB) fieldsFromDB.add("encrypted");
-		 if (fields.contains("data")) fieldsFromDB.add("encryptedData");
+		 if (fields.contains("data") || properties.containsKey("data")) fieldsFromDB.add("encryptedData");
 		 if (fields.contains("watches")) fieldsFromDB.add("encWatches");
 		 
 		 					

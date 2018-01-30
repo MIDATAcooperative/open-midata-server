@@ -304,7 +304,7 @@ public class Feature_Streams extends Feature {
 					q.getCache().getAPS(r._id, r.key, r.owner, set, true);
 				}
 			}
-				
+			Collections.sort(streams);	
 			
 			
 			return new StreamCombineIterator(next, q, streams.iterator(), filtered);

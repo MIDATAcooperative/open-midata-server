@@ -12,6 +12,7 @@ import controllers.Circles;
 import models.AccessPermissionSet;
 import models.Circle;
 import models.Consent;
+import models.Member;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.Record;
@@ -24,12 +25,16 @@ import models.UserGroup;
 import models.UserGroupMember;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
+import models.enums.Gender;
+import models.enums.InformationType;
+import models.enums.ParticipationStatus;
 import models.enums.ResearcherRole;
 import models.enums.UserGroupType;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import utils.AccessLog;
 import utils.access.RecordManager;
+import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -47,6 +52,7 @@ public class AccountPatches {
 		if (user.accountVersion < 20160902) { formatPatch20160902(user); }
 		if (user.accountVersion < 20161205) { formatPatch20161205(user); }
 		if (user.accountVersion < 20171206) { formatPatch20171206(user); }
+		//if (user.accountVersion < 20180130) { formatPatch20180130(user); }
 		//if (user.accountVersion < 20170206) { formatPatch20170206(user); }
 	}
 	
@@ -213,6 +219,33 @@ public class AccountPatches {
 						
 		AccessLog.logEnd("end patch 2017 12 06");
 	}
+	
+	/*public static void formatPatch20180130(User user) throws AppException {
+		AccessLog.logBegin("start patch 2018 01 30");
+		
+	     if (user.role.equals(UserRole.MEMBER)) {	    	 
+			Set<StudyParticipation> parts = StudyParticipation.getAllByMember(user._id, Sets.create("ownerName", "study", "studyName", "pstatus", "group", "recruiter", "recruiterName", "providers", "yearOfBirth", "country", "gender","name", "authorized", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "dateOfCreation", "sharingQuery", "externalOwner", "externalAuthorized", "writes", "dataupdate", "owner"));
+			for (StudyParticipation c : parts) {
+				Study study = Study.getById(c.study, Study.ALL);
+				Member member = Member.getById(user._id, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country"));
+				if (study.requiredInformation.equals(InformationType.RESTRICTED)) {
+					//List<Record> recs = RecordManager.instance.list(user._id, c._id, CMaps.map("format", "fhir/Patient").map("content", "PseudonymizedPatient"), Sets.create("_id", "data", "owner"));
+					//if (recs.size()==0) {
+  					  List<Record> old = RecordManager.instance.list(user._id, c._id, CMaps.map("format", "fhir/Patient"), Sets.create("_id", "data", "owner"));
+					  RecordManager.instance.unshare(user._id, c._id, old);
+					  PatientResourceProvider.createPatientForStudyParticipation(new ExecutionInfo(user._id), c, member);
+					  Circles.autosharePatientRecord(user._id, c);
+					//}
+				}
+			
+			}
+			
+		}
+				
+		//makeCurrent(user, 20180130);
+						
+		AccessLog.logEnd("end patch 2018 01 30");
+	}*/
 	
 	public static void accountReset(User user) throws AppException {
 		MidataId userId = user._id;

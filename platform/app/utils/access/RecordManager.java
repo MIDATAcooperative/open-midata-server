@@ -460,6 +460,16 @@ public class RecordManager {
 		for (DBRecord rec : recordEntries) RecordLifecycle.removeWatchingAps(rec, apsId);
 		AccessLog.logEnd("end unshare");
 	}
+	
+	public void unshare(MidataId who, MidataId apsId, Collection<Record> records)
+			throws AppException {
+		if (records.size() == 0) return;
+		
+		Set<MidataId> ids = new HashSet<MidataId>();
+		for (Record r : records) ids.add(r._id);
+		
+		unshare(who, apsId, ids);
+	}
 
 	/**
 	 * read a meta data object from an APS

@@ -153,4 +153,10 @@ public abstract class Model implements JsonSerializable {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return _id != null ? "obj:"+_id.toString() : "obj-null";
+	}
+
+	
 }

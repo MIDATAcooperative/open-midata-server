@@ -20,16 +20,17 @@ public abstract class Feature {
 	}
 	
 	protected Iterator<DBRecord> iterator(Query q) throws AppException {
-		throw new NullPointerException();
-		/*List<DBRecord> result = query(q);
-		return result.iterator();*/
+		//throw new NullPointerException();
+		List<DBRecord> result = query(q);
+		return result.iterator();
 	}
 	
 	
 	public static abstract class MultiIterator<A,B> implements Iterator<A> {
 
 		protected Iterator<B> chain;
-		protected Iterator<A> current;		
+		protected Iterator<A> current;	
+		protected int passed;
 		
 		@Override
 		public boolean hasNext() {
@@ -43,7 +44,8 @@ public abstract class Feature {
 			  
 			  if (result == null) throw new NullPointerException();
 			  
-			  advance();			
+			  advance();	
+			  passed++;
 			  return result;
 			} catch (AppException e) {
 				throw new RuntimeException(e);
@@ -93,7 +95,8 @@ public abstract class Feature {
 			  if (from != null && result._id.equals(from._id)) {				
 				  query.setFromRecord(null);
 			  }
-			  advance();			
+			  advance();	
+			  passed++;
 			  return result;
 			} catch (AppException e) {
 				throw new RuntimeException(e);
