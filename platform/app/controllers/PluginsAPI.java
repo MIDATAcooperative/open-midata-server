@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -612,6 +613,10 @@ public class PluginsAPI extends APIController {
 			return badRequest(e.getMessage());
 		}
 
+		String method = json.get("method").asText("GET");
+		JsonNode body = json.get("body");
+		// At the moment only GET is supported
+		
 		// perform the api call
 		ConsumerKey key = new ConsumerKey(app.consumerKey, app.consumerSecret);
 		RequestToken token = new RequestToken(oauthToken, oauthTokenSecret);
@@ -626,6 +631,11 @@ public class PluginsAPI extends APIController {
 		URL target = new URL(signed);
 		
 		HttpURLConnection con = (HttpURLConnection) target.openConnection();
+		/*con.setRequestMethod(method.toUpperCase());
+		if (body != null && !body.isNull()) {
+		   OutputStream out = con.getOutputStream();
+		   
+		}*/
 		con.connect();
 		InputStream str = con.getInputStream();
 		response().setContentType(con.getContentType());
@@ -727,8 +737,9 @@ public class PluginsAPI extends APIController {
 		}
 
 		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());
-		
-		Promise<WSResponse> response = oAuth2Call(inf, json.get("url").asText());	
+		String method = json.get("method").asText("get");
+		JsonNode body = json.get("body");
+		Promise<WSResponse> response = oAuth2Call(inf, json.get("url").asText(), method, body);	
 		
 		Promise<Result> promise = response.map(new Function<WSResponse, Result>() {
 			public Result apply(WSResponse response) {				
@@ -747,7 +758,7 @@ public class PluginsAPI extends APIController {
 	 * @return result of oauth request
 	 * @throws AppException
 	 */
-    public static Promise<WSResponse> oAuth2Call(ExecutionInfo inf, String url) throws AppException {
+    public static Promise<WSResponse> oAuth2Call(ExecutionInfo inf, String url, String method, JsonNode body) throws AppException {
 				
     	BSONObject oauthMeta = RecordManager.instance.getMeta(inf.executorId, inf.targetAPS, "_oauth");
     	if (oauthMeta == null) throw new BadRequestException("error.notauthorized.action", "No valid oauth credentials.");
@@ -759,7 +770,12 @@ public class PluginsAPI extends APIController {
 		WSRequestHolder holder = WS.url(url);
 		holder.setHeader("Authorization", "Bearer " + accessToken);
 		
-		return holder.get();
+		if (method == null || method.equalsIgnoreCase("get")) return holder.get();
+		if (method.equalsIgnoreCase("post")) return holder.post(body);
+		if (method.equalsIgnoreCase("put")) return holder.put(body);
+		if (method.equalsIgnoreCase("delete")) return holder.delete();
+		
+		throw new BadRequestException("error.internal", "Unknown request type");
 				
 	}
 	
