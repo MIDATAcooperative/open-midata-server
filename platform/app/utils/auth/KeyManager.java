@@ -27,11 +27,13 @@ import akka.japi.Pair;
 import models.KeyInfo;
 import models.MidataId;
 import models.MobileAppInstance;
+import models.PersistedSession;
 import models.User;
 import models.UserGroup;
 import utils.AccessLog;
 import utils.access.EncryptionUtils;
 import utils.collections.Sets;
+import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 import utils.exceptions.InternalServerException;
 
@@ -205,24 +207,40 @@ public class KeyManager implements KeySession {
 		}
 	}
 	
-	public String login(long expire) {
+	public String login(long expire, boolean persistable) {
 		AccessLog.log("Key-Ring: new session with duration="+expire);
 		String handle;
+		String passkey;
 		do {
 			handle = new BigInteger(130, random).toString(32);
+			passkey = persistable ? new BigInteger(130, random).toString(32) : null;
 		} while (keySessions.containsKey(handle));
-		KeyRing keyring = new KeyRing(System.currentTimeMillis() + expire);
+		KeyRing keyring = new KeyRing(System.currentTimeMillis() + expire, passkey);
 		keySessions.put(handle, keyring);
 		session.set(new KeyManagerSession(handle, keyring));
-		return handle;
+		return passkey != null ? (handle+";"+passkey) : handle;
 	}
 	
-	public void continueSession(String handle) throws AuthException {
+	public void continueSession(String fhandle) throws AppException {		
 		AccessLog.log("Key-Ring: continue session");
+		int p = fhandle.indexOf(";");
+		String handle = p > 0 ? fhandle.substring(0, p) : fhandle;
 		KeyRing ring = keySessions.get(handle);
 		if (ring != null) {
 			session.set(new KeyManagerSession(handle, ring));
-		} else throw new AuthException("error.relogin", "Session expired. Please relogin.");
+			return;
+		} else if (p>0) {
+			PersistedSession psession = PersistedSession.getById(handle);
+			if (psession != null && psession.timeout > System.currentTimeMillis()) {
+				String passkey = fhandle.substring(p+1);
+				KeyRing keyring = new KeyRing(psession.timeout, passkey);
+				keySessions.put(handle, keyring);
+				session.set(new KeyManagerSession(handle, keyring));
+				keyring.addKey(psession.user.toString(), EncryptionUtils.applyKey(psession.splitkey, passkey));				
+				return;
+			}
+		}			
+		throw new AuthException("error.relogin", "Session expired. Please relogin.");
 	}
 	
 	public String currentHandle() {
@@ -236,6 +254,9 @@ public class KeyManager implements KeySession {
 		if (current != null) {
 			AccessLog.log("Key-Ring: end session");
 			keySessions.remove(current.handle);
+			try {
+			  PersistedSession.delete(current.handle);
+			} catch (AppException e) {}
 		} else {
 			AccessLog.log("Key-Ring: no session");
 		}		
@@ -286,10 +307,10 @@ public class KeyManager implements KeySession {
 	class KeyManagerSession implements KeySession {
 		
 		private KeyRing pks;
-		public String handle;
+		public String handle;		
 		
 		KeyManagerSession(String handle, KeyRing pks) {
-			this.handle = handle;
+			this.handle = handle;		
 			this.pks = pks;
 		}
 		
@@ -474,15 +495,34 @@ public class KeyManager implements KeySession {
 				throw new InternalServerException("error.internal", e);
 			}
 		}
+
+		@Override
+		public void persist(MidataId target) throws AppException {
+			byte key[] = pks.getKey(target.toString());		
+			if (key == null) throw new AuthException("error.relogin", "Authorization Failure");
+		
+			//Pair<byte[], byte[]> split = EncryptionUtils.splitKey(key);
+			//token.setSplitKey(split.first());
+			byte[] split = EncryptionUtils.applyKey(key, pks.passkey);
+						
+			PersistedSession session = new PersistedSession();
+			session.set_id(this.handle);
+			session.splitkey = split;
+			session.timeout = pks.expire;
+			session.user = target;
+			session.add();						
+		}
 	}
 	
 	class KeyRing {
 		private Map<String, byte[]> keys; 
 		private long expire;
+		private String passkey;
 		
-		KeyRing(long expire) {
+		KeyRing(long expire, String passkey) {
 			this.keys = new ConcurrentHashMap<String, byte[]>(8, 0.9f, 1);
 			this.expire = expire;
+			this.passkey = passkey;
 		}
 		
 		byte[] getKey(String name) {
@@ -552,5 +592,10 @@ public class KeyManager implements KeySession {
 	@Override
 	public byte[] generateKeypairAndReturnPublicKeyInMemory(MidataId target, String passphrase) throws InternalServerException {
 		return session.get().generateKeypairAndReturnPublicKeyInMemory(target, passphrase);
+	}
+
+	@Override
+	public void persist(MidataId target) throws AppException {
+		session.get().persist(target);		
 	}
 }

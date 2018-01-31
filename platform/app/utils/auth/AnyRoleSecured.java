@@ -4,6 +4,7 @@ import models.enums.UserRole;
 import play.mvc.Http.Context;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 
 /**
@@ -20,7 +21,7 @@ public class AnyRoleSecured extends Security.Authenticator {
 	    if (tk == null || tk.getRole() == UserRole.ANY) return null;
 	    try {
 	      KeyManager.instance.continueSession(tk.getHandle());
-	    } catch (AuthException e) { return null; }	    
+	    } catch (AppException e) { return null; }	    
 	   
 		// id is the user id in String form
 		return tk.getUserId().toString();

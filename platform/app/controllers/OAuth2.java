@@ -165,7 +165,7 @@ public class OAuth2 extends Controller {
 		
 		appInstance = MobileAPI.getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode", "appVersion"));		
 		
-		KeyManager.instance.login(60000l);
+		KeyManager.instance.login(60000l, false);
 		MidataId executor = null;
 		if (appInstance == null) {		
 			if (!confirmed) {
@@ -233,7 +233,7 @@ public class OAuth2 extends Controller {
         String phrase = null;
         ObjectNode obj = Json.newObject();	      
         
-        KeyManager.instance.login(60000l);
+        KeyManager.instance.login(60000l, false);
         
         if (data==null) throw new BadRequestException("error.internal", "Missing request body of type form/urlencoded.");
         if (!data.containsKey("grant_type")) throw new BadRequestException("error.internal", "Missing grant_type");

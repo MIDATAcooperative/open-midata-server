@@ -217,7 +217,7 @@ public class MobileAPI extends Controller {
 		String phrase;
 		Map<String, Object> meta = null;
 		
-		KeyManager.instance.login(60000l);
+		KeyManager.instance.login(60000l, false);
 		if (json.has("refreshToken")) {
 			MobileAppToken refreshToken = MobileAppToken.decrypt(JsonValidation.getString(json, "refreshToken"));
 			if (refreshToken.created + MobileAPI.DEFAULT_REFRESHTOKEN_EXPIRATION_TIME < System.currentTimeMillis()) return MobileAPI.invalidToken();
@@ -411,7 +411,7 @@ public class MobileAPI extends Controller {
 	}
 	
 	protected static MidataId prepareMobileExecutor(MobileAppInstance appInstance, MobileAppSessionToken tk) throws AppException {
-		KeyManager.instance.login(1000l*60l);
+		KeyManager.instance.login(1000l*60l, false);
 		KeyManager.instance.unlock(tk.appInstanceId, tk.passphrase);
 		Map<String, Object> appobj = RecordManager.instance.getMeta(tk.appInstanceId, tk.appInstanceId, "_app").toMap();
 		if (appobj.containsKey("aliaskey") && appobj.containsKey("alias")) {

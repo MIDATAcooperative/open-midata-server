@@ -581,10 +581,11 @@ public class Application extends APIController {
 		
 		if (user.status.equals(UserStatus.ACTIVE) || user.status.equals(UserStatus.NEW)) {
 		   PortalSessionToken token = null;
-		   String handle = KeyManager.instance.login(PortalSessionToken.LIFETIME);		
+		   String handle = KeyManager.instance.login(PortalSessionToken.LIFETIME, true);		
 		   token = new PortalSessionToken(handle, user._id, UserRole.ANY, null, user.developer);
 		   obj.put("sessionToken", token.encrypt(request()));
 		   KeyManager.instance.unlock(user._id, null);
+		   KeyManager.instance.persist(user._id);
 		}
 					
 		AuditManager.instance.success();
@@ -602,7 +603,7 @@ public class Application extends APIController {
 		Set<UserFeature> notok = loginHelperPreconditionsFailed(user, InstanceConfig.getInstance().getInstanceType().defaultRequirementsPortalLogin(user.role));
 		
 		PortalSessionToken token = null;
-		String handle = KeyManager.instance.login(PortalSessionToken.LIFETIME);
+		String handle = KeyManager.instance.login(PortalSessionToken.LIFETIME, true);
 	
 		if (user instanceof HPUser) {
 		   token = new PortalSessionToken(handle, user._id, user.role, ((HPUser) user).provider, user.developer);		  
@@ -619,7 +620,10 @@ public class Application extends APIController {
 		  return loginHelperResult(user, notok);
 		} else {						
 		  int keytype = KeyManager.instance.unlock(user._id, null);		
-		  if (keytype == 0) AccountPatches.check(user);
+		  if (keytype == 0) {
+			  AccountPatches.check(user);
+			  KeyManager.instance.persist(user._id);
+		  }
 				
 		  obj.put("keyType", keytype);
 		  obj.put("role", user.role.toString().toLowerCase());
@@ -661,6 +665,7 @@ public class Application extends APIController {
 		String passphrase = JsonValidation.getString(json, "passphrase");
 		
 		KeyManager.instance.unlock(userId, passphrase);
+		KeyManager.instance.persist(userId);
 		
 		try {
 		  RecordManager.instance.list(userId, userId, CMaps.map("format","zzzzzzz"), Sets.create("name"));
@@ -772,8 +777,9 @@ public class Application extends APIController {
 		user.security = AccountSecurityLevel.KEY;		
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);								
 		Member.add(user);
-		KeyManager.instance.login(60000);
+		KeyManager.instance.login(60000, true);
 		KeyManager.instance.unlock(user._id, null);
+		KeyManager.instance.persist(user._id);
 		
 		user.myaps = RecordManager.instance.createPrivateAPS(user._id, user._id);
 		Member.set(user._id, "myaps", user.myaps);
