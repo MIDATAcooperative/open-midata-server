@@ -613,8 +613,8 @@ public class PluginsAPI extends APIController {
 			return badRequest(e.getMessage());
 		}
 
-		String method = json.get("method").asText("GET");
-		JsonNode body = json.get("body");
+		String method = json.has("method") ? json.get("method").asText() : "GET";
+		JsonNode body = json.has("body") ? json.get("body") : null;
 		// At the moment only GET is supported
 		
 		// perform the api call
@@ -737,8 +737,8 @@ public class PluginsAPI extends APIController {
 		}
 
 		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());
-		String method = json.get("method").asText("get");
-		JsonNode body = json.get("body");
+		String method = json.has("method") ? json.get("method").asText() : "get";
+		JsonNode body = json.has("body") ? json.get("body") : null;
 		Promise<WSResponse> response = oAuth2Call(inf, json.get("url").asText(), method, body);	
 		
 		Promise<Result> promise = response.map(new Function<WSResponse, Result>() {
