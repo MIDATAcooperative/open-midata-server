@@ -172,7 +172,7 @@ public class Circles extends APIController {
         AccessLog.log("consents size="+consents.size());
 		if (fields.contains("ownerName")) ReferenceTool.resolveOwners(consents, true);
 	
-		if (fields.contains("records")) {
+		if (fields.contains("records") && consents.size() <= RETURNED_CONSENT_LIMIT) {
 			Map<String, Object> all = new HashMap<String,Object>();
 			for (Consent consent : consents) {
 				if (consent.status.equals(ConsentStatus.ACTIVE)) {

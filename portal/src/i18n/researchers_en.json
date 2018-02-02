@@ -129,6 +129,7 @@
     "partName" : "Pseudonymized",
     "group" : "Group",
     "status" : "Status",
+    "total" : "{{count}} consents matching your criteria found.",
     "recruiter" : "Recruiter",
     "accept_btn" : "Accept",
     "reject_btn" : "Reject",

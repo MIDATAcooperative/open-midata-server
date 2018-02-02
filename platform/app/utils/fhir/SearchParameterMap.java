@@ -161,6 +161,7 @@ public class SearchParameterMap extends HashMap<String, List<List<? extends IQue
 
 
  	public void setCount(Integer theCount) {
+ 		if (theCount == null) theCount = 2000;
 		myCount = theCount;
  	}
  	

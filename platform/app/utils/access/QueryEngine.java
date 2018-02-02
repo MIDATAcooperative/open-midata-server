@@ -163,9 +163,9 @@ class QueryEngine {
 		
 		
 		Feature qm = new Feature_Prefetch(new Feature_BlackList(myaps, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_UserGroups(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Streams())))))))));
-				
-		List<DBRecord> recs = qm.query(q);
-		recs = ProcessingTools.collect(ProcessingTools.noDuplicates(qm.iterator(q)));
+						 
+		List<DBRecord> recs = ProcessingTools.collect(ProcessingTools.noDuplicates(qm.iterator(q)));
+		
 		if (!cached) q.getCache().prefetch(recs);
 		
 		

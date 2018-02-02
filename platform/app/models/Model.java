@@ -123,7 +123,25 @@ public abstract class Model implements JsonSerializable {
 	protected static <T extends Model> List<T> getAllList(Class<T> modelClass, String collection,
 			Map<String, ? extends Object> properties, Set<String> fields, int limit) throws InternalServerException {
 		try {
-			return DBLayer.getAllList(modelClass, collection, properties, fields, limit);
+			return DBLayer.getAllList(modelClass, collection, properties, fields, limit, null, 1);
+		} catch (DatabaseException e) {
+			throw new InternalServerException("error.internal_db", e);
+		}
+	}
+	
+	protected static <T extends Model> List<T> getAllList(Class<T> modelClass, String collection,
+			Map<String, ? extends Object> properties, Set<String> fields, int limit, String sortField, int order) throws InternalServerException {
+		try {
+			return DBLayer.getAllList(modelClass, collection, properties, fields, limit, sortField, order);
+		} catch (DatabaseException e) {
+			throw new InternalServerException("error.internal_db", e);
+		}
+	}
+	
+	protected static long count(Class modelClass, String collection,
+			Map<String, ? extends Object> properties) throws InternalServerException {
+		try {
+			return DBLayer.count(modelClass, collection, properties);
 		} catch (DatabaseException e) {
 			throw new InternalServerException("error.internal_db", e);
 		}

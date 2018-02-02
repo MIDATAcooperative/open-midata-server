@@ -778,8 +778,7 @@ public class Application extends APIController {
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);								
 		Member.add(user);
 		KeyManager.instance.login(60000, true);
-		KeyManager.instance.unlock(user._id, null);
-		KeyManager.instance.persist(user._id);
+		KeyManager.instance.unlock(user._id, null);	
 		
 		user.myaps = RecordManager.instance.createPrivateAPS(user._id, user._id);
 		Member.set(user._id, "myaps", user.myaps);
@@ -950,6 +949,7 @@ public class Application extends APIController {
 				controllers.research.routes.javascript.Studies.abortExecution(),
 				controllers.research.routes.javascript.Studies.delete(),
 				controllers.research.routes.javascript.Studies.listParticipants(),
+				controllers.research.routes.javascript.Studies.countParticipants(),
 				controllers.research.routes.javascript.Studies.getParticipant(),
 				controllers.research.routes.javascript.Studies.approveParticipation(),
 				controllers.research.routes.javascript.Studies.rejectParticipation(),	

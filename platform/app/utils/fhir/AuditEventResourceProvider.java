@@ -13,6 +13,7 @@ import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventAgentComponent;
 import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventEntityComponent;
 import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventEntityDetailComponent;
 import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventOutcome;
+import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.Group;
@@ -137,7 +138,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 	
 		
 	   @Search()
-	    public List<IBaseResource> getAuditEvent(
+	    public Bundle getAuditEvent(
 	    		@Description(shortDefinition="The resource identity")
 	    		@OptionalParam(name="_id")
 	    		StringAndListParam theId, 
@@ -243,7 +244,12 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 	    		Integer theCount,
 	    		
 	    		SummaryEnum theSummary, // will receive the summary (no annotation required)
-	    	    @Elements Set<String> theElements
+	    	    @Elements Set<String> theElements,
+	    	    
+	    		@OptionalParam(name="_page")
+				StringParam _page,
+				
+				RequestDetails theDetails
 	    
 	    		) throws AppException {
 	    	
@@ -278,9 +284,11 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 	    	paramMap.setSort(theSort);
 	    	paramMap.setCount(theCount);
 	    	paramMap.setElements(theElements);
-	    	paramMap.setSummary(theSummary);
-	    	
-			return search(paramMap);
+	    	paramMap.setSummary(theSummary);	    	
+			paramMap.setFrom(_page != null ? _page.getValue() : null);
+
+			//return search(paramMap);
+			return searchBundle(paramMap, theDetails);	    				
 	    	    		    		    	  
 	    }
 	
@@ -458,12 +466,17 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 		builder.restriction("user", false, QueryBuilder.TYPE_IDENTIFIER, "fhirAuditEvent.agent.userId");
 		
 		Map<String, Object> properties = query.retrieveAsNormalMongoQuery();
+		
 		ObjectIdConversion.convertMidataIds(properties, "authorized", "about");
 		
 		//properties = CMaps.map("recorded", CMaps.map("$ge", 150));
-										
-		Set<MidataAuditEvent> events = MidataAuditEvent.getAll(properties, MidataAuditEvent.ALL);
-		return new ArrayList(events);
+		int limit = params.getCount() != null ? params.getCount() + 1 : 10000;	
+		if (params.getFrom() != null) {
+			properties.put("_id", CMaps.map("$lte", MidataId.from(params.getFrom()).toObjectId()));
+		}
+		
+		List<MidataAuditEvent> events = MidataAuditEvent.getAll(properties, MidataAuditEvent.ALL, limit);
+		return events;
 	}
 
 	@Override

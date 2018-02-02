@@ -139,6 +139,7 @@ POST    /api/research/studies/:study/status/abort        controllers.research.St
 POST    /api/research/studies/:study/status/delete       controllers.research.Studies.delete(study: String)
 POST    /api/admin/studies/:study/status/delete       controllers.admin.Administration.deleteStudy(study: String)
 POST    /api/research/studies/:study/participants        controllers.research.Studies.listParticipants(study: String)
+POST    /api/research/studies/:study/participants/count  controllers.research.Studies.countParticipants(study: String)
 GET     /api/research/studies/:study/participants/:participant controllers.research.Studies.getParticipant(study: String, participant: String)
 POST    /api/research/studies/:study/approve             controllers.research.Studies.approveParticipation(study: String)
 POST    /api/research/studies/:study/reject              controllers.research.Studies.rejectParticipation(study: String)

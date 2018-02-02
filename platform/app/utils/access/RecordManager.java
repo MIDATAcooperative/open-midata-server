@@ -1056,6 +1056,7 @@ public class RecordManager {
 		nproperties.put("streams", "true");
 		nproperties.put("flat", "true");
 		nproperties.put("group-system", "v1");
+		nproperties.put("consent-limit", 1000);
 		nproperties.put("no-postfilter-streams", true); // For old streams without "app" field
 		if (properties.containsKey("group-system")) nproperties.put("group-system", properties.get("group-system"));
 		if (properties.containsKey("owner")) nproperties.put("owner", properties.get("owner"));

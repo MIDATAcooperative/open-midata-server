@@ -23,6 +23,7 @@ import java.util.zip.ZipOutputStream;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.Lists;
 
 import actions.APICall;
 import controllers.APIController;
@@ -1179,7 +1180,7 @@ public class Studies extends APIController {
 	   
        Set<String> fields = Sets.create("owner", "ownerName", "group", "recruiter", "recruiterName", "pstatus", "gender", "country", "yearOfBirth", "partName");
        Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
-	   Set<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(studyid, properties, fields);
+	   List<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(studyid, properties, fields, 1000);
 	   if (!ugm.role.pseudonymizedAccess()) {
 		   for (StudyParticipation part : participants) {
 			   part.partName = part.ownerName;
@@ -1189,6 +1190,34 @@ public class Studies extends APIController {
 	   ReferenceTool.resolveOwners(participants, true);
 	   fields.remove("owner");
 	   return ok(JsonOutput.toJson(participants, "Consent", fields));
+	}
+	
+	/**
+	 * count participation consents of all participants of a study
+	 * @param id ID of study
+	 * @return list of Consents (StudyParticipation)
+	 * @throws JsonValidationException
+	 * @throws InternalServerException
+	 */
+	@APICall
+	@BodyParser.Of(BodyParser.Json.class)
+	@Security.Authenticated(ResearchSecured.class)
+	public static Result countParticipants(String id) throws JsonValidationException, AppException {
+	   MidataId userId = new MidataId(request().username());	   
+	   MidataId studyid = new MidataId(id);
+	   JsonNode json = request().body().asJson();		
+	   
+	   Study study = Study.getById(studyid, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus"));
+	   if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
+	   
+	   UserGroupMember ugm = UserGroupMember.getByGroupAndMember(studyid, userId);
+	   if (ugm == null) throw new BadRequestException("error.notauthorized.study", "Not member of study team");
+	          
+       Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+	   long participants = StudyParticipation.countParticipantsByStudy(studyid, properties);
+	   ObjectNode obj = Json.newObject();
+	   obj.put("total", participants);
+	   return ok(obj);
 	}
 	
 	/**
@@ -1303,18 +1332,29 @@ public class Studies extends APIController {
 		if (!ugm.role.manageParticipants()) throw new BadRequestException("error.notauthorized.action", "User is not allowed to manage participants.");
 		   		
 	    Set<String> fields = Sets.create("owner", "ownerName", "group", "recruiter", "recruiterName", "pstatus", "gender", "country", "yearOfBirth", "partName");	    
-		Set<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(study._id, CMaps.map("pstatus", ParticipationStatus.REQUEST), fields);
+		List<StudyParticipation> participants1 = StudyParticipation.getParticipantsByStudy(study._id, CMaps.map("pstatus", ParticipationStatus.REQUEST), fields, 0);
 
-		for (StudyParticipation participation : participants) {
-			AuditManager.instance.addAuditEvent(AuditEventType.STUDY_PARTICIPATION_GROUP_ASSIGNED, app, userId, participation, study);
-												
-			participation.group = group;
-			StudyParticipation.set(participation._id, "group", participation.group);		
+		List<List<StudyParticipation>> parts = Lists.partition(participants1, 1000);
+		for (List<StudyParticipation> participants : parts) {
+		  joinSharing(userId, study, group, true, participants);
 		
-			AuditManager.instance.addAuditEvent(AuditEventType.STUDY_PARTICIPATION_APPROVED, app, userId, participation, study);												
-			joinSharing(userId, study, participation.group, true, Collections.singletonList(participation));
-			participation.setPStatus(ParticipationStatus.ACCEPTED);
-			AuditManager.instance.success();			
+		  Set<MidataId> ids = new HashSet<MidataId>();
+		  
+		  for (StudyParticipation participation : participants) {
+			AuditManager.instance.addAuditEvent(AuditEventType.STUDY_PARTICIPATION_GROUP_ASSIGNED, app, userId, participation, study);												
+			participation.group = group;
+			ids.add(participation._id);
+		  }
+		  
+		  StudyParticipation.setManyGroup(ids, group);
+		  
+		  for (StudyParticipation participation : participants) {
+			AuditManager.instance.addAuditEvent(AuditEventType.STUDY_PARTICIPATION_APPROVED, app, userId, participation, study);																				
+		  }
+		  
+		  StudyParticipation.setManyStatus(ids, ParticipationStatus.ACCEPTED);
+		  
+		  AuditManager.instance.success();
 		}
 		
 	}

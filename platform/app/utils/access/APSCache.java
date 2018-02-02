@@ -17,6 +17,7 @@ import utils.AccessLog;
 import utils.auth.EncryptionNotSupportedException;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
+import utils.exceptions.RequestTooLargeException;
 
 /**
  * caches access permission sets during a request. No inter-request caching. 
@@ -186,6 +187,7 @@ public class APSCache {
 			  }
 			}
    		    if (ids.isEmpty()) return;
+   		    if (ids.size()>1000) throw new RequestTooLargeException("error.toolarge", "Too large");
 		    Map<String, Set<MidataId>> properties = Collections.singletonMap("_id", ids.keySet());
 		    Set<AccessPermissionSet> rsets = AccessPermissionSet.getAll(properties, AccessPermissionSet.ALL_FIELDS);
 		    for (AccessPermissionSet set : rsets) {

@@ -33,7 +33,7 @@ import utils.exceptions.RequestTooLargeException;
  */
 public class Feature_AccountQuery extends Feature {
 
-	public final static int MAX_CONSENTS_IN_QUERY = 100000;
+	public final static int MAX_CONSENTS_IN_QUERY = 1000;
 	public final static int MIN_FOR_ACCELERATION = 10;
 	
 	private Feature next;
@@ -134,6 +134,10 @@ public class Feature_AccountQuery extends Feature {
             
             	List<Consent> consents = getConsentsForQuery(query, false);
     			
+            	if (query.restrictedBy("consent-limit")) {
+            		if (consents.size() > MAX_CONSENTS_IN_QUERY) throw new RequestTooLargeException("error.toomany.consents", "Too many consents in query #="+consents.size());
+            	}
+            	
             	/*
     			if (!q.restrictedBy("consent-limit")) {
     				if (consents.size() > MAX_CONSENTS_IN_QUERY) throw new RequestTooLargeException("error.toomany.consents", "Too many consents in query #="+consents.size());
