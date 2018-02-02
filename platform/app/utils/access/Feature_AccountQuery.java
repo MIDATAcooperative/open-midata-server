@@ -95,12 +95,12 @@ public class Feature_AccountQuery extends Feature {
 	
 	
 	@Override
-	protected Iterator<DBRecord> iterator(Query q) throws AppException {
+	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
 
 		if (q.getApsId().equals(q.getCache().getAccountOwner())) {			
 			return new AccountThenConsents(next, q);
 		} else {		
-			Iterator<DBRecord> result = next.iterator(q);
+			DBIterator<DBRecord> result = next.iterator(q);
 			if (result.hasNext()) {
 				result = new IdAndConsentFieldIterator(result, q.getContext(), q.getApsId(), q.returns("id"));
 			}			
@@ -111,38 +111,47 @@ public class Feature_AccountQuery extends Feature {
 	static class AccountThenConsents extends Feature.MultiSource<Integer> {
 			
 		private Feature next;	
+		private boolean account;
 		
 		AccountThenConsents(Feature next, Query q) throws AppException {						
 			this.next = next;
 			this.query = q;
 			
 			Integer[] steps = {1,2};
-			init(Arrays.asList(steps).iterator());
+			init(ProcessingTools.dbiterator("",  Arrays.asList(steps).iterator()));
 		}
 		
 		@Override
-		public Iterator<DBRecord> advance(Integer step) throws AppException {
+		public DBIterator<DBRecord> advance(Integer step) throws AppException {
             if (step == 1) {
+            	account = true;
             	Set<String> sets = query.restrictedBy("owner") ? query.getRestriction("owner") : Collections.singleton("all");    			    		
 
     			if ((sets.contains("self") || sets.contains("all") || sets.contains(query.getApsId().toString())) && !query.restrictedBy("consent-after") && !query.restrictedBy("usergroup") && !query.restrictedBy("study") && !query.restrictedBy("shared-after")) {
     				return new IdAndConsentFieldIterator(next.iterator(query), query.getContext(), query.getApsId(), query.returns("id"));						
     			} else {
-    				return Collections.emptyIterator();
+    				return ProcessingTools.empty();
     			}
             } else if (step == 2) {            	            	
             
+            	account = false;
+            	
             	List<Consent> consents = getConsentsForQuery(query, false);
     			
             	if (query.restrictedBy("consent-limit")) {
-            		if (consents.size() > MAX_CONSENTS_IN_QUERY) throw new RequestTooLargeException("error.toomany.consents", "Too many consents in query #="+consents.size());
+            		
+            		if (consents.size() > MAX_CONSENTS_IN_QUERY) {
+            			AccessLog.logQuery(query.getApsId(), query.getProperties(), query.getFields());
+            			throw new RequestTooLargeException("error.toomany.consents", "Too many consents in query #="+consents.size());
+            		}
+            		
             	}
             	
             	/*
     			if (!q.restrictedBy("consent-limit")) {
     				if (consents.size() > MAX_CONSENTS_IN_QUERY) throw new RequestTooLargeException("error.toomany.consents", "Too many consents in query #="+consents.size());
     			}*/
-            	if (consents.isEmpty()) return Collections.emptyIterator();
+            	if (consents.isEmpty()) ProcessingTools.empty();
     									            	
             	
             	return ProcessingTools.noDuplicates(new ConsentIterator(next, query, consents));
@@ -153,12 +162,12 @@ public class Feature_AccountQuery extends Feature {
 
 		@Override
 		public String toString() {			
-			return (chain.hasNext() ? "account(" : "acc-consents(")+"["+passed+"] "+current.toString()+")";
+			return (account ? "account(" : "acc-consents(")+"["+passed+"] "+current.toString()+")";
 		}
 						
 	}
 	
-	static class BlockwiseConsentPrefetch implements Iterator<Consent> {
+	static class BlockwiseConsentPrefetch implements DBIterator<Consent> {
 
 		private int blocksize;
 		private int pos;
@@ -191,16 +200,16 @@ public class Feature_AccountQuery extends Feature {
 		}
 				
 		@Override
-		public Consent next() {
+		public Consent next() throws AppException {
 			if (cache.hasNext())
 				return cache.next();
 
 			int end = pos + blocksize;
 			if (end > maxsize) end = maxsize;
 			List<Consent> sublist = all.subList(pos, end);
-			try {
-			  FasterDecryptTool.accelerate(q, sublist);
-			} catch (AppException e) { throw new RuntimeException(e); }
+			
+			FasterDecryptTool.accelerate(q, sublist);
+			
 			AccessLog.log("get consent "+pos+" - "+end);
 			pos = end;
 			cache = sublist.iterator();			         
@@ -234,7 +243,7 @@ public class Feature_AccountQuery extends Feature {
 					  }
 					  pos++;
 				  }
-				  init(it);
+				  init(ProcessingTools.dbiterator("", it));
 				  return;
 				}
 			}
@@ -242,15 +251,16 @@ public class Feature_AccountQuery extends Feature {
 		}
 		
 		@Override
-		public Iterator<DBRecord> advance(Consent circle) throws AppException {
+		public DBIterator<DBRecord> advance(Consent circle) throws AppException {
 			ConsentAccessContext context = new ConsentAccessContext(circle, query.getContext());
-			Iterator<DBRecord> consentRecords = next.iterator(new Query(query.getProperties(), query.getFields(), query.getCache(), circle._id, context));
+			DBIterator<DBRecord> consentRecords = next.iterator(new Query(query.getProperties(), query.getFields(), query.getCache(), circle._id, context));
 			thisconsent = circle;
 			return new IdAndConsentFieldIterator(consentRecords, context, circle._id, query.returns("id"));
 		}
 
 		@Override
 		public String toString() {
+			if (thisconsent==null) return "consent(null)";
 			return "consent(["+passed+"] "+thisconsent._id.toString()+","+current.toString()+")";
 		}
 		
@@ -260,14 +270,14 @@ public class Feature_AccountQuery extends Feature {
 		
 	}
 
-	static class IdAndConsentFieldIterator implements Iterator<DBRecord> {
+	static class IdAndConsentFieldIterator implements DBIterator<DBRecord> {
 
-		private Iterator<DBRecord> chain;
+		private DBIterator<DBRecord> chain;
 		private AccessContext context;
 		private MidataId sourceAps;
 		private boolean setid;
 		
-		IdAndConsentFieldIterator(Iterator<DBRecord> chain, AccessContext context, MidataId sourceAps, boolean setid) {
+		IdAndConsentFieldIterator(DBIterator<DBRecord> chain, AccessContext context, MidataId sourceAps, boolean setid) {
 			this.chain = chain;
 			this.context = context;
 			this.sourceAps = sourceAps;
@@ -275,12 +285,12 @@ public class Feature_AccountQuery extends Feature {
 		}
 		
 		@Override
-		public boolean hasNext() {
+		public boolean hasNext() throws AppException {
 			return chain.hasNext();
 		}
 
 		@Override
-		public DBRecord next() {
+		public DBRecord next() throws AppException {
 			DBRecord record = chain.next();
 			record.context = context;
 			record.consentAps = sourceAps;
@@ -384,7 +394,7 @@ public class Feature_AccountQuery extends Feature {
 	}
 	
 	protected static boolean allApsIncluded(Query q) throws BadRequestException {
-		if (!q.restrictedBy("owner") && !q.restrictedBy("study") && !q.restrictedBy("study-group")) return true;
+		if (!q.restrictedBy("owner") && !q.restrictedBy("study-group")) return true;
 		return false;
 	}
 	
@@ -412,12 +422,18 @@ public class Feature_AccountQuery extends Feature {
 	    	}
 	    	
 	    	//consents = new HashSet<Consent>(StudyParticipation.getActiveParticipantsByStudyAndGroupsAndIds(studies, studyGroups, q.getCache().getAccountOwner(), sets.contains("all") ? null : owners, Sets.create("name", "order", "owner", "ownerName", "type")));
-	    	
+	    	long limit = 0;
+			if (q.restrictedBy("created-after")) limit = q.getMinCreatedTimestamp();
+			if (q.restrictedBy("updated-after")) limit = q.getMinUpdatedTimestamp();				
+			if (q.restrictedBy("shared-after")) limit = q.getMinSharedTimestamp();
 	    		    		
-	    	consents =  new ArrayList<Consent>(StudyParticipation.getActiveParticipantsByStudyAndGroupsAndParticipant(studies, studyGroups, q.getCache().getAccountOwner(), sets.contains("all") ? null : owners, Consent.SMALL, true));
-	    	consents.addAll(StudyRelated.getActiveByAuthorizedGroupAndStudy(q.getCache().getAccountOwner(), studyGroups, studies, Consent.SMALL));
+	    	consents =  new ArrayList<Consent>(StudyParticipation.getActiveParticipantsByStudyAndGroupsAndParticipant(studies, studyGroups, q.getCache().getAccountOwner(), sets.contains("all") ? null : owners, Consent.SMALL, true, limit));
+	    	AccessLog.log("found consents (participants): "+consents.size());
+	    	consents.addAll(StudyRelated.getActiveByAuthorizedGroupAndStudy(q.getCache().getAccountOwner(), studyGroups, studies, Consent.SMALL, limit));
+	    	
+	    	consents = applyLimit(consents, limit);
             q.getCache().cache(consents);	    		    
-	    	AccessLog.log("found: "+consents.size());
+	    	AccessLog.log("found consents (total): "+consents.size());
 	    } else if (sets.contains("all") || sets.contains("other") || sets.contains("shared")) {			
 			if (sets.contains("shared"))
 				consents = new ArrayList<Consent>(Circle.getAllActiveByMember(q.getCache().getAccountOwner()));

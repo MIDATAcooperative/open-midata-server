@@ -23,7 +23,7 @@ public class Feature_ConsentRestrictions extends Feature {
 	
 
 	@Override
-	protected Iterator<DBRecord> iterator(Query q) throws AppException {
+	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
 		BasicBSONObject filter = q.getCache().getAPS(q.getApsId()).getMeta("_filter");
 		if (filter != null) {			
 		  if (filter.containsField("valid-until")) {
@@ -31,7 +31,7 @@ public class Feature_ConsentRestrictions extends Feature {
 			  if (until.before(new Date(System.currentTimeMillis()))) {
 				  AccessLog.log("consent not valid anymore");			
 				  Circles.consentExpired(q.getCache().getExecutor(), q.getApsId());
-				  return Collections.emptyIterator();
+				  return ProcessingTools.empty();
 			  }
 		  }
 		  Date historyDate = filter.getDate("history-date");

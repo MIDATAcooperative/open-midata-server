@@ -205,9 +205,9 @@ public class Feature_FormatGroups extends Feature {
 	
 	
 	@Override
-	protected Iterator<DBRecord> iterator(Query q) throws AppException {
+	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
 		Set<String> contents = prepareFilter(q);
-		Iterator<DBRecord> result = null;
+		DBIterator<DBRecord> result = null;
 		if (contents != null) {
 		  	result = QueryEngine.combineIterator(q, CMaps.map("content", contents), next);					
 		} else {
@@ -223,32 +223,30 @@ public class Feature_FormatGroups extends Feature {
 		return result;
 	}
 
-	static class SetRecordGroupIterator implements Iterator<DBRecord> {
+	static class SetRecordGroupIterator implements DBIterator<DBRecord> {
 
-		private Iterator<DBRecord> chain;
+		private DBIterator<DBRecord> chain;
 		private String system;
 		
-		SetRecordGroupIterator(Iterator<DBRecord> chain, String system) {
+		SetRecordGroupIterator(DBIterator<DBRecord> chain, String system) {
 			this.chain = chain;
 			this.system = system;
 		}
 		
 		@Override
-		public boolean hasNext() {
+		public boolean hasNext() throws AppException {
 			return chain.hasNext();
 		}
 
 		@Override
-		public DBRecord next() {
+		public DBRecord next() throws AppException {
 			DBRecord record = chain.next();
-			try {
-			   BasicBSONObject meta = record.meta;
+		
+			BasicBSONObject meta = record.meta;
 			   
-			   if (meta == null) AccessLog.log("NO META");
-			   record.group = RecordGroup.getGroupForSystemAndContent(system, (String) meta.get("content"));
-			} catch (AppException e) {
-				throw new RuntimeException(e);
-			}
+			if (meta == null) AccessLog.log("NO META");
+			record.group = RecordGroup.getGroupForSystemAndContent(system, (String) meta.get("content"));
+		
 			return record;
 		}
 

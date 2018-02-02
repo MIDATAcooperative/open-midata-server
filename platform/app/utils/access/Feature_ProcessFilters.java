@@ -20,9 +20,9 @@ public class Feature_ProcessFilters extends Feature {
 	}
 
 	@Override
-	protected Iterator<DBRecord> iterator(Query q) throws AppException {
+	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
 
-		Iterator<DBRecord> result = next.iterator(q);
+		DBIterator<DBRecord> result = next.iterator(q);
 
 		if (!result.hasNext())
 			return result;

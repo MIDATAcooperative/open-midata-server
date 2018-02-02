@@ -59,7 +59,7 @@ public class Feature_UserGroups extends Feature {
 	
 	
 	@Override
-	protected Iterator<DBRecord> iterator(Query q) throws AppException {
+	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
 		if (q.restrictedBy("usergroup")) {
 			MidataId usergroup = q.getMidataIdRestriction("usergroup").iterator().next();
 			UserGroupMember isMemberOfGroup = UserGroupMember.getByGroupAndMember(usergroup, q.getCache().getAccountOwner());
@@ -92,7 +92,7 @@ public class Feature_UserGroups extends Feature {
 		}
 		
 		@Override
-		public Iterator<DBRecord> advance(UserGroupMember usergroup) throws AppException {
+		public DBIterator<DBRecord> advance(UserGroupMember usergroup) throws AppException {
 			
 			if (usergroup == null) return next.iterator(query);
 			return doQueryAsGroup(usergroup, query);
@@ -110,7 +110,7 @@ public class Feature_UserGroups extends Feature {
 		
 	}
 
-	protected Iterator<DBRecord> doQueryAsGroup(UserGroupMember ugm, Query q) throws AppException {		
+	protected DBIterator<DBRecord> doQueryAsGroup(UserGroupMember ugm, Query q) throws AppException {		
 		MidataId group = ugm.userGroup;
 		//AccessLog.logBegin("start user group query for group="+group.toString());
 		BasicBSONObject obj = q.getCache().getAPS(ugm._id, ugm.member).getMeta("_usergroup");
@@ -128,7 +128,7 @@ public class Feature_UserGroups extends Feature {
 			}
 		}
 		
-		if (!ugm.role.mayReadData()) return Collections.emptyIterator();
+		if (!ugm.role.mayReadData()) return ProcessingTools.empty();
 		
 		if (ugm.role.pseudonymizedAccess()) {
 			
@@ -139,7 +139,7 @@ public class Feature_UserGroups extends Feature {
 					  owners.add(part.owner.toString());
 				   }
 				   newprops.put("owner", owners);
-				   if (owners.isEmpty()) return Collections.emptyIterator();
+				   if (owners.isEmpty()) return ProcessingTools.empty();
 		    }		
 			
 		}
@@ -147,7 +147,7 @@ public class Feature_UserGroups extends Feature {
 		// AK : Removed instanceof DummyAccessContext : Does not work correctly when listing study participants records on portal
 		MidataId aps = (q.getApsId().equals(ugm.member) /*|| q.getContext() instanceof DummyAccessContext */) ? group : q.getApsId();
 		Query qnew = new Query(newprops, q.getFields(), subcache, aps, new UserGroupAccessContext(ugm, subcache, q.getContext())).setFromRecord(q.getFromRecord());
-		Iterator<DBRecord> result = next.iterator(qnew);
+		DBIterator<DBRecord> result = next.iterator(qnew);
 		//AccessLog.logEnd("end user group query for group="+group.toString());
 		
 		return result;

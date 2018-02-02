@@ -56,7 +56,7 @@ public class Feature_Indexes extends Feature {
 	}
 
 	@Override
-	protected Iterator<DBRecord> iterator(Query q) throws AppException {
+	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
 		if (q.restrictedBy("index") && !q.restrictedBy("_id")) {
 
 			if (!q.restrictedBy("format"))
@@ -69,7 +69,7 @@ public class Feature_Indexes extends Feature {
 				if (recs.size() > AUTOCREATE_INDEX_COUNT) {
 					pseudo = IndexManager.instance.getIndexPseudonym(q.getCache(), q.getCache().getExecutor(), q.getApsId(), true);
 				} else {
-					return recs.iterator();
+					return ProcessingTools.dbiterator("non-indexed()", recs.iterator());
 				}
 			}
 
@@ -112,7 +112,7 @@ public class Feature_Indexes extends Feature {
 
 			if (targetAps != null && targetAps.isEmpty()) {
 				AccessLog.logEnd("end index query no target APS");
-				return Collections.emptyIterator();
+				return ProcessingTools.empty();
 			}
 
 			IndexUse myAccess = parse(pseudo, q.getRestriction("format"), indexQueryParsed);
@@ -143,14 +143,16 @@ public class Feature_Indexes extends Feature {
 					result = null;
 					AccessContext context = getContextForAps(q, id);
 					if (context != null) {
-						if (context instanceof ConsentAccessContext && ((ConsentAccessContext) context).getConsent().dataupdate <= v)
+						if (context instanceof ConsentAccessContext && ((ConsentAccessContext) context).getConsent().dataupdate <= v) {
 							continue;
+						} 
+						//if (context instanceof ConsentAccessContext) AccessLog.log("TIMESTAMP "+((ConsentAccessContext) context).getConsent().dataupdate+" vs "+v);
 						List<DBRecord> add;
-						add = QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.mapPositive("updated-after", v), id, context)), indexQueryParsed, null);
+						add = QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.mapPositive("updated-after", v).map("owner", "self"), id, context)), indexQueryParsed, null);
 						AccessLog.log("found new updated entries aps=" + id + ": " + add.size());
 						result = QueryEngine.combine(result, add);
 						if (v > 0) {
-							add = QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.mapPositive("shared-after", v), id, context)), indexQueryParsed, null);
+							add = QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.mapPositive("shared-after", v).map("owner", "self"), id, context)), indexQueryParsed, null);
 							AccessLog.log("found new shared entries aps=" + id + ": " + add.size());
 							result = QueryEngine.combine(result, add);
 						}
@@ -164,11 +166,11 @@ public class Feature_Indexes extends Feature {
 				long v = myAccess.version(null);
 				// AccessLog.log("vx="+v);
 				List<DBRecord> add;
-				add = QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.mapPositive("updated-after", v))), indexQueryParsed, null);
+				add = QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.mapPositive("updated-after", v).map("consent-limit",1000))), indexQueryParsed, null);
 				AccessLog.log("found new updated entries: " + add.size());
 				result = QueryEngine.combine(result, add);
 				if (v > 0) {
-					add = QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.mapPositive("shared-after", v))), indexQueryParsed, null);
+					add = QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.mapPositive("shared-after", v).map("consent-limit",1000))), indexQueryParsed, null);
 					AccessLog.log("found new shared entries: " + add.size());
 					result = QueryEngine.combine(result, add);
 				}
@@ -206,7 +208,7 @@ public class Feature_Indexes extends Feature {
 			queryFields.addAll(q.getFieldsFromDB());
 
 			AccessLog.logEnd("end index query");
-			if (contexts.isEmpty()) return Collections.emptyIterator();
+			if (contexts.isEmpty()) return ProcessingTools.empty();
 			return ProcessingTools.noDuplicates(new IndexIterator(q, myAccess, contexts, newRecords, filterMatches));				
 
 		} else
@@ -269,7 +271,7 @@ public class Feature_Indexes extends Feature {
 		}
 
 		@Override
-		public Iterator<DBRecord> advance(AccessContext context) throws AppException {
+		public DBIterator<DBRecord> advance(AccessContext context) throws AppException {
 			MidataId aps = context.getTargetAps();
 			List<DBRecord> result = newRecords.get(aps);
 			if (result == null)
@@ -350,7 +352,7 @@ public class Feature_Indexes extends Feature {
 			Collections.sort(result);
 			size = result.size();
 			currentContext = context;
-			return result.iterator();
+			return ProcessingTools.dbiterator("index-use()", result.iterator());
 		}
 
 		@Override

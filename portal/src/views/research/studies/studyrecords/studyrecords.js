@@ -13,7 +13,7 @@ angular.module('portal')
 				$scope.study = data.data;
 				$scope.infos = [];
 				angular.forEach($scope.study.groups, function(group) {
-					var inf = { group : group.name, count:0 };
+					var inf = { group : group.name, count:"?" };
 					$scope.infos.push(inf);
 					var properties = { study : $scope.studyId, "study-group" : group.name };
 					$scope.status.doBusy(records.getInfos(userId, properties, "ALL"))

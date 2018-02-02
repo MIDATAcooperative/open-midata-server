@@ -17,7 +17,7 @@ public class Feature_Or extends Feature {
 	}
 
 	@Override
-	protected Iterator<DBRecord> iterator(Query q) throws AppException {
+	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
 		if (q.getProperties().containsKey("$or")) {
 			  
 			  // TODO overlapping ORs
@@ -25,7 +25,7 @@ public class Feature_Or extends Feature {
 			
 	      	  Feature qm = new Feature_Sort(next);
 	      	  Collection<Map<String, Object>> col = (Collection<Map<String, Object>>) q.getProperties().get("$or");      	  
-	      	  return ProcessingTools.noDuplicates(ProcessingTools.multiQuery(qm, q, col.iterator()));      	  
+	      	  return ProcessingTools.noDuplicates(ProcessingTools.multiQuery(qm, q, ProcessingTools.dbiterator("", col.iterator())));      	  
 	    } return next.iterator(q);
 	}
 	

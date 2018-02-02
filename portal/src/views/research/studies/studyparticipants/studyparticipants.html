@@ -14,6 +14,7 @@
 	</p>
 	
 	<p translate="studyparticipants.total" translate-value-count="{{ total }}"></p>
+	<p translate="studyparticipants.only_first_shown" ng-show="total > 1000"></p>
 	
 	<div ng-show="results.length > 0">
 	<div ng-if="results.length > 10">

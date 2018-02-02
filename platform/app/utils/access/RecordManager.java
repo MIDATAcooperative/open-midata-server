@@ -56,7 +56,7 @@ public class RecordManager {
 
 	public static RecordManager instance = new RecordManager();
 
-	public final static Map<String, Object> FULLAPS = Collections.unmodifiableMap(new HashMap<String, Object>());
+	public final static Map<String, Object> FULLAPS_LIMITED_SIZE = Collections.unmodifiableMap(CMaps.map("limit-consents", 1000).map("limit", 10000));
 	public final static Map<String, Object> FULLAPS_WITHSTREAMS = Collections.unmodifiableMap(CMaps.map("streams", "true"));
 	public final static Map<String, Object> FULLAPS_FLAT = Collections.unmodifiableMap(CMaps.map("streams", "true").map("flat", "true"));
 	public final static Map<String, Object> FULLAPS_FLAT_OWNER = Collections.unmodifiableMap(CMaps.map("streams", "true").map("flat", "true").map("owner", "self"));
@@ -1180,7 +1180,7 @@ public class RecordManager {
 	 */
 	public Set<String> listRecordIds(MidataId who, MidataId apsId)
 			throws AppException {
-		return listRecordIds(who, apsId, RecordManager.FULLAPS);
+		return listRecordIds(who, apsId, RecordManager.FULLAPS_LIMITED_SIZE);
 	}
 
 	/**

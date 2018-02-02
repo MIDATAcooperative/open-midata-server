@@ -313,12 +313,12 @@ class APSImplementation extends APS {
 	
 	
 	@Override
-	protected Iterator<DBRecord> iterator(Query q) throws AppException {
+	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
 		List<DBRecord> result = query(q);
 		return new APSIterator(result.iterator(), result.size(), getId());
 	}
 
-	static class APSIterator implements Iterator<DBRecord> {
+	static class APSIterator implements DBIterator<DBRecord> {
 		private Iterator<DBRecord> data;
 		private int size;
 		private MidataId aps;

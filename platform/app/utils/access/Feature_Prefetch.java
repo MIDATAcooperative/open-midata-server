@@ -34,7 +34,7 @@ public class Feature_Prefetch extends Feature {
 	
 	
 	@Override
-	protected Iterator<DBRecord> iterator(Query q) throws AppException {
+	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
 		if (q.restrictedBy("_id")) {
 			List<DBRecord> prefetched = QueryEngine.lookupRecordsById(q);
 			
@@ -87,7 +87,7 @@ public class Feature_Prefetch extends Feature {
 	}
 		
 
-	static class LookupIterator implements Iterator<DBRecord> {
+	static class LookupIterator implements DBIterator<DBRecord> {
 		private Iterator<DBRecord> data;
 		private int size;
 		

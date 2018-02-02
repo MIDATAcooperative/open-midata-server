@@ -19,8 +19,45 @@ import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
 public class ProcessingTools {
+ 
 
-	public static Iterator<DBRecord> sort(Map<String, Object> properties, Iterator<DBRecord> input) {
+	private static final DBIterator EMPTY = new IteratorWrapper("empty", Collections.emptyIterator());
+	
+	public static <A> DBIterator<A> dbiterator(String name, Iterator<A> in) {
+		return new IteratorWrapper(name, in);
+	}
+	
+	public static <A> DBIterator<A> empty() {
+		return EMPTY;
+	}
+	
+	public static class IteratorWrapper<A> implements DBIterator<A> {
+
+		private Iterator<A> iterator;
+		private String title;
+		
+		public IteratorWrapper(String name, Iterator<A> iterator) {
+			this.iterator = iterator;
+			this.title = name;
+		}
+		
+		@Override
+		public A next() throws AppException {
+			return iterator.next();
+		}
+
+		@Override
+		public boolean hasNext() throws AppException {
+			return iterator.hasNext();
+		}
+
+		@Override
+		public String toString() {
+			return title;
+		}						
+	}
+	
+	public static DBIterator<DBRecord> sort(Map<String, Object> properties, DBIterator<DBRecord> input) throws AppException {
 		if (!properties.containsKey("sort"))
 			return input;
 
@@ -38,20 +75,20 @@ public class ProcessingTools {
 		RecordComparator comp = new RecordComparator(sortBy);
 		Collections.sort(result, comp);
 
-		return result.iterator();
+		return ProcessingTools.dbiterator("sorted("+result.size()+")",result.iterator());
 	}
 
-	public static Iterator<DBRecord> noDuplicates(Iterator<DBRecord> input) {
+	public static DBIterator<DBRecord> noDuplicates(DBIterator<DBRecord> input) throws AppException {
 		return new DuplicateEliminator<DBRecord>(input);
 	}
 
-	public static Iterator<DBRecord> filterUntilFrom(Query q, Iterator<DBRecord> input) {
+	public static DBIterator<DBRecord> filterUntilFrom(Query q, DBIterator<DBRecord> input) throws AppException {
 		if (q.getFromRecord() != null)
 			return new FilterUntilFromRecord(q.getFromRecord(), input);
 		return input;
 	}
 
-	public static Iterator<DBRecord> limit(Map<String, Object> properties, Iterator<DBRecord> input) {
+	public static DBIterator<DBRecord> limit(Map<String, Object> properties, DBIterator<DBRecord> input) {
 		if (properties.containsKey("limit")) {
 			Object limitObj = properties.get("limit");
 			int limit = (int) Integer.parseInt(limitObj.toString());
@@ -60,23 +97,19 @@ public class ProcessingTools {
 			return input;
 	}
 
-	public static List<DBRecord> collect(Iterator<DBRecord> input) {
+	public static List<DBRecord> collect(DBIterator<DBRecord> input) throws AppException {
 		List<DBRecord> result = new ArrayList<DBRecord>();
 		// int fail = 0;
-		try {
+		
 		while (input.hasNext()) {
 			result.add(input.next());
 			// fail++; if (fail > 1000) return result; // XXXXXXX
-		}
-		} catch (RuntimeException e) {
-			AccessLog.log("Exception Query:"+input.toString());
-			throw e;
-		}
+		}		
 		AccessLog.log("collected "+result.size()+" records");
 		return result;
 	}
 
-	public static Iterator<DBRecord> multiQuery(Feature fchain, Query base, Iterator<Map<String, Object>> queries) throws AppException {
+	public static DBIterator<DBRecord> multiQuery(Feature fchain, Query base, DBIterator<Map<String, Object>> queries) throws AppException {
 		return new MultiQuery(fchain, base, queries);
 	}
 
@@ -84,19 +117,19 @@ public class ProcessingTools {
 
 		private Feature fchain;
 
-		public MultiQuery(Feature fchain, Query base, Iterator<Map<String, Object>> queries) throws AppException {
+		public MultiQuery(Feature fchain, Query base, DBIterator<Map<String, Object>> queries) throws AppException {
 			this.query = base;
 			this.fchain = fchain;
 			init(queries);
 		}
 
 		@Override
-		public Iterator<DBRecord> advance(Map<String, Object> next) throws AppException {
+		public DBIterator<DBRecord> advance(Map<String, Object> next) throws AppException {
 			Map<String, Object> comb = Feature_QueryRedirect.combineQuery(next, query.getProperties());
 			if (comb != null) {
 				return ProcessingTools.limit(comb, fchain.iterator(new Query(comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext()).setFromRecord(query.getFromRecord())));
 			} else
-				return Collections.emptyIterator();
+				return ProcessingTools.empty();
 		}
 
 		@Override
@@ -108,14 +141,14 @@ public class ProcessingTools {
 
 	}
 
-	abstract static class FilterIterator<A> implements Iterator<A> {
+	abstract static class FilterIterator<A> implements DBIterator<A> {
 
 		protected A next;
-		protected Iterator<A> chain;
+		protected DBIterator<A> chain;
 		protected int passed;
 		protected int filtered;
 
-		public FilterIterator(Iterator<A> chain) {
+		public FilterIterator(DBIterator<A> chain) {
 			this.chain = chain;
 		}
 
@@ -124,10 +157,10 @@ public class ProcessingTools {
 			return next != null;
 		}
 
-		public abstract boolean contained(A obj);
+		public abstract boolean contained(A obj) throws AppException;
 
 		@Override
-		public A next() {
+		public A next() throws AppException {
 			A result = next;			
 			boolean condition = false;
 			A candidate = null;
@@ -146,7 +179,7 @@ public class ProcessingTools {
 
 		private Set<A> encountered;
 
-		public DuplicateEliminator(Iterator<A> chain) {
+		public DuplicateEliminator(DBIterator<A> chain) throws AppException {
 			super(chain);
 			if (chain.hasNext()) {
 				encountered = new HashSet<A>();
@@ -168,24 +201,24 @@ public class ProcessingTools {
 
 	}
 
-	static class LimitIterator<A> implements Iterator<A> {
+	static class LimitIterator<A> implements DBIterator<A> {
 		private int max = 0;
 		private int current = 0;
-		private Iterator<A> chain;
+		private DBIterator<A> chain;
 
-		public LimitIterator(int limit, Iterator<A> chain) {
+		public LimitIterator(int limit, DBIterator<A> chain) {
 			this.max = limit;
 			this.chain = chain;
 			this.current = 0;
 		}
 
 		@Override
-		public boolean hasNext() {
+		public boolean hasNext() throws AppException {
 			return current < max && chain.hasNext();
 		}
 
 		@Override
-		public A next() {
+		public A next() throws AppException {
 			current++;
 			//AccessLog.log("LIMIT " + current);
 			return chain.next();
@@ -202,7 +235,7 @@ public class ProcessingTools {
 		private DBRecord fromRecord;
 		private boolean found;
 
-		public FilterUntilFromRecord(DBRecord fromRecord, Iterator<DBRecord> chain) {
+		public FilterUntilFromRecord(DBRecord fromRecord, DBIterator<DBRecord> chain) throws AppException {
 			super(chain);
 			this.fromRecord = fromRecord;
 			this.found = false;
@@ -235,7 +268,7 @@ public class ProcessingTools {
 		private Set values;
 		private boolean noPostfilterStreams;
 
-		public FilterByMetaSet(Iterator<DBRecord> chain, String property, Set values, boolean noPostfilterStreams) {
+		public FilterByMetaSet(DBIterator<DBRecord> chain, String property, Set values, boolean noPostfilterStreams) throws AppException {
 			super(chain);
 			this.property = property;
 			this.values = values;
@@ -260,7 +293,7 @@ public class ProcessingTools {
 	
 	static class FilterNoMeta extends FilterIterator<DBRecord> {
 		
-		public FilterNoMeta(Iterator<DBRecord> chain) {
+		public FilterNoMeta(DBIterator<DBRecord> chain) throws AppException {
 			super(chain);			
 			if (chain.hasNext())
 				next();
@@ -283,7 +316,7 @@ public class ProcessingTools {
     	private boolean filterDelete;
     	private int minTime;
     	
-		public DecryptRecords(Iterator<DBRecord> chain, int minTime, boolean filterDelete) {
+		public DecryptRecords(DBIterator<DBRecord> chain, int minTime, boolean filterDelete) throws AppException {
 			super(chain);	
 			this.filterDelete = filterDelete;
 			this.minTime = minTime;
@@ -292,14 +325,10 @@ public class ProcessingTools {
 		}
 
 		@Override
-		public boolean contained(DBRecord record)  {
+		public boolean contained(DBRecord record) throws AppException {
 			//AccessLog.log("rec meta="+record.meta+" enc="+record.encrypted+" dat="+record.data+" encdat="+record.encryptedData);
-			if (record.meta != null && (minTime == 0 || record.time ==0 || record.time >= minTime)) {
-				try {
-				   RecordEncryption.decryptRecord(record);				   
-				} catch (AppException e) {
-					throw new RuntimeException(e);
-				}
+			if (record.meta != null && (minTime == 0 || record.time ==0 || record.time >= minTime)) {				
+				 RecordEncryption.decryptRecord(record);				   			
 				 if (!record.meta.containsField("creator") && record.owner != null) record.meta.put("creator", record.owner.toDb());
 				 if (filterDelete && record.meta.containsField("deleted")) return false;
 				 return true;
@@ -319,7 +348,7 @@ public class ProcessingTools {
 		private Set values;
 		private boolean noPostfilterStreams;
 
-		public FilterSetByMetaSet(Iterator<DBRecord> chain, String property, Set values, boolean noPostfilterStreams) {
+		public FilterSetByMetaSet(DBIterator<DBRecord> chain, String property, Set values, boolean noPostfilterStreams) throws AppException {
 			super(chain);
 			this.property = property;
 			this.values = values;
@@ -362,7 +391,7 @@ public class ProcessingTools {
 		private Date minDate;
 		private Date maxDate;
 
-		public FilterByDateRange(Iterator<DBRecord> chain, String property, Date minDate, Date maxDate) {
+		public FilterByDateRange(DBIterator<DBRecord> chain, String property, Date minDate, Date maxDate) throws AppException {
 			super(chain);
 			this.property = property;
 			this.minDate = minDate;
@@ -396,7 +425,7 @@ public class ProcessingTools {
 		private Condition condition;
 		private List<DBRecord> nomatch;
 
-		public FilterByDataQuery(Iterator<DBRecord> chain, Object query, List<DBRecord> nomatch) throws InternalServerException {
+		public FilterByDataQuery(DBIterator<DBRecord> chain, Object query, List<DBRecord> nomatch) throws AppException {
 			super(chain);
 			this.nomatch = nomatch;
 
@@ -434,7 +463,7 @@ public class ProcessingTools {
 		private Set<String> check;
 		private boolean created;
 		
-		public ConditionalLoad(Iterator<DBRecord> chain, Query q, int blocksize) {
+		public ConditionalLoad(DBIterator<DBRecord> chain, Query q, int blocksize) {
 			super(chain, q, blocksize);
 			check = q.mayNeedFromDB();
 			created = check.contains("created");
@@ -457,17 +486,17 @@ public class ProcessingTools {
 		}
 	}
 
-	static class BlockwiseLoad implements Iterator<DBRecord> {
+	static class BlockwiseLoad implements DBIterator<DBRecord> {
 
 		private int blocksize;
-		protected Iterator<DBRecord> chain;
+		protected DBIterator<DBRecord> chain;
 		protected Iterator<DBRecord> cache;
 		private List<DBRecord> work;
 		private Query q;
 		private int loaded;
 		private int notloaded;
 
-		public BlockwiseLoad(Iterator<DBRecord> chain, Query q, int blocksize) {
+		public BlockwiseLoad(DBIterator<DBRecord> chain, Query q, int blocksize) {
 			this.chain = chain;
 			this.blocksize = blocksize;
 			this.q = q;
@@ -476,7 +505,7 @@ public class ProcessingTools {
 		}
 
 		@Override
-		public boolean hasNext() {
+		public boolean hasNext() throws AppException {
 			return cache.hasNext() || chain.hasNext();
 		}
 		
@@ -485,7 +514,7 @@ public class ProcessingTools {
 		}
 
 		@Override
-		public DBRecord next() {
+		public DBRecord next() throws AppException {
 			if (cache.hasNext())
 				return cache.next();
 
@@ -507,23 +536,20 @@ public class ProcessingTools {
 				current++;
 			}
 
-			try {
-				if (!fetchIds.isEmpty()) {
-					List<DBRecord> read = QueryEngine.lookupRecordsById(q, fetchIds.keySet(), q.restrictedBy("deleted"));
-					for (DBRecord record : read) {
-						DBRecord old = fetchIds.get(record._id);
-						QueryEngine.fetchFromDB(old, record);
-					}
-					if (read.size() < fetchIds.size()) {
-						for (DBRecord record : fetchIds.values()) {
-							if (record.encrypted == null)
-								record.meta = null;
-						}
+		
+			if (!fetchIds.isEmpty()) {
+				List<DBRecord> read = QueryEngine.lookupRecordsById(q, fetchIds.keySet(), q.restrictedBy("deleted"));
+				for (DBRecord record : read) {
+					DBRecord old = fetchIds.get(record._id);
+					QueryEngine.fetchFromDB(old, record);
+				}
+				if (read.size() < fetchIds.size()) {
+					for (DBRecord record : fetchIds.values()) {
+						if (record.encrypted == null)
+							record.meta = null;
 					}
 				}
-			} catch (AppException e) {
-				throw new RuntimeException(e);
-			}
+			}			
 
 			cache = work.iterator();
 

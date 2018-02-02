@@ -56,7 +56,7 @@ public class MobileCallAction extends Action<MobileCall> {
 			ErrorReporter.report("Mobile API", ctx, e2);
 			if (Stats.enabled) Stats.finishRequest(ctx.request(), "500");
 			AuditManager.instance.fail(500, e2.getMessage(), null);
-			return F.Promise.pure((Result) internalServerError(e2.getMessage()));			
+			return F.Promise.pure((Result) internalServerError("err:"+e2.getMessage()));			
 		} finally {
 			long endTime = System.currentTimeMillis();
 			if (endTime - startTime > 1000l * 4l) {

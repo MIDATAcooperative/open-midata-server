@@ -22,7 +22,7 @@ public class Feature_Pseudonymization extends Feature {
 	}
 
 	@Override
-	protected Iterator<DBRecord> iterator(Query q) throws AppException {
+	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
 		// For researchers
 		if (q.restrictedBy("study")) {
 			q = new Query(q, CMaps.map()).setFromRecord(q.getFromRecord());
@@ -32,7 +32,7 @@ public class Feature_Pseudonymization extends Feature {
 
 		}
 
-		Iterator<DBRecord> result = next.iterator(q);
+		DBIterator<DBRecord> result = next.iterator(q);
 
 		boolean oname = q.returns("ownerName");
 		if (q.returns("owner") || oname || q.returns("data") || q.returns("name")) {
@@ -42,25 +42,25 @@ public class Feature_Pseudonymization extends Feature {
 		return result;
 	}
 	
-	static class PseudonymIterator implements Iterator<DBRecord> {
+	static class PseudonymIterator implements DBIterator<DBRecord> {
 
-		private Iterator<DBRecord> chain;
+		private DBIterator<DBRecord> chain;
 		private Query q;
 		private boolean oname;
 		
-		PseudonymIterator(Iterator<DBRecord> chain, Query q, boolean oname) {
+		PseudonymIterator(DBIterator<DBRecord> chain, Query q, boolean oname) {
 			this.chain = chain;
 			this.q = q;
 			this.oname = oname;
 		}
 		
 		@Override
-		public boolean hasNext() {
+		public boolean hasNext() throws AppException {
 			return chain.hasNext();
 		}
 
 		@Override
-		public DBRecord next() {
+		public DBRecord next() throws AppException {
 			DBRecord r = chain.next();
 			if (r.context.mustPseudonymize()) {
 
@@ -68,12 +68,10 @@ public class Feature_Pseudonymization extends Feature {
 
 				String name = r.context.getOwnerName();
 				if (oname && name != null) {
-					try {
-					  QueryEngine.fetchFromDB(q, r);
-					  RecordEncryption.decryptRecord(r);
-					} catch (AppException e) {
-						throw new RuntimeException(e);
-					}
+					
+					QueryEngine.fetchFromDB(q, r);
+					RecordEncryption.decryptRecord(r);
+					
 					r.meta.put("ownerName", name);
 
 				}

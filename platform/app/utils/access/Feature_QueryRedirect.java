@@ -67,7 +67,7 @@ public class Feature_QueryRedirect extends Feature {
 	
 	
 	@Override
-	protected Iterator<DBRecord> iterator(Query q) throws AppException {
+	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
 		APS target = q.getCache().getAPS(q.getApsId());
 		BasicBSONObject query = target.getMeta(APS.QUERY);    	
     	// Ignores queries in main APS 
@@ -83,6 +83,7 @@ public class Feature_QueryRedirect extends Feature {
 		private APS target;
 		private BasicBSONObject requery;
 		private Feature next;	
+		private boolean redirect;
 		
 		RedirectIterator(APS target, BasicBSONObject query, Feature next, Query q) throws AppException {			
 			this.target = target;
@@ -95,27 +96,29 @@ public class Feature_QueryRedirect extends Feature {
 		}
 		
 		@Override
-		public Iterator<DBRecord> advance(Integer step) throws AppException {
+		public DBIterator<DBRecord> advance(Integer step) throws AppException {
             if (step == 1) {
+            	redirect = false;
             	if (query.restrictedBy("redirect-only") || target.hasNoDirectEntries()) {
-      			  return Collections.emptyIterator();	
+      			  return ProcessingTools.empty();
       			} else {
       				query.setFromRecord(null);
       			  return next.iterator(query);
       			}	
-            } else if (step == 2) {            	            	
+            } else if (step == 2) {
+            	redirect = true;
             	if (!query.restrictedBy("ignore-redirect")) {
             		Object targetAPSId = requery.get("aps");
             		return QueryEngine.combineIterator(new Query(query, CMaps.map(), MidataId.from(targetAPSId), new AccountAccessContext(query.getCache(), query.getContext())).setFromRecord(query.getFromRecord()), requery.toMap(), next);            				    			
     			}
-            	return Collections.emptyIterator();
+            	return ProcessingTools.empty();
             }
 			return null;
 		}
 
 		@Override
 		public String toString() {			
-			return (chain.hasNext() ? "noredirect(" : "redirect(")+"["+passed+"] "+current.toString()+")";
+			return (!redirect ? "noredirect(" : "redirect(")+"["+passed+"] "+current.toString()+")";
 		}
 		
 		

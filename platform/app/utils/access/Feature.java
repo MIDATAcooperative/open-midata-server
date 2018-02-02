@@ -19,27 +19,27 @@ public abstract class Feature {
 		return ProcessingTools.collect(iterator(q));
 	}
 	
-	protected Iterator<DBRecord> iterator(Query q) throws AppException {
+	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
 		//throw new NullPointerException();
 		List<DBRecord> result = query(q);
-		return result.iterator();
+		return ProcessingTools.dbiterator("old-iterator",result.iterator());
 	}
 	
 	
-	public static abstract class MultiIterator<A,B> implements Iterator<A> {
+	public static abstract class MultiIterator<A,B> implements DBIterator<A> {
 
-		protected Iterator<B> chain;
-		protected Iterator<A> current;	
+		protected DBIterator<B> chain;
+		protected DBIterator<A> current;	
 		protected int passed;
 		
 		@Override
-		public boolean hasNext() {
+		public boolean hasNext() throws AppException {
 			return current != null && current.hasNext();
 		}
 
 		@Override
-		public A next() {
-			try {			
+		public A next() throws AppException {
+					
 			  A result = current.next();
 			  
 			  if (result == null) throw new NullPointerException();
@@ -47,22 +47,28 @@ public abstract class Feature {
 			  advance();	
 			  passed++;
 			  return result;
-			} catch (AppException e) {
-				throw new RuntimeException(e);
-			}
+			
 		}
 		
 		public void init(Iterator<B> init) throws AppException {
+			init(ProcessingTools.dbiterator("", init));
+		}
+		
+		public void init(DBIterator<B> init) throws AppException {
 		  this.chain = init;
 		  if (chain.hasNext()) {
 			  B next = chain.next();
 			  current = advance(next);
 			  AccessLog.log("init:"+this.toString());
-		  } else current = Collections.emptyIterator();
+		  } else current = ProcessingTools.empty();
 		  advance();
 		}
 		
 		public void init(B first, Iterator<B> init) throws AppException {
+			init(first, ProcessingTools.dbiterator("", init));
+		}
+		
+		public void init(B first, DBIterator<B> init) throws AppException {
 			  this.chain = init;
 			  current = advance(first);
 			  AccessLog.log("init:"+this.toString());			  
@@ -77,7 +83,7 @@ public abstract class Feature {
 			}  			
 		}
 		
-		public abstract Iterator<A> advance(B next) throws AppException;
+		public abstract DBIterator<A> advance(B next) throws AppException;
 		
 		
 		
@@ -87,8 +93,8 @@ public abstract class Feature {
 		protected Query query;						
 		
 		@Override
-		public DBRecord next() {
-			try {
+		public DBRecord next() throws AppException {
+	
 			  
 			  DBRecord result = current.next();
 			  DBRecord from = query.getFromRecord();
@@ -98,9 +104,7 @@ public abstract class Feature {
 			  advance();	
 			  passed++;
 			  return result;
-			} catch (AppException e) {
-				throw new RuntimeException(e);
-			}
+			
 		}				
 		
 	}

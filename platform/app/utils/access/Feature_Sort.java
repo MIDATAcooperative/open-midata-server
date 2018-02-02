@@ -16,7 +16,7 @@ public class Feature_Sort extends Feature {
 		
 
 	@Override
-	protected Iterator<DBRecord> iterator(Query q) throws AppException {
+	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
 		if (q.restrictedBy("sort")) {
 			q.setFromRecord(null);
 			return ProcessingTools.sort(q.getProperties(), next.iterator(q));

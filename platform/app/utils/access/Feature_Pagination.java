@@ -20,7 +20,7 @@ public class Feature_Pagination extends Feature {
 	}
 
 	@Override
-	protected Iterator<DBRecord> iterator(Query q) throws AppException {
+	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
 		
 		if (q.restrictedBy("from")) {
 			MidataId from = q.getFrom();
@@ -32,15 +32,15 @@ public class Feature_Pagination extends Feature {
 			DBRecord fromRecord = null;
 			if (findFrom.size() == 1) {
 				fromRecord = findFrom.get(0);
-			} else return Collections.emptyIterator();
+			} else return ProcessingTools.empty();
 			
-			Iterator<DBRecord> result = next.iterator(new Query(q, props).setFromRecord(fromRecord));
+			DBIterator<DBRecord> result = next.iterator(new Query(q, props).setFromRecord(fromRecord));
 			boolean foundFrom = false;
 			while (!foundFrom && result.hasNext()) { DBRecord rec = result.next();if (rec._id.equals(from)) foundFrom = true; }
 			
 			AccessLog.log("foundFrom="+foundFrom);
-			if (!foundFrom) return Collections.emptyIterator();
-			if (!result.hasNext()) return Collections.singletonList(fromRecord).iterator();
+			if (!foundFrom) return ProcessingTools.empty();
+			if (!result.hasNext()) return ProcessingTools.dbiterator("singleton()", Collections.singletonList(fromRecord).iterator());
 			
 			return ProcessingTools.limit(q.getProperties(), new PaginationIterator(fromRecord, result));
 		}
@@ -53,11 +53,11 @@ public class Feature_Pagination extends Feature {
 			
 			
 			
-			Iterator<DBRecord> result = next.iterator(new Query(q, props));
+			DBIterator<DBRecord> result = next.iterator(new Query(q, props));
 			int current = 0;
 			while ( current < skip && result.hasNext()) { result.next();current++; }
 			
-			if (!result.hasNext()) return Collections.emptyIterator();
+			if (!result.hasNext()) return ProcessingTools.empty();
 			
 			return ProcessingTools.limit(q.getProperties(), result);
 		}				
@@ -65,23 +65,23 @@ public class Feature_Pagination extends Feature {
 		return ProcessingTools.limit(q.getProperties(), next.iterator(q));
 	}
 	
-	class PaginationIterator implements Iterator<DBRecord> {
+	class PaginationIterator implements DBIterator<DBRecord> {
 
 		private DBRecord first;
-		private Iterator<DBRecord> chain;
+		private DBIterator<DBRecord> chain;
 		
-		public PaginationIterator(DBRecord first, Iterator<DBRecord> chain) {
+		public PaginationIterator(DBRecord first, DBIterator<DBRecord> chain) {
 			this.first = first;
 			this.chain = chain;
 		}
 		
 		@Override
-		public boolean hasNext() {
+		public boolean hasNext() throws AppException {
 			return first != null || chain.hasNext();
 		}
 
 		@Override
-		public DBRecord next() {
+		public DBRecord next() throws AppException {
 			if (first != null) {
 				DBRecord result = first;
 				first = null;

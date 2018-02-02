@@ -22,7 +22,7 @@ public class Feature_Consents extends Feature {
 	
 	
 	@Override
-	protected Iterator<DBRecord> iterator(Query q) throws AppException {
+	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
 		if (q.restrictedBy("shared-after")) {			
 			Date after = q.getDateRestriction("shared-after");
 			AccessLog.logBegin("start history query after="+after.toString());
@@ -44,7 +44,7 @@ public class Feature_Consents extends Feature {
 			
 			AccessLog.logEnd("ended history query with size="+result.size());
 			
-			return result.iterator();
+			return ProcessingTools.dbiterator("history()", result.iterator());
 		} 
 		return next.iterator(q);	
 	}

@@ -37,25 +37,15 @@ class QueryEngine {
 	public final static Map<String, Object> NOTNULL = Collections.unmodifiableMap(Collections.singletonMap("$ne", null));
 
 	
-	public static List<Record> list(APSCache cache, MidataId aps, AccessContext context, Map<String, Object> properties, Set<String> fields) throws AppException {
-		try {
- 		   return RecordConversion.instance.currentVersionFromDB(ProcessingTools.collect(fullQuery(properties, fields, aps, context, cache)));
-		} catch (RuntimeException e) {
-			if (e.getCause() instanceof AppException) throw (AppException) e.getCause();
-			throw new InternalServerException("error.internal", e);
-		}
+	public static List<Record> list(APSCache cache, MidataId aps, AccessContext context, Map<String, Object> properties, Set<String> fields) throws AppException {		
+ 		return RecordConversion.instance.currentVersionFromDB(ProcessingTools.collect(fullQuery(properties, fields, aps, context, cache)));		
 	}
 	
-	public static List<DBRecord> listInternal(APSCache cache, MidataId aps, AccessContext context, Map<String, Object> properties, Set<String> fields) throws AppException {
-		try {
-		   return ProcessingTools.collect(fullQuery(properties, fields, aps, context, cache));
-		} catch (RuntimeException e) {
-			if (e.getCause() instanceof AppException) throw (AppException) e.getCause();
-			throw new InternalServerException("error.internal", e);
-		}
+	public static List<DBRecord> listInternal(APSCache cache, MidataId aps, AccessContext context, Map<String, Object> properties, Set<String> fields) throws AppException {		
+		return ProcessingTools.collect(fullQuery(properties, fields, aps, context, cache));		
 	}
 	
-	public static Iterator<DBRecord> listInternalIterator(APSCache cache, MidataId aps, AccessContext context, Map<String, Object> properties, Set<String> fields) throws AppException {
+	public static DBIterator<DBRecord> listInternalIterator(APSCache cache, MidataId aps, AccessContext context, Map<String, Object> properties, Set<String> fields) throws AppException {
 		return fullQuery(properties, fields, aps, context, cache);
 	}
 	
@@ -85,7 +75,7 @@ class QueryEngine {
 		APS inMemory = new Feature_InMemoryQuery(records);
 		context.getCache().addAPS(inMemory);
 		Feature qm = new Feature_Or(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_ContentFilter(inMemory))));		
-		Iterator<DBRecord> recs = qm.iterator(new Query(properties, Sets.create("_id"), context.getCache(), inMemory.getId(),context));
+		DBIterator<DBRecord> recs = qm.iterator(new Query(properties, Sets.create("_id"), context.getCache(), inMemory.getId(),context));
 		//AccessLog.log("list from memory pre postprocess size = "+recs.size());
 		List<DBRecord> result = ProcessingTools.collect(recs);		
 		if (AccessLog.detailedLog) AccessLog.logEnd("End list from memory #recs="+result.size());
@@ -219,7 +209,7 @@ class QueryEngine {
 		return result.values();
 	}
 	
-    public static Iterator<DBRecord> fullQuery(Map<String, Object> properties, Set<String> fields, MidataId aps, AccessContext context, APSCache cache) throws AppException {
+    public static DBIterator<DBRecord> fullQuery(Map<String, Object> properties, Set<String> fields, MidataId aps, AccessContext context, APSCache cache) throws AppException {
     	AccessLog.logBegin("begin full query on aps="+aps.toString());
     	long queryStart = System.currentTimeMillis();
     	if (context == null) context = new DummyAccessContext(cache);
@@ -234,7 +224,7 @@ class QueryEngine {
     	   APS target = cache.getAPS(aps);    	
     	   qm = new Feature_Pagination(new Feature_Sort(new Feature_Or(new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))))))))))))));
     	}
-    	Iterator<DBRecord> result = qm.iterator(new Query(properties, fields, cache, aps, context));
+    	DBIterator<DBRecord> result = qm.iterator(new Query(properties, fields, cache, aps, context));
     	    	    	
 		if (result == null) {
 			AccessLog.log("NULL result");
@@ -300,10 +290,10 @@ class QueryEngine {
         }
     }
     
-    protected static Iterator<DBRecord> combineIterator(Query query, Map<String, Object> properties, Feature qm) throws AppException {
+    protected static DBIterator<DBRecord> combineIterator(Query query, Map<String, Object> properties, Feature qm) throws AppException {
     	if (properties.containsKey("$or")) {
       	  Collection<Map<String, Object>> col = (Collection<Map<String, Object>>) properties.get("$or");      	  
-      	  return ProcessingTools.multiQuery(qm, query, col.iterator());
+      	  return ProcessingTools.multiQuery(qm, query, ProcessingTools.dbiterator("", col.iterator()));
       	        	
         } else {
           Map<String, Object> comb = Feature_QueryRedirect.combineQuery(properties, query.getProperties());
@@ -312,7 +302,7 @@ class QueryEngine {
     	  } else {
     		  AccessLog.log("empty combine");
     	  }
-      	  return Collections.emptyIterator();
+      	  return ProcessingTools.empty();
         }
     }
     
@@ -432,7 +422,7 @@ class QueryEngine {
     	return filteredresult;
     }
     
-    protected static Iterator<DBRecord> limitAndSortRecords(Map<String, Object> properties, Iterator<DBRecord> input) throws AppException {
+    protected static DBIterator<DBRecord> limitAndSortRecords(Map<String, Object> properties, DBIterator<DBRecord> input) throws AppException {
     	input = ProcessingTools.limit(properties, ProcessingTools.sort(properties, ProcessingTools.noDuplicates(input)));	    	    
 		return input;
     }

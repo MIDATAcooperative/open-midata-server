@@ -39,20 +39,20 @@ public class Feature_BlackList extends Feature {
 	}
 	
 	@Override
-	protected Iterator<DBRecord> iterator(Query q) throws AppException {
+	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
 		if (blacklist.isEmpty()) return next.iterator(q);
 		return new BlackListIterator(next.iterator(q));
 		
 		
 	}
 		
-	class BlackListIterator implements Iterator<DBRecord> {
-		BlackListIterator(Iterator<DBRecord> chain) {
+	class BlackListIterator implements DBIterator<DBRecord> {
+		BlackListIterator(DBIterator<DBRecord> chain) {
 			this.chain = chain;
 		}
 		
 		private DBRecord next;
-		private Iterator<DBRecord> chain;
+		private DBIterator<DBRecord> chain;
 
 		@Override
 		public boolean hasNext() {
@@ -60,7 +60,7 @@ public class Feature_BlackList extends Feature {
 		}
 
 		@Override
-		public DBRecord next() {
+		public DBRecord next() throws AppException {
 			DBRecord result = next;
 			next = null;
 			while (next == null && chain.hasNext()) {

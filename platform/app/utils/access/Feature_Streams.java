@@ -178,12 +178,12 @@ public class Feature_Streams extends Feature {
 		private int size;
 		private List<DBRecord> direct;
 		
-		StreamCombineIterator(APS next, Query query, Iterator<DBRecord> streams, List<DBRecord> direct) throws AppException {
+		StreamCombineIterator(APS next, Query query, DBIterator<DBRecord> streams, List<DBRecord> direct) throws AppException {
 		  	this.next = next;		  			  
 		  	this.query = query;		  
 		  			  
 		  	if (direct != null && !direct.isEmpty()) {		  		
-		  		current = direct.iterator();
+		  		current = ProcessingTools.dbiterator("direct()", direct.iterator());
 		  		chain = streams;
 		  		thisrecord = next;
 		  		owner = next.getStoredOwner();
@@ -193,7 +193,7 @@ public class Feature_Streams extends Feature {
 		}
 		
 		@Override
-		public Iterator<DBRecord> advance(DBRecord r) throws AppException {
+		public DBIterator<DBRecord> advance(DBRecord r) throws AppException {
 			
 			if (r.isStream) {
 				  
@@ -214,16 +214,16 @@ public class Feature_Streams extends Feature {
 					    }
 					    size = rs.size();					   
 
-					    return rs.iterator();
+					    return ProcessingTools.dbiterator("",  rs.iterator());
 					  }
 					} catch (EncryptionNotSupportedException e) { throw new InternalServerException("error.internal", "Encryption not supported."); }					 	
 				  catch (APSNotExistingException e2) {
 					  next.removePermission(r);
 				  }
 				
-				return Collections.emptyIterator();
+				return ProcessingTools.empty();
 			}
-			return Collections.emptyIterator();			
+			return ProcessingTools.empty();			
 		}
 
 		@Override
@@ -236,7 +236,7 @@ public class Feature_Streams extends Feature {
 	}
 	
 	@Override
-	protected Iterator<DBRecord> iterator(Query q) throws AppException {
+	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
 		APS next = q.getCache().getAPS(q.getApsId());
 		//Iterator<DBRecord> records = Collections.emptyIterator();
 		boolean restrictedByStream = q.restrictedBy("stream");
@@ -245,13 +245,13 @@ public class Feature_Streams extends Feature {
 			  			 
 			  // optimization for record lookup queries 
 			  if (q.restrictedBy("quick")) {				  				  				  
-			      Iterator<DBRecord> records = next.iterator(q);			    
+			      DBIterator<DBRecord> records = next.iterator(q);			    
 			      if (records.hasNext()) return records; 
 			  }
 			  
 			  //AccessLog.logBegin("begin single stream query");
 			  
-			  Iterator<DBRecord> streams = next.iterator(new Query(CMaps.map(q.getProperties()).map("_id", q.getProperties().get("stream")).removeKey("quick"), streamQueryFields, q.getCache(), q.getApsId(), q.getContext() ));				
+			  DBIterator<DBRecord> streams = next.iterator(new Query(CMaps.map(q.getProperties()).map("_id", q.getProperties().get("stream")).removeKey("quick"), streamQueryFields, q.getCache(), q.getApsId(), q.getContext() ));				
 			  return new StreamCombineIterator(next, q, streams, null);
 			  
 		}
@@ -260,7 +260,7 @@ public class Feature_Streams extends Feature {
 		List<DBRecord> recs = next.query(q);
 		
 		//AccessLog.logEnd("end query on target APS #res="+recs.size());
-		if (recs.isEmpty()) return Collections.emptyIterator();
+		if (recs.isEmpty()) return ProcessingTools.empty();
 		
 		boolean includeStreams = q.includeStreams();
 		boolean streamsOnly = q.isStreamOnlyQuery();
@@ -276,7 +276,7 @@ public class Feature_Streams extends Feature {
 				  if (r.isStream) filtered.add(r);
 				}
 			}
-			return filtered.iterator();
+			return ProcessingTools.dbiterator("", filtered.iterator());
 		} else
 		if (q.deepQuery()) {
 			//records = recs;
@@ -307,7 +307,7 @@ public class Feature_Streams extends Feature {
 			Collections.sort(streams);	
 			
 			
-			return new StreamCombineIterator(next, q, streams.iterator(), filtered);
+			return new StreamCombineIterator(next, q, ProcessingTools.dbiterator("", streams.iterator()), filtered);
 			
 		} else if (!includeStreams) {
 			
@@ -315,8 +315,8 @@ public class Feature_Streams extends Feature {
 			for (DBRecord record : recs) {
 				if (!record.isStream) filtered.add(record);
 			}
-			return filtered.iterator();
-		} else return recs.iterator();
+			return ProcessingTools.dbiterator("", filtered.iterator());
+		} else return ProcessingTools.dbiterator("", recs.iterator());
 							
 		
 	}

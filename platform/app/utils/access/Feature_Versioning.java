@@ -29,8 +29,8 @@ public class Feature_Versioning extends Feature {
 	
 	
 	@Override
-	protected Iterator<DBRecord> iterator(Query q) throws AppException {
-		Iterator<DBRecord> result = next.iterator(q);		
+	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
+		DBIterator<DBRecord> result = next.iterator(q);		
 		if (q.restrictedBy("version")) {
 			
 			String version = q.getStringRestriction("version");
@@ -47,13 +47,13 @@ public class Feature_Versioning extends Feature {
 
 		private List<DBRecord> currentlist;
 		
-		HistoryIterator(Iterator<DBRecord> input, Query q) throws AppException {
+		HistoryIterator(DBIterator<DBRecord> input, Query q) throws AppException {
 			this.query = q;
 			init(input);
 		}
 		
 		@Override
-		public Iterator<DBRecord> advance(DBRecord record) throws AppException {
+		public DBIterator<DBRecord> advance(DBRecord record) throws AppException {
 			Set<VersionedDBRecord> recs = VersionedDBRecord.getAllById(record._id, query.getFieldsFromDB());
 			for (VersionedDBRecord rec : recs) {				
 				rec.merge(record);
@@ -66,7 +66,7 @@ public class Feature_Versioning extends Feature {
 			
 			currentlist.add(record);
 			
-			return currentlist.iterator();
+			return ProcessingTools.dbiterator("history()", currentlist.iterator());
 		}
 
 		@Override
@@ -78,13 +78,13 @@ public class Feature_Versioning extends Feature {
 		
 	}
 
-    class VersionIterator implements Iterator<DBRecord> {
-    	private Iterator<DBRecord> chain;
+    class VersionIterator implements DBIterator<DBRecord> {
+    	private DBIterator<DBRecord> chain;
     	private String version;
     	private Query q;
     	private DBRecord next;
     	
-    	VersionIterator(Iterator<DBRecord> chain, String version, Query q) {
+    	VersionIterator(DBIterator<DBRecord> chain, String version, Query q) throws AppException {
     		this.chain = chain;
     		this.version = version;
     		this.q = q;
@@ -97,10 +97,10 @@ public class Feature_Versioning extends Feature {
 		}
 
 		@Override
-		public DBRecord next() {
+		public DBRecord next() throws AppException {
 			DBRecord result = next;
 			next = null;
-			try {
+			
 			while (next == null && chain.hasNext()) {
 			
 			DBRecord record = chain.next();
@@ -121,9 +121,7 @@ public class Feature_Versioning extends Feature {
 			}
 			return result;
 			
-			} catch (AppException e) {
-				throw new RuntimeException(e);
-			}
+		
 		}
     	
 		@Override
@@ -218,13 +216,13 @@ public class Feature_Versioning extends Feature {
 		return result;
 	}
 	*/
-	public static class HistoryDate implements Iterator<DBRecord> {
+	public static class HistoryDate implements DBIterator<DBRecord> {
 
-		private Iterator<DBRecord> chain;
+		private DBIterator<DBRecord> chain;
 		private DBRecord next;
 		private Date historyDate;
 		
-		public HistoryDate(Iterator<DBRecord> chain, Query q) throws BadRequestException {
+		public HistoryDate(DBIterator<DBRecord> chain, Query q) throws AppException {
 			this.chain = chain;
 			historyDate = q.getDateRestriction("history-date");
 			advance();
@@ -235,45 +233,43 @@ public class Feature_Versioning extends Feature {
 			return next != null;
 		}
 
-		private void advance() {
+		private void advance() throws AppException {
 			if (!chain.hasNext()) {
 				next = null;
 				return;
 			}
 			next = chain.next();
-			try {
-				Date lu = next.meta.getDate("lastUpdated");
-				if (lu != null && lu.after(historyDate)) {
-					Set<VersionedDBRecord> recs = VersionedDBRecord.getAllById(next._id, QueryEngine.META_AND_DATA);
-					VersionedDBRecord bestRecord = null;
-					Date bestDate = null;
-					for (VersionedDBRecord rec : recs) {	
-	                    rec.merge(next);					
-						RecordEncryption.decryptRecord(rec);
-						Date vlastUpdate = rec.meta.getDate("lastUpdated");
-						if (vlastUpdate == null) vlastUpdate = next._id.getCreationDate();
-						if (!vlastUpdate.after(historyDate)) {
-							if (bestRecord == null) {
-								bestRecord = rec;
-								bestDate = vlastUpdate;
-							} else if (vlastUpdate.after(bestDate)) {
-								bestRecord = rec;
-								bestDate = vlastUpdate;
-							}
-					    }
-					}				
-					if (bestRecord != null) {					
-						bestRecord.meta.put("ownerName", next.meta.get("ownerName"));
-						next = bestRecord;
-					} else advance();
-				} 
-			} catch (AppException e) {
-				throw new RuntimeException(e);
-			}
+			
+			Date lu = next.meta.getDate("lastUpdated");
+			if (lu != null && lu.after(historyDate)) {
+				Set<VersionedDBRecord> recs = VersionedDBRecord.getAllById(next._id, QueryEngine.META_AND_DATA);
+				VersionedDBRecord bestRecord = null;
+				Date bestDate = null;
+				for (VersionedDBRecord rec : recs) {	
+                    rec.merge(next);					
+					RecordEncryption.decryptRecord(rec);
+					Date vlastUpdate = rec.meta.getDate("lastUpdated");
+					if (vlastUpdate == null) vlastUpdate = next._id.getCreationDate();
+					if (!vlastUpdate.after(historyDate)) {
+						if (bestRecord == null) {
+							bestRecord = rec;
+							bestDate = vlastUpdate;
+						} else if (vlastUpdate.after(bestDate)) {
+							bestRecord = rec;
+							bestDate = vlastUpdate;
+						}
+				    }
+				}				
+				if (bestRecord != null) {					
+					bestRecord.meta.put("ownerName", next.meta.get("ownerName"));
+					next = bestRecord;
+				} else advance();
+			} 
+			
 		}
 		
 		@Override
-		public DBRecord next() {
+		public DBRecord next() throws AppException {
             DBRecord result = next;
             advance();
 			return result;

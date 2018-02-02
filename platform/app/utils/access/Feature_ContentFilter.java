@@ -18,8 +18,8 @@ public class Feature_ContentFilter extends Feature {
 	}
 	
 	@Override
-	protected Iterator<DBRecord> iterator(Query q) throws AppException {
-		Iterator<DBRecord> chain = next.iterator(q);
+	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
+		DBIterator<DBRecord> chain = next.iterator(q);
 		
 		if (q.restrictedBy("format")) chain = new ProcessingTools.FilterByMetaSet(chain, "format", q.getRestrictionOrNull("format"), false);
 		if (q.restrictedBy("content")) chain = new ProcessingTools.FilterByMetaSet(chain, "content", q.getRestrictionOrNull("content"), false);

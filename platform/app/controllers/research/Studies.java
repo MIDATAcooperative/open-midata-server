@@ -300,7 +300,7 @@ public class Studies extends APIController {
 		 setAttachmentContentDisposition("study.json");
 				 		 		
 		 final Set<Consent> parts = new HashSet<Consent>(StudyParticipation.getActiveParticipantsByStudyAndGroup(study._id, studyGroup, Sets.create("owner")));			    
-		 parts.addAll(StudyRelated.getActiveByAuthorizedGroupAndStudy(study._id, Collections.singleton(studyGroup), Collections.singleton(study._id), Consent.SMALL));
+		 parts.addAll(StudyRelated.getActiveByAuthorizedGroupAndStudy(study._id, Collections.singleton(studyGroup), Collections.singleton(study._id), Consent.SMALL, 0));
 		 				 
 		 final String handle = PortalSessionToken.session().handle;
 		 
