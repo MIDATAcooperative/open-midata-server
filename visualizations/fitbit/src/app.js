@@ -433,12 +433,12 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 		var importRecords = function(measure) {
 		
 			var fromDate = measure.from;
-			var toDate = measure.to;
+			var toDate = new Date(fromDate.getTime() + 1000 * 60 * 60 * 24 * 365);//measure.to;
 			$translate("titles."+measure.id).then(function(t) { measure.title = t; });
 			$translate(measure.id).then(function(t) { measure.name_translated = t; });
 			$translate("fitness_data").then(function(t) { measure.category_name = t; });
 			
-			if (fromDate > toDate) return;
+			if (fromDate > (new Date())) return;
 			
 			$scope.status = "importing";			
 			$scope.requesting++;			
