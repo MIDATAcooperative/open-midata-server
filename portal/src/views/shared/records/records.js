@@ -16,6 +16,7 @@ angular.module('portal')
 	$scope.allowDelete = $state.current.allowDelete;
 	$scope.open = {};
 	$scope.treeMode = "group";
+	$scope.tooManyConsents = false;
 	
 	var contentLabels = {};
 	var loadLabels = {};
@@ -105,6 +106,7 @@ angular.module('portal')
 		if ($scope.debug) properties.streams = "true";
 		return $scope.status.doBusy(records.getInfos(userId, properties, $scope.treeMode === "plugin" ? "CONTENT_PER_APP" : "CONTENT")).
 		then(function(results) {
+			$scope.tooManyConsents = results.status == 202;
 			$scope.infos = results.data;
 			if ($scope.gi != null) $scope.prepareInfos();				
 		});

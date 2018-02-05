@@ -69,8 +69,10 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public String getCharacterEncoding() {
-		 throw new NotImplementedError();
-		
+		String ct = request.getHeader("Content-Type");
+		int p = ct.indexOf(";charset=");
+		if (p>=0) return ct.substring(p+";charset=".length());
+		return "UTF-8";		
 	}
 
 	@Override

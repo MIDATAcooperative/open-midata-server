@@ -25,15 +25,19 @@ public class SearchParameterMap extends HashMap<String, List<List<? extends IQue
   
   	private static final long serialVersionUID = 1L;
   
-  	private Integer myCount;  	
+  	private Integer myCount;  
+  	private Integer skip;  	
+  	private String from;
+
+  	
   	private Set<Include> myIncludes;
   	private DateRangeParam myLastUpdated;  	
   	private Set<Include> myRevIncludes;
   	private SortSpec mySort;
   	private Set<String> elements;
   	private SummaryEnum summary = SummaryEnum.FALSE;
-    private String content;	
-  	
+    private String content;	    
+    
   	public void add(String theName, IQueryParameterAnd<?> theAnd) {
   		if (theAnd == null) {
   			return;
@@ -157,6 +161,7 @@ public class SearchParameterMap extends HashMap<String, List<List<? extends IQue
 
 
  	public void setCount(Integer theCount) {
+ 		if (theCount == null) theCount = 2000;
 		myCount = theCount;
  	}
  	
@@ -204,6 +209,24 @@ public class SearchParameterMap extends HashMap<String, List<List<? extends IQue
 	public void setContent(String content) {
 		this.content = content;
 	}
+
+	public Integer getSkip() {
+		return skip;
+	}
+
+	public void setSkip(Integer skip) {
+		this.skip = skip;
+	}
+
+	public String getFrom() {
+		return from;
+	}
+
+	public void setFrom(String from) {
+		this.from = from;		
+	}
+
+	
 	
 	
 	

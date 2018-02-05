@@ -1,6 +1,7 @@
 package utils.auth;
 
 import models.MidataId;
+import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 import utils.exceptions.InternalServerException;
 
@@ -47,6 +48,13 @@ public interface KeySession {
 	 * @throws InternalServerException
 	 */
 	public void unlock(MidataId target, MidataId source, byte[] splitkey) throws InternalServerException;
+	
+	/**
+	 * Persist a session with an unlocked key across instances
+	 * @param target
+	 * @throws InternalServerException
+	 */
+	public void persist(MidataId target) throws AppException;
 	
 	/**
 	 * Deletes a key from the storage

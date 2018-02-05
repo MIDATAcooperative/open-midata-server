@@ -36,6 +36,8 @@ import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortOrderEnum;
 import ca.uhn.fhir.rest.api.SortSpec;
+import ca.uhn.fhir.rest.api.server.IBundleProvider;
+import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.param.CompositeAndListParam;
 import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateOrListParam;
@@ -84,7 +86,7 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 	}
 
 	@Search()
-	public List<IBaseResource> getObservation(
+	public Bundle getObservation(
 			@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,
 
 			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
@@ -262,9 +264,14 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 			}) 
 			Set<Include> theIncludes,
 								
-			@Sort SortSpec theSort,
-
-			@ca.uhn.fhir.rest.annotation.Count Integer theCount
+			@Sort SortSpec theSort,		
+			
+			@ca.uhn.fhir.rest.annotation.Count Integer theCount,
+			
+			@OptionalParam(name="_page")
+			StringParam _page,
+			
+			RequestDetails theDetails
 
 	) throws AppException {
 
@@ -316,8 +323,10 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 		paramMap.setIncludes(theIncludes);
 		paramMap.setSort(theSort);
 		paramMap.setCount(theCount);
+		paramMap.setFrom(_page != null ? _page.getValue() : null);
 
-		return search(paramMap);
+		return searchBundle(paramMap, theDetails);
+		
 	}
 
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {

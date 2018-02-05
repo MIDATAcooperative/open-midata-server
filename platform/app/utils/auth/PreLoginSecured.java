@@ -3,6 +3,7 @@ package utils.auth;
 import play.mvc.Result;
 import play.mvc.Security;
 import play.mvc.Http.Context;
+import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 
 public class PreLoginSecured extends Security.Authenticator {
@@ -15,7 +16,7 @@ public class PreLoginSecured extends Security.Authenticator {
 	    if (tk == null) return null;
 	    try {
 	      KeyManager.instance.continueSession(tk.getHandle());
-	    } catch (AuthException e) { return null; }	    
+	    } catch (AppException e) { return null; }	    
 	   
 		// id is the user id in String form
 		return tk.getUserId().toString();

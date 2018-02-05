@@ -102,6 +102,8 @@ public class Query {
 	public Map<String, Object> retrieveAsNormalMongoQuery() throws AppException {		
 		Map<String,Object> result = new HashMap<String, Object>();
 		result.putAll(accountCriteria);
+		result.remove("limit");
+		result.remove("from");
 		if (dataCriteria != null) result.putAll((Map<String,Object>) dataCriteria.asMongoQuery());
 		ObjectIdConversion.convertMidataIds(result, "_id");
 		return result;

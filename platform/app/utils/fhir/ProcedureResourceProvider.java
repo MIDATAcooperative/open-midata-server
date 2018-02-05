@@ -3,6 +3,7 @@ package utils.fhir;
 import java.util.List;
 import java.util.Set;
 
+import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.EpisodeOfCare;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Procedure;
@@ -21,10 +22,12 @@ import ca.uhn.fhir.rest.annotation.Sort;
 import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
+import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
+import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
@@ -65,7 +68,7 @@ public class ProcedureResourceProvider extends RecordBasedResourceProvider<Proce
 	}
 
 	@Search()
-	public List<IBaseResource> getProcedure(
+	public Bundle getProcedure(
 
   			@Description(shortDefinition="The ID of the resource")
   			@OptionalParam(name="_id")
@@ -155,7 +158,12 @@ public class ProcedureResourceProvider extends RecordBasedResourceProvider<Proce
 			SortSpec theSort,
 			
 			@ca.uhn.fhir.rest.annotation.Count
-			Integer theCount
+			Integer theCount,
+			
+			@OptionalParam(name="_page")
+			StringParam _page,
+			
+			RequestDetails theDetails
 
 	) throws AppException {
 
@@ -183,8 +191,10 @@ public class ProcedureResourceProvider extends RecordBasedResourceProvider<Proce
 		paramMap.setIncludes(theIncludes);
 		paramMap.setSort(theSort);
 		paramMap.setCount(theCount);
+		paramMap.setFrom(_page != null ? _page.getValue() : null);
 
-		return search(paramMap);
+		return searchBundle(paramMap, theDetails);
+		
 	}
 
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {

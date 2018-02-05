@@ -17,6 +17,8 @@
 		    <p><span translate="records.delete_instructions1"></span> <b translate="records.delete_instructions2">delete</b> <span translate="records.delete_instructions3"></span> <b translate="records.delete_instructions4"></b> <span translate="records.delete_instructions5"></span></p>
 		    <p translate="records.delete_instructions6"></p>	     
 		  </div>
+		  
+		 
 		  		  
 		<div class="row">	
 			<div class="pull-right col-sm-4" ng-show="displayAps.owner && compare!=null">
@@ -48,7 +50,14 @@
           </form>
         
         </div></div>
+        
+        <div class="alert alert-warning" ng-show="tooManyConsents">
+		  <p translate="records.too_many_consents"></p>
+		</div>
         </div>
+        
+     
+		 
         <loader busy="status.isBusy !== false">					
 		<script type="text/ng-template"  id="tree_item_renderer.html">
            <div class="pull-right sharebox" ng-show="selectedAps">	                				  

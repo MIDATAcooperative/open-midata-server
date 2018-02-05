@@ -139,7 +139,7 @@ public class ExecutionInfo {
 
         if (!allowInactive && !appInstance.status.equals(ConsentStatus.ACTIVE)) throw new BadRequestException("error.noconsent", "Consent needs to be confirmed before creating records!");
 
-        KeyManager.instance.login(60000l);
+        KeyManager.instance.login(60000l, false);
         KeyManager.instance.unlock(appInstance._id, authToken.passphrase);
         
         ExecutionInfo result = new ExecutionInfo();

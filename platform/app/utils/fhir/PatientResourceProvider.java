@@ -14,6 +14,7 @@ import java.util.Set;
 
 import org.bson.BSONObject;
 import org.hl7.fhir.dstu3.model.Address;
+import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.ContactPoint;
 import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointSystem;
@@ -47,10 +48,12 @@ import ca.uhn.fhir.rest.annotation.Search;
 import ca.uhn.fhir.rest.annotation.Sort;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
+import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
+import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.AuthenticationException;
@@ -163,7 +166,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 	}
 
 	@Search()
-	public List<IBaseResource> getPatient(@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,
+	public Bundle getPatient(@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,
 
 			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
 
@@ -266,7 +269,12 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 			@Sort SortSpec theSort,
 
-			@ca.uhn.fhir.rest.annotation.Count Integer theCount) throws AppException {
+			@ca.uhn.fhir.rest.annotation.Count Integer theCount,
+			
+			@OptionalParam(name="_page")
+			StringParam _page,
+			
+			RequestDetails theDetails) throws AppException {
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 		paramMap.add("_id", theId);
@@ -313,8 +321,9 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		paramMap.setIncludes(theIncludes);
 		paramMap.setSort(theSort);
 		paramMap.setCount(theCount);
+		paramMap.setFrom(_page != null ? _page.getValue() : null);
 
-		return search(paramMap);
+		return searchBundle(paramMap, theDetails);
 	}
 
 	/*
@@ -440,7 +449,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			patientProvider.setExecutionInfo(inf);
 		}
 
-		Member member = Member.getById(who, Sets.create("firstname", "lastname", "birthday", "midataID", "gender", "email", "phone", "city", "country", "zip", "address1", "address2"));
+		Member member = Member.getById(who, Sets.create("firstname", "lastname", "birthday", "midataID", "gender", "email", "phone", "city", "country", "zip", "address1", "address2", "emailLC"));
 		patientProvider.updatePatientForAccount(member);
 	}
 

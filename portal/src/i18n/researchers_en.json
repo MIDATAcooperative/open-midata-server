@@ -129,6 +129,8 @@
     "partName" : "Pseudonymized",
     "group" : "Group",
     "status" : "Status",
+    "total" : "{{count}} consents matching your criteria found.",
+    "only_first_shown" : "Only first 1000 matching consents are shown.",
     "recruiter" : "Recruiter",
     "accept_btn" : "Accept",
     "reject_btn" : "Reject",
