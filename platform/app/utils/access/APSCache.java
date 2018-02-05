@@ -269,7 +269,7 @@ public class APSCache {
 		}
 		
 		if (touchedConsents != null) {
-			Consent.updateTimestamp(touchedConsents, System.currentTimeMillis(), System.currentTimeMillis() + 1000l * 60l * 60l);
+			Consent.updateTimestamp(touchedConsents, System.currentTimeMillis(), System.currentTimeMillis() + 1000l * 60l);
 		}
 		if (subcache != null) {
 			for (APSCache sub : subcache.values()) {

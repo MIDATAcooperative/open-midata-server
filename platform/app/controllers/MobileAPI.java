@@ -168,7 +168,8 @@ public class MobileAPI extends Controller {
         Plugin app = Plugin.getById(appInstance.applicationId);
         
         AccessLog.log("app-instance:"+appInstance.appVersion+" vs plugin:"+app.pluginVersion);
-        if (appInstance.appVersion != app.pluginVersion) {
+        
+        if (appInstance.appVersion != app.pluginVersion) {      
         	MobileAPI.removeAppInstance(appInstance);
         	return false;
         }
@@ -270,10 +271,11 @@ public class MobileAPI extends Controller {
 			}
 						
 			if (appInstance == null) {									
-				boolean autoConfirm = false; /*KeyManager.instance.unlock(appInstance.owner, null) == KeyManager.KEYPROTECTION_NONE;*/
-
+				boolean autoConfirm = InstanceConfig.getInstance().getInstanceType().autoconfirmConsentsMidataApi() && KeyManager.instance.unlock(user._id, null) == KeyManager.KEYPROTECTION_NONE;
+				executor = autoConfirm ? user._id : null;
 				AccessLog.log("REINSTALL");
-				appInstance = installApp(null, app._id, user, phrase, autoConfirm, false);
+				appInstance = installApp(executor, app._id, user, phrase, autoConfirm, false);
+				if (executor != null) RecordManager.instance.clearCache();
 				executor = appInstance._id;
 	   		    meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
 			} else {

@@ -236,7 +236,7 @@ public class Feature_AccountQuery extends Feature {
 				  Iterator<Consent> it = consents.iterator();
 				  while (it.hasNext()) {					  
 					  Consent c = it.next();
-					  if (c.owner.equals(r.owner)) {
+					  if (c.owner.equals(r.owner) || c._id.equals(r.owner)) {
 						  AccessLog.log("found, skipping "+pos+" consents");
 						  init(new BlockwiseConsentPrefetch(q, consents, 105, pos));
 						  return;
