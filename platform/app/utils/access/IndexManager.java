@@ -43,6 +43,7 @@ public class IndexManager {
 	public static IndexManager instance = new IndexManager();
 			
 	private static long UPDATE_TIME = 1000 * 10;
+	private static long UPDATE_UNUSED = 1000 * 60 * 60 * 24;
 	
 	private ActorRef indexSupervisor;
 	
@@ -193,7 +194,7 @@ public class IndexManager {
 				if (limit != null) restrictions.put("updated-after", limit);								
 				List<DBRecord> recs = QueryEngine.listInternal(cache, aps, null, restrictions, Sets.create("_id"));
 				addRecords(index, aps, recs);
-				boolean updateTs = recs.size() > 0;
+				boolean updateTs = recs.size() > 0 || limit == null || (now-v) > UPDATE_UNUSED;
 				// Records that have been freshly shared
 				if (limit != null) {
 					restrictions.remove("updated-after");

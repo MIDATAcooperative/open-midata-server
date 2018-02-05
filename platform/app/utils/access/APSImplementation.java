@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -305,8 +306,46 @@ class APSImplementation extends APS {
 				}
 			}
 		}
-		AccessLog.log("query APS=" + eaps.getId()+" #size="+result.size());
+		//AccessLog.log("query APS=" + eaps.getId()+" #size="+result.size());
 		return result;
+	}
+	
+	
+	
+	@Override
+	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
+		List<DBRecord> result = query(q);
+		return new APSIterator(result.iterator(), result.size(), getId());
+	}
+
+	static class APSIterator implements DBIterator<DBRecord> {
+		private Iterator<DBRecord> data;
+		private int size;
+		private MidataId aps;
+		
+		APSIterator(Iterator<DBRecord> data, int size, MidataId aps) {
+			this.data = data;
+			this.aps = aps;
+			this.size = size;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return data.hasNext();
+		}
+
+		@Override
+		public DBRecord next() {
+			return data.next();
+		}
+
+		@Override
+		public String toString() {
+			return "aps({ id: "+aps.toString()+", size: "+size+"})";
+		}
+		
+		
+		
 	}
 
 	protected boolean satisfies(BasicBSONObject entry, Query q) {

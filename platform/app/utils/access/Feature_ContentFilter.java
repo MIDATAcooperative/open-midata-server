@@ -1,5 +1,6 @@
 package utils.access;
 
+import java.util.Iterator;
 import java.util.List;
 
 import utils.exceptions.AppException;
@@ -15,15 +16,16 @@ public class Feature_ContentFilter extends Feature {
 	public Feature_ContentFilter(Feature next) {
 		this.next = next;
 	}
-		
-
+	
 	@Override
-	protected List<DBRecord> query(Query q) throws AppException {		
-		List<DBRecord> result = next.query(q);
-		if (q.restrictedBy("format")) result = QueryEngine.filterByMetaSet(result, "format", q.getRestrictionOrNull("format"));
-		if (q.restrictedBy("content")) result = QueryEngine.filterByMetaSet(result, "content", q.getRestrictionOrNull("content"));
-		if (q.restrictedBy("app")) result = QueryEngine.filterByMetaSet(result, "app", q.getIdRestrictionDB("app"));	
-		return result;
+	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
+		DBIterator<DBRecord> chain = next.iterator(q);
+		
+		if (q.restrictedBy("format")) chain = new ProcessingTools.FilterByMetaSet(chain, "format", q.getRestrictionOrNull("format"), false);
+		if (q.restrictedBy("content")) chain = new ProcessingTools.FilterByMetaSet(chain, "content", q.getRestrictionOrNull("content"), false);
+		if (q.restrictedBy("app")) chain = new ProcessingTools.FilterByMetaSet(chain, "app", q.getIdRestrictionDB("app"), false);	
+		
+		return chain;
 	}
-			
+		
 }

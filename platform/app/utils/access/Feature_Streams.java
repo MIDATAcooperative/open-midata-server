@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -13,6 +14,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.bson.BasicBSONObject;
 import org.bson.types.ObjectId;
 
+import com.google.common.collect.Iterators;
 import com.mongodb.BasicDBObject;
 
 import models.APSNotExistingException;
@@ -45,6 +47,7 @@ public class Feature_Streams extends Feature {
 	
 	private final static Set<String> streamQueryFields = Sets.create("_id", "key", "owner");
 	
+	/*
 	@Override
 	protected List<DBRecord> query(Query q) throws AppException {		
 		APS next = q.getCache().getAPS(q.getApsId());
@@ -166,8 +169,161 @@ public class Feature_Streams extends Feature {
 		return records;
 		
 	}
+	*/
+	static class StreamCombineIterator extends Feature.MultiSource<DBRecord> {
+
+		private APS next;
+		private APS thisrecord;
+		private MidataId owner;
+		private int size;
+		private List<DBRecord> direct;
+		
+		StreamCombineIterator(APS next, Query query, DBIterator<DBRecord> streams, List<DBRecord> direct) throws AppException {
+		  	this.next = next;		  			  
+		  	this.query = query;		  
+		  			  
+		  	if (direct != null && !direct.isEmpty()) {		  		
+		  		current = ProcessingTools.dbiterator("direct()", direct.iterator());
+		  		chain = streams;
+		  		thisrecord = next;
+		  		owner = next.getStoredOwner();
+		  		size = direct.size();
+		  	}
+		  	else init(streams);
+		}
+		
+		@Override
+		public DBIterator<DBRecord> advance(DBRecord r) throws AppException {
+			
+			if (r.isStream) {
+				  
+				
+				try {
+					  APS streamaps = query.getCache().getAPS(r._id, r.key, r.owner);
+					  thisrecord = streamaps;
+					  owner = thisrecord.getStoredOwner();
+					  boolean medium = streamaps.getSecurityLevel().equals(APSSecurityLevel.MEDIUM);
+					  if (query.getMinUpdatedTimestamp() <= streamaps.getLastChanged() && query.getMinCreatedTimestamp() <= streamaps.getLastChanged()) {
+//						AccessLog.logBegin("start query on stream APS:"+streamaps.getId());
+						 List<DBRecord> rs = streamaps.query(query);
+						 
+					    for (DBRecord r2 : rs) {
+					    	 r2.owner = r.owner;
+					    	fromStream(r, r2, medium);				    	
+					    	//filtered.add(r2);
+					    }
+					    size = rs.size();					   
+
+					    return ProcessingTools.dbiterator("",  rs.iterator());
+					  }
+					} catch (EncryptionNotSupportedException e) { throw new InternalServerException("error.internal", "Encryption not supported."); }					 	
+				  catch (APSNotExistingException e2) {
+					  next.removePermission(r);
+				  }
+				
+				return ProcessingTools.empty();
+			}
+			return ProcessingTools.empty();			
+		}
+
+		@Override
+		public String toString() {
+			if (thisrecord == null) return "access-streams()";
+			return "access-streams("+next.getId().toString()+", aps({ow:"+owner.toString()+", id:"+thisrecord.getId().toString()+", size:"+size+" }))";
+		}
+		
+		
+	}
 	
-	private void fromStream(DBRecord stream, DBRecord record, boolean medium) {
+	@Override
+	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
+		APS next = q.getCache().getAPS(q.getApsId());
+		//Iterator<DBRecord> records = Collections.emptyIterator();
+		boolean restrictedByStream = q.restrictedBy("stream");
+		
+		if (restrictedByStream) {
+			  			 
+			  // optimization for record lookup queries 
+			  if (q.restrictedBy("quick")) {				  				  				  
+			      DBIterator<DBRecord> records = next.iterator(q);			    
+			      if (records.hasNext()) return records; 
+			  }
+			  
+			  //AccessLog.logBegin("begin single stream query");
+			  
+			  DBIterator<DBRecord> streams = next.iterator(new Query(CMaps.map(q.getProperties()).map("_id", q.getProperties().get("stream")).removeKey("quick"), streamQueryFields, q.getCache(), q.getApsId(), q.getContext() ));				
+			  return new StreamCombineIterator(next, q, streams, null);
+			  
+		}
+        		
+		//AccessLog.logBegin("start query on target APS");
+		List<DBRecord> recs = next.query(q);
+		
+		//AccessLog.logEnd("end query on target APS #res="+recs.size());
+		if (recs.isEmpty()) return ProcessingTools.empty();
+		
+		boolean includeStreams = q.includeStreams();
+		boolean streamsOnly = q.isStreamOnlyQuery();
+		if (streamsOnly) {
+			
+			List<DBRecord> filtered = new ArrayList<DBRecord>(recs.size());
+			if (q.restrictedBy("writeable") && q.getProperties().get("writeable").equals("true")) {
+				for (DBRecord r : recs) {
+				  if (r.isStream && !r.isReadOnly) filtered.add(r);
+				}
+			} else {
+				for (DBRecord r : recs) {
+				  if (r.isStream) filtered.add(r);
+				}
+			}
+			return ProcessingTools.dbiterator("", filtered.iterator());
+		} else
+		if (q.deepQuery()) {
+			//records = recs;
+			List<DBRecord> filtered = new ArrayList<DBRecord>(recs.size());
+			List<DBRecord> streams = new ArrayList<DBRecord>();
+			Map<MidataId, DBRecord> streamsToFetch = new HashMap<MidataId, DBRecord>();
+			
+			for (DBRecord r : recs) {
+				if (r.isStream) {
+					if (!q.getCache().hasAPS(r._id)) streamsToFetch.put(r._id, r);
+					else streams.add(r);
+				} else filtered.add(r);
+			}
+			
+			if (!streamsToFetch.isEmpty()) {
+				NChainedMap<String, Object> restriction = CMaps.map("_id", streamsToFetch.keySet());
+				if (q.getMinCreatedTimestamp() > 0) restriction = restriction.map("version", CMaps.map("$gt", q.getMinCreatedTimestamp()));
+				if (q.getMinUpdatedTimestamp() > 0) restriction = restriction.map("version", CMaps.map("$gt", q.getMinUpdatedTimestamp()));
+				
+				Set<AccessPermissionSet> rsets = AccessPermissionSet.getAll(restriction, AccessPermissionSet.ALL_FIELDS);
+				for (AccessPermissionSet set : rsets) {
+					DBRecord r = streamsToFetch.get(set._id);
+					streams.add(r);
+					if (includeStreams) filtered.add(r);
+					q.getCache().getAPS(r._id, r.key, r.owner, set, true);
+				}
+			}
+			Collections.sort(streams);	
+			
+			
+			return new StreamCombineIterator(next, q, ProcessingTools.dbiterator("", streams.iterator()), filtered);
+			
+		} else if (!includeStreams) {
+			
+			List<DBRecord> filtered = new ArrayList<DBRecord>(recs.size());
+			for (DBRecord record : recs) {
+				if (!record.isStream) filtered.add(record);
+			}
+			return ProcessingTools.dbiterator("", filtered.iterator());
+		} else return ProcessingTools.dbiterator("", recs.iterator());
+							
+		
+	}
+
+
+
+	private static void fromStream(DBRecord stream, DBRecord record, boolean medium) {
 		record.stream = stream._id;
     	if (medium) {
 	    	for (String field : streamFields) {

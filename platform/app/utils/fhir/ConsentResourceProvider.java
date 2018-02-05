@@ -51,11 +51,13 @@ import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.api.SummaryEnum;
+import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.param.CompositeAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
+import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
@@ -301,7 +303,12 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 	    		Integer theCount,
 	    		
 	    		SummaryEnum theSummary, // will receive the summary (no annotation required)
-	    	    @Elements Set<String> theElements
+	    	    @Elements Set<String> theElements,
+	    	    
+	    	    @OptionalParam(name="_page")
+				StringParam _page,
+				
+				RequestDetails theDetails
 	    
 	    		) throws AppException {
 	    	

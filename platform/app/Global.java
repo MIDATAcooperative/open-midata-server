@@ -3,6 +3,7 @@ import javax.servlet.ServletException;
 import controllers.AutoRun;
 import controllers.FHIR;
 import controllers.Market;
+import models.PersistedSession;
 import models.RecordGroup;
 import play.Application;
 import play.GlobalSettings;
@@ -54,6 +55,7 @@ public class Global extends GlobalSettings {
 		  Instances.init();
 		  RecordGroup.load();		 
 		  RuntimeConstants.instance = new RuntimeConstants();
+		  PersistedSession.deleteExpired();
 		  
 		} catch (AppException e) {
 		  AccessLog.logException("startup", e);

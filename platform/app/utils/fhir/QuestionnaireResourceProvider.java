@@ -3,6 +3,7 @@ package utils.fhir;
 import java.util.List;
 import java.util.Set;
 
+import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Questionnaire;
@@ -21,10 +22,12 @@ import ca.uhn.fhir.rest.annotation.Sort;
 import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
+import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
+import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
@@ -47,7 +50,7 @@ public class QuestionnaireResourceProvider extends RecordBasedResourceProvider<Q
 	}
 
 	@Search()
-	public List<IBaseResource> getQuestionnaire(
+	public Bundle getQuestionnaire(
 		
 			@Description(shortDefinition="The resource identity")
 			@OptionalParam(name="_id")
@@ -119,7 +122,12 @@ public class QuestionnaireResourceProvider extends RecordBasedResourceProvider<Q
 			
 			@Sort SortSpec theSort,
 
-			@ca.uhn.fhir.rest.annotation.Count Integer theCount
+			@ca.uhn.fhir.rest.annotation.Count Integer theCount,
+			
+			@OptionalParam(name="_page")
+			StringParam _page,
+			
+			RequestDetails theDetails
 
 	) throws AppException {
 
@@ -147,8 +155,10 @@ public class QuestionnaireResourceProvider extends RecordBasedResourceProvider<Q
 		paramMap.setIncludes(theIncludes);
 		paramMap.setSort(theSort);
 		paramMap.setCount(theCount);
+		paramMap.setFrom(_page != null ? _page.getValue() : null);
 
-		return search(paramMap);
+		return searchBundle(paramMap, theDetails);
+		
 	}
 
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {

@@ -387,7 +387,7 @@ public class Administration extends APIController {
 		List<MidataAuditEvent> events = null;
 	
 		
-		events = new ArrayList<MidataAuditEvent>(MidataAuditEvent.getAll(properties, fields));
+		events = MidataAuditEvent.getAll(properties, fields, 1000);
 							
 		
 		//Collections.sort(circles);

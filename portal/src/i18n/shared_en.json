@@ -846,6 +846,7 @@
 	"delete" : "delete",
 	"delete_all_btn" : "delete all",
 	"empty" : "No available records found.",
+	"too_many_consents" : "The record tree for this selection cannot be evaluated. There are too many consents involved.",
 	"close_btn" : "Close"
   },
 
@@ -1056,6 +1057,8 @@
     "none" : "None",
     "change_btn" : "Change",
     "success" : "Email address successfully changed!"
-  }
+  },
+  
+  "-1" : "unknown"
     
 }

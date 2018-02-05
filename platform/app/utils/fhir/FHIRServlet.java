@@ -79,8 +79,9 @@ public class FHIRServlet extends RestfulServer {
       
       resourceProviders.addAll(myProviders.values());
       setResourceProviders(resourceProviders);
-      
+      //setInterceptors(new PaginationSupport());
       setPlainProviders(new Transactions());
+      //setPagingProvider(new VirtualPaging());
    }
 
 	@Override

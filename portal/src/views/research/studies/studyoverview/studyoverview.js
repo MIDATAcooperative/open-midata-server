@@ -177,9 +177,9 @@ angular.module('portal')
 					$scope.tests.applinked = data.data.length > 0;
 				}).then(function() {
 				
-				server.post(jsRoutes.controllers.research.Studies.listParticipants($scope.studyid).url, JSON.stringify({ properties : { pstatus : "REQUEST" } }))
+				server.post(jsRoutes.controllers.research.Studies.countParticipants($scope.studyid).url, JSON.stringify({ properties : { pstatus : "REQUEST" } }))
 						.then(function(data) {
-							$scope.tests.allassigned = data.data.length === 0;
+							$scope.tests.allassigned = data.data.total === 0;
 						}).then(function()  {
 					
 

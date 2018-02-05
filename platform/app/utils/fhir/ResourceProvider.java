@@ -1,87 +1,55 @@
 package utils.fhir;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.Attachment;
-import org.hl7.fhir.dstu3.model.BaseResource;
-import org.hl7.fhir.dstu3.model.CodeableConcept;
-import org.hl7.fhir.dstu3.model.Coding;
-import org.hl7.fhir.dstu3.model.DateTimeType;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.DomainResource;
-import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Reference;
-import org.hl7.fhir.dstu3.model.Task;
+import org.hl7.fhir.dstu3.model.Resource;
 import org.hl7.fhir.instance.model.api.IBaseReference;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
-import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
-
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.api.IQueryParameterType;
 import ca.uhn.fhir.model.api.Include;
-import ca.uhn.fhir.parser.DataFormatException;
-import ca.uhn.fhir.parser.IParser;
-import ca.uhn.fhir.rest.annotation.Create;
-import ca.uhn.fhir.rest.annotation.History;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
-import ca.uhn.fhir.rest.annotation.Read;
-import ca.uhn.fhir.rest.annotation.ResourceParam;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.api.server.IBundleProvider;
+import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.param.ReferenceOrListParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.TokenOrListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.AuthenticationException;
-import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
-import ca.uhn.fhir.rest.server.exceptions.PreconditionFailedException;
-import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
-import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
-import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import ca.uhn.fhir.util.FhirTerser;
-import controllers.Circles;
-import controllers.PluginsAPI;
-import models.Consent;
-import models.ContentInfo;
+import ca.uhn.fhir.util.UrlUtil;
 import models.MidataId;
 import models.Model;
-import models.Plugin;
 import models.Record;
-import models.TypedMidataId;
-import utils.AccessLog;
 import utils.ErrorReporter;
-import utils.access.AccessContext;
-import utils.access.ConsentAccessContext;
-import utils.access.RecordManager;
 import utils.access.VersionedDBRecord;
 import utils.auth.ExecutionInfo;
-import utils.collections.CMaps;
-import utils.collections.ReferenceTool;
 import utils.exceptions.AppException;
-import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.exceptions.RequestTooLargeException;
 
 /**
  * Base class for FHIR resource providers. There is one provider subclass for each FHIR resource type.
@@ -152,11 +120,63 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 	
 	public abstract T getResourceById(@IdParam IIdType theId) throws AppException;
 	
+	
+	public Bundle searchBundle(SearchParameterMap params, RequestDetails theDetails) {
+		Bundle result = new Bundle();
+		try {
+			List<IBaseResource> res = search(params);
+			for (IBaseResource r : res) {
+				result.addEntry().setResource((Resource) r).setFullUrl(theDetails.getFhirServerBase()+"/"+r.getIdElement().toString());
+			}
+			
+			if (params.getFrom() != null) {
+			String p = theDetails.getCompleteUrl();
+			int pos = p.indexOf("?");
+			p = pos > 0 ? p.substring(0, pos) : p;
+			Map<String, String[]> rp = new HashMap<String, String[]>(theDetails.getParameters());
+			String[] _page = new String[1];
+			_page[0] = params.getFrom();
+			rp.put("_page", _page );
+			
+			StringBuilder b = new StringBuilder();
+			for (Entry<String, String[]> next : rp.entrySet()) {
+				for (String nextValue : next.getValue()) {
+					if (b.length() == 0) {
+						b.append('?');
+					} else {
+						b.append('&');
+					}
+					b.append(UrlUtil.escapeUrlParam(next.getKey()));
+					b.append('=');
+					b.append(UrlUtil.escapeUrlParam(nextValue));
+				}
+			}
+			
+			result.addLink().setRelation("next").setUrl(p + b.toString());
+			result.setTotal(0);
+			} else result.setTotal(res.size());
+		} catch (RequestTooLargeException e) {
+			try { Thread.sleep(1000*10); } catch (InterruptedException e2) {}
+			result.addLink().setRelation("next").setUrl(theDetails.getCompleteUrl());
+		}
+		return result;		
+	}
+	
 	public List<IBaseResource> search(SearchParameterMap params) {
 		try {		
 			List<IBaseResource> results = new ArrayList<IBaseResource>();
-		   List<T> resources = parse(searchRaw(params), getResourceType());	
+			List<M> raw = searchRaw(params);
+		    List<T> resources = parse(raw, getResourceType());
+		   
+		   if (params.getCount() != null && raw.size() == params.getCount() + 1) {
+			   params.setFrom(raw.get(raw.size() - 1)._id.toString());
+			   if (resources.size() > params.getCount()) {
+			     resources = resources.subList(0, params.getCount());
+			   }
+		   } else params.setFrom(null);
+		   
 		   results.addAll(resources);
+		   
 		   if (!params.getIncludes().isEmpty()) {
 			   FhirTerser terser = ResourceProvider.ctx().newTerser();
 			   
@@ -217,6 +237,8 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 		   
 		   return results;
 
+		} catch (RequestTooLargeException e2) {
+			throw e2;
 	    } catch (AppException e) {
 	       ErrorReporter.report("FHIR (search)", null, e);	       
 		   return null;

@@ -3,6 +3,7 @@ package utils.access;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import utils.AccessLog;
@@ -18,8 +19,10 @@ public class Feature_Consents extends Feature {
 	}
 	
 	
+	
+	
 	@Override
-	protected List<DBRecord> query(Query q) throws AppException {
+	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
 		if (q.restrictedBy("shared-after")) {			
 			Date after = q.getDateRestriction("shared-after");
 			AccessLog.logBegin("start history query after="+after.toString());
@@ -41,20 +44,9 @@ public class Feature_Consents extends Feature {
 			
 			AccessLog.logEnd("ended history query with size="+result.size());
 			
-			return result;
+			return ProcessingTools.dbiterator("history()", result.iterator());
 		} 
-		return next.query(q);
-		/*
-		if (q.restrictedBy("removed-after")) {
-			Date after = q.getDateRestriction("removed-after");
-			List<DBRecord> recs = q.getCache().getAPS(q.getApsId()).historyQuery(after.getTime(), false);
-			if (recs.size() == 0) return new ArrayList<DBRecord>();
-			
-			List<DBRecord> result = new ArrayList<DBRecord>(recs.size());
-			
-			
-		}*/
-		
+		return next.iterator(q);	
 	}
 
 

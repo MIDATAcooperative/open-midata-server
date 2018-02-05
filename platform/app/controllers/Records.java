@@ -49,6 +49,7 @@ import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.ServerTools;
 import utils.access.APS;
+import utils.access.DBIterator;
 import utils.access.Feature_FormatGroups;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
@@ -69,6 +70,7 @@ import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.exceptions.RequestTooLargeException;
 import utils.fhir.FHIRServlet;
 import utils.fhir.FHIRTools;
 import utils.fhir.PractitionerResourceProvider;
@@ -155,8 +157,17 @@ public class Records extends APIController {
 		
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
-					
-	    records.addAll(RecordManager.instance.list(userId, aps, properties, fields));	
+			
+		if (!properties.containsKey("limit")) {
+			properties.put("limit", 10000);
+			properties.put("consent-limit", 1000);
+		}
+		
+		try {
+	      records.addAll(RecordManager.instance.list(userId, aps, properties, fields));
+		} catch (RequestTooLargeException e) {
+			return ok();
+		}
 				
 		Collections.sort(records);
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
@@ -183,9 +194,13 @@ public class Records extends APIController {
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));			
 		
 		AggregationType aggrType = json.has("summarize") ? JsonValidation.getEnum(json, "summarize", AggregationType.class) : AggregationType.GROUP;
-	    Collection<RecordsInfo> result = RecordManager.instance.info(userId, aps, null, properties, aggrType);	
-						
-		return ok(Json.toJson(result));
+		
+		try {
+	      Collection<RecordsInfo> result = RecordManager.instance.info(userId, aps, null, properties, aggrType);						
+		  return ok(Json.toJson(result));
+		} catch (RequestTooLargeException e) {
+			return status(202);
+		}
 	}
 	
 	/**
@@ -221,12 +236,16 @@ public class Records extends APIController {
 		result.set("query", Json.toJson(query));
 		
 		if (readRecords) {
-			Set<String> recordsIds = RecordManager.instance.listRecordIds(userId, apsId);		
-			Map<String, Object> props = new HashMap<String, Object>();
-			Collection<RecordsInfo> infos = RecordManager.instance.info(userId, apsId, null, props, AggregationType.CONTENT);
-								
-			result.set("records", Json.toJson(recordsIds));		
-			result.set("summary", Json.toJson(infos));
+			Set<String> recordsIds = RecordManager.instance.listRecordIds(userId, apsId);
+			result.set("records", Json.toJson(recordsIds));	
+
+			try {
+				Map<String, Object> props = new HashMap<String, Object>();
+				Collection<RecordsInfo> infos = RecordManager.instance.info(userId, apsId, null, props, AggregationType.CONTENT);										
+				result.set("summary", Json.toJson(infos));
+			} catch (RequestTooLargeException e) {
+			  result.putArray("summary");
+			}
 		} else {
 			result.putArray("records");
 			result.putArray("summary");
@@ -569,17 +588,11 @@ public class Records extends APIController {
 		        		
 		        				        				        				        		
 		        
-		        		List<Record> allRecords = RecordManager.instance.list(executorId, executorId, CMaps.map("owner", "self").map("deleted", true), Sets.create("_id"));
-		        		Iterator<Record> recordIterator = allRecords.iterator();
-
-		        		while (recordIterator.hasNext()) {
-				            int i = 0;
-				            Set<MidataId> ids = new HashSet<MidataId>();		           
-				            while (i < 100 && recordIterator.hasNext()) {
-				            	ids.add(recordIterator.next()._id);i++;
-				            }
-				            List<Record> someRecords = RecordManager.instance.list(executorId, executorId, CMaps.map("owner", "self").map("_id", ids), RecordManager.COMPLETE_DATA);
-				            for (Record rec : someRecords) {
+		        		DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, executorId, CMaps.map("owner", "self"), RecordManager.COMPLETE_DATA);
+		        		
+		        		while (allRecords.hasNext()) {
+				            
+                           Record rec = allRecords.next();
 				            	
 				            	String format = rec.format.startsWith("fhir/") ? rec.format.substring("fhir/".length()) : "Basic";
 				            	
@@ -613,7 +626,7 @@ public class Records extends APIController {
 				            	}
 			            		first = false;
 				            }
-		        		}
+		        		
 		        				        		
 		        		out.write("] }");
 			        	out.close();

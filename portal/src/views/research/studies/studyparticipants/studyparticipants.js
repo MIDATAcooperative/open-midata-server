@@ -38,11 +38,16 @@ angular.module('portal')
 			}
 		});
 		
+		$scope.status.doBusy(server.post(jsRoutes.controllers.research.Studies.countParticipants($scope.studyid).url, JSON.stringify({ properties : $scope.search.criteria })))
+		.then(function(cdata) {
+		  $scope.total = cdata.data.total;
 		$scope.status.doBusy(server.post(jsRoutes.controllers.research.Studies.listParticipants($scope.studyid).url, JSON.stringify({ properties : $scope.search.criteria })))
 		.then(function(data) { 	
 			if (!comeback) paginationService.setCurrentPage("membertable", 1);
 			$scope.results = data.data;		
 			console.log($scope.results);
+		});
+		
 		});
 	};
 	

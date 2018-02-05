@@ -17,6 +17,7 @@ import utils.AccessLog;
 import utils.auth.EncryptionNotSupportedException;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
+import utils.exceptions.RequestTooLargeException;
 
 /**
  * caches access permission sets during a request. No inter-request caching. 
@@ -37,6 +38,8 @@ public class APSCache {
 	
 	private long consentLimit;
 	private Set<UserGroupMember> userGroupMember;
+	
+	private static final int CACHE_LIMIT = 5000;
 	
 	public APSCache(MidataId executorId, MidataId accountApsId) {
 		this.executorId = executorId;
@@ -150,7 +153,11 @@ public class APSCache {
 	}
 	
 	public void prefetch(Collection<? extends Consent> consents, Map<MidataId, byte[]> keys) throws AppException {	
-		if (consents.size() > 1) {			
+		if (consents.size() > 1) {
+			if (cache.size() > CACHE_LIMIT) {
+			   cache.clear();
+			}
+			
 			int end = 0;
 			Map<MidataId, Consent> ids = new HashMap<MidataId, Consent>(consents.size());
 			for (Consent consent : consents) {			  			
@@ -186,6 +193,7 @@ public class APSCache {
 			  }
 			}
    		    if (ids.isEmpty()) return;
+   		    if (ids.size()>1000) throw new RequestTooLargeException("error.toolarge", "Too large");
 		    Map<String, Set<MidataId>> properties = Collections.singletonMap("_id", ids.keySet());
 		    Set<AccessPermissionSet> rsets = AccessPermissionSet.getAll(properties, AccessPermissionSet.ALL_FIELDS);
 		    for (AccessPermissionSet set : rsets) {
@@ -217,17 +225,17 @@ public class APSCache {
 		return consents;
 	}
 	
-	public Set<Consent> getAllActiveByAuthorizedAndOwners(Set<MidataId> owners, long limit) throws InternalServerException {
+	public List<Consent> getAllActiveByAuthorizedAndOwners(Set<MidataId> owners, long limit) throws InternalServerException {
 		if (owners.size() == 1) {
 			if (ownerToConsent == null) ownerToConsent = new HashMap<MidataId,MidataId[]>();
 			MidataId owner = owners.iterator().next();
 			MidataId[] consents = ownerToConsent.get(owner);
 			if (consents != null) {
-			  Set<Consent> result = new HashSet<Consent>(consents.length);
+			  List<Consent> result = new ArrayList<Consent>(consents.length);
 			  for (MidataId id : consents) result.add(getConsent(id));
 			  return result;
 			} else {
-			  Set<Consent> result = Consent.getAllActiveByAuthorizedAndOwners(getAccountOwner(), owners);
+			  List<Consent> result = new ArrayList<Consent>(Consent.getAllActiveByAuthorizedAndOwners(getAccountOwner(), owners));
 			  cache(result);
 			  MidataId[] ids = new MidataId[result.size()];
 			  int idx = 0;
@@ -237,7 +245,7 @@ public class APSCache {
 			}
 		}
 				
-		Set<Consent> result = Consent.getAllActiveByAuthorizedAndOwners(getAccountOwner(), owners);
+		List<Consent> result = new ArrayList<Consent>(Consent.getAllActiveByAuthorizedAndOwners(getAccountOwner(), owners));
 		cache(result);
 		return result;
 		
@@ -267,7 +275,7 @@ public class APSCache {
 		}
 		
 		if (touchedConsents != null) {
-			Consent.updateTimestamp(touchedConsents, System.currentTimeMillis(), System.currentTimeMillis() + 1000l * 60l * 60l);
+			Consent.updateTimestamp(touchedConsents, System.currentTimeMillis(), System.currentTimeMillis() + 1000l * 60l);
 		}
 		if (subcache != null) {
 			for (APSCache sub : subcache.values()) {
