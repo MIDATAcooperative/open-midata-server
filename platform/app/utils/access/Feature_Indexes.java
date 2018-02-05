@@ -232,7 +232,7 @@ public class Feature_Indexes extends Feature {
 	 * }
 	 */
 
-	public class IndexIterator extends MultiSource<AccessContext> {
+	public class IndexIterator extends Feature.MultiSource<AccessContext> {
 
 		private Query q;
 		private Set<String> queryFields;
