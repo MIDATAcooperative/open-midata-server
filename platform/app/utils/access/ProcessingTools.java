@@ -280,7 +280,7 @@ public class ProcessingTools {
 
 		@Override
 		public boolean contained(DBRecord record) {
-			if (!noPostfilterStreams || !record.isStream)
+			if (noPostfilterStreams && record.isStream)
 				return true;
 			return values.contains(record.meta.get(property));
 		}
