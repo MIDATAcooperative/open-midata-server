@@ -82,6 +82,7 @@ import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.ServerTools;
+import utils.access.DBIterator;
 import utils.access.Feature_FormatGroups;
 import utils.access.Query;
 import utils.access.RecordManager;
@@ -299,9 +300,9 @@ public class Studies extends APIController {
 		 
 		 setAttachmentContentDisposition("study.json");
 				 		 		
-		 final Set<Consent> parts = new HashSet<Consent>(StudyParticipation.getActiveParticipantsByStudyAndGroup(study._id, studyGroup, Sets.create("owner")));			    
+		 /*final Set<Consent> parts = new HashSet<Consent>(StudyParticipation.getActiveParticipantsByStudyAndGroup(study._id, studyGroup, Sets.create("owner")));			    
 		 parts.addAll(StudyRelated.getActiveByAuthorizedGroupAndStudy(study._id, Collections.singleton(studyGroup), Collections.singleton(study._id), Consent.SMALL, 0));
-		 				 
+		 	*/			 
 		 final String handle = PortalSessionToken.session().handle;
 		 
 		 
@@ -328,19 +329,11 @@ public class Studies extends APIController {
 		        			out.write((first?"":",")+"{ \"fullUrl\" : \""+location+"\", \"resource\" : "+ser+" } ");
 		        		}
 		        				        				        		
-		        		for (Consent part : parts) {
-		        		List<Record> allRecords = RecordManager.instance.list(executorId, part._id, CMaps.map("export", mode).map("deleted", true), Sets.create("_id"));
-		        		Iterator<Record> recordIterator = allRecords.iterator();
+		        		//for (Consent part : parts) {
+		        		DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, executorId, CMaps.map("export", mode).map("study", study._id).map("study-group", studyGroup), RecordManager.COMPLETE_DATA);		        		
 
-		        		while (recordIterator.hasNext()) {
-				            int i = 0;
-				            Set<MidataId> ids = new HashSet<MidataId>();		           
-				            while (i < 100 && recordIterator.hasNext()) {
-				            	ids.add(recordIterator.next()._id);i++;
-				            }
-				            List<Record> someRecords = RecordManager.instance.list(executorId, part._id, CMaps.map("_id", ids).map("export", mode), RecordManager.COMPLETE_DATA);
-				            for (Record rec : someRecords) {
-				            	
+		        		while (allRecords.hasNext()) {
+				          Record rec = allRecords.next();      	
 				            	String format = rec.format.startsWith("fhir/") ? rec.format.substring("fhir/".length()) : "Basic";
 				            	
 				            	ResourceProvider<DomainResource, Model> prov = FHIRServlet.myProviders.get(format); 
@@ -373,9 +366,8 @@ public class Studies extends APIController {
 				            	}
 			            		first = false;
 				            }
-		        		}
 		        		
-		        		}
+		        				        		
 		        		out.write("] }");
 			        	out.close();
 		        	} catch (Exception e) {

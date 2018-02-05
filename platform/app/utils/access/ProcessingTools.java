@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 import models.MidataId;
+import models.Record;
 import utils.AccessLog;
 import utils.access.op.AndCondition;
 import utils.access.op.Condition;
@@ -564,4 +565,27 @@ public class ProcessingTools {
 
 	}
 
+	static class ConvertIterator implements DBIterator<Record> {
+		private DBIterator<DBRecord> input;
+		
+		public ConvertIterator(DBIterator input) {
+			this.input = input;
+		}
+
+		@Override
+		public Record next() throws AppException {
+			DBRecord rec = input.next();
+			Record result = RecordConversion.instance.currentVersionFromDB(rec);
+			rec.clearEncryptedFields();
+			rec.clearSecrets();
+			return result;
+		}
+
+		@Override
+		public boolean hasNext() throws AppException {
+			return input.hasNext();
+		}
+		
+		
+	}
 }

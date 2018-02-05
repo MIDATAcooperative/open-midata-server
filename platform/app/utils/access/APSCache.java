@@ -39,6 +39,8 @@ public class APSCache {
 	private long consentLimit;
 	private Set<UserGroupMember> userGroupMember;
 	
+	private static final int CACHE_LIMIT = 5000;
+	
 	public APSCache(MidataId executorId, MidataId accountApsId) {
 		this.executorId = executorId;
 		this.accountOwner = accountApsId;
@@ -151,7 +153,11 @@ public class APSCache {
 	}
 	
 	public void prefetch(Collection<? extends Consent> consents, Map<MidataId, byte[]> keys) throws AppException {	
-		if (consents.size() > 1) {			
+		if (consents.size() > 1) {
+			if (cache.size() > CACHE_LIMIT) {
+			   cache.clear();
+			}
+			
 			int end = 0;
 			Map<MidataId, Consent> ids = new HashMap<MidataId, Consent>(consents.size());
 			for (Consent consent : consents) {			  			

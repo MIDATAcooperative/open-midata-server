@@ -49,6 +49,7 @@ import utils.access.VersionedDBRecord;
 import utils.auth.ExecutionInfo;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
+import utils.exceptions.RequestTooLargeException;
 
 /**
  * Base class for FHIR resource providers. There is one provider subclass for each FHIR resource type.
@@ -122,38 +123,42 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 	
 	public Bundle searchBundle(SearchParameterMap params, RequestDetails theDetails) {
 		Bundle result = new Bundle();
-		
-		List<IBaseResource> res = search(params);
-		for (IBaseResource r : res) {
-			result.addEntry().setResource((Resource) r).setFullUrl(theDetails.getFhirServerBase()+"/"+r.getIdElement().toString());
-		}
-		
-		if (params.getFrom() != null) {
-		String p = theDetails.getCompleteUrl();
-		int pos = p.indexOf("?");
-		p = pos > 0 ? p.substring(0, pos) : p;
-		Map<String, String[]> rp = new HashMap<String, String[]>(theDetails.getParameters());
-		String[] _page = new String[1];
-		_page[0] = params.getFrom();
-		rp.put("_page", _page );
-		
-		StringBuilder b = new StringBuilder();
-		for (Entry<String, String[]> next : rp.entrySet()) {
-			for (String nextValue : next.getValue()) {
-				if (b.length() == 0) {
-					b.append('?');
-				} else {
-					b.append('&');
-				}
-				b.append(UrlUtil.escapeUrlParam(next.getKey()));
-				b.append('=');
-				b.append(UrlUtil.escapeUrlParam(nextValue));
+		try {
+			List<IBaseResource> res = search(params);
+			for (IBaseResource r : res) {
+				result.addEntry().setResource((Resource) r).setFullUrl(theDetails.getFhirServerBase()+"/"+r.getIdElement().toString());
 			}
+			
+			if (params.getFrom() != null) {
+			String p = theDetails.getCompleteUrl();
+			int pos = p.indexOf("?");
+			p = pos > 0 ? p.substring(0, pos) : p;
+			Map<String, String[]> rp = new HashMap<String, String[]>(theDetails.getParameters());
+			String[] _page = new String[1];
+			_page[0] = params.getFrom();
+			rp.put("_page", _page );
+			
+			StringBuilder b = new StringBuilder();
+			for (Entry<String, String[]> next : rp.entrySet()) {
+				for (String nextValue : next.getValue()) {
+					if (b.length() == 0) {
+						b.append('?');
+					} else {
+						b.append('&');
+					}
+					b.append(UrlUtil.escapeUrlParam(next.getKey()));
+					b.append('=');
+					b.append(UrlUtil.escapeUrlParam(nextValue));
+				}
+			}
+			
+			result.addLink().setRelation("next").setUrl(p + b.toString());
+			result.setTotal(0);
+			} else result.setTotal(res.size());
+		} catch (RequestTooLargeException e) {
+			try { Thread.sleep(1000*10); } catch (InterruptedException e2) {}
+			result.addLink().setRelation("next").setUrl(theDetails.getCompleteUrl());
 		}
-		
-		result.addLink().setRelation("next").setUrl(p + b.toString());
-		result.setTotal(0);
-		} else result.setTotal(res.size());
 		return result;		
 	}
 	
@@ -232,6 +237,8 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 		   
 		   return results;
 
+		} catch (RequestTooLargeException e2) {
+			throw e2;
 	    } catch (AppException e) {
 	       ErrorReporter.report("FHIR (search)", null, e);	       
 		   return null;

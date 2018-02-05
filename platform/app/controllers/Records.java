@@ -49,6 +49,7 @@ import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.ServerTools;
 import utils.access.APS;
+import utils.access.DBIterator;
 import utils.access.Feature_FormatGroups;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
@@ -198,7 +199,7 @@ public class Records extends APIController {
 	      Collection<RecordsInfo> result = RecordManager.instance.info(userId, aps, null, properties, aggrType);						
 		  return ok(Json.toJson(result));
 		} catch (RequestTooLargeException e) {
-			return ok();
+			return status(202);
 		}
 	}
 	
@@ -587,17 +588,11 @@ public class Records extends APIController {
 		        		
 		        				        				        				        		
 		        
-		        		List<Record> allRecords = RecordManager.instance.list(executorId, executorId, CMaps.map("owner", "self").map("deleted", true), Sets.create("_id"));
-		        		Iterator<Record> recordIterator = allRecords.iterator();
-
-		        		while (recordIterator.hasNext()) {
-				            int i = 0;
-				            Set<MidataId> ids = new HashSet<MidataId>();		           
-				            while (i < 100 && recordIterator.hasNext()) {
-				            	ids.add(recordIterator.next()._id);i++;
-				            }
-				            List<Record> someRecords = RecordManager.instance.list(executorId, executorId, CMaps.map("owner", "self").map("_id", ids), RecordManager.COMPLETE_DATA);
-				            for (Record rec : someRecords) {
+		        		DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, executorId, CMaps.map("owner", "self"), RecordManager.COMPLETE_DATA);
+		        		
+		        		while (allRecords.hasNext()) {
+				            
+                           Record rec = allRecords.next();
 				            	
 				            	String format = rec.format.startsWith("fhir/") ? rec.format.substring("fhir/".length()) : "Basic";
 				            	
@@ -631,7 +626,7 @@ public class Records extends APIController {
 				            	}
 			            		first = false;
 				            }
-		        		}
+		        		
 		        				        		
 		        		out.write("] }");
 			        	out.close();

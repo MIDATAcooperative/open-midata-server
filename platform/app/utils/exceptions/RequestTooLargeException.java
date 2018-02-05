@@ -1,9 +1,9 @@
 package utils.exceptions;
 
-public class RequestTooLargeException extends AppException {
+public class RequestTooLargeException extends RuntimeException {
 
 	public RequestTooLargeException(String localeKey, String msg) {
-		super(localeKey, msg);		
+		super(msg);		
 	}
 
 }

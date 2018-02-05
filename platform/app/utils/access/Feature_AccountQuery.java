@@ -41,57 +41,6 @@ public class Feature_AccountQuery extends Feature {
 	public Feature_AccountQuery(Feature next) {
 		this.next = next;
 	}
-
-	/*
-	@Override
-	protected List<DBRecord> query(Query q) throws AppException {
-
-		if (q.getApsId().equals(q.getCache().getAccountOwner())) {
-			if (AccessLog.detailedLog) AccessLog.logBegin("Begin process owner aps");
-			long time = System.currentTimeMillis();
-			Set<String> sets = q.restrictedBy("owner") ? q.getRestriction("owner") : Collections.singleton("all");
-			
-			List<DBRecord> result = null;
-
-		
-
-			if ((sets.contains("self") || sets.contains("all") || sets.contains(q.getApsId().toString())) && !q.restrictedBy("consent-after") && !q.restrictedBy("usergroup") && !q.restrictedBy("study") && !q.restrictedBy("shared-after")) {
-				result = next.query(q);
-				setIdAndConsentField(q, q.getContext(), q.getApsId(), result);						
-			} else {
-				result = Collections.emptyList();
-			}
-
-			Set<Consent> consents = getConsentsForQuery(q);
-			
-			if (!q.restrictedBy("consent-limit")) {
-				if (consents.size() > MAX_CONSENTS_IN_QUERY) throw new RequestTooLargeException("error.toomany.consents", "Too many consents in query #="+consents.size());
-			}
-									
-			for (Consent circle : consents) {
-			   AccessLog.logBegin("start query for consent id="+circle._id);
-			   List<DBRecord> consentRecords = next.query(new Query(q.getProperties(), q.getFields(), q.getCache(), circle._id, new ConsentAccessContext(circle, q.getContext())));
-			   //setOwnerField(q, circle, consentRecords);
-			   if (!consentRecords.isEmpty()) {
-				   setIdAndConsentField(q, new ConsentAccessContext(circle, q.getContext()), circle._id, consentRecords);							
-				   result = QueryEngine.combine(result, consentRecords);
-			   }
-			   AccessLog.logEnd("end query for consent");
-			}				
-				
-			
-			if (AccessLog.detailedLog) AccessLog.logEnd("End process owner aps #size="+result.size()+" time="+(System.currentTimeMillis()-time));
-			return result;
-		} else {
-			
-			List<DBRecord> result = next.query(q);
-
-			if (!result.isEmpty()) setIdAndConsentField(q, q.getContext(), q.getApsId(), result);
-			
-			return result;
-		}
-	}
-	*/
 	
 	
 	@Override

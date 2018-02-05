@@ -147,6 +147,14 @@ public enum InstanceType {
 		return this == TEST || this == LOCAL || this == DEMO;
 	}
 	
+	/**
+	 * Automatically confirm changed consents on login from Midata API
+	 * @return
+	 */
+	public boolean autoconfirmConsentsMidataApi() {
+		return this == PERFTEST;
+	}
+	
 	public Set<UserFeature> defaultRequirementsPortalLogin(UserRole role) {
 		if (this == PERFTEST) return EnumSet.of(UserFeature.EMAIL_ENTERED);
 		if (role != UserRole.MEMBER) return EnumSet.of(UserFeature.EMAIL_VERIFIED, UserFeature.ADMIN_VERIFIED, UserFeature.PASSWORD_SET);

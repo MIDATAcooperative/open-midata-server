@@ -1035,6 +1035,19 @@ public class RecordManager {
 		return QueryEngine.list(getCache(who), apsId, context, properties, fields);
 	}
 	
+	public DBIterator<Record> listIterator(MidataId who, MidataId apsId,
+			Map<String, Object> properties, Set<String> fields)
+			throws AppException {
+		AccessContext context = null;
+		if (who.equals(apsId)) context = createContextFromAccount(who);
+		else {
+          Consent consent = Consent.getByIdUnchecked(apsId, Consent.ALL);
+          if (consent != null) context =  createContextFromConsent(who, consent);
+		}
+		AccessLog.log("context="+context);
+		return QueryEngine.listIterator(getCache(who), apsId, context, properties, fields);
+	}
+	
 	public List<Record> list(MidataId who, AccessContext context,
 			Map<String, Object> properties, Set<String> fields)
 			throws AppException {

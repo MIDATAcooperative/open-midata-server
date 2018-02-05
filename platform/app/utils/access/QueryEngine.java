@@ -41,6 +41,10 @@ class QueryEngine {
  		return RecordConversion.instance.currentVersionFromDB(ProcessingTools.collect(fullQuery(properties, fields, aps, context, cache)));		
 	}
 	
+	public static DBIterator<Record> listIterator(APSCache cache, MidataId aps, AccessContext context, Map<String, Object> properties, Set<String> fields) throws AppException {		
+ 		return new ProcessingTools.ConvertIterator(fullQuery(properties, fields, aps, context, cache));		
+	}
+	
 	public static List<DBRecord> listInternal(APSCache cache, MidataId aps, AccessContext context, Map<String, Object> properties, Set<String> fields) throws AppException {		
 		return ProcessingTools.collect(fullQuery(properties, fields, aps, context, cache));		
 	}
