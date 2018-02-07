@@ -37,6 +37,10 @@ public class Instances {
 		actorSystem.actorOf(Props.create(InstanceSync.class), "instanceSync");		
 	}
 	
+	public static ActorSystem system() {
+		return actorSystem;
+	}
+	
 	/**
 	 * Shutdown synchronization
 	 */

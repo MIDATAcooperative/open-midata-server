@@ -14,6 +14,8 @@ import akka.actor.ActorRef;
 import akka.actor.Cancellable;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
+import akka.contrib.pattern.ClusterSingletonManager;
+import akka.contrib.pattern.ClusterSingletonProxy;
 import akka.routing.ActorRefRoutee;
 import akka.routing.RoundRobinRoutingLogic;
 import akka.routing.Routee;
@@ -40,6 +42,7 @@ import utils.auth.SpaceToken;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.sync.Instances;
 
 /**
  * Automatically run plugins once a day for auto import of records
@@ -49,6 +52,7 @@ public class AutoRun extends APIController {
 
 		
 	private static Cancellable importer;
+	private static ActorRef managerSingleton;
 	private static ActorRef manager;
 	
 	/**
@@ -56,7 +60,12 @@ public class AutoRun extends APIController {
 	 */
 	public static void init() {
 		
-		manager = Akka.system().actorOf(Props.create(ImportManager.class), "manager");
+		//manager = Akka.system().actorOf(Props.create(ImportManager.class), "manager");
+		
+		managerSingleton = Instances.system().actorOf(ClusterSingletonManager.defaultProps(Props.create(ImportManager.class), "manager-instance",
+			    null, null), "manager-singleton");
+		
+		manager = Instances.system().actorOf(ClusterSingletonProxy.defaultProps("user/manager-singleton/manager-instance", null), "manager");
 		
 		importer = Akka.system().scheduler().schedule(
                 Duration.create(nextExecutionInSeconds(4, 0), TimeUnit.SECONDS),
