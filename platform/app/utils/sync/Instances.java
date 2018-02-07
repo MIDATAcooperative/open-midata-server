@@ -1,6 +1,7 @@
 package utils.sync;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import akka.actor.ActorRef;
@@ -8,6 +9,8 @@ import akka.actor.ActorSelection;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
+import akka.cluster.routing.ClusterRouterGroup;
+import akka.cluster.routing.ClusterRouterGroupSettings;
 import akka.routing.BroadcastGroup;
 import models.ContentCode;
 import models.MidataId;
@@ -33,8 +36,14 @@ public class Instances {
 	 */
 	public static void init() {
 		actorSystem = ActorSystem.create("midata", Play.application().configuration().getConfig("midata").underlying().withFallback(Play.application().configuration().underlying()));
-		instanceURIs = Play.application().configuration().getStringList("servers");
-		actorSystem.actorOf(Props.create(InstanceSync.class), "instanceSync");		
+		//instanceURIs = Play.application().configuration().getStringList("servers");
+		actorSystem.actorOf(Props.create(InstanceSync.class), "instanceSync");	
+				
+		Iterable<String> routeesPaths = Collections.singletonList("/user/instanceSync");				
+		broadcast = actorSystem.actorOf(
+		    new ClusterRouterGroup(new BroadcastGroup(routeesPaths),
+		        new ClusterRouterGroupSettings(Integer.MAX_VALUE, routeesPaths,
+		            true, null)).props(), "broadcast");
 	}
 	
 	public static ActorSystem system() {
@@ -51,19 +60,15 @@ public class Instances {
 	/**
 	 * Get actor to broadcast to all application servers
 	 */
-	protected static ActorRef getBroadcast() {		
-		if (broadcast == null) {
-			List<String> urls = new ArrayList<String>();
-		    for (String url : instanceURIs) { urls.add("akka.tcp://midata@"+url+"/user/instanceSync"); }
-		    broadcast = actorSystem.actorOf(new BroadcastGroup(urls).props(), "broadcast");
-		}
+	protected static ActorRef getBroadcast() {				
 		return broadcast;
 	}
 	
 	/**
 	 * send a clear cache message to all application servers
 	 */
-	public static void cacheClear(String collection, MidataId entry) {		
+	public static void cacheClear(String collection, MidataId entry) {	
+		AccessLog.log("broadcast reload message");
 		getBroadcast().tell(new ReloadMessage(collection, entry), ActorRef.noSender());
 	}
 
@@ -96,6 +101,7 @@ class InstanceSync extends UntypedActor {
 	public void onReceive(Object message) throws Exception {
 		try {
 		if (message instanceof ReloadMessage) {
+			AccessLog.log("Received Reload Message");
 		   ReloadMessage msg = (ReloadMessage) message;
 		   if (msg.collection.equals("plugin")) {
 			   Plugin.cacheRemove(msg.entry);

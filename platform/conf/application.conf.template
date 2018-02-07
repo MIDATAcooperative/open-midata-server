@@ -70,8 +70,6 @@ logger.application=DEBUG
 # ~~~~~
 parsers.text.maxLength=1024K
 
-servers = ["127.0.0.1:9006"]
-
 play {
   akka {
     event-handlers = ["akka.event.slf4j.Slf4jEventHandler"]
