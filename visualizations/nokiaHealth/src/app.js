@@ -514,6 +514,12 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 								measurement.imported = entry.count;
 								if (measurement.from == null || measurement.from < newestDate) measurement.from = newestDate;
 
+								// if not defined
+								if (!importer.allMeasurementGroups[mapMeasureTypeToGroup[measurement.id]]) {
+									// initialize allMeasurementGroups with null
+									importer.allMeasurementGroups[mapMeasureTypeToGroup[measurement.id]] = {from : null};
+								}
+																
 								// set value of "from" to import
 								if (!importer.allMeasurementGroups[mapMeasureTypeToGroup[measurement.id]].from ||
 									importer.allMeasurementGroups[mapMeasureTypeToGroup[measurement.id]].from.getTime() - (1000 * 60 * 60 * 24 * daysRequest) > newestDate.getTime()) {

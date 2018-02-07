@@ -397,7 +397,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			  var work = [];
 			  angular.forEach($scope.measurements, function(measure) {
 				if (measure.import && !(measure.skip)) {					
-					work.add(importRecords(measure));					
+					work.push(importRecords(measure));					
 				}
 			  });
 			  return $q.all(work);
