@@ -380,6 +380,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 									
 			$scope.saved = 0;			
 			$scope.status = "importing";
+			$scope.saving = true;
 			
 			var actionDef = $q.defer();
 			var actionChain = actionDef.promise;
