@@ -32,7 +32,7 @@ portal.server="DOMAIN"
 platform.server="DOMAIN"
 apps.server="DOMAIN"
 visualizations.server="PLUGINS_SERVER"
-visualizations.path="RUNDIR/visualizations"
+visualizations.path="ROOTDIR/visualizations"
 node.server="DOMAIN:5000"
 node.path="/usr/bin/node"
 

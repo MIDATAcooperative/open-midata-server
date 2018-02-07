@@ -20,11 +20,14 @@ nokiaHealth.controller('ImportController', ['$scope', '$translate', '$location',
 			importer.firstTime = true;
 			importer.saveConfig()
 			.then(function(){
-				importer.initForm(authToken)
-				.then(function() {
-					importer.importNow();
-				});
-			});
+				return importer.initForm(authToken);
+			})
+			.then(function(){
+				return importer.importNow();
+			})
+			.then(function(){
+				return importer.initForm(authToken);
+			});			
 			
 			$scope.status = "ok";
 		};
@@ -37,8 +40,8 @@ nokiaHealth.controller('ImportController', ['$scope', '$translate', '$location',
 		};
 
 		$scope.progress = function() {
-			var r = $scope.importer.requested > 0 ? $scope.importer.requested : 1;
-			return { 'width' : ($scope.importer.saved * 100 / r)+"%" };
+			var r = ($scope.importer.requested + $scope.importer.requesting) > 0 ? ($scope.importer.requested + $scope.importer.requesting) : 1;
+			return { 'width' : (($scope.importer.saved + $scope.importer.requestingDone) * 100 / r)+"%" };
 		};
 	}
 ]);

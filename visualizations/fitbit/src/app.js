@@ -21,16 +21,12 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 	$scope.error = {};
 	$scope.reimport = 7;
 	$scope.status = null;
-	$scope.requesting = 0;
-	$scope.requested = 0;
+	$scope.measuresRequested = 0;
+	$scope.measuresDone = 0;
 	$scope.saving = false;
 	$scope.saved = 0;
 	$scope.totalImport = 0;
-	$scope.measure = null;
-	$scope.alldone = null;
-	$scope.repeat = false;
-	$scope.totalYears = 0; // For progress bar
-	$scope.currentYear = 0; // For progress bar
+	$scope.measure = null;		
 	$scope.measurements = [
 						
 			// {
@@ -251,6 +247,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 	var baseUrl = "https://api.fitbit.com";
 	var stored = {};
 	
+	/*
 	var setToDate = function(amendFrom) {
 		 var yesterday = new Date();
 		 yesterday.setDate(yesterday.getDate() - 1);
@@ -283,6 +280,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			} else measurement.repeat = false;
 		 });		 
 	};
+	*/
 
 	$scope.initForm = function(authToken, nofitbitquery) {
 		var deferred = $q.defer();
@@ -312,7 +310,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 					if (measurement.from == null || measurement.from < since) measurement.from = measurement.fromDisplay = since;					
 				  });
 				  
-				  setToDate(false);
+				  //setToDate(false);
 				  
 				  //$("#toDate").datepicker("setDate", yesterday); 
 			  }
@@ -379,18 +377,10 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 		$scope.startImport = function() {
 			$scope.error.message = null;
 			$scope.error.messages = [];			
-			$scope.currentYear = -1;
-			
-			$scope.continueImport();
-		};
-		
-		// start the importing of records
-		$scope.continueImport = function() {			
-			
-			$scope.requested = 0;
-			$scope.saved = 0;
-			$scope.currentYear++;
+									
+			$scope.saved = 0;			
 			$scope.status = "importing";
+			$scope.saving = true;
 			
 			var actionDef = $q.defer();
 			var actionChain = actionDef.promise;
@@ -398,22 +388,31 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 						
 			angular.forEach($scope.measurements, function(measure) {
 				if (measure.import && !(measure.skip)) {
-					$scope.requesting++;
+					$scope.measuresRequested++;
 					var f = function() { return getPrevRecords(measure); };
 					actionChain = actionChain.then(f);					
 				}
 			});			
 			
-			actionChain.then(function() {
+			actionChain = actionChain.then(function() {
+			  var work = [];
 			  angular.forEach($scope.measurements, function(measure) {
 				if (measure.import && !(measure.skip)) {					
-					importRecords(measure);
-					if (measure.repeat) { measure.repeat = false; $scope.repeat = true; }
+					work.push(importRecords(measure));					
 				}
 			  });
+			  return $q.all(work);
 			});
 			
-			if ($scope.requesting === 0) { finish(); }
+			return actionChain.then(function() {
+			  $scope.status = "done";			
+			  if ($scope.error.messages.length > 0) {
+				$scope.status = "with_errors"; 
+			  }
+			  $scope.saving = false;
+			  console.log("Done import");
+			});
+						
 		};
 		
 		var getPrevRecords = function(measure) {
@@ -424,35 +423,21 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			   .then(function(results) {
 				   angular.forEach(results.data, function(rec) {
 					 stored[rec.content+rec.data.effectiveDateTime] = rec;  
-				   });
-				   $scope.requesting--;
+				   });				  
 			   });
 		};
-				
-		// import records, one main record and possibly a detailed record for each day
-		var importRecords = function(measure) {
 		
-			var fromDate = measure.from;
-			var toDate = measure.to;
-			$translate("titles."+measure.id).then(function(t) { measure.title = t; });
-			$translate(measure.id).then(function(t) { measure.name_translated = t; });
-			$translate("fitness_data").then(function(t) { measure.category_name = t; });
-			
-			if (fromDate > toDate) return;
-			
-			$scope.status = "importing";			
-			$scope.requesting++;			
-			$scope.saving = true;
-			
+	    var importRange = function(measure, fromDate, toDate) {
 			
 			var formattedFromDate = fromDate.getFullYear() + "-" + twoDigit(fromDate.getMonth() + 1) + "-" + twoDigit(fromDate.getDate());
 			var formattedEndDate = toDate.getFullYear() + "-" + twoDigit(toDate.getMonth() + 1) + "-" + twoDigit(toDate.getDate());
 												
-			midataServer.oauth2Request($scope.authToken, baseUrl + measure.endpoint.replace("{date}", formattedFromDate).replace("1d", formattedEndDate))
+			return midataServer.oauth2Request($scope.authToken, baseUrl + measure.endpoint.replace("{date}", formattedFromDate).replace("1d", formattedEndDate))
 			.then(function(response1) {
 				var response = response1.data;
 					// check if an error was returned
 				var actions = [];
+				var trans = [];
 				
 				if (response.errors) {
 					var _error_message = response.errors[0].message;
@@ -500,7 +485,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 							  
 							  // Limit request size
 							  if (actions.length > 200) {
-								  processTransaction(actions);
+								  trans.push(processTransaction(actions));
 								  actions = [];
 							  }
 							  
@@ -510,16 +495,38 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 					});				
 				}
 				if (actions.length > 0) {				  
-				  processTransaction(actions);
+				  trans.push(processTransaction(actions));
 				}
 				
-				$scope.requesting--;
-				finish();
-			}, function(err) {
-					errorMessage("Failed to import data on " + formattedDate + ": " + err);
+				return $q.all(trans);
 			});
+				
+		};
+		
+				
+		// import records, one main record and possibly a detailed record for each day
+		var importRecords = function(measure) {
+		
+			var fromDate = measure.from;
+			var toDate = new Date(fromDate.getTime() + 1000 * 60 * 60 * 24 * 365);//measure.to;
+			$translate("titles."+measure.id).then(function(t) { measure.title = t; });
+			$translate(measure.id).then(function(t) { measure.name_translated = t; });
+			$translate("fitness_data").then(function(t) { measure.category_name = t; });
+			
+			var yesterday = new Date();
+			yesterday.setDate(yesterday.getDate() - 1);
+			yesterday.setHours(1,1,1,1);
 						
-			//$scope.requesting = false;
+			var work = [];
+			
+			while (fromDate < yesterday) {
+			  if (toDate > yesterday) toDate = yesterday;
+			  work.push(importRange(measure, fromDate, toDate));			  
+			  fromDate = new Date(toDate.getTime() + 1);
+			  toDate = new Date(fromDate.getTime() + 1000 * 60 * 60 * 24 * 365);
+			}
+			
+			return $q.all(work).then(function() { $scope.measuresDone++; });
 		};
 		
 		// make a two digit string out of a given number
@@ -542,16 +549,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 		};
 			
 		// save a single record to the database
-		var saveRecord = function(title, content, formattedDate, record) {
-			/*var name = title.replace("{date}", formattedDate);			
-			midataServer.createRecord($scope.authToken, { "name" : name, "content" : content, "format" : "fhir/Observation", subformat : "Quantity" }, record)
-			.then(function() {
-					$scope.saved += 1;
-					finish();
-			})
-			.catch(function(err) {
-					errorMessage("Failed to save record '" + name + "' to database: " + err);
-			});*/
+		var saveRecord = function(title, content, formattedDate, record) {			
 			
 			return {
 				"resource" : record,
@@ -563,14 +561,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 		};
 		
 		var updateRecord = function(id, version, record) {			
-			/*midataServer.updateRecord($scope.authToken, id, version, record)
-			.then(function() {
-					$scope.saved += 1;
-					finish();
-			})
-			.catch(function(err) {
-					errorMessage("Failed to update record to database: " + err);
-			});*/
+			
 			record.meta = { "versionId" : version };
 			record.id = id;
 			return {
@@ -588,57 +579,27 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			   "id": "bundle-transaction",
 			   "type": "transaction",
 			   "entry": actions
-			};
-			$scope.requested++;
-			midataServer.fhirTransaction($scope.authToken, request)
+			};			
+			return midataServer.fhirTransaction($scope.authToken, request)
 			.then(function() {
-				$scope.saved++;
-				finish();
+				$scope.saved+=actions.length;				
 			});
 		};
 			
 		// handle errors during import
 		var errorMessage = function(errMsg) {
-			$scope.error.messages.push(errMsg);
-			finish();
+			$scope.error.messages.push(errMsg);			
 		};
-
-		// update application state at the end of an import
-		var finish = function() {
-			if ($scope.requesting === 0 && $scope.requested === $scope.saved + $scope.error.messages.length) {
-				if ($scope.repeat) {
-					$scope.repeat = false;
-					$scope.totalImport += $scope.saved;
-					setToDate(true);
-					$scope.continueImport();
-				} else {							
-					$scope.status = "done";
-					$scope.totalYears = 0;
-					if ($scope.error.messages.length > 0) {
-						$scope.status = "with_errors"; 
-					}
-					$scope.saving = false;
-					if ($scope.alldone != null) {
-						$scope.alldone.resolve();
-					} else {
-						$scope.user = null;
-					    $scope.initForm($scope.authToken);
-					}
-				}
-			}
-		};
+	
 		
 		$scope.automatic = function(authToken, lang) {
 			console.log("run automatic");
-			$translate.use(lang);
-			$scope.alldone = $q.defer();
-			$scope.initForm(authToken)
+			$translate.use(lang);		
+			return $scope.initForm(authToken)
 			.then(function() {
 				console.log("past init");
-				$scope.startImport();
-			});
-			console.log("end automatic");
-			return $scope.alldone.promise;
+				return $scope.startImport();
+			});			
 		};
 		
 		$scope.saveConfig = function() {
@@ -662,16 +623,17 @@ fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', '$translate', '
 		var authToken = $location.search().authToken;
 							
 		$scope.progress = function() {
-			var r = $scope.importer.requested > 0 ? $scope.importer.requested : 1;
-			var b = Math.floor($scope.importer.currentYear / ($scope.importer.totalYears + 1) * 100); 
-			return { 'width' : Math.floor(b + $scope.importer.saved * (100 / ($scope.importer.totalYears + 1)) / r)+"%" };
+			var r = $scope.importer.measuresRequested > 0 ? $scope.importer.measuresRequested : 1;			
+			return { 'width' : Math.floor($scope.importer.measuresDone * 100 / r)+"%" };
 		};
 		
 		$scope.importer.initForm(authToken);
 		
 		$scope.submit = function() {
 		   importer.saveConfig();
-		   importer.startImport();
+		   importer.startImport().then(function() {
+			   $scope.importer.initForm(authToken);			   
+		   });
 		};
 	}
 ]);
