@@ -40,8 +40,8 @@ nokiaHealth.controller('ImportController', ['$scope', '$translate', '$location',
 		};
 
 		$scope.progress = function() {
-			var r = $scope.importer.requested > 0 ? $scope.importer.requested : 1;
-			return { 'width' : (($scope.importer.saved + $scope.importer.requestingDone) * 100 / (r+$scope.importer.requesting))+"%" };
+			var r = ($scope.importer.requested + $scope.importer.requesting) > 0 ? ($scope.importer.requested + $scope.importer.requesting) : 1;
+			return { 'width' : (($scope.importer.saved + $scope.importer.requestingDone) * 100 / r)+"%" };
 		};
 	}
 ]);
