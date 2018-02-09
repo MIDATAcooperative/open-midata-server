@@ -72,14 +72,11 @@ public class Global extends GlobalSettings {
 
 	@Override
 	public void onStop(Application app) {
-		AutoRun.shutdown();
-		
+				
 		// Close connection to database
-		DBLayer.close();
 		Instances.shutdown();
-
-		// Close connection to search cluster
-		//Search.close();
+		DBLayer.close();
+		
 	}
 
 }

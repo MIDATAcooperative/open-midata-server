@@ -51,7 +51,7 @@ import utils.sync.Instances;
 public class AutoRun extends APIController {
 
 		
-	private static Cancellable importer;
+
 	private static ActorRef managerSingleton;
 	private static ActorRef manager;
 	
@@ -67,19 +67,15 @@ public class AutoRun extends APIController {
 		
 		manager = Instances.system().actorOf(ClusterSingletonProxy.defaultProps("user/manager-singleton/manager-instance", null), "manager");
 		
-		importer = Akka.system().scheduler().schedule(
-                Duration.create(nextExecutionInSeconds(4, 0), TimeUnit.SECONDS),
-                Duration.create(24, TimeUnit.HOURS),
-                manager, new StartImport(),
-                Akka.system().dispatcher(), null);		
+		
 	}
 	
 	/**
 	 * shutdown job launcher
 	 */
-	public static void shutdown() {
-		if (importer != null) importer.cancel();
-	}
+	//public static void shutdown() {
+	//	if (importer != null) importer.cancel();
+	//}
 	
 	/**
 	 * manually trigger import. Only for testing.
@@ -263,6 +259,7 @@ public class AutoRun extends APIController {
 		private final int nrOfWorkers;
 		private int numberSuccess = 0;
 		private int numberFailure = 0;
+		private static Cancellable importer;
 		
 		/**
 		 * Constructor
@@ -279,6 +276,31 @@ public class AutoRun extends APIController {
 		    workerRouter = new Router(new RoundRobinRoutingLogic(), routees);					    
 		}
 		
+		
+		
+		@Override
+		public void postStop() throws Exception {
+			// TODO Auto-generated method stub
+			super.postStop();
+			
+			importer.cancel();
+		}
+
+
+
+		@Override
+		public void preStart() throws Exception {			
+			super.preStart();
+			
+			importer = getContext().system().scheduler().schedule(
+	                Duration.create(nextExecutionInSeconds(4, 0), TimeUnit.SECONDS),
+	                Duration.create(24, TimeUnit.HOURS),
+	                manager, new StartImport(),
+	                Akka.system().dispatcher(), null);		
+		}
+
+
+
 		@Override
 		public void onReceive(Object message) throws Exception {
 			try {
