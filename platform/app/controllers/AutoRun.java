@@ -1,6 +1,7 @@
 package controllers;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -91,7 +92,10 @@ public class AutoRun extends APIController {
 	 * request to run plugin for a specific space
 	 *
 	 */
-	public static class ImportRequest {
+	public static class ImportRequest implements Serializable {
+		
+		private static final long serialVersionUID = 6535855157383731993L;
+		
 		private final MidataId autorunner;
 		private final Space space;
 		private final String handle;
@@ -132,7 +136,10 @@ public class AutoRun extends APIController {
 	 * response from import plugin for a space
 	 *
 	 */
-	public static class ImportResult {
+	public static class ImportResult implements Serializable {
+	
+		private static final long serialVersionUID = 2863510695436070968L;
+		
 		private final int exitCode;
 
 		/**
@@ -159,7 +166,12 @@ public class AutoRun extends APIController {
 	 * At this time there are no parameters to pass
 	 *
 	 */
-	public static class StartImport {
+	public static class StartImport implements Serializable {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1459275213447427228L;
 		
 	}
 	

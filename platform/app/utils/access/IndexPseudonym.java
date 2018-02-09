@@ -1,6 +1,11 @@
 package utils.access;
 
-public class IndexPseudonym {
+import java.io.Serializable;
+
+public class IndexPseudonym implements Serializable {
+  
+   private static final long serialVersionUID = 5612134842436725319L;
+   
    private String pseudonym;
    private byte[] key;
    

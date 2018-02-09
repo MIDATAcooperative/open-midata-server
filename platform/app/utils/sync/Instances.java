@@ -1,5 +1,6 @@
 package utils.sync;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -78,7 +79,10 @@ public class Instances {
  * A "reload cache" message
  *
  */
-class ReloadMessage {
+class ReloadMessage implements Serializable {
+	
+	private static final long serialVersionUID = -1541876300975690426L;
+	
 	final String collection;
 	final MidataId entry;
 	
