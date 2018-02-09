@@ -19,12 +19,8 @@ server {
             return 503;
         }
 
-        error_page 503 @maintenance;
-
-        location @maintenance {
-          root RUNDIR/portal/dest;
-          try_files /maintenance.html 404;
-        }
+        root RUNDIR/portal/dest;
+        error_page 503 /maintenance.html;
     
         location / { 
           root RUNDIR/portal/dest;

@@ -58,7 +58,7 @@ tasks/prepare-webserver:
 	$(info ------------------------------)
 	$(info Basic configuration of Frontend)
 	$(info ------------------------------)
-	read -p "Enter domain name: " newdomain ; node scripts/replace.js domain $$newdomain ; node scripts/replace.js portal origin https://$$newdomain ; node scripts/replace.js portal backend https://$$newdomain ; node scripts/replace.js portal plugins $$newdomain/plugins ;
+	read -p "Enter domain name: " newdomain ; node scripts/replace.js domain $$newdomain ; node scripts/replace.js portal origin https://$$newdomain ; node scripts/replace.js portal backend https://$$newdomain ; node scripts/replace.js portal plugins $$newdomain/plugin ;
 	node scripts/replace.js instanceType prod
 	touch tasks/prepare-webserver
 
