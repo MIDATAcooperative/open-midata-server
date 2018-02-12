@@ -68,7 +68,7 @@ midata {
 	    remote {
 	      log-remote-lifecycle-events = off
           netty.tcp {
-             hostname = "127.0.0.1"
+             hostname = "PLATFORM_HOSTNAME"
              port = 9006
           }
 	    	      	      
@@ -78,7 +78,7 @@ midata {
 	    
 	    cluster {
           seed-nodes = [
-            "akka.tcp://midata@127.0.0.1:9006"
+            CLUSTER_SERVER
           ]
  
           auto-down-unreachable-after = 10s

@@ -30,6 +30,10 @@ class Portal(Product):
 			instance = json.load(reader, 'utf8')		
 						
 		print 'Setting paths in config file...'
+		clusters = []		
+		for ip in instance['cluster']:
+			clusters.append('"akka.tcp://midata@' + ip + ':9006"')
+		clusterstr = ",".join(clusters)  
 		with open(os.path.join(self.appconf, 'application.conf.template'), 'r') as configFile:				
 			config = configFile.read()			
 			config = config.replace('PORTAL_ORIGIN', instance['portal']['origin'])
@@ -39,6 +43,8 @@ class Portal(Product):
 			config = config.replace('CERTIFICATE_KEY', instance['certificate']['key'])			
 			config = config.replace('NODE_INTERNAL_PORT', instance['node']['port'])
 			config = config.replace('PLATFORM_INTERNAL_PORT', instance['platform']['port'])
+			config = config.replace('PLATFORM_HOSTNAME', instance['platform']['hostname'])
+			config = config.replace('CLUSTER_SERVER', clusterstr)
 			config = config.replace('INSTANCETYPE', instance['instanceType'])
 			config = config.replace('DEFAULT_LANGUAGE', instance['portal']['defaultLanguage'])
 			config = config.replace('ROOTDIR', self.parent)															

@@ -17,9 +17,11 @@
      "countries" : "CH"
   },
   "platform" : {
-     "port" : "9001"
+     "port" : "9001",     
+     "hostname" : "127.0.0.1"
    },
   "node" : {
      "port" : "5001"
-  }
+  },
+  "cluster" : [ "127.0.0.1" ]
 }
