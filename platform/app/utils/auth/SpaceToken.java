@@ -112,6 +112,9 @@ public class SpaceToken {
 	}
 	
 	private static String remoteAddr(Request req) {
+		if (req.hasHeader("X-Real-IP-LB")) {
+			return req.getHeader("X-Real-IP-LB");
+		}
 		if (req.hasHeader("X-Real-IP")) {
 			return req.getHeader("X-Real-IP");
 		}

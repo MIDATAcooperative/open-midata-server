@@ -15,6 +15,9 @@ import org.bson.BasicBSONObject;
 
 import akka.actor.ActorRef;
 import akka.actor.Props;
+import akka.contrib.pattern.ClusterSingletonManager;
+import akka.contrib.pattern.ClusterSingletonProxy;
+import controllers.AutoRun.ImportManager;
 import models.Consent;
 import models.MidataId;
 import play.libs.Akka;
@@ -32,6 +35,7 @@ import utils.db.LostUpdateException;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 import utils.stats.Stats;
+import utils.sync.Instances;
 
 /**
  * Manages indexes on encrypted data records. Allows creation of new indexes,
@@ -46,9 +50,14 @@ public class IndexManager {
 	private static long UPDATE_UNUSED = 1000 * 60 * 60 * 24;
 	
 	private ActorRef indexSupervisor;
+	private ActorRef indexSupervisorSingleton;
+				
 	
-	public IndexManager() {
-		indexSupervisor = Akka.system().actorOf(Props.create(IndexSupervisor.class), "indexSupervisor");
+	public IndexManager() {		
+		indexSupervisorSingleton = Instances.system().actorOf(ClusterSingletonManager.defaultProps(Props.create(IndexSupervisor.class), "indexSupervisor-instance",
+			    null, null), "indexSupervisor-singleton");
+		
+		indexSupervisor = Instances.system().actorOf(ClusterSingletonProxy.defaultProps("user/indexSupervisor-singleton/indexSupervisor-instance", null), "indexSupervisor");			
 	}
 
 	public IndexPseudonym getIndexPseudonym(APSCache cache, MidataId user, MidataId targetAPS, boolean create) throws AppException {		
