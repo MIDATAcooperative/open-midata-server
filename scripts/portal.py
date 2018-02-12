@@ -40,6 +40,7 @@ class Portal(Product):
 			config = config.replace('NODE_INTERNAL_PORT', instance['node']['port'])
 			config = config.replace('PLATFORM_INTERNAL_PORT', instance['platform']['port'])
 			config = config.replace('INSTANCETYPE', instance['instanceType'])
+			config = config.replace('DEFAULT_LANGUAGE', instance['portal']['defaultLanguage'])
 			config = config.replace('ROOTDIR', self.parent)															
 		with open(os.path.join(self.appconf, 'application.conf'), 'w') as configFile:
 			configFile.write(config)

@@ -13,6 +13,7 @@
      "plugins" : "https://localhost:4000",
      "beta" : false,
      "languages" : "en,de,fr",
+     "defaultLanguage" : "de",
      "countries" : "CH"
   },
   "platform" : {
