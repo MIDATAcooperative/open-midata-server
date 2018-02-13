@@ -18,7 +18,7 @@
     "help_welcome" : {
         "menu" : "Le menu ci-dessus contient les liens suivants:",
         "menu_me" : "Moi",
-        "menu_me_text" : "Votre tableau de bord personnel où vous pouvez placer vos favoris.",
+        "menu_me_text" : "Votre tableau de bord personnel, où vous pouvez placer vos favoris.",
         "menu_overview" : "Vue d'ensemble",
         "menu_overview_text" : "Une vue d'ensemble de toutes les fonctionnalités proposées par la plateforme MIDATA.",
         "menu_config" : "Configuration",
@@ -27,9 +27,7 @@
         "menu_research_text" : "Nouveautés et announces à propos de MIDATA, de la plateforme et de projets de recherche",
         "menu_consents" : "Partage",
         "menu_consents_text" : "Gérez les données que vous partagez avec d'autres utilisateurs.",
-
         "starts" : "Quelques idées pour débuter avec MIDATA:",
-
         "answer_questions" : "Pour commencer, nous vous recommandons de répondre à quelques questions. Votre compte sera préconfiguré d'après vos réponses.",
         "answered_questions" : "Merci d'avoir répondu aux questions de configuration! Vous pouvez maintenant consulter votre tableau de bord et le reconfigurer le cas échéant.",
         "answer_btn" : "Répondre aux questions de configuration maintenant",
@@ -49,10 +47,6 @@
     },
 
     "accountdata" : {
-
-        // TODO CHANGED
-        // OLD: Midata ID:
-        // NEW: MIDATA ID:
         "midata_id" : "ID MIDATA:",
         "birthday" : "Date de naissance:",
         "change_btn" : "Modifier"

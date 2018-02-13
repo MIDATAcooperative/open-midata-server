@@ -50,7 +50,6 @@
             "not_plugin_owner" : "Ce n'est pas votre plugin"
         },
 
-
         "invalid" : {
             "email" : "Veuillez entrer une adresse e-mail valide",
             "credentials" : "Adresse e-mail ou mot de passe invalide.",
@@ -79,7 +78,6 @@
         },
 
         "missing" : {
-
             "credentials" : "Veuillez saisir votre adresse e-mail et mot de passe.",
             "email" : "Veuillez saisir votre adresse e-mail",
             "input_field" : "Veuillez compléter ce champ de saisie.",
@@ -135,12 +133,12 @@
 
         "tooshort" : {
             "password" : "Les mots de passe doivent comporter au moins 8 caractères.",
-            "passphrase" : "La phrase secrète doit contenir au moins 8 caractères."
+            "passphrase" : "Les phrases secrètes doivent contenir au moins 8 caractères."
         },
 
         "tooweak" : {
-            "password" : "Les mots de passe doivent contenir un mélange de lettres majuscules/minuscules, de chiffres et de caractères spéciaux.",
-            "passphrase" : "Les phrases de passe doivent contenir un mélange de lettres majuscules ou minuscules, de chiffres et de caractères spéciaux."
+            "password" : "Les mots de passe doivent contenir des lettres majuscules/minuscules, des chiffres et des caractères spéciaux.",
+            "passphrase" : "Les phrases secrètes doivent contenir des lettres majuscules ou minuscules, des chiffres et des caractères spéciaux."
         },
 
         "concurrent" : {
@@ -194,15 +192,14 @@
             "STUDY_FINISHED" : "Étude terminée",
             "STUDY_ABORTED" : "Étude avortée",
             "REQUIRED_INFORMATION_CHANGED" : "Les informations requises ont changées",
-            "STUDY_SETUP_CHANGED" : "La configuration de l'étude a changée",
+            "STUDY_SETUP_CHANGED" : "La configuration de l'étude a changé",
             "MEMBERSHIP_REQUEST" : "Adhésion demandée",
-            "CONTACT_ADDRESS_CHANGED" : "L'adresse a changée",
+            "CONTACT_ADDRESS_CHANGED" : "L'adresse a changé",
             "CONTRACT_SEND" : "Contrat envoyé",
-            "ADMIN_ACCOUNT_CHANGE" : "Compte modifié par l'administrateur",
+            "ADMIN_ACCOUNT_CHANGE" : "Compte modifié par un administrateur",
             "ACCOUNT_DELETED" : "Compte supprimé",
             "INTERNAL_COMMENT" : "Commentaire interne",
-            "TERMS_OF_USE_AGREED" : "Conditions Générales d'Utilisation acceptées",
-
+            "TERMS_OF_USE_AGREED" : "Conditions générales acceptées",
             "user-registration" : "Inscription de l'utilisateur",
             "110122" : "Connexion",
             "user-password-change" : "Mot de passe modifié",
@@ -245,7 +242,7 @@
             "contract-requested" : "Contrat requis par l'utilisateur",
             "contract-send" : "Contrat envoyé à l'utilisateur",
             "internal-comment" : "Commentaire administrateur",
-            "user-terms-of-use-agreed" : "Conditions d'utilisation acceptées",
+            "user-terms-of-use-agreed" : "Conditions générales acceptées",
             "audit-log-used" : "Audit Log consulté",
             "added-as-team-member" : "Ajouté comme membre d'un team",
             "updated-role-in-team" : "Rôle dans le team modifié",
@@ -388,18 +385,10 @@
             "12" : "Dec."
         },
         "codesystems" : {
-
-            // TODO NEW: Loinc Code
-            "loinc" : "Loinc Code",
-
-            // TODO NEW: Midata Code
-            "midata" : "Midata Code",
-
-            // TODO NEW: FHIR Resource Name
-            "fhir" : "FHIR Resource Name",
-
-            // TODO NEW: Snowmed
-            "snowmed" : "Snowmed"
+            "loinc" : "Code LOINC",
+            "midata" : "Code MIDATA",
+            "fhir" : "FHIR Resource",
+            "snowmed" : "Code SNOMED CT"
         },
         "tags" : {
             "Analysis" : "Analyse",
@@ -479,7 +468,7 @@
             "name" : "MIDATA Suisse (ch.midata.coop)",
             "intro" : "Ceci est la plate-forme MIDATA pour la Suisse.",
             "purpose" : "Il s'agit de la plate-forme productive MIDATA pour stocker des données sur la santé en Suisse.",
-            "access" : "Les nouveaux comptes d'utilisateurs ont des restrictions de fonctionnalité. Les comptes de professionnels de la santé, de recherche et de développement ne peuvent être utilisés qu'après validation par l'agence MIDATA. Les comptes factices ou de test ne sont pas autorisés et seront bloqués.",
+            "access" : "Les nouveaux comptes d'utilisateurs ont des restrictions de fonctionnalité. Les comptes de professionnels de la santé, de recherche et de développement ne peuvent être utilisés qu'après validation par MIDATA. Les comptes factices ou de test ne sont pas autorisés et seront bloqués.",
             "uptime" : "Les plages de maintenance seront annoncés.",
             "data" : "Cette instance stocke des données réelles appartenant à des personnes réelles. Les données sont savegardées quotidiennement."
         }
@@ -513,12 +502,12 @@
         "agb" : "Conditions MIDATA",
         "study" : "Recherche",
         "agb2" : "J'accepte les",
-        "agb3" : "Conditions Générales d'Utilisation",
+        "agb3" : "Conditions générales",
         "privacypolicy2" : "J'accepte la",
         "privacypolicy3" : "Déclaration de confidentialité",
         "app_agb" : "Conditions de l'app",
         "app_agb2" : "J'accepte les",
-        "app_agb3" : "Conditions Générales d'Utilisation de l'app",
+        "app_agb3" : "Conditions générales de l'app",
         "study_agb" : "Conditions de l'étude",
         "sign_up_btn" : "S'inscrire",
         "unlock_code" : "Code d'activation"
@@ -527,9 +516,7 @@
     "login" : {
         "email_address" : "Adresse e-mail",
         "password" : "Mot de passe",
-
-        // TODO NEW: Study
-        "study" : "Study",
+        "study" : "Étude",
         "remember_me" : "Rester connecté",
         "sign_in_btn" : "Se connecter",
         "forgot_your_password" : "Mot de passe oublié?",
@@ -576,7 +563,7 @@
         "contract_instructions" : "Un contrat vous a été adressé par la poste. Veuillez le signer et le renvoyer à MIDATA.",
         "pilot_phase" : "Durant la phase pilote (ainsi que sur l'instance de test), AUCUN contrat n'est envoyé. Un administrateur MIDATA verifiera et validera votre compte. Vous serez averti, lorsque votre compte aure été validé.",
         "code_intructions" : "Une lettre contenant un code de confirmation vous a été adressée par la poste. Veuillez saisir ce code de confirmation pour pouvoir accéder à la plateforme.",
-        "code_done" : "Vous avez saisi le code de confirmation. Vous pourrez vous connecter dès que le contrat signé sera parvenu à l'agence MIDATA.",
+        "code_done" : "Vous avez saisi le code de confirmation. Vous pourrez vous connecter dès que le contrat signé sera parvenu à MIDATA.",
         "enter_now_btn" : "Entrer maintenant",
         "email_success" : "L'adresse e-mail a déjà été confirmée.",
         "address_entered" : "Votre adresse postale est requise pour utiliser ce service, veuillez la saisir.",
@@ -677,19 +664,11 @@
         "account" : "Compte d'utilisateur",
         "user" : "Utilisateur",
         "name" : "Prénom:",
-
-        // TODO CHANGED
-        // OLD: EMail:
-        // NEW: Email:
         "email" : "E-mail:",
         "action" : "Plus...",
         "change_password_btn" : "Changer le mot de passe",
         "change_passphrase_btn" : "Modifier la phrase de passe",
         "auditlog_btn" : "Consulter l'Audit Log",
-
-        // TODO CHANGED
-        // OLD: Change EMail
-        // NEW: Change Email Address
         "change_email_btn" : "Changer l'adresse e-mail",
         "repair_account_btn" : "Réparer le compte",
         "reset_spaces_btn" : "Réinitialiser le portail",
@@ -831,7 +810,7 @@
 
     "records" : {
         "title" : "Mes données",
-        "share_instructions1" : "Utilisez les boutons 'partager' et 'supprimer le partage' pour sélectionner les enregistrementd que vous désirez partager sous le consentement  ",
+        "share_instructions1" : "Utilisez les boutons 'partager' et 'supprimer le partage' pour sélectionner les enregistrements que vous désirez partager sous le consentement ",
         "share_instructions2" : "Ce consentement permet le partage de données avec ",
         "share_instructions3" : "personne(s).",
         "delete_instructions1" : "Afin de ",
@@ -864,8 +843,8 @@
     },
 
     "oauth2" : {
-        "reshares_data" : "L'app peut partager les données auxquelles elle a accès avec des tiers.",
-        "allows_user_search" : "Vos nom et adresse e-mail peuvent être consultés par d'autres utilisateurs de cette app.",
+        "reshares_data" : "L'application peut partager les données auxquelles elle a accès avec des tiers.",
+        "allows_user_search" : "Vos nom et adresse e-mail peuvent être consultés par d'autres personnes utilisant cette application.",
         "requesting_app" : "Cette application demande l'accès:",
         "sign_in" : "Connexion à MIDATA pour:",
         "sign_in_btn" : "Se connecter",
@@ -1048,14 +1027,8 @@
         "MEMBER" : "Compte",
         "PROVIDER" : "Compte (Professionnel de la santé)",
         "RESEARCH" : "Compte (Chercheur)",
-
-        // TODO CHANGED
-        // OLD: Account (Admin)
-        // NEW: Account (Administrator)
         "ADMIN" : "Compte (Administrateur)",
-
-        // TODO NEW: Account (Developer)
-        "DEVELOPER" : "Account (Developer)"
+        "DEVELOPER" : "Account (Développeur)"
     },
 
     "apps" : {
@@ -1068,33 +1041,13 @@
     },
 
     "changeemail" : {
-
-        // TODO CHANGED
-        // OLD: Change Account eMail Address
-        // NEW: Change Account Email Address
         "title" : "Changer l'adresse e-mail du compte",
-
-        // TODO CHANGED
-        // OLD: Midata ID
-        // NEW: MIDATA ID
         "midataId" : "ID MIDATA",
         "name" : "Nom",
-
-        // TODO CHANGED
-        // OLD: Current eMail Address
-        // NEW: Current Email Address
         "old_email" : "Adresse e-mail actuelle",
-
-        // TODO CHANGED
-        // OLD: New eMail Address
-        // NEW: New Email Address
         "new_email" : "Nouvelle adresse e-mail",
         "none" : "Aucune",
         "change_btn" : "Changer",
-
-        // TODO CHANGED
-        // OLD: EMail address successfully changed!
-        // NEW: Email address successfully changed!
         "success" : "L'adresse e-mail a été changée avec succès!"
     }
 }

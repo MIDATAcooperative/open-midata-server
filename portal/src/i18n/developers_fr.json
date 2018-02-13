@@ -56,15 +56,7 @@
             "CONSENT_REJECT_OWNER" : "Refus de consentement (cédant)",
             "CONSENT_REJECT_AUTHORIZED" : "Refus de consentement (bénéficiaire)",
             "ACCOUNT_UNLOCK" : "Compte validé par l'administrateur",
-
-            // TODO CHANGED
-            // OLD: Login email changed (sent to old email address)
-            // NEW: Login email changed (send to old email address)
             "EMAIL_CHANGED_OLDADDRESS" : "Adresse e-mail changée (envoyer à l'ancienne adresse e-mail)",
-
-            // TODO CHANGED
-            // OLD: Login email changed (sent to new email address)
-            // NEW: Login email changed (send to new email address)
             "EMAIL_CHANGED_NEWADDRESS" : "Adresse e-mail changée (envoyer à la nouvelle adresse e-mail)"
         }
     },
@@ -75,13 +67,13 @@
         "debug_btn" : "API Tester",
         "linkedStudy" : "Étude liée à l'app (code)",
         "mustParticipateInStudy" : "Participation à l'étude requise",
-        "admin_only" : "Seul un administrateur MIDATA peux modifier cette section. Veuillez faire une demande si nécessaire.",
-        "terms_of_use" : "Dispositions",
-        "show_terms" : "Afficher les dispositions",
+        "admin_only" : "Seul un administrateur MIDATA peut modifier cette section. Veuillez faire une demande de changement si nécessaire.",
+        "terms_of_use" : "Conditions générales",
+        "show_terms" : "Afficher les conditions générales",
         "unlock_code" : "Code d'activation",
         "info" : {
             "filename" : "Ce nom est utilisé (en interne) pour identifier votre app. Il doit s'agir d'un identificateur valide (a-z, A-Z, 0-9, _).",
-            "targetUserRole" : "Est-ce que votre app est spécifique à un rôle ? Si non, veuillez choisir 'Tous les rôles'.",
+            "targetUserRole" : "Votre app est-elle destinée à un rôle spécifique? Sinon, veuillez choisir 'Tous les rôles'.",
             "type" : "Choisissez 'Plugin' si votre app tourne en temps que plugin sur le portail MIDATA. Choisissez 'Mobile App' pour une app externe. Choisissez 'OAuth1 Import' ou 'OAuth2 Import' si vous vous connectez à un serveur externe par OAuth1 ou OAuth2.",
             "name" : "Le nom de l'app ou du plugin tel qu'il est affiché pour les utilisateurs finaux.",
             "description" : "La description du plugin qui sera affichée sur la place du marché.",
@@ -99,31 +91,15 @@
             "mustParticipateInStudy" : "Les utilisateurs doivent participer à l'étude afin de pouvoir utiliser l'app.",
             "unlock_code" : "Si renseigné, ce code doit être saisi par l'utilisateur lors de l'enregistrement ou lors de la première connexion à MIDATA par cette app. Le code n'est pas sensible à la casse."
         },
-
-        // TODO NEW: Access Query (Options)
         "access_query_options" : "Access Query (Options)",
-
-        // TODO NEW: Access Query (Selection)
-        "access_query_selection" : "Access Query (Selection)",
-
-        // TODO NEW: Access Query (Add)
-        "access_query_add" : "Access Query (Add)",
-
-        // TODO NEW: Access Query (JSON)
+        "access_query_selection" : "Access Query (Sélection)",
+        "access_query_add" : "Access Query (Ajouter)",
         "access_query_json" : "Access Query (JSON)",
         "query" : {
-
-            // TODO NEW: App/Plugin may only access data of the person using it
-            "self" : "App/Plugin may only access data of the person using it",
-
-            // TODO NEW: App/Plugin may only access data created using this app or plugin.
-            "ownapp" : "App/Plugin may only access data created using this app or plugin.",
-
-            // TODO NEW: Add all types written by the app automatically to the Access Query. (MUST be turned off before app goes productive)
-            "learn" : "Add all types written by the app automatically to the Access Query. (MUST be turned off before app goes productive)",
-
-            // TODO NEW: During development allow to access all data of the user. (MUST be replaced with a proper query before plugin goes productive)
-            "all" : "During development allow to access all data of the user. (MUST be replaced with a proper query before plugin goes productive)"
+            "self" : "L'app/le plugin ne peut accéder que les données de l'utilisateur connecté.",
+            "ownapp" : "L'app/le plugin ne peut accéder que les données créées par cette app/ce plugin.",
+            "learn" : "Ajouter automatiquement tous les types de données écrites par cette app à l'Access Query. (DOIT être désactivé avant la mise en production de l'app)",
+            "all" : "Pendant le développement, autoriser l'accès à toutes les données de l'utilisateur. (DOIT être remplacé par un Access Query adéquat avant la mise en production de l'app)"
         }
     },
 

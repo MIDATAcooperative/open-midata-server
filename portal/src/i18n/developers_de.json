@@ -56,15 +56,7 @@
             "CONSENT_REJECT_OWNER" : "Zustimmungsablehnung (Geber)",
             "CONSENT_REJECT_AUTHORIZED" : "Zustimmungsablehnung (Empfänger)",
             "ACCOUNT_UNLOCK" : "Konto vom Administrator freigeschaltet",
-
-            // TODO CHANGED
-            // OLD: Login email changed (sent to old email address)
-            // NEW: Login email changed (send to old email address)
             "EMAIL_CHANGED_OLDADDRESS" : "E-Mail-Adresse geändert (an alte E-Mail-Adresse senden)",
-
-            // TODO CHANGED
-            // OLD: Login email changed (sent to new email address)
-            // NEW: Login email changed (send to new email address)
             "EMAIL_CHANGED_NEWADDRESS" : "E-Mail-Adresse geändert (an neue E-Mail-Adresse senden)"
         }
     },
@@ -75,55 +67,41 @@
         "debug_btn" : "API Tester",
         "linkedStudy" : "Mit der App verknüpfte Studie (Code)",
         "mustParticipateInStudy" : "Studienteilnahme erforderlich",
-        "admin_only" : "Nur ein MIDATA Administrator kann diese Abschnitt ändern. Stellen Sie bitte eine Anfrage für Veränderungen.",
-        "terms_of_use" : "Bestimmungen",
-        "show_terms" : "Bestimmungen anzeigen",
+        "admin_only" : "Nur ein MIDATA Administrator darf diesen Abschnitt ändern. Bitte fordern Sie bei Bedarf Änderungen an.",
+        "terms_of_use" : "Allgemeine Geschäftsbedingungen (AGB)",
+        "show_terms" : "Allgemeine Geschäftsbedingungen (AGB) anzeigen",
         "unlock_code" : "Freischaltcode",
         "info" : {
-            "filename" : "Dieser Name wird intern für die Kennung Ihrer App verwendet. Es sollte einen gültigen Identifikator sein (a-z, A-Z, 0-9, _).",
-            "targetUserRole" : "Dient Ihre App nur für eine spezifische Rolle? Wenn nicht, wählen Sie 'Alle Rollen'.",
+            "filename" : "Dieser Name wird intern für die Kennung Ihrer App verwendet. Es sollte ein gültiger Identifikator sein (a-z, A-Z, 0-9, _).",
+            "targetUserRole" : "Ist Ihre App nur für eine spezifische Rolle bestimmt? Wenn nicht, wählen Sie 'Alle Rollen'.",
             "type" : "Wählen Sie 'Plugin' wenn Ihre App im MIDATA-Portal laufen wird. Wählen Sie 'Mobile App' für eine externe App. Wählen Sie 'OAuth1 Import' oder 'OAuth2 Import' wenn Sie sich über OAuth1 oder OAuth2 mit einem externen Server verbinden.",
             "name" : "Der Name der App oder des Plugins für den Endbenutzer.",
             "description" : "Die Beschreibung des Plugins, die im Markplatz erscheinen wird.",
             "resharesData" : "Die App darf Daten, auf die sie Zugriff hat, an Drittparteien weitergeben.",
             "allowsUserSearch" : "Benutzer dieser App dürfen nach anderen Benutzern der gleichen App suchen.",
+            // TODO Dashboard
             "defaultSpaceName" : "Titel der Kachel des Plugins auf dem Dashboard.",
             "tags" : "Kategorien unter welchen das Plugin im Marktplatz erscheinen wird.",
             "url" : "URL der Hauptseite des Plugins. Wenn Sie das MIDATA-Template verwenden ist es 'dist/index.html#?authToken=:authToken''",
             "previewUrl" : "URL der Dashboard-Kachel des Plugins. Leer lassen falls keine solche Kachel angeboten wird.",
-            "defaultSpaceContext" : "Wählen Sie 'Mich' für den Standard-Dashboard. Wählen Sie 'Konfiguration' für ein Import-Plugin.",
+            // TODO Konfiguration -> heisst jetzt anders
+            "defaultSpaceContext" : "Wählen Sie 'Mich' für das Standard-Dashboard. Wählen Sie 'Konfiguration' für ein Import-Plugin.",
             "defaultQuery_mobile" : "Query das den Zugriff der App auf die Datenbank begrenzt. Der Zugriff muss eingeschränkt werden nach 'code', 'content' oder 'group' und kann eingeschränkt werden nach 'format' oder 'owner'. Gültiges Beispiel (alle Observations): '{ \"group\" : \"all\", \"group-system\" : \"v1\", \"format\" : [\"fhir/Observation\" ] }'",
             "defaultQuery" : "Query, das den Zugriff des Plugins auf die Datenbank begrenzt. Der Zugriff muss mindestens eingeschränkt werden nach 'code', 'content', 'group', 'format' oder 'owner'. Gültiges Beispiel (alle Observations): '{ \"format\" : [\"fhir/Observation\" ] }'",
             "defaultQuery_extra" : "Gültige Werte für 'code', 'content' oder 'format' sind im Developer Guide unter 'Format/Content' aufgelistet. Für erste Versionen kann der Vollzugriff erstattet werden mit { \"group\" : \"all\", \"group-system\" : \"v1\" }. Schränken Sie allerdings den Zugriff weiter ein, bevor das Plugin oder die App produktiv eingesetzt wird.",
             "secret" : "Ihre App braucht dieses 'secret' um sich anmelden zu können. Wählen Sie es nach Belieben.",
-            "mustParticipateInStudy" : "Benutzer müssen an der Studie teilnehmen um diese App benutzen zu können.",
-            "unlock_code" : "Wenn ausgefüllt, muss dieser Code vom Benutzer eingegeben werden bei der Registrierung oder ersten Anmeldung bei MIDATA über die App. Der Code ist nicht 'case sensitiv'."
+            "mustParticipateInStudy" : "Benutzer müssen an der Studie teilnehmen, um diese App benutzen zu können.",
+            "unlock_code" : "Wenn ausgefüllt, muss dieser Code vom Benutzer bei der Registrierung oder ersten Anmeldung bei MIDATA über die App eingegeben werden. Der Code ist nicht 'case sensitiv'."
         },
-
-        // TODO NEW: Access Query (Options)
-        "access_query_options" : "Access Query (Options)",
-
-        // TODO NEW: Access Query (Selection)
-        "access_query_selection" : "Access Query (Selection)",
-
-        // TODO NEW: Access Query (Add)
-        "access_query_add" : "Access Query (Add)",
-
-        // TODO NEW: Access Query (JSON)
+        "access_query_options" : "Access Query (Optionen)",
+        "access_query_selection" : "Access Query (Auswahl)",
+        "access_query_add" : "Access Query (Hinzufügen)",
         "access_query_json" : "Access Query (JSON)",
         "query" : {
-
-            // TODO NEW: App/Plugin may only access data of the person using it
-            "self" : "App/Plugin may only access data of the person using it",
-
-            // TODO NEW: App/Plugin may only access data created using this app or plugin.
-            "ownapp" : "App/Plugin may only access data created using this app or plugin.",
-
-            // TODO NEW: Add all types written by the app automatically to the Access Query. (MUST be turned off before app goes productive)
-            "learn" : "Add all types written by the app automatically to the Access Query. (MUST be turned off before app goes productive)",
-
-            // TODO NEW: During development allow to access all data of the user. (MUST be replaced with a proper query before plugin goes productive)
-            "all" : "During development allow to access all data of the user. (MUST be replaced with a proper query before plugin goes productive)"
+            "self" : "App/Plugin kann nur auf Daten des angemeldeten Benutzers zugreifen.",
+            "ownapp" : "App/Plugin kann nur auf Daten zugreifen, die mittels dieser App/diesem Plugin erstellt wurden.",
+            "learn" : "Alle Datentypen, die diese App schreibt, automatisch zum Access Query hinzufügen. (MUSS ausgeschaltet werden bevor die App produktiv eingesetzt wird)",
+            "all" : "Während der Entwicklung, Zugriff auf alle Daten des Benutzers erlauben. (MUSS durch ein geeignetes Access Query ersetzt werden bevor das Plugin produktiv eingesetzt wird)"
         }
     },
 
@@ -134,14 +112,14 @@
         "lastrun" : "Zuletzt ausgeführt",
         "count" : "Statistiken",
         "run" : "Anzahl Ausführungen dieser Aktion.",
-        "retry" : "Anzahl Mal die Operation wiederholt werden musste auf Grund von Parallelitätsprobleme.",
-        "db" : "Durchschnittliche Anzahl internen Datenbankabfragen (MongoDB) pro Ausführung der Operation.",
+        "retry" : "Anzahl Wiederholungsversuche auf Grund von Parallelitätsproblemen.",
+        "db" : "Durchschnittliche Anzahl interner Datenbankabfragen (MongoDB) je Ausführung der Operation.",
         "time" : "Ausführungsdauer",
         "avgtime" : "Durchschnitt",
         "lasttime" : "Zuletzt",
         "results" : "Resultate und Warnungen",
         "result" : "Antwort",
-        "empty" : "Keine Angaben wurden aufgezeichnet seit die Debug-Informationen gelöscht wurden.",
+        "empty" : "Seit die Debug-Informationen gelöscht wurden, sind keine Angaben aufgezeichnet worden.",
         "reload_btn" : "Aktualisieren",
         "reset_btn" : "Löschen"
     },
