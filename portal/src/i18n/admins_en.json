@@ -6,7 +6,7 @@
     "plugins" : "Plugins",
 	"content" : "Content",
 	"studies" : "Studies",
-	"terms" : "Terms",	
+	"terms" : "Terms and Conditions",
 	"registration" : "Register Admin"
   },
   
@@ -15,14 +15,14 @@
     "search_type" : "Search",
     "contract_required" : "Contract needs to be sent",
     "contract_confirm_required" : "Signed contract needs to be confirmed",
-    "no_email_confirm" : "Email not confirmed by user",
+    "no_email_confirm" : "Email not yet confirmed by user",
     "email_rejected" : "Email confirmation rejected by user",
 	"not_admin_confirmed" : "Not confirmed by administrator",
     "overview" : "Overview",
     "specific_user" : "Specific User",
     "role" : "Role",
     "status" : "Status",
-    "midata_id" : "midataID",
+    "midata_id" : "MIDATA-ID",
     "empty" : "No matching users found."
   },
 
@@ -98,8 +98,8 @@
   },
   
   "admin_terms" : {
-    "title" : "Terms",
-    "empty" : "No terms available.",
+    "title" : "Terms and Conditions",
+    "empty" : "No Terms and Conditions available.",
     "name" : "Name",
     "version" : "Version",
     "language" : "Language",
@@ -107,7 +107,7 @@
   },
   
   "admin_manageterms" : {
-    "pagetitle" : "Terms",
+    "pagetitle" : "Terms and Conditions",
     "name" : "Internal Name",
     "version" : "Version",
     "language" : "Language",
@@ -127,7 +127,7 @@
      "dataCreatedBefore" : "Data freeze date",
      "required_information" : "Required Information",
      "required_assistance" : "Required Assistance",
-     "termsOfUse" : "Terms",
+     "termsOfUse" : "Terms and Conditions",
      "sharing_query" : "Sharing Query",
      "requirements" : "Requirements",
      "groups" : "Groups",

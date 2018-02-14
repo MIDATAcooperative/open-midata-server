@@ -67,13 +67,13 @@
         "debug_btn" : "API Tester",
         "linkedStudy" : "Étude liée à l'app (code)",
         "mustParticipateInStudy" : "Participation à l'étude requise",
-        "admin_only" : "Seul un administrateur MIDATA peux modifier cette section. Veuillez faire une demande si nécessaire.",
-        "terms_of_use" : "Dispositions",
-        "show_terms" : "Afficher les dispositions",
+        "admin_only" : "Seul un administrateur MIDATA peut modifier cette section. Veuillez faire une demande de changement si nécessaire.",
+        "terms_of_use" : "Conditions générales",
+        "show_terms" : "Afficher les conditions générales",
         "unlock_code" : "Code d'activation",
         "info" : {
             "filename" : "Ce nom est utilisé (en interne) pour identifier votre app. Il doit s'agir d'un identificateur valide (a-z, A-Z, 0-9, _).",
-            "targetUserRole" : "Est-ce que votre app est spécifique à un rôle ? Si non, veuillez choisir 'Tous les rôles'.",
+            "targetUserRole" : "Votre app est-elle destinée à un rôle spécifique? Sinon, veuillez choisir 'Tous les rôles'.",
             "type" : "Choisissez 'Plugin' si votre app tourne en temps que plugin sur le portail MIDATA. Choisissez 'Mobile App' pour une app externe. Choisissez 'OAuth1 Import' ou 'OAuth2 Import' si vous vous connectez à un serveur externe par OAuth1 ou OAuth2.",
             "name" : "Le nom de l'app ou du plugin tel qu'il est affiché pour les utilisateurs finaux.",
             "description" : "La description du plugin qui sera affichée sur la place du marché.",
@@ -90,6 +90,16 @@
             "secret" : "Votre app aura besoin de ce 'secret' pour se connecter. Choisissez le librement.",
             "mustParticipateInStudy" : "Les utilisateurs doivent participer à l'étude afin de pouvoir utiliser l'app.",
             "unlock_code" : "Si renseigné, ce code doit être saisi par l'utilisateur lors de l'enregistrement ou lors de la première connexion à MIDATA par cette app. Le code n'est pas sensible à la casse."
+        },
+        "access_query_options" : "Access Query (Options)",
+        "access_query_selection" : "Access Query (Sélection)",
+        "access_query_add" : "Access Query (Ajouter)",
+        "access_query_json" : "Access Query (JSON)",
+        "query" : {
+            "self" : "L'app/le plugin ne peut accéder que les données de l'utilisateur connecté.",
+            "ownapp" : "L'app/le plugin ne peut accéder que les données créées par cette app/ce plugin.",
+            "learn" : "Ajouter automatiquement tous les types de données écrites par cette app à l'Access Query. (DOIT être désactivé avant la mise en production de l'app)",
+            "all" : "Pendant le développement, autoriser l'accès à toutes les données de l'utilisateur. (DOIT être remplacé par un Access Query adéquat avant la mise en production de l'app)"
         }
     },
 

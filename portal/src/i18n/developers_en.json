@@ -67,9 +67,9 @@
     "debug_btn" : "API Tester",
     "linkedStudy" : "Study linked to App (Code)",
     "mustParticipateInStudy" : "Study Participation Required",
-    "admin_only" : "Only a MIDATA admin may change this section. Please request changes if required.",
-    "terms_of_use" : "Terms",
-    "show_terms" : "Show terms",
+    "admin_only" : "Only a MIDATA administrator may change this section. Please request changes if required.",
+    "terms_of_use" : "Terms and Conditions",
+    "show_terms" : "Show Terms and Conditions",
     "unlock_code" : "Code for registration",    
     "info" : {
        "filename" : "This name is internally used to identify your app. Should be a valid identifier (a-z, A-Z, 0-9, _).",
@@ -96,12 +96,13 @@
     "access_query_add" : "Access Query (Add)",
     "access_query_json" : "Access Query (JSON)",
     "query" : {
-      "self" : "App/Plugin may only access data of the person using it",
+      "self" : "App/Plugin may only access data of the user logged in.",
       "ownapp" : "App/Plugin may only access data created using this app or plugin.",
-      "learn" : "Add all types written by the app automatically to the Access Query. (MUST be turned off before app goes productive)",
-      "all" : "During development allow to access all data of the user. (MUST be replaced with a proper query before plugin goes productive)"
+      "learn" : "Add all data types written by the app automatically to the Access Query. (MUST be turned off before app goes productive)",
+      "all" : "During development allow to access all data of the user. (MUST be replaced with a proper Access Query before plugin goes productive)"
     },
     "export_btn" : "Export"
+
   },
   
   "appstats" : {
