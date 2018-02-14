@@ -7,10 +7,6 @@
         "plugins" : "Plugins",
         "content" : "Inhalt",
         "studies" : "Studien",
-
-        // TODO CHANGED
-        // OLD: Terms
-        // NEW: Terms and Conditions
         "terms" : "Allgemeine Geschäftsbedingungen (AGB)",
         "registration" : "Administrator registrieren"
     },
@@ -20,10 +16,6 @@
         "search_type" : "Suche",
         "contract_required" : "Der Vertrag muss versandt werden",
         "contract_confirm_required" : "Der unterschriebene Vertrag muss bestätigt werden",
-
-        // TODO CHANGED
-        // OLD: Email not confirmed by user
-        // NEW: Email not yet confirmed by user
         "no_email_confirm" : "E-Mail vom Benutzer noch nicht bestätigt",
         "email_rejected" : "E-Mail-Bestätigung vom Benutzer abgelehnt",
         "not_admin_confirmed" : "Nicht vom Administrator bestätigte Accounts",
@@ -31,10 +23,6 @@
         "specific_user" : "Bestimmter Benutzer",
         "role" : "Rolle",
         "status" : "Status",
-
-        // TODO CHANGED
-        // OLD: midataID
-        // NEW: MIDATA-ID
         "midata_id" : "MIDATA-ID",
         "empty" : "Kein passender Benutzer gefunden."
     },
@@ -86,45 +74,21 @@
     "admin_plugins" : {
         "title" : "Plugins",
         "developer" : "Nach Entwickler filtern",
-
-        // TODO NEW: Filter by Appname
-        "name" : "Filter by Appname",
-
-        // TODO NEW: Filter by Organisation
-        "organisation" : "Filter by Organisation",
+        "name" : "Nach Applikationsname filtern",
+        "organisation" : "Nach Organisation filtern",
         "empty" : "Es gibt noch keine Apps oder Plugins.",
-
-        // TODO NEW: Name
         "plugin_name" : "Name",
-
-        // TODO NEW: Developer
-        "plugin_developer" : "Developer",
-
-        // TODO NEW: Type
-        "plugin_type" : "Type",
-
-        // TODO NEW: Target Role
-        "plugin_role" : "Target Role",
-
-        // TODO NEW: Market
-        "plugin_market" : "Market",
-
-        // TODO NEW: Stats
-        "plugin_stats" : "Stats",
-
-        // TODO NEW: Status
+        "plugin_developer" : "Entwickler",
+        "plugin_type" : "Typ",
+        "plugin_role" : "Zielrolle",
+        "plugin_market" : "MISTORE",
+        "plugin_stats" : "Statistiken",
         "plugin_status" : "Status",
-
-        // TODO NEW: Import Plugin Definition
-        "add_definition_btn" : "Import Plugin Definition"
+        "add_definition_btn" : "Plugin-Definition importieren"
     },
 
     "admin_defineplugin" : {
-
-        // TODO NEW: Import Plugin Definition
-        "title" : "Import Plugin Definition",
-
-        // TODO NEW: Definition (JSON)
+        "title" : "Plugin-Definition importieren",
         "definition" : "Definition (JSON)"
     },
 
@@ -135,15 +99,7 @@
     },
 
     "admin_terms" : {
-
-        // TODO CHANGED
-        // OLD: Terms
-        // NEW: Terms and Conditions
         "title" : "Allgemeine Geschäftsbedingungen (AGB)",
-
-        // TODO CHANGED
-        // OLD: No terms available.
-        // NEW: No Terms and Conditions available.
         "empty" : "Keine Allgemeine Geschäftsbedingungen vorhanden.",
         "name" : "Name",
         "version" : "Version",
@@ -152,10 +108,6 @@
     },
 
     "admin_manageterms" : {
-
-        // TODO CHANGED
-        // OLD: Terms
-        // NEW: Terms and Conditions
         "pagetitle" : "Allgemeine Geschäftsbedingungen (AGB)",
         "name" : "Interner Name",
         "version" : "Version",
@@ -176,12 +128,8 @@
         "dataCreatedBefore" : "Datenbestand eingefroren ab dem",
         "required_information" : "Benötigte Informationen",
         "required_assistance" : "Belegarzt benötigt",
-
-        // TODO CHANGED
-        // OLD: Terms
-        // NEW: Terms and Conditions
         "termsOfUse" : "Allgemeine Geschäftsbedingungen (AGB)",
-        "sharing_query" : "Sharing Query",
+        "sharing_query" : "Data Access Filter",
         "requirements" : "Anforderungen",
         "groups" : "Gruppen",
         "group_name" : "Name der Gruppe",

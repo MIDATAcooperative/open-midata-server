@@ -18,10 +18,6 @@
     "help_welcome" : {
         "menu" : "Le menu ci-dessus contient les liens suivants:",
         "menu_me" : "Moi",
-
-        // TODO CHANGED
-        // OLD: Your personal dashboard where you can place whatever functionality you need most.
-        // NEW: Your personal dashboard, where you can place whatever functionality you need most.
         "menu_me_text" : "Votre tableau de bord personnel, où vous pouvez placer vos favoris.",
         "menu_overview" : "Vue d'ensemble",
         "menu_overview_text" : "Une vue d'ensemble de toutes les fonctionnalités proposées par la plateforme MIDATA.",

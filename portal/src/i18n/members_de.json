@@ -17,13 +17,8 @@
 
     "help_welcome" : {
         "menu" : "Das oben stehende Menü enthält folgende Verknüpfungen:",
-
         // todo: Mich oder Dashboard?
         "menu_me" : "Mich",
-
-        // TODO CHANGED
-        // OLD: Your personal dashboard where you can place whatever functionality you need most.
-        // NEW: Your personal dashboard, where you can place whatever functionality you need most.
         "menu_me_text" : "Ihr persönliches Dashboard, wo Sie Ihre Favoriten platzieren können.",
         "menu_overview" : "Übersicht",
         "menu_overview_text" : "Eine Übersicht über alle Funktionen, die die MIDATA-Plattform anbietet.",
