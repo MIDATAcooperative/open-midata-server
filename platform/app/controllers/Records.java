@@ -1,15 +1,20 @@
 package controllers;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.codec.binary.Base64InputStream;
 import org.bson.BSONObject;
+import org.hl7.fhir.dstu3.model.DomainResource;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -19,11 +24,16 @@ import models.Consent;
 import models.FormatInfo;
 import models.Member;
 import models.MidataId;
+import models.Model;
 import models.Plugin;
 import models.Record;
 import models.RecordsInfo;
 import models.Space;
+import models.Study;
+import models.StudyParticipation;
+import models.StudyRelated;
 import models.User;
+import models.UserGroupMember;
 import models.enums.AggregationType;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
@@ -33,15 +43,23 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import play.mvc.Results.Chunks;
+import play.mvc.Results.StringChunks;
 import utils.AccessLog;
+import utils.ErrorReporter;
+import utils.ServerTools;
 import utils.access.APS;
+import utils.access.DBIterator;
 import utils.access.Feature_FormatGroups;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
+import utils.auth.ExecutionInfo;
+import utils.auth.KeyManager;
 import utils.auth.MemberSecured;
 import utils.auth.PortalSessionToken;
 import utils.auth.RecordToken;
+import utils.auth.ResearchSecured;
 import utils.auth.SpaceToken;
 import utils.collections.CMaps;
 import utils.collections.ReferenceTool;
@@ -49,8 +67,14 @@ import utils.collections.Sets;
 import utils.db.FileStorage.FileData;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
+import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.exceptions.RequestTooLargeException;
+import utils.fhir.FHIRServlet;
+import utils.fhir.FHIRTools;
+import utils.fhir.PractitionerResourceProvider;
+import utils.fhir.ResourceProvider;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
@@ -133,8 +157,17 @@ public class Records extends APIController {
 		
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
-					
-	    records.addAll(RecordManager.instance.list(userId, aps, properties, fields));	
+			
+		if (!properties.containsKey("limit")) {
+			properties.put("limit", 10000);
+			properties.put("consent-limit", 1000);
+		}
+		
+		try {
+	      records.addAll(RecordManager.instance.list(userId, aps, properties, fields));
+		} catch (RequestTooLargeException e) {
+			return ok();
+		}
 				
 		Collections.sort(records);
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
@@ -161,9 +194,13 @@ public class Records extends APIController {
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));			
 		
 		AggregationType aggrType = json.has("summarize") ? JsonValidation.getEnum(json, "summarize", AggregationType.class) : AggregationType.GROUP;
-	    Collection<RecordsInfo> result = RecordManager.instance.info(userId, aps, null, properties, aggrType);	
-						
-		return ok(Json.toJson(result));
+		
+		try {
+	      Collection<RecordsInfo> result = RecordManager.instance.info(userId, aps, null, properties, aggrType);						
+		  return ok(Json.toJson(result));
+		} catch (RequestTooLargeException e) {
+			return status(202);
+		}
 	}
 	
 	/**
@@ -199,12 +236,16 @@ public class Records extends APIController {
 		result.set("query", Json.toJson(query));
 		
 		if (readRecords) {
-			Set<String> recordsIds = RecordManager.instance.listRecordIds(userId, apsId);		
-			Map<String, Object> props = new HashMap<String, Object>();
-			Collection<RecordsInfo> infos = RecordManager.instance.info(userId, apsId, null, props, AggregationType.CONTENT);
-								
-			result.set("records", Json.toJson(recordsIds));		
-			result.set("summary", Json.toJson(infos));
+			Set<String> recordsIds = RecordManager.instance.listRecordIds(userId, apsId);
+			result.set("records", Json.toJson(recordsIds));	
+
+			try {
+				Map<String, Object> props = new HashMap<String, Object>();
+				Collection<RecordsInfo> infos = RecordManager.instance.info(userId, apsId, null, props, AggregationType.CONTENT);										
+				result.set("summary", Json.toJson(infos));
+			} catch (RequestTooLargeException e) {
+			  result.putArray("summary");
+			}
 		} else {
 			result.putArray("records");
 			result.putArray("summary");
@@ -298,7 +339,7 @@ public class Records extends APIController {
 			String id = JsonValidation.getString(json, "_id");
 			RecordToken tk = getRecordTokenFromString(id);
 			AuditManager.instance.addAuditEvent(AuditEventType.DATA_DELETION, null, userId, null, "id="+tk.recordId);
-			RecordManager.instance.wipe(userId, CMaps.map("_id", tk.recordId));
+			RecordManager.instance.delete(userId, CMaps.map("_id", tk.recordId));
 		} else if (json.has("group") || json.has("content") || json.has("app")) {
 			
 			Map<String, Object> properties = new HashMap<String, Object>();
@@ -311,7 +352,7 @@ public class Records extends APIController {
 			}
 			
 			AuditManager.instance.addAuditEvent(AuditEventType.DATA_DELETION, null, userId, null, message);
-			RecordManager.instance.wipe(userId,  properties);			
+			RecordManager.instance.delete(userId,  properties);			
 		}
 		AuditManager.instance.success();
 		
@@ -339,14 +380,7 @@ public class Records extends APIController {
 		Set<MidataId> stopped = ObjectIdConversion.toMidataIds(JsonExtraction.extractStringSet(json.get("stopped")));
 		Set<String> recordIds = JsonExtraction.extractStringSet(json.get("records"));		
 		Map<String, Object> query = json.has("query") ? JsonExtraction.extractMap(json.get("query")) : null;
-		String groupSystem = null;
-		if (query != null) {
-			if (query.containsKey("group-system")) {
-			  groupSystem = query.get("group-system").toString();
-			} else {
-			  groupSystem = "v1";
-			}
-		}
+		
 		
 		if (query != null && query.isEmpty()) query = null;
 			
@@ -391,7 +425,7 @@ public class Records extends APIController {
         	
         	if (query != null) {
         		        		
-        		Feature_FormatGroups.convertQueryToContents(groupSystem, query);        		
+        		Feature_FormatGroups.convertQueryToContents(query);        		
         		        		
         		
         		if (consent == null || consent.type.equals(ConsentType.EXTERNALSERVICE)) {
@@ -442,7 +476,7 @@ public class Records extends APIController {
         	}
         	
         	if (query != null) {
-        		Feature_FormatGroups.convertQueryToContents(groupSystem, query);
+        		Feature_FormatGroups.convertQueryToContents(query);
         		
         		if (consent == null || consent.type.equals(ConsentType.EXTERNALSERVICE)) {
         		  RecordManager.instance.shareByQuery(userId, userId, start, query);
@@ -474,7 +508,7 @@ public class Records extends APIController {
 		FormatInfo format = FormatInfo.getByName(record.format);
 		if (format == null || format.visualization == null) return ok();
 		
-		Plugin visualization = Plugin.getById(format.visualization);
+		Plugin visualization = Plugin.getByFilename(format.visualization, Plugin.ALL_PUBLIC);
 		if (visualization == null) return ok();
 					
 		// create encrypted authToken
@@ -526,5 +560,88 @@ public class Records extends APIController {
 		RecordManager.instance.fixAccount(userId);
 		
 		return ok();
+	}
+	
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public static Result downloadAccountData() throws AppException, IOException {
+		 
+		 final MidataId executorId = new MidataId(request().username());
+		   		 
+		 AuditManager.instance.addAuditEvent(AuditEventType.DATA_EXPORT, executorId);
+		 		 		 
+		 setAttachmentContentDisposition("yourdata.json");
+				 		 				 				
+		 final String handle = PortalSessionToken.session().handle;
+		 
+		 
+		 Chunks<String> chunks = new StringChunks() {
+                
+		        // Called when the stream is ready
+		        public void onReady(Chunks.Out<String> out) {
+		        	try {
+		        		KeyManager.instance.continueSession(handle);
+		        		ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId));
+		        		out.write("{ \"resourceType\" : \"Bundle\", \"type\" : \"searchset\", \"entry\" : [ ");
+
+		        		boolean first = true;
+		        		
+		        				        				        				        		
+		        
+		        		DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, executorId, CMaps.map("owner", "self"), RecordManager.COMPLETE_DATA);
+		        		
+		        		while (allRecords.hasNext()) {
+				            
+                           Record rec = allRecords.next();
+				            	
+				            	String format = rec.format.startsWith("fhir/") ? rec.format.substring("fhir/".length()) : "Basic";
+				            	
+				            	ResourceProvider<DomainResource, Model> prov = FHIRServlet.myProviders.get(format); 
+				            	DomainResource r = prov.parse(rec, prov.getResourceType());
+				            	String location = FHIRServlet.getBaseUrl()+"/"+prov.getResourceType().getSimpleName()+"/"+rec._id.toString()+"/_history/"+rec.version;
+				            	if (r!=null) {
+				            		String ser = prov.serialize(r);
+				            		int attpos = ser.indexOf(FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING);
+				            		if (attpos > 0) {
+				            			out.write((first?"":",")+"{ \"fullUrl\" : \""+location+"\", \"resource\" : "+ser.substring(0, attpos));
+				            			FileData fileData = RecordManager.instance.fetchFile(executorId, new RecordToken(rec._id.toString(), rec.stream.toString()));
+				            			
+				            			
+				            			int BUFFER_SIZE = 3 * 1024;
+
+				            			try ( InputStreamReader in = new InputStreamReader(new Base64InputStream(fileData.inputStream, true, -1, null)); ) {				            			    
+				            			    
+				            			    char[] chunk = new char[BUFFER_SIZE];
+				            			    int len = 0;
+				            			    while ( (len = in.read(chunk)) != -1 ) {				            			    	
+				            			         out.write(String.valueOf(chunk, 0, len));
+				            			    }
+				            			    
+				            			}
+				            							            							            			
+				            			out.write(ser.substring(attpos+FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING.length())+" } ");
+				            		} else out.write((first?"":",")+"{ \"fullUrl\" : \""+location+"\", \"resource\" : "+ser+" } ");
+				            	} else {
+				            		out.write((first?"":",")+"{ \"fullUrl\" : \""+location+"\" } ");
+				            	}
+			            		first = false;
+				            }
+		        		
+		        				        		
+		        		out.write("] }");
+			        	out.close();
+		        	} catch (Exception e) {
+		        		AccessLog.logException("download", e);
+		        		ErrorReporter.report("Account export", null, e);		        		
+		        	} finally {
+		        		ServerTools.endRequest();		        		
+		        	}
+		        }
+
+		 };
+
+		 AuditManager.instance.success();
+		    // Serves this stream with 200 OK
+		  return ok(chunks);			    				 
 	}
 }

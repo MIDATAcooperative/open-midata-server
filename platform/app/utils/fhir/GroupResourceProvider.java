@@ -42,6 +42,7 @@ import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.api.SummaryEnum;
+import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.param.CompositeAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
@@ -70,7 +71,7 @@ import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.stats.Stats;
 
-public class GroupResourceProvider extends ResourceProvider<Group> implements IResourceProvider {
+public class GroupResourceProvider extends RecordBasedResourceProvider<Group> implements IResourceProvider {
 
 	public GroupResourceProvider() {
 		registerSearches("Group", getClass(), "getGroup");
@@ -204,7 +205,12 @@ public class GroupResourceProvider extends ResourceProvider<Group> implements IR
 	    		Integer theCount,
 	    		
 	    		SummaryEnum theSummary, // will receive the summary (no annotation required)
-	    	    @Elements Set<String> theElements
+	    	    @Elements Set<String> theElements,
+	    	    
+	    	    @OptionalParam(name="_page")
+				StringParam _page,
+				
+				RequestDetails theDetails
 	    
 	    		) throws AppException {
 	    	

@@ -1,0 +1,27 @@
+{
+  "name" : "test",
+  "domain" : "localhost",
+  "instanceType" : "local",
+  "certificate" : {
+    "pem" : "ROOTDIR/ssl-certificate/server.pem",
+    "key" : "ROOTDIR/ssl-certificate/server.pem",
+    "dhparams" : "ROOTDIR/ssl-certificate/dhparams.pem"
+  },
+  "portal" : {
+     "origin" : "https://localhost:9002",
+     "backend" : "https://localhost:9000",
+     "plugins" : "https://localhost:4000",
+     "beta" : false,
+     "languages" : "en,de,fr",
+     "defaultLanguage" : "de",
+     "countries" : "CH"
+  },
+  "platform" : {
+     "port" : "9001",     
+     "hostname" : "127.0.0.1"
+   },
+  "node" : {
+     "port" : "5001"
+  },
+  "cluster" : [ "127.0.0.1" ]
+}

@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,11 +34,22 @@ import utils.exceptions.InternalServerException;
  */
 class QueryEngine {
 
-	public static List<Record> list(APSCache cache, MidataId aps, AccessContext context, Map<String, Object> properties, Set<String> fields) throws AppException {
-		return RecordConversion.instance.currentVersionFromDB(fullQuery(properties, fields, aps, context, cache));
+	public final static Map<String, Object> NOTNULL = Collections.unmodifiableMap(Collections.singletonMap("$ne", null));
+
+	
+	public static List<Record> list(APSCache cache, MidataId aps, AccessContext context, Map<String, Object> properties, Set<String> fields) throws AppException {		
+ 		return RecordConversion.instance.currentVersionFromDB(ProcessingTools.collect(fullQuery(properties, fields, aps, context, cache)));		
 	}
 	
-	public static List<DBRecord> listInternal(APSCache cache, MidataId aps, AccessContext context, Map<String, Object> properties, Set<String> fields) throws AppException {
+	public static DBIterator<Record> listIterator(APSCache cache, MidataId aps, AccessContext context, Map<String, Object> properties, Set<String> fields) throws AppException {		
+ 		return new ProcessingTools.ConvertIterator(fullQuery(properties, fields, aps, context, cache));		
+	}
+	
+	public static List<DBRecord> listInternal(APSCache cache, MidataId aps, AccessContext context, Map<String, Object> properties, Set<String> fields) throws AppException {		
+		return ProcessingTools.collect(fullQuery(properties, fields, aps, context, cache));		
+	}
+	
+	public static DBIterator<DBRecord> listInternalIterator(APSCache cache, MidataId aps, AccessContext context, Map<String, Object> properties, Set<String> fields) throws AppException {
 		return fullQuery(properties, fields, aps, context, cache);
 	}
 	
@@ -66,11 +78,10 @@ class QueryEngine {
 		if (AccessLog.detailedLog) AccessLog.logBegin("Begin list from memory #recs="+records.size());
 		APS inMemory = new Feature_InMemoryQuery(records);
 		context.getCache().addAPS(inMemory);
-		Feature qm = new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_ContentFilter(inMemory)));
-		Query query = new Query(properties, Sets.create("_id"), context.getCache(), inMemory.getId(), context);
-		List<DBRecord> recs = qm.query(query);
-		AccessLog.log("list from memory pre postprocess size = "+recs.size());
-		List<DBRecord> result = postProcessRecords(query.getProperties(), recs);		
+		Feature qm = new Feature_Or(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_ContentFilter(inMemory))));		
+		DBIterator<DBRecord> recs = qm.iterator(new Query(properties, Sets.create("_id"), context.getCache(), inMemory.getId(),context));
+		//AccessLog.log("list from memory pre postprocess size = "+recs.size());
+		List<DBRecord> result = ProcessingTools.collect(recs);		
 		if (AccessLog.detailedLog) AccessLog.logEnd("End list from memory #recs="+result.size());
 		return result;
 	}
@@ -146,9 +157,9 @@ class QueryEngine {
 		
 		
 		Feature qm = new Feature_Prefetch(new Feature_BlackList(myaps, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_UserGroups(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Streams())))))))));
-				
-		List<DBRecord> recs = qm.query(q);
-		recs = postProcessRecords(q.getProperties(), recs);
+						 
+		List<DBRecord> recs = ProcessingTools.collect(ProcessingTools.noDuplicates(qm.iterator(q)));
+		
 		if (!cached) q.getCache().prefetch(recs);
 		
 		
@@ -202,38 +213,44 @@ class QueryEngine {
 		return result.values();
 	}
 	
-    public static List<DBRecord> fullQuery(Map<String, Object> properties, Set<String> fields, MidataId aps, AccessContext context, APSCache cache) throws AppException {
+    public static DBIterator<DBRecord> fullQuery(Map<String, Object> properties, Set<String> fields, MidataId aps, AccessContext context, APSCache cache) throws AppException {
     	AccessLog.logBegin("begin full query on aps="+aps.toString());
     	long queryStart = System.currentTimeMillis();
     	if (context == null) context = new DummyAccessContext(cache);
     	Feature qm = null;
     	MidataId userGroup = Feature_UserGroups.identifyUserGroup(cache, aps);
     	if (userGroup != null) {
+    		AccessLog.log("with usergroup");
     		properties = new HashMap<String, Object>(properties);
     		properties.put("usergroup", userGroup);
-    		qm = new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams()))))))))));
+    		qm = new Feature_Pagination(new Feature_Sort(new Feature_Or(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams()))))))))))));
     	} else {    	
     	   APS target = cache.getAPS(aps);    	
-    	   qm = new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams()))))))))))));
+    	   qm = new Feature_Pagination(new Feature_Sort(new Feature_Or(new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))))))))))))));
     	}
-    	List<DBRecord> result = query(properties, fields, aps, context, cache, qm);
-    	
+    	Query q = new Query(properties, fields, cache, aps, context);
+    	AccessLog.logQuery(q.getApsId(), q.getProperties(), q.getFields());
+    	DBIterator<DBRecord> result = qm.iterator(q);
+    	    	    	
 		if (result == null) {
 			AccessLog.log("NULL result");
 		}
-					
-		result = postProcessRecords(properties, result);
+		
+		AccessLog.log("fullQuery="+result.toString());
+							
 		AccessLog.logEnd("end full query time= "+(System.currentTimeMillis() - queryStart)+" ms");
 		
 		return result;
 	}
-             
+         
+    /*
     protected static List<DBRecord> query(Map<String, Object> properties, Set<String> fields, MidataId apsId, AccessContext context, APSCache cache, Feature qm) throws AppException {
       if (properties.containsKey("$or")) {
     	  qm = new Feature_SortAndLimit(qm);
     	  Collection<Map<String, Object>> col = (Collection<Map<String, Object>>) properties.get("$or");
     	  List<DBRecord> result = Collections.emptyList();
     	  for (Map<String, Object> prop : col) {
+    		  prop = Feature_QueryRedirect.combineQuery(prop, properties);
     		  AccessLog.logQuery(apsId, prop, fields);
     		  result = QueryEngine.combine(result,  qm.query(new Query(prop, fields, cache, apsId, context)));
     	  }
@@ -243,6 +260,19 @@ class QueryEngine {
     	  return qm.query(new Query(properties, fields, cache, apsId, context));
       }
     }
+    */
+    /*
+    protected static Iterator<DBRecord> queryIterator(Map<String, Object> properties, Set<String> fields, MidataId apsId, AccessContext context, APSCache cache, Feature qm) throws AppException {
+        if (properties.containsKey("$or")) {
+      	  qm = new Feature_SortAndLimit(qm);
+      	  Collection<Map<String, Object>> col = (Collection<Map<String, Object>>) properties.get("$or");      	  
+      	  return ProcessingTools.multiQuery(qm, new Query(properties, fields, cache, apsId, context, true), col.iterator());      	  
+        } else {
+      	  AccessLog.logQuery(apsId, properties, fields);
+      	  return qm.iterator(new Query(properties, fields, cache, apsId, context));
+        }
+      }
+      */  
     
     protected static List<DBRecord> combine(Query query, Map<String, Object> properties, Feature qm) throws AppException {
     	if (properties.containsKey("$or")) {
@@ -263,6 +293,22 @@ class QueryEngine {
     		  AccessLog.log("empty combine");
     	  }
       	  return Collections.emptyList();
+        }
+    }
+    
+    protected static DBIterator<DBRecord> combineIterator(Query query, Map<String, Object> properties, Feature qm) throws AppException {
+    	if (properties.containsKey("$or")) {
+      	  Collection<Map<String, Object>> col = (Collection<Map<String, Object>>) properties.get("$or");      	  
+      	  return ProcessingTools.multiQuery(qm, query, ProcessingTools.dbiterator("", col.iterator()));
+      	        	
+        } else {
+          Map<String, Object> comb = Feature_QueryRedirect.combineQuery(properties, query.getProperties());
+    	  if (comb != null) {
+    		  return qm.iterator(new Query(comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext()).setFromRecord(query.getFromRecord()));
+    	  } else {
+    		  AccessLog.log("empty combine");
+    	  }
+      	  return ProcessingTools.empty();
         }
     }
     
@@ -298,6 +344,8 @@ class QueryEngine {
     }
     
     private static final Set<String> DATA_ONLY = Sets.create("_id", "encryptedData");
+    private static final Set<String> DATA_AND_WATCHES = Sets.create("_id", "encryptedData", "encWatches");
+    protected static final Set<String> META_AND_DATA = Sets.create("_id", "encryptedData", "encrypted");
     
     protected static DBRecord loadData(DBRecord input) throws AppException {
     	if (input.data == null && input.encryptedData == null) {
@@ -311,7 +359,7 @@ class QueryEngine {
     }
     
     protected static void loadData(Collection<DBRecord> records) throws AppException {
-    	Map<MidataId, DBRecord> idMap = new HashMap<MidataId,DBRecord>(records.size());
+    	Map<MidataId, DBRecord> idMap = new HashMap<MidataId,DBRecord>(records.size());    	
     	for (DBRecord rec : records) {    		    	
 	    	if (rec.data == null && rec.encryptedData == null) {
 	    	   idMap.put(rec._id, rec);
@@ -319,7 +367,7 @@ class QueryEngine {
 	    	
     	}
     	if (!idMap.isEmpty()) {
-	    	Collection<DBRecord> fromDB = DBRecord.getAllList(CMaps.map("_id", idMap.keySet()), DATA_ONLY);
+	    	Collection<DBRecord> fromDB = DBRecord.getAllList(CMaps.map("_id", idMap.keySet()).map("encryptedData", NOTNULL), DATA_ONLY);
 	    	for (DBRecord r2 : fromDB) {
 	    	   idMap.get(r2._id).encryptedData = r2.encryptedData;	    	   
 	    	}
@@ -329,6 +377,27 @@ class QueryEngine {
     	}		
     }
     
+    protected static void loadDataAndWatches(Collection<DBRecord> records) throws AppException {
+    	Map<MidataId, DBRecord> idMap = new HashMap<MidataId,DBRecord>(records.size());
+    	for (DBRecord rec : records) {    		    	
+	    	if ((rec.data == null && rec.encryptedData == null) || (rec.watches == null && rec.encWatches == null)) {
+	    	   idMap.put(rec._id, rec);
+	    	}
+	    	
+    	}
+    	if (!idMap.isEmpty()) {
+	    	Collection<DBRecord> fromDB = DBRecord.getAllList(CMaps.map("_id", idMap.keySet()), DATA_AND_WATCHES);	    	
+	    	for (DBRecord r2 : fromDB) {	    	
+	    	   idMap.get(r2._id).encryptedData = r2.encryptedData;	    	   
+	    	   idMap.get(r2._id).encWatches = r2.encWatches;
+	    	}
+    	}
+    	for (DBRecord rec : records) {      		
+		   RecordEncryption.decryptRecord(rec);		   
+    	}		
+    }
+    
+    /*
     protected static List<DBRecord> duplicateElimination(List<DBRecord> input) {
     	int size = input.size();
     	if (size<2) return input;
@@ -349,6 +418,7 @@ class QueryEngine {
         }
     	return input;
     }
+    */
     
     protected static List<DBRecord> onlyWithKey(List<DBRecord> input) {    	
     	List<DBRecord> filteredresult = new ArrayList<DBRecord>(input.size());
@@ -358,33 +428,12 @@ class QueryEngine {
     	return filteredresult;
     }
     
-    protected static List<DBRecord> postProcessRecords(Map<String, Object> properties, List<DBRecord> result) throws AppException {
-    	if (result.size() > 1) {
-    	   result = duplicateElimination(result); 
-    	   
-    	   if (properties.containsKey("sort")) {
-    		 String sortBy = properties.get("sort").toString();
-    		 if (sortBy.startsWith("lastUpdated")) {
-    			 for (DBRecord r : result) {
-    				 if (r.meta.getDate("lastUpdated") == null) r.meta.put("lastUpdated", r.meta.get("created"));
-    			 }
-    		 }
-    		 RecordComparator comp = new RecordComparator(sortBy);
-    		 Collections.sort(result, comp);
-    	   } else {
-	         Collections.sort(result);
-    	   }
-    	   
-	       result = limitResultSize(properties, result);	    
-    	}
-	    
-	    AccessLog.log("Sort and limit, result size="+result.size());
-	    
-		return result;
+    protected static DBIterator<DBRecord> limitAndSortRecords(Map<String, Object> properties, DBIterator<DBRecord> input) throws AppException {
+    	input = ProcessingTools.limit(properties, ProcessingTools.sort(properties, ProcessingTools.noDuplicates(input)));	    	    
+		return input;
     }
     
-    
-    
+    /*        
     protected static List<DBRecord> postProcessRecordsFilter(Query q, List<DBRecord> result) throws AppException {
     	if (result.size() > 0) {
     	AccessLog.logBegin("begin process filters size="+result.size());    	
@@ -396,7 +445,7 @@ class QueryEngine {
     	if (q.getFetchFromDB()) {	
     		//result = duplicateElimination(result);    		
 			for (DBRecord record : result) {
-				if (record.encrypted == null) {
+				if (record.encrypted == null && record.data == null) {
 					DBRecord old = fetchIds.put(record._id, record);
 					if (old != null) old.meta = null;
 				}
@@ -428,17 +477,25 @@ class QueryEngine {
     	}
     	if (!fetchIds.isEmpty()) {	
     		
-			List<DBRecord> read = lookupRecordsById(q, fetchIds.keySet());			
+			List<DBRecord> read = lookupRecordsById(q, fetchIds.keySet(), q.restrictedBy("deleted"));			
 			for (DBRecord record : read) {
 				DBRecord old = fetchIds.get(record._id);
 				fetchFromDB(old, record);
 			}
+			if (read.size() < fetchIds.size()) {
+				for (DBRecord record : fetchIds.values()) {
+					if (record.encrypted == null) record.meta = null;
+				}
+			}
     	}
+    	
+    	boolean checkDelete = !q.restrictedBy("deleted");
     	
 		for (DBRecord record : result) {
 			if (record.meta != null && (minTime == 0 || record.time ==0 || record.time >= minTime)) {
 			  RecordEncryption.decryptRecord(record);
-			  if (!record.meta.containsField("creator")) record.meta.put("creator", record.owner);
+			  if (!record.meta.containsField("creator") && record.owner != null) record.meta.put("creator", record.owner.toDb());
+			  if (checkDelete && record.meta.containsField("deleted")) { record.meta = null;compress++; }
 			} else {compress++;record.meta=null;}			
 		}
     	     	
@@ -453,7 +510,8 @@ class QueryEngine {
 		//if (qm!=null) result = qm.postProcess(result, q);     	
 								
 		// 8 Post filter records if necessary		
-						
+    	if (q.restrictedBy("history-date")) result = Feature_Versioning.historyDate(q, result);
+    	
 		if (q.restrictedBy("creator")) result = filterByMetaSet(result, "creator", q.getIdRestrictionDB("creator"));
 		if (q.restrictedBy("app")) result = filterByMetaSet(result, "app", q.getIdRestrictionDB("app"), q.restrictedBy("no-postfilter-streams"));
 		if (q.restrictedBy("name")) result = filterByMetaSet(result, "name", q.getRestriction("name"));
@@ -469,14 +527,14 @@ class QueryEngine {
 		result = filterByDateRange(result, "created", q.getMinDateCreated(), q.getMaxDateCreated());			
 		result = filterByDateRange(result, "lastUpdated", q.getMinDateUpdated(), q.getMaxDateUpdated());
 		
-		if (q.restrictedBy("history-date")) result = Feature_Versioning.historyDate(q, result);
+		
 		AccessLog.logEnd("end process filters size="+result.size());
 	    
     	} 
 	    	    	    
 		return result;
     }
-    
+    */
     
     /*
     protected static List<DBRecord> filterByWCFormat(List<DBRecord> input, String name, Set<String> contentsWC) {
@@ -579,28 +637,21 @@ class QueryEngine {
     	}    	
     	return filteredResult;
     }
-    
-    
-    
-    protected static List<DBRecord> limitResultSize(Map<String, Object> properties, List<DBRecord> result) {
-    	if (properties.containsKey("limit")) {
-	    	Object limitObj = properties.get("limit");
-	    	int limit = (int) Integer.parseInt(limitObj.toString());
-	    	if (result.size() > limit) result = result.subList(0, limit);
-	    }
-    	return result;
-    }
+               
     
     protected static List<DBRecord> lookupRecordsById(Query q) throws AppException {
-    	return lookupRecordsById(q, q.getMidataIdRestriction("_id"));
+    	return lookupRecordsById(q, q.getMidataIdRestriction("_id"), true);
     }
     	
-    protected static List<DBRecord> lookupRecordsById(Query q, Set<MidataId> ids) throws AppException {  
+    protected static List<DBRecord> lookupRecordsById(Query q, Set<MidataId> ids, boolean alsoDeleted) throws AppException {  
 			Map<String, Object> query = new HashMap<String, Object>();
 			Set<String> queryFields = Sets.create("stream", "time", "document", "part", "direct");
 			queryFields.addAll(q.getFieldsFromDB());
 			query.put("_id", ids);
-			q.addMongoTimeRestriction(query, true);			
+			q.addMongoTimeRestriction(query, true);
+			if (!alsoDeleted) {
+				query.put("encryptedData", NOTNULL);
+			}
 			return DBRecord.getAllList(query, queryFields);		
     }
         

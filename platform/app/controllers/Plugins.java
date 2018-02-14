@@ -386,7 +386,9 @@ public class Plugins extends APIController {
 		Map<String, Object> properties = CMaps.map("_id", space.visualization);
 		Set<String> fields = Sets.create("accessTokenUrl", "consumerKey", "consumerSecret");
 		Plugin app = Plugin.get(properties, fields);
-		Map<String, Object> reqTokens = RecordManager.instance.getMeta(userId, space._id, "_oauth1").toMap(); 
+		
+		BSONObject oauth1Params = RecordManager.instance.getMeta(userId, space._id, "_oauth1");
+		Map<String, Object> reqTokens = oauth1Params.toMap(); 
 		
 		// request access token
 		ConsumerKey key = new ConsumerKey(app.consumerKey, app.consumerSecret);
@@ -527,8 +529,9 @@ public class Plugins extends APIController {
 		final Map<String, Object> tokens = tokens1;
 		final MidataId spaceId = new MidataId(spaceIdStr);
 		// get app details			
-		
-		String refreshToken = tokens.get("refreshToken").toString();
+		Object rt = tokens.get("refreshToken");
+		if (rt == null) AccessLog.log("tokens="+tokens.toString());
+		String refreshToken = rt.toString();
        
 		// request access token	
 		Promise<WSResponse> promise = WS

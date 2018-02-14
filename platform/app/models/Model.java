@@ -1,5 +1,6 @@
 package models;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -122,7 +123,25 @@ public abstract class Model implements JsonSerializable {
 	protected static <T extends Model> List<T> getAllList(Class<T> modelClass, String collection,
 			Map<String, ? extends Object> properties, Set<String> fields, int limit) throws InternalServerException {
 		try {
-			return DBLayer.getAllList(modelClass, collection, properties, fields, limit);
+			return DBLayer.getAllList(modelClass, collection, properties, fields, limit, null, 1);
+		} catch (DatabaseException e) {
+			throw new InternalServerException("error.internal_db", e);
+		}
+	}
+	
+	protected static <T extends Model> List<T> getAllList(Class<T> modelClass, String collection,
+			Map<String, ? extends Object> properties, Set<String> fields, int limit, String sortField, int order) throws InternalServerException {
+		try {
+			return DBLayer.getAllList(modelClass, collection, properties, fields, limit, sortField, order);
+		} catch (DatabaseException e) {
+			throw new InternalServerException("error.internal_db", e);
+		}
+	}
+	
+	protected static long count(Class modelClass, String collection,
+			Map<String, ? extends Object> properties) throws InternalServerException {
+		try {
+			return DBLayer.count(modelClass, collection, properties);
 		} catch (DatabaseException e) {
 			throw new InternalServerException("error.internal_db", e);
 		}
@@ -136,6 +155,14 @@ public abstract class Model implements JsonSerializable {
 		}
 	}
 	
+	protected void setMultiple(String collection, Collection<String> fields) throws InternalServerException {
+		try {
+			DBLayer.update(this, collection, fields);
+		} catch (DatabaseException e) {
+			throw new InternalServerException("error.internal_db", e);
+		}
+	}
+	
 	protected static void setAll(Class model, String collection, Map<String, Object> properties, String field, Object value) throws InternalServerException {
 		try {
 			DBLayer.set(model, collection, properties, field, value);
@@ -144,4 +171,10 @@ public abstract class Model implements JsonSerializable {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return _id != null ? "obj:"+_id.toString() : "obj-null";
+	}
+
+	
 }

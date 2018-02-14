@@ -73,7 +73,22 @@
   "admin_plugins" : {
     "title" : "Plugins",
     "developer" : "Filter by Developer",
-    "empty" : "There are no apps or plugins yet."
+    "name" : "Filter by Appname",
+    "organisation" : "Filter by Organisation",
+    "empty" : "There are no apps or plugins yet.",
+    "plugin_name" : "Name",
+    "plugin_developer" : "Developer",
+    "plugin_type" : "Type",
+    "plugin_role" : "Target Role",
+    "plugin_market" : "Market",
+    "plugin_stats" : "Stats",
+    "plugin_status" : "Status",
+    "add_definition_btn" : "Import Plugin Definition"
+  },
+  
+  "admin_defineplugin" : {
+    "title" : "Import Plugin Definition",
+    "definition" : "Definition (JSON)"  
   },
   
   "admin_studies" : {

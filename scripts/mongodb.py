@@ -116,8 +116,32 @@ class MongoDB(Product):
 			self.record_port, 
 			self.record_database,
 			self.record_username,
-			self.record_password), self.parent)								 					
+			self.record_password), self.parent)
 
+	def sharding(self):
+		MongoDB.readconf(self)
+		Command.execute('{0} {5}{6} {2}:{3}/{4} {1}'.format(os.path.join(self.bin, 'mongo'),
+			os.path.join(self.parent, 'json', 'init-sharding-mapping.js'),
+			self.mapping_host, 
+			self.mapping_port, 
+			self.mapping_database,
+			self.mapping_username,
+			self.mapping_password), self.parent)					 					
+		Command.execute('{0} {5}{6} {2}:{3}/{4} {1}'.format(os.path.join(self.bin, 'mongo'),
+			os.path.join(self.parent, 'json', 'init-sharding-access.js'),
+			self.access_host, 
+			self.access_port, 
+			self.access_database,
+			self.access_username,
+			self.access_password), self.parent)					 					
+		Command.execute('{0} {5}{6} {2}:{3}/{4} {1}'.format(os.path.join(self.bin, 'mongo'),
+			os.path.join(self.parent, 'json', 'init-sharding-record.js'),
+			self.record_host, 
+			self.record_port, 
+			self.record_database,
+			self.record_username,
+			self.record_password), self.parent)								 					
+								 					
 	def start(self):
 		print 'Starting MongoDB...'
 		Command.execute('{0} --config {1}'.format(os.path.join(self.bin, 'mongod'), 
@@ -131,69 +155,8 @@ class MongoDB(Product):
 		Command.execute('pkill mongod')
 
 	def reset(self):
-		MongoDB.readconf(self)		
-		print 'Reimporting data from dump...'
-		Command.execute('{0} -h {2}:{3} --drop --db {4} {5}{6} {1}'.format(os.path.join(self.bin, 'mongorestore'), 
-			os.path.join(self.parent, 'dump', 'mongodb', 'user'),
-			self.user_host, 
-			self.user_port, 
-			self.user_database,
-			self.user_username,
-			self.user_password), self.parent)			
-		Command.execute('{0} -h {2}:{3} --drop --db {4} {5}{6} {1}'.format(os.path.join(self.bin, 'mongorestore'), 
-			os.path.join(self.parent, 'dump', 'mongodb', 'access'),
-			self.access_host, 
-			self.access_port, 
-			self.access_database,
-			self.access_username,
-			self.access_password), self.parent)			
-		Command.execute('{0} -h {2}:{3} --drop --db {4} {5}{6} {1}'.format(os.path.join(self.bin, 'mongorestore'), 
-			os.path.join(self.parent, 'dump', 'mongodb', 'mapping'),
-			self.mapping_host, 
-			self.mapping_port, 
-			self.mapping_database,
-			self.mapping_username,
-			self.mapping_password), self.parent)			
-		Command.execute('{0} -h {2}:{3} --drop --db {4} {5}{6} {1}'.format(os.path.join(self.bin, 'mongorestore'), 
-			os.path.join(self.parent, 'dump', 'mongodb', 'record'),
-			self.record_host, 
-			self.record_port, 
-			self.record_database,
-			self.record_username,
-			self.record_password), self.parent)			
-
-	def dump(self):
-		MongoDB.readconf(self)	
-		print 'Dumping database...'		
-		Command.execute('{0} -h {2}:{3} --db {4} {5}{6} --out {1}'.format(os.path.join(self.bin, 'mongodump'), 
-			os.path.join(self.parent, 'dump', 'mongodb'),
-			self.user_host, 
-			self.user_port, 
-			self.user_database,
-			self.user_username,
-			self.user_password), self.parent)
-		Command.execute('{0} -h {2}:{3} --db {4} {5}{6} --out {1}'.format(os.path.join(self.bin, 'mongodump'), 
-			os.path.join(self.parent, 'dump', 'mongodb'),
-			self.access_host, 
-			self.access_port, 
-			self.access_database,
-			self.access_username,
-			self.access_password), self.parent)
-		Command.execute('{0} -h {2}:{3} --db {4} {5}{6} --out {1}'.format(os.path.join(self.bin, 'mongodump'), 
-			os.path.join(self.parent, 'dump', 'mongodb'),
-			self.mapping_host, 
-			self.mapping_port, 
-			self.mapping_database,
-			self.mapping_username,
-			self.mapping_password), self.parent)
-		Command.execute('{0} -h {2}:{3} --db {4} {5}{6} --out {1}'.format(os.path.join(self.bin, 'mongodump'), 
-			os.path.join(self.parent, 'dump', 'mongodb'),
-			self.record_host, 
-			self.record_port, 
-			self.record_database,
-			self.record_username,
-			self.record_password), self.parent)
-	
+		pass
+				
 	def export(self):
 		MongoDB.readconf(self)
 		print 'Exporting metadata'

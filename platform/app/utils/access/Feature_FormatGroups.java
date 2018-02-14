@@ -1,11 +1,15 @@
 package utils.access;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.bson.BasicBSONObject;
 
 import models.ContentCode;
 import models.RecordGroup;
@@ -39,19 +43,7 @@ public class Feature_FormatGroups extends Feature {
 			    }		
 			}
 	}
-		
-	/*private Set<String> resolveContentNames(Query q, Set<String> groups) throws AppException {
-		List<DBRecord> records = next.query(new Query(CMaps.map(q.getProperties()).map("streams", "true").map("flat", "true"), Sets.create("content"), q.getCache(), q.getApsId(), true ));
-		Set<String> result = new HashSet<String>();
-		for (DBRecord rec : records) {
-			String content = (String) rec.meta.get("content");
-			ContentInfo fi = ContentInfo.getByName(content);
-            if (groups.contains(fi.group)) {
-            	result.add(content);            	
-            }
-		}	
-		return result;
-	}*/
+			
 	
 	public static Set<String> resolveContentNames(String groupSystem, Set<String> groups) throws AppException {
 		
@@ -82,8 +74,10 @@ public class Feature_FormatGroups extends Feature {
 		return resolveContentNames(groupSystem, groups);
 	}
     
-    public static void convertQueryToContents(String groupSystem, Map<String, Object> properties) throws BadRequestException, AppException {
+    public static void convertQueryToContents(Map<String, Object> properties) throws BadRequestException, AppException {
+    	
     	if (properties.containsKey("group")) {
+    		String groupSystem = properties.containsKey("group-system") ? properties.get("group-system").toString() : "v1";
     		Set<String> include = Query.getRestriction(properties.get("group"), "group");
     		Set<String> exclude;
     		if (properties.containsKey("group-exclude")) {
@@ -104,6 +98,10 @@ public class Feature_FormatGroups extends Feature {
 				 contents.add(content);
 			 }
 			 properties.put("content", contents);
+    	}
+    	if (properties.containsKey("$or")) {
+    		Collection<Map<String, Object>> parts = (Collection<Map<String, Object>>) properties.get("$or");
+    		for (Map<String, Object> part : parts) convertQueryToContents(part);
     	}
     }
     
@@ -204,39 +202,82 @@ public class Feature_FormatGroups extends Feature {
 		return null;
 	}
 
+	
+	
 	@Override
-	protected List<DBRecord> query(Query q) throws AppException {
+	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
 		Set<String> contents = prepareFilter(q);
-		List<DBRecord> result = null;
+		DBIterator<DBRecord> result = null;
 		if (contents != null) {
-			Map<String, Object> combined = Feature_QueryRedirect.combineQuery(q.getProperties(), CMaps.map("content", contents));
-			if (combined == null) return Collections.EMPTY_LIST;
-		  	result = next.query(new Query(q, combined));					
+		  	result = QueryEngine.combineIterator(q, CMaps.map("content", contents), next);					
 		} else {
-		   result = next.query(q);
+		   result = next.iterator(q);
 		}
 		
 		if (q.returns("group")) {
 			String system = q.getStringRestriction("group-system");
 			if (system == null) system = "v1";
 			
-			for (DBRecord record : result) {
-	    		record.group = RecordGroup.getGroupForSystemAndContent(system, (String) record.meta.get("content"));
-			}
+			return new SetRecordGroupIterator(result, system);			
 		}	
 		return result;
-	}	
+	}
+
+	static class SetRecordGroupIterator implements DBIterator<DBRecord> {
+
+		private DBIterator<DBRecord> chain;
+		private String system;
+		
+		SetRecordGroupIterator(DBIterator<DBRecord> chain, String system) {
+			this.chain = chain;
+			this.system = system;
+		}
+		
+		@Override
+		public boolean hasNext() throws AppException {
+			return chain.hasNext();
+		}
+
+		@Override
+		public DBRecord next() throws AppException {
+			DBRecord record = chain.next();
+		
+			BasicBSONObject meta = record.meta;
+			   
+			if (meta == null) AccessLog.log("NO META");
+			record.group = RecordGroup.getGroupForSystemAndContent(system, (String) meta.get("content"));
+		
+			return record;
+		}
+
+		@Override
+		public String toString() {
+			return "set-group("+chain.toString()+")";
+		}
+		
+		
+		
+	}
+	
 	
 	public static boolean mayAccess(Map<String, Object> properties, String content, String format) throws AppException {
+		if (properties.containsKey("$or")) {
+			Collection<Map<String, Object>> parts = (Collection<Map<String, Object>>) properties.get("$or");
+			boolean found = false;
+			for (Map<String, Object> part : parts) {
+				if (mayAccess(part, content, format)) found = true;;
+			}
+			if (!found) return false;
+		}
+		
 		Object formatObj = properties.get("format");
 		if (formatObj != null && format != null) { 
 		  Set<String> fmts = Query.getRestriction(formatObj, "format");
 		  if (!fmts.contains(format)) return false;
 		}
 		if (content == null) return true;
-		Object gs =  properties.get("group-system");
-		if (gs == null) gs = "v1";
-		convertQueryToContents(gs.toString(), properties);
+		
+		convertQueryToContents(properties);
 		Object contentObj = properties.get("content");
 		if (contentObj != null) {
 			Set<String> contents = Query.getRestriction(contentObj, "content");

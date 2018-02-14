@@ -139,7 +139,7 @@ angular.module('portal')
 			$scope.study.processFlags.push(tag);
 			
 			var data = { processFlags : $scope.study.processFlags };
-			$scope.status.doAction("update", server.put(jsRoutes.controllers.research.Studies.update($scope.studyid).url, JSON.stringify(data)))
+			$scope.status.doAction("update", server.post(jsRoutes.controllers.research.Studies.updateNonSetup($scope.studyid).url, JSON.stringify(data)))
 			  .then(function(data) { 				
 				    $scope.reload();
 			   }); 
@@ -168,9 +168,7 @@ angular.module('portal')
 				$scope.tests = {};
 				
 				$scope.status.doBusy(usergroups.listUserGroupMembers($scope.studyid))
-				.then(function(data) {
-					console.log("X");
-					console.log(data);
+				.then(function(data) {					
 					$scope.tests.team = data.data.length > 1;
 				}).then(function() {
 				
@@ -179,19 +177,20 @@ angular.module('portal')
 					$scope.tests.applinked = data.data.length > 0;
 				}).then(function() {
 				
-				server.post(jsRoutes.controllers.research.Studies.listParticipants($scope.studyid).url, JSON.stringify({ properties : { pstatus : "REQUEST" } }))
+				server.post(jsRoutes.controllers.research.Studies.countParticipants($scope.studyid).url, JSON.stringify({ properties : { pstatus : "REQUEST" } }))
 						.then(function(data) {
-							$scope.tests.allassigned = data.data.length === 0;
+							$scope.tests.allassigned = data.data.total === 0;
 						}).then(function()  {
 					
 
 				if (!$scope.study.processFlags) $scope.study.processFlags = [];
+			
 				$scope.checklist = [
 					{ title : "study_checklist.phase1", page : ".", heading : true  },
 					{ title : "study_checklist.name", page : "^.description", required : true, done : $scope.study.name && $scope.study.description },
 					{ title : "study_checklist.teamsetup", page : "^.team", flag : "team", done : $scope.tests.team || $scope.study.processFlags.indexOf("team")>=0 },
                     { title : "study_checklist.groups", page : "^.fields", required : true, done : $scope.study.groups.length },
-                    { title : "study_checklist.sharingQuery", page : "^.rules", required : true, done : ($scope.study.recordQuery && ($scope.study.recordQuery.content || $scope.study.recordQuery.group)) },
+                    { title : "study_checklist.sharingQuery", page : "^.rules", required : true, done : ($scope.study.recordQuery && ( JSON.stringify($scope.study.recordQuery) !== "{}")  ) },
                     { title : "study_checklist.dates", page : "^.rules", required : true, done : $scope.study.startDate || $scope.study.endDate || $scope.study.dataCreatedBefore },
                     { title : "study_checklist.terms", page : "^.rules" , flag : "termsofuse", done : $scope.study.termsOfUse || $scope.study.processFlags.indexOf("termsofuse")>=0 },
                     { title : "study_checklist.validation", action : $scope.startValidation, check : $scope.readyForValidation, page : ".", required : true, done : $scope.study.validationStatus !== "DRAFT" },

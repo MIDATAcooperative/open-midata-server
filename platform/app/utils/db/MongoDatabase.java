@@ -206,16 +206,26 @@ public class MongoDatabase extends Database {
 	}
 	
 	public <T extends Model> List<T> getAllList(Class<T> modelClass, String collection, Map<String, ? extends Object> properties,
-			Set<String> fields, int limit) throws DatabaseException {		
+			Set<String> fields, int limit, String sortField, int order) throws DatabaseException {		
 		try {
 			DBObject query = toDBObject(modelClass, properties);
 			DBObject projection = toDBObject(fields);
 			if (logQueries) AccessLog.logDB("all "+collection+" "+query.toString());
 			DBCursor cursor = getCollection(collection).find(query, projection);
+			if (sortField != null) cursor = cursor.sort(new BasicDBObject(sortField, order));
 			if (limit!=0) cursor = cursor.limit(limit);			
 			return conversion.toModelList(modelClass, cursor.iterator());
 		} catch (MongoException e) {
 			throw new DatabaseException(e);
+		} catch (DatabaseConversionException e) {
+			throw new DatabaseException(e);
+		}
+	}
+	
+	public long count(Class modelClass, String collection, Map<String, ? extends Object> properties) throws DatabaseException {
+		try {
+		  DBObject query = toDBObject(modelClass, properties);
+		  return getCollection(collection).count(query);
 		} catch (DatabaseConversionException e) {
 			throw new DatabaseException(e);
 		}
@@ -248,6 +258,38 @@ public class MongoDatabase extends Database {
 			throw new DatabaseException(e);
 		} catch (DatabaseConversionException e2) {
 			throw new DatabaseException(e2);
+		}
+	}
+	
+	/**
+	 * Set the given fields of the object with the given id.
+	 */
+	public <T extends Model> void update(T model, String collection, Collection<String> fields) throws DatabaseException {
+		try {
+			if (logQueries) AccessLog.logDB("update "+collection+ " "+model.to_db_id().toString());
+			DBObject query = new BasicDBObject();
+			query.put("_id", model.to_db_id());
+			
+			
+			
+			DBObject updateContent = new BasicDBObject();
+			for (String field : fields) {
+				updateContent.put(field, conversion.toDBObjectValue(model.getClass().getField(field).get(model)));
+			}
+			long ts = System.currentTimeMillis();
+			
+			DBObject update = new BasicDBObject("$set", updateContent);
+		
+			getCollection(collection).update(query, update, false, false);
+																	
+		} catch (MongoException e) {
+			throw new DatabaseException(e);
+		} catch (DatabaseConversionException e2) {
+			throw new DatabaseException(e2);
+		} catch (IllegalAccessException e3) {
+			throw new DatabaseException(e3);
+		} catch (NoSuchFieldException e4) {
+			throw new DatabaseException(e4);
 		}
 	}
 	

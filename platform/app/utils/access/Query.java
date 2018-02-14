@@ -55,7 +55,16 @@ public class Query {
 		this.apsId = apsId;
 		this.context = context;
 		process();
-		AccessLog.logQuery(apsId, properties, fields);
+		//AccessLog.logQuery(apsId, properties, fields);
+	}
+	
+	public Query(Map<String, Object> properties, Set<String> fields, APSCache cache, MidataId apsId, AccessContext context, boolean noinit) throws AppException {
+		this.properties = new HashMap<String, Object>(properties);
+		this.fields = fields;
+		this.cache = cache;
+		this.apsId = apsId;
+		this.context = context;	
+		
 	}
 	
 	public Query(Query q, Map<String, Object> properties) throws AppException {
@@ -70,7 +79,7 @@ public class Query {
 		this.apsId = aps;			
 		this.context = context;
 		process();
-		AccessLog.logQuery(apsId, properties, fields);
+		//AccessLog.logQuery(apsId, properties, fields);
 	}		
 	
 	public Map<String, Object> getProperties() {
@@ -146,6 +155,20 @@ public class Query {
 			for (Object val : (Collection) v) { results.add(val.toString()); }			
 			return results;											
 		} else throw new InternalServerException("error.internal","Bad Restriction 1: "+name);
+	}
+	
+	public static Set<String> getAnyRestrictionFromQuery(Map<String, Object> properties, String name) throws AppException {
+		if (properties.containsKey("$or")) {
+			Set<String> result = new HashSet<String>();
+			for (Map<String, Object> part : ((Collection<Map<String, Object>>) properties.get("$or"))){
+				result.addAll(getAnyRestrictionFromQuery(part, name));
+			}
+			return result;
+		}
+		if (properties.containsKey(name)) {
+			return getRestriction(properties.get(name), name);
+		}
+		return Collections.emptySet();		
 	}
 	
 	public Set<MidataId> getMidataIdRestriction(String name) throws BadRequestException {
@@ -256,6 +279,19 @@ public class Query {
 		return maxDateUpdated;
 	}
 	
+	public MidataId getFrom() {
+		return MidataId.from(properties.get("from"));		
+	}
+	
+	private DBRecord fromRecord;
+	public DBRecord getFromRecord() {
+		return fromRecord;		
+	}
+	public Query setFromRecord(DBRecord record) {
+		this.fromRecord = record;
+		return this;
+	}
+	
 	public boolean addMongoTimeRestriction(Map<String, Object> properties1, boolean allowZero) {
 		Map<String, Object> properties = properties1;		
 		if (minTime != 0 || maxTime != 0) {
@@ -311,7 +347,9 @@ public class Query {
 	}
 	
 	private void process() throws AppException {
-		 if (fields.contains("group")) fields.add("content");
+		 if (properties.containsKey("$or")) return; //throw new InternalServerException("error.internal", "Query may not contain or");
+		 if (fields.contains("group") && !fields.contains("content")) fields.add("content");
+		 if (properties.containsKey("history-date") || properties.containsKey("version") || properties.containsKey("history") || isStreamOnlyQuery()) properties.put("deleted", true);
 		
 		 fetchFromDB = fields.contains("data") ||
 	              //fields.contains("app") || 
@@ -322,8 +360,10 @@ public class Query {
 	              fields.contains("lastUpdated") || 
 	              fields.contains("tags") ||	              
 	              fields.contains("watches") ||
+	              (!properties.containsKey("deleted")) ||
 	              //properties.containsKey("app") ||
 	              properties.containsKey("creator") ||
+	              properties.containsKey("data") ||
 	              properties.containsKey("code") ||
 	              properties.containsKey("name");
 		 
@@ -350,7 +390,7 @@ public class Query {
          
          if (restrictedOnTime) fieldsFromDB.add("time");
 		 //if (fetchFromDB) fieldsFromDB.add("encrypted");
-		 if (fields.contains("data")) fieldsFromDB.add("encryptedData");
+		 if (fields.contains("data") || properties.containsKey("data")) fieldsFromDB.add("encryptedData");
 		 if (fields.contains("watches")) fieldsFromDB.add("encWatches");
 		 
 		 					
@@ -417,7 +457,7 @@ public class Query {
 			 Set<String> owners = getRestriction("owner");
 			 Set<Object> resolved = new HashSet<Object>();
 			 for (Object owner : owners) {
-				 AccessLog.log("check owner:"+owner.toString());
+				 //AccessLog.log("check owner:"+owner.toString());
 				 if (MidataId.isValid(owner.toString())) {
 					 resolved.add(owner);
 				 } else {
@@ -452,6 +492,18 @@ public class Query {
 	
 	public static void validate(Map<String, Object> query, boolean requiresContent) throws AppException {
 		boolean contentSet = false;
+		if (query.containsKey("$or")) {
+			if (query.size() > 1) throw new BadRequestException("error.invalid.access_query", "Access query with $or is not allowed to have other restriction.");
+			Object test = query.get("$or");
+			if (!(test instanceof Collection)) throw new BadRequestException("error.invalid.access_query", "Access query with $or needs array.");
+			Collection<Object> parts = (Collection<Object>) test;
+			for (Object part : parts) {
+				if (!(part instanceof Map)) throw new BadRequestException("error.invalid.access_query", "Access query with $or needs array with objects.");
+				Map<String, Object> part2 = (Map<String, Object>) part;
+				validate(part2, requiresContent);
+			}
+			return;
+		}
 		if (query.containsKey("group")) {
 			Object system = query.get("group-system");
 			if (system == null || ! (system instanceof String)) throw new BadRequestException("error.missing.groupsystem", "Missing group-system for query");

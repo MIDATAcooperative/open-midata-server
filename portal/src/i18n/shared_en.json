@@ -369,7 +369,8 @@
 	   "EN" : "English",
 	   "DE" : "German",
 	   "IT" : "Italian",
-	   "FR" : "French"
+	   "FR" : "French",
+	   "NL" : "Dutch"
 	 },
 	 "month" : {
 	   "01" : "Jan",
@@ -419,6 +420,7 @@
     "submit_btn" : "Submit",
     "delete_btn" : "Delete",
     "or" : "or",
+    "save_ok" : "Successfully Saved",
     "user" : {
       "lastname" : "Surname",
 	  "firstname" : "Firstname",
@@ -666,6 +668,8 @@
     "user" : "User",
     "name" : "Name:",
     "email" : "Email:",
+    "birthday" : "Date of birth:",
+    "midataID" : "Account ID:",
     "action" : "More...",
     "change_password_btn" : "Change Password",
  	"change_passphrase_btn" : "Change Passphrase",
@@ -673,6 +677,7 @@
 	"change_email_btn" : "Change Email Address",
 	"repair_account_btn" : "Repair Account",
 	"reset_spaces_btn" : "Reset Portal",
+	"export_btn" : "Export your data",
 	"delete_records_btn" : "Delete Records",
 	"account_repaired" : "Your account has been repaired.",
 	"spaces_resetted" : "Your configuration has been resetted.",
@@ -840,6 +845,7 @@
 	"delete" : "delete",
 	"delete_all_btn" : "delete all",
 	"empty" : "No available records found.",
+	"too_many_consents" : "The record tree for this selection cannot be evaluated. There are too many consents involved.",
 	"close_btn" : "Close"
   },
 
@@ -1050,6 +1056,8 @@
     "none" : "None",
     "change_btn" : "Change",
     "success" : "Email address successfully changed!"
-  }
+  },
+  
+  "-1" : "unknown"
     
 }

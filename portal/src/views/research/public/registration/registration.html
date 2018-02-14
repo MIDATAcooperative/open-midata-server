@@ -8,7 +8,7 @@
 		              		<h3 class="panel-title" translate="researcher_registration.sign_up"></h3>
 		            	</div>
 		            	<div class="panel-body">
-		            		<p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
+		            		<p ng-show="error && !error.field" translate="{{ error.code || error }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
 	                        </p>	
 	                        <p ng-show="offline" class="alert alert-danger" translate="error.offline"></p>								
 							<form name="myform" novalidate class="css-form form-horizontal" ng-submit="register()" role="form">

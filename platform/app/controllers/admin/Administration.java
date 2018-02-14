@@ -169,12 +169,15 @@ public class Administration extends APIController {
 	public static Result register() throws AppException {
 		requireSubUserRole(SubUserRole.SUPERADMIN);
 		
+		MidataId executorId = new MidataId(request().username());
+		
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "language", "subroles");
 							
 		String email = JsonValidation.getEMail(json, "email");
 		if (Admin.existsByEMail(email)) return inputerror("email", "exists", "A user with this email address already exists.");
 				
+		Admin executingUser = Admin.getById(executorId, User.ALL_USER);
 		
 		Admin user = new Admin(email);
 		user._id = new MidataId();
@@ -210,8 +213,8 @@ public class Administration extends APIController {
 		user.security = AccountSecurityLevel.KEY;
 				
 		Admin.add(user);
-					
-		Application.sendWelcomeMail(user);
+							
+		Application.sendWelcomeMail(user, executingUser);
 			
 		AuditManager.instance.success();
 		return ok();		
@@ -306,7 +309,7 @@ public class Administration extends APIController {
 		if (oldEmail != null) {
 			Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.EMAIL_CHANGED_NEWADDRESS, null, Collections.singleton(targetUser._id), null, replacements);		
 		} else { 			
- 		    Application.sendWelcomeMail(targetUser);
+ 		    Application.sendWelcomeMail(targetUser, null);
 		}
 		
 		AuditManager.instance.success();
@@ -335,7 +338,7 @@ public class Administration extends APIController {
 			Space.delete(userId, space._id);
 		}
 		
-		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map(), Consent.ALL, Integer.MAX_VALUE);
+		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map("type", Sets.createEnum(ConsentType.CIRCLE, ConsentType.EXTERNALSERVICE, ConsentType.HCRELATED, ConsentType.HEALTHCARE)), Consent.ALL, Integer.MAX_VALUE);
 		for (Consent consent : consents) {			
 			AccessPermissionSet.delete(consent._id);
 			Circle.delete(userId, consent._id);
@@ -353,25 +356,13 @@ public class Administration extends APIController {
 			AccessPermissionSet.delete(ug._id);
 			ug.delete();
 		}
-		
-				
-		if (getRole().equals(UserRole.RESEARCH)) {
-			/*Set<Study> studies = Study.getByOwner(PortalSessionToken.session().org, Sets.create("_id"));
-			
-			for (Study study : studies) {
-				controllers.research.Studies.deleteStudy(userId, study._id, true);
-			}*/
-			
-			
-			
-		}
-		
+							
 		if (getRole().equals(UserRole.PROVIDER)) {
 			HealthcareProvider.delete(PortalSessionToken.session().org);
 		}
 		
 		KeyManager.instance.deleteKey(userId);
-		User.delete(userId);
+		selected.delete();
 		
 		/*if (!User.exists(CMaps.map("organization", PortalSessionToken.session().org))) {
 			  Research.delete(PortalSessionToken.session().org);			
@@ -396,7 +387,7 @@ public class Administration extends APIController {
 		List<MidataAuditEvent> events = null;
 	
 		
-		events = new ArrayList<MidataAuditEvent>(MidataAuditEvent.getAll(properties, fields));
+		events = MidataAuditEvent.getAll(properties, fields, 1000);
 							
 		
 		//Collections.sort(circles);

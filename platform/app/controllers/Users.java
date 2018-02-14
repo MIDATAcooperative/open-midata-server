@@ -27,6 +27,7 @@ import models.Study;
 import models.User;
 import models.UserGroupMember;
 import models.enums.AuditEventType;
+import models.enums.ConsentType;
 import models.enums.ContractStatus;
 import models.enums.EventType;
 import models.enums.Gender;
@@ -68,6 +69,8 @@ import utils.json.JsonValidation.JsonValidationException;
  *
  */
 public class Users extends APIController {
+	
+	public final static int MAX_CONTACTS_SIZE = 300;
 	
 	/**
 	 * retrieve a list of users matching some criteria
@@ -205,10 +208,12 @@ public class Users extends APIController {
 		Set<MidataId> contactIds = new HashSet<MidataId>();
 		Set<Member> contacts;
 	
-		Set<Circle> circles = Circle.getAll(CMaps.map("owner", userId), Sets.create("authorized"));
+		Set<Circle> circles = Circle.getAll(CMaps.map("owner", userId).map("type",Sets.createEnum(ConsentType.CIRCLE, ConsentType.HEALTHCARE)), Sets.create("authorized"));
 		for (Circle circle : circles) {
 			contactIds.addAll(circle.authorized);
 		}
+		if (contactIds.size() > MAX_CONTACTS_SIZE) return ok();
+		
 		contacts = Member.getAll(CMaps.map("_id", contactIds).map("role", UserRole.MEMBER).map("status", User.NON_DELETED),Sets.create("firstname","lastname","email","role"));
 			
 		return ok(JsonOutput.toJson(contacts, "User", Sets.create("firstname","lastname","email","role")));
@@ -392,7 +397,7 @@ public class Users extends APIController {
 			Space.delete(userId, space._id);
 		}
 		
-		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map(), Consent.ALL, Integer.MAX_VALUE);
+		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map("type", Sets.createEnum(ConsentType.CIRCLE, ConsentType.EXTERNALSERVICE, ConsentType.HCRELATED, ConsentType.HEALTHCARE)), Consent.ALL, Integer.MAX_VALUE);
 		for (Consent consent : consents) {
 			RecordManager.instance.deleteAPS(consent._id, userId);
 			Circle.delete(userId, consent._id);
@@ -413,26 +418,13 @@ public class Users extends APIController {
 		
 		RecordManager.instance.clearIndexes(userId);
 		
-		RecordManager.instance.wipe(userId, CMaps.map("owner", "self"));
-		RecordManager.instance.wipe(userId, CMaps.map("owner", "self").map("streams", "true"));
-		
-		/*if (getRole().equals(UserRole.RESEARCH)) {
-			Set<Study> studies = Study.getByOwner(PortalSessionToken.session().org, Sets.create("_id"));
-			
-			for (Study study : studies) {
-				controllers.research.Studies.deleteStudy(userId, study._id, false);
-			}
-			
-			Research.delete(PortalSessionToken.session().org);			
-			
-		}*/
-		
-		/*if (getRole().equals(UserRole.PROVIDER)) {
-			HealthcareProvider.delete(PortalSessionToken.session().org);
-		}*/
-		
+		//RecordManager.instance.wipe(userId, CMaps.map("owner", "self"));
+		//RecordManager.instance.wipe(userId, CMaps.map("owner", "self").map("streams", "true"));
+						
 		KeyManager.instance.deleteKey(userId);
-		User.delete(userId);
+		
+		User user = User.getById(userId, User.ALL_USER_INTERNAL);
+		user.delete();
 		
 		AuditManager.instance.success();
 		return ok();

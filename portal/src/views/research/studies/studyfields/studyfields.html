@@ -14,14 +14,14 @@
 	  <formrow myid="identity" label="studyfields.member_identity">
 	     <div class="radio">
   	       <label>
-  	        <input type="radio" name="identity" value="RESTRICTED" ng-model="information.identity">
+  	        <input type="radio" ng-disabled="studyLocked()" ng-change="requiredDataChange()" name="identity" value="RESTRICTED" ng-model="information.identity">
   	         <strong translate="studyfields.anonymous1"></strong><span translate="studyfields.anonymous2"></span>
   	       </label>
   	    </div>   	     
 	  
 	    <div class="radio">
 		 <label>
-  	        <input type="radio" id="identity" name="identity" value="DEMOGRAPHIC" ng-model="information.identity">
+  	        <input type="radio" ng-disabled="studyLocked()" ng-change="requiredDataChange()" id="identity" name="identity" value="DEMOGRAPHIC" ng-model="information.identity">
   	         <strong translate="studyfields.not_anonymous1"></strong><span translate="studyfields.not_anonymous2"></span>
   	     </label>
   	    </div>
@@ -29,20 +29,21 @@
        <formrow myid="assistance" label="studyfields.assistance">
 	     <div class="radio">
   	       <label>
-  	        <input type="radio" name="assistance" value="NONE" ng-model="information.assistance">
+  	        <input type="radio" ng-disabled="studyLocked()" ng-change="requiredDataChange()" name="assistance" value="NONE" ng-model="information.assistance">
   	         <strong translate="studyfields.no_assistance1"></strong><span translate="studyfields.no_assistance2"></span>
   	       </label>
   	    </div>   	     
 	  
 	    <div class="radio">
 		 <label>
-  	        <input type="radio" id="assistance" name="assistance" value="HCPROFESSIONAL" ng-model="information.assistance">
+  	        <input type="radio" id="assistance" name="assistance" ng-change="requiredDataChange()" ng-disabled="studyLocked()" value="HCPROFESSIONAL" ng-model="information.assistance">
   	         <strong translate="studyfields.assistance1"></strong><span translate="studyfields.assistance2"></span>
   	     </label>
   	    </div>
       </formrow>
       <formrow myid="x" label="">
         <button type="submit" class="btn btn-primary" ng-disabled="studyLocked()" translate="common.change_btn"></button>
+        <span class="text-success" ng-show="requiredDataOk"><span class="glyphicon glyphicon-ok"></span> <span translate="common.save_ok"></span></span>
       </formrow>
     </form>
     
@@ -55,14 +56,14 @@
         <th>&nbsp;</th>
       </tr>
       <tr ng-repeat="group in study.groups">
-        <td><input class="form-control" type="text"  ng-model="group.name"></td>
-        <td><input class="form-control" type="text"  ng-model="group.description"></td>
+        <td><input class="form-control" type="text"  ng-change="groupChange()" ng-disabled="studyLocked()" ng-model="group.name"></td>
+        <td><input class="form-control" type="text"  ng-change="groupChange()" ng-disabled="studyLocked()" ng-model="group.description"></td>
         <td><button class="btn btn-danger btn-sm" ng-click="deleteGroup(group);" translate="common.delete_btn" ng-disabled="studyLocked()">Delete</button>
       </tr>
     </table>
     <button class="btn btn-default" ng-click="addGroup();" translate="studyfields.add_group_btn" ng-disabled="studyLocked()"></button>
     <button class="btn btn-primary" ng-click="saveGroups()" ng-disabled="status.action == 'groups' || studyLocked()" translate="studyfields.save_changes_btn"></button>
-        
+    <span class="text-success" ng-show="groupSaveOk"><span class="glyphicon glyphicon-ok"></span> <span translate="common.save_ok"></span></span>  
     </loader>
     </div>
     </div>	

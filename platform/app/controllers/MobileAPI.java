@@ -168,7 +168,8 @@ public class MobileAPI extends Controller {
         Plugin app = Plugin.getById(appInstance.applicationId);
         
         AccessLog.log("app-instance:"+appInstance.appVersion+" vs plugin:"+app.pluginVersion);
-        if (appInstance.appVersion != app.pluginVersion) {
+        
+        if (appInstance.appVersion != app.pluginVersion) {      
         	MobileAPI.removeAppInstance(appInstance);
         	return false;
         }
@@ -217,7 +218,7 @@ public class MobileAPI extends Controller {
 		String phrase;
 		Map<String, Object> meta = null;
 		
-		KeyManager.instance.login(60000l);
+		KeyManager.instance.login(60000l, false);
 		if (json.has("refreshToken")) {
 			MobileAppToken refreshToken = MobileAppToken.decrypt(JsonValidation.getString(json, "refreshToken"));
 			if (refreshToken.created + MobileAPI.DEFAULT_REFRESHTOKEN_EXPIRATION_TIME < System.currentTimeMillis()) return MobileAPI.invalidToken();
@@ -270,10 +271,11 @@ public class MobileAPI extends Controller {
 			}
 						
 			if (appInstance == null) {									
-				boolean autoConfirm = false; /*KeyManager.instance.unlock(appInstance.owner, null) == KeyManager.KEYPROTECTION_NONE;*/
-
+				boolean autoConfirm = InstanceConfig.getInstance().getInstanceType().autoconfirmConsentsMidataApi() && KeyManager.instance.unlock(user._id, null) == KeyManager.KEYPROTECTION_NONE;
+				executor = autoConfirm ? user._id : null;
 				AccessLog.log("REINSTALL");
-				appInstance = installApp(null, app._id, user, phrase, autoConfirm, false);
+				appInstance = installApp(executor, app._id, user, phrase, autoConfirm, false);
+				if (executor != null) RecordManager.instance.clearCache();
 				executor = appInstance._id;
 	   		    meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
 			} else {
@@ -287,7 +289,9 @@ public class MobileAPI extends Controller {
 		}
 				
 		if (!phrase.equals(meta.get("phrase"))) return internalServerError("Internal error while validating consent");
-						
+				
+		
+		
 		return authResult(executor, appInstance, meta, phrase);
 	}
 	
@@ -315,6 +319,13 @@ public class MobileAPI extends Controller {
 		
         meta.put("created", refresh.created);
         RecordManager.instance.setMeta(executor, appInstance._id, "_app", meta);
+        
+        BSONObject q = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_query");
+        if (q.containsField("link-study")) {
+        	MidataId studyId = MidataId.from(q.get("link-study"));
+        	MobileAPI.prepareMobileExecutor(appInstance, session);
+        	controllers.research.Studies.autoApproveCheck(appInstance.applicationId, studyId, appInstance.owner);
+        }
         
 		// create encrypted authToken		
 		ObjectNode obj = Json.newObject();								
@@ -353,15 +364,8 @@ public class MobileAPI extends Controller {
     	appInstance.writes = app.writes;
 		
     	if (app.defaultQuery != null && !app.defaultQuery.isEmpty()) {
-			String groupSystem = null;
-			if (app.defaultQuery != null) {
-				if (app.defaultQuery.containsKey("group-system")) {
-				  groupSystem = app.defaultQuery.get("group-system").toString();
-				} else {
-				  groupSystem = "v1";
-				}
-			}
-		    Feature_FormatGroups.convertQueryToContents(groupSystem, app.defaultQuery);
+			
+		    Feature_FormatGroups.convertQueryToContents(app.defaultQuery);
 		    
 		    appInstance.sharingQuery = app.defaultQuery;						   
 		}
@@ -408,8 +412,8 @@ public class MobileAPI extends Controller {
 		return appInstance;
 	}
 	
-	private static MidataId prepareMobileExecutor(MobileAppInstance appInstance, MobileAppSessionToken tk) throws AppException {
-		KeyManager.instance.login(1000l*60l);
+	protected static MidataId prepareMobileExecutor(MobileAppInstance appInstance, MobileAppSessionToken tk) throws AppException {
+		KeyManager.instance.login(1000l*60l, false);
 		KeyManager.instance.unlock(tk.appInstanceId, tk.passphrase);
 		Map<String, Object> appobj = RecordManager.instance.getMeta(tk.appInstanceId, tk.appInstanceId, "_app").toMap();
 		if (appobj.containsKey("aliaskey") && appobj.containsKey("alias")) {

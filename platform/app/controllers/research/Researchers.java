@@ -15,6 +15,7 @@ import models.Admin;
 import models.MidataId;
 import models.Research;
 import models.ResearchUser;
+import models.User;
 import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
 import models.enums.ContractStatus;
@@ -90,7 +91,7 @@ public class Researchers extends APIController {
 		Application.developerRegisteredAccountCheck(user, json);		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);
 		
-		register(user, research);
+		register(user, research, null);
 		return Application.loginHelper(user);		
 	}
 	
@@ -110,6 +111,9 @@ public class Researchers extends APIController {
 							
 		String email = JsonValidation.getEMail(json, "email");
 			
+		MidataId executorId = new MidataId(request().username());
+		User executingUser = User.getById(executorId, User.ALL_USER);
+		
 	    ResearchUser user = new ResearchUser(email);
 		
 	    user._id = new MidataId();
@@ -128,14 +132,14 @@ public class Researchers extends APIController {
 		user.status = UserStatus.ACTIVE;
 						
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, null, new MidataId(request().username()), user);
-		register(user ,null);
+		register(user ,null, executingUser);
 			
 		AuditManager.instance.success();
 		return ok();		
 	}
 	
 	
-	public static void register(ResearchUser user, Research research) throws AppException {
+	public static void register(ResearchUser user, Research research, User executingUser) throws AppException {
 					
 		if (research != null && Research.existsByName(research.name)) throw new JsonValidationException("error.exists.organization", "name", "exists", "A research organization with this name already exists.");			
 		if (ResearchUser.existsByEMail(user.email)) throw new JsonValidationException("error.exists.user", "email", "exists", "A user with this email address already exists.");
@@ -166,7 +170,7 @@ public class Researchers extends APIController {
 					
 		RecordManager.instance.createPrivateAPS(user._id, user._id);		
 		
-		Application.sendWelcomeMail(user);
+		Application.sendWelcomeMail(user, executingUser);
 		if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) Application.sendAdminNotificationMail(user);
 						
 	}
@@ -194,7 +198,7 @@ public class Researchers extends APIController {
 		if (!ResearchUser.authenticationValid(password, user.password)) {
 			throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
 		}
-		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
+		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.WIPED)) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
 		
 		return Application.loginHelper(user); 
 				

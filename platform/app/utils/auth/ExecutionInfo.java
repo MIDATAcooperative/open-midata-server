@@ -139,12 +139,16 @@ public class ExecutionInfo {
 
         if (!allowInactive && !appInstance.status.equals(ConsentStatus.ACTIVE)) throw new BadRequestException("error.noconsent", "Consent needs to be confirmed before creating records!");
 
-        KeyManager.instance.login(60000l);
+        KeyManager.instance.login(60000l, false);
         KeyManager.instance.unlock(appInstance._id, authToken.passphrase);
         
         ExecutionInfo result = new ExecutionInfo();
 		result.executorId = appInstance._id;
         
+		if (appInstance.sharingQuery == null) {
+			appInstance.sharingQuery = RecordManager.instance.getMeta(authToken.appInstanceId, authToken.appInstanceId, "_query").toMap();
+		}
+		
 		Map<String, Object> appobj = RecordManager.instance.getMeta(authToken.appInstanceId, authToken.appInstanceId, "_app").toMap();
 		if (appobj.containsKey("aliaskey") && appobj.containsKey("alias")) {
 			MidataId alias = new MidataId(appobj.get("alias").toString());
@@ -155,6 +159,7 @@ public class ExecutionInfo {
 		} else {
 			RecordManager.instance.setAccountOwner(appInstance._id, appInstance.owner);
 		}
+		
                                                 
 		result.ownerId = appInstance.owner;
 		result.pluginId = appInstance.applicationId;

@@ -165,7 +165,7 @@ public class OAuth2 extends Controller {
 		
 		appInstance = MobileAPI.getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode", "appVersion"));		
 		
-		KeyManager.instance.login(60000l);
+		KeyManager.instance.login(60000l, false);
 		MidataId executor = null;
 		if (appInstance == null) {		
 			if (!confirmed) {
@@ -218,6 +218,7 @@ public class OAuth2 extends Controller {
 		obj.put("istatus", appInstance.status.toString());
 		
 		AuditManager.instance.success();
+				
 		return ok(obj);
 	}
 
@@ -230,9 +231,9 @@ public class OAuth2 extends Controller {
         MobileAppInstance appInstance = null;
         Map<String, Object> meta = null;
         String phrase = null;
-        ObjectNode obj = Json.newObject();	
+        ObjectNode obj = Json.newObject();	      
         
-        KeyManager.instance.login(60000l);
+        KeyManager.instance.login(60000l, false);
         
         if (data==null) throw new BadRequestException("error.internal", "Missing request body of type form/urlencoded.");
         if (!data.containsKey("grant_type")) throw new BadRequestException("error.internal", "Missing grant_type");
@@ -266,6 +267,8 @@ public class OAuth2 extends Controller {
             if (refreshToken.created != ((Long) meta.get("created")).longValue()) {
             	return status(UNAUTHORIZED);
             }
+            
+           
         } else if (grant_type.equals("authorization_code")) {
         	if (!data.containsKey("redirect_uri")) throw new BadRequestException("error.internal", "Missing redirect_uri");
             if (!data.containsKey("client_id")) throw new BadRequestException("error.internal", "Missing client_id");
@@ -277,6 +280,7 @@ public class OAuth2 extends Controller {
             String client_id = data.get("client_id")[0];
     					
     		OAuthCodeToken tk = OAuthCodeToken.decrypt(code);
+    		if (tk == null) throw new BadRequestException("error.internal", "invalid_grant");
     		//AccessLog.log("cs:"+tk.codeChallenge);
     		//AccessLog.log("csm:"+tk.codeChallengeMethod);
     		
@@ -320,6 +324,13 @@ public class OAuth2 extends Controller {
         meta.put("created", refresh.created);
         RecordManager.instance.setMeta(appInstance._id, appInstance._id, "_app", meta);
         
+        BSONObject q = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_query");
+        if (q.containsField("link-study")) {
+        	MidataId studyId = MidataId.from(q.get("link-study"));
+        	MobileAPI.prepareMobileExecutor(appInstance, session);
+        	controllers.research.Studies.autoApproveCheck(appInstance.applicationId, studyId, appInstance.owner);
+        }
+            	
 		// create encrypted authToken		
 											
 		obj.put("access_token", session.encrypt());

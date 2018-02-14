@@ -1,0 +1,28 @@
+<div class="container" ng-controller="ListCtrl" ng-cloak>
+   <div >
+		     <div ng-hide="allResources.length">
+		        <p class="lead center-block">Loading FHIR definitions....</p>
+		     </div>
+		     <div ng-show="allResources.length" >
+		     <h3>Select type of resource to create</h3>
+		     <!--  <div class="row">
+		       <div class="col-sm-4" ng-repeat="res in allResources"  uib-tooltip="{{ res.description }}" tooltip-animation="false" tooltip-placement="top left">
+		         <div class="well well-sm" style="min-height:200px">
+		         <h4><a href="javascript:"  ng-click="makeResource(res)">{{ makeLabel(res.resourceType) }}</a></h4>
+		         <p class="list-group-item-text">{{ res.short }}</p>
+		         </div>
+		       </div>
+		     </div>  -->
+		     
+		     <table class="table">
+		       <tr ng-repeat="res in allResources | orderBy : 'resourceType'"   tooltip-animation="false" tooltip-placement="top left">
+		         
+		         <td><a href="javascript:"  uib-popover="{{ res.description }}" popover-title="{{ makeLabel(res.resourceType) }}" popover-trigger="'mouseenter'" popover-placement="auto top-left" ng-click="makeResource(res)">{{ makeLabel(res.resourceType) }}</a></td>
+		         <td>{{ res.short }}</td>
+		         </tr>
+		     </table>
+		     </div>
+		     
+		     
+		     </div>
+</div>

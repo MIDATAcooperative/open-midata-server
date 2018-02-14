@@ -8,6 +8,11 @@ public enum MessageReason {
 	REGISTRATION,
 	
 	/**
+	 * Message sent upon registration by another user
+	 */
+	REGISTRATION_BY_OTHER_PERSON, 
+	
+	/**
 	 * Message sent upon first use of app 
 	 */
 	FIRSTUSE_ANYUSER,

@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ca.uhn.fhir.narrative.DefaultThymeleafNarrativeGenerator;
-import ca.uhn.fhir.rest.server.BundleInclusionRule;
 import ca.uhn.fhir.rest.server.HardcodedServerAddressStrategy;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.RestfulServer;
@@ -76,11 +75,13 @@ public class FHIRServlet extends RestfulServer {
       myProviders.put("AuditEvent", new AuditEventResourceProvider());
       myProviders.put("EpisodeOfCare", new EpisodeOfCareResourceProvider());
       myProviders.put("Procedure", new ProcedureResourceProvider());
+      myProviders.put("AllergyIntolerance", new AllergyIntoleranceResourceProvider());
       
       resourceProviders.addAll(myProviders.values());
       setResourceProviders(resourceProviders);
-      
+      //setInterceptors(new PaginationSupport());
       setPlainProviders(new Transactions());
+      //setPagingProvider(new VirtualPaging());
    }
 
 	@Override

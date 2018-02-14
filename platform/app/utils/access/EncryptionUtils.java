@@ -265,6 +265,7 @@ public class EncryptionUtils {
 			}
 			return new Pair<byte[], byte[]>(b1, b2);		
 	}
+		
 	
 	public static byte[] joinKey(byte[] b1, byte[] b2) throws InternalServerException {		
 		if (b1.length != b2.length) throw new InternalServerException("error.internal", "Key length mismatch");

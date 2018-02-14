@@ -51,6 +51,7 @@ POST    /api/admin/news/delete/:id                       controllers.News.delete
 POST    /api/members/records/get                         controllers.Records.get()
 POST    /api/members/records/delete                      controllers.Records.delete()
 POST    /api/members/records/list                        controllers.Records.getRecords()
+GET     /api/members/records/export                      controllers.Records.downloadAccountData()
 POST    /api/members/records/info                        controllers.Records.getInfo()
 GET     /api/members/records/:id/view                    controllers.Records.getRecordUrl(id: String)
 GET     /api/members/records/shared/:apsId               controllers.Records.getSharingDetails(apsId: String)
@@ -93,6 +94,9 @@ DELETE  /api/developers/plugins/:appId/stats             controllers.Market.dele
 PUT     /api/admins/plugins/:appId            	         controllers.Market.updatePluginStatus(appId: String)
 DELETE  /api/admins/plugins/:appId            	         controllers.Market.deletePlugin(appId: String)
 
+POST     /api/admins/importplugin                        controllers.Market.importPlugin()
+GET      /api/admins/exportplugin/:appId                 controllers.Market.exportPlugin(appId: String)
+
 # Users
 
 POST    /api/members/users/get                           controllers.Users.get()
@@ -117,6 +121,7 @@ POST    /api/admin/studies                               controllers.research.St
 GET     /api/research/studies/:study                     controllers.research.Studies.get(study: String)
 GET     /api/admin/studies/:study                        controllers.research.Studies.getAdmin(study: String)
 PUT     /api/research/studies/:study                     controllers.research.Studies.update(study: String)
+POST    /api/research/studies/:study/change              controllers.research.Studies.updateNonSetup(study: String)
 GET     /api/research/studies/:study/download            controllers.research.Studies.download(study: String)
 GET     /api/research/studies/:study/fhirdownload/:studyGroup/:mode  controllers.research.Studies.downloadFHIR(study: String, studyGroup : String, mode : String)
 GET     /api/research/studies/:study/codes               controllers.research.Studies.listCodes(study: String)
@@ -134,6 +139,7 @@ POST    /api/research/studies/:study/status/abort        controllers.research.St
 POST    /api/research/studies/:study/status/delete       controllers.research.Studies.delete(study: String)
 POST    /api/admin/studies/:study/status/delete       controllers.admin.Administration.deleteStudy(study: String)
 POST    /api/research/studies/:study/participants        controllers.research.Studies.listParticipants(study: String)
+POST    /api/research/studies/:study/participants/count  controllers.research.Studies.countParticipants(study: String)
 GET     /api/research/studies/:study/participants/:participant controllers.research.Studies.getParticipant(study: String, participant: String)
 POST    /api/research/studies/:study/approve             controllers.research.Studies.approveParticipation(study: String)
 POST    /api/research/studies/:study/reject              controllers.research.Studies.rejectParticipation(study: String)

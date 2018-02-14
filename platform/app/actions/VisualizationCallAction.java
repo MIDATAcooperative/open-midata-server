@@ -14,6 +14,7 @@ import utils.ServerTools;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.exceptions.BadRequestException;
+import utils.exceptions.RequestTooLargeException;
 import utils.fhir.ResourceProvider;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.stats.Stats;
@@ -58,6 +59,9 @@ public class VisualizationCallAction extends Action<VisualizationCall> {
     		} else {
     		  return F.Promise.pure((Result) badRequest(e.getMessage()));
     		}
+    	} catch (RequestTooLargeException e4) {
+    		if (Stats.enabled) Stats.finishRequest(ctx.request(), "202");
+    		return F.Promise.pure((Result) status(202, e4.getMessage()));
     	} catch (BadRequestException e3) {
     		if (Stats.enabled) Stats.finishRequest(ctx.request(), e3.getStatusCode()+"");
     		AuditManager.instance.fail(400, e3.getMessage(), e3.getLocaleKey());

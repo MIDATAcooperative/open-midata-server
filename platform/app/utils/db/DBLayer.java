@@ -1,5 +1,6 @@
 package utils.db;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -194,9 +195,17 @@ public class DBLayer {
 	 * Return the given fields of all objects that have the given properties.
 	 */
 	public static <T extends Model> List<T> getAllList(Class<T> modelClass, String collection, Map<String, ? extends Object> properties,
-			Set<String> fields, int limit) throws DatabaseException {
+			Set<String> fields, int limit, String sortField, int order) throws DatabaseException {
 		Stats.reportDb("read N", collection);
-		return getDatabaseForCollection(collection).getAllList(modelClass, collection, properties, fields, limit);
+		return getDatabaseForCollection(collection).getAllList(modelClass, collection, properties, fields, limit, sortField, order);
+	}
+	
+	/**
+	 * Return the count of all objects that have the given properties.
+	 */
+	public static long count(Class modelClass, String collection, Map<String, ? extends Object> properties) throws DatabaseException {
+		Stats.reportDb("count", collection);
+		return getDatabaseForCollection(collection).count(modelClass, collection, properties);
 	}
 
 	/**
@@ -219,6 +228,16 @@ public class DBLayer {
 	public static <T extends Model> void set(Class<T> model, String collection, Map<String, Object> properties, String field, Object value) throws DatabaseException {
 		Stats.reportDb("update N",collection);
 		getDatabaseForCollection(collection).set(model, collection, properties, field, value);		
+	}
+	
+	
+	/**
+	 * Sets the given fields of the object (does not prevent lost update)
+	 * @return
+	 */
+	public static <T extends Model> void update(T model, String collection, Collection<String> fields) throws DatabaseException {
+		Stats.reportDb("update 1", collection);
+		getDatabaseForCollection(collection).update(model, collection, fields);
 	}
 	
 	/**

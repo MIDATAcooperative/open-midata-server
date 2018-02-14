@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('StudyTeamCtrl', ['$scope', '$state', 'server', 'status', 'usergroups', 'studies', 'session', 'users', function($scope, $state, server, status, usergroups, studies, session, users) {
+.controller('StudyTeamCtrl', ['$scope', '$state', 'server', 'status', 'usergroups', 'studies', 'session', 'users', '$document', function($scope, $state, server, status, usergroups, studies, session, users, $document) {
 	
 	$scope.studyId = $state.params.studyId;
 	$scope.status = new status(false, $scope);
@@ -11,6 +11,7 @@ angular.module('portal')
 	  	 startingDay: 1
 	};
 	$scope.members = [];
+	$scope.form = {};
     $scope.roles = studies.roles;
     $scope.rights = ["setup", "readData", "writeData", "unpseudo", "export", "changeTeam", "participants", "auditLog" ];
     $scope.add = { role:{} };
@@ -26,12 +27,14 @@ angular.module('portal')
 		
 		$scope.status.doBusy(server.get(jsRoutes.controllers.research.Studies.get($scope.studyId).url))
 		.then(function(data) { 				
-				$scope.study = data.data;			
+				$scope.study = data.data;	
+				$scope.lockChanges = !$scope.study.myRole.changeTeam;
 		});
 						
 		$scope.status.doBusy(usergroups.listUserGroupMembers($scope.studyId))
 		.then(function(data) {
 			$scope.members = data.data;
+			angular.forEach($scope.members, function(member) { member.role.unpseudo = !member.role.pseudo; });
 		});
 		
 		$scope.status.doBusy(users.getMembers({ role : "RESEARCH", organization : session.org }, users.MINIMAL ))
@@ -68,8 +71,22 @@ angular.module('portal')
 		}
 	};
 	
-	$scope.addPerson = function() {			
-        $scope.error = null;				
+	$scope.formChange = function() {
+		$scope.saveOk = false;
+	};
+	
+	$scope.addPerson = function() {		
+		$scope.myform = $scope.form.myform;
+		$scope.submitted = true;	
+		if ($scope.error && $scope.error.field && $scope.error.type) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
+		$scope.error = null;
+		if (! $scope.myform.$valid) {
+			var elem = $document[0].querySelector('input.ng-invalid');
+			if (elem && elem.focus) elem.focus();
+			return;
+		}
+		
+       			
 		$scope.status.doAction("add", users.getMembers({ email : $scope.add.personemail, role : "RESEARCH" },["email", "role"]))
 		.then(function(result) {
 			if (result.data && result.data.length) {
@@ -80,6 +97,8 @@ angular.module('portal')
 				then(function() {
 					$scope.add = { role:{} };
 					$scope.init();
+					$scope.submitted = false;
+					$scope.saveOk = true;
 				});
 			} else {
 				$scope.error = { code : "error.unknown.user" };

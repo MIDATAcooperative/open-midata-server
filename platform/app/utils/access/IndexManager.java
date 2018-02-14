@@ -15,6 +15,9 @@ import org.bson.BasicBSONObject;
 
 import akka.actor.ActorRef;
 import akka.actor.Props;
+import akka.contrib.pattern.ClusterSingletonManager;
+import akka.contrib.pattern.ClusterSingletonProxy;
+import controllers.AutoRun.ImportManager;
 import models.Consent;
 import models.MidataId;
 import play.libs.Akka;
@@ -32,6 +35,7 @@ import utils.db.LostUpdateException;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 import utils.stats.Stats;
+import utils.sync.Instances;
 
 /**
  * Manages indexes on encrypted data records. Allows creation of new indexes,
@@ -43,11 +47,17 @@ public class IndexManager {
 	public static IndexManager instance = new IndexManager();
 			
 	private static long UPDATE_TIME = 1000 * 10;
+	private static long UPDATE_UNUSED = 1000 * 60 * 60 * 24;
 	
 	private ActorRef indexSupervisor;
+	private ActorRef indexSupervisorSingleton;
+				
 	
-	public IndexManager() {
-		indexSupervisor = Akka.system().actorOf(Props.create(IndexSupervisor.class), "indexSupervisor");
+	public IndexManager() {		
+		indexSupervisorSingleton = Instances.system().actorOf(ClusterSingletonManager.defaultProps(Props.create(IndexSupervisor.class), "indexSupervisor-instance",
+			    null, null), "indexSupervisor-singleton");
+		
+		indexSupervisor = Instances.system().actorOf(ClusterSingletonProxy.defaultProps("user/indexSupervisor-singleton/indexSupervisor-instance", null), "indexSupervisor");			
 	}
 
 	public IndexPseudonym getIndexPseudonym(APSCache cache, MidataId user, MidataId targetAPS, boolean create) throws AppException {		
@@ -103,6 +113,7 @@ public class IndexManager {
 			List<DBRecord> part = records.subList(cur, cur+CHUNK_SIZE > max ? max : cur+CHUNK_SIZE);
 			QueryEngine.loadData(part);
 			for (DBRecord record : part) {
+				
 				if (record.data != null) index.addEntry(aps != null ? aps : record.consentAps, record);				
 				// Remove from memory
 				record.data = null;
@@ -136,6 +147,8 @@ public class IndexManager {
 					} catch (InternalServerException e) {
 					  // We ignore error during index remove as this might be part of a delete operation
 					  AccessLog.logException("Error during index entry remove", e);
+					} catch (NullPointerException e2) {
+					  AccessLog.logException("Error during index entry remove", e2);
 					}
 					// Remove from memory
 					record.data = null;
@@ -177,7 +190,7 @@ public class IndexManager {
 				if (index.getModCount() > 5000) index.flush();
 				
 				Map<String, Object> restrictions = new HashMap<String, Object>();
-				restrictions.put("format", index.getFormats());
+				restrictions.put("format", index.getFormats());				
 				if (aps.equals(executor)) restrictions.put("owner", "self");
 				
 			    AccessLog.log("Checking aps:"+aps.toString());
@@ -190,7 +203,7 @@ public class IndexManager {
 				if (limit != null) restrictions.put("updated-after", limit);								
 				List<DBRecord> recs = QueryEngine.listInternal(cache, aps, null, restrictions, Sets.create("_id"));
 				addRecords(index, aps, recs);
-				boolean updateTs = recs.size() > 0;
+				boolean updateTs = recs.size() > 0 || limit == null || (now-v) > UPDATE_UNUSED;
 				// Records that have been freshly shared
 				if (limit != null) {
 					restrictions.remove("updated-after");

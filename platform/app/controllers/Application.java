@@ -158,7 +158,7 @@ public class Application extends APIController {
 		User user = User.getById(userId, Sets.create("firstname", "lastname", "email", "emailStatus", "status", "role"));
 		
 		if (user != null && (user.emailStatus.equals(EMailStatus.UNVALIDATED) || user.emailStatus.equals(EMailStatus.EXTERN_VALIDATED)) ) {							  
-		   sendWelcomeMail(user);
+		   sendWelcomeMail(user, null);
 		}
 			
 		// response
@@ -169,12 +169,12 @@ public class Application extends APIController {
 	 * Helper function to send welcome mail
 	 * @param user user record which sould receive the mail
 	 */
-	public static void sendWelcomeMail(User user) throws AppException {
-		sendWelcomeMail(RuntimeConstants.instance.portalPlugin, user);
+	public static void sendWelcomeMail(User user, User executingUser) throws AppException {
+		sendWelcomeMail(RuntimeConstants.instance.portalPlugin, user, executingUser);
 	}
 	
 	
-	public static void sendWelcomeMail(MidataId sourcePlugin, User user) throws AppException {
+	public static void sendWelcomeMail(MidataId sourcePlugin, User user, User executingUser) throws AppException {
 	   if (user.developer == null) {
 		   if (user.email == null) return;
 		   PasswordResetToken token = new PasswordResetToken(user._id, user.role.toString(), true);
@@ -189,10 +189,26 @@ public class Application extends APIController {
 		   replacements.put("reject-url", site + "/#/portal/reject/" + encrypted);
 		   replacements.put("token", token.token);
 		   
+		   if (executingUser != null) {
+			   replacements.put("executor-firstname", executingUser.firstname);
+			   replacements.put("executor-lastname", executingUser.lastname);
+			   replacements.put("executor-email", executingUser.email);
+		   }
+		   
 		   AccessLog.log("send welcome mail: "+user.email);
-		   if (!Messager.sendMessage(sourcePlugin, MessageReason.REGISTRATION, null, Collections.singleton(user._id), null, replacements)) {
-			   Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.REGISTRATION, null, Collections.singleton(user._id), null, replacements);
-		   }	  	   
+		   if (executingUser == null) {
+			   if (!Messager.sendMessage(sourcePlugin, MessageReason.REGISTRATION, null, Collections.singleton(user._id), null, replacements)) {
+				   Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.REGISTRATION, user.role.toString(), Collections.singleton(user._id), null, replacements);
+			   }	  	   
+		   } else {
+			   if (!Messager.sendMessage(sourcePlugin, MessageReason.REGISTRATION_BY_OTHER_PERSON, null, Collections.singleton(user._id), null, replacements)) {
+				   if (!Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.REGISTRATION_BY_OTHER_PERSON, user.role.toString(), Collections.singleton(user._id), null, replacements)) {
+					   if (!Messager.sendMessage(sourcePlugin, MessageReason.REGISTRATION, null, Collections.singleton(user._id), null, replacements)) {
+						   Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.REGISTRATION, user.role.toString(), Collections.singleton(user._id), null, replacements);
+					   }	
+				   }
+			   }	  	   
+		   }
 	   } else {
 		   user.emailStatus = EMailStatus.VALIDATED;
 		   User.set(user._id, "emailStatus", user.emailStatus);
@@ -298,7 +314,7 @@ public class Application extends APIController {
 				       
 			       } else if (user!=null && user.emailStatus.equals(EMailStatus.UNVALIDATED) && user.resettoken != null 
 			    		   && user.resettoken.equals(token)) {
-			    	     sendWelcomeMail(user);
+			    	     sendWelcomeMail(user, null);
 			    	     throw new BadRequestException("error.expired.tokenresent", "Token has already expired. A new one has been requested.");
 			       } else throw new BadRequestException("error.expired.token", "Token has already expired. Please request a new one.");
 			       
@@ -528,7 +544,7 @@ public class Application extends APIController {
 	*/
 	
 	public static Set<UserFeature> loginHelperPreconditionsFailed(User user, Set<UserFeature> required) throws AppException {
-        if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
+        if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.WIPED)) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
 		
 		if (user.emailStatus.equals(EMailStatus.UNVALIDATED) && user.registeredAt.before(new Date(System.currentTimeMillis() - MAX_TIME_UNTIL_EMAIL_CONFIRMATION)) && !InstanceConfig.getInstance().getInstanceType().disableEMailValidation()) {
 			user.status = UserStatus.TIMEOUT;			
@@ -565,10 +581,11 @@ public class Application extends APIController {
 		
 		if (user.status.equals(UserStatus.ACTIVE) || user.status.equals(UserStatus.NEW)) {
 		   PortalSessionToken token = null;
-		   String handle = KeyManager.instance.login(PortalSessionToken.LIFETIME);		
+		   String handle = KeyManager.instance.login(PortalSessionToken.LIFETIME, true);		
 		   token = new PortalSessionToken(handle, user._id, UserRole.ANY, null, user.developer);
 		   obj.put("sessionToken", token.encrypt(request()));
 		   KeyManager.instance.unlock(user._id, null);
+		   KeyManager.instance.persist(user._id);
 		}
 					
 		AuditManager.instance.success();
@@ -586,7 +603,7 @@ public class Application extends APIController {
 		Set<UserFeature> notok = loginHelperPreconditionsFailed(user, InstanceConfig.getInstance().getInstanceType().defaultRequirementsPortalLogin(user.role));
 		
 		PortalSessionToken token = null;
-		String handle = KeyManager.instance.login(PortalSessionToken.LIFETIME);
+		String handle = KeyManager.instance.login(PortalSessionToken.LIFETIME, true);
 	
 		if (user instanceof HPUser) {
 		   token = new PortalSessionToken(handle, user._id, user.role, ((HPUser) user).provider, user.developer);		  
@@ -603,7 +620,10 @@ public class Application extends APIController {
 		  return loginHelperResult(user, notok);
 		} else {						
 		  int keytype = KeyManager.instance.unlock(user._id, null);		
-		  if (keytype == 0) AccountPatches.check(user);
+		  if (keytype == 0) {
+			  AccountPatches.check(user);
+			  KeyManager.instance.persist(user._id);
+		  }
 				
 		  obj.put("keyType", keytype);
 		  obj.put("role", user.role.toString().toLowerCase());
@@ -645,6 +665,7 @@ public class Application extends APIController {
 		String passphrase = JsonValidation.getString(json, "passphrase");
 		
 		KeyManager.instance.unlock(userId, passphrase);
+		KeyManager.instance.persist(userId);
 		
 		try {
 		  RecordManager.instance.list(userId, userId, CMaps.map("format","zzzzzzz"), Sets.create("name"));
@@ -712,7 +733,7 @@ public class Application extends APIController {
 		
 		Circles.fetchExistingConsents(user._id, user.emailLC);
 		
-		sendWelcomeMail(user);
+		sendWelcomeMail(user, null);
 		if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) sendAdminNotificationMail(user);
 		
 		return loginHelper(user);		
@@ -756,8 +777,8 @@ public class Application extends APIController {
 		user.security = AccountSecurityLevel.KEY;		
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);								
 		Member.add(user);
-		KeyManager.instance.login(60000);
-		KeyManager.instance.unlock(user._id, null);
+		KeyManager.instance.login(60000, true);
+		KeyManager.instance.unlock(user._id, null);	
 		
 		user.myaps = RecordManager.instance.createPrivateAPS(user._id, user._id);
 		Member.set(user._id, "myaps", user.myaps);
@@ -871,6 +892,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.Records.getRecordUrl(),
 				controllers.routes.javascript.Records.delete(),
 				controllers.routes.javascript.Records.fixAccount(),
+				controllers.routes.javascript.Records.downloadAccountData(),
 				// Circles
 				controllers.routes.javascript.Circles.get(),
 				controllers.routes.javascript.Circles.add(),
@@ -911,6 +933,7 @@ public class Application extends APIController {
 				controllers.research.routes.javascript.Studies.get(),
 				controllers.research.routes.javascript.Studies.getAdmin(),
 				controllers.research.routes.javascript.Studies.update(),
+				controllers.research.routes.javascript.Studies.updateNonSetup(),
 				controllers.research.routes.javascript.Studies.updateParticipation(),
 				controllers.research.routes.javascript.Studies.download(),
 				controllers.research.routes.javascript.Studies.downloadFHIR(),
@@ -926,6 +949,7 @@ public class Application extends APIController {
 				controllers.research.routes.javascript.Studies.abortExecution(),
 				controllers.research.routes.javascript.Studies.delete(),
 				controllers.research.routes.javascript.Studies.listParticipants(),
+				controllers.research.routes.javascript.Studies.countParticipants(),
 				controllers.research.routes.javascript.Studies.getParticipant(),
 				controllers.research.routes.javascript.Studies.approveParticipation(),
 				controllers.research.routes.javascript.Studies.rejectParticipation(),	
@@ -976,6 +1000,8 @@ public class Application extends APIController {
 				controllers.routes.javascript.Market.updatePluginStatus(),
 				controllers.routes.javascript.Market.getPluginStats(),
 				controllers.routes.javascript.Market.deletePluginStats(),
+				controllers.routes.javascript.Market.importPlugin(),
+				controllers.routes.javascript.Market.exportPlugin(),
 								
 				// UserGroups
 				controllers.routes.javascript.UserGroups.search(),

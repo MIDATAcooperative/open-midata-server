@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import ca.uhn.fhir.rest.api.SortOrderEnum;
+import controllers.MobileAPI;
 import models.Record;
 import utils.access.RecordManager;
 import utils.access.op.AndCondition;
@@ -92,7 +93,7 @@ public class Query {
 		if (sorts!=null) {
 			accountCriteria.put("sort", String.join(",", sorts));
 		}
-		
+				
 		List<Record> result = RecordManager.instance.list(info.executorId, info.context, accountCriteria, Sets.create("owner", "ownerName", "version", "created", "lastUpdated", "data"));
 		
 		return result;
@@ -101,6 +102,8 @@ public class Query {
 	public Map<String, Object> retrieveAsNormalMongoQuery() throws AppException {		
 		Map<String,Object> result = new HashMap<String, Object>();
 		result.putAll(accountCriteria);
+		result.remove("limit");
+		result.remove("from");
 		if (dataCriteria != null) result.putAll((Map<String,Object>) dataCriteria.asMongoQuery());
 		ObjectIdConversion.convertMidataIds(result, "_id");
 		return result;

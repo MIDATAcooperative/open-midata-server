@@ -1,5 +1,5 @@
 <div>  
-  <div ui-calendar="uiConfig.calendar" ng-model="eventSources"></div>
+  <div ui-calendar="uiConfig.calendar" ng-model="eventSources" calendar="calendar"></div>
   <div class="extraspace"></div>
   <a class="btn btn-primary" href="#/cal/add" translate="add_data_btn"></a>
   
@@ -16,14 +16,26 @@
               <td translate="event"></td>
 	          <td>{{ selectedEvent.what }}</td>
 	        </tr><tr>
-	        <td translate="persons"></td><td>{{ selectedEvent.who }}</td>
+	        <td translate="persons"></td><td><div ng-repeat="w in selectedEvent.who">{{ w }}</div></td>
 	        </tr><tr>        
 	        <td translate="date"></td><td>{{ selectedEvent.start.toDate() | date }}</td>
 	        </tr><tr>
 	        <td translate="details"></td><td>{{ selectedEvent.details }}</td>
 	        </tr>
+	        <tr ng-if="tlb">
+	          <td translate="tlb"></td>
+	          <td><div class="row">
+	            <div class="col-xs-4">
+                <select class="form-control" ng-model="tlb.operator" ng-options="op for op in operators" ng-change="tlbModified()"></select>
+                </div>
+                <div class="col-xs-8">            
+                <input type="number" class="form-control" ng-model="tlb.limit" ng-change="tlbModified()">
+                </div>
+                </div>
+              </td>
+            </tr>
 	      </table>
-	      <button data-dismiss="modal" type="button" class="btn btn-primary" translate="close_btn"></button>
+	      <button data-dismiss="modal" ng-click="checkTlb()" type="button" class="btn btn-primary" translate="close_btn"></button>
 	      <button ng-click="showDetails(selectedEvent)" data-dismiss="modal" type="button" class="btn btn-default" translate="details_btn"></button>
         </div>
       </div> 

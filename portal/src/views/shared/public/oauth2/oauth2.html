@@ -21,7 +21,7 @@
 		              		<h3 class="panel-title"><span translate="oauth2.sign_in"></span> <strong>{{ app.i18n[translate.use()].name || app.name }}</strong></h3>
 		            	</div>
 		            	<div class="panel-body">
-			            	<p translate="{{ error.code }}" ng-show="error" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                           
+			            	<p translate="{{ error.code || error }}" ng-show="error" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                           
 	                        </p>
 	                        <p ng-show="offline" class="alert alert-danger" translate="error.offline"></p>
 							<form ng-submit="dologin()" role="form" ng-hide="offline">

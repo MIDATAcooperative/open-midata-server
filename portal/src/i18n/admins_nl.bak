@@ -1,0 +1,137 @@
+{
+  "admin_navbar" : {
+    "members" : "Members",
+    "auditlog" : "Audit",
+    "news" : "News",
+    "plugins" : "Plugins",
+	"content" : "Content",
+	"studies" : "Studies",
+	"terms" : "Terms",	
+	"registration" : "Register Admin"
+  },
+  
+  "admin_members" : {
+    "title" : "Member List",
+    "search_type" : "Search",
+    "contract_required" : "Contract needs to be sent",
+    "contract_confirm_required" : "Signed contract needs to be confirmed",
+    "no_email_confirm" : "Email not confirmed by user",
+    "email_rejected" : "Email confirmation rejected by user",
+	"not_admin_confirmed" : "Not confirmed by administrator",
+    "overview" : "Overview",
+    "specific_user" : "Specific User",
+    "role" : "Role",
+    "status" : "Status",
+    "midata_id" : "midataID",
+    "empty" : "No matching users found."
+  },
+
+  "admin_address" : {
+    "title" : "Member Address",
+    "midata_id" : "MIDATA-ID",
+    "role" : "Role",
+    "subroles" : "Sub-Role(s)",
+    "developer" : "Belongs to Developer:",
+    "status" : "Status:",
+    "agb_status" : "AGB Status:",
+    "contract_status" : "Contract Status:",
+    "email_status" : "Email Status:",
+    "confirmation_code" : "Confirmation Code:",
+    "registration_date" : "Registration Date:",
+    "confirmation_date" : "Confirmation Date:",
+    "last_login" : "Last Login:",
+    "email_confirm_btn" : "Confirm Email Address",
+    "comment" : "Comment",
+    "add_comment_btn" : "Add Comment",
+    "wipe_btn" : "Wipe Account",
+    "change_email_btn" : "Change Email Address"
+  },
+  
+  "admin_news" : {
+    "created" : "Created",
+    "language" : "Language",
+    "title" : "Title",
+    "expires" : "Expiration Date",
+    "delete_btn" : "Delete",
+    "empty" : "No News-Items found"
+  },
+  
+  "admin_managenews" : {
+    "title1" : "Add a new news message",
+    "title2" : "Modify news message",
+    "title" : "News title",
+    "language" : "News language",
+    "content" : "Content",
+    "url" : "URL of full message",
+    "expires" : "Expiration date of message"
+  },
+  
+  "admin_registration" : {
+    "sign_up" : "Register New Admin Account"
+  },
+  
+  "admin_plugins" : {
+    "title" : "Plugins",
+    "developer" : "Filter by Developer",
+    "name" : "Filter by Appname",
+    "organisation" : "Filter by Organisation",
+    "empty" : "There are no apps or plugins yet.",
+    "plugin_name" : "Name",
+    "plugin_developer" : "Developer",
+    "plugin_type" : "Type",
+    "plugin_role" : "Target Role",
+    "plugin_market" : "Market",
+    "plugin_stats" : "Stats",
+    "plugin_status" : "Status"
+  },
+  
+  "admin_studies" : {
+    "title" : "Studies",
+    "criteria" : "Search criteria",
+    "empty" : "No matching studies found."
+  },
+  
+  "admin_terms" : {
+    "title" : "Terms",
+    "empty" : "No terms available.",
+    "name" : "Name",
+    "version" : "Version",
+    "language" : "Language",
+    "createdAt" : "Creation Date"
+  },
+  
+  "admin_manageterms" : {
+    "pagetitle" : "Terms",
+    "name" : "Internal Name",
+    "version" : "Version",
+    "language" : "Language",
+    "title" : "Title (public)",
+    "text" : "Content (HTML)"
+  },
+  
+  "admin_study" : {
+     "title" : "Study",
+     "name" : "Name",
+     "created_at" : "Created at",
+     "created_by" : "Created by",
+     "description" : "Description",
+     "code" : "Code",
+     "startDate" : "Start Date",
+     "endDate" : "End Date",
+     "dataCreatedBefore" : "Data freeze date",
+     "required_information" : "Required Information",
+     "required_assistance" : "Required Assistance",
+     "termsOfUse" : "Terms",
+     "sharing_query" : "Sharing Query",
+     "requirements" : "Requirements",
+     "groups" : "Groups",
+     "group_name" : "Group Name",
+     "group_description" : "Description",
+     "team" : "Team",
+     "role" : "Role",
+     "history" : "History",
+     "end_validation_btn" : "Complete Validation",
+     "back_to_draft_btn" : "Back to Draft",
+     "delete_study_btn" : "Delete Study"    
+  }
+}

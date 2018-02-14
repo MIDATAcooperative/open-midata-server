@@ -12,7 +12,7 @@
       </tr>
       <tr ng-repeat="info in infos">        
 	      <td>{{ info.group }}</td>      
-	      <td>{{ info.count }}</td>
+	      <td>{{ info.count | translate }}</td>
 	      <td><button ng-disabled="status.action == 'download' || !study.myRole.export" ng-click="fhirDownload(info, 'pseudonymized')" href="javascript:" class="btn btn-xs btn-primary" translate="studyrecords.fhir_download_btn"></button>
 	      <td><button ng-show="!study.myRole.pseudo" ng-disabled="status.action == 'download' || !study.myRole.export" ng-click="fhirDownload(info, 'original')" href="javascript:" class="btn btn-xs btn-primary" translate="studyrecords.fhir_download_original_btn"></button>
       </tr>

@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('ContentEditorCtrl', ['$scope', '$state', 'views', 'session', 'formats', 'status', function($scope, $state, views, session, formats, status) {
+.controller('ContentEditorCtrl', ['$scope', '$state', 'views', 'session', 'formats', 'status', 'languages', function($scope, $state, views, session, formats, status, languages) {
 
 	$scope.status = new status(true);
 	$scope.lang = "en";
@@ -7,7 +7,7 @@ angular.module('portal')
     $scope.nameToGroup = {};
     $scope.nameToContent = {};
     $scope.groupSystem = "v1";
-    $scope.languages = ["en","de","it","fr"];
+    $scope.languages = languages.array;
     $scope.resourceTypes = ["", "fhir/Observation", "fhir/DocumentReference"];
     $scope.subTypes = ["", "Quantity", "CodeableConcept", "String", "Range", "Ratio", "SampledData", "Attachment", "Time", "DateTime", "Period", "component"];
     $scope.categories = ["", "social-history", "vital-signs", "imaging", "laboratory", "procedure", "survey", "exam", "therapy", "fitness" ];

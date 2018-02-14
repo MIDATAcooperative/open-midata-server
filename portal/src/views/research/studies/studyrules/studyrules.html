@@ -12,13 +12,13 @@
 	
 	  <formrow myid="queryadd" label="studyrules.sharing_query_options">
 	     <div class="col-sm-5">
-		 <select class="form-control" ng-model="query.system" ng-options="cs as cs.label | translate for cs in codesystems"></select>
+		 <select class="form-control" ng-change="formChange()" ng-model="query.system" ng-disabled="studyLocked()" ng-options="cs as cs.label | translate for cs in codesystems"></select>
 		 </div>
 		 <div class="col-sm-5">
-		 <input type="text" id="queryadd" name="queryadd" class="form-control" ng-model="query.code">
+		 <input type="text" id="queryadd" name="queryadd" class="form-control" ng-change="formChange()" ng-disabled="studyLocked()" ng-model="query.code">
 		 </div>
 		 <div class="col-sm-2">
-		 <button class="btn btn-default" type="button" ng-click="addCode()" translate="common.add_btn"></button>
+		 <button class="btn btn-default" type="button" ng-disabled="studyLocked()" ng-click="addCode()" translate="common.add_btn"></button>
 		 </div> 
 		 <div class="col-sm-12" ng-show="codeerror">
 		    <p class="help-block"  translate="{{codeerror}}"></p>
@@ -27,45 +27,45 @@
 		   <formrow myid="query" label="studyrules.sharing_query_selection" ng-show="labels.length">		    
 		    <div ng-repeat="label in labels" class="checkbox">
 		      <label>
-		      <input type="checkbox" ng-model="label.selected" ng-change="patchQuery(label.type, label)">
+		      <input type="checkbox" ng-model="label.selected" ng-disabled="studyLocked()" ng-change="patchQuery(label.type, label)">
 		      {{ label.label }}</label>
 		    </div>
 		  </formrow>
 	
 	  <formrow myid="recordQuery" label="studyrules.sharing_query">
-	     <textarea class="form-control" ng-change="updateQuery()" ng-model="study.recordQueryStr"></textarea>
+	     <textarea class="form-control" ng-change="updateQuery()" ng-disabled="studyLocked()" ng-model="study.recordQueryStr"></textarea>
       </formrow>
     
       <formrow myid="startDate" label="studyrules.startDate">
 	    <div class="input-group">
-          <input id="startDate" type="text" class="form-control" placeholder="" uib-datepicker-popup="dd.MM.yyyy" ng-model="study.startDate" is-open="datePickers.startDate" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+          <input id="startDate" type="text" class="form-control" ng-change="formChange()" ng-disabled="studyLocked()" placeholder="" uib-datepicker-popup="dd.MM.yyyy" ng-model="study.startDate" is-open="datePickers.startDate" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
           <span class="input-group-btn">
-             <button type="button"  class="btn btn-default" ng-click="datePickers.startDate=true;"><i class="glyphicon glyphicon-calendar"></i></button>
+             <button type="button"  class="btn btn-default" ng-disabled="studyLocked()" ng-click="datePickers.startDate=true;"><i class="glyphicon glyphicon-calendar"></i></button>
           </span>
         </div>
 	  </formrow>
 	  
 	  <formrow myid="endDate" label="studyrules.endDate">
 	    <div class="input-group">
-          <input id="endDate" type="text" class="form-control" placeholder="" uib-datepicker-popup="dd.MM.yyyy" ng-model="study.endDate" is-open="datePickers.endDate" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+          <input id="endDate" type="text" class="form-control" ng-change="formChange()" ng-disabled="studyLocked()" placeholder="" uib-datepicker-popup="dd.MM.yyyy" ng-model="study.endDate" is-open="datePickers.endDate" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
           <span class="input-group-btn">
-             <button type="button"  class="btn btn-default" ng-click="datePickers.endDate=true;"><i class="glyphicon glyphicon-calendar"></i></button>
+             <button type="button"  class="btn btn-default" ng-disabled="studyLocked()" ng-click="datePickers.endDate=true;"><i class="glyphicon glyphicon-calendar"></i></button>
           </span>
         </div>
 	  </formrow>
 	  
 	  <formrow myid="dataCreatedBefore" label="studyrules.dataCreatedBefore">
 	    <div class="input-group">
-          <input id="dataCreatedBefore" type="text" class="form-control" placeholder="" uib-datepicker-popup="dd.MM.yyyy" ng-model="study.dataCreatedBefore" is-open="datePickers.dataCreatedBefore" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+          <input id="dataCreatedBefore" type="text" class="form-control" ng-change="formChange()" ng-disabled="studyLocked()" placeholder="" uib-datepicker-popup="dd.MM.yyyy" ng-model="study.dataCreatedBefore" is-open="datePickers.dataCreatedBefore" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
           <span class="input-group-btn">
-             <button type="button"  class="btn btn-default" ng-click="datePickers.dataCreatedBefore=true;"><i class="glyphicon glyphicon-calendar"></i></button>
+             <button type="button"  class="btn btn-default" ng-disabled="studyLocked()" ng-click="datePickers.dataCreatedBefore=true;"><i class="glyphicon glyphicon-calendar"></i></button>
           </span>
         </div>
 	  </formrow>
     
       
       <formrow myid="termsOfUse" label="studyrules.terms_of_use" >	    
-	    <input id="termsOfUse" type="text" name="termsOfUse" class="form-control" ng-model="study.termsOfUse" autocomplete="off" uib-typeahead="term.id as term.fullname for term in terms | filter:{fullname:$viewValue}">		    
+	    <input id="termsOfUse" type="text" name="termsOfUse" class="form-control" ng-change="formChange()" ng-disabled="studyLocked()" ng-model="study.termsOfUse" autocomplete="off" uib-typeahead="term.id as term.fullname for term in terms | filter:{fullname:$viewValue}">		    
 	    <p class="help-block" ng-show="study.termsOfUse"><a ui-sref="research.terms({ which:study.termsOfUse })" translate="studyrules.show_terms"></a></p>
 	    <p class="help-block" translate="studyrules.terms_of_use_hint"></p> 
 	  </formrow>
@@ -73,13 +73,14 @@
       <formrow myid="requirements" label="studyrules.requirements">
 		 <div class="checkbox" ng-repeat="req in requirements">
 		    <label>
-		        <input type="checkbox" ng-checked="study.requirements.indexOf(req)>=0" ng-click="toggle(study.requirements, req)">
+		        <input type="checkbox" ng-disabled="studyLocked()" ng-checked="study.requirements.indexOf(req)>=0" ng-click="toggle(study.requirements, req);formChange();">
 		        <span translate="{{ 'enum.userfeature.'+req }}"></span>
 		    </label>
 		 </div>
 	  </formrow>
       <formrow myid="x" label="">
         <button type="submit" ng-disabled="status.action == 'update' || studyLocked()" class="btn btn-primary" translate="common.change_btn"></button>
+        <span class="text-success" ng-show="saveOk"><span class="glyphicon glyphicon-ok"></span> <span translate="common.save_ok"></span></span>
       </formrow>
     </form>
     </loader>

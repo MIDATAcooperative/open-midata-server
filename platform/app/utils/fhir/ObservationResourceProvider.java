@@ -36,6 +36,8 @@ import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortOrderEnum;
 import ca.uhn.fhir.rest.api.SortSpec;
+import ca.uhn.fhir.rest.api.server.IBundleProvider;
+import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.param.CompositeAndListParam;
 import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateOrListParam;
@@ -61,7 +63,7 @@ import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
-public class ObservationResourceProvider extends ResourceProvider<Observation> implements IResourceProvider {
+public class ObservationResourceProvider extends RecordBasedResourceProvider<Observation> implements IResourceProvider {
 
 	public ObservationResourceProvider() {
 		searchParamNameToPathMap.put("Observation:based-on", "basedOn");
@@ -84,7 +86,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 	}
 
 	@Search()
-	public List<IBaseResource> getObservation(
+	public Bundle getObservation(
 			@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,
 
 			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
@@ -262,9 +264,14 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 			}) 
 			Set<Include> theIncludes,
 								
-			@Sort SortSpec theSort,
-
-			@ca.uhn.fhir.rest.annotation.Count Integer theCount
+			@Sort SortSpec theSort,		
+			
+			@ca.uhn.fhir.rest.annotation.Count Integer theCount,
+			
+			@OptionalParam(name="_page")
+			StringParam _page,
+			
+			RequestDetails theDetails
 
 	) throws AppException {
 
@@ -316,8 +323,10 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		paramMap.setIncludes(theIncludes);
 		paramMap.setSort(theSort);
 		paramMap.setCount(theCount);
+		paramMap.setFrom(_page != null ? _page.getValue() : null);
 
-		return search(paramMap);
+		return searchBundle(paramMap, theDetails);
+		
 	}
 
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
@@ -398,9 +407,9 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		// Set Record code and content
 		String display = setRecordCodeByCodeableConcept(record, theObservation.getCode(), null);		
 		String date = "No time";		
-		if (theObservation.hasEffectiveDateTimeType()) {
+		if (theObservation.hasEffective()) {
 			try {
-				date = FHIRTools.stringFromDateTime(theObservation.getEffectiveDateTimeType());
+				date = FHIRTools.stringFromDateTime(theObservation.getEffective());
 			} catch (Exception e) {
 				throw new UnprocessableEntityException("Cannot process effectiveDateTime");
 			}

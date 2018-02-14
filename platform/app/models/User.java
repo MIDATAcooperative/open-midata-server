@@ -246,6 +246,7 @@ public class User extends Model implements Comparable<User> {
 	 * Map consent id to query map.
 	 */
 	public Map<String, Map<String, Object>> queries;
+	public Map<String, Map<String, Object>> rqueries;
 	
 	/**
 	 * App that was used to register this person
@@ -349,8 +350,47 @@ public class User extends Model implements Comparable<User> {
 					        	
     }
 	
-	public static void delete(MidataId userId) throws InternalServerException {			
+	/*public static void delete(MidataId userId) throws InternalServerException {			
 		Model.delete(User.class, collection, CMaps.map("_id", userId));
+	}*/
+	
+	public void delete() throws InternalServerException {
+		
+		this.email = "deleted"; 
+		this.emailLC = "deleted";
+		this.midataID = null;
+		this.password = null;
+		this.login = null;
+		this.registeredAt = null;
+		this.resettoken = null;
+		this.resettokenTs = 0;
+		this.status = UserStatus.WIPED;
+		this.contractStatus = null;
+		this.agbStatus = null;
+		this.emailStatus = null;
+        this.confirmationCode = null;
+        this.confirmedAt = null;
+        this.firstname = "deleted";
+        this.lastname = "user";
+	    this.city = null;
+	    this.zip = null;
+	    this.address1 = null;
+	    this.address2 = null;
+	    this.phone = null;
+	    this.mobile = null;
+	    this.searchable = false;
+	    this.person = null;
+	    this.keywordsLC = null;
+	    this.publicKey = null;
+	    this.apps = null;
+	    this.termsAgreed = null;
+        this.visualizations = null;
+        this.queries = null;
+        this.initialApp = null;
+        this.initialStudy = null;
+        this.previousEMail = null;
+
+        this.setMultiple(collection, ALL_USER_INTERNAL);
 	}
 
 	/**

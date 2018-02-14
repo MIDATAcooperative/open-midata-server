@@ -35,11 +35,16 @@ angular.module('portal')
 	   $scope.status.doAction("update", server.put(jsRoutes.controllers.research.Studies.update($scope.studyid).url, JSON.stringify(data)))
 	  .then(function(data) { 				
 		    $scope.reload();
+		    $scope.saveOk = true;
 	   }); 
    };
    
    $scope.studyLocked = function() {
 	 return (!$scope.study) || ($scope.study.validationStatus !== "DRAFT" && $scope.study.validationStatus !== "REJECTED") || !$scope.study.myRole.setup;    
+   };
+   
+   $scope.formChange = function() {
+	 $scope.saveOk = false;  
    };
    
    $scope.toggle = function(array,itm) {
@@ -56,22 +61,24 @@ angular.module('portal')
    $scope.updateQuery = function() {
 		try {
 		  $scope.study.recordQuery = JSON.parse($scope.study.recordQueryStr);
-		var q = $scope.study.recordQuery;
+		
 		var is = function(f, v) {
 			return f && (f == v ||( f.length > 0 && f.indexOf(v) >= 0));
 		};
 		
 		$scope.labels = [];
 		
-		if ($scope.study.recordQuery.content) {
-			angular.forEach($scope.study.recordQuery.content, function(r) {
+		var q = labels.simplifyQuery($scope.study.recordQuery);
+		
+		if (q.content) {
+			angular.forEach(q.content, function(r) {
 			  labels.getContentLabel($translate.use(), r).then(function(lab) {
 				 $scope.labels.push({ type : "content", field : r, label : lab, selected : true }); 
 			  });
 			});
 		}
-		if ($scope.study.recordQuery.group) {
-			angular.forEach($scope.study.recordQuery.group, function(r) {
+		if (q.group) {
+			angular.forEach(q.group, function(r) {
 				  labels.getGroupLabel($translate.use(), r).then(function(lab) {
 					 $scope.labels.push({ type : "group", field : r, label : lab, selected : true }); 
 				  });

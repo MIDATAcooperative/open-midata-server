@@ -208,14 +208,14 @@
 		     <p class="help-block" ng-show="app.termsOfUse"><a ui-sref="^.terms({ which:app.termsOfUse })" translate="manageapp.show_terms"></a></p> 
 		  </formrow>
 		  <formrow myid="linkedStudy" label="manageapp.linkedStudy" >
-		    <input type="text" id="linkedStudy" ng-disabled="!allowStudyConfig" name="linkedStudy" class="form-control" placeholder="Study" ng-model="app.linkedStudyCode">
+		    <input type="text" id="linkedStudy" ng-disabled="!allowStudyConfig" name="linkedStudy" class="form-control" ng-change="checkStudyEmpty()" placeholder="Study" ng-model="app.linkedStudyCode">
 		    <formerror myid="linkedStudy" type="invalid" message="error.unknown.study" ></formerror>
 		     <p class="help-block">{{ app.linkedStudyName }}</p> 
 		  </formrow>
 		   <formrow myid="mustParticipateInStudy" label="manageapp.mustParticipateInStudy">
 		    <div class="checkbox">
 		    <label>
-		      <input type="checkbox" id="mustParticipateInStudy" ng-disabled="!allowStudyConfig" name="mustParticipateInStudy" ng-model="app.mustParticipateInStudy" value="true">
+		      <input type="checkbox" id="mustParticipateInStudy" ng-disabled="!allowStudyConfig || !app.linkedStudyCode" name="mustParticipateInStudy" ng-model="app.mustParticipateInStudy" value="true">
 		      <span translate="manageapp.info.mustParticipateInStudy"></span>
 		    </label>
 		    </div>
@@ -226,11 +226,18 @@
 		    <button type="submit" ng-disabled="status.action=='submit'" class="btn btn-primary">Submit</button>
 		    <button type="button" class="btn btn-default" ng-click="doInstall()" ng-hide="app.type == 'mobile'" ng-disabled="app._id == null">Install from localhost</button>
 		    <a class="btn btn-default" ui-sref="^.autoimport({ appId : app._id })" ng-show="app.type == 'oauth1' || app.type == 'oauth2'" ng-disabled="app._id == null">Serverside Import Test</a>
+		    		    
+		    <button type="button" class="btn btn-danger" ng-show="allowDelete" ng-click="doDelete()" ng-disabled="status.action=='delete'" translate="common.delete_btn"></button>
+		    
+		  </formrow>
+		  <formrow myid="x2" label="">
 		    
 		    <a class="btn btn-default" ui-sref="^.appmessages({ appId : app._id })" ng-disabled="app._id == null" translate="manageapp.messages_btn"></a>
 		    <a class="btn btn-default" ui-sref="^.appstats({ appId : app._id })" ng-disabled="app._id == null" translate="manageapp.stats_btn"></a>
 		    <a class="btn btn-default" ui-sref="^.appdebug({ appId : app._id })" ng-disabled="app._id == null" translate="manageapp.debug_btn"></a>
-		    <button type="button" class="btn btn-danger" ng-show="allowDelete" ng-click="doDelete()" ng-disabled="status.action=='delete'">Delete</button>
+		    <button type="button" class="btn btn-default" ng-show="allowExport" ng-click="exportPlugin()" ng-disabled="status.action=='download'" translate="manageapp.export_btn"></button>
+		    
+		    
 		  </formrow>
 	     </form>	  
 		  

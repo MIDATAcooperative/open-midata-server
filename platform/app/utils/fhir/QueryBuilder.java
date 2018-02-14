@@ -29,6 +29,7 @@ import ca.uhn.fhir.rest.param.UriParamQualifierEnum;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
+import models.MidataId;
 import utils.AccessLog;
 import utils.access.op.AndCondition;
 import utils.access.op.CompareCaseInsensitive;
@@ -85,14 +86,24 @@ public class QueryBuilder {
 	
 	public void handleCommon() throws AppException {
 		if (params.getLastUpdated() != null) {
-			Date from = params.getLastUpdated().getLowerBoundAsInstant();
-			Date to = params.getLastUpdated().getUpperBoundAsInstant();
-			if (from != null) query.putAccount("updated-after", from);
-			if (to != null) query.putAccount("updated-before", to);
+			try {
+			    Date from = params.getLastUpdated().getLowerBoundAsInstant();
+			    Date to = params.getLastUpdated().getUpperBoundAsInstant();
+			    if (from != null) query.putAccount("updated-after", from);
+				if (to != null) query.putAccount("updated-before", to);
+			} catch (IllegalArgumentException e) {
+				throw new InvalidRequestException("Invalid _lastUpdated parameter!");
+			}			
 		}
 		if (params.getCount() != null) {
-			query.putAccount("limit", params.getCount());
-		}	
+			query.putAccount("limit", params.getCount() + 1); // We add 1 to see if there are more results available
+		}
+		if (params.getSkip() != null) {
+			query.putAccount("skip", params.getSkip());
+		}
+		if (params.getFrom() != null) {
+			query.putAccount("from", params.getFrom());
+		}
 		query.initSort(params.getSortNames());
 		
 	}
@@ -100,7 +111,10 @@ public class QueryBuilder {
 	public void handleIdRestriction() throws AppException {
 		if (params.containsKey("_id")) {
 	           Set<String> ids = paramToStrings("_id");
-	           if (ids != null) query.putAccount("_id", ids);
+	           if (ids != null) {
+	        	   for (String id : ids) if (!MidataId.isValid(id)) throw new UnprocessableEntityException("Invalid value for _id in query");
+	        	   query.putAccount("_id", ids);
+	           }
 		}
 	}
 	
@@ -276,18 +290,21 @@ public class QueryBuilder {
 		if (param instanceof TokenParam) {
 			  TokenParam tokenParam = (TokenParam) param;
 			  String system = tokenParam.getSystem();
+			  String val = tokenParam.getValue();
+			  if (val == null) return;
 			  boolean isText = tokenParam.isText();
 			  if (type.equals(TYPE_CODEABLE_CONCEPT)) {
 				if (isText) {
 				  bld.add(
 						  OrCondition.or(
-						    FieldAccess.path(path+".text", new CompareCaseInsensitive(tokenParam.getValue(), CompareCaseInsensitiveOperator.CONTAINS)),
-						    FieldAccess.path(path+".coding.display", new CompareCaseInsensitive(tokenParam.getValue(), CompareCaseInsensitiveOperator.CONTAINS))
+						    FieldAccess.path(path+".text", new CompareCaseInsensitive(val, CompareCaseInsensitiveOperator.CONTAINS)),
+						    FieldAccess.path(path+".coding.display", new CompareCaseInsensitive(val, CompareCaseInsensitiveOperator.CONTAINS))
                           ));						  
 				} else 	if (system == null) {
-			      bld.addEq(path+".coding.code", tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
+				  
+			      bld.addEq(path+".coding.code", val, CompareCaseInsensitiveOperator.EQUALS);
 				} else {
-				  bld.addEq(path+".coding", "system", system, "code", tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
+				  bld.addEq(path+".coding", "system", system, "code", val, CompareCaseInsensitiveOperator.EQUALS);
 				}
 			    //if (tokenParam.getSystem() != null) bld.addEq(path+".coding.code", tokenParam.getValue());
 			  } else if (type.equals(TYPE_CODE)) {
@@ -380,7 +397,7 @@ public class QueryBuilder {
 				
 				Calendar cal = dateParam.getValueAsDateTimeDt().getValueAsCalendar();
 				//cal.setTime(comp);
-				
+				if (cal == null) throw new UnprocessableEntityException("Invalid date in date restriction");
 				switch (precision) {					  
 				case SECOND: 
 					cal.set(Calendar.MILLISECOND, 0);

@@ -120,6 +120,7 @@
     "country" : "Country:",
     "status" : "Status:",
     "group" : "Group:",
+    "shared_records" : "Shared records",
     "history" : "Participation History"
   },
   
@@ -128,6 +129,8 @@
     "partName" : "Pseudonymized",
     "group" : "Group",
     "status" : "Status",
+    "total" : "{{count}} consents matching your criteria found.",
+    "only_first_shown" : "Only first 1000 matching consents are shown.",
     "recruiter" : "Recruiter",
     "accept_btn" : "Accept",
     "reject_btn" : "Reject",
@@ -137,7 +140,10 @@
     "all" : "All participants",
     "request" : "Candidates waiting for a decision",
     "rejected" : "Rejected candidates",
-    "retreated" : "Participants that have retreated"
+    "retreated" : "Participants that have retreated",
+    "acceptall" : "Accept all requests and assign new participants to participant group",
+    "autojoin" : "Auto-Accept",
+    "autojoin2" : "Always accept all participation requests and assign new participants to chosen group upon login of research application linked to this study."
   },
   
   "studyrecords" : {

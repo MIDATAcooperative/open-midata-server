@@ -16,7 +16,7 @@ import utils.exceptions.AppException;
 
 public class FasterDecryptTool {
 
-	public static void accelerate(Query q, Set<Consent> consents) throws AppException {
+	public static void accelerate(Query q, List<Consent> consents) throws AppException {
 		AccessLog.logBegin("start accelerate consent access");
 		MidataId owner = q.getCache().getAccountOwner();
 		APS main = q.getCache().getAPS(owner);

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>MiSens Statistics</title>
+
+	<!-- build:css assets/app.min.css -->
+	<link rel="stylesheet" href="components/bootstrap/css/bootstrap.css">
+	<link rel="stylesheet" href="components/midata/css/app.css">
+	<!-- endbuild -->
+
+	<!-- build:js assets/app.min.js -->
+	<script type="text/javascript" src="components/angular/angular.js" defer></script>
+	<script type="text/javascript" src="components/angular-translate/angular-translate.js" defer></script>
+	<script type="text/javascript" src="components/angular-bootstrap/ui-bootstrap-tpls.js" defer></script>
+	<script type="text/javascript" src="components/midata/js/midata.js" defer></script>
+	<script type="text/javascript" src="components/chart.js/Chart.js" defer></script>
+	<script type="text/javascript" src="i18n.js" defer></script>
+	<script type="text/javascript" src="app.js" defer></script>
+	<script type="text/javascript" src="controller.js" defer></script>
+	<!-- endbuild -->
+        <style>
+            .StyleDivForCanvas{
+                width: 50%;
+				text-align: center;
+				/*float: left;*/
+            }
+/*
+			.StyleDivContainerForCanvas{
+                width: 100%;
+				display:inline-block"
+			}*/
+        </style>
+</head>
+
+<body>
+	<div ng-app="MiSens" ng-controller="ViewController" ng-cloak>
+		<div class="container">
+			<div style="float:right; padding-top:15px;">
+				<select ng-model="information.datasetGroup" ng-change="UpdateInformation()"><!-- ng-options='i | translate for i in {scientifica: "selectOptionScientificaResultsText", current: "selectOptionCurrentResultsText"}'>-->
+					<option value="scientifica" translate="selectOptionScientificaResultsText"> </option>
+					<option value="current" translate="selectOptionCurrentResultsText"></option>
+				</select>
+			</div>
+			<h2 translate="title"></h2>
+			<hr>
+			<p translate="textStarDiagram"></p>
+			<canvas id="myCanvas" width="950px" height="950px"></canvas>
+			<br />
+			<h3 translate="GeschmackshistogrammeTitle"></h3>
+			<span translate="GeschmackshistogrammeText1"></span>
+			<span style="font-weight:bold" translate="GeschmackshistogrammeText2Bold"></span>
+			<!--<p translate="GeschmackshistogrammeText1"></p>
+			<p translate="GeschmackshistogrammeText2Bold"></p>-->
+			<br /><br />
+				
+			<div class="StyleDivForCanvas">
+				<h4 translate="PROPTitle"></h4>
+				<canvas id="chart-prop"></canvas>
+			</div>
+			<br />
+			<p translate="PROPText1"></p>
+			<br /><br /><br />
+
+			<div class="StyleDivForCanvas">
+				<h4 translate="SucroseTitle"></h4>
+				<canvas id="chart-sugar"></canvas>
+			</div>
+			<br />
+			<p translate="SucrosseText1"></p>
+			<br /><br /><br />
+				
+			<div class="StyleDivForCanvas">
+				<h4 translate="SalzTitle"></h4>
+				<canvas id="chart-salt"></canvas>
+			</div>
+			<br />
+			<p translate="SalzText1"></p>
+			<br /><br />
+
+
+			<h3 translate="GeruchshistogrammeTitle"></h3>
+			<span translate="GeruchshistogrammeText1"></span>
+			<span style="font-weight:bold" translate="GeruchshistogrammeText2Bold"></span>
+			<!--<p translate="GeschmackshistogrammeText1"></p>
+			<p translate="GeschmackshistogrammeText2Bold"></p>-->
+			<br /><br />
+
+			<div class="StyleDivForCanvas">
+			<h4 class="text-center" translate="BetaiononTitle"></h4>
+				<canvas id="chart-beta-ionon"></canvas>
+			</div>
+			<br />
+			<p translate="BetaiononText1"></p>
+			<br /><br /><br />
+
+			<div class="StyleDivForCanvas">
+				<h4 translate="HeptanonTitle"></h4>
+				<canvas id="chart-heptanone"></canvas>
+			</div>
+			<br />
+			<p translate="HeptanonText1"></p>
+			<br /><br /><br />
+				
+			<div class="StyleDivForCanvas">
+				<h4 translate="IsobutyraldehydTitle"></h4>
+				<canvas id="chart-isobuteraldehyde"></canvas>
+			</div>
+			<br />
+			<p translate="IsobutyraldehydText1"></p>
+			<br /><br /><br />
+				
+			<div class="StyleDivForCanvas">
+				<h4 translate="IsovalericAcidTitle"></h4>
+				<canvas id="chart-iso-valeric-acid"></canvas>
+			</div>
+			<br />
+			<p translate="IsovalericAcidText"></p>
+			<br /><br /><br />
+				
+			<div class="StyleDivForCanvas">
+				<h4 translate="RotundonTitle"></h4>
+				<canvas id="chart-rotundone"></canvas>
+			</div>
+			<br />
+			<p translate="RotundonText"></p>
+			
+		</div>
+	</div>
+</body>
+
+</html>

@@ -124,7 +124,7 @@ public class Providers extends APIController {
 		
 		RecordManager.instance.createPrivateAPS(user._id, user._id);		
 		
-		Application.sendWelcomeMail(user);
+		Application.sendWelcomeMail(user, null);
 		if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) Application.sendAdminNotificationMail(user);
 		
 		return Application.loginHelper(user);		
@@ -152,7 +152,7 @@ public class Providers extends APIController {
 		if (!HPUser.authenticationValid(password, user.password)) {
 			throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
 		}
-		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
+		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.WIPED)) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
 
 		if (user.keywordsLC == null || user.keywordsLC.isEmpty()) {
 			User user2 = User.getById(user._id, User.ALL_USER);

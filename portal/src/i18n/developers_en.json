@@ -44,6 +44,7 @@
     "available_tags" : "Available variables",
     "reasons" : {
        "REGISTRATION" : "Registration of new user",
+       "REGISTRATION_BY_OTHER_PERSON" : "Registration of a new user by someone else",
 	   "FIRSTUSE_ANYUSER" : "First use of app",
 	   "FIRSTUSE_EXISTINGUSER" : "First use of app (if no registration email sent)",
 	   "CONSENT_REQUEST_OWNER_INVITED" : "Proposed consent (Grantor, Invitation)",
@@ -99,7 +100,9 @@
       "ownapp" : "App/Plugin may only access data created using this app or plugin.",
       "learn" : "Add all data types written by the app automatically to the Access Query. (MUST be turned off before app goes productive)",
       "all" : "During development allow to access all data of the user. (MUST be replaced with a proper Access Query before plugin goes productive)"
-    }
+    },
+    "export_btn" : "Export"
+
   },
   
   "appstats" : {

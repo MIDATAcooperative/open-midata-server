@@ -20,12 +20,12 @@ angular.module('portal')
 				console.log($scope.participation);
 				$scope.member = data.member;
 				$scope.loading = false;
-				if (data.participation && data.participation.status == "ACTIVE") {
+				/*if (data.participation && data.participation.status == "ACTIVE") {
 					views.link("study_records", "record", "record");
 					views.setView("study_records", { aps : $scope.memberid, properties : { } , fields : [ "ownerName", "created", "id", "name" ]});				
 				} else {
 					views.disableView("study_records");
-				}
+				}*/
 				
 				$scope.status.doBusy(server.get(jsRoutes.controllers.research.Studies.get($scope.studyid).url))
 				.then(function(data) { 				

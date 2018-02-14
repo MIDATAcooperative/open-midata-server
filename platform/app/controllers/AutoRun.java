@@ -1,6 +1,7 @@
 package controllers;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -14,12 +15,15 @@ import akka.actor.ActorRef;
 import akka.actor.Cancellable;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
+import akka.contrib.pattern.ClusterSingletonManager;
+import akka.contrib.pattern.ClusterSingletonProxy;
 import akka.routing.ActorRefRoutee;
 import akka.routing.RoundRobinRoutingLogic;
 import akka.routing.Routee;
 import akka.routing.Router;
 import models.Admin;
 import models.MidataId;
+import models.PersistedSession;
 import models.Plugin;
 import models.Space;
 import models.User;
@@ -39,6 +43,7 @@ import utils.auth.SpaceToken;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.sync.Instances;
 
 /**
  * Automatically run plugins once a day for auto import of records
@@ -47,7 +52,8 @@ import utils.exceptions.AppException;
 public class AutoRun extends APIController {
 
 		
-	private static Cancellable importer;
+
+	private static ActorRef managerSingleton;
 	private static ActorRef manager;
 	
 	/**
@@ -55,21 +61,22 @@ public class AutoRun extends APIController {
 	 */
 	public static void init() {
 		
-		manager = Akka.system().actorOf(Props.create(ImportManager.class), "manager");
+		//manager = Akka.system().actorOf(Props.create(ImportManager.class), "manager");
 		
-		importer = Akka.system().scheduler().schedule(
-                Duration.create(nextExecutionInSeconds(4, 0), TimeUnit.SECONDS),
-                Duration.create(24, TimeUnit.HOURS),
-                manager, new StartImport(),
-                Akka.system().dispatcher(), null);		
+		managerSingleton = Instances.system().actorOf(ClusterSingletonManager.defaultProps(Props.create(ImportManager.class), "manager-instance",
+			    null, null), "manager-singleton");
+		
+		manager = Instances.system().actorOf(ClusterSingletonProxy.defaultProps("user/manager-singleton/manager-instance", null), "manager");
+		
+		
 	}
 	
 	/**
 	 * shutdown job launcher
 	 */
-	public static void shutdown() {
-		if (importer != null) importer.cancel();
-	}
+	//public static void shutdown() {
+	//	if (importer != null) importer.cancel();
+	//}
 	
 	/**
 	 * manually trigger import. Only for testing.
@@ -85,7 +92,10 @@ public class AutoRun extends APIController {
 	 * request to run plugin for a specific space
 	 *
 	 */
-	public static class ImportRequest {
+	public static class ImportRequest implements Serializable {
+		
+		private static final long serialVersionUID = 6535855157383731993L;
+		
 		private final MidataId autorunner;
 		private final Space space;
 		private final String handle;
@@ -126,7 +136,10 @@ public class AutoRun extends APIController {
 	 * response from import plugin for a space
 	 *
 	 */
-	public static class ImportResult {
+	public static class ImportResult implements Serializable {
+	
+		private static final long serialVersionUID = 2863510695436070968L;
+		
 		private final int exitCode;
 
 		/**
@@ -153,7 +166,12 @@ public class AutoRun extends APIController {
 	 * At this time there are no parameters to pass
 	 *
 	 */
-	public static class StartImport {
+	public static class StartImport implements Serializable {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1459275213447427228L;
 		
 	}
 	
@@ -253,6 +271,7 @@ public class AutoRun extends APIController {
 		private final int nrOfWorkers;
 		private int numberSuccess = 0;
 		private int numberFailure = 0;
+		private static Cancellable importer;
 		
 		/**
 		 * Constructor
@@ -269,13 +288,40 @@ public class AutoRun extends APIController {
 		    workerRouter = new Router(new RoundRobinRoutingLogic(), routees);					    
 		}
 		
+		
+		
+		@Override
+		public void postStop() throws Exception {
+			// TODO Auto-generated method stub
+			super.postStop();
+			
+			importer.cancel();
+		}
+
+
+
+		@Override
+		public void preStart() throws Exception {			
+			super.preStart();
+			
+			importer = getContext().system().scheduler().schedule(
+	                Duration.create(nextExecutionInSeconds(4, 0), TimeUnit.SECONDS),
+	                Duration.create(24, TimeUnit.HOURS),
+	                manager, new StartImport(),
+	                Akka.system().dispatcher(), null);		
+		}
+
+
+
 		@Override
 		public void onReceive(Object message) throws Exception {
 			try {
 			if (message instanceof StartImport) {
 				AccessLog.log("Starting Autoimport...");
+				PersistedSession.deleteExpired();
+								
 				User autorunner = Admin.getByEmail("autorun-service", Sets.create("_id"));
-				String handle = KeyManager.instance.login(1000l*60l*60l*23l);
+				String handle = KeyManager.instance.login(1000l*60l*60l*23l, false);
 				KeyManager.instance.unlock(autorunner._id, null);
 				Set<Space> autoImports = Space.getAll(CMaps.map("autoImport", true), Sets.create("_id", "owner", "visualization"));
 				

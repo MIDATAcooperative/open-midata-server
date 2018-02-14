@@ -3,6 +3,7 @@ package utils.fhir;
 import java.util.List;
 import java.util.Set;
 
+import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Questionnaire;
@@ -21,10 +22,12 @@ import ca.uhn.fhir.rest.annotation.Sort;
 import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
+import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
+import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
@@ -34,7 +37,7 @@ import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
-public class QuestionnaireResourceProvider extends ResourceProvider<Questionnaire> implements IResourceProvider {
+public class QuestionnaireResourceProvider extends RecordBasedResourceProvider<Questionnaire> implements IResourceProvider {
 
 	public QuestionnaireResourceProvider() {
 		
@@ -47,7 +50,7 @@ public class QuestionnaireResourceProvider extends ResourceProvider<Questionnair
 	}
 
 	@Search()
-	public List<IBaseResource> getQuestionnaire(
+	public Bundle getQuestionnaire(
 		
 			@Description(shortDefinition="The resource identity")
 			@OptionalParam(name="_id")
@@ -119,7 +122,12 @@ public class QuestionnaireResourceProvider extends ResourceProvider<Questionnair
 			
 			@Sort SortSpec theSort,
 
-			@ca.uhn.fhir.rest.annotation.Count Integer theCount
+			@ca.uhn.fhir.rest.annotation.Count Integer theCount,
+			
+			@OptionalParam(name="_page")
+			StringParam _page,
+			
+			RequestDetails theDetails
 
 	) throws AppException {
 
@@ -147,8 +155,10 @@ public class QuestionnaireResourceProvider extends ResourceProvider<Questionnair
 		paramMap.setIncludes(theIncludes);
 		paramMap.setSort(theSort);
 		paramMap.setCount(theCount);
+		paramMap.setFrom(_page != null ? _page.getValue() : null);
 
-		return search(paramMap);
+		return searchBundle(paramMap, theDetails);
+		
 	}
 
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
@@ -180,20 +190,7 @@ public class QuestionnaireResourceProvider extends ResourceProvider<Questionnair
 	public MethodOutcome createResource(@ResourceParam Questionnaire theQuestionnaire) {
 		return super.createResource(theQuestionnaire);
 	}
-	
-	@Override
-	protected MethodOutcome create(Questionnaire theQuestionnaire) throws AppException {
-
-		Record record = newRecord("fhir/Questionnaire");
-		prepare(record, theQuestionnaire);
-		// insert
-		insertRecord(record, theQuestionnaire);
-
-		processResource(record, theQuestionnaire);				
 		
-		return outcome("Questionnaire", record, theQuestionnaire);
-
-	}
 	
 	public Record init() { return newRecord("fhir/Questionnaire"); }
 
@@ -203,15 +200,6 @@ public class QuestionnaireResourceProvider extends ResourceProvider<Questionnair
 		return super.updateResource(theId, theQuestionnaire);
 	}
 	
-	@Override
-	protected MethodOutcome update(@IdParam IdType theId, @ResourceParam Questionnaire theQuestionnaire) throws AppException {
-		Record record = fetchCurrent(theId);
-		prepare(record, theQuestionnaire);		
-		updateRecord(record, theQuestionnaire);		
-		processResource(record, theQuestionnaire);
-		
-		return outcome("Questionnaire", record, theQuestionnaire);
-	}
 
 	public void prepare(Record record, Questionnaire theQuestionnaire) throws AppException {
 		// Set Record code and content

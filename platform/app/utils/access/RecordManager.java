@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.http.HttpStatus;
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
@@ -55,21 +56,23 @@ public class RecordManager {
 
 	public static RecordManager instance = new RecordManager();
 
-	public final static Map<String, Object> FULLAPS = Collections.unmodifiableMap(new HashMap<String, Object>());
+	public final static Map<String, Object> FULLAPS_LIMITED_SIZE = Collections.unmodifiableMap(CMaps.map("limit-consents", 1000).map("limit", 10000));
 	public final static Map<String, Object> FULLAPS_WITHSTREAMS = Collections.unmodifiableMap(CMaps.map("streams", "true"));
 	public final static Map<String, Object> FULLAPS_FLAT = Collections.unmodifiableMap(CMaps.map("streams", "true").map("flat", "true"));
 	public final static Map<String, Object> FULLAPS_FLAT_OWNER = Collections.unmodifiableMap(CMaps.map("streams", "true").map("flat", "true").map("owner", "self"));
 	
-	public final static Set<String> INTERNALIDONLY = Sets.create("_id");
-	public final static Set<String> INTERNALID_AND_WACTHES = Sets.create("_id","watches");
-	public final static Set<String> COMPLETE_META = Sets.create("id", "owner",
-			"app", "creator", "created", "name", "format",  "content", "code", "description", "isStream", "lastUpdated", "consentAps");
-	public final static Set<String> COMPLETE_DATA = Sets.create("id", "owner", "ownerName",
+	public final static Set<String> INTERNALIDONLY = Collections.unmodifiableSet(Sets.create("_id"));
+	public final static Set<String> INTERNALID_AND_WACTHES = Collections.unmodifiableSet(Sets.create("_id","watches"));
+	public final static Set<String> COMPLETE_META = Collections.unmodifiableSet(Sets.create("id", "owner",
+			"app", "creator", "created", "name", "format",  "content", "code", "description", "isStream", "lastUpdated", "consentAps"));
+	public final static Set<String> COMPLETE_DATA = Collections.unmodifiableSet(Sets.create("id", "owner", "ownerName",
 			"app", "creator", "created", "name", "format", "content", "code", "description", "isStream", "lastUpdated",
-			"data", "group");
-	public final static Set<String> COMPLETE_DATA_WITH_WATCHES = Sets.create("id", "owner",
+			"data", "group"));
+	public final static Set<String> COMPLETE_DATA_WITH_WATCHES = Collections.unmodifiableSet(Sets.create("id", "owner",
 			"app", "creator", "created", "name", "format",  "content", "code", "description", "isStream", "lastUpdated",
-			"data", "group", "watches", "stream");
+			"data", "group", "watches", "stream"));
+	public final static Set<String> SHARING_FIELDS = Collections.unmodifiableSet(Sets.create("_id", "key", "owner", "format", "content", "created", "name", "isStream", "stream"));
+	
 	//public final static String STREAM_TYPE = "Stream";
 	public final static Map<String, Object> STREAMS_ONLY = Collections.unmodifiableMap(CMaps.map("streams", "only").map("flat", "true"));
 	public final static Map<String, Object> STREAMS_ONLY_OWNER = Collections.unmodifiableMap(CMaps.map("streams", "only").map("flat", "true").map("owner", "self"));	
@@ -271,18 +274,56 @@ public class RecordManager {
 		APS apswrapper = cache.getAPS(toAPS, toAPSOwner);
 		List<DBRecord> recordEntries = QueryEngine.listInternal(cache, fromAPS, null,
 				records != null ? CMaps.map("_id", records) : RecordManager.FULLAPS_FLAT,
-				Sets.create("_id", "key", "owner", "format", "content", "created", "name", "isStream", "stream"));
+				RecordManager.SHARING_FIELDS);
 		
 		List<DBRecord> alreadyContained = QueryEngine.isContainedInAps(cache, toAPS, recordEntries);
 		AccessLog.log("to-share: "+recordEntries.size()+" already="+alreadyContained.size());
-        if (alreadyContained.size() == recordEntries.size()) {
-        	AccessLog.logEnd("end share");
+		
+		shareUnchecked(recordEntries, alreadyContained, apswrapper, withOwnerInformation);
+        
+        AccessLog.logEnd("end share");
+	}
+	
+	public int share(MidataId who, MidataId fromAPS, MidataId toAPS, MidataId toAPSOwner,
+			Map<String, Object> query, boolean withOwnerInformation) throws AppException {
+		
+		APSCache cache = getCache(who);
+		APS apswrapper = cache.getAPS(toAPS, toAPSOwner);
+		List<DBRecord> recordEntries = QueryEngine.listInternal(cache, fromAPS, null,
+				CMaps.map(query).map("owner", fromAPS),	RecordManager.SHARING_FIELDS);
+		
+		share(cache, toAPS, toAPSOwner, recordEntries, withOwnerInformation);
+		
+		return recordEntries.size();
+	}
+	
+	
+	protected void share(APSCache cache, MidataId toAPS, MidataId toAPSOwner,
+			List<DBRecord> recordEntries, boolean withOwnerInformation)
+			throws AppException {		
+        
+		APS apswrapper = cache.getAPS(toAPS, toAPSOwner);
+		
+		AccessLog.log("check if contained in target aps");
+		List<DBRecord> alreadyContained = QueryEngine.isContainedInAps(cache, toAPS, recordEntries);		
+		
+		shareUnchecked(recordEntries, alreadyContained, apswrapper, withOwnerInformation);
+        
+	}
+	
+	protected void shareUnchecked(List<DBRecord> recordEntries, List<DBRecord> alreadyContained, APS apswrapper, boolean withOwnerInformation) throws AppException {
+		
+		withOwnerInformation = false; // Preparing to remove this feature completely
+		
+		if (alreadyContained.size() == recordEntries.size()) {
+        	
         	return;
         }
+		AccessLog.log("to-share: count#="+recordEntries.size()+" already="+alreadyContained.size());
         if (alreadyContained.size() == 0) {		
 		    apswrapper.addPermission(recordEntries, withOwnerInformation);
 		    for (DBRecord rec : recordEntries) {		    	
-		    	RecordLifecycle.addWatchingAps(rec, toAPS);
+		    	RecordLifecycle.addWatchingAps(rec, apswrapper.getId());
 		    }
         } else {
         	Set<MidataId> contained = new HashSet<MidataId>();
@@ -292,9 +333,8 @@ public class RecordManager {
         		if (!contained.contains(rec._id)) filtered.add(rec);
         	}
         	apswrapper.addPermission(filtered, withOwnerInformation);
-        	for (DBRecord rec : filtered) RecordLifecycle.addWatchingAps(rec, toAPS);
+        	for (DBRecord rec : filtered) RecordLifecycle.addWatchingAps(rec, apswrapper.getId());
         }
-        AccessLog.logEnd("end share");
 	}
 
 	/**
@@ -378,7 +418,7 @@ public class RecordManager {
 			apswrapper.clearPermissions();
 			apswrapper.addPermission(content, true);
 			
-			Member member = Member.getById(executorAndOwnerId, Sets.create("queries"));
+			Member member = Member.getById(executorAndOwnerId, Sets.create("queries", "rqueries"));
 			
 			if (member.queries != null) {			 
 			  String key = targetAPS.toString();
@@ -386,6 +426,14 @@ public class RecordManager {
 		    	  member.queries.remove(key);
 		    	  Member.set(executorAndOwnerId, "queries", member.queries);
 		      }
+			}
+			
+			if (member.rqueries != null) {			 
+				  String key = targetAPS.toString();
+			      if (member.rqueries.containsKey(key)) {
+			    	  member.rqueries.remove(key);
+			    	  Member.set(executorAndOwnerId, "rqueries", member.rqueries);
+			      }
 			}
 			
 			apswrapper.removeMeta("_filter");
@@ -411,6 +459,16 @@ public class RecordManager {
 		apswrapper.removePermission(recordEntries);
 		for (DBRecord rec : recordEntries) RecordLifecycle.removeWatchingAps(rec, apsId);
 		AccessLog.logEnd("end unshare");
+	}
+	
+	public void unshare(MidataId who, MidataId apsId, Collection<Record> records)
+			throws AppException {
+		if (records.size() == 0) return;
+		
+		Set<MidataId> ids = new HashSet<MidataId>();
+		for (Record r : records) ids.add(r._id);
+		
+		unshare(who, apsId, ids);
 	}
 
 	/**
@@ -684,6 +742,84 @@ public class RecordManager {
 				
 		AccessLog.logEnd("end wipe #records="+recs.size());				
 	}
+	
+	/**
+	 * "Delete" records from the system. This actually only hides records.
+	 * @param executingPerson id of executing person
+	 * @param query
+	 * @throws AppException
+	 */	
+	public void delete(MidataId executingPerson, Map<String, Object> query) throws AppException {
+		AccessLog.logBegin("begin deletingRecords executor="+executingPerson.toString());
+			
+		APSCache cache = getCache(executingPerson);
+		query.put("owner", "self");
+		List<DBRecord> recs = QueryEngine.listInternal(cache, executingPerson, null, query, COMPLETE_META);
+		
+		delete(executingPerson, recs);				
+		
+		AccessLog.logEnd("end deleteRecord");
+	}
+	
+	private void delete(MidataId executingPerson, List<DBRecord> recs) throws AppException {
+		APSCache cache = getCache(executingPerson);
+		if (recs.size() == 0) return;
+		
+		AccessLog.logBegin("begin delete #records="+recs.size());
+		Set<MidataId> streams = new HashSet<MidataId>();
+		
+		Iterator<DBRecord> it = recs.iterator();
+		while (it.hasNext()) {
+	   	   DBRecord record = it.next();			
+	       if (record.meta.getString("content").equals("Patient")) it.remove();
+		   if (record.owner == null) throw new InternalServerException("error.internal", "Owner of record is null.");
+		   if (!record.owner.equals(executingPerson)) throw new BadRequestException("error.internal", "Not owner of record!");
+		}
+		
+		IndexManager.instance.removeRecords(cache, executingPerson, recs);
+		
+		QueryEngine.loadDataAndWatches(recs);
+		
+		for (DBRecord record : recs) {
+			if (record.stream != null) {		
+				streams.add(record.stream);
+			}
+		}
+		
+		Date now = new Date();		
+		for (DBRecord record : recs) { 			
+			if (record.data == null) throw new NullPointerException();
+			VersionedDBRecord vrec = new VersionedDBRecord(record);
+			
+			RecordEncryption.encryptRecord(vrec);			
+						
+			record.data = null;
+			record.meta.put("name", "deleted");
+			record.meta.put("deleted", true);
+		    record.meta.put("lastUpdated", now);
+		    record.time = Query.getTimeFromDate(now);		
+		    
+		    String version = Long.toString(System.currentTimeMillis());
+		    record.meta.put("version", version);
+			
+		    DBRecord clone = record.clone();
+		    
+			RecordEncryption.encryptRecord(record);	
+						
+			VersionedDBRecord.add(vrec);
+		    DBRecord.upsert(record); 	  			    
+		    RecordLifecycle.notifyOfChange(clone, getCache(executingPerson));									
+		}
+				
+		for (MidataId streamId : streams) {
+			try {
+				getCache(executingPerson).getAPS(streamId).removeMeta("_info");
+														
+			} catch (APSNotExistingException e) {}
+		}
+				
+		AccessLog.logEnd("end delete #records="+recs.size());				
+	}
 
 	private byte[] addRecordIntern(AccessContext context, DBRecord record, boolean documentPart, MidataId alternateAps, boolean upsert) throws AppException {		
 		
@@ -715,6 +851,10 @@ public class RecordManager {
 			else context.getCache().touchAPS(apswrapper.getId());
 		    
 		    //Feature_Expiration.check(getCache(executingPerson), apswrapper);
+		    
+		    RecordManager.instance.applyQueries(context, unencrypted.owner, unencrypted, alternateAps != null ? alternateAps : unencrypted.owner);
+			
+		    
 			
 		} else {
 			record.time = 0;
@@ -736,7 +876,7 @@ public class RecordManager {
 	}
 	
 	/**
-	 * Share stream records from one APS to another by applying a query once.
+	 * Share (stream) records from one APS to another by applying a query once.
 	 * @param userId id of executing user
 	 * @param query to query to be applied
 	 * @param sourceaps the source APS id
@@ -745,61 +885,96 @@ public class RecordManager {
 	 * @throws AppException
 	 */
 	public void applyQuery(AccessContext context, Map<String, Object> query, MidataId sourceaps, MidataId targetaps, boolean ownerInformation) throws AppException {
+		
+		Pair<Map<String, Object>, Map<String, Object>> pair = Feature_Streams.convertToQueryPair(query);
+				
 		AccessLog.logBegin("BEGIN APPLY QUERY");
-		MidataId userId = context.getCache().getExecutor();		
-		List<Record> recs = RecordManager.instance.list(userId, targetaps, CMaps.map(query).map("flat", "true").map("owner", context.getSelf()), Sets.create("_id"));
-		Set<MidataId> remove = new HashSet<MidataId>();
-		for (Record r : recs) remove.add(r._id);
-		AccessLog.log("REMOVE DUPLICATES:"+remove.size());
-		RecordManager.instance.unshare(userId, targetaps, remove);		
-		
-		
-		Map<String, Object> selectionQuery = CMaps.map(query).map("streams", "true").map("flat", "true").map("owner", context.getSelf());		
-		List<DBRecord> records = QueryEngine.listInternal(getCache(userId), sourceaps, null, selectionQuery, RecordManager.COMPLETE_META);
-		
-		AccessLog.log("SHARE QUALIFIED:"+records.size());
-		if (records.size() > 0) {
-			Set<MidataId> ids = new HashSet<MidataId>();
-			for (DBRecord record : records) ids.add(record._id);
-			RecordManager.instance.share(userId, sourceaps, targetaps, ids, ownerInformation);
+		MidataId userId = context.getCache().getExecutor();
+		if (pair.getRight() != null) {
+			AccessLog.logBegin("SINGLE RECORDS");
+			List<DBRecord> recs = QueryEngine.listInternal(getCache(userId), sourceaps, context, CMaps.map(pair.getRight()).map("owner", context.getSelf()), RecordManager.SHARING_FIELDS);			
+			RecordManager.instance.share(getCache(userId), targetaps, null, recs, ownerInformation);
 		}
-		
-		List<DBRecord> streams = QueryEngine.listInternal(getCache(userId), targetaps, null, RecordManager.STREAMS_ONLY_OWNER, RecordManager.COMPLETE_META);
-		AccessLog.log("UNSHARE STREAMS CANDIDATES = "+streams.size());
-		
-		List<DBRecord> stillOkay = QueryEngine.listFromMemory(context, query, streams);
-		streams.removeAll(stillOkay);		
-		remove = new HashSet<MidataId>();
-		for (DBRecord stream : streams) {
-			remove.add(stream._id);
+		if (pair.getLeft() != null) {
+			List<Record> recs = RecordManager.instance.list(userId, targetaps, CMaps.map(pair.getLeft()).map("flat", "true").map("owner", context.getSelf()), Sets.create("_id"));
+			Set<MidataId> remove = new HashSet<MidataId>();
+			for (Record r : recs) remove.add(r._id);
+			AccessLog.log("REMOVE DUPLICATES:"+remove.size());
+			RecordManager.instance.unshare(userId, targetaps, remove);		
+			
+			
+			Map<String, Object> selectionQuery = CMaps.map(pair.getLeft()).map("streams", "true").map("flat", "true").map("owner", context.getSelf());		
+			List<DBRecord> records = QueryEngine.listInternal(getCache(userId), sourceaps, null, selectionQuery, RecordManager.SHARING_FIELDS);
+			
+			AccessLog.log("SHARE QUALIFIED STREAMS:"+records.size());
+			if (records.size() > 0) {				
+				RecordManager.instance.share(getCache(userId), targetaps, null, records, ownerInformation);
+			}
+			
+			List<DBRecord> streams = QueryEngine.listInternal(getCache(userId), targetaps, null, RecordManager.STREAMS_ONLY_OWNER, RecordManager.COMPLETE_META);
+			AccessLog.log("UNSHARE STREAMS CANDIDATES = "+streams.size());
+			
+			List<DBRecord> stillOkay = QueryEngine.listFromMemory(context, pair.getLeft(), streams);
+			streams.removeAll(stillOkay);		
+			remove = new HashSet<MidataId>();
+			for (DBRecord stream : streams) {
+				remove.add(stream._id);
+			}
+			
+			AccessLog.log("UNSHARE STREAMS QUALIFIED = "+remove.size());
+			RecordManager.instance.unshare(userId, targetaps, remove);
+			AccessLog.logEnd("END APPLY RULES");
 		}
-		
-		AccessLog.log("UNSHARE STREAMS QUALIFIED = "+remove.size());
-		RecordManager.instance.unshare(userId, targetaps, remove);
-		AccessLog.logEnd("END APPLY RULES");
 		
 	}
 	
 	protected void applyQueries(AccessContext context, MidataId userId, DBRecord record, MidataId useAps) throws AppException {
-		AccessLog.logBegin("start applying queries");
-		Member member = Member.getById(userId, Sets.create("queries"));
-		if (member.queries!=null) {
-			for (String key : member.queries.keySet()) {
-				try {
-				Map<String, Object> query = member.queries.get(key);
-				if (QueryEngine.isInQuery(context, query, record)) {
+		AccessLog.logBegin("start applying queries for targetUser="+userId.toString());
+		if (record.isStream) {
+		
+			Member member = Member.getById(userId, Sets.create("queries"));
+			if (member.queries!=null) {
+				for (String key : member.queries.keySet()) {
 					try {
-					  MidataId targetAps = new MidataId(key);
-					  context.getCache().getAPS(targetAps, userId);
-					  RecordManager.instance.share(context.getCache().getExecutor(), context.getCache(), useAps, targetAps, null, Collections.singleton(record._id), true);
-					} catch (APSNotExistingException e) {
-						
+					Map<String, Object> query = member.queries.get(key);
+					if (QueryEngine.isInQuery(context, query, record)) {
+						try {
+						  MidataId targetAps = new MidataId(key);
+						  APS apswrapper = context.getCache().getAPS(targetAps, userId);
+						  RecordManager.instance.shareUnchecked(Collections.singletonList(record), Collections.<DBRecord>emptyList(), apswrapper, true);
+						} catch (APSNotExistingException e) {
+							
+						}
 					}
+					} catch (BadRequestException e) {
+						AccessLog.logException("error while sharing", e);
+					}  
 				}
-				} catch (BadRequestException e) {
-					AccessLog.logException("error while sharing", e);
-				}  
 			}
+		
+		} else {
+			
+			Member member = Member.getById(userId, Sets.create("rqueries"));
+			if (member.rqueries!=null) {
+				for (String key : member.rqueries.keySet()) {
+					try {
+					Map<String, Object> query = member.rqueries.get(key);
+					if (QueryEngine.isInQuery(context, query, record)) {
+						try {
+						  MidataId targetAps = new MidataId(key);
+						  APS apswrapper = context.getCache().getAPS(targetAps, userId);
+						  RecordManager.instance.shareUnchecked(Collections.singletonList(record), Collections.<DBRecord>emptyList(), apswrapper, true);
+						} catch (APSNotExistingException e) {
+							
+						}
+					}
+					} catch (BadRequestException e) {
+						AccessLog.logException("error while sharing", e);
+					}  
+				}
+			}
+		
+			
 		}
 		AccessLog.logEnd("end applying queries");
 	}
@@ -860,6 +1035,19 @@ public class RecordManager {
 		return QueryEngine.list(getCache(who), apsId, context, properties, fields);
 	}
 	
+	public DBIterator<Record> listIterator(MidataId who, MidataId apsId,
+			Map<String, Object> properties, Set<String> fields)
+			throws AppException {
+		AccessContext context = null;
+		if (who.equals(apsId)) context = createContextFromAccount(who);
+		else {
+          Consent consent = Consent.getByIdUnchecked(apsId, Consent.ALL);
+          if (consent != null) context =  createContextFromConsent(who, consent);
+		}
+		AccessLog.log("context="+context);
+		return QueryEngine.listIterator(getCache(who), apsId, context, properties, fields);
+	}
+	
 	public List<Record> list(MidataId who, AccessContext context,
 			Map<String, Object> properties, Set<String> fields)
 			throws AppException {
@@ -881,6 +1069,7 @@ public class RecordManager {
 		nproperties.put("streams", "true");
 		nproperties.put("flat", "true");
 		nproperties.put("group-system", "v1");
+		nproperties.put("consent-limit", 1000);
 		nproperties.put("no-postfilter-streams", true); // For old streams without "app" field
 		if (properties.containsKey("group-system")) nproperties.put("group-system", properties.get("group-system"));
 		if (properties.containsKey("owner")) nproperties.put("owner", properties.get("owner"));
@@ -1004,7 +1193,7 @@ public class RecordManager {
 	 */
 	public Set<String> listRecordIds(MidataId who, MidataId apsId)
 			throws AppException {
-		return listRecordIds(who, apsId, RecordManager.FULLAPS);
+		return listRecordIds(who, apsId, RecordManager.FULLAPS_LIMITED_SIZE);
 	}
 
 	/**

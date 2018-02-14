@@ -8,6 +8,7 @@ import models.MidataId;
 import play.libs.Json;
 import play.mvc.Http.Request;
 import utils.collections.ChainedMap;
+import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 import utils.exceptions.InternalServerException;
 
@@ -111,6 +112,9 @@ public class SpaceToken {
 	}
 	
 	private static String remoteAddr(Request req) {
+		if (req.hasHeader("X-Real-IP-LB")) {
+			return req.getHeader("X-Real-IP-LB");
+		}
 		if (req.hasHeader("X-Real-IP")) {
 			return req.getHeader("X-Real-IP");
 		}
@@ -141,7 +145,7 @@ public class SpaceToken {
 	 * The secret passed here can be an arbitrary string, so check all possible exceptions.
 	 */
 	
-	public static SpaceToken decryptAndSession(Request request, String unsafeSecret) throws AuthException {
+	public static SpaceToken decryptAndSession(Request request, String unsafeSecret) throws AppException {
 		SpaceToken res = decrypt(request, unsafeSecret);
 		KeyManager.instance.continueSession(res.handle);
 		return res;

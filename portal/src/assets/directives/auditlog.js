@@ -18,10 +18,10 @@ angular.module('portal')
     		$scope.status = new status(true);        	
     		
     		$scope.page = { nr : 1 };
-    		
+    		var crit = {};
     	    
     		$scope.reload = function() {
-    			var crit = {};
+    			
     			if ($scope.patient) crit.patient = $scope.patient;
     			if ($scope.entity && $scope.altentity) {
     				crit.entity = [$scope.entity, $scope.altentity];
@@ -30,8 +30,8 @@ angular.module('portal')
     			
     			
     			if (!$scope.all && !$scope.patient && !$scope.entity && !$scope.from && !$scope.to) return;
-    			
-    			console.log(crit);
+    			crit._count=1001;
+    			console.log(crit);    		    
     			$scope.status.doBusy(fhir.search("AuditEvent", crit))
     			.then(function(log) {
     				//if (!comeback) paginationService.setCurrentPage("membertable", 1); // Reset view to first page
@@ -40,7 +40,21 @@ angular.module('portal')
     			});
     			
     			
-    		};    		    			    	
+    		};    
+    		
+    		$scope.pageChanged = function(pn) {
+    			if (pn == 101) {
+    				crit._page = $scope.log[$scope.log.length-1].id;
+    				console.log(crit);
+    				$scope.status.doBusy(fhir.search("AuditEvent", crit))
+        			.then(function(log) {
+        				//if (!comeback) paginationService.setCurrentPage("membertable", 1); // Reset view to first page
+        				$scope.log = log;
+        				paginationService.setCurrentPage("audit", 1);        				
+        				console.log($scope.log);
+        			});
+    			}
+    		};
     		
     		var api = $scope.api || {};
     		api.reload = $scope.reload;

@@ -3,6 +3,7 @@ package utils.access;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -36,23 +37,44 @@ public class Feature_BlackList extends Feature {
 			}
 		}
 	}
-			
 	
-	private List<DBRecord> filter(List<DBRecord> input) {		
-		if (blacklist.isEmpty()) return input;
-		if (AccessLog.detailedLog) AccessLog.logBegin("Begin apply blacklist #recs="+input.size());
-		List<DBRecord> filtered = new ArrayList<DBRecord>(input.size());
-		for (DBRecord record : input) {
-			if (!blacklist.contains(record._id.toString())) filtered.add(record);
-		}
-		if (AccessLog.detailedLog) AccessLog.logEnd("End apply blacklist #recs="+filtered.size());
-		return filtered;
-	}
-
 	@Override
-	protected List<DBRecord> query(Query q) throws AppException {		
-		List<DBRecord> result = next.query(q);
-		return filter(result);
+	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
+		if (blacklist.isEmpty()) return next.iterator(q);
+		return new BlackListIterator(next.iterator(q));
+		
+		
+	}
+		
+	class BlackListIterator implements DBIterator<DBRecord> {
+		BlackListIterator(DBIterator<DBRecord> chain) {
+			this.chain = chain;
+		}
+		
+		private DBRecord next;
+		private DBIterator<DBRecord> chain;
+
+		@Override
+		public boolean hasNext() {
+			return next != null;
+		}
+
+		@Override
+		public DBRecord next() throws AppException {
+			DBRecord result = next;
+			next = null;
+			while (next == null && chain.hasNext()) {
+				DBRecord record = chain.next();
+				if (!blacklist.contains(record._id.toString())) next = record;	
+			}			
+			return result;
+		}	
+		
+		@Override
+		public String toString() {
+			return "blacklist("+chain.toString()+")";
+		}
+		
 	}
 		
 }
