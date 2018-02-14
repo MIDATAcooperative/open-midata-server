@@ -40,11 +40,11 @@
     "registration_date" : "Registration Date:",
     "confirmation_date" : "Confirmation Date:",
     "last_login" : "Last Login:",
-    "email_confirm_btn" : "Confirm email Address",
+    "email_confirm_btn" : "Confirm Email Address",
     "comment" : "Comment",
     "add_comment_btn" : "Add Comment",
     "wipe_btn" : "Wipe Account",
-    "change_email_btn" : "Change eMail"    
+    "change_email_btn" : "Change Email Address"
   },
   
   "admin_news" : {

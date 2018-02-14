@@ -12,6 +12,7 @@ info:
 	$(info   )
 	$(info order-ssl : Generate new CSR to order a new certificate)
 	$(info install-ssl : Activate new certificate)
+	$(info use-loadbalancer : Use loadbalancer)
 	$(info   )
 	$(info update : Update and start current instance)
 	$(info start : Start current instance)
@@ -21,6 +22,7 @@ install-webserver: tasks/install-packages tasks/install-node tasks/bugfixes task
 	$(info Please run "make order-ssl" to order SSL certificate)
 	$(info Please run "make install-ssl" to install SSL certificate that has been ordered before)
 	$(info Please run "make skip-ssl" to continue with a fake SSL certificate that will trigger browser warnings)
+	$(info Please run "make use-loadbalancer" to continue with a default certificate for the load balancer)	
 	$(info Please run "make configure-connection" to setup database connection)
 	$(info Please run "make update" to build after everything has been configured correctly)
 
@@ -56,7 +58,7 @@ tasks/prepare-webserver:
 	$(info ------------------------------)
 	$(info Basic configuration of Frontend)
 	$(info ------------------------------)
-	read -p "Enter domain name: " newdomain ; node scripts/replace.js domain $$newdomain ; node scripts/replace.js portal origin https://$$newdomain ; node scripts/replace.js portal backend https://$$newdomain ; node scripts/replace.js portal plugins $$newdomain/plugins ;
+	read -p "Enter domain name: " newdomain ; node scripts/replace.js domain $$newdomain ; node scripts/replace.js portal origin https://$$newdomain ; node scripts/replace.js portal backend https://$$newdomain ; node scripts/replace.js portal plugins $$newdomain/plugin ;
 	node scripts/replace.js instanceType prod
 	touch tasks/prepare-webserver
 
@@ -237,6 +239,8 @@ install-ssl: reconfig tasks/set-ssl-path tasks/check-config tasks/setup-nginx
 
 skip-ssl: self-sign-ssl install-ssl
 
+use-loadbalancer: reconfig tasks/install-ssl-lb tasks/set-ssl-lb tasks/check-config tasks/setup-nginx 
+
 sharding:
 	python main.py sharding mongodb
 
@@ -246,6 +250,14 @@ tasks/set-ssl-path:
 	$(eval CERTPATH := $(abspath ../ssl/$(DOMAIN)_$(YEAR)))
 	node scripts/replace.js certificate pem $(CERTPATH).crt
 	node scripts/replace.js certificate key $(CERTPATH).key
+	
+tasks/install-ssl-lb:
+	sudo apt-get install ssl-cert
+	touch tasks/install-ssl-lb
+	
+tasks/set-ssl-lb:
+	node scripts/replace.js certificate pem /etc/ssl/certs/ssl-cert-snakeoil.pem;
+	node scripts/replace.js certificate key /etc/ssl/private/ssl-cert-snakeoil.key;
 
 tasks/bugfixes:
 	sudo chown -R $$USER:$$GROUP ~/.config	

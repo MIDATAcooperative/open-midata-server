@@ -7,23 +7,23 @@
         "plugins" : "Plugins",
         "content" : "Inhalt",
         "studies" : "Studien",
-        "terms" : "Bestimmungen",
+        "terms" : "Allgemeine Geschäftsbedingungen (AGB)",
         "registration" : "Administrator registrieren"
     },
 
     "admin_members" : {
         "title" : "Mitgliederverzeichnis",
         "search_type" : "Suche",
-        "contract_required" : "Der Vertrag muss geschickt werden",
+        "contract_required" : "Der Vertrag muss versandt werden",
         "contract_confirm_required" : "Der unterschriebene Vertrag muss bestätigt werden",
-        "no_email_confirm" : "E-Mail nicht vom Benutzer bestätigt",
+        "no_email_confirm" : "E-Mail vom Benutzer noch nicht bestätigt",
         "email_rejected" : "E-Mail-Bestätigung vom Benutzer abgelehnt",
         "not_admin_confirmed" : "Nicht vom Administrator bestätigte Accounts",
         "overview" : "Übersicht",
-        "specific_user" : "Bestimmten Benutzer",
+        "specific_user" : "Bestimmter Benutzer",
         "role" : "Rolle",
         "status" : "Status",
-        "midata_id" : "midataID",
+        "midata_id" : "MIDATA-ID",
         "empty" : "Kein passender Benutzer gefunden."
     },
 
@@ -31,7 +31,7 @@
         "title" : "Adresse des Mitglieds",
         "midata_id" : "MIDATA-ID",
         "role" : "Rolle",
-        "subroles" : "Unterrolle(n)",
+        "subroles" : "Subrolle(n)",
         "developer" : "Gehört dem Entwickler:",
         "status" : "Status:",
         "agb_status" : "Status AGB:",
@@ -44,7 +44,7 @@
         "email_confirm_btn" : "E-Mail-Adresse bestätigen",
         "comment" : "Bemerkung",
         "add_comment_btn" : "Bemerkung hinzufügen",
-        "wipe_btn" : "Account beseitigen",
+        "wipe_btn" : "Account entfernen",
         "change_email_btn" : "E-Mail-Adresse ändern"
     },
 
@@ -58,7 +58,7 @@
     },
 
     "admin_managenews" : {
-        "title1" : "Neuer News-Eintrag hinzufügen",
+        "title1" : "Neuen News-Eintrag hinzufügen",
         "title2" : "News-Eintrag ändern",
         "title" : "Überschrift des News-Eintrags",
         "language" : "Sprache des News-Eintrags",
@@ -68,13 +68,13 @@
     },
 
     "admin_registration" : {
-        "sign_up" : "Neuer Admin-Account registrieren"
+        "sign_up" : "Neuen Admin-Account registrieren"
     },
 
     "admin_plugins" : {
         "title" : "Plugins",
         "developer" : "Nach Entwickler filtern",
-        "empty" : "Es gibt noch keine App oder Plugin."
+        "empty" : "Es gibt noch keine Apps oder Plugins."
     },
 
     "admin_studies" : {
@@ -84,8 +84,8 @@
     },
 
     "admin_terms" : {
-        "title" : "Bestimmungen",
-        "empty" : "Keine Bestimmungen vorhanden.",
+        "title" : "Allgemeine Geschäftsbedingungen (AGB)",
+        "empty" : "Keine Allgemeine Geschäftsbedingungen vorhanden.",
         "name" : "Name",
         "version" : "Version",
         "language" : "Sprache",
@@ -93,7 +93,7 @@
     },
 
     "admin_manageterms" : {
-        "pagetitle" : "Bestimmungen",
+        "pagetitle" : "Allgemeine Geschäftsbedingungen (AGB)",
         "name" : "Interner Name",
         "version" : "Version",
         "language" : "Sprache",
@@ -113,7 +113,7 @@
         "dataCreatedBefore" : "Datenbestand eingefroren ab dem",
         "required_information" : "Benötigte Informationen",
         "required_assistance" : "Belegarzt benötigt",
-        "termsOfUse" : "Bestimmungen",
+        "termsOfUse" : "Allgemeine Geschäftsbedingungen (AGB)",
         "sharing_query" : "Sharing Query",
         "requirements" : "Anforderungen",
         "groups" : "Gruppen",
