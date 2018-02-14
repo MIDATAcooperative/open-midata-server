@@ -19,6 +19,7 @@
         "edit_profile" : "Profil ändern",
         "app_count" : "Autorisierte Apps",
         "study_count" : "Studienteilnahmen",
+
         // todo Mich -> Dashboard?
         "me" : "Mich",
         "view" : "Ansehen",
@@ -51,6 +52,7 @@
             "not_plugin_owner" : "Dies ist nicht Ihr Plugin"
         },
 
+
         "invalid" : {
             "email" : "Bitte eine gültige E-Mail-Adresse eingeben.",
             "credentials" : "Ungültige E-Mail-Adresse oder Kennwort!",
@@ -79,6 +81,7 @@
         },
 
         "missing" : {
+
             "credentials" : "Bitte Ihre E-Mail-Adresse und Kennwort eingeben.",
             "email" : "Geben Sie bitte Ihre E-Mail-Adresse ein.",
             "input_field" : "Füllen Sie bitte dieses Eingabefeld aus.",
@@ -138,7 +141,15 @@
         },
 
         "tooweak" : {
+
+            // TODO CHANGED
+            // OLD: Passwords should contain of a mix of upper/lower case letters, numbers and special characters.
+            // NEW: Passwords should contain upper/lower case letters, numbers and special characters.
             "password" : "Kennwörter müssen Klein-/Grossbuchstaben, Ziffern und Sonderzeichen enthalten.",
+
+            // TODO CHANGED
+            // OLD: Passphrases should contain of a mix of upper/lower case letters, numbers and special characters.
+            // NEW: Passphrases should contain upper/lower case letters, numbers and special characters.
             "passphrase" : "Passphrasen müssen Klein-/Grossbuchstaben, Ziffern und Sonderzeichen enthalten."
         },
 
@@ -197,6 +208,10 @@
             "MEMBERSHIP_REQUEST" : "Mitgliedschaft erforderlich",
             "CONTACT_ADDRESS_CHANGED" : "Adresse geändert",
             "CONTRACT_SEND" : "Vertrag verschickt",
+
+            // TODO CHANGED
+            // OLD: Account changed by admin
+            // NEW: Account changed by an administrator
             "ADMIN_ACCOUNT_CHANGE" : "Konto durch Administrator geändert",
             "ACCOUNT_DELETED" : "Konto gelöscht",
             "INTERNAL_COMMENT" : "Interne Bemerkung",
@@ -369,7 +384,14 @@
             "EN" : "English",
             "DE" : "Deutsch",
             "IT" : "Italienisch",
-            "FR" : "Französisch"
+
+            // TODO CHANGED
+            // OLD: Frensh
+            // NEW: French
+            "FR" : "Französisch",
+
+            // TODO NEW: Dutch
+            "NL" : "Dutch"
         },
         "month" : {
             "01" : "Jan",
@@ -386,9 +408,25 @@
             "12" : "Dez"
         },
         "codesystems" : {
+
+            // TODO CHANGED
+            // OLD: Loinc Code
+            // NEW: LOINC code
             "loinc" : "LOINC Code",
+
+            // TODO CHANGED
+            // OLD: Midata Code
+            // NEW: MIDATA code
             "midata" : "MIDATA Code",
+
+            // TODO CHANGED
+            // OLD: FHIR Resource Name
+            // NEW: FHIR Resource
             "fhir" : "FHIR Resource",
+
+            // TODO CHANGED
+            // OLD: Snowmed
+            // NEW: SNOMED CT code
             "snowmed" : "SNOMED CT Code"
         },
         "tags" : {
@@ -419,6 +457,9 @@
         "submit_btn" : "Abschicken",
         "delete_btn" : "Löschen",
         "or" : "oder",
+
+        // TODO NEW: Successfully Saved
+        "save_ok" : "Successfully Saved",
         "user" : {
             "lastname" : "Name",
             "firstname" : "Vorname",
@@ -469,6 +510,10 @@
             "name" : "MIDATA Schweiz (ch.midata.coop)",
             "intro" : "Dies ist die schweizerische MIDATA-Plattform.",
             "purpose" : "Dies ist die produktive MIDATA-Plattform für die Speicherung von Gesundheitsdaten in der Schweiz.",
+
+            // TODO CHANGED
+            // OLD: New user accounts have feature restrictions. Healthprovider, research and development accounts can only be used after validation by the MIDATA office. Fake or test accounts are not allowed and will be blocked.
+            // NEW: New user accounts have feature restrictions. Healthprovider, research and development accounts can only be used after validation by MIDATA. Fake or test accounts are not allowed and will be blocked.
             "access" : "Neue Benutzerkonten haben Funktionalitätseinschränkungen. Konten für Gesundheitsfachpersonen, Forscher und Entwickler können nur nach Validierung durch MIDATA benutzt werden. Fingierte oder Testkonten sind nicht erlaubt und werden gesperrt.",
             "uptime" : "Ausfälle werden angekündigt.",
             "data" : "Diese Instanz dient zur Speicherung von echten Daten für echte Personen. Die Daten werden täglich gesichert."
@@ -503,11 +548,19 @@
         "agb" : "MIDATA-Bestimmungen",
         "study" : "Forschung",
         "agb2" : "Ich akzeptiere die",
+
+        // TODO CHANGED
+        // OLD: Terms of Use
+        // NEW: Terms and Conditions
         "agb3" : "Allgemeine Geschäftsbedingungen (AGB)",
         "privacypolicy2" : "Ich akzeptiere die",
         "privacypolicy3" : "Datenschutzerklärung",
         "app_agb" : "App-Bestimmungen",
         "app_agb2" : "Ich akzeptiere die",
+
+        // TODO CHANGED
+        // OLD: App Terms And Conditions
+        // NEW: App Terms and Conditions
         "app_agb3" : "Allgemeine Geschäftsbedingungen (AGB) der App",
         "study_agb" : "Studienbestimmungen",
         "sign_up_btn" : "Registrieren",
@@ -564,6 +617,10 @@
         "contract_instructions" : "Ein Vertrag wurde an Ihre Postadresse versandt. Schicken Sie ihn bitte unterschrieben an MIDATA zurück.",
         "pilot_phase" : "Während der Pilotphase (oder auf der Testinstanz) wird KEIN Vertrag versendet. Ein MIDATA Administrator wird Ihr Konto verifizieren und freischalten. Sie werden informiert, wenn Ihr Konto freigeschaltet wurde.",
         "code_intructions" : "Ein Brief mit einem Bestätigungscode wurde an Ihre Postadresse versandt. Geben Sie bitte den Bestätigungscode ein, um Zugriff auf die Plattform zu erhalten.",
+
+        // TODO CHANGED
+        // OLD: You have provided the confirmation code. You may login after the signed contract has arrived at MIDATA office.
+        // NEW: You have provided the confirmation code. You may login after the signed contract has arrived at MIDATA.
         "code_done" : "Sie haben den Bestätigungscode eingegeben. Sie werden sich anmelden können sobald Ihr unterschriebener Vertrag bei MIDATA eingetroffen ist.",
         "enter_now_btn" : "Jetzt eingeben",
         "email_success" : "Die E-Mail-Adresse wurde bestätigt.",
@@ -666,6 +723,12 @@
         "user" : "Benutzer",
         "name" : "Name:",
         "email" : "E-Mail:",
+
+        // TODO NEW: Date of birth:
+        "birthday" : "Date of birth:",
+
+        // TODO NEW: Account ID:
+        "midataID" : "Account ID:",
         "action" : "Mehr...",
         "change_password_btn" : "Kennwort ändern",
         "change_passphrase_btn" : "Passphrase ändern",
@@ -673,6 +736,9 @@
         "change_email_btn" : "E-Mail Adresse ändern",
         "repair_account_btn" : "Account reparieren",
         "reset_spaces_btn" : "Reset Portal zurücksetzen",
+
+        // TODO NEW: Export your data
+        "export_btn" : "Export your data",
         "delete_records_btn" : "Datensätze löschen",
         "account_repaired" : "Ihr Account wurde repariert.",
         "spaces_resetted" : "Ihre Konfiguration wurde zurückgesetzt.",
@@ -840,12 +906,15 @@
         "delete" : "löschen",
         "delete_all_btn" : "alle löschen",
         "empty" : "Keine verfügbare Datensätze gefunden.",
+
+        // TODO NEW: The record tree for this selection cannot be evaluated. There are too many consents involved.
+        "too_many_consents" : "The record tree for this selection cannot be evaluated. There are too many consents involved.",
         "close_btn" : "Schliessen"
     },
 
     "oauth2" : {
         "reshares_data" : "Die Applikation darf Daten, auf die sie Zugriff hat, an Dritte weitergeben.",
-        "allows_user_search" : "Ihr Name und Ihre E-Mail-Adresse können von anderen Personen, die diese Applikation verwenden, durchsucht werden.",        
+        "allows_user_search" : "Ihr Name und Ihre E-Mail-Adresse können von anderen Personen, die diese Applikation verwenden, durchsucht werden.",
         "requesting_app" : "Diese Applikation benötigt Zugriff auf:",
         "sign_in" : "MIDATA Anmeldung für:",
         "sign_in_btn" : "Anmelden",
@@ -1050,5 +1119,9 @@
         "none" : "Keine",
         "change_btn" : "Ändern",
         "success" : "E-Mail Adresse erfolgreich geändert!"
-    }
+    },
+
+
+    // TODO NEW: unknown
+    "-1" : "unknown"
 }

@@ -45,6 +45,9 @@
         "available_tags" : "Verfügbare Variablen",
         "reasons" : {
             "REGISTRATION" : "Neue Benutzerregistrierung",
+
+            // TODO NEW: Registration of a new user by someone else
+            "REGISTRATION_BY_OTHER_PERSON" : "Registration of a new user by someone else",
             "FIRSTUSE_ANYUSER" : "Erstanwendung App",
             "FIRSTUSE_EXISTINGUSER" : "Erstanwendung App (wenn kein Registrierungs-E-Mail versendet)",
             "CONSENT_REQUEST_OWNER_INVITED" : "Vorgeschlagene Zustimmung (Geber, Einladung)",
@@ -67,8 +70,20 @@
         "debug_btn" : "API Tester",
         "linkedStudy" : "Mit der App verknüpfte Studie (Code)",
         "mustParticipateInStudy" : "Studienteilnahme erforderlich",
+
+        // TODO CHANGED
+        // OLD: Only a MIDATA admin may change this section. Please request changes if required.
+        // NEW: Only a MIDATA administrator may change this section. Please request changes if required.
         "admin_only" : "Nur ein MIDATA Administrator darf diesen Abschnitt ändern. Bitte fordern Sie bei Bedarf Änderungen an.",
+
+        // TODO CHANGED
+        // OLD: Terms
+        // NEW: Terms and Conditions
         "terms_of_use" : "Allgemeine Geschäftsbedingungen (AGB)",
+
+        // TODO CHANGED
+        // OLD: Show terms
+        // NEW: Show Terms and Conditions
         "show_terms" : "Allgemeine Geschäftsbedingungen (AGB) anzeigen",
         "unlock_code" : "Freischaltcode",
         "info" : {
@@ -79,11 +94,13 @@
             "description" : "Die Beschreibung des Plugins, die im Markplatz erscheinen wird.",
             "resharesData" : "Die App darf Daten, auf die sie Zugriff hat, an Drittparteien weitergeben.",
             "allowsUserSearch" : "Benutzer dieser App dürfen nach anderen Benutzern der gleichen App suchen.",
+
             // TODO Dashboard
             "defaultSpaceName" : "Titel der Kachel des Plugins auf dem Dashboard.",
             "tags" : "Kategorien unter welchen das Plugin im Marktplatz erscheinen wird.",
             "url" : "URL der Hauptseite des Plugins. Wenn Sie das MIDATA-Template verwenden ist es 'dist/index.html#?authToken=:authToken''",
             "previewUrl" : "URL der Dashboard-Kachel des Plugins. Leer lassen falls keine solche Kachel angeboten wird.",
+
             // TODO Konfiguration -> heisst jetzt anders
             "defaultSpaceContext" : "Wählen Sie 'Mich' für das Standard-Dashboard. Wählen Sie 'Konfiguration' für ein Import-Plugin.",
             "defaultQuery_mobile" : "Query das den Zugriff der App auf die Datenbank begrenzt. Der Zugriff muss eingeschränkt werden nach 'code', 'content' oder 'group' und kann eingeschränkt werden nach 'format' oder 'owner'. Gültiges Beispiel (alle Observations): '{ \"group\" : \"all\", \"group-system\" : \"v1\", \"format\" : [\"fhir/Observation\" ] }'",
@@ -98,11 +115,27 @@
         "access_query_add" : "Access Query (Hinzufügen)",
         "access_query_json" : "Access Query (JSON)",
         "query" : {
+
+            // TODO CHANGED
+            // OLD: App/Plugin may only access data of the person using it
+            // NEW: App/Plugin may only access data of the user logged in.
             "self" : "App/Plugin kann nur auf Daten des angemeldeten Benutzers zugreifen.",
             "ownapp" : "App/Plugin kann nur auf Daten zugreifen, die mittels dieser App/diesem Plugin erstellt wurden.",
+
+            // TODO CHANGED
+            // OLD: Add all types written by the app automatically to the Access Query. (MUST be turned off before app goes productive)
+            // NEW: Add all data types written by the app automatically to the Access Query. (MUST be turned off before app goes productive)
             "learn" : "Alle Datentypen, die diese App schreibt, automatisch zum Access Query hinzufügen. (MUSS ausgeschaltet werden bevor die App produktiv eingesetzt wird)",
+
+            // TODO CHANGED
+            // OLD: During development allow to access all data of the user. (MUST be replaced with a proper query before plugin goes productive)
+            // NEW: During development allow to access all data of the user. (MUST be replaced with a proper Access Query before plugin goes productive)
             "all" : "Während der Entwicklung, Zugriff auf alle Daten des Benutzers erlauben. (MUSS durch ein geeignetes Access Query ersetzt werden bevor das Plugin produktiv eingesetzt wird)"
-        }
+        },
+
+        // TODO NEW: Export
+        "export_btn" : "Export"
+
     },
 
     "appstats" : {

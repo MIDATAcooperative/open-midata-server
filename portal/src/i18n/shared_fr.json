@@ -50,6 +50,7 @@
             "not_plugin_owner" : "Ce n'est pas votre plugin"
         },
 
+
         "invalid" : {
             "email" : "Veuillez entrer une adresse e-mail valide",
             "credentials" : "Adresse e-mail ou mot de passe invalide.",
@@ -78,6 +79,7 @@
         },
 
         "missing" : {
+
             "credentials" : "Veuillez saisir votre adresse e-mail et mot de passe.",
             "email" : "Veuillez saisir votre adresse e-mail",
             "input_field" : "Veuillez compléter ce champ de saisie.",
@@ -137,7 +139,15 @@
         },
 
         "tooweak" : {
+
+            // TODO CHANGED
+            // OLD: Passwords should contain of a mix of upper/lower case letters, numbers and special characters.
+            // NEW: Passwords should contain upper/lower case letters, numbers and special characters.
             "password" : "Les mots de passe doivent contenir des lettres majuscules/minuscules, des chiffres et des caractères spéciaux.",
+
+            // TODO CHANGED
+            // OLD: Passphrases should contain of a mix of upper/lower case letters, numbers and special characters.
+            // NEW: Passphrases should contain upper/lower case letters, numbers and special characters.
             "passphrase" : "Les phrases secrètes doivent contenir des lettres majuscules ou minuscules, des chiffres et des caractères spéciaux."
         },
 
@@ -196,6 +206,10 @@
             "MEMBERSHIP_REQUEST" : "Adhésion demandée",
             "CONTACT_ADDRESS_CHANGED" : "L'adresse a changé",
             "CONTRACT_SEND" : "Contrat envoyé",
+
+            // TODO CHANGED
+            // OLD: Account changed by admin
+            // NEW: Account changed by an administrator
             "ADMIN_ACCOUNT_CHANGE" : "Compte modifié par un administrateur",
             "ACCOUNT_DELETED" : "Compte supprimé",
             "INTERNAL_COMMENT" : "Commentaire interne",
@@ -368,7 +382,14 @@
             "EN" : "anglais",
             "DE" : "allemand",
             "IT" : "italien",
-            "FR" : "français"
+
+            // TODO CHANGED
+            // OLD: Frensh
+            // NEW: French
+            "FR" : "français",
+
+            // TODO NEW: Dutch
+            "NL" : "Dutch"
         },
         "month" : {
             "01" : "Jan.",
@@ -385,9 +406,25 @@
             "12" : "Dec."
         },
         "codesystems" : {
+
+            // TODO CHANGED
+            // OLD: Loinc Code
+            // NEW: LOINC code
             "loinc" : "Code LOINC",
+
+            // TODO CHANGED
+            // OLD: Midata Code
+            // NEW: MIDATA code
             "midata" : "Code MIDATA",
+
+            // TODO CHANGED
+            // OLD: FHIR Resource Name
+            // NEW: FHIR Resource
             "fhir" : "FHIR Resource",
+
+            // TODO CHANGED
+            // OLD: Snowmed
+            // NEW: SNOMED CT code
             "snowmed" : "Code SNOMED CT"
         },
         "tags" : {
@@ -418,6 +455,9 @@
         "submit_btn" : "Envoyer",
         "delete_btn" : "Supprimer",
         "or" : "ou",
+
+        // TODO NEW: Successfully Saved
+        "save_ok" : "Successfully Saved",
         "user" : {
             "lastname" : "Nom",
             "firstname" : "Prénom",
@@ -468,6 +508,10 @@
             "name" : "MIDATA Suisse (ch.midata.coop)",
             "intro" : "Ceci est la plate-forme MIDATA pour la Suisse.",
             "purpose" : "Il s'agit de la plate-forme productive MIDATA pour stocker des données sur la santé en Suisse.",
+
+            // TODO CHANGED
+            // OLD: New user accounts have feature restrictions. Healthprovider, research and development accounts can only be used after validation by the MIDATA office. Fake or test accounts are not allowed and will be blocked.
+            // NEW: New user accounts have feature restrictions. Healthprovider, research and development accounts can only be used after validation by MIDATA. Fake or test accounts are not allowed and will be blocked.
             "access" : "Les nouveaux comptes d'utilisateurs ont des restrictions de fonctionnalité. Les comptes de professionnels de la santé, de recherche et de développement ne peuvent être utilisés qu'après validation par MIDATA. Les comptes factices ou de test ne sont pas autorisés et seront bloqués.",
             "uptime" : "Les plages de maintenance seront annoncés.",
             "data" : "Cette instance stocke des données réelles appartenant à des personnes réelles. Les données sont savegardées quotidiennement."
@@ -502,11 +546,19 @@
         "agb" : "Conditions MIDATA",
         "study" : "Recherche",
         "agb2" : "J'accepte les",
+
+        // TODO CHANGED
+        // OLD: Terms of Use
+        // NEW: Terms and Conditions
         "agb3" : "Conditions générales",
         "privacypolicy2" : "J'accepte la",
         "privacypolicy3" : "Déclaration de confidentialité",
         "app_agb" : "Conditions de l'app",
         "app_agb2" : "J'accepte les",
+
+        // TODO CHANGED
+        // OLD: App Terms And Conditions
+        // NEW: App Terms and Conditions
         "app_agb3" : "Conditions générales de l'app",
         "study_agb" : "Conditions de l'étude",
         "sign_up_btn" : "S'inscrire",
@@ -563,6 +615,10 @@
         "contract_instructions" : "Un contrat vous a été adressé par la poste. Veuillez le signer et le renvoyer à MIDATA.",
         "pilot_phase" : "Durant la phase pilote (ainsi que sur l'instance de test), AUCUN contrat n'est envoyé. Un administrateur MIDATA verifiera et validera votre compte. Vous serez averti, lorsque votre compte aure été validé.",
         "code_intructions" : "Une lettre contenant un code de confirmation vous a été adressée par la poste. Veuillez saisir ce code de confirmation pour pouvoir accéder à la plateforme.",
+
+        // TODO CHANGED
+        // OLD: You have provided the confirmation code. You may login after the signed contract has arrived at MIDATA office.
+        // NEW: You have provided the confirmation code. You may login after the signed contract has arrived at MIDATA.
         "code_done" : "Vous avez saisi le code de confirmation. Vous pourrez vous connecter dès que le contrat signé sera parvenu à MIDATA.",
         "enter_now_btn" : "Entrer maintenant",
         "email_success" : "L'adresse e-mail a déjà été confirmée.",
@@ -665,6 +721,12 @@
         "user" : "Utilisateur",
         "name" : "Prénom:",
         "email" : "E-mail:",
+
+        // TODO NEW: Date of birth:
+        "birthday" : "Date of birth:",
+
+        // TODO NEW: Account ID:
+        "midataID" : "Account ID:",
         "action" : "Plus...",
         "change_password_btn" : "Changer le mot de passe",
         "change_passphrase_btn" : "Modifier la phrase de passe",
@@ -672,6 +734,9 @@
         "change_email_btn" : "Changer l'adresse e-mail",
         "repair_account_btn" : "Réparer le compte",
         "reset_spaces_btn" : "Réinitialiser le portail",
+
+        // TODO NEW: Export your data
+        "export_btn" : "Export your data",
         "delete_records_btn" : "Supprimer les enregistrements",
         "account_repaired" : "Votre compte a été réparé.",
         "spaces_resetted" : "Votre configuration a été réinitialisée.",
@@ -839,6 +904,9 @@
         "delete" : "supprimer",
         "delete_all_btn" : "supprimer tout",
         "empty" : "Aucun enregistrement trouvé.",
+
+        // TODO NEW: The record tree for this selection cannot be evaluated. There are too many consents involved.
+        "too_many_consents" : "The record tree for this selection cannot be evaluated. There are too many consents involved.",
         "close_btn" : "Fermer"
     },
 
@@ -1049,5 +1117,9 @@
         "none" : "Aucune",
         "change_btn" : "Changer",
         "success" : "L'adresse e-mail a été changée avec succès!"
-    }
+    },
+
+
+    // TODO NEW: unknown
+    "-1" : "unknown"
 }

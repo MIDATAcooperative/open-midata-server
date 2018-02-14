@@ -45,6 +45,9 @@
         "available_tags" : "Variables disponibles",
         "reasons" : {
             "REGISTRATION" : "Enregistrement d'un nouvel utilisateur",
+
+            // TODO NEW: Registration of a new user by someone else
+            "REGISTRATION_BY_OTHER_PERSON" : "Registration of a new user by someone else",
             "FIRSTUSE_ANYUSER" : "Première utilisation de l'app",
             "FIRSTUSE_EXISTINGUSER" : "Première utilisation de l'app (si pas d'e-mail d'enregistrement envoyé)",
             "CONSENT_REQUEST_OWNER_INVITED" : "Consentement proposé (cédant, invitation)",
@@ -67,8 +70,20 @@
         "debug_btn" : "API Tester",
         "linkedStudy" : "Étude liée à l'app (code)",
         "mustParticipateInStudy" : "Participation à l'étude requise",
+
+        // TODO CHANGED
+        // OLD: Only a MIDATA admin may change this section. Please request changes if required.
+        // NEW: Only a MIDATA administrator may change this section. Please request changes if required.
         "admin_only" : "Seul un administrateur MIDATA peut modifier cette section. Veuillez faire une demande de changement si nécessaire.",
+
+        // TODO CHANGED
+        // OLD: Terms
+        // NEW: Terms and Conditions
         "terms_of_use" : "Conditions générales",
+
+        // TODO CHANGED
+        // OLD: Show terms
+        // NEW: Show Terms and Conditions
         "show_terms" : "Afficher les conditions générales",
         "unlock_code" : "Code d'activation",
         "info" : {
@@ -96,11 +111,27 @@
         "access_query_add" : "Access Query (Ajouter)",
         "access_query_json" : "Access Query (JSON)",
         "query" : {
+
+            // TODO CHANGED
+            // OLD: App/Plugin may only access data of the person using it
+            // NEW: App/Plugin may only access data of the user logged in.
             "self" : "L'app/le plugin ne peut accéder que les données de l'utilisateur connecté.",
             "ownapp" : "L'app/le plugin ne peut accéder que les données créées par cette app/ce plugin.",
+
+            // TODO CHANGED
+            // OLD: Add all types written by the app automatically to the Access Query. (MUST be turned off before app goes productive)
+            // NEW: Add all data types written by the app automatically to the Access Query. (MUST be turned off before app goes productive)
             "learn" : "Ajouter automatiquement tous les types de données écrites par cette app à l'Access Query. (DOIT être désactivé avant la mise en production de l'app)",
+
+            // TODO CHANGED
+            // OLD: During development allow to access all data of the user. (MUST be replaced with a proper query before plugin goes productive)
+            // NEW: During development allow to access all data of the user. (MUST be replaced with a proper Access Query before plugin goes productive)
             "all" : "Pendant le développement, autoriser l'accès à toutes les données de l'utilisateur. (DOIT être remplacé par un Access Query adéquat avant la mise en production de l'app)"
-        }
+        },
+
+        // TODO NEW: Export
+        "export_btn" : "Export"
+
     },
 
     "appstats" : {
