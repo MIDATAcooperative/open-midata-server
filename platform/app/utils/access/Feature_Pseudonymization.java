@@ -83,6 +83,9 @@ public class Feature_Pseudonymization extends Feature {
 				}
 
 				String ct = r.meta.getString("content");
+				
+				
+				
 				if (ct.equals("Patient"))
 					r.meta = null;
 

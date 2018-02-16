@@ -30,6 +30,7 @@ import models.TypedMidataId;
 import models.User;
 import models.UserGroup;
 import models.enums.UserRole;
+import utils.AccessLog;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
@@ -59,8 +60,9 @@ public class FHIRTools {
 	 * @throws InternalServerException
 	 */
 	public static Reference getReferenceToUser(MidataId id, String defName) throws AppException {
-	
-		if (defName != null) return new Reference().setDisplay(defName).setReference("Patient/"+id.toString());
+	    
+		if (defName != null) return new Reference().setDisplay(defName).setReference("Patient/"+id.toString());				
+		
 		User user = ResourceProvider.info().cache.getUserById(id);
 		if (user == null) {
 			return new Reference().setDisplay(defName).setReference("Patient/"+id.toString());

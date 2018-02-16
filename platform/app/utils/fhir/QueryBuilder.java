@@ -303,6 +303,8 @@ public class QueryBuilder {
 				} else 	if (system == null) {
 				  
 			      bld.addEq(path+".coding.code", val, CompareCaseInsensitiveOperator.EQUALS);
+				} else 	if (val == null || val.length() == 0) {
+				  bld.addEq(path+".coding.system", system, CompareCaseInsensitiveOperator.EQUALS);
 				} else {
 				  bld.addEq(path+".coding", "system", system, "code", val, CompareCaseInsensitiveOperator.EQUALS);
 				}
@@ -322,6 +324,8 @@ public class QueryBuilder {
 				   bld.addEq(path+".type.text",tokenParam.getValue(), CompareCaseInsensitiveOperator.CONTAINS);
 				} else if (system == null) {
 				   bld.addEq(path+".value", tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
+				} else 	if (val == null || val.length() == 0) {
+				   bld.addEq(path+".system", system, CompareCaseInsensitiveOperator.EQUALS);
 				} else {
 				   bld.addEq(path, "system", system, "value", tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
 				}	

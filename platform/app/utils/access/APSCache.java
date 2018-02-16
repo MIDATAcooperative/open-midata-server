@@ -126,6 +126,11 @@ public class APSCache {
 		return result;
 	}
 	
+	public boolean hasSubCache(MidataId group) {
+		if (subcache == null) return false;			
+		return  subcache.get(group.toString()) != null;		
+	}
+	
 	public Consent getConsent(MidataId consentId) throws InternalServerException {
 		if (consentId == null || consentId.equals(accountOwner)) return null;
 		
