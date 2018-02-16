@@ -349,6 +349,7 @@
 	   "SPONSOR" : "Sponsor",
 	   "INVESTIGATOR" : "Investigator",
 	   "AUDITOR" : "Auditor",
+	   "STUDYNURSE" : "Study Nurse",
 	   "MONITOR" : "Monitor",
 	   "OTHER" : "Other"
 	 },

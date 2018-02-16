@@ -77,7 +77,7 @@ angular.module('portal')
 	
 	$scope.addPerson = function() {		
 		$scope.myform = $scope.form.myform;
-		$scope.submitted = true;	
+		$scope.submitted = $scope.form.submitted = true;	
 		if ($scope.error && $scope.error.field && $scope.error.type) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
 		$scope.error = null;
 		if (! $scope.myform.$valid) {
@@ -97,8 +97,9 @@ angular.module('portal')
 				then(function() {
 					$scope.add = { role:{} };
 					$scope.init();
-					$scope.submitted = false;
+					$scope.submitted = $scope.form.submitted = false;				
 					$scope.saveOk = true;
+					$scope.myform.$setPristine();
 				});
 			} else {
 				$scope.error = { code : "error.unknown.user" };

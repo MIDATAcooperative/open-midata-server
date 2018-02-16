@@ -223,6 +223,10 @@ angular.module('portal')
 		});
 	};
 	
+	$scope.go = function(what) {
+		$state.go(what.page);
+	};
+	
 	$scope.reload();
 	
 }]);
