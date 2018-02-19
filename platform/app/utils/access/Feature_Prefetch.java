@@ -73,8 +73,18 @@ public class Feature_Prefetch extends Feature {
 	    		    partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("flat", "true").map("usergroup", c2.getAccountOwner()).map("owner", owner).map("stream", record.stream).map("quick",  record), nextWithUserGroup);
 		    	  }
 		    	}
-		    		
-		    	if (partResult == null)	partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("flat", "true").map("stream", record.stream).map("quick",  record), next);
+		    	
+		    	// This "study" section is just a hack to fetch researcher shared data faster until a general solution is found
+		    	if (partResult == null && q.restrictedBy("study") && !q.restrictedBy("owner"))	{
+		    		partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("flat", "true").map("stream", record.stream).map("study-related", true).map("quick",  record), next);
+		    		if (partResult.isEmpty()) partResult = null;
+		    	}
+		    	
+		    	if (partResult == null) {	
+		    				    		
+		    		//if (true) throw new NullPointerException();
+		    		partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("flat", "true").map("stream", record.stream).map("quick",  record), next);
+		    	}
 		    	
 		    }		 
 		  } else {			  
