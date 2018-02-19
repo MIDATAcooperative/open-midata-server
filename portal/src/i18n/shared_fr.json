@@ -73,11 +73,12 @@
             "passcode" : "Mauvais NIP",
             "plugin" : "Ce plugin est prévu pour un rôle différent",
             "unlock_code" : "Code d'activation incorrect",
-            "access_query" : "La requête d'accès doit être restreinte par 'contenu' ou 'groupe'!",
-            "sharing" : "Le Sharing Query accède à des types de données qui sont exclues par la configuration de l'étude."
+            "access_query" : "Le filtre d'accès aux données (Data Access Filter) doit être limité par 'contenu' ou 'groupe'!",
+            "sharing" : "Le filtre d'accès aux données (Data Access Filter) contient des types de données qui sont exclus par la configuration de l'étude."
         },
 
         "missing" : {
+
             "credentials" : "Veuillez saisir votre adresse e-mail et mot de passe.",
             "email" : "Veuillez saisir votre adresse e-mail",
             "input_field" : "Veuillez compléter ce champ de saisie.",
@@ -368,7 +369,8 @@
             "EN" : "anglais",
             "DE" : "allemand",
             "IT" : "italien",
-            "FR" : "français"
+            "FR" : "français",
+            "NL" : "néerlandais"
         },
         "month" : {
             "01" : "Jan.",
@@ -418,6 +420,7 @@
         "submit_btn" : "Envoyer",
         "delete_btn" : "Supprimer",
         "or" : "ou",
+        "save_ok" : "Enregistrement effectué",
         "user" : {
             "lastname" : "Nom",
             "firstname" : "Prénom",
@@ -665,6 +668,8 @@
         "user" : "Utilisateur",
         "name" : "Prénom:",
         "email" : "E-mail:",
+        "birthday" : "Date de naissance:",
+        "midataID" : "Account ID:",
         "action" : "Plus...",
         "change_password_btn" : "Changer le mot de passe",
         "change_passphrase_btn" : "Modifier la phrase de passe",
@@ -672,6 +677,7 @@
         "change_email_btn" : "Changer l'adresse e-mail",
         "repair_account_btn" : "Réparer le compte",
         "reset_spaces_btn" : "Réinitialiser le portail",
+        "export_btn" : "Exporter vos données",
         "delete_records_btn" : "Supprimer les enregistrements",
         "account_repaired" : "Votre compte a été réparé.",
         "spaces_resetted" : "Votre configuration a été réinitialisée.",
@@ -839,6 +845,7 @@
         "delete" : "supprimer",
         "delete_all_btn" : "supprimer tout",
         "empty" : "Aucun enregistrement trouvé.",
+        "too_many_consents" : "L'arborescence des enregistrements ne peut pas être créée pour cette sélection. Il y a trop de consentements impliqués.",
         "close_btn" : "Fermer"
     },
 
@@ -1049,5 +1056,7 @@
         "none" : "Aucune",
         "change_btn" : "Changer",
         "success" : "L'adresse e-mail a été changée avec succès!"
-    }
+    },
+
+    "-1" : "inconnu"
 }

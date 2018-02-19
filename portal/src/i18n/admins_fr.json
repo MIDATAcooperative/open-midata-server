@@ -74,7 +74,22 @@
     "admin_plugins" : {
         "title" : "Plugins",
         "developer" : "Filtrer par développeur",
-        "empty" : "Il n'existe encore aucune app ou plugin."
+        "name" : "Filtrer par nom d'application",
+        "organisation" : "Filtrer par organisation",
+        "empty" : "Il n'existe encore aucune app ou plugin.",
+        "plugin_name" : "Nom",
+        "plugin_developer" : "Dévelopeur",
+        "plugin_type" : "Type",
+        "plugin_role" : "Rôle cible",
+        "plugin_market" : "MISTORE",
+        "plugin_stats" : "Statistiques",
+        "plugin_status" : "État",
+        "add_definition_btn" : "Importer la définition d'un plugin"
+    },
+
+    "admin_defineplugin" : {
+        "title" : "Importer la définition d'un plugin",
+        "definition" : "Définition (JSON)"
     },
 
     "admin_studies" : {
@@ -114,7 +129,7 @@
         "required_information" : "Informations requises",
         "required_assistance" : "Médecin agréé requis",
         "termsOfUse" : "Conditions générales",
-        "sharing_query" : "Sharing Query",
+        "sharing_query" : "Data Access Filter",
         "requirements" : "Exigences",
         "groups" : "Groupes",
         "group_name" : "Nom du groupe",

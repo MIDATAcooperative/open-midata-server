@@ -121,6 +121,7 @@
         "country" : "Pays:",
         "status" : "État:",
         "group" : "Groupe:",
+        "shared_records" : "Enregistrements partagés",
         "history" : "Historique de participation"
     },
 
@@ -129,6 +130,8 @@
         "partName" : "Pseudonymisé",
         "group" : "Groupe",
         "status" : "État",
+        "total" : "{{count}} consentements correspondant à vos critères trouvés.",
+        "only_first_shown" : "Seuls les 1000 premiers consentements correspondants sont affichés",
         "recruiter" : "Recruteur",
         "accept_btn" : "Accepter",
         "reject_btn" : "Rejeter",
@@ -138,7 +141,10 @@
         "all" : "Tous les participants",
         "request" : "Candidats qui sont en attente d'une décision",
         "rejected" : "Candidats rejetés",
-        "retreated" : "Participants qui se sont retirés"
+        "retreated" : "Participants qui se sont retirés",
+        "acceptall" : "Accepter toutes les demandes et affecter les nouveaux participants au groupe de participants",
+        "autojoin" : "Acceptation automatique",
+        "autojoin2" : "Accepter toutes les demandes de participation et assigner les nouveaux participants au groupe sélectionné dès que l'application de recherche associée à cette étude se connecte."
     },
 
     "studyrecords" : {
@@ -156,9 +162,9 @@
         "startDate" : "Date de début officielle",
         "endDate" : "Date de fin officielle",
         "dataCreatedBefore" : "Données figées dès le",
-        "sharing_query" : "Sharing Query (JSON)",
-        "sharing_query_options" : "Sharing Query (Ajouter)",
-        "sharing_query_selection" : "Sharing Query (Sélection)",
+        "sharing_query" : "Data Access Filter (JSON)",
+        "sharing_query_options" : "Data Access Filter (Ajouter)",
+        "sharing_query_selection" : "Data Access Filter (Sélection)",
         "terms_of_use" : "Conditions générales",
         "terms_of_use_hint" : "Si les conditions générales de l'étude doivent être lues et acceptées par l'utilisateur, veuillez envoyer le texte à MIDATA. Nous téléchargerons le texte au bon format et vous fournirons l'ID que vous devez saisir ici.",
         "show_terms" : "Afficher les conditions générales",
@@ -182,7 +188,7 @@
         "role" : "Rôle",
         "rolehint" : "Rôle (cliquer sur une rangée pour voir les détails)",
         "roleName" : "Nom du rôle",
-        "defineself" : "Vous pouvez modifier vos propres droits en vous rajoutant à l'équipe avec des droits différents. Vous ne pouvez le faire que si vous êtes le seul membre de l'équipe. Vous ne pouvez pas vous retirer le droit de gérer l'équipe.",        
+        "defineself" : "Vous pouvez modifier vos propres droits en vous rajoutant à l'équipe avec des droits différents. Vous ne pouvez le faire que si vous êtes le seul membre de l'équipe. Vous ne pouvez pas vous retirer le droit de gérer l'équipe.",
         "addperson_btn" : "Ajouter une personne",
         "rights" : "Droits",
         "right" : {
@@ -206,8 +212,8 @@
         "teamsetup_help" : "Si davantage de personnes participent à la réalisation de l'étude, indiquez toutes les personnes concernées et leur rôle. Tant que vous n'avez pas ajouté d'autres personnes, vous pouvez changer votre propre rôle en vous ajoutant à nouveau avec un autre rôle.",
         "groups" : "Groupes de participants définis",
         "groups_help" : "Votre étude peut comprendre un ou plusieurs groupes de participants. Veuillez définir la liste des groupes de participants.",
-        "sharingQuery" : "Data Sharing Query défini",
-        "sharingQuery_help" : "Votre étude doit indiquer explicitement les données des participants auxquelles elle accédera. La requête de partage des données ne peut pas être modifiée après la validation de l'étude.",
+        "sharingQuery" : "Data Access Filter défini",
+        "sharingQuery_help" : "Votre étude doit indiquer explicitement les données des participants auxquelles elle accédera. Le filtre d'accès aux données (Data Access Filter) ne peut pas être modifié après la validation de l'étude.",
         "dates" : "Dates de début et de fin fixées",
         "dates_help" : "Les dates de début et de fin seront affichées aux participants. Aucune donnée n'entrera dans l'étude à partir du moment où les données sont gelées.",
         "terms" : "Conditions générales fournies",
@@ -218,7 +224,7 @@
         "validation_passed_help" : "Veuillez attendre que l'étude ait été validée.",
         "phase2" : "Phase 2 : Préparation",
         "phase2_help" : "Préparation",
-        "applications" : "Application de recherche ajoutée",
+        "applications" : "Application de recherche associée",
         "applications_help" : "Vous pouvez lier des plugins et des services externes de traitement de données à votre étude. Ceux-ci peuvent lire les données des participants et/ou partager des données agrégées avec les participants. Ces plugins ou services doivent se connecter à MIDATA en utilisant les identifiants d'un des membres de l'équipe de recherche ayant des droits suffisants.",
         "applinked" : "Une app a été liée à l'étude",
         "applinked_help" : "Afin de lier une application à votre étude, veuillez envoyer à MIDATA le code de votre étude et le nom de l'application que vous souhaitez lier.",
