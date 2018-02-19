@@ -238,7 +238,7 @@ public class RecordManager {
 			Set<MidataId> targetUsers) throws AppException {
 		AccessLog.logBegin("begin unshareAPSRecursive aps="+apsId.toString()+" executor="+executorId.toString()+" #targets="+targetUsers.size());
 		if (getCache(executorId).getAPS(apsId).isAccessible()) {
-			List<DBRecord> to_unshare = QueryEngine.listInternal(getCache(executorId), apsId, null, CMaps.map("streams", "only"), Sets.create("_id"));
+			List<DBRecord> to_unshare = QueryEngine.listInternal(getCache(executorId), apsId, null, CMaps.map("streams", "only").map("ignore-redirect", true), Sets.create("_id"));
 			for (DBRecord rec : to_unshare) unshareAPS(rec._id, executorId, targetUsers);
 			getCache(executorId).getAPS(apsId).removeAccess(targetUsers);
 		}
@@ -1048,6 +1048,12 @@ public class RecordManager {
 		return QueryEngine.listIterator(getCache(who), apsId, context, properties, fields);
 	}
 	
+	public DBIterator<Record> listIterator(MidataId who, AccessContext context,
+			Map<String, Object> properties, Set<String> fields)
+			throws AppException {	
+		return QueryEngine.listIterator(getCache(who), context.getTargetAps(), context, properties, fields);
+	}
+	
 	public List<Record> list(MidataId who, AccessContext context,
 			Map<String, Object> properties, Set<String> fields)
 			throws AppException {
@@ -1095,7 +1101,7 @@ public class RecordManager {
 		try {
 		    Collection<RecordsInfo> result = QueryEngine.info(getCache(who), aps, context, nproperties, aggrType);
 		    
-		    if (properties.containsKey("include-records")) {
+		    if (properties.containsKey("include-records")) {		    	
 			    for (RecordsInfo inf : result) {
 			    	if (inf.newestRecord != null) {
 			    		inf.newestRecordContent = fetch(who, aps, inf.newestRecord);

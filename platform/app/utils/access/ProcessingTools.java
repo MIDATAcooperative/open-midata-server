@@ -360,7 +360,7 @@ public class ProcessingTools {
 
 		@Override
 		public boolean contained(DBRecord record) {
-			Object v = record.meta.get(property);
+			Object v = record.meta.get(property);			
 			if (v == null)
 				return false;
 			;

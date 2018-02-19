@@ -62,6 +62,8 @@ public class Feature_UserGroups extends Feature {
 	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
 		if (q.restrictedBy("usergroup")) {
 			MidataId usergroup = q.getMidataIdRestriction("usergroup").iterator().next();
+			
+			if (usergroup.equals(q.getCache().getAccountOwner())) return next.iterator(q);
 			UserGroupMember isMemberOfGroup = UserGroupMember.getByGroupAndMember(usergroup, q.getCache().getAccountOwner());
 			if (isMemberOfGroup == null) throw new InternalServerException("error.internal", "Not member of provided user group");
 			return doQueryAsGroup(isMemberOfGroup, q);					
@@ -117,7 +119,7 @@ public class Feature_UserGroups extends Feature {
 		KeyManager.instance.unlock(group, ugm._id, (byte[]) obj.get("aliaskey"));
 		Map<String, Object> newprops = new HashMap<String, Object>();
 		newprops.putAll(q.getProperties());
-		newprops.put("usergroup", ugm.userGroup);
+		newprops.put("usergroup", ugm.userGroup);		
 		APSCache subcache = q.getCache().getSubCache(group); 
 		if (ugm.role == null) ugm.role = ResearcherRole.HC();
 		
@@ -144,7 +146,7 @@ public class Feature_UserGroups extends Feature {
 			
 		}
 		
-		// AK : Removed instanceof DummyAccessContext : Does not work correctly when listing study participants records on portal
+		// AK : Removed instanceof DummyAccessContext : Does not work correctly when listing study participants records on portal		 
 		MidataId aps = (q.getApsId().equals(ugm.member) /*|| q.getContext() instanceof DummyAccessContext */) ? group : q.getApsId();
 		Query qnew = new Query(newprops, q.getFields(), subcache, aps, new UserGroupAccessContext(ugm, subcache, q.getContext())).setFromRecord(q.getFromRecord());
 		DBIterator<DBRecord> result = next.iterator(qnew);
@@ -182,7 +184,7 @@ public class Feature_UserGroups extends Feature {
 		if (ugm == null) return cache;		
 		
 		BasicBSONObject obj = cache.getAPS(ugm._id, ugm.member).getMeta("_usergroup");
-		KeyManager.instance.unlock(ugm.userGroup, ugm._id, (byte[]) obj.get("aliaskey"));		
+		if (!cache.hasSubCache(ugm.userGroup)) KeyManager.instance.unlock(ugm.userGroup, ugm._id, (byte[]) obj.get("aliaskey"));		
 		return cache.getSubCache(ugm.userGroup);				
 	}
 		

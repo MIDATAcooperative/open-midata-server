@@ -327,7 +327,7 @@ public class Feature_Indexes extends Feature {
 					//AccessLog.log("db time:" + (System.currentTimeMillis() - time));
 
 					Query q3 = new Query(q, CMaps.map("strict", "true"), aps, context);
-					partresult = Feature_Prefetch.lookup(q3, partresult, next);
+					partresult = Feature_Prefetch.lookup(q3, partresult, next, false);
 					for (DBRecord record : partresult)
 						record.consentAps = aps;
 					result = QueryEngine.combine(result, partresult);

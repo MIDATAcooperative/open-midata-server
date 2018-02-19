@@ -47,6 +47,17 @@ angular.module('services')
 			  participants : false,
 			  setup : false
 		},
+		{ id :"STUDYNURSE",
+			  roleName : "Study Nurse",
+			  readData : false,
+			  writeData : false,
+			  unpseudo : true,
+			  "export" : false,
+			  changeTeam : false,
+			  auditLog : false,
+			  participants : true,
+			  setup : false
+		},
 		{ id :"OTHER",
 			  roleName : "",
 			  readData : false,

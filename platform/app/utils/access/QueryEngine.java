@@ -62,7 +62,7 @@ class QueryEngine {
 		if (!cache.getAPS(aps).isAccessible()) return new ArrayList<DBRecord>();
 
 		if (AccessLog.detailedLog) AccessLog.logBegin("Begin check contained in aps #recs="+candidates.size());
-		List<DBRecord> result = Feature_Prefetch.lookup(new Query(CMaps.map(RecordManager.FULLAPS_WITHSTREAMS).map("strict", true), Sets.create("_id"), cache, aps, null), candidates, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_AccountQuery(new Feature_Streams()))));
+		List<DBRecord> result = Feature_Prefetch.lookup(new Query(CMaps.map(RecordManager.FULLAPS_WITHSTREAMS).map("strict", true), Sets.create("_id"), cache, aps, null), candidates, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_AccountQuery(new Feature_Streams()))), false);
 		if (AccessLog.detailedLog) AccessLog.logEnd("End check contained in aps #recs="+result.size());
 		
 		return result;						
@@ -156,7 +156,7 @@ class QueryEngine {
 		}
 		
 		
-		Feature qm = new Feature_Prefetch(new Feature_BlackList(myaps, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_UserGroups(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Streams())))))))));
+		Feature qm = new Feature_Prefetch(false, new Feature_BlackList(myaps, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_UserGroups(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Streams())))))))));
 						 
 		List<DBRecord> recs = ProcessingTools.collect(ProcessingTools.noDuplicates(qm.iterator(q)));
 		
@@ -223,10 +223,10 @@ class QueryEngine {
     		AccessLog.log("with usergroup");
     		properties = new HashMap<String, Object>(properties);
     		properties.put("usergroup", userGroup);
-    		qm = new Feature_Pagination(new Feature_Sort(new Feature_Or(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams()))))))))))));
+    		qm = new Feature_Pagination(new Feature_Sort(new Feature_Or(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(false, new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams()))))))))))));
     	} else {    	
     	   APS target = cache.getAPS(aps);    	
-    	   qm = new Feature_Pagination(new Feature_Sort(new Feature_Or(new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))))))))))))));
+    	   qm = new Feature_Pagination(new Feature_Sort(new Feature_Or(new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_Prefetch(true, new Feature_UserGroups(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))))))))))))));
     	}
     	Query q = new Query(properties, fields, cache, aps, context);
     	AccessLog.logQuery(q.getApsId(), q.getProperties(), q.getFields());
@@ -367,9 +367,11 @@ class QueryEngine {
 	    	
     	}
     	if (!idMap.isEmpty()) {
-	    	Collection<DBRecord> fromDB = DBRecord.getAllList(CMaps.map("_id", idMap.keySet()).map("encryptedData", NOTNULL), DATA_ONLY);
+	    	Collection<DBRecord> fromDB = DBRecord.getAllList(CMaps.map("_id", idMap.keySet()).map("encryptedData", NOTNULL), META_AND_DATA);
 	    	for (DBRecord r2 : fromDB) {
-	    	   idMap.get(r2._id).encryptedData = r2.encryptedData;	    	   
+	    	   DBRecord r = idMap.get(r2._id);
+	    	   r.encryptedData = r2.encryptedData;
+	    	   r.encrypted = r2.encrypted;
 	    	}
     	}
     	for (DBRecord rec : records) {    		

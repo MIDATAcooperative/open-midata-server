@@ -94,6 +94,7 @@ import utils.RuntimeConstants;
 import utils.access.AccessContext;
 import utils.access.AccountCreationAccessContext;
 import utils.access.ConsentAccessContext;
+import utils.access.DBIterator;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.ExecutionInfo;
@@ -353,7 +354,8 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 		Query query = new Query();
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Patient");
-
+        query.removeAccount("limit");
+		
 		if (params.containsKey("_id")) {
 			Set<String> ids = builder.paramToStrings("_id");
 			if (ids != null)
@@ -383,16 +385,25 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		builder.restriction("telecom", true, QueryBuilder.TYPE_CODE, "telecom.value");
 		builder.restriction("active", false, QueryBuilder.TYPE_BOOLEAN, "active");
 
-		List<Record> recs = query.execute(info);
-		List<Record> result = new ArrayList<Record>(recs.size());
-		for (Record record : recs) {
+		DBIterator<Record> recs = query.executeIterator(info);
+		List<Record> result = new ArrayList<Record>();
+		int limit = params.getCount() != null ? params.getCount() : Integer.MAX_VALUE;
+		while (recs.hasNext() && result.size() <= limit) {
+		    Record record = recs.next();
 			if (record.data == null)
 				continue;
 			Object id = record.data.get("id");
-			// AccessLog.log(id.toString()+" vs "+record.owner.toString());
-			if (id.equals(record.owner.toString()))
+			// 
+			if (id.equals(record.owner.toString())) {
+				if (record.creator != null && record.creator.equals(record.owner)) record.creator = null; 
 				result.add(record);
+			//AccessLog.log("taken:"+record.content+" / "+record.name);
+			} else {
+				//AccessLog.log(id.toString()+" vs "+record.owner.toString());
+				//AccessLog.log(record.content+" / "+record.name);
+			}
 		}
+		AccessLog.log("RESULT AFTER FILTER="+result.size());
 		return result;
 	}
 	

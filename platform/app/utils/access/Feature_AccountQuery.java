@@ -185,7 +185,7 @@ public class Feature_AccountQuery extends Feature {
 				  Iterator<Consent> it = consents.iterator();
 				  while (it.hasNext()) {					  
 					  Consent c = it.next();
-					  if (c.owner.equals(r.owner) || c._id.equals(r.owner)) {
+					  if (c.owner.equals(r.owner) || c._id.equals(r.owner)) {						  
 						  AccessLog.log("found, skipping "+pos+" consents");
 						  init(new BlockwiseConsentPrefetch(q, consents, 105, pos));
 						  return;
@@ -376,10 +376,15 @@ public class Feature_AccountQuery extends Feature {
 			if (q.restrictedBy("updated-after")) limit = q.getMinUpdatedTimestamp();				
 			if (q.restrictedBy("shared-after")) limit = q.getMinSharedTimestamp();
 	    		    		
-	    	consents =  new ArrayList<Consent>(StudyParticipation.getActiveParticipantsByStudyAndGroupsAndParticipant(studies, studyGroups, q.getCache().getAccountOwner(), sets.contains("all") ? null : owners, Consent.SMALL, true, limit));
-	    	AccessLog.log("found consents (participants): "+consents.size());
-	    	consents.addAll(StudyRelated.getActiveByAuthorizedGroupAndStudy(q.getCache().getAccountOwner(), studyGroups, studies, Consent.SMALL, limit));
-	    	
+			if (q.restrictedBy("study-related")) {				
+				consents = new ArrayList<Consent>(StudyRelated.getActiveByAuthorizedGroupAndStudy(q.getCache().getAccountOwner(), studyGroups, studies, sets.contains("all") ? null : owners, Consent.SMALL, limit));
+			} else if (q.restrictedBy("participant-related")) {
+				consents =  new ArrayList<Consent>(StudyParticipation.getActiveParticipantsByStudyAndGroupsAndParticipant(studies, studyGroups, q.getCache().getAccountOwner(), sets.contains("all") ? null : owners, Consent.SMALL, true, limit));		    	
+			} else {
+		    	consents =  new ArrayList<Consent>(StudyParticipation.getActiveParticipantsByStudyAndGroupsAndParticipant(studies, studyGroups, q.getCache().getAccountOwner(), sets.contains("all") ? null : owners, Consent.SMALL, true, limit));
+		    	AccessLog.log("found consents (participants): "+consents.size());
+		    	consents.addAll(StudyRelated.getActiveByAuthorizedGroupAndStudy(q.getCache().getAccountOwner(), studyGroups, studies, sets.contains("all") ? null : owners, Consent.SMALL, limit));
+			}
 	    	consents = applyLimit(consents, limit);
             q.getCache().cache(consents);	    		    
 	    	AccessLog.log("found consents (total): "+consents.size());

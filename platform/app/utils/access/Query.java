@@ -280,7 +280,17 @@ public class Query {
 	}
 	
 	public MidataId getFrom() {
-		return MidataId.from(properties.get("from"));		
+		String fr = properties.get("from").toString();
+		int p = fr.indexOf('.');
+		if (p <=0) p = fr.length(); 
+		return MidataId.from(fr.substring(0, p));		
+	}
+	
+	public MidataId getFromOwner() {
+		String fr = properties.get("from").toString();
+		int p = fr.indexOf('.');
+		if (p <=0) return null; 
+		return MidataId.from(fr.substring(p+1));			
 	}
 	
 	private DBRecord fromRecord;
