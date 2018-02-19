@@ -252,12 +252,12 @@ class APSImplementation extends APS {
 								query.put("_id", idRestriction);
 				useCache = false;
 			}
-			//query.put("direct", Boolean.TRUE);
+			
 			useCache = !q.addMongoTimeRestriction(query, false) && useCache;
 			List<DBRecord> directResult;
 			
 			if (useCache && cachedRecords != null) {
-				//result.addAll(cachedRecords);
+			
 				return Collections.unmodifiableList(cachedRecords);
 			}
 			
@@ -269,20 +269,19 @@ class APSImplementation extends APS {
 					record.owner = eaps.getOwner();
 			}
 			AccessLog.log("direct query stream=" + eaps.getId()+" #size="+directResult.size());
-			if (useCache && withOwner) cachedRecords = directResult;
-			//result.addAll(directResult);
+			
+			// Disabled: Produces wrong results first call to Observation/$lastn after first record inserted
+			// if (useCache && withOwner) cachedRecords = directResult;
+			
 			return Collections.unmodifiableList(directResult);
 		}
 
-		// 4 restricted by time? has APS time restriction? load other APS -> APS
-		// (4,5,6) APS LIST -> Records
-
-		// 5 Create list format -> Permission List (maybe load other APS)
+		
 		Map<String, Object> permissions = eaps.getPermissions();
 		List<BasicBSONObject> rows = APSEntry.findMatchingRowsForQuery(permissions, q);
         if (rows == null) return Collections.emptyList();
         result = new ArrayList<DBRecord>();
-		// 6 Each permission list : apply filters -> Records
+		
 		boolean restrictedById = q.restrictedBy("_id");
 		if (restrictedById) {
 			for (MidataId id : q.getMidataIdRestriction("_id")) {

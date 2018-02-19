@@ -10,14 +10,14 @@
 	 <div class="alert alert-info">
 	  <p><strong translate="studyoverview.workflow"></strong></p>
  	  <div ng-if="lastCheck"> 	  
- 	    <p><span translate="studyoverview.lastdone"></span>: <a ui-sref="{{ lastCheck.page }}" class="alert-link" translate="{{lastCheck.title}}"></a></p>
+ 	    <p><span translate="studyoverview.lastdone"></span>: <a href="javascript:" ng-click="go(lastCheck);" class="alert-link" translate="{{lastCheck.title}}"></a></p>
  	    <p><i translate="{{lastCheck.title + '_help' }}"></i></p>
  	                   
  	  </div>
 	  <div ng-if="primaryCheck">
-	  <p><span translate="studyoverview.nextstep"></span>: <a ui-sref="{{ primaryCheck.page }}" class="alert-link" translate="{{primaryCheck.title}}"></a></p>
+	  <p><span translate="studyoverview.nextstep"></span>: <a href="javascript:" ng-click="go(primaryCheck);" class="alert-link" translate="{{primaryCheck.title}}"></a></p>
       <p><i translate="{{primaryCheck.title + '_help' }}"></i></p>
-      <a ng-show="primaryCheck.page != '.'" ui-sref="{{ primaryCheck.page }}" class="btn btn-default" translate="studyoverview.visitnow_btn" ></a>               
+      <a ng-show="primaryCheck.page != '.'" href="javascript:" ng-click="go(primaryCheck);" class="btn btn-default" translate="studyoverview.visitnow_btn" ></a>               
       <button ng-show="primaryCheck.flag && !primaryCheck.done" ng-click="addProcessTag(primaryCheck.flag)" class="btn btn-default" translate="studyoverview.markdone_btn"></button>
       <button ng-click="primaryCheck.action()" class="btn btn-default" ng-show="primaryCheck.action && primaryCheck.check()" translate="studyoverview.donow_btn"></button>
       </div>

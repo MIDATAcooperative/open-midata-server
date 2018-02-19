@@ -111,6 +111,11 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		updateRecord(record, theResource);
 	}
 	
+	@Override
+	protected String getFromId(Record resource) {
+		return resource._id.toString()+"."+resource.owner.toString();
+	}
+	
 	public List<T> parse(List<Record> result, Class<T> resultClass) throws AppException {
 		ArrayList<T> parsed = new ArrayList<T>();	
 	    IParser parser = ctx().newJsonParser();

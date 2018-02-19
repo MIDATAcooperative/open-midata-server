@@ -138,8 +138,8 @@
      },
 
      "tooweak" : {
-       "password" : "Passwords should contain of a mix of upper/lower case letters, numbers and special characters.",
-       "passphrase" : "Passphrases should contain of a mix of upper/lower case letters, numbers and special characters."
+       "password" : "Passwords should contain upper/lower case letters, numbers and special characters.",
+       "passphrase" : "Passphrases should contain upper/lower case letters, numbers and special characters."
      },
 
      "concurrent" : {
@@ -197,11 +197,10 @@
 	   "MEMBERSHIP_REQUEST" : "Membership requested",
 	   "CONTACT_ADDRESS_CHANGED" : "Address changed",
 	   "CONTRACT_SEND" : "Contract sent",
-	   "ADMIN_ACCOUNT_CHANGE" : "Account changed by admin",
+	   "ADMIN_ACCOUNT_CHANGE" : "Account changed by an administrator",
 	   "ACCOUNT_DELETED" : "Account deleted",
 	   "INTERNAL_COMMENT" : "Internal Comment",
 	   "TERMS_OF_USE_AGREED" : "Agreed to terms of use",
-
 	   "user-registration" : "User sign up",
 	   "110122" : "Login",
 	   "user-password-change" : "Password changed",
@@ -370,7 +369,8 @@
 	   "EN" : "English",
 	   "DE" : "German",
 	   "IT" : "Italian",
-	   "FR" : "Frensh"
+	   "FR" : "French",
+	   "NL" : "Dutch"
 	 },
 	 "month" : {
 	   "01" : "Jan",
@@ -387,10 +387,10 @@
 	   "12" : "Dec"
 	 },
 	 "codesystems" : {
-	   "loinc" : "Loinc Code",
-	   "midata" : "Midata Code",
-	   "fhir" : "FHIR Resource Name",
-	   "snowmed" : "Snowmed" 
+	   "loinc" : "LOINC code",
+	   "midata" : "MIDATA code",
+	   "fhir" : "FHIR Resource",
+	   "snowmed" : "SNOMED CT code" 
 	 },
 	 "tags" : {
 	   "Analysis" : "Analysis",
@@ -420,6 +420,7 @@
     "submit_btn" : "Submit",
     "delete_btn" : "Delete",
     "or" : "or",
+    "save_ok" : "Successfully Saved",
     "user" : {
       "lastname" : "Surname",
 	  "firstname" : "Firstname",
@@ -470,7 +471,7 @@
         "name" : "MIDATA Switzerland (ch.midata.coop)",
         "intro": "This is the MIDATA platform for Switzerland.",
         "purpose" : "This is the productive MIDATA platform for storing health data in Switzerland.",
-        "access" : "New user accounts have feature restrictions. Healthprovider, research and development accounts can only be used after validation by the MIDATA office. Fake or test accounts are not allowed and will be blocked.",
+        "access" : "New user accounts have feature restrictions. Healthprovider, research and development accounts can only be used after validation by MIDATA. Fake or test accounts are not allowed and will be blocked.",
         "uptime" : "Downtimes will be announced.",
         "data" : "This instance is for storing real data about real people. Data is backed up on a daily basis."
      }
@@ -504,12 +505,12 @@
     "agb" : "MIDATA Terms",    
     "study" : "Research",
     "agb2" : "I accept the",
-    "agb3" : "Terms of Use",
+    "agb3" : "Terms and Conditions",
     "privacypolicy2" : "I accept the",
     "privacypolicy3" : "Privacy Policy",
     "app_agb" : "App Terms",
     "app_agb2" : "I accept the",
-    "app_agb3" : "App Terms And Conditions",
+    "app_agb3" : "App Terms and Conditions",
     "study_agb" : "Study Terms",
     "sign_up_btn" : "Sign Up",
     "unlock_code" : "Unlock Code"
@@ -565,7 +566,7 @@
     "contract_instructions" : "A contract has been sent to your postal address. Please return it signed to MIDATA.",
     "pilot_phase" : "During the pilot phase (or if you are on a test server) NO contract will be sent to you. A MIDATA administrator will verify and unlock your account. You will be notified when your account has been unlocked.",
     "code_intructions" : "A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.",
-    "code_done" : "You have provided the confirmation code. You may login after the signed contract has arrived at MIDATA office.",
+    "code_done" : "You have provided the confirmation code. You may login after the signed contract has arrived at MIDATA.",
     "enter_now_btn" : "Enter now",
     "email_success" : "Email address has been confirmed.",
     "address_entered" : "Your postal address is required to use this service, please provide it.",
@@ -667,6 +668,8 @@
     "user" : "User",
     "name" : "Name:",
     "email" : "Email:",
+    "birthday" : "Date of birth:",
+    "midataID" : "Account ID:",
     "action" : "More...",
     "change_password_btn" : "Change Password",
  	"change_passphrase_btn" : "Change Passphrase",
@@ -674,6 +677,7 @@
 	"change_email_btn" : "Change Email Address",
 	"repair_account_btn" : "Repair Account",
 	"reset_spaces_btn" : "Reset Portal",
+	"export_btn" : "Export your data",
 	"delete_records_btn" : "Delete Records",
 	"account_repaired" : "Your account has been repaired.",
 	"spaces_resetted" : "Your configuration has been resetted.",
@@ -841,6 +845,7 @@
 	"delete" : "delete",
 	"delete_all_btn" : "delete all",
 	"empty" : "No available records found.",
+	"too_many_consents" : "The record tree for this selection cannot be evaluated. There are too many consents involved.",
 	"close_btn" : "Close"
   },
 
@@ -1051,6 +1056,8 @@
     "none" : "None",
     "change_btn" : "Change",
     "success" : "Email address successfully changed!"
-  }
+  },
+  
+  "-1" : "unknown"
     
 }

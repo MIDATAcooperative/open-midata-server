@@ -43,7 +43,7 @@
      "mustbemember_detail" : "In order to use this feature you must be member of the MIDATA cooperative. Click on your username on the top right and check the 'Account Status' section for more information.",
      "notauthorized" : {
        "action" : "You are not authorized to do this action",
-       "fields" : "You are not authorized to query provided fields",
+       "fields" : "You are not authorized to query the provided fields",
        "account" : "You are not authorized to access this account",
        "study" : "You are not authorized to access this study",
        "not_plugin_owner" : "This is not your plugin"
@@ -73,8 +73,8 @@
        "passcode": "Bad passcode",
        "plugin" : "Plugin is intended for a different role",
        "unlock_code" : "Incorrect unlock code",
-       "access_query" : "Access query must restrict by 'content' or 'group'!",
-       "sharing" : "The Sharing Query accesses data types that are excluded by study configuration."
+       "access_query" : "The Data Access Filter must restrict by 'content' or 'group'!",
+       "sharing" : "The Data Access Filter contains data types that are excluded by the study configuration."
      },
 
      "missing" : {
@@ -349,6 +349,7 @@
 	   "SPONSOR" : "Sponsor",
 	   "INVESTIGATOR" : "Investigator",
 	   "AUDITOR" : "Auditor",
+	   "STUDYNURSE" : "Study Nurse",
 	   "MONITOR" : "Monitor",
 	   "OTHER" : "Other"
 	 },
@@ -845,7 +846,7 @@
 	"delete" : "delete",
 	"delete_all_btn" : "delete all",
 	"empty" : "No available records found.",
-	"too_many_consents" : "The record tree for this selection cannot be evaluated. There are too many consents involved.",
+	"too_many_consents" : "The record tree for this selection cannot be created. There are too many consents involved.",
 	"close_btn" : "Close"
   },
 

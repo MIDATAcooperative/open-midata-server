@@ -10,6 +10,7 @@ import models.MidataId;
 import utils.AccessLog;
 import utils.collections.CMaps;
 import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
 
 public class Feature_Pagination extends Feature {
 
@@ -24,14 +25,15 @@ public class Feature_Pagination extends Feature {
 		
 		if (q.restrictedBy("from")) {
 			MidataId from = q.getFrom();
+			MidataId fromOwner = q.getFromOwner();
 			
 			Map<String, Object> props = new HashMap<String, Object>(q.getProperties());			
 			props.put("limit", null);
 			
-			List<DBRecord> findFrom = next.query(new Query(q, CMaps.map("_id", from)));
+			List<DBRecord> findFrom = next.query(new Query(q, CMaps.map("_id", from).mapNotEmpty("owner", fromOwner)));
 			DBRecord fromRecord = null;
 			if (findFrom.size() == 1) {
-				fromRecord = findFrom.get(0);
+				fromRecord = findFrom.get(0);				
 			} else return ProcessingTools.empty();
 			
 			DBIterator<DBRecord> result = next.iterator(new Query(q, props).setFromRecord(fromRecord));

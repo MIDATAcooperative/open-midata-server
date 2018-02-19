@@ -19,6 +19,7 @@
         "edit_profile" : "Profil ändern",
         "app_count" : "Autorisierte Apps",
         "study_count" : "Studienteilnahmen",
+
         // todo Mich -> Dashboard?
         "me" : "Mich",
         "view" : "Ansehen",
@@ -51,6 +52,7 @@
             "not_plugin_owner" : "Dies ist nicht Ihr Plugin"
         },
 
+
         "invalid" : {
             "email" : "Bitte eine gültige E-Mail-Adresse eingeben.",
             "credentials" : "Ungültige E-Mail-Adresse oder Kennwort!",
@@ -74,11 +76,12 @@
             "passcode" : "Falscher Zugangscode",
             "plugin" : "Dieses Plugin ist nur für eine andere Rolle vorgesehen",
             "unlock_code" : "Falscher Freischaltcode",
-            "access_query" : "Das Query muss den Zugriff nach 'content' oder 'group' einschränken!",
-            "sharing" : "Das Sharing Query greift auf Datentypen zu, die in der Studienkonfiguration ausgeschlossen sind."
+            "access_query" : "Der Datenzugriffsfilter (Data Access Filter) muss nach 'content' oder 'group' einschränken!",
+            "sharing" : "Der Datenzugriffsfilter (Data Access Filter) beinhaltet Datentypen, die von der Studienkonfiguration ausgeschlossen sind."
         },
 
         "missing" : {
+
             "credentials" : "Bitte Ihre E-Mail-Adresse und Kennwort eingeben.",
             "email" : "Geben Sie bitte Ihre E-Mail-Adresse ein.",
             "input_field" : "Füllen Sie bitte dieses Eingabefeld aus.",
@@ -369,7 +372,8 @@
             "EN" : "English",
             "DE" : "Deutsch",
             "IT" : "Italienisch",
-            "FR" : "Französisch"
+            "FR" : "Französisch",
+            "NL" : "Niederländisch"
         },
         "month" : {
             "01" : "Jan",
@@ -419,6 +423,7 @@
         "submit_btn" : "Abschicken",
         "delete_btn" : "Löschen",
         "or" : "oder",
+        "save_ok" : "Erfolgreich gespeichert",
         "user" : {
             "lastname" : "Name",
             "firstname" : "Vorname",
@@ -666,6 +671,8 @@
         "user" : "Benutzer",
         "name" : "Name:",
         "email" : "E-Mail:",
+        "birthday" : "Geburtsdatum:",
+        "midataID" : "Account ID:",
         "action" : "Mehr...",
         "change_password_btn" : "Kennwort ändern",
         "change_passphrase_btn" : "Passphrase ändern",
@@ -673,6 +680,7 @@
         "change_email_btn" : "E-Mail Adresse ändern",
         "repair_account_btn" : "Account reparieren",
         "reset_spaces_btn" : "Reset Portal zurücksetzen",
+        "export_btn" : "Export Ihrer Daten",
         "delete_records_btn" : "Datensätze löschen",
         "account_repaired" : "Ihr Account wurde repariert.",
         "spaces_resetted" : "Ihre Konfiguration wurde zurückgesetzt.",
@@ -840,12 +848,13 @@
         "delete" : "löschen",
         "delete_all_btn" : "alle löschen",
         "empty" : "Keine verfügbare Datensätze gefunden.",
+        "too_many_consents" : "Die Baumstruktur der Datensätze kann für diese Selektion nicht erstellt werden. Es geht um zu viele Zustimmungen.",
         "close_btn" : "Schliessen"
     },
 
     "oauth2" : {
         "reshares_data" : "Die Applikation darf Daten, auf die sie Zugriff hat, an Dritte weitergeben.",
-        "allows_user_search" : "Ihr Name und Ihre E-Mail-Adresse können von anderen Personen, die diese Applikation verwenden, durchsucht werden.",        
+        "allows_user_search" : "Ihr Name und Ihre E-Mail-Adresse können von anderen Personen, die diese Applikation verwenden, durchsucht werden.",
         "requesting_app" : "Diese Applikation benötigt Zugriff auf:",
         "sign_in" : "MIDATA Anmeldung für:",
         "sign_in_btn" : "Anmelden",
@@ -1050,5 +1059,7 @@
         "none" : "Keine",
         "change_btn" : "Ändern",
         "success" : "E-Mail Adresse erfolgreich geändert!"
-    }
+    },
+
+    "-1" : "unbekannt"
 }

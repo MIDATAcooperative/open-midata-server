@@ -49,7 +49,7 @@
     },
 
     "studyactions" : {
-        "description" : "Nach der Validierung der Studie können Sie Plugins und externe Datenverarbeitungsdienste mit der Studie verknüpfen. Diese Plugins oder Dienste müssen sich mit den Zugangsdaten eines Mitglieds des Forschungsteams an MIDATA anmelden, das über ausreichende Rechte verfügt.",  
+        "description" : "Nach der Validierung der Studie können Sie Plugins und externe Datenverarbeitungsdienste mit der Studie verknüpfen. Diese Plugins oder Dienste müssen sich mit den Zugangsdaten eines Mitglieds des Forschungsteams an MIDATA anmelden, das über ausreichende Rechte verfügt.",
         "select_group_btn" : "Gruppe auswählen",
         "allgroups" : "<Alle Gruppen>",
         "add_task_btn" : "Aufgabe für Teilnehmer hinzufügen",
@@ -121,6 +121,7 @@
         "country" : "Land:",
         "status" : "Status:",
         "group" : "Gruppe:",
+        "shared_records" : "Geteilte Datensätze",
         "history" : "Historie der Teilnahme"
     },
 
@@ -129,16 +130,21 @@
         "partName" : "Pseudonymisiert",
         "group" : "Gruppe",
         "status" : "Status",
+        "total" : "{{count}} Zustimmungen, die Ihren Kriterien entsprechen.",
+        "only_first_shown" : "Es werden nur die ersten 1000 übereinstimmenden Zustimmungen angezeigt.",
         "recruiter" : "Anwerber",
         "accept_btn" : "Annehmen",
         "reject_btn" : "Verwerfen",
         "add_participant_btn" : "Teilnehmer hinzufügen",
-        "empty" : "Diese Studie hat noch keine Teilnehmer, die den Suchkriterien entsprechen.", 
+        "empty" : "Diese Studie hat noch keine Teilnehmer, die den Suchkriterien entsprechen.",
         "search_type" : "Suchen",
         "all" : "Alle Teilnehmer",
         "request" : "Kandidaten, welche auf eine Entscheidung warten",
         "rejected" : "Abgelehnte Kandidaten",
-        "retreated" : "Teilnehmer, welche sich zurückgezogen haben"
+        "retreated" : "Teilnehmer, welche sich zurückgezogen haben",
+        "acceptall" : "Alle Anfragen annehmen und die neuen Teilnehmer zuordnen an der Teilnehmergruppe",
+        "autojoin" : "Automatische Annahme",
+        "autojoin2" : "Alle Teilnahmewünsche annehmen und neue Teilnehmer der ausgewählten Gruppe zuweisen, sobald sich die Forschungsapplikation, die mit dieser Studie verknüpft ist, verbindet."
     },
 
     "studyrecords" : {
@@ -156,9 +162,9 @@
         "startDate" : "Offizielles Startdatum",
         "endDate" : "Offizielles Enddatum",
         "dataCreatedBefore" : "Datenbestand eingefroren ab dem",
-        "sharing_query" : "Sharing Query (JSON)",
-        "sharing_query_options" : "Sharing Query (Hinzufügen)",
-        "sharing_query_selection" : "Sharing Query (Auswahl)",
+        "sharing_query" : "Data Access Filter (JSON)",
+        "sharing_query_options" : "Data Access Filter (Hinzufügen)",
+        "sharing_query_selection" : "Data Access Filter (Auswahl)",
         "terms_of_use" : "Allgemeine Geschäftsbedingungen (AGB)",
         "terms_of_use_hint" : "Wenn die Allgemeine Geschäftsbedingungen (AGB) der Studie vom Benutzer gelesen und akzeptiert werden müssen, senden Sie den Text bitte an MIDATA. Wir werden den Text im richtigen Format hochladen und Ihnen die ID mitteilen, die Sie hier eingeben müssen.",
         "show_terms" : "Allgemeine Geschäftsbedingungen (AGB) anzeigen",
@@ -206,8 +212,8 @@
         "teamsetup_help" : "Wenn weitere Personen an der Studiendurchführung beteiligt sind, geben Sie alle involvierten Personen und deren Rolle an. Solange Sie keine weitere Personen hinzugefügt haben, können Sie Ihre Rolle ändern, indem Sie sich nochmal mit einer anderen Rolle hinzufügen.",
         "groups" : "Teilnehmergruppen definiert",
         "groups_help" : "Ihre Studie kann eine oder mehrere Teilnehmergruppen umfassen. Bitte definieren Sie die Liste der Teilnehmergruppen.",
-        "sharingQuery" : "Data Sharing Query definiert",
-	    "sharingQuery_help" : "Für Ihre Studie muss klar festgelegt sein, auf welche Daten der Teilnehmer sie zugreifen wird. Das Data-Sharing-Query kann nach der Validierung der Studie nicht mehr geändert werden.",
+        "sharingQuery" : "Data Access Filter definiert",
+        "sharingQuery_help" : "Für Ihre Studie muss klar festgelegt sein, auf welche Daten der Teilnehmer sie zugreifen wird. Der Datenzugriffsfilter (Data Access Filter) kann nach der Validierung der Studie nicht mehr geändert werden.",
         "dates" : "Start- und Enddatum gesetzt",
         "dates_help" : "Start- und Enddatum werden den Teilnehmern angezeigt. Ab dem Zeitpunkt wo der Datenbestand eingefroren wird, fliessen keine Daten mehr in der Studie.",
         "terms" : "Allgemeine Geschäftsbedingungen (AGB) geliefert",

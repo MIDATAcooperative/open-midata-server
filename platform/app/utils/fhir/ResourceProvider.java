@@ -44,6 +44,7 @@ import ca.uhn.fhir.util.UrlUtil;
 import models.MidataId;
 import models.Model;
 import models.Record;
+import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.access.VersionedDBRecord;
 import utils.auth.ExecutionInfo;
@@ -162,14 +163,18 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 		return result;		
 	}
 	
+	protected String getFromId(M resource) {
+		return resource._id.toString();
+	}
+	
 	public List<IBaseResource> search(SearchParameterMap params) {
 		try {		
 			List<IBaseResource> results = new ArrayList<IBaseResource>();
 			List<M> raw = searchRaw(params);
 		    List<T> resources = parse(raw, getResourceType());
-		   
-		   if (params.getCount() != null && raw.size() == params.getCount() + 1) {
-			   params.setFrom(raw.get(raw.size() - 1)._id.toString());
+		   		  
+		   if (params.getCount() != null && raw.size() == params.getCount() + 1) {			   
+			   params.setFrom(getFromId(raw.get(raw.size() - 1)));
 			   if (resources.size() > params.getCount()) {
 			     resources = resources.subList(0, params.getCount());
 			   }

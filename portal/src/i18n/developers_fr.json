@@ -45,6 +45,7 @@
         "available_tags" : "Variables disponibles",
         "reasons" : {
             "REGISTRATION" : "Enregistrement d'un nouvel utilisateur",
+            "REGISTRATION_BY_OTHER_PERSON" : "Enregistrement d'un nouvel utilisateur par une autre personne",
             "FIRSTUSE_ANYUSER" : "Première utilisation de l'app",
             "FIRSTUSE_EXISTINGUSER" : "Première utilisation de l'app (si pas d'e-mail d'enregistrement envoyé)",
             "CONSENT_REQUEST_OWNER_INVITED" : "Consentement proposé (cédant, invitation)",
@@ -80,27 +81,28 @@
             "resharesData" : "L'app est autorisée à transmettre les données auxquelles elle a accès à des tierces parties.",
             "allowsUserSearch" : "Les utilisateurs de l'app sont autorisés à rechercher d'autres utilisateurs de la même app.",
             "defaultSpaceName" : "Titre de la tuile du plugin sur le tableau de bord.",
-            "tags" : "Catégories sous lesquelles le plugin sera listé sur la place du marché.",
+            "tags" : "Catégories sous lesquelles le plugin sera listé dans le MISTORE.",
             "url" : "URL de la page principale du plugin. Si vous utilisez le modèle MIDATA, c'est 'dist/index.html#?authToken=:authToken''",
             "previewUrl" : "URL de la tuile du tableau de bord du plugin. Laisser vide si une telle tuile n'est pas fournie.",
             "defaultSpaceContext" : "Choisissez 'Moi' pour le tableau de bord standard. Choisissez 'Configuration' pour un plugin d'importation.",
-            "defaultQuery_mobile" : "Requête limitant l'accès de l'app à la base de données. L'accès doit être limité par 'code', 'content' ou 'group' et peut être restreint par 'format' ou 'owner'. Example valide (toutes les Observations) : '{ \"group\" : \"all\", \"group-system\" : \"v1\", \"format\" : [\"fhir/Observation\" ] }'",
-            "defaultQuery" : "Requête limitant l'accès du plugin à la base de données. L'accès doit être limité au moins par 'code', 'content', 'group', 'format' ou 'owner'. Example valide (toutes les Observations) : '{ \"format\" : [\"fhir/Observation\" ] }'",
+            "defaultQuery_mobile" : "Filtre limitant l'accès de l'app aux données. L'accès doit être limité par 'code', 'content' ou 'group' et peut être restreint par 'format' ou 'owner'. Example valide (toutes les Observations) : '{ \"group\" : \"all\", \"group-system\" : \"v1\", \"format\" : [\"fhir/Observation\" ] }'",
+            "defaultQuery" : "Filtre limitant l'accès du plugin aux données. L'accès doit être limité au moins par 'code', 'content', 'group', 'format' ou 'owner'. Example valide (toutes les Observations) : '{ \"format\" : [\"fhir/Observation\" ] }'",
             "defaultQuery_extra" : "Veuillez consulter les valeurs valides pour 'code', 'content' et 'format' sous 'Format/Content' dans le guide du développeur. Pour une première version, vous pouvez débuter avec un accès total en indiquant : { \"group\" : \"all\", \"group-system\" : \"v1\" }. Veuillez préciser la limitation avant que le plugin ou l'app soit mis en production.",
             "secret" : "Votre app aura besoin de ce 'secret' pour se connecter. Choisissez le librement.",
             "mustParticipateInStudy" : "Les utilisateurs doivent participer à l'étude afin de pouvoir utiliser l'app.",
             "unlock_code" : "Si renseigné, ce code doit être saisi par l'utilisateur lors de l'enregistrement ou lors de la première connexion à MIDATA par cette app. Le code n'est pas sensible à la casse."
         },
-        "access_query_options" : "Access Query (Options)",
-        "access_query_selection" : "Access Query (Sélection)",
-        "access_query_add" : "Access Query (Ajouter)",
-        "access_query_json" : "Access Query (JSON)",
+        "access_query_options" : "Data Access Filter (Options)",
+        "access_query_selection" : "Data Access Filter (Sélection)",
+        "access_query_add" : "Data Access Filter (Ajouter)",
+        "access_query_json" : "Data Access Filter (JSON)",
         "query" : {
-            "self" : "L'app/le plugin ne peut accéder que les données de l'utilisateur connecté.",
-            "ownapp" : "L'app/le plugin ne peut accéder que les données créées par cette app/ce plugin.",
-            "learn" : "Ajouter automatiquement tous les types de données écrites par cette app à l'Access Query. (DOIT être désactivé avant la mise en production de l'app)",
-            "all" : "Pendant le développement, autoriser l'accès à toutes les données de l'utilisateur. (DOIT être remplacé par un Access Query adéquat avant la mise en production de l'app)"
-        }
+            "self" : "L'app/le plugin ne peut accéder qu'aux données de l'utilisateur connecté.",
+            "ownapp" : "L'app/le plugin ne peut accéder qu'aux données créées par cette app/ce plugin.",
+            "learn" : "Ajouter automatiquement tous les types de données écrites par cette app au Data Access Filter. (DOIT être désactivé avant la mise en production de l'app)",
+            "all" : "Pendant le développement, autoriser l'accès à toutes les données de l'utilisateur. (DOIT être remplacé par un Data Access Filter adéquat avant la mise en production de l'app)"
+        },
+        "export_btn" : "Exporter"
     },
 
     "appstats" : {
