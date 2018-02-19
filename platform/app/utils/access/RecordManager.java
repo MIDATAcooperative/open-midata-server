@@ -1101,7 +1101,7 @@ public class RecordManager {
 		try {
 		    Collection<RecordsInfo> result = QueryEngine.info(getCache(who), aps, context, nproperties, aggrType);
 		    
-		    if (properties.containsKey("include-records")) {
+		    if (properties.containsKey("include-records")) {		    	
 			    for (RecordsInfo inf : result) {
 			    	if (inf.newestRecord != null) {
 			    		inf.newestRecordContent = fetch(who, aps, inf.newestRecord);

@@ -376,8 +376,10 @@ public class Feature_AccountQuery extends Feature {
 			if (q.restrictedBy("updated-after")) limit = q.getMinUpdatedTimestamp();				
 			if (q.restrictedBy("shared-after")) limit = q.getMinSharedTimestamp();
 	    		    		
-			if (q.restrictedBy("study-related")) {
+			if (q.restrictedBy("study-related")) {				
 				consents = new ArrayList<Consent>(StudyRelated.getActiveByAuthorizedGroupAndStudy(q.getCache().getAccountOwner(), studyGroups, studies, sets.contains("all") ? null : owners, Consent.SMALL, limit));
+			} else if (q.restrictedBy("participant-related")) {
+				consents =  new ArrayList<Consent>(StudyParticipation.getActiveParticipantsByStudyAndGroupsAndParticipant(studies, studyGroups, q.getCache().getAccountOwner(), sets.contains("all") ? null : owners, Consent.SMALL, true, limit));		    	
 			} else {
 		    	consents =  new ArrayList<Consent>(StudyParticipation.getActiveParticipantsByStudyAndGroupsAndParticipant(studies, studyGroups, q.getCache().getAccountOwner(), sets.contains("all") ? null : owners, Consent.SMALL, true, limit));
 		    	AccessLog.log("found consents (participants): "+consents.size());
