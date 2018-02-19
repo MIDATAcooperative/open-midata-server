@@ -108,6 +108,8 @@ class Midata {
 						
 		var work = function() { return new Promise(function(resolve, reject) {
 				
+			if (typeof query == "function") query = query();
+			
 			var matches = 0;
 			var pages = 0;
 			
@@ -119,7 +121,7 @@ class Midata {
 				.on("header", function(header) {					
 					nextUrl = findNext(header);
 					if (nextUrl != null) nextUrl = nextUrl.replace("localhost", "localhost:9000");	
-					console.log(nextUrl);
+					//console.log(nextUrl);
 				})
 			    .pipe(es.mapSync(function(data) {
 			       matches++;
@@ -236,7 +238,7 @@ class Midata {
 			},
 			
 			update : function(resource) {
-				
+				stats.updated++;
 				cp = cp.then(function() {
 					return put(session, "/fhir/"+resource.resourceType+"/"+resource.id, resource);
 				});
