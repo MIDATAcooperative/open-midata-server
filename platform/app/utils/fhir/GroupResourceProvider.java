@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.hl7.fhir.dstu3.model.Person;
 import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointSystem;
@@ -142,7 +143,7 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 	}
 			
 	   @Search()
-	    public List<IBaseResource> getGroup(
+	    public Bundle getGroup(
 	    		@Description(shortDefinition="The resource identity")
 	    		@OptionalParam(name="_id")
 	    		StringAndListParam theId, 
@@ -235,7 +236,7 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 	    	paramMap.setElements(theElements);
 	    	paramMap.setSummary(theSummary);
 	    	    		    	
-	    	return search(paramMap);    	    	    	
+	    	return searchBundle(paramMap, theDetails);    	    	    	
 	    }
 	
 	@Override

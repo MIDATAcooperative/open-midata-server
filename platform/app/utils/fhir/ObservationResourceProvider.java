@@ -58,6 +58,7 @@ import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.Record;
 import models.RecordsInfo;
 import models.enums.AggregationType;
+import utils.AccessLog;
 import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
 import utils.collections.Sets;

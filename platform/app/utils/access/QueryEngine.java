@@ -367,9 +367,11 @@ class QueryEngine {
 	    	
     	}
     	if (!idMap.isEmpty()) {
-	    	Collection<DBRecord> fromDB = DBRecord.getAllList(CMaps.map("_id", idMap.keySet()).map("encryptedData", NOTNULL), DATA_ONLY);
+	    	Collection<DBRecord> fromDB = DBRecord.getAllList(CMaps.map("_id", idMap.keySet()).map("encryptedData", NOTNULL), META_AND_DATA);
 	    	for (DBRecord r2 : fromDB) {
-	    	   idMap.get(r2._id).encryptedData = r2.encryptedData;	    	   
+	    	   DBRecord r = idMap.get(r2._id);
+	    	   r.encryptedData = r2.encryptedData;
+	    	   r.encrypted = r2.encrypted;
 	    	}
     	}
     	for (DBRecord rec : records) {    		
