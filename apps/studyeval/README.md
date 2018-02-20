@@ -9,12 +9,13 @@ set up and an application registered that is assigned as research app to the stu
 ## Provided examples
 
 These are the provided examples:
-example-total-steps : 
+
+**example-total-steps.js**: 
 Calculates the sum of all steps of all study participants for one given day (Observation.effectiveDateTime)
 Creates one FHIR Group that represent "all participants" of the study.
 Creates one Observation containing the total step count for each day this script is run. The observations subject will be the group. 
 
-example-weight-per-yearofbirth.js
+**example-weight-per-yearofbirth.js**
 Takes the newest body weight Observation of each participant and calculates the average weight of participants for each year of birth.
 Creates one FHIR Group for each year of birth
 Creates one Observation per Group containing the average weight.
