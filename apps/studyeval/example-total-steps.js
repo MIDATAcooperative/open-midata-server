@@ -98,8 +98,11 @@ midata.app("research", "12345", "debug")
 
 /*
  * Have results already been stored by a previous run of the script?
+ * Important: "groupForAggregation" is not set at the time the forEachMatch method is called (initialized). 
+ * Therefore the criteria parameter is wrapped into " () => ( ... ) " which will delay the evaluation of the criteria expression until  
+ * the query is actually executed. At that time groupForAggregation will have been set.
  */
-.forEachMatch("Observation", function() { return { code : "http://loinc.org|41950-7", date : dayToCalculate, subject : groupForAggregation }; }, function(observation) {
+.forEachMatch("Observation", () => ( { code : "http://loinc.org|41950-7", date : dayToCalculate, subject : groupForAggregation } ), function(observation) {
 	existingAggregatedObservation = observation;
 })
 
