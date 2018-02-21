@@ -1,0 +1,104 @@
+
+	<div  ng-controller="ManageAppCtrl">
+		
+		<div class="panel panel-primary">
+		<div class="panel-heading" translate="manageapp.overview">		  	
+		</div>
+		<div class="body">
+	      <div class="pull-left" ng-if="hasIcon()" style="margin-right:10px">
+	        <img style="max-width:64px" ng-src="{{ getIconUrl() }}">
+	      </div>	
+		  <p class="lead">{{ app.name }}</p>
+		  <p>{{ app.description }}</p>
+
+          <table>
+            <tr>
+		      <td style="padding-right:130px" translate="manageapp.filename"></td>
+		      <td><b>{{ app.filename }}</b></td>
+		    </tr>
+		    <tr>
+		      <td translate="manageapp.type"></td>
+		      <td><b translate="{{ 'enum.plugintype.' + app.type }}"></b></td>
+		    </tr><tr>
+		      <td translate="manageapp.targetUserRole"></td>
+              <td><b translate="{{ 'enum.userrole.'+app.targetUserRole }}"></b></td>
+            </tr><tr>
+              <td translate="manageapp.status.title"></td>
+              <td><b translate="{{ 'manageapp.status.'+app.status }}"></b></td>
+            </tr>
+            <tr>
+              <td translate="manageapp.linkedStudy"></td>
+              <td>
+                <b ng-hide="app.linkedStudyName" translate="manageapp.nostudy"></b>
+                <b ng-show="app.linkedStudyName">
+              {{ app.linkedStudyName }} <span ng-show="app.mustParticipateInStudy" translate="manageapp.mustParticipateInStudy"></span><span ng-hide="app.mustParticipateInStudy" translate="manageapp.optionalParticipation"></span></td>
+                </b>
+            </tr>
+          </table>
+          <div class="extraspace"></div>
+		  
+		  <p><b translate="manageapp.choose"></b></p>
+		  <table class="table clickable">
+			<tr>
+			  <td ng-click="go('^.editapp')">				    
+				<div class="pull-left"><img width="80" class="img-responsive" src="/images/editapp.jpg"></div>														   
+				<div><b translate="manageapp.edit_btn"></b></div>
+				<div translate="manageapp.edit_help"></div>																
+			  </td>
+			</tr>
+			<tr ng-hide="app.type == 'mobile' || allowExport">
+			  <td ng-click="doInstall()">				    
+				<div class="pull-left"><img width="80" class="img-responsive" src="/images/testfromlocal.jpg"></div>														   
+				<div><b translate="manageapp.testfromlocal_btn"></b></div>
+				<div translate="manageapp.testfromlocal_help"></div>																
+			  </td>
+			</tr>
+			<tr ng-show="(app.type == 'oauth1' || app.type == 'oauth2') && !allowExport">
+			  <td ng-click="go('^.autoimport')">				    
+				<div class="pull-left"><img width="80" class="img-responsive" src="/images/serverimport.jpg"></div>														   
+				<div><b translate="manageapp.serverimport_btn"></b></div>
+				<div translate="manageapp.serverimport_help"></div>																
+			  </td>
+			</tr>
+			<tr>
+			  <td ng-click="go('^.appicon')">				    
+				<div class="pull-left"><img width="80" class="img-responsive" src="/images/editicons.jpg"></div>														   
+				<div><b translate="manageapp.icon_btn"></b></div>
+				<div translate="manageapp.icon_help"></div>																
+			  </td>
+			</tr>
+			<tr>
+			  <td ng-click="go('^.appmessages')">				    
+				<div class="pull-left"><img width="80" class="img-responsive" src="/images/mail.jpg"></div>														   
+				<div><b translate="manageapp.messages_btn"></b></div>
+				<div translate="manageapp.messages_help"></div>																
+			  </td>
+			</tr>
+			<tr>
+			  <td ng-click="go('^.appstats')">				    
+				<div class="pull-left"><img width="80" class="img-responsive" src="/images/stats.jpg"></div>														   
+				<div><b translate="manageapp.stats_btn"></b></div>
+				<div translate="manageapp.stats_help"></div>																
+			  </td>
+			</tr>
+			<tr>
+			  <td ng-click="go('^.appdebug')">				    
+				<div class="pull-left"><img width="80" class="img-responsive" src="/images/apitest.jpg"></div>														   
+				<div><b translate="manageapp.debug_btn"></b></div>
+				<div translate="manageapp.debug_help"></div>																
+			  </td>
+			</tr>
+			<tr ng-show="allowExport">
+			  <td ng-click="exportPlugin()">				    
+				<div class="pull-left"><img width="80" class="img-responsive" src="/images/export.jpg"></div>														   
+				<div><b translate="manageapp.export_btn"></b></div>
+				<div translate="manageapp.export_help"></div>																
+			  </td>
+			</tr>
+			
+		 </table>
+											    	 
+		  
+		
+	</div>
+	</div></div>

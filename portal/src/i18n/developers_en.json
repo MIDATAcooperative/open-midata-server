@@ -62,9 +62,25 @@
   },
   
   "manageapp" : {
-    "messages_btn" : "Edit Messages",
-    "stats_btn" : "Debug Info",
-    "debug_btn" : "API Tester",
+    "overview" : "Application Overview",
+    "choose" : "Functions to manage your application",
+    "filename" : "Internal Name",
+    "type" : "Application Type",
+    "targetUserRole" : "Target Audience",
+    "edit_btn" : "Change Settings",
+    "edit_help" : "Change setup for your application.",
+    "testfromlocal_btn" : "Test your plugin from localhost",
+    "testfromlocal_help" : "During development you can test the plugin code stored on your local computer on this server.",
+    "serverimport_btn" : "Test automatic import script.",
+    "serverimport_help" : "If your plugin offers automatic import, you can test the script of your plugin that is normally run on the server on your local computer.",
+    "icon_btn" : "Application Icons and Images",
+    "icon_help" : "Upload and manage icons and images to be used with your application. Provide images for login screen, appstore, consent accept screen, etc.",    
+    "messages_btn" : "Application eMail Messages",
+    "messages_help" : "Provide your own email texts sent to new user accounts, on first use of your application, for accepting consents and more.",
+    "stats_btn" : "Error and Performance Statistics",
+    "stats_help" : "View statistics and hints for improvements about the various types of API calls your application sends to the server.",    
+    "debug_btn" : "API Tester Sandbox",
+    "debug_help" : "Login as your app and test queries against the MIDATA backend",
     "linkedStudy" : "Study linked to App (Code)",
     "mustParticipateInStudy" : "Study Participation Required",
     "admin_only" : "Only a MIDATA administrator may change this section. Please request changes if required.",
@@ -91,6 +107,16 @@
        "mustParticipateInStudy" : "User must participate in study in order to use app.",
        "unlock_code" : "If filled out, this code must be entered by the user in order to sign up or log in the first time to MIDATA using the app. The code is not case sensitive."
     },
+    "status" : {
+      "title" : "Application Status",
+      "ACTIVE" : "Ready for productive use",
+      "BETA" : "Beta version",
+      "DEVELOPMENT" : "Under development - to be used by developer only",
+      "DEPRECATED" : "Deprecated. Should no longer be used.",
+      "DELETED" : "Deleted"
+    },
+    "nostudy" : "Not linked to a study",
+    "optionalParticipation" : "Participation Optional",
     "access_query_options" : "Data Access Filter (Options)",
     "access_query_selection" : "Data Access Filter (Selection)",
     "access_query_add" : "Data Access Filter (Add)",
@@ -101,7 +127,8 @@
       "learn" : "Add all data types written by the app automatically to the Data Access Filter. (MUST be turned off before app goes productive)",
       "all" : "During development allow to access all data of the user. (MUST be replaced with a proper Data Access Filter before plugin goes productive)"
     },
-    "export_btn" : "Export"
+    "export_btn" : "Export Application Definition",
+    "export_help" : "Export the definition of this application so that it can be imported and used on another server."
 
   },
   

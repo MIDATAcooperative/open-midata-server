@@ -3,6 +3,13 @@ angular.module('portal')
 	   $stateProvider
 	    .state('developer.manageapp', {
 	      url: '/app/:appId',
+	      templateUrl: 'views/developers/manageapp/overview.html',
+	      allowDelete : false,
+	      allowStudyConfig : false,
+	      allowExport : false
+	    })
+	    .state('developer.editapp', {
+	      url: '/app/:appId/edit',
 	      templateUrl: 'views/developers/manageapp/manageapp.html',
 	      allowDelete : false,
 	      allowStudyConfig : false,
@@ -17,6 +24,13 @@ angular.module('portal')
 	    })
 	   .state('admin.manageapp', {
 		      url: '/app/:appId',
+		      templateUrl: 'views/developers/manageapp/overview.html',
+		      allowDelete : true,
+		      allowStudyConfig : true,
+		      allowExport : true
+	   })
+	   .state('admin.editapp', {
+		      url: '/app/:appId/edit',
 		      templateUrl: 'views/developers/manageapp/manageapp.html',
 		      allowDelete : true,
 		      allowStudyConfig : true,

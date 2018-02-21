@@ -29,7 +29,7 @@ angular.module('portal')
 		}
 		
 		if (! $scope.myform.$valid) {
-			var elem = $document[0].querySelector('input.ng-invalid');
+			var elem = $window.document.querySelector('input.ng-invalid');
 			if (elem && elem.focus) elem.focus();
 			return;
 		}
