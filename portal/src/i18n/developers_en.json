@@ -126,5 +126,25 @@
   
   "appdebug" : {
     "title" : "API Tester"
+  },
+  
+  "appicon" : {
+     "title" : "Icons and Images",
+     "name" : "Plugin/App Name",
+     "internalname" : "Internal Name",
+     "use" : {
+       "title" : "Purpose of image",
+       "LOGINPAGE" : "Display on OAuth Login Page",
+       "APPICON" : "Use as application icon"
+     },
+     "type" : {
+       "title" : "Image type",
+       "image/jpeg" : "JPEG",
+       "image/png" : "PNG",
+       "image/gif" : "GIF"
+     },
+     "file" : "Image file to upload",
+     "file_help" : "Please resize and compress image to a reasonable size before upload. Images larger than 1MB will not be accepted.",
+     "existing" : "Images linked to application"
   }
 }

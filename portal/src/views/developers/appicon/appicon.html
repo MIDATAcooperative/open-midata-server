@@ -1,0 +1,50 @@
+
+<div  ng-controller="AppIconCtrl">
+		
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+		  	<span translate="appicon.title"></span>		  	
+		</div>
+		<div class="body">
+		  <p ng-show="error && !error.field" translate="{{ error.code || error }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
+	      </p>
+		  <form name="myform" novalidate class="css-form form-horizontal" ng-submit="submit()">		    
+		    <formrow myid="name" label="appicon.name">
+		      <p class="form-control-static">{{ app.name }}</p>
+		    </formrow>
+		    <formrow myid="filename" label="appicon.internalname">
+		      <p class="form-control-static">{{ app.filename }}</p>
+		    </formrow>
+		    <formrow myid="use" label="appicon.use.title">
+		      <select name="use" class="form-control" required ng-model="meta.use" ng-options="use as 'appicon.use.'+use | translate for use in uses"></select>
+		    </formrow>
+		    <formrow myid="type" label="appicon.type.title">
+		      <select name="type" class="form-control" required ng-model="meta.type" ng-options="type as 'appicon.type.'+type | translate for type in types"></select>
+		    </formrow>
+		    <formrow myid="file" label="appicon.file">
+		      <input type="file" name="file" id="iconfile" required>
+		      <p class="help-text" translate="appicon.file_help"></p>
+		    </formrow>
+		    <formrow myid="x" label="">
+		      <button class="btn btn-primary" type="submit" translate="common.submit_btn"></button>
+		    </formrow>
+		  </form>
+		 </div>
+    </div>
+    <div class="panel panel-primary" ng-show="app.icons.length">
+		<div class="panel-heading" translate="appicon.existing">
+		  			  	
+		</div>
+		<div class="body">		  
+		  <div ng-repeat="use in app.icons">
+		    <hr>
+		    <p translate="{{ 'appicon.use.'+use }}"></p>
+		    <div class="extraspace">
+		      <img style="max-width:100%" ng-src="{{getUrl(use)}}">
+		    </div>		    
+		    <button class="btn btn-danger" translate="common.delete_btn" ng-click="doDelete(use);"></button>
+		  </div>
+	      
+		</div>		
+	</div>
+</div>

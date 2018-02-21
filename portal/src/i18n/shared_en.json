@@ -10,8 +10,7 @@
    },
 
    "navbar" : {
-	  "toggle_navigation": "Toggle navigation",
-	  "ribbon" : "Pilot Phase",
+	  "toggle_navigation": "Toggle navigation",	 
 	  "login" : "Login",
 	  "sign_up" : "Sign Up",
 	  "sign_out" : "Sign out",
@@ -90,7 +89,8 @@
        "privacypolicy" : "Privacy policy must be accepted.",
        "study_accept" : "Study participation must be accepted.",
        "study_group" : "Participant must first be assigned to a group.",
-       "confirmation" : "Confirmation by user required first."
+       "confirmation" : "Confirmation by user required first.",
+       "file" : "No file for upload selected"
      },
 
      "unknown" : {
@@ -160,6 +160,10 @@
        "consent" : "Consents for studies may not be altered.",
        "study" : "Setup can only be changed as long as study is in draft phase.",
        "group" : "Group of participant can only be changed if study is not running or no participant accepted yet."
+     },
+     
+     "too_large" : {
+       "file" : "File is larger than allowed."
      }
 
    },
@@ -565,7 +569,7 @@
     "resend_btn" : "Resend email",
     "retry_btn" : "Retry login",
     "contract_instructions" : "A contract has been sent to your postal address. Please return it signed to MIDATA.",
-    "pilot_phase" : "During the pilot phase (or if you are on a test server) NO contract will be sent to you. A MIDATA administrator will verify and unlock your account. You will be notified when your account has been unlocked.",
+    "pilot_phase" : "A MIDATA administrator will verify and unlock your account. You will be notified when your account has been unlocked.",
     "code_intructions" : "A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.",
     "code_done" : "You have provided the confirmation code. You may login after the signed contract has arrived at MIDATA.",
     "enter_now_btn" : "Enter now",

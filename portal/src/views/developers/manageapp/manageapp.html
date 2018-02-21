@@ -231,7 +231,7 @@
 		    
 		  </formrow>
 		  <formrow myid="x2" label="">
-		    
+		    <a class="btn btn-default" ui-sref="^.appicon({ appId : app._id })" ng-disabled="app._id == null" translate="manageapp.icon_btn"></a>
 		    <a class="btn btn-default" ui-sref="^.appmessages({ appId : app._id })" ng-disabled="app._id == null" translate="manageapp.messages_btn"></a>
 		    <a class="btn btn-default" ui-sref="^.appstats({ appId : app._id })" ng-disabled="app._id == null" translate="manageapp.stats_btn"></a>
 		    <a class="btn btn-default" ui-sref="^.appdebug({ appId : app._id })" ng-disabled="app._id == null" translate="manageapp.debug_btn"></a>
