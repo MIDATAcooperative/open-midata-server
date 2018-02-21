@@ -260,7 +260,7 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 					id: "body_measures_body_temperature", 
 					name: "Body Measures - Body Temperature",
 					measureType: 71, 
-					unit: "C°", 
+					unit: "°C", 
 					system: "http://loinc.org", 
 					code: "8310-5", 
 					unitSystem: "http://unitsofmeasure.org", 
