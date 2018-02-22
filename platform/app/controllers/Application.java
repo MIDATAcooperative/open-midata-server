@@ -1002,6 +1002,9 @@ public class Application extends APIController {
 				controllers.routes.javascript.Market.deletePluginStats(),
 				controllers.routes.javascript.Market.importPlugin(),
 				controllers.routes.javascript.Market.exportPlugin(),
+				controllers.routes.javascript.Market.uploadIcon(),
+				controllers.routes.javascript.Market.deleteIcon(),
+				controllers.routes.javascript.Market.getIcon(),
 								
 				// UserGroups
 				controllers.routes.javascript.UserGroups.search(),

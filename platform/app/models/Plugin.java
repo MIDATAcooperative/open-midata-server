@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 
+import models.enums.IconUse;
 import models.enums.PluginStatus;
 import models.enums.UserFeature;
 import models.enums.UserRole;
@@ -43,7 +44,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "accessTokenUrl", "consumerKey", "consumerSecret",
 	                     "requestTokenUrl", "scopeParameters", "secret", "redirectUri", "developmentServer", "status", "i18n",
-	                     "predefinedMessages", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion", "termsOfUse", "requirements", "orgName", "unlockCode", "writes");
+	                     "predefinedMessages", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion", "termsOfUse", "requirements", "orgName", "unlockCode", "writes", "icons");
 	
 	/**
 	 * constant containing all fields visible to anyone
@@ -53,7 +54,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	                     "targetUserRole", "spotlighted", "url", "addDataUrl", "previewUrl", "defaultSpaceName",
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "consumerKey", "scopeParameters", "status", "i18n", "lang", "predefinedMessages", "resharesData", "linkedStudy", "mustParticipateInStudy", "pluginVersion",
-	                     "termsOfUse", "requirements", "orgName", "unlockCode", "writes");
+	                     "termsOfUse", "requirements", "orgName", "unlockCode", "writes", "icons");
 	
 	/**
 	 * timestamp of last change. Used to prevent lost updates.
@@ -256,6 +257,11 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	 * for development: localhost-URL-prefix to be used instead of plugin server domain for testing on local machine 
 	 */
 	public String developmentServer;
+	
+	/**
+	 * Types of icons used by this plugin
+	 */
+	public Set<IconUse> icons;
 
 	@Override
 	public int compareTo(Plugin other) {
@@ -309,6 +315,12 @@ public class Plugin extends Model implements Comparable<Plugin> {
 		} catch (DatabaseException e) {
 			throw new InternalServerException("error.internal_db", e);
 		}
+	}
+	
+	public void updateIcons(Set<IconUse> icons) throws InternalServerException {
+		this.icons = icons;
+		Model.set(Plugin.class, collection, _id, "icons", icons);
+		Instances.cacheClear("plugin",  _id);
 	}
 
 

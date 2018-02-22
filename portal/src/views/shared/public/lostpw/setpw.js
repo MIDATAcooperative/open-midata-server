@@ -11,6 +11,8 @@ angular.module('portal')
 		
 	// submit
 	$scope.submit = function() {
+		$scope.error = null;
+		
 		// check user input
 		if (!$scope.setpw.password) {
 			$scope.error = { code : "error.missing.newpassword" };

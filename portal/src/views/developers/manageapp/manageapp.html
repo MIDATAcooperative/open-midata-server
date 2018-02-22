@@ -11,15 +11,15 @@
 		<form name="myform" novalidate role="form" class="form-horizontal" ng-submit="updateApp()">
 		  <p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
 	      </p>	
-		  <formrow myid="filename" label="Internal Name">
-		    <input type="text" id="filename" name="filename" class="form-control" placeholder="Filename" ng-model="app.filename" autofocus required>
+		  <formrow myid="filename" label="manageapp.filename">
+		    <input type="text" id="filename" name="filename" class="form-control" ng-model="app.filename" autofocus required>
 		    <p class="help-block" translate="manageapp.info.filename"></p>
 		  </formrow>
-		  <formrow myid="targetUserRole" label="Target Role">
+		  <formrow myid="targetUserRole" label="manageapp.targetUserRole">
 		    <select id="targetUserRole" name="targetUserRole" class="form-control" ng-model="app.targetUserRole" ng-options="role.value as role.label for role in targetUserRoles" required></select>
 		    <p class="help-block" translate="manageapp.info.targetUserRole"></p>
 		  </formrow>
-		  <formrow myid="type" label="Type">
+		  <formrow myid="type" label="manageapp.type">
 		    <select id="type" name="type" class="form-control" ng-model="app.type" ng-options="type.value as type.label for type in types" required></select>
 		    <p class="help-block" translate="manageapp.info.type"></p>
 		  </formrow>
@@ -223,22 +223,10 @@
 		  </div>
 		  
 		  <formrow myid="x" label="">
-		    <button type="submit" ng-disabled="status.action=='submit'" class="btn btn-primary">Submit</button>
-		    <button type="button" class="btn btn-default" ng-click="doInstall()" ng-hide="app.type == 'mobile'" ng-disabled="app._id == null">Install from localhost</button>
-		    <a class="btn btn-default" ui-sref="^.autoimport({ appId : app._id })" ng-show="app.type == 'oauth1' || app.type == 'oauth2'" ng-disabled="app._id == null">Serverside Import Test</a>
-		    		    
+		    <button type="submit" ng-disabled="status.action=='submit'" class="btn btn-primary">Submit</button>		    		   
 		    <button type="button" class="btn btn-danger" ng-show="allowDelete" ng-click="doDelete()" ng-disabled="status.action=='delete'" translate="common.delete_btn"></button>
 		    
-		  </formrow>
-		  <formrow myid="x2" label="">
-		    
-		    <a class="btn btn-default" ui-sref="^.appmessages({ appId : app._id })" ng-disabled="app._id == null" translate="manageapp.messages_btn"></a>
-		    <a class="btn btn-default" ui-sref="^.appstats({ appId : app._id })" ng-disabled="app._id == null" translate="manageapp.stats_btn"></a>
-		    <a class="btn btn-default" ui-sref="^.appdebug({ appId : app._id })" ng-disabled="app._id == null" translate="manageapp.debug_btn"></a>
-		    <button type="button" class="btn btn-default" ng-show="allowExport" ng-click="exportPlugin()" ng-disabled="status.action=='download'" translate="manageapp.export_btn"></button>
-		    
-		    
-		  </formrow>
+		  </formrow>		  
 	     </form>	  
 		  
 		

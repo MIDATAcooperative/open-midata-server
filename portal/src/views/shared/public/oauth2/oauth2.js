@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('OAuth2LoginCtrl', ['$scope', '$location', '$translate', 'server', '$state', 'status', 'session', 'apps', 'studies', 'oauth', 'views', 'labels', function($scope, $location, $translate, server, $state, status, session, apps, studies, oauth, views,labels) {
+.controller('OAuth2LoginCtrl', ['$scope', '$location', '$translate', 'server', '$state', 'status', 'session', 'apps', 'studies', 'oauth', 'views', 'labels', 'ENV', function($scope, $location, $translate, server, $state, status, session, apps, studies, oauth, views,labels, ENV) {
 	
 	// init
 	$scope.login = { role : "MEMBER"};	
@@ -125,6 +125,16 @@ angular.module('portal')
 	
 	$scope.terms = function(def) {
 		views.setView("terms", def, "Terms");
+	};
+	
+	$scope.hasIcon = function() {
+		if (!$scope.app || !$scope.app.icons) return false;
+		return $scope.app.icons.indexOf("LOGINPAGE") >= 0;
+	};
+	
+	$scope.getIconUrl = function() {
+		if (!$scope.app) return null;
+		return ENV.apiurl + "/api/shared/icon/LOGINPAGE/" + $scope.app.filename;
 	};
 	
 	$scope.prepare();

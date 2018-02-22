@@ -168,18 +168,19 @@ class MongoDB(Product):
 				self.user_database,
 				self.user_username,
 				self.user_password,
-				f), self.parent)					  
-		Command.execute('{0} -h {2}:{3} -d {4} {5}{6} -c {7} -o {1} {8}'.format(os.path.join(self.bin, 'mongoexport'), 
-			os.path.join(self.parent, 'json', 'plugins.json'), 
-			self.user_host, 
-			self.user_port, 
-			self.user_database,
-			self.user_username,
-			self.user_password,
-			'plugins',
-			'-q \'{ "status" : { "$in" : ["BETA","ACTIVE","DEPRECATED"] } }\''
+				f), self.parent)	
+		for f in ['plugins','pluginicons']:				  
+			Command.execute('{0} -h {2}:{3} -d {4} {5}{6} -c {7} -o {1} {8}'.format(os.path.join(self.bin, 'mongoexport'), 
+				os.path.join(self.parent, 'json', f + '.json'), 
+				self.user_host, 
+				self.user_port, 
+				self.user_database,
+				self.user_username,
+				self.user_password,
+				f,
+				'-q \'{ "status" : { "$in" : ["BETA","ACTIVE","DEPRECATED"] } }\''
 			), self.parent)		
-		Command.execute('/bin/sed -i \'/"_id":/s/"_id":[^,]*,//\' {0}'.format(os.path.join(self.parent, 'json', 'plugins.json')))			  
+			Command.execute('/bin/sed -i \'/"_id":/s/"_id":[^,]*,//\' {0}'.format(os.path.join(self.parent, 'json', f + '.json')))			  
 
 	def reimport(self):
 		MongoDB.readconf(self)	
@@ -201,6 +202,14 @@ class MongoDB(Product):
 			self.user_username,
 			self.user_password,
 			'plugins'), self.parent)		
+		Command.execute('{0} -h {2}:{3} -d {4} {5}{6} -c {7} --file {1} --upsert --upsertFields plugin,use'.format(os.path.join(self.bin, 'mongoimport'), 
+			os.path.join(self.parent, 'json', 'pluginicons.json'),
+			self.user_host, 
+			self.user_port, 
+			self.user_database,
+			self.user_username,
+			self.user_password,
+			'pluginicons'), self.parent)					
 		Command.execute('{0} -h {2}:{3} -d {4} {5}{6} -c loinc --type csv --drop --headerline --file {1}'.format(os.path.join(self.bin, 'mongoimport'), 
 			os.path.join(self.parent, 'json', 'loinc.csv'),
 			self.user_host, 
