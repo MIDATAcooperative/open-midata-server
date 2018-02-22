@@ -19,6 +19,7 @@ angular.module('portal')
 					$scope.status.doBusy(records.getInfos(userId, properties, "ALL"))
 					.then(function(results) {						
 					    if (results.data && results.data.length == 1) {	inf.count = results.data[0].count; }
+					    else if (results.data && results.data.length === 0) { inf.count = 0; }
 					});
 				});
 			});

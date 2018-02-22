@@ -97,6 +97,10 @@ DELETE  /api/admins/plugins/:appId            	         controllers.Market.delet
 POST     /api/admins/importplugin                        controllers.Market.importPlugin()
 GET      /api/admins/exportplugin/:appId                 controllers.Market.exportPlugin(appId: String)
 
+POST     /api/developers/plugins/:appId/icon             controllers.Market.uploadIcon(appId: String)
+DELETE   /api/developers/plugins/:appId/icon/:use        controllers.Market.deleteIcon(appId: String, use: String)
+GET      /api/shared/icon/:use/:id                       controllers.Market.getIcon(use:String, id:String)
+
 # Users
 
 POST    /api/members/users/get                           controllers.Users.get()

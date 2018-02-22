@@ -34,7 +34,7 @@ angular.module('portal')
     ];
 			
 	$scope.loadApp = function(appId) {
-		$scope.status.doBusy(apps.getApps({ "_id" : appId }, ["creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion", "requirements", "termsOfUse", "orgName", "unlockCode", "writes"]))
+		$scope.status.doBusy(apps.getApps({ "_id" : appId }, ["creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion", "requirements", "termsOfUse", "orgName", "unlockCode", "writes", "icons"]))
 		.then(function(data) { 
 			$scope.app = data.data[0];			
 			if ($scope.app.status == "DEVELOPMENT" || $scope.app.status == "BETA") {
@@ -63,7 +63,7 @@ angular.module('portal')
 	
 	$scope.updateQuery = function() {
 		$scope.codeerror = null;
-		$scope.myform.queryadd.$invalid = false;
+		if ($scope.myform && $scope.myform.queryadd) $scope.myform.queryadd.$invalid = false;
 		try {
 		  $scope.app.defaultQuery = JSON.parse($scope.app.defaultQueryStr);
 		var q = $scope.app.defaultQuery;
@@ -246,6 +246,20 @@ angular.module('portal')
 		.then(function(response) {
 		  document.location.href = ENV.apiurl + jsRoutes.controllers.Market.exportPlugin($scope.app._id).url + "?token=" + encodeURIComponent(response.data.token);
 		});
+	};
+	
+	$scope.go = function(where) {
+		$state.go(where, { appId : $scope.app._id });
+	};
+	
+	$scope.hasIcon = function() {
+		if (!$scope.app || !$scope.app.icons) return false;
+		return $scope.app.icons.indexOf("APPICON") >= 0;
+	};
+	
+	$scope.getIconUrl = function() {
+		if (!$scope.app) return null;
+		return ENV.apiurl + "/api/shared/icon/APPICON/" + $scope.app.filename;
 	};
 	
 }]);

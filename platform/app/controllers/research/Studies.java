@@ -999,13 +999,12 @@ public class Studies extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public static Result addApplication(String id, String group) throws AppException, JsonValidationException {
-		MidataId userId = new MidataId(request().username());
-		MidataId owner = PortalSessionToken.session().getOrg();
+		MidataId userId = new MidataId(request().username());	
 		MidataId studyId = new MidataId(id);
 		if (group != null && (group.equals("undefined") || group.equals("null"))) group = null;
 		
 		Study study = Study.getById(studyId, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "name", "code", "createdBy", "groups"));
-		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
+		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not exist.");
 		if (study.validationStatus != StudyValidationStatus.VALIDATED) throw new BadRequestException("error.notvalidated.study", "Study must be validated before.");
 		//if (study.executionStatus != StudyExecutionStatus.RUNNING) throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
 		
