@@ -35,6 +35,7 @@ import models.Developer;
 import models.MessageDefinition;
 import models.MidataId;
 import models.MobileAppInstance;
+import models.Model;
 import models.Plugin;
 import models.PluginDevStats;
 import models.PluginIcon;
@@ -267,9 +268,18 @@ public class Market extends APIController {
 		
 		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
 		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
-						
-		String json = JsonOutput.toJson(app, "Plugin", Plugin.ALL_DEVELOPER);
-		String base64 = Base64.getEncoder().encodeToString(json.getBytes());
+				
+		Set<PluginIcon> icons = PluginIcon.getByPlugin(app.filename);
+		
+		List<Model> mixed = new ArrayList<Model>();
+		mixed.add(app);
+		mixed.addAll(icons);
+		Map<String, Set<String>> mapping = new HashMap<String, Set<String>>();
+		mapping.put("Plugin", Plugin.ALL_DEVELOPER);
+		mapping.put("PluginIcon", PluginIcon.FIELDS);
+		
+		String json = JsonOutput.toJson(mixed, mapping);
+		//String base64 = Base64.getEncoder().encodeToString(json.getBytes());
 		return ok(json);
 	}
 	
@@ -284,8 +294,10 @@ public class Market extends APIController {
 		//byte[] decoded = Base64.getDecoder().decode(base64);
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode pluginJson = null;
+		JsonNode allJson = null;
 		try {
-	       pluginJson = mapper.readTree(base64);
+			allJson = mapper.readTree(base64);
+			pluginJson = allJson.get(0);
 		} catch (JsonProcessingException e) {
 			AccessLog.logException("parse json", e);
 		  throw new BadRequestException("error.invalid.json", "Invalid JSON provided");
@@ -314,16 +326,37 @@ public class Market extends APIController {
 		app.name = JsonValidation.getStringOrNull(pluginJson, "name");
 		parsePlugin(app, pluginJson);
 		
+		try {
+		List<PluginIcon> icons = new ArrayList<PluginIcon>();
+		for (int i=1;i<allJson.size();i++) {
+			JsonNode iconData = allJson.get(i);			
+			PluginIcon icon = new PluginIcon();
+			icon._id = JsonValidation.getMidataId(iconData, "_id");
+			icon.contentType = JsonValidation.getString(iconData, "contentType");
+			icon.plugin = app.filename;
+			icon.use = JsonValidation.getEnum(iconData, "use", IconUse.class);
+			icon.status = app.status;		
+			icon.data = iconData.get("data").binaryValue();
+			icons.add(icon);
+		}
+		
 		if (isNew) {
-			Plugin.add(app);				
+			Plugin.add(app);
+			for (PluginIcon icon : icons) PluginIcon.add(icon);
 		} else {
 			try {
 			  app.update();
+			  PluginIcon.delete(app.filename);
+			  for (PluginIcon icon : icons) PluginIcon.add(icon);
 			} catch (LostUpdateException e) {
 			  throw new BadRequestException("error.concurrent.update", "Concurrent updates. Reload page and try again.");
 			}
 		}								
 		return ok(JsonOutput.toJson(app, "Plugin", Plugin.ALL_DEVELOPER));
+		
+		} catch (IOException e) {
+			throw new BadRequestException("error.internal", "Cannot parse JSON");
+		}
 	}
 		
 

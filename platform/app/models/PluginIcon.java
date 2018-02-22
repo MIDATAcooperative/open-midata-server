@@ -7,6 +7,7 @@ import models.enums.IconUse;
 import models.enums.PluginStatus;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
 
 /**
@@ -15,8 +16,11 @@ import utils.exceptions.InternalServerException;
  */
 public class PluginIcon extends Model {
 
+	@NotMaterialized
 	private static final String collection = "pluginicons";
-	private static final Set<String> FIELDS = Collections.unmodifiableSet(Sets.create("plugin", "status", "use", "contentType", "data"));
+	
+	@NotMaterialized
+	public static final Set<String> FIELDS = Collections.unmodifiableSet(Sets.create("_id", "plugin", "status", "use", "contentType", "data"));
 	
 	/**
 	 * Internal name of plugin
@@ -45,6 +49,10 @@ public class PluginIcon extends Model {
 	
 	public static PluginIcon getByPluginAndUse(String name, IconUse use) throws InternalServerException {
 		return Model.get(PluginIcon.class, collection, CMaps.map("plugin", name).map("use", use), FIELDS);
+	}
+	
+	public static Set<PluginIcon> getByPlugin(String name) throws InternalServerException {
+		return Model.getAll(PluginIcon.class, collection, CMaps.map("plugin", name), FIELDS);
 	}
 	
 	public static void add(PluginIcon pluginIcon) throws InternalServerException {
