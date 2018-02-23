@@ -10,6 +10,8 @@ var res = [];
 var allFiles = 0;
 var doneFiles = 0;
 var xliffin = null;
+var sf = null;
+var bak = null;
 
 function prepare(name, language) {
 	return {
@@ -179,11 +181,11 @@ function doprocess(info) {
 		  } else {
 			  xliff.pop();
 		  }
-		} else if (srcLine.type == 3) {
+		} else if (srcLine.type == 3) {		  
 		  var srcVal = fetch(info.src, srcLine.full);
 		  var targetVal = fetch(info.target, srcLine.full);
-		  var refVal = fetch(info.ref, srcLine.full);		  
-		 
+		  var refVal = fetch(info.ref, srcLine.full);		  		  
+		  
 		  if (!targetVal) {		
 			  output.push("");
 			  output.push(spaces(wsIdx)+"// TODO NEW: "+srcVal);
@@ -225,6 +227,8 @@ function saveFiles(info) {
 	}	
 	fs.writeFileSync("xliff-out.xliff", createxliff(xliffout));
 }
+
+
 
 
 function xliffgroup(id,contents) {
@@ -352,6 +356,95 @@ function loadFiles(languages) {
 	}
 };
 
+function filereplace(text, lang, replacement) { 	
+	   var result = [];
+	   var initial = -1;
+	   var end = -1;
+	   for (var line = 0;line < text.length; line++) {
+		   var str = text[line].trim();
+		   if (str.startsWith("//$START_LANGUAGE") && str.endsWith(lang)) {
+			   initial = line+1;				   
+		   } else if (str.startsWith("//$END_LANGUAGE") && str.endsWith(lang)) {
+			   end = line;				   
+		   } 
+	   }
+	   if (initial >= 0 && end >= 0 && end > initial) {
+		   result = text.slice(initial, end);
+		   if (replacement) {
+			   console.log("text replace from="+initial+" rem-lines="+(end-initial)+" insert:"+replacement.length);
+			   text.splice(initial, (end-initial), replacement);
+		   }
+	   }	
+	   return result;
+}
+
+function loadSingle(filename, languages) {
+	
+
+	var process = function() {
+		if (sf && bak) {
+			for (var j=0;j<languages.length;j++) {
+				var lang = languages[j];
+				var info = prepare(filename, languages[j]);			
+				info.src.text = filereplace(sf, "en");
+				info.src.json = JSON.parse(JSON.minify(info.src.text.join("\n")));
+				
+				info.target.text = filereplace(sf, lang);
+				info.target.json = JSON.parse(JSON.minify(info.target.text.join("\n")));
+				
+				info.ref.text = filereplace(bak, lang) || '{ "a" : "b" }';
+				
+				info.ref.json = JSON.parse(JSON.minify(info.ref.text.join("\n") || '{ "a" : "b" }'));
+											
+				res.push(info);
+				allFiles++;
+			}
+			
+			if (bak.length == 0) bak = sf.slice();
+			
+			processfiles();
+			
+		}
+	}
+	
+	fs.readFile(filename, 'utf8', function (err,data) {	
+		   if (err) {
+			   console.log("file: "+filename+" error:"+err);
+		   }
+		   sf = data.split("\n");
+		   console.log("loaded: "+filename+" #lines="+sf.length);
+		   process();
+	});
+	fs.readFile(filename+".bak", 'utf8', function (err,data) {	
+		   if (err) {
+			   console.log("file: "+filename+" error:"+err);
+		   }
+		   if (!data) bak = [];
+		   else bak = data.split("\n");
+		   
+		   console.log("loaded: "+filename+".bak #lines="+bak.length);
+		   
+		   process();
+	});
+	
+ 
+}
+
+function saveSingleFile() {
+	for (var i=0;i<res.length;i++) {
+		var info = res[i];
+		filereplace(sf, info.language, info.output);
+		filereplace(bak, info.language, info.src.text.join("\n"));
+	}
+	
+	fs.writeFileSync(singleFileName, sf.join("\n"));
+	console.log("Written "+singleFileName+" #lines="+sf.length);
+	fs.writeFileSync(singleFileName+".bak", bak.join("\n"));	
+	console.log("Written "+singleFileName+".bak #lines="+bak.length);
+	fs.writeFileSync("xliff-out.xliff", createxliff(xliffout));
+	console.log("Written xliff-out.xliff");
+}
+
 function processfiles() {
 	if (res.length < allFiles) return;
 	
@@ -361,7 +454,11 @@ function processfiles() {
 		doprocess(res[i]);
 	}
 	
-	saveFiles();
+	if (singleFileName) {
+	  saveSingleFile();
+	} else {
+	  saveFiles();
+	}
 	
 }
 
@@ -377,10 +474,28 @@ function loadxliff(xlname, next) {
 }
 
 var params = process.argv.slice(2);
+
+if (params.length == 0) {
+	console.log("Usage:");
+	console.log("node convert.js [<i18n.js>] [<xliff-in.xliff>] <lang>");
+	console.log("<i18n.js> : (optional) name of JS file containing i18n resources.");
+	console.log("<xliff-in.xliff> : (optional) name of xliff file containg changes to merge. ");
+	console.log("<lang> : language to process");
+	process.exit();
+} 
+
+var singleFileName = null;
+if (params[0].endsWith(".js")) {
+	singleFileName = params[0];
+	params = params.slice(1);
+}
 var languages = params;
+
+var loader = function() { loadFiles(languages); };
+if (singleFileName) loader = function() { loadSingle(singleFileName, languages); };
 
 if (params[0].endsWith(".xliff")) {	
 	languages = params.slice(1);
-	loadxliff(params[0], function() { loadFiles(languages); });
-} else loadFiles(languages);
+	loadxliff(params[0], loader);
+} else loader();
 
