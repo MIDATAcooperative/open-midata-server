@@ -31,7 +31,8 @@ angular.module('fhirObservation')
  		
  		$scope.showDetailsPopup = function(record) {
  			console.log(record);
- 			$state.go("^.chart", {  measure : record.content, until : record.data.effectiveDateTime });
+ 			var sdate = record.data.effectivePeriod ? record.data.effectivePeriod.start : null;
+ 			$state.go("^.chart", {  measure : record.content, until : (record.data.effectiveDateTime || sdate) });
  		
  			//midataPortal.openLink("page", "dist/index.html#/chart?authToken=:authToken", { measure : record.content, until : record.data.effectiveDateTime });
 

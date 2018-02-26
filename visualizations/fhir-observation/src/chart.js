@@ -92,7 +92,8 @@ angular.module('fhirObservation')
       		  cnt = cmp.code.coding[0].code;
       		  fhirinfo.codeToLabel[cnt] = fhirinfo.codeToLabel[cnt] || cmp.code.coding[0].display;
       	  }
-      	  var dateTime = record.data.effectiveDateTime || cdate;
+      	  var pstart = record.data.effectivePeriod ? record.data.effectivePeriod.start : null;
+      	  var dateTime = record.data.effectiveDateTime || pstart || cdate;
       	  var e = {
                     value : Number(q.value),
                     unit : q.unit,	                          
@@ -122,6 +123,12 @@ angular.module('fhirObservation')
 	   var result = {};
 	   for (var i=0;i<valuearray.length;i++) { result[valuearray[i]] = i; }
 	   return result;
+	};
+	
+	$scope.getDate = function(record) {
+		if (record.effectiveDateTime) return record.effectiveDateTime;
+		if (record.effecitvePeriod) return record.effectivePeriod.start;
+		return null;
 	};
 	
 	$scope.buildAxes = function(entries) {
