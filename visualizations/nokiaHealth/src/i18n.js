@@ -1,6 +1,10 @@
+/*jshint laxcomma:true */
+
 angular.module('nokiaHealthi18n', [])
   .constant('i18nc', {
-    en: {
+    en: 
+//$START_LANGUAGE : en    
+    {
       "hello_world": "Hello World",
       "start_import": "Import Now",
       "test_import": "Test Import with Nokia Health",
@@ -31,7 +35,6 @@ angular.module('nokiaHealthi18n', [])
 
       "activity_measures_steps": "Steps",
       "activity_measures_distance": "Distance",
-      //? //"activity_measures_calories": "Calories",
       "activity_measures_totalcalories": "Total Calories",
       "activity_measures_elevation": "Elevation",
       "activity_measures_soft": "Soft Activities",
@@ -60,9 +63,6 @@ angular.module('nokiaHealthi18n', [])
       "intraday_activity_stroke": "Stroke",
       "intraday_activity_pool_lap": "Pool lap",
       "sleep_measures_awake": "Awake",
-      //"sleep_measures_light_sleep": "Light sleep",
-      //"sleep_measures_deep_sleep": "Deep Sleep",
-      //"sleep_measures_rem_sleep": "REM Sleep",
       "sleep_summary_wakeupduration": "Wake up duration",
       "sleep_summary_lightsleepduration": "Light sleep duration",
       "sleep_summary_deepsleepduration": "Deep sleep duration",
@@ -70,14 +70,11 @@ angular.module('nokiaHealthi18n', [])
       "sleep_summary_wakeupcount": "Wake up count",
       "sleep_summary_durationtosleep": "Duration to sleep",
       "sleep_summary_durationtowakeup": "Duration to wake up",
-      //"workouts_calories": "Calories",
-      //"workouts_strokes": "Strokes",
-      //"workouts_pool_length": "Pool length",
-      //"workouts_pool_laps": "Pool laps",
-      //"workouts_effduration": "Effective duration",
-
-    },
-    de: {
+    }
+//$END_LANGUAGE : en  
+  ,de: 
+//$START_LANGUAGE : de    
+    {
       "hello_world": "Hallo Welt",
       "start_import": "Import starten",
       "test_import": "Test Importierung mit Nokia Health",
@@ -108,8 +105,7 @@ angular.module('nokiaHealthi18n', [])
       "vital_signs_data": "Vitalzeichen",
 
       "activity_measures_steps": "Schritte",
-      "activity_measures_distance": "Distanz",
-      //? //"activity_measures_calories": "Kalorien",
+      "activity_measures_distance": "Distanz",     
       "activity_measures_totalcalories": "Gesamtkalorien",
       "activity_measures_elevation": "Elevation",
       "activity_measures_soft": "Leichte Betätigung",
@@ -124,7 +120,7 @@ angular.module('nokiaHealthi18n', [])
       "body_measures_systolic_blood_pressure": "Systolischer Blutdruck",
       "body_measures_blood_pressure" : "Blutdruck",
       "body_measures_heart_pulse": "Herzschlag",
-      "body_measures_sp02": "Blutsauerstoffgehalt", // Der Sauerstoffgehalt im Blut?
+      "body_measures_sp02": "Blutsauerstoffgehalt", 
       "body_measures_body_temperature": "Körpertemperatur",
       "body_measures_muscle_mass": "Muskelmasse",
       "body_measures_hydration": "Hydratation",
@@ -135,91 +131,38 @@ angular.module('nokiaHealthi18n', [])
       "intraday_activity_duration": "Dauer",
       "intraday_activity_elevation": "Elevation",
       "intraday_activity_steps": "Schritte",
-      "intraday_activity_stroke": "Takt",//?
-      "intraday_activity_pool_lap": "Pool lap", ////////////////////////
+      "intraday_activity_stroke": "Takt",
+      "intraday_activity_pool_lap": "Pool lap", 
       "sleep_measures_awake": "Wach",
-      //"sleep_measures_light_sleep": "Leichtschlaf",
-      //"sleep_measures_deep_sleep": "Tiefschlaf",
-      //"sleep_measures_rem_sleep": "REM-Schlaf",
       "sleep_summary_wakeupduration": "Dauer des Aufwachens",
       "sleep_summary_lightsleepduration": "Lichtschlafdauer",
       "sleep_summary_deepsleepduration": "Tiefschlafdauer",
       "sleep_summary_remsleepduration": "REM-Schlaf Dauer",
-      "sleep_summary_wakeupcount": "Wake up count",/////////////////////////////
-      "sleep_summary_durationtosleep": "Dauer fürs Einschlaffen", // Einschlaffensdauer
+      "sleep_summary_wakeupcount": "Wake up count",
+      "sleep_summary_durationtosleep": "Dauer fürs Einschlaffen",
       "sleep_summary_durationtowakeup": "Dauer fürs Auswachen",
-      //"workouts_calories": "Kalorien",
-      //"workouts_strokes": "Takte",
-      //"workouts_pool_length": "Swimmbad länge",
-      //"workouts_pool_laps": "Pool laps", ///////////////////////////////////
-      //"workouts_effduration": "Effektive Dauer",
 
       titles: {
         "activity_measures_steps": "Schritte",
         "activity_measures_distance": "Distanz",
-        //? //"activity_measures_calories": "Kalorien",
+
         "activity_measures_totalcalories": "Gesamtkalorien",
         "activity_measures_elevation": "Elevation",
         "activity_measures_soft": "Leichte Betätigung",
         "activity_measures_moderate": "Mässige Activität",
         "activity_measures_intense": "Intensive Activität",
       }
-    },
-    it: {
-      "hello_world": "Ciao mondo",
-      "start_import": "??",
-      "test_import": "IT - Test Import with Nokia Health",
-      "import_now": "IT - Import now",
-      "save_changes": "IT - Save changes",
-
-      "autoimport": "importazione automatica",
-      "activity_measures_distance": "Distance",
-      //? //"activity_measures_calories": "Calories",
-      "activity_measures_totalcalories": "Total Calories",
-      "activity_measures_elevation": "Elevation",
-      "activity_measures_soft": "Soft Activities",
-      "activity_measures_moderate": "Moderate Activities",
-      "activity_measures_intense": "Intense Activities",
-      "body_measures_weigth": "Weight",
-      "body_measures_height": "Height",
-      "body_measures_fat_free_mass": "Fat Free Mass",
-      "body_measures_fat_radio": "Fat Ratio",
-      "body_measures_fat_mass_weight": "Fat Mass Weight",
-      "body_measures_diastolic_blood_pressure": "Diastolic Blood Pressure",
-      "body_measures_systolic_blood_pressure": "Systolic Blood Pressure",
-      "body_measures_blood_pressure" : "Blood Pressure",
-      "body_measures_heart_pulse": "Heart Pulse",
-      "body_measures_sp02": "SP02",
-      "body_measures_body_temperature": "Body Temperature",
-      "body_measures_muscle_mass": "Muscle Mass",
-      "body_measures_hydration": "Hydration",
-      "body_measures_bone_mass": "Bone Mass",
-      "body_measures_pulse_wave_velocity": "Pulse Wave Velocity",
-      "intraday_activity_calories": "Calories",
-      "intraday_activity_distance": "Distance",
-      "intraday_activity_duration": "Duration",
-      "intraday_activity_elevation": "Elevation",
-      "intraday_activity_steps": "Steps",
-      "intraday_activity_stroke": "Stroke",
-      "intraday_activity_pool_lap": "Pool lap",
-      "sleep_measures_awake": "Awake",
-      //"sleep_measures_light_sleep": "Light sleep",
-      //"sleep_measures_deep_sleep": "Deep Sleep",
-      //"sleep_measures_rem_sleep": "REM Sleep",
-      "sleep_summary_wakeupduration": "Wake up duration",
-      "sleep_summary_lightsleepduration": "Light sleep duration",
-      "sleep_summary_deepsleepduration": "Deep sleep duration",
-      "sleep_summary_remsleepduration": "REM sleep duration",
-      "sleep_summary_wakeupcount": "Wake up count",
-      "sleep_summary_durationtosleep": "Duration to sleep",
-      "sleep_summary_durationtowakeup": "Duration to wake up",
-      //"workouts_calories": "Calories",
-      //"workouts_strokes": "Strokes",
-      //"workouts_pool_length": "Pool length",
-      //"workouts_pool_laps": "Pool laps",
-      //"workouts_effduration": "Effective duration",
-    },
-    fr: {
+    }
+//$END_LANGUAGE : de  
+  ,it: 
+//$START_LANGUAGE : it    
+    {
+    
+    }
+//$END_LANGUAGE : it  
+  ,fr: 
+//$START_LANGUAGE : fr    
+    {
       "hello_world": "Bonjour le monde",
         "start_import": "Importer maintenant",
         "test_import": "Test d'importation avec Nokia Health",
@@ -251,7 +194,6 @@ angular.module('nokiaHealthi18n', [])
 
         "activity_measures_steps": "Pas",
         "activity_measures_distance": "Distance",
-        //? //"activity_measures_calories": "Calories",
         "activity_measures_totalcalories": "Calories totales",
         "activity_measures_elevation": "Élévation",
         "activity_measures_soft": "Activités douces",
@@ -277,15 +219,10 @@ angular.module('nokiaHealthi18n', [])
         "intraday_activity_duration": "Durée",
         "intraday_activity_elevation": "Élévation",
         "intraday_activity_steps": "Pas",
-
-		// to check....
         "intraday_activity_stroke": "Stroke",
 
         "intraday_activity_pool_lap": "Bassin de piscine",
         "sleep_measures_awake": "Éveillé",
-        //"sleep_measures_light_sleep": "Sommeil léger",
-        //"sleep_measures_deep_sleep": "Sommeil profond",
-        //"sleep_measures_rem_sleep": "Sommeil paradoxal",
         "sleep_summary_wakeupduration": "Durée de réveil",
         "sleep_summary_lightsleepduration": "Durée du sommeil léger",
         "sleep_summary_deepsleepduration": "Durée du sommeil profond",
@@ -293,10 +230,6 @@ angular.module('nokiaHealthi18n', [])
         "sleep_summary_wakeupcount": "Nombre de réveil",
         "sleep_summary_durationtosleep": "Durée de sommeil",
         "sleep_summary_durationtowakeup": "Durée d'éveil",
-        //"workouts_calories": "Calories",
-        //"workouts_strokes": "Strokes",
-        //"workouts_pool_length": "Longueur de la piscine",
-        //"workouts_pool_laps": "Bassins de piscine",
-        //"workouts_effduration": "Durée effective"
     }
+//$END_LANGUAGE : fr  
   });

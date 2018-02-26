@@ -1,4 +1,8 @@
-var en = {
+/*jshint laxcomma:true */
+
+var en = 
+//$START_LANGUAGE : en
+{
 	"data_added" : "Data successfully added.",
 	"prompt" : "Which of the events you want to track happend today?",
 	"date" : "Date of events",
@@ -26,14 +30,23 @@ var en = {
 	"example4" : "Ate more than I wanted",
 	"example5" : "Thunderstorm outside",
 	"example6" : "Click 'Edit Event List' and change this list into something useful for you!"
-},
-de = {
+}
+//$END_LANGUAGE : en
+,de = 
+//$START_LANGUAGE : de
+{
 
-},
-it = {
+}
+//$END_LANGUAGE : de
+,it = 
+//$START_LANGUAGE : it
+{
 
-},
-fr = {
+}
+//$END_LANGUAGE : it
+,fr = 
+//$START_LANGUAGE : fr
+{
 	"data_added": "Données ajoutées avec succès.",
 			"prompt": "Parmis les évènements que vous souhaitez suivre s'en est-il produit aujourd'hui?",
 			"date": "Date des événements",
@@ -60,4 +73,6 @@ fr = {
 			"example4": "J'ai mangé plus que ce que je voulais",
 			"example5": "L'orage",
 			"example6": "Cliquez sur 'Modifier la liste des événements' et modifiez cette liste afin qu'elle vous soit utile!"
-};
+}
+//$END_LANGUAGE : fr
+;

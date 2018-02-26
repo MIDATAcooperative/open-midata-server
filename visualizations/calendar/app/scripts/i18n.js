@@ -1,4 +1,8 @@
-var en = {
+/*jshint laxcomma:true */
+
+var en = 
+//$START_LANGUAGE : en
+{
   "todays_date" : "Today's date:",
 
   "add_data_btn" : "Add Data",
@@ -17,8 +21,11 @@ var en = {
   "add_sources_title" : "Add Data Sources",
   "no_data_sources" : "Currently there is no data available that could be displayed in the calendar. Please come back after you have some data in your account.",
   "add_sources_add_btn" : "Add"
-},
-de = {
+}
+//$END_LANGUAGE : en
+,de = 
+//$START_LANGUAGE : de
+{
   "todays_date" : "Heutiges Datum:",
    
   "add_data_btn" : "Daten hinzufügen",
@@ -37,11 +44,17 @@ de = {
   "add_sources_title" : "Datenquellen hinzufügen",
   "no_data_sources" : "Derzeit haben Sie keine zur Anzeige geeigneten Daten in ihrem Account. Kommen Sie wieder auf diese Seite, wenn mehr Daten in ihrem Account verfügbar sind.",
   "add_sources_add_btn" : "Hinzufügen"
-},
-it = {
+}
+//$END_LANGUAGE : de
+,it = 
+//$START_LANGUAGE : it
+{
 
-},
-fr = {
+}
+//$END_LANGUAGE : it
+,fr = 
+//$START_LANGUAGE : fr
+{
   "todays_date" : "Aujourd'hui:",
 
   "add_data_btn" : "Ajouter données",
@@ -55,4 +68,6 @@ fr = {
   "add_sources_title" : "Ajouter une source de donnée",
   "no_data_sources" : "Il n'y a actuellement aucune donnée qui pourrait être affichée dans le calendrier. Veuillez réessayer une fois que des données sont ajoutées à votre compte.",
   "add_sources_add_btn" : "Ajouter"
-};
+}
+//$END_LANGUAGE : fr
+;

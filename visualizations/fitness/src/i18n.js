@@ -1,4 +1,8 @@
-var en = {
+/*jshint laxcomma:true */
+
+var en = 
+//$START_LANGUAGE : en
+{
   "last" : "Newest",
   "avg" : "Average",
   "best" : "Highest",
@@ -60,14 +64,23 @@ var en = {
 	  "sleep" : "Normal sleep duration is 6 to 9.5 hours a day.",
 	  "water" : "You should drink at least 2 liter a day."
   }
-},
-de = {
+}
+//$END_LANGUAGE : en
+,de = 
+//$START_LANGUAGE : de
+{
 
-},
-it = {
+}
+//$END_LANGUAGE : de
+,it = 
+//$START_LANGUAGE : it
+{
 
-},
-fr = {
+}
+//$END_LANGUAGE : it
+,fr = 
+//$START_LANGUAGE : fr
+{
   "last": "Valeur la plus récente",
   "avg": "Moyenne",
   "best": "Valeur la plus élevée",
@@ -128,4 +141,6 @@ fr = {
         "sleep": "La durée normale de sommeil est de 6 à 9,5 heures par jour.",
         "water": "Vous devriez boire au moins 2 litres par jour."
     }
-};
+}
+//$END_LANGUAGE : fr
+;
