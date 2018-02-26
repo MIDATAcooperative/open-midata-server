@@ -1,6 +1,10 @@
+/*jshint laxcomma:true */
+
 angular.module('fitbiti18n', [])
 .constant('i18nc', {
-  en : {
+  en : 
+//$START_LANGUAGE : en  
+{
   "title" : "Import Records from your Fitbit Account",
   "account" : "Fitbit Account:",
   "member_since" : "Member since:",
@@ -46,7 +50,7 @@ angular.module('fitbiti18n', [])
   "body_bmi" : "BMI",
   "body_fat" : "Fat",
 
-  "titles" : { // TODO: delete ?
+  "titles" : { 
 	 "food_calories_intake" : "Fitbit food (calories intake) {date}",
      "food_water_consumption" : "Fitbit food (water consumption) {date}",
      "activities_calories_burned" : "Fitbit activities (calories burned) {date}",
@@ -69,9 +73,11 @@ angular.module('fitbiti18n', [])
      "body_fat" : "Fitbit body (fat) {date}"
   }
 
-
-},
-de : {
+}
+//$END_LANGUAGE : en
+,de : 
+//$START_LANGUAGE : de
+{
 	  "title" : "Import aus ihrem Fitbit Account",
 	  "account" : "Fitbit Account:",
 	  "member_since" : "Mitglied seit:",
@@ -139,11 +145,17 @@ de : {
 	     "body_bmi" : "Fitbit Körper (BMI) {date}",
 	     "body_fat" : "Fitbit Körper (Fett) {date}"
 	  }
-},
-it : {
+}
+//$END_LANGUAGE : de
+,it : 
+//$START_LANGUAGE : it
+{
 
-},
-fr : {
+}
+//$END_LANGUAGE : it
+,fr : 
+//$START_LANGUAGE : fr
+{
 "title" : "Importez des enregistrements depuis votre compte Fitbit",
 "account" : "Compte Fitbit:",
 "member_since" : "Membre depuis le:",
@@ -189,7 +201,7 @@ fr : {
 "body_bmi" : "BMI",
 "body_fat" : "Graisse",
 
-"titles" : { // TODO: delete ?
+"titles" : { 
  "food_calories_intake" : "Fitbit food (calories intake) {date}",
    "food_water_consumption" : "Fitbit food (water consumption) {date}",
    "activities_calories_burned" : "Fitbit activities (calories burned) {date}",
@@ -214,4 +226,5 @@ fr : {
 
 
 }
+//$END_LANGUAGE : fr
 });

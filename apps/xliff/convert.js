@@ -168,7 +168,7 @@ function doprocess(info) {
 		if (srcLine.type == 1) {
 		  output.push(spaces(wsIdx)+'"'+srcLine.key+'" : {');
 		  wsIdx+=4;
-		  xliff.push(xliffgroup(srcLine.key, []));
+		  xliff.push(xliffgroup(srcLine.key, [], srcLine.full));
 		  stack.push(xliff);
 		  xliff = [];
 		} else if (srcLine.type == 2) {
@@ -190,10 +190,10 @@ function doprocess(info) {
 			  output.push("");
 			  output.push(spaces(wsIdx)+"// TODO NEW: "+srcVal);
 			  output.push(spaces(wsIdx)+'"'+srcLine.key+'" : "'+esc(srcVal)+'"'+(srcLine.komma ? "," : ""));
-			  xliff.push(xliffentry(srcLine.key, srcVal, null));
+			  xliff.push(xliffentry(srcLine.key, srcVal, null, srcLine.full));
 		  } else if (srcVal === refVal) {
 			  addcmt(srcLine.full, targetVal != srcVal);
-			  if (targetVal == srcVal) xliff.push(xliffentry(srcLine.key, srcVal, null));
+			  if (targetVal == srcVal) xliff.push(xliffentry(srcLine.key, srcVal, null, srcLine.full));
 			  output.push(spaces(wsIdx)+'"'+srcLine.key+'" : "'+esc(targetVal)+'"'+(srcLine.komma ? "," : ""));
 		  } else {
 			  addcmt(srcLine.full);
@@ -202,7 +202,7 @@ function doprocess(info) {
 			  output.push(spaces(wsIdx)+"// OLD: "+refVal);
 			  output.push(spaces(wsIdx)+"// NEW: "+srcVal);
 			  output.push(spaces(wsIdx)+'"'+srcLine.key+'" : "'+esc(targetVal)+'"'+(srcLine.komma ? "," : ""));
-			  xliff.push(xliffentry(srcLine.key, srcVal, targetVal));
+			  xliff.push(xliffentry(srcLine.key, srcVal, targetVal, srcLine.full));
 		  }
 		}
 		srcLine = nextLine(info.src);	
@@ -231,20 +231,20 @@ function saveFiles(info) {
 
 
 
-function xliffgroup(id,contents) {
+function xliffgroup(id,contents, path) {
 	return {
 		name : "group",
 		type : "element",
-		attributes : { resname : id },
+		attributes : { resname : id, id : path },
 		elements : contents
 	};
 }
 
-function xliffentry(id, source, target) {
+function xliffentry(id, source, target, path) {
 	var result = {
 		name : "trans-unit",
 		type : "element",
-		attributes : { resname : id },
+		attributes : { resname : id, id : path },
 		elements : [
 			{
 				name : "source",

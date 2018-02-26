@@ -1,4 +1,8 @@
-var en = {
+/*jshint laxcomma:true */
+
+var en = 
+//$START_LANGUAGE : en
+{
 	"person" : "Person:",
 	"measure" : "Measure:",
 	"category" : "Category:",
@@ -34,8 +38,11 @@ var en = {
 		"therapy" : "Therapy",
 		"fitness" : "Fitness Data"
 	}
-},
-de = {
+}
+//$END_LANGUAGE : en
+,de = 
+//$START_LANGUAGE : de
+{
  	"person" : "Person:",
 	"measure" : "Meßwert:",
 
@@ -72,11 +79,17 @@ de = {
 		"therapy" : "Therapie",
 		"fitness" : "Fitnessdaten"
 	}
-},
-it = {
+}
+//$END_LANGUAGE : de
+,it = 
+//$START_LANGUAGE : it
+{
 
-},
-fr = {
+}
+//$END_LANGUAGE : it
+,fr = 
+//$START_LANGUAGE : fr
+{
 	"person" : "Personne:",
 	"measure" : "Messure:",
 	"category" : "Catégorie:",
@@ -111,4 +124,6 @@ fr = {
 		"therapy" : "Thérapie",
 		"fitness" : "Donnée de fitness"
 	}
-};
+}
+//$END_LANGUAGE : fr
+;

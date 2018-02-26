@@ -1,6 +1,10 @@
+/*jshint laxcomma:true */
+
 angular.module('MiSensi18n', [])
   .constant('i18nc', {
-    de: {
+    de: 
+//$START_LANGUAGE : de    
+    {
       "title": "MiSens",
       "textStarDiagram": "Der Stern zeigt auf einen Blick wie empfindlich Sie auf die von Ihnen in der MiSens-Studie getesteten Geruchs- und Geschmacksstoffe ansprechen. Je weiter der grüne Punkt auf einer der acht Achsen vom Zentrum des Sterns entfernt ist, desto stärker nehmen Sie die entsprechende Substanz wahr. Befindet sich entlang einer der Achsen kein Punkt, so liegt dies daran, dass Sie diese Substanz nicht getestet haben bzw. die Resultate nicht in der App gespeichert haben. Die Grafik zeigt zum Vergleich auch den Mittelwert aller Studienteilnehmer (graue Linie) und die Empfindlichkeit der oberen und unteren 10% bzw. 25% der Teilnehmer an. Für eine noch detailliertere Aufschlüsselung Ihrer Resultate finden Sie im Anschluss die Histogramme der Sensitivitäten für die verschiedenen Substanzen.",
       "GeschmackshistogrammeTitle": "Geschmackshistogramme",
@@ -28,8 +32,11 @@ angular.module('MiSensi18n', [])
       "chartLabelY": "# Teilnehmer",
       "selectOptionScientificaResultsText": "Meine Scientifica Resultate",
       "selectOptionCurrentResultsText": "Meine aktuellen Resultate"
-    },
-    en: {
+    }
+//$END_LANGUAGE : de
+  ,en: 
+//$START_LANGUAGE : en    
+    {
       "title": "MiSens",
       "textStarDiagram": "The star diagram summarizes the sensitivity of your response to the taste and smell compounds tested during the MiSense study. The farther out the dot lies along the spoke of the star, the higher your sensitivity for that compound. If there is no dot along one or more of the spokes, you did not register a response for this compound in the app. To allow the comparison of your results to those of the other study participants the plot also shows the median sensitivity (grey line) of the other participants as well as the bottom and top 10th and 25th percentiles of the group. For an even more detailed view of your results, please have a look at the individual histograms for each of the tested aroma compounds.",
       "GeschmackshistogrammeTitle": "Taste histograms",
@@ -57,9 +64,16 @@ angular.module('MiSensi18n', [])
       "chartLabelY": "# participants",
       "selectOptionScientificaResultsText": "My Scientifica results",
       "selectOptionCurrentResultsText": "My current results"
-    },
-    it: {
-    },
-    fr: {
     }
+//$END_LANGUAGE : en
+  ,it: 
+//$START_LANGUAGE : it
+    {
+    }
+//$END_LANGUAGE : it  
+  ,fr: 
+//$START_LANGUAGE : fr    
+    {
+    }
+//$END_LANGUAGE : fr  
   });

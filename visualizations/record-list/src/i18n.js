@@ -1,4 +1,8 @@
-var en = {
+/*jshint laxcomma:true */
+
+var en = 
+//$START_LANGUAGE : en
+{
 	"loading" : "Loading records...",
 	"create_title" : "Create a new text record",
 	"date" : "Date",
@@ -23,14 +27,23 @@ var en = {
 	"no_title_error" : "No title provided",
 	"title_too_long_error" : "Title too long.",
 	"no_content_error" : "No content provided."
-},
-de = {
+}
+//$END_LANGUAGE : en
+,de = 
+//$START_LANGUAGE : de
+{
 
-},
-it = {
+}
+//$END_LANGUAGE : de
+,it = 
+//$START_LANGUAGE : it
+{
 
-},
-fr = {
+}
+//$END_LANGUAGE : it
+,fr = 
+//$START_LANGUAGE : fr
+{
 	"loading": "Chargement des enregistrements ...",
         "create_title": "Créer un nouvel enregistrement texte",
         "date": "Date",
@@ -51,4 +64,6 @@ fr = {
         "no_title_error": "Aucun titre entré",
         "title_too_long_error": "Titre trop long.",
         "no_content_error": "Aucun contenu entré."
-};
+}
+//$END_LANGUAGE : fr
+;
