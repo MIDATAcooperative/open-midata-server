@@ -123,8 +123,9 @@ angular.module('chartApp')
          var addEntry = function(record,cmp,cdate) {
 	       	  var q = cmp.valueQuantity || { value : 1 };
 	       	  var cnt = "";
-	       	  if (cmp.code && cmp.code.coding && cmp.code.coding[0].display) cnt = cmp.code.coding[0].display; 
-	       	  var dateTime = record.data.effectiveDateTime || cdate;
+	       	  if (cmp.code && cmp.code.coding && cmp.code.coding[0].display) cnt = cmp.code.coding[0].display;
+	       	  var sdate = record.data.effectivePeriod ? record.data.effectivePeriod.start : null;
+	       	  var dateTime = record.data.effectiveDateTime || sdate || cdate;
 	       	  var e = {
 	                     value : Number(q.value),
 	                     unit : q.unit,	
