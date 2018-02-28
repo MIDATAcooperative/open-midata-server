@@ -37,6 +37,7 @@ import play.libs.oauth.OAuth.ServiceInfo;
 import play.libs.ws.WS;
 import play.libs.ws.WSResponse;
 import play.mvc.BodyParser;
+import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
@@ -60,6 +61,7 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.stats.Stats;
 
 /**
  * functions for managing MIDATA plugins
@@ -272,7 +274,7 @@ public class Plugins extends APIController {
 		BSONObject oauthmeta = RecordManager.instance.getMeta(userId, new MidataId(spaceIdString), "_oauth");
 		if (oauthmeta == null) return F.Promise.pure((Result) ok(Json.toJson(false))); 
 		 		
-	    if (oauthmeta.containsField("refreshToken")) {
+	    if (oauthmeta.containsField("refreshToken") && oauthmeta.get("refreshToken") != null) {
 	      return requestAccessTokenOAuth2FromRefreshToken(spaceIdString, oauthmeta.toMap(), Json.toJson(true));
 	    } else {		
 		  return F.Promise.pure((Result) ok(Json.toJson(true)));
@@ -451,7 +453,7 @@ public class Plugins extends APIController {
 		String origin = Play.application().configuration().getString("portal.originUrl");
 		if (origin.equals("https://demo.midata.coop:9002")) origin = "https://demo.midata.coop"; 
 		String authPage = origin +"/authorized.html";
-		
+		final Http.Request req = request();
         try {
 		// request access token	
 		Promise<WSResponse> promise = WS
@@ -479,6 +481,11 @@ public class Plugins extends APIController {
 					
 					return ok();
 				} else {
+					Stats.startRequest();
+					Stats.setPlugin(appId);
+					Stats.addComment("extern server: "+response.getStatus()+" "+response.getBody());
+					Stats.finishRequest(req, "400 Access token not found.");
+					
 					return badRequest("Access token not found.");
 				}
 				} finally {

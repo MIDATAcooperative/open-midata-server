@@ -42,6 +42,10 @@ public class Stats {
 		statsRecorder = Akka.system().actorOf(Props.create(StatsRecorder.class), "statsRecorder");
 	}
 	
+	public static void startRequest() {
+		startRequest(null);
+	}
+	
 	public static void startRequest(Request req) {
 		if (!enabled) return;
 		
