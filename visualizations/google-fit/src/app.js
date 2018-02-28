@@ -60,43 +60,50 @@ googleFit.factory('importer', ['$http', '$translate', 'midataServer', '$q', func
 	$scope.init = function (authTokenImport) {
 		authToken = authTokenImport;
 		$scope.measuresRequested = $scope.measurements.length; //number of measure to import
+		var promises = [];
 		//Get the config from the midata server
-		midataServer.getConfig(authToken)
-			.then(function (response) {
-				if (response.data && response.data.selected) {
-					$scope.countSelected = response.data.selected.length;
-					$scope.autoimport = response.data.autoimport; //If auto import has to be do
-					$scope.typeOfRequest = response.data.typeOfRequest;
-					//For each measure detect if this value has to be imported or not
-					angular.forEach($scope.measurements, function (measurement) {
-						if (response.data.selected.indexOf(measurement.name) >= 0) {
+		promises.push(
+			midataServer.getConfig(authToken)
+				.then(function (response) {
+					if (response.data && response.data.selected) {
+						$scope.countSelected = response.data.selected.length;
+						$scope.autoimport = response.data.autoimport; //If auto import has to be do
+						$scope.typeOfRequest = response.data.typeOfRequest;
+						//For each measure detect if this value has to be imported or not
+						angular.forEach($scope.measurements, function (measurement) {
+							if (response.data.selected.indexOf(measurement.name) >= 0) {
+								measurement.import = true;
+							}
+						});
+					} else {
+						//For each measure detect if the values has to be imported or not
+						angular.forEach($scope.measurements, function (measurement) {
 							measurement.import = true;
-						}
-					});
-				} else {
-					//For each measure detect if the values has to be imported or not
-					angular.forEach($scope.measurements, function (measurement) {
-						measurement.import = true;
-					});
-				}
-			});
+						});
+					}
+				})
+		);
 
 		//For each measure get the date of the last value, of the oldest value and the number of values present in MIDATA
 		angular.forEach($scope.measurements, function (measurement) {
 
 			measurement.import = false;
-			midataServer.getSummary(authToken, "content", { "format": "fhir/Observation", "content": "activities/steps", "app": "googleFitPlugin" })
-				.then(function (response) {
-					if (typeof response.data[0] !== 'undefined') {
-						measurement.newest = response.data[0].newest;
-						var oneDayInMillis = 24 * 60 * 60 * 1000;
-						daysSinceLastImport = Math.round(Math.abs((new Date(measurement.newest).getTime() - new Date().getTime()) / (oneDayInMillis)));
-						$scope.last = measurement.newest;
-						measurement.oldest = response.data[0].oldest;
-						measurement.nbOfValues = response.data[0].count;
-					}
-				});
+			promises.push(
+				midataServer.getSummary(authToken, "content", { "format": "fhir/Observation", "content": "activities/steps", "app": "googleFitPlugin" })
+					.then(function (response) {
+						if (typeof response.data[0] !== 'undefined') {
+							measurement.newest = response.data[0].newest;
+							var oneDayInMillis = 24 * 60 * 60 * 1000;
+							daysSinceLastImport = Math.round(Math.abs((new Date(measurement.newest).getTime() - new Date().getTime()) / (oneDayInMillis)));
+							$scope.last = measurement.newest;
+							measurement.oldest = response.data[0].oldest;
+							measurement.nbOfValues = response.data[0].count;
+						}
+					})
+			);
+
 		});
+		return promises;
 	};
 
 	/**
@@ -112,6 +119,7 @@ googleFit.factory('importer', ['$http', '$translate', 'midataServer', '$q', func
 			if (measurement.import) {
 				if (typeof daysSinceLastImport === 'undefined' || daysSinceLastImport > 0) {
 					$scope.saving = true;
+
 					//Get the steps values from midata
 					getMidataRecords(measurement).then(function (values) {
 						midataRecords = values.data;
@@ -388,6 +396,9 @@ googleFit.factory('importer', ['$http', '$translate', 'midataServer', '$q', func
 			$scope.saving = false;
 		}
 	};
+	/**
+	* Save the configuration of the plugin in midata
+	*/
 	$scope.saveConfig = function () {
 		var config = { autoimport: $scope.autoimport, selected: [], typeOfRequest: $scope.typeOfRequest };
 		angular.forEach($scope.measurements, function (measurement) {
@@ -395,10 +406,17 @@ googleFit.factory('importer', ['$http', '$translate', 'midataServer', '$q', func
 		});
 		midataServer.setConfig(authToken, config, $scope.autoimport);
 	};
-
+	/**
+	* Function called by the server to do the automatic importation
+	* @param authToken Authtoken of the midata platform
+	*/
 	$scope.automatic = function (authToken) {
 		console.log("run automatic");
-		return $scope.doImportation(authToken);
+		var init = $scope.init(authToken);
+		Promise.all(init).then(function () {
+			$scope.doImportation(authToken);
+		}
+		);
 	};
 	return $scope;
 }]);
@@ -413,7 +431,8 @@ googleFit.controller('GoogleFitCtrl', ['$q', '$scope', '$filter', '$location', '
 			var r = $scope.importer.measuresRequested > 0 ? $scope.importer.measuresRequested : 1;
 			return { 'width': Math.floor($scope.importer.measuresDone * 100 / r) + "%" };
 		};
-		importer.init(authToken);
+		var init = importer.init(authToken);
+		Promise.all(init).then();
 		$scope.importer = importer;
 		midataPortal.autoresize();
 		$translate.use(midataPortal.language);
