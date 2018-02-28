@@ -466,7 +466,8 @@ public class Plugins extends APIController {
 			public Result apply(WSResponse response) throws AppException {
 				try {
 				KeyManager.instance.continueSession(sessionHandle);
-				AccessLog.log(response.getBody());
+				final String body = response.getBody();
+				AccessLog.log(body);
 				JsonNode jsonNode = response.asJson();
 				if (jsonNode.has("access_token") && jsonNode.get("access_token").isTextual()) {
 					String accessToken = jsonNode.get("access_token").asText();
@@ -485,7 +486,7 @@ public class Plugins extends APIController {
 					Stats.startRequest();
 					Stats.setPlugin(appId);
 					Stats.addComment("send:"+post);
-					Stats.addComment("extern server: "+response.getStatus()+" "+response.getBody());
+					Stats.addComment("extern server: "+response.getStatus()+" "+body);
 					Stats.finishRequest(req, "400");
 					
 					return badRequest("Access token not found.");
@@ -541,13 +542,13 @@ public class Plugins extends APIController {
 		Object rt = tokens.get("refreshToken");
 		if (rt == null) AccessLog.log("tokens="+tokens.toString());
 		String refreshToken = rt.toString();
-       
+        final String post = "client_id="+app.consumerKey+"&grant_type=refresh_token&refresh_token="+refreshToken;
 		// request access token	
 		Promise<WSResponse> promise = WS
 		   .url(app.accessTokenUrl)
 		   .setAuth(app.consumerKey, app.consumerSecret)
 		   .setContentType("application/x-www-form-urlencoded; charset=utf-8")
-		   .post("client_id="+app.consumerKey+"&grant_type=refresh_token&refresh_token="+refreshToken);
+		   .post(post);
 		return promise.map(new Function<WSResponse, Boolean>()  {
 			public Boolean apply(WSResponse response) throws AppException {
 				KeyManager.instance.continueSession(sessionHandle);
@@ -568,6 +569,12 @@ public class Plugins extends APIController {
 					}
 					return true;
 				} else {
+					Stats.startRequest();
+					Stats.setPlugin(app._id);
+					Stats.addComment("send:"+post);
+					Stats.addComment("extern server: "+response.getStatus()+" "+response.getBody());
+					Stats.finishRequest("intern", "/oauth2", null, "400", Collections.<String>emptySet());
+					
 					return false;
 				}
 			}
