@@ -318,6 +318,7 @@ public class Market extends APIController {
 			app.filename = JsonValidation.getStringOrNull(pluginJson, "filename");						
 			app.creatorLogin = JsonValidation.getStringOrNull(pluginJson, "creatorLogin");
 			app.status = JsonValidation.getEnum(pluginJson, "status", PluginStatus.class);
+			app.icons = EnumSet.noneOf(IconUse.class);
 			User u = Developer.getByEmail(app.creatorLogin, Sets.create("_id", "email"));
 			if (u != null) {
 			   app.creator = u._id;
@@ -337,6 +338,8 @@ public class Market extends APIController {
 			icon.use = JsonValidation.getEnum(iconData, "use", IconUse.class);
 			icon.status = app.status;		
 			icon.data = iconData.get("data").binaryValue();
+			if (app.icons == null) app.icons = EnumSet.noneOf(IconUse.class);
+			app.icons.add(icon.use);
 			icons.add(icon);
 		}
 		
@@ -346,6 +349,7 @@ public class Market extends APIController {
 		} else {
 			try {
 			  app.update();
+			  app.updateIcons(app.icons);
 			  PluginIcon.delete(app.filename);
 			  for (PluginIcon icon : icons) PluginIcon.add(icon);
 			} catch (LostUpdateException e) {
@@ -522,7 +526,7 @@ public class Market extends APIController {
 		app.unlockCode = JsonValidation.getStringOrNull(json, "unlockCode");
 		app.writes = JsonValidation.getEnum(json, "writes", WritePermissionType.class);
 		app.i18n = new HashMap<String, Plugin_i18n>();
-		app.pluginVersion = System.currentTimeMillis();				
+		app.pluginVersion = System.currentTimeMillis();			
 		
 		Map<String, MessageDefinition> predefinedMessages = parseMessages(json);
 		if (predefinedMessages != null) app.predefinedMessages = predefinedMessages;
