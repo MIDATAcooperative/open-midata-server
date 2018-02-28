@@ -455,7 +455,7 @@ public class Plugins extends APIController {
 		String authPage = origin +"/authorized.html";
 		final Http.Request req = request();		
         try {
-        	final String post = "client_id="+app.consumerKey+"&grant_type=authorization_code&code="+json.get("code").asText()+"&redirect_uri="+URLEncoder.encode(authPage, "UTF-8");
+        	final String post = "client_id="+app.consumerKey+"&client_secret="+app.consumerSecret+"&grant_type=authorization_code&code="+json.get("code").asText()+"&redirect_uri="+URLEncoder.encode(authPage, "UTF-8");
 		// request access token	
 		Promise<WSResponse> promise = WS
 		   .url(app.accessTokenUrl)
