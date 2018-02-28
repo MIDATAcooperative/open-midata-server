@@ -28,7 +28,9 @@
     
     <tr>
       <td translate="date"></td>
-      <td>{{ record.data.effectiveDateTime | date }}</td>
+      <td><span ng-show="record.data.effectiveDateTime">{{ record.data.effectiveDateTime | date }}</span>
+      <span ng-show="record.data.effectivePeriod">{{ record.data.effectivePeriod.start | date }} - {{ record.data.effectivePeriod.end | date }}</span>
+      </td>
     </tr>
     
     <tr ng-show="record.ownerName">

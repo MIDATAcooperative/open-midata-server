@@ -1,4 +1,8 @@
-var en = {
+/*jshint laxcomma:true */
+
+var en = 
+//$START_LANGUAGE : en
+{
   "pick" : {
 	  "title" : "Questionnaires",
 	  "intro_empty" : "There are no questionnaires available. Start by creating your own questionnaire.",
@@ -67,13 +71,24 @@ var en = {
   "yes" : "Yes",
   
   "answers" : "Total nr of Answers"
-},
-de = {
+}
+//$END_LANGUAGE : en
+,de = 
+//$START_LANGUAGE : de
+{
 	
-},
-it = {
+}
+//$END_LANGUAGE : de
+,it = 
+//$START_LANGUAGE : it
+{
 		
-},
-fr = {
+}
+//$END_LANGUAGE : it
+,fr = 
+//$START_LANGUAGE : fr
+{
 		
-};
+}
+//$END_LANGUAGE : fr
+;

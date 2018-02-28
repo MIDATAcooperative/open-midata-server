@@ -254,7 +254,9 @@ angular.module('fhirObservation', [ 'midata', 'ui.router','ui.bootstrap', 'chart
 			
 			angular.forEach(sumResult.data, function(entry) {
 				if (entry.newestRecordContent.data.effectiveDateTime) {			
-				  queries.push({ "format" : "fhir/Observation", "content" : entry.newestRecordContent.content, "owner" : "self", "index" : { "effectiveDateTime" : { "!!!ge" : entry.newestRecordContent.data.effectiveDateTime } }, "sort" : "data.effectiveDateTime desc", "limit" : 1 } );
+				  queries.push({ "format" : "fhir/Observation", "content" : entry.newestRecordContent.content, "owner" : "self", "index" : { "effectiveDateTime|effectivePeriod.start|null" : { "!!!ge" : entry.newestRecordContent.data.effectiveDateTime } }, "sort" : "data.effectiveDateTime|effectivePeriod.start desc", "limit" : 1 } );
+				} else if (entry.newestRecordContent.data.effectivePeriod && entry.newestRecordContent.data.effectivePeriod.start) {
+  				  queries.push({ "format" : "fhir/Observation", "content" : entry.newestRecordContent.content, "owner" : "self", "index" : { "effectiveDateTime|effectivePeriod.start|null": { "!!!ge" : entry.newestRecordContent.data.effectivePeriod.start } }, "sort" : "data.effectiveDateTime|effectivePeriod.start desc", "limit" : 1 } );				
 		        } else {
 		          res.push($q.when(entry.newestRecordContent));
 		        } 
@@ -295,7 +297,7 @@ angular.module('fhirObservation', [ 'midata', 'ui.router','ui.bootstrap', 'chart
 			if (params.content) query.content = params.content;
 			if (params.owner) query.owner = params.owner;
 			if (params.ids) query._id = params.ids;
-			if (params.after && params.before) query.index = { "effectiveDateTime" : { "!!!ge" : params.after, "!!!lt" : params.before }};
+			if (params.after && params.before) query.index = { "effectiveDateTime|effectivePeriod.start|null" : { "!!!ge" : params.after, "!!!lt" : params.before }};
 		}
 		console.log(params);
 		return midataServer.getRecords(midataServer.authToken, query, ["name", "created", "content", "data", "owner", "ownerName"])

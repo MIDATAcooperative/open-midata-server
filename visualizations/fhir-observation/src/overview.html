@@ -24,7 +24,10 @@
 					</div>
 				</td>
 
-				<td>{{ record.data.effectiveDateTime | date }}</td>
+				<td>
+				  <span ng-show="record.data.effectiveDateTime">{{ record.data.effectiveDateTime | date }}</span>
+				  <span ng-show="record.data.effectivePeriod">{{ record.data.effectivePeriod.start | date }} - {{ record.data.effectivePeriod.end | date }}</span>
+				</td>
 				<td><button class="btn btn-default btn-xs" ng-click="showAddPopup(record)">
 						<span class="glyphicon glyphicon-plus"></span> add
 					</button>

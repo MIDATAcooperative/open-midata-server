@@ -1,4 +1,8 @@
-var en = {
+/*jshint laxcomma:true */
+
+var en = 
+//$START_LANGUAGE : en
+{
 	"empty" : "No documents available. Click on 'add' to upload a document.",
 	"title" : "Title",
 	"type" : "Type",
@@ -31,13 +35,24 @@ var en = {
 	"hospital" : "-4- Typically from hospital",
 	"patient" : "-2- Signed by patient",
 	"other" : "-3- 3rd Party Documents"
-},
-de = {
+}
+//$END_LANGUAGE : en
+,de = 
+//$START_LANGUAGE : de
+{
 	
-},
-it = {
+}
+//$END_LANGUAGE : de
+,it = 
+//$START_LANGUAGE : it
+{
 		
-},
-fr = {
+}
+//$END_LANGUAGE : it
+,fr = 
+//$START_LANGUAGE : fr
+{
 		
-};
+}
+//$END_LANGUAGE : fr
+;
