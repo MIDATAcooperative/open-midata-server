@@ -453,14 +453,15 @@ public class Plugins extends APIController {
 		String origin = Play.application().configuration().getString("portal.originUrl");
 		if (origin.equals("https://demo.midata.coop:9002")) origin = "https://demo.midata.coop"; 
 		String authPage = origin +"/authorized.html";
-		final Http.Request req = request();
+		final Http.Request req = request();		
         try {
+        	final String post = "client_id="+app.consumerKey+"&grant_type=authorization_code&code="+json.get("code").asText()+"&redirect_uri="+URLEncoder.encode(authPage, "UTF-8");
 		// request access token	
 		Promise<WSResponse> promise = WS
 		   .url(app.accessTokenUrl)
 		   .setAuth(app.consumerKey, app.consumerSecret)
 		   .setContentType("application/x-www-form-urlencoded; charset=utf-8")
-		   .post("client_id="+app.consumerKey+"&grant_type=authorization_code&code="+json.get("code").asText()+"&redirect_uri="+URLEncoder.encode(authPage, "UTF-8"));
+		   .post(post);
 		return promise.map(new Function<WSResponse, Result>() {
 			public Result apply(WSResponse response) throws AppException {
 				try {
@@ -483,8 +484,9 @@ public class Plugins extends APIController {
 				} else {
 					Stats.startRequest();
 					Stats.setPlugin(appId);
+					Stats.addComment("send:"+post);
 					Stats.addComment("extern server: "+response.getStatus()+" "+response.getBody());
-					Stats.finishRequest(req, "400 Access token not found.");
+					Stats.finishRequest(req, "400");
 					
 					return badRequest("Access token not found.");
 				}
