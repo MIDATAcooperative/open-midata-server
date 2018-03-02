@@ -170,7 +170,7 @@ angular.module('fhirDebug')
     
     $scope.addCoding = function(cc, system) {
     	if (!cc.coding) cc.coding = [];
-    	cc.coding.push({ system: (system || ""), value : "", display : "" });
+    	cc.coding.push({ system: (system || ""), code : "", display : "" });
     };
     
     $scope.addText = function(cc) {

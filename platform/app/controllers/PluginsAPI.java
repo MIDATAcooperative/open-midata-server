@@ -771,8 +771,14 @@ public class PluginsAPI extends APIController {
 		holder.setHeader("Authorization", "Bearer " + accessToken);
 		
 		if (method == null || method.equalsIgnoreCase("get")) return holder.get();
-		if (method.equalsIgnoreCase("post")) return holder.post(body);
-		if (method.equalsIgnoreCase("put")) return holder.put(body);
+		if (method.equalsIgnoreCase("post")) {
+			if (body == null) throw new BadRequestException("error.missing.body", "Missing request body for POST request.");
+			return holder.post(body);
+		}
+		if (method.equalsIgnoreCase("put")) {
+			if (body == null) throw new BadRequestException("error.missing.body", "Missing request body for PUT request.");
+			return holder.put(body);
+		}
 		if (method.equalsIgnoreCase("delete")) return holder.delete();
 		
 		throw new BadRequestException("error.internal", "Unknown request type");

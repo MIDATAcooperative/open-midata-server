@@ -101,6 +101,7 @@
                    <button type="button" class="close" aria-label="Close" ng-click="removeCoding(access[idx].coding, coding);change();"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <div ng-show="access[idx].$$fhirSearch">
+                  <div class="clearfix"></div>
                 <ul>
                   <li ng-repeat="sel in access[idx].$$fhirSearch"><a href="javascript:" ng-click="chooseOption(access[idx], false, sel)">{{ sel.code }}</a>: {{ sel.display }}</li>
                 </ul>
@@ -136,12 +137,13 @@
                  </div>             
                </div>
              </div>
-             <div class="row extraspace" ng-show="access[idx].text" style="margin-bottom:5px">
+            
+           </div>
+           <div class="row extraspace" ng-show="access[idx].text" style="margin-bottom:5px">
                <div class="col-xs-12" >
                  <input type="text" class="form-control" ng-change="change();" ng-model-debounce="1000" ng-model="access[idx].text"  popover-placement="auto top" popover-trigger="'mouseenter'" popover-title="{{ field.label }}" uib-popover="{{ field.description }}">
                </div>
              </div>
-           </div>
            <div>
               <button ng-click="addCoding(access[idx])" class="btn btn-default btn-xs">add coding</button>
               <button ng-click="addText(access[idx])" class="btn btn-default btn-xs">add freetext</button>
