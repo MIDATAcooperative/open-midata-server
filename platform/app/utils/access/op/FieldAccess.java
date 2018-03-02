@@ -105,13 +105,13 @@ public class FieldAccess implements Condition {
 				for (Condition part : ((AndCondition) cond).getParts()) {
 					r = AndCondition.and(r, new FieldAccess(path, part));
 				}
-				return r.indexExpression();
+				return r == null ? null : r.indexExpression();
 			} else if (cond instanceof OrCondition) {
 				Condition r = null;
 				for (Condition part : ((OrCondition) cond).getParts()) {
 					r = OrCondition.or(r, new FieldAccess(path, part));
 				}
-				return r.indexExpression();
+				return r == null ? null : r.indexExpression();
 			} 
 			return null;
 		}
