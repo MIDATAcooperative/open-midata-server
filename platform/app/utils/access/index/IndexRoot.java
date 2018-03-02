@@ -252,7 +252,8 @@ public class IndexRoot {
 				}				
 			} else if (res != null) {
 			  if (res instanceof String) inf.key[keyIdx] = (Comparable) ((String) res).toUpperCase();
-			  else inf.key[keyIdx] = (Comparable) res;
+			  else if (res instanceof Comparable) inf.key[keyIdx] = (Comparable) res;
+			  else inf.key[keyIdx] = null;
 			  extract(keyIdx+1, inf, null, null, null, 0, remove);
 			} else {
 			  extract(keyIdx, inf, null, null, allpath, pathIdx, remove);
