@@ -10,6 +10,7 @@ import java.util.Set;
 
 
 import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.dstu3.model.DateTimeType;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.IntegerType;
@@ -479,7 +480,7 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 			// If there are only few records execute query without restriction
 			if (code.count < Math.max(count * 2, 30)) {
 				paramMap.remove("date");
-				addBundle(paramMap, retVal);
+				addBundle(paramMap, retVal, code.count);
 			} else {
 				
 				// Otherwise determine effective date of last written record
@@ -503,7 +504,7 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 				paramMap.add("date", (IQueryParameterType) new DateParam(ParamPrefixEnum.STARTS_AFTER, limit));
 				
 				// Search
-				int found = addBundle(paramMap, retVal);
+				int found = addBundle(paramMap, retVal, code.count);
 				int retries = 3;
 				
 				// If we did not find enough results retry 3 times
@@ -526,7 +527,7 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 					paramMap.add("date", daterange);
 					
 					// Search again
-					found += addBundle(paramMap, retVal);				
+					found += addBundle(paramMap, retVal, code.count);				
 				}
 			}
 		}
@@ -535,10 +536,12 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
  	    return retVal;
 	}
 	
-	private int addBundle(SearchParameterMap paramMap, Bundle retVal) {
+	private int addBundle(SearchParameterMap paramMap, Bundle retVal, int count) {
 		List<IBaseResource> partResult = search(paramMap);												
 		for (IBaseResource res : partResult) {
-			retVal.addEntry().setResource((Resource) res); 
+			BundleEntryComponent cmp = retVal.addEntry();
+			cmp.setResource((Resource) res);
+			cmp.addExtension("http://midata.coop/Extensions/total-count", new IntegerType(count));
 		}		
 		return partResult.size();
 	}
