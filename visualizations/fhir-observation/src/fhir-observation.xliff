@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.1" xml:lang="en">
+    <file source-language="en" target-language="it" datatype="winres" original="i18n.js_it.json">
+        <trans-unit resname="person" id="person">
+            <source>Person:</source>
+        </trans-unit>
+        <trans-unit resname="measure" id="measure">
+            <source>Measure:</source>
+        </trans-unit>
+        <trans-unit resname="category" id="category">
+            <source>Category:</source>
+        </trans-unit>
+        <trans-unit resname="date" id="date">
+            <source>Date:</source>
+        </trans-unit>
+        <trans-unit resname="status" id="status">
+            <source>Status:</source>
+        </trans-unit>
+        <trans-unit resname="add_btn" id="add_btn">
+            <source>Add</source>
+        </trans-unit>
+        <trans-unit resname="add_new_btn" id="add_new_btn">
+            <source>Add new measure</source>
+        </trans-unit>
+        <trans-unit resname="back_btn" id="back_btn">
+            <source>Timeline View</source>
+        </trans-unit>
+        <trans-unit resname="later" id="later">
+            <source>&gt;&gt;</source>
+        </trans-unit>
+        <trans-unit resname="earlier" id="earlier">
+            <source>&lt;&lt;</source>
+        </trans-unit>
+        <trans-unit resname="change_btn" id="change_btn">
+            <source>Change</source>
+        </trans-unit>
+        <trans-unit resname="empty" id="empty">
+            <source>No measurements found.</source>
+        </trans-unit>
+        <trans-unit resname="data_added" id="data_added">
+            <source>Observation added</source>
+        </trans-unit>
+        <trans-unit resname="registered" id="registered">
+            <source>Registered</source>
+        </trans-unit>
+        <trans-unit resname="preliminary" id="preliminary">
+            <source>Preliminary</source>
+        </trans-unit>
+        <trans-unit resname="final" id="final">
+            <source>Final</source>
+        </trans-unit>
+        <trans-unit resname="amended" id="amended">
+            <source>Amended</source>
+        </trans-unit>
+        <trans-unit resname="cancelled" id="cancelled">
+            <source>Cancelled</source>
+        </trans-unit>
+        <trans-unit resname="entered-in-error" id="entered-in-error">
+            <source>Entered in Error</source>
+        </trans-unit>
+        <trans-unit resname="unknown" id="unknown">
+            <source>Unknown Status</source>
+        </trans-unit>
+        <group resname="category_names" id="category_names">
+            <trans-unit resname="social-history" id="category_names.social-history">
+                <source>Social History</source>
+            </trans-unit>
+            <trans-unit resname="vital-signs" id="category_names.vital-signs">
+                <source>Vital Signs</source>
+            </trans-unit>
+            <trans-unit resname="imaging" id="category_names.imaging">
+                <source>Imaging</source>
+            </trans-unit>
+            <trans-unit resname="laboratory" id="category_names.laboratory">
+                <source>Laboratory</source>
+            </trans-unit>
+            <trans-unit resname="procedure" id="category_names.procedure">
+                <source>Procedure</source>
+            </trans-unit>
+            <trans-unit resname="survey" id="category_names.survey">
+                <source>Survey</source>
+            </trans-unit>
+            <trans-unit resname="exam" id="category_names.exam">
+                <source>Exam</source>
+            </trans-unit>
+            <trans-unit resname="therapy" id="category_names.therapy">
+                <source>Therapy</source>
+            </trans-unit>
+            <trans-unit resname="fitness" id="category_names.fitness">
+                <source>Fitness Data</source>
+            </trans-unit>
+        </group>
+    </file>
+</xliff>

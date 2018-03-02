@@ -5,6 +5,9 @@
         // TODO NEW: Members
         "members" : "Members",
 
+        // TODO NEW: Audit
+        "auditlog" : "Audit",
+
         // TODO NEW: News
         "news" : "News",
 
@@ -17,8 +20,8 @@
         // TODO NEW: Studies
         "studies" : "Studies",
 
-        // TODO NEW: Terms
-        "terms" : "Terms",
+        // TODO NEW: Terms and Conditions
+        "terms" : "Terms and Conditions",
 
         // TODO NEW: Register Admin
         "registration" : "Register Admin"
@@ -38,6 +41,15 @@
         // TODO NEW: Signed contract needs to be confirmed
         "contract_confirm_required" : "Signed contract needs to be confirmed",
 
+        // TODO NEW: Email not yet confirmed by user
+        "no_email_confirm" : "Email not yet confirmed by user",
+
+        // TODO NEW: Email confirmation rejected by user
+        "email_rejected" : "Email confirmation rejected by user",
+
+        // TODO NEW: Not confirmed by administrator
+        "not_admin_confirmed" : "Not confirmed by administrator",
+
         // TODO NEW: Overview
         "overview" : "Overview",
 
@@ -50,8 +62,8 @@
         // TODO NEW: Status
         "status" : "Status",
 
-        // TODO NEW: midataID
-        "midata_id" : "midataID",
+        // TODO NEW: MIDATA-ID
+        "midata_id" : "MIDATA-ID",
 
         // TODO NEW: No matching users found.
         "empty" : "No matching users found."
@@ -83,10 +95,8 @@
         // TODO NEW: Contract Status:
         "contract_status" : "Contract Status:",
 
-        // TODO CHANGED
-        // OLD: EMail Status:
-        // NEW: eMail Status:
-        "email_status" : "EMail Status:",
+        // TODO NEW: Email Status:
+        "email_status" : "Email Status:",
 
         // TODO NEW: Confirmation Code:
         "confirmation_code" : "Confirmation Code:",
@@ -97,15 +107,11 @@
         // TODO NEW: Confirmation Date:
         "confirmation_date" : "Confirmation Date:",
 
-        // TODO CHANGED
-        // OLD: Last login:
-        // NEW: Last Login:
-        "last_login" : "Last login:",
+        // TODO NEW: Last Login:
+        "last_login" : "Last Login:",
 
-        // TODO CHANGED
-        // OLD: Confirm email address
-        // NEW: Confirm eMail Address
-        "email_confirm_btn" : "Confirm email address",
+        // TODO NEW: Confirm Email Address
+        "email_confirm_btn" : "Confirm Email Address",
 
         // TODO NEW: Comment
         "comment" : "Comment",
@@ -114,7 +120,10 @@
         "add_comment_btn" : "Add Comment",
 
         // TODO NEW: Wipe Account
-        "wipe_btn" : "Wipe Account"
+        "wipe_btn" : "Wipe Account",
+
+        // TODO NEW: Change Email Address
+        "change_email_btn" : "Change Email Address"
     },
 
     "admin_news" : {
@@ -173,13 +182,50 @@
         // TODO NEW: Plugins
         "title" : "Plugins",
 
-        // TODO CHANGED
-        // OLD: Restrict by Developer
-        // NEW: Filter by Developer
-        "developer" : "Restrict by Developer",
+        // TODO NEW: Filter by Developer
+        "developer" : "Filter by Developer",
+
+        // TODO NEW: Filter by Appname
+        "name" : "Filter by Appname",
+
+        // TODO NEW: Filter by Organisation
+        "organisation" : "Filter by Organisation",
 
         // TODO NEW: There are no apps or plugins yet.
-        "empty" : "There are no apps or plugins yet."
+        "empty" : "There are no apps or plugins yet.",
+
+        // TODO NEW: Name
+        "plugin_name" : "Name",
+
+        // TODO NEW: Developer
+        "plugin_developer" : "Developer",
+
+        // TODO NEW: Type
+        "plugin_type" : "Type",
+
+        // TODO NEW: Target Role
+        "plugin_role" : "Target Role",
+
+        // TODO NEW: MISTORE
+        "plugin_market" : "MISTORE",
+
+        // TODO NEW: Stats
+        "plugin_stats" : "Stats",
+
+        // TODO NEW: Status
+        "plugin_status" : "Status",
+
+        // TODO NEW: Import Plugin Definition
+        "add_definition_btn" : "Import Plugin Definition"
+    },
+
+    "admin_defineplugin" : {
+
+        // TODO NEW: Import Plugin Definition
+        "title" : "Import Plugin Definition",
+
+        // TODO NEW: Definition (JSON)
+        "definition" : "Definition (JSON)"
     },
 
     "admin_studies" : {
@@ -196,11 +242,11 @@
 
     "admin_terms" : {
 
-        // TODO NEW: Terms of Use
-        "title" : "Terms of Use",
+        // TODO NEW: Terms and Conditions
+        "title" : "Terms and Conditions",
 
-        // TODO NEW: No terms of use stored.
-        "empty" : "No terms of use stored.",
+        // TODO NEW: No Terms and Conditions available.
+        "empty" : "No Terms and Conditions available.",
 
         // TODO NEW: Name
         "name" : "Name",
@@ -217,8 +263,8 @@
 
     "admin_manageterms" : {
 
-        // TODO NEW: Terms of Use
-        "pagetitle" : "Terms of Use",
+        // TODO NEW: Terms and Conditions
+        "pagetitle" : "Terms and Conditions",
 
         // TODO NEW: Internal Name
         "name" : "Internal Name",
@@ -244,8 +290,11 @@
         // TODO NEW: Name
         "name" : "Name",
 
-        // TODO NEW: Created At
-        "created_at" : "Created At",
+        // TODO NEW: Created at
+        "created_at" : "Created at",
+
+        // TODO NEW: Created by
+        "created_by" : "Created by",
 
         // TODO NEW: Description
         "description" : "Description",
@@ -253,17 +302,26 @@
         // TODO NEW: Code
         "code" : "Code",
 
+        // TODO NEW: Start Date
+        "startDate" : "Start Date",
+
+        // TODO NEW: End Date
+        "endDate" : "End Date",
+
+        // TODO NEW: Data freeze date
+        "dataCreatedBefore" : "Data freeze date",
+
         // TODO NEW: Required Information
         "required_information" : "Required Information",
 
         // TODO NEW: Required Assistance
         "required_assistance" : "Required Assistance",
 
-        // TODO NEW: Terms Of Use
-        "termsOfUse" : "Terms Of Use",
+        // TODO NEW: Terms and Conditions
+        "termsOfUse" : "Terms and Conditions",
 
-        // TODO NEW: Sharing Query
-        "sharing_query" : "Sharing Query",
+        // TODO NEW: Data Access Filter
+        "sharing_query" : "Data Access Filter",
 
         // TODO NEW: Requirements
         "requirements" : "Requirements",
@@ -277,11 +335,20 @@
         // TODO NEW: Description
         "group_description" : "Description",
 
+        // TODO NEW: Team
+        "team" : "Team",
+
+        // TODO NEW: Role
+        "role" : "Role",
+
         // TODO NEW: History
         "history" : "History",
 
-        // TODO NEW: End Validation
-        "end_validation_btn" : "End Validation",
+        // TODO NEW: Complete Validation
+        "end_validation_btn" : "Complete Validation",
+
+        // TODO NEW: Back to Draft
+        "back_to_draft_btn" : "Back to Draft",
 
         // TODO NEW: Delete Study
         "delete_study_btn" : "Delete Study"

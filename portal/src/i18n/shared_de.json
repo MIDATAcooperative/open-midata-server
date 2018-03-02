@@ -12,7 +12,6 @@
 
     "navbar" : {
         "toggle_navigation" : "Navigation an/aus",
-        "ribbon" : "Pilot Phase",
         "login" : "Anmelden",
         "sign_up" : "Registrieren",
         "sign_out" : "Abmelden",
@@ -46,6 +45,10 @@
         "mustbemember_detail" : "Um diese Funktion nutzen zu können, müssen sie Mitglied der MIDATA Genossenschaft sein. Klicken Sie auf Ihren Benutzernamen oben rechts und überprüfen Sie den Abschnitt 'Kontostatus'",
         "notauthorized" : {
             "action" : "Sie sind nicht berechtigt diese Aktion auszuführen",
+
+            // TODO CHANGED
+            // OLD: You are not authorized to query provided fields
+            // NEW: You are not authorized to query the provided fields
             "fields" : "Sie sind nicht berechtigt diese Felder abzufragen",
             "account" : "Sie sind nicht berechtigt auf dieses Konto zuzugreifen",
             "study" : "Sie sind nicht berechtigt diese Studie einzusehen",
@@ -76,7 +79,15 @@
             "passcode" : "Falscher Zugangscode",
             "plugin" : "Dieses Plugin ist nur für eine andere Rolle vorgesehen",
             "unlock_code" : "Falscher Freischaltcode",
+
+            // TODO CHANGED
+            // OLD: Access query must restrict by 'content' or 'group'!
+            // NEW: The Data Access Filter must restrict by 'content' or 'group'!
             "access_query" : "Der Datenzugriffsfilter (Data Access Filter) muss nach 'content' oder 'group' einschränken!",
+
+            // TODO CHANGED
+            // OLD: The Sharing Query accesses data types that are excluded by study configuration.
+            // NEW: The Data Access Filter contains data types that are excluded by the study configuration.
             "sharing" : "Der Datenzugriffsfilter (Data Access Filter) beinhaltet Datentypen, die von der Studienkonfiguration ausgeschlossen sind."
         },
 
@@ -93,7 +104,10 @@
             "privacypolicy" : "Die Datenschutzerklärung muss akzeptiert werden.",
             "study_accept" : "Die Studienteilnahme muss akzeptiert werden.",
             "study_group" : "Der Teilnehmer muss zuerst zu einer Gruppe zugeordnet werden.",
-            "confirmation" : "Bestätigung durch Benutzer zuerst erforderlich."
+            "confirmation" : "Bestätigung durch Benutzer zuerst erforderlich.",
+
+            // TODO NEW: No file for upload selected
+            "file" : "No file for upload selected"
         },
 
         "unknown" : {
@@ -163,6 +177,12 @@
             "consent" : "Zustimmungen für Studien können nicht verändert werden.",
             "study" : "Der Studienaufbau kann nur während der Entwurfsphase geändert werden.",
             "group" : "Die Teilnehmergruppe kann nur geändert werden, wenn die Studie noch nicht gestartet wurde oder wenn noch keine Teilnehmer angenommen wurden."
+        },
+
+        "too_large" : {
+
+            // TODO NEW: File is larger than allowed.
+            "file" : "File is larger than allowed."
         }
 
     },
@@ -352,6 +372,9 @@
             "SPONSOR" : "Sponsor",
             "INVESTIGATOR" : "Investigator",
             "AUDITOR" : "Auditor",
+
+            // TODO NEW: Study Nurse
+            "STUDYNURSE" : "Study Nurse",
             "MONITOR" : "Monitor",
             "OTHER" : "Andere"
         },
@@ -567,6 +590,10 @@
         "resend_btn" : "E-Mail erneut versenden",
         "retry_btn" : "Anmeldung erneut versuchen",
         "contract_instructions" : "Ein Vertrag wurde an Ihre Postadresse versandt. Schicken Sie ihn bitte unterschrieben an MIDATA zurück.",
+
+        // TODO CHANGED
+        // OLD: During the pilot phase (or if you are on a test server) NO contract will be sent to you. A MIDATA administrator will verify and unlock your account. You will be notified when your account has been unlocked.
+        // NEW: A MIDATA administrator will verify and unlock your account. You will be notified when your account has been unlocked.
         "pilot_phase" : "Während der Pilotphase (oder auf der Testinstanz) wird KEIN Vertrag versendet. Ein MIDATA Administrator wird Ihr Konto verifizieren und freischalten. Sie werden informiert, wenn Ihr Konto freigeschaltet wurde.",
         "code_intructions" : "Ein Brief mit einem Bestätigungscode wurde an Ihre Postadresse versandt. Geben Sie bitte den Bestätigungscode ein, um Zugriff auf die Plattform zu erhalten.",
         "code_done" : "Sie haben den Bestätigungscode eingegeben. Sie werden sich anmelden können sobald Ihr unterschriebener Vertrag bei MIDATA eingetroffen ist.",
@@ -848,6 +875,10 @@
         "delete" : "löschen",
         "delete_all_btn" : "alle löschen",
         "empty" : "Keine verfügbare Datensätze gefunden.",
+
+        // TODO CHANGED
+        // OLD: The record tree for this selection cannot be evaluated. There are too many consents involved.
+        // NEW: The record tree for this selection cannot be created. There are too many consents involved.
         "too_many_consents" : "Die Baumstruktur der Datensätze kann für diese Selektion nicht erstellt werden. Es geht um zu viele Zustimmungen.",
         "close_btn" : "Schliessen"
     },

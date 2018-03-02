@@ -1,0 +1,95 @@
+/*jshint laxcomma:true */
+
+var en = 
+//$START_LANGUAGE : en
+{
+  "todays_date" : "Today's date:",
+
+  "add_data_btn" : "Add Data",
+  "event" : "Event",
+  "tlb" : "Mark If",
+  "persons" : "Person(s)",
+  "date" : "Date",
+  "details" : "Details",
+  "close_btn" : "Close",
+  "details_btn" : "Open Details",
+  
+  "appointment" : "Appointments",
+  "medicationStatement" : "Medication",
+  "observation" : "Observations and Measurements",
+
+  "add_sources_title" : "Add Data Sources",
+  "no_data_sources" : "Currently there is no data available that could be displayed in the calendar. Please come back after you have some data in your account.",
+  "add_sources_add_btn" : "Add"
+}
+//$END_LANGUAGE : en
+,de = 
+//$START_LANGUAGE : de
+{
+  "todays_date" : "Today's date:",
+
+  "add_data_btn" : "Add Data",
+  "event" : "Event",
+  "tlb" : "Mark If",
+  "persons" : "Person(s)",
+  "date" : "Date",
+  "details" : "Details",
+  "close_btn" : "Close",
+  "details_btn" : "Open Details",
+  
+  "appointment" : "Appointments",
+  "medicationStatement" : "Medication",
+  "observation" : "Observations and Measurements",
+
+  "add_sources_title" : "Add Data Sources",
+  "no_data_sources" : "Currently there is no data available that could be displayed in the calendar. Please come back after you have some data in your account.",
+  "add_sources_add_btn" : "Add"
+}
+//$END_LANGUAGE : de
+,it = 
+//$START_LANGUAGE : it
+{
+  "todays_date" : "Today's date:",
+
+  "add_data_btn" : "Add Data",
+  "event" : "Event",
+  "tlb" : "Mark If",
+  "persons" : "Person(s)",
+  "date" : "Date",
+  "details" : "Details",
+  "close_btn" : "Close",
+  "details_btn" : "Open Details",
+  
+  "appointment" : "Appointments",
+  "medicationStatement" : "Medication",
+  "observation" : "Observations and Measurements",
+
+  "add_sources_title" : "Add Data Sources",
+  "no_data_sources" : "Currently there is no data available that could be displayed in the calendar. Please come back after you have some data in your account.",
+  "add_sources_add_btn" : "Add"
+}
+//$END_LANGUAGE : it
+,fr = 
+//$START_LANGUAGE : fr
+{
+  "todays_date" : "Today's date:",
+
+  "add_data_btn" : "Add Data",
+  "event" : "Event",
+  "tlb" : "Mark If",
+  "persons" : "Person(s)",
+  "date" : "Date",
+  "details" : "Details",
+  "close_btn" : "Close",
+  "details_btn" : "Open Details",
+  
+  "appointment" : "Appointments",
+  "medicationStatement" : "Medication",
+  "observation" : "Observations and Measurements",
+
+  "add_sources_title" : "Add Data Sources",
+  "no_data_sources" : "Currently there is no data available that could be displayed in the calendar. Please come back after you have some data in your account.",
+  "add_sources_add_btn" : "Add"
+}
+//$END_LANGUAGE : fr
+;

@@ -63,9 +63,69 @@
     },
 
     "manageapp" : {
+
+        // TODO NEW: Application Overview
+        "overview" : "Application Overview",
+
+        // TODO NEW: Functions to manage your application
+        "choose" : "Functions to manage your application",
+
+        // TODO NEW: Internal Name
+        "filename" : "Internal Name",
+
+        // TODO NEW: Application Type
+        "type" : "Application Type",
+
+        // TODO NEW: Target Audience
+        "targetUserRole" : "Target Audience",
+
+        // TODO NEW: Change Settings
+        "edit_btn" : "Change Settings",
+
+        // TODO NEW: Change setup for your application.
+        "edit_help" : "Change setup for your application.",
+
+        // TODO NEW: Test your plugin from localhost
+        "testfromlocal_btn" : "Test your plugin from localhost",
+
+        // TODO NEW: During development you can test the plugin code stored on your local computer on this server.
+        "testfromlocal_help" : "During development you can test the plugin code stored on your local computer on this server.",
+
+        // TODO NEW: Test automatic import script.
+        "serverimport_btn" : "Test automatic import script.",
+
+        // TODO NEW: If your plugin offers automatic import, you can test the script of your plugin that is normally run on the server on your local computer.
+        "serverimport_help" : "If your plugin offers automatic import, you can test the script of your plugin that is normally run on the server on your local computer.",
+
+        // TODO NEW: Application Icons and Images
+        "icon_btn" : "Application Icons and Images",
+
+        // TODO NEW: Upload and manage icons and images to be used with your application. Provide images for login screen, appstore, consent accept screen, etc.
+        "icon_help" : "Upload and manage icons and images to be used with your application. Provide images for login screen, appstore, consent accept screen, etc.",
+
+        // TODO CHANGED
+        // OLD: Edit Messages
+        // NEW: Application eMail Messages
         "messages_btn" : "Nachrichten bearbeiten",
+
+        // TODO NEW: Provide your own email texts sent to new user accounts, on first use of your application, for accepting consents and more.
+        "messages_help" : "Provide your own email texts sent to new user accounts, on first use of your application, for accepting consents and more.",
+
+        // TODO CHANGED
+        // OLD: Debug Info
+        // NEW: Error and Performance Statistics
         "stats_btn" : "Debug Info",
+
+        // TODO NEW: View statistics and hints for improvements about the various types of API calls your application sends to the server.
+        "stats_help" : "View statistics and hints for improvements about the various types of API calls your application sends to the server.",
+
+        // TODO CHANGED
+        // OLD: API Tester
+        // NEW: API Tester Sandbox
         "debug_btn" : "API Tester",
+
+        // TODO NEW: Login as your app and test queries against the MIDATA backend
+        "debug_help" : "Login as your app and test queries against the MIDATA backend",
         "linkedStudy" : "Mit der App verknüpfte Studie (Code)",
         "mustParticipateInStudy" : "Studienteilnahme erforderlich",
         "admin_only" : "Nur ein MIDATA Administrator darf diesen Abschnitt ändern. Bitte fordern Sie bei Bedarf Änderungen an.",
@@ -83,30 +143,104 @@
 
             // TODO Dashboard
             "defaultSpaceName" : "Titel der Kachel des Plugins auf dem Dashboard.",
+
+            // TODO CHANGED
+            // OLD: Categories on the market place for which your plugin should be listed.
+            // NEW: Categories on MISTORE for which your plugin should be listed.
             "tags" : "Kategorien unter welchen das Plugin im MISTORE erscheinen wird.",
             "url" : "URL der Hauptseite des Plugins. Wenn Sie das MIDATA-Template verwenden ist es 'dist/index.html#?authToken=:authToken''",
             "previewUrl" : "URL der Dashboard-Kachel des Plugins. Leer lassen falls keine solche Kachel angeboten wird.",
 
             // TODO Konfiguration -> heisst jetzt anders
             "defaultSpaceContext" : "Wählen Sie 'Mich' für das Standard-Dashboard. Wählen Sie 'Konfiguration' für ein Import-Plugin.",
+
+            // TODO CHANGED
+            // OLD: Query restricting the access of the app to the database. Access must be restricted by 'code', 'content' or 'group' and may be restricted by 'format' or 'owner'. Valid example (all Observations): '{ "group" : "all", "group-system" : "v1", "format" : ["fhir/Observation" ] }'
+            // NEW: Filter restricting the access of the app to the data. Access must be restricted by 'code', 'content' or 'group' and may be restricted by 'format' or 'owner'. Valid example (all Observations): '{ "group" : "all", "group-system" : "v1", "format" : ["fhir/Observation" ] }'
             "defaultQuery_mobile" : "Filter, das den Zugriff der App auf die Daten begrenzt. Der Zugriff muss eingeschränkt werden nach 'code', 'content' oder 'group' und kann eingeschränkt werden nach 'format' oder 'owner'. Gültiges Beispiel (alle Observations): '{ \"group\" : \"all\", \"group-system\" : \"v1\", \"format\" : [\"fhir/Observation\" ] }'",
+
+            // TODO CHANGED
+            // OLD: Query restricting the access of the plugin to the database. Access must be restricted by at least one of 'code', 'content', 'group', 'format' or 'owner'. Valid example (all Observations): '{ "format" : ["fhir/Observation" ] }'
+            // NEW: Filter restricting the access of the plugin to the data. Access must be restricted by at least one of 'code', 'content', 'group', 'format' or 'owner'. Valid example (all Observations): '{ "format" : ["fhir/Observation" ] }'
             "defaultQuery" : "Filter, das den Zugriff des Plugins auf die Daten begrenzt. Der Zugriff muss mindestens eingeschränkt werden nach 'code', 'content', 'group', 'format' oder 'owner'. Gültiges Beispiel (alle Observations): '{ \"format\" : [\"fhir/Observation\" ] }'",
+
+            // TODO CHANGED
+            // OLD: Look for valid values for 'code', 'content' or 'format' on the 'Format/Content' list of the developer guide. As a first version you may start with access to all data. For that use { "group" : "all", "group-system" : "v1" }. Please refine query before plugin or app goes in production.
+            // NEW: Look for valid values for 'code', 'content' or 'format' on the 'Format/Content' list of the developer guide. As a first version you may start with access to all data. For that use { "group" : "all", "group-system" : "v1" }. Please refine the filter before the plugin or the app goes in production.
             "defaultQuery_extra" : "Gültige Werte für 'code', 'content' oder 'format' sind im Developer Guide unter 'Format/Content' aufgelistet. Für erste Versionen kann der Vollzugriff erstattet werden mit { \"group\" : \"all\", \"group-system\" : \"v1\" }. Schränken Sie allerdings den Zugriff weiter ein, bevor das Plugin oder die App produktiv eingesetzt wird.",
             "secret" : "Ihre App braucht dieses 'secret' um sich anmelden zu können. Wählen Sie es nach Belieben.",
             "mustParticipateInStudy" : "Benutzer müssen an der Studie teilnehmen, um diese App benutzen zu können.",
             "unlock_code" : "Wenn ausgefüllt, muss dieser Code vom Benutzer bei der Registrierung oder ersten Anmeldung bei MIDATA über die App eingegeben werden. Der Code ist nicht 'case sensitiv'."
         },
+        "status" : {
+
+            // TODO NEW: Application Status
+            "title" : "Application Status",
+
+            // TODO NEW: Ready for productive use
+            "ACTIVE" : "Ready for productive use",
+
+            // TODO NEW: Beta version
+            "BETA" : "Beta version",
+
+            // TODO NEW: Under development - to be used by developer only
+            "DEVELOPMENT" : "Under development - to be used by developer only",
+
+            // TODO NEW: Deprecated. Should no longer be used.
+            "DEPRECATED" : "Deprecated. Should no longer be used.",
+
+            // TODO NEW: Deleted
+            "DELETED" : "Deleted"
+        },
+
+        // TODO NEW: Not linked to a study
+        "nostudy" : "Not linked to a study",
+
+        // TODO NEW: Participation Optional
+        "optionalParticipation" : "Participation Optional",
+
+        // TODO CHANGED
+        // OLD: Access Query (Options)
+        // NEW: Data Access Filter (Options)
         "access_query_options" : "Data Access Filter (Optionen)",
+
+        // TODO CHANGED
+        // OLD: Access Query (Selection)
+        // NEW: Data Access Filter (Selection)
         "access_query_selection" : "Data Access Filter (Auswahl)",
+
+        // TODO CHANGED
+        // OLD: Access Query (Add)
+        // NEW: Data Access Filter (Add)
         "access_query_add" : "Data Access Filter (Hinzufügen)",
+
+        // TODO CHANGED
+        // OLD: Access Query (JSON)
+        // NEW: Data Access Filter (JSON)
         "access_query_json" : "Data Access Filter (JSON)",
         "query" : {
             "self" : "App/Plugin kann nur auf Daten des angemeldeten Benutzers zugreifen.",
             "ownapp" : "App/Plugin kann nur auf Daten zugreifen, die mittels dieser App/diesem Plugin erstellt wurden.",
+
+            // TODO CHANGED
+            // OLD: Add all data types written by the app automatically to the Access Query. (MUST be turned off before app goes productive)
+            // NEW: Add all data types written by the app automatically to the Data Access Filter. (MUST be turned off before app goes productive)
             "learn" : "Alle Datentypen, die diese App schreibt, automatisch zum Data Access Filter hinzufügen. (MUSS ausgeschaltet werden bevor die App produktiv eingesetzt wird)",
+
+            // TODO CHANGED
+            // OLD: During development allow to access all data of the user. (MUST be replaced with a proper Access Query before plugin goes productive)
+            // NEW: During development allow to access all data of the user. (MUST be replaced with a proper Data Access Filter before plugin goes productive)
             "all" : "Während der Entwicklung, Zugriff auf alle Daten des Benutzers erlauben. (MUSS durch ein geeignetes Data Access Filter ersetzt werden bevor das Plugin produktiv eingesetzt wird)"
         },
-        "export_btn" : "Exportieren"
+
+        // TODO CHANGED
+        // OLD: Export
+        // NEW: Export Application Definition
+        "export_btn" : "Exportieren",
+
+        // TODO NEW: Export the definition of this application so that it can be imported and used on another server.
+        "export_help" : "Export the definition of this application so that it can be imported and used on another server."
+
     },
 
     "appstats" : {
@@ -130,5 +264,51 @@
 
     "appdebug" : {
         "title" : "API Tester"
+    },
+
+    "appicon" : {
+
+        // TODO NEW: Icons and Images
+        "title" : "Icons and Images",
+
+        // TODO NEW: Plugin/App Name
+        "name" : "Plugin/App Name",
+
+        // TODO NEW: Internal Name
+        "internalname" : "Internal Name",
+        "use" : {
+
+            // TODO NEW: Purpose of image
+            "title" : "Purpose of image",
+
+            // TODO NEW: Display on OAuth Login Page
+            "LOGINPAGE" : "Display on OAuth Login Page",
+
+            // TODO NEW: Use as application icon
+            "APPICON" : "Use as application icon"
+        },
+        "type" : {
+
+            // TODO NEW: Image type
+            "title" : "Image type",
+
+            // TODO NEW: JPEG
+            "image/jpeg" : "JPEG",
+
+            // TODO NEW: PNG
+            "image/png" : "PNG",
+
+            // TODO NEW: GIF
+            "image/gif" : "GIF"
+        },
+
+        // TODO NEW: Image file to upload
+        "file" : "Image file to upload",
+
+        // TODO NEW: Please resize and compress image to a reasonable size before upload. Images larger than 1MB will not be accepted.
+        "file_help" : "Please resize and compress image to a reasonable size before upload. Images larger than 1MB will not be accepted.",
+
+        // TODO NEW: Images linked to application
+        "existing" : "Images linked to application"
     }
 }
