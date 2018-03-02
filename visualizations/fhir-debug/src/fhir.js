@@ -177,7 +177,7 @@ angular.module('fhirDebug')
 	    		newResource = "";
 	    	} else if (fielddef.type == "CodeableConcept" && fielddef.valueSet != null) {
 	    		var systems = fhirModule.getOptionCodeSystem(fielddef);
-	    		newResource = { text : "" };
+	    		newResource = {  };
 	    		if (systems.length == 1) { newResource.coding = [ { system : systems[0] } ]; }
 	    		//else if (systems.length > 1) { newResource.coding = [ { }]; }
 	    	} else if (fielddef.type == "Reference") {
@@ -213,7 +213,7 @@ angular.module('fhirDebug')
 		    		parentResource[fielddef.field].splice(i, 1);
 		    	}
 	    	} else {
-	    		parentResource[fielddef.field] = null;
+	    		parentResource[fielddef.field] = undefined;
 	    	}
 	    };
 	    
@@ -239,6 +239,8 @@ angular.module('fhirDebug')
 	    };
 	    
 	    fhirModule.getOptions = function(fielddef) {
+	    	if (!fielddef) return [];
+	    	
 	    	//console.log(fielddef);
 	    	var orig = uriCache[fielddef.valueSet || fielddef];
 	    	

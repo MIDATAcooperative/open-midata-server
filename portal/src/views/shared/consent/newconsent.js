@@ -38,6 +38,10 @@ angular.module('portal')
 			
 			$scope.status.doBusy(circles.listConsents({ "_id" : $state.params.consentId }, ["name", "type", "status", "owner", "authorized", "entityType", "createdBefore", "validUntil", "externalOwner", "externalAuthorized", "sharingQuery", "dateOfCreation", "writes" ]))
 			.then(function(data) {
+				if (!data.data || !data.data.length) {
+					$scope.consent = null;
+					return;
+				}
 				
 				$scope.consent = $scope.myform = data.data[0];		
 				if ($scope.consent.status === "ACTIVE" || $scope.consent.owner === $scope.userId) {
@@ -70,18 +74,19 @@ angular.module('portal')
 				}
 				
 				$scope.writeProtect = ($scope.consent.owner !== userId && $scope.consent.status !== "UNCONFIRMED") || $scope.consent.type === "STUDYPARTICIPATION" || $scope.consent.status === "EXPIRED" || $scope.consent.status === "REJECTED";
-				
+			
+				$scope.status.doBusy(server.get(jsRoutes.controllers.Records.getSharingDetails($state.params.consentId).url)).
+				then(function(results) {				
+				    $scope.sharing = results.data;
+				    
+				    if ($scope.sharing.query) {
+				    	if ($scope.sharing.query["group-exclude"] && !angular.isArray($scope.sharing.query["group-exclude"])) { $scope.sharing.query["group-exclude"] = [ $scope.sharing.query["group-exclude"] ]; }
+				    	if ($scope.sharing.query.group && !angular.isArray($scope.sharing.query.group)) { $scope.sharing.query.group = [ $scope.sharing.query.group ]; }
+				    	$scope.updateSharingLabels();
+				    }
+				});
 			});
-			$scope.status.doBusy(server.get(jsRoutes.controllers.Records.getSharingDetails($state.params.consentId).url)).
-			then(function(results) {				
-			    $scope.sharing = results.data;
-			    
-			    if ($scope.sharing.query) {
-			    	if ($scope.sharing.query["group-exclude"] && !angular.isArray($scope.sharing.query["group-exclude"])) { $scope.sharing.query["group-exclude"] = [ $scope.sharing.query["group-exclude"] ]; }
-			    	if ($scope.sharing.query.group && !angular.isArray($scope.sharing.query.group)) { $scope.sharing.query.group = [ $scope.sharing.query.group ]; }
-			    	$scope.updateSharingLabels();
-			    }
-			});
+			
 		} else {
 			$scope.consent = { type : ($state.current.data.role === "PROVIDER" ? "HEALTHCARE" : "CIRCLE"), status : "ACTIVE", authorized : [], writes : "NONE" };
 			views.disableView("records_shared");
@@ -254,7 +259,13 @@ angular.module('portal')
 		circles.unconfirmed = 0;
 		server.delete(jsRoutes.controllers.Circles["delete"]($scope.consent._id).url).
 		then(function() {
-			$state.go("^.circles");
+			if (session.user.role == "MEMBER" && $scope.consent.type == "EXTERNALSERVICE") {
+				$state.go("^.apps");
+			} else if (session.user.role == "MEMBER" && $scope.consent.type == "STUDYPARTICIPATION") {
+			    $state.go("^.studies");				
+			} else {
+			    $state.go("^.circles");
+			}
 		});
 	};
 	
