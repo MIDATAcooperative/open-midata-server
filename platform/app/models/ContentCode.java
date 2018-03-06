@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
 
 /**
@@ -41,7 +42,7 @@ public class ContentCode extends Model  {
 	   */
 	  public String content;
 	  
-	  public static Map<String, String> contentForSystemCode = new ConcurrentHashMap<String, String>();
+	  public @NotMaterialized static Map<String, String> contentForSystemCode = new ConcurrentHashMap<String, String>();
 	  	
 	  /**
 	   * returns all coding entries matching the given criteria.
