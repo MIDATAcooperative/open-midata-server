@@ -74,7 +74,7 @@ public class ContentInfo extends Model {
 	public String comment;
 	
 	
-	private static Map<String, ContentInfo> byName = new ConcurrentHashMap<String, ContentInfo>();
+	private @NotMaterialized static Map<String, ContentInfo> byName = new ConcurrentHashMap<String, ContentInfo>();
 	
 	public static ContentInfo getByName(String name) throws AppException {		
 			ContentInfo r = byName.get(name);		
