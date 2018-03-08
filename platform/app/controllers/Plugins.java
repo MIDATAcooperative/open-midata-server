@@ -542,7 +542,7 @@ public class Plugins extends APIController {
 		Object rt = tokens.get("refreshToken");
 		if (rt == null) AccessLog.log("tokens="+tokens.toString());
 		String refreshToken = rt.toString();
-        final String post = "client_id="+app.consumerKey+"&grant_type=refresh_token&refresh_token="+refreshToken;
+        final String post = /*"client_id="+app.consumerKey+"&"+*/ "grant_type=refresh_token&refresh_token="+refreshToken;
 		// request access token	
 		Promise<WSResponse> promise = WS
 		   .url(app.accessTokenUrl)
