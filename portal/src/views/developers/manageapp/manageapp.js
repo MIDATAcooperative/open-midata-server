@@ -3,7 +3,7 @@ angular.module('portal')
 	
 	// init
 	$scope.error = null;
-	$scope.app = { version:0, tags:[], i18n : {}, requirements:[], defaultQuery:{}  };
+	$scope.app = { version:0, tags:[], i18n : {}, requirements:[], defaultQuery:{}, tokenExchangeParams : "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>"  };
 	$scope.status = new status(false, $scope);
 	$scope.allowDelete = $state.current.allowDelete;
 	$scope.allowExport = $state.current.allowExport;
@@ -34,7 +34,7 @@ angular.module('portal')
     ];
 			
 	$scope.loadApp = function(appId) {
-		$scope.status.doBusy(apps.getApps({ "_id" : appId }, ["creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion", "requirements", "termsOfUse", "orgName", "unlockCode", "writes", "icons"]))
+		$scope.status.doBusy(apps.getApps({ "_id" : appId }, ["creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion", "requirements", "termsOfUse", "orgName", "unlockCode", "writes", "icons"]))
 		.then(function(data) { 
 			$scope.app = data.data[0];			
 			if ($scope.app.status == "DEVELOPMENT" || $scope.app.status == "BETA") {
@@ -44,6 +44,7 @@ angular.module('portal')
 			}
 			if (!$scope.app.i18n) { $scope.app.i18n = {}; }
 			if (!$scope.app.requirements) { $scope.app.requirements = []; }
+			if ($scope.app.type == "oauth2" && !$scope.app.tokenExhangeParams) $scope.app.tokenExchangeParams = "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>";
 			$scope.app.defaultQueryStr = JSON.stringify($scope.app.defaultQuery);
 			$scope.updateQuery();
 			

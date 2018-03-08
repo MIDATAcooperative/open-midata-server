@@ -193,7 +193,7 @@ public class AutoRun extends APIController {
 			    	final String nodepath = Play.application().configuration().getString("node.path");
 					final String visPath = Play.application().configuration().getString("visualizations.path");
 							    	
-			    	final Plugin plugin = Plugin.getById(space.visualization, Sets.create("type", "filename", "name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret"));
+			    	final Plugin plugin = Plugin.getById(space.visualization, Sets.create("type", "filename", "name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret", "tokenExchangeParams"));
 					SpaceToken token = new SpaceToken(request.handle, space._id, space.owner, null, null, autorunner);
 					User tuser = User.getById(space.owner, Sets.create("language", "role"));					
 					final String lang = tuser.language != null ? tuser.language : InstanceConfig.getInstance().getDefaultLanguage();

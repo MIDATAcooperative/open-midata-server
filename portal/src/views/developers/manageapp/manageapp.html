@@ -173,6 +173,10 @@
 		  <formrow myid="accessTokenUrl" label="Access Token URL" ng-show="app.type == 'oauth1' || app.type == 'oauth2'">
 		    <input type="text" id="accessTokenUrl" name="accessTokenUrl" class="form-control" placeholder="Access token URL" ng-model="app.accessTokenUrl">
 		  </formrow>
+		  <formrow myid="tokenExchangeParams" label="manageapp.tokenExchangeParams" ng-show="app.type == 'oauth2'">
+		    <input type="text" id="tokenExchangeParams" name="tokenExchangeParams" class="form-control" ng-model="app.tokenExchangeParams">
+		    <p class="help-block" translate="manageapp.info.tokenExchangeParams"></p>
+		  </formrow>
 		  <formrow myid="consumerKey" label="Consumer Key" ng-show="app.type == 'oauth1' || app.type == 'oauth2'">
 		    <input type="text" id="consumerKey" name="consumerKey" class="form-control" placeholder="Consumer key" ng-model="app.consumerKey">
 		  </formrow>
