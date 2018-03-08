@@ -35,6 +35,7 @@ import play.libs.oauth.OAuth.ConsumerKey;
 import play.libs.oauth.OAuth.RequestToken;
 import play.libs.oauth.OAuth.ServiceInfo;
 import play.libs.ws.WS;
+import play.libs.ws.WSRequestHolder;
 import play.libs.ws.WSResponse;
 import play.mvc.BodyParser;
 import play.mvc.Http;
@@ -447,7 +448,7 @@ public class Plugins extends APIController {
 					
 		final MidataId appId = space.visualization;
 		Map<String, Object> properties = CMaps.map("_id", space.visualization);
-		Set<String> fields = Sets.create("accessTokenUrl", "consumerKey", "consumerSecret");
+		Set<String> fields = Sets.create("accessTokenUrl", "consumerKey", "consumerSecret", "tokenExchangeParams");
 		Plugin app = Plugin.get(properties, fields);
 		
 		String origin = Play.application().configuration().getString("portal.originUrl");
@@ -455,11 +456,22 @@ public class Plugins extends APIController {
 		String authPage = origin +"/authorized.html";
 		final Http.Request req = request();		
         try {
-        	final String post = /*"client_id="+app.consumerKey+"&client_secret="+app.consumerSecret+"&"+*/ "grant_type=authorization_code&code="+json.get("code").asText()+"&redirect_uri="+URLEncoder.encode(authPage, "UTF-8");
+        	
+        	String postBuilder = app.tokenExchangeParams;
+        	if (postBuilder == null) postBuilder = "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>";
+        	postBuilder = postBuilder.replace("<code>", json.get("code").asText());
+        	postBuilder = postBuilder.replace("<redirect_uri>", URLEncoder.encode(authPage, "UTF-8"));
+        	postBuilder = postBuilder.replace("<client_id>", app.consumerKey);
+        	postBuilder = postBuilder.replace("<client_secret>", app.consumerSecret);
+        	postBuilder = postBuilder.replace("<grant_type>", "authorization_code");
+        	final String post = postBuilder;
+        	
+        	WSRequestHolder holder = WS
+        			   .url(app.accessTokenUrl);
+        	
+        	if (postBuilder.indexOf("client_secret") < 0) holder = holder.setAuth(app.consumerKey, app.consumerSecret);
 		// request access token	
-		Promise<WSResponse> promise = WS
-		   .url(app.accessTokenUrl)
-		   .setAuth(app.consumerKey, app.consumerSecret)
+		Promise<WSResponse> promise = holder
 		   .setContentType("application/x-www-form-urlencoded; charset=utf-8")
 		   .post(post);
 		return promise.map(new Function<WSResponse, Result>() {
@@ -520,7 +532,7 @@ public class Plugins extends APIController {
 		final MidataId userId = new MidataId(request().username());
 		
 		Map<String, Object> properties = new ChainedMap<String, Object>().put("_id", appId.toObjectId()).get();
-		Set<String> fields = Sets.create("name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret", "type");
+		Set<String> fields = Sets.create("name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret", "tokenExchangeParams","type");
 			
 		final Plugin app = Plugin.get(properties, fields);
 	
@@ -542,11 +554,20 @@ public class Plugins extends APIController {
 		Object rt = tokens.get("refreshToken");
 		if (rt == null) AccessLog.log("tokens="+tokens.toString());
 		String refreshToken = rt.toString();
-        final String post = /*"client_id="+app.consumerKey+"&"+*/ "grant_type=refresh_token&refresh_token="+refreshToken;
+		
+		String postBuilder = app.tokenExchangeParams;
+    	if (postBuilder == null) postBuilder = "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>";
+    	String post0 = "grant_type=refresh_token&refresh_token="+refreshToken;
+    	if (postBuilder.indexOf("client_secret") >= 0) post0 = "client_secret="+app.consumerSecret+"&"+post0;
+        if (postBuilder.indexOf("client_id") >= 0) post0 = "client_id="+app.consumerKey+"&"+post0;
+        
+		
+        final String post = post0;
 		// request access token	
-		Promise<WSResponse> promise = WS
-		   .url(app.accessTokenUrl)
-		   .setAuth(app.consumerKey, app.consumerSecret)
+        WSRequestHolder holder = WS
+     		   .url(app.accessTokenUrl);
+        if (postBuilder.indexOf("client_secret") < 0) holder = holder.setAuth(app.consumerKey, app.consumerSecret);
+		Promise<WSResponse> promise = holder		   
 		   .setContentType("application/x-www-form-urlencoded; charset=utf-8")
 		   .post(post);
 		return promise.map(new Function<WSResponse, Boolean>()  {
