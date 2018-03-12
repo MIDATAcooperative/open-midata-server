@@ -33,6 +33,9 @@ angular.module('portal')
    };
    
    $scope.requiredDataChange = function() {
+	   if ($scope.information.identity == "DEMOGRAPHIC") {
+		   $scope.information.anonymous = false;		  
+	   }
 	   $scope.requiredDataOk = false;
    };
    

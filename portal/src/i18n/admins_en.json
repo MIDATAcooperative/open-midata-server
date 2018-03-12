@@ -126,6 +126,7 @@
      "endDate" : "End Date",
      "dataCreatedBefore" : "Data freeze date",
      "required_information" : "Required Information",
+     "anonymous" : "Anonymous",
      "required_assistance" : "Required Assistance",
      "termsOfUse" : "Terms and Conditions",
      "sharing_query" : "Data Access Filter",

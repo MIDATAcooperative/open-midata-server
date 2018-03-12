@@ -31,7 +31,7 @@ public class Study extends Model {
 	/**
 	 * constant set containing all fields
 	 */
-	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "owner", "createdBy", "createdAt", "description", "infos", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup");
+	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "owner", "createdBy", "createdAt", "description", "infos", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "anonymous");
 	
 	/**
 	 * name of study
@@ -104,6 +104,11 @@ public class Study extends Model {
 	 * Level of information required
 	 */
 	public InformationType requiredInformation;
+	
+	/**
+	 * If set no one is allowed to see mapping
+	 */
+	public boolean anonymous;
 	
 	/**
 	 * Type of member assistance required
@@ -201,6 +206,10 @@ public class Study extends Model {
     
     public void setRequiredInformation(InformationType inf) throws InternalServerException {
 		Model.set(Study.class, collection, this._id, "requiredInformation", inf);
+	}
+    
+    public void setAnonymous(boolean anonymous) throws InternalServerException {
+		Model.set(Study.class, collection, this._id, "anonymous", anonymous);
 	}
     
     public void setAssistance(AssistanceType inf) throws InternalServerException {
