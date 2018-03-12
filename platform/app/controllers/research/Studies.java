@@ -167,6 +167,7 @@ public class Studies extends APIController {
 		study.participantRules = new HashSet<FilterRule>();
 		study.recordQuery = new HashMap<String, Object>();
 		study.requiredInformation = InformationType.RESTRICTED;
+		study.anonymous = false;
 		study.assistance = AssistanceType.NONE;
 		study.groups = new ArrayList<StudyGroup>();		
 				
@@ -441,7 +442,7 @@ public class Studies extends APIController {
 	   MidataId userid = MidataId.from(request().username());
 	   MidataId owner = PortalSessionToken.session().getOrg();
 
-	   Set<String> fields = Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","infos","owner","participantRules","recordQuery","studyKeywords","code","groups","requiredInformation", "assistance", "termsOfUse", "requirements", "startDate", "endDate", "dataCreatedBefore", "myRole", "processFlags", "autoJoinGroup"); 
+	   Set<String> fields = Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","infos","owner","participantRules","recordQuery","studyKeywords","code","groups","requiredInformation", "anonymous", "assistance", "termsOfUse", "requirements", "startDate", "endDate", "dataCreatedBefore", "myRole", "processFlags", "autoJoinGroup"); 
 	   Study study = Study.getById(studyid, fields);
 	   	   	   
 	   UserGroupMember ugm = UserGroupMember.getByGroupAndMember(studyid, userid);
@@ -465,7 +466,7 @@ public class Studies extends APIController {
        
 	   MidataId studyid = new MidataId(id);
 	   
-	   Set<String> fields = Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","infos","owner","participantRules","recordQuery","studyKeywords","code","groups","requiredInformation", "assistance", "termsOfUse", "requirements", "startDate", "endDate", "dataCreatedBefore"); 
+	   Set<String> fields = Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","infos","owner","participantRules","recordQuery","studyKeywords","code","groups","requiredInformation", "anonymous", "assistance", "termsOfUse", "requirements", "startDate", "endDate", "dataCreatedBefore"); 
 	   Study study = Study.getById(studyid, fields);
 	   	   	   
 	   ObjectNode result = Json.newObject();
@@ -570,7 +571,7 @@ public class Studies extends APIController {
 		MidataId studyid = new MidataId(id);
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
-		Study study = Study.getById(studyid, Sets.create("name", "owner","executionStatus", "participantSearchStatus","validationStatus","groups","recordQuery","requiredInformation", "code"));
+		Study study = Study.getById(studyid, Sets.create("name", "owner","executionStatus", "participantSearchStatus","validationStatus","groups","recordQuery","requiredInformation", "anonymous", "code"));
 		
 		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 		if (study.validationStatus == StudyValidationStatus.VALIDATED) return badRequest("Study has already been validated.");
@@ -1226,7 +1227,7 @@ public class Studies extends APIController {
 	   MidataId studyId = new MidataId(studyidstr);
 	   MidataId partId = new MidataId(partidstr);
 	   	   
-	   Study study = Study.getById(studyId, Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","infos","owner","participantRules","recordQuery","studyKeywords", "requiredInformation"));
+	   Study study = Study.getById(studyId, Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","infos","owner","participantRules","recordQuery","studyKeywords", "requiredInformation","anonymous"));
 	   if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 	   	   
 	   UserGroupMember ugm = UserGroupMember.getByGroupAndMember(studyId, userId);
@@ -1257,7 +1258,7 @@ public class Studies extends APIController {
 	   ObjectNode obj = Json.newObject();
 	   obj.put("participation", JsonOutput.toJsonNode(participation, "Consent", participationFields));	   
 	    
-	   if (study.requiredInformation == InformationType.DEMOGRAPHIC || !ugm.role.pseudonymizedAccess()) {
+	   if (!study.anonymous && (study.requiredInformation == InformationType.DEMOGRAPHIC || !ugm.role.pseudonymizedAccess())) {
 		 Set<String> memberFields = Sets.create("_id", "firstname","lastname","address1","address2","city","zip","country","email", "phone","mobile"); 
 	     Member member = Member.getById(participation.owner, memberFields);
 	     if (member == null) return badRequest("Member does not exist");
@@ -1458,7 +1459,7 @@ public class Studies extends APIController {
 		MidataId owner = PortalSessionToken.session().getOrg();
 		MidataId studyid = new MidataId(id);
 			
-		Study study = Study.getById(studyid, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "requiredInformation", "assistance"));
+		Study study = Study.getById(studyid, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "requiredInformation", "anonymous", "assistance"));
 		
 		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");  
 		
@@ -1466,6 +1467,7 @@ public class Studies extends APIController {
 		
 		ObjectNode result = Json.newObject();
 		result.put("identity", study.requiredInformation.toString());
+		result.put("anonymous", study.anonymous);
 		result.put("assistance", study.assistance.toString());
 		return ok(result);
 	}
@@ -1480,13 +1482,14 @@ public class Studies extends APIController {
 		
 		InformationType inf = JsonValidation.getEnum(json, "identity", InformationType.class);
 		AssistanceType assist = JsonValidation.getEnum(json, "assistance", AssistanceType.class);
+		boolean anonymous = JsonValidation.getBoolean(json, "anonymous");
 		
 		MidataId userId = new MidataId(request().username());
 		MidataId owner = PortalSessionToken.session().getOrg();
 		MidataId studyid = new MidataId(id);
 		
 		
-		Study study = Study.getById(studyid, Sets.create("name", "owner","executionStatus", "participantSearchStatus","validationStatus", "requiredInformation", "createdBy", "code"));
+		Study study = Study.getById(studyid, Sets.create("name", "owner","executionStatus", "participantSearchStatus","validationStatus", "requiredInformation", "anonymous", "createdBy", "code"));
 			
 		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 		
@@ -1497,9 +1500,17 @@ public class Studies extends APIController {
 		if (!self.role.maySetup()) throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
 	
 		if (study.validationStatus != StudyValidationStatus.DRAFT) throw new BadRequestException("error.no_alter.study", "Setup can only be changed as long as study is in draft phase.");
+		
+		if (anonymous && inf.equals(InformationType.DEMOGRAPHIC)) throw new BadRequestException("error.invalid.anonymous", "Anonymous can only be set if pseudonymized.");
         
+		if (anonymous) {
+			for (UserGroupMember member : UserGroupMember.getAllActiveByGroup(study._id)) {
+				if (!member.role.pseudonymizedAccess()) throw new BadRequestException("error.invalid.anonymous", "Anonymous can only be set if no team member may access unpseudonymized.");
+			}
+		}
 		
 		study.setRequiredInformation(inf);
+		study.setAnonymous(anonymous);
 		study.setAssistance(assist);        		
         
 		AuditManager.instance.success();
@@ -1519,7 +1530,7 @@ public class Studies extends APIController {
 		MidataId studyid = new MidataId(id);
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
-		Study study = Study.getById(studyid, Sets.create("name", "owner","executionStatus", "participantSearchStatus","validationStatus", "requiredInformation", "code", "startDate", "endDate", "dataCreatedBefore"));
+		Study study = Study.getById(studyid, Sets.create("name", "owner","executionStatus", "participantSearchStatus","validationStatus", "requiredInformation", "anonymous", "code", "startDate", "endDate", "dataCreatedBefore"));
 			
 		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 		   			
@@ -1593,7 +1604,7 @@ public class Studies extends APIController {
 		MidataId studyid = new MidataId(id);
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
-		Study study = Study.getById(studyid, Sets.create("name", "owner","executionStatus", "participantSearchStatus","validationStatus", "requiredInformation", "code", "startDate", "endDate", "dataCreatedBefore"));
+		Study study = Study.getById(studyid, Sets.create("name", "owner","executionStatus", "participantSearchStatus","validationStatus", "requiredInformation", "anonymous", "code", "startDate", "endDate", "dataCreatedBefore"));
 			
 		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");		   				
 		

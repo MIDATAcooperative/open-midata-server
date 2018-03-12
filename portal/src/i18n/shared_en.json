@@ -73,7 +73,8 @@
        "plugin" : "Plugin is intended for a different role",
        "unlock_code" : "Incorrect unlock code",
        "access_query" : "The Data Access Filter must restrict by 'content' or 'group'!",
-       "sharing" : "The Data Access Filter contains data types that are excluded by the study configuration."
+       "sharing" : "The Data Access Filter contains data types that are excluded by the study configuration.",
+       "anonymous" : "Study can only be anonymous if no one is allowed to access unpseudonymized data."
      },
 
      "missing" : {
@@ -426,6 +427,10 @@
     "delete_btn" : "Delete",
     "or" : "or",
     "save_ok" : "Successfully Saved",
+    "yesno" : {
+      "true" : "Yes",
+      "false" : "No"
+    },
     "user" : {
       "lastname" : "Surname",
 	  "firstname" : "Firstname",

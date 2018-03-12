@@ -34,12 +34,14 @@ import models.RecordsInfo;
 import models.ResearchUser;
 import models.Space;
 import models.Study;
+import models.StudyParticipation;
 import models.User;
 import models.enums.AggregationType;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.EventType;
 import models.enums.MessageReason;
+import models.enums.ParticipationStatus;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import play.libs.Json;
@@ -172,6 +174,20 @@ public class MobileAPI extends Controller {
         if (appInstance.appVersion != app.pluginVersion) {      
         	MobileAPI.removeAppInstance(appInstance);
         	return false;
+        }
+        
+        if (app.mustParticipateInStudy && app.linkedStudy != null) {
+        	StudyParticipation sp = StudyParticipation.getByStudyAndMember(app.linkedStudy, appInstance.owner, Sets.create("status", "pstatus"));
+        	if (sp == null) {
+        		MobileAPI.removeAppInstance(appInstance);
+            	return false;
+        	}
+        	if ( 
+        		sp.pstatus.equals(ParticipationStatus.MEMBER_RETREATED) || 
+        		sp.pstatus.equals(ParticipationStatus.MEMBER_REJECTED) || 
+        		sp.pstatus.equals(ParticipationStatus.RESEARCH_REJECTED)) {
+        		throw new BadRequestException("error.blocked.consent", "Research consent expired or blocked.");
+        	}
         }
         
         return true;
