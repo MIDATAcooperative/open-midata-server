@@ -21,10 +21,12 @@ import models.MobileAppInstance;
 import models.Plugin;
 import models.ResearchUser;
 import models.Study;
+import models.StudyParticipation;
 import models.User;
 import models.UserGroupMember;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
+import models.enums.ParticipationStatus;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.UserStatus;
@@ -80,6 +82,20 @@ public class OAuth2 extends Controller {
         if (appInstance.appVersion != app.pluginVersion) {
         	MobileAPI.removeAppInstance(appInstance);
         	return false;
+        }
+        
+        if (app.mustParticipateInStudy && app.linkedStudy != null) {
+        	StudyParticipation sp = StudyParticipation.getByStudyAndMember(app.linkedStudy, appInstance.owner, Sets.create("status", "pstatus"));
+        	if (sp == null) {
+        		MobileAPI.removeAppInstance(appInstance);
+            	return false;
+        	}
+        	if ( 
+        		sp.pstatus.equals(ParticipationStatus.MEMBER_RETREATED) || 
+        		sp.pstatus.equals(ParticipationStatus.MEMBER_REJECTED) || 
+        		sp.pstatus.equals(ParticipationStatus.RESEARCH_REJECTED)) {
+        		throw new BadRequestException("error.blocked.consent", "Research consent expired or blocked.");
+        	}
         }
         return true;
 	}

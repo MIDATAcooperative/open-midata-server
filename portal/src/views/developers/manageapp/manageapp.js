@@ -44,7 +44,7 @@ angular.module('portal')
 			}
 			if (!$scope.app.i18n) { $scope.app.i18n = {}; }
 			if (!$scope.app.requirements) { $scope.app.requirements = []; }
-			if ($scope.app.type == "oauth2" && !$scope.app.tokenExhangeParams) $scope.app.tokenExchangeParams = "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>";
+			if ($scope.app.type === "oauth2" && ! ($scope.app.tokenExchangeParams) ) $scope.app.tokenExchangeParams = "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>";
 			$scope.app.defaultQueryStr = JSON.stringify($scope.app.defaultQuery);
 			$scope.updateQuery();
 			

@@ -50,6 +50,7 @@
 		<div class="panel-heading" translate="admin_study.required_information"></div>
 		<div class="body">
 		  <p><span translate="admin_study.required_information"></span>: <b>{{ study.requiredInformation }}</b></p>
+		  <p><span translate="admin_study.anonymous"></span>: <b translate="{{ 'common.yesno.'+study.anonymous }}"></b></p>
 		  <p><span translate="admin_study.required_assistance"></span>: <b>{{ study.assistance }}</b></p>
 		  <p><span translate="admin_study.termsOfUse"></span>: <b><a ui-sref="^.terms({which:study.termsOfUse})">{{ study.termsOfUse }}</a></b></p>		  
 		  <p><span translate="admin_study.sharing_query"></span>:</p>
