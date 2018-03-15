@@ -1,0 +1,188 @@
+.mi-at-input {
+	@include reset-input;
+	position: absolute;
+	left: 115px;
+	width: 280px;
+
+	caret-color: $color-brand-blue-primary;
+	font-family: $font-normal;
+	vertical-align: bottom;
+
+	&__fieldset {
+		position: relative;
+		height: 40px;
+		padding-left: 23px;
+
+		label {
+			pointer-events: none;
+			font-size: $font-size-normal;
+			font-family: $font-normal;
+			position: relative;
+			top: 3px;
+
+			color: $color-brand-grey-label;
+			text-transform: capitalize;
+			vertical-align: bottom;
+
+			@supports (-moz-appearance:meterbar) and (background-blend-mode:difference,normal) {
+				// CSS hack to target Firefox
+				top: 1px;
+			}
+
+			// CSS hack for IE11+
+			@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+				position: relative;
+				pointer-events: auto;
+			}
+		}
+
+		&::after {
+			content: '';
+			position: absolute;
+			left: 23px;
+			margin-top: 30px;
+			width: calc(100% - 46px);
+
+			border-bottom: solid 1px $color-brand-grey-border;
+		}
+
+		&--floating-label { // Variant used in login/signup screens
+			margin-top: 16px;
+
+			label {
+				transition: 0.2s ease all;
+			}
+
+			.mi-at-input {
+				left: 23px;
+			}
+
+			// Because inputs are required if the fieldset has the
+			// .mi-at-input__fieldset--floating-label class,
+			// as soon as they are not empty anymore, they are "valid".
+			//
+			// For now, value is dynamically added to the input with the
+			// combination of both a default empty value (so it's empty at
+			// document load) and a keyup event (to add value on the fly
+			// after user has typed something in the field).
+			//
+			// If you want to manage yourself with JS whether the field
+			// has some value or not, you can toggle the .mi-x-has_value
+			// state-related class — its style is already defined below.
+
+			input:focus,			
+			input:optional:focus,
+			input[type="date"],			
+			input.mi-x-has_value {
+				~ label {
+					font-size: $font-size-smallest;
+					top: -20px;
+				}
+			}
+
+		
+		}
+
+		&--white {
+			input,
+			label {
+				color: $color-brand-white;
+			}
+
+			.mi-at-input__fieldset:after {
+				border-bottom-color: $color-brand-white;
+			}
+
+			.mi-at-input {
+				caret-color: $color-brand-white;
+			}
+		}
+	}
+
+	&--checkbox {
+		position: relative;
+
+		&::after {
+			border: none;
+		}
+
+		label {
+			position: absolute;
+			left: 55px;
+			top: 4px;
+			color: $color-brand-black;
+		}
+
+		input[type=checkbox] {
+			appearance: none;
+			width: 20px;
+			height: 20px;
+			position: relative;
+			left: 0px;
+			border: solid 1px $color-brand-grey-label;
+
+			&:after {
+				content: '';
+				width: 12px;
+				height: 8px;
+				position: absolute;
+				top: 3px;
+				left: 3px;
+				border: 3px solid $color-brand-blue-primary;
+				border-top: none;
+				border-right: none;
+				background: transparent;
+				opacity: 0;
+				transform: rotate(-45deg);
+			}
+
+			&:hover {
+				&::after {
+					opacity: 0.5;
+				}
+
+				~ label {
+					cursor: pointer;
+					color: $color-brand-blue-primary;
+				}
+			}
+
+			&:checked {
+				&::after {
+					opacity: 1;
+				}
+			}
+		}
+
+		&-white {
+			label {
+				color: $color-brand-white;
+
+				&:hover {
+				}
+			}
+
+			input[type=checkbox] {
+				border-color: $color-brand-white;
+
+				&:after {
+					border-color: $color-brand-white;
+				}
+
+				&:hover ~ label {
+					color: $color-brand-white;
+					font-family: $font-bold;
+				}
+
+				&:checked ~ label {
+					font-family: $font-bold;
+				}
+			}
+		}
+	}
+
+	&::placeholder {
+		color: $color-brand-white;
+	}
+}
+

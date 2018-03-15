@@ -490,7 +490,7 @@
 
   "registration" : {
     "sign_up" : "Sign Up",
-    "mandantory_fields" : "Fields marked with a * must be filled out.",
+    "mandantory_fields" : "Please fill in the required information below (fields marked with an asterisk * are mandatory)",
     "email" : "EMail",
     "password" : "Password",
     "password_repetition" : "Repeat Password",
@@ -522,8 +522,9 @@
     "app_agb2" : "I accept the",
     "app_agb3" : "App Terms and Conditions",
     "study_agb" : "Study Terms",
-    "sign_up_btn" : "Sign Up",
-    "unlock_code" : "Unlock Code"
+    "sign_up_btn" : "create account",
+    "unlock_code" : "Unlock Code",
+    "already_have_account" : "I already have an account"
   },
 
   "login" : {
@@ -860,11 +861,13 @@
   },
 
   "oauth2" : {
+    "requests_permission" : "requests the permission to access your personal data.",
+    "no_account" : "I don't have an account",  
     "reshares_data" : "App may share data it has access to to third parties.",
     "allows_user_search" : "Your name and email address may be searched by other people using this app.",
-    "requesting_app" : "This application requests access:",
+    "requesting_app" : "needs access to your data.",
     "sign_in" : "MIDATA login for:",
-    "sign_in_btn" : "Log in",
+    "sign_in_btn" : "Login",
     "device" : "Device: {{ device}}",
     "please_confirm" : "Please confirm the activation of the application using the MIDATA portal, then retry. Consent title is: {{ consent }}",
     "confirm_btn" : "Confirm Access",
@@ -872,7 +875,7 @@
     "shares_group" : "Group: {{ group }}",
     "shares_format" : "Format: {{ format }}",
     "shares_content" : "Content: {{ content }}",
-    "confirm_study" : "Participate to the study"
+    "confirm_study" : "Enroll in the following study"
   },
 
   "dashboard" : {
@@ -1023,7 +1026,8 @@
   },
   
   "terms" : {
-    "close_btn" : "<< Back"
+    "close_btn" : "<< Back",
+    "close_new_btn" : "Close"
   },
   
   "auditlog" : {

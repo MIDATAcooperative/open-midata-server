@@ -1,0 +1,10 @@
+<div class="mi-at-icon{{#if modifier_classes }}{{ modifier_classes }}{{/if}} mi-at-icon-{{ icon }}">
+	<svg role="img">
+	  <use xlink:href="/img/icons.svg#{{ icon }}" />
+	</svg>
+	{{#if badge }}
+		<div class="mi-at-icon__badge">
+			{{ badge }}
+		</div>
+	{{/if}}
+</div>

@@ -1,0 +1,21 @@
+.mi-mo-menu_item {
+	display: block;
+	position: relative;
+
+
+	.mi-at-icon {
+		position: absolute;
+		top: 50%;
+		margin-top: -13px;
+		height: 20px;
+	}
+
+	.mi-at-text {
+		position: relative;
+		left: 47px;
+		height: 40px;
+
+		line-height: 40px;
+		white-space: nowrap;
+	}
+}

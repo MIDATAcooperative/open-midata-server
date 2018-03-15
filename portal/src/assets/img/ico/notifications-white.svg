@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="21px" viewBox="0 0 16 21" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.1 (47250) - http://www.bohemiancoding.com/sketch -->
+    <title>Notif</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="ICO/Desktop/Notifs/white" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-2.000000, -4.000000)">
+        <g id="Group" transform="translate(2.000000, 2.000000)">
+            <g id="Notif" transform="translate(0.500000, 3.357143)">
+                <path d="M2.28031492,9.07667691 C2.28031492,12.3165132 1.52020995,14.5909543 0,15.9000002 L7.5,15.9000002 L15,15.9000002 C13.4797901,14.5909543 12.7196851,12.3165132 12.7196851,9.07667691 C12.7196851,4.2169225 12.4620056,2.14285714 7.5,2.14285714 C2.53799438,2.14285714 2.28031492,6.07219225 2.28031492,9.07667691 Z" id="Path-8" stroke="#FFFFFF" stroke-width="0.9375" fill="#FFFFFF" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M2.14285714,12.7 L11.0850743,12.7" id="Path-9" stroke="#3F8EFC" stroke-width="1.39999998" stroke-linecap="round"></path>
+                <path d="M2.28031492,9.07667691 C2.28031492,12.3165132 1.52020995,14.5909543 0,15.9000002 L7.5,15.9000002 L15,15.9000002 C13.4797901,14.5909543 12.7196851,12.3165132 12.7196851,9.07667691 C12.7196851,4.2169225 12.4620056,2.14285714 7.5,2.14285714 C2.53799438,2.14285714 2.28031492,6.07219225 2.28031492,9.07667691 Z" id="Path-8-Copy" stroke="#FFFFFF" stroke-width="0.9375" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M7.5,2.14285714 C8.09173366,2.14285714 8.57142857,1.66316223 8.57142857,1.07142857 C8.57142857,0.682121395 8.36379509,0.341309617 8.05322659,0.153691685 C7.89174153,0.056136745 7.70242648,0 7.5,0 C6.90826634,0 6.42857143,0.479694911 6.42857143,1.07142857 C6.42857143,1.66316223 6.90826634,2.14285714 7.5,2.14285714 Z" id="Path" stroke="#FFFFFF" stroke-width="0.9375" fill="#FFFFFF" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M5.35714286,16.0714286 C5.35714286,17.2548959 6.31653268,18.2142857 7.5,18.2142857 C8.68346732,18.2142857 9.64285714,17.2548959 9.64285714,16.0714286" id="Path" stroke="#FFFFFF" stroke-width="0.9375" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
