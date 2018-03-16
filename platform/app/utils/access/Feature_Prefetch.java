@@ -65,7 +65,7 @@ public class Feature_Prefetch extends Feature {
 		    } else {
 		    	if (withUserGroup) {
 		    	  APSCache c2 = Feature_UserGroups.findApsCacheToUse(q.getCache(), record.stream);		    	
-		    	  if (c2 != null) {
+		    	  if (c2 != null && !c2.equals(q.getCache())) {
 		    		AccessLog.log("with usergroup");		
 		    		APS streamUG = c2.getAPS(record.stream);		    				    		
 		    		MidataId owner = streamUG.getStoredOwner();
