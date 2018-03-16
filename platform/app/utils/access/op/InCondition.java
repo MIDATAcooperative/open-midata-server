@@ -1,6 +1,5 @@
 package utils.access.op;
 
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -31,7 +30,7 @@ public class InCondition implements Condition {
 
 	@Override
 	public Condition indexValueExpression() {
-		return this;
+		return new InIndexCondition(val);
 	}
 
 	@Override
