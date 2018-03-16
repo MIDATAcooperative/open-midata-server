@@ -271,7 +271,7 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 	
 			Query query = new Query();		
 			QueryBuilder builder = new QueryBuilder(params, query, null);
-						
+			builder.handleIdRestriction();		
 			builder.restriction("actual", false, QueryBuilder.TYPE_BOOLEAN, "fhirGroup.actual");
 			builder.restriction("characteristic", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "fhirGroup.characteristic.code");
 			builder.restriction("code", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "fhirGroup.code");
