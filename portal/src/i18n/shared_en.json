@@ -490,7 +490,7 @@
 
   "registration" : {
     "sign_up" : "Sign Up",
-    "mandantory_fields" : "Fields marked with a * must be filled out.",
+    "mandantory_fields" : "Please fill in the required information below (fields marked with an asterisk * are mandatory)",
     "email" : "EMail",
     "password" : "Password",
     "password_repetition" : "Repeat Password",
@@ -512,18 +512,22 @@
     "mobile_phone" : "Mobile Phone",
     "coach" : "Contact person MIDATA",
     "reason" : "Purpose of Registration*",
-    "agb" : "MIDATA Terms",    
-    "study" : "Research",
+    "agb" : "MIDATA Terms",
+    "agb4" : "I agree to MIDATA's terms of use",    
+    "study" : "Research",    
     "agb2" : "I accept the",
     "agb3" : "Terms and Conditions",
     "privacypolicy2" : "I accept the",
     "privacypolicy3" : "Privacy Policy",
+    "privacypolicy4" : "I agree to MIDATA's privacy terms",
     "app_agb" : "App Terms",
     "app_agb2" : "I accept the",
     "app_agb3" : "App Terms and Conditions",
+    "app_agb4" : "I agree to the App Terms and Conditions",
     "study_agb" : "Study Terms",
-    "sign_up_btn" : "Sign Up",
-    "unlock_code" : "Unlock Code"
+    "sign_up_btn" : "create account",
+    "unlock_code" : "Unlock Code",
+    "already_have_account" : "I already have an account"
   },
 
   "login" : {
@@ -571,6 +575,7 @@
     "code_entered" : "Confirmation code entered?",
     "email_instructions" : "Your email address needs to be confirmed. An activation email has been sent to your account. Just click on the link in this email to confirm your email address.",
     "email_code" : "For convenience you may enter the code from the email here:",
+    "code" : "Code",
     "resend_btn" : "Resend email",
     "retry_btn" : "Retry login",
     "contract_instructions" : "A contract has been sent to your postal address. Please return it signed to MIDATA.",
@@ -860,11 +865,13 @@
   },
 
   "oauth2" : {
+    "requests_permission" : "requests the permission to access your personal data.",
+    "no_account" : "I don't have an account",  
     "reshares_data" : "App may share data it has access to to third parties.",
     "allows_user_search" : "Your name and email address may be searched by other people using this app.",
-    "requesting_app" : "This application requests access:",
+    "requesting_app" : "needs access to your data.",
     "sign_in" : "MIDATA login for:",
-    "sign_in_btn" : "Log in",
+    "sign_in_btn" : "Login",
     "device" : "Device: {{ device}}",
     "please_confirm" : "Please confirm the activation of the application using the MIDATA portal, then retry. Consent title is: {{ consent }}",
     "confirm_btn" : "Confirm Access",
@@ -872,7 +879,7 @@
     "shares_group" : "Group: {{ group }}",
     "shares_format" : "Format: {{ format }}",
     "shares_content" : "Content: {{ content }}",
-    "confirm_study" : "Participate to the study"
+    "confirm_study" : "Enroll in the following study"
   },
 
   "dashboard" : {
@@ -1023,7 +1030,8 @@
   },
   
   "terms" : {
-    "close_btn" : "<< Back"
+    "close_btn" : "<< Back",
+    "close_new_btn" : "Close"
   },
   
   "auditlog" : {

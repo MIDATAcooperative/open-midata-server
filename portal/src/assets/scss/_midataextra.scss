@@ -1,0 +1,48 @@
+.required label::after {
+  content : " *"
+}
+
+.old { display:none; }
+
+.terms > ol > li {
+   font-weight:bold;
+}
+
+.terms > ol > li > * {
+   font-weight:normal;
+}
+
+.terms {
+   h1,h2,h3,h4 { text-align:center; }
+   li { margin-bottom:10pt; }
+   address { margin-top:10pt;margin-bottom:10pt; }
+   ol {
+     counter-reset: listenpunkt_ebene1;
+     list-style-type: none;
+     margin:30pt;
+     padding:0px;
+     margin-bottom:10pt;
+     position:relative;
+               
+     ol {
+        counter-reset:listenpunkt_ebene2;
+        list-style-type:none;
+        margin:0px;
+        
+     }
+     ol > li::before {
+        content: counter(listenpunkt_ebene1) "." counter(listenpunkt_ebene2) ". ";
+        counter-increment:listenpunkt_ebene2;
+        
+     }
+     
+   }
+   
+   ol > li::before {
+     content: counter(listenpunkt_ebene1) ". ";
+     counter-increment: listenpunkt_ebene1;
+     left:-30pt;
+     position:absolute;
+   }
+      
+}

@@ -1,0 +1,39 @@
+<div class="mi-or-auth{{ modifier_classes }}">
+	<div class="mi-or-auth__content">
+		<section class="mi-or-auth__section mi-or-auth__section--app">
+			{{render '@text--highlighted-white' app.name merge=true}}
+			{{render '@text--white' intro_message merge=true}}
+			{{#if app.image }}
+			<div
+				class="mi-or-auth__app_image"
+				style="background-image: url('{{ app.image.url }}');"
+			></div>
+			{{/if}}
+			<div class="mi-or-auth__app_description">
+				{{render '@text--smaller-white' app.description merge=true}}
+			</div>
+		</section>
+		<section class="mi-or-auth__section mi-or-auth__section--required_data">
+			{{render '@text--highlighted-white' required_data.title merge=true}}
+			<ul>
+			{{#each required_data.data }}
+				<li>
+					{{render '@text--smaller-white' data merge=true}}
+				</li>
+			{{/each }}
+			</ul>
+		</section>
+		<section class="mi-or-auth__section mi-or-auth__section--study">
+			{{ render '@input--checkbox-white' study.input merge=true }}
+			<div class="mi-or-auth__study_title">
+				{{ render '@text--highlighted-white' study.title merge=true }}
+			</div>
+			<div class="mi-or-auth__study_description">
+				{{ render '@text--smaller-white' study.description merge=true }}
+			</div>
+		</section>
+		<div class="mi-or-auth__fields_checkboxes">
+		</div>
+		{{ render '@flat_button--rounded' button merge=true }}
+	</div>
+</div>

@@ -1,0 +1,46 @@
+.mi-at-select {
+	border: 0 !important;
+	position: relative;
+	appearance: none;
+	background-color: transparent;
+	background: url('/img/ico/arrow-down.svg') no-repeat;
+	background-position: 100% 8px;
+
+	// Hide the handle icon on Firefox (both lines below)
+	text-indent: 0.01px;
+	text-overflow: "";
+
+	// CSS hack to target Firefox only and correct the select/option text position
+	@-moz-document url-prefix() {
+		left: -3px;
+	}
+
+	// CSS hack to hide the default handle icon
+	&::-ms-expand {
+		display: none;
+	}
+
+	&:focus {
+		outline: none;
+	}
+
+	&__fieldset {
+		margin-bottom: 40px;
+		position: relative;
+
+		&::after {
+			content: '';
+			position: absolute;
+			left: 0;
+			top: 37px;
+			margin-top: 10px;
+			height: 1px;
+			width: 100%;
+			background-color: $color-brand-white;
+		}
+	}
+	
+	option {
+	  @extend .mi-at-text;
+	}
+}

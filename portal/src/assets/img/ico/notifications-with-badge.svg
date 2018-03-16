@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="21px" height="19px" viewBox="0 0 21 19" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48 (47235) - http://www.bohemiancoding.com/sketch -->
+    <title>ICO/Timeline</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Menu" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-26.000000, -280.000000)">
+        <g id="ICO/Notifs" transform="translate(24.000000, 278.000000)">
+            <g id="Group" transform="translate(2.000000, 2.000000)">
+                <g id="Page-1" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10.2915,16.5 C10.2915,17.5 9.2185,18.5 7.9995,18.5 C6.7815,18.5 5.7085,17.5 5.7085,16.5" id="Stroke-1" stroke="#1350A8"></path>
+                    <path d="M2.5,13.5 L7.5,13.5" id="Stroke-3" stroke="#1350A8"></path>
+                    <path d="M9.5,13.5 L10.5,13.5" id="Stroke-5" stroke="#1350A8"></path>
+                    <path d="M8,2.5 C-0.571,2.5 4.786,13.5 0.5,16.5 L15.5,16.5 C11.214,13.5 16.571,2.5 8,2.5" id="Stroke-7" stroke="#3F8EFC"></path>
+                    <path d="M9,1.5 C9,2.052 8.552,2.5 8,2.5 C7.448,2.5 7,2.052 7,1.5 C7,0.948 7.448,0.5 8,0.5 C8.552,0.5 9,0.948 9,1.5 Z" id="Stroke-9" stroke="#3F8EFC"></path>
+                </g>
+                <g id="Notif" transform="translate(9.000000, 1.000000)">
+                    <circle id="Oval-3" fill="#F5515F" cx="5.66666667" cy="5.8" r="5.66666667"></circle>
+                    <text id="13245-copy-7" font-family="Roboto-Medium, Roboto" font-size="6.8" font-weight="400" fill="#FFFFFF">
+                        <tspan x="3.60924479" y="8">3 </tspan>
+                    </text>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

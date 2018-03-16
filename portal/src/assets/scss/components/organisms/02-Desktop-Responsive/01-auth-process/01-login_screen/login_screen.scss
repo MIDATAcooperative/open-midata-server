@@ -1,0 +1,293 @@
+/** 
+  * Local variables for dimensions (width, margins…)
+  */
+
+$login-min-width: 280px;
+$login-max-width: 320px;
+
+$login-margin-bottom-min: 15px;
+$login-margin-bottom-max: 35px;
+
+$login-margin-top-min: $login-margin-bottom-min;
+$login-margin-top-max: $login-margin-bottom-max;
+
+$signup-link-margin-top-min: 10px;
+$signup-link-margin-top-max: 45px;
+
+$login-button-min-margin-top: 5px;
+$login-button-max-margin-top: 20px;
+$login-button-min-margin-bottom: 5px;
+$login-button-max-margin-bottom: 20px;
+
+$login-big-title-min-width: $login-min-width - 50px;
+$login-big-title-max-width: $login-max-width - 50px;
+
+$login-app-image-vertical-margin: 10px;
+
+$login-logo-margin-top: 20px;
+$login-logo-margin-bottom: 20px;
+
+$login-error-margin-bottom: 20px;
+
+/**
+	* Mixin and values to resize app image badge
+	*/
+
+$mobile-image-size: 65px;
+$tablet-image-size: 75px;
+$laptop-image-size: 85px;
+$desktop-image-size: 95px;
+
+@mixin mi-x-badge-size($image-size) {
+	background-size: $image-size, $image-size, cover;
+	height: $image-size - 5px;
+	width: $image-size - 5px;
+}
+// end mixin
+
+%local-text-defaults {
+	display: block;
+	text-align: center;
+}
+
+/**
+	* Overall layout for the content
+	*/
+
+.mi-or-login {
+	position: relative;
+	@extend %mi-x-colored_gradient_background;
+	height: 100vh;
+	width: 100vw;
+	overflow: hidden;
+	display: table;
+
+	&__app {
+		display: block;
+		position: relative;
+		@include fluid-props(width, $fluid-min, $fluid-max, $login-min-width, $login-max-width);
+		left: 50%;
+		transform: translateX(-50%);
+
+		@include fluid-props(margin-bottom, $fluid-min, $fluid-max, $login-margin-bottom-min, $login-margin-bottom-max);
+
+		.mi-at-text {
+			@include fluid-props(font-size, $fluid-min, $fluid-max, $font-size-smaller, $font-size-normal);
+		}
+
+		&_image {
+			@include mi-x-badge-size($mobile-image-size);
+			position: relative;
+			border-radius: 50%; // Android-like
+			// border-radius: 18px; // iOS-like
+			background-position: center;
+			background-repeat: no-repeat;
+			background-color: white;
+			left: 50%;
+			transform: translateX(-50%);
+			margin-top: $login-app-image-vertical-margin;
+
+			@include media($tablet-breakpoint) {
+				margin-bottom: $login-app-image-vertical-margin;
+				@include mi-x-badge-size($mobile-image-size);
+			}
+
+			@include media($laptop-breakpoint) {
+				@include mi-x-badge-size($laptop-image-size);
+			}
+
+			@include media($desktop-breakpoint) {
+				@include mi-x-badge-size($desktop-image-size);
+			}
+		}
+	}
+
+	&__logo {
+		position: relative;
+		@include fluid-scaler(width, 180px);
+		@include fluid-scaler(height, 27px);
+		left: 50%;
+		transform: translateX(-50%);
+		margin-top: $login-logo-margin-top;
+		margin-bottom: $login-logo-margin-bottom;
+
+		// CSS Hacks for IE11+
+		@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+			position: absolute;
+			margin-top: -60px;
+		}
+	}
+
+	&__content {
+		position: relative;
+		left: 50%;
+		transform: translateX(-50%);
+		display: table-cell;
+		vertical-align: middle;
+		@include fluid-props(width, $fluid-min, $fluid-max, $login-min-width, $login-max-width);
+
+		&::before {
+			@include fluid-scaler(width, 180px);
+			@include fluid-scaler(height, 27px);
+			@include fluid-props(top, $fluid-min, $fluid-max, 0px, 0px);
+
+			@media screen and (max-height: $iphone4-screen-height) {
+				top: -40px;
+			}
+		}
+
+		// CSS Hacks for IE11+
+		@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+			position: absolute;
+			padding-top: 100px;
+			@include media($tablet-breakpoint) {
+				margin-top: 200px;
+			}
+		}
+	}
+
+
+	/**
+		* Text-related styles
+		*/
+
+	.mi-at-text--big-title {
+		display: block;
+		position: relative;
+		padding-left: 0;
+		width: 90%;
+		left: 5%;
+		@include fluid-props(width, $fluid-min, $fluid-max, $login-big-title-min-width, $login-big-title-max-width);
+		@include fluid-props(margin-bottom, $fluid-min, $fluid-max, $login-margin-bottom-min, $login-margin-bottom-max);
+	}
+
+	a {
+		text-decoration: none;
+		font-weight: bold;
+	}
+
+
+	/**
+	  * Forms
+	  */
+
+	.mi-at-input__fieldset {
+		@include fluid-props(width, $fluid-min, $fluid-max, $login-min-width, $login-max-width);
+		padding-left: 0;
+		left: 50%;
+		transform: translateX(-50%);
+
+		&::after {
+			left: 0;
+			width: 100%;
+		}
+
+		input {
+			@include fluid-props(font-size, $fluid-min, $fluid-max, $font-size-smaller, $font-size-smaller);
+			left: 0;
+		}
+
+		label {
+			@include fluid-props(font-size, $fluid-min, $fluid-max, $font-size-smaller, $font-size-smaller);
+		}
+
+		&:last-of-type {
+			margin-bottom: 0;
+		}
+	}
+
+	.mi-at-select {
+		@include fluid-props(width, $fluid-min, $fluid-max, $login-min-width, $login-max-width);
+		color: $color-brand-white;
+		margin-top: 20px;
+		left: 50%;
+		transform: translateX(-50%);
+
+		&__fieldset {
+			&::after {
+				@include fluid-props(width, $fluid-min, $fluid-max, $login-min-width, $login-max-width);
+				left: 50%;
+				transform: translateX(-50%);
+			}
+		}
+	}
+
+	select {
+		@include fluid-props(font-size, $fluid-min, $fluid-max, $font-size-smaller, $font-size-smaller);
+	}
+
+
+	/**
+	  * Bottom elements (button, legal mentions, links, device…)
+	  */
+
+	&__error {
+		// the error message is hidden by default
+		// You have to add the .mi-x-is_visible class to the .mi-or-login__error div
+		// using JS when an error occurs.
+		
+		@include fluid-props(width, $fluid-min, $fluid-max, $login-min-width, $login-max-width);
+		margin-bottom: $login-error-margin-bottom;
+
+		.mi-at-text {
+			color: $color-brand-red-darker;
+			background-color: $color-brand-white;
+			// comment both lines above and uncomment both lines below to get an inverted look
+			// color: $color-brand-white;
+			// background-color: $color-brand-red-darker;
+			padding: 10px;
+			border-radius: 8px;
+		}
+	}
+
+	.mi-mo-flat_button {
+		left: 50%;
+		transform: translate(-50%);
+		@include fluid-props(margin-bottom, $fluid-min, $fluid-max, $login-margin-bottom-min, $login-margin-bottom-max);
+		@include fluid-props(margin-top, $fluid-min, $fluid-max, $login-button-min-margin-top, $login-button-max-margin-top);
+	}
+
+	&__legal_mentions,
+	&__signup_link,
+	&__device,
+	&__error {
+		.mi-at-text--smallest {
+			@extend %local-text-defaults;
+		}
+	}
+
+	&__legal_mentions,
+	&__device,
+	&__error {
+		position: relative;
+		left: 50%;
+		transform: translate(-50%);
+
+		.mi-at-text--smallest {
+			@extend %local-text-defaults;
+			position: relative;
+		}
+	}
+
+	&__legal_mentions {
+		margin-bottom: 50px;
+		@include fluid-props(width, $fluid-min, $fluid-max, $login-min-width, $login-max-width);
+	}
+
+	&__device {
+		padding-top: 50px;
+		@include fluid-props(width, $fluid-min, $fluid-max, $login-min-width, $login-max-width);
+	}
+
+	&__signup_link {
+		margin-top: $signup-link-margin-top-min;
+
+		.mi-at-text--smallest {
+			font-family: $font-bold;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+	}
+}

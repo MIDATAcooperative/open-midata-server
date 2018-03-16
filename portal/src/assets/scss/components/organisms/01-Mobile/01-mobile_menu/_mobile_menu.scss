@@ -1,0 +1,35 @@
+.mi-or-mobile_menu {
+	height: 100vh;
+	width: 100%;
+	overflow: hidden;
+
+	whitespace: nowrap;
+
+	.mi-mo-menu_header {
+		position: relative;
+		z-index: 1;
+	}
+
+	.mi-mo-main_menu_buttons {
+		position: relative;
+	}
+
+	.mi-mo-menu_items_list {
+		position: relative;
+		left: 21px;
+		top: 15px;
+		/** 162px : header height
+		 * 52px : flat buttons height
+		 * 60px : footer height
+		 * and added 50px more to truncate the last item
+		 * so that user understands there is more below
+		 */
+		// TODO: account for possible variant without flat buttons?
+		height: calc(100vh - 162px - 52px - 60px - 40px);
+
+	}
+
+	.mi-mo-menu_footer {
+		bottom: 0;
+	}
+}

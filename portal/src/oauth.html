@@ -24,10 +24,11 @@
 		<!-- Clear CSS defaults -->
 					
 		<!-- Application style sheet -->
-		<!-- build:css app.min.css -->
-		<link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap.min.css">
+		<!-- build:css oauth.min.css -->
+		<!--  <link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap.min.css"> -->
 		<!-- <link rel="stylesheet" href="components/jquery-ui/themes/smoothness/jquery-ui.css">  -->
-		<link rel="stylesheet" href="/app.css">
+		
+		<link rel="stylesheet" href="/app2.css">
 		<!-- endbuild -->
 		
 		<script type="text/javascript" src="<!-- @echo BACKEND -->/api/assets/javascripts/routes" defer></script>									
@@ -48,17 +49,7 @@
 	</head>
 	<body ng-app="portal" ng-csp="no-unsafe-eval" class="<!-- @echo NAME -->">
 	
-	  <div ng-if="false" class="colored fullheight">
-	  <header id="navbar" class="navbar navbar-default" role="navigation" ng-controller="NavbarCtrl">
-				<div class="container">
-
-
-					<span style="text-align: center" class="midata center-block" id="logotype"><img src="/images/logo.png" style="height: 36px;"></span>
-
-				</div>
-			</header>
-
-
+	  <div ng-if="false" class="fullheight">	 
 			<div style="position: relative;" class="fullheight">
 				<div id="loader">
 					Hello!</div>
@@ -66,12 +57,7 @@
 
 	  </div>
     <div id="wrapper">
-	  <div id="maincontent" ui-view ng-cloak></div>
-	  <footer id="footer">
-		 <div class="container">
-			<p onClick="document.body.classList.toggle('newdesign');" translate="footer.copyright" translate-value-now="{{ currentDate | date:'yyyy' }}"></p>		   
-		 </div>
-	  </footer>
-	  </div>
+	  <div id="maincontent" ui-view ng-cloak></div>	 
+	 </div>
 	</body>
 </html>

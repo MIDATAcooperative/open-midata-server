@@ -120,7 +120,7 @@ angular.module('portal')
 	};
 	
 	$scope.showRegister = function() {
-		$state.go("public.registration");
+		$state.go("public.registration_new");
 	};
 	
 	$scope.terms = function(def) {
@@ -135,6 +135,11 @@ angular.module('portal')
 	$scope.getIconUrl = function() {
 		if (!$scope.app) return null;
 		return ENV.apiurl + "/api/shared/icon/LOGINPAGE/" + $scope.app.filename;
+	};
+	
+	$scope.getIconUrlBG = function() {
+		if (!$scope.app) return null;
+		return { "background-image" : "url('"+ENV.apiurl + "/api/shared/icon/LOGINPAGE/" + $scope.app.filename+"')" };
 	};
 	
 	$scope.prepare();

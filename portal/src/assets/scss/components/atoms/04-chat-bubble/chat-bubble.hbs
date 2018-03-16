@@ -1,0 +1,20 @@
+<div
+	class="mi-at-chat_bubble{{ modifier_classes }}{{#if typing }} mi-x-is_typing{{/if }}"
+	>
+	{{#if message}}<span class="mi-at-chat_bubble__message">{{ message }}</span>{{/if}}
+	{{#if typing }}
+		<span></span>
+		<span></span>
+		<span></span>
+	{{/if}}
+	{{#if choices }}
+		{{#each choices }}
+			<a
+				href="#"
+				class="mi-at-chat_bubble--choice"
+			/>
+				{{ text }}
+			</a>
+		{{/each }}
+	{{/if}}
+</div>

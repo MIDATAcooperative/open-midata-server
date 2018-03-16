@@ -1,0 +1,31 @@
+<div class="mi-or-responsive_menu" data-mi-or-responsive_menu>
+	<div class="mi-or-responsive_menu__wrapper">
+		<img
+			class="mi-or-responsive_menu__logo"
+			src="{{ path logo.src }}"
+			alt="{{ path logo.alt }}"
+		/>
+		<div class="mi-or-responsive_menu__user">
+			{{> @avatar user.avatar }}
+			<div class="mi-or-responsive_menu__popover">
+				{{ render '@menu_header' }}
+				{{ render '@menu_main_buttons' }}
+			</div>
+		</div>
+		<div class="mi-or-responsive_menu__plus_button"></div>
+		<a href="#">{{> @icon--with-badge notifications }}</a>
+		<a href="#">{{> @icon menu}}</a>
+		<nav class="mi-or-responsive_menu__tabs">
+			{{#each tabs}}
+				<a {{#if active}}class="mi-x-is_active"{{/if}} href="{{ link }}">
+					{{ render '@text--white' title merge=true }}
+				</a>
+			{{/each}}
+		</nav>
+		{{#each tabs}}
+			<div class="mi-or-responsive_menu__last_row {{#if active}} mi-x-is_active{{/if}}">
+				{{ render '@text--big-title-white' description merge=true }}
+			</div>
+		{{/each}}
+	</div>
+</div>
