@@ -87,6 +87,41 @@ p, body {
   .form-group {
     @extend .mi-at-input__fieldset;
     @extend .mi-at-input__fieldset--white;
+    height: 55px;
+    
+    &::after {
+			content: '';
+			position: absolute;
+			left: 23px;
+			margin-top: 40px;
+			width: calc(100% - 26px);
+
+			border-bottom: solid 1px $color-brand-grey-border;
+	}
+    
+    label {
+      font-size: $font-size-smallest;
+      position:absolute;
+      top: 3px;
+      left: 23px;
+    }
+    
+    .form-control {
+      font-size: $font-size-normal;
+      position:absolute;
+      top: 16px;
+      left: 23px;
+      color: $color-brand-white;
+      width: 280px;
+      
+      select {
+        @extend .mi-at-select;
+      }
+      
+      option {
+        color: $color-brand-black;
+      }
+    }
   }
   
   .form-control {
@@ -131,51 +166,3 @@ p, body {
 
 
 
-.required label::after {
-  content : " *"
-}
-
-.old { display:none; }
-
-.terms > ol > li {
-   font-weight:bold;
-}
-
-.terms > ol > li > * {
-   font-weight:normal;
-}
-
-.terms {
-   h1,h2,h3,h4 { text-align:center; }
-   li { margin-bottom:10pt; }
-   address { margin-top:10pt;margin-bottom:10pt; }
-   ol {
-     counter-reset: listenpunkt_ebene1;
-     list-style-type: none;
-     margin:30pt;
-     padding:0px;
-     margin-bottom:10pt;
-     position:relative;
-               
-     ol {
-        counter-reset:listenpunkt_ebene2;
-        list-style-type:none;
-        margin:0px;
-        
-     }
-     ol > li::before {
-        content: counter(listenpunkt_ebene1) "." counter(listenpunkt_ebene2) ". ";
-        counter-increment:listenpunkt_ebene2;
-        
-     }
-     
-   }
-   
-   ol > li::before {
-     content: counter(listenpunkt_ebene1) ". ";
-     counter-increment: listenpunkt_ebene1;
-     left:-30pt;
-     position:absolute;
-   }
-      
-}

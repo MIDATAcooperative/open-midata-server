@@ -166,7 +166,7 @@ module.exports = function(grunt) {
             	'src/assets/scss/_placeholder_classes.scss',
             	'src/assets/scss/_html.scss',
             	'src/assets/scss/_animations.scss',
-            	'src/assets/scss/_typography.scss', 'src/assets/scss/components/**/*.scss', 'src/views/**/*.scss', 'src/assets/scss/_olddesign.scss'],
+            	'src/assets/scss/_typography.scss', 'src/assets/scss/components/**/*.scss', 'src/views/**/*.scss', 'src/assets/scss/_olddesign.scss', 'src/assets/scss/_midataextra.scss'],
             dest: 'dest/app.scss'
         },
         test : {

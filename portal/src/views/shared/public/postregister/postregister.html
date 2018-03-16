@@ -16,13 +16,13 @@
 						
 						<div ng-show="progress.PASSWORD_SET">
 						   <p translate="setpw.enter_new"></p>
-						   <form ng-submit="pwsubmit()" role="form">
-						      <formrowfloat myid="" label="setpw.new_password">
+						   <form ng-submit="pwsubmit()" role="form" class="form form-horizontal">
+						      <formrow myid="password" label="setpw.new_password">
 								<input type="password" class="form-control" floating-label ng-model="setpw.password" style="margin-bottom:5px;" autofocus>
-							  </formrowfloat>
-							  <formrowfloat myid="" label="setpw.new_password_repetition">								
+							  </formrow>
+							  <formrow myid="passwordnew" label="setpw.new_password_repetition">								
 								<input type="password" class="form-control" floating-label ng-model="setpw.passwordRepeat" style="margin-bottom:5px;">
-							  </formrowfloat>
+							  </formrow>
 							  <div class="extraspace"></div>
 							  <button type="submit" ng-disabled="status.action=='setpw'" class="btn btn-primary btn-block" translate="setpw.set_new_btn"></button>
 						   </form>
@@ -34,10 +34,12 @@
 							<button class="btn btn-default" ng-click="resend()" translate="postregister.resend_btn"></button>
 							<button class="btn btn-default" ng-click="retry()" ng-show="isoauth" translate="postregister.retry_btn"></button>
 							<hr>
-							<p translate="postregister.email_code"></p>
-							<formrowfloat myid="" label="postregister.code">
+							<p class="extraspace" translate="postregister.email_code"></p>
+							<form class="form form-horizontal">
+							<formrow myid="code" label="postregister.code">
 								<input class="form-control" floating-label ng-model="passphrase.code" type="text">
-						    </formrowfloat>
+						    </formrow>
+						    </form>
 							<div class="extraspace"></div>	
 							<button class="btn btn-primary btn-block" ng-click="enterMailCode(passphrase.code)" translate="postregister.enter_now_btn"></button>
 								
@@ -66,9 +68,11 @@
 								<div ng-hide="progress.confirmationCode">
 									<div class="extraspace"></div>
 									<p translate="postregister.code_intructions"></p>
-									  <formrowfloat myid="" label="postregister.code">
+									  <form class="form form-horizontal">
+									  <formrow myid="code" label="postregister.code">
 										<input class="form-control" ng-model="passphrase.passphrase" type="text">
-									  </formrowfloat>
+									  </formrow>
+									  </form>
 									  <button class="btn btn-primary btn-block" ng-click="sendCode()" translate="postregister.enter_now_btn"></button>
 									
 									
@@ -91,18 +95,18 @@
 								<div ng-show="addressNeeded()">
 									<div class="required">
 										<formrow myid="address1" label="registration.address">
-										<input type="text" class="form-control" id="address1" name="address1" translate
-											translate-attr-placeholder="registration.address_line1" ng-model="registration.address1" ng-required="addressNeeded()"></formrow>
+										<input type="text" class="form-control" id="address1" name="address1" 
+											ng-model="registration.address1" ng-required="addressNeeded()"></formrow>
 									</div>
 									<formrow myid="address2" label="">
-									<input type="text" class="form-control" id="address2" name="address2" translate
-										translate-attr-placeholder="registration.address_line2" ng-model="registration.address2"></formrow>
+									<input type="text" class="form-control" id="address2" name="address2" 
+										ng-model="registration.address2"></formrow>
 									<div class="required">
 										<formrow myid="city" label="registration.city">
-										<input type="text" class="form-control" id="city" name="city" translate translate-attr-placeholder="registration.city"
+										<input type="text" class="form-control" id="city" name="city" 
 											ng-model="registration.city" ng-required="addressNeeded()"></formrow>
 										<formrow myid="zip" label="registration.zip">
-										<input type="text" class="form-control" id="zip" name="zip" translate translate-attr-placeholder="registration.zip"
+										<input type="text" class="form-control" id="zip" name="zip" 
 											ng-model="registration.zip" ng-required="addressNeeded()"></formrow>
 									</div>
 									<formrow myid="country" label="registration.country">
@@ -113,12 +117,11 @@
 
 								<div ng-show="phoneNeeded()">
 									<formrow myid="phone" label="registration.phone">
-									<input type="text" class="form-control" id="phone" name="phone" translate translate-attr-placeholder="registration.phone"
+									<input type="text" class="form-control" id="phone" name="phone" 
 										ng-model="registration.phone"></formrow>
 									<div class="required">
 										<formrow myid="mobile" label="registration.mobile_phone">
-										<input type="text" class="form-control" id="mobile" name="mobile" translate translate-attr-placeholder="registration.mobile_phone"
-											ng-model="registration.mobile" ng-required="phoneNeeded()"></formrow>
+										<input type="text" class="form-control" id="mobile" name="mobile" 											ng-model="registration.mobile" ng-required="phoneNeeded()"></formrow>
 									</div>
 								</div>
 
