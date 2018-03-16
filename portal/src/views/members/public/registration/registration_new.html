@@ -2,7 +2,7 @@
 	<div  ng-controller="RegistrationCtrl" ng-cloak>
 		<div class="mi-or-signup" ng-hide="view.active">
 			<!-- Registration -->
-			<div class="mi-or-signup__content" ng-class="{ 'mi-or-signup__content--two-columns' : flags.optional }">
+			<div class="mi-or-signup__content" ng-class="{ 'mi-or-signup__content--two-columns' : (flags.optional || addressNeeded() || phoneNeeded()) }">
 			
 			    <img src="/img/logo-midata--white.svg" alt="" class="mi-or-login__logo">
 			
@@ -22,27 +22,26 @@
 							  <div class="required">								  														  							  
 							  							  
 							  <formrowfloat myid="email" label="registration.email">
-							    <input type="email" class="mi-at-input mi-at-input-text" id="email" name="email" ng-model="registration.email" required floating-label>
-							    <form-error myid="email" type="email" message="error.invalid.email" ></form-error> 
-							    <form-error myid="email" type="exists" message="error.exists.member"></form-error> 
+							    <input type="email" class="mi-at-input mi-at-input-text" id="email" name="email" ng-model="registration.email" required floating-label>							    
 							  </formrowfloat>
+							  <form-error myid="email" type="email" message="error.invalid.email" ></form-error> 
+							  <form-error myid="email" type="exists" message="error.exists.member"></form-error>
 							  <formrowfloat myid="password" label="registration.password"> 
-							    <input type="password" class="mi-at-input mi-at-input-password" id="password" name="password" ng-model="registration.password" required>
-							    <form-error myid="password" type="compare" message="error.invalid.password_repetition"></form-error>  
-							    <form-error myid="password" type="tooshort" message="error.tooshort.password"></form-error>
-							    <form-error myid="password" type="tooweak" message="error.tooweak.password"></form-error>
+							    <input type="password" class="mi-at-input mi-at-input-password" id="password" name="password" ng-model="registration.password" floating-label required>							    
 							  </formrowfloat>
-							  <formrowfloat myid="password2" label="registration.password_repetition"><input type="password" class="mi-at-input mi-at-input-password" id="password2" name="password2" ng-model="registration.password2" required></formrowfloat>
-							  <formrowfloat myid="firstname" label="registration.firstname"><input type="text" class="mi-at-input mi-at-input-text" id="firstname" name="firstname" ng-model="registration.firstname" required></formrowfloat>
-							  <formrowfloat myid="lastname" label="registration.lastname"><input type="text" class="mi-at-input mi-at-input-text" id="lastname" name="lastname" ng-model="registration.lastname" required></formrowfloat>
+							  <form-error myid="password" type="compare" message="error.invalid.password_repetition"></form-error>  
+							  <form-error myid="password" type="tooshort" message="error.tooshort.password"></form-error>
+							  <form-error myid="password" type="tooweak" message="error.tooweak.password"></form-error>
+							  <formrowfloat myid="password2" label="registration.password_repetition"><input type="password" class="mi-at-input mi-at-input-password" id="password2" name="password2" ng-model="registration.password2" floating-label required></formrowfloat>
+							  <formrowfloat myid="firstname" label="registration.firstname"><input type="text" class="mi-at-input mi-at-input-text" id="firstname" name="firstname" ng-model="registration.firstname" floating-label required></formrowfloat>
+							  <formrowfloat myid="lastname" label="registration.lastname"><input type="text" class="mi-at-input mi-at-input-text" id="lastname" name="lastname" ng-model="registration.lastname" floating-label required></formrowfloat>
 							  
 
 							  <formrowfloat myid="gender" type="select"><select class="mi-at-select" id="gender" name="gender" ng-model="registration.gender" required><option value="" translate="registration.gender" selected disabled></option><option value="FEMALE" translate="enum.gender.FEMALE">female</option><option value="MALE" translate="enum.gender.MALE"></option><option value="OTHER" translate="enum.gender.OTHER"></option></select></formrowfloat>
 							  <formrowfloat myid="birthday" label="registration.birthday">
-								  <input required id="mi-at-input-date-of-birth" id="birthday" name="birthday" class="mi-at-input mi-at-input--date" type="date" value="" ng-model="registration.birthdayDate" floating-label placeholder="mm/dd/yyyy" />							 
-							  
-							     <form-error myid="birthday" type="date" message="error.invalid.date"></form-error>                                 
+								  <input required id="mi-at-input-date-of-birth" id="birthday" name="birthday" class="mi-at-input mi-at-input--date" type="date" value="" ng-model="registration.birthdayDate" floating-label placeholder="mm/dd/yyyy" />							 							 							                                    
 							  </formrowfloat>
+							  <form-error myid="birthday" type="date" message="error.invalid.date"></form-error>
 
 							  <formrowfloat myid="language"  type="select"><select class="mi-at-select" id="language" ng-model="registration.language" ng-change="changeLanguage(registration.language);" ng-options="lang.value as lang.name | translate for lang in languages"><option value="" translate="registration.language" selected disabled></option></select></formrowfloat>
 							  
@@ -57,8 +56,8 @@
                               
                               </div>
 							  
-							   <div class="mi-or-signup__fields_optional" ng-show="flags.optional && !addressNeeded() && !phoneNeeded()">
-                                  <div class="mi-or-signup__fields_optional_close">
+							   <div class="mi-or-signup__fields_optional" ng-show="flags.optional || addressNeeded() || phoneNeeded()">
+                                  <div class="mi-or-signup__fields_optional_close" ng-show="flags.optional && !addressNeeded() && !phoneNeeded()">
                                      <span class="mi-at-text mi-at-text--smaller mi-at-text--white" ng-click="flags.optional=false;">Hide optional fields</span>
 
                                   </div>
@@ -91,46 +90,61 @@
                                 <fieldset class="mi-at-input__fieldset mi-at-input--checkbox mi-at-input--checkbox-white">
                                    <input id="agb" name="agb" ng-model="registration.agb" class="mi-at-input mi-at-input--checkbox" type="checkbox" value="" floating-label />
                                    <label for="agb" class="mi-at-text">
-		                              <span  translate="registration.agb2"></span>                                     
+		                              <span  translate="registration.agb4"></span>                                     
 	                               </label>	                               
 	                               
-	                               <form-error myid="agb" type="mustaccept" message="error.missing.agb"></form-error>
+	                               
                                 </fieldset>
-                                <div class="mi-or-signup__login_link">
-                                <a class="mi-at-text mi-at-text--smallest mi-at-text--white" ng-click="terms({which : 'midata-terms-of-use'});" href="javascript:" translate="registration.agb3"></a>
+                                <div class="mi-at-link">
+                                  <a class="mi-at-text mi-at-text--smallest mi-at-text--white" ng-click="terms({which : 'midata-terms-of-use'});" href="javascript:" translate="registration.agb3"></a>
                                 </div>
+                                <form-error myid="agb" type="mustaccept" message="error.missing.agb"></form-error>
 
                                 <fieldset class="mi-at-input__fieldset mi-at-input--checkbox mi-at-input--checkbox-white">
                                    <input id="privacypolicy" name="privacypolicy" ng-model="registration.privacypolicy" class="mi-at-input mi-at-input--checkbox" type="checkbox" value="" floating-label />
                                    <label for="privacypolicy" class="mi-at-text">
-		                               <span translate="registration.privacypolicy2"></span>                                       
-	                               </label>
-	                               <form-error myid="privacypolicy" type="mustaccept" message="error.missing.privacypolicy"></form-error>
+		                               <span translate="registration.privacypolicy4"></span>                                       
+	                               </label>	                               
                                 </fieldset>
+                                <div class="mi-at-link">
                                  <a class="mi-at-text mi-at-text--smallest mi-at-text--white" ng-click="terms({which : 'midata-privacy-policy'});" href="javascript:" translate="registration.privacypolicy3"></a>
+                                </div>
+                                 <form-error myid="privacypolicy" type="mustaccept" message="error.missing.privacypolicy"></form-error>
             
                                 <fieldset ng-show="app.termsOfUse" class="mi-at-input__fieldset mi-at-input--checkbox mi-at-input--checkbox-white">
                                    <input id="appAgb" name="appAgb" ng-model="registration.appAgb" class="mi-at-input mi-at-input--checkbox" type="checkbox" value="" floating-label />
                                    <label for="appAgb" class="mi-at-text">
 		                              <span translate="registration.app_agb2"></span>
                                     
-	                               </label>
-	                               <form-error myid="appAgb" type="mustaccept" message="error.missing.agb"></form-error>
+	                               </label>	                               
                                 </fieldset>
-                                <a ng-show="app.termsOfUse" class="mi-at-text mi-at-text--smallest mi-at-text--white" ng-click="terms({which : app.termsOfUse })" href="javascript:" translate="registration.app_agb3"></a>
+                                <div class="mi-at-link">
+                                  <a ng-show="app.termsOfUse" class="mi-at-text mi-at-text--smallest mi-at-text--white" ng-click="terms({which : app.termsOfUse })" href="javascript:" translate="registration.app_agb3"></a>
+                                </div>
+                                <form-error myid="appAgb" type="mustaccept" message="error.missing.agb"></form-error>
             
                                 <fieldset ng-show="app.linkedStudy" class="mi-at-input__fieldset mi-at-input--checkbox mi-at-input--checkbox-white">
                                    <input id="confirmStudy" name="confirmStudy" ng-model="registration.confirmStudy" class="mi-at-input mi-at-input--checkbox" type="checkbox" value="" floating-label />
                                    <label for="confirmStudy" class="mi-at-text">
 		                               <span translate="oauth2.confirm_study"></span>:
 	                               </label>
-	                               <form-error myid="confirmStudy" type="mustaccept" message="error.missing.agb"></form-error>
-	                                 <p class="help-block" ng-show="app.linkedStudyTermsOfUse">
-		            	             <a ng-click="terms({which : app.linkedStudyTermsOfUse })" href="javascript:" translate="registration.study_agb"></a>
-		            	           </p>
-		            	           <p class="help-block">{{ app.linkedStudyName }}</p>
-		            	           <p class="help-block">{{ app.linkedStudyDescription }}</p>
+	                               
+	                               
+	                               <div class="mi-or-auth__study_title">
+						<span class="mi-at-text mi-at-text--highlighted mi-at-text--white">{{ app.linkedStudyName }}</span>
+
+					</div>
+					<div class="mi-or-auth__study_description">
+						<span class="mi-at-text mi-at-text--smaller mi-at-text--white">{{ app.linkedStudyDescription }}</span>
+
+                        <p ng-show="app.linkedStudyTermsOfUse">
+						  <a ng-click="terms({which : app.linkedStudyTermsOfUse })" href="javascript:" translate="registration.study_agb"></a>
+						</p>
+					</div>
+	                               
+	                                
                                 </fieldset>
+                                <form-error myid="confirmStudy" type="mustaccept" message="error.missing.agb"></form-error>
 
                               </div>
                                        

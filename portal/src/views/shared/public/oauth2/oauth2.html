@@ -2,6 +2,28 @@
 
 <div ng-controller="OAuth2LoginCtrl" ng-cloak>
 
+<div class="mi-or-blue">
+<div class="required">
+										<formrow myid="address1" label="registration.address">
+										<input type="text" class="form-control" id="address1" name="address1" translate
+											translate-attr-placeholder="registration.address_line1" ng-model="registration.address1" ng-required="addressNeeded()"></formrow>
+									</div>
+									<formrow myid="address2" label="">
+									<input type="text" class="form-control" id="address2" name="address2" translate
+										translate-attr-placeholder="registration.address_line2" ng-model="registration.address2"></formrow>
+									<div class="required">
+										<formrow myid="city" label="registration.city">
+										<input type="text" class="form-control" id="city" name="city" translate translate-attr-placeholder="registration.city"
+											ng-model="registration.city" ng-required="addressNeeded()"></formrow>
+										<formrow myid="zip" label="registration.zip">
+										<input type="text" class="form-control" id="zip" name="zip" translate translate-attr-placeholder="registration.zip"
+											ng-model="registration.zip" ng-required="addressNeeded()"></formrow>
+									</div>
+									<formrow myid="country" label="registration.country">
+									<select class="form-control" id="country" name="country" ng-model="registration.country" required><option value="CH"
+											translate="enum.country.CH"></option></select></formrow>
+</div>
+
 
 	<div id="x" ng-hide="view.active">
 		<div class="mi-or-auth" ng-show="pleaseConfirm">
@@ -117,10 +139,15 @@
 							floating-label /> 
 						<label for="mi-at-input-checkbox" class="mi-at-text mi-at-text--white">
 						  <span
-											translate="registration.app_agb2"></span> <a ng-click="terms({which : app.termsOfUse })" href="javascript:"
-											translate="registration.app_agb3"></a>
+											translate="registration.app_agb4"></span> 
 						 </label>
+						 
+						 
 					</fieldset>
+					
+					<div class="mi-at-link">
+					  <a ng-click="terms({which : app.termsOfUse })" href="javascript:" translate="registration.app_agb3"></a>
+					</div>
 
 				</section>
 				
@@ -140,7 +167,7 @@
 					<div class="mi-or-auth__study_description">
 						<span class="mi-at-text mi-at-text--smaller mi-at-text--white">{{ app.linkedStudyDescription }}</span>
 
-                        <p ng-show="app.linkedStudyTermsOfUse">
+                        <div class="mi-at-link" ng-show="app.linkedStudyTermsOfUse">
 						  <a ng-click="terms({which : app.linkedStudyTermsOfUse })" href="javascript:" translate="registration.study_agb"></a>
 						</p>
 					</div>

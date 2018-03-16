@@ -7,6 +7,130 @@ p, body {
 	-moz-osx-font-smoothing: grayscale;
 }
 
+@-webkit-keyframes autofill {
+    to {
+        color: $color-brand-white;
+        background: transparent;
+    }
+}
+
+.mi-or-login input:-webkit-autofill {
+    -webkit-animation-name: autofill;
+    -webkit-animation-fill-mode: both;
+}
+
+
+.mi-at-link {		
+		text-align: center;
+		width: $signup-min-width;
+
+		a {
+			display: inline-block;
+			padding: 10px;
+			text-decoration: underline;
+			font-weight: bold;
+			border-radius: 5px;
+			color: $color-brand-white;
+
+			&:hover {
+				background-color: $color-brand-white;
+				color: $color-brand-blue-primary;
+			}
+		}
+
+		@include media($laptop-breakpoint) {
+			width: $signup-max-width;
+		}
+}
+
+
+.mi-or-blue {
+  @extend .mi-or-signup;
+  
+  color: $color-brand-white;
+  
+  hr { display:none; }
+  
+  p {
+    @extend .mi-at-text;
+    @extend .mi-at-text--white;
+  }
+  
+  .panel {
+    @extend .mi-or-signup__content;
+  }
+  
+  .panel-title {
+	  @extend .mi-at-text;
+	  @extend .mi-at-text--white;
+	  @extend .mi-at-text--title;
+	  margin-bottom: 10px;
+  }
+  
+  .btn {
+    @extend .mi-at-text;
+    @extend .mi-at-text--white;
+    @extend .mi-mo-flat_button;
+    @extend .mi-mo-flat_button--rounded;
+    @extend %mi-x-uppercase;
+	text-align: center;	
+	font-family: $font-bold;
+	letter-spacing:  $letter-spacing-airy;	
+	padding-top: 1px; // without it, the text does not look like vertically centered
+	
+	&:hover {
+	  color: $color-brand-blue-primary;	
+	}
+    
+  }
+  
+  .form-group {
+    @extend .mi-at-input__fieldset;
+    @extend .mi-at-input__fieldset--white;
+  }
+  
+  .form-control {
+    @include reset-input;	
+	caret-color: $color-brand-blue-primary;
+	font-family: $font-normal;
+	vertical-align: bottom;
+    color: $color-brand-white;
+  }
+  
+  .alert-danger {
+    @extend .mi-at-text; 
+    @extend .mi-at-text--smallest;
+    @extend .mi-at-text--white;
+    @extend .mi-at-text--highlighted;
+    @extend .mi-or-login__error;
+    color: $color-brand-red-darker;
+	background-color: $color-brand-white;
+	padding: 10px;
+	border-radius: 8px;
+    
+  }
+ 
+  .alert-success {
+    @extend .mi-at-text; 
+    @extend .mi-at-text--smallest;
+    @extend .mi-at-text--white;
+    @extend .mi-at-text--highlighted;
+    @extend .mi-or-login__error;
+    color: $color-brand-pastel-green;
+	background-color: $color-brand-white;
+	padding: 10px;
+	border-radius: 8px;
+    
+  }
+    
+}
+
+
+
+
+
+
+
 .required label::after {
   content : " *"
 }

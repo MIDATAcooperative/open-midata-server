@@ -1,5 +1,5 @@
 
-<div class="container" ng-controller="PostRegisterCtrl" ng-cloak>
+<div class="mi-or-blue container" ng-controller="PostRegisterCtrl" ng-cloak>
 	<div class="row">
 
 		<div class="col-sm-12">
@@ -17,9 +17,14 @@
 						<div ng-show="progress.PASSWORD_SET">
 						   <p translate="setpw.enter_new"></p>
 						   <form ng-submit="pwsubmit()" role="form">
-								<input type="password" class="form-control" translate translate-attr-placeholder="setpw.new_password" ng-model="setpw.password" style="margin-bottom:5px;" autofocus>								
-								<input type="password" class="form-control" translate trnaslate-attr-placeholder="setpw.new_password_repetition" ng-model="setpw.passwordRepeat" style="margin-bottom:5px;">
-								<button type="submit" ng-disabled="status.action=='setpw'" class="btn btn-primary btn-block" translate="setpw.set_new_btn"></button>
+						      <formrowfloat myid="" label="setpw.new_password">
+								<input type="password" class="form-control" floating-label ng-model="setpw.password" style="margin-bottom:5px;" autofocus>
+							  </formrowfloat>
+							  <formrowfloat myid="" label="setpw.new_password_repetition">								
+								<input type="password" class="form-control" floating-label ng-model="setpw.passwordRepeat" style="margin-bottom:5px;">
+							  </formrowfloat>
+							  <div class="extraspace"></div>
+							  <button type="submit" ng-disabled="status.action=='setpw'" class="btn btn-primary btn-block" translate="setpw.set_new_btn"></button>
 						   </form>
 						</div>
 						
@@ -30,12 +35,12 @@
 							<button class="btn btn-default" ng-click="retry()" ng-show="isoauth" translate="postregister.retry_btn"></button>
 							<hr>
 							<p translate="postregister.email_code"></p>
-							<div class="input-group">
-								<input class="form-control" ng-model="passphrase.code" type="text">
-								<div class="input-group-btn">
-									<button class="btn btn-primary" ng-click="enterMailCode(passphrase.code)" translate="postregister.enter_now_btn"></button>
-								</div>
-							</div>
+							<formrowfloat myid="" label="postregister.code">
+								<input class="form-control" floating-label ng-model="passphrase.code" type="text">
+						    </formrowfloat>
+							<div class="extraspace"></div>	
+							<button class="btn btn-primary btn-block" ng-click="enterMailCode(passphrase.code)" translate="postregister.enter_now_btn"></button>
+								
 							<hr>
 						</div>
 						
@@ -61,12 +66,12 @@
 								<div ng-hide="progress.confirmationCode">
 									<div class="extraspace"></div>
 									<p translate="postregister.code_intructions"></p>
-									<div class="input-group">
+									  <formrowfloat myid="" label="postregister.code">
 										<input class="form-control" ng-model="passphrase.passphrase" type="text">
-										<div class="input-group-btn">
-											<button class="btn btn-primary" ng-click="sendCode()" translate="postregister.enter_now_btn"></button>
-										</div>
-									</div>
+									  </formrowfloat>
+									  <button class="btn btn-primary btn-block" ng-click="sendCode()" translate="postregister.enter_now_btn"></button>
+									
+									
 								</div>
 								<div ng-show="progress.confirmationCode">
 								  <p translate="postregister.code_done"></p>

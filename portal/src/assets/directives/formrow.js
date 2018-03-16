@@ -50,7 +50,7 @@ angular.module('portal')
          attrs.myid + 
          '.$invalid && (myform.' + attrs.myid + '.$dirty || submitted) }">'+                
                 '<span class="" ng-transclude-replace></span>'+
-                (attrs.label ? ('<label for="'+attrs.myid+'"mi-at-input-text" class="mi-at-text" translate="'+attrs.label+'">'+
+                (attrs.label ? ('<label for="'+attrs.myid+'" class="new mi-at-text" translate="'+attrs.label+'">'+
                 '</label>') : '') + '</fieldset>';    	  
       },
       restrict: 'E',
@@ -62,7 +62,7 @@ angular.module('portal')
 .directive('floatingLabel', ['views', function (views) {
     return {      
       link: function( scope, elem, attrs ) {
-          elem.bind('keyup', function() { console.log(elem[0]);if (elem[0].value) angular.element(elem).addClass("mi-x-has_value"); else elem.removeClass("mi-x-has_value"); /*setAttribute('value', elem.value);*/ });
+          elem.bind('keyup', function() { if (elem[0].value) angular.element(elem).addClass("mi-x-has_value"); else elem.removeClass("mi-x-has_value"); /*setAttribute('value', elem.value);*/ });
       },
       restrict: 'A'
     };
