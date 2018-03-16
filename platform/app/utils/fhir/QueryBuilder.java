@@ -490,6 +490,10 @@ public class QueryBuilder {
 					bld.addCompOr(lPath, CompareOperator.LT, lDate, true);
 					bld.addCompOr(hPath, CompareOperator.GE, hDate, true);
 					break;
+				case APPROXIMATE:
+					bld.addComp(lPath, CompareOperator.LT, hDate, true);
+					bld.addComp(hPath, CompareOperator.GE, lDate, true);									
+					break;
 				default:throw new NullPointerException();
 				}
 			
