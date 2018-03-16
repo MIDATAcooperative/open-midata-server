@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +18,7 @@ import akka.japi.Pair;
 import ca.uhn.fhir.model.api.IQueryParameterType;
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import ca.uhn.fhir.rest.api.SortOrderEnum;
+import ca.uhn.fhir.rest.api.SummaryEnum;
 import ca.uhn.fhir.rest.param.CompositeParam;
 import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.param.ParamPrefixEnum;
@@ -564,7 +566,7 @@ public class QueryBuilder {
 	
 	public List<ReferenceParam> followChain(ReferenceParam r, String targetType) {
 		SearchParameterMap params = new SearchParameterMap();
-				         
+        params.setSummary(SummaryEnum.TRUE);//Elements(Collections.singleton("_id"));				         
         if (targetType == null) targetType = r.getResourceType();
         if (targetType == null) throw new UnprocessableEntityException("Reference search needs reference target type in query");
         
@@ -603,7 +605,7 @@ public class QueryBuilder {
 					if (r.getChain() != null) {
 						
 						SearchParameterMap params = new SearchParameterMap();						
-                                                
+						params.setSummary(SummaryEnum.TRUE);                                              
                         List<BaseResource> resultList;
                         if (targetType == null) {
                            String rt = r.getResourceType();
