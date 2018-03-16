@@ -1,0 +1,49 @@
+@font-face {
+    font-family: 'Roboto';
+    src: url('/fonts/Roboto-Medium.eot');
+    src: local('Roboto Medium'), local('Roboto-Medium'),
+        url('/fonts/Roboto-Medium.eot?#iefix') format('embedded-opentype'),
+        url('/fonts/Roboto-Medium.woff2') format('woff2'),
+        url('/fonts/Roboto-Medium.woff') format('woff'),
+        url('/fonts/Roboto-Medium.ttf') format('truetype'),
+        url('/fonts/Roboto-Medium.svg#Roboto-Medium') format('svg');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Roboto Book';
+    src: url('/fonts/Roboto-Book.eot');
+    src: local('Roboto Book'), local('Roboto-Book'),
+        url('/fonts/Roboto-Book.eot?#iefix') format('embedded-opentype'),
+        url('/fonts/Roboto-Book.woff2') format('woff2'),
+        url('/fonts/Roboto-Book.woff') format('woff'),
+        url('/fonts/Roboto-Book.ttf') format('truetype'),
+        url('/fonts/Roboto-Book.svg#Roboto-Book') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/**
+ * Font families
+ */
+$font-normal: 'Roboto Book';
+$font-bold: 'Roboto';
+
+/**
+	* Default font sizes
+	*/
+$font-size-normal: 16px;
+$font-size-smaller: 14px;
+$font-size-smallest: 12px;
+$font-size-tiny: 10px;
+$font-size-title: 18px;
+$font-size-big-title: 24px;
+$font-size-caps: 32px;
+$font-size-caps-bigger: 40px;
+$font-size-tiny: 7px;
+
+/**
+  * Letter spacings
+  */
+ $letter-spacing-airy: 0.6px;

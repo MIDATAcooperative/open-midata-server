@@ -1,0 +1,72 @@
+
+.mi-mo-flat_button {
+	@include reset-button;
+	position: relative;
+	height: 52px;
+	width: 100%;
+	line-height: 52px;
+
+	.mi-at-icon {
+		display: inline-block;
+		position: relative;
+		top: 2px;
+		padding-left: 10px;
+
+		svg {
+			width: 16px;
+			height: 16px;
+		}
+	}
+
+	&--rounded,
+	&--submit {
+		.mi-at-text {
+			color: $color-brand-white;
+			@extend %mi-x-uppercase;
+		}
+	}
+
+	&--submit {
+		@extend %mi-x-colored_gradient_background;
+	}
+
+	&--rounded {
+		height: 30px;
+		line-height: 30px;
+
+		width: 170px;
+		border-radius: 8px;
+		border: solid 1px;
+		border-color: $color-brand-white;
+		transition: 0.2s ease all;
+
+		.mi-at-text {
+			display: block;
+			position: absolute;
+			text-align: center;
+			left: 50%;
+			top: 50%;
+			width: 100%;
+			font-family: $font-bold;
+			letter-spacing:  $letter-spacing-airy;
+			transform: translate(-50%, -50%);
+			margin-top: 1px; // without it, the text does not look like vertically centered
+		}
+
+		&:hover {
+			background-color: $color-brand-white;
+			
+			.mi-at-text {
+				color: $color-brand-blue-primary;
+			}
+		}
+	}
+
+	@media (max-width: $min-fidelity-menu-width) {
+		align-items: center;
+
+		.mi-at-icon {
+			padding-left: 2px;
+		}
+	}
+}

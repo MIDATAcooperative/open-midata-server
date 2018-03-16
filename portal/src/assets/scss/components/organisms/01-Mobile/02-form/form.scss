@@ -1,0 +1,22 @@
+.mi-or-form {
+	max-height: 100vh;
+	// overflow: scroll;
+	.mi-at-input__fieldset {
+		margin-top: 15px;
+	}
+
+	.mi-mo-flat_button--submit {
+		position: absolute;
+		bottom: 0;
+	}
+
+	.mi-at-avatar {
+		position: absolute;
+		left: 22px;
+		top: 22px;
+	}
+
+	.mi-at-input__fieldset:first-of-type {
+		padding-top: 105px;
+	}
+}

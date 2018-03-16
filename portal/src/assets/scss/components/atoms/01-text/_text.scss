@@ -1,0 +1,53 @@
+.mi-at-text {
+	font-size: $font-size-normal;
+
+	color: $color-brand-black;
+	font-family: $font-normal;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+
+	&--responsive {
+		@include fluid-props(font-size, $tablet-breakpoint, $fluid-max, $font-size-normal, $font-size-normal, false)
+	}
+
+	&--white {
+		color: $color-brand-white;
+	}
+
+	&--smaller {
+		font-size: $font-size-smaller;
+
+		&-responsive {
+			@include fluid-props(font-size, $tablet-breakpoint, $fluid-max, $font-size-smaller, $font-size-smaller, false)
+		}
+	}
+
+	&--smallest {
+		font-size: $font-size-smallest;
+		letter-spacing: .5px;
+
+		&-responsive {
+			@include fluid-props(font-size, $tablet-breakpoint, $fluid-max, $font-size-smallest, $font-size-smallest, false)
+		}
+	}
+
+	&--title {
+		font-size: $font-size-title;
+
+		&-responsive {
+			@include fluid-props(font-size, $tablet-breakpoint, $fluid-max, $font-size-title, $font-size-title, false);
+		}
+	}
+
+	&--big-title {
+		font-size: $font-size-big-title;
+
+		&-responsive {
+			@include fluid-props(font-size, $tablet-breakpoint, $fluid-max, $font-size-big-title, $font-size-big-title, false);
+		}
+	}
+
+	&--highlighted {
+		font-family: $font-bold;
+	}
+}

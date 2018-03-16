@@ -78,7 +78,7 @@ tasks/install-packages: trigger/install-packages
 	$(info ------------------------------)
 	$(info Installing Packages... )
 	$(info ------------------------------)
-	sudo apt-get install git curl openssl python openjdk-8-jdk nginx mcrypt sqlite3 unzip
+	sudo apt-get install git curl openssl python openjdk-8-jdk nginx mcrypt unzip ruby-sass	
 	touch tasks/install-packages
 	
 tasks/install-node: tasks/install-packages trigger/install-node

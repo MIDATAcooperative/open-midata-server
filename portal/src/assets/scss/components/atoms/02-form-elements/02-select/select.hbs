@@ -1,0 +1,12 @@
+<fieldset class="mi-at-select__fieldset{{ modifier_classes }}">
+{{!-- 	<label for="{{name}}" class="mi-at-text {{ text_modifier_classes }}">{{ name }}</label> --}}
+	<select id="{{ name }}" name="{{name}}" class="mi-at-select mi-at-text{{ text_modifier_classes }}" {{#if required}}required{{/if}}>
+	{{#each options}}
+		<option
+			class="mi-at-text{{ text_modifier_classes }}"
+			value="{{option}}"
+			{{ attributes }}
+		>{{option}}</option>
+	{{/each}}
+	</select>
+</fieldset>

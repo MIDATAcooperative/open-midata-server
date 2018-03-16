@@ -1,0 +1,42 @@
+<div class="mi-or-signup{{ modifier_classes }}" data-mi-or-signup>
+	<div class="mi-or-signup__content">
+		<img src="/img/logo-midata--white.svg" alt="" class="mi-or-login__logo">
+		{{#if app.image }}<div class="mi-or-signup__app_image" style="background-image: url('{{ app.image.url }}');"></div>{{/if}}
+		<div class="mi-or-signup__fields">
+			<div class="mi-or-signup__description">
+				{{render '@text--smaller-white' description merge=true }}
+			</div>
+			<div class="mi-or-signup__fields_required">
+				{{#each fields.first_group }}
+					{{ render '@input--floating-label-white' input merge=true }}
+				{{/each }}
+				{{ render '@select' selects.first merge=true }}
+				{{#each fields.second_group }}
+					{{ render '@input--floating-label-white' input merge=true }}
+				{{/each }}
+				{{ render '@select' selects.second merge=true }}
+				{{ render '@select' selects.third merge=true }}
+				<div class="mi-or-signup__fields_optional_invite">
+					{{> @text--smaller optional.title }} {{> @text--smaller optional.link }}
+				</div>
+			</div>
+			<div class="mi-or-signup__fields_optional">
+				<div class="mi-or-signup__fields_optional_close">
+					{{ render '@text--smaller-white' optional.close merge=true }}
+				</div>
+				{{#each optional.fields }}
+					{{ render '@input--floating-label-white' input merge=true }}
+				{{/each }}
+			</div>
+		</div>
+		<div class="mi-or-signup__fields_checkboxes">
+			{{#each checkboxes }}
+				{{ render '@input--checkbox-white' input merge=true }}
+			{{/each}}
+		</div>
+		{{ render '@flat_button--rounded' signup_button merge=true }}
+		<div class="mi-or-signup__login_link">
+			<a href="{{ link.href }}">{{> @text--smallest link }}</a>
+		</div>
+	</div>
+</div>

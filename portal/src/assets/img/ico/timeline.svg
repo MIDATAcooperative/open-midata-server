@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="19px" viewBox="0 0 24 19" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48 (47235) - http://www.bohemiancoding.com/sketch -->
+    <title>ICO/Timeline Copy 4</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Menu" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-24.000000, -320.000000)" stroke-linecap="round" stroke-linejoin="round">
+        <g id="ICO/Timeline" transform="translate(24.000000, 318.000000)">
+            <g id="Page-1" transform="translate(0.000000, 2.000000)">
+                <polygon id="Stroke-1" stroke="#3F8EFC" points="0.5 4.5 13.5 4.5 13.5 0.5 0.5 0.5"></polygon>
+                <polyline id="Stroke-3" stroke="#1350A8" points="19.5 7.5 19.5 11.5 0.5 11.5 0.5 7.5 14.5 7.5"></polyline>
+                <polygon id="Stroke-4" stroke="#3F8EFC" points="0.5 18.5 23.5 18.5 23.5 14.5 0.5 14.5"></polygon>
+                <path d="M16.5,7.5 L17.5,7.5" id="Stroke-6" stroke="#1350A8"></path>
+            </g>
+        </g>
+    </g>
+</svg>
