@@ -357,7 +357,14 @@ public class MobileAPI extends Controller {
 		Plugin app = Plugin.getById(appId, Sets.create("name", "pluginVersion", "defaultQuery", "predefinedMessages", "linkedStudy", "mustParticipateInStudy", "termsOfUse", "writes"));
 
 		if (app.linkedStudy != null && app.mustParticipateInStudy && !studyConfirm) {
-			throw new BadRequestException("error.missing.study_accept", "Study belonging to app must be accepted.");
+			StudyParticipation sp = StudyParticipation.getByStudyAndMember(app.linkedStudy, executor, Sets.create("status", "pstatus"));
+        	if (sp == null || 
+        		sp.pstatus.equals(ParticipationStatus.MEMBER_RETREATED) || 
+        		sp.pstatus.equals(ParticipationStatus.MEMBER_REJECTED) || 
+        		sp.pstatus.equals(ParticipationStatus.RESEARCH_REJECTED)) {
+        		throw new BadRequestException("error.missing.study_accept", "Study belonging to app must be accepted.");        		
+        	}
+			
 		}
 		
 		if (app.linkedStudy != null && studyConfirm) {			
