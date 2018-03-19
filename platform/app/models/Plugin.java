@@ -14,6 +14,7 @@ import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.WritePermissionType;
 import utils.AccessLog;
+import utils.access.DBRecord;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.Sets;
@@ -21,6 +22,7 @@ import utils.db.DBLayer;
 import utils.db.DatabaseException;
 import utils.db.LostUpdateException;
 import utils.db.NotMaterialized;
+import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 import utils.sync.Instances;
 
@@ -350,5 +352,9 @@ public class Plugin extends Model implements Comparable<Plugin> {
 			this.description = in.description;
 			this.defaultSpaceName = in.defaultSpaceName;
 		}
+	}
+	
+	public static long count() throws AppException {
+		return Model.count(Plugin.class, collection, CMaps.map("status", Plugin.NOT_DELETED));
 	}
 }

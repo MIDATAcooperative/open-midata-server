@@ -12,6 +12,8 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.EntityType;
+import models.enums.UserRole;
+import models.enums.UserStatus;
 import models.enums.WritePermissionType;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
@@ -21,6 +23,7 @@ import utils.db.DatabaseException;
 import utils.db.IncludeNullValues;
 import utils.db.NotMaterialized;
 import utils.db.OrderOperations;
+import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
 /**
@@ -258,5 +261,9 @@ public class Consent extends Model implements Comparable<Consent> {
 	public int compareTo(Consent arg0) {
 		int r = owner.compareTo(arg0.owner);
 		return r != 0 ? r : _id.compareTo(arg0._id);
+	}
+	
+	public static long count(ConsentType type) throws AppException {
+		return Model.count(Consent.class, collection, CMaps.map("type", type));
 	}
 }

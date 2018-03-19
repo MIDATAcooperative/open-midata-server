@@ -1,6 +1,5 @@
 package controllers.admin;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -9,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bson.BSONObject;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -21,13 +19,14 @@ import models.Admin;
 import models.Circle;
 import models.Consent;
 import models.HealthcareProvider;
+import models.InstanceStats;
 import models.MidataAuditEvent;
 import models.MidataId;
-import models.Research;
-import models.ResearchUser;
+import models.Plugin;
 import models.Space;
 import models.Study;
 import models.User;
+import models.UserGroup;
 import models.UserGroupMember;
 import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
@@ -47,6 +46,7 @@ import play.mvc.Security;
 import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
+import utils.access.DBRecord;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.AdminSecured;
@@ -59,6 +59,7 @@ import utils.auth.ResearchSecured;
 import utils.auth.Rights;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.db.DBLayer;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -418,4 +419,47 @@ public class Administration extends APIController {
 		
 		return ok();
 	}
+	
+	public static void createStats() throws AppException {
+		InstanceStats stats = new InstanceStats();
+		stats._id = new MidataId();
+		stats.date = new Date();
+		
+		stats.recordCount = DBRecord.count();
+		stats.appCount = Plugin.count();
+		stats.runningStudyCount = Study.count(); 
+		stats.groupCount = UserGroup.count();
+		stats.auditEventCount = MidataAuditEvent.count();
+		stats.userCount = new HashMap<String, Long>();
+		for (UserRole role : UserRole.values()) {
+			stats.userCount.put(role.toString(), User.count(role));
+		}
+		
+		stats.consentCount = new HashMap<String, Long>();
+		for (ConsentType type : ConsentType.values()) {
+			stats.consentCount.put(type.toString(), Consent.count(type));
+		}
+		
+		stats.add();
+		
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(AdminSecured.class)
+	public static Result getStats() throws AppException {
+		JsonNode json = request().body().asJson();					
+		JsonValidation.validate(json, "properties");
+		
+		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));	
+		ObjectIdConversion.convertMidataIds(properties, "_id");
+		
+		properties = CMaps.map("date", CMaps.map("$gte", new Date(System.currentTimeMillis() - 1000l*60l*60l*24l-7l)));
+		
+		Set<InstanceStats> stats = InstanceStats.getAll(properties);		
+		return ok(JsonOutput.toJson(stats, "InstanceStats", InstanceStats.ALL_FIELDS));
+		
+	}
+	
+	
 }

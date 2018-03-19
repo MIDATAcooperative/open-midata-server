@@ -21,6 +21,7 @@ import akka.routing.ActorRefRoutee;
 import akka.routing.RoundRobinRoutingLogic;
 import akka.routing.Routee;
 import akka.routing.Router;
+import controllers.admin.Administration;
 import models.Admin;
 import models.MidataId;
 import models.PersistedSession;
@@ -319,6 +320,11 @@ public class AutoRun extends APIController {
 			if (message instanceof StartImport) {
 				AccessLog.log("Starting Autoimport...");
 				PersistedSession.deleteExpired();
+				try {
+				   Administration.createStats();
+				} catch (AppException e) {
+					ErrorReporter.report("stats service", null, e);
+				}
 								
 				User autorunner = Admin.getByEmail("autorun-service", Sets.create("_id"));
 				String handle = KeyManager.instance.login(1000l*60l*60l*23l, false);
