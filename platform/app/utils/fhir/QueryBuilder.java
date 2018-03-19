@@ -722,8 +722,16 @@ public class QueryBuilder {
 	public void recordCodeRestriction(String name, String path) throws AppException {
 		Set<String> codes = tokensToCodeSystemStrings(name);
 		if (codes != null) {
-			query.putAccount("code", codes);
-			restriction(name, false, TYPE_CODEABLE_CONCEPT, path);
+			boolean allMidata = true;
+			for (String code : codes) if (!code.startsWith("http://midata.coop/codesystems/content ")) allMidata = false;
+			if (!allMidata) {
+			    query.putAccount("code", codes);			
+			    restriction(name, false, TYPE_CODEABLE_CONCEPT, path);
+			} else {
+				Set<String> contents = new HashSet<String>();
+				for (String code : codes) contents.add(code.substring("http://midata.coop/codesystems/content ".length()));
+				query.putAccount("content", contents);
+			}
 		} else {
 			restriction(name, true, TYPE_CODEABLE_CONCEPT, path);
 		}		
