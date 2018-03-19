@@ -10,11 +10,13 @@ import org.bson.BSONObject;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 
+import models.enums.StudyExecutionStatus;
 import models.enums.UserGroupType;
 import models.enums.UserStatus;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
+import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
 /**
@@ -129,5 +131,9 @@ public class UserGroup extends Model {
 	
 	public void add() throws InternalServerException {
 		Model.insert(collection, this);	
+	}
+	
+	public static long count() throws AppException {
+		return Model.count(UserGroup.class, collection, CMaps.map());
 	}
 }

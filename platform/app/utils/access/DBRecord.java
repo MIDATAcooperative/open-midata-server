@@ -14,8 +14,10 @@ import models.Model;
 import models.enums.APSSecurityLevel;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
+import utils.db.DBLayer;
 import utils.db.IncludeNullValues;
 import utils.db.NotMaterialized;
+import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
 public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
@@ -227,6 +229,10 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 		} else if (dme == null && dother == null) return super.compareTo(other);
 		else if (dme == null) return 1;
 		else return -1;		
+	}
+	
+	public static long count() throws AppException {
+		return Model.count(DBRecord.class, collection, CMaps.map());
 	}
 
 }

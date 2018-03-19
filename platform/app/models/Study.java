@@ -17,6 +17,7 @@ import models.enums.UserFeature;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
+import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
 /**
@@ -276,4 +277,7 @@ public class Study extends Model {
 		Model.delete(Study.class, collection, CMaps.map("_id", studyId));
 	}
 	
+    public static long count() throws AppException {
+		return Model.count(Study.class, collection, CMaps.map("executionStatus", StudyExecutionStatus.RUNNING));
+	}
 }

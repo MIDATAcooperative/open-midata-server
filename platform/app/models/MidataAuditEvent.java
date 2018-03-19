@@ -9,10 +9,12 @@ import org.bson.BSONObject;
 
 import models.enums.AuditEventType;
 import models.enums.EventType;
+import models.enums.StudyExecutionStatus;
 import models.enums.UserRole;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
+import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
 public class MidataAuditEvent extends Model {
@@ -90,6 +92,10 @@ public class MidataAuditEvent extends Model {
     
     public static List<MidataAuditEvent> getAll(Map<String, ? extends Object> properties, Set<String> fields, int limit) throws InternalServerException {
 		return Model.getAllList(MidataAuditEvent.class, collection, properties, fields, limit, "_id", -1);
+	}
+    
+    public static long count() throws AppException {
+		return Model.count(MidataAuditEvent.class, collection, CMaps.map());
 	}
     
 }

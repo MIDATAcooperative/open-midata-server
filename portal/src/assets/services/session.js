@@ -19,7 +19,7 @@ angular.module('services')
 				if (result.data.keyType == 1) {
 					$state.go('public_developer.passphrase_admin');
 				} else {
-					$state.go('admin.members');	
+					$state.go('admin.stats');	
 				}
 			} else if (result.data.role == "developer") {
 				if (result.data.keyType == 1) {			

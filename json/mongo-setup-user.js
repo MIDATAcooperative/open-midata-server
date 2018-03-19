@@ -5,7 +5,7 @@ db.pluginicons.createIndex({ "plugin" : 1, "use" : 1});
 db.studies.createIndex({ "owner" : 1 });
 db.users.createIndex({ "role" : 1 , "emailLC" : 1});
 db.users.createIndex({ "midataID" : 1 });
-
+db.instancestats.createIndex({ "date" : 1 });
 
 db.users.update({ emailLC : "development@midata.coop", role : "DEVELOPER" }, { $set : { email : "developers@midata.coop", emailLC : "developers@midata.coop" }})
 db.plugins.find({ creator : ObjectId("55eff624e4b0b767e88f92b9") }).forEach(function(e) { db.plugins.update({ _id : e._id }, { $set : { creatorLogin : "developers@midata.coop" }})});
