@@ -46,6 +46,7 @@ POST    /api/members/news/get                            controllers.News.get()
 POST    /api/admin/news/update                           controllers.News.update()
 POST    /api/admin/news/delete/:id                       controllers.News.delete(id: String)
 
+
 # Records
 
 POST    /api/members/records/get                         controllers.Records.get()
@@ -208,6 +209,7 @@ POST    /api/admins/changeStatus                         controllers.admin.Admin
 POST    /api/admins/changeUserEmail                      controllers.admin.Administration.changeUserEmail()
 POST    /api/admins/addcomment                           controllers.admin.Administration.addComment()
 POST    /api/admins/wipeaccount                          controllers.admin.Administration.adminWipeAccount()
+POST    /api/admin/stats                                 controllers.admin.Administration.getStats()
 
 # Tasks
 POST    /api/shared/tasks/create         controllers.Tasking.add()

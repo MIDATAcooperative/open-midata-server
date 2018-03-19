@@ -4,6 +4,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import models.enums.AuditEventType;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
 import models.enums.Gender;
+import models.enums.StudyExecutionStatus;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
@@ -408,6 +410,10 @@ public class User extends Model implements Comparable<User> {
 		if (city != null && city.length() > 0) keywords.add(city.toLowerCase());
 		keywordsLC = keywords;
 		if (write) User.set(_id, "keywordsLC", keywordsLC);
+	}
+	
+	public static long count(UserRole role) throws AppException {
+		return Model.count(User.class, collection, CMaps.map("role", role).map("status", EnumSet.of(UserStatus.ACTIVE, UserStatus.NEW)));
 	}
 		
 	
