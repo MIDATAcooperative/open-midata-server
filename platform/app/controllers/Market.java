@@ -204,6 +204,9 @@ public class Market extends APIController {
 
 		// fill in specific fields
 		if (app.type.equals("oauth1") || app.type.equals("oauth2")) {
+			app.apiUrl = JsonValidation.getStringOrNull(json, "apiUrl");
+			if (app.apiUrl != null && (!app.apiUrl.startsWith("http://") && !app.apiUrl.startsWith("https://"))) throw new JsonValidationException("error.invalid.url", "apiUrl", "invalid", "Invalid API Url");
+			
 			app.authorizationUrl = JsonValidation.getStringOrNull(json, "authorizationUrl");
 			app.accessTokenUrl = JsonValidation.getStringOrNull(json, "accessTokenUrl");
 			app.consumerKey = JsonValidation.getStringOrNull(json, "consumerKey");
@@ -388,10 +391,10 @@ public class Market extends APIController {
 			JsonValidation.validate(json, "filename", "name", "description", "url");
 		} else if (type.equals("oauth1")) {
 			JsonValidation.validate(json, "filename", "name", "description", "url", "authorizationUrl", "accessTokenUrl",
-					"consumerKey", "consumerSecret", "requestTokenUrl");
+					"consumerKey", "consumerSecret", "requestTokenUrl", "apiUrl");
 		} else if (type.equals("oauth2")) {
 			JsonValidation.validate(json, "filename", "name", "description", "url", "authorizationUrl", "accessTokenUrl",
-					"consumerKey", "consumerSecret", "scopeParameters");
+					"consumerKey", "consumerSecret", "scopeParameters", "apiUrl");
 		} else if (type.equals("mobile")) {
 			JsonValidation.validate(json, "filename", "name", "description", "secret");
 		} else if (type.equals("visualization")) {
@@ -468,6 +471,8 @@ public class Market extends APIController {
 
 		// fill in specific fields
 		if (plugin.type.equals("oauth1") || plugin.type.equals("oauth2")) {
+			plugin.apiUrl = JsonValidation.getStringOrNull(json, "apiUrl");
+			if (plugin.apiUrl != null && (!plugin.apiUrl.startsWith("http://") && !plugin.apiUrl.startsWith("https://"))) throw new JsonValidationException("error.invalid.url", "apiUrl", "invalid", "Invalid API Url");
 			plugin.authorizationUrl = JsonValidation.getStringOrNull(json, "authorizationUrl");
 			plugin.accessTokenUrl = JsonValidation.getStringOrNull(json, "accessTokenUrl");
 			plugin.consumerKey = JsonValidation.getStringOrNull(json, "consumerKey");
@@ -556,6 +561,8 @@ public class Market extends APIController {
 
 		// fill in specific fields
 		if (app.type.equals("oauth1") || app.type.equals("oauth2")) {
+			app.apiUrl = JsonValidation.getStringOrNull(json, "apiUrl");
+			if (app.apiUrl != null && (!app.apiUrl.startsWith("http://") && !app.apiUrl.startsWith("https://"))) throw new JsonValidationException("error.invalid.url", "apiUrl", "invalid", "Invalid API Url");
 			app.authorizationUrl = JsonValidation.getStringOrNull(json, "authorizationUrl");
 			app.accessTokenUrl = JsonValidation.getStringOrNull(json, "accessTokenUrl");
 			app.consumerKey = JsonValidation.getStringOrNull(json, "consumerKey");

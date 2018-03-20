@@ -607,7 +607,7 @@ public class PluginsAPI extends APIController {
 				
 		Plugin app;
 		try {			
-				app = Plugin.getById(appId, Sets.create("consumerKey", "consumerSecret"));
+				app = Plugin.getById(appId, Sets.create("consumerKey", "consumerSecret", "apiUrl"));
 				if (app == null) return badRequest("Invalid authToken");			
 		} catch (InternalServerException e) {
 			return badRequest(e.getMessage());
@@ -626,7 +626,9 @@ public class PluginsAPI extends APIController {
 		AccessLog.log(oauthTokenSecret);
 		OAuthCalculator calc = new OAuthCalculator(key, token);
 		try {
-		String signed = calc.sign(json.get("url").asText());
+			String url = json.get("url").asText();
+			if (app.apiUrl == null || !url.startsWith(app.apiUrl)) throw new BadRequestException("error.invalid.url", "API URL does not match URL in app definition.");
+		String signed = calc.sign(url);
 		AccessLog.log(signed);
 		URL target = new URL(signed);
 		
@@ -739,7 +741,12 @@ public class PluginsAPI extends APIController {
 		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());
 		String method = json.has("method") ? json.get("method").asText() : "get";
 		JsonNode body = json.has("body") ? json.get("body") : null;
-		Promise<WSResponse> response = oAuth2Call(inf, json.get("url").asText(), method, body);	
+	
+		String url = json.get("url").asText();
+		Plugin app = Plugin.getById(inf.pluginId);
+		if (app.apiUrl == null || !url.startsWith(app.apiUrl)) throw new BadRequestException("error.invalid.url", "API URL does not match URL in app definition.");
+		
+		Promise<WSResponse> response = oAuth2Call(inf, url, method, body);	
 		
 		Promise<Result> promise = response.map(new Function<WSResponse, Result>() {
 			public Result apply(WSResponse response) {				
