@@ -145,11 +145,11 @@ public class Providers extends APIController {
 		
 		String email = JsonValidation.getString(json, "email");
 		String password = JsonValidation.getString(json, "password");
-		HPUser user = HPUser.getByEmail(email, Sets.create("firstname", "lastname", "email", "password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "provider", "role", "subroles", "login", "registeredAt", "developer", "keywordsLC"));
+		HPUser user = HPUser.getByEmail(email, Sets.create("firstname", "lastname", "email", "password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "provider", "role", "subroles", "login", "registeredAt", "developer", "keywordsLC","failedLogins", "lastFailed"));
 		
 		if (user == null) throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user);
-		if (!HPUser.authenticationValid(password, user.password)) {
+		if (!user.authenticationValid(password)) {
 			throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
 		}
 		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.WIPED)) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");

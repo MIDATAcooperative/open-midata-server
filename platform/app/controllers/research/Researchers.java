@@ -190,12 +190,12 @@ public class Researchers extends APIController {
 		
 		String email = JsonValidation.getString(json, "email");
 		String password = JsonValidation.getString(json, "password");
-		ResearchUser user = ResearchUser.getByEmail(email, Sets.create("firstname", "lastname", "password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "email", "organization", "role", "subroles", "login", "registeredAt", "developer"));
+		ResearchUser user = ResearchUser.getByEmail(email, Sets.create("firstname", "lastname", "password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "email", "organization", "role", "subroles", "login", "registeredAt", "developer", "failedLogins", "lastFailed"));
 		
 		if (user == null) throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user);
 		
-		if (!ResearchUser.authenticationValid(password, user.password)) {
+		if (!user.authenticationValid(password)) {
 			throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
 		}
 		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.WIPED)) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
