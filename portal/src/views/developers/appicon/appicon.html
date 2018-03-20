@@ -17,10 +17,7 @@
 		    </formrow>
 		    <formrow myid="use" label="appicon.use.title">
 		      <select name="use" class="form-control" required ng-model="meta.use" ng-options="use as 'appicon.use.'+use | translate for use in uses"></select>
-		    </formrow>
-		    <formrow myid="type" label="appicon.type.title">
-		      <select name="type" class="form-control" required ng-model="meta.type" ng-options="type as 'appicon.type.'+type | translate for type in types"></select>
-		    </formrow>
+		    </formrow>		    
 		    <formrow myid="file" label="appicon.file">
 		      <input type="file" name="file" id="iconfile" required>
 		      <p class="help-text" translate="appicon.file_help"></p>

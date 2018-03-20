@@ -151,7 +151,7 @@ public class OAuth2 extends Controller {
 		case RESEARCH : user = ResearchUser.getByEmail(username, User.ALL_USER_INTERNAL);break; 
 		}
 		if (user == null) throw new BadRequestException("error.invalid.credentials", "Unknown user or bad password");
-        boolean authenticationValid =  Member.authenticationValid(password, user.password);   
+        boolean authenticationValid =  user.authenticationValid(password);   
 		MidataId studyContext = null;
 		if (role.equals(UserRole.RESEARCH) && authenticationValid) {
 			studyContext = json.has("studyLink") ? JsonValidation.getMidataId(json, "studyLink") : null;
@@ -324,7 +324,7 @@ public class OAuth2 extends Controller {
                				
 		if (appInstance == null) throw new NullPointerException();									
 			
-		if (appInstance.passcode != null && !User.authenticationValid(phrase, appInstance.passcode)) throw new BadRequestException("error.invalid.credentials", "Wrong password.");
+		if (appInstance.passcode != null && !User.phraseValid(phrase, appInstance.passcode)) throw new BadRequestException("error.invalid.credentials", "Wrong password.");
 		//	if (!verifyAppInstance(appInstance, user._id, app._id)) return badRequest("Access denied");
 		
 		KeyManager.instance.unlock(appInstance._id, phrase);

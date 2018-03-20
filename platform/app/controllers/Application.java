@@ -451,7 +451,7 @@ public class Application extends APIController {
 		User user = User.getById(userId, User.ALL_USER_INTERNAL);
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE, user);
-		if (!Member.authenticationValid(oldPassword, user.password)) throw new BadRequestException("error.invalid.password_old","Bad password.");
+		if (!user.authenticationValid(oldPassword)) throw new BadRequestException("error.invalid.password_old","Bad password.");
 		
 		user.set("password", Member.encrypt(password));
 		       			
@@ -511,7 +511,7 @@ public class Application extends APIController {
 		String password = JsonValidation.getString(json, "password");
 		
 		// check status
-		Member user = Member.getByEmail(email , Sets.create("firstname", "lastname", "email", "role", "password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer"));
+		Member user = Member.getByEmail(email , Sets.create("firstname", "lastname", "email", "role", "password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "failedLogins", "lastFailed"));
 		if (user == null) {
 			Set<User> alts = User.getAllUser(CMaps.map("emailLC", email.toLowerCase()).map("status", User.NON_DELETED).map("role", Sets.create(UserRole.DEVELOPER.toString(), UserRole.RESEARCH.toString(), UserRole.PROVIDER.toString())), Sets.create("role"));
 			if (!alts.isEmpty()) {				
@@ -522,7 +522,7 @@ public class Application extends APIController {
 		}
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user);
-		if (!Member.authenticationValid(password, user.password)) {
+		if (!user.authenticationValid(password)) {
 			throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");
 		}
 			 

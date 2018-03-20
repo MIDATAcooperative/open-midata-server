@@ -162,7 +162,7 @@ public class Tasking extends APIController {
 			  RecordManager.instance.shareByQuery(userId, userId, space._id, plugin.defaultQuery);			  
 		}
 				
-		return ok(JsonOutput.toJson(space, "Space", Space.ALL));
+		return ok(JsonOutput.toJson(space, "Space", Space.ALL)).as("application/json");
 	}
 	
 

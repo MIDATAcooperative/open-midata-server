@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -15,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
 
@@ -201,6 +204,9 @@ public class Market extends APIController {
 
 		// fill in specific fields
 		if (app.type.equals("oauth1") || app.type.equals("oauth2")) {
+			app.apiUrl = JsonValidation.getStringOrNull(json, "apiUrl");
+			if (app.apiUrl != null && (!app.apiUrl.startsWith("http://") && !app.apiUrl.startsWith("https://"))) throw new JsonValidationException("error.invalid.url", "apiUrl", "invalid", "Invalid API Url");
+			
 			app.authorizationUrl = JsonValidation.getStringOrNull(json, "authorizationUrl");
 			app.accessTokenUrl = JsonValidation.getStringOrNull(json, "accessTokenUrl");
 			app.consumerKey = JsonValidation.getStringOrNull(json, "consumerKey");
@@ -357,7 +363,7 @@ public class Market extends APIController {
 			  throw new BadRequestException("error.concurrent.update", "Concurrent updates. Reload page and try again.");
 			}
 		}								
-		return ok(JsonOutput.toJson(app, "Plugin", Plugin.ALL_DEVELOPER));
+		return ok(JsonOutput.toJson(app, "Plugin", Plugin.ALL_DEVELOPER)).as("application/json");
 		
 		} catch (IOException e) {
 			throw new BadRequestException("error.internal", "Cannot parse JSON");
@@ -385,10 +391,10 @@ public class Market extends APIController {
 			JsonValidation.validate(json, "filename", "name", "description", "url");
 		} else if (type.equals("oauth1")) {
 			JsonValidation.validate(json, "filename", "name", "description", "url", "authorizationUrl", "accessTokenUrl",
-					"consumerKey", "consumerSecret", "requestTokenUrl");
+					"consumerKey", "consumerSecret", "requestTokenUrl", "apiUrl");
 		} else if (type.equals("oauth2")) {
 			JsonValidation.validate(json, "filename", "name", "description", "url", "authorizationUrl", "accessTokenUrl",
-					"consumerKey", "consumerSecret", "scopeParameters");
+					"consumerKey", "consumerSecret", "scopeParameters", "apiUrl");
 		} else if (type.equals("mobile")) {
 			JsonValidation.validate(json, "filename", "name", "description", "secret");
 		} else if (type.equals("visualization")) {
@@ -465,6 +471,8 @@ public class Market extends APIController {
 
 		// fill in specific fields
 		if (plugin.type.equals("oauth1") || plugin.type.equals("oauth2")) {
+			plugin.apiUrl = JsonValidation.getStringOrNull(json, "apiUrl");
+			if (plugin.apiUrl != null && (!plugin.apiUrl.startsWith("http://") && !plugin.apiUrl.startsWith("https://"))) throw new JsonValidationException("error.invalid.url", "apiUrl", "invalid", "Invalid API Url");
 			plugin.authorizationUrl = JsonValidation.getStringOrNull(json, "authorizationUrl");
 			plugin.accessTokenUrl = JsonValidation.getStringOrNull(json, "accessTokenUrl");
 			plugin.consumerKey = JsonValidation.getStringOrNull(json, "consumerKey");
@@ -484,7 +492,7 @@ public class Market extends APIController {
 			
 		Plugin.add(plugin);
 		
-		return ok(JsonOutput.toJson(plugin, "Plugin", Plugin.ALL_DEVELOPER));
+		return ok(JsonOutput.toJson(plugin, "Plugin", Plugin.ALL_DEVELOPER)).as("application/json");
 	}
 	
 	private static Map<String, MessageDefinition> parseMessages(JsonNode json) throws JsonValidationException {
@@ -553,6 +561,8 @@ public class Market extends APIController {
 
 		// fill in specific fields
 		if (app.type.equals("oauth1") || app.type.equals("oauth2")) {
+			app.apiUrl = JsonValidation.getStringOrNull(json, "apiUrl");
+			if (app.apiUrl != null && (!app.apiUrl.startsWith("http://") && !app.apiUrl.startsWith("https://"))) throw new JsonValidationException("error.invalid.url", "apiUrl", "invalid", "Invalid API Url");
 			app.authorizationUrl = JsonValidation.getStringOrNull(json, "authorizationUrl");
 			app.accessTokenUrl = JsonValidation.getStringOrNull(json, "accessTokenUrl");
 			app.consumerKey = JsonValidation.getStringOrNull(json, "consumerKey");
@@ -680,7 +690,7 @@ public class Market extends APIController {
    
 		List<PluginDevStats> stats = new ArrayList(PluginDevStats.getByPlugin(pluginId, PluginDevStats.ALL));
 		
-		return ok(JsonOutput.toJson(stats, "PluginDevStats", PluginDevStats.ALL));
+		return ok(JsonOutput.toJson(stats, "PluginDevStats", PluginDevStats.ALL)).as("application/json");
 	}
 	
 	@APICall
@@ -734,7 +744,7 @@ public class Market extends APIController {
 			// check meta data
 			MultipartFormData formData = request().body().asMultipartFormData();
 			Map<String, String[]> metaData = formData.asFormUrlEncoded();
-			if (!metaData.containsKey("contentType") || !metaData.containsKey("use")) {
+			if (!metaData.containsKey("use")) {
 				throw new BadRequestException("error.internal", "At least one request parameter is missing.");
 			}
 							
@@ -754,9 +764,22 @@ public class Market extends APIController {
 			}
 			File file = fileData.getFile();
 			if (file.length() > 1024 * 1024) throw new BadRequestException("error.too_large.file", "Maximum file size is 100kb");
-			//String filename = fileData.getFilename();
-			//String contentType = fileData.getContentType();
+			String filename = fileData.getFilename().toUpperCase();
+			String contentType = fileData.getContentType();
+			if (!filename.endsWith(".JPG") && !filename.endsWith(".JPEG") && !filename.endsWith(".PNG") && !filename.endsWith(".GIF")) throw new BadRequestException("error.invalid.file", "File extension not known.");
+			if (!contentType.equals("image/png") && !contentType.equals("image/jpeg") && !contentType.equals("image/gif"))  throw new BadRequestException("error.invalid.file", "Mime type not known.");
 			
+			boolean isvalid = false;
+			try (InputStream input = new FileInputStream(file)) {
+			    try {			    	
+			        ImageIO.read(input).toString();
+			        isvalid = true;
+			    } catch (Exception e) {
+			        isvalid = false;
+			    }
+			}
+			if (!isvalid) 
+						
 			PluginIcon.delete(app.filename, use);
 		
 			PluginIcon icon = new PluginIcon();
@@ -764,7 +787,7 @@ public class Market extends APIController {
 			icon.plugin = app.filename;
 			icon.use = use;
 			icon.status = app.status;
-			icon.contentType = metaData.get("contentType")[0];
+			icon.contentType = contentType;
 			icon.data = IOUtils.toByteArray(new FileInputStream(file));
 						
 			PluginIcon.add(icon);
