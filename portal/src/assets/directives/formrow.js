@@ -46,12 +46,12 @@ angular.module('portal')
     	 var classes = "mi-at-input__fieldset mi-at-input__fieldset--floating-label mi-at-input__fieldset--white";
     	 if (attrs.type == "select") classes = "mi-at-select__fieldset";
     	 else if (attrs.type == "checkbox") classes ="mi-at-input__fieldset mi-at-input--checkbox mi-at-input--checkbox-white";
-    	 return '<fieldset class="'+classes+'" ng-class="{ \'has-error\' :  myform.' +
+    	 return '<div><fieldset class="'+classes+'" ng-class="{ \'has-error\' :  myform.' +
          attrs.myid + 
          '.$invalid && (myform.' + attrs.myid + '.$dirty || submitted) }">'+                
                 '<span class="" ng-transclude-replace></span>'+
                 (attrs.label ? ('<label for="'+attrs.myid+'" class="new mi-at-text" translate="'+attrs.label+'">'+
-                '</label>') : '') + '</fieldset>';    	  
+                '</label>') : '') + '</fieldset><div ng-show="myform.'+attrs.myid+'.$error.required && (myform.'+attrs.myid+'.$dirty || submitted)" class="mi-or-login__error"><span class="mi-at-text mi-at-text--smallest mi-at-text--white mi-at-text--highlighted" translate="error.missing.input_field"></span></div></div>';    	  
       },
       restrict: 'E',
       transclude: true,
