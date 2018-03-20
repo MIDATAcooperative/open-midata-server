@@ -74,7 +74,8 @@
        "unlock_code" : "Incorrect unlock code",
        "access_query" : "The Data Access Filter must restrict by 'content' or 'group'!",
        "sharing" : "The Data Access Filter contains data types that are excluded by the study configuration.",
-       "anonymous" : "Study can only be anonymous if no one is allowed to access unpseudonymized data."
+       "anonymous" : "Study can only be anonymous if no one is allowed to access unpseudonymized data.",
+       "url" : "Invalid URL"
      },
 
      "missing" : {
@@ -120,6 +121,9 @@
 
      "blocked" : {
        "user" : "User is not allowed to log in. Contact support@midata.coop for help.",
+       "password1" : "Too many bad login attempts. Wait 1 minute before next attempt.",
+       "password5" : "Too many bad login attempts. Wait 5 minutes before next attempt.",
+       "password60" : "Too many bad login attempts. Wait 1 hour before next attempt.",
        "participation" : "Account holder is not allowed to participate in study.",
        "consent" : "The consent for using this app has been revoked. To reenable the app, delete the rejected or expired consent on the MIDATA portal.",
        "app" : "You are allowed to use this app on a maximum of 10 devices. Please delete unused consents on the MIDATA portal." 

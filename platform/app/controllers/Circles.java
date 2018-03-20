@@ -106,7 +106,7 @@ public class Circles extends APIController {
 			ReferenceTool.resolveOwners(circles, true);
 		} else JsonValidation.validate(json, "owner");
 		Collections.sort(circles);
-		return ok(JsonOutput.toJson(circles, "Consent", Sets.create("name", "order", "owner", "authorized")));
+		return ok(JsonOutput.toJson(circles, "Consent", Sets.create("name", "order", "owner", "authorized"))).as("application/json");
 	}
 	
 	/**
@@ -164,7 +164,7 @@ public class Circles extends APIController {
 				
 		
 		//Collections.sort(circles);
-		return ok(JsonOutput.toJson(consents, "Consent", fields));
+		return ok(JsonOutput.toJson(consents, "Consent", fields)).as("application/json");
 	}
 	
 	public static void fillConsentFields(MidataId executor, Collection<Consent> consents, Set<String> fields) throws AppException {
@@ -335,7 +335,7 @@ public class Circles extends APIController {
 			}
 		}
 		
-		return ok(JsonOutput.toJson(consent, "Consent", Consent.ALL));
+		return ok(JsonOutput.toJson(consent, "Consent", Consent.ALL)).as("application/json");
 	}
 	
 	public static void addConsent(MidataId executorId, Consent consent, boolean patientRecord, String passcode, boolean force) throws AppException {
@@ -455,7 +455,7 @@ public class Circles extends APIController {
 		   consent.authorized.add(executorId);
 		   Consent.set(consent._id, "authorized", consent.authorized);
 		
-		   return ok(JsonOutput.toJson(consent, "Consent", Sets.create("_id", "authorized")));
+		   return ok(JsonOutput.toJson(consent, "Consent", Sets.create("_id", "authorized"))).as("application/json");
 		} catch (NoSuchAlgorithmException e) {
 	    	throw new InternalServerException("error.internal", e);
 	    } catch (InvalidKeySpecException e) {

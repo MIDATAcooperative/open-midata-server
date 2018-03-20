@@ -144,6 +144,7 @@ public class PlayHttpServletResponse implements HttpServletResponse {
 
 	@Override
 	public void addHeader(String arg0, String arg1) {
+		if (arg0.equals("X-Powered-By")) return;
 		response.setHeader(arg0, arg1);		
 	}
 

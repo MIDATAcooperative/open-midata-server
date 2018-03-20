@@ -166,7 +166,10 @@
 		  
 		
 		  
-		  		 
+		  <formrow myid="apiUrl" label="API Base URL" ng-show="app.type == 'oauth1' || app.type == 'oauth2'">
+		    <input type="text" id="apiUrl" name="apiUrl" class="form-control" placeholder="API Base URL" ng-model="app.apiUrl">
+		    <formerror myid="apiUrl" type="invalid" message="error.invalid.url"></formerror>
+		  </formrow>	 
 		  <formrow myid="authorizationUrl" label="Authorization URL" ng-show="app.type == 'oauth1' || app.type == 'oauth2'">
 		    <input type="text" id="authorizationUrl" name="authorizationUrl" class="form-control" placeholder="Authorization URL" ng-model="app.authorizationUrl">
 		  </formrow>

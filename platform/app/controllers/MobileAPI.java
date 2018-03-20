@@ -199,7 +199,7 @@ public class MobileAPI extends Controller {
 		if (candidates.isEmpty()) return null;
 		if (candidates.size() >= 10) throw new BadRequestException("error.blocked.app", "Maximum number of consents reached for this app. Please cleanup using the MIDATA portal.");
 		for (MobileAppInstance instance : candidates) {
-		  if (User.authenticationValid(phrase, instance.passcode)) return instance;
+		  if (User.phraseValid(phrase, instance.passcode)) return instance;
 		}
 		AccessLog.log("CS:fail");
 		return null;
@@ -266,13 +266,13 @@ public class MobileAPI extends Controller {
 				
 			User user = null;
 			switch (role) {
-			case MEMBER : user = Member.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
-			case PROVIDER : user = HPUser.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
-			case RESEARCH: user = ResearchUser.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
+			case MEMBER : user = Member.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp", "failedLogins", "lastFailed"));break;
+			case PROVIDER : user = HPUser.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp", "failedLogins", "lastFailed"));break;
+			case RESEARCH: user = ResearchUser.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp", "failedLogins", "lastFailed"));break;
 			}
 			if (user == null) throw new BadRequestException("error.invalid.credentials", "Unknown user or bad password");
 			
-			if (!Member.authenticationValid(password, user.password)) {
+			if (!user.authenticationValid(password)) {
 				throw new BadRequestException("error.invalid.credentials",  "Unknown user or bad password");
 			}
 			Set<UserFeature> req = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(user.role);
@@ -357,7 +357,7 @@ public class MobileAPI extends Controller {
 		Plugin app = Plugin.getById(appId, Sets.create("name", "pluginVersion", "defaultQuery", "predefinedMessages", "linkedStudy", "mustParticipateInStudy", "termsOfUse", "writes"));
 
 		if (app.linkedStudy != null && app.mustParticipateInStudy && !studyConfirm) {
-			StudyParticipation sp = StudyParticipation.getByStudyAndMember(app.linkedStudy, executor, Sets.create("status", "pstatus"));
+			StudyParticipation sp = StudyParticipation.getByStudyAndMember(app.linkedStudy, member._id, Sets.create("status", "pstatus"));
         	if (sp == null || 
         		sp.pstatus.equals(ParticipationStatus.MEMBER_RETREATED) || 
         		sp.pstatus.equals(ParticipationStatus.MEMBER_REJECTED) || 
@@ -488,7 +488,7 @@ public class MobileAPI extends Controller {
         Stats.setPlugin(inf.pluginId);
         
         if (!((AppAccessContext) inf.context).getAppInstance().status.equals(ConsentStatus.ACTIVE)) {
-        	return ok(JsonOutput.toJson(Collections.EMPTY_LIST, "Record", fields));
+        	return ok(JsonOutput.toJson(Collections.EMPTY_LIST, "Record", fields)).as("application/json");
         }
                 
 		// get record data
@@ -501,7 +501,7 @@ public class MobileAPI extends Controller {
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
 		
 		Stats.finishRequest(request(), "200", properties.keySet());
-		return ok(JsonOutput.toJson(records, "Record", fields));
+		return ok(JsonOutput.toJson(records, "Record", fields)).as("application/json");
 	}
 	
 	/**
@@ -605,7 +605,7 @@ public class MobileAPI extends Controller {
 		Stats.finishRequest(request(), "200", Collections.EMPTY_SET);
 		ObjectNode obj = Json.newObject();		
 		obj.put("_id", record._id.toString());		
-		return ok(JsonOutput.toJson(record, "Record", Sets.create("_id", "created", "version")));
+		return ok(JsonOutput.toJson(record, "Record", Sets.create("_id", "created", "version"))).as("application/json");
 	}
 	
 	/**
@@ -711,7 +711,7 @@ public class MobileAPI extends Controller {
         if (appInstance == null) return invalidToken(); 
 		
         if (!appInstance.status.equals(ConsentStatus.ACTIVE)) {
-        	return ok(JsonOutput.toJson(Collections.EMPTY_LIST, "Consent", fields));
+        	return ok(JsonOutput.toJson(Collections.EMPTY_LIST, "Consent", fields)).as("application/json");
         }
         
         MidataId executor = prepareMobileExecutor(appInstance, authToken);
@@ -721,7 +721,7 @@ public class MobileAPI extends Controller {
 		if (fields.contains("ownerName")) ReferenceTool.resolveOwners(consents, true);
 		
 		
-		return ok(JsonOutput.toJson(consents, "Consent", fields));
+		return ok(JsonOutput.toJson(consents, "Consent", fields)).as("application/json");
 	}
 	
 	public static void autoLearnAccessQuery(ExecutionInfo info, String format, String content) throws AppException {

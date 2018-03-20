@@ -83,7 +83,7 @@ public class UserGroups extends APIController {
 		
 		Set<UserGroup> groups = UserGroup.getAllUserGroup(properties, fields);
 		
-		return ok(JsonOutput.toJson(groups, "UserGroup", fields)); 		
+		return ok(JsonOutput.toJson(groups, "UserGroup", fields)).as("application/json"); 		
 	}
 	
 	/**
@@ -170,7 +170,7 @@ public class UserGroups extends APIController {
 				
 		RecordManager.instance.createPrivateAPS(userGroup._id, userGroup._id);
 		
-		return ok(JsonOutput.toJson(userGroup, "UserGroup", UserGroup.ALL));
+		return ok(JsonOutput.toJson(userGroup, "UserGroup", UserGroup.ALL)).as("application/json");
 	}
 	
 	/**

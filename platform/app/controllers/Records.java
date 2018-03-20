@@ -133,7 +133,7 @@ public class Records extends APIController {
 		// execute
 		Record target = RecordManager.instance.fetch(userId, tk);
 		ReferenceTool.resolveOwners(Collections.singleton(target), true, true);		
-		return ok(JsonOutput.toJson(target, "Record", Record.ALL_PUBLIC_WITHNAMES));
+		return ok(JsonOutput.toJson(target, "Record", Record.ALL_PUBLIC_WITHNAMES)).as("application/json");
 	}		
 	
 	/**
@@ -171,7 +171,7 @@ public class Records extends APIController {
 				
 		Collections.sort(records);
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
-		return ok(JsonOutput.toJson(records, "Record", fields));
+		return ok(JsonOutput.toJson(records, "Record", fields)).as("application/json");
 	}
 	
 	/**

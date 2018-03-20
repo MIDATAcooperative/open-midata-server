@@ -45,7 +45,7 @@ public class VisualizationCallAction extends Action<VisualizationCall> {
     	  ctx.response().setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS, PATCH");
     	  ctx.response().setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie, Prefer, Location, IfMatch, ETag, LastModified, Pragma, Cache-Control");
     	  ctx.response().setHeader("Pragma", "no-cache");
-    	  ctx.response().setHeader("Cache-Control", "no-cache");
+    	  ctx.response().setHeader("Cache-Control", "no-cache, no-store");
     	  AccessLog.log("path: ["+ctx.request().method()+"] "+ctx.request().path());
     	  return delegate.call(ctx);
     	      	  

@@ -154,7 +154,7 @@ public class Users extends APIController {
 		}
 		
 		Collections.sort(users);
-		return ok(JsonOutput.toJson(users, "User", fields));
+		return ok(JsonOutput.toJson(users, "User", fields)).as("application/json");
 	}
 		
 	/**
