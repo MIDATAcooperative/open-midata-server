@@ -5,7 +5,6 @@ angular.module('portal')
 	$scope.error = null;
 	
 	$scope.status = new status(false, $scope);
-	$scope.types = ["image/jpeg", "image/png", "image/gif"];
 	$scope.uses = ["LOGINPAGE", "APPICON"];
 	$scope.meta = { };
 			
@@ -36,8 +35,7 @@ angular.module('portal')
 		
 		var fd = new FormData();
 		
-		console.log(fileelem);
-		fd.append('contentType', $scope.meta.type );
+		console.log(fileelem);		
 		fd.append('use', $scope.meta.use );
         fd.append('file', fileelem.files[0]);
         $scope.status.doAction("upload", $http.post(ENV.apiurl + "/api/developers/plugins/"+$scope.app._id+"/icon", fd, {

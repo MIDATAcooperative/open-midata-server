@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -15,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
 
@@ -734,7 +737,7 @@ public class Market extends APIController {
 			// check meta data
 			MultipartFormData formData = request().body().asMultipartFormData();
 			Map<String, String[]> metaData = formData.asFormUrlEncoded();
-			if (!metaData.containsKey("contentType") || !metaData.containsKey("use")) {
+			if (!metaData.containsKey("use")) {
 				throw new BadRequestException("error.internal", "At least one request parameter is missing.");
 			}
 							
@@ -754,9 +757,22 @@ public class Market extends APIController {
 			}
 			File file = fileData.getFile();
 			if (file.length() > 1024 * 1024) throw new BadRequestException("error.too_large.file", "Maximum file size is 100kb");
-			//String filename = fileData.getFilename();
-			//String contentType = fileData.getContentType();
+			String filename = fileData.getFilename().toUpperCase();
+			String contentType = fileData.getContentType();
+			if (!filename.endsWith(".JPG") && !filename.endsWith(".JPEG") && !filename.endsWith(".PNG") && !filename.endsWith(".GIF")) throw new BadRequestException("error.invalid.file", "File extension not known.");
+			if (!contentType.equals("image/png") && !contentType.equals("image/jpeg") && !contentType.equals("image/gif"))  throw new BadRequestException("error.invalid.file", "Mime type not known.");
 			
+			boolean isvalid = false;
+			try (InputStream input = new FileInputStream(file)) {
+			    try {			    	
+			        ImageIO.read(input).toString();
+			        isvalid = true;
+			    } catch (Exception e) {
+			        isvalid = false;
+			    }
+			}
+			if (!isvalid) 
+						
 			PluginIcon.delete(app.filename, use);
 		
 			PluginIcon icon = new PluginIcon();
@@ -764,7 +780,7 @@ public class Market extends APIController {
 			icon.plugin = app.filename;
 			icon.use = use;
 			icon.status = app.status;
-			icon.contentType = metaData.get("contentType")[0];
+			icon.contentType = contentType;
 			icon.data = IOUtils.toByteArray(new FileInputStream(file));
 						
 			PluginIcon.add(icon);
