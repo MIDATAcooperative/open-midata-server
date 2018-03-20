@@ -22,7 +22,7 @@ GET     /test/autorun                                    controllers.AutoRun.run
 
 # Home page
 
-GET     /api/logout                                          controllers.Application.logout()
+POST     /api/logout                                          controllers.Application.logout()
 
 POST    /api/members/registration                        controllers.Application.register()
 POST    /api/members/join                                controllers.QuickRegistration.register()
