@@ -76,7 +76,7 @@ public class Spaces extends Controller {
 			}
 		}
 		Collections.sort(spaces);
-		return ok(JsonOutput.toJson(spaces, "Space", fields));
+		return ok(JsonOutput.toJson(spaces, "Space", fields)).as("application/json");
 	}
 
 	/**
@@ -116,7 +116,7 @@ public class Spaces extends Controller {
 			RecordManager.instance.setMeta(userId, space._id, "_config", config);
 		}
 				
-		return ok(JsonOutput.toJson(space, "Space", Space.ALL));
+		return ok(JsonOutput.toJson(space, "Space", Space.ALL)).as("application/json");
 	}
 	
 	/**

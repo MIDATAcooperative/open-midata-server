@@ -363,7 +363,7 @@ public class Market extends APIController {
 			  throw new BadRequestException("error.concurrent.update", "Concurrent updates. Reload page and try again.");
 			}
 		}								
-		return ok(JsonOutput.toJson(app, "Plugin", Plugin.ALL_DEVELOPER));
+		return ok(JsonOutput.toJson(app, "Plugin", Plugin.ALL_DEVELOPER)).as("application/json");
 		
 		} catch (IOException e) {
 			throw new BadRequestException("error.internal", "Cannot parse JSON");
@@ -492,7 +492,7 @@ public class Market extends APIController {
 			
 		Plugin.add(plugin);
 		
-		return ok(JsonOutput.toJson(plugin, "Plugin", Plugin.ALL_DEVELOPER));
+		return ok(JsonOutput.toJson(plugin, "Plugin", Plugin.ALL_DEVELOPER)).as("application/json");
 	}
 	
 	private static Map<String, MessageDefinition> parseMessages(JsonNode json) throws JsonValidationException {
@@ -690,7 +690,7 @@ public class Market extends APIController {
    
 		List<PluginDevStats> stats = new ArrayList(PluginDevStats.getByPlugin(pluginId, PluginDevStats.ALL));
 		
-		return ok(JsonOutput.toJson(stats, "PluginDevStats", PluginDevStats.ALL));
+		return ok(JsonOutput.toJson(stats, "PluginDevStats", PluginDevStats.ALL)).as("application/json");
 	}
 	
 	@APICall

@@ -290,7 +290,7 @@ public class PluginsAPI extends APIController {
 		Collection<Record> records = getRecords(inf, properties, fields);
 				
 		Stats.finishRequest(request(), "200", properties.keySet());
-		return ok(JsonOutput.toJson(records, "Record", fields));
+		return ok(JsonOutput.toJson(records, "Record", fields)).as("application/json");
 	}
 	
 	/**
@@ -368,7 +368,7 @@ public class PluginsAPI extends APIController {
 	    if (fields.contains("ownerName")) ReferenceTool.resolveOwnersForRecordsInfo(result, true);
 	    
 	    Stats.finishRequest(request(), "200", properties.keySet());
-		return ok(JsonOutput.toJson(result, "Record", Record.ALL_PUBLIC));
+		return ok(JsonOutput.toJson(result, "Record", Record.ALL_PUBLIC)).as("application/json");
 	}
 	
 	/**

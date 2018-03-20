@@ -488,7 +488,7 @@ public class MobileAPI extends Controller {
         Stats.setPlugin(inf.pluginId);
         
         if (!((AppAccessContext) inf.context).getAppInstance().status.equals(ConsentStatus.ACTIVE)) {
-        	return ok(JsonOutput.toJson(Collections.EMPTY_LIST, "Record", fields));
+        	return ok(JsonOutput.toJson(Collections.EMPTY_LIST, "Record", fields)).as("application/json");
         }
                 
 		// get record data
@@ -501,7 +501,7 @@ public class MobileAPI extends Controller {
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
 		
 		Stats.finishRequest(request(), "200", properties.keySet());
-		return ok(JsonOutput.toJson(records, "Record", fields));
+		return ok(JsonOutput.toJson(records, "Record", fields)).as("application/json");
 	}
 	
 	/**
@@ -605,7 +605,7 @@ public class MobileAPI extends Controller {
 		Stats.finishRequest(request(), "200", Collections.EMPTY_SET);
 		ObjectNode obj = Json.newObject();		
 		obj.put("_id", record._id.toString());		
-		return ok(JsonOutput.toJson(record, "Record", Sets.create("_id", "created", "version")));
+		return ok(JsonOutput.toJson(record, "Record", Sets.create("_id", "created", "version"))).as("application/json");
 	}
 	
 	/**
@@ -711,7 +711,7 @@ public class MobileAPI extends Controller {
         if (appInstance == null) return invalidToken(); 
 		
         if (!appInstance.status.equals(ConsentStatus.ACTIVE)) {
-        	return ok(JsonOutput.toJson(Collections.EMPTY_LIST, "Consent", fields));
+        	return ok(JsonOutput.toJson(Collections.EMPTY_LIST, "Consent", fields)).as("application/json");
         }
         
         MidataId executor = prepareMobileExecutor(appInstance, authToken);
@@ -721,7 +721,7 @@ public class MobileAPI extends Controller {
 		if (fields.contains("ownerName")) ReferenceTool.resolveOwners(consents, true);
 		
 		
-		return ok(JsonOutput.toJson(consents, "Consent", fields));
+		return ok(JsonOutput.toJson(consents, "Consent", fields)).as("application/json");
 	}
 	
 	public static void autoLearnAccessQuery(ExecutionInfo info, String format, String content) throws AppException {
