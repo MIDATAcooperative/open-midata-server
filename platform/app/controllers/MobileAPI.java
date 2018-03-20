@@ -357,7 +357,7 @@ public class MobileAPI extends Controller {
 		Plugin app = Plugin.getById(appId, Sets.create("name", "pluginVersion", "defaultQuery", "predefinedMessages", "linkedStudy", "mustParticipateInStudy", "termsOfUse", "writes"));
 
 		if (app.linkedStudy != null && app.mustParticipateInStudy && !studyConfirm) {
-			StudyParticipation sp = StudyParticipation.getByStudyAndMember(app.linkedStudy, executor, Sets.create("status", "pstatus"));
+			StudyParticipation sp = StudyParticipation.getByStudyAndMember(app.linkedStudy, member._id, Sets.create("status", "pstatus"));
         	if (sp == null || 
         		sp.pstatus.equals(ParticipationStatus.MEMBER_RETREATED) || 
         		sp.pstatus.equals(ParticipationStatus.MEMBER_REJECTED) || 
