@@ -9,17 +9,9 @@
         "research_organization" : "Research Organization",
 
         // TODO NEW: Name
-
-        // TODO CHANGED
-        // OLD: Name
-        // NEW: Name*
         "name" : "Name",
 
         // TODO NEW: Description
-
-        // TODO CHANGED
-        // OLD: Description
-        // NEW: Description*
         "description" : "Description",
 
         // TODO NEW: Research User
@@ -41,13 +33,19 @@
         "workspace" : "Workspace",
 
         // TODO NEW: Data
-        "data" : "Data"
+        "data" : "Data",
+
+        // TODO NEW: Add Researcher
+        "addresearcher" : "Add Researcher"
     },
 
     "createstudy" : {
 
         // TODO NEW: Create new study
         "title" : "Create new study",
+
+        // TODO NEW: Change study description
+        "title2" : "Change study description",
 
         // TODO NEW: Study name
         "study_name" : "Study name",
@@ -67,8 +65,8 @@
         // TODO NEW: Rules
         "rules" : "Rules",
 
-        // TODO NEW: Actions
-        "actions" : "Actions",
+        // TODO NEW: Applications
+        "actions" : "Applications",
 
         // TODO NEW: Participants
         "participants" : "Participants",
@@ -77,7 +75,10 @@
         "records" : "Records",
 
         // TODO NEW: Results
-        "results" : "Results"
+        "results" : "Results",
+
+        // TODO NEW: Team
+        "team" : "Team"
     },
 
     "studies" : {
@@ -109,11 +110,14 @@
 
     "studyactions" : {
 
-        // TODO NEW: When the study is running you can share data with participants and have them complete tasks. (Like fill out a form)
-        "description" : "When the study is running you can share data with participants and have them complete tasks. (Like fill out a form)",
+        // TODO NEW: After the study has been validated, you can link plugins and external data processing services to it. These plugins or services must connect to MIDATA using the credentials of one of the members of the research team with sufficient rights.
+        "description" : "After the study has been validated, you can link plugins and external data processing services to it. These plugins or services must connect to MIDATA using the credentials of one of the members of the research team with sufficient rights.",
 
         // TODO NEW: Select Group
         "select_group_btn" : "Select Group",
+
+        // TODO NEW: <All Groups>
+        "allgroups" : "<All Groups>",
 
         // TODO NEW: Add Task for Participants
         "add_task_btn" : "Add Task for Participants",
@@ -124,14 +128,20 @@
         // TODO NEW: Device Code
         "device" : "Device Code",
 
-        // TODO NEW: Restrict Read to Group
-        "restrict" : "Restrict Read to Group",
+        // TODO NEW: Restrict read to group
+        "restrict" : "Restrict read to group",
 
-        // TODO NEW: Add Study Data Providing Application
-        "add_application_btn" : "Add Study Data Providing Application",
+        // TODO NEW: Application shares data with participant group(s)
+        "shareback" : "Application shares data with participant group(s)",
 
-        // TODO NEW: Application Consents
-        "linked_apps" : "Application Consents"
+        // TODO NEW: Add Research Application
+        "add_application_btn" : "Add Research Application",
+
+        // TODO NEW: Applications Consents
+        "linked_apps" : "Applications Consents",
+
+        // TODO NEW: Research Plugins
+        "linked_spaces" : "Research Plugins"
     },
 
     "studyfields" : {
@@ -154,8 +164,8 @@
         // TODO NEW: Not Anonymous
         "not_anonymous1" : "Not Anonymous",
 
-        // TODO NEW: , requests member to share full name, birthday and contact Information (address, phone, eMail)
-        "not_anonymous2" : ", requests member to share full name, birthday and contact Information (address, phone, eMail)",
+        // TODO NEW: , requests member to share full name, birthday and contact Information (address, phone, email)
+        "not_anonymous2" : ", requests member to share full name, birthday and contact Information (address, phone, email)",
 
         // TODO NEW: Assistance
         "assistance" : "Assistance",
@@ -217,6 +227,9 @@
         // TODO NEW: Execution Status
         "execution_status" : "Execution Status",
 
+        // TODO NEW: Checklist
+        "checklist" : "Checklist",
+
         // TODO NEW: History
         "history" : "History",
 
@@ -232,11 +245,14 @@
         // TODO NEW: Comment
         "comment" : "Comment",
 
+        // TODO NEW: Change
+        "edit_description_btn" : "Change",
+
         // TODO NEW: Request Study Validation
         "start_validation_btn" : "Request Study Validation",
 
-        // TODO NEW: Start to search for participants
-        "start_participant_search_btn" : "Start to search for participants",
+        // TODO NEW: Start to Search for Participants
+        "start_participant_search_btn" : "Start to Search for Participants",
 
         // TODO NEW: End Participant Search
         "end_participant_search_btn" : "End Participant Search",
@@ -248,7 +264,28 @@
         "finish_study_btn" : "Finish Study",
 
         // TODO NEW: Delete Study
-        "delete_study_btn" : "Delete Study"
+        "delete_study_btn" : "Delete Study",
+
+        // TODO NEW: Abort Study
+        "abort_study_btn" : "Abort Study",
+
+        // TODO NEW: Workflow Information
+        "workflow" : "Workflow Information",
+
+        // TODO NEW: Not Required, Mark as Done
+        "markdone_btn" : "Not Required, Mark as Done",
+
+        // TODO NEW: Visit Page
+        "visitnow_btn" : "Visit Page",
+
+        // TODO NEW: Trigger Now
+        "donow_btn" : "Trigger Now",
+
+        // TODO NEW: Last step worked on
+        "lastdone" : "Last step worked on",
+
+        // TODO NEW: Next step to do
+        "nextstep" : "Next step to do"
     },
 
     "studyparticipant" : {
@@ -271,6 +308,9 @@
         // TODO NEW: Group:
         "group" : "Group:",
 
+        // TODO NEW: Shared records
+        "shared_records" : "Shared records",
+
         // TODO NEW: Participation History
         "history" : "Participation History"
     },
@@ -280,11 +320,20 @@
         // TODO NEW: Name
         "name" : "Name",
 
+        // TODO NEW: Pseudonymized
+        "partName" : "Pseudonymized",
+
         // TODO NEW: Group
         "group" : "Group",
 
         // TODO NEW: Status
         "status" : "Status",
+
+        // TODO NEW: {{count}} consents matching your criteria found.
+        "total" : "{{count}} consents matching your criteria found.",
+
+        // TODO NEW: Only the first 1000 matching consents are shown.
+        "only_first_shown" : "Only the first 1000 matching consents are shown.",
 
         // TODO NEW: Recruiter
         "recruiter" : "Recruiter",
@@ -295,8 +344,35 @@
         // TODO NEW: Reject
         "reject_btn" : "Reject",
 
-        // TODO NEW: This study does not have any participants yet.
-        "empty" : "This study does not have any participants yet."
+        // TODO NEW: Add Participant
+        "add_participant_btn" : "Add Participant",
+
+        // TODO NEW: This study does not have any participants matching your search criteria yet.
+        "empty" : "This study does not have any participants matching your search criteria yet.",
+
+        // TODO NEW: Search
+        "search_type" : "Search",
+
+        // TODO NEW: All participants
+        "all" : "All participants",
+
+        // TODO NEW: Candidates waiting for a decision
+        "request" : "Candidates waiting for a decision",
+
+        // TODO NEW: Rejected candidates
+        "rejected" : "Rejected candidates",
+
+        // TODO NEW: Participants that have retreated
+        "retreated" : "Participants that have retreated",
+
+        // TODO NEW: Accept all requests and assign new participants to participant group
+        "acceptall" : "Accept all requests and assign new participants to participant group",
+
+        // TODO NEW: Auto-Accept
+        "autojoin" : "Auto-Accept",
+
+        // TODO NEW: Accept all participation requests and assign new participants to the selected group as soon as the research application linked to this study connects.
+        "autojoin2" : "Accept all participation requests and assign new participants to the selected group as soon as the research application linked to this study connects."
     },
 
     "studyrecords" : {
@@ -314,7 +390,10 @@
         "download_btn" : "Download",
 
         // TODO NEW: Download FHIR Bundle
-        "fhir_download_btn" : "Download FHIR Bundle"
+        "fhir_download_btn" : "Download FHIR Bundle",
+
+        // TODO NEW: Download not pseudonymized
+        "fhir_download_original_btn" : "Download not pseudonymized"
     },
 
     "studyrules" : {
@@ -325,16 +404,234 @@
         // TODO NEW: This setup cannot be changed anymore after Study has been validated.
         "no_change_warning" : "This setup cannot be changed anymore after Study has been validated.",
 
-        // TODO NEW: Sharing Query (JSON)
-        "sharing_query" : "Sharing Query (JSON)",
+        // TODO NEW: Official start date
+        "startDate" : "Official start date",
 
-        // TODO NEW: Terms
-        "terms_of_use" : "Terms",
+        // TODO NEW: Official end date
+        "endDate" : "Official end date",
 
-        // TODO NEW: Show Terms
-        "show_terms" : "Show Terms",
+        // TODO NEW: Data freeze date
+        "dataCreatedBefore" : "Data freeze date",
+
+        // TODO NEW: Data Access Filter (JSON)
+        "sharing_query" : "Data Access Filter (JSON)",
+
+        // TODO NEW: Data Access Filter (Add)
+        "sharing_query_options" : "Data Access Filter (Add)",
+
+        // TODO NEW: Data Access Filter (Selection)
+        "sharing_query_selection" : "Data Access Filter (Selection)",
+
+        // TODO NEW: Terms and Conditions
+        "terms_of_use" : "Terms and Conditions",
+
+        // TODO NEW: If the study Terms and Conditions have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the ID you need to enter here.
+        "terms_of_use_hint" : "If the study Terms and Conditions have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the ID you need to enter here.",
+
+        // TODO NEW: Show Terms and Conditions
+        "show_terms" : "Show Terms and Conditions",
 
         // TODO NEW: Requirements
         "requirements" : "Requirements"
+    },
+
+    "addresearcher" : {
+
+        // TODO NEW: Sign Up Researcher
+        "sign_up" : "Sign Up Researcher",
+
+        // TODO NEW: A new researcher has been added to your organization.
+        "success" : "A new researcher has been added to your organization."
+    },
+
+    "addparticipant" : {
+
+        // TODO NEW: Sign Up Participant
+        "sign_up" : "Sign Up Participant",
+
+        // TODO NEW: Study
+        "study" : "Study",
+
+        // TODO NEW: Participant has accepted
+        "hasaccepted" : "Participant has accepted",
+
+        // TODO NEW: A new participant has been added to your study.
+        "success" : "A new participant has been added to your study."
+    },
+
+    "studyteam" : {
+
+        // TODO NEW: Team member
+        "person" : "Team member",
+
+        // TODO NEW: Role
+        "role" : "Role",
+
+        // TODO NEW: Role (click row for details below)
+        "rolehint" : "Role (click row for details below)",
+
+        // TODO NEW: Role Name
+        "roleName" : "Role Name",
+
+        // TODO NEW: You may change your own rights by readding yourself to the team with different rights. You may only do this as long as you are the only team member. You can't deprive yourself of the right to manage the team.
+        "defineself" : "You may change your own rights by readding yourself to the team with different rights. You may only do this as long as you are the only team member. You can't deprive yourself of the right to manage the team.",
+
+        // TODO NEW: Add Person
+        "addperson_btn" : "Add Person",
+
+        // TODO NEW: Rights
+        "rights" : "Rights",
+        "right" : {
+
+            // TODO NEW: Read data records
+            "readData" : "Read data records",
+
+            // TODO NEW: Write/Update data records
+            "writeData" : "Write/Update data records",
+
+            // TODO NEW: Unpseudonymized participants
+            "unpseudo" : "Unpseudonymized participants",
+
+            // TODO NEW: Export data
+            "export" : "Export data",
+
+            // TODO NEW: Change team
+            "changeTeam" : "Change team",
+
+            // TODO NEW: View audit log
+            "auditLog" : "View audit log",
+
+            // TODO NEW: Manage participants
+            "participants" : "Manage participants",
+
+            // TODO NEW: Setup Study
+            "setup" : "Setup Study"
+        }
+    },
+
+    "study_checklist" : {
+
+        // TODO NEW: Phase 1 : Draft
+        "phase1" : "Phase 1 : Draft",
+
+        // TODO NEW: Draft
+        "phase1_help" : "Draft",
+
+        // TODO NEW: Study name and description defined
+        "name" : "Study name and description defined",
+
+        // TODO NEW: The study name will be shown to participants. The description will be available on the portal and during app login.
+        "name_help" : "The study name will be shown to participants. The description will be available on the portal and during app login.",
+
+        // TODO NEW: Researcher team setup
+        "teamsetup" : "Researcher team setup",
+
+        // TODO NEW: If more people are involved in carrying out the study, provide all involved persons and their role. As long as you have not added more people, you can change your own role by adding yourself again with another role.
+        "teamsetup_help" : "If more people are involved in carrying out the study, provide all involved persons and their role. As long as you have not added more people, you can change your own role by adding yourself again with another role.",
+
+        // TODO NEW: Participant groups defined
+        "groups" : "Participant groups defined",
+
+        // TODO NEW: Your study may have one or multiple groups of participants. Please define the list of participant groups.
+        "groups_help" : "Your study may have one or multiple groups of participants. Please define the list of participant groups.",
+
+        // TODO NEW: Data Access Filter defined
+        "sharingQuery" : "Data Access Filter defined",
+
+        // TODO NEW: Your study has to explicitely state which data of the participants it will access. The Data Access Filter cannot be changed after study has been validated.
+        "sharingQuery_help" : "Your study has to explicitely state which data of the participants it will access. The Data Access Filter cannot be changed after study has been validated.",
+
+        // TODO NEW: Start and end dates set
+        "dates" : "Start and end dates set",
+
+        // TODO NEW: Start and end date will be shown to the participants. No data will flow into the study from the moment the data is frozen.
+        "dates_help" : "Start and end date will be shown to the participants. No data will flow into the study from the moment the data is frozen.",
+
+        // TODO NEW: Terms and Conditions provided
+        "terms" : "Terms and Conditions provided",
+
+        // TODO NEW: If the study Terms and Conditions have to be confirmed online by the participants, please contact MIDATA.
+        "terms_help" : "If the study Terms and Conditions have to be confirmed online by the participants, please contact MIDATA.",
+
+        // TODO NEW: Study validation requested
+        "validation" : "Study validation requested",
+
+        // TODO NEW: Validation will be done by MIDATA after it has been requested. The study may no longer be changed after validation has been requested.
+        "validation_help" : "Validation will be done by MIDATA after it has been requested. The study may no longer be changed after validation has been requested.",
+
+        // TODO NEW: Study validated by MIDATA
+        "validation_passed" : "Study validated by MIDATA",
+
+        // TODO NEW: Please wait until study has been validated.
+        "validation_passed_help" : "Please wait until study has been validated.",
+
+        // TODO NEW: Phase 2 : Preparation
+        "phase2" : "Phase 2 : Preparation",
+
+        // TODO NEW: Preparation
+        "phase2_help" : "Preparation",
+
+        // TODO NEW: Research application added
+        "applications" : "Research application added",
+
+        // TODO NEW: You can link plugins and external data processing services to your study. These may read the participants' data and/or share aggregated data back to the participants. These plugins or services must connect to MIDATA using the credentials of one of the members of the research team with sufficient rights.
+        "applications_help" : "You can link plugins and external data processing services to your study. These may read the participants' data and/or share aggregated data back to the participants. These plugins or services must connect to MIDATA using the credentials of one of the members of the research team with sufficient rights.",
+
+        // TODO NEW: App has been linked with study
+        "applinked" : "App has been linked with study",
+
+        // TODO NEW: To link an application to your study, please send to MIDATA the code of your study and the name of the application you want to have linked.
+        "applinked_help" : "To link an application to your study, please send to MIDATA the code of your study and the name of the application you want to have linked.",
+
+        // TODO NEW: Started to search for participants
+        "partsearchstart" : "Started to search for participants",
+
+        // TODO NEW: As long as participant search is not started it is not possible to participate to the study. Apps which require study participation may not be used.
+        "partsearchstart_help" : "As long as participant search is not started it is not possible to participate to the study. Apps which require study participation may not be used.",
+
+        // TODO NEW: Phase 3 : Execution
+        "phase3" : "Phase 3 : Execution",
+
+        // TODO NEW: Execution
+        "phase3_help" : "Execution",
+
+        // TODO NEW: Execution started
+        "executionstart" : "Execution started",
+
+        // TODO NEW: Marks this study as officially started.
+        "executionstart_help" : "Marks this study as officially started.",
+
+        // TODO NEW: Participants assigned to groups and accepted
+        "acceptedpart" : "Participants assigned to groups and accepted",
+
+        // TODO NEW: New participants must be assigned to a participant group and be accepted or rejected.
+        "acceptedpart_help" : "New participants must be assigned to a participant group and be accepted or rejected.",
+
+        // TODO NEW: Phase 4 : Completion
+        "phase4" : "Phase 4 : Completion",
+
+        // TODO NEW: Completion
+        "phase4_help" : "Completion",
+
+        // TODO NEW: Search for participants ended
+        "partsearchend" : "Search for participants ended",
+
+        // TODO NEW: No new participants may be recruited after participant search has ended.
+        "partsearchend_help" : "No new participants may be recruited after participant search has ended.",
+
+        // TODO NEW: Study ended
+        "execend" : "Study ended",
+
+        // TODO NEW: When the study is ended data are immediately frozen. The data stay available for download.
+        "execend_help" : "When the study is ended data are immediately frozen. The data stay available for download.",
+
+        // TODO NEW: Data exported
+        "exportdata" : "Data exported",
+
+        // TODO NEW: Export the study data as FHIR JSON Bundle (separate for each participant group).
+        "exportdata_help" : "Export the study data as FHIR JSON Bundle (separate for each participant group).",
+
+        // TODO NEW: (optional)
+        "optional" : "(optional)"
     }
 }

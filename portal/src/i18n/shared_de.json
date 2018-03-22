@@ -12,7 +12,6 @@
 
     "navbar" : {
         "toggle_navigation" : "Navigation an/aus",
-        "ribbon" : "Pilot Phase",
         "login" : "Anmelden",
         "sign_up" : "Registrieren",
         "sign_out" : "Abmelden",
@@ -93,7 +92,8 @@
             "privacypolicy" : "Die Datenschutzerklärung muss akzeptiert werden.",
             "study_accept" : "Die Studienteilnahme muss akzeptiert werden.",
             "study_group" : "Der Teilnehmer muss zuerst zu einer Gruppe zugeordnet werden.",
-            "confirmation" : "Bestätigung durch Benutzer zuerst erforderlich."
+            "confirmation" : "Bestätigung durch Benutzer zuerst erforderlich.",
+            "file" : "Keine Datei zum Hochladen ausgewählt"
         },
 
         "unknown" : {
@@ -163,6 +163,10 @@
             "consent" : "Zustimmungen für Studien können nicht verändert werden.",
             "study" : "Der Studienaufbau kann nur während der Entwurfsphase geändert werden.",
             "group" : "Die Teilnehmergruppe kann nur geändert werden, wenn die Studie noch nicht gestartet wurde oder wenn noch keine Teilnehmer angenommen wurden."
+        },
+
+        "too_large" : {
+            "file" : "Die Datei ist zu gross (maximal 1 MB)."
         }
 
     },
@@ -352,6 +356,7 @@
             "SPONSOR" : "Sponsor",
             "INVESTIGATOR" : "Investigator",
             "AUDITOR" : "Auditor",
+            "STUDYNURSE" : "Study Nurse",
             "MONITOR" : "Monitor",
             "OTHER" : "Andere"
         },
@@ -567,7 +572,7 @@
         "resend_btn" : "E-Mail erneut versenden",
         "retry_btn" : "Anmeldung erneut versuchen",
         "contract_instructions" : "Ein Vertrag wurde an Ihre Postadresse versandt. Schicken Sie ihn bitte unterschrieben an MIDATA zurück.",
-        "pilot_phase" : "Während der Pilotphase (oder auf der Testinstanz) wird KEIN Vertrag versendet. Ein MIDATA Administrator wird Ihr Konto verifizieren und freischalten. Sie werden informiert, wenn Ihr Konto freigeschaltet wurde.",
+        "pilot_phase" : "Ein MIDATA Administrator wird Ihr Konto verifizieren und freischalten. Sie werden informiert, wenn Ihr Konto freigeschaltet wurde.",
         "code_intructions" : "Ein Brief mit einem Bestätigungscode wurde an Ihre Postadresse versandt. Geben Sie bitte den Bestätigungscode ein, um Zugriff auf die Plattform zu erhalten.",
         "code_done" : "Sie haben den Bestätigungscode eingegeben. Sie werden sich anmelden können sobald Ihr unterschriebener Vertrag bei MIDATA eingetroffen ist.",
         "enter_now_btn" : "Jetzt eingeben",

@@ -3,7 +3,7 @@
     "sign_up" : "Healthcare Provider Sign up",
     "provider" : "Healthcare Provider",
     "user" : "User",
-    "name" : "Name*"
+    "name" : "Name"
   },
   
   "provider_login" : {
@@ -15,7 +15,7 @@
     "patients" : "Patients",
     "research" : "Research",
     "workspace" : "Workspace",
-    "market" : "Market",    
+    "market" : "MISTORE",    
 	"usergroups" : "Teams"
   },
   

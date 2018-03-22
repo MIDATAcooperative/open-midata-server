@@ -31,7 +31,7 @@ class Activator(Product):
 	def setup(self, version):
 		print 'Setting up Activator...'
 		print 'Downloading binaries...'
-		Command.execute('wget http://downloads.typesafe.com/typesafe-activator/{0}/typesafe-activator-{0}-minimal.zip'
+		Command.execute('wget https://downloads.typesafe.com/typesafe-activator/{0}/typesafe-activator-{0}-minimal.zip'
 			.format(version), self.parent)
 		print 'Extracting...'
 		Command.execute('unzip typesafe-activator-{0}-minimal.zip'.format(version), self.parent)
@@ -95,7 +95,7 @@ class Activator(Product):
 		print 'Running Activator...'
 		password = getpass.getpass("Please enter the password for the Java KeyStore: ")
 		Activator.readconf(self)
-		Command.execute('{0} run -Dpidfile.path=/dev/shm/play.pid -Dconfig.file=/dev/shm/secret.conf -Dhttp.port=9001 -Dhttps.port=9000 -Dhttps.keyStore={1} -Dhttps.keyStorePassword={2}'
+		Command.execute('{0} run -Dpidfile.path=/dev/shm/play.pid -J-Xverify:none -Dconfig.file=/dev/shm/secret.conf -Dhttp.port=9001 -Dhttps.port=9000 -Dhttps.keyStore={1} -Dhttps.keyStorePassword={2}'
 			.format(self.bin, self.keystore, password), self.coderun)
 		Command.execute('{0} -zun 0 /dev/shm/secret.conf'.format(self.shred), self.conf)
 

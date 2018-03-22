@@ -12,7 +12,6 @@
 
     "navbar" : {
         "toggle_navigation" : "Navigation en/hors",
-        "ribbon" : "Phase pilote",
         "login" : "Connexion",
         "sign_up" : "Inscription",
         "sign_out" : "Déconnexion",
@@ -90,7 +89,8 @@
             "privacypolicy" : "La déclaration de confidentialité doit être acceptée.",
             "study_accept" : "La participation à l'étude doit être acceptée.",
             "study_group" : "Le participant doit d'abord être assigné à un groupe.",
-            "confirmation" : "Confirmation par l'utilisateur requise en premier."
+            "confirmation" : "Confirmation par l'utilisateur requise en premier.",
+            "file" : "Aucun fichier à télécharger sélectionné"
         },
 
         "unknown" : {
@@ -160,6 +160,10 @@
             "consent" : "Les consentements pour les études ne peuvent pas être modifiés.",
             "study" : "Les préférences ne peuvent être modifiées que si l'étude est en phase d'ébauche.",
             "group" : "Le groupe de participants ne peut être modifié que si l'étude n'est pas en cours ou qu'aucune participation n'a été approuvée."
+        },
+
+        "too_large" : {
+            "file" : "Le fichier est trop gros (maximum 1 MB)."
         }
 
     },
@@ -349,6 +353,7 @@
             "SPONSOR" : "Sponsor",
             "INVESTIGATOR" : "Investigator",
             "AUDITOR" : "Auditor",
+            "STUDYNURSE" : "Study Nurse",
             "MONITOR" : "Monitor",
             "OTHER" : "Autre"
         },
@@ -564,7 +569,7 @@
         "resend_btn" : "Renvoyer l'e-mail",
         "retry_btn" : "Veuillez vous authentifier à nouveau",
         "contract_instructions" : "Un contrat vous a été adressé par la poste. Veuillez le signer et le renvoyer à MIDATA.",
-        "pilot_phase" : "Durant la phase pilote (ainsi que sur l'instance de test), AUCUN contrat n'est envoyé. Un administrateur MIDATA verifiera et validera votre compte. Vous serez averti, lorsque votre compte aure été validé.",
+        "pilot_phase" : "Un administrateur MIDATA verifiera et validera votre compte. Vous serez averti, lorsque votre compte aure été validé.",
         "code_intructions" : "Une lettre contenant un code de confirmation vous a été adressée par la poste. Veuillez saisir ce code de confirmation pour pouvoir accéder à la plateforme.",
         "code_done" : "Vous avez saisi le code de confirmation. Vous pourrez vous connecter dès que le contrat signé sera parvenu à MIDATA.",
         "enter_now_btn" : "Entrer maintenant",

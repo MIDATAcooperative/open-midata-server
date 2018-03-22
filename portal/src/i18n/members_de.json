@@ -17,6 +17,7 @@
 
     "help_welcome" : {
         "menu" : "Das oben stehende Menü enthält folgende Verknüpfungen:",
+
         // todo: Mich oder Dashboard?
         "menu_me" : "Mich",
         "menu_me_text" : "Ihr persönliches Dashboard, wo Sie Ihre Favoriten platzieren können.",

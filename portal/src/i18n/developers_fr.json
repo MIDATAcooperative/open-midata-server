@@ -63,9 +63,29 @@
     },
 
     "manageapp" : {
-        "messages_btn" : "Éditer les messages",
-        "stats_btn" : "Informations de débogage",
-        "debug_btn" : "API Tester",
+        "overview" : "Aperçu de l'application",
+        "choose" : "Fonctions de gestion de votre application",
+        "filename" : "Nom interne",
+        "type" : "Type d'application",
+        "targetUserRole" : "Rôle cible",
+        "edit_btn" : "Modifier la configuration",
+        "edit_help" : "Modifier la configuration de votre application.",
+        "testfromlocal_btn" : "Testez votre plugin depuis localhost",
+        "testfromlocal_help" : "Pendant le développement, vous pouvez tester le code du plugin stocké sur votre ordinateur local sur cette instance.",
+        "serverimport_btn" : "Tester le script d'importation automatique.",
+        "serverimport_help" : "Si votre plugin offre l'importation automatique, vous pouvez tester le script de votre plugin, qui est normalement exécuté sur le serveur, sur votre ordinateur local.",
+
+        "icon_btn" : "Icônes et images de l'application",
+
+        // todo app store = MISTORE?
+        "icon_help" : "Téléchargez et gérez les icônes et les images à utiliser avec votre application. Fournissez des images pour l'écran de connexion, l'app store, l'écran d'acceptation des consentements, etc.",
+
+        "messages_btn" : "Messages e-mail de l'application",
+        "messages_help" : "Fournissez vos propres textes d'e-mails envoyés aux nouveaux comptes d'utilisateurs, dès la première utilisation de votre application, pour accepter les consentements et plus encore.",
+        "stats_btn" : "Statistiques sur les erreurs et les performances",
+        "stats_help" : "Consultez des statistiques et des conseils pour améliorer les différents types d'appels API envoyés par votre application au serveur.",
+        "debug_btn" : "API Tester Sandbox",
+        "debug_help" : "Connectez-vous en tant qu'application et testez les requêtes contre le backend MIDATA",
         "linkedStudy" : "Étude liée à l'app (code)",
         "mustParticipateInStudy" : "Participation à l'étude requise",
         "admin_only" : "Seul un administrateur MIDATA peut modifier cette section. Veuillez faire une demande de changement si nécessaire.",
@@ -92,6 +112,16 @@
             "mustParticipateInStudy" : "Les utilisateurs doivent participer à l'étude afin de pouvoir utiliser l'app.",
             "unlock_code" : "Si renseigné, ce code doit être saisi par l'utilisateur lors de l'enregistrement ou lors de la première connexion à MIDATA par cette app. Le code n'est pas sensible à la casse."
         },
+        "status" : {
+            "title" : "État de l'application",
+            "ACTIVE" : "Prête pour une utilisation productive",
+            "BETA" : "Version bêta",
+            "DEVELOPMENT" : "En cours de développement - à l'usage exclusif du développeur",
+            "DEPRECATED" : "Obsolète - ne doit plus être utilisée",
+            "DELETED" : "Supprimée"
+        },
+        "nostudy" : "Non lié à une étude",
+        "optionalParticipation" : "Participation optionnelle",
         "access_query_options" : "Data Access Filter (Options)",
         "access_query_selection" : "Data Access Filter (Sélection)",
         "access_query_add" : "Data Access Filter (Ajouter)",
@@ -102,7 +132,8 @@
             "learn" : "Ajouter automatiquement tous les types de données écrites par cette app au Data Access Filter. (DOIT être désactivé avant la mise en production de l'app)",
             "all" : "Pendant le développement, autoriser l'accès à toutes les données de l'utilisateur. (DOIT être remplacé par un Data Access Filter adéquat avant la mise en production de l'app)"
         },
-        "export_btn" : "Exporter"
+        "export_btn" : "Exporter la définition de l'application",
+        "export_help" : "Exportez la définition de cette application, pour qu'elle puisse être importée et utilisée sur un autre serveur."
     },
 
     "appstats" : {
@@ -126,5 +157,25 @@
 
     "appdebug" : {
         "title" : "API Tester"
+    },
+
+    "appicon" : {
+        "title" : "Icônes et images",
+        "name" : "Nom du plugin/de l'app",
+        "internalname" : "Nom interne",
+        "use" : {
+            "title" : "Usage de l'image",
+            "LOGINPAGE" : "Affichage sur la page de connexion OAuth",
+            "APPICON" : "Utilisation comme icône d'application"
+        },
+        "type" : {
+            "title" : "Type d'image",
+            "image/jpeg" : "JPEG",
+            "image/png" : "PNG",
+            "image/gif" : "GIF"
+        },
+        "file" : "Fichier image à télécharger",
+        "file_help" : "Veuillez redimensionner et compresser l'image à une taille raisonnable avant de la télécharger. Les images d'une taille supérieure à 1 MB ne seront pas acceptées.",
+        "existing" : "Images liées à l'application"
     }
 }

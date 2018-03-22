@@ -2,8 +2,8 @@
 
     "member_login" : {
 
-        // TODO NEW: MY DATA - OUR HEALTH!
-        "teaser" : "MY DATA - OUR HEALTH!",
+        // TODO NEW: My data - Our health
+        "teaser" : "My data - Our health",
 
         // TODO NEW: Register Now
         "register_now" : "Register Now",
@@ -17,19 +17,11 @@
         // TODO NEW: Sign up
         "sign_up" : "Sign up",
 
-        // TODO NEW: Study
+        // TODO NEW: Study*
+        "study" : "Study*",
 
-        // TODO CHANGED
-        // OLD: Study
-        // NEW: Study*
-        "study" : "Study",
-
-        // TODO NEW: App to be used
-
-        // TODO CHANGED
-        // OLD: App to be used
-        // NEW: App to be used*
-        "app" : "App to be used",
+        // TODO NEW: App to be used*
+        "app" : "App to be used*",
 
         // TODO NEW: Password for app
         "app_password" : "Password for app",
@@ -49,8 +41,8 @@
         // TODO NEW: Me
         "menu_me" : "Me",
 
-        // TODO NEW: Your personal dashboard where you can place whatever functionality you need most.
-        "menu_me_text" : "Your personal dashboard where you can place whatever functionality you need most.",
+        // TODO NEW: Your personal dashboard, where you can place whatever functionality you need most.
+        "menu_me_text" : "Your personal dashboard, where you can place whatever functionality you need most.",
 
         // TODO NEW: Overview
         "menu_overview" : "Overview",
@@ -70,18 +62,14 @@
         // TODO NEW: News and announcements about MIDATA, the platform and research projects
         "menu_research_text" : "News and announcements about MIDATA, the platform and research projects",
 
-        // TODO CHANGED
-        // OLD: Consents
-        // NEW: Sharing
-        "menu_consents" : "Consents",
+        // TODO NEW: Sharing
+        "menu_consents" : "Sharing",
 
         // TODO NEW: Manage data sharing with others.
         "menu_consents_text" : "Manage data sharing with others.",
 
-
         // TODO NEW: Some ideas to start with MIDATA:
         "starts" : "Some ideas to start with MIDATA:",
-
 
         // TODO NEW: In order to get started we recommend that you answer us some questions. We will preconfigure your account based on your answers.
         "answer_questions" : "In order to get started we recommend that you answer us some questions. We will preconfigure your account based on your answers.",
@@ -109,8 +97,14 @@
 
         // TODO NEW: Do use any of these devices?
         "question_devices" : "Do use any of these devices?",
+
+        // TODO NEW: Fitbit
         "question_devices_answer1" : "Fitbit",
+
+        // TODO NEW: Jawbone
         "question_devices_answer2" : "Jawbone",
+
+        // TODO NEW: Withings
         "question_devices_answer3" : "Withings",
 
         // TODO NEW: You can always come back and change these settings by visiting the "Help" page.
@@ -122,8 +116,8 @@
 
     "accountdata" : {
 
-        // TODO NEW: Midata ID:
-        "midata_id" : "Midata ID:",
+        // TODO NEW: MIDATA ID:
+        "midata_id" : "MIDATA ID:",
 
         // TODO NEW: Birthday:
         "birthday" : "Birthday:",
@@ -239,10 +233,34 @@
         // TODO NEW: The letter sent to you contains a registration code. Please enter your code here once you have received it:
         "entercode" : "The letter sent to you contains a registration code. Please enter your code here once you have received it:",
 
-        // TODO NEW: Your eMail address has not been validated yet. Please click on the link of the validation email you received in your email account!
-        "email_unvalidated" : "Your eMail address has not been validated yet. Please click on the link of the validation email you received in your email account!",
+        // TODO NEW: Your email address has not been validated yet. Please click on the link in the validation email you received!
+        "email_unvalidated" : "Your email address has not been validated yet. Please click on the link in the validation email you received!",
 
         // TODO NEW: Request Contract
         "request_membership_btn" : "Request Contract"
+    },
+
+    "smallstudies" : {
+
+        // TODO NEW: Want to help studies by sharing your data?
+        "greeting" : "Want to help studies by sharing your data?",
+
+        // TODO NEW: Studies
+        "studies" : "Studies",
+
+        // TODO NEW: Enrollment
+        "status" : "Enrollment",
+
+        // TODO NEW: Recruiting
+        "recruiting" : "Recruiting",
+
+        // TODO NEW: Ongoing
+        "ongoing" : "Ongoing",
+
+        // TODO NEW: Completed
+        "completed" : "Completed",
+
+        // TODO NEW: Stopped
+        "stopped" : "Stopped"
     }
 }
