@@ -454,7 +454,7 @@ public class Administration extends APIController {
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));	
 		ObjectIdConversion.convertMidataIds(properties, "_id");
 		
-		properties = CMaps.map("date", CMaps.map("$gte", new Date(System.currentTimeMillis() - 1000l*60l*60l*24l-7l)));
+		properties = CMaps.map("date", CMaps.map("$gte", new Date(System.currentTimeMillis() - 1000l*60l*60l*24l*7l)));
 		
 		Set<InstanceStats> stats = InstanceStats.getAll(properties);		
 		return ok(JsonOutput.toJson(stats, "InstanceStats", InstanceStats.ALL_FIELDS));
