@@ -204,8 +204,7 @@ public class Market extends APIController {
 
 		// fill in specific fields
 		if (app.type.equals("oauth1") || app.type.equals("oauth2")) {
-			app.apiUrl = JsonValidation.getStringOrNull(json, "apiUrl");
-			if (app.apiUrl != null && (!app.apiUrl.startsWith("http://") && !app.apiUrl.startsWith("https://"))) throw new JsonValidationException("error.invalid.url", "apiUrl", "invalid", "Invalid API Url");
+			app.apiUrl = validApiUrl(JsonValidation.getStringOrNull(json, "apiUrl"));			
 			
 			app.authorizationUrl = JsonValidation.getStringOrNull(json, "authorizationUrl");
 			app.accessTokenUrl = JsonValidation.getStringOrNull(json, "accessTokenUrl");
@@ -471,8 +470,7 @@ public class Market extends APIController {
 
 		// fill in specific fields
 		if (plugin.type.equals("oauth1") || plugin.type.equals("oauth2")) {
-			plugin.apiUrl = JsonValidation.getStringOrNull(json, "apiUrl");
-			if (plugin.apiUrl != null && (!plugin.apiUrl.startsWith("http://") && !plugin.apiUrl.startsWith("https://"))) throw new JsonValidationException("error.invalid.url", "apiUrl", "invalid", "Invalid API Url");
+			plugin.apiUrl = validApiUrl(JsonValidation.getStringOrNull(json, "apiUrl"));			
 			plugin.authorizationUrl = JsonValidation.getStringOrNull(json, "authorizationUrl");
 			plugin.accessTokenUrl = JsonValidation.getStringOrNull(json, "accessTokenUrl");
 			plugin.consumerKey = JsonValidation.getStringOrNull(json, "consumerKey");
@@ -514,6 +512,16 @@ public class Market extends APIController {
 			result.put(messageDef.reason.toString() + (messageDef.code != null ? "_"+messageDef.code : ""), messageDef);
 		}
 		return result;
+	}
+	
+	public static String validApiUrl(String url) throws AppException {
+		if (url == null) return null;
+		if (!url.startsWith("http://") && !url.startsWith("https://")) throw new JsonValidationException("error.invalid.url", "apiUrl", "invalid", "Invalid API Url");
+        if (!url.endsWith("/")) url += "/";
+        String domain = url.substring(url.indexOf("//")+2).trim();
+        if (domain.indexOf("localhost") >= 0 || domain.indexOf("midata.coop") >=0 ) throw new JsonValidationException("error.invalid.url", "apiUrl", "invalid", "Invalid API Url");
+        if (domain.startsWith("172.") || domain.startsWith("192.168.") || domain.startsWith("10.")) throw new JsonValidationException("error.invalid.url", "apiUrl", "invalid", "Invalid API Url");
+        return url;
 	}
 	
 	private static void parsePlugin(Plugin app, JsonNode json) throws JsonValidationException, AppException {
