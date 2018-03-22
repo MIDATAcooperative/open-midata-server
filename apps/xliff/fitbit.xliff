@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.1" xml:lang="en">
+    <file source-language="en" target-language="it" datatype="winres" original="i18n.js_it.json">
+        <trans-unit resname="title" id="title">
+            <source>Import Records from your Fitbit Account</source>
+        </trans-unit>
+        <trans-unit resname="account" id="account">
+            <source>Fitbit Account:</source>
+        </trans-unit>
+        <trans-unit resname="member_since" id="member_since">
+            <source>Member since:</source>
+        </trans-unit>
+        <trans-unit resname="which_measurements" id="which_measurements">
+            <source>Please select which measurements you want to import:</source>
+        </trans-unit>
+        <trans-unit resname="measurement" id="measurement">
+            <source>Measurement</source>
+        </trans-unit>
+        <trans-unit resname="imported" id="imported">
+            <source>Imported</source>
+        </trans-unit>
+        <trans-unit resname="from_date" id="from_date">
+            <source>From Date</source>
+        </trans-unit>
+        <trans-unit resname="to_date" id="to_date">
+            <source>To Date</source>
+        </trans-unit>
+        <trans-unit resname="autoimport" id="autoimport">
+            <source>Automatically import measurements once per day</source>
+        </trans-unit>
+        <trans-unit resname="import_btn" id="import_btn">
+            <source>Import data</source>
+        </trans-unit>
+        <trans-unit resname="progress" id="progress">
+            <source>{{saved}} records saved to database.</source>
+        </trans-unit>
+        <trans-unit resname="importing" id="importing">
+            <source>Importing data from Fitbit...</source>
+        </trans-unit>
+        <trans-unit resname="done" id="done">
+            <source>Finished import</source>
+        </trans-unit>
+        <trans-unit resname="with_errors" id="with_errors">
+            <source>Finished import with errors.</source>
+        </trans-unit>
+        <trans-unit resname="no_entries_yet" id="no_entries_yet">
+            <source>Fitbit Import not configured yet.</source>
+        </trans-unit>
+        <trans-unit resname="newest_entry_from" id="newest_entry_from">
+            <source>Newest entry:</source>
+        </trans-unit>
+        <trans-unit resname="measures_to_import" id="measures_to_import">
+            <source>Measures to import</source>
+        </trans-unit>
+        <trans-unit resname="autoimport_status" id="autoimport_status">
+            <source>Automatically import</source>
+        </trans-unit>
+        <trans-unit resname="on" id="on">
+            <source>ON</source>
+        </trans-unit>
+        <trans-unit resname="off" id="off">
+            <source>OFF</source>
+        </trans-unit>
+        <trans-unit resname="fitness_data" id="fitness_data">
+            <source>Fitness Data</source>
+        </trans-unit>
+        <trans-unit resname="food_calories_intake" id="food_calories_intake">
+            <source>Calories Intake</source>
+        </trans-unit>
+        <trans-unit resname="food_water_consumption" id="food_water_consumption">
+            <source>Water Consumption</source>
+        </trans-unit>
+        <trans-unit resname="activities_calories_burned" id="activities_calories_burned">
+            <source>Calories Burned</source>
+        </trans-unit>
+        <trans-unit resname="activities_steps" id="activities_steps">
+            <source>Steps</source>
+        </trans-unit>
+        <trans-unit resname="activities_distance" id="activities_distance">
+            <source>Distance</source>
+        </trans-unit>
+        <trans-unit resname="activities_floors_climbed" id="activities_floors_climbed">
+            <source>Floors Climbed</source>
+        </trans-unit>
+        <trans-unit resname="activities_elevation" id="activities_elevation">
+            <source>Elevation</source>
+        </trans-unit>
+        <trans-unit resname="activities_minutes_sedentary" id="activities_minutes_sedentary">
+            <source>Minutes Sedentary</source>
+        </trans-unit>
+        <trans-unit resname="activities_minutes_lightly_active" id="activities_minutes_lightly_active">
+            <source>Minutes Lightly Active</source>
+        </trans-unit>
+        <trans-unit resname="activities_minutes_fairly_active" id="activities_minutes_fairly_active">
+            <source>Minutes Fairly Active</source>
+        </trans-unit>
+        <trans-unit resname="activities_minutes_very_active" id="activities_minutes_very_active">
+            <source>Minutes Very Active</source>
+        </trans-unit>
+        <trans-unit resname="activities_calories_burned_in_activities" id="activities_calories_burned_in_activities">
+            <source>Calories Burned in Activities</source>
+        </trans-unit>
+        <trans-unit resname="sleep_time_in_bed" id="sleep_time_in_bed">
+            <source>Time in Bed</source>
+        </trans-unit>
+        <trans-unit resname="sleep_minutes_asleep" id="sleep_minutes_asleep">
+            <source>Minutes Asleep</source>
+        </trans-unit>
+        <trans-unit resname="sleep_minutes_awake" id="sleep_minutes_awake">
+            <source>Minutes Awake</source>
+        </trans-unit>
+        <trans-unit resname="sleep_minutes_to_fall_asleep" id="sleep_minutes_to_fall_asleep">
+            <source>Minutes to Fall Asleep</source>
+        </trans-unit>
+        <trans-unit resname="sleep_efficiency" id="sleep_efficiency">
+            <source>Efficiency</source>
+        </trans-unit>
+        <trans-unit resname="body_weight" id="body_weight">
+            <source>Weight</source>
+        </trans-unit>
+        <trans-unit resname="body_bmi" id="body_bmi">
+            <source>BMI</source>
+        </trans-unit>
+        <trans-unit resname="body_fat" id="body_fat">
+            <source>Fat</source>
+        </trans-unit>
+        <group resname="titles" id="titles">
+            <trans-unit resname="food_calories_intake" id="titles.food_calories_intake">
+                <source>Fitbit food (calories intake) {date}</source>
+            </trans-unit>
+            <trans-unit resname="food_water_consumption" id="titles.food_water_consumption">
+                <source>Fitbit food (water consumption) {date}</source>
+            </trans-unit>
+            <trans-unit resname="activities_calories_burned" id="titles.activities_calories_burned">
+                <source>Fitbit activities (calories burned) {date}</source>
+            </trans-unit>
+            <trans-unit resname="activities_steps" id="titles.activities_steps">
+                <source>Fitbit activities (steps) {date}</source>
+            </trans-unit>
+            <trans-unit resname="activities_distance" id="titles.activities_distance">
+                <source>Fitbit activities (distance) {date}</source>
+            </trans-unit>
+            <trans-unit resname="activities_floors_climbed" id="titles.activities_floors_climbed">
+                <source>Fitbit activities (floors climbed) {date}</source>
+            </trans-unit>
+            <trans-unit resname="activities_elevation" id="titles.activities_elevation">
+                <source>Fitbit activities (elevation) {date}</source>
+            </trans-unit>
+            <trans-unit resname="activities_minutes_sedentary" id="titles.activities_minutes_sedentary">
+                <source>Fitbit activities (minutes sedentary) {date}</source>
+            </trans-unit>
+            <trans-unit resname="activities_minutes_lightly_active" id="titles.activities_minutes_lightly_active">
+                <source>Fitbit activities (minutes lightly active) {date}</source>
+            </trans-unit>
+            <trans-unit resname="activities_minutes_fairly_active" id="titles.activities_minutes_fairly_active">
+                <source>Fitbit activities (minutes fairly active) {date}</source>
+            </trans-unit>
+            <trans-unit resname="activities_minutes_very_active" id="titles.activities_minutes_very_active">
+                <source>Fitbit activities (minutes very active) {date}</source>
+            </trans-unit>
+            <trans-unit resname="activities_calories_burned_in_activities" id="titles.activities_calories_burned_in_activities">
+                <source>Fitbit activities (calories burned in activities) {date}</source>
+            </trans-unit>
+            <trans-unit resname="sleep_time_in_bed" id="titles.sleep_time_in_bed">
+                <source>Fitbit sleep (time in bed) {date}</source>
+            </trans-unit>
+            <trans-unit resname="sleep_minutes_asleep" id="titles.sleep_minutes_asleep">
+                <source>Fitbit sleep (minutes asleep) {date}</source>
+            </trans-unit>
+            <trans-unit resname="sleep_minutes_awake" id="titles.sleep_minutes_awake">
+                <source>Fitbit sleep (minutes awake) {date}</source>
+            </trans-unit>
+            <trans-unit resname="sleep_minutes_to_fall_asleep" id="titles.sleep_minutes_to_fall_asleep">
+                <source>Fitbit sleep (minutes to fall asleep) {date}</source>
+            </trans-unit>
+            <trans-unit resname="sleep_efficiency" id="titles.sleep_efficiency">
+                <source>Sleep - Efficiency</source>
+            </trans-unit>
+            <trans-unit resname="body_weight" id="titles.body_weight">
+                <source>Fitbit body (weight) {date}</source>
+            </trans-unit>
+            <trans-unit resname="body_bmi" id="titles.body_bmi">
+                <source>Fitbit body (BMI) {date}</source>
+            </trans-unit>
+            <trans-unit resname="body_fat" id="titles.body_fat">
+                <source>Fitbit body (fat) {date}</source>
+            </trans-unit>
+        </group>
+    </file>
+</xliff>

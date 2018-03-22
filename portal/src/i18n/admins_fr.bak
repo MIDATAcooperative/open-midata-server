@@ -80,7 +80,7 @@
     "plugin_developer" : "Developer",
     "plugin_type" : "Type",
     "plugin_role" : "Target Role",
-    "plugin_market" : "Market",
+    "plugin_market" : "MISTORE",
     "plugin_stats" : "Stats",
     "plugin_status" : "Status",
     "add_definition_btn" : "Import Plugin Definition"
@@ -128,7 +128,7 @@
      "required_information" : "Required Information",
      "required_assistance" : "Required Assistance",
      "termsOfUse" : "Terms and Conditions",
-     "sharing_query" : "Sharing Query",
+     "sharing_query" : "Data Access Filter",
      "requirements" : "Requirements",
      "groups" : "Groups",
      "group_name" : "Group Name",

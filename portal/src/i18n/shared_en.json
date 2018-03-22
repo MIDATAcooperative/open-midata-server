@@ -168,7 +168,7 @@
      },
      
      "too_large" : {
-       "file" : "File is larger than allowed."
+       "file" : "The file is too large (maximum 1 MB)."
      }
 
    },

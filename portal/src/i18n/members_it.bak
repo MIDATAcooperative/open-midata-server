@@ -1,6 +1,6 @@
 {
   "member_login" : {
-    "teaser": "MY DATA - OUR HEALTH!",
+    "teaser": "My data - Our health",
     "register_now" : "Register Now",
     "sign_in" : "Sign in"
   },   
@@ -17,7 +17,7 @@
   "help_welcome" : {
     "menu" : "The menu above contains these links:",
     "menu_me" : "Me",
-    "menu_me_text" : "Your personal dashboard where you can place whatever functionality you need most.",
+    "menu_me_text" : "Your personal dashboard, where you can place whatever functionality you need most.",
     "menu_overview" : "Overview",
     "menu_overview_text" : "An overview over all functions provided by the MIDATA platform.",      
     "menu_config" : "Config",
@@ -26,9 +26,7 @@
     "menu_research_text" : "News and announcements about MIDATA, the platform and research projects",
     "menu_consents" : "Sharing",
     "menu_consents_text" : "Manage data sharing with others.",
-    
     "starts" : "Some ideas to start with MIDATA:",
-    
     "answer_questions" : "In order to get started we recommend that you answer us some questions. We will preconfigure your account based on your answers.",
     "answered_questions" : "Thank you for answering the setup questions! You sould visit your dashboard now or change your answers if you need to.",
     "answer_btn" : "Answer Setup Questions Now",
@@ -48,7 +46,7 @@
   },
   
   "accountdata" : {
-     "midata_id" : "Midata ID:",
+     "midata_id" : "MIDATA ID:",
      "birthday" : "Birthday:",
      "change_btn" : "Change"
   },
@@ -93,13 +91,24 @@
 	"appuser" : "Your account has been registered by an external application. Functionality is limited. You may upgrade your user account to a full account.",
 	"memberofcooperative" : "You are a member of the MIDATA cooperative.",
 	"nonmemberuser" : "You have a full user account but you are no member of the MIDATA cooperative.",
+	// todo: AGB - GTC
 	"agb_not_requested" : "By clicking on the 'Request Contract' button the contract and AGB will be sent to you by letter. Please return the signed AGB to convert this trial account into a full account.",
 	"agb_requested" : "The AGB and contract have been requested by you. Your request has not been processed by the MIDATA office yet.",
 	"agb_printed" : "The AGB and contract have been requested by you and should arrive during the next days.",
 	"agb_signed" : "You have signed the AGB.",
 	"confirmed" : "Your postal address has been confirmed.",
 	"entercode" : "The letter sent to you contains a registration code. Please enter your code here once you have received it:",
-	"email_unvalidated" : "Your eMail address has not been validated yet. Please click on the link of the validation email you received in your email account!", 
+	"email_unvalidated" : "Your email address has not been validated yet. Please click on the link in the validation email you received!", 
 	"request_membership_btn" : "Request Contract"						
+  },
+  
+  "smallstudies" : {
+    "greeting" : "Want to help studies by sharing your data?",
+    "studies" : "Studies",
+    "status" : "Enrollment",
+    "recruiting" : "Recruiting",
+    "ongoing" : "Ongoing",
+    "completed" : "Completed",
+    "stopped" : "Stopped"
   }
 }

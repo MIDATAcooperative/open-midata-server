@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.1" xml:lang="en">
+    <file source-language="en" target-language="it" datatype="winres" original="i18n.js_it.json">
+        <trans-unit resname="next" id="next">
+            <source>Next</source>
+        </trans-unit>
+        <trans-unit resname="skip" id="skip">
+            <source>Skip Question</source>
+        </trans-unit>
+        <trans-unit resname="back" id="back">
+            <source>Back</source>
+        </trans-unit>
+        <trans-unit resname="cancel" id="cancel">
+            <source>Cancel</source>
+        </trans-unit>
+        <trans-unit resname="select_survey" id="select_survey">
+            <source>Select a survey</source>
+        </trans-unit>
+        <trans-unit resname="last_answered" id="last_answered">
+            <source>Last Answered</source>
+        </trans-unit>
+        <trans-unit resname="empty" id="empty">
+            <source>This visualizations allows you to participate in surveys shared with you. You currently do not have any survey to participate.</source>
+        </trans-unit>
+    </file>
+</xliff>

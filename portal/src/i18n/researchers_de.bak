@@ -130,7 +130,7 @@
     "group" : "Group",
     "status" : "Status",
     "total" : "{{count}} consents matching your criteria found.",
-    "only_first_shown" : "Only first 1000 matching consents are shown.",
+    "only_first_shown" : "Only the first 1000 matching consents are shown.",
     "recruiter" : "Recruiter",
     "accept_btn" : "Accept",
     "reject_btn" : "Reject",
@@ -143,7 +143,7 @@
     "retreated" : "Participants that have retreated",
     "acceptall" : "Accept all requests and assign new participants to participant group",
     "autojoin" : "Auto-Accept",
-    "autojoin2" : "Always accept all participation requests and assign new participants to chosen group upon login of research application linked to this study."
+    "autojoin2" : "Accept all participation requests and assign new participants to the selected group as soon as the research application linked to this study connects."
   },
   
   "studyrecords" : {
@@ -161,9 +161,9 @@
     "startDate" : "Official start date",
     "endDate" : "Official end date",
     "dataCreatedBefore" : "Data freeze date",
-    "sharing_query" : "Sharing Query (JSON)",
-    "sharing_query_options" : "Sharing Query (Add)",
-    "sharing_query_selection" : "Sharing Query (Selection)",
+    "sharing_query" : "Data Access Filter (JSON)",
+    "sharing_query_options" : "Data Access Filter (Add)",
+    "sharing_query_selection" : "Data Access Filter (Selection)",
     "terms_of_use" : "Terms and Conditions",
     "terms_of_use_hint" : "If the study Terms and Conditions have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the ID you need to enter here.",
     "show_terms" : "Show Terms and Conditions",
@@ -211,8 +211,8 @@
     "teamsetup_help" : "If more people are involved in carrying out the study, provide all involved persons and their role. As long as you have not added more people, you can change your own role by adding yourself again with another role.",
     "groups" : "Participant groups defined",
     "groups_help" : "Your study may have one or multiple groups of participants. Please define the list of participant groups.",
-    "sharingQuery" : "Data Sharing Query defined",
-    "sharingQuery_help" : "Your study has to explicitely state which data of the participants it will access. The data sharing query cannot be changed after study has been validated.",
+    "sharingQuery" : "Data Access Filter defined",
+    "sharingQuery_help" : "Your study has to explicitely state which data of the participants it will access. The Data Access Filter cannot be changed after study has been validated.",
     "dates" : "Start and end dates set",
     "dates_help" : "Start and end date will be shown to the participants. No data will flow into the study from the moment the data is frozen.",
     "terms" : "Terms and Conditions provided",

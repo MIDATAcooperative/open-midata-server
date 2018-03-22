@@ -12,10 +12,6 @@
         "user" : "User",
 
         // TODO NEW: Name
-
-        // TODO CHANGED
-        // OLD: Name
-        // NEW: Name*
         "name" : "Name"
     },
 
@@ -39,8 +35,8 @@
         // TODO NEW: Workspace
         "workspace" : "Workspace",
 
-        // TODO NEW: Market
-        "market" : "Market",
+        // TODO NEW: MISTORE
+        "market" : "MISTORE",
 
         // TODO NEW: Teams
         "usergroups" : "Teams"
