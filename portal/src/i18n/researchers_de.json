@@ -66,8 +66,19 @@
         "required_data" : "Erforderliche Daten",
         "no_change_warning" : "Diese Konfiguration kann nicht mehr geändert werden, sobald die Studie validiert wurde.",
         "member_identity" : "Identität des Mitglieds",
+
+        // TODO CHANGED
+        // OLD: Anonymous Participation
+        // NEW: Pseudonymized Participation
         "anonymous1" : "Anonyme Teilnahme",
         "anonymous2" : ", legt anonymisierte ID, Geburtsjahr, Geschlecht und Land offen",
+
+        // TODO NEW: Anonym: Pseudonymization mapping may not be accessed.
+        "anonymous3" : "Anonym: Pseudonymization mapping may not be accessed.",
+
+        // TODO CHANGED
+        // OLD: Not Anonymous
+        // NEW: Not Pseudonymized
         "not_anonymous1" : "Nicht anonym",
         "not_anonymous2" : ", bedingt, dass das Mitglied seinen vollständigen Namen, Geburtsdatum und Kontaktinformationen (Adresse, Telefon, E-Mail) teilt",
         "assistance" : "Unterstützung",

@@ -76,7 +76,13 @@
             "plugin" : "Dieses Plugin ist nur für eine andere Rolle vorgesehen",
             "unlock_code" : "Falscher Freischaltcode",
             "access_query" : "Der Datenzugriffsfilter (Data Access Filter) muss nach 'content' oder 'group' einschränken!",
-            "sharing" : "Der Datenzugriffsfilter (Data Access Filter) beinhaltet Datentypen, die von der Studienkonfiguration ausgeschlossen sind."
+            "sharing" : "Der Datenzugriffsfilter (Data Access Filter) beinhaltet Datentypen, die von der Studienkonfiguration ausgeschlossen sind.",
+
+            // TODO NEW: Study can only be anonymous if no one is allowed to access unpseudonymized data.
+            "anonymous" : "Study can only be anonymous if no one is allowed to access unpseudonymized data.",
+
+            // TODO NEW: Invalid URL
+            "url" : "Invalid URL"
         },
 
         "missing" : {
@@ -122,6 +128,15 @@
 
         "blocked" : {
             "user" : "Dieser Benutzer ist nicht berechtigt sich anzumelden. Für Hilfe kontaktieren Sie bitte support@midata.coop.",
+
+            // TODO NEW: Too many bad login attempts. Wait 1 minute before next attempt.
+            "password1" : "Too many bad login attempts. Wait 1 minute before next attempt.",
+
+            // TODO NEW: Too many bad login attempts. Wait 5 minutes before next attempt.
+            "password5" : "Too many bad login attempts. Wait 5 minutes before next attempt.",
+
+            // TODO NEW: Too many bad login attempts. Wait 1 hour before next attempt.
+            "password60" : "Too many bad login attempts. Wait 1 hour before next attempt.",
             "participation" : "Dieser Kontoinhabende ist nicht berechtigt, an einer Studie teilzunehmen.",
             "consent" : "Die Zustimmung, diese App zu nutzen, wurde widerrufen. Falls Sie diese App wieder nutzen möchten, müssen Sie die zurückgewiesene oder abgelaufene Zustimmung auf dem MIDATA-Portal löschen.",
             "app" : "Sie dürfen diese App auf maximal 10 Geräten nutzen. Löschen Sie bitte nicht mehr genutzte Zustimmungen auf dem MIDATA-Portal."
@@ -166,6 +181,10 @@
         },
 
         "too_large" : {
+
+            // TODO CHANGED
+            // OLD: File is larger than allowed.
+            // NEW: The file is too large (maximum 1 MB).
             "file" : "Die Datei ist zu gross (maximal 1 MB)."
         }
 
@@ -286,6 +305,10 @@
             "HCRELATED" : "Gesundheitswesen",
             "HEALTHCARE" : "Arzt / Spital",
             "STUDYPARTICIPATION" : "Studie",
+
+            // TODO CHANGED
+            // OLD: Study
+            // NEW: Study information
             "STUDYRELATED" : "Studie",
             "IMPLICIT" : "Nachrichtenaustausch"
         },
@@ -429,6 +452,14 @@
         "delete_btn" : "Löschen",
         "or" : "oder",
         "save_ok" : "Erfolgreich gespeichert",
+        "yesno" : {
+
+            // TODO NEW: Yes
+            "true" : "Yes",
+
+            // TODO NEW: No
+            "false" : "No"
+        },
         "user" : {
             "lastname" : "Name",
             "firstname" : "Vorname",
@@ -488,6 +519,10 @@
 
     "registration" : {
         "sign_up" : "Registrierung",
+
+        // TODO CHANGED
+        // OLD: Fields marked with a * must be filled out.
+        // NEW: Please fill in the required information below (fields marked with an asterisk * are mandatory)
         "mandantory_fields" : "Pflichtfelder sind mit einem * markiert.",
         "email" : "E-Mail",
         "password" : "Kennwort",
@@ -520,8 +555,15 @@
         "app_agb2" : "Ich akzeptiere die",
         "app_agb3" : "Allgemeine Geschäftsbedingungen (AGB) der App",
         "study_agb" : "Studienbestimmungen",
+
+        // TODO CHANGED
+        // OLD: Sign Up
+        // NEW: create account
         "sign_up_btn" : "Registrieren",
-        "unlock_code" : "Freischaltcode"
+        "unlock_code" : "Freischaltcode",
+
+        // TODO NEW: I already have an account
+        "already_have_account" : "I already have an account"
     },
 
     "login" : {
@@ -569,6 +611,9 @@
         "code_entered" : "Bestätigungscode eingegeben?",
         "email_instructions" : "Ihre E-Mail-Adresse muss bestätigt werden. Eine Aktivierungs-E-Mail wurde Ihnen geschickt. Klicken Sie bitte auf den Link, um Ihre E-Mail-Adresse zu bestätigen.",
         "email_code" : "Sie können auch den per E-Mail erhaltenen Code direkt hier eingeben:",
+
+        // TODO NEW: Code
+        "code" : "Code",
         "resend_btn" : "E-Mail erneut versenden",
         "retry_btn" : "Anmeldung erneut versuchen",
         "contract_instructions" : "Ein Vertrag wurde an Ihre Postadresse versandt. Schicken Sie ihn bitte unterschrieben an MIDATA zurück.",
@@ -858,10 +903,24 @@
     },
 
     "oauth2" : {
+
+        // TODO NEW: requests the permission to access your personal data.
+        "requests_permission" : "requests the permission to access your personal data.",
+
+        // TODO NEW: I don't have an account
+        "no_account" : "I don't have an account",
         "reshares_data" : "Die Applikation darf Daten, auf die sie Zugriff hat, an Dritte weitergeben.",
         "allows_user_search" : "Ihr Name und Ihre E-Mail-Adresse können von anderen Personen, die diese Applikation verwenden, durchsucht werden.",
+
+        // TODO CHANGED
+        // OLD: This application requests access:
+        // NEW: needs access to your data.
         "requesting_app" : "Diese Applikation benötigt Zugriff auf:",
         "sign_in" : "MIDATA Anmeldung für:",
+
+        // TODO CHANGED
+        // OLD: Log in
+        // NEW: Login
         "sign_in_btn" : "Anmelden",
         "device" : "Gerät: {{ device}}",
         "please_confirm" : "Bestätigen Sie bitte die Aktivierung der Applikation auf dem MIDATA Portal, dann versuchen Sie es erneut. Zustimmungsbezeichnung: {{ consent }}",
@@ -870,6 +929,10 @@
         "shares_group" : "Gruppe: {{ group }}",
         "shares_format" : "Format: {{ format }}",
         "shares_content" : "Inhalt: {{ content }}",
+
+        // TODO CHANGED
+        // OLD: Participate to the study
+        // NEW: Enroll in the following study
         "confirm_study" : "An Studie teilnehmen"
     },
 
@@ -1021,7 +1084,10 @@
     },
 
     "terms" : {
-        "close_btn" : "<< Zurück"
+        "close_btn" : "<< Zurück",
+
+        // TODO NEW: Close
+        "close_new_btn" : "Close"
     },
 
     "auditlog" : {
