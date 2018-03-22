@@ -131,10 +131,6 @@
         "group" : "Gruppe",
         "status" : "Status",
         "total" : "{{count}} Zustimmungen, die Ihren Kriterien entsprechen.",
-
-        // TODO CHANGED
-        // OLD: Only first 1000 matching consents are shown.
-        // NEW: Only the first 1000 matching consents are shown.
         "only_first_shown" : "Es werden nur die ersten 1000 übereinstimmenden Zustimmungen angezeigt.",
         "recruiter" : "Anwerber",
         "accept_btn" : "Annehmen",
@@ -148,10 +144,6 @@
         "retreated" : "Teilnehmer, welche sich zurückgezogen haben",
         "acceptall" : "Alle Anfragen annehmen und die neuen Teilnehmer zuordnen an der Teilnehmergruppe",
         "autojoin" : "Automatische Annahme",
-
-        // TODO CHANGED
-        // OLD: Always accept all participation requests and assign new participants to chosen group upon login of research application linked to this study.
-        // NEW: Accept all participation requests and assign new participants to the selected group as soon as the research application linked to this study connects.
         "autojoin2" : "Alle Teilnahmewünsche annehmen und neue Teilnehmer der ausgewählten Gruppe zuweisen, sobald sich die Forschungsapplikation, die mit dieser Studie verknüpft ist, verbindet."
     },
 
@@ -170,20 +162,8 @@
         "startDate" : "Offizielles Startdatum",
         "endDate" : "Offizielles Enddatum",
         "dataCreatedBefore" : "Datenbestand eingefroren ab dem",
-
-        // TODO CHANGED
-        // OLD: Sharing Query (JSON)
-        // NEW: Data Access Filter (JSON)
         "sharing_query" : "Data Access Filter (JSON)",
-
-        // TODO CHANGED
-        // OLD: Sharing Query (Add)
-        // NEW: Data Access Filter (Add)
         "sharing_query_options" : "Data Access Filter (Hinzufügen)",
-
-        // TODO CHANGED
-        // OLD: Sharing Query (Selection)
-        // NEW: Data Access Filter (Selection)
         "sharing_query_selection" : "Data Access Filter (Auswahl)",
         "terms_of_use" : "Allgemeine Geschäftsbedingungen (AGB)",
         "terms_of_use_hint" : "Wenn die Allgemeine Geschäftsbedingungen (AGB) der Studie vom Benutzer gelesen und akzeptiert werden müssen, senden Sie den Text bitte an MIDATA. Wir werden den Text im richtigen Format hochladen und Ihnen die ID mitteilen, die Sie hier eingeben müssen.",
@@ -232,15 +212,7 @@
         "teamsetup_help" : "Wenn weitere Personen an der Studiendurchführung beteiligt sind, geben Sie alle involvierten Personen und deren Rolle an. Solange Sie keine weitere Personen hinzugefügt haben, können Sie Ihre Rolle ändern, indem Sie sich nochmal mit einer anderen Rolle hinzufügen.",
         "groups" : "Teilnehmergruppen definiert",
         "groups_help" : "Ihre Studie kann eine oder mehrere Teilnehmergruppen umfassen. Bitte definieren Sie die Liste der Teilnehmergruppen.",
-
-        // TODO CHANGED
-        // OLD: Data Sharing Query defined
-        // NEW: Data Access Filter defined
         "sharingQuery" : "Data Access Filter definiert",
-
-        // TODO CHANGED
-        // OLD: Your study has to explicitely state which data of the participants it will access. The data sharing query cannot be changed after study has been validated.
-        // NEW: Your study has to explicitely state which data of the participants it will access. The Data Access Filter cannot be changed after study has been validated.
         "sharingQuery_help" : "Für Ihre Studie muss klar festgelegt sein, auf welche Daten der Teilnehmer sie zugreifen wird. Der Datenzugriffsfilter (Data Access Filter) kann nach der Validierung der Studie nicht mehr geändert werden.",
         "dates" : "Start- und Enddatum gesetzt",
         "dates_help" : "Start- und Enddatum werden den Teilnehmern angezeigt. Ab dem Zeitpunkt wo der Datenbestand eingefroren wird, fliessen keine Daten mehr in der Studie.",

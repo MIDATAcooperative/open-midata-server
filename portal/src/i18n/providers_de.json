@@ -16,10 +16,6 @@
         "patients" : "Patienten",
         "research" : "Forschung",
         "workspace" : "Workspace",
-
-        // TODO CHANGED
-        // OLD: Market
-        // NEW: MISTORE
         "market" : "MISTORE",
         "usergroups" : "Teams"
     },

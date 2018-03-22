@@ -43,16 +43,11 @@
         "mustbemember_detail" : "Pour utiliser cette fonctionnalité, vous devez être membre de la coopérative MIDATA. Cliquez sur votre nom d'utilisateur en haut à droite et rendez-vous à la section 'Etat du compte' pour plus d'informations.",
         "notauthorized" : {
             "action" : "Vous n'êtes pas autorisé à entreprendre cette action",
-
-            // TODO CHANGED
-            // OLD: You are not authorized to query provided fields
-            // NEW: You are not authorized to query the provided fields
             "fields" : "Vous n'êtes pas autorisé à consulter les champs demandés",
             "account" : "Vous n'êtes pas autorisé à accéder à ce compte",
             "study" : "Vous n'êtes pas autorisé à accéder à cette étude",
             "not_plugin_owner" : "Ce n'est pas votre plugin"
         },
-
 
         "invalid" : {
             "email" : "Veuillez entrer une adresse e-mail valide",
@@ -77,15 +72,7 @@
             "passcode" : "Mauvais NIP",
             "plugin" : "Ce plugin est prévu pour un rôle différent",
             "unlock_code" : "Code d'activation incorrect",
-
-            // TODO CHANGED
-            // OLD: Access query must restrict by 'content' or 'group'!
-            // NEW: The Data Access Filter must restrict by 'content' or 'group'!
             "access_query" : "Le filtre d'accès aux données (Data Access Filter) doit être limité par 'contenu' ou 'groupe'!",
-
-            // TODO CHANGED
-            // OLD: The Sharing Query accesses data types that are excluded by study configuration.
-            // NEW: The Data Access Filter contains data types that are excluded by the study configuration.
             "sharing" : "Le filtre d'accès aux données (Data Access Filter) contient des types de données qui sont exclus par la configuration de l'étude."
         },
 
@@ -103,9 +90,7 @@
             "study_accept" : "La participation à l'étude doit être acceptée.",
             "study_group" : "Le participant doit d'abord être assigné à un groupe.",
             "confirmation" : "Confirmation par l'utilisateur requise en premier.",
-
-            // TODO NEW: No file for upload selected
-            "file" : "No file for upload selected"
+            "file" : "Aucun fichier à télécharger sélectionné"
         },
 
         "unknown" : {
@@ -178,9 +163,7 @@
         },
 
         "too_large" : {
-
-            // TODO NEW: File is larger than allowed.
-            "file" : "File is larger than allowed."
+            "file" : "Le fichier est trop gros (maximum 1 MB)."
         }
 
     },
@@ -370,8 +353,6 @@
             "SPONSOR" : "Sponsor",
             "INVESTIGATOR" : "Investigator",
             "AUDITOR" : "Auditor",
-
-            // TODO NEW: Study Nurse
             "STUDYNURSE" : "Study Nurse",
             "MONITOR" : "Monitor",
             "OTHER" : "Autre"
@@ -588,11 +569,7 @@
         "resend_btn" : "Renvoyer l'e-mail",
         "retry_btn" : "Veuillez vous authentifier à nouveau",
         "contract_instructions" : "Un contrat vous a été adressé par la poste. Veuillez le signer et le renvoyer à MIDATA.",
-
-        // TODO CHANGED
-        // OLD: During the pilot phase (or if you are on a test server) NO contract will be sent to you. A MIDATA administrator will verify and unlock your account. You will be notified when your account has been unlocked.
-        // NEW: A MIDATA administrator will verify and unlock your account. You will be notified when your account has been unlocked.
-        "pilot_phase" : "Durant la phase pilote (ainsi que sur l'instance de test), AUCUN contrat n'est envoyé. Un administrateur MIDATA verifiera et validera votre compte. Vous serez averti, lorsque votre compte aure été validé.",
+        "pilot_phase" : "Un administrateur MIDATA verifiera et validera votre compte. Vous serez averti, lorsque votre compte aure été validé.",
         "code_intructions" : "Une lettre contenant un code de confirmation vous a été adressée par la poste. Veuillez saisir ce code de confirmation pour pouvoir accéder à la plateforme.",
         "code_done" : "Vous avez saisi le code de confirmation. Vous pourrez vous connecter dès que le contrat signé sera parvenu à MIDATA.",
         "enter_now_btn" : "Entrer maintenant",
@@ -873,10 +850,6 @@
         "delete" : "supprimer",
         "delete_all_btn" : "supprimer tout",
         "empty" : "Aucun enregistrement trouvé.",
-
-        // TODO CHANGED
-        // OLD: The record tree for this selection cannot be evaluated. There are too many consents involved.
-        // NEW: The record tree for this selection cannot be created. There are too many consents involved.
         "too_many_consents" : "L'arborescence des enregistrements ne peut pas être créée pour cette sélection. Il y a trop de consentements impliqués.",
         "close_btn" : "Fermer"
     },

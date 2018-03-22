@@ -66,21 +66,21 @@
     "choose" : "Functions to manage your application",
     "filename" : "Internal Name",
     "type" : "Application Type",
-    "targetUserRole" : "Target Audience",
+    "targetUserRole" : "Target Role",
     "edit_btn" : "Change Settings",
     "edit_help" : "Change setup for your application.",
     "testfromlocal_btn" : "Test your plugin from localhost",
-    "testfromlocal_help" : "During development you can test the plugin code stored on your local computer on this server.",
+    "testfromlocal_help" : "During development, you can test the plugin code stored on your local computer on this instance.",
     "serverimport_btn" : "Test automatic import script.",
     "serverimport_help" : "If your plugin offers automatic import, you can test the script of your plugin that is normally run on the server on your local computer.",
     "icon_btn" : "Application Icons and Images",
-    "icon_help" : "Upload and manage icons and images to be used with your application. Provide images for login screen, appstore, consent accept screen, etc.",    
-    "messages_btn" : "Application eMail Messages",
+    "icon_help" : "Upload and manage the icons and images to be used with your application. Provide images for the login screen, the app store, the consent acceptation screen, etc.",
+    "messages_btn" : "Application email Messages",
     "messages_help" : "Provide your own email texts sent to new user accounts, on first use of your application, for accepting consents and more.",
     "stats_btn" : "Error and Performance Statistics",
     "stats_help" : "View statistics and hints for improvements about the various types of API calls your application sends to the server.",    
     "debug_btn" : "API Tester Sandbox",
-    "debug_help" : "Login as your app and test queries against the MIDATA backend",
+    "debug_help" : "Login as app and test queries against the MIDATA backend.",
     "linkedStudy" : "Study linked to App (Code)",
     "mustParticipateInStudy" : "Study Participation Required",
     "admin_only" : "Only a MIDATA administrator may change this section. Please request changes if required.",
@@ -112,7 +112,7 @@
       "ACTIVE" : "Ready for productive use",
       "BETA" : "Beta version",
       "DEVELOPMENT" : "Under development - to be used by developer only",
-      "DEPRECATED" : "Deprecated. Should no longer be used.",
+      "DEPRECATED" : "Deprecated - should no longer be used",
       "DELETED" : "Deleted"
     },
     "nostudy" : "Not linked to a study",
@@ -128,8 +128,7 @@
       "all" : "During development allow to access all data of the user. (MUST be replaced with a proper Data Access Filter before plugin goes productive)"
     },
     "export_btn" : "Export Application Definition",
-    "export_help" : "Export the definition of this application so that it can be imported and used on another server."
-
+    "export_help" : "Export the definition of this application, so that it can be imported and used on another server."
   },
   
   "appstats" : {
@@ -160,7 +159,7 @@
      "name" : "Plugin/App Name",
      "internalname" : "Internal Name",
      "use" : {
-       "title" : "Purpose of image",
+       "title" : "Usage of image",
        "LOGINPAGE" : "Display on OAuth Login Page",
        "APPICON" : "Use as application icon"
      },
@@ -171,7 +170,7 @@
        "image/gif" : "GIF"
      },
      "file" : "Image file to upload",
-     "file_help" : "Please resize and compress image to a reasonable size before upload. Images larger than 1MB will not be accepted.",
+     "file_help" : "Please resize and compress the image to a reasonable size before upload. Images larger than 1 MB will not be accepted.",
      "existing" : "Images linked to application"
   }
 }

@@ -63,69 +63,29 @@
     },
 
     "manageapp" : {
+        "overview" : "Aperçu de l'application",
+        "choose" : "Fonctions de gestion de votre application",
+        "filename" : "Nom interne",
+        "type" : "Type d'application",
+        "targetUserRole" : "Rôle cible",
+        "edit_btn" : "Modifier la configuration",
+        "edit_help" : "Modifier la configuration de votre application.",
+        "testfromlocal_btn" : "Testez votre plugin depuis localhost",
+        "testfromlocal_help" : "Pendant le développement, vous pouvez tester le code du plugin stocké sur votre ordinateur local sur cette instance.",
+        "serverimport_btn" : "Tester le script d'importation automatique.",
+        "serverimport_help" : "Si votre plugin offre l'importation automatique, vous pouvez tester le script de votre plugin, qui est normalement exécuté sur le serveur, sur votre ordinateur local.",
 
-        // TODO NEW: Application Overview
-        "overview" : "Application Overview",
+        "icon_btn" : "Icônes et images de l'application",
 
-        // TODO NEW: Functions to manage your application
-        "choose" : "Functions to manage your application",
+        // todo app store = MISTORE?
+        "icon_help" : "Téléchargez et gérez les icônes et les images à utiliser avec votre application. Fournissez des images pour l'écran de connexion, l'app store, l'écran d'acceptation des consentements, etc.",
 
-        // TODO NEW: Internal Name
-        "filename" : "Internal Name",
-
-        // TODO NEW: Application Type
-        "type" : "Application Type",
-
-        // TODO NEW: Target Audience
-        "targetUserRole" : "Target Audience",
-
-        // TODO NEW: Change Settings
-        "edit_btn" : "Change Settings",
-
-        // TODO NEW: Change setup for your application.
-        "edit_help" : "Change setup for your application.",
-
-        // TODO NEW: Test your plugin from localhost
-        "testfromlocal_btn" : "Test your plugin from localhost",
-
-        // TODO NEW: During development you can test the plugin code stored on your local computer on this server.
-        "testfromlocal_help" : "During development you can test the plugin code stored on your local computer on this server.",
-
-        // TODO NEW: Test automatic import script.
-        "serverimport_btn" : "Test automatic import script.",
-
-        // TODO NEW: If your plugin offers automatic import, you can test the script of your plugin that is normally run on the server on your local computer.
-        "serverimport_help" : "If your plugin offers automatic import, you can test the script of your plugin that is normally run on the server on your local computer.",
-
-        // TODO NEW: Application Icons and Images
-        "icon_btn" : "Application Icons and Images",
-
-        // TODO NEW: Upload and manage icons and images to be used with your application. Provide images for login screen, appstore, consent accept screen, etc.
-        "icon_help" : "Upload and manage icons and images to be used with your application. Provide images for login screen, appstore, consent accept screen, etc.",
-
-        // TODO CHANGED
-        // OLD: Edit Messages
-        // NEW: Application eMail Messages
-        "messages_btn" : "Éditer les messages",
-
-        // TODO NEW: Provide your own email texts sent to new user accounts, on first use of your application, for accepting consents and more.
-        "messages_help" : "Provide your own email texts sent to new user accounts, on first use of your application, for accepting consents and more.",
-
-        // TODO CHANGED
-        // OLD: Debug Info
-        // NEW: Error and Performance Statistics
-        "stats_btn" : "Informations de débogage",
-
-        // TODO NEW: View statistics and hints for improvements about the various types of API calls your application sends to the server.
-        "stats_help" : "View statistics and hints for improvements about the various types of API calls your application sends to the server.",
-
-        // TODO CHANGED
-        // OLD: API Tester
-        // NEW: API Tester Sandbox
-        "debug_btn" : "API Tester",
-
-        // TODO NEW: Login as your app and test queries against the MIDATA backend
-        "debug_help" : "Login as your app and test queries against the MIDATA backend",
+        "messages_btn" : "Messages e-mail de l'application",
+        "messages_help" : "Fournissez vos propres textes d'e-mails envoyés aux nouveaux comptes d'utilisateurs, dès la première utilisation de votre application, pour accepter les consentements et plus encore.",
+        "stats_btn" : "Statistiques sur les erreurs et les performances",
+        "stats_help" : "Consultez des statistiques et des conseils pour améliorer les différents types d'appels API envoyés par votre application au serveur.",
+        "debug_btn" : "API Tester Sandbox",
+        "debug_help" : "Connectez-vous en tant qu'application et testez les requêtes contre le backend MIDATA",
         "linkedStudy" : "Étude liée à l'app (code)",
         "mustParticipateInStudy" : "Participation à l'étude requise",
         "admin_only" : "Seul un administrateur MIDATA peut modifier cette section. Veuillez faire une demande de changement si nécessaire.",
@@ -141,102 +101,39 @@
             "resharesData" : "L'app est autorisée à transmettre les données auxquelles elle a accès à des tierces parties.",
             "allowsUserSearch" : "Les utilisateurs de l'app sont autorisés à rechercher d'autres utilisateurs de la même app.",
             "defaultSpaceName" : "Titre de la tuile du plugin sur le tableau de bord.",
-
-            // TODO CHANGED
-            // OLD: Categories on the market place for which your plugin should be listed.
-            // NEW: Categories on MISTORE for which your plugin should be listed.
             "tags" : "Catégories sous lesquelles le plugin sera listé dans le MISTORE.",
             "url" : "URL de la page principale du plugin. Si vous utilisez le modèle MIDATA, c'est 'dist/index.html#?authToken=:authToken''",
             "previewUrl" : "URL de la tuile du tableau de bord du plugin. Laisser vide si une telle tuile n'est pas fournie.",
             "defaultSpaceContext" : "Choisissez 'Moi' pour le tableau de bord standard. Choisissez 'Configuration' pour un plugin d'importation.",
-
-            // TODO CHANGED
-            // OLD: Query restricting the access of the app to the database. Access must be restricted by 'code', 'content' or 'group' and may be restricted by 'format' or 'owner'. Valid example (all Observations): '{ "group" : "all", "group-system" : "v1", "format" : ["fhir/Observation" ] }'
-            // NEW: Filter restricting the access of the app to the data. Access must be restricted by 'code', 'content' or 'group' and may be restricted by 'format' or 'owner'. Valid example (all Observations): '{ "group" : "all", "group-system" : "v1", "format" : ["fhir/Observation" ] }'
             "defaultQuery_mobile" : "Filtre limitant l'accès de l'app aux données. L'accès doit être limité par 'code', 'content' ou 'group' et peut être restreint par 'format' ou 'owner'. Example valide (toutes les Observations) : '{ \"group\" : \"all\", \"group-system\" : \"v1\", \"format\" : [\"fhir/Observation\" ] }'",
-
-            // TODO CHANGED
-            // OLD: Query restricting the access of the plugin to the database. Access must be restricted by at least one of 'code', 'content', 'group', 'format' or 'owner'. Valid example (all Observations): '{ "format" : ["fhir/Observation" ] }'
-            // NEW: Filter restricting the access of the plugin to the data. Access must be restricted by at least one of 'code', 'content', 'group', 'format' or 'owner'. Valid example (all Observations): '{ "format" : ["fhir/Observation" ] }'
             "defaultQuery" : "Filtre limitant l'accès du plugin aux données. L'accès doit être limité au moins par 'code', 'content', 'group', 'format' ou 'owner'. Example valide (toutes les Observations) : '{ \"format\" : [\"fhir/Observation\" ] }'",
-
-            // TODO CHANGED
-            // OLD: Look for valid values for 'code', 'content' or 'format' on the 'Format/Content' list of the developer guide. As a first version you may start with access to all data. For that use { "group" : "all", "group-system" : "v1" }. Please refine query before plugin or app goes in production.
-            // NEW: Look for valid values for 'code', 'content' or 'format' on the 'Format/Content' list of the developer guide. As a first version you may start with access to all data. For that use { "group" : "all", "group-system" : "v1" }. Please refine the filter before the plugin or the app goes in production.
             "defaultQuery_extra" : "Veuillez consulter les valeurs valides pour 'code', 'content' et 'format' sous 'Format/Content' dans le guide du développeur. Pour une première version, vous pouvez débuter avec un accès total en indiquant : { \"group\" : \"all\", \"group-system\" : \"v1\" }. Veuillez préciser la limitation avant que le plugin ou l'app soit mis en production.",
             "secret" : "Votre app aura besoin de ce 'secret' pour se connecter. Choisissez le librement.",
             "mustParticipateInStudy" : "Les utilisateurs doivent participer à l'étude afin de pouvoir utiliser l'app.",
             "unlock_code" : "Si renseigné, ce code doit être saisi par l'utilisateur lors de l'enregistrement ou lors de la première connexion à MIDATA par cette app. Le code n'est pas sensible à la casse."
         },
         "status" : {
-
-            // TODO NEW: Application Status
-            "title" : "Application Status",
-
-            // TODO NEW: Ready for productive use
-            "ACTIVE" : "Ready for productive use",
-
-            // TODO NEW: Beta version
-            "BETA" : "Beta version",
-
-            // TODO NEW: Under development - to be used by developer only
-            "DEVELOPMENT" : "Under development - to be used by developer only",
-
-            // TODO NEW: Deprecated. Should no longer be used.
-            "DEPRECATED" : "Deprecated. Should no longer be used.",
-
-            // TODO NEW: Deleted
-            "DELETED" : "Deleted"
+            "title" : "État de l'application",
+            "ACTIVE" : "Prête pour une utilisation productive",
+            "BETA" : "Version bêta",
+            "DEVELOPMENT" : "En cours de développement - à l'usage exclusif du développeur",
+            "DEPRECATED" : "Obsolète - ne doit plus être utilisée",
+            "DELETED" : "Supprimée"
         },
-
-        // TODO NEW: Not linked to a study
-        "nostudy" : "Not linked to a study",
-
-        // TODO NEW: Participation Optional
-        "optionalParticipation" : "Participation Optional",
-
-        // TODO CHANGED
-        // OLD: Access Query (Options)
-        // NEW: Data Access Filter (Options)
+        "nostudy" : "Non lié à une étude",
+        "optionalParticipation" : "Participation optionnelle",
         "access_query_options" : "Data Access Filter (Options)",
-
-        // TODO CHANGED
-        // OLD: Access Query (Selection)
-        // NEW: Data Access Filter (Selection)
         "access_query_selection" : "Data Access Filter (Sélection)",
-
-        // TODO CHANGED
-        // OLD: Access Query (Add)
-        // NEW: Data Access Filter (Add)
         "access_query_add" : "Data Access Filter (Ajouter)",
-
-        // TODO CHANGED
-        // OLD: Access Query (JSON)
-        // NEW: Data Access Filter (JSON)
         "access_query_json" : "Data Access Filter (JSON)",
         "query" : {
             "self" : "L'app/le plugin ne peut accéder qu'aux données de l'utilisateur connecté.",
             "ownapp" : "L'app/le plugin ne peut accéder qu'aux données créées par cette app/ce plugin.",
-
-            // TODO CHANGED
-            // OLD: Add all data types written by the app automatically to the Access Query. (MUST be turned off before app goes productive)
-            // NEW: Add all data types written by the app automatically to the Data Access Filter. (MUST be turned off before app goes productive)
             "learn" : "Ajouter automatiquement tous les types de données écrites par cette app au Data Access Filter. (DOIT être désactivé avant la mise en production de l'app)",
-
-            // TODO CHANGED
-            // OLD: During development allow to access all data of the user. (MUST be replaced with a proper Access Query before plugin goes productive)
-            // NEW: During development allow to access all data of the user. (MUST be replaced with a proper Data Access Filter before plugin goes productive)
             "all" : "Pendant le développement, autoriser l'accès à toutes les données de l'utilisateur. (DOIT être remplacé par un Data Access Filter adéquat avant la mise en production de l'app)"
         },
-
-        // TODO CHANGED
-        // OLD: Export
-        // NEW: Export Application Definition
-        "export_btn" : "Exporter",
-
-        // TODO NEW: Export the definition of this application so that it can be imported and used on another server.
-        "export_help" : "Export the definition of this application so that it can be imported and used on another server."
-
+        "export_btn" : "Exporter la définition de l'application",
+        "export_help" : "Exportez la définition de cette application, pour qu'elle puisse être importée et utilisée sur un autre serveur."
     },
 
     "appstats" : {
@@ -263,48 +160,22 @@
     },
 
     "appicon" : {
-
-        // TODO NEW: Icons and Images
-        "title" : "Icons and Images",
-
-        // TODO NEW: Plugin/App Name
-        "name" : "Plugin/App Name",
-
-        // TODO NEW: Internal Name
-        "internalname" : "Internal Name",
+        "title" : "Icônes et images",
+        "name" : "Nom du plugin/de l'app",
+        "internalname" : "Nom interne",
         "use" : {
-
-            // TODO NEW: Purpose of image
-            "title" : "Purpose of image",
-
-            // TODO NEW: Display on OAuth Login Page
-            "LOGINPAGE" : "Display on OAuth Login Page",
-
-            // TODO NEW: Use as application icon
-            "APPICON" : "Use as application icon"
+            "title" : "Usage de l'image",
+            "LOGINPAGE" : "Affichage sur la page de connexion OAuth",
+            "APPICON" : "Utilisation comme icône d'application"
         },
         "type" : {
-
-            // TODO NEW: Image type
-            "title" : "Image type",
-
-            // TODO NEW: JPEG
+            "title" : "Type d'image",
             "image/jpeg" : "JPEG",
-
-            // TODO NEW: PNG
             "image/png" : "PNG",
-
-            // TODO NEW: GIF
             "image/gif" : "GIF"
         },
-
-        // TODO NEW: Image file to upload
-        "file" : "Image file to upload",
-
-        // TODO NEW: Please resize and compress image to a reasonable size before upload. Images larger than 1MB will not be accepted.
-        "file_help" : "Please resize and compress image to a reasonable size before upload. Images larger than 1MB will not be accepted.",
-
-        // TODO NEW: Images linked to application
-        "existing" : "Images linked to application"
+        "file" : "Fichier image à télécharger",
+        "file_help" : "Veuillez redimensionner et compresser l'image à une taille raisonnable avant de la télécharger. Les images d'une taille supérieure à 1 MB ne seront pas acceptées.",
+        "existing" : "Images liées à l'application"
     }
 }

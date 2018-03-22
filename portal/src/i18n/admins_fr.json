@@ -81,10 +81,6 @@
         "plugin_developer" : "Dévelopeur",
         "plugin_type" : "Type",
         "plugin_role" : "Rôle cible",
-
-        // TODO CHANGED
-        // OLD: Market
-        // NEW: MISTORE
         "plugin_market" : "MISTORE",
         "plugin_stats" : "Statistiques",
         "plugin_status" : "État",
@@ -133,10 +129,6 @@
         "required_information" : "Informations requises",
         "required_assistance" : "Médecin agréé requis",
         "termsOfUse" : "Conditions générales",
-
-        // TODO CHANGED
-        // OLD: Sharing Query
-        // NEW: Data Access Filter
         "sharing_query" : "Data Access Filter",
         "requirements" : "Exigences",
         "groups" : "Groupes",
