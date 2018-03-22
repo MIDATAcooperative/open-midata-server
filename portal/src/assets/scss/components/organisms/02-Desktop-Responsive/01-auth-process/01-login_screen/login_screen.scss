@@ -78,8 +78,8 @@ $desktop-image-size: 95px;
 		&_image {
 			@include mi-x-badge-size($mobile-image-size);
 			position: relative;
-			border-radius: 50%; // Android-like
-			// border-radius: 18px; // iOS-like
+			// border-radius: 50%; // Android-like
+			border-radius: 18px; // iOS-like
 			background-position: center;
 			background-repeat: no-repeat;
 			background-color: white;

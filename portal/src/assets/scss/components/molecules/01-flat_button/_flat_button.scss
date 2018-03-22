@@ -1,9 +1,11 @@
+// adjust at will to decrease/increase whitespace between text and button border
+$horizontal-text-button-padding: 50px;
 
 .mi-mo-flat_button {
 	@include reset-button;
 	position: relative;
 	height: 52px;
-	width: 100%;
+	display: inline-block;
 	line-height: 52px;
 
 	.mi-at-icon {
@@ -28,21 +30,22 @@
 
 	&--submit {
 		@extend %mi-x-colored_gradient_background;
+		width: 100%;
 	}
 
 	&--rounded {
 		height: 30px;
 		line-height: 30px;
+		display: inline-block;
 
-		width: 170px;
 		border-radius: 8px;
+		padding-left: $horizontal-text-button-padding;
+		padding-right: $horizontal-text-button-padding;
 		border: solid 1px;
 		border-color: $color-brand-white;
 		transition: 0.2s ease all;
 
 		.mi-at-text {
-			display: block;
-			position: absolute;
 			text-align: center;
 			left: 50%;
 			top: 50%;
