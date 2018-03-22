@@ -14,7 +14,7 @@
 		padding-left: 23px;
 
 		label {
-			pointer-events: none;
+			pointer-events: none; // if unset, you need to click *outside* of label to enter data
 			font-size: $font-size-normal;
 			font-family: $font-normal;
 			position: relative;
@@ -79,8 +79,6 @@
 					top: -20px;
 				}
 			}
-
-		
 		}
 
 		&--white {
@@ -106,7 +104,20 @@
 			border: none;
 		}
 
+		&-link {
+			padding: 5px;
+			text-decoration: underline;
+			font-weight: bold;
+			border-radius: 5px;
+
+			&:hover {
+				text-decoration: underline;
+				color: $color-brand-white;
+			}
+		}
+
 		label {
+			pointer-events: auto; // restoring pointer-events so you can click on link
 			position: absolute;
 			left: 55px;
 			top: 4px;
