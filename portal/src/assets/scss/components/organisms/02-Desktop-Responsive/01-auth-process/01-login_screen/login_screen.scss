@@ -29,6 +29,8 @@ $login-logo-margin-bottom: 20px;
 
 $login-error-margin-bottom: 20px;
 
+$adjust-text-button-x-axis-padding: 15px;
+
 /**
 	* Mixin and values to resize app image badge
 	*/
@@ -245,6 +247,7 @@ $desktop-image-size: 95px;
 		transform: translate(-50%);
 		@include fluid-props(margin-bottom, $fluid-min, $fluid-max, $login-margin-bottom-min, $login-margin-bottom-max);
 		@include fluid-props(margin-top, $fluid-min, $fluid-max, $login-button-min-margin-top, $login-button-max-margin-top);
+		@include fluid-props(max-width, $fluid-min, $fluid-max, $login-min-width, $login-max-width);
 	}
 
 	&__legal_mentions,
