@@ -322,7 +322,8 @@ public class IndexManager {
 		AccessLog.log("Index found records:"+validatedResult.size()+" still valid:"+stillValid.size());
 		if (validatedResult.size() > stillValid.size()) {
 			AccessLog.log("Removing "+notValid.size()+" records from index.");
-			indexSupervisor.tell(new IndexRemoveMsg(root.getModel()._id, executor, pseudo, KeyManager.instance.currentHandle(), notValid), null);			
+			// You must remove the record IDS from the match not using the records data!!
+			// indexSupervisor.tell(new IndexRemoveMsg(root.getModel()._id, executor, pseudo, KeyManager.instance.currentHandle(), notValid), null);			
 		}				 
 	}
 	

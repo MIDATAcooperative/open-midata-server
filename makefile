@@ -88,6 +88,7 @@ tasks/install-node: tasks/install-packages trigger/install-node
 	curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 	sudo apt-get install -y nodejs
 	sudo npm install -g bower grunt-cli
+	sudo chmod -R ugo+rx /usr/lib/node_modules
 	touch tasks/install-node
 
 tasks/check-config: trigger/check-config
