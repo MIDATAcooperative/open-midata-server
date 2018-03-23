@@ -579,9 +579,7 @@ var en =
     "please_configure" : "Veuillez configurer cette tuile pour afficher un graphique.",
 
     "save_question" : "Voulez-vous enregistrer ce graphique sur votre tableau de bord?",
-
     "save_setting_btn" : "Enregistrer",
-.
     "saving" : "Enregistrement...",
 
     "chart_name" : "Nom du graphique",

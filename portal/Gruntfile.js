@@ -12,7 +12,7 @@ module.exports = function(grunt) {
         },
         
         build : {
-        	src : ['dest/app.min.js','dest/oauth.min.js','dest/app.min.css']        	
+        	src : ['dest/app.min.js','dest/oauth.min.js','dest/app.min.css','dest/oauth.min.css']        	
         }
     },
     
