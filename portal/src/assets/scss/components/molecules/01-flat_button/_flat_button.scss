@@ -1,5 +1,6 @@
 // adjust at will to decrease/increase whitespace between text and button border
 $horizontal-text-button-padding: 50px;
+$vertical-text-button-padding: 10px;
 
 .mi-mo-flat_button {
 	@include reset-button;
@@ -34,8 +35,12 @@ $horizontal-text-button-padding: 50px;
 	}
 
 	&--rounded {
-		height: 30px;
-		line-height: 30px;
+		height: auto;
+		padding-top: $vertical-text-button-padding;
+		padding-bottom: $vertical-text-button-padding;
+		padding-bottom: 10px;
+		min-height: 30px;
+		line-height: initial;
 		display: inline-block;
 
 		border-radius: 8px;
