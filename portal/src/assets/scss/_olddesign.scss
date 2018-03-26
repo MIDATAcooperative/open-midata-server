@@ -75,8 +75,7 @@ p, body {
     @extend %mi-x-uppercase;
 	text-align: center;	
 	font-family: $font-bold;
-	letter-spacing:  $letter-spacing-airy;	
-	padding-top: 1px; // without it, the text does not look like vertically centered
+	letter-spacing:  $letter-spacing-airy;		
 	
 	&:hover {
 	  color: $color-brand-blue-primary;	
@@ -111,6 +110,7 @@ p, body {
       position:absolute;
       top: 16px;
       left: 23px;
+      caret-color: $color-brand-white;
       color: $color-brand-white;
       width: 280px;
       

@@ -3,6 +3,7 @@ import javax.servlet.ServletException;
 import controllers.AutoRun;
 import controllers.FHIR;
 import controllers.Market;
+import controllers.research.AutoJoiner;
 import models.PersistedSession;
 import models.RecordGroup;
 import play.Application;
@@ -67,6 +68,7 @@ public class Global extends GlobalSettings {
 		
 		Stats.init();
 		Messager.init();
+		AutoJoiner.init();
 		AutoRun.init();
 	}
 
