@@ -1351,6 +1351,8 @@ public class Studies extends APIController {
 		
 	}
 	
+	
+	
 	public static void autoApproveCheck(MidataId app, MidataId studyid, MidataId owner) throws AppException {
 		Study study = Study.getById(studyid, Sets.create("_id", "participantSearchStatus", "executionStatus", "autoJoinGroup", "name", "code"));
 		if (study != null && study.autoJoinGroup != null) {
