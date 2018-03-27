@@ -300,7 +300,7 @@
         "consenttype" : {
             "CIRCLE" : "Autres détenteurs de compte",
             "EXTERNALSERVICE" : "Application externe",
-            "HCRELATED" : "Système de la santé",
+            "HCRELATED" : "Système de santé",
             "HEALTHCARE" : "Médecin / Hôpital",
             "STUDYPARTICIPATION" : "Étude",
 
@@ -451,12 +451,8 @@
         "or" : "ou",
         "save_ok" : "Enregistrement effectué",
         "yesno" : {
-
-            // TODO NEW: Yes
-            "true" : "Yes",
-
-            // TODO NEW: No
-            "false" : "No"
+            "true" : "Oui",
+            "false" : "Non"
         },
         "user" : {
             "lastname" : "Nom",
@@ -559,9 +555,7 @@
         // NEW: create account
         "sign_up_btn" : "S'inscrire",
         "unlock_code" : "Code d'activation",
-
-        // TODO NEW: I already have an account
-        "already_have_account" : "I already have an account"
+        "already_have_account" : "J'ai déjà un compte"
     },
 
     "login" : {
@@ -609,8 +603,6 @@
         "code_entered" : "Code de confirmation saisi?",
         "email_instructions" : "Votre adresse e-mail doit être confirmée. Un e-mail d'activation vous a été envoyé. Cliquez sur le lien contenu dans celui-ci pour confirmer votre adresse e-mail.",
         "email_code" : "Vous pouvez également saisir le code reçu par e-mail ici:",
-
-        // TODO NEW: Code
         "code" : "Code",
         "resend_btn" : "Renvoyer l'e-mail",
         "retry_btn" : "Veuillez vous authentifier à nouveau",
@@ -905,15 +897,10 @@
         // TODO NEW: requests the permission to access your personal data.
         "requests_permission" : "requests the permission to access your personal data.",
 
-        // TODO NEW: I don't have an account
-        "no_account" : "I don't have an account",
+        "no_account" : "Je n'ai pas de compte",
         "reshares_data" : "L'application peut partager les données auxquelles elle a accès avec des tiers.",
         "allows_user_search" : "Vos nom et adresse e-mail peuvent être consultés par d'autres personnes utilisant cette application.",
-
-        // TODO CHANGED
-        // OLD: This application requests access:
-        // NEW: needs access to your data.
-        "requesting_app" : "Cette application demande l'accès:",
+        "requesting_app" : "désire accéder à vos données.",
         "sign_in" : "Connexion à MIDATA pour:",
 
         // TODO CHANGED

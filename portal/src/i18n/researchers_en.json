@@ -66,6 +66,8 @@
     "no_change_warning" : "This setup cannot be changed anymore after Study has been validated.",
     "member_identity" : "Member Identity",
     "anonymous1" : "Pseudonymized Participation",
+
+    //todo anonymized -> pseudonymized
     "anonymous2" : ", reveals anonymized ID, year of birth, gender and country",
     "anonymous3" : "Anonym: Pseudonymization mapping may not be accessed.",
     "not_anonymous1" : "Not Pseudonymized",

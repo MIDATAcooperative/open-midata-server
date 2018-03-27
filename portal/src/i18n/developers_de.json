@@ -67,43 +67,21 @@
         "choose" : "Funktionen zur Verwaltung Ihrer Anwendung",
         "filename" : "Interner Name",
         "type" : "Applikationstyp",
-
-        // TODO CHANGED
-        // OLD: Target Audience
-        // NEW: Target Role
         "targetUserRole" : "Zielrolle",
         "edit_btn" : "Einstellungen ändern",
         "edit_help" : "Ändern Sie die Einstellungen für Ihre Applikation.",
-
-        // TODO NEW: OAuth2 Parameters for Token Exchange
-        "tokenExchangeParams" : "OAuth2 Parameters for Token Exchange",
+        "tokenExchangeParams" : "OAuth2-Parameter für den Token-Austausch",
         "testfromlocal_btn" : "Testen Sie Ihr Plugin von localhost aus",
-
-        // TODO CHANGED
-        // OLD: During development you can test the plugin code stored on your local computer on this server.
-        // NEW: During development, you can test the plugin code stored on your local computer on this instance.
         "testfromlocal_help" : "Während der Entwicklung können Sie den Plugin-Code, der auf Ihrem lokalen Computer gespeichert ist, auf dieser Instanz testen.",
         "serverimport_btn" : "Automatisches Importskript testen.",
         "serverimport_help" : "Wenn Ihr Plugin einen automatischen Import bietet, können Sie das Skript Ihres Plugins, das normalerweise auf dem Server läuft, auf Ihrem lokalen Computer testen.",
         "icon_btn" : "Icons und Bilder der Applikation",
-
-        // TODO CHANGED
-        // OLD: Upload and manage icons and images to be used with your application. Provide images for login screen, appstore, consent accept screen, etc.
-        // NEW: Upload and manage the icons and images to be used with your application. Provide images for the login screen, the app store, the consent acceptation screen, etc.
         "icon_help" : "Laden und verwalten Sie die Icons und Bilder hoch, die mit Ihrer Anwendung verwendet werden sollen. Stellen Sie Bilder für den Login-Bildschirm, den App-Store, den Zustimmungsbildschirm usw. bereit.",
-
-        // TODO CHANGED
-        // OLD: Application eMail Messages
-        // NEW: Application email Messages
         "messages_btn" : "E-Mail-Nachrichten der Applikation",
         "messages_help" : "Stellen Sie Ihre eigenen E-Mail-Texte zur Verfügung, die an neue Benutzerkonten gesendet werden, bei der ersten Nutzung Ihrer Anwendung, für die Annahme von Zustimmungen und mehr.",
         "stats_btn" : "Fehler- und Performance-Statistiken",
         "stats_help" : "Hier finden Sie Statistiken und Hinweise zur Verbesserung der verschiedenen Arten von API-Aufrufen, die Ihre Anwendung an den Server sendet.",
         "debug_btn" : "API Tester Sandbox",
-
-        // TODO CHANGED
-        // OLD: Login as your app and test queries against the MIDATA backend
-        // NEW: Login as app and test queries against the MIDATA backend.
         "debug_help" : "Melden Sie sich als App an und testen Sie Abfragen gegen das MIDATA-Backend.",
         "linkedStudy" : "Mit der App verknüpfte Studie (Code)",
         "mustParticipateInStudy" : "Studienteilnahme erforderlich",
@@ -117,9 +95,7 @@
             "type" : "Wählen Sie 'Plugin' wenn Ihre App im MIDATA-Portal laufen wird. Wählen Sie 'Mobile App' für eine externe App. Wählen Sie 'OAuth1 Import' oder 'OAuth2 Import' wenn Sie sich über OAuth1 oder OAuth2 mit einem externen Server verbinden.",
             "name" : "Der Name der App oder des Plugins für den Endbenutzer.",
             "description" : "Die Beschreibung des Plugins, die im Markplatz erscheinen wird.",
-
-            // TODO NEW: Default is client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> but some services also require client_secret=<client_secret> or no client_id
-            "tokenExchangeParams" : "Default is client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> but some services also require client_secret=<client_secret> or no client_id",
+            "tokenExchangeParams" : "Der Standardwert ist client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> aber einige Dienste erfordern auch client_secret=<client_secret> oder kein client_id",
             "resharesData" : "Die App darf Daten, auf die sie Zugriff hat, an Drittparteien weitergeben.",
             "allowsUserSearch" : "Benutzer dieser App dürfen nach anderen Benutzern der gleichen App suchen.",
 
@@ -143,10 +119,6 @@
             "ACTIVE" : "Bereit für den produktiven Einsatz",
             "BETA" : "Beta-Version",
             "DEVELOPMENT" : "In Entwicklung - darf nur vom Entwickler verwendet werden",
-
-            // TODO CHANGED
-            // OLD: Deprecated. Should no longer be used.
-            // NEW: Deprecated - should no longer be used
             "DEPRECATED" : "Veraltet - sollte nicht mehr verwendet werden",
             "DELETED" : "Gelöscht"
         },
@@ -163,10 +135,6 @@
             "all" : "Während der Entwicklung, Zugriff auf alle Daten des Benutzers erlauben. (MUSS durch ein geeignetes Data Access Filter ersetzt werden bevor das Plugin produktiv eingesetzt wird)"
         },
         "export_btn" : "Applikationsdefinition exportieren",
-
-        // TODO CHANGED
-        // OLD: Export the definition of this application so that it can be imported and used on another server.
-        // NEW: Export the definition of this application, so that it can be imported and used on another server.
         "export_help" : "Exportieren Sie die Definition dieser Applikation, damit sie auf einem anderen Server importiert und verwendet werden kann."
     },
 
@@ -198,10 +166,6 @@
         "name" : "Name des Plugin/der App",
         "internalname" : "Interner Name",
         "use" : {
-
-            // TODO CHANGED
-            // OLD: Purpose of image
-            // NEW: Usage of image
             "title" : "Verwendung des Bildes",
             "LOGINPAGE" : "Anzeige auf der OAuth Login-Seite",
             "APPICON" : "Als Applikations-Icon verwenden"
@@ -213,10 +177,6 @@
             "image/gif" : "GIF"
         },
         "file" : "Bilddatei zum Hochladen",
-
-        // TODO CHANGED
-        // OLD: Please resize and compress image to a reasonable size before upload. Images larger than 1MB will not be accepted.
-        // NEW: Please resize and compress the image to a reasonable size before upload. Images larger than 1 MB will not be accepted.
         "file_help" : "Bitte verkleinern und komprimieren Sie das Bild auf eine vernünftige Grösse, bevor Sie es hochladen. Bilder, die grösser als 1 MB sind, werden nicht akzeptiert.",
         "existing" : "Bilder verknüpft mit der Applikation"
     }

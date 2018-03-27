@@ -67,45 +67,26 @@
         "choose" : "Fonctions de gestion de votre application",
         "filename" : "Nom interne",
         "type" : "Type d'application",
-
-        // TODO CHANGED
-        // OLD: Target Audience
-        // NEW: Target Role
         "targetUserRole" : "Rôle cible",
         "edit_btn" : "Modifier la configuration",
         "edit_help" : "Modifier la configuration de votre application.",
 
         // TODO NEW: OAuth2 Parameters for Token Exchange
-        "tokenExchangeParams" : "OAuth2 Parameters for Token Exchange",
+        "tokenExchangeParams" : "Paramètres OAuth2 pour l'échange du token",
         "testfromlocal_btn" : "Testez votre plugin depuis localhost",
-
-        // TODO CHANGED
-        // OLD: During development you can test the plugin code stored on your local computer on this server.
-        // NEW: During development, you can test the plugin code stored on your local computer on this instance.
         "testfromlocal_help" : "Pendant le développement, vous pouvez tester le code du plugin stocké sur votre ordinateur local sur cette instance.",
         "serverimport_btn" : "Tester le script d'importation automatique.",
         "serverimport_help" : "Si votre plugin offre l'importation automatique, vous pouvez tester le script de votre plugin, qui est normalement exécuté sur le serveur, sur votre ordinateur local.",
         "icon_btn" : "Icônes et images de l'application",
 
         // todo app store = MISTORE?
-
-        // TODO CHANGED
-        // OLD: Upload and manage icons and images to be used with your application. Provide images for login screen, appstore, consent accept screen, etc.
-        // NEW: Upload and manage the icons and images to be used with your application. Provide images for the login screen, the app store, the consent acceptation screen, etc.
         "icon_help" : "Téléchargez et gérez les icônes et les images à utiliser avec votre application. Fournissez des images pour l'écran de connexion, l'app store, l'écran d'acceptation des consentements, etc.",
 
-        // TODO CHANGED
-        // OLD: Application eMail Messages
-        // NEW: Application email Messages
         "messages_btn" : "Messages e-mail de l'application",
         "messages_help" : "Fournissez vos propres textes d'e-mails envoyés aux nouveaux comptes d'utilisateurs, dès la première utilisation de votre application, pour accepter les consentements et plus encore.",
         "stats_btn" : "Statistiques sur les erreurs et les performances",
         "stats_help" : "Consultez des statistiques et des conseils pour améliorer les différents types d'appels API envoyés par votre application au serveur.",
         "debug_btn" : "API Tester Sandbox",
-
-        // TODO CHANGED
-        // OLD: Login as your app and test queries against the MIDATA backend
-        // NEW: Login as app and test queries against the MIDATA backend.
         "debug_help" : "Connectez-vous en tant qu'application et testez les requêtes contre le backend MIDATA",
         "linkedStudy" : "Étude liée à l'app (code)",
         "mustParticipateInStudy" : "Participation à l'étude requise",
@@ -119,9 +100,7 @@
             "type" : "Choisissez 'Plugin' si votre app tourne en temps que plugin sur le portail MIDATA. Choisissez 'Mobile App' pour une app externe. Choisissez 'OAuth1 Import' ou 'OAuth2 Import' si vous vous connectez à un serveur externe par OAuth1 ou OAuth2.",
             "name" : "Le nom de l'app ou du plugin tel qu'il est affiché pour les utilisateurs finaux.",
             "description" : "La description du plugin qui sera affichée sur la place du marché.",
-
-            // TODO NEW: Default is client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> but some services also require client_secret=<client_secret> or no client_id
-            "tokenExchangeParams" : "Default is client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> but some services also require client_secret=<client_secret> or no client_id",
+            "tokenExchangeParams" : "La valeur par défaut est client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> mais certains services nécessitent également client_secret=<client_secret> ou pas de client_id",
             "resharesData" : "L'app est autorisée à transmettre les données auxquelles elle a accès à des tierces parties.",
             "allowsUserSearch" : "Les utilisateurs de l'app sont autorisés à rechercher d'autres utilisateurs de la même app.",
             "defaultSpaceName" : "Titre de la tuile du plugin sur le tableau de bord.",
@@ -141,10 +120,6 @@
             "ACTIVE" : "Prête pour une utilisation productive",
             "BETA" : "Version bêta",
             "DEVELOPMENT" : "En cours de développement - à l'usage exclusif du développeur",
-
-            // TODO CHANGED
-            // OLD: Deprecated. Should no longer be used.
-            // NEW: Deprecated - should no longer be used
             "DEPRECATED" : "Obsolète - ne doit plus être utilisée",
             "DELETED" : "Supprimée"
         },
@@ -161,10 +136,6 @@
             "all" : "Pendant le développement, autoriser l'accès à toutes les données de l'utilisateur. (DOIT être remplacé par un Data Access Filter adéquat avant la mise en production de l'app)"
         },
         "export_btn" : "Exporter la définition de l'application",
-
-        // TODO CHANGED
-        // OLD: Export the definition of this application so that it can be imported and used on another server.
-        // NEW: Export the definition of this application, so that it can be imported and used on another server.
         "export_help" : "Exportez la définition de cette application, pour qu'elle puisse être importée et utilisée sur un autre serveur."
     },
 
@@ -196,10 +167,6 @@
         "name" : "Nom du plugin/de l'app",
         "internalname" : "Nom interne",
         "use" : {
-
-            // TODO CHANGED
-            // OLD: Purpose of image
-            // NEW: Usage of image
             "title" : "Usage de l'image",
             "LOGINPAGE" : "Affichage sur la page de connexion OAuth",
             "APPICON" : "Utilisation comme icône d'application"
@@ -211,10 +178,6 @@
             "image/gif" : "GIF"
         },
         "file" : "Fichier image à télécharger",
-
-        // TODO CHANGED
-        // OLD: Please resize and compress image to a reasonable size before upload. Images larger than 1MB will not be accepted.
-        // NEW: Please resize and compress the image to a reasonable size before upload. Images larger than 1 MB will not be accepted.
         "file_help" : "Veuillez redimensionner et compresser l'image à une taille raisonnable avant de la télécharger. Les images d'une taille supérieure à 1 MB ne seront pas acceptées.",
         "existing" : "Images liées à l'application"
     }

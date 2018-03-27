@@ -127,9 +127,7 @@
         "endDate" : "Enddatum",
         "dataCreatedBefore" : "Datenbestand eingefroren ab dem",
         "required_information" : "Benötigte Informationen",
-
-        // TODO NEW: Anonymous
-        "anonymous" : "Anonymous",
+        "anonymous" : "Anonym",
         "required_assistance" : "Belegarzt benötigt",
         "termsOfUse" : "Allgemeine Geschäftsbedingungen (AGB)",
         "sharing_query" : "Data Access Filter",
@@ -146,41 +144,20 @@
     },
 
     "admin_stats" : {
-
-        // TODO NEW: Statistics
-        "title" : "Statistics",
+        "title" : "Statistiken",
 
         // TODO NEW: 
         "what" : "",
 
-        // TODO NEW: Total count
-        "value" : "Total count",
-
-        // TODO NEW: Diff to 1 day ago
-        "diff_yesterday" : "Diff to 1 day ago",
-
-        // TODO NEW: Diff to 7 days ago
-        "diff_week" : "Diff to 7 days ago",
-
-        // TODO NEW: Records in DB
-        "recordCount" : "Records in DB",
-
-        // TODO NEW: Apps and Plugins
-        "appCount" : "Apps and Plugins",
-
-        // TODO NEW: Running Studies
-        "runningStudyCount" : "Running Studies",
-
-        // TODO NEW: Teams (Healthcare and Research)
-        "groupCount" : "Teams (Healthcare and Research)",
-
-        // TODO NEW: Audit Events
-        "auditEventCount" : "Audit Events",
-
-        // TODO NEW: Active User Accounts
-        "users" : "Active User Accounts",
-
-        // TODO NEW: Consents
-        "consents" : "Consents"
+        "value" : "Gesamtzahl",
+        "diff_yesterday" : "Diff. zu vor 1 Tag",
+        "diff_week" : "Diff. zu vor 7 Tagen",
+        "recordCount" : "Datensätze in DB",
+        "appCount" : "Apps und Plugins",
+        "runningStudyCount" : "Laufende Studien",
+        "groupCount" : "Teams (Gesundheitswesen und Forschung)",
+        "auditEventCount" : "Audit-Ereignisse",
+        "users" : "Aktive Benutzerkonten",
+        "consents" : "Zustimmungen"
     }
 }
