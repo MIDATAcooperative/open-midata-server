@@ -200,7 +200,13 @@
             "access_query" : "The Data Access Filter must restrict by 'content' or 'group'!",
 
             // TODO NEW: The Data Access Filter contains data types that are excluded by the study configuration.
-            "sharing" : "The Data Access Filter contains data types that are excluded by the study configuration."
+            "sharing" : "The Data Access Filter contains data types that are excluded by the study configuration.",
+
+            // TODO NEW: Study can only be anonymous if no one is allowed to access unpseudonymized data.
+            "anonymous" : "Study can only be anonymous if no one is allowed to access unpseudonymized data.",
+
+            // TODO NEW: Invalid URL
+            "url" : "Invalid URL"
         },
 
         "missing" : {
@@ -311,6 +317,15 @@
             // TODO NEW: User is not allowed to log in. Contact support@midata.coop for help.
             "user" : "User is not allowed to log in. Contact support@midata.coop for help.",
 
+            // TODO NEW: Too many bad login attempts. Wait 1 minute before next attempt.
+            "password1" : "Too many bad login attempts. Wait 1 minute before next attempt.",
+
+            // TODO NEW: Too many bad login attempts. Wait 5 minutes before next attempt.
+            "password5" : "Too many bad login attempts. Wait 5 minutes before next attempt.",
+
+            // TODO NEW: Too many bad login attempts. Wait 1 hour before next attempt.
+            "password60" : "Too many bad login attempts. Wait 1 hour before next attempt.",
+
             // TODO NEW: Account holder is not allowed to participate in study.
             "participation" : "Account holder is not allowed to participate in study.",
 
@@ -389,8 +404,8 @@
 
         "too_large" : {
 
-            // TODO NEW: File is larger than allowed.
-            "file" : "File is larger than allowed."
+            // TODO NEW: The file is too large (maximum 1 MB).
+            "file" : "The file is too large (maximum 1 MB)."
         }
 
     },
@@ -713,8 +728,8 @@
             // TODO NEW: Study
             "STUDYPARTICIPATION" : "Study",
 
-            // TODO NEW: Study
-            "STUDYRELATED" : "Study",
+            // TODO NEW: Study information
+            "STUDYRELATED" : "Study information",
 
             // TODO NEW: Messaging
             "IMPLICIT" : "Messaging"
@@ -1069,6 +1084,14 @@
 
         // TODO NEW: Successfully Saved
         "save_ok" : "Successfully Saved",
+        "yesno" : {
+
+            // TODO NEW: Yes
+            "true" : "Yes",
+
+            // TODO NEW: No
+            "false" : "No"
+        },
         "user" : {
 
             // TODO NEW: Surname
@@ -1205,8 +1228,8 @@
         // TODO NEW: Sign Up
         "sign_up" : "Sign Up",
 
-        // TODO NEW: Fields marked with a * must be filled out.
-        "mandantory_fields" : "Fields marked with a * must be filled out.",
+        // TODO NEW: Please fill in the required information below (fields marked with an asterisk * are mandatory)
+        "mandantory_fields" : "Please fill in the required information below (fields marked with an asterisk * are mandatory)",
 
         // TODO NEW: EMail
         "email" : "EMail",
@@ -1274,6 +1297,9 @@
         // TODO NEW: MIDATA Terms
         "agb" : "MIDATA Terms",
 
+        // TODO NEW: I agree to MIDATA's terms of use
+        "agb4" : "I agree to MIDATA's terms of use",
+
         // TODO NEW: Research
         "study" : "Research",
 
@@ -1289,6 +1315,9 @@
         // TODO NEW: Privacy Policy
         "privacypolicy3" : "Privacy Policy",
 
+        // TODO NEW: I agree to MIDATA's privacy terms
+        "privacypolicy4" : "I agree to MIDATA's privacy terms",
+
         // TODO NEW: App Terms
         "app_agb" : "App Terms",
 
@@ -1298,14 +1327,20 @@
         // TODO NEW: App Terms and Conditions
         "app_agb3" : "App Terms and Conditions",
 
+        // TODO NEW: I agree to the App Terms and Conditions
+        "app_agb4" : "I agree to the App Terms and Conditions",
+
         // TODO NEW: Study Terms
         "study_agb" : "Study Terms",
 
-        // TODO NEW: Sign Up
-        "sign_up_btn" : "Sign Up",
+        // TODO NEW: create account
+        "sign_up_btn" : "create account",
 
         // TODO NEW: Unlock Code
-        "unlock_code" : "Unlock Code"
+        "unlock_code" : "Unlock Code",
+
+        // TODO NEW: I already have an account
+        "already_have_account" : "I already have an account"
     },
 
     "login" : {
@@ -1417,6 +1452,9 @@
 
         // TODO NEW: For convenience you may enter the code from the email here:
         "email_code" : "For convenience you may enter the code from the email here:",
+
+        // TODO NEW: Code
+        "code" : "Code",
 
         // TODO NEW: Resend email
         "resend_btn" : "Resend email",
@@ -2179,20 +2217,26 @@
 
     "oauth2" : {
 
+        // TODO NEW: requests the permission to access your personal data.
+        "requests_permission" : "requests the permission to access your personal data.",
+
+        // TODO NEW: I don't have an account
+        "no_account" : "I don't have an account",
+
         // TODO NEW: App may share data it has access to to third parties.
         "reshares_data" : "App may share data it has access to to third parties.",
 
         // TODO NEW: Your name and email address may be searched by other people using this app.
         "allows_user_search" : "Your name and email address may be searched by other people using this app.",
 
-        // TODO NEW: This application requests access:
-        "requesting_app" : "This application requests access:",
+        // TODO NEW: needs access to your data.
+        "requesting_app" : "needs access to your data.",
 
         // TODO NEW: MIDATA login for:
         "sign_in" : "MIDATA login for:",
 
-        // TODO NEW: Log in
-        "sign_in_btn" : "Log in",
+        // TODO NEW: Login
+        "sign_in_btn" : "Login",
 
         // TODO NEW: Device: {{ device}}
         "device" : "Device: {{ device}}",
@@ -2215,8 +2259,8 @@
         // TODO NEW: Content: {{ content }}
         "shares_content" : "Content: {{ content }}",
 
-        // TODO NEW: Participate to the study
-        "confirm_study" : "Participate to the study"
+        // TODO NEW: Enroll in the following study
+        "confirm_study" : "Enroll in the following study"
     },
 
     "dashboard" : {
@@ -2589,7 +2633,10 @@
     "terms" : {
 
         // TODO NEW: << Back
-        "close_btn" : "<< Back"
+        "close_btn" : "<< Back",
+
+        // TODO NEW: Close
+        "close_new_btn" : "Close"
     },
 
     "auditlog" : {

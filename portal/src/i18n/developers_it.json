@@ -160,8 +160,8 @@
         // TODO NEW: Application Type
         "type" : "Application Type",
 
-        // TODO NEW: Target Audience
-        "targetUserRole" : "Target Audience",
+        // TODO NEW: Target Role
+        "targetUserRole" : "Target Role",
 
         // TODO NEW: Change Settings
         "edit_btn" : "Change Settings",
@@ -169,11 +169,14 @@
         // TODO NEW: Change setup for your application.
         "edit_help" : "Change setup for your application.",
 
+        // TODO NEW: OAuth2 Parameters for Token Exchange
+        "tokenExchangeParams" : "OAuth2 Parameters for Token Exchange",
+
         // TODO NEW: Test your plugin from localhost
         "testfromlocal_btn" : "Test your plugin from localhost",
 
-        // TODO NEW: During development you can test the plugin code stored on your local computer on this server.
-        "testfromlocal_help" : "During development you can test the plugin code stored on your local computer on this server.",
+        // TODO NEW: During development, you can test the plugin code stored on your local computer on this instance.
+        "testfromlocal_help" : "During development, you can test the plugin code stored on your local computer on this instance.",
 
         // TODO NEW: Test automatic import script.
         "serverimport_btn" : "Test automatic import script.",
@@ -184,11 +187,11 @@
         // TODO NEW: Application Icons and Images
         "icon_btn" : "Application Icons and Images",
 
-        // TODO NEW: Upload and manage icons and images to be used with your application. Provide images for login screen, appstore, consent accept screen, etc.
-        "icon_help" : "Upload and manage icons and images to be used with your application. Provide images for login screen, appstore, consent accept screen, etc.",
+        // TODO NEW: Upload and manage the icons and images to be used with your application. Provide images for the login screen, the app store, the consent acceptation screen, etc.
+        "icon_help" : "Upload and manage the icons and images to be used with your application. Provide images for the login screen, the app store, the consent acceptation screen, etc.",
 
-        // TODO NEW: Application eMail Messages
-        "messages_btn" : "Application eMail Messages",
+        // TODO NEW: Application email Messages
+        "messages_btn" : "Application email Messages",
 
         // TODO NEW: Provide your own email texts sent to new user accounts, on first use of your application, for accepting consents and more.
         "messages_help" : "Provide your own email texts sent to new user accounts, on first use of your application, for accepting consents and more.",
@@ -202,8 +205,8 @@
         // TODO NEW: API Tester Sandbox
         "debug_btn" : "API Tester Sandbox",
 
-        // TODO NEW: Login as your app and test queries against the MIDATA backend
-        "debug_help" : "Login as your app and test queries against the MIDATA backend",
+        // TODO NEW: Login as app and test queries against the MIDATA backend.
+        "debug_help" : "Login as app and test queries against the MIDATA backend.",
 
         // TODO NEW: Study linked to App (Code)
         "linkedStudy" : "Study linked to App (Code)",
@@ -238,6 +241,9 @@
 
             // TODO NEW: A description of your plugin that will also be shown on the marked place.
             "description" : "A description of your plugin that will also be shown on the marked place.",
+
+            // TODO NEW: Default is client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> but some services also require client_secret=<client_secret> or no client_id
+            "tokenExchangeParams" : "Default is client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> but some services also require client_secret=<client_secret> or no client_id",
 
             // TODO NEW: App is allowed to reshare data it has access to to 3rd party.
             "resharesData" : "App is allowed to reshare data it has access to to 3rd party.",
@@ -292,8 +298,8 @@
             // TODO NEW: Under development - to be used by developer only
             "DEVELOPMENT" : "Under development - to be used by developer only",
 
-            // TODO NEW: Deprecated. Should no longer be used.
-            "DEPRECATED" : "Deprecated. Should no longer be used.",
+            // TODO NEW: Deprecated - should no longer be used
+            "DEPRECATED" : "Deprecated - should no longer be used",
 
             // TODO NEW: Deleted
             "DELETED" : "Deleted"
@@ -334,9 +340,8 @@
         // TODO NEW: Export Application Definition
         "export_btn" : "Export Application Definition",
 
-        // TODO NEW: Export the definition of this application so that it can be imported and used on another server.
-        "export_help" : "Export the definition of this application so that it can be imported and used on another server."
-
+        // TODO NEW: Export the definition of this application, so that it can be imported and used on another server.
+        "export_help" : "Export the definition of this application, so that it can be imported and used on another server."
     },
 
     "appstats" : {
@@ -408,8 +413,8 @@
         "internalname" : "Internal Name",
         "use" : {
 
-            // TODO NEW: Purpose of image
-            "title" : "Purpose of image",
+            // TODO NEW: Usage of image
+            "title" : "Usage of image",
 
             // TODO NEW: Display on OAuth Login Page
             "LOGINPAGE" : "Display on OAuth Login Page",
@@ -435,8 +440,8 @@
         // TODO NEW: Image file to upload
         "file" : "Image file to upload",
 
-        // TODO NEW: Please resize and compress image to a reasonable size before upload. Images larger than 1MB will not be accepted.
-        "file_help" : "Please resize and compress image to a reasonable size before upload. Images larger than 1MB will not be accepted.",
+        // TODO NEW: Please resize and compress the image to a reasonable size before upload. Images larger than 1 MB will not be accepted.
+        "file_help" : "Please resize and compress the image to a reasonable size before upload. Images larger than 1 MB will not be accepted.",
 
         // TODO NEW: Images linked to application
         "existing" : "Images linked to application"

@@ -155,14 +155,17 @@
         // TODO NEW: Member Identity
         "member_identity" : "Member Identity",
 
-        // TODO NEW: Anonymous Participation
-        "anonymous1" : "Anonymous Participation",
+        // TODO NEW: Pseudonymized Participation
+        "anonymous1" : "Pseudonymized Participation",
 
         // TODO NEW: , reveals anonymized ID, year of birth, gender and country
         "anonymous2" : ", reveals anonymized ID, year of birth, gender and country",
 
-        // TODO NEW: Not Anonymous
-        "not_anonymous1" : "Not Anonymous",
+        // TODO NEW: Anonym: Pseudonymization mapping may not be accessed.
+        "anonymous3" : "Anonym: Pseudonymization mapping may not be accessed.",
+
+        // TODO NEW: Not Pseudonymized
+        "not_anonymous1" : "Not Pseudonymized",
 
         // TODO NEW: , requests member to share full name, birthday and contact Information (address, phone, email)
         "not_anonymous2" : ", requests member to share full name, birthday and contact Information (address, phone, email)",
