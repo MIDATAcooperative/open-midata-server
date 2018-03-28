@@ -27,7 +27,9 @@ angular.module('MiSensi18n', [])
       "RotundonText":"Rotundon ist ein hoch potenter Geruchsstoff. Einige Personen können ihn schon bei einer Konzentration von 0.001 ppb (also einem Milliardstel Gramm pro Liter) wahrnehmen. Der Geruch von Rotundon wird als holzig bzw. pfeffrig beschrieben und tatsächlich ist Rotundon ein wichtiger Bestandteil des natürlichen Pfefferaromas. Ausserdem ist Rotundon für das pfeffrige Aroma von Weinen aus „Syrah“- und „Grüner Veltliner“-Trauben verantwortlich. Wie Sie in dem Histogramm sehen, gibt es auch bei Rotundon eine extreme Bandbreite der persönlichen Wahrnehmungsschwellen. Dies lässt vermuten, dass auch hier eine genetische Variation im Spiel ist. Die Identifizierung dieser genetischen Variation und somit die Identifizierung des für die Wahrnehmung des Pfefferaromas verantwortlichen Geruchsrezeptors ist eines der wissenschaftlichen Ziele der MiSens-Studie.",
       "chartLabelY": "# Teilnehmer",
       "selectOptionScientificaResultsText": "Meine Scientifica Resultate",
-      "selectOptionCurrentResultsText": "Meine aktuellen Resultate"
+      "selectOptionCurrentResultsText": "Meine aktuellen Resultate",
+      "legende_not_sensitive": "nicht empfindlich",
+      "legende_sensitive": "sehr empfindlich"
     },
     en: {
       "title": "MiSens",
@@ -56,7 +58,9 @@ angular.module('MiSensi18n', [])
       "RotundonText":"Rotundone is an extremely potent aroma compound. Some individuals can already detect it at a concentration of as little as 0.001 ppb (equivalent to 1 billionth of a gram per liter). The smell of rotundone is typically described as woody or peppery. And indeed, rotundone is one of the essential components of natural pepper aroma. Rotundone is also responsible for the peppery notes ascribed to wines made from “Syrah” and “Grüner Veltliner” grapes. As you can see from the histogram, rotundone also shows a very broad range of personal detection thresholds. This suggests that a genetic variation might be at play. The identification of the responsible genetic variation is one of the scientific goals of the MiSens study.",
       "chartLabelY": "# participants",
       "selectOptionScientificaResultsText": "My Scientifica results",
-      "selectOptionCurrentResultsText": "My current results"
+      "selectOptionCurrentResultsText": "My current results",
+      "legende_not_sensitive": "not sensitive",
+      "legende_sensitive": "highly sensitive"
     },
     it: {
     },
