@@ -3,6 +3,8 @@ mkdir -p instance1
 mkdir -p instance2
 mkdir -p locks
 chmod ugo+rx locks
+chmod ugo+X .
+chmod go-r . 
 
 if [ -f ./instance1/run ]
   then 
