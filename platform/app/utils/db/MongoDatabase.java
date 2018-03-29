@@ -13,8 +13,10 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
 import com.mongodb.MongoException;
+import com.mongodb.ReadConcern;
 import com.mongodb.ReadPreference;
 import com.mongodb.ServerAddress;
 import com.mongodb.WriteConcern;
@@ -66,9 +68,14 @@ public class MongoDatabase extends Database {
 				addr.add(new ServerAddress(h.substring(0, p), Integer.parseInt(h.substring(p+1))));
 			}
 			
+			 MongoClientOptions.Builder builder = new MongoClientOptions.Builder();
+			 builder.maxConnectionIdleTime(60000);
+			 builder.serverSelectionTimeout(5000);
+			 MongoClientOptions options = builder.build();
+			
 			if (credential != null) {		
-				mongoClient = new MongoClient(addr, Arrays.asList(this.credential));
-			} else mongoClient = new MongoClient(addr);			
+				mongoClient = new MongoClient(addr, Arrays.asList(this.credential), options);
+			} else mongoClient = new MongoClient(addr, options);			
 			mongoClient.setReadPreference(ReadPreference.primaryPreferred());
 			mongoClient.setWriteConcern(WriteConcern.W1);
 			
