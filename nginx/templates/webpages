@@ -18,7 +18,7 @@ server {
         ssl_dhparam DHPARAMS;
     
     
-        if (-f ROOTDIR/lock) {
+        if (-f ROOTDIR/locks/lock) {
             return 503;
         }
 

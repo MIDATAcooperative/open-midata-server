@@ -21,7 +21,7 @@ server {
         add_header 'X-Content-Type-Options' 'nosniff';
         add_header 'Strict-Transport-Security' "max-age=31536000";  
         
-        if (-f ROOTDIR/lock) {
+        if (-f ROOTDIR/locks/lock) {
             return 503;
         }
         
@@ -47,7 +47,7 @@ server {
 
         root RUNDIR/visualizations;
 
-        if (-f ROOTDIR/lock) {
+        if (-f ROOTDIR/locks/lock) {
             return 503;
         }
 
