@@ -56,14 +56,29 @@ public class MongoDatabase extends Database {
 		//database = Play.application().configuration().getString("mongo.database");
 		//try {
 		
-		if (credential != null) {		
-			mongoClient = new MongoClient(new ServerAddress(host, port), Arrays.asList(this.credential));
-		} else mongoClient = new MongoClient(new ServerAddress(host, port));
+		if (host.indexOf(",") >= 0) {
+			host = host.substring(host.indexOf("/"));
+			String hosts[] = host.split(",");
+			List<ServerAddress> addr = new ArrayList<ServerAddress>();
+			for (String h : hosts) {
+				int p = h.indexOf(":");
+				addr.add(new ServerAddress(h.substring(0, p), Integer.parseInt(h.substring(p+1))));
+			}
+			
+			if (credential != null) {		
+				mongoClient = new MongoClient(addr, Arrays.asList(this.credential));
+			} else mongoClient = new MongoClient(addr);
 			mongoClient.setWriteConcern(WriteConcern.ACKNOWLEDGED);
-		/*} catch (UnknownHostException e) {	
-			e.printStackTrace();
-			throw new DatabaseException(e);
-		}*/
+			
+		} else { 
+		
+			if (credential != null) {		
+				mongoClient = new MongoClient(new ServerAddress(host, port), Arrays.asList(this.credential));
+			} else mongoClient = new MongoClient(new ServerAddress(host, port));
+				mongoClient.setWriteConcern(WriteConcern.ACKNOWLEDGED);
+			
+		}
+		
 	}
 	
 	/**

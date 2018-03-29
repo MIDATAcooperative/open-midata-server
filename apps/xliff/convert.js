@@ -277,7 +277,12 @@ function xlifffile(lang,filename,content) {
 		  "datatype" : "winres",
 		  "original" : filename
 	  },
-	  elements : content	  
+	  elements : [
+		  { name : "body",
+			type : "element",
+			elements : content
+		  }		 
+	 ]	  
   };
 }
 
@@ -322,7 +327,7 @@ function parsexliff(xliff) {
 		  if (res[i2].nameTarget == fileName) { file = res[i2]; }
 	  }
 	  assert(file, "Matching file not found:"+fileName);
-	  workxliff(file.target.json, fileelement.elements, "");
+	  workxliff(file.target.json, fileelement.elements[0].elements, "");
 	}
 }
 
