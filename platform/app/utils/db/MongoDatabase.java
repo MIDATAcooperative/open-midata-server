@@ -15,6 +15,7 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.MongoException;
+import com.mongodb.ReadPreference;
 import com.mongodb.ServerAddress;
 import com.mongodb.WriteConcern;
 
@@ -67,8 +68,9 @@ public class MongoDatabase extends Database {
 			
 			if (credential != null) {		
 				mongoClient = new MongoClient(addr, Arrays.asList(this.credential));
-			} else mongoClient = new MongoClient(addr);
-			mongoClient.setWriteConcern(WriteConcern.ACKNOWLEDGED);
+			} else mongoClient = new MongoClient(addr);			
+			mongoClient.setReadPreference(ReadPreference.primaryPreferred());
+			mongoClient.setWriteConcern(WriteConcern.W1);
 			
 		} else { 
 		
