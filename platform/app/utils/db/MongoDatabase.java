@@ -68,9 +68,8 @@ public class MongoDatabase extends Database {
 				addr.add(new ServerAddress(h.substring(0, p), Integer.parseInt(h.substring(p+1))));
 			}
 			
-			 MongoClientOptions.Builder builder = new MongoClientOptions.Builder();
-			 builder.maxConnectionIdleTime(60000);
-			 builder.serverSelectionTimeout(5000);
+			 MongoClientOptions.Builder builder = new MongoClientOptions.Builder();			
+			 builder.maxConnectionIdleTime(60000);			 
 			 MongoClientOptions options = builder.build();
 			
 			if (credential != null) {		
@@ -214,19 +213,22 @@ public class MongoDatabase extends Database {
 	 * Return the given fields of all objects that have the given properties.
 	 */
 	public <T extends Model> Set<T> getAll(Class<T> modelClass, String collection, Map<String, ? extends Object> properties,
-			Set<String> fields, int limit) throws DatabaseException {		
-		try {
-			DBObject query = toDBObject(modelClass, properties);
-			DBObject projection = toDBObject(fields);
-			if (logQueries) AccessLog.logDB("all "+collection+" "+query.toString());
-			DBCursor cursor = getCollection(collection).find(query, projection);
-			if (limit!=0) cursor = cursor.limit(limit);			
-			return conversion.toModel(modelClass, cursor.iterator());
-		} catch (MongoException e) {
-			throw new DatabaseException(e);
-		} catch (DatabaseConversionException e) {
-			throw new DatabaseException(e);
+			Set<String> fields, int limit) throws DatabaseException {
+		for (int tries = 0;tries < 3;tries++) {
+			try {
+				DBObject query = toDBObject(modelClass, properties);
+				DBObject projection = toDBObject(fields);
+				if (logQueries) AccessLog.logDB("all "+collection+" "+query.toString());
+				DBCursor cursor = getCollection(collection).find(query, projection);
+				if (limit!=0) cursor = cursor.limit(limit);			
+				return conversion.toModel(modelClass, cursor.iterator());
+			} catch (MongoException e) {
+				if (tries == 2) throw new DatabaseException(e);
+			} catch (DatabaseConversionException e) {
+				throw new DatabaseException(e);
+			}
 		}
+		throw new DatabaseException();
 	}
 	
 	public <T extends Model> List<T> getAllList(Class<T> modelClass, String collection, Map<String, ? extends Object> properties,
