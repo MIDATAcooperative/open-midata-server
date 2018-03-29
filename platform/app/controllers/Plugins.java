@@ -164,6 +164,7 @@ public class Plugins extends APIController {
 		visualizationId = visualization._id;
 		
 		String context = json.has("context") ? JsonValidation.getString(json, "context") : visualization.defaultSpaceContext;
+		if (context.equals("me") && visualization.defaultSpaceContext != null && visualization.defaultSpaceContext.length() > 0) context = visualization.defaultSpaceContext;
 				
 		User user = User.getById(userId, Sets.create("visualizations","apps", "role", "developer"));
 
