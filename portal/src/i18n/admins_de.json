@@ -81,7 +81,7 @@
         "plugin_developer" : "Entwickler",
         "plugin_type" : "Typ",
         "plugin_role" : "Zielrolle",
-        "plugin_market" : "MISTORE",
+        "plugin_market" : "MIDATA Store",
         "plugin_stats" : "Statistiken",
         "plugin_status" : "Status",
         "add_definition_btn" : "Plugin-Definition importieren"
@@ -100,7 +100,7 @@
 
     "admin_terms" : {
         "title" : "Allgemeine Geschäftsbedingungen (AGB)",
-        "empty" : "Keine Allgemeine Geschäftsbedingungen vorhanden.",
+        "empty" : "Keine Allgemeine Geschäftsbedingungen (AGB) vorhanden.",
         "name" : "Name",
         "version" : "Version",
         "language" : "Sprache",
@@ -145,10 +145,7 @@
 
     "admin_stats" : {
         "title" : "Statistiken",
-
-        // TODO NEW: 
         "what" : "",
-
         "value" : "Gesamtzahl",
         "diff_yesterday" : "Diff. zu vor 1 Tag",
         "diff_week" : "Diff. zu vor 7 Tagen",

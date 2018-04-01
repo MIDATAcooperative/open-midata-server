@@ -40,7 +40,7 @@
         "noconsent" : "Keine aktive Zustimmung vorhanden, die es erlaubt Daten bei der Zielperson hinzuzufügen.",
         "unsupported" : "Operation nicht unterstützt",
         "notrialuser_title" : "Vollständige Mitgliedschaft notwendig!",
-        "notrialuser_detail" : "Um diese Funktion nutzen zu können, benötigen Sie eine vollständige Registrierung. Beantragen Sie die Zusendung eines Vertrages inkl. AGB und senden Sie diesen unterschrieben an uns zurück. Sie werden auch einen Bestätigungscode erhalten, um Ihre Postadresse zu bestätigen. Wenn Sie Ihren Kontostatus prüfen möchten, klicken Sie auf Ihren Benutzernamen oben rechts und überprüfen Sie den Abschnitt 'Kontostatus'",
+        "notrialuser_detail" : "Um diese Funktion nutzen zu können, benötigen Sie eine vollständige Registrierung. Beantragen Sie die Zusendung der Allgemeinen Geschäftsbedingungen (AGB) und senden Sie diese unterschrieben an MIDATA zurück. Sie werden auch einen Bestätigungscode erhalten, um Ihre Postadresse zu bestätigen. Wenn Sie Ihren Kontostatus prüfen möchten, klicken Sie auf Ihren Benutzernamen oben rechts und überprüfen Sie den Abschnitt 'Kontostatus'",
         "mustbemember_title" : "Mitgliedschaft bei der MIDATA Genossenschaft erforderlich!",
         "mustbemember_detail" : "Um diese Funktion nutzen zu können, müssen sie Mitglied der MIDATA Genossenschaft sein. Klicken Sie auf Ihren Benutzernamen oben rechts und überprüfen Sie den Abschnitt 'Kontostatus'",
         "notauthorized" : {
@@ -77,12 +77,8 @@
             "unlock_code" : "Falscher Freischaltcode",
             "access_query" : "Der Datenzugriffsfilter (Data Access Filter) muss nach 'content' oder 'group' einschränken!",
             "sharing" : "Der Datenzugriffsfilter (Data Access Filter) beinhaltet Datentypen, die von der Studienkonfiguration ausgeschlossen sind.",
-
-            // TODO NEW: Study can only be anonymous if no one is allowed to access unpseudonymized data.
-            "anonymous" : "Study can only be anonymous if no one is allowed to access unpseudonymized data.",
-
-            // TODO NEW: Invalid URL
-            "url" : "Invalid URL"
+            "anonymous" : "Die Studie kann nur dann anonym sein, wenn niemand auf unpseudonymisierte Daten zugreifen darf.",
+            "url" : "Ungültige URL"
         },
 
         "missing" : {
@@ -128,15 +124,9 @@
 
         "blocked" : {
             "user" : "Dieser Benutzer ist nicht berechtigt sich anzumelden. Für Hilfe kontaktieren Sie bitte support@midata.coop.",
-
-            // TODO NEW: Too many bad login attempts. Wait 1 minute before next attempt.
-            "password1" : "Too many bad login attempts. Wait 1 minute before next attempt.",
-
-            // TODO NEW: Too many bad login attempts. Wait 5 minutes before next attempt.
-            "password5" : "Too many bad login attempts. Wait 5 minutes before next attempt.",
-
-            // TODO NEW: Too many bad login attempts. Wait 1 hour before next attempt.
-            "password60" : "Too many bad login attempts. Wait 1 hour before next attempt.",
+            "password1" : "Zu viele falsche Anmeldeversuche. Bitte warten Sie 1 Minute vor dem nächsten Versuch.",
+            "password5" : "Zu viele falsche Anmeldeversuche. Bitte warten Sie 5 Minuten vor dem nächsten Versuch.",
+            "password60" : "Zu viele falsche Anmeldeversuche. Bitte warten Sie 1 Stunde vor dem nächsten Versuch.",
             "participation" : "Dieser Kontoinhabende ist nicht berechtigt, an einer Studie teilzunehmen.",
             "consent" : "Die Zustimmung, diese App zu nutzen, wurde widerrufen. Falls Sie diese App wieder nutzen möchten, müssen Sie die zurückgewiesene oder abgelaufene Zustimmung auf dem MIDATA-Portal löschen.",
             "app" : "Sie dürfen diese App auf maximal 10 Geräten nutzen. Löschen Sie bitte nicht mehr genutzte Zustimmungen auf dem MIDATA-Portal."
@@ -181,10 +171,6 @@
         },
 
         "too_large" : {
-
-            // TODO CHANGED
-            // OLD: File is larger than allowed.
-            // NEW: The file is too large (maximum 1 MB).
             "file" : "Die Datei ist zu gross (maximal 1 MB)."
         }
 
@@ -305,11 +291,7 @@
             "HCRELATED" : "Gesundheitswesen",
             "HEALTHCARE" : "Arzt / Spital",
             "STUDYPARTICIPATION" : "Studie",
-
-            // TODO CHANGED
-            // OLD: Study
-            // NEW: Study information
-            "STUDYRELATED" : "Studie",
+            "STUDYRELATED" : "Informationen zur Studie",
             "IMPLICIT" : "Nachrichtenaustausch"
         },
         "contractstatus" : {
@@ -515,11 +497,7 @@
 
     "registration" : {
         "sign_up" : "Registrierung",
-
-        // TODO CHANGED
-        // OLD: Fields marked with a * must be filled out.
-        // NEW: Please fill in the required information below (fields marked with an asterisk * are mandatory)
-        "mandantory_fields" : "Pflichtfelder sind mit einem * markiert.",
+        "mandantory_fields" : "Bitte füllen Sie die folgenden Felder aus, die mit einem Sternchen (*) gekennzeichneten Felder sind Pflichtfelder",
         "email" : "E-Mail",
         "password" : "Kennwort",
         "password_repetition" : "Kennwort wiederholen",
@@ -551,11 +529,7 @@
         "app_agb2" : "Ich akzeptiere die",
         "app_agb3" : "Allgemeine Geschäftsbedingungen (AGB) der App",
         "study_agb" : "Studienbestimmungen",
-
-        // TODO CHANGED
-        // OLD: Sign Up
-        // NEW: create account
-        "sign_up_btn" : "Registrieren",
+        "sign_up_btn" : "Konto erstellen",
         "unlock_code" : "Freischaltcode",
         "already_have_account" : "Ich habe bereits ein Konto"
     },
@@ -895,19 +869,12 @@
     },
 
     "oauth2" : {
-
-        // TODO NEW: requests the permission to access your personal data.
-        "requests_permission" : "requests the permission to access your personal data.",
-
+        "requests_permission" : "bittet um die Erlaubnis, auf Ihre persönlichen Daten zuzugreifen.",
         "no_account" : "Ich habe kein Konto",
         "reshares_data" : "Die Applikation darf Daten, auf die sie Zugriff hat, an Dritte weitergeben.",
         "allows_user_search" : "Ihr Name und Ihre E-Mail-Adresse können von anderen Personen, die diese Applikation verwenden, durchsucht werden.",
         "requesting_app" : "benötigt Zugriff auf Ihre Daten.",
         "sign_in" : "MIDATA Anmeldung für:",
-
-        // TODO CHANGED
-        // OLD: Log in
-        // NEW: Login
         "sign_in_btn" : "Anmelden",
         "device" : "Gerät: {{ device}}",
         "please_confirm" : "Bestätigen Sie bitte die Aktivierung der Applikation auf dem MIDATA Portal, dann versuchen Sie es erneut. Zustimmungsbezeichnung: {{ consent }}",
@@ -916,11 +883,7 @@
         "shares_group" : "Gruppe: {{ group }}",
         "shares_format" : "Format: {{ format }}",
         "shares_content" : "Inhalt: {{ content }}",
-
-        // TODO CHANGED
-        // OLD: Participate to the study
-        // NEW: Enroll in the following study
-        "confirm_study" : "An Studie teilnehmen"
+        "confirm_study" : "Melden Sie sich für die folgende Studie an"
     },
 
     "dashboard" : {

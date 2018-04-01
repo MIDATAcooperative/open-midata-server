@@ -38,7 +38,7 @@
         "noconsent" : "Il n'y a pas de consentement actif permettant l'ajout de donnée à cette personne.",
         "unsupported" : "Opération non supportée",
         "notrialuser_title" : "Inscription requise!",
-        "notrialuser_detail" : "Pour utiliser cette fonctionnalité, vous devez compléter votre inscription. Veuillez demander une copie écrite des conditions générales d'utilisation et la retourner signée. Vous recevrez également un code d'activation permettant de vérifier votre adresse postale. Si vous désirez vérifier le status de votre compte, cliquez sur votre nom d'utilisateur en haut à droite et rendez-vous à la section 'Etat du compte'.",
+        "notrialuser_detail" : "Pour utiliser cette fonctionnalité, vous devez compléter votre inscription. Veuillez demander une copie écrite des Conditions Générales (CG) et la renvoyer signée à MIDATA. Vous recevrez également un code d'activation permettant de vérifier votre adresse postale. Si vous désirez vérifier le status de votre compte, cliquez sur votre nom d'utilisateur en haut à droite et rendez-vous à la section 'Etat du compte'.",
         "mustbemember_title" : "Inscription à la copperative MIDATA requise!",
         "mustbemember_detail" : "Pour utiliser cette fonctionnalité, vous devez être membre de la coopérative MIDATA. Cliquez sur votre nom d'utilisateur en haut à droite et rendez-vous à la section 'Etat du compte' pour plus d'informations.",
         "notauthorized" : {
@@ -75,12 +75,8 @@
             "unlock_code" : "Code d'activation incorrect",
             "access_query" : "Le filtre d'accès aux données (Data Access Filter) doit être limité par 'contenu' ou 'groupe'!",
             "sharing" : "Le filtre d'accès aux données (Data Access Filter) contient des types de données qui sont exclus par la configuration de l'étude.",
-
-            // TODO NEW: Study can only be anonymous if no one is allowed to access unpseudonymized data.
-            "anonymous" : "Study can only be anonymous if no one is allowed to access unpseudonymized data.",
-
-            // TODO NEW: Invalid URL
-            "url" : "Invalid URL"
+            "anonymous" : "L'étude ne peut être anonyme que si personne n'est autorisé à accéder à des données non pseudonymisées.",
+            "url" : "URL invalide"
         },
 
         "missing" : {
@@ -92,7 +88,7 @@
             "passphrase" : "Veuillez fournir votre phrase secrète.",
             "groupsystem" : "Le système de groupe doit être fourni.",
             "token" : "Jeton manquant ou invalide.",
-            "agb" : "Conditions Générales d'Utilisation (CGU) pas acceptées.",
+            "agb" : "Conditions Générales (CG) pas acceptées.",
             "privacypolicy" : "La déclaration de confidentialité doit être acceptée.",
             "study_accept" : "La participation à l'étude doit être acceptée.",
             "study_group" : "Le participant doit d'abord être assigné à un groupe.",
@@ -126,15 +122,9 @@
 
         "blocked" : {
             "user" : "L'utilisateur n'est pas autorisé à se connecter. Contactez support@midata.coop pour obtenir de l'aide.",
-
-            // TODO NEW: Too many bad login attempts. Wait 1 minute before next attempt.
-            "password1" : "Too many bad login attempts. Wait 1 minute before next attempt.",
-
-            // TODO NEW: Too many bad login attempts. Wait 5 minutes before next attempt.
-            "password5" : "Too many bad login attempts. Wait 5 minutes before next attempt.",
-
-            // TODO NEW: Too many bad login attempts. Wait 1 hour before next attempt.
-            "password60" : "Too many bad login attempts. Wait 1 hour before next attempt.",
+            "password1" : "Trop d'essais de connexion manqués. Veuillez attendre 1 minute avant la prochaine tentative.",
+            "password5" : "Trop d'essais de connexion manqués. Veuillez attendre 5 minutes avant la prochaine tentative.",
+            "password60" : "Trop d'essais de connexion manqués. Veuillez attendre 1 heure avant la prochaine tentative.",
             "participation" : "Le titulaire du compte n'est pas autorisé à participer à l'étude.",
             "consent" : "Le consentement pour l'utilisation de cette application a été révoqué. Si vous désirez utiliser cette app à nouveau, veuillez supprimer le consentement rejeté ou expiré sur le portail web.",
             "app" : "Vous pouvez utiliser cette application sur 10 appareils au maximum. Veuillez effacer les consentements non utilisés sur le portail MIDATA."
@@ -179,10 +169,6 @@
         },
 
         "too_large" : {
-
-            // TODO CHANGED
-            // OLD: File is larger than allowed.
-            // NEW: The file is too large (maximum 1 MB).
             "file" : "Le fichier est trop gros (maximum 1 MB)."
         }
 
@@ -303,11 +289,7 @@
             "HCRELATED" : "Système de santé",
             "HEALTHCARE" : "Médecin / Hôpital",
             "STUDYPARTICIPATION" : "Étude",
-
-            // TODO CHANGED
-            // OLD: Study
-            // NEW: Study information
-            "STUDYRELATED" : "Étude",
+            "STUDYRELATED" : "Informations sur l'étude",
             "IMPLICIT" : "Messagerie"
         },
         "contractstatus" : {
@@ -512,12 +494,8 @@
     },
 
     "registration" : {
-        "sign_up" : "S'authentifier",
-
-        // TODO CHANGED
-        // OLD: Fields marked with a * must be filled out.
-        // NEW: Please fill in the required information below (fields marked with an asterisk * are mandatory)
-        "mandantory_fields" : "Les champs marqués d'une étoile doivent être saisis.",
+        "sign_up" : "S'inscrire",
+        "mandantory_fields" : "Veuillez remplir les informations ci-dessous, les champs marqués d'un astérisque (*) sont obligatoires",
         "email" : "E-mail",
         "password" : "Mot de passe",
         "password_repetition" : "Répéter le mot de passe",
@@ -542,18 +520,14 @@
         "agb" : "Conditions MIDATA",
         "study" : "Recherche",
         "agb2" : "J'accepte les",
-        "agb3" : "Conditions générales",
+        "agb3" : "Conditions Générales (CG)",
         "privacypolicy2" : "J'accepte la",
         "privacypolicy3" : "Déclaration de confidentialité",
         "app_agb" : "Conditions de l'app",
         "app_agb2" : "J'accepte les",
-        "app_agb3" : "Conditions générales de l'app",
+        "app_agb3" : "Conditions Générales (CG) de l'app",
         "study_agb" : "Conditions de l'étude",
-
-        // TODO CHANGED
-        // OLD: Sign Up
-        // NEW: create account
-        "sign_up_btn" : "S'inscrire",
+        "sign_up_btn" : "Créer un compte",
         "unlock_code" : "Code d'activation",
         "already_have_account" : "J'ai déjà un compte"
     },
@@ -893,19 +867,12 @@
     },
 
     "oauth2" : {
-
-        // TODO NEW: requests the permission to access your personal data.
-        "requests_permission" : "requests the permission to access your personal data.",
-
+        "requests_permission" : "demande l'autorisation d'accéder à vos données personnelles.",
         "no_account" : "Je n'ai pas de compte",
         "reshares_data" : "L'application peut partager les données auxquelles elle a accès avec des tiers.",
         "allows_user_search" : "Vos nom et adresse e-mail peuvent être consultés par d'autres personnes utilisant cette application.",
         "requesting_app" : "désire accéder à vos données.",
         "sign_in" : "Connexion à MIDATA pour:",
-
-        // TODO CHANGED
-        // OLD: Log in
-        // NEW: Login
         "sign_in_btn" : "Se connecter",
         "device" : "Appareil : {{ device}}",
         "please_confirm" : "Veuillez confirmer l'activation de l'app sur le portail MIDATA, puis réessayez. Libellé du consentement: {{ consent }}",
@@ -914,11 +881,7 @@
         "shares_group" : "Groupe: {{ group }}",
         "shares_format" : "Format: {{ format }}",
         "shares_content" : "Contenu: {{ content }}",
-
-        // TODO CHANGED
-        // OLD: Participate to the study
-        // NEW: Enroll in the following study
-        "confirm_study" : "Participer à l'étude"
+        "confirm_study" : "Inscrivez-vous à l'étude suivante"
     },
 
     "dashboard" : {
@@ -1069,10 +1032,8 @@
     },
 
     "terms" : {
-        "close_btn" : "<< Back",
-
-        // TODO NEW: Close
-        "close_new_btn" : "Close"
+        "close_btn" : "<< Retour",
+        "close_new_btn" : "Fermer"
     },
 
     "auditlog" : {

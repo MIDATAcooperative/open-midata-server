@@ -76,7 +76,7 @@
         "serverimport_btn" : "Automatisches Importskript testen.",
         "serverimport_help" : "Wenn Ihr Plugin einen automatischen Import bietet, können Sie das Skript Ihres Plugins, das normalerweise auf dem Server läuft, auf Ihrem lokalen Computer testen.",
         "icon_btn" : "Icons und Bilder der Applikation",
-        "icon_help" : "Laden und verwalten Sie die Icons und Bilder hoch, die mit Ihrer Anwendung verwendet werden sollen. Stellen Sie Bilder für den Login-Bildschirm, den App-Store, den Zustimmungsbildschirm usw. bereit.",
+        "icon_help" : "Laden und verwalten Sie die Icons und Bilder hoch, die mit Ihrer Anwendung verwendet werden sollen. Stellen Sie Bilder für den Login-Bildschirm, den Zustimmungsbildschirm, den MIDATA Store usw. bereit.",
         "messages_btn" : "E-Mail-Nachrichten der Applikation",
         "messages_help" : "Stellen Sie Ihre eigenen E-Mail-Texte zur Verfügung, die an neue Benutzerkonten gesendet werden, bei der ersten Nutzung Ihrer Anwendung, für die Annahme von Zustimmungen und mehr.",
         "stats_btn" : "Fehler- und Performance-Statistiken",
@@ -101,7 +101,7 @@
 
             // TODO Dashboard
             "defaultSpaceName" : "Titel der Kachel des Plugins auf dem Dashboard.",
-            "tags" : "Kategorien unter welchen das Plugin im MISTORE erscheinen wird.",
+            "tags" : "Kategorien unter welchen das Plugin im MIDATA Store erscheinen wird.",
             "url" : "URL der Hauptseite des Plugins. Wenn Sie das MIDATA-Template verwenden ist es 'dist/index.html#?authToken=:authToken''",
             "previewUrl" : "URL der Dashboard-Kachel des Plugins. Leer lassen falls keine solche Kachel angeboten wird.",
 

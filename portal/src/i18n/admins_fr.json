@@ -7,7 +7,7 @@
         "plugins" : "Plugins",
         "content" : "Contenu",
         "studies" : "Études",
-        "terms" : "Conditions générales",
+        "terms" : "Conditions Générales (CG)",
         "registration" : "Enregistrer un administrateur"
     },
 
@@ -34,7 +34,7 @@
         "subroles" : "Sous-rôle(s)",
         "developer" : "Appartient au développeur:",
         "status" : "État:",
-        "agb_status" : "État des CGU:",
+        "agb_status" : "État des CG:",
         "contract_status" : "État du contrat:",
         "email_status" : "État de l'e-mail:",
         "confirmation_code" : "Code de confirmation:",
@@ -81,7 +81,7 @@
         "plugin_developer" : "Dévelopeur",
         "plugin_type" : "Type",
         "plugin_role" : "Rôle cible",
-        "plugin_market" : "MISTORE",
+        "plugin_market" : "MIDATA Store",
         "plugin_stats" : "Statistiques",
         "plugin_status" : "État",
         "add_definition_btn" : "Importer la définition d'un plugin"
@@ -99,8 +99,8 @@
     },
 
     "admin_terms" : {
-        "title" : "Conditions générales",
-        "empty" : "Aucunes conditions générales disponibles.",
+        "title" : "Conditions Générales (CG)",
+        "empty" : "Aucunes Conditions Générales (CG) disponibles.",
         "name" : "Nom",
         "version" : "Version",
         "language" : "Langue",
@@ -108,7 +108,7 @@
     },
 
     "admin_manageterms" : {
-        "pagetitle" : "Conditions générales",
+        "pagetitle" : "Conditions Générales (CG)",
         "name" : "Nom interne",
         "version" : "Version",
         "language" : "Langue",
@@ -129,7 +129,7 @@
         "required_information" : "Informations requises",
         "anonymous" : "Anonyme",
         "required_assistance" : "Médecin agréé requis",
-        "termsOfUse" : "Conditions générales",
+        "termsOfUse" : "Conditions Générales (CG)",
         "sharing_query" : "Data Access Filter",
         "requirements" : "Exigences",
         "groups" : "Groupes",
@@ -145,10 +145,7 @@
 
     "admin_stats" : {
         "title" : "Statistiques",
-
-        // TODO NEW: 
         "what" : "",
-
         "value" : "Nombre total",
         "diff_yesterday" : "Diff. sur 1 jour",
         "diff_week" : "Diff. sur 7 jours",
