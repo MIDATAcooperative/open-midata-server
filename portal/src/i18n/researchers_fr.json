@@ -67,7 +67,7 @@
         "no_change_warning" : "Cette configuration ne peut plus être modifiée une fois l'étude validée.",
         "member_identity" : "Identité du membre",
         "anonymous1" : "Participation pseudonymisée",
-        "anonymous2" : ", révèle l'ID anonyme, l'année de naissance, le genre et le pays",
+        "anonymous2" : ", révèle l'ID anonyme, l'année de naissance, le sexe et le pays",
         "anonymous3" : "Anonyme : La cartographie de pseudonymisation n'est pas accessible.",
         "not_anonymous1" : "Pas pseudonymisé",
         "not_anonymous2" : ", requière que le membre partage son nom complet, date de naissance et informations de contact (adresse, téléphone, e-mail)",
@@ -117,7 +117,7 @@
 
     "studyparticipant" : {
         "participant" : "Participant:",
-        "gender" : "Genre:",
+        "gender" : "Sexe:",
         "year" : "Année de naissance:",
         "country" : "Pays:",
         "status" : "État:",

@@ -6,7 +6,7 @@
     "plugins" : "Plugins",
 	"content" : "Content",
 	"studies" : "Studies",
-	"terms" : "General Terms and Conditions (T&Cs)",
+	"terms" : "General Terms and Conditions",
 	"registration" : "Register Admin"
   },
   
@@ -98,8 +98,8 @@
   },
   
   "admin_terms" : {
-    "title" : "General Terms and Conditions (T&Cs)",
-    "empty" : "No General Terms and Conditions (T&Cs) available.",
+    "title" : "General Terms and Conditions",
+    "empty" : "No General Terms and Conditions available.",
     "name" : "Name",
     "version" : "Version",
     "language" : "Language",
@@ -107,7 +107,7 @@
   },
   
   "admin_manageterms" : {
-    "pagetitle" : "General Terms and Conditions (T&Cs)",
+    "pagetitle" : "General Terms and Conditions",
     "name" : "Internal Name",
     "version" : "Version",
     "language" : "Language",
@@ -128,7 +128,7 @@
      "required_information" : "Required Information",
      "anonymous" : "Anonymous",
      "required_assistance" : "Required Assistance",
-     "termsOfUse" : "General Terms and Conditions (T&Cs)",
+     "termsOfUse" : "General Terms and Conditions",
      "sharing_query" : "Data Access Filter",
      "requirements" : "Requirements",
      "groups" : "Groups",

@@ -7,7 +7,7 @@
         "plugins" : "Plugins",
         "content" : "Inhalt",
         "studies" : "Studien",
-        "terms" : "Allgemeine Geschäftsbedingungen (AGB)",
+        "terms" : "Allgemeine Geschäftsbedingungen",
         "registration" : "Administrator registrieren"
     },
 
@@ -99,8 +99,8 @@
     },
 
     "admin_terms" : {
-        "title" : "Allgemeine Geschäftsbedingungen (AGB)",
-        "empty" : "Keine Allgemeine Geschäftsbedingungen (AGB) vorhanden.",
+        "title" : "Allgemeine Geschäftsbedingungen",
+        "empty" : "Keine Allgemeine Geschäftsbedingungen vorhanden.",
         "name" : "Name",
         "version" : "Version",
         "language" : "Sprache",
@@ -108,7 +108,7 @@
     },
 
     "admin_manageterms" : {
-        "pagetitle" : "Allgemeine Geschäftsbedingungen (AGB)",
+        "pagetitle" : "Allgemeine Geschäftsbedingungen",
         "name" : "Interner Name",
         "version" : "Version",
         "language" : "Sprache",
@@ -129,7 +129,7 @@
         "required_information" : "Benötigte Informationen",
         "anonymous" : "Anonym",
         "required_assistance" : "Belegarzt benötigt",
-        "termsOfUse" : "Allgemeine Geschäftsbedingungen (AGB)",
+        "termsOfUse" : "Allgemeine Geschäftsbedingungen",
         "sharing_query" : "Data Access Filter",
         "requirements" : "Anforderungen",
         "groups" : "Gruppen",
