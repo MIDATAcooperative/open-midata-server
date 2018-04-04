@@ -85,7 +85,7 @@ angular.module('portal')
 	    	$scope.progress = result.data;	 
 	    	if (result.data.emailStatus !== "UNVALIDATED") {
 	    	  $scope.mailSuccess = true;	  
-	    	  session.postLogin(result, $state);
+	    	  //session.postLogin(result, $state);
 	    	} else {
 	    		$scope.setFlags();
 	    	}

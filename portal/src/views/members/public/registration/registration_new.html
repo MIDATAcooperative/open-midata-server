@@ -93,32 +93,18 @@
                                    <label for="agb" class="mi-at-text">
 		                              <span  translate="registration.agb2"></span><a class="mi-at-input--checkbox-link" ng-click="terms({which : 'midata-terms-of-use'});" href="javascript:"><span class="mi-at-text mi-at-text--white mi-at-text--highlighted" translate="registration.agb3"></span>
                                       </a>
+                                      <span  translate="registration.privacypolicy2"></span><a class="mi-at-input--checkbox-link" ng-click="terms({which : 'midata-privacy-policy'});" href="javascript:"><span class="mi-at-text mi-at-text--white mi-at-text--highlighted" translate="registration.privacypolicy3"></span>
+                                      </a>
 	                                </label>
                                    
 	                               
                                 </fieldset>                                
                                 <form-error myid="agb" type="mustaccept" message="error.missing.agb"></form-error>
-
-                                <fieldset class="mi-at-input__fieldset mi-at-input--checkbox mi-at-input--checkbox-white">
-                                   <input id="privacypolicy" name="privacypolicy" ng-model="registration.privacypolicy" class="mi-at-input mi-at-input--checkbox" type="checkbox" value="" floating-label />                                  
-	                               
-	                               <label for="privacypolicy" class="mi-at-text">
-		                              <span  translate="registration.privacypolicy2"></span><a class="mi-at-input--checkbox-link" ng-click="terms({which : 'midata-privacy-policy'});" href="javascript:"><span class="mi-at-text mi-at-text--white mi-at-text--highlighted" translate="registration.privacypolicy3"></span>
-                                      </a>
-	                                </label>
-	                                                            
-                                </fieldset>
-                                 <form-error myid="privacypolicy" type="mustaccept" message="error.missing.privacypolicy"></form-error>
-            
+                             
                                 <fieldset ng-show="app.termsOfUse" class="mi-at-input__fieldset mi-at-input--checkbox mi-at-input--checkbox-white">
-                                   <input id="appAgb" name="appAgb" ng-model="registration.appAgb" class="mi-at-input mi-at-input--checkbox" type="checkbox" value="" floating-label />
-                                   <label for="appAgb" class="mi-at-text">
-		                              <span translate="registration.app_agb2"></span>
-                                    
-	                               </label>	 
+                                   <input id="appAgb" name="appAgb" ng-model="registration.appAgb" class="mi-at-input mi-at-input--checkbox" type="checkbox" value="" floating-label />                                  	                              
 	                               
-	                               
-	                                <label for="appAgb" class="mi-at-text">
+	                                <label for="appAgb" class="mi-at-text mi-at-text--white">
 		                              <span  translate="registration.app_agb2"></span><a class="mi-at-input--checkbox-link" ng-click="terms({which : app.termsOfUse });" href="javascript:"><span class="mi-at-text mi-at-text--white mi-at-text--highlighted" translate="registration.app_agb3"></span>
                                       </a>
 	                                </label>
