@@ -64,7 +64,8 @@ angular.module('portal')
 				
 		$scope.status.doAction("login", oauth.login(false))
 		.then(function(result) {
-		  if (result === "CONFIRM") {
+		  if (result === "CONFIRM" || result === "CONFIRM-STUDYOK") {
+			  if (result === "CONFIRM-STUDYOK") { $scope.app.linkedStudy = undefined; }
 			  $scope.acceptConsent = true;
 			  $scope.prepareConfirm();
 		  } else if (result !== "ACTIVE") {

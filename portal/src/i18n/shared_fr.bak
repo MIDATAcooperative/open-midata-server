@@ -73,7 +73,9 @@
        "plugin" : "Plugin is intended for a different role",
        "unlock_code" : "Incorrect unlock code",
        "access_query" : "The Data Access Filter must restrict by 'content' or 'group'!",
-       "sharing" : "The Data Access Filter contains data types that are excluded by the study configuration."
+       "sharing" : "The Data Access Filter contains data types that are excluded by the study configuration.",
+       "anonymous" : "Study can only be anonymous if no one is allowed to access unpseudonymized data.",
+       "url" : "Invalid URL"
      },
 
      "missing" : {
@@ -119,6 +121,9 @@
 
      "blocked" : {
        "user" : "User is not allowed to log in. Contact support@midata.coop for help.",
+       "password1" : "Too many bad login attempts. Wait 1 minute before next attempt.",
+       "password5" : "Too many bad login attempts. Wait 5 minutes before next attempt.",
+       "password60" : "Too many bad login attempts. Wait 1 hour before next attempt.",
        "participation" : "Account holder is not allowed to participate in study.",
        "consent" : "The consent for using this app has been revoked. To reenable the app, delete the rejected or expired consent on the MIDATA portal.",
        "app" : "You are allowed to use this app on a maximum of 10 devices. Please delete unused consents on the MIDATA portal." 
@@ -163,7 +168,7 @@
      },
      
      "too_large" : {
-       "file" : "File is larger than allowed."
+       "file" : "The file is too large (maximum 1 MB)."
      }
 
    },
@@ -283,7 +288,7 @@
 	   "HCRELATED" : "Healthcare",
 	   "HEALTHCARE" : "Doctor / Hospital",
 	   "STUDYPARTICIPATION" : "Study",
-	   "STUDYRELATED" : "Study",
+	   "STUDYRELATED" : "Study information",
 	   "IMPLICIT" : "Messaging"
 	 },
 	 "contractstatus" : {
@@ -426,6 +431,10 @@
     "delete_btn" : "Delete",
     "or" : "or",
     "save_ok" : "Successfully Saved",
+    "yesno" : {
+      "true" : "Yes",
+      "false" : "No"
+    },
     "user" : {
       "lastname" : "Surname",
 	  "firstname" : "Firstname",
@@ -485,7 +494,7 @@
 
   "registration" : {
     "sign_up" : "Sign Up",
-    "mandantory_fields" : "Fields marked with a * must be filled out.",
+    "mandantory_fields" : "Please fill in the required information below (fields marked with an asterisk * are mandatory)",
     "email" : "EMail",
     "password" : "Password",
     "password_repetition" : "Repeat Password",
@@ -507,18 +516,19 @@
     "mobile_phone" : "Mobile Phone",
     "coach" : "Contact person MIDATA",
     "reason" : "Purpose of Registration*",
-    "agb" : "MIDATA Terms",    
-    "study" : "Research",
+    "agb" : "MIDATA Terms",     
+    "study" : "Research",    
     "agb2" : "I accept the",
     "agb3" : "Terms and Conditions",
     "privacypolicy2" : "I accept the",
-    "privacypolicy3" : "Privacy Policy",
+    "privacypolicy3" : "Privacy Policy",    
     "app_agb" : "App Terms",
     "app_agb2" : "I accept the",
-    "app_agb3" : "App Terms and Conditions",
+    "app_agb3" : "App Terms and Conditions",    
     "study_agb" : "Study Terms",
-    "sign_up_btn" : "Sign Up",
-    "unlock_code" : "Unlock Code"
+    "sign_up_btn" : "create account",
+    "unlock_code" : "Unlock Code",
+    "already_have_account" : "I already have an account"
   },
 
   "login" : {
@@ -566,6 +576,7 @@
     "code_entered" : "Confirmation code entered?",
     "email_instructions" : "Your email address needs to be confirmed. An activation email has been sent to your account. Just click on the link in this email to confirm your email address.",
     "email_code" : "For convenience you may enter the code from the email here:",
+    "code" : "Code",
     "resend_btn" : "Resend email",
     "retry_btn" : "Retry login",
     "contract_instructions" : "A contract has been sent to your postal address. Please return it signed to MIDATA.",
@@ -855,11 +866,13 @@
   },
 
   "oauth2" : {
+    "requests_permission" : "requests the permission to access your personal data.",
+    "no_account" : "I don't have an account",  
     "reshares_data" : "App may share data it has access to to third parties.",
     "allows_user_search" : "Your name and email address may be searched by other people using this app.",
-    "requesting_app" : "This application requests access:",
+    "requesting_app" : "needs access to your data.",
     "sign_in" : "MIDATA login for:",
-    "sign_in_btn" : "Log in",
+    "sign_in_btn" : "Login",
     "device" : "Device: {{ device}}",
     "please_confirm" : "Please confirm the activation of the application using the MIDATA portal, then retry. Consent title is: {{ consent }}",
     "confirm_btn" : "Confirm Access",
@@ -867,7 +880,7 @@
     "shares_group" : "Group: {{ group }}",
     "shares_format" : "Format: {{ format }}",
     "shares_content" : "Content: {{ content }}",
-    "confirm_study" : "Participate to the study"
+    "confirm_study" : "Enroll in the following study"
   },
 
   "dashboard" : {
@@ -1018,7 +1031,8 @@
   },
   
   "terms" : {
-    "close_btn" : "<< Back"
+    "close_btn" : "<< Back",
+    "close_new_btn" : "Close"
   },
   
   "auditlog" : {

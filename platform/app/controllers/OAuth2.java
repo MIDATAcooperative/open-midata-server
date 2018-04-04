@@ -186,7 +186,7 @@ public class OAuth2 extends Controller {
 		if (appInstance == null) {		
 			if (!confirmed) {
 				AuditManager.instance.fail(0, "Confirmation required", "error.missing.confirmation");
-				return ok("CONFIRM");
+				return checkAlreadyParticipatesInStudy(app.linkedStudy, user._id) ? ok("CONFIRM-STUDYOK") : ok("CONFIRM");
 			}
 			
 			if (app.unlockCode != null) {				
@@ -205,7 +205,7 @@ public class OAuth2 extends Controller {
    		    meta = RecordManager.instance.getMeta(executor, appInstance._id, "_app").toMap();
 		} else {				
 			if (!verifyAppInstance(appInstance, user._id, app._id)) {
-				return ok("CONFIRM");
+				return checkAlreadyParticipatesInStudy(app.linkedStudy, user._id) ? ok("CONFIRM-STUDYOK") : ok("CONFIRM");
 			}
 			KeyManager.instance.unlock(appInstance._id, phrase);
 			meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
@@ -361,5 +361,18 @@ public class OAuth2 extends Controller {
 		response().setHeader("Pragma", "no-cache"); 
 		
 		return ok(obj);
+	}
+	
+	private static boolean checkAlreadyParticipatesInStudy(MidataId linkedStudy, MidataId owner) throws InternalServerException {
+		if (linkedStudy == null) return true;
+        StudyParticipation sp = StudyParticipation.getByStudyAndMember(linkedStudy, owner, Sets.create("status", "pstatus"));
+        if (sp == null) return false;        		
+        if ( 
+        	sp.pstatus.equals(ParticipationStatus.MEMBER_RETREATED) || 
+        	sp.pstatus.equals(ParticipationStatus.MEMBER_REJECTED) || 
+        	sp.pstatus.equals(ParticipationStatus.RESEARCH_REJECTED)) {
+        	return false;
+        }        	
+        return true;
 	}
 }

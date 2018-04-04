@@ -40,7 +40,7 @@
         "noconsent" : "Keine aktive Zustimmung vorhanden, die es erlaubt Daten bei der Zielperson hinzuzufügen.",
         "unsupported" : "Operation nicht unterstützt",
         "notrialuser_title" : "Vollständige Mitgliedschaft notwendig!",
-        "notrialuser_detail" : "Um diese Funktion nutzen zu können, benötigen Sie eine vollständige Registrierung. Beantragen Sie die Zusendung eines Vertrages inkl. AGB und senden Sie diesen unterschrieben an uns zurück. Sie werden auch einen Bestätigungscode erhalten, um Ihre Postadresse zu bestätigen. Wenn Sie Ihren Kontostatus prüfen möchten, klicken Sie auf Ihren Benutzernamen oben rechts und überprüfen Sie den Abschnitt 'Kontostatus'",
+        "notrialuser_detail" : "Um diese Funktion nutzen zu können, benötigen Sie eine vollständige Registrierung. Beantragen Sie die Zusendung der Allgemeinen Geschäftsbedingungen und senden Sie diese unterschrieben an MIDATA zurück. Sie werden auch einen Bestätigungscode erhalten, um Ihre Postadresse zu bestätigen. Wenn Sie Ihren Kontostatus prüfen möchten, klicken Sie auf Ihren Benutzernamen oben rechts und überprüfen Sie den Abschnitt 'Kontostatus'",
         "mustbemember_title" : "Mitgliedschaft bei der MIDATA Genossenschaft erforderlich!",
         "mustbemember_detail" : "Um diese Funktion nutzen zu können, müssen sie Mitglied der MIDATA Genossenschaft sein. Klicken Sie auf Ihren Benutzernamen oben rechts und überprüfen Sie den Abschnitt 'Kontostatus'",
         "notauthorized" : {
@@ -76,7 +76,9 @@
             "plugin" : "Dieses Plugin ist nur für eine andere Rolle vorgesehen",
             "unlock_code" : "Falscher Freischaltcode",
             "access_query" : "Der Datenzugriffsfilter (Data Access Filter) muss nach 'content' oder 'group' einschränken!",
-            "sharing" : "Der Datenzugriffsfilter (Data Access Filter) beinhaltet Datentypen, die von der Studienkonfiguration ausgeschlossen sind."
+            "sharing" : "Der Datenzugriffsfilter (Data Access Filter) beinhaltet Datentypen, die von der Studienkonfiguration ausgeschlossen sind.",
+            "anonymous" : "Die Studie kann nur dann anonym sein, wenn niemand auf unpseudonymisierte Daten zugreifen darf.",
+            "url" : "Ungültige URL"
         },
 
         "missing" : {
@@ -88,7 +90,7 @@
             "passphrase" : "Geben Sie bitte Ihre Passphrase ein.",
             "groupsystem" : "Das Gruppensystem muss angegeben sein.",
             "token" : "Fehlendes oder falsches Token.",
-            "agb" : "Allgemeine Geschäftsbedingungen (AGB) nicht akzeptiert.",
+            "agb" : "Allgemeine Geschäftsbedingungen nicht akzeptiert.",
             "privacypolicy" : "Die Datenschutzerklärung muss akzeptiert werden.",
             "study_accept" : "Die Studienteilnahme muss akzeptiert werden.",
             "study_group" : "Der Teilnehmer muss zuerst zu einer Gruppe zugeordnet werden.",
@@ -122,6 +124,9 @@
 
         "blocked" : {
             "user" : "Dieser Benutzer ist nicht berechtigt sich anzumelden. Für Hilfe kontaktieren Sie bitte support@midata.coop.",
+            "password1" : "Zu viele falsche Anmeldeversuche. Bitte warten Sie 1 Minute vor dem nächsten Versuch.",
+            "password5" : "Zu viele falsche Anmeldeversuche. Bitte warten Sie 5 Minuten vor dem nächsten Versuch.",
+            "password60" : "Zu viele falsche Anmeldeversuche. Bitte warten Sie 1 Stunde vor dem nächsten Versuch.",
             "participation" : "Dieser Kontoinhabende ist nicht berechtigt, an einer Studie teilzunehmen.",
             "consent" : "Die Zustimmung, diese App zu nutzen, wurde widerrufen. Falls Sie diese App wieder nutzen möchten, müssen Sie die zurückgewiesene oder abgelaufene Zustimmung auf dem MIDATA-Portal löschen.",
             "app" : "Sie dürfen diese App auf maximal 10 Geräten nutzen. Löschen Sie bitte nicht mehr genutzte Zustimmungen auf dem MIDATA-Portal."
@@ -207,7 +212,7 @@
             "ADMIN_ACCOUNT_CHANGE" : "Konto durch Administrator geändert",
             "ACCOUNT_DELETED" : "Konto gelöscht",
             "INTERNAL_COMMENT" : "Interne Bemerkung",
-            "TERMS_OF_USE_AGREED" : "Allgemeine Geschäftsbedingungen (AGB) zugestimmt",
+            "TERMS_OF_USE_AGREED" : "Allgemeine Geschäftsbedingungen zugestimmt",
             "user-registration" : "Benutzerregistrierung ",
             "110122" : "Anmeldung",
             "user-password-change" : "Kennwort geändert",
@@ -250,7 +255,7 @@
             "contract-requested" : "Vertrag durch Benutzer angefordert",
             "contract-send" : "Vertrag an Benutzer versandt",
             "internal-comment" : "Anmerkung Administrator",
-            "user-terms-of-use-agreed" : "Allgemeine Geschäftsbedingungen (AGB) angenommen",
+            "user-terms-of-use-agreed" : "Allgemeine Geschäftsbedingungen angenommen",
             "audit-log-used" : "Audit Log angeschaut",
             "added-as-team-member" : "Hinzugefügt als Teammitglied",
             "updated-role-in-team" : "Rolle im Team aktualisiert",
@@ -286,7 +291,7 @@
             "HCRELATED" : "Gesundheitswesen",
             "HEALTHCARE" : "Arzt / Spital",
             "STUDYPARTICIPATION" : "Studie",
-            "STUDYRELATED" : "Studie",
+            "STUDYRELATED" : "Informationen zur Studie",
             "IMPLICIT" : "Nachrichtenaustausch"
         },
         "contractstatus" : {
@@ -429,6 +434,10 @@
         "delete_btn" : "Löschen",
         "or" : "oder",
         "save_ok" : "Erfolgreich gespeichert",
+        "yesno" : {
+            "true" : "Ja",
+            "false" : "Nein"
+        },
         "user" : {
             "lastname" : "Name",
             "firstname" : "Vorname",
@@ -488,7 +497,7 @@
 
     "registration" : {
         "sign_up" : "Registrierung",
-        "mandantory_fields" : "Pflichtfelder sind mit einem * markiert.",
+        "mandantory_fields" : "Bitte füllen Sie die folgenden Felder aus, die mit einem Sternchen (*) gekennzeichneten Felder sind Pflichtfelder",
         "email" : "E-Mail",
         "password" : "Kennwort",
         "password_repetition" : "Kennwort wiederholen",
@@ -513,15 +522,16 @@
         "agb" : "MIDATA-Bestimmungen",
         "study" : "Forschung",
         "agb2" : "Ich akzeptiere die",
-        "agb3" : "Allgemeine Geschäftsbedingungen (AGB)",
+        "agb3" : "Allgemeine Geschäftsbedingungen",
         "privacypolicy2" : "Ich akzeptiere die",
         "privacypolicy3" : "Datenschutzerklärung",
         "app_agb" : "App-Bestimmungen",
         "app_agb2" : "Ich akzeptiere die",
-        "app_agb3" : "Allgemeine Geschäftsbedingungen (AGB) der App",
+        "app_agb3" : "Allgemeine Geschäftsbedingungen der App",
         "study_agb" : "Studienbestimmungen",
-        "sign_up_btn" : "Registrieren",
-        "unlock_code" : "Freischaltcode"
+        "sign_up_btn" : "Konto erstellen",
+        "unlock_code" : "Freischaltcode",
+        "already_have_account" : "Ich habe bereits ein Konto"
     },
 
     "login" : {
@@ -569,6 +579,7 @@
         "code_entered" : "Bestätigungscode eingegeben?",
         "email_instructions" : "Ihre E-Mail-Adresse muss bestätigt werden. Eine Aktivierungs-E-Mail wurde Ihnen geschickt. Klicken Sie bitte auf den Link, um Ihre E-Mail-Adresse zu bestätigen.",
         "email_code" : "Sie können auch den per E-Mail erhaltenen Code direkt hier eingeben:",
+        "code" : "Code",
         "resend_btn" : "E-Mail erneut versenden",
         "retry_btn" : "Anmeldung erneut versuchen",
         "contract_instructions" : "Ein Vertrag wurde an Ihre Postadresse versandt. Schicken Sie ihn bitte unterschrieben an MIDATA zurück.",
@@ -858,9 +869,11 @@
     },
 
     "oauth2" : {
+        "requests_permission" : "bittet um die Erlaubnis, auf Ihre persönlichen Daten zuzugreifen.",
+        "no_account" : "Ich habe kein Konto",
         "reshares_data" : "Die Applikation darf Daten, auf die sie Zugriff hat, an Dritte weitergeben.",
         "allows_user_search" : "Ihr Name und Ihre E-Mail-Adresse können von anderen Personen, die diese Applikation verwenden, durchsucht werden.",
-        "requesting_app" : "Diese Applikation benötigt Zugriff auf:",
+        "requesting_app" : "benötigt Zugriff auf Ihre Daten.",
         "sign_in" : "MIDATA Anmeldung für:",
         "sign_in_btn" : "Anmelden",
         "device" : "Gerät: {{ device}}",
@@ -870,7 +883,7 @@
         "shares_group" : "Gruppe: {{ group }}",
         "shares_format" : "Format: {{ format }}",
         "shares_content" : "Inhalt: {{ content }}",
-        "confirm_study" : "An Studie teilnehmen"
+        "confirm_study" : "Melden Sie sich für die folgende Studie an"
     },
 
     "dashboard" : {
@@ -1021,7 +1034,8 @@
     },
 
     "terms" : {
-        "close_btn" : "<< Zurück"
+        "close_btn" : "<< Zurück",
+        "close_new_btn" : "Schliessen"
     },
 
     "auditlog" : {

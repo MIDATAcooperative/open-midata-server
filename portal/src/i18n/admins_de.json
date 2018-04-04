@@ -7,7 +7,7 @@
         "plugins" : "Plugins",
         "content" : "Inhalt",
         "studies" : "Studien",
-        "terms" : "Allgemeine Geschäftsbedingungen (AGB)",
+        "terms" : "Allgemeine Geschäftsbedingungen",
         "registration" : "Administrator registrieren"
     },
 
@@ -68,7 +68,7 @@
     },
 
     "admin_registration" : {
-        "sign_up" : "Neuen Admin-Account registrieren"
+        "sign_up" : "Neuen Administrator registrieren"
     },
 
     "admin_plugins" : {
@@ -81,7 +81,7 @@
         "plugin_developer" : "Entwickler",
         "plugin_type" : "Typ",
         "plugin_role" : "Zielrolle",
-        "plugin_market" : "MISTORE",
+        "plugin_market" : "MIDATA Store",
         "plugin_stats" : "Statistiken",
         "plugin_status" : "Status",
         "add_definition_btn" : "Plugin-Definition importieren"
@@ -99,7 +99,7 @@
     },
 
     "admin_terms" : {
-        "title" : "Allgemeine Geschäftsbedingungen (AGB)",
+        "title" : "Allgemeine Geschäftsbedingungen",
         "empty" : "Keine Allgemeine Geschäftsbedingungen vorhanden.",
         "name" : "Name",
         "version" : "Version",
@@ -108,7 +108,7 @@
     },
 
     "admin_manageterms" : {
-        "pagetitle" : "Allgemeine Geschäftsbedingungen (AGB)",
+        "pagetitle" : "Allgemeine Geschäftsbedingungen",
         "name" : "Interner Name",
         "version" : "Version",
         "language" : "Sprache",
@@ -127,8 +127,9 @@
         "endDate" : "Enddatum",
         "dataCreatedBefore" : "Datenbestand eingefroren ab dem",
         "required_information" : "Benötigte Informationen",
+        "anonymous" : "Anonym",
         "required_assistance" : "Belegarzt benötigt",
-        "termsOfUse" : "Allgemeine Geschäftsbedingungen (AGB)",
+        "termsOfUse" : "Allgemeine Geschäftsbedingungen",
         "sharing_query" : "Data Access Filter",
         "requirements" : "Anforderungen",
         "groups" : "Gruppen",
@@ -140,5 +141,20 @@
         "end_validation_btn" : "Validierung abschliessen",
         "back_to_draft_btn" : "Zurück zum Entwurf",
         "delete_study_btn" : "Studie löschen"
+    },
+
+    "admin_stats" : {
+        "title" : "Statistiken",
+        "what" : "",
+        "value" : "Gesamtzahl",
+        "diff_yesterday" : "Diff. zu vor 1 Tag",
+        "diff_week" : "Diff. zu vor 7 Tagen",
+        "recordCount" : "Datensätze in DB",
+        "appCount" : "Apps und Plugins",
+        "runningStudyCount" : "Laufende Studien",
+        "groupCount" : "Teams (Gesundheitswesen und Forschung)",
+        "auditEventCount" : "Audit-Ereignisse",
+        "users" : "Aktive Benutzerkonten",
+        "consents" : "Zustimmungen"
     }
 }

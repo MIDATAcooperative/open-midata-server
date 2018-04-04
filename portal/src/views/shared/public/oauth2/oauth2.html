@@ -28,7 +28,7 @@
 
 					<fieldset class="mi-at-input__fieldset mi-at-input__fieldset--floating-label mi-at-input__fieldset--white">
 						<input ng-disabled="studies" required id="mi-at-input-username" ng-model="login.email" class="mi-at-input mi-at-input--text"
-							type="text" value="" floating-label /> <label for="mi-at-input-text" class="mi-at-text"
+							type="email" value="" floating-label /> <label for="mi-at-input-text" class="mi-at-text"
 							translate="login.email_address"> username * </label>
 					</fieldset>
 
@@ -63,18 +63,26 @@
 					</button>
 
 				</form>
-				<div class="mi-or-login__signup_link">
-					<a href="javascript:" ng-click="showRegister(true);"> <span class="mi-at-text mi-at-text--smallest mi-at-text--white"
-						translate="oauth2.no_account"></span>
-					</a>
+				
+				<div class="mi-or-login__signup_link">				
+					<span class="mi-at-text mi-at-text--smallest mi-at-text--white"
+						translate="oauth2.no_account" ng-click="showRegister(true);"></span>
+						
+					<button class="mi-mo-flat_button mi-mo-flat_button--rounded" type="button" ng-click="showRegister(true);">
+					  <span class="mi-at-text" translate="registration.sign_up"></span>
+				    </button>					
 				</div>
+				
+				
+				
+				
+				
 				<div class="mi-or-login__device">
-					<span class="mi-at-text mi-at-text--smallest mi-at-text--white" translate="oauth2.device" translate-value-device="{{ device }}">Device:
-						#678handy</span>
+					<span class="mi-at-text mi-at-text--smallest mi-at-text--white" translate="oauth2.device" translate-value-device="{{ device }}"></span>
 				</div>
-				<div class="mi-or-login__legal_mentions">
+				<!-- <div class="mi-or-login__legal_mentions">
 					<span class="mi-at-text mi-at-text--smallest mi-at-text--white">(c) 2018 ETH Zürich</span>
-				</div>
+				</div>  -->
 			</div>
 		</div>
 		<div class="mi-or-auth" ng-show="acceptConsent">
@@ -113,19 +121,15 @@
 				<section class="mi-or-auth__section mi-or-auth__section--study" ng-show="app.termsOfUse">
 					<fieldset class="mi-at-input__fieldset mi-at-input--checkbox mi-at-input--checkbox-white">
 						<input id="appAgb" name="appAgb" class="mi-at-input mi-at-input--checkbox" type="checkbox" value="" ng-model="login.appAgb"
-							floating-label /> 
+							floating-label />
+							
 						<label for="mi-at-input-checkbox" class="mi-at-text mi-at-text--white">
-						  <span
-											translate="registration.app_agb4"></span> 
-						 </label>
-						 
+						   <span translate="registration.app_agb2"></span>
+						   <a class="mi-at-text--white mi-at-input--checkbox-link" ng-click="terms({which : app.termsOfUse })" href="javascript:" translate="registration.app_agb3"></a>
+						 </label>							 					
 						 
 					</fieldset>
 					
-					<div class="mi-at-link">
-					  <a ng-click="terms({which : app.termsOfUse })" href="javascript:" translate="registration.app_agb3"></a>
-					</div>
-
 				</section>
 				
 				

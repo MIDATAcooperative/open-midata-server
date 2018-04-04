@@ -126,6 +126,7 @@
      "endDate" : "End Date",
      "dataCreatedBefore" : "Data freeze date",
      "required_information" : "Required Information",
+     "anonymous" : "Anonymous",
      "required_assistance" : "Required Assistance",
      "termsOfUse" : "Terms and Conditions",
      "sharing_query" : "Data Access Filter",
@@ -139,5 +140,20 @@
      "end_validation_btn" : "Complete Validation",
      "back_to_draft_btn" : "Back to Draft",
      "delete_study_btn" : "Delete Study"    
-  }
+  },
+  
+  "admin_stats" : {
+     "title" : "Statistics",
+	 "what" : "",
+	 "value" : "Total count",
+	 "diff_yesterday" : "Diff to 1 day ago",
+	 "diff_week" : "Diff to 7 days ago",
+	 "recordCount" : "Records in DB",
+	 "appCount" : "Apps and Plugins",
+	 "runningStudyCount" : "Running Studies",
+	 "groupCount" : "Teams (Healthcare and Research)",
+	 "auditEventCount" : "Audit Events",
+	 "users" : "Active User Accounts",		       
+     "consents" : "Consents"
+   }
 }
