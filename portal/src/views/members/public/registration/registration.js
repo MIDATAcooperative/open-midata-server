@@ -16,8 +16,7 @@ angular.module('portal')
 	$scope.register = function() {		
 		
         $scope.myform.password.$setValidity('compare', $scope.registration.password ==  $scope.registration.password2);
-        $scope.myform.agb.$setValidity('mustaccept', $scope.registration.agb);
-        $scope.myform.privacypolicy.$setValidity('mustaccept', $scope.registration.privacypolicy);  
+        $scope.myform.agb.$setValidity('mustaccept', $scope.registration.agb);        
         if (!$scope.registration.agb) {
         	
         	$scope.myform.agb.$invalid = true;
@@ -29,10 +28,7 @@ angular.module('portal')
           $scope.myform.birthday.$setValidity('date', dateService.isValidDate($scope.registration.birthdayDay, $scope.registration.birthdayMonth, $scope.registration.birthdayYear));
         }
 				
-        if (!$scope.registration.privacypolicy) {        	
-        	$scope.myform.privacypolicy.$invalid = true;
-        	$scope.myform.privacypolicy.$error = { 'mustaccept' : true };
-        }
+     
         if ($scope.app && $scope.app.termsOfUse) {
         	$scope.myform.appAgb.$setValidity('mustaccept', $scope.registration.appAgb);
             if (!$scope.registration.appAgb) {        	

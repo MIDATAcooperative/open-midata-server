@@ -79,19 +79,11 @@
                                      <input type="checkbox" id="agb" name="agb" ng-model="registration.agb">
                                      <span translate="registration.agb2"></span>
                                         <a ng-click="terms({which : 'midata-terms-of-use'});" href="javascript:" translate="registration.agb3"></a>
-                                   </label>
-                                 </div>
-                                <formerror myid="agb" type="mustaccept" message="error.missing.agb"></formerror>
-                              </formrow>
-                               <formrow myid="privacypolicy" label="">
-                                 <div class="checkbox">
-                                   <label>
-                                     <input type="checkbox" id="privacypolicy" name="privacypolicy" ng-model="registration.privacypolicy">
-                                     <span translate="registration.privacypolicy2"></span>
+                                        <span translate="registration.privacypolicy2"></span>
                                         <a ng-click="terms({which : 'midata-privacy-policy'});" href="javascript:" translate="registration.privacypolicy3"></a>
                                    </label>
                                  </div>
-                                <formerror myid="privacypolicy" type="mustaccept" message="error.missing.privacypolicy"></formerror>
+                                <formerror myid="agb" type="mustaccept" message="error.missing.agb"></formerror>
                               </formrow>
                               <div ng-show="app.termsOfUse">
                               <formrow myid="appAgb" label="registration.app_agb">
