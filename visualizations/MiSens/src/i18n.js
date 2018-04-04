@@ -60,7 +60,7 @@ angular.module('MiSensi18n', [])
       "selectOptionScientificaResultsText": "My Scientifica results",
       "selectOptionCurrentResultsText": "My current results",
       "legende_not_sensitive": "not sensitive",
-      "legende_sensitive": "highly sensitive"
+      "legende_sensitive": "very sensitive"
     },
     it: {
     },
