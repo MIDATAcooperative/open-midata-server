@@ -7,7 +7,7 @@
 	"content" : "Content",
 	"studies" : "Studies",
 	"terms" : "General Terms and Conditions",
-	"registration" : "Register Admin"
+	"registration" : "Register an Administrator"
   },
   
   "admin_members" : {
@@ -67,7 +67,7 @@
   },
   
   "admin_registration" : {
-    "sign_up" : "Register New Admin Account"
+    "sign_up" : "Register a New Administrator"
   },
   
   "admin_plugins" : {

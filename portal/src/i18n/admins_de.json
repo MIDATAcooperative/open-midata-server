@@ -68,7 +68,7 @@
     },
 
     "admin_registration" : {
-        "sign_up" : "Neuen Admin-Account registrieren"
+        "sign_up" : "Neuen Administrator registrieren"
     },
 
     "admin_plugins" : {

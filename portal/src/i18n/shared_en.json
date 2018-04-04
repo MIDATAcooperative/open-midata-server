@@ -11,9 +11,9 @@
 
    "navbar" : {
 	  "toggle_navigation": "Toggle navigation",	 
-	  "login" : "Login",
+	  "login" : "Log in",
 	  "sign_up" : "Sign Up",
-	  "sign_out" : "Sign out",
+	  "sign_out" : "Log out",
 	  "edit_profile" : "Edit Profile",
 	  "app_count" : "Authorized apps",
 	  "study_count" : "Studies enrollments",

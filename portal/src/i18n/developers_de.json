@@ -1,9 +1,9 @@
 {
 
     "developer_registration" : {
-        "sign_up" : "Registrieren als Entwickler",
+        "sign_up" : "Registrierung als Entwickler",
         "reason_fillout" : "Um die Wartezeit bis zur Freigabe des Accounts zu reduzieren, geben Sie bitte die Kontaktperson und der Zweck der Registrierung sorgfältig ein, damit ein Administrator ihr Anfrage rasch bearbeiten kann.",
-        "sign_up_btn" : "Registrieren als Entwickler"
+        "sign_up_btn" : "Als Entwickler registrieren"
     },
 
     "developer_login" : {

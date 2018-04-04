@@ -8,7 +8,7 @@
         "content" : "Contenu",
         "studies" : "Études",
         "terms" : "Conditions générales",
-        "registration" : "Enregistrer un administrateur"
+        "registration" : "Inscrire un administrateur"
     },
 
     "admin_members" : {
@@ -38,7 +38,7 @@
         "contract_status" : "État du contrat:",
         "email_status" : "État de l'e-mail:",
         "confirmation_code" : "Code de confirmation:",
-        "registration_date" : "Date d'enregistrement:",
+        "registration_date" : "Date de l'inscription:",
         "confirmation_date" : "Date de confirmation:",
         "last_login" : "Dernière connexion:",
         "email_confirm_btn" : "Confirmer l'adresse e-mail",
@@ -68,7 +68,7 @@
     },
 
     "admin_registration" : {
-        "sign_up" : "Enregistrer un nouveau compte Admin"
+        "sign_up" : "Inscrire un nouvel administrateur"
     },
 
     "admin_plugins" : {
