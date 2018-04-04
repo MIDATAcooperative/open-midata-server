@@ -87,7 +87,7 @@
         "confirmation_date" : "Bestätigungsdatum",
         "confirm_btn" : "Bestätigen",
         "reject_btn" : "Zurückweisen",
-        "empty" : "Sie haben keinen Kontakt zu einer Gesundheitsfachperson registriert."
+        "empty" : "Sie haben keine Kontakte als Gesundheitsfachperson registriert."
     },
 
     "member_user" : {
@@ -96,10 +96,10 @@
         "appuser" : "Ihr Account wurde durch eine externe Applikation eingerichtet. Die Funktionalität ist begrenzt. Sie können Ihren Account in einen vollwertigen Account umwandeln.",
         "memberofcooperative" : "Sie sind Mitglied der MIDATA Genossenschaft.",
         "nonmemberuser" : "Sie besitzen einen vollwertigen Account sind aber nicht Mitglied der MIDATA Genossenschaft.",
-        "agb_not_requested" : "Durch Klicken auf dem Button 'Vertrag anfordern' werden Ihnen einen Vertrag und die AGB nach Hause geschickt. Schicken Sie bitte die unterzeichneten AGB zurück um Ihr Probe-Account zu einem vollwertigen Account aufzuwerten.",
-        "agb_requested" : "Sie haben die AGB und den Vertrag angefordert. Ihre Anfrage wird durch die MIDATA Anmeldestelle verarbeitet.",
-        "agb_printed" : "Die von Ihnen angeforderten AGB und Vertrag sollten in den nächsten Tagen eintreffen.",
-        "agb_signed" : "Sie haben die AGB unterzeichnet.",
+        "agb_not_requested" : "Durch Klicken auf dem Button 'Vertrag anfordern' werden Ihnen die Allgemeine Geschäftsbedingungen (AGB) sowie den Vertrag nach Hause geschickt. Schicken Sie bitte die unterzeichneten AGB zurück um Ihr Probe-Account zu einem vollwertigen Account aufzuwerten.",
+        "agb_requested" : "Sie haben die Allgemeine Geschäftsbedingungen und den Vertrag angefordert. Ihre Anfrage wird durch die MIDATA Genossenschaft verarbeitet.",
+        "agb_printed" : "Die von Ihnen angeforderten Allgemeine Geschäftsbedingungen und Vertrag sollten in den nächsten Tagen eintreffen.",
+        "agb_signed" : "Sie haben die Allgemeine Geschäftsbedingungen unterzeichnet.",
         "confirmed" : "Ihr Postadresse wurde bestätigt.",
         "entercode" : "Sie sollten einen Brief mit einem Registrierungscode erhalten haben. Geben Sie bitte den Code hier ein, sobald Sie ihn erhalten haben:",
         "email_unvalidated" : "Ihre E-Mail-Adresse wurde bisher noch nicht bestätigt. Klicken Sie bitte auf dem Link, den Sie in der Bestätigungs-E-Mail erhalten haben!",

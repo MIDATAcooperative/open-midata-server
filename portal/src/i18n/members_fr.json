@@ -83,7 +83,7 @@
         "confirmation_date" : "Date de confirmation",
         "confirm_btn" : "confirmer",
         "reject_btn" : "refuser",
-        "empty" : "Vous n'avez pas enregistré de contact à un professionel de la santé."
+        "empty" : "Vous n'avez enregistré aucun contact comme professionel de la santé."
     },
 
     "member_user" : {
@@ -92,12 +92,12 @@
         "appuser" : "Votre compte a été créé par une application externe. Sa fonctionnalité est limitée. Vous pouvez le faire évoluer vers un compte à part entière.",
         "memberofcooperative" : "Vous êtes membre de la coopérative MIDATA.",
         "nonmemberuser" : "Vous possédez un compte à part entière mais vous n'êtes pas membre de la coopérative MIDATA.",
-        "agb_not_requested" : "En cliquant sur 'Demander un contrat', un contrat ainsi que les CGU vous seront envoyés par la poste. Veuillez renvoyer les CGU signées pour faire évoluer votre compte de test vers un compte à part entière.",
-        "agb_requested" : "Vous avez fait une demande pour les CGU et un contrat. Votre demande est en cours de traitement à la centrale des inscriptions de MIDATA.",
-        "agb_printed" : "Les CGU et le contrat que vous avez demandés devraient vous être livrés dans les prochains jours.",
-        "agb_signed" : "Vous avez signé les CGU.",
+        "agb_not_requested" : "En cliquant sur 'Demander un contrat', les conditions générales (CG) ainsi que le contrat vous seront envoyés par la poste. Veuillez renvoyer les CG signées pour faire évoluer votre compte de test vers un compte à part entière.",
+        "agb_requested" : "Vous avez fait une demande pour les conditions générales et le contrat. Votre demande est en cours de traitement à la coopérative MIDATA.",
+        "agb_printed" : "Les conditions générales et le contrat que vous avez demandés devraient vous être livrés dans les prochains jours.",
+        "agb_signed" : "Vous avez signé les conditions générales.",
         "confirmed" : "Votre adresse postale a été confirmée.",
-        "entercode" : "Une lettre contenant un code d'enregistrement vous a été envoyée. Veuillez saisir le code ici dès que vous l'avez reçu:",
+        "entercode" : "Une lettre contenant un code d'inscription vous a été envoyée. Veuillez saisir le code ici dès que vous l'avez reçu:",
         "email_unvalidated" : "Votre adresse e-mail n'a pas encore été validée. Veuillez cliquer sur le lien que vous avez reçu dans l'e-mail de confirmation !",
         "request_membership_btn" : "Demander un contrat"
     },
