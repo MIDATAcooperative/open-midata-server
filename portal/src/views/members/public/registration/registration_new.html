@@ -87,7 +87,7 @@
                               
                               <div class="mi-or-signup__fields_checkboxes">
                                 
-                                <fieldset class="mi-at-input__fieldset mi-at-input--checkbox mi-at-input--checkbox-white">
+                                <fieldset style="height:60px" class="mi-at-input__fieldset mi-at-input--checkbox mi-at-input--checkbox-white">
                                    <input id="agb" name="agb" ng-model="registration.agb" class="mi-at-input mi-at-input--checkbox" type="checkbox" value="" floating-label />
                                    
                                    <label for="agb" class="mi-at-text">
@@ -101,7 +101,7 @@
                                 </fieldset>                                
                                 <form-error myid="agb" type="mustaccept" message="error.missing.agb"></form-error>
                              
-                                <fieldset ng-show="app.termsOfUse" class="mi-at-input__fieldset mi-at-input--checkbox mi-at-input--checkbox-white">
+                                <fieldset style="height:60px" ng-show="app.termsOfUse" class="mi-at-input__fieldset mi-at-input--checkbox mi-at-input--checkbox-white">
                                    <input id="appAgb" name="appAgb" ng-model="registration.appAgb" class="mi-at-input mi-at-input--checkbox" type="checkbox" value="" floating-label />                                  	                              
 	                               
 	                                <label for="appAgb" class="mi-at-text mi-at-text--white">
@@ -112,12 +112,12 @@
                                 </fieldset>                              
                                 <form-error myid="appAgb" type="mustaccept" message="error.missing.agb"></form-error>
             
-                                <fieldset ng-show="app.linkedStudy" class="mi-at-input__fieldset mi-at-input--checkbox mi-at-input--checkbox-white">
+                                <fieldset  ng-show="app.linkedStudy" class="mi-at-input__fieldset mi-at-input--checkbox mi-at-input--checkbox-white">
                                    <input id="confirmStudy" name="confirmStudy" ng-model="registration.confirmStudy" class="mi-at-input mi-at-input--checkbox" type="checkbox" value="" floating-label />
                                    <label for="confirmStudy" class="mi-at-text">
 		                               <span translate="oauth2.confirm_study"></span>:
 	                               </label>
-	                               
+	                               </fieldset>
 	                               
 	                               <div class="mi-or-auth__study_title">
 						<span class="mi-at-text mi-at-text--highlighted mi-at-text--white">{{ app.linkedStudyName }}</span>
@@ -132,7 +132,7 @@
 					</div>
 	                               
 	                                
-                                </fieldset>
+                                
                                 <form-error myid="confirmStudy" type="mustaccept" message="error.missing.agb"></form-error>
 
                               </div>

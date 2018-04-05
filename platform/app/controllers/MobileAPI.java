@@ -442,7 +442,7 @@ public class MobileAPI extends Controller {
 		if (appobj.containsKey("aliaskey") && appobj.containsKey("alias")) {
 			MidataId alias = new MidataId(appobj.get("alias").toString());
 			byte[] key = (byte[]) appobj.get("aliaskey");
-			KeyManager.instance.unlock(appInstance.owner, alias, key);
+			KeyManager.instance.unlock(appInstance.owner, alias, key);		
 			RecordManager.instance.clearCache();
 			return appInstance.owner;
 		} else {

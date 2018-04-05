@@ -65,7 +65,7 @@ public class IndexWorker extends UntypedActor {
 			if (message instanceof IndexMsg) {
 				this.handle = ((IndexMsg) message).getHandle();
 			
-				KeyManager.instance.continueSession(handle);
+				KeyManager.instance.continueSession(handle, ((IndexMsg) message).getExecutor());
 				if (cache == null) cache = RecordManager.instance.getCache(executor);			
 				if (idx == null) idx = IndexManager.instance.findIndex(pseudo, indexId);
 				if (root == null) root = new IndexRoot(pseudo.getKey(), idx, false);	
