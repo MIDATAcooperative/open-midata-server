@@ -87,6 +87,7 @@ angular.module('portal')
 		if (sq) {
 			if (sq.content) {
 				angular.forEach(sq.content, function(r) {
+				  if (r === "Patient" || r === "Group" || r === "Person" || r === "Practitioner") return;
 				  labels.getContentLabel($translate.use(), r).then(function(lab) {
 					 $scope.labels.push(lab); 
 				  });
