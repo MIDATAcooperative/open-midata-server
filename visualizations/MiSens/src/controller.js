@@ -1,8 +1,6 @@
 // The frontend controller
 MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$location', 'midataServer', 'midataPortal', 'information',
 	function($scope, $document, $translate, $location, midataServer, midataPortal, information) {
-
-
 		var canvasWidth =$document[0].getElementById("myCanvas").width;
 		var canvasHeight = $document[0].getElementById("myCanvas").height;
 	    // Make layout fit into MIDATA page
@@ -14,7 +12,22 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 		$scope.information = information;
 		midataServer.authToken = $location.search().authToken;
 
+		var my_helper_math_round = function (value_to_round) {
+			var help_value_to_round = 1000;
+
+			if (Math.round(value_to_round * help_value_to_round) == 0) {
+				return 0;
+			}
+
+			return Math.round(value_to_round * help_value_to_round) / help_value_to_round;
+		};
+
 		var UpdateInformation = function() {
+			var legende_not_sensitive = "nicht empfindlich";
+			var legende_sensitive = "sehr empfindlich";
+			$translate("legende_not_sensitive").then(function(t) { legende_not_sensitive = t; });
+			$translate("legende_sensitive").then(function(t) { legende_sensitive = t; });
+			
 			var result = information.GetInformationForVisualization();
 			// draw image
 			var canvas = $document[0].getElementById("myCanvas");
@@ -25,60 +38,62 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 
             // resize canvas
             var newSize = 0.7;
-            canvas.width = canvasWidth * newSize;//canvas.width * newSize;
-            canvas.height = canvasHeight * newSize;//canvas.height * newSize;
+            canvas.width = canvasWidth * newSize;
+            canvas.height = canvasHeight * newSize;
             ctx.scale(newSize, newSize);
 
+			console.log(result);
+
 			if (result['isobuteryl-aldehyde'] != null) {
-				_value = Math.round(result['isobuteryl-aldehyde']);
+				_value = my_helper_math_round(result['isobuteryl-aldehyde']);
 				switch (_value) {
-					case Math.round(0.0): arrayWithValues[0] = 0; break;
-					case Math.round(100000): arrayWithValues[0] = 1; break;
-					case Math.round(27825.62239): arrayWithValues[0] = 2; break;
-					case Math.round(7742.652614): arrayWithValues[0] = 3; break;
-					case Math.round(2154.441279): arrayWithValues[0] = 4; break;
-					case Math.round(599.486695): arrayWithValues[0] = 5; break;
-					case Math.round(166.810904): arrayWithValues[0] = 6; break;
-					case Math.round(46.41617226): arrayWithValues[0] = 7; break;
-					case Math.round(12.91558882): arrayWithValues[0] = 8; break;
-					case Math.round(3.593842974): arrayWithValues[0] = 9; break;
-					case Math.round(1.000009175): arrayWithValues[0] = 10; break;
+					case my_helper_math_round(0.0): arrayWithValues[0] = 0; break;
+					case my_helper_math_round(100000): arrayWithValues[0] = 1; break;
+					case my_helper_math_round(27825.62239): arrayWithValues[0] = 2; break;
+					case my_helper_math_round(7742.652614): arrayWithValues[0] = 3; break;
+					case my_helper_math_round(2154.441279): arrayWithValues[0] = 4; break;
+					case my_helper_math_round(599.486695): arrayWithValues[0] = 5; break;
+					case my_helper_math_round(166.810904): arrayWithValues[0] = 6; break;
+					case my_helper_math_round(46.41617226): arrayWithValues[0] = 7; break;
+					case my_helper_math_round(12.91558882): arrayWithValues[0] = 8; break;
+					case my_helper_math_round(3.593842974): arrayWithValues[0] = 9; break;
+					case my_helper_math_round(1.000009175): arrayWithValues[0] = 10; break;
 					default:
 						break;
 				}
 			}
 			if (result['isovaleci-acid'] != null) {
-				_value = Math.round(result['isovaleci-acid']);
+				_value = my_helper_math_round(result['isovaleci-acid']);
 				switch (_value) {
-					case Math.round(0.0): arrayWithValues[1] = 0; break;
-					case Math.round(100000): arrayWithValues[1] = 1; break;
-					case Math.round(27825.62239): arrayWithValues[1] = 2; break;
-					case Math.round(7742.652614): arrayWithValues[1] = 3; break;
-					case Math.round(2154.441279): arrayWithValues[1] = 4; break;
-					case Math.round(599.486695): arrayWithValues[1] = 5; break;
-					case Math.round(166.810904): arrayWithValues[1] = 6; break;
-					case Math.round(46.41617226): arrayWithValues[1] = 7; break;
-					case Math.round(12.91558882): arrayWithValues[1] = 8; break;
-					case Math.round(3.593842974): arrayWithValues[1] = 9; break;
-					case Math.round(1.000009175): arrayWithValues[1] = 10; break;
+					case my_helper_math_round(0.0): arrayWithValues[1] = 0; break;
+					case my_helper_math_round(100000): arrayWithValues[1] = 1; break;
+					case my_helper_math_round(27825.62239): arrayWithValues[1] = 2; break;
+					case my_helper_math_round(7742.652614): arrayWithValues[1] = 3; break;
+					case my_helper_math_round(2154.441279): arrayWithValues[1] = 4; break;
+					case my_helper_math_round(599.486695): arrayWithValues[1] = 5; break;
+					case my_helper_math_round(166.810904): arrayWithValues[1] = 6; break;
+					case my_helper_math_round(46.41617226): arrayWithValues[1] = 7; break;
+					case my_helper_math_round(12.91558882): arrayWithValues[1] = 8; break;
+					case my_helper_math_round(3.593842974): arrayWithValues[1] = 9; break;
+					case my_helper_math_round(1.000009175): arrayWithValues[1] = 10; break;
 					default:
 						break;
 				}
 			}
 			if (result.rotundone != null) {
-				_value = Math.round(result.rotundone);
+				_value = my_helper_math_round(result.rotundone);
 				switch (_value) {
-					case Math.round(0.0): arrayWithValues[2] = 0; break;
-					case Math.round(100): arrayWithValues[2] = 1; break;
-					case Math.round(27.82562239): arrayWithValues[2] = 2; break;
-					case Math.round(7.742652614): arrayWithValues[2] = 3; break;
-					case Math.round(2.154441279): arrayWithValues[2] = 4; break;
-					case Math.round(0.599486695): arrayWithValues[2] = 5; break;
-					case Math.round(0.166810904): arrayWithValues[2] = 6; break;
-					case Math.round(0.046416172): arrayWithValues[2] = 7; break;
-					case Math.round(0.012915589): arrayWithValues[2] = 8; break;
-					case Math.round(0.003593843): arrayWithValues[2] = 9; break;
-					case Math.round(0.001): arrayWithValues[2] = 10; break;
+					case my_helper_math_round(0.0): arrayWithValues[2] = 0; break;
+					case my_helper_math_round(100): arrayWithValues[2] = 1; break;
+					case my_helper_math_round(27.82562239): arrayWithValues[2] = 2; break;
+					case my_helper_math_round(7.742652614): arrayWithValues[2] = 3; break;
+					case my_helper_math_round(2.154441279): arrayWithValues[2] = 4; break;
+					case my_helper_math_round(0.599486695): arrayWithValues[2] = 5; break;
+					case my_helper_math_round(0.166810904): arrayWithValues[2] = 6; break;
+					case my_helper_math_round(0.046416172): arrayWithValues[2] = 7; break;
+					case my_helper_math_round(0.012915589): arrayWithValues[2] = 8; break;
+					case my_helper_math_round(0.003593843): arrayWithValues[2] = 9; break;
+					case my_helper_math_round(0.001): arrayWithValues[2] = 10; break;
 					default:
 						break;
 				}
@@ -117,37 +132,37 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 				}
 			}
 			if (result['beta-ionone'] != null) {
-				_value = Math.round(result['beta-ionone']);
+				_value = my_helper_math_round(result['beta-ionone']);
 				switch (_value) {
-					case Math.round(0.0): arrayWithValues[6] = 0; break;
-					case Math.round(100000): arrayWithValues[6] = 1; break;
-					case Math.round(21547.08037): arrayWithValues[6] = 2; break;
-					case Math.round(4642.766725): arrayWithValues[6] = 3; break;
-					case Math.round(1000.380678): arrayWithValues[6] = 4; break;
-					case Math.round(215.5528286): arrayWithValues[6] = 5; break;
-					case Math.round(46.44534123): arrayWithValues[6] = 6; break;
-					case Math.round(10.007615): arrayWithValues[6] = 7; break;
-					case Math.round(2.156348848): arrayWithValues[6] = 8; break;
-					case Math.round(0.464630219): arrayWithValues[6] = 9; break;
-					case Math.round(0.100114247): arrayWithValues[6] = 10; break;
+					case my_helper_math_round(0.0): arrayWithValues[6] = 0; break;
+					case my_helper_math_round(100000): arrayWithValues[6] = 1; break;
+					case my_helper_math_round(21547.08037): arrayWithValues[6] = 2; break;
+					case my_helper_math_round(4642.766725): arrayWithValues[6] = 3; break;
+					case my_helper_math_round(1000.380678): arrayWithValues[6] = 4; break;
+					case my_helper_math_round(215.5528286): arrayWithValues[6] = 5; break;
+					case my_helper_math_round(46.44534123): arrayWithValues[6] = 6; break;
+					case my_helper_math_round(10.007615): arrayWithValues[6] = 7; break;
+					case my_helper_math_round(2.156348848): arrayWithValues[6] = 8; break;
+					case my_helper_math_round(0.464630219): arrayWithValues[6] = 9; break;
+					case my_helper_math_round(0.100114247): arrayWithValues[6] = 10; break;
 					default:
 						break;
 				}
 			}
 			if (result.heptanone != null) {
-				_value = Math.round(result.heptanone);
+				_value = my_helper_math_round(result.heptanone);
 				switch (_value) {
-					case Math.round(0.0): arrayWithValues[7] = 0; break;
-					case Math.round(100000): arrayWithValues[7] = 1; break;
-					case Math.round(27825.62239): arrayWithValues[7] = 2; break;
-					case Math.round(7742.652614): arrayWithValues[7] = 3; break;
-					case Math.round(2154.441279): arrayWithValues[7] = 4; break;
-					case Math.round(599.486695): arrayWithValues[7] = 5; break;
-					case Math.round(166.810904): arrayWithValues[7] = 6; break;
-					case Math.round(46.41617226): arrayWithValues[7] = 7; break;
-					case Math.round(12.91558882): arrayWithValues[7] = 8; break;
-					case Math.round(3.593842974): arrayWithValues[7] = 9; break;
-					case Math.round(1.000009175): arrayWithValues[7] = 10; break;
+					case my_helper_math_round(0.0): arrayWithValues[7] = 0; break;
+					case my_helper_math_round(100000): arrayWithValues[7] = 1; break;
+					case my_helper_math_round(27825.62239): arrayWithValues[7] = 2; break;
+					case my_helper_math_round(7742.652614): arrayWithValues[7] = 3; break;
+					case my_helper_math_round(2154.441279): arrayWithValues[7] = 4; break;
+					case my_helper_math_round(599.486695): arrayWithValues[7] = 5; break;
+					case my_helper_math_round(166.810904): arrayWithValues[7] = 6; break;
+					case my_helper_math_round(46.41617226): arrayWithValues[7] = 7; break;
+					case my_helper_math_round(12.91558882): arrayWithValues[7] = 8; break;
+					case my_helper_math_round(3.593842974): arrayWithValues[7] = 9; break;
+					case my_helper_math_round(1.000009175): arrayWithValues[7] = 10; break;
 					default:
 						break;
 				}
@@ -162,7 +177,7 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 				var r = 21.7;
 				var numberOfElements = 8;
 				var angleInRadian = Math.PI * 2 / numberOfElements;
-				var pointWidth = 8;
+				var pointWidth = 10;
 				
 				// draw point in the center to calibrate!
 				ctx.fillStyle = "#872233";
@@ -206,10 +221,28 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 
 				// close diagram
 				ctx.lineTo(x + ((_firstValueInPosition + 1) * r) * Math.cos(angleInRadian * _positionOfFirstValue), y + ((_firstValueInPosition + 1) * r) * Math.sin(angleInRadian * _positionOfFirstValue));
-				//ctx.lineTo(x + (_firstValueInPosition + 1) * r, y);
 
-				ctx.strokeStyle = "green";//"#00ff00";
+				ctx.strokeStyle = "green";
 				ctx.stroke();
+
+				var legendePX = 673, legendePY = 785, legendeW = 227, legendeH = 82, legendePaddingX = 20, legendePaddingY = 30;
+
+				ctx.fillStyle = "dimgrey";
+				ctx.font = "20px Arial";
+				ctx.fillText("0     " + legende_not_sensitive, legendePX + legendePaddingX, legendePY + legendePaddingY);
+				ctx.fillText("10   " + legende_sensitive, legendePX + legendePaddingX, legendePY + legendePaddingY + 30);
+				ctx.fillStyle = "green";
+
+				ctx.strokeStyle = "dimgrey";
+				ctx.lineWidth = 1;
+				ctx.beginPath();
+				ctx.moveTo(legendePX, legendePY);
+				ctx.lineTo(legendePX, legendePY + legendeH);//870);
+				ctx.lineTo(legendePX + legendeW, legendePY + legendeH);
+				ctx.lineTo(legendePX + legendeW, legendePY);
+				ctx.lineTo(legendePX, legendePY);
+				ctx.stroke();
+				ctx.strokeStyle = "green";//"#00ff00";
 			};
 			
 			imageObj.src = "spider_plot.png";
@@ -316,7 +349,7 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 						//	text: chartTitle
 						//}
                     }
-                });
+				});
             }
 
             var chartLabel = '# Teilnehmer';
@@ -363,11 +396,10 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 					[16, 3, 10, 6, 10, 13, 13, 5, 10, 16, 7],
 					chartLabel, chartLabelY, chartLabelX, selectedValue);
 				
-					
-					selectedValue = null;
-					if (arrayWithValues[2] != null) {
-						selectedValue = 10 - arrayWithValues[2];
-					}
+				selectedValue = null;
+				if (arrayWithValues[2] != null) {
+					selectedValue = 10 - arrayWithValues[2];
+				}
 				generateBar("chart-rotundone",
 					["0.001", "0.0036", "0.013", "0.046", "0.167", "0.6", "2.15", "7.7", "27.8", "100", ">100"],
 					[7, 3, 3, 5, 5, 13, 13, 18, 14, 19, 8],
