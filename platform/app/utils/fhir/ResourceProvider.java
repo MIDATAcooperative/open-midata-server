@@ -355,7 +355,7 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 					
 					
 				} else cleanSubject = false;
-			}
+			} else if (subjectRef.getDisplay() != null) cleanSubject = false;
 		}
 		return cleanSubject;
 	}
