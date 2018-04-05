@@ -7,23 +7,23 @@
         "plugins" : "Plugins",
         "content" : "Inhalt",
         "studies" : "Studien",
-        "terms" : "Bestimmungen",
+        "terms" : "Allgemeine Geschäftsbedingungen",
         "registration" : "Administrator registrieren"
     },
 
     "admin_members" : {
         "title" : "Mitgliederverzeichnis",
         "search_type" : "Suche",
-        "contract_required" : "Der Vertrag muss geschickt werden",
+        "contract_required" : "Der Vertrag muss versandt werden",
         "contract_confirm_required" : "Der unterschriebene Vertrag muss bestätigt werden",
-        "no_email_confirm" : "E-Mail nicht vom Benutzer bestätigt",
+        "no_email_confirm" : "E-Mail vom Benutzer noch nicht bestätigt",
         "email_rejected" : "E-Mail-Bestätigung vom Benutzer abgelehnt",
         "not_admin_confirmed" : "Nicht vom Administrator bestätigte Accounts",
         "overview" : "Übersicht",
-        "specific_user" : "Bestimmten Benutzer",
+        "specific_user" : "Bestimmter Benutzer",
         "role" : "Rolle",
         "status" : "Status",
-        "midata_id" : "midataID",
+        "midata_id" : "MIDATA-ID",
         "empty" : "Kein passender Benutzer gefunden."
     },
 
@@ -31,7 +31,7 @@
         "title" : "Adresse des Mitglieds",
         "midata_id" : "MIDATA-ID",
         "role" : "Rolle",
-        "subroles" : "Unterrolle(n)",
+        "subroles" : "Subrolle(n)",
         "developer" : "Gehört dem Entwickler:",
         "status" : "Status:",
         "agb_status" : "Status AGB:",
@@ -44,7 +44,7 @@
         "email_confirm_btn" : "E-Mail-Adresse bestätigen",
         "comment" : "Bemerkung",
         "add_comment_btn" : "Bemerkung hinzufügen",
-        "wipe_btn" : "Account beseitigen",
+        "wipe_btn" : "Account entfernen",
         "change_email_btn" : "E-Mail-Adresse ändern"
     },
 
@@ -58,7 +58,7 @@
     },
 
     "admin_managenews" : {
-        "title1" : "Neuer News-Eintrag hinzufügen",
+        "title1" : "Neuen News-Eintrag hinzufügen",
         "title2" : "News-Eintrag ändern",
         "title" : "Überschrift des News-Eintrags",
         "language" : "Sprache des News-Eintrags",
@@ -68,13 +68,28 @@
     },
 
     "admin_registration" : {
-        "sign_up" : "Neuer Admin-Account registrieren"
+        "sign_up" : "Neuen Administrator registrieren"
     },
 
     "admin_plugins" : {
         "title" : "Plugins",
         "developer" : "Nach Entwickler filtern",
-        "empty" : "Es gibt noch keine App oder Plugin."
+        "name" : "Nach Applikationsname filtern",
+        "organisation" : "Nach Organisation filtern",
+        "empty" : "Es gibt noch keine Apps oder Plugins.",
+        "plugin_name" : "Name",
+        "plugin_developer" : "Entwickler",
+        "plugin_type" : "Typ",
+        "plugin_role" : "Zielrolle",
+        "plugin_market" : "MIDATA Store",
+        "plugin_stats" : "Statistiken",
+        "plugin_status" : "Status",
+        "add_definition_btn" : "Plugin-Definition importieren"
+    },
+
+    "admin_defineplugin" : {
+        "title" : "Plugin-Definition importieren",
+        "definition" : "Definition (JSON)"
     },
 
     "admin_studies" : {
@@ -84,8 +99,8 @@
     },
 
     "admin_terms" : {
-        "title" : "Bestimmungen",
-        "empty" : "Keine Bestimmungen vorhanden.",
+        "title" : "Allgemeine Geschäftsbedingungen",
+        "empty" : "Keine Allgemeine Geschäftsbedingungen vorhanden.",
         "name" : "Name",
         "version" : "Version",
         "language" : "Sprache",
@@ -93,7 +108,7 @@
     },
 
     "admin_manageterms" : {
-        "pagetitle" : "Bestimmungen",
+        "pagetitle" : "Allgemeine Geschäftsbedingungen",
         "name" : "Interner Name",
         "version" : "Version",
         "language" : "Sprache",
@@ -112,9 +127,10 @@
         "endDate" : "Enddatum",
         "dataCreatedBefore" : "Datenbestand eingefroren ab dem",
         "required_information" : "Benötigte Informationen",
+        "anonymous" : "Anonym",
         "required_assistance" : "Belegarzt benötigt",
-        "termsOfUse" : "Bestimmungen",
-        "sharing_query" : "Sharing Query",
+        "termsOfUse" : "Allgemeine Geschäftsbedingungen",
+        "sharing_query" : "Data Access Filter",
         "requirements" : "Anforderungen",
         "groups" : "Gruppen",
         "group_name" : "Name der Gruppe",
@@ -125,5 +141,20 @@
         "end_validation_btn" : "Validierung abschliessen",
         "back_to_draft_btn" : "Zurück zum Entwurf",
         "delete_study_btn" : "Studie löschen"
+    },
+
+    "admin_stats" : {
+        "title" : "Statistiken",
+        "what" : "",
+        "value" : "Gesamtzahl",
+        "diff_yesterday" : "Diff. zu vor 1 Tag",
+        "diff_week" : "Diff. zu vor 7 Tagen",
+        "recordCount" : "Datensätze in DB",
+        "appCount" : "Apps und Plugins",
+        "runningStudyCount" : "Laufende Studien",
+        "groupCount" : "Teams (Gesundheitswesen und Forschung)",
+        "auditEventCount" : "Audit-Ereignisse",
+        "users" : "Aktive Benutzerkonten",
+        "consents" : "Zustimmungen"
     }
 }

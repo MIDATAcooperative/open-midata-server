@@ -1,6 +1,10 @@
 #!/bin/bash
 mkdir -p instance1
 mkdir -p instance2
+mkdir -p locks
+chmod ugo+rx locks
+chmod ugo+X .
+chmod go-r . 
 
 if [ -f ./instance1/run ]
   then 
@@ -38,10 +42,13 @@ sudo cp $instance/nginx/sites-available/* /etc/nginx/sites-available
 rm -f instance1/run
 rm -f instance2/run
 touch $instance/run
+sudo chmod -R ugo+r $instance/portal
+sudo chmod -R ugo+r $instance/visualizations
+sudo chmod -R ugo+X $instance
 echo "Instance LOCKED for start..."
-touch lock apilock
+touch locks/lock locks/apilock
 python main.py hotswap activator
 sudo service nginx restart
-rm lock apilock
+rm locks/lock locks/apilock
 rm $instance/builddir
 echo "Instance UNLOCKED..."

@@ -3,6 +3,7 @@ package utils.fhir;
 import java.util.List;
 import java.util.Set;
 
+import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.MedicationStatement;
 import org.hl7.fhir.dstu3.model.Observation;
@@ -21,6 +22,7 @@ import ca.uhn.fhir.rest.annotation.Sort;
 import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
+import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.param.CompositeAndListParam;
 import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateParam;
@@ -40,7 +42,7 @@ import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
-public class MedicationStatementResourceProvider extends ResourceProvider<MedicationStatement> implements IResourceProvider {
+public class MedicationStatementResourceProvider extends RecordBasedResourceProvider<MedicationStatement> implements IResourceProvider {
 
 	public MedicationStatementResourceProvider() {
 		searchParamNameToPathMap.put("MedicationStatement:context", "context");
@@ -62,7 +64,7 @@ public class MedicationStatementResourceProvider extends ResourceProvider<Medica
 	}
 
 	@Search()
-	public List<IBaseResource> getMedicationStatement(
+	public Bundle getMedicationStatement(
 			@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,
 
 			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
@@ -134,7 +136,12 @@ public class MedicationStatementResourceProvider extends ResourceProvider<Medica
 			SortSpec theSort,
 			 			
 			@ca.uhn.fhir.rest.annotation.Count
-			Integer theCount
+			Integer theCount,
+			
+			@OptionalParam(name="_page")
+			StringParam _page,
+			
+			RequestDetails theDetails
 
 	) throws AppException {
 
@@ -160,8 +167,10 @@ public class MedicationStatementResourceProvider extends ResourceProvider<Medica
 		paramMap.setIncludes(theIncludes);
 		paramMap.setSort(theSort);
 		paramMap.setCount(theCount);
+		paramMap.setFrom(_page != null ? _page.getValue() : null);
 
-		return search(paramMap);
+		return searchBundle(paramMap, theDetails);
+		
 	}
 
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
@@ -208,19 +217,13 @@ public class MedicationStatementResourceProvider extends ResourceProvider<Medica
 		setRecordCodeByCodings(record, null, "MedicationStatement");		
 		
 		String date = "No time";		
-		if (theMedicationStatement.hasEffectiveDateTimeType()) {
+		if (theMedicationStatement.hasEffective()) {
 			try {
-				date = FHIRTools.stringFromDateTime(theMedicationStatement.getEffectiveDateTimeType());
+				date = FHIRTools.stringFromDateTime(theMedicationStatement.getEffective());
 			} catch (Exception e) {
 				throw new UnprocessableEntityException("Cannot process effectiveDateTime");
 			}
-		} else if (theMedicationStatement.hasEffectivePeriod()) {
-			try {
-				date = FHIRTools.stringFromDateTime(theMedicationStatement.getEffectivePeriod().getStartElement())+" - "+FHIRTools.stringFromDateTime(theMedicationStatement.getEffectivePeriod().getEndElement());
-			} catch (Exception e) {
-				throw new UnprocessableEntityException("Cannot process effectivePeriod");
-			}
-		}
+		} 
 		record.name = date;		
 
 		// clean

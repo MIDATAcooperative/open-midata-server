@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import actions.APICall;
 import models.Consent;
 import models.MidataId;
+import models.Study;
 import models.User;
 import models.UserGroup;
 import models.UserGroupMember;
@@ -82,7 +83,7 @@ public class UserGroups extends APIController {
 		
 		Set<UserGroup> groups = UserGroup.getAllUserGroup(properties, fields);
 		
-		return ok(JsonOutput.toJson(groups, "UserGroup", fields)); 		
+		return ok(JsonOutput.toJson(groups, "UserGroup", fields)).as("application/json"); 		
 	}
 	
 	/**
@@ -169,7 +170,7 @@ public class UserGroups extends APIController {
 				
 		RecordManager.instance.createPrivateAPS(userGroup._id, userGroup._id);
 		
-		return ok(JsonOutput.toJson(userGroup, "UserGroup", UserGroup.ALL));
+		return ok(JsonOutput.toJson(userGroup, "UserGroup", UserGroup.ALL)).as("application/json");
 	}
 	
 	/**
@@ -238,6 +239,9 @@ public class UserGroups extends APIController {
 		if (self == null) throw new AuthException("error.notauthorized.action", "User not member of group");
 		if (!self.role.mayChangeTeam()) throw new BadRequestException("error.notauthorized.action", "User is not allowed to change team.");
 		
+		Study study = Study.getById(groupId, Sets.create("anonymous"));
+		boolean anonymous = study != null && study.anonymous;
+		
 		ResearcherRole role = null;
 		if (json.has("roleName")) {
 			role = new ResearcherRole();
@@ -251,6 +255,10 @@ public class UserGroups extends APIController {
 			role.setup = JsonValidation.getBoolean(json, "setup");
 			role.roleName = JsonValidation.getString(json, "roleName");
 			role.id = JsonValidation.getString(json, "id");	
+		}
+		
+		if (anonymous) {
+			if (role == null || !role.pseudo) throw new BadRequestException("error.invalid.anonymous", "Unpseudonymized access not allowed");
 		}
 		
 		BSONObject meta = RecordManager.instance.getMeta(executorId, self._id, "_usergroup");

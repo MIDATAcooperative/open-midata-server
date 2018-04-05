@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.1" xml:lang="en">
+    <file source-language="en" target-language="it" datatype="winres" original="i18n.js_it.json">
+        <trans-unit resname="todays_date" id="todays_date">
+            <source>Today's date:</source>
+        </trans-unit>
+        <trans-unit resname="add_data_btn" id="add_data_btn">
+            <source>Add Data</source>
+        </trans-unit>
+        <trans-unit resname="event" id="event">
+            <source>Event</source>
+        </trans-unit>
+        <trans-unit resname="tlb" id="tlb">
+            <source>Mark If</source>
+        </trans-unit>
+        <trans-unit resname="persons" id="persons">
+            <source>Person(s)</source>
+        </trans-unit>
+        <trans-unit resname="date" id="date">
+            <source>Date</source>
+        </trans-unit>
+        <trans-unit resname="details" id="details">
+            <source>Details</source>
+        </trans-unit>
+        <trans-unit resname="close_btn" id="close_btn">
+            <source>Close</source>
+        </trans-unit>
+        <trans-unit resname="details_btn" id="details_btn">
+            <source>Open Details</source>
+        </trans-unit>
+        <trans-unit resname="appointment" id="appointment">
+            <source>Appointments</source>
+        </trans-unit>
+        <trans-unit resname="medicationStatement" id="medicationStatement">
+            <source>Medication</source>
+        </trans-unit>
+        <trans-unit resname="observation" id="observation">
+            <source>Observations and Measurements</source>
+        </trans-unit>
+        <trans-unit resname="add_sources_title" id="add_sources_title">
+            <source>Add Data Sources</source>
+        </trans-unit>
+        <trans-unit resname="no_data_sources" id="no_data_sources">
+            <source>Currently there is no data available that could be displayed in the calendar. Please come back after you have some data in your account.</source>
+        </trans-unit>
+        <trans-unit resname="add_sources_add_btn" id="add_sources_add_btn">
+            <source>Add</source>
+        </trans-unit>
+    </file>
+</xliff>

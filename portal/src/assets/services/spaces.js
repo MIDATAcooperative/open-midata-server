@@ -58,7 +58,7 @@ angular.module('services')
 	
 	service.openAppLink = function($state, userId, data) {
 		  if (data.app === "market") {
-				$state.go("^.market", { tag : data.params.tag, context : "me" });
+				$state.go("^.market", { tag : data.params.tag, context : (data.params.context || "me") });
 		  } else if (data.app === "newconsent") {
 			  $state.go("^.newconsent", { share : data.params.share });
 		  } else if (data.app === "newrequest") {

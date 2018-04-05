@@ -13,6 +13,8 @@ mongodb*/
 lighttpd
 node
 node*/
+tasks/
+switches/
 ssl-certificate/
 portal/node_modules
 portal/dest

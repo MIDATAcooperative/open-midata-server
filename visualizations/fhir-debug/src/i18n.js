@@ -1,3 +1,5 @@
+/*jshint laxcomma:true */
+
 var en = {
 	
 },

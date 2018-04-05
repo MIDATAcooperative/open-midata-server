@@ -195,9 +195,17 @@ public class DBLayer {
 	 * Return the given fields of all objects that have the given properties.
 	 */
 	public static <T extends Model> List<T> getAllList(Class<T> modelClass, String collection, Map<String, ? extends Object> properties,
-			Set<String> fields, int limit) throws DatabaseException {
+			Set<String> fields, int limit, String sortField, int order) throws DatabaseException {
 		Stats.reportDb("read N", collection);
-		return getDatabaseForCollection(collection).getAllList(modelClass, collection, properties, fields, limit);
+		return getDatabaseForCollection(collection).getAllList(modelClass, collection, properties, fields, limit, sortField, order);
+	}
+	
+	/**
+	 * Return the count of all objects that have the given properties.
+	 */
+	public static long count(Class modelClass, String collection, Map<String, ? extends Object> properties) throws DatabaseException {
+		Stats.reportDb("count", collection);
+		return getDatabaseForCollection(collection).count(modelClass, collection, properties);
 	}
 
 	/**

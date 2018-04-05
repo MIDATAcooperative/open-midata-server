@@ -139,7 +139,7 @@ angular.module('portal')
 			$scope.study.processFlags.push(tag);
 			
 			var data = { processFlags : $scope.study.processFlags };
-			$scope.status.doAction("update", server.put(jsRoutes.controllers.research.Studies.update($scope.studyid).url, JSON.stringify(data)))
+			$scope.status.doAction("update", server.post(jsRoutes.controllers.research.Studies.updateNonSetup($scope.studyid).url, JSON.stringify(data)))
 			  .then(function(data) { 				
 				    $scope.reload();
 			   }); 
@@ -177,9 +177,9 @@ angular.module('portal')
 					$scope.tests.applinked = data.data.length > 0;
 				}).then(function() {
 				
-				server.post(jsRoutes.controllers.research.Studies.listParticipants($scope.studyid).url, JSON.stringify({ properties : { pstatus : "REQUEST" } }))
+				server.post(jsRoutes.controllers.research.Studies.countParticipants($scope.studyid).url, JSON.stringify({ properties : { pstatus : "REQUEST" } }))
 						.then(function(data) {
-							$scope.tests.allassigned = data.data.length === 0;
+							$scope.tests.allassigned = data.data.total === 0;
 						}).then(function()  {
 					
 
@@ -221,6 +221,10 @@ angular.module('portal')
 				});
 				
 		});
+	};
+	
+	$scope.go = function(what) {
+		$state.go(what.page);
 	};
 	
 	$scope.reload();

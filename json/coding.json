@@ -229,3 +229,9 @@
 {"_id":{"$oid":"5a3ce220aed64508a1f074bf"},"system":"http://midata.coop","code":"SPScoreSprint","display":"SensoPro Score Sprint Exercise","content":"SPScoreSprint","contentForSystemCode":{}}
 {"_id":{"$oid":"5a4c9ad8aed6450fbff7d2b7"},"system":"http://loinc.org","code":"85658-3","display":"Occupation","content":"work/occupation","contentForSystemCode":{}}
 {"_id":{"$oid":"5a4c9b44aed6450fbff7d2b8"},"system":"http://loinc.org","code":"85078-4","display":"Occupation industry","content":"work/field-of-occupation","contentForSystemCode":{}}
+{"_id":{"$oid":"5a9e713679c721f679467c70"},"system":"http://midata.coop/codesystems/specific","code":"air-purifier","display":"Person owns air purifier","content":"specific/air-purificator"}
+{"_id":{"$oid":"5a9e7d9f79c721f679467c98"},"system":"http://midata.coop","code":"main-occupation-location","display":"Main Occupation Location","content":"main-occupation-location"}
+{"_id":{"$oid":"5a9e7fab79c721f679467ca0"},"system":"http://midata.coop","code":"pollen-forecast","display":"Pollen forecast","content":"public/pollen-forecast"}
+{"_id":{"$oid":"5a9e800579c721f679467ca4"},"system":"http://snomed.info/sct","code":"300910009","display":"Allergy to pollen","content":"allergy-to-pollen"}
+{"_id":{"$oid":"5a9ff0fe79c721f679468c91"},"system":"http://midata.coop","code":"living-location","display":"Living Location","content":"living-location"}
+{"_id":{"$oid":"5abcbc1e79c721baaaae8467"},"system":"http://midata.coop","code":"main-occupation-location-type","display":"Main Occupation Location Type","content":"main-occupation-location-type"}

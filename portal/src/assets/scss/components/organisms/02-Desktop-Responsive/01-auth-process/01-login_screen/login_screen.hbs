@@ -1,0 +1,25 @@
+<div class="mi-or-login{{ modifier_classes }}">
+	<div class="mi-or-login__content">
+		<img src="/img/logo-midata--white.svg" alt="" class="mi-or-login__logo">
+		<div class="mi-or-login__app">
+			{{> @text--smaller app.name }}{{> @text--smaller app.message }}
+		</div>
+		{{#if app.image }}<div class="mi-or-login__app_image" style="background-image: url('{{ app.image.url }}');"></div>{{/if}}
+		{{#each fields}}
+			{{ render '@input--floating-label-white' input merge=true }}
+		{{/each }}
+		{{ render '@select' }}
+		{{ render '@flat_button--rounded' }}
+		<div class="mi-or-login__signup_link">
+			<a href="{{ link.href }}">
+				{{> @text--smallest link }}
+			</a>
+		</div>
+		<div class="mi-or-login__device">
+			{{> @text--smallest device }}
+		</div>
+		<div class="mi-or-login__legal_mentions">
+			{{> @text--smallest legal }}
+		</div>
+	</div>
+</div>

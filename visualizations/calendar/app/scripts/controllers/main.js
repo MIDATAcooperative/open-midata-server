@@ -1,12 +1,14 @@
 'use strict';
 
 angular.module('calendarApp')
-  .controller('MainCtrl', ['$scope', '$filter', '$routeParams', '$timeout', '$location', 'midataServer', 'midataPortal', 'eventProvider',
-    function ($scope, $filter, $routeParams, $timeout, $location, midataServer, midataPortal, eventProvider) {
+  .controller('MainCtrl', ['$scope', '$filter', '$routeParams', '$timeout', '$location', 'midataServer', 'midataPortal', 'eventProvider', 'uiCalendarConfig',
+    function ($scope, $filter, $routeParams, $timeout, $location, midataServer, midataPortal, eventProvider, uiCalendarConfig) {
       window.scope = $scope;
       var authToken = $routeParams.authToken;
       if (authToken) eventProvider.authToken = authToken;
       midataPortal.autoresize();
+      
+      $scope.operators = [ "<", ">" ];
       
       $scope.init = function() {
 	      /* config object */
@@ -31,15 +33,9 @@ angular.module('calendarApp')
       };
       
       $scope.useConfig = function(config) {
-    	 var add = [];
- 		 angular.forEach(config.sources, function(source) { 
-     		 if (source.selected) { 
-     			 add.push(source.id);
-     			 if (source.tlb) eventProvider.setTlb(source); else eventProvider.clearTlb(source.id);
-     		 }
-     	  });
-     	 eventProvider.setContents(add);
-     	 $scope.init();
+    	 $scope.init();
+    	 console.log(config);
+     	 eventProvider.setCriteria(config);     	 
       };
 	    
       $scope.load = function() {
@@ -49,13 +45,13 @@ angular.module('calendarApp')
     		  var params = $location.search();
     		  
     		  if (params.content) {
-    			  eventProvider.setContents(params.content.split(","));
+    			  //eventProvider.setContents(params.content.split(","));
     			  $scope.init();
     		  } else {
     		  
 			      midataServer.getConfig(eventProvider.authToken)
 			      .then(function(result) {
-			    	 if (result.data && result.data.sources) {
+			    	 if (result.data && result.data.cal) {
 			    	    $scope.useConfig(result.data);
 			    	 } else {
 			    		$scope.init();
@@ -66,15 +62,7 @@ angular.module('calendarApp')
     		  }
     	  }
       };
-      
-      $scope.loadTest = function( start, end, timezone, callback ) { 
-     	 console.log(start.toDate());
-     	 console.log(end.toDate());
-     	 console.log(timezone);
-     	 console.log(callback);
-     	 
-     	 eventProvider.query(eventProvider.authToken, start, end, callback);     	     	
-       }; 
+           
       
       $scope.eventSources = [
    /*       [                   
@@ -88,18 +76,41 @@ angular.module('calendarApp')
       textColor : "#ffffff"
     }
            ], */
-           $scope.loadTest
+           { id : "Observations", events : function(start,end,timezone,callback) { eventProvider.queryObservations(eventProvider.authToken, start, end, callback); } },
+           { id : "Appointments", color : "#0000a0", textColor : "#ffffff", events : function(start,end,timezone,callback) { eventProvider.queryAppointments(eventProvider.authToken, start, end, callback); } },
+           { id : "MedicationStatement", color : "#a000a0", textColor : "#ffffff", events : function(start,end,timezone,callback) { eventProvider.queryMedicationStatements(eventProvider.authToken, start, end, callback); } }
       ];
             
       
       $scope.eventClick = function(event, jsEvent, view) {
     	  console.log(event);
     	  $scope.selectedEvent = event;
+    	  $scope.tlb = event.tlb ? (eventProvider.getTlb(event.tlb) || { id : event.tlb })  : null;
+    
           $("#details").modal("show");          
       };
       
+      $scope.tlbModified = function() {
+    	  $scope.tlb.modified = true;
+      };
+      
+      $scope.checkTlb = function() {    	  
+    	  if ($scope.tlb && $scope.tlb.modified) {
+    		  $scope.tlb.modified = false;
+    		  if ($scope.tlb.limit == "" || $scope.tlb.limit == null) { 
+    			eventProvider.clearTlb($scope.tlb.id);
+    		  } else {
+    	        eventProvider.setTlb($scope.tlb);
+    		  }
+    	      midataServer.setConfig(eventProvider.authToken, eventProvider.getCriteria());
+    	      console.log(uiCalendarConfig);
+    	      uiCalendarConfig.calendars.calendar.fullCalendar('refetchEvents');
+    	      
+    	  }
+      };
+      
       $scope.showDetails = function(event) {
-    	  midataPortal.openApp("page", "fhir-observation", { id : event.id, path :"/record" });
+    	  midataPortal.openApp("page", event.viewer, { id : event.id, path :"/record" });
       };
       
       $scope.load();

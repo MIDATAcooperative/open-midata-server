@@ -1,0 +1,32 @@
+.mi-at-icon {
+	z-index: 1;
+
+	svg {
+		width: 24px;
+		height: 24px;
+	}
+
+	&__badge {
+		font-size: $font-size-tiny;
+		color: $color-brand-white;
+		font-family: $font-normal;
+		position: relative;
+		top: -21px;
+		left: 13px;
+		width: 10px;
+		z-index: 2;
+
+		&::after {
+			content: "";
+			border-radius: 50%;
+			background-color: $color-brand-red-primary;
+			height: 12px;
+			width: 12px;
+			position: absolute;
+			top: -2px;
+			left: -4px;
+			z-index: -1;
+		}
+	}
+}
+

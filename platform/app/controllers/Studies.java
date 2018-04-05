@@ -51,7 +51,7 @@ public class Studies extends APIController {
 	   Rights.chk("Studies.search", UserRole.MEMBER, properties, fields);	   	   
 	   Set<Study> studies = Study.getAll(null, properties, fields);
 	   
-	   return ok(JsonOutput.toJson(studies, "Study", fields));
+	   return ok(JsonOutput.toJson(studies, "Study", fields)).as("application/json");
 	}	
 			
 }

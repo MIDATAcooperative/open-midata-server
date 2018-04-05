@@ -13,8 +13,11 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
 import com.mongodb.MongoException;
+import com.mongodb.ReadConcern;
+import com.mongodb.ReadPreference;
 import com.mongodb.ServerAddress;
 import com.mongodb.WriteConcern;
 
@@ -36,6 +39,8 @@ public class MongoDatabase extends Database {
 	private DatabaseConversion conversion = new DatabaseConversion();
 	private MongoCredential credential;
 	
+	private final static int MAX_TRIES = 3;
+	
 	private boolean logQueries = true;
 	
 	public MongoDatabase(String host, int port, String database, String user, String password) {
@@ -56,14 +61,34 @@ public class MongoDatabase extends Database {
 		//database = Play.application().configuration().getString("mongo.database");
 		//try {
 		
-		if (credential != null) {		
-			mongoClient = new MongoClient(new ServerAddress(host, port), Arrays.asList(this.credential));
-		} else mongoClient = new MongoClient(new ServerAddress(host, port));
-			mongoClient.setWriteConcern(WriteConcern.ACKNOWLEDGED);
-		/*} catch (UnknownHostException e) {	
-			e.printStackTrace();
-			throw new DatabaseException(e);
-		}*/
+		if (host.indexOf(",") >= 0) {
+			host = host.substring(host.indexOf("/"));
+			String hosts[] = host.split(",");
+			List<ServerAddress> addr = new ArrayList<ServerAddress>();
+			for (String h : hosts) {
+				int p = h.indexOf(":");
+				addr.add(new ServerAddress(h.substring(0, p), Integer.parseInt(h.substring(p+1))));
+			}
+			
+			 MongoClientOptions.Builder builder = new MongoClientOptions.Builder();			
+			 builder.maxConnectionIdleTime(60000);			 
+			 MongoClientOptions options = builder.build();
+			
+			if (credential != null) {		
+				mongoClient = new MongoClient(addr, Arrays.asList(this.credential), options);
+			} else mongoClient = new MongoClient(addr, options);			
+			mongoClient.setReadPreference(ReadPreference.primaryPreferred());
+			mongoClient.setWriteConcern(WriteConcern.W1);
+			
+		} else { 
+		
+			if (credential != null) {		
+				mongoClient = new MongoClient(new ServerAddress(host, port), Arrays.asList(this.credential));
+			} else mongoClient = new MongoClient(new ServerAddress(host, port));
+				mongoClient.setWriteConcern(WriteConcern.ACKNOWLEDGED);
+			
+		}
+		
 	}
 	
 	/**
@@ -100,14 +125,18 @@ public class MongoDatabase extends Database {
 	 */
 	public <T extends Model> void insert(String collection, T modelObject) throws DatabaseException {
 		DBObject dbObject;
+		for (int tries=0;tries<=MAX_TRIES;tries++) {
 		try {
 			if (logQueries) AccessLog.logDB("insert into "+collection);
 			dbObject = conversion.toDBObject(modelObject);
-			getCollection(collection).insert(dbObject);			
+			getCollection(collection).insert(dbObject);	
+			return;
 		} catch (DatabaseConversionException e) {
 			throw new DatabaseException(e);
 		} catch (MongoException e) {
-			throw new DatabaseException(e);
+			if (tries==MAX_TRIES) throw new DatabaseException(e);
+			delay();
+		}
 		}
 	}
 	
@@ -116,55 +145,68 @@ public class MongoDatabase extends Database {
 	 */
 	public <T extends Model> void upsert(String collection, T modelObject) throws DatabaseException {
 		DBObject dbObject;
+		for (int tries=0;tries<=MAX_TRIES;tries++) {
 		try {
 			if (logQueries) AccessLog.logDB("upsert "+collection+ " "+modelObject.to_db_id().toString());
 			dbObject = conversion.toDBObject(modelObject);
 			DBObject query = new BasicDBObject();
 			query.put("_id", modelObject.to_db_id());
-			getCollection(collection).update(query, dbObject, true, false);			
+			getCollection(collection).update(query, dbObject, true, false);
+			return;
 		} catch (DatabaseConversionException e) {
 			throw new DatabaseException(e);
 		} catch (MongoException e) {
-			throw new DatabaseException(e);
+			if (tries==MAX_TRIES) throw new DatabaseException(e);
+			delay();
+		}
 		}
 	}
 
 	/**
 	 * Remove all documents with the given properties from the given collection.
 	 */
-	public void delete(Class model, String collection, Map<String, ? extends Object> properties) throws DatabaseException {		
+	public void delete(Class model, String collection, Map<String, ? extends Object> properties) throws DatabaseException {
+		for (int tries=0;tries<=MAX_TRIES;tries++) {
 		try {
 			if (logQueries) AccessLog.logDB("delete "+collection+ " "+properties.toString());
 			DBObject query = toDBObject(model, properties);
 			getCollection(collection).remove(query);
+			return;
 		} catch (MongoException e) {
-			throw new DatabaseException(e);
+			if (tries==MAX_TRIES) throw new DatabaseException(e);
+			delay();
 		} catch (DatabaseConversionException e2) {
 			throw new DatabaseException(e2);
+		}
 		}
 	}
 
 	/**
 	 * Check whether a document exists that has the given properties.
 	 */
-	public boolean exists(Class model, String collection, Map<String, ? extends Object> properties) throws DatabaseException {		
+	public boolean exists(Class model, String collection, Map<String, ? extends Object> properties) throws DatabaseException {
+		for (int tries=0;tries<=MAX_TRIES;tries++) {
 		try {
 			DBObject query = toDBObject(model, properties);
 			DBObject projection = new BasicDBObject("_id", 1);
 			if (logQueries) AccessLog.logDB("exists "+collection+" "+query.toString());
 			return getCollection(collection).findOne(query, projection) != null;
 		} catch (MongoException e) {
-			throw new DatabaseException(e);
+			if (tries==MAX_TRIES) throw new DatabaseException(e);
+			delay();
 		} catch (DatabaseConversionException e) {
 			throw new DatabaseException(e);
 		}
+		}
+		throw new DatabaseException();
 	}
 
 	/**
 	 * Return the given fields of the object that has the given properties.
 	 */
 	public <T extends Model> T get(Class<T> modelClass, String collection, Map<String, ? extends Object> properties,
-			Set<String> fields) throws DatabaseException {		
+			Set<String> fields) throws DatabaseException {
+		for (int tries=0;tries<=MAX_TRIES;tries++) {
 		try {
 			DBObject query = toDBObject(modelClass, properties);
 			DBObject projection = toDBObject(fields);
@@ -173,10 +215,13 @@ public class MongoDatabase extends Database {
 			if (dbObject == null) return null;
 			return conversion.toModel(modelClass, dbObject);
 		} catch (MongoException e) {
-			throw new DatabaseException(e);
+			if (tries==MAX_TRIES) throw new DatabaseException(e);
+			delay();
 		} catch (DatabaseConversionException e) {
 			throw new DatabaseException(e);
 		}
+		}
+		throw new DatabaseException();
 	}
 
 	/**
@@ -190,32 +235,50 @@ public class MongoDatabase extends Database {
 	 * Return the given fields of all objects that have the given properties.
 	 */
 	public <T extends Model> Set<T> getAll(Class<T> modelClass, String collection, Map<String, ? extends Object> properties,
-			Set<String> fields, int limit) throws DatabaseException {		
-		try {
-			DBObject query = toDBObject(modelClass, properties);
-			DBObject projection = toDBObject(fields);
-			if (logQueries) AccessLog.logDB("all "+collection+" "+query.toString());
-			DBCursor cursor = getCollection(collection).find(query, projection);
-			if (limit!=0) cursor = cursor.limit(limit);			
-			return conversion.toModel(modelClass, cursor.iterator());
-		} catch (MongoException e) {
-			throw new DatabaseException(e);
-		} catch (DatabaseConversionException e) {
-			throw new DatabaseException(e);
+			Set<String> fields, int limit) throws DatabaseException {
+		for (int tries = 0;tries <= MAX_TRIES;tries++) {
+			try {
+				DBObject query = toDBObject(modelClass, properties);
+				DBObject projection = toDBObject(fields);
+				if (logQueries) AccessLog.logDB("all "+collection+" "+query.toString());
+				DBCursor cursor = getCollection(collection).find(query, projection);
+				if (limit!=0) cursor = cursor.limit(limit);			
+				return conversion.toModel(modelClass, cursor.iterator());
+			} catch (MongoException e) {
+				if (tries == MAX_TRIES) throw new DatabaseException(e);
+				delay();
+			} catch (DatabaseConversionException e) {
+				throw new DatabaseException(e);
+			}
 		}
+		throw new DatabaseException();
 	}
 	
 	public <T extends Model> List<T> getAllList(Class<T> modelClass, String collection, Map<String, ? extends Object> properties,
-			Set<String> fields, int limit) throws DatabaseException {		
+			Set<String> fields, int limit, String sortField, int order) throws DatabaseException {
+		for (int tries=0;tries<=MAX_TRIES;tries++) {
 		try {
 			DBObject query = toDBObject(modelClass, properties);
 			DBObject projection = toDBObject(fields);
 			if (logQueries) AccessLog.logDB("all "+collection+" "+query.toString());
 			DBCursor cursor = getCollection(collection).find(query, projection);
+			if (sortField != null) cursor = cursor.sort(new BasicDBObject(sortField, order));
 			if (limit!=0) cursor = cursor.limit(limit);			
 			return conversion.toModelList(modelClass, cursor.iterator());
 		} catch (MongoException e) {
+			if (tries==MAX_TRIES) throw new DatabaseException(e);
+			delay();
+		} catch (DatabaseConversionException e) {
 			throw new DatabaseException(e);
+		}
+		}
+		throw new DatabaseException();
+	}
+	
+	public long count(Class modelClass, String collection, Map<String, ? extends Object> properties) throws DatabaseException {
+		try {
+		  DBObject query = toDBObject(modelClass, properties);
+		  return getCollection(collection).count(query);
 		} catch (DatabaseConversionException e) {
 			throw new DatabaseException(e);
 		}
@@ -226,28 +289,36 @@ public class MongoDatabase extends Database {
 	 * Set the given field of the object with the given id.
 	 */
 	public <T extends Model> void set(Class<T> model, String collection, Object modelId, String field, Object value) throws DatabaseException {
+		for (int tries=0;tries<=MAX_TRIES;tries++){
 		try {
 			DBObject query = new BasicDBObject("_id", modelId);
 			DBObject update = new BasicDBObject("$set", conversion.toDBObject(field, value));
 			if (logQueries) AccessLog.logDB("set field "+collection+" field="+field+" value="+value);
 			getCollection(collection).update(query, update);
+			return;
 		} catch (MongoException e) {
-			throw new DatabaseException(e);
+			if (tries==MAX_TRIES) throw new DatabaseException(e);
+			delay();
 		} catch (DatabaseConversionException e2) {
 			throw new DatabaseException(e2);
+		}
 		}
 	}
 	
 	public <T extends Model> void set(Class<T> model, String collection, Map<String, Object> properties, String field, Object value) throws DatabaseException {
+		for (int tries=0;tries<=MAX_TRIES;tries++) {
 		try {
 			DBObject query = toDBObject(model, properties);
 			DBObject update = new BasicDBObject("$set", conversion.toDBObject(field, value));
 			if (logQueries) AccessLog.logDB("set all "+collection+" query="+query.toString()+" field="+field+" to="+value);
 			getCollection(collection).update(query, update, false, true);
+			return;
 		} catch (MongoException e) {
-			throw new DatabaseException(e);
+			if (tries==MAX_TRIES) throw new DatabaseException(e);
+			delay();
 		} catch (DatabaseConversionException e2) {
 			throw new DatabaseException(e2);
+		}
 		}
 	}
 	
@@ -255,6 +326,7 @@ public class MongoDatabase extends Database {
 	 * Set the given fields of the object with the given id.
 	 */
 	public <T extends Model> void update(T model, String collection, Collection<String> fields) throws DatabaseException {
+		for (int tries=0;tries<=MAX_TRIES;tries++) {
 		try {
 			if (logQueries) AccessLog.logDB("update "+collection+ " "+model.to_db_id().toString());
 			DBObject query = new BasicDBObject();
@@ -271,9 +343,10 @@ public class MongoDatabase extends Database {
 			DBObject update = new BasicDBObject("$set", updateContent);
 		
 			getCollection(collection).update(query, update, false, false);
-																	
+			return;														
 		} catch (MongoException e) {
-			throw new DatabaseException(e);
+			if (tries==MAX_TRIES) throw new DatabaseException(e);
+			delay();
 		} catch (DatabaseConversionException e2) {
 			throw new DatabaseException(e2);
 		} catch (IllegalAccessException e3) {
@@ -281,12 +354,14 @@ public class MongoDatabase extends Database {
 		} catch (NoSuchFieldException e4) {
 			throw new DatabaseException(e4);
 		}
+		}
 	}
 	
 	/**
 	 * Set the given field of the object with the given id.
 	 */
 	public <T extends Model> void secureUpdate(T model, String collection, String timestampField, String[] fields) throws LostUpdateException, DatabaseException {
+		for (int tries=0;tries<=MAX_TRIES;tries++) {
 		try {
 			if (logQueries) AccessLog.logDB("secure update "+collection+ " "+model.to_db_id().toString());
 			DBObject query = new BasicDBObject();
@@ -311,15 +386,17 @@ public class MongoDatabase extends Database {
 			
 			model.getClass().getField(timestampField).set(model, ts);
 			if (logQueries) AccessLog.log("secure updated: "+oldTimeStamp+" -> "+ts);
-											
+		    return;									
 		} catch (MongoException e) {
-			throw new DatabaseException(e);
+			if (tries==MAX_TRIES) throw new DatabaseException(e);
+			delay();
 		} catch (DatabaseConversionException e2) {
 			throw new DatabaseException(e2);
 		} catch (IllegalAccessException e3) {
 			throw new DatabaseException(e3);
 		} catch (NoSuchFieldException e4) {
 			throw new DatabaseException(e4);
+		}
 		}
 	}
 
@@ -361,6 +438,10 @@ public class MongoDatabase extends Database {
 			dbObject.put(field, 1);
 		}
 		return dbObject;
+	}
+	
+	private void delay() {
+		try { Thread.sleep(100); } catch (InterruptedException e) {}
 	}
 	
 }

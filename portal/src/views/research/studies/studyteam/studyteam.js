@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('StudyTeamCtrl', ['$scope', '$state', 'server', 'status', 'usergroups', 'studies', 'session', 'users', function($scope, $state, server, status, usergroups, studies, session, users) {
+.controller('StudyTeamCtrl', ['$scope', '$state', 'server', 'status', 'usergroups', 'studies', 'session', 'users', '$document', function($scope, $state, server, status, usergroups, studies, session, users, $document) {
 	
 	$scope.studyId = $state.params.studyId;
 	$scope.status = new status(false, $scope);
@@ -11,6 +11,7 @@ angular.module('portal')
 	  	 startingDay: 1
 	};
 	$scope.members = [];
+	$scope.form = {};
     $scope.roles = studies.roles;
     $scope.rights = ["setup", "readData", "writeData", "unpseudo", "export", "changeTeam", "participants", "auditLog" ];
     $scope.add = { role:{} };
@@ -70,8 +71,22 @@ angular.module('portal')
 		}
 	};
 	
-	$scope.addPerson = function() {			
-        $scope.error = null;				
+	$scope.formChange = function() {
+		$scope.saveOk = false;
+	};
+	
+	$scope.addPerson = function() {		
+		$scope.myform = $scope.form.myform;
+		$scope.submitted = $scope.form.submitted = true;	
+		if ($scope.error && $scope.error.field && $scope.error.type) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
+		$scope.error = null;
+		if (! $scope.myform.$valid) {
+			var elem = $document[0].querySelector('input.ng-invalid');
+			if (elem && elem.focus) elem.focus();
+			return;
+		}
+		
+       			
 		$scope.status.doAction("add", users.getMembers({ email : $scope.add.personemail, role : "RESEARCH" },["email", "role"]))
 		.then(function(result) {
 			if (result.data && result.data.length) {
@@ -82,6 +97,9 @@ angular.module('portal')
 				then(function() {
 					$scope.add = { role:{} };
 					$scope.init();
+					$scope.submitted = $scope.form.submitted = false;				
+					$scope.saveOk = true;
+					$scope.myform.$setPristine();
 				});
 			} else {
 				$scope.error = { code : "error.unknown.user" };

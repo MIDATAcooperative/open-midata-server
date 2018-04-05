@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.hl7.fhir.dstu3.model.Appointment;
+import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.IdType;
@@ -28,11 +29,13 @@ import ca.uhn.fhir.rest.annotation.Sort;
 import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
+import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
+import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
@@ -45,7 +48,7 @@ import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
-public class QuestionnaireResponseResourceProvider extends ResourceProvider<QuestionnaireResponse> implements IResourceProvider {
+public class QuestionnaireResponseResourceProvider extends RecordBasedResourceProvider<QuestionnaireResponse> implements IResourceProvider {
 
 	public QuestionnaireResponseResourceProvider() {
 		searchParamNameToPathMap.put("QuestionnaireResponse:author", "author");
@@ -67,7 +70,7 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 	}
 
 	@Search()
-	public List<IBaseResource> getQuestionnaireResponse(
+	public Bundle getQuestionnaireResponse(
 		
 			@Description(shortDefinition="The resource identity")
 			@OptionalParam(name="_id")
@@ -147,7 +150,12 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 			
 			@Sort SortSpec theSort,
 
-			@ca.uhn.fhir.rest.annotation.Count Integer theCount
+			@ca.uhn.fhir.rest.annotation.Count Integer theCount,
+			
+			@OptionalParam(name="_page")
+			StringParam _page,
+			
+			RequestDetails theDetails
 
 	) throws AppException {
 
@@ -174,8 +182,10 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 		paramMap.setIncludes(theIncludes);
 		paramMap.setSort(theSort);
 		paramMap.setCount(theCount);
+		paramMap.setFrom(_page != null ? _page.getValue() : null);
 
-		return search(paramMap);
+		return searchBundle(paramMap, theDetails);
+		
 	}
 
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
@@ -207,20 +217,7 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 	public MethodOutcome createResource(@ResourceParam QuestionnaireResponse theQuestionnaireResponse) {
 		return super.createResource(theQuestionnaireResponse);
 	}
-	
-	@Override
-	protected MethodOutcome create(QuestionnaireResponse theQuestionnaireResponse) throws AppException {
-
-		Record record = newRecord("fhir/QuestionnaireResponse");
-		prepare(record, theQuestionnaireResponse);
-		// insert
-		insertRecord(record, theQuestionnaireResponse);
-
-		processResource(record, theQuestionnaireResponse);				
 		
-		return outcome("QuestionnaireResponse", record, theQuestionnaireResponse);
-
-	}
 	
 	public Record init() { return newRecord("fhir/QuestionnaireResponse"); }
 
@@ -230,15 +227,6 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 		return super.updateResource(theId, theQuestionnaireResponse);
 	}
 	
-	@Override
-	protected MethodOutcome update(@IdParam IdType theId, @ResourceParam QuestionnaireResponse theQuestionnaireResponse) throws AppException {
-		Record record = fetchCurrent(theId);
-		prepare(record, theQuestionnaireResponse);		
-		updateRecord(record, theQuestionnaireResponse);		
-		processResource(record, theQuestionnaireResponse);
-		
-		return outcome("QuestionnaireResponse", record, theQuestionnaireResponse);
-	}
 
 	public void prepare(Record record, QuestionnaireResponse theQuestionnaireResponse) throws AppException {
 		// Set Record code and content

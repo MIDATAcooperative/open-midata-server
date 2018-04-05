@@ -116,6 +116,7 @@ angular.module('fhirDebug')
     	$scope.returnStack.push($scope.resource);
     	var r = fhirModule.pool[id];
     	if (r) {
+    	  $state.go("resource", { id : id });
     	  $scope.resource = r;
     	  access.display = fhirModule.makeHRName($scope.resource);
     	  $scope.currentDefinition = fhirModule.definitions[$scope.resource.resourceType];
@@ -124,11 +125,11 @@ angular.module('fhirDebug')
     		midataServer.fhirRead(midataServer.authToken, rt[0], rt[1])
     		.then(function(result) {
     			r = result.data;
-    			fhirModule.addToPool(r);    			
+    			fhirModule.addToPool(r);
     			r.$$fhirUnchanged = true;
-    			$scope.resource = r;
-    	    	access.display = fhirModule.makeHRName($scope.resource);
-    	    	$scope.currentDefinition = fhirModule.definitions[$scope.resource.resourceType];
+    			
+    			$state.go("resource", { id : id });
+    			    			
     		});
     	}
     };
@@ -169,7 +170,7 @@ angular.module('fhirDebug')
     
     $scope.addCoding = function(cc, system) {
     	if (!cc.coding) cc.coding = [];
-    	cc.coding.push({ system: (system || ""), value : "", display : "" });
+    	cc.coding.push({ system: (system || ""), code : "", display : "" });
     };
     
     $scope.addText = function(cc) {

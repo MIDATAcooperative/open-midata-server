@@ -70,6 +70,8 @@ import utils.json.JsonValidation.JsonValidationException;
  */
 public class Users extends APIController {
 	
+	public final static int MAX_CONTACTS_SIZE = 300;
+	
 	/**
 	 * retrieve a list of users matching some criteria
 	 * allowed restrictions and returned fields depend heavily on user role
@@ -152,7 +154,7 @@ public class Users extends APIController {
 		}
 		
 		Collections.sort(users);
-		return ok(JsonOutput.toJson(users, "User", fields));
+		return ok(JsonOutput.toJson(users, "User", fields)).as("application/json");
 	}
 		
 	/**
@@ -206,10 +208,12 @@ public class Users extends APIController {
 		Set<MidataId> contactIds = new HashSet<MidataId>();
 		Set<Member> contacts;
 	
-		Set<Circle> circles = Circle.getAll(CMaps.map("owner", userId), Sets.create("authorized"));
+		Set<Circle> circles = Circle.getAll(CMaps.map("owner", userId).map("type",Sets.createEnum(ConsentType.CIRCLE, ConsentType.HEALTHCARE)), Sets.create("authorized"));
 		for (Circle circle : circles) {
 			contactIds.addAll(circle.authorized);
 		}
+		if (contactIds.size() > MAX_CONTACTS_SIZE) return ok();
+		
 		contacts = Member.getAll(CMaps.map("_id", contactIds).map("role", UserRole.MEMBER).map("status", User.NON_DELETED),Sets.create("firstname","lastname","email","role"));
 			
 		return ok(JsonOutput.toJson(contacts, "User", Sets.create("firstname","lastname","email","role")));

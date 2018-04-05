@@ -12,7 +12,7 @@ module.exports = function(grunt) {
         },
         
         build : {
-        	src : ['dest/app.min.js','dest/oauth.min.js','dest/app.min.css']        	
+        	src : ['dest/app.min.js','dest/oauth.min.js','dest/app.min.css','dest/oauth.min.css']        	
         }
     },
     
@@ -100,6 +100,10 @@ module.exports = function(grunt) {
         css: {
           files : 'src/**/*.less',
           tasks : ['concat:css', 'less']
+        },
+        sass: {
+          files : 'src/**/*.scss',
+          tasks : ['concat:sass', 'sass']
         }
     },
     
@@ -114,7 +118,7 @@ module.exports = function(grunt) {
     	   eqeqeq: false,
     	   eqnull: true
     	},
-        all: ['Gruntfile.js', 'src/**/*.js' ]
+        all: ['Gruntfile.js', 'src/**/*.js', '!src/assets/scss/components/**/*.js' ]
     },
     
     // Copy files
@@ -124,7 +128,9 @@ module.exports = function(grunt) {
     	 { expand : true, cwd: 'src/', src: '**/*.html', dest: 'dest/' },    	 
     	 { expand : true, cwd: 'src/', src: 'auth.js', dest: 'dest/' },
     	 { expand : true, cwd: 'src/assets/images/', src : '**/*', dest : 'dest/images' },
-    	 { expand : true, flatten:true, cwd: 'dest/components/', src: ['**/*.ttf','**/*.woff','**/*.woff2'], dest: 'dest/fonts' }
+    	 { expand : true, cwd: 'src/assets/img/', src : '**/*', dest : 'dest/img' },
+    	 { expand : true, flatten:true, cwd: 'dest/components/', src: ['**/*.ttf','**/*.woff','**/*.woff2'], dest: 'dest/fonts' },
+    	 { expand : true, cwd: 'src/assets/fonts/', src: ['*'], dest: 'dest/fonts' }
         ]
       }
     },
@@ -141,18 +147,47 @@ module.exports = function(grunt) {
     concat: {
         
         js: {
-          src: ['src/app.js', 'tmp/scripts/config.js', 'src/assets/**/*.js', 'src/views/**/*.js' ],
+          src: ['src/app.js', 'tmp/scripts/config.js', 'src/assets/**/*.js', '!src/assets/scss/**/*.js', 'src/views/**/*.js' ],
           dest: 'dest/app.js'
         },
         oauthjs: {
-            src: ['src/oauthapp.js', 'tmp/scripts/config.js', 'src/assets/**/*.js', 'src/views/shared/public/oauth2/*.js', 'src/views/shared/public/postregister/*.js', 'src/views/members/public/registration/*.js', 'src/views/shared/public/terms/*.js' ],
+            src: ['src/oauthapp.js', 'tmp/scripts/config.js', 'src/assets/**/*.js',  '!src/assets/scss/**/*.js', 'src/views/shared/public/oauth2/*.js', 'src/views/shared/public/postregister/*.js', 'src/views/members/public/registration/*.js', 'src/views/shared/public/terms/*.js' ],
             dest: 'dest/oauthapp.js'
         },
         css : {
-          src : ['src/assets/css/*' , 'src/views/**/*.less'],
+          src : ['src/assets/css/*' , 'src/views/**/*.less', '!src/assets/css/main.css'],
           dest: 'dest/app.less'
+        },
+        sass : {
+            src : ['src/assets/scss/_reset.scss',
+            	'src/assets/scss/_variables.scss',
+            	'src/assets/scss/_mixins.scss',
+            	'src/assets/scss/_colors.scss',
+            	'src/assets/scss/_placeholder_classes.scss',
+            	'src/assets/scss/_html.scss',
+            	'src/assets/scss/_animations.scss',
+            	'src/assets/scss/_typography.scss', 'src/assets/scss/components/**/*.scss', 'src/views/**/*.scss', 'src/assets/scss/_olddesign.scss', 'src/assets/scss/_midataextra.scss'],
+            dest: 'dest/app.scss'
+        },
+        test : {
+          src : "src/assets/css/main.css",
+          dest : "dest/main.css"
         }
      },
+     
+     postcss: {
+    	    options: {
+    	      map: true, // inline sourcemaps
+
+    	     
+    	      processors: [    	     
+    	        require('autoprefixer')({browsers: 'last 2 versions'})
+    	      ]
+    	    },
+    	    dist: {
+    	      src: 'dest/app2.css'
+    	    }
+    },
      
      // ng-annotate
      ngAnnotate: {
@@ -197,6 +232,17 @@ module.exports = function(grunt) {
     	      "dest/app.css": "dest/app.less"
     	 }
       }
+     },
+     
+     sass: {
+    	 development: {
+        	 options: {
+        	      paths: []
+        	 },
+        	 files: {
+        	      "dest/app2.css": "dest/app.scss"
+        	 }
+          } 
      },
      
      ngconstant: {    	  
@@ -250,7 +296,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-less');
+  grunt.loadNpmTasks('grunt-contrib-sass');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.loadNpmTasks('grunt-postcss');
   grunt.loadNpmTasks('grunt-ng-annotate');
   grunt.loadNpmTasks('grunt-ng-constant');
   grunt.loadNpmTasks('grunt-usemin');
@@ -263,7 +311,7 @@ module.exports = function(grunt) {
   // Default task(s).
   grunt.registerTask('default', ['deploy']);
   grunt.registerTask('webserver', ['connect', 'watch']);
-  grunt.registerTask('bundle', [ 'copy', 'jsonmin', 'preprocess', 'jshint', 'concat', 'less' ]);
+  grunt.registerTask('bundle', [ 'copy', 'jsonmin', 'preprocess', 'jshint', 'concat', 'less', 'sass', 'postcss' ]);
   grunt.registerTask('build', [
                                'ngAnnotate',
                                'useminPrepare',

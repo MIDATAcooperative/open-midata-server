@@ -1,0 +1,26 @@
+/**
+ * Set some global rules.
+ */
+html {
+	box-sizing: border-box;
+	// color: $color-secondary;
+	// font-family: $font-primary;
+	// Some fonts fix
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*:before,
+*:after {
+	box-sizing: inherit;
+	font-family: inherit;
+}
+
+// ::selection {
+// 	background: $color-flashy;
+// }
+//
+// ::-moz-selection {
+// 	background: $color-flashy;
+// }

@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.hl7.fhir.dstu3.model.Person;
 import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointSystem;
@@ -42,6 +43,7 @@ import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.api.SummaryEnum;
+import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.param.CompositeAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
@@ -70,7 +72,7 @@ import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.stats.Stats;
 
-public class GroupResourceProvider extends ResourceProvider<Group> implements IResourceProvider {
+public class GroupResourceProvider extends RecordBasedResourceProvider<Group> implements IResourceProvider {
 
 	public GroupResourceProvider() {
 		registerSearches("Group", getClass(), "getGroup");
@@ -141,7 +143,7 @@ public class GroupResourceProvider extends ResourceProvider<Group> implements IR
 	}
 			
 	   @Search()
-	    public List<IBaseResource> getGroup(
+	    public Bundle getGroup(
 	    		@Description(shortDefinition="The resource identity")
 	    		@OptionalParam(name="_id")
 	    		StringAndListParam theId, 
@@ -204,7 +206,12 @@ public class GroupResourceProvider extends ResourceProvider<Group> implements IR
 	    		Integer theCount,
 	    		
 	    		SummaryEnum theSummary, // will receive the summary (no annotation required)
-	    	    @Elements Set<String> theElements
+	    	    @Elements Set<String> theElements,
+	    	    
+	    	    @OptionalParam(name="_page")
+				StringParam _page,
+				
+				RequestDetails theDetails
 	    
 	    		) throws AppException {
 	    	
@@ -229,7 +236,7 @@ public class GroupResourceProvider extends ResourceProvider<Group> implements IR
 	    	paramMap.setElements(theElements);
 	    	paramMap.setSummary(theSummary);
 	    	    		    	
-	    	return search(paramMap);    	    	    	
+	    	return searchBundle(paramMap, theDetails);    	    	    	
 	    }
 	
 	@Override
@@ -264,7 +271,7 @@ public class GroupResourceProvider extends ResourceProvider<Group> implements IR
 	
 			Query query = new Query();		
 			QueryBuilder builder = new QueryBuilder(params, query, null);
-						
+			builder.handleIdRestriction();		
 			builder.restriction("actual", false, QueryBuilder.TYPE_BOOLEAN, "fhirGroup.actual");
 			builder.restriction("characteristic", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "fhirGroup.characteristic.code");
 			builder.restriction("code", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "fhirGroup.code");

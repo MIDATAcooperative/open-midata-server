@@ -1,0 +1,18 @@
+<div class="mi-mo-menu_header">
+	{{> @icon--close icon }}
+	{{ render '@avatar' user.avatar merge=true }}
+	<div class="mi-mo-menu_header__data">
+		<div class="mi-mo-menu_header__data_user">
+			{{ render '@text--title-highlighted-white' user.first_name merge=true }}
+			{{ render '@text--smallest-white' user.email merge=true }}
+		</div>
+		<ul class="mi-mo-menu_header__data_connections">
+			{{#each connections}}
+				<li>
+					{{ render '@text--smallest-highlighted-white' count merge=true }}
+					{{ render '@text--smallest-white' text merge=true }}
+				</li>
+			{{/each }}
+		</ul>
+	</div>
+</div>

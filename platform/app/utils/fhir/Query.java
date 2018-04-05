@@ -3,6 +3,7 @@ package utils.fhir;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,6 +11,7 @@ import java.util.Set;
 import ca.uhn.fhir.rest.api.SortOrderEnum;
 import controllers.MobileAPI;
 import models.Record;
+import utils.access.DBIterator;
 import utils.access.RecordManager;
 import utils.access.op.AndCondition;
 import utils.access.op.CompareCaseInsensitive;
@@ -45,6 +47,10 @@ public class Query {
 	public void putAccount(String name, Object obj) throws InternalServerException {
 		if (accountCriteria.containsKey(name)) throw new InternalServerException("error.internal", "criteria already used in query: "+name);
 		accountCriteria.put(name, obj);
+	}
+	
+	public void removeAccount(String name) {
+		accountCriteria.remove(name);
 	}
 	
 	public void putDataCondition(Condition obj) {
@@ -99,9 +105,26 @@ public class Query {
 		return result;
 	}
 	
+	public DBIterator<Record> executeIterator(ExecutionInfo info) throws AppException {
+		if (indexCriteria!=null) {
+			accountCriteria.put("index", indexCriteria);
+		}
+		if (dataCriteria!=null) {
+			accountCriteria.put("data", dataCriteria);
+		}
+		if (sorts!=null) {
+			accountCriteria.put("sort", String.join(",", sorts));
+		}
+				
+		return RecordManager.instance.listIterator(info.executorId, info.context, accountCriteria, Sets.create("owner", "ownerName", "version", "created", "lastUpdated", "data"));
+				
+	}
+	
 	public Map<String, Object> retrieveAsNormalMongoQuery() throws AppException {		
 		Map<String,Object> result = new HashMap<String, Object>();
 		result.putAll(accountCriteria);
+		result.remove("limit");
+		result.remove("from");
 		if (dataCriteria != null) result.putAll((Map<String,Object>) dataCriteria.asMongoQuery());
 		ObjectIdConversion.convertMidataIds(result, "_id");
 		return result;

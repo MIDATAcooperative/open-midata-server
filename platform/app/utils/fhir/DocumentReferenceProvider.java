@@ -7,6 +7,7 @@ import java.util.Set;
 import org.hl7.fhir.dstu3.model.Appointment;
 import org.hl7.fhir.dstu3.model.Attachment;
 import org.hl7.fhir.dstu3.model.Base64BinaryType;
+import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.DocumentReference;
 import org.hl7.fhir.dstu3.model.DocumentReference.DocumentReferenceContentComponent;
@@ -29,12 +30,14 @@ import ca.uhn.fhir.rest.annotation.Sort;
 import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
+import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.param.CompositeAndListParam;
 import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
+import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.param.UriAndListParam;
@@ -49,7 +52,7 @@ import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
-public class DocumentReferenceProvider extends ResourceProvider<DocumentReference> implements IResourceProvider {
+public class DocumentReferenceProvider extends RecordBasedResourceProvider<DocumentReference> implements IResourceProvider {
 
 	public DocumentReferenceProvider() {
 		searchParamNameToPathMap.put("DocumentReference:authenticator", "authenticator");
@@ -71,7 +74,7 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 	}
 
 	@Search()
-	public List<IBaseResource> getDocumentReference(
+	public Bundle getDocumentReference(
 			@OptionalParam(name="_id")
 			StringAndListParam theId, 
 			
@@ -233,7 +236,12 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 			SortSpec theSort,
 				
 			@ca.uhn.fhir.rest.annotation.Count
-			Integer theCount	
+			Integer theCount,
+			
+			@OptionalParam(name="_page")
+			StringParam _page,
+			
+			RequestDetails theDetails
 
 	) throws AppException {
 
@@ -280,7 +288,10 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 		paramMap.setIncludes(theIncludes);
 		paramMap.setSort(theSort);
 		paramMap.setCount(theCount);
-		return search(paramMap);
+		paramMap.setFrom(_page != null ? _page.getValue() : null);
+
+		return searchBundle(paramMap, theDetails);
+		
 	}
 
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
@@ -344,12 +355,8 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 	}
 		
 	@Override
-	protected MethodOutcome create(DocumentReference theDocumentReference) throws AppException {
-
-		Record record = newRecord("fhir/DocumentReference");
-		prepare(record, theDocumentReference);
-		// insert
-		Attachment attachment = null;
+	public void createExecute(Record record, DocumentReference theDocumentReference) throws AppException {
+        Attachment attachment = null;
 		
 		List<DocumentReferenceContentComponent> contents = theDocumentReference.getContent(); 
 		if (contents != null && contents.size() == 1) {
@@ -357,11 +364,7 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 		}
 		
 		insertRecord(record, theDocumentReference, attachment);
-
-		processResource(record, theDocumentReference);
-		return outcome("DocumentReference", record, theDocumentReference);
-
-	}
+	}	
 	
 	public Record init() { return newRecord("fhir/DocumentReference"); }
 
@@ -371,16 +374,6 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 		return super.updateResource(theId, theDocumentReference);
 	}
 	
-	@Override
-	protected MethodOutcome update(@IdParam IdType theId, @ResourceParam DocumentReference theDocumentReference) throws AppException {
-		Record record = fetchCurrent(theId);
-		prepare(record, theDocumentReference);
-		updateRecord(record, theDocumentReference);
-		processResource(record, theDocumentReference);
-		
-		return outcome("DocumentReference", record, theDocumentReference);
-	}
-
 	public void prepare(Record record, DocumentReference theDocumentReference) throws AppException {
 		// Set Record code and content
 		setRecordCodeByCodeableConcept(record, theDocumentReference.getType(), "DocumentReference");		

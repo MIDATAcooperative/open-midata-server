@@ -1,0 +1,15 @@
+.mi-or-chat {
+	position: relative;
+	margin-left: 22px;
+	margin-right: 22px;
+
+	// add 'mi-or-chat--scrolled' class using JS 
+	// to add a fading background effect on top of chat window
+	&.mi-x-is_scrolled::before {
+		position: absolute;
+		content: "";
+		height: 100px;
+		width: 100%;
+		@extend %mi-x-fading_white_background;
+	}
+}

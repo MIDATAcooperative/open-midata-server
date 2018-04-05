@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,6 +15,7 @@ import actions.APICall;
 import controllers.APIController;
 import controllers.Application;
 import controllers.Circles;
+import controllers.research.AutoJoiner;
 import models.Consent;
 import models.Member;
 import models.MidataId;
@@ -22,6 +24,7 @@ import models.Research;
 import models.Study;
 import models.StudyParticipation;
 import models.User;
+import models.UserGroupMember;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.EntityType;
@@ -31,6 +34,7 @@ import models.enums.InstanceType;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationCodeStatus;
 import models.enums.ParticipationStatus;
+import models.enums.StudyExecutionStatus;
 import models.enums.SubUserRole;
 import models.enums.UserFeature;
 import models.enums.WritePermissionType;
@@ -46,6 +50,7 @@ import utils.auth.CodeGenerator;
 import utils.auth.ExecutionInfo;
 import utils.auth.MemberSecured;
 import utils.auth.Rights;
+import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
@@ -298,7 +303,7 @@ public class Studies extends APIController {
 	   MidataId userId = new MidataId(request().username());	
 	   MidataId studyId = new MidataId(id);
 	   	   
-	   Set<String> studyFields = Sets.create("_id", "createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","infos","owner","participantRules","recordQuery","studyKeywords","requiredInformation","assistance", "startDate", "endDate", "dataCreatedBefore");
+	   Set<String> studyFields = Sets.create("_id", "createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","infos","owner","participantRules","recordQuery","studyKeywords","requiredInformation","anonymous","assistance", "startDate", "endDate", "dataCreatedBefore");
 	   Set<String> consentFields = Sets.create("_id", "pstatus", "providers");
 	   Set<String> researchFields = Sets.create("_id", "name", "description");
 	   
@@ -347,7 +352,7 @@ public class Studies extends APIController {
 		
 		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country"));		
 		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "pstatus", "ownerName", "owner", "authorized", "sharingQuery", "validUntil", "createdBefore"));		
-		Study study = Study.getById(studyId, Sets.create("name", "executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "termsOfUse", "code"));
+		Study study = Study.getById(studyId, Sets.create("name", "executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "termsOfUse", "code", "autoJoinGroup"));
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
 		
@@ -377,15 +382,21 @@ public class Studies extends APIController {
 
 		AuditManager.instance.success();
 		
+		if (study.autoJoinGroup != null) {
+			AutoJoiner.autoJoin(usingApp, userId, study._id);
+		}
+		
 		return participation;
 	}
+	
+	
 	
     public static StudyParticipation match(MidataId executor, MidataId userId, MidataId studyId, MidataId usingApp) throws AppException {
 		
 		
 		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country"));		
 		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "pstatus", "ownerName", "owner", "authorized", "sharingQuery", "validUntil", "createdBefore"));		
-		Study study = Study.getById(studyId, Sets.create("name", "executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "termsOfUse", "code"));
+		Study study = Study.getById(studyId, Sets.create("name", "executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "anonymous", "termsOfUse", "code"));
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
 		
@@ -405,7 +416,7 @@ public class Studies extends APIController {
 				
 		Member user = userId != null ? Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country")) : null;		
 		StudyParticipation participation = userId != null ? StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "pstatus", "ownerName", "owner", "authorized", "sharingQuery", "validUntil", "createdBefore")) : null;		
-		Study study = Study.getById(studyId, Sets.create("executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "requirements", "code"));
+		Study study = Study.getById(studyId, Sets.create("executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "anonymous", "requirements", "code"));
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
 		if (participation == null) {

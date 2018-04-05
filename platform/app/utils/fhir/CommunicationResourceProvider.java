@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.hl7.fhir.dstu3.model.Appointment;
+import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Communication;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Patient;
@@ -25,11 +26,13 @@ import ca.uhn.fhir.rest.annotation.Sort;
 import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
+import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
+import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
@@ -45,7 +48,7 @@ import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
-public class CommunicationResourceProvider extends ResourceProvider<Communication> implements IResourceProvider {
+public class CommunicationResourceProvider extends RecordBasedResourceProvider<Communication> implements IResourceProvider {
 
 	public CommunicationResourceProvider() {
 		searchParamNameToPathMap.put("Communication:based-on", "basedOn");
@@ -65,7 +68,7 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 	}
 
 	@Search()
-	public List<IBaseResource> getCommunication(
+	public Bundle getCommunication(
 			
 			@Description(shortDefinition="The resource identity")
 			@OptionalParam(name="_id")
@@ -143,7 +146,12 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 			 									
 			@Sort SortSpec theSort,
 
-			@ca.uhn.fhir.rest.annotation.Count Integer theCount
+			@ca.uhn.fhir.rest.annotation.Count Integer theCount,
+			
+			@OptionalParam(name="_page")
+			StringParam _page,
+			
+			RequestDetails theDetails
 
 	) throws AppException {
 
@@ -170,8 +178,10 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 		paramMap.setIncludes(theIncludes);
 		paramMap.setSort(theSort);
 		paramMap.setCount(theCount);
+		paramMap.setFrom(_page != null ? _page.getValue() : null);
 
-		return search(paramMap);
+		return searchBundle(paramMap, theDetails);
+		
 	}
 
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
@@ -205,21 +215,15 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 	public MethodOutcome createResource(@ResourceParam Communication theCommunication) {
 		return super.createResource(theCommunication);
 	}
-	
-	@Override
-	protected MethodOutcome create(Communication theCommunication) throws AppException {
-
-		Record record = newRecord("fhir/Communication");
+			
+	public void createPrepare(Record record, Communication theCommunication) throws AppException {		
 		prepareForSharing(theCommunication);
 		prepare(record, theCommunication);		
-		// insert
-		//insertRecord(record, theCommunication);
-        shareRecord(record, theCommunication);
-		processResource(record, theCommunication);				
-		
-		return outcome("Communication", record, theCommunication);
-
 	}
+	
+	public void createExecute(Record record, Communication theCommunication) throws AppException {
+		shareRecord(record, theCommunication);
+	}	
 	
 	public void prepareForSharing(Communication theCommunication) throws AppException {
 		if (theCommunication.getSender().isEmpty()) {

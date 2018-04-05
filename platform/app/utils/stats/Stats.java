@@ -42,6 +42,10 @@ public class Stats {
 		statsRecorder = Akka.system().actorOf(Props.create(StatsRecorder.class), "statsRecorder");
 	}
 	
+	public static void startRequest() {
+		startRequest(null);
+	}
+	
 	public static void startRequest(Request req) {
 		if (!enabled) return;
 		
@@ -90,6 +94,10 @@ public class Stats {
 	}
 	
 	public static void finishRequest(Request req, String result, Set<String> paramSet) {
+		finishRequest(req.method(), req.path(), req.queryString(), result, paramSet);
+	}
+	
+	public static void finishRequest(String method, String pathf, Map<String, String[]> qstring, String result, Set<String> paramSet) {
 		if (!enabled) return;		
 		
 		PluginDevStats stats = currentStats.get();
@@ -100,15 +108,15 @@ public class Stats {
 		stats.lastExecTime = System.currentTimeMillis() - stats.lastExecTime;
 		
 		if (stats.action == null) {
-		  String[] path = req.path().split("/");
+		  String[] path = pathf.split("/");
 		  for (int i=0;i<path.length;i++) {
 			  if (MidataId.isValid(path[i]) || path[i].matches("^-?\\d+$")) path[i] = "<id>";
 		  }
-		  stats.action = req.method()+" "+String.join("/", path);
+		  stats.action = method+" "+String.join("/", path);
 		}
 		
 		if (stats.params == null) {
-			List<String> params = paramSet != null ? new ArrayList(paramSet) : new ArrayList(req.queryString().keySet());
+			List<String> params = paramSet != null ? new ArrayList(paramSet) : new ArrayList(qstring.keySet());
 			Collections.sort(params);
 			stats.params = String.join("&", params);
 		}

@@ -15,6 +15,9 @@ import org.bson.BasicBSONObject;
 
 import akka.actor.ActorRef;
 import akka.actor.Props;
+import akka.contrib.pattern.ClusterSingletonManager;
+import akka.contrib.pattern.ClusterSingletonProxy;
+import controllers.AutoRun.ImportManager;
 import models.Consent;
 import models.MidataId;
 import play.libs.Akka;
@@ -32,6 +35,7 @@ import utils.db.LostUpdateException;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 import utils.stats.Stats;
+import utils.sync.Instances;
 
 /**
  * Manages indexes on encrypted data records. Allows creation of new indexes,
@@ -43,11 +47,17 @@ public class IndexManager {
 	public static IndexManager instance = new IndexManager();
 			
 	private static long UPDATE_TIME = 1000 * 10;
+	private static long UPDATE_UNUSED = 1000 * 60 * 60 * 24;
 	
 	private ActorRef indexSupervisor;
+	private ActorRef indexSupervisorSingleton;
+				
 	
-	public IndexManager() {
-		indexSupervisor = Akka.system().actorOf(Props.create(IndexSupervisor.class), "indexSupervisor");
+	public IndexManager() {		
+		indexSupervisorSingleton = Instances.system().actorOf(ClusterSingletonManager.defaultProps(Props.create(IndexSupervisor.class), "indexSupervisor-instance",
+			    null, null), "indexSupervisor-singleton");
+		
+		indexSupervisor = Instances.system().actorOf(ClusterSingletonProxy.defaultProps("user/indexSupervisor-singleton/indexSupervisor-instance", null), "indexSupervisor");			
 	}
 
 	public IndexPseudonym getIndexPseudonym(APSCache cache, MidataId user, MidataId targetAPS, boolean create) throws AppException {		
@@ -193,7 +203,7 @@ public class IndexManager {
 				if (limit != null) restrictions.put("updated-after", limit);								
 				List<DBRecord> recs = QueryEngine.listInternal(cache, aps, null, restrictions, Sets.create("_id"));
 				addRecords(index, aps, recs);
-				boolean updateTs = recs.size() > 0;
+				boolean updateTs = recs.size() > 0 || limit == null || (now-v) > UPDATE_UNUSED;
 				// Records that have been freshly shared
 				if (limit != null) {
 					restrictions.remove("updated-after");
@@ -312,7 +322,8 @@ public class IndexManager {
 		AccessLog.log("Index found records:"+validatedResult.size()+" still valid:"+stillValid.size());
 		if (validatedResult.size() > stillValid.size()) {
 			AccessLog.log("Removing "+notValid.size()+" records from index.");
-			indexSupervisor.tell(new IndexRemoveMsg(root.getModel()._id, executor, pseudo, KeyManager.instance.currentHandle(), notValid), null);			
+			// You must remove the record IDS from the match not using the records data!!
+			// indexSupervisor.tell(new IndexRemoveMsg(root.getModel()._id, executor, pseudo, KeyManager.instance.currentHandle(), notValid), null);			
 		}				 
 	}
 	

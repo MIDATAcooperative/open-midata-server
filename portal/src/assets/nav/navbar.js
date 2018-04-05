@@ -47,7 +47,7 @@ angular.module('portal')
 	$scope.updateNav();
 			
 	$scope.logout = function() {		
-		server.get('/api/logout')
+		server.post('/api/logout')
 		.then(function() { 
 			session.logout();
 			if ($state.includes("provider") || $state.includes("public_provider")) document.location.href="/#/provider/login";

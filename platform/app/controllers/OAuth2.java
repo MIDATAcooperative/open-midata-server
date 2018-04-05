@@ -21,10 +21,12 @@ import models.MobileAppInstance;
 import models.Plugin;
 import models.ResearchUser;
 import models.Study;
+import models.StudyParticipation;
 import models.User;
 import models.UserGroupMember;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
+import models.enums.ParticipationStatus;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.UserStatus;
@@ -81,6 +83,20 @@ public class OAuth2 extends Controller {
         	MobileAPI.removeAppInstance(appInstance);
         	return false;
         }
+        
+        if (app.mustParticipateInStudy && app.linkedStudy != null) {
+        	StudyParticipation sp = StudyParticipation.getByStudyAndMember(app.linkedStudy, appInstance.owner, Sets.create("status", "pstatus"));
+        	if (sp == null) {
+        		MobileAPI.removeAppInstance(appInstance);
+            	return false;
+        	}
+        	if ( 
+        		sp.pstatus.equals(ParticipationStatus.MEMBER_RETREATED) || 
+        		sp.pstatus.equals(ParticipationStatus.MEMBER_REJECTED) || 
+        		sp.pstatus.equals(ParticipationStatus.RESEARCH_REJECTED)) {
+        		throw new BadRequestException("error.blocked.consent", "Research consent expired or blocked.");
+        	}
+        }
         return true;
 	}
 	
@@ -135,7 +151,7 @@ public class OAuth2 extends Controller {
 		case RESEARCH : user = ResearchUser.getByEmail(username, User.ALL_USER_INTERNAL);break; 
 		}
 		if (user == null) throw new BadRequestException("error.invalid.credentials", "Unknown user or bad password");
-        boolean authenticationValid =  Member.authenticationValid(password, user.password);   
+        boolean authenticationValid =  user.authenticationValid(password);   
 		MidataId studyContext = null;
 		if (role.equals(UserRole.RESEARCH) && authenticationValid) {
 			studyContext = json.has("studyLink") ? JsonValidation.getMidataId(json, "studyLink") : null;
@@ -165,12 +181,12 @@ public class OAuth2 extends Controller {
 		
 		appInstance = MobileAPI.getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode", "appVersion"));		
 		
-		KeyManager.instance.login(60000l);
+		KeyManager.instance.login(60000l, false);
 		MidataId executor = null;
 		if (appInstance == null) {		
 			if (!confirmed) {
 				AuditManager.instance.fail(0, "Confirmation required", "error.missing.confirmation");
-				return ok("CONFIRM");
+				return checkAlreadyParticipatesInStudy(app.linkedStudy, user._id) ? ok("CONFIRM-STUDYOK") : ok("CONFIRM");
 			}
 			
 			if (app.unlockCode != null) {				
@@ -189,7 +205,7 @@ public class OAuth2 extends Controller {
    		    meta = RecordManager.instance.getMeta(executor, appInstance._id, "_app").toMap();
 		} else {				
 			if (!verifyAppInstance(appInstance, user._id, app._id)) {
-				return ok("CONFIRM");
+				return checkAlreadyParticipatesInStudy(app.linkedStudy, user._id) ? ok("CONFIRM-STUDYOK") : ok("CONFIRM");
 			}
 			KeyManager.instance.unlock(appInstance._id, phrase);
 			meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
@@ -218,6 +234,7 @@ public class OAuth2 extends Controller {
 		obj.put("istatus", appInstance.status.toString());
 		
 		AuditManager.instance.success();
+				
 		return ok(obj);
 	}
 
@@ -230,9 +247,9 @@ public class OAuth2 extends Controller {
         MobileAppInstance appInstance = null;
         Map<String, Object> meta = null;
         String phrase = null;
-        ObjectNode obj = Json.newObject();	
+        ObjectNode obj = Json.newObject();	      
         
-        KeyManager.instance.login(60000l);
+        KeyManager.instance.login(60000l, false);
         
         if (data==null) throw new BadRequestException("error.internal", "Missing request body of type form/urlencoded.");
         if (!data.containsKey("grant_type")) throw new BadRequestException("error.internal", "Missing grant_type");
@@ -266,6 +283,8 @@ public class OAuth2 extends Controller {
             if (refreshToken.created != ((Long) meta.get("created")).longValue()) {
             	return status(UNAUTHORIZED);
             }
+            
+           
         } else if (grant_type.equals("authorization_code")) {
         	if (!data.containsKey("redirect_uri")) throw new BadRequestException("error.internal", "Missing redirect_uri");
             if (!data.containsKey("client_id")) throw new BadRequestException("error.internal", "Missing client_id");
@@ -305,7 +324,7 @@ public class OAuth2 extends Controller {
                				
 		if (appInstance == null) throw new NullPointerException();									
 			
-		if (appInstance.passcode != null && !User.authenticationValid(phrase, appInstance.passcode)) throw new BadRequestException("error.invalid.credentials", "Wrong password.");
+		if (appInstance.passcode != null && !User.phraseValid(phrase, appInstance.passcode)) throw new BadRequestException("error.invalid.credentials", "Wrong password.");
 		//	if (!verifyAppInstance(appInstance, user._id, app._id)) return badRequest("Access denied");
 		
 		KeyManager.instance.unlock(appInstance._id, phrase);
@@ -321,6 +340,13 @@ public class OAuth2 extends Controller {
         meta.put("created", refresh.created);
         RecordManager.instance.setMeta(appInstance._id, appInstance._id, "_app", meta);
         
+        BSONObject q = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_query");
+        if (q.containsField("link-study")) {
+        	MidataId studyId = MidataId.from(q.get("link-study"));
+        	MobileAPI.prepareMobileExecutor(appInstance, session);
+        	controllers.research.Studies.autoApproveCheck(appInstance.applicationId, studyId, appInstance.owner);
+        }
+            	
 		// create encrypted authToken		
 											
 		obj.put("access_token", session.encrypt());
@@ -335,5 +361,18 @@ public class OAuth2 extends Controller {
 		response().setHeader("Pragma", "no-cache"); 
 		
 		return ok(obj);
+	}
+	
+	private static boolean checkAlreadyParticipatesInStudy(MidataId linkedStudy, MidataId owner) throws InternalServerException {
+		if (linkedStudy == null) return true;
+        StudyParticipation sp = StudyParticipation.getByStudyAndMember(linkedStudy, owner, Sets.create("status", "pstatus"));
+        if (sp == null) return false;        		
+        if ( 
+        	sp.pstatus.equals(ParticipationStatus.MEMBER_RETREATED) || 
+        	sp.pstatus.equals(ParticipationStatus.MEMBER_REJECTED) || 
+        	sp.pstatus.equals(ParticipationStatus.RESEARCH_REJECTED)) {
+        	return false;
+        }        	
+        return true;
 	}
 }

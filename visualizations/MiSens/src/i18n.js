@@ -1,6 +1,10 @@
+/*jshint laxcomma:true */
+
 angular.module('MiSensi18n', [])
   .constant('i18nc', {
-    de: {
+    de: 
+    //$START_LANGUAGE : de    
+    {
       "title": "MiSens",
       "textStarDiagram": "Der Stern zeigt auf einen Blick wie empfindlich Sie auf die von Ihnen in der MiSens-Studie getesteten Geruchs- und Geschmacksstoffe ansprechen. Je weiter der grüne Punkt auf einer der acht Achsen vom Zentrum des Sterns entfernt ist, desto stärker nehmen Sie die entsprechende Substanz wahr. Befindet sich entlang einer der Achsen kein Punkt, so liegt dies daran, dass Sie diese Substanz nicht getestet haben bzw. die Resultate nicht in der App gespeichert haben. Die Grafik zeigt zum Vergleich auch den Mittelwert aller Studienteilnehmer (graue Linie) und die Empfindlichkeit der oberen und unteren 10% bzw. 25% der Teilnehmer an. Für eine noch detailliertere Aufschlüsselung Ihrer Resultate finden Sie im Anschluss die Histogramme der Sensitivitäten für die verschiedenen Substanzen.",
       "GeschmackshistogrammeTitle": "Geschmackshistogramme",
@@ -30,8 +34,11 @@ angular.module('MiSensi18n', [])
       "selectOptionCurrentResultsText": "Meine aktuellen Resultate",
       "legende_not_sensitive": "nicht empfindlich",
       "legende_sensitive": "sehr empfindlich"
-    },
-    en: {
+    }
+    //$END_LANGUAGE : de
+    ,en: 
+    //$START_LANGUAGE : en  
+    {
       "title": "MiSens",
       "textStarDiagram": "The star diagram summarizes the sensitivity of your response to the taste and smell compounds tested during the MiSense study. The farther out the dot lies along the spoke of the star, the higher your sensitivity for that compound. If there is no dot along one or more of the spokes, you did not register a response for this compound in the app. To allow the comparison of your results to those of the other study participants the plot also shows the median sensitivity (grey line) of the other participants as well as the bottom and top 10th and 25th percentiles of the group. For an even more detailed view of your results, please have a look at the individual histograms for each of the tested aroma compounds.",
       "GeschmackshistogrammeTitle": "Taste histograms",
@@ -61,9 +68,180 @@ angular.module('MiSensi18n', [])
       "selectOptionCurrentResultsText": "My current results",
       "legende_not_sensitive": "not sensitive",
       "legende_sensitive": "very sensitive"
-    },
-    it: {
-    },
-    fr: {
     }
+//$END_LANGUAGE : en
+  ,it: 
+//$START_LANGUAGE : it
+{
+
+
+    // TODO NEW: MiSens
+    "title" : "MiSens",
+
+    // TODO NEW: The star diagram summarizes the sensitivity of your response to the taste and smell compounds tested during the MiSense study. The farther out the dot lies along the spoke of the star, the higher your sensitivity for that compound. If there is no dot along one or more of the spokes, you did not register a response for this compound in the app. To allow the comparison of your results to those of the other study participants the plot also shows the median sensitivity (grey line) of the other participants as well as the bottom and top 10th and 25th percentiles of the group. For an even more detailed view of your results, please have a look at the individual histograms for each of the tested aroma compounds.
+    "textStarDiagram" : "The star diagram summarizes the sensitivity of your response to the taste and smell compounds tested during the MiSense study. The farther out the dot lies along the spoke of the star, the higher your sensitivity for that compound. If there is no dot along one or more of the spokes, you did not register a response for this compound in the app. To allow the comparison of your results to those of the other study participants the plot also shows the median sensitivity (grey line) of the other participants as well as the bottom and top 10th and 25th percentiles of the group. For an even more detailed view of your results, please have a look at the individual histograms for each of the tested aroma compounds.",
+
+    // TODO NEW: Taste histograms
+    "GeschmackshistogrammeTitle" : "Taste histograms",
+
+    // TODO NEW: The histograms indicate how many study participants assigned what intensity rating to the tested sample. On the gLMS scale used in the tests, the different scale values correspond to textual descriptions as follows: 0=”no perception”; 1.4=”barely detectable; 6=”weak”, 17=”moderate”; 35=”strong”; 51=”very strong”; 100=”strongest imaginable sensation”. Your own intensity rating of the substance is indicated in green.
+    "GeschmackshistogrammeText1" : "The histograms indicate how many study participants assigned what intensity rating to the tested sample. On the gLMS scale used in the tests, the different scale values correspond to textual descriptions as follows: 0=”no perception”; 1.4=”barely detectable; 6=”weak”, 17=”moderate”; 35=”strong”; 51=”very strong”; 100=”strongest imaginable sensation”. Your own intensity rating of the substance is indicated in green.",
+
+    // TODO NEW: In these histograms, showing the taste test results, a higher intensity rating corresponds to a higher sensitivity to the respective substance.
+    "GeschmackshistogrammeText2Bold" : "In these histograms, showing the taste test results, a higher intensity rating corresponds to a higher sensitivity to the respective substance.",
+
+    // TODO NEW: PROP (6-n-Propylthiouracil)
+    "PROPTitle" : "PROP (6-n-Propylthiouracil)",
+
+    // TODO NEW: Among the 25 known human bitter taste receptors, the bitter compound known as PROP activates only one specific taste receptor known as TAS2R38. While PROP is registered as a medicinal drug, at the concentrations used in the test (1mM) it has no pharmacological activity, but a very pronounced bitter taste. The bitter receptor TAS2R38 is famous for being the first taste receptor that could be identified. This identification was based on genetic mapping, which in turn was possible, because multiple genetic variants of the human TAS2R38 receptor exists and depending which variant a person carries, they are either rather sensitive to this particular bitter compound or nearly oblivious to it.  This fact is quite nicely represented in the histogram, which shows a substantial portion of participants who have rated the PROP solution to have “no taste” or a “barely detectable taste”.  PROP itself is not found in foods, but closely related thiourea compounds are found in many types of cabbages. It is important to realize that the genetic variations that influence the perception of PROP and the related thiourea compounds have absolutely no influence on the perception of the myriad of other type of bitter compounds, such as those found in coffee or beer.
+    "PROPText1" : "Among the 25 known human bitter taste receptors, the bitter compound known as PROP activates only one specific taste receptor known as TAS2R38. While PROP is registered as a medicinal drug, at the concentrations used in the test (1mM) it has no pharmacological activity, but a very pronounced bitter taste. The bitter receptor TAS2R38 is famous for being the first taste receptor that could be identified. This identification was based on genetic mapping, which in turn was possible, because multiple genetic variants of the human TAS2R38 receptor exists and depending which variant a person carries, they are either rather sensitive to this particular bitter compound or nearly oblivious to it.  This fact is quite nicely represented in the histogram, which shows a substantial portion of participants who have rated the PROP solution to have “no taste” or a “barely detectable taste”.  PROP itself is not found in foods, but closely related thiourea compounds are found in many types of cabbages. It is important to realize that the genetic variations that influence the perception of PROP and the related thiourea compounds have absolutely no influence on the perception of the myriad of other type of bitter compounds, such as those found in coffee or beer.",
+
+    // TODO NEW: Sucrose (sugar)
+    "SucroseTitle" : "Sucrose (sugar)",
+
+    // TODO NEW: This sample contained ordinary table sugar (also known as sucrose or saccharose). The concentration of 300 mM (approx. 100g/l) used in the tests corresponds roughly to that found in commercial sodas. As you can see from the histogram, virtually all participants perceived the substantial sweetness of this sample. These results are in accordance with research results, which show that genetic factors have, at best, a negligible influence on the perceived sweetness of sugar. The still substantial range of intensity ratings can be ascribed to different usage of the rating scale, the age of the participants, their dental health and how hungry they were at the time of the test. Still, for a considerable portion of the observed variation, science still has no explanation.
+    "SucrosseText1" : "This sample contained ordinary table sugar (also known as sucrose or saccharose). The concentration of 300 mM (approx. 100g/l) used in the tests corresponds roughly to that found in commercial sodas. As you can see from the histogram, virtually all participants perceived the substantial sweetness of this sample. These results are in accordance with research results, which show that genetic factors have, at best, a negligible influence on the perceived sweetness of sugar. The still substantial range of intensity ratings can be ascribed to different usage of the rating scale, the age of the participants, their dental health and how hungry they were at the time of the test. Still, for a considerable portion of the observed variation, science still has no explanation.",
+
+    // TODO NEW: Sodium chloride (table salt)
+    "SalzTitle" : "Sodium chloride (table salt)",
+
+    // TODO NEW: This sample contained ordinary table salt (sodium chloride or NaCl) just as you might use at home to salt your food. The concentration used in the tests (300 mM) corresponds to that of a very heavily salted (perhaps “over salted”) soup. Also, for sodium chloride the influence of genetic factors on its perception are negligible. The well-known difference in the preferred levels of salt in foods therefore appear to be driven by differences in preference rather than differences in perception.
+    "SalzText1" : "This sample contained ordinary table salt (sodium chloride or NaCl) just as you might use at home to salt your food. The concentration used in the tests (300 mM) corresponds to that of a very heavily salted (perhaps “over salted”) soup. Also, for sodium chloride the influence of genetic factors on its perception are negligible. The well-known difference in the preferred levels of salt in foods therefore appear to be driven by differences in preference rather than differences in perception.",
+
+    // TODO NEW: Smell histograms
+    "GeruchshistogrammeTitle" : "Smell histograms",
+
+    // TODO NEW: The following histograms show the concentration of the aroma compounds that were necessary to permit participants to distinguish a smell pen containing the compound from pens that contain only water. The concentration unit used is ppb, which stands for “parts per billion” and corresponds to one thousandth of a milligram of aroma compound per litre of water. Please also note that the concentration scale is logarithmic and not linear. The scale therefore covers a very broad range of concentrations. In the case of -ionone the lowest concentration tested is 1'000'000 times less concentrated than the highest one. The concentration at which you detected the compound is indicated in green.
+    "GeruchshistogrammeText1" : "The following histograms show the concentration of the aroma compounds that were necessary to permit participants to distinguish a smell pen containing the compound from pens that contain only water. The concentration unit used is ppb, which stands for “parts per billion” and corresponds to one thousandth of a milligram of aroma compound per litre of water. Please also note that the concentration scale is logarithmic and not linear. The scale therefore covers a very broad range of concentrations. In the case of -ionone the lowest concentration tested is 1'000'000 times less concentrated than the highest one. The concentration at which you detected the compound is indicated in green.",
+
+    // TODO NEW: In these histograms, a higher numerical value corresponds to a lower sensitivity to that compound (i.e. a higher concentration of the substance is needed to detect it reliably).
+    "GeruchshistogrammeText2Bold" : "In these histograms, a higher numerical value corresponds to a lower sensitivity to that compound (i.e. a higher concentration of the substance is needed to detect it reliably).",
+
+    // TODO NEW: β-ionone
+    "BetaiononTitle" : "β-ionone",
+
+    // TODO NEW: β-ionone is a characteristic component of the natural scent of the violet flower.  To most people it is, however, known through its mass use as an artificial scent in many soaps, laundry detergents and household cleaning products. Given this widespread use, it is perhaps surprising, that a substantial proportion of the population can barely detect this scent, even at very elevated concentrations. The ability to smell / not smell this substance is strongly influenced by a genetic variation in the gene that codes for the olfactory receptor responsible for its perception. 
+    "BetaiononText1" : "β-ionone is a characteristic component of the natural scent of the violet flower.  To most people it is, however, known through its mass use as an artificial scent in many soaps, laundry detergents and household cleaning products. Given this widespread use, it is perhaps surprising, that a substantial proportion of the population can barely detect this scent, even at very elevated concentrations. The ability to smell / not smell this substance is strongly influenced by a genetic variation in the gene that codes for the olfactory receptor responsible for its perception. ",
+
+    // TODO NEW: Heptanone
+    "HeptanonTitle" : "Heptanone",
+
+    // TODO NEW: The smell of pure heptanone is typically described as fruity or “banana-like”. One of the biggest natural sources of this aroma compound is blue cheese. However, heptanone is just one of many other aroma compounds found in these cheeses. In this pungent mix heptanone contributes a slight fruity note.
+    "HeptanonText1" : "The smell of pure heptanone is typically described as fruity or “banana-like”. One of the biggest natural sources of this aroma compound is blue cheese. However, heptanone is just one of many other aroma compounds found in these cheeses. In this pungent mix heptanone contributes a slight fruity note.",
+
+    // TODO NEW: Isobutyraldehyde
+    "IsobutyraldehydTitle" : "Isobutyraldehyde",
+
+    // TODO NEW: The smell of isobutyraldehyde is difficult to describe with a single word. The literature frequently uses the word “malty” but many people also cite “wet cereal” or “hay”. Others associate it with the smell of wet laundry coming fresh out of the washing machine.
+    "IsobutyraldehydText1" : "The smell of isobutyraldehyde is difficult to describe with a single word. The literature frequently uses the word “malty” but many people also cite “wet cereal” or “hay”. Others associate it with the smell of wet laundry coming fresh out of the washing machine.",
+
+    // TODO NEW: Isovaleric acid
+    "IsovalericAcidTitle" : "Isovaleric acid",
+
+    // TODO NEW: Isovaleric acid is a very intense aroma compound that is formed during the ripening process of many cheeses. It is an important component of the characteristic aroma of cheese fondue and raclette. Many people find isovaleric acids aroma off-putting. Perhaps justifiably so, because isovaleric acid is also formed by the bacterial breakdown of amino acids contained in sweat and is a major contributor to the “aroma” of smelly socks.
+    "IsovalericAcidText" : "Isovaleric acid is a very intense aroma compound that is formed during the ripening process of many cheeses. It is an important component of the characteristic aroma of cheese fondue and raclette. Many people find isovaleric acids aroma off-putting. Perhaps justifiably so, because isovaleric acid is also formed by the bacterial breakdown of amino acids contained in sweat and is a major contributor to the “aroma” of smelly socks.",
+
+    // TODO NEW: Rotundone
+    "RotundonTitle" : "Rotundone",
+
+    // TODO NEW: Rotundone is an extremely potent aroma compound. Some individuals can already detect it at a concentration of as little as 0.001 ppb (equivalent to 1 billionth of a gram per liter). The smell of rotundone is typically described as woody or peppery. And indeed, rotundone is one of the essential components of natural pepper aroma. Rotundone is also responsible for the peppery notes ascribed to wines made from “Syrah” and “Grüner Veltliner” grapes. As you can see from the histogram, rotundone also shows a very broad range of personal detection thresholds. This suggests that a genetic variation might be at play. The identification of the responsible genetic variation is one of the scientific goals of the MiSens study.
+    "RotundonText" : "Rotundone is an extremely potent aroma compound. Some individuals can already detect it at a concentration of as little as 0.001 ppb (equivalent to 1 billionth of a gram per liter). The smell of rotundone is typically described as woody or peppery. And indeed, rotundone is one of the essential components of natural pepper aroma. Rotundone is also responsible for the peppery notes ascribed to wines made from “Syrah” and “Grüner Veltliner” grapes. As you can see from the histogram, rotundone also shows a very broad range of personal detection thresholds. This suggests that a genetic variation might be at play. The identification of the responsible genetic variation is one of the scientific goals of the MiSens study.",
+
+    // TODO NEW: # participants
+    "chartLabelY" : "# participants",
+
+    // TODO NEW: My Scientifica results
+    "selectOptionScientificaResultsText" : "My Scientifica results",
+
+    // TODO NEW: My current results
+    "selectOptionCurrentResultsText" : "My current results"
+}
+//$END_LANGUAGE : it  
+  ,fr: 
+//$START_LANGUAGE : fr    
+{
+
+
+    // TODO NEW: MiSens
+    "title" : "MiSens",
+
+    // TODO NEW: The star diagram summarizes the sensitivity of your response to the taste and smell compounds tested during the MiSense study. The farther out the dot lies along the spoke of the star, the higher your sensitivity for that compound. If there is no dot along one or more of the spokes, you did not register a response for this compound in the app. To allow the comparison of your results to those of the other study participants the plot also shows the median sensitivity (grey line) of the other participants as well as the bottom and top 10th and 25th percentiles of the group. For an even more detailed view of your results, please have a look at the individual histograms for each of the tested aroma compounds.
+    "textStarDiagram" : "The star diagram summarizes the sensitivity of your response to the taste and smell compounds tested during the MiSense study. The farther out the dot lies along the spoke of the star, the higher your sensitivity for that compound. If there is no dot along one or more of the spokes, you did not register a response for this compound in the app. To allow the comparison of your results to those of the other study participants the plot also shows the median sensitivity (grey line) of the other participants as well as the bottom and top 10th and 25th percentiles of the group. For an even more detailed view of your results, please have a look at the individual histograms for each of the tested aroma compounds.",
+
+    // TODO NEW: Taste histograms
+    "GeschmackshistogrammeTitle" : "Taste histograms",
+
+    // TODO NEW: The histograms indicate how many study participants assigned what intensity rating to the tested sample. On the gLMS scale used in the tests, the different scale values correspond to textual descriptions as follows: 0=”no perception”; 1.4=”barely detectable; 6=”weak”, 17=”moderate”; 35=”strong”; 51=”very strong”; 100=”strongest imaginable sensation”. Your own intensity rating of the substance is indicated in green.
+    "GeschmackshistogrammeText1" : "The histograms indicate how many study participants assigned what intensity rating to the tested sample. On the gLMS scale used in the tests, the different scale values correspond to textual descriptions as follows: 0=”no perception”; 1.4=”barely detectable; 6=”weak”, 17=”moderate”; 35=”strong”; 51=”very strong”; 100=”strongest imaginable sensation”. Your own intensity rating of the substance is indicated in green.",
+
+    // TODO NEW: In these histograms, showing the taste test results, a higher intensity rating corresponds to a higher sensitivity to the respective substance.
+    "GeschmackshistogrammeText2Bold" : "In these histograms, showing the taste test results, a higher intensity rating corresponds to a higher sensitivity to the respective substance.",
+
+    // TODO NEW: PROP (6-n-Propylthiouracil)
+    "PROPTitle" : "PROP (6-n-Propylthiouracil)",
+
+    // TODO NEW: Among the 25 known human bitter taste receptors, the bitter compound known as PROP activates only one specific taste receptor known as TAS2R38. While PROP is registered as a medicinal drug, at the concentrations used in the test (1mM) it has no pharmacological activity, but a very pronounced bitter taste. The bitter receptor TAS2R38 is famous for being the first taste receptor that could be identified. This identification was based on genetic mapping, which in turn was possible, because multiple genetic variants of the human TAS2R38 receptor exists and depending which variant a person carries, they are either rather sensitive to this particular bitter compound or nearly oblivious to it.  This fact is quite nicely represented in the histogram, which shows a substantial portion of participants who have rated the PROP solution to have “no taste” or a “barely detectable taste”.  PROP itself is not found in foods, but closely related thiourea compounds are found in many types of cabbages. It is important to realize that the genetic variations that influence the perception of PROP and the related thiourea compounds have absolutely no influence on the perception of the myriad of other type of bitter compounds, such as those found in coffee or beer.
+    "PROPText1" : "Among the 25 known human bitter taste receptors, the bitter compound known as PROP activates only one specific taste receptor known as TAS2R38. While PROP is registered as a medicinal drug, at the concentrations used in the test (1mM) it has no pharmacological activity, but a very pronounced bitter taste. The bitter receptor TAS2R38 is famous for being the first taste receptor that could be identified. This identification was based on genetic mapping, which in turn was possible, because multiple genetic variants of the human TAS2R38 receptor exists and depending which variant a person carries, they are either rather sensitive to this particular bitter compound or nearly oblivious to it.  This fact is quite nicely represented in the histogram, which shows a substantial portion of participants who have rated the PROP solution to have “no taste” or a “barely detectable taste”.  PROP itself is not found in foods, but closely related thiourea compounds are found in many types of cabbages. It is important to realize that the genetic variations that influence the perception of PROP and the related thiourea compounds have absolutely no influence on the perception of the myriad of other type of bitter compounds, such as those found in coffee or beer.",
+
+    // TODO NEW: Sucrose (sugar)
+    "SucroseTitle" : "Sucrose (sugar)",
+
+    // TODO NEW: This sample contained ordinary table sugar (also known as sucrose or saccharose). The concentration of 300 mM (approx. 100g/l) used in the tests corresponds roughly to that found in commercial sodas. As you can see from the histogram, virtually all participants perceived the substantial sweetness of this sample. These results are in accordance with research results, which show that genetic factors have, at best, a negligible influence on the perceived sweetness of sugar. The still substantial range of intensity ratings can be ascribed to different usage of the rating scale, the age of the participants, their dental health and how hungry they were at the time of the test. Still, for a considerable portion of the observed variation, science still has no explanation.
+    "SucrosseText1" : "This sample contained ordinary table sugar (also known as sucrose or saccharose). The concentration of 300 mM (approx. 100g/l) used in the tests corresponds roughly to that found in commercial sodas. As you can see from the histogram, virtually all participants perceived the substantial sweetness of this sample. These results are in accordance with research results, which show that genetic factors have, at best, a negligible influence on the perceived sweetness of sugar. The still substantial range of intensity ratings can be ascribed to different usage of the rating scale, the age of the participants, their dental health and how hungry they were at the time of the test. Still, for a considerable portion of the observed variation, science still has no explanation.",
+
+    // TODO NEW: Sodium chloride (table salt)
+    "SalzTitle" : "Sodium chloride (table salt)",
+
+    // TODO NEW: This sample contained ordinary table salt (sodium chloride or NaCl) just as you might use at home to salt your food. The concentration used in the tests (300 mM) corresponds to that of a very heavily salted (perhaps “over salted”) soup. Also, for sodium chloride the influence of genetic factors on its perception are negligible. The well-known difference in the preferred levels of salt in foods therefore appear to be driven by differences in preference rather than differences in perception.
+    "SalzText1" : "This sample contained ordinary table salt (sodium chloride or NaCl) just as you might use at home to salt your food. The concentration used in the tests (300 mM) corresponds to that of a very heavily salted (perhaps “over salted”) soup. Also, for sodium chloride the influence of genetic factors on its perception are negligible. The well-known difference in the preferred levels of salt in foods therefore appear to be driven by differences in preference rather than differences in perception.",
+
+    // TODO NEW: Smell histograms
+    "GeruchshistogrammeTitle" : "Smell histograms",
+
+    // TODO NEW: The following histograms show the concentration of the aroma compounds that were necessary to permit participants to distinguish a smell pen containing the compound from pens that contain only water. The concentration unit used is ppb, which stands for “parts per billion” and corresponds to one thousandth of a milligram of aroma compound per litre of water. Please also note that the concentration scale is logarithmic and not linear. The scale therefore covers a very broad range of concentrations. In the case of -ionone the lowest concentration tested is 1'000'000 times less concentrated than the highest one. The concentration at which you detected the compound is indicated in green.
+    "GeruchshistogrammeText1" : "The following histograms show the concentration of the aroma compounds that were necessary to permit participants to distinguish a smell pen containing the compound from pens that contain only water. The concentration unit used is ppb, which stands for “parts per billion” and corresponds to one thousandth of a milligram of aroma compound per litre of water. Please also note that the concentration scale is logarithmic and not linear. The scale therefore covers a very broad range of concentrations. In the case of -ionone the lowest concentration tested is 1'000'000 times less concentrated than the highest one. The concentration at which you detected the compound is indicated in green.",
+
+    // TODO NEW: In these histograms, a higher numerical value corresponds to a lower sensitivity to that compound (i.e. a higher concentration of the substance is needed to detect it reliably).
+    "GeruchshistogrammeText2Bold" : "In these histograms, a higher numerical value corresponds to a lower sensitivity to that compound (i.e. a higher concentration of the substance is needed to detect it reliably).",
+
+    // TODO NEW: β-ionone
+    "BetaiononTitle" : "β-ionone",
+
+    // TODO NEW: β-ionone is a characteristic component of the natural scent of the violet flower.  To most people it is, however, known through its mass use as an artificial scent in many soaps, laundry detergents and household cleaning products. Given this widespread use, it is perhaps surprising, that a substantial proportion of the population can barely detect this scent, even at very elevated concentrations. The ability to smell / not smell this substance is strongly influenced by a genetic variation in the gene that codes for the olfactory receptor responsible for its perception. 
+    "BetaiononText1" : "β-ionone is a characteristic component of the natural scent of the violet flower.  To most people it is, however, known through its mass use as an artificial scent in many soaps, laundry detergents and household cleaning products. Given this widespread use, it is perhaps surprising, that a substantial proportion of the population can barely detect this scent, even at very elevated concentrations. The ability to smell / not smell this substance is strongly influenced by a genetic variation in the gene that codes for the olfactory receptor responsible for its perception. ",
+
+    // TODO NEW: Heptanone
+    "HeptanonTitle" : "Heptanone",
+
+    // TODO NEW: The smell of pure heptanone is typically described as fruity or “banana-like”. One of the biggest natural sources of this aroma compound is blue cheese. However, heptanone is just one of many other aroma compounds found in these cheeses. In this pungent mix heptanone contributes a slight fruity note.
+    "HeptanonText1" : "The smell of pure heptanone is typically described as fruity or “banana-like”. One of the biggest natural sources of this aroma compound is blue cheese. However, heptanone is just one of many other aroma compounds found in these cheeses. In this pungent mix heptanone contributes a slight fruity note.",
+
+    // TODO NEW: Isobutyraldehyde
+    "IsobutyraldehydTitle" : "Isobutyraldehyde",
+
+    // TODO NEW: The smell of isobutyraldehyde is difficult to describe with a single word. The literature frequently uses the word “malty” but many people also cite “wet cereal” or “hay”. Others associate it with the smell of wet laundry coming fresh out of the washing machine.
+    "IsobutyraldehydText1" : "The smell of isobutyraldehyde is difficult to describe with a single word. The literature frequently uses the word “malty” but many people also cite “wet cereal” or “hay”. Others associate it with the smell of wet laundry coming fresh out of the washing machine.",
+
+    // TODO NEW: Isovaleric acid
+    "IsovalericAcidTitle" : "Isovaleric acid",
+
+    // TODO NEW: Isovaleric acid is a very intense aroma compound that is formed during the ripening process of many cheeses. It is an important component of the characteristic aroma of cheese fondue and raclette. Many people find isovaleric acids aroma off-putting. Perhaps justifiably so, because isovaleric acid is also formed by the bacterial breakdown of amino acids contained in sweat and is a major contributor to the “aroma” of smelly socks.
+    "IsovalericAcidText" : "Isovaleric acid is a very intense aroma compound that is formed during the ripening process of many cheeses. It is an important component of the characteristic aroma of cheese fondue and raclette. Many people find isovaleric acids aroma off-putting. Perhaps justifiably so, because isovaleric acid is also formed by the bacterial breakdown of amino acids contained in sweat and is a major contributor to the “aroma” of smelly socks.",
+
+    // TODO NEW: Rotundone
+    "RotundonTitle" : "Rotundone",
+
+    // TODO NEW: Rotundone is an extremely potent aroma compound. Some individuals can already detect it at a concentration of as little as 0.001 ppb (equivalent to 1 billionth of a gram per liter). The smell of rotundone is typically described as woody or peppery. And indeed, rotundone is one of the essential components of natural pepper aroma. Rotundone is also responsible for the peppery notes ascribed to wines made from “Syrah” and “Grüner Veltliner” grapes. As you can see from the histogram, rotundone also shows a very broad range of personal detection thresholds. This suggests that a genetic variation might be at play. The identification of the responsible genetic variation is one of the scientific goals of the MiSens study.
+    "RotundonText" : "Rotundone is an extremely potent aroma compound. Some individuals can already detect it at a concentration of as little as 0.001 ppb (equivalent to 1 billionth of a gram per liter). The smell of rotundone is typically described as woody or peppery. And indeed, rotundone is one of the essential components of natural pepper aroma. Rotundone is also responsible for the peppery notes ascribed to wines made from “Syrah” and “Grüner Veltliner” grapes. As you can see from the histogram, rotundone also shows a very broad range of personal detection thresholds. This suggests that a genetic variation might be at play. The identification of the responsible genetic variation is one of the scientific goals of the MiSens study.",
+
+    // TODO NEW: # participants
+    "chartLabelY" : "# participants",
+
+    // TODO NEW: My Scientifica results
+    "selectOptionScientificaResultsText" : "My Scientifica results",
+
+    // TODO NEW: My current results
+    "selectOptionCurrentResultsText" : "My current results"
+}
+//$END_LANGUAGE : fr  
   });

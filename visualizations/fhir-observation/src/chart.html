@@ -36,7 +36,10 @@
            
 			<table class="table">
 				<tr ng-repeat="record in records | orderBy : 'data.effectiveDateTime'">
-					<td><a href="javascript:" ng-click="showSingle(record);">{{ record.data.effectiveDateTime | date }}</a></td>
+					<td><a href="javascript:" ng-click="showSingle(record);">
+					  <span ng-show="record.data.effectiveDateTime">{{ record.data.effectiveDateTime | date }}</span>
+					  <span ng-show="record.data.effectivePeriod">{{ record.data.effectivePeriod.start | date }} - {{ record.data.effectivePeriod.end | date }}</span>
+					</a></td>
 					<td ng-class="record.data.status">
 						<div ng-show="record.data.component">
 							<span ng-repeat="comp in record.data.component">{{ comp.valueQuantity.value }} {{ comp.valueQuantity.unit }} </span>

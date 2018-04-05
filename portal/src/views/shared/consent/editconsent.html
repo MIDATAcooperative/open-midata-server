@@ -6,7 +6,8 @@
   </div>
   <div class="panel-body">
   <loader busy="status.isBusy !== false">
-  <form name="myform" class="css-form form-horizontal" ng-submit="create()" novalidate role="form">
+  <p ng-hide="consent" class="alert alert-warning" translate="error.unknown.consent"></p>
+  <form ng-show="consent" name="myform" class="css-form form-horizontal" ng-submit="create()" novalidate role="form">
     <formrow id="name" label="editconsent.name">
       <p class="form-control-static">{{ consent.name }}</p>
     </formrow>

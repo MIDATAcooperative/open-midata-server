@@ -1,9 +1,9 @@
 {
 
     "developer_registration" : {
-        "sign_up" : "Registrieren als Entwickler",
+        "sign_up" : "Registrierung als Entwickler",
         "reason_fillout" : "Um die Wartezeit bis zur Freigabe des Accounts zu reduzieren, geben Sie bitte die Kontaktperson und der Zweck der Registrierung sorgfältig ein, damit ein Administrator ihr Anfrage rasch bearbeiten kann.",
-        "sign_up_btn" : "Registrieren als Entwickler"
+        "sign_up_btn" : "Als Entwickler registrieren"
     },
 
     "developer_login" : {
@@ -45,6 +45,7 @@
         "available_tags" : "Verfügbare Variablen",
         "reasons" : {
             "REGISTRATION" : "Neue Benutzerregistrierung",
+            "REGISTRATION_BY_OTHER_PERSON" : "Registrierung eines neuen Benutzers durch eine andere Person",
             "FIRSTUSE_ANYUSER" : "Erstanwendung App",
             "FIRSTUSE_EXISTINGUSER" : "Erstanwendung App (wenn kein Registrierungs-E-Mail versendet)",
             "CONSENT_REQUEST_OWNER_INVITED" : "Vorgeschlagene Zustimmung (Geber, Einladung)",
@@ -62,35 +63,79 @@
     },
 
     "manageapp" : {
-        "messages_btn" : "Nachrichten bearbeiten",
-        "stats_btn" : "Debug Info",
-        "debug_btn" : "API Tester",
+        "overview" : "Applikations-Übersicht",
+        "choose" : "Funktionen zur Verwaltung Ihrer Anwendung",
+        "filename" : "Interner Name",
+        "type" : "Applikationstyp",
+        "targetUserRole" : "Zielrolle",
+        "edit_btn" : "Einstellungen ändern",
+        "edit_help" : "Ändern Sie die Einstellungen für Ihre Applikation.",
+        "tokenExchangeParams" : "OAuth2-Parameter für den Token-Austausch",
+        "testfromlocal_btn" : "Testen Sie Ihr Plugin von localhost aus",
+        "testfromlocal_help" : "Während der Entwicklung können Sie den Plugin-Code, der auf Ihrem lokalen Computer gespeichert ist, auf dieser Instanz testen.",
+        "serverimport_btn" : "Automatisches Importskript testen.",
+        "serverimport_help" : "Wenn Ihr Plugin einen automatischen Import bietet, können Sie das Skript Ihres Plugins, das normalerweise auf dem Server läuft, auf Ihrem lokalen Computer testen.",
+        "icon_btn" : "Icons und Bilder der Applikation",
+        "icon_help" : "Laden und verwalten Sie die Icons und Bilder hoch, die mit Ihrer Anwendung verwendet werden sollen. Stellen Sie Bilder für den Login-Bildschirm, den Zustimmungsbildschirm, den MIDATA Store usw. bereit.",
+        "messages_btn" : "E-Mail-Nachrichten der Applikation",
+        "messages_help" : "Stellen Sie Ihre eigenen E-Mail-Texte zur Verfügung, die an neue Benutzerkonten gesendet werden, bei der ersten Nutzung Ihrer Anwendung, für die Annahme von Zustimmungen und mehr.",
+        "stats_btn" : "Fehler- und Performance-Statistiken",
+        "stats_help" : "Hier finden Sie Statistiken und Hinweise zur Verbesserung der verschiedenen Arten von API-Aufrufen, die Ihre Anwendung an den Server sendet.",
+        "debug_btn" : "API Tester Sandbox",
+        "debug_help" : "Melden Sie sich als App an und testen Sie Abfragen gegen das MIDATA-Backend.",
         "linkedStudy" : "Mit der App verknüpfte Studie (Code)",
         "mustParticipateInStudy" : "Studienteilnahme erforderlich",
-        "admin_only" : "Nur ein MIDATA Administrator kann diese Abschnitt ändern. Stellen Sie bitte eine Anfrage für Veränderungen.",
-        "terms_of_use" : "Bestimmungen",
-        "show_terms" : "Bestimmungen anzeigen",
+        "admin_only" : "Nur ein MIDATA Administrator darf diesen Abschnitt ändern. Bitte fordern Sie bei Bedarf Änderungen an.",
+        "terms_of_use" : "Allgemeine Geschäftsbedingungen (AGB)",
+        "show_terms" : "Allgemeine Geschäftsbedingungen (AGB) anzeigen",
         "unlock_code" : "Freischaltcode",
         "info" : {
-            "filename" : "Dieser Name wird intern für die Kennung Ihrer App verwendet. Es sollte einen gültigen Identifikator sein (a-z, A-Z, 0-9, _).",
-            "targetUserRole" : "Dient Ihre App nur für eine spezifische Rolle? Wenn nicht, wählen Sie 'Alle Rollen'.",
+            "filename" : "Dieser Name wird intern für die Kennung Ihrer App verwendet. Es sollte ein gültiger Identifikator sein (a-z, A-Z, 0-9, _).",
+            "targetUserRole" : "Ist Ihre App nur für eine spezifische Rolle bestimmt? Wenn nicht, wählen Sie 'Alle Rollen'.",
             "type" : "Wählen Sie 'Plugin' wenn Ihre App im MIDATA-Portal laufen wird. Wählen Sie 'Mobile App' für eine externe App. Wählen Sie 'OAuth1 Import' oder 'OAuth2 Import' wenn Sie sich über OAuth1 oder OAuth2 mit einem externen Server verbinden.",
             "name" : "Der Name der App oder des Plugins für den Endbenutzer.",
             "description" : "Die Beschreibung des Plugins, die im Markplatz erscheinen wird.",
+            "tokenExchangeParams" : "Der Standardwert ist client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> aber einige Dienste erfordern auch client_secret=<client_secret> oder kein client_id",
             "resharesData" : "Die App darf Daten, auf die sie Zugriff hat, an Drittparteien weitergeben.",
             "allowsUserSearch" : "Benutzer dieser App dürfen nach anderen Benutzern der gleichen App suchen.",
+
+            // TODO Dashboard
             "defaultSpaceName" : "Titel der Kachel des Plugins auf dem Dashboard.",
-            "tags" : "Kategorien unter welchen das Plugin im Marktplatz erscheinen wird.",
+            "tags" : "Kategorien unter welchen das Plugin im MIDATA Store erscheinen wird.",
             "url" : "URL der Hauptseite des Plugins. Wenn Sie das MIDATA-Template verwenden ist es 'dist/index.html#?authToken=:authToken''",
             "previewUrl" : "URL der Dashboard-Kachel des Plugins. Leer lassen falls keine solche Kachel angeboten wird.",
-            "defaultSpaceContext" : "Wählen Sie 'Mich' für den Standard-Dashboard. Wählen Sie 'Konfiguration' für ein Import-Plugin.",
-            "defaultQuery_mobile" : "Query das den Zugriff der App auf die Datenbank begrenzt. Der Zugriff muss eingeschränkt werden nach 'code', 'content' oder 'group' und kann eingeschränkt werden nach 'format' oder 'owner'. Gültiges Beispiel (alle Observations): '{ \"group\" : \"all\", \"group-system\" : \"v1\", \"format\" : [\"fhir/Observation\" ] }'",
-            "defaultQuery" : "Query, das den Zugriff des Plugins auf die Datenbank begrenzt. Der Zugriff muss mindestens eingeschränkt werden nach 'code', 'content', 'group', 'format' oder 'owner'. Gültiges Beispiel (alle Observations): '{ \"format\" : [\"fhir/Observation\" ] }'",
+
+            // TODO Konfiguration -> heisst jetzt anders
+            "defaultSpaceContext" : "Wählen Sie 'Mich' für das Standard-Dashboard. Wählen Sie 'Konfiguration' für ein Import-Plugin.",
+            "defaultQuery_mobile" : "Filter, das den Zugriff der App auf die Daten begrenzt. Der Zugriff muss eingeschränkt werden nach 'code', 'content' oder 'group' und kann eingeschränkt werden nach 'format' oder 'owner'. Gültiges Beispiel (alle Observations): '{ \"group\" : \"all\", \"group-system\" : \"v1\", \"format\" : [\"fhir/Observation\" ] }'",
+            "defaultQuery" : "Filter, das den Zugriff des Plugins auf die Daten begrenzt. Der Zugriff muss mindestens eingeschränkt werden nach 'code', 'content', 'group', 'format' oder 'owner'. Gültiges Beispiel (alle Observations): '{ \"format\" : [\"fhir/Observation\" ] }'",
             "defaultQuery_extra" : "Gültige Werte für 'code', 'content' oder 'format' sind im Developer Guide unter 'Format/Content' aufgelistet. Für erste Versionen kann der Vollzugriff erstattet werden mit { \"group\" : \"all\", \"group-system\" : \"v1\" }. Schränken Sie allerdings den Zugriff weiter ein, bevor das Plugin oder die App produktiv eingesetzt wird.",
             "secret" : "Ihre App braucht dieses 'secret' um sich anmelden zu können. Wählen Sie es nach Belieben.",
-            "mustParticipateInStudy" : "Benutzer müssen an der Studie teilnehmen um diese App benutzen zu können.",
-            "unlock_code" : "Wenn ausgefüllt, muss dieser Code vom Benutzer eingegeben werden bei der Registrierung oder ersten Anmeldung bei MIDATA über die App. Der Code ist nicht 'case sensitiv'."
-        }
+            "mustParticipateInStudy" : "Benutzer müssen an der Studie teilnehmen, um diese App benutzen zu können.",
+            "unlock_code" : "Wenn ausgefüllt, muss dieser Code vom Benutzer bei der Registrierung oder ersten Anmeldung bei MIDATA über die App eingegeben werden. Der Code ist nicht 'case sensitiv'."
+        },
+        "status" : {
+            "title" : "Applikations-Status",
+            "ACTIVE" : "Bereit für den produktiven Einsatz",
+            "BETA" : "Beta-Version",
+            "DEVELOPMENT" : "In Entwicklung - darf nur vom Entwickler verwendet werden",
+            "DEPRECATED" : "Veraltet - sollte nicht mehr verwendet werden",
+            "DELETED" : "Gelöscht"
+        },
+        "nostudy" : "Nicht an eine Studie gebunden",
+        "optionalParticipation" : "Teilnahme optional",
+        "access_query_options" : "Data Access Filter (Optionen)",
+        "access_query_selection" : "Data Access Filter (Auswahl)",
+        "access_query_add" : "Data Access Filter (Hinzufügen)",
+        "access_query_json" : "Data Access Filter (JSON)",
+        "query" : {
+            "self" : "App/Plugin kann nur auf Daten des angemeldeten Benutzers zugreifen.",
+            "ownapp" : "App/Plugin kann nur auf Daten zugreifen, die mittels dieser App/diesem Plugin erstellt wurden.",
+            "learn" : "Alle Datentypen, die diese App schreibt, automatisch zum Data Access Filter hinzufügen. (MUSS ausgeschaltet werden bevor die App produktiv eingesetzt wird)",
+            "all" : "Während der Entwicklung, Zugriff auf alle Daten des Benutzers erlauben. (MUSS durch ein geeignetes Data Access Filter ersetzt werden bevor das Plugin produktiv eingesetzt wird)"
+        },
+        "export_btn" : "Applikationsdefinition exportieren",
+        "export_help" : "Exportieren Sie die Definition dieser Applikation, damit sie auf einem anderen Server importiert und verwendet werden kann."
     },
 
     "appstats" : {
@@ -100,19 +145,39 @@
         "lastrun" : "Zuletzt ausgeführt",
         "count" : "Statistiken",
         "run" : "Anzahl Ausführungen dieser Aktion.",
-        "retry" : "Anzahl Mal die Operation wiederholt werden musste auf Grund von Parallelitätsprobleme.",
-        "db" : "Durchschnittliche Anzahl internen Datenbankabfragen (MongoDB) pro Ausführung der Operation.",
+        "retry" : "Anzahl Wiederholungsversuche auf Grund von Parallelitätsproblemen.",
+        "db" : "Durchschnittliche Anzahl interner Datenbankabfragen (MongoDB) je Ausführung der Operation.",
         "time" : "Ausführungsdauer",
         "avgtime" : "Durchschnitt",
         "lasttime" : "Zuletzt",
         "results" : "Resultate und Warnungen",
         "result" : "Antwort",
-        "empty" : "Keine Angaben wurden aufgezeichnet seit die Debug-Informationen gelöscht wurden.",
+        "empty" : "Seit die Debug-Informationen gelöscht wurden, sind keine Angaben aufgezeichnet worden.",
         "reload_btn" : "Aktualisieren",
         "reset_btn" : "Löschen"
     },
 
     "appdebug" : {
         "title" : "API Tester"
+    },
+
+    "appicon" : {
+        "title" : "Icons und Bilder",
+        "name" : "Name des Plugin/der App",
+        "internalname" : "Interner Name",
+        "use" : {
+            "title" : "Verwendung des Bildes",
+            "LOGINPAGE" : "Anzeige auf der OAuth Login-Seite",
+            "APPICON" : "Als Applikations-Icon verwenden"
+        },
+        "type" : {
+            "title" : "Bildtyp",
+            "image/jpeg" : "JPEG",
+            "image/png" : "PNG",
+            "image/gif" : "GIF"
+        },
+        "file" : "Bilddatei zum Hochladen",
+        "file_help" : "Bitte verkleinern und komprimieren Sie das Bild auf eine vernünftige Grösse, bevor Sie es hochladen. Bilder, die grösser als 1 MB sind, werden nicht akzeptiert.",
+        "existing" : "Bilder verknüpft mit der Applikation"
     }
 }

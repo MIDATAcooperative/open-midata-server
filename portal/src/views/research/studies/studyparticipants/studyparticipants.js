@@ -4,6 +4,7 @@ angular.module('portal')
 	$scope.studyid = $state.params.studyId;
 	$scope.results =[];
     $scope.status = new status(false, $scope);    
+    $scope.acceptall = {};
     $scope.searches = [ 
   	  { 
   		name : "studyparticipants.all",
@@ -31,14 +32,22 @@ angular.module('portal')
 		
 		$scope.status.doBusy(server.get(jsRoutes.controllers.research.Studies.get($scope.studyid).url))
 		.then(function(data) { 				
-			$scope.study = data.data;	
+			$scope.study = data.data;
+			if ($scope.study.autoJoinGroup) {
+				$scope.acceptall = { autoJoinGroup : $scope.study.autoJoinGroup, autoJoin : true };
+			}
 		});
 		
+		$scope.status.doBusy(server.post(jsRoutes.controllers.research.Studies.countParticipants($scope.studyid).url, JSON.stringify({ properties : $scope.search.criteria })))
+		.then(function(cdata) {
+		  $scope.total = cdata.data.total;
 		$scope.status.doBusy(server.post(jsRoutes.controllers.research.Studies.listParticipants($scope.studyid).url, JSON.stringify({ properties : $scope.search.criteria })))
 		.then(function(data) { 	
 			if (!comeback) paginationService.setCurrentPage("membertable", 1);
 			$scope.results = data.data;		
 			console.log($scope.results);
+		});
+		
 		});
 	};
 	
@@ -84,6 +93,14 @@ angular.module('portal')
 		$scope.status.doAction("change", server.post(jsRoutes.controllers.research.Studies.updateParticipation($scope.studyid).url, JSON.stringify(params)))
 		.then(function(data) { 				
 		    //$scope.reload();
+		});
+	};
+	
+	$scope.acceptAll = function() {		
+		$scope.status.doAction("change", server.post(jsRoutes.controllers.research.Studies.updateNonSetup($scope.studyid).url, JSON.stringify($scope.acceptall)))
+		.then(function(data) { 				
+		   $scope.reload();
+		   $scope.saveOk = true;
 		});
 	};
 	

@@ -55,7 +55,16 @@ public class Query {
 		this.apsId = apsId;
 		this.context = context;
 		process();
-		AccessLog.logQuery(apsId, properties, fields);
+		//AccessLog.logQuery(apsId, properties, fields);
+	}
+	
+	public Query(Map<String, Object> properties, Set<String> fields, APSCache cache, MidataId apsId, AccessContext context, boolean noinit) throws AppException {
+		this.properties = new HashMap<String, Object>(properties);
+		this.fields = fields;
+		this.cache = cache;
+		this.apsId = apsId;
+		this.context = context;	
+		
 	}
 	
 	public Query(Query q, Map<String, Object> properties) throws AppException {
@@ -70,7 +79,7 @@ public class Query {
 		this.apsId = aps;			
 		this.context = context;
 		process();
-		AccessLog.logQuery(apsId, properties, fields);
+		//AccessLog.logQuery(apsId, properties, fields);
 	}		
 	
 	public Map<String, Object> getProperties() {
@@ -270,6 +279,29 @@ public class Query {
 		return maxDateUpdated;
 	}
 	
+	public MidataId getFrom() {
+		String fr = properties.get("from").toString();
+		int p = fr.indexOf('.');
+		if (p <=0) p = fr.length(); 
+		return MidataId.from(fr.substring(0, p));		
+	}
+	
+	public MidataId getFromOwner() {
+		String fr = properties.get("from").toString();
+		int p = fr.indexOf('.');
+		if (p <=0) return null; 
+		return MidataId.from(fr.substring(p+1));			
+	}
+	
+	private DBRecord fromRecord;
+	public DBRecord getFromRecord() {
+		return fromRecord;		
+	}
+	public Query setFromRecord(DBRecord record) {
+		this.fromRecord = record;
+		return this;
+	}
+	
 	public boolean addMongoTimeRestriction(Map<String, Object> properties1, boolean allowZero) {
 		Map<String, Object> properties = properties1;		
 		if (minTime != 0 || maxTime != 0) {
@@ -325,7 +357,7 @@ public class Query {
 	}
 	
 	private void process() throws AppException {
-		 if (properties.containsKey("$or")) throw new InternalServerException("error.internal", "Query may not contain or");
+		 if (properties.containsKey("$or")) return; //throw new InternalServerException("error.internal", "Query may not contain or");
 		 if (fields.contains("group") && !fields.contains("content")) fields.add("content");
 		 if (properties.containsKey("history-date") || properties.containsKey("version") || properties.containsKey("history") || isStreamOnlyQuery()) properties.put("deleted", true);
 		
@@ -341,6 +373,7 @@ public class Query {
 	              (!properties.containsKey("deleted")) ||
 	              //properties.containsKey("app") ||
 	              properties.containsKey("creator") ||
+	              properties.containsKey("data") ||
 	              properties.containsKey("code") ||
 	              properties.containsKey("name");
 		 
@@ -367,7 +400,7 @@ public class Query {
          
          if (restrictedOnTime) fieldsFromDB.add("time");
 		 //if (fetchFromDB) fieldsFromDB.add("encrypted");
-		 if (fields.contains("data")) fieldsFromDB.add("encryptedData");
+		 if (fields.contains("data") || properties.containsKey("data")) fieldsFromDB.add("encryptedData");
 		 if (fields.contains("watches")) fieldsFromDB.add("encWatches");
 		 
 		 					
@@ -434,7 +467,7 @@ public class Query {
 			 Set<String> owners = getRestriction("owner");
 			 Set<Object> resolved = new HashSet<Object>();
 			 for (Object owner : owners) {
-				 AccessLog.log("check owner:"+owner.toString());
+				 //AccessLog.log("check owner:"+owner.toString());
 				 if (MidataId.isValid(owner.toString())) {
 					 resolved.add(owner);
 				 } else {

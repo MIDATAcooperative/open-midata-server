@@ -1,0 +1,335 @@
+/** 
+  * Local variables for dimensions (width, margins…)
+  */
+
+$signup-min-width: 280px;
+$signup-max-width: 320px;
+
+$signup-padding-top: 50px;
+
+$signup-margin-bottom-min: 15px;
+$signup-margin-bottom-max: 35px;
+
+$signup-margin-top-min: $signup-margin-bottom-min;
+$signup-margin-top-max: $signup-margin-bottom-max;
+
+$signup-link-margin-top-min: 20px;
+$signup-link-margin-top-max: 45px;
+
+$signup-button-min-margin-top-mobile: 30px;
+$signup-button-min-margin-top-desktop: 20px;
+$signup-button-max-margin-top: 20px;
+$signup-button-min-margin-bottom: 5px;
+$signup-button-max-margin-bottom: 20px;
+
+$signup-big-title-min-width: $signup-min-width - 50px;
+$signup-big-title-max-width: $signup-max-width - 50px;
+
+$signup-app-image-vertical-margin: 10px;
+
+$columns_horizontal_spacing: 150px;
+
+$signup-checkboxes-padding-top: 20px;
+$signup-checkboxes-min-margin-left: 0;
+$signup-checkboxes-max-margin-left: 15px;
+
+%local-text-defaults {
+	display: block;
+	text-align: center;
+}
+
+
+/**
+	* Overall layout for the content
+	*/
+
+.mi-or-signup {
+	position: relative;
+	@extend %mi-x-colored_gradient_background;
+	height: 100vh;
+	width: 100vw;
+	overflow-x: hidden;
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+
+	@media (min-height: 980px) { // minimum height to display current signup fields}
+		justify-content: center;
+	}
+
+	&__app {
+		display: block;
+		position: relative;
+
+		@include fluid-props(margin-bottom, $fluid-min, $fluid-max, $signup-margin-bottom-min, $signup-margin-bottom-max);
+
+		.mi-at-text {
+			@include fluid-props(font-size, $fluid-min, $fluid-max, $font-size-smaller, $font-size-normal);
+		}
+
+		&_image {
+			position: relative;
+			border-radius: 50%;
+			background-position: center;
+			background-size: 65px, 65px, cover;
+			background-repeat: no-repeat;
+			background-color: white;
+			height: 60px;
+			width: 60px;
+			left: 50%;
+			transform: translateX(-50%);
+			margin-bottom: $signup-app-image-vertical-margin;
+			margin-top: $signup-app-image-vertical-margin;
+		}
+	}
+
+	&__content {
+		padding-top: $signup-padding-top;
+		position: relative;
+		left: 50%;
+		transform: translateX(-50%);
+		@include fluid-props(width, $fluid-min, $fluid-max, $signup-min-width, $signup-max-width);
+
+		@include media($laptop-breakpoint) {
+			width: $signup-max-width;
+		}
+
+		/**
+			* Forms
+			*/
+
+
+		&--two-columns {
+			transition: ease all 0.2s;
+			@include media($tablet-breakpoint) {
+				@include fluid-props(width, $fluid-min, $fluid-max, $signup-min-width * 2 + $columns_horizontal_spacing, $signup-max-width * 2 + $columns_horizontal_spacing);
+			}
+
+			.mi-at-select__fieldset {
+				width: 90%;
+			}
+
+			.mi-or-signup__fields	{
+				&_optional {
+					animation: fadein 0.2s 0.2s forwards;
+					display: block;
+					opacity: 0;
+				}
+			}
+		}
+
+		&::before {
+			content: '';
+			position: absolute;
+			@include fluid-scaler(width, 180px);
+			@include fluid-scaler(height, 27px);
+			@include fluid-props(top, $fluid-min, $fluid-max, 20px, 20px);
+			left: 50%;
+			transform: translateX(-50%);
+		}
+	}
+
+	&__description {
+		margin-bottom: 20px;
+
+		@include media($laptop-breakpoint) {
+			width: $signup-max-width;
+		}
+	}
+
+	&__fields {
+		position: relative;
+		left: 50%;
+		transform: translateX(-50%);
+
+		@include media($tablet-breakpoint) {
+			&_required {
+				float: left;
+				position: relative;
+				left: 0%;
+				/* width: 45%; */
+			}
+
+			&_optional {
+				float: right;
+				position: relative;
+				left: 5%;
+				/* width: 45%; */
+			}
+		}
+
+		&_optional {
+			display: none;
+
+			&_invite {
+				margin-top: 50px;
+				text-align: center;
+				width: $signup-min-width;
+
+				& span:last-of-type {
+					display: inline-block;
+					padding: 10px;
+					text-decoration: underline;
+					font-weight: bold;
+					border-radius: 5px;
+
+					&:hover {
+						background-color: $color-brand-white;
+						color: $color-brand-blue-primary;
+					}
+				}
+
+				@include media($laptop-breakpoint) {
+					width: $signup-max-width;
+				}
+			}
+
+			&_close {
+				padding-top: 50px;
+				padding-bottom: 21px;
+				font-weight: bold;
+
+				& span:last-of-type:hover {
+					background-color: $color-brand-white;
+					color: $color-brand-blue-primary;
+					border-radius: 5px;
+					padding: 10px;
+				}
+
+				@include media($tablet-breakpoint) {
+					padding-top: 15px;
+				}
+			}
+		}
+
+		&::after {
+			content: "";
+			display: table;
+			clear: both;
+		}
+
+		&_checkboxes {
+			padding-top: $signup-checkboxes-padding-top;
+			@include fluid-props(margin-left, $fluid-min, $fluid-max, $signup-checkboxes-min-margin-left, $signup-checkboxes-max-margin-left);
+		}
+	}
+
+	a {
+		text-decoration: none;
+		font-family: $font-bold;
+	}
+
+	.mi-at-input__fieldset {
+		padding-left: 0;
+		@include fluid-props(width, $fluid-min, $fluid-max, $signup-min-width, $signup-max-width);
+
+		&::after {
+			left: 0;
+			width: 100%;
+		}
+
+		input {
+			@include fluid-props(font-size, $fluid-min, $fluid-max, $font-size-smaller, $font-size-smaller);
+			left: 0;
+		}
+
+		&:last-of-type {
+			margin-bottom: 0;
+		}
+	}
+
+	.mi-at-select__fieldset ~ .mi-at-select__fieldset {
+		margin-bottom: 20px;
+	}
+
+	.mi-at-select {
+		@include fluid-props(width, $fluid-min, $fluid-max, $signup-min-width, $signup-max-width);
+		color: $color-brand-white;
+		margin-top: 20px;
+	}
+
+	.mi-at-input__fieldset,
+	.mi-at-select__fieldset,
+	.mi-at-select {
+		@include media($laptop-breakpoint) {
+			width: $signup-max-width;
+		}
+	}
+
+	select {
+		font-size: $font-size-normal;
+	}
+
+	.mi-at-input--checkbox {
+		label {
+			left: 35px;
+		}
+	}
+
+
+	/**
+		* Text-related styles
+		*/
+
+	.mi-at-text--big-title {
+		display: block;
+		position: relative;
+		padding-left: 0;
+		width: 90%;
+		left: 5%;
+		@include fluid-props(width, $fluid-min, $fluid-max, $signup-big-title-min-width, $signup-big-title-max-width);
+		@include fluid-props(margin-bottom, $fluid-min, $fluid-max, $signup-margin-bottom-min, $signup-margin-bottom-max);
+	}
+
+
+	/**
+	  * Bottom elements (button, legal mentions, links, device…)
+	  */
+
+	.mi-mo-flat_button {
+		left: 50%;
+		transform: translate(-50%);
+		@include fluid-props(margin-top, $fluid-min, $fluid-max, $signup-button-min-margin-top-mobile, $signup-button-max-margin-top);
+		@include fluid-props(margin-bottom, $fluid-min, $fluid-max, $signup-margin-bottom-min, $signup-margin-bottom-max);
+
+		@include media($tablet-breakpoint) {
+			@include fluid-props(margin-top, $fluid-min, $fluid-max, $signup-button-min-margin-top-desktop, $signup-button-max-margin-top);
+		}
+	}
+
+	&__legal_mentions,
+	&__login_link,
+	&__device {
+		.mi-at-text--smallest {
+			@extend %local-text-defaults;
+		}
+	}
+
+	&__legal_mentions,
+	&__device {
+		position: relative;
+		width: 100vw;
+		bottom: 20px;
+		overflow: hidden;
+
+		.mi-at-text--smallest {
+			@extend %local-text-defaults;
+			position: relative;
+			left: 50%;
+			transform: translate(-50%);
+		}
+	}
+
+	&__login_link {
+		margin-top: 10px;
+		margin-bottom: 30px;
+
+		.mi-at-text--smallest {
+			font-family: $font-bold;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+	}
+}

@@ -22,7 +22,7 @@ GET     /test/autorun                                    controllers.AutoRun.run
 
 # Home page
 
-GET     /api/logout                                          controllers.Application.logout()
+POST     /api/logout                                          controllers.Application.logout()
 
 POST    /api/members/registration                        controllers.Application.register()
 POST    /api/members/join                                controllers.QuickRegistration.register()
@@ -45,6 +45,7 @@ POST    /api/members/news/add                            controllers.News.add()
 POST    /api/members/news/get                            controllers.News.get()
 POST    /api/admin/news/update                           controllers.News.update()
 POST    /api/admin/news/delete/:id                       controllers.News.delete(id: String)
+
 
 # Records
 
@@ -97,6 +98,10 @@ DELETE  /api/admins/plugins/:appId            	         controllers.Market.delet
 POST     /api/admins/importplugin                        controllers.Market.importPlugin()
 GET      /api/admins/exportplugin/:appId                 controllers.Market.exportPlugin(appId: String)
 
+POST     /api/developers/plugins/:appId/icon             controllers.Market.uploadIcon(appId: String)
+DELETE   /api/developers/plugins/:appId/icon/:use        controllers.Market.deleteIcon(appId: String, use: String)
+GET      /api/shared/icon/:use/:id                       controllers.Market.getIcon(use:String, id:String)
+
 # Users
 
 POST    /api/members/users/get                           controllers.Users.get()
@@ -121,6 +126,7 @@ POST    /api/admin/studies                               controllers.research.St
 GET     /api/research/studies/:study                     controllers.research.Studies.get(study: String)
 GET     /api/admin/studies/:study                        controllers.research.Studies.getAdmin(study: String)
 PUT     /api/research/studies/:study                     controllers.research.Studies.update(study: String)
+POST    /api/research/studies/:study/change              controllers.research.Studies.updateNonSetup(study: String)
 GET     /api/research/studies/:study/download            controllers.research.Studies.download(study: String)
 GET     /api/research/studies/:study/fhirdownload/:studyGroup/:mode  controllers.research.Studies.downloadFHIR(study: String, studyGroup : String, mode : String)
 GET     /api/research/studies/:study/codes               controllers.research.Studies.listCodes(study: String)
@@ -138,6 +144,7 @@ POST    /api/research/studies/:study/status/abort        controllers.research.St
 POST    /api/research/studies/:study/status/delete       controllers.research.Studies.delete(study: String)
 POST    /api/admin/studies/:study/status/delete       controllers.admin.Administration.deleteStudy(study: String)
 POST    /api/research/studies/:study/participants        controllers.research.Studies.listParticipants(study: String)
+POST    /api/research/studies/:study/participants/count  controllers.research.Studies.countParticipants(study: String)
 GET     /api/research/studies/:study/participants/:participant controllers.research.Studies.getParticipant(study: String, participant: String)
 POST    /api/research/studies/:study/approve             controllers.research.Studies.approveParticipation(study: String)
 POST    /api/research/studies/:study/reject              controllers.research.Studies.rejectParticipation(study: String)
@@ -202,6 +209,7 @@ POST    /api/admins/changeStatus                         controllers.admin.Admin
 POST    /api/admins/changeUserEmail                      controllers.admin.Administration.changeUserEmail()
 POST    /api/admins/addcomment                           controllers.admin.Administration.addComment()
 POST    /api/admins/wipeaccount                          controllers.admin.Administration.adminWipeAccount()
+POST    /api/admin/stats                                 controllers.admin.Administration.getStats()
 
 # Tasks
 POST    /api/shared/tasks/create         controllers.Tasking.add()

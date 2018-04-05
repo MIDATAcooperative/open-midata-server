@@ -10,7 +10,7 @@
 		            	</div>
 		            	<div class="panel-body">
 			            	<div class="alert alert-danger" ng-show="error">
-								<p translate="{{ error.code }}"></p>
+								<p translate="{{ error.code || error }}"></p>
 							</div>
 							
 							<p translate="passphrase.description"></p>

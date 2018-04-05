@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.1" xml:lang="en">
+    <file source-language="en" target-language="it" datatype="winres" original="i18n.js_it.json">
+        <group resname="pick" id="pick">
+            <trans-unit resname="title" id="pick.title">
+                <source>Questionnaires</source>
+            </trans-unit>
+            <trans-unit resname="intro_empty" id="pick.intro_empty">
+                <source>There are no questionnaires available. Start by creating your own questionnaire.</source>
+            </trans-unit>
+            <trans-unit resname="count" id="pick.count">
+                <source> answers, last:</source>
+            </trans-unit>
+            <trans-unit resname="create_new_btn" id="pick.create_new_btn">
+                <source>Create new survey</source>
+            </trans-unit>
+            <trans-unit resname="edit_btn" id="pick.edit_btn">
+                <source>Edit</source>
+            </trans-unit>
+            <trans-unit resname="results_btn" id="pick.results_btn">
+                <source>Show results</source>
+            </trans-unit>
+        </group>
+        <group resname="editsurvey" id="editsurvey">
+            <trans-unit resname="name" id="editsurvey.name">
+                <source>Internal Name</source>
+            </trans-unit>
+            <trans-unit resname="title" id="editsurvey.title">
+                <source>Public Title</source>
+            </trans-unit>
+            <trans-unit resname="version" id="editsurvey.version">
+                <source>Version</source>
+            </trans-unit>
+            <trans-unit resname="publisher" id="editsurvey.publisher">
+                <source>Publisher</source>
+            </trans-unit>
+            <trans-unit resname="description" id="editsurvey.description">
+                <source>Description</source>
+            </trans-unit>
+            <trans-unit resname="purpose" id="editsurvey.purpose">
+                <source>Purpose</source>
+            </trans-unit>
+            <trans-unit resname="status" id="editsurvey.status">
+                <source>Status</source>
+            </trans-unit>
+            <trans-unit resname="save_btn" id="editsurvey.save_btn">
+                <source>Save</source>
+            </trans-unit>
+            <trans-unit resname="cancel_btn" id="editsurvey.cancel_btn">
+                <source>Cancel</source>
+            </trans-unit>
+        </group>
+        <group resname="previewsurvey" id="previewsurvey">
+            <trans-unit resname="title" id="previewsurvey.title">
+                <source>Questionnaire:</source>
+            </trans-unit>
+            <trans-unit resname="preview" id="previewsurvey.preview">
+                <source>Preview:</source>
+            </trans-unit>
+            <trans-unit resname="empty" id="previewsurvey.empty">
+                <source>The questionnaire does not have any questions yet. Add a section by clicking on 'Add new page'</source>
+            </trans-unit>
+            <trans-unit resname="page" id="previewsurvey.page">
+                <source>Page</source>
+            </trans-unit>
+            <trans-unit resname="end" id="previewsurvey.end">
+                <source>End of questionnaire</source>
+            </trans-unit>
+            <trans-unit resname="add_page_btn" id="previewsurvey.add_page_btn">
+                <source>Add new page</source>
+            </trans-unit>
+        </group>
+        <group resname="item" id="item">
+            <trans-unit resname="linkId" id="item.linkId">
+                <source>Section ID</source>
+            </trans-unit>
+            <trans-unit resname="prefix" id="item.prefix">
+                <source>Section prefix ( 1(a), 2.5.3, etc.)</source>
+            </trans-unit>
+            <trans-unit resname="text" id="item.text">
+                <source>Text to be displayed</source>
+            </trans-unit>
+            <trans-unit resname="type" id="item.type">
+                <source>Section type</source>
+            </trans-unit>
+            <trans-unit resname="required" id="item.required">
+                <source>Must be answered?</source>
+            </trans-unit>
+            <trans-unit resname="repeats" id="item.repeats">
+                <source>Multiple answers allowed?</source>
+            </trans-unit>
+            <trans-unit resname="options" id="item.options">
+                <source>List of possible choices</source>
+            </trans-unit>
+            <trans-unit resname="options_empty" id="item.options_empty">
+                <source>No choices defined yet. Click on 'Add Option' to at possible choices.</source>
+            </trans-unit>
+            <trans-unit resname="delete_btn" id="item.delete_btn">
+                <source>Delete</source>
+            </trans-unit>
+            <trans-unit resname="add_option_btn" id="item.add_option_btn">
+                <source>Add Option</source>
+            </trans-unit>
+            <trans-unit resname="display" id="item.display">
+                <source>Displayed Value</source>
+            </trans-unit>
+            <trans-unit resname="system" id="item.system">
+                <source>Code system</source>
+            </trans-unit>
+            <trans-unit resname="code" id="item.code">
+                <source>Code</source>
+            </trans-unit>
+        </group>
+        <group resname="type" id="type">
+            <trans-unit resname="group" id="type.group">
+                <source>Group of Questions</source>
+            </trans-unit>
+            <trans-unit resname="display" id="type.display">
+                <source>Text (Introduction, Explanation, etc.)</source>
+            </trans-unit>
+            <trans-unit resname="boolean" id="type.boolean">
+                <source>Question: Yes / No</source>
+            </trans-unit>
+            <trans-unit resname="decimal" id="type.decimal">
+                <source>Question: Decimal Number</source>
+            </trans-unit>
+            <trans-unit resname="integer" id="type.integer">
+                <source>Question: Integer Number</source>
+            </trans-unit>
+            <trans-unit resname="date" id="type.date">
+                <source>Question: Date</source>
+            </trans-unit>
+            <trans-unit resname="dateTime" id="type.dateTime">
+                <source>Question: DateTime</source>
+            </trans-unit>
+            <trans-unit resname="time" id="type.time">
+                <source>Question: Time</source>
+            </trans-unit>
+            <trans-unit resname="string" id="type.string">
+                <source>Question: Free-Text (single line)</source>
+            </trans-unit>
+            <trans-unit resname="text" id="type.text">
+                <source>Question: Free-Text (multiple lines)</source>
+            </trans-unit>
+            <trans-unit resname="url" id="type.url">
+                <source>Question: URL</source>
+            </trans-unit>
+            <trans-unit resname="choice" id="type.choice">
+                <source>Question: Predefined Choices</source>
+            </trans-unit>
+            <trans-unit resname="open-choice" id="type.open-choice">
+                <source>Question: Predefined Choices + Freetext</source>
+            </trans-unit>
+            <trans-unit resname="attachment" id="type.attachment">
+                <source>Question: Attachment</source>
+            </trans-unit>
+            <trans-unit resname="reference" id="type.reference">
+                <source>Question: Reference</source>
+            </trans-unit>
+            <trans-unit resname="quantity" id="type.quantity">
+                <source>Question: Quantity</source>
+            </trans-unit>
+        </group>
+        <trans-unit resname="draft" id="draft">
+            <source>Draft</source>
+        </trans-unit>
+        <trans-unit resname="active" id="active">
+            <source>Active</source>
+        </trans-unit>
+        <trans-unit resname="retired" id="retired">
+            <source>Retired</source>
+        </trans-unit>
+        <trans-unit resname="Unknown" id="Unknown">
+            <source>Unknown</source>
+        </trans-unit>
+        <trans-unit resname="yes" id="yes">
+            <source>Yes</source>
+        </trans-unit>
+        <trans-unit resname="answers" id="answers">
+            <source>Total nr of Answers</source>
+        </trans-unit>
+    </file>
+</xliff>

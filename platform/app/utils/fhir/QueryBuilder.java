@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +18,7 @@ import akka.japi.Pair;
 import ca.uhn.fhir.model.api.IQueryParameterType;
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import ca.uhn.fhir.rest.api.SortOrderEnum;
+import ca.uhn.fhir.rest.api.SummaryEnum;
 import ca.uhn.fhir.rest.param.CompositeParam;
 import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.param.ParamPrefixEnum;
@@ -29,6 +31,7 @@ import ca.uhn.fhir.rest.param.UriParamQualifierEnum;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
+import models.MidataId;
 import utils.AccessLog;
 import utils.access.op.AndCondition;
 import utils.access.op.CompareCaseInsensitive;
@@ -85,14 +88,24 @@ public class QueryBuilder {
 	
 	public void handleCommon() throws AppException {
 		if (params.getLastUpdated() != null) {
-			Date from = params.getLastUpdated().getLowerBoundAsInstant();
-			Date to = params.getLastUpdated().getUpperBoundAsInstant();
-			if (from != null) query.putAccount("updated-after", from);
-			if (to != null) query.putAccount("updated-before", to);
+			try {
+			    Date from = params.getLastUpdated().getLowerBoundAsInstant();
+			    Date to = params.getLastUpdated().getUpperBoundAsInstant();
+			    if (from != null) query.putAccount("updated-after", from);
+				if (to != null) query.putAccount("updated-before", to);
+			} catch (IllegalArgumentException e) {
+				throw new InvalidRequestException("Invalid _lastUpdated parameter!");
+			}			
 		}
 		if (params.getCount() != null) {
-			query.putAccount("limit", params.getCount());
-		}	
+			query.putAccount("limit", params.getCount() + 1); // We add 1 to see if there are more results available
+		}
+		if (params.getSkip() != null) {
+			query.putAccount("skip", params.getSkip());
+		}
+		if (params.getFrom() != null) {
+			query.putAccount("from", params.getFrom());
+		}
 		query.initSort(params.getSortNames());
 		
 	}
@@ -100,7 +113,10 @@ public class QueryBuilder {
 	public void handleIdRestriction() throws AppException {
 		if (params.containsKey("_id")) {
 	           Set<String> ids = paramToStrings("_id");
-	           if (ids != null) query.putAccount("_id", ids);
+	           if (ids != null) {
+	        	   for (String id : ids) if (!MidataId.isValid(id)) throw new UnprocessableEntityException("Invalid value for _id in query");
+	        	   query.putAccount("_id", ids);
+	           }
 		}
 	}
 	
@@ -289,6 +305,8 @@ public class QueryBuilder {
 				} else 	if (system == null) {
 				  
 			      bld.addEq(path+".coding.code", val, CompareCaseInsensitiveOperator.EQUALS);
+				} else 	if (val == null || val.length() == 0) {
+				  bld.addEq(path+".coding.system", system, CompareCaseInsensitiveOperator.EQUALS);
 				} else {
 				  bld.addEq(path+".coding", "system", system, "code", val, CompareCaseInsensitiveOperator.EQUALS);
 				}
@@ -308,6 +326,8 @@ public class QueryBuilder {
 				   bld.addEq(path+".type.text",tokenParam.getValue(), CompareCaseInsensitiveOperator.CONTAINS);
 				} else if (system == null) {
 				   bld.addEq(path+".value", tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
+				} else 	if (val == null || val.length() == 0) {
+				   bld.addEq(path+".system", system, CompareCaseInsensitiveOperator.EQUALS);
 				} else {
 				   bld.addEq(path, "system", system, "value", tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
 				}	
@@ -383,7 +403,7 @@ public class QueryBuilder {
 				
 				Calendar cal = dateParam.getValueAsDateTimeDt().getValueAsCalendar();
 				//cal.setTime(comp);
-				
+				if (cal == null) throw new UnprocessableEntityException("Invalid date in date restriction");
 				switch (precision) {					  
 				case SECOND: 
 					cal.set(Calendar.MILLISECOND, 0);
@@ -470,6 +490,10 @@ public class QueryBuilder {
 					bld.addCompOr(lPath, CompareOperator.LT, lDate, true);
 					bld.addCompOr(hPath, CompareOperator.GE, hDate, true);
 					break;
+				case APPROXIMATE:
+					bld.addComp(lPath, CompareOperator.LT, hDate, true);
+					bld.addComp(hPath, CompareOperator.GE, lDate, true);									
+					break;
 				default:throw new NullPointerException();
 				}
 			
@@ -546,7 +570,7 @@ public class QueryBuilder {
 	
 	public List<ReferenceParam> followChain(ReferenceParam r, String targetType) {
 		SearchParameterMap params = new SearchParameterMap();
-				         
+        params.setSummary(SummaryEnum.TRUE);//Elements(Collections.singleton("_id"));				         
         if (targetType == null) targetType = r.getResourceType();
         if (targetType == null) throw new UnprocessableEntityException("Reference search needs reference target type in query");
         
@@ -585,7 +609,7 @@ public class QueryBuilder {
 					if (r.getChain() != null) {
 						
 						SearchParameterMap params = new SearchParameterMap();						
-                                                
+						params.setSummary(SummaryEnum.TRUE);                                              
                         List<BaseResource> resultList;
                         if (targetType == null) {
                            String rt = r.getResourceType();
@@ -704,8 +728,16 @@ public class QueryBuilder {
 	public void recordCodeRestriction(String name, String path) throws AppException {
 		Set<String> codes = tokensToCodeSystemStrings(name);
 		if (codes != null) {
-			query.putAccount("code", codes);
-			restriction(name, false, TYPE_CODEABLE_CONCEPT, path);
+			boolean allMidata = true;
+			for (String code : codes) if (!code.startsWith("http://midata.coop/codesystems/content ")) allMidata = false;
+			if (!allMidata) {
+			    query.putAccount("code", codes);			
+			    restriction(name, false, TYPE_CODEABLE_CONCEPT, path);
+			} else {
+				Set<String> contents = new HashSet<String>();
+				for (String code : codes) contents.add(code.substring("http://midata.coop/codesystems/content ".length()));
+				query.putAccount("content", contents);
+			}
 		} else {
 			restriction(name, true, TYPE_CODEABLE_CONCEPT, path);
 		}		

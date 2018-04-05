@@ -1,0 +1,238 @@
+/** 
+  * Local variables for dimensions (width, margins…)
+  */
+
+$auth-min-width: 280px;
+$auth-max-width: 320px;
+
+$auth-margin-bottom-min: 15px;
+$auth-margin-bottom-max: 35px;
+
+$auth-margin-top-min: $auth-margin-bottom-min;
+$auth-margin-top-max: $auth-margin-bottom-max;
+
+$auth-button-min-margin-top-mobile: 20px;
+$auth-button-min-margin-top-desktop: 30px;
+$auth-button-max-margin-top: 20px;
+$auth-button-min-margin-bottom: 5px;
+$auth-button-max-margin-bottom: 20px;
+
+$auth-app-image-vertical-margin: 10px;
+
+$columns_horizontal_spacing: 150px;
+
+$app-description-padding-top: 20px;
+$app-description-padding-bottom: 0px;
+
+$auth-checkboxes-padding-top: 40px;
+
+$section-padding-top: 20px;
+$section-padding-bottom: 20px;
+
+$list-padding-top: 20px;
+$list-padding-bottom: 0;
+$list-item-margin-left: 50px;
+
+$study-block-padding-top: 20px;
+$study-block-padding-bottom: 0;
+$study-title-padding-top: 10px;
+$study-title-padding-bottom: 15px;
+$study-content-margin-left: 35px;
+
+%local-text-defaults {
+	display: block;
+	text-align: center;
+}
+
+/**
+	* Overall layout for the content
+	*/
+
+.mi-or-auth {
+	position: relative;
+	@extend %mi-x-colored_gradient_background;
+	height: 100vh;
+	width: 100vw;
+	overflow-x: hidden;
+
+	&__content {
+		padding-top: 50px;
+		position: relative;
+		left: 50%;
+		transform: translateX(-50%);
+		@include fluid-props(width, $fluid-min, $fluid-max, $auth-min-width, $auth-max-width);
+		transition: ease all 0.2s;
+
+		@include media($laptop-breakpoint) {
+			width: $auth-max-width;
+		}
+
+		@include media($tablet-breakpoint) {
+			top: 50%;
+			transform: translate(-50%, -50%);
+		}
+
+		&::before {
+			@include background-image('logo-midata--white.svg');
+			content: '';
+			position: absolute;
+			width: 170px;
+			height: 26px;
+			@include fluid-props(top, $fluid-min, $fluid-max, 20px, 20px);
+			left: 50%;
+			transform: translateX(-50%);
+		}
+	}
+
+/**
+  * Sections
+  */
+
+	&__section {
+		position: relative;
+		padding-top: $section-padding-top;
+		padding-bottom: $section-padding-bottom;
+
+		&::after {
+			content: '';
+			position: absolute;
+			left: 0px;
+			bottom: 0px;
+			width: 100%;
+
+			border-bottom: solid 1px $color-brand-grey-border;
+		}
+
+		&:last-of-type:after {
+			border: none;
+		}
+
+		&--app {
+			.mi-or-auth__app_description {
+				padding-top: $app-description-padding-top;
+				padding-bottom: $app-description-padding-bottom;
+			}
+		}
+
+		&--required_data {
+			ul {
+				padding-top: $list-padding-top;
+				padding-bottom: $list-padding-bottom;
+			}
+
+			li {
+				margin-left: $list-item-margin-left;
+				color: $color-brand-white;
+				list-style: square;
+			}
+		}
+
+		&--study {
+			div {
+				margin-left: $study-content-margin-left;
+				padding-bottom: $study-block-padding-bottom;
+			}
+
+			.mi-or-auth__study {
+
+				&_title {
+					padding-top: $study-title-padding-top;
+					padding-bottom: $study-title-padding-bottom;
+				}
+
+				&_description {
+				}
+			}
+		}
+	}
+
+
+/**
+  * Forms
+  */
+
+	.mi-at-input__fieldset {
+		padding-left: 0;
+		@include fluid-props(width, $fluid-min, $fluid-max, $auth-min-width, $auth-max-width);
+
+		@include media($laptop-breakpoint) {
+			width: $auth-max-width;
+		}
+
+		&::after {
+			left: 0;
+			width: 100%;
+		}
+
+		input {
+			@include fluid-props(font-size, $fluid-min, $fluid-max, $font-size-smaller, $font-size-smaller);
+			left: 0;
+
+			// &:required ~ label::after {
+			// 	content: '*';
+			// }
+		}
+
+		&:last-of-type {
+			margin-bottom: 0;
+		}
+	}
+
+	.mi-at-input--checkbox {
+		label {
+			left: 35px;
+		}
+	}
+
+
+/**
+  * Bottom elements (button, legal mentions, links, device…)
+  */
+
+	.mi-mo-flat_button {
+		left: 50%;
+		transform: translate(-50%);
+		@include fluid-props(margin-top, $fluid-min, $fluid-max, $auth-button-min-margin-top-mobile, $auth-button-max-margin-top);
+		@include fluid-props(margin-bottom, $fluid-min, $fluid-max, $auth-margin-bottom-min, $auth-margin-bottom-max);
+
+		@include media($tablet-breakpoint) {
+			@include fluid-props(margin-top, $fluid-min, $fluid-max, $auth-button-min-margin-top-desktop, $auth-button-max-margin-top);
+		}
+	}
+
+	&__legal_mentions,
+	&__login_link,
+	&__device {
+		.mi-at-text--smallest {
+			@extend %local-text-defaults;
+		}
+	}
+
+	&__legal_mentions,
+	&__device {
+		position: relative;
+		width: 100vw;
+		bottom: 20px;
+		overflow: hidden;
+
+		.mi-at-text--smallest {
+			@extend %local-text-defaults;
+			position: relative;
+			left: 50%;
+			transform: translate(-50%);
+		}
+	}
+
+	&__login_link {
+		margin-top: 10px;
+		margin-bottom: 30px;
+
+		.mi-at-text--smallest {
+			font-family: $font-bold;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+	}
+}

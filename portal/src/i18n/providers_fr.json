@@ -1,7 +1,7 @@
 {
 
     "provider_registration" : {
-        "sign_up" : "Enregistrement en tant que professionnel de la santé",
+        "sign_up" : "Inscription en tant que professionnel de la santé",
         "provider" : "Professionnel de la santé",
         "user" : "Utilisateur",
         "name" : "Nom"
@@ -16,7 +16,7 @@
         "patients" : "Patients",
         "research" : "Recherche",
         "workspace" : "Workspace",
-        "market" : "Marché",
+        "market" : "MIDATA Store",
         "usergroups" : "Teams"
     },
 

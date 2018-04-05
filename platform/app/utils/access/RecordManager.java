@@ -56,7 +56,7 @@ public class RecordManager {
 
 	public static RecordManager instance = new RecordManager();
 
-	public final static Map<String, Object> FULLAPS = Collections.unmodifiableMap(new HashMap<String, Object>());
+	public final static Map<String, Object> FULLAPS_LIMITED_SIZE = Collections.unmodifiableMap(CMaps.map("limit-consents", 1000).map("limit", 10000));
 	public final static Map<String, Object> FULLAPS_WITHSTREAMS = Collections.unmodifiableMap(CMaps.map("streams", "true"));
 	public final static Map<String, Object> FULLAPS_FLAT = Collections.unmodifiableMap(CMaps.map("streams", "true").map("flat", "true"));
 	public final static Map<String, Object> FULLAPS_FLAT_OWNER = Collections.unmodifiableMap(CMaps.map("streams", "true").map("flat", "true").map("owner", "self"));
@@ -238,7 +238,7 @@ public class RecordManager {
 			Set<MidataId> targetUsers) throws AppException {
 		AccessLog.logBegin("begin unshareAPSRecursive aps="+apsId.toString()+" executor="+executorId.toString()+" #targets="+targetUsers.size());
 		if (getCache(executorId).getAPS(apsId).isAccessible()) {
-			List<DBRecord> to_unshare = QueryEngine.listInternal(getCache(executorId), apsId, null, CMaps.map("streams", "only"), Sets.create("_id"));
+			List<DBRecord> to_unshare = QueryEngine.listInternal(getCache(executorId), apsId, null, CMaps.map("streams", "only").map("ignore-redirect", true), Sets.create("_id"));
 			for (DBRecord rec : to_unshare) unshareAPS(rec._id, executorId, targetUsers);
 			getCache(executorId).getAPS(apsId).removeAccess(targetUsers);
 		}
@@ -459,6 +459,16 @@ public class RecordManager {
 		apswrapper.removePermission(recordEntries);
 		for (DBRecord rec : recordEntries) RecordLifecycle.removeWatchingAps(rec, apsId);
 		AccessLog.logEnd("end unshare");
+	}
+	
+	public void unshare(MidataId who, MidataId apsId, Collection<Record> records)
+			throws AppException {
+		if (records.size() == 0) return;
+		
+		Set<MidataId> ids = new HashSet<MidataId>();
+		for (Record r : records) ids.add(r._id);
+		
+		unshare(who, apsId, ids);
 	}
 
 	/**
@@ -1025,6 +1035,25 @@ public class RecordManager {
 		return QueryEngine.list(getCache(who), apsId, context, properties, fields);
 	}
 	
+	public DBIterator<Record> listIterator(MidataId who, MidataId apsId,
+			Map<String, Object> properties, Set<String> fields)
+			throws AppException {
+		AccessContext context = null;
+		if (who.equals(apsId)) context = createContextFromAccount(who);
+		else {
+          Consent consent = Consent.getByIdUnchecked(apsId, Consent.ALL);
+          if (consent != null) context =  createContextFromConsent(who, consent);
+		}
+		AccessLog.log("context="+context);
+		return QueryEngine.listIterator(getCache(who), apsId, context, properties, fields);
+	}
+	
+	public DBIterator<Record> listIterator(MidataId who, AccessContext context,
+			Map<String, Object> properties, Set<String> fields)
+			throws AppException {	
+		return QueryEngine.listIterator(getCache(who), context.getTargetAps(), context, properties, fields);
+	}
+	
 	public List<Record> list(MidataId who, AccessContext context,
 			Map<String, Object> properties, Set<String> fields)
 			throws AppException {
@@ -1046,6 +1075,7 @@ public class RecordManager {
 		nproperties.put("streams", "true");
 		nproperties.put("flat", "true");
 		nproperties.put("group-system", "v1");
+		nproperties.put("consent-limit", 1000);
 		nproperties.put("no-postfilter-streams", true); // For old streams without "app" field
 		if (properties.containsKey("group-system")) nproperties.put("group-system", properties.get("group-system"));
 		if (properties.containsKey("owner")) nproperties.put("owner", properties.get("owner"));
@@ -1071,7 +1101,7 @@ public class RecordManager {
 		try {
 		    Collection<RecordsInfo> result = QueryEngine.info(getCache(who), aps, context, nproperties, aggrType);
 		    
-		    if (properties.containsKey("include-records")) {
+		    if (properties.containsKey("include-records")) {		    	
 			    for (RecordsInfo inf : result) {
 			    	if (inf.newestRecord != null) {
 			    		inf.newestRecordContent = fetch(who, aps, inf.newestRecord);
@@ -1169,7 +1199,7 @@ public class RecordManager {
 	 */
 	public Set<String> listRecordIds(MidataId who, MidataId apsId)
 			throws AppException {
-		return listRecordIds(who, apsId, RecordManager.FULLAPS);
+		return listRecordIds(who, apsId, RecordManager.FULLAPS_LIMITED_SIZE);
 	}
 
 	/**

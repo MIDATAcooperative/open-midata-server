@@ -1,5 +1,6 @@
 package models;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import org.bson.types.ObjectId;
@@ -8,8 +9,10 @@ import org.bson.types.ObjectId;
  * id for any resource stored in MIDATA
  *
  */
-public class MidataId implements Comparable<MidataId> {
+public class MidataId implements Comparable<MidataId>, Serializable {
 
+	private static final long serialVersionUID = 5402993258205599040L;
+	
 	private String id;
 	private ObjectId objId;
 	

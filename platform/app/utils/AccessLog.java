@@ -41,7 +41,7 @@ public class AccessLog {
 	 */
 	public static void log(String txt) {
 		String msg = "                                            ".substring(0,ident.get())+txt;
-		//if (logToFile) Logger.debug(msg);
+		if (logToFile)	Logger.debug(msg);
 		if (logForMail) msgs.get().println(msg);
 	}
 	
@@ -80,9 +80,8 @@ public class AccessLog {
 		   s.append(" ");
 	   }
 	   s.append(")");
-	   String msg = "                                            ".substring(0,ident.get())+"Query:"+s.toString();
-	   //if (logToFile) Logger.debug(msg);
-	   if (logForMail) log(msg);
+	   String msg = "                                            ".substring(0,ident.get())+"Query:"+s.toString();	   
+	   log(msg);
 	}
 	
 	/**
@@ -90,9 +89,8 @@ public class AccessLog {
 	 * @param msg the message to be logged
 	 */
 	public static void logDB(String msg) {
-	   String msg1 = "                                            ".substring(0,ident.get())+"DB:"+msg; 
-	   //if (logToFile) Logger.debug(msg1);
-	   if (logForMail) log(msg1);
+	   String msg1 = "                                            ".substring(0,ident.get())+"DB:"+msg; 	   
+	   log(msg1);
 	}
 	
 	private static ThreadLocal<Integer> ident = new ThreadLocal<Integer>() {

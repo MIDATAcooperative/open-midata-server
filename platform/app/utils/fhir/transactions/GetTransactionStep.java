@@ -13,15 +13,15 @@ public class GetTransactionStep extends TransactionStep {
 	}
 	
     public void init() {
-    	record = provider.init();
+    	//record = provider.init();
     } 
 	
 	public void prepare() { 
-		try {
+		/*try {
 		  provider.prepare(record, resource);
 		} catch (Exception e) {
 		  setResultBasedOnException(e);
-		}
+		}*/
 	}
 	
 	public void execute() {

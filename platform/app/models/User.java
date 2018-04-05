@@ -4,6 +4,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import models.enums.AuditEventType;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
 import models.enums.Gender;
+import models.enums.StudyExecutionStatus;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
@@ -28,6 +30,7 @@ import utils.collections.Sets;
 import utils.db.NotMaterialized;
 import utils.evolution.AccountPatches;
 import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 
 /**
@@ -40,7 +43,7 @@ public class User extends Model implements Comparable<User> {
 	protected static final @NotMaterialized String collection = "users";
 	public static final @NotMaterialized Set<String> NON_DELETED = Sets.create(UserStatus.ACTIVE.toString(), UserStatus.NEW.toString(), UserStatus.BLOCKED.toString(), UserStatus.TIMEOUT.toString());
 	public static final @NotMaterialized Set<String> ALL_USER = Sets.create("email", "emailLC", "name", "role", "subroles", "accountVersion", "registeredAt",  "status", "contractStatus", "agbStatus", "emailStatus", "confirmedAt", "firstname", "lastname",	"gender", "city", "zip", "country", "address1", "address2", "phone", "mobile", "language", "searchable", "developer", "midataID");
-	public static final @NotMaterialized Set<String> ALL_USER_INTERNAL = Sets.create("email", "emailLC", "name", "role", "subroles", "accountVersion", "registeredAt",  "status", "contractStatus", "agbStatus", "emailStatus", "confirmedAt", "firstname", "lastname",	"gender", "city", "zip", "country", "address1", "address2", "phone", "mobile", "language", "searchable", "developer", "initialApp", "password", "apps", "midataID");
+	public static final @NotMaterialized Set<String> ALL_USER_INTERNAL = Sets.create("email", "emailLC", "name", "role", "subroles", "accountVersion", "registeredAt",  "status", "contractStatus", "agbStatus", "emailStatus", "confirmedAt", "firstname", "lastname",	"gender", "city", "zip", "country", "address1", "address2", "phone", "mobile", "language", "searchable", "developer", "initialApp", "password", "apps", "midataID", "failedLogins", "lastFailed");
 	public static final @NotMaterialized Set<String> PUBLIC = Sets.create("email", "role", "status", "firstname", "lastname", "gender", "midataID");
 	
 			
@@ -262,6 +265,16 @@ public class User extends Model implements Comparable<User> {
 	 * old email address (if changed)
 	 */
 	public String previousEMail;
+	
+	/**
+	 * Number of failed logins
+	 */
+	public int failedLogins;
+	
+	/**
+	 * Timestamp of last failed login
+	 */
+	public Date lastFailed;
 
 	@Override
 	public int compareTo(User other) {
@@ -277,7 +290,7 @@ public class User extends Model implements Comparable<User> {
 	/**
 	 * Authenticate login data.
 	 */
-	public static boolean authenticationValid(String givenPassword, String savedPassword) throws InternalServerException {
+	public static boolean phraseValid(String givenPassword, String savedPassword) throws InternalServerException {
 		try {
 			if (givenPassword == null || savedPassword == null) return false;
 			return PasswordHash.validatePassword(givenPassword, savedPassword);
@@ -287,6 +300,47 @@ public class User extends Model implements Comparable<User> {
 			throw new InternalServerException("error.internal", e);
 		}
 	}
+	
+	public boolean authenticationValid(String givenPassword) throws AppException {
+		try {
+			if (givenPassword == null || this.password == null) return false;
+			
+			if (this.failedLogins > 4) {
+				long diff = System.currentTimeMillis() - this.lastFailed.getTime();
+				switch (this.failedLogins) {
+					case 5:
+					case 6:
+						if (diff < 1000l * 60l) throw new BadRequestException("error.blocked.password1", "Blocked for 1 minute.");
+						break;				
+					case 7:
+					case 8:
+						if (diff < 1000l * 60l * 5l) throw new BadRequestException("error.blocked.password5", "Blocked for 5 minutes.");					
+						break;
+					default:
+						if (diff < 1000l * 60l * 60l) throw new BadRequestException("error.blocked.password60", "Blocked for 1 hour.");					
+						break;
+				}
+			}
+			
+			boolean valid = PasswordHash.validatePassword(givenPassword, this.password);
+			
+			if (!valid) {
+				this.failedLogins ++;
+				this.lastFailed = new Date();
+				setMultiple(collection, Sets.create("failedLogins", "lastFailed"));
+			} else if (this.failedLogins > 0){
+				this.failedLogins = 0;
+				set("failedLogins", this.failedLogins);
+			}
+			
+			return valid;
+		} catch (NoSuchAlgorithmException e) {
+			throw new InternalServerException("error.internal", e);
+		} catch (InvalidKeySpecException e) {
+			throw new InternalServerException("error.internal", e);
+		}
+	}
+	
 
 	public static String encrypt(String password) throws InternalServerException {
 		try {
@@ -408,6 +462,10 @@ public class User extends Model implements Comparable<User> {
 		if (city != null && city.length() > 0) keywords.add(city.toLowerCase());
 		keywordsLC = keywords;
 		if (write) User.set(_id, "keywordsLC", keywordsLC);
+	}
+	
+	public static long count(UserRole role) throws AppException {
+		return Model.count(User.class, collection, CMaps.map("role", role).map("status", EnumSet.of(UserStatus.ACTIVE, UserStatus.NEW)));
 	}
 		
 	

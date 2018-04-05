@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.1" xml:lang="en">
+    <file source-language="en" target-language="it" datatype="winres" original="i18n.js_it.json">
+        <trans-unit resname="hello_world" id="hello_world">
+            <source>Hello World</source>
+        </trans-unit>
+        <trans-unit resname="start_import" id="start_import">
+            <source>Import Now</source>
+        </trans-unit>
+        <trans-unit resname="test_import" id="test_import">
+            <source>Test Import with Nokia Health</source>
+        </trans-unit>
+        <trans-unit resname="title" id="title">
+            <source>Import Records from your Nokia Health Account</source>
+        </trans-unit>
+        <trans-unit resname="account" id="account">
+            <source>Nokia Health Account:</source>
+        </trans-unit>
+        <trans-unit resname="member_since" id="member_since">
+            <source>Member since:</source>
+        </trans-unit>
+        <trans-unit resname="which_measurements" id="which_measurements">
+            <source>Please select which measurements you want to import:</source>
+        </trans-unit>
+        <trans-unit resname="measurement" id="measurement">
+            <source>Measurement</source>
+        </trans-unit>
+        <trans-unit resname="imported" id="imported">
+            <source>Imported</source>
+        </trans-unit>
+        <trans-unit resname="from_date" id="from_date">
+            <source>From Date</source>
+        </trans-unit>
+        <trans-unit resname="to_date" id="to_date">
+            <source>To Date</source>
+        </trans-unit>
+        <trans-unit resname="autoimport" id="autoimport">
+            <source>auto import</source>
+        </trans-unit>
+        <trans-unit resname="import_now" id="import_now">
+            <source>Import now</source>
+        </trans-unit>
+        <trans-unit resname="save_changes" id="save_changes">
+            <source>Save changes</source>
+        </trans-unit>
+        <trans-unit resname="progress" id="progress">
+            <source>Requested {{requested}} records from Nokia Health. {{saved}} records saved to database.</source>
+        </trans-unit>
+        <trans-unit resname="importing" id="importing">
+            <source>Importing data from Nokia Health...</source>
+        </trans-unit>
+        <trans-unit resname="done" id="done">
+            <source>Finished import</source>
+        </trans-unit>
+        <trans-unit resname="with_errors" id="with_errors">
+            <source>Finished import with errors.</source>
+        </trans-unit>
+        <trans-unit resname="no_entries_yet" id="no_entries_yet">
+            <source>Nokia Health Import not configured yet.</source>
+        </trans-unit>
+        <trans-unit resname="newest_entry_from" id="newest_entry_from">
+            <source>Newest entry:</source>
+        </trans-unit>
+        <trans-unit resname="measures_to_import" id="measures_to_import">
+            <source>Measures to import</source>
+        </trans-unit>
+        <trans-unit resname="autoimport_status" id="autoimport_status">
+            <source>Automatically import</source>
+        </trans-unit>
+        <trans-unit resname="on" id="on">
+            <source>ON</source>
+        </trans-unit>
+        <trans-unit resname="off" id="off">
+            <source>OFF</source>
+        </trans-unit>
+        <trans-unit resname="changesSaved" id="changesSaved">
+            <source>The changes were saved successfully.</source>
+        </trans-unit>
+        <trans-unit resname="fitness_data" id="fitness_data">
+            <source>Fitness Data</source>
+        </trans-unit>
+        <trans-unit resname="vital_signs_data" id="vital_signs_data">
+            <source>Vital Signs</source>
+        </trans-unit>
+        <trans-unit resname="activity_measures_steps" id="activity_measures_steps">
+            <source>Steps</source>
+        </trans-unit>
+        <trans-unit resname="activity_measures_distance" id="activity_measures_distance">
+            <source>Distance</source>
+        </trans-unit>
+        <trans-unit resname="activity_measures_totalcalories" id="activity_measures_totalcalories">
+            <source>Total Calories</source>
+        </trans-unit>
+        <trans-unit resname="activity_measures_elevation" id="activity_measures_elevation">
+            <source>Elevation</source>
+        </trans-unit>
+        <trans-unit resname="activity_measures_soft" id="activity_measures_soft">
+            <source>Soft Activities</source>
+        </trans-unit>
+        <trans-unit resname="activity_measures_moderate" id="activity_measures_moderate">
+            <source>Moderate Activities</source>
+        </trans-unit>
+        <trans-unit resname="activity_measures_intense" id="activity_measures_intense">
+            <source>Intense Activities</source>
+        </trans-unit>
+        <trans-unit resname="body_measures_weigth" id="body_measures_weigth">
+            <source>Weight</source>
+        </trans-unit>
+        <trans-unit resname="body_measures_height" id="body_measures_height">
+            <source>Height</source>
+        </trans-unit>
+        <trans-unit resname="body_measures_fat_free_mass" id="body_measures_fat_free_mass">
+            <source>Fat Free Mass</source>
+        </trans-unit>
+        <trans-unit resname="body_measures_fat_radio" id="body_measures_fat_radio">
+            <source>Fat Ratio</source>
+        </trans-unit>
+        <trans-unit resname="body_measures_fat_mass_weight" id="body_measures_fat_mass_weight">
+            <source>Fat Mass Weight</source>
+        </trans-unit>
+        <trans-unit resname="body_measures_diastolic_blood_pressure" id="body_measures_diastolic_blood_pressure">
+            <source>Diastolic Blood Pressure</source>
+        </trans-unit>
+        <trans-unit resname="body_measures_systolic_blood_pressure" id="body_measures_systolic_blood_pressure">
+            <source>Systolic Blood Pressure</source>
+        </trans-unit>
+        <trans-unit resname="body_measures_blood_pressure" id="body_measures_blood_pressure">
+            <source>Blood Pressure</source>
+        </trans-unit>
+        <trans-unit resname="body_measures_heart_pulse" id="body_measures_heart_pulse">
+            <source>Heart Pulse</source>
+        </trans-unit>
+        <trans-unit resname="body_measures_sp02" id="body_measures_sp02">
+            <source>SP02</source>
+        </trans-unit>
+        <trans-unit resname="body_measures_body_temperature" id="body_measures_body_temperature">
+            <source>Body Temperature</source>
+        </trans-unit>
+        <trans-unit resname="body_measures_muscle_mass" id="body_measures_muscle_mass">
+            <source>Muscle Mass</source>
+        </trans-unit>
+        <trans-unit resname="body_measures_hydration" id="body_measures_hydration">
+            <source>Hydration</source>
+        </trans-unit>
+        <trans-unit resname="body_measures_bone_mass" id="body_measures_bone_mass">
+            <source>Bone Mass</source>
+        </trans-unit>
+        <trans-unit resname="body_measures_pulse_wave_velocity" id="body_measures_pulse_wave_velocity">
+            <source>Pulse Wave Velocity</source>
+        </trans-unit>
+        <trans-unit resname="intraday_activity_calories" id="intraday_activity_calories">
+            <source>Calories</source>
+        </trans-unit>
+        <trans-unit resname="intraday_activity_distance" id="intraday_activity_distance">
+            <source>Distance</source>
+        </trans-unit>
+        <trans-unit resname="intraday_activity_duration" id="intraday_activity_duration">
+            <source>Duration</source>
+        </trans-unit>
+        <trans-unit resname="intraday_activity_elevation" id="intraday_activity_elevation">
+            <source>Elevation</source>
+        </trans-unit>
+        <trans-unit resname="intraday_activity_steps" id="intraday_activity_steps">
+            <source>Steps</source>
+        </trans-unit>
+        <trans-unit resname="intraday_activity_stroke" id="intraday_activity_stroke">
+            <source>Stroke</source>
+        </trans-unit>
+        <trans-unit resname="intraday_activity_pool_lap" id="intraday_activity_pool_lap">
+            <source>Pool lap</source>
+        </trans-unit>
+        <trans-unit resname="sleep_measures_awake" id="sleep_measures_awake">
+            <source>Awake</source>
+        </trans-unit>
+        <trans-unit resname="sleep_summary_wakeupduration" id="sleep_summary_wakeupduration">
+            <source>Wake up duration</source>
+        </trans-unit>
+        <trans-unit resname="sleep_summary_lightsleepduration" id="sleep_summary_lightsleepduration">
+            <source>Light sleep duration</source>
+        </trans-unit>
+        <trans-unit resname="sleep_summary_deepsleepduration" id="sleep_summary_deepsleepduration">
+            <source>Deep sleep duration</source>
+        </trans-unit>
+        <trans-unit resname="sleep_summary_remsleepduration" id="sleep_summary_remsleepduration">
+            <source>REM sleep duration</source>
+        </trans-unit>
+        <trans-unit resname="sleep_summary_wakeupcount" id="sleep_summary_wakeupcount">
+            <source>Wake up count</source>
+        </trans-unit>
+        <trans-unit resname="sleep_summary_durationtosleep" id="sleep_summary_durationtosleep">
+            <source>Duration to sleep</source>
+        </trans-unit>
+        <trans-unit resname="sleep_summary_durationtowakeup" id="sleep_summary_durationtowakeup">
+            <source>Duration to wake up</source>
+        </trans-unit>
+    </file>
+</xliff>

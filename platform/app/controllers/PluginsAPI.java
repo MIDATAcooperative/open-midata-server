@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -289,7 +290,7 @@ public class PluginsAPI extends APIController {
 		Collection<Record> records = getRecords(inf, properties, fields);
 				
 		Stats.finishRequest(request(), "200", properties.keySet());
-		return ok(JsonOutput.toJson(records, "Record", fields));
+		return ok(JsonOutput.toJson(records, "Record", fields)).as("application/json");
 	}
 	
 	/**
@@ -367,7 +368,7 @@ public class PluginsAPI extends APIController {
 	    if (fields.contains("ownerName")) ReferenceTool.resolveOwnersForRecordsInfo(result, true);
 	    
 	    Stats.finishRequest(request(), "200", properties.keySet());
-		return ok(JsonOutput.toJson(result, "Record", Record.ALL_PUBLIC));
+		return ok(JsonOutput.toJson(result, "Record", Record.ALL_PUBLIC)).as("application/json");
 	}
 	
 	/**
@@ -606,12 +607,16 @@ public class PluginsAPI extends APIController {
 				
 		Plugin app;
 		try {			
-				app = Plugin.getById(appId, Sets.create("consumerKey", "consumerSecret"));
+				app = Plugin.getById(appId, Sets.create("consumerKey", "consumerSecret", "apiUrl"));
 				if (app == null) return badRequest("Invalid authToken");			
 		} catch (InternalServerException e) {
 			return badRequest(e.getMessage());
 		}
 
+		String method = json.has("method") ? json.get("method").asText() : "GET";
+		JsonNode body = json.has("body") ? json.get("body") : null;
+		// At the moment only GET is supported
+		
 		// perform the api call
 		ConsumerKey key = new ConsumerKey(app.consumerKey, app.consumerSecret);
 		RequestToken token = new RequestToken(oauthToken, oauthTokenSecret);
@@ -621,11 +626,18 @@ public class PluginsAPI extends APIController {
 		AccessLog.log(oauthTokenSecret);
 		OAuthCalculator calc = new OAuthCalculator(key, token);
 		try {
-		String signed = calc.sign(json.get("url").asText());
+			String url = json.get("url").asText();
+			if (app.apiUrl == null || !url.startsWith(app.apiUrl)) throw new BadRequestException("error.invalid.url", "API URL does not match URL in app definition.");
+		String signed = calc.sign(url);
 		AccessLog.log(signed);
 		URL target = new URL(signed);
 		
 		HttpURLConnection con = (HttpURLConnection) target.openConnection();
+		/*con.setRequestMethod(method.toUpperCase());
+		if (body != null && !body.isNull()) {
+		   OutputStream out = con.getOutputStream();
+		   
+		}*/
 		con.connect();
 		InputStream str = con.getInputStream();
 		response().setContentType(con.getContentType());
@@ -727,8 +739,14 @@ public class PluginsAPI extends APIController {
 		}
 
 		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());
+		String method = json.has("method") ? json.get("method").asText() : "get";
+		JsonNode body = json.has("body") ? json.get("body") : null;
+	
+		String url = json.get("url").asText();
+		Plugin app = Plugin.getById(inf.pluginId);
+		if (app.apiUrl == null || !url.startsWith(app.apiUrl)) throw new BadRequestException("error.invalid.url", "API URL does not match URL in app definition.");
 		
-		Promise<WSResponse> response = oAuth2Call(inf, json.get("url").asText());	
+		Promise<WSResponse> response = oAuth2Call(inf, url, method, body);	
 		
 		Promise<Result> promise = response.map(new Function<WSResponse, Result>() {
 			public Result apply(WSResponse response) {				
@@ -747,7 +765,7 @@ public class PluginsAPI extends APIController {
 	 * @return result of oauth request
 	 * @throws AppException
 	 */
-    public static Promise<WSResponse> oAuth2Call(ExecutionInfo inf, String url) throws AppException {
+    public static Promise<WSResponse> oAuth2Call(ExecutionInfo inf, String url, String method, JsonNode body) throws AppException {
 				
     	BSONObject oauthMeta = RecordManager.instance.getMeta(inf.executorId, inf.targetAPS, "_oauth");
     	if (oauthMeta == null) throw new BadRequestException("error.notauthorized.action", "No valid oauth credentials.");
@@ -759,7 +777,18 @@ public class PluginsAPI extends APIController {
 		WSRequestHolder holder = WS.url(url);
 		holder.setHeader("Authorization", "Bearer " + accessToken);
 		
-		return holder.get();
+		if (method == null || method.equalsIgnoreCase("get")) return holder.get();
+		if (method.equalsIgnoreCase("post")) {
+			if (body == null) throw new BadRequestException("error.missing.body", "Missing request body for POST request.");
+			return holder.post(body);
+		}
+		if (method.equalsIgnoreCase("put")) {
+			if (body == null) throw new BadRequestException("error.missing.body", "Missing request body for PUT request.");
+			return holder.put(body);
+		}
+		if (method.equalsIgnoreCase("delete")) return holder.delete();
+		
+		throw new BadRequestException("error.internal", "Unknown request type");
 				
 	}
 	

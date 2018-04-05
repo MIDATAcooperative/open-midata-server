@@ -8,11 +8,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 
+import models.enums.IconUse;
 import models.enums.PluginStatus;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.WritePermissionType;
 import utils.AccessLog;
+import utils.access.DBRecord;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.Sets;
@@ -20,6 +22,7 @@ import utils.db.DBLayer;
 import utils.db.DatabaseException;
 import utils.db.LostUpdateException;
 import utils.db.NotMaterialized;
+import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 import utils.sync.Instances;
 
@@ -41,9 +44,9 @@ public class Plugin extends Model implements Comparable<Plugin> {
 			 Sets.create("_id", "version", "creator", "creatorLogin", "filename", "name", "description", "tags", 
 	                     "targetUserRole", "spotlighted", "url", "addDataUrl", "previewUrl", "defaultSpaceName",
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
-	                     "authorizationUrl", "accessTokenUrl", "consumerKey", "consumerSecret",
+	                     "authorizationUrl", "accessTokenUrl", "consumerKey", "consumerSecret","tokenExchangeParams",
 	                     "requestTokenUrl", "scopeParameters", "secret", "redirectUri", "developmentServer", "status", "i18n",
-	                     "predefinedMessages", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion", "termsOfUse", "requirements", "orgName", "unlockCode", "writes");
+	                     "predefinedMessages", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion", "termsOfUse", "requirements", "orgName", "unlockCode", "writes", "icons", "apiUrl");
 	
 	/**
 	 * constant containing all fields visible to anyone
@@ -53,7 +56,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	                     "targetUserRole", "spotlighted", "url", "addDataUrl", "previewUrl", "defaultSpaceName",
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "consumerKey", "scopeParameters", "status", "i18n", "lang", "predefinedMessages", "resharesData", "linkedStudy", "mustParticipateInStudy", "pluginVersion",
-	                     "termsOfUse", "requirements", "orgName", "unlockCode", "writes");
+	                     "termsOfUse", "requirements", "orgName", "unlockCode", "writes", "icons", "apiUrl");
 	
 	/**
 	 * timestamp of last change. Used to prevent lost updates.
@@ -210,7 +213,12 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	/**
 	 * list of ids of other plugins that a user may like if he likes this plugin
 	 */
-	public List<MidataId> recommendedPlugins;	
+	public List<MidataId> recommendedPlugins;
+	
+	/**
+	 * for OAUTH 1.0 and 2.0 : URL of target API
+	 */
+	public String apiUrl;
 	
 	/**
 	 * for OAUTH 1.0 and 2.0 : authorization URL
@@ -243,6 +251,11 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	public String scopeParameters;
 	
 	/**
+	 * for OAUTH 2.0 : how to obtain token
+	 */
+	public String tokenExchangeParams;
+	
+	/**
 	 * for mobile apps : secret needed for "init" request
 	 */
 	public String secret;
@@ -256,6 +269,11 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	 * for development: localhost-URL-prefix to be used instead of plugin server domain for testing on local machine 
 	 */
 	public String developmentServer;
+	
+	/**
+	 * Types of icons used by this plugin
+	 */
+	public Set<IconUse> icons;
 
 	@Override
 	public int compareTo(Plugin other) {
@@ -304,11 +322,17 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	
 	public void update() throws InternalServerException, LostUpdateException {		
 		try {
-		   DBLayer.secureUpdate(this, collection, "version", "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status", "i18n", "predefinedMessages", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion", "termsOfUse", "requirements", "orgName", "unlockCode", "writes" );
+		   DBLayer.secureUpdate(this, collection, "version", "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status", "i18n", "predefinedMessages", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion", "termsOfUse", "requirements", "orgName", "unlockCode", "writes", "apiUrl" );
 		   Instances.cacheClear("plugin",  _id);
 		} catch (DatabaseException e) {
 			throw new InternalServerException("error.internal_db", e);
 		}
+	}
+	
+	public void updateIcons(Set<IconUse> icons) throws InternalServerException {
+		this.icons = icons;
+		Model.set(Plugin.class, collection, _id, "icons", icons);
+		Instances.cacheClear("plugin",  _id);
 	}
 
 
@@ -333,5 +357,9 @@ public class Plugin extends Model implements Comparable<Plugin> {
 			this.description = in.description;
 			this.defaultSpaceName = in.defaultSpaceName;
 		}
+	}
+	
+	public static long count() throws AppException {
+		return Model.count(Plugin.class, collection, CMaps.map("status", Plugin.NOT_DELETED));
 	}
 }

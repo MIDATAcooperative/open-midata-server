@@ -6,7 +6,7 @@
     "plugins" : "Plugins",
 	"content" : "Content",
 	"studies" : "Studies",
-	"terms" : "Terms",	
+	"terms" : "Terms and Conditions",
 	"registration" : "Register Admin"
   },
   
@@ -15,14 +15,14 @@
     "search_type" : "Search",
     "contract_required" : "Contract needs to be sent",
     "contract_confirm_required" : "Signed contract needs to be confirmed",
-    "no_email_confirm" : "Email not confirmed by user",
+    "no_email_confirm" : "Email not yet confirmed by user",
     "email_rejected" : "Email confirmation rejected by user",
 	"not_admin_confirmed" : "Not confirmed by administrator",
     "overview" : "Overview",
     "specific_user" : "Specific User",
     "role" : "Role",
     "status" : "Status",
-    "midata_id" : "midataID",
+    "midata_id" : "MIDATA-ID",
     "empty" : "No matching users found."
   },
 
@@ -40,11 +40,11 @@
     "registration_date" : "Registration Date:",
     "confirmation_date" : "Confirmation Date:",
     "last_login" : "Last Login:",
-    "email_confirm_btn" : "Confirm email Address",
+    "email_confirm_btn" : "Confirm Email Address",
     "comment" : "Comment",
     "add_comment_btn" : "Add Comment",
     "wipe_btn" : "Wipe Account",
-    "change_email_btn" : "Change eMail"    
+    "change_email_btn" : "Change Email Address"
   },
   
   "admin_news" : {
@@ -73,7 +73,22 @@
   "admin_plugins" : {
     "title" : "Plugins",
     "developer" : "Filter by Developer",
-    "empty" : "There are no apps or plugins yet."
+    "name" : "Filter by Appname",
+    "organisation" : "Filter by Organisation",
+    "empty" : "There are no apps or plugins yet.",
+    "plugin_name" : "Name",
+    "plugin_developer" : "Developer",
+    "plugin_type" : "Type",
+    "plugin_role" : "Target Role",
+    "plugin_market" : "MISTORE",
+    "plugin_stats" : "Stats",
+    "plugin_status" : "Status",
+    "add_definition_btn" : "Import Plugin Definition"
+  },
+  
+  "admin_defineplugin" : {
+    "title" : "Import Plugin Definition",
+    "definition" : "Definition (JSON)"  
   },
   
   "admin_studies" : {
@@ -83,8 +98,8 @@
   },
   
   "admin_terms" : {
-    "title" : "Terms",
-    "empty" : "No terms available.",
+    "title" : "Terms and Conditions",
+    "empty" : "No Terms and Conditions available.",
     "name" : "Name",
     "version" : "Version",
     "language" : "Language",
@@ -92,7 +107,7 @@
   },
   
   "admin_manageterms" : {
-    "pagetitle" : "Terms",
+    "pagetitle" : "Terms and Conditions",
     "name" : "Internal Name",
     "version" : "Version",
     "language" : "Language",
@@ -111,9 +126,10 @@
      "endDate" : "End Date",
      "dataCreatedBefore" : "Data freeze date",
      "required_information" : "Required Information",
+     "anonymous" : "Anonymous",
      "required_assistance" : "Required Assistance",
-     "termsOfUse" : "Terms",
-     "sharing_query" : "Sharing Query",
+     "termsOfUse" : "Terms and Conditions",
+     "sharing_query" : "Data Access Filter",
      "requirements" : "Requirements",
      "groups" : "Groups",
      "group_name" : "Group Name",
@@ -124,5 +140,20 @@
      "end_validation_btn" : "Complete Validation",
      "back_to_draft_btn" : "Back to Draft",
      "delete_study_btn" : "Delete Study"    
-  }
+  },
+  
+  "admin_stats" : {
+     "title" : "Statistics",
+	 "what" : "",
+	 "value" : "Total count",
+	 "diff_yesterday" : "Diff to 1 day ago",
+	 "diff_week" : "Diff to 7 days ago",
+	 "recordCount" : "Records in DB",
+	 "appCount" : "Apps and Plugins",
+	 "runningStudyCount" : "Running Studies",
+	 "groupCount" : "Teams (Healthcare and Research)",
+	 "auditEventCount" : "Audit Events",
+	 "users" : "Active User Accounts",		       
+     "consents" : "Consents"
+   }
 }

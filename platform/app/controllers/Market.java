@@ -1,34 +1,54 @@
 package controllers;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.imageio.ImageIO;
+
+import org.apache.commons.io.IOUtils;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonValueFormat;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
+import com.mongodb.util.JSONParseException;
 
 import actions.APICall;
+import models.ContentInfo;
 import models.Developer;
 import models.MessageDefinition;
 import models.MidataId;
 import models.MobileAppInstance;
+import models.Model;
 import models.Plugin;
 import models.PluginDevStats;
+import models.PluginIcon;
 import models.Plugin_i18n;
+import models.Record;
 import models.Space;
 import models.Study;
 import models.TermsOfUse;
 import models.User;
+import models.enums.IconUse;
 import models.enums.MessageReason;
 import models.enums.ParticipantSearchStatus;
 import models.enums.PluginStatus;
@@ -42,17 +62,24 @@ import play.api.libs.json.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import play.mvc.Http.MultipartFormData;
+import play.mvc.Http.MultipartFormData.FilePart;
 import utils.AccessLog;
+import utils.ErrorReporter;
+import utils.ServerTools;
 import utils.access.Query;
 import utils.access.RecordManager;
 import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
 import utils.auth.DeveloperSecured;
+import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
+import utils.auth.RecordToken;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.Sets;
 import utils.db.LostUpdateException;
+import utils.db.FileStorage.FileData;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
@@ -60,6 +87,7 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.stats.Stats;
 
 /**
  * functions for controlling the "market" of plugins
@@ -176,6 +204,8 @@ public class Market extends APIController {
 
 		// fill in specific fields
 		if (app.type.equals("oauth1") || app.type.equals("oauth2")) {
+			app.apiUrl = validApiUrl(JsonValidation.getStringOrNull(json, "apiUrl"));			
+			
 			app.authorizationUrl = JsonValidation.getStringOrNull(json, "authorizationUrl");
 			app.accessTokenUrl = JsonValidation.getStringOrNull(json, "accessTokenUrl");
 			app.consumerKey = JsonValidation.getStringOrNull(json, "consumerKey");
@@ -184,6 +214,7 @@ public class Market extends APIController {
 				app.requestTokenUrl = JsonValidation.getStringOrNull(json, "requestTokenUrl");
 			} else if (app.type.equals("oauth2")) {
 				app.scopeParameters = JsonValidation.getStringOrNull(json, "scopeParameters");
+				app.tokenExchangeParams = JsonValidation.getStringOrNull(json, "tokenExchangeParams");
 			}
 		}
 		if (app.type.equals("mobile")) {
@@ -226,6 +257,7 @@ public class Market extends APIController {
 				 
 		try {
 		   app.update();
+		   PluginIcon.updateStatus(app.filename, app.status);
 		} catch (LostUpdateException e) {
 			throw new BadRequestException("error.concurrent.update", "Concurrent updates. Reload page and try again.");
 		}
@@ -242,9 +274,18 @@ public class Market extends APIController {
 		
 		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
 		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
-						
-		String json = JsonOutput.toJson(app, "Plugin", Plugin.ALL_DEVELOPER);
-		String base64 = Base64.getEncoder().encodeToString(json.getBytes());
+				
+		Set<PluginIcon> icons = PluginIcon.getByPlugin(app.filename);
+		
+		List<Model> mixed = new ArrayList<Model>();
+		mixed.add(app);
+		mixed.addAll(icons);
+		Map<String, Set<String>> mapping = new HashMap<String, Set<String>>();
+		mapping.put("Plugin", Plugin.ALL_DEVELOPER);
+		mapping.put("PluginIcon", PluginIcon.FIELDS);
+		
+		String json = JsonOutput.toJson(mixed, mapping);
+		//String base64 = Base64.getEncoder().encodeToString(json.getBytes());
 		return ok(json);
 	}
 	
@@ -259,8 +300,10 @@ public class Market extends APIController {
 		//byte[] decoded = Base64.getDecoder().decode(base64);
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode pluginJson = null;
+		JsonNode allJson = null;
 		try {
-	       pluginJson = mapper.readTree(base64);
+			allJson = mapper.readTree(base64);
+			pluginJson = allJson.get(0);
 		} catch (JsonProcessingException e) {
 			AccessLog.logException("parse json", e);
 		  throw new BadRequestException("error.invalid.json", "Invalid JSON provided");
@@ -281,6 +324,7 @@ public class Market extends APIController {
 			app.filename = JsonValidation.getStringOrNull(pluginJson, "filename");						
 			app.creatorLogin = JsonValidation.getStringOrNull(pluginJson, "creatorLogin");
 			app.status = JsonValidation.getEnum(pluginJson, "status", PluginStatus.class);
+			app.icons = EnumSet.noneOf(IconUse.class);
 			User u = Developer.getByEmail(app.creatorLogin, Sets.create("_id", "email"));
 			if (u != null) {
 			   app.creator = u._id;
@@ -289,16 +333,40 @@ public class Market extends APIController {
 		app.name = JsonValidation.getStringOrNull(pluginJson, "name");
 		parsePlugin(app, pluginJson);
 		
+		try {
+		List<PluginIcon> icons = new ArrayList<PluginIcon>();
+		for (int i=1;i<allJson.size();i++) {
+			JsonNode iconData = allJson.get(i);			
+			PluginIcon icon = new PluginIcon();
+			icon._id = JsonValidation.getMidataId(iconData, "_id");
+			icon.contentType = JsonValidation.getString(iconData, "contentType");
+			icon.plugin = app.filename;
+			icon.use = JsonValidation.getEnum(iconData, "use", IconUse.class);
+			icon.status = app.status;		
+			icon.data = iconData.get("data").binaryValue();
+			if (app.icons == null) app.icons = EnumSet.noneOf(IconUse.class);
+			app.icons.add(icon.use);
+			icons.add(icon);
+		}
+		
 		if (isNew) {
-			Plugin.add(app);				
+			Plugin.add(app);
+			for (PluginIcon icon : icons) PluginIcon.add(icon);
 		} else {
 			try {
 			  app.update();
+			  app.updateIcons(app.icons);
+			  PluginIcon.delete(app.filename);
+			  for (PluginIcon icon : icons) PluginIcon.add(icon);
 			} catch (LostUpdateException e) {
 			  throw new BadRequestException("error.concurrent.update", "Concurrent updates. Reload page and try again.");
 			}
 		}								
-		return ok(JsonOutput.toJson(app, "Plugin", Plugin.ALL_DEVELOPER));
+		return ok(JsonOutput.toJson(app, "Plugin", Plugin.ALL_DEVELOPER)).as("application/json");
+		
+		} catch (IOException e) {
+			throw new BadRequestException("error.internal", "Cannot parse JSON");
+		}
 	}
 		
 
@@ -322,10 +390,10 @@ public class Market extends APIController {
 			JsonValidation.validate(json, "filename", "name", "description", "url");
 		} else if (type.equals("oauth1")) {
 			JsonValidation.validate(json, "filename", "name", "description", "url", "authorizationUrl", "accessTokenUrl",
-					"consumerKey", "consumerSecret", "requestTokenUrl");
+					"consumerKey", "consumerSecret", "requestTokenUrl", "apiUrl");
 		} else if (type.equals("oauth2")) {
 			JsonValidation.validate(json, "filename", "name", "description", "url", "authorizationUrl", "accessTokenUrl",
-					"consumerKey", "consumerSecret", "scopeParameters");
+					"consumerKey", "consumerSecret", "scopeParameters", "apiUrl");
 		} else if (type.equals("mobile")) {
 			JsonValidation.validate(json, "filename", "name", "description", "secret");
 		} else if (type.equals("visualization")) {
@@ -402,6 +470,7 @@ public class Market extends APIController {
 
 		// fill in specific fields
 		if (plugin.type.equals("oauth1") || plugin.type.equals("oauth2")) {
+			plugin.apiUrl = validApiUrl(JsonValidation.getStringOrNull(json, "apiUrl"));			
 			plugin.authorizationUrl = JsonValidation.getStringOrNull(json, "authorizationUrl");
 			plugin.accessTokenUrl = JsonValidation.getStringOrNull(json, "accessTokenUrl");
 			plugin.consumerKey = JsonValidation.getStringOrNull(json, "consumerKey");
@@ -410,6 +479,7 @@ public class Market extends APIController {
 				plugin.requestTokenUrl = JsonValidation.getStringOrNull(json, "requestTokenUrl");
 			} else if (plugin.type.equals("oauth2")) {
 				plugin.scopeParameters = JsonValidation.getStringOrNull(json, "scopeParameters");
+				plugin.tokenExchangeParams = JsonValidation.getStringOrNull(json, "tokenExchangeParams");
 			}
 		}
 		if (plugin.type.equals("mobile")) {
@@ -420,7 +490,7 @@ public class Market extends APIController {
 			
 		Plugin.add(plugin);
 		
-		return ok(JsonOutput.toJson(plugin, "Plugin", Plugin.ALL_DEVELOPER));
+		return ok(JsonOutput.toJson(plugin, "Plugin", Plugin.ALL_DEVELOPER)).as("application/json");
 	}
 	
 	private static Map<String, MessageDefinition> parseMessages(JsonNode json) throws JsonValidationException {
@@ -444,6 +514,16 @@ public class Market extends APIController {
 		return result;
 	}
 	
+	public static String validApiUrl(String url) throws AppException {
+		if (url == null) return null;
+		if (!url.startsWith("http://") && !url.startsWith("https://")) throw new JsonValidationException("error.invalid.url", "apiUrl", "invalid", "Invalid API Url");
+        if (!url.endsWith("/")) url += "/";
+        String domain = url.substring(url.indexOf("//")+2).trim();
+        if (domain.indexOf("localhost") >= 0 || domain.indexOf("midata.coop") >=0 ) throw new JsonValidationException("error.invalid.url", "apiUrl", "invalid", "Invalid API Url");
+        if (domain.startsWith("172.") || domain.startsWith("192.168.") || domain.startsWith("10.")) throw new JsonValidationException("error.invalid.url", "apiUrl", "invalid", "Invalid API Url");
+        return url;
+	}
+	
 	private static void parsePlugin(Plugin app, JsonNode json) throws JsonValidationException, AppException {
 		app.orgName = JsonValidation.getStringOrNull(json, "orgName");
 		app.description = JsonValidation.getStringOrNull(json, "description");		
@@ -464,7 +544,7 @@ public class Market extends APIController {
 		app.unlockCode = JsonValidation.getStringOrNull(json, "unlockCode");
 		app.writes = JsonValidation.getEnum(json, "writes", WritePermissionType.class);
 		app.i18n = new HashMap<String, Plugin_i18n>();
-		app.pluginVersion = System.currentTimeMillis();				
+		app.pluginVersion = System.currentTimeMillis();			
 		
 		Map<String, MessageDefinition> predefinedMessages = parseMessages(json);
 		if (predefinedMessages != null) app.predefinedMessages = predefinedMessages;
@@ -489,6 +569,8 @@ public class Market extends APIController {
 
 		// fill in specific fields
 		if (app.type.equals("oauth1") || app.type.equals("oauth2")) {
+			app.apiUrl = JsonValidation.getStringOrNull(json, "apiUrl");
+			if (app.apiUrl != null && (!app.apiUrl.startsWith("http://") && !app.apiUrl.startsWith("https://"))) throw new JsonValidationException("error.invalid.url", "apiUrl", "invalid", "Invalid API Url");
 			app.authorizationUrl = JsonValidation.getStringOrNull(json, "authorizationUrl");
 			app.accessTokenUrl = JsonValidation.getStringOrNull(json, "accessTokenUrl");
 			app.consumerKey = JsonValidation.getStringOrNull(json, "consumerKey");
@@ -497,6 +579,7 @@ public class Market extends APIController {
 				app.requestTokenUrl = JsonValidation.getStringOrNull(json, "requestTokenUrl");
 			} else if (app.type.equals("oauth2")) {
 				app.scopeParameters = JsonValidation.getStringOrNull(json, "scopeParameters");
+				app.tokenExchangeParams = JsonValidation.getStringOrNull(json, "tokenExchangeParams");
 			}
 		}
 		if (app.type.equals("mobile")) {
@@ -551,6 +634,7 @@ public class Market extends APIController {
 		
 	    try {
 	        app.update();
+	        PluginIcon.delete(app.filename);
 	    } catch (LostUpdateException e) {
 	        throw new BadRequestException("error.concurrent.update", "Concurrent updates. Reload page and try again.");
 	    }
@@ -614,7 +698,7 @@ public class Market extends APIController {
    
 		List<PluginDevStats> stats = new ArrayList(PluginDevStats.getByPlugin(pluginId, PluginDevStats.ALL));
 		
-		return ok(JsonOutput.toJson(stats, "PluginDevStats", PluginDevStats.ALL));
+		return ok(JsonOutput.toJson(stats, "PluginDevStats", PluginDevStats.ALL)).as("application/json");
 	}
 	
 	@APICall
@@ -632,5 +716,127 @@ public class Market extends APIController {
 		PluginDevStats.deleteByPlugin(pluginId);
 		
 		return ok();
+	}
+	
+	
+	/**
+	 * Retrieve icon for an App. 
+	 * Public function - no session required	
+	 * @param id - name of plugin
+	 * @return the icon which has been set for the app
+	 * @throws AppException
+	 */
+	@APICall
+	public static Result getIcon(String use, String id) throws AppException {
+		IconUse iconUse = IconUse.valueOf(use);
+		if (iconUse == null) return notFound();
+		
+        PluginIcon icon = PluginIcon.getByPluginAndUse( id, iconUse);	
+        if (icon == null || icon.status.equals(PluginStatus.DELETED)) return notFound();
+        
+        response().setContentType(icon.contentType);        			
+		return ok(icon.data);
+	}
+	
+	/**
+	 * Add icon to app
+	 */	
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)	
+	public static Result uploadIcon(String pluginIdStr) throws AppException {
+		MidataId pluginId = MidataId.from(pluginIdStr);
+		try {
+		
+			//response().setHeader("Access-Control-Allow-Origin", "*");
+	
+			// check meta data
+			MultipartFormData formData = request().body().asMultipartFormData();
+			Map<String, String[]> metaData = formData.asFormUrlEncoded();
+			if (!metaData.containsKey("use")) {
+				throw new BadRequestException("error.internal", "At least one request parameter is missing.");
+			}
+							
+			MidataId userId = new MidataId(request().username());			
+			IconUse use = IconUse.valueOf(metaData.get("use")[0]);
+			if (use == null) throw new BadRequestException("error.internal", "Unknown icon use");
+					
+			Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
+			if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");			
+			if (!app.creator.equals(userId) && !getRole().equals(UserRole.ADMIN)) throw new BadRequestException("error.not_authorized.not_plugin_owner", "Not your plugin!");
+		
+			
+			// extract file from data
+			FilePart fileData = formData.getFile("file");
+			if (fileData == null) {
+				throw new BadRequestException("error.internal", "No file found.");
+			}
+			File file = fileData.getFile();
+			if (file.length() > 1024 * 1024) throw new BadRequestException("error.too_large.file", "Maximum file size is 100kb");
+			String filename = fileData.getFilename().toUpperCase();
+			String contentType = fileData.getContentType();
+			if (!filename.endsWith(".JPG") && !filename.endsWith(".JPEG") && !filename.endsWith(".PNG") && !filename.endsWith(".GIF")) throw new BadRequestException("error.invalid.file", "File extension not known.");
+			if (!contentType.equals("image/png") && !contentType.equals("image/jpeg") && !contentType.equals("image/gif"))  throw new BadRequestException("error.invalid.file", "Mime type not known.");
+			
+			boolean isvalid = false;
+			try (InputStream input = new FileInputStream(file)) {
+			    try {			    	
+			        ImageIO.read(input).toString();
+			        isvalid = true;
+			    } catch (Exception e) {
+			        isvalid = false;
+			    }
+			}
+			if (!isvalid) 
+						
+			PluginIcon.delete(app.filename, use);
+		
+			PluginIcon icon = new PluginIcon();
+			icon._id = new MidataId();
+			icon.plugin = app.filename;
+			icon.use = use;
+			icon.status = app.status;
+			icon.contentType = contentType;
+			icon.data = IOUtils.toByteArray(new FileInputStream(file));
+						
+			PluginIcon.add(icon);
+			
+			if (app.icons == null) app.icons = EnumSet.noneOf(IconUse.class);
+			
+			app.icons.add(use);
+			app.updateIcons(app.icons);
+			
+			return ok();
+		
+		} catch (IOException e) {
+			throw new InternalServerException("error.internal", e);
+		}
+			
+		
+	}
+	
+	/**
+	 * Remove icon from app
+	 */	
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)	
+	public static Result deleteIcon(String pluginIdStr, String useStr) throws AppException {
+		MidataId pluginId = MidataId.from(pluginIdStr);
+		
+		IconUse use = IconUse.valueOf(useStr);
+		if (use == null) throw new BadRequestException("error.internal", "Unknown icon use");
+									
+		MidataId userId = new MidataId(request().username());			
+					
+		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
+		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");			
+		if (!app.creator.equals(userId) && !getRole().equals(UserRole.ADMIN)) throw new BadRequestException("error.not_authorized.not_plugin_owner", "Not your plugin!");
+				
+		PluginIcon.delete(app.filename, use);
+				
+		app.icons.remove(use);
+		app.updateIcons(app.icons);
+			
+		return ok();				
+		
 	}
 }

@@ -1,0 +1,72 @@
+.mi-mo-menu_header {
+	position: absolute;
+	top: 0;
+	height: 162px;
+	width: 100%;
+	// min-width: 290px;
+
+	background: linear-gradient(90deg, $color-brand-teal, $color-brand-blue-alt);
+
+	.mi-at-avatar {
+		position: absolute;
+		left: 22px;
+		top: 22px;
+	}
+
+	.mi-at-text {
+		display: block;
+	}
+
+	&__data {
+		position: relative;
+		height: calc(100% - 22px);
+		padding-top: 22px;
+		padding-left: 93px;
+
+		&_user {
+			max-width: calc(100% - 40px);
+			padding-top: 10px;
+			padding-bottom: 15px;
+
+			 > * {
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+
+			&::after {
+				content: '';
+				position: absolute;
+				height: 1px;
+				width: 26px;
+				padding-top: 15px;
+
+				border-bottom: solid 1px $color-brand-white;
+			}
+		}
+
+		&_connections {
+			width: 100%;
+			padding-top: 15px;
+
+			li {
+				span:nth-child(1) {
+					width: 22px;
+
+					float: left;
+				}
+			}
+		}
+	}
+
+	> .mi-at-icon {
+		position: absolute;
+		right: 20px;
+		top: 20px;
+
+		svg {
+			width: 20px;
+			height: 20px;
+		}
+	}
+}

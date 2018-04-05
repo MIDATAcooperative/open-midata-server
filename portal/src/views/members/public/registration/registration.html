@@ -9,7 +9,7 @@
 		              		<h3 class="panel-title" translate="registration.sign_up"></h3>
 		            	</div>
 		            	<div class="panel-body">
-		            		<p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
+		            		<p ng-show="error && !error.field" translate="{{ error.code || error }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
 	                        </p>	
 	                        <p ng-show="offline" class="alert alert-danger" translate="error.offline"></p>
 	                        <div class="row">
@@ -79,19 +79,11 @@
                                      <input type="checkbox" id="agb" name="agb" ng-model="registration.agb">
                                      <span translate="registration.agb2"></span>
                                         <a ng-click="terms({which : 'midata-terms-of-use'});" href="javascript:" translate="registration.agb3"></a>
-                                   </label>
-                                 </div>
-                                <formerror myid="agb" type="mustaccept" message="error.missing.agb"></formerror>
-                              </formrow>
-                               <formrow myid="privacypolicy" label="">
-                                 <div class="checkbox">
-                                   <label>
-                                     <input type="checkbox" id="privacypolicy" name="privacypolicy" ng-model="registration.privacypolicy">
-                                     <span translate="registration.privacypolicy2"></span>
+                                        <span translate="registration.privacypolicy2"></span>
                                         <a ng-click="terms({which : 'midata-privacy-policy'});" href="javascript:" translate="registration.privacypolicy3"></a>
                                    </label>
                                  </div>
-                                <formerror myid="privacypolicy" type="mustaccept" message="error.missing.privacypolicy"></formerror>
+                                <formerror myid="agb" type="mustaccept" message="error.missing.agb"></formerror>
                               </formrow>
                               <div ng-show="app.termsOfUse">
                               <formrow myid="appAgb" label="registration.app_agb">

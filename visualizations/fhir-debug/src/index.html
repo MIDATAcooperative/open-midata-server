@@ -5,10 +5,8 @@
 		<title>FHIR</title>
 		
 	   <!-- build:css assets/app.min.css -->
-		<link rel="stylesheet" href="components/bootstrap/css/bootstrap.css">
-		<link rel="stylesheet" href="components/angular-chart.js/angular-chart.css" />
-		<link rel="stylesheet" href="components/midata/css/app.css">
-		<link rel="stylesheet" type="text/xsl" href="CDA.xsl">
+		<link rel="stylesheet" href="components/bootstrap/css/bootstrap.css">	
+		<link rel="stylesheet" href="components/midata/css/app.css">	
 		<!-- endbuild -->
 		
 		<!-- build:js assets/app.min.js -->
@@ -40,7 +38,7 @@
 			
 	</head>
 	<body>	
-		<div ng-app="fhirDebug" ng-cloak>		
+		<div ng-app="fhirDebug" ng-cloak ng-csp="no-unsafe-eval">		
 		   <div ui-view class="ng-cloak"></div>		 		
 	   </div>
 	</body>

@@ -17,13 +17,14 @@ import utils.exceptions.InternalServerException;
  * Data model for "Circles". Circles are consents between members.
  *
  */
-public class Circle extends Consent implements Comparable<Circle> {
+public class Circle extends Consent {
 	
 	/**
 	 * display order field
 	 */
 	public int order;	
 
+	/*
 	@Override
 	public int compareTo(Circle other) {
 		if (this.order > 0 && other.order > 0) {
@@ -31,7 +32,7 @@ public class Circle extends Consent implements Comparable<Circle> {
 		} else {
 			return super.compareTo(other);
 		}
-	}
+	}*/
 	
 	public Circle() {
 		this.type = ConsentType.CIRCLE;

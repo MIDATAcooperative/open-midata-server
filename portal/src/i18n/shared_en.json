@@ -10,11 +10,10 @@
    },
 
    "navbar" : {
-	  "toggle_navigation": "Toggle navigation",
-	  "ribbon" : "Pilot Phase",
-	  "login" : "Login",
+	  "toggle_navigation": "Toggle navigation",	 
+	  "login" : "Log in",
 	  "sign_up" : "Sign Up",
-	  "sign_out" : "Sign out",
+	  "sign_out" : "Log out",
 	  "edit_profile" : "Edit Profile",
 	  "app_count" : "Authorized apps",
 	  "study_count" : "Studies enrollments",
@@ -38,12 +37,12 @@
      "noconsent" : "No active consent that allows to add data for target person.",
      "unsupported" : "Operation not supported",
      "notrialuser_title" : "Full membership required!",
-     "notrialuser_detail" : "In order to use this feature you need to complete your registration. Request a written copy of the AGB and return it signed. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
+     "notrialuser_detail" : "In order to use this feature you need to complete your registration. Request a written copy of the General Terms and Conditions and send it signed back to MIDATA. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
      "mustbemember_title" : "MIDATA cooperative membership required!",
      "mustbemember_detail" : "In order to use this feature you must be member of the MIDATA cooperative. Click on your username on the top right and check the 'Account Status' section for more information.",
      "notauthorized" : {
        "action" : "You are not authorized to do this action",
-       "fields" : "You are not authorized to query provided fields",
+       "fields" : "You are not authorized to query the provided fields",
        "account" : "You are not authorized to access this account",
        "study" : "You are not authorized to access this study",
        "not_plugin_owner" : "This is not your plugin"
@@ -73,8 +72,10 @@
        "passcode": "Bad passcode",
        "plugin" : "Plugin is intended for a different role",
        "unlock_code" : "Incorrect unlock code",
-       "access_query" : "Access query must restrict by 'content' or 'group'!",
-       "sharing" : "The Sharing Query accesses data types that are excluded by study configuration."
+       "access_query" : "The Data Access Filter must restrict by 'content' or 'group'!",
+       "sharing" : "The Data Access Filter contains data types that are excluded by the study configuration.",
+       "anonymous" : "Study can only be anonymous if no one is allowed to access unpseudonymized data.",
+       "url" : "Invalid URL"
      },
 
      "missing" : {
@@ -86,11 +87,12 @@
        "passphrase" : "Please provide your passphrase.",
        "groupsystem" : "Group system must be provided.",
        "token" : "Missing or bad token.",
-       "agb" : "Terms and conditions not accepted.",
+       "agb" : "General Terms and Conditions not accepted.",
        "privacypolicy" : "Privacy policy must be accepted.",
        "study_accept" : "Study participation must be accepted.",
        "study_group" : "Participant must first be assigned to a group.",
-       "confirmation" : "Confirmation by user required first."
+       "confirmation" : "Confirmation by user required first.",
+       "file" : "No file for upload selected"
      },
 
      "unknown" : {
@@ -119,6 +121,9 @@
 
      "blocked" : {
        "user" : "User is not allowed to log in. Contact support@midata.coop for help.",
+       "password1" : "Too many missed login attempts. Please wait 1 minute before next attempt.",
+       "password5" : "Too many missed login attempts. Please wait 5 minutes before next attempt.",
+       "password60" : "Too many missed login attempts. Please wait 1 hour before next attempt.",
        "participation" : "Account holder is not allowed to participate in study.",
        "consent" : "The consent for using this app has been revoked. To reenable the app, delete the rejected or expired consent on the MIDATA portal.",
        "app" : "You are allowed to use this app on a maximum of 10 devices. Please delete unused consents on the MIDATA portal." 
@@ -138,8 +143,8 @@
      },
 
      "tooweak" : {
-       "password" : "Passwords should contain of a mix of upper/lower case letters, numbers and special characters.",
-       "passphrase" : "Passphrases should contain of a mix of upper/lower case letters, numbers and special characters."
+       "password" : "Passwords should contain upper/lower case letters, numbers and special characters.",
+       "passphrase" : "Passphrases should contain upper/lower case letters, numbers and special characters."
      },
 
      "concurrent" : {
@@ -160,6 +165,10 @@
        "consent" : "Consents for studies may not be altered.",
        "study" : "Setup can only be changed as long as study is in draft phase.",
        "group" : "Group of participant can only be changed if study is not running or no participant accepted yet."
+     },
+     
+     "too_large" : {
+       "file" : "The file is too large (maximum 1 MB)."
      }
 
    },
@@ -197,11 +206,10 @@
 	   "MEMBERSHIP_REQUEST" : "Membership requested",
 	   "CONTACT_ADDRESS_CHANGED" : "Address changed",
 	   "CONTRACT_SEND" : "Contract sent",
-	   "ADMIN_ACCOUNT_CHANGE" : "Account changed by admin",
+	   "ADMIN_ACCOUNT_CHANGE" : "Account changed by an administrator",
 	   "ACCOUNT_DELETED" : "Account deleted",
 	   "INTERNAL_COMMENT" : "Internal Comment",
-	   "TERMS_OF_USE_AGREED" : "Agreed to terms of use",
-
+	   "TERMS_OF_USE_AGREED" : "Agreed to General Terms and Conditions",
 	   "user-registration" : "User sign up",
 	   "110122" : "Login",
 	   "user-password-change" : "Password changed",
@@ -244,7 +252,7 @@
        "contract-requested" : "Contract requested by user",
        "contract-send" : "Contract send to user",
        "internal-comment" : "Administrator's comment",
-       "user-terms-of-use-agreed" : "Agreed to terms of use",
+       "user-terms-of-use-agreed" : "Agreed to General Terms and Conditions",
        "audit-log-used" : "Audit Log consulted",	   
 	   "added-as-team-member" : "Added as team member",
 	   "updated-role-in-team" :  "Updated role in team",
@@ -280,7 +288,7 @@
 	   "HCRELATED" : "Healthcare",
 	   "HEALTHCARE" : "Doctor / Hospital",
 	   "STUDYPARTICIPATION" : "Study",
-	   "STUDYRELATED" : "Study",
+	   "STUDYRELATED" : "Study information",
 	   "IMPLICIT" : "Messaging"
 	 },
 	 "contractstatus" : {
@@ -350,6 +358,7 @@
 	   "SPONSOR" : "Sponsor",
 	   "INVESTIGATOR" : "Investigator",
 	   "AUDITOR" : "Auditor",
+	   "STUDYNURSE" : "Study Nurse",
 	   "MONITOR" : "Monitor",
 	   "OTHER" : "Other"
 	 },
@@ -370,7 +379,7 @@
 	   "EN" : "English",
 	   "DE" : "German",
 	   "IT" : "Italian",
-	   "FR" : "Frensh",
+	   "FR" : "French",
 	   "NL" : "Dutch"
 	 },
 	 "month" : {
@@ -388,10 +397,10 @@
 	   "12" : "Dec"
 	 },
 	 "codesystems" : {
-	   "loinc" : "Loinc Code",
-	   "midata" : "Midata Code",
-	   "fhir" : "FHIR Resource Name",
-	   "snowmed" : "Snowmed" 
+	   "loinc" : "LOINC code",
+	   "midata" : "MIDATA code",
+	   "fhir" : "FHIR Resource",
+	   "snowmed" : "SNOMED CT code" 
 	 },
 	 "tags" : {
 	   "Analysis" : "Analysis",
@@ -421,6 +430,11 @@
     "submit_btn" : "Submit",
     "delete_btn" : "Delete",
     "or" : "or",
+    "save_ok" : "Successfully Saved",
+    "yesno" : {
+      "true" : "Yes",
+      "false" : "No"
+    },
     "user" : {
       "lastname" : "Surname",
 	  "firstname" : "Firstname",
@@ -471,7 +485,7 @@
         "name" : "MIDATA Switzerland (ch.midata.coop)",
         "intro": "This is the MIDATA platform for Switzerland.",
         "purpose" : "This is the productive MIDATA platform for storing health data in Switzerland.",
-        "access" : "New user accounts have feature restrictions. Healthprovider, research and development accounts can only be used after validation by the MIDATA office. Fake or test accounts are not allowed and will be blocked.",
+        "access" : "New user accounts have feature restrictions. Healthprovider, research and development accounts can only be used after validation by MIDATA. Fake or test accounts are not allowed and will be blocked.",
         "uptime" : "Downtimes will be announced.",
         "data" : "This instance is for storing real data about real people. Data is backed up on a daily basis."
      }
@@ -480,7 +494,7 @@
 
   "registration" : {
     "sign_up" : "Sign Up",
-    "mandantory_fields" : "Fields marked with a * must be filled out.",
+    "mandantory_fields" : "Please fill in the information below, fields marked with an asterisk (*) are mandatory",
     "email" : "EMail",
     "password" : "Password",
     "password_repetition" : "Repeat Password",
@@ -502,18 +516,19 @@
     "mobile_phone" : "Mobile Phone",
     "coach" : "Contact person MIDATA",
     "reason" : "Purpose of Registration*",
-    "agb" : "MIDATA Terms",    
-    "study" : "Research",
+    "agb" : "MIDATA Terms",     
+    "study" : "Research",    
     "agb2" : "I accept the",
-    "agb3" : "Terms of Use",
-    "privacypolicy2" : "I accept the",
-    "privacypolicy3" : "Privacy Policy",
+    "agb3" : "General Terms and Conditions",
+    "privacypolicy2" : "and the",
+    "privacypolicy3" : "Privacy Policy",    
     "app_agb" : "App Terms",
     "app_agb2" : "I accept the",
-    "app_agb3" : "App Terms And Conditions",
+    "app_agb3" : "App General Terms and Conditions",    
     "study_agb" : "Study Terms",
-    "sign_up_btn" : "Sign Up",
-    "unlock_code" : "Unlock Code"
+    "sign_up_btn" : "Create Account",
+    "unlock_code" : "Unlock Code",
+    "already_have_account" : "I already have an account"
   },
 
   "login" : {
@@ -561,14 +576,15 @@
     "code_entered" : "Confirmation code entered?",
     "email_instructions" : "Your email address needs to be confirmed. An activation email has been sent to your account. Just click on the link in this email to confirm your email address.",
     "email_code" : "For convenience you may enter the code from the email here:",
+    "code" : "Code",
     "resend_btn" : "Resend email",
     "retry_btn" : "Retry login",
     "contract_instructions" : "A contract has been sent to your postal address. Please return it signed to MIDATA.",
-    "pilot_phase" : "During the pilot phase (or if you are on a test server) NO contract will be sent to you. A MIDATA administrator will verify and unlock your account. You will be notified when your account has been unlocked.",
+    "pilot_phase" : "A MIDATA administrator will verify and unlock your account. You will be notified when your account has been unlocked.",
     "code_intructions" : "A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.",
-    "code_done" : "You have provided the confirmation code. You may login after the signed contract has arrived at MIDATA office.",
+    "code_done" : "You have provided the confirmation code. You may login after the signed contract has arrived at MIDATA.",
     "enter_now_btn" : "Enter now",
-    "email_success" : "Email address has been confirmed.",
+    "email_success" : "Email address has been confirmed.",    
     "address_entered" : "Your postal address is required to use this service, please provide it.",
     "phone_entered" : "A mobile phone number is required to use this service, please provide it.",
     "admin_verified" : "Your account must be unlocked by a MIDATA administrator. Please retry later. If your account has not been unlocked for more than 24 hours, please contact MIDATA."
@@ -845,13 +861,16 @@
 	"delete" : "delete",
 	"delete_all_btn" : "delete all",
 	"empty" : "No available records found.",
+	"too_many_consents" : "The record tree for this selection cannot be created. There are too many consents involved.",
 	"close_btn" : "Close"
   },
 
   "oauth2" : {
+    "requests_permission" : "requests the permission to access your personal data.",
+    "no_account" : "I don't have an account",  
     "reshares_data" : "App may share data it has access to to third parties.",
     "allows_user_search" : "Your name and email address may be searched by other people using this app.",
-    "requesting_app" : "This application requests access:",
+    "requesting_app" : "needs access to your data.",
     "sign_in" : "MIDATA login for:",
     "sign_in_btn" : "Log in",
     "device" : "Device: {{ device}}",
@@ -861,7 +880,7 @@
     "shares_group" : "Group: {{ group }}",
     "shares_format" : "Format: {{ format }}",
     "shares_content" : "Content: {{ content }}",
-    "confirm_study" : "Participate to the study"
+    "confirm_study" : "Enroll in the following study"
   },
 
   "dashboard" : {
@@ -1012,7 +1031,8 @@
   },
   
   "terms" : {
-    "close_btn" : "<< Back"
+    "close_btn" : "<< Back",
+    "close_new_btn" : "Close"
   },
   
   "auditlog" : {
@@ -1055,6 +1075,8 @@
     "none" : "None",
     "change_btn" : "Change",
     "success" : "Email address successfully changed!"
-  }
+  },
+  
+  "-1" : "unknown"
     
 }

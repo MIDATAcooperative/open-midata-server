@@ -21,7 +21,7 @@ class Node(Product):
 	def setup(self, version):
 		print 'Setting up Node.js...'
 		print 'Downloading binaries...'
-		Command.execute('wget http://nodejs.org/dist/v{0}/node-v{0}-linux-x64.tar.gz'.format(version), self.parent)
+		Command.execute('wget https://nodejs.org/dist/v{0}/node-v{0}-linux-x64.tar.gz'.format(version), self.parent)
 		print 'Extracting...'
 		Command.execute('tar xzf node-v{0}-linux-x64.tar.gz'.format(version), self.parent)
 		print 'Setting symlink...'

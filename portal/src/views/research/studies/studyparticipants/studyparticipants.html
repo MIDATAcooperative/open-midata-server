@@ -12,6 +12,10 @@
 	<loader busy="status.isBusy !== false">
 	<p ng-show="error && !error.field" translate="{{error.code || error }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	   
 	</p>
+	
+	<p translate="studyparticipants.total" translate-value-count="{{ total }}"></p>
+	<p translate="studyparticipants.only_first_shown" ng-show="total > 1000"></p>
+	
 	<div ng-show="results.length > 0">
 	<div ng-if="results.length > 10">
        <dir-pagination-controls pagination-id="membertable" current-page="page.nr"></dir-pagination-controls>
@@ -45,8 +49,32 @@
 	</table>
 	</div>
 	<p ng-show="results.length == 0" translate="studyparticipants.empty">	  
-	</p>
+	</p>	
 	<button ng-show="mayAddParticipants()" ui-sref="^.addparticipant"  class="btn btn-default" translate="studyparticipants.add_participant_btn"></button>
+	</div></div>
+		
+	<div class="panel panel-primary">
+		<div class="panel-heading" translate="studyparticipants.acceptall"></div>
+		<div class="body">
+	
+	<form class="form form-horizontal">
+	 
+	  <formrow myid="autoJoinGroup" label="studyparticipants.group">
+	    <select ng-model="acceptall.autoJoinGroup" class="form-control" ng-options="group.name as group.name for group in study.groups"></select>
+	  </formrow>
+	  <formrow myid="autoJoin" label="studyparticipants.autojoin">
+	    <div class="checkbox">
+	      <label>
+	        <input type="checkbox" ng-model="acceptall.autoJoin">
+	        <span translate="studyparticipants.autojoin2"></span>
+	      </label>
+	    </div>
+	  </formrow>
+	  <formrow myid="x" label="">
+	    <button type="button" class="btn btn-primary" ng-disabled="status.action=='change' || (acceptall.autoJoin && !acceptall.autoJoinGroup)" translate="common.submit_btn" ng-click="acceptAll()"></button>
+	    <span class="text-success" ng-show="saveOk"><span class="glyphicon glyphicon-ok"></span> <span translate="common.save_ok"></span></span>
+	  </formrow>
+	</form>
 	</loader>
 	</div>	
 	</div>	

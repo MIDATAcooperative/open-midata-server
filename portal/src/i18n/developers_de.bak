@@ -44,6 +44,7 @@
     "available_tags" : "Available variables",
     "reasons" : {
        "REGISTRATION" : "Registration of new user",
+       "REGISTRATION_BY_OTHER_PERSON" : "Registration of a new user by someone else",
 	   "FIRSTUSE_ANYUSER" : "First use of app",
 	   "FIRSTUSE_EXISTINGUSER" : "First use of app (if no registration email sent)",
 	   "CONSENT_REQUEST_OWNER_INVITED" : "Proposed consent (Grantor, Invitation)",
@@ -55,20 +56,37 @@
 	   "CONSENT_REJECT_OWNER" : "Consent rejection (Grantor)",
 	   "CONSENT_REJECT_AUTHORIZED" : "Consent rejection (Grantee)",
 	   "ACCOUNT_UNLOCK" : "Account unlocked by the administrator",
-	   "EMAIL_CHANGED_OLDADDRESS" : "Login email changed (sent to old email address)",
-	   "EMAIL_CHANGED_NEWADDRESS" : "Login email changed (sent to new email address)"	   
+	   "EMAIL_CHANGED_OLDADDRESS" : "Login email changed (send to old email address)",
+	   "EMAIL_CHANGED_NEWADDRESS" : "Login email changed (send to new email address)"	   
     }		      
   },
   
   "manageapp" : {
-    "messages_btn" : "Edit Messages",
-    "stats_btn" : "Debug Info",
-    "debug_btn" : "API Tester",
+    "overview" : "Application Overview",
+    "choose" : "Functions to manage your application",
+    "filename" : "Internal Name",
+    "type" : "Application Type",
+    "targetUserRole" : "Target Role",
+    "edit_btn" : "Change Settings",
+    "edit_help" : "Change setup for your application.",
+    "tokenExchangeParams" : "OAuth2 Parameters for Token Exchange", 
+    "testfromlocal_btn" : "Test your plugin from localhost",
+    "testfromlocal_help" : "During development, you can test the plugin code stored on your local computer on this instance.",
+    "serverimport_btn" : "Test automatic import script.",
+    "serverimport_help" : "If your plugin offers automatic import, you can test the script of your plugin that is normally run on the server on your local computer.",
+    "icon_btn" : "Application Icons and Images",
+    "icon_help" : "Upload and manage the icons and images to be used with your application. Provide images for the login screen, the app store, the consent acceptation screen, etc.",
+    "messages_btn" : "Application email Messages",
+    "messages_help" : "Provide your own email texts sent to new user accounts, on first use of your application, for accepting consents and more.",
+    "stats_btn" : "Error and Performance Statistics",
+    "stats_help" : "View statistics and hints for improvements about the various types of API calls your application sends to the server.",    
+    "debug_btn" : "API Tester Sandbox",
+    "debug_help" : "Login as app and test queries against the MIDATA backend.",
     "linkedStudy" : "Study linked to App (Code)",
     "mustParticipateInStudy" : "Study Participation Required",
-    "admin_only" : "Only a MIDATA admin may change this section. Please request changes if required.",
-    "terms_of_use" : "Terms",
-    "show_terms" : "Show terms",
+    "admin_only" : "Only a MIDATA administrator may change this section. Please request changes if required.",
+    "terms_of_use" : "Terms and Conditions",
+    "show_terms" : "Show Terms and Conditions",
     "unlock_code" : "Code for registration",    
     "info" : {
        "filename" : "This name is internally used to identify your app. Should be a valid identifier (a-z, A-Z, 0-9, _).",
@@ -76,20 +94,43 @@
        "type" : "Choose 'Plugin' if your app will run as MIDATA portal plugin. Choose 'Mobile App' for an external application. Choose 'OAuth1 Import' or 'OAuth2 Import' if you need to connect to an external server using OAuth1 or OAuth2.",
        "name" : "The name of your app or plugin that will be presented to the end user.",
        "description" : "A description of your plugin that will also be shown on the marked place.",
+       "tokenExchangeParams" : "Default is client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> but some services also require client_secret=<client_secret> or no client_id",
        "resharesData" : "App is allowed to reshare data it has access to to 3rd party.",
        "allowsUserSearch" : "Users of the app are allowed to search for other users of the same app.",
        "defaultSpaceName" : "Title of the tile for your plugin on the dashboard.",
-       "tags" : "Categories on the market place for which your plugin should be listed.",
+       "tags" : "Categories on MISTORE for which your plugin should be listed.",
        "url" : "URL of your plugins main page. If you use the template from MIDATA it is 'dist/index.html#?authToken=:authToken''",
        "previewUrl" : "URL of your plugins dashboard tile. Leave empty if you do not provide such a tile.",
        "defaultSpaceContext" : "Choose 'me' for the default dashboard. Choose 'config' if you write an import plugin.",
-       "defaultQuery_mobile" : "Query restricting the access of the app to the database. Access must be restricted by 'code', 'content' or 'group' and may be restricted by 'format' or 'owner'. Valid example (all Observations): '{ \"group\" : \"all\", \"group-system\" : \"v1\", \"format\" : [\"fhir/Observation\" ] }'",
-       "defaultQuery" : "Query restricting the access of the plugin to the database. Access must be restricted by at least one of 'code', 'content', 'group', 'format' or 'owner'. Valid example (all Observations): '{ \"format\" : [\"fhir/Observation\" ] }'",
-       "defaultQuery_extra" : "Look for valid values for 'code', 'content' or 'format' on the 'Format/Content' list of the developer guide. As a first version you may start with access to all data. For that use { \"group\" : \"all\", \"group-system\" : \"v1\" }. Please refine query before plugin or app goes in production.",
+       "defaultQuery_mobile" : "Filter restricting the access of the app to the data. Access must be restricted by 'code', 'content' or 'group' and may be restricted by 'format' or 'owner'. Valid example (all Observations): '{ \"group\" : \"all\", \"group-system\" : \"v1\", \"format\" : [\"fhir/Observation\" ] }'",
+       "defaultQuery" : "Filter restricting the access of the plugin to the data. Access must be restricted by at least one of 'code', 'content', 'group', 'format' or 'owner'. Valid example (all Observations): '{ \"format\" : [\"fhir/Observation\" ] }'",
+       "defaultQuery_extra" : "Look for valid values for 'code', 'content' or 'format' on the 'Format/Content' list of the developer guide. As a first version you may start with access to all data. For that use { \"group\" : \"all\", \"group-system\" : \"v1\" }. Please refine the filter before the plugin or the app goes in production.",
        "secret" : "Your app will need this 'secret' during login. Choose whatever you like.",
        "mustParticipateInStudy" : "User must participate in study in order to use app.",
        "unlock_code" : "If filled out, this code must be entered by the user in order to sign up or log in the first time to MIDATA using the app. The code is not case sensitive."
-    }
+    },
+    "status" : {
+      "title" : "Application Status",
+      "ACTIVE" : "Ready for productive use",
+      "BETA" : "Beta version",
+      "DEVELOPMENT" : "Under development - to be used by developer only",
+      "DEPRECATED" : "Deprecated - should no longer be used",
+      "DELETED" : "Deleted"
+    },
+    "nostudy" : "Not linked to a study",
+    "optionalParticipation" : "Participation Optional",
+    "access_query_options" : "Data Access Filter (Options)",
+    "access_query_selection" : "Data Access Filter (Selection)",
+    "access_query_add" : "Data Access Filter (Add)",
+    "access_query_json" : "Data Access Filter (JSON)",
+    "query" : {
+      "self" : "App/Plugin may only access data of the user logged in.",
+      "ownapp" : "App/Plugin may only access data created using this app or plugin.",
+      "learn" : "Add all data types written by the app automatically to the Data Access Filter. (MUST be turned off before app goes productive)",
+      "all" : "During development allow to access all data of the user. (MUST be replaced with a proper Data Access Filter before plugin goes productive)"
+    },
+    "export_btn" : "Export Application Definition",
+    "export_help" : "Export the definition of this application, so that it can be imported and used on another server."
   },
   
   "appstats" : {
@@ -113,5 +154,25 @@
   
   "appdebug" : {
     "title" : "API Tester"
+  },
+  
+  "appicon" : {
+     "title" : "Icons and Images",
+     "name" : "Plugin/App Name",
+     "internalname" : "Internal Name",
+     "use" : {
+       "title" : "Usage of image",
+       "LOGINPAGE" : "Display on OAuth Login Page",
+       "APPICON" : "Use as application icon"
+     },
+     "type" : {
+       "title" : "Image type",
+       "image/jpeg" : "JPEG",
+       "image/png" : "PNG",
+       "image/gif" : "GIF"
+     },
+     "file" : "Image file to upload",
+     "file_help" : "Please resize and compress the image to a reasonable size before upload. Images larger than 1 MB will not be accepted.",
+     "existing" : "Images linked to application"
   }
 }

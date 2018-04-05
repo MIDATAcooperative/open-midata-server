@@ -54,7 +54,7 @@
 {"_id":{"$oid":"569915fc6281a61a232ece01"},"content":"ImmunizationRecommendation","security":"MEDIUM","group":"allergies","defaultCode":"http://midata.coop ImmunizationRecommendation","label":{"en":"Immunization Recommendation"}}
 {"_id":{"$oid":"569915fc6281a61a232ece02"},"content":"ImplementationGuide","security":"MEDIUM","group":"unknown","defaultCode":"http://midata.coop ImplementationGuide","label":{"en":"ImplementationGuide"}}
 {"_id":{"$oid":"569915fc6281a61a232ece03"},"content":"List","security":"MEDIUM","group":"unknown","defaultCode":"http://midata.coop List","label":{"en":"List"}}
-{"_id":{"$oid":"569915fc6281a61a232ece04"},"content":"Location","security":"MEDIUM","group":"entities","defaultCode":"http://midata.coop Location","label":{"en":"Location"}}
+{"_id":{"$oid":"569915fc6281a61a232ece04"},"content":"Location","defaultCode":"http://midata.coop Location","security":"MEDIUM","label":{"en":"Location","fr":"Lieu"}}
 {"_id":{"$oid":"569915fc6281a61a232ece05"},"content":"Media","security":"MEDIUM","group":"unknown","defaultCode":"http://midata.coop Media","label":{"en":"Media"}}
 {"_id":{"$oid":"569915fc6281a61a232ece06"},"content":"Medication","security":"MEDIUM","group":"medication","defaultCode":"http://midata.coop Medication","label":{"en":"Medication"}}
 {"_id":{"$oid":"569915fc6281a61a232ece07"},"content":"MedicationAdministration","security":"MEDIUM","group":"medication","defaultCode":"http://midata.coop MedicationAdministration","label":{"en":"Medication Administration"}}
@@ -217,3 +217,9 @@
 {"_id":{"$oid":"5a3ce220aed64508a1f074be"},"content":"SPScoreSprint","defaultCode":"http://midata.coop SPScoreSprint","security":"MEDIUM","label":{"de":"SensoPro Score Sprint Übung","en":"SensoPro Score Sprint Exercise"}}
 {"_id":{"$oid":"5a3ce220aed64508a1f074c0"},"content":"SPScoreWave","defaultCode":"http://midata.coop SPScoreWave","security":"MEDIUM","label":{"de":"SensoPro Score Wave Übung","en":"SensoPro Score Wave Exercise"}}
 {"_id":{"$oid":"5a4c9ad8aed6450fbff7d2b6"},"content":"work/occupation","defaultCode":"http://loinc.org 85658-3","security":"MEDIUM","label":{"de":"Beruf","en":"Occupation"},"resourceType":"fhir/Observation","subType":"CodeableConcept","category":"survey"}
+{"_id":{"$oid":"5a9e4dec79c721367b535432"},"content":"public/pollen-forecast","defaultCode":"http://snomed.info/sct 300910009","security":"MEDIUM","label":{"en":"Pollen forecast"},"resourceType":"fhir/Observation","subType":"component","category":"survey"}
+{"_id":{"$oid":"5a9e500c79c721367b535435"},"content":"specific/air-purificator","defaultCode":"http://midata.coop/codesystems/specific air-purifier","security":"MEDIUM","label":{"en":"Person owns air purifier"},"resourceType":"fhir/Observation","category":"survey"}
+{"_id":{"$oid":"5a9e7d9f79c721f679467c99"},"content":"main-occupation-location","defaultCode":"http://midata.coop main-occupation-location","security":"MEDIUM","label":{"en":"Main Occupation Location"},"resourceType":"fhir/Observation","category":"survey"}
+{"_id":{"$oid":"5a9e800579c721f679467ca3"},"content":"allergy-to-pollen","defaultCode":"http://snomed.info/sct 300910009","security":"MEDIUM","label":{"en":"Allergy to pollen"},"resourceType":"fhir/Observation","category":"survey"}
+{"_id":{"$oid":"5a9ff0fe79c721f679468c92"},"content":"living-location","defaultCode":"http://midata.coop living-location","security":"MEDIUM","label":{"en":"Living Location","fr":"Lieu d'habitation"},"resourceType":"fhir/Observation","category":"survey"}
+{"_id":{"$oid":"5abcbc1e79c721baaaae8466"},"content":"main-occupation-location-type","defaultCode":"http://midata.coop main-occupation-location-type","security":"MEDIUM","label":{"en":"Main Occupation Location Type"},"resourceType":"fhir/Observation","category":"survey"}

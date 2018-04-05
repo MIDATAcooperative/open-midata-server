@@ -1,0 +1,45 @@
+/*
+ * These placeholder classes define standards for commonly used styles.
+ * They can be used anywhere with @extend %mi-x-[put_class_name_here]
+ * to be applied to any element throughout the whole UX.
+ * 
+ * Reminder: SASS/SCSS placeholder classes ( = name starts with %)
+ * are not printed in the final CSS unless used with @extend.
+ *
+ * Like 'state-related classes' you can find elsewhere in this styleguide
+ * (e.g. .mi-x-is_first, .mi-x-is_last…)
+ * these placeholder classes all include the mi-x- prefix to avoid conflicts
+ * with other pre-existing classes when integrated in other codebases.
+ */
+
+/*
+ ** Text-related classes
+ */
+
+%mi-x-uppercase {
+	text-transform: uppercase;
+}
+
+/*
+ ** Gradients
+ */
+
+%mi-x-colored_gradient_background {
+	background: radial-gradient(ellipse at top right, $color-brand-teal, $color-brand-blue-alt);
+}
+
+%mi-x-fading_white_background {
+	background: linear-gradient(180deg, $color-brand-white, rgba(255, 255, 255, 0));
+}
+
+%mi-x-hidden_on_mobile {
+	display: none;
+
+	@include media($tablet-breakpoint) {
+		display: inline-block;
+	}
+}
+
+%-mi-x-is_visible {
+	display: block;
+}

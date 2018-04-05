@@ -35,8 +35,10 @@ import play.libs.oauth.OAuth.ConsumerKey;
 import play.libs.oauth.OAuth.RequestToken;
 import play.libs.oauth.OAuth.ServiceInfo;
 import play.libs.ws.WS;
+import play.libs.ws.WSRequestHolder;
 import play.libs.ws.WSResponse;
 import play.mvc.BodyParser;
+import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
@@ -60,6 +62,7 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.stats.Stats;
 
 /**
  * functions for managing MIDATA plugins
@@ -111,7 +114,7 @@ public class Plugins extends APIController {
 		List<Plugin> visualizations = new ArrayList<Plugin>(Plugin.getAll(properties, fields));
 		
 		Collections.sort(visualizations);
-		return ok(JsonOutput.toJson(visualizations, "Plugin", fields));
+		return ok(JsonOutput.toJson(visualizations, "Plugin", fields)).as("application/json");
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)	
@@ -123,11 +126,11 @@ public class Plugins extends APIController {
 		
 		String name = JsonValidation.getString(json, "name");
 		
-		Set<String> fields = Sets.create("name", "description", "i18n", "defaultQuery", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "termsOfUse", "requirements", "orgName", "unlockCode", "targetUserRole");
+		Set<String> fields = Sets.create("name", "description", "i18n", "defaultQuery", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "termsOfUse", "requirements", "orgName", "unlockCode", "targetUserRole", "icons", "filename");
 		Plugin plugin = Plugin.get(CMaps.map("filename", name).map("type", "mobile"), fields);
 		if (plugin != null && plugin.unlockCode != null) plugin.unlockCode = "true";	
 		
-		return ok(JsonOutput.toJson(plugin, "Plugin", fields));
+		return ok(JsonOutput.toJson(plugin, "Plugin", fields)).as("application/json");
 	}
 
 	/**
@@ -161,6 +164,7 @@ public class Plugins extends APIController {
 		visualizationId = visualization._id;
 		
 		String context = json.has("context") ? JsonValidation.getString(json, "context") : visualization.defaultSpaceContext;
+		if (context.equals("me") && visualization.defaultSpaceContext != null && visualization.defaultSpaceContext.length() > 0) context = visualization.defaultSpaceContext;
 				
 		User user = User.getById(userId, Sets.create("visualizations","apps", "role", "developer"));
 
@@ -215,7 +219,7 @@ public class Plugins extends APIController {
 				Map<String, Object> config = JsonExtraction.extractMap(json.get("config"));		
 				RecordManager.instance.setMeta(userId, space._id, "_config", config);
 			}
-			return 	ok(JsonOutput.toJson(space, "Space", Space.ALL));
+			return 	ok(JsonOutput.toJson(space, "Space", Space.ALL)).as("application/json");
 		}
 										
 		return ok();
@@ -272,7 +276,7 @@ public class Plugins extends APIController {
 		BSONObject oauthmeta = RecordManager.instance.getMeta(userId, new MidataId(spaceIdString), "_oauth");
 		if (oauthmeta == null) return F.Promise.pure((Result) ok(Json.toJson(false))); 
 		 		
-	    if (oauthmeta.containsField("refreshToken")) {
+	    if (oauthmeta.containsField("refreshToken") && oauthmeta.get("refreshToken") != null) {
 	      return requestAccessTokenOAuth2FromRefreshToken(spaceIdString, oauthmeta.toMap(), Json.toJson(true));
 	    } else {		
 		  return F.Promise.pure((Result) ok(Json.toJson(true)));
@@ -386,7 +390,9 @@ public class Plugins extends APIController {
 		Map<String, Object> properties = CMaps.map("_id", space.visualization);
 		Set<String> fields = Sets.create("accessTokenUrl", "consumerKey", "consumerSecret");
 		Plugin app = Plugin.get(properties, fields);
-		Map<String, Object> reqTokens = RecordManager.instance.getMeta(userId, space._id, "_oauth1").toMap(); 
+		
+		BSONObject oauth1Params = RecordManager.instance.getMeta(userId, space._id, "_oauth1");
+		Map<String, Object> reqTokens = oauth1Params.toMap(); 
 		
 		// request access token
 		ConsumerKey key = new ConsumerKey(app.consumerKey, app.consumerSecret);
@@ -443,25 +449,38 @@ public class Plugins extends APIController {
 					
 		final MidataId appId = space.visualization;
 		Map<String, Object> properties = CMaps.map("_id", space.visualization);
-		Set<String> fields = Sets.create("accessTokenUrl", "consumerKey", "consumerSecret");
+		Set<String> fields = Sets.create("accessTokenUrl", "consumerKey", "consumerSecret", "tokenExchangeParams");
 		Plugin app = Plugin.get(properties, fields);
 		
 		String origin = Play.application().configuration().getString("portal.originUrl");
 		if (origin.equals("https://demo.midata.coop:9002")) origin = "https://demo.midata.coop"; 
 		String authPage = origin +"/authorized.html";
-		
+		final Http.Request req = request();		
         try {
+        	
+        	String postBuilder = app.tokenExchangeParams;
+        	if (postBuilder == null) postBuilder = "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>";
+        	postBuilder = postBuilder.replace("<code>", json.get("code").asText());
+        	postBuilder = postBuilder.replace("<redirect_uri>", URLEncoder.encode(authPage, "UTF-8"));
+        	postBuilder = postBuilder.replace("<client_id>", app.consumerKey);
+        	postBuilder = postBuilder.replace("<client_secret>", app.consumerSecret);
+        	postBuilder = postBuilder.replace("<grant_type>", "authorization_code");
+        	final String post = postBuilder;
+        	
+        	WSRequestHolder holder = WS
+        			   .url(app.accessTokenUrl);
+        	
+        	if (postBuilder.indexOf("client_secret") < 0) holder = holder.setAuth(app.consumerKey, app.consumerSecret);
 		// request access token	
-		Promise<WSResponse> promise = WS
-		   .url(app.accessTokenUrl)
-		   .setAuth(app.consumerKey, app.consumerSecret)
+		Promise<WSResponse> promise = holder
 		   .setContentType("application/x-www-form-urlencoded; charset=utf-8")
-		   .post("client_id="+app.consumerKey+"&grant_type=authorization_code&code="+json.get("code").asText()+"&redirect_uri="+URLEncoder.encode(authPage, "UTF-8"));
+		   .post(post);
 		return promise.map(new Function<WSResponse, Result>() {
 			public Result apply(WSResponse response) throws AppException {
 				try {
 				KeyManager.instance.continueSession(sessionHandle);
-				AccessLog.log(response.getBody());
+				final String body = response.getBody();
+				AccessLog.log(body);
 				JsonNode jsonNode = response.asJson();
 				if (jsonNode.has("access_token") && jsonNode.get("access_token").isTextual()) {
 					String accessToken = jsonNode.get("access_token").asText();
@@ -477,6 +496,12 @@ public class Plugins extends APIController {
 					
 					return ok();
 				} else {
+					Stats.startRequest();
+					Stats.setPlugin(appId);
+					Stats.addComment("send:"+post);
+					Stats.addComment("extern server: "+response.getStatus()+" "+body);
+					Stats.finishRequest(req, "400");
+					
 					return badRequest("Access token not found.");
 				}
 				} finally {
@@ -508,7 +533,7 @@ public class Plugins extends APIController {
 		final MidataId userId = new MidataId(request().username());
 		
 		Map<String, Object> properties = new ChainedMap<String, Object>().put("_id", appId.toObjectId()).get();
-		Set<String> fields = Sets.create("name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret", "type");
+		Set<String> fields = Sets.create("name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret", "tokenExchangeParams","type");
 			
 		final Plugin app = Plugin.get(properties, fields);
 	
@@ -527,15 +552,25 @@ public class Plugins extends APIController {
 		final Map<String, Object> tokens = tokens1;
 		final MidataId spaceId = new MidataId(spaceIdStr);
 		// get app details			
+		Object rt = tokens.get("refreshToken");
+		if (rt == null) AccessLog.log("tokens="+tokens.toString());
+		String refreshToken = rt.toString();
 		
-		String refreshToken = tokens.get("refreshToken").toString();
-       
+		String postBuilder = app.tokenExchangeParams;
+    	if (postBuilder == null) postBuilder = "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>";
+    	String post0 = "grant_type=refresh_token&refresh_token="+refreshToken;
+    	if (postBuilder.indexOf("client_secret") >= 0) post0 = "client_secret="+app.consumerSecret+"&"+post0;
+        if (postBuilder.indexOf("client_id") >= 0) post0 = "client_id="+app.consumerKey+"&"+post0;
+        
+		
+        final String post = post0;
 		// request access token	
-		Promise<WSResponse> promise = WS
-		   .url(app.accessTokenUrl)
-		   .setAuth(app.consumerKey, app.consumerSecret)
+        WSRequestHolder holder = WS
+     		   .url(app.accessTokenUrl);
+        if (postBuilder.indexOf("client_secret") < 0) holder = holder.setAuth(app.consumerKey, app.consumerSecret);
+		Promise<WSResponse> promise = holder		   
 		   .setContentType("application/x-www-form-urlencoded; charset=utf-8")
-		   .post("client_id="+app.consumerKey+"&grant_type=refresh_token&refresh_token="+refreshToken);
+		   .post(post);
 		return promise.map(new Function<WSResponse, Boolean>()  {
 			public Boolean apply(WSResponse response) throws AppException {
 				KeyManager.instance.continueSession(sessionHandle);
@@ -556,6 +591,12 @@ public class Plugins extends APIController {
 					}
 					return true;
 				} else {
+					Stats.startRequest();
+					Stats.setPlugin(app._id);
+					Stats.addComment("send:"+post);
+					Stats.addComment("extern server: "+response.getStatus()+" "+response.getBody());
+					Stats.finishRequest("intern", "/oauth2", null, "400", Collections.<String>emptySet());
+					
 					return false;
 				}
 			}

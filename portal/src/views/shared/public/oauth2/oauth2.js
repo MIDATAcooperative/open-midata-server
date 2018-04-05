@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('OAuth2LoginCtrl', ['$scope', '$location', '$translate', 'server', '$state', 'status', 'session', 'apps', 'studies', 'oauth', 'views', 'labels', function($scope, $location, $translate, server, $state, status, session, apps, studies, oauth, views,labels) {
+.controller('OAuth2LoginCtrl', ['$scope', '$location', '$translate', 'server', '$state', 'status', 'session', 'apps', 'studies', 'oauth', 'views', 'labels', 'ENV', function($scope, $location, $translate, server, $state, status, session, apps, studies, oauth, views,labels, ENV) {
 	
 	// init
 	$scope.login = { role : "MEMBER"};	
@@ -64,7 +64,8 @@ angular.module('portal')
 				
 		$scope.status.doAction("login", oauth.login(false))
 		.then(function(result) {
-		  if (result === "CONFIRM") {
+		  if (result === "CONFIRM" || result === "CONFIRM-STUDYOK") {
+			  if (result === "CONFIRM-STUDYOK") { $scope.app.linkedStudy = undefined; }
 			  $scope.acceptConsent = true;
 			  $scope.prepareConfirm();
 		  } else if (result !== "ACTIVE") {
@@ -120,11 +121,26 @@ angular.module('portal')
 	};
 	
 	$scope.showRegister = function() {
-		$state.go("public.registration");
+		$state.go("public.registration_new");
 	};
 	
 	$scope.terms = function(def) {
 		views.setView("terms", def, "Terms");
+	};
+	
+	$scope.hasIcon = function() {
+		if (!$scope.app || !$scope.app.icons) return false;
+		return $scope.app.icons.indexOf("LOGINPAGE") >= 0;
+	};
+	
+	$scope.getIconUrl = function() {
+		if (!$scope.app) return null;
+		return ENV.apiurl + "/api/shared/icon/LOGINPAGE/" + $scope.app.filename;
+	};
+	
+	$scope.getIconUrlBG = function() {
+		if (!$scope.app) return null;
+		return { "background-image" : "url('"+ENV.apiurl + "/api/shared/icon/LOGINPAGE/" + $scope.app.filename+"')" };
 	};
 	
 	$scope.prepare();

@@ -7,8 +7,8 @@
         "plugins" : "Plugins",
         "content" : "Contenu",
         "studies" : "Études",
-        "terms" : "Dispositions",
-        "registration" : "Enregistrer un administrateur"
+        "terms" : "Conditions générales",
+        "registration" : "Inscrire un administrateur"
     },
 
     "admin_members" : {
@@ -16,14 +16,14 @@
         "search_type" : "Recherche",
         "contract_required" : "Le contrat doit être envoyé",
         "contract_confirm_required" : "Le contrat signé doit être confirmé",
-        "no_email_confirm" : "E-mail non confirmé par l'utilisateur",
+        "no_email_confirm" : "E-mail pas encore confirmé par l'utilisateur",
         "email_rejected" : "Confirmation e-mail rejetée par l'utilisateur",
         "not_admin_confirmed" : "Non confirmé par un administrateur",
         "overview" : "Aperçu",
         "specific_user" : "Utilisateur spécifique",
         "role" : "Rôle",
         "status" : "État",
-        "midata_id" : "midataID",
+        "midata_id" : "MIDATA-ID",
         "empty" : "Aucun utilisateur correspondant trouvé."
     },
 
@@ -34,11 +34,11 @@
         "subroles" : "Sous-rôle(s)",
         "developer" : "Appartient au développeur:",
         "status" : "État:",
-        "agb_status" : "État des CGU:",
+        "agb_status" : "État des CG:",
         "contract_status" : "État du contrat:",
         "email_status" : "État de l'e-mail:",
         "confirmation_code" : "Code de confirmation:",
-        "registration_date" : "Date d'enregistrement:",
+        "registration_date" : "Date de l'inscription:",
         "confirmation_date" : "Date de confirmation:",
         "last_login" : "Dernière connexion:",
         "email_confirm_btn" : "Confirmer l'adresse e-mail",
@@ -68,13 +68,28 @@
     },
 
     "admin_registration" : {
-        "sign_up" : "Enregistrer un nouveau compte Admin"
+        "sign_up" : "Inscrire un nouvel administrateur"
     },
 
     "admin_plugins" : {
         "title" : "Plugins",
         "developer" : "Filtrer par développeur",
-        "empty" : "Il n'existe encore aucune app ou plugin."
+        "name" : "Filtrer par nom d'application",
+        "organisation" : "Filtrer par organisation",
+        "empty" : "Il n'existe encore aucune app ou plugin.",
+        "plugin_name" : "Nom",
+        "plugin_developer" : "Dévelopeur",
+        "plugin_type" : "Type",
+        "plugin_role" : "Rôle cible",
+        "plugin_market" : "MIDATA Store",
+        "plugin_stats" : "Statistiques",
+        "plugin_status" : "État",
+        "add_definition_btn" : "Importer la définition d'un plugin"
+    },
+
+    "admin_defineplugin" : {
+        "title" : "Importer la définition d'un plugin",
+        "definition" : "Définition (JSON)"
     },
 
     "admin_studies" : {
@@ -84,8 +99,8 @@
     },
 
     "admin_terms" : {
-        "title" : "Dispositions",
-        "empty" : "Aucunes dispositions disponibles.",
+        "title" : "Conditions générales",
+        "empty" : "Aucunes conditions générales disponibles.",
         "name" : "Nom",
         "version" : "Version",
         "language" : "Langue",
@@ -93,7 +108,7 @@
     },
 
     "admin_manageterms" : {
-        "pagetitle" : "Dispositions",
+        "pagetitle" : "Conditions générales",
         "name" : "Nom interne",
         "version" : "Version",
         "language" : "Langue",
@@ -112,9 +127,10 @@
         "endDate" : "Date de fin",
         "dataCreatedBefore" : "Données figées dès le",
         "required_information" : "Informations requises",
+        "anonymous" : "Anonyme",
         "required_assistance" : "Médecin agréé requis",
-        "termsOfUse" : "Dispositions",
-        "sharing_query" : "Sharing Query",
+        "termsOfUse" : "Conditions générales",
+        "sharing_query" : "Data Access Filter",
         "requirements" : "Exigences",
         "groups" : "Groupes",
         "group_name" : "Nom du groupe",
@@ -125,5 +141,20 @@
         "end_validation_btn" : "Finaliser la validation",
         "back_to_draft_btn" : "Revenir à l'ébauche",
         "delete_study_btn" : "Effacer l'étude"
+    },
+
+    "admin_stats" : {
+        "title" : "Statistiques",
+        "what" : "",
+        "value" : "Nombre total",
+        "diff_yesterday" : "Diff. sur 1 jour",
+        "diff_week" : "Diff. sur 7 jours",
+        "recordCount" : "Enregistrements dans la BD",
+        "appCount" : "Apps et Plugins",
+        "runningStudyCount" : "Études en cours d'exécution",
+        "groupCount" : "Teams (Système de santé et recherche)",
+        "auditEventCount" : "Événements d'audit",
+        "users" : "Comptes d'utilisateurs actifs",
+        "consents" : "Consentements"
     }
 }

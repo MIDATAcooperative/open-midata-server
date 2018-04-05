@@ -19,7 +19,7 @@
 		            	</div>
 		            	<div class="panel-body">
 			            	<div ng-show="error" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
-			            	  <span translate="{{ error.code }}"></span>
+			            	  <span translate="{{ error.code || error }}"></span>
 			            	  <span ng-if="error.code == 'error.invalid.credentials_hint'">
 			            	    
 			            	    <a class="alert-link" ui-sref="public_research.login" translate="enum.userrole.RESEARCH"></a>,

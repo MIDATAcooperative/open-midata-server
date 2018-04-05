@@ -46,8 +46,8 @@ class APSEntry {
 			  if (fmt != null && !contents.contains(fmt)) continue;  
 			}
 			if (apps != null) {
-				String fmt = crit.getString("app");
-				if (fmt != null && !apps.contains(fmt)) continue;
+				String fmt = crit.getString("app");				
+				if (fmt != null && !apps.contains(fmt)) continue;				
 			}	
 			if (result == null) result = new ArrayList<BasicBSONObject>();
 			result.add(crit);			

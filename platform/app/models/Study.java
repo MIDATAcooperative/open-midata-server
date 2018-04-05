@@ -17,6 +17,7 @@ import models.enums.UserFeature;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
+import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
 /**
@@ -31,7 +32,7 @@ public class Study extends Model {
 	/**
 	 * constant set containing all fields
 	 */
-	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "owner", "createdBy", "createdAt", "description", "infos", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags");
+	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "owner", "createdBy", "createdAt", "description", "infos", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "anonymous");
 	
 	/**
 	 * name of study
@@ -106,6 +107,11 @@ public class Study extends Model {
 	public InformationType requiredInformation;
 	
 	/**
+	 * If set no one is allowed to see mapping
+	 */
+	public boolean anonymous;
+	
+	/**
 	 * Type of member assistance required
 	 */
 	public AssistanceType assistance;
@@ -149,6 +155,11 @@ public class Study extends Model {
      * mark process steps as done/unnecessary
      */
     public Set<String> processFlags;
+    
+    /**
+     * A StudyGroup new participants should automatically join
+     */
+    public String autoJoinGroup;
     
     public static void add(Study study) throws InternalServerException {
 		Model.insert(collection, study);
@@ -196,6 +207,10 @@ public class Study extends Model {
     
     public void setRequiredInformation(InformationType inf) throws InternalServerException {
 		Model.set(Study.class, collection, this._id, "requiredInformation", inf);
+	}
+    
+    public void setAnonymous(boolean anonymous) throws InternalServerException {
+		Model.set(Study.class, collection, this._id, "anonymous", anonymous);
 	}
     
     public void setAssistance(AssistanceType inf) throws InternalServerException {
@@ -247,6 +262,11 @@ public class Study extends Model {
     	Model.set(Study.class, collection, this._id, "description", description);
     }
     
+    public void setAutoJoinGroup(String autoJoinGroup) throws InternalServerException {
+    	this.autoJoinGroup = autoJoinGroup;
+    	Model.set(Study.class, collection, this._id, "autoJoinGroup", autoJoinGroup);
+    }
+    
     public void setProcessFlags(Set<String> processFlags) throws InternalServerException {
     	this.processFlags = processFlags;
     	Model.set(Study.class, collection, this._id, "processFlags", processFlags);
@@ -257,4 +277,7 @@ public class Study extends Model {
 		Model.delete(Study.class, collection, CMaps.map("_id", studyId));
 	}
 	
+    public static long count() throws AppException {
+		return Model.count(Study.class, collection, CMaps.map("executionStatus", StudyExecutionStatus.RUNNING));
+	}
 }

@@ -451,7 +451,7 @@ public class Application extends APIController {
 		User user = User.getById(userId, User.ALL_USER_INTERNAL);
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE, user);
-		if (!Member.authenticationValid(oldPassword, user.password)) throw new BadRequestException("error.invalid.password_old","Bad password.");
+		if (!user.authenticationValid(oldPassword)) throw new BadRequestException("error.invalid.password_old","Bad password.");
 		
 		user.set("password", Member.encrypt(password));
 		       			
@@ -511,7 +511,7 @@ public class Application extends APIController {
 		String password = JsonValidation.getString(json, "password");
 		
 		// check status
-		Member user = Member.getByEmail(email , Sets.create("firstname", "lastname", "email", "role", "password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer"));
+		Member user = Member.getByEmail(email , Sets.create("firstname", "lastname", "email", "role", "password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "failedLogins", "lastFailed"));
 		if (user == null) {
 			Set<User> alts = User.getAllUser(CMaps.map("emailLC", email.toLowerCase()).map("status", User.NON_DELETED).map("role", Sets.create(UserRole.DEVELOPER.toString(), UserRole.RESEARCH.toString(), UserRole.PROVIDER.toString())), Sets.create("role"));
 			if (!alts.isEmpty()) {				
@@ -522,7 +522,7 @@ public class Application extends APIController {
 		}
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user);
-		if (!Member.authenticationValid(password, user.password)) {
+		if (!user.authenticationValid(password)) {
 			throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");
 		}
 			 
@@ -581,10 +581,11 @@ public class Application extends APIController {
 		
 		if (user.status.equals(UserStatus.ACTIVE) || user.status.equals(UserStatus.NEW)) {
 		   PortalSessionToken token = null;
-		   String handle = KeyManager.instance.login(PortalSessionToken.LIFETIME);		
+		   String handle = KeyManager.instance.login(PortalSessionToken.LIFETIME, true);		
 		   token = new PortalSessionToken(handle, user._id, UserRole.ANY, null, user.developer);
 		   obj.put("sessionToken", token.encrypt(request()));
 		   KeyManager.instance.unlock(user._id, null);
+		   KeyManager.instance.persist(user._id);
 		}
 					
 		AuditManager.instance.success();
@@ -602,7 +603,7 @@ public class Application extends APIController {
 		Set<UserFeature> notok = loginHelperPreconditionsFailed(user, InstanceConfig.getInstance().getInstanceType().defaultRequirementsPortalLogin(user.role));
 		
 		PortalSessionToken token = null;
-		String handle = KeyManager.instance.login(PortalSessionToken.LIFETIME);
+		String handle = KeyManager.instance.login(PortalSessionToken.LIFETIME, true);
 	
 		if (user instanceof HPUser) {
 		   token = new PortalSessionToken(handle, user._id, user.role, ((HPUser) user).provider, user.developer);		  
@@ -619,7 +620,10 @@ public class Application extends APIController {
 		  return loginHelperResult(user, notok);
 		} else {						
 		  int keytype = KeyManager.instance.unlock(user._id, null);		
-		  if (keytype == 0) AccountPatches.check(user);
+		  if (keytype == 0) {
+			  AccountPatches.check(user);
+			  KeyManager.instance.persist(user._id);
+		  }
 				
 		  obj.put("keyType", keytype);
 		  obj.put("role", user.role.toString().toLowerCase());
@@ -661,6 +665,7 @@ public class Application extends APIController {
 		String passphrase = JsonValidation.getString(json, "passphrase");
 		
 		KeyManager.instance.unlock(userId, passphrase);
+		KeyManager.instance.persist(userId);
 		
 		try {
 		  RecordManager.instance.list(userId, userId, CMaps.map("format","zzzzzzz"), Sets.create("name"));
@@ -772,8 +777,8 @@ public class Application extends APIController {
 		user.security = AccountSecurityLevel.KEY;		
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);								
 		Member.add(user);
-		KeyManager.instance.login(60000);
-		KeyManager.instance.unlock(user._id, null);
+		KeyManager.instance.login(60000, true);
+		KeyManager.instance.unlock(user._id, null);	
 		
 		user.myaps = RecordManager.instance.createPrivateAPS(user._id, user._id);
 		Member.set(user._id, "myaps", user.myaps);
@@ -928,6 +933,7 @@ public class Application extends APIController {
 				controllers.research.routes.javascript.Studies.get(),
 				controllers.research.routes.javascript.Studies.getAdmin(),
 				controllers.research.routes.javascript.Studies.update(),
+				controllers.research.routes.javascript.Studies.updateNonSetup(),
 				controllers.research.routes.javascript.Studies.updateParticipation(),
 				controllers.research.routes.javascript.Studies.download(),
 				controllers.research.routes.javascript.Studies.downloadFHIR(),
@@ -943,6 +949,7 @@ public class Application extends APIController {
 				controllers.research.routes.javascript.Studies.abortExecution(),
 				controllers.research.routes.javascript.Studies.delete(),
 				controllers.research.routes.javascript.Studies.listParticipants(),
+				controllers.research.routes.javascript.Studies.countParticipants(),
 				controllers.research.routes.javascript.Studies.getParticipant(),
 				controllers.research.routes.javascript.Studies.approveParticipation(),
 				controllers.research.routes.javascript.Studies.rejectParticipation(),	
@@ -985,6 +992,7 @@ public class Application extends APIController {
 				controllers.admin.routes.javascript.Administration.addComment(),
 				controllers.admin.routes.javascript.Administration.adminWipeAccount(),
 				controllers.admin.routes.javascript.Administration.deleteStudy(),
+				controllers.admin.routes.javascript.Administration.getStats(),
 				// Market				
 				controllers.routes.javascript.Market.registerPlugin(),
 				controllers.routes.javascript.Market.updatePlugin(),
@@ -995,6 +1003,9 @@ public class Application extends APIController {
 				controllers.routes.javascript.Market.deletePluginStats(),
 				controllers.routes.javascript.Market.importPlugin(),
 				controllers.routes.javascript.Market.exportPlugin(),
+				controllers.routes.javascript.Market.uploadIcon(),
+				controllers.routes.javascript.Market.deleteIcon(),
+				controllers.routes.javascript.Market.getIcon(),
 								
 				// UserGroups
 				controllers.routes.javascript.UserGroups.search(),

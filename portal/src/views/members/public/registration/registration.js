@@ -1,10 +1,11 @@
 angular.module('portal')
-.controller('RegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', '$translate', 'languages', '$stateParams', 'oauth', '$document', 'views', 'dateService', function($scope, $state, server, status, session, $translate, languages, $stateParams, oauth, $document, views, dateService) {
+.controller('RegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', '$translate', 'languages', '$stateParams', 'oauth', '$document', 'views', 'dateService', '$window', function($scope, $state, server, status, session, $translate, languages, $stateParams, oauth, $document, views, dateService, $window) {
 	
 	$scope.registration = { language : $translate.use() };
 	$scope.languages = languages.all;
 	$scope.countries = languages.countries;
 	$scope.error = null;
+	$scope.flags = {};
 	$scope.status = new status(false, $scope);
 	
 	$scope.offline = (window.jsRoutes === undefined) || (window.jsRoutes.controllers === undefined);
@@ -15,8 +16,7 @@ angular.module('portal')
 	$scope.register = function() {		
 		
         $scope.myform.password.$setValidity('compare', $scope.registration.password ==  $scope.registration.password2);
-        $scope.myform.agb.$setValidity('mustaccept', $scope.registration.agb);
-        $scope.myform.privacypolicy.$setValidity('mustaccept', $scope.registration.privacypolicy);  
+        $scope.myform.agb.$setValidity('mustaccept', $scope.registration.agb);        
         if (!$scope.registration.agb) {
         	
         	$scope.myform.agb.$invalid = true;
@@ -28,10 +28,7 @@ angular.module('portal')
           $scope.myform.birthday.$setValidity('date', dateService.isValidDate($scope.registration.birthdayDay, $scope.registration.birthdayMonth, $scope.registration.birthdayYear));
         }
 				
-        if (!$scope.registration.privacypolicy) {        	
-        	$scope.myform.privacypolicy.$invalid = true;
-        	$scope.myform.privacypolicy.$error = { 'mustaccept' : true };
-        }
+     
         if ($scope.app && $scope.app.termsOfUse) {
         	$scope.myform.appAgb.$setValidity('mustaccept', $scope.registration.appAgb);
             if (!$scope.registration.appAgb) {        	
@@ -59,9 +56,15 @@ angular.module('portal')
 		    return ("0" + n).slice(-2);
 		};
 		
+		var d = $scope.registration.birthdayDate;
+		
+		if (d) {
+			$scope.registration.birthday = d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+		} else {
         $scope.registration.birthday = $scope.registration.birthdayYear + "-" + 
                                        pad($scope.registration.birthdayMonth) + "-" +
-                                       pad($scope.registration.birthdayDay);		
+                                       pad($scope.registration.birthdayDay);
+		}
 		// send the request
 		var data = $scope.registration;	
 		
@@ -105,6 +108,7 @@ angular.module('portal')
 	};
 	
 	$scope.terms = function(def) {
+		console.log("TERMS");
 		views.setView("terms", def, "Terms");
 	};
 	
@@ -118,5 +122,9 @@ angular.module('portal')
 	if (oauth.getAppname()) {		
 	   $scope.app = oauth.app;
 	}
+	
+	$scope.back = function() {
+		$window.history.back();
+	};
 	
 }]);

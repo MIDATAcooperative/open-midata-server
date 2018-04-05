@@ -2,10 +2,10 @@
             <loader busy="status.isBusy !== false">
 			
 			<div ng-if="log.length > 10">
-              <dir-pagination-controls pagination-id="audit" current-page="page.nr"></dir-pagination-controls>
+              <dir-pagination-controls pagination-id="audit" current-page="page.nr" on-page-change="pageChanged(newPageNumber)"></dir-pagination-controls>
              </div>
 
-			<div dir-paginate="entry in log | orderBy : 'recorded' : true | itemsPerPage : 10" pagination-id="audit">
+			<div dir-paginate="entry in log | itemsPerPage : 10" pagination-id="audit" >
 			  <div class="row">
 			  <div class="col-sm-6 col-md-2" style="color:#707070">{{ entry.recorded | date : 'dd.MM.yyyy HH:mm' }}</div>
 			  <div class="col-sm-6 col-md-3">

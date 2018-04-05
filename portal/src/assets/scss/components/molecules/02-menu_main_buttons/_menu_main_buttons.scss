@@ -1,0 +1,44 @@
+.mi-mo-menu_main_buttons {
+	width: 100%;
+
+	background-color: $color-brand-grey-button;
+
+	.mi-mo-flat_button {
+		display: inline-block;
+		position: relative;
+		width: 100%;
+
+		&::after {
+			content: '';
+			position: absolute;
+			bottom: 5px;
+			right: 0;
+			top: 5px;
+
+			border: 1px solid $color-brand-grey-separator;
+
+			@media (max-width: $min-fidelity-menu-width) {
+				display: none;
+			}
+
+			@media (max-width: $min-pretty-menu-width) {
+				display: initial;
+				right: 10%;
+				left: 10%;
+				height: 0px;
+				bottom: 0;
+				top: initial;
+			}
+		}
+
+		&:last-of-type {
+			&::after {
+				border: none;
+			}
+		}
+
+		@media (min-width: $min-pretty-menu-width) {
+			width: 49%;
+		}
+	}
+}

@@ -96,7 +96,7 @@ angular.module('portal')
 	};
 	
 	$scope.deleteSpace = function(space) {
-		spaces.deleteSpace(space._id).then(function() { $scope.updateConsents(); });
+		$scope.status.doAction("deleteConsent", spaces.deleteSpace(space._id)).then(function() { $scope.updateConsents(); });
 	};
 	
 	$scope.reload();

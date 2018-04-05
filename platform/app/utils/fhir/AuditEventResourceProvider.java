@@ -13,6 +13,7 @@ import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventAgentComponent;
 import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventEntityComponent;
 import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventEntityDetailComponent;
 import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventOutcome;
+import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.Group;
@@ -45,12 +46,14 @@ import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.api.SummaryEnum;
+import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.param.CompositeAndListParam;
 import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
+import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.param.UriAndListParam;
@@ -81,10 +84,9 @@ import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.stats.Stats;
 
-public class AuditEventResourceProvider extends ResourceProvider<AuditEvent> implements IResourceProvider {
+public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, MidataAuditEvent> implements IResourceProvider {
+	
 
-	
-	
 	public AuditEventResourceProvider() {
 		registerSearches("AuditEvent", getClass(), "getAuditEvent");
 	}
@@ -106,12 +108,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent> imp
 		if (mae != null) return readAuditEventFromMidataAuditEvent(mae);
 		throw new ResourceNotFoundException(theId);		
 	}
-	
-    @History()
-    @Override
-	public List<AuditEvent> getHistory(@IdParam IIdType theId) throws AppException {
-    	throw new ResourceNotFoundException("No history kept for AuditEvent resource"); 
-    }
+	    
     
 	/**
 	 * Convert a MIDATA User object into a FHIR person object
@@ -141,7 +138,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent> imp
 	
 		
 	   @Search()
-	    public List<IBaseResource> getAuditEvent(
+	    public Bundle getAuditEvent(
 	    		@Description(shortDefinition="The resource identity")
 	    		@OptionalParam(name="_id")
 	    		StringAndListParam theId, 
@@ -247,7 +244,12 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent> imp
 	    		Integer theCount,
 	    		
 	    		SummaryEnum theSummary, // will receive the summary (no annotation required)
-	    	    @Elements Set<String> theElements
+	    	    @Elements Set<String> theElements,
+	    	    
+	    		@OptionalParam(name="_page")
+				StringParam _page,
+				
+				RequestDetails theDetails
 	    
 	    		) throws AppException {
 	    	
@@ -282,118 +284,16 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent> imp
 	    	paramMap.setSort(theSort);
 	    	paramMap.setCount(theCount);
 	    	paramMap.setElements(theElements);
-	    	paramMap.setSummary(theSummary);
-	    	    		    	
-	    	return search(paramMap);    	    	    	
+	    	paramMap.setSummary(theSummary);	    	
+			paramMap.setFrom(_page != null ? _page.getValue() : null);
+
+			//return search(paramMap);
+			return searchBundle(paramMap, theDetails);	    				
+	    	    		    		    	  
 	    }
 	
-	 
-	@Override
-	public List<IBaseResource> search(SearchParameterMap params) {
-		try {
-					
-			ExecutionInfo info = info();			
-	
-			if (!info.context.mayAccess("AuditEvent", "fhir/AuditEvent")) return Collections.emptyList();
-						
-			Query query = new Query();		
-			QueryBuilder builder = new QueryBuilder(params, query, null);
+	 	
 			
-			User current = info().cache.getUserById(info().ownerId);
-			boolean authrestricted = false;
-			if (!current.role.equals(UserRole.ADMIN)) {
-			  Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByMember(info().executorId);
-			  if (ugms.isEmpty()) {
-			    query.putAccount("authorized", info.executorId);
-			  } else {
-				Set<MidataId> allowedIds = new HashSet<MidataId>();
-				allowedIds.add(info.executorId);
-				for (UserGroupMember ugm : ugms) if (ugm.role.auditLogAccess()) allowedIds.add(ugm.userGroup);
-				query.putAccount("authorized", allowedIds);
-			  }
-			  authrestricted = true;
-			}
-			
-			builder.handleIdRestriction();
-			builder.restriction("action", false, QueryBuilder.TYPE_CODE, "fhirAuditEvent.action");
-			builder.restriction("address", false, QueryBuilder.TYPE_STRING, "fhirAuditEvent.agent.network.address");
-			builder.restriction("agent", false, "Patient", "fhirAuditEvent.agent.reference");
-			
-			if (params.containsKey("agent")) {
-			  List<ReferenceParam> agents = builder.resolveReferences("agent", null);
-			   if (agents != null && !authrestricted) {
-				query.putAccount("authorized", FHIRTools.referencesToIds(agents));
-			   }
-			}
-			
-			builder.restriction("agent-name", false, QueryBuilder.TYPE_STRING, "fhirAuditEvent.agent.name");
-			builder.restriction("agent-role", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "fhirAuditEvent.agent.role");	
-			builder.restriction("altid", false, QueryBuilder.TYPE_CODE, "fhirAuditEvent.agent.altId");	
-			builder.restriction("date", false, QueryBuilder.TYPE_DATETIME, "timestamp");	
-			
-			if (params.containsKey("entity")) {
-				List<ReferenceParam> entities = builder.resolveReferences("entity", null);
-				if (entities != null) {
-					query.putAccount("about", FHIRTools.referencesToIds(entities));
-				}
-			}
-			builder.restriction("entity", false, null, "fhirAuditEvent.entity.reference");
-				
-			builder.restriction("entity-id", false, QueryBuilder.TYPE_IDENTIFIER, "fhirAuditEvent.entity.identifier");
-			builder.restriction("entity-name", false, QueryBuilder.TYPE_STRING, "fhirAuditEvent.entity.name");	
-			builder.restriction("entity-role", false, QueryBuilder.TYPE_CODING, "fhirAuditEvent.entity.role");
-			builder.restriction("entity-type", false, QueryBuilder.TYPE_CODING, "fhirAuditEvent.entity.type");
-				
-			//outcome	token	Whether the event succeeded or failed	AuditEvent.outcome	
-			
-			if (params.containsKey("patient")) {
-				List<ReferenceParam> patients = builder.resolveReferences("patient", null);
-				if (patients != null && !authrestricted) {
-					query.putAccount("authorized", FHIRTools.referencesToIds(patients));
-				}
-			}
-			//patient	reference	Direct reference to resource	AuditEvent.agent.reference | AuditEvent.entity.reference
-			//Patient)	
-			builder.restriction("policy", false, QueryBuilder.TYPE_URI, "fhirAuditEvent.agent.policy");
-			builder.restriction("site", false, QueryBuilder.TYPE_CODE, "fhirAuditEvent.source.site");
-			builder.restriction("source", false, QueryBuilder.TYPE_IDENTIFIER, "fhirAuditEvent.source.identifier");
-			
-			//subtype	token	More specific type/id for the event	AuditEvent.subtype	
-			//type	token	Type/identifier of event	AuditEvent.type	
-			
-			builder.restriction("user", false, QueryBuilder.TYPE_IDENTIFIER, "fhirAuditEvent.agent.userId");
-			
-			Map<String, Object> properties = query.retrieveAsNormalMongoQuery();
-			ObjectIdConversion.convertMidataIds(properties, "authorized", "about");
-			
-			//properties = CMaps.map("recorded", CMaps.map("$ge", 150));
-											
-			Set<MidataAuditEvent> events = MidataAuditEvent.getAll(properties, MidataAuditEvent.ALL);
-			List<IBaseResource> result = new ArrayList<IBaseResource>();
-			for (MidataAuditEvent mae : events) {
-				result.add(readAuditEventFromMidataAuditEvent(mae));
-			}
-									
-			return result;
-			
-		 } catch (AppException e) {
-		       ErrorReporter.report("FHIR (search)", null, e);	       
-			   return null;
-		 } catch (NullPointerException e2) {
-		   	    ErrorReporter.report("FHIR (search)", null, e2);	 
-				throw new InternalErrorException(e2);
-		}
-		
-	}
-		
-			
-	public Record init() { return newRecord("fhir/AuditEvent"); }
-
-	@Override
-	public List<Record> searchRaw(SearchParameterMap params) throws AppException {		
-		return null;
-	}	
-	
 	public static void updateMidataAuditEvent(MidataAuditEvent mae, MidataId appUsed, User actorUser, User modifiedUser, Consent affectedConsent, String message, Study study) throws AppException {
 		AuditEvent ae = new AuditEvent();
 
@@ -482,5 +382,111 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent> imp
 		String encoded = ctx.newJsonParser().encodeResourceToString(ae);		
 		mae.fhirAuditEvent = (DBObject) JSON.parse(encoded);				
 	}
+
+	@Override
+	public MidataAuditEvent fetchCurrent(IIdType theId) throws AppException {
+		return MidataAuditEvent.getById(MidataId.from(theId.getIdPart()));
+	}
+
+	@Override
+	public void processResource(MidataAuditEvent record, AuditEvent resource) throws AppException {				
+	}
+
+	@Override
+	public List<MidataAuditEvent> searchRaw(SearchParameterMap params) throws AppException {
+		ExecutionInfo info = info();			
+		
+		if (!info.context.mayAccess("AuditEvent", "fhir/AuditEvent")) return Collections.emptyList();
+					
+		Query query = new Query();		
+		QueryBuilder builder = new QueryBuilder(params, query, null);
+		
+		User current = info().cache.getUserById(info().ownerId);
+		boolean authrestricted = false;
+		if (!current.role.equals(UserRole.ADMIN)) {
+		  Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByMember(info().executorId);
+		  if (ugms.isEmpty()) {
+		    query.putAccount("authorized", info.executorId);
+		  } else {
+			Set<MidataId> allowedIds = new HashSet<MidataId>();
+			allowedIds.add(info.executorId);
+			for (UserGroupMember ugm : ugms) if (ugm.role.auditLogAccess()) allowedIds.add(ugm.userGroup);
+			query.putAccount("authorized", allowedIds);
+		  }
+		  authrestricted = true;
+		}
+		
+		builder.handleIdRestriction();
+		builder.restriction("action", false, QueryBuilder.TYPE_CODE, "fhirAuditEvent.action");
+		builder.restriction("address", false, QueryBuilder.TYPE_STRING, "fhirAuditEvent.agent.network.address");
+		builder.restriction("agent", false, "Patient", "fhirAuditEvent.agent.reference");
+		
+		if (params.containsKey("agent")) {
+		  List<ReferenceParam> agents = builder.resolveReferences("agent", null);
+		   if (agents != null && !authrestricted) {
+			query.putAccount("authorized", FHIRTools.referencesToIds(agents));
+		   }
+		}
+		
+		builder.restriction("agent-name", false, QueryBuilder.TYPE_STRING, "fhirAuditEvent.agent.name");
+		builder.restriction("agent-role", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "fhirAuditEvent.agent.role");	
+		builder.restriction("altid", false, QueryBuilder.TYPE_CODE, "fhirAuditEvent.agent.altId");	
+		builder.restriction("date", false, QueryBuilder.TYPE_DATETIME, "timestamp");	
+		
+		if (params.containsKey("entity")) {
+			List<ReferenceParam> entities = builder.resolveReferences("entity", null);
+			if (entities != null) {
+				query.putAccount("about", FHIRTools.referencesToIds(entities));
+			}
+		}
+		builder.restriction("entity", false, null, "fhirAuditEvent.entity.reference");
+			
+		builder.restriction("entity-id", false, QueryBuilder.TYPE_IDENTIFIER, "fhirAuditEvent.entity.identifier");
+		builder.restriction("entity-name", false, QueryBuilder.TYPE_STRING, "fhirAuditEvent.entity.name");	
+		builder.restriction("entity-role", false, QueryBuilder.TYPE_CODING, "fhirAuditEvent.entity.role");
+		builder.restriction("entity-type", false, QueryBuilder.TYPE_CODING, "fhirAuditEvent.entity.type");
+			
+		//outcome	token	Whether the event succeeded or failed	AuditEvent.outcome	
+		
+		if (params.containsKey("patient")) {
+			List<ReferenceParam> patients = builder.resolveReferences("patient", null);
+			if (patients != null && !authrestricted) {
+				query.putAccount("authorized", FHIRTools.referencesToIds(patients));
+			}
+		}
+		//patient	reference	Direct reference to resource	AuditEvent.agent.reference | AuditEvent.entity.reference
+		//Patient)	
+		builder.restriction("policy", false, QueryBuilder.TYPE_URI, "fhirAuditEvent.agent.policy");
+		builder.restriction("site", false, QueryBuilder.TYPE_CODE, "fhirAuditEvent.source.site");
+		builder.restriction("source", false, QueryBuilder.TYPE_IDENTIFIER, "fhirAuditEvent.source.identifier");
+		
+		//subtype	token	More specific type/id for the event	AuditEvent.subtype	
+		//type	token	Type/identifier of event	AuditEvent.type	
+		
+		builder.restriction("user", false, QueryBuilder.TYPE_IDENTIFIER, "fhirAuditEvent.agent.userId");
+		
+		Map<String, Object> properties = query.retrieveAsNormalMongoQuery();
+		
+		ObjectIdConversion.convertMidataIds(properties, "authorized", "about");
+		
+		//properties = CMaps.map("recorded", CMaps.map("$ge", 150));
+		int limit = params.getCount() != null ? params.getCount() + 1 : 10000;	
+		if (params.getFrom() != null) {
+			properties.put("_id", CMaps.map("$lte", MidataId.from(params.getFrom()).toObjectId()));
+		}
+		
+		List<MidataAuditEvent> events = MidataAuditEvent.getAll(properties, MidataAuditEvent.ALL, limit);
+		return events;
+	}
+
+	@Override
+	public List<AuditEvent> parse(List<MidataAuditEvent> events, Class<AuditEvent> resultClass) throws AppException {
+		List<AuditEvent> result = new ArrayList<AuditEvent>();
+		for (MidataAuditEvent mae : events) {
+			result.add(readAuditEventFromMidataAuditEvent(mae));
+		}								
+		return result;
+	}
+
  	
 }

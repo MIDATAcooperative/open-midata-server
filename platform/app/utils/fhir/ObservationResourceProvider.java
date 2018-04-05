@@ -10,6 +10,7 @@ import java.util.Set;
 
 
 import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.dstu3.model.DateTimeType;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.IntegerType;
@@ -36,6 +37,8 @@ import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortOrderEnum;
 import ca.uhn.fhir.rest.api.SortSpec;
+import ca.uhn.fhir.rest.api.server.IBundleProvider;
+import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.param.CompositeAndListParam;
 import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateOrListParam;
@@ -56,12 +59,13 @@ import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.Record;
 import models.RecordsInfo;
 import models.enums.AggregationType;
+import utils.AccessLog;
 import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
-public class ObservationResourceProvider extends ResourceProvider<Observation> implements IResourceProvider {
+public class ObservationResourceProvider extends RecordBasedResourceProvider<Observation> implements IResourceProvider {
 
 	public ObservationResourceProvider() {
 		searchParamNameToPathMap.put("Observation:based-on", "basedOn");
@@ -84,7 +88,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 	}
 
 	@Search()
-	public List<IBaseResource> getObservation(
+	public Bundle getObservation(
 			@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,
 
 			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
@@ -262,9 +266,14 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 			}) 
 			Set<Include> theIncludes,
 								
-			@Sort SortSpec theSort,
-
-			@ca.uhn.fhir.rest.annotation.Count Integer theCount
+			@Sort SortSpec theSort,		
+			
+			@ca.uhn.fhir.rest.annotation.Count Integer theCount,
+			
+			@OptionalParam(name="_page")
+			StringParam _page,
+			
+			RequestDetails theDetails
 
 	) throws AppException {
 
@@ -316,8 +325,10 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		paramMap.setIncludes(theIncludes);
 		paramMap.setSort(theSort);
 		paramMap.setCount(theCount);
+		paramMap.setFrom(_page != null ? _page.getValue() : null);
 
-		return search(paramMap);
+		return searchBundle(paramMap, theDetails);
+		
 	}
 
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
@@ -398,9 +409,9 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		// Set Record code and content
 		String display = setRecordCodeByCodeableConcept(record, theObservation.getCode(), null);		
 		String date = "No time";		
-		if (theObservation.hasEffectiveDateTimeType()) {
+		if (theObservation.hasEffective()) {
 			try {
-				date = FHIRTools.stringFromDateTime(theObservation.getEffectiveDateTimeType());
+				date = FHIRTools.stringFromDateTime(theObservation.getEffective());
 			} catch (Exception e) {
 				throw new UnprocessableEntityException("Cannot process effectiveDateTime");
 			}
@@ -469,7 +480,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 			// If there are only few records execute query without restriction
 			if (code.count < Math.max(count * 2, 30)) {
 				paramMap.remove("date");
-				addBundle(paramMap, retVal);
+				addBundle(paramMap, retVal, code.count);
 			} else {
 				
 				// Otherwise determine effective date of last written record
@@ -493,7 +504,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 				paramMap.add("date", (IQueryParameterType) new DateParam(ParamPrefixEnum.STARTS_AFTER, limit));
 				
 				// Search
-				int found = addBundle(paramMap, retVal);
+				int found = addBundle(paramMap, retVal, code.count);
 				int retries = 3;
 				
 				// If we did not find enough results retry 3 times
@@ -516,7 +527,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 					paramMap.add("date", daterange);
 					
 					// Search again
-					found += addBundle(paramMap, retVal);				
+					found += addBundle(paramMap, retVal, code.count);				
 				}
 			}
 		}
@@ -525,10 +536,12 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
  	    return retVal;
 	}
 	
-	private int addBundle(SearchParameterMap paramMap, Bundle retVal) {
+	private int addBundle(SearchParameterMap paramMap, Bundle retVal, int count) {
 		List<IBaseResource> partResult = search(paramMap);												
 		for (IBaseResource res : partResult) {
-			retVal.addEntry().setResource((Resource) res); 
+			BundleEntryComponent cmp = retVal.addEntry();
+			cmp.setResource((Resource) res);
+			cmp.addExtension("http://midata.coop/Extensions/total-count", new IntegerType(count));
 		}		
 		return partResult.size();
 	}

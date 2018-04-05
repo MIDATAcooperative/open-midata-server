@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
 
 /**
@@ -41,7 +42,7 @@ public class ContentCode extends Model  {
 	   */
 	  public String content;
 	  
-	  public static Map<String, String> contentForSystemCode = new ConcurrentHashMap<String, String>();
+	  public @NotMaterialized static Map<String, String> contentForSystemCode = new ConcurrentHashMap<String, String>();
 	  	
 	  /**
 	   * returns all coding entries matching the given criteria.
@@ -68,6 +69,8 @@ public class ContentCode extends Model  {
 		  if (p<0) return null;
 		  String system = systemCode.substring(0, p);
 		  String code = systemCode.substring(p+1);
+		  
+		  if (system.equals("http://midata.coop/codesystems/content")) return code;
 		  
 		  ContentCode result = Model.get(ContentCode.class, collection, CMaps.map("system", system).map("code", code), Sets.create("content"));
 		  if (result != null) {

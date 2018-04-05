@@ -10,8 +10,10 @@ import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.DateTimeType;
 import org.hl7.fhir.dstu3.model.Identifier;
+import org.hl7.fhir.dstu3.model.Period;
 import org.hl7.fhir.dstu3.model.Person;
 import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.dstu3.model.Type;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 import com.mongodb.DBObject;
@@ -28,6 +30,7 @@ import models.TypedMidataId;
 import models.User;
 import models.UserGroup;
 import models.enums.UserRole;
+import utils.AccessLog;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
@@ -57,12 +60,13 @@ public class FHIRTools {
 	 * @throws InternalServerException
 	 */
 	public static Reference getReferenceToUser(MidataId id, String defName) throws AppException {
-	
-		if (defName != null) return new Reference().setDisplay(defName).setReference("Patient/"+id.toString());
+	    
+		if (defName != null) return new Reference().setDisplay(defName).setReference("Patient/"+id.toString());				
+		
 		User user = ResourceProvider.info().cache.getUserById(id);
 		if (user == null) {
-			//return new Reference().setDisplay(defName).setReference("Patient/"+id.toString());
-			throw new InternalServerException("error.internal", "Person not found "+id.toString());
+			return new Reference().setDisplay(defName).setReference("Patient/"+id.toString());
+			//throw new InternalServerException("error.internal", "Person not found "+id.toString());
 		}
         return getReferenceToUser(user);		
 	}
@@ -219,11 +223,18 @@ public class FHIRTools {
     	return defaultValue;
     }
     
-    public static String stringFromDateTime(DateTimeType date) {
+    public static String stringFromDateTime(Type date) {
     	if (date == null) return "";
-    	return date.getValue().toInstant()
+    	if (date instanceof Period) {
+    		Period p = (Period) date;
+    		return stringFromDateTime(p.getStartElement())+" - "+stringFromDateTime(p.getEndElement());
+    	}
+    	if (date instanceof DateTimeType) {
+    	return ((DateTimeType) date).getValue().toInstant()
                .atZone(ZoneId.systemDefault())
                .format(titleTimeFormatter);
+    	}
+    	return "";
     }
 	
 	/*

@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import models.MidataId;
+import utils.AccessLog;
 import utils.exceptions.BadRequestException;
 
 /**
@@ -92,6 +93,7 @@ public class JsonValidation {
 	private final static Pattern NUMBER = Pattern.compile("[0-9]");
 	private final static Pattern LC = Pattern.compile("[a-z]");
 	private final static Pattern UC = Pattern.compile("[A-Z]");
+	private final static Pattern OC = Pattern.compile("[^A-Za-z0-9]");
 	
 	public static String getPassword(JsonNode json, String field) throws JsonValidationException {
 		String pw = json.path(field).asText();
@@ -99,6 +101,7 @@ public class JsonValidation {
 		if (!NUMBER.matcher(pw).find()) throw new JsonValidationException("error.tooweak.password", field, "tooweak", "Password is too weak. It must container numbers and a mix of upper/lowercase letters.");
 		if (!LC.matcher(pw).find()) throw new JsonValidationException("error.tooweak.password", field, "tooweak", "Password is too weak. It must container numbers and a mix of upper/lowercase letters.");
 		if (!UC.matcher(pw).find()) throw new JsonValidationException("error.tooweak.password", field, "tooweak", "Password is too weak. It must container numbers and a mix of upper/lowercase letters.");
+		if (!OC.matcher(pw).find()) throw new JsonValidationException("error.tooweak.password", field, "tooweak", "Password is too weak. It must container numbers and a mix of upper/lowercase letters.");
 		return pw;
 	}
 	
@@ -126,7 +129,7 @@ public class JsonValidation {
 	}
 	
 	public static <T extends Enum<T>> T getEnum(JsonNode json, String field, Class<T> en) throws JsonValidationException {
-		String val = json.path(field).asText().toUpperCase();
+		String val = json.path(field).asText().toUpperCase();		
 		try {
 		  T result = (T) Enum.valueOf(en, val);
 		  return result;

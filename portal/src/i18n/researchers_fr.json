@@ -1,7 +1,7 @@
 {
 
     "researcher_registration" : {
-        "sign_up" : "Enregistrement en tant que chercheur",
+        "sign_up" : "Inscription en tant que chercheur",
         "research_organization" : "Organisation de recherche",
         "name" : "Nom",
         "description" : "Description",
@@ -21,6 +21,7 @@
 
     "createstudy" : {
         "title" : "Créer une nouvelle étude",
+        "title2" : "Modifier la description de l'étude",
         "study_name" : "Nom de l'étude",
         "study_description" : "Description de l'étude"
     },
@@ -29,7 +30,7 @@
         "overview" : "Aperçu",
         "details" : "Détails",
         "rules" : "Règles",
-        "actions" : "Actions",
+        "actions" : "Applications",
         "participants" : "Participants",
         "records" : "Enregistrements",
         "results" : "Résultats",
@@ -48,24 +49,27 @@
     },
 
     "studyactions" : {
-        "description" : "Lorsque l'étude est en cours, vous pouvez partager des données avec les participants et leur assigner des tâches (p.ex. remplir un formulaire).",
+        "description" : "Une fois l'étude validée, vous pouvez y associer des plugins et des services externes de traitement de données. Ces plugins ou services doivent se connecter à MIDATA en utilisant les identifiants d'un des membres de l'équipe de recherche ayant des droits suffisants.",
         "select_group_btn" : "Sélectionnez un groupe",
+        "allgroups" : "<Tous les groupes>",
         "add_task_btn" : "Ajouter une tâche pour les participants",
-        "plugin" : "Application pour la recherche",
+        "plugin" : "Application vouée à la recherche",
         "device" : "Code de l'appareil",
         "restrict" : "Restreindre la lecture à ce groupe",
-        "shareback" : "L'application partage des données avec le groupe de participants",
+        "shareback" : "L'application partage des données avec le(s) groupe(s) de participants",
         "add_application_btn" : "Ajouter une application vouée à la recherche",
-        "linked_apps" : "Consentements pour les applications"
+        "linked_apps" : "Consentements pour les applications",
+        "linked_spaces" : "Plugins pour la recherche"
     },
 
     "studyfields" : {
         "required_data" : "Données requises",
         "no_change_warning" : "Cette configuration ne peut plus être modifiée une fois l'étude validée.",
         "member_identity" : "Identité du membre",
-        "anonymous1" : "Participation anonyme",
-        "anonymous2" : ", révèle l'ID anonyme, l'année de naissance, le genre et le pays",
-        "not_anonymous1" : "Pas anonyme",
+        "anonymous1" : "Participation pseudonymisée",
+        "anonymous2" : ", révèle l'ID pseudonymisée, l'année de naissance, le sexe et le pays",
+        "anonymous3" : "Anonyme: La cartographie de pseudonymisation n'est pas accessible.",
+        "not_anonymous1" : "Pas pseudonymisé",
         "not_anonymous2" : ", requière que le membre partage son nom complet, date de naissance et informations de contact (adresse, téléphone, e-mail)",
         "assistance" : "Assistance",
         "no_assistance1" : "Aucune",
@@ -89,38 +93,59 @@
         "validation_status" : "État de la validation",
         "participant_search_status" : "État de la recherche de participants",
         "execution_status" : "État du déroulement",
+        "checklist" : "Checklist",
         "history" : "Historique",
         "event" : "Evénement",
         "who" : "Qui",
         "when" : "Quand",
         "comment" : "Commentaire",
+        "edit_description_btn" : "Modifier",
         "start_validation_btn" : "Demander la validation de l'étude",
         "start_participant_search_btn" : "Débuter la recherche de participants",
         "end_participant_search_btn" : "Terminer la recherche de participants",
         "start_study_execution_btn" : "Débuter la recherche",
         "finish_study_btn" : "Terminer la recherche",
         "delete_study_btn" : "Effacer la recherche",
-        "abort_study_btn" : "Annuler l'étude"
+        "abort_study_btn" : "Annuler l'étude",
+        "workflow" : "Informations sur le flux de travail",
+        "markdone_btn" : "Non requis, marquer comme fait",
+        "visitnow_btn" : "Consulter la page",
+        "donow_btn" : "Déclencher maintenant",
+        "lastdone" : "Dernière étape traitée",
+        "nextstep" : "Prochaine étape à effectuer"
     },
 
     "studyparticipant" : {
         "participant" : "Participant:",
-        "gender" : "Genre:",
+        "gender" : "Sexe:",
         "year" : "Année de naissance:",
         "country" : "Pays:",
         "status" : "État:",
         "group" : "Groupe:",
+        "shared_records" : "Enregistrements partagés",
         "history" : "Historique de participation"
     },
 
     "studyparticipants" : {
         "name" : "Nom",
+        "partName" : "Pseudonymisé",
         "group" : "Groupe",
         "status" : "État",
+        "total" : "{{count}} consentements correspondant à vos critères trouvés.",
+        "only_first_shown" : "Seuls les 1000 premiers consentements correspondants sont affichés",
         "recruiter" : "Recruteur",
         "accept_btn" : "Accepter",
         "reject_btn" : "Rejeter",
-        "empty" : "Cette étude ne comporte encore aucun participant."
+        "add_participant_btn" : "Ajouter un participant",
+        "empty" : "Cette étude n'a pas encore de participants correspondant à vos critères de recherche.",
+        "search_type" : "Rechercher",
+        "all" : "Tous les participants",
+        "request" : "Candidats qui sont en attente d'une décision",
+        "rejected" : "Candidats rejetés",
+        "retreated" : "Participants qui se sont retirés",
+        "acceptall" : "Accepter toutes les demandes et affecter les nouveaux participants au groupe de participants",
+        "autojoin" : "Acceptation automatique",
+        "autojoin2" : "Accepter toutes les demandes de participation et assigner les nouveaux participants au groupe sélectionné dès que l'application de recherche associée à cette étude se connecte."
     },
 
     "studyrecords" : {
@@ -128,7 +153,8 @@
         "group" : "Groupe de données",
         "number_of_records" : "# enregistrements",
         "download_btn" : "Télécharger",
-        "fhir_download_btn" : "Télécharger le FHIR Bundle"
+        "fhir_download_btn" : "Télécharger le FHIR Bundle",
+        "fhir_download_original_btn" : "Télécharger non pseudonymisé"
     },
 
     "studyrules" : {
@@ -137,9 +163,12 @@
         "startDate" : "Date de début officielle",
         "endDate" : "Date de fin officielle",
         "dataCreatedBefore" : "Données figées dès le",
-        "sharing_query" : "Sharing Query (JSON)",
-        "terms_of_use" : "Dispositions",
-        "show_terms" : "Afficher les dispositions",
+        "sharing_query" : "Data Access Filter (JSON)",
+        "sharing_query_options" : "Data Access Filter (Ajouter)",
+        "sharing_query_selection" : "Data Access Filter (Sélection)",
+        "terms_of_use" : "Conditions générales",
+        "terms_of_use_hint" : "Si les conditions générales de l'étude doivent être lues et acceptées par l'utilisateur, veuillez envoyer le texte à MIDATA. Nous téléchargerons le texte au bon format et vous fournirons l'ID que vous devez saisir ici.",
+        "show_terms" : "Afficher les conditions générales",
         "requirements" : "Exigences"
     },
 
@@ -148,10 +177,19 @@
         "success" : "Un nouveau chercher a été ajouté à votre organisation."
     },
 
+    "addparticipant" : {
+        "sign_up" : "Inscrire un participant",
+        "study" : "Étude",
+        "hasaccepted" : "Le participant a accepté",
+        "success" : "Un nouveau participant a été ajouté à votre étude."
+    },
+
     "studyteam" : {
         "person" : "Membre du team",
         "role" : "Rôle",
+        "rolehint" : "Rôle (cliquer sur une rangée pour voir les détails)",
         "roleName" : "Nom du rôle",
+        "defineself" : "Vous pouvez modifier vos propres droits en vous rajoutant à l'équipe avec des droits différents. Vous ne pouvez le faire que si vous êtes le seul membre de l'équipe. Vous ne pouvez pas vous retirer le droit de gérer l'équipe.",
         "addperson_btn" : "Ajouter une personne",
         "rights" : "Droits",
         "right" : {
@@ -164,5 +202,49 @@
             "participants" : "Gérer les participants",
             "setup" : "Configuration de l'étude"
         }
+    },
+
+    "study_checklist" : {
+        "phase1" : "Phase 1 : Ébauche",
+        "phase1_help" : "Ébauche",
+        "name" : "Nom et description de l'étude définis",
+        "name_help" : "Le nom de l'étude sera affiché aux participants. La description est affichée sur le portail, ainsi que lors de la connexion via une application.",
+        "teamsetup" : "Configuration de l'équipe de chercheurs",
+        "teamsetup_help" : "Si davantage de personnes participent à la réalisation de l'étude, indiquez toutes les personnes concernées et leur rôle. Tant que vous n'avez pas ajouté d'autres personnes, vous pouvez changer votre propre rôle en vous ajoutant à nouveau avec un autre rôle.",
+        "groups" : "Groupes de participants définis",
+        "groups_help" : "Votre étude peut comprendre un ou plusieurs groupes de participants. Veuillez définir la liste des groupes de participants.",
+        "sharingQuery" : "Data Access Filter défini",
+        "sharingQuery_help" : "Votre étude doit indiquer explicitement les données des participants auxquelles elle accédera. Le filtre d'accès aux données (Data Access Filter) ne peut pas être modifié après la validation de l'étude.",
+        "dates" : "Dates de début et de fin fixées",
+        "dates_help" : "Les dates de début et de fin seront affichées aux participants. Aucune donnée n'entrera dans l'étude à partir du moment où les données sont gelées.",
+        "terms" : "Conditions générales fournies",
+        "terms_help" : "Si les conditions générales de l'étude doivent être confirmées en ligne par les participants, veuillez contacter MIDATA.",
+        "validation" : "Validation de l'étude demandée",
+        "validation_help" : "La validation sera effectuée par MIDATA après sa demande. L'étude ne peut plus être modifiée après la demande de validation.",
+        "validation_passed" : "Étude validée par MIDATA",
+        "validation_passed_help" : "Veuillez attendre que l'étude ait été validée.",
+        "phase2" : "Phase 2 : Préparation",
+        "phase2_help" : "Préparation",
+        "applications" : "Application de recherche associée",
+        "applications_help" : "Vous pouvez lier des plugins et des services externes de traitement de données à votre étude. Ceux-ci peuvent lire les données des participants et/ou partager des données agrégées avec les participants. Ces plugins ou services doivent se connecter à MIDATA en utilisant les identifiants d'un des membres de l'équipe de recherche ayant des droits suffisants.",
+        "applinked" : "Une app a été liée à l'étude",
+        "applinked_help" : "Afin de lier une application à votre étude, veuillez envoyer à MIDATA le code de votre étude et le nom de l'application que vous souhaitez lier.",
+        "partsearchstart" : "Recherche de participants lancée",
+        "partsearchstart_help" : "Tant que la recherche de participants n'est pas lancée, il est impossible de participer à l'étude. Les applications nécessitant une participation à l'étude ne peuvent pas être utilisées.",
+        "phase3" : "Phase 3 : Exécution",
+        "phase3_help" : "Exécution",
+        "executionstart" : "Exécution commencée",
+        "executionstart_help" : "Marque le début officiel de cette étude.",
+        "acceptedpart" : "Participants assignés à des groupes et acceptés",
+        "acceptedpart_help" : "Les nouveaux participants doivent être assignés à un groupe de participants et être acceptés ou rejetés.",
+        "phase4" : "Phase 4 : Finalisation",
+        "phase4_help" : "Finalisation",
+        "partsearchend" : "Recherche de participants terminée",
+        "partsearchend_help" : "Aucun nouveau participant ne peut être recruté une fois la recherche terminée.",
+        "execend" : "Étude terminée",
+        "execend_help" : "Lorsque l'étude est terminée, les données sont immédiatement gelées. Les données restent disponibles en téléchargement.",
+        "exportdata" : "Données exportées",
+        "exportdata_help" : "Export des données de l'étude sous forme de Bundle FHIR JSON (séparé pour chaque groupe de participants).",
+        "optional" : "(optionnel)"
     }
 }

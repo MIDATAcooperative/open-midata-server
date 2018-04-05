@@ -1,6 +1,6 @@
 {
   "provider_registration" : {
-    "sign_up" : "Healthcare Provider Sign up",
+    "sign_up" : "Registration as a Healthcare Provider",
     "provider" : "Healthcare Provider",
     "user" : "User",
     "name" : "Name"
@@ -15,7 +15,7 @@
     "patients" : "Patients",
     "research" : "Research",
     "workspace" : "Workspace",
-    "market" : "Market",    
+    "market" : "MIDATA Store",    
 	"usergroups" : "Teams"
   },
   

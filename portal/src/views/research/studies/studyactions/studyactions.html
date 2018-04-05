@@ -57,7 +57,7 @@
 			<tr ng-repeat="entry in me_menu">
 			  <td>
 			  <a href="javascript:" ng-click="showSpace(entry)" translate="{{entry.name}}"></a>
-			  <a href="javascript:" ng-click="deleteSpace(entry)" class="pull-right btn btn-danger btn-xs" translate="common.delete_btn"></a>
+			  <a href="javascript:" ng-click="deleteSpace(entry)" ng-disabled="status.action=='deleteConsent'" class="pull-right btn btn-danger btn-xs" translate="common.delete_btn"></a>
 			  </td>
 			</tr>
 			</table>
@@ -81,7 +81,7 @@
 					<td><a ng-click="editConsent(consent);" href="javascript:">{{ consent.name }}</a></td>					
 					<td translate="{{ 'enum.consentstatus.'+consent.status }}"></td>					
 					<td>{{ consent.records }}</td>
-					<td><button ng-click="deleteConsent(consent)" class="btn btn-danger btn-xs" translate="common.delete_btn"></button>
+					<td><button ng-click="deleteConsent(consent)" ng-disabled="status.action=='deleteConsent'" class="btn btn-danger btn-xs" translate="common.delete_btn"></button>
 				</tr>
 			</table>
 		</div>

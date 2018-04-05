@@ -206,7 +206,7 @@ jsonRecords.factory('server', [ '$http', function($http) {
 		var t = new Date();	
 		var payload = function(id) {
 			    var effDate = (rand(2000,2016) +"-" + twodigit(rand(1,12)) + "-" + twodigit(rand(1,28)));
-                var value = rand(1000,10000);
+                var value = rand(50,120);
 			    return {
 			    	"request" : {
 						"method" : "POST",
@@ -227,15 +227,15 @@ jsonRecords.factory('server', [ '$http', function($http) {
 							"coding": [ 
 								{ 
 								  "system": "http://loinc.org", 						
-								  "code": "41950-7", 
-								  "display": "Steps" 
+								  "code": "29463-7", 
+								  "display": "Body Weight" 
 								} 
 							] 
 			            }, 
 			            "effectiveDateTime": effDate, 
 			            "valueQuantity": { 
 			            	"value": value, 
-			            	"unit": "steps"
+			            	"unit": "kg"
 			            }
 			    	}
 			    }

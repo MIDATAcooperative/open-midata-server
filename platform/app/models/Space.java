@@ -132,15 +132,16 @@ public class Space extends Model implements Comparable<Space> {
 
 	public static void delete(MidataId ownerId, MidataId spaceId) throws InternalServerException {
 		// find order first
-		Map<String, MidataId> properties = new ChainedMap<String, MidataId>().put("_id", spaceId).get();
-		Space space = get(properties, new ChainedSet<String>().add("order").get());
-
-		// decrement all order fields greater than the removed space
-		try {
-			OrderOperations.decrement(collection, ownerId, space.order, 0);
-		} catch (DatabaseException e) {
-			throw new InternalServerException("error.internal", e);
-		}
+		Map<String, Object> properties = CMaps.map("_id", spaceId);
+		Space space = get(properties, Sets.create("order"));
+        if (space != null) {
+			// decrement all order fields greater than the removed space
+			try {
+				OrderOperations.decrement(collection, ownerId, space.order, 0);
+			} catch (DatabaseException e) {
+				throw new InternalServerException("error.internal", e);
+			}
+        }
 		
 		Model.delete(Space.class, collection, properties);
 	}

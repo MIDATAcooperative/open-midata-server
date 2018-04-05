@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Google Fit Synchronisation</title>
+	<!-- build:css assets/app.min.css -->
+	<link rel="stylesheet" href="components/bootstrap/css/bootstrap.css">
+	<link rel="stylesheet" href="components/midata/css/app.css">
+	<!-- endbuild -->
+
+	<!-- build:js assets/app.min.js -->
+	<script type="text/javascript" src="components/jquery/jquery.js" defer></script>
+	<script type="text/javascript" src="components/bootstrap/js/bootstrap.js" defer></script>
+	<script type="text/javascript" src="components/angular/angular.js" defer></script>
+	<script type="text/javascript" src="components/angular-translate/angular-translate.js" defer></script>
+	<script type="text/javascript" src="components/angular-bootstrap/ui-bootstrap-tpls.js" defer></script>
+	<script type="text/javascript" src="components/angular-route/angular-route.js" defer></script>
+	<script type="text/javascript" src="components/midata/js/midata.js" defer></script>
+	<script type="text/javascript" src="components/async/async.js" defer></script>
+	<script type="text/javascript" src="i18n.js" defer></script>
+	<script type="text/javascript" src="app.js" defer></script>
+	<!-- endbuild -->
+
+</head>
+
+<body>
+	<div class="container" ng-app="googleFit" ng-controller="GoogleFitCtrl" ng-cloak>
+		<p class="lead" translate="title"></p>
+
+		<hr>
+		<!--<div class="row">
+			<span class="col-sm-3" translate="account"></span><span><b>{{ importer.user.fullName }}</b></</span>
+		</div>
+		<div class="row">
+			<span class="col-sm-3" translate="member_since"></span><span><b>{{ importer.user.memberSince | date }}</b></span>
+		</div>
+		<hr>-->
+		<p translate="which_measurements"></p>
+		<form class="form">
+			<table class="table">
+				<tr>
+					<th translate="measurement"></th>
+					<th translate="imported"></th>
+					<th translate="from_date"></th>
+					<th translate="to_date"></th>
+				</tr>
+				<tr ng-repeat="measurement in importer.measurements">
+					<td>
+						<div class="checkbox">
+							<label><input type="checkbox" ng-model="measurement.import"><span translate="{{ measurement.name }}"></span></label>
+						</div>
+					</td>
+					<td>
+						<!--{{ measurement.imported }}-->
+						{{ measurement.nbOfValues }}
+					</td>
+					<td>
+						<!--{{ measurement.fromDisplay | date }}-->
+						{{ measurement.oldest | date }}
+
+					</td>
+					<td>
+						<!--{{ measurement.to | date }}-->
+						{{ measurement.newest | date }}
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div>
+							<label><span translate="importPeriod"></span></label>
+						</div>
+					</td>
+					<td>
+					</td>
+					<td colspan="2">
+						<div>
+							<select ng-model="importer.typeOfRequest"><option hidden style='display: none' value=''></option><option value="daily">{{'daily' | translate}}</option><option value="hourly">{{'hourly' | translate}}</option><option value="block">{{'per_activity_block' | translate}}</option></select>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="checkbox">
+							<label><input type="checkbox" ng-model="importer.autoimport"><span translate="autoimport"></span></label>
+						</div>
+
+					</td>
+
+					<td colspan="3"></td>
+				</tr>
+
+			</table>
+			<button type="button" class="btn btn-primary" ng-click="submit()" ng-disabled="importer.saving" translate="import_btn"></button>
+		</form>
+		<hr>
+		<!--<div class="alert alert-danger alert-dismissable" ng-show="importer.error.message || importer.error.messages.length">
+			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+			<p>{{importer.error.message}}</p>
+			<ul>
+				<li ng-repeat="err in importer.error.messages">{{err}}</li>
+			</ul>
+		</div>
+		<p ng-show="importer.status" class="alert alert-info" translate="{{importer.status}}"></p>
+
+		<div ng-show="importer.saving" class="progress">
+			<div class="progress-bar" role="progressbar" ng-style="progress()">
+				<span class="sr-only"></span>
+			</div>
+		</div>
+		<p ng-show="importer.saving" translate="progress" translate-value-requested="{{importer.requested}}" translate-value-saved="{{importer.saved}}">
+
+		</p>-->
+		<!--</div>-->
+		<div ng-show="importer.saving" class="progress">
+			<div class="progress-bar" role="progressbar" ng-style="progress()">
+				<span class="sr-only"></span>
+			</div>
+		</div>
+		<p ng-show="importer.saving" translate="progress">
+	</div>
+</body>
+
+</html>

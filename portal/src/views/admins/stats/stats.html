@@ -1,0 +1,84 @@
+<div ng-controller="AdminStatsCtrl">
+
+	<div class="panel panel-primary">
+		<div class="panel-heading" translate="admin_stats.title"></div>
+		<div class="body">
+		  <p class="lead">{{ today.date | date : 'dd.MM.yyyy HH:mm' }}</p>
+		  <table class="table table-striped table-condensed">
+		     <tr>
+		       <th translate="admin_stats.what"></th>
+		       <th class="text-right" translate="admin_stats.value"></th>
+		       <th class="text-right" translate="admin_stats.diff_yesterday"></th>
+		       <th class="text-right" translate="admin_stats.diff_week"></th>
+		     </tr>
+		  
+		     <tr class="info">
+		       <td translate="admin_stats.recordCount"></td>
+		       <td class="text-right">{{ today.recordCount  }}</td>
+		       <td class="text-right">{{ today.recordCount - yesterday.recordCount }}</td>
+		       <td class="text-right">{{ today.recordCount - week.recordCount }}</td>
+		     </tr>
+		     
+		     <tr>
+		       <td translate="admin_stats.appCount"></td>
+		       <td class="text-right">{{ today.appCount }}</td>
+		       <td class="text-right">{{ today.appCount - yesterday.appCount }}</td>
+		       <td class="text-right">{{ today.appCount - week.appCount }}</td>
+		     </tr>
+		     
+		     <tr>
+		       <td translate="admin_stats.runningStudyCount"></td>
+		       <td class="text-right">{{ today.runningStudyCount }}</td>
+		       <td class="text-right">{{ today.runningStudyCount - yesterday.runningStudyCount }}</td>
+		       <td class="text-right">{{ today.runningStudyCount - week.runningStudyCount }}</td>
+		     </tr>
+		     
+		     <tr>
+		       <td translate="admin_stats.groupCount"></td>
+		       <td class="text-right">{{ today.groupCount }}</td>
+		       <td class="text-right">{{ today.groupCount - yesterday.groupCount }}</td>
+		       <td class="text-right">{{ today.groupCount - week.groupCount }}</td>
+		     </tr>
+		     
+		     <tr>
+		       <td translate="admin_stats.auditEventCount"></td>
+		       <td class="text-right">{{ today.auditEventCount }}</td>
+		       <td class="text-right">{{ today.auditEventCount - yesterday.auditEventCount }}</td>
+		       <td class="text-right">{{ today.auditEventCount - week.auditEventCount }}</td>
+		     </tr>
+		     
+		     <tr>
+		       <th translate="admin_stats.users"></th>
+		       <th class="text-right" translate="admin_stats.value"></th>
+		       <th class="text-right" translate="admin_stats.diff_yesterday"></th>
+		       <th class="text-right" translate="admin_stats.diff_week"></th>
+		     </tr>
+		     
+		     <tr ng-repeat="(role,v) in today.userCount" ng-class="{ 'info' : role == 'MEMBER' }" ng-hide="role=='ANY'">
+		       <td translate="{{'enum.userrole.'+role }}"></td>
+		       <td class="text-right">{{ today.userCount[role] }}</td>
+		       <td class="text-right">{{ today.userCount[role] - yesterday.userCount[role] }}</td>
+		       <td class="text-right">{{ today.userCount[role] - week.userCount[role] }}</td>
+		     </tr>
+		     
+		     <tr>
+		       <th translate="admin_stats.consents"></th>
+		       <th class="text-right" translate="admin_stats.value"></th>
+		       <th class="text-right" translate="admin_stats.diff_yesterday"></th>
+		       <th class="text-right" translate="admin_stats.diff_week"></th>
+		     </tr>
+		     
+		     <tr ng-repeat="(type,v) in today.consentCount">
+		       <td translate="{{'enum.consenttype.'+type }}"></td>
+		       <td class="text-right">{{ today.consentCount[type] }}</td>
+		       <td class="text-right">{{ today.consentCount[type] - yesterday.consentCount[type] }}</td>
+		       <td class="text-right">{{ today.consentCount[type] - week.consentCount[type] }}</td>
+		     </tr>
+		     
+		  </table>
+		  
+	
+          	
+        </div>
+	</div>
+</div>

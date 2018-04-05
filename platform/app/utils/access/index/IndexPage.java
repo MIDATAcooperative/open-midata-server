@@ -152,7 +152,7 @@ public class IndexPage {
 		for (IndexKey o : entries) {
 			results.add(new IndexMatch(o.getId(), o.value));			
 		}
-		AccessLog.log("lookup:"+(System.currentTimeMillis() - t));
+		//AccessLog.log("lookup:"+(System.currentTimeMillis() - t));
 		return results;
 	}
 	
@@ -165,7 +165,7 @@ public class IndexPage {
 		for (IndexKey o : entries) {
 			if (o.value.equals(targetAps)) results.add(new IndexMatch(o.getId(), o.value));			
 		}
-		AccessLog.log("lookup:"+(System.currentTimeMillis() - t));
+		//AccessLog.log("lookup:"+(System.currentTimeMillis() - t));
 		return results;
 	}
 
@@ -213,7 +213,7 @@ public class IndexPage {
 	protected void encrypt() throws InternalServerException {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		try {
-			AccessLog.log("encrypt:"+mIsLeaf+" "+mCurrentKeyNum);// +" ts="+ts);
+			//AccessLog.log("encrypt:"+mIsLeaf+" "+mCurrentKeyNum);// +" ts="+ts);
 			ObjectOutputStream oos = new ObjectOutputStream(bos);
 			oos.writeBoolean(mIsLeaf);
 			oos.writeInt(mCurrentKeyNum);			
@@ -255,7 +255,7 @@ public class IndexPage {
 			
 			this.ts = (Map<String, Long>) in.readObject();
 			
-			AccessLog.log("decrypt:"+mIsLeaf+" "+mCurrentKeyNum);//+" ts="+ts);
+			//AccessLog.log("decrypt:"+mIsLeaf+" "+mCurrentKeyNum);//+" ts="+ts);
 		} catch (IOException e) {
 			AccessLog.logException("IOException", e);
 			throw new InternalServerException("error.internal", "IOException"); }

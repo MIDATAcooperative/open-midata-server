@@ -17,8 +17,10 @@
 
     "help_welcome" : {
         "menu" : "Das oben stehende Menü enthält folgende Verknüpfungen:",
+
+        // todo: Mich oder Dashboard?
         "menu_me" : "Mich",
-        "menu_me_text" : "Ihr persönliches Dashboard wo Sie Ihre Favoriten platzieren können.",
+        "menu_me_text" : "Ihr persönliches Dashboard, wo Sie Ihre Favoriten platzieren können.",
         "menu_overview" : "Übersicht",
         "menu_overview_text" : "Eine Übersicht über alle Funktionen, die die MIDATA-Plattform anbietet.",
         "menu_config" : "Konfiguration",
@@ -27,10 +29,10 @@
         "menu_research_text" : "Neuigkeiten und Ankündigungen über MIDATA, die Plattform und Forschungsprojekte",
         "menu_consents" : "Teilen",
         "menu_consents_text" : "Verwaltung der mit anderen Benutzern geteilten Daten.",
-
         "starts" : "Ein paar Ideen zum Starten mit MIDATA:",
 
-        "answer_questions" : "Zum Starten empfehlen wir Ihnen einige Fragen zu beantworten. Ihr Konto wird an Hand Ihren Antworten vorkonfiguriert.",
+        // todo: ihr Konto oder Dashboard?
+        "answer_questions" : "Zum Starten empfehlen wir Ihnen einige Fragen zu beantworten. Ihr Konto wird an Hand Ihrer Antworten vorkonfiguriert.",
         "answered_questions" : "Danke, dass Sie die Konfigurationsfragen beantwortet haben! Sie können nun Ihr Dashboard betrachten oder die Konfiguration ggf. nochmals durchführen.",
         "answer_btn" : "Konfigurationsfragen jetzt beantworten",
         "dashboard_btn" : "Zur Seite 'Mich' wechseln",
@@ -38,13 +40,13 @@
     },
 
     "help_setup" : {
-        "description" : "Die Antworten zu diesen Fragen dienen nur um Ihr Konto nach Ihren Bedürfnissen zu konfigurieren.",
+        "description" : "Die Antworten zu diesen Fragen helfen uns, Ihr Konto nach Ihren Bedürfnissen zu konfigurieren.",
         "question_measures" : "Welche Messungen wollen Sie im Portal einblenden?",
         "question_devices" : "Benutzen Sie eines dieser Produkte?",
         "question_devices_answer1" : "Fitbit",
         "question_devices_answer2" : "Jawbone",
         "question_devices_answer3" : "Withings",
-        "come_back" : "Sie können immer wieder Ihre Einstellungen über die Seite \"Hilfe\" ändern.",
+        "come_back" : "Sie können Ihre Einstellungen jederzeit über die Seite \"Hilfe\" ändern.",
         "done_btn" : "Fertig"
     },
 
@@ -83,24 +85,24 @@
         "name" : "Name",
         "status" : "Status",
         "confirmation_date" : "Bestätigungsdatum",
-        "confirm_btn" : "bestätigen",
-        "reject_btn" : "zurückweisen",
-        "empty" : "Sie haben keinen Kontakt zu einer Gesundheitsfachperson registriert."
+        "confirm_btn" : "Bestätigen",
+        "reject_btn" : "Zurückweisen",
+        "empty" : "Sie haben keine Kontakte als Gesundheitsfachperson registriert."
     },
 
     "member_user" : {
-        "account_status" : "Status Account",
-        "studyparticipant" : "Ihr Account wurde eingerichtet um an eine Studie teilzunehmen. Die Funktionalität ist begrenzt. Sie können Ihr Account zu einem vollwertigen Account aufwerten.",
-        "appuser" : "Ihr Account wurde durch eine externe Applikation eingerichtet. Die Funktionalität ist begrenzt. Sie können Ihr Account zu einem vollwertigen Account aufwerten.",
+        "account_status" : "Account-Status",
+        "studyparticipant" : "Ihr Account wurde eingerichtet, um an eine Studie teilzunehmen. Die Funktionalität ist begrenzt. Sie können Ihren Account in einen vollwertigen Account umwandeln.",
+        "appuser" : "Ihr Account wurde durch eine externe Applikation eingerichtet. Die Funktionalität ist begrenzt. Sie können Ihren Account in einen vollwertigen Account umwandeln.",
         "memberofcooperative" : "Sie sind Mitglied der MIDATA Genossenschaft.",
-        "nonmemberuser" : "Sie besitzen ein vollwertiges Account sind aber nicht Mitglied der MIDATA Genossenschaft.",
-        "agb_not_requested" : "Durch Klicken auf dem Button 'Vertrag anfordern' werden Ihnen einen Vertrag und die AGB nach Hause geschickt. Schicken Sie bitte die unterzeichneten AGB zurück um Ihr Probe-Account zu einem vollwertigen Account aufzuwerten.",
-        "agb_requested" : "Sie haben die AGB und den Vertrag angefordert. Ihre Anfrage wird durch die MIDATA Anmeldestelle verarbeitet.",
-        "agb_printed" : "Die von Ihnen angeforderten AGB und Vertrag sollten in den nächsten Tagen eintreffen.",
-        "agb_signed" : "Sie haben die AGB unterzeichnet.",
+        "nonmemberuser" : "Sie besitzen einen vollwertigen Account sind aber nicht Mitglied der MIDATA Genossenschaft.",
+        "agb_not_requested" : "Durch Klicken auf dem Button 'Vertrag anfordern' werden Ihnen die Allgemeine Geschäftsbedingungen (AGB) sowie den Vertrag nach Hause geschickt. Schicken Sie bitte die unterzeichneten AGB zurück um Ihr Probe-Account zu einem vollwertigen Account aufzuwerten.",
+        "agb_requested" : "Sie haben die Allgemeine Geschäftsbedingungen und den Vertrag angefordert. Ihre Anfrage wird durch die MIDATA Genossenschaft verarbeitet.",
+        "agb_printed" : "Die von Ihnen angeforderten Allgemeine Geschäftsbedingungen und Vertrag sollten in den nächsten Tagen eintreffen.",
+        "agb_signed" : "Sie haben die Allgemeine Geschäftsbedingungen unterzeichnet.",
         "confirmed" : "Ihr Postadresse wurde bestätigt.",
         "entercode" : "Sie sollten einen Brief mit einem Registrierungscode erhalten haben. Geben Sie bitte den Code hier ein, sobald Sie ihn erhalten haben:",
-        "email_unvalidated" : "Ihre E-Mail-Adresse wurde bisher noch nicht bestätigt. Klicken Sie bitten auf dem Link den Sie in der Bestätigungs-E-Mail erhalten haben!",
+        "email_unvalidated" : "Ihre E-Mail-Adresse wurde bisher noch nicht bestätigt. Klicken Sie bitte auf dem Link, den Sie in der Bestätigungs-E-Mail erhalten haben!",
         "request_membership_btn" : "Vertrag anfordern"
     },
 

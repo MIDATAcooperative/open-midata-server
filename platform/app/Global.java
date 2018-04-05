@@ -3,6 +3,8 @@ import javax.servlet.ServletException;
 import controllers.AutoRun;
 import controllers.FHIR;
 import controllers.Market;
+import controllers.research.AutoJoiner;
+import models.PersistedSession;
 import models.RecordGroup;
 import play.Application;
 import play.GlobalSettings;
@@ -54,6 +56,7 @@ public class Global extends GlobalSettings {
 		  Instances.init();
 		  RecordGroup.load();		 
 		  RuntimeConstants.instance = new RuntimeConstants();
+		  PersistedSession.deleteExpired();
 		  
 		} catch (AppException e) {
 		  AccessLog.logException("startup", e);
@@ -65,19 +68,17 @@ public class Global extends GlobalSettings {
 		
 		Stats.init();
 		Messager.init();
+		AutoJoiner.init();
 		AutoRun.init();
 	}
 
 	@Override
 	public void onStop(Application app) {
-		AutoRun.shutdown();
-		
+				
 		// Close connection to database
-		DBLayer.close();
 		Instances.shutdown();
-
-		// Close connection to search cluster
-		//Search.close();
+		DBLayer.close();
+		
 	}
 
 }

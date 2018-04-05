@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,6 +30,7 @@ public class Feature_UserGroups extends Feature {
 		this.next = next;
 	}
 	
+	/*
 	@Override
 	protected List<DBRecord> query(Query q) throws AppException {
 		if (q.restrictedBy("usergroup")) {
@@ -53,15 +55,71 @@ public class Feature_UserGroups extends Feature {
 		}
 		return next.query(q);
 	}
+	*/
 	
-	protected List<DBRecord> doQueryAsGroup(UserGroupMember ugm, Query q) throws AppException {		
+	
+	@Override
+	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
+		if (q.restrictedBy("usergroup")) {
+			MidataId usergroup = q.getMidataIdRestriction("usergroup").iterator().next();
+			
+			if (usergroup.equals(q.getCache().getAccountOwner())) return next.iterator(q);
+			UserGroupMember isMemberOfGroup = UserGroupMember.getByGroupAndMember(usergroup, q.getCache().getAccountOwner());
+			if (isMemberOfGroup == null) throw new InternalServerException("error.internal", "Not member of provided user group");
+			return doQueryAsGroup(isMemberOfGroup, q);					
+		}
+		
+		if (q.getApsId().equals(q.getCache().getAccountOwner())) {				
+			
+			if (!q.isRestrictedToSelf()) {
+				Set<UserGroupMember> isMemberOfGroups = q.getCache().getAllActiveByMember();
+				if (!isMemberOfGroups.isEmpty()) {
+					q.setFromRecord(null);
+					List<UserGroupMember> members = new ArrayList<UserGroupMember>(isMemberOfGroups);
+					Collections.sort(members);
+					members.add(0, null);
+					return ProcessingTools.noDuplicates(new UserGroupIterator(q, members));
+					
+				}
+			}
+		}
+		return next.iterator(q);
+	}
+	
+	class UserGroupIterator extends Feature.MultiSource<UserGroupMember> {
+				
+		UserGroupIterator(Query query, List<UserGroupMember> groups) throws AppException {
+			this.query = query;
+			init(groups.iterator());
+		}
+		
+		@Override
+		public DBIterator<DBRecord> advance(UserGroupMember usergroup) throws AppException {
+			
+			if (usergroup == null) return next.iterator(query);
+			return doQueryAsGroup(usergroup, query);
+			
+		}
+
+		@Override
+		public String toString() {
+			return "usergroups(["+passed+"] "+current.toString()+")";
+		}
+		
+		
+		
+		
+		
+	}
+
+	protected DBIterator<DBRecord> doQueryAsGroup(UserGroupMember ugm, Query q) throws AppException {		
 		MidataId group = ugm.userGroup;
-		AccessLog.logBegin("start user group query for group="+group.toString());
+		//AccessLog.logBegin("start user group query for group="+group.toString());
 		BasicBSONObject obj = q.getCache().getAPS(ugm._id, ugm.member).getMeta("_usergroup");
 		KeyManager.instance.unlock(group, ugm._id, (byte[]) obj.get("aliaskey"));
 		Map<String, Object> newprops = new HashMap<String, Object>();
 		newprops.putAll(q.getProperties());
-		newprops.put("usergroup", ugm.userGroup);
+		newprops.put("usergroup", ugm.userGroup);		
 		APSCache subcache = q.getCache().getSubCache(group); 
 		if (ugm.role == null) ugm.role = ResearcherRole.HC();
 		
@@ -72,7 +130,7 @@ public class Feature_UserGroups extends Feature {
 			}
 		}
 		
-		if (!ugm.role.mayReadData()) return Collections.emptyList();
+		if (!ugm.role.mayReadData()) return ProcessingTools.empty();
 		
 		if (ugm.role.pseudonymizedAccess()) {
 			
@@ -83,15 +141,16 @@ public class Feature_UserGroups extends Feature {
 					  owners.add(part.owner.toString());
 				   }
 				   newprops.put("owner", owners);
+				   if (owners.isEmpty()) return ProcessingTools.empty();
 		    }		
 			
 		}
 		
-		// AK : Removed instanceof DummyAccessContext : Does not work correctly when listing study participants records on portal
+		// AK : Removed instanceof DummyAccessContext : Does not work correctly when listing study participants records on portal		 
 		MidataId aps = (q.getApsId().equals(ugm.member) /*|| q.getContext() instanceof DummyAccessContext */) ? group : q.getApsId();
-		Query qnew = new Query(newprops, q.getFields(), subcache, aps, new UserGroupAccessContext(ugm, subcache, q.getContext()));
-		List<DBRecord> result = next.query(qnew);
-		AccessLog.logEnd("end user group query for group="+group.toString());
+		Query qnew = new Query(newprops, q.getFields(), subcache, aps, new UserGroupAccessContext(ugm, subcache, q.getContext())).setFromRecord(q.getFromRecord());
+		DBIterator<DBRecord> result = next.iterator(qnew);
+		//AccessLog.logEnd("end user group query for group="+group.toString());
 		
 		return result;
 	}
@@ -125,7 +184,7 @@ public class Feature_UserGroups extends Feature {
 		if (ugm == null) return cache;		
 		
 		BasicBSONObject obj = cache.getAPS(ugm._id, ugm.member).getMeta("_usergroup");
-		KeyManager.instance.unlock(ugm.userGroup, ugm._id, (byte[]) obj.get("aliaskey"));		
+		if (!cache.hasSubCache(ugm.userGroup)) KeyManager.instance.unlock(ugm.userGroup, ugm._id, (byte[]) obj.get("aliaskey"));		
 		return cache.getSubCache(ugm.userGroup);				
 	}
 		

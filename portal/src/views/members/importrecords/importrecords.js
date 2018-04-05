@@ -151,7 +151,7 @@ angular.module('portal')
 	};
 	
 	$scope.goBack = function() {
-		$window.history.back();
+		$state.go("^.apps");
 		/*
 		   spaces.get({ "_id" :  $scope.spaceId }, ["context"]).
 		   then(function(result) { $state.go('^.dashboard', { dashId : result.data[0].context }); });*/

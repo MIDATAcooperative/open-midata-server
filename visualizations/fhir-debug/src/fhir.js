@@ -177,7 +177,7 @@ angular.module('fhirDebug')
 	    		newResource = "";
 	    	} else if (fielddef.type == "CodeableConcept" && fielddef.valueSet != null) {
 	    		var systems = fhirModule.getOptionCodeSystem(fielddef);
-	    		newResource = { text : "" };
+	    		newResource = {  };
 	    		if (systems.length == 1) { newResource.coding = [ { system : systems[0] } ]; }
 	    		//else if (systems.length > 1) { newResource.coding = [ { }]; }
 	    	} else if (fielddef.type == "Reference") {
@@ -205,13 +205,15 @@ angular.module('fhirDebug')
 	    };
 	    
 	    fhirModule.removeResource = function(parentResource, fielddef, resource) {
+	    	//console.log(parentResource);
+	    	//console.log(fielddef);
 	    	if (angular.isArray(parentResource[fielddef.field])) {
 		    	var i = parentResource[fielddef.field].indexOf(resource);
 		    	if (i>=0) {
 		    		parentResource[fielddef.field].splice(i, 1);
 		    	}
 	    	} else {
-	    		parentResource[fielddef.field] = null;
+	    		parentResource[fielddef.field] = undefined;
 	    	}
 	    };
 	    
@@ -237,6 +239,8 @@ angular.module('fhirDebug')
 	    };
 	    
 	    fhirModule.getOptions = function(fielddef) {
+	    	if (!fielddef) return [];
+	    	
 	    	//console.log(fielddef);
 	    	var orig = uriCache[fielddef.valueSet || fielddef];
 	    	
@@ -360,10 +364,10 @@ angular.module('fhirDebug')
 	    	   
 	    
 	    	
-	    	if (name == "id" || name == "meta" || name == "implicitRules" || name == "text" || name == "contained" || name == "modifierExtension" || name == "language") return;
+	    	if (/*name == "id" || name == "meta" || name == "implicitRules" || */name == "text" || name == "contained" /*|| name == "modifierExtension" || name == "language" */) return;
 			
 			//console.log(elem.type);
-			if (!elem.type) { console.log(elem);return; }
+			if (!elem.type) { /*console.log(elem);*/ return; }
 			var lastElemDef = null;
 			angular.forEach(elem.type, function(type) {
 				if (!type.code) return;				
@@ -443,26 +447,38 @@ angular.module('fhirDebug')
     				
     				angular.forEach(proc.resource.base, function(base) {
     					if (!searches[base]) searches[base] = [];
-    					searches[base].push(proc.resource);
-    					switch(proc.resource.type) {
+    					var r = proc.resource;
+    					
+    					if (r.description.startsWith("Multiple ")) {
+    						r = JSON.parse(JSON.stringify(proc.resource));
+    						var txt = r.description.split("*");
+    						angular.forEach(txt, function(t) {
+    							if (t.indexOf(base) >= 0) {
+    								r.description = t.substring(t.indexOf(":")+1);
+    							}
+    						});
+    					}
+    					
+    					searches[base].push(r);
+    					switch(r.type) {
     					case "string" :
-    						proc.resource.modifier = ["contains", "exact"];
+    						r.modifier = ["contains", "exact"];
     						
     						break;
     					case "token" :
-    						proc.resource.modifier = ["text", "not", "in", "not-in"];
+    						r.modifier = ["text", "not", "in", "not-in"];
     						break;
     					case "date":
     						
-    						proc.resource.comparator = ["eq", "ne", "gt", "lt", "ge", "le", "sa", "eb", "ap"];
+    						r.comparator = ["eq", "ne", "gt", "lt", "ge", "le", "sa", "eb", "ap"];
     						break;
     					case "number":
     						
-    						proc.resource.comparator = ["eq", "ne", "gt", "lt", "ge", "le", "sa", "eb", "ap"];
+    						r.comparator = ["eq", "ne", "gt", "lt", "ge", "le", "sa", "eb", "ap"];
     						break;
     					case "quantity":
     						
-    						proc.resource.comparator = ["eq", "ne", "gt", "lt", "ge", "le", "sa", "eb", "ap"];
+    						r.comparator = ["eq", "ne", "gt", "lt", "ge", "le", "sa", "eb", "ap"];
     						break;
     					}
     				});    				
@@ -471,6 +487,27 @@ angular.module('fhirDebug')
     			//"resourceType": "StructureDefinition",
     		});
     		
+	    };
+	    
+	    fhirModule.postProcess = function() {
+	    	var domainResource = definitions.DomainResource;
+	    	var defResource = definitions.Resource;
+	    	
+	    	angular.forEach(fhirModule.allResources, function(res) {
+	    		//console.log(res);
+	    		if (res.resourceType == "DomainResource" || res.resourceType == "Resource" ) return;
+	    		res.fields = res.fields.concat(domainResource.fields);
+	    		res.fields = res.fields.concat(defResource.fields);
+	    	});
+	    	
+	    	var baseSearches = searches.Resource;
+	    	
+	    	angular.forEach(searches, function(v,k) {
+	    		if (k != "Resource") {
+	    			searches[k] = searches[k].concat(baseSearches);
+	    		}
+	    	});
+	    	
 	    };
 	    
 	    var resourceList = [];
@@ -527,7 +564,12 @@ angular.module('fhirDebug')
 	    		if (finish == 5) prom.resolve();
 	    	});
 	    	
-	    	return prom.promise;
+	    	
+	    	
+	    	return prom.promise.then(function() {
+	    		fhirModule.postProcess();
+	    		return;
+	    	});
 	    };
 	    
 	   	    

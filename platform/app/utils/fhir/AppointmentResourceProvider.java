@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.hl7.fhir.dstu3.model.Appointment;
 import org.hl7.fhir.dstu3.model.Appointment.AppointmentParticipantComponent;
+import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Location;
 import org.hl7.fhir.dstu3.model.Patient;
@@ -29,10 +30,12 @@ import ca.uhn.fhir.rest.annotation.Sort;
 import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
+import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
+import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
@@ -48,7 +51,7 @@ import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
-public class AppointmentResourceProvider extends ResourceProvider<Appointment> implements IResourceProvider {
+public class AppointmentResourceProvider extends RecordBasedResourceProvider<Appointment> implements IResourceProvider {
 
 	public AppointmentResourceProvider() {
 		searchParamNameToPathMap.put("Appointment:actor", "participant.actor");
@@ -68,7 +71,7 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 	}
 
 	@Search()
-	public List<IBaseResource> getAppointment(
+	public Bundle getAppointment(
 			@Description(shortDefinition="The resource identity")
 			@OptionalParam(name="_id")
 			StringAndListParam theId, 
@@ -162,7 +165,12 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 			 									
 			@Sort SortSpec theSort,
 
-			@ca.uhn.fhir.rest.annotation.Count Integer theCount
+			@ca.uhn.fhir.rest.annotation.Count Integer theCount,
+			
+			@OptionalParam(name="_page")
+			StringParam _page,
+			
+			RequestDetails theDetails
 
 	) throws AppException {
 
@@ -187,8 +195,10 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 		paramMap.setIncludes(theIncludes);
 		paramMap.setSort(theSort);
 		paramMap.setCount(theCount);
+		paramMap.setFrom(_page != null ? _page.getValue() : null);
 
-		return search(paramMap);
+		return searchBundle(paramMap, theDetails);
+		
 	}
 
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
@@ -218,18 +228,12 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 		return super.createResource(theAppointment);
 	}
 	
-	@Override
-	protected MethodOutcome create(Appointment theAppointment) throws AppException {
-		Record record = newRecord("fhir/Appointment");
-		
-		prepare(record, theAppointment);				
-		insertRecord(record, theAppointment);
-        shareRecord(record, theAppointment);
-		processResource(record, theAppointment);				
-		
-		return outcome("Appointment", record, theAppointment);
 
-	}
+	@Override
+	public void createExecute(Record record, Appointment theAppointment) throws AppException {
+		insertRecord(record, theAppointment);
+		shareRecord(record, theAppointment);
+	}		
 	
 	@Update
 	@Override
@@ -237,15 +241,11 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 		return super.updateResource(theId, theAppointment);
 	}
 	
+	
 	@Override
-	protected MethodOutcome update(IdType theId, Appointment theAppointment) throws AppException {
-		Record record = fetchCurrent(theId);
-		prepare(record, theAppointment);		
+	public void updateExecute(Record record, Appointment theAppointment) throws AppException {
 		updateRecord(record, theAppointment);			
 		shareRecord(record, theAppointment);
-		processResource(record, theAppointment);
-		
-		return outcome("Appointment", record, theAppointment);
 	}
 			
 	public void shareRecord(Record record, Appointment theAppointment) throws AppException {

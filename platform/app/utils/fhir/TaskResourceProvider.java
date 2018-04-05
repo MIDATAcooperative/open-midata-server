@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.hl7.fhir.dstu3.model.Appointment;
+import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Communication;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Observation;
@@ -29,11 +30,13 @@ import ca.uhn.fhir.rest.annotation.Sort;
 import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
+import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.HasAndListParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
+import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
@@ -50,7 +53,7 @@ import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
-public class TaskResourceProvider extends ResourceProvider<Task> implements IResourceProvider {
+public class TaskResourceProvider extends RecordBasedResourceProvider<Task> implements IResourceProvider {
 
 	public TaskResourceProvider() {
 		
@@ -69,7 +72,7 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 	}
 
 	@Search()
-	public List<IBaseResource> getTask(
+	public Bundle getTask(
 			@Description(shortDefinition="The resource identity")
 			@OptionalParam(name="_id")
 			StringAndListParam theId, 
@@ -210,7 +213,12 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 			@Sort 
 			SortSpec theSort,
 
-			@ca.uhn.fhir.rest.annotation.Count Integer theCount
+			@ca.uhn.fhir.rest.annotation.Count Integer theCount,
+			
+			@OptionalParam(name="_page")
+			StringParam _page,
+			
+			RequestDetails theDetails
 
 	) throws AppException {
 
@@ -248,8 +256,10 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 		paramMap.setIncludes(theIncludes);
 		paramMap.setSort(theSort);
 		paramMap.setCount(theCount);
+		paramMap.setFrom(_page != null ? _page.getValue() : null);
 
-		return search(paramMap);
+		return searchBundle(paramMap, theDetails);
+		
 	}
 
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
@@ -299,19 +309,11 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 	}
 	
 	@Override
-	protected MethodOutcome create(Task theTask) throws AppException {
-
-		Record record = newRecord("fhir/Task");
-		
-		prepare(record, theTask);		
-		// insert
+	public void createExecute(Record record, Task theTask) throws AppException {
 		MidataId consent = insertMessageRecord(record, theTask);
         shareRecord(record, theTask, consent);
-		processResource(record, theTask);				
-		
-		return outcome("Task", record, theTask);
-
-	}
+	}	
+	
 			
 	public void shareRecord(Record record, Task theTask, MidataId consent) throws AppException {		
 		ExecutionInfo inf = info();
@@ -340,15 +342,11 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 		return super.updateResource(theId, theTask);
 	}
 	
+	
 	@Override
-	protected MethodOutcome update(@IdParam IdType theId, @ResourceParam Task theTask) throws AppException {
-		Record record = fetchCurrent(theId);
-		prepare(record, theTask);		
+	public void updateExecute(Record record, Task theTask) throws AppException {
 		updateRecord(record, theTask);
 		shareRecord(record, theTask, info().executorId); // XXX To be checked
-		processResource(record, theTask);
-		
-		return outcome("Task", record, theTask);
 	}
 
 	public void prepare(Record record, Task theTask) throws AppException {
