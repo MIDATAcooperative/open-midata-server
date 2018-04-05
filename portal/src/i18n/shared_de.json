@@ -529,7 +529,10 @@
         "study_agb" : "Studienbestimmungen",
         "sign_up_btn" : "Konto erstellen",
         "unlock_code" : "Freischaltcode",
-        "already_have_account" : "Ich habe bereits ein Konto"
+        "already_have_account" : "Ich habe bereits ein Konto",
+        "more" : "Haben Sie noch ein paar Sekunden Zeit? Wir wären froh, wenn Sie uns noch ein paar Details über sich verraten könnten ☺️",
+        "generous" : "Ich bin heute großzügig - zeige die Eingabefelder!",
+        "hide_optional" : "Optionale Felder verstecken" 
     },
 
     "login" : {

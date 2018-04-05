@@ -105,7 +105,7 @@ angular.module('calendarApp')
 		    midataServer.fhirSearch(authToken, "Observation", crit, true)
 	     	 .then(function(results) {
 	     		var entries = [];	     		
-	     		 
+	     		var used = {};
 	     		angular.forEach(results, function(record) {
 	                	               
 	              	  var q = null;
@@ -127,8 +127,9 @@ angular.module('calendarApp')
 	              			      ( (q > tlbdef.limit) ? "#00a000" : "#a00000" ) :
 	              			      ( (q < tlbdef.limit) ? "#00a000" : "#a00000" );
 	              	  if (q == "Yes") q = null;
-	              	  
-	              	  if (start || end) {
+	              	  var k = start+title;
+	              	  if ((start || end) && !used[k]) {
+	              		  
 	              	  var e = {
 	              		  id : record.id,
 	              	      title : shorten(title)+((q != null) ? (":"+q) : ""),
@@ -144,6 +145,7 @@ angular.module('calendarApp')
 	              	      details : ((q!=null) ? q : "")+" "+u,
 	              	      textColor : "#ffffff"	                            
 	                  };
+	              	  used[k] = e; 
 	                  entries.push(e);
 	              	  }
 	                

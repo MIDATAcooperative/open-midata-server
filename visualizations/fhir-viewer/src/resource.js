@@ -55,7 +55,7 @@ angular.module('fhirViewer')
   };
   
   var use = function(path, field) {
-	  if (field == "meta" || field=="id" || field=="resourceType") return false;
+	  if (field == "meta" || field=="id" || field=="resourceType" || field=="extension") return false;
 	  if ((field == "code" || field == "text") && path.indexOf(".")<0) return false;
 	  if (field == "linkId") return false;
 	  return true;
@@ -79,6 +79,11 @@ angular.module('fhirViewer')
   
   var isRef = function(path, v) {
 	  if (v.reference) return true;
+	  return false;
+  };
+  
+  var isIdRef = function(path, v) {
+	  if (v.display) return true;
 	  return false;
   };
   
@@ -135,6 +140,7 @@ angular.module('fhirViewer')
 			 if (isCCx(f.path, vt)) { f.template = "cc.html"; }	
 			 else if (isCoding(f.path, vt)) { f.template = "cc.html"; }
 			 else if (isRef(f.path, vt)) { f.template="ref.html"; }
+			 else if (isIdRef(f.path, vt)) { f.template="idref.html"; }
 			 else if (isQuantity(f.path, vt)) { f.template="quantity.html"; }
 			 else if (isDate(f.path, vt)) { f.template="date.html"; }
 			 else if (isPeriod(f.path, vt)) { f.template="period.html"; }
@@ -197,6 +203,18 @@ angular.module('fhirViewer')
 	   if (angular.isArray(cc)) return $scope.makeLabelFromCoding(cc[0]);
 	   return "?";
    };
+   
+   $scope.getRefType = function(ref) {
+	  if (!ref) return "?";
+	  var i = ref.indexOf("/"); 
+	  return (i > 0) ? ref.substring(0,i) : ref;  
+   };
+   
+   $scope.getRefTargetr = function(ref) {
+		  if (!ref) return "?";
+		  var i = ref.indexOf("/"); 
+		  return (i > 0) ? ref.substring(i+1) : ref;  
+	};
   
   if ($state.params.id && $state.params.type) {
 	$scope.loadResource($state.params.type, $state.params.id);  

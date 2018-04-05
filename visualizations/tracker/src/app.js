@@ -142,7 +142,7 @@ tracker.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter', '$t
 					  }],
 					  text : code.display
 					},
-					effectiveDateTime : theDate.toJSON(),					
+					effectiveDateTime : $scope.newentry.date,					
 					valueCodeableConcept : {						
 					    coding : [{
 						   system : "http://hl7.org/fhir/v2/0136",

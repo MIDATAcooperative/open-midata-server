@@ -8,6 +8,7 @@ var en =
 	"category" : "Category:",
 	"date" : "Date:",
 	"status" : "Status:",
+	"specimen" : "Specimen:",
 	"add_btn" : "Add",
 	"add_new_btn" : "Add new measure",
 	"back_btn" : "Timeline View",
