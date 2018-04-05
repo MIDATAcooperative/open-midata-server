@@ -90,21 +90,7 @@
         "empty" : "Sie haben keine Kontakte als Gesundheitsfachperson registriert."
     },
 
-    "member_user" : {
-        "account_status" : "Account-Status",
-        "studyparticipant" : "Ihr Account wurde eingerichtet, um an eine Studie teilzunehmen. Die Funktionalität ist begrenzt. Sie können Ihren Account in einen vollwertigen Account umwandeln.",
-        "appuser" : "Ihr Account wurde durch eine externe Applikation eingerichtet. Die Funktionalität ist begrenzt. Sie können Ihren Account in einen vollwertigen Account umwandeln.",
-        "memberofcooperative" : "Sie sind Mitglied der MIDATA Genossenschaft.",
-        "nonmemberuser" : "Sie besitzen einen vollwertigen Account sind aber nicht Mitglied der MIDATA Genossenschaft.",
-        "agb_not_requested" : "Durch Klicken auf dem Button 'Vertrag anfordern' werden Ihnen die Allgemeine Geschäftsbedingungen (AGB) sowie den Vertrag nach Hause geschickt. Schicken Sie bitte die unterzeichneten AGB zurück um Ihr Probe-Account zu einem vollwertigen Account aufzuwerten.",
-        "agb_requested" : "Sie haben die Allgemeine Geschäftsbedingungen und den Vertrag angefordert. Ihre Anfrage wird durch die MIDATA Genossenschaft verarbeitet.",
-        "agb_printed" : "Die von Ihnen angeforderten Allgemeine Geschäftsbedingungen und Vertrag sollten in den nächsten Tagen eintreffen.",
-        "agb_signed" : "Sie haben die Allgemeine Geschäftsbedingungen unterzeichnet.",
-        "confirmed" : "Ihr Postadresse wurde bestätigt.",
-        "entercode" : "Sie sollten einen Brief mit einem Registrierungscode erhalten haben. Geben Sie bitte den Code hier ein, sobald Sie ihn erhalten haben:",
-        "email_unvalidated" : "Ihre E-Mail-Adresse wurde bisher noch nicht bestätigt. Klicken Sie bitte auf dem Link, den Sie in der Bestätigungs-E-Mail erhalten haben!",
-        "request_membership_btn" : "Vertrag anfordern"
-    },
+ 
 
     "smallstudies" : {
         "greeting" : "Wollen Sie helfen und Ihre Daten für eine Studie teilen?",

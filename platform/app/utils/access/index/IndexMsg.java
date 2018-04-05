@@ -11,7 +11,7 @@ public class IndexMsg implements Serializable {
 	private final MidataId indexId;
     private final MidataId executor;
     private final IndexPseudonym pseudo;
-    private final String handle;
+    private final String handle;   
     
     public IndexMsg(MidataId indexId, MidataId executor, IndexPseudonym pseudo, String handle) {
     	this.indexId = indexId;

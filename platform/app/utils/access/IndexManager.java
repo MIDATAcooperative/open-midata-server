@@ -274,7 +274,7 @@ public class IndexManager {
 	}
 	
 	public void triggerUpdate(IndexPseudonym pseudo, APSCache cache, MidataId user, IndexDefinition idx, Set<MidataId> targetAps) throws AppException {			
-		indexSupervisor.tell(new IndexUpdateMsg(idx._id, user, pseudo, KeyManager.instance.currentHandle(), targetAps), null);		
+		indexSupervisor.tell(new IndexUpdateMsg(idx._id, user, pseudo, KeyManager.instance.currentHandle(user), targetAps), null);		
 	}
 	
 	public IndexRoot getIndexRoot(IndexPseudonym pseudo, IndexDefinition idx) throws AppException {

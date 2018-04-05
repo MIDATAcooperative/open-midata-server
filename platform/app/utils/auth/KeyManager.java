@@ -12,6 +12,7 @@ import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -222,30 +223,48 @@ public class KeyManager implements KeySession {
 	}
 	
 	public void continueSession(String fhandle) throws AppException {		
+		continueSession(fhandle, null);
+	}
+	
+	public void continueSession(String fhandle, MidataId user) throws AppException {		
 		AccessLog.log("Key-Ring: continue session");
 		int p = fhandle.indexOf(";");
 		String handle = p > 0 ? fhandle.substring(0, p) : fhandle;
 		KeyRing ring = keySessions.get(handle);
+						
 		if (ring != null) {
 			session.set(new KeyManagerSession(handle, ring));
 			return;
 		} else if (p>0) {
-			PersistedSession psession = PersistedSession.getById(handle);
-			if (psession != null && psession.timeout > System.currentTimeMillis()) {
-				String passkey = fhandle.substring(p+1);
-				KeyRing keyring = new KeyRing(psession.timeout, passkey);
-				keySessions.put(handle, keyring);
-				session.set(new KeyManagerSession(handle, keyring));
-				keyring.addKey(psession.user.toString(), EncryptionUtils.applyKey(psession.splitkey, passkey));				
-				return;
+			if (fhandle.charAt(p+1) == '+') {
+				if (user != null) {
+					byte[] key = Base64.getDecoder().decode(fhandle.substring(p+2));
+					KeyRing keyring = new KeyRing(System.currentTimeMillis() + 1000l * 60l, null);
+					keySessions.put(handle, keyring);
+					session.set(new KeyManagerSession(handle, keyring));
+					keyring.addKey(user.toString(), key);
+					return;
+				}
+			} else {
+				PersistedSession psession = PersistedSession.getById(handle);
+				if (psession != null && psession.timeout > System.currentTimeMillis()) {
+					String passkey = fhandle.substring(p+1);
+					KeyRing keyring = new KeyRing(psession.timeout, passkey);
+					keySessions.put(handle, keyring);
+					session.set(new KeyManagerSession(handle, keyring));
+					keyring.addKey(psession.user.toString(), EncryptionUtils.applyKey(psession.splitkey, passkey));				
+					return;
+				}
 			}
 		}			
 		throw new AuthException("error.relogin", "Session expired. Please relogin.");
 	}
 	
-	public String currentHandle() {
+	public String currentHandle(MidataId executor) throws AuthException {
 		KeyManagerSession current = session.get();
-		if (current != null) return current.handle;
+		if (current != null) {
+			return current.getPersisted(executor);		
+		}
 		return null;
 	}
 	
@@ -306,7 +325,7 @@ public class KeyManager implements KeySession {
 	
 	class KeyManagerSession implements KeySession {
 		
-		private KeyRing pks;
+		private KeyRing pks;				
 		public String handle;		
 		
 		KeyManagerSession(String handle, KeyRing pks) {
@@ -501,16 +520,23 @@ public class KeyManager implements KeySession {
 			byte key[] = pks.getKey(target.toString());		
 			if (key == null) throw new AuthException("error.relogin", "Authorization Failure");
 		
-			//Pair<byte[], byte[]> split = EncryptionUtils.splitKey(key);
-			//token.setSplitKey(split.first());
-			byte[] split = EncryptionUtils.applyKey(key, pks.passkey);
-						
-			PersistedSession session = new PersistedSession();
-			session.set_id(this.handle);
-			session.splitkey = split;
-			session.timeout = pks.expire;
-			session.user = target;
-			session.add();						
+			if (pks.passkey != null) {
+				byte[] split = EncryptionUtils.applyKey(key, pks.passkey);
+							
+				PersistedSession session = new PersistedSession();
+				session.set_id(this.handle);
+				session.splitkey = split;
+				session.timeout = pks.expire;
+				session.user = target;
+				session.add();				
+			} 
+		}
+		
+		public String getPersisted(MidataId executor) throws AuthException {
+			byte key[] = pks.getKey(executor.toString());		
+			if (key == null) throw new AuthException("error.relogin", "Authorization Failure");
+		
+			return handle+";+"+Base64.getEncoder().encodeToString(key);			
 		}
 	}
 	

@@ -3,65 +3,41 @@
 angular.module('MiSensi18n', [])
   .constant('i18nc', {
     de: 
-//$START_LANGUAGE : de    
-{
-
-    "title" : "MiSens",
-
-    "textStarDiagram" : "Der Stern zeigt auf einen Blick wie empfindlich Sie auf die von Ihnen in der MiSens-Studie getesteten Geruchs- und Geschmacksstoffe ansprechen. Je weiter der grüne Punkt auf einer der acht Achsen vom Zentrum des Sterns entfernt ist, desto stärker nehmen Sie die entsprechende Substanz wahr. Befindet sich entlang einer der Achsen kein Punkt, so liegt dies daran, dass Sie diese Substanz nicht getestet haben bzw. die Resultate nicht in der App gespeichert haben. Die Grafik zeigt zum Vergleich auch den Mittelwert aller Studienteilnehmer (graue Linie) und die Empfindlichkeit der oberen und unteren 10% bzw. 25% der Teilnehmer an. Für eine noch detailliertere Aufschlüsselung Ihrer Resultate finden Sie im Anschluss die Histogramme der Sensitivitäten für die verschiedenen Substanzen.",
-
-    "GeschmackshistogrammeTitle" : "Geschmackshistogramme",
-
-    "GeschmackshistogrammeText1" : "Diese Histogramme zeigen, wie viele der Teilnehmer die verkosteten Proben mit welcher Intensität bewertet haben. Dabei entsprechen die Skalenwerte auf der bei der Bewertung verwendeten gLMS Skala folgenden Textbeschreibungen:  0=„keine Wahrnehmung“; 1.4 = „sehr schwach“; 6=„schwach“; 17=„moderat“; 35=„stark“; 51=„sehr stark“; 100=„stärkste vorstellbare Wahrnehmung“). Die Intensität, mit der Sie die jeweilige Probe selber bewertet haben ist grün markiert.",
-
-    "GeschmackshistogrammeText2Bold" : "Bei diesen drei Histogrammen aus den Geschmackstests gilt, je höher Ihre Intensitätsbewertung, desto empfindlicher sind Sie für die jeweilige Substanz.",
-
-    "PROPTitle" : "PROP (6-n-Propylthiouracil)",
-
-    "PROPText1" : "PROP ist ein Bitterstoff, der einen ganz bestimmten der 25 verschiedenen menschlichen Bitterrezeptoren anregt, nämlichTAS2R38. PROP wird als Arzneimittel verwendet, hat in den in den Tests verwendeten Konzentrationen (1 mM) aber keine medikamentöse Wirkung, hingegen bleibt der bittere Geschmack auch bei diesen Konzentration erhalten. Der Bitterrezeptor TAS2R38 ist dafür berühmt, dass er der erste Geschmacksrezeptor war, der identifiziert werden konnte. Diese Identifizierung wurde durch genetisches Mapping ermöglicht. Dieses Mapping wiederum basierte darauf, dass es von dem Rezeptor mehrere genetische Varianten gibt, welche einen sehr starken Einfluss auf die Wahrnehmung dieses Bitterstoffs haben. Dieser genetische Einfluss ist auch in dem Histogramm ersichtlich, insbesondere in der relativ grossen Anzahl von Teilnehmern, welche die PROP-enthaltende Lösung als völlig geschmacksneutral eingestuft haben.  PROP selbst taucht nicht in Lebensmitteln auf, aber eng verwandte Substanzen, sogenannte Thioharnstoffverbindungen, finden sich unter anderem in vielen Kohlsorten. Wichtig zu wissen ist auch, dass die genetischen Veränderungen im TAS2R38-Rezeptor nur die Wahrnehmung dieser Klasse von Bitterstoffen beeinflussen. Die Tatsache, dass Sie PROP also als besonders intensiv oder besonders schwach eingestuft haben, bedeutet nicht, dass Sie andere Bittersubstanzen auch als besonders stark oder schwach wahrnehmen werden.",
-
-    "SucroseTitle" : "Saccharose (Zucker)",
-
-    "SucrosseText1" : "Bei dieser Probe handelt es sich um gewöhnlichen Tafelzucker (auch Saccharose oder Sucrose genannt). Die in den Tests verwendete Konzentration von 300 mM (ca. 100 g/l) entspricht in etwa der einer handelsüblichen Cola. Wie Sie aus dem Histogramm ersehen, haben praktisch alle Teilnehmer den süssen Geschmack von Zucker wahrgenommen. Dies stimmt mit Forschungsergebnissen überein, die zeigen, dass es keinen nennenswerten Einfluss von genetischen Faktoren auf die Geschmackswahrnehmung von Zucker gibt. Die beobachtete Bandbreite der Intensitätsbewertungen erklärt sich erfahrungsgemäss aus einer Reihe verschiedener Faktoren wie der unterschiedlichen Nutzung der Bewertungsskala, dem Alter der Teilnehmer, deren Zahngesundheit und dadurch, wie hungrig sie zum Zeitpunkt des Tests waren. Nichtsdestotrotz, bleibt ein substantieller Anteil der beobachteten Variation in der Intensitätsbewertung weiterhin unerklärt.",
-
-    "SalzTitle" : "Natriumchlorid (Tafelsalz)",
-    "SalzText1" : "Diese Probe enthielt ganz normales Tafelsalz, wie Sie es auch zu Hause benutzen, um Speisen zu salzen.  Die im Test verwendete Konzentration (300 mM) entspricht der einer sehr stark gesalzenen (bzw. „versalzenen“) Suppe. Auch für Natriumchlorid haben genetische Faktoren, wenn überhaupt, nur einen vernachlässigbaren Einfluss auf die wahrgenommene Geschmacksintensität. Die doch deutlichen Unterschiede in der bevorzugten Salzkonzentration in Speisen sind also eher das Resultat unterschiedlicher Präferenzen denn unterschiedlicher Wahrnehmung.",
-
-    "GeruchshistogrammeTitle" : "Geruchshistogramme",
-
-    "GeruchshistogrammeText1" : "Diese Histogramme zeigen die Konzentration der Geruchsstoffe, ab der Sie einen mit dieser Substanz befüllten Geruchsstift von mit Wasser befüllten Stiften unterscheiden konnten. Die verwendete Konzentrationseinheit ist ppb (d.h. parts per billion), und entspricht einem tausendstel Milligramm Geruchsstoff pro Liter Wasser. Bitte beachten Sie, dass die Konzentrationsskala nicht linear, sondern logarithmisch ist. Die Skala deckt also eine extreme Bandbreite von Konzentrationen ab (im Falle von -Ionon besteht ein millionenfacher Unterschied zwischen der geringsten und der höchsten getesteten Konzentration). Die Konzentration bei der Sie selber den Geruchsstoff wahrgenommen haben ist in grün angezeigt.",
-
-    "GeruchshistogrammeText2Bold" : "In diesen Abbildungen entspricht ein höherer Zahlenwert also einer geringeren Empfindlichkeit (d.h. Sie benötigen eine höhere Konzentration der Substanz um sie wahrzunehmen).",
-
-    "BetaiononTitle" : "β-Ionon",
-
-    "BetaiononText1" : "β-Ionon ist ein charakteristischer Bestandteil des natürlichen Veilchenaromas. Dieser Duftstoff ist den meisten Menschen aber dadurch bekannt, dass er im industriellen Massstab produziert wird und Bestandteil des Aromas von vielen Seifen, Waschmitteln, Weichspülern und Putzmitteln ist. Dies, obwohl ein nicht unerheblicher Teil der Bevölkerung diese Substanz fast überhaupt nicht wahrnimmt. Diese geringe Sensitivität wird durch eine genetische Variation in dem für diesen Geruchsstoff verantwortlichen Geruchsrezeptorgen verursacht.",
-
-    "HeptanonTitle" : "Heptanon",
-
-    "HeptanonText1" : "Der Geruch reinen Heptanons wird typischerweise als fruchtig oder auch „bananig“, beschrieben. Eine der reichsten natürlichen Quellen dieses Geruchsstoffs ist Blauschimmelkäse. Diese Käsesorten produzieren allerdings auch eine breite Palette von anderen geruchsaktiven Substanzen, die ganz andere Geruchsnoten beisteuern. In diesem Gemisch ist Heptanon für die fruchtige Nebennote verantwortlich.",
-
-    "IsobutyraldehydTitle" : "Isobutyraldehyd",
-
-    "IsobutyraldehydText1" : "Es ist nicht einfach den Geruchseindruck von Isobutyraldehyd (auch als Isobutanal bekannt) mit einem einzelnen Adjektiv zu beschreiben. In der Literatur wird generell das Wort „malzig“ benutzt aber viele Leute verwenden auch Begriffe wie „nasses Getreide“ oder „Heu“. Wieder andere assoziieren den Geruch mit nasser Wäsche die frisch aus der Waschmaschine kommt.",
-
-    "IsovalericAcidTitle" : "Iso-Valeriansäure",
-
-    "IsovalericAcidText" : "Iso-Valeriansäure ist ein sehr intensiver Aromastoff, der bei der Reifung vieler Käsesorten entsteht und entscheidend zum intensiven Aroma von Käsefondue und Raclette beiträgt. Viele Personen nehmen diesen Geruch als besonders unangenehm wahr und dies zu Recht: Iso-Valeriansäure entsteht auch durch den bakteriellen Abbau von im Schweiss enthaltenen Aminosäuren und ist massgeblich für das klassische Schweissfuss-„Aroma“ verantwortlich.",
-
-    "RotundonTitle" : "Rotundon",
-
-    "RotundonText" : "Rotundon ist ein hoch potenter Geruchsstoff. Einige Personen können ihn schon bei einer Konzentration von 0.001 ppb (also einem Milliardstel Gramm pro Liter) wahrnehmen. Der Geruch von Rotundon wird als holzig bzw. pfeffrig beschrieben und tatsächlich ist Rotundon ein wichtiger Bestandteil des natürlichen Pfefferaromas. Ausserdem ist Rotundon für das pfeffrige Aroma von Weinen aus „Syrah“- und „Grüner Veltliner“-Trauben verantwortlich. Wie Sie in dem Histogramm sehen, gibt es auch bei Rotundon eine extreme Bandbreite der persönlichen Wahrnehmungsschwellen. Dies lässt vermuten, dass auch hier eine genetische Variation im Spiel ist. Die Identifizierung dieser genetischen Variation und somit die Identifizierung des für die Wahrnehmung des Pfefferaromas verantwortlichen Geruchsrezeptors ist eines der wissenschaftlichen Ziele der MiSens-Studie.",
-
-    "chartLabelY" : "# Teilnehmer",
-
-    "selectOptionScientificaResultsText" : "Meine Scientifica Resultate",
-
-    "selectOptionCurrentResultsText" : "Meine aktuellen Resultate"
-}
-//$END_LANGUAGE : de
-  ,en: 
-//$START_LANGUAGE : en    
+    //$START_LANGUAGE : de    
+    {
+      "title": "MiSens",
+      "textStarDiagram": "Der Stern zeigt auf einen Blick wie empfindlich Sie auf die von Ihnen in der MiSens-Studie getesteten Geruchs- und Geschmacksstoffe ansprechen. Je weiter der grüne Punkt auf einer der acht Achsen vom Zentrum des Sterns entfernt ist, desto stärker nehmen Sie die entsprechende Substanz wahr. Befindet sich entlang einer der Achsen kein Punkt, so liegt dies daran, dass Sie diese Substanz nicht getestet haben bzw. die Resultate nicht in der App gespeichert haben. Die Grafik zeigt zum Vergleich auch den Mittelwert aller Studienteilnehmer (graue Linie) und die Empfindlichkeit der oberen und unteren 10% bzw. 25% der Teilnehmer an. Für eine noch detailliertere Aufschlüsselung Ihrer Resultate finden Sie im Anschluss die Histogramme der Sensitivitäten für die verschiedenen Substanzen.",
+      "GeschmackshistogrammeTitle": "Geschmackshistogramme",
+      "GeschmackshistogrammeText1": "Diese Histogramme zeigen, wie viele der Teilnehmer die verkosteten Proben mit welcher Intensität bewertet haben. Dabei entsprechen die Skalenwerte auf der bei der Bewertung verwendeten gLMS Skala folgenden Textbeschreibungen:  0=„keine Wahrnehmung“; 1.4 = „sehr schwach“; 6=„schwach“; 17=„moderat“; 35=„stark“; 51=„sehr stark“; 100=„stärkste vorstellbare Wahrnehmung“). Die Intensität, mit der Sie die jeweilige Probe selber bewertet haben ist grün markiert.",
+      "GeschmackshistogrammeText2Bold":"Bei diesen drei Histogrammen aus den Geschmackstests gilt, je höher Ihre Intensitätsbewertung, desto empfindlicher sind Sie für die jeweilige Substanz.",
+      "PROPTitle": "PROP (6-n-Propylthiouracil)",
+      "PROPText1": "PROP ist ein Bitterstoff, der einen ganz bestimmten der 25 verschiedenen menschlichen Bitterrezeptoren anregt, nämlichTAS2R38. PROP wird als Arzneimittel verwendet, hat in den in den Tests verwendeten Konzentrationen (1 mM) aber keine medikamentöse Wirkung, hingegen bleibt der bittere Geschmack auch bei diesen Konzentration erhalten. Der Bitterrezeptor TAS2R38 ist dafür berühmt, dass er der erste Geschmacksrezeptor war, der identifiziert werden konnte. Diese Identifizierung wurde durch genetisches Mapping ermöglicht. Dieses Mapping wiederum basierte darauf, dass es von dem Rezeptor mehrere genetische Varianten gibt, welche einen sehr starken Einfluss auf die Wahrnehmung dieses Bitterstoffs haben. Dieser genetische Einfluss ist auch in dem Histogramm ersichtlich, insbesondere in der relativ grossen Anzahl von Teilnehmern, welche die PROP-enthaltende Lösung als völlig geschmacksneutral eingestuft haben.  PROP selbst taucht nicht in Lebensmitteln auf, aber eng verwandte Substanzen, sogenannte Thioharnstoffverbindungen, finden sich unter anderem in vielen Kohlsorten. Wichtig zu wissen ist auch, dass die genetischen Veränderungen im TAS2R38-Rezeptor nur die Wahrnehmung dieser Klasse von Bitterstoffen beeinflussen. Die Tatsache, dass Sie PROP also als besonders intensiv oder besonders schwach eingestuft haben, bedeutet nicht, dass Sie andere Bittersubstanzen auch als besonders stark oder schwach wahrnehmen werden.",
+      "SucroseTitle": "Saccharose (Zucker)",
+      "SucrosseText1":"Bei dieser Probe handelt es sich um gewöhnlichen Tafelzucker (auch Saccharose oder Sucrose genannt). Die in den Tests verwendete Konzentration von 300 mM (ca. 100 g/l) entspricht in etwa der einer handelsüblichen Cola. Wie Sie aus dem Histogramm ersehen, haben praktisch alle Teilnehmer den süssen Geschmack von Zucker wahrgenommen. Dies stimmt mit Forschungsergebnissen überein, die zeigen, dass es keinen nennenswerten Einfluss von genetischen Faktoren auf die Geschmackswahrnehmung von Zucker gibt. Die beobachtete Bandbreite der Intensitätsbewertungen erklärt sich erfahrungsgemäss aus einer Reihe verschiedener Faktoren wie der unterschiedlichen Nutzung der Bewertungsskala, dem Alter der Teilnehmer, deren Zahngesundheit und dadurch, wie hungrig sie zum Zeitpunkt des Tests waren. Nichtsdestotrotz, bleibt ein substantieller Anteil der beobachteten Variation in der Intensitätsbewertung weiterhin unerklärt.",
+      "SalzTitle":"Natriumchlorid (Tafelsalz)",
+      "SalzText1":"Diese Probe enthielt ganz normales Tafelsalz, wie Sie es auch zu Hause benutzen, um Speisen zu salzen.  Die im Test verwendete Konzentration (300 mM) entspricht der einer sehr stark gesalzenen (bzw. „versalzenen“) Suppe. Auch für Natriumchlorid haben genetische Faktoren, wenn überhaupt, nur einen vernachlässigbaren Einfluss auf die wahrgenommene Geschmacksintensität. Die doch deutlichen Unterschiede in der bevorzugten Salzkonzentration in Speisen sind also eher das Resultat unterschiedlicher Präferenzen denn unterschiedlicher Wahrnehmung.",
+      "GeruchshistogrammeTitle":"Geruchshistogramme",
+      "GeruchshistogrammeText1":"Diese Histogramme zeigen die Konzentration der Geruchsstoffe, ab der Sie einen mit dieser Substanz befüllten Geruchsstift von mit Wasser befüllten Stiften unterscheiden konnten. Die verwendete Konzentrationseinheit ist ppb (d.h. parts per billion), und entspricht einem tausendstel Milligramm Geruchsstoff pro Liter Wasser. Bitte beachten Sie, dass die Konzentrationsskala nicht linear, sondern logarithmisch ist. Die Skala deckt also eine extreme Bandbreite von Konzentrationen ab (im Falle von -Ionon besteht ein millionenfacher Unterschied zwischen der geringsten und der höchsten getesteten Konzentration). Die Konzentration bei der Sie selber den Geruchsstoff wahrgenommen haben ist in grün angezeigt.",
+      "GeruchshistogrammeText2Bold":"In diesen Abbildungen entspricht ein höherer Zahlenwert also einer geringeren Empfindlichkeit (d.h. Sie benötigen eine höhere Konzentration der Substanz um sie wahrzunehmen).",
+      "BetaiononTitle":"β-Ionon",
+      "BetaiononText1":"β-Ionon ist ein charakteristischer Bestandteil des natürlichen Veilchenaromas. Dieser Duftstoff ist den meisten Menschen aber dadurch bekannt, dass er im industriellen Massstab produziert wird und Bestandteil des Aromas von vielen Seifen, Waschmitteln, Weichspülern und Putzmitteln ist. Dies, obwohl ein nicht unerheblicher Teil der Bevölkerung diese Substanz fast überhaupt nicht wahrnimmt. Diese geringe Sensitivität wird durch eine genetische Variation in dem für diesen Geruchsstoff verantwortlichen Geruchsrezeptorgen verursacht.",
+      "HeptanonTitle":"Heptanon",
+      "HeptanonText1":"Der Geruch reinen Heptanons wird typischerweise als fruchtig oder auch „bananig“, beschrieben. Eine der reichsten natürlichen Quellen dieses Geruchsstoffs ist Blauschimmelkäse. Diese Käsesorten produzieren allerdings auch eine breite Palette von anderen geruchsaktiven Substanzen, die ganz andere Geruchsnoten beisteuern. In diesem Gemisch ist Heptanon für die fruchtige Nebennote verantwortlich.",
+      "IsobutyraldehydTitle":"Isobutyraldehyd",
+      "IsobutyraldehydText1":"Es ist nicht einfach den Geruchseindruck von Isobutyraldehyd (auch als Isobutanal bekannt) mit einem einzelnen Adjektiv zu beschreiben. In der Literatur wird generell das Wort „malzig“ benutzt aber viele Leute verwenden auch Begriffe wie „nasses Getreide“ oder „Heu“. Wieder andere assoziieren den Geruch mit nasser Wäsche die frisch aus der Waschmaschine kommt.",
+      "IsovalericAcidTitle":"Iso-Valeriansäure",
+      "IsovalericAcidText":"Iso-Valeriansäure ist ein sehr intensiver Aromastoff, der bei der Reifung vieler Käsesorten entsteht und entscheidend zum intensiven Aroma von Käsefondue und Raclette beiträgt. Viele Personen nehmen diesen Geruch als besonders unangenehm wahr und dies zu Recht: Iso-Valeriansäure entsteht auch durch den bakteriellen Abbau von im Schweiss enthaltenen Aminosäuren und ist massgeblich für das klassische Schweissfuss-„Aroma“ verantwortlich.",
+      "RotundonTitle": "Rotundon",
+      "RotundonText":"Rotundon ist ein hoch potenter Geruchsstoff. Einige Personen können ihn schon bei einer Konzentration von 0.001 ppb (also einem Milliardstel Gramm pro Liter) wahrnehmen. Der Geruch von Rotundon wird als holzig bzw. pfeffrig beschrieben und tatsächlich ist Rotundon ein wichtiger Bestandteil des natürlichen Pfefferaromas. Ausserdem ist Rotundon für das pfeffrige Aroma von Weinen aus „Syrah“- und „Grüner Veltliner“-Trauben verantwortlich. Wie Sie in dem Histogramm sehen, gibt es auch bei Rotundon eine extreme Bandbreite der persönlichen Wahrnehmungsschwellen. Dies lässt vermuten, dass auch hier eine genetische Variation im Spiel ist. Die Identifizierung dieser genetischen Variation und somit die Identifizierung des für die Wahrnehmung des Pfefferaromas verantwortlichen Geruchsrezeptors ist eines der wissenschaftlichen Ziele der MiSens-Studie.",
+      "chartLabelY": "# Teilnehmer",
+      "selectOptionScientificaResultsText": "Meine Scientifica Resultate",
+      "selectOptionCurrentResultsText": "Meine aktuellen Resultate",
+      "legende_not_sensitive": "nicht empfindlich",
+      "legende_sensitive": "sehr empfindlich"
+    }
+    //$END_LANGUAGE : de
+    ,en: 
+    //$START_LANGUAGE : en  
     {
       "title": "MiSens",
       "textStarDiagram": "The star diagram summarizes the sensitivity of your response to the taste and smell compounds tested during the MiSense study. The farther out the dot lies along the spoke of the star, the higher your sensitivity for that compound. If there is no dot along one or more of the spokes, you did not register a response for this compound in the app. To allow the comparison of your results to those of the other study participants the plot also shows the median sensitivity (grey line) of the other participants as well as the bottom and top 10th and 25th percentiles of the group. For an even more detailed view of your results, please have a look at the individual histograms for each of the tested aroma compounds.",
@@ -89,7 +65,9 @@ angular.module('MiSensi18n', [])
       "RotundonText":"Rotundone is an extremely potent aroma compound. Some individuals can already detect it at a concentration of as little as 0.001 ppb (equivalent to 1 billionth of a gram per liter). The smell of rotundone is typically described as woody or peppery. And indeed, rotundone is one of the essential components of natural pepper aroma. Rotundone is also responsible for the peppery notes ascribed to wines made from “Syrah” and “Grüner Veltliner” grapes. As you can see from the histogram, rotundone also shows a very broad range of personal detection thresholds. This suggests that a genetic variation might be at play. The identification of the responsible genetic variation is one of the scientific goals of the MiSens study.",
       "chartLabelY": "# participants",
       "selectOptionScientificaResultsText": "My Scientifica results",
-      "selectOptionCurrentResultsText": "My current results"
+      "selectOptionCurrentResultsText": "My current results",
+      "legende_not_sensitive": "not sensitive",
+      "legende_sensitive": "very sensitive"
     }
 //$END_LANGUAGE : en
   ,it: 
