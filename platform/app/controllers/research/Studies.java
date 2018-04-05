@@ -328,6 +328,7 @@ public class Studies extends APIController {
 		        			String location = FHIRServlet.getBaseUrl()+"/"+pprov.getResourceType().getSimpleName()+"/"+user._id.toString();			            	
 			            	String ser = pprov.serialize(PractitionerResourceProvider.practitionerFromMidataUser(user));
 		        			out.write((first?"":",")+"{ \"fullUrl\" : \""+location+"\", \"resource\" : "+ser+" } ");
+		        			first = false;
 		        		}
 		        				        				        		
 		        		//for (Consent part : parts) {
