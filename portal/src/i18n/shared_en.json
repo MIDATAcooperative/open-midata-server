@@ -528,7 +528,10 @@
     "study_agb" : "Study Terms",
     "sign_up_btn" : "Create Account",
     "unlock_code" : "Unlock Code",
-    "already_have_account" : "I already have an account"
+    "already_have_account" : "I already have an account",
+    "more" : "Have a few more seconds to spare? We'd be happy if you could give us a bit more details about you ☺️",
+    "generous" : "I'm feeling generous today, show me the fields!",
+    "hide_optional" : "Hide optional fields" 
   },
 
   "login" : {
