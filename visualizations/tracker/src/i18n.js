@@ -36,54 +36,38 @@ var en =
 //$START_LANGUAGE : de
 {
 
+   
+    "data_added" : "Daten erfolgreich hinzugefügt.",
+   
+    "prompt" : "Welche der Ereignisse sind heute passiert?",
+    
+    "date" : "Datum der Ereignisse",
+   
+    "events" : "Ereignisse/Beobachtungen:",
 
-    // TODO NEW: Data successfully added.
-    "data_added" : "Data successfully added.",
+    "empty1" : "Leer! Bitte klicken Sie auf",
+    "empty2" : "Ereignisliste bearbeiten",
 
-    // TODO NEW: Which of the events you want to track happend today?
-    "prompt" : "Which of the events you want to track happend today?",
+    "empty3" : "um Ereignisarten hinzuzufügen.",
 
-    // TODO NEW: Date of events
-    "date" : "Date of events",
-
-    // TODO NEW: Events/Observations:
-    "events" : "Events/Observations:",
-
-    // TODO NEW: Empty! Please click the
-    "empty1" : "Empty! Please click the",
-
-    // TODO NEW: Edit Event List
-    "empty2" : "Edit Event List",
-
-    // TODO NEW: button to add event types.
-    "empty3" : "button to add event types.",
-
-    // TODO NEW: Add
     "add_btn" : "Add",
 
-    // TODO NEW: Edit Event List
-    "edit_events_btn" : "Edit Event List",
+    "edit_events_btn" : "Ereignisliste bearbeiten",
+    
+    "calendar_btn" : "Im Kalender ansehen",
 
-    // TODO NEW: View in Calendar
-    "calendar_btn" : "View in Calendar",
+    "available" : "Liste der verfügbaren Ereignisse bearbeiten:",
 
-    // TODO NEW: Edit list of available events:
-    "available" : "Edit list of available events:",
+    "available_title" : "Ereignis/Beobachtung Titel",
 
-    // TODO NEW: Event/Observation Title
-    "available_title" : "Event/Observation Title",
-
-    // TODO NEW: Remove
-    "remove_btn" : "Remove",
+    "remove_btn" : "Entfernen",
 
     // TODO NEW: Name of event to track
     "name_of_event" : "Name of event to track",
 
-    // TODO NEW: Done
-    "done_btn" : "Done",
+    "done_btn" : "Fertig",
 
-    // TODO NEW: Cancel
-    "cancel_btn" : "Cancel",
+    "cancel_btn" : "Abbruch",
 
     // TODO NEW: Events tracked today:
     "events_today" : "Events tracked today:",

@@ -25,7 +25,14 @@
     </script>
     
     <script type="text/ng-template"  id="ref.html">
-     <span><b><a href="javascript:" ng-click="go(resource);">{{resource.display || resource.reference }}</a></b></span>
+     <span><b><a href="javascript:" ng-click="go(resource);">
+       <span ng-show="resource.display">{{resource.display}}</span>
+       <span ng-hide="resource.display">{{getRefType(resource.reference)}}</span>
+     </a></b></span>
+    </script>
+    
+     <script type="text/ng-template"  id="idref.html">
+     <span><b>{{resource.display }}</b></span>
     </script>
     
     <script type="text/ng-template"  id="quantity.html">

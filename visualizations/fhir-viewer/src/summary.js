@@ -37,7 +37,7 @@ angular.module('fhirViewer')
 	
   $scope.getTemplate = function(resource, field) {	
 	  if (!resource) return "empty.html";
-	  if (resource.reference) return "ref.html";
+	  if (resource.reference) return "ref.html";	
 	  if (resource.text || resource.coding) return "cc.html";
 	  if (resource.code || resource.display) return "cc.html";
 	  if (resource.start || resource.end) return "period.html";

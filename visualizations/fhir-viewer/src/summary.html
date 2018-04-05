@@ -25,6 +25,10 @@
     <script type="text/ng-template"  id="ref.html">
      {{resource.display || resource.reference }}
   </script>
+  
+  <script type="text/ng-template"  id="idref.html">
+     {{resource.display || resource.identifier.value }}
+  </script>
 
   <div ng-repeat="section in sections" ng-show="section.entries.length">
     <p class="lead">{{ makeLabel(section.resource) | translate }}</p>

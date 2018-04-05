@@ -47,6 +47,11 @@
       <td translate="status"></td>
       <td translate="{{ record.data.status }}"></td>
     </tr>            
+    
+    <tr ng-show="record.data.specimen.display">
+      <td translate="specimen"></td>
+      <td translate="{{ record.data.specimen.display }}"></td>
+    </tr>
          
     </table>       
     <div class="btn btn-default" ng-show="recordId" translate="back_btn" ng-click="showAll()"></div>
