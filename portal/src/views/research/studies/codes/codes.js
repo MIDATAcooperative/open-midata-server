@@ -38,7 +38,7 @@ angular.module('portal')
 		
 		server.post(jsRoutes.controllers.research.Studies.generateCodes($scope.studyid).url, JSON.stringify(data)).
 			then(function(url) { $scope.reload(); }, function(err) {
-				$scope.newcodes.error = err;
+				$scope.newcodes.error = err.data;
 				if (err.field && err.type) $scope.myform[err.field].$setValidity(err.type, false);			
 			});
 	};

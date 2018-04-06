@@ -26,7 +26,7 @@ angular.module('portal')
 				case "developer": $state.go('developer.yourapps');break;	
 				case "admin" : $state.go('admin.members');break;
 				}
-			}, function(err) { $scope.error = err; });
+			}, function(err) { $scope.error = err.data; });
 	};
 			
 }]);

@@ -228,6 +228,13 @@
 		    </div>
 		  </formrow>
 		  </div>
+		  <formrow myid="y" label="">
+		  <div ng-show="app._id && app.type=='mobile'" class="alert alert-warning">
+		    <strong translate="manageapp.important"></strong>
+		    <p ng-hide="app.targetUserRole=='RESEARCH'" translate="manageapp.logoutwarning"></p>
+		    <p ng-show="app.targetUserRole=='RESEARCH'" translate="manageapp.researchwarning"></p>		    
+		  </div>
+		  </formrow>
 		  
 		  <formrow myid="x" label="">
 		    <button type="submit" ng-disabled="status.action=='submit'" class="btn btn-primary">Submit</button>		    		   
@@ -238,4 +245,6 @@
 		  
 		
 	</div>
-	</div></div>
+	</div>	 
+	
+	</div>

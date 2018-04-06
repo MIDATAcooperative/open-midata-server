@@ -59,7 +59,7 @@ angular.module('portal')
 					}
 				}
 			}, function(err) {
-				$scope.error = err;				
+				$scope.error = err.data;				
 			});
 	};
 	
@@ -107,7 +107,7 @@ angular.module('portal')
 		then(function(data) { 				
 		    $scope.reload();
 		}, function(err) {
-			$scope.error = err;			
+			$scope.error = err.data;			
 		});
 	};
 	
@@ -118,7 +118,7 @@ angular.module('portal')
 		then(function(data) { 				
 		    $scope.reload();
 		}, function(err) {
-			$scope.error = err;			
+			$scope.error = err.data;			
 		});
 	};
 	
@@ -129,7 +129,7 @@ angular.module('portal')
 		then(function(data) { 				
 		    $scope.reload();
 		}, function(err) {
-			$scope.error = err;			
+			$scope.error = err.data;			
 		});
 	};
 	

@@ -18,7 +18,7 @@ angular.module('portal')
 	getSenderName = function() {
 		var data = {"properties": {"_id": $scope.message.sender}, "fields": ["name"]};
 		server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
-			then(function(users) { $scope.message.sender.name = users.data[0].name; }, function(err) { $scope.error = "Failed to load sender name: " + err; });
+			then(function(users) { $scope.message.sender.name = users.data[0].name; }, function(err) { $scope.error = "Failed to load sender name: " + err.data; });
 	};
 	
 	getReceiverNames = function() {

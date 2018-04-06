@@ -36,7 +36,7 @@ angular.module('views')
 				$scope.foundUsers = users.data;
 				$scope.searching = false;
 			}, function(err) {
-				$scope.error = "User search failed: " + err;
+				$scope.error = "User search failed: " + err.data;
 				$scope.searching = false;
 			});
 		

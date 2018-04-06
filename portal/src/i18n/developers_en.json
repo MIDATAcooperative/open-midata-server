@@ -130,7 +130,11 @@
       "all" : "During development allow to access all data of the user. (MUST be replaced with a proper Data Access Filter before plugin goes productive)"
     },
     "export_btn" : "Export Application Definition",
-    "export_help" : "Export the definition of this application, so that it can be imported and used on another server."
+    "export_help" : "Export the definition of this application, so that it can be imported and used on another server.",
+    
+    "important" : "IMPORTANT",
+    "logoutwarning" : "Changing the app definition will log out all users of that app. They will need to confirm again on next login.",
+    "researchwarning" : "Changing the app definition will unlink this research app from all studies!"		    
   },
   
   "appstats" : {

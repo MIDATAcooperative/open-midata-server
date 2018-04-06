@@ -47,7 +47,7 @@ angular.module('portal')
 	        		 $scope.authheader = "Bearer " + data.authToken;
 	        	 } 
 	        	 $scope.results = JSON.stringify(data, null, 2); 
-	          }, function(x,p) { $scope.results = p + ":" + JSON.stringify(x, null, 2); });
+	          }, function(x) { $scope.results = x.status + ":" + JSON.stringify(x.data, null, 2); });
          //}
        };
 

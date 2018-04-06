@@ -17,6 +17,6 @@ angular.module('portal')
 		then(function(url) {
 			$scope.error = null;
 			$scope.url = $sce.trustAsResourceUrl(url.data);
-		}, function(err) { $scope.error = "Failed to load app: " + err; });
+		}, function(err) { $scope.error = "Failed to load app: " + err.data; });
 	
 }]);
