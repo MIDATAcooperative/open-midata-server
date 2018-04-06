@@ -27,7 +27,7 @@ angular.module('portal')
 		    $scope.reload();
 		    $scope.requiredDataOk = true;
 		}, function(err) {
-			$scope.error = err;			
+			$scope.error = err.data;			
 		});  
    };
    

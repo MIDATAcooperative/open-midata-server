@@ -22,7 +22,7 @@ angular.module('views')
 			then(function(data) { 
 				$state.go('member.studydetails', { studyId : data.data.study });				
 			}, function(err) {
-				$scope.error = err;
+				$scope.error = err.data;
 				if (err.field && err.type) $scope.myform[err.field].$setValidity(err.type, false);				
 			});
 	};

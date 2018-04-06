@@ -144,7 +144,7 @@ angular.module('portal')
 				$scope.message = "Loading app...";
 				getAuthToken($scope.space, true);
 			}, function(err) {
-				$scope.error = "Requesting access token failed: " + err;
+				$scope.error = "Requesting access token failed: " + err.data;
 				$scope.authorizing = false;
 			});
 	};

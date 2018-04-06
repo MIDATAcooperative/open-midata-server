@@ -92,7 +92,7 @@ angular.module('portal')
 				var users = users1.data;
 				$scope.getAppDetails(users[0].apps);
 				$scope.getVisualizationDetails(users[0].visualizations);
-			}, function(err) { $scope.error = "Failed to load apps: " + err; });
+			}, function(err) { $scope.error = "Failed to load apps: " + err.data; });
 	};
 	
 	// get name and type for app ids
@@ -104,7 +104,7 @@ angular.module('portal')
 			then(function(apps) {
 				$scope.apps = apps.data;
 				$scope.loadingApps = false;
-			}, function(err) { $scope.error = "Failed to load apps: " + err; });
+			}, function(err) { $scope.error = "Failed to load apps: " + err.data; });
 	};
 	
 	// get name and type for app ids
@@ -116,7 +116,7 @@ angular.module('portal')
 			then(function(visualizations) {
 				$scope.visualizations = visualizations.data;
 				$scope.loadingVisualizations = false;
-			}, function(err) { $scope.error = "Failed to load apps: " + err; });
+			}, function(err) { $scope.error = "Failed to load apps: " + err.data; });
 	};
 	
 	/*
