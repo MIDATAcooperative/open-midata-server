@@ -30,10 +30,9 @@ angular.module('portal')
 		$scope.error = null;
 		
 		server.post(jsRoutes.controllers.research.Studies.endValidation($scope.studyid).url).
-		success(function(data) { 				
+		then(function(data) { 				
 			$state.go("admin.studies");
-		}).
-		error(function(err) {
+		}, function(err) {
 			$scope.error = err;			
 		});
 	};
@@ -42,10 +41,9 @@ angular.module('portal')
 		$scope.error = null;
 		
 		server.post(jsRoutes.controllers.research.Studies.backToDraft($scope.studyid).url).
-		success(function(data) { 				
+		then(function(data) { 				
 			$state.go("admin.studies");
-		}).
-		error(function(err) {
+		}, function(err) {
 			$scope.error = err;			
 		});
 	};
@@ -55,10 +53,9 @@ angular.module('portal')
 		$scope.error = null;
 		
 		server.post(jsRoutes.controllers.admin.Administration.deleteStudy($scope.studyid).url).
-		success(function(data) { 				
+		then(function(data) { 				
 		    $state.go("admin.studies");
-		}).
-		error(function(err) {
+		}, function(err) {
 			$scope.error = err;			
 		});
 	};

@@ -27,7 +27,7 @@
 		  
 		  <formrow myid="expires" label="admin_managenews.expires">
 		      <div class="input-group">
-				  <input type="text" id="date" is-open="datePickers.dateOpened" datepicker-options="dateOptions" close-text="Close" uib-datepicker-popup="dd.MM.yyyy" class="form-control" placeholder="Date" autofocus ng-model="newsItem.expires">
+				  <input type="text" id="date" is-open="datePickers.dateOpened" no-time datepicker-options="dateOptions" close-text="Close" uib-datepicker-popup="dd.MM.yyyy" class="form-control" placeholder="Date" autofocus ng-model="newsItem.expires">
 				  <span class="input-group-btn">
                       <button type="button" class="btn btn-default" ng-click="datePickers.dateOpened=true;"><i class="glyphicon glyphicon-calendar"></i></button>
                   </span>

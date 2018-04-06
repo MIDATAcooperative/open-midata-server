@@ -16,7 +16,8 @@ angular.module('portal')
 	$scope.reload = function() {
 			
 		server.get(jsRoutes.controllers.members.Studies.get($scope.studyid).url).
-			success(function(data) { 				
+			then(function(data1) {
+				var data = data1.data;
 				$scope.study = data.study;
 				delete $scope.study.recordQuery["group-system"];
 				$scope.participation = data.participation;
@@ -57,8 +58,7 @@ angular.module('portal')
 						});
 					}
 				}
-			}).
-			error(function(err) {
+			}, function(err) {
 				$scope.error = err;				
 			});
 	};
@@ -104,10 +104,9 @@ angular.module('portal')
 		$scope.error = null;
 		
 		server.post(jsRoutes.controllers.members.Studies.requestParticipation($scope.studyid).url).
-		success(function(data) { 				
+		then(function(data) { 				
 		    $scope.reload();
-		}).
-		error(function(err) {
+		}, function(err) {
 			$scope.error = err;			
 		});
 	};
@@ -116,10 +115,9 @@ angular.module('portal')
 		$scope.error = null;
 		
 		server.post(jsRoutes.controllers.members.Studies.noParticipation($scope.studyid).url).
-		success(function(data) { 				
+		then(function(data) { 				
 		    $scope.reload();
-		}).
-		error(function(err) {
+		}, function(err) {
 			$scope.error = err;			
 		});
 	};
@@ -128,10 +126,9 @@ angular.module('portal')
 		$scope.error = null;
 		
 		server.post(jsRoutes.controllers.members.Studies.retreatParticipation($scope.studyid).url).
-		success(function(data) { 				
+		then(function(data) { 				
 		    $scope.reload();
-		}).
-		error(function(err) {
+		}, function(err) {
 			$scope.error = err;			
 		});
 	};

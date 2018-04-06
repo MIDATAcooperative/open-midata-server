@@ -16,7 +16,7 @@
             <div class="form-group">
             <label>Until:</label>
              <div class="input-group">
-				  <input type="text" id="date" ng-change="recalc()" is-open="datePickers.dateOpened" datepicker-options="dateOptions" close-text="Close" uib-datepicker-popup="dd.MM.yyyy" class="form-control" placeholder="Date" autofocus ng-model="criteria.to">
+				  <input type="text" id="date" ng-change="recalc()" is-open="datePickers.dateOpened" datepicker-options="dateOptions" close-text="Close" no-time uib-datepicker-popup="dd.MM.yyyy" class="form-control" placeholder="Date" autofocus ng-model="criteria.to">
 				  <span class="input-group-btn">
                       <button type="button" class="btn btn-default" ng-click="datePickers.dateOpened=true;"><i class="glyphicon glyphicon-calendar"></i></button>
                   </span>

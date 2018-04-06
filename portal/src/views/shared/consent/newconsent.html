@@ -91,7 +91,7 @@
 	
 	<formrow myid="validUntil" label="newconsent.expiration_date">
 	  <div class="input-group">
-        <input id="validUntil" type="text" class="form-control" placeholder="Leave empty if none" uib-datepicker-popup="dd.MM.yyyy" ng-model="consent.validUntil" is-open="datePickers.validUntil" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+        <input id="validUntil" type="text" class="form-control" placeholder="Leave empty if none" no-time uib-datepicker-popup="dd.MM.yyyy" ng-model="consent.validUntil" is-open="datePickers.validUntil" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
         <span class="input-group-btn">
            <button type="button" class="btn btn-default" ng-click="datePickers.validUntil=true;"><i class="glyphicon glyphicon-calendar"></i></button>
         </span>
@@ -99,7 +99,7 @@
 	</formrow>
 	<formrow myid="createdBefore" label="newconsent.created_before">
 	  <div class="input-group">
-        <input id="createdBefore" type="text" class="form-control" placeholder="Leave empty if none" uib-datepicker-popup="dd.MM.yyyy" ng-model="consent.createdBefore" is-open="datePickers.createdBefore" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+        <input id="createdBefore" type="text" class="form-control" placeholder="Leave empty if none" no-time uib-datepicker-popup="dd.MM.yyyy" ng-model="consent.createdBefore" is-open="datePickers.createdBefore" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
         <span class="input-group-btn">
            <button type="button" class="btn btn-default" ng-click="datePickers.createdBefore=true;"><i class="glyphicon glyphicon-calendar"></i></button>
         </span>

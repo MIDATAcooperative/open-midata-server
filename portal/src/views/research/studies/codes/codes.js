@@ -13,13 +13,12 @@ angular.module('portal')
 	$scope.reload = function() {
 			
 		server.get(jsRoutes.controllers.research.Studies.listCodes($scope.studyid).url).
-			success(function(data) { 				
-				$scope.codes = data;
+			then(function(data) { 				
+				$scope.codes = data.data;
 				$scope.loading = false;
 				$scope.createnew = false;
 				$scope.error = null;
-			}).
-			error(function(err) {
+			}, function(err) {
 				$scope.error = err;
 				$scope.blocked = true;
 				$scope.createnew = false;
@@ -38,8 +37,7 @@ angular.module('portal')
 		var data = $scope.newcodes;		
 		
 		server.post(jsRoutes.controllers.research.Studies.generateCodes($scope.studyid).url, JSON.stringify(data)).
-			success(function(url) { $scope.reload(); }).
-			error(function(err) {
+			then(function(url) { $scope.reload(); }, function(err) {
 				$scope.newcodes.error = err;
 				if (err.field && err.type) $scope.myform[err.field].$setValidity(err.type, false);			
 			});
