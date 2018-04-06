@@ -221,7 +221,7 @@ public class MobileAPI extends Controller {
 		String secret = JsonValidation.getString(json,"secret");
 				
 	    // Validate Mobile App	
-		Plugin app = Plugin.getByFilename(name, Sets.create("type", "name", "secret", "status"));
+		Plugin app = Plugin.getByFilename(name, Sets.create("type", "name", "secret", "status", "targetUserRole"));
 		if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");
 		
 		if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
@@ -290,6 +290,7 @@ public class MobileAPI extends Controller {
 				boolean autoConfirm = InstanceConfig.getInstance().getInstanceType().autoconfirmConsentsMidataApi() && KeyManager.instance.unlock(user._id, null) == KeyManager.KEYPROTECTION_NONE;
 				executor = autoConfirm ? user._id : null;
 				AccessLog.log("REINSTALL");
+				if (!autoConfirm && app.targetUserRole.equals(UserRole.RESEARCH)) throw new BadRequestException("error.invalid.study", "The research app is not properly linked to a study! Please log in as researcher and link the app properly.");
 				appInstance = installApp(executor, app._id, user, phrase, autoConfirm, false);
 				if (executor != null) RecordManager.instance.clearCache();
 				executor = appInstance._id;
@@ -306,6 +307,10 @@ public class MobileAPI extends Controller {
 				
 		if (!phrase.equals(meta.get("phrase"))) return internalServerError("Internal error while validating consent");
 				
+		if (app.targetUserRole.equals(UserRole.RESEARCH)) {
+		  BSONObject q = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_query");
+          if (!q.containsField("link-study")) throw new BadRequestException("error.invalid.study", "The research app is not properly linked to a study! Please log in as researcher and link the app properly.");
+		}
 		
 		
 		return authResult(executor, appInstance, meta, phrase);

@@ -23,7 +23,7 @@ angular.module('portal')
 			then(function(url) {
 				space.baseUrl = url.data;
 				getAuthToken(space);
-			}, function(err) { $scope.error = "Failed to load space '" + space.name + "': " + err; });
+			}, function(err) { $scope.error = "Failed to load space '" + space.name + "': " + err.data; });
 	};
 	
 	// get the authorization token for the current space

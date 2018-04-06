@@ -13,7 +13,7 @@ angular.module('portal')
 		then(function(contacts) {
 			$scope.contacts = contacts.data;
 			//initTypeahead();
-		}, function(err) { $scope.error = "Failed to load contacts: " + err; });
+		}, function(err) { $scope.error = "Failed to load contacts: " + err.data; });
 	
 	// initialize typeahead for receivers field
 	$scope.showContacts = function(viewValue) {
@@ -84,7 +84,7 @@ angular.module('portal')
 			then(function() {
 				$scope.success = "Your message was sent.";
 				$scope.message = {};
-			}, function(err) { $scope.error = err; });
+			}, function(err) { $scope.error = err.data; });
 	};
 	
 }]);

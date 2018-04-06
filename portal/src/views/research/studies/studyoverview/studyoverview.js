@@ -64,7 +64,7 @@ angular.module('portal')
 		    $scope.reload();
 		    $scope.auditlog.reload();
 		}, function(err) {
-			$scope.error = err;			
+			$scope.error = err.data;			
 		});
 	};
 	
@@ -76,7 +76,7 @@ angular.module('portal')
 		    $scope.reload();
 		    $scope.auditlog.reload();
 		}, function(err) {
-			$scope.error = err;			
+			$scope.error = err.data;			
 		});
 	};
 	
@@ -100,7 +100,7 @@ angular.module('portal')
 		    $scope.reload();
 		    $scope.auditlog.reload();
 		}, function(err) {
-			$scope.error = err;			
+			$scope.error = err.data;			
 		});
 	};
 	
@@ -124,7 +124,7 @@ angular.module('portal')
 		    $scope.reload();
 		    $scope.auditlog.reload();
 		}, function(err) {
-			$scope.error = err;			
+			$scope.error = err.data;			
 		});
 	};
 	

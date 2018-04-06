@@ -33,7 +33,7 @@ angular.module('portal')
 		then(function(data) { 				
 			$state.go("admin.studies");
 		}, function(err) {
-			$scope.error = err;			
+			$scope.error = err.data;			
 		});
 	};
 	
@@ -44,7 +44,7 @@ angular.module('portal')
 		then(function(data) { 				
 			$state.go("admin.studies");
 		}, function(err) {
-			$scope.error = err;			
+			$scope.error = err.data;			
 		});
 	};
 	
@@ -56,7 +56,7 @@ angular.module('portal')
 		then(function(data) { 				
 		    $state.go("admin.studies");
 		}, function(err) {
-			$scope.error = err;			
+			$scope.error = err.data;			
 		});
 	};
 	

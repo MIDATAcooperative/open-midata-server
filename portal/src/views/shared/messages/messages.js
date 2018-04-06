@@ -29,7 +29,7 @@ angular.module('portal')
 				var messageIds = _.flatten([$scope.inbox, $scope.archive, $scope.trash]);
 				getMessages(messageIds);
 			}, function(err) {
-				$scope.error = "Failed to load message: " + err;
+				$scope.error = "Failed to load message: " + err.data;
 				$scope.loading = false;
 			});
 	};
@@ -46,7 +46,7 @@ angular.module('portal')
 				senderIds = _.uniq(senderIds, false, function(senderId) { return senderId; });
 				getSenderNames(senderIds);
 			}, function(err) {
-				$scope.error = "Failed to load message: " + err;
+				$scope.error = "Failed to load message: " + err.data;
 				$scope.loading = false;
 			});
 	};
@@ -75,7 +75,7 @@ angular.module('portal')
 			then(function() {
 				$scope[from].splice($scope[from].indexOf(messageId), 1);
 				$scope[to].push(messageId);
-			}, function(err) { $scope.error = "Failed to move the message from " + from + " to " + to + ": " + err; });
+			}, function(err) { $scope.error = "Failed to move the message from " + from + " to " + to + ": " + err.data; });
 	};
 	
 	// remove message
@@ -84,7 +84,7 @@ angular.module('portal')
 			then(function() {
 				delete $scope.messages[messageId];
 				$scope.trash.splice($scope.trash.indexOf(messageId), 1);
-			}, function(err) { $scope.error = "Failed to delete message: " + err; });
+			}, function(err) { $scope.error = "Failed to delete message: " + err.data; });
 	};
 	
 }]);
