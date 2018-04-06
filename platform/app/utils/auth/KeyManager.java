@@ -232,17 +232,19 @@ public class KeyManager implements KeySession {
 		String handle = p > 0 ? fhandle.substring(0, p) : fhandle;
 		KeyRing ring = keySessions.get(handle);
 						
-		if (ring != null) {
+		if (ring != null && user==null) {
 			session.set(new KeyManagerSession(handle, ring));
 			return;
 		} else if (p>0) {
 			if (fhandle.charAt(p+1) == '+') {
 				if (user != null) {
+					handle = new BigInteger(130, random).toString(32);
 					byte[] key = Base64.getDecoder().decode(fhandle.substring(p+2));
-					KeyRing keyring = new KeyRing(System.currentTimeMillis() + 1000l * 60l, null);
+					KeyRing keyring = new KeyRing(System.currentTimeMillis() + 1000l * 60l *10l, null);
 					keySessions.put(handle, keyring);
 					session.set(new KeyManagerSession(handle, keyring));
 					keyring.addKey(user.toString(), key);
+					AccessLog.log("Key-Ring: Adding key for executor:"+user.toString());
 					return;
 				}
 			} else {
@@ -252,7 +254,8 @@ public class KeyManager implements KeySession {
 					KeyRing keyring = new KeyRing(psession.timeout, passkey);
 					keySessions.put(handle, keyring);
 					session.set(new KeyManagerSession(handle, keyring));
-					keyring.addKey(psession.user.toString(), EncryptionUtils.applyKey(psession.splitkey, passkey));				
+					keyring.addKey(psession.user.toString(), EncryptionUtils.applyKey(psession.splitkey, passkey));
+					AccessLog.log("Key-Ring: Persisted session for executor:"+psession.user.toString());
 					return;
 				}
 			}
