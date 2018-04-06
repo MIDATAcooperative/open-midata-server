@@ -23,11 +23,10 @@ angular.module('portal')
 	   var params = $scope.information;
 	   
 	   server.post(jsRoutes.controllers.research.Studies.setRequiredInformationSetup($scope.studyid).url, params).
-		success(function(data) { 				
+		then(function(data) { 				
 		    $scope.reload();
 		    $scope.requiredDataOk = true;
-		}).
-		error(function(err) {
+		}, function(err) {
 			$scope.error = err;			
 		});  
    };

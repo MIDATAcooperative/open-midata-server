@@ -88,11 +88,11 @@ angular.module('portal')
 		var fields = ["apps", "visualizations"];
 		var data = {"properties": properties, "fields": fields};
 		server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
-			success(function(users) {
+			then(function(users1) {
+				var users = users1.data;
 				$scope.getAppDetails(users[0].apps);
 				$scope.getVisualizationDetails(users[0].visualizations);
-			}).
-			error(function(err) { $scope.error = "Failed to load apps: " + err; });
+			}, function(err) { $scope.error = "Failed to load apps: " + err; });
 	};
 	
 	// get name and type for app ids
@@ -101,11 +101,10 @@ angular.module('portal')
 		var fields = ["name", "type"];
 		var data = {"properties": properties, "fields": fields};
 		server.post(jsRoutes.controllers.Plugins.get().url, JSON.stringify(data)).
-			success(function(apps) {
-				$scope.apps = apps;
+			then(function(apps) {
+				$scope.apps = apps.data;
 				$scope.loadingApps = false;
-			}).
-			error(function(err) { $scope.error = "Failed to load apps: " + err; });
+			}, function(err) { $scope.error = "Failed to load apps: " + err; });
 	};
 	
 	// get name and type for app ids
@@ -114,11 +113,10 @@ angular.module('portal')
 		var fields = ["name", "type"];
 		var data = {"properties": properties, "fields": fields};
 		server.post(jsRoutes.controllers.Plugins.get().url, JSON.stringify(data)).
-			success(function(visualizations) {
-				$scope.visualizations = visualizations;
+			then(function(visualizations) {
+				$scope.visualizations = visualizations.data;
 				$scope.loadingVisualizations = false;
-			}).
-			error(function(err) { $scope.error = "Failed to load apps: " + err; });
+			}, function(err) { $scope.error = "Failed to load apps: " + err; });
 	};
 	
 	/*

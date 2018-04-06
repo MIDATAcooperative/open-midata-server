@@ -9,7 +9,8 @@ angular.module('portal')
 	var loadUserNames = function() {
 		var data = {"properties": {"_id": [$scope.study.createdBy]}, "fields": ["firstname", "lastname"]};
 		server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
-			success(function(users) {
+			then(function(users1) {
+				var users = users1.data;
 				_.each(users, function(user) {
 					if ($scope.study.createdBy === user._id) { $scope.study.creatorName = (user.firstname+" "+user.lastname).trim(); }					
 				});
@@ -59,11 +60,10 @@ angular.module('portal')
 		$scope.error = null;
 		
 		server.post(jsRoutes.controllers.research.Studies.startValidation($scope.studyid).url).
-		success(function(data) { 				
+		then(function(data) { 				
 		    $scope.reload();
 		    $scope.auditlog.reload();
-		}).
-		error(function(err) {
+		}, function(err) {
 			$scope.error = err;			
 		});
 	};
@@ -72,11 +72,10 @@ angular.module('portal')
 		$scope.error = null;
 		
 		server.post(jsRoutes.controllers.research.Studies.startParticipantSearch($scope.studyid).url).
-		success(function(data) { 				
+		then(function(data) { 				
 		    $scope.reload();
 		    $scope.auditlog.reload();
-		}).
-		error(function(err) {
+		}, function(err) {
 			$scope.error = err;			
 		});
 	};
@@ -85,11 +84,10 @@ angular.module('portal')
 		$scope.error = null;
 		
 		server.post(jsRoutes.controllers.research.Studies.endParticipantSearch($scope.studyid).url).
-		success(function(data) { 				
+		then(function(data) { 				
 		    $scope.reload();
 		    $scope.auditlog.reload();
-		}).
-		error(function(err) {
+		},function(err) {
 			$scope.error = err;			
 		});
 	};
@@ -98,11 +96,10 @@ angular.module('portal')
 		$scope.error = null;
 		
 		server.post(jsRoutes.controllers.research.Studies.startExecution($scope.studyid).url).
-		success(function(data) { 				
+		then(function(data) { 				
 		    $scope.reload();
 		    $scope.auditlog.reload();
-		}).
-		error(function(err) {
+		}, function(err) {
 			$scope.error = err;			
 		});
 	};
@@ -111,11 +108,10 @@ angular.module('portal')
 		$scope.error = null;
 		
 		server.post(jsRoutes.controllers.research.Studies.finishExecution($scope.studyid).url).
-		success(function(data) { 				
+		then(function(data) { 				
 		    $scope.reload();
 		    $scope.auditlog.reload();
-		}).
-		error(function(err) {
+		},function(err) {
 			$scope.error = err;			
 		});
 	};
@@ -124,11 +120,10 @@ angular.module('portal')
 		$scope.error = null;
 		
 		server.post(jsRoutes.controllers.research.Studies.abortExecution($scope.studyid).url).
-		success(function(data) { 				
+		then(function(data) { 				
 		    $scope.reload();
 		    $scope.auditlog.reload();
-		}).
-		error(function(err) {
+		}, function(err) {
 			$scope.error = err;			
 		});
 	};
@@ -150,10 +145,9 @@ angular.module('portal')
 		$scope.error = null;
 		
 		server.post(jsRoutes.controllers.research.Studies.delete($scope.studyid).url).
-		success(function(data) { 				
+		then(function(data) { 				
 		    $state.go("research.studies");
-		}).
-		error(function(err) {
+		},function(err) {
 			$scope.error = err;			
 		});
 	};

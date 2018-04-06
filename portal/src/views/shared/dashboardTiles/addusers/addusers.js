@@ -31,12 +31,11 @@ angular.module('views')
 		$scope.searching = true;
 		
 		server.get(jsRoutes.controllers.Users.search($scope.crit.userQuery).url).
-			success(function(users) {
+			then(function(users) {
 				$scope.error = null;
-				$scope.foundUsers = users;
+				$scope.foundUsers = users.data;
 				$scope.searching = false;
-			}).
-			error(function(err) {
+			}, function(err) {
 				$scope.error = "User search failed: " + err;
 				$scope.searching = false;
 			});
@@ -64,14 +63,13 @@ angular.module('views')
 		
 		var data = {"users": userIds};
 		server.post(jsRoutes.controllers.Circles.addUsers(circle._id).url, JSON.stringify(data)).
-			success(function() {
+			then(function() {
 				$scope.error = null;
 				$scope.foundUsers = [];
 				_.each($scope.contacts, function(contact) { contact.checked = false; });
 				_.each(userIds, function(userId) { circle.authorized.push(userId); });
 				//_.each(usersToAdd, function(user) { $scope.userNames[user._id] = user.name; });
-			}).
-			error(function(err) { $scope.error = "Failed to add users: " + err; });
+			},function(err) { $scope.error = "Failed to add users: " + err; });
 		}
 	};
 	

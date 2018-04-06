@@ -1,11 +1,11 @@
 var services = angular.module('services', []);
 var views = angular.module('views', ['services']);
 angular.module('portal', [ 'ngCookies', 'ui.router', 'services', 'views', 'config', 'pascalprecht.translate', 'ngSanitize'])
-.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$translateProvider', 'ENV', function($stateProvider, $urlRouterProvider, $httpProvider, $translateProvider, ENV) {
+.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$translateProvider', 'ENV', '$locationProvider', function($stateProvider, $urlRouterProvider, $httpProvider, $translateProvider, ENV, $locationProvider) {
    //$httpProvider.defaults.useXDomain = true;
    //$httpProvider.defaults.withCredentials = true;
    //delete $httpProvider.defaults.headers.common['X-Requested-With'];
-  
+	$locationProvider.hashPrefix('');
 
    $translateProvider
      .useSanitizeValueStrategy('escape')

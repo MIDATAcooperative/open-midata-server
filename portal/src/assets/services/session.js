@@ -51,7 +51,8 @@ angular.module('services')
 		login : function(requiredRole) {			
 			var def  = $q.defer();		
 			server.get(jsRoutes.controllers.Users.getCurrentUser().url).
-			success(function(result) {
+			then(function(result1) {
+				var result = result1.data;
 				var userId = result.user;
 				if (requiredRole && result.role != requiredRole) {
 				   document.location.href="/#/public/login";
@@ -67,8 +68,7 @@ angular.module('services')
 				   session.user = data.data[0];				 
 				   def.resolve(userId);
 				});																					
-			}).
-			error(function() { document.location.href="/#/public/login"; });		
+			}, function() { document.location.href="/#/public/login"; });		
 			session.currentUser = def.promise;
 		},
 		

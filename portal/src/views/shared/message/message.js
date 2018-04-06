@@ -8,31 +8,29 @@ angular.module('portal')
 	var messageId = $state.params.messageId;
 	var data = {"properties": {"_id":  messageId}, "fields": ["sender", "receivers", "created", "title", "content"]};
 	server.post(jsRoutes.controllers.Messages.get().url, JSON.stringify(data)).
-		success(function(messages) {
-			$scope.message = messages[0];
+		then(function(messages) {
+			$scope.message = messages.data[0];
 			getSenderName();
 			getReceiverNames();
 			//rewriteCreated();
-		}).
-		error(function(err) { $scope.error = "Failed to load message details: " + err; });
+		},function(err) { $scope.error = "Failed to load message details: " + err; });
 	
 	getSenderName = function() {
 		var data = {"properties": {"_id": $scope.message.sender}, "fields": ["name"]};
 		server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
-			success(function(users) { $scope.message.sender.name = users[0].name; }).
-			error(function(err) { $scope.error = "Failed to load sender name: " + err; });
+			then(function(users) { $scope.message.sender.name = users.data[0].name; }, function(err) { $scope.error = "Failed to load sender name: " + err; });
 	};
 	
 	getReceiverNames = function() {
 		var data = {"properties": {"_id": $scope.message.receivers}, "fields": ["name"]};
 		server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
-			success(function(users) {
+			then(function(users1) {
+				var users = users1.data;
 				_.each(users, function(user) {
 					var receiver = _.find($scope.message.receivers, function(rec) { return rec === user._id; });
 					receiver.name = user.name;
 				});
-			}).
-			error(function(err) { $scope.error = "Failed to load receiver names: " + err; });
+			},function(err) { $scope.error = "Failed to load receiver names: " + err; });
 	};
 	
 	/*rewriteCreated = function() {

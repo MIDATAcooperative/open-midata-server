@@ -177,14 +177,13 @@ angular.module('portal')
 	$scope.removePerson = function(person) {
 		if ($scope.consentId) {
 		server.delete(jsRoutes.controllers.Circles.removeMember($scope.consent._id, person._id).url).
-			success(function() {
+			then(function() {
 				if ($scope.consent.entityType == "USERGROUP") {
 				  $scope.authteams.splice($scope.authteams.indexOf(person), 1);
 				} else {
 				  $scope.authpersons.splice($scope.authpersons.indexOf(person), 1);
 				}
-			}).
-			error(function(err) { $scope.error = { code : "error.internal" }; });
+			}, function(err) { $scope.error = { code : "error.internal" }; });
 		} else {
 			if ($scope.consent.entityType == "USERGROUP") {
 				  $scope.authteams.splice($scope.authteams.indexOf(person), 1);

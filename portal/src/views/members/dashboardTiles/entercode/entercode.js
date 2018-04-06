@@ -19,10 +19,9 @@ angular.module('views')
 		var data = $scope.code;		
 		
 		server.post(jsRoutes.controllers.members.Studies.enterCode().url, JSON.stringify(data)).
-			success(function(data) { 
-				$state.go('member.studydetails', { studyId : data.study });				
-			}).
-			error(function(err) {
+			then(function(data) { 
+				$state.go('member.studydetails', { studyId : data.data.study });				
+			}, function(err) {
 				$scope.error = err;
 				if (err.field && err.type) $scope.myform[err.field].$setValidity(err.type, false);				
 			});

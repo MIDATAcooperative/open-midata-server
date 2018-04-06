@@ -10,11 +10,10 @@ angular.module('portal')
 	
 	// prefetch contacts
 	server.get(jsRoutes.controllers.Users.loadContacts().url).
-		success(function(contacts) {
-			$scope.contacts = contacts;
+		then(function(contacts) {
+			$scope.contacts = contacts.data;
 			//initTypeahead();
-		}).
-		error(function(err) { $scope.error = "Failed to load contacts: " + err; });
+		}, function(err) { $scope.error = "Failed to load contacts: " + err; });
 	
 	// initialize typeahead for receivers field
 	$scope.showContacts = function(viewValue) {
@@ -82,11 +81,10 @@ angular.module('portal')
 		var receivers = receiverIds; // _.map(receiverIds, function(receiverId) { return {"$oid": receiverId}; });
 		var data = {"receivers": receivers, "title": $scope.message.title, "content": $scope.message.content};
 		server.post(jsRoutes.controllers.Messages.send().url, JSON.stringify(data)).
-			success(function() {
+			then(function() {
 				$scope.success = "Your message was sent.";
 				$scope.message = {};
-			}).
-			error(function(err) { $scope.error = err; });
+			}, function(err) { $scope.error = err; });
 	};
 	
 }]);
