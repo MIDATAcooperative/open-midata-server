@@ -14,10 +14,9 @@ angular.module('portal')
 	
 	// get app url
 	server.get(jsRoutes.controllers.Plugins.getUrlForConsent(appId, consentId).url).
-		success(function(url) {
+		then(function(url) {
 			$scope.error = null;
-			$scope.url = $sce.trustAsResourceUrl(url);
-		}).
-		error(function(err) { $scope.error = "Failed to load app: " + err; });
+			$scope.url = $sce.trustAsResourceUrl(url.data);
+		}, function(err) { $scope.error = "Failed to load app: " + err; });
 	
 }]);

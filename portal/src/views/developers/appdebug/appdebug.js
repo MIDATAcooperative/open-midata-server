@@ -41,13 +41,13 @@ angular.module('portal')
          //for (var count = 0;count < Number($scope.count); count++) {
         //	 console.log(count);
 	         $http(call)
-	         .success(function(data) {
+	         .then(function(data1) {
+	        	 var data  = data1.data;
 	        	 if ($scope.url === "/v1/auth" && data.authToken) {
 	        		 $scope.authheader = "Bearer " + data.authToken;
 	        	 } 
 	        	 $scope.results = JSON.stringify(data, null, 2); 
-	          })
-	         .error(function(x,p) { $scope.results = p + ":" + JSON.stringify(x, null, 2); });
+	          }, function(x,p) { $scope.results = p + ":" + JSON.stringify(x, null, 2); });
          //}
        };
 

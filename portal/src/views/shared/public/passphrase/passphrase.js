@@ -18,7 +18,7 @@ angular.module('portal')
 		// send the request
 		var data = { "passphrase": $scope.passphrase.passphrase, "role" : $state.current.data.role };
 		server.post(jsRoutes.controllers.Application.providePassphrase().url, JSON.stringify(data)).
-			success(function() { 
+			then(function() { 
 				switch ($state.current.data.role) {
 				case "member": $state.go('member.overview');break;
 				case "hpuser": $state.go('member.overview');break;
@@ -26,8 +26,7 @@ angular.module('portal')
 				case "developer": $state.go('developer.yourapps');break;	
 				case "admin" : $state.go('admin.members');break;
 				}
-			}).
-			error(function(err) { $scope.error = err; });
+			}, function(err) { $scope.error = err; });
 	};
 			
 }]);

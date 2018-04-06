@@ -394,7 +394,7 @@ angular.module('portal')
 	
 	$scope.deleteRecord = function(record, group) {
 		server.post(jsRoutes.controllers.Records["delete"]().url, { "_id" : record.id }).
-		success(function(data) {			
+		then(function(data) {			
 			group.allRecords.splice(group.allRecords.indexOf(record), 1);			
 		});
 	};

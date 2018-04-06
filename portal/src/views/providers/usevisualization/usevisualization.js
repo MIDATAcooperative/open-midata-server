@@ -20,22 +20,20 @@ angular.module('portal')
 	// load visualization url for given space
 	loadBaseUrl = function(space) {
 		server.get(jsRoutes.controllers.Plugins.getUrlForConsent(space.visualization, $scope.consentId).url).
-			success(function(url) {
-				space.baseUrl = url;
+			then(function(url) {
+				space.baseUrl = url.data;
 				getAuthToken(space);
-			}).
-			error(function(err) { $scope.error = "Failed to load space '" + space.name + "': " + err; });
+			}, function(err) { $scope.error = "Failed to load space '" + space.name + "': " + err; });
 	};
 	
 	// get the authorization token for the current space
 	getAuthToken = function(space) {
 		var body = { "consent" : $scope.consentId };		
 		server.post(jsRoutes.controllers.providers.Providers.getVisualizationToken().url, body).
-			success(function(authToken) {
-				space.completedUrl = space.baseUrl.replace(":authToken", authToken);
+			then(function(authToken) {
+				space.completedUrl = space.baseUrl.replace(":authToken", authToken.data);
 				reloadIframe(space);
-			}).
-			error(function(err) { $scope.error = "Failed to get the authorization token: " + err; });
+			},function(err) { $scope.error = "Failed to get the authorization token: " + err; });
 	};
 	
 	// reload the iframe displaying the visualization

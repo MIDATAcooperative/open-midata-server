@@ -31,20 +31,19 @@ angular.module('portal')
 	var loadUserNames = function() {
 		var data = {"properties": {"_id": [$scope.record.owner, $scope.record.creator]}, "fields": ["firstname", "lastname"]};
 		server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
-			success(function(users) {
+			then(function(users1) {
+				var users = users1.data;
 				_.each(users, function(user) {
 					if ($scope.record.owner === user._id) { $scope.record.owner = (user.firstname+" "+user.lastname).trim(); }
 					if ($scope.record.creator === user._id) { $scope.record.creator = (user.firstname+" "+user.lastname).trim(); }
 				});
-			}).
-			error(function(err) { $scope.error = { code : "error.internal" }; } );
+			}, function(err) { $scope.error = { code : "error.internal" }; } );
 	};
 	
 	var loadAppName = function() {
 		var data = {"properties": {"_id": $scope.record.app}, "fields": ["name"]};
 		server.post(jsRoutes.controllers.Plugins.get().url, JSON.stringify(data)).
-			success(function(apps) { $scope.record.app = apps[0].name; }).
-			error(function(err) { $scope.error = { code : "error.internal" }; });
+			then(function(apps) { $scope.record.app = apps.data[0].name; }, function(err) { $scope.error = { code : "error.internal" }; });
 	};
 		
 	$scope.goBack = function() {

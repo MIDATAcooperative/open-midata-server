@@ -8,7 +8,8 @@ angular.module('portal')
    $scope.datePickers = {  };
    $scope.dateOptions = {
 	  	 formatYear: 'yy',
-	  	 startingDay: 1
+	  	 startingDay: 1,
+	  	  
    };
    $scope.query = {};
    $scope.codesystems = formats.codesystems;
@@ -20,6 +21,7 @@ angular.module('portal')
 			$scope.study = data.data;	
 			if (!$scope.study.requirements) $scope.study.requirements = [];
 			$scope.study.recordQueryStr = JSON.stringify($scope.study.recordQuery);
+			if ($scope.study.recordQueryStr === "{}") $scope.study.recordQueryStr = "{ \"content\" : [] }";
 			$scope.updateQuery();
 		});
    };

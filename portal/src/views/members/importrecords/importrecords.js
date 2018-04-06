@@ -138,13 +138,12 @@ angular.module('portal')
 			requestTokensUrl = jsRoutes.controllers.Plugins.requestAccessTokenOAuth1($scope.spaceId).url;
 		}
 		server.post(requestTokensUrl, JSON.stringify(data)).
-			success(function() {
+			then(function() {
 				$scope.authorized = true;
 				$scope.authorizing = false;
 				$scope.message = "Loading app...";
 				getAuthToken($scope.space, true);
-			}).
-			error(function(err) {
+			}, function(err) {
 				$scope.error = "Requesting access token failed: " + err;
 				$scope.authorizing = false;
 			});

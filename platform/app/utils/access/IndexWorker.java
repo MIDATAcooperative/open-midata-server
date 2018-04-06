@@ -18,6 +18,7 @@ import utils.access.index.IndexUpdateMsg;
 import utils.access.index.TerminateMsg;
 import utils.auth.KeyManager;
 import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
 import utils.messaging.MailUtils;
 import utils.messaging.Message;
 
@@ -65,7 +66,8 @@ public class IndexWorker extends UntypedActor {
 			if (message instanceof IndexMsg) {
 				this.handle = ((IndexMsg) message).getHandle();
 			
-				KeyManager.instance.continueSession(handle, ((IndexMsg) message).getExecutor());
+				if (!((IndexMsg) message).getExecutor().equals(executor)) throw new InternalServerException("error.internal", "Wrong executor for index update:"+executor.toString()+" vs "+((IndexMsg) message).getExecutor());
+				KeyManager.instance.continueSession(handle, executor);
 				if (cache == null) cache = RecordManager.instance.getCache(executor);			
 				if (idx == null) idx = IndexManager.instance.findIndex(pseudo, indexId);
 				if (root == null) root = new IndexRoot(pseudo.getKey(), idx, false);	

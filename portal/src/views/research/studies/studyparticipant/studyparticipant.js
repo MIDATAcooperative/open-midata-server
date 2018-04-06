@@ -15,7 +15,8 @@ angular.module('portal')
 					
 		
 		server.get(jsRoutes.controllers.research.Studies.getParticipant($scope.studyid, $scope.memberid).url).
-			success(function(data) { 								
+			then(function(data1) {
+				var data = data1.data;
 				$scope.participation = data.participation;
 				console.log($scope.participation);
 				$scope.member = data.member;
@@ -41,8 +42,7 @@ angular.module('portal')
 				
 				
 											
-			}).
-			error(function(err) {
+			}, function(err) {
 				$scope.error = err;				
 			});
 	};

@@ -21,14 +21,14 @@ angular.module('portal')
 		var fields = ["messages"];
 		var data = {"properties": properties, "fields": fields};
 		server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
-			success(function(users) {
+			then(function(users1) {
+				var users = users1.data;
 				$scope.inbox = users[0].messages.inbox;
 				$scope.archive = users[0].messages.archive;
 				$scope.trash = users[0].messages.trash;
 				var messageIds = _.flatten([$scope.inbox, $scope.archive, $scope.trash]);
 				getMessages(messageIds);
-			}).
-			error(function(err) {
+			}, function(err) {
 				$scope.error = "Failed to load message: " + err;
 				$scope.loading = false;
 			});
@@ -39,13 +39,13 @@ angular.module('portal')
 		var fields = ["sender", "created", "title"];
 		var data = {"properties": properties, "fields": fields};
 		server.post(jsRoutes.controllers.Messages.get().url, JSON.stringify(data)).
-			success(function(messages) {
+			then(function(messages1) {
+				var messages = messages1.data;
 				_.each(messages, function(message) { $scope.messages[message._id] = message; });
 				var senderIds = _.map(messages, function(message) { return message.sender; });
 				senderIds = _.uniq(senderIds, false, function(senderId) { return senderId; });
 				getSenderNames(senderIds);
-			}).
-			error(function(err) {
+			}, function(err) {
 				$scope.error = "Failed to load message: " + err;
 				$scope.loading = false;
 			});
@@ -54,11 +54,11 @@ angular.module('portal')
 	getSenderNames = function(senderIds) {
 		var data = {"properties": {"_id": senderIds}, "fields": ["name"]};
 		server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
-			success(function(users) {
+			then(function(users1) {
+				var users = users1.data;
 				_.each(users, function(user) { $scope.names[user._id] = user.name; });
 				$scope.loading = false;
-			}).
-			error(function(err) {
+			},function(err) {
 				$scope.error = "Failed to load user names: " + err;
 				$scope.loading = false;
 			});
@@ -72,21 +72,19 @@ angular.module('portal')
 	// move message to another folder
 	$scope.move = function(messageId, from, to) {
 		server.post(jsRoutes.controllers.Messages.move(messageId, from, to).url).
-			success(function() {
+			then(function() {
 				$scope[from].splice($scope[from].indexOf(messageId), 1);
 				$scope[to].push(messageId);
-			}).
-			error(function(err) { $scope.error = "Failed to move the message from " + from + " to " + to + ": " + err; });
+			}, function(err) { $scope.error = "Failed to move the message from " + from + " to " + to + ": " + err; });
 	};
 	
 	// remove message
 	$scope.remove = function(messageId) {
 		server.delete(jsRoutes.controllers.Messages.remove(messageId).url).
-			success(function() {
+			then(function() {
 				delete $scope.messages[messageId];
 				$scope.trash.splice($scope.trash.indexOf(messageId), 1);
-			}).
-			error(function(err) { $scope.error = "Failed to delete message: " + err; });
+			}, function(err) { $scope.error = "Failed to delete message: " + err; });
 	};
 	
 }]);

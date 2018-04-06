@@ -26,8 +26,7 @@ angular.module('portal')
 		// send the request
 		var data = { "token": $scope.setpw.token, "password" : $scope.setpw.password };
 		server.post(jsRoutes.controllers.Application.setPasswordWithToken().url, JSON.stringify(data)).
-			success(function() { $scope.setpw.success = true; }).
-			error(function(err) { $scope.error = err; });
+			then(function() { $scope.setpw.success = true; }, function(err) { $scope.error = err; });
 	};
 			
 }]);

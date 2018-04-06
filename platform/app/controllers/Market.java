@@ -117,7 +117,7 @@ public class Market extends APIController {
 		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
 		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
 		
-		if (!app.creator.equals(userId) && !getRole().equals(UserRole.ADMIN)) throw new BadRequestException("error.not_authorized.not_plugin_owner", "Not your plugin!");
+		if (!getRole().equals(UserRole.ADMIN) && !userId.equals(app.creator)) throw new BadRequestException("error.not_authorized.not_plugin_owner", "Not your plugin!");
 		
 		app.version = JsonValidation.getLong(json, "version");				
 		
