@@ -1,3 +1,18 @@
+.fullheight { height: 100%; }
+.start-color { @extend %mi-x-colored_gradient_background; }
+
+#loader {
+  text-align: center; 
+  font-size: 60px; 
+  color: $color-brand-white; 
+  margin-top: -100px; 
+  top: 50%; 
+  width: 100%; 
+  position: absolute;
+}
+
+html, body { height:100% }
+
 .required label::after {
   content : " *"
 }
