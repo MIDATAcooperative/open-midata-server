@@ -66,7 +66,7 @@ midata {
 	    }
 	    
 	    remote {
-	      log-remote-lifecycle-events = off
+	      log-remote-lifecycle-events = on
           netty.tcp {
              hostname = "PLATFORM_HOSTNAME"
              port = 9006
