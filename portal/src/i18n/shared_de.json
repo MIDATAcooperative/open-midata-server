@@ -12,12 +12,20 @@
 
     "navbar" : {
         "toggle_navigation" : "Navigation an/aus",
+
+        // TODO CHANGED
+        // OLD: Login
+        // NEW: Log in
         "login" : "Anmelden",
         "sign_up" : "Registrieren",
+
+        // TODO CHANGED
+        // OLD: Sign out
+        // NEW: Log out
         "sign_out" : "Abmelden",
         "edit_profile" : "Profil ändern",
         "app_count" : "Autorisierte Apps",
-        "study_count" : "Studienteilnahmen",      
+        "study_count" : "Studienteilnahmen",
         "me" : "Dashboard",
         "view" : "Ansehen",
         "overview" : "Übersicht",
@@ -38,6 +46,10 @@
         "noconsent" : "Keine aktive Zustimmung vorhanden, die es erlaubt Daten bei der Zielperson hinzuzufügen.",
         "unsupported" : "Operation nicht unterstützt",
         "notrialuser_title" : "Vollständige Mitgliedschaft notwendig!",
+
+        // TODO CHANGED
+        // OLD: In order to use this feature you need to complete your registration. Request a written copy of the AGB and return it signed. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.
+        // NEW: In order to use this feature you need to complete your registration. Request a written copy of the General Terms and Conditions and send it signed back to MIDATA. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.
         "notrialuser_detail" : "Um diese Funktion nutzen zu können, benötigen Sie eine vollständige Registrierung. Beantragen Sie die Zusendung der Allgemeinen Geschäftsbedingungen und senden Sie diese unterschrieben an MIDATA zurück. Sie werden auch einen Bestätigungscode erhalten, um Ihre Postadresse zu bestätigen. Wenn Sie Ihren Kontostatus prüfen möchten, klicken Sie auf Ihren Benutzernamen oben rechts und überprüfen Sie den Abschnitt 'Kontostatus'",
         "mustbemember_title" : "Mitgliedschaft bei der MIDATA Genossenschaft erforderlich!",
         "mustbemember_detail" : "Um diese Funktion nutzen zu können, müssen sie Mitglied der MIDATA Genossenschaft sein. Klicken Sie auf Ihren Benutzernamen oben rechts und überprüfen Sie den Abschnitt 'Kontostatus'",
@@ -88,6 +100,10 @@
             "passphrase" : "Geben Sie bitte Ihre Passphrase ein.",
             "groupsystem" : "Das Gruppensystem muss angegeben sein.",
             "token" : "Fehlendes oder falsches Token.",
+
+            // TODO CHANGED
+            // OLD: Terms and conditions not accepted.
+            // NEW: General Terms and Conditions not accepted.
             "agb" : "Allgemeine Geschäftsbedingungen nicht akzeptiert.",
             "privacypolicy" : "Die Datenschutzerklärung muss akzeptiert werden.",
             "study_accept" : "Die Studienteilnahme muss akzeptiert werden.",
@@ -122,8 +138,20 @@
 
         "blocked" : {
             "user" : "Dieser Benutzer ist nicht berechtigt sich anzumelden. Für Hilfe kontaktieren Sie bitte support@midata.coop.",
+
+            // TODO CHANGED
+            // OLD: Too many bad login attempts. Wait 1 minute before next attempt.
+            // NEW: Too many missed login attempts. Please wait 1 minute before next attempt.
             "password1" : "Zu viele falsche Anmeldeversuche. Bitte warten Sie 1 Minute vor dem nächsten Versuch.",
+
+            // TODO CHANGED
+            // OLD: Too many bad login attempts. Wait 5 minutes before next attempt.
+            // NEW: Too many missed login attempts. Please wait 5 minutes before next attempt.
             "password5" : "Zu viele falsche Anmeldeversuche. Bitte warten Sie 5 Minuten vor dem nächsten Versuch.",
+
+            // TODO CHANGED
+            // OLD: Too many bad login attempts. Wait 1 hour before next attempt.
+            // NEW: Too many missed login attempts. Please wait 1 hour before next attempt.
             "password60" : "Zu viele falsche Anmeldeversuche. Bitte warten Sie 1 Stunde vor dem nächsten Versuch.",
             "participation" : "Dieser Kontoinhabende ist nicht berechtigt, an einer Studie teilzunehmen.",
             "consent" : "Die Zustimmung, diese App zu nutzen, wurde widerrufen. Falls Sie diese App wieder nutzen möchten, müssen Sie die zurückgewiesene oder abgelaufene Zustimmung auf dem MIDATA-Portal löschen.",
@@ -210,6 +238,10 @@
             "ADMIN_ACCOUNT_CHANGE" : "Konto durch Administrator geändert",
             "ACCOUNT_DELETED" : "Konto gelöscht",
             "INTERNAL_COMMENT" : "Interne Bemerkung",
+
+            // TODO CHANGED
+            // OLD: Agreed to terms of use
+            // NEW: Agreed to General Terms and Conditions
             "TERMS_OF_USE_AGREED" : "Allgemeine Geschäftsbedingungen zugestimmt",
             "user-registration" : "Benutzerregistrierung ",
             "110122" : "Anmeldung",
@@ -253,6 +285,10 @@
             "contract-requested" : "Vertrag durch Benutzer angefordert",
             "contract-send" : "Vertrag an Benutzer versandt",
             "internal-comment" : "Anmerkung Administrator",
+
+            // TODO CHANGED
+            // OLD: Agreed to terms of use
+            // NEW: Agreed to General Terms and Conditions
             "user-terms-of-use-agreed" : "Allgemeine Geschäftsbedingungen angenommen",
             "audit-log-used" : "Audit Log angeschaut",
             "added-as-team-member" : "Hinzugefügt als Teammitglied",
@@ -495,6 +531,10 @@
 
     "registration" : {
         "sign_up" : "Registrierung",
+
+        // TODO CHANGED
+        // OLD: Please fill in the required information below (fields marked with an asterisk * are mandatory)
+        // NEW: Please fill in the information below, fields marked with an asterisk (*) are mandatory
         "mandantory_fields" : "Bitte füllen Sie die folgenden Felder aus, die mit einem Sternchen (*) gekennzeichneten Felder sind Pflichtfelder",
         "email" : "E-Mail",
         "password" : "Kennwort",
@@ -520,19 +560,47 @@
         "agb" : "MIDATA-Bestimmungen",
         "study" : "Forschung",
         "agb2" : "Ich akzeptiere die",
+
+        // TODO CHANGED
+        // OLD: Terms and Conditions
+        // NEW: General Terms and Conditions
         "agb3" : "Allgemeine Geschäftsbedingungen",
+
+        // TODO CHANGED
+        // OLD: I accept the
+        // NEW: and the
         "privacypolicy2" : "und die",
         "privacypolicy3" : "Datenschutzerklärung",
         "app_agb" : "App-Bestimmungen",
         "app_agb2" : "Ich akzeptiere die",
+
+        // TODO CHANGED
+        // OLD: App Terms and Conditions
+        // NEW: App General Terms and Conditions
         "app_agb3" : "Allgemeine Geschäftsbedingungen der App",
         "study_agb" : "Studienbestimmungen",
+
+        // TODO CHANGED
+        // OLD: create account
+        // NEW: Create Account
         "sign_up_btn" : "Konto erstellen",
         "unlock_code" : "Freischaltcode",
         "already_have_account" : "Ich habe bereits ein Konto",
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: Have a few more seconds to spare? We'd be happy if you could give us a bit more details about you ☺️
         "more" : "Haben Sie noch ein paar Sekunden Zeit? Wir wären froh, wenn Sie uns noch ein paar Details über sich verraten könnten ☺️",
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: I'm feeling generous today, show me the fields!
         "generous" : "Ich bin heute großzügig - zeige die Eingabefelder!",
-        "hide_optional" : "Optionale Felder verstecken" 
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: Hide optional fields
+        "hide_optional" : "Optionale Felder verstecken"
     },
 
     "login" : {
@@ -876,6 +944,10 @@
         "allows_user_search" : "Ihr Name und Ihre E-Mail-Adresse können von anderen Personen, die diese Applikation verwenden, durchsucht werden.",
         "requesting_app" : "benötigt Zugriff auf Ihre Daten.",
         "sign_in" : "MIDATA Anmeldung für:",
+
+        // TODO CHANGED
+        // OLD: Login
+        // NEW: Log in
         "sign_in_btn" : "Anmelden",
         "device" : "Gerät: {{ device}}",
         "please_confirm" : "Bestätigen Sie bitte die Aktivierung der Applikation auf dem MIDATA Portal, dann versuchen Sie es erneut. Zustimmungsbezeichnung: {{ consent }}",
@@ -1080,20 +1152,72 @@
         "change_btn" : "Ändern",
         "success" : "E-Mail Adresse erfolgreich geändert!"
     },
-    
+
     "member_user" : {
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: Account Status
         "account_status" : "Account-Status",
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: Your account has been set up for participation in a study. Functionality is limited. You may upgrade your user account to a full account.
         "studyparticipant" : "Ihr Account wurde eingerichtet, um an eine Studie teilzunehmen. Die Funktionalität ist begrenzt. Sie können Ihren Account in einen vollwertigen Account umwandeln.",
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: Your account has been registered by an external application. Functionality is limited. You may upgrade your user account to a full account.
         "appuser" : "Ihr Account wurde durch eine externe Applikation eingerichtet. Die Funktionalität ist begrenzt. Sie können Ihren Account in einen vollwertigen Account umwandeln.",
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: You are a member of the MIDATA cooperative.
         "memberofcooperative" : "Sie sind Mitglied der MIDATA Genossenschaft.",
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: You have a full user account but you are no member of the MIDATA cooperative.
         "nonmemberuser" : "Sie besitzen einen vollwertigen Account sind aber nicht Mitglied der MIDATA Genossenschaft.",
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: By clicking on the 'Request Contract' button, the General Terms and Conditions (T&Cs) and the contract will be sent to you by letter. Please return the signed T&Cs to convert this trial account into a full account.
         "agb_not_requested" : "Durch Klicken auf dem Button 'Vertrag anfordern' werden Ihnen die Allgemeine Geschäftsbedingungen (AGB) sowie den Vertrag nach Hause geschickt. Schicken Sie bitte die unterzeichneten AGB zurück um Ihr Probe-Account zu einem vollwertigen Account aufzuwerten.",
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: You have requested the General Terms and Conditions and the contract. Your request is being processed by the MIDATA cooperative.
         "agb_requested" : "Sie haben die Allgemeine Geschäftsbedingungen und den Vertrag angefordert. Ihre Anfrage wird durch die MIDATA Genossenschaft verarbeitet.",
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: The General Terms and Conditions and contract you have asked for should arrive in the next days.
         "agb_printed" : "Die von Ihnen angeforderten Allgemeine Geschäftsbedingungen und Vertrag sollten in den nächsten Tagen eintreffen.",
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: You have signed the General Terms and Conditions.
         "agb_signed" : "Sie haben die Allgemeine Geschäftsbedingungen unterzeichnet.",
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: Your postal address has been confirmed.
         "confirmed" : "Ihr Postadresse wurde bestätigt.",
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: The letter sent to you contains a registration code. Please enter your code here once you have received it:
         "entercode" : "Sie sollten einen Brief mit einem Registrierungscode erhalten haben. Geben Sie bitte den Code hier ein, sobald Sie ihn erhalten haben:",
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: Your email address has not been validated yet. Please click on the link in the validation email you received!
         "email_unvalidated" : "Ihre E-Mail-Adresse wurde bisher noch nicht bestätigt. Klicken Sie bitte auf dem Link, den Sie in der Bestätigungs-E-Mail erhalten haben!",
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: Request Contract
         "request_membership_btn" : "Vertrag anfordern"
     },
 

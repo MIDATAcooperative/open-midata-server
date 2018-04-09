@@ -87,10 +87,13 @@
         "confirmation_date" : "Bestätigungsdatum",
         "confirm_btn" : "Bestätigen",
         "reject_btn" : "Zurückweisen",
+
+        // TODO CHANGED
+        // OLD: You do not have a registered contact to a healthcare provider.
+        // NEW: You have not registered any contacts as a healthcare provider.
         "empty" : "Sie haben keine Kontakte als Gesundheitsfachperson registriert."
     },
 
- 
 
     "smallstudies" : {
         "greeting" : "Wollen Sie helfen und Ihre Daten für eine Studie teilen?",

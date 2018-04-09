@@ -6,8 +6,8 @@
     "plugins" : "Plugins",
 	"content" : "Content",
 	"studies" : "Studies",
-	"terms" : "Terms and Conditions",
-	"registration" : "Register Admin"
+	"terms" : "General Terms and Conditions",
+	"registration" : "Register an Administrator"
   },
   
   "admin_members" : {
@@ -33,7 +33,7 @@
     "subroles" : "Sub-Role(s)",
     "developer" : "Belongs to Developer:",
     "status" : "Status:",
-    "agb_status" : "AGB Status:",
+    "agb_status" : "T&Cs Status:",
     "contract_status" : "Contract Status:",
     "email_status" : "Email Status:",
     "confirmation_code" : "Confirmation Code:",
@@ -67,7 +67,7 @@
   },
   
   "admin_registration" : {
-    "sign_up" : "Register New Admin Account"
+    "sign_up" : "Register a New Administrator"
   },
   
   "admin_plugins" : {
@@ -80,7 +80,7 @@
     "plugin_developer" : "Developer",
     "plugin_type" : "Type",
     "plugin_role" : "Target Role",
-    "plugin_market" : "MISTORE",
+    "plugin_market" : "MIDATA Store",
     "plugin_stats" : "Stats",
     "plugin_status" : "Status",
     "add_definition_btn" : "Import Plugin Definition"
@@ -98,8 +98,8 @@
   },
   
   "admin_terms" : {
-    "title" : "Terms and Conditions",
-    "empty" : "No Terms and Conditions available.",
+    "title" : "General Terms and Conditions",
+    "empty" : "No General Terms and Conditions available.",
     "name" : "Name",
     "version" : "Version",
     "language" : "Language",
@@ -107,7 +107,7 @@
   },
   
   "admin_manageterms" : {
-    "pagetitle" : "Terms and Conditions",
+    "pagetitle" : "General Terms and Conditions",
     "name" : "Internal Name",
     "version" : "Version",
     "language" : "Language",
@@ -128,7 +128,7 @@
      "required_information" : "Required Information",
      "anonymous" : "Anonymous",
      "required_assistance" : "Required Assistance",
-     "termsOfUse" : "Terms and Conditions",
+     "termsOfUse" : "General Terms and Conditions",
      "sharing_query" : "Data Access Filter",
      "requirements" : "Requirements",
      "groups" : "Groups",
@@ -146,8 +146,8 @@
      "title" : "Statistics",
 	 "what" : "",
 	 "value" : "Total count",
-	 "diff_yesterday" : "Diff to 1 day ago",
-	 "diff_week" : "Diff to 7 days ago",
+	 "diff_yesterday" : "Diff. to 1 day ago",
+	 "diff_week" : "Diff. to 7 days ago",
 	 "recordCount" : "Records in DB",
 	 "appCount" : "Apps and Plugins",
 	 "runningStudyCount" : "Running Studies",

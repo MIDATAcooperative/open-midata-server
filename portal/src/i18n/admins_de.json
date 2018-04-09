@@ -7,7 +7,15 @@
         "plugins" : "Plugins",
         "content" : "Inhalt",
         "studies" : "Studien",
+
+        // TODO CHANGED
+        // OLD: Terms and Conditions
+        // NEW: General Terms and Conditions
         "terms" : "Allgemeine Geschäftsbedingungen",
+
+        // TODO CHANGED
+        // OLD: Register Admin
+        // NEW: Register an Administrator
         "registration" : "Administrator registrieren"
     },
 
@@ -34,6 +42,10 @@
         "subroles" : "Subrolle(n)",
         "developer" : "Gehört dem Entwickler:",
         "status" : "Status:",
+
+        // TODO CHANGED
+        // OLD: AGB Status:
+        // NEW: T&Cs Status:
         "agb_status" : "Status AGB:",
         "contract_status" : "Status Vertrag:",
         "email_status" : "Status E-Mail:",
@@ -68,6 +80,10 @@
     },
 
     "admin_registration" : {
+
+        // TODO CHANGED
+        // OLD: Register New Admin Account
+        // NEW: Register a New Administrator
         "sign_up" : "Neuen Administrator registrieren"
     },
 
@@ -81,6 +97,10 @@
         "plugin_developer" : "Entwickler",
         "plugin_type" : "Typ",
         "plugin_role" : "Zielrolle",
+
+        // TODO CHANGED
+        // OLD: MISTORE
+        // NEW: MIDATA Store
         "plugin_market" : "MIDATA Store",
         "plugin_stats" : "Statistiken",
         "plugin_status" : "Status",
@@ -99,7 +119,15 @@
     },
 
     "admin_terms" : {
+
+        // TODO CHANGED
+        // OLD: Terms and Conditions
+        // NEW: General Terms and Conditions
         "title" : "Allgemeine Geschäftsbedingungen",
+
+        // TODO CHANGED
+        // OLD: No Terms and Conditions available.
+        // NEW: No General Terms and Conditions available.
         "empty" : "Keine Allgemeine Geschäftsbedingungen vorhanden.",
         "name" : "Name",
         "version" : "Version",
@@ -108,6 +136,10 @@
     },
 
     "admin_manageterms" : {
+
+        // TODO CHANGED
+        // OLD: Terms and Conditions
+        // NEW: General Terms and Conditions
         "pagetitle" : "Allgemeine Geschäftsbedingungen",
         "name" : "Interner Name",
         "version" : "Version",
@@ -129,6 +161,10 @@
         "required_information" : "Benötigte Informationen",
         "anonymous" : "Anonym",
         "required_assistance" : "Belegarzt benötigt",
+
+        // TODO CHANGED
+        // OLD: Terms and Conditions
+        // NEW: General Terms and Conditions
         "termsOfUse" : "Allgemeine Geschäftsbedingungen",
         "sharing_query" : "Data Access Filter",
         "requirements" : "Anforderungen",
@@ -145,9 +181,19 @@
 
     "admin_stats" : {
         "title" : "Statistiken",
+
+        // TODO NEW: 
         "what" : "",
         "value" : "Gesamtzahl",
+
+        // TODO CHANGED
+        // OLD: Diff to 1 day ago
+        // NEW: Diff. to 1 day ago
         "diff_yesterday" : "Diff. zu vor 1 Tag",
+
+        // TODO CHANGED
+        // OLD: Diff to 7 days ago
+        // NEW: Diff. to 7 days ago
         "diff_week" : "Diff. zu vor 7 Tagen",
         "recordCount" : "Datensätze in DB",
         "appCount" : "Apps und Plugins",

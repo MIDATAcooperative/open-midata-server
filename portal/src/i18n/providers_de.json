@@ -1,6 +1,10 @@
 {
 
     "provider_registration" : {
+
+        // TODO CHANGED
+        // OLD: Healthcare Provider Sign up
+        // NEW: Registration as a Healthcare Provider
         "sign_up" : "Registrierung als Gesundheitsfachperson",
         "provider" : "Gesundheitsfachperson",
         "user" : "Benutzer",
@@ -16,6 +20,10 @@
         "patients" : "Patienten",
         "research" : "Forschung",
         "workspace" : "Workspace",
+
+        // TODO CHANGED
+        // OLD: MISTORE
+        // NEW: MIDATA Store
         "market" : "MIDATA Store",
         "usergroups" : "Teams"
     },

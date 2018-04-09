@@ -1,8 +1,16 @@
 {
 
     "developer_registration" : {
+
+        // TODO CHANGED
+        // OLD: Developer Sign Up
+        // NEW: Registration as a Developer
         "sign_up" : "Inscription en tant que développeur",
         "reason_fillout" : "Afin de réduire le temps d'attente jusqu'à la validation de votre compte, veuillez indiquer la personne de contact et la raison précise de la demande d'inscription, afin qu'un administrateur puisse rapidement traiter votre requête.",
+
+        // TODO CHANGED
+        // OLD: Developer Sign Up
+        // NEW: Sign Up as a Developer
         "sign_up_btn" : "S'inscrire en tant développeur"
     },
 
@@ -69,13 +77,25 @@
         "type" : "Type d'application",
         "targetUserRole" : "Rôle cible",
         "edit_btn" : "Modifier la configuration",
+
+        // TODO CHANGED
+        // OLD: Change setup for your application.
+        // NEW: Change the setup for your application.
         "edit_help" : "Modifier la configuration de votre application.",
+
+        // TODO CHANGED
+        // OLD: OAuth2 Parameters for Token Exchange
+        // NEW: OAuth2 Parameters for the Token Exchange
         "tokenExchangeParams" : "Paramètres OAuth2 pour l'échange du token",
         "testfromlocal_btn" : "Testez votre plugin depuis localhost",
         "testfromlocal_help" : "Pendant le développement, vous pouvez tester le code du plugin stocké sur votre ordinateur local sur cette instance.",
         "serverimport_btn" : "Tester le script d'importation automatique.",
         "serverimport_help" : "Si votre plugin offre l'importation automatique, vous pouvez tester le script de votre plugin, qui est normalement exécuté sur le serveur, sur votre ordinateur local.",
         "icon_btn" : "Icônes et images de l'application",
+
+        // TODO CHANGED
+        // OLD: Upload and manage the icons and images to be used with your application. Provide images for the login screen, the app store, the consent acceptation screen, etc.
+        // NEW: Upload and manage the icons and images to be used with your application. Provide images for the login screen, the consent acceptation screen, the MIDATA Store, etc.
         "icon_help" : "Téléchargez et gérez les icônes et les images à utiliser avec votre application. Fournissez des images pour l'écran de connexion, l'écran d'acceptation des consentements, le MIDATA Store, etc.",
         "messages_btn" : "Messages e-mail de l'application",
         "messages_help" : "Fournissez vos propres textes d'e-mails envoyés aux nouveaux comptes d'utilisateurs, dès la première utilisation de votre application, pour accepter les consentements et plus encore.",
@@ -86,7 +106,15 @@
         "linkedStudy" : "Étude liée à l'app (code)",
         "mustParticipateInStudy" : "Participation à l'étude requise",
         "admin_only" : "Seul un administrateur MIDATA peut modifier cette section. Veuillez faire une demande de changement si nécessaire.",
+
+        // TODO CHANGED
+        // OLD: Terms and Conditions
+        // NEW: General Terms and Conditions (T&Cs)
         "terms_of_use" : "Conditions Générales (CG)",
+
+        // TODO CHANGED
+        // OLD: Show Terms and Conditions
+        // NEW: Show General Terms and Conditions (T&Cs)
         "show_terms" : "Afficher les Conditions Générales (CG)",
         "unlock_code" : "Code d'activation",
         "info" : {
@@ -99,6 +127,10 @@
             "resharesData" : "L'app est autorisée à transmettre les données auxquelles elle a accès à des tierces parties.",
             "allowsUserSearch" : "Les utilisateurs de l'app sont autorisés à rechercher d'autres utilisateurs de la même app.",
             "defaultSpaceName" : "Titre de la tuile du plugin sur le tableau de bord.",
+
+            // TODO CHANGED
+            // OLD: Categories on MISTORE for which your plugin should be listed.
+            // NEW: Categories on MIDATA Store for which your plugin should be listed.
             "tags" : "Catégories sous lesquelles le plugin sera listé dans le MIDATA Store.",
             "url" : "URL de la page principale du plugin. Si vous utilisez le modèle MIDATA, c'est 'dist/index.html#?authToken=:authToken''",
             "previewUrl" : "URL de la tuile du tableau de bord du plugin. Laisser vide si une telle tuile n'est pas fournie.",
@@ -131,7 +163,17 @@
             "all" : "Pendant le développement, autoriser l'accès à toutes les données de l'utilisateur. (DOIT être remplacé par un Data Access Filter adéquat avant la mise en production de l'app)"
         },
         "export_btn" : "Exporter la définition de l'application",
-        "export_help" : "Exportez la définition de cette application, pour qu'elle puisse être importée et utilisée sur un autre serveur."
+        "export_help" : "Exportez la définition de cette application, pour qu'elle puisse être importée et utilisée sur un autre serveur.",
+
+
+        // TODO NEW: IMPORTANT
+        "important" : "IMPORTANT",
+
+        // TODO NEW: Changing the app definition will log out all users of that app. They will need to confirm again on next login.
+        "logoutwarning" : "Changing the app definition will log out all users of that app. They will need to confirm again on next login.",
+
+        // TODO NEW: Changing the app definition will unlink this research app from all studies!
+        "researchwarning" : "Changing the app definition will unlink this research app from all studies!"
     },
 
     "appstats" : {
