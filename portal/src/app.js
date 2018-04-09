@@ -14,11 +14,11 @@ angular.module('portal', [ 'ngCookies', 'ui.router', 'ui.bootstrap', 'services',
      .useLoader('$translatePartialLoader', {
         urlTemplate: '/i18n/{part}_{lang}.json'
       })   
-     .registerAvailableLanguageKeys(['en', 'de', 'fr' /* , 'it' */], {
+     .registerAvailableLanguageKeys(['en', 'de', 'fr', 'it'], {
        'en_*': 'en',
        'de_*': 'de',
-       'fr_*': 'fr'/*,
-       'it_*': 'it'*/
+       'fr_*': 'fr',
+       'it_*': 'it'
      })
      .fallbackLanguage('en')
      .determinePreferredLanguage();
