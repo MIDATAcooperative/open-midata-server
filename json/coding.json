@@ -93,7 +93,7 @@
 {"_id":{"$oid":"5718ec14aed645098e8cedfc"},"system":"http://midata.coop","code":"DeviceUseRequest","display":"DeviceUseRequest","content":"DeviceUseRequest"}
 {"_id":{"$oid":"5718ec14aed645098e8cedfd"},"system":"http://midata.coop","code":"EpisodeOfCare","display":"EpisodeOfCare","content":"EpisodeOfCare"}
 {"_id":{"$oid":"5718ec14aed645098e8cedfe"},"system":"http://midata.coop","code":"OrderResponse","display":"OrderResponse","content":"OrderResponse"}
-{"_id":{"$oid":"5718ec14aed645098e8cee00"},"system":"http://midata.coop","code":"AllergyIntolerance","display":"AllergyIntolerance","content":"AllergyIntolerance"}
+{"_id":{"$oid":"5718ec14aed645098e8cee00"},"system":"http://midata.coop","code":"AllergyIntolerance","display":"Allergy / Intolerance","content":"AllergyIntolerance"}
 {"_id":{"$oid":"5718ec14aed645098e8cedff"},"system":"http://midata.coop","code":"StructureDefinition","display":"StructureDefinition","content":"StructureDefinition"}
 {"_id":{"$oid":"5718ec14aed645098e8cee01"},"system":"http://midata.coop","code":"SearchParameter","display":"SearchParameter","content":"SearchParameter"}
 {"_id":{"$oid":"5718ec14aed645098e8cee02"},"system":"http://midata.coop","code":"HealthcareService","display":"HealthcareService","content":"HealthcareService"}
