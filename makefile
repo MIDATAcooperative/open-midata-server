@@ -42,7 +42,25 @@ update: tasks/check-config start-mongo tasks/setup-portal tasks/build-mongodb ta
 
 .PHONY: stop
 stop:
+	$(info ------------------------------)
+	$(info Locking and stopping platform)
+	$(info ------------------------------)
+	touch locks/lock
 	python main.py stop
+
+.PHONY: lock
+lock:
+	$(info ------------------------------)
+	$(info Locking platform)
+	$(info ------------------------------)
+	touch locks/lock
+	
+.PHONY: unlock
+unlock:
+	$(info ------------------------------)
+	$(info Unlocking platform)
+	$(info ------------------------------)
+	rm locks/lock
 
 .PHONY: reconfig
 reconfig:
