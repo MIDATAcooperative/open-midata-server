@@ -47,12 +47,12 @@ server {
            proxy_set_header X-Real-IP $remote_addr;
            proxy_http_version 1.1;
            proxy_cookie_path / "/; secure; HttpOnly";          
-           add_header 'X-XSS-Protection' "1; mode=block";
-           add_header 'X-Content-Type-Options' 'nosniff';
-           add_header 'Strict-Transport-Security' "max-age=31536000; preload";             
-           add_header 'Content-Security-Policy' "default-src 'none';";
-           add_header 'X-Content-Security-Policy' "default-src 'none';";
-           add_header 'X-WebKit-CSP' "default-src 'none';";            
+           add_header 'X-XSS-Protection' "1; mode=block" always;
+           add_header 'X-Content-Type-Options' 'nosniff' always;
+           add_header 'Strict-Transport-Security' "max-age=31536000; preload" always;             
+           add_header 'Content-Security-Policy' "default-src 'none';" always;
+           add_header 'X-Content-Security-Policy' "default-src 'none';" always;
+           add_header 'X-WebKit-CSP' "default-src 'none';" always;            
  
         }
         
@@ -63,12 +63,12 @@ server {
            proxy_http_version 1.1;
            proxy_cookie_path / "/; secure; HttpOnly";
            client_max_body_size 100M;
-           add_header 'X-XSS-Protection' "1; mode=block";
-           add_header 'X-Content-Type-Options' 'nosniff';
-           add_header 'Strict-Transport-Security' "max-age=31536000; preload";             
-           add_header 'Content-Security-Policy' "default-src 'none';";
-           add_header 'X-Content-Security-Policy' "default-src 'none';";
-           add_header 'X-WebKit-CSP' "default-src 'none';";
+           add_header 'X-XSS-Protection' "1; mode=block" always;
+           add_header 'X-Content-Type-Options' 'nosniff' always;
+           add_header 'Strict-Transport-Security' "max-age=31536000; preload" always;             
+           add_header 'Content-Security-Policy' "default-src 'none';" always;
+           add_header 'X-Content-Security-Policy' "default-src 'none';" always;
+           add_header 'X-WebKit-CSP' "default-src 'none';" always;
         }
         
         location /v1 {                      
@@ -77,12 +77,12 @@ server {
            proxy_set_header X-Real-IP $remote_addr;
            proxy_http_version 1.1;
            proxy_cookie_path / "/; secure; HttpOnly";
-           add_header 'X-XSS-Protection' "1; mode=block";
-           add_header 'X-Content-Type-Options' 'nosniff';
-           add_header 'Strict-Transport-Security' "max-age=31536000; preload";             
-           add_header 'Content-Security-Policy' "default-src 'none';";
-           add_header 'X-Content-Security-Policy' "default-src 'none';";
-           add_header 'X-WebKit-CSP' "default-src 'none';";
+           add_header 'X-XSS-Protection' "1; mode=block" always;
+           add_header 'X-Content-Type-Options' 'nosniff' always;
+           add_header 'Strict-Transport-Security' "max-age=31536000; preload" always;             
+           add_header 'Content-Security-Policy' "default-src 'none';" always;
+           add_header 'X-Content-Security-Policy' "default-src 'none';" always;
+           add_header 'X-WebKit-CSP' "default-src 'none';" always;
         }
 
         location /v1/plugin_api/records/upload {
@@ -92,12 +92,12 @@ server {
            proxy_http_version 1.1;
            proxy_cookie_path / "/; secure; HttpOnly";
            client_max_body_size 100M;
-           add_header 'X-XSS-Protection' "1; mode=block";
-           add_header 'X-Content-Type-Options' 'nosniff';
-           add_header 'Strict-Transport-Security' "max-age=31536000; preload";             
-           add_header 'Content-Security-Policy' "default-src 'none';";
-           add_header 'X-Content-Security-Policy' "default-src 'none';";
-           add_header 'X-WebKit-CSP' "default-src 'none';";
+           add_header 'X-XSS-Protection' "1; mode=block" always;
+           add_header 'X-Content-Type-Options' 'nosniff' always;
+           add_header 'Strict-Transport-Security' "max-age=31536000; preload" always;             
+           add_header 'Content-Security-Policy' "default-src 'none';" always;
+           add_header 'X-Content-Security-Policy' "default-src 'none';" always;
+           add_header 'X-WebKit-CSP' "default-src 'none';" always;
         }
          
         location /plugin {   
