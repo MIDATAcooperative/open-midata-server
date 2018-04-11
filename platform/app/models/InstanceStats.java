@@ -18,7 +18,7 @@ import utils.exceptions.InternalServerException;
 public class InstanceStats extends Model {
 	
 	private static final String collection = "instancestats";
-	public @NotMaterialized static final Set<String> ALL_FIELDS = Collections.unmodifiableSet(Sets.create("_id", "date", "recordCount", "appCount", "userCount", "consentCount", "runningStudyCount", "groupCount", "auditEventCount")); 
+	public @NotMaterialized static final Set<String> ALL_FIELDS = Collections.unmodifiableSet(Sets.create("_id", "date", "recordCount", "vRecordCount", "appCount", "userCount", "consentCount", "runningStudyCount", "groupCount", "auditEventCount", "indexCount", "indexPageCount", "languages")); 
 	
 	/**
 	 * date of statistic
@@ -29,6 +29,11 @@ public class InstanceStats extends Model {
 	 * total number of records in database
 	 */
 	public long recordCount;
+	
+	/**
+	 * total number of archived records
+	 */
+	public long vRecordCount;
 	
 	/**
 	 * total number of apps registered
@@ -49,6 +54,21 @@ public class InstanceStats extends Model {
 	 * total number of audit events
 	 */
 	public long auditEventCount;
+	
+	/**
+	 * total number of indexes
+	 */
+	public long indexCount;
+	
+	/**
+	 * total number of index pages
+	 */
+	public long indexPageCount;
+	
+	/**
+	 * distribution of language use
+	 */
+	public Map<String, Long> languages;
     
 	/**
 	 * total number of users per role
