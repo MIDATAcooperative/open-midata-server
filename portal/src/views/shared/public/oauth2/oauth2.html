@@ -137,15 +137,17 @@
 					<fieldset class="mi-at-input__fieldset mi-at-input--checkbox mi-at-input--checkbox-white">
 						<input id="mi-at-input-" class="mi-at-input mi-at-input--checkbox" type="checkbox" value="" ng-model="login.confirmStudy"
 							floating-label  /> 
-						<label for="mi-at-input-checkbox" class="mi-at-text mi-at-text--white" translate="oauth2.confirm_study">
+						<label for="mi-at-input-checkbox" class="mi-at-text mi-at-text--white">
+						  <span translate="oauth2.confirm_study"></span>:
+						  <a class="mi-at-text--white mi-at-input--checkbox-link" ng-show="app.linkedStudyTermsOfUse" ng-click="terms({which : app.linkedStudyTermsOfUse })" href="javascript:">{{ app.linkedStudyName }}</a>
 						 </label>
 					</fieldset>
 
-					<div class="mi-or-auth__study_title">
+					<div class="mi-or-auth__study_title" ng-hide="app.linkedStudyTermsOfUse">
 						<span class="mi-at-text mi-at-text--highlighted mi-at-text--white">{{ app.linkedStudyName }}</span>
 
 					</div>
-					<div class="mi-or-auth__study_description">
+					<div class="mi-or-auth__study_description" ng-hide="app.linkedStudyTermsOfUse">
 						<span class="mi-at-text mi-at-text--smaller mi-at-text--white">{{ app.linkedStudyDescription }}</span>
 
                         <div class="mi-at-link" ng-show="app.linkedStudyTermsOfUse">
