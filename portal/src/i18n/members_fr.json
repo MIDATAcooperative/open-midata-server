@@ -17,7 +17,7 @@
 
     "help_welcome" : {
         "menu" : "Le menu ci-dessus contient les liens suivants:",
-        "menu_me" : "Moi",
+        "menu_me" : "Tableau de bord",
         "menu_me_text" : "Votre tableau de bord personnel, où vous pouvez placer vos favoris.",
         "menu_overview" : "Vue d'ensemble",
         "menu_overview_text" : "Une vue d'ensemble de toutes les fonctionnalités proposées par la plateforme MIDATA.",
@@ -31,7 +31,7 @@
         "answer_questions" : "Pour commencer, nous vous recommandons de répondre à quelques questions. Votre compte sera préconfiguré d'après vos réponses.",
         "answered_questions" : "Merci d'avoir répondu aux questions de configuration! Vous pouvez maintenant consulter votre tableau de bord et le reconfigurer le cas échéant.",
         "answer_btn" : "Répondre aux questions de configuration maintenant",
-        "dashboard_btn" : "Aller à la page 'Moi'",
+        "dashboard_btn" : "Aller à mon tableau de bord",
         "answer_again_btn" : "Répéter les questions de configuration"
     },
 
@@ -83,10 +83,6 @@
         "confirmation_date" : "Date de confirmation",
         "confirm_btn" : "confirmer",
         "reject_btn" : "refuser",
-
-        // TODO CHANGED
-        // OLD: You do not have a registered contact to a healthcare provider.
-        // NEW: You have not registered any contacts as a healthcare provider.
         "empty" : "Vous n'avez enregistré aucun contact comme professionel de la santé."
     },
 

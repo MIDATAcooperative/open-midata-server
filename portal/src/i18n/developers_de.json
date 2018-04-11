@@ -1,16 +1,8 @@
 {
 
     "developer_registration" : {
-
-        // TODO CHANGED
-        // OLD: Developer Sign Up
-        // NEW: Registration as a Developer
         "sign_up" : "Registrierung als Entwickler",
         "reason_fillout" : "Um die Wartezeit bis zur Freigabe des Accounts zu reduzieren, geben Sie bitte die Kontaktperson und der Zweck der Registrierung sorgfältig ein, damit ein Administrator ihr Anfrage rasch bearbeiten kann.",
-
-        // TODO CHANGED
-        // OLD: Developer Sign Up
-        // NEW: Sign Up as a Developer
         "sign_up_btn" : "Als Entwickler registrieren"
     },
 
@@ -77,25 +69,13 @@
         "type" : "Applikationstyp",
         "targetUserRole" : "Zielrolle",
         "edit_btn" : "Einstellungen ändern",
-
-        // TODO CHANGED
-        // OLD: Change setup for your application.
-        // NEW: Change the setup for your application.
         "edit_help" : "Ändern Sie die Einstellungen für Ihre Applikation.",
-
-        // TODO CHANGED
-        // OLD: OAuth2 Parameters for Token Exchange
-        // NEW: OAuth2 Parameters for the Token Exchange
         "tokenExchangeParams" : "OAuth2-Parameter für den Token-Austausch",
         "testfromlocal_btn" : "Testen Sie Ihr Plugin von localhost aus",
         "testfromlocal_help" : "Während der Entwicklung können Sie den Plugin-Code, der auf Ihrem lokalen Computer gespeichert ist, auf dieser Instanz testen.",
         "serverimport_btn" : "Automatisches Importskript testen.",
         "serverimport_help" : "Wenn Ihr Plugin einen automatischen Import bietet, können Sie das Skript Ihres Plugins, das normalerweise auf dem Server läuft, auf Ihrem lokalen Computer testen.",
         "icon_btn" : "Icons und Bilder der Applikation",
-
-        // TODO CHANGED
-        // OLD: Upload and manage the icons and images to be used with your application. Provide images for the login screen, the app store, the consent acceptation screen, etc.
-        // NEW: Upload and manage the icons and images to be used with your application. Provide images for the login screen, the consent acceptation screen, the MIDATA Store, etc.
         "icon_help" : "Laden und verwalten Sie die Icons und Bilder hoch, die mit Ihrer Anwendung verwendet werden sollen. Stellen Sie Bilder für den Login-Bildschirm, den Zustimmungsbildschirm, den MIDATA Store usw. bereit.",
         "messages_btn" : "E-Mail-Nachrichten der Applikation",
         "messages_help" : "Stellen Sie Ihre eigenen E-Mail-Texte zur Verfügung, die an neue Benutzerkonten gesendet werden, bei der ersten Nutzung Ihrer Anwendung, für die Annahme von Zustimmungen und mehr.",
@@ -106,16 +86,8 @@
         "linkedStudy" : "Mit der App verknüpfte Studie (Code)",
         "mustParticipateInStudy" : "Studienteilnahme erforderlich",
         "admin_only" : "Nur ein MIDATA Administrator darf diesen Abschnitt ändern. Bitte fordern Sie bei Bedarf Änderungen an.",
-
-        // TODO CHANGED
-        // OLD: Terms and Conditions
-        // NEW: General Terms and Conditions (T&Cs)
-        "terms_of_use" : "Allgemeine Geschäftsbedingungen (AGB)",
-
-        // TODO CHANGED
-        // OLD: Show Terms and Conditions
-        // NEW: Show General Terms and Conditions (T&Cs)
-        "show_terms" : "Allgemeine Geschäftsbedingungen (AGB) anzeigen",
+        "terms_of_use" : "Allgemeine Geschäftsbedingungen",
+        "show_terms" : "Allgemeine Geschäftsbedingungen anzeigen",
         "unlock_code" : "Freischaltcode",
         "info" : {
             "filename" : "Dieser Name wird intern für die Kennung Ihrer App verwendet. Es sollte ein gültiger Identifikator sein (a-z, A-Z, 0-9, _).",
@@ -126,19 +98,11 @@
             "tokenExchangeParams" : "Der Standardwert ist client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> aber einige Dienste erfordern auch client_secret=<client_secret> oder kein client_id",
             "resharesData" : "Die App darf Daten, auf die sie Zugriff hat, an Drittparteien weitergeben.",
             "allowsUserSearch" : "Benutzer dieser App dürfen nach anderen Benutzern der gleichen App suchen.",
-
-            // TODO Dashboard
             "defaultSpaceName" : "Titel der Kachel des Plugins auf dem Dashboard.",
-
-            // TODO CHANGED
-            // OLD: Categories on MISTORE for which your plugin should be listed.
-            // NEW: Categories on MIDATA Store for which your plugin should be listed.
             "tags" : "Kategorien unter welchen das Plugin im MIDATA Store erscheinen wird.",
             "url" : "URL der Hauptseite des Plugins. Wenn Sie das MIDATA-Template verwenden ist es 'dist/index.html#?authToken=:authToken''",
             "previewUrl" : "URL der Dashboard-Kachel des Plugins. Leer lassen falls keine solche Kachel angeboten wird.",
-
-            // TODO Konfiguration -> heisst jetzt anders
-            "defaultSpaceContext" : "Wählen Sie 'Mich' für das Standard-Dashboard. Wählen Sie 'Konfiguration' für ein Import-Plugin.",
+            "defaultSpaceContext" : "Wählen Sie 'Dashboard' für das Standard-Dashboard. Wählen Sie 'Konfiguration' für ein Import-Plugin.",
             "defaultQuery_mobile" : "Filter, das den Zugriff der App auf die Daten begrenzt. Der Zugriff muss eingeschränkt werden nach 'code', 'content' oder 'group' und kann eingeschränkt werden nach 'format' oder 'owner'. Gültiges Beispiel (alle Observations): '{ \"group\" : \"all\", \"group-system\" : \"v1\", \"format\" : [\"fhir/Observation\" ] }'",
             "defaultQuery" : "Filter, das den Zugriff des Plugins auf die Daten begrenzt. Der Zugriff muss mindestens eingeschränkt werden nach 'code', 'content', 'group', 'format' oder 'owner'. Gültiges Beispiel (alle Observations): '{ \"format\" : [\"fhir/Observation\" ] }'",
             "defaultQuery_extra" : "Gültige Werte für 'code', 'content' oder 'format' sind im Developer Guide unter 'Format/Content' aufgelistet. Für erste Versionen kann der Vollzugriff erstattet werden mit { \"group\" : \"all\", \"group-system\" : \"v1\" }. Schränken Sie allerdings den Zugriff weiter ein, bevor das Plugin oder die App produktiv eingesetzt wird.",
@@ -168,16 +132,9 @@
         },
         "export_btn" : "Applikationsdefinition exportieren",
         "export_help" : "Exportieren Sie die Definition dieser Applikation, damit sie auf einem anderen Server importiert und verwendet werden kann.",
-
-
-        // TODO NEW: IMPORTANT
-        "important" : "IMPORTANT",
-
-        // TODO NEW: Changing the app definition will log out all users of that app. They will need to confirm again on next login.
-        "logoutwarning" : "Changing the app definition will log out all users of that app. They will need to confirm again on next login.",
-
-        // TODO NEW: Changing the app definition will unlink this research app from all studies!
-        "researchwarning" : "Changing the app definition will unlink this research app from all studies!"
+        "important" : "WICHTIG",
+        "logoutwarning" : "Bei einer Änderung der Applikationsdefinition, werden alle Benutzer von dieser Applikation getrennt. Sie müssen die Verwendung der Applikation bei der nächsten Anmeldung erneut bestätigen.",
+        "researchwarning" : "Eine Änderung der Applikationsdefinition entkoppelt diese Forschungsapplikation von allen Studien!"
     },
 
     "appstats" : {

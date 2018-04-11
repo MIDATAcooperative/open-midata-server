@@ -85,8 +85,8 @@
     "linkedStudy" : "Study linked to App (Code)",
     "mustParticipateInStudy" : "Study Participation Required",
     "admin_only" : "Only a MIDATA administrator may change this section. Please request changes if required.",
-    "terms_of_use" : "General Terms and Conditions (T&Cs)",
-    "show_terms" : "Show General Terms and Conditions (T&Cs)",
+    "terms_of_use" : "General Terms and Conditions",
+    "show_terms" : "Show General Terms and Conditions",
     "unlock_code" : "Code for registration",    
     "info" : {
        "filename" : "This name is internally used to identify your app. Should be a valid identifier (a-z, A-Z, 0-9, _).",
@@ -101,7 +101,7 @@
        "tags" : "Categories on MIDATA Store for which your plugin should be listed.",
        "url" : "URL of your plugins main page. If you use the template from MIDATA it is 'dist/index.html#?authToken=:authToken''",
        "previewUrl" : "URL of your plugins dashboard tile. Leave empty if you do not provide such a tile.",
-       "defaultSpaceContext" : "Choose 'me' for the default dashboard. Choose 'config' if you write an import plugin.",
+       "defaultSpaceContext" : "Choose 'Dashboard' for the default dashboard. Choose 'Config' if you write an import plugin.",
        "defaultQuery_mobile" : "Filter restricting the access of the app to the data. Access must be restricted by 'code', 'content' or 'group' and may be restricted by 'format' or 'owner'. Valid example (all Observations): '{ \"group\" : \"all\", \"group-system\" : \"v1\", \"format\" : [\"fhir/Observation\" ] }'",
        "defaultQuery" : "Filter restricting the access of the plugin to the data. Access must be restricted by at least one of 'code', 'content', 'group', 'format' or 'owner'. Valid example (all Observations): '{ \"format\" : [\"fhir/Observation\" ] }'",
        "defaultQuery_extra" : "Look for valid values for 'code', 'content' or 'format' on the 'Format/Content' list of the developer guide. As a first version you may start with access to all data. For that use { \"group\" : \"all\", \"group-system\" : \"v1\" }. Please refine the filter before the plugin or the app goes in production.",
@@ -131,10 +131,9 @@
     },
     "export_btn" : "Export Application Definition",
     "export_help" : "Export the definition of this application, so that it can be imported and used on another server.",
-    
     "important" : "IMPORTANT",
-    "logoutwarning" : "Changing the app definition will log out all users of that app. They will need to confirm again on next login.",
-    "researchwarning" : "Changing the app definition will unlink this research app from all studies!"		    
+    "logoutwarning" : "Changing the application definition will log out all users from that application. They will have to confirm the use of the application again on next login.",
+    "researchwarning" : "Changing the application definition will unlink this research application from all studies!"		    
   },
   
   "appstats" : {

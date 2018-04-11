@@ -1,10 +1,6 @@
 {
 
     "researcher_registration" : {
-
-        // TODO CHANGED
-        // OLD: Research Sign up
-        // NEW: Registration as a Researcher
         "sign_up" : "Inscription en tant que chercheur",
         "research_organization" : "Organisation de recherche",
         "name" : "Nom",
@@ -71,10 +67,6 @@
         "no_change_warning" : "Cette configuration ne peut plus être modifiée une fois l'étude validée.",
         "member_identity" : "Identité du membre",
         "anonymous1" : "Participation pseudonymisée",
-
-        // TODO CHANGED
-        // OLD: , reveals anonymized ID, year of birth, gender and country
-        // NEW: , reveals pseudonymized ID, year of birth, gender and country
         "anonymous2" : ", révèle l'ID pseudonymisée, l'année de naissance, le sexe et le pays",
         "anonymous3" : "Anonyme: La cartographie de pseudonymisation n'est pas accessible.",
         "not_anonymous1" : "Pas pseudonymisé",
@@ -174,20 +166,8 @@
         "sharing_query" : "Data Access Filter (JSON)",
         "sharing_query_options" : "Data Access Filter (Ajouter)",
         "sharing_query_selection" : "Data Access Filter (Sélection)",
-
-        // TODO CHANGED
-        // OLD: Terms and Conditions
-        // NEW: General Terms and Conditions
         "terms_of_use" : "Conditions générales",
-
-        // TODO CHANGED
-        // OLD: If the study Terms and Conditions have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the ID you need to enter here.
-        // NEW: If the study General Terms and Conditions have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the ID you need to enter here.
         "terms_of_use_hint" : "Si les conditions générales de l'étude doivent être lues et acceptées par l'utilisateur, veuillez envoyer le texte à MIDATA. Nous téléchargerons le texte au bon format et vous fournirons l'ID que vous devez saisir ici.",
-
-        // TODO CHANGED
-        // OLD: Show Terms and Conditions
-        // NEW: Show General Terms and Conditions
         "show_terms" : "Afficher les conditions générales",
         "requirements" : "Exigences"
     },
@@ -237,15 +217,7 @@
         "sharingQuery_help" : "Votre étude doit indiquer explicitement les données des participants auxquelles elle accédera. Le filtre d'accès aux données (Data Access Filter) ne peut pas être modifié après la validation de l'étude.",
         "dates" : "Dates de début et de fin fixées",
         "dates_help" : "Les dates de début et de fin seront affichées aux participants. Aucune donnée n'entrera dans l'étude à partir du moment où les données sont gelées.",
-
-        // TODO CHANGED
-        // OLD: Terms and Conditions provided
-        // NEW: General Terms and Conditions provided
         "terms" : "Conditions générales fournies",
-
-        // TODO CHANGED
-        // OLD: If the study Terms and Conditions have to be confirmed online by the participants, please contact MIDATA.
-        // NEW: If the study General Terms and Conditions have to be confirmed online by the participants, please contact MIDATA.
         "terms_help" : "Si les conditions générales de l'étude doivent être confirmées en ligne par les participants, veuillez contacter MIDATA.",
         "validation" : "Validation de l'étude demandée",
         "validation_help" : "La validation sera effectuée par MIDATA après sa demande. L'étude ne peut plus être modifiée après la demande de validation.",

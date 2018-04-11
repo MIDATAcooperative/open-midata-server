@@ -7,15 +7,7 @@
         "plugins" : "Plugins",
         "content" : "Contenu",
         "studies" : "Études",
-
-        // TODO CHANGED
-        // OLD: Terms and Conditions
-        // NEW: General Terms and Conditions
         "terms" : "Conditions générales",
-
-        // TODO CHANGED
-        // OLD: Register Admin
-        // NEW: Register an Administrator
         "registration" : "Inscrire un administrateur"
     },
 
@@ -42,10 +34,6 @@
         "subroles" : "Sous-rôle(s)",
         "developer" : "Appartient au développeur:",
         "status" : "État:",
-
-        // TODO CHANGED
-        // OLD: AGB Status:
-        // NEW: T&Cs Status:
         "agb_status" : "État des CG:",
         "contract_status" : "État du contrat:",
         "email_status" : "État de l'e-mail:",
@@ -80,10 +68,6 @@
     },
 
     "admin_registration" : {
-
-        // TODO CHANGED
-        // OLD: Register New Admin Account
-        // NEW: Register a New Administrator
         "sign_up" : "Inscrire un nouvel administrateur"
     },
 
@@ -97,10 +81,6 @@
         "plugin_developer" : "Dévelopeur",
         "plugin_type" : "Type",
         "plugin_role" : "Rôle cible",
-
-        // TODO CHANGED
-        // OLD: MISTORE
-        // NEW: MIDATA Store
         "plugin_market" : "MIDATA Store",
         "plugin_stats" : "Statistiques",
         "plugin_status" : "État",
@@ -119,15 +99,7 @@
     },
 
     "admin_terms" : {
-
-        // TODO CHANGED
-        // OLD: Terms and Conditions
-        // NEW: General Terms and Conditions
         "title" : "Conditions générales",
-
-        // TODO CHANGED
-        // OLD: No Terms and Conditions available.
-        // NEW: No General Terms and Conditions available.
         "empty" : "Aucunes conditions générales disponibles.",
         "name" : "Nom",
         "version" : "Version",
@@ -136,10 +108,6 @@
     },
 
     "admin_manageterms" : {
-
-        // TODO CHANGED
-        // OLD: Terms and Conditions
-        // NEW: General Terms and Conditions
         "pagetitle" : "Conditions générales",
         "name" : "Nom interne",
         "version" : "Version",
@@ -161,10 +129,6 @@
         "required_information" : "Informations requises",
         "anonymous" : "Anonyme",
         "required_assistance" : "Médecin agréé requis",
-
-        // TODO CHANGED
-        // OLD: Terms and Conditions
-        // NEW: General Terms and Conditions
         "termsOfUse" : "Conditions générales",
         "sharing_query" : "Data Access Filter",
         "requirements" : "Exigences",
@@ -181,19 +145,9 @@
 
     "admin_stats" : {
         "title" : "Statistiques",
-
-        // TODO NEW: 
         "what" : "",
         "value" : "Nombre total",
-
-        // TODO CHANGED
-        // OLD: Diff to 1 day ago
-        // NEW: Diff. to 1 day ago
         "diff_yesterday" : "Diff. sur 1 jour",
-
-        // TODO CHANGED
-        // OLD: Diff to 7 days ago
-        // NEW: Diff. to 7 days ago
         "diff_week" : "Diff. sur 7 jours",
         "recordCount" : "Enregistrements dans la BD",
         "appCount" : "Apps et Plugins",
