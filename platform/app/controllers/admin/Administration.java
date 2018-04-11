@@ -48,6 +48,9 @@ import utils.InstanceConfig;
 import utils.RuntimeConstants;
 import utils.access.DBRecord;
 import utils.access.RecordManager;
+import utils.access.VersionedDBRecord;
+import utils.access.index.IndexDefinition;
+import utils.access.index.IndexPageModel;
 import utils.audit.AuditManager;
 import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
@@ -426,6 +429,8 @@ public class Administration extends APIController {
 		stats.date = new Date();
 		
 		stats.recordCount = DBRecord.count();
+		stats.vRecordCount = VersionedDBRecord.vcount();
+		stats.indexPageCount = IndexPageModel.count();
 		stats.appCount = Plugin.count();
 		stats.runningStudyCount = Study.count(); 
 		stats.groupCount = UserGroup.count();
@@ -433,6 +438,12 @@ public class Administration extends APIController {
 		stats.userCount = new HashMap<String, Long>();
 		for (UserRole role : UserRole.values()) {
 			stats.userCount.put(role.toString(), User.count(role));
+		}
+		
+		stats.languages = new HashMap<String, Long>();
+		String langs[] = new String[] { "en", "de", "fr", "it" };
+		for (String language : langs) {
+			stats.languages.put(language, User.countLanguage(language));
 		}
 		
 		stats.consentCount = new HashMap<String, Long>();

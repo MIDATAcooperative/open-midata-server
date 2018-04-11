@@ -467,6 +467,10 @@ public class User extends Model implements Comparable<User> {
 	public static long count(UserRole role) throws AppException {
 		return Model.count(User.class, collection, CMaps.map("role", role).map("status", EnumSet.of(UserStatus.ACTIVE, UserStatus.NEW)));
 	}
+	
+	public static long countLanguage(String lang) throws AppException {
+		return Model.count(User.class, collection, CMaps.map("language", lang).map("status", EnumSet.of(UserStatus.ACTIVE, UserStatus.NEW)));
+	}
 		
 	
 }

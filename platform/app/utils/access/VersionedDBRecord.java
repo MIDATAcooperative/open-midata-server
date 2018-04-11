@@ -8,6 +8,7 @@ import models.MidataId;
 import models.Model;
 import utils.collections.CMaps;
 import utils.db.NotMaterialized;
+import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
 public class VersionedDBRecord extends DBRecord {
@@ -100,5 +101,9 @@ public class VersionedDBRecord extends DBRecord {
 		this.isStream = record.isStream;
 		this.security = record.security;
 		
+	}
+	
+	public static long vcount() throws AppException {
+		return Model.count(VersionedDBRecord.class, collection, CMaps.map());
 	}
 }

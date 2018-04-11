@@ -19,6 +19,7 @@
 		       <td class="text-right">{{ today.recordCount - week.recordCount }}</td>
 		     </tr>
 		     
+		     
 		     <tr>
 		       <td translate="admin_stats.appCount"></td>
 		       <td class="text-right">{{ today.appCount }}</td>
@@ -46,6 +47,20 @@
 		       <td class="text-right">{{ today.auditEventCount - yesterday.auditEventCount }}</td>
 		       <td class="text-right">{{ today.auditEventCount - week.auditEventCount }}</td>
 		     </tr>
+		     		     
+		     <tr>
+		       <td translate="admin_stats.vRecordCount"></td>
+		       <td class="text-right">{{ today.vRecordCount  }}</td>
+		       <td class="text-right">{{ today.vRecordCount - yesterday.vRecordCount }}</td>
+		       <td class="text-right">{{ today.vRecordCount - week.vRecordCount }}</td>
+		     </tr>
+		     
+		     <tr>
+		       <td translate="admin_stats.indexPageCount"></td>
+		       <td class="text-right">{{ today.indexPageCount  }}</td>
+		       <td class="text-right">{{ today.indexPageCount - yesterday.indexPageCount }}</td>
+		       <td class="text-right">{{ today.indexPageCount - week.indexPageCount }}</td>
+		     </tr>
 		     
 		     <tr>
 		       <th translate="admin_stats.users"></th>
@@ -59,6 +74,20 @@
 		       <td class="text-right">{{ today.userCount[role] }}</td>
 		       <td class="text-right">{{ today.userCount[role] - yesterday.userCount[role] }}</td>
 		       <td class="text-right">{{ today.userCount[role] - week.userCount[role] }}</td>
+		     </tr>
+		     
+		     <tr>
+		       <th translate="admin_stats.languages"></th>
+		       <th class="text-right" translate="admin_stats.value"></th>
+		       <th class="text-right" translate="admin_stats.diff_yesterday"></th>
+		       <th class="text-right" translate="admin_stats.diff_week"></th>
+		     </tr>
+		     
+		     <tr ng-repeat="(lang,v) in today.languages">
+		       <td translate="{{'enum.language.'+lang.toUpperCase() }}"></td>
+		       <td class="text-right">{{ today.languages[lang] }}</td>
+		       <td class="text-right">{{ today.languages[lang] - (yesterday.languages[lang] || 0) }}</td>
+		       <td class="text-right">{{ today.languages[lang] - (week.languages[lang] || 0) }}</td>
 		     </tr>
 		     
 		     <tr>

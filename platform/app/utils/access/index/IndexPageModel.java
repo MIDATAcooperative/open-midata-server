@@ -2,8 +2,6 @@ package utils.access.index;
 
 import java.util.Set;
 
-import org.bson.BSONObject;
-
 import models.MidataId;
 import models.Model;
 import utils.collections.CMaps;
@@ -12,6 +10,7 @@ import utils.db.DBLayer;
 import utils.db.DatabaseException;
 import utils.db.LostUpdateException;
 import utils.db.NotMaterialized;
+import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
 /**
@@ -75,6 +74,9 @@ public class IndexPageModel extends Model {
 		}
 	}
 	
+	public static long count() throws AppException {
+		return Model.count(IndexPageModel.class, collection, CMaps.map());
+	}
 	
 	// array of { key : array , entries : [ { rec :   , consent :  } ] or page : IndexPageId } 
 }
