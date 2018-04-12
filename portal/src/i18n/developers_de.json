@@ -86,8 +86,8 @@
         "linkedStudy" : "Mit der App verknüpfte Studie (Code)",
         "mustParticipateInStudy" : "Studienteilnahme erforderlich",
         "admin_only" : "Nur ein MIDATA Administrator darf diesen Abschnitt ändern. Bitte fordern Sie bei Bedarf Änderungen an.",
-        "terms_of_use" : "Allgemeine Geschäftsbedingungen (AGB)",
-        "show_terms" : "Allgemeine Geschäftsbedingungen (AGB) anzeigen",
+        "terms_of_use" : "Allgemeine Geschäftsbedingungen",
+        "show_terms" : "Allgemeine Geschäftsbedingungen anzeigen",
         "unlock_code" : "Freischaltcode",
         "info" : {
             "filename" : "Dieser Name wird intern für die Kennung Ihrer App verwendet. Es sollte ein gültiger Identifikator sein (a-z, A-Z, 0-9, _).",
@@ -98,15 +98,11 @@
             "tokenExchangeParams" : "Der Standardwert ist client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> aber einige Dienste erfordern auch client_secret=<client_secret> oder kein client_id",
             "resharesData" : "Die App darf Daten, auf die sie Zugriff hat, an Drittparteien weitergeben.",
             "allowsUserSearch" : "Benutzer dieser App dürfen nach anderen Benutzern der gleichen App suchen.",
-
-            // TODO Dashboard
             "defaultSpaceName" : "Titel der Kachel des Plugins auf dem Dashboard.",
             "tags" : "Kategorien unter welchen das Plugin im MIDATA Store erscheinen wird.",
             "url" : "URL der Hauptseite des Plugins. Wenn Sie das MIDATA-Template verwenden ist es 'dist/index.html#?authToken=:authToken''",
             "previewUrl" : "URL der Dashboard-Kachel des Plugins. Leer lassen falls keine solche Kachel angeboten wird.",
-
-            // TODO Konfiguration -> heisst jetzt anders
-            "defaultSpaceContext" : "Wählen Sie 'Mich' für das Standard-Dashboard. Wählen Sie 'Konfiguration' für ein Import-Plugin.",
+            "defaultSpaceContext" : "Wählen Sie 'Dashboard' für das Standard-Dashboard. Wählen Sie 'Konfiguration' für ein Import-Plugin.",
             "defaultQuery_mobile" : "Filter, das den Zugriff der App auf die Daten begrenzt. Der Zugriff muss eingeschränkt werden nach 'code', 'content' oder 'group' und kann eingeschränkt werden nach 'format' oder 'owner'. Gültiges Beispiel (alle Observations): '{ \"group\" : \"all\", \"group-system\" : \"v1\", \"format\" : [\"fhir/Observation\" ] }'",
             "defaultQuery" : "Filter, das den Zugriff des Plugins auf die Daten begrenzt. Der Zugriff muss mindestens eingeschränkt werden nach 'code', 'content', 'group', 'format' oder 'owner'. Gültiges Beispiel (alle Observations): '{ \"format\" : [\"fhir/Observation\" ] }'",
             "defaultQuery_extra" : "Gültige Werte für 'code', 'content' oder 'format' sind im Developer Guide unter 'Format/Content' aufgelistet. Für erste Versionen kann der Vollzugriff erstattet werden mit { \"group\" : \"all\", \"group-system\" : \"v1\" }. Schränken Sie allerdings den Zugriff weiter ein, bevor das Plugin oder die App produktiv eingesetzt wird.",
@@ -135,7 +131,10 @@
             "all" : "Während der Entwicklung, Zugriff auf alle Daten des Benutzers erlauben. (MUSS durch ein geeignetes Data Access Filter ersetzt werden bevor das Plugin produktiv eingesetzt wird)"
         },
         "export_btn" : "Applikationsdefinition exportieren",
-        "export_help" : "Exportieren Sie die Definition dieser Applikation, damit sie auf einem anderen Server importiert und verwendet werden kann."
+        "export_help" : "Exportieren Sie die Definition dieser Applikation, damit sie auf einem anderen Server importiert und verwendet werden kann.",
+        "important" : "WICHTIG",
+        "logoutwarning" : "Bei einer Änderung der Applikationsdefinition, werden alle Benutzer von dieser Applikation getrennt. Sie müssen die Verwendung der Applikation bei der nächsten Anmeldung erneut bestätigen.",
+        "researchwarning" : "Eine Änderung der Applikationsdefinition entkoppelt diese Forschungsapplikation von allen Studien!"
     },
 
     "appstats" : {

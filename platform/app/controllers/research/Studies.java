@@ -1306,12 +1306,13 @@ public class Studies extends APIController {
 		if (self == null) throw new AuthException("error.notauthorized.action", "User not member of study group");
 		if (!self.role.manageParticipants()) throw new BadRequestException("error.notauthorized.action", "User is not allowed to manage participants.");
 	
+		AutoJoiner.approve(study, participation.owner, null, participation.group);
 		
 		//participation.addHistory(new History(EventType.PARTICIPATION_APPROVED, user, comment));
-		joinSharing(userId, study, participation.group, true, Collections.singletonList(participation));
+		/*joinSharing(userId, study, participation.group, true, Collections.singletonList(participation));
 		participation.setPStatus(ParticipationStatus.ACCEPTED);
 		AuditManager.instance.success();
-		
+		*/
 		return ok();
 	}
 	
@@ -1327,28 +1328,10 @@ public class Studies extends APIController {
 	    Set<String> fields = Sets.create("owner", "ownerName", "group", "recruiter", "recruiterName", "pstatus", "gender", "country", "yearOfBirth", "partName");	    
 		List<StudyParticipation> participants1 = StudyParticipation.getParticipantsByStudy(study._id, CMaps.map("pstatus", ParticipationStatus.REQUEST), fields, 0);
 
-		List<List<StudyParticipation>> parts = Lists.partition(participants1, 1000);
-		for (List<StudyParticipation> participants : parts) {
-		  joinSharing(userId, study, group, true, participants);
-		
-		  Set<MidataId> ids = new HashSet<MidataId>();
-		  
-		  for (StudyParticipation participation : participants) {
-			AuditManager.instance.addAuditEvent(AuditEventType.STUDY_PARTICIPATION_GROUP_ASSIGNED, app, userId, participation, study);												
-			participation.group = group;
-			ids.add(participation._id);
-		  }
-		  
-		  StudyParticipation.setManyGroup(ids, group);
-		  
-		  for (StudyParticipation participation : participants) {
-			AuditManager.instance.addAuditEvent(AuditEventType.STUDY_PARTICIPATION_APPROVED, app, userId, participation, study);																				
-		  }
-		  
-		  StudyParticipation.setManyStatus(ids, ParticipationStatus.ACCEPTED);
-		  
-		  AuditManager.instance.success();
+		for (StudyParticipation part : participants1) {
+			AutoJoiner.autoJoin(app, part.owner, study._id);
 		}
+				
 		
 	}
 	
@@ -1694,5 +1677,6 @@ public class Studies extends APIController {
 		Study.delete(studyId);
 		
 		AuditManager.instance.success();
-	}
+	}	
+	
 }
