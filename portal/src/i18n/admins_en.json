@@ -118,7 +118,7 @@
   "admin_study" : {
      "title" : "Study",
      "name" : "Name",
-     "created_at" : "Created at",
+     "created_at" : "Created on",
      "created_by" : "Created by",
      "description" : "Description",
      "code" : "Code",

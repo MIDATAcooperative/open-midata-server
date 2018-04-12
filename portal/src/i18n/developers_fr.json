@@ -86,8 +86,8 @@
         "linkedStudy" : "Étude liée à l'app (code)",
         "mustParticipateInStudy" : "Participation à l'étude requise",
         "admin_only" : "Seul un administrateur MIDATA peut modifier cette section. Veuillez faire une demande de changement si nécessaire.",
-        "terms_of_use" : "Conditions Générales (CG)",
-        "show_terms" : "Afficher les Conditions Générales (CG)",
+        "terms_of_use" : "Conditions Générales",
+        "show_terms" : "Afficher les Conditions Générales",
         "unlock_code" : "Code d'activation",
         "info" : {
             "filename" : "Ce nom est utilisé (en interne) pour identifier votre app. Il doit s'agir d'un identificateur valide (a-z, A-Z, 0-9, _).",
@@ -102,7 +102,7 @@
             "tags" : "Catégories sous lesquelles le plugin sera listé dans le MIDATA Store.",
             "url" : "URL de la page principale du plugin. Si vous utilisez le modèle MIDATA, c'est 'dist/index.html#?authToken=:authToken''",
             "previewUrl" : "URL de la tuile du tableau de bord du plugin. Laisser vide si une telle tuile n'est pas fournie.",
-            "defaultSpaceContext" : "Choisissez 'Moi' pour le tableau de bord standard. Choisissez 'Configuration' pour un plugin d'importation.",
+            "defaultSpaceContext" : "Choisissez 'Tableau de bord' pour le tableau de bord standard. Choisissez 'Configuration' pour un plugin d'importation.",
             "defaultQuery_mobile" : "Filtre limitant l'accès de l'app aux données. L'accès doit être limité par 'code', 'content' ou 'group' et peut être restreint par 'format' ou 'owner'. Example valide (toutes les Observations) : '{ \"group\" : \"all\", \"group-system\" : \"v1\", \"format\" : [\"fhir/Observation\" ] }'",
             "defaultQuery" : "Filtre limitant l'accès du plugin aux données. L'accès doit être limité au moins par 'code', 'content', 'group', 'format' ou 'owner'. Example valide (toutes les Observations) : '{ \"format\" : [\"fhir/Observation\" ] }'",
             "defaultQuery_extra" : "Veuillez consulter les valeurs valides pour 'code', 'content' et 'format' sous 'Format/Content' dans le guide du développeur. Pour une première version, vous pouvez débuter avec un accès total en indiquant : { \"group\" : \"all\", \"group-system\" : \"v1\" }. Veuillez préciser la limitation avant que le plugin ou l'app soit mis en production.",
@@ -131,7 +131,10 @@
             "all" : "Pendant le développement, autoriser l'accès à toutes les données de l'utilisateur. (DOIT être remplacé par un Data Access Filter adéquat avant la mise en production de l'app)"
         },
         "export_btn" : "Exporter la définition de l'application",
-        "export_help" : "Exportez la définition de cette application, pour qu'elle puisse être importée et utilisée sur un autre serveur."
+        "export_help" : "Exportez la définition de cette application, pour qu'elle puisse être importée et utilisée sur un autre serveur.",
+        "important" : "IMPORTANT",
+        "logoutwarning" : "Changer la définition de l'application déconnectera tous les utilisateurs de cette application. Ils devront confirmer à nouveau l'utilisation de l'application à la prochaine connexion.",
+        "researchwarning" : "Changer la définition de l'application dissociera cette application de recherche de toutes les études!"
     },
 
     "appstats" : {

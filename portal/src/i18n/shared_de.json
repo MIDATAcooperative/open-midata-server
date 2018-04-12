@@ -17,7 +17,7 @@
         "sign_out" : "Abmelden",
         "edit_profile" : "Profil ändern",
         "app_count" : "Autorisierte Apps",
-        "study_count" : "Studienteilnahmen",      
+        "study_count" : "Studienteilnahmen",
         "me" : "Dashboard",
         "view" : "Ansehen",
         "overview" : "Übersicht",
@@ -531,8 +531,8 @@
         "unlock_code" : "Freischaltcode",
         "already_have_account" : "Ich habe bereits ein Konto",
         "more" : "Haben Sie noch ein paar Sekunden Zeit? Wir wären froh, wenn Sie uns noch ein paar Details über sich verraten könnten ☺️",
-        "generous" : "Ich bin heute großzügig - zeige die Eingabefelder!",
-        "hide_optional" : "Optionale Felder verstecken" 
+        "generous" : "Ich bin heute grosszügig, zeigen Sie mir die Eingabefelder!",
+        "hide_optional" : "Optionale Felder verstecken"
     },
 
     "login" : {
@@ -728,7 +728,7 @@
             "mobile" : "MIDATA mobile App",
             "research" : "Forschungs-Dashboard",
             "sandbox" : "Workspace",
-            "me" : "Meine Seite",
+            "me" : "Persönliches Dashboard",
             "config" : "Konfigurations-Dashboard",
             "mydata" : "Daten-Dashboard",
             "social" : "Social-Dashboard",
@@ -1080,7 +1080,7 @@
         "change_btn" : "Ändern",
         "success" : "E-Mail Adresse erfolgreich geändert!"
     },
-    
+
     "member_user" : {
         "account_status" : "Account-Status",
         "studyparticipant" : "Ihr Account wurde eingerichtet, um an eine Studie teilzunehmen. Die Funktionalität ist begrenzt. Sie können Ihren Account in einen vollwertigen Account umwandeln.",

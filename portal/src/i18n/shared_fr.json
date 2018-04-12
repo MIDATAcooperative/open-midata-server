@@ -49,7 +49,6 @@
             "not_plugin_owner" : "Ce n'est pas votre plugin"
         },
 
-
         "invalid" : {
             "email" : "Veuillez entrer une adresse e-mail valide",
             "credentials" : "Adresse e-mail ou mot de passe invalide.",
@@ -521,7 +520,7 @@
         "study" : "Recherche",
         "agb2" : "J'accepte les",
         "agb3" : "Conditions générales",
-        "privacypolicy2" : "J'accepte la",
+        "privacypolicy2" : "et la",
         "privacypolicy3" : "Déclaration de confidentialité",
         "app_agb" : "Conditions de l'app",
         "app_agb2" : "J'accepte les",
@@ -529,7 +528,10 @@
         "study_agb" : "Conditions de l'étude",
         "sign_up_btn" : "Créer un compte",
         "unlock_code" : "Code d'activation",
-        "already_have_account" : "J'ai déjà un compte"
+        "already_have_account" : "J'ai déjà un compte",
+        "more" : "Vous avez encore quelques secondes? Nous serions heureux si vous pouviez nous donner un peu plus de détails sur vous ☺️️",
+        "generous" : "Je me sens généreux aujourd'hui, montrez-moi les champs!",
+        "hide_optional" : "Masquer les champs facultatifs"
     },
 
     "login" : {
@@ -725,7 +727,7 @@
             "mobile" : "MIDATA Mobile App",
             "research" : "Tableau de bord de recherche",
             "sandbox" : "Espace de travail",
-            "me" : "Ma page",
+            "me" : "Tableau de bord personnel",
             "config" : "Tableau de bord de configuration",
             "mydata" : "Tableau de bord de mes données",
             "social" : "Tableau de bord social",
@@ -1077,7 +1079,7 @@
         "change_btn" : "Changer",
         "success" : "L'adresse e-mail a été changée avec succès!"
     },
-    
+
     "member_user" : {
         "account_status" : "État du compte",
         "studyparticipant" : "Votre compte a été créé pour participer à une étude. Sa fonctionnalité est limitée. Vous pouvez le faire évoluer vers un compte à part entière.",
