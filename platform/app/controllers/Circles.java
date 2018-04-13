@@ -542,8 +542,12 @@ public class Circles extends APIController {
 					
 		return ok();
 	}
-	
+
 	public static void addUsers(MidataId executor, EntityType type, Consent consent, Set<MidataId> newMemberIds) throws AppException {
+		addUsers(executor, executor, type, consent, newMemberIds);
+	}
+	
+	public static void addUsers(MidataId personExecutor, MidataId userGroupExecutor, EntityType type, Consent consent, Set<MidataId> newMemberIds) throws AppException {
 		if (type != null) {			
 			if (consent.entityType == null) {
 				consent.entityType = type;				
@@ -557,12 +561,12 @@ public class Circles extends APIController {
 		
 		consent.authorized.addAll(newMemberIds);
 		if (!consent.type.equals(ConsentType.STUDYRELATED)) {
-		  AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_PERSONS_CHANGE, executor, consent);
+		  AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_PERSONS_CHANGE, personExecutor, consent);
 		}
 		Consent.set(consent._id, "authorized", consent.authorized);
 		
 		if (consent.status == ConsentStatus.ACTIVE) {
-		  RecordManager.instance.shareAPS(consent._id, executor, newMemberIds);
+		  RecordManager.instance.reshareAPS(consent._id, personExecutor, userGroupExecutor, newMemberIds);
 		}
 		
 		AuditManager.instance.success();
