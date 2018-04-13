@@ -197,6 +197,17 @@ public class RecordManager {
 		AccessLog.logEnd("end shareAPS");
 	}
 	
+	public void reshareAPS(MidataId apsId, MidataId executorId, MidataId groupWithAccessId,
+			Set<MidataId> targetUsers) throws AppException {
+		if (groupWithAccessId == null || groupWithAccessId.equals(executorId)) {
+			shareAPS(apsId, executorId, targetUsers);
+		} else {
+			AccessLog.logBegin("begin reshareAPS aps="+apsId.toString()+" executor="+executorId.toString()+" #targetUsers="+targetUsers.size());
+			Feature_UserGroups.findApsCacheToUse(getCache(executorId), apsId).getAPS(apsId).addAccess(targetUsers);
+			AccessLog.logEnd("end shareAPS");
+		}
+	}
+	
 	/**
 	 * share access permission set content with another entity that has a public key
 	 * @param apsId ID of APS
@@ -293,6 +304,19 @@ public class RecordManager {
 				CMaps.map(query).map("owner", fromAPS),	RecordManager.SHARING_FIELDS);
 		
 		share(cache, toAPS, toAPSOwner, recordEntries, withOwnerInformation);
+		
+		return recordEntries.size();
+	}
+	
+	public int copyAPS(MidataId who, MidataId fromAPS, MidataId toAPS, MidataId toAPSOwner) throws AppException {
+		
+		APSCache tocache = Feature_UserGroups.findApsCacheToUse(getCache(who), toAPS);
+		APSCache fromcache = Feature_UserGroups.findApsCacheToUse(getCache(who), fromAPS);
+		APS apswrapper = tocache.getAPS(toAPS, toAPSOwner);
+		List<DBRecord> recordEntries = QueryEngine.listInternal(fromcache, fromAPS, null,
+				CMaps.map("streams", "true").map("flat", "true"), RecordManager.SHARING_FIELDS);
+		
+		share(tocache, toAPS, toAPSOwner, recordEntries, false);
 		
 		return recordEntries.size();
 	}
