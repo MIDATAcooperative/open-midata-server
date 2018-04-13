@@ -16,6 +16,7 @@ import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationStatus;
 import models.enums.StudyExecutionStatus;
 import play.libs.Akka;
+import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.ServerTools;
@@ -41,66 +42,13 @@ private static ActorRef autoJoiner;
 		autoJoiner.tell(new JoinMessage(app, user, study), ActorRef.noSender());
 	}
 	       
-    protected static void autoApproveSingle(List<StudyParticipation> participants, MidataId userId, MidataId app, Study study, String group, MidataId targetUser) throws AppException {			   		  		
-		//controllers.research.Studies.joinSharing(userId, study, group, true, participants);
-		
-		Set<MidataId> ids = new HashSet<MidataId>();
-		  
-		for (StudyParticipation participation : participants) {
-			if (participation.group == null || !participation.group.equals(group)) {
-			  AuditManager.instance.addAuditEvent(AuditEventType.STUDY_PARTICIPATION_GROUP_ASSIGNED, app, userId, participation, study);
-			}
-			participation.group = group;
-			ids.add(participation._id);
-		}
-		  
-		StudyParticipation.setManyGroup(ids, group);
-		  
-		for (StudyParticipation participation : participants) {
-			AuditManager.instance.addAuditEvent(AuditEventType.STUDY_PARTICIPATION_APPROVED, app, userId, participation, study);																				
-		}
-		  
-		StudyParticipation.setManyStatus(ids, ParticipationStatus.ACCEPTED);
-		  					
-		AuditManager.instance.success();
-				
-	}
+  
     
-    public static void approve(Study theStudy, MidataId participant, MidataId app, String group) throws AppException {
-    	Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByGroup(theStudy._id);
-
+    public static void approve(MidataId executor, Study theStudy, MidataId participant, MidataId app, String group) throws AppException {    	
 	    Set<String> fields = Sets.create("owner", "ownerName", "group", "recruiter", "recruiterName", "pstatus", "gender", "country", "yearOfBirth", "partName");	    
 		List<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(theStudy._id, CMaps.map("pstatus", ParticipationStatus.REQUEST).map("owner", participant), fields, 0);
-
-		MidataId executor = null;
-		for (UserGroupMember ugm : ugms) {		   
-		  if  (ugm.role.manageParticipants()) {
-			executor = ugm.member;
-			
-			try {
-				String handle = KeyManager.instance.login(1000l*60l, false);
-				KeyManager.instance.unlock(ugm.member, null);
-				
-					
-				controllers.research.Studies.joinSharing(ugm.member, theStudy, group, true, participants);
-																		
-			} finally {
-				
-			    KeyManager.instance.logout();
-			    ServerTools.endRequest();
-			}
 		
-		  }
-		}
-		
-		try {
-			String handle = KeyManager.instance.login(1000l*60l, false);
-			KeyManager.instance.unlock(executor, null);																														
-			AutoJoiner.autoApproveSingle(participants, executor, app, theStudy, group, participant);
-		} finally {						
-		    KeyManager.instance.logout();
-		    ServerTools.endRequest();
-		}
+		Studies.autoApprove(app, theStudy, executor, theStudy.autoJoinGroup, participants);			
     }
 	
 }
@@ -117,8 +65,32 @@ class AutoJoinerActor extends UntypedActor {
 			
 			Study theStudy = Study.getById(((JoinMessage) message).getStudy(), Sets.create("_id", "participantSearchStatus", "executionStatus", "autoJoinGroup", "name", "code"));				
 			if (theStudy != null && theStudy.autoJoinGroup != null) {
-				if (theStudy.participantSearchStatus.equals(ParticipantSearchStatus.SEARCHING) && (theStudy.executionStatus.equals(StudyExecutionStatus.PRE) || theStudy.executionStatus.equals(StudyExecutionStatus.RUNNING))) {					
-					AutoJoiner.approve(theStudy, ((JoinMessage) message).getUser(), ((JoinMessage) message).getApp(), theStudy.autoJoinGroup);									
+				if (theStudy.participantSearchStatus.equals(ParticipantSearchStatus.SEARCHING) && (theStudy.executionStatus.equals(StudyExecutionStatus.PRE) || theStudy.executionStatus.equals(StudyExecutionStatus.RUNNING))) {
+					
+					Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByGroup(theStudy._id);
+					UserGroupMember ugm = null;
+					for (UserGroupMember ugmx : ugms) {		   
+					  if  (ugmx.role.manageParticipants()) { ugm = ugmx; }
+					}
+					
+					if (ugm != null) {
+						AccessLog.log("START AUTOJOIN");		
+						try {
+							String handle = KeyManager.instance.login(1000l*60l, false);
+							KeyManager.instance.unlock(ugm.member, null);
+							RecordManager.instance.setAccountOwner(ugm.member, ugm.member);
+							
+							AutoJoiner.approve(ugm.member, theStudy, ((JoinMessage) message).getUser(), ((JoinMessage) message).getApp(), theStudy.autoJoinGroup);
+							
+							AccessLog.log("END AUTOJOIN");
+						} finally {
+							
+						    KeyManager.instance.logout();
+						    ServerTools.endRequest();
+						}
+					
+					  }
+										
 				}
 			}
 			
