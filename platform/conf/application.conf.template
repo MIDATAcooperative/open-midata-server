@@ -24,6 +24,9 @@ errorreports.targetname="Security Officer"
 instanceType=INSTANCETYPE
 default.language=DEFAULT_LANGUAGE
 
+versions.midata-terms-of-use=1.1
+versions.midata-privacy-policy=1.1
+
 # Logger
 # ~~~~~
 # You can also configure logback (http://logback.qos.ch/), by providing a logger.xml file in the conf directory .
