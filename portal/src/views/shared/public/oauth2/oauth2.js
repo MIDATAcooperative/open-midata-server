@@ -125,6 +125,10 @@ angular.module('portal')
 		$state.go("public.registration_new");
 	};
 	
+	$scope.lostpw = function() {
+		$state.go("public.lostpw");
+	};
+	
 	$scope.terms = function(def) {
 		views.setView("terms", def, "Terms");
 	};

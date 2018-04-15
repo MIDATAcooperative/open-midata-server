@@ -9,11 +9,7 @@
 						<h3 class="panel-title" translate="postregister.title"></h3>
 					</div>
 					<div class="panel-body">
-						<p ng-show="resentSuccess" class="alert alert-success" translate="postregister.resent_success"></p>
-						<p ng-show="codeSuccess" class="alert alert-success" translate="postregister.address_success"></p>
-						<p ng-show="mailSuccess" class="alert alert-success" translate="postregister.email_success"></p>
-						<p ng-show="error" class="alert alert-danger" translate="{{ error.code }}"></p>
-						
+							
 						<div ng-show="progress.PASSWORD_SET">
 						   <p translate="setpw.enter_new"></p>
 						   <form ng-submit="pwsubmit()" role="form" class="form form-horizontal">
@@ -32,6 +28,7 @@
 						<div ng-show="progress.EMAIL_VERIFIED">
 							<p translate="postregister.email_instructions"></p>
 							<button class="btn btn-default" ng-click="resend()" translate="postregister.resend_btn"></button>
+							<p ng-show="resentSuccess" class="alert alert-success" translate="postregister.resent_success"></p>
 							<button class="btn btn-default" ng-click="retry()" ng-show="isoauth" translate="postregister.retry_btn"></button>
 							<hr>
 							<p class="extraspace" translate="postregister.email_code"></p>
@@ -131,7 +128,12 @@
 						</div>
                      </div>
 
-
+                       
+                        
+						<p ng-show="codeSuccess" class="alert alert-success" translate="postregister.address_success"></p>
+						<p ng-show="mailSuccess" class="alert alert-success" translate="postregister.email_success"></p>
+						<p ng-show="error" class="alert alert-danger" translate="{{ error.code }}"></p>
+					
 					</div>
 				</div>
 			</div>

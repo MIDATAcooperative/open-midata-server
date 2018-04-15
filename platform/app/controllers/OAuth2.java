@@ -63,10 +63,8 @@ public class OAuth2 extends Controller {
 		return ok();
 	}
  	
-	
-	
-	
-		
+	public static long OAUTH_CODE_LIFETIME = 1000l * 60l * 5l;
+			
 	
 	private static boolean verifyAppInstance(MobileAppInstance appInstance, MidataId ownerId, MidataId applicationId) throws AppException {
 		if (appInstance == null) return false;
@@ -297,6 +295,7 @@ public class OAuth2 extends Controller {
     					
     		OAuthCodeToken tk = OAuthCodeToken.decrypt(code);
     		if (tk == null) throw new BadRequestException("error.internal", "invalid_grant");
+    		if (tk.created + OAUTH_CODE_LIFETIME < System.currentTimeMillis()) throw new BadRequestException("error.internal", "invalid_grant");
     		//AccessLog.log("cs:"+tk.codeChallenge);
     		//AccessLog.log("csm:"+tk.codeChallengeMethod);
     		

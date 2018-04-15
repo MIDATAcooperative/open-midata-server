@@ -151,7 +151,7 @@ module.exports = function(grunt) {
           dest: 'dest/app.js'
         },
         oauthjs: {
-            src: ['src/oauthapp.js', 'tmp/scripts/config.js', 'src/assets/**/*.js',  '!src/assets/scss/**/*.js', 'src/views/shared/public/oauth2/*.js', 'src/views/shared/public/postregister/*.js', 'src/views/members/public/registration/*.js', 'src/views/shared/public/terms/*.js' ],
+            src: ['src/oauthapp.js', 'tmp/scripts/config.js', 'src/assets/**/*.js',  '!src/assets/scss/**/*.js', 'src/views/shared/public/oauth2/*.js', 'src/views/shared/public/postregister/*.js', 'src/views/members/public/registration/*.js', 'src/views/shared/public/terms/*.js', 'src/views/shared/public/lostpw/*.js' ],
             dest: 'dest/oauthapp.js'
         },
         css : {

@@ -19,6 +19,16 @@ p, body {
     -webkit-animation-fill-mode: both;
 }
 
+.mi-or-blue input:-webkit-autofill {
+    -webkit-animation-name: autofill;
+    -webkit-animation-fill-mode: both;
+}
+
+.mi-or-signup input:-webkit-autofill {
+    -webkit-animation-name: autofill;
+    -webkit-animation-fill-mode: both;
+}
+
 
 .mi-at-link {		
 		text-align: center;
@@ -83,6 +93,10 @@ p, body {
     
   }
   
+  .form {
+    margin-top:10px;
+  }
+  
   .form-group {
     @extend .mi-at-input__fieldset;
     @extend .mi-at-input__fieldset--white;
@@ -91,9 +105,9 @@ p, body {
     &::after {
 			content: '';
 			position: absolute;
-			left: 23px;
+			/* left: 23px; */
 			margin-top: 40px;
-			width: calc(100% - 26px);
+			/* width: calc(100% - 26px); */
 
 			border-bottom: solid 1px $color-brand-grey-border;
 	}
@@ -102,14 +116,14 @@ p, body {
       font-size: $font-size-smallest;
       position:absolute;
       top: 3px;
-      left: 23px;
+      /* left: 23px; */
     }
     
     .form-control {
       font-size: $font-size-normal;
       position:absolute;
       top: 16px;
-      left: 23px;
+      /* left: 23px; */
       caret-color: $color-brand-white;
       color: $color-brand-white;
       width: 280px;

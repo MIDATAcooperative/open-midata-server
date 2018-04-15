@@ -531,7 +531,12 @@
     "already_have_account" : "I already have an account",
     "more" : "Have a few more seconds to spare? We'd be happy if you could give us a bit more details about you ☺️",
     "generous" : "I'm feeling generous today, show me the fields!",
-    "hide_optional" : "Hide optional fields" 
+    "hide_optional" : "Hide optional fields",
+    
+    "welcome_title" : "Welcome",
+    "welcome_text1" : "Your account has been created. We have send you a welcome email to your email address.",
+    "welcome_text2" : "Please klick on the confirmation link in the email to confirm that your email address is correct.",
+    "welcome_btn" : "I will do it" 
   },
 
   "login" : {
