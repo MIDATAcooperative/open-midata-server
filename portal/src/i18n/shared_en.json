@@ -494,7 +494,8 @@
 
   "registration" : {
     "sign_up" : "Sign Up",
-    "mandantory_fields" : "Please fill in the information below, fields marked with an asterisk (*) are mandatory",
+    "mandantory_fields" : "Please fill in the information below, fields marked with an asterisk (*) are mandatory.",
+    "password_policy" : "Password must be at least 8 characters long. (letters and digits)",
     "email" : "EMail",
     "password" : "Password",
     "password_repetition" : "Repeat Password",

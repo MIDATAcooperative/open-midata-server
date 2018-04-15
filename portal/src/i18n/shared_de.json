@@ -495,7 +495,7 @@
 
     "registration" : {
         "sign_up" : "Registrierung",
-        "mandantory_fields" : "Bitte füllen Sie die folgenden Felder aus, die mit einem Sternchen (*) gekennzeichneten Felder sind Pflichtfelder",
+        "mandantory_fields" : "Bitte füllen Sie die folgenden Felder aus, die mit einem Sternchen (*) gekennzeichneten Felder sind Pflichtfelder.",
         "email" : "E-Mail",
         "password" : "Kennwort",
         "password_repetition" : "Kennwort wiederholen",
