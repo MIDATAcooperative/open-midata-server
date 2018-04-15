@@ -17,10 +17,6 @@
 
     "help_welcome" : {
         "menu" : "Das oben stehende Menü enthält folgende Verknüpfungen:",
-
-        // TODO CHANGED
-        // OLD: Me
-        // NEW: Dashboard
         "menu_me" : "Dashboard",
         "menu_me_text" : "Ihr persönliches Dashboard, wo Sie Ihre Favoriten platzieren können.",
         "menu_overview" : "Übersicht",
@@ -35,10 +31,6 @@
         "answer_questions" : "Zum Starten empfehlen wir Ihnen einige Fragen zu beantworten. Ihr Konto wird an Hand Ihrer Antworten vorkonfiguriert.",
         "answered_questions" : "Danke, dass Sie die Konfigurationsfragen beantwortet haben! Sie können nun Ihr Dashboard betrachten oder die Konfiguration ggf. nochmals durchführen.",
         "answer_btn" : "Konfigurationsfragen jetzt beantworten",
-
-        // TODO CHANGED
-        // OLD: Visit 'me' page
-        // NEW: Visit my Dashboard
         "dashboard_btn" : "Zu meinem Dashboard wechseln",
         "answer_again_btn" : "Konfigurationsfragen nochmals beantworten"
     },

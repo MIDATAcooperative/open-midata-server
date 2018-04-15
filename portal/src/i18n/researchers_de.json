@@ -55,10 +55,6 @@
         "add_task_btn" : "Aufgabe für Teilnehmer hinzufügen",
         "plugin" : "Forschungsapplikation",
         "device" : "Code des Gerätes",
-
-        // TODO CHANGED
-        // OLD: Restrict read to group
-        // NEW: Restrict read to this group
         "restrict" : "Lesen auf diese Studiengruppe beschränken",
         "shareback" : "Die Applikation teilt Daten mit Teilnehmergruppe(n)",
         "add_application_btn" : "Forschungsapplikation hinzufügen",
@@ -90,15 +86,7 @@
 
     "studyoverview" : {
         "name" : "Name",
-
-        // TODO CHANGED
-        // OLD: Created At:
-        // NEW: Created on:
         "created_at" : "Erstellt bei:",
-
-        // TODO CHANGED
-        // OLD: Created By:
-        // NEW: Created by:
         "created_by" : "Erstellt durch:",
         "description" : "Beschreibung",
         "code" : "Code",

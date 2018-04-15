@@ -119,10 +119,6 @@
     "admin_study" : {
         "title" : "Studie",
         "name" : "Name",
-
-        // TODO CHANGED
-        // OLD: Created at
-        // NEW: Created on
         "created_at" : "Erstellt am",
         "created_by" : "Erstellt von",
         "description" : "Beschreibung",
@@ -149,23 +145,15 @@
 
     "admin_stats" : {
         "title" : "Statistiken",
-
-        // TODO NEW: 
         "what" : "",
         "value" : "Gesamtzahl",
         "diff_yesterday" : "Diff. zu vor 1 Tag",
         "diff_week" : "Diff. zu vor 7 Tagen",
         "recordCount" : "Datensätze in DB",
-
-        // TODO NEW: Archived Records
-        "vRecordCount" : "Archived Records",
-
-        // TODO NEW: DB Index Pages
+        "vRecordCount" : "Archivierte Datensätze",
         "indexPageCount" : "DB Index Pages",
         "appCount" : "Apps und Plugins",
-
-        // TODO NEW: User Languages
-        "languages" : "User Languages",
+        "languages" : "Benutzersprachen",
         "runningStudyCount" : "Laufende Studien",
         "groupCount" : "Teams (Gesundheitswesen und Forschung)",
         "auditEventCount" : "Audit-Ereignisse",

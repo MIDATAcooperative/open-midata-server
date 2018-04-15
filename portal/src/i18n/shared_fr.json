@@ -18,10 +18,6 @@
         "edit_profile" : "Modifier le profil",
         "app_count" : "Applications autorisées",
         "study_count" : "Inscriptions à des études",
-
-        // TODO CHANGED
-        // OLD: Me
-        // NEW: Dashboard
         "me" : "Moi",
         "view" : "Examiner",
         "overview" : "Vue d'ensemble",
@@ -52,7 +48,6 @@
             "study" : "Vous n'êtes pas autorisé à accéder à cette étude",
             "not_plugin_owner" : "Ce n'est pas votre plugin"
         },
-
 
         "invalid" : {
             "email" : "Veuillez entrer une adresse e-mail valide",
@@ -374,10 +369,6 @@
             "NEW" : "nouveau"
         },
         "frequency" : {
-
-            // TODO CHANGED
-            // OLD: Einmalig
-            // NEW: Once
             "ONCE" : "une fois",
             "DAILY" : "quotidien",
             "WEEKLY" : "hebdomadaire",
@@ -503,14 +494,8 @@
 
     "registration" : {
         "sign_up" : "S'inscrire",
-
-        // TODO CHANGED
-        // OLD: Please fill in the information below, fields marked with an asterisk (*) are mandatory
-        // NEW: Please fill in the information below, fields marked with an asterisk (*) are mandatory.
-        "mandantory_fields" : "Veuillez remplir les informations ci-dessous, les champs marqués d'un astérisque (*) sont obligatoires",
-
-        // TODO NEW: Password must be at least 8 characters long. (letters and digits)
-        "password_policy" : "Password must be at least 8 characters long. (letters and digits)",
+        "mandantory_fields" : "Veuillez remplir les informations ci-dessous, les champs marqués d'un astérisque (*) sont obligatoires.",
+        "password_policy" : "Le mot de passe doit comporter au moins 8 caractères (lettres et chiffres).",
         "email" : "E-mail",
         "password" : "Mot de passe",
         "password_repetition" : "Répéter le mot de passe",
@@ -549,18 +534,10 @@
         "generous" : "Je me sens généreux aujourd'hui, montrez-moi les champs!",
         "hide_optional" : "Masquer les champs facultatifs",
 
-
-        // TODO NEW: Welcome
-        "welcome_title" : "Welcome",
-
-        // TODO NEW: Your account has been created. We have send you a welcome email to your email address.
-        "welcome_text1" : "Your account has been created. We have send you a welcome email to your email address.",
-
-        // TODO NEW: Please klick on the confirmation link in the email to confirm that your email address is correct.
-        "welcome_text2" : "Please klick on the confirmation link in the email to confirm that your email address is correct.",
-
-        // TODO NEW: I will do it
-        "welcome_btn" : "I will do it"
+        "welcome_title" : "Bienvenue",
+        "welcome_text1" : "Votre compte MIDATA vient d'être créé. Un e-mail de confirmation vous a été envoyé.",
+        "welcome_text2" : "Veuillez cliquer sur le lien contenu dans l'e-mail pour terminer votre inscription.",
+        "welcome_btn" : "Je vais le faire"
     },
 
     "login" : {
@@ -756,10 +733,6 @@
             "mobile" : "MIDATA Mobile App",
             "research" : "Tableau de bord de recherche",
             "sandbox" : "Espace de travail",
-
-            // TODO CHANGED
-            // OLD: Me Page
-            // NEW: Personal Dashboard
             "me" : "Tableau de bord personnel",
             "config" : "Tableau de bord de configuration",
             "mydata" : "Tableau de bord de mes données",
@@ -799,10 +772,6 @@
         "title" : "Consentement",
         "owner" : "Propriétaire du consentement",
         "name" : "Libellé du consentement",
-
-        // TODO CHANGED
-        // OLD: Consent created at
-        // NEW: Consent created on
         "date_of_creation" : "Consentement créé le",
         "type" : "Type de consentement",
         "status" : "État du consentement",
@@ -906,7 +875,7 @@
     },
 
     "oauth2" : {
-        "requests_permission" : "demande l'autorisation d'accéder à vos données personnelles.",
+        "requests_permission" : "enregistre vos données personnelles dans votre compte MIDATA. Veuillez vous connecter ou vous inscrire si vous n’avez pas encore de compte.",
         "no_account" : "Je n'ai pas de compte",
         "reshares_data" : "L'application peut partager les données auxquelles elle a accès avec des tiers.",
         "allows_user_search" : "Vos nom et adresse e-mail peuvent être consultés par d'autres personnes utilisant cette application.",
@@ -920,7 +889,7 @@
         "shares_group" : "Groupe: {{ group }}",
         "shares_format" : "Format: {{ format }}",
         "shares_content" : "Contenu: {{ content }}",
-        "confirm_study" : "Inscrivez-vous à l'étude suivante"
+        "confirm_study" : "J’accepte les conditions d’utilisation de l’application et de participer à l’étude"
     },
 
     "dashboard" : {

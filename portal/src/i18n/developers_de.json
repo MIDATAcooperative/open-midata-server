@@ -86,15 +86,7 @@
         "linkedStudy" : "Mit der App verknüpfte Studie (Code)",
         "mustParticipateInStudy" : "Studienteilnahme erforderlich",
         "admin_only" : "Nur ein MIDATA Administrator darf diesen Abschnitt ändern. Bitte fordern Sie bei Bedarf Änderungen an.",
-
-        // TODO CHANGED
-        // OLD: General Terms and Conditions (T&Cs)
-        // NEW: General Terms and Conditions
         "terms_of_use" : "Allgemeine Geschäftsbedingungen",
-
-        // TODO CHANGED
-        // OLD: Show General Terms and Conditions (T&Cs)
-        // NEW: Show General Terms and Conditions
         "show_terms" : "Allgemeine Geschäftsbedingungen anzeigen",
         "unlock_code" : "Freischaltcode",
         "info" : {
@@ -110,10 +102,6 @@
             "tags" : "Kategorien unter welchen das Plugin im MIDATA Store erscheinen wird.",
             "url" : "URL der Hauptseite des Plugins. Wenn Sie das MIDATA-Template verwenden ist es 'dist/index.html#?authToken=:authToken''",
             "previewUrl" : "URL der Dashboard-Kachel des Plugins. Leer lassen falls keine solche Kachel angeboten wird.",
-
-            // TODO CHANGED
-            // OLD: Choose 'me' for the default dashboard. Choose 'config' if you write an import plugin.
-            // NEW: Choose 'Dashboard' for the default dashboard. Choose 'Config' if you write an import plugin.
             "defaultSpaceContext" : "Wählen Sie 'Dashboard' für das Standard-Dashboard. Wählen Sie 'Konfiguration' für ein Import-Plugin.",
             "defaultQuery_mobile" : "Filter, das den Zugriff der App auf die Daten begrenzt. Der Zugriff muss eingeschränkt werden nach 'code', 'content' oder 'group' und kann eingeschränkt werden nach 'format' oder 'owner'. Gültiges Beispiel (alle Observations): '{ \"group\" : \"all\", \"group-system\" : \"v1\", \"format\" : [\"fhir/Observation\" ] }'",
             "defaultQuery" : "Filter, das den Zugriff des Plugins auf die Daten begrenzt. Der Zugriff muss mindestens eingeschränkt werden nach 'code', 'content', 'group', 'format' oder 'owner'. Gültiges Beispiel (alle Observations): '{ \"format\" : [\"fhir/Observation\" ] }'",
@@ -145,15 +133,7 @@
         "export_btn" : "Applikationsdefinition exportieren",
         "export_help" : "Exportieren Sie die Definition dieser Applikation, damit sie auf einem anderen Server importiert und verwendet werden kann.",
         "important" : "WICHTIG",
-
-        // TODO CHANGED
-        // OLD: Changing the app definition will log out all users of that app. They will need to confirm again on next login.
-        // NEW: Changing the application definition will log out all users from that application. They will have to confirm the use of the application again on next login.
         "logoutwarning" : "Bei einer Änderung der Applikationsdefinition, werden alle Benutzer von dieser Applikation getrennt. Sie müssen die Verwendung der Applikation bei der nächsten Anmeldung erneut bestätigen.",
-
-        // TODO CHANGED
-        // OLD: Changing the app definition will unlink this research app from all studies!
-        // NEW: Changing the application definition will unlink this research application from all studies!
         "researchwarning" : "Eine Änderung der Applikationsdefinition entkoppelt diese Forschungsapplikation von allen Studien!"
     },
 
