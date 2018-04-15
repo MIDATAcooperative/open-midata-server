@@ -79,11 +79,12 @@ angular.module('portal')
 		  
 		  $scope.status.doAction("register", server.post(jsRoutes.controllers.QuickRegistration.register().url, JSON.stringify(data))).
 		  then(function(datax) { 			 
-			  oauth.setUser($scope.registration.email, $scope.registration.password);
-			  console.log(data);
-			  oauth.login(true, data.confirmStudy).then(function(result) {
-				  if (result !== "ACTIVE") { session.postLogin({ data : result}, $state);}
-			  });		
+			  oauth.setUser($scope.registration.email, $scope.registration.password);			  
+			  $scope.welcomemsg = true;	
+			  
+			  if ($scope.app && $scope.app.requirements && $scope.app.requirements.indexOf('EMAIL_VERIFIED') >= 0) {
+				  $scope.confirmWelcome(); 
+			  }
 		  });
 		  
 		} else {
@@ -92,6 +93,13 @@ angular.module('portal')
 		  then(function(data) { session.postLogin(data, $state); });
 		}
 				
+	};
+	
+	$scope.confirmWelcome = function() {
+		oauth.login(true, $scope.registration.confirmStudy).then(function(result) {
+		  //$scope.welcomemsg = false;
+		  if (result !== "ACTIVE") { session.postLogin({ data : result}, $state);}
+		});	
 	};
 	
 	$scope.changeLanguage = function(lang) {

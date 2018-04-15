@@ -1,6 +1,6 @@
 
 <div ng-controller="RegistrationCtrl" ng-cloak>
-	<div class="mi-or-signup" ng-hide="view.active">
+	<div class="mi-or-signup" ng-hide="view.active || welcomemsg">
 		<!-- Registration -->
 		<div class="mi-or-signup__content"
 			ng-class="{ 'mi-or-signup__content--two-columns' : (flags.optional || addressNeeded() || phoneNeeded()) }">
@@ -45,7 +45,7 @@
 
 							<formrowfloat myid="gender" type="select">
 							<select class="mi-at-select" id="gender" name="gender" ng-model="registration.gender" required><option value=""
-									translate="registration.gender" selected disabled></option>
+									 selected disabled>{{ 'registration.gender' | translate}} *</option>
 								<option value="FEMALE" translate="enum.gender.FEMALE">female</option>
 								<option value="MALE" translate="enum.gender.MALE"></option>
 								<option value="OTHER" translate="enum.gender.OTHER"></option></select></formrowfloat>
@@ -62,7 +62,7 @@
 							<formrowfloat myid="country" type="select">
 							<select class="mi-at-select" id="country" name="country" ng-model="registration.country" required
 								ng-options="country as ('enum.country.'+country)|translate for country in countries"><option value=""
-									translate="registration.country" selected disabled></option></select></formrowfloat>
+									selected disabled>{{ 'registration.country' | translate }} *</option></select></formrowfloat>
 
 						</div>
 
@@ -160,7 +160,7 @@
 
 
 
-					<form-error myid="confirmStudy" type="mustaccept" message="error.missing.agb"></form-error>
+					<form-error myid="confirmStudy" type="mustaccept" message="error.missing.study_accept"></form-error>
 
 				</div>
 
@@ -176,10 +176,10 @@
 					<span class="mi-at-text" translate="registration.sign_up_btn">create account</span>
 				</button>
 
-				<div class="mi-or-signup__login_link">
+				<!--  <div class="mi-or-signup__login_link">
 					<a ng-click="back();" href="javascript:"><span class="mi-at-text mi-at-text--smallest mi-at-text--white"
 						translate="registration.already_have_account"></span> </a>
-				</div>
+				</div>  -->
 
 			</form>
 		</div>
@@ -191,5 +191,24 @@
 		<div ng-include="'/views/shared/public/terms/terms-modal.html'"></div>
 	</div>
 
-</div>
+    <div class="mi-or-blue container" ng-show="welcomemsg">
+      	<div class="row">
+		  <div class="col-sm-12">
+			<div class="panel-container" style="max-width: 600px; padding-top: 20px; margin: 0 auto;">
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<h3 class="panel-title" translate="registration.welcome_title"></h3>
+					</div>
+					<div class="panel-body">
+					  <p translate="registration.welcome_text1"></p>
+					  <div class="extraspace"></div>
+					  <p translate="registration.welcome_text2"></p>
+					  <button class="btn btn-primary" type="button" translate="registration.welcome_btn" ng-click="confirmWelcome();"></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	  </div>		
+    </div>
 
+</div>

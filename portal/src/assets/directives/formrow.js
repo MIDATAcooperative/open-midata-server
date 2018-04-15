@@ -63,6 +63,7 @@ angular.module('portal')
     return {      
       link: function( scope, elem, attrs ) {
           elem.bind('keyup', function() { if (elem[0].value) angular.element(elem).addClass("mi-x-has_value"); else elem.removeClass("mi-x-has_value"); /*setAttribute('value', elem.value);*/ });
+          elem.bind('change', function() { if (elem[0].value) angular.element(elem).addClass("mi-x-has_value"); else elem.removeClass("mi-x-has_value"); /*setAttribute('value', elem.value);*/ });
       },
       restrict: 'A'
     };

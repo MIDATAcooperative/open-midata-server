@@ -532,7 +532,11 @@
         "already_have_account" : "Ich habe bereits ein Konto",
         "more" : "Haben Sie noch ein paar Sekunden Zeit? Wir wären froh, wenn Sie uns noch ein paar Details über sich verraten könnten ☺️",
         "generous" : "Ich bin heute großzügig - zeige die Eingabefelder!",
-        "hide_optional" : "Optionale Felder verstecken" 
+        "hide_optional" : "Optionale Felder verstecken",                    
+        "welcome_title" : "Willkommen",
+        "welcome_text1" : "Ihr Konto wurde angelegt. Wir haben ihnen eine Willkommens-E-Mail geschickt.",
+        "welcome_text2" : "Bitte öffnen Sie den Link in der E-Mail um zu bestätigen, dass ihre E-Mailadresse korrekt ist.",
+        "welcome_btn" : "Werde ich machen"  
     },
 
     "login" : {
