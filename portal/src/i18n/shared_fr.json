@@ -494,7 +494,8 @@
 
     "registration" : {
         "sign_up" : "S'inscrire",
-        "mandantory_fields" : "Veuillez remplir les informations ci-dessous, les champs marqués d'un astérisque (*) sont obligatoires",
+        "mandantory_fields" : "Veuillez remplir les informations ci-dessous, les champs marqués d'un astérisque (*) sont obligatoires.",
+        "password_policy" : "Le mot de passe doit comporter au moins 8 caractères (lettres et chiffres).",
         "email" : "E-mail",
         "password" : "Mot de passe",
         "password_repetition" : "Répéter le mot de passe",
@@ -531,7 +532,12 @@
         "already_have_account" : "J'ai déjà un compte",
         "more" : "Vous avez encore quelques secondes? Nous serions heureux si vous pouviez nous donner un peu plus de détails sur vous ☺️️",
         "generous" : "Je me sens généreux aujourd'hui, montrez-moi les champs!",
-        "hide_optional" : "Masquer les champs facultatifs"
+        "hide_optional" : "Masquer les champs facultatifs",
+
+        "welcome_title" : "Bienvenue",
+        "welcome_text1" : "Votre compte MIDATA vient d'être créé. Un e-mail de confirmation vous a été envoyé.",
+        "welcome_text2" : "Veuillez cliquer sur le lien contenu dans l'e-mail pour terminer votre inscription.",
+        "welcome_btn" : "Je vais le faire"
     },
 
     "login" : {
@@ -869,7 +875,7 @@
     },
 
     "oauth2" : {
-        "requests_permission" : "demande l'autorisation d'accéder à vos données personnelles.",
+        "requests_permission" : "enregistre vos données personnelles dans votre compte MIDATA. Veuillez vous connecter ou vous inscrire si vous n’avez pas encore de compte.",
         "no_account" : "Je n'ai pas de compte",
         "reshares_data" : "L'application peut partager les données auxquelles elle a accès avec des tiers.",
         "allows_user_search" : "Vos nom et adresse e-mail peuvent être consultés par d'autres personnes utilisant cette application.",
@@ -883,7 +889,7 @@
         "shares_group" : "Groupe: {{ group }}",
         "shares_format" : "Format: {{ format }}",
         "shares_content" : "Contenu: {{ content }}",
-        "confirm_study" : "Inscrivez-vous à l'étude suivante"
+        "confirm_study" : "J’accepte les conditions d’utilisation de l’application et de participer à l’étude"
     },
 
     "dashboard" : {

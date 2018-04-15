@@ -54,7 +54,7 @@
     "add_task_btn" : "Add Task for Participants",
     "plugin" : "Research Application",
     "device" : "Device Code",
-    "restrict" : "Restrict read to group",
+    "restrict" : "Restrict read to this group",
     "shareback" : "Application shares data with participant group(s)",
     "add_application_btn" : "Add Research Application",
     "linked_apps" : "Applications Consents",
@@ -85,8 +85,8 @@
   
   "studyoverview" : {
     "name" : "Name",
-    "created_at" : "Created At:",
-    "created_by" : "Created By:",
+    "created_at" : "Created on:",
+    "created_by" : "Created by:",
     "description" : "Description",
     "code" : "Code",
     "validation_status" : "Validation Status",

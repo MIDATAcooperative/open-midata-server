@@ -496,6 +496,7 @@
     "registration" : {
         "sign_up" : "Registrierung",
         "mandantory_fields" : "Bitte füllen Sie die folgenden Felder aus, die mit einem Sternchen (*) gekennzeichneten Felder sind Pflichtfelder.",
+        "password_policy" : "Das Kennwort muss mindestens 8 Zeichen lang sein (Buchstaben und Ziffern).",
         "email" : "E-Mail",
         "password" : "Kennwort",
         "password_repetition" : "Kennwort wiederholen",
@@ -532,11 +533,12 @@
         "already_have_account" : "Ich habe bereits ein Konto",
         "more" : "Haben Sie noch ein paar Sekunden Zeit? Wir wären froh, wenn Sie uns noch ein paar Details über sich verraten könnten ☺️",
         "generous" : "Ich bin heute grosszügig, zeigen Sie mir die Eingabefelder!",
-        "hide_optional" : "Optionale Felder verstecken",                    
+        "hide_optional" : "Optionale Felder verstecken",
+
         "welcome_title" : "Willkommen",
-        "welcome_text1" : "Ihr Konto wurde angelegt. Wir haben ihnen eine Willkommens-E-Mail geschickt.",
-        "welcome_text2" : "Bitte öffnen Sie den Link in der E-Mail um zu bestätigen, dass ihre E-Mailadresse korrekt ist.",
-        "welcome_btn" : "Werde ich machen"  
+        "welcome_text1" : "Ihr MIDATA-Konto wurde gerade erstellt. Eine Bestätigungs-E-Mail wurde Ihnen gesendet.",
+        "welcome_text2" : "Bitte klicken Sie auf den Link in der E-Mail, um Ihre Registrierung abzuschliessen.",
+        "welcome_btn" : "Ich werde es machen"
     },
 
     "login" : {
@@ -874,7 +876,7 @@
     },
 
     "oauth2" : {
-        "requests_permission" : "bittet um die Erlaubnis, auf Ihre persönlichen Daten zuzugreifen.",
+        "requests_permission" : "speichert Ihre persönlichen Daten in Ihrem MIDATA-Konto. Bitte melden Sie sich an oder registrieren Sie sich, wenn Sie noch kein Konto haben.",
         "no_account" : "Ich habe kein Konto",
         "reshares_data" : "Die Applikation darf Daten, auf die sie Zugriff hat, an Dritte weitergeben.",
         "allows_user_search" : "Ihr Name und Ihre E-Mail-Adresse können von anderen Personen, die diese Applikation verwenden, durchsucht werden.",
@@ -888,7 +890,7 @@
         "shares_group" : "Gruppe: {{ group }}",
         "shares_format" : "Format: {{ format }}",
         "shares_content" : "Inhalt: {{ content }}",
-        "confirm_study" : "Melden Sie sich für die folgende Studie an"
+        "confirm_study" : "Ich akzeptiere die Nutzungsbedingungen der Applikation und die Teilnahme an der Studie"
     },
 
     "dashboard" : {
