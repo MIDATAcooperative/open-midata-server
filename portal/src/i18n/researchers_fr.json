@@ -86,7 +86,7 @@
 
     "studyoverview" : {
         "name" : "Nom",
-        "created_at" : "Créé à:",
+        "created_at" : "Créé le:",
         "created_by" : "Créé par:",
         "description" : "Description",
         "code" : "Code",
