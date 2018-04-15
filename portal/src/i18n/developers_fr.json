@@ -86,7 +86,15 @@
         "linkedStudy" : "Étude liée à l'app (code)",
         "mustParticipateInStudy" : "Participation à l'étude requise",
         "admin_only" : "Seul un administrateur MIDATA peut modifier cette section. Veuillez faire une demande de changement si nécessaire.",
+
+        // TODO CHANGED
+        // OLD: General Terms and Conditions (T&Cs)
+        // NEW: General Terms and Conditions
         "terms_of_use" : "Conditions Générales",
+
+        // TODO CHANGED
+        // OLD: Show General Terms and Conditions (T&Cs)
+        // NEW: Show General Terms and Conditions
         "show_terms" : "Afficher les Conditions Générales",
         "unlock_code" : "Code d'activation",
         "info" : {
@@ -102,6 +110,10 @@
             "tags" : "Catégories sous lesquelles le plugin sera listé dans le MIDATA Store.",
             "url" : "URL de la page principale du plugin. Si vous utilisez le modèle MIDATA, c'est 'dist/index.html#?authToken=:authToken''",
             "previewUrl" : "URL de la tuile du tableau de bord du plugin. Laisser vide si une telle tuile n'est pas fournie.",
+
+            // TODO CHANGED
+            // OLD: Choose 'me' for the default dashboard. Choose 'config' if you write an import plugin.
+            // NEW: Choose 'Dashboard' for the default dashboard. Choose 'Config' if you write an import plugin.
             "defaultSpaceContext" : "Choisissez 'Tableau de bord' pour le tableau de bord standard. Choisissez 'Configuration' pour un plugin d'importation.",
             "defaultQuery_mobile" : "Filtre limitant l'accès de l'app aux données. L'accès doit être limité par 'code', 'content' ou 'group' et peut être restreint par 'format' ou 'owner'. Example valide (toutes les Observations) : '{ \"group\" : \"all\", \"group-system\" : \"v1\", \"format\" : [\"fhir/Observation\" ] }'",
             "defaultQuery" : "Filtre limitant l'accès du plugin aux données. L'accès doit être limité au moins par 'code', 'content', 'group', 'format' ou 'owner'. Example valide (toutes les Observations) : '{ \"format\" : [\"fhir/Observation\" ] }'",
@@ -133,7 +145,15 @@
         "export_btn" : "Exporter la définition de l'application",
         "export_help" : "Exportez la définition de cette application, pour qu'elle puisse être importée et utilisée sur un autre serveur.",
         "important" : "IMPORTANT",
+
+        // TODO CHANGED
+        // OLD: Changing the app definition will log out all users of that app. They will need to confirm again on next login.
+        // NEW: Changing the application definition will log out all users from that application. They will have to confirm the use of the application again on next login.
         "logoutwarning" : "Changer la définition de l'application déconnectera tous les utilisateurs de cette application. Ils devront confirmer à nouveau l'utilisation de l'application à la prochaine connexion.",
+
+        // TODO CHANGED
+        // OLD: Changing the app definition will unlink this research app from all studies!
+        // NEW: Changing the application definition will unlink this research application from all studies!
         "researchwarning" : "Changer la définition de l'application dissociera cette application de recherche de toutes les études!"
     },
 

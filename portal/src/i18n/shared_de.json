@@ -18,6 +18,10 @@
         "edit_profile" : "Profil ändern",
         "app_count" : "Autorisierte Apps",
         "study_count" : "Studienteilnahmen",
+
+        // TODO CHANGED
+        // OLD: Me
+        // NEW: Dashboard
         "me" : "Dashboard",
         "view" : "Ansehen",
         "overview" : "Übersicht",
@@ -370,6 +374,10 @@
             "NEW" : "Neu"
         },
         "frequency" : {
+
+            // TODO CHANGED
+            // OLD: Einmalig
+            // NEW: Once
             "ONCE" : "Einmalig",
             "DAILY" : "Täglich",
             "WEEKLY" : "Wöchentlich",
@@ -495,7 +503,14 @@
 
     "registration" : {
         "sign_up" : "Registrierung",
+
+        // TODO CHANGED
+        // OLD: Please fill in the information below, fields marked with an asterisk (*) are mandatory
+        // NEW: Please fill in the information below, fields marked with an asterisk (*) are mandatory.
         "mandantory_fields" : "Bitte füllen Sie die folgenden Felder aus, die mit einem Sternchen (*) gekennzeichneten Felder sind Pflichtfelder.",
+
+        // TODO NEW: Password must be at least 8 characters long. (letters and digits)
+        "password_policy" : "Password must be at least 8 characters long. (letters and digits)",
         "email" : "E-Mail",
         "password" : "Kennwort",
         "password_repetition" : "Kennwort wiederholen",
@@ -532,11 +547,28 @@
         "already_have_account" : "Ich habe bereits ein Konto",
         "more" : "Haben Sie noch ein paar Sekunden Zeit? Wir wären froh, wenn Sie uns noch ein paar Details über sich verraten könnten ☺️",
         "generous" : "Ich bin heute grosszügig, zeigen Sie mir die Eingabefelder!",
-        "hide_optional" : "Optionale Felder verstecken",                    
+        "hide_optional" : "Optionale Felder verstecken",
+
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: Welcome
         "welcome_title" : "Willkommen",
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: Your account has been created. We have send you a welcome email to your email address.
         "welcome_text1" : "Ihr Konto wurde angelegt. Wir haben ihnen eine Willkommens-E-Mail geschickt.",
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: Please klick on the confirmation link in the email to confirm that your email address is correct.
         "welcome_text2" : "Bitte öffnen Sie den Link in der E-Mail um zu bestätigen, dass ihre E-Mailadresse korrekt ist.",
-        "welcome_btn" : "Werde ich machen"  
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: I will do it
+        "welcome_btn" : "Werde ich machen"
     },
 
     "login" : {
@@ -732,6 +764,10 @@
             "mobile" : "MIDATA mobile App",
             "research" : "Forschungs-Dashboard",
             "sandbox" : "Workspace",
+
+            // TODO CHANGED
+            // OLD: Me Page
+            // NEW: Personal Dashboard
             "me" : "Persönliches Dashboard",
             "config" : "Konfigurations-Dashboard",
             "mydata" : "Daten-Dashboard",
@@ -771,6 +807,10 @@
         "title" : "Zustimmung",
         "owner" : "Besitzer der Zustimmung",
         "name" : "Name der Zustimmung",
+
+        // TODO CHANGED
+        // OLD: Consent created at
+        // NEW: Consent created on
         "date_of_creation" : "Zustimmung erstellt am",
         "type" : "Typ der Zustimmung",
         "status" : "Status der Zustimmung",

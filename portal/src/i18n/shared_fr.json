@@ -18,6 +18,10 @@
         "edit_profile" : "Modifier le profil",
         "app_count" : "Applications autorisées",
         "study_count" : "Inscriptions à des études",
+
+        // TODO CHANGED
+        // OLD: Me
+        // NEW: Dashboard
         "me" : "Moi",
         "view" : "Examiner",
         "overview" : "Vue d'ensemble",
@@ -48,6 +52,7 @@
             "study" : "Vous n'êtes pas autorisé à accéder à cette étude",
             "not_plugin_owner" : "Ce n'est pas votre plugin"
         },
+
 
         "invalid" : {
             "email" : "Veuillez entrer une adresse e-mail valide",
@@ -369,6 +374,10 @@
             "NEW" : "nouveau"
         },
         "frequency" : {
+
+            // TODO CHANGED
+            // OLD: Einmalig
+            // NEW: Once
             "ONCE" : "une fois",
             "DAILY" : "quotidien",
             "WEEKLY" : "hebdomadaire",
@@ -494,7 +503,14 @@
 
     "registration" : {
         "sign_up" : "S'inscrire",
+
+        // TODO CHANGED
+        // OLD: Please fill in the information below, fields marked with an asterisk (*) are mandatory
+        // NEW: Please fill in the information below, fields marked with an asterisk (*) are mandatory.
         "mandantory_fields" : "Veuillez remplir les informations ci-dessous, les champs marqués d'un astérisque (*) sont obligatoires",
+
+        // TODO NEW: Password must be at least 8 characters long. (letters and digits)
+        "password_policy" : "Password must be at least 8 characters long. (letters and digits)",
         "email" : "E-mail",
         "password" : "Mot de passe",
         "password_repetition" : "Répéter le mot de passe",
@@ -531,7 +547,20 @@
         "already_have_account" : "J'ai déjà un compte",
         "more" : "Vous avez encore quelques secondes? Nous serions heureux si vous pouviez nous donner un peu plus de détails sur vous ☺️️",
         "generous" : "Je me sens généreux aujourd'hui, montrez-moi les champs!",
-        "hide_optional" : "Masquer les champs facultatifs"
+        "hide_optional" : "Masquer les champs facultatifs",
+
+
+        // TODO NEW: Welcome
+        "welcome_title" : "Welcome",
+
+        // TODO NEW: Your account has been created. We have send you a welcome email to your email address.
+        "welcome_text1" : "Your account has been created. We have send you a welcome email to your email address.",
+
+        // TODO NEW: Please klick on the confirmation link in the email to confirm that your email address is correct.
+        "welcome_text2" : "Please klick on the confirmation link in the email to confirm that your email address is correct.",
+
+        // TODO NEW: I will do it
+        "welcome_btn" : "I will do it"
     },
 
     "login" : {
@@ -727,6 +756,10 @@
             "mobile" : "MIDATA Mobile App",
             "research" : "Tableau de bord de recherche",
             "sandbox" : "Espace de travail",
+
+            // TODO CHANGED
+            // OLD: Me Page
+            // NEW: Personal Dashboard
             "me" : "Tableau de bord personnel",
             "config" : "Tableau de bord de configuration",
             "mydata" : "Tableau de bord de mes données",
@@ -766,6 +799,10 @@
         "title" : "Consentement",
         "owner" : "Propriétaire du consentement",
         "name" : "Libellé du consentement",
+
+        // TODO CHANGED
+        // OLD: Consent created at
+        // NEW: Consent created on
         "date_of_creation" : "Consentement créé le",
         "type" : "Type de consentement",
         "status" : "État du consentement",

@@ -55,6 +55,10 @@
         "add_task_btn" : "Ajouter une tâche pour les participants",
         "plugin" : "Application vouée à la recherche",
         "device" : "Code de l'appareil",
+
+        // TODO CHANGED
+        // OLD: Restrict read to group
+        // NEW: Restrict read to this group
         "restrict" : "Restreindre la lecture à ce groupe",
         "shareback" : "L'application partage des données avec le(s) groupe(s) de participants",
         "add_application_btn" : "Ajouter une application vouée à la recherche",
@@ -86,7 +90,15 @@
 
     "studyoverview" : {
         "name" : "Nom",
+
+        // TODO CHANGED
+        // OLD: Created At:
+        // NEW: Created on:
         "created_at" : "Créé à:",
+
+        // TODO CHANGED
+        // OLD: Created By:
+        // NEW: Created by:
         "created_by" : "Créé par:",
         "description" : "Description",
         "code" : "Code",

@@ -16,7 +16,7 @@
   
   "help_welcome" : {
     "menu" : "The menu above contains these links:",
-    "menu_me" : "Me",
+    "menu_me" : "Dashboard",
     "menu_me_text" : "Your personal dashboard, where you can place whatever functionality you need most.",
     "menu_overview" : "Overview",
     "menu_overview_text" : "An overview over all functions provided by the MIDATA platform.",      
@@ -30,7 +30,7 @@
     "answer_questions" : "In order to get started we recommend that you answer us some questions. We will preconfigure your account based on your answers.",
     "answered_questions" : "Thank you for answering the setup questions! You sould visit your dashboard now or change your answers if you need to.",
     "answer_btn" : "Answer Setup Questions Now",
-    "dashboard_btn" : "Visit 'me' page",
+    "dashboard_btn" : "Visit my Dashboard",
     "answer_again_btn" : "Change Answers to Setup Questions"
   },
   
