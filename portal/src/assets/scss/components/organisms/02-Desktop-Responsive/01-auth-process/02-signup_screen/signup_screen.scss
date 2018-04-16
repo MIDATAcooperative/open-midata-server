@@ -211,6 +211,19 @@ $signup-checkboxes-max-margin-left: 15px;
 		&_checkboxes {
 			padding-top: $signup-checkboxes-padding-top;
 			@include fluid-props(margin-left, $fluid-min, $fluid-max, $signup-checkboxes-min-margin-left, $signup-checkboxes-max-margin-left);
+
+			.mi-at-input__fieldset {
+				height: 100%;
+
+				label {
+					position: relative;
+					display: block;
+					left: 35px;
+					top: -22px;
+					max-width: $signup-min-width - 30px;
+					margin-left: 0;
+				}
+			}
 		}
 	}
 
