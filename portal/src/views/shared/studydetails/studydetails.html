@@ -1,7 +1,7 @@
 
 <div ng-controller="StudyDetailCtrl" ng-cloak class="midata-overlay borderless">
 	
- <div class="overlay-body">
+ <div class="overlay-body" ng-hide="view.active">
 
 		
     <div class="panel panel-primary">
@@ -63,6 +63,9 @@
 				    <p class="lead">{{ study.name }}</p>
 				    <div class="line"></div>			
 					<p>{{ study.description }}</p>
+                    <p ng-show="study.termsOfUse">
+					  <a href="javascript:" ng-click="terms(study.termsOfUse)" translate="registration.study_agb"></a>
+					</p>
 
 					<p translate="studydetails.organization"></p>								
 					<p><i>{{ research.name }}</i></p>
@@ -115,4 +118,8 @@
 
 	<div ng-include="'/views/shared/dashboard/dashboard.html'"></div>
 </div>
+
+  <div ng-show="view.active">      
+	     <div ng-include="'/views/shared/public/terms/terms-modal.html'"></div>	    	  
+  </div>
 </div>
