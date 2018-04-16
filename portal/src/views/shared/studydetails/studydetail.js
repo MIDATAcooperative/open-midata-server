@@ -13,6 +13,8 @@ angular.module('portal')
 	views.link("shared_with_study", "shareFrom", "share");
 	views.link("share", "record", "record");
 	
+	$scope.view = views.getView("terms");
+	
 	$scope.reload = function() {
 			
 		server.get(jsRoutes.controllers.members.Studies.get($scope.studyid).url).
@@ -45,6 +47,7 @@ angular.module('portal')
 					$scope.labels = [];
 					if (sq.content) {
 						angular.forEach(sq.content, function(r) {
+						  if (r === "Patient" || r === "Group" || r === "Person" || r === "Practitioner") return;
 						  labels.getContentLabel($translate.use(), r).then(function(lab) {
 							 $scope.labels.push(lab); 
 						  });
@@ -142,6 +145,15 @@ angular.module('portal')
 	
 	$scope.goBack = function() {
 		$window.history.back();
+	};
+	
+	/*$scope.terms = function(terms) {
+		$state.go("^.terms", { which : terms });
+	};*/
+	
+	$scope.terms = function(def) {
+		console.log("TERMS");
+		views.setView("terms", { which : def }, "Terms");
 	};
 	
 }]);
