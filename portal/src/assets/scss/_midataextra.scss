@@ -29,6 +29,9 @@ html, body { height:100% }
 
 .terms {
    h1,h2,h3,h4 { text-align:center; }
+   h1 { font-size: $font-size-big-title; }
+   h2 { font-size: $font-size-big-title; }
+   h3 { font-size: $font-size-title; }
    li { margin-bottom:10pt; }
    address { margin-top:10pt;margin-bottom:10pt; }
    ol {

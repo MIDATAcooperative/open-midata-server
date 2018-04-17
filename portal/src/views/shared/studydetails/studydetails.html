@@ -64,7 +64,7 @@
 				    <div class="line"></div>			
 					<p>{{ study.description }}</p>
                     <p ng-show="study.termsOfUse">
-					  <a href="javascript:" ng-click="terms(study.termsOfUse)" translate="registration.study_agb"></a>
+					  <a href="javascript:" ui-sref="^.terms({ which : study.termsOfUse })" translate="registration.study_agb"></a>
 					</p>
 
 					<p translate="studydetails.organization"></p>								
