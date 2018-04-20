@@ -1048,8 +1048,7 @@
 
         "description" : "La frase password è una protezione aggiuntiva (crittografia aggiuntiva) dei propri dati. Non è memorizzata sui nostri server. Si deve inserire la frase password a ogni accesso, per consentire la decrittazione dei propri dati. Se si perde la frase password, non si sarà più in grado di accedere ai propri dati!",
 
-        "if_unprotected" : "Se il proprio account non è ancora protetto
-da una frase password lasciare vuoto il campo 'Vecchia frase password'.",
+        "if_unprotected" : "Se il proprio account non è ancora protetto da una frase password lasciare vuoto il campo 'Vecchia frase password'.",
 
         "keep_passphrase_safe" : "Mantenere la propria frase password in un posto sicuro, non esiste una funzione per recuperarla. Se si perde la frase password, non si potrà più accedere ai propri dati!",
 
