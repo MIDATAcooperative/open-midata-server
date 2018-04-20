@@ -2,395 +2,292 @@
 
     "footer" : {
 
-        // TODO NEW: ©{{now}} ETH Zürich
-        "copyright" : "©{{now}} ETH Zürich",
+        "copyright" : "©{{now}} ETH Zurigo",
 
-        // TODO NEW: MIDATA Homepage
-        "homepage" : "MIDATA Homepage",
+        "homepage" : "Pagina iniziale MIDATA",
 
-        // TODO NEW: Midata Portals:
-        "portals" : "Midata Portals:",
+        "portals" : "Portali Midata:",
 
-        // TODO NEW: For Account Holders
-        "for_members" : "For Account Holders",
+        "for_members" : "Per i titolari di account",
 
-        // TODO NEW: For Research Organizations
-        "for_researchers" : "For Research Organizations",
+        "for_researchers" : "Per le organizzazioni di ricerca",
 
-        // TODO NEW: For Healthcare Providers
-        "for_providers" : "For Healthcare Providers",
+        "for_providers" : "Per i fornitori di prestazioni sanitarie",
 
-        // TODO NEW: For Developers
-        "for_developers" : "For Developers"
+        "for_developers" : "Per gli sviluppatori"
     },
 
     "navbar" : {
 
-        // TODO NEW: Toggle navigation
-        "toggle_navigation" : "Toggle navigation",
+        "toggle_navigation" : "Attiva/Disattiva navigazione",
 
-        // TODO NEW: Login
-        "login" : "Login",
+        "login" : "Accesso",
 
-        // TODO NEW: Sign Up
-        "sign_up" : "Sign Up",
+        "sign_up" : "Registrazione",
 
-        // TODO NEW: Sign out
-        "sign_out" : "Sign out",
+        "sign_out" : "Uscita",
 
-        // TODO NEW: Edit Profile
-        "edit_profile" : "Edit Profile",
+        "edit_profile" : "Modifica profilo",
 
-        // TODO NEW: Authorized apps
-        "app_count" : "Authorized apps",
+        "app_count" : "Applicazioni autorizzate",
 
-        // TODO NEW: Studies enrollments
-        "study_count" : "Studies enrollments",
+        "study_count" : "Iscrizioni agli studi",
 
-        // TODO NEW: Me
-        "me" : "Me",
+        "me" : "I miei dati",
 
-        // TODO NEW: View
-        "view" : "View",
+        "view" : "Visualizzazione",
 
-        // TODO NEW: Overview
-        "overview" : "Overview",
+        "overview" : "Panoramica",
 
-        // TODO NEW: Messages
-        "messages" : "Messages",
+        "messages" : "Messaggi",
 
-        // TODO NEW: My Data
-        "my_data" : "My Data",
+        "my_data" : "I miei dati",
 
-        // TODO NEW: Sharing
-        "consents" : "Sharing",
+        "consents" : "Condivisione",
 
-        // TODO NEW: Research
-        "research" : "Research",
+        "research" : "Ricerca",
 
-        // TODO NEW: Apps
-        "apps" : "Apps",
+        "apps" : "Applicazioni",
 
-        // TODO NEW: Configuration
-        "config" : "Configuration",
+        "config" : "Configurazione",
 
-        // TODO NEW: Help
-        "help" : "Help"
+        "help" : "Aiuto"
     },
 
     "error" : {
 
-        // TODO NEW: The backend is currently offline! Please contact support@midata.coop if the problem persists.
-        "offline" : "The backend is currently offline! Please contact support@midata.coop if the problem persists.",
+        "offline" : "Il backend è attualmente offline! Se il problema persiste contattare support@midata.coop.",
 
-        // TODO NEW: An internal error occured. Please contact support@midata.coop if the problem persists.
-        "internal" : "An internal error occured. Please contact support@midata.coop if the problem persists.",
+        "internal" : "Si è verificato un errore interno. Se il problema persiste contattare support@midata.coop.",
 
-        // TODO NEW: An internal database error occured. Please contact support@midata.coop if the problem persists.
-        "internal_db" : "An internal database error occured. Please contact support@midata.coop if the problem persists.",
+        "internal_db" : "Si è verificato un errore interno del database. Se il problema persiste contattare support@midata.coop.",
 
-        // TODO NEW: Please relogin
-        "relogin" : "Please relogin",
+        "relogin" : "Accedere nuovamente",
 
-        // TODO NEW: No active consent that allows to add data for target person.
-        "noconsent" : "No active consent that allows to add data for target person.",
+        "noconsent" : "Non esiste alcun consenso attivo che consenta di aggiungere dati per la persona di destinazione.",
 
-        // TODO NEW: Operation not supported
-        "unsupported" : "Operation not supported",
+        "unsupported" : "Operazione non supportata",
 
-        // TODO NEW: Full membership required!
-        "notrialuser_title" : "Full membership required!",
+        "notrialuser_title" : "È richiesta l'iscrizione completa in qualità di membro!",
 
-        // TODO NEW: In order to use this feature you need to complete your registration. Request a written copy of the AGB and return it signed. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.
-        "notrialuser_detail" : "In order to use this feature you need to complete your registration. Request a written copy of the AGB and return it signed. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
+        "notrialuser_detail" : "Per utilizzare questa funzionalità, è necessario completare la propria registrazione. Richiedere una copia scritta dei Termini e Condizioni generali e restituirla firmata. Si riceverà inoltre un codice di conferma per verificare il proprio indirizzo postale. Se si desidera controllare lo stato del proprio account fare clic sul proprio nome utente in alto a destra e selezionare la sezione 'Stato account'.",
 
-        // TODO NEW: MIDATA cooperative membership required!
-        "mustbemember_title" : "MIDATA cooperative membership required!",
+        "mustbemember_title" : "È richiesta l'iscrizione a MIDATA Cooperativa!",
 
-        // TODO NEW: In order to use this feature you must be member of the MIDATA cooperative. Click on your username on the top right and check the 'Account Status' section for more information.
-        "mustbemember_detail" : "In order to use this feature you must be member of the MIDATA cooperative. Click on your username on the top right and check the 'Account Status' section for more information.",
+        "mustbemember_detail" : "Per utilizzare questa funzione è necessario essere membri di MIDATA Cooperativa. Per ulteriori informazioni fare clic sul proprio nome utente in alto a destra e selezionare la sezione 'Stato account'.",
         "notauthorized" : {
 
-            // TODO NEW: You are not authorized to do this action
-            "action" : "You are not authorized to do this action",
+            "action" : "Non si è autorizzati a eseguire questa azione",
 
-            // TODO NEW: You are not authorized to query the provided fields
-            "fields" : "You are not authorized to query the provided fields",
+            "fields" : "Non si è autorizzati a interrogare i campi forniti",
 
-            // TODO NEW: You are not authorized to access this account
-            "account" : "You are not authorized to access this account",
+            "account" : "Non si è autorizzati ad accedere a questo account",
 
-            // TODO NEW: You are not authorized to access this study
-            "study" : "You are not authorized to access this study",
+            "study" : "Non si è autorizzati ad accedere a questo studio",
 
-            // TODO NEW: This is not your plugin
-            "not_plugin_owner" : "This is not your plugin"
+            "not_plugin_owner" : "Questo non è il suo plugin"
         },
 
 
         "invalid" : {
 
-            // TODO NEW: Please enter a valid email address
-            "email" : "Please enter a valid email address",
+            "email" : "Inserire un indirizzo e-mail valido",
 
-            // TODO NEW: Invalid email address or password.
-            "credentials" : "Invalid email address or password.",
+            "credentials" : "Indirizzo e-mail o password errati.",
 
-            // TODO NEW: Invalid email address or password. You are trying to log in as account holder. Are you 
-            "credentials_hint" : "Invalid email address or password. You are trying to log in as account holder. Are you ",
+            "credentials_hint" : "Indirizzo e-mail o password errati. Stai tentando di accedere come titolare dell'account. Sei ",
 
-            // TODO NEW: Password and password repetition do not match!
-            "password_repetition" : "Password and password repetition do not match!",
+            "password_repetition" : "La password e la ripetizione della password non coincidono!",
 
-            // TODO NEW: Passphrase and passphrase repetition do not match!
-            "passphrase_repetition" : "Passphrase and passphrase repetition do not match!",
+            "passphrase_repetition" : "La frase password e la ripetizione della frase password non coincidono!",
 
-            // TODO NEW: Old passphrase not correct.
-            "passphrase_old" : "Old passphrase not correct.",
+            "passphrase_old" : "La vecchia frase password non è corretta.",
 
-            // TODO NEW: Old password not correct.
-            "password_old" : "Old password not correct.",
+            "password_old" : "La vecchia password non è corretta.",
 
-            // TODO NEW: Bad confirmation code
-            "confirmation_code" : "Bad confirmation code",
+            "confirmation_code" : "Codice di conferma errato",
 
-            // TODO NEW: Unknown code for study.
-            "code" : "Unknown code for study.",
+            "code" : "Codice sconosciuto per lo studio.",
 
-            // TODO NEW: Unknown code for app.
-            "appcode" : "Unknown code for app.",
+            "appcode" : "Codice sconosciuto per l'applicazione.",
 
-            // TODO NEW: Invalid status change
-            "status_transition" : "Invalid status change",
+            "status_transition" : "Modifica stato non valida",
 
-            // TODO NEW: Invalid value for date field
-            "date" : "Invalid value for date field",
+            "date" : "Valore non valido per il campo dati",
 
-            // TODO NEW: Enter a valid day of month (1 - 31)
-            "day" : "Enter a valid day of month (1 - 31)",
+            "day" : "Inserire un giorno del mese valido (1 - 31)",
 
-            // TODO NEW: Enter a valid year (4 digits)
-            "year" : "Enter a valid year (4 digits)",
+            "year" : "Inserire un anno valido (4 cifre)",
 
-            // TODO NEW: Choose a valid month
-            "month" : "Choose a valid month",
+            "month" : "Scegliere un mese valido",
 
-            // TODO NEW: Field must be of type string
-            "string" : "Field must be of type string",
+            "string" : "Il campo deve essere di tipo a stringa",
 
-            // TODO NEW: Invalid authorization token. Please relogin.
-            "token" : "Invalid authorization token. Please relogin.",
+            "token" : "Token di autorizzazione non valido. Accedere nuovamente.",
 
-            // TODO NEW: Invalid JSON provided
-            "json" : "Invalid JSON provided",
+            "json" : "Immesso JSON non valido",
 
-            // TODO NEW: Bad passphrase
-            "passphrase" : "Bad passphrase",
+            "passphrase" : "Frase password errata",
 
-            // TODO NEW: Bad passcode
-            "passcode" : "Bad passcode",
+            "passcode" : "Codice password errato",
 
-            // TODO NEW: Plugin is intended for a different role
-            "plugin" : "Plugin is intended for a different role",
+            "plugin" : "Il plugin è destinato a un ruolo diverso",
 
-            // TODO NEW: Incorrect unlock code
-            "unlock_code" : "Incorrect unlock code",
+            "unlock_code" : "Codice di sblocco errato",
 
-            // TODO NEW: The Data Access Filter must restrict by 'content' or 'group'!
-            "access_query" : "The Data Access Filter must restrict by 'content' or 'group'!",
+            "access_query" : "Il filtro di accesso dati deve essere ristretto a 'contenuto' o 'gruppo'!",
 
-            // TODO NEW: The Data Access Filter contains data types that are excluded by the study configuration.
-            "sharing" : "The Data Access Filter contains data types that are excluded by the study configuration."
+            "sharing" : "Il filtro di accesso dati contiene tipi di dati esclusi dalla configurazione dello studio.",
+
+            "anonymous" : "Lo studio può essere anonimo soltanto se non è autorizzato nessuno ad accedere a dati presentati senza pseudonimi.",
+
+            "url" : "URL non valido"
         },
 
         "missing" : {
 
 
-            // TODO NEW: Please provide your email address and password.
-            "credentials" : "Please provide your email address and password.",
+            "credentials" : "Fornire il proprio indirizzo e-mail e password.",
 
-            // TODO NEW: Please fill out your email address.
-            "email" : "Please fill out your email address.",
+            "email" : "Inserire l'indirizzo e-mail.",
 
-            // TODO NEW: Please fill out this input field.
-            "input_field" : "Please fill out this input field.",
+            "input_field" : "Compilare questo campo di immissione.",
 
-            // TODO NEW: Please enter a new password!
-            "newpassword" : "Please enter a new password!",
+            "newpassword" : "Inserire una nuova password!",
 
-            // TODO NEW: Please provide your passphrase.
-            "passphrase" : "Please provide your passphrase.",
+            "passphrase" : "Immettere la frase password.",
 
-            // TODO NEW: Group system must be provided.
-            "groupsystem" : "Group system must be provided.",
+            "groupsystem" : "È obbligatorio immettere il sistema del gruppo.",
 
-            // TODO NEW: Missing or bad token.
-            "token" : "Missing or bad token.",
+            "token" : "Token mancante o errato.",
 
-            // TODO NEW: Terms and conditions not accepted.
-            "agb" : "Terms and conditions not accepted.",
+            "agb" : "Termini e condizioni non accettate.",
 
-            // TODO NEW: Privacy policy must be accepted.
-            "privacypolicy" : "Privacy policy must be accepted.",
+            "privacypolicy" : "Le politiche sulla privacy devono essere accettate.",
 
-            // TODO NEW: Study participation must be accepted.
-            "study_accept" : "Study participation must be accepted.",
+            "study_accept" : "La partecipazione allo studio deve essere accettata.",
 
-            // TODO NEW: Participant must first be assigned to a group.
-            "study_group" : "Participant must first be assigned to a group.",
+            "study_group" : "Il partecipante deve dapprima essere assegnato a un gruppo.",
 
-            // TODO NEW: Confirmation by user required first.
-            "confirmation" : "Confirmation by user required first.",
+            "confirmation" : "Per prima cosa è richiesta la conferma dell'utente.",
 
-            // TODO NEW: No file for upload selected
-            "file" : "No file for upload selected"
+            "file" : "Nessun file selezionato per il caricamento"
         },
 
         "unknown" : {
 
-            // TODO NEW: Unknown Plugin
-            "plugin" : "Unknown Plugin",
+            "plugin" : "Plugin sconosciuto",
 
-            // TODO NEW: Unknown application
-            "app" : "Unknown application",
+            "app" : "Applicazione sconosciuta",
 
-            // TODO NEW: The requested space does no longer exist.
-            "space" : "The requested space does no longer exist.",
+            "space" : "Lo spazio richiesto non esiste più.",
 
-            // TODO NEW: Consent not found
-            "consent" : "Consent not found",
+            "consent" : "Consenso non trovato",
 
-            // TODO NEW: Study does not exist.
-            "study" : "Study does not exist.",
+            "study" : "Lo studio non esiste.",
 
-            // TODO NEW: Record Content-Type is not registered with the platform.
-            "content" : "Record Content-Type is not registered with the platform.",
+            "content" : "Il tipo di contenuto del record non è registrato nella piattaforma.",
 
-            // TODO NEW: Unknown group name
-            "group" : "Unknown group name",
+            "group" : "Nome gruppo sconosciuto",
 
-            // TODO NEW: Unknown code
-            "code" : "Unknown code",
+            "code" : "Codice sconosciuto",
 
-            // TODO NEW: Unknown record
-            "record" : "Unknown record",
+            "record" : "Record sconosciuto",
 
-            // TODO NEW: User does not exist
-            "user" : "User does not exist",
+            "user" : "L'utente non esiste",
 
-            // TODO NEW: Study Participation not found.
-            "participation" : "Study Participation not found."
+            "participation" : "Partecipazione allo studio non trovata."
         },
 
         "exists" : {
 
-            // TODO NEW: A person with this email is already registered.
-            "user" : "A person with this email is already registered.",
+            "user" : "Una persona è già registrata con questo indirizzo e-mail.",
 
-            // TODO NEW: A person with this email is already registered.
-            "member" : "A person with this email is already registered.",
+            "member" : "Una persona è già registrata con questo indirizzo e-mail.",
 
-            // TODO NEW: A healthcare provider with this name already exists.
-            "provider" : "A healthcare provider with this name already exists.",
+            "provider" : "Un fornitore di prestazioni sanitarie con questo nome esiste già.",
 
-            // TODO NEW: A research organisation with this name already exists.
-            "research" : "A research organisation with this name already exists.",
+            "research" : "Un'organizzazione di ricerca con questo nome esiste già.",
 
-            // TODO NEW: Please choose a different passcode!
-            "passcode" : "Please choose a different passcode!",
+            "passcode" : "Scegliere un codice password diverso!",
 
-            // TODO NEW: A plugin with the same name already exists.
-            "plugin" : "A plugin with the same name already exists.",
+            "plugin" : "Un plugin con lo stesso nome esiste già.",
 
-            // TODO NEW: A study with this name already exists.
-            "study" : "A study with this name already exists."
+            "study" : "Uno studio con questo nome esiste già."
         },
 
         "blocked" : {
 
-            // TODO NEW: User is not allowed to log in. Contact support@midata.coop for help.
-            "user" : "User is not allowed to log in. Contact support@midata.coop for help.",
+            "user" : "L'utente non è autorizzato ad accedere. Contattare support@midata.coop per ottenere assistenza.",
 
-            // TODO NEW: Account holder is not allowed to participate in study.
-            "participation" : "Account holder is not allowed to participate in study.",
+            "password1" : "Troppi tentativi di accesso errati. Attendere 1 minuto prima di tentare nuovamente.",
 
-            // TODO NEW: The consent for using this app has been revoked. To reenable the app, delete the rejected or expired consent on the MIDATA portal.
-            "consent" : "The consent for using this app has been revoked. To reenable the app, delete the rejected or expired consent on the MIDATA portal.",
+            "password5" : "Troppi tentativi di accesso errati. Attendere 5 minuti prima di tentare nuovamente.",
 
-            // TODO NEW: You are allowed to use this app on a maximum of 10 devices. Please delete unused consents on the MIDATA portal.
-            "app" : "You are allowed to use this app on a maximum of 10 devices. Please delete unused consents on the MIDATA portal."
+            "password60" : "Troppi tentativi di accesso errati. Attendere 1 ora prima di tentare ad accedere nuovamente.",
+
+            "participation" : "Il titolare dell'account non è autorizzato a partecipare allo studio.",
+
+            "consent" : "Il consenso per utilizzare questa applicazione è stato revocato. Per riattivare l'applicazione, eliminare il consenso rifiutato o scaduto sul portale MIDATA.",
+
+            "app" : "Si è autorizzati a utilizzare questa applicazione su un numero massimo di 10 dispositivi. Eliminare i consensi non utilizzati sul portale MIDATA."
         },
 
         "closed" : {
 
-            // TODO NEW: Study not searching for participants.
-            "study" : "Study not searching for participants."
+            "study" : "Lo studio non sta cercando partecipanti."
         },
 
         "notvalidated" : {
 
-            // TODO NEW: Study must be validated before.
-            "study" : "Study must be validated before."
+            "study" : "Lo studio deve essere dapprima convalidato."
         },
 
         "tooshort" : {
 
-            // TODO NEW: Passwords must be at least 8 characters long.
-            "password" : "Passwords must be at least 8 characters long.",
+            "password" : "Le password devono essere composte da almeno 8 caratteri.",
 
-            // TODO NEW: Passphrases must be at least 8 characters long.
-            "passphrase" : "Passphrases must be at least 8 characters long."
+            "passphrase" : "Le frasi password devono essere composte da almeno 8 caratteri."
         },
 
         "tooweak" : {
 
-            // TODO NEW: Passwords should contain upper/lower case letters, numbers and special characters.
-            "password" : "Passwords should contain upper/lower case letters, numbers and special characters.",
+            "password" : "Le password devono contenere lettere maiuscole/minuscole, numeri e caratteri speciali.",
 
-            // TODO NEW: Passphrases should contain upper/lower case letters, numbers and special characters.
-            "passphrase" : "Passphrases should contain upper/lower case letters, numbers and special characters."
+            "passphrase" : "Le frasi password devono contenere lettere maiuscole/minuscole, numeri e caratteri speciali."
         },
 
         "concurrent" : {
 
-            // TODO NEW: Concurrent update. Please try again.
-            "update" : "Concurrent update. Please try again."
+            "update" : "Aggiornamento concomitante. Riprovare."
         },
 
         "expired" : {
 
-            // TODO NEW: This activation token has already expired. Please request a new one.
-            "token" : "This activation token has already expired. Please request a new one.",
+            "token" : "Questo token di attivazione è già scaduto. Richiederne uno nuovo.",
 
-            // TODO NEW: This activation token has already expired. A new token has been sent to your email address right now. Please confirm your email address within 24 hours using the new token.
-            "tokenresent" : "This activation token has already expired. A new token has been sent to your email address right now. Please confirm your email address within 24 hours using the new token.",
+            "tokenresent" : "Questo token di attivazione è già scaduto. Un nuovo token è stato appena inviato al tuo indirizzo e-mail. Conferma il tuo indirizzo e-mail entro 24 ore utilizzando il nuovo token.",
 
-            // TODO NEW: This participation code has expired.
-            "code" : "This participation code has expired."
+            "code" : "Questo codice di partecipazione è scaduto."
         },
 
         "already_done" : {
 
-            // TODO NEW: Email has already been verified.
-            "email_verification" : "Email has already been verified."
+            "email_verification" : "L'e-mail è già stata verificata."
         },
 
         "no_alter" : {
 
-            // TODO NEW: Consents for studies may not be altered.
-            "consent" : "Consents for studies may not be altered.",
+            "consent" : "I consensi per gli studi non possono essere modificati.",
 
-            // TODO NEW: Setup can only be changed as long as study is in draft phase.
-            "study" : "Setup can only be changed as long as study is in draft phase.",
+            "study" : "La configurazione può essere modificata solamente fintanto che lo studio è nella fase bozza.",
 
-            // TODO NEW: Group of participant can only be changed if study is not running or no participant accepted yet.
-            "group" : "Group of participant can only be changed if study is not running or no participant accepted yet."
+            "group" : "Un gruppo di partecipanti può essere modificato solamente se lo studio non è attivato o se nessun partecipante ha ancora accettato."
         },
 
         "too_large" : {
 
-            // TODO NEW: File is larger than allowed.
-            "file" : "File is larger than allowed."
+            "file" : "Il file è troppo pesante (massimo 1 MB)."
         }
 
     },
@@ -398,2309 +295,1626 @@
     "enum" : {
         "gender" : {
 
-            // TODO NEW: male
-            "MALE" : "male",
+            "MALE" : "maschile",
 
-            // TODO NEW: female
-            "FEMALE" : "female",
+            "FEMALE" : "femminile",
 
-            // TODO NEW: other
-            "OTHER" : "other"
+            "OTHER" : "altro"
         },
         "country" : {
 
-            // TODO NEW: Switzerland
-            "CH" : "Switzerland",
+            "CH" : "Svizzera",
 
-            // TODO NEW: Germany
-            "DE" : "Germany",
+            "DE" : "Germania",
 
-            // TODO NEW: Netherlands
-            "NL" : "Netherlands",
+            "NL" : "Olanda",
 
-            // TODO NEW: United Kingdom
-            "GB" : "United Kingdom"
+            "GB" : "Regno Unito"
         },
         "eventtype" : {
 
-            // TODO NEW: Code entered
-            "CODE_ENTERED" : "Code entered",
+            "CODE_ENTERED" : "Codice inserito",
 
-            // TODO NEW: Participation requested
-            "PARTICIPATION_REQUESTED" : "Participation requested",
+            "PARTICIPATION_REQUESTED" : "Partecipazione richiesta",
 
-            // TODO NEW: No participation
-            "NO_PARTICIPATION" : "No participation",
+            "NO_PARTICIPATION" : "Nessuna partecipazione",
 
-            // TODO NEW: Participation rejected
-            "PARTICIPATION_REJECTED" : "Participation rejected",
+            "PARTICIPATION_REJECTED" : "Partecipazione rifiutata",
 
-            // TODO NEW: Participation approved
-            "PARTICIPATION_APPROVED" : "Participation approved",
+            "PARTICIPATION_APPROVED" : "Partecipazione approvata",
 
-            // TODO NEW: Group assigned
-            "GROUP_ASSIGNED" : "Group assigned",
+            "GROUP_ASSIGNED" : "Gruppo assegnato",
 
-            // TODO NEW: Validation requested
-            "VALIDATION_REQUESTED" : "Validation requested",
+            "VALIDATION_REQUESTED" : "Convalida richiesta",
 
-            // TODO NEW: Study validated
-            "STUDY_VALIDATED" : "Study validated",
+            "STUDY_VALIDATED" : "Studio convalidato",
 
-            // TODO NEW: Study rejected
-            "STUDY_REJECTED" : "Study rejected",
+            "STUDY_REJECTED" : "Studio rifiutato",
 
-            // TODO NEW: Participant search started
-            "PARTICIPANT_SEARCH_STARTED" : "Participant search started",
+            "PARTICIPANT_SEARCH_STARTED" : "Ricerca del partecipante iniziata",
 
-            // TODO NEW: Participant search closed
-            "PARTICIPANT_SEARCH_CLOSED" : "Participant search closed",
+            "PARTICIPANT_SEARCH_CLOSED" : "Ricerca del partecipante chiusa",
 
-            // TODO NEW: Codes generated
-            "CODES_GENERATED" : "Codes generated",
+            "CODES_GENERATED" : "Codici generati",
 
-            // TODO NEW: Study started
-            "STUDY_STARTED" : "Study started",
+            "STUDY_STARTED" : "Studio iniziato",
 
-            // TODO NEW: Study finished
-            "STUDY_FINISHED" : "Study finished",
+            "STUDY_FINISHED" : "Studio terminato",
 
-            // TODO NEW: Study aborted
-            "STUDY_ABORTED" : "Study aborted",
+            "STUDY_ABORTED" : "Studio interrotto",
 
-            // TODO NEW: Required information changed
-            "REQUIRED_INFORMATION_CHANGED" : "Required information changed",
+            "REQUIRED_INFORMATION_CHANGED" : "Informazioni richieste modificate",
 
-            // TODO NEW: Study setup changed
-            "STUDY_SETUP_CHANGED" : "Study setup changed",
+            "STUDY_SETUP_CHANGED" : "Configurazione studio modificata",
 
-            // TODO NEW: Membership requested
-            "MEMBERSHIP_REQUEST" : "Membership requested",
+            "MEMBERSHIP_REQUEST" : "Iscrizione richiesta",
 
-            // TODO NEW: Address changed
-            "CONTACT_ADDRESS_CHANGED" : "Address changed",
+            "CONTACT_ADDRESS_CHANGED" : "Indirizzo modificato",
 
-            // TODO NEW: Contract sent
-            "CONTRACT_SEND" : "Contract sent",
+            "CONTRACT_SEND" : "Contratto inviato",
 
-            // TODO NEW: Account changed by an administrator
-            "ADMIN_ACCOUNT_CHANGE" : "Account changed by an administrator",
+            "ADMIN_ACCOUNT_CHANGE" : "Account modificato da un amministratore",
 
-            // TODO NEW: Account deleted
-            "ACCOUNT_DELETED" : "Account deleted",
+            "ACCOUNT_DELETED" : "Account eliminato",
 
-            // TODO NEW: Internal Comment
-            "INTERNAL_COMMENT" : "Internal Comment",
+            "INTERNAL_COMMENT" : "Commento interno",
 
-            // TODO NEW: Agreed to terms of use
-            "TERMS_OF_USE_AGREED" : "Agreed to terms of use",
+            "TERMS_OF_USE_AGREED" : "Accettati i termini e condizioni d'uso",
 
-            // TODO NEW: User sign up
-            "user-registration" : "User sign up",
+            "user-registration" : "Registrazione utente",
 
-            // TODO NEW: Login
-            "110122" : "Login",
+            "110122" : "Accesso",
 
-            // TODO NEW: Password changed
-            "user-password-change" : "Password changed",
+            "user-password-change" : "Password modificata",
 
-            // TODO NEW: Passphrase changed
-            "user-passphrase-change" : "Passphrase changed",
+            "user-passphrase-change" : "Frase password modificata",
 
-            // TODO NEW: User's address changed
-            "user-address-change" : "User's address changed",
+            "user-address-change" : "Indirizzo dell'utente modificato",
 
-            // TODO NEW: User's email changed
-            "user-email-change" : "User's email changed",
+            "user-email-change" : "E-mail dell'utente modificata",
 
-            // TODO NEW: Status of user account changed
-            "user-status-change" : "Status of user account changed",
+            "user-status-change" : "Stato dell'account utente modificato",
 
-            // TODO NEW: Email confirmed by user
-            "user-email-confirmed" : "Email confirmed by user",
+            "user-email-confirmed" : "E-mail confermata dall'utente",
 
-            // TODO NEW: Email rejected by user
-            "user-email-rejected" : "Email rejected by user",
+            "user-email-rejected" : "E-mail rifiutata dall'utente",
 
-            // TODO NEW: User account changed by an administrator
-            "user-account-change-by-admin" : "User account changed by an administrator",
+            "user-account-change-by-admin" : "Account utente modificato dall'amministratore",
 
-            // TODO NEW: User account deleted
-            "user-account-deleted" : "User account deleted",
+            "user-account-deleted" : "Account utente eliminato",
 
-            // TODO NEW: First use of application
-            "app-first-use" : "First use of application",
+            "app-first-use" : "Primo utilizzo dell'applicazione",
 
-            // TODO NEW: Application authorization rejected
-            "app-rejected" : "Application authorization rejected",
+            "app-rejected" : "Autorizzazione dell'applicazione rifiutata",
 
-            // TODO NEW: Application authorization deleted
-            "app-deleted" : "Application authorization deleted",
+            "app-deleted" : "Autorizzazione dell'applicazione eliminata",
 
-            // TODO NEW: Consent created
-            "consent-create" : "Consent created",
+            "consent-create" : "Consenso creato",
 
-            // TODO NEW: Consent's recipients changed
-            "consent-persons-change" : "Consent's recipients changed",
+            "consent-persons-change" : "Destinatari del consenso modificati",
 
-            // TODO NEW: Consent changed
-            "consent-change" : "Consent changed",
+            "consent-change" : "Consenso modificato",
 
-            // TODO NEW: Consent approved
-            "consent-approved" : "Consent approved",
+            "consent-approved" : "Consenso approvato",
 
-            // TODO NEW: Consent rejected
-            "consent-rejected" : "Consent rejected",
+            "consent-rejected" : "Consenso rifiutato",
 
-            // TODO NEW: Consent deleted
-            "consent-deleted" : "Consent deleted",
+            "consent-deleted" : "Consenso eliminato",
 
-            // TODO NEW: Study participation requested
-            "study-participation-requested" : "Study participation requested",
+            "study-participation-requested" : "Partecipazione allo studio richiesta",
 
-            // TODO NEW: Study participation rejected by member
-            "study-participation-member-rejected" : "Study participation rejected by member",
+            "study-participation-member-rejected" : "Partecipazione allo studio rifiutata dal membro",
 
-            // TODO NEW: Study participation rejected by researcher
-            "study-participation-research-rejected" : "Study participation rejected by researcher",
+            "study-participation-research-rejected" : "Partecipazione allo studio rifiutata dal ricercatore",
 
-            // TODO NEW: Account holder retreated from study participation
-            "study-participation-member-retreat" : "Account holder retreated from study participation",
+            "study-participation-member-retreat" : "Il titolare di account si è ritirato dalla partecipazione allo studio",
 
-            // TODO NEW: Study participation approved
-            "study-participation-approved" : "Study participation approved",
+            "study-participation-approved" : "Partecipazione allo studio approvata",
 
-            // TODO NEW: Study participation group assigned
-            "study-participation-group-assigned" : "Study participation group assigned",
+            "study-participation-group-assigned" : "Gruppo di partecipazione allo studio assegnato",
 
-            // TODO NEW: Study validation requested
-            "study-validation-requested" : "Study validation requested",
+            "study-validation-requested" : "Convalida dello studio richiesta",
 
-            // TODO NEW: Study validated
-            "study-validated" : "Study validated",
+            "study-validated" : "Studio convalidato",
 
-            // TODO NEW: Study rejected
-            "study-rejected" : "Study rejected",
+            "study-rejected" : "Studio rifiutato",
 
-            // TODO NEW: Study participant search started
-            "study-participant-search-started" : "Study participant search started",
+            "study-participant-search-started" : "Ricerca del partecipante allo studio iniziata",
 
-            // TODO NEW: Study participant search closed
-            "study-participant-search-closed" : "Study participant search closed",
+            "study-participant-search-closed" : "Ricerca del partecipante allo studio chiusa",
 
-            // TODO NEW: Study started
-            "study-started" : "Study started",
+            "study-started" : "Studio iniziato",
 
-            // TODO NEW: Study finished
-            "study-finished" : "Study finished",
+            "study-finished" : "Studio terminato",
 
-            // TODO NEW: Study aborted
-            "study-aborted" : "Study aborted",
+            "study-aborted" : "Studio interrotto",
 
-            // TODO NEW: Entire Study deleted
-            "110105" : "Entire Study deleted",
+            "110105" : "Intero studio eliminato",
 
-            // TODO NEW: Study changed
-            "study-setup-changed" : "Study changed",
+            "study-setup-changed" : "Studio modificato",
 
-            // TODO NEW: Data deleted
-            "data-deletion" : "Data deleted",
+            "data-deletion" : "Dati eliminati",
 
-            // TODO NEW: Data exported
-            "data-export" : "Data exported",
+            "data-export" : "Dati esportati",
 
-            // TODO NEW: Data import
-            "data-import" : "Data import",
+            "data-import" : "Importazione dati",
 
-            // TODO NEW: Contract requested by user
-            "contract-requested" : "Contract requested by user",
+            "contract-requested" : "Contratto richiesto dall'utente",
 
-            // TODO NEW: Contract send to user
-            "contract-send" : "Contract send to user",
+            "contract-send" : "Contratto inviato all'utente",
 
-            // TODO NEW: Administrator's comment
-            "internal-comment" : "Administrator's comment",
+            "internal-comment" : "Commento dell'amministratore",
 
-            // TODO NEW: Agreed to terms of use
-            "user-terms-of-use-agreed" : "Agreed to terms of use",
+            "user-terms-of-use-agreed" : "Accettati i termini e condizioni d'uso",
 
-            // TODO NEW: Audit Log consulted
-            "audit-log-used" : "Audit Log consulted",
+            "audit-log-used" : "Consultato il registro di revisione",
 
-            // TODO NEW: Added as team member
-            "added-as-team-member" : "Added as team member",
+            "added-as-team-member" : "Aggiunto come membro del team",
 
-            // TODO NEW: Updated role in team
-            "updated-role-in-team" : "Updated role in team",
+            "updated-role-in-team" : "Ruolo aggiornato nel team",
 
-            // TODO NEW: Removed from team
-            "removed-from-team" : "Removed from team"
+            "removed-from-team" : "Rimosso dal team"
         },
         "userfeature" : {
 
-            // TODO NEW: Email address of user must be known to the platform
-            "EMAIL_ENTERED" : "Email address of user must be known to the platform",
+            "EMAIL_ENTERED" : "L'indirizzo e-mail dell'utente deve essere conosciuto nella piattaforma",
 
-            // TODO NEW: Email address of user must have been verified
-            "EMAIL_VERIFIED" : "Email address of user must have been verified",
+            "EMAIL_VERIFIED" : "L'indirizzo e-mail dell'utente deve essere stato verificato",
 
-            // TODO NEW: Mobile phone number of user must be known to the platform
-            "PHONE_ENTERED" : "Mobile phone number of user must be known to the platform",
+            "PHONE_ENTERED" : "Il numero di telefono mobile dell'utente deve essere conosciuto nella piattaforma",
 
-            // TODO NEW: Mobile phone number of user must have been verified
-            "PHONE_VERIFIED" : "Mobile phone number of user must have been verified",
+            "PHONE_VERIFIED" : "Il numero di telefono mobile dell'utente deve essere stato verificato",
 
-            // TODO NEW: Post address of user must be known to the platform
-            "ADDRESS_ENTERED" : "Post address of user must be known to the platform",
+            "ADDRESS_ENTERED" : "L'indirizzo postale dell'utente deve essere conosciuto nella piattaforma",
 
-            // TODO NEW: Post address of user must have been verified
-            "ADDRESS_VERIFIED" : "Post address of user must have been verified",
+            "ADDRESS_VERIFIED" : "L'indirizzo postare dell'utente deve essere stato verificato",
 
-            // TODO NEW: ID card of users must have been verified
-            "PASSPORT_VERIFIED" : "ID card of users must have been verified",
+            "PASSPORT_VERIFIED" : "La scheda ID degli utenti deve essere stata verificata",
 
-            // TODO NEW: User must be member of the cooperative
-            "MIDATA_COOPERATIVE_MEMBER" : "User must be member of the cooperative",
+            "MIDATA_COOPERATIVE_MEMBER" : "L'utente deve essere membro della cooperativa",
 
-            // TODO NEW: Account must have been unlocked by a MIDATA administrator
-            "ADMIN_VERIFIED" : "Account must have been unlocked by a MIDATA administrator"
+            "ADMIN_VERIFIED" : "L'account deve essere stato sbloccato da un amministratore di MIDATA"
         },
         "writepermissiontype" : {
 
-            // TODO NEW: No data may be written.
-            "NONE" : "No data may be written.",
+            "NONE" : "Non è possibile scrivere alcun dato.",
 
-            // TODO NEW: Existing data may be updated.
-            "UPDATE_EXISTING" : "Existing data may be updated.",
+            "UPDATE_EXISTING" : "I dati esistenti possono essere aggiornati.",
 
-            // TODO NEW: Data covered by consent may be written or updated.
-            "UPDATE_AND_CREATE" : "Data covered by consent may be written or updated.",
+            "UPDATE_AND_CREATE" : "I dati coperti da consenso possono essere scritti o aggiornati.",
 
-            // TODO NEW: Any kind of data may be written using this consent.
-            "WRITE_ANY" : "Any kind of data may be written using this consent."
+            "WRITE_ANY" : "Qualsiasi tipo di dati può essere scritto utilizzando questo consenso."
         },
         "consentstatus" : {
 
-            // TODO NEW: Active
-            "ACTIVE" : "Active",
+            "ACTIVE" : "Attivo",
 
-            // TODO NEW: Expired
-            "EXPIRED" : "Expired",
+            "EXPIRED" : "Scaduto",
 
-            // TODO NEW: Rejected
-            "REJECTED" : "Rejected",
+            "REJECTED" : "Rifiutato",
 
-            // TODO NEW: Unconfirmed
-            "UNCONFIRMED" : "Unconfirmed",
+            "UNCONFIRMED" : "Non confermato",
 
-            // TODO NEW: Frozen
-            "FROZEN" : "Frozen"
+            "FROZEN" : "Congelato"
         },
         "consenttype" : {
 
-            // TODO NEW: Other Account Holders
-            "CIRCLE" : "Other Account Holders",
+            "CIRCLE" : "Altri titolari di account",
 
-            // TODO NEW: External Application
-            "EXTERNALSERVICE" : "External Application",
+            "EXTERNALSERVICE" : "Applicazione esterna",
 
-            // TODO NEW: Healthcare
-            "HCRELATED" : "Healthcare",
+            "HCRELATED" : "Prestazioni sanitarie",
 
-            // TODO NEW: Doctor / Hospital
-            "HEALTHCARE" : "Doctor / Hospital",
+            "HEALTHCARE" : "Dottore/ssa / Ospedale",
 
-            // TODO NEW: Study
-            "STUDYPARTICIPATION" : "Study",
+            "STUDYPARTICIPATION" : "Studio",
 
-            // TODO NEW: Study
-            "STUDYRELATED" : "Study",
+            "STUDYRELATED" : "Informazioni sullo studio",
 
-            // TODO NEW: Messaging
-            "IMPLICIT" : "Messaging"
+            "IMPLICIT" : "Invio di messaggi"
         },
         "contractstatus" : {
 
-            // TODO NEW: New
-            "NEW" : "New",
+            "NEW" : "Nuovo",
 
-            // TODO NEW: Contract requested
-            "REQUESTED" : "Contract requested",
+            "REQUESTED" : "Contratto richiesto",
 
-            // TODO NEW: Contract printed
-            "PRINTED" : "Contract printed",
+            "PRINTED" : "Contratto stampato",
 
-            // TODO NEW: Contract signed
-            "SIGNED" : "Contract signed"
+            "SIGNED" : "Contratto firmato"
         },
         "emailstatus" : {
 
-            // TODO NEW: Rejected
-            "REJECTED" : "Rejected",
+            "REJECTED" : "Rifiutato",
 
-            // TODO NEW: Not confirmed yet
-            "UNVALIDATED" : "Not confirmed yet",
+            "UNVALIDATED" : "Non ancora confermato",
 
-            // TODO NEW: Confirmed
-            "VALIDATED" : "Confirmed",
+            "VALIDATED" : "Confermato",
 
-            // TODO NEW: Confirmed by 3rd party
-            "EXTERN_VALIDATED" : "Confirmed by 3rd party"
+            "EXTERN_VALIDATED" : "Confermato da terzi"
         },
         "participantsearchstatus" : {
 
-            // TODO NEW: Closed
-            "CLOSED" : "Closed",
+            "CLOSED" : "Chiuso",
 
-            // TODO NEW: Not yet started
-            "PRE" : "Not yet started",
+            "PRE" : "Non ancora iniziato",
 
-            // TODO NEW: Currently searching
-            "SEARCHING" : "Currently searching"
+            "SEARCHING" : "Ricerca in corso"
         },
         "participationstatus" : {
 
-            // TODO NEW: Participation accepted
-            "ACCEPTED" : "Participation accepted",
+            "ACCEPTED" : "Partecipazione accettata",
 
-            // TODO NEW: Participation code entered
-            "CODE" : "Participation code entered",
+            "CODE" : "Codice di partecipazione inserito",
 
-            // TODO NEW: Possible match
-            "MATCH" : "Possible match",
+            "MATCH" : "Possibile corrispondenza",
 
-            // TODO NEW: Account holder rejected
-            "MEMBER_REJECTED" : "Account holder rejected",
+            "MEMBER_REJECTED" : "Titolare account rifiutato",
 
-            // TODO NEW: Participation requested
-            "REQUEST" : "Participation requested",
+            "REQUEST" : "Partecipazione richiesta",
 
-            // TODO NEW: Rejected by researcher
-            "RESEARCH_REJECTED" : "Rejected by researcher",
+            "RESEARCH_REJECTED" : "Rifiutato dal ricercatore",
 
-            // TODO NEW: Participant has retreated
-            "MEMBER_RETREATED" : "Participant has retreated"
+            "MEMBER_RETREATED" : "Il partecipante si è ritirato"
         },
         "studyexecutionstatus" : {
 
-            // TODO NEW: Execution aborted
-            "ABORTED" : "Execution aborted",
+            "ABORTED" : "Esecuzione interrotta",
 
-            // TODO NEW: Finished
-            "FINISHED" : "Finished",
+            "FINISHED" : "Terminato",
 
-            // TODO NEW: Not yet started
-            "PRE" : "Not yet started",
+            "PRE" : "Non ancora iniziato",
 
-            // TODO NEW: Currently running
-            "RUNNING" : "Currently running"
+            "RUNNING" : "Esecuzione in corso"
         },
         "studyvalidationstatus" : {
 
-            // TODO NEW: Draft (Not Validated)
-            "DRAFT" : "Draft (Not Validated)",
+            "DRAFT" : "Bozza (non convalidata)",
 
-            // TODO NEW: Study rejected by MIDATA
-            "REJECTED" : "Study rejected by MIDATA",
+            "REJECTED" : "Studio rifiutato da MIDATA",
 
-            // TODO NEW: Study has been validated
-            "VALIDATED" : "Study has been validated",
+            "VALIDATED" : "Lo studio è stato convalidato",
 
-            // TODO NEW: Validation running
-            "VALIDATION" : "Validation running"
+            "VALIDATION" : "Convalida in esecuzione"
         },
         "userrole" : {
 
-            // TODO NEW: Administrator
-            "ADMIN" : "Administrator",
+            "ADMIN" : "Amministratore",
 
-            // TODO NEW: Any Role
-            "ANY" : "Any Role",
+            "ANY" : "Qualsiasi ruolo",
 
-            // TODO NEW: Developer
-            "DEVELOPER" : "Developer",
+            "DEVELOPER" : "Sviluppatore",
 
-            // TODO NEW: Account Holder
-            "MEMBER" : "Account Holder",
+            "MEMBER" : "Titolare account",
 
-            // TODO NEW: Healthcare provider
-            "PROVIDER" : "Healthcare provider",
+            "PROVIDER" : "Fornitore di prestazioni sanitarie",
 
-            // TODO NEW: Researcher
-            "RESEARCH" : "Researcher"
+            "RESEARCH" : "Ricercatore"
         },
         "subuserrole" : {
 
-            // TODO NEW: Doctor
-            "DOCTOR" : "Doctor",
+            "DOCTOR" : "Dottore/ssa",
 
-            // TODO NEW: Nurse
-            "NURSE" : "Nurse",
+            "NURSE" : "Infermiere/a",
 
-            // TODO NEW: Manager
-            "MANAGER" : "Manager",
+            "MANAGER" : "Responsabile",
 
-            // TODO NEW: Monitor
-            "MONITOR" : "Monitor",
+            "MONITOR" : "Supervisore",
 
-            // TODO NEW: User Admin
-            "USERADMIN" : "User Admin",
+            "USERADMIN" : "Ammin. utente",
 
-            // TODO NEW: Study Admin
-            "STUDYADMIN" : "Study Admin",
+            "STUDYADMIN" : "Ammin. studio",
 
-            // TODO NEW: Content Admin
-            "CONTENTADMIN" : "Content Admin",
+            "CONTENTADMIN" : "Ammin. contenuti",
 
-            // TODO NEW: Plugin Admin
-            "PLUGINADMIN" : "Plugin Admin",
+            "PLUGINADMIN" : "Ammin plugin",
 
-            // TODO NEW: News Author
-            "NEWSWRITER" : "News Author",
+            "NEWSWRITER" : "Autore notizie",
 
-            // TODO NEW: Super Admin
-            "SUPERADMIN" : "Super Admin",
+            "SUPERADMIN" : "Super ammin.",
 
-            // TODO NEW: Trial User
-            "TRIALUSER" : "Trial User",
+            "TRIALUSER" : "Utente di prova",
 
-            // TODO NEW: Study Participant
-            "STUDYPARTICIPANT" : "Study Participant",
+            "STUDYPARTICIPANT" : "Partecipante allo studio",
 
-            // TODO NEW: App User
-            "APPUSER" : "App User",
+            "APPUSER" : "Utente applicazione",
 
-            // TODO NEW: Validated Account Holder
-            "NONMEMBERUSER" : "Validated Account Holder",
+            "NONMEMBERUSER" : "Titolare account convalidato",
 
-            // TODO NEW: Member of Cooperative
-            "MEMBEROFCOOPERATIVE" : "Member of Cooperative"
+            "MEMBEROFCOOPERATIVE" : "Membro della cooperativa"
         },
         "researcherrole" : {
-
-            // TODO NEW: Sponsor
+           
             "SPONSOR" : "Sponsor",
 
-            // TODO NEW: Investigator
-            "INVESTIGATOR" : "Investigator",
+            "INVESTIGATOR" : "Sperimentatore",
 
-            // TODO NEW: Auditor
-            "AUDITOR" : "Auditor",
+            "AUDITOR" : "Revisore",
 
-            // TODO NEW: Study Nurse
-            "STUDYNURSE" : "Study Nurse",
+            "STUDYNURSE" : "Infermiere/a di ricerca",
 
-            // TODO NEW: Monitor
-            "MONITOR" : "Monitor",
+            "MONITOR" : "Supervisore",
 
-            // TODO NEW: Other
-            "OTHER" : "Other"
+            "OTHER" : "Altro"
         },
         "userstatus" : {
 
-            // TODO NEW: Active
-            "ACTIVE" : "Active",
+            "ACTIVE" : "Attivo",
 
-            // TODO NEW: Blocked
-            "BLOCKED" : "Blocked",
+            "BLOCKED" : "Bloccato",
 
-            // TODO NEW: Deleted
-            "DELETED" : "Deleted",
+            "DELETED" : "Eliminato",
 
-            // TODO NEW: New
-            "NEW" : "New"
+            "NEW" : "Nuovo"
         },
         "frequency" : {
 
-            // TODO NEW: Einmalig
-            "ONCE" : "Einmalig",
+            "ONCE" : "Una sola volta",
 
-            // TODO NEW: Daily
-            "DAILY" : "Daily",
+            "DAILY" : "Giornaliero",
 
-            // TODO NEW: Once a week
-            "WEEKLY" : "Once a week",
+            "WEEKLY" : "Settimanale",
 
-            // TODO NEW: Once a month
-            "MONTHLY" : "Once a month",
+            "MONTHLY" : "Mensile",
 
-            // TODO NEW: Once a year
-            "YEARLY" : "Once a year"
+            "YEARLY" : "Annuale"
         },
         "language" : {
 
-            // TODO NEW: English
-            "EN" : "English",
+            "EN" : "Inglese",
 
-            // TODO NEW: German
-            "DE" : "German",
+            "DE" : "Tedesco",
 
-            // TODO NEW: Italian
-            "IT" : "Italian",
+            "IT" : "Italiano",
 
-            // TODO NEW: French
-            "FR" : "French",
+            "FR" : "Francese",
 
-            // TODO NEW: Dutch
-            "NL" : "Dutch"
+            "NL" : "Olandese"
         },
         "month" : {
 
-            // TODO NEW: Jan
-            "01" : "Jan",
-
-            // TODO NEW: Feb
+            "01" : "Gen",
+           
             "02" : "Feb",
-
-            // TODO NEW: Mar
+          
             "03" : "Mar",
-
-            // TODO NEW: Apr
+           
             "04" : "Apr",
 
-            // TODO NEW: May
-            "05" : "May",
+            "05" : "Mag",
 
-            // TODO NEW: Jun
-            "06" : "Jun",
+            "06" : "Giu",
 
-            // TODO NEW: Jul
-            "07" : "Jul",
+            "07" : "Lug",
 
-            // TODO NEW: Aug
-            "08" : "Aug",
+            "08" : "Ago",
 
-            // TODO NEW: Sep
-            "09" : "Sep",
+            "09" : "Set",
 
-            // TODO NEW: Oct
-            "10" : "Oct",
-
-            // TODO NEW: Nov
+            "10" : "Ott",
+          
             "11" : "Nov",
 
-            // TODO NEW: Dec
-            "12" : "Dec"
+            "12" : "Dic"
         },
         "codesystems" : {
 
-            // TODO NEW: LOINC code
-            "loinc" : "LOINC code",
+            "loinc" : "Codice LOINC",
 
-            // TODO NEW: MIDATA code
-            "midata" : "MIDATA code",
+            "midata" : "Codice MIDATA",
 
-            // TODO NEW: FHIR Resource
-            "fhir" : "FHIR Resource",
+            "fhir" : "Risorsa FHIR",
 
-            // TODO NEW: SNOMED CT code
-            "snowmed" : "SNOMED CT code"
+            "snowmed" : "Codice SNOMED CT"
         },
         "tags" : {
 
-            // TODO NEW: Analysis
-            "Analysis" : "Analysis",
+            "Analysis" : "Analisi",
 
-            // TODO NEW: Import
-            "Import" : "Import",
+            "Import" : "Importazione",
 
-            // TODO NEW: Planning
-            "Planning" : "Planning",
+            "Planning" : "Pianificazione",
 
-            // TODO NEW: Tools
-            "Tools" : "Tools",
+            "Tools" : "Strumenti",
 
-            // TODO NEW: Protocol
-            "Protocol" : "Protocol",
+            "Protocol" : "Protocollo",
 
-            // TODO NEW: Available Plugins
-            "Available" : "Available Plugins"
+            "Available" : "Plugin disponibili"
         },
         "plugintype" : {
-
-            // TODO NEW: Plugin
+           
             "visualization" : "Plugin",
 
-            // TODO NEW: Form
-            "create" : "Form",
-
-            // TODO NEW: OAuth 1
+            "create" : "Modulo",
+            
             "oauth1" : "OAuth 1",
-
-            // TODO NEW: OAuth 2
+           
             "oauth2" : "OAuth 2",
 
-            // TODO NEW: App (Smartphone, Web)
-            "mobile" : "App (Smartphone, Web)"
+            "mobile" : "Applicazione (Smartphone, Web)"
         }
     },
 
     "common" : {
 
-        // TODO NEW: Back
-        "back_btn" : "Back",
+        "back_btn" : "Indietro",
 
-        // TODO NEW: Search
-        "search_btn" : "Search",
+        "search_btn" : "Cerca",
 
-        // TODO NEW: Add
-        "add_btn" : "Add",
+        "add_btn" : "Aggiungi",
 
-        // TODO NEW: Create
-        "create_btn" : "Create",
+        "create_btn" : "Crea",
 
-        // TODO NEW: Change
-        "change_btn" : "Change",
+        "change_btn" : "Modifica",
 
-        // TODO NEW: Cancel
-        "cancel_btn" : "Cancel",
+        "cancel_btn" : "Annulla",
 
-        // TODO NEW: View
-        "view_btn" : "View",
+        "view_btn" : "Visualizzazione",
 
-        // TODO NEW: Submit
-        "submit_btn" : "Submit",
+        "submit_btn" : "Inoltra",
 
-        // TODO NEW: Delete
-        "delete_btn" : "Delete",
+        "delete_btn" : "Elimina",
 
-        // TODO NEW: or
-        "or" : "or",
+        "or" : "oppure",
 
-        // TODO NEW: Successfully Saved
-        "save_ok" : "Successfully Saved",
+        "save_ok" : "Salvato con successo",
+        "yesno" : {
+
+            "true" : "Sì",
+           
+            "false" : "No"
+        },
         "user" : {
 
-            // TODO NEW: Surname
-            "lastname" : "Surname",
+            "lastname" : "Cognome",
 
-            // TODO NEW: Firstname
-            "firstname" : "Firstname",
+            "firstname" : "Nome",
 
-            // TODO NEW: ZIP
-            "zip" : "ZIP",
+            "zip" : "Codice Post.",
 
-            // TODO NEW: City
-            "city" : "City",
+            "city" : "Città",
 
-            // TODO NEW: Street
-            "street" : "Street",
+            "street" : "Via/Piazza",
 
-            // TODO NEW: Phone
-            "phone" : "Phone",
+            "phone" : "Telefono",
 
-            // TODO NEW: Mobile
-            "mobile_phone" : "Mobile",
+            "mobile_phone" : "Cellulare",
 
-            // TODO NEW: Email
-            "email" : "Email"
+            "email" : "E-mail"
         }
     },
 
     "instance" : {
 
-        // TODO NEW: Purpose of this MIDATA instance
-        "purpose" : "Purpose of this MIDATA instance",
+        "purpose" : "Scopo di questa istanza MIDATA",
 
-        // TODO NEW: Access to this MIDATA instance
-        "access" : "Access to this MIDATA instance",
+        "access" : "Accesso a questa istanza MIDATA",
 
-        // TODO NEW: Availability and downtimes
-        "uptime" : "Availability and downtimes",
+        "uptime" : "Disponibilità e tempi di inattività",
 
-        // TODO NEW: Data stored in this MIDATA instance
-        "data" : "Data stored in this MIDATA instance",
+        "data" : "Dati memorizzati in questa istanza MIDATA",
 
-        // TODO NEW: Choose one of the portal from the top of the page to start. Each portal has its own LOGIN and SIGN UP page.
-        "start" : "Choose one of the portal from the top of the page to start. Each portal has its own LOGIN and SIGN UP page.",
+        "start" : "Per iniziare, scegliere uno dei portali in alto sulla pagina. Ogni portale è dotato di una pagina di ACCESSO e REGISTRAZIONE.",
 
         "localhost" : {
 
-            // TODO NEW: Local Instance (localhost)
-            "name" : "Local Instance (localhost)",
+            "name" : "Istanza locale (localhost)",
 
-            // TODO NEW: This is a local installation of the MIDATA platform, only available from your PC.
-            "intro" : "This is a local installation of the MIDATA platform, only available from your PC.",
+            "intro" : "Questa è un'installazione locale della piattaforma MIDATA, disponibile solamente dal proprio PC.",
 
-            // TODO NEW: A local installation may be used in order to contribute to the MIDATA platform and for testing purposes.
-            "purpose" : "A local installation may be used in order to contribute to the MIDATA platform and for testing purposes.",
+            "purpose" : "Un'installazione locale può essere utilizzata per contribuire alla piattaforma MIDATA e a scopo di test.",
 
-            // TODO NEW: You may register user accounts for all four portals. Accounts do not need to be validated by a MIDATA administrator. You may register and use your own admin accounts.
-            "access" : "You may register user accounts for all four portals. Accounts do not need to be validated by a MIDATA administrator. You may register and use your own admin accounts.",
+            "access" : "È possibile registrare gli account utente per tutti i quattro portali. Gli account non richiedono la convalida da parte di un amministratore MIDATA. È possibile registrare e utilizzare i propri account ammin.",
 
-            // TODO NEW: Whenever you run it, its available only for you :-)
-            "uptime" : "Whenever you run it, its available only for you :-)",
+            "uptime" : "Ogniqualvolta lo esegui, è disponibile solo per te :-)",
 
-            // TODO NEW: Data stored in this instance will only be available on your local PC.
-            "data" : "Data stored in this instance will only be available on your local PC."
+            "data" : "I dati memorizzati in questa istanza saranno disponibili solamente sul proprio PC locale."
         },
 
         "test" : {
 
-            // TODO NEW: Test Instance (test.midata.coop)
-            "name" : "Test Instance (test.midata.coop)",
+            "name" : "Istanza di test (test.midata.coop)",
 
-            // TODO NEW: This is a test instance of the MIDATA platform.
-            "intro" : "This is a test instance of the MIDATA platform.",
+            "intro" : "Questa è un'istanza di test della piattaforma MIDATA.",
 
-            // TODO NEW: This instance may be used to develop and test new apps and plugins for MIDATA in a safe environment. It is also used to test new versions of the portal and the backend before the other instances are updated.
-            "purpose" : "This instance may be used to develop and test new apps and plugins for MIDATA in a safe environment. It is also used to test new versions of the portal and the backend before the other instances are updated.",
+            "purpose" : "Questa istanza può essere utilizzata per sviluppare e testare nuove applicazioni e plugin per MIDATA in un ambiente sicuro. È inoltre utilizzata per testare nuove versioni del portale e il backend prima che altre istanze siano aggiornate.",
 
-            // TODO NEW: Register your own developer account. After validation by a MIDATA administrator, you may register test users, researchers and health providers without additional validation.
-            "access" : "Register your own developer account. After validation by a MIDATA administrator, you may register test users, researchers and health providers without additional validation.",
+            "access" : "Registrare il proprio account di sviluppatore. Dopo la convalida di un amministratore di MIDATA, è possibile registrare utenti di test, ricercatori e fornitori di prestazioni sanitarie senza un'ulteriore convalida.",
 
-            // TODO NEW: There is no guarantee on availability. Expect updates of the instance to happen as needed. If possible, updates are done between 12:00 and 13:00 central european time, but may occur more than once a day if problems occur.
-            "uptime" : "There is no guarantee on availability. Expect updates of the instance to happen as needed. If possible, updates are done between 12:00 and 13:00 central european time, but may occur more than once a day if problems occur.",
+            "uptime" : "La disponibilità non è garantita. Attendere che gli aggiornamenti dell'istanza avvengano secondo le esigenze. Ove possibile, gli aggiornamenti sono eseguiti tra le 12:00 e le 13:00 ora dell'Europa centrale, tuttavia potrebbero avvenire più di una volta al giorno se si verificano dei problemi.",
 
-            // TODO NEW: Store only test data on this instance. Data may be wiped, accounts may be deleted if necessary. Records may become corrupted by bugs. There is no backup of the data.
-            "data" : "Store only test data on this instance. Data may be wiped, accounts may be deleted if necessary. Records may become corrupted by bugs. There is no backup of the data."
+            "data" : "Su questa istanza memorizzare solo dati di test. Se necessario, i dati possono essere rimossi e gli account eliminati. I record potrebbero danneggiarsi a causa di anomalie. Non esiste un backup dei dati."
         },
 
         "demo" : {
 
-            // TODO NEW: Demo Instance (demo.midata.coop)
-            "name" : "Demo Instance (demo.midata.coop)",
+            "name" : "Istanza demo (demo.midata.coop)",
 
-            // TODO NEW: This is a demonstration instance of the MIDATA platform.
-            "intro" : "This is a demonstration instance of the MIDATA platform.",
+            "intro" : "Questa è un'istanza dimostrativa della piattaforma MIDATA.",
 
-            // TODO NEW: This instance may be used for demonstration purposes and training.
-            "purpose" : "This instance may be used for demonstration purposes and training.",
+            "purpose" : "Questa istanza può essere utilizzata a scopo dimostrativo e formativo.",
 
-            // TODO NEW: You may register user accounts for all four portals. Accounts must be validated by a MIDATA administrator, before they are unlocked.
-            "access" : "You may register user accounts for all four portals. Accounts must be validated by a MIDATA administrator, before they are unlocked.",
+            "access" : "È possibile registrare gli account utente per tutti i quattro portali. Gli account devono essere convalidati da un amministratore di MIDATA, prima che siano sbloccati.",
 
-            // TODO NEW: This instance is updated less frequently than the test.midata.coop instance. Expected downtime is once a week on Monday between 12:00 and 14:00 central european time.
-            "uptime" : "This instance is updated less frequently than the test.midata.coop instance. Expected downtime is once a week on Monday between 12:00 and 14:00 central european time.",
+            "uptime" : "Questa istanza è aggiornata meno frequentemente dell'istanza test.midata.coop. Il tempo di inattività atteso è una volta la settimana il lunedì tra le 12:00 e le 14:00 ora dell'Europa centrale.",
 
-            // TODO NEW: Store only demonstration data on this instance. There is no backup of the data.
-            "data" : "Store only demonstration data on this instance. There is no backup of the data."
+            "data" : "Su questa istanza memorizzare solo dati dimostrativi. Non esiste un backup dei dati."
         },
 
         "ch" : {
 
-            // TODO NEW: MIDATA Switzerland (ch.midata.coop)
-            "name" : "MIDATA Switzerland (ch.midata.coop)",
+            "name" : "MIDATA Svizzera (ch.midata.coop)",
 
-            // TODO NEW: This is the MIDATA platform for Switzerland.
-            "intro" : "This is the MIDATA platform for Switzerland.",
+            "intro" : "Questa è la piattaforma MIDATA per la Svizzera.",
 
-            // TODO NEW: This is the productive MIDATA platform for storing health data in Switzerland.
-            "purpose" : "This is the productive MIDATA platform for storing health data in Switzerland.",
+            "purpose" : "Questa è la piattaforma MIDATA di produzione per la memorizzazione dei dati relativi a salute e sanità in Svizzera.",
 
-            // TODO NEW: New user accounts have feature restrictions. Healthprovider, research and development accounts can only be used after validation by MIDATA. Fake or test accounts are not allowed and will be blocked.
-            "access" : "New user accounts have feature restrictions. Healthprovider, research and development accounts can only be used after validation by MIDATA. Fake or test accounts are not allowed and will be blocked.",
+            "access" : "I nuovi account utente presentano limitazioni associate alle funzionalità. Gli account dei fornitori di prestazioni sanitarie e di ricerca e sviluppo possono essere utilizzati esclusivamente previa convalida da parte di MIDATA. Account fittizi o di test non sono autorizzati e saranno bloccati.",
 
-            // TODO NEW: Downtimes will be announced.
-            "uptime" : "Downtimes will be announced.",
+            "uptime" : "I tempi di inattività verranno preannunciati.",
 
-            // TODO NEW: This instance is for storing real data about real people. Data is backed up on a daily basis.
-            "data" : "This instance is for storing real data about real people. Data is backed up on a daily basis."
+            "data" : "Questa istanza è destinata alla memorizzazione di dati effettivi riguardanti persone reali. I dati sono salvati in backup su base giornaliera."
         }
 
     },
 
     "registration" : {
 
-        // TODO NEW: Sign Up
-        "sign_up" : "Sign Up",
+        "sign_up" : "Registrazione",
 
-        // TODO NEW: Fields marked with a * must be filled out.
-        "mandantory_fields" : "Fields marked with a * must be filled out.",
+        "mandantory_fields" : "Inserire le informazioni richieste qui sotto (i campi contrassegnati da un asterisco * sono obbligatori)",
 
-        // TODO NEW: EMail
-        "email" : "EMail",
-
-        // TODO NEW: Password
+        "email" : "E-mail",
+       
         "password" : "Password",
 
-        // TODO NEW: Repeat Password
-        "password_repetition" : "Repeat Password",
+        "password_repetition" : "Ripetere la password",
 
-        // TODO NEW: First Name
-        "firstname" : "First Name",
+        "firstname" : "Nome",
 
-        // TODO NEW: Surname
-        "lastname" : "Surname",
+        "lastname" : "Cognome",
 
-        // TODO NEW: Gender
-        "gender" : "Gender",
+        "gender" : "Sesso",
 
-        // TODO NEW: Birthday
-        "birthday" : "Birthday",
+        "birthday" : "Data di nascita",
 
-        // TODO NEW: Preferred Language
-        "language" : "Preferred Language",
+        "language" : "Lingua preferita",
 
-        // TODO NEW: Day
-        "day" : "Day",
+        "day" : "Giorno",
 
-        // TODO NEW: Month
-        "month" : "Month",
+        "month" : "Mese",
 
-        // TODO NEW: Year
-        "year" : "Year",
+        "year" : "Anno",
 
-        // TODO NEW: Address
-        "address" : "Address",
+        "address" : "Indirizzo",
 
-        // TODO NEW: Enter your address here
-        "address_line1" : "Enter your address here",
+        "address_line1" : "Inserire qui il proprio indirizzo",
 
-        // TODO NEW: Second line for address
-        "address_line2" : "Second line for address",
+        "address_line2" : "Seconda riga per l'indirizzo",
 
-        // TODO NEW: City
-        "city" : "City",
+        "city" : "Città",
 
-        // TODO NEW: Zip Code
-        "zip" : "Zip Code",
+        "zip" : "Codice Postale",
 
-        // TODO NEW: Country
-        "country" : "Country",
+        "country" : "Nazione",
 
-        // TODO NEW: Phone
-        "phone" : "Phone",
+        "phone" : "Telefono",
 
-        // TODO NEW: Mobile Phone
-        "mobile_phone" : "Mobile Phone",
+        "mobile_phone" : "Telefono cellulare",
 
-        // TODO NEW: Contact person MIDATA
-        "coach" : "Contact person MIDATA",
+        "coach" : "Persona di contatto MIDATA",
 
-        // TODO NEW: Purpose of Registration*
-        "reason" : "Purpose of Registration*",
+        "reason" : "Scopo della registrazione*",
 
-        // TODO NEW: MIDATA Terms
-        "agb" : "MIDATA Terms",
+        "agb" : "Termini e Condizioni di MIDATA",
 
-        // TODO NEW: Research
-        "study" : "Research",
+        "agb4" : "Accetto i Termini e Condizioni d'uso di MIDATA",
 
-        // TODO NEW: I accept the
-        "agb2" : "I accept the",
+        "study" : "Ricerca",
 
-        // TODO NEW: Terms and Conditions
-        "agb3" : "Terms and Conditions",
+        "agb2" : "Accetto i",
 
-        // TODO NEW: I accept the
-        "privacypolicy2" : "I accept the",
+        "agb3" : "Termini e Condizioni",
 
-        // TODO NEW: Privacy Policy
-        "privacypolicy3" : "Privacy Policy",
+        "privacypolicy2" : "Accetto le",
 
-        // TODO NEW: App Terms
-        "app_agb" : "App Terms",
+        "privacypolicy3" : "Politiche sulla privacy",
 
-        // TODO NEW: I accept the
-        "app_agb2" : "I accept the",
+        "privacypolicy4" : "Accetto i Termini e Condizioni relativi alla privacy di MIDATA",
 
-        // TODO NEW: App Terms and Conditions
-        "app_agb3" : "App Terms and Conditions",
+        "app_agb" : "Termini/Condizioni dell'applicazione",
 
-        // TODO NEW: Study Terms
-        "study_agb" : "Study Terms",
+        "app_agb2" : "Accetto i",
 
-        // TODO NEW: Sign Up
-        "sign_up_btn" : "Sign Up",
+        "app_agb3" : "Termini e Condizioni dell'applicazione",
 
-        // TODO NEW: Unlock Code
-        "unlock_code" : "Unlock Code"
+        "app_agb4" : "Accetto i Termini e Condizioni dell'applicazione",
+
+        "study_agb" : "Termini e Condizioni dello studio",
+
+        "sign_up_btn" : "crea account",
+
+        "unlock_code" : "Codice di sblocco",
+
+        "already_have_account" : "Ho già un account"
     },
 
     "login" : {
 
-        // TODO NEW: Email address
-        "email_address" : "Email address",
-
-        // TODO NEW: Password
+        "email_address" : "Indirizzo e-mail",
+      
         "password" : "Password",
 
-        // TODO NEW: Study
-        "study" : "Study",
+        "study" : "Studio",
 
-        // TODO NEW: Remember me
-        "remember_me" : "Remember me",
+        "remember_me" : "Ricordami",
 
-        // TODO NEW: Log in
-        "sign_in_btn" : "Log in",
+        "sign_in_btn" : "Accedi",
 
-        // TODO NEW: Forgot your password?
-        "forgot_your_password" : "Forgot your password?",
+        "forgot_your_password" : "Dimenticata la password?",
 
-        // TODO NEW: Log in
-        "login_btn" : "Log in"
+        "login_btn" : "Accedi"
     },
 
     "lostpw" : {
 
-        // TODO NEW: Password Assistance - Step 1
-        "title" : "Password Assistance - Step 1",
+        "title" : "Assistenza per la password - Passo 1",
 
-        // TODO NEW: Enter the email address associated with your account, then click Continue. We'll email you a link to a page where you can easily create a new password.
-        "description" : "Enter the email address associated with your account, then click Continue. We'll email you a link to a page where you can easily create a new password.",
+        "description" : "Inserisci l'indirizzo e-mail associato al tuo account, quindi fai clic su Continua. Ti invieremo un link alla pagina da cui potrai creare facilmente una nuova password.",
 
-        // TODO NEW: Email address
-        "email" : "Email address",
+        "email" : "Indirizzo e-mail",
 
-        // TODO NEW: Continue
-        "continue" : "Continue",
+        "continue" : "Continua",
 
-        // TODO NEW: We have sent you an email with instructions on how to reset your password.
-        "success" : "We have sent you an email with instructions on how to reset your password."
+        "success" : "Ti abbiamo inviato un'e-mail con le istruzioni su come resettare la password."
     },
 
     "setpw" : {
 
-        // TODO NEW: Password Assistance - Step 2
-        "title" : "Password Assistance - Step 2",
+        "title" : "Assistenza per la password - Passo 2",
 
-        // TODO NEW: New password
-        "new_password" : "New password",
+        "new_password" : "Nuova password",
 
-        // TODO NEW: Password repetition
-        "new_password_repeat" : "Password repetition",
+        "new_password_repeat" : "Ripetizione password",
 
-        // TODO NEW: Please enter a new password for your account.
-        "enter_new" : "Please enter a new password for your account.",
+        "enter_new" : "Inserire una nuova password per il proprio account.",
 
-        // TODO NEW: Set New Password
-        "set_new_btn" : "Set New Password",
+        "set_new_btn" : "Impostare la nuova password",
 
-        // TODO NEW: You have successfully set a new password for your account.
-        "success" : "You have successfully set a new password for your account.",
+        "success" : "Hai impostato con successo una nuova password per il tuo account.",
 
-        // TODO NEW: Go back to login page.
-        "back_to_login" : "Go back to login page."
+        "back_to_login" : "Tornare alla pagina di accesso."
     },
 
     "passphrase" : {
 
-        // TODO NEW: Enter Passphrase
-        "title" : "Enter Passphrase",
+        "title" : "Inserire la frase password",
 
-        // TODO NEW: Your account is protected with a passphrase.
-        "description" : "Your account is protected with a passphrase.",
+        "description" : "Il tuo account è protetto da una frase password.",
 
-        // TODO NEW: Passphrase
-        "passphrase" : "Passphrase",
+        "passphrase" : "Frase password",
 
-        // TODO NEW: Continue
-        "continue_btn" : "Continue",
+        "continue_btn" : "Continua",
 
-        // TODO NEW: If you lost your passphrase contact support@midata.coop
-        "if_lost" : "If you lost your passphrase contact support@midata.coop"
+        "if_lost" : "Se hai perso la frase password, contatta support@midata.coop"
     },
 
     "postregister" : {
 
-        // TODO NEW: Welcome to MIDATA
-        "title" : "Welcome to MIDATA",
+        "title" : "Benvenuto in MIDATA",
 
-        // TODO NEW: Email confirmed?
-        "email_confirmed" : "Email confirmed?",
+        "email_confirmed" : "L'e-mail è stata confermata?",
 
-        // TODO NEW: Contract signed and sent back?
-        "contract_signed" : "Contract signed and sent back?",
+        "contract_signed" : "Il contratto è stato firmato e restituito?",
 
-        // TODO NEW: Welcome email has been resent.
-        "resent_success" : "Welcome email has been resent.",
+        "resent_success" : "L'e-mail di benvenuto è stata reinviata.",
 
-        // TODO NEW: Address has been confirmed.
-        "address_success" : "Address has been confirmed.",
+        "address_success" : "L'indirizzo è stato confermato.",
 
-        // TODO NEW: Confirmation code entered?
-        "code_entered" : "Confirmation code entered?",
+        "code_entered" : "Il codice di conferma è stato inserito?",
 
-        // TODO NEW: Your email address needs to be confirmed. An activation email has been sent to your account. Just click on the link in this email to confirm your email address.
-        "email_instructions" : "Your email address needs to be confirmed. An activation email has been sent to your account. Just click on the link in this email to confirm your email address.",
+        "email_instructions" : "Il tuo indirizzo e-mail deve essere confermato. Una e-mail di attivazione è stata inviata al tuo account. Fai clic sul link contenuto in questa e-mail per confermare l'indirizzo e-mail.",
 
-        // TODO NEW: For convenience you may enter the code from the email here:
-        "email_code" : "For convenience you may enter the code from the email here:",
+        "email_code" : "Per praticità, puoi inserire il codice dell'e-mail qui:",
 
-        // TODO NEW: Resend email
-        "resend_btn" : "Resend email",
+        "code" : "Codice",
 
-        // TODO NEW: Retry login
-        "retry_btn" : "Retry login",
+        "resend_btn" : "Reinviare l'e-mail",
 
-        // TODO NEW: A contract has been sent to your postal address. Please return it signed to MIDATA.
-        "contract_instructions" : "A contract has been sent to your postal address. Please return it signed to MIDATA.",
+        "retry_btn" : "Ritentare l'accesso",
 
-        // TODO NEW: A MIDATA administrator will verify and unlock your account. You will be notified when your account has been unlocked.
-        "pilot_phase" : "A MIDATA administrator will verify and unlock your account. You will be notified when your account has been unlocked.",
+        "contract_instructions" : "Il contratto è stato inviato al tuo indirizzo postale. Ti invitiamo a restituirlo firmato a MIDATA.",
 
-        // TODO NEW: A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.
-        "code_intructions" : "A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.",
+        "pilot_phase" : "Un amministratore MIDATA verificherà e sbloccherà il tuo account. Riceverai un avviso quando l'account è stato sbloccato.",
 
-        // TODO NEW: You have provided the confirmation code. You may login after the signed contract has arrived at MIDATA.
-        "code_done" : "You have provided the confirmation code. You may login after the signed contract has arrived at MIDATA.",
+        "code_intructions" : "Una lettera con il codice di conferma sarà inviata al tuo indirizzo postale. Inserisci questo codice di conferma per accedere alla piattaforma.",
 
-        // TODO NEW: Enter now
-        "enter_now_btn" : "Enter now",
+        "code_done" : "Hai fornito il codice di conferma. Potrai accedere dopo che il contratto firmato sarà arrivato a MIDATA.",
 
-        // TODO NEW: Email address has been confirmed.
-        "email_success" : "Email address has been confirmed.",
+        "enter_now_btn" : "Inserire ora",
 
-        // TODO NEW: Your postal address is required to use this service, please provide it.
-        "address_entered" : "Your postal address is required to use this service, please provide it.",
+        "email_success" : "L'indirizzo e-mail è stato confermato.",
 
-        // TODO NEW: A mobile phone number is required to use this service, please provide it.
-        "phone_entered" : "A mobile phone number is required to use this service, please provide it.",
+        "address_entered" : "Per utilizzare questo servizio è richiesto il tuo indirizzo postale; ti invitiamo a inserirlo.",
 
-        // TODO NEW: Your account must be unlocked by a MIDATA administrator. Please retry later. If your account has not been unlocked for more than 24 hours, please contact MIDATA.
-        "admin_verified" : "Your account must be unlocked by a MIDATA administrator. Please retry later. If your account has not been unlocked for more than 24 hours, please contact MIDATA."
+        "phone_entered" : "Per utilizzare questo servizio è richiesto un numero di telefono cellulare; ti invitiamo a inserirlo.",
+
+        "admin_verified" : "Il tuo account deve essere sbloccato da un amministratore MIDATA. Riprova più tardi. Se trascorse più di 24 ore il tuo account non è stato sbloccato, contatta MIDATA."
     },
 
     "changepassphrase" : {
 
-        // TODO NEW: Change Passphrase
-        "title" : "Change Passphrase",
+        "title" : "Modificare la frase password",
 
-        // TODO NEW: A passphrase is an additional protection (additional encryption) for your data. It is not stored on our servers. You have to provide the passphrase on every login, to make it possible to decrypt your data. If you loose your passphrase, you will not be able to access your data anymore!.
-        "description" : "A passphrase is an additional protection (additional encryption) for your data. It is not stored on our servers. You have to provide the passphrase on every login, to make it possible to decrypt your data. If you loose your passphrase, you will not be able to access your data anymore!.",
+        "description" : "La frase password è una protezione aggiuntiva (crittografia aggiuntiva) dei propri dati. Non è memorizzata sui nostri server. Si deve inserire la frase password a ogni accesso, per consentire la decrittazione dei propri dati. Se si perde la frase password, non si sarà più in grado di accedere ai propri dati!",
 
-        // TODO NEW: If your account is not yet protected by a passphrase leave the field 'Old passphrase' empty.
-        "if_unprotected" : "If your account is not yet protected by a passphrase leave the field 'Old passphrase' empty.",
+        "if_unprotected" : "Se il proprio account non è ancora protetto
+da una frase password lasciare vuoto il campo 'Vecchia frase password'.",
 
-        // TODO NEW: Please keep your passphrase at a save place, there is no recovery function for it. If you loose your passphrase, you will not be able to access your data anymore!.
-        "keep_passphrase_safe" : "Please keep your passphrase at a save place, there is no recovery function for it. If you loose your passphrase, you will not be able to access your data anymore!.",
+        "keep_passphrase_safe" : "Mantenere la propria frase password in un posto sicuro, non esiste una funzione per recuperarla. Se si perde la frase password, non si potrà più accedere ai propri dati!",
 
-        // TODO NEW: Old Passphrase
-        "old_passphrase" : "Old Passphrase",
+        "old_passphrase" : "Vecchia frase password",
 
-        // TODO NEW: New Passphrase
-        "new_passphrase" : "New Passphrase",
+        "new_passphrase" : "Nuova frase password",
 
-        // TODO NEW: Change Passphrase
-        "change_passphrase_btn" : "Change Passphrase",
+        "change_passphrase_btn" : "Modificare la frase password",
 
-        // TODO NEW: By repeating your new passphrase you make the change final.
-        "repeat_finalizes" : "By repeating your new passphrase you make the change final.",
+        "repeat_finalizes" : "Ripetendo la nuova frase password la modifica diventa definitiva.",
 
-        // TODO NEW: Repeat New Passphrase
-        "repeat_passphrase" : "Repeat New Passphrase",
+        "repeat_passphrase" : "Ripetere la nuova frase password",
 
-        // TODO NEW: Confirm Passphrase
-        "confirm_btn" : "Confirm Passphrase",
+        "confirm_btn" : "Confermare la frase password",
 
-        // TODO NEW: Passphrase has been successfully changed!
-        "success" : "Passphrase has been successfully changed!"
+        "success" : "La frase password è stata modificata con successo!"
     },
 
     "changepassword" : {
 
-        // TODO NEW: Change Password
-        "title" : "Change Password",
+        "title" : "Modifica password",
 
-        // TODO NEW: Old Password
-        "old_password" : "Old Password",
+        "old_password" : "Vecchia password",
 
-        // TODO NEW: New Password
-        "new_password" : "New Password",
+        "new_password" : "Nuova password",
 
-        // TODO NEW: Repeat New Password
-        "repeat_password" : "Repeat New Password",
+        "repeat_password" : "Ripetere la nuova password",
 
-        // TODO NEW: Change Password
-        "change_btn" : "Change Password",
+        "change_btn" : "Modifica password",
 
-        // TODO NEW: Password has been successfully changed!
-        "success" : "Password has been successfully changed!"
+        "success" : "La password è stata modificata con successo!"
     },
 
     "changeaddress" : {
 
-        // TODO NEW: Postal Address and Contact Information
-        "title" : "Postal Address and Contact Information",
+        "title" : "Indirizzo postale e informazioni di contatto",
 
-        // TODO NEW: Update
-        "update_btn" : "Update"
+        "update_btn" : "Aggiornamento"
     },
 
     "market" : {
 
-        // TODO NEW: Categories
-        "categories" : "Categories",
+        "categories" : "Categorie",
 
-        // TODO NEW: Plugins
-        "plugins" : "Plugins",
+        "plugins" : "Plugin",
 
-        // TODO NEW: There are no spotlighted plugins yet.
-        "no_spotlighted_plugins" : "There are no spotlighted plugins yet.",
+        "no_spotlighted_plugins" : "Non è ancora stato evidenziato alcun plugin.",
 
-        // TODO NEW: Plugins you may like
-        "plugins_you_may_like" : "Plugins you may like",
+        "plugins_you_may_like" : "Plugin che potrebbero interessarti",
 
-        // TODO NEW: We have no recommendations for you yet.
-        "no_recommendations" : "We have no recommendations for you yet.",
+        "no_recommendations" : "Non abbiamo ancora consigli per te.",
 
-        // TODO NEW: Use Now
-        "install_now_btn" : "Use Now"
+        "install_now_btn" : "Utilizzare ora"
     },
 
     "providersearch" : {
 
-        // TODO NEW: Provider search
-        "title" : "Provider search",
+        "title" : "Ricerca fornitore",
 
-        // TODO NEW: Name
-        "name" : "Name",
+        "name" : "Nome",
 
-        // TODO NEW: City / Zip
-        "city_or_zip" : "City / Zip",
+        "city_or_zip" : "Città / Codice Postale",
 
-        // TODO NEW: Search only healthcare providers you already had contact with.
-        "only_with_contact" : "Search only healthcare providers you already had contact with.",
+        "only_with_contact" : "Cercare solo i fornitori di prestazioni sanitarie con cui si è già in contatto.",
 
-        // TODO NEW: No providers found.
-        "empty_result" : "No providers found.",
+        "empty_result" : "Non è stato trovato alcun fornitore.",
 
-        // TODO NEW: Add Consent
-        "add_consent_btn" : "Add Consent"
+        "add_consent_btn" : "Aggiungi consenso"
     },
 
     "recorddetail" : {
 
-        // TODO NEW: Meta Information
-        "meta" : "Meta Information",
+        "meta" : "Informazioni aggiuntive",
 
-        // TODO NEW: Name:
-        "name" : "Name:",
+        "name" : "Nome:",
 
-        // TODO NEW: Owned by:
-        "owned_by" : "Owned by:",
+        "owned_by" : "Il titolare è:",
 
-        // TODO NEW: Created by:
-        "created_by" : "Created by:",
+        "created_by" : "Creato da:",
 
-        // TODO NEW: Created with:
-        "created_with" : "Created with:",
+        "created_with" : "Creato con:",
 
-        // TODO NEW: Created on:
-        "created_on" : "Created on:",
+        "created_on" : "Creato il:",
 
-        // TODO NEW: Content:
-        "content" : "Content:",
+        "content" : "Contenuti:",
 
-        // TODO NEW: Format:
-        "format" : "Format:",
+        "format" : "Formato:",
 
-        // TODO NEW: Download
-        "download_btn" : "Download",
+        "download_btn" : "Scarica",
 
-        // TODO NEW: Content Visualization
-        "content_visualization" : "Content Visualization",
+        "content_visualization" : "Visualizzazione dei contenuti",
 
-        // TODO NEW: No visualization available for this record.
-        "no_visualization" : "No visualization available for this record.",
+        "no_visualization" : "Nessuna visualizzazione disponibile per questo record.",
 
-        // TODO NEW: Raw Data
-        "raw_data" : "Raw Data"
+        "raw_data" : "Dati grezzi"
     },
 
     "studydetails" : {
 
-        // TODO NEW: Study
-        "study" : "Study",
+        "study" : "Studio",
 
-        // TODO NEW: Organization performing the research:
-        "organization" : "Organization performing the research:",
+        "organization" : "Organizzazione che svolge la ricerca:",
 
-        // TODO NEW: Healthcare Providers monitoring the study
-        "providers_monitoring" : "Healthcare Providers monitoring the study",
+        "providers_monitoring" : "Fornitori di prestazioni sanitarie che monitorano lo studio",
 
-        // TODO NEW: None
-        "no_providers" : "None",
+        "no_providers" : "Nessuno",
 
-        // TODO NEW: Remove
-        "provider_remove_btn" : "Remove",
+        "provider_remove_btn" : "Rimuovi",
 
-        // TODO NEW: Add
-        "provider_add_btn" : "Add",
+        "provider_add_btn" : "Aggiungi",
 
-        // TODO NEW: Duration
-        "duration" : "Duration",
+        "duration" : "Durata",
 
-        // TODO NEW: Required data
-        "information_that_needs_sharing" : "Required data",
+        "information_that_needs_sharing" : "Dati richiesti",
 
-        // TODO NEW: Your gender, year of birth and country of residence
-        "information_restricted" : "Your gender, year of birth and country of residence",
+        "information_restricted" : "Indicare sesso, anno di nascita e nazione di residenza",
 
-        // TODO NEW: Your complete demographic data (name, birthday, address, ...)
-        "information_demographic" : "Your complete demographic data (name, birthday, address, ...)",
+        "information_demographic" : "I propri dati demografici completi (nome, data di nascita, indirizzo, ...)",
 
-        // TODO NEW: Records that have format:
-        "records_with_format" : "Records that have format:",
+        "records_with_format" : "Record con il formato:",
 
-        // TODO NEW: Records that have content:
-        "records_with_content" : "Records that have content:",
+        "records_with_content" : "Record con i contenuti:",
 
-        // TODO NEW: Records that belong to group:
-        "records_with_group" : "Records that belong to group:",
+        "records_with_group" : "Record appartenenti al gruppo:",
 
-        // TODO NEW: Records that belong to owner:
-        "records_with_owner" : "Records that belong to owner:",
+        "records_with_owner" : "Record appartenenti al titolare:",
 
-        // TODO NEW: Records created by app:
-        "records_from_app" : "Records created by app:",
+        "records_from_app" : "Record create dall'applicazione:",
 
-        // TODO NEW: Your own records
-        "owner_self" : "Your own records",
+        "owner_self" : "I tuoi record",
 
-        // TODO NEW: Participation History
-        "participation_history" : "Participation History",
+        "participation_history" : "Storico della partecipazione",
 
-        // TODO NEW: Event
-        "history_event" : "Event",
+        "history_event" : "Evento",
 
-        // TODO NEW: Who
-        "history_who" : "Who",
+        "history_who" : "Chi",
 
-        // TODO NEW: When
-        "history_when" : "When",
+        "history_when" : "Quando",
 
-        // TODO NEW: Comment
-        "history_comment" : "Comment",
+        "history_comment" : "Commento",
 
-        // TODO NEW: Request Participation
-        "request_participation_btn" : "Request Participation",
+        "request_participation_btn" : "Richiedere la partecipazione",
 
-        // TODO NEW: Do not participate
-        "do_not_participate_btn" : "Do not participate",
+        "do_not_participate_btn" : "Non partecipare",
 
-        // TODO NEW: Retreat from participation
-        "retreat_btn" : "Retreat from participation",
+        "retreat_btn" : "Ritirarsi dalla partecipazione",
 
-        // TODO NEW: Status
-        "status" : "Status"
+        "status" : "Stato"
     },
 
     "user" : {
 
-        // TODO NEW: User Account
-        "account" : "User Account",
+        "account" : "Account utente",
 
-        // TODO NEW: User
-        "user" : "User",
+        "user" : "Utente",
 
-        // TODO NEW: Name:
-        "name" : "Name:",
+        "name" : "Nome:",
 
-        // TODO NEW: Email:
-        "email" : "Email:",
+        "email" : "E-mail:",
 
-        // TODO NEW: Date of birth:
-        "birthday" : "Date of birth:",
+        "birthday" : "Data di nascita:",
 
-        // TODO NEW: Account ID:
-        "midataID" : "Account ID:",
+        "midataID" : "ID account:",
 
-        // TODO NEW: More...
-        "action" : "More...",
+        "action" : "Altro...",
 
-        // TODO NEW: Change Password
-        "change_password_btn" : "Change Password",
+        "change_password_btn" : "Modifica password",
 
-        // TODO NEW: Change Passphrase
-        "change_passphrase_btn" : "Change Passphrase",
+        "change_passphrase_btn" : "Modificare la frase password",
 
-        // TODO NEW: View Audit Log
-        "auditlog_btn" : "View Audit Log",
+        "auditlog_btn" : "Visualizza il registro di revisione",
 
-        // TODO NEW: Change Email Address
-        "change_email_btn" : "Change Email Address",
+        "change_email_btn" : "Modifica indirizzo e-mail",
 
-        // TODO NEW: Repair Account
-        "repair_account_btn" : "Repair Account",
+        "repair_account_btn" : "Ripara account",
 
-        // TODO NEW: Reset Portal
-        "reset_spaces_btn" : "Reset Portal",
+        "reset_spaces_btn" : "Ripristina portale",
 
-        // TODO NEW: Export your data
-        "export_btn" : "Export your data",
+        "export_btn" : "Esporta i tuoi dati",
 
-        // TODO NEW: Delete Records
-        "delete_records_btn" : "Delete Records",
+        "delete_records_btn" : "Elimina record",
 
-        // TODO NEW: Your account has been repaired.
-        "account_repaired" : "Your account has been repaired.",
+        "account_repaired" : "Il tuo account è stato riparato.",
 
-        // TODO NEW: Your configuration has been resetted.
-        "spaces_resetted" : "Your configuration has been resetted.",
+        "spaces_resetted" : "La tua configurazione è stata ripristinata.",
 
-        // TODO NEW: Settings
-        "settings" : "Settings",
+        "settings" : "Impostazioni",
 
-        // TODO NEW: Address and Contact Info
-        "address" : "Address and Contact Info",
+        "address" : "Indirizzo e info. di contatto",
 
-        // TODO NEW: Change Address
-        "change_address_btn" : "Change Address",
+        "change_address_btn" : "Modifica indirizzo",
 
-        // TODO NEW: Visibility of your account
-        "searchable_short" : "Visibility of your account",
+        "searchable_short" : "Visibilità del proprio account",
 
-        // TODO NEW: May other users find your profile, while searching for your email?
-        "searchable" : "May other users find your profile, while searching for your email?",
+        "searchable" : "Altri utenti possono trovare il tuo profilo durante la ricerca della tua e-mail?",
 
-        // TODO NEW: Yes, I want my name and email to be visible to other users
-        "searchable_yes" : "Yes, I want my name and email to be visible to other users",
+        "searchable_yes" : "Sì, voglio che il mio nome ed e-mail siano visibili ad altri utenti",
 
-        // TODO NEW: No, I don't want that any other user sees my profile
-        "searchable_no" : "No, I don't want that any other user sees my profile",
+        "searchable_no" : "No, non voglio che altri utenti vedano il mio profilo",
 
-        // TODO NEW: This setting has no effect on your existing data sharing consents.
-        "searchable_info" : "This setting has no effect on your existing data sharing consents.",
+        "searchable_info" : "Questa impostazione non ha effetto sui consensi di condivisione dei tuoi dati esistenti.",
 
-        // TODO NEW: Change Settings
-        "change_settings_btn" : "Change Settings",
+        "change_settings_btn" : "Modifica impostazioni",
 
-        // TODO NEW: Settings have been updated
-        "change_settings_success" : "Settings have been updated"
+        "change_settings_success" : "Le impostazioni sono state aggiornate"
     },
 
     "visualization" : {
 
-        // TODO NEW: Plugin Information
-        "title" : "Plugin Information",
+        "title" : "Informazioni del plugin",
 
-        // TODO NEW: You have successfully installed a new plugin.
-        "success" : "You have successfully installed a new plugin.",
+        "success" : "Il nuovo plugin è stato installato con successo.",
 
-        // TODO NEW: Created by:
-        "created_by" : "Created by:",
+        "created_by" : "Creato da:",
 
-        // TODO NEW: Organization:
-        "orgName" : "Organization:",
+        "orgName" : "Organizzazione:",
 
-        // TODO NEW: Description:
-        "description" : "Description:",
+        "description" : "Descrizione:",
 
-        // TODO NEW: Tile Name:
-        "tile_name" : "Tile Name:",
+        "tile_name" : "Nome riquadro:",
 
-        // TODO NEW: Location:
-        "install_location" : "Location:",
+        "install_location" : "Posizione:",
 
-        // TODO NEW: Grant this plugin access to:
-        "grant_access" : "Grant this plugin access to:",
+        "grant_access" : "Autorizzare al plugin l'accesso a:",
 
-        // TODO NEW: Add Plugin
-        "install_btn" : "Add Plugin",
+        "install_btn" : "Aggiungi plugin",
         "location" : {
 
-            // TODO NEW: Workspace
-            "workspace" : "Workspace",
+            "workspace" : "Spazio di lavoro",
 
-            // TODO NEW: MIDATA Mobile App
-            "mobile" : "MIDATA Mobile App",
+            "mobile" : "Applicazione mobile di MIDATA",
 
-            // TODO NEW: Research Dashboard
-            "research" : "Research Dashboard",
+            "research" : "Pannello di controllo Ricerca",
 
-            // TODO NEW: Workspace
-            "sandbox" : "Workspace",
+            "sandbox" : "Spazio di lavoro",
 
-            // TODO NEW: Me Page
-            "me" : "Me Page",
+            "me" : "Pagina I miei dati",
 
-            // TODO NEW: Config Dashboard
-            "config" : "Config Dashboard",
+            "config" : "Pannello di controllo Config",
 
-            // TODO NEW: My Data Dashboard
-            "mydata" : "My Data Dashboard",
+            "mydata" : "Pannello di controllo I miei dati",
 
-            // TODO NEW: Social Dashboard
-            "social" : "Social Dashboard",
+            "social" : "Pannello di controllo Social",
 
-            // TODO NEW: Health Dashboard
-            "providers" : "Health Dashboard",
+            "providers" : "Pannello di controllo Salute e Sanità",
 
-            // TODO NEW: Research Dashboard
-            "studies" : "Research Dashboard"
+            "studies" : "Pannello di controllo Ricerca"
         }
     },
 
     "newconsent" : {
 
-        // TODO NEW: Create a new consent
-        "title" : "Create a new consent",
+        "title" : "Crea un nuovo consenso",
 
-        // TODO NEW: How should this consent be named?
-        "name" : "How should this consent be named?",
+        "name" : "Come deve essere denominato questo consenso?",
 
-        // TODO NEW: What type of consent do you want to create?
-        "type" : "What type of consent do you want to create?",
+        "type" : "Che tipo di consenso si desidera creare?",
 
-        // TODO NEW: I want to share data with other MIDATA account holders.
-        "share_with_members" : "I want to share data with other MIDATA account holders.",
+        "share_with_members" : "Desidero condividere i dati con altri titolari dell'account MIDATA.",
 
-        // TODO NEW: I want to share data with a health professional.
-        "share_with_provider" : "I want to share data with a health professional.",
+        "share_with_provider" : "Desidero condividere i dati con un professionista del settore sanitario.",
 
-        // TODO NEW: Include a passcode?
-        "use_passcode" : "Include a passcode?",
+        "use_passcode" : "Includere un codice password?",
 
-        // TODO NEW: I do not know yet to whom I want to share the data. Please add a passcode to this consent that I can give to a health professional.
-        "use_passcode2" : "I do not know yet to whom I want to share the data. Please add a passcode to this consent that I can give to a health professional.",
+        "use_passcode2" : "Non so ancora con chi condividere i dati. Aggiungere un codice password a questo consenso in modo che io possa comunicarlo a un professionista del settore sanitario.",
 
-        // TODO NEW: Choose a secure passcode
-        "choose_passcode" : "Choose a secure passcode",
+        "choose_passcode" : "Scegliere un codice password sicuro",
 
-        // TODO NEW: Who is sharing data?
-        "who_is_owner" : "Who is sharing data?",
+        "who_is_owner" : "Chi sta condividendo i dati?",
 
-        // TODO NEW: With which persons(s) is data shared?
-        "which_persons" : "With which persons(s) is data shared?",
+        "which_persons" : "Con quale persona/e sono condivisi i dati?",
 
-        // TODO NEW: Select person that shares its data
-        "set_owner_btn" : "Select person that shares its data",
+        "set_owner_btn" : "Selezionare la persona che condivide i propri dati",
 
-        // TODO NEW: Add yourself
-        "add_yourself_btn" : "Add yourself",
+        "add_yourself_btn" : "Aggiungi te stesso/a",
 
-        // TODO NEW: Add New Person
-        "add_person_btn" : "Add New Person",
+        "add_person_btn" : "Aggiungi una nuova persona",
 
-        // TODO NEW: Add New Team
-        "add_usergroup_btn" : "Add New Team",
+        "add_usergroup_btn" : "Aggiungi un nuovo team",
 
-        // TODO NEW: Write Permission
-        "writes" : "Write Permission",
+        "writes" : "Scrivi l'autorizzazione",
 
-        // TODO NEW: The persons authorized by this consent may create or update data in your account covered by this consent.
-        "writes2" : "The persons authorized by this consent may create or update data in your account covered by this consent.",
+        "writes2" : "Le persone autorizzate da questo consenso possono creare o aggiornare dati nel tuo account incluso nel consenso suddetto.",
 
-        // TODO NEW: 3rd party access?
-        "reshare" : "3rd party access?",
+        "reshare" : "Accesso di terzi?",
 
-        // TODO NEW: The persons authorized by this consent may reshare the data I gave them access to.
-        "reshare2" : "The persons authorized by this consent may reshare the data I gave them access to.",
+        "reshare2" : "Le persone autorizzate da questo consenso possono ri-condividere i dati ai quali ho consentito loro di accedere.",
 
-        // TODO NEW: Consent expiration date:
-        "expiration_date" : "Consent expiration date:",
+        "expiration_date" : "Data di scadenza del consenso:",
 
-        // TODO NEW: Do not share data created after:
-        "created_before" : "Do not share data created after:",
+        "created_before" : "Non condividere dati creati dopo:",
 
-        // TODO NEW: What data do you want to share?
-        "share_what" : "What data do you want to share?",
+        "share_what" : "Quali dati desideri condividere?",
 
-        // TODO NEW: This consent is empty at the beginning. You can select the data you want to share with this consent afterwards.
-        "consent_empty" : "This consent is empty at the beginning. You can select the data you want to share with this consent afterwards.",
+        "consent_empty" : "Questo consenso è inizialmente vuoto. È possibile selezionare in seguito i dati che si desiderano condividere con questo consenso.",
 
-        // TODO NEW: Create and Data Selection
-        "create_btn" : "Create and Data Selection"
+        "create_btn" : "Creare e selezionare i dati"
     },
 
     "editconsent" : {
 
-        // TODO NEW: Consent
-        "title" : "Consent",
+        "title" : "Consenso",
 
-        // TODO NEW: Owner of Consent
-        "owner" : "Owner of Consent",
+        "owner" : "Titolare del consenso",
 
-        // TODO NEW: Name of Consent
-        "name" : "Name of Consent",
+        "name" : "Nome del consenso",
 
-        // TODO NEW: Consent created at
-        "date_of_creation" : "Consent created at",
+        "date_of_creation" : "Consenso creato il",
 
-        // TODO NEW: Type of Consent
-        "type" : "Type of Consent",
+        "type" : "Tipo di consenso",
 
-        // TODO NEW: Status of Consent
-        "status" : "Status of Consent",
+        "status" : "Stato del consenso",
 
-        // TODO NEW: With which persons(s) do you want to share data?
-        "people" : "With which persons(s) do you want to share data?",
+        "people" : "Con quale/i persona/e si desidera condividere i dati?",
 
-        // TODO NEW: Non MIDATA account holder
-        "external" : "Non MIDATA account holder",
+        "external" : "Titolare di un account non appartenente a MIDATA",
 
-        // TODO NEW: Add More People
-        "add_people_btn" : "Add More People",
+        "add_people_btn" : "Aggiungi altre persone",
 
-        // TODO NEW: Add a Team
-        "add_usergroup_btn" : "Add a Team",
+        "add_usergroup_btn" : "Aggiungi un team",
 
-        // TODO NEW: @:newconsent.reshare
-        "reshare" : "@:newconsent.reshare",
+        "reshare" : "@:nuovoconsenso.ricondividi",
 
-        // TODO NEW: @:newconsent.reshare2
-        "reshare2" : "@:newconsent.reshare2",
+        "reshare2" : "@:nuovoconsenso.ricondividi2",
 
-        // TODO NEW: Write Permission
-        "writes" : "Write Permission",
+        "writes" : "Scrivi l'autorizzazione",
 
-        // TODO NEW: Consent expiration date:
-        "expiration_date" : "Consent expiration date:",
+        "expiration_date" : "Data di scadenza del consenso:",
 
-        // TODO NEW: Does not share data created after:
-        "created_before" : "Does not share data created after:",
+        "created_before" : "Non condividere i dati creati dopo:",
 
-        // TODO NEW: What data is shared?
-        "what_is_shared" : "What data is shared?",
+        "what_is_shared" : "Quali dati sono condivisi?",
 
-        // TODO NEW: This consent does not share any data at the moment.
-        "consent_empty" : "This consent does not share any data at the moment.",
+        "consent_empty" : "Attualmente questo consenso non condivide alcun dato.",
 
-        // TODO NEW: This consent shares data with other MIDATA account holders.
-        "type_circle" : "This consent shares data with other MIDATA account holders.",
+        "type_circle" : "Questo consenso condivide i dati con altri titolari di account MIDATA.",
 
-        // TODO NEW: This consent shares data with healthcare professionals.
-        "type_healthcare" : "This consent shares data with healthcare professionals.",
+        "type_healthcare" : "Questo consenso condivide dati con professionisti dell'assistenza sanitaria.",
 
-        // TODO NEW: This consent shares data with research for use in a study.
-        "type_studyparticipation" : "This consent shares data with research for use in a study.",
+        "type_studyparticipation" : "Questo consenso condivide con la ricerca dati da utilizzare in uno studio.",
 
-        // TODO NEW: This consent shares research data to a study participant.
-        "type_studyrelated" : "This consent shares research data to a study participant.",
+        "type_studyrelated" : "Questo consenso condivide dati di ricerca con un partecipante allo studio.",
 
-        // TODO NEW: This consent shares data with a mobile app or external service.
-        "type_externalservice" : "This consent shares data with a mobile app or external service.",
+        "type_externalservice" : "Questo consenso condivide dati con una applicazione o servizio esterno mobile.",
 
-        // TODO NEW: This implicitely created consent shares messages with their receivers.
-        "type_implicit" : "This implicitely created consent shares messages with their receivers.",
+        "type_implicit" : "Questo consenso creato implicitamente condivide i messaggi con i rispettivi destinatari.",
 
-        // TODO NEW: This consent is active.
-        "status_active" : "This consent is active.",
+        "status_active" : "Questo consenso è attivo.",
 
-        // TODO NEW: This consent is expired. Data is no longer shared.
-        "status_expired" : "This consent is expired. Data is no longer shared.",
+        "status_expired" : "Questo è scaduto. I dati non sono più condivisi.",
 
-        // TODO NEW: This consent needs confirmation by its owner.
-        "status_unconfirmed" : "This consent needs confirmation by its owner.",
+        "status_unconfirmed" : "Questo consenso richiede la conferma del rispettivo titolare.",
 
-        // TODO NEW: This consent has been rejected by its owner.
-        "status_rejected" : "This consent has been rejected by its owner.",
+        "status_rejected" : "Questo consenso è stato rifiutato dal rispettivo titolare.",
 
-        // TODO NEW: This consent shares {{count}} records.
-        "shares_records" : "This consent shares {{count}} records.",
+        "shares_records" : "Questo consenso condivide {{count}} record.",
 
-        // TODO NEW: Shares all records belonging to group: {{ group }}
-        "shares_group" : "Shares all records belonging to group: {{ group }}",
+        "shares_group" : "Condivide tutti i record appartenenti al gruppo: {{ group }}",
 
-        // TODO NEW: Excluded are records belonging to group: {{ group }}
-        "excludes_group" : "Excluded are records belonging to group: {{ group }}",
+        "excludes_group" : "Sono esclusi i record appartenenti al gruppo: {{ group }}",
 
-        // TODO NEW: View/Change data selection
-        "view_change_selection_btn" : "View/Change data selection",
+        "view_change_selection_btn" : "Visualizza/Modifica la selezione dei dati",
 
-        // TODO NEW: Confirm this Consent
-        "confirm_btn" : "Confirm this Consent",
+        "confirm_btn" : "Conferma questo consenso",
 
-        // TODO NEW: Reject this Consent
-        "reject_btn" : "Reject this Consent",
+        "reject_btn" : "Rifiuta questo consenso",
 
-        // TODO NEW: Delete this Consent
-        "delete_btn" : "Delete this Consent"
+        "delete_btn" : "Elimina questo consenso"
     },
 
     "consents" : {
 
-        // TODO NEW: Consents
-        "title" : "Consents",
+        "title" : "Consensi",
 
-        // TODO NEW: Using consents you can grant others (healthcare professionals, friends, researchers, ...) access to some of your data. Use this page to manage your consents and create new ones.
-        "description" : "Using consents you can grant others (healthcare professionals, friends, researchers, ...) access to some of your data. Use this page to manage your consents and create new ones.",
+        "description" : "Utilizzando i consensi si può concedere ad altri (professionisti dell'assistenza sanitaria, amici, ricercatori, ...) l'accesso ad alcuni dei propri dati. Utilizzare questa pagina per gestire i propri consensi e crearne di nuovi.",
 
-        // TODO NEW: You have {{ count }} consent(s):
-        "count" : "You have {{ count }} consent(s):",
+        "count" : "Hai {{ count }} consenso(i):",
 
-        // TODO NEW: Show consents where you share data with someone else
-        "where_owner" : "Show consents where you share data with someone else",
+        "where_owner" : "Mostra i consensi in cui puoi condividere i dati con altri",
 
-        // TODO NEW: Show consents where data is shared with you
-        "where_authorized" : "Show consents where data is shared with you",
+        "where_authorized" : "Mostra i consensi in cui i dati sono condivisi con te",
 
-        // TODO NEW: Consent Title
-        "name" : "Consent Title",
+        "name" : "Titolo del consenso",
 
-        // TODO NEW: Owner
-        "ownerName" : "Owner",
+        "ownerName" : "Titolare",
 
-        // TODO NEW: Type
-        "type" : "Type",
+        "type" : "Tipo",
 
-        // TODO NEW: Status
-        "status" : "Status",
+        "status" : "Stato",
 
-        // TODO NEW: # People
-        "number_of_people" : "# People",
+        "number_of_people" : "# Persone",
 
-        // TODO NEW: # Records
-        "number_of_records" : "# Records",
+        "number_of_records" : "# record",
 
-        // TODO NEW: Add new consent
-        "add_new_btn" : "Add new consent"
+        "add_new_btn" : "Aggiungi nuovo consenso"
     },
 
     "revconsents" : {
 
-        // TODO NEW: There are {{ count }} consent(s) sharing data with you:
-        "count" : "There are {{ count }} consent(s) sharing data with you:",
+        "count" : "Esistono {{ count }} consensi che condividono i dati con te:",
 
-        // TODO NEW: Add Request for Consent
-        "add_new_btn" : "Add Request for Consent"
+        "add_new_btn" : "Aggiungi richiesta per il consenso"
     },
 
     "importrecords" : {
 
-        // TODO NEW: Import
-        "title" : "Import",
+        "title" : "Importazione",
 
-        // TODO NEW: Authorize Now
-        "authorize_btn" : "Authorize Now"
+        "authorize_btn" : "Autorizza ora"
     },
 
     "spaces" : {
 
-        // TODO NEW: MIDATA Plugin
-        "title" : "MIDATA Plugin",
+        "title" : "Plugin MIDATA",
 
-        // TODO NEW: Delete this space
-        "delete_btn" : "Delete this space",
+        "delete_btn" : "Elimina questo spazio",
 
-        // TODO NEW: Used records...
-        "used_btn" : "Used records...",
+        "used_btn" : "Record utilizzati...",
 
-        // TODO NEW: Share...
-        "share_btn" : "Share...",
+        "share_btn" : "Condividi...",
 
-        // TODO NEW: Finished comparing
-        "finish_comparing_btn" : "Finished comparing",
+        "finish_comparing_btn" : "Confronto terminato",
 
-        // TODO NEW: Compare
-        "compare_btn" : "Compare"
+        "compare_btn" : "Confronto"
     },
 
     "records" : {
 
-        // TODO NEW: My Data
-        "title" : "My Data",
+        "title" : "I miei dati",
 
-        // TODO NEW: Please use the 'share' and 'unshare' buttons to select which records you want to share with consent 
-        "share_instructions1" : "Please use the 'share' and 'unshare' buttons to select which records you want to share with consent ",
+        "share_instructions1" : "Utilizzare i pulsanti 'condividi' e 'non condividere' per selezionare i record che si desidera condividere con consenso ",
 
-        // TODO NEW: This consent currently shares data with 
-        "share_instructions2" : "This consent currently shares data with ",
+        "share_instructions2" : "Questo consenso attualmente condivide i dati con ",
 
-        // TODO NEW: person(s).
-        "share_instructions3" : "person(s).",
+        "share_instructions3" : "persona/e.",
 
-        // TODO NEW: In order to permanently 
-        "delete_instructions1" : "In order to permanently ",
+        "delete_instructions1" : "Per ",
 
-        // TODO NEW: delete
-        "delete_instructions2" : "delete",
+        "delete_instructions2" : "eliminare in modo permanente",
 
-        // TODO NEW: a record, 
-        "delete_instructions3" : "a record, ",
+        "delete_instructions3" : "un record, ",
 
-        // TODO NEW: double click
-        "delete_instructions4" : "double click",
+        "delete_instructions4" : "fare doppio clic",
 
-        // TODO NEW: on the 'delete' button to the right of the record.
-        "delete_instructions5" : "on the 'delete' button to the right of the record.",
+        "delete_instructions5" : "sul pulsante 'elimina' a destra del record.",
 
-        // TODO NEW: In order to permanently delete all records of a certain category, double click on the 'delete all' button to the right of the category.
-        "delete_instructions6" : "In order to permanently delete all records of a certain category, double click on the 'delete all' button to the right of the category.",
+        "delete_instructions6" : "Per eliminare in modo permanente tutti i record di una determinata categoria, fare doppio clic sul pulsante 'elimina tutti' a destra della categoria.",
 
-        // TODO NEW: Shared With:
-        "shared_with" : "Shared With:",
+        "shared_with" : "Condiviso con:",
 
-        // TODO NEW: Records used for app
-        "records_used_for_app" : "Records used for app",
+        "records_used_for_app" : "Record utilizzati per l'applicazione",
 
-        // TODO NEW: Back to Visualization
-        "back_to_plugin" : "Back to Visualization",
+        "back_to_plugin" : "Torna alla visualizzazione",
 
-        // TODO NEW: Grouped by type of content
-        "by_group" : "Grouped by type of content",
+        "by_group" : "Raggruppato per tipo di contenuto",
 
-        // TODO NEW: Grouped by application
-        "by_plugin" : "Grouped by application",
+        "by_plugin" : "Raggruppato per applicazione",
 
-        // TODO NEW: Global
-        "type_global" : "Global",
+        "type_global" : "Globale",
 
-        // TODO NEW: Research
-        "type_study" : "Research",
+        "type_study" : "Ricerca",
 
-        // TODO NEW: Other users
-        "type_circle" : "Other users",
+        "type_circle" : "Altri utenti",
 
-        // TODO NEW: Show:
-        "show" : "Show:",
+        "show" : "Mostra:",
 
-        // TODO NEW: My Data
-        "my_data" : "My Data",
+        "my_data" : "I miei dati",
 
-        // TODO NEW: All Data
-        "all_data" : "All Data",
+        "all_data" : "Tutti i dati",
 
-        // TODO NEW: Personal Data
-        "all" : "Personal Data",
+        "all" : "Dati personali",
 
-        // TODO NEW: Study: {{name}}
-        "study" : "Study: {{name}}",
+        "study" : "Studio: {{name}}",
 
-        // TODO NEW: Shared by: {{name}}
-        "shared" : "Shared by: {{name}}",
-
-        // TODO NEW: {{name}}
+        "shared" : "Condiviso da: {{name}}",
+      
         "just_name" : "{{name}}",
 
-        // TODO NEW: share
-        "share" : "share",
+        "share" : "condividi",
 
-        // TODO NEW: unshare
-        "unshare" : "unshare",
+        "unshare" : "non condividere",
 
-        // TODO NEW: delete
-        "delete" : "delete",
+        "delete" : "elimina",
 
-        // TODO NEW: delete all
-        "delete_all_btn" : "delete all",
+        "delete_all_btn" : "elimina tutti",
 
-        // TODO NEW: No available records found.
-        "empty" : "No available records found.",
+        "empty" : "Non è stato trovato alcun record disponibile.",
 
-        // TODO NEW: The record tree for this selection cannot be created. There are too many consents involved.
-        "too_many_consents" : "The record tree for this selection cannot be created. There are too many consents involved.",
+        "too_many_consents" : "Impossibile creare la struttura ad albero dei record per questa selezione. Sono coinvolti troppi consensi.",
 
-        // TODO NEW: Close
-        "close_btn" : "Close"
+        "close_btn" : "Chiudi"
     },
 
     "oauth2" : {
 
-        // TODO NEW: App may share data it has access to to third parties.
-        "reshares_data" : "App may share data it has access to to third parties.",
+        "requests_permission" : "richiede l'autorizzazione ad accedere ai tuoi dati personali.",
 
-        // TODO NEW: Your name and email address may be searched by other people using this app.
-        "allows_user_search" : "Your name and email address may be searched by other people using this app.",
+        "no_account" : "Non ho un account",
 
-        // TODO NEW: This application requests access:
-        "requesting_app" : "This application requests access:",
+        "reshares_data" : "L'applicazione può condividere i dati a cui ha accesso con terzi.",
 
-        // TODO NEW: MIDATA login for:
-        "sign_in" : "MIDATA login for:",
+        "allows_user_search" : "Il tuo nome e indirizzo e-mail può essere cercato da altre persone utilizzando questa applicazione.",
 
-        // TODO NEW: Log in
-        "sign_in_btn" : "Log in",
+        "requesting_app" : "richiede l'accesso ai tuoi dati.",
 
-        // TODO NEW: Device: {{ device}}
-        "device" : "Device: {{ device}}",
+        "sign_in" : "Accesso MIDATA per:",
 
-        // TODO NEW: Please confirm the activation of the application using the MIDATA portal, then retry. Consent title is: {{ consent }}
-        "please_confirm" : "Please confirm the activation of the application using the MIDATA portal, then retry. Consent title is: {{ consent }}",
+        "sign_in_btn" : "Accesso",
 
-        // TODO NEW: Confirm Access
-        "confirm_btn" : "Confirm Access",
+        "device" : "Dispositivo: {{ device}}",
 
-        // TODO NEW: Requested Access:
-        "requests_access" : "Requested Access:",
+        "please_confirm" : "Confermare l'attivazione dell'applicazione utilizzando il portale MIDATA, quindi riprovare. Il titolo del consenso è: {{ consent }}",
 
-        // TODO NEW: Group: {{ group }}
-        "shares_group" : "Group: {{ group }}",
+        "confirm_btn" : "Conferma l'accesso",
 
-        // TODO NEW: Format: {{ format }}
-        "shares_format" : "Format: {{ format }}",
+        "requests_access" : "Accesso richiesto:",
 
-        // TODO NEW: Content: {{ content }}
-        "shares_content" : "Content: {{ content }}",
+        "shares_group" : "Gruppo: {{ group }}",
 
-        // TODO NEW: Participate to the study
-        "confirm_study" : "Participate to the study"
+        "shares_format" : "Formato: {{ format }}",
+
+        "shares_content" : "Contenuti: {{ content }}",
+
+        "confirm_study" : "Iscriviti al seguente studio"
     },
 
     "dashboard" : {
 
-        // TODO NEW: Welcome to MIDATA
-        "help_welcome" : "Welcome to MIDATA",
+        "help_welcome" : "Benvenuto in MIDATA",
 
-        // TODO NEW: Tasks
-        "tasks" : "Tasks",
+        "tasks" : "Attività",
 
-        // TODO NEW: My Views
-        "myviews" : "My Views",
+        "myviews" : "Le mie visualizzazioni",
 
-        // TODO NEW: My personal data
-        "mydata" : "My personal data",
+        "mydata" : "I miei dati personali",
 
-        // TODO NEW: Manage your health data. Enter new data and visualize existing data.
-        "mydata_text" : "Manage your health data. Enter new data and visualize existing data.",
-
-        // TODO NEW: Social
+        "mydata_text" : "Gestisci i tuoi dati relativi a salute e sanità. Inserisci i nuovi dati e visualizza quelli esistenti.",
+       
         "social" : "Social",
 
-        // TODO NEW: Share your data with friends. Communicate with people sharing your health situation. Motivate yourself by competition with others.
-        "social_text" : "Share your data with friends. Communicate with people sharing your health situation. Motivate yourself by competition with others.",
+        "social_text" : "Condividi i tuoi dati con gli amici. Comunica con le persone con le quali condividi la tua situazione riguardante salute e sanità. Potenzia la tua motivazione nella competizione con altri.",
 
-        // TODO NEW: Research
-        "research" : "Research",
+        "research" : "Ricerca",
 
-        // TODO NEW: Participate in studies. Inform yourself about current research.
-        "research_text" : "Participate in studies. Inform yourself about current research.",
+        "research_text" : "Partecipa agli studi. Informati sulla ricerca corrente.",
 
-        // TODO NEW: Health
-        "health" : "Health",
+        "health" : "Salute e sanità",
 
-        // TODO NEW: Share data with your doctor. Search for health professionals.
-        "health_text" : "Share data with your doctor. Search for health professionals.",
+        "health_text" : "Condividi i dati con il tuo medico. Cerca professionisti del settore sanitario.",
 
-        // TODO NEW: Help
-        "help" : "Help",
+        "help" : "Aiuto",
 
-        // TODO NEW: Get help about MIDATA functions
-        "help_text" : "Get help about MIDATA functions",
+        "help_text" : "Ottieni aiuto sulle funzioni MIDATA",
 
-        // TODO NEW: Training
-        "training" : "Training",
+        "training" : "Formazione",
 
-        // TODO NEW: Manage your personal training!
-        "training_text" : "Manage your personal training!",
+        "training_text" : "Gestisci il tuo personal training!",
 
-        // TODO NEW: Newest records added this month:
-        "newrecords" : "Newest records added this month:",
+        "newrecords" : "Record più recenti aggiunti questo mese:",
 
-        // TODO NEW: There are no new records. Visit the records page to browser all of your records.
-        "newrecords_teaser" : "There are no new records. Visit the records page to browser all of your records.",
+        "newrecords_teaser" : "Non ci sono nuovi record. Visita la pagina dei record per sfogliare tutti i tuoi record.",
 
-        // TODO NEW: My Account Data
-        "myaccount" : "My Account Data",
+        "myaccount" : "I dati del mio account",
 
-        // TODO NEW: New records shared with you
-        "newsharedrecords" : "New records shared with you",
+        "newsharedrecords" : "Nuovi record condivisi con te",
 
-        // TODO NEW: Other MIDATA account holders may share their data with you.
-        "newsharedrecords_teaser" : "Other MIDATA account holders may share their data with you.",
+        "newsharedrecords_teaser" : "Altri titolari di account MIDATA possono condividere i loro dati con te.",
 
-        // TODO NEW: Member of Circles
-        "circles" : "Member of Circles",
+        "circles" : "Membro delle cerchie",
 
-        // TODO NEW: Ask others to add you to their circles.
-        "circles_teaser" : "Ask others to add you to their circles.",
+        "circles_teaser" : "Chiedi ad altri di aggiungerti alle loro cerchie.",
 
-        // TODO NEW: Your Circles
-        "circles2" : "Your Circles",
+        "circles2" : "Le tue cerchie",
 
-        // TODO NEW: Create Circles to share your data with others. Share with friends, family or others.
-        "circles2_teaser" : "Create Circles to share your data with others. Share with friends, family or others.",
+        "circles2_teaser" : "Crea Cerchie per condividere i tuoi dati con altri. Condividi con amici, famiglia o altri.",
 
-        // TODO NEW: Your Health Consents
-        "providers" : "Your Health Consents",
+        "providers" : "I tuoi consensi per salute e sanità",
 
-        // TODO NEW: Search for healthcare providers and add them to your list in order to share data with them.
-        "providers_teaser" : "Search for healthcare providers and add them to your list in order to share data with them.",
+        "providers_teaser" : "Cerca altri fornitori di prestazioni sanitarie e aggiungili al tuo elenco per condividere dati con loro.",
 
-        // TODO NEW: Search for Health Providers
-        "providersearch" : "Search for Health Providers",
+        "providersearch" : "Cerca fornitori di prestazioni sanitarie",
 
-        // TODO NEW: Search function for healthcare providers.
-        "providersearch_text" : "Search function for healthcare providers.",
+        "providersearch_text" : "Funzione di ricerca per fornitori di prestazioni sanitarie.",
 
-        // TODO NEW: Search for Teams
-        "usergroupsearch" : "Search for Teams",
+        "usergroupsearch" : "Cerca i team",
 
-        // TODO NEW: Newest records from your healthcare providers
-        "hcrecords" : "Newest records from your healthcare providers",
+        "hcrecords" : "I record più recenti dai tuoi fornitori di prestazioni sanitarie",
 
-        // TODO NEW: Records
-        "records" : "Records",
+        "records" : "Record",
 
-        // TODO NEW: Share
-        "share" : "Share",
+        "share" : "Condividi",
 
-        // TODO NEW: Details
-        "details" : "Details",
+        "details" : "Dettagli",
 
-        // TODO NEW: Studies you are involved:
-        "yourstudies" : "Studies you are involved:",
+        "yourstudies" : "Studi in cui sei coinvolto:",
 
-        // TODO NEW: If you want to participate in research, configure your research settings. You will be contacted in this tile if you match a studies requirements.
-        "studies_teaser" : "If you want to participate in research, configure your research settings. You will be contacted in this tile if you match a studies requirements.",
+        "studies_teaser" : "Se desideri partecipare alla ricerca, configura le tue impostazioni. Se corrispondi ai requisiti di uno studio sarai contattato/a in questo riquadro.",
 
-        // TODO NEW: New Studies
-        "newstudies" : "New Studies",
+        "newstudies" : "Nuovi studi",
 
-        // TODO NEW: News
-        "newsconfig" : "News",
+        "newsconfig" : "Notizie",
 
-        // TODO NEW: There are currently no announcements
-        "newsconfig_teaser" : "There are currently no announcements",
+        "newsconfig_teaser" : "Attualmente non esistono annunci",
 
-        // TODO NEW: Research News
-        "researchnews" : "Research News",
+        "researchnews" : "Notizie sulla ricerca",
 
-        // TODO NEW: Search for new health research publications.
-        "researchnews_text" : "Search for new health research publications.",
+        "researchnews_text" : "Cerca nuove pubblicazioni di ricerca su salute e sanità.",
 
-        // TODO NEW: Search for News
-        "researchnews_btn" : "Search for News",
+        "researchnews_btn" : "Cerca le notizie",
 
-        // TODO NEW: My Research Settings
-        "studysettings" : "My Research Settings",
+        "studysettings" : "Le mie impostazioni di ricerca",
 
-        // TODO NEW: Join by participation code
-        "entercode" : "Join by participation code",
+        "entercode" : "Aderisci con il codice di partecipazione",
 
-        // TODO NEW: Records shared with this consent:
-        "records_shared" : "Records shared with this consent:",
+        "records_shared" : "Record condivisi con questo consenso:",
 
-        // TODO NEW: Add Users to Consent
-        "addusers" : "Add Users to Consent",
+        "addusers" : "Aggiungi utenti al consenso",
 
-        // TODO NEW: Shared records:
-        "shared_with_study" : "Shared records:",
+        "shared_with_study" : "Record condivisi:",
 
-        // TODO NEW: Records of this patient:
-        "patient_records" : "Records of this patient:",
+        "patient_records" : "Record di questo paziente:",
 
-        // TODO NEW: Add Task
-        "addtask" : "Add Task",
+        "addtask" : "Aggiungi attività",
 
-        // TODO NEW: Records of this group:
-        "group_records" : "Records of this group:",
+        "group_records" : "Record di questo gruppo:",
 
-        // TODO NEW: Shared records:
-        "study_records" : "Shared records:",
+        "study_records" : "Record condivisi:",
 
-        // TODO NEW: Add more
-        "addmore" : "Add more",
+        "addmore" : "Aggiungi altro",
 
-        // TODO NEW: View
-        "view_btn" : "View",
+        "view_btn" : "Visualizzazione",
 
-        // TODO NEW: Add more
-        "install_btn" : "Add more",
+        "install_btn" : "Aggiungi altro",
 
-        // TODO NEW: Measures
-        "observations" : "Measures",
+        "observations" : "Misure",
 
-        // TODO NEW: Calendar
-        "calendar" : "Calendar",
+        "calendar" : "Calendario",
 
-        // TODO NEW: Studies
-        "smallstudies" : "Studies"
+        "smallstudies" : "Studi"
     },
 
     "measure" : {
 
-        // TODO NEW: Body Weight
-        "body_weight" : "Body Weight",
+        "body_weight" : "Peso corporeo",
 
-        // TODO NEW: Steps
-        "activities_steps" : "Steps",
+        "activities_steps" : "Passi",
 
-        // TODO NEW: Personal Diary
-        "diary" : "Personal Diary",
+        "diary" : "Diario personale",
 
-        // TODO NEW: Mood
-        "subjective_condition" : "Mood",
+        "subjective_condition" : "Umore",
 
-        // TODO NEW: Heart Rate and Blood Pressure
-        "heart" : "Heart Rate and Blood Pressure",
+        "heart" : "Frequenza cardiaca e pressione sanguigna",
 
-        // TODO NEW: Health Documents
-        "documents" : "Health Documents",
+        "documents" : "Documenti riguardanti salute e sanità",
 
-        // TODO NEW: Appointments
-        "appointments" : "Appointments",
+        "appointments" : "Appuntamenti",
 
-        // TODO NEW: Sleep Data
-        "sleep" : "Sleep Data",
+        "sleep" : "Dati relativi al sonno",
 
-        // TODO NEW: Heart Rate
-        "activities_heartrate" : "Heart Rate",
+        "activities_heartrate" : "Frequenza cardiaca",
 
-        // TODO NEW: Blood Pressure
-        "body_bloodpressure" : "Blood Pressure",
+        "body_bloodpressure" : "Pressione sanguigna",
 
-        // TODO NEW: Documents
-        "files" : "Documents"
+        "files" : "Documenti"
     },
 
     "config" : {
 
-        // TODO NEW: Fitbit Configuration
-        "fitbit" : "Fitbit Configuration",
+        "fitbit" : "Configurazione Fitbit",
 
-        // TODO NEW: Withings Configuration
-        "withings" : "Withings Configuration"
+        "withings" : "Configurazione Withings"
     },
 
     "spacesummary" : {
 
-        // TODO NEW: Records to view.
-        "records_to_view" : "Records to view.",
+        "records_to_view" : "Record da visualizzare.",
 
-        // TODO NEW: Last entry at
-        "last_entry_at" : "Last entry at",
+        "last_entry_at" : "Ultimi dati immessi alle",
 
-        // TODO NEW: No entries yet
-        "no_entries_yet" : "No entries yet",
+        "no_entries_yet" : "Non sono stati ancora immessi dati",
 
-        // TODO NEW: Newest entry from
-        "newest_entry_from" : "Newest entry from",
+        "newest_entry_from" : "Dati più recenti immessi da",
 
-        // TODO NEW: View
-        "view_btn" : "View",
+        "view_btn" : "Visualizzazione",
 
-        // TODO NEW: Add
-        "add_btn" : "Add"
+        "add_btn" : "Aggiungi"
     },
 
     "flexiblerecords" : {
 
-        // TODO NEW: Records available:
-        "records_available" : "Records available:",
+        "records_available" : "Record disponibili:",
 
-        // TODO NEW: Empty
-        "empty" : "Empty",
+        "empty" : "Vuoto",
 
-        // TODO NEW: Browse Records
-        "browse_btn" : "Browse Records",
+        "browse_btn" : "Sfoglia record",
 
-        // TODO NEW: Add Records...
-        "add_btn" : "Add Records...",
+        "add_btn" : "Aggiungi record...",
 
-        // TODO NEW: Share
-        "share_btn" : "Share"
+        "share_btn" : "Condividi"
     },
 
     "flexiblestudies" : {
 
-        // TODO NEW: Empty
-        "empty" : "Empty",
+        "empty" : "Vuoto",
 
-        // TODO NEW: Studies found:
-        "studies_found" : "Studies found:"
+        "studies_found" : "Studi trovati:"
     },
 
     "addtask" : {
 
-        // TODO NEW: Task Type
-        "task_type" : "Task Type",
+        "task_type" : "Tipo di attività",
 
-        // TODO NEW: Task Title
-        "task_title" : "Task Title",
+        "task_title" : "Titolo dell'attività",
 
-        // TODO NEW: Description
-        "description" : "Description",
+        "description" : "Descrizione",
 
-        // TODO NEW: Frequency
-        "frequency" : "Frequency",
+        "frequency" : "Frequenza",
 
 
-        // TODO NEW: Fill out survey
-        "survey_name" : "Fill out survey",
+        "survey_name" : "Compila il questionario",
 
-        // TODO NEW: Please fill out the surveys I shared with your account.
-        "survey_description" : "Please fill out the surveys I shared with your account.",
+        "survey_description" : "Compila i questionari che ho condiviso con il tuo account.",
 
-        // TODO NEW: Fill out survey
-        "survey_title" : "Fill out survey"
+        "survey_title" : "Compila il questionario"
     },
 
     "taskdetails" : {
 
-        // TODO NEW: Created by:
-        "created_by" : "Created by:",
+        "created_by" : "Creato da:",
 
-        // TODO NEW: How often:
-        "frequency" : "How often:",
-
-        // TODO NEW: Plugin:
+        "frequency" : "Con quale frequenza:",
+       
         "plugin" : "Plugin:",
 
-        // TODO NEW: Do Now
-        "do_now_btn" : "Do Now"
+        "do_now_btn" : "Esegui ora"
     },
 
     "tasks" : {
 
-        // TODO NEW: Empty
-        "empty" : "Empty",
+        "empty" : "Vuoto",
 
-        // TODO NEW: Tasks found:
-        "tasks_found" : "Tasks found:",
+        "tasks_found" : "Attività trovate:",
 
-        // TODO NEW: More...
-        "more_btn" : "More..."
+        "more_btn" : "Altro..."
     },
 
     "addusers" : {
 
-        // TODO NEW: Existing contacts:
-        "contacts" : "Existing contacts:",
+        "contacts" : "Contatti esistenti:",
 
-        // TODO NEW: All users
-        "all_users" : "All users",
+        "all_users" : "Tutti gli utenti",
 
-        // TODO NEW: No contacts can be added to this circle.
-        "no_contacts_to_add" : "No contacts can be added to this circle.",
+        "no_contacts_to_add" : "Non è possibile aggiungere alcun contatto a questa cerchia.",
 
-        // TODO NEW: Enter email of target person:
-        "search_by_email" : "Enter email of target person:",
+        "search_by_email" : "Inserisci l'e-mail o la persona destinataria:",
 
-        // TODO NEW: Search for a user
-        "search_user" : "Search for a user",
+        "search_user" : "Cerca un utente",
 
-        // TODO NEW: Searching...
-        "searching" : "Searching...",
+        "searching" : "Ricerca in corso...",
 
-        // TODO NEW: No users matched your search.
-        "no_matching_users" : "No users matched your search.",
+        "no_matching_users" : "Nessun utente corrisponde alla tua ricerca.",
 
-        // TODO NEW: All found users are already members of this circle.
-        "no_new_found" : "All found users are already members of this circle."
+        "no_new_found" : "Tutti gli utenti trovati sono già membri di questa cerchia."
     },
 
     "usergroupsearch" : {
 
-        // TODO NEW: Team Name
-        "name" : "Team Name",
+        "name" : "Nome del team",
 
-        // TODO NEW: No matching teams found.
-        "empty_result" : "No matching teams found.",
+        "empty_result" : "Non è stato trovato alcun team corrispondente.",
 
-        // TODO NEW: Add As Individual People To Consent
-        "add_individuals_btn" : "Add As Individual People To Consent",
+        "add_individuals_btn" : "Aggiungi come singola persona al consenso",
 
-        // TODO NEW: Add As Changing Team To Consent
-        "add_group_btn" : "Add As Changing Team To Consent"
+        "add_group_btn" : "Aggiungi come team da modificare al consenso"
     },
 
     "confirm" : {
 
-        // TODO NEW: Are you really sure?
-        "title" : "Are you really sure?",
+        "title" : "Confermi?",
 
-        // TODO NEW: Cancel
-        "cancel" : "Cancel"
+        "cancel" : "Annulla"
     },
 
     "terms" : {
 
-        // TODO NEW: << Back
-        "close_btn" : "<< Back"
+        "close_btn" : "<< Indietro",
+
+        "close_new_btn" : "Chiudi"
     },
 
     "auditlog" : {
 
-        // TODO NEW: Event
-        "event" : "Event",
+        "event" : "Evento",
 
-        // TODO NEW: Actor
-        "actor" : "Actor",
+        "actor" : "Attore",
 
-        // TODO NEW: Entity
-        "entity" : "Entity",
+        "entity" : "Entità",
 
-        // TODO NEW: Time
-        "recorded" : "Time",
+        "recorded" : "Ora",
 
-        // TODO NEW: Outcome
-        "outcome" : "Outcome",
+        "outcome" : "Esito",
 
-        // TODO NEW: No entry yet.
-        "empty" : "No entry yet.",
+        "empty" : "Non è stato ancora immesso alcun dato.",
 
-        // TODO NEW: Audit Log
-        "title" : "Audit Log",
+        "title" : "Registro di revisione",
 
-        // TODO NEW: Refresh
-        "refresh_btn" : "Refresh",
-
-        // TODO NEW: via
+        "refresh_btn" : "Aggiorna",
+     
         "via" : "via",
 
-        // TODO NEW: Consent
-        "CIRCLE" : "Consent",
+        "CIRCLE" : "Consenso",
 
-        // TODO NEW: Study
-        "ResearchStudy" : "Study",
+        "ResearchStudy" : "Studio",
 
-        // TODO NEW: App
-        "EXTERNALSERVICE" : "App",
+        "EXTERNALSERVICE" : "Applicazione",
 
-        // TODO NEW: Participation
-        "STUDYPARTICIPATION" : "Participation",
+        "STUDYPARTICIPATION" : "Partecipazione",
 
-        // TODO NEW: Consent (Health Provider)
-        "HEALTHCARE" : "Consent (Health Provider)",
-
-        // TODO NEW: Account
+        "HEALTHCARE" : "Consenso (Fornitore di prestazioni sanitarie)",
+       
         "MEMBER" : "Account",
 
-        // TODO NEW: Account (Health Provider)
-        "PROVIDER" : "Account (Health Provider)",
+        "PROVIDER" : "Account (Fornitore di prestazioni sanitarie)",
 
-        // TODO NEW: Account (Researcher)
-        "RESEARCH" : "Account (Researcher)",
+        "RESEARCH" : "Account (Ricercatore)",
 
-        // TODO NEW: Account (Administrator)
-        "ADMIN" : "Account (Administrator)",
+        "ADMIN" : "Account (Amministratore)",
 
-        // TODO NEW: Account (Developer)
-        "DEVELOPER" : "Account (Developer)"
+        "DEVELOPER" : "Account (Sviluppatore)"
     },
 
     "apps" : {
 
-        // TODO NEW: Connect your apps to collect data
-        "greeting" : "Connect your apps to collect data",
+        "greeting" : "Collega le tue applicazioni per raccogliere i dati",
 
-        // TODO NEW: Apps
-        "title" : "Apps",
+        "title" : "Applicazioni",
 
-        // TODO NEW: Authorized Apps
-        "description" : "Authorized Apps",
+        "description" : "Applicazioni autorizzate",
 
-        // TODO NEW: You have {{count}} authorized apps:
-        "count" : "You have {{count}} authorized apps:",
+        "count" : "Hai {{count}} applicazioni autorizzate:",
 
-        // TODO NEW: Services
-        "services" : "Services",
+        "services" : "Servizi",
 
-        // TODO NEW: Authorize
-        "connect_btn" : "Authorize"
+        "connect_btn" : "Autorizza"
     },
 
     "changeemail" : {
 
-        // TODO NEW: Change Account Email Address
-        "title" : "Change Account Email Address",
+        "title" : "Modifica l'indirizzo e-mail dell'account",
 
-        // TODO NEW: MIDATA ID
-        "midataId" : "MIDATA ID",
+        "midataId" : "ID MIDATA",
 
-        // TODO NEW: Name
-        "name" : "Name",
+        "name" : "Nome",
 
-        // TODO NEW: Current Email Address
-        "old_email" : "Current Email Address",
+        "old_email" : "Indirizzo e-mail corrente",
 
-        // TODO NEW: New Email Address
-        "new_email" : "New Email Address",
+        "new_email" : "Nuovo indirizzo e-mail",
 
-        // TODO NEW: None
-        "none" : "None",
+        "none" : "Nessuno",
 
-        // TODO NEW: Change
-        "change_btn" : "Change",
+        "change_btn" : "Modifica",
 
-        // TODO NEW: Email address successfully changed!
-        "success" : "Email address successfully changed!"
+        "success" : "Indirizzo e-mail modificato con successo!"
     },
 
 
-    // TODO NEW: unknown
-    "-1" : "unknown"
+    "-1" : "sconosciuto"
 }

@@ -2,355 +2,278 @@
 
     "admin_navbar" : {
 
-        // TODO NEW: Members
-        "members" : "Members",
+        "members" : "Membri",
 
-        // TODO NEW: Audit
-        "auditlog" : "Audit",
+        "auditlog" : "Revisione",
 
-        // TODO NEW: News
-        "news" : "News",
+        "news" : "Notizie",
 
-        // TODO NEW: Plugins
-        "plugins" : "Plugins",
+        "plugins" : "Plugin",
 
-        // TODO NEW: Content
-        "content" : "Content",
+        "content" : "Contenuti",
 
-        // TODO NEW: Studies
-        "studies" : "Studies",
+        "studies" : "Studi",
 
-        // TODO NEW: Terms and Conditions
-        "terms" : "Terms and Conditions",
+        "terms" : "Termini e condizioni",
 
-        // TODO NEW: Register Admin
-        "registration" : "Register Admin"
+        "registration" : "Registra amministratore"
     },
 
     "admin_members" : {
 
-        // TODO NEW: Member List
-        "title" : "Member List",
+        "title" : "Elenco membri",
 
-        // TODO NEW: Search
-        "search_type" : "Search",
+        "search_type" : "Cerca",
 
-        // TODO NEW: Contract needs to be sent
-        "contract_required" : "Contract needs to be sent",
+        "contract_required" : "Il contratto deve essere inviato",
 
-        // TODO NEW: Signed contract needs to be confirmed
-        "contract_confirm_required" : "Signed contract needs to be confirmed",
+        "contract_confirm_required" : "Il contratto firmato deve essere confermato",
 
-        // TODO NEW: Email not yet confirmed by user
-        "no_email_confirm" : "Email not yet confirmed by user",
+        "no_email_confirm" : "E-mail non ancora confermata dall'utente",
 
-        // TODO NEW: Email confirmation rejected by user
-        "email_rejected" : "Email confirmation rejected by user",
+        "email_rejected" : "Conferma dell'e-mail rifiutata dall'utente",
 
-        // TODO NEW: Not confirmed by administrator
-        "not_admin_confirmed" : "Not confirmed by administrator",
+        "not_admin_confirmed" : "Non confermato dall'amministratore",
 
-        // TODO NEW: Overview
-        "overview" : "Overview",
+        "overview" : "Panoramica",
 
-        // TODO NEW: Specific User
-        "specific_user" : "Specific User",
+        "specific_user" : "Utente specifico",
 
-        // TODO NEW: Role
-        "role" : "Role",
+        "role" : "Ruolo",
 
-        // TODO NEW: Status
-        "status" : "Status",
+        "status" : "Stato",
 
-        // TODO NEW: MIDATA-ID
-        "midata_id" : "MIDATA-ID",
+        "midata_id" : "ID-MIDATA",
 
-        // TODO NEW: No matching users found.
-        "empty" : "No matching users found."
+        "empty" : "Non è stato trovato alcun utente corrispondente."
     },
 
     "admin_address" : {
 
-        // TODO NEW: Member Address
-        "title" : "Member Address",
+        "title" : "Indirizzo del membro",
 
-        // TODO NEW: MIDATA-ID
-        "midata_id" : "MIDATA-ID",
+        "midata_id" : "ID-MIDATA",
 
-        // TODO NEW: Role
-        "role" : "Role",
+        "role" : "Ruolo",
 
-        // TODO NEW: Sub-Role(s)
-        "subroles" : "Sub-Role(s)",
+        "subroles" : "Sotto-ruolo/i",
 
-        // TODO NEW: Belongs to Developer:
-        "developer" : "Belongs to Developer:",
+        "developer" : "Appartiene allo sviluppatore:",
 
-        // TODO NEW: Status:
-        "status" : "Status:",
+        "status" : "Stato:",
 
-        // TODO NEW: AGB Status:
-        "agb_status" : "AGB Status:",
+        "agb_status" : "Stato dei Termini e Condizioni generali:",
 
-        // TODO NEW: Contract Status:
-        "contract_status" : "Contract Status:",
+        "contract_status" : "Stato del contratto:",
 
-        // TODO NEW: Email Status:
-        "email_status" : "Email Status:",
+        "email_status" : "Stato dell'e-mail:",
 
-        // TODO NEW: Confirmation Code:
-        "confirmation_code" : "Confirmation Code:",
+        "confirmation_code" : "Codice di conferma:",
 
-        // TODO NEW: Registration Date:
-        "registration_date" : "Registration Date:",
+        "registration_date" : "Data di registrazione:",
 
-        // TODO NEW: Confirmation Date:
-        "confirmation_date" : "Confirmation Date:",
+        "confirmation_date" : "Data di conferma:",
 
-        // TODO NEW: Last Login:
-        "last_login" : "Last Login:",
+        "last_login" : "Ultimo accesso:",
 
-        // TODO NEW: Confirm Email Address
-        "email_confirm_btn" : "Confirm Email Address",
+        "email_confirm_btn" : "Conferma indirizzo e-mail",
 
-        // TODO NEW: Comment
-        "comment" : "Comment",
+        "comment" : "Commento",
 
-        // TODO NEW: Add Comment
-        "add_comment_btn" : "Add Comment",
+        "add_comment_btn" : "Aggiungi commento",
 
-        // TODO NEW: Wipe Account
-        "wipe_btn" : "Wipe Account",
+        "wipe_btn" : "Elimina account",
 
-        // TODO NEW: Change Email Address
-        "change_email_btn" : "Change Email Address"
+        "change_email_btn" : "Modifica indirizzo e-mail"
     },
 
     "admin_news" : {
 
-        // TODO NEW: Created
-        "created" : "Created",
+        "created" : "Creato",
 
-        // TODO NEW: Language
-        "language" : "Language",
+        "language" : "Lingua",
 
-        // TODO NEW: Title
-        "title" : "Title",
+        "title" : "Titolo",
 
-        // TODO NEW: Expiration Date
-        "expires" : "Expiration Date",
+        "expires" : "Data di scadenza",
 
-        // TODO NEW: Delete
-        "delete_btn" : "Delete",
+        "delete_btn" : "Elimina",
 
-        // TODO NEW: No News-Items found
-        "empty" : "No News-Items found"
+        "empty" : "Non è stata trovata alcuna voce"
     },
 
     "admin_managenews" : {
 
-        // TODO NEW: Add a new news message
-        "title1" : "Add a new news message",
+        "title1" : "Aggiungi un nuovo messaggio con le notizie",
 
-        // TODO NEW: Modify news message
-        "title2" : "Modify news message",
+        "title2" : "Modifica il messaggio con le notizie",
 
-        // TODO NEW: News title
-        "title" : "News title",
+        "title" : "Titolo della notizia",
 
-        // TODO NEW: News language
-        "language" : "News language",
+        "language" : "Lingua delle notizie",
 
-        // TODO NEW: Content
-        "content" : "Content",
+        "content" : "Contenuti",
 
-        // TODO NEW: URL of full message
-        "url" : "URL of full message",
+        "url" : "URL del messaggio completo",
 
-        // TODO NEW: Expiration date of message
-        "expires" : "Expiration date of message"
+        "expires" : "Data di scadenza del messaggio"
     },
 
     "admin_registration" : {
 
-        // TODO NEW: Register New Admin Account
-        "sign_up" : "Register New Admin Account"
+        "sign_up" : "Registra il nuovo account ammin."
     },
 
     "admin_plugins" : {
 
-        // TODO NEW: Plugins
-        "title" : "Plugins",
+        "title" : "Plugin",
 
-        // TODO NEW: Filter by Developer
-        "developer" : "Filter by Developer",
+        "developer" : "Filtra per sviluppatore",
 
-        // TODO NEW: Filter by Appname
-        "name" : "Filter by Appname",
+        "name" : "Filtra per nome applicazione",
 
-        // TODO NEW: Filter by Organisation
-        "organisation" : "Filter by Organisation",
+        "organisation" : "Filtra per organizzazione",
 
-        // TODO NEW: There are no apps or plugins yet.
-        "empty" : "There are no apps or plugins yet.",
+        "empty" : "Non ci sono ancora applicazioni o plugin.",
 
-        // TODO NEW: Name
-        "plugin_name" : "Name",
+        "plugin_name" : "Nome",
 
-        // TODO NEW: Developer
-        "plugin_developer" : "Developer",
+        "plugin_developer" : "Sviluppatore",
 
-        // TODO NEW: Type
-        "plugin_type" : "Type",
+        "plugin_type" : "Tipo",
 
-        // TODO NEW: Target Role
-        "plugin_role" : "Target Role",
-
-        // TODO NEW: MISTORE
+        "plugin_role" : "Ruolo di destinazione",
+       
         "plugin_market" : "MISTORE",
 
-        // TODO NEW: Stats
-        "plugin_stats" : "Stats",
+        "plugin_stats" : "Statist.",
 
-        // TODO NEW: Status
-        "plugin_status" : "Status",
+        "plugin_status" : "Stato",
 
-        // TODO NEW: Import Plugin Definition
-        "add_definition_btn" : "Import Plugin Definition"
+        "add_definition_btn" : "Importa definizione plugin"
     },
 
     "admin_defineplugin" : {
 
-        // TODO NEW: Import Plugin Definition
-        "title" : "Import Plugin Definition",
+        "title" : "Importa definizione plugin",
 
-        // TODO NEW: Definition (JSON)
-        "definition" : "Definition (JSON)"
+        "definition" : "Definizione (JSON)"
     },
 
     "admin_studies" : {
 
-        // TODO NEW: Studies
-        "title" : "Studies",
+        "title" : "Studi",
 
-        // TODO NEW: Search criteria
-        "criteria" : "Search criteria",
+        "criteria" : "Criteri di ricerca",
 
-        // TODO NEW: No matching studies found.
-        "empty" : "No matching studies found."
+        "empty" : "Non è stato trovato alcuno studio corrispondente."
     },
 
     "admin_terms" : {
 
-        // TODO NEW: Terms and Conditions
-        "title" : "Terms and Conditions",
+        "title" : "Termini e Condizioni",
 
-        // TODO NEW: No Terms and Conditions available.
-        "empty" : "No Terms and Conditions available.",
+        "empty" : "Non sono disponibili Termini e Condizioni.",
 
-        // TODO NEW: Name
-        "name" : "Name",
+        "name" : "Nome",
 
-        // TODO NEW: Version
-        "version" : "Version",
+        "version" : "Versione",
 
-        // TODO NEW: Language
-        "language" : "Language",
+        "language" : "Lingua",
 
-        // TODO NEW: Creation Date
-        "createdAt" : "Creation Date"
+        "createdAt" : "Data di creazione"
     },
 
     "admin_manageterms" : {
 
-        // TODO NEW: Terms and Conditions
-        "pagetitle" : "Terms and Conditions",
+        "pagetitle" : "Termini e Condizioni",
 
-        // TODO NEW: Internal Name
-        "name" : "Internal Name",
+        "name" : "Nome interno",
 
-        // TODO NEW: Version
-        "version" : "Version",
+        "version" : "Versione",
 
-        // TODO NEW: Language
-        "language" : "Language",
+        "language" : "Lingua",
 
-        // TODO NEW: Title (public)
-        "title" : "Title (public)",
+        "title" : "Titolo (pubblico)",
 
-        // TODO NEW: Content (HTML)
-        "text" : "Content (HTML)"
+        "text" : "Contenuti (HTML)"
     },
 
     "admin_study" : {
 
-        // TODO NEW: Study
-        "title" : "Study",
+        "title" : "Studio",
 
-        // TODO NEW: Name
-        "name" : "Name",
+        "name" : "Nome",
 
-        // TODO NEW: Created at
-        "created_at" : "Created at",
+        "created_at" : "Creato il",
 
-        // TODO NEW: Created by
-        "created_by" : "Created by",
+        "created_by" : "Creato da",
 
-        // TODO NEW: Description
-        "description" : "Description",
+        "description" : "Descrizione",
 
-        // TODO NEW: Code
-        "code" : "Code",
+        "code" : "Codice",
 
-        // TODO NEW: Start Date
-        "startDate" : "Start Date",
+        "startDate" : "Data di inizio",
 
-        // TODO NEW: End Date
-        "endDate" : "End Date",
+        "endDate" : "Data di fine",
 
-        // TODO NEW: Data freeze date
-        "dataCreatedBefore" : "Data freeze date",
+        "dataCreatedBefore" : "Data di congelamento dei dati",
 
-        // TODO NEW: Required Information
-        "required_information" : "Required Information",
+        "required_information" : "Informazioni richieste",
 
-        // TODO NEW: Required Assistance
-        "required_assistance" : "Required Assistance",
+        "anonymous" : "Anonimo",
 
-        // TODO NEW: Terms and Conditions
-        "termsOfUse" : "Terms and Conditions",
+        "required_assistance" : "Assistenza richiesta",
 
-        // TODO NEW: Data Access Filter
-        "sharing_query" : "Data Access Filter",
+        "termsOfUse" : "Termini e Condizioni",
 
-        // TODO NEW: Requirements
-        "requirements" : "Requirements",
+        "sharing_query" : "Filtro di accesso dati",
 
-        // TODO NEW: Groups
-        "groups" : "Groups",
+        "requirements" : "Requisiti",
 
-        // TODO NEW: Group Name
-        "group_name" : "Group Name",
+        "groups" : "Gruppi",
 
-        // TODO NEW: Description
-        "group_description" : "Description",
+        "group_name" : "Nome del gruppo",
 
-        // TODO NEW: Team
+        "group_description" : "Descrizione",
+       
         "team" : "Team",
 
-        // TODO NEW: Role
-        "role" : "Role",
+        "role" : "Ruolo",
 
-        // TODO NEW: History
-        "history" : "History",
+        "history" : "Storico",
 
-        // TODO NEW: Complete Validation
-        "end_validation_btn" : "Complete Validation",
+        "end_validation_btn" : "Convalida completa",
 
-        // TODO NEW: Back to Draft
-        "back_to_draft_btn" : "Back to Draft",
+        "back_to_draft_btn" : "Torna alla bozza",
 
-        // TODO NEW: Delete Study
-        "delete_study_btn" : "Delete Study"
+        "delete_study_btn" : "Elimina studio"
+    },
+
+    "admin_stats" : {
+
+        "title" : "Statistiche",
+       
+        "what" : "",
+
+        "value" : "Conteggio totale",
+
+        "diff_yesterday" : "Diff a 1 giorno fa",
+
+        "diff_week" : "Diff a 7 giorni fa",
+
+        "recordCount" : "Record nel DB",
+
+        "appCount" : "Applicazioni e plugin",
+
+        "runningStudyCount" : "Studi in esecuzione",
+
+        "groupCount" : "Team (Assistenza sanitaria e Ricerca)",
+
+        "auditEventCount" : "Eventi di revisione",
+
+        "users" : "Account utente attivi",
+
+        "consents" : "Consensi"
     }
 }

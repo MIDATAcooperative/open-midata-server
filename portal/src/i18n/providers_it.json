@@ -2,109 +2,82 @@
 
     "provider_registration" : {
 
-        // TODO NEW: Healthcare Provider Sign up
-        "sign_up" : "Healthcare Provider Sign up",
+        "sign_up" : "Registrazione fornitore di prestazioni sanitarie",
 
-        // TODO NEW: Healthcare Provider
-        "provider" : "Healthcare Provider",
+        "provider" : "Fornitore di prestazioni sanitarie",
 
-        // TODO NEW: User
-        "user" : "User",
+        "user" : "Utente",
 
-        // TODO NEW: Name
-        "name" : "Name"
+        "name" : "Nome"
     },
 
     "provider_login" : {
 
-        // TODO NEW: Healthcare Provider Login
-        "title" : "Healthcare Provider Login"
+        "title" : "Accesso fornitore di prestazioni sanitarie"
     },
 
     "provider_navbar" : {
 
-        // TODO NEW: New Patient
-        "new_patient" : "New Patient",
+        "new_patient" : "Nuovo paziente",
 
-        // TODO NEW: Patients
-        "patients" : "Patients",
+        "patients" : "Pazienti",
 
-        // TODO NEW: Research
-        "research" : "Research",
+        "research" : "Ricerca",
 
-        // TODO NEW: Workspace
-        "workspace" : "Workspace",
-
-        // TODO NEW: MISTORE
+        "workspace" : "Spazio di lavoro",
+        
         "market" : "MISTORE",
 
-        // TODO NEW: Teams
-        "usergroups" : "Teams"
+        "usergroups" : "Team"
     },
 
     "provider_patientsearch" : {
 
-        // TODO NEW: Patient Search
-        "title" : "Patient Search"
+        "title" : "Ricerca paziente"
     },
 
     "provider_patients" : {
 
-        // TODO NEW: Patients
-        "title" : "Patients"
+        "title" : "Pazienti"
     },
 
     "provider_usergroups" : {
 
-        // TODO NEW: Teams
-        "title" : "Teams",
-
-        // TODO NEW: Team
+        "title" : "Team",
+       
         "name" : "Team",
 
-        // TODO NEW: Status
-        "status" : "Status",
+        "status" : "Stato",
 
-        // TODO NEW: You are not part of a team.
-        "empty" : "You are not part of a team."
+        "empty" : "Non fai parte di un team."
     },
 
     "provider_newusergroup" : {
 
-        // TODO NEW: Create new Team
-        "title" : "Create new Team",
+        "title" : "Crea un nuovo team",
 
-        // TODO NEW: Team Name
-        "name" : "Team Name",
+        "name" : "Nome del team",
 
-        // TODO NEW: Create
-        "create_btn" : "Create"
+        "create_btn" : "Crea"
     },
 
     "provider_editusergroup" : {
 
-        // TODO NEW: Edit Team
-        "title" : "Edit Team",
+        "title" : "Modica team",
 
-        // TODO NEW: Former Members
-        "former_members" : "Former Members",
+        "former_members" : "Membri precedenti",
 
-        // TODO NEW: Team Name
-        "name" : "Team Name",
+        "name" : "Nome del team",
 
-        // TODO NEW: Status
-        "status" : "Status",
+        "status" : "Stato",
 
-        // TODO NEW: Member From
-        "startDate" : "Member From",
+        "startDate" : "Membro da",
 
-        // TODO NEW: Member Until
-        "endDate" : "Member Until"
+        "endDate" : "Membro fino a"
     },
 
     "provider_memberdetails" : {
 
-        // TODO NEW: Request Consent
-        "propose_consent" : "Request Consent"
+        "propose_consent" : "Richiedi consenso"
     }
 }
