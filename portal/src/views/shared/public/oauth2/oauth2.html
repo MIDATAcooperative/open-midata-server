@@ -14,14 +14,31 @@
 
 		<div ng-hide="acceptConsent" class="mi-or-login welcome">
 			<div class="mi-or-login__content">
+			    <div ng-if="hasIcon()" class="mi-or-login__app_image" ng-style="getIconUrlBG()">
+					
+				</div>
+			
 				<img src="/img/logo-midata--white.svg" alt="" class="mi-or-login__logo">
 				<div class="mi-or-login__app">
 					<span class="mi-at-text mi-at-text--smaller mi-at-text--white mi-at-text--highlighted">{{ app.i18n[translate.use()].name ||
 						app.name }}</span> <span class="mi-at-text mi-at-text--smaller mi-at-text--white" translate="oauth2.requests_permission"></span>
 				</div>
 
-				<div ng-if="hasIcon()" class="mi-or-login__app_image" ng-style="getIconUrlBG()">
-					
+				
+				
+				<div class="mi-or-login__app" style="margin-bottom: 0px">				
+					<span class="mi-at-text mi-at-text--smaller mi-at-text--white"
+						translate="oauth2.no_account" ng-click="showRegister(true);"></span>
+						
+					<button class="mi-mo-flat_button mi-mo-flat_button--rounded" type="button" ng-click="showRegister(true);">
+					  <span class="mi-at-text" translate="oauth2.sign_up_btn"></span>					  
+				    </button>					
+				    
+				    <div style="margin-top:20px"></div>
+				    <div class="mi-at-text mi-at-text--smaller mi-at-text--white"
+						translate="oauth2.have_account"></div>
+					<div class="mi-at-text mi-at-text--smaller mi-at-text--white"
+						translate="oauth2.have_account2"></div>
 				</div>
 				
 				<form ng-submit="dologin()" role="form" ng-hide="offline" class="required">
@@ -64,16 +81,9 @@
 
 				</form>
 				
-				<div class="mi-or-login__signup_link">				
-					<span class="mi-at-text mi-at-text--smallest mi-at-text--white"
-						translate="oauth2.no_account" ng-click="showRegister(true);"></span>
-						
-					<button class="mi-mo-flat_button mi-mo-flat_button--rounded" type="button" ng-click="showRegister(true);">
-					  <span class="mi-at-text" translate="registration.sign_up"></span>
-				    </button>					
-				</div>
+			
 				
-				<div class="mi-or-login__signup_link">				
+				<div class="mi-or-login__signup_link" style="margin-top:-5px">				
 					<span class="mi-at-text mi-at-text--smallest mi-at-text--white"
 						translate="login.forgot_your_password" ng-click="lostpw();"></span>
 						
