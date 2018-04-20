@@ -235,3 +235,4 @@
 {"_id":{"$oid":"5a9e800579c721f679467ca4"},"system":"http://snomed.info/sct","code":"300910009","display":"Allergy to pollen","content":"allergy-to-pollen"}
 {"_id":{"$oid":"5a9ff0fe79c721f679468c91"},"system":"http://midata.coop","code":"living-location","display":"Living Location","content":"living-location"}
 {"_id":{"$oid":"5abcbc1e79c721baaaae8467"},"system":"http://midata.coop","code":"main-occupation-location-type","display":"Main Occupation Location Type","content":"main-occupation-location-type"}
+{"_id":{"$oid":"5ad9e81eaed6451e7ebef97f"},"system":"http://midata.coop","code":"MSMotTestDotDetail","display":"MS Motoriktest Punkte bewegen - Details pro Durchgang","content":"MSMotTestDotDetail"}
