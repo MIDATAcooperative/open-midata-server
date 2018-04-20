@@ -877,8 +877,11 @@
     },
 
     "oauth2" : {
-        "requests_permission" : "speichert Ihre persönlichen Daten in Ihrem MIDATA-Konto. Bitte melden Sie sich an oder registrieren Sie sich, wenn Sie noch kein Konto haben.",
-        "no_account" : "Ich habe kein Konto",
+        "requests_permission" : "speichert Ihre persönlichen Daten in Ihrem MIDATA-Konto.",
+        "no_account" : "Sie besitzen noch kein Konto?",
+        "have_account" : "Sie besitzen ein MIDATA Konto?",
+        "have_account2" : "Perfekt, melden Sie sich an",
+        "sign_up_btn" : "Konto erstellen",
         "reshares_data" : "Die Applikation darf Daten, auf die sie Zugriff hat, an Dritte weitergeben.",
         "allows_user_search" : "Ihr Name und Ihre E-Mail-Adresse können von anderen Personen, die diese Applikation verwenden, durchsucht werden.",
         "requesting_app" : "benötigt Zugriff auf Ihre Daten.",
