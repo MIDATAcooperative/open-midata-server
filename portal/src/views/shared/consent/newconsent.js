@@ -73,7 +73,7 @@ angular.module('portal')
 					.then(function(result) { console.log(result);$scope.owner = result.data[0]; });
 				}
 				
-				$scope.writeProtect = ($scope.consent.owner !== userId && $scope.consent.status !== "UNCONFIRMED") || $scope.consent.type === "STUDYPARTICIPATION" || $scope.consent.status === "EXPIRED" || $scope.consent.status === "REJECTED";
+				$scope.writeProtect = ($scope.consent.owner !== userId && $scope.consent.status !== "UNCONFIRMED") || $scope.consent.type === "EXTERNALSERVICE" || $scope.consent.type === "STUDYPARTICIPATION" || $scope.consent.status === "EXPIRED" || $scope.consent.status === "REJECTED";
 			
 				$scope.status.doBusy(server.get(jsRoutes.controllers.Records.getSharingDetails($state.params.consentId).url)).
 				then(function(results) {				

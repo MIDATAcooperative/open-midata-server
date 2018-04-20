@@ -314,7 +314,7 @@ var en =
 {
 
 
-    // TODO NEW: Report: 
+    // TODO NEW: Report:
     "report" : "Report: ",
 
     // TODO NEW: Please configure this tile to see a useful chart.
@@ -341,10 +341,10 @@ var en =
     // TODO NEW: Time
     "time" : "Time",
 
-    // TODO NEW: From: 
+    // TODO NEW: From:
     "from" : "From: ",
 
-    // TODO NEW: To: 
+    // TODO NEW: To:
     "to" : "To: ",
 
     // TODO NEW: Time Unit:

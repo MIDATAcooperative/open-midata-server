@@ -538,6 +538,7 @@
         "welcome_title" : "Willkommen",
         "welcome_text1" : "Ihr MIDATA-Konto wurde gerade erstellt. Eine Bestätigungs-E-Mail wurde Ihnen gesendet.",
         "welcome_text2" : "Bitte klicken Sie auf den Link in der E-Mail, um Ihre Registrierung abzuschliessen.",
+        "welcome_text3" : "Sollte die E-Mail nicht innerhalb einer halben Stunde in Ihrem Posteingang erscheinen, überprüfen Sie bitte Ihren Spam-Filter.",
         "welcome_btn" : "Ich werde es machen"
     },
 
