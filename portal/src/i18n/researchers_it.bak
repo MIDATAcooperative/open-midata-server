@@ -1,6 +1,6 @@
 {
   "researcher_registration" : {
-    "sign_up" : "Research Sign up",
+    "sign_up" : "Registration as a Researcher",
     "research_organization" : "Research Organization",
     "name" : "Name",
     "description" : "Description",
@@ -54,7 +54,7 @@
     "add_task_btn" : "Add Task for Participants",
     "plugin" : "Research Application",
     "device" : "Device Code",
-    "restrict" : "Restrict read to group",
+    "restrict" : "Restrict read to this group",
     "shareback" : "Application shares data with participant group(s)",
     "add_application_btn" : "Add Research Application",
     "linked_apps" : "Applications Consents",
@@ -66,7 +66,7 @@
     "no_change_warning" : "This setup cannot be changed anymore after Study has been validated.",
     "member_identity" : "Member Identity",
     "anonymous1" : "Pseudonymized Participation",
-    "anonymous2" : ", reveals anonymized ID, year of birth, gender and country",
+    "anonymous2" : ", reveals pseudonymized ID, year of birth, gender and country",
     "anonymous3" : "Anonym: Pseudonymization mapping may not be accessed.",
     "not_anonymous1" : "Not Pseudonymized",
     "not_anonymous2" : ", requests member to share full name, birthday and contact Information (address, phone, email)",
@@ -85,8 +85,8 @@
   
   "studyoverview" : {
     "name" : "Name",
-    "created_at" : "Created At:",
-    "created_by" : "Created By:",
+    "created_at" : "Created on:",
+    "created_by" : "Created by:",
     "description" : "Description",
     "code" : "Code",
     "validation_status" : "Validation Status",
@@ -165,9 +165,9 @@
     "sharing_query" : "Data Access Filter (JSON)",
     "sharing_query_options" : "Data Access Filter (Add)",
     "sharing_query_selection" : "Data Access Filter (Selection)",
-    "terms_of_use" : "Terms and Conditions",
-    "terms_of_use_hint" : "If the study Terms and Conditions have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the ID you need to enter here.",
-    "show_terms" : "Show Terms and Conditions",
+    "terms_of_use" : "General Terms and Conditions",
+    "terms_of_use_hint" : "If the study General Terms and Conditions have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the ID you need to enter here.",
+    "show_terms" : "Show General Terms and Conditions",
     "requirements" : "Requirements"
   },
   
@@ -216,8 +216,8 @@
     "sharingQuery_help" : "Your study has to explicitely state which data of the participants it will access. The Data Access Filter cannot be changed after study has been validated.",
     "dates" : "Start and end dates set",
     "dates_help" : "Start and end date will be shown to the participants. No data will flow into the study from the moment the data is frozen.",
-    "terms" : "Terms and Conditions provided",
-    "terms_help" : "If the study Terms and Conditions have to be confirmed online by the participants, please contact MIDATA.",
+    "terms" : "General Terms and Conditions provided",
+    "terms_help" : "If the study General Terms and Conditions have to be confirmed online by the participants, please contact MIDATA.",
     "validation" : "Study validation requested",
     "validation_help" : "Validation will be done by MIDATA after it has been requested. The study may no longer be changed after validation has been requested.",
     "validation_passed" : "Study validated by MIDATA",

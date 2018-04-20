@@ -2,444 +2,289 @@
 
     "researcher_registration" : {
 
+        // TODO CHANGED
+        // OLD: Research Sign up
+        // NEW: Registration as a Researcher
         "sign_up" : "Registrazione ricercatore",
-
         "research_organization" : "Organizzazione di ricerca",
-
         "name" : "Nome",
-
         "description" : "Descrizione",
-
         "research_user" : "Utente di ricerca"
     },
 
     "researcher_login" : {
-
         "title" : "Accesso di ricerca"
     },
 
     "researcher_navbar" : {
-
         "studies" : "Studi",
-
         "workspace" : "Spazio di lavoro",
-
         "data" : "Dati",
-
         "addresearcher" : "Aggiungi ricercatore"
     },
 
     "createstudy" : {
-
         "title" : "Crea un nuovo studio",
-
         "title2" : "Modifica la descrizione dello studio",
-
         "study_name" : "Nome studio",
-
         "study_description" : "Descrizione studio"
     },
 
     "studynav" : {
-
         "overview" : "Panoramica",
-
         "details" : "Dettagli",
-
         "rules" : "Regole",
-
         "actions" : "Applicazioni",
-
         "participants" : "Partecipanti",
-
         "records" : "Record",
-
         "results" : "Risultati",
-       
         "team" : "Team"
     },
 
     "studies" : {
-
         "title" : "Studi",
-
         "name" : "Nome",
-
         "validation" : "Convalida",
-
         "participants" : "Partecipanti",
-
         "execution" : "Esecuzione",
-
         "creation_date" : "Creato",
-
         "empty" : "Non è stato ancora creato alcuno studio per la tua organizzazione.",
-
         "create_btn" : "Crea un nuovo studio"
     },
 
     "studyactions" : {
-
         "description" : "Una volta convalidato lo studio, è possibile collegarlo con link a plugin e servizi di elaborazione dati esterni. Tali plugin o servizi devono collegarsi a MIDATA utilizzando le credenziali di uno dei membri del team di ricerca avente i diritti pertinenti.",
-
         "select_group_btn" : "Seleziona gruppo",
-
         "allgroups" : "<Tutti i gruppi>",
-
         "add_task_btn" : "Aggiungi attività per i partecipanti",
-
         "plugin" : "Applicazione di ricerca",
-
         "device" : "Codice dispositivo",
 
+        // TODO CHANGED
+        // OLD: Restrict read to group
+        // NEW: Restrict read to this group
         "restrict" : "Limita lettura al gruppo",
-
         "shareback" : "L'applicazione condivide i dati con il gruppo/i del partecipante",
-
         "add_application_btn" : "Aggiungi applicazione di ricerca",
-
         "linked_apps" : "Consensi dell'applicazione",
-
         "linked_spaces" : "Plugin di ricerca"
     },
 
     "studyfields" : {
-
         "required_data" : "Dati richiesti",
-
         "no_change_warning" : "Una volta convalidato lo studio, questa configurazione non potrà più essere modificata.",
-
         "member_identity" : "Identità del membro",
-
         "anonymous1" : "Partecipazione con pseudonimo",
 
+        // TODO CHANGED
+        // OLD: , reveals anonymized ID, year of birth, gender and country
+        // NEW: , reveals pseudonymized ID, year of birth, gender and country
         "anonymous2" : ", indica un ID anonimo, anno di nascita, sesso e nazione",
-
         "anonymous3" : "Anonimo: non è possibile accedere alla mappatura con pseudonimo.",
-
         "not_anonymous1" : "Senza pseudonimo",
-
         "not_anonymous2" : ", richiede al membro di condividere il nome completo, la data di nascita e le informazioni di contatto (indirizzo, telefono, e-mail)",
-
         "assistance" : "Assistenza",
-
         "no_assistance1" : "Nessuno",
-
         "no_assistance2" : " - il membro MIDATA partecipa in modo autonomo.",
-
         "assistance1" : "Professionista del settore sanitario",
-
         "assistance2" : " - il membro MIDATA necessita di assistenza da parte di un professionista del settore sanitario.",
-
         "groups" : "Gruppi di partecipanti",
-
         "groups_empty" : "Non è ancora stato definito alcun gruppo di partecipanti.",
-
         "group_name" : "Nome del gruppo",
-
         "group_description" : "Descrizione",
-
         "add_group_btn" : "Aggiungi gruppo",
-
         "save_changes_btn" : "Salva modifiche"
     },
 
     "studyoverview" : {
-
         "name" : "Nome",
 
+        // TODO CHANGED
+        // OLD: Created At:
+        // NEW: Created on:
         "created_at" : "Creato alle:",
 
+        // TODO CHANGED
+        // OLD: Created By:
+        // NEW: Created by:
         "created_by" : "Creato da:",
-
         "description" : "Descrizione",
-
         "code" : "Codice",
-
         "validation_status" : "Stato di convalida",
-
         "participant_search_status" : "Stato della ricerca partecipante",
-
         "execution_status" : "Stato di esecuzione",
-
         "checklist" : "Lista di controllo",
-
         "history" : "Storico",
-
         "event" : "Evento",
-
         "who" : "Chi",
-
         "when" : "Quando",
-
         "comment" : "Commento",
-
         "edit_description_btn" : "Modifica",
-
         "start_validation_btn" : "Richiedi convalida dello studio",
-
         "start_participant_search_btn" : "Inizia a cercare i partecipanti",
-
         "end_participant_search_btn" : "Termina la ricerca dei partecipanti",
-
         "start_study_execution_btn" : "Inizia l'esecuzione dello studio",
-
         "finish_study_btn" : "Termina studio",
-
         "delete_study_btn" : "Elimina studio",
-
         "abort_study_btn" : "Interrompi studio",
-
         "workflow" : "Informazioni sul flusso di lavoro",
-
         "markdone_btn" : "Non richiesto, contrassegnare come eseguito",
-
         "visitnow_btn" : "Visita pagina",
-
         "donow_btn" : "Attiva ora",
-
         "lastdone" : "Ultima fase su cui si è lavorato",
-
         "nextstep" : "Prossima fase da eseguire"
     },
 
     "studyparticipant" : {
-
         "participant" : "Partecipante:",
-
         "gender" : "Sesso:",
-
         "year" : "Anno di nascita:",
-
         "country" : "Nazione:",
-
         "status" : "Stato:",
-
         "group" : "Gruppo:",
-
         "shared_records" : "Record condivisi",
-
         "history" : "Storico della partecipazione"
     },
 
     "studyparticipants" : {
-
         "name" : "Nome",
-
         "partName" : "Con pseudonimo",
-
         "group" : "Gruppo",
-
         "status" : "Stato",
-
         "total" : "Trovati {{count}} consensi corrispondenti ai tuoi criteri.",
-
         "only_first_shown" : "Sono visualizzati solo i primi 1000 consensi corrispondenti.",
-
         "recruiter" : "Reclutatore",
-
         "accept_btn" : "Accetta",
-
         "reject_btn" : "Rifiuta",
-
         "add_participant_btn" : "Aggiungi partecipante",
-
         "empty" : "Questo studio non ha ancora alcun partecipante che corrisponda ai tuoi criteri di ricerca.",
-
         "search_type" : "Cerca",
-
         "all" : "Tutti i partecipanti",
-
         "request" : "Candidati in attesa di una decisione",
-
         "rejected" : "Candidati rifiutati",
-
         "retreated" : "Partecipanti che si sono ritirati",
-
         "acceptall" : "Accetta tutte le richieste e assegna nuovi partecipanti al gruppo di partecipanti",
-
         "autojoin" : "Accetta automaticamente",
-
         "autojoin2" : "Accetta tutte le richieste di partecipazione e assegna nuovi partecipanti al gruppo selezionato non appena si connette l'applicazione di ricerca collegata tramite link a questo studio."
     },
 
     "studyrecords" : {
-
         "empty" : "Una volta disponibili, i dati possono essere scaricati qui.",
-
         "group" : "Gruppo di dati",
-
         "number_of_records" : "# record",
-
         "download_btn" : "Scarica",
-
         "fhir_download_btn" : "Scarica bundle FHIR",
-
         "fhir_download_original_btn" : "Download senza pseudonimo"
     },
 
     "studyrules" : {
-
         "title" : "Regole dello studio",
-
         "no_change_warning" : "Una volta convalidato lo studio, questa configurazione non potrà più essere modificata.",
-
         "startDate" : "Data di inizio ufficiale",
-
         "endDate" : "Data di fine ufficiale",
-
         "dataCreatedBefore" : "Data di congelamento dei dati",
-
         "sharing_query" : "Filtro di accesso ai dati (JSON)",
-
         "sharing_query_options" : "Filtro di accesso ai dati (Aggiungi)",
-
         "sharing_query_selection" : "Filtro di accesso ai dati (Selezione)",
 
+        // TODO CHANGED
+        // OLD: Terms and Conditions
+        // NEW: General Terms and Conditions
         "terms_of_use" : "Termini e Condizioni",
 
+        // TODO CHANGED
+        // OLD: If the study Terms and Conditions have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the ID you need to enter here.
+        // NEW: If the study General Terms and Conditions have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the ID you need to enter here.
         "terms_of_use_hint" : "Se i Termini e Condizioni dello studio devono essere letti e accettati dall'utente, inviare il testo a MIDATA. Caricheremo il testo nel formato corretto e ti forniremo l'ID necessario da inserire qui.",
 
+        // TODO CHANGED
+        // OLD: Show Terms and Conditions
+        // NEW: Show General Terms and Conditions
         "show_terms" : "Mostra termini e condizioni",
-
         "requirements" : "Requisiti"
     },
 
     "addresearcher" : {
-
         "sign_up" : "Registrazione ricercatore",
-
         "success" : "Un nuovo ricercatore è stato aggiunto alla tua organizzazione."
     },
 
     "addparticipant" : {
-
         "sign_up" : "Registrazione partecipante",
-
         "study" : "Studio",
-
         "hasaccepted" : "Il partecipante ha accettato",
-
         "success" : "Un nuovo partecipante è stato aggiunto al tuo studio."
     },
 
     "studyteam" : {
-
         "person" : "Membro del team",
-
         "role" : "Ruolo",
-
         "rolehint" : "Ruolo (per i dettagli fare clic sulla riga qui sotto)",
-
         "roleName" : "Nome ruolo",
-
         "defineself" : "Puoi modificare i tuoi diritti aggiungendoti al team con diritti differenti. Puoi compiere quest'operazione fino a quando sei l'unico membro del team. Non puoi privarti dei diritti di gestione del team.",
-
         "addperson_btn" : "Aggiungi persona",
-
         "rights" : "Diritti",
         "right" : {
-
             "readData" : "Leggi i record di dati",
-
             "writeData" : "Scrivi/Aggiorna i record di dati",
-
             "unpseudo" : "Partecipanti senza pseudonimo",
-
             "export" : "Esporta i dati",
-
             "changeTeam" : "Modifica il team",
-
             "auditLog" : "Visualizza il registro di revisione",
-
             "participants" : "Gestisci i partecipanti",
-
             "setup" : "Configura studio"
         }
     },
 
     "study_checklist" : {
-
         "phase1" : "Fase 1: bozza",
-
         "phase1_help" : "Bozza",
-
         "name" : "Nome e descrizione studio definiti",
-
         "name_help" : "Il nome dello studio sarà mostrato ai partecipanti. La descrizione sarà disponibile sul portale durante l'accesso all'applicazione.",
-
         "teamsetup" : "Configurazione del team ricercatore",
-
         "teamsetup_help" : "Se più persone sono coinvolte nello svolgimento dello studio, indicare tutte le persone coinvolte e il loro ruolo. Finché non si aggiungono altre persone, è possibile cambiare il proprio ruolo aggiungendo nuovamente sé stessi con un altro ruolo.",
-
         "groups" : "Gruppi di partecipanti definiti",
-
         "groups_help" : "Il tuo studio può avere uno o più gruppi di partecipanti. Definisci l'elenco dei gruppi di partecipanti.",
-
         "sharingQuery" : "Filtro di accesso ai dati definito",
-
         "sharingQuery_help" : "Il tuo studio deve dichiarare in modo esplicito a quali dati dei partecipanti accederà. Il filtro di accesso ai dati non può essere modificato dopo la convalida dello studio.",
-
         "dates" : "Date di inizio e fine impostate",
-
         "dates_help" : "Le date di inizio e fine saranno mostrate ai partecipanti. Nessun dato sarà inserito nello studio dal momento in cui i dati vengono congelati.",
 
+        // TODO CHANGED
+        // OLD: Terms and Conditions provided
+        // NEW: General Terms and Conditions provided
         "terms" : "Termini e Condizioni forniti",
 
+        // TODO CHANGED
+        // OLD: If the study Terms and Conditions have to be confirmed online by the participants, please contact MIDATA.
+        // NEW: If the study General Terms and Conditions have to be confirmed online by the participants, please contact MIDATA.
         "terms_help" : "Se i Termini e Condizioni dello studio devono essere confermati online dai partecipanti, contattare MIDATA.",
-
         "validation" : "Convalida dello studio richiesta",
-
         "validation_help" : "Una volta richiesta, la convalida sarà eseguita da MIDATA. Lo studio non potrà più essere modificato dopo la richiesta di convalida.",
-
         "validation_passed" : "Studio convalidato da MIDATA",
-
         "validation_passed_help" : "Attendere finché lo studio non è stato convalidato.",
-
         "phase2" : "Fase 2: preparazione",
-
         "phase2_help" : "Preparazione",
-
         "applications" : "Applicazione di ricerca aggiunta",
-
         "applications_help" : "È possibile collegare con link al proprio studio i plugin e i servizi di elaborazione dei dati esterni. I plugin e servizi possono leggere i dati dei partecipanti e/o ri-condividere con loro dei dati aggregati. Plugin e servizi devono collegarsi a MIDATA utilizzando le credenziali di uno dei membri del team di ricerca avente i diritti pertinenti.",
-
         "applinked" : "L'applicazione è stata collegata con link al proprio studio",
-
         "applinked_help" : "Per collegare con link un'applicazione al proprio studio, inviare a MIDATA il codice dello studio e il nome dell'applicazione che si desidera collegare con link.",
-
         "partsearchstart" : "La ricerca dei partecipanti è iniziata",
-
         "partsearchstart_help" : "Fino a quando non inizia la ricerca del partecipante, non è possibile partecipare allo studio. Le applicazioni che richiedono la partecipazione allo studio non possono essere utilizzate.",
-
         "phase3" : "Fase 3: esecuzione",
-
         "phase3_help" : "Esecuzione",
-
         "executionstart" : "Esecuzione iniziata",
-
         "executionstart_help" : "Contrassegna questo studio come iniziato ufficialmente.",
-
         "acceptedpart" : "Partecipanti assegnati al gruppo e accettati",
-
         "acceptedpart_help" : "I nuovi partecipanti devono essere assegnati a un gruppo di partecipanti ed essere accettati o rifiutati.",
-
         "phase4" : "Fase 4: completamento",
-
         "phase4_help" : "Completamento",
-
         "partsearchend" : "La ricerca dei partecipanti è terminata",
-
         "partsearchend_help" : "Una volta terminata la ricerca dei partecipanti, non sarà più possibile reclutarne di nuovi.",
-
         "execend" : "Studio concluso",
-
         "execend_help" : "Quando lo studio è terminato, i dati vengono immediatamente congelati. I dati restano disponibili per il download.",
-
         "exportdata" : "Dati esportati",
-
         "exportdata_help" : "Esportare i dati dello studio come Bundle FHIR JSON (separati per ciascun gruppo di partecipanti).",
-
         "optional" : "(opzionale)"
     }
 }
