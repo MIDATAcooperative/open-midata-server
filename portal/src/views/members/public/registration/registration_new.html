@@ -145,7 +145,7 @@
 						class="mi-at-input__fieldset mi-at-input--checkbox mi-at-input--checkbox-white">
 						<input id="confirmStudy" name="confirmStudy" ng-model="registration.confirmStudy" class="mi-at-input mi-at-input--checkbox"
 							type="checkbox" value="" floating-label /> <label for="confirmStudy" class="mi-at-text"> <span
-							translate="oauth2.confirm_study"></span>: <a class="mi-at-input--checkbox-link" ng-show="app.linkedStudyTermsOfUse"
+							translate="oauth2.confirm_study"></span> <a class="mi-at-input--checkbox-link" ng-show="app.linkedStudyTermsOfUse"
 							ng-click="terms({which : app.linkedStudyTermsOfUse });" href="javascript:"><span
 								class="mi-at-text mi-at-text--white mi-at-text--highlighted">{{ app.linkedStudyName }}</span></a></label>
 					</fieldset>
@@ -204,6 +204,8 @@
 					  <p translate="registration.welcome_text1"></p>
 					  <div class="extraspace"></div>
 					  <p translate="registration.welcome_text2"></p>
+					  <div class="extraspace"></div>
+					  <p translate="registration.welcome_text3"></p>
 					  <button class="btn btn-primary" type="button" translate="registration.welcome_btn" ng-click="confirmWelcome();"></button>
 					</div>
 				</div>
