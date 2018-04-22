@@ -1,18 +1,14 @@
 {
 
     "provider_registration" : {
-
-        // TODO CHANGED
-        // OLD: Healthcare Provider Sign up
-        // NEW: Registration as a Healthcare Provider
-        "sign_up" : "Registrazione fornitore di prestazioni sanitarie",
-        "provider" : "Fornitore di prestazioni sanitarie",
+        "sign_up" : "Iscrizione come operatore sanitario",
+        "provider" : "Operatore sanitario",
         "user" : "Utente",
         "name" : "Nome"
     },
 
     "provider_login" : {
-        "title" : "Accesso fornitore di prestazioni sanitarie"
+        "title" : "Accesso come operatore sanitario"
     },
 
     "provider_navbar" : {
@@ -20,11 +16,7 @@
         "patients" : "Pazienti",
         "research" : "Ricerca",
         "workspace" : "Spazio di lavoro",
-
-        // TODO CHANGED
-        // OLD: MISTORE
-        // NEW: MIDATA Store
-        "market" : "MISTORE",
+        "market" : "MIDATA Store",
         "usergroups" : "Team"
     },
 

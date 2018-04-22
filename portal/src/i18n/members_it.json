@@ -2,12 +2,12 @@
 
     "member_login" : {
         "teaser" : "I miei dati - La nostra salute e sanità",
-        "register_now" : "Registrati ora",
-        "sign_in" : "Iscriviti"
+        "register_now" : "Iscriviti ora",
+        "sign_in" : "Accedi"
     },
 
     "member_quickregistration" : {
-        "sign_up" : "Registrazione",
+        "sign_up" : "Iscrizione",
         "study" : "Studio*",
         "app" : "Applicazione da usare*",
         "app_password" : "Password dell'applicazione",
@@ -17,11 +17,7 @@
 
     "help_welcome" : {
         "menu" : "Il menu qui sopra contiene questi link:",
-
-        // TODO CHANGED
-        // OLD: Me
-        // NEW: Dashboard
-        "menu_me" : "I miei dati",
+        "menu_me" : "Pannello",
         "menu_me_text" : "Il proprio pannello di controllo personale, in cui è possibile inserire tutte le funzionalità più utili.",
         "menu_overview" : "Panoramica",
         "menu_overview_text" : "Una panoramica di tutte le funzioni fornite dalla piattaforma MIDATA.",
@@ -35,11 +31,7 @@
         "answer_questions" : "Per iniziare ti consigliamo di rispondere ad alcune domande. Preconfigureremo il tuo account sulla base delle tue risposte.",
         "answered_questions" : "Grazie per avere risposto alle domande sulla configurazione! Visita il tuo pannello di controllo ora oppure modifica le risposte, se necessario.",
         "answer_btn" : "Rispondere ora alle domande sulla configurazione",
-
-        // TODO CHANGED
-        // OLD: Visit 'me' page
-        // NEW: Visit my Dashboard
-        "dashboard_btn" : "Visitare la pagina 'I miei dati'",
+        "dashboard_btn" : "Visitare la pagina 'Pannello'",
         "answer_again_btn" : "Modificare le risposte alle domande sulla configurazione"
     },
 
@@ -91,11 +83,7 @@
         "confirmation_date" : "Data di conferma",
         "confirm_btn" : "conferma",
         "reject_btn" : "rifiuta",
-
-        // TODO CHANGED
-        // OLD: You do not have a registered contact to a healthcare provider.
-        // NEW: You have not registered any contacts as a healthcare provider.
-        "empty" : "Non hai un contatto registrato con un fornitore prestazioni sanitarie."
+        "empty" : "Non hai registrato alcun contatto come operatore sanitario."
     },
 
 

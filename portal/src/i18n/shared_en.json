@@ -536,9 +536,9 @@
     
     "welcome_title" : "Welcome",
     "welcome_text1" : "Your MIDATA account has just been created. A confirmation email has been sent to you.",
-    "welcome_text2" : "Please click on the link in the email to complete your registration.",
-    "welcome_text3" : "If you should not receive the email within the next 30 minutes please check your spam filter.",
-    "welcome_btn" : "I will do it" 
+    "welcome_text2" : "Please click on the link in the email within 24 hours to complete your registration.",
+    "welcome_text3" : "If you should not receive the email within the next 30 minutes, please check your spam filter.",
+    "welcome_btn" : "Go on" 
   },
 
   "login" : {

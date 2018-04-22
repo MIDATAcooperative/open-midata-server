@@ -1,19 +1,15 @@
 {
 
     "researcher_registration" : {
-
-        // TODO CHANGED
-        // OLD: Research Sign up
-        // NEW: Registration as a Researcher
-        "sign_up" : "Registrazione ricercatore",
+        "sign_up" : "Iscrizione come ricercatore",
         "research_organization" : "Organizzazione di ricerca",
         "name" : "Nome",
         "description" : "Descrizione",
-        "research_user" : "Utente di ricerca"
+        "research_user" : "Ricercatore"
     },
 
     "researcher_login" : {
-        "title" : "Accesso di ricerca"
+        "title" : "Accesso come ricercatore"
     },
 
     "researcher_navbar" : {
@@ -59,11 +55,7 @@
         "add_task_btn" : "Aggiungi attività per i partecipanti",
         "plugin" : "Applicazione di ricerca",
         "device" : "Codice dispositivo",
-
-        // TODO CHANGED
-        // OLD: Restrict read to group
-        // NEW: Restrict read to this group
-        "restrict" : "Limita lettura al gruppo",
+        "restrict" : "Limita lettura al questo gruppo",
         "shareback" : "L'applicazione condivide i dati con il gruppo/i del partecipante",
         "add_application_btn" : "Aggiungi applicazione di ricerca",
         "linked_apps" : "Consensi dell'applicazione",
@@ -75,11 +67,7 @@
         "no_change_warning" : "Una volta convalidato lo studio, questa configurazione non potrà più essere modificata.",
         "member_identity" : "Identità del membro",
         "anonymous1" : "Partecipazione con pseudonimo",
-
-        // TODO CHANGED
-        // OLD: , reveals anonymized ID, year of birth, gender and country
-        // NEW: , reveals pseudonymized ID, year of birth, gender and country
-        "anonymous2" : ", indica un ID anonimo, anno di nascita, sesso e nazione",
+        "anonymous2" : ", indica un ID pseudonimo, anno di nascita, sesso e nazione",
         "anonymous3" : "Anonimo: non è possibile accedere alla mappatura con pseudonimo.",
         "not_anonymous1" : "Senza pseudonimo",
         "not_anonymous2" : ", richiede al membro di condividere il nome completo, la data di nascita e le informazioni di contatto (indirizzo, telefono, e-mail)",
@@ -98,15 +86,7 @@
 
     "studyoverview" : {
         "name" : "Nome",
-
-        // TODO CHANGED
-        // OLD: Created At:
-        // NEW: Created on:
         "created_at" : "Creato alle:",
-
-        // TODO CHANGED
-        // OLD: Created By:
-        // NEW: Created by:
         "created_by" : "Creato da:",
         "description" : "Descrizione",
         "code" : "Codice",
@@ -186,21 +166,9 @@
         "sharing_query" : "Filtro di accesso ai dati (JSON)",
         "sharing_query_options" : "Filtro di accesso ai dati (Aggiungi)",
         "sharing_query_selection" : "Filtro di accesso ai dati (Selezione)",
-
-        // TODO CHANGED
-        // OLD: Terms and Conditions
-        // NEW: General Terms and Conditions
-        "terms_of_use" : "Termini e Condizioni",
-
-        // TODO CHANGED
-        // OLD: If the study Terms and Conditions have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the ID you need to enter here.
-        // NEW: If the study General Terms and Conditions have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the ID you need to enter here.
-        "terms_of_use_hint" : "Se i Termini e Condizioni dello studio devono essere letti e accettati dall'utente, inviare il testo a MIDATA. Caricheremo il testo nel formato corretto e ti forniremo l'ID necessario da inserire qui.",
-
-        // TODO CHANGED
-        // OLD: Show Terms and Conditions
-        // NEW: Show General Terms and Conditions
-        "show_terms" : "Mostra termini e condizioni",
+        "terms_of_use" : "Condizioni generali di contratto",
+        "terms_of_use_hint" : "Se i Condizioni generali di contratto dello studio devono essere letti e accettati dall'utente, inviare il testo a MIDATA. Caricheremo il testo nel formato corretto e ti forniremo l'ID necessario da inserire qui.",
+        "show_terms" : "Mostra Condizioni generali di contratto",
         "requirements" : "Requisiti"
     },
 
@@ -249,16 +217,8 @@
         "sharingQuery_help" : "Il tuo studio deve dichiarare in modo esplicito a quali dati dei partecipanti accederà. Il filtro di accesso ai dati non può essere modificato dopo la convalida dello studio.",
         "dates" : "Date di inizio e fine impostate",
         "dates_help" : "Le date di inizio e fine saranno mostrate ai partecipanti. Nessun dato sarà inserito nello studio dal momento in cui i dati vengono congelati.",
-
-        // TODO CHANGED
-        // OLD: Terms and Conditions provided
-        // NEW: General Terms and Conditions provided
-        "terms" : "Termini e Condizioni forniti",
-
-        // TODO CHANGED
-        // OLD: If the study Terms and Conditions have to be confirmed online by the participants, please contact MIDATA.
-        // NEW: If the study General Terms and Conditions have to be confirmed online by the participants, please contact MIDATA.
-        "terms_help" : "Se i Termini e Condizioni dello studio devono essere confermati online dai partecipanti, contattare MIDATA.",
+        "terms" : "Condizioni generali di contratto forniti",
+        "terms_help" : "Se i Condizioni generali di contratto dello studio devono essere confermati online dai partecipanti, contattare MIDATA.",
         "validation" : "Convalida dello studio richiesta",
         "validation_help" : "Una volta richiesta, la convalida sarà eseguita da MIDATA. Lo studio non potrà più essere modificato dopo la richiesta di convalida.",
         "validation_passed" : "Studio convalidato da MIDATA",

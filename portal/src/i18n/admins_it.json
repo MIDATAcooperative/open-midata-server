@@ -7,15 +7,7 @@
         "plugins" : "Plugin",
         "content" : "Contenuti",
         "studies" : "Studi",
-
-        // TODO CHANGED
-        // OLD: Terms and Conditions
-        // NEW: General Terms and Conditions
-        "terms" : "Termini e condizioni",
-
-        // TODO CHANGED
-        // OLD: Register Admin
-        // NEW: Register an Administrator
+        "terms" : "Condizioni generali di contratto",
         "registration" : "Registra amministratore"
     },
 
@@ -42,11 +34,7 @@
         "subroles" : "Sotto-ruolo/i",
         "developer" : "Appartiene allo sviluppatore:",
         "status" : "Stato:",
-
-        // TODO CHANGED
-        // OLD: AGB Status:
-        // NEW: T&Cs Status:
-        "agb_status" : "Stato dei Termini e Condizioni generali:",
+        "agb_status" : "Stato dei CGC:",
         "contract_status" : "Stato del contratto:",
         "email_status" : "Stato dell'e-mail:",
         "confirmation_code" : "Codice di conferma:",
@@ -80,11 +68,7 @@
     },
 
     "admin_registration" : {
-
-        // TODO CHANGED
-        // OLD: Register New Admin Account
-        // NEW: Register a New Administrator
-        "sign_up" : "Registra il nuovo account ammin."
+        "sign_up" : "Registrare un nuovo amministratore"
     },
 
     "admin_plugins" : {
@@ -97,11 +81,7 @@
         "plugin_developer" : "Sviluppatore",
         "plugin_type" : "Tipo",
         "plugin_role" : "Ruolo di destinazione",
-
-        // TODO CHANGED
-        // OLD: MISTORE
-        // NEW: MIDATA Store
-        "plugin_market" : "MISTORE",
+        "plugin_market" : "MIDATA Store",
         "plugin_stats" : "Statist.",
         "plugin_status" : "Stato",
         "add_definition_btn" : "Importa definizione plugin"
@@ -119,16 +99,8 @@
     },
 
     "admin_terms" : {
-
-        // TODO CHANGED
-        // OLD: Terms and Conditions
-        // NEW: General Terms and Conditions
-        "title" : "Termini e Condizioni",
-
-        // TODO CHANGED
-        // OLD: No Terms and Conditions available.
-        // NEW: No General Terms and Conditions available.
-        "empty" : "Non sono disponibili Termini e Condizioni.",
+        "title" : "Condizioni generali di contratto",
+        "empty" : "Non sono disponibili Condizioni generali di contratto.",
         "name" : "Nome",
         "version" : "Versione",
         "language" : "Lingua",
@@ -136,11 +108,7 @@
     },
 
     "admin_manageterms" : {
-
-        // TODO CHANGED
-        // OLD: Terms and Conditions
-        // NEW: General Terms and Conditions
-        "pagetitle" : "Termini e Condizioni",
+        "pagetitle" : "Condizioni generali di contratto",
         "name" : "Nome interno",
         "version" : "Versione",
         "language" : "Lingua",
@@ -151,10 +119,6 @@
     "admin_study" : {
         "title" : "Studio",
         "name" : "Nome",
-
-        // TODO CHANGED
-        // OLD: Created at
-        // NEW: Created on
         "created_at" : "Creato il",
         "created_by" : "Creato da",
         "description" : "Descrizione",
@@ -165,11 +129,7 @@
         "required_information" : "Informazioni richieste",
         "anonymous" : "Anonimo",
         "required_assistance" : "Assistenza richiesta",
-
-        // TODO CHANGED
-        // OLD: Terms and Conditions
-        // NEW: General Terms and Conditions
-        "termsOfUse" : "Termini e Condizioni",
+        "termsOfUse" : "Condizioni generali di contratto",
         "sharing_query" : "Filtro di accesso dati",
         "requirements" : "Requisiti",
         "groups" : "Gruppi",
@@ -185,31 +145,15 @@
 
     "admin_stats" : {
         "title" : "Statistiche",
-
-        // TODO NEW: 
         "what" : "",
         "value" : "Conteggio totale",
-
-        // TODO CHANGED
-        // OLD: Diff to 1 day ago
-        // NEW: Diff. to 1 day ago
-        "diff_yesterday" : "Diff a 1 giorno fa",
-
-        // TODO CHANGED
-        // OLD: Diff to 7 days ago
-        // NEW: Diff. to 7 days ago
-        "diff_week" : "Diff a 7 giorni fa",
+        "diff_yesterday" : "Diff. a 1 giorno fa",
+        "diff_week" : "Diff. a 7 giorni fa",
         "recordCount" : "Record nel DB",
-
-        // TODO NEW: Archived Records
-        "vRecordCount" : "Archived Records",
-
-        // TODO NEW: DB Index Pages
+        "vRecordCount" : "Record archivistica",
         "indexPageCount" : "DB Index Pages",
         "appCount" : "Applicazioni e plugin",
-
-        // TODO NEW: User Languages
-        "languages" : "User Languages",
+        "languages" : "Lingue dell'utente",
         "runningStudyCount" : "Studi in esecuzione",
         "groupCount" : "Team (Assistenza sanitaria e Ricerca)",
         "auditEventCount" : "Eventi di revisione",
