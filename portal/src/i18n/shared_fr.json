@@ -49,7 +49,6 @@
             "not_plugin_owner" : "Ce n'est pas votre plugin"
         },
 
-
         "invalid" : {
             "email" : "Veuillez entrer une adresse e-mail valide",
             "credentials" : "Adresse e-mail ou mot de passe invalide.",
@@ -80,7 +79,6 @@
         },
 
         "missing" : {
-
             "credentials" : "Veuillez saisir votre adresse e-mail et mot de passe.",
             "email" : "Veuillez saisir votre adresse e-mail",
             "input_field" : "Veuillez compléter ce champ de saisie.",
@@ -496,10 +494,6 @@
     "registration" : {
         "sign_up" : "S'inscrire",
         "mandantory_fields" : "Veuillez remplir les informations ci-dessous, les champs marqués d'un astérisque (*) sont obligatoires.",
-
-        // TODO CHANGED
-        // OLD: Password must be at least 8 characters long. (letters and digits)
-        // NEW: Password must be at least 8 characters long (letters and digits).
         "password_policy" : "Le mot de passe doit avoir au moins 8 caractères (lettres et chiffres).",
         "email" : "E-mail",
         "password" : "Mot de passe",
@@ -540,25 +534,9 @@
         "hide_optional" : "Masquer les champs facultatifs",
 
         "welcome_title" : "Bienvenue",
-
-        // TODO CHANGED
-        // OLD: Your account has been created. We have send you a welcome email to your email address.
-        // NEW: Your MIDATA account has just been created. A confirmation email has been sent to you.
         "welcome_text1" : "Votre compte MIDATA vient d'être créé. Un e-mail de confirmation vous a été envoyé.",
-
-        // TODO CHANGED
-        // OLD: Please klick on the confirmation link in the email to confirm that your email address is correct.
-        // NEW: Please click on the link in the email within 24 hours to complete your registration.
         "welcome_text2" : "Veuillez cliquer le lien contenu dans l'e-mail dans les 24 heures pour terminer votre inscription.",
-
-        // TODO CHANGED
-        // OLD: undefined
-        // NEW: If you should not receive the email within the next 30 minutes, please check your spam filter.
         "welcome_text3" : "Si vous ne recevez pas l'e-mail dans les 30 prochaines minutes, veuillez vérifier votre filtre anti-spam.",
-
-        // TODO CHANGED
-        // OLD: I will do it
-        // NEW: Go on
         "welcome_btn" : "Continuer"
     },
 
@@ -897,30 +875,10 @@
     },
 
     "oauth2" : {
-
-        // TODO CHANGED
-        // OLD: requests the permission to access your personal data.
-        // NEW: stores your personal data in your MIDATA account.
         "requests_permission" : "enregistre vos données personnelles dans votre compte MIDATA.",
-
-        // TODO CHANGED
-        // OLD: I don't have an account
-        // NEW: You don't have an account?
         "no_account" : "Vous n'avez pas encore de compte?",
-
-        // TODO CHANGED
-        // OLD: undefined
-        // NEW: You have a MIDATA account?
         "have_account" : "Avez-vous un compte MIDATA?",
-
-        // TODO CHANGED
-        // OLD: undefined
-        // NEW: Perfect, log in here
         "have_account2" : "Parfait, connectez-vous.",
-
-        // TODO CHANGED
-        // OLD: undefined
-        // NEW: Create Account
         "sign_up_btn" : "S'inscrite",
         "reshares_data" : "L'application peut partager les données auxquelles elle a accès avec des tiers.",
         "allows_user_search" : "Vos nom et adresse e-mail peuvent être consultés par d'autres personnes utilisant cette application.",
@@ -934,10 +892,6 @@
         "shares_group" : "Groupe: {{ group }}",
         "shares_format" : "Format: {{ format }}",
         "shares_content" : "Contenu: {{ content }}",
-
-        // TODO CHANGED
-        // OLD: Enroll in the following study
-        // NEW: I accept the terms of use of the application and to participate in the study
         "confirm_study" : "J’accepte les conditions d’utilisation de l’application et de participer à l’étude"
     },
 

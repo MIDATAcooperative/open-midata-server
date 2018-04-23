@@ -48,7 +48,6 @@
        "not_plugin_owner" : "This is not your plugin"
      },
 
-
      "invalid" : {
        "email" : "Please enter a valid email address",
        "credentials" : "Invalid email address or password.",
@@ -79,7 +78,6 @@
      },
 
      "missing" : {
-
        "credentials" : "Please provide your email address and password.",
        "email" : "Please fill out your email address.",
        "input_field" : "Please fill out this input field.",
@@ -880,7 +878,7 @@
     "no_account" : "You don't have an account?", 
     "have_account" : "You have a MIDATA account?",
     "have_account2" : "Perfect, log in here",
-    "sign_up_btn" : "Create Account",
+    "sign_up_btn" : "Sign up",
     "reshares_data" : "App may share data it has access to to third parties.",
     "allows_user_search" : "Your name and email address may be searched by other people using this app.",
     "requesting_app" : "needs access to your data.",

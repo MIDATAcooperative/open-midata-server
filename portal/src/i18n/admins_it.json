@@ -145,8 +145,6 @@
 
     "admin_stats" : {
         "title" : "Statistiche",
-
-        // TODO NEW: 
         "what" : "",
         "value" : "Conteggio totale",
         "diff_yesterday" : "Diff. a 1 giorno fa",

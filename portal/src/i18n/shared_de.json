@@ -49,7 +49,6 @@
             "not_plugin_owner" : "Dies ist nicht Ihr Plugin"
         },
 
-
         "invalid" : {
             "email" : "Bitte eine gültige E-Mail-Adresse eingeben.",
             "credentials" : "Ungültige E-Mail-Adresse oder Kennwort!",
@@ -80,7 +79,6 @@
         },
 
         "missing" : {
-
             "credentials" : "Bitte Ihre E-Mail-Adresse und Kennwort eingeben.",
             "email" : "Geben Sie bitte Ihre E-Mail-Adresse ein.",
             "input_field" : "Füllen Sie bitte dieses Eingabefeld aus.",
@@ -496,10 +494,6 @@
     "registration" : {
         "sign_up" : "Registrierung",
         "mandantory_fields" : "Bitte füllen Sie die folgenden Felder aus, die mit einem Sternchen (*) gekennzeichneten Felder sind Pflichtfelder.",
-
-        // TODO CHANGED
-        // OLD: Password must be at least 8 characters long. (letters and digits)
-        // NEW: Password must be at least 8 characters long (letters and digits).
         "password_policy" : "Das Kennwort muss mindestens 8 Zeichen lang sein (Buchstaben und Ziffern).",
         "email" : "E-Mail",
         "password" : "Kennwort",
@@ -540,25 +534,9 @@
         "hide_optional" : "Optionale Felder verstecken",
 
         "welcome_title" : "Willkommen",
-
-        // TODO CHANGED
-        // OLD: Your account has been created. We have send you a welcome email to your email address.
-        // NEW: Your MIDATA account has just been created. A confirmation email has been sent to you.
         "welcome_text1" : "Ihr MIDATA-Konto wurde gerade erstellt. Eine Bestätigungs-E-Mail wurde Ihnen gesendet.",
-
-        // TODO CHANGED
-        // OLD: Please klick on the confirmation link in the email to confirm that your email address is correct.
-        // NEW: Please click on the link in the email within 24 hours to complete your registration.
         "welcome_text2" : "Bitte klicken Sie auf den Link in der E-Mail innert 24 Stunden, um Ihre Registrierung abzuschliessen.",
-
-        // TODO CHANGED
-        // OLD: undefined
-        // NEW: If you should not receive the email within the next 30 minutes, please check your spam filter.
         "welcome_text3" : "Sollten Sie die E-Mail nicht innerhalb der nächsten 30 Minuten erhalten, überprüfen Sie bitte Ihren Spam-Filter.",
-
-        // TODO CHANGED
-        // OLD: I will do it
-        // NEW: Go on
         "welcome_btn" : "Fortsetzen"
     },
 
@@ -897,31 +875,11 @@
     },
 
     "oauth2" : {
-
-        // TODO CHANGED
-        // OLD: requests the permission to access your personal data.
-        // NEW: stores your personal data in your MIDATA account.
         "requests_permission" : "speichert Ihre persönlichen Daten in Ihrem MIDATA-Konto.",
-
-        // TODO CHANGED
-        // OLD: I don't have an account
-        // NEW: You don't have an account?
         "no_account" : "Sie besitzen noch kein Konto?",
-
-        // TODO CHANGED
-        // OLD: undefined
-        // NEW: You have a MIDATA account?
         "have_account" : "Sie besitzen ein MIDATA Konto?",
-
-        // TODO CHANGED
-        // OLD: undefined
-        // NEW: Perfect, log in here
         "have_account2" : "Perfekt, melden Sie sich an",
-
-        // TODO CHANGED
-        // OLD: undefined
-        // NEW: Create Account
-        "sign_up_btn" : "Konto erstellen",
+        "sign_up_btn" : "Registrieren",
         "reshares_data" : "Die Applikation darf Daten, auf die sie Zugriff hat, an Dritte weitergeben.",
         "allows_user_search" : "Ihr Name und Ihre E-Mail-Adresse können von anderen Personen, die diese Applikation verwenden, durchsucht werden.",
         "requesting_app" : "benötigt Zugriff auf Ihre Daten.",
@@ -934,10 +892,6 @@
         "shares_group" : "Gruppe: {{ group }}",
         "shares_format" : "Format: {{ format }}",
         "shares_content" : "Inhalt: {{ content }}",
-
-        // TODO CHANGED
-        // OLD: Enroll in the following study
-        // NEW: I accept the terms of use of the application and to participate in the study
         "confirm_study" : "Ich akzeptiere die Nutzungsbedingungen der Applikation und die Teilnahme an der Studie"
     },
 
