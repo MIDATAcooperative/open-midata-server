@@ -547,7 +547,16 @@
         "remember_me" : "Angemeldet bleiben",
         "sign_in_btn" : "Anmelden",
         "forgot_your_password" : "Kennwort vergessen?",
-        "login_btn" : "Anmelden"
+        "login_btn" : "Anmelden",
+    
+        "info1" : "Liebe Studienteilnehmerin, Lieber Studienteilnehmer",
+        "info2" : "Sie haben bereits ein MIDATA-Konto, melden Sie sich mit Ihrer E-Mail-Adresse und ihrem Kennwort an.",
+        "info3" : "Ihr persönliches Konto gibt Ihnen einen Überblick über Ihre Studienteilnahme.",
+        "info4" : "Liebe Besucherin, lieber Besucher",
+        "info5" : "Sie haben noch kein MIDATA-Konto und nehmen an keiner Studie teil?",
+        "info6" : "Machen Sie beim Projekt",
+        "info6b" : "Ally Science",
+        "info6c" : "mit!"
     },
 
     "lostpw" : {
