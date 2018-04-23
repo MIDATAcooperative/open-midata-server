@@ -79,7 +79,6 @@
         },
 
         "missing" : {
-
             "credentials" : "Veuillez saisir votre adresse e-mail et mot de passe.",
             "email" : "Veuillez saisir votre adresse e-mail",
             "input_field" : "Veuillez compléter ce champ de saisie.",
@@ -881,7 +880,6 @@
         "have_account" : "Avez-vous un compte MIDATA?",
         "have_account2" : "Parfait, connectez-vous.",
         "sign_up_btn" : "S'inscrite",
-
         "reshares_data" : "L'application peut partager les données auxquelles elle a accès avec des tiers.",
         "allows_user_search" : "Vos nom et adresse e-mail peuvent être consultés par d'autres personnes utilisant cette application.",
         "requesting_app" : "désire accéder à vos données.",
