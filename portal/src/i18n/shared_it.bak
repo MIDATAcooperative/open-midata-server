@@ -11,13 +11,13 @@
 
    "navbar" : {
 	  "toggle_navigation": "Toggle navigation",	 
-	  "login" : "Login",
+	  "login" : "Log in",
 	  "sign_up" : "Sign Up",
-	  "sign_out" : "Sign out",
+	  "sign_out" : "Log out",
 	  "edit_profile" : "Edit Profile",
 	  "app_count" : "Authorized apps",
 	  "study_count" : "Studies enrollments",
-	  "me" : "Me",
+	  "me" : "Dashboard",
 	  "view" : "View",
       "overview" : "Overview",
 	  "messages" : "Messages",
@@ -37,7 +37,7 @@
      "noconsent" : "No active consent that allows to add data for target person.",
      "unsupported" : "Operation not supported",
      "notrialuser_title" : "Full membership required!",
-     "notrialuser_detail" : "In order to use this feature you need to complete your registration. Request a written copy of the AGB and return it signed. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
+     "notrialuser_detail" : "In order to use this feature you need to complete your registration. Request a written copy of the General Terms and Conditions and send it signed back to MIDATA. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
      "mustbemember_title" : "MIDATA cooperative membership required!",
      "mustbemember_detail" : "In order to use this feature you must be member of the MIDATA cooperative. Click on your username on the top right and check the 'Account Status' section for more information.",
      "notauthorized" : {
@@ -87,7 +87,7 @@
        "passphrase" : "Please provide your passphrase.",
        "groupsystem" : "Group system must be provided.",
        "token" : "Missing or bad token.",
-       "agb" : "Terms and conditions not accepted.",
+       "agb" : "General Terms and Conditions not accepted.",
        "privacypolicy" : "Privacy policy must be accepted.",
        "study_accept" : "Study participation must be accepted.",
        "study_group" : "Participant must first be assigned to a group.",
@@ -121,9 +121,9 @@
 
      "blocked" : {
        "user" : "User is not allowed to log in. Contact support@midata.coop for help.",
-       "password1" : "Too many bad login attempts. Wait 1 minute before next attempt.",
-       "password5" : "Too many bad login attempts. Wait 5 minutes before next attempt.",
-       "password60" : "Too many bad login attempts. Wait 1 hour before next attempt.",
+       "password1" : "Too many missed login attempts. Please wait 1 minute before next attempt.",
+       "password5" : "Too many missed login attempts. Please wait 5 minutes before next attempt.",
+       "password60" : "Too many missed login attempts. Please wait 1 hour before next attempt.",
        "participation" : "Account holder is not allowed to participate in study.",
        "consent" : "The consent for using this app has been revoked. To reenable the app, delete the rejected or expired consent on the MIDATA portal.",
        "app" : "You are allowed to use this app on a maximum of 10 devices. Please delete unused consents on the MIDATA portal." 
@@ -209,7 +209,7 @@
 	   "ADMIN_ACCOUNT_CHANGE" : "Account changed by an administrator",
 	   "ACCOUNT_DELETED" : "Account deleted",
 	   "INTERNAL_COMMENT" : "Internal Comment",
-	   "TERMS_OF_USE_AGREED" : "Agreed to terms of use",
+	   "TERMS_OF_USE_AGREED" : "Agreed to General Terms and Conditions",
 	   "user-registration" : "User sign up",
 	   "110122" : "Login",
 	   "user-password-change" : "Password changed",
@@ -252,7 +252,7 @@
        "contract-requested" : "Contract requested by user",
        "contract-send" : "Contract send to user",
        "internal-comment" : "Administrator's comment",
-       "user-terms-of-use-agreed" : "Agreed to terms of use",
+       "user-terms-of-use-agreed" : "Agreed to General Terms and Conditions",
        "audit-log-used" : "Audit Log consulted",	   
 	   "added-as-team-member" : "Added as team member",
 	   "updated-role-in-team" :  "Updated role in team",
@@ -369,7 +369,7 @@
 	   "NEW" : "New"
 	 },
 	 "frequency" : {
-	   "ONCE" : "Einmalig",
+	   "ONCE" : "Once",
 	   "DAILY" : "Daily",
 	   "WEEKLY" : "Once a week",
 	   "MONTHLY" : "Once a month",
@@ -494,7 +494,8 @@
 
   "registration" : {
     "sign_up" : "Sign Up",
-    "mandantory_fields" : "Please fill in the required information below (fields marked with an asterisk * are mandatory)",
+    "mandantory_fields" : "Please fill in the information below, fields marked with an asterisk (*) are mandatory.",
+    "password_policy" : "Password must be at least 8 characters long (letters and digits).",
     "email" : "EMail",
     "password" : "Password",
     "password_repetition" : "Repeat Password",
@@ -516,22 +517,28 @@
     "mobile_phone" : "Mobile Phone",
     "coach" : "Contact person MIDATA",
     "reason" : "Purpose of Registration*",
-    "agb" : "MIDATA Terms",
-    "agb4" : "I agree to MIDATA's terms of use",    
+    "agb" : "MIDATA Terms",     
     "study" : "Research",    
     "agb2" : "I accept the",
-    "agb3" : "Terms and Conditions",
-    "privacypolicy2" : "I accept the",
-    "privacypolicy3" : "Privacy Policy",
-    "privacypolicy4" : "I agree to MIDATA's privacy terms",
+    "agb3" : "General Terms and Conditions",
+    "privacypolicy2" : "and the",
+    "privacypolicy3" : "Privacy Policy",    
     "app_agb" : "App Terms",
     "app_agb2" : "I accept the",
-    "app_agb3" : "App Terms and Conditions",
-    "app_agb4" : "I agree to the App Terms and Conditions",
+    "app_agb3" : "App General Terms and Conditions",    
     "study_agb" : "Study Terms",
-    "sign_up_btn" : "create account",
+    "sign_up_btn" : "Create Account",
     "unlock_code" : "Unlock Code",
-    "already_have_account" : "I already have an account"
+    "already_have_account" : "I already have an account",
+    "more" : "Have a few more seconds to spare? We'd be happy if you could give us a bit more details about you ☺️",
+    "generous" : "I'm feeling generous today, show me the fields!",
+    "hide_optional" : "Hide optional fields",
+    
+    "welcome_title" : "Welcome",
+    "welcome_text1" : "Your MIDATA account has just been created. A confirmation email has been sent to you.",
+    "welcome_text2" : "Please click on the link in the email to complete your registration.",
+    "welcome_text3" : "If you should not receive the email within the next 30 minutes please check your spam filter.",
+    "welcome_btn" : "I will do it" 
   },
 
   "login" : {
@@ -727,7 +734,7 @@
       "mobile" : "MIDATA Mobile App",
       "research" : "Research Dashboard",
       "sandbox" : "Workspace",
-      "me" : "Me Page",
+      "me" : "Personal Dashboard",
       "config" : "Config Dashboard",
 	  "mydata" : "My Data Dashboard",
 	  "social" : "Social Dashboard",
@@ -766,7 +773,7 @@
     "title" : "Consent",
     "owner" : "Owner of Consent",
     "name" : "Name of Consent",
-    "date_of_creation" : "Consent created at",
+    "date_of_creation" : "Consent created on",
     "type" : "Type of Consent",
     "status" : "Status of Consent",
     "people" : "With which persons(s) do you want to share data?",
@@ -869,13 +876,13 @@
   },
 
   "oauth2" : {
-    "requests_permission" : "requests the permission to access your personal data.",
+    "requests_permission" : "stores your personal data in your MIDATA account. Please log in or sign up if you do not already have an account.",
     "no_account" : "I don't have an account",  
     "reshares_data" : "App may share data it has access to to third parties.",
     "allows_user_search" : "Your name and email address may be searched by other people using this app.",
     "requesting_app" : "needs access to your data.",
     "sign_in" : "MIDATA login for:",
-    "sign_in_btn" : "Login",
+    "sign_in_btn" : "Log in",
     "device" : "Device: {{ device}}",
     "please_confirm" : "Please confirm the activation of the application using the MIDATA portal, then retry. Consent title is: {{ consent }}",
     "confirm_btn" : "Confirm Access",
@@ -883,7 +890,7 @@
     "shares_group" : "Group: {{ group }}",
     "shares_format" : "Format: {{ format }}",
     "shares_content" : "Content: {{ content }}",
-    "confirm_study" : "Enroll in the following study"
+    "confirm_study" : "I accept the terms of use of the application and to participate in the study"
   },
 
   "dashboard" : {
@@ -1078,6 +1085,22 @@
     "none" : "None",
     "change_btn" : "Change",
     "success" : "Email address successfully changed!"
+  },
+  
+  "member_user" : {
+    "account_status" : "Account Status",
+	"studyparticipant" : "Your account has been set up for participation in a study. Functionality is limited. You may upgrade your user account to a full account.",
+	"appuser" : "Your account has been registered by an external application. Functionality is limited. You may upgrade your user account to a full account.",
+	"memberofcooperative" : "You are a member of the MIDATA cooperative.",
+	"nonmemberuser" : "You have a full user account but you are no member of the MIDATA cooperative.",
+	"agb_not_requested" : "By clicking on the 'Request Contract' button, the General Terms and Conditions (T&Cs) and the contract will be sent to you by letter. Please return the signed T&Cs to convert this trial account into a full account.",
+	"agb_requested" : "You have requested the General Terms and Conditions and the contract. Your request is being processed by the MIDATA cooperative.",
+	"agb_printed" : "The General Terms and Conditions and contract you have asked for should arrive in the next days.",
+	"agb_signed" : "You have signed the General Terms and Conditions.",
+	"confirmed" : "Your postal address has been confirmed.",
+	"entercode" : "The letter sent to you contains a registration code. Please enter your code here once you have received it:",
+	"email_unvalidated" : "Your email address has not been validated yet. Please click on the link in the validation email you received!", 
+	"request_membership_btn" : "Request Contract"						
   },
   
   "-1" : "unknown"

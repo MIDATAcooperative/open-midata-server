@@ -5,7 +5,7 @@
         "research_organization" : "Organisation de recherche",
         "name" : "Nom",
         "description" : "Description",
-        "research_user" : "Utilisateur"
+        "research_user" : "Chercheur"
     },
 
     "researcher_login" : {

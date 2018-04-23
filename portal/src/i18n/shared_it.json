@@ -1,292 +1,173 @@
 {
 
     "footer" : {
-
         "copyright" : "©{{now}} ETH Zurigo",
-
         "homepage" : "Pagina iniziale MIDATA",
-
         "portals" : "Portali Midata:",
-
         "for_members" : "Per i titolari di account",
-
         "for_researchers" : "Per le organizzazioni di ricerca",
-
         "for_providers" : "Per i fornitori di prestazioni sanitarie",
-
         "for_developers" : "Per gli sviluppatori"
     },
 
     "navbar" : {
-
         "toggle_navigation" : "Attiva/Disattiva navigazione",
-
-        "login" : "Accesso",
-
-        "sign_up" : "Registrazione",
-
-        "sign_out" : "Uscita",
-
+        "login" : "Accedi",
+        "sign_up" : "Iscriviti",
+        "sign_out" : "Disconnetti",
         "edit_profile" : "Modifica profilo",
-
         "app_count" : "Applicazioni autorizzate",
-
         "study_count" : "Iscrizioni agli studi",
-
-        "me" : "I miei dati",
-
+        "me" : "Pannello",
         "view" : "Visualizzazione",
-
         "overview" : "Panoramica",
-
         "messages" : "Messaggi",
-
         "my_data" : "I miei dati",
-
         "consents" : "Condivisione",
-
         "research" : "Ricerca",
-
         "apps" : "Applicazioni",
-
         "config" : "Configurazione",
-
         "help" : "Aiuto"
     },
 
     "error" : {
-
         "offline" : "Il backend è attualmente offline! Se il problema persiste contattare support@midata.coop.",
-
         "internal" : "Si è verificato un errore interno. Se il problema persiste contattare support@midata.coop.",
-
         "internal_db" : "Si è verificato un errore interno del database. Se il problema persiste contattare support@midata.coop.",
-
         "relogin" : "Accedere nuovamente",
-
         "noconsent" : "Non esiste alcun consenso attivo che consenta di aggiungere dati per la persona di destinazione.",
-
         "unsupported" : "Operazione non supportata",
-
         "notrialuser_title" : "È richiesta l'iscrizione completa in qualità di membro!",
-
-        "notrialuser_detail" : "Per utilizzare questa funzionalità, è necessario completare la propria registrazione. Richiedere una copia scritta dei Termini e Condizioni generali e restituirla firmata. Si riceverà inoltre un codice di conferma per verificare il proprio indirizzo postale. Se si desidera controllare lo stato del proprio account fare clic sul proprio nome utente in alto a destra e selezionare la sezione 'Stato account'.",
-
+        "notrialuser_detail" : "Per utilizzare questa funzionalità, è necessario completare la propria registrazione. Richiedere una copia scritta dei Condizioni generali di contratto e restituirla firmata a MIDATA. Si riceverà inoltre un codice di conferma per verificare il proprio indirizzo postale. Se si desidera controllare lo stato del proprio account fare clic sul proprio nome utente in alto a destra e selezionare la sezione 'Stato account'.",
         "mustbemember_title" : "È richiesta l'iscrizione a MIDATA Cooperativa!",
-
         "mustbemember_detail" : "Per utilizzare questa funzione è necessario essere membri di MIDATA Cooperativa. Per ulteriori informazioni fare clic sul proprio nome utente in alto a destra e selezionare la sezione 'Stato account'.",
         "notauthorized" : {
-
             "action" : "Non si è autorizzati a eseguire questa azione",
-
             "fields" : "Non si è autorizzati a interrogare i campi forniti",
-
             "account" : "Non si è autorizzati ad accedere a questo account",
-
             "study" : "Non si è autorizzati ad accedere a questo studio",
-
             "not_plugin_owner" : "Questo non è il suo plugin"
         },
 
-
         "invalid" : {
-
             "email" : "Inserire un indirizzo e-mail valido",
-
             "credentials" : "Indirizzo e-mail o password errati.",
-
             "credentials_hint" : "Indirizzo e-mail o password errati. Stai tentando di accedere come titolare dell'account. Sei ",
-
             "password_repetition" : "La password e la ripetizione della password non coincidono!",
-
             "passphrase_repetition" : "La frase password e la ripetizione della frase password non coincidono!",
-
             "passphrase_old" : "La vecchia frase password non è corretta.",
-
             "password_old" : "La vecchia password non è corretta.",
-
             "confirmation_code" : "Codice di conferma errato",
-
             "code" : "Codice sconosciuto per lo studio.",
-
             "appcode" : "Codice sconosciuto per l'applicazione.",
-
             "status_transition" : "Modifica stato non valida",
-
             "date" : "Valore non valido per il campo dati",
-
             "day" : "Inserire un giorno del mese valido (1 - 31)",
-
             "year" : "Inserire un anno valido (4 cifre)",
-
             "month" : "Scegliere un mese valido",
-
             "string" : "Il campo deve essere di tipo a stringa",
-
             "token" : "Token di autorizzazione non valido. Accedere nuovamente.",
-
             "json" : "Immesso JSON non valido",
-
             "passphrase" : "Frase password errata",
-
             "passcode" : "Codice password errato",
-
             "plugin" : "Il plugin è destinato a un ruolo diverso",
-
             "unlock_code" : "Codice di sblocco errato",
-
             "access_query" : "Il filtro di accesso dati deve essere ristretto a 'contenuto' o 'gruppo'!",
-
             "sharing" : "Il filtro di accesso dati contiene tipi di dati esclusi dalla configurazione dello studio.",
-
             "anonymous" : "Lo studio può essere anonimo soltanto se non è autorizzato nessuno ad accedere a dati presentati senza pseudonimi.",
-
             "url" : "URL non valido"
         },
 
         "missing" : {
 
-
             "credentials" : "Fornire il proprio indirizzo e-mail e password.",
-
             "email" : "Inserire l'indirizzo e-mail.",
-
             "input_field" : "Compilare questo campo di immissione.",
-
             "newpassword" : "Inserire una nuova password!",
-
             "passphrase" : "Immettere la frase password.",
-
             "groupsystem" : "È obbligatorio immettere il sistema del gruppo.",
-
             "token" : "Token mancante o errato.",
-
-            "agb" : "Termini e condizioni non accettate.",
-
+            "agb" : "Condizioni generali di contratto non accettate.",
             "privacypolicy" : "Le politiche sulla privacy devono essere accettate.",
-
             "study_accept" : "La partecipazione allo studio deve essere accettata.",
-
             "study_group" : "Il partecipante deve dapprima essere assegnato a un gruppo.",
-
             "confirmation" : "Per prima cosa è richiesta la conferma dell'utente.",
-
             "file" : "Nessun file selezionato per il caricamento"
         },
 
         "unknown" : {
-
             "plugin" : "Plugin sconosciuto",
-
             "app" : "Applicazione sconosciuta",
-
             "space" : "Lo spazio richiesto non esiste più.",
-
             "consent" : "Consenso non trovato",
-
             "study" : "Lo studio non esiste.",
-
             "content" : "Il tipo di contenuto del record non è registrato nella piattaforma.",
-
             "group" : "Nome gruppo sconosciuto",
-
             "code" : "Codice sconosciuto",
-
             "record" : "Record sconosciuto",
-
             "user" : "L'utente non esiste",
-
             "participation" : "Partecipazione allo studio non trovata."
         },
 
         "exists" : {
-
             "user" : "Una persona è già registrata con questo indirizzo e-mail.",
-
             "member" : "Una persona è già registrata con questo indirizzo e-mail.",
-
             "provider" : "Un fornitore di prestazioni sanitarie con questo nome esiste già.",
-
             "research" : "Un'organizzazione di ricerca con questo nome esiste già.",
-
             "passcode" : "Scegliere un codice password diverso!",
-
             "plugin" : "Un plugin con lo stesso nome esiste già.",
-
             "study" : "Uno studio con questo nome esiste già."
         },
 
         "blocked" : {
-
             "user" : "L'utente non è autorizzato ad accedere. Contattare support@midata.coop per ottenere assistenza.",
-
-            "password1" : "Troppi tentativi di accesso errati. Attendere 1 minuto prima di tentare nuovamente.",
-
-            "password5" : "Troppi tentativi di accesso errati. Attendere 5 minuti prima di tentare nuovamente.",
-
-            "password60" : "Troppi tentativi di accesso errati. Attendere 1 ora prima di tentare ad accedere nuovamente.",
-
+            "password1" : "Troppi tentativi di mancato accesso. Attendere 1 minuto prima di tentare nuovamente.",
+            "password5" : "Troppi tentativi di mancato accesso. Attendere 5 minuti prima di tentare nuovamente.",
+            "password60" : "Troppi tentativi di mancato accesso. Attendere 1 ora prima di tentare nuovamente.",
             "participation" : "Il titolare dell'account non è autorizzato a partecipare allo studio.",
-
             "consent" : "Il consenso per utilizzare questa applicazione è stato revocato. Per riattivare l'applicazione, eliminare il consenso rifiutato o scaduto sul portale MIDATA.",
-
             "app" : "Si è autorizzati a utilizzare questa applicazione su un numero massimo di 10 dispositivi. Eliminare i consensi non utilizzati sul portale MIDATA."
         },
 
         "closed" : {
-
             "study" : "Lo studio non sta cercando partecipanti."
         },
 
         "notvalidated" : {
-
             "study" : "Lo studio deve essere dapprima convalidato."
         },
 
         "tooshort" : {
-
             "password" : "Le password devono essere composte da almeno 8 caratteri.",
-
             "passphrase" : "Le frasi password devono essere composte da almeno 8 caratteri."
         },
 
         "tooweak" : {
-
             "password" : "Le password devono contenere lettere maiuscole/minuscole, numeri e caratteri speciali.",
-
             "passphrase" : "Le frasi password devono contenere lettere maiuscole/minuscole, numeri e caratteri speciali."
         },
 
         "concurrent" : {
-
             "update" : "Aggiornamento concomitante. Riprovare."
         },
 
         "expired" : {
-
             "token" : "Questo token di attivazione è già scaduto. Richiederne uno nuovo.",
-
             "tokenresent" : "Questo token di attivazione è già scaduto. Un nuovo token è stato appena inviato al tuo indirizzo e-mail. Conferma il tuo indirizzo e-mail entro 24 ore utilizzando il nuovo token.",
-
             "code" : "Questo codice di partecipazione è scaduto."
         },
 
         "already_done" : {
-
             "email_verification" : "L'e-mail è già stata verificata."
         },
 
         "no_alter" : {
-
             "consent" : "I consensi per gli studi non possono essere modificati.",
-
             "study" : "La configurazione può essere modificata solamente fintanto che lo studio è nella fase bozza.",
-
             "group" : "Un gruppo di partecipanti può essere modificato solamente se lo studio non è attivato o se nessun partecipante ha ancora accettato."
         },
 
         "too_large" : {
-
             "file" : "Il file è troppo pesante (massimo 1 MB)."
         }
 
@@ -294,1627 +175,937 @@
 
     "enum" : {
         "gender" : {
-
             "MALE" : "maschile",
-
             "FEMALE" : "femminile",
-
             "OTHER" : "altro"
         },
         "country" : {
-
             "CH" : "Svizzera",
-
             "DE" : "Germania",
-
             "NL" : "Olanda",
-
             "GB" : "Regno Unito"
         },
         "eventtype" : {
-
             "CODE_ENTERED" : "Codice inserito",
-
             "PARTICIPATION_REQUESTED" : "Partecipazione richiesta",
-
             "NO_PARTICIPATION" : "Nessuna partecipazione",
-
             "PARTICIPATION_REJECTED" : "Partecipazione rifiutata",
-
             "PARTICIPATION_APPROVED" : "Partecipazione approvata",
-
             "GROUP_ASSIGNED" : "Gruppo assegnato",
-
             "VALIDATION_REQUESTED" : "Convalida richiesta",
-
             "STUDY_VALIDATED" : "Studio convalidato",
-
             "STUDY_REJECTED" : "Studio rifiutato",
-
             "PARTICIPANT_SEARCH_STARTED" : "Ricerca del partecipante iniziata",
-
             "PARTICIPANT_SEARCH_CLOSED" : "Ricerca del partecipante chiusa",
-
             "CODES_GENERATED" : "Codici generati",
-
             "STUDY_STARTED" : "Studio iniziato",
-
             "STUDY_FINISHED" : "Studio terminato",
-
             "STUDY_ABORTED" : "Studio interrotto",
-
             "REQUIRED_INFORMATION_CHANGED" : "Informazioni richieste modificate",
-
             "STUDY_SETUP_CHANGED" : "Configurazione studio modificata",
-
             "MEMBERSHIP_REQUEST" : "Iscrizione richiesta",
-
             "CONTACT_ADDRESS_CHANGED" : "Indirizzo modificato",
-
             "CONTRACT_SEND" : "Contratto inviato",
-
             "ADMIN_ACCOUNT_CHANGE" : "Account modificato da un amministratore",
-
             "ACCOUNT_DELETED" : "Account eliminato",
-
             "INTERNAL_COMMENT" : "Commento interno",
-
-            "TERMS_OF_USE_AGREED" : "Accettati i termini e condizioni d'uso",
-
+            "TERMS_OF_USE_AGREED" : "Accettati i Condizioni generali di contratto",
             "user-registration" : "Registrazione utente",
-
             "110122" : "Accesso",
-
             "user-password-change" : "Password modificata",
-
             "user-passphrase-change" : "Frase password modificata",
-
             "user-address-change" : "Indirizzo dell'utente modificato",
-
             "user-email-change" : "E-mail dell'utente modificata",
-
             "user-status-change" : "Stato dell'account utente modificato",
-
             "user-email-confirmed" : "E-mail confermata dall'utente",
-
             "user-email-rejected" : "E-mail rifiutata dall'utente",
-
             "user-account-change-by-admin" : "Account utente modificato dall'amministratore",
-
             "user-account-deleted" : "Account utente eliminato",
-
             "app-first-use" : "Primo utilizzo dell'applicazione",
-
             "app-rejected" : "Autorizzazione dell'applicazione rifiutata",
-
             "app-deleted" : "Autorizzazione dell'applicazione eliminata",
-
             "consent-create" : "Consenso creato",
-
             "consent-persons-change" : "Destinatari del consenso modificati",
-
             "consent-change" : "Consenso modificato",
-
             "consent-approved" : "Consenso approvato",
-
             "consent-rejected" : "Consenso rifiutato",
-
             "consent-deleted" : "Consenso eliminato",
-
             "study-participation-requested" : "Partecipazione allo studio richiesta",
-
             "study-participation-member-rejected" : "Partecipazione allo studio rifiutata dal membro",
-
             "study-participation-research-rejected" : "Partecipazione allo studio rifiutata dal ricercatore",
-
             "study-participation-member-retreat" : "Il titolare di account si è ritirato dalla partecipazione allo studio",
-
             "study-participation-approved" : "Partecipazione allo studio approvata",
-
             "study-participation-group-assigned" : "Gruppo di partecipazione allo studio assegnato",
-
             "study-validation-requested" : "Convalida dello studio richiesta",
-
             "study-validated" : "Studio convalidato",
-
             "study-rejected" : "Studio rifiutato",
-
             "study-participant-search-started" : "Ricerca del partecipante allo studio iniziata",
-
             "study-participant-search-closed" : "Ricerca del partecipante allo studio chiusa",
-
             "study-started" : "Studio iniziato",
-
             "study-finished" : "Studio terminato",
-
             "study-aborted" : "Studio interrotto",
-
             "110105" : "Intero studio eliminato",
-
             "study-setup-changed" : "Studio modificato",
-
             "data-deletion" : "Dati eliminati",
-
             "data-export" : "Dati esportati",
-
             "data-import" : "Importazione dati",
-
             "contract-requested" : "Contratto richiesto dall'utente",
-
             "contract-send" : "Contratto inviato all'utente",
-
             "internal-comment" : "Commento dell'amministratore",
-
-            "user-terms-of-use-agreed" : "Accettati i termini e condizioni d'uso",
-
+            "user-terms-of-use-agreed" : "Accettati i Condizioni generali di contratto",
             "audit-log-used" : "Consultato il registro di revisione",
-
             "added-as-team-member" : "Aggiunto come membro del team",
-
             "updated-role-in-team" : "Ruolo aggiornato nel team",
-
             "removed-from-team" : "Rimosso dal team"
         },
         "userfeature" : {
-
             "EMAIL_ENTERED" : "L'indirizzo e-mail dell'utente deve essere conosciuto nella piattaforma",
-
             "EMAIL_VERIFIED" : "L'indirizzo e-mail dell'utente deve essere stato verificato",
-
             "PHONE_ENTERED" : "Il numero di telefono mobile dell'utente deve essere conosciuto nella piattaforma",
-
             "PHONE_VERIFIED" : "Il numero di telefono mobile dell'utente deve essere stato verificato",
-
             "ADDRESS_ENTERED" : "L'indirizzo postale dell'utente deve essere conosciuto nella piattaforma",
-
             "ADDRESS_VERIFIED" : "L'indirizzo postare dell'utente deve essere stato verificato",
-
             "PASSPORT_VERIFIED" : "La scheda ID degli utenti deve essere stata verificata",
-
             "MIDATA_COOPERATIVE_MEMBER" : "L'utente deve essere membro della cooperativa",
-
             "ADMIN_VERIFIED" : "L'account deve essere stato sbloccato da un amministratore di MIDATA"
         },
         "writepermissiontype" : {
-
             "NONE" : "Non è possibile scrivere alcun dato.",
-
             "UPDATE_EXISTING" : "I dati esistenti possono essere aggiornati.",
-
             "UPDATE_AND_CREATE" : "I dati coperti da consenso possono essere scritti o aggiornati.",
-
             "WRITE_ANY" : "Qualsiasi tipo di dati può essere scritto utilizzando questo consenso."
         },
         "consentstatus" : {
-
             "ACTIVE" : "Attivo",
-
             "EXPIRED" : "Scaduto",
-
             "REJECTED" : "Rifiutato",
-
             "UNCONFIRMED" : "Non confermato",
-
             "FROZEN" : "Congelato"
         },
         "consenttype" : {
-
             "CIRCLE" : "Altri titolari di account",
-
             "EXTERNALSERVICE" : "Applicazione esterna",
-
             "HCRELATED" : "Prestazioni sanitarie",
-
             "HEALTHCARE" : "Dottore/ssa / Ospedale",
-
             "STUDYPARTICIPATION" : "Studio",
-
             "STUDYRELATED" : "Informazioni sullo studio",
-
             "IMPLICIT" : "Invio di messaggi"
         },
         "contractstatus" : {
-
             "NEW" : "Nuovo",
-
             "REQUESTED" : "Contratto richiesto",
-
             "PRINTED" : "Contratto stampato",
-
             "SIGNED" : "Contratto firmato"
         },
         "emailstatus" : {
-
             "REJECTED" : "Rifiutato",
-
             "UNVALIDATED" : "Non ancora confermato",
-
             "VALIDATED" : "Confermato",
-
             "EXTERN_VALIDATED" : "Confermato da terzi"
         },
         "participantsearchstatus" : {
-
             "CLOSED" : "Chiuso",
-
             "PRE" : "Non ancora iniziato",
-
             "SEARCHING" : "Ricerca in corso"
         },
         "participationstatus" : {
-
             "ACCEPTED" : "Partecipazione accettata",
-
             "CODE" : "Codice di partecipazione inserito",
-
             "MATCH" : "Possibile corrispondenza",
-
             "MEMBER_REJECTED" : "Titolare account rifiutato",
-
             "REQUEST" : "Partecipazione richiesta",
-
             "RESEARCH_REJECTED" : "Rifiutato dal ricercatore",
-
             "MEMBER_RETREATED" : "Il partecipante si è ritirato"
         },
         "studyexecutionstatus" : {
-
             "ABORTED" : "Esecuzione interrotta",
-
             "FINISHED" : "Terminato",
-
             "PRE" : "Non ancora iniziato",
-
             "RUNNING" : "Esecuzione in corso"
         },
         "studyvalidationstatus" : {
-
             "DRAFT" : "Bozza (non convalidata)",
-
             "REJECTED" : "Studio rifiutato da MIDATA",
-
             "VALIDATED" : "Lo studio è stato convalidato",
-
             "VALIDATION" : "Convalida in esecuzione"
         },
         "userrole" : {
-
             "ADMIN" : "Amministratore",
-
             "ANY" : "Qualsiasi ruolo",
-
             "DEVELOPER" : "Sviluppatore",
-
             "MEMBER" : "Titolare account",
-
             "PROVIDER" : "Fornitore di prestazioni sanitarie",
-
             "RESEARCH" : "Ricercatore"
         },
         "subuserrole" : {
-
             "DOCTOR" : "Dottore/ssa",
-
             "NURSE" : "Infermiere/a",
-
             "MANAGER" : "Responsabile",
-
             "MONITOR" : "Supervisore",
-
             "USERADMIN" : "Ammin. utente",
-
             "STUDYADMIN" : "Ammin. studio",
-
             "CONTENTADMIN" : "Ammin. contenuti",
-
             "PLUGINADMIN" : "Ammin plugin",
-
             "NEWSWRITER" : "Autore notizie",
-
             "SUPERADMIN" : "Super ammin.",
-
             "TRIALUSER" : "Utente di prova",
-
             "STUDYPARTICIPANT" : "Partecipante allo studio",
-
             "APPUSER" : "Utente applicazione",
-
             "NONMEMBERUSER" : "Titolare account convalidato",
-
             "MEMBEROFCOOPERATIVE" : "Membro della cooperativa"
         },
         "researcherrole" : {
-           
             "SPONSOR" : "Sponsor",
-
             "INVESTIGATOR" : "Sperimentatore",
-
             "AUDITOR" : "Revisore",
-
             "STUDYNURSE" : "Infermiere/a di ricerca",
-
             "MONITOR" : "Supervisore",
-
             "OTHER" : "Altro"
         },
         "userstatus" : {
-
             "ACTIVE" : "Attivo",
-
             "BLOCKED" : "Bloccato",
-
             "DELETED" : "Eliminato",
-
             "NEW" : "Nuovo"
         },
         "frequency" : {
-
             "ONCE" : "Una sola volta",
-
             "DAILY" : "Giornaliero",
-
             "WEEKLY" : "Settimanale",
-
             "MONTHLY" : "Mensile",
-
             "YEARLY" : "Annuale"
         },
         "language" : {
-
             "EN" : "Inglese",
-
             "DE" : "Tedesco",
-
             "IT" : "Italiano",
-
             "FR" : "Francese",
-
             "NL" : "Olandese"
         },
         "month" : {
-
             "01" : "Gen",
-           
             "02" : "Feb",
-          
             "03" : "Mar",
-           
             "04" : "Apr",
-
             "05" : "Mag",
-
             "06" : "Giu",
-
             "07" : "Lug",
-
             "08" : "Ago",
-
             "09" : "Set",
-
             "10" : "Ott",
-          
             "11" : "Nov",
-
             "12" : "Dic"
         },
         "codesystems" : {
-
             "loinc" : "Codice LOINC",
-
             "midata" : "Codice MIDATA",
-
             "fhir" : "Risorsa FHIR",
-
             "snowmed" : "Codice SNOMED CT"
         },
         "tags" : {
-
             "Analysis" : "Analisi",
-
             "Import" : "Importazione",
-
             "Planning" : "Pianificazione",
-
             "Tools" : "Strumenti",
-
             "Protocol" : "Protocollo",
-
             "Available" : "Plugin disponibili"
         },
         "plugintype" : {
-           
             "visualization" : "Plugin",
-
             "create" : "Modulo",
-            
             "oauth1" : "OAuth 1",
-           
             "oauth2" : "OAuth 2",
-
             "mobile" : "Applicazione (Smartphone, Web)"
         }
     },
 
     "common" : {
-
         "back_btn" : "Indietro",
-
         "search_btn" : "Cerca",
-
         "add_btn" : "Aggiungi",
-
         "create_btn" : "Crea",
-
         "change_btn" : "Modifica",
-
         "cancel_btn" : "Annulla",
-
         "view_btn" : "Visualizzazione",
-
         "submit_btn" : "Inoltra",
-
         "delete_btn" : "Elimina",
-
         "or" : "oppure",
-
         "save_ok" : "Salvato con successo",
         "yesno" : {
-
             "true" : "Sì",
-           
             "false" : "No"
         },
         "user" : {
-
             "lastname" : "Cognome",
-
             "firstname" : "Nome",
-
             "zip" : "Codice Post.",
-
             "city" : "Città",
-
             "street" : "Via/Piazza",
-
             "phone" : "Telefono",
-
             "mobile_phone" : "Cellulare",
-
             "email" : "E-mail"
         }
     },
 
     "instance" : {
-
         "purpose" : "Scopo di questa istanza MIDATA",
-
         "access" : "Accesso a questa istanza MIDATA",
-
         "uptime" : "Disponibilità e tempi di inattività",
-
         "data" : "Dati memorizzati in questa istanza MIDATA",
-
         "start" : "Per iniziare, scegliere uno dei portali in alto sulla pagina. Ogni portale è dotato di una pagina di ACCESSO e REGISTRAZIONE.",
 
         "localhost" : {
-
             "name" : "Istanza locale (localhost)",
-
             "intro" : "Questa è un'installazione locale della piattaforma MIDATA, disponibile solamente dal proprio PC.",
-
             "purpose" : "Un'installazione locale può essere utilizzata per contribuire alla piattaforma MIDATA e a scopo di test.",
-
             "access" : "È possibile registrare gli account utente per tutti i quattro portali. Gli account non richiedono la convalida da parte di un amministratore MIDATA. È possibile registrare e utilizzare i propri account ammin.",
-
             "uptime" : "Ogniqualvolta lo esegui, è disponibile solo per te :-)",
-
             "data" : "I dati memorizzati in questa istanza saranno disponibili solamente sul proprio PC locale."
         },
 
         "test" : {
-
             "name" : "Istanza di test (test.midata.coop)",
-
             "intro" : "Questa è un'istanza di test della piattaforma MIDATA.",
-
             "purpose" : "Questa istanza può essere utilizzata per sviluppare e testare nuove applicazioni e plugin per MIDATA in un ambiente sicuro. È inoltre utilizzata per testare nuove versioni del portale e il backend prima che altre istanze siano aggiornate.",
-
             "access" : "Registrare il proprio account di sviluppatore. Dopo la convalida di un amministratore di MIDATA, è possibile registrare utenti di test, ricercatori e fornitori di prestazioni sanitarie senza un'ulteriore convalida.",
-
             "uptime" : "La disponibilità non è garantita. Attendere che gli aggiornamenti dell'istanza avvengano secondo le esigenze. Ove possibile, gli aggiornamenti sono eseguiti tra le 12:00 e le 13:00 ora dell'Europa centrale, tuttavia potrebbero avvenire più di una volta al giorno se si verificano dei problemi.",
-
             "data" : "Su questa istanza memorizzare solo dati di test. Se necessario, i dati possono essere rimossi e gli account eliminati. I record potrebbero danneggiarsi a causa di anomalie. Non esiste un backup dei dati."
         },
 
         "demo" : {
-
             "name" : "Istanza demo (demo.midata.coop)",
-
             "intro" : "Questa è un'istanza dimostrativa della piattaforma MIDATA.",
-
             "purpose" : "Questa istanza può essere utilizzata a scopo dimostrativo e formativo.",
-
             "access" : "È possibile registrare gli account utente per tutti i quattro portali. Gli account devono essere convalidati da un amministratore di MIDATA, prima che siano sbloccati.",
-
             "uptime" : "Questa istanza è aggiornata meno frequentemente dell'istanza test.midata.coop. Il tempo di inattività atteso è una volta la settimana il lunedì tra le 12:00 e le 14:00 ora dell'Europa centrale.",
-
             "data" : "Su questa istanza memorizzare solo dati dimostrativi. Non esiste un backup dei dati."
         },
 
         "ch" : {
-
             "name" : "MIDATA Svizzera (ch.midata.coop)",
-
             "intro" : "Questa è la piattaforma MIDATA per la Svizzera.",
-
             "purpose" : "Questa è la piattaforma MIDATA di produzione per la memorizzazione dei dati relativi a salute e sanità in Svizzera.",
-
             "access" : "I nuovi account utente presentano limitazioni associate alle funzionalità. Gli account dei fornitori di prestazioni sanitarie e di ricerca e sviluppo possono essere utilizzati esclusivamente previa convalida da parte di MIDATA. Account fittizi o di test non sono autorizzati e saranno bloccati.",
-
             "uptime" : "I tempi di inattività verranno preannunciati.",
-
             "data" : "Questa istanza è destinata alla memorizzazione di dati effettivi riguardanti persone reali. I dati sono salvati in backup su base giornaliera."
         }
 
     },
 
     "registration" : {
-
         "sign_up" : "Registrazione",
-
-        "mandantory_fields" : "Inserire le informazioni richieste qui sotto (i campi contrassegnati da un asterisco * sono obbligatori)",
-
+        "mandantory_fields" : "Inserire le informazioni qui sotto, i campi contrassegnati da un asterisco * sono obbligatori.",
+        "password_policy" : "La password deve essere lunga almeno 8 caratteri (lettere e cifre).",
         "email" : "E-mail",
-       
         "password" : "Password",
-
         "password_repetition" : "Ripetere la password",
-
         "firstname" : "Nome",
-
         "lastname" : "Cognome",
-
         "gender" : "Sesso",
-
         "birthday" : "Data di nascita",
-
         "language" : "Lingua preferita",
-
         "day" : "Giorno",
-
         "month" : "Mese",
-
         "year" : "Anno",
-
         "address" : "Indirizzo",
-
         "address_line1" : "Inserire qui il proprio indirizzo",
-
         "address_line2" : "Seconda riga per l'indirizzo",
-
         "city" : "Città",
-
         "zip" : "Codice Postale",
-
         "country" : "Nazione",
-
         "phone" : "Telefono",
-
         "mobile_phone" : "Telefono cellulare",
-
         "coach" : "Persona di contatto MIDATA",
-
         "reason" : "Scopo della registrazione*",
-
-        "agb" : "Termini e Condizioni di MIDATA",
-
-        "agb4" : "Accetto i Termini e Condizioni d'uso di MIDATA",
-
+        "agb" : "Condizioni generali di contratto di MIDATA",
         "study" : "Ricerca",
-
         "agb2" : "Accetto i",
-
-        "agb3" : "Termini e Condizioni",
-
-        "privacypolicy2" : "Accetto le",
-
+        "agb3" : "Condizioni generali di contratto",
+        "privacypolicy2" : "e le",
         "privacypolicy3" : "Politiche sulla privacy",
-
-        "privacypolicy4" : "Accetto i Termini e Condizioni relativi alla privacy di MIDATA",
-
-        "app_agb" : "Termini/Condizioni dell'applicazione",
-
+        "app_agb" : "Condizioni dell'applicazione",
         "app_agb2" : "Accetto i",
-
-        "app_agb3" : "Termini e Condizioni dell'applicazione",
-
-        "app_agb4" : "Accetto i Termini e Condizioni dell'applicazione",
-
-        "study_agb" : "Termini e Condizioni dello studio",
-
-        "sign_up_btn" : "crea account",
-
+        "app_agb3" : "Condizioni generali di contratto dell'applicazione",
+        "study_agb" : "Condizioni dello studio",
+        "sign_up_btn" : "Crea account",
         "unlock_code" : "Codice di sblocco",
+        "already_have_account" : "Ho già un account",
+        "more" : "Avete ancora qualche secondo? Saremmo lieti se poteste fornirci maggiori dettagli su di voi ☺️️",
+        "generous" : "Mi sento generoso oggi, mi mostrano i campi!",
+        "hide_optional" : "Nascondi campi opzionali",
 
-        "already_have_account" : "Ho già un account"
+        "welcome_title" : "Benvenuto",
+        "welcome_text1" : "Il tuo account MIDATA è appena stato creato. Vi è stata inviata un'e-mail di conferma.",
+        "welcome_text2" : "Clicca sul link nell'e-mail entro 24 ore per completare l'iscrizione.",
+        "welcome_text3" : "Se non dovessi ricevere l'e-mail entro i prossimi 30 minuti, controlla il filtro antispam.",
+        "welcome_btn" : "Continuare"
     },
 
     "login" : {
-
         "email_address" : "Indirizzo e-mail",
-      
         "password" : "Password",
-
         "study" : "Studio",
-
         "remember_me" : "Ricordami",
-
         "sign_in_btn" : "Accedi",
-
         "forgot_your_password" : "Dimenticata la password?",
-
         "login_btn" : "Accedi"
     },
 
     "lostpw" : {
-
         "title" : "Assistenza per la password - Passo 1",
-
         "description" : "Inserisci l'indirizzo e-mail associato al tuo account, quindi fai clic su Continua. Ti invieremo un link alla pagina da cui potrai creare facilmente una nuova password.",
-
         "email" : "Indirizzo e-mail",
-
         "continue" : "Continua",
-
         "success" : "Ti abbiamo inviato un'e-mail con le istruzioni su come resettare la password."
     },
 
     "setpw" : {
-
         "title" : "Assistenza per la password - Passo 2",
-
         "new_password" : "Nuova password",
-
         "new_password_repeat" : "Ripetizione password",
-
         "enter_new" : "Inserire una nuova password per il proprio account.",
-
         "set_new_btn" : "Impostare la nuova password",
-
         "success" : "Hai impostato con successo una nuova password per il tuo account.",
-
         "back_to_login" : "Tornare alla pagina di accesso."
     },
 
     "passphrase" : {
-
         "title" : "Inserire la frase password",
-
         "description" : "Il tuo account è protetto da una frase password.",
-
         "passphrase" : "Frase password",
-
         "continue_btn" : "Continua",
-
         "if_lost" : "Se hai perso la frase password, contatta support@midata.coop"
     },
 
     "postregister" : {
-
         "title" : "Benvenuto in MIDATA",
-
         "email_confirmed" : "L'e-mail è stata confermata?",
-
         "contract_signed" : "Il contratto è stato firmato e restituito?",
-
         "resent_success" : "L'e-mail di benvenuto è stata reinviata.",
-
         "address_success" : "L'indirizzo è stato confermato.",
-
         "code_entered" : "Il codice di conferma è stato inserito?",
-
         "email_instructions" : "Il tuo indirizzo e-mail deve essere confermato. Una e-mail di attivazione è stata inviata al tuo account. Fai clic sul link contenuto in questa e-mail per confermare l'indirizzo e-mail.",
-
         "email_code" : "Per praticità, puoi inserire il codice dell'e-mail qui:",
-
         "code" : "Codice",
-
         "resend_btn" : "Reinviare l'e-mail",
-
         "retry_btn" : "Ritentare l'accesso",
-
         "contract_instructions" : "Il contratto è stato inviato al tuo indirizzo postale. Ti invitiamo a restituirlo firmato a MIDATA.",
-
         "pilot_phase" : "Un amministratore MIDATA verificherà e sbloccherà il tuo account. Riceverai un avviso quando l'account è stato sbloccato.",
-
         "code_intructions" : "Una lettera con il codice di conferma sarà inviata al tuo indirizzo postale. Inserisci questo codice di conferma per accedere alla piattaforma.",
-
         "code_done" : "Hai fornito il codice di conferma. Potrai accedere dopo che il contratto firmato sarà arrivato a MIDATA.",
-
         "enter_now_btn" : "Inserire ora",
-
         "email_success" : "L'indirizzo e-mail è stato confermato.",
-
         "address_entered" : "Per utilizzare questo servizio è richiesto il tuo indirizzo postale; ti invitiamo a inserirlo.",
-
         "phone_entered" : "Per utilizzare questo servizio è richiesto un numero di telefono cellulare; ti invitiamo a inserirlo.",
-
         "admin_verified" : "Il tuo account deve essere sbloccato da un amministratore MIDATA. Riprova più tardi. Se trascorse più di 24 ore il tuo account non è stato sbloccato, contatta MIDATA."
     },
 
     "changepassphrase" : {
-
         "title" : "Modificare la frase password",
-
         "description" : "La frase password è una protezione aggiuntiva (crittografia aggiuntiva) dei propri dati. Non è memorizzata sui nostri server. Si deve inserire la frase password a ogni accesso, per consentire la decrittazione dei propri dati. Se si perde la frase password, non si sarà più in grado di accedere ai propri dati!",
-
-        "if_unprotected" : "Se il proprio account non è ancora protetto
-da una frase password lasciare vuoto il campo 'Vecchia frase password'.",
-
+        "if_unprotected" : "Se il proprio account non è ancora protetto da una frase password lasciare vuoto il campo 'Vecchia frase password'.",
         "keep_passphrase_safe" : "Mantenere la propria frase password in un posto sicuro, non esiste una funzione per recuperarla. Se si perde la frase password, non si potrà più accedere ai propri dati!",
-
         "old_passphrase" : "Vecchia frase password",
-
         "new_passphrase" : "Nuova frase password",
-
         "change_passphrase_btn" : "Modificare la frase password",
-
         "repeat_finalizes" : "Ripetendo la nuova frase password la modifica diventa definitiva.",
-
         "repeat_passphrase" : "Ripetere la nuova frase password",
-
         "confirm_btn" : "Confermare la frase password",
-
         "success" : "La frase password è stata modificata con successo!"
     },
 
     "changepassword" : {
-
         "title" : "Modifica password",
-
         "old_password" : "Vecchia password",
-
         "new_password" : "Nuova password",
-
         "repeat_password" : "Ripetere la nuova password",
-
         "change_btn" : "Modifica password",
-
         "success" : "La password è stata modificata con successo!"
     },
 
     "changeaddress" : {
-
         "title" : "Indirizzo postale e informazioni di contatto",
-
         "update_btn" : "Aggiornamento"
     },
 
     "market" : {
-
         "categories" : "Categorie",
-
         "plugins" : "Plugin",
-
         "no_spotlighted_plugins" : "Non è ancora stato evidenziato alcun plugin.",
-
         "plugins_you_may_like" : "Plugin che potrebbero interessarti",
-
         "no_recommendations" : "Non abbiamo ancora consigli per te.",
-
         "install_now_btn" : "Utilizzare ora"
     },
 
     "providersearch" : {
-
         "title" : "Ricerca fornitore",
-
         "name" : "Nome",
-
         "city_or_zip" : "Città / Codice Postale",
-
         "only_with_contact" : "Cercare solo i fornitori di prestazioni sanitarie con cui si è già in contatto.",
-
         "empty_result" : "Non è stato trovato alcun fornitore.",
-
         "add_consent_btn" : "Aggiungi consenso"
     },
 
     "recorddetail" : {
-
         "meta" : "Informazioni aggiuntive",
-
         "name" : "Nome:",
-
         "owned_by" : "Il titolare è:",
-
         "created_by" : "Creato da:",
-
         "created_with" : "Creato con:",
-
         "created_on" : "Creato il:",
-
         "content" : "Contenuti:",
-
         "format" : "Formato:",
-
         "download_btn" : "Scarica",
-
         "content_visualization" : "Visualizzazione dei contenuti",
-
         "no_visualization" : "Nessuna visualizzazione disponibile per questo record.",
-
         "raw_data" : "Dati grezzi"
     },
 
     "studydetails" : {
-
         "study" : "Studio",
-
         "organization" : "Organizzazione che svolge la ricerca:",
-
         "providers_monitoring" : "Fornitori di prestazioni sanitarie che monitorano lo studio",
-
         "no_providers" : "Nessuno",
-
         "provider_remove_btn" : "Rimuovi",
-
         "provider_add_btn" : "Aggiungi",
-
         "duration" : "Durata",
-
         "information_that_needs_sharing" : "Dati richiesti",
-
         "information_restricted" : "Indicare sesso, anno di nascita e nazione di residenza",
-
         "information_demographic" : "I propri dati demografici completi (nome, data di nascita, indirizzo, ...)",
-
         "records_with_format" : "Record con il formato:",
-
         "records_with_content" : "Record con i contenuti:",
-
         "records_with_group" : "Record appartenenti al gruppo:",
-
         "records_with_owner" : "Record appartenenti al titolare:",
-
         "records_from_app" : "Record create dall'applicazione:",
-
         "owner_self" : "I tuoi record",
-
         "participation_history" : "Storico della partecipazione",
-
         "history_event" : "Evento",
-
         "history_who" : "Chi",
-
         "history_when" : "Quando",
-
         "history_comment" : "Commento",
-
         "request_participation_btn" : "Richiedere la partecipazione",
-
         "do_not_participate_btn" : "Non partecipare",
-
         "retreat_btn" : "Ritirarsi dalla partecipazione",
-
         "status" : "Stato"
     },
 
     "user" : {
-
         "account" : "Account utente",
-
         "user" : "Utente",
-
         "name" : "Nome:",
-
         "email" : "E-mail:",
-
         "birthday" : "Data di nascita:",
-
         "midataID" : "ID account:",
-
         "action" : "Altro...",
-
         "change_password_btn" : "Modifica password",
-
         "change_passphrase_btn" : "Modificare la frase password",
-
         "auditlog_btn" : "Visualizza il registro di revisione",
-
         "change_email_btn" : "Modifica indirizzo e-mail",
-
         "repair_account_btn" : "Ripara account",
-
         "reset_spaces_btn" : "Ripristina portale",
-
         "export_btn" : "Esporta i tuoi dati",
-
         "delete_records_btn" : "Elimina record",
-
         "account_repaired" : "Il tuo account è stato riparato.",
-
         "spaces_resetted" : "La tua configurazione è stata ripristinata.",
-
         "settings" : "Impostazioni",
-
         "address" : "Indirizzo e info. di contatto",
-
         "change_address_btn" : "Modifica indirizzo",
-
         "searchable_short" : "Visibilità del proprio account",
-
         "searchable" : "Altri utenti possono trovare il tuo profilo durante la ricerca della tua e-mail?",
-
         "searchable_yes" : "Sì, voglio che il mio nome ed e-mail siano visibili ad altri utenti",
-
         "searchable_no" : "No, non voglio che altri utenti vedano il mio profilo",
-
         "searchable_info" : "Questa impostazione non ha effetto sui consensi di condivisione dei tuoi dati esistenti.",
-
         "change_settings_btn" : "Modifica impostazioni",
-
         "change_settings_success" : "Le impostazioni sono state aggiornate"
     },
 
     "visualization" : {
-
         "title" : "Informazioni del plugin",
-
         "success" : "Il nuovo plugin è stato installato con successo.",
-
         "created_by" : "Creato da:",
-
         "orgName" : "Organizzazione:",
-
         "description" : "Descrizione:",
-
         "tile_name" : "Nome riquadro:",
-
         "install_location" : "Posizione:",
-
         "grant_access" : "Autorizzare al plugin l'accesso a:",
-
         "install_btn" : "Aggiungi plugin",
         "location" : {
-
             "workspace" : "Spazio di lavoro",
-
             "mobile" : "Applicazione mobile di MIDATA",
-
             "research" : "Pannello di controllo Ricerca",
-
             "sandbox" : "Spazio di lavoro",
-
-            "me" : "Pagina I miei dati",
-
+            "me" : "Pannello personale",
             "config" : "Pannello di controllo Config",
-
             "mydata" : "Pannello di controllo I miei dati",
-
             "social" : "Pannello di controllo Social",
-
             "providers" : "Pannello di controllo Salute e Sanità",
-
             "studies" : "Pannello di controllo Ricerca"
         }
     },
 
     "newconsent" : {
-
         "title" : "Crea un nuovo consenso",
-
         "name" : "Come deve essere denominato questo consenso?",
-
         "type" : "Che tipo di consenso si desidera creare?",
-
         "share_with_members" : "Desidero condividere i dati con altri titolari dell'account MIDATA.",
-
         "share_with_provider" : "Desidero condividere i dati con un professionista del settore sanitario.",
-
         "use_passcode" : "Includere un codice password?",
-
         "use_passcode2" : "Non so ancora con chi condividere i dati. Aggiungere un codice password a questo consenso in modo che io possa comunicarlo a un professionista del settore sanitario.",
-
         "choose_passcode" : "Scegliere un codice password sicuro",
-
         "who_is_owner" : "Chi sta condividendo i dati?",
-
         "which_persons" : "Con quale persona/e sono condivisi i dati?",
-
         "set_owner_btn" : "Selezionare la persona che condivide i propri dati",
-
         "add_yourself_btn" : "Aggiungi te stesso/a",
-
         "add_person_btn" : "Aggiungi una nuova persona",
-
         "add_usergroup_btn" : "Aggiungi un nuovo team",
-
         "writes" : "Scrivi l'autorizzazione",
-
         "writes2" : "Le persone autorizzate da questo consenso possono creare o aggiornare dati nel tuo account incluso nel consenso suddetto.",
-
         "reshare" : "Accesso di terzi?",
-
         "reshare2" : "Le persone autorizzate da questo consenso possono ri-condividere i dati ai quali ho consentito loro di accedere.",
-
         "expiration_date" : "Data di scadenza del consenso:",
-
         "created_before" : "Non condividere dati creati dopo:",
-
         "share_what" : "Quali dati desideri condividere?",
-
         "consent_empty" : "Questo consenso è inizialmente vuoto. È possibile selezionare in seguito i dati che si desiderano condividere con questo consenso.",
-
         "create_btn" : "Creare e selezionare i dati"
     },
 
     "editconsent" : {
-
         "title" : "Consenso",
-
         "owner" : "Titolare del consenso",
-
         "name" : "Nome del consenso",
-
         "date_of_creation" : "Consenso creato il",
-
         "type" : "Tipo di consenso",
-
         "status" : "Stato del consenso",
-
         "people" : "Con quale/i persona/e si desidera condividere i dati?",
-
         "external" : "Titolare di un account non appartenente a MIDATA",
-
         "add_people_btn" : "Aggiungi altre persone",
-
         "add_usergroup_btn" : "Aggiungi un team",
-
         "reshare" : "@:nuovoconsenso.ricondividi",
-
         "reshare2" : "@:nuovoconsenso.ricondividi2",
-
         "writes" : "Scrivi l'autorizzazione",
-
         "expiration_date" : "Data di scadenza del consenso:",
-
         "created_before" : "Non condividere i dati creati dopo:",
-
         "what_is_shared" : "Quali dati sono condivisi?",
-
         "consent_empty" : "Attualmente questo consenso non condivide alcun dato.",
-
         "type_circle" : "Questo consenso condivide i dati con altri titolari di account MIDATA.",
-
         "type_healthcare" : "Questo consenso condivide dati con professionisti dell'assistenza sanitaria.",
-
         "type_studyparticipation" : "Questo consenso condivide con la ricerca dati da utilizzare in uno studio.",
-
         "type_studyrelated" : "Questo consenso condivide dati di ricerca con un partecipante allo studio.",
-
         "type_externalservice" : "Questo consenso condivide dati con una applicazione o servizio esterno mobile.",
-
         "type_implicit" : "Questo consenso creato implicitamente condivide i messaggi con i rispettivi destinatari.",
-
         "status_active" : "Questo consenso è attivo.",
-
         "status_expired" : "Questo è scaduto. I dati non sono più condivisi.",
-
         "status_unconfirmed" : "Questo consenso richiede la conferma del rispettivo titolare.",
-
         "status_rejected" : "Questo consenso è stato rifiutato dal rispettivo titolare.",
-
         "shares_records" : "Questo consenso condivide {{count}} record.",
-
         "shares_group" : "Condivide tutti i record appartenenti al gruppo: {{ group }}",
-
         "excludes_group" : "Sono esclusi i record appartenenti al gruppo: {{ group }}",
-
         "view_change_selection_btn" : "Visualizza/Modifica la selezione dei dati",
-
         "confirm_btn" : "Conferma questo consenso",
-
         "reject_btn" : "Rifiuta questo consenso",
-
         "delete_btn" : "Elimina questo consenso"
     },
 
     "consents" : {
-
         "title" : "Consensi",
-
         "description" : "Utilizzando i consensi si può concedere ad altri (professionisti dell'assistenza sanitaria, amici, ricercatori, ...) l'accesso ad alcuni dei propri dati. Utilizzare questa pagina per gestire i propri consensi e crearne di nuovi.",
-
         "count" : "Hai {{ count }} consenso(i):",
-
         "where_owner" : "Mostra i consensi in cui puoi condividere i dati con altri",
-
         "where_authorized" : "Mostra i consensi in cui i dati sono condivisi con te",
-
         "name" : "Titolo del consenso",
-
         "ownerName" : "Titolare",
-
         "type" : "Tipo",
-
         "status" : "Stato",
-
         "number_of_people" : "# Persone",
-
         "number_of_records" : "# record",
-
         "add_new_btn" : "Aggiungi nuovo consenso"
     },
 
     "revconsents" : {
-
         "count" : "Esistono {{ count }} consensi che condividono i dati con te:",
-
         "add_new_btn" : "Aggiungi richiesta per il consenso"
     },
 
     "importrecords" : {
-
         "title" : "Importazione",
-
         "authorize_btn" : "Autorizza ora"
     },
 
     "spaces" : {
-
         "title" : "Plugin MIDATA",
-
         "delete_btn" : "Elimina questo spazio",
-
         "used_btn" : "Record utilizzati...",
-
         "share_btn" : "Condividi...",
-
         "finish_comparing_btn" : "Confronto terminato",
-
         "compare_btn" : "Confronto"
     },
 
     "records" : {
-
         "title" : "I miei dati",
-
         "share_instructions1" : "Utilizzare i pulsanti 'condividi' e 'non condividere' per selezionare i record che si desidera condividere con consenso ",
-
         "share_instructions2" : "Questo consenso attualmente condivide i dati con ",
-
         "share_instructions3" : "persona/e.",
-
         "delete_instructions1" : "Per ",
-
         "delete_instructions2" : "eliminare in modo permanente",
-
         "delete_instructions3" : "un record, ",
-
         "delete_instructions4" : "fare doppio clic",
-
         "delete_instructions5" : "sul pulsante 'elimina' a destra del record.",
-
         "delete_instructions6" : "Per eliminare in modo permanente tutti i record di una determinata categoria, fare doppio clic sul pulsante 'elimina tutti' a destra della categoria.",
-
         "shared_with" : "Condiviso con:",
-
         "records_used_for_app" : "Record utilizzati per l'applicazione",
-
         "back_to_plugin" : "Torna alla visualizzazione",
-
         "by_group" : "Raggruppato per tipo di contenuto",
-
         "by_plugin" : "Raggruppato per applicazione",
-
         "type_global" : "Globale",
-
         "type_study" : "Ricerca",
-
         "type_circle" : "Altri utenti",
-
         "show" : "Mostra:",
-
         "my_data" : "I miei dati",
-
         "all_data" : "Tutti i dati",
-
         "all" : "Dati personali",
-
         "study" : "Studio: {{name}}",
-
         "shared" : "Condiviso da: {{name}}",
-      
         "just_name" : "{{name}}",
-
         "share" : "condividi",
-
         "unshare" : "non condividere",
-
         "delete" : "elimina",
-
         "delete_all_btn" : "elimina tutti",
-
         "empty" : "Non è stato trovato alcun record disponibile.",
-
         "too_many_consents" : "Impossibile creare la struttura ad albero dei record per questa selezione. Sono coinvolti troppi consensi.",
-
         "close_btn" : "Chiudi"
     },
 
     "oauth2" : {
-
-        "requests_permission" : "richiede l'autorizzazione ad accedere ai tuoi dati personali.",
-
-        "no_account" : "Non ho un account",
+        "requests_permission" : "memorizza i dati personali nell'account MIDATA.",
+        "no_account" : "Non hai ancora un account?",
+        "have_account" : "Hai un account MIDATA?",
+        "have_account2" : "Perfetto, accedi.",
+        "sign_up_btn" : "Iscriviti",
 
         "reshares_data" : "L'applicazione può condividere i dati a cui ha accesso con terzi.",
-
         "allows_user_search" : "Il tuo nome e indirizzo e-mail può essere cercato da altre persone utilizzando questa applicazione.",
-
         "requesting_app" : "richiede l'accesso ai tuoi dati.",
-
         "sign_in" : "Accesso MIDATA per:",
-
-        "sign_in_btn" : "Accesso",
-
+        "sign_in_btn" : "Accedi",
         "device" : "Dispositivo: {{ device}}",
-
         "please_confirm" : "Confermare l'attivazione dell'applicazione utilizzando il portale MIDATA, quindi riprovare. Il titolo del consenso è: {{ consent }}",
-
         "confirm_btn" : "Conferma l'accesso",
-
         "requests_access" : "Accesso richiesto:",
-
         "shares_group" : "Gruppo: {{ group }}",
-
         "shares_format" : "Formato: {{ format }}",
-
         "shares_content" : "Contenuti: {{ content }}",
-
-        "confirm_study" : "Iscriviti al seguente studio"
+        "confirm_study" : "Accetto le condizioni d'uso della domanda e di partecipare allo studio"
     },
 
     "dashboard" : {
-
         "help_welcome" : "Benvenuto in MIDATA",
-
         "tasks" : "Attività",
-
         "myviews" : "Le mie visualizzazioni",
-
         "mydata" : "I miei dati personali",
-
         "mydata_text" : "Gestisci i tuoi dati relativi a salute e sanità. Inserisci i nuovi dati e visualizza quelli esistenti.",
-       
         "social" : "Social",
-
         "social_text" : "Condividi i tuoi dati con gli amici. Comunica con le persone con le quali condividi la tua situazione riguardante salute e sanità. Potenzia la tua motivazione nella competizione con altri.",
-
         "research" : "Ricerca",
-
         "research_text" : "Partecipa agli studi. Informati sulla ricerca corrente.",
-
         "health" : "Salute e sanità",
-
         "health_text" : "Condividi i dati con il tuo medico. Cerca professionisti del settore sanitario.",
-
         "help" : "Aiuto",
-
         "help_text" : "Ottieni aiuto sulle funzioni MIDATA",
-
         "training" : "Formazione",
-
         "training_text" : "Gestisci il tuo personal training!",
-
         "newrecords" : "Record più recenti aggiunti questo mese:",
-
         "newrecords_teaser" : "Non ci sono nuovi record. Visita la pagina dei record per sfogliare tutti i tuoi record.",
-
         "myaccount" : "I dati del mio account",
-
         "newsharedrecords" : "Nuovi record condivisi con te",
-
         "newsharedrecords_teaser" : "Altri titolari di account MIDATA possono condividere i loro dati con te.",
-
         "circles" : "Membro delle cerchie",
-
         "circles_teaser" : "Chiedi ad altri di aggiungerti alle loro cerchie.",
-
         "circles2" : "Le tue cerchie",
-
         "circles2_teaser" : "Crea Cerchie per condividere i tuoi dati con altri. Condividi con amici, famiglia o altri.",
-
         "providers" : "I tuoi consensi per salute e sanità",
-
         "providers_teaser" : "Cerca altri fornitori di prestazioni sanitarie e aggiungili al tuo elenco per condividere dati con loro.",
-
         "providersearch" : "Cerca fornitori di prestazioni sanitarie",
-
         "providersearch_text" : "Funzione di ricerca per fornitori di prestazioni sanitarie.",
-
         "usergroupsearch" : "Cerca i team",
-
         "hcrecords" : "I record più recenti dai tuoi fornitori di prestazioni sanitarie",
-
         "records" : "Record",
-
         "share" : "Condividi",
-
         "details" : "Dettagli",
-
         "yourstudies" : "Studi in cui sei coinvolto:",
-
         "studies_teaser" : "Se desideri partecipare alla ricerca, configura le tue impostazioni. Se corrispondi ai requisiti di uno studio sarai contattato/a in questo riquadro.",
-
         "newstudies" : "Nuovi studi",
-
         "newsconfig" : "Notizie",
-
         "newsconfig_teaser" : "Attualmente non esistono annunci",
-
         "researchnews" : "Notizie sulla ricerca",
-
         "researchnews_text" : "Cerca nuove pubblicazioni di ricerca su salute e sanità.",
-
         "researchnews_btn" : "Cerca le notizie",
-
         "studysettings" : "Le mie impostazioni di ricerca",
-
         "entercode" : "Aderisci con il codice di partecipazione",
-
         "records_shared" : "Record condivisi con questo consenso:",
-
         "addusers" : "Aggiungi utenti al consenso",
-
         "shared_with_study" : "Record condivisi:",
-
         "patient_records" : "Record di questo paziente:",
-
         "addtask" : "Aggiungi attività",
-
         "group_records" : "Record di questo gruppo:",
-
         "study_records" : "Record condivisi:",
-
         "addmore" : "Aggiungi altro",
-
         "view_btn" : "Visualizzazione",
-
         "install_btn" : "Aggiungi altro",
-
         "observations" : "Misure",
-
         "calendar" : "Calendario",
-
         "smallstudies" : "Studi"
     },
 
     "measure" : {
-
         "body_weight" : "Peso corporeo",
-
         "activities_steps" : "Passi",
-
         "diary" : "Diario personale",
-
         "subjective_condition" : "Umore",
-
         "heart" : "Frequenza cardiaca e pressione sanguigna",
-
         "documents" : "Documenti riguardanti salute e sanità",
-
         "appointments" : "Appuntamenti",
-
         "sleep" : "Dati relativi al sonno",
-
         "activities_heartrate" : "Frequenza cardiaca",
-
         "body_bloodpressure" : "Pressione sanguigna",
-
         "files" : "Documenti"
     },
 
     "config" : {
-
         "fitbit" : "Configurazione Fitbit",
-
         "withings" : "Configurazione Withings"
     },
 
     "spacesummary" : {
-
         "records_to_view" : "Record da visualizzare.",
-
         "last_entry_at" : "Ultimi dati immessi alle",
-
         "no_entries_yet" : "Non sono stati ancora immessi dati",
-
         "newest_entry_from" : "Dati più recenti immessi da",
-
         "view_btn" : "Visualizzazione",
-
         "add_btn" : "Aggiungi"
     },
 
     "flexiblerecords" : {
-
         "records_available" : "Record disponibili:",
-
         "empty" : "Vuoto",
-
         "browse_btn" : "Sfoglia record",
-
         "add_btn" : "Aggiungi record...",
-
         "share_btn" : "Condividi"
     },
 
     "flexiblestudies" : {
-
         "empty" : "Vuoto",
-
         "studies_found" : "Studi trovati:"
     },
 
     "addtask" : {
-
         "task_type" : "Tipo di attività",
-
         "task_title" : "Titolo dell'attività",
-
         "description" : "Descrizione",
-
         "frequency" : "Frequenza",
 
-
         "survey_name" : "Compila il questionario",
-
         "survey_description" : "Compila i questionari che ho condiviso con il tuo account.",
-
         "survey_title" : "Compila il questionario"
     },
 
     "taskdetails" : {
-
         "created_by" : "Creato da:",
-
         "frequency" : "Con quale frequenza:",
-       
         "plugin" : "Plugin:",
-
         "do_now_btn" : "Esegui ora"
     },
 
     "tasks" : {
-
         "empty" : "Vuoto",
-
         "tasks_found" : "Attività trovate:",
-
         "more_btn" : "Altro..."
     },
 
     "addusers" : {
-
         "contacts" : "Contatti esistenti:",
-
         "all_users" : "Tutti gli utenti",
-
         "no_contacts_to_add" : "Non è possibile aggiungere alcun contatto a questa cerchia.",
-
         "search_by_email" : "Inserisci l'e-mail o la persona destinataria:",
-
         "search_user" : "Cerca un utente",
-
         "searching" : "Ricerca in corso...",
-
         "no_matching_users" : "Nessun utente corrisponde alla tua ricerca.",
-
         "no_new_found" : "Tutti gli utenti trovati sono già membri di questa cerchia."
     },
 
     "usergroupsearch" : {
-
         "name" : "Nome del team",
-
         "empty_result" : "Non è stato trovato alcun team corrispondente.",
-
         "add_individuals_btn" : "Aggiungi come singola persona al consenso",
-
         "add_group_btn" : "Aggiungi come team da modificare al consenso"
     },
 
     "confirm" : {
-
         "title" : "Confermi?",
-
         "cancel" : "Annulla"
     },
 
     "terms" : {
-
         "close_btn" : "<< Indietro",
-
         "close_new_btn" : "Chiudi"
     },
 
     "auditlog" : {
-
         "event" : "Evento",
-
         "actor" : "Attore",
-
         "entity" : "Entità",
-
         "recorded" : "Ora",
-
         "outcome" : "Esito",
-
         "empty" : "Non è stato ancora immesso alcun dato.",
-
         "title" : "Registro di revisione",
-
         "refresh_btn" : "Aggiorna",
-     
         "via" : "via",
-
         "CIRCLE" : "Consenso",
-
         "ResearchStudy" : "Studio",
-
         "EXTERNALSERVICE" : "Applicazione",
-
         "STUDYPARTICIPATION" : "Partecipazione",
-
         "HEALTHCARE" : "Consenso (Fornitore di prestazioni sanitarie)",
-       
         "MEMBER" : "Account",
-
         "PROVIDER" : "Account (Fornitore di prestazioni sanitarie)",
-
         "RESEARCH" : "Account (Ricercatore)",
-
         "ADMIN" : "Account (Amministratore)",
-
         "DEVELOPER" : "Account (Sviluppatore)"
     },
 
     "apps" : {
-
         "greeting" : "Collega le tue applicazioni per raccogliere i dati",
-
         "title" : "Applicazioni",
-
         "description" : "Applicazioni autorizzate",
-
         "count" : "Hai {{count}} applicazioni autorizzate:",
-
         "services" : "Servizi",
-
         "connect_btn" : "Autorizza"
     },
 
     "changeemail" : {
-
         "title" : "Modifica l'indirizzo e-mail dell'account",
-
         "midataId" : "ID MIDATA",
-
         "name" : "Nome",
-
         "old_email" : "Indirizzo e-mail corrente",
-
         "new_email" : "Nuovo indirizzo e-mail",
-
         "none" : "Nessuno",
-
         "change_btn" : "Modifica",
-
         "success" : "Indirizzo e-mail modificato con successo!"
     },
 
+    "member_user" : {
+        "account_status" : "Stato dell'account",
+        "studyparticipant" : "Il tuo account è stato configurato per la partecipazione a uno studio. Le funzionalità sono limitate. Puoi aggiornare il tuo account utente a un account completo.",
+        "appuser" : "Il tuo account è stato registrato da un'applicazione esterna. Le funzionalità sono limitate. Puoi aggiornare il tuo account utente a un account completo.",
+        "memberofcooperative" : "Sei membro di MIDATA Cooperativa.",
+        "nonmemberuser" : "Possiedi un account utente completo ma non sei membro di MIDATA Cooperativa.",
+        "agb_not_requested" : "Facendo clic sul pulsante 'Richiedi contratto', i Condizioni generali di contratto (CGC) e il contratto ti saranno inviati per lettera. Restituisci i CGC firmato per convertire questo account di prova in un account completo.",
+        "agb_requested" : "Hai richiesto i Condizioni generali di contratto e il contratto. La tua richiesta è in fase di elaborazione presso la cooperativa MIDATA.",
+        "agb_printed" : "Le Condizioni generali di contratto e il contratto da lei richiesto dovrebbero arrivare nei prossimi giorni.",
+        "agb_signed" : "Hai firmato i Condizioni generali di contratto.",
+        "confirmed" : "Il tuo indirizzo postale è stato confermato.",
+        "entercode" : "La lettera che ti è stata inviata contiene un codice di registrazione. Una volta ricevuta la lettera, inserisci il codice qui:",
+        "email_unvalidated" : "Il tuo indirizzo e-mail non è ancora stato convalidato. Fai clic sul link nell'e-mail di convalida ricevuta!",
+        "request_membership_btn" : "Richiedi contratto"
+    },
 
     "-1" : "sconosciuto"
 }
