@@ -49,7 +49,6 @@
             "not_plugin_owner" : "Dies ist nicht Ihr Plugin"
         },
 
-
         "invalid" : {
             "email" : "Bitte eine gültige E-Mail-Adresse eingeben.",
             "credentials" : "Ungültige E-Mail-Adresse oder Kennwort!",
@@ -80,7 +79,6 @@
         },
 
         "missing" : {
-
             "credentials" : "Bitte Ihre E-Mail-Adresse und Kennwort eingeben.",
             "email" : "Geben Sie bitte Ihre E-Mail-Adresse ein.",
             "input_field" : "Füllen Sie bitte dieses Eingabefeld aus.",
@@ -881,7 +879,7 @@
         "no_account" : "Sie besitzen noch kein Konto?",
         "have_account" : "Sie besitzen ein MIDATA Konto?",
         "have_account2" : "Perfekt, melden Sie sich an",
-        "sign_up_btn" : "Konto erstellen",
+        "sign_up_btn" : "Registrieren",
         "reshares_data" : "Die Applikation darf Daten, auf die sie Zugriff hat, an Dritte weitergeben.",
         "allows_user_search" : "Ihr Name und Ihre E-Mail-Adresse können von anderen Personen, die diese Applikation verwenden, durchsucht werden.",
         "requesting_app" : "benötigt Zugriff auf Ihre Daten.",
