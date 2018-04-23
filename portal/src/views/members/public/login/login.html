@@ -2,12 +2,21 @@
    	<div class="welcome" ng-controller="LoginCtrl" ng-cloak >
 		<div id="mainheader"><div class="container"><div class="row">
 			<!-- Login -->
-			<div class="col-sm-12" style="margin-top:70px;margin-bottom:70px;font-family:Sans-serif;color:white">
+			<div class="col-sm-12" style="margin-top:30px;margin-bottom:30px;font-family:Sans-serif;color:white">
 
-
+              <div ng-hide="notPublic" style="margin-bottom:40px"></div>
+              
               <h1 style="color:white;" translate="member_login.teaser"></h1>
-
-			  <a ui-sref="public.registration" class="btn btn-primary" ng-hide="offline||notPublic" translate="member_login.register_now"></a>
+              <div ng-show="notPublic">
+              <div translate="login.info1"></div>
+              <div translate="login.info2"></div>
+              <div translate="login.info3"></div>
+              <p>&nbsp;</p>
+              <div translate="login.info4"></div>
+              <div translate="login.info5"></div>
+              <div><span translate="login.info6"></span> <a style="color:white;font-weight:bold;text-decoration:underline" href="https://www.allyscience.ch" translate="login.info6b"></a> <span translate="login.info6c"></span></div>
+              </div>
+			  <a ui-sref="public.registration" style="margin-top:10px;margin-bottom:40px;" class="btn btn-primary" ng-hide="offline||notPublic" translate="member_login.register_now"></a> 
 			</div>
 			</div></div>
 		</div><div class="container"><div class="row">
