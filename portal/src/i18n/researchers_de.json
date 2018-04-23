@@ -5,6 +5,10 @@
         "research_organization" : "Forschungseinrichtung",
         "name" : "Name",
         "description" : "Beschreibung",
+
+        // TODO CHANGED
+        // OLD: Research User
+        // NEW: Researcher
         "research_user" : "Forscher"
     },
 

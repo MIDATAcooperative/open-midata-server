@@ -495,7 +495,7 @@
   "registration" : {
     "sign_up" : "Sign Up",
     "mandantory_fields" : "Please fill in the information below, fields marked with an asterisk (*) are mandatory.",
-    "password_policy" : "Password must be at least 8 characters long. (letters and digits)",
+    "password_policy" : "Password must be at least 8 characters long (letters and digits).",
     "email" : "EMail",
     "password" : "Password",
     "password_repetition" : "Repeat Password",
@@ -535,9 +535,10 @@
     "hide_optional" : "Hide optional fields",
     
     "welcome_title" : "Welcome",
-    "welcome_text1" : "Your account has been created. We have send you a welcome email to your email address.",
-    "welcome_text2" : "Please klick on the confirmation link in the email to confirm that your email address is correct.",
-    "welcome_btn" : "I will do it" 
+    "welcome_text1" : "Your MIDATA account has just been created. A confirmation email has been sent to you.",
+    "welcome_text2" : "Please click on the link in the email within 24 hours to complete your registration.",
+    "welcome_text3" : "If you should not receive the email within the next 30 minutes, please check your spam filter.",
+    "welcome_btn" : "Go on" 
   },
 
   "login" : {
@@ -875,8 +876,11 @@
   },
 
   "oauth2" : {
-    "requests_permission" : "requests the permission to access your personal data.",
-    "no_account" : "I don't have an account",  
+    "requests_permission" : "stores your personal data in your MIDATA account.",
+    "no_account" : "You don't have an account?", 
+    "have_account" : "You have a MIDATA account?",
+    "have_account2" : "Perfect, log in here",
+    "sign_up_btn" : "Create Account",
     "reshares_data" : "App may share data it has access to to third parties.",
     "allows_user_search" : "Your name and email address may be searched by other people using this app.",
     "requesting_app" : "needs access to your data.",
@@ -889,7 +893,7 @@
     "shares_group" : "Group: {{ group }}",
     "shares_format" : "Format: {{ format }}",
     "shares_content" : "Content: {{ content }}",
-    "confirm_study" : "Enroll in the following study"
+    "confirm_study" : "I accept the terms of use of the application and to participate in the study"
   },
 
   "dashboard" : {

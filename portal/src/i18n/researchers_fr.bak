@@ -4,7 +4,7 @@
     "research_organization" : "Research Organization",
     "name" : "Name",
     "description" : "Description",
-    "research_user" : "Research User"
+    "research_user" : "Researcher"
   },
   
   "researcher_login" : {

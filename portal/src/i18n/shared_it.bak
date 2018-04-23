@@ -536,9 +536,9 @@
     
     "welcome_title" : "Welcome",
     "welcome_text1" : "Your MIDATA account has just been created. A confirmation email has been sent to you.",
-    "welcome_text2" : "Please click on the link in the email to complete your registration.",
-    "welcome_text3" : "If you should not receive the email within the next 30 minutes please check your spam filter.",
-    "welcome_btn" : "I will do it" 
+    "welcome_text2" : "Please click on the link in the email within 24 hours to complete your registration.",
+    "welcome_text3" : "If you should not receive the email within the next 30 minutes, please check your spam filter.",
+    "welcome_btn" : "Go on" 
   },
 
   "login" : {
@@ -876,8 +876,11 @@
   },
 
   "oauth2" : {
-    "requests_permission" : "stores your personal data in your MIDATA account. Please log in or sign up if you do not already have an account.",
-    "no_account" : "I don't have an account",  
+    "requests_permission" : "stores your personal data in your MIDATA account.",
+    "no_account" : "You don't have an account?", 
+    "have_account" : "You have a MIDATA account?",
+    "have_account2" : "Perfect, log in here",
+    "sign_up_btn" : "Create Account",
     "reshares_data" : "App may share data it has access to to third parties.",
     "allows_user_search" : "Your name and email address may be searched by other people using this app.",
     "requesting_app" : "needs access to your data.",

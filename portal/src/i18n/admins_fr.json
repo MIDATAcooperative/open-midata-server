@@ -145,6 +145,8 @@
 
     "admin_stats" : {
         "title" : "Statistiques",
+
+        // TODO NEW: 
         "what" : "",
         "value" : "Nombre total",
         "diff_yesterday" : "Diff. sur 1 jour",

@@ -49,6 +49,7 @@
             "not_plugin_owner" : "Questo non è il suo plugin"
         },
 
+
         "invalid" : {
             "email" : "Inserire un indirizzo e-mail valido",
             "credentials" : "Indirizzo e-mail o password errati.",
@@ -536,8 +537,20 @@
 
         "welcome_title" : "Benvenuto",
         "welcome_text1" : "Il tuo account MIDATA è appena stato creato. Vi è stata inviata un'e-mail di conferma.",
+
+        // TODO CHANGED
+        // OLD: Please click on the link in the email to complete your registration.
+        // NEW: Please click on the link in the email within 24 hours to complete your registration.
         "welcome_text2" : "Clicca sul link nell'e-mail entro 24 ore per completare l'iscrizione.",
+
+        // TODO CHANGED
+        // OLD: If you should not receive the email within the next 30 minutes please check your spam filter.
+        // NEW: If you should not receive the email within the next 30 minutes, please check your spam filter.
         "welcome_text3" : "Se non dovessi ricevere l'e-mail entro i prossimi 30 minuti, controlla il filtro antispam.",
+
+        // TODO CHANGED
+        // OLD: I will do it
+        // NEW: Go on
         "welcome_btn" : "Continuare"
     },
 
@@ -876,12 +889,31 @@
     },
 
     "oauth2" : {
-        "requests_permission" : "memorizza i dati personali nell'account MIDATA.",
-        "no_account" : "Non hai ancora un account?",
-        "have_account" : "Hai un account MIDATA?",
-        "have_account2" : "Perfetto, accedi.",
-        "sign_up_btn" : "Iscriviti",
 
+        // TODO CHANGED
+        // OLD: stores your personal data in your MIDATA account. Please log in or sign up if you do not already have an account.
+        // NEW: stores your personal data in your MIDATA account.
+        "requests_permission" : "memorizza i dati personali nell'account MIDATA.",
+
+        // TODO CHANGED
+        // OLD: I don't have an account
+        // NEW: You don't have an account?
+        "no_account" : "Non hai ancora un account?",
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: You have a MIDATA account?
+        "have_account" : "Hai un account MIDATA?",
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: Perfect, log in here
+        "have_account2" : "Perfetto, accedi.",
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: Create Account
+        "sign_up_btn" : "Iscriviti",
         "reshares_data" : "L'applicazione può condividere i dati a cui ha accesso con terzi.",
         "allows_user_search" : "Il tuo nome e indirizzo e-mail può essere cercato da altre persone utilizzando questa applicazione.",
         "requesting_app" : "richiede l'accesso ai tuoi dati.",
