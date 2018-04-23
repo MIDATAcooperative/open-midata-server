@@ -547,7 +547,15 @@
         "remember_me" : "Ricordami",
         "sign_in_btn" : "Accedi",
         "forgot_your_password" : "Dimenticata la password?",
-        "login_btn" : "Accedi"
+        "login_btn" : "Accedi",
+        "info1" : "Caro partecipante allo studio",
+        "info2" : "Hai già un account MIDATA, accedi con il tuo indirizzo email e la tua password.",
+        "info3" : "Il tuo account personale ti fornisce una panoramica della partecipazione allo studio.",
+        "info4" : "Caro visitatore",
+        "info5" : "Non hai ancora un account MIDATA e non partecipi ad uno studio?",
+        "info6" : "Partecipa al progetto",
+        "info6b" : "Ally Science",
+        "info6c" : "!"
     },
 
     "lostpw" : {
