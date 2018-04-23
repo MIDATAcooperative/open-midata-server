@@ -1,279 +1,163 @@
 {
 
     "admin_navbar" : {
-
         "members" : "Membri",
-
         "auditlog" : "Revisione",
-
         "news" : "Notizie",
-
         "plugins" : "Plugin",
-
         "content" : "Contenuti",
-
         "studies" : "Studi",
-
-        "terms" : "Termini e condizioni",
-
+        "terms" : "Condizioni generali di contratto",
         "registration" : "Registra amministratore"
     },
 
     "admin_members" : {
-
         "title" : "Elenco membri",
-
         "search_type" : "Cerca",
-
         "contract_required" : "Il contratto deve essere inviato",
-
         "contract_confirm_required" : "Il contratto firmato deve essere confermato",
-
         "no_email_confirm" : "E-mail non ancora confermata dall'utente",
-
         "email_rejected" : "Conferma dell'e-mail rifiutata dall'utente",
-
         "not_admin_confirmed" : "Non confermato dall'amministratore",
-
         "overview" : "Panoramica",
-
         "specific_user" : "Utente specifico",
-
         "role" : "Ruolo",
-
         "status" : "Stato",
-
         "midata_id" : "ID-MIDATA",
-
         "empty" : "Non è stato trovato alcun utente corrispondente."
     },
 
     "admin_address" : {
-
         "title" : "Indirizzo del membro",
-
         "midata_id" : "ID-MIDATA",
-
         "role" : "Ruolo",
-
         "subroles" : "Sotto-ruolo/i",
-
         "developer" : "Appartiene allo sviluppatore:",
-
         "status" : "Stato:",
-
-        "agb_status" : "Stato dei Termini e Condizioni generali:",
-
+        "agb_status" : "Stato dei CGC:",
         "contract_status" : "Stato del contratto:",
-
         "email_status" : "Stato dell'e-mail:",
-
         "confirmation_code" : "Codice di conferma:",
-
         "registration_date" : "Data di registrazione:",
-
         "confirmation_date" : "Data di conferma:",
-
         "last_login" : "Ultimo accesso:",
-
         "email_confirm_btn" : "Conferma indirizzo e-mail",
-
         "comment" : "Commento",
-
         "add_comment_btn" : "Aggiungi commento",
-
         "wipe_btn" : "Elimina account",
-
         "change_email_btn" : "Modifica indirizzo e-mail"
     },
 
     "admin_news" : {
-
         "created" : "Creato",
-
         "language" : "Lingua",
-
         "title" : "Titolo",
-
         "expires" : "Data di scadenza",
-
         "delete_btn" : "Elimina",
-
         "empty" : "Non è stata trovata alcuna voce"
     },
 
     "admin_managenews" : {
-
         "title1" : "Aggiungi un nuovo messaggio con le notizie",
-
         "title2" : "Modifica il messaggio con le notizie",
-
         "title" : "Titolo della notizia",
-
         "language" : "Lingua delle notizie",
-
         "content" : "Contenuti",
-
         "url" : "URL del messaggio completo",
-
         "expires" : "Data di scadenza del messaggio"
     },
 
     "admin_registration" : {
-
-        "sign_up" : "Registra il nuovo account ammin."
+        "sign_up" : "Registrare un nuovo amministratore"
     },
 
     "admin_plugins" : {
-
         "title" : "Plugin",
-
         "developer" : "Filtra per sviluppatore",
-
         "name" : "Filtra per nome applicazione",
-
         "organisation" : "Filtra per organizzazione",
-
         "empty" : "Non ci sono ancora applicazioni o plugin.",
-
         "plugin_name" : "Nome",
-
         "plugin_developer" : "Sviluppatore",
-
         "plugin_type" : "Tipo",
-
         "plugin_role" : "Ruolo di destinazione",
-       
-        "plugin_market" : "MISTORE",
-
+        "plugin_market" : "MIDATA Store",
         "plugin_stats" : "Statist.",
-
         "plugin_status" : "Stato",
-
         "add_definition_btn" : "Importa definizione plugin"
     },
 
     "admin_defineplugin" : {
-
         "title" : "Importa definizione plugin",
-
         "definition" : "Definizione (JSON)"
     },
 
     "admin_studies" : {
-
         "title" : "Studi",
-
         "criteria" : "Criteri di ricerca",
-
         "empty" : "Non è stato trovato alcuno studio corrispondente."
     },
 
     "admin_terms" : {
-
-        "title" : "Termini e Condizioni",
-
-        "empty" : "Non sono disponibili Termini e Condizioni.",
-
+        "title" : "Condizioni generali di contratto",
+        "empty" : "Non sono disponibili Condizioni generali di contratto.",
         "name" : "Nome",
-
         "version" : "Versione",
-
         "language" : "Lingua",
-
         "createdAt" : "Data di creazione"
     },
 
     "admin_manageterms" : {
-
-        "pagetitle" : "Termini e Condizioni",
-
+        "pagetitle" : "Condizioni generali di contratto",
         "name" : "Nome interno",
-
         "version" : "Versione",
-
         "language" : "Lingua",
-
         "title" : "Titolo (pubblico)",
-
         "text" : "Contenuti (HTML)"
     },
 
     "admin_study" : {
-
         "title" : "Studio",
-
         "name" : "Nome",
-
         "created_at" : "Creato il",
-
         "created_by" : "Creato da",
-
         "description" : "Descrizione",
-
         "code" : "Codice",
-
         "startDate" : "Data di inizio",
-
         "endDate" : "Data di fine",
-
         "dataCreatedBefore" : "Data di congelamento dei dati",
-
         "required_information" : "Informazioni richieste",
-
         "anonymous" : "Anonimo",
-
         "required_assistance" : "Assistenza richiesta",
-
-        "termsOfUse" : "Termini e Condizioni",
-
+        "termsOfUse" : "Condizioni generali di contratto",
         "sharing_query" : "Filtro di accesso dati",
-
         "requirements" : "Requisiti",
-
         "groups" : "Gruppi",
-
         "group_name" : "Nome del gruppo",
-
         "group_description" : "Descrizione",
-       
         "team" : "Team",
-
         "role" : "Ruolo",
-
         "history" : "Storico",
-
         "end_validation_btn" : "Convalida completa",
-
         "back_to_draft_btn" : "Torna alla bozza",
-
         "delete_study_btn" : "Elimina studio"
     },
 
     "admin_stats" : {
-
         "title" : "Statistiche",
-       
         "what" : "",
-
         "value" : "Conteggio totale",
-
-        "diff_yesterday" : "Diff a 1 giorno fa",
-
-        "diff_week" : "Diff a 7 giorni fa",
-
+        "diff_yesterday" : "Diff. a 1 giorno fa",
+        "diff_week" : "Diff. a 7 giorni fa",
         "recordCount" : "Record nel DB",
-
+        "vRecordCount" : "Record archivistica",
+        "indexPageCount" : "DB Index Pages",
         "appCount" : "Applicazioni e plugin",
-
+        "languages" : "Lingue dell'utente",
         "runningStudyCount" : "Studi in esecuzione",
-
         "groupCount" : "Team (Assistenza sanitaria e Ricerca)",
-
         "auditEventCount" : "Eventi di revisione",
-
         "users" : "Account utente attivi",
-
         "consents" : "Consensi"
     }
 }

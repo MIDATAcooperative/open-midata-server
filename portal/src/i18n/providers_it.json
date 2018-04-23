@@ -1,83 +1,56 @@
 {
 
     "provider_registration" : {
-
-        "sign_up" : "Registrazione fornitore di prestazioni sanitarie",
-
-        "provider" : "Fornitore di prestazioni sanitarie",
-
+        "sign_up" : "Iscrizione come operatore sanitario",
+        "provider" : "Operatore sanitario",
         "user" : "Utente",
-
         "name" : "Nome"
     },
 
     "provider_login" : {
-
-        "title" : "Accesso fornitore di prestazioni sanitarie"
+        "title" : "Accesso come operatore sanitario"
     },
 
     "provider_navbar" : {
-
         "new_patient" : "Nuovo paziente",
-
         "patients" : "Pazienti",
-
         "research" : "Ricerca",
-
         "workspace" : "Spazio di lavoro",
-        
-        "market" : "MISTORE",
-
+        "market" : "MIDATA Store",
         "usergroups" : "Team"
     },
 
     "provider_patientsearch" : {
-
         "title" : "Ricerca paziente"
     },
 
     "provider_patients" : {
-
         "title" : "Pazienti"
     },
 
     "provider_usergroups" : {
-
         "title" : "Team",
-       
         "name" : "Team",
-
         "status" : "Stato",
-
         "empty" : "Non fai parte di un team."
     },
 
     "provider_newusergroup" : {
-
         "title" : "Crea un nuovo team",
-
         "name" : "Nome del team",
-
         "create_btn" : "Crea"
     },
 
     "provider_editusergroup" : {
-
         "title" : "Modica team",
-
         "former_members" : "Membri precedenti",
-
         "name" : "Nome del team",
-
         "status" : "Stato",
-
         "startDate" : "Membro da",
-
         "endDate" : "Membro fino a"
     },
 
     "provider_memberdetails" : {
-
         "propose_consent" : "Richiedi consenso"
     }
 }

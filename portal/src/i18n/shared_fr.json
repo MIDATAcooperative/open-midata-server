@@ -495,7 +495,7 @@
     "registration" : {
         "sign_up" : "S'inscrire",
         "mandantory_fields" : "Veuillez remplir les informations ci-dessous, les champs marqués d'un astérisque (*) sont obligatoires.",
-        "password_policy" : "Le mot de passe doit comporter au moins 8 caractères (lettres et chiffres).",
+        "password_policy" : "Le mot de passe doit avoir au moins 8 caractères (lettres et chiffres).",
         "email" : "E-mail",
         "password" : "Mot de passe",
         "password_repetition" : "Répéter le mot de passe",
@@ -536,8 +536,9 @@
 
         "welcome_title" : "Bienvenue",
         "welcome_text1" : "Votre compte MIDATA vient d'être créé. Un e-mail de confirmation vous a été envoyé.",
-        "welcome_text2" : "Veuillez cliquer sur le lien contenu dans l'e-mail pour terminer votre inscription.",
-        "welcome_btn" : "Je vais le faire"
+        "welcome_text2" : "Veuillez cliquer le lien contenu dans l'e-mail dans les 24 heures pour terminer votre inscription.",
+        "welcome_text3" : "Si vous ne recevez pas l'e-mail dans les 30 prochaines minutes, veuillez vérifier votre filtre anti-spam.",
+        "welcome_btn" : "Continuer"
     },
 
     "login" : {
@@ -875,8 +876,12 @@
     },
 
     "oauth2" : {
-        "requests_permission" : "enregistre vos données personnelles dans votre compte MIDATA. Veuillez vous connecter ou vous inscrire si vous n’avez pas encore de compte.",
-        "no_account" : "Je n'ai pas de compte",
+        "requests_permission" : "enregistre vos données personnelles dans votre compte MIDATA.",
+        "no_account" : "Vous n'avez pas encore de compte?",
+        "have_account" : "Avez-vous un compte MIDATA?",
+        "have_account2" : "Parfait, connectez-vous.",
+        "sign_up_btn" : "S'inscrite",
+
         "reshares_data" : "L'application peut partager les données auxquelles elle a accès avec des tiers.",
         "allows_user_search" : "Vos nom et adresse e-mail peuvent être consultés par d'autres personnes utilisant cette application.",
         "requesting_app" : "désire accéder à vos données.",
@@ -884,7 +889,7 @@
         "sign_in_btn" : "Se connecter",
         "device" : "Appareil : {{ device}}",
         "please_confirm" : "Veuillez confirmer l'activation de l'app sur le portail MIDATA, puis réessayez. Libellé du consentement: {{ consent }}",
-        "confirm_btn" : "Confimer l'accès",
+        "confirm_btn" : "Confirmer l'accès",
         "requests_access" : "Accès demandé:",
         "shares_group" : "Groupe: {{ group }}",
         "shares_format" : "Format: {{ format }}",

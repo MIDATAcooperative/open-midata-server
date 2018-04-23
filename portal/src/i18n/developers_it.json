@@ -1,314 +1,182 @@
 {
 
     "developer_registration" : {
-
-        "sign_up" : "Registrazione sviluppatore",
-
+        "sign_up" : "Iscrizione come sviluppatore",
         "reason_fillout" : "Onde evitare tempi prolungati di attesa per la convalida del proprio account, compilare attentamente i campi relativi alla persona di contatto e allo scopo della registrazione. Ciò consentirà all'amministratore di decidere rapidamente in merito alla propria richiesta di accesso.",
-
-        "sign_up_btn" : "Registrazione sviluppatore"
+        "sign_up_btn" : "Iscriviti come sviluppatore"
     },
 
     "developer_login" : {
-
-        "title" : "Accesso sviluppatore",
-
+        "title" : "Accesso come sviluppatore",
         "guide" : "Visita la guida dello sviluppatore"
     },
 
     "developer_navbar" : {
-
         "yourapps" : "I tuoi plugin",
-       
         "sandbox" : "Sandbox",
-
         "records" : "Record di test",
-
         "testusers" : "Utente di test"
     },
 
     "developer_testusers" : {
-
         "title" : "Utenti di test",
-
         "empty" : "Non esistono utenti di test registrati per questo account.",
-
         "role" : "Ruolo",
-
         "resetpw" : "Nuova password",
-
         "description" : "Utilizzando questi pulsanti è possibile registrare utenti aggiuntivi per testare i propri plugin. Gli utenti di test eseguono i plugin localmente (da 'localhost') e non sul server.",
-
         "register_member_btn" : "Registra titolare account",
-
         "register_hp_btn" : "Registra fornitore di prestazioni sanitarie",
-
         "register_researcher_btn" : "Registra ricercatore"
     },
 
     "developer_yourapps" : {
-
         "title" : "I tuoi plugin"
     },
 
     "appmessages" : {
-
         "title" : "Messaggi predefiniti per l'applicazione:",
-
         "reason" : "Evento (attivazione)",
-
         "code" : "Codice",
-
         "languages" : "Lingue",
-
         "empty" : "Non esistono ancora messaggi definiti per l'applicazione.",
-
         "lang" : "Lingua",
-
         "msgtitle" : "Titolo del messaggio",
-
         "text" : "Testo del messaggio",
-
         "available_tags" : "Variabili disponibili",
         "reasons" : {
-
             "REGISTRATION" : "Registrazione di un nuovo utente",
-
             "REGISTRATION_BY_OTHER_PERSON" : "Registrazione di un nuovo utente da parte di altre persone",
-
             "FIRSTUSE_ANYUSER" : "Primo utilizzo dell'applicazione",
-
             "FIRSTUSE_EXISTINGUSER" : "Primo utilizzo dell'applicazione (se non è stata inviata l'e-mail di registrazione)",
-
             "CONSENT_REQUEST_OWNER_INVITED" : "Consenso proposto (Concedente, Invito)",
-
             "CONSENT_REQUEST_OWNER_EXISTING" : "Consenso proposto (Concedente, Titolare account)",
-
             "CONSENT_REQUEST_AUTHORIZED_INVITED" : "Consenso proposto (Beneficiario, Invito)",
-
             "CONSENT_REQUEST_AUTHORIZED_EXISTING" : "Consenso proposto (Beneficiario, Titolare account)",
-
             "CONSENT_CONFIRM_OWNER" : "Conferma del consenso (Concedente)",
-
             "CONSENT_CONFIRM_AUTHORIZED" : "Conferma del consenso (Beneficiario)",
-
             "CONSENT_REJECT_OWNER" : "Rifiuto del consenso (Concedente)",
-
             "CONSENT_REJECT_AUTHORIZED" : "Rifiuto del consenso (Beneficiario)",
-
             "ACCOUNT_UNLOCK" : "Account sbloccato dall'amministratore",
-
             "EMAIL_CHANGED_OLDADDRESS" : "E-mail di accesso modificata (inviare al vecchio indirizzo e-mail)",
-
             "EMAIL_CHANGED_NEWADDRESS" : "E-mail di accesso modificata (inviare al nuovo indirizzo e-mail)"
         }
     },
 
     "manageapp" : {
-
         "overview" : "Panoramica dell'applicazione",
-
         "choose" : "Funzioni per gestire la propria applicazione",
-
         "filename" : "Nome interno",
-
         "type" : "Tipo di applicazione",
-
         "targetUserRole" : "Ruolo di destinazione",
-
         "edit_btn" : "Modifica impostazioni",
-
-        "edit_help" : "Modifica configurazione della tua applicazione.",
-
+        "edit_help" : "Modifica la configurazione della tua applicazione.",
         "tokenExchangeParams" : "Parametri OAuth2 per lo scambio di token",
-
         "testfromlocal_btn" : "Testa il tuo plugin da localhost",
-
         "testfromlocal_help" : "Durante lo sviluppo, è possibile testare il codice del plugin memorizzato nel proprio computer locale su questa istanza.",
-
         "serverimport_btn" : "Testa lo script dell'importazione automatica.",
-
         "serverimport_help" : "Se il proprio plugin offre l'importazione automatica, è possibile testare nel proprio computer locale lo script del plugin che è normalmente eseguito sul server.",
-
         "icon_btn" : "Icone e immagini dell'applicazione",
-
-        "icon_help" : "Caricare e gestire le icone e le immagini da utilizzare con la tua applicazione. Fornire immagini per la schermata di login, l'app store, la schermata di accettazione del consenso, ecc.",
-
+        "icon_help" : "Caricare e gestire le icone e le immagini da utilizzare con la tua applicazione. Fornire immagini per la schermata di login, la schermata di accettazione del consenso, il MIDATA Store, ecc.",
         "messages_btn" : "Messaggi e-mail dell'applicazione",
-
         "messages_help" : "Inserisci i tuoi testi personali per l'e-mail da inviare ai nuovi account utente, in occasione del primo utilizzo dell'applicazione, per accettare consensi e altro ancora.",
-
         "stats_btn" : "Statistiche di errore e prestazioni",
-
         "stats_help" : "Visualizzare le statistiche e i suggerimenti per miglioramenti riguardanti le diverse tipologie di chiamate API che la propria applicazione invia al server.",
-      
         "debug_btn" : "API Tester Sandbox",
-
         "debug_help" : "Accedere come interrogazioni di applicazione e test nei confronti del backend MIDATA.",
-
         "linkedStudy" : "Studio collegato con link all'applicazione (Codice)",
-
         "mustParticipateInStudy" : "Richiesta la partecipazione allo studio",
-
         "admin_only" : "Solo un amministratore MIDATA può modificare questa sezione. Richiedere le modifiche se necessarie.",
-
-        "terms_of_use" : "Termini e Condizioni",
-
-        "show_terms" : "Mostra termini e condizioni",
-
+        "terms_of_use" : "Condizioni generali di contratto",
+        "show_terms" : "Mostra Condizioni generali di contratto",
         "unlock_code" : "Codice di registrazione",
         "info" : {
-
             "filename" : "Questo nome è utilizzato internamente per identificare la propria applicazione. Deve essere un identificatore valido (a-z, A-Z, 0-9, _).",
-
             "targetUserRole" : "La propria applicazione è destinata esclusivamente a un ruolo specifico? In caso contrario scegliere 'Qualsiasi ruolo'.",
-
             "type" : "Scegliere 'Plugin' se la propria applicazione sarà eseguita come plugin del portale MIDATA. Scegliere 'Mobile App' per un'applicazione esterna. Scegliere 'OAuth1 Import' o 'OAuth2 Import' se è necessario collegarsi a un server esterno utilizzando OAuth1 o OAuth2.",
-
             "name" : "Il nome, della propria applicazione o plugin, che sarà presentato all'utente finale.",
-
             "description" : "La descrizione del proprio plugin che sarà visualizzata anche nel punto contrassegnato.",
-
             "tokenExchangeParams" : "La definizione predefinita è client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> tuttavia alcuni servizi richiedono anche client_secret=<client_secret> oppure nessun client_id",
-
             "resharesData" : "L'applicazione è autorizzata a ricondividere con terzi i dati a cui accede.",
-
             "allowsUserSearch" : "Gli utenti dell'applicazione sono autorizzati a cercare altri utenti della stessa applicazione.",
-
             "defaultSpaceName" : "Il titolo del riquadro del proprio plugin sul pannello di controllo.",
-
-            "tags" : "Categorie su MISTORE per le quali il proprio plugin deve essere elencato.",
-
+            "tags" : "Categorie su MIDATA Store per le quali il proprio plugin deve essere elencato.",
             "url" : "La pagina iniziale con l'URL dei propri plugin. Se si utilizza il modello di MIDATA è 'dist/index.html#?authToken=:authToken''",
-
             "previewUrl" : "Sezione del pannello di controllo con l'URL dei propri plugin. Lasciare vuoto se non si include questo riquadro.",
-
-            "defaultSpaceContext" : "Scegliere 'I miei dati' per il pannello di controllo predefinito. Scegliere 'config' se si scrive un plugin importato.",
-
+            "defaultSpaceContext" : "Scegliere 'Pannello' per il pannello di controllo predefinito. Scegliere 'Configurazione' se si scrive un plugin importato.",
             "defaultQuery_mobile" : "Filtrare restringendo l'accesso dell'applicazione ai dati. L'accesso deve essere limitato per 'codice', 'contenuto' o 'gruppo' e può essere limitato per 'formato' o 'titolare'. Un esempio valido è il seguente (tutte le Osservazioni): '{ \"group\" : \"all\", \"group-system\" : \"v1\", \"format\" : [\"fhir/Observation\" ] }'",
-
             "defaultQuery" : "Filtrare restringendo l'accesso del plugin ai dati. L'accesso deve essere limitato per almeno una voce tra 'codice', 'contenuto', 'gruppo', 'formato' o 'titolare'. Un esempio valido è il seguente (tutte le Osservazioni): '{ \"format\" : [\"fhir/Observation\" ] }'",
-
             "defaultQuery_extra" : "Cercare i valori validi per 'codice', 'contenuto' o 'formato' nell'elenco 'Formato/Contenuto' della guida dello sviluppatore. Come prima versione è possibile iniziare con l'accesso a tutti i dati. A tale scopo utilizzare { \"group\" : \"all\", \"group-system\" : \"v1\" }. Raffinare il filtro prima che il plugin o l'applicazione entrino in produzione.",
-
             "secret" : "La propria applicazione necessiterà di questo 'segreto' durante l'accesso. Scegliere un qualsiasi elemento desiderato.",
-
             "mustParticipateInStudy" : "L'utente deve partecipare allo studio per utilizzare l'applicazione.",
-
             "unlock_code" : "Se compilato, questo codice deve essere inserito dall'utente per registrarsi o accedere per la prima volta a MIDATA tramite l'applicazione. Il codice non è sensibile ai caratteri maiuscoli/minuscoli."
         },
         "status" : {
-
             "title" : "Stato dell'applicazione",
-
             "ACTIVE" : "Pronto per l'utilizzo in produzione",
-
             "BETA" : "Versione beta",
-
             "DEVELOPMENT" : "Sviluppo in corso - utilizzo riservato esclusivamente allo sviluppatore",
-
             "DEPRECATED" : "Deprecato - non deve essere più utilizzato",
-
             "DELETED" : "Eliminato"
         },
-
         "nostudy" : "Non collegato a uno studio",
-
         "optionalParticipation" : "Partecipazione opzionale",
-
         "access_query_options" : "Filtro di accesso ai dati (Opzioni)",
-
         "access_query_selection" : "Filtro di accesso ai dati (Selezione)",
-
         "access_query_add" : "Filtro di accesso ai dati (Aggiungi)",
-
         "access_query_json" : "Filtro di accesso ai dati (JSON)",
         "query" : {
-
             "self" : "L'applicazione o il plugin possono accedere esclusivamente ai dati dell'utente che ha eseguito la procedura di accesso.",
-
             "ownapp" : "L'applicazione o il plugin possono accedere esclusivamente ai dati creati utilizzando questa applicazione o plugin.",
-
             "learn" : "Aggiungere tutti i tipi di dati scritti dall'applicazione automaticamente al filtro di accesso ai dati. (DEVE essere disattivato prima che l'applicazione entri in produzione)",
-
             "all" : "Durante lo sviluppo, consentire l'accesso a tutti i dati dell'utente. (DEVE essere sostituito con un filtro di accesso ai dati adeguato prima che il plugin entri in produzione)"
         },
-
         "export_btn" : "Esporta la definizione applicazione",
-
-        "export_help" : "Esportare la definizione di questa applicazione, in modo che possa essere importata e utilizzata su un altro servizio."
+        "export_help" : "Esportare la definizione di questa applicazione, in modo che possa essere importata e utilizzata su un altro servizio.",
+        "important" : "IMPORTANTE",
+        "logoutwarning" : "La modifica della definizione dell'applicazione comporta la disconnessione di tutti gli utenti dall'applicazione stessa. Dovranno confermare nuovamente l'utilizzo dell'applicazione al prossimo accedi.",
+        "researchwarning" : "La modifica della definizione dell'applicazione dissocia questa applicazione di ricerca da tutti gli studi!"
     },
 
     "appstats" : {
-
         "title" : "Debug delle informazioni di",
-
         "action" : "Azione",
-
         "first" : "Prima azione registrata alle",
-
         "lastrun" : "Ultimo eseguita",
-
         "count" : "Statistiche",
-
         "run" : "Numero di volte in cui l'azione è stata richiamata.",
-
         "retry" : "Numero di volte in cui le operazioni devono essere ripetute per problemi di simultaneità.",
-
         "db" : "Numero medio di interrogazioni del database interno (MongoDB) eseguite per richiamo dell'azione.",
-
         "time" : "Tempo di esecuzione",
-
         "avgtime" : "Media",
-
         "lasttime" : "Ultimo",
-
         "results" : "Risultati e avvisi",
-
         "result" : "Risposta",
-
         "empty" : "Non è stata registrata alcuna informazione dall'ultima eliminazione delle informazioni di debug.",
-
         "reload_btn" : "Aggiorna",
-
         "reset_btn" : "Cancella"
     },
 
     "appdebug" : {
-       
         "title" : "API Tester"
     },
 
     "appicon" : {
-
         "title" : "Icone e immagini",
-
         "name" : "Nome plugin/applicazione",
-
         "internalname" : "Nome interno",
         "use" : {
-
             "title" : "Utilizzo dell'immagine",
-
             "LOGINPAGE" : "Visualizza sulla pagina di accesso OAuth",
-
             "APPICON" : "Utilizza come icona dell'applicazione"
         },
         "type" : {
-
             "title" : "Tipo di immagine",
-          
             "image/jpeg" : "JPEG",
-           
             "image/png" : "PNG",
-          
             "image/gif" : "GIF"
         },
-
         "file" : "File di immagine da caricare",
-
         "file_help" : "Ridimensionare e comprimere l'immagine a un formato ragionevole prima di caricarla. Le immagini più pesanti di 1 MB non saranno accettate.",
-
         "existing" : "Immagini collegate all'applicazione"
     }
 }
