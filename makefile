@@ -195,8 +195,15 @@ tasks/reimport-mongodb: trigger/reimport-mongodb $(wildcard json/*.json)
 	$(info ------------------------------)
 	python main.py reimport mongodb
 	touch tasks/reimport-mongodb
+
+tasks/reimport-plugins: trigger/reimport-plugins
+	$(info ------------------------------)
+	$(info Importing Plugins into mongoDB.... )
+	$(info ------------------------------)
+	python main.py reimportplugins mongodb
+	touch tasks/reimport-plugins
 	
-tasks/build-mongodb: trigger/build-mongodb tasks/reimport-mongodb
+tasks/build-mongodb: trigger/build-mongodb tasks/reimport-mongodb tasks/reimport-plugins
 	python main.py start mongodb
 	python main.py build mongodb
 	touch tasks/build-mongodb

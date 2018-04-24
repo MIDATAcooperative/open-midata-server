@@ -58,7 +58,7 @@ angular.module('portal')
 		
 		if (! $scope.myform.$valid) return;
 		*/
-						
+		$scope.app.msgOnly = true;				
 		$scope.status.doAction('submit', apps.updatePlugin($scope.app))
 		.then(function() { $scope.selmsg = null;$scope.submitted = false;$scope.loadApp($state.params.appId); });
 		
