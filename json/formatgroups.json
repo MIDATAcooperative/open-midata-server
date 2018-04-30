@@ -45,7 +45,7 @@
 {"_id":{"$oid":"58773f8daed645135829ffbc"},"system":"v1","name":"condition","label":{"de":"Beschwerden","en":"Conditions"},"parent":"health","contents":["Condition","condition/icd-10-c9x"]}
 {"_id":{"$oid":"58773f8daed645135829ffbb"},"system":"v1","name":"goal","label":{"de":"Ziele","en":"Goals"},"parent":"health","contents":["Goal"]}
 {"_id":{"$oid":"5877408faed645135829ffbd"},"system":"v1","name":"milestones","label":{"de":"Meilensteine","en":"Milestones"},"parent":"lifestyle","contents":["milestones"]}
-{"_id":{"$oid":"58e60ed1aed6450f67436b75"},"system":"v1","name":"assessment","label":{"de":"Bewertungen","en":"Assessment"},"parent":"health","contents":["MiSensSmellThreshold","MSCogTestSDPrep","MSMotTestLine","MSMotTestDotDetail","MSMotTestDot","MSCogTestLab","MiSensTasteIntensity","MSTests","MSCogTestSD","MiSensQuestionnaire"]}
+{"_id":{"$oid":"58e60ed1aed6450f67436b75"},"system":"v1","name":"assessment","label":{"de":"Bewertungen","en":"Assessment"},"parent":"health","contents":["MiSensSmellThreshold","MSCogTestSDPrep","MSMotTestLine","MSMotTestDotDetail","MSMotTestDot","MSCogTestLab","MiSensTasteIntensity","MSTests","MSCogTestSD","MSMotNineHolePeg","MiSensQuestionnaire"]}
 {"_id":{"$oid":"5909f37caed6450e198a9451"},"system":"v1","name":"behavior","label":{"de":"Verhalten","en":"Behavior"},"parent":"health","contents":["behavior/craves-for-drugs"]}
 {"_id":{"$oid":"598025dbaed6450a5c70f846"},"system":"v1","name":"habits","label":{"de":"Gewohnheiten","en":"Habits"},"parent":"lifestyle","contents":["loinc/63582-1"]}
 {"_id":{"$oid":"59a3fa4eaed645237854253d"},"system":"v1","name":"media","label":{"de":"Medien","en":"Media"},"parent":"other","contents":["profile/picture"]}

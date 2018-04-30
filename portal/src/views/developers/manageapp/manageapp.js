@@ -263,4 +263,8 @@ angular.module('portal')
 		return ENV.apiurl + "/api/shared/icon/APPICON/" + $scope.app.filename;
 	};
 	
+	$scope.requireLogout = function() {
+		$scope.logoutRequired = true;
+	};
+	
 }]);

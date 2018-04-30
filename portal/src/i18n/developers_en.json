@@ -57,7 +57,8 @@
 	   "CONSENT_REJECT_AUTHORIZED" : "Consent rejection (Grantee)",
 	   "ACCOUNT_UNLOCK" : "Account unlocked by the administrator",
 	   "EMAIL_CHANGED_OLDADDRESS" : "Login email changed (send to old email address)",
-	   "EMAIL_CHANGED_NEWADDRESS" : "Login email changed (send to new email address)"	   
+	   "EMAIL_CHANGED_NEWADDRESS" : "Login email changed (send to new email address)",
+	   "PASSWORD_FORGOTTEN" : "Password forgotten"	   
     }		      
   },
   
@@ -87,7 +88,14 @@
     "admin_only" : "Only a MIDATA administrator may change this section. Please request changes if required.",
     "terms_of_use" : "General Terms and Conditions",
     "show_terms" : "Show General Terms and Conditions",
-    "unlock_code" : "Code for registration",    
+    "unlock_code" : "Code for registration",  
+    "logout" : "Disconnect All",
+    "pleaseLogout1" : "Logout all users",
+    "pleaseLogout2" : "Disconnect from studies",
+    "logout_optional" : "[ Not required ]",
+    "logout_required" : "[ required ]",
+    "logout_explain" : "Changes to fields marked with !! will require to log out all users of that application.",
+      
     "info" : {
        "filename" : "This name is internally used to identify your app. Should be a valid identifier (a-z, A-Z, 0-9, _).",
        "targetUserRole" : "Is your app for a specific role only? Otherwise choose 'Any Role'.",

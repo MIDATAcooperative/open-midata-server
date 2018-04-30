@@ -111,7 +111,7 @@ public class Application extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class) 
 	@APICall
-	public static Result requestPasswordResetToken() throws JsonValidationException, InternalServerException {
+	public static Result requestPasswordResetToken() throws AppException {
 		// validate input
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "email", "role");				
@@ -121,13 +121,14 @@ public class Application extends APIController {
 		// execute
 		User user = null;
 		switch (role) {
-		case "member" : user = Member.getByEmail(email, Sets.create("firstname", "lastname","email","password"));break;
-		case "research" : user = ResearchUser.getByEmail(email, Sets.create("firstname", "lastname","email","password"));break;
-		case "provider" : user = HPUser.getByEmail(email, Sets.create("firstname", "lastname","email","password"));break;
-		case "developer" : user = Developer.getByEmail(email, Sets.create("firstname", "lastname","email","password"));break;
+		case "member" : user = Member.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role"));break;
+		case "research" : user = ResearchUser.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role"));break;
+		case "provider" : user = HPUser.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role"));break;
+		case "developer" : user = Developer.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role"));break;
 		default: break;		
 		}
-		if (user != null) {							  
+		if (user != null) {		
+		  AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE_REQUEST, user._id);
 		  PasswordResetToken token = new PasswordResetToken(user._id, role);
 		  user.set("resettoken", token.token);
 		  user.set("resettokenTs", System.currentTimeMillis());
@@ -136,7 +137,15 @@ public class Application extends APIController {
 		  String site = "https://" + InstanceConfig.getInstance().getPortalServerDomain();
 		  String url = site + "/#/portal/setpw?token=" + encrypted;
 			   
-		  Messager.sendTextMail(email, user.firstname+" "+user.lastname, "Your Password", lostpwmail.render(site,url).toString());
+		  
+		  Map<String,String> replacements = new HashMap<String, String>();
+		  replacements.put("site", site);
+		  replacements.put("password-link", url);
+		   		  			  		   		  		  			   
+		  if (!Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.PASSWORD_FORGOTTEN, null, Collections.singleton(user._id), null, replacements)) {			  		  		 
+		    Messager.sendTextMail(email, user.firstname+" "+user.lastname, "Your Password", lostpwmail.render(site,url).toString());
+		  }
+		  AuditManager.instance.success();
 		}
 			
 		// response

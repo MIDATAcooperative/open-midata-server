@@ -84,6 +84,10 @@ public class VersionedDBRecord extends DBRecord {
 		return Model.getAll(VersionedDBRecord.class, collection, CMaps.map("_id._id", id), fields);
 	}
 	
+	public static Set<VersionedDBRecord> getAllById(Set<MidataId> id, Set<String> fields) throws InternalServerException {
+		return Model.getAll(VersionedDBRecord.class, collection, CMaps.map("_id._id", id), fields);
+	}
+	
 	public static VersionedDBRecord getByIdAndVersion(MidataId id, String version, Set<String> fields) throws InternalServerException {
 		return Model.get(VersionedDBRecord.class, collection, CMaps.map("_id", CMaps.map("_id", id).map("version", version)), fields);
 	}

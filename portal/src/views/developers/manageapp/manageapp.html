@@ -7,26 +7,26 @@
 			<p ng-show="app._id">Manage Plugin</p>
 		</div>
 		<div class="body">
-		
-		<form name="myform" novalidate role="form" class="form-horizontal" ng-submit="updateApp()">
+		<p ng-show="app._id" translate="manageapp.logout_explain"></p>
+		<form name="myform" novalidate role="form" class="form-horizontal" ng-class="{ 'mark-danger' : app._id }" ng-submit="updateApp()">
 		  <p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
 	      </p>	
-		  <formrow myid="filename" label="manageapp.filename">
-		    <input type="text" id="filename" name="filename" class="form-control" ng-model="app.filename" autofocus required>
+		  <formrow myid="filename" label="manageapp.filename" class="danger-change">
+		    <input type="text" id="filename" name="filename" class="form-control" ng-change="requireLogout();" ng-model="app.filename" autofocus required>
 		    <p class="help-block" translate="manageapp.info.filename"></p>
 		  </formrow>
-		  <formrow myid="targetUserRole" label="manageapp.targetUserRole">
-		    <select id="targetUserRole" name="targetUserRole" class="form-control" ng-model="app.targetUserRole" ng-options="role.value as role.label for role in targetUserRoles" required></select>
+		  <formrow myid="targetUserRole" label="manageapp.targetUserRole" class="danger-change">
+		    <select id="targetUserRole" name="targetUserRole" class="form-control" ng-change="requireLogout();" ng-model="app.targetUserRole" ng-options="role.value as role.label for role in targetUserRoles" required></select>
 		    <p class="help-block" translate="manageapp.info.targetUserRole"></p>
 		  </formrow>
-		  <formrow myid="type" label="manageapp.type">
-		    <select id="type" name="type" class="form-control" ng-model="app.type" ng-options="type.value as type.label for type in types" required></select>
+		  <formrow myid="type" label="manageapp.type" class="danger-change">
+		    <select id="type" name="type" class="form-control" ng-model="app.type" ng-change="requireLogout();" ng-options="type.value as type.label for type in types" required></select>
 		    <p class="help-block" translate="manageapp.info.type"></p>
 		  </formrow>
-		  <formrow myid="requirements" label="Requirements">
+		  <formrow myid="requirements" label="Requirements" class="danger-change">
 		    <div class="checkbox" ng-repeat="req in requirements">
 		      <label>
-		        <input type="checkbox" ng-checked="app.requirements.indexOf(req)>=0" ng-click="toggle(app.requirements, req)">
+		        <input type="checkbox" ng-checked="app.requirements.indexOf(req)>=0" ng-click="toggle(app.requirements, req);requireLogout();">
 		        <span translate="{{ 'enum.userfeature.'+req }}"></span>
 		      </label>
 		    </div>
@@ -93,29 +93,29 @@
 		    <input type="text" id="defaultSpaceContext" name="defaultSpaceContext" class="form-control" placeholder="Dashboard Name" ng-model="app.defaultSpaceContext">
 		    <p class="help-block" translate="manageapp.info.defaultSpaceContext"></p>
 		  </formrow>
-		  <formrow myid="query" label="manageapp.access_query_options">
+		  <formrow myid="query" label="manageapp.access_query_options" class="danger-change">
 		    <div class="checkbox">
 		      <label>
-		      <input type="checkbox" ng-model="query.self" ng-change="patchQuery('owner')">
+		      <input type="checkbox" ng-model="query.self" ng-change="patchQuery('owner');requireLogout();">
 		      <span translate="manageapp.query.self"></span></label>
 		    </div>
 		    <div class="checkbox">
 		      <label>
-		      <input type="checkbox" ng-model="query.ownapp" ng-change="patchQuery('app')">
+		      <input type="checkbox" ng-model="query.ownapp" ng-change="patchQuery('app');requireLogout();">
 		      <span translate="manageapp.query.ownapp"></span></label>
 		    </div>
 		    <div class="checkbox" ng-show="app.type == 'mobile'">
 		      <label>
-		      <input type="checkbox"  ng-model="query.learn" ng-change="patchQuery('learn')">
+		      <input type="checkbox"  ng-model="query.learn" ng-change="patchQuery('learn');requireLogout();">
 		      <span translate="manageapp.query.learn"></span></label>
 		    </div>
 		    <div class="checkbox">
 		      <label>
-		      <input type="checkbox"  ng-model="query.all" ng-change="patchQuery('group')">
+		      <input type="checkbox"  ng-model="query.all" ng-change="patchQuery('group');requireLogout();">
 		      <span translate="manageapp.query.all"></span></label>
 		    </div>
 		   </formrow> 
-		   <formrow myid="queryadd" label="manageapp.access_query_add">
+		   <formrow myid="queryadd" label="manageapp.access_query_add" class="danger-change">
 		    <div class="col-sm-5">
 		      <select class="form-control" ng-model="query.system" ng-options="cs as cs.label | translate for cs in codesystems"></select>
 		    </div>
@@ -123,42 +123,42 @@
 		      <input type="text" class="form-control" id="queryadd" name="queryadd" ng-model="query.code">
 		    </div>
 		    <div class="col-sm-2">
-		      <button class="btn btn-default" type="button" ng-click="addCode()" translate="common.add_btn"></button>
+		      <button class="btn btn-default" type="button" ng-click="addCode();requireLogout();" translate="common.add_btn"></button>
 		    </div>	
 		    <div class="col-sm-12" ng-show="codeerror">
 		    <p class="help-block"  translate="{{codeerror}}"></p>
 		    </div>
 		   </formrow>
-		   <formrow myid="query" label="manageapp.access_query_selection" ng-show="labels.length">		    
+		   <formrow myid="query" label="manageapp.access_query_selection" ng-show="labels.length" class="danger-change">		    
 		    <div ng-repeat="label in labels" class="checkbox">
 		      <label>
-		      <input type="checkbox" ng-model="label.selected" ng-change="patchQuery(label.type, label)">
+		      <input type="checkbox" ng-model="label.selected" ng-change="patchQuery(label.type, label);requireLogout();">
 		      {{ label.label }}</label>
 		    </div>
 		  </formrow>
-		  <formrow myid="defaultQuery" label="manageapp.access_query_json">
-		    <textarea rows="5" id="defaultQuery" name="defaultQuery" class="form-control" placeholder="Description" ng-change="updateQuery()" ng-model="app.defaultQueryStr"></textarea>
+		  <formrow myid="defaultQuery" label="manageapp.access_query_json" class="danger-change">
+		    <textarea rows="5" id="defaultQuery" name="defaultQuery" class="form-control" placeholder="Description" ng-change="updateQuery();requireLogout();" ng-model="app.defaultQueryStr"></textarea>
 		    <formerror myid="defaultQuery" type="json" message="error.invalid.json" ></formerror>
 		    <formerror myid="defaultQuery" type="invalid" message="error.invalid.access_query" ></formerror>
 		    <p class="help-block" ng-show="app.type == 'mobile'" translate="manageapp.info.defaultQuery_mobile"></p> 
 		    <p class="help-block" ng-hide="app.type == 'mobile'" translate="manageapp.info.defaultQuery"></p>
 		    
 		  </formrow>
-		  <formrow myid="writes" label="Write Mode">
-		    <select class="form-control" name="writes" ng-model="app.writes" ng-options="mode as ('enum.writepermissiontype.'+mode)|translate for mode in writemodes"></select>
+		  <formrow myid="writes" label="Write Mode" class="danger-change">
+		    <select class="form-control" name="writes" ng-model="app.writes" ng-change="requireLogout();" ng-options="mode as ('enum.writepermissiontype.'+mode)|translate for mode in writemodes"></select>
 		  </formrow>	
-		  <formrow myid="resharesData" label="Resharing">
+		  <formrow myid="resharesData" label="Resharing" class="danger-change">
 		    <div class="checkbox">
 		    <label>
-		      <input type="checkbox" id="resharesData" name="resharesData" ng-model="app.resharesData" value="true">
+		      <input type="checkbox" id="resharesData" name="resharesData" ng-change="requireLogout();" ng-model="app.resharesData" value="true">
 		      <span translate="manageapp.info.resharesData"></span>
 		    </label>
 		    </div>
 		  </formrow>
-		   <formrow myid="allowsUserSearch" label="User Search" ng-show="app.type == 'mobile'">
+		   <formrow myid="allowsUserSearch" label="User Search" ng-show="app.type == 'mobile'" class="danger-change">
 		    <div class="checkbox">
 		    <label>
-		      <input type="checkbox" id="allowsUserSearch" name="allowsUserSearch" ng-model="app.allowsUserSearch" value="true">
+		      <input type="checkbox" id="allowsUserSearch" name="allowsUserSearch" ng-change="requireLogout();" ng-model="app.allowsUserSearch" value="true">
 		      <span translate="manageapp.info.allowsUserSearch"></span>
 		    </label>
 		    </div>
@@ -206,40 +206,53 @@
 		    <input type="text" id="unlockCode" name="unlockCode" class="form-control" ng-model="app.unlockCode">
 		    <p class="help-block" translate="manageapp.info.unlock_code"></p>
 		  </formrow>
+		  
+		  
+		   <formrow myid="withLogout" label="manageapp.logout" ng-if="app._id">
+		    <div class="checkbox">
+		      <label>
+		        <input type="checkbox" id="withLogout" name="withLogout" ng-model="app.withLogout" value="true" ng-required="logoutRequired">
+		        <span translate="manageapp.pleaseLogout1"></span>
+		        <span ng-show="app.targetUserRole=='RESEARCH'"> / </span>
+		        <span ng-show="app.targetUserRole=='RESEARCH'" translate="manageapp.pleaseLogout2"></span>
+		        <span class="text-danger" ng-show="logoutRequired" translate="manageapp.logout_required"></span>
+		        <span class="text-success" ng-hide="logoutRequired" translate="manageapp.logout_optional"></span>
+		      </label>
+		    </div>
+		    <div ng-show="app._id && app.type=='mobile' && app.withLogout" class="alert alert-warning">
+		      <strong translate="manageapp.important"></strong>
+		      <p ng-hide="app.targetUserRole=='RESEARCH'" translate="manageapp.logoutwarning"></p>
+		      <p ng-show="app.targetUserRole=='RESEARCH'" translate="manageapp.researchwarning"></p>		    
+		    </div>  		  
+		  </formrow>
+		  
 		  <div ng-show="app.type == 'mobile' && app.targetUserRole != 'RESEARCH'">
 		  <hr ng-show="app.type == 'mobile'">
 		  <p class="alert alert-info" ng-show="app.type == 'mobile'" translate="manageapp.admin_only"></p>
-		  <formrow myid="termsOfUse" label="manageapp.terms_of_use">
-		    <input id="termsOfUse" type="text" ng-disabled="!allowStudyConfig" name="termsOfUse" class="form-control" ng-model="app.termsOfUse" autocomplete="off" uib-typeahead="term.id as term.fullname for term in terms | filter:{fullname:$viewValue}">
+		  <formrow myid="termsOfUse" label="manageapp.terms_of_use" class="danger-change">
+		    <input id="termsOfUse" type="text" ng-disabled="!allowStudyConfig" name="termsOfUse" class="form-control" ng-change="requireLogout();" ng-model="app.termsOfUse" autocomplete="off" uib-typeahead="term.id as term.fullname for term in terms | filter:{fullname:$viewValue}">
 		    
 		     <p class="help-block" ng-show="app.termsOfUse"><a ui-sref="^.terms({ which:app.termsOfUse })" translate="manageapp.show_terms"></a></p> 
 		  </formrow>
-		  <formrow myid="linkedStudy" label="manageapp.linkedStudy" >
-		    <input type="text" id="linkedStudy" ng-disabled="!allowStudyConfig" name="linkedStudy" class="form-control" ng-change="checkStudyEmpty()" placeholder="Study" ng-model="app.linkedStudyCode">
+		  <formrow myid="linkedStudy" label="manageapp.linkedStudy" class="danger-change" >
+		    <input type="text" id="linkedStudy" ng-disabled="!allowStudyConfig" name="linkedStudy" class="form-control" ng-change="checkStudyEmpty();requireLogout();" placeholder="Study" ng-model="app.linkedStudyCode">
 		    <formerror myid="linkedStudy" type="invalid" message="error.unknown.study" ></formerror>
 		     <p class="help-block">{{ app.linkedStudyName }}</p> 
 		  </formrow>
-		   <formrow myid="mustParticipateInStudy" label="manageapp.mustParticipateInStudy">
+		   <formrow myid="mustParticipateInStudy" label="manageapp.mustParticipateInStudy" class="danger-change">
 		    <div class="checkbox">
 		    <label>
-		      <input type="checkbox" id="mustParticipateInStudy" ng-disabled="!allowStudyConfig || !app.linkedStudyCode" name="mustParticipateInStudy" ng-model="app.mustParticipateInStudy" value="true">
+		      <input type="checkbox" id="mustParticipateInStudy" ng-change="requireLogout();" ng-disabled="!allowStudyConfig || !app.linkedStudyCode" name="mustParticipateInStudy" ng-model="app.mustParticipateInStudy" value="true">
 		      <span translate="manageapp.info.mustParticipateInStudy"></span>
 		    </label>
 		    </div>
 		  </formrow>
 		  </div>
-		  <formrow myid="y" label="">
-		  <div ng-show="app._id && app.type=='mobile'" class="alert alert-warning">
-		    <strong translate="manageapp.important"></strong>
-		    <p ng-hide="app.targetUserRole=='RESEARCH'" translate="manageapp.logoutwarning"></p>
-		    <p ng-show="app.targetUserRole=='RESEARCH'" translate="manageapp.researchwarning"></p>		    
-		  </div>
-		  </formrow>
+		
 		  
 		  <formrow myid="x" label="">
 		    <button type="submit" ng-disabled="status.action=='submit'" class="btn btn-primary">Submit</button>		    		   
-		    <button type="button" class="btn btn-danger" ng-show="allowDelete" ng-click="doDelete()" ng-disabled="status.action=='delete'" translate="common.delete_btn"></button>
-		    
+		    <button type="button" class="btn btn-danger" ng-show="allowDelete" ng-click="doDelete()" ng-disabled="status.action=='delete'" translate="common.delete_btn"></button>		    
 		  </formrow>		  
 	     </form>	  
 		  

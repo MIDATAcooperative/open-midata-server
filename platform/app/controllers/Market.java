@@ -121,105 +121,125 @@ public class Market extends APIController {
 		
 		app.version = JsonValidation.getLong(json, "version");				
 		
-		String filename = JsonValidation.getString(json, "filename"); // .toLowerCase(); We have existing plugins with mixed case
-		if (!app.filename.equals(filename)) {
-			
-			if (Plugin.exists(CMaps.map("filename", filename).map("status", EnumSet.of(PluginStatus.ACTIVE, PluginStatus.BETA, PluginStatus.DEPRECATED, PluginStatus.DEVELOPMENT)))) {
-				throw new BadRequestException("error.exists.plugin", "A plugin with the same filename already exists.");
-			}
-			
-			app.filename = JsonValidation.getString(json, "filename"); 
-		}
-			
-		String name = JsonValidation.getString(json, "name");
-		if (!app.name.equals(name)) {
-			
-		  if (Plugin.exists(CMaps.map("creator", userId.toDb()).map("name", name).map("status", EnumSet.of(PluginStatus.ACTIVE, PluginStatus.BETA, PluginStatus.DEPRECATED, PluginStatus.DEVELOPMENT)))) {
-			throw new BadRequestException("error.exists.plugin", "A plugin with the same name already exists.");
-		  }
-			
-		  app.name = JsonValidation.getString(json, "name");
-		}
-		app.orgName = JsonValidation.getStringOrNull(json, "orgName");
-		app.description = JsonValidation.getStringOrNull(json, "description");		
-		app.type = JsonValidation.getString(json, "type");
-		app.url = JsonValidation.getStringOrNull(json, "url");
-		app.previewUrl = JsonValidation.getStringOrNull(json, "previewUrl");
-		app.addDataUrl = JsonValidation.getStringOrNull(json, "addDataUrl");
-		app.developmentServer = "https://localhost:9004/"+app.filename;
-		//app.developmentServer = JsonValidation.getStringOrNull(json, "developmentServer");
-		app.tags = JsonExtraction.extractStringSet(json.get("tags"));
-		app.requirements = JsonExtraction.extractEnumSet(json, "requirements", UserFeature.class);
-		app.targetUserRole = JsonValidation.getEnum(json, "targetUserRole", UserRole.class);
-		app.defaultSpaceName = JsonValidation.getStringOrNull(json, "defaultSpaceName");
-		app.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");
-		app.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
-		app.resharesData = JsonValidation.getBoolean(json, "resharesData");
-		app.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
-		app.unlockCode = JsonValidation.getStringOrNull(json, "unlockCode");
-		app.writes = JsonValidation.getEnum(json, "writes", WritePermissionType.class);
-		app.i18n = new HashMap<String, Plugin_i18n>();
-		app.pluginVersion = System.currentTimeMillis();
-		
-		if (getRole().equals(UserRole.ADMIN)) {
-			String linkedStudyCode = JsonValidation.getStringOrNull(json, "linkedStudyCode");
-			if (linkedStudyCode != null) {
-			  Study study = Study.getByCodeFromMember(linkedStudyCode, Sets.create("_id", "executionStatus", "validationStatus", "participantSearchStatus"));
-			  if (study == null) throw new JsonValidationException("error.invalid.study", "linkedStudy", "invalid", "Unknown Study");
-			  if (study.executionStatus.equals(StudyExecutionStatus.ABORTED) || study.executionStatus.equals(StudyExecutionStatus.FINISHED)) throw new JsonValidationException("error.invalid.study", "linkedStudy", "invalid", "Study closed");
-			  if (study.validationStatus.equals(StudyValidationStatus.REJECTED) || study.validationStatus.equals(StudyValidationStatus.DRAFT)) throw new JsonValidationException("error.invalid.study", "linkedStudy", "invalid", "Study rejected");
-			  if (study.participantSearchStatus.equals(ParticipantSearchStatus.CLOSED)) throw new JsonValidationException("error.invalid.study", "linkedStudy", "invalid", "Study not searching");
-			  
-			  app.linkedStudy = study._id;
-			} else {
-			  app.linkedStudy = null;
-			}
-			app.mustParticipateInStudy = JsonValidation.getBoolean(json, "mustParticipateInStudy");
-				
-			
-		   String termsOfUse = JsonValidation.getStringOrNull(json, "termsOfUse");
-		   app.termsOfUse = termsOfUse;
-		}
+		boolean withLogout = JsonValidation.getBoolean(json, "withLogout");
+		boolean msgOnly = JsonValidation.getBoolean(json, "msgOnly");
 		
 		Map<String, MessageDefinition> predefinedMessages = parseMessages(json);
 		if (predefinedMessages != null) app.predefinedMessages = predefinedMessages;
 		
-		try {
-		  Query.validate(app.defaultQuery, app.type.equals("mobile"));
-		} catch (BadRequestException e) {
-			throw new JsonValidationException(e.getLocaleKey(), "defaultQuery", "invalid", e.getMessage());
-		}
-		if (json.has("i18n")) {
-			Map<String,Object> i18n = JsonExtraction.extractMap(json.get("i18n"));
-			for (String lang : i18n.keySet()) {
-				Map<String, Object> entry = (Map<String, Object>) i18n.get(lang);
-				Plugin_i18n plugin_i18n = new Plugin_i18n();
-				plugin_i18n.name = (String) entry.get("name");
-				plugin_i18n.description = (String) entry.get("description");
-				plugin_i18n.defaultSpaceName = (String) entry.get("defaultSpaceName");
-				app.i18n.put(lang, plugin_i18n);
+		if (!msgOnly) { 
+			if (withLogout) {
+				String filename = JsonValidation.getString(json, "filename"); // .toLowerCase(); We have existing plugins with mixed case
+				if (!app.filename.equals(filename)) {
+					
+					if (Plugin.exists(CMaps.map("filename", filename).map("status", EnumSet.of(PluginStatus.ACTIVE, PluginStatus.BETA, PluginStatus.DEPRECATED, PluginStatus.DEVELOPMENT)))) {
+						throw new BadRequestException("error.exists.plugin", "A plugin with the same filename already exists.");
+					}
+					
+					app.filename = JsonValidation.getString(json, "filename"); 
+				}
 			}
-		}
-		
-
-		// fill in specific fields
-		if (app.type.equals("oauth1") || app.type.equals("oauth2")) {
-			app.apiUrl = validApiUrl(JsonValidation.getStringOrNull(json, "apiUrl"));			
+				
+			String name = JsonValidation.getString(json, "name");
+			if (!app.name.equals(name)) {
+				
+			  if (Plugin.exists(CMaps.map("creator", userId.toDb()).map("name", name).map("status", EnumSet.of(PluginStatus.ACTIVE, PluginStatus.BETA, PluginStatus.DEPRECATED, PluginStatus.DEVELOPMENT)))) {
+				throw new BadRequestException("error.exists.plugin", "A plugin with the same name already exists.");
+			  }
+				
+			  app.name = JsonValidation.getString(json, "name");
+			}
 			
-			app.authorizationUrl = JsonValidation.getStringOrNull(json, "authorizationUrl");
-			app.accessTokenUrl = JsonValidation.getStringOrNull(json, "accessTokenUrl");
-			app.consumerKey = JsonValidation.getStringOrNull(json, "consumerKey");
-			app.consumerSecret = JsonValidation.getStringOrNull(json, "consumerSecret");
-			if (app.type.equals("oauth1")) {
-				app.requestTokenUrl = JsonValidation.getStringOrNull(json, "requestTokenUrl");
-			} else if (app.type.equals("oauth2")) {
-				app.scopeParameters = JsonValidation.getStringOrNull(json, "scopeParameters");
-				app.tokenExchangeParams = JsonValidation.getStringOrNull(json, "tokenExchangeParams");
+			
+			if (withLogout) {
+				app.type = JsonValidation.getString(json, "type");
+				app.requirements = JsonExtraction.extractEnumSet(json, "requirements", UserFeature.class);
+				app.targetUserRole = JsonValidation.getEnum(json, "targetUserRole", UserRole.class);
+				app.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
+				app.resharesData = JsonValidation.getBoolean(json, "resharesData");
+				app.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
+				app.writes = JsonValidation.getEnum(json, "writes", WritePermissionType.class);
+				app.pluginVersion = System.currentTimeMillis();
+				
+				try {
+				  Query.validate(app.defaultQuery, app.type.equals("mobile"));
+				} catch (BadRequestException e) {
+				  throw new JsonValidationException(e.getLocaleKey(), "defaultQuery", "invalid", e.getMessage());
+				}
 			}
-		}
-		if (app.type.equals("mobile")) {
-			app.secret = JsonValidation.getStringOrNull(json, "secret");
-			app.redirectUri = JsonValidation.getStringOrNull(json, "redirectUri");
+			
+			app.orgName = JsonValidation.getStringOrNull(json, "orgName");
+			app.description = JsonValidation.getStringOrNull(json, "description");				
+			app.url = JsonValidation.getStringOrNull(json, "url");
+			app.previewUrl = JsonValidation.getStringOrNull(json, "previewUrl");
+			app.addDataUrl = JsonValidation.getStringOrNull(json, "addDataUrl");
+			app.developmentServer = "https://localhost:9004/"+app.filename;
+			//app.developmentServer = JsonValidation.getStringOrNull(json, "developmentServer");
+			app.tags = JsonExtraction.extractStringSet(json.get("tags"));
+					
+			app.defaultSpaceName = JsonValidation.getStringOrNull(json, "defaultSpaceName");
+			app.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");
+			
+			app.unlockCode = JsonValidation.getStringOrNull(json, "unlockCode");
+			
+			app.i18n = new HashMap<String, Plugin_i18n>();
+			
+			
+			if (getRole().equals(UserRole.ADMIN) && withLogout) {
+				String linkedStudyCode = JsonValidation.getStringOrNull(json, "linkedStudyCode");
+				if (linkedStudyCode != null) {
+				  Study study = Study.getByCodeFromMember(linkedStudyCode, Sets.create("_id", "executionStatus", "validationStatus", "participantSearchStatus"));
+				  if (study == null) throw new JsonValidationException("error.invalid.study", "linkedStudy", "invalid", "Unknown Study");
+				  if (study.executionStatus.equals(StudyExecutionStatus.ABORTED) || study.executionStatus.equals(StudyExecutionStatus.FINISHED)) throw new JsonValidationException("error.invalid.study", "linkedStudy", "invalid", "Study closed");
+				  if (study.validationStatus.equals(StudyValidationStatus.REJECTED) || study.validationStatus.equals(StudyValidationStatus.DRAFT)) throw new JsonValidationException("error.invalid.study", "linkedStudy", "invalid", "Study rejected");
+				  if (study.participantSearchStatus.equals(ParticipantSearchStatus.CLOSED)) throw new JsonValidationException("error.invalid.study", "linkedStudy", "invalid", "Study not searching");
+				  
+				  app.linkedStudy = study._id;
+				} else {
+				  app.linkedStudy = null;
+				}
+				app.mustParticipateInStudy = JsonValidation.getBoolean(json, "mustParticipateInStudy");
+					
+				
+			   String termsOfUse = JsonValidation.getStringOrNull(json, "termsOfUse");
+			   app.termsOfUse = termsOfUse;
+			}
+			
+			
+			
+			if (json.has("i18n")) {
+				Map<String,Object> i18n = JsonExtraction.extractMap(json.get("i18n"));
+				for (String lang : i18n.keySet()) {
+					Map<String, Object> entry = (Map<String, Object>) i18n.get(lang);
+					Plugin_i18n plugin_i18n = new Plugin_i18n();
+					plugin_i18n.name = (String) entry.get("name");
+					plugin_i18n.description = (String) entry.get("description");
+					plugin_i18n.defaultSpaceName = (String) entry.get("defaultSpaceName");
+					app.i18n.put(lang, plugin_i18n);
+				}
+			}
+			
+	
+			// fill in specific fields
+			if (app.type.equals("oauth1") || app.type.equals("oauth2")) {
+				app.apiUrl = validApiUrl(JsonValidation.getStringOrNull(json, "apiUrl"));			
+				
+				app.authorizationUrl = JsonValidation.getStringOrNull(json, "authorizationUrl");
+				app.accessTokenUrl = JsonValidation.getStringOrNull(json, "accessTokenUrl");
+				app.consumerKey = JsonValidation.getStringOrNull(json, "consumerKey");
+				app.consumerSecret = JsonValidation.getStringOrNull(json, "consumerSecret");
+				if (app.type.equals("oauth1")) {
+					app.requestTokenUrl = JsonValidation.getStringOrNull(json, "requestTokenUrl");
+				} else if (app.type.equals("oauth2")) {
+					app.scopeParameters = JsonValidation.getStringOrNull(json, "scopeParameters");
+					app.tokenExchangeParams = JsonValidation.getStringOrNull(json, "tokenExchangeParams");
+				}
+			}
+			if (app.type.equals("mobile")) {
+				app.secret = JsonValidation.getStringOrNull(json, "secret");
+				app.redirectUri = JsonValidation.getStringOrNull(json, "redirectUri");
+			}
+		
 		}
 		 
 		try {
