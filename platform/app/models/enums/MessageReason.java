@@ -75,5 +75,10 @@ public enum MessageReason {
 	/**
 	 * Account email has been changed (sent to new address)
 	 */
-	EMAIL_CHANGED_NEWADDRESS
+	EMAIL_CHANGED_NEWADDRESS,
+	
+	/**
+	 * User has forgotten his password
+	 */
+	PASSWORD_FORGOTTEN
 }

@@ -187,6 +187,10 @@ class MongoDB(Product):
 				self.user_username,
 				self.user_password,
 				f), self.parent)	
+	
+	def exportplugins(self):
+		MongoDB.readconf(self)
+		print 'Exporting plugins'			
 		for f in ['plugins','pluginicons']:				  
 			Command.execute('{0} -h {2}{3} -d {4} {5}{6} -c {7} -o {1} {8}'.format(os.path.join(self.bin, 'mongoexport'), 
 				os.path.join(self.parent, 'json', f + '.json'), 
@@ -200,6 +204,7 @@ class MongoDB(Product):
 			), self.parent)		
 			Command.execute('/bin/sed -i \'/"_id":/s/"_id":[^,]*,//\' {0}'.format(os.path.join(self.parent, 'json', f + '.json')))			  
 
+
 	def reimport(self):
 		MongoDB.readconf(self)	
 		print 'Importing metadata'
@@ -211,7 +216,18 @@ class MongoDB(Product):
 				self.user_database,
 				self.user_username,
 				self.user_password,
-				f), self.parent)		
+				f), self.parent)							
+		Command.execute('{0} -h {2}{3} -d {4} {5}{6} -c loinc --type csv --drop --headerline --file {1}'.format(os.path.join(self.bin, 'mongoimport'), 
+			os.path.join(self.parent, 'json', 'loinc.csv'),
+			self.user_host, 
+			self.user_port, 
+			self.user_database,
+			self.user_username,
+			self.user_password), self.parent)		
+
+	def reimportplugins(self):
+		MongoDB.readconf(self)	
+		print 'Importing plugins'			
 		Command.execute('{0} -h {2}{3} -d {4} {5}{6} -c {7} --file {1} --upsert --upsertFields filename'.format(os.path.join(self.bin, 'mongoimport'), 
 			os.path.join(self.parent, 'json', 'plugins.json'),
 			self.user_host, 
@@ -227,13 +243,5 @@ class MongoDB(Product):
 			self.user_database,
 			self.user_username,
 			self.user_password,
-			'pluginicons'), self.parent)					
-		Command.execute('{0} -h {2}{3} -d {4} {5}{6} -c loinc --type csv --drop --headerline --file {1}'.format(os.path.join(self.bin, 'mongoimport'), 
-			os.path.join(self.parent, 'json', 'loinc.csv'),
-			self.user_host, 
-			self.user_port, 
-			self.user_database,
-			self.user_username,
-			self.user_password), self.parent)		
-
+			'pluginicons'), self.parent)						
 						

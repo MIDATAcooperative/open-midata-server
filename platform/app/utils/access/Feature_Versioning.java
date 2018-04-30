@@ -1,9 +1,12 @@
 package utils.access;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.bson.BSONObject;
@@ -216,66 +219,103 @@ public class Feature_Versioning extends Feature {
 		return result;
 	}
 	*/
-	public static class HistoryDate implements DBIterator<DBRecord> {
+	
+	static class HistoryDate implements DBIterator<DBRecord> {
 
-		private DBIterator<DBRecord> chain;
-		private DBRecord next;
+		private int blocksize;
+		protected DBIterator<DBRecord> chain;
+		protected Iterator<DBRecord> cache;
+		private List<DBRecord> work;
+		private Query q;
+		private int loaded;
+		private int notloaded;
 		private Date historyDate;
-		
+
 		public HistoryDate(DBIterator<DBRecord> chain, Query q) throws AppException {
 			this.chain = chain;
 			historyDate = q.getDateRestriction("history-date");
-			advance();
+			this.blocksize = 500;
+			this.q = q;
+			this.cache = Collections.emptyIterator();
+			work = new ArrayList<DBRecord>(blocksize);
 		}
-		
-		@Override
-		public boolean hasNext() {
-			return next != null;
-		}
+				
 
-		private void advance() throws AppException {
-			if (!chain.hasNext()) {
-				next = null;
-				return;
+		@Override
+		public boolean hasNext() throws AppException {
+			return cache.hasNext() || chain.hasNext();
+		}
+				
+		@Override
+		public DBRecord next() throws AppException {
+			if (cache.hasNext())
+				return cache.next();
+
+			int current = 0;
+			work.clear();
+			Map<MidataId, DBRecord> fetchIds = new HashMap<MidataId, DBRecord>();
+			while (current < blocksize && chain.hasNext()) {
+				DBRecord next = chain.next();
+				
+				Date lu = next.meta.getDate("lastUpdated");
+				if (lu != null && lu.after(historyDate)) {				   							
+					DBRecord old = fetchIds.put(next._id, next);
+					/*if (old == null) {
+						work.add(record);
+						loaded++;
+					}*/
+				} else {
+					work.add(next);
+					notloaded++;
+				}
+				current++;
 			}
-			next = chain.next();
-			
-			Date lu = next.meta.getDate("lastUpdated");
-			if (lu != null && lu.after(historyDate)) {
-				Set<VersionedDBRecord> recs = VersionedDBRecord.getAllById(next._id, QueryEngine.META_AND_DATA);
-				VersionedDBRecord bestRecord = null;
-				Date bestDate = null;
-				for (VersionedDBRecord rec : recs) {	
+		
+			if (!fetchIds.isEmpty()) {
+											
+				Set<VersionedDBRecord> recs = VersionedDBRecord.getAllById(fetchIds.keySet(), QueryEngine.META_AND_DATA);
+				Map<MidataId,VersionedDBRecord> bestRecord = new HashMap<MidataId,VersionedDBRecord>();				
+				for (VersionedDBRecord rec : recs) {
+					DBRecord next = fetchIds.get(rec._id);
                     rec.merge(next);					
 					RecordEncryption.decryptRecord(rec);
 					Date vlastUpdate = rec.meta.getDate("lastUpdated");
 					if (vlastUpdate == null) vlastUpdate = next._id.getCreationDate();
 					if (!vlastUpdate.after(historyDate)) {
-						if (bestRecord == null) {
-							bestRecord = rec;
-							bestDate = vlastUpdate;
-						} else if (vlastUpdate.after(bestDate)) {
-							bestRecord = rec;
-							bestDate = vlastUpdate;
+						rec.meta.put("ownerName", next.meta.get("ownerName"));
+						VersionedDBRecord old = bestRecord.get(next._id); 
+						if (old == null) {
+							bestRecord.put(next._id, rec);							
+						} else {
+							Date bestDate = old.meta.getDate("lastUpdated");
+							if (bestDate == null) bestDate = next._id.getCreationDate();						
+							if (vlastUpdate.after(bestDate)) {
+						      bestRecord.put(next._id, rec);
+							}
 						}
 				    }
-				}				
-				if (bestRecord != null) {					
-					bestRecord.meta.put("ownerName", next.meta.get("ownerName"));
-					next = bestRecord;
-				} else advance();
-			} 
-			
+				}
+				for (MidataId id : fetchIds.keySet()) {
+					VersionedDBRecord found = bestRecord.get(id);
+					if (found != null) {
+						work.add(found);
+						loaded++;
+					}
+				}																
+				
+			}			
+
+			cache = work.iterator();
+
+			return cache.next();
+
 		}
 		
 		@Override
-		public DBRecord next() throws AppException {
-            DBRecord result = next;
-            advance();
-			return result;
+		public String toString() {
+			return "history-date([L:"+loaded+",S:"+notloaded+"] "+chain.toString()+")";
 		}
-		
-		
+
 	}
 	
 		
