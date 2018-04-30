@@ -209,7 +209,7 @@ public class AutoRun extends APIController {
 					if (plugin.type != null && plugin.type.equals("oauth2")) {
 						BSONObject oauthmeta = RecordManager.instance.getMeta(autorunner, space._id, "_oauth");
 						if (oauthmeta != null) {
-							if (oauthmeta.containsField("refreshToken")) {							                        				
+							if (oauthmeta.get("refreshToken") != null) {							                        				
 								Plugins.requestAccessTokenOAuth2FromRefreshToken(request.handle, autorunner, plugin, space._id.toString(), oauthmeta.toMap()).onRedeem(new Callback<Boolean>() {
 									public void invoke(Boolean success) throws AppException, IOException {
 										AccessLog.log("Auth:"+success);
