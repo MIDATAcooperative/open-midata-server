@@ -13,6 +13,8 @@ public enum AuditEventType {
 	
 	USER_PASSWORD_CHANGE(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-password-change", "Password changed"), AuditEventAction.U),
 	
+	USER_PASSWORD_CHANGE_REQUEST(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-password-change-request", "Password change request"), AuditEventAction.E),
+	
 	USER_PASSPHRASE_CHANGE(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-passphrase-change", "Passphrase changed"), AuditEventAction.U),
 	
 	USER_ADDRESS_CHANGE(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-address-change", "User address changed"), AuditEventAction.U),
@@ -169,8 +171,9 @@ public enum AuditEventType {
 	
 	UPDATED_ROLE_IN_TEAM(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "updated-role-in-team", "Updated role in team"), AuditEventAction.U),
 	
-	REMOVED_FROM_TEAM(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "removed-from-team", "Removed from team"), AuditEventAction.D);
+	REMOVED_FROM_TEAM(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "removed-from-team", "Removed from team"), AuditEventAction.D),
 	
+	APP_DEFINITION_CHANGED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "app-definition-changed", "App Definition Changed"), AuditEventAction.U);
 	
 	private AuditEventAction action;
 	private Coding type;

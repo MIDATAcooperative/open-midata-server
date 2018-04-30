@@ -211,6 +211,7 @@
 	   "user-registration" : "User sign up",
 	   "110122" : "Login",
 	   "user-password-change" : "Password changed",
+	   "user-password-change-request" : "Password change requested",
 	   "user-passphrase-change" : "Passphrase changed",
 	   "user-address-change" :"User's address changed",
 	   "user-email-change" :"User's email changed",
@@ -254,7 +255,7 @@
        "audit-log-used" : "Audit Log consulted",	   
 	   "added-as-team-member" : "Added as team member",
 	   "updated-role-in-team" :  "Updated role in team",
-	   "removed-from-team" : "Removed from team"
+	   "removed-from-team" : "Removed from team"	   
 	 },
 	 "userfeature" : {
 	   "EMAIL_ENTERED" : "Email address of user must be known to the platform",
