@@ -237,3 +237,6 @@
 {"_id":{"$oid":"5abcbc1e79c721baaaae8467"},"system":"http://midata.coop","code":"main-occupation-location-type","display":"Main Occupation Location Type","content":"main-occupation-location-type"}
 {"_id":{"$oid":"5ad9e81eaed6451e7ebef97f"},"system":"http://midata.coop","code":"MSMotTestDotDetail","display":"MS Motoriktest Punkte bewegen - Details pro Durchgang","content":"MSMotTestDotDetail"}
 {"_id":{"$oid":"5ae72094aed6450f5126a020"},"system":"http://midata.coop","code":"MSMotNineHolePeg","display":"MS Motoriktest Nine-hole Peg","content":"MSMotNineHolePeg"}
+{"_id":{"$oid":"5ae9d640aed64509ec03dbe8"},"system":"http://loinc.org","code":"80404-7","display":"Heart rate variability","content":"loinc/80404-7"}
+{"_id":{"$oid":"5ae9d6abaed64509ec03dbea"},"system":"http://loinc.org","code":"39106-0","display":"Skin Temperatur","content":"loinc/39106-0"}
+{"_id":{"$oid":"5ae9d765aed64509ec03dbec"},"system":"http://snomed.info/sct","code":"24672009","display":"Galvanic skin response","content":"snomed/24672009"}
