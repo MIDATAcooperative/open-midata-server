@@ -69,7 +69,7 @@ angular.module('portal')
 		if ($scope.error && $scope.error.field && $scope.error.type) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
 		$scope.error = null;
 		if (! $scope.myform.$valid) return;
-												
+		$scope.registration.user = $scope.registration._id;									
 		$scope.status.doAction("changeAddress", users.updateAddress($scope.registration)).
 		then(function(data) { 
 			$scope.retry();

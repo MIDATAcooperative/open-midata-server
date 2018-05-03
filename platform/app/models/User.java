@@ -3,6 +3,7 @@ package models;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -14,6 +15,7 @@ import org.bson.BSONObject;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 
+import models.enums.AccountActionFlags;
 import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
 import models.enums.ContractStatus;
@@ -41,10 +43,11 @@ import utils.exceptions.InternalServerException;
 public class User extends Model implements Comparable<User> {
 
 	protected static final @NotMaterialized String collection = "users";
-	public static final @NotMaterialized Set<String> NON_DELETED = Sets.create(UserStatus.ACTIVE.toString(), UserStatus.NEW.toString(), UserStatus.BLOCKED.toString(), UserStatus.TIMEOUT.toString());
-	public static final @NotMaterialized Set<String> ALL_USER = Sets.create("email", "emailLC", "name", "role", "subroles", "accountVersion", "registeredAt",  "status", "contractStatus", "agbStatus", "emailStatus", "confirmedAt", "firstname", "lastname",	"gender", "city", "zip", "country", "address1", "address2", "phone", "mobile", "language", "searchable", "developer", "midataID");
-	public static final @NotMaterialized Set<String> ALL_USER_INTERNAL = Sets.create("email", "emailLC", "name", "role", "subroles", "accountVersion", "registeredAt",  "status", "contractStatus", "agbStatus", "emailStatus", "confirmedAt", "firstname", "lastname",	"gender", "city", "zip", "country", "address1", "address2", "phone", "mobile", "language", "searchable", "developer", "initialApp", "password", "apps", "midataID", "failedLogins", "lastFailed");
-	public static final @NotMaterialized Set<String> PUBLIC = Sets.create("email", "role", "status", "firstname", "lastname", "gender", "midataID");
+	public static final @NotMaterialized Set<String> NON_DELETED = Collections.unmodifiableSet(Sets.create(UserStatus.ACTIVE.toString(), UserStatus.NEW.toString(), UserStatus.BLOCKED.toString(), UserStatus.TIMEOUT.toString()));
+	public static final @NotMaterialized Set<String> ALL_USER = Collections.unmodifiableSet(Sets.create("email", "emailLC", "name", "role", "subroles", "accountVersion", "registeredAt",  "status", "contractStatus", "agbStatus", "emailStatus", "confirmedAt", "firstname", "lastname",	"gender", "city", "zip", "country", "address1", "address2", "phone", "mobile", "language", "searchable", "developer", "midataID"));
+	public static final @NotMaterialized Set<String> ALL_USER_INTERNAL = Collections.unmodifiableSet(Sets.create("email", "emailLC", "name", "role", "subroles", "accountVersion", "registeredAt",  "status", "contractStatus", "agbStatus", "emailStatus", "confirmedAt", "firstname", "lastname",	"gender", "city", "zip", "country", "address1", "address2", "phone", "mobile", "language", "searchable", "developer", "initialApp", "password", "apps", "midataID", "failedLogins", "lastFailed"));
+	public static final @NotMaterialized Set<String> PUBLIC = Collections.unmodifiableSet(Sets.create("email", "role", "status", "firstname", "lastname", "gender", "midataID"));
+	public static final @NotMaterialized Set<String> FOR_LOGIN = Collections.unmodifiableSet(Sets.create("firstname", "lastname", "email", "role", "password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "failedLogins", "lastFailed", "flags", "resettoken"));
 	
 			
 	/**
@@ -275,6 +278,11 @@ public class User extends Model implements Comparable<User> {
 	 * Timestamp of last failed login
 	 */
 	public Date lastFailed;
+	
+	/**
+	 * Actions that must be done upon login
+	 */
+	public Set<AccountActionFlags> flags;
 
 	@Override
 	public int compareTo(User other) {
@@ -470,6 +478,12 @@ public class User extends Model implements Comparable<User> {
 	
 	public static long countLanguage(String lang) throws AppException {
 		return Model.count(User.class, collection, CMaps.map("language", lang).map("status", EnumSet.of(UserStatus.ACTIVE, UserStatus.NEW)));
+	}
+	
+	public void addFlag(AccountActionFlags flag) throws AppException {
+		if (this.flags == null) this.flags = EnumSet.of(flag);
+		else this.flags.add(flag);
+		User.set(_id, "flags", flags);
 	}
 		
 	

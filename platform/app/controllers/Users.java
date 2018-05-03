@@ -26,6 +26,7 @@ import models.Space;
 import models.Study;
 import models.User;
 import models.UserGroupMember;
+import models.enums.AccountActionFlags;
 import models.enums.AuditEventType;
 import models.enums.ConsentType;
 import models.enums.ContractStatus;
@@ -238,19 +239,27 @@ public class Users extends APIController {
 	@APICall
 	@Security.Authenticated(PreLoginSecured.class)
 	public static Result updateAddress() throws AppException {
-		// validate 
+		
 		JsonNode json = request().body().asJson();		
-		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1");
-		String email = JsonValidation.getEMail(json, "email");
+		JsonValidation.validate(json, "user", "firstname", "lastname", "gender", "city", "zip", "country", "address1");
+							
+		MidataId userId = JsonValidation.getMidataId(json, "user");			
+		MidataId executorId = new MidataId(request().username());
+		
+		//Check authorization except for change self
+		if (!executorId.equals(userId)) {
+		  requireSubUserRole(SubUserRole.USERADMIN);
+		}			
+		
+
+		//String email = JsonValidation.getEMail(json, "email");
 		String firstName = JsonValidation.getString(json, "firstname");
 		String lastName = JsonValidation.getString(json, "lastname");
-		
-		MidataId userId = new MidataId(request().username());
-				
+					
 		User user = User.getById(userId, User.ALL_USER); 
 		
-		user.email = email;
-		user.emailLC = email.toLowerCase();
+		//user.email = email;
+		//user.emailLC = email.toLowerCase();
 		user.name = firstName + " " + lastName;
 		user.address1 = JsonValidation.getString(json, "address1");
 		user.address2 = JsonValidation.getString(json, "address2");
@@ -261,12 +270,12 @@ public class Users extends APIController {
 		user.country = JsonValidation.getString(json, "country");
 		user.firstname = JsonValidation.getString(json, "firstname");
 		user.lastname = JsonValidation.getString(json, "lastname");
-		user.gender = JsonValidation.getEnum(json, "gender", Gender.class);
+		user.gender = JsonValidation.getEnum(json, "gender", Gender.class);				
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_ADDRESS_CHANGE, user);
 		
-		User.set(user._id, "email", user.email);
-		User.set(user._id, "emailLC", user.emailLC);
+		//User.set(user._id, "email", user.email);
+		//User.set(user._id, "emailLC", user.emailLC);
 		User.set(user._id, "name", user.name);
 		User.set(user._id, "address1", user.address1);
 		User.set(user._id, "address2", user.address2);
@@ -281,14 +290,21 @@ public class Users extends APIController {
 		
 		user.updateKeywords(true);
 		
-		if (user.role.equals(UserRole.MEMBER)) {		  
-		  PatientResourceProvider.updatePatientForAccount(user._id);
+		if (user.role.equals(UserRole.MEMBER)) {	
+			
+			if (!executorId.equals(userId)) {
+			   user.addFlag(AccountActionFlags.UPDATE_FHIR);
+			} else {
+			   PatientResourceProvider.updatePatientForAccount(user._id);
+			}
+					  
 		}
 		
 		AuditManager.instance.success();
 		
 		return ok();		
 	}
+	
 	
 	
 	
