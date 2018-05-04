@@ -336,6 +336,8 @@ public class Users extends APIController {
 		User.set(user._id, "searchable", searchable);
 		User.set(user._id, "language", language);
 		
+		PatientResourceProvider.updatePatientForAccount(userId);
+		
 		return ok();		
 	}
 	
