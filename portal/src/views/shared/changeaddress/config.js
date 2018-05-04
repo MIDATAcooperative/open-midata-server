@@ -14,7 +14,7 @@ angular.module('portal')
 	      templateUrl: 'views/shared/changeaddress/changeaddress.html' 
 	    })
 	    .state('admin.changeaddress', {
-	      url: '/changeaddress',
+	      url: '/changeaddress?userId',
 	      templateUrl: 'views/shared/changeaddress/changeaddress.html' 
 	    })
 	    .state('developer.changeaddress', {

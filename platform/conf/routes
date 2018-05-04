@@ -207,6 +207,7 @@ POST    /api/developers/testuser/resetpw                  controllers.Developers
 POST    /api/admins/register                             controllers.admin.Administration.register()
 POST    /api/admins/changeStatus                         controllers.admin.Administration.changeStatus()
 POST    /api/admins/changeUserEmail                      controllers.admin.Administration.changeUserEmail()
+POST    /api/admins/changeBirthday                       controllers.admin.Administration.changeBirthday()
 POST    /api/admins/addcomment                           controllers.admin.Administration.addComment()
 POST    /api/admins/wipeaccount                          controllers.admin.Administration.adminWipeAccount()
 POST    /api/admin/stats                                 controllers.admin.Administration.getStats()

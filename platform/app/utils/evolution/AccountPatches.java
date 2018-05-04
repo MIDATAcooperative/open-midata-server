@@ -46,7 +46,9 @@ public class AccountPatches {
 
 	public static final int currentAccountVersion = 20171206;
 	
-	public static void check(User user) throws AppException {		
+	public static boolean check(User user) throws AppException {
+		boolean isold = user.accountVersion < currentAccountVersion;
+		
 		if (user.accountVersion < 20160324) { formatPatch20160324(user); }	
 		if (user.accountVersion < 20160407) { formatPatch20160407(user); }
 		if (user.accountVersion < 20160902) { formatPatch20160902(user); }
@@ -54,6 +56,8 @@ public class AccountPatches {
 		if (user.accountVersion < 20171206) { formatPatch20171206(user); }
 		//if (user.accountVersion < 20180130) { formatPatch20180130(user); }
 		//if (user.accountVersion < 20170206) { formatPatch20170206(user); }
+		
+		return isold;
 	}
 	
 	public static void makeCurrent(User user, int currentAccountVersion) throws AppException {

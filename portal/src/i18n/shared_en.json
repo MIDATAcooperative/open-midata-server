@@ -215,6 +215,7 @@
 	   "user-passphrase-change" : "Passphrase changed",
 	   "user-address-change" :"User's address changed",
 	   "user-email-change" :"User's email changed",
+	   "user-birthday-change" : "User's birthday changed",
 	   "user-status-change" : "Status of user account changed",
 	   "user-email-confirmed" : "Email confirmed by user",
 	   "user-email-rejected" : "Email rejected by user",
@@ -633,6 +634,7 @@
 
   "changeaddress" : {
     "title" : "Postal Address and Contact Information",
+    "success" : "Your account information has been updated.",
     "update_btn" : "Update"
   },
 

@@ -21,6 +21,8 @@ public enum AuditEventType {
 	
 	USER_EMAIL_CHANGE(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-email-change", "Email changed"), AuditEventAction.U),
 	
+	USER_BIRTHDAY_CHANGE(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-birthday-change", "Birthday changed"), AuditEventAction.U),
+	
 	// Not done
 	USER_STATUS_CHANGE(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-status-change", "User status changed"), AuditEventAction.U),
 	

@@ -51,6 +51,7 @@ import utils.auth.PreLoginSecured;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.evolution.AccountPatches;
+import utils.evolution.PostLoginActions;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
@@ -276,7 +277,7 @@ public class Application extends APIController {
 		}
 		
 		
-		User user = User.getById(userId, Sets.create("firstname", "lastname", "email","status", "role", "subroles", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "resettoken","password","resettokenTs", "registeredAt", "confirmedAt", "developer", "previousEMail"));
+		User user = User.getById(userId, Sets.create(User.FOR_LOGIN, "resettoken", "resettokenTs", "registeredAt", "confirmedAt", "previousEMail"));
 		
 		if (user!=null && password != null) {				
 			 AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE, userId);
@@ -358,7 +359,7 @@ public class Application extends APIController {
 		MidataId userId = new MidataId(request().username());
 		String confirmationCode = JsonValidation.getString(json, "confirmationCode");
 		
-		User user = User.getById(userId, Sets.create("firstname", "lastname", "email", "confirmationCode", "emailStatus", "contractStatus", "agbStatus", "status", "role", "subroles", "registeredAt", "confirmedAt", "developer"));
+		User user = User.getById(userId, User.FOR_LOGIN);
 		
 		
 		if (user!=null && user.confirmationCode != null && user.confirmedAt == null) {
@@ -520,7 +521,7 @@ public class Application extends APIController {
 		String password = JsonValidation.getString(json, "password");
 		
 		// check status
-		Member user = Member.getByEmail(email , Sets.create("firstname", "lastname", "email", "role", "password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "failedLogins", "lastFailed"));
+		Member user = Member.getByEmail(email , User.FOR_LOGIN);
 		if (user == null) {
 			Set<User> alts = User.getAllUser(CMaps.map("emailLC", email.toLowerCase()).map("status", User.NON_DELETED).map("role", Sets.create(UserRole.DEVELOPER.toString(), UserRole.RESEARCH.toString(), UserRole.PROVIDER.toString())), Sets.create("role"));
 			if (!alts.isEmpty()) {				
@@ -630,7 +631,7 @@ public class Application extends APIController {
 		} else {						
 		  int keytype = KeyManager.instance.unlock(user._id, null);		
 		  if (keytype == 0) {
-			  AccountPatches.check(user);
+			  user = PostLoginActions.check(user);			  
 			  KeyManager.instance.persist(user._id);
 		  }
 				
@@ -683,7 +684,7 @@ public class Application extends APIController {
 		}
 					
 		User user = User.getById(userId , Sets.create("firstname", "lastname", "email", "role", "password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer"));
-		AccountPatches.check(user);
+		user = PostLoginActions.check(user);
 		
 		// response
 		return ok();
@@ -998,8 +999,9 @@ public class Application extends APIController {
 				controllers.admin.routes.javascript.Administration.register(),
 				controllers.admin.routes.javascript.Administration.changeStatus(),
 				controllers.admin.routes.javascript.Administration.changeUserEmail(),
+				controllers.admin.routes.javascript.Administration.changeBirthday(),
 				controllers.admin.routes.javascript.Administration.addComment(),
-				controllers.admin.routes.javascript.Administration.adminWipeAccount(),
+				controllers.admin.routes.javascript.Administration.adminWipeAccount(), 
 				controllers.admin.routes.javascript.Administration.deleteStudy(),
 				controllers.admin.routes.javascript.Administration.getStats(),
 				// Market				

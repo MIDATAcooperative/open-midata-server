@@ -1,9 +1,11 @@
 angular.module('portal')
-.controller('TermsCtrl', ['$scope', 'terms', '$translate', '$stateParams', '$sce', 'views', function($scope, terms, $translate, $stateParams, $sce, views) {
+.controller('TermsCtrl', ['$scope', '$rootScope', 'terms', '$translate', '$stateParams', '$sce', 'views', function($scope, $rootScope, terms, $translate, $stateParams, $sce, views) {
   
 	$scope.view = views.getView("terms");
 	
 	$scope.init = function(name, version, language) {
+		$scope.name = name;
+		$scope.version = version;
 		
 		terms.get(name, version,language)
 		.then(function(result) {
@@ -26,4 +28,15 @@ angular.module('portal')
 		var lang = $stateParams.lang || $translate.use();
 		$scope.init(which[0], which[1], lang);
 	});
+		
+	var languageWatcher = null;
+	this.$onInit = function () {
+		languageWatcher = $rootScope.$on('$translateChangeStart', function(event,data) {
+	        $scope.init($scope.name, $scope.version, data.language);
+	    });
+	};
+	 
+	this.$onDestroy = function () {	
+		languageWatcher();
+	};
 }]);
