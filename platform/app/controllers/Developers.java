@@ -123,10 +123,10 @@ public class Developers extends APIController {
 		
 		String email = JsonValidation.getString(json, "email");
 		String password = JsonValidation.getString(json, "password");
-		Developer user = Developer.getByEmail(email, Sets.create("firstname", "lastname", "email", "password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "email", "role", "subroles", "login", "registeredAt", "failedLogins", "lastFailed"));
+		Developer user = Developer.getByEmail(email, User.FOR_LOGIN);
 		
 		if (user == null) {
-			Admin adminuser = Admin.getByEmail(email, Sets.create("firstname", "lastname", "email", "password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "email", "role", "subroles", "login", "registeredAt", "failedLogins", "lastFailed"));
+			Admin adminuser = Admin.getByEmail(email, User.FOR_LOGIN);
 			if (adminuser != null) {
 				AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, adminuser);
 				if (!adminuser.authenticationValid(password)) {

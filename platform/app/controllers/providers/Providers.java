@@ -145,7 +145,7 @@ public class Providers extends APIController {
 		
 		String email = JsonValidation.getString(json, "email");
 		String password = JsonValidation.getString(json, "password");
-		HPUser user = HPUser.getByEmail(email, Sets.create("firstname", "lastname", "email", "password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "provider", "role", "subroles", "login", "registeredAt", "developer", "keywordsLC","failedLogins", "lastFailed"));
+		HPUser user = HPUser.getByEmail(email, Sets.create(User.FOR_LOGIN, "provider"));
 		
 		if (user == null) throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user);

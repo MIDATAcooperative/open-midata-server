@@ -20,6 +20,7 @@ import models.Circle;
 import models.Consent;
 import models.HealthcareProvider;
 import models.InstanceStats;
+import models.Member;
 import models.MidataAuditEvent;
 import models.MidataId;
 import models.Plugin;
@@ -28,6 +29,7 @@ import models.Study;
 import models.User;
 import models.UserGroup;
 import models.UserGroupMember;
+import models.enums.AccountActionFlags;
 import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
 import models.enums.ConsentType;
@@ -58,6 +60,7 @@ import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
 import utils.auth.PasswordResetToken;
 import utils.auth.PortalSessionToken;
+import utils.auth.PreLoginSecured;
 import utils.auth.ResearchSecured;
 import utils.auth.Rights;
 import utils.collections.CMaps;
@@ -67,6 +70,7 @@ import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.fhir.PatientResourceProvider;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
@@ -320,6 +324,42 @@ public class Administration extends APIController {
 		//targetUser.addHistory(new History(EventType.INTERNAL_COMMENT, admin, comment));
 		
 		return ok();
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public static Result changeBirthday() throws AppException {	
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "user", "birthday");
+							
+		MidataId userId = JsonValidation.getMidataId(json, "user");			
+		MidataId executorId = new MidataId(request().username());
+		
+		//Check authorization except for change self
+		if (!executorId.equals(userId)) {
+		  requireSubUserRole(SubUserRole.USERADMIN);
+		}				
+				
+		Member user = Member.getById(userId, Sets.create("_id", "birthday", "firstname", "lastname", "email", "role", "flags")); 
+						
+		Date birthDay = JsonValidation.getDate(json, "birthday");
+		if (user != null && birthDay != null && !birthDay.equals(user.birthday)) {
+			
+			AuditManager.instance.addAuditEvent(AuditEventType.USER_BIRTHDAY_CHANGE, user);
+			
+			user.birthday = birthDay;
+			User.set(user._id, "birthday", user.birthday);	
+										
+			if (!executorId.equals(userId)) {
+			   user.addFlag(AccountActionFlags.UPDATE_FHIR);
+			} else {
+		       PatientResourceProvider.updatePatientForAccount(user._id);
+			}
+		    AuditManager.instance.success();
+		
+		}
+		return ok();		
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)

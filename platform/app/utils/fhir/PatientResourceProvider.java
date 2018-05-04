@@ -15,6 +15,7 @@ import java.util.Set;
 import org.bson.BSONObject;
 import org.hl7.fhir.dstu3.model.Address;
 import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.ContactPoint;
 import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointSystem;
@@ -46,6 +47,7 @@ import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.annotation.ResourceParam;
 import ca.uhn.fhir.rest.annotation.Search;
 import ca.uhn.fhir.rest.annotation.Sort;
+import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.api.server.RequestDetails;
@@ -57,8 +59,10 @@ import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.AuthenticationException;
+import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
+import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import controllers.Application;
 import controllers.Circles;
@@ -88,6 +92,7 @@ import models.enums.UserStatus;
 import models.enums.WritePermissionType;
 import play.Play;
 import utils.AccessLog;
+import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.PasswordHash;
 import utils.RuntimeConstants;
@@ -143,6 +148,45 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		processResource(record, p);
 		return p;
 	}
+	
+	
+	@Override
+	public Record fetchCurrent(IIdType theId)  {
+		try {
+			if (theId == null) throw new UnprocessableEntityException("id missing");
+			if (theId.getIdPart() == null || theId.getIdPart().length() == 0) throw new UnprocessableEntityException("id local part missing");
+			if (!isLocalId(theId)) throw new UnprocessableEntityException("id is not local resource");
+			
+			ExecutionInfo info = info();
+			MidataId targetId = MidataId.from(theId.getIdPart());
+			List<Record> allRecs = RecordManager.instance.list(info.executorId, info.context, CMaps.map("owner", targetId).map("format", "fhir/Patient").map("data", CMaps.map("id", targetId.toString())),
+					RecordManager.COMPLETE_DATA);
+
+			if (allRecs == null || allRecs.size() == 0)
+				throw new ResourceNotFoundException("not found");
+
+			Record record = allRecs.get(0);
+			
+			
+			if (record == null) throw new ResourceNotFoundException("Resource "+theId.getIdPart()+" not found."); 
+			if (!record.format.equals("fhir/"+theId.getResourceType())) throw new ResourceNotFoundException("Resource "+theId.getIdPart()+" has wrong resource type."); 
+												
+			String versionId = theId.getVersionIdPart();
+			if (versionId != null) {	  
+			   if (!versionId.equals(record.version)) {
+			     throw new ResourceVersionConflictException("Unexpected version");
+			   }
+			}		
+			return record;
+		} catch (AppException e) {
+			ErrorReporter.report("FHIR (fetch current record)", null, e);	 
+			throw new InternalErrorException(e);
+		} catch (NullPointerException e2) {
+			ErrorReporter.report("FHIR (fetch current record)", null, e2);	 
+			throw new InternalErrorException(e2);
+		}
+	}
+	
 
 	@History()
 	@Override
@@ -412,6 +456,12 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 	public MethodOutcome createResource(@ResourceParam Patient thePatient) {
 		return super.createResource(thePatient);
 	}
+	
+	@Update
+	@Override
+	public MethodOutcome updateResource(@IdParam IdType theId, @ResourceParam Patient thePatient) {
+		return super.updateResource(theId, thePatient);
+	}	
 
 	public Patient generatePatientForAccount(Member member) {
 		Patient p = new Patient();
@@ -427,6 +477,8 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		if (member.phone != null && member.phone.length() > 0) {
 			p.addTelecom().setSystem(ContactPointSystem.PHONE).setValue(member.phone);
 		}
+		if (member.language != null)
+			p.addCommunication().setPreferred(true).setLanguage(new CodeableConcept().addCoding(new Coding().setCode(member.language)));
 		p.addAddress().setCity(member.city).setCountry(member.country).setPostalCode(member.zip).addLine(member.address1).addLine(member.address2);
 		return p;
 	}
@@ -460,7 +512,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			patientProvider.setExecutionInfo(inf);
 		}
 
-		Member member = Member.getById(who, Sets.create("firstname", "lastname", "birthday", "midataID", "gender", "email", "phone", "city", "country", "zip", "address1", "address2", "emailLC"));
+		Member member = Member.getById(who, Sets.create("firstname", "lastname", "birthday", "midataID", "gender", "email", "phone", "city", "country", "zip", "address1", "address2", "emailLC", "language"));
 		patientProvider.updatePatientForAccount(member);
 	}
 
@@ -548,11 +600,30 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 	}
 	
 	@Override
-	public void updatePrepare(Record record, Patient theResource) throws AppException {		
-		throw new NotImplementedOperationException("update on Patient not implemented.");
+	public void updatePrepare(Record record, Patient theResource) throws AppException {	
+		if (!record.owner.equals(info().executorId)) throw new NotImplementedOperationException("update on Patient not implemented.");
 	}
 	
 	
+	
+	@Override
+	public void updateExecute(Record record, Patient thePatient) throws AppException {
+		String lang = null;
+		for (PatientCommunicationComponent comm : thePatient.getCommunication()) {
+			if (comm.getPreferred()) {
+				lang = comm.getLanguage().getCodingFirstRep().getCode();
+			}
+		}
+		Member user = Member.getById(record.owner, User.ALL_USER);
+		
+		if (lang != null && !lang.equals(user.language)) {			
+			user.language = lang;
+			User.set(user._id, "language", user.language);
+			updatePatientForAccount(user);
+		}
+		AuditManager.instance.success();
+	}
+
 	@Override
 	public void createPrepare(Record record, Patient thePatient) throws AppException {
 		if (!thePatient.hasName()) throw new UnprocessableEntityException("Name required for patient");
