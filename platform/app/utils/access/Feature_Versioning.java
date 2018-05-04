@@ -243,14 +243,17 @@ public class Feature_Versioning extends Feature {
 
 		@Override
 		public boolean hasNext() throws AppException {
-			return cache.hasNext() || chain.hasNext();
+			if (cache.hasNext()) { return true; }
+		    while (chain.hasNext()) {						  
+			  advance();
+			  if (cache.hasNext()) { return true; }
+		    }
+		    return false;
+			
 		}
-				
-		@Override
-		public DBRecord next() throws AppException {
-			if (cache.hasNext())
-				return cache.next();
-
+			
+		public void advance() throws AppException {
+			
 			int current = 0;
 			work.clear();
 			Map<MidataId, DBRecord> fetchIds = new HashMap<MidataId, DBRecord>();
@@ -305,10 +308,12 @@ public class Feature_Versioning extends Feature {
 				
 			}			
 
-			cache = work.iterator();
-
+			cache = work.iterator();						
+		}
+		
+		@Override
+		public DBRecord next() throws AppException {			
 			return cache.next();
-
 		}
 		
 		@Override
