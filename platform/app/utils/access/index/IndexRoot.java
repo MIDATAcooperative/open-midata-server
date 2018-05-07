@@ -187,6 +187,8 @@ public class IndexRoot {
 		inf.key = new Comparable[model.fields.size()];		
 		extract(0, inf, null,null, null, 0, true);						
 	}
+	
+	
 
 
 	private void extract(int keyIdx, EntryInfo inf, BSONObject data, String path, String[] allpath, int pathIdx, boolean remove) throws InternalServerException, LostUpdateException {
@@ -312,6 +314,22 @@ public class IndexRoot {
 	    }
 	
 	    return btNode.getChild(keyIdx);
+	}
+
+
+
+	public void removeOutdated(List<IndexMatch> records, Condition[] cond) throws InternalServerException, LostUpdateException {
+        Collection<IndexKey> matches = rootPage.findEntries(cond);
+		
+        for (IndexMatch rec : records) {
+			for (IndexKey match : matches) {
+				if (match.id.equals(rec.recordId) && match.value.equals(rec.apsId)) {
+					btree.delete(match);
+					modCount++;
+				}
+			}
+        }
+								
 	}
 
 	/*

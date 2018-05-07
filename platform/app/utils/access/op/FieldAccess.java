@@ -1,5 +1,6 @@
 package utils.access.op;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,8 +12,12 @@ import org.bson.types.BasicBSONList;
  * Field access operator for mongo conditions
  *
  */
-public class FieldAccess implements Condition {
+public class FieldAccess implements Condition, Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2755088373173853881L;
 	private String field;
 	private Condition cond;
 	

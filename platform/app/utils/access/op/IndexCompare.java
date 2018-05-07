@@ -1,10 +1,16 @@
 package utils.access.op;
 
+import java.io.Serializable;
 import java.util.regex.Pattern;
 
 import utils.access.op.CompareCaseInsensitive.CompareCaseInsensitiveOperator;
 
-public class IndexCompare implements Condition {
+public class IndexCompare implements Condition, Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4671204512483952171L;
 
 	private String val;
 			

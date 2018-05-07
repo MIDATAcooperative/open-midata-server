@@ -20,5 +20,8 @@ public class IndexUpdateMsg extends IndexMsg {
 		return aps;
 	}
     
+	public String toString() {
+		return "Index Update: #aps="+(aps==null?"null":aps.size())+" "+super.toString();
+	}
     
 }

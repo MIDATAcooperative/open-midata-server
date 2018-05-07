@@ -1,12 +1,19 @@
 package utils.access.index;
 
+import java.io.Serializable;
+
 import models.MidataId;
 
 /**
  * Stores an index match
  *
  */
-public class IndexMatch {
+public class IndexMatch implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5753238851931181026L;
 
 	/**
 	 * id of record included in result
