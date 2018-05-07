@@ -31,9 +31,7 @@ public class Feature_ProcessFilters extends Feature {
 		int minTime = q.getMinTime();	
 
 		boolean indexQuery = q.restrictedBy("index") && !q.getApsId().equals(q.getCache().getAccountOwner());
-
-		Map<MidataId, DBRecord> fetchIds = new HashMap<MidataId, DBRecord>();
-
+		
 		if (q.getFetchFromDB() || indexQuery) {
 			result = new ProcessingTools.BlockwiseLoad(result, q, 101);
 		} else {
