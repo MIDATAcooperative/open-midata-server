@@ -1,13 +1,18 @@
 package utils.access.op;
 
+import java.io.Serializable;
 import java.util.Set;
 
 /**
  * check if object is in a list of objects
  *
  */
-public class InCondition implements Condition {
+public class InCondition implements Condition, Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3810696744848273080L;
 	private Set<Object> val;
 	
 	/**

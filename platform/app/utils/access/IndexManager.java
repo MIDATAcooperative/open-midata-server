@@ -23,6 +23,7 @@ import models.MidataId;
 import play.libs.Akka;
 import utils.AccessLog;
 import utils.access.index.IndexDefinition;
+import utils.access.index.IndexKey;
 import utils.access.index.IndexMatch;
 import utils.access.index.IndexRemoveMsg;
 import utils.access.index.IndexRoot;
@@ -283,13 +284,13 @@ public class IndexManager {
 	
 	public IndexDefinition findIndex(IndexPseudonym pseudo, Set<String> format, List<String> pathes) throws AppException {		
 		Set<IndexDefinition> res = IndexDefinition.getAll(CMaps.map("owner", pseudo.getPseudonym()).map("formats", CMaps.map("$all", format)).map("fields", CMaps.map("$all", pathes)), IndexDefinition.ALL);
-		if (res.size() == 1) return res.iterator().next();
+		if (res.size() >= 1) return res.iterator().next();
 		return null;
 	}
 	
 	public IndexDefinition findIndex(IndexPseudonym pseudo, MidataId id) throws AppException {		
 		Set<IndexDefinition> res = IndexDefinition.getAll(CMaps.map("owner", pseudo.getPseudonym()).map("_id", id), IndexDefinition.ALL);
-		if (res.size() == 1) return res.iterator().next();
+		if (res.size() >= 1) return res.iterator().next();
 		return null;
 	}
 	
@@ -323,7 +324,10 @@ public class IndexManager {
 		if (validatedResult.size() > stillValid.size()) {
 			AccessLog.log("Removing "+notValid.size()+" records from index.");
 			// You must remove the record IDS from the match not using the records data!!
-			// indexSupervisor.tell(new IndexRemoveMsg(root.getModel()._id, executor, pseudo, KeyManager.instance.currentHandle(), notValid), null);			
+			List<IndexMatch> matches = new ArrayList<IndexMatch>(notValid.size());
+			for (DBRecord r : notValid) matches.add(new IndexMatch(r._id, r.consentAps));
+			
+			indexSupervisor.tell(new IndexRemoveMsg(root.getModel()._id, executor, pseudo, KeyManager.instance.currentHandle(executor), matches, cond), null);			
 		}				 
 	}
 	
@@ -337,6 +341,29 @@ public class IndexManager {
 			removeRecords(root, cond, ids);
 		}
 	}*/
+	public void removeRecords(APSCache cache, MidataId user, List<IndexMatch> records, MidataId indexId, Condition[] cond) throws AppException {
+		IndexPseudonym pseudo = getIndexPseudonym(cache, user, user, false);
+		if (pseudo == null) return;
+		AccessLog.logBegin("start removing outdated entries from indexes #recs="+records.size());
+	
+		IndexDefinition def = IndexDefinition.getById(indexId);		
+		IndexRoot root = new IndexRoot(pseudo.getKey(), def, false);
+		
+		boolean again = true;
+		
+		while (again) {
+			again = false;
+			try {				
+				root.removeOutdated(records, cond);
+				root.flush();		
+			} catch (LostUpdateException e) {
+				root.reload();
+				again = true;
+		    }
+		}
+		
+		AccessLog.logEnd("end removing outdated entries from indexes");
+	}
 	
 	public void removeRecords(APSCache cache, MidataId user, List<DBRecord> records) throws AppException {
 		IndexPseudonym pseudo = getIndexPseudonym(cache, user, user, false);

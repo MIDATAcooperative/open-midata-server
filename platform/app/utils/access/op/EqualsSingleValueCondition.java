@@ -1,5 +1,6 @@
 package utils.access.op;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import utils.access.op.CompareCaseInsensitive.CompareCaseInsensitiveOperator;
@@ -8,8 +9,12 @@ import utils.access.op.CompareCaseInsensitive.CompareCaseInsensitiveOperator;
  * check if object is equal to a fixed value
  *
  */
-public class EqualsSingleValueCondition implements Condition {
+public class EqualsSingleValueCondition implements Condition, Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2376421768573187153L;
 	private Comparable<Object> val;
 	
 	/**

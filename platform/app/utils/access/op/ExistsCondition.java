@@ -1,10 +1,15 @@
 package utils.access.op;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ExistsCondition implements Condition {
+public class ExistsCondition implements Condition, Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4953224071488125722L;
 	private boolean shouldExist;
 	
 	/**

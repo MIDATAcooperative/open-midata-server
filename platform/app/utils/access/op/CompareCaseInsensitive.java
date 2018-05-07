@@ -1,12 +1,17 @@
 package utils.access.op;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.regex.Pattern;
 
 import scala.NotImplementedError;
 
-public class CompareCaseInsensitive implements Condition {
+public class CompareCaseInsensitive implements Condition, Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2543649644913299628L;
 	private String val;
 	
 	public enum CompareCaseInsensitiveOperator {

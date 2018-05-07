@@ -1,11 +1,16 @@
 package utils.access.op;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 
-public class InIndexCondition implements Condition {
+public class InIndexCondition implements Condition, Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4857879713781565949L;
 	private Set<String> val;
 					
 	/**

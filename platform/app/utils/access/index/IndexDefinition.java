@@ -53,5 +53,9 @@ public class IndexDefinition extends IndexPageModel {
 	public static void delete(MidataId id) throws InternalServerException {		
 		Model.delete(IndexDefinition.class, collection, CMaps.map("_id", id));
 	}
+	
+	public static IndexDefinition getById(MidataId pageId) throws InternalServerException {
+		return Model.get(IndexDefinition.class, collection, CMaps.map("_id", pageId), ALL);
+	}
 		
 }

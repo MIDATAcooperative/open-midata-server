@@ -36,6 +36,10 @@ public class IndexMsg implements Serializable {
 	public IndexPseudonym getPseudo() {
 		return pseudo;
 	}
+	
+	public String toString() {
+		return "index="+indexId.toString()+" exec="+executor.toString();
+	}
     
 	
     

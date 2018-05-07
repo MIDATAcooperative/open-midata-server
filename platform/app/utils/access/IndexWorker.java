@@ -62,6 +62,7 @@ public class IndexWorker extends UntypedActor {
 	@Override
 	public void onReceive(Object message) throws Exception {
 		try {
+			AccessLog.logBegin("START INDEX UPDATE:");
 			AccessLog.log("in:"+message.toString());
 			if (message instanceof IndexMsg) {
 				this.handle = ((IndexMsg) message).getHandle();
@@ -78,7 +79,8 @@ public class IndexWorker extends UntypedActor {
 				
 			} else if (message instanceof IndexRemoveMsg) {
 			  IndexRemoveMsg msg = (IndexRemoveMsg) message;
-			  IndexManager.instance.removeRecords(cache, executor, msg.getRecords());
+			  
+			  IndexManager.instance.removeRecords(cache, executor, msg.getRecords(), msg.getIndexId(), msg.getCondition());
 			} else if (message instanceof ReceiveTimeout) {
 			  getContext().parent().tell(new TerminateMsg(indexId.toString()), getSelf());
 			} else {
@@ -88,6 +90,7 @@ public class IndexWorker extends UntypedActor {
 			ErrorReporter.report("Messager", null, e);	
 			throw e;
 		} finally {
+			AccessLog.logEnd("END INDEX UPDATE");
 			ServerTools.endRequest();			
 		}
 	}

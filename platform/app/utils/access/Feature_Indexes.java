@@ -137,6 +137,8 @@ public class Feature_Indexes extends Feature {
 			Map<MidataId, List<DBRecord>> newRecords = new HashMap<MidataId, List<DBRecord>>();
 
 			AccessLog.logBegin("start to look for new entries");
+			Feature nextWithProcessing = new Feature_ProcessFilters(next);
+			
 			if (targetAps != null) {
 				for (MidataId id : targetAps) {
 					long v = myAccess.version(id);
@@ -148,11 +150,13 @@ public class Feature_Indexes extends Feature {
 						} 
 						//if (context instanceof ConsentAccessContext) AccessLog.log("TIMESTAMP "+((ConsentAccessContext) context).getConsent().dataupdate+" vs "+v);
 						List<DBRecord> add;
-						add = QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.mapPositive("updated-after", v).map("owner", "self"), id, context)), indexQueryParsed, null);
+						Query updQuery = new Query(q, CMaps.mapPositive("updated-after", v).map("owner", "self"), id, context);
+						add = QueryEngine.filterByDataQuery(nextWithProcessing.query(updQuery), indexQueryParsed, null);
 						AccessLog.log("found new updated entries aps=" + id + ": " + add.size());
 						result = QueryEngine.combine(result, add);
 						if (v > 0) {
-							add = QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.mapPositive("shared-after", v).map("owner", "self"), id, context)), indexQueryParsed, null);
+							Query shrQuery = new Query(q, CMaps.mapPositive("shared-after", v).map("owner", "self"), id, context);
+							add = QueryEngine.filterByDataQuery(nextWithProcessing.query(shrQuery), indexQueryParsed, null);
 							AccessLog.log("found new shared entries aps=" + id + ": " + add.size());
 							result = QueryEngine.combine(result, add);
 						}
@@ -166,11 +170,11 @@ public class Feature_Indexes extends Feature {
 				long v = myAccess.version(null);
 				// AccessLog.log("vx="+v);
 				List<DBRecord> add;
-				add = QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.mapPositive("updated-after", v).map("consent-limit",1000))), indexQueryParsed, null);
+				add = QueryEngine.filterByDataQuery(nextWithProcessing.query(new Query(q, CMaps.mapPositive("updated-after", v).map("consent-limit",1000))), indexQueryParsed, null);
 				AccessLog.log("found new updated entries: " + add.size());
 				result = QueryEngine.combine(result, add);
 				if (v > 0) {
-					add = QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.mapPositive("shared-after", v).map("consent-limit",1000))), indexQueryParsed, null);
+					add = QueryEngine.filterByDataQuery(nextWithProcessing.query(new Query(q, CMaps.mapPositive("shared-after", v).map("consent-limit",1000))), indexQueryParsed, null);
 					AccessLog.log("found new shared entries: " + add.size());
 					result = QueryEngine.combine(result, add);
 				}
