@@ -1,5 +1,6 @@
 package utils.access.op;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,9 +11,13 @@ import org.joda.time.format.ISODateTimeFormat;
  * A comparison operator for mongo expressions
  *
  */
-public class CompareCondition implements Condition {
+public class CompareCondition implements Condition, Serializable {
 
-    private Comparable<Object> val;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 6959525790908419853L;
+	private Comparable<Object> val;
     private CompareOperator op;
     private boolean nullTrue;
 	private boolean isDate;

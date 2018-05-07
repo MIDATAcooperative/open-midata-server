@@ -8,6 +8,11 @@ import java.util.Map;
 
 public class ElemMatchCondition extends AndCondition {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5762971270313448425L;
+
 	public ElemMatchCondition(Map<String, Object> restrictions) {
 		super(restrictions);
 	}

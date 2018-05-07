@@ -1,6 +1,7 @@
 package utils.access.op;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -16,9 +17,13 @@ import scala.NotImplementedError;
  * "And" operator for mongo expressions
  *
  */
-public class AndCondition implements Condition {
+public class AndCondition implements Condition, Serializable {
 		
-    protected List<Condition> checks;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 7999329976231518887L;
+	protected List<Condition> checks;
 
     public static Condition and(Condition cond1, Condition cond2) {
     	if (cond1 == null) return cond2;

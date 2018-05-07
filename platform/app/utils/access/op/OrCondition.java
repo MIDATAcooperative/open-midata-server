@@ -1,5 +1,6 @@
 package utils.access.op;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -9,9 +10,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class OrCondition implements Condition {
+public class OrCondition implements Condition, Serializable {
 		
-    private List<Condition> checks;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 7183212952668394470L;
+	private List<Condition> checks;
 
     public static Condition or(Condition cond1, Condition cond2) {
     	if (cond1 == null) return cond2;
