@@ -58,7 +58,7 @@ public class JsonOutput {
 	}
 	
 	public static JsonNode toJsonNode(Object o, String filtered, Set<String> fields) throws InternalServerException {	   	    
-		fields.add("_id");
+		if (!fields.contains("_id")) fields.add("_id");
 		
 	    SimpleBeanPropertyFilter filter =
 	            new SimpleBeanPropertyFilter.FilterExceptFilter(fields);
