@@ -8,8 +8,8 @@ import java.util.Set;
 
 import org.bson.types.ObjectId;
 
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
+import com.mongodb.client.MongoCollection;
 
 import models.Model;
 import play.Play;
@@ -127,8 +127,8 @@ public class DBLayer {
 	/**
 	 * Gets the specified collection.
 	 */
-	public static DBCollection getCollection(String collection) {
-		return getDatabaseForCollection(collection).getDB().getCollection(collection);
+	public static MongoCollection<DBObject> getCollection(String collection) {
+		return getDatabaseForCollection(collection).getDB().getCollection(collection, DBObject.class);
 	}
 
 	/* Database operations */
@@ -249,7 +249,7 @@ public class DBLayer {
 		getDatabaseForCollection(collection).secureUpdate(model, collection, timestampField, fields);
 	}
 
-	public static DB getFSDB() {
+	public static com.mongodb.client.MongoDatabase getFSDB() {
 		return ((MongoDatabase) DBLayer.dbnameToDB.get(DB_RECORD)).getDB();
 	}
 
