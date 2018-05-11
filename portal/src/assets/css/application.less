@@ -98,6 +98,26 @@ footer {
 		font-family: coco_gothicheavy, Sans-serif;   
 }
 
+tr .sort::after {
+  content: " ";
+  position:relative;
+  display:inline-block;
+  padding-left:5px;
+  width:20px;
+}
+
+tr .desc::after {
+  content: "▾";
+  font-family: Arial, sans-serif;
+}
+
+tr .asc::after {
+  content: "▴";
+  font-family: Arial, sans-serif;
+} 
+
+
+
 .extraspace { margin-bottom: 10px; }
 
 .welcome h1 { color : #000000; }

@@ -37,8 +37,7 @@
 	    <tr dir-paginate="participant in results | itemsPerPage : 10" pagination-id="membertable" current-page="page.nr">
 	      <td><a ui-sref="research.study.participant({ studyId : studyid, participantId : participant._id})">{{ participant.ownerName }}</a></td>
 	      <td ng-hide="study.myRole.pseudo">{{ participant.partName }}</td>	  
-	      <td><select ng-model="participant.group" class="form-control" ng-change="changeGroup(participant)" ng-options="group.name as group.name for group in study.groups"></select></td>
-	      <td translate="{{ 'enum.participationstatus.'+ participant.pstatus }}"></td>
+	      <td><select ng-model="participant.group" class="form-control" ng-show="mayApproveParticipation(participant)" ng-change="changeGroup(participant)" ng-options="group.name as group.name for group in study.groups"></select><span ng-hide="mayApproveParticipation(participant)">{{ participant.group }}</span></td><td translate="{{ 'enum.participationstatus.'+ participant.pstatus }}"></td>
 	      <td>{{ participant.recruiterName }}</td>
 	      <td>
 	        <button ng-show="mayApproveParticipation(participant)" ng-click="approveParticipation(participant)" class="btn btn-success btn-xs" translate="studyparticipants.accept_btn"></button>
