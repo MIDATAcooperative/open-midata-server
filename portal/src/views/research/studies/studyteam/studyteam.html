@@ -7,12 +7,12 @@
 	        <p ng-show="members.length < 2" translate="studyteam.defineself" class="alert alert-info"></p>
 			<table class="table table-striped table-hover">
 			    <tr>
-			      <th translate="common.user.firstname"></th>
-			      <th translate="common.user.lastname"></th>
-			      <th translate="common.user.email"></th>
-			      <th colspan="3" translate="studyteam.rolehint"></th>			      
+			      <th translate="common.user.firstname" sortby="user.firstname"></th>
+			      <th sortby="user.lastname" translate="common.user.lastname"></th>
+			      <th translate="common.user.email" sortby="user.email"></th>
+			      <th colspan="3" translate="studyteam.rolehint" sortby="role.roleName"></th>			      
 			    </tr>
-				<tr class="clickable" ng-click="select(member)" ng-repeat="member in members|filter:{status:'ACTIVE'}|orderBy:'lastname'">
+				<tr class="clickable" ng-click="select(member)" ng-repeat="member in members|filter:{status:'ACTIVE'}|orderBy:sortby">
 					<td>{{ member.user.firstname }}</td>
 					<td>{{ member.user.lastname }}</td>
 					<td>{{ member.user.email }}</td>

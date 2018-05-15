@@ -64,6 +64,13 @@
 							<select class="mi-at-select" id="country" name="country" ng-model="registration.country" required
 								ng-options="country as ('enum.country.'+country)|translate for country in countries"><option value=""
 									selected disabled>{{ 'registration.country' | translate }} *</option></select></formrowfloat>
+									
+							<div ng-if="app.unlockCode">
+							<formrowfloat myid="unlockCode" label="registration.unlock_code">
+							<input type="text" class="mi-at-input mi-at-input-text" floating-label id="unlockCode" name="unlockCode"
+								ng-model="registration.unlockCode" required>  </formrowfloat>
+							<form-error myid="unlockCode" type="invalid" message="error.invalid.unlock_code"></form-error>
+						</div>
 
 						</div>
 
@@ -105,12 +112,7 @@
 							<input type="text" class="mi-at-input mi-at-input-text" id="mobile" name="mobile" floating-label ng-model="registration.mobile"
 								ng-required="phoneNeeded()"></formrowfloat>
 						</div>
-						<div class="required" ng-if="app.unlockCode">
-							<formrowfloat myid="unlockCode" label="registration.unlock_code">
-							<input type="text" class="mi-at-input mi-at-input-text" floating-label id="unlockCode" name="unlockCode"
-								ng-model="registration.unlockCode" required> <form-error myid="unlockCode" type="invalid"
-								message="error.invalid.unlock_code"></form-error> </formrowfloat>
-						</div>
+						
 					</div>
 
 				</div>
@@ -159,12 +161,9 @@
 						<span class="mi-at-text mi-at-text--smaller mi-at-text--white">{{ app.linkedStudyDescription }}</span>
 					</div>
 
-
-
 					<form-error myid="confirmStudy" type="mustaccept" message="error.missing.study_accept"></form-error>
 
 				</div>
-
 
 				<div class="mi-or-login__error" ng-show="error && !error.field">
 					<span class="mi-at-text mi-at-text--smallest mi-at-text--white mi-at-text--highlighted" translate="{{ error.code || error }}"></span>

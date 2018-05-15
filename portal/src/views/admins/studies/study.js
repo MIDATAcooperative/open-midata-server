@@ -4,6 +4,7 @@ angular.module('portal')
 	$scope.studyid = $state.params.studyId;
 	$scope.study = {};
 	$scope.status = new status(true);
+	$scope.sortby = "user.lastname";
 		
 	$scope.reload = function() {
 			
@@ -75,6 +76,11 @@ angular.module('portal')
 	
 	$scope.readyForDelete = function() {
 		return true;
+	};
+	
+	$scope.setSort = function(key) {
+		if ($scope.sortby==key) $scope.sortby = "-"+key;
+		else { $scope.sortby = key; }
 	};
 	
 	$scope.reload();

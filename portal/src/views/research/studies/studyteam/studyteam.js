@@ -15,6 +15,7 @@ angular.module('portal')
     $scope.roles = studies.roles;
     $scope.rights = ["setup", "readData", "writeData", "unpseudo", "export", "changeTeam", "participants", "auditLog" ];
     $scope.add = { role:{} };
+    $scope.sortby="user.lastname";   
 	
 	$scope.init = function() {
 		
@@ -123,6 +124,12 @@ angular.module('portal')
 	$scope.select = function(member) {
 	   $scope.add = { personemail : member.user.email, role : JSON.parse(JSON.stringify(member.role))  };
 	   angular.forEach($scope.roles, function(r) { if (r.id == member.role.id) $scope.add.roleTemplate = r; });	   
+	};
+	
+	$scope.setSort = function(key) {
+		console.log(key);
+		if ($scope.sortby==key) $scope.sortby = "-"+key;
+		else { $scope.sortby = key; }
 	};
 		
 	session.currentUser.then(function(userId) {	 

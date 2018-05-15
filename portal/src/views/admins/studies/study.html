@@ -85,14 +85,14 @@
 	
 		<table class="table table-striped">
 			    <tr>
-			      <th translate="common.user.firstname"></th>
-			      <th translate="common.user.lastname"></th>
-			      <th translate="common.user.email"></th>
-			      <th translate="admin_study.role"></th>
+			      <th sortby="user.firstname" translate="common.user.firstname"></th>
+			      <th sortby="user.lastname" translate="common.user.lastname"></th>
+			      <th sortby="user.email" translate="common.user.email"></th>
+			      <th sortby="role" translate="admin_study.role"></th>
 			      <th></th>
 			     
 			    </tr>
-				<tr ng-repeat="member in members|filter:{status:'ACTIVE'}|orderBy:'lastname'">
+				<tr ng-repeat="member in members|filter:{status:'ACTIVE'}|orderBy:sortby">
 					<td>{{ member.user.firstname }}</td>
 					<td>{{ member.user.lastname }}</td>
 					<td>{{ member.user.email }}</td>
