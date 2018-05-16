@@ -1,10 +1,12 @@
 package utils.db;
 
+import org.bson.conversions.Bson;
+
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoException;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
 
 import models.MidataId;
 
@@ -18,14 +20,15 @@ public class OrderOperations {
 	 * Returns the maximum of the order fields in the given collection.
 	 */
 	public static int getMax(String collection, MidataId userId) {
-		DBCollection coll = DBLayer.getCollection(collection);
-		DBObject query = new BasicDBObject("owner", userId.toObjectId());
+		MongoCollection<DBObject> coll = DBLayer.getCollection(collection);
+		BasicDBObject query = new BasicDBObject("owner", userId.toObjectId());
 		query.put("order", new BasicDBObject("$exists", true));
-		DBObject projection = new BasicDBObject("order", 1);
-		DBCursor maxOrder = coll.find(query, projection).sort(new BasicDBObject("order", -1)).limit(1);
+		Bson projection = new BasicDBObject("order", 1);
+		FindIterable<DBObject> maxOrder = coll.find(query).projection(projection).sort(new BasicDBObject("order", -1)).limit(1);
+		DBObject first = maxOrder.first();
 		int max = 0;
-		if (maxOrder.hasNext()) {
-			max = (Integer) maxOrder.next().get("order");
+		if (first != null) {
+			max = (Integer) first.get("order");
 		}
 		return max;
 	}
@@ -61,7 +64,7 @@ public class OrderOperations {
 
 	private static void incOperation(String collection, MidataId userId, int fromLimit, int toLimit, int increment)
 			throws DatabaseException {
-		DBObject query = new BasicDBObject("owner", userId.toObjectId());
+		BasicDBObject query = new BasicDBObject("owner", userId.toObjectId());
 		query.put("order", new BasicDBObject("$exists", true));
 		if (fromLimit == 0) {
 			query.put("order", new BasicDBObject("$lte", toLimit));
@@ -72,10 +75,10 @@ public class OrderOperations {
 					new BasicDBObject("order", new BasicDBObject("$lte", toLimit)) };
 			query.put("$and", and);
 		}
-		DBObject update = new BasicDBObject("$inc", new BasicDBObject("order", increment));
-		DBCollection coll = DBLayer.getCollection(collection);
+		BasicDBObject update = new BasicDBObject("$inc", new BasicDBObject("order", increment));
+		MongoCollection<DBObject> coll = DBLayer.getCollection(collection);
 		try {
-			coll.updateMulti(query, update);
+			coll.updateMany(query, update);
 		} catch (MongoException e) {
 			throw new DatabaseException(e);
 		}
