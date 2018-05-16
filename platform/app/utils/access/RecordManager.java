@@ -592,7 +592,7 @@ public class RecordManager {
 		DBRecord dbrecord = RecordConversion.instance.toDB(record);
 		byte[] kdata = addRecordIntern(context, dbrecord, false, alternateAps, false);	
 		try {
-		FileStorage.store(EncryptionUtils.encryptStream(kdata, data), record._id, fileName, contentType);
+		FileStorage.store(EncryptionUtils.encryptStream(kdata, data), record._id, 0, fileName, contentType);
 		} catch (DatabaseException e) {
 			throw new InternalServerException("error.internal", e);
 		}
@@ -1166,7 +1166,7 @@ public class RecordManager {
 		DBRecord rec = result.get(0);
 		
 		if (rec.security == null) throw new InternalServerException("error.internal", "Missing key for record:"+rec._id.toString());
-		FileData fileData = FileStorage.retrieve(new MidataId(token.recordId));
+		FileData fileData = FileStorage.retrieve(new MidataId(token.recordId), 0);
 		if (fileData == null) throw new InternalServerException("error.internal", "Record "+rec._id.toString()+" has no binary data attached.");		
 		
 		if (rec.security.equals(APSSecurityLevel.NONE) || rec.security.equals(APSSecurityLevel.LOW)) {

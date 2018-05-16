@@ -2,6 +2,16 @@ package utils.db;
 
 import java.io.InputStream;
 
+import org.bson.BsonValue;
+import org.bson.Document;
+import org.bson.types.ObjectId;
+
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.gridfs.GridFSBucket;
+import com.mongodb.client.gridfs.GridFSBuckets;
+import com.mongodb.client.gridfs.GridFSFindIterable;
+import com.mongodb.client.gridfs.model.GridFSFile;
+import com.mongodb.client.gridfs.model.GridFSUploadOptions;
 import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSInputFile;
@@ -20,26 +30,44 @@ public class FileStorage {
 	/**
 	 * Stores an input file with GridFS, which automatically divides a file into chunks of 265 kB.
 	 */
-	public static void store(InputStream file, MidataId id, String filename, String contentType) throws DatabaseException {
+	public static MidataId store(InputStream file, MidataId id, int index, String filename, String contentType) throws DatabaseException {
 		AccessLog.log("store id = "+id+" filename="+filename);
-		GridFS fileSystem = new GridFS(DBLayer.getFSDB(), FILE_STORAGE);
-		GridFSInputFile inputFile;
+		GridFSBucket fileSystem = GridFSBuckets.create(DBLayer.getFSDB(), FILE_STORAGE);		
 		
-		inputFile = fileSystem.createFile(file, filename);		
-		inputFile.setId(id.toObjectId());
-		inputFile.setFilename(filename);
-		inputFile.setContentType(contentType);
-		inputFile.save();
+		GridFSUploadOptions options = new GridFSUploadOptions()
+                //.chunkSizeBytes(1024)                
+                .metadata(new Document("contentType", contentType).append("filename", filename));
+
+        return MidataId.from(fileSystem.uploadFromStream(id.toString()+"_"+index, file, options));
+						
 	}
 
 	/**
 	 * Returns an input stream from which the file can be read.
 	 */
-	public static FileData retrieve(MidataId id) {
-		GridFS fileSystem = new GridFS(DBLayer.getFSDB(), FILE_STORAGE);
-		GridFSDBFile retrievedFile = fileSystem.findOne(id.toObjectId());
-		if (retrievedFile != null) return new FileData(retrievedFile.getInputStream(), retrievedFile.getFilename(), retrievedFile.getContentType());
-		return null;
+	public static FileData retrieve(MidataId id, int index) {
+		GridFSBucket fileSystem = GridFSBuckets.create(DBLayer.getFSDB(), FILE_STORAGE);
+				
+		GridFSFindIterable retrievedFile = fileSystem.find(new BasicDBObject("filename", id.toString()+"_"+index));
+		GridFSFile gridfile = retrievedFile.first();
+		if (gridfile == null) {
+			retrievedFile = fileSystem.find(new BasicDBObject("_id", id.toObjectId()));
+			gridfile = retrievedFile.first();
+		}
+		if (gridfile == null) return null;
+		
+		ObjectId fileid = gridfile.getObjectId();
+		
+		Document meta = gridfile.getMetadata();
+		String contentType = null;		
+		if (meta != null) contentType = meta.getString("contentType");
+		if (contentType == null) contentType = gridfile.getContentType();
+		
+		String filename = null;
+		if (meta != null) filename = meta.getString("filename");
+		if (filename == null) filename = gridfile.getFilename();
+				
+		return new FileData(fileSystem.openDownloadStream(fileid), filename, contentType);		
 	}
 
 	/**
