@@ -1,5 +1,6 @@
 package utils.json;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,7 +19,10 @@ import utils.exceptions.InternalServerException;
 public class JsonOutput {
 	
 	public static String toJson(Object o, String filtered, Set<String> fields) throws InternalServerException {	   	    
-		if (!fields.contains("_id")) fields.add("_id");
+		if (!fields.contains("_id")) {
+			if (!(fields instanceof HashSet)) fields = new HashSet<String>(fields);
+			fields.add("_id");
+		}
 		
 	    SimpleBeanPropertyFilter filter =
 	            new SimpleBeanPropertyFilter.FilterExceptFilter(fields);

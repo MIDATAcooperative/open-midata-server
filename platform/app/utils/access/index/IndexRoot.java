@@ -31,6 +31,7 @@ public class IndexRoot {
 	private byte[] key;
 	private boolean locked;
 	private int modCount = 0;
+	protected int maxDepth = 0;
 	protected Map<MidataId, IndexPage> loadedPages;
 	
 	public final static int MIN_DEGREE          =   100;
@@ -40,7 +41,7 @@ public class IndexRoot {
 	public IndexRoot(byte[] key, IndexDefinition def, boolean isnew) throws InternalServerException {
 		this.key = key;
 		this.model = def;
-		this.rootPage = new IndexPage(this.key, def, this);		
+		this.rootPage = new IndexPage(this.key, def, this, 1);		
 		if (isnew) {
 			locked = true;
 			this.rootPage.initAsRootPage();
@@ -54,15 +55,15 @@ public class IndexRoot {
 	public IndexDefinition getModel() {
 		return model;
 	}
-
-    
-	
+    	
 
 	public int getModCount() {
 		return modCount;
 	}
 
-
+    public int getMaxDepth() {
+    	return maxDepth;
+    }
 
 	public long getVersion() {
 		return rootPage.getVersion();
@@ -285,6 +286,10 @@ public class IndexRoot {
 			rootPage.reload();
 			return lookup(key);
 		}
+	}
+	
+	public int getEstimatedIndexCoverage(Condition[] key) {
+		return rootPage.getEstimatedIndexCoverage(key);
 	}
 
 	protected static IndexPage getRightSiblingAtIndex(IndexPage parentNode, int keyIdx) throws InternalServerException, LostUpdateException  {

@@ -89,8 +89,7 @@ public class MongoDatabase extends Database {
 			} else mongoClient = new MongoClient(new ServerAddress(host, port));
 				mongoClient.setWriteConcern(WriteConcern.ACKNOWLEDGED);
 			
-		}
-		
+		}		
 	}
 	
 	/**

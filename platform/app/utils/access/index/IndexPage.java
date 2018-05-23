@@ -41,15 +41,17 @@ public class IndexPage {
     protected IndexKey mKeys[];  
     protected MidataId mChildren[];
     protected Map<String, Long> ts;
-    
+    protected int depth;
     	
 	
 	protected IndexPage() {}
 	
-	public IndexPage(byte[] key, IndexPageModel model, IndexRoot root) throws InternalServerException {
+	public IndexPage(byte[] key, IndexPageModel model, IndexRoot root, int depth) throws InternalServerException {
 		this.key = key;
 		this.model = model;
 		this.root = root;
+		this.depth = depth;
+		if (root.maxDepth < depth) root.maxDepth = depth;
 		if (model.enc != null) decrypt();
 	}
 	
@@ -59,7 +61,8 @@ public class IndexPage {
 		this.model = new IndexPageModel();
 		this.model._id = new MidataId();
 		this.root = root;
-		
+		this.depth = 1;
+		if (root.maxDepth < depth) root.maxDepth = depth;
 		init();				
 		encrypt();
 		
@@ -82,9 +85,10 @@ public class IndexPage {
 		IndexPage loaded = root.loadedPages.get(child);
 		if (loaded != null) return loaded;
 				
-		loaded = new IndexPage(this.key, IndexPageModel.getById(child), root);
+		loaded = new IndexPage(this.key, IndexPageModel.getById(child), root, this.depth + 1);
 		if (loaded.model.lockTime > root.getVersion()) throw new LostUpdateException();
 		root.loadedPages.put(child, loaded);
+		
 		return loaded;
 	}
 	
@@ -98,7 +102,7 @@ public class IndexPage {
 		}
 		if (toload.isEmpty()) return;
 		Set<IndexPageModel> result = IndexPageModel.getMultipleById(toload);
-		for (IndexPageModel r : result) root.loadedPages.put(r._id, new IndexPage(this.key, r, root));		
+		for (IndexPageModel r : result) root.loadedPages.put(r._id, new IndexPage(this.key, r, root, this.depth + 1));		
 	}
 	
 	public MidataId getId() {
@@ -262,6 +266,15 @@ public class IndexPage {
 		catch (ClassNotFoundException e2) { throw new InternalServerException("error.internal", "ClassNotFoundException");}
 	}
 			
+	protected int getEstimatedIndexCoverage(Condition[] key) {
+		if (mIsLeaf || mCurrentKeyNum == 0) return 0;
+		int work = 0;
+		for (int i=0;i<=mCurrentKeyNum;i++) {				
+			if (conditionCompare(key, i==0 ? null : mKeys[i-1].getKey(), i == mCurrentKeyNum ? null : mKeys[i].getKey())) work++;									
+		}
+		return 100 * work / mCurrentKeyNum;
+	}
+	
 	protected Collection<IndexKey> findEntries(Condition[] key) throws InternalServerException, LostUpdateException {
 		Collection<IndexKey> result = new ArrayList<IndexKey>();
 		
