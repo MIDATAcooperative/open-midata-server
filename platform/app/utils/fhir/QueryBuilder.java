@@ -486,13 +486,13 @@ public class QueryBuilder {
                       bld.addComp(hPath, CompareOperator.LT, hDate, false, CompareOperator.GE, lDate, false);
 					}
 					break;
-				case NOT_EQUAL:					
-					bld.addCompOr(lPath, CompareOperator.LT, lDate, true);
+				case NOT_EQUAL:
 					bld.addCompOr(hPath, CompareOperator.GE, hDate, true);
+					bld.addCompOr(lPath, CompareOperator.LT, lDate, true);					
 					break;
-				case APPROXIMATE:
+				case APPROXIMATE:						
+					bld.addComp(hPath, CompareOperator.GE, lDate, true);
 					bld.addComp(lPath, CompareOperator.LT, hDate, true);
-					bld.addComp(hPath, CompareOperator.GE, lDate, true);									
 					break;
 				default:throw new NullPointerException();
 				}
@@ -642,6 +642,31 @@ public class QueryBuilder {
 		return orResult;		
 	}
 	
+	public boolean referencesHaveTypes(String name, String targetType, Set<String> types) throws AppException {
+		if (targetType != null && types.contains(targetType)) return true;
+		
+		List<List<? extends IQueryParameterType>> paramsAnd = params.get(name);
+		if (paramsAnd == null) return true;
+						
+		for (List<? extends IQueryParameterType> paramsOr : paramsAnd) {												
+			for (IQueryParameterType param : paramsOr) {				
+				if (param instanceof ReferenceParam) {					
+					ReferenceParam r = (ReferenceParam) param;					
+					if (r.getChain() != null) {											
+                        if (targetType == null) {
+                           String rt = r.getResourceType();
+                           if (rt == null) throw new BadRequestException("error.internal", "Target resource type for chaining not known.");
+                           if (!types.contains(rt)) return false;
+                        } 
+												
+					} 
+					
+				}
+			}			
+		}		
+		return true;		
+	}
+	
 	public Set<String> tokensToCodeSystemStrings(String name) {
 		List<List<? extends IQueryParameterType>> paramsAnd = params.get(name);
 		if (paramsAnd == null) return null;
@@ -690,14 +715,16 @@ public class QueryBuilder {
 		return result;
 	}
 
+	private final static Set<String> USER_TYPES = Collections.unmodifiableSet(Sets.create("Patient", "Practitioner", "Person"));
 	/**
 	 * Use a FHIR query parameter to restrict the record owner
 	 * @param name name of FHIR search parameter
 	 * @param refType Resource referenced (Patient, Practitioner, ...)
 	 */
 	public boolean recordOwnerReference(String name, String refType, String emptyField) throws AppException {
+		if (!referencesHaveTypes(name, refType, USER_TYPES)) return false;
 		List<ReferenceParam> patients = resolveReferences(name, refType);
-		if (patients != null && FHIRTools.areAllOfType(patients, Sets.create("Patient", "Practitioner", "Person"))) {
+		if (patients != null && FHIRTools.areAllOfType(patients, USER_TYPES)) {
 			query.putAccount("owner", FHIRTools.referencesToIds(patients));
 			if (emptyField != null) query.putDataCondition(new FieldAccess(emptyField, new ExistsCondition(false)));
 			return true;

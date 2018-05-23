@@ -579,6 +579,7 @@ public class Feature_Indexes extends Feature {
 
 		Collection<IndexMatch> matches;
 		IndexRoot root;
+		boolean doupdate = false;
 
 		IndexAccess(IndexPseudonym pseudo, Set<String> format, Condition indexQuery) throws InternalServerException {
 			this.pseudo = pseudo;
@@ -610,18 +611,37 @@ public class Feature_Indexes extends Feature {
 				index = IndexManager.instance.createIndex(pseudo, format, pathes);
 				AccessLog.logEnd("end index creation");
 			}
-		}
-
-		public Collection<IndexMatch> query(Query q, Set<MidataId> targetAps) throws AppException {
-			long t1 = System.currentTimeMillis();
-			prepare();
 			root = cachedIndexRoots.get(index._id);
-			boolean doupdate = false;
+			doupdate = false;
 			if (root == null) {
 				root = IndexManager.instance.getIndexRoot(pseudo, index);
 				doupdate = true;
 				cachedIndexRoots.put(index._id, root);
 			}
+		}
+		
+		public int getCoverage() throws AppException {
+			if (index == null) prepare();
+			return root.getEstimatedIndexCoverage(condition);
+		}
+		
+		public void dontuse() {
+			index = null;
+		}
+		
+		public int getEstimatedTotal() {
+			switch (root.getMaxDepth()) {
+			case 0:
+			case 1: return 100;
+			case 2: return 10000;
+			default: return 1000000;
+			}
+		}
+
+		public Collection<IndexMatch> query(Query q, Set<MidataId> targetAps) throws AppException {
+			long t1 = System.currentTimeMillis();
+			if (index == null) prepare();
+			
 			long t2 = System.currentTimeMillis();
 			if (targetAps != null && targetAps.size() == 1) {
 				matches = IndexManager.instance.queryIndex(root, condition, targetAps.iterator().next());
@@ -662,11 +682,25 @@ public class Feature_Indexes extends Feature {
 		public Collection<IndexMatch> query(Query q, Set<MidataId> targetAps) throws AppException {
 			Collection<IndexMatch> results = null;
 
+			int divider = 100;
+			
 			for (IndexUse part : parts) {
+				if (results != null && part instanceof IndexAccess && results.size() < divider) {
+					int coverage = ((IndexAccess) part).getCoverage();
+					 if (coverage > 10 && ((IndexAccess) part).getCoverage() > 100 * results.size() / divider) {
+						((IndexAccess) part).dontuse();
+						continue;
+					 }
+				}
+				
 				Collection<IndexMatch> partResult = part.query(q, targetAps);
 				if (results == null) {
 					results = partResult;
-				} else {
+					if (part instanceof IndexAccess) {
+						divider = ((IndexAccess) part).getEstimatedTotal();
+					}
+					
+				} else if (partResult != null) {
 					Set<IndexMatch> check = new HashSet<IndexMatch>(partResult);
 					Collection<IndexMatch> newresult = new ArrayList<IndexMatch>();
 					for (IndexMatch match : results) {
@@ -684,7 +718,7 @@ public class Feature_Indexes extends Feature {
 		@Override
 		public void revalidate(MidataId executor, List<DBRecord> result) throws AppException {
 			for (IndexUse part : parts)
-				part.revalidate(executor, result);
+				part.revalidate(executor, result); 
 		}
 
 		public long version(MidataId aps) {
