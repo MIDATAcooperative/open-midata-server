@@ -112,7 +112,7 @@ GET     /api/shared/users/complete/:query                controllers.Users.compl
 POST    /api/shared/users/updateAddress                  controllers.Users.updateAddress()
 POST    /api/shared/users/updateSettings                 controllers.Users.updateSettings()
 POST    /api/shared/users/requestMembership              controllers.Users.requestMembership()
-DELETE  /api/shared/users/wipe                           controllers.Users.accountWipe()
+POST    /api/shared/users/wipe                           controllers.Users.accountWipe()
 
 # Research
 

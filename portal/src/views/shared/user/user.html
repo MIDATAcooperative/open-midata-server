@@ -40,7 +40,7 @@
 	<li><a href="javascript:" ng-disabled="msg" ng-click="resetSpaces();" translate="user.reset_spaces_btn"></a></li>
 	<li><a href="javascript:" ui-sref="^.delete_records" translate="user.delete_records_btn"></a></li>
 	<li><a href="javascript:" ng-click="exportAccount()" translate="user.export_btn"></a></li>
-	<li ng-show="beta && user.role=='MEMBER'"><a  href="javascript:" ng-click="askwipe()">test server: wipe account</a></li>
+	<li><a  href="javascript:" ng-show="user.role!='ADMIN'" ui-sref="^.accountwipe" translate="user.wipe_account_btn"></a></li>
   </ul>
 </div>
 			     
@@ -144,16 +144,7 @@
 		
 			</loader>
 		  </div>
-		</div>
-		
-	    <modal viewid="confirm">
-	      <div style="margin:10px 10px 10px 10px">	    
-	      <div>
-	        <a class="btn btn-danger" href="javascript:" ng-click="wipe()">test server: wipe account</a>
-	        <button class="btn btn-default" type="button" data-dismiss="modal" translate="confirm.cancel"></button>	      
-	      </div>
-	      </div>
-	    </modal>
+		</div>			   
 		
 		
 	</div>
