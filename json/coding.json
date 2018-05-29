@@ -240,3 +240,5 @@
 {"_id":{"$oid":"5ae9d640aed64509ec03dbe8"},"system":"http://loinc.org","code":"80404-7","display":"Heart rate variability","content":"loinc/80404-7"}
 {"_id":{"$oid":"5ae9d6abaed64509ec03dbea"},"system":"http://loinc.org","code":"39106-0","display":"Skin Temperatur","content":"loinc/39106-0"}
 {"_id":{"$oid":"5ae9d765aed64509ec03dbec"},"system":"http://snomed.info/sct","code":"24672009","display":"Galvanic skin response","content":"snomed/24672009"}
+{"_id":{"$oid":"5b0d6bbeaed6451dd798d678"},"system":"http://loinc.org","code":"66378-1","display":"Do you take cortisone?","content":"loinc/66378-1"}
+{"_id":{"$oid":"5b0d6c1caed6451dd798d67a"},"system":"http://snomed.info/sct","code":"422673001","display":"Snellen visual acuity","content":"snomed/422673001"}

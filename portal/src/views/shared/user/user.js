@@ -1,10 +1,11 @@
 angular.module('portal')
-.controller('UserCtrl', ['$scope', '$state', '$translate', 'ENV', 'users', 'status', 'session', 'server', 'languages', 'views', function($scope, $state, $translate, ENV, users, status, session, server, languages, views) {
+.controller('UserCtrl', ['$scope', '$state', '$translate', 'ENV', 'users', 'status', 'session', 'server', 'languages', function($scope, $state, $translate, ENV, users, status, session, server, languages) {
 	// init
 	$scope.status = new status(false);
 	$scope.user = {};
 	$scope.msg = null;
 	$scope.beta = ENV.instanceType == "test" || ENV.instanceType == "local";
+	$scope.error = null;
 	
 	$scope.languages = languages.all;
 	
@@ -22,13 +23,10 @@ angular.module('portal')
 	};
 	
 	
-	session.currentUser.then(function(myUserId) { 
-		$scope.isSelf = myUserId == userId;
-		/*if (session.user.subroles.indexOf("TRIALUSER") >= 0 || session.user.subroles.indexOf("STUDYPARTICIPANT") >= 0 || session.user.subroles.indexOf("NONMEMBERUSER") >= 0) {
-			  $scope.locked = true;
-		  } else $scope.locked = false;
-		*/
+	session.currentUser.then(function(myUserId) { 		
+		
 		userId = userId || myUserId;
+		$scope.isSelf = myUserId == userId;
 		
         $scope.init();
 	});
@@ -82,15 +80,17 @@ angular.module('portal')
 		});	    
 		}
 	};
+		
 	
-	$scope.askwipe = function() {
-		views.setView("confirm", true, "confirm.title");
-	};
-	
-	$scope.wipe = function() {
-	  server.delete("/api/shared/users/wipe").then(function() {
+	$scope.accountWipe = function() {
+		if (!$scope.user.password) {
+			$scope.error = { code : "accountwipe.error" };
+			return;
+		}
+		
+		$scope.status.doAction("wipe", server.post("/api/shared/users/wipe", JSON.stringify($scope.user))).then(function() {
 		  document.location.href="/#/public/login"; 
-	  });	  
+	  },function(err) { $scope.error = err.data; });	  
 	};
 	
 }]);

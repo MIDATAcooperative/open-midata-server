@@ -26,6 +26,7 @@ import models.MidataId;
 import models.Plugin;
 import models.Space;
 import models.Study;
+import models.StudyParticipation;
 import models.User;
 import models.UserGroup;
 import models.UserGroupMember;
@@ -38,6 +39,7 @@ import models.enums.EMailStatus;
 import models.enums.EventType;
 import models.enums.Gender;
 import models.enums.MessageReason;
+import models.enums.ParticipationStatus;
 import models.enums.StudyExecutionStatus;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
@@ -372,6 +374,7 @@ public class Administration extends APIController {
 		JsonValidation.validate(json, "user");
 							
 		MidataId userId = JsonValidation.getMidataId(json, "user");
+		MidataId executorId = new MidataId(request().username());
 		
 		User selected = User.getById(userId, User.ALL_USER);
 		if (!selected.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.invalid.status",  "User must have status deleted to be wiped.");
@@ -386,6 +389,14 @@ public class Administration extends APIController {
 		for (Consent consent : consents) {			
 			AccessPermissionSet.delete(consent._id);
 			Circle.delete(userId, consent._id);
+		}
+		
+		Set<StudyParticipation> studies = StudyParticipation.getAllByMember(userId, Sets.create("_id", "study","pstatus"));
+		for (StudyParticipation study : studies) {
+			if (study.pstatus == ParticipationStatus.MEMBER_REJECTED || study.pstatus == ParticipationStatus.MEMBER_RETREATED || study.pstatus == ParticipationStatus.RESEARCH_REJECTED) continue;
+			try {
+			  controllers.members.Studies.retreatParticipation(executorId, userId, study.study);
+			} catch (Exception e) {}
 		}
 		
 		Set<Consent> consents2 = Consent.getAllByAuthorized(userId);

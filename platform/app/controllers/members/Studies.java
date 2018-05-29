@@ -474,6 +474,14 @@ public class Studies extends APIController {
 		MidataId userId = new MidataId(request().username());		
 		MidataId studyId = new MidataId(id);
 		
+		retreatParticipation(userId, userId, studyId);		
+		
+		AuditManager.instance.success();
+		return ok();
+	}
+	
+	public static void retreatParticipation(MidataId executor, MidataId userId, MidataId studyId) throws JsonValidationException, AppException {
+				
 		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country"));
 		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create(Consent.ALL, "status", "pstatus", "ownerName", "owner", "authorized"));		
 		Study study = Study.getById(studyId, Sets.create("name", "executionStatus", "participantSearchStatus", "createdBy", "code"));
@@ -481,15 +489,21 @@ public class Studies extends APIController {
 		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
 		if (participation == null) throw new BadRequestException("error.blocked.participation", "Member does not participate in study.");
 		
+		if (participation.pstatus == ParticipationStatus.REQUEST || participation.pstatus == ParticipationStatus.MATCH || participation.pstatus == ParticipationStatus.CODE) {
+			AuditManager.instance.addAuditEvent(AuditEventType.STUDY_PARTICIPATION_MEMBER_REJECTED, userId, participation, study);			
+			
+			participation.setPStatus(ParticipationStatus.MEMBER_REJECTED);				
+			Circles.consentStatusChange(executor, participation, ConsentStatus.REJECTED);
+		} else {
+		
 		AuditManager.instance.addAuditEvent(AuditEventType.STUDY_PARTICIPATION_MEMBER_RETREAT, userId, participation, study);
-		if (participation.pstatus != ParticipationStatus.ACCEPTED) throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");
+		   if (participation.pstatus != ParticipationStatus.ACCEPTED) throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");
 		
-		participation.setPStatus(ParticipationStatus.MEMBER_RETREATED);		
+		   participation.setPStatus(ParticipationStatus.MEMBER_RETREATED);
+		}
 		//participation.addHistory(new History(EventType.NO_PARTICIPATION, participation, user, null));
-		Circles.consentStatusChange(userId, participation, ConsentStatus.FROZEN);
+		Circles.consentStatusChange(executor, participation, ConsentStatus.FROZEN);				
 		
-		AuditManager.instance.success();
-		return ok();
 	}
 		
 }

@@ -715,6 +715,7 @@
 	"reset_spaces_btn" : "Reset Portal",
 	"export_btn" : "Export your data",
 	"delete_records_btn" : "Delete Records",
+	"wipe_account_btn" : "Delete Account",
 	"account_repaired" : "Your account has been repaired.",
 	"spaces_resetted" : "Your configuration has been resetted.",
 	"settings" : "Settings",
@@ -1114,6 +1115,21 @@
 	"entercode" : "The letter sent to you contains a registration code. Please enter your code here once you have received it:",
 	"email_unvalidated" : "Your email address has not been validated yet. Please click on the link in the validation email you received!", 
 	"request_membership_btn" : "Request Contract"						
+  },
+  
+  "accountwipe" : {
+    "title" : "Close and Delete MIDATA Account",
+    "paragraph1" : "You would like to delete your MIDATA account irrevocably? That is of course possible.",
+    "paragraph2" : "Please read the following information first:",
+    "point1" : "If you delete your MIDATA account your personal data will no longer be available.",
+    "point2" : "Data already shared for research will remain available to the studies it has been shared to up to the time of account deletion. No new data will be shared.",
+    "point3" : "MIDATA is not able to recover your deleted account.",    
+    "warning" : "Warning",
+    "final" : "This action cannot be undone.",
+    "paragraph3" : "If you really want to delete your MIDATA account enter your password for confirmation.",
+    "password" : "Password",
+    "wipe_btn" : "Close and Delete MIDATA Account",
+    "error" : "Password not correct. Account not deleted."
   },
   
   "-1" : "unknown"
