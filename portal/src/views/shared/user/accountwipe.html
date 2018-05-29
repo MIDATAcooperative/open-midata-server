@@ -1,0 +1,46 @@
+	<div  ng-controller="UserCtrl">		
+		
+				
+		<div ng-cloak class="panel panel-primary">
+		  <div class="panel-heading" translate="accountwipe.title"></div>
+		  <div class="panel-body">
+			<loader busy="status.isBusy !== false">		
+			<div class="alert alert-warning"><strong translate="accountwipe.warning"></strong><p translate="accountwipe.final">This cannot be undone!</p></div>	
+			<p translate="accountwipe.paragraph1"></p>
+			<p translate="accountwipe.paragraph2"></p>	
+			<ul>
+			  <li translate="accountwipe.point1"></li>
+			  <li translate="accountwipe.point2"></li>
+			  <li translate="accountwipe.point3"></li>
+			</ul>		
+			<p translate="accountwipe.paragraph3"></p>
+			<form name="myform" novalidate class="css-form form-horizontal" ng-submit="accountWipe()" role="form">
+			   <input type="text" style="display: none" id="fakeUsername" name="fakeUsername" value="" />
+               <input type="password" style="display: none" id="fakePassword" name="fakePassword" value="" />
+	
+	           <formrow label="user.name">
+	             <p class="form-control-static">
+	               {{ user.name }} ({{ "enum.userrole."+user.role | translate }})<br>
+	               {{ user.email }}	                
+	             </p>
+	           </formrow>
+	           
+	           <formrow myid="password" label="accountwipe.password">
+				  <input type="password" class="form-control" id="password" name="password" ng-model="user.password"
+					required autocomplete="off">
+				</formrow>
+	           
+	           <div ng-show="error" class="alert alert-danger">
+			         <span translate="{{ error.code || error }}"></span>			            	                             
+	           </div>
+	            
+				<button type="submit" ng-disabled="status.action=='wipe'" class="btn btn-danger" translate="accountwipe.wipe_btn"></button>				
+				
+			</form>
+						
+			</loader>
+		  </div>
+		</div>
+			    				
+	</div>
+	

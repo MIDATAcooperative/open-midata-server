@@ -21,5 +21,25 @@ angular.module('portal')
 	    .state('developer.user', {
 	      url: '/user/:userId',
 	      templateUrl: 'views/shared/user/user.html' 
-	    });	    
+	    })
+	    
+	    
+	     .state('member.accountwipe', {
+	      url: '/accountwipe',
+	      templateUrl: 'views/shared/user/accountwipe.html' 
+	    })
+	   
+	    .state('provider.accountwipe', {
+	      url: '/accountwipe',
+	      templateUrl: 'views/shared/user/accountwipe.html' 
+	    })
+	    .state('research.accountwipe', {
+	      url: '/accountwipe',
+	      templateUrl: 'views/shared/user/accountwipe.html' 
+	    })	    
+	    .state('developer.accountwipe', {
+	      url: '/accountwipe',
+	      templateUrl: 'views/shared/user/accountwipe.html' 
+	    });	 
+	       
 }]);

@@ -24,6 +24,7 @@ import models.Research;
 import models.ResearchUser;
 import models.Space;
 import models.Study;
+import models.StudyParticipation;
 import models.User;
 import models.UserGroupMember;
 import models.enums.AccountActionFlags;
@@ -32,6 +33,7 @@ import models.enums.ConsentType;
 import models.enums.ContractStatus;
 import models.enums.EventType;
 import models.enums.Gender;
+import models.enums.ParticipationStatus;
 import models.enums.SubUserRole;
 import models.enums.UserFeature;
 import models.enums.UserRole;
@@ -407,6 +409,18 @@ public class Users extends APIController {
 		
 		MidataId userId = new MidataId(request().username());
 		
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "_id", "password");
+		
+		String password = JsonValidation.getString(json, "password");
+		MidataId check = JsonValidation.getMidataId(json, "_id");
+		if (!check.equals(userId)) throw new InternalServerException("error.internal", "Session mismatch for wipe account.");
+		
+		User user = User.getById(userId, User.FOR_LOGIN);
+		if (!user.authenticationValid(password)) {
+			throw new BadRequestException("accountwipe.error",  "Invalid password.");
+		}
+		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_ACCOUNT_DELETED, userId);
 						
 		Set<Space> spaces = Space.getAllByOwner(userId, Space.ALL);
@@ -419,6 +433,12 @@ public class Users extends APIController {
 		for (Consent consent : consents) {
 			RecordManager.instance.deleteAPS(consent._id, userId);
 			Circle.delete(userId, consent._id);
+		}
+		
+		Set<StudyParticipation> studies = StudyParticipation.getAllByMember(userId, Sets.create("_id", "study", "status", "pstatus"));
+		for (StudyParticipation study : studies) {
+			if (study.pstatus == ParticipationStatus.MEMBER_REJECTED || study.pstatus == ParticipationStatus.MEMBER_RETREATED || study.pstatus == ParticipationStatus.RESEARCH_REJECTED) continue;
+			controllers.members.Studies.retreatParticipation(userId, userId, study.study);
 		}
 		
 		Set<Consent> consents2 = Consent.getAllByAuthorized(userId);
@@ -441,7 +461,7 @@ public class Users extends APIController {
 						
 		KeyManager.instance.deleteKey(userId);
 		
-		User user = User.getById(userId, User.ALL_USER_INTERNAL);
+		user = User.getById(userId, User.ALL_USER_INTERNAL);
 		user.delete();
 		
 		AuditManager.instance.success();
