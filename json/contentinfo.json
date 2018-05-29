@@ -228,3 +228,5 @@
 {"_id":{"$oid":"5ae9d640aed64509ec03dbe7"},"content":"loinc/80404-7","defaultCode":"http://loinc.org 80404-7","security":"MEDIUM","label":{"en":"Heart rate variability"},"resourceType":"fhir/Observation","subType":"Quantity","category":"vital-signs"}
 {"_id":{"$oid":"5ae9d6abaed64509ec03dbe9"},"content":"loinc/39106-0","defaultCode":"http://loinc.org 39106-0","security":"MEDIUM","label":{"en":"Skin Temperature"},"resourceType":"fhir/Observation","subType":"Quantity","category":"vital-signs"}
 {"_id":{"$oid":"5ae9d765aed64509ec03dbeb"},"content":"snomed/24672009","defaultCode":"http://snomed.info/sct 24672009","security":"MEDIUM","label":{"en":"Galvanic skin response"},"resourceType":"fhir/Observation","subType":"Quantity","category":"vital-signs"}
+{"_id":{"$oid":"5b0d6bbeaed6451dd798d677"},"content":"loinc/66378-1","defaultCode":"http://loinc.org 66378-1","security":"MEDIUM","label":{"en":"Do you take cortisone?"}}
+{"_id":{"$oid":"5b0d6c1caed6451dd798d679"},"content":"snomed/422673001","defaultCode":"http://snomed.info/sct 422673001","security":"MEDIUM","label":{"en":"Snellen visual acuity"}}
