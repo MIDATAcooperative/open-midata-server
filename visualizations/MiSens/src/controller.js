@@ -23,11 +23,11 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 		};
 
 		var UpdateInformation = function() {
-			var legende_not_sensitive = "nicht empfindlich";
-			var legende_sensitive = "sehr empfindlich";
-			$translate("legende_not_sensitive").then(function(t) { legende_not_sensitive = t; });
-			$translate("legende_sensitive").then(function(t) { legende_sensitive = t; });
-			
+			//var legende_not_sensitive = "nicht empfindlich";
+			//var legende_sensitive = "sehr empfindlich";
+			//$translate("legende_not_sensitive").then(function(t) { legende_not_sensitive = t; });
+			//$translate("legende_sensitive").then(function(t) { legende_sensitive = t; });
+
 			var result = information.GetInformationForVisualization();
 			// draw image
 			var canvas = $document[0].getElementById("myCanvas");
@@ -37,7 +37,8 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 			var _value;
 
             // resize canvas
-            var newSize = 0.7;
+            //var newSize = 0.7;
+            var newSize = 0.8;
             canvas.width = canvasWidth * newSize;
             canvas.height = canvasHeight * newSize;
             ctx.scale(newSize, newSize);
@@ -172,17 +173,23 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 				ctx.drawImage(imageObj, 0, 0);
 				
 				// variables
-				var x = 453;
-				var y = 462;
-				var r = 21.7;
+				//var x = 453;
+				//var y = 462;
+				var x = 427;
+				var y = 638;
+				//var r = 21.7;
+				var r = 22;
 				var numberOfElements = 8;
 				var angleInRadian = Math.PI * 2 / numberOfElements;
-				var pointWidth = 10;
+				//var pointWidth = 10;
+				var pointWidth = 6;
+				var styleColorLine = "#ED6B6A";
 				
 				// draw point in the center to calibrate!
 				ctx.fillStyle = "#872233";
 				ctx.fillRect(x, y, 1, 1);
-				ctx.fillStyle = "green";
+				ctx.fillStyle = styleColorLine;
+				ctx.strokeStyle = styleColorLine;
 
 				// center of the diagram is -1. The next point is 0, then 1, etc.
 				// the lines are going to be drawed in clockwise and start with angle 0°
@@ -194,15 +201,19 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 				var _firstValueInPosition;
 
 				var _positionOfFirstValue = -1;
-
+				var temp_x, temp_y;
 				do {
 					_positionOfFirstValue++;
 
 					if (arrayWithValues[_positionOfFirstValue] != null) {
 						_firstValueInPosition = arrayWithValues[_positionOfFirstValue];
-						//ctx.moveTo(x + (_firstValueInPosition + 1) * r, y);
-						ctx.moveTo(x + ((_firstValueInPosition + 1) * r) * Math.cos(angleInRadian * _positionOfFirstValue), y + ((_firstValueInPosition + 1) * r) * Math.sin(angleInRadian * _positionOfFirstValue));
-						ctx.fillRect(x + ((_firstValueInPosition + 1) * r) * Math.cos(angleInRadian * _positionOfFirstValue) - (pointWidth/2), y + ((_firstValueInPosition + 1) * r) * Math.sin(angleInRadian * _positionOfFirstValue) - (pointWidth/2), pointWidth, pointWidth);
+						temp_x = x + ((_firstValueInPosition + 1) * r) * Math.cos(angleInRadian * _positionOfFirstValue);
+						temp_y = y + ((_firstValueInPosition + 1) * r) * Math.sin(angleInRadian * _positionOfFirstValue);
+						ctx.moveTo(temp_x, temp_y);
+						//ctx.fillRect(x + ((_firstValueInPosition + 1) * r) * Math.cos(angleInRadian * _positionOfFirstValue) - (pointWidth/2), y + ((_firstValueInPosition + 1) * r) * Math.sin(angleInRadian * _positionOfFirstValue) - (pointWidth/2), pointWidth, pointWidth);
+						ctx.arc(temp_x, temp_y, pointWidth, 0, 2*Math.PI);
+						ctx.fill();
+						ctx.moveTo(temp_x, temp_y);
 					}
 
 				} while (arrayWithValues[_positionOfFirstValue] == null && _positionOfFirstValue < numberOfElements);
@@ -215,37 +226,49 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 					}
 
 					var _distance = (_valueInPosition + 1) * r;
-					ctx.lineTo(x + _distance * Math.cos(angleInRadian * i), y + _distance * Math.sin(angleInRadian * i));
-					ctx.fillRect(x + _distance * Math.cos(angleInRadian * i) - (pointWidth/2), y + _distance * Math.sin(angleInRadian * i) - (pointWidth/2), pointWidth, pointWidth);
+					//ctx.lineTo(x + _distance * Math.cos(angleInRadian * i), y + _distance * Math.sin(angleInRadian * i));
+					//ctx.fillRect(x + _distance * Math.cos(angleInRadian * i) - (pointWidth/2), y + _distance * Math.sin(angleInRadian * i) - (pointWidth/2), pointWidth, pointWidth);
+					temp_x = x + _distance * Math.cos(angleInRadian * i);
+					temp_y = y + _distance * Math.sin(angleInRadian * i);
+					ctx.lineTo(temp_x, temp_y);
+					ctx.stroke();
+					ctx.beginPath();
+					ctx.moveTo(temp_x, temp_y);
+					ctx.arc(temp_x, temp_y, pointWidth, 0, 2*Math.PI);
+					ctx.moveTo(temp_x, temp_y);
+					ctx.fill();
 				}
 
 				// close diagram
 				ctx.lineTo(x + ((_firstValueInPosition + 1) * r) * Math.cos(angleInRadian * _positionOfFirstValue), y + ((_firstValueInPosition + 1) * r) * Math.sin(angleInRadian * _positionOfFirstValue));
 
-				ctx.strokeStyle = "green";
 				ctx.stroke();
 
-				var legendePX = 673, legendePY = 785, legendeW = 227, legendeH = 82, legendePaddingX = 20, legendePaddingY = 30;
+				//var legendePX = 673, legendePY = 785, legendeW = 227, legendeH = 82, legendePaddingX = 20, legendePaddingY = 30;
 
-				ctx.fillStyle = "dimgrey";
-				ctx.font = "20px Arial";
-				ctx.fillText("0     " + legende_not_sensitive, legendePX + legendePaddingX, legendePY + legendePaddingY);
-				ctx.fillText("10   " + legende_sensitive, legendePX + legendePaddingX, legendePY + legendePaddingY + 30);
-				ctx.fillStyle = "green";
+				//ctx.fillStyle = "dimgrey";
+				//ctx.font = "20px Arial";
+				//ctx.fillText("0     " + legende_not_sensitive, legendePX + legendePaddingX, legendePY + legendePaddingY);
+				//ctx.fillText("10   " + legende_sensitive, legendePX + legendePaddingX, legendePY + legendePaddingY + 30);
+				//ctx.fillStyle = styleColorLine;
 
-				ctx.strokeStyle = "dimgrey";
-				ctx.lineWidth = 1;
-				ctx.beginPath();
-				ctx.moveTo(legendePX, legendePY);
-				ctx.lineTo(legendePX, legendePY + legendeH);//870);
-				ctx.lineTo(legendePX + legendeW, legendePY + legendeH);
-				ctx.lineTo(legendePX + legendeW, legendePY);
-				ctx.lineTo(legendePX, legendePY);
-				ctx.stroke();
-				ctx.strokeStyle = "green";//"#00ff00";
+				//ctx.strokeStyle = "dimgrey";
+				//ctx.lineWidth = 1;
+				//ctx.beginPath();
+				//ctx.moveTo(legendePX, legendePY);
+				//ctx.lineTo(legendePX, legendePY + legendeH);//870);
+				//ctx.lineTo(legendePX + legendeW, legendePY + legendeH);
+				//ctx.lineTo(legendePX + legendeW, legendePY);
+				//ctx.lineTo(legendePX, legendePY);
+				//ctx.stroke();
+				//ctx.strokeStyle = styleColorLine;//"#00ff00";
 			};
 			
-			imageObj.src = "spider_plot.png";
+			if ($translate.proposedLanguage() == 'de') {
+				imageObj.src = "spider_plot_de.png";
+			} else {
+				imageObj.src = "spider_plot_en.png";
+			}
 
 			/**
 			 * Draw bar diagrams
