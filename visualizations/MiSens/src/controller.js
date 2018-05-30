@@ -23,11 +23,6 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 		};
 
 		var UpdateInformation = function() {
-			//var legende_not_sensitive = "nicht empfindlich";
-			//var legende_sensitive = "sehr empfindlich";
-			//$translate("legende_not_sensitive").then(function(t) { legende_not_sensitive = t; });
-			//$translate("legende_sensitive").then(function(t) { legende_sensitive = t; });
-
 			var result = information.GetInformationForVisualization();
 			// draw image
 			var canvas = $document[0].getElementById("myCanvas");
@@ -37,7 +32,6 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 			var _value;
 
             // resize canvas
-            //var newSize = 0.7;
             var newSize = 0.8;
             canvas.width = canvasWidth * newSize;
             canvas.height = canvasHeight * newSize;
@@ -210,7 +204,6 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 						temp_x = x + ((_firstValueInPosition + 1) * r) * Math.cos(angleInRadian * _positionOfFirstValue);
 						temp_y = y + ((_firstValueInPosition + 1) * r) * Math.sin(angleInRadian * _positionOfFirstValue);
 						ctx.moveTo(temp_x, temp_y);
-						//ctx.fillRect(x + ((_firstValueInPosition + 1) * r) * Math.cos(angleInRadian * _positionOfFirstValue) - (pointWidth/2), y + ((_firstValueInPosition + 1) * r) * Math.sin(angleInRadian * _positionOfFirstValue) - (pointWidth/2), pointWidth, pointWidth);
 						ctx.arc(temp_x, temp_y, pointWidth, 0, 2*Math.PI);
 						ctx.fill();
 						ctx.moveTo(temp_x, temp_y);
@@ -226,8 +219,7 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 					}
 
 					var _distance = (_valueInPosition + 1) * r;
-					//ctx.lineTo(x + _distance * Math.cos(angleInRadian * i), y + _distance * Math.sin(angleInRadian * i));
-					//ctx.fillRect(x + _distance * Math.cos(angleInRadian * i) - (pointWidth/2), y + _distance * Math.sin(angleInRadian * i) - (pointWidth/2), pointWidth, pointWidth);
+					
 					temp_x = x + _distance * Math.cos(angleInRadian * i);
 					temp_y = y + _distance * Math.sin(angleInRadian * i);
 					ctx.lineTo(temp_x, temp_y);
@@ -243,25 +235,6 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 				ctx.lineTo(x + ((_firstValueInPosition + 1) * r) * Math.cos(angleInRadian * _positionOfFirstValue), y + ((_firstValueInPosition + 1) * r) * Math.sin(angleInRadian * _positionOfFirstValue));
 
 				ctx.stroke();
-
-				//var legendePX = 673, legendePY = 785, legendeW = 227, legendeH = 82, legendePaddingX = 20, legendePaddingY = 30;
-
-				//ctx.fillStyle = "dimgrey";
-				//ctx.font = "20px Arial";
-				//ctx.fillText("0     " + legende_not_sensitive, legendePX + legendePaddingX, legendePY + legendePaddingY);
-				//ctx.fillText("10   " + legende_sensitive, legendePX + legendePaddingX, legendePY + legendePaddingY + 30);
-				//ctx.fillStyle = styleColorLine;
-
-				//ctx.strokeStyle = "dimgrey";
-				//ctx.lineWidth = 1;
-				//ctx.beginPath();
-				//ctx.moveTo(legendePX, legendePY);
-				//ctx.lineTo(legendePX, legendePY + legendeH);//870);
-				//ctx.lineTo(legendePX + legendeW, legendePY + legendeH);
-				//ctx.lineTo(legendePX + legendeW, legendePY);
-				//ctx.lineTo(legendePX, legendePY);
-				//ctx.stroke();
-				//ctx.strokeStyle = styleColorLine;//"#00ff00";
 			};
 			
 			if ($translate.proposedLanguage() == 'de') {
@@ -279,8 +252,9 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 				var defaultBackgroundColor = 'rgba(0, 0, 0, 0.2)';
 				var defaultBoderColor = 'rgba(0, 0, 0, 0.4)';
 
-				var selectedBackgroundColor = 'rgba(72, 136, 30, 0.2)';
-				var selectedBorderColor = 'rgba(72, 136, 30, 1)';
+				var selectedBackgroundColor = 'rgba(237, 107, 106, 0.6)';
+				var selectedBorderColor = 'rgba(237, 107, 106, 1)';
+				//var selectedBorderColor = 'rgba(72, 136, 30, 1)';
 
 				var _backgroundColor = [];
 				var _borderColor = [];
