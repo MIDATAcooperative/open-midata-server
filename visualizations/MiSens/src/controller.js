@@ -248,9 +248,10 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 			 * 
 			 */
 			
-            function generateBar(canvasId, chartLabels, chartData, chartLabel, chartLabelStringY, chartLabelStringX, selectedIndex) {
-				var defaultBackgroundColor = 'rgba(0, 0, 0, 0.2)';
-				var defaultBoderColor = 'rgba(0, 0, 0, 0.4)';
+            function generateBar(canvasId, chartLabels, chartData, chartLabel, chartLabelStringY, chartLabelStringX, selectedIndex, default_bar_color_rgb) {
+				var base_default_color = 'rgba(' + default_bar_color_rgb[0] + ', ' + default_bar_color_rgb[1] + ', ' + default_bar_color_rgb[2];
+				var defaultBackgroundColor = base_default_color + ', 0.4)';
+				var defaultBoderColor = base_default_color + ', 0.6)';//'rgba(0, 0, 0, 0.4)';
 
 				var selectedBackgroundColor = 'rgba(237, 107, 106, 0.6)';
 				var selectedBorderColor = 'rgba(237, 107, 106, 1)';
@@ -364,7 +365,8 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 				generateBar('chart-beta-ionon',
 					["0.1", "0.46", "2.15", "10", "46", "215", "1'000", "4'600", "21'500", "100'000", ">100'000"],
 					[6, 0, 5, 8, 2, 13, 10, 13, 8, 22, 21],
-					chartLabel, chartLabelY, chartLabelX, selectedValue);
+					chartLabel, chartLabelY, chartLabelX, selectedValue,
+					[195,216,234]);
 					
 				selectedValue = null;
 				if (arrayWithValues[7] != null) {
@@ -373,7 +375,8 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 				generateBar("chart-heptanone",
 					["1", "3.6", "13", "46", "167", "600", "2'154", "7'742", "27'825", "100'000", ">100'000"],
 					[1, 8, 2, 3, 3, 12, 9, 15, 12, 20, 21],
-					chartLabel, chartLabelY, chartLabelX, selectedValue);
+					chartLabel, chartLabelY, chartLabelX, selectedValue,
+					[195,216,234]);
 					
 				selectedValue = null;
 				if (arrayWithValues[0] != null) {
@@ -382,7 +385,8 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 				generateBar("chart-isobuteraldehyde",
 					["1", "3.6", "13", "46", "167", "600", "2'154", "7'742", "27'825", "100'000", ">100'000"],
 					[12, 4, 3, 4, 4, 8, 13, 14, 11, 17, 17],
-					chartLabel, chartLabelY, chartLabelX, selectedValue);
+					chartLabel, chartLabelY, chartLabelX, selectedValue,
+					[195,216,234]);
 					
 				selectedValue = null;
 				if (arrayWithValues[1] != null) {
@@ -391,7 +395,8 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 				generateBar("chart-iso-valeric-acid",
 					["1", "3.6", "13", "46", "167", "600", "2'154", "7'742", "27'825", "100'000", ">100'000"],
 					[16, 3, 10, 6, 10, 13, 13, 5, 10, 16, 7],
-					chartLabel, chartLabelY, chartLabelX, selectedValue);
+					chartLabel, chartLabelY, chartLabelX, selectedValue,
+					[195,216,234]);
 				
 				selectedValue = null;
 				if (arrayWithValues[2] != null) {
@@ -400,23 +405,27 @@ MiSens.controller('ViewController', ['$scope', '$document', '$translate', '$loca
 				generateBar("chart-rotundone",
 					["0.001", "0.0036", "0.013", "0.046", "0.167", "0.6", "2.15", "7.7", "27.8", "100", ">100"],
 					[7, 3, 3, 5, 5, 13, 13, 18, 14, 19, 8],
-					chartLabel, chartLabelY, chartLabelX, selectedValue);
+					chartLabel, chartLabelY, chartLabelX, selectedValue,
+					[195,216,234]);
 				
 				chartLabelX = "Intensitätsbewertung (gLMS Skala)";
 				generateBar("chart-prop",
 					["0-10", "11-20", "21-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90", "91-100"],
 					[32, 13, 7, 19, 18, 18, 5, 2, 2, 3],
-					chartLabel, chartLabelY, chartLabelX, GetTasteIntForBars(result.prop));//GetTasteIntForBars(arrayWithValues[5]));
+					chartLabel, chartLabelY, chartLabelX, GetTasteIntForBars(result.prop),
+					[223,243,201]);
 				
 				generateBar("chart-sugar",
 					["0-10", "11-20", "21-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90", "91-100"],
 					[1, 25, 25, 40, 10, 13, 3, 1, 0, 2],
-					chartLabel, chartLabelY, chartLabelX, GetTasteIntForBars(result.sucrose));//GetTasteIntForBars(arrayWithValues[3]));
+					chartLabel, chartLabelY, chartLabelX, GetTasteIntForBars(result.sucrose),
+					[223,243,201]);
 				
 				generateBar("chart-salt",
 					["0-10", "11-20", "21-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90", "91-100"],
 					[3, 22, 14, 34, 20, 19, 0, 0, 0, 0],
-					chartLabel, chartLabelY, chartLabelX, GetTasteIntForBars(result.nacl));//GetTasteIntForBars(arrayWithValues[4]));
+					chartLabel, chartLabelY, chartLabelX, GetTasteIntForBars(result.nacl),
+					[223,243,201]);
 			});
 		};
 

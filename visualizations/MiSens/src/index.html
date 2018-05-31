@@ -26,33 +26,61 @@
 				text-align: center;
 				/*float: left;*/
             }
-/*
-			.StyleDivContainerForCanvas{
-                width: 100%;
-				display:inline-block"
-			}*/
+			
+			.title2{
+				margin-top: 0px;
+			}
+
+			.divlogo{
+				float:right; 
+				margin-top: 20px;
+				margin-left: 20px;
+			}
+
+			.div-canvas-spiderplot{
+				margin-top: 20px;
+				overflow: hidden;
+			}
+			.canvas-spiderplot{
+				margin-top: -200px;
+				margin-bottom: -20px;
+				/*width: 950px;
+				height: 1350px;*/
+			}
+
+			.StyleDivForCanvas, .center {
+				display: block;
+				margin-left: auto;
+				margin-right: auto;
+			}
         </style>
 </head>
 
 <body>
 	<div ng-app="MiSens" ng-controller="ViewController" ng-cloak>
 		<div class="container">
-			<div style="float:right; padding-top:15px;">
-				<select ng-model="information.datasetGroup" ng-change="UpdateInformation()"><!-- ng-options='i | translate for i in {scientifica: "selectOptionScientificaResultsText", current: "selectOptionCurrentResultsText"}'>-->
-					<option value="scientifica" translate="selectOptionScientificaResultsText"> </option>
-					<option value="current" translate="selectOptionCurrentResultsText"></option>
-				</select>
+			<div class="divlogo">
+				<img src="logo.png"style="width:190px;"/>
 			</div>
-			<h2 translate="title"></h2>
-			<hr>
+			<!--<h2 translate="title"></h2>-->
+			<h2 translate="title1"></h2>
+			<h1 translate="title2" class="title2"></h1>
+
 			<p translate="textStarDiagram"></p>
-			<canvas id="myCanvas" width="950px" height="1350px"></canvas>
+			<br />
+			<select ng-model="information.datasetGroup" ng-change="UpdateInformation()"><!-- ng-options='i | translate for i in {scientifica: "selectOptionScientificaResultsText", current: "selectOptionCurrentResultsText"}'>-->
+				<option value="scientifica" translate="selectOptionScientificaResultsText"> </option>
+				<option value="current" translate="selectOptionCurrentResultsText"></option>
+			</select>
+			<div class="div-canvas-spiderplot">
+				<canvas id="myCanvas" class="canvas-spiderplot center" width="841px" height="1350px"></canvas>
+			</div>
+			<p translate="textLegendeDiagram"></p>
 			<br />
 			<h3 translate="GeschmackshistogrammeTitle"></h3>
 			<span translate="GeschmackshistogrammeText1"></span>
 			<span style="font-weight:bold" translate="GeschmackshistogrammeText2Bold"></span>
-			<!--<p translate="GeschmackshistogrammeText1"></p>
-			<p translate="GeschmackshistogrammeText2Bold"></p>-->
+
 			<br /><br />
 				
 			<div class="StyleDivForCanvas">
@@ -83,8 +111,6 @@
 			<h3 translate="GeruchshistogrammeTitle"></h3>
 			<span translate="GeruchshistogrammeText1"></span>
 			<span style="font-weight:bold" translate="GeruchshistogrammeText2Bold"></span>
-			<!--<p translate="GeschmackshistogrammeText1"></p>
-			<p translate="GeschmackshistogrammeText2Bold"></p>-->
 			<br /><br />
 
 			<div class="StyleDivForCanvas">
