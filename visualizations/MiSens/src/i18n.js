@@ -8,7 +8,6 @@ angular.module('MiSensi18n', [])
       "title": "Wie fein ist Ihre NASE",
       "title1":"Wie fein ist Ihre",
       "title2":"NASE",
-      //"textStarDiagram": "Der Stern zeigt auf einen Blick wie empfindlich Sie auf die von Ihnen in der MiSens-Studie getesteten Geruchs- und Geschmacksstoffe ansprechen. Je weiter der grüne Punkt auf einer der acht Achsen vom Zentrum des Sterns entfernt ist, desto stärker nehmen Sie die entsprechende Substanz wahr. Befindet sich entlang einer der Achsen kein Punkt, so liegt dies daran, dass Sie diese Substanz nicht getestet haben bzw. die Resultate nicht in der App gespeichert haben. Die Grafik zeigt zum Vergleich auch den Mittelwert aller Studienteilnehmer (graue Linie) und die Empfindlichkeit der oberen und unteren 10% bzw. 25% der Teilnehmer an. Für eine noch detailliertere Aufschlüsselung Ihrer Resultate finden Sie im Anschluss die Histogramme der Sensitivitäten für die verschiedenen Substanzen.",
       "textStarDiagram": "Im MiSens Projekt haben Sie Ihre Geruchs- und Geschmackssinne getestet. Hier können Sie sehen, wie empfindlich Sie auf die verschiedenen Aromastoffe ansprechen und Ihre Resultate mit denen der anderen Teilnehmer vergleichen.",
       "textLegendeDiagram":"Der obige Stern zeigt auf einen Blick, wie empfindlich Sie auf die von Ihnen in der MiSens-Studie getesteten Geruchs- und Geschmacksstoffe ansprechen. Je weiter der rote Punkt auf einer der acht Achsen vom Zentrum des Sterns entfernt liegt, desto stärker nehmen Sie die entsprechende Substanz wahr. Befindet sich entlang einer der Achsen kein Punkt, so liegt dies daran, dass Sie diese Substanz nicht getestet haben bzw. die Resultate nicht in der App gespeichert haben. Die Grafik zeigt zum Vergleich auch den Mittelwert aller Studienteilnehmer (graue Linie) sowie die Empfindlichkeitsspanne der mittleren 50% dieser Teilnehmer an. Eine detailliertere Aufschlüsselung Ihrer Resultate und weitere Informationen zu den getesteten Substanzen finden Sie im folgenden Abschnitt.",
       "GeschmackshistogrammeTitle": "Geschmackshistogramme",
@@ -43,8 +42,6 @@ angular.module('MiSensi18n', [])
     ,en: 
     //$START_LANGUAGE : en  
     {
-      //"title": "MiSens",
-      //"textStarDiagram": "The star diagram summarizes the sensitivity of your response to the taste and smell compounds tested during the MiSense study. The farther out the dot lies along the spoke of the star, the higher your sensitivity for that compound. If there is no dot along one or more of the spokes, you did not register a response for this compound in the app. To allow the comparison of your results to those of the other study participants the plot also shows the median sensitivity (grey line) of the other participants as well as the bottom and top 10th and 25th percentiles of the group. For an even more detailed view of your results, please have a look at the individual histograms for each of the tested aroma compounds.",
       "title": "How fine are your Senses",
       "title1":"How fine are your",
       "title2":"Senses",
@@ -82,8 +79,7 @@ angular.module('MiSensi18n', [])
   ,it: 
 //$START_LANGUAGE : it
 {
-
-
+/*
     // TODO NEW: MiSens
     "title" : "MiSens",
 
@@ -163,14 +159,13 @@ angular.module('MiSensi18n', [])
     "selectOptionScientificaResultsText" : "My Scientifica results",
 
     // TODO NEW: My current results
-    "selectOptionCurrentResultsText" : "My current results"
+    "selectOptionCurrentResultsText" : "My current results"*/
 }
 //$END_LANGUAGE : it  
   ,fr: 
 //$START_LANGUAGE : fr    
 {
-
-
+/*
     // TODO NEW: MiSens
     "title" : "MiSens",
 
@@ -250,7 +245,7 @@ angular.module('MiSensi18n', [])
     "selectOptionScientificaResultsText" : "My Scientifica results",
 
     // TODO NEW: My current results
-    "selectOptionCurrentResultsText" : "My current results"
+    "selectOptionCurrentResultsText" : "My current results"*/
 }
 //$END_LANGUAGE : fr  
   });
