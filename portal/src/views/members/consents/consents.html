@@ -3,7 +3,7 @@
 	<div class="panel panel-primary">
 		<div class="panel-heading" translate="consents.title"></div>
 		<div class="body">
-		  <form class="form">
+		  <form class="form" ng-if="role!='RESEARCH'">
 		    <div class="radio">
 		      <label>
                 <input type="radio" name="consenttype" value="option1" checked> <span translate="consents.where_owner"></span> 
@@ -39,7 +39,7 @@
 				</tr>
 			</table>
 
-			<button class="btn btn-primary" ng-click="addConsent();" translate="consents.add_new_btn"></button>
+			<button class="btn btn-primary" ng-click="addConsent();" ng-show="role!='RESEARCH'" translate="consents.add_new_btn"></button>
 			</loader>
 		</div>
 	</div>
