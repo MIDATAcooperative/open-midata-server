@@ -611,6 +611,12 @@ public class Application extends APIController {
 	 */
 	public static Result loginHelper(User user ) throws AppException {
 		Set<UserFeature> notok = loginHelperPreconditionsFailed(user, InstanceConfig.getInstance().getInstanceType().defaultRequirementsPortalLogin(user.role));
+	
+		if (user.role == UserRole.RESEARCH && !(user instanceof ResearchUser)) {
+			user = ResearchUser.getById(user._id, Sets.create(User.FOR_LOGIN, "organization"));
+		} else if (user.role == UserRole.PROVIDER && !(user instanceof HPUser)) {
+			user = HPUser.getById(user._id, Sets.create(User.FOR_LOGIN, "organization"));
+		}
 		
 		PortalSessionToken token = null;
 		String handle = KeyManager.instance.login(PortalSessionToken.LIFETIME, true);

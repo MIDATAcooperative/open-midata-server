@@ -129,6 +129,7 @@ public class Researchers extends APIController {
 		user.phone = JsonValidation.getStringOrNull(json, "phone");
 		user.mobile = JsonValidation.getStringOrNull(json, "mobile");
 		user.organization = PortalSessionToken.session().org;
+		if (user.organization == null) throw new InternalServerException("error.internal", "No organization in session for register researcher!");
 		user.status = UserStatus.ACTIVE;
 						
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, null, new MidataId(request().username()), user);
