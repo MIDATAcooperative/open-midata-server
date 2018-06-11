@@ -23,6 +23,10 @@ public abstract class AccessContext {
 	
 	public abstract boolean mayAccess(String content, String format) throws AppException;
 	
+	public boolean produceHistory() {
+		return true;
+	}
+	
 	public abstract MidataId getSelf();
 	
 	public abstract MidataId getTargetAps();

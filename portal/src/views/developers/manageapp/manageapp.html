@@ -146,6 +146,14 @@
 		  </formrow>
 		  <formrow myid="writes" label="Write Mode" class="danger-change">
 		    <select class="form-control" name="writes" ng-model="app.writes" ng-change="requireLogout();" ng-options="mode as ('enum.writepermissiontype.'+mode)|translate for mode in writemodes"></select>
+		  </formrow>
+		   <formrow myid="noUpdateHistory" label="manageapp.no_update_history" ng-show="app.targetUserRole=='RESEARCH'">
+		    <div class="checkbox">
+		    <label>
+		      <input type="checkbox" id="noUpdateHistory" name="noUpdateHistory" ng-model="app.noUpdateHistory" value="true">
+		      <span translate="manageapp.info.no_update_history"></span>
+		    </label>
+		    </div>
 		  </formrow>	
 		  <formrow myid="resharesData" label="Resharing" class="danger-change">
 		    <div class="checkbox">
