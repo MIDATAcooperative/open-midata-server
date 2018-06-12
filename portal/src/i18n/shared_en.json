@@ -1119,6 +1119,7 @@
   
   "accountwipe" : {
     "title" : "Close and Delete MIDATA Account",
+    "hello" : "Dear {{name}},",
     "paragraph1" : "You would like to delete your MIDATA account irrevocably? That is of course possible.",
     "paragraph2" : "Please read the following information first:",
     "point1" : "If you delete your MIDATA account your personal data will no longer be available.",
@@ -1128,6 +1129,8 @@
     "final" : "This action cannot be undone.",
     "paragraph3" : "If you really want to delete your MIDATA account enter your password for confirmation.",
     "password" : "Password",
+    "reason" : "Reason (optional)",
+    "reason2" : "Please tell us why you want to delete your account. We are continously trying to improve the service.",
     "wipe_btn" : "Close and Delete MIDATA Account",
     "error" : "Password not correct. Account not deleted."
   },

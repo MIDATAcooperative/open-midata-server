@@ -3,7 +3,6 @@ package controllers;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -17,13 +16,10 @@ import models.AccessPermissionSet;
 import models.Circle;
 import models.Consent;
 import models.Developer;
-import models.HealthcareProvider;
 import models.Member;
 import models.MidataId;
-import models.Research;
 import models.ResearchUser;
 import models.Space;
-import models.Study;
 import models.StudyParticipation;
 import models.User;
 import models.UserGroupMember;
@@ -31,19 +27,16 @@ import models.enums.AccountActionFlags;
 import models.enums.AuditEventType;
 import models.enums.ConsentType;
 import models.enums.ContractStatus;
-import models.enums.EventType;
 import models.enums.Gender;
 import models.enums.ParticipationStatus;
 import models.enums.SubUserRole;
 import models.enums.UserFeature;
 import models.enums.UserRole;
-import models.enums.UserStatus;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.InstanceConfig;
-import utils.access.IndexManager;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
@@ -53,8 +46,6 @@ import utils.auth.PortalSessionToken;
 import utils.auth.PreLoginSecured;
 import utils.auth.Rights;
 import utils.collections.CMaps;
-import utils.collections.ChainedMap;
-import utils.collections.ChainedSet;
 import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
@@ -66,6 +57,7 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.messaging.Messager;
 
 /**
  * user related functions
@@ -413,6 +405,7 @@ public class Users extends APIController {
 		JsonValidation.validate(json, "_id", "password");
 		
 		String password = JsonValidation.getString(json, "password");
+		String reason = JsonValidation.getStringOrNull(json, "reason");
 		MidataId check = JsonValidation.getMidataId(json, "_id");
 		if (!check.equals(userId)) throw new InternalServerException("error.internal", "Session mismatch for wipe account.");
 		
@@ -465,6 +458,11 @@ public class Users extends APIController {
 		user.delete();
 		
 		AuditManager.instance.success();
+		
+		if (reason != null) {
+			Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), "Midata Admin", "Account Deletion", "Reason given by user: "+reason);
+		}
+		
 		return ok();
 	}
 }
