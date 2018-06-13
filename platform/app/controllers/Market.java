@@ -168,6 +168,7 @@ public class Market extends APIController {
 				}
 			}
 			
+			app.noUpdateHistory = JsonValidation.getBoolean(json, "noUpdateHistory");
 			app.orgName = JsonValidation.getStringOrNull(json, "orgName");
 			app.description = JsonValidation.getStringOrNull(json, "description");				
 			app.url = JsonValidation.getStringOrNull(json, "url");
@@ -470,6 +471,7 @@ public class Market extends APIController {
 		plugin.writes = JsonValidation.getEnum(json, "writes", WritePermissionType.class);
 		plugin.predefinedMessages = parseMessages(json);
 		plugin.pluginVersion = System.currentTimeMillis();
+		plugin.noUpdateHistory = JsonValidation.getBoolean(json, "noUpdateHistory");
 		
 		try {
 		    Query.validate(plugin.defaultQuery, plugin.type.equals("mobile"));
@@ -562,6 +564,7 @@ public class Market extends APIController {
 		app.resharesData = JsonValidation.getBoolean(json, "resharesData");
 		app.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
 		app.unlockCode = JsonValidation.getStringOrNull(json, "unlockCode");
+		app.noUpdateHistory = JsonValidation.getBoolean(json, "noUpdateHistory");
 		app.writes = JsonValidation.getEnum(json, "writes", WritePermissionType.class);
 		app.i18n = new HashMap<String, Plugin_i18n>();
 		app.pluginVersion = System.currentTimeMillis();			

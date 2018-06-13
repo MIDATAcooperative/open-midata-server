@@ -46,7 +46,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "accessTokenUrl", "consumerKey", "consumerSecret","tokenExchangeParams",
 	                     "requestTokenUrl", "scopeParameters", "secret", "redirectUri", "developmentServer", "status", "i18n",
-	                     "predefinedMessages", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion", "termsOfUse", "requirements", "orgName", "unlockCode", "writes", "icons", "apiUrl");
+	                     "predefinedMessages", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion", "termsOfUse", "requirements", "orgName", "unlockCode", "writes", "icons", "apiUrl", "noUpdateHistory");
 	
 	/**
 	 * constant containing all fields visible to anyone
@@ -56,7 +56,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	                     "targetUserRole", "spotlighted", "url", "addDataUrl", "previewUrl", "defaultSpaceName",
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "consumerKey", "scopeParameters", "status", "i18n", "lang", "predefinedMessages", "resharesData", "linkedStudy", "mustParticipateInStudy", "pluginVersion",
-	                     "termsOfUse", "requirements", "orgName", "unlockCode", "writes", "icons", "apiUrl");
+	                     "termsOfUse", "requirements", "orgName", "unlockCode", "writes", "icons", "apiUrl", "noUpdateHistory");
 	
 	/**
 	 * timestamp of last change. Used to prevent lost updates.
@@ -274,6 +274,11 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	 * Types of icons used by this plugin
 	 */
 	public Set<IconUse> icons;
+	
+	/**
+	 * Updates of resources performed with this plugin should not be recorded
+	 */
+	public boolean noUpdateHistory;
 
 	@Override
 	public int compareTo(Plugin other) {
@@ -322,7 +327,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	
 	public void update() throws InternalServerException, LostUpdateException {		
 		try {
-		   DBLayer.secureUpdate(this, collection, "version", "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status", "i18n", "predefinedMessages", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion", "termsOfUse", "requirements", "orgName", "unlockCode", "writes", "apiUrl" );
+		   DBLayer.secureUpdate(this, collection, "version", "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status", "i18n", "predefinedMessages", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion", "termsOfUse", "requirements", "orgName", "unlockCode", "writes", "apiUrl", "noUpdateHistory" );
 		   Instances.cacheClear("plugin",  _id);
 		} catch (DatabaseException e) {
 			throw new InternalServerException("error.internal_db", e);

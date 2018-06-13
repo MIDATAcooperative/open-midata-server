@@ -1113,6 +1113,24 @@
         "email_unvalidated" : "Ihre E-Mail-Adresse wurde bisher noch nicht bestätigt. Klicken Sie bitte auf dem Link, den Sie in der Bestätigungs-E-Mail erhalten haben!",
         "request_membership_btn" : "Vertrag anfordern"
     },
+    
+    "accountwipe" : {
+	    "title" : "MIDATA Account schließen und löschen",
+	    "hello" : "Liebe(r) {{name}},",
+	    "paragraph1" : "Sie möchten ihre MIDATA-Konto unwiderruflich löschen? Das ist selbstverständlich möglich.",
+	    "paragraph2" : "Lesen Sie zuerst die nachfolgende Information:",
+	    "point1" : "Wenn Sie Ihr MIDATA-Konto löschen, löschen Sie alle persönlichen Daten auf ihrem Konto unwiderruflich.",
+	    "point2" : "Daten die bereits in Studien eingeflossen sind , werden weiterhin in der Studie verfügbar sein.",
+	    "point3" : "MIDATA hat keine Möglichkeit, ein gelöschtes Konto wieder herzustellen.",    
+	    "warning" : "Warnung",
+	    "final" : "Die Account-Löschung kann nicht rückgängig gemacht werden!",
+	    "paragraph3" : "Falls Sie das Konto dennoch löschen möchten, geben Sie bitte Ihr Kennwort ein",
+	    "password" : "Passwort",
+	    "reason" : "Grund (optional)",
+	    "reason2" : "Teilen Sie uns bitte mit, warum Sie Ihr Konto löschen möchten. Wir sind bemüht unser Angebot laufend zu verbessern, Ihr Hinweis wird uns dabei helfen.",
+	    "wipe_btn" : "MIDATA Account schließen und löschen",
+	    "error" : "Passwort nicht korrekt. Konto wurde nicht gelöscht."
+  },
 
     "-1" : "unbekannt"
 }

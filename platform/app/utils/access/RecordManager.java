@@ -28,6 +28,7 @@ import models.ContentInfo;
 import models.Member;
 import models.MidataId;
 import models.MobileAppInstance;
+import models.Plugin;
 import models.Record;
 import models.RecordsInfo;
 import models.Space;
@@ -652,14 +653,22 @@ public class RecordManager {
 			if (record.content != null && !rec.meta.getString("content").equals(record.content)) throw new InternalServerException("error.invalid.request", "Tried to change record content type during update.");
 			if (record.owner != null && !rec.owner.equals(record.owner)) throw new InternalServerException("error.invalid.request", "Tried to change record owner during update.");
 			
-			VersionedDBRecord vrec = new VersionedDBRecord(rec);		
-			RecordEncryption.encryptRecord(vrec);			
+			VersionedDBRecord vrec = null;
+			
+			if (context.produceHistory()) {
+			  vrec = new VersionedDBRecord(rec);		
+			  RecordEncryption.encryptRecord(vrec);
+			}
 					
 			record.lastUpdated = new Date(); 
 			
 		    rec.data = record.data;
 		    rec.meta.put("lastUpdated", record.lastUpdated);
-		    rec.time = Query.getTimeFromDate(record.lastUpdated);		
+		    rec.time = Query.getTimeFromDate(record.lastUpdated);
+		    if (vrec==null) {
+		    	rec.meta.put("previousVersion", storedVersion);
+		    	rec.meta.put("previousLastUpdated", rec.meta.get("lastUpdated"));
+		    }
 		    
 		    String version = Long.toString(System.currentTimeMillis());
 		    rec.meta.put("version", version);
@@ -668,7 +677,7 @@ public class RecordManager {
 		    
 			RecordEncryption.encryptRecord(rec);	
 			
-			VersionedDBRecord.add(vrec);
+			if (vrec!=null) VersionedDBRecord.add(vrec);
 		    DBRecord.upsert(rec); 	  	
 		    
 		    RecordLifecycle.notifyOfChange(clone, getCache(executingPerson));
@@ -1404,7 +1413,8 @@ public class RecordManager {
 	}
 	
 	public AppAccessContext createContextFromApp(MidataId executorId, MobileAppInstance app) throws InternalServerException {
-		return new AppAccessContext(app, getCache(executorId), null);
+		Plugin plugin = Plugin.getById(app.applicationId);
+		return new AppAccessContext(app, plugin, getCache(executorId), null);
 	}
 	
 	public UserGroupAccessContext createContextForUserGroup(UserGroupMember ugm, AccessContext parent) throws AppException {
