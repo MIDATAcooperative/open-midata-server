@@ -460,7 +460,7 @@ public class Users extends APIController {
 		AuditManager.instance.success();
 		
 		if (reason != null) {
-			Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), "Midata Admin", "Account Deletion", "Reason given by user: "+reason);
+			Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), "Midata Admin", "["+InstanceConfig.getInstance().getPortalServerDomain()+"]: Account Deletion", "Reason given by user: "+reason);
 		}
 		
 		return ok();
