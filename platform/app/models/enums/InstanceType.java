@@ -48,7 +48,7 @@ public enum InstanceType {
 	 * @return 
 	 */
 	public boolean getAccountWipeAvailable() {
-	   return this != PROD;
+	   return true; //this != PROD; Now allowed for all instances
 	}
 	
 	/**

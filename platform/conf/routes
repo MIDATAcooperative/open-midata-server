@@ -119,6 +119,8 @@ POST    /api/shared/users/wipe                           controllers.Users.accou
 POST    /api/research/register                           controllers.research.Researchers.register()
 POST    /api/research/addresearcher                      controllers.research.Researchers.registerOther()
 POST    /api/research/login                              controllers.research.Researchers.login()
+GET     /api/shared/org/:id                              controllers.research.Researchers.getOrganization(id: String)
+POST    /api/shared/org                                  controllers.research.Researchers.updateOrganization(id: String)
 
 POST    /api/research/studies                            controllers.research.Studies.create()
 GET     /api/research/studies                            controllers.research.Studies.list()

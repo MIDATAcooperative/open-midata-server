@@ -31,6 +31,7 @@ import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.AdminSecured;
+import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
 import utils.auth.PortalSessionToken;
@@ -39,6 +40,7 @@ import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 
@@ -129,6 +131,7 @@ public class Researchers extends APIController {
 		user.phone = JsonValidation.getStringOrNull(json, "phone");
 		user.mobile = JsonValidation.getStringOrNull(json, "mobile");
 		user.organization = PortalSessionToken.session().org;
+		if (user.organization == null) throw new InternalServerException("error.internal", "No organization in session for register researcher!");
 		user.status = UserStatus.ACTIVE;
 						
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, null, new MidataId(request().username()), user);
@@ -202,6 +205,49 @@ public class Researchers extends APIController {
 		
 		return Application.loginHelper(user); 
 				
+	}
+	
+
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public static Result getOrganization(String id) throws AppException {
+			
+		MidataId userId = new MidataId(request().username());
+		MidataId researchid = MidataId.from(id);
+						
+		Research research = Research.getById(researchid, Research.ALL);
+		if (research == null) return notFound();						
+		return ok(JsonOutput.toJson(research, "Research", Research.ALL));		
+	}
+
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(ResearchSecured.class)
+	public static Result updateOrganization(String id) throws AppException {
+		JsonNode json = request().body().asJson();
+		
+		JsonValidation.validate(json, "_id", "name", "description");
+					
+		String name = JsonValidation.getString(json, "name");				
+		String description = JsonValidation.getString(json, "description");
+				
+		MidataId researchid = PortalSessionToken.session().getOrg();
+		
+		if (!researchid.equals(JsonValidation.getMidataId(json, "_id"))) throw new InternalServerException("error.internal", "Tried to change other research organization!");
+		
+		if (Research.existsByName(name, researchid)) throw new JsonValidationException("error.exists.organization", "name", "exists", "A research organization with this name already exists.");			
+		
+		Research research = Research.getById(researchid, Research.ALL);
+
+		if (research == null) throw new InternalServerException("error.internal", "Research organization not found.");
+		
+		research.name = name;
+		research.description = description;
+		research.set("name", research.name);
+		research.set("description", research.description);						
+		
+		return ok();		
 	}
 		
 }

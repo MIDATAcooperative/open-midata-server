@@ -4,15 +4,18 @@ import java.util.Collections;
 
 import models.MidataId;
 import models.MobileAppInstance;
+import models.Plugin;
 import utils.exceptions.AppException;
 
 public class AppAccessContext extends AccessContext {
 
 	private MobileAppInstance instance;
-	
-	public AppAccessContext(MobileAppInstance instance, APSCache cache, AccessContext parent) {
+	private Plugin plugin;
+		
+	public AppAccessContext(MobileAppInstance instance, Plugin plugin, APSCache cache, AccessContext parent) {
 		super(cache, parent);
 		this.instance = instance;
+		this.plugin = plugin;
 	}
 	
 	@Override
@@ -78,4 +81,9 @@ public class AppAccessContext extends AccessContext {
     public MobileAppInstance getAppInstance() {
     	return instance;
     }
+
+	@Override
+	public boolean produceHistory() {
+		return !plugin.noUpdateHistory;
+	}
 }
