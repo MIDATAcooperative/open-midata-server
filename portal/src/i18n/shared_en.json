@@ -1135,6 +1135,14 @@
     "error" : "Password not correct. Account not deleted."
   },
   
+  "serviceleave" : {
+    "title" : "Done with your session?",
+    "thankyou" : "Thank you for your help!",
+    "goodbye_btn" : "End session and close window",
+    "logoutreturn" : "You will be redirected to the calling page.",
+    "return_btn" : "Logout and continue"
+  },
+  
   "-1" : "unknown"
     
 }

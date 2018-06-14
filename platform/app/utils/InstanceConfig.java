@@ -1,5 +1,6 @@
 package utils;
 
+import java.net.URLEncoder;
 import java.util.List;
 
 import models.enums.InstanceType;
@@ -48,6 +49,10 @@ public class InstanceConfig {
 	 */
 	public String getPortalServerDomain() {
 		return portalServerDomain;
+	}
+	
+	public String getServiceURL() {
+		return "https://"+getPortalServerDomain()+"/#/portal/service";
 	}
 	
 	/**
