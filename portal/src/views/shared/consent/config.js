@@ -12,6 +12,11 @@ angular.module('portal')
 	      templateUrl: 'views/shared/consent/editconsent.html',
 	      dashId : 'circles'
 	    })
+	    .state('member.service_consent', {
+	    	url: '/consentservice/:consentId?callback&action',
+	        templateUrl: 'views/shared/consent/editconsent.html',
+	        dashId : 'circles'
+	    })
 	    .state('provider.newconsent', {
 	      url: '/newconsent?authorize&owner&share&request',	      
 	      templateUrl: 'views/shared/consent/newconsent.html',

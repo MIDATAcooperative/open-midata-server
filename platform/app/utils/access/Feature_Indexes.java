@@ -662,7 +662,7 @@ public class Feature_Indexes extends Feature {
 		}
 
 		public long version(MidataId aps) {
-			if (root != null) {
+			if (root != null && index != null) {
 				if (aps == null)
 					return root.getAllVersion();
 				return root.getVersion(aps);

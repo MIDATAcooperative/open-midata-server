@@ -17,31 +17,33 @@ angular.module('services')
 				  $state.go("public.postregister", { progress : result.data }, { location : false });			
 			} else if (result.data.role == "admin") {
 				if (result.data.keyType == 1) {
-					$state.go('public_developer.passphrase_admin');
+					$state.go('public_developer.passphrase_admin', $state.params);
 				} else {
 					$state.go('admin.stats');	
 				}
 			} else if (result.data.role == "developer") {
 				if (result.data.keyType == 1) {			
-				  $state.go('public_developer.passphrase');
+				  $state.go('public_developer.passphrase', $state.params);
 			    } else {
  			      $state.go('developer.yourapps');	
 			    }
 			} else if (result.data.role == "member") {
 				if (result.data.keyType == 1) {
-				  $state.go('public.passphrase');
+				  $state.go('public.passphrase', $state.params);
 				} else {
-				  $state.go('member.overview');
+					console.log($state.params);
+				  if ($state.params.action) $state.go("member.service2", $state.params);
+				  else $state.go('member.overview');
 				}
 			} else if (result.data.role == "provider") {
 				if (result.data.keyType == 1) {
-				  $state.go('public_provider.passphrase');
+				  $state.go('public_provider.passphrase', $state.params);
 				} else {
 				  $state.go('provider.patientsearch');
 				}
 			} else if (result.data.role == "research") {
 				if (result.data.keyType == 1) {
-				  $state.go('public_research.passphrase');
+				  $state.go('public_research.passphrase', $state.params);
 				} else {
 				  $state.go('research.studies');
 				}
