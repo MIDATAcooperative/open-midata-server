@@ -1,5 +1,7 @@
 package utils.fhir;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Patient.ContactComponent;
 import org.hl7.fhir.dstu3.model.Patient.PatientCommunicationComponent;
 import org.hl7.fhir.dstu3.model.StringType;
+import org.hl7.fhir.dstu3.model.UriType;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
@@ -840,6 +843,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			consent.writes = WritePermissionType.WRITE_ANY;
 			consent.owner = user._id;
 			consent.name = consentName;
+			consent.creatorApp = info.pluginId;
 			consent.authorized = new HashSet<MidataId>();
 			consent.status = existing == null ? ConsentStatus.ACTIVE : ConsentStatus.UNCONFIRMED;
 			consent.authorized.add(info().ownerId);
@@ -848,6 +852,13 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			consent.sharingQuery.put("app", plugin.filename);
 
 			Circles.addConsent(executorId, consent, false, null, true);
+			
+			if (consent.status == ConsentStatus.UNCONFIRMED) {
+				try {
+			      String serviceUrl = InstanceConfig.getInstance().getServiceURL()+"?consent="+consent._id+"&login="+URLEncoder.encode(user.email, "UTF-8");
+			      thePatient.addExtension(new Extension("http://midata.coop/extensions/service-url", new UriType(serviceUrl)));
+				} catch (UnsupportedEncodingException e) {}
+			}
 		}
 
 		if (query != null && query.containsField("link-study")) {
