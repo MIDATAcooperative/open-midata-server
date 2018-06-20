@@ -3,12 +3,13 @@
     <div class="tab-pane active">
 	
 	<div ng-app="studies" ng-controller="StudyRulesCtrl" ng-cloak>
+	<form name="myform" novalidate class="css-form form-horizontal" ng-submit="submit()" role="form">
 	<loader busy="status.isBusy !== false">
 	
 	<h2 translate="studyrules.title"></h2>
 	<p class="alert alert-info" ng-hide="error" translate="studyrules.no_change_warning"></p>
 	<p class="alert alert-danger" ng-show="error" translate="{{ error.code || error }}"></p>
-	<form name="myform" novalidate class="css-form form-horizontal" ng-submit="submit()" role="form">
+	
 	
 	  <formrow myid="queryadd" label="studyrules.sharing_query_options">
 	     <div class="col-sm-5">
@@ -38,29 +39,32 @@
     
       <formrow myid="startDate" label="studyrules.startDate">
 	    <div class="input-group">
-          <input id="startDate" type="text" class="form-control" ng-change="formChange()" ng-disabled="studyLocked()" placeholder="" uib-datepicker-popup="dd.MM.yyyy"  ng-model="study.startDate" is-open="datePickers.startDate" no-time datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+          <input id="startDate" name="startDate" type="text" class="form-control" ng-change="formChange()" ng-disabled="studyLocked()" placeholder="" uib-datepicker-popup="dd.MM.yyyy"  ng-model="study.startDate" is-open="datePickers.startDate" no-time datepicker-options="dateOptions" ng-required="false" close-text="Close" />
           <span class="input-group-btn">
              <button type="button"  class="btn btn-default" ng-disabled="studyLocked()" ng-click="datePickers.startDate=true;"><i class="glyphicon glyphicon-calendar"></i></button>
           </span>
         </div>
+        <formerror myid="startDate" type="date" message="error.invalid.date"></formerror>
 	  </formrow>
 	  
 	  <formrow myid="endDate" label="studyrules.endDate">
 	    <div class="input-group">
-          <input id="endDate" type="text" class="form-control" ng-change="formChange()" ng-disabled="studyLocked()" placeholder="" no-time uib-datepicker-popup="dd.MM.yyyy" ng-model="study.endDate" is-open="datePickers.endDate" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+          <input id="endDate" name="endDate" type="text" class="form-control" ng-change="formChange()" ng-disabled="studyLocked()" placeholder="" no-time uib-datepicker-popup="dd.MM.yyyy" ng-model="study.endDate" is-open="datePickers.endDate" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
           <span class="input-group-btn">
              <button type="button"  class="btn btn-default" ng-disabled="studyLocked()" ng-click="datePickers.endDate=true;"><i class="glyphicon glyphicon-calendar"></i></button>
           </span>
         </div>
+        <formerror myid="endDate" type="date" message="error.invalid.date"></formerror>
 	  </formrow>
 	  
 	  <formrow myid="dataCreatedBefore" label="studyrules.dataCreatedBefore">
 	    <div class="input-group">
-          <input id="dataCreatedBefore" type="text" class="form-control" ng-change="formChange()" ng-disabled="studyLocked()" placeholder="" no-time uib-datepicker-popup="dd.MM.yyyy" ng-model="study.dataCreatedBefore" is-open="datePickers.dataCreatedBefore" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+          <input id="dataCreatedBefore" name="dataCreatedBefore" type="text" class="form-control" ng-change="formChange()" ng-disabled="studyLocked()" placeholder="" no-time uib-datepicker-popup="dd.MM.yyyy" ng-model="study.dataCreatedBefore" is-open="datePickers.dataCreatedBefore" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
           <span class="input-group-btn">
              <button type="button"  class="btn btn-default" ng-disabled="studyLocked()" ng-click="datePickers.dataCreatedBefore=true;"><i class="glyphicon glyphicon-calendar"></i></button>
           </span>
         </div>
+        <formerror myid="dataCreatedBefore" type="date" message="error.invalid.date"></formerror>
 	  </formrow>
     
       
@@ -82,8 +86,9 @@
         <button type="submit" ng-disabled="status.action == 'update' || studyLocked()" class="btn btn-primary" translate="common.change_btn"></button>
         <span class="text-success" ng-show="saveOk"><span class="glyphicon glyphicon-ok"></span> <span translate="common.save_ok"></span></span>
       </formrow>
-    </form>
+    
     </loader>
+    </form>
    </div>
    </div>	
 </div>
