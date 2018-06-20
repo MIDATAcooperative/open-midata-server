@@ -206,6 +206,7 @@
 		  </formrow>
 		  <formrow myid="redirectUri" label="Redirect URI (optional, required for OAuth2 login)" ng-show="app.type == 'mobile'">
 		    <input type="text" id="redirectUri" name="redirectUri" class="form-control" placeholder="Redirect URI" ng-model="app.redirectUri">
+		    <p class="help-block" translate="manageapp.info.redirectUri"></p>
 		  </formrow>
 		   <formrow myid="developmentServer" label="Development Server" ng-hide="app.type == 'mobile' || !app.developmentServer">
 		    <p class="form-control-static">{{ app.developmentServer }}</p>

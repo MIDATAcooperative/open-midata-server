@@ -114,9 +114,10 @@
        "defaultQuery_mobile" : "Filter restricting the access of the app to the data. Access must be restricted by 'code', 'content' or 'group' and may be restricted by 'format' or 'owner'. Valid example (all Observations): '{ \"group\" : \"all\", \"group-system\" : \"v1\", \"format\" : [\"fhir/Observation\" ] }'",
        "defaultQuery" : "Filter restricting the access of the plugin to the data. Access must be restricted by at least one of 'code', 'content', 'group', 'format' or 'owner'. Valid example (all Observations): '{ \"format\" : [\"fhir/Observation\" ] }'",
        "defaultQuery_extra" : "Look for valid values for 'code', 'content' or 'format' on the 'Format/Content' list of the developer guide. As a first version you may start with access to all data. For that use { \"group\" : \"all\", \"group-system\" : \"v1\" }. Please refine the filter before the plugin or the app goes in production.",
+       "redirectUri" : "You may specifiy multiple possible redirect URIs by seperating the URIs with a space",
        "secret" : "Your app will need this 'secret' during login. Choose whatever you like.",
        "mustParticipateInStudy" : "User must participate in study in order to use app.",
-       "unlock_code" : "If filled out, this code must be entered by the user in order to sign up or log in the first time to MIDATA using the app. The code is not case sensitive."
+       "unlock_code" : "If filled out, this code must be entered by the user in order to sign up or log in the first time to MIDATA using the app. The code is not case sensitive."       
     },
     "status" : {
       "title" : "Application Status",
