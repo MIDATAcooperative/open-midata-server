@@ -80,7 +80,7 @@ class Activator(Product):
 		print 'Swapping Activator...'
 		Command.execute('pkill -f typesafe')
 		print 'Starting new instance...'				
-		Command.execute('{0} -Dpidfile.path=/dev/shm/play.pid -Dconfig.file=/dev/shm/secret.conf -Dhttp.port=9001 &'
+		Command.execute('/usr/bin/nohup {0} -Dpidfile.path=/dev/shm/play.pid -Dconfig.file=/dev/shm/secret.conf -Dhttp.port=9001 &'
 			.format(self.app), redirect=os.path.join(self.parent, 'logs', 'activator.log'))
 		print 'Waiting for startup...'		
 		time.sleep(30)

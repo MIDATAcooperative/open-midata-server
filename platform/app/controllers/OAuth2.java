@@ -122,7 +122,19 @@ public class OAuth2 extends Controller {
 		Plugin app = Plugin.getByFilename(name, Sets.create("type", "name", "redirectUri", "requirements", "linkedStudy", "termsOfUse", "unlockCode"));
 		if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");		
 		if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
-		if (!redirectUri.equals(app.redirectUri)) throw new InternalServerException("error.internal", "Wrong redirect uri");
+		if (!redirectUri.equals(app.redirectUri)) {
+			String[] multiple = app.redirectUri.split(" ");
+			boolean found = false;
+			// if length is 1 the URL has already been tested
+			if (multiple.length > 1) {
+				for (String rUri : multiple) {
+					if (rUri.equals(redirectUri)) {
+						found = true;					
+					}
+				}
+			}
+			if (!found) throw new InternalServerException("error.internal", "Wrong redirect uri");
+		}
 		
 		
 		
