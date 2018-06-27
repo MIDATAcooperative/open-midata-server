@@ -26,7 +26,7 @@ install-webserver: tasks/install-packages tasks/install-node tasks/bugfixes task
 	$(info Please run "make configure-connection" to setup database connection)
 	$(info Please run "make update" to build after everything has been configured correctly)
 
-install-from-servertools: tasks/install-packages tasks/install-node tasks/bugfixes tasks/install-activator tasks/dhparams tasks/configure-connection
+install-from-servertools: tasks/install-packages tasks/install-node tasks/bugfixes tasks/install-localmongo tasks/install-activator tasks/dhparams tasks/configure-connection
 	touch switches/use-hotdeploy
 
 install-local: tasks/install-packages tasks/install-node tasks/bugfixes tasks/prepare-local tasks/check-config tasks/install-dummycert tasks/install-localmongo tasks/install-lighttpd tasks/install-activator tasks/configure-connection
