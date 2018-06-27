@@ -31,6 +31,7 @@ install-from-servertools: tasks/install-packages tasks/install-node tasks/bugfix
 
 install-local: tasks/install-packages tasks/install-node tasks/bugfixes tasks/prepare-local tasks/check-config tasks/install-dummycert tasks/install-localmongo tasks/install-lighttpd tasks/install-activator tasks/configure-connection
 	$(info Please run "make update" to build)
+	touch switches/local-mongo
 
 .PHONY: pull
 pull:
@@ -129,7 +130,6 @@ tasks/install-localmongo: trigger/install-localmongo
 	$(info Installing Local Version of MongoDB... )
 	$(info ------------------------------)
 	python main.py setup mongodb
-	touch switches/local-mongo
 	touch tasks/install-localmongo
 
 tasks/install-dummycert: trigger/install-dummycert
