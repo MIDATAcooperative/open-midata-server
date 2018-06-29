@@ -24,16 +24,17 @@
   	    <div class="radio">
   	       <label>
   	        <input type="radio" ng-disabled="studyLocked()" ng-change="requiredDataChange()" name="identity" value="RESTRICTED" ng-model="information.identity">
-  	         <strong translate="studyfields.anonymous1"></strong><span translate="studyfields.anonymous2"></span>
+  	         <strong translate="studyfields.pseudonymous1"></strong><span translate="studyfields.pseudonymous2"></span>
   	       </label>
   	    </div>
   	    
-  	    <div class="checkbox">
-  	      <label>
-  	        <input type="checkbox" ng-disabled="studyLocked() || information.identity!='RESTRICTED'" ng-change="requiredDataChange()" ng-model="information.anonymous">
-  	         <span translate="studyfields.anonymous3"></span>
+  	     <div class="radio">
+  	       <label>
+  	        <input type="radio" ng-disabled="studyLocked()" ng-change="requiredDataChange()" name="identity" value="ANONYMOUS" ng-model="information.identity">
+  	         <strong translate="studyfields.anonymous"></strong><span translate="studyfields.anonymous2"></span>
   	       </label>
-  	    </div> 
+  	    </div>
+  	      	     
       </formrow>
        <formrow myid="assistance" label="studyfields.assistance">
 	     <div class="radio">
