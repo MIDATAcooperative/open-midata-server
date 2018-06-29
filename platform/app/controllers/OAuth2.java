@@ -297,14 +297,27 @@ public class OAuth2 extends Controller {
            
         } else if (grant_type.equals("authorization_code")) {
         	if (!data.containsKey("redirect_uri")) throw new BadRequestException("error.internal", "Missing redirect_uri");
-            if (!data.containsKey("client_id")) throw new BadRequestException("error.internal", "Missing client_id");
+            
             if (!data.containsKey("code")) throw new BadRequestException("error.internal", "Missing code");
+            
+            String client_id = null;
             
                             
             String code = data.get("code")[0];
             String redirect_uri = data.get("redirect_uri")[0];
-            String client_id = data.get("client_id")[0];
-    					
+            if (data.containsKey("client_id")) {
+              client_id = data.get("client_id")[0];
+            } else {
+            	String auth = request().getHeader("Authorization");
+            	if (auth != null && auth.startsWith("Basic")) {
+            		String authstr = auth.substring("Basic ".length());
+            		int p = authstr.indexOf(':');
+            		if (p > 0) client_id = authstr.substring(0, p);
+            	}
+            }
+    		
+            if (client_id == null) throw new BadRequestException("error.internal", "Missing client_id");
+            
     		OAuthCodeToken tk = OAuthCodeToken.decrypt(code);
     		if (tk == null) throw new BadRequestException("error.internal", "invalid_grant");
     		if (tk.created + OAUTH_CODE_LIFETIME < System.currentTimeMillis()) throw new BadRequestException("error.internal", "invalid_grant");
