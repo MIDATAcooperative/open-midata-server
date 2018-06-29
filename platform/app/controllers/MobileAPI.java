@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -35,6 +36,7 @@ import models.ResearchUser;
 import models.Space;
 import models.Study;
 import models.StudyParticipation;
+import models.StudyRelated;
 import models.User;
 import models.enums.AggregationType;
 import models.enums.AuditEventType;
@@ -655,6 +657,98 @@ public class MobileAPI extends Controller {
 		obj.put("version", version);		
 		return ok(obj);
 	}
+	
+	/*
+	@BodyParser.Of(BodyParser.Json.class)
+	@MobileCall
+	public static Result deleteRecord() throws AppException, JsonValidationException {
+		
+		Stats.startRequest(request());
+		// check whether the request is complete
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "authToken", "properties");
+		
+		ExecutionInfo inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false);
+		Stats.setPlugin(inf.pluginId);	
+		        		
+    	Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+				
+		String message = "";
+		for (Map.Entry<String, Object> prop : properties.entrySet()) {				
+			message += (message.length()>0?"&":"")+prop.getKey()+"="+prop.getValue();			
+		}
+		
+		if (properties.get("format") == null) throw new BadRequestException("error.internal", "No format");
+		
+		AuditManager.instance.addAuditEvent(AuditEventType.DATA_DELETION, null, inf.executorId, null, message);
+		RecordManager.instance.delete(inf.executorId,  properties);		
+				
+		Stats.finishRequest(request(), "200", Collections.EMPTY_SET);						
+		return ok();
+	}
+	
+    public static Result unshareRecord() throws AppException, JsonValidationException {
+		
+		Stats.startRequest(request());
+		// check whether the request is complete
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "authToken", "properties", "target-study", "target-study-group");
+		
+		ExecutionInfo inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false);
+		Stats.setPlugin(inf.pluginId);	
+		        		
+    	Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+								
+		if (properties.get("format") == null) throw new BadRequestException("error.internal", "No format");
+		
+		
+		MidataId studyId = JsonValidation.getMidataId(json, "target-study");
+		String group = JsonValidation.getString(json, "target-study-group");		
+		Set<StudyRelated> srs = StudyRelated.getActiveByOwnerGroupAndStudy(inf.executorId, group, studyId, Sets.create("_id"));
+		
+		List<Record> recs = RecordManager.instance.list(inf.executorId, inf.targetAPS, properties, Sets.create("_id"));
+		
+		if (!srs.isEmpty()) {
+			for (StudyRelated sr : srs ) {
+			  RecordManager.instance.unshare(inf.executorId, sr._id, recs);
+			}
+		}								
+								
+		return ok();
+	}
+	
+    
+    public static Result shareRecord() throws AppException, JsonValidationException {
+		
+		Stats.startRequest(request());
+		// check whether the request is complete
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "authToken", "properties", "target-study", "target-study-group");
+		
+		ExecutionInfo inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false);
+		Stats.setPlugin(inf.pluginId);	
+		        		
+    	Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+								
+		if (properties.get("format") == null) throw new BadRequestException("error.internal", "No format");
+		
+		
+		MidataId studyId = JsonValidation.getMidataId(json, "target-study");
+		String group = JsonValidation.getString(json, "target-study-group");		
+		Set<StudyRelated> srs = StudyRelated.getActiveByOwnerGroupAndStudy(inf.executorId, group, studyId, Sets.create("_id"));
+		
+		List<Record> recs = RecordManager.instance.list(inf.executorId, inf.targetAPS, properties, Sets.create("_id"));
+		
+		if (!srs.isEmpty()) {
+			for (StudyRelated sr : srs ) {
+			  RecordManager.instance.share(inf.executorId, inf.executorId, sr._id, sr.owner, properties, false);
+			}
+		}								
+								
+		return ok();
+	}
+	*/
+			
 	
 	
 	/**

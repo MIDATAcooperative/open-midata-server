@@ -96,7 +96,7 @@ public class FHIRTools {
 		if (user == null) throw new UnprocessableEntityException("Invalid Person Reference");
 		if (rt != null) {
 				if (rt.equals("Patient") && user.role != UserRole.MEMBER) throw new UnprocessableEntityException("Invalid Patient reference");
-				if (rt.equals("Practitioner") && user.role != UserRole.PROVIDER) throw new UnprocessableEntityException("Invalid Practitioner reference");
+				if (rt.equals("Practitioner") && (user.role != UserRole.PROVIDER && user.role != UserRole.RESEARCH)) throw new UnprocessableEntityException("Invalid Practitioner reference");
 		}
 		return id;
 		
