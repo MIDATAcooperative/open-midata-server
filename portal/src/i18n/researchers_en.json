@@ -15,7 +15,15 @@
     "studies" : "Studies",
     "workspace" : "Workspace",
     "data" : "Data",
-    "addresearcher" : "Add Researcher"
+    "addresearcher" : "Add Researcher",
+    "organization" : "Organization"
+  },
+  
+  "researcher_organization" : {
+    "title" : "Organization",
+    "name" : "Org. Name",
+    "description" : "Description",
+    "researchers" : "All researchers of your organization"
   },
   
   "createstudy" : {

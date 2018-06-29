@@ -146,6 +146,14 @@
 		  </formrow>
 		  <formrow myid="writes" label="Write Mode" class="danger-change">
 		    <select class="form-control" name="writes" ng-model="app.writes" ng-change="requireLogout();" ng-options="mode as ('enum.writepermissiontype.'+mode)|translate for mode in writemodes"></select>
+		  </formrow>
+		   <formrow myid="noUpdateHistory" label="manageapp.no_update_history" ng-show="app.targetUserRole=='RESEARCH'">
+		    <div class="checkbox">
+		    <label>
+		      <input type="checkbox" id="noUpdateHistory" name="noUpdateHistory" ng-model="app.noUpdateHistory" value="true">
+		      <span translate="manageapp.info.no_update_history"></span>
+		    </label>
+		    </div>
 		  </formrow>	
 		  <formrow myid="resharesData" label="Resharing" class="danger-change">
 		    <div class="checkbox">
@@ -198,6 +206,7 @@
 		  </formrow>
 		  <formrow myid="redirectUri" label="Redirect URI (optional, required for OAuth2 login)" ng-show="app.type == 'mobile'">
 		    <input type="text" id="redirectUri" name="redirectUri" class="form-control" placeholder="Redirect URI" ng-model="app.redirectUri">
+		    <p class="help-block" translate="manageapp.info.redirectUri"></p>
 		  </formrow>
 		   <formrow myid="developmentServer" label="Development Server" ng-hide="app.type == 'mobile' || !app.developmentServer">
 		    <p class="form-control-static">{{ app.developmentServer }}</p>

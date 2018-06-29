@@ -611,6 +611,12 @@ public class Application extends APIController {
 	 */
 	public static Result loginHelper(User user ) throws AppException {
 		Set<UserFeature> notok = loginHelperPreconditionsFailed(user, InstanceConfig.getInstance().getInstanceType().defaultRequirementsPortalLogin(user.role));
+	
+		if (user.role == UserRole.RESEARCH && !(user instanceof ResearchUser)) {
+			user = ResearchUser.getById(user._id, Sets.create(User.FOR_LOGIN, "organization"));
+		} else if (user.role == UserRole.PROVIDER && !(user instanceof HPUser)) {
+			user = HPUser.getById(user._id, Sets.create(User.FOR_LOGIN, "organization"));
+		}
 		
 		PortalSessionToken token = null;
 		String handle = KeyManager.instance.login(PortalSessionToken.LIFETIME, true);
@@ -937,6 +943,8 @@ public class Application extends APIController {
 				controllers.research.routes.javascript.Researchers.register(),
 				controllers.research.routes.javascript.Researchers.registerOther(),
 				controllers.research.routes.javascript.Researchers.login(),
+				controllers.research.routes.javascript.Researchers.getOrganization(),
+				controllers.research.routes.javascript.Researchers.updateOrganization(),
 				controllers.research.routes.javascript.Studies.create(),
 				controllers.research.routes.javascript.Studies.list(),
 				controllers.research.routes.javascript.Studies.listAdmin(),

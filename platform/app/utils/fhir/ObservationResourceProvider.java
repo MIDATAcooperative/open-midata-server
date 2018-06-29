@@ -365,8 +365,8 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 	    builder.restriction("combo-value-concept", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "valueCodeableConcept", QueryBuilder.TYPE_CODEABLE_CONCEPT, "component.valueCodeableConcept");
 	    builder.restriction("combo-value-quantity", true, QueryBuilder.TYPE_QUANTITY, "valueQuantity", QueryBuilder.TYPE_QUANTITY, "component.valueQuantity");
 		
-		
-		
+	    builder.restriction("method", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "method");
+				
 		builder.restriction("data-absent-reason", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "dataAbsentReason");
 		
 		builder.restriction("related-type", false, "code", "related.type");

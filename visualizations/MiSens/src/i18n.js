@@ -5,8 +5,11 @@ angular.module('MiSensi18n', [])
     de: 
     //$START_LANGUAGE : de    
     {
-      "title": "MiSens",
-      "textStarDiagram": "Der Stern zeigt auf einen Blick wie empfindlich Sie auf die von Ihnen in der MiSens-Studie getesteten Geruchs- und Geschmacksstoffe ansprechen. Je weiter der grüne Punkt auf einer der acht Achsen vom Zentrum des Sterns entfernt ist, desto stärker nehmen Sie die entsprechende Substanz wahr. Befindet sich entlang einer der Achsen kein Punkt, so liegt dies daran, dass Sie diese Substanz nicht getestet haben bzw. die Resultate nicht in der App gespeichert haben. Die Grafik zeigt zum Vergleich auch den Mittelwert aller Studienteilnehmer (graue Linie) und die Empfindlichkeit der oberen und unteren 10% bzw. 25% der Teilnehmer an. Für eine noch detailliertere Aufschlüsselung Ihrer Resultate finden Sie im Anschluss die Histogramme der Sensitivitäten für die verschiedenen Substanzen.",
+      "title": "Wie fein ist Ihre NASE",
+      "title1":"Wie fein ist Ihre",
+      "title2":"NASE",
+      "textStarDiagram": "Im MiSens Projekt haben Sie Ihre Geruchs- und Geschmackssinne getestet. Hier können Sie sehen, wie empfindlich Sie auf die verschiedenen Aromastoffe ansprechen und Ihre Resultate mit denen der anderen Teilnehmer vergleichen.",
+      "textLegendeDiagram":"Der obige Stern zeigt auf einen Blick, wie empfindlich Sie auf die von Ihnen in der MiSens-Studie getesteten Geruchs- und Geschmacksstoffe ansprechen. Je weiter der rote Punkt auf einer der acht Achsen vom Zentrum des Sterns entfernt liegt, desto stärker nehmen Sie die entsprechende Substanz wahr. Befindet sich entlang einer der Achsen kein Punkt, so liegt dies daran, dass Sie diese Substanz nicht getestet haben bzw. die Resultate nicht in der App gespeichert haben. Die Grafik zeigt zum Vergleich auch den Mittelwert aller Studienteilnehmer (graue Linie) sowie die Empfindlichkeitsspanne der mittleren 50% dieser Teilnehmer an. Eine detailliertere Aufschlüsselung Ihrer Resultate und weitere Informationen zu den getesteten Substanzen finden Sie im folgenden Abschnitt.",
       "GeschmackshistogrammeTitle": "Geschmackshistogramme",
       "GeschmackshistogrammeText1": "Diese Histogramme zeigen, wie viele der Teilnehmer die verkosteten Proben mit welcher Intensität bewertet haben. Dabei entsprechen die Skalenwerte auf der bei der Bewertung verwendeten gLMS Skala folgenden Textbeschreibungen:  0=„keine Wahrnehmung“; 1.4 = „sehr schwach“; 6=„schwach“; 17=„moderat“; 35=„stark“; 51=„sehr stark“; 100=„stärkste vorstellbare Wahrnehmung“). Die Intensität, mit der Sie die jeweilige Probe selber bewertet haben ist grün markiert.",
       "GeschmackshistogrammeText2Bold":"Bei diesen drei Histogrammen aus den Geschmackstests gilt, je höher Ihre Intensitätsbewertung, desto empfindlicher sind Sie für die jeweilige Substanz.",
@@ -39,8 +42,11 @@ angular.module('MiSensi18n', [])
     ,en: 
     //$START_LANGUAGE : en  
     {
-      "title": "MiSens",
-      "textStarDiagram": "The star diagram summarizes the sensitivity of your response to the taste and smell compounds tested during the MiSense study. The farther out the dot lies along the spoke of the star, the higher your sensitivity for that compound. If there is no dot along one or more of the spokes, you did not register a response for this compound in the app. To allow the comparison of your results to those of the other study participants the plot also shows the median sensitivity (grey line) of the other participants as well as the bottom and top 10th and 25th percentiles of the group. For an even more detailed view of your results, please have a look at the individual histograms for each of the tested aroma compounds.",
+      "title": "How fine are your Senses",
+      "title1":"How fine are your",
+      "title2":"Senses",
+      "textStarDiagram": "In the MiSens project you tested your sense of taste and smell. Here you can see how sensitive you were for the different aroma compounds and how you compare to the other participants.",
+      "textLegendeDiagram":"The star diagram shown above summarizes the sensitivity of your response to the taste and smell compounds tested during the MiSense study. The farther out the red dot lies along the spoke of the star, the higher your sensitivity for that compound. If there is no dot along one or more of the spokes, you did not register a response for this compound in the app. To allow the comparison of your results to those of the other study participants the plot also shows the median sensitivity (grey line) of the other participants as the band of sensitivities displayed by the middle 50% of participants. For a detailed view of your results and for more information on the tested compounds, please have a look at the section below.",
       "GeschmackshistogrammeTitle": "Taste histograms",
       "GeschmackshistogrammeText1": "The histograms indicate how many study participants assigned what intensity rating to the tested sample. On the gLMS scale used in the tests, the different scale values correspond to textual descriptions as follows: 0=”no perception”; 1.4=”barely detectable; 6=”weak”, 17=”moderate”; 35=”strong”; 51=”very strong”; 100=”strongest imaginable sensation”. Your own intensity rating of the substance is indicated in green.",
       "GeschmackshistogrammeText2Bold": "In these histograms, showing the taste test results, a higher intensity rating corresponds to a higher sensitivity to the respective substance.",
@@ -51,7 +57,7 @@ angular.module('MiSensi18n', [])
       "SalzTitle":"Sodium chloride (table salt)",
       "SalzText1":"This sample contained ordinary table salt (sodium chloride or NaCl) just as you might use at home to salt your food. The concentration used in the tests (300 mM) corresponds to that of a very heavily salted (perhaps “over salted”) soup. Also, for sodium chloride the influence of genetic factors on its perception are negligible. The well-known difference in the preferred levels of salt in foods therefore appear to be driven by differences in preference rather than differences in perception.",
       "GeruchshistogrammeTitle":"Smell histograms",
-      "GeruchshistogrammeText1":"The following histograms show the concentration of the aroma compounds that were necessary to permit participants to distinguish a smell pen containing the compound from pens that contain only water. The concentration unit used is ppb, which stands for “parts per billion” and corresponds to one thousandth of a milligram of aroma compound per litre of water. Please also note that the concentration scale is logarithmic and not linear. The scale therefore covers a very broad range of concentrations. In the case of -ionone the lowest concentration tested is 1'000'000 times less concentrated than the highest one. The concentration at which you detected the compound is indicated in green.",
+      "GeruchshistogrammeText1":"The following histograms show the concentration of the aroma compounds that were necessary to permit participants to distinguish a smell pen containing the compound from pens that contain only water. The concentration unit used is ppb, which stands for “parts per billion” and corresponds to one thousandth of a milligram of aroma compound per litre of water. Please also note that the concentration scale is logarithmic and not linear. The scale therefore covers a very broad range of concentrations. In the case of β-ionone the lowest concentration tested is 1'000'000 times less concentrated than the highest one. The concentration at which you detected the compound is indicated in green.",
       "GeruchshistogrammeText2Bold":"In these histograms, a higher numerical value corresponds to a lower sensitivity to that compound (i.e. a higher concentration of the substance is needed to detect it reliably).",
       "BetaiononTitle":"β-ionone",
       "BetaiononText1":"β-ionone is a characteristic component of the natural scent of the violet flower.  To most people it is, however, known through its mass use as an artificial scent in many soaps, laundry detergents and household cleaning products. Given this widespread use, it is perhaps surprising, that a substantial proportion of the population can barely detect this scent, even at very elevated concentrations. The ability to smell / not smell this substance is strongly influenced by a genetic variation in the gene that codes for the olfactory receptor responsible for its perception. ",
@@ -73,8 +79,7 @@ angular.module('MiSensi18n', [])
   ,it: 
 //$START_LANGUAGE : it
 {
-
-
+/*
     // TODO NEW: MiSens
     "title" : "MiSens",
 
@@ -154,14 +159,13 @@ angular.module('MiSensi18n', [])
     "selectOptionScientificaResultsText" : "My Scientifica results",
 
     // TODO NEW: My current results
-    "selectOptionCurrentResultsText" : "My current results"
+    "selectOptionCurrentResultsText" : "My current results"*/
 }
 //$END_LANGUAGE : it  
   ,fr: 
 //$START_LANGUAGE : fr    
 {
-
-
+/*
     // TODO NEW: MiSens
     "title" : "MiSens",
 
@@ -241,7 +245,7 @@ angular.module('MiSensi18n', [])
     "selectOptionScientificaResultsText" : "My Scientifica results",
 
     // TODO NEW: My current results
-    "selectOptionCurrentResultsText" : "My current results"
+    "selectOptionCurrentResultsText" : "My current results"*/
 }
 //$END_LANGUAGE : fr  
   });

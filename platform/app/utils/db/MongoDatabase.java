@@ -7,23 +7,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.bson.conversions.Bson;
+
 import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
 import com.mongodb.MongoException;
-import com.mongodb.ReadConcern;
 import com.mongodb.ReadPreference;
 import com.mongodb.ServerAddress;
 import com.mongodb.WriteConcern;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.UpdateOptions;
 
 import models.Model;
 import utils.AccessLog;
-import utils.collections.CollectionConversion;
 
 /**
  * Connection to a mongoDB database
@@ -38,6 +38,8 @@ public class MongoDatabase extends Database {
 	private MongoClient mongoClient; // mongo client is already a connection pool
 	private DatabaseConversion conversion = new DatabaseConversion();
 	private MongoCredential credential;
+	
+	private final static UpdateOptions UPSERT = new UpdateOptions().upsert(true);
 	
 	private final static int MAX_TRIES = 3;
 	
@@ -107,15 +109,15 @@ public class MongoDatabase extends Database {
 	/**
 	 * Get a connection to the database in use.
 	 */
-	DB getDB() {
-		return mongoClient.getDB(database);
+	com.mongodb.client.MongoDatabase getDB() {
+		return mongoClient.getDatabase(database);
 	}
 
 	/**
 	 * Gets the specified collection.
 	 */
-	public DBCollection getCollection(String collection) {
-		return getDB().getCollection(collection);
+	public MongoCollection<DBObject> getCollection(String collection) {
+		return getDB().getCollection(collection, DBObject.class);
 	}
 
 	/* Database operations */
@@ -128,7 +130,7 @@ public class MongoDatabase extends Database {
 		try {
 			if (logQueries) AccessLog.logDB("insert into "+collection);
 			dbObject = conversion.toDBObject(modelObject);
-			getCollection(collection).insert(dbObject);	
+			getCollection(collection).insertOne(dbObject);	
 			return;
 		} catch (DatabaseConversionException e) {
 			throw new DatabaseException(e);
@@ -143,14 +145,14 @@ public class MongoDatabase extends Database {
 	 * Insert a document into the given collection.
 	 */
 	public <T extends Model> void upsert(String collection, T modelObject) throws DatabaseException {
-		DBObject dbObject;
+		BasicDBObject dbObject;
 		for (int tries=0;tries<=MAX_TRIES;tries++) {
 		try {
 			if (logQueries) AccessLog.logDB("upsert "+collection+ " "+modelObject.to_db_id().toString());
 			dbObject = conversion.toDBObject(modelObject);
-			DBObject query = new BasicDBObject();
+			BasicDBObject query = new BasicDBObject();
 			query.put("_id", modelObject.to_db_id());
-			getCollection(collection).update(query, dbObject, true, false);
+			getCollection(collection).replaceOne(query, dbObject, UPSERT); 
 			return;
 		} catch (DatabaseConversionException e) {
 			throw new DatabaseException(e);
@@ -168,8 +170,8 @@ public class MongoDatabase extends Database {
 		for (int tries=0;tries<=MAX_TRIES;tries++) {
 		try {
 			if (logQueries) AccessLog.logDB("delete "+collection+ " "+properties.toString());
-			DBObject query = toDBObject(model, properties);
-			getCollection(collection).remove(query);
+			Bson query = toDBObject(model, properties);
+			getCollection(collection).deleteMany(query);
 			return;
 		} catch (MongoException e) {
 			if (tries==MAX_TRIES) throw new DatabaseException(e);
@@ -186,10 +188,10 @@ public class MongoDatabase extends Database {
 	public boolean exists(Class model, String collection, Map<String, ? extends Object> properties) throws DatabaseException {
 		for (int tries=0;tries<=MAX_TRIES;tries++) {
 		try {
-			DBObject query = toDBObject(model, properties);
-			DBObject projection = new BasicDBObject("_id", 1);
+			Bson query = toDBObject(model, properties);
+			Bson projection = new BasicDBObject("_id", 1);
 			if (logQueries) AccessLog.logDB("exists "+collection+" "+query.toString());
-			return getCollection(collection).findOne(query, projection) != null;
+			return getCollection(collection).find(query).projection(projection).first() != null;
 		} catch (MongoException e) {
 			if (tries==MAX_TRIES) throw new DatabaseException(e);
 			delay();
@@ -207,9 +209,9 @@ public class MongoDatabase extends Database {
 			Set<String> fields) throws DatabaseException {
 		for (int tries=0;tries<=MAX_TRIES;tries++) {
 		try {
-			DBObject query = toDBObject(modelClass, properties);
-			DBObject projection = toDBObject(fields);
-			DBObject dbObject = getCollection(collection).findOne(query, projection);
+			Bson query = toDBObject(modelClass, properties);
+			Bson projection = toDBObject(fields);
+			DBObject dbObject = getCollection(collection).find(query).limit(1).projection(projection).first();
 			if (logQueries) AccessLog.logDB("single "+collection+" "+query.toString());
 			if (dbObject == null) return null;
 			return conversion.toModel(modelClass, dbObject);
@@ -237,10 +239,10 @@ public class MongoDatabase extends Database {
 			Set<String> fields, int limit) throws DatabaseException {
 		for (int tries = 0;tries <= MAX_TRIES;tries++) {
 			try {
-				DBObject query = toDBObject(modelClass, properties);
-				DBObject projection = toDBObject(fields);
+				Bson query = toDBObject(modelClass, properties);
+				Bson projection = toDBObject(fields);
 				if (logQueries) AccessLog.logDB("all "+collection+" "+query.toString());
-				DBCursor cursor = getCollection(collection).find(query, projection);
+				FindIterable<DBObject> cursor = getCollection(collection).find(query).projection(projection);
 				if (limit!=0) cursor = cursor.limit(limit);			
 				return conversion.toModel(modelClass, cursor.iterator());
 			} catch (MongoException e) {
@@ -257,10 +259,10 @@ public class MongoDatabase extends Database {
 			Set<String> fields, int limit, String sortField, int order) throws DatabaseException {
 		for (int tries=0;tries<=MAX_TRIES;tries++) {
 		try {
-			DBObject query = toDBObject(modelClass, properties);
-			DBObject projection = toDBObject(fields);
+			Bson query = toDBObject(modelClass, properties);
+			Bson projection = toDBObject(fields);
 			if (logQueries) AccessLog.logDB("all "+collection+" "+query.toString());
-			DBCursor cursor = getCollection(collection).find(query, projection);
+			FindIterable<DBObject> cursor = getCollection(collection).find(query).projection(projection);
 			if (sortField != null) cursor = cursor.sort(new BasicDBObject(sortField, order));
 			if (limit!=0) cursor = cursor.limit(limit);			
 			return conversion.toModelList(modelClass, cursor.iterator());
@@ -276,7 +278,7 @@ public class MongoDatabase extends Database {
 	
 	public long count(Class modelClass, String collection, Map<String, ? extends Object> properties) throws DatabaseException {
 		try {
-		  DBObject query = toDBObject(modelClass, properties);
+		  Bson query = toDBObject(modelClass, properties);
 		  return getCollection(collection).count(query);
 		} catch (DatabaseConversionException e) {
 			throw new DatabaseException(e);
@@ -290,10 +292,10 @@ public class MongoDatabase extends Database {
 	public <T extends Model> void set(Class<T> model, String collection, Object modelId, String field, Object value) throws DatabaseException {
 		for (int tries=0;tries<=MAX_TRIES;tries++){
 		try {
-			DBObject query = new BasicDBObject("_id", modelId);
-			DBObject update = new BasicDBObject("$set", conversion.toDBObject(field, value));
+			Bson query = new BasicDBObject("_id", modelId);
+			Bson update = new BasicDBObject("$set", conversion.toDBObject(field, value));
 			if (logQueries) AccessLog.logDB("set field "+collection+" field="+field+" value="+value);
-			getCollection(collection).update(query, update);
+			getCollection(collection).updateOne(query, update);
 			return;
 		} catch (MongoException e) {
 			if (tries==MAX_TRIES) throw new DatabaseException(e);
@@ -307,10 +309,10 @@ public class MongoDatabase extends Database {
 	public <T extends Model> void set(Class<T> model, String collection, Map<String, Object> properties, String field, Object value) throws DatabaseException {
 		for (int tries=0;tries<=MAX_TRIES;tries++) {
 		try {
-			DBObject query = toDBObject(model, properties);
-			DBObject update = new BasicDBObject("$set", conversion.toDBObject(field, value));
+			Bson query = toDBObject(model, properties);
+			Bson update = new BasicDBObject("$set", conversion.toDBObject(field, value));
 			if (logQueries) AccessLog.logDB("set all "+collection+" query="+query.toString()+" field="+field+" to="+value);
-			getCollection(collection).update(query, update, false, true);
+			getCollection(collection).updateMany(query, update);
 			return;
 		} catch (MongoException e) {
 			if (tries==MAX_TRIES) throw new DatabaseException(e);
@@ -328,20 +330,20 @@ public class MongoDatabase extends Database {
 		for (int tries=0;tries<=MAX_TRIES;tries++) {
 		try {
 			if (logQueries) AccessLog.logDB("update "+collection+ " "+model.to_db_id().toString());
-			DBObject query = new BasicDBObject();
+			BasicDBObject query = new BasicDBObject();
 			query.put("_id", model.to_db_id());
 			
 			
 			
-			DBObject updateContent = new BasicDBObject();
+			BasicDBObject updateContent = new BasicDBObject();
 			for (String field : fields) {
 				updateContent.put(field, conversion.toDBObjectValue(model.getClass().getField(field).get(model)));
 			}
 			long ts = System.currentTimeMillis();
 			
-			DBObject update = new BasicDBObject("$set", updateContent);
+			BasicDBObject update = new BasicDBObject("$set", updateContent);
 		
-			getCollection(collection).update(query, update, false, false);
+			getCollection(collection).updateOne(query, update);
 			return;														
 		} catch (MongoException e) {
 			if (tries==MAX_TRIES) throw new DatabaseException(e);
@@ -363,21 +365,21 @@ public class MongoDatabase extends Database {
 		for (int tries=0;tries<=MAX_TRIES;tries++) {
 		try {
 			if (logQueries) AccessLog.logDB("secure update "+collection+ " "+model.to_db_id().toString());
-			DBObject query = new BasicDBObject();
+			BasicDBObject query = new BasicDBObject();
 			query.put("_id", model.to_db_id());
 			
 			Object oldTimeStamp = model.getClass().getField(timestampField).get(model);
 			query.put(timestampField, oldTimeStamp);
 			
-			DBObject updateContent = new BasicDBObject();
+			BasicDBObject updateContent = new BasicDBObject();
 			for (String field : fields) {
 				updateContent.put(field, conversion.toDBObjectValue(model.getClass().getField(field).get(model)));
 			}
 			long ts = System.currentTimeMillis();
 			updateContent.put(timestampField, ts);
-			DBObject update = new BasicDBObject("$set", updateContent);
+			BasicDBObject update = new BasicDBObject("$set", updateContent);
 		
-			DBObject result = getCollection(collection).findAndModify(query, update);
+			DBObject result = getCollection(collection).findOneAndUpdate(query, update);
 			if (result == null) {
 				if (logQueries) AccessLog.log("failed secure update version: "+oldTimeStamp); 
 				throw new LostUpdateException();
@@ -402,8 +404,8 @@ public class MongoDatabase extends Database {
 	/**
 	 * Convert the properties map to a database object. If an array is given as the value, use the $in operator.
 	 */
-	private DBObject toDBObject(Class model, Map<String, ? extends Object> properties) throws DatabaseConversionException {
-		DBObject dbObject = new BasicDBObject();
+	private BasicDBObject toDBObject(Class model, Map<String, ? extends Object> properties) throws DatabaseConversionException {
+		BasicDBObject dbObject = new BasicDBObject();
 		for (String key : properties.keySet()) {
 			Object property = properties.get(key);
 			if (property instanceof Collection<?> && !key.startsWith("$")) {
@@ -431,8 +433,8 @@ public class MongoDatabase extends Database {
 	/**
 	 * Convert the fields set to a database object. Project to all fields given.
 	 */
-	private DBObject toDBObject(Set<String> fields) {
-		DBObject dbObject = new BasicDBObject();
+	private BasicDBObject toDBObject(Set<String> fields) {
+		BasicDBObject dbObject = new BasicDBObject();
 		for (String field : fields) {
 			dbObject.put(field, 1);
 		}

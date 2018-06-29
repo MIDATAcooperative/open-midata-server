@@ -83,7 +83,7 @@ angular.module('portal')
 	    $scope.status.doAction('email', server.post(jsRoutes.controllers.Application.confirmAccountEmail().url, JSON.stringify(data) ))
 	    .then(function(result) {
 	    	$scope.progress = result.data;	 
-	    	if (result.data.emailStatus !== "UNVALIDATED") {
+	    	if (result.data.emailStatus !== "UNVALIDATED" && (!result.data.requirements || result.data.requirements.indexOf("PASSWORD_SET") < 0)) {
 	    	  $scope.mailSuccess = true;	  
 	    	  //session.postLogin(result, $state);
 	    	} else {

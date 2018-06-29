@@ -14,7 +14,7 @@ MiSens.config(['$translateProvider', 'i18nc', function ($translateProvider, i18n
 		.translations('de', i18nc.de)
 		.translations('it', i18nc.it)
 		.translations('fr', i18nc.fr)
-		.fallbackLanguage('de');
+		.fallbackLanguage('en');
 
 }]);
 

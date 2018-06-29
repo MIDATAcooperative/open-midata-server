@@ -75,8 +75,8 @@ public class DatabaseConversion {
 	/**
 	 * Turns a model into a database object.
 	 */
-	public <T extends JsonSerializable> DBObject toDBObject(T modelObject) throws DatabaseConversionException {
-		DBObject dbObject = new BasicDBObject();
+	public <T extends JsonSerializable> BasicDBObject toDBObject(T modelObject) throws DatabaseConversionException {
+		BasicDBObject dbObject = new BasicDBObject();
 		Class model = modelObject.getClass();
 		for (Field field : model.getFields()) {
 			if (field.getAnnotation(NotMaterialized.class)!=null) continue;			

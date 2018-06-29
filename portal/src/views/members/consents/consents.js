@@ -2,6 +2,7 @@ angular.module('portal')
 .controller('ConsentsCtrl', ['$scope', '$state', 'circles', 'session', 'views', 'status', function($scope, $state, circles, session, views, status) {
 
 	$scope.status = new status(true);
+	$scope.role = $state.current.data.role;
 		
 	loadConsents = function(userId) {	
 		var prop = {};

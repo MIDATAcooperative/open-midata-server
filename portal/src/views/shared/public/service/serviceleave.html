@@ -1,0 +1,26 @@
+<div ng-controller="ServiceLeaveCtrl">
+<div class="container"><div class="row">
+			<div class="col-sm-12">
+				<div class="panel-container" style="max-width:330px; padding-top:30px; margin:0 auto;">
+
+
+	<div class="panel panel-primary">
+		<div class="panel-heading" translate="serviceleave.title"></div>
+		<div class="body">
+		
+		   <p translate="serviceleave.thankyou"></p>
+		   
+		   <div ng-show="callback=='close'">
+		     <button class="btn btn-primary" translate="serviceleave.goodbye_btn" ng-click="close();"></button>
+		   </div>
+		   
+		   <div ng-show="callback && callback!='close'">
+		      <p translate="serviceleave.logoutreturn"></p>
+		      <button class="btn btn-primary" translate="serviceleave.return_btn" ng-click="leave();"></button>
+		   </div>
+		   
+		</div>
+	</div>
+	
+	</div></div></div></div>
+</div>

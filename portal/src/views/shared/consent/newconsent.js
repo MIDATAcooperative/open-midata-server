@@ -41,7 +41,7 @@ angular.module('portal')
 				if (!data.data || !data.data.length) {
 					$scope.consent = null;
 					return;
-				}
+				}								
 				
 				$scope.consent = $scope.myform = data.data[0];		
 				if ($scope.consent.status === "ACTIVE" || $scope.consent.owner === $scope.userId) {
@@ -270,12 +270,12 @@ angular.module('portal')
 	
 	$scope.rejectConsent = function() {
 		circles.unconfirmed = 0;
-		hc.reject($scope.consent._id).then(function() { $scope.init(); });
+		hc.reject($scope.consent._id).then(function() { $scope.reinit(); });
 	};
 	
 	$scope.confirmConsent = function() {
 		circles.unconfirmed = 0;
-		hc.confirm($scope.consent._id).then(function() { $scope.init(); });	
+		hc.confirm($scope.consent._id).then(function() { $scope.reinit(); });	
 	};
 	
 	$scope.mayReject = function() {
@@ -326,6 +326,13 @@ angular.module('portal')
 		$window.history.back();
 	};
 		
+	$scope.reinit = function() {
+		if ($state.params.callback || $state.params.action) {
+			$state.go("^.service2", $state.params);
+		} else {
+			init();
+		}
+	};
 	
 	session.currentUser.then(function(userId) {	
 	  $scope.init(userId);
