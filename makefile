@@ -130,8 +130,8 @@ tasks/install-localmongo: trigger/install-localmongo
 	$(info ------------------------------)
 	$(info Installing Local Version of MongoDB... )
 	$(info ------------------------------)
-  python main.py setup mongodb
-  touch tasks/install-localmongo
+	python main.py setup mongodb
+	touch tasks/install-localmongo
 
 tasks/install-dummycert: trigger/install-dummycert
 	$(info ------------------------------)
