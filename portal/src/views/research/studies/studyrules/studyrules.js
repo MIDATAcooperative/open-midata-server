@@ -1,8 +1,8 @@
 angular.module('portal')
-.controller('StudyRulesCtrl', ['$scope', '$state', 'server', 'status', 'terms', 'apps', 'labels', '$translate', 'formats', function($scope, $state, server, status, terms, apps, labels, $translate, formats) {
+.controller('StudyRulesCtrl', ['$scope', '$state', 'server', 'status', 'terms', 'apps', 'labels', '$translate', 'formats', '$document', function($scope, $state, server, status, terms, apps, labels, $translate, formats, $document) {
    
    $scope.studyid = $state.params.studyId;
-   $scope.status = new status(false, $scope);
+   $scope.status = new status(true, $scope);
    $scope.error = null;
    $scope.requirements = apps.userfeatures;
    $scope.datePickers = {  };
@@ -27,12 +27,22 @@ angular.module('portal')
    };
    
    $scope.submit = function() {
-	   $scope.error = null;
+	 
    	   
    	   try{
 	     $scope.study.recordQuery = JSON.parse($scope.study.recordQueryStr);
    	   } catch (e) { console.log(e); $scope.error = e.message;return; }
-	  
+   	   
+	   	$scope.submitted = true;	
+		if ($scope.error && $scope.error.field && $scope.error.type) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
+		$scope.error = null;
+		
+		if (! $scope.myform.$valid) {
+			var elem = $document[0].querySelector('input.ng-invalid');
+			if (elem && elem.focus) elem.focus();
+			return;
+		}
+   	   	   
 	   var data = { recordQuery : $scope.study.recordQuery, termsOfUse : $scope.study.termsOfUse, requirements: $scope.study.requirements, startDate : $scope.study.startDate, endDate : $scope.study.endDate, dataCreatedBefore : $scope.study.dataCreatedBefore };
 	   $scope.status.doAction("update", server.put(jsRoutes.controllers.research.Studies.update($scope.studyid).url, JSON.stringify(data)))
 	  .then(function(data) { 				
