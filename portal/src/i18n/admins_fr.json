@@ -45,7 +45,10 @@
         "comment" : "Commentaire",
         "add_comment_btn" : "Ajouter un commentaire",
         "wipe_btn" : "Supprimer le compte",
-        "change_email_btn" : "Changer l'adresse e-mail"
+        "change_email_btn" : "Changer l'adresse e-mail",
+
+        // TODO NEW: Change Address / Birthday
+        "change_address_btn" : "Change Address / Birthday"
     },
 
     "admin_news" : {
@@ -145,6 +148,8 @@
 
     "admin_stats" : {
         "title" : "Statistiques",
+
+        // TODO NEW: 
         "what" : "",
         "value" : "Nombre total",
         "diff_yesterday" : "Diff. sur 1 jour",
