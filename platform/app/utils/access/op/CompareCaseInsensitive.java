@@ -1,10 +1,7 @@
 package utils.access.op;
 
 import java.io.Serializable;
-import java.util.Map;
 import java.util.regex.Pattern;
-
-import scala.NotImplementedError;
 
 public class CompareCaseInsensitive implements Condition, Serializable {
 

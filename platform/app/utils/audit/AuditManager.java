@@ -2,7 +2,6 @@ package utils.audit;
 
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Map;
 
 import models.Consent;
 import models.MidataAuditEvent;
@@ -11,7 +10,6 @@ import models.Study;
 import models.User;
 import models.enums.AuditEventType;
 import utils.exceptions.AppException;
-import utils.exceptions.InternalServerException;
 import utils.fhir.AuditEventResourceProvider;
 
 public class AuditManager {

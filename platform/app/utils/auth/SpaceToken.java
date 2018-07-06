@@ -9,7 +9,6 @@ import play.libs.Json;
 import play.mvc.Http.Request;
 import utils.collections.ChainedMap;
 import utils.exceptions.AppException;
-import utils.exceptions.AuthException;
 import utils.exceptions.InternalServerException;
 
 /**

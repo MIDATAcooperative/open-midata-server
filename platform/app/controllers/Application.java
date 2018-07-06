@@ -1,6 +1,5 @@
 package controllers;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
@@ -24,7 +23,6 @@ import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
-import models.enums.EventType;
 import models.enums.Gender;
 import models.enums.MessageReason;
 import models.enums.ParticipationInterest;
@@ -32,11 +30,11 @@ import models.enums.SubUserRole;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.UserStatus;
-import play.Routes;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import play.routing.JavaScriptReverseRouter;
 import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
@@ -50,7 +48,6 @@ import utils.auth.PortalSessionToken;
 import utils.auth.PreLoginSecured;
 import utils.collections.CMaps;
 import utils.collections.Sets;
-import utils.evolution.AccountPatches;
 import utils.evolution.PostLoginActions;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
@@ -60,13 +57,9 @@ import utils.fhir.PatientResourceProvider;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-import utils.messaging.MailUtils;
 import utils.messaging.Messager;
-import views.html.apstest;
-import views.html.tester;
-import views.txt.mails.lostpwmail;
-import views.txt.mails.welcome;
 import views.txt.mails.adminnotify;
+import views.txt.mails.lostpwmail;
 
 /**
  * Member login, registration and password reset functions 
@@ -78,21 +71,6 @@ public class Application extends APIController {
 	public final static long EMAIL_TOKEN_LIFETIME = 1000l * 60l * 60l * 24l *3l;
 	
 	// public final static long MAX_TRIAL_DURATION = 1000l * 60l * 60l * 24l * 30l;
-	/**
-	 * for debugging only : displays API call test page
-	 * @return
-	 */
-	public static Result test() {
-		return ok(tester.render());
-	}
-
-	/**
-	 * for debugging : displays APS viewer
-	 * @return
-	 */
-	public static Result test2() {
-		return ok(apstest.render());
-	} 
 			
 	/**
 	 * Handling of OPTIONS requests
@@ -356,7 +334,7 @@ public class Application extends APIController {
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "confirmationCode");
 				
-		MidataId userId = new MidataId(request().username());
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		String confirmationCode = JsonValidation.getString(json, "confirmationCode");
 		
 		User user = User.getById(userId, User.FOR_LOGIN);
@@ -453,7 +431,7 @@ public class Application extends APIController {
 		// validate 
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "oldPassword", "password");
-		MidataId userId = new MidataId(request().username());
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		
 		String oldPassword = JsonValidation.getString(json, "oldPassword");
 		String password = JsonValidation.getPassword(json, "password");
@@ -483,7 +461,7 @@ public class Application extends APIController {
 		
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "oldPassphrase", "passphrase");
-		MidataId userId = new MidataId(request().username());
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		
 		String oldPassphrase = JsonValidation.getStringOrNull(json, "oldPassphrase");
 		String passphrase = JsonValidation.getPassword(json, "passphrase");
@@ -643,8 +621,8 @@ public class Application extends APIController {
 				
 		  obj.put("keyType", keytype);
 		  obj.put("role", user.role.toString().toLowerCase());
-		  obj.put("subroles", Json.toJson(user.subroles));
-		  obj.put("lastLogin", Json.toJson(user.login));
+		  obj.set("subroles", Json.toJson(user.subroles));
+		  obj.set("lastLogin", Json.toJson(user.login));
 		}
 	    User.set(user._id, "login", new Date());
 	    
@@ -676,7 +654,7 @@ public class Application extends APIController {
 		// validate 
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "passphrase");
-		MidataId userId = new MidataId(request().username());
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		
 		String passphrase = JsonValidation.getString(json, "passphrase");
 		
@@ -840,11 +818,11 @@ public class Application extends APIController {
 	 * retrieves a list of URLs to all functions used by the MIDATA portal
 	 * @return javascript file with URL routes
 	 */
+	
 	@APICall
 	public static Result javascriptRoutes() {
 		response().setContentType("text/javascript");
-		return ok(Routes.javascriptRouter(
-				"jsRoutes",
+          return ok(JavaScriptReverseRouter.create("jsRoutes", 	
 				// Application
 				
 				controllers.routes.javascript.Application.authenticate(),

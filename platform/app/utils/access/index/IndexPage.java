@@ -13,15 +13,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bson.BasicBSONObject;
-import org.bson.types.BasicBSONList;
-
 import models.MidataId;
 import utils.AccessLog;
 import utils.access.EncryptionUtils;
 import utils.access.op.Condition;
 import utils.db.LostUpdateException;
-import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
 
 /**

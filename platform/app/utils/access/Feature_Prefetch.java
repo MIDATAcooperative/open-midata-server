@@ -1,16 +1,12 @@
 package utils.access;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import models.Consent;
 import models.MidataId;
 import utils.AccessLog;
 import utils.collections.CMaps;
-import utils.collections.Sets;
 import utils.exceptions.AppException;
 
 public class Feature_Prefetch extends Feature {

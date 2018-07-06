@@ -5,8 +5,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import org.bson.types.BasicBSONList;
-
 import models.MidataId;
 
 public class IndexKey implements Comparable<IndexKey>, Serializable {

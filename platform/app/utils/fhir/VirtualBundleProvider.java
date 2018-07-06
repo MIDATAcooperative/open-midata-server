@@ -15,7 +15,6 @@ import org.hl7.fhir.instance.model.api.IPrimitiveType;
 import ca.uhn.fhir.rest.api.server.IBundleProvider;
 import models.Model;
 import utils.AccessLog;
-import utils.exceptions.AppException;
 
 public class VirtualBundleProvider implements IBundleProvider {
 

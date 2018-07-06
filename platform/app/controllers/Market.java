@@ -1,16 +1,12 @@
 package controllers;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -24,16 +20,8 @@ import org.apache.commons.io.IOUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonValueFormat;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.mongodb.BasicDBList;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
-import com.mongodb.util.JSONParseException;
 
 import actions.APICall;
-import models.ContentInfo;
 import models.Developer;
 import models.MessageDefinition;
 import models.MidataId;
@@ -43,10 +31,8 @@ import models.Plugin;
 import models.PluginDevStats;
 import models.PluginIcon;
 import models.Plugin_i18n;
-import models.Record;
 import models.Space;
 import models.Study;
-import models.TermsOfUse;
 import models.User;
 import models.enums.IconUse;
 import models.enums.MessageReason;
@@ -57,29 +43,20 @@ import models.enums.StudyValidationStatus;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.WritePermissionType;
-import play.api.libs.json.JsValue;
-import play.api.libs.json.Json;
 import play.mvc.BodyParser;
-import play.mvc.Result;
-import play.mvc.Security;
 import play.mvc.Http.MultipartFormData;
 import play.mvc.Http.MultipartFormData.FilePart;
+import play.mvc.Result;
+import play.mvc.Security;
 import utils.AccessLog;
-import utils.ErrorReporter;
-import utils.ServerTools;
 import utils.access.Query;
-import utils.access.RecordManager;
 import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
 import utils.auth.DeveloperSecured;
-import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
-import utils.auth.RecordToken;
 import utils.collections.CMaps;
-import utils.collections.ChainedMap;
 import utils.collections.Sets;
 import utils.db.LostUpdateException;
-import utils.db.FileStorage.FileData;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
@@ -87,7 +64,6 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-import utils.stats.Stats;
 
 /**
  * functions for controlling the "market" of plugins
@@ -111,7 +87,7 @@ public class Market extends APIController {
 		JsonNode json = request().body().asJson();
 			
 		// validate request
-		MidataId userId = new MidataId(request().username());
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId pluginId = new MidataId(pluginIdStr);
 		
 		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
@@ -424,7 +400,7 @@ public class Market extends APIController {
 		}
 
 		// validate request
-		MidataId userId = new MidataId(request().username());
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		
 		Developer dev = Developer.getById(userId, Sets.create("email"));
 		
@@ -677,7 +653,7 @@ public class Market extends APIController {
             
         // validate request     
         MidataId pluginId = new MidataId(pluginIdStr);
-        MidataId userId = new MidataId(request().username());
+        MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
         
         Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
         if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
@@ -713,7 +689,7 @@ public class Market extends APIController {
 		if (!getRole().equals(UserRole.ADMIN) && !getRole().equals(UserRole.DEVELOPER)) return unauthorized();
 		
 		MidataId pluginId = new MidataId(pluginIdStr);
-        MidataId userId = new MidataId(request().username());
+        MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
         
         Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
         if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
@@ -730,7 +706,7 @@ public class Market extends APIController {
 		if (!getRole().equals(UserRole.ADMIN) && !getRole().equals(UserRole.DEVELOPER)) return unauthorized();
 		
 		MidataId pluginId = new MidataId(pluginIdStr);
-        MidataId userId = new MidataId(request().username());
+        MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
         
         Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
         if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
@@ -779,7 +755,7 @@ public class Market extends APIController {
 				throw new BadRequestException("error.internal", "At least one request parameter is missing.");
 			}
 							
-			MidataId userId = new MidataId(request().username());			
+			MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));			
 			IconUse use = IconUse.valueOf(metaData.get("use")[0]);
 			if (use == null) throw new BadRequestException("error.internal", "Unknown icon use");
 					
@@ -793,7 +769,7 @@ public class Market extends APIController {
 			if (fileData == null) {
 				throw new BadRequestException("error.internal", "No file found.");
 			}
-			File file = fileData.getFile();
+			File file = (File) fileData.getFile();
 			if (file.length() > 1024 * 1024) throw new BadRequestException("error.too_large.file", "Maximum file size is 100kb");
 			String filename = fileData.getFilename().toUpperCase();
 			String contentType = fileData.getContentType();
@@ -848,7 +824,7 @@ public class Market extends APIController {
 		IconUse use = IconUse.valueOf(useStr);
 		if (use == null) throw new BadRequestException("error.internal", "Unknown icon use");
 									
-		MidataId userId = new MidataId(request().username());			
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));			
 					
 		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
 		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");			

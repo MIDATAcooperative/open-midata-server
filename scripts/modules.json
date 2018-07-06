@@ -1,9 +1,4 @@
-{
-	"sslcert": {
-		"module": "scripts.sslcert",
-		"class": "SSLCertificate",
-		"startOrder": 0
-	},
+{	
 	"mongodb": {
 		"module": "scripts.mongodb",
 		"class": "MongoDB",

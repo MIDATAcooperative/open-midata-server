@@ -1,9 +1,7 @@
 package controllers.providers;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -13,7 +11,6 @@ import actions.APICall;
 import controllers.APIController;
 import controllers.Application;
 import controllers.Circles;
-import controllers.Users;
 import models.HCRelated;
 import models.HPUser;
 import models.HealthcareProvider;
@@ -172,7 +169,7 @@ public class Providers extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public static Result search() throws JsonValidationException, InternalServerException {
-		MidataId userId = new MidataId(request().username());
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		JsonNode json = request().body().asJson();
 			
 		JsonValidation.validate(json, "midataID", "birthday");
@@ -206,7 +203,7 @@ public class Providers extends APIController {
 	@APICall
 	public static Result list() throws JsonValidationException, InternalServerException {
 		
-		MidataId userId = new MidataId(request().username());
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 
 		Set<MemberKey> memberKeys = MemberKey.getByAuthorizedPerson(userId, Sets.create("owner"), Circles.RETURNED_CONSENT_LIMIT);
 		Set<MidataId> ids = new HashSet<MidataId>();
@@ -227,7 +224,7 @@ public class Providers extends APIController {
 	@Security.Authenticated(ProviderSecured.class)	
 	@APICall
 	public static Result getMember(String id) throws JsonValidationException, AppException {
-		MidataId userId = new MidataId(request().username());
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId memberId = new MidataId(id);
 		
 		Set<MemberKey> memberKeys = MemberKey.getByOwnerAndAuthorizedPerson(memberId, userId);
@@ -256,7 +253,7 @@ public class Providers extends APIController {
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	public static Result getVisualizationToken() throws JsonValidationException, InternalServerException {
-		MidataId userId = new MidataId(request().username());
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		JsonNode json = request().body().asJson();
 						
 		JsonValidation.validate(json, "consent");

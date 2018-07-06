@@ -5,16 +5,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.bson.BasicBSONObject;
-import org.bson.types.ObjectId;
 
-import com.google.common.collect.Iterators;
 import com.mongodb.BasicDBObject;
 
 import models.APSNotExistingException;

@@ -2,11 +2,6 @@
 # ~~~~~
 
 
-# The application languages
-# ~~~~~
-application.langs="en"
-
-
 ## Server configuration
 # ~~~~~
 portal.originUrl="PORTAL_ORIGIN"
@@ -27,22 +22,14 @@ default.language=DEFAULT_LANGUAGE
 versions.midata-terms-of-use=1.1
 versions.midata-privacy-policy=1.1
 
-# Logger
-# ~~~~~
-# You can also configure logback (http://logback.qos.ch/), by providing a logger.xml file in the conf directory .
-
-# Root logger:
-logger.root=ERROR
-
-# Logger used by the framework:
-logger.play=INFO
-
-# Logger provided to your application:
-logger.application=DEBUG
 
 # Maximum size for POST payloads
 # ~~~~~
-parsers.text.maxLength=1024K
+play.http.parser.maxMemoryBuffer=10MB
+play.http.parser.maxDiskBuffer=100MB
+
+play.filters.enabled=[]
+
 
 play {
   akka {

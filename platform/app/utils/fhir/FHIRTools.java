@@ -11,17 +11,11 @@ import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.DateTimeType;
 import org.hl7.fhir.dstu3.model.Identifier;
 import org.hl7.fhir.dstu3.model.Period;
-import org.hl7.fhir.dstu3.model.Person;
 import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.dstu3.model.Type;
 import org.hl7.fhir.instance.model.api.IIdType;
 
-import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
-
-import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.param.ReferenceParam;
-import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.HPUser;
 import models.Member;
@@ -30,7 +24,6 @@ import models.TypedMidataId;
 import models.User;
 import models.UserGroup;
 import models.enums.UserRole;
-import utils.AccessLog;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;

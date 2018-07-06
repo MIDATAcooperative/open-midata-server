@@ -1,15 +1,12 @@
 package utils.access;
 
 import java.util.Collections;
-import java.util.Set;
 
 import controllers.Circles;
 import models.Consent;
 import models.MidataId;
 import models.enums.ConsentType;
-import models.enums.WritePermissionType;
 import utils.AccessLog;
-import utils.collections.Sets;
 import utils.exceptions.AppException;
 
 public class ConsentAccessContext extends AccessContext{

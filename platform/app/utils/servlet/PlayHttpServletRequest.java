@@ -28,10 +28,10 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpUpgradeHandler;
 import javax.servlet.http.Part;
 
-import play.Play;
 import play.mvc.Http;
-import scala.NotImplementedError;
+import play.mvc.Http.RawBuffer;
 import utils.AccessLog;
+import utils.InstanceConfig;
 
 /**
  * HttpServletRequest emulation for Play Framework
@@ -52,7 +52,7 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 	
 	@Override
 	public AsyncContext getAsyncContext() {
-		 throw new NotImplementedError();
+		 throw new RuntimeException("Not implemented");
 		
 	}
 
@@ -63,7 +63,7 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public Enumeration<String> getAttributeNames() {
-		throw new NotImplementedError();
+		throw new RuntimeException("Not implemented");
 		
 	}
 
@@ -77,57 +77,58 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public int getContentLength() {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");	
 	}
 
 	@Override
 	public long getContentLengthLong() {
-		throw new NotImplementedError();	
+		throw new RuntimeException("Not implemented");
 	}
 
 	@Override
 	public String getContentType() {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");	
 	}
 
 	@Override
 	public DispatcherType getDispatcherType() {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");	
 	}
 
 	@Override
 	public ServletInputStream getInputStream() throws IOException {
-		Http.RawBuffer b = request.body().asRaw();
-		long l = b.size();		
-		return new PlayServletInputStream(new ByteArrayInputStream(request.body().asRaw().asBytes((int) l)));
+		RawBuffer b = request.body().asRaw();
+		long l = b.size();
+			
+		return new PlayServletInputStream(new ByteArrayInputStream(b.asBytes().toArray()));
 	}
 
 	@Override
 	public String getLocalAddr() {
-		throw new NotImplementedError();
+		throw new RuntimeException("Not implemented");
 		
 	}
 
 	@Override
 	public String getLocalName() {
-		throw new NotImplementedError();
+		throw new RuntimeException("Not implemented");
 		
 	}
 
 	@Override
 	public int getLocalPort() {
-		throw new NotImplementedError();
+		throw new RuntimeException("Not implemented");
 	}
 
 	@Override
 	public Locale getLocale() {
-		throw new NotImplementedError();
+		throw new RuntimeException("Not implemented");
 		
 	}
 
 	@Override
 	public Enumeration<Locale> getLocales() {
-		throw new NotImplementedError();
+		throw new RuntimeException("Not implemented");
 		
 	}
 
@@ -143,7 +144,7 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public Enumeration<String> getParameterNames() {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");	
 	}
 
 	@Override
@@ -153,72 +154,72 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public String getProtocol() {
-	    throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");
 	}
 
 	@Override
 	public BufferedReader getReader() throws IOException {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");	
 	}
 
 	@Override
 	public String getRealPath(String arg0) {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");	
 	}
 
 	@Override
 	public String getRemoteAddr() {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");	
 	}
 
 	@Override
 	public String getRemoteHost() {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");	
 	}
 
 	@Override
 	public int getRemotePort() {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");	
 	}
 
 	@Override
 	public RequestDispatcher getRequestDispatcher(String arg0) {
-		throw new NotImplementedError();
+		throw new RuntimeException("Not implemented");
 	}
 
 	@Override
 	public String getScheme() {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");	
 	}
 
 	@Override
 	public String getServerName() {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");
 	}
 
 	@Override
 	public int getServerPort() {
-		throw new NotImplementedError();
+		throw new RuntimeException("Not implemented");
 	}
 
 	@Override
 	public ServletContext getServletContext() {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");	
 	}
 
 	@Override
 	public boolean isAsyncStarted() {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");
 	}
 
 	@Override
 	public boolean isAsyncSupported() {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");
 	}
 
 	@Override
 	public boolean isSecure() {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");	
 	}
 
 	@Override
@@ -234,33 +235,33 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public void setCharacterEncoding(String arg0) throws UnsupportedEncodingException {
-		if (true) throw new NotImplementedError();
+		if (true) throw new RuntimeException("Not implemented");
 		
 	}
 
 	@Override
 	public AsyncContext startAsync() throws IllegalStateException {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");		
 	}
 
 	@Override
 	public AsyncContext startAsync(ServletRequest arg0, ServletResponse arg1) throws IllegalStateException {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");	
 	}
 
 	@Override
 	public boolean authenticate(HttpServletResponse arg0) throws IOException, ServletException {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");	
 	}
 
 	@Override
 	public String changeSessionId() {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");		
 	}
 
 	@Override
 	public String getAuthType() {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");	
 	}
 
 	@Override
@@ -270,12 +271,12 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public Cookie[] getCookies() {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");	
 	}
 
 	@Override
 	public long getDateHeader(String arg0) {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");	
 	}
 
 	@Override
@@ -307,32 +308,32 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public int getIntHeader(String arg0) {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");	
 	}
 
 	@Override
 	public String getMethod() {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");	
 	}
 
 	@Override
 	public Part getPart(String arg0) throws IOException, ServletException {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");
 	}
 
 	@Override
 	public Collection<Part> getParts() throws IOException, ServletException {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");		
 	}
 
 	@Override
 	public String getPathInfo() {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");		
 	}
 
 	@Override
 	public String getPathTranslated() {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");	
 	}
 
 	@Override
@@ -344,7 +345,7 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public String getRemoteUser() {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");		
 	}
 
 	@Override
@@ -356,7 +357,7 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public StringBuffer getRequestURL() {
-		StringBuffer result = new StringBuffer("https://"+Play.application().configuration().getString("platform.server"));
+		StringBuffer result = new StringBuffer("https://"+InstanceConfig.getInstance().getPlatformServer());
 		String uri = request.uri();
 		int i = uri.indexOf('?');
 		result.append(i >= 0 ? uri.substring(0,i) : uri);
@@ -366,7 +367,7 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public String getRequestedSessionId() {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");	
 	}
 
 	@Override
@@ -376,59 +377,59 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public HttpSession getSession() {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");
 	}
 
 	@Override
 	public HttpSession getSession(boolean arg0) {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");	
 	}
 
 	@Override
 	public Principal getUserPrincipal() {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");		
 	}
 
 	@Override
 	public boolean isRequestedSessionIdFromCookie() {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");	
 	}
 
 	@Override
 	public boolean isRequestedSessionIdFromURL() {
-		throw new NotImplementedError();	
+		throw new RuntimeException("Not implemented");
 	}
 
 	@Override
 	public boolean isRequestedSessionIdFromUrl() {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");	
 	}
 
 	@Override
 	public boolean isRequestedSessionIdValid() {
-		throw new NotImplementedError();
+		throw new RuntimeException("Not implemented");
 	}
 
 	@Override
 	public boolean isUserInRole(String arg0) {
-		throw new NotImplementedError();		
+		throw new RuntimeException("Not implemented");	
 	}
 
 	@Override
 	public void login(String arg0, String arg1) throws ServletException {
-		throw new NotImplementedError();
+		throw new RuntimeException("Not implemented");
 		
 	}
 
 	@Override
 	public void logout() throws ServletException {
-		throw new NotImplementedError();
+		throw new RuntimeException("Not implemented");
 		
 	}
 
 	@Override
 	public <T extends HttpUpgradeHandler> T upgrade(Class<T> arg0) throws IOException, ServletException {
-		throw new NotImplementedError();
+		throw new RuntimeException("Not implemented");
 	}
 
 }

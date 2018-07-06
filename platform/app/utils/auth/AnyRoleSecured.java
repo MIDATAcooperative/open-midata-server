@@ -5,7 +5,6 @@ import play.mvc.Http.Context;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.exceptions.AppException;
-import utils.exceptions.AuthException;
 
 /**
  * This authenticator allows all users that are logged in

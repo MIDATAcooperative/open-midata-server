@@ -61,8 +61,7 @@ public class Feature_InMemoryQuery extends APS {
 	}
 
 	@Override
-	public long getLastChanged() throws AppException {
-		// TODO Auto-generated method stub
+	public long getLastChanged() throws AppException {		
 		return 0;
 	}
 

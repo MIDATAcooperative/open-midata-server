@@ -12,17 +12,11 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.EntityType;
-import models.enums.UserRole;
-import models.enums.UserStatus;
 import models.enums.WritePermissionType;
 import utils.collections.CMaps;
-import utils.collections.ChainedMap;
-import utils.collections.ChainedSet;
 import utils.collections.Sets;
-import utils.db.DatabaseException;
 import utils.db.IncludeNullValues;
 import utils.db.NotMaterialized;
-import utils.db.OrderOperations;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 

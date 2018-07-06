@@ -2,7 +2,6 @@ package utils.access;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -10,7 +9,6 @@ import models.MidataId;
 import utils.AccessLog;
 import utils.collections.CMaps;
 import utils.exceptions.AppException;
-import utils.exceptions.InternalServerException;
 
 public class Feature_Pagination extends Feature {
 

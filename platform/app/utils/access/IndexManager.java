@@ -15,15 +15,13 @@ import org.bson.BasicBSONObject;
 
 import akka.actor.ActorRef;
 import akka.actor.Props;
-import akka.contrib.pattern.ClusterSingletonManager;
-import akka.contrib.pattern.ClusterSingletonProxy;
-import controllers.AutoRun.ImportManager;
+import akka.cluster.singleton.ClusterSingletonManager;
+import akka.cluster.singleton.ClusterSingletonManagerSettings;
+import akka.cluster.singleton.ClusterSingletonProxy;
 import models.Consent;
 import models.MidataId;
-import play.libs.Akka;
 import utils.AccessLog;
 import utils.access.index.IndexDefinition;
-import utils.access.index.IndexKey;
 import utils.access.index.IndexMatch;
 import utils.access.index.IndexRemoveMsg;
 import utils.access.index.IndexRoot;
@@ -55,10 +53,14 @@ public class IndexManager {
 				
 	
 	public IndexManager() {		
-		indexSupervisorSingleton = Instances.system().actorOf(ClusterSingletonManager.defaultProps(Props.create(IndexSupervisor.class), "indexSupervisor-instance",
-			    null, null), "indexSupervisor-singleton");
+		final ClusterSingletonManagerSettings settings =
+				  ClusterSingletonManagerSettings.create(Instances.system()).withSingletonName("indexSupervisor-instance");
+	
 		
-		indexSupervisor = Instances.system().actorOf(ClusterSingletonProxy.defaultProps("user/indexSupervisor-singleton/indexSupervisor-instance", null), "indexSupervisor");			
+		indexSupervisorSingleton = Instances.system().actorOf(ClusterSingletonManager.props(Props.create(IndexSupervisor.class), "indexSupervisor-instance",
+				settings), "indexSupervisor-singleton");
+		
+		indexSupervisor = Instances.system().actorOf(ClusterSingletonProxy.props("user/indexSupervisor-singleton/indexSupervisor-instance", null), "indexSupervisor");			
 	}
 
 	public IndexPseudonym getIndexPseudonym(APSCache cache, MidataId user, MidataId targetAPS, boolean create) throws AppException {		

@@ -15,7 +15,7 @@ import ca.uhn.fhir.narrative.DefaultThymeleafNarrativeGenerator;
 import ca.uhn.fhir.rest.server.HardcodedServerAddressStrategy;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.RestfulServer;
-import play.Play;
+import utils.InstanceConfig;
 
 // https://demo.careevolution.com/PDemo/PDemo.html?iss=https://localhost:9000/fhir
 // https://demo.careevolution.com/PDemo/PDemo.html?iss=https://test.midata.coop:9000/fhir
@@ -31,7 +31,7 @@ public class FHIRServlet extends RestfulServer {
     public static Map<String, ResourceProvider> myProviders;
    
     public static String getBaseUrl() {
-    	return "https://"+Play.application().configuration().getString("platform.server")+"/fhir";
+    	return "https://"+InstanceConfig.getInstance().getPlatformServer()+"/fhir";
     }
     /**
      * The initialize method is automatically called when the servlet is starting up, so it can
@@ -40,8 +40,9 @@ public class FHIRServlet extends RestfulServer {
      */
    @Override
    protected void initialize() throws ServletException {
-	   
+	   System.out.println("FHIR Servlet init");
 	   String serverBaseUrl = getBaseUrl();
+	   System.out.println("FHIR Servlet init x");
        setServerAddressStrategy(new HardcodedServerAddressStrategy(serverBaseUrl));
        this.setServerConformanceProvider(new MidataConformanceProvider());
        ResourceProvider.ctx.setNarrativeGenerator(new DefaultThymeleafNarrativeGenerator());       
@@ -53,7 +54,7 @@ public class FHIRServlet extends RestfulServer {
        */
       myProviders = new HashMap<String, ResourceProvider>();
       List<IResourceProvider> resourceProviders = new ArrayList<IResourceProvider>();
-      
+      System.out.println("FHIR Servlet init 2");
       myProviders.put("Patient", new PatientResourceProvider());
       myProviders.put("Observation",  new ObservationResourceProvider());        
       myProviders.put("DocumentReference",  new DocumentReferenceProvider());
@@ -82,6 +83,8 @@ public class FHIRServlet extends RestfulServer {
       //setInterceptors(new PaginationSupport());
       setPlainProviders(new Transactions());
       //setPagingProvider(new VirtualPaging());
+      
+      System.out.println("FHIR Servlet init end");
    }
 
 	@Override

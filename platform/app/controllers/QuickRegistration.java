@@ -1,31 +1,17 @@
 package controllers;
 
-import java.util.Date;
 import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 import actions.APICall;
-import actions.MobileCall;
-import controllers.members.HealthProvider;
 import models.Member;
-import models.MidataId;
 import models.MobileAppInstance;
 import models.Plugin;
 import models.Study;
-import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
-import models.enums.ConsentStatus;
-import models.enums.ContractStatus;
-import models.enums.EMailStatus;
-import models.enums.EventType;
 import models.enums.Gender;
-import models.enums.ParticipantSearchStatus;
-import models.enums.ParticipationInterest;
 import models.enums.SubUserRole;
 import models.enums.UserFeature;
 import models.enums.UserRole;
@@ -33,16 +19,10 @@ import models.enums.UserStatus;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import utils.InstanceConfig;
-import utils.access.RecordManager;
 import utils.audit.AuditManager;
-import utils.auth.CodeGenerator;
 import utils.auth.ExecutionInfo;
-import utils.auth.KeyManager;
-import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
-import utils.exceptions.InternalServerException;
-import utils.fhir.PatientResourceProvider;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 

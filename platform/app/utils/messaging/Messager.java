@@ -3,21 +3,19 @@ package utils.messaging;
 import java.util.Map;
 import java.util.Set;
 
+import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
+import akka.actor.ActorSystem;
 import akka.actor.Props;
-import akka.actor.UntypedActor;
 import models.MessageDefinition;
 import models.MidataId;
 import models.Plugin;
 import models.User;
 import models.enums.MessageReason;
-import play.libs.Akka;
-import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
 import utils.ServerTools;
-import utils.access.RecordManager;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
@@ -25,9 +23,12 @@ import utils.exceptions.AppException;
 public class Messager {
 
 	private static ActorRef mailSender;
+		
+	private static ActorSystem system;
 	
-	public static void init() {
-		mailSender = Akka.system().actorOf(Props.create(MailSender.class), "mailSender");
+	public static void init(ActorSystem system1) {
+		system = system1;
+		mailSender = system.actorOf(Props.create(MailSender.class), "mailSender");
 	}
 	
 	public static void sendTextMail(String email, String fullname, String subject, String content) {		
@@ -141,22 +142,23 @@ public class Messager {
 	}
 }
 
-class MailSender extends UntypedActor {
+class MailSender extends AbstractActor {
 			
 	public MailSender() {							    
 	}
 	
 	@Override
-	public void onReceive(Object message) throws Exception {
-		try {
-		if (message instanceof Message) {
-			if (!InstanceConfig.getInstance().getInstanceType().disableMessaging()) {
-			  Message msg = (Message) message;
+	public Receive createReceive() {
+	    return receiveBuilder()
+	      .match(Message.class, this::receiveMessage)	      
+	      .build();
+	}
+		
+	public void receiveMessage(Message msg) throws Exception {
+		try {		
+			if (!InstanceConfig.getInstance().getInstanceType().disableMessaging()) {			  
 			  MailUtils.sendTextMail(msg.getReceiverEmail(), msg.getReceiverName(), msg.getSubject(), msg.getText());
-			}
-		} else {
-		    unhandled(message);
-	    }	
+			}			
 		} catch (Exception e) {
 			ErrorReporter.report("Messager", null, e);	
 			throw e;

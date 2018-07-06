@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -14,7 +13,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.http.HttpStatus;
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
@@ -35,10 +33,9 @@ import models.Space;
 import models.UserGroupMember;
 import models.enums.APSSecurityLevel;
 import models.enums.AggregationType;
-import models.enums.ConsentStatus;
+import play.mvc.Http;
 import utils.AccessLog;
 import utils.auth.KeyManager;
-import utils.auth.KeySession;
 import utils.auth.RecordToken;
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -647,7 +644,7 @@ public class RecordManager {
 			String storedVersion = rec.meta.getString("version");
 			if (storedVersion == null) storedVersion = VersionedDBRecord.INITIAL_VERSION;
 			String providedVersion = record.version != null ? record.version : VersionedDBRecord.INITIAL_VERSION; 
-			if (!providedVersion.equals(storedVersion)) throw new BadRequestException("error.concurrent.update", "Concurrent update", HttpStatus.SC_CONFLICT);
+			if (!providedVersion.equals(storedVersion)) throw new BadRequestException("error.concurrent.update", "Concurrent update", Http.Status.CONFLICT);
 			
 			if (record.format != null && !rec.meta.getString("format").equals(record.format)) throw new InternalServerException("error.invalid.request", "Tried to change record format during update.");
 			if (record.content != null && !rec.meta.getString("content").equals(record.content)) throw new InternalServerException("error.invalid.request", "Tried to change record content type during update.");

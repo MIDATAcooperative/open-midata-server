@@ -1,10 +1,8 @@
 package utils.access.index;
 
 import java.util.List;
-import java.util.Set;
 
 import models.MidataId;
-import utils.access.DBRecord;
 import utils.access.IndexPseudonym;
 import utils.access.op.Condition;
 

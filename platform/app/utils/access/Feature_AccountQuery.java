@@ -4,24 +4,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-
-import org.bson.BasicBSONObject;
 
 import models.Circle;
 import models.Consent;
 import models.MidataId;
 import models.StudyParticipation;
 import models.StudyRelated;
-import models.enums.ConsentType;
 import utils.AccessLog;
-import utils.collections.CMaps;
-import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.RequestTooLargeException;

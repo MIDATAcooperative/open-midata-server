@@ -1,7 +1,5 @@
 package utils.access.index;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Stack;
 
 import utils.db.LostUpdateException;

@@ -35,7 +35,7 @@ public class Debug extends Controller {
 				
 		if (InstanceConfig.getInstance().getInstanceType().getDebugFunctionsAvailable()) {
 		
-			MidataId userId = new MidataId(request().username());
+			MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 			MidataId apsId = id.equals("-") ? userId : new MidataId(id);
 			
 			EncryptedAPS enc = new EncryptedAPS(apsId, userId);
