@@ -21,7 +21,7 @@ public class CompareCaseInsensitive implements Condition, Serializable {
 	 * Constructor
 	 * @param val value to compare target object with
 	 */
-	public CompareCaseInsensitive(Object val, CompareCaseInsensitiveOperator op) {
+	public CompareCaseInsensitive(Object val, CompareCaseInsensitive.CompareCaseInsensitiveOperator op) {
 		this.val = val.toString().toLowerCase();
 		this.op = op;
 	}

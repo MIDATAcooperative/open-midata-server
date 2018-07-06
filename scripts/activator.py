@@ -15,8 +15,8 @@ class Activator(Product):
 	def __init__(self, parentDir, buildDir, runDir):
 		self.parent = parentDir
 		self.runDir = runDir
-		self.base = os.path.join(self.parent, 'activator')
-		self.bin = os.path.join(self.base, 'activator')
+		self.base = os.path.join(self.parent, 'platform')
+		self.bin = os.path.join(self.base, 'sbt')
 		self.code = os.path.join(buildDir, 'platform')
 		self.stage = os.path.join(self.code, 'target', 'universal', 'stage')
 		self.app = os.path.join(self.stage, 'bin', 'hdc')
@@ -29,16 +29,7 @@ class Activator(Product):
 		self.conf = os.path.join(self.code, 'conf')
 
 	def setup(self, version):
-		print 'Setting up Activator...'
-		print 'Downloading binaries...'
-		Command.execute('wget https://downloads.typesafe.com/typesafe-activator/{0}/typesafe-activator-{0}-minimal.zip'
-			.format(version), self.parent)
-		print 'Extracting...'
-		Command.execute('unzip typesafe-activator-{0}-minimal.zip'.format(version), self.parent)
-		print 'Setting symlink...'
-		Command.execute('ln -s activator-{0}-minimal activator'.format(version), self.parent)
-		print 'Cleaning up...'
-		Command.execute('rm typesafe-activator-{0}-minimal.zip'.format(version), self.parent)
+		pass
 
 	def readconf(self):
 		copyfile(os.path.join(self.conf, 'secret.conf.gz.nc'), '/dev/shm/secret.conf.gz.nc')
@@ -54,13 +45,12 @@ class Activator(Product):
 	
 
 	def start(self):
-		print 'Starting Activator...'
-		password = getpass.getpass("Please enter the password for the Java KeyStore: ")
+		print 'Starting Play Framework...'		
 		# workaround: use the stage task as the start command doesn't work with HTTPS for now...		
 		Activator.readconf(self)
 		Command.execute('{0} stage'.format(self.bin), self.coderun)
-		Command.execute('{0} -Dpidfile.path=/dev/shm/play.pid -Dconfig.file=/dev/shm/secret.conf -Dhttp.port=9001 -Dhttps.keyStore={1} -Dhttps.keyStorePassword={2} &'
-			.format(self.apprun, self.keystore, password), redirect=os.path.join(self.parent, 'logs', 'activator.log'))
+		Command.execute('{0} -Dpidfile.path=/dev/shm/play.pid -Dconfig.file=/dev/shm/secret.conf -Dhttp.port=9001 &'
+			.format(self.apprun), redirect=os.path.join(self.parent, 'logs', 'activator.log'))
 		print 'Waiting for startup...'		
 		time.sleep(30)
 		print 'Fetching Page'

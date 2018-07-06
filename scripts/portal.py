@@ -17,10 +17,7 @@ class Portal(Product):
 		self.appconf = os.path.join(self.parent, 'platform', 'conf')					
 
 	def build(self):
-		print 'Installing Portal...'		
-		Command.execute('npm install', self.portal)
-		Command.execute('bower install', self.portal)			
-		Command.execute('grunt deploy', self.portal)	
+		pass
 		
 	def setup(self):
 		print 'Setting up Plattform...'

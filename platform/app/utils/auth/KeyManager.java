@@ -78,7 +78,7 @@ public class KeyManager implements KeySession {
 	
 	private Map<String, KeyRing> keySessions = new ConcurrentHashMap<String, KeyRing>();	
 	
-	private static ThreadLocal<KeyManagerSession> session = new ThreadLocal<KeyManagerSession>();
+	private static ThreadLocal<KeyManager.KeyManagerSession> session = new ThreadLocal<KeyManager.KeyManagerSession>();
 	
 	public KeyManager() {
 		new CleanerThread().start();

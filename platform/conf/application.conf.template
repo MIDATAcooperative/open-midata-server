@@ -30,6 +30,17 @@ play.http.parser.maxDiskBuffer=100MB
 
 play.filters.enabled=[]
 
+play.mailer {
+  host=MAIL_SMTP_SERVER
+  port=25
+  ssl=false
+  tls=true
+  user="MAIL_SENDER"
+  password="MAIL_PASSWORD"
+  debug=false  
+}
+smtp.from="MAIL_SENDER"
+
 
 play {
   akka {

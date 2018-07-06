@@ -18,12 +18,7 @@
 		"module": "scripts.lighttpd",
 		"class": "Lighttpd",
 		"startOrder": 1
-	},
-	"nginx": {
-		"module": "scripts.nginx",
-		"class": "Nginx",
-		"startOrder": 1
-	},
+	}
 	"activator": {
 		"module": "scripts.activator",
 		"class": "Activator",

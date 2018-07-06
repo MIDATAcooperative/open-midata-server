@@ -1,3 +1,5 @@
+include conf/*
+
 .PHONY: info
 info:
 	$(info ------------------------------)
@@ -18,7 +20,7 @@ info:
 	$(info start : Start current instance)
 	$(info stop : Stop current instance)
 
-install-webserver: tasks/install-packages tasks/install-node tasks/bugfixes tasks/prepare-webserver tasks/install-localmongo tasks/install-activator tasks/dhparams tasks/configure-connection
+install-webserver: tasks/install-packages tasks/install-node tasks/bugfixes tasks/prepare-webserver tasks/install-localmongo tasks/install-activator $(CERTIFICATE_DIR)/dhparams.pem tasks/configure-connection
 	$(info Please run "make order-ssl" to order SSL certificate)
 	$(info Please run "make install-ssl" to install SSL certificate that has been ordered before)
 	$(info Please run "make skip-ssl" to continue with a fake SSL certificate that will trigger browser warnings)
@@ -26,7 +28,7 @@ install-webserver: tasks/install-packages tasks/install-node tasks/bugfixes task
 	$(info Please run "make configure-connection" to setup database connection)
 	$(info Please run "make update" to build after everything has been configured correctly)
 
-install-from-servertools: tasks/install-packages tasks/install-node tasks/bugfixes tasks/install-localmongo tasks/install-activator tasks/dhparams tasks/configure-connection
+install-from-servertools: tasks/install-packages tasks/install-node tasks/bugfixes tasks/install-localmongo tasks/install-activator $(CERTIFICATE_DIR)/dhparams.pem tasks/configure-connection
 	touch switches/use-hotdeploy
 
 install-local: tasks/install-packages tasks/install-node tasks/bugfixes tasks/prepare-local tasks/check-config tasks/install-dummycert tasks/install-localmongo tasks/install-lighttpd tasks/install-activator tasks/configure-connection
@@ -39,11 +41,11 @@ pull:
 	git pull
 
 .PHONY: start
-start:
+start: /dev/shm/secret.conf
 	if [ -e switches/use-hotdeploy ]; then sh ./hotdeploy.sh; fi;
-	if [ -e switches/use-run ]; then python main.py run; fi;
+	if [ -e switches/use-run ]; then cd platform;./sbt -Dhttps.port=9000 -Dhttp.port=9001; fi;
 
-update: tasks/check-config start-mongo tasks/setup-portal tasks/build-mongodb tasks/build-portal tasks/build-plugins start
+update: tasks/check-config start-mongo tasks/setup-portal tasks/build-mongodb tasks/build-portal tasks/build-plugins tasks/build-platform start
 
 .PHONY: stop
 stop:
@@ -75,26 +77,13 @@ reconfig:
 start-mongo:
 	test=`pgrep mongo`; if [ -e switches/local-mongo -a -z "$$test" ]; then python main.py start mongodb; fi 
 
-tasks/prepare-webserver:
-	touch switches/use-hotdeploy
-	cp config/instance-template.json config/instance.json
-	$(info ------------------------------)
-	$(info Basic configuration of Frontend)
-	$(info ------------------------------)
-	read -p "Enter domain name: " newdomain ; node scripts/replace.js domain $$newdomain ; node scripts/replace.js portal origin https://$$newdomain ; node scripts/replace.js portal backend https://$$newdomain ; node scripts/replace.js portal plugins $$newdomain/plugin ;
-	node scripts/replace.js instanceType prod
-	touch tasks/prepare-webserver
-
-tasks/dhparams:
-	mkdir -p ../ssl
-	openssl dhparam -out ../ssl/dhparams.pem 2048
-	node scripts/replace.js certificate dhparams $(abspath ../ssl/dhparams.pem)
-	touch tasks/dhparams
+$(CERTIFICATE_DIR)/dhparams.pem:
+	mkdir -p $(CERTIFICATE_DIR)
+	openssl dhparam -out $(CERTIFICATE_DIR)/dhparams.pem 2048	
 
 tasks/prepare-local:
 	touch switches/use-run
-	touch switches/local-mongo
-	cp config/instance-template.json config/instance.json	
+	touch switches/local-mongo		
 	touch tasks/prepare-local
 		
 tasks/install-packages: trigger/install-packages
@@ -115,83 +104,74 @@ tasks/install-node: tasks/install-packages trigger/install-node
 	touch tasks/install-node
 
 tasks/check-config: trigger/check-config
-	nano config/instance.json
+	nano conf/setup.conf
+	nano conf/pathes.conf
 	touch tasks/check-config
 	
-tasks/install-activator: trigger/install-activator
-	$(info ------------------------------)
-	$(info Installing Play Framework... )
-	$(info ------------------------------)
-	python main.py setup activator
-	python main.py newsecret activator
-	touch tasks/install-activator
 
 tasks/install-localmongo: trigger/install-localmongo
 	$(info ------------------------------)
 	$(info Installing Local Version of MongoDB... )
 	$(info ------------------------------)
-	python main.py setup mongodb
+	wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-$(MONGO_VERSION).tgz
+	tar xzf mongodb-linux-x86_64-$(MONGO_VERSION).tgz
+	ln -s mongodb-linux-x86_64-$(MONGO_VERSION) mongodb
+	mkdir -p mongodb/data	
+	cp config/mongod.conf mongodb/mongod.conf
+	sed -i 's|MONGODB_DATA_PATH|$(abspath monodb/data)|' mongodb/mongod.conf
+	sed -i 's|MONGODB_LOG_PATH|$(abspath logs/mongod.log)|' mongodb/mongod.conf
+	rm mongodb-linux-x86_64-{MONGO_VERSION}.tgz			
 	touch tasks/install-localmongo
 
-tasks/install-dummycert: trigger/install-dummycert
-	$(info ------------------------------)
-	$(info Generating Dummy Certificate for Development Instance... )
-	$(info ------------------------------)
-	python main.py setup sslcert
-	touch tasks/install-dummycert
-
-tasks/install-lighttpd: trigger/install-lighttpd
-	$(info ------------------------------)
-	$(info Installing lighttpd Server for Development Instance.... )
-	$(info ------------------------------)
-	python main.py setup lighttpd
-	touch tasks/install-lighttpd
 	
-tasks/configure-connection: trigger/configure-connection
+conf/secret.conf.gz.nc:		
 	$(info ------------------------------)
-	$(info Preparing encrypted configuration file.... )
+	$(info Generating new encrypted config file.... )
 	$(info ------------------------------)
 	$(info You will need a strong mantra to encrypt and decrypt the configuration file. )
 	rm -f /dev/shm/secret.conf*
-	python main.py configure activator
+	cp conf/secret.conf.template /dev/shm/secret.conf
 	sed -i '/application.secret/d' /dev/shm/secret.conf
-	NEWSECRET=`python main.py newsecret activator | grep 'new secret:' | sed 's/^.*: //' | sed 's/[^[:print:]]//'` ; echo "application.secret=\"$$NEWSECRET\"" >> /dev/shm/secret.conf
+	NEWSECRET=`cd platform;./sbt playGenerateSecret | grep 'new secret:' | sed 's/^.*: //' | sed 's/[^[:print:]]//'` ; echo "application.secret=\"$$NEWSECRET\"" >> /dev/shm/secret.conf
+	$(eval DECRYPT_PW := $(if $(DECRYPT_PW),$(DECRYPT_PW),$(shell stty -echo;read -p "Password:" pw;stty echo;printf "\n";printf $$pw;)))
+	@/usr/bin/mcrypt /dev/shm/secret.conf -z -a rijndael-128 -m cbc -k "$(DECRYPT_PW)"
+	cp /dev/shm/secret.conf.gz.nc platform/conf/secret.conf.gz.nc
+	/usr/bin/shred -zun 0 /dev/shm/secret.conf
 	rm -f /dev/shm/secret.conf.gz.nc
-	python main.py configure activator
-	touch tasks/configure-connection
 
-configure-connection: 
+tasks/remove-secret:
 	rm -f /dev/shm/secret.conf*
-	python main.py configure activator
+
+tasks/reencrypt-secret:
+	$(info ------------------------------)
+	$(info Encrypting configuration file.... )
+	$(info ------------------------------)
+	$(eval DECRYPT_PW := $(if $(DECRYPT_PW),$(DECRYPT_PW),$(shell stty -echo;read -p "Password:" pw;stty echo;printf "\n";printf $$pw;)))
+	@/usr/bin/mcrypt /dev/shm/secret.conf -z -a rijndael-128 -m cbc -k "$(DECRYPT_PW)"
+	cp /dev/shm/secret.conf.gz.nc platform/conf/secret.conf.gz.nc
+	/usr/bin/shred -zun 0 /dev/shm/secret.conf
+	rm -f /dev/shm/secret.conf.gz.nc
+
+tasks/edit-secret:
 	nano /dev/shm/secret.conf
-	rm -f /dev/shm/secret.conf.gz.nc
-	python main.py configure activator
-
-create-mongo-passwords:
-	rm -f /dev/shm/secret.conf*
-	python main.py configure activator	
-	$(eval HOST=$(shell read -p "Host of Mongo Instance:" pw ; echo $$pw))	
-	$(eval MASTERPW=$(shell read -p "Choose Admin Password:" pw ; echo $$pw))
-	$(eval MAPPINGPW=$(shell read -p "Password for 'mapping' database:" pw ; echo $$pw))
-	$(eval USERPW=$(shell read -p "Password for 'user' database:" pw ; echo $$pw))
-	$(eval ACCESSPW=$(shell read -p "Password for 'access' database:" pw ; echo $$pw))
-	$(eval RECORDPW=$(shell read -p "Password for 'record' database:" pw ; echo $$pw))
-	mongodb/bin/mongo --host $(HOST) --eval "db=db.getSiblingDB('admin');db.createUser({ user: 'midataAdmin', pwd: '$(MASTERPW)', roles: [ { role: 'userAdminAnyDatabase', db: 'admin' } ] } );"
-	mongodb/bin/mongo --host $(HOST) --eval "db=db.getSiblingDB('admin');db.auth('midataAdmin', '$(MASTERPW)');db=db.getSiblingDB('mapping');db.createUser({user: 'mapping',pwd:'$(MAPPINGPW)',roles: [ { role: 'dbAdmin', db: 'mapping' }, { role: 'readWrite', db: 'mapping' } ] });"
-	mongodb/bin/mongo --host $(HOST) --eval "db=db.getSiblingDB('admin');db.auth('midataAdmin', '$(MASTERPW)');db=db.getSiblingDB('user');db.createUser({user: 'user',pwd:'$(USERPW)',roles: [ { role: 'dbAdmin', db: 'user' }, { role: 'readWrite', db: 'user' } ] });"
-	mongodb/bin/mongo --host $(HOST) --eval "db=db.getSiblingDB('admin');db.auth('midataAdmin', '$(MASTERPW)');db=db.getSiblingDB('access');db.createUser({user: 'access',pwd:'$(ACCESSPW)',roles: [ { role: 'dbAdmin', db: 'access' }, { role: 'readWrite', db: 'access' } ] });"
-	mongodb/bin/mongo --host $(HOST) --eval "db=db.getSiblingDB('admin');db.auth('midataAdmin', '$(MASTERPW)');db=db.getSiblingDB('record');db.createUser({user: 'record',pwd:'$(RECORDPW)',roles: [ { role: 'dbAdmin', db: 'record' }, { role: 'readWrite', db: 'record' } ] });"
-	sed -i 's|PASSWORD_USER|$(USERPW)|' /dev/shm/secret.conf
-	sed -i 's|PASSWORD_ACCESS|$(ACCESSPW)|' /dev/shm/secret.conf
-	sed -i 's|PASSWORD_RECORD|$(RECORDPW)|' /dev/shm/secret.conf
-	sed -i 's|PASSWORD_MAPPING|$(MAPPINGPW)|' /dev/shm/secret.conf
-	sed -i 's|\# mongo\.|mongo\.|g' /dev/shm/secret.conf
-	rm -f /dev/shm/secret.conf.gz.nc
-	python main.py configure activator	
 	
-tasks/setup-portal: trigger/setup-portal tasks/check-config config/instance.json
-	python main.py setup portal
-	touch tasks/setup-portal
+configure-connection: tasks/remove-secret /dev/shm/secret.conf tasks/edit-secret tasks/reencrypt-secret  
+	
+platform/conf/application.conf: platform/conf/application.conf.template conf/setup.conf conf/pathes.conf 
+	@echo 'Setting up Plattform...'
+	cp platform/conf/application.conf.template platform/conf/application.conf
+	sed -i 's|PORTAL_ORIGIN|https://$(DOMAIN)|' platform/conf/application.conf
+	sed -i 's|PLUGINS_SERVER|$(DOMAIN)/plugin|' platform/conf/application.conf
+	sed -i 's|DOMAIN|$(DOMAIN)|' platform/conf/application.conf	
+	sed -i 's|PLATFORM_HOSTNAME|$(HOSTNAME)|' platform/conf/application.conf
+	sed -i 's|CLUSTER_SERVER|$(CLUSTER)|' platform/conf/application.conf
+	sed -i 's|INSTANCETYPE|$(INSTANCE_TYPE)|' platform/conf/application.conf
+	sed -i 's|MAIL_PASSWORD|$(MAIL_PASSWORD)|' platform/conf/application.conf
+	sed -i 's|MAIL_SENDER|$(MAIL_SENDER)|' platform/conf/application.conf
+	sed -i 's|MAIL_SMTP_SERVER|$(MAIL_SMTP_SERVER)|' platform/conf/application.conf
+	sed -i 's|MAIL_SECURITY_TARGET|$(MAIL_SECURITY_TARGET)|' platform/conf/application.conf
+	sed -i 's|DEFAULT_LANGUAGE|$(DEFAULT_LANGUAGE)|' platform/conf/application.conf
+	sed -i 's|ROOTDIR|$(abspath .)|' platform/conf/application.conf	
 	
 tasks/reimport-mongodb: trigger/reimport-mongodb $(wildcard json/*.json)
 	$(info ------------------------------)
@@ -223,19 +203,32 @@ tasks/build-portal: trigger/build-portal $(shell find portal -type f | sed 's/ /
 	$(info ------------------------------)
 	$(info Building Portal... )
 	$(info ------------------------------)
-	python main.py build portal
+	cd portal;npm install;bower update;grunt deploy;
 	touch tasks/build-portal
+	
+tasks/build-platform: $(shell find platform -name "*.java" | sed 's/ /\\ /g')
+	cd platform;./sbt dist
+	touch tasks/build-platform
 	
 tasks/reimport-build-mongodb: tasks/reimport-mongodb tasks/build-mongodb
 	touch tasks/reimport-build-mongodb
+
+nginx/sites-available/%: nginx/templates/% conf/setup.conf conf/pathes.conf
+	cp nginx/templates/$* nginx/sites-available/$*
+	sed -i 's|DOMAIN|https://$(DOMAIN)|' nginx/sites-available/$*
+	sed -i 's|CERTIFICATE_PEM|$(CERTIFICATE_PEM)|' nginx/sites-available/$*
+	sed -i 's|CERTIFICATE_KEY|$(CERTIFICATE_KEY)|' nginx/sites-available/$*
+	sed -i 's|DHPARAMS|https://$(CERTIFICATE_DIR)/dhparams.pem|' nginx/sites-available/$*
+	sed -i 's|PLATFORM_INTERNAL_PORT|9001|' nginx/sites-available/$*
+	sed -i 's|ROOTDIR|$(abspath .)|' nginx/sites-available/$*
+	sed -i 's|RUNDIR|$(abspath running)|' nginx/sites-available/$*
 	
-tasks/setup-nginx: tasks/check-config
-	python main.py setup nginx
+tasks/setup-nginx: nginx/sites-available/sslredirect nginx/sites-available/webpages		
 	sudo cp nginx/sites-available/* /etc/nginx/sites-available
 	sudo ln -s /etc/nginx/sites-available/sslredirect /etc/nginx/sites-enabled/sslredirect || true
-	sudo ln -s /etc/nginx/sites-available/*_plugins /etc/nginx/sites-enabled/ || true
-	sudo ln -s /etc/nginx/sites-available/*_portal_api /etc/nginx/sites-enabled/ || true
-	sudo ln -s /etc/nginx/sites-available/*_webpages /etc/nginx/sites-enabled/ || true
+	sudo ln -s /etc/nginx/sites-available/plugins /etc/nginx/sites-enabled/ || true
+	sudo ln -s /etc/nginx/sites-available/portal_api /etc/nginx/sites-enabled/ || true
+	sudo ln -s /etc/nginx/sites-available/webpages /etc/nginx/sites-enabled/ || true
 	sudo rm -f /etc/nginx/sites-enabled/default
 	sudo nginx -t && sudo service nginx reload
 	touch tasks/setup-nginx
@@ -259,11 +252,9 @@ order-ssl:
 	@echo "Run make install-ssl when ready"
 	@echo "----------------------"
 
-self-sign-ssl:
-	$(eval DOMAIN := $(shell cat config/instance.json | python -c "import sys, json; print json.load(sys.stdin)['domain']"))
-	$(eval YEAR := $(shell read -p "Enter Current Year (4digits): " pw ;printf $$pw;))
-	mkdir -p ../ssl
-	openssl req -x509 -nodes -newkey rsa:2048 -keyout ../ssl/$(DOMAIN)_$(YEAR).key -out ../ssl/$(DOMAIN)_$(YEAR).crt -days 365
+$(CERTIFICATE_DIR)/selfsign.crt:
+	mkdir -p $(CERTIFICATE_DIR)
+	openssl req -x509 -nodes -newkey rsa:2048 -keyout $(CERTIFICATE_DIR)/selfsign.key -out $(CERTIFICATE_DIR)/selfsign.crt -days 365
 		
 install-ssl: reconfig tasks/set-ssl-path tasks/check-config tasks/setup-nginx
 
@@ -271,15 +262,6 @@ skip-ssl: self-sign-ssl install-ssl
 
 use-loadbalancer: reconfig tasks/install-ssl-lb tasks/set-ssl-lb tasks/check-config tasks/setup-nginx 
 
-sharding:
-	python main.py sharding mongodb
-
-tasks/set-ssl-path:
-	$(eval DOMAIN := $(shell cat config/instance.json | python -c "import sys, json; print json.load(sys.stdin)['domain']"))
-	$(eval YEAR := $(shell read -p "Enter Current Year (4digits): " pw ; printf $$pw))
-	$(eval CERTPATH := $(abspath ../ssl/$(DOMAIN)_$(YEAR)))
-	node scripts/replace.js certificate pem $(CERTPATH).crt
-	node scripts/replace.js certificate key $(CERTPATH).key
 	
 tasks/install-ssl-lb:
 	sudo apt-get install ssl-cert
@@ -294,3 +276,13 @@ tasks/bugfixes:
 	sudo chown -R $$USER:$$GROUP ~/.npm
 	touch tasks/bugfixes
 
+/dev/shm/secret.conf: 
+	@echo "Decrypting configfile..."
+	$(eval DECRYPT_PW := $(if $(DECRYPT_PW),$(DECRYPT_PW),$(shell stty -echo;read -p "Password:" pw;stty echo;printf "\n";printf $$pw;)))	
+	cp platform/conf/secret.conf.gz.nc /dev/shm/secret.conf.gz.nc
+	@cd /dev/shm;/usr/bin/mcrypt /dev/shm/secret.conf.gz.nc -z -a rijndael-128 -m cbc -d -k "$(DECRYPT_PW)"
+	cat platform/conf/application.conf >> /dev/shm/secret.conf
+	rm -f /dev/shm/secret.conf.gz.nc 
+
+tasks/password:
+	$(eval DECRYPT_PW := $(if $(DECRYPT_PW),$(DECRYPT_PW),$(shell stty -echo;read -p "Password:" pw;stty echo;printf "\n";printf $$pw;)))
