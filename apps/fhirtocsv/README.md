@@ -4,6 +4,8 @@ npm install
 
 Configure to your needs by editing "example.js"
 
-Run:
+Create directory for output:
+mkdir out
 
+Run:
 node example.js
