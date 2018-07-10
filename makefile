@@ -126,7 +126,7 @@ tasks/install-localmongo: trigger/install-localmongo
 	touch tasks/install-localmongo
 
 	
-conf/secret.conf.gz.nc:		
+platform/conf/secret.conf.gz.nc:		
 	$(info ------------------------------)
 	$(info Generating new encrypted config file.... )
 	$(info ------------------------------)
