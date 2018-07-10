@@ -24,6 +24,7 @@ join-with = $(subst $(space),$1,$(strip $2))
 
 install-from-servertools: tasks/install-packages tasks/install-node tasks/bugfixes tasks/install-localmongo $(CERTIFICATE_DIR)/dhparams.pem /etc/ssl/certs/ssl-cert-snakeoil.pem tasks/precompile
 	touch switches/use-hotdeploy
+	touch tasks/check-config
 
 install-local: tasks/install-packages tasks/install-node tasks/bugfixes tasks/prepare-local tasks/check-config $(CERTIFICATE_DIR)/selfsign.crt $(CERTIFICATE_DIR)/dhparams.pem tasks/install-localmongo conf/secret.conf.gz.nc tasks/precompile 
 	touch switches/local-mongo
@@ -44,7 +45,7 @@ stop-mongo:
 	@echo 'Shutting down MongoDB...'
 	if [ -e switches/local-mongo ]; then pkill mongod; fi
 
-update: tasks/check-config start-mongo tasks/setup-portal tasks/build-mongodb tasks/build-portal tasks/build-platform tasks/setup-nginx start
+update: tasks/check-config start-mongo tasks/build-mongodb tasks/build-portal tasks/build-platform tasks/setup-nginx start
 
 .PHONY: stop
 stop: stop-platform stop-mongo
