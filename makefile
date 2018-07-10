@@ -134,6 +134,7 @@ platform/conf/secret.conf.gz.nc:
 	rm -f /dev/shm/secret.conf*
 	cp platform/conf/secret.conf.template /dev/shm/secret.conf
 	sed -i '/application.secret/d' /dev/shm/secret.conf
+	cd platform;./sbt compile;
 	NEWSECRET=`cd platform;./sbt playGenerateSecret | grep 'new secret:' | sed 's/^.*: //' | sed 's/[^[:print:]]//'` ; echo "application.secret=\"$$NEWSECRET\"" >> /dev/shm/secret.conf
 	$(eval DECRYPT_PW := $(if $(DECRYPT_PW),$(DECRYPT_PW),$(shell stty -echo;read -p "Password:" pw;stty echo;printf "\n";printf $$pw;)))
 	@/usr/bin/mcrypt /dev/shm/secret.conf -z -a rijndael-128 -m cbc -k "$(DECRYPT_PW)"
