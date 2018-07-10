@@ -22,10 +22,10 @@ space +=
 komma :=,
 join-with = $(subst $(space),$1,$(strip $2))
 
-install-from-servertools: tasks/install-packages tasks/install-node tasks/bugfixes tasks/install-localmongo $(CERTIFICATE_DIR)/dhparams.pem /etc/ssl/certs/ssl-cert-snakeoil.pem
+install-from-servertools: tasks/install-packages tasks/install-node tasks/bugfixes tasks/install-localmongo $(CERTIFICATE_DIR)/dhparams.pem /etc/ssl/certs/ssl-cert-snakeoil.pem tasks/precompile
 	touch switches/use-hotdeploy
 
-install-local: tasks/install-packages tasks/install-node tasks/bugfixes tasks/prepare-local tasks/check-config $(CERTIFICATE_DIR)/selfsign.crt $(CERTIFICATE_DIR)/dhparams.pem tasks/install-localmongo conf/secret.conf.gz.nc 
+install-local: tasks/install-packages tasks/install-node tasks/bugfixes tasks/prepare-local tasks/check-config $(CERTIFICATE_DIR)/selfsign.crt $(CERTIFICATE_DIR)/dhparams.pem tasks/install-localmongo conf/secret.conf.gz.nc tasks/precompile 
 	touch switches/local-mongo
 	$(info Please run "make update" to build)
 	touch switches/local-mongo
@@ -109,7 +109,13 @@ tasks/check-config: trigger/check-config
 	nano conf/setup.conf
 	nano conf/pathes.conf
 	touch tasks/check-config
-	
+
+tasks/precompile:
+	$(info ------------------------------)
+	$(info Preparing Play Framework)
+	$(info ------------------------------)
+	cd platform;./sbt compile;	
+	touch tasks/precompile
 
 tasks/install-localmongo: trigger/install-localmongo
 	$(info ------------------------------)
