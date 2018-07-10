@@ -132,7 +132,7 @@ platform/conf/secret.conf.gz.nc:
 	$(info ------------------------------)
 	$(info You will need a strong mantra to encrypt and decrypt the configuration file. )
 	rm -f /dev/shm/secret.conf*
-	cp conf/secret.conf.template /dev/shm/secret.conf
+	cp platform/conf/secret.conf.template /dev/shm/secret.conf
 	sed -i '/application.secret/d' /dev/shm/secret.conf
 	NEWSECRET=`cd platform;./sbt playGenerateSecret | grep 'new secret:' | sed 's/^.*: //' | sed 's/[^[:print:]]//'` ; echo "application.secret=\"$$NEWSECRET\"" >> /dev/shm/secret.conf
 	$(eval DECRYPT_PW := $(if $(DECRYPT_PW),$(DECRYPT_PW),$(shell stty -echo;read -p "Password:" pw;stty echo;printf "\n";printf $$pw;)))
