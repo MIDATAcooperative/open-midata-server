@@ -3,25 +3,5 @@
 		"module": "scripts.mongodb",
 		"class": "MongoDB",
 		"startOrder": 1
-	},
-	"plugins": {
-		"module": "scripts.plugins",
-		"class": "Plugins",
-		"startOrder": 1
-	},
-	"portal": {
-		"module": "scripts.portal",
-		"class": "Portal",
-		"startOrder": 1
-	},
-	"lighttpd": {
-		"module": "scripts.lighttpd",
-		"class": "Lighttpd",
-		"startOrder": 1
-	}
-	"activator": {
-		"module": "scripts.activator",
-		"class": "Activator",
-		"startOrder": 2
 	}
 }
