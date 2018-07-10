@@ -93,7 +93,7 @@ tasks/install-packages: trigger/install-packages
 	$(info ------------------------------)
 	$(info Installing Packages... )
 	$(info ------------------------------)
-	sudo apt-get install git curl openssl python openjdk-8-jdk nginx mcrypt unzip ruby-sass	
+	sudo apt-get install git curl openssl openjdk-8-jdk nginx mcrypt unzip ruby-sass	
 	touch tasks/install-packages
 	
 tasks/install-node: tasks/install-packages trigger/install-node
@@ -157,15 +157,16 @@ tasks/reencrypt-secret:
 	$(info Encrypting configuration file.... )
 	$(info ------------------------------)
 	$(eval DECRYPT_PW := $(if $(DECRYPT_PW),$(DECRYPT_PW),$(shell stty -echo;read -p "Password:" pw;stty echo;printf "\n";printf $$pw;)))
+	mv /dev/shm/db.conf /dev/shm/secret.conf
 	@/usr/bin/mcrypt /dev/shm/secret.conf -z -a rijndael-128 -m cbc -k "$(DECRYPT_PW)"
 	cp /dev/shm/secret.conf.gz.nc platform/conf/secret.conf.gz.nc
 	/usr/bin/shred -zun 0 /dev/shm/secret.conf
 	rm -f /dev/shm/secret.conf.gz.nc
 
 tasks/edit-secret:
-	nano /dev/shm/secret.conf
+	nano /dev/shm/db.conf
 	
-configure-connection: tasks/remove-secret /dev/shm/secret.conf tasks/edit-secret tasks/reencrypt-secret  
+configure-connection: tasks/remove-secret /dev/shm/db.conf tasks/edit-secret tasks/reencrypt-secret  
 	
 platform/conf/application.conf: platform/conf/application.conf.template conf/setup.conf conf/pathes.conf conf/cluster.conf
 	@echo 'Setting up Plattform...'
@@ -206,19 +207,18 @@ tasks/reimport-mongodb: trigger/reimport-mongodb $(wildcard json/*.json)
 	$(info ------------------------------)
 	$(info Importing META-DATA into mongoDB.... )
 	$(info ------------------------------)
-	python main.py reimport mongodb
+	cd json;make reimport
 	touch tasks/reimport-mongodb
 
 tasks/reimport-plugins: trigger/reimport-plugins
 	$(info ------------------------------)
 	$(info Importing Plugins into mongoDB.... )
 	$(info ------------------------------)
-	python main.py reimportplugins mongodb
+	cd json;make reimportplugins
 	touch tasks/reimport-plugins
 	
 tasks/build-mongodb: trigger/build-mongodb tasks/reimport-mongodb tasks/reimport-plugins
-	python main.py start mongodb
-	python main.py build mongodb
+	cd json;make build	
 	touch tasks/build-mongodb
 	
 tasks/build-portal: trigger/build-portal $(shell find portal -type f | sed 's/ /\\ /g') config/instance.json
@@ -287,6 +287,17 @@ tasks/bugfixes:
 	@cd /dev/shm;/usr/bin/mcrypt /dev/shm/secret.conf.gz.nc -z -a rijndael-128 -m cbc -d -k "$(DECRYPT_PW)"
 	cat platform/conf/application.conf >> /dev/shm/secret.conf
 	rm -f /dev/shm/secret.conf.gz.nc 
+
+/dev/shm/db.conf: platform/conf/application.conf platform/conf/secret.conf.gz.nc 
+	@echo "Decrypting configfile..."
+	rm -f /dev/shm/secret.conf*
+	rm -f /dev/shm/db.conf
+	$(eval DECRYPT_PW := $(if $(DECRYPT_PW),$(DECRYPT_PW),$(shell stty -echo;read -p "Password:" pw;stty echo;printf "\n";printf $$pw;)))	
+	cp platform/conf/secret.conf.gz.nc /dev/shm/secret.conf.gz.nc
+	@cd /dev/shm;/usr/bin/mcrypt /dev/shm/secret.conf.gz.nc -z -a rijndael-128 -m cbc -d -k "$(DECRYPT_PW)"	
+	mv /dev/shm/secret.conf /dev/shm/db.conf
+	rm -f /dev/shm/secret.conf.gz.nc 
+
 
 tasks/password:
 	$(eval DECRYPT_PW := $(if $(DECRYPT_PW),$(DECRYPT_PW),$(shell stty -echo;read -p "Password:" pw;stty echo;printf "\n";printf $$pw;)))

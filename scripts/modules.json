@@ -1,7 +1,0 @@
-{	
-	"mongodb": {
-		"module": "scripts.mongodb",
-		"class": "MongoDB",
-		"startOrder": 1
-	}
-}
