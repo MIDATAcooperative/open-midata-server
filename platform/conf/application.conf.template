@@ -40,7 +40,7 @@ play.mailer {
   debug=false  
 }
 smtp.from="MAIL_SENDER"
-
+emails.admin="MAIL_ADMIN"
 
 play {
   akka {
@@ -63,7 +63,7 @@ midata {
     akka {
 	    loglevel = WARNING
 	    actor {      
-	      provider = "akka.cluster.ClusterActorRefProvider"         
+	      provider = "cluster"         
 	    }
 	    
 	    remote {

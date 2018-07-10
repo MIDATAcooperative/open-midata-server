@@ -101,7 +101,7 @@ server {
         }
          
         location /plugin {   
-           alias RUNDIR/visualizations;
+           alias PLUGINS_DIR;
               
            add_header 'X-XSS-Protection' "1; mode=block";
            add_header 'X-Content-Type-Options' 'nosniff';

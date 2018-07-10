@@ -106,9 +106,9 @@ public class InstanceConfig {
 	 * returns the list of supported countries for this platform
 	 * @return
 	 */
-	public List<String> getCountries() {
+	/*public List<String> getCountries() {
 		return countries;
-	}
+	}*/
 	
 	public Config getConfig() {
 		return config;
@@ -142,7 +142,7 @@ public class InstanceConfig {
 		
 		defaultLanguage = config.getString("default.language");
 		
-		countries = config.getStringList("default.countries");
+		//countries = config.getStringList("default.countries");
 		} catch (ConfigException e) {
 			System.out.println(e.toString());
 			throw e;

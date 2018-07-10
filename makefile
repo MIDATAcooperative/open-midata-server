@@ -5,33 +5,27 @@ info:
 	$(info ------------------------------)
 	$(info Welcome to MIDATA)
 	$(info ------------------------------)
-	$(info   )
-	$(info install-webserver : Install a productive frontend server that may use separate database servers)
+	$(info   )	
 	$(info install-local : Install a localhost instance)
 	$(info   )
-	$(info create-mongo-passwords : Run once after your mongoDB setup is ready and running. For webserver)
 	$(info configure-connection : Reconfigure database connection)
-	$(info   )
-	$(info order-ssl : Generate new CSR to order a new certificate)
-	$(info install-ssl : Activate new certificate)
-	$(info use-loadbalancer : Use loadbalancer)
-	$(info   )
+	$(info   )	
 	$(info update : Update and start current instance)
 	$(info start : Start current instance)
 	$(info stop : Stop current instance)
+	$(info   )	
+	$(info lock : Lock current instance (exclude from load balancer) )
+	$(info unlock : Unlock current instance)
 
-install-webserver: tasks/install-packages tasks/install-node tasks/bugfixes tasks/prepare-webserver tasks/install-localmongo tasks/install-activator $(CERTIFICATE_DIR)/dhparams.pem tasks/configure-connection
-	$(info Please run "make order-ssl" to order SSL certificate)
-	$(info Please run "make install-ssl" to install SSL certificate that has been ordered before)
-	$(info Please run "make skip-ssl" to continue with a fake SSL certificate that will trigger browser warnings)
-	$(info Please run "make use-loadbalancer" to continue with a default certificate for the load balancer)	
-	$(info Please run "make configure-connection" to setup database connection)
-	$(info Please run "make update" to build after everything has been configured correctly)
+space :=
+space +=	
+komma :=,
+join-with = $(subst $(space),$1,$(strip $2))
 
-install-from-servertools: tasks/install-packages tasks/install-node tasks/bugfixes tasks/install-localmongo tasks/install-activator $(CERTIFICATE_DIR)/dhparams.pem tasks/configure-connection
+install-from-servertools: tasks/install-packages tasks/install-node tasks/bugfixes tasks/install-localmongo $(CERTIFICATE_DIR)/dhparams.pem /etc/ssl/certs/ssl-cert-snakeoil.pem
 	touch switches/use-hotdeploy
 
-install-local: tasks/install-packages tasks/install-node tasks/bugfixes tasks/prepare-local tasks/check-config tasks/install-dummycert tasks/install-localmongo tasks/install-lighttpd tasks/install-activator tasks/configure-connection
+install-local: tasks/install-packages tasks/install-node tasks/bugfixes tasks/prepare-local tasks/check-config $(CERTIFICATE_DIR)/selfsign.crt $(CERTIFICATE_DIR)/dhparams.pem tasks/install-localmongo conf/secret.conf.gz.nc 
 	touch switches/local-mongo
 	$(info Please run "make update" to build)
 	touch switches/local-mongo
@@ -43,17 +37,25 @@ pull:
 .PHONY: start
 start: /dev/shm/secret.conf
 	if [ -e switches/use-hotdeploy ]; then sh ./hotdeploy.sh; fi;
-	if [ -e switches/use-run ]; then cd platform;./sbt -Dhttps.port=9000 -Dhttp.port=9001; fi;
+	if [ -e switches/use-run ]; then sudo service nginx start; fi;
+	if [ -e switches/use-run ]; then mkdir -p locks;cd platform;./sbt run -Dpidfile.path=/dev/shm/play.pid -J-Xverify:none -Dconfig.file=/dev/shm/secret.conf -Dhttps.port=9000 -Dhttp.port=9001; fi;
 
-update: tasks/check-config start-mongo tasks/setup-portal tasks/build-mongodb tasks/build-portal tasks/build-plugins tasks/build-platform start
+stop-mongo:
+	@echo 'Shutting down MongoDB...'
+	if [ -e switches/local-mongo ]; then pkill mongod; fi
+
+update: tasks/check-config start-mongo tasks/setup-portal tasks/build-mongodb tasks/build-portal tasks/build-platform tasks/setup-nginx start
 
 .PHONY: stop
-stop:
+stop: stop-platform stop-mongo
+
+stop-platform:
 	$(info ------------------------------)
 	$(info Locking and stopping platform)
 	$(info ------------------------------)
 	touch locks/lock
-	python main.py stop
+	pkill -f sbt
+	
 
 .PHONY: lock
 lock:
@@ -75,7 +77,7 @@ reconfig:
 
 .PHONY: start-mongo
 start-mongo:
-	test=`pgrep mongo`; if [ -e switches/local-mongo -a -z "$$test" ]; then python main.py start mongodb; fi 
+	test=`pgrep mongo`; if [ -e switches/local-mongo -a -z "$$test" ]; then mongodb/bin/mongod --config mongodb/mongod.conf; fi 
 
 $(CERTIFICATE_DIR)/dhparams.pem:
 	mkdir -p $(CERTIFICATE_DIR)
@@ -157,21 +159,40 @@ tasks/edit-secret:
 	
 configure-connection: tasks/remove-secret /dev/shm/secret.conf tasks/edit-secret tasks/reencrypt-secret  
 	
-platform/conf/application.conf: platform/conf/application.conf.template conf/setup.conf conf/pathes.conf 
+platform/conf/application.conf: platform/conf/application.conf.template conf/setup.conf conf/pathes.conf conf/cluster.conf
 	@echo 'Setting up Plattform...'
 	cp platform/conf/application.conf.template platform/conf/application.conf
-	sed -i 's|PORTAL_ORIGIN|https://$(DOMAIN)|' platform/conf/application.conf
+	$(eval PORTAL_ORIGIN:=$(shell if [ -e switches/use-run ]; then echo "https://$(DOMAIN):9002";else echo "https://$(DOMAIN)";fi;))
+	$(eval CLUSTERSERVERS:=$(foreach a,$(CLUSTER),"akka.tcp://midata@$(a):9006"))
+	$(eval CLUSTERX:=$(call join-with,$(komma),$(CLUSTERSERVERS))) 
+	echo "1:$(CLUSTER)"
+	echo "2:$(CLUSTERSERVERS)"
+	echo "3:$(CLUSTERX)"
+	sed -i 's|PORTAL_ORIGIN|$(PORTAL_ORIGIN)|' platform/conf/application.conf
 	sed -i 's|PLUGINS_SERVER|$(DOMAIN)/plugin|' platform/conf/application.conf
 	sed -i 's|DOMAIN|$(DOMAIN)|' platform/conf/application.conf	
 	sed -i 's|PLATFORM_HOSTNAME|$(HOSTNAME)|' platform/conf/application.conf
-	sed -i 's|CLUSTER_SERVER|$(CLUSTER)|' platform/conf/application.conf
+	sed -i 's|CLUSTER_SERVER|$(CLUSTERX)|' platform/conf/application.conf
 	sed -i 's|INSTANCETYPE|$(INSTANCE_TYPE)|' platform/conf/application.conf
 	sed -i 's|MAIL_PASSWORD|$(MAIL_PASSWORD)|' platform/conf/application.conf
 	sed -i 's|MAIL_SENDER|$(MAIL_SENDER)|' platform/conf/application.conf
 	sed -i 's|MAIL_SMTP_SERVER|$(MAIL_SMTP_SERVER)|' platform/conf/application.conf
 	sed -i 's|MAIL_SECURITY_TARGET|$(MAIL_SECURITY_TARGET)|' platform/conf/application.conf
+	sed -i 's|MAIL_ADMIN|$(MAIL_ADMIN)|' platform/conf/application.conf
 	sed -i 's|DEFAULT_LANGUAGE|$(DEFAULT_LANGUAGE)|' platform/conf/application.conf
 	sed -i 's|ROOTDIR|$(abspath .)|' platform/conf/application.conf	
+	
+config/instance.json: config/instance-template.json conf/pathes.conf conf/setup.conf
+	$(eval PORTAL_ORIGIN:=$(shell if [ -e switches/use-run ]; then echo "https://$(DOMAIN):9002";else echo "https://$(DOMAIN)";fi;))
+	cp config/instance-template.json config/instance.json
+	sed -i 's|PORTAL_ORIGIN|$(PORTAL_ORIGIN)|' config/instance.json
+	sed -i 's|DOMAIN|$(DOMAIN)|' config/instance.json
+	sed -i 's|INSTANCE_TYPE|$(INSTANCE_TYPE)|' config/instance.json
+	sed -i 's|INSTANCE|$(INSTANCE)|' config/instance.json
+	sed -i 's|LANGUAGES|$(LANGUAGES)|' config/instance.json
+	sed -i 's|DEFAULT_LANGUAGE|$(DEFAULT_LANGUAGE)|' config/instance.json
+	sed -i 's|COUNTRIES|$(COUNTRIES)|' config/instance.json
+	sed -i 's|BETA_FEATURES|$(BETA_FEATURES)|' config/instance.json		
 	
 tasks/reimport-mongodb: trigger/reimport-mongodb $(wildcard json/*.json)
 	$(info ------------------------------)
@@ -191,15 +212,8 @@ tasks/build-mongodb: trigger/build-mongodb tasks/reimport-mongodb tasks/reimport
 	python main.py start mongodb
 	python main.py build mongodb
 	touch tasks/build-mongodb
-
-tasks/build-plugins: trigger/build-plugins $(shell find visualizations/*/src -type f | sed 's/ /\\ /g')
-	$(info ------------------------------)
-	$(info Building Plugins... )
-	$(info ------------------------------)
-	python main.py build plugins
-	touch tasks/build-plugins
 	
-tasks/build-portal: trigger/build-portal $(shell find portal -type f | sed 's/ /\\ /g')
+tasks/build-portal: trigger/build-portal $(shell find portal -type f | sed 's/ /\\ /g') config/instance.json
 	$(info ------------------------------)
 	$(info Building Portal... )
 	$(info ------------------------------)
@@ -213,17 +227,26 @@ tasks/build-platform: $(shell find platform -name "*.java" | sed 's/ /\\ /g')
 tasks/reimport-build-mongodb: tasks/reimport-mongodb tasks/build-mongodb
 	touch tasks/reimport-build-mongodb
 
-nginx/sites-available/%: nginx/templates/% conf/setup.conf conf/pathes.conf
+nginx/sites-available/%: nginx/templates/% conf/setup.conf conf/pathes.conf conf/certificate.conf
 	cp nginx/templates/$* nginx/sites-available/$*
-	sed -i 's|DOMAIN|https://$(DOMAIN)|' nginx/sites-available/$*
+	sed -i 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
+	sed -i 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
+	sed -i 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
+	sed -i 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
+	sed -i 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
+	sed -i 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
+	sed -i 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
+	sed -i 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
+	sed -i 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
 	sed -i 's|CERTIFICATE_PEM|$(CERTIFICATE_PEM)|' nginx/sites-available/$*
 	sed -i 's|CERTIFICATE_KEY|$(CERTIFICATE_KEY)|' nginx/sites-available/$*
-	sed -i 's|DHPARAMS|https://$(CERTIFICATE_DIR)/dhparams.pem|' nginx/sites-available/$*
+	sed -i 's|DHPARAMS|$(CERTIFICATE_DIR)/dhparams.pem|' nginx/sites-available/$*
 	sed -i 's|PLATFORM_INTERNAL_PORT|9001|' nginx/sites-available/$*
 	sed -i 's|ROOTDIR|$(abspath .)|' nginx/sites-available/$*
-	sed -i 's|RUNDIR|$(abspath running)|' nginx/sites-available/$*
+	sed -i 's|PLUGINS_DIR|$(PLUGINS_DIR)|' nginx/sites-available/$*
+	sed -i 's|RUNDIR|$(abspath running)|' nginx/sites-available/$* 
 	
-tasks/setup-nginx: nginx/sites-available/sslredirect nginx/sites-available/webpages		
+tasks/setup-nginx: nginx/sites-available/sslredirect nginx/sites-available/webpages $(CERTIFICATE_PEM) $(CERTIFICATE_DIR)/dhparams.pem	
 	sudo cp nginx/sites-available/* /etc/nginx/sites-available
 	sudo ln -s /etc/nginx/sites-available/sslredirect /etc/nginx/sites-enabled/sslredirect || true
 	sudo ln -s /etc/nginx/sites-available/plugins /etc/nginx/sites-enabled/ || true
@@ -233,51 +256,24 @@ tasks/setup-nginx: nginx/sites-available/sslredirect nginx/sites-available/webpa
 	sudo nginx -t && sudo service nginx reload
 	touch tasks/setup-nginx
 	
-order-ssl:		    
-	$(info ------------------------------)
-	$(info Order SSL Certificate... )
-	$(info ------------------------------)
-	$(eval DOMAIN := $(shell cat config/instance.json | python -c "import sys, json; print json.load(sys.stdin)['domain']"))
-	$(eval YEAR := $(shell read -p "Enter Current Year (4digits): " pw ;printf $$pw;))
-	mkdir -p ../ssl
-	openssl req -new -nodes -keyout ../ssl/$(DOMAIN)_$(YEAR).key -out ../ssl/$(DOMAIN)_$(YEAR).csr -newkey rsa:2048;
-	@echo "----------------------"
-	@echo "Your certificate request CSR is here:"
-	@echo "$(abspath ../ssl/$(DOMAIN)_$(YEAR).csr)"
-	@echo
-	@echo "Please put the certificate once you have it here:"
-	@echo "$(abspath ../ssl/$(DOMAIN)_$(YEAR).crt)"
-	@echo
-	@echo "Append the CA-Chain to the certificate so that it is only one file."
-	@echo "Run make install-ssl when ready"
-	@echo "----------------------"
-
 $(CERTIFICATE_DIR)/selfsign.crt:
 	mkdir -p $(CERTIFICATE_DIR)
 	openssl req -x509 -nodes -newkey rsa:2048 -keyout $(CERTIFICATE_DIR)/selfsign.key -out $(CERTIFICATE_DIR)/selfsign.crt -days 365
 		
-install-ssl: reconfig tasks/set-ssl-path tasks/check-config tasks/setup-nginx
-
-skip-ssl: self-sign-ssl install-ssl
-
-use-loadbalancer: reconfig tasks/install-ssl-lb tasks/set-ssl-lb tasks/check-config tasks/setup-nginx 
-
+use-loadbalancer: /etc/ssl/certs/ssl-cert-snakeoil.pem
+	echo "CERTIFICATE_PEM=/etc/ssl/certs/ssl-cert-snakeoil.pem\nCERTIFICATE_KEY=/etc/ssl/certs/ssl-cert-snakeoil.key\n" >conf/certificate.conf
 	
-tasks/install-ssl-lb:
-	sudo apt-get install ssl-cert
-	touch tasks/install-ssl-lb
+/etc/ssl/certs/ssl-cert-snakeoil.pem:
+	sudo apt-get install ssl-cert	
 	
-tasks/set-ssl-lb:
-	node scripts/replace.js certificate pem /etc/ssl/certs/ssl-cert-snakeoil.pem;
-	node scripts/replace.js certificate key /etc/ssl/private/ssl-cert-snakeoil.key;
-
 tasks/bugfixes:
 	sudo chown -R $$USER:$$GROUP ~/.config	
 	sudo chown -R $$USER:$$GROUP ~/.npm
 	touch tasks/bugfixes
 
-/dev/shm/secret.conf: 
+/dev/shm/secret.conf: platform/conf/application.conf platform/conf/secret.conf.gz.nc 
 	@echo "Decrypting configfile..."
+	rm -f /dev/shm/secret.conf*
 	$(eval DECRYPT_PW := $(if $(DECRYPT_PW),$(DECRYPT_PW),$(shell stty -echo;read -p "Password:" pw;stty echo;printf "\n";printf $$pw;)))	
 	cp platform/conf/secret.conf.gz.nc /dev/shm/secret.conf.gz.nc
 	@cd /dev/shm;/usr/bin/mcrypt /dev/shm/secret.conf.gz.nc -z -a rijndael-128 -m cbc -d -k "$(DECRYPT_PW)"
