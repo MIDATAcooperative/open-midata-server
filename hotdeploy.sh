@@ -36,7 +36,7 @@ pkill -f java
 echo 'Starting new instance...'
 rm running
 ln -s $instance running				
-/usr/bin/nohup $instance/bin/midata-server -Dpidfile.path=/dev/shm/play.pid -Dconfig.file=/dev/shm/secret.conf -Dhttp.port=9001 &
+/usr/bin/nohup $instance/midata-server-1.0-SNAPSHOT/bin/midata-server -Dpidfile.path=/dev/shm/play.pid -Dconfig.file=/dev/shm/secret.conf -Dhttp.port=9001 &
 echo 'Waiting for startup...'		
 sleep 30s
 echo 'Fetching Page'

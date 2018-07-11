@@ -252,7 +252,7 @@ nginx/sites-available/%: nginx/templates/% conf/setup.conf conf/pathes.conf conf
 	sed -i 's|DHPARAMS|$(CERTIFICATE_DIR)/dhparams.pem|' nginx/sites-available/$*
 	sed -i 's|PLATFORM_INTERNAL_PORT|9001|' nginx/sites-available/$*
 	sed -i 's|ROOTDIR|$(abspath .)|' nginx/sites-available/$*
-	sed -i 's|PLUGINS_DIR|$(PLUGINS_DIR)|' nginx/sites-available/$*
+	sed -i 's|PLUGINS_DIR|$(PLUGINS_DIR)/plugin_active|' nginx/sites-available/$*
 	sed -i 's|RUNDIR|$(abspath running)|' nginx/sites-available/$* 
 	
 tasks/setup-nginx: nginx/sites-available/sslredirect nginx/sites-available/webpages $(CERTIFICATE_PEM) $(CERTIFICATE_DIR)/dhparams.pem	
