@@ -40,7 +40,7 @@ ln -s $instance running
 echo 'Waiting for startup...'		
 sleep 30s
 echo 'Fetching Page'
-curl 'http://localhost:9001/api/test'
+curl 'http://localhost:9001/api/ping'
 /usr/bin/shred -zun 0 /dev/shm/secret.conf
 echo 'Done swapping server'		
 sudo service nginx restart

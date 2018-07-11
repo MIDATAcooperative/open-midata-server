@@ -24,7 +24,7 @@ import utils.exceptions.InternalServerException;
 
 public class TokenCrypto {
 
-	private static final String instanceSecret = InstanceConfig.getInstance().getConfig().getString("application.secret");
+	private static final String instanceSecret = InstanceConfig.getInstance().getConfig().getString("play.http.secret.key");
 	
 	private static final SecretKey tokenKey = new SecretKeySpec(instanceSecret.getBytes(), 0, 32, "AES");
 	private static final SecretKey signKey = new SecretKeySpec(instanceSecret.getBytes(), 32, 32, "HMACSHA256");

@@ -146,10 +146,10 @@ platform/conf/secret.conf.gz.nc:
 	$(info You will need a strong mantra to encrypt and decrypt the configuration file. )
 	rm -f /dev/shm/secret.conf*
 	cp platform/conf/secret.conf.template /dev/shm/secret.conf
-	sed -i '/application.secret/d' /dev/shm/secret.conf
+	sed -i '/play.http.secret.key/d' /dev/shm/secret.conf
 	cd platform;./sbt compile;
-	NEWSECRET=`cd platform;./sbt playGenerateSecret | grep 'new secret:' | sed 's/^.*: //' | sed 's/[^[:print:]]//'` ; echo "application.secret=\"$$NEWSECRET\"" >> /dev/shm/secret.conf
-	$(eval DECRYPT_PW := $(if $(DECRYPT_PW),$(DECRYPT_PW),$(shell stty -echo;read -p "Password:" pw;stty echo;printf "\n";printf $$pw;)))
+	NEWSECRET=`cd platform;./sbt playGenerateSecret | grep 'new secret:' | sed 's/^.*: //' | sed 's/[^[:print:]]//'` ; echo "play.http.secret.key=\"$$NEWSECRET\"" >> /dev/shm/secret.conf
+	$(eval DECRYPT_PW := $(if $(DECRYPT_PW),$(DECRYPT_PW),$(shell stty -echo;read -p "Mantra for config file:" pw;stty echo;printf "\n";printf $$pw;)))
 	@/usr/bin/mcrypt /dev/shm/secret.conf -z -a rijndael-128 -m cbc -k "$(DECRYPT_PW)"
 	cp /dev/shm/secret.conf.gz.nc platform/conf/secret.conf.gz.nc
 	/usr/bin/shred -zun 0 /dev/shm/secret.conf
@@ -163,7 +163,7 @@ tasks/reencrypt-secret:
 	$(info ------------------------------)
 	$(info Encrypting configuration file.... )
 	$(info ------------------------------)
-	$(eval DECRYPT_PW := $(if $(DECRYPT_PW),$(DECRYPT_PW),$(shell stty -echo;read -p "Password:" pw;stty echo;printf "\n";printf $$pw;)))
+	$(eval DECRYPT_PW := $(if $(DECRYPT_PW),$(DECRYPT_PW),$(shell stty -echo;read -p "Mantra for config file:" pw;stty echo;printf "\n";printf $$pw;)))
 	mv /dev/shm/db.conf /dev/shm/secret.conf
 	@/usr/bin/mcrypt /dev/shm/secret.conf -z -a rijndael-128 -m cbc -k "$(DECRYPT_PW)"
 	cp /dev/shm/secret.conf.gz.nc platform/conf/secret.conf.gz.nc
@@ -307,7 +307,7 @@ tasks/bugfixes:
 /dev/shm/secret.conf: platform/conf/application.conf platform/conf/secret.conf.gz.nc 
 	@echo "Decrypting configfile..."
 	rm -f /dev/shm/secret.conf*
-	$(eval DECRYPT_PW := $(if $(DECRYPT_PW),$(DECRYPT_PW),$(shell stty -echo;read -p "Password:" pw;stty echo;printf "\n";printf $$pw;)))	
+	$(eval DECRYPT_PW := $(if $(DECRYPT_PW),$(DECRYPT_PW),$(shell stty -echo;read -p "Mantra for config file:" pw;stty echo;printf "\n";printf $$pw;)))	
 	cp platform/conf/secret.conf.gz.nc /dev/shm/secret.conf.gz.nc
 	@cd /dev/shm;/usr/bin/mcrypt /dev/shm/secret.conf.gz.nc -z -a rijndael-128 -m cbc -d -k "$(DECRYPT_PW)"
 	cat platform/conf/application.conf >> /dev/shm/secret.conf
@@ -317,7 +317,7 @@ tasks/bugfixes:
 	@echo "Decrypting configfile..."
 	rm -f /dev/shm/secret.conf*
 	rm -f /dev/shm/db.conf
-	$(eval DECRYPT_PW := $(if $(DECRYPT_PW),$(DECRYPT_PW),$(shell stty -echo;read -p "Password:" pw;stty echo;printf "\n";printf $$pw;)))	
+	$(eval DECRYPT_PW := $(if $(DECRYPT_PW),$(DECRYPT_PW),$(shell stty -echo;read -p "Mantra for config file:" pw;stty echo;printf "\n";printf $$pw;)))	
 	cp platform/conf/secret.conf.gz.nc /dev/shm/secret.conf.gz.nc
 	@cd /dev/shm;/usr/bin/mcrypt /dev/shm/secret.conf.gz.nc -z -a rijndael-128 -m cbc -d -k "$(DECRYPT_PW)"	
 	mv /dev/shm/secret.conf /dev/shm/db.conf
@@ -343,4 +343,4 @@ clean:
 	@echo "Run make update to rebuild."
 	
 tasks/password:
-	$(eval DECRYPT_PW := $(if $(DECRYPT_PW),$(DECRYPT_PW),$(shell stty -echo;read -p "Password:" pw;stty echo;printf "\n";printf $$pw;)))
+	$(eval DECRYPT_PW := $(if $(DECRYPT_PW),$(DECRYPT_PW),$(shell stty -echo;read -p "Mantra for config file:" pw;stty echo;printf "\n";printf $$pw;)))

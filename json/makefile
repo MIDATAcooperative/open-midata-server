@@ -59,7 +59,7 @@ endif
 	@echo "Decrypting configfile..."
 	rm -f /dev/shm/secret.conf*
 	rm -f /dev/shm/db.conf
-	$(eval DECRYPT_PW := $(if $(DECRYPT_PW),$(DECRYPT_PW),$(shell stty -echo;read -p "Password:" pw;stty echo;printf "\n";printf $$pw;)))	
+	$(eval DECRYPT_PW := $(if $(DECRYPT_PW),$(DECRYPT_PW),$(shell stty -echo;read -p "Mantra for config file:" pw;stty echo;printf "\n";printf $$pw;)))	
 	cp ../platform/conf/secret.conf.gz.nc /dev/shm/secret.conf.gz.nc
 	@cd /dev/shm;/usr/bin/mcrypt /dev/shm/secret.conf.gz.nc -z -a rijndael-128 -m cbc -d -k "$(DECRYPT_PW)"	
 	mv /dev/shm/secret.conf /dev/shm/db.conf
