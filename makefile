@@ -236,6 +236,7 @@ tasks/reimport-build-mongodb: tasks/reimport-mongodb tasks/build-mongodb
 	touch tasks/reimport-build-mongodb
 
 nginx/sites-available/%: nginx/templates/% conf/setup.conf conf/pathes.conf conf/certificate.conf
+	mkdir -p nginx/sites-available
 	cp nginx/templates/$* nginx/sites-available/$*
 	sed -i 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
 	sed -i 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
