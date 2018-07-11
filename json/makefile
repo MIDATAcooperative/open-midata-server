@@ -10,49 +10,49 @@ mongoimport=../mongodb/bin/mongoimport
 ifndef mongo.user.port
 user.db=$(mongo.user.host)
 else
-user.db=$(mongo.user.host):$(mongo.user.port)
+user.db=$(patsubst "%",%,$(mongo.user.host)):$(mongo.user.port)
 endif
 
 ifndef mongo.user.password
 user.pw=
 else
-user.pw="-u $(mongo.user.username) -p $(mongo.user.password)"
+user.pw=-u $(mongo.user.username) -p $(mongo.user.password)
 endif
 
 ifndef mongo.access.port
 access.db=$(mongo.access.host)
 else
-access.db=$(mongo.access.host):$(mongo.access.port)
+access.db=$(patsubst "%",%,$(mongo.access.host)):$(mongo.access.port)
 endif
 
 ifndef mongo.access.password
 access.pw=
 else
-access.pw="-u $(mongo.access.username) -p $(mongo.access.password)"
+access.pw=-u $(mongo.access.username) -p $(mongo.access.password)
 endif
 
 ifndef mongo.mapping.port
 mapping.db=$(mongo.mapping.host)
 else
-mapping.db=$(mongo.mapping.host):$(mongo.mapping.port)
+mapping.db=$(patsubst "%",%,$(mongo.mapping.host)):$(mongo.mapping.port)
 endif
 
 ifndef mongo.mapping.password
 mapping.pw=
 else
-mapping.pw="-u $(mongo.mapping.username) -p $(mongo.mapping.password)"
+mapping.pw=-u $(mongo.mapping.username) -p $(mongo.mapping.password)
 endif
 
 ifndef mongo.record.port
 record.db=$(mongo.record.host)
 else
-record.db=$(mongo.record.host):$(mongo.record.port)
+record.db=$(patsubst "%",%,$(mongo.record.host)):$(mongo.record.port)
 endif
 
 ifndef mongo.record.password
 record.pw=
 else
-record.pw="-u $(mongo.record.username) -p $(mongo.record.password)"
+record.pw=-u $(mongo.record.username) -p $(mongo.record.password)
 endif
 
 /dev/shm/db.conf: 
