@@ -36,7 +36,9 @@ pull:
 	git pull
 
 .PHONY: start
-start: /dev/shm/secret.conf
+start: /dev/shm/secret.conf start1 clear-secrets
+
+start1: 
 	if [ -e switches/use-hotdeploy ]; then sh ./hotdeploy.sh; fi;
 	if [ -e switches/use-run ]; then sudo service nginx start; fi;
 	if [ -e switches/use-run ]; then mkdir -p locks;cd platform;./sbt run -Dpidfile.path=/dev/shm/play.pid -J-Xverify:none -Dconfig.file=/dev/shm/secret.conf -Dhttps.port=9000 -Dhttp.port=9001; fi;
@@ -78,9 +80,13 @@ reconfig:
 
 .PHONY: start-mongo
 start-mongo:
+	@echo Check that MongoDB is available
 	test=`pgrep mongo`; if [ -e switches/local-mongo -a -z "$$test" ]; then mongodb/bin/mongod --config mongodb/mongod.conf; fi 
 
 $(CERTIFICATE_DIR)/dhparams.pem:
+	$(info ------------------------------)
+	$(info Generating DH Params file)
+	$(info ------------------------------)
 	mkdir -p $(CERTIFICATE_DIR)
 	openssl dhparam -out $(CERTIFICATE_DIR)/dhparams.pem 2048	
 
@@ -151,6 +157,7 @@ platform/conf/secret.conf.gz.nc:
 
 tasks/remove-secret:
 	rm -f /dev/shm/secret.conf*
+	rm -f /dev/shm/db.conf
 
 tasks/reencrypt-secret:
 	$(info ------------------------------)
@@ -166,17 +173,16 @@ tasks/reencrypt-secret:
 tasks/edit-secret:
 	nano /dev/shm/db.conf
 	
-configure-connection: tasks/remove-secret /dev/shm/db.conf tasks/edit-secret tasks/reencrypt-secret  
+configure-connection: tasks/remove-secret /dev/shm/db.conf tasks/edit-secret tasks/reencrypt-secret clear-secrets  
 	
 platform/conf/application.conf: platform/conf/application.conf.template conf/setup.conf conf/pathes.conf conf/cluster.conf
-	@echo 'Setting up Plattform...'
+	$(info ------------------------------)
+	$(info Configuring Play Application.... )
+	$(info ------------------------------)
 	cp platform/conf/application.conf.template platform/conf/application.conf
 	$(eval PORTAL_ORIGIN:=$(shell if [ -e switches/use-run ]; then echo "https://$(DOMAIN):9002";else echo "https://$(DOMAIN)";fi;))
 	$(eval CLUSTERSERVERS:=$(foreach a,$(CLUSTER),"akka.tcp://midata@$(a):9006"))
 	$(eval CLUSTERX:=$(call join-with,$(komma),$(CLUSTERSERVERS))) 
-	echo "1:$(CLUSTER)"
-	echo "2:$(CLUSTERSERVERS)"
-	echo "3:$(CLUSTERX)"
 	sed -i 's|PORTAL_ORIGIN|$(PORTAL_ORIGIN)|' platform/conf/application.conf
 	sed -i 's|PLUGINS_SERVER|$(DOMAIN)/plugin|' platform/conf/application.conf
 	sed -i 's|DOMAIN|$(DOMAIN)|' platform/conf/application.conf	
@@ -192,6 +198,9 @@ platform/conf/application.conf: platform/conf/application.conf.template conf/set
 	sed -i 's|ROOTDIR|$(abspath .)|' platform/conf/application.conf	
 	
 config/instance.json: config/instance-template.json conf/pathes.conf conf/setup.conf
+	$(info ------------------------------)
+	$(info Configuring Portal.... )
+	$(info ------------------------------)
 	$(eval PORTAL_ORIGIN:=$(shell if [ -e switches/use-run ]; then echo "https://$(DOMAIN):9002";else echo "https://$(DOMAIN)";fi;))
 	cp config/instance-template.json config/instance.json
 	sed -i 's|PORTAL_ORIGIN|$(PORTAL_ORIGIN)|' config/instance.json
@@ -218,6 +227,9 @@ tasks/reimport-plugins: trigger/reimport-plugins
 	touch tasks/reimport-plugins
 	
 tasks/build-mongodb: trigger/build-mongodb tasks/reimport-mongodb tasks/reimport-plugins
+	$(info ------------------------------)
+	$(info (Re-)creating database indexes)
+	$(info ------------------------------)
 	cd json;make build	
 	touch tasks/build-mongodb
 	
@@ -229,13 +241,16 @@ tasks/build-portal: trigger/build-portal $(shell find portal -type f | sed 's/ /
 	touch tasks/build-portal
 	
 tasks/build-platform: $(shell find platform -name "*.java" | sed 's/ /\\ /g')
+	$(info ------------------------------)
+	$(info Creating Server Play Application... )
+	$(info ------------------------------)
 	cd platform;./sbt dist
 	touch tasks/build-platform
 	
 tasks/reimport-build-mongodb: tasks/reimport-mongodb tasks/build-mongodb
 	touch tasks/reimport-build-mongodb
 
-nginx/sites-available/%: nginx/templates/% conf/setup.conf conf/pathes.conf conf/certificate.conf
+nginx/sites-available/%: nginx/templates/% conf/setup.conf conf/pathes.conf conf/certificate.conf	
 	mkdir -p nginx/sites-available
 	cp nginx/templates/$* nginx/sites-available/$*
 	sed -i 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
@@ -255,7 +270,10 @@ nginx/sites-available/%: nginx/templates/% conf/setup.conf conf/pathes.conf conf
 	sed -i 's|PLUGINS_DIR|$(PLUGINS_DIR)/plugin_active|' nginx/sites-available/$*
 	sed -i 's|RUNDIR|$(abspath running)|' nginx/sites-available/$* 
 	
-tasks/setup-nginx: nginx/sites-available/sslredirect nginx/sites-available/webpages $(CERTIFICATE_PEM) $(CERTIFICATE_DIR)/dhparams.pem	
+tasks/setup-nginx: nginx/sites-available/sslredirect nginx/sites-available/webpages $(CERTIFICATE_PEM) $(CERTIFICATE_DIR)/dhparams.pem
+	$(info ------------------------------)
+	$(info Configuring NGINX... )
+	$(info ------------------------------)	
 	sudo cp nginx/sites-available/* /etc/nginx/sites-available
 	sudo rm -f /etc/nginx/sites-enabled/*
 	sudo ln -s /etc/nginx/sites-available/sslredirect /etc/nginx/sites-enabled/sslredirect || true
@@ -266,6 +284,9 @@ tasks/setup-nginx: nginx/sites-available/sslredirect nginx/sites-available/webpa
 	touch tasks/setup-nginx
 	
 $(CERTIFICATE_DIR)/selfsign.crt:
+	$(info ------------------------------)
+	$(info Create Self signed Certificate... )
+	$(info ------------------------------)
 	mkdir -p $(CERTIFICATE_DIR)
 	openssl req -x509 -nodes -newkey rsa:2048 -keyout $(CERTIFICATE_DIR)/selfsign.key -out $(CERTIFICATE_DIR)/selfsign.crt -days 365
 		
@@ -273,6 +294,9 @@ use-loadbalancer: /etc/ssl/certs/ssl-cert-snakeoil.pem
 	echo "CERTIFICATE_PEM=/etc/ssl/certs/ssl-cert-snakeoil.pem\nCERTIFICATE_KEY=/etc/ssl/certs/ssl-cert-snakeoil.key\n" >conf/certificate.conf
 	
 /etc/ssl/certs/ssl-cert-snakeoil.pem:
+	$(info ------------------------------)
+	$(info Install Certificate for use with Load Balancer... )
+	$(info ------------------------------)
 	sudo apt-get install ssl-cert	
 	
 tasks/bugfixes:
@@ -299,6 +323,24 @@ tasks/bugfixes:
 	mv /dev/shm/secret.conf /dev/shm/db.conf
 	rm -f /dev/shm/secret.conf.gz.nc 
 
+clear-secrets:
+	@echo "Removing decrypted config files..."
+	@rm -f /dev/shm/secret.conf.gz.nc
+	@rm -f /dev/shm/secret.conf
+	@rm -f /dev/shm/db.conf
 
+clean:	
+	@rm -f tasks/bugfixes
+	@rm -f tasks/build-platform
+	@rm -f tasks/build-mongodb
+	@rm -f tasks/build-portal
+	@rm -f tasks/setup-nginx
+	@rm -f config/instance.json
+	@rm -f platform/conf/application.conf
+	@rm -f nginx/sites-available/*
+	@rm -f platform/target
+	@rm -f portal/dest
+	@echo "Run make update to rebuild."
+	
 tasks/password:
 	$(eval DECRYPT_PW := $(if $(DECRYPT_PW),$(DECRYPT_PW),$(shell stty -echo;read -p "Password:" pw;stty echo;printf "\n";printf $$pw;)))

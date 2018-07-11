@@ -80,12 +80,14 @@ export:
 	@$(mongoexport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c contentinfo -o contentinfo.json
 	@$(mongoexport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c formatinfo -o formatinfo.json
 	@$(mongoexport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c coding -o coding.json	
+	@rm /dev/shm/db.conf
 
 exportplugins:
 	@$(mongoexport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c plugins -o plugins.json -q '{ "status" : { "$$in" : ["BETA","ACTIVE","DEPRECATED"] } }'
 	/bin/sed -i '/"_id":/s/"_id":[^,]*,//' plugins.json
 	@$(mongoexport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c pluginicons -o pluginicons.json -q '{ "status" : { "$$in" : ["BETA","ACTIVE","DEPRECATED"] } }'
 	/bin/sed -i '/"_id":/s/"_id":[^,]*,//' pluginicons.json
+	@rm /dev/shm/db.conf
 	
 reimport:
 	$(mongoimport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c formatgroups --file formatgroups.json --drop --upsertFields _id
