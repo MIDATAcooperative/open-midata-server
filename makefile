@@ -22,9 +22,9 @@ space +=
 komma :=,
 join-with = $(subst $(space),$1,$(strip $2))
 
-install-from-servertools: tasks/install-packages tasks/install-node tasks/bugfixes tasks/install-localmongo $(CERTIFICATE_DIR)/dhparams.pem /etc/ssl/certs/ssl-cert-snakeoil.pem tasks/precompile
+install-from-servertools: lock tasks/install-packages tasks/install-node tasks/bugfixes tasks/install-localmongo $(CERTIFICATE_DIR)/dhparams.pem /etc/ssl/certs/ssl-cert-snakeoil.pem tasks/precompile
 	touch switches/use-hotdeploy
-	touch tasks/check-config
+	touch tasks/check-config	
 
 install-local: tasks/install-packages tasks/install-node tasks/bugfixes tasks/prepare-local tasks/check-config $(CERTIFICATE_DIR)/selfsign.crt $(CERTIFICATE_DIR)/dhparams.pem tasks/install-localmongo conf/secret.conf.gz.nc tasks/precompile 
 	touch switches/local-mongo
@@ -65,6 +65,7 @@ lock:
 	$(info ------------------------------)
 	$(info Locking platform)
 	$(info ------------------------------)
+	mkdir -p locks
 	touch locks/lock
 	
 .PHONY: unlock
