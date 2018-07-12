@@ -721,8 +721,8 @@ public class PluginsAPI extends APIController {
 		
 		CompletionStage<Result> promise = response.thenApply(response1 -> {			
 				Optional<String> ct = response1.getSingleHeader("Content-Type");
-				if (ct.isPresent()) response().setContentType(ct.get());
-				return ok(response1.asJson());			
+				if (ct.isPresent()) return ok(response1.asJson()).as(ct.get());
+				else return ok(response1.asJson());			
 		});
 		return promise;
 	}
