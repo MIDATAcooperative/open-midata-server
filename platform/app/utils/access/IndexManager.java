@@ -18,6 +18,7 @@ import akka.actor.Props;
 import akka.cluster.singleton.ClusterSingletonManager;
 import akka.cluster.singleton.ClusterSingletonManagerSettings;
 import akka.cluster.singleton.ClusterSingletonProxy;
+import akka.cluster.singleton.ClusterSingletonProxySettings;
 import models.Consent;
 import models.MidataId;
 import utils.AccessLog;
@@ -54,13 +55,16 @@ public class IndexManager {
 	
 	public IndexManager() {		
 		final ClusterSingletonManagerSettings settings =
-				  ClusterSingletonManagerSettings.create(Instances.system()).withSingletonName("indexSupervisor-instance");
+				  ClusterSingletonManagerSettings.create(Instances.system());
 	
 		
-		indexSupervisorSingleton = Instances.system().actorOf(ClusterSingletonManager.props(Props.create(IndexSupervisor.class), "indexSupervisor-instance",
-				settings), "indexSupervisor-singleton");
+		indexSupervisorSingleton = Instances.system().actorOf(ClusterSingletonManager.props(Props.create(IndexSupervisor.class), null,
+				settings), "indexSupervisor");
 		
-		indexSupervisor = Instances.system().actorOf(ClusterSingletonProxy.props("user/indexSupervisor-singleton/indexSupervisor-instance", null), "indexSupervisor");			
+		final ClusterSingletonProxySettings proxySettings =
+			    ClusterSingletonProxySettings.create(Instances.system());
+		
+		indexSupervisor = Instances.system().actorOf(ClusterSingletonProxy.props("/user/indexSupervisor", proxySettings), "indexSupervisor-Consumer");			
 	}
 
 	public IndexPseudonym getIndexPseudonym(APSCache cache, MidataId user, MidataId targetAPS, boolean create) throws AppException {		

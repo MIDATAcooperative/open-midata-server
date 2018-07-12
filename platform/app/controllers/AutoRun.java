@@ -63,15 +63,15 @@ public class AutoRun extends APIController {
 		//manager = Akka.system().actorOf(Props.create(ImportManager.class), "manager");
 		
 		final ClusterSingletonManagerSettings settings =
-				  ClusterSingletonManagerSettings.create(Instances.system()).withSingletonName("manager-instance");
+				  ClusterSingletonManagerSettings.create(Instances.system());
 		
-		managerSingleton = Instances.system().actorOf(ClusterSingletonManager.props(Props.create(ImportManager.class), null, settings), "manager-singleton");
+		managerSingleton = Instances.system().actorOf(ClusterSingletonManager.props(Props.create(ImportManager.class), null, settings), "autoimport");
 		
 		final ClusterSingletonProxySettings proxySettings =
 			    ClusterSingletonProxySettings.create(Instances.system());
 
 		
-		manager = Instances.system().actorOf(ClusterSingletonProxy.props("user/manager-singleton/manager-instance", proxySettings), "manager");
+		manager = Instances.system().actorOf(ClusterSingletonProxy.props("user/autoimport", proxySettings), "autoimportProxy");
 		
 		
 	}
