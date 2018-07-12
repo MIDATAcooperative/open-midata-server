@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import models.MidataId;
 import play.libs.Json;
 import play.mvc.Http.Request;
+import sun.net.util.IPAddressUtil;
+import utils.AccessLog;
 import utils.collections.ChainedMap;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
@@ -153,10 +155,12 @@ public class SpaceToken {
 	public static SpaceToken decrypt(Request request, String unsafeSecret) {
 		try {
 			// decryptAES can throw DecoderException, but there is no way to catch it; catch all exceptions for now...
-			String plaintext = TokenCrypto.decryptToken(unsafeSecret);
+								
+			String plaintext = TokenCrypto.decryptToken(unsafeSecret);			
 			JsonNode json = Json.parse(plaintext);
 			return decrypt(request, json);
-		} catch (Exception e) {
+		} catch (Exception e) {			
+			AccessLog.logException("decrypt", e);
 			return null;
 		}
 	}
@@ -173,7 +177,7 @@ public class SpaceToken {
 			String remoteAddr = json.get("i").asText();
 			
 			if (System.currentTimeMillis() > created + LIFETIME) return null;
-			if (!remoteAddr.equals("all")) {
+			if (!remoteAddr.equals("all") && !remoteAddr.equals("::1")) {				
 			  if (!remoteAddr(request).equals(remoteAddr)) return null;
 			}
 			

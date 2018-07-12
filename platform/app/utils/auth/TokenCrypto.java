@@ -97,7 +97,7 @@ public class TokenCrypto {
 		
 	}
 	
-	public static String decryptToken(String input) throws AppException {
+	public static String decryptToken(String input) throws AppException {		
 		try {
 			byte[] encrypted = Base64.decodeBase64(input);
 			

@@ -133,6 +133,7 @@ public class InstanceConfig {
 		portalOriginUrl = config.getString("portal.originUrl");
 		
 		pluginServerDomain = config.getString("visualizations.server");
+		if (pluginServerDomain.endsWith("/plugin")) pluginServerDomain = pluginServerDomain.substring(0, pluginServerDomain.length()-"/plugin".length());
 		
 		portalServerDomain = config.getString("portal.server");
 		
