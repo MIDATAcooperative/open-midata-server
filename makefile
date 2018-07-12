@@ -292,7 +292,7 @@ $(CERTIFICATE_DIR)/selfsign.crt:
 	openssl req -x509 -nodes -newkey rsa:2048 -keyout $(CERTIFICATE_DIR)/selfsign.key -out $(CERTIFICATE_DIR)/selfsign.crt -days 365
 		
 use-loadbalancer: /etc/ssl/certs/ssl-cert-snakeoil.pem
-	echo "CERTIFICATE_PEM=/etc/ssl/certs/ssl-cert-snakeoil.pem\nCERTIFICATE_KEY=/etc/ssl/certs/ssl-cert-snakeoil.key\n" >conf/certificate.conf
+	echo "CERTIFICATE_PEM=/etc/ssl/certs/ssl-cert-snakeoil.pem\nCERTIFICATE_KEY=/etc/ssl/private/ssl-cert-snakeoil.key\n" >conf/certificate.conf
 	
 /etc/ssl/certs/ssl-cert-snakeoil.pem:
 	$(info ------------------------------)
