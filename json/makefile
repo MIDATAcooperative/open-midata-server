@@ -9,6 +9,8 @@ mongoimport=../mongodb/bin/mongoimport
 
 ifndef mongo.user.port
 user.db=$(mongo.user.host)
+else ifeq ($(mongo.user.host),0)
+user.db=$(mongo.user.host)
 else
 user.db=$(patsubst "%",%,$(mongo.user.host)):$(mongo.user.port)
 endif
@@ -20,6 +22,8 @@ user.pw=-u $(mongo.user.username) -p $(mongo.user.password)
 endif
 
 ifndef mongo.access.port
+access.db=$(mongo.access.host)
+else ifeq ($(mongo.access.host),0)
 access.db=$(mongo.access.host)
 else
 access.db=$(patsubst "%",%,$(mongo.access.host)):$(mongo.access.port)
@@ -33,6 +37,8 @@ endif
 
 ifndef mongo.mapping.port
 mapping.db=$(mongo.mapping.host)
+else ifeq ($(mongo.mapping.host),0)
+mapping.db=$(mongo.mapping.host)
 else
 mapping.db=$(patsubst "%",%,$(mongo.mapping.host)):$(mongo.mapping.port)
 endif
@@ -44,6 +50,8 @@ mapping.pw=-u $(mongo.mapping.username) -p $(mongo.mapping.password)
 endif
 
 ifndef mongo.record.port
+record.db=$(mongo.record.host)
+else ifeq ($(mongo.record.host),0)
 record.db=$(mongo.record.host)
 else
 record.db=$(patsubst "%",%,$(mongo.record.host)):$(mongo.record.port)
