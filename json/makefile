@@ -9,7 +9,7 @@ mongoimport=../mongodb/bin/mongoimport
 
 ifndef mongo.user.port
 user.db=$(mongo.user.host)
-else ifeq ($(mongo.user.host),0)
+else ifeq ($(mongo.user.port),0)
 user.db=$(mongo.user.host)
 else
 user.db=$(patsubst "%",%,$(mongo.user.host)):$(mongo.user.port)
@@ -23,7 +23,7 @@ endif
 
 ifndef mongo.access.port
 access.db=$(mongo.access.host)
-else ifeq ($(mongo.access.host),0)
+else ifeq ($(mongo.access.port),0)
 access.db=$(mongo.access.host)
 else
 access.db=$(patsubst "%",%,$(mongo.access.host)):$(mongo.access.port)
@@ -37,7 +37,7 @@ endif
 
 ifndef mongo.mapping.port
 mapping.db=$(mongo.mapping.host)
-else ifeq ($(mongo.mapping.host),0)
+else ifeq ($(mongo.mapping.port),0)
 mapping.db=$(mongo.mapping.host)
 else
 mapping.db=$(patsubst "%",%,$(mongo.mapping.host)):$(mongo.mapping.port)
@@ -51,7 +51,7 @@ endif
 
 ifndef mongo.record.port
 record.db=$(mongo.record.host)
-else ifeq ($(mongo.record.host),0)
+else ifeq ($(mongo.record.port),0)
 record.db=$(mongo.record.host)
 else
 record.db=$(patsubst "%",%,$(mongo.record.host)):$(mongo.record.port)
