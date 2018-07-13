@@ -2,16 +2,13 @@ package controllers;
 
 import java.util.Date;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 import actions.APICall;
 import models.Admin;
 import models.Developer;
-import models.Member;
 import models.MidataId;
 import models.User;
 import models.enums.AccountSecurityLevel;
@@ -28,7 +25,6 @@ import play.mvc.Security;
 import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
-import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
 import utils.auth.DeveloperSecured;
 import utils.auth.KeyManager;
@@ -161,7 +157,7 @@ public class Developers extends APIController {
 	public static Result resetTestAccountPassword() throws AppException {
 		JsonNode json = request().body().asJson();
 			
-		MidataId developerId = new MidataId(request().username());
+		MidataId developerId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId targetUserId = JsonValidation.getMidataId(json, "user");
 		User target = User.getById(targetUserId, Sets.create("developer", "role", "password"));		
 		if (target == null || !target.developer.equals(developerId)) throw new BadRequestException("error.unknown.user", "No test user");

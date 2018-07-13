@@ -5,8 +5,6 @@ import java.util.Enumeration;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 
-import scala.NotImplementedError;
-
 /**
  * HttpServletConfig emulation for Play Framework
  *
@@ -17,13 +15,13 @@ public class PlayHttpServletConfig implements ServletConfig {
 	
 	@Override
 	public String getInitParameter(String arg0) {
-		throw new NotImplementedError();
+		throw new RuntimeException("Not implemented");	
 		
 	}
 
 	@Override
 	public Enumeration<String> getInitParameterNames() {
-		throw new NotImplementedError();
+		throw new RuntimeException("Not implemented");	
 		
 	}
 

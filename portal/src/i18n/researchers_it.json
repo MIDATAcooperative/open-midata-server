@@ -16,7 +16,25 @@
         "studies" : "Studi",
         "workspace" : "Spazio di lavoro",
         "data" : "Dati",
-        "addresearcher" : "Aggiungi ricercatore"
+        "addresearcher" : "Aggiungi ricercatore",
+
+        // TODO NEW: Organization
+        "organization" : "Organization"
+    },
+
+    "researcher_organization" : {
+
+        // TODO NEW: Organization
+        "title" : "Organization",
+
+        // TODO NEW: Org. Name
+        "name" : "Org. Name",
+
+        // TODO NEW: Description
+        "description" : "Description",
+
+        // TODO NEW: All researchers of your organization
+        "researchers" : "All researchers of your organization"
     },
 
     "createstudy" : {
@@ -66,9 +84,20 @@
         "required_data" : "Dati richiesti",
         "no_change_warning" : "Una volta convalidato lo studio, questa configurazione non potrà più essere modificata.",
         "member_identity" : "Identità del membro",
-        "anonymous1" : "Partecipazione con pseudonimo",
+
+        // TODO NEW: Pseudonymized Participation
+        "pseudonymous1" : "Pseudonymized Participation",
+
+        // TODO NEW: , exported data reveals pseudonymized ID, year of birth, gender and country. Some researchers like study nurses may have access to full personal data.
+        "pseudonymous2" : ", exported data reveals pseudonymized ID, year of birth, gender and country. Some researchers like study nurses may have access to full personal data.",
+
+        // TODO NEW: Anonymous Participation
+        "anonymous" : "Anonymous Participation",
+
+        // TODO CHANGED
+        // OLD: , reveals pseudonymized ID, year of birth, gender and country
+        // NEW: , reveals pseudonymized ID, year of birth, gender and country. Pseudonymization mapping may not be accessed.
         "anonymous2" : ", indica un ID pseudonimo, anno di nascita, sesso e nazione",
-        "anonymous3" : "Anonimo: non è possibile accedere alla mappatura con pseudonimo.",
         "not_anonymous1" : "Senza pseudonimo",
         "not_anonymous2" : ", richiede al membro di condividere il nome completo, la data di nascita e le informazioni di contatto (indirizzo, telefono, e-mail)",
         "assistance" : "Assistenza",

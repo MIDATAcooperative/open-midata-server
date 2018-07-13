@@ -33,7 +33,7 @@ public class CompareCondition implements Condition, Serializable {
 	 * @param val a value to that the record fields should be compared with 
 	 * @param op comparison operator. 
 	 */
-	public CompareCondition(Comparable<Object> val, CompareOperator op, boolean nullTrue) {
+	public CompareCondition(Comparable<Object> val, CompareCondition.CompareOperator op, boolean nullTrue) {
 		if (val == null) throw new NullPointerException("Null argument for comparator");
 		this.val = val;
 		this.op = op;

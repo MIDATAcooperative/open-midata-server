@@ -10,9 +10,9 @@ import org.bson.types.ObjectId;
 
 import com.mongodb.DBObject;
 import com.mongodb.client.MongoCollection;
+import com.typesafe.config.Config;
 
 import models.Model;
-import play.Play;
 import utils.stats.Stats;
 
 /**
@@ -32,40 +32,43 @@ public class DBLayer {
 	protected final static String DB_ACCESS = "access";
 	protected final static String DB_LOG = "log";
 	
-	private static void init(boolean debug) {
+	private static void init(boolean debug, Config config) {
 		dbnameToDB = new HashMap<String,Database>();
 		collectionsToDB = new HashMap<String,MongoDatabase>();
 		
 		// User database
-		String host = Play.application().configuration().getString("mongo.user.host");
-		int port = Play.application().configuration().getInt("mongo.user.port");
-		String database = Play.application().configuration().getString("mongo.user.database");
-		String user = Play.application().configuration().getString("mongo.user.username", null);
-		String password = Play.application().configuration().getString("mongo.user.password", null);
+		String host = config.getString("mongo.user.host");
+		int port = config.getInt("mongo.user.port");
+		String database = config.getString("mongo.user.database");
+		String user = config.hasPath("mongo.user.username") ? config.getString("mongo.user.username") : null;
+		String password = config.hasPath("mongo.user.password") ? config.getString("mongo.user.password") : null;
 		dbnameToDB.put(DB_USER, new MongoDatabase(host, port, database, user, password));
 		
 		// Mapping database
-		host = Play.application().configuration().getString("mongo.mapping.host");
-		port = Play.application().configuration().getInt("mongo.mapping.port");
-		database = Play.application().configuration().getString("mongo.mapping.database");
-		user = Play.application().configuration().getString("mongo.mapping.username", null);
-		password = Play.application().configuration().getString("mongo.mapping.password", null);
+		host = config.getString("mongo.mapping.host");
+		port = config.getInt("mongo.mapping.port");
+		database = config.getString("mongo.mapping.database");
+		user = config.hasPath("mongo.mapping.username") ? config.getString("mongo.mapping.username") : null;
+		password = config.hasPath("mongo.mapping.password") ? config.getString("mongo.mapping.password") : null;
+		
 		dbnameToDB.put(DB_MAPPING, new MongoDatabase(host, port, database, user, password));		
 		
 		// Record database
-		host = Play.application().configuration().getString("mongo.record.host");
-		port = Play.application().configuration().getInt("mongo.record.port");
-		database = Play.application().configuration().getString("mongo.record.database");
-		user = Play.application().configuration().getString("mongo.record.username", null);
-		password = Play.application().configuration().getString("mongo.record.password", null);
+		host = config.getString("mongo.record.host");
+		port = config.getInt("mongo.record.port");
+		database = config.getString("mongo.record.database");
+		user = config.hasPath("mongo.record.username") ? config.getString("mongo.record.username") : null;
+		password = config.hasPath("mongo.record.password") ? config.getString("mongo.record.password") : null;
+		
 		dbnameToDB.put(DB_RECORD, new MongoDatabase(host, port, database, user, password));
 		
 		// Access database
-		host = Play.application().configuration().getString("mongo.access.host");
-		port = Play.application().configuration().getInt("mongo.access.port");
-		database = Play.application().configuration().getString("mongo.access.database");
-		user = Play.application().configuration().getString("mongo.access.username", null);
-		password = Play.application().configuration().getString("mongo.access.password", null);
+		host = config.getString("mongo.access.host");
+		port = config.getInt("mongo.access.port");
+		database = config.getString("mongo.access.database");
+		user = config.hasPath("mongo.access.username") ? config.getString("mongo.access.username") : null;
+		password = config.hasPath("mongo.access.password") ? config.getString("mongo.access.password") : null;
+		
 		dbnameToDB.put(DB_ACCESS, new MongoDatabase(host, port, database, user, password));
 				
 		// Log database
@@ -85,8 +88,8 @@ public class DBLayer {
 	/**
 	 * Open mongo client.
 	 */
-	private static void openConnection(boolean debug) throws DatabaseException {
-		init(debug);
+	private static void openConnection(boolean debug, Config config) throws DatabaseException {
+		init(debug, config);
 		
 		for (Database db : dbnameToDB.values()) { db.openConnection(); }		
 	}
@@ -94,15 +97,15 @@ public class DBLayer {
 	/**
 	 * Connects to the production database 'healthdata'.
 	 */
-	public static void connect() throws DatabaseException {
-		openConnection(false);		
+	public static void connect(Config config) throws DatabaseException {
+		openConnection(false, config);		
 	}
 
 	/**
 	 * Connects to the test database 'test'.
 	 */
-	public static void connectToTest() throws DatabaseException {
-		openConnection(true);		
+	public static void connectToTest(Config config) throws DatabaseException {
+		openConnection(true, config);		
 	}
 
 	/**
@@ -116,8 +119,7 @@ public class DBLayer {
 	/**
 	 * Sets up the collections and creates all indices.
 	 */
-	public static void initialize() {
-		// TODO
+	public static void initialize() {		
 	}	
 
 	public static MongoDatabase getDatabaseForCollection(String collection) {

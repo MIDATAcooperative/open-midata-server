@@ -1,32 +1,26 @@
 package controllers;
 
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
-import org.apache.http.HttpStatus;
 import org.bson.BSONObject;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
+import com.mongodb.BasicDBObject;
 import com.mongodb.util.JSONParseException;
 
 import actions.MobileCall;
 import controllers.members.HealthProvider;
-import models.Circle;
 import models.Consent;
 import models.ContentInfo;
 import models.HPUser;
 import models.Member;
-import models.MessageDefinition;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.Plugin;
@@ -34,14 +28,11 @@ import models.Record;
 import models.RecordsInfo;
 import models.ResearchUser;
 import models.Space;
-import models.Study;
 import models.StudyParticipation;
-import models.StudyRelated;
 import models.User;
 import models.enums.AggregationType;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
-import models.enums.EventType;
 import models.enums.MessageReason;
 import models.enums.ParticipationStatus;
 import models.enums.UserFeature;
@@ -49,15 +40,14 @@ import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.access.AccessContext;
 import utils.access.AppAccessContext;
 import utils.access.Feature_FormatGroups;
-import utils.access.Query;
 import utils.access.RecordManager;
-import utils.access.SpaceAccessContext;
 import utils.audit.AuditManager;
 import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
@@ -65,11 +55,10 @@ import utils.auth.MobileAppSessionToken;
 import utils.auth.MobileAppToken;
 import utils.auth.RecordToken;
 import utils.auth.Rights;
-import utils.collections.CMaps;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
-import utils.db.LostUpdateException;
 import utils.db.FileStorage.FileData;
+import utils.db.LostUpdateException;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
@@ -105,60 +94,9 @@ public class MobileAPI extends Controller {
 	 * @throws BadRequestException
 	 */
 	public static Result invalidToken() throws BadRequestException {
-		throw new BadRequestException("error.invalid.token", "Invalid or expired authToken.", HttpStatus.SC_UNAUTHORIZED);
+		throw new BadRequestException("error.invalid.token", "Invalid or expired authToken.", Http.Status.UNAUTHORIZED);
 	}
-	
-	/**
-	 * login function for MIDATA app
-	 * @return status ok
-	 * @throws AppException
-	
-	@APICall
-	@BodyParser.Of(BodyParser.Json.class)
-	public static Result midataLogin() throws AppException {
-		// validate 
-		JsonNode json = request().body().asJson();	
-		User user;
-		String passphrase = null;
 		
-		if (json.has("email")) {		
-		  JsonValidation.validate(json, "email", "password");	
-		  String email = JsonValidation.getEMail(json, "email");
-		  String password = JsonValidation.getString(json, "password");
-		  passphrase = JsonValidation.getStringOrNull(json, "passphrase");
-		
-		  // check status
-		  user = Member.getByEmail(email , Sets.create("password", "status", "contractStatus", "emailStatus", "confirmationCode", "accountVersion", "role"));
-		  if (user == null) return badRequest("Invalid user or password.");
-		  if (!Member.authenticationValid(password, user.password)) {
-			return badRequest("Invalid user or password.");
-		  }
-		} else {
-		  JsonValidation.validate(json, "token");
-		  MobileAppToken test = MobileAppToken.decrypt(JsonValidation.getString(json, "token"));
-		  user = User.getById(test.appId , Sets.create("password", "status", "contractStatus", "emailStatus", "confirmationCode", "accountVersion", "role"));
-		  passphrase = test.phrase;
-		}
-			 
-		KeyManager.instance.unlock(user._id, passphrase);
-	    Set<Space> spaces = Space.getAll(CMaps.map("owner", user._id).map("context", "mobile"), Space.ALL);
-	    
-	    for (Space space : spaces) {
-	       SpaceToken spaceToken = new SpaceToken(space._id, user._id);
-	       Plugin visualization = Plugin.getById(space.visualization, Sets.create("type", "name", "filename", "url", "creator", "developmentServer", "accessTokenUrl", "authorizationUrl", "consumerKey", "scopeParameters"));
-	       String visualizationServer = "https://" + Play.application().configuration().getString("visualizations.server") + "/" + visualization.filename;
-	 	   String url =  visualizationServer  + "/" + visualization.url;
-	 	   url = url.replace(":authToken", spaceToken.encrypt());
-	 	   space.context = url;
-	    }
-	    
-	    ObjectNode obj = Json.newObject();
-	    obj.put("spaces", JsonOutput.toJsonNode(spaces, "Space", Sets.create("name", "context")));
-	    obj.put("token", new MobileAppToken(user._id, user._id, passphrase).encrypt());
-		return ok(obj);
-	
-	}
-	 */
 		
 	
 	private static boolean verifyAppInstance(MobileAppInstance appInstance, MidataId ownerId, MidataId applicationId) throws AppException {
@@ -526,11 +464,11 @@ public class MobileAPI extends Controller {
 						
 		ExecutionInfo info = null;
 		
-		String param = request().getHeader("Authorization");
+		Optional<String> param = request().header("Authorization");
 		String param2 = request().getQueryString("access_token");
 		
-		if (param != null && param.startsWith("Bearer ")) {
-          info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()), false);                  
+		if (param.isPresent() && param.get().startsWith("Bearer ")) {
+          info = ExecutionInfo.checkToken(request(), param.get().substring("Bearer ".length()), false);                  
 		} else if (json != null && json.has("authToken")) {
 		  info = ExecutionInfo.checkToken(request(), JsonValidation.getString(json, "authToken"), false);
 		} else if (param2 != null) {
@@ -540,11 +478,12 @@ public class MobileAPI extends Controller {
 		MidataId recordId = json != null ? JsonValidation.getMidataId(json, "_id") : new MidataId(request().getQueryString("_id"));			
 		FileData fileData = RecordManager.instance.fetchFile(info.executorId, new RecordToken(recordId.toString(), info.targetAPS.toString()));
 		if (fileData == null) return badRequest();
-		if (fileData.contentType != null) response().setContentType(fileData.contentType);
+		String contentType = "application/binary";
+		if (fileData.contentType != null) contentType = fileData.contentType;
 		//response().setHeader("Content-Disposition", "attachment; filename=" + fileData.filename);
 		
 		Stats.finishRequest(request(), "200", Collections.EMPTY_SET);
-		return ok(fileData.inputStream);
+		return ok(fileData.inputStream).as(contentType);
 	}
 	
 	/**
@@ -597,7 +536,7 @@ public class MobileAPI extends Controller {
 		ContentInfo.setRecordCodeAndContent(record, code, content);
 				
 		try {
-			record.data = (DBObject) JSON.parse(data);
+			record.data = BasicDBObject.parse(data);
 		} catch (JSONParseException e) {
 			throw new BadRequestException("error.invalid.json", "Record data is invalid JSON.");
 		} catch (ClassCastException e2) {
@@ -644,7 +583,7 @@ public class MobileAPI extends Controller {
 		record.lastUpdated = new Date();		
 							
 		try {
-			record.data = (DBObject) JSON.parse(data);
+			record.data = BasicDBObject.parse(data);
 		} catch (JSONParseException e) {
 			throw new BadRequestException("error.invalid.json", "Record data is invalid JSON.");
 		}

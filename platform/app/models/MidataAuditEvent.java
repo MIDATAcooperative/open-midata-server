@@ -8,9 +8,6 @@ import java.util.Set;
 import org.bson.BSONObject;
 
 import models.enums.AuditEventType;
-import models.enums.EventType;
-import models.enums.StudyExecutionStatus;
-import models.enums.UserRole;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;

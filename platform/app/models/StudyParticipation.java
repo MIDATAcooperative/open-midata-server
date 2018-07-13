@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bson.BSONObject;
-
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.Gender;

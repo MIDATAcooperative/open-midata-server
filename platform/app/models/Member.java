@@ -108,12 +108,7 @@ public class Member extends User {
 		}*/
 	}
 
-	public static void delete(MidataId userId) throws InternalServerException {
-		// remove from search index
-		//Search.delete(Type.USER, userId);
-
-		// TODO remove all the user's messages, records, spaces, circles, apps (if published, ask whether to leave it in
-		// the marketplace), ...
+	public static void delete(MidataId userId) throws InternalServerException {		
 		Model.delete(Member.class, collection, new ChainedMap<String, MidataId>().put("_id", userId).get());
 	}
 	

@@ -58,10 +58,7 @@ public class MongoDatabase extends Database {
 	 * Open mongo client.
 	 */
 	protected void openConnection() throws DatabaseException {
-		//String host = Play.application().configuration().getString("mongo.host");
-		//int port = Play.application().configuration().getInt("mongo.port");
-		//database = Play.application().configuration().getString("mongo.database");
-		//try {
+		
 		
 		if (host.indexOf(",") >= 0) {
 			host = host.substring(host.indexOf("/"));
@@ -102,8 +99,7 @@ public class MongoDatabase extends Database {
 	/**
 	 * Sets up the collections and creates all indices.
 	 */
-	protected void initialize() {
-		// TODO
+	protected void initialize() {		
 	}	
 
 	/**

@@ -6,10 +6,8 @@ import javax.servlet.ServletException;
 
 import actions.MobileCall;
 import models.enums.UserRole;
-import play.api.mvc.RawBuffer;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
-import play.mvc.Http;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.auth.ExecutionInfo;
@@ -126,7 +124,7 @@ public class FHIR extends Controller {
 	 * @throws ServletException
 	 */
 	@MobileCall
-	@BodyParser.Of(value = BodyParser.Raw.class, maxLength = 100 * 1024 * 1024)
+	@BodyParser.Of(value = BodyParser.Raw.class)
 	public static Result postRoot() throws AppException, IOException, ServletException {
 		return post("/");
 	}
@@ -141,7 +139,7 @@ public class FHIR extends Controller {
 	 * @throws ServletException
 	 */
 	@MobileCall
-	@BodyParser.Of(value = BodyParser.Raw.class, maxLength = 100 * 1024 * 1024)
+	@BodyParser.Of(value = BodyParser.Raw.class)
 	public static Result post(String all) throws AppException, IOException, ServletException {
 				
 		Stats.startRequest(request());
@@ -193,7 +191,7 @@ public class FHIR extends Controller {
 	 * @throws ServletException
 	 */
 	@MobileCall
-	@BodyParser.Of(value = BodyParser.Raw.class, maxLength = 100 * 1024 * 1024)
+	@BodyParser.Of(value = BodyParser.Raw.class)
 	public static Result putRoot() throws AppException, IOException, ServletException {
 		return put("/");
 	}
@@ -208,7 +206,7 @@ public class FHIR extends Controller {
 	 * @throws ServletException
 	 */
 	@MobileCall
-	@BodyParser.Of(value = BodyParser.Raw.class, maxLength = 100 * 1024 * 1024)
+	@BodyParser.Of(value = BodyParser.Raw.class)
 	public static Result put(String all) throws AppException, IOException, ServletException {
 		Stats.startRequest(request());
 		

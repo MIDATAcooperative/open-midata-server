@@ -2,21 +2,23 @@ package controllers;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import org.bson.BSONObject;
 import org.joda.time.DateTime;
 import org.joda.time.Seconds;
 
+import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Cancellable;
 import akka.actor.Props;
-import akka.actor.UntypedActor;
-import akka.contrib.pattern.ClusterSingletonManager;
-import akka.contrib.pattern.ClusterSingletonProxy;
+import akka.cluster.singleton.ClusterSingletonManager;
+import akka.cluster.singleton.ClusterSingletonManagerSettings;
+import akka.cluster.singleton.ClusterSingletonProxy;
+import akka.cluster.singleton.ClusterSingletonProxySettings;
 import akka.routing.ActorRefRoutee;
 import akka.routing.RoundRobinRoutingLogic;
 import akka.routing.Routee;
@@ -29,11 +31,7 @@ import models.Plugin;
 import models.Space;
 import models.User;
 import models.enums.UserRole;
-import play.Play;
-import play.libs.Akka;
-import play.libs.F.Callback;
 import play.mvc.Result;
-import scala.concurrent.duration.Duration;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
@@ -64,10 +62,16 @@ public class AutoRun extends APIController {
 		
 		//manager = Akka.system().actorOf(Props.create(ImportManager.class), "manager");
 		
-		managerSingleton = Instances.system().actorOf(ClusterSingletonManager.defaultProps(Props.create(ImportManager.class), "manager-instance",
-			    null, null), "manager-singleton");
+		final ClusterSingletonManagerSettings settings =
+				  ClusterSingletonManagerSettings.create(Instances.system());
 		
-		manager = Instances.system().actorOf(ClusterSingletonProxy.defaultProps("user/manager-singleton/manager-instance", null), "manager");
+		managerSingleton = Instances.system().actorOf(ClusterSingletonManager.props(Props.create(ImportManager.class), null, settings), "autoimport");
+		
+		final ClusterSingletonProxySettings proxySettings =
+			    ClusterSingletonProxySettings.create(Instances.system());
+
+		
+		manager = Instances.system().actorOf(ClusterSingletonProxy.props("user/autoimport", proxySettings), "autoimportProxy");
 		
 		
 	}
@@ -180,19 +184,24 @@ public class AutoRun extends APIController {
 	 * Akka actor that runs the plugin of a specific space
 	 *
 	 */
-	public static class Importer extends UntypedActor {
+	public static class Importer extends AbstractActor {
 
 		@Override
-		public void onReceive(Object message) throws Exception {
-		    if (message instanceof ImportRequest) {
+		public Receive createReceive() {
+		    return receiveBuilder()
+		      .match(ImportRequest.class, this::doImport)	      
+		      .build();
+		}
+				
+		public void doImport(ImportRequest message) throws Exception {		    
 		    	try {
 			    	ImportRequest request = (ImportRequest) message;
 			    	KeyManager.instance.continueSession(request.handle);
 			    	MidataId autorunner = request.autorunner;
 			    	Space space = request.space;
 			        
-			    	final String nodepath = Play.application().configuration().getString("node.path");
-					final String visPath = Play.application().configuration().getString("visualizations.path");
+			    	final String nodepath = InstanceConfig.getInstance().getConfig().getString("node.path");
+					final String visPath = InstanceConfig.getInstance().getConfig().getString("visualizations.path");
 							    	
 			    	final Plugin plugin = Plugin.getById(space.visualization, Sets.create("type", "filename", "name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret", "tokenExchangeParams"));
 					SpaceToken token = new SpaceToken(request.handle, space._id, space.owner, null, null, autorunner);
@@ -210,8 +219,9 @@ public class AutoRun extends APIController {
 						BSONObject oauthmeta = RecordManager.instance.getMeta(autorunner, space._id, "_oauth");
 						if (oauthmeta != null) {
 							if (oauthmeta.get("refreshToken") != null) {							                        				
-								Plugins.requestAccessTokenOAuth2FromRefreshToken(request.handle, autorunner, plugin, space._id.toString(), oauthmeta.toMap()).onRedeem(new Callback<Boolean>() {
-									public void invoke(Boolean success) throws AppException, IOException {
+								Plugins.requestAccessTokenOAuth2FromRefreshToken(request.handle, autorunner, plugin, space._id.toString(), oauthmeta.toMap()).thenAcceptAsync(success1 -> {
+									try{
+									    boolean success = (Boolean) success1;
 										AccessLog.log("Auth:"+success);
 										if (success) {
 											AccessLog.log(nodepath+" "+visPath+"/"+plugin.filename+"/server.js"+" "+tokenstr+" "+lang+" "+owner);
@@ -225,7 +235,8 @@ public class AutoRun extends APIController {
 										} else {
 											sender.tell(new ImportResult(-1), getSelf());
 										}
-										
+									} catch (IOException e) {
+										ErrorReporter.report("Autorun-Service", null, e);
 									}
 								});
 		
@@ -254,10 +265,7 @@ public class AutoRun extends APIController {
 		    		throw e;
 		    	} finally {
 		    		ServerTools.endRequest();		    		
-		    	}
-		      } else {
-		        unhandled(message);
-		      }			
+		    	}		    
 		}
 		
 	}
@@ -266,7 +274,7 @@ public class AutoRun extends APIController {
 	 * Akka actor that manages the import process
 	 *
 	 */
-	public static class ImportManager extends UntypedActor {
+	public static class ImportManager extends AbstractActor {
 
 		private final Router workerRouter;
 		private final int nrOfWorkers;
@@ -293,7 +301,7 @@ public class AutoRun extends APIController {
 		
 		@Override
 		public void postStop() throws Exception {
-			// TODO Auto-generated method stub
+			
 			super.postStop();
 			
 			importer.cancel();
@@ -306,18 +314,24 @@ public class AutoRun extends APIController {
 			super.preStart();
 			
 			importer = getContext().system().scheduler().schedule(
-	                Duration.create(nextExecutionInSeconds(4, 0), TimeUnit.SECONDS),
-	                Duration.create(24, TimeUnit.HOURS),
+	                Duration.ofSeconds(nextExecutionInSeconds(4, 0)),
+	                Duration.ofHours(24),
 	                manager, new StartImport(),
-	                Akka.system().dispatcher(), null);		
+	                Instances.system().dispatcher(), null);		
 		}
 
 
-
 		@Override
-		public void onReceive(Object message) throws Exception {
+		public Receive createReceive() {
+		    return receiveBuilder()
+		      .match(StartImport.class, this::startImport)
+		      .match(ImportResult.class, this::processResult)
+		      .build();
+		}
+		
+		public void startImport(StartImport message) throws Exception {
 			try {
-			if (message instanceof StartImport) {
+			
 				AccessLog.log("Starting Autoimport...");
 				PersistedSession.deleteExpired();
 				try {
@@ -336,19 +350,18 @@ public class AutoRun extends APIController {
 			    }
 				
 				AccessLog.log("Done scheduling Autoimport size="+autoImports.size());
-			} else if (message instanceof ImportResult) {
-				ImportResult result = (ImportResult) message;
-				if (result.exitCode == 0) numberSuccess++; else numberFailure++;
-				AccessLog.log("Autoimport success="+numberSuccess+" fail="+numberFailure);
-			} else {
-			    unhandled(message);
-		    }	
 			} catch (Exception e) {
 				ErrorReporter.report("Autorun-Service", null, e);	
 				throw e;
 			} finally {
 				ServerTools.endRequest();				
 			}
+
+		}
+		
+		public void processResult(ImportResult result) throws Exception {							
+				if (result.exitCode == 0) numberSuccess++; else numberFailure++;
+				AccessLog.log("Autoimport success="+numberSuccess+" fail="+numberFailure);
 		}
 		
 	}

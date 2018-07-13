@@ -7,39 +7,32 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
 
+import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
+import akka.actor.ActorSystem;
 import akka.actor.Props;
-import akka.actor.UntypedActor;
-import models.MessageDefinition;
 import models.MidataId;
-import models.Plugin;
 import models.PluginDevStats;
-import models.User;
-import models.enums.MessageReason;
-import play.libs.Akka;
 import play.mvc.Http.Request;
-import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
-import utils.RuntimeConstants;
 import utils.ServerTools;
-import utils.access.RecordManager;
-import utils.collections.Sets;
-import utils.exceptions.AppException;
 
 
 public class Stats {
 
 	private static ActorRef statsRecorder;
+		
+	private static ActorSystem system;
 	
 	private final static ThreadLocal<PluginDevStats> currentStats = new ThreadLocal<PluginDevStats>();
 	
 	public final static boolean enabled = InstanceConfig.getInstance().getInstanceType().doAppDeveloperStats();
 	
-	public static void init() {
-		statsRecorder = Akka.system().actorOf(Props.create(StatsRecorder.class), "statsRecorder");
+	public static void init(ActorSystem system1) {
+		system = system1;
+		statsRecorder = system.actorOf(Props.create(StatsRecorder.class), "statsRecorder");
 	}
 	
 	public static void startRequest() {
@@ -160,17 +153,21 @@ class StatsMessage {
 	}
 }
 
-class StatsRecorder extends UntypedActor {
+class StatsRecorder extends AbstractActor {
 			
 	public StatsRecorder() {							    
 	}
 	
 	@Override
-	public void onReceive(Object message) throws Exception {
+	public Receive createReceive() {
+	    return receiveBuilder()
+	      .match(StatsMessage.class, this::updateStats)	      
+	      .build();
+	}
+		
+	public void updateStats(StatsMessage msg) throws Exception {
 		try {
-		if (message instanceof StatsMessage) {
-			StatsMessage msg = (StatsMessage) message;
-			
+					
 			PluginDevStats stats = PluginDevStats.getByRequest(MidataId.from(msg.plugin), msg.action, msg.params);
 			if (stats == null) {
 			  stats = new PluginDevStats();
@@ -204,10 +201,7 @@ class StatsRecorder extends UntypedActor {
 				else stats.queryCount.put(queries.getKey(), queries.getValue());
 			}
 			
-			stats.update();
-		} else {
-		    unhandled(message);
-	    }	
+			stats.update();	
 		} catch (Exception e) {
 			ErrorReporter.report("Messager", null, e);	
 			throw e;

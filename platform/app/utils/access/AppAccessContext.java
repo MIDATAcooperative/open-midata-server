@@ -37,8 +37,7 @@ public class AppAccessContext extends AccessContext {
 	}
 
 	@Override
-	public boolean mustPseudonymize() {
-		// TODO Auto-generated method stub
+	public boolean mustPseudonymize() {		
 		return false;
 	}
 

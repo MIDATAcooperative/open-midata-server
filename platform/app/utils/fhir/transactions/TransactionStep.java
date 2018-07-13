@@ -8,7 +8,6 @@ import org.hl7.fhir.dstu3.model.Resource;
 
 import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
 import models.Model;
-import models.Record;
 import utils.ErrorReporter;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;

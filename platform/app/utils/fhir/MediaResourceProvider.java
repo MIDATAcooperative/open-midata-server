@@ -1,20 +1,13 @@
 package utils.fhir;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.Appointment;
 import org.hl7.fhir.dstu3.model.Attachment;
 import org.hl7.fhir.dstu3.model.Base64BinaryType;
 import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.Coding;
-import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Media;
 import org.hl7.fhir.dstu3.model.Patient;
-import org.hl7.fhir.dstu3.model.Reference;
-import org.hl7.fhir.instance.model.api.IBaseResource;
-import org.hl7.fhir.instance.model.api.IIdType;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
@@ -29,23 +22,14 @@ import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
-import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
-import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
-import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
-import models.ContentInfo;
-import models.MidataId;
 import models.Record;
-import play.Play;
-import utils.ErrorReporter;
-import utils.access.RecordManager;
+import utils.InstanceConfig;
 import utils.auth.ExecutionInfo;
-import utils.auth.RecordToken;
 import utils.collections.Sets;
-import utils.db.FileStorage.FileData;
 import utils.exceptions.AppException;
 
 public class MediaResourceProvider extends RecordBasedResourceProvider<Media> implements IResourceProvider {
@@ -237,7 +221,7 @@ public class MediaResourceProvider extends RecordBasedResourceProvider<Media> im
 		
 		Attachment attachment = p.getContent();
 		if (attachment != null && attachment.getUrl() == null && attachment.getData() == null) {	
-		  String url = "https://"+Play.application().configuration().getString("platform.server")+"/v1/records/file?_id="+record._id;
+		  String url = "https://"+InstanceConfig.getInstance().getPlatformServer()+"/v1/records/file?_id="+record._id;
 		  attachment.setUrl(url);
 		}
 		

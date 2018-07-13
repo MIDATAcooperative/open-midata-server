@@ -17,14 +17,14 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
 
-import play.Play;
+import utils.InstanceConfig;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 
 public class TokenCrypto {
 
-	private static final String instanceSecret = Play.application().configuration().getString("application.secret");
+	private static final String instanceSecret = InstanceConfig.getInstance().getConfig().getString("play.http.secret.key");
 	
 	private static final SecretKey tokenKey = new SecretKeySpec(instanceSecret.getBytes(), 0, 32, "AES");
 	private static final SecretKey signKey = new SecretKeySpec(instanceSecret.getBytes(), 32, 32, "HMACSHA256");
@@ -97,7 +97,7 @@ public class TokenCrypto {
 		
 	}
 	
-	public static String decryptToken(String input) throws AppException {
+	public static String decryptToken(String input) throws AppException {		
 		try {
 			byte[] encrypted = Base64.decodeBase64(input);
 			
