@@ -1,17 +1,8 @@
 package utils.access;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import models.MidataId;
-import models.StudyParticipation;
-import utils.AccessLog;
 import utils.collections.CMaps;
-import utils.collections.Sets;
 import utils.exceptions.AppException;
-import utils.exceptions.InternalServerException;
 
 public class Feature_Pseudonymization extends Feature {
 

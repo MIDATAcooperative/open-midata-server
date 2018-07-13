@@ -98,7 +98,7 @@ public class Users extends APIController {
 		
 		
 		
-		if (properties.containsKey("_id") && properties.get("_id").toString().equals(request().username())) {
+		if (properties.containsKey("_id") && properties.get("_id").toString().equals(request().attrs().get(play.mvc.Security.USERNAME))) {
 		  Rights.chk("Users.getSelf", getRole(), properties, fields);
 		} else if (properties.containsKey("role")) {
 		  role = UserRole.valueOf(properties.get("role").toString());
@@ -199,7 +199,7 @@ public class Users extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
 	public static Result loadContacts() throws InternalServerException {
-		MidataId userId = new MidataId(request().username());
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		Set<MidataId> contactIds = new HashSet<MidataId>();
 		Set<Member> contacts;
 	
@@ -238,7 +238,7 @@ public class Users extends APIController {
 		JsonValidation.validate(json, "user", "firstname", "lastname", "gender", "city", "zip", "country", "address1");
 							
 		MidataId userId = JsonValidation.getMidataId(json, "user");			
-		MidataId executorId = new MidataId(request().username());
+		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		
 		//Check authorization except for change self
 		if (!executorId.equals(userId)) {
@@ -323,7 +323,7 @@ public class Users extends APIController {
 		
 		String language = JsonValidation.getString(json, "language");
 					
-		MidataId userId = new MidataId(request().username());
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 				
 		User user = User.getById(userId, Sets.create("_id")); 
 		
@@ -344,7 +344,7 @@ public class Users extends APIController {
 	@APICall
 	@Security.Authenticated(PreLoginSecured.class)
 	public static Result requestMembership() throws AppException {
-		MidataId userId = new MidataId(request().username());
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		return requestMembershipHelper(userId);
 	}
 	
@@ -399,7 +399,7 @@ public class Users extends APIController {
 	public static Result accountWipe() throws AppException {
 		if (!InstanceConfig.getInstance().getInstanceType().getAccountWipeAvailable()) throw new InternalServerException("error.internal", "Only allowed on demo server");
 		
-		MidataId userId = new MidataId(request().username());
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "_id", "password");

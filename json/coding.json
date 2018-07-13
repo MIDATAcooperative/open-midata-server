@@ -242,3 +242,5 @@
 {"_id":{"$oid":"5ae9d765aed64509ec03dbec"},"system":"http://snomed.info/sct","code":"24672009","display":"Galvanic skin response","content":"snomed/24672009"}
 {"_id":{"$oid":"5b0d6bbeaed6451dd798d678"},"system":"http://loinc.org","code":"66378-1","display":"Do you take cortisone?","content":"loinc/66378-1"}
 {"_id":{"$oid":"5b0d6c1caed6451dd798d67a"},"system":"http://snomed.info/sct","code":"422673001","display":"Snellen visual acuity","content":"snomed/422673001"}
+{"_id":{"$oid":"5b3f7eb1cf569311e2c5f098"},"system":"http://snomed.info/sct","code":"434910001","display":"Interstitial fluid glucose concentration","content":"snomed/434910001"}
+

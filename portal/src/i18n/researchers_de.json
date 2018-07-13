@@ -16,7 +16,25 @@
         "studies" : "Studien",
         "workspace" : "Workspace",
         "data" : "Daten",
-        "addresearcher" : "Forscher hinzufügen"
+        "addresearcher" : "Forscher hinzufügen",
+
+        // TODO NEW: Organization
+        "organization" : "Organization"
+    },
+
+    "researcher_organization" : {
+
+        // TODO NEW: Organization
+        "title" : "Organization",
+
+        // TODO NEW: Org. Name
+        "name" : "Org. Name",
+
+        // TODO NEW: Description
+        "description" : "Description",
+
+        // TODO NEW: All researchers of your organization
+        "researchers" : "All researchers of your organization"
     },
 
     "createstudy" : {
@@ -66,9 +84,20 @@
         "required_data" : "Erforderliche Daten",
         "no_change_warning" : "Diese Konfiguration kann nicht mehr geändert werden, sobald die Studie validiert wurde.",
         "member_identity" : "Identität des Mitglieds",
-        "anonymous1" : "Pseudonymisierte Teilnahme",
+
+        // TODO NEW: Pseudonymized Participation
+        "pseudonymous1" : "Pseudonymized Participation",
+
+        // TODO NEW: , exported data reveals pseudonymized ID, year of birth, gender and country. Some researchers like study nurses may have access to full personal data.
+        "pseudonymous2" : ", exported data reveals pseudonymized ID, year of birth, gender and country. Some researchers like study nurses may have access to full personal data.",
+
+        // TODO NEW: Anonymous Participation
+        "anonymous" : "Anonymous Participation",
+
+        // TODO CHANGED
+        // OLD: , reveals pseudonymized ID, year of birth, gender and country
+        // NEW: , reveals pseudonymized ID, year of birth, gender and country. Pseudonymization mapping may not be accessed.
         "anonymous2" : ", legt pseudonymisierte ID, Geburtsjahr, Geschlecht und Land offen",
-        "anonymous3" : "Anonym: Auf das Pseudonymisierungs-Mapping kann nicht zugegriffen werden.",
         "not_anonymous1" : "Nicht pseudonymisiert",
         "not_anonymous2" : ", bedingt, dass das Mitglied seinen vollständigen Namen, Geburtsdatum und Kontaktinformationen (Adresse, Telefon, E-Mail) teilt",
         "assistance" : "Unterstützung",

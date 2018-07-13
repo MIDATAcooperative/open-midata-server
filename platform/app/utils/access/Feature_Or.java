@@ -1,11 +1,8 @@
 package utils.access;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
 
-import models.MidataId;
-import utils.AccessLog;
 import utils.exceptions.AppException;
 
 public class Feature_Or extends Feature {

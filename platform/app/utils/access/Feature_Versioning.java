@@ -9,16 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bson.BSONObject;
-import org.bson.BasicBSONObject;
-import org.bson.types.BasicBSONList;
-
 import models.MidataId;
-import models.enums.APSSecurityLevel;
-import utils.AccessLog;
-import utils.db.NotMaterialized;
 import utils.exceptions.AppException;
-import utils.exceptions.BadRequestException;
 
 public class Feature_Versioning extends Feature {
 

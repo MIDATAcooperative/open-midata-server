@@ -19,7 +19,6 @@ import models.MidataId;
 import models.Plugin;
 import models.RecordGroup;
 import models.Study;
-import utils.AccessLog;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;

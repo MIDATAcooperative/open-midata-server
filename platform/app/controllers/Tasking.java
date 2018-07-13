@@ -20,7 +20,6 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
-import utils.access.DummyAccessContext;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
 import utils.collections.CMaps;
@@ -51,7 +50,7 @@ public class Tasking extends APIController {
 	public static Result add() throws InternalServerException, JsonValidationException {
 		// validate json
 		JsonNode json = request().body().asJson();
-		MidataId userId = new MidataId(request().username());
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		JsonValidation.validate(json, "owner", "plugin", "shareBackTo", "context", "title", "description", "pluginQuery", "confirmQuery", "frequency");
 		
 		Task task = new Task();
@@ -112,7 +111,7 @@ public class Tasking extends APIController {
 	@APICall
 	public static Result list() throws AppException {
 		
-		MidataId userId = new MidataId(request().username());		
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));		
 		Set<Task> tasks = Task.getAllByOwner(userId, Sets.create("owner", "createdBy", "plugin", "shareBackTo", "createdAt", "deadline", "context", "title", "description", "pluginQuery", "confirmQuery", "frequency", "done"));
 		
 		for (Task task : tasks) {
@@ -133,7 +132,7 @@ public class Tasking extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
 	public static Result execute(String taskIdStr) throws AppException {
-		MidataId userId = new MidataId(request().username());
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId taskId = new MidataId(taskIdStr);
 		
 		Task task = Task.getByIdAndOwner(taskId, userId, Sets.create("owner", "createdBy", "plugin", "shareBackTo", "createdAt", "deadline", "context", "title", "description", "pluginQuery", "confirmQuery", "frequency", "done"));

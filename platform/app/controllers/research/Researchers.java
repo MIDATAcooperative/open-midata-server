@@ -2,16 +2,13 @@ package controllers.research;
 
 import java.util.Date;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 import actions.APICall;
 import controllers.APIController;
 import controllers.Application;
-import models.Admin;
 import models.MidataId;
 import models.Research;
 import models.ResearchUser;
@@ -30,7 +27,6 @@ import play.mvc.Security;
 import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
-import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
@@ -113,7 +109,7 @@ public class Researchers extends APIController {
 							
 		String email = JsonValidation.getEMail(json, "email");
 			
-		MidataId executorId = new MidataId(request().username());
+		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		User executingUser = User.getById(executorId, User.ALL_USER);
 		
 	    ResearchUser user = new ResearchUser(email);
@@ -134,7 +130,7 @@ public class Researchers extends APIController {
 		if (user.organization == null) throw new InternalServerException("error.internal", "No organization in session for register researcher!");
 		user.status = UserStatus.ACTIVE;
 						
-		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, null, new MidataId(request().username()), user);
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, null, new MidataId(request().attrs().get(play.mvc.Security.USERNAME)), user);
 		register(user ,null, executingUser);
 			
 		AuditManager.instance.success();
@@ -212,7 +208,7 @@ public class Researchers extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result getOrganization(String id) throws AppException {
 			
-		MidataId userId = new MidataId(request().username());
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId researchid = MidataId.from(id);
 						
 		Research research = Research.getById(researchid, Research.ALL);

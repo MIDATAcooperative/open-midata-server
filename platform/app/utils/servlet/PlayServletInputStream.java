@@ -6,8 +6,6 @@ import java.io.IOException;
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 
-import scala.NotImplementedError;
-
 /**
  * ServletInputStream emulation for Play Framework
  *
@@ -26,17 +24,17 @@ public class PlayServletInputStream extends ServletInputStream {
 	
 	@Override
 	public boolean isFinished() {
-		throw new NotImplementedError();
+		throw new RuntimeException("Not implemented");	
 	}
 
 	@Override
 	public boolean isReady() {
-		throw new NotImplementedError();
+		throw new RuntimeException("Not implemented");	
 	}
 
 	@Override
 	public void setReadListener(ReadListener arg0) {
-		throw new NotImplementedError();
+		throw new RuntimeException("Not implemented");	
 		
 	}
 

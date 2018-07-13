@@ -1,6 +1,5 @@
 package controllers;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -58,7 +57,7 @@ public class UserGroups extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result search() throws AppException {
 		JsonNode json = request().body().asJson();				
-		MidataId executorId = new MidataId(request().username());
+		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		
         JsonValidation.validate(json, "properties", "fields");
 		
@@ -96,7 +95,7 @@ public class UserGroups extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result listUserGroupMembers() throws AppException {
 		JsonNode json = request().body().asJson();				
-		MidataId executorId = new MidataId(request().username());
+		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		
         JsonValidation.validate(json, "usergroup");
         MidataId groupId = JsonValidation.getMidataId(json, "usergroup");
@@ -134,7 +133,7 @@ public class UserGroups extends APIController {
 	public static Result createUserGroup() throws AppException {
         JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "name");
-		MidataId executorId = new MidataId(request().username());
+		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		
 		UserGroup userGroup = new UserGroup();
 		
@@ -181,7 +180,7 @@ public class UserGroups extends APIController {
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result deleteUserGroup(String groupIdStr) throws AppException {       
-		MidataId executorId = new MidataId(request().username());
+		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId groupId = MidataId.from(groupIdStr);
 		
 		UserGroupMember execMember = UserGroupMember.getByGroupAndMember(groupId, executorId);
@@ -230,7 +229,7 @@ public class UserGroups extends APIController {
 	public static Result addMembersToUserGroup() throws AppException {
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "members", "group");
-		MidataId executorId = new MidataId(request().username());
+		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 	
 		MidataId groupId = JsonValidation.getMidataId(json, "group");
 		Set<MidataId> targetUserIds = JsonExtraction.extractMidataIdSet(json.get("members"));
@@ -316,7 +315,7 @@ public class UserGroups extends APIController {
 	public static Result deleteUserGroupMembership() throws AppException  {
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "member", "group");
-		MidataId executorId = new MidataId(request().username());
+		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 	
 		MidataId groupId = JsonValidation.getMidataId(json, "group");
 		MidataId targetUserId = JsonValidation.getMidataId(json, "member");

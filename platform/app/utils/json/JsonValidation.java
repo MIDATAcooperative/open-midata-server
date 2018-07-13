@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import models.MidataId;
-import utils.AccessLog;
 import utils.exceptions.BadRequestException;
 
 /**

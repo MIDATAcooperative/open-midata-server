@@ -1,9 +1,0 @@
-@setup("Authorized") {
-	<!-- Pass code to opener window. -->
-	<script type="text/javascript">
-		//<![CDATA[
-		window.opener.postMessage(window.location.search.split("?")[1], "http://" + window.location.hostname + ":9002");
-		//]]>
-	</script>
-	
-}

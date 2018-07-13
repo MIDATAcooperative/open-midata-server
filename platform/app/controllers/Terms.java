@@ -1,22 +1,16 @@
 package controllers;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.typesafe.config.Config;
 
 import actions.APICall;
-import models.Developer;
 import models.MidataId;
-import models.NewsItem;
 import models.TermsOfUse;
 import models.User;
-import models.enums.EventType;
-import play.Play;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
@@ -24,9 +18,7 @@ import play.mvc.Security;
 import utils.InstanceConfig;
 import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
-import utils.auth.Rights;
 import utils.collections.Sets;
-import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
@@ -35,6 +27,7 @@ import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 
 public class Terms extends APIController {
+		
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
@@ -42,7 +35,7 @@ public class Terms extends APIController {
 	public static Result add() throws AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
-		MidataId userId = new MidataId(request().username());
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		
 		JsonValidation.validate(json, "title", "text", "name", "version", "language");		
 
@@ -79,9 +72,9 @@ public class Terms extends APIController {
 		String name = JsonValidation.getString(json, "name");
 		String version = JsonValidation.getStringOrNull(json, "version");
 		String language = JsonValidation.getString(json, "language");
-		
+		Config config = InstanceConfig.getInstance().getConfig();
 		if (version == null && name.startsWith("midata-")) {
-			version = Play.application().configuration().getString("versions."+name,"1.0");
+			version = config.hasPath("versions."+name) ? config.getString("versions."+name) : "1.0";
 		}
 		
         TermsOfUse result = TermsOfUse.getByNameVersionLanguage(name, version, language);
@@ -92,8 +85,9 @@ public class Terms extends APIController {
 	}
 	
 	public static void addAgreedToDefaultTerms(User user) throws AppException {
-		String terms = Play.application().configuration().getString("versions.midata-terms-of-use","1.0");
-		String ppolicy = Play.application().configuration().getString("versions.midata-privacy-policy","1.0");		
+		Config config = InstanceConfig.getInstance().getConfig();
+		String terms = config.hasPath("versions.midata-terms-of-use") ? config.getString("versions.midata-terms-of-use") : "1.0";
+		String ppolicy = config.hasPath("versions.midata-privacy-policy") ? config.getString("versions.midata-privacy-policy") : "1.0";		
 		user.agreedToTerms("midata-terms-of-use--"+terms, user.initialApp);
 		user.agreedToTerms("midata-privacy-policy--"+ppolicy, user.initialApp);		
 	}

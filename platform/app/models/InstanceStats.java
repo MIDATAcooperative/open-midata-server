@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
-import models.enums.ConsentType;
-import models.enums.UserRole;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;

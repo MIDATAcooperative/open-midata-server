@@ -9,9 +9,6 @@ import models.MidataId;
 import models.Model;
 import utils.collections.CMaps;
 import utils.collections.Sets;
-import utils.db.DBLayer;
-import utils.db.DatabaseException;
-import utils.db.LostUpdateException;
 import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
 

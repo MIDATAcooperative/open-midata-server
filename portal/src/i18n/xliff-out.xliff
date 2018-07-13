@@ -3,6 +3,14 @@
     <file source-language="en" target-language="it" datatype="winres" original="shared_it.json">
         <body>
             <group resname="enum" id="enum">
+                <group resname="eventtype" id="enum.eventtype">
+                    <trans-unit resname="user-password-change-request" id="enum.eventtype.user-password-change-request">
+                        <source>Password change requested</source>
+                    </trans-unit>
+                    <trans-unit resname="user-birthday-change" id="enum.eventtype.user-birthday-change">
+                        <source>User's birthday changed</source>
+                    </trans-unit>
+                </group>
                 <group resname="researcherrole" id="enum.researcherrole">
                     <trans-unit resname="SPONSOR" id="enum.researcherrole.SPONSOR">
                         <source>Sponsor</source>
@@ -45,22 +53,52 @@
                 <trans-unit resname="password" id="registration.password">
                     <source>Password</source>
                 </trans-unit>
-                <trans-unit resname="welcome_text2" id="registration.welcome_text2">
-                    <source>Please click on the link in the email within 24 hours to complete your registration.</source>
-                    <target>Clicca sul link nell'e-mail entro 24 ore per completare l'iscrizione.</target>
-                </trans-unit>
-                <trans-unit resname="welcome_text3" id="registration.welcome_text3">
-                    <source>If you should not receive the email within the next 30 minutes, please check your spam filter.</source>
-                    <target>Se non dovessi ricevere l'e-mail entro i prossimi 30 minuti, controlla il filtro antispam.</target>
-                </trans-unit>
-                <trans-unit resname="welcome_btn" id="registration.welcome_btn">
-                    <source>Go on</source>
-                    <target>Continuare</target>
-                </trans-unit>
             </group>
             <group resname="login" id="login">
                 <trans-unit resname="password" id="login.password">
                     <source>Password</source>
+                </trans-unit>
+                <trans-unit resname="info1" id="login.info1">
+                    <source>Dear study participant</source>
+                    <target>Caro partecipante allo studio</target>
+                </trans-unit>
+                <trans-unit resname="info2" id="login.info2">
+                    <source>You already have a MIDATA account, log in with your email address and password.</source>
+                    <target>Hai già un account MIDATA, accedi con il tuo indirizzo email e la tua password.</target>
+                </trans-unit>
+                <trans-unit resname="info3" id="login.info3">
+                    <source>Your personal account gives you an overview of your study participation.</source>
+                    <target>Il tuo account personale ti fornisce una panoramica della partecipazione allo studio.</target>
+                </trans-unit>
+                <trans-unit resname="info4" id="login.info4">
+                    <source>Dear visitor</source>
+                    <target>Caro visitatore</target>
+                </trans-unit>
+                <trans-unit resname="info5" id="login.info5">
+                    <source>You do not yet have a MIDATA account and do not participate in a study?</source>
+                    <target>Non hai ancora un account MIDATA e non partecipi ad uno studio?</target>
+                </trans-unit>
+                <trans-unit resname="info6" id="login.info6">
+                    <source>Join the</source>
+                    <target>Partecipa al progetto</target>
+                </trans-unit>
+                <trans-unit resname="info6b" id="login.info6b">
+                    <source>Ally Science</source>
+                    <target>Ally Science</target>
+                </trans-unit>
+                <trans-unit resname="info6c" id="login.info6c">
+                    <source>project!</source>
+                    <target>!</target>
+                </trans-unit>
+            </group>
+            <group resname="changeaddress" id="changeaddress">
+                <trans-unit resname="success" id="changeaddress.success">
+                    <source>Your account information has been updated.</source>
+                </trans-unit>
+            </group>
+            <group resname="user" id="user">
+                <trans-unit resname="wipe_account_btn" id="user.wipe_account_btn">
+                    <source>Delete Account</source>
                 </trans-unit>
             </group>
             <group resname="records" id="records">
@@ -69,24 +107,8 @@
                 </trans-unit>
             </group>
             <group resname="oauth2" id="oauth2">
-                <trans-unit resname="requests_permission" id="oauth2.requests_permission">
-                    <source>stores your personal data in your MIDATA account.</source>
-                    <target>memorizza i dati personali nell'account MIDATA.</target>
-                </trans-unit>
-                <trans-unit resname="no_account" id="oauth2.no_account">
-                    <source>You don't have an account?</source>
-                    <target>Non hai ancora un account?</target>
-                </trans-unit>
-                <trans-unit resname="have_account" id="oauth2.have_account">
-                    <source>You have a MIDATA account?</source>
-                    <target>Hai un account MIDATA?</target>
-                </trans-unit>
-                <trans-unit resname="have_account2" id="oauth2.have_account2">
-                    <source>Perfect, log in here</source>
-                    <target>Perfetto, accedi.</target>
-                </trans-unit>
                 <trans-unit resname="sign_up_btn" id="oauth2.sign_up_btn">
-                    <source>Create Account</source>
+                    <source>Sign up</source>
                     <target>Iscriviti</target>
                 </trans-unit>
             </group>
@@ -108,10 +130,79 @@
                     <source>Account</source>
                 </trans-unit>
             </group>
+            <group resname="accountwipe" id="accountwipe">
+                <trans-unit resname="title" id="accountwipe.title">
+                    <source>Close and Delete MIDATA Account</source>
+                </trans-unit>
+                <trans-unit resname="hello" id="accountwipe.hello">
+                    <source>Dear {{name}},</source>
+                </trans-unit>
+                <trans-unit resname="paragraph1" id="accountwipe.paragraph1">
+                    <source>You would like to delete your MIDATA account irrevocably? That is of course possible.</source>
+                </trans-unit>
+                <trans-unit resname="paragraph2" id="accountwipe.paragraph2">
+                    <source>Please read the following information first:</source>
+                </trans-unit>
+                <trans-unit resname="point1" id="accountwipe.point1">
+                    <source>If you delete your MIDATA account your personal data will no longer be available.</source>
+                </trans-unit>
+                <trans-unit resname="point2" id="accountwipe.point2">
+                    <source>Data already shared for research will remain available to the studies it has been shared to up to the time of account deletion. No new data will be shared.</source>
+                </trans-unit>
+                <trans-unit resname="point3" id="accountwipe.point3">
+                    <source>MIDATA is not able to recover your deleted account.</source>
+                </trans-unit>
+                <trans-unit resname="warning" id="accountwipe.warning">
+                    <source>Warning</source>
+                </trans-unit>
+                <trans-unit resname="final" id="accountwipe.final">
+                    <source>This action cannot be undone.</source>
+                </trans-unit>
+                <trans-unit resname="paragraph3" id="accountwipe.paragraph3">
+                    <source>If you really want to delete your MIDATA account enter your password for confirmation.</source>
+                </trans-unit>
+                <trans-unit resname="password" id="accountwipe.password">
+                    <source>Password</source>
+                </trans-unit>
+                <trans-unit resname="reason" id="accountwipe.reason">
+                    <source>Reason (optional)</source>
+                </trans-unit>
+                <trans-unit resname="reason2" id="accountwipe.reason2">
+                    <source>Please tell us why you want to delete your account. We are continously trying to improve the service.</source>
+                </trans-unit>
+                <trans-unit resname="wipe_btn" id="accountwipe.wipe_btn">
+                    <source>Close and Delete MIDATA Account</source>
+                </trans-unit>
+                <trans-unit resname="error" id="accountwipe.error">
+                    <source>Password not correct. Account not deleted.</source>
+                </trans-unit>
+            </group>
+            <group resname="serviceleave" id="serviceleave">
+                <trans-unit resname="title" id="serviceleave.title">
+                    <source>Done with your session?</source>
+                </trans-unit>
+                <trans-unit resname="thankyou" id="serviceleave.thankyou">
+                    <source>Thank you for your help!</source>
+                </trans-unit>
+                <trans-unit resname="goodbye_btn" id="serviceleave.goodbye_btn">
+                    <source>End session and close window</source>
+                </trans-unit>
+                <trans-unit resname="logoutreturn" id="serviceleave.logoutreturn">
+                    <source>You will be redirected to the calling page.</source>
+                </trans-unit>
+                <trans-unit resname="return_btn" id="serviceleave.return_btn">
+                    <source>Logout and continue</source>
+                </trans-unit>
+            </group>
         </body>
     </file>
     <file source-language="en" target-language="it" datatype="winres" original="admins_it.json">
         <body>
+            <group resname="admin_address" id="admin_address">
+                <trans-unit resname="change_address_btn" id="admin_address.change_address_btn">
+                    <source>Change Address / Birthday</source>
+                </trans-unit>
+            </group>
             <group resname="admin_plugins" id="admin_plugins">
                 <trans-unit resname="plugin_market" id="admin_plugins.plugin_market">
                     <source>MIDATA Store</source>
@@ -139,9 +230,45 @@
                     <source>Sandbox</source>
                 </trans-unit>
             </group>
+            <group resname="appmessages" id="appmessages">
+                <group resname="reasons" id="appmessages.reasons">
+                    <trans-unit resname="PASSWORD_FORGOTTEN" id="appmessages.reasons.PASSWORD_FORGOTTEN">
+                        <source>Password forgotten</source>
+                    </trans-unit>
+                </group>
+            </group>
             <group resname="manageapp" id="manageapp">
                 <trans-unit resname="debug_btn" id="manageapp.debug_btn">
                     <source>API Tester Sandbox</source>
+                </trans-unit>
+                <trans-unit resname="logout" id="manageapp.logout">
+                    <source>Disconnect All</source>
+                </trans-unit>
+                <trans-unit resname="pleaseLogout1" id="manageapp.pleaseLogout1">
+                    <source>Logout all users</source>
+                </trans-unit>
+                <trans-unit resname="pleaseLogout2" id="manageapp.pleaseLogout2">
+                    <source>Disconnect from studies</source>
+                </trans-unit>
+                <trans-unit resname="logout_optional" id="manageapp.logout_optional">
+                    <source>[ Not required ]</source>
+                </trans-unit>
+                <trans-unit resname="logout_required" id="manageapp.logout_required">
+                    <source>[ required ]</source>
+                </trans-unit>
+                <trans-unit resname="logout_explain" id="manageapp.logout_explain">
+                    <source>Changes to fields marked with !! will require to log out all users of that application.</source>
+                </trans-unit>
+                <group resname="info" id="manageapp.info">
+                    <trans-unit resname="no_update_history" id="manageapp.info.no_update_history">
+                        <source>Resource updates done by this application produce no history entries. Use only if application does many and frequent updates.</source>
+                    </trans-unit>
+                    <trans-unit resname="redirectUri" id="manageapp.info.redirectUri">
+                        <source>You may specifiy multiple possible redirect URIs by seperating the URIs with a space</source>
+                    </trans-unit>
+                </group>
+                <trans-unit resname="no_update_history" id="manageapp.no_update_history">
+                    <source>No Resource History</source>
                 </trans-unit>
             </group>
             <group resname="appdebug" id="appdebug">
@@ -200,15 +327,43 @@
     </file>
     <file source-language="en" target-language="it" datatype="winres" original="researchers_it.json">
         <body>
-            <group resname="researcher_registration" id="researcher_registration">
-                <trans-unit resname="research_user" id="researcher_registration.research_user">
-                    <source>Researcher</source>
-                    <target>Ricercatore</target>
+            <group resname="researcher_navbar" id="researcher_navbar">
+                <trans-unit resname="organization" id="researcher_navbar.organization">
+                    <source>Organization</source>
+                </trans-unit>
+            </group>
+            <group resname="researcher_organization" id="researcher_organization">
+                <trans-unit resname="title" id="researcher_organization.title">
+                    <source>Organization</source>
+                </trans-unit>
+                <trans-unit resname="name" id="researcher_organization.name">
+                    <source>Org. Name</source>
+                </trans-unit>
+                <trans-unit resname="description" id="researcher_organization.description">
+                    <source>Description</source>
+                </trans-unit>
+                <trans-unit resname="researchers" id="researcher_organization.researchers">
+                    <source>All researchers of your organization</source>
                 </trans-unit>
             </group>
             <group resname="studynav" id="studynav">
                 <trans-unit resname="team" id="studynav.team">
                     <source>Team</source>
+                </trans-unit>
+            </group>
+            <group resname="studyfields" id="studyfields">
+                <trans-unit resname="pseudonymous1" id="studyfields.pseudonymous1">
+                    <source>Pseudonymized Participation</source>
+                </trans-unit>
+                <trans-unit resname="pseudonymous2" id="studyfields.pseudonymous2">
+                    <source>, exported data reveals pseudonymized ID, year of birth, gender and country. Some researchers like study nurses may have access to full personal data.</source>
+                </trans-unit>
+                <trans-unit resname="anonymous" id="studyfields.anonymous">
+                    <source>Anonymous Participation</source>
+                </trans-unit>
+                <trans-unit resname="anonymous2" id="studyfields.anonymous2">
+                    <source>, reveals pseudonymized ID, year of birth, gender and country. Pseudonymization mapping may not be accessed.</source>
+                    <target>, indica un ID pseudonimo, anno di nascita, sesso e nazione</target>
                 </trans-unit>
             </group>
         </body>

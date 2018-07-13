@@ -1,7 +1,5 @@
 package controllers;
 
-import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -29,7 +27,6 @@ import models.enums.ConsentStatus;
 import models.enums.ParticipationStatus;
 import models.enums.UserFeature;
 import models.enums.UserRole;
-import models.enums.UserStatus;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;

@@ -37,7 +37,7 @@ public class PortalConfig extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result getConfig() throws JsonValidationException, AppException {
 	
-		MidataId userId = new MidataId(request().username());
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		
 	    Space config = Space.getByOwnerSpecialContext(userId, "portal", Sets.create("name"));
 	    if (config == null) return ok();
@@ -58,7 +58,7 @@ public class PortalConfig extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
 	public static Result setConfig() throws JsonValidationException, AppException {
-		MidataId userId = new MidataId(request().username());
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 
 		// validate json
 		JsonNode json = request().body().asJson();		
