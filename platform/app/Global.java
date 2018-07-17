@@ -34,6 +34,7 @@ import utils.fhir.ResourceProvider;
 import utils.json.CustomObjectMapper;
 import utils.messaging.MailUtils;
 import utils.messaging.Messager;
+import utils.messaging.SubscriptionManager;
 import utils.servlet.PlayHttpServletConfig;
 import utils.stats.Stats;
 import utils.sync.Instances;
@@ -79,7 +80,10 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 		  FHIR.servlet.setFhirContext(ResourceProvider.ctx);
 		  System.out.println("FHIR Servlet 3");
 		  FHIR.servlet.init(new PlayHttpServletConfig());
-		
+			
+		  System.out.println("Subscription Manager");
+		  SubscriptionManager.init(system, ws);
+		  
 		  System.out.println("Minimal Setup");
 		  MinimalSetup.dosetup();
 		  

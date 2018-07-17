@@ -9,7 +9,7 @@
 {"_id":{"$oid":"569915fc6281a61a232ecdd3"},"content":"AllergyIntolerance","defaultCode":"http://midata.coop AllergyIntolerance","security":"HIGH","label":{"de":"Allergie-Intoleranz","en":"Allergy / Intolerance","it":"Intolleranza / allergia","fr":"Intolérance / allergie"}}
 {"_id":{"$oid":"569915fc6281a61a232ecdd4"},"content":"Appointment","defaultCode":"http://midata.coop Appointment","security":"MEDIUM","label":{"de":"Termin","en":"Appointment"}}
 {"_id":{"$oid":"569915fc6281a61a232ecdd5"},"content":"AppointmentResponse","defaultCode":"http://midata.coop AppointmentResponse","security":"MEDIUM","label":{"de":"Termin-Antwort","en":"AppointmentResponse"}}
-{"_id":{"$oid":"569915fc6281a61a232ecdd6"},"content":"AuditEvent","security":"HIGH","group":"unknown","defaultCode":"http://midata.coop AuditEvent","label":{"en":"AuditEvent"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdd6"},"content":"AuditEvent","defaultCode":"http://midata.coop AuditEvent","security":"HIGH","label":{"en":"Audit Event"}}
 {"_id":{"$oid":"569915fc6281a61a232ecdd7"},"content":"Basic","security":"HIGH","group":"unknown","defaultCode":"http://midata.coop Basic","label":{"en":"Basic"}}
 {"_id":{"$oid":"569915fc6281a61a232ecdd8"},"content":"Binary","defaultCode":"http://midata.coop Binary","security":"HIGH","label":{"de":"Binärdaten","en":"Binary"}}
 {"_id":{"$oid":"569915fc6281a61a232ecdd9"},"content":"BodySite","security":"HIGH","group":"otherhealth","defaultCode":"http://midata.coop BodySite","label":{"en":"BodySite"}}
@@ -231,3 +231,4 @@
 {"_id":{"$oid":"5b0d6bbeaed6451dd798d677"},"content":"loinc/66378-1","defaultCode":"http://loinc.org 66378-1","security":"MEDIUM","label":{"en":"Do you take cortisone?"}}
 {"_id":{"$oid":"5b0d6c1caed6451dd798d679"},"content":"snomed/422673001","defaultCode":"http://snomed.info/sct 422673001","security":"MEDIUM","label":{"en":"Snellen visual acuity"}}
 {"_id":{"$oid":"5b3f7eb1bcbc876f05834750"},"content":"snomed/434910001","defaultCode":"http://snomed.info/sct 434910001","security":"MEDIUM","label":{"en":"Interstitial fluid glucose concentration"},"resourceType":"fhir/Observation","subType":"Quantity","defaultUnit":"mmol/L","category":"vital-signs"}
+{"_id":{"$oid":"5b4df89faed6453ed8fdcedd"},"content":"Consent","defaultCode":"http://midata.coop Consent","security":"HIGH","label":{"en":"Consents on Midata"}}

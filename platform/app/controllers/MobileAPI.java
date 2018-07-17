@@ -329,6 +329,7 @@ public class MobileAPI extends Controller {
         appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(appInstance._id, phrase);    	
     	appInstance.passcode = Member.encrypt(phrase); 
     	appInstance.dateOfCreation = new Date();
+    	appInstance.lastUpdated = appInstance.dateOfCreation;
     	appInstance.writes = app.writes;
 		
     	if (app.defaultQuery != null && !app.defaultQuery.isEmpty()) {

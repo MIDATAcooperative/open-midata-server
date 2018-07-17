@@ -15,6 +15,7 @@ import utils.auth.KeyManager;
 import utils.auth.PortalSessionToken;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
+import utils.exceptions.InternalServerException;
 import utils.fhir.FHIRServlet;
 import utils.fhir.ResourceProvider;
 import utils.servlet.PlayHttpServletRequest;
@@ -101,16 +102,18 @@ public class FHIR extends Controller {
 		AccessLog.logBegin("begin FHIR get request: "+req.getRequestURI());
 		servlet.doGet(req, res);
 		AccessLog.logEnd("end FHIR get request");
-	
+			
+		
 		Stats.finishRequest(request(), String.valueOf(res.getStatus()));
 		if (res.getContentType() != null && res.getResponseWriter() != null) {
-			return status(res.getStatus(), res.getResponseWriter().toString());		
+			return status(res.getStatus(), res.getResponseWriter().toString()).as(res.getContentType());		
 		}
 		
 		if (res.getContentType() != null && res.getResponseStream() != null) {
 			
-			return status(res.getStatus(), res.getResponseStream().toByteArray());
+			return status(res.getStatus(), res.getResponseStream().toByteArray()).as(res.getContentType());
 		}
+		
 		
 		
 		return status(res.getStatus());
@@ -171,12 +174,12 @@ public class FHIR extends Controller {
 		
 		Stats.finishRequest(request(), String.valueOf(res.getStatus()));
 		if (res.getContentType() != null && res.getResponseWriter() != null) {			
-			return status(res.getStatus(), res.getResponseWriter().toString());		
+			return status(res.getStatus(), res.getResponseWriter().toString()).as(res.getContentType());		
 		}
 		
 		if (res.getContentType() != null && res.getResponseStream() != null) {			
 			byte[] bytes = res.getResponseStream().toByteArray();			
-			return status(res.getStatus(), bytes);
+			return status(res.getStatus(), bytes).as(res.getContentType());
 		}
 		
 		
@@ -226,12 +229,13 @@ public class FHIR extends Controller {
 		
 		Stats.finishRequest(request(), String.valueOf(res.getStatus()));
 		
-		if (res.getResponseWriter() != null) {
-			return status(res.getStatus(), res.getResponseWriter().toString());		
+		if (res.getContentType() != null && res.getResponseWriter() != null) {			
+			return status(res.getStatus(), res.getResponseWriter().toString()).as(res.getContentType());		
 		}
 		
-		if (res.getResponseStream() != null) {
-			return status(res.getStatus(), res.getResponseStream().toByteArray());
+		if (res.getContentType() != null && res.getResponseStream() != null) {			
+			byte[] bytes = res.getResponseStream().toByteArray();			
+			return status(res.getStatus(), bytes).as(res.getContentType());
 		}
 		
 		return status(res.getStatus());
@@ -280,12 +284,13 @@ public class FHIR extends Controller {
 		
 		Stats.finishRequest(request(), String.valueOf(res.getStatus()));
 		
-		if (res.getResponseWriter() != null) {
-			return status(res.getStatus(), res.getResponseWriter().toString());		
+		if (res.getContentType() != null && res.getResponseWriter() != null) {			
+			return status(res.getStatus(), res.getResponseWriter().toString()).as(res.getContentType());		
 		}
 		
-		if (res.getResponseStream() != null) {
-			return status(res.getStatus(), res.getResponseStream().toByteArray());
+		if (res.getContentType() != null && res.getResponseStream() != null) {			
+			byte[] bytes = res.getResponseStream().toByteArray();			
+			return status(res.getStatus(), bytes).as(res.getContentType());
 		}
 		
 		return status(res.getStatus());
