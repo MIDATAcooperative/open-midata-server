@@ -120,6 +120,8 @@ public class Query {
 		result.putAll(accountCriteria);
 		result.remove("limit");
 		result.remove("from");
+		result.remove("updated-after");
+		result.remove("updated-before");
 		if (dataCriteria != null) result.putAll((Map<String,Object>) dataCriteria.asMongoQuery());
 		ObjectIdConversion.convertMidataIds(result, "_id");
 		return result;

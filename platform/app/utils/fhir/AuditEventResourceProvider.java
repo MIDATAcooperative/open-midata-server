@@ -18,6 +18,7 @@ import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.dstu3.model.StringType;
 import org.hl7.fhir.instance.model.api.IIdType;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
@@ -354,7 +355,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 		}
 		
 		String encoded = ctx.newJsonParser().encodeResourceToString(ae);		
-		mae.fhirAuditEvent = (DBObject) JSON.parse(encoded);				
+		mae.fhirAuditEvent = BasicDBObject.parse(encoded);				
 	}
 
 	@Override

@@ -330,7 +330,7 @@ angular.module('portal')
 		if ($state.params.callback || $state.params.action) {
 			$state.go("^.service2", $state.params);
 		} else {
-			init();
+			$scope.init($scope.userId);
 		}
 	};
 	

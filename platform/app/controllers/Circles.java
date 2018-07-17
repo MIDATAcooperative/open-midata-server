@@ -70,6 +70,7 @@ import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.messaging.Messager;
+import utils.messaging.SubscriptionManager;
 
 /**
  * functions for managing consents
@@ -337,7 +338,8 @@ public class Circles extends APIController {
 	
 	public static void addConsent(MidataId executorId, Consent consent, boolean patientRecord, String passcode, boolean force) throws AppException {
 		consent._id = new MidataId();
-		consent.dateOfCreation = new Date();	
+		consent.dateOfCreation = new Date();
+		consent.lastUpdated = consent.dateOfCreation;
 		consent.dataupdate = System.currentTimeMillis();
 			
 		AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_CREATE, executorId, consent);
@@ -357,7 +359,7 @@ public class Circles extends APIController {
 		}
 						
 		//consentSettingChange(executorId, consent);
-		prepareConsent(consent);
+		//prepareConsent(consent); - done by consentStatusChange
 		consentStatusChange(executorId, consent, null, patientRecord);
 		
 		if (consent.status.equals(ConsentStatus.ACTIVE) && patientRecord) autosharePatientRecord(executorId, consent);
@@ -451,6 +453,7 @@ public class Circles extends APIController {
 		   RecordManager.instance.shareAPS(consent._id, consent._id, Collections.singleton(executorId));		   
 		   consent.authorized.add(executorId);
 		   Consent.set(consent._id, "authorized", consent.authorized);
+		   Consent.set(consent._id, "lastUpdated", new Date());
 		
 		   return ok(JsonOutput.toJson(consent, "Consent", Sets.create("_id", "authorized"))).as("application/json");
 		} catch (NoSuchAlgorithmException e) {
@@ -561,6 +564,7 @@ public class Circles extends APIController {
 		  AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_PERSONS_CHANGE, personExecutor, consent);
 		}
 		Consent.set(consent._id, "authorized", consent.authorized);
+		Consent.set(consent._id, "lastUpdated", new Date());
 		
 		if (consent.status == ConsentStatus.ACTIVE) {
 		  RecordManager.instance.reshareAPS(consent._id, personExecutor, userGroupExecutor, newMemberIds);
@@ -594,6 +598,7 @@ public class Circles extends APIController {
 		
 		consent.authorized.remove(memberId);
 		Consent.set(consent._id, "authorized", consent.authorized);
+		Consent.set(consent._id, "lastUpdated", new Date());
 
 		Set<MidataId> memberIds = new HashSet<MidataId>();
 		memberIds.add(memberId);
@@ -700,6 +705,8 @@ public class Circles extends APIController {
 	 */
 	public static void prepareConsent(Consent consent) throws AppException {
 		ConsentResourceProvider.updateMidataConsent(consent);
+		if (consent.authorized == null && consent.type != ConsentType.EXTERNALSERVICE) throw new InternalServerException("error.internal", "Missing authorized");
+		SubscriptionManager.resourceChange(consent);
 	}
 	
 	public static void sendConsentNotifications(MidataId executorId, Consent consent, ConsentStatus reason) throws AppException {
