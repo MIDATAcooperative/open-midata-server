@@ -1030,6 +1030,7 @@ public class Studies extends APIController {
 			consent.authorized = new HashSet<MidataId>();
 			consent.entityType = EntityType.USERGROUP;
 			consent.dateOfCreation = new Date();
+			consent.lastUpdated = consent.dateOfCreation;
 			consent.status = ConsentStatus.ACTIVE;
 			consent.writes = WritePermissionType.UPDATE_EXISTING;
 
@@ -1055,6 +1056,7 @@ public class Studies extends APIController {
 		consent.name = "Study:" + study.name;
 		consent.authorized = new HashSet<MidataId>();
 		consent.dateOfCreation = new Date();
+		consent.lastUpdated = consent.dateOfCreation;
 		consent.status = ConsentStatus.ACTIVE;
 		consent.writes = WritePermissionType.NONE;
 

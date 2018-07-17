@@ -438,7 +438,8 @@ public class Users extends APIController {
 		for (Consent consent : consents2) {
 			consent = Consent.getByIdAndAuthorized(consent._id, userId, Sets.create("authorized"));
 			consent.authorized.remove(userId);
-			Consent.set(consent._id, "authorized", consent.authorized);			
+			Consent.set(consent._id, "authorized", consent.authorized);	
+			Consent.set(consent._id, "lastUpdated", new Date());
 		}
 		
 		Set<UserGroupMember> ugs = UserGroupMember.getAllByMember(userId);

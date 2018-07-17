@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -453,6 +454,8 @@ public class Records extends APIController {
 					}
 				}
 			}
+			
+			Consent.set(consent._id, "lastUpdated", new Date());
 		}
 
 		for (MidataId start : stopped) {
@@ -497,6 +500,8 @@ public class Records extends APIController {
 					}
 				}
 			}
+			
+			Consent.set(consent._id, "lastUpdated", new Date());
 
 		}
 

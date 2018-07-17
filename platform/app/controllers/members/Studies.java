@@ -224,6 +224,7 @@ public class Studies extends APIController {
 		part.name = "Study: "+study.name;
 		part.owner = member._id;
 		part.dateOfCreation = new Date();
+		part.lastUpdated = part.dateOfCreation;
 		part.dataupdate = System.currentTimeMillis();
 		
 		String userName;

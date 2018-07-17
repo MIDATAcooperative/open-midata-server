@@ -3,6 +3,7 @@ package utils.sync;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletionStage;
 
 import akka.actor.AbstractActor;
@@ -20,6 +21,8 @@ import models.RecordGroup;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
+import utils.collections.Sets;
+import utils.messaging.SubscriptionManager;
 
 /**
  * Synchronization between multiple application servers for changes on cached data like plugins or content type definitions
@@ -43,7 +46,7 @@ public class Instances {
 		broadcast = actorSystem.actorOf(
 		    new ClusterRouterGroup(new BroadcastGroup(routeesPaths),
 		        new ClusterRouterGroupSettings(Integer.MAX_VALUE, routeesPaths,
-		            true, (String) null)).props(), "broadcast");
+		            true, Sets.create())).props(), "broadcast");
 	}
 	
 	public static ActorSystem system() {
@@ -111,13 +114,17 @@ class InstanceSync extends AbstractActor {
 
 	public void reload(ReloadMessage msg) throws Exception {
 		try {		
-		   AccessLog.log("Received Reload Message");		  
+		   AccessLog.log("Received Reload Message: "+msg.toString());		  
 		   if (msg.collection.equals("plugin")) {
 			   Plugin.cacheRemove(msg.entry);
 		   } else if (msg.collection.equals("content")) {
 			   RecordGroup.load();
 			   ContentCode.reset();
-		   }	
+		   } else if (msg.collection.equals("SubscriptionData")) {
+			   System.out.println("A");
+			   SubscriptionManager.subscriptionChangeLocal(msg.entry);
+			   System.out.println("B");
+		   }
 		} catch (Exception e) {
 			ErrorReporter.report("Messager", null, e);	
 			throw e;

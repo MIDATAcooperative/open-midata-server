@@ -24,6 +24,7 @@ import org.hl7.fhir.dstu3.model.StringType;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
@@ -193,7 +194,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		c.addExtension().setUrl("http://midata.coop/extensions/consent-name").setValue(new StringType(consentToConvert.name));
 		
 		String encoded = ctx.newJsonParser().encodeResourceToString(c);		
-		consentToConvert.fhirConsent = (DBObject) JSON.parse(encoded);				
+		consentToConvert.fhirConsent = BasicDBObject.parse(encoded);				
 	}
 			
 	   @Search()
@@ -315,6 +316,8 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 			paramMap.add("source", theSource);
 			paramMap.add("status", theStatus);
 			
+			paramMap.add("_lastUpdated", theLastUpdated);
+			
 	    	paramMap.setRevIncludes(theRevIncludes);
 	    	paramMap.setLastUpdated(theLastUpdated);
 	    	paramMap.setIncludes(theIncludes);
@@ -339,6 +342,8 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		builder.restriction("date", false, QueryBuilder.TYPE_DATETIME, "fhirConsent.dateTime");
 		builder.restriction("period", false, QueryBuilder.TYPE_DATETIME, "fhirConsent.period");
 		builder.restriction("status", false, QueryBuilder.TYPE_CODE, "fhirConsent.status");
+				
+		builder.restriction("_lastUpdated", false, QueryBuilder.TYPE_DATETIME, "lastUpdated");
 		
 		Set<String> authorized = null;
 		if (params.containsKey("actor")) {
@@ -582,7 +587,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 
 	@Override
 	public Date getLastUpdated(Consent record) {
-		return record.dateOfCreation;
+		return record.lastUpdated;
 	}	
 	
 	
