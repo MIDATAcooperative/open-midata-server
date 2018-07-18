@@ -92,7 +92,7 @@ angular.module('portal')
 	
 	$scope.mayRequestParticipation = function() {
 		return ($scope.participation != null && ( $scope.participation.pstatus == "MATCH" || $scope.participation.pstatus == "CODE" )) ||
-		   ($scope.participation == null && !$scope.locked && $scope.study.participantSearchStatus == 'SEARCHING');
+		   ($scope.participation == null && !$scope.locked && $scope.study.participantSearchStatus == 'SEARCHING' && $state.current.data.role == 'MEMBER');
 	};
 	
 	$scope.mayDeclineParticipation = function() {
