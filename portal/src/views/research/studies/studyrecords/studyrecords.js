@@ -3,6 +3,14 @@ angular.module('portal')
 	
 	$scope.studyId = $state.params.studyId;
 	$scope.status = new status(true);
+	$scope.datePickers = {  };
+	   $scope.dateOptions = {
+		  	 formatYear: 'yy',
+		  	 startingDay: 1,
+		  	  
+	 };
+	   
+	$scope.filter = {};
 	
 	$scope.reload = function() {
 		
@@ -38,7 +46,10 @@ angular.module('portal')
 	$scope.fhirDownload = function(what, mode) {
 		$scope.status.doAction("download", server.token())
 		.then(function(response) {
-		  document.location.href = ENV.apiurl + jsRoutes.controllers.research.Studies.downloadFHIR($scope.studyId, what.group, mode).url + "?token=" + encodeURIComponent(response.data.token);
+		  var urlParams = "";
+		  if ($scope.filter.startDate) urlParams += "&startDate="+encodeURIComponent($scope.filter.startDate.getTime());
+		  if ($scope.filter.endDate) urlParams += "&endDate="+encodeURIComponent($scope.filter.endDate.getTime());
+		  document.location.href = ENV.apiurl + jsRoutes.controllers.research.Studies.downloadFHIR($scope.studyId, what.group, mode).url + "?token=" + encodeURIComponent(response.data.token)+urlParams;
 		});
 	};
 	
