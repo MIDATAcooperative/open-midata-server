@@ -15,7 +15,7 @@
 	      <tr ng-repeat="patient in patients">
 	        <td><a href="javascript:" ng-click="selectPatient(patient)">{{ patient.lastname }}</a></td>
 	        <td>{{ patient.firstname }}</td>
-	        <td>{{ patient.birthday | date }}</td>
+	        <td>{{ patient.birthday | date : 'dd.MM.yy'}}</td>
 	      </tr>
 	    </table>
 	    

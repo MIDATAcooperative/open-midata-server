@@ -51,8 +51,8 @@
       <td>{{ member.user.firstname }}</td>
       <td>{{ member.user.lastname }}</td>
       <td>{{ member.user.email }}</td>
-      <td>{{ member.startDate | date }}</td>
-      <td>{{ member.endDate | date }}</td>      
+      <td>{{ member.startDate | date : 'dd.MM.yy' }}</td>
+      <td>{{ member.endDate | date : 'dd.MM.yy' }}</td>      
     </tr>  
   </table>
    </div>

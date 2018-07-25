@@ -2,7 +2,7 @@
   <div class="body">
      <loader busy="status.isBusy !== false">
      <span translate="accountdata.midata_id"></span> <strong>{{ member.midataID }}</strong><br/>
-     <span translate="accountdata.birthday"></span> <strong>{{ member.birthday | date }}</strong><br/><br/>
+     <span translate="accountdata.birthday"></span> <strong>{{ member.birthday | date : 'dd.MM.yy' }}</strong><br/><br/>
      <address>     
      <strong>{{ member.firstname }} {{ member.lastname }}</strong><br/>
      {{ member.address1 }}<br/>

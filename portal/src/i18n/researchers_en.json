@@ -158,6 +158,8 @@
   
   "studyrecords" : {
     "empty" : "Once data is available it can be downloaded here.",
+    "startDate" : "Export start date (optional)",
+    "endDate" : "Export end date (optional)",
     "group" : "Data Group",
     "number_of_records" : "# Records",
     "download_btn" : "Download",
@@ -171,9 +173,8 @@
     "startDate" : "Official start date",
     "endDate" : "Official end date",
     "dataCreatedBefore" : "Data freeze date",
-    "sharing_query" : "Data Access Filter (JSON)",
-    "sharing_query_options" : "Data Access Filter (Add)",
-    "sharing_query_selection" : "Data Access Filter (Selection)",
+    "sharing_query" : "Data Access Filter",
+    "queryeditor_btn" : "Edit",    
     "terms_of_use" : "General Terms and Conditions",
     "terms_of_use_hint" : "If the study General Terms and Conditions have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the ID you need to enter here.",
     "show_terms" : "Show General Terms and Conditions",
