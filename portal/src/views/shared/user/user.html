@@ -7,10 +7,13 @@
 		  <div class="panel-body">
 			<loader busy="status.isBusy !== false">
 			
-			<div class="row">
-				<p class="col-sm-2" translate="user.name"></p>
-				<p class="col-sm-10">{{user.name}}</p>
-			</div>
+			<address>     
+     		<strong>{{ user.firstname }} {{ user.lastname }}</strong><br/>
+     		{{ user.address1 }}<br/>
+     		{{ user.address2 }}<br/>
+     		{{ user.zip }} {{ user.city }}
+     		</address>  
+     					
 			<div class="row">
 				<p class="col-sm-2" translate="user.email"></p>
 				<p class="col-sm-10">{{user.email}}</p>
@@ -26,6 +29,9 @@
 			
 			<div class="row" ng-show="isSelf">
 			  <div class="col-sm-12">
+			  
+		   	     <a class="btn btn-default" href="javascript:" ui-sref="^.changeaddress" translate="user.change_address_btn"></a>		
+			  
 			     <a class="btn btn-default" href="javascript:" ui-sref="^.changepassword" translate="user.change_password_btn"></a>
 			     
 			     <div class="btn-group">
@@ -56,26 +62,7 @@
 			</loader>
 		  </div>
 		</div>
-		
-		
-		<div ng-cloak class="panel panel-primary">
-		  <div class="panel-heading" translate="user.address"></div>
-		  <div class="panel-body">
-			<loader busy="status.isBusy !== false">
-		
-			
-			<address>     
-     		<strong>{{ user.firstname }} {{ user.lastname }}</strong><br/>
-     		{{ user.address1 }}<br/>
-     		{{ user.address2 }}<br/>
-     		{{ user.zip }} {{ user.city }}
-     		</address>  
-			<a class="btn btn-default" href="javascript:" ui-sref="^.changeaddress" translate="user.change_address_btn"></a>
-								
-			</loader>
-		  </div>
-		</div>
-		
+				
 		<!-- 
 		<div ng-cloak class="panel panel-primary" ng-if="user.role == 'MEMBER'">
 		  <div class="panel-heading" translate="member_user.account_status"></div>

@@ -318,7 +318,8 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	@Override
 	public void createPrepare(SubscriptionData subscriptionData, Subscription theResource) throws AppException {
 		if (!info().context.mayAccess("Subscription", "fhir/Subscription")) throw new ForbiddenOperationException("Plugin is not allowed to create subscriptions (Access Query)."); 
-		if (theResource.getStatus().equals(SubscriptionStatus.ACTIVE)) mayShare(info().pluginId, CMaps.map("content", theResource.getCriteria()));				
+		if (theResource.getStatus().equals(SubscriptionStatus.ACTIVE) || theResource.getStatus().equals(SubscriptionStatus.REQUESTED)) mayShare(info().pluginId, CMaps.map("content", theResource.getCriteria()));
+		if (theResource.getStatus().equals(SubscriptionStatus.REQUESTED)) theResource.setStatus(SubscriptionStatus.ACTIVE);
         subscriptionData.active = theResource.getStatus().equals(SubscriptionStatus.ACTIVE);
         subscriptionData.format = "fhir/"+theResource.getCriteria();
         subscriptionData.endDate = theResource.getEnd();

@@ -4,14 +4,14 @@
  
   <div ng-show="!url && previewType=='visualization'" class="body">
      <div class="text-center lead"><span class="bignumber">{{ count }}</span> <span translate="spacesummary.records_to_view"></span></div> 
-     <div ng-show="last" class="text-center"><span translate="spacesummary.last_entry_at"></span> <b>{{ last | date }}</b>.</div>
+     <div ng-show="last" class="text-center"><span translate="spacesummary.last_entry_at"></span> <b>{{ last | date : 'dd.MM.yy' }}</b>.</div>
      <div class="extraspace"></div>     
   </div>
   
   <div ng-show="!url && (previewType=='oauth1' || previewType=='oauth2' || previewType=='create') " class="body body-center">
      <div ng-hide="last" class="text-center lead" translate="spacesummary.no_entries_yet"></div>     
      <div ng-show="last" class="text-center lead" translate="spacesummary.newest_entry_from"></div>
-     <div ng-show="last" class="text-center lead"><b>{{ last | date }}</b>.</div>
+     <div ng-show="last" class="text-center lead"><b>{{ last | date : 'dd.MM.yy' }}</b>.</div>
      <div class="extraspace"></div>     
   </div>
   

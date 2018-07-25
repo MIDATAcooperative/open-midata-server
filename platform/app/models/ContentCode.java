@@ -84,7 +84,7 @@ public class ContentCode extends Model  {
 	  public static ContentCode getBySystemCode(String systemCode) throws InternalServerException {
 		  int p = systemCode.indexOf(' ');
 		  String system = systemCode.substring(0, p);
-		  String code = systemCode.substring(p);
+		  String code = systemCode.substring(p+1);
 		  
 		  ContentCode result = Model.get(ContentCode.class, collection, CMaps.map("system", system).map("code", code), Sets.create("content"));
 		  return result;

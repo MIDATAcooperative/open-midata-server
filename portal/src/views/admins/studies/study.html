@@ -39,7 +39,7 @@
 	  </tr>
 	  <tr>
 	    <td translate="admin_study.dataCreatedBefore"></td>
-	    <td>{{ study.dataCreatedBefore | date }}</td>
+	    <td>{{ study.dataCreatedBefore | date : 'dd.MM.yy' }}</td>
 	  </tr>
     </table>	
     </loader>
@@ -54,6 +54,7 @@
 		  <p><span translate="admin_study.required_assistance"></span>: <b>{{ study.assistance }}</b></p>
 		  <p><span translate="admin_study.termsOfUse"></span>: <b><a ui-sref="^.terms({which:study.termsOfUse})">{{ study.termsOfUse }}</a></b></p>		  
 		  <p><span translate="admin_study.sharing_query"></span>:</p>
+		  <accessquery query="study.recordQuery" details="true"></accessquery>
 		  <pre>{{ study.recordQuery | json }}
 		  </pre>
 		  <p translate="admin_study.requirements"></p>

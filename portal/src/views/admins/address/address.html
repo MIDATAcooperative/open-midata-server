@@ -41,11 +41,11 @@
 			  </tr><tr>
 			  <td translate="admin_address.confirmation_code"></td><td><b>{{ member.confirmationCode }}</b></td>
 			  </tr><tr>
-			  <td translate="admin_address.confirmation_date"></td><td>{{ member.confirmedAt | date }}</td>
+			  <td translate="admin_address.confirmation_date"></td><td>{{ member.confirmedAt | date : 'dd.MM.yy' }}</td>
 			  </tr><tr>
-			  <td translate="admin_address.registration_date"></td><td>{{ member.registeredAt | date }}</td>
+			  <td translate="admin_address.registration_date"></td><td>{{ member.registeredAt | date : 'dd.MM.yy' }}</td>
 			  </tr><tr>
-			  <td translate="admin_address.last_login"></td><td>{{ member.login | date }}</td>
+			  <td translate="admin_address.last_login"></td><td>{{ member.login | date : 'dd.MM.yy' }}</td>
 			  </tr>
 			  </table>
 			  <button ui-sref="^.members" class="btn btn-default" translate="common.back_btn"></button>

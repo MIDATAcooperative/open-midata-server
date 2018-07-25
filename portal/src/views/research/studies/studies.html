@@ -21,7 +21,7 @@
 	      <td translate="{{ 'enum.studyvalidationstatus.'+study.validationStatus }}"></td>
 	      <td translate="{{ 'enum.participantsearchstatus.'+study.participantSearchStatus }}"></td>
 	      <td translate="{{ 'enum.studyexecutionstatus.'+study.executionStatus }}"></td>
-	      <td>{{ study.createdAt | date }}</td>	         
+	      <td>{{ study.createdAt | date : 'dd.MM.yy' }}</td>	         
 	    </tr>
 	  </tbody>
 	</table>

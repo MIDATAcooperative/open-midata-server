@@ -35,6 +35,10 @@ server {
           add_header 'X-Content-Security-Policy' "default-src 'none'; script-src https://DOMAIN/components/ https://DOMAIN/api/ https://DOMAIN/; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; media-src 'none'; child-src https://DOMAIN/plugin/ https://localhost:9004 https://DOMAIN/v1/plugin_api/records/file; font-src 'self'; connect-src 'self'";
           add_header 'X-WebKit-CSP' "default-src 'none'; script-src https://DOMAIN/components/ https://DOMAIN/api/ https://DOMAIN/; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; media-src 'none'; child-src https://DOMAIN/plugin/ https://localhost:9004 https://DOMAIN/v1/plugin_api/records/file; font-src 'self'; connect-src 'self'";            
         }
+        
+        location /auth {
+          return 301 "https://DOMAIN/oauth.html#/portal/oauth2$is_args$args";
+        }
 
         # Disabled unless completely open source
         #location /doc {

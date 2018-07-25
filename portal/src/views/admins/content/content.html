@@ -80,7 +80,7 @@
 	             <select class="form-control" type="text" ng-model="contentEntry.group" ng-options="grp.name as grp.name for grp in groups | orderBy : 'name'"></select>
 	           </formrow>
 	           <formrow myid="resourceType" label="FHIR Resource Type">
-	             <select class="form-control" type="text" ng-model="contentEntry.resourceType" ng-options="type for type in resourceTypes"></select>
+	             <input  class="form-control" type="text" ng-model="contentEntry.resourceType">
 	           </formrow>
 	           <formrow myid="category" label="Category">
 	             <select class="form-control" type="text" ng-model="contentEntry.category" ng-options="category for category in categories"></select>

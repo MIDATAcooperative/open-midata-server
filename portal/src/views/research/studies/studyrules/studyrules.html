@@ -9,32 +9,10 @@
 	<h2 translate="studyrules.title"></h2>
 	<p class="alert alert-info" ng-hide="error" translate="studyrules.no_change_warning"></p>
 	<p class="alert alert-danger" ng-show="error" translate="{{ error.code || error }}"></p>
-	
-	
-	  <formrow myid="queryadd" label="studyrules.sharing_query_options">
-	     <div class="col-sm-5">
-		 <select class="form-control" ng-change="formChange()" ng-model="query.system" ng-disabled="studyLocked()" ng-options="cs as cs.label | translate for cs in codesystems"></select>
-		 </div>
-		 <div class="col-sm-5">
-		 <input type="text" id="queryadd" name="queryadd" class="form-control" ng-change="formChange()" ng-disabled="studyLocked()" ng-model="query.code">
-		 </div>
-		 <div class="col-sm-2">
-		 <button class="btn btn-default" type="button" ng-disabled="studyLocked()" ng-click="addCode()" translate="common.add_btn"></button>
-		 </div> 
-		 <div class="col-sm-12" ng-show="codeerror">
-		    <p class="help-block"  translate="{{codeerror}}"></p>
-		  </div>		 
-	  </formrow>
-		   <formrow myid="query" label="studyrules.sharing_query_selection" ng-show="labels.length">		    
-		    <div ng-repeat="label in labels" class="checkbox">
-		      <label>
-		      <input type="checkbox" ng-model="label.selected" ng-disabled="studyLocked()" ng-change="patchQuery(label.type, label)">
-		      {{ label.label }}</label>
-		    </div>
-		  </formrow>
-	
+		
 	  <formrow myid="recordQuery" label="studyrules.sharing_query">
-	     <textarea class="form-control" ng-change="updateQuery()" ng-disabled="studyLocked()" ng-model="study.recordQueryStr"></textarea>
+	     <accessquery query="study.recordQuery" details="true"></accessquery>	     
+	     <a href="javascript:" ui-sref="^.queryeditor" class="btn btn-default" translate="studyrules.queryeditor_btn"></a>
       </formrow>
     
       <formrow myid="startDate" label="studyrules.startDate">

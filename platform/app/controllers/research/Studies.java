@@ -304,6 +304,11 @@ public class Studies extends APIController {
 		if (study == null)
 			throw new BadRequestException("error.unknown.study", "Unknown Study");
 
+		Map<String, String[]> params = request().queryString();
+						
+		final Date startDate = params.containsKey("startDate")? new Date(Long.parseLong(params.get("startDate")[0])) : null;
+		final Date endDate   = params.containsKey("endDate") ? new Date(Long.parseLong(params.get("endDate")[0])) : null;
+		
 		AuditManager.instance.addAuditEvent(AuditEventType.DATA_EXPORT, executorId, null, study);
 
 		UserGroupMember self = UserGroupMember.getByGroupAndMember(studyid, executorId);
@@ -346,7 +351,7 @@ public class Studies extends APIController {
 			public Iterator<ByteString> create() throws Exception {
 				KeyManager.instance.continueSession(handle);
 				ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId));
-				DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, executorId, CMaps.map("export", mode).map("study", study._id).map("study-group", studyGroup),
+				DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, executorId, CMaps.map("export", mode).map("study", study._id).map("study-group", studyGroup).mapNotEmpty("updated-after",  startDate).mapNotEmpty("updated-before", endDate),
 						RecordManager.COMPLETE_DATA);
 				return new RecIterator(allRecords);
 			}
