@@ -23,7 +23,7 @@
 	    <tr ng-repeat="study in results | orderBy : 'createdAt' : true">
 	      <td><a ui-sref="^.study({ studyId : study._id})">{{ study.name }}</a></td>	  
 	      
-	      <td>{{ study.createdAt | date }}</td>	         
+	      <td>{{ study.createdAt | date : 'dd.MM.yy' }}</td>	         
 	    </tr>
 	  </tbody>
 	</table>

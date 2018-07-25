@@ -29,10 +29,10 @@
 		    </div>		   
 		    
 		    <div ng-show="block.timeRestrictionMode">
-		      <span translate="{{ 'queryeditor.'+block.timeRestrictionMode }}"></span>: {{ block.timeRestrictionDate | date }}
+		      <span translate="{{ 'queryeditor.'+block.timeRestrictionMode }}"></span>: {{ block.timeRestrictionDate | date : 'dd.MM.yy'}}
 		    </div>
 		    <div ng-show="block.dataPeriodRestrictionMode">
-		      <span translate="{{ 'queryeditor.'+block.dataPeriodRestrictionMode }}"></span>: {{ block.dataPeriodRestrictionStart | date }} - {{ block.dataPeriodRestrictionEnd | date }} 
+		      <span translate="{{ 'queryeditor.'+block.dataPeriodRestrictionMode }}"></span>: {{ block.dataPeriodRestrictionStart | date : 'dd.MM.yy'}} - {{ block.dataPeriodRestrictionEnd | date : 'dd.MM.yy' }} 
 		    </div>
 		    <div ng-show="block.customFilter">
 		      <span>Extra Filter: </span><span>{{ block.customFilterPath }}</span>: {{ block.customFilterValue }}

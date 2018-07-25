@@ -18,17 +18,15 @@ angular.module('portal')
     $translatePartialLoader.addPart("developers");
     
 	$scope.reload = function() {
-		console.log($state.current.data);
-		console.log($state.params.studyId);
+		//console.log($state.current.data);
+		//console.log($state.params.studyId);
 		if ($state.current.data.mode == "study") {
 			$scope.mode = "study";
 			$scope.status.doBusy(server.get(jsRoutes.controllers.research.Studies.get($state.params.studyId).url))
 			.then(function(data) { 				
 				$scope.study = data.data;	
 			    $scope.query = { queryStr : JSON.stringify($scope.study.recordQuery), json : $scope.study.recordQuery };
-			    $scope.blocks = parseAccessQuery($scope.query.json);
-			    console.log($scope.query);
-			    console.log($scope.blocks);
+			    $scope.blocks = parseAccessQuery($scope.query.json);			    
 			    
 			    if ($scope.blocks.length === 0) $scope.addNew();
 			});				
@@ -87,9 +85,7 @@ angular.module('portal')
 		
 		var addgroup = function(dat) {
 			var grp = { key : "grp "+dat.name, group : dat.name, system : dat.system, display : dat.label[$translate.use()], contents:[] };
-			var addgrp = function(what) {
-				console.log("ADD GROUP");
-				console.log(what);
+			var addgrp = function(what) {				
 				grp.contents.push(what); 
 			};
 			var recproc = function(dat) {
@@ -129,8 +125,7 @@ angular.module('portal')
 			for (var i=0;i<l;i++) {
 				var dat = result.data[i];
 				for (var lang in dat.label) {
-				  if (dat.label[lang].toLowerCase().indexOf(what) >= 0) {
-					  console.log(dat);
+				  if (dat.label[lang].toLowerCase().indexOf(what) >= 0) {					 
 				    lookupCodes({ key : dat.content, content : dat.content, display : dat.label[$translate.use()], format : dat.resourceType })
 				    .then(add);					
 				  }
@@ -146,8 +141,7 @@ angular.module('portal')
 			for (var i2=0;i2<l;i2++) { 
 				var dat = result.data[i2];
 				for (var lang in dat.label) {					
-				  if (dat.label[lang].toLowerCase().indexOf(what) >= 0) {
-					  console.log(dat);
+				  if (dat.label[lang].toLowerCase().indexOf(what) >= 0) {					 
 					  addgroup(dat);
 				    
 				  }
@@ -188,11 +182,9 @@ angular.module('portal')
 	
 	var buildAccessQuery = function() {		
 		var finalblocks = [];
-		var keys = {};	
-		console.log("start");
+		var keys = {};			
 		for (var i=0;i<$scope.blocks.length;i++) {
-			var block = $scope.blocks[i];
-			console.log(block);
+			var block = $scope.blocks[i];			
 			var fb = {};
 			if (block.format) fb.format = [ block.format ];
 			if (block.owner && block.owner != "all") fb.owner = [ block.owner ];
@@ -230,8 +222,7 @@ angular.module('portal')
 				if (block.code) fb.code = [ block.code ];
 			}									
 								
-		}
-		console.log(finalblocks);
+		}		
 		if (finalblocks.length > 1) {
 			return { "$or" : finalblocks };
 		} else if (finalblocks.length == 1) {
@@ -282,8 +273,7 @@ angular.module('portal')
 			var nblock = {};
 			if (ac("format")) nblock.format = ac("format");
 			if (ac("content")) nblock.content = ac("content");
-			if (ac("code")) nblock.code = ac("code");
-			console.log("Code: "+query.code);
+			if (ac("code")) nblock.code = ac("code");		
 			if (ac("group")) nblock.group = ac("group");
 			if (ac("group-system")) nblock.system = ac("group-system");
 			if (ac("created-after")) {
@@ -298,15 +288,17 @@ angular.module('portal')
 			}
 			if (ac("data")) {
 				var p = ac("data");
-				if (p["effectiveDateTime|effectivePeriod.start|null"] && p["effectiveDateTime|effectivePeriod.start|null"]["!!!GE"]) {
+				if (p["effectiveDateTime|effectivePeriod.start|null"]) {
 					nblock.dataPeriodRestriction = true;
 					nblock.dataPeriodRestrictionMode = "effective";
-					nblock.dataPeriodRestrictionStart = new Date(p["effectiveDateTime|effectivePeriod.start|null"]["!!!GE"]);					
+					var d = p["effectiveDateTime|effectivePeriod.start|null"]["!!!GE"] || p["effectiveDateTime|effectivePeriod.start|null"].$GE; 
+					nblock.dataPeriodRestrictionStart = new Date(d);					
 				}
-				if (p["effectiveDateTime|effectivePeriod.end|null"] && p["effectiveDateTime|effectivePeriod.end|null"]["!!!LT"]) {
+				if (p["effectiveDateTime|effectivePeriod.end|null"]) {
 					nblock.dataPeriodRestriction = true;
 					nblock.dataPeriodRestrictionMode = "effective";
-					nblock.dataPeriodRestrictionEnd = new Date(p["effectiveDateTime|effectivePeriod.end|null"]["!!!LT"]);					
+					var d2 = p["effectiveDateTime|effectivePeriod.end|null"]["!!!LT"] || p["effectiveDateTime|effectivePeriod.end|null"].$LT;
+					nblock.dataPeriodRestrictionEnd = new Date(d2);					
 				}
 				if (!nblock.dataPeriodRestriction) {
 					nblock.customFilter = true;
@@ -318,8 +310,7 @@ angular.module('portal')
 			}
 			if (ac("owner")) {
 				nblock.owner = noarray(ac("owner"));
-			}
-			console.log(nblock);
+			}		
 			angular.forEach(unwrap(unwrap(unwrap(unwrap(unwrap([ nblock ],"group"),"code"),"content"),"app"),"format"), function(r) {
 				if (!r.app) r.app = "all";
 				if (r.app == $scope.target.appname) { r.app = "self"; }
@@ -331,8 +322,7 @@ angular.module('portal')
 					labels.getGroupLabel($translate.use(), r["group-system"] || "v1", r.group).then(function(v) { r.display = v; });
 				} else if (r.format) {
 					r.display = r.format;
-				}
-				console.log(r);
+				}				
 				if (r.content || r.group || r.code || r.format) { result.push(r); } 
 			});
 		}
