@@ -54,6 +54,11 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 	 * creation date as stored in aps
 	 */
 	public @NotMaterialized Date createdFromAps;
+	
+	/**
+	 * Sharing date (used only for some queries)
+	 */
+	public @NotMaterialized Date sharedAt;
 		
 	public BasicBSONObject meta;
 		

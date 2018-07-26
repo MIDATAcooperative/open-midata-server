@@ -198,8 +198,8 @@ angular.module('portal')
 			if (block.dataPeriodRestriction && block.dataPeriodRestrictionMode) {
 				if (!fb.data) fb.data = {};
 				if (block.dataPeriodRestrictionMode === "effective") {
-					if (block.dataPeriodRestrictionStart) fb.data["effectiveDateTime|effectivePeriod.start|null"] = { "!!!GE" : block.dataPeriodRestrictionStart };
-					if (block.dataPeriodRestrictionEnd) fb.data["effectiveDateTime|effectivePeriod.end|null"] = { "!!!LT" : block.dataPeriodRestrictionEnd };
+					if (block.dataPeriodRestrictionStart) fb.data["effectiveDateTime|effectivePeriod.start|null"] = { "!!!ge" : block.dataPeriodRestrictionStart };
+					if (block.dataPeriodRestrictionEnd) fb.data["effectiveDateTime|effectivePeriod.end|null"] = { "!!!lt" : block.dataPeriodRestrictionEnd };
 				}
 			}
 			if (block.customFilter && block.customFilterValue) {
@@ -291,13 +291,13 @@ angular.module('portal')
 				if (p["effectiveDateTime|effectivePeriod.start|null"]) {
 					nblock.dataPeriodRestriction = true;
 					nblock.dataPeriodRestrictionMode = "effective";
-					var d = p["effectiveDateTime|effectivePeriod.start|null"]["!!!GE"] || p["effectiveDateTime|effectivePeriod.start|null"].$GE; 
+					var d = p["effectiveDateTime|effectivePeriod.start|null"]["!!!ge"] || p["effectiveDateTime|effectivePeriod.start|null"].$ge; 
 					nblock.dataPeriodRestrictionStart = new Date(d);					
 				}
 				if (p["effectiveDateTime|effectivePeriod.end|null"]) {
 					nblock.dataPeriodRestriction = true;
 					nblock.dataPeriodRestrictionMode = "effective";
-					var d2 = p["effectiveDateTime|effectivePeriod.end|null"]["!!!LT"] || p["effectiveDateTime|effectivePeriod.end|null"].$LT;
+					var d2 = p["effectiveDateTime|effectivePeriod.end|null"]["!!!lt"] || p["effectiveDateTime|effectivePeriod.end|null"].$lt;
 					nblock.dataPeriodRestrictionEnd = new Date(d2);					
 				}
 				if (!nblock.dataPeriodRestriction) {
