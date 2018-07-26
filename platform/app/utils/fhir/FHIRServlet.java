@@ -41,8 +41,7 @@ public class FHIRServlet extends RestfulServer {
    @Override
    protected void initialize() throws ServletException {
 	   System.out.println("FHIR Servlet init");
-	   String serverBaseUrl = getBaseUrl();
-	   System.out.println("FHIR Servlet init x");
+	   String serverBaseUrl = getBaseUrl();	   
        setServerAddressStrategy(new HardcodedServerAddressStrategy(serverBaseUrl));
        this.setServerConformanceProvider(new MidataConformanceProvider());
        ResourceProvider.ctx.setNarrativeGenerator(new DefaultThymeleafNarrativeGenerator());       
@@ -54,7 +53,7 @@ public class FHIRServlet extends RestfulServer {
        */
       myProviders = new HashMap<String, ResourceProvider>();
       List<IResourceProvider> resourceProviders = new ArrayList<IResourceProvider>();
-      System.out.println("FHIR Servlet init 2");
+      System.out.println("FHIR Servlet register providers");
       myProviders.put("Patient", new PatientResourceProvider());
       myProviders.put("Observation",  new ObservationResourceProvider());        
       myProviders.put("DocumentReference",  new DocumentReferenceProvider());
