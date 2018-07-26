@@ -207,19 +207,11 @@ public class IndexManager {
 				Date limit = v>0 ? new Date(v - UPDATE_TIME) : null;
 				long now = System.currentTimeMillis();
 				 
-				if (limit != null) restrictions.put("updated-after", limit);								
+				if (limit != null) restrictions.put("shared-after", limit);								
 				List<DBRecord> recs = QueryEngine.listInternal(cache, aps, null, restrictions, Sets.create("_id"));
 				addRecords(index, aps, recs);
 				boolean updateTs = recs.size() > 0 || limit == null || (now-v) > UPDATE_UNUSED;
-				// Records that have been freshly shared
-				if (limit != null) {
-					restrictions.remove("updated-after");
-					restrictions.put("shared-after", limit);
-					List<DBRecord> recs2 = QueryEngine.listInternal(cache, aps, null, restrictions, Sets.create("_id", "key"));
-					addRecords(index, aps, recs2);
-					if (recs2.size()>0) updateTs = true;
-					AccessLog.log("Add index from sharing="+recs2.size());
-				}
+				// Records that have been freshly shared				
 				
 				if (updateTs) index.setVersion(aps, now);
 				AccessLog.log("Add index: from updated="+recs.size());
