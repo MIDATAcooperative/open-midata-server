@@ -328,7 +328,7 @@ public class ProcessingTools {
 		@Override
 		public boolean contained(DBRecord record) throws AppException {
 			//AccessLog.log("rec meta="+record.meta+" enc="+record.encrypted+" dat="+record.data+" encdat="+record.encryptedData);
-			if (record.meta != null && (minTime == 0 || record.time ==0 || record.time >= minTime)) {				
+			if (record.meta != null && (minTime == 0 || record.time ==0 || record.time >= minTime || record.sharedAt != null)) {				
 				 RecordEncryption.decryptRecord(record);				   			
 				 if (!record.meta.containsField("creator") && record.owner != null) record.meta.put("creator", record.owner.toDb());
 				 if (filterDelete && record.meta.containsField("deleted")) return false;
@@ -417,6 +417,41 @@ public class ProcessingTools {
 		@Override
 		public String toString() {
 			return "filter-date(["+passed+"/"+filtered+"] "+property+","+chain.toString()+")";
+		}
+
+	}
+	
+	static class FilterBySharedDate extends FilterIterator<DBRecord> {
+		
+		private Date minDate;
+		private Date maxDate;
+
+		public FilterBySharedDate(DBIterator<DBRecord> chain, Date minDate, Date maxDate) throws AppException {
+			super(chain);
+			
+			this.minDate = minDate;
+			this.maxDate = maxDate;
+			if (chain.hasNext())
+				next();
+		}
+
+		@Override
+		public boolean contained(DBRecord record) {
+			Date cmp = (Date) record.meta.get("lastUpdated");
+    		if (cmp == null) cmp = record._id.getCreationDate(); //Fallback for lastUpdated
+    		if (cmp == null) {
+    			AccessLog.log("Record with _id "+record._id.toString()+" has not created date!");
+    			return false;
+    		}
+    		if (record.sharedAt != null && record.sharedAt.after(cmp)) cmp = record.sharedAt;
+    		if (minDate != null && cmp.before(minDate)) return false;
+			if (maxDate != null && cmp.after(maxDate)) return false;
+			return true;
+		}
+		
+		@Override
+		public String toString() {
+			return "filter-date(["+passed+"/"+filtered+"] shared-after,"+chain.toString()+")";
 		}
 
 	}

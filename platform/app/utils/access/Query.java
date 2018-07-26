@@ -41,6 +41,8 @@ public class Query {
 	private Date maxDateCreated;
 	private Date minDateUpdated;
 	private Date maxDateUpdated;
+	private Date minDateShared;
+	//private Date maxDateShared;
 	private boolean fetchFromDB;
 	private boolean restrictedOnTime;
 	private APSCache cache;
@@ -57,7 +59,7 @@ public class Query {
 		//AccessLog.logQuery(apsId, properties, fields);
 	}
 	
-	public Query(Map<String, Object> properties, Set<String> fields, APSCache cache, MidataId apsId, AccessContext context, boolean noinit) throws AppException {
+	public Query(Map<String, Object> properties, Set<String> fields, APSCache cache, MidataId apsId, AccessContext context, boolean noinit)  {
 		this.properties = new HashMap<String, Object>(properties);
 		this.fields = fields;
 		this.cache = cache;
@@ -79,7 +81,14 @@ public class Query {
 		this.context = context;
 		process();
 		//AccessLog.logQuery(apsId, properties, fields);
-	}		
+	}	
+	
+	public Query withoutTime() throws AppException {
+		Query r = new Query(properties, fields, cache, apsId, context, true);
+		properties.remove("shared-after");
+		process();
+		return r;
+	}
 	
 	public Map<String, Object> getProperties() {
 		return properties;
@@ -256,6 +265,10 @@ public class Query {
 		return minDateUpdated;
 	}
 	
+	public Date getMinDateShared() {
+		return minDateShared;
+	}
+	
 	public long getMinCreatedTimestamp() {
 		if (minDateCreated != null) return minDateCreated.getTime();
 		return 0;
@@ -267,7 +280,8 @@ public class Query {
 	}
 	
 	public long getMinSharedTimestamp() throws BadRequestException {
-		return getDateRestriction("shared-after").getTime();
+		if (minDateShared != null) return minDateShared.getTime();
+		return 0;
 	}
 	
 	public Date getMaxDateCreated() {
@@ -277,6 +291,10 @@ public class Query {
 	public Date getMaxDateUpdated() {
 		return maxDateUpdated;
 	}
+	
+	/*public Date getMaxDateShared() {
+		return maxDateShared;
+	}*/
 	
 	public MidataId getFrom() {
 		String fr = properties.get("from").toString();
@@ -376,7 +394,7 @@ public class Query {
 	              properties.containsKey("code") ||
 	              properties.containsKey("name");
 		 
-		 restrictedOnTime = properties.containsKey("created") || properties.containsKey("max-age") || properties.containsKey("created-after") || properties.containsKey("created-before") || properties.containsKey("updated-after") || properties.containsKey("updated-before") || properties.containsKey("history-date");
+		 restrictedOnTime = properties.containsKey("created") || properties.containsKey("max-age") || properties.containsKey("created-after") || properties.containsKey("created-before") || properties.containsKey("updated-after") || properties.containsKey("shared-after") || properties.containsKey("updated-before") || properties.containsKey("history-date");
 		 
          fieldsFromDB = Sets.create();
          mayNeedFromDB = new HashSet<String>();
@@ -406,17 +424,23 @@ public class Query {
 		 if (properties.containsKey("max-age")) {
 			Number maxAge = (long) Double.parseDouble(properties.get("max-age").toString());
 			minDateCreated = new Date(System.currentTimeMillis() - 1000 * maxAge.longValue());
-			minTime = getTimeFromDate(minDateCreated);
+			minTime = Math.max(minTime, getTimeFromDate(minDateCreated));
 		 }
 		 
 		 if (properties.containsKey("created-after")) {				
 				minDateCreated = getDateRestriction("created-after");
-				minTime = getTimeFromDate(minDateCreated);
+				minTime = Math.max(minTime, getTimeFromDate(minDateCreated));
 		 }
 		 
 		 if (properties.containsKey("updated-after")) {				
 				minDateUpdated = getDateRestriction("updated-after");
-				minTime = getTimeFromDate(minDateUpdated); 
+				minTime = Math.max(minTime, getTimeFromDate(minDateUpdated)); 
+				fetchFromDB = true;
+		 }
+		 
+		 if (properties.containsKey("shared-after")) {				
+				minDateShared = getDateRestriction("shared-after");
+				minTime = Math.max(minTime, getTimeFromDate(minDateShared)); 
 				fetchFromDB = true;
 		 }
 		 
@@ -435,6 +459,15 @@ public class Query {
 				maxTime = getTimeFromDate(maxDateUpdated);
 				fetchFromDB = true;
 		 }
+		 
+		 /*
+		 if (properties.containsKey("shared-before")) {				
+				maxDateShared = getDateRestriction("shared-before");
+				int maxTime1 = getTimeFromDate(maxDateShared);
+				if (maxTime1 < maxTime || maxTime == 0) maxTime = maxTime1;
+				fetchFromDB = true;
+		 }
+		 */
 		 
 		 if (properties.containsKey("app")) {
 			 Set<String> apps = getRestriction("app");

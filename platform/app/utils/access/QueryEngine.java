@@ -66,7 +66,7 @@ class QueryEngine {
 		return result;						
 	}
 		
-	public static boolean isInQuery(AccessContext context, Map<String, Object> properties, DBRecord record) throws AppException {
+	public static boolean isInQuery(AccessContext context, Map<String, Object> properties, DBRecord record) throws AppException {		
 		List<DBRecord> results = new ArrayList<DBRecord>(1);
 		results.add(record);
 		return listFromMemory(context, properties, results).size() > 0;		
@@ -77,8 +77,7 @@ class QueryEngine {
 		APS inMemory = new Feature_InMemoryQuery(records);
 		context.getCache().addAPS(inMemory);
 		Feature qm = new Feature_Or(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_ContentFilter(inMemory))));		
-		DBIterator<DBRecord> recs = qm.iterator(new Query(properties, Sets.create("_id"), context.getCache(), inMemory.getId(),context));
-		//AccessLog.log("list from memory pre postprocess size = "+recs.size());
+		DBIterator<DBRecord> recs = qm.iterator(new Query(properties, Sets.create("_id"), context.getCache(), inMemory.getId(),context));		
 		List<DBRecord> result = ProcessingTools.collect(recs);		
 		if (AccessLog.detailedLog) AccessLog.logEnd("End list from memory #recs="+result.size());
 		return result;

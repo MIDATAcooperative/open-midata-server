@@ -594,10 +594,12 @@ class APSImplementation extends APS {
 		List<DBRecord> result = new ArrayList<DBRecord>();		
 		for (Object entry1 : history) {
 			BasicBSONObject entry = (BasicBSONObject) entry1;
-			if (entry.getLong("ts") >= minUpd && (entry.containsField("d") == removes)) {
+			long ts = entry.getLong("ts"); 
+			if (ts >= minUpd && (entry.containsField("d") == removes)) {
 				DBRecord r = new DBRecord();
 				r._id = new MidataId(entry.getString("r"));
-				r.isStream = entry.containsField("s");				
+				r.isStream = entry.containsField("s");	
+				r.sharedAt = new Date(ts);
 				result.add(r);
 			}
 		}

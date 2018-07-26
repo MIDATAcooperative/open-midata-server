@@ -173,12 +173,14 @@ public class Feature_Streams extends Feature {
 		private APS thisrecord;
 		private MidataId owner;
 		private int size;
+		private long limit;
 		private List<DBRecord> direct;
 		
 		StreamCombineIterator(APS next, Query query, DBIterator<DBRecord> streams, List<DBRecord> direct) throws AppException {
 		  	this.next = next;		  			  
 		  	this.query = query;		  
-		  			  
+            this.limit = Math.max(query.getMinUpdatedTimestamp(), query.getMinCreatedTimestamp());
+            this.limit = Math.max(this.limit, query.getMinSharedTimestamp());
 		  	if (direct != null && !direct.isEmpty()) {		  		
 		  		current = ProcessingTools.dbiterator("direct()", direct.iterator());
 		  		chain = streams;
@@ -200,7 +202,7 @@ public class Feature_Streams extends Feature {
 					  thisrecord = streamaps;
 					  owner = thisrecord.getStoredOwner();
 					  boolean medium = streamaps.getSecurityLevel().equals(APSSecurityLevel.MEDIUM);
-					  if (query.getMinUpdatedTimestamp() <= streamaps.getLastChanged() && query.getMinCreatedTimestamp() <= streamaps.getLastChanged()) {
+					  if (limit <= streamaps.getLastChanged()) {
 //						AccessLog.logBegin("start query on stream APS:"+streamaps.getId());
 						 List<DBRecord> rs = streamaps.query(query);
 						 
@@ -290,8 +292,10 @@ public class Feature_Streams extends Feature {
 			
 			if (!streamsToFetch.isEmpty()) {
 				NChainedMap<String, Object> restriction = CMaps.map("_id", streamsToFetch.keySet());
-				if (q.getMinCreatedTimestamp() > 0) restriction = restriction.map("version", CMaps.map("$gt", q.getMinCreatedTimestamp()));
-				if (q.getMinUpdatedTimestamp() > 0) restriction = restriction.map("version", CMaps.map("$gt", q.getMinUpdatedTimestamp()));
+				long min = q.getMinCreatedTimestamp() > 0 ? q.getMinCreatedTimestamp() : 0;
+				min = q.getMinUpdatedTimestamp() > min ? q.getMinUpdatedTimestamp() : min;
+				min = q.getMinSharedTimestamp() > min ? q.getMinSharedTimestamp() : min;
+				if (min > 0) restriction = restriction.map("version", CMaps.map("$gt", min));
 				
 				Set<AccessPermissionSet> rsets = AccessPermissionSet.getAll(restriction, AccessPermissionSet.ALL_FIELDS);
 				for (AccessPermissionSet set : rsets) {

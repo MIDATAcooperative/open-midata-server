@@ -48,6 +48,7 @@ public class Global  {
 
 @Inject
 public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle, MailerClient mailerClient, WSClient ws) {
+	    System.out.println("----------------------------------------------------------------");
 	    System.out.println("Starting UP");
 		// Connect to production database
 	    InstanceConfig.setInstance(new InstanceConfig(config));
@@ -76,9 +77,9 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 		FHIR.servlet = new FHIRServlet();
 		
 		try {
-			System.out.println("FHIR Servlet 2");
+			
 		  FHIR.servlet.setFhirContext(ResourceProvider.ctx);
-		  System.out.println("FHIR Servlet 3");
+		  
 		  FHIR.servlet.init(new PlayHttpServletConfig());
 			
 		  System.out.println("Subscription Manager");
@@ -135,7 +136,8 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 				
 		}); 
 		
-		System.out.println("Finished STartup");
+		System.out.println("Finished Startup");
+		System.out.println("----------------------------------------------------------------");
 	}	
 
 }

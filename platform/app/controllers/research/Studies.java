@@ -351,7 +351,7 @@ public class Studies extends APIController {
 			public Iterator<ByteString> create() throws Exception {
 				KeyManager.instance.continueSession(handle);
 				ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId));
-				DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, executorId, CMaps.map("export", mode).map("study", study._id).map("study-group", studyGroup).mapNotEmpty("updated-after",  startDate).mapNotEmpty("updated-before", endDate),
+				DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, executorId, CMaps.map("export", mode).map("study", study._id).map("study-group", studyGroup).mapNotEmpty("shared-after",  startDate).mapNotEmpty("updated-before", endDate),
 						RecordManager.COMPLETE_DATA);
 				return new RecIterator(allRecords);
 			}
