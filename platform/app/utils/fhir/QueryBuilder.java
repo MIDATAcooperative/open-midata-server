@@ -106,6 +106,10 @@ public class QueryBuilder {
 		
 	}
 	
+	/**
+	 * Handle restriction on _id field the normal way
+	 * @throws AppException
+	 */
 	public void handleIdRestriction() throws AppException {
 		if (params.containsKey("_id")) {
 	           Set<String> ids = paramToStrings("_id");
@@ -116,6 +120,14 @@ public class QueryBuilder {
 		}
 	}
 	
+	/**
+	 * Add a FHIR COMPOSITE search. 
+	 * @param name name of composite search parameter
+	 * @param path1 path of field 1 of composite search
+	 * @param path2 path of field 2 of composite search
+	 * @param type1 type of field 1 of composite search
+	 * @param type2 type of field 2 of composite search
+	 */
 	public void restriction(String name, String path1, String path2, String type1, String type2) {
 		List<List<? extends IQueryParameterType>> paramsAnd = params.get(name);
 		if (paramsAnd == null) return;
@@ -150,15 +162,41 @@ public class QueryBuilder {
 		//} 
 	}
 		
-	
+	/**
+	 * Add a FHIR search that searches one (possibly multityped) field in the resource
+	 * @param name name of FHIR search
+	 * @param indexing does creating an index make sense? No if only very few values are possible (male/female for example)
+	 * @param t1 type of search - look at constants defined at beginning of this class
+	 * @param p1 path to field to be searched in FHIR resource
+	 */
 	public void restriction(String name, boolean indexing, String t1, String p1) {
 	  restriction(name, indexing, t1, p1, null, null, null, null);	
 	}
 	
+	/**
+	 * Add a FHIR search that searches two fields in the resource
+	 * @param name name of FHIR search
+	 * @param indexing does creating an index make sense?
+	 * @param t1 type for field 1. (see constants at beginning of this class)
+	 * @param p1 path for field 1
+	 * @param t2 type for field 2
+	 * @param p2 path for field 2
+	 */
 	public void restriction(String name, boolean indexing, String t1, String p1, String t2, String p2) {
 	  restriction(name, indexing, t1, p1, t2, p2, null, null);	
 	}
 	
+	/**
+	 * Add a FHIR search that searches three fields in the resource
+	 * @param name name of FHIR search
+	 * @param indexing does creating an index make sense?
+	 * @param t1 type for field 1
+	 * @param p1 path for field 1
+	 * @param t2 type for field 2
+	 * @param p2 path for field 2
+	 * @param t3 type for field 3
+	 * @param p3 path for field 3
+	 */
 	public void restriction(String name, boolean indexing, String t1, String p1, String t2, String p2, String t3, String p3) {
 		SortOrderEnum sortOrder = params.hasSortParam(name);
 		if (sortOrder != null) addSort(name, sortOrder, t1, p1, t2, p2, t3, p3);
@@ -239,6 +277,13 @@ public class QueryBuilder {
 		} else return "null";
 	}
 	
+	/**
+	 * Add a FHIR search that searches multiple fields of the same type in the resource (like address)
+	 * @param name name of FHIR search
+	 * @param indexing does indexing make sense?
+	 * @param type type of all fields to be searched. look at constants defined at beginning of class
+	 * @param paths string list off all pathes to be searched
+	 */
 	public void restrictionMany(String name, boolean indexing, String type, String... paths) {
 		List<List<? extends IQueryParameterType>> paramsAnd = params.get(name);
 		if (paramsAnd == null) return;
@@ -716,13 +761,14 @@ public class QueryBuilder {
 	 * Use a FHIR query parameter to restrict the record owner
 	 * @param name name of FHIR search parameter
 	 * @param refType Resource referenced (Patient, Practitioner, ...)
+	 * @param fhirField name of the reference type field in the FHIR resource
 	 */
-	public boolean recordOwnerReference(String name, String refType, String emptyField) throws AppException {
+	public boolean recordOwnerReference(String name, String refType, String fhirField) throws AppException {
 		if (!referencesHaveTypes(name, refType, USER_TYPES)) return false;
 		List<ReferenceParam> patients = resolveReferences(name, refType);
 		if (patients != null && FHIRTools.areAllOfType(patients, USER_TYPES)) {
 			query.putAccount("owner", FHIRTools.referencesToIds(patients));
-			if (emptyField != null) query.putDataCondition(new FieldAccess(emptyField, new ExistsCondition(false)));
+			if (fhirField != null) query.putDataCondition(new FieldAccess(fhirField, new ExistsCondition(false)));
 			return true;
 		}
 		if (Stats.enabled && patients == null && name.equals("patient") && !params.containsKey(name)) Stats.addComment("Restrict by patient?");
