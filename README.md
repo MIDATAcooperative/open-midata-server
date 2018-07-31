@@ -43,11 +43,15 @@ cd platform-private
 make update
 ```
 
-Terminal 2:
+Terminal 2: (after Terminal 1 is ready)
 ```
 cd platform-private/portal
 grunt server
 ```
+
+The local server will be at address: https://localhost:9002
+On the developer login page you can log in as "admin@midata.coop" with initial password "secret".
+
 
 Folder structure
 ----------------
