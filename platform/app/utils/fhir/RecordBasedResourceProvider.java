@@ -45,6 +45,7 @@ import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.access.AccessContext;
 import utils.access.ConsentAccessContext;
+import utils.access.EncryptedFileHandle;
 import utils.access.RecordManager;
 import utils.access.VersionedDBRecord;
 import utils.auth.ExecutionInfo;
@@ -234,7 +235,8 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 			String encoded = ctx.newJsonParser().encodeResourceToString(resource);
 			record.data = (DBObject) JSON.parse(encoded);
 			
-			PluginsAPI.createRecord(info(), record, data, fileName, contentType, info().context);			
+			EncryptedFileHandle handle = RecordManager.instance.addFile(data, fileName, contentType);
+			PluginsAPI.createRecord(info(), record, handle, fileName, contentType, info().context);			
 		
 		AccessLog.logEnd("end insert FHIR record with attachment");
 	}
@@ -248,6 +250,9 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	
 	}
 	
+	/**
+	 * Sets id field and meta section
+	 */
 	public void processResource(Record record, T resource) throws AppException {
 		resource.setId(new IdType(resource.fhirType(), record._id.toString(), record.version));
 		resource.getMeta().setVersionId(record.version);
