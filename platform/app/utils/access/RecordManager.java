@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.io.input.CountingInputStream;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
@@ -39,7 +40,6 @@ import utils.auth.KeyManager;
 import utils.auth.RecordToken;
 import utils.collections.CMaps;
 import utils.collections.Sets;
-import utils.db.DatabaseException;
 import utils.db.FileStorage;
 import utils.db.FileStorage.FileData;
 import utils.exceptions.AppException;
@@ -586,14 +586,48 @@ public class RecordManager {
 	 * @param contentType the mime type of the attached file	
 	 * @throws AppException
 	 */
-	public void addRecord(AccessContext context, Record record, MidataId alternateAps, InputStream data, String fileName, String contentType) throws AppException {
+	public void addRecord(AccessContext context, Record record, MidataId alternateAps, EncryptedFileHandle data, String fileName, String contentType) throws AppException {
 		DBRecord dbrecord = RecordConversion.instance.toDB(record);
+		dbrecord.meta.append("file", data.getId().toObjectId());
+		dbrecord.meta.append("file-key", data.getKey());
 		byte[] kdata = addRecordIntern(context, dbrecord, false, alternateAps, false);	
+		/*
 		try {
 		FileStorage.store(EncryptionUtils.encryptStream(kdata, data), record._id, 0, fileName, contentType);
 		} catch (DatabaseException e) {
 			throw new InternalServerException("error.internal", e);
+		}*/		
+	}
+	
+	/**
+	 * Add a new record containing an attachment to the database
+	 * @param executingPerson id of executing person
+	 * @param record the record to be saved
+	 * @param alternateAps alternative target aps
+	 * @param data a file input stream containing the file to be stored as attachment
+	 * @param fileName the name of the attached file
+	 * @param contentType the mime type of the attached file	
+	 * @throws AppException
+	 */
+	public void addRecord(AccessContext context, Record record, MidataId alternateAps, InputStream input, String fileName, String contentType) throws AppException {
+		EncryptedFileHandle data = addFile(input, fileName, contentType);
+		addRecord(context, record, alternateAps, data, fileName, contentType);	
+	}
+	
+	public EncryptedFileHandle addFile(InputStream data, String fileName, String contentType) throws AppException {
+		MidataId id = new MidataId();
+		byte[] kdata = EncryptionUtils.generateKey();
+		CountingInputStream countInput = new CountingInputStream(data);
+		System.out.println("START UPLOAD");
+		try {
+		  FileStorage.store(EncryptionUtils.encryptStream(kdata, countInput), id, 0, fileName, contentType);
+		} catch (Exception e) {
+		  System.out.println("FAIL UPLOAD");
+		  FileStorage.delete(id.toObjectId());
+		  throw new InternalServerException("error.internal", e);
 		}
+		System.out.println("EXIT UPLOAD");
+		return new EncryptedFileHandle(id, kdata, countInput.getByteCount());
 		//createAndShareDependend(executingPerson, dbrecord, record.dependencies, kdata);
 	}
 	
@@ -1166,19 +1200,30 @@ public class RecordManager {
 	 * @throws AppException
 	 */
 	public FileData fetchFile(MidataId who, RecordToken token) throws AppException {		
-		List<DBRecord> result = QueryEngine.listInternal(getCache(who), new MidataId(token.apsId), null, CMaps.map("_id", new MidataId(token.recordId)), Sets.create("key"));
+		List<DBRecord> result = QueryEngine.listInternal(getCache(who), new MidataId(token.apsId), null, CMaps.map("_id", new MidataId(token.recordId)), Sets.create("key", "data"));
 				
 		if (result.size() != 1) throw new InternalServerException("error.internal.notfound", "Unknown Record");
 		DBRecord rec = result.get(0);
 		
 		if (rec.security == null) throw new InternalServerException("error.internal", "Missing key for record:"+rec._id.toString());
-		FileData fileData = FileStorage.retrieve(new MidataId(token.recordId), 0);
+		
+		MidataId fileId;
+		byte[] key;
+		if (rec.meta.containsField("file")) {
+			fileId = MidataId.from(rec.meta.get("file"));
+			key = (byte[]) rec.meta.get("file-key");
+		} else {
+			fileId = rec._id;
+			key = rec.key;
+		}
+		
+		FileData fileData = FileStorage.retrieve(fileId, 0);
 		if (fileData == null) throw new InternalServerException("error.internal", "Record "+rec._id.toString()+" has no binary data attached.");		
 		
 		if (rec.security.equals(APSSecurityLevel.NONE) || rec.security.equals(APSSecurityLevel.LOW)) {
 		  fileData.inputStream = fileData.inputStream;			
 		} else {
-		  fileData.inputStream = EncryptionUtils.decryptStream(rec.key, fileData.inputStream);
+		  fileData.inputStream = EncryptionUtils.decryptStream(key, fileData.inputStream);
 		}
 		
 		return fileData;

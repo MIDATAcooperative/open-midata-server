@@ -65,6 +65,12 @@ public class FileStorage {
 				
 		return new FileData(fileSystem.openDownloadStream(fileid), filename, contentType);		
 	}
+	
+	public static void delete(ObjectId fileId) {
+		GridFSBucket fileSystem = GridFSBuckets.create(DBLayer.getFSDB(), FILE_STORAGE);
+		System.out.println("delete id="+fileId.toString());
+		fileSystem.delete(fileId);
+	}
 
 	/**
 	 * Inner class used for passing back the filename along with the input stream when retrieving a file.

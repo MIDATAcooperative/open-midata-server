@@ -54,6 +54,8 @@ public class FHIRServlet extends RestfulServer {
       myProviders = new HashMap<String, ResourceProvider>();
       List<IResourceProvider> resourceProviders = new ArrayList<IResourceProvider>();
       System.out.println("FHIR Servlet register providers");
+      
+      // HERE each resource provider needs to be registered
       myProviders.put("Patient", new PatientResourceProvider());
       myProviders.put("Observation",  new ObservationResourceProvider());        
       myProviders.put("DocumentReference",  new DocumentReferenceProvider());
