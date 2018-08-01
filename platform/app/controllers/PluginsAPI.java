@@ -47,6 +47,7 @@ import play.libs.ws.WSClient;
 import play.libs.ws.WSRequest;
 import play.libs.ws.WSResponse;
 import play.mvc.BodyParser;
+import play.mvc.BodyParser.DelegatingMultipartFormDataBodyParser;
 import play.mvc.Http.MultipartFormData;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
@@ -58,6 +59,7 @@ import utils.access.AccessContext;
 import utils.access.AccountCreationAccessContext;
 import utils.access.ConsentAccessContext;
 import utils.access.DBRecord;
+import utils.access.EncryptedFileHandle;
 import utils.access.RecordConversion;
 import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
@@ -76,6 +78,7 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.largerequests.HugeBodyParser;
 import utils.stats.Stats;
 
 /**
@@ -476,7 +479,7 @@ public class PluginsAPI extends APIController {
 	    createRecord(inf, record, null, null, null, context);		
 	}
 	
-	public static void createRecord(ExecutionInfo inf, Record record, InputStream fileData, String fileName, String contentType, AccessContext context) throws AppException  {
+	public static void createRecord(ExecutionInfo inf, Record record, EncryptedFileHandle fileData, String fileName, String contentType, AccessContext context) throws AppException  {
 		if (record.format==null) record.format = "application/json";
 		if (record.content==null) record.content = "other";
 		if (record.owner==null) record.owner = inf.ownerId;
@@ -762,17 +765,28 @@ public class PluginsAPI extends APIController {
 	}
 	
 	/**
-	 * Accepts and stores files up to sizes of 2GB.
+	 * Accepts and stores files up to any size
 	 */
+    @BodyParser.Of(HugeBodyParser.class)
 	public static Result uploadFile() throws AppException {
+    	EncryptedFileHandle handle = null;
+    	
 		Stats.startRequest(request());
-		
+		System.out.println("Start handle request");
 		try {
-		
+			
 		response().setHeader("Access-Control-Allow-Origin", "*");
-
+		
 		// check meta data
 		MultipartFormData formData = request().body().asMultipartFormData();
+		FilePart fileData = formData.getFile("file");
+		if (fileData == null) {
+			throw new BadRequestException("error.internal", "No file found.");
+		}
+		handle = (EncryptedFileHandle) fileData.getFile();			
+		String filename = fileData.getFilename();
+		String contentType = fileData.getContentType();
+				
 		Map<String, String[]> metaData = formData.asFormUrlEncoded();
 		if (!metaData.containsKey("authToken") || !metaData.containsKey("name")) {
 			throw new BadRequestException("error.internal", "At least one request parameter is missing.");
@@ -786,18 +800,10 @@ public class PluginsAPI extends APIController {
 		ExecutionInfo authToken = ExecutionInfo.checkSpaceToken(request(), metaData.get("authToken")[0]);
 		Stats.setPlugin(authToken.pluginId);
 		
+		System.out.println("Passed 1");
 		if (authToken.recordId != null) throw new BadRequestException("error.internal", "This view is readonly.");
 			try {
-							
-			// extract file from data
-			FilePart fileData = formData.getFile("file");
-			if (fileData == null) {
-				throw new BadRequestException("error.internal", "No file found.");
-			}
-			File file = (File) fileData.getFile();
-			String filename = fileData.getFilename();
-			String contentType = fileData.getContentType();
-							
+																			
 			// create record
 			Record record = new Record();
 			record._id = new MidataId();
@@ -820,9 +826,9 @@ public class PluginsAPI extends APIController {
 					BasicDBObject att = new BasicDBObject(CMaps							
 							.map("title", filename)
 							.map("contentType", contentType)
-					        .map("size", file.length())
+					        .map("size", handle.getLength())
 					);
-					record.data = (DBObject) JSON.parse(data);
+					record.data = BasicDBObject.parse(data);
 					
 					Object rt = record.data.get("resourceType");
 					
@@ -845,22 +851,24 @@ public class PluginsAPI extends APIController {
 						.map("type", "file")
 						.map("title", filename)
 						.map("contentType", contentType)
-				        .map("size", file.length())
+				        .map("size", 0)
 				);
 			 		
 			}
 					
-			createRecord(authToken, record, new FileInputStream(file), filename, contentType, authToken.context);
+			createRecord(authToken, record, handle, filename, contentType, authToken.context);
 					
 			Stats.finishRequest(request(), "200");
 			ObjectNode obj = Json.newObject();
 			obj.put("_id", record._id.toString());
 			return ok(obj);
 		} catch (AppException e) {
+			if (handle != null) handle.removeAfterFailure();
 			return badRequest(e.getMessage());
 		} 
 			
 		} catch (Exception e2) {
+			if (handle != null) handle.removeAfterFailure();
 			ErrorReporter.report("Plugin API", ctx(), e2);
 			return internalServerError(e2.getMessage());			
 		} finally {

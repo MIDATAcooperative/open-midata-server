@@ -95,7 +95,10 @@ server {
            proxy_set_header X-Real-IP $remote_addr;
            proxy_http_version 1.1;
            proxy_cookie_path / "/; secure; HttpOnly";
-           client_max_body_size 100M;
+           proxy_request_buffering off;
+		   proxy_buffering off;
+           client_max_body_size 0;
+           
            add_header 'X-XSS-Protection' "1; mode=block" always;
            add_header 'X-Content-Type-Options' 'nosniff' always;
            add_header 'Strict-Transport-Security' "max-age=31536000; preload" always;             
