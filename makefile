@@ -278,8 +278,6 @@ tasks/setup-nginx: nginx/sites-available/sslredirect nginx/sites-available/webpa
 	sudo cp nginx/sites-available/* /etc/nginx/sites-available
 	sudo rm -f /etc/nginx/sites-enabled/*
 	sudo ln -s /etc/nginx/sites-available/sslredirect /etc/nginx/sites-enabled/sslredirect || true
-	sudo ln -s /etc/nginx/sites-available/plugins /etc/nginx/sites-enabled/ || true
-	sudo ln -s /etc/nginx/sites-available/portal_api /etc/nginx/sites-enabled/ || true
 	sudo ln -s /etc/nginx/sites-available/webpages /etc/nginx/sites-enabled/ || true	
 	sudo nginx -t && sudo service nginx reload
 	touch tasks/setup-nginx
