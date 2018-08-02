@@ -26,7 +26,7 @@ install-from-servertools: lock tasks/install-packages tasks/install-node tasks/b
 	touch switches/use-hotdeploy
 	touch tasks/check-config	
 
-install-local: tasks/install-packages tasks/install-node tasks/bugfixes tasks/prepare-local tasks/check-config $(CERTIFICATE_DIR)/selfsign.crt $(CERTIFICATE_DIR)/dhparams.pem tasks/install-localmongo conf/secret.conf.gz.nc tasks/precompile 
+install-local: tasks/install-packages tasks/install-node tasks/bugfixes tasks/prepare-local tasks/check-config $(CERTIFICATE_DIR)/selfsign.crt $(CERTIFICATE_DIR)/dhparams.pem tasks/install-localmongo platform/conf/secret.conf.gz.nc tasks/precompile 
 	touch switches/local-mongo
 	$(info Please run "make update" to build)
 	touch switches/local-mongo
@@ -134,7 +134,7 @@ tasks/install-localmongo: trigger/install-localmongo
 	ln -s mongodb-linux-x86_64-$(MONGO_VERSION) mongodb
 	mkdir -p mongodb/data	
 	cp config/mongod.conf mongodb/mongod.conf
-	sed -i 's|MONGODB_DATA_PATH|$(abspath monodb/data)|' mongodb/mongod.conf
+	sed -i 's|MONGODB_DATA_PATH|$(abspath mongodb/data)|' mongodb/mongod.conf
 	sed -i 's|MONGODB_LOG_PATH|$(abspath logs/mongod.log)|' mongodb/mongod.conf
 	rm mongodb-linux-x86_64-$(MONGO_VERSION).tgz			
 	touch tasks/install-localmongo

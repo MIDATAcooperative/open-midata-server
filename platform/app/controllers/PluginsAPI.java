@@ -797,7 +797,7 @@ public class PluginsAPI extends APIController {
 			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
 	
-		ExecutionInfo authToken = ExecutionInfo.checkSpaceToken(request(), metaData.get("authToken")[0]);
+		ExecutionInfo authToken = ExecutionInfo.checkToken(request(), metaData.get("authToken")[0], false);
 		Stats.setPlugin(authToken.pluginId);
 		
 		System.out.println("Passed 1");
