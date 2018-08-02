@@ -133,6 +133,7 @@ tasks/install-localmongo: trigger/install-localmongo
 	tar xzf mongodb-linux-x86_64-$(MONGO_VERSION).tgz
 	ln -s mongodb-linux-x86_64-$(MONGO_VERSION) mongodb
 	mkdir -p mongodb/data	
+	mkdir -p logs
 	cp config/mongod.conf mongodb/mongod.conf
 	sed -i 's|MONGODB_DATA_PATH|$(abspath mongodb/data)|' mongodb/mongod.conf
 	sed -i 's|MONGODB_LOG_PATH|$(abspath logs/mongod.log)|' mongodb/mongod.conf
