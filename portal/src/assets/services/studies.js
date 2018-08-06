@@ -2,6 +2,9 @@ angular.module('services')
 .factory('studies', ['server', function(server) {
 	var service = {};
 	
+	service.studytypes = ["CLINICAL", "CITIZENSCIENCE", "COMMUNITY"];
+	service.joinmethods = ["APP", "PORTAL", "RESEARCHER", "API", "ALGORITHM", "CODE", "TRANSFER"];
+	
 	service.roles = [
 		{ id :"SPONSOR",
 		  roleName : "Sponsor",

@@ -64,12 +64,14 @@ import models.enums.ConsentStatus;
 import models.enums.EntityType;
 import models.enums.Frequency;
 import models.enums.InformationType;
+import models.enums.JoinMethod;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationCodeStatus;
 import models.enums.ParticipationStatus;
 import models.enums.PluginStatus;
 import models.enums.ResearcherRole;
 import models.enums.StudyExecutionStatus;
+import models.enums.StudyType;
 import models.enums.StudyValidationStatus;
 import models.enums.UserFeature;
 import models.enums.UserGroupType;
@@ -136,7 +138,7 @@ public class Studies extends APIController {
 	public static Result create() throws AppException {
 		JsonNode json = request().body().asJson();
 
-		JsonValidation.validate(json, "name", "description");
+		JsonValidation.validate(json, "name", "description", "type");
 
 		String name = JsonValidation.getString(json, "name");
 		if (Study.existsByName(name))
@@ -154,6 +156,7 @@ public class Studies extends APIController {
 		do {
 			study.code = CodeGenerator.nextUniqueCode();
 		} while (Study.existsByCode(study.code));
+		study.type = JsonValidation.getEnum(json, "type", StudyType.class);
 		study.description = JsonValidation.getString(json, "description");
 
 		study.createdAt = new Date();
@@ -481,7 +484,7 @@ public class Studies extends APIController {
 
 		JsonNode json = request().body().asJson();
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
-		Set<String> fields = Sets.create("createdAt", "createdBy", "description", "name", "startDate", "endDate", "dataCreatedBefore");
+		Set<String> fields = Sets.create("type", "createdAt", "createdBy", "description", "name", "startDate", "endDate", "dataCreatedBefore");
 		Set<Study> studies = Study.getAll(null, properties, fields);
 
 		return ok(JsonOutput.toJson(studies, "Study", fields));
@@ -506,7 +509,7 @@ public class Studies extends APIController {
 
 		Set<String> fields = Sets.create("createdAt", "createdBy", "description", "executionStatus", "name", "participantSearchStatus", "validationStatus", "infos", "owner", "participantRules",
 				"recordQuery", "studyKeywords", "code", "groups", "requiredInformation", "anonymous", "assistance", "termsOfUse", "requirements", "startDate", "endDate", "dataCreatedBefore", "myRole",
-				"processFlags", "autoJoinGroup");
+				"processFlags", "autoJoinGroup", "type", "joinMethods");
 		Study study = Study.getById(studyid, fields);
 
 		UserGroupMember ugm = UserGroupMember.getByGroupAndMember(studyid, userid);
@@ -534,7 +537,7 @@ public class Studies extends APIController {
 		MidataId studyid = new MidataId(id);
 
 		Set<String> fields = Sets.create("createdAt", "createdBy", "description", "executionStatus", "name", "participantSearchStatus", "validationStatus", "infos", "owner", "participantRules",
-				"recordQuery", "studyKeywords", "code", "groups", "requiredInformation", "anonymous", "assistance", "termsOfUse", "requirements", "startDate", "endDate", "dataCreatedBefore");
+				"recordQuery", "studyKeywords", "code", "groups", "requiredInformation", "anonymous", "assistance", "termsOfUse", "requirements", "startDate", "endDate", "dataCreatedBefore", "type", "joinMethods");
 		Study study = Study.getById(studyid, fields);
 
 		ObjectNode result = Json.newObject();
@@ -1804,7 +1807,7 @@ public class Studies extends APIController {
 		MidataId studyid = new MidataId(id);
 
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
-		Study study = Study.getById(studyid, Sets.create("name", "owner", "executionStatus", "participantSearchStatus", "validationStatus", "requiredInformation", "anonymous", "code", "startDate",
+		Study study = Study.getById(studyid, Sets.create("name", "owner", "type", "joinMethods", "infos", "executionStatus", "participantSearchStatus", "validationStatus", "requiredInformation", "anonymous", "code", "startDate",
 				"endDate", "dataCreatedBefore"));
 
 		if (study == null)
@@ -1866,6 +1869,12 @@ public class Studies extends APIController {
 		}
 		if (json.has("description")) {
 			study.setDescription(JsonValidation.getString(json, "description"));
+		}
+		if (json.has("type")) {
+			study.setType(JsonValidation.getEnum(json, "type", StudyType.class));
+		}
+		if (json.has("joinMethods")) {
+			study.setJoinMethods(JsonValidation.getEnumSet(json, "joinMethods", JoinMethod.class));
 		}
 
 		AuditManager.instance.success();

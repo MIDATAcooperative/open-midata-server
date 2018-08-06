@@ -35,6 +35,7 @@ import models.Space;
 import models.Study;
 import models.User;
 import models.enums.IconUse;
+import models.enums.JoinMethod;
 import models.enums.MessageReason;
 import models.enums.ParticipantSearchStatus;
 import models.enums.PluginStatus;
@@ -165,11 +166,12 @@ public class Market extends APIController {
 			if (getRole().equals(UserRole.ADMIN) && withLogout) {
 				String linkedStudyCode = JsonValidation.getStringOrNull(json, "linkedStudyCode");
 				if (linkedStudyCode != null) {
-				  Study study = Study.getByCodeFromMember(linkedStudyCode, Sets.create("_id", "executionStatus", "validationStatus", "participantSearchStatus"));
+				  Study study = Study.getByCodeFromMember(linkedStudyCode, Sets.create("_id", "joinMethods", "executionStatus", "validationStatus", "participantSearchStatus"));
 				  if (study == null) throw new JsonValidationException("error.invalid.study", "linkedStudy", "invalid", "Unknown Study");
 				  if (study.executionStatus.equals(StudyExecutionStatus.ABORTED) || study.executionStatus.equals(StudyExecutionStatus.FINISHED)) throw new JsonValidationException("error.invalid.study", "linkedStudy", "invalid", "Study closed");
 				  if (study.validationStatus.equals(StudyValidationStatus.REJECTED) || study.validationStatus.equals(StudyValidationStatus.DRAFT)) throw new JsonValidationException("error.invalid.study", "linkedStudy", "invalid", "Study rejected");
 				  if (study.participantSearchStatus.equals(ParticipantSearchStatus.CLOSED)) throw new JsonValidationException("error.invalid.study", "linkedStudy", "invalid", "Study not searching");
+				  if (study.joinMethods != null && !study.joinMethods.contains(JoinMethod.APP)) throw new JsonValidationException("error.invalid.study", "linkedStudy", "invalid", "Join by app not allowed");
 				  
 				  app.linkedStudy = study._id;
 				} else {

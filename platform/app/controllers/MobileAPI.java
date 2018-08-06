@@ -33,6 +33,7 @@ import models.User;
 import models.enums.AggregationType;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
+import models.enums.JoinMethod;
 import models.enums.MessageReason;
 import models.enums.ParticipationStatus;
 import models.enums.UserFeature;
@@ -355,7 +356,7 @@ public class MobileAPI extends Controller {
 		}
 				
 		if (app.linkedStudy != null && studyConfirm) {								
-			controllers.members.Studies.requestParticipation(new ExecutionInfo(executor), member._id, app.linkedStudy, app._id);
+			controllers.members.Studies.requestParticipation(new ExecutionInfo(executor), member._id, app.linkedStudy, app._id, JoinMethod.APP);
 		}
 		
 		if (autoConfirm) {
