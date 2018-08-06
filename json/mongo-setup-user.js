@@ -17,4 +17,4 @@ db.users.find({ subroles : { $in : ["TRIALUSER", "NONMEMBERUSER" ] }}).forEach(f
 db.plugins.find({ status : "DELETED", filename : { $exists : true } }).forEach(function(e) { db.plugins.update({ _id : e._id }, { $unset : { filename : 1 }})});
 
 db.devstats.createIndex({ "plugin" : 1, "action" : 1, "params" : 1});
-
+db.studies.find({ type : { $exists : false}}).forEach(function(e) { db.studies.update({ _id : e._id }, { $set : { type : "CLINICAL", joinMethods : ["API", "APP", "PORTAL", "RESEARCHER"] } }); });

@@ -13,6 +13,10 @@
 	    <td translate="admin_study.name"></td>
 	    <td>{{ study.name }}</td>
 	  </tr>
+	   <tr>
+	    <td translate="admin_study.type"></td>
+	    <td>{{ 'enum.studytype.' + study.type | translate }}</td>
+	  </tr>
 	  <tr>
         <td translate="admin_study.created_at"></td>
         <td>{{ study.createdAt | date : 'dd.MM.yy' }}</td>
@@ -41,7 +45,17 @@
 	    <td translate="admin_study.dataCreatedBefore"></td>
 	    <td>{{ study.dataCreatedBefore | date : 'dd.MM.yy' }}</td>
 	  </tr>
+	  <tr>
+	    <td translate="admin_study.joinmethods"></td>
+	    <td>
+	      <ul>
+		    <li ng-repeat="method in study.joinMethods" translate="{{'enum.joinmethod.'+method}}"></li>
+		  </ul>
+	    </td>
+	  </tr>
     </table>	
+      
+		  
     </loader>
     </div>
     </div>
@@ -61,6 +75,7 @@
 		  <ul>
 		    <li ng-repeat="req in study.requirements" translate="{{'enum.userfeature.'+req}}"></li>
 		  </ul>
+		
 		</div>
 	</div>
 	

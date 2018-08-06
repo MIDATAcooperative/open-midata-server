@@ -18,12 +18,21 @@ public class ConsentAccessContext extends AccessContext{
 	public ConsentAccessContext(Consent consent, APSCache cache, AccessContext parent) throws AppException {
 		super(cache, parent);
 		this.consent = consent;
+		setStudyOwnerName();
 		
 	}
 	
 	public ConsentAccessContext(Consent consent, AccessContext parent) throws AppException {
 		super(parent.getCache(), parent);
-		this.consent = consent;		
+		this.consent = consent;
+		setStudyOwnerName();
+	}
+	
+	private void setStudyOwnerName() throws AppException {
+		if (consent.type.equals(ConsentType.STUDYRELATED) && consent.ownerName == null) {
+			consent.ownerName = consent.name;
+			if (consent.ownerName != null && consent.ownerName.startsWith("Study:")) consent.ownerName = consent.ownerName.substring("Study:".length());
+		}
 	}
 	
 	@Override
@@ -60,7 +69,8 @@ public class ConsentAccessContext extends AccessContext{
 
 	@Override
 	public boolean mustPseudonymize() {
-		return consent.type.equals(ConsentType.STUDYPARTICIPATION) && consent.ownerName != null && (parent == null || parent.mustPseudonymize());		
+		return (consent.type.equals(ConsentType.STUDYPARTICIPATION) && consent.ownerName != null && (parent == null || parent.mustPseudonymize()))
+				|| (consent.type.equals(ConsentType.STUDYRELATED) && consent.ownerName != null);		
 	}
 
 	@Override

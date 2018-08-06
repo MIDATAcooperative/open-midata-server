@@ -108,7 +108,7 @@ angular.module('services')
 		if (query.$or) {
 			for (var i = 0;i<query.$or.length;i++) service.parseAccessQuery(lang, query.$or[i], query, result);
 		} else {
-		
+		    if (angular.equals({}, query)) return [];
 			var nblock = {};
 			if (ac("format")) nblock.format = ac("format");
 			if (ac("content")) nblock.content = ac("content");

@@ -7,6 +7,7 @@ import java.util.Set;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.Gender;
+import models.enums.JoinMethod;
 import models.enums.ParticipationStatus;
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -27,6 +28,8 @@ public class StudyParticipation extends Consent {
 	public MidataId recruiter; // if member has been recruited through someone (by entering a participation code)
 	public String recruiterName; // replication of recruiter name
 	public Set<MidataId> providers; // (Optional) List of healthcare providers monitoring the member for this study.	
+	
+	public JoinMethod joinMethod;
 	
 	public int yearOfBirth;
 	public String country;
@@ -98,6 +101,12 @@ public class StudyParticipation extends Consent {
 	
 	public void setPStatus(ParticipationStatus newstatus) throws InternalServerException {
 		Model.set(StudyParticipation.class, collection, this._id, "pstatus", newstatus);
+	}
+	
+	public void setPStatus(ParticipationStatus newstatus, JoinMethod joinMethod) throws InternalServerException {
+		this.pstatus = newstatus;
+		this.joinMethod = joinMethod;
+		this.setMultiple(collection, Sets.create("pstatus", "joinMethod"));		
 	}
 	
 	public static void setManyGroup(Set<MidataId> ids, String group) throws InternalServerException {

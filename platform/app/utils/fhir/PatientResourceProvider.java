@@ -79,6 +79,7 @@ import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.EMailStatus;
 import models.enums.Gender;
+import models.enums.JoinMethod;
 import models.enums.SubUserRole;
 import models.enums.UserFeature;
 import models.enums.UserRole;
@@ -87,6 +88,7 @@ import models.enums.WritePermissionType;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
+import utils.RuntimeConstants;
 import utils.access.DBIterator;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
@@ -853,7 +855,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			Set<UserFeature> studyReq = controllers.members.Studies.precheckRequestParticipation(null, studyId);
 			AccessLog.log("request part");
 			if (existing == null) {
-				part = controllers.members.Studies.requestParticipation(info, user._id, studyId, plugin._id);
+				part = controllers.members.Studies.requestParticipation(info, user._id, studyId, plugin._id, info().pluginId.equals(RuntimeConstants.instance.portalPlugin) ? JoinMethod.RESEARCHER : JoinMethod.APP);
 			} else {
 				part = controllers.members.Studies.match(executorId, user._id, studyId, plugin._id);
 			}
