@@ -90,7 +90,8 @@
        "study_accept" : "Study participation must be accepted.",
        "study_group" : "Participant must first be assigned to a group.",
        "confirmation" : "Confirmation by user required first.",
-       "file" : "No file for upload selected"
+       "file" : "No file for upload selected",
+       "access_query" : "No data selected"
      },
 
      "unknown" : {
@@ -316,6 +317,20 @@
 	   "REQUEST" : "Participation requested",
 	   "RESEARCH_REJECTED" : "Rejected by researcher",
 	   "MEMBER_RETREATED" : "Participant has retreated"
+	 },
+	 "studytype" : {
+	   "CLINICAL" : "Clinical Study",
+	   "CITIZENSCIENCE" : "Citizen Science Project",
+	   "COMMUNITY" : "Community (Data use only for providing services back to the participants)"
+	 },
+	 "joinmethod" : {
+	   "APP" : "Participant uses linked app or software",
+	   "PORTAL" : "Participant applies on MIDATA portal",
+	   "RESEARCHER" : "Participant is manually registered by research team member",
+	   "API" : "Participant is registered by external software",
+	   "ALGORITHM" : "Participant has been proposed by algorithm (not supported)",
+	   "CODE" : "Participant may join by entering a code (not supported)",
+	   "TRANSFER" : "Data is transferred from another study. (not supported)"	
 	 },
 	 "studyexecutionstatus" : {
 	   "ABORTED" : "Execution aborted",

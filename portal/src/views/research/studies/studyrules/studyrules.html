@@ -52,6 +52,15 @@
 	    <p class="help-block" translate="studyrules.terms_of_use_hint"></p> 
 	  </formrow>
        
+       <formrow myid="joinMethods" label="studyrules.join_methods">
+		 <div class="checkbox" ng-repeat="method in joinmethods">
+		    <label>
+		        <input type="checkbox" ng-disabled="studyLocked()" ng-checked="study.joinMethods.indexOf(method)>=0" ng-click="toggle(study.joinMethods, method);formChange();">
+		        <span translate="{{ 'enum.joinmethod.'+method }}"></span>
+		    </label>
+		 </div>
+	  </formrow>
+       
       <formrow myid="requirements" label="studyrules.requirements">
 		 <div class="checkbox" ng-repeat="req in requirements">
 		    <label>

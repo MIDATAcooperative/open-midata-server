@@ -30,7 +30,8 @@
     "title" : "Create new study",
     "title2" : "Change study description",
     "study_name" : "Study name",
-    "study_description" : "Study description"
+    "study_type" : "Type of research",
+    "study_description" : "Study description"    
   },
   
   "studynav" : {
@@ -94,8 +95,9 @@
   
   "studyoverview" : {
     "name" : "Name",
-    "created_at" : "Created on:",
-    "created_by" : "Created by:",
+    "type" : "Type of Research",
+    "created_at" : "Created on",
+    "created_by" : "Created by",
     "description" : "Description",
     "code" : "Code",
     "validation_status" : "Validation Status",
@@ -174,6 +176,7 @@
     "endDate" : "Official end date",
     "dataCreatedBefore" : "Data freeze date",
     "sharing_query" : "Data Access Filter",
+    "join_methods" : "Allowed Ways of Joining",
     "queryeditor_btn" : "Edit",    
     "terms_of_use" : "General Terms and Conditions",
     "terms_of_use_hint" : "If the study General Terms and Conditions have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the ID you need to enter here.",

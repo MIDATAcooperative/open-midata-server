@@ -228,7 +228,7 @@ tasks/reimport-plugins: trigger/reimport-plugins
 	cd json;make reimportplugins
 	touch tasks/reimport-plugins
 	
-tasks/build-mongodb: trigger/build-mongodb tasks/reimport-mongodb tasks/reimport-plugins
+tasks/build-mongodb: trigger/build-mongodb tasks/reimport-mongodb tasks/reimport-plugins $(wildcard json/*.js)
 	$(info ------------------------------)
 	$(info (Re-)creating database indexes)
 	$(info ------------------------------)

@@ -616,6 +616,7 @@ public class Plugins extends APIController {
 
 			try {
 			KeyManager.instance.continueSession(sessionHandle);
+			AccessLog.log(post);
 			AccessLog.log(response.getBody());
 			JsonNode jsonNode = response.asJson();
 			if (jsonNode.has("access_token") && jsonNode.get("access_token").isTextual()) {

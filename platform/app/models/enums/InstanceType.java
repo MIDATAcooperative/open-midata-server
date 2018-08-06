@@ -80,7 +80,7 @@ public enum InstanceType {
 	 * @return
 	 */
 	public boolean getLogToFile() {
-		return this == LOCAL;
+		return this == LOCAL || this == TEST;
 	}
 	
 	/**

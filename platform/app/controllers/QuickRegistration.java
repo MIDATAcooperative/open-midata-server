@@ -12,6 +12,7 @@ import models.Plugin;
 import models.Study;
 import models.enums.AuditEventType;
 import models.enums.Gender;
+import models.enums.JoinMethod;
 import models.enums.SubUserRole;
 import models.enums.UserFeature;
 import models.enums.UserRole;
@@ -147,7 +148,7 @@ public class QuickRegistration extends APIController {
 		
 		if (notok == null || notok.isEmpty()) {
 		
-			if (study != null) controllers.members.Studies.requestParticipation(new ExecutionInfo(user._id), user._id, study._id, user.initialApp);
+			if (study != null) controllers.members.Studies.requestParticipation(new ExecutionInfo(user._id), user._id, study._id, user.initialApp, JoinMethod.RESEARCHER);
 			
 			if (device != null) {
 			   MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, device, true, confirmStudy);
