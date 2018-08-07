@@ -23,6 +23,7 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
@@ -291,6 +292,7 @@ public class Spaces extends Controller {
 		  if (data != null && data.get("refreshToken") != null) {					
 		    return Plugins.requestAccessTokenOAuth2FromRefreshToken(spaceIdString, data, obj);
 		  }
+		  AccessLog.log("No refresh token requested.");
 		} 
 		if (visualization.type != null && visualization.type.equals("oauth1")) {
 	  		  BSONObject oauthmeta = RecordManager.instance.getMeta(userId, new MidataId(spaceIdString), "_oauth");  		  
