@@ -35,7 +35,8 @@ echo print 'Swapping Midata Server...'
 pkill -f java
 echo 'Starting new instance...'
 rm running
-ln -s $instance running				
+ln -s $instance running		
+rm -f nohup.out		
 /usr/bin/nohup $instance/midata-server-1.0-SNAPSHOT/bin/midata-server -Dpidfile.path=/dev/shm/play.pid -Dconfig.file=/dev/shm/secret.conf -Dhttp.port=9001 &
 echo 'Waiting for startup...'		
 sleep 30s

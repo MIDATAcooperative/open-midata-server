@@ -518,7 +518,8 @@ public class Plugins extends APIController {
 				try {
 					KeyManager.instance.continueSession(sessionHandle);
 					final String body = response.getBody();
-					AccessLog.log(body);
+					AccessLog.log("OAuth2 Request: "+post);
+					AccessLog.log("OAuth2 Response: "+body);
 					JsonNode jsonNode = response.asJson();
 					if (jsonNode.has("access_token") && jsonNode.get("access_token").isTextual()) {
 						String accessToken = jsonNode.get("access_token").asText();
@@ -526,8 +527,16 @@ public class Plugins extends APIController {
 						if (jsonNode.has("refresh_token") && jsonNode.get("refresh_token").isTextual()) {
 							refreshToken = jsonNode.get("refresh_token").asText();
 						}
+						
+						if (refreshToken == null || refreshToken.equals("null")) {
+							Stats.startRequest();
+							Stats.setPlugin(appId);
+							Stats.addComment("send:" + post);
+							Stats.addComment("extern server: " + response.getStatus() + " " + body);
+							Stats.finishRequest(req, "400");
+						}
 
-						Map<String, Object> tokens = CMaps.map("appId", appId.toString()).map("accessToken", accessToken).map("refreshToken", refreshToken);
+						Map<String, Object> tokens = CMaps.map("appId", appId.toString()).map("accessToken", accessToken).mapNotEmpty("refreshToken", refreshToken);
 						RecordManager.instance.setMeta(userId, spaceId, "_oauth", tokens);
 
 						return ok();
@@ -616,8 +625,8 @@ public class Plugins extends APIController {
 
 			try {
 			KeyManager.instance.continueSession(sessionHandle);
-			AccessLog.log(post);
-			AccessLog.log(response.getBody());
+			AccessLog.log("OAUTH POST: "+post);
+			AccessLog.log("OAUTH RESPONSE: "+response.getBody());
 			JsonNode jsonNode = response.asJson();
 			if (jsonNode.has("access_token") && jsonNode.get("access_token").isTextual()) {
 				String accessToken = jsonNode.get("access_token").asText();
