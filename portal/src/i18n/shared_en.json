@@ -215,7 +215,7 @@
 	   "user-passphrase-change" : "Passphrase changed",
 	   "user-address-change" :"User's address changed",
 	   "user-email-change" :"User's email changed",
-	   "user-birthday-change" : "User's birthday changed",
+	   "user-birthday-change" : "User's birth date changed",
 	   "user-status-change" : "Status of user account changed",
 	   "user-email-confirmed" : "Email confirmed by user",
 	   "user-email-rejected" : "Email rejected by user",
@@ -502,7 +502,7 @@
     "firstname" : "First Name",
     "lastname" : "Surname",
     "gender" : "Gender",
-    "birthday" : "Birthday",
+    "birthday" : "Birth date",
     "language" : "Preferred Language",
     "day" : "Day",
     "month" : "Month",
@@ -634,7 +634,7 @@
 
   "changeaddress" : {
     "title" : "Postal Address and Contact Information",
-    "success" : "Your account information has been updated.",
+    "success" : "Your profile has been updated.",
     "update_btn" : "Update"
   },
 
@@ -681,7 +681,7 @@
     "duration" : "Duration",
     "information_that_needs_sharing" : "Required data",
     "information_restricted" : "Your gender, year of birth and country of residence",
-    "information_demographic" : "Your complete demographic data (name, birthday, address, ...)",
+    "information_demographic" : "Your complete demographic data (name, birth date, address, ...)",
     "records_with_format" : "Records that have format:",
     "records_with_content" : "Records that have content:",
     "records_with_group" : "Records that belong to group:",
@@ -704,8 +704,8 @@
     "user" : "User",
     "name" : "Name:",
     "email" : "Email:",
-    "birthday" : "Date of birth:",
-    "midataID" : "Account ID:",
+    "birthday" : "Birth date:",
+    "midataID" : "MIDATA ID:",
     "action" : "More...",
     "change_password_btn" : "Change Password",
  	"change_passphrase_btn" : "Change Passphrase",
@@ -1012,7 +1012,6 @@
     "task_title" : "Task Title",
     "description" : "Description",
     "frequency" : "Frequency",
-
     "survey_name" : "Fill out survey",
     "survey_description" : "Please fill out the surveys I shared with your account.",
 	"survey_title" : "Fill out survey"
@@ -1123,20 +1122,20 @@
     "paragraph1" : "You would like to delete your MIDATA account irrevocably? That is of course possible.",
     "paragraph2" : "Please read the following information first:",
     "point1" : "If you delete your MIDATA account your personal data will no longer be available.",
-    "point2" : "Data already shared for research will remain available to the studies it has been shared to up to the time of account deletion. No new data will be shared.",
+    "point2" : "Data already included in studies will continue to be available in the study.",
     "point3" : "MIDATA is not able to recover your deleted account.",    
     "warning" : "Warning",
     "final" : "This action cannot be undone.",
     "paragraph3" : "If you really want to delete your MIDATA account enter your password for confirmation.",
     "password" : "Password",
     "reason" : "Reason (optional)",
-    "reason2" : "Please tell us why you want to delete your account. We are continously trying to improve the service.",
+    "reason2" : "We would be grateful if you could tell us why you are deleting your account. We are continually trying to improve the MIDATA platform.",
     "wipe_btn" : "Close and Delete MIDATA Account",
-    "error" : "Password not correct. Account not deleted."
+    "error" : "Password not correct. The account has not been deleted."
   },
   
   "serviceleave" : {
-    "title" : "Done with your session?",
+    "title" : "You finished your session?",
     "thankyou" : "Thank you for your help!",
     "goodbye_btn" : "End session and close window",
     "logoutreturn" : "You will be redirected to the calling page.",

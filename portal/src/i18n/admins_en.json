@@ -27,7 +27,7 @@
   },
 
   "admin_address" : {
-    "title" : "Member Address",
+    "title" : "Member Profile",
     "midata_id" : "MIDATA-ID",
     "role" : "Role",
     "subroles" : "Sub-Role(s)",
@@ -45,7 +45,7 @@
     "add_comment_btn" : "Add Comment",
     "wipe_btn" : "Wipe Account",
     "change_email_btn" : "Change Email Address",
-    "change_address_btn" : "Change Address / Birthday"
+    "change_address_btn" : "Change Profile"
   },
   
   "admin_news" : {
@@ -145,7 +145,6 @@
   
   "admin_stats" : {
      "title" : "Statistics",
-	 "what" : "",
 	 "value" : "Total count",
 	 "diff_yesterday" : "Diff. to 1 day ago",
 	 "diff_week" : "Diff. to 7 days ago",

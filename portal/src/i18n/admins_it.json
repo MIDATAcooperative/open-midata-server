@@ -28,7 +28,7 @@
     },
 
     "admin_address" : {
-        "title" : "Indirizzo del membro",
+        "title" : "Profilo del membro",
         "midata_id" : "ID-MIDATA",
         "role" : "Ruolo",
         "subroles" : "Sotto-ruolo/i",
@@ -46,9 +46,7 @@
         "add_comment_btn" : "Aggiungi commento",
         "wipe_btn" : "Elimina account",
         "change_email_btn" : "Modifica indirizzo e-mail",
-
-        // TODO NEW: Change Address / Birthday
-        "change_address_btn" : "Change Address / Birthday"
+        "change_address_btn" : "Modifica profilo"
     },
 
     "admin_news" : {
@@ -148,9 +146,6 @@
 
     "admin_stats" : {
         "title" : "Statistiche",
-
-        // TODO NEW: 
-        "what" : "",
         "value" : "Conteggio totale",
         "diff_yesterday" : "Diff. a 1 giorno fa",
         "diff_week" : "Diff. a 7 giorni fa",

@@ -37,8 +37,8 @@
 
     "help_setup" : {
         "description" : "Les réponses aux questions suivantes sont utilisées uniquement pour configurer votre compte selon vos besoins.",
-        "question_measures" : "Quelles données voulez-vous afficher sur votre portail ?",
-        "question_devices" : "Utilisez-vous l'un de ces produits ?",
+        "question_measures" : "Quelles données voulez-vous afficher sur votre portail?",
+        "question_devices" : "Utilisez-vous l'un de ces produits?",
         "question_devices_answer1" : "Fitbit",
         "question_devices_answer2" : "Jawbone",
         "question_devices_answer3" : "Withings",
