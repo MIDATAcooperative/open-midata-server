@@ -17,11 +17,23 @@
         "workspace" : "Spazio di lavoro",
         "data" : "Dati",
         "addresearcher" : "Aggiungi ricercatore",
+
+        // TODO CHANGED
+        // OLD: Organization
+        // NEW: Research Organization
         "organization" : "Istituto di ricerca"
     },
 
     "researcher_organization" : {
+
+        // TODO CHANGED
+        // OLD: Organization
+        // NEW: Research Organization
         "title" : "Istituto di ricerca",
+
+        // TODO CHANGED
+        // OLD: Org. Name
+        // NEW: Name
         "name" : "Nome",
         "description" : "Descrizione",
         "researchers" : "Tutti i ricercatori dell vostro istituto"
@@ -31,6 +43,9 @@
         "title" : "Crea un nuovo studio",
         "title2" : "Modifica la descrizione dello studio",
         "study_name" : "Nome studio",
+
+        // TODO NEW: Type of research
+        "study_type" : "Type of research",
         "study_description" : "Descrizione studio"
     },
 
@@ -75,8 +90,16 @@
         "no_change_warning" : "Una volta convalidato lo studio, questa configurazione non potrà più essere modificata.",
         "member_identity" : "Identità del membro",
         "pseudonymous1" : "Partecipazione pseudonimizzata",
+
+        // TODO CHANGED
+        // OLD: , exported data reveals pseudonymized ID, year of birth, gender and country. Some researchers like study nurses may have access to full personal data.
+        // NEW: , exported data reveals the pseudonymized identity, year of birth, gender and country. Some researchers like study nurses may have access to full personal data.
         "pseudonymous2" : ", i dati esportati rivelano l'identità pseudonimizzati, l'anno di nascita, il sesso e il paese. Alcuni ricercatori, come gli study nurses, possono avere accesso a dati personali completi.",
         "anonymous" : "Partecipazione anonima",
+
+        // TODO CHANGED
+        // OLD: , reveals pseudonymized ID, year of birth, gender and country. Pseudonymization mapping may not be accessed.
+        // NEW: , exported data reveals the spseudonymized identity, year of birth, gender and country. The pseudonymization mapping may not be accessed.
         "anonymous2" : ", i dati esportati rivelano l'identità pseudonimizzata, l'anno di nascita, il sesso e il paese. La mappatura della pseudonimizzazione non è accessibile.",
         "not_anonymous1" : "Senza pseudonimo",
         "not_anonymous2" : ", richiede al membro di condividere il nome completo, la data di nascita e le informazioni di contatto (indirizzo, telefono, e-mail)",
@@ -95,7 +118,18 @@
 
     "studyoverview" : {
         "name" : "Nome",
+
+        // TODO NEW: Type of Research
+        "type" : "Type of Research",
+
+        // TODO CHANGED
+        // OLD: Created on:
+        // NEW: Created on
         "created_at" : "Creato alle:",
+
+        // TODO CHANGED
+        // OLD: Created by:
+        // NEW: Created by
         "created_by" : "Creato da:",
         "description" : "Descrizione",
         "code" : "Codice",
@@ -159,6 +193,12 @@
 
     "studyrecords" : {
         "empty" : "Una volta disponibili, i dati possono essere scaricati qui.",
+
+        // TODO NEW: Export start date (optional)
+        "startDate" : "Export start date (optional)",
+
+        // TODO NEW: Export end date (optional)
+        "endDate" : "Export end date (optional)",
         "group" : "Gruppo di dati",
         "number_of_records" : "# record",
         "download_btn" : "Scarica",
@@ -172,9 +212,17 @@
         "startDate" : "Data di inizio ufficiale",
         "endDate" : "Data di fine ufficiale",
         "dataCreatedBefore" : "Data di congelamento dei dati",
+
+        // TODO CHANGED
+        // OLD: Data Access Filter (JSON)
+        // NEW: Data Access Filter
         "sharing_query" : "Filtro di accesso ai dati (JSON)",
-        "sharing_query_options" : "Filtro di accesso ai dati (Aggiungi)",
-        "sharing_query_selection" : "Filtro di accesso ai dati (Selezione)",
+
+        // TODO NEW: Allowed Ways of Joining
+        "join_methods" : "Allowed Ways of Joining",
+
+        // TODO NEW: Edit
+        "queryeditor_btn" : "Edit",
         "terms_of_use" : "Condizioni generali di contratto",
         "terms_of_use_hint" : "Se i Condizioni generali di contratto dello studio devono essere letti e accettati dall'utente, inviare il testo a MIDATA. Caricheremo il testo nel formato corretto e ti forniremo l'ID necessario da inserire qui.",
         "show_terms" : "Mostra Condizioni generali di contratto",

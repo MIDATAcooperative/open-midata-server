@@ -28,6 +28,10 @@
     },
 
     "admin_address" : {
+
+        // TODO CHANGED
+        // OLD: Member Address
+        // NEW: Member Profile
         "title" : "Profilo del membro",
         "midata_id" : "ID-MIDATA",
         "role" : "Ruolo",
@@ -46,6 +50,10 @@
         "add_comment_btn" : "Aggiungi commento",
         "wipe_btn" : "Elimina account",
         "change_email_btn" : "Modifica indirizzo e-mail",
+
+        // TODO CHANGED
+        // OLD: Change Address / Birthday
+        // NEW: Change Profile
         "change_address_btn" : "Modifica profilo"
     },
 
@@ -123,6 +131,9 @@
         "created_at" : "Creato il",
         "created_by" : "Creato da",
         "description" : "Descrizione",
+
+        // TODO NEW: Join Methods
+        "joinmethods" : "Join Methods",
         "code" : "Codice",
         "startDate" : "Data di inizio",
         "endDate" : "Data di fine",
