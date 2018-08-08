@@ -22,7 +22,6 @@ import models.User;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
-import models.enums.MessageReason;
 import models.enums.UserRole;
 import play.mvc.BodyParser;
 import play.mvc.Result;
@@ -57,7 +56,7 @@ public class HealthProvider extends APIController {
 	@Security.Authenticated(MemberSecured.class)
 	public static Result list() throws InternalServerException {
 	      
-		MidataId userId = new MidataId(request().username());	
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));	
 		Set<MemberKey> memberkeys = MemberKey.getByOwner(userId);
 		
 		return ok(JsonOutput.toJson(memberkeys, "Consent", Sets.create("owner", "organization", "authorized", "status", "confirmDate", "aps", "comment", "name")));
@@ -129,7 +128,7 @@ public class HealthProvider extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result confirmConsent() throws AppException, JsonValidationException {
 		
-		MidataId userId = new MidataId(request().username());
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		JsonNode json = request().body().asJson();
 		JsonValidation.validate(json, "consent");
 		
@@ -173,7 +172,7 @@ public class HealthProvider extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result rejectConsent() throws AppException, JsonValidationException {
 		
-		MidataId userId = new MidataId(request().username());
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		JsonNode json = request().body().asJson();
 		JsonValidation.validate(json, "consent");
 		

@@ -3,7 +3,6 @@ package utils;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import play.Play;
 import play.mvc.Http;
 import utils.auth.PortalSessionToken;
 import utils.messaging.MailUtils;
@@ -15,8 +14,8 @@ import utils.stats.Stats;
  */
 public class ErrorReporter {
 
-	private static String bugReportEmail = Play.application().configuration().getString("errorreports.targetemail");
-	private static String bugReportName = Play.application().configuration().getString("errorreports.targetname");
+	private static String bugReportEmail = InstanceConfig.getInstance().getConfig().getString("errorreports.targetemail");
+	private static String bugReportName = InstanceConfig.getInstance().getConfig().getString("errorreports.targetname");
 	private static volatile long lastReport = 0;
 	
 	/**

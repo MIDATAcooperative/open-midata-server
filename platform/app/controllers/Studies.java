@@ -6,13 +6,10 @@ import java.util.Set;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import actions.APICall;
-import models.MidataId;
 import models.Study;
 import models.enums.UserRole;
 import play.mvc.BodyParser;
 import play.mvc.Result;
-import play.mvc.Security;
-import utils.auth.AnyRoleSecured;
 import utils.auth.Rights;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AuthException;
@@ -40,7 +37,7 @@ public class Studies extends APIController {
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	public static Result search() throws JsonValidationException, InternalServerException, AuthException {
-	   //MidataId user = new MidataId(request().username());	   
+	   //MidataId user = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));	   
 	   JsonNode json = request().body().asJson();
 	   JsonValidation.validate(json, "properties", "fields");
 							   		

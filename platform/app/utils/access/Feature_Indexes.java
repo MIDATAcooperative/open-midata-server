@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import models.Consent;
@@ -150,16 +149,10 @@ public class Feature_Indexes extends Feature {
 						} 
 						//if (context instanceof ConsentAccessContext) AccessLog.log("TIMESTAMP "+((ConsentAccessContext) context).getConsent().dataupdate+" vs "+v);
 						List<DBRecord> add;
-						Query updQuery = new Query(q, CMaps.mapPositive("updated-after", v).map("owner", "self"), id, context);
+						Query updQuery = new Query(q, CMaps.mapPositive("shared-after", v).map("owner", "self"), id, context);
 						add = QueryEngine.filterByDataQuery(nextWithProcessing.query(updQuery), indexQueryParsed, null);
 						AccessLog.log("found new updated entries aps=" + id + ": " + add.size());
-						result = QueryEngine.combine(result, add);
-						if (v > 0) {
-							Query shrQuery = new Query(q, CMaps.mapPositive("shared-after", v).map("owner", "self"), id, context);
-							add = QueryEngine.filterByDataQuery(nextWithProcessing.query(shrQuery), indexQueryParsed, null);
-							AccessLog.log("found new shared entries aps=" + id + ": " + add.size());
-							result = QueryEngine.combine(result, add);
-						}
+						result = QueryEngine.combine(result, add);						
 						if (result != null) {
 							newRecords.put(id, result);
 							allAps.add(id);
@@ -170,14 +163,9 @@ public class Feature_Indexes extends Feature {
 				long v = myAccess.version(null);
 				// AccessLog.log("vx="+v);
 				List<DBRecord> add;
-				add = QueryEngine.filterByDataQuery(nextWithProcessing.query(new Query(q, CMaps.mapPositive("updated-after", v).map("consent-limit",1000))), indexQueryParsed, null);
+				add = QueryEngine.filterByDataQuery(nextWithProcessing.query(new Query(q, CMaps.mapPositive("shared-after", v).map("consent-limit",1000))), indexQueryParsed, null);
 				AccessLog.log("found new updated entries: " + add.size());
-				result = QueryEngine.combine(result, add);
-				if (v > 0) {
-					add = QueryEngine.filterByDataQuery(nextWithProcessing.query(new Query(q, CMaps.mapPositive("shared-after", v).map("consent-limit",1000))), indexQueryParsed, null);
-					AccessLog.log("found new shared entries: " + add.size());
-					result = QueryEngine.combine(result, add);
-				}
+				result = QueryEngine.combine(result, add);				
 				if (result != null && !result.isEmpty()) {
 					for (DBRecord record : result) {
 						MidataId id = record.context.getTargetAps();

@@ -1,10 +1,9 @@
 package utils.auth;
 
+import play.mvc.Http.Context;
 import play.mvc.Result;
 import play.mvc.Security;
-import play.mvc.Http.Context;
 import utils.exceptions.AppException;
-import utils.exceptions.AuthException;
 
 public class PreLoginSecured extends Security.Authenticator {
 

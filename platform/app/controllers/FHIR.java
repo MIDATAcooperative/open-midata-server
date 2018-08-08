@@ -6,10 +6,8 @@ import javax.servlet.ServletException;
 
 import actions.MobileCall;
 import models.enums.UserRole;
-import play.api.mvc.RawBuffer;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
-import play.mvc.Http;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.auth.ExecutionInfo;
@@ -17,6 +15,7 @@ import utils.auth.KeyManager;
 import utils.auth.PortalSessionToken;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
+import utils.exceptions.InternalServerException;
 import utils.fhir.FHIRServlet;
 import utils.fhir.ResourceProvider;
 import utils.servlet.PlayHttpServletRequest;
@@ -103,16 +102,18 @@ public class FHIR extends Controller {
 		AccessLog.logBegin("begin FHIR get request: "+req.getRequestURI());
 		servlet.doGet(req, res);
 		AccessLog.logEnd("end FHIR get request");
-	
+			
+		
 		Stats.finishRequest(request(), String.valueOf(res.getStatus()));
 		if (res.getContentType() != null && res.getResponseWriter() != null) {
-			return status(res.getStatus(), res.getResponseWriter().toString());		
+			return status(res.getStatus(), res.getResponseWriter().toString()).as(res.getContentType());		
 		}
 		
 		if (res.getContentType() != null && res.getResponseStream() != null) {
 			
-			return status(res.getStatus(), res.getResponseStream().toByteArray());
+			return status(res.getStatus(), res.getResponseStream().toByteArray()).as(res.getContentType());
 		}
+		
 		
 		
 		return status(res.getStatus());
@@ -126,7 +127,7 @@ public class FHIR extends Controller {
 	 * @throws ServletException
 	 */
 	@MobileCall
-	@BodyParser.Of(value = BodyParser.Raw.class, maxLength = 100 * 1024 * 1024)
+	@BodyParser.Of(value = BodyParser.Raw.class)
 	public static Result postRoot() throws AppException, IOException, ServletException {
 		return post("/");
 	}
@@ -141,7 +142,7 @@ public class FHIR extends Controller {
 	 * @throws ServletException
 	 */
 	@MobileCall
-	@BodyParser.Of(value = BodyParser.Raw.class, maxLength = 100 * 1024 * 1024)
+	@BodyParser.Of(value = BodyParser.Raw.class)
 	public static Result post(String all) throws AppException, IOException, ServletException {
 				
 		Stats.startRequest(request());
@@ -173,12 +174,12 @@ public class FHIR extends Controller {
 		
 		Stats.finishRequest(request(), String.valueOf(res.getStatus()));
 		if (res.getContentType() != null && res.getResponseWriter() != null) {			
-			return status(res.getStatus(), res.getResponseWriter().toString());		
+			return status(res.getStatus(), res.getResponseWriter().toString()).as(res.getContentType());		
 		}
 		
 		if (res.getContentType() != null && res.getResponseStream() != null) {			
 			byte[] bytes = res.getResponseStream().toByteArray();			
-			return status(res.getStatus(), bytes);
+			return status(res.getStatus(), bytes).as(res.getContentType());
 		}
 		
 		
@@ -193,7 +194,7 @@ public class FHIR extends Controller {
 	 * @throws ServletException
 	 */
 	@MobileCall
-	@BodyParser.Of(value = BodyParser.Raw.class, maxLength = 100 * 1024 * 1024)
+	@BodyParser.Of(value = BodyParser.Raw.class)
 	public static Result putRoot() throws AppException, IOException, ServletException {
 		return put("/");
 	}
@@ -208,7 +209,7 @@ public class FHIR extends Controller {
 	 * @throws ServletException
 	 */
 	@MobileCall
-	@BodyParser.Of(value = BodyParser.Raw.class, maxLength = 100 * 1024 * 1024)
+	@BodyParser.Of(value = BodyParser.Raw.class)
 	public static Result put(String all) throws AppException, IOException, ServletException {
 		Stats.startRequest(request());
 		
@@ -228,12 +229,13 @@ public class FHIR extends Controller {
 		
 		Stats.finishRequest(request(), String.valueOf(res.getStatus()));
 		
-		if (res.getResponseWriter() != null) {
-			return status(res.getStatus(), res.getResponseWriter().toString());		
+		if (res.getContentType() != null && res.getResponseWriter() != null) {			
+			return status(res.getStatus(), res.getResponseWriter().toString()).as(res.getContentType());		
 		}
 		
-		if (res.getResponseStream() != null) {
-			return status(res.getStatus(), res.getResponseStream().toByteArray());
+		if (res.getContentType() != null && res.getResponseStream() != null) {			
+			byte[] bytes = res.getResponseStream().toByteArray();			
+			return status(res.getStatus(), bytes).as(res.getContentType());
 		}
 		
 		return status(res.getStatus());
@@ -282,12 +284,13 @@ public class FHIR extends Controller {
 		
 		Stats.finishRequest(request(), String.valueOf(res.getStatus()));
 		
-		if (res.getResponseWriter() != null) {
-			return status(res.getStatus(), res.getResponseWriter().toString());		
+		if (res.getContentType() != null && res.getResponseWriter() != null) {			
+			return status(res.getStatus(), res.getResponseWriter().toString()).as(res.getContentType());		
 		}
 		
-		if (res.getResponseStream() != null) {
-			return status(res.getStatus(), res.getResponseStream().toByteArray());
+		if (res.getContentType() != null && res.getResponseStream() != null) {			
+			byte[] bytes = res.getResponseStream().toByteArray();			
+			return status(res.getStatus(), bytes).as(res.getContentType());
 		}
 		
 		return status(res.getStatus());

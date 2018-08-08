@@ -7,22 +7,67 @@ package models.enums;
 public enum InfoType {
 	
    /**
-    * a URL to a external resource
+    * Short Summary
     */
-   URL,
+   SUMMARY,
    
    /**
-    * an email address
+    * What is this study doiing?
     */
-   EMAIL,
+   DESCRIPTION,
    
    /**
-    * a phone number
-    */
-   PHONE,
+	 * Link to project homepage
+	 */
+   HOMEPAGE,
    
    /**
-    * a text giving some piece of information about the study
+    * Contact information
     */
-   TEXT
+   CONTACT,
+   
+   /**
+    * Instructions for participants
+    */
+   INSTRUCTIONS,
+   
+    /**
+     * What is the purpose of this research
+     */
+  PURPOSE,
+  
+    /**
+     * Limitations on who should participate
+     */
+  AUDIENCE,
+  
+   /**
+    * State or region where this study is taking place
+    */
+  LOCATION,
+  
+  /**
+   * What is the state of progression of the research taking place
+   */
+  PHASE,
+
+  /**
+   * Who is initiator of the research and who is legally responsible
+   */
+  SPONSOR, 
+
+  /**
+   * At which site are activities beeing conducted?
+   */
+  SITE, 
+
+  /**
+   * Information about equipment required by a participant
+   */
+  DEVICES,
+  
+  /**
+   * Additional notes
+   */
+  COMMENT
 }

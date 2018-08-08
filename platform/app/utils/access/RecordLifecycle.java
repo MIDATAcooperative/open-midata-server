@@ -5,8 +5,6 @@ import java.util.Set;
 
 import com.mongodb.BasicDBList;
 
-import models.APSNotExistingException;
-import models.Consent;
 import models.MidataId;
 import utils.AccessLog;
 import utils.collections.Sets;

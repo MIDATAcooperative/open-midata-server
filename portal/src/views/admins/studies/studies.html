@@ -15,15 +15,15 @@
 	  <thead>
 	    <tr>
 	      <th>Name</th>
-	      
+	      <th>Type</th>
 	      <th>Created</th>
 	    </tr>
 	  </thead>
 	  <tbody>
 	    <tr ng-repeat="study in results | orderBy : 'createdAt' : true">
 	      <td><a ui-sref="^.study({ studyId : study._id})">{{ study.name }}</a></td>	  
-	      
-	      <td>{{ study.createdAt | date }}</td>	         
+	      <td>{{ 'enum.studytype.' + study.type | translate }}</td>
+	      <td>{{ study.createdAt | date : 'dd.MM.yy' }}</td>	         
 	    </tr>
 	  </tbody>
 	</table>

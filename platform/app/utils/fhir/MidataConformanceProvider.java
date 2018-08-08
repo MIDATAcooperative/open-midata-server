@@ -8,7 +8,7 @@ import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.UriType;
 
 import ca.uhn.fhir.rest.annotation.Metadata;
-import play.Play;
+import utils.InstanceConfig;
 
 public class MidataConformanceProvider  extends ServerCapabilityStatementProvider  {
 
@@ -20,9 +20,9 @@ public class MidataConformanceProvider  extends ServerCapabilityStatementProvide
 				
 		if (doadd) {
 			Extension dt = conformance.getRest().get(0).getSecurity().addExtension().setUrl("http://fhir-registry.smarthealthit.org/StructureDefinition/oauth-uris");
-			String tokenUrl = "https://"+Play.application().configuration().getString("platform.server")+"/v1/token";
+			String tokenUrl = "https://"+InstanceConfig.getInstance().getPlatformServer()+"/v1/token";
 			dt.addExtension(new Extension("token", new UriType(tokenUrl)));
-			String authUrl = Play.application().configuration().getString("portal.originUrl")+"/oauth.html#/portal/oauth2";		
+			String authUrl = InstanceConfig.getInstance().getPortalOriginUrl()+"/authservice";		
 			dt.addExtension(new Extension("authorize", new UriType(authUrl)));
 			doadd = false;
 		}

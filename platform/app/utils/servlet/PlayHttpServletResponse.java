@@ -121,7 +121,7 @@ public class PlayHttpServletResponse implements HttpServletResponse {
 			return;		
 		}
 		contentType = arg0;
-		response.setContentType(arg0);				
+		//response.setContentType(arg0);				
 	}
 
 	@Override

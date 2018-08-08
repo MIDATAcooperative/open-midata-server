@@ -1,0 +1,209 @@
+ <div ng-controller="QueryEditorCtrl" ng-cloak >
+    <div class="panel panel-primary">
+	<div class="panel-heading">
+		<div ng-show="app"><span translate="queryeditor.app"></span>: {{ app.name }}</div>
+		<div ng-show="study"><span translate="queryeditor.study"></span>: {{ study.name }}</div>
+		 
+	</div>
+	<div class="panel-body">
+		<p ng-show="error && !error.field" translate="{{error.code || error}}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	   
+		</p>
+		
+		<div ng-show="app._id && app.type=='mobile'" class="alert alert-warning">
+		   <strong translate="manageapp.important"></strong>
+		   <p ng-hide="app.targetUserRole=='RESEARCH'" translate="manageapp.logoutwarning"></p>
+		   <p ng-show="app.targetUserRole=='RESEARCH'" translate="manageapp.researchwarning"></p>		    
+	    </div>
+		<div ng-show="blocks.length && !currentBlock && !target.askresources && !expertmode">
+		<p translate="queryeditor.summary"></p>
+		<div class="list-group">
+		  <button ng-repeat="block in blocks" class="list-group-item" ng-click="selectBlock(block);">
+		    <b>{{ block.display }}</b>
+		    <div ng-show="block.code">{{ block.code }}</div>
+		    <div>
+		      <span class="text-success" ng-show="mode=='app' && block.owner && block.owner != 'all'" translate="{{ 'queryeditor.short_owner_'+block.owner }}"></span>
+		      <span class="text-danger" ng-show="mode=='app' && (!block.owner || block.owner == 'all')" translate="queryeditor.short_owner_all"></span> 
+		      <span ng-show="mode=='app'"> / </span>
+		      <span class="text-danger" ng-show="block.app && block.app != 'all'"><span translate="queryeditor.short_app_other"></span> {{ block.appName }}</span>
+		      <span class="text-success" ng-show="!block.app || block.app == 'all'" translate="queryeditor.short_app_all"></span>
+		    </div>		   
+		    
+		    <div ng-show="block.timeRestrictionMode">
+		      <span translate="{{ 'queryeditor.'+block.timeRestrictionMode }}"></span>: {{ block.timeRestrictionDate | date : 'dd.MM.yy'}}
+		    </div>
+		    <div ng-show="block.dataPeriodRestrictionMode">
+		      <span translate="{{ 'queryeditor.'+block.dataPeriodRestrictionMode }}"></span>: {{ block.dataPeriodRestrictionStart | date : 'dd.MM.yy'}} - {{ block.dataPeriodRestrictionEnd | date : 'dd.MM.yy' }} 
+		    </div>
+		    <div ng-show="block.customFilter">
+		      <span>Extra Filter: </span><span>{{ block.customFilterPath }}</span>: {{ block.customFilterValue }}
+		    </div>
+		  </button>
+		</div>
+		
+		<hr>
+				
+       
+						
+		</div>
+		
+		<div ng-show="expertmode">				
+		<p translate="queryeditor.access_query"></p>		
+		<textarea class="form-control" ng-change="updateQuery()" ng-model="query.queryStr"></textarea>
+		<div class="extraspace"></div>
+		<button class="btn btn-default" ng-click="expertModeDone()" translate="common.submit_btn"></button>
+		</div>
+		
+		<div ng-if="target.askresources">
+		  <p translate="queryeditor.select_resources"></p>
+		  <div ng-repeat="resource in target.askresources" class="checkbox">
+		    <label><input type="checkbox" ng-model="resource.selected">
+		      <b>{{ resource.display }}</b> {{ resource.text }}
+		    </label>
+		  </div>
+		  <button class="btn btn-default" translate="common.submit_btn" ng-click="addPreselection()"></button>
+		</div>
+		
+		<div ng-show="!currentBlock && !newentry && !expertmode && !target.askresources">
+		  <p translate="queryeditor.check_okay"></p>
+		   <div ng-if="mode=='app'">
+		    
+		  
+		    <div class="checkbox">
+		      <label>
+		        <input type="checkbox" id="withLogout" name="withLogout" ng-model="app.withLogout" value="true" ng-required="logoutRequired">
+		        <span translate="manageapp.pleaseLogout1"></span>
+		        <span ng-show="app.targetUserRole=='RESEARCH'"> / </span>
+		        <span ng-show="app.targetUserRole=='RESEARCH'" translate="manageapp.pleaseLogout2"></span>		        
+		      </label>
+		    </div>  		  
+		 </div>
+		  
+		  <button class="btn btn-default" ng-click="addNew()" translate="queryeditor.add_data_btn"></button>
+		  <button class="btn btn-default" ng-disabled="mode=='app' && !app.withLogout" ng-click="saveExit()" translate="queryeditor.save_exit_btn"></button>
+		  <button class="btn btn-default" ng-click="cancel()" translate="queryeditor.cancel_btn"></button>
+		  <br><br>
+		  <button class="btn btn-xs btn-default" ng-click="enableExpertMode()" translate="queryeditor.expert_mode_btn"></button>
+		  <button class="btn btn-xs btn-default" ng-show="mode=='app'" ng-click="basicAppResources()" translate="queryeditor.add_basic_btn"></button>
+		</div>
+		
+		<div ng-show="currentBlock">	
+		
+		<form class="form form-horizontal">
+		  
+		<h3>{{ currentBlock.display }}</h3>
+		  
+		  <formrow id="display" label="queryeditor.format">
+		    <input type="text" class="form-control" ng-model="currentBlock.format">
+		  </formrow>
+		  <formrow id="content" label="queryeditor.content" ng-show="currentBlock.content">
+		    <p class="form-control-static">{{ currentBlock.content }}</p>
+		  </formrow>
+		  <formrow id="content" label="queryeditor.code" ng-show="currentBlock.code">
+		    <p class="form-control-static">{{ currentBlock.code }}</p>
+		  </formrow>
+		  <formrow id="owner" label="queryeditor.owner" ng-show="mode=='app' && !currentBlock.flags.noowner">
+		    <div class="radio">
+		      <label><input type="radio" ng-model="currentBlock.owner" value="self"><span translate="queryeditor.owner_self"></span></label>
+		    </div><div class="radio">
+		      <label><input type="radio" ng-model="currentBlock.owner" value="all"><span translate="queryeditor.owner_all"></span></label>
+		    </div>
+		  </formrow>
+		  <formrow id="owner" label="queryeditor.source_app" ng-show="!currentBlock.flags.noapp">
+		    <div class="radio" ng-show="target.appname">
+		      <label><input type="radio" ng-model="currentBlock.app"  value="self"><span translate="queryeditor.app_self"></span></label>
+		    </div><div class="radio">
+		      <label><input type="radio" ng-model="currentBlock.app" value="all"><span translate="queryeditor.app_all"></span></label>
+		    </div><div class="radio">
+		      <label><input type="radio" ng-model="currentBlock.app" value="other"><span translate="queryeditor.app_other"></span><input type="text" ng-model="currentBlock.appName"></label>
+		    </div>
+		  </formrow>
+		  <div ng-show="mode=='study'">
+		  <formrow id="restrictions" label="queryeditor.restrictions" ng-show="timeModes.length || dataPeriodModes.length || currentBlock.flags.custom">
+		    <div class="checkbox" ng-if="timeModes.length"><label><input type="checkbox" ng-model="currentBlock.timeRestriction"><span translate="queryeditor.time_restriction"></span></label></div>
+		    <div class="checkbox" ng-if="dataPeriodModes.length"><label><input type="checkbox" ng-model="currentBlock.dataPeriodRestriction"><span translate="queryeditor.data_period_restriction"></span></label></div>
+		    <div class="checkbox" ng-if="currentBlock.flags.custom"><label><input type="checkbox" ng-model="currentBlock.customFilter"><span translate="queryeditor.custom_filter"></span></label></div>
+		  </formrow>
+		  <formrow id="timeRestriction" label="queryeditor.time_restriction" ng-if="currentBlock.timeRestriction">
+		     <div class="row"><div class="col-sm-3">		     
+		     <select class="col-sm-6 form-control" ng-model="currentBlock.timeRestrictionMode" ng-options="timeMode as 'queryeditor.'+timeMode | translate for timeMode in timeModes"></select>
+		     </div>
+		     <div class="input-group col-sm-5">
+	          <input id="timeRestrictionDate" name="timeRestrictionDate" as-date type="text" class="form-control" placeholder="" uib-datepicker-popup="dd.MM.yyyy"  ng-model="currentBlock.timeRestrictionDate" is-open="datePickers.timeRestrictionDate" no-time datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+	          <span class="input-group-btn">
+	             <button type="button"  class="btn btn-default" ng-click="datePickers.timeRestrictionDate=true;"><i class="glyphicon glyphicon-calendar"></i></button>
+	          </span>
+             </div>
+             </div>
+             <formerror myid="timeRestrictionDate" type="date" message="error.invalid.date"></formerror>
+        		       
+		  </formrow>
+		  <formrow id="dataPeriodRestriction" label="queryeditor.data_period_restriction" ng-if="currentBlock.dataPeriodRestriction">
+		     <div class="row">
+		     <div class="col-sm-5">		     
+		       <select class="form-control" ng-model="currentBlock.dataPeriodRestrictionMode" ng-options="timeMode as 'queryeditor.'+timeMode | translate for timeMode in dataPeriodModes"></select>
+		     </div>
+		     <div class="col-sm-3">
+		     <div class="input-group">
+	          <input id="dataPeriodRestrictionStart" name="dataPeriodRestrictionStart" as-date type="text" class="form-control" placeholder="" uib-datepicker-popup="dd.MM.yyyy"  ng-model="currentBlock.dataPeriodRestrictionStart" is-open="datePickers.dataPeriodRestrictionStart" no-time datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+	          <span class="input-group-btn">
+	             <button type="button"  class="btn btn-default" ng-click="datePickers.dataPeriodRestrictionStart=true;"><i class="glyphicon glyphicon-calendar"></i></button>
+	          </span>
+             </div>
+             </div><div class="col-sm-1"><p class="form-control-static" translate="queryeditor.to"></p></div>
+             <div class="col-sm-3">
+		     <div class="input-group">
+	          <input id="dataPeriodRestrictionEnd" name="dataPeriodRestrictionEnd" as-date type="text" class="form-control" placeholder="" uib-datepicker-popup="dd.MM.yyyy"  ng-model="currentBlock.dataPeriodRestrictionEnd" is-open="datePickers.dataPeriodRestrictionEnd" no-time datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+	          <span class="input-group-btn">
+	             <button type="button"  class="btn btn-default" ng-click="datePickers.dataPeriodRestrictionEnd=true;"><i class="glyphicon glyphicon-calendar"></i></button>
+	          </span>
+             </div>
+             </div>
+		     		    
+		     </div>
+		  </formrow>
+		  <formrow id="customFilter"  label="queryeditor.custom_filter" ng-if="currentBlock.customFilter">		   		     
+		     <input type="text" class="form-control" ng-model="currentBlock.customFilterValue"> 
+		  </formrow>
+		  </div>
+          <formrow id="x" label="">								
+		    <button class="btn btn-default" ng-click="deleteBlock()" translate="queryeditor.remove_btn"></button>
+		    <button class="btn btn-default" ng-click="applyBlock()" translate="queryeditor.apply_btn"></button>
+		  </formrow>
+		</form>
+		
+		</div>
+		
+		<div ng-show="newentry">
+		<p translate="queryeditor.newentry"></p>
+		<div class="row">
+		<div class="col-sm-8">
+		<input type="text" id="queryadd" name="queryadd" class="form-control" ng-model="newentry.search">
+		</div><div class="col-sm-4">
+		<button class="btn btn-default" ng-click="search()" translate="common.search_btn"></button>
+		<button class="btn btn-default" ng-click="cancelsearch()" translate="common.cancel_btn"></button>
+		</div>
+		</div>
+		<div class="extraspace"></div>
+		<p translate="queryeditor.make_selection" ng-show="newentry.choices"></p>
+		<table class="table table-striped" ng-show="newentry.choices">
+		  <tr>
+		    <th translate="queryeditor.resultgroup"></th>
+		    <th translate="queryeditor.resultdetail"></th>
+		  </tr>
+		  <tr ng-repeat="choice in newentry.choices">
+		    <td><a href="javascript:" ng-click="addContent(choice)">{{ choice.display }}</a>
+		      <span ng-show="choice.group" class="text-muted">(Group)</span>
+		    </td>
+		    <td>
+		      <div ng-repeat="code in choice.codes"><a href="javascript:" ng-click="addContent(choice, code)">{{ code.system }} {{ code.code }}</a></div>
+		      <div ng-repeat="content in choice.contents"><a href="javascript:" ng-click="addContent(content);">{{ content.display }}</a><span ng-show="content.content" class="text-muted">(Content)</span></div>
+		    </td> 
+		  </tr>
+		</table>
+		<p ng-show="newentry.choices.length === 0" translate="queryeditor.search_empty"></p>
+		
+		</div>
+	</div>
+	</div>   
+</div>
+ 

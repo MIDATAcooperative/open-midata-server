@@ -1,10 +1,8 @@
 package controllers.members;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,25 +22,20 @@ import models.Research;
 import models.Study;
 import models.StudyParticipation;
 import models.User;
-import models.UserGroupMember;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.EntityType;
-import models.enums.EventType;
 import models.enums.InformationType;
-import models.enums.InstanceType;
+import models.enums.JoinMethod;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationCodeStatus;
 import models.enums.ParticipationStatus;
-import models.enums.StudyExecutionStatus;
-import models.enums.SubUserRole;
 import models.enums.UserFeature;
 import models.enums.WritePermissionType;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
-import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
@@ -50,7 +43,6 @@ import utils.auth.CodeGenerator;
 import utils.auth.ExecutionInfo;
 import utils.auth.MemberSecured;
 import utils.auth.Rights;
-import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
@@ -78,7 +70,7 @@ public class Studies extends APIController {
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	public static Result list() throws JsonValidationException, InternalServerException {
-	   MidataId user = new MidataId(request().username());
+	   MidataId user = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 	   
 	   Set<String> fields = Sets.create("study","studyName", "pstatus");
 	   Set<StudyParticipation> participation = StudyParticipation.getAllByMember(user, fields);
@@ -97,7 +89,7 @@ public class Studies extends APIController {
 	@Security.Authenticated(MemberSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
 	public static Result search() throws JsonValidationException, InternalServerException, AuthException {
-	   MidataId user = new MidataId(request().username());
+	   MidataId user = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 	   
 	   JsonNode json = request().body().asJson();
 	   JsonValidation.validate(json, "properties", "fields");
@@ -126,7 +118,7 @@ public class Studies extends APIController {
 		
 		JsonValidation.validate(json, "code");
 		String codestr = JsonValidation.getString(json, "code");
-		MidataId userId = new MidataId(request().username());
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		
 		Member user = Member.getById(userId, Sets.create("firstname","lastname","birthday","country","gender"));
 				
@@ -173,7 +165,7 @@ public class Studies extends APIController {
 	public static Result updateParticipation(String id) throws JsonValidationException, AppException {
 		JsonNode json = request().body().asJson();
 		MidataId studyId = new MidataId(id);
-		MidataId memberId = new MidataId(request().username());
+		MidataId memberId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		
 		
 		StudyParticipation part = StudyParticipation.getByStudyAndMember(studyId, memberId, Sets.create("providers", "authorized"));
@@ -233,6 +225,7 @@ public class Studies extends APIController {
 		part.name = "Study: "+study.name;
 		part.owner = member._id;
 		part.dateOfCreation = new Date();
+		part.lastUpdated = part.dateOfCreation;
 		part.dataupdate = System.currentTimeMillis();
 		
 		String userName;
@@ -254,7 +247,11 @@ public class Studies extends APIController {
 			part.recruiter = code.recruiter;		
 			part.recruiterName = code.recruiterName;
 			part.pstatus = ParticipationStatus.CODE;
-		} else part.pstatus = ParticipationStatus.MATCH;
+			part.joinMethod = JoinMethod.CODE;
+		} else {
+			part.pstatus = ParticipationStatus.MATCH;
+			part.joinMethod = JoinMethod.ALGORITHM;
+		}
 		
 		//PatientResourceProvider.generatePatientForStudyParticipation(part, member);
 		
@@ -300,7 +297,7 @@ public class Studies extends APIController {
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result get(String id) throws JsonValidationException, InternalServerException {
-	   MidataId userId = new MidataId(request().username());	
+	   MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));	
 	   MidataId studyId = new MidataId(id);
 	   	   
 	   Set<String> studyFields = Sets.create("_id", "createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","infos","owner","participantRules","recordQuery","studyKeywords","requiredInformation","anonymous","assistance", "startDate", "endDate", "dataCreatedBefore", "termsOfUse");
@@ -334,7 +331,7 @@ public class Studies extends APIController {
 		  forbidSubUserRole(SubUserRole.STUDYPARTICIPANT, SubUserRole.NONMEMBERUSER);
 		  forbidSubUserRole(SubUserRole.APPUSER, SubUserRole.NONMEMBERUSER);	
 		}*/
-		MidataId userId = new MidataId(request().username());		
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));		
 		MidataId studyId = new MidataId(id);	
 		
 		User user = Member.getById(userId, Member.ALL_USER_INTERNAL);
@@ -343,22 +340,24 @@ public class Studies extends APIController {
 		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, requirements);
 		if (notok != null && !notok.isEmpty()) requireUserFeature(notok.iterator().next());
 		
-		requestParticipation(new ExecutionInfo(userId), userId, studyId, null);		
+		requestParticipation(new ExecutionInfo(userId), userId, studyId, null, JoinMethod.PORTAL);		
 		return ok();
 	}
 	
-	public static StudyParticipation requestParticipation(ExecutionInfo inf, MidataId userId, MidataId studyId, MidataId usingApp) throws AppException {
+	public static StudyParticipation requestParticipation(ExecutionInfo inf, MidataId userId, MidataId studyId, MidataId usingApp, JoinMethod joinMethod) throws AppException {
 		
 		
 		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country"));		
 		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "pstatus", "ownerName", "owner", "authorized", "sharingQuery", "validUntil", "createdBefore"));		
-		Study study = Study.getById(studyId, Sets.create("name", "executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "termsOfUse", "code", "autoJoinGroup"));
+		Study study = Study.getById(studyId, Sets.create("name", "joinMethods", "executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "termsOfUse", "code", "autoJoinGroup"));
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
 		
 		
 		if (participation == null) {
 			if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new JsonValidationException("error.closed.study", "code", "notsearching", "Study is not searching for participants.");
+			
+			if (study.joinMethods != null && !study.joinMethods.contains(joinMethod)) throw new JsonValidationException("error.closed.study", "code", "notsearching", "Study is not searching for participants using this channel."); 
 			
 			participation = createStudyParticipation(inf.executorId, study, user, null);
 										
@@ -368,7 +367,8 @@ public class Studies extends APIController {
 		if (participation.pstatus == ParticipationStatus.ACCEPTED || participation.pstatus == ParticipationStatus.REQUEST) return participation;				
 		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");
 		
-		participation.setPStatus(ParticipationStatus.REQUEST);						
+		participation.setPStatus(ParticipationStatus.REQUEST, joinMethod);	
+		
 		//participation.addHistory(new History(EventType.PARTICIPATION_REQUESTED, participation, user, null));
 		if (study.termsOfUse != null) user.agreedToTerms(study.termsOfUse, usingApp);		
 		if (study.requiredInformation.equals(InformationType.RESTRICTED)) {
@@ -440,7 +440,7 @@ public class Studies extends APIController {
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	public static Result noParticipation(String id) throws JsonValidationException, AppException {
-		MidataId userId = new MidataId(request().username());		
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));		
 		MidataId studyId = new MidataId(id);
 		
 		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country"));
@@ -471,7 +471,7 @@ public class Studies extends APIController {
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	public static Result retreatParticipation(String id) throws JsonValidationException, AppException {
-		MidataId userId = new MidataId(request().username());		
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));		
 		MidataId studyId = new MidataId(id);
 		
 		retreatParticipation(userId, userId, studyId);		

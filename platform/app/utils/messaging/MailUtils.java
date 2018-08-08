@@ -2,10 +2,12 @@ package utils.messaging;
 
 import java.util.Date;
 
-import com.typesafe.plugin.MailerAPI;
-import com.typesafe.plugin.MailerPlugin;
+import javax.inject.Inject;
 
-import play.Play;
+import com.typesafe.config.Config;
+
+import play.libs.mailer.Email;
+import play.libs.mailer.MailerClient;
 
 /**
  * function for sending mails
@@ -13,6 +15,21 @@ import play.Play;
  */
 public class MailUtils {
 
+	private MailerClient mailerClient;
+	private Config config;
+	
+	@Inject
+	public MailUtils(MailerClient mailerClient, Config config) {
+		this.mailerClient = mailerClient;
+		this.config = config;
+	}
+	
+	private static MailUtils instance;
+	
+	public static void setInstance(MailUtils instance1) {
+		instance = instance1;
+	}
+	
 	/**
 	 * Sends an email in text format
 	 * @param email target email address
@@ -20,14 +37,26 @@ public class MailUtils {
 	 * @param subject title of email
 	 * @param content content of email
 	 */
-	public static void sendTextMail(String email, String fullname, String subject, Object content) {
+	public static void sendTextMail(String email, String fullname, String subject, Object content) {		
+		if (instance == null) throw new NullPointerException("MailUtils not initialized");
+		instance.sendEmail(email, fullname, subject, content);
+	}
+	
+		
+		  
+
+	public void sendEmail(String email, String fullname, String subject, Object content) {
 		System.out.println("Start send mail to "+email+" at "+new Date().toString());
-		MailerAPI mail = play.Play.application().plugin(MailerPlugin.class).email();
+		Email mail = new Email();
+		    
 		mail.setSubject(subject);
-		mail.setRecipient(fullname +"<" + email + ">");
-		mail.setFrom(Play.application().configuration().getString("smtp.from"));	
-		mail.send(content.toString());
+		mail.addTo(fullname +"<" + email + ">");
+		mail.setFrom(config.getString("smtp.from"));	
+		mail.setBodyText(content.toString());
+		    
+		mailerClient.send(mail);
 		System.out.println("End send mail to "+email);
 		System.out.flush();
 	}
+		
 }

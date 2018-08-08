@@ -1,15 +1,16 @@
 package utils.sync;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CompletionStage;
 
+import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
-import akka.actor.ActorSelection;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
-import akka.actor.UntypedActor;
+import akka.actor.Terminated;
 import akka.cluster.routing.ClusterRouterGroup;
 import akka.cluster.routing.ClusterRouterGroupSettings;
 import akka.routing.BroadcastGroup;
@@ -17,10 +18,11 @@ import models.ContentCode;
 import models.MidataId;
 import models.Plugin;
 import models.RecordGroup;
-import play.Play;
-import play.libs.Akka;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.InstanceConfig;
+import utils.collections.Sets;
+import utils.messaging.SubscriptionManager;
 
 /**
  * Synchronization between multiple application servers for changes on cached data like plugins or content type definitions
@@ -36,7 +38,7 @@ public class Instances {
 	 * Initialize synchronization
 	 */
 	public static void init() {
-		actorSystem = ActorSystem.create("midata", Play.application().configuration().getConfig("midata").underlying().withFallback(Play.application().configuration().underlying()));
+		actorSystem = ActorSystem.create("midata", InstanceConfig.getInstance().getConfig().getConfig("midata").withFallback(InstanceConfig.getInstance().getConfig()));
 		//instanceURIs = Play.application().configuration().getStringList("servers");
 		actorSystem.actorOf(Props.create(InstanceSync.class), "instanceSync");	
 				
@@ -44,7 +46,7 @@ public class Instances {
 		broadcast = actorSystem.actorOf(
 		    new ClusterRouterGroup(new BroadcastGroup(routeesPaths),
 		        new ClusterRouterGroupSettings(Integer.MAX_VALUE, routeesPaths,
-		            true, null)).props(), "broadcast");
+		            true, Sets.create())).props(), "broadcast");
 	}
 	
 	public static ActorSystem system() {
@@ -54,8 +56,9 @@ public class Instances {
 	/**
 	 * Shutdown synchronization
 	 */
-	public static void shutdown() {
-		actorSystem.shutdown();  
+	public static CompletionStage<Terminated> shutdown() {
+		actorSystem.terminate();  
+		return actorSystem.getWhenTerminated();
 	}
 	
 	/**
@@ -96,26 +99,32 @@ class ReloadMessage implements Serializable {
  * Actor for instance synchronization
  *
  */
-class InstanceSync extends UntypedActor {
+class InstanceSync extends AbstractActor {
 	
 	public InstanceSync() {							    
 	}
 	
 	@Override
-	public void onReceive(Object message) throws Exception {
-		try {
-		if (message instanceof ReloadMessage) {
-			AccessLog.log("Received Reload Message");
-		   ReloadMessage msg = (ReloadMessage) message;
+	public Receive createReceive() {
+	    return receiveBuilder()
+	      .match(ReloadMessage.class, this::reload)	      
+	      .build();
+	}
+	
+
+	public void reload(ReloadMessage msg) throws Exception {
+		try {		
+		   AccessLog.log("Received Reload Message: "+msg.toString());		  
 		   if (msg.collection.equals("plugin")) {
 			   Plugin.cacheRemove(msg.entry);
 		   } else if (msg.collection.equals("content")) {
 			   RecordGroup.load();
 			   ContentCode.reset();
+		   } else if (msg.collection.equals("SubscriptionData")) {
+			   System.out.println("A");
+			   SubscriptionManager.subscriptionChangeLocal(msg.entry);
+			   System.out.println("B");
 		   }
-		} else {
-		    unhandled(message);
-	    }	
 		} catch (Exception e) {
 			ErrorReporter.report("Messager", null, e);	
 			throw e;

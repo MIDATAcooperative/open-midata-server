@@ -2,7 +2,6 @@ package utils.fhir;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -11,43 +10,31 @@ import java.util.Set;
 import org.hl7.fhir.dstu3.model.AuditEvent;
 import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventAgentComponent;
 import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventEntityComponent;
-import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventEntityDetailComponent;
 import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventOutcome;
 import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
-import org.hl7.fhir.dstu3.model.Group;
-import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Identifier;
 import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.dstu3.model.StringType;
-import org.hl7.fhir.dstu3.model.Group.GroupMemberComponent;
-import org.hl7.fhir.dstu3.model.Group.GroupType;
-import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.parser.IParser;
-import ca.uhn.fhir.rest.annotation.Create;
 import ca.uhn.fhir.rest.annotation.Elements;
-import ca.uhn.fhir.rest.annotation.History;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.IncludeParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
 import ca.uhn.fhir.rest.annotation.Read;
-import ca.uhn.fhir.rest.annotation.ResourceParam;
 import ca.uhn.fhir.rest.annotation.Search;
 import ca.uhn.fhir.rest.annotation.Sort;
-import ca.uhn.fhir.rest.annotation.Update;
-import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.api.SummaryEnum;
 import ca.uhn.fhir.rest.api.server.RequestDetails;
-import ca.uhn.fhir.rest.param.CompositeAndListParam;
 import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
@@ -55,34 +42,22 @@ import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
-import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
-import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
-import controllers.UserGroups;
 import models.Consent;
 import models.MidataAuditEvent;
 import models.MidataId;
 import models.Plugin;
-import models.Record;
 import models.Study;
 import models.User;
-import models.UserGroup;
 import models.UserGroupMember;
-import models.enums.AuditEventType;
-import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.UserRole;
-import models.enums.UserStatus;
-import utils.AccessLog;
-import utils.ErrorReporter;
 import utils.auth.ExecutionInfo;
 import utils.collections.CMaps;
-import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
-import utils.stats.Stats;
 
 public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, MidataAuditEvent> implements IResourceProvider {
 	
@@ -380,7 +355,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 		}
 		
 		String encoded = ctx.newJsonParser().encodeResourceToString(ae);		
-		mae.fhirAuditEvent = (DBObject) JSON.parse(encoded);				
+		mae.fhirAuditEvent = BasicDBObject.parse(encoded);				
 	}
 
 	@Override

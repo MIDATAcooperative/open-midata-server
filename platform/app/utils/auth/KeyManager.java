@@ -13,7 +13,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -79,7 +78,7 @@ public class KeyManager implements KeySession {
 	
 	private Map<String, KeyRing> keySessions = new ConcurrentHashMap<String, KeyRing>();	
 	
-	private static ThreadLocal<KeyManagerSession> session = new ThreadLocal<KeyManagerSession>();
+	private static ThreadLocal<KeyManager.KeyManagerSession> session = new ThreadLocal<KeyManager.KeyManagerSession>();
 	
 	public KeyManager() {
 		new CleanerThread().start();

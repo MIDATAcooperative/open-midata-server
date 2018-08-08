@@ -69,6 +69,93 @@ angular.module('services')
 		 return result;
 	  } else return query;
 	};
+	
+	service.parseAccessQuery = function(lang, query, outerquery, rarray) {
+		console.log("IN:"+JSON.stringify(query));
+		var ac = function(path) {
+			if (query[path] !== undefined) return query[path];
+			if (outerquery && outerquery[path] !== undefined) return outerquery[path];
+			return undefined;
+		};
+		var unwrap = function(arr, field) {
+			var out = [];
+			angular.forEach(arr, function(elem) {
+				if (elem[field]) {
+					if (angular.isArray(elem[field])) {						
+						if (elem[field].length == 1) {
+							var copy = JSON.parse(JSON.stringify(elem));
+							copy[field] = copy[field][0];
+							out.push(copy);
+						} else {
+							angular.forEach(elem[field], function(v) {
+								var copy1 = JSON.parse(JSON.stringify(elem));
+								copy1[field] = v;
+								out.push(copy1);
+							});
+						}
+					} else out.push(elem);
+				} else out.push(elem);
+			});
+			return out;
+		};
+		var noarray = function(a) {
+			if (angular.isArray(a) && a.length) return a[0];
+			return a;
+		};
+	    
+		var result = rarray || [];
+		
+		if (query.$or) {
+			for (var i = 0;i<query.$or.length;i++) service.parseAccessQuery(lang, query.$or[i], query, result);
+		} else {
+		    if (angular.equals({}, query)) return [];
+			var nblock = {};
+			if (ac("format")) nblock.format = ac("format");
+			if (ac("content")) nblock.content = ac("content");
+			if (ac("code")) nblock.code = ac("code");			
+			if (ac("group")) nblock.group = ac("group");
+			if (ac("group-system")) nblock.system = ac("group-system");
+			if (ac("created-after")) {
+				nblock.timeRestrictionMode = "created-after";
+				nblock.timeRestrictionDate = ac("created-after");
+			}
+			if (ac("updated-after")) {
+				nblock.timeRestrictionMode = "updated-after";
+				nblock.timeRestrictionDate = ac("updated-after");
+			}
+			/*if (ac("data")) {
+				var p = ac("data");
+				nblock.customFilterPath = Objects.keys(p)[0];
+				nblock.customFilterValue = p[nblock.customFilterPath];
+			}*/
+			if (ac("app")) {
+				nblock.app = ac("app");
+			}
+			if (ac("owner")) {
+				nblock.owner = noarray(ac("owner"));
+			}
+			console.log(nblock);			
+			angular.forEach(unwrap(unwrap(unwrap(unwrap(unwrap([ nblock ],"group"),"code"),"content"),"app"),"format"), function(r) {
+				if (!r.app) r.app = "all";
+				else if (r.app !== "all") { r.appName = r.app; r.app = "other"; }
+				if (!r.owner) r.owner = "all";
+				
+				var c = r.content;
+				if (c === "Patient" || c === "Group" || c === "Person" || c === "Practitioner") return;	
+				console.log("PRE LOOPUP:"+r);
+				if (r.content) {
+					service.getContentLabel(lang, r.content).then(function(v) { r.display = v; });
+				} else if (r.group) {
+					service.getGroupLabel(lang, r["group-system"] || "v1", r.group).then(function(v) { r.display = v; });
+				} else if (r.format) {
+					r.display = r.format;
+				}
+				result.push(r); 
+			});
+		}
+		return result;
+	};
+		
 		
 	return service;
 }]);

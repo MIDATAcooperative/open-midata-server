@@ -65,9 +65,10 @@ angular.module('portal')
 		$scope.message = "Authorization in progress...";
 		var redirectUri = window.location.protocol + "//" + window.location.hostname + /*":" + window.location.port + */ "/authorized.html";
 		if (app.type === "oauth2") {
-			var parameters = "?response_type=code" + "&client_id=" + app.consumerKey + "&scope=" + app.scopeParameters +
+			var parameters = "response_type=code" + "&client_id=" + app.consumerKey + "&scope=" + app.scopeParameters +
 				"&redirect_uri=" + redirectUri;
 			sessionStorage.returnTo=document.location.href;
+			if (app.authorizationUrl.indexOf("?")>=0) parameters = "&"+parameters; else parameters = "?"+parameters;
 			document.location.href = app.authorizationUrl + encodeURI(parameters);
 			//authWindow = window.open(app.authorizationUrl + encodeURI(parameters));
 			//window.addEventListener("message", onAuthorized);

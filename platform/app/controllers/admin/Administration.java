@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
 import com.fasterxml.jackson.databind.JsonNode;
 
 import actions.APICall;
@@ -36,7 +35,6 @@ import models.enums.AuditEventType;
 import models.enums.ConsentType;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
-import models.enums.EventType;
 import models.enums.Gender;
 import models.enums.MessageReason;
 import models.enums.ParticipationStatus;
@@ -47,13 +45,10 @@ import models.enums.UserStatus;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
-import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
 import utils.access.DBRecord;
-import utils.access.RecordManager;
 import utils.access.VersionedDBRecord;
-import utils.access.index.IndexDefinition;
 import utils.access.index.IndexPageModel;
 import utils.audit.AuditManager;
 import utils.auth.AdminSecured;
@@ -62,12 +57,9 @@ import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
 import utils.auth.PasswordResetToken;
 import utils.auth.PortalSessionToken;
-import utils.auth.PreLoginSecured;
-import utils.auth.ResearchSecured;
 import utils.auth.Rights;
 import utils.collections.CMaps;
 import utils.collections.Sets;
-import utils.db.DBLayer;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -100,7 +92,7 @@ public class Administration extends APIController {
 		
 		JsonValidation.validate(json, "user", "status");
 				
-		MidataId executorId = new MidataId(request().username());		
+		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));		
 		MidataId userId = JsonValidation.getMidataId(json, "user");
 		UserStatus status = JsonValidation.getEnum(json, "status", UserStatus.class);
 		
@@ -179,7 +171,7 @@ public class Administration extends APIController {
 	public static Result register() throws AppException {
 		requireSubUserRole(SubUserRole.SUPERADMIN);
 		
-		MidataId executorId = new MidataId(request().username());
+		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "language", "subroles");
@@ -214,7 +206,7 @@ public class Administration extends APIController {
 		user.emailStatus = EMailStatus.UNVALIDATED;
 		user.confirmationCode = CodeGenerator.nextCode();
 		
-		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, null, new MidataId(request().username()), user);
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, null, new MidataId(request().attrs().get(play.mvc.Security.USERNAME)), user);
 		
 		user.apps = new HashSet<MidataId>();		
 		user.visualizations = new HashSet<MidataId>();
@@ -247,7 +239,7 @@ public class Administration extends APIController {
 		MidataId userId = JsonValidation.getMidataId(json, "user");
 		String comment = JsonValidation.getString(json, "comment");
 		
-		MidataId executorId = new MidataId(request().username());				
+		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));				
 		
 		User targetUser = User.getById(userId, User.ALL_USER);
 		AuditManager.instance.addAuditEvent(AuditEventType.INTERNAL_COMMENT, null, executorId, targetUser, comment);
@@ -274,7 +266,7 @@ public class Administration extends APIController {
 		MidataId userId = JsonValidation.getMidataId(json, "user");
 		String email = JsonValidation.getEMail(json, "email");
 		
-		MidataId executorId = new MidataId(request().username());
+		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		
 		//Check authorization except for change self
 		if (!executorId.equals(userId)) {
@@ -336,7 +328,7 @@ public class Administration extends APIController {
 		JsonValidation.validate(json, "user", "birthday");
 							
 		MidataId userId = JsonValidation.getMidataId(json, "user");			
-		MidataId executorId = new MidataId(request().username());
+		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		
 		//Check authorization except for change self
 		if (!executorId.equals(userId)) {
@@ -374,7 +366,7 @@ public class Administration extends APIController {
 		JsonValidation.validate(json, "user");
 							
 		MidataId userId = JsonValidation.getMidataId(json, "user");
-		MidataId executorId = new MidataId(request().username());
+		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		
 		User selected = User.getById(userId, User.ALL_USER);
 		if (!selected.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.invalid.status",  "User must have status deleted to be wiped.");
@@ -403,7 +395,8 @@ public class Administration extends APIController {
 		for (Consent consent : consents2) {
 			consent = Consent.getByIdAndAuthorized(consent._id, userId, Sets.create("authorized"));
 			consent.authorized.remove(userId);
-			Consent.set(consent._id, "authorized", consent.authorized);			
+			Consent.set(consent._id, "authorized", consent.authorized);		
+			Consent.set(consent._id, "lastUpdated", new Date());
 		}
 		
 		Set<UserGroupMember> ugs = UserGroupMember.getAllByMember(userId);
@@ -459,7 +452,7 @@ public class Administration extends APIController {
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
 	public static Result deleteStudy(String id) throws JsonValidationException, AppException {
-		MidataId userId = new MidataId(request().username());
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId owner = PortalSessionToken.session().getOrg();
 		MidataId studyid = new MidataId(id);
 		

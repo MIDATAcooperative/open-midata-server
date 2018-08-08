@@ -1,13 +1,11 @@
 package utils.fhir;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
@@ -37,7 +35,6 @@ import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortOrderEnum;
 import ca.uhn.fhir.rest.api.SortSpec;
-import ca.uhn.fhir.rest.api.server.IBundleProvider;
 import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.param.CompositeAndListParam;
 import ca.uhn.fhir.rest.param.DateAndListParam;
@@ -54,39 +51,68 @@ import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
-import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.Record;
 import models.RecordsInfo;
 import models.enums.AggregationType;
-import utils.AccessLog;
 import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
+// Guide for implementing a FHIR resource:
+// One resource provider needs to be written for each FHIR resource
+//
+// FHIR data type of resource should already be available from happy fhir
+//
+// Choose super class : 
+// RecordBasedResourceProvider for Resources that will be Midata Records
+// ReadWriteResourceProvider for other writable resources
+// ResourceProvider for other read only resources
+//
+// Register your new provider in the class:
+// utils.fhir.FHIRServlet
+// (search for myProviders.put )
 public class ObservationResourceProvider extends RecordBasedResourceProvider<Observation> implements IResourceProvider {
 
+	// Provide one default constructor
 	public ObservationResourceProvider() {
+		
+		// For each existing search parameter that has a "reference" type add one line:
+		// searchParamNameToPathMap.put("Resource:search-name", "path from search specification");
 		searchParamNameToPathMap.put("Observation:based-on", "basedOn");
 		searchParamNameToPathMap.put("Observation:context", "context");
 		searchParamNameToPathMap.put("Observation:device", "device");
 		searchParamNameToPathMap.put("Observation:encounter", "encounter");
 		searchParamNameToPathMap.put("Observation:patient", "subject");
+		
+		// For each existing search parameter that has a "reference" type that cannot reference
+		// to any resource add one line:
+		// searchParamNameToTypeMap.put("Resource:search-name", Sets.create("TargetResourceTyp1", ...));			
 		searchParamNameToTypeMap.put("Observation:patient", Sets.create("Patient"));
+		
+		
 		searchParamNameToPathMap.put("Observation:performer", "performer");
 		searchParamNameToPathMap.put("Observation:related-target", "related.target");
 		searchParamNameToPathMap.put("Observation:specimen", "specimen");
 		searchParamNameToPathMap.put("Observation:subject", "subject");				
 		
+		// Use name of @Search function as last parameter
 		registerSearches("Observation", getClass(), "getObservation");
 	}
 	
+	// Return corresponding FHIR class
 	@Override
 	public Class<Observation> getResourceType() {
 		return Observation.class;
 	}
 
+	// Main search function for resource. May have another name.
+	// Copy method signature from happy fhir implementation.
+	// Look at http://hapifhir.io/xref-jpaserver/ca/uhn/fhir/jpa/rp/dstu3/ObservationResourceProvider.html
+	// Throw out unsupported search parameters (like "_has" and all starting with "PARAM_" )
+	// Replace DateRangeParam with DateAndListParam everywhere except for _lastUpdated	
+	// Add non FHIR _page parameter used for the pagination mechanism
 	@Search()
 	public Bundle getObservation(
 			@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,
@@ -252,6 +278,7 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 			@OptionalParam(name="_lastUpdated")
 			DateRangeParam theLastUpdated, 
 			
+			// This often needs to be cleaned up after copy/paste
 			@IncludeParam(allow= {
 					"Observation:based-on",
 					"Observation:context" ,
@@ -270,6 +297,7 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 			
 			@ca.uhn.fhir.rest.annotation.Count Integer theCount,
 			
+			// Non FHIR parameter used for pagination
 			@OptionalParam(name="_page")
 			StringParam _page,
 			
@@ -277,6 +305,7 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 
 	) throws AppException {
 
+		// The implementation of this method may also be copied from happy fhir except for the last lines
 		SearchParameterMap paramMap = new SearchParameterMap();
 
 		paramMap.add("_id", theId);
@@ -325,33 +354,56 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 		paramMap.setIncludes(theIncludes);
 		paramMap.setSort(theSort);
 		paramMap.setCount(theCount);
+		
+		// The last lines are different than the happy fhir version
 		paramMap.setFrom(_page != null ? _page.getValue() : null);
-
 		return searchBundle(paramMap, theDetails);
 		
 	}
 
+	// The actual search method implementation.
+	// Basically this "maps" the FHIR query to a MIDATA query and executes it
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
+		
+		// get execution context (which user, which app)
 		ExecutionInfo info = info();
 
+		// construct empty query and a builder for that query
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Observation");
 
+		// Now all possible searches need to be handeled. For performance reasons it makes sense
+		// to put searches that are very restrictive and frequently used first in order
+	
+		// Add default handling for the _id search parameter
 		builder.handleIdRestriction();
+		
+		// Add handling for search on the "owner" of the record. 
 		builder.recordOwnerReference("patient", "Patient", "subject");
 				
+		// Add handling for search on the field that determines the MIDATA content type used.
         builder.recordCodeRestriction("code", "code");
 			
+        // Add handling for a multiTYPE search: "date" may be search on effectiveDateTime or effectivePeriod
+        // Note that path = "effective" and type = TYPE_DATETIME_OR_PERIOD
+        // If the search was only on effectiveDateTime then
+        // type would be TYPE_DATETIME and path would be "effectiveDateTime" instead
 		builder.restriction("date", true, QueryBuilder.TYPE_DATETIME_OR_PERIOD, "effective");
 		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
 		
+		// On some resources there are searches for "patient" and "subject" which are 
+		// searches on the same field. patient is always the record owner
+		// subject may be something different than a person and may not be the record owner
+		// in that case. Add a record owner search if possible and a normal search otherwise:		
 		if (!builder.recordOwnerReference("subject", null, "subject")) builder.restriction("subject", true, null, "subject");
-		
+	
+		// Many examples for COMPOSITE type searches:
 		builder.restriction("code-value-quantity", "code", "valueQuantity", QueryBuilder.TYPE_CODEABLE_CONCEPT, QueryBuilder.TYPE_QUANTITY);
 		builder.restriction("code-value-string", "code", "valueString", QueryBuilder.TYPE_CODEABLE_CONCEPT, QueryBuilder.TYPE_STRING);
 		builder.restriction("code-value-date", "code", "value", QueryBuilder.TYPE_CODEABLE_CONCEPT, QueryBuilder.TYPE_DATETIME_OR_PERIOD);
 		builder.restriction("code-value-concept", "code", "valueConcept", QueryBuilder.TYPE_CODEABLE_CONCEPT, QueryBuilder.TYPE_CODEABLE_CONCEPT);
 		
+		// Example for a restriction on a Codeable Concept:
 		builder.restriction("category", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "category");
 		builder.restriction("component-code", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "component.code");
 		
@@ -370,7 +422,10 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 		builder.restriction("data-absent-reason", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "dataAbsentReason");
 		
 		builder.restriction("related-type", false, "code", "related.type");
+		
+		// Example for a search on a code field (not codeable concept)
 		builder.restriction("status", false, QueryBuilder.TYPE_CODE, "status");
+				
 		builder.restriction("value-concept", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "valueCodeableConcept");
 		
 		builder.restriction("value-string", true, QueryBuilder.TYPE_STRING, "valueString");
@@ -382,32 +437,48 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 		builder.restriction("device", true, "Device", "device");
 		builder.restriction("encounter", true, "Encounter", "encounter");
 		builder.restriction("performer", true, "Performer", "performer");
+		
+		// Example for a "reference" type search where the target type of the reference is unknown:
 		builder.restriction("based-on", true, null, "basedOn");
 		builder.restriction("related-target", true, null, "related.target");
 		builder.restriction("related", "related.target", "related.type", null,  QueryBuilder.TYPE_CODE);
+		
+		// Example for a "reference" type search where the target type is known:
 		builder.restriction("specimen", true, "Specimen", "specimen");
 		
-		
+		// At last execute the constructed query
 		return query.execute(info);
 	}
 
+	// This method is required if it is allowed to create the resource.
+	// Just change the resource type
 	@Create
 	@Override
 	public MethodOutcome createResource(@ResourceParam Observation theObservation) {
 		return super.createResource(theObservation);
 	}
 			
+	// Construct a new empty MIDATA record that is initialized with the correct format.
 	public Record init() { return newRecord("fhir/Observation"); }
 
+	// This method is required if it is allowed to update the resource.
+	// Just change the resource type
 	@Update
 	@Override
 	public MethodOutcome updateResource(@IdParam IdType theId, @ResourceParam Observation theObservation) {
 		return super.updateResource(theId, theObservation);
 	}		
 
+	// Prepare a Midata record to be written into the database. Tasks:
+	// a) Each record must have syntactical type "format" set and semantical type "content" set. 
+	// b) Each record must have a "name" that will be shown to the user in the record tree.
+	//    The name should describe the content, should not reveal secrets.
+	// c) If the "subject" is the record owner he should be removed from the FHIR representation
 	public void prepare(Record record, Observation theObservation) throws AppException {
-		// Set Record code and content
-		String display = setRecordCodeByCodeableConcept(record, theObservation.getCode(), null);		
+		// Task a : Set Record "content" field by using a code from the resource (or a fixed value or something else useful)
+		String display = setRecordCodeByCodeableConcept(record, theObservation.getCode(), null);
+		
+		// Task b : Create record name
 		String date = "No time";		
 		if (theObservation.hasEffective()) {
 			try {
@@ -418,23 +489,29 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 		}
 		record.name = display != null ? (display + " / " + date) : date;		
 
-		// clean
+		// Task c : Set record owner based on subject and clean subject if this was possible
 		Reference subjectRef = theObservation.getSubject();
 		if (cleanAndSetRecordOwner(record, subjectRef)) theObservation.setSubject(null);
 		
+		// Other cleaning tasks: Remove _id from FHIR representation and remove "meta" section
 		clean(theObservation);
  
 	}	
  
+	// Prepare a FHIR resource for output to the user
+	// Basically re-add the stuff that was taken away by prepare
 	@Override
 	public void processResource(Record record, Observation p) throws AppException {
+		// Add _id field and meta section
 		super.processResource(record, p);
 		
+		// Add subject field from record owner field if it is not already there
 		if (p.getSubject().isEmpty()) {			
 			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
 	}
 	
+	// This is the implementation of an Observation specific operation called $lastn
 	@Operation(name="$lastn", idempotent=true)
 	public Bundle lastn(				  
 	   @OperationParam(name="max") IntegerType theMax,
@@ -536,6 +613,7 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
  	    return retVal;
 	}
 	
+	// This is used by the $lastn implementation
 	private int addBundle(SearchParameterMap paramMap, Bundle retVal, int count) {
 		List<IBaseResource> partResult = search(paramMap);												
 		for (IBaseResource res : partResult) {

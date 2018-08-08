@@ -13,6 +13,10 @@
 	    <td translate="admin_study.name"></td>
 	    <td>{{ study.name }}</td>
 	  </tr>
+	   <tr>
+	    <td translate="admin_study.type"></td>
+	    <td>{{ 'enum.studytype.' + study.type | translate }}</td>
+	  </tr>
 	  <tr>
         <td translate="admin_study.created_at"></td>
         <td>{{ study.createdAt | date : 'dd.MM.yy' }}</td>
@@ -39,9 +43,19 @@
 	  </tr>
 	  <tr>
 	    <td translate="admin_study.dataCreatedBefore"></td>
-	    <td>{{ study.dataCreatedBefore | date }}</td>
+	    <td>{{ study.dataCreatedBefore | date : 'dd.MM.yy' }}</td>
+	  </tr>
+	  <tr>
+	    <td translate="admin_study.joinmethods"></td>
+	    <td>
+	      <ul>
+		    <li ng-repeat="method in study.joinMethods" translate="{{'enum.joinmethod.'+method}}"></li>
+		  </ul>
+	    </td>
 	  </tr>
     </table>	
+      
+		  
     </loader>
     </div>
     </div>
@@ -54,12 +68,14 @@
 		  <p><span translate="admin_study.required_assistance"></span>: <b>{{ study.assistance }}</b></p>
 		  <p><span translate="admin_study.termsOfUse"></span>: <b><a ui-sref="^.terms({which:study.termsOfUse})">{{ study.termsOfUse }}</a></b></p>		  
 		  <p><span translate="admin_study.sharing_query"></span>:</p>
+		  <accessquery query="study.recordQuery" details="true"></accessquery>
 		  <pre>{{ study.recordQuery | json }}
 		  </pre>
 		  <p translate="admin_study.requirements"></p>
 		  <ul>
 		    <li ng-repeat="req in study.requirements" translate="{{'enum.userfeature.'+req}}"></li>
 		  </ul>
+		
 		</div>
 	</div>
 	

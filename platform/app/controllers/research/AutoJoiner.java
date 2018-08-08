@@ -1,41 +1,37 @@
 package controllers.research;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
+import akka.actor.ActorSystem;
 import akka.actor.Props;
-import akka.actor.UntypedActor;
 import models.MidataId;
 import models.Study;
 import models.StudyParticipation;
 import models.UserGroupMember;
-import models.enums.AuditEventType;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationStatus;
 import models.enums.StudyExecutionStatus;
-import play.libs.Akka;
 import utils.AccessLog;
 import utils.ErrorReporter;
-import utils.InstanceConfig;
 import utils.ServerTools;
 import utils.access.RecordManager;
-import utils.audit.AuditManager;
 import utils.auth.KeyManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
-import utils.exceptions.BadRequestException;
-import utils.messaging.MailUtils;
-import utils.messaging.Message;
 
 public class AutoJoiner {
 
 private static ActorRef autoJoiner;
+
+private static ActorSystem system;
 	
-	public static void init() {
-		autoJoiner = Akka.system().actorOf(Props.create(AutoJoinerActor.class), "autoJoiner");
+	public static void init(ActorSystem system1) {
+		system = system1;
+		autoJoiner = system.actorOf(Props.create(AutoJoinerActor.class), "autoJoiner");
 	}
 	
 	public static void autoJoin(MidataId app, MidataId user, MidataId study) {		
@@ -53,17 +49,24 @@ private static ActorRef autoJoiner;
 	
 }
 
-class AutoJoinerActor extends UntypedActor {
+class AutoJoinerActor extends AbstractActor {
 	
 	public AutoJoinerActor() {							    
 	}
 	
 	@Override
-	public void onReceive(Object message) throws Exception {
+	public Receive createReceive() {
+	    return receiveBuilder()
+	      .match(JoinMessage.class, this::join)	      
+	      .build();
+	}
+	
+		
+	public void join(JoinMessage message) throws Exception {
 		try {
-		if (message instanceof JoinMessage) {
+		
 			
-			Study theStudy = Study.getById(((JoinMessage) message).getStudy(), Sets.create("_id", "participantSearchStatus", "executionStatus", "autoJoinGroup", "name", "code"));				
+			Study theStudy = Study.getById(message.getStudy(), Sets.create("_id", "participantSearchStatus", "executionStatus", "autoJoinGroup", "name", "code"));				
 			if (theStudy != null && theStudy.autoJoinGroup != null) {
 				if (theStudy.participantSearchStatus.equals(ParticipantSearchStatus.SEARCHING) && (theStudy.executionStatus.equals(StudyExecutionStatus.PRE) || theStudy.executionStatus.equals(StudyExecutionStatus.RUNNING))) {
 					
@@ -80,7 +83,7 @@ class AutoJoinerActor extends UntypedActor {
 							KeyManager.instance.unlock(ugm.member, null);
 							RecordManager.instance.setAccountOwner(ugm.member, ugm.member);
 							
-							AutoJoiner.approve(ugm.member, theStudy, ((JoinMessage) message).getUser(), ((JoinMessage) message).getApp(), theStudy.autoJoinGroup);
+							AutoJoiner.approve(ugm.member, theStudy, message.getUser(), message.getApp(), theStudy.autoJoinGroup);
 							
 							AccessLog.log("END AUTOJOIN");
 						} finally {
@@ -93,10 +96,7 @@ class AutoJoinerActor extends UntypedActor {
 										
 				}
 			}
-			
-		} else {
-		    unhandled(message);
-	    }	
+					
 		} catch (Exception e) {
 			ErrorReporter.report("AutoJoiner", null, e);	
 			throw e;

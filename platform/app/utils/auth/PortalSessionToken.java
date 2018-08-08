@@ -4,7 +4,6 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import models.Developer;
 import models.MidataId;
 import models.enums.UserRole;
 import play.libs.Json;

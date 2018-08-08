@@ -32,9 +32,13 @@
 	    <a ng-show="readyForValidation()" class="btn btn-default btn-xs" ui-sref="^.description" translate="studyoverview.edit_description_btn"></button>
 	    </td>
 	  </tr>
+	   <tr>
+        <td translate="studyoverview.type"></td>
+        <td translate="{{ 'enum.studytype.'+study.type }}"></td>
+      </tr>
 	  <tr>
         <td translate="studyoverview.created_at"></td>
-        <td>{{ study.createdAt | date }}</td>
+        <td>{{ study.createdAt | date : 'dd.MM.yy'}}</td>
       </tr>
       <tr>
         <td translate="studyoverview.created_by"></td>

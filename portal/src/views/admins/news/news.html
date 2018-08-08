@@ -14,10 +14,10 @@
           <th></th>        
         </tr>
         <tr ng-repeat="item in news">
-          <td>{{ item.created | date }}</td>
+          <td>{{ item.created | date : 'dd.MM.yy'}}</td>
           <td>{{ item.language }}</td>
           <td><a ui-sref="^.managenews({ newsId : item._id })">{{  item.title }}</a></td>
-          <td>{{ item.expires | date }}</td>
+          <td>{{ item.expires | date : 'dd.MM.yy'}}</td>
           <td><button class="btn btn-danger btn-xs" translate="admin_news.delete_btn" ng-click="deleteNews(item)"></button></td>          
         </tr>
       </table>

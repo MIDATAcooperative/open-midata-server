@@ -90,7 +90,8 @@
        "study_accept" : "Study participation must be accepted.",
        "study_group" : "Participant must first be assigned to a group.",
        "confirmation" : "Confirmation by user required first.",
-       "file" : "No file for upload selected"
+       "file" : "No file for upload selected",
+       "access_query" : "No data selected"
      },
 
      "unknown" : {
@@ -316,6 +317,20 @@
 	   "REQUEST" : "Participation requested",
 	   "RESEARCH_REJECTED" : "Rejected by researcher",
 	   "MEMBER_RETREATED" : "Participant has retreated"
+	 },
+	 "studytype" : {
+	   "CLINICAL" : "Clinical Study",
+	   "CITIZENSCIENCE" : "Citizen Science Project",
+	   "COMMUNITY" : "Community (Data use only for providing services back to the participants)"
+	 },
+	 "joinmethod" : {
+	   "APP" : "Participant uses linked app or software",
+	   "PORTAL" : "Participant applies on MIDATA portal",
+	   "RESEARCHER" : "Participant is manually registered by research team member",
+	   "API" : "Participant is registered by external software",
+	   "ALGORITHM" : "Participant has been proposed by algorithm (not supported)",
+	   "CODE" : "Participant may join by entering a code (not supported)",
+	   "TRANSFER" : "Data is transferred from another study. (not supported)"	
 	 },
 	 "studyexecutionstatus" : {
 	   "ABORTED" : "Execution aborted",
@@ -718,9 +733,8 @@
 	"wipe_account_btn" : "Delete Account",
 	"account_repaired" : "Your account has been repaired.",
 	"spaces_resetted" : "Your configuration has been resetted.",
-	"settings" : "Settings",
-	"address" : "Address and Contact Info",
-	"change_address_btn" : "Change Address",
+	"settings" : "Settings",	
+	"change_address_btn" : "Change Profile",
 	"searchable_short" : "Visibility of your account",
 	"searchable" : "May other users find your profile, while searching for your email?",
 	"searchable_yes" : "Yes, I want my name and email to be visible to other users",
@@ -1140,6 +1154,60 @@
     "goodbye_btn" : "End session and close window",
     "logoutreturn" : "You will be redirected to the calling page.",
     "return_btn" : "Logout and continue"
+  },
+  
+  "queryeditor" : {
+    "title" : "Access Rights Editor",
+    "app" : "Application",
+    "study" : "Study",
+    "summary" : "List of accessable data types:",
+    "select_btn" : "select",
+    "access_query" : "Access Query",
+    "format" : "Resource",
+    "code" : "Code",
+    "to" : "to",
+    "content" : "Data Type",
+    "expert_mode_btn" : "Expert Mode",
+    "add_basic_btn" : "Basic Resources",
+    "add_data_btn" : "Add More Data Types",
+    "owner" : "Data Owner",
+    "owner_all" : "Use also shared data (from studies, friends, patients)",
+    "owner_self" : "Only data from the user of the application",
+    "short_owner_all" : "Also shared data",
+    "short_owner_self" : "Only own data",
+    "source_app" : "Source application",
+    "short_app_all" : "All sources",
+    "short_app_other" : "Only app:",
+    "app_self" : "Use only data from this application",
+    "app_all" : "Use data from any source application",
+    "app_other" : "Use data from app:",    
+    "restrictions" : "Additional Restrictions",
+    "data_period_restriction" : "Date",
+    "time_restriction" : "Creation / Update time",
+    "created-after" : "Created after",
+    "updated-after" : "Last updated after",
+    "effective" : "Effective date or period",
+    "custom_filter" : "User Defined Filter (JSON)",
+    "remove_btn" : "Remove",
+    "apply_btn" : "Apply",
+    "newentry" : "Enter name, code, resource type or (part of) description of data type to add:",
+    "make_selection" : "Please select a result from the left to add or only a fragment from the right column.",
+    "resultgroup" : "Match",
+    "resultdetail" : "Contained types or codes",
+    "search_empty" : "No matching datatypes found.",
+    "select_resources" : "Select which of these frequently required resources your app needs access to:",
+    "save_exit_btn" : "Save and exit",
+    "cancel_btn" : "Cancel",
+    "check_okay" : "Is the list of required data now complete and correct?",
+    "ask" : {
+      "AuditEvent" : "Access to the audit event log",
+      "Consent" : "Access to consents of the application user with other users or applications",
+      "Group" : "Access to group definitions (either teams of practitioners or researchers or groups defined as part of study results generation)",
+      "Patient" : "Patient Records : Name, email, address of Midata account holders",
+      "PseudonymizedPatient" : "Patient Records : Pseudonym, year of birth, country of study participants",
+      "Practitioner" : "Practitioner Resource : Search for healthcare providers or researchers",
+      "Subscription" : "Access and manage subscriptions to external systems"
+    }
   },
   
   "-1" : "unknown"

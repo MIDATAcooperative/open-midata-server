@@ -15,15 +15,14 @@ import org.bson.BasicBSONObject;
 
 import akka.actor.ActorRef;
 import akka.actor.Props;
-import akka.contrib.pattern.ClusterSingletonManager;
-import akka.contrib.pattern.ClusterSingletonProxy;
-import controllers.AutoRun.ImportManager;
+import akka.cluster.singleton.ClusterSingletonManager;
+import akka.cluster.singleton.ClusterSingletonManagerSettings;
+import akka.cluster.singleton.ClusterSingletonProxy;
+import akka.cluster.singleton.ClusterSingletonProxySettings;
 import models.Consent;
 import models.MidataId;
-import play.libs.Akka;
 import utils.AccessLog;
 import utils.access.index.IndexDefinition;
-import utils.access.index.IndexKey;
 import utils.access.index.IndexMatch;
 import utils.access.index.IndexRemoveMsg;
 import utils.access.index.IndexRoot;
@@ -55,10 +54,17 @@ public class IndexManager {
 				
 	
 	public IndexManager() {		
-		indexSupervisorSingleton = Instances.system().actorOf(ClusterSingletonManager.defaultProps(Props.create(IndexSupervisor.class), "indexSupervisor-instance",
-			    null, null), "indexSupervisor-singleton");
+		final ClusterSingletonManagerSettings settings =
+				  ClusterSingletonManagerSettings.create(Instances.system());
+	
 		
-		indexSupervisor = Instances.system().actorOf(ClusterSingletonProxy.defaultProps("user/indexSupervisor-singleton/indexSupervisor-instance", null), "indexSupervisor");			
+		indexSupervisorSingleton = Instances.system().actorOf(ClusterSingletonManager.props(Props.create(IndexSupervisor.class), null,
+				settings), "indexSupervisor");
+		
+		final ClusterSingletonProxySettings proxySettings =
+			    ClusterSingletonProxySettings.create(Instances.system());
+		
+		indexSupervisor = Instances.system().actorOf(ClusterSingletonProxy.props("/user/indexSupervisor", proxySettings), "indexSupervisor-Consumer");			
 	}
 
 	public IndexPseudonym getIndexPseudonym(APSCache cache, MidataId user, MidataId targetAPS, boolean create) throws AppException {		
@@ -201,19 +207,11 @@ public class IndexManager {
 				Date limit = v>0 ? new Date(v - UPDATE_TIME) : null;
 				long now = System.currentTimeMillis();
 				 
-				if (limit != null) restrictions.put("updated-after", limit);								
+				if (limit != null) restrictions.put("shared-after", limit);								
 				List<DBRecord> recs = QueryEngine.listInternal(cache, aps, null, restrictions, Sets.create("_id"));
 				addRecords(index, aps, recs);
 				boolean updateTs = recs.size() > 0 || limit == null || (now-v) > UPDATE_UNUSED;
-				// Records that have been freshly shared
-				if (limit != null) {
-					restrictions.remove("updated-after");
-					restrictions.put("shared-after", limit);
-					List<DBRecord> recs2 = QueryEngine.listInternal(cache, aps, null, restrictions, Sets.create("_id", "key"));
-					addRecords(index, aps, recs2);
-					if (recs2.size()>0) updateTs = true;
-					AccessLog.log("Add index from sharing="+recs2.size());
-				}
+				// Records that have been freshly shared				
 				
 				if (updateTs) index.setVersion(aps, now);
 				AccessLog.log("Add index: from updated="+recs.size());

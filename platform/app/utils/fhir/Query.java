@@ -1,15 +1,12 @@
 package utils.fhir;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import ca.uhn.fhir.rest.api.SortOrderEnum;
-import controllers.MobileAPI;
 import models.Record;
 import utils.access.DBIterator;
 import utils.access.RecordManager;
@@ -20,11 +17,9 @@ import utils.access.op.EqualsSingleValueCondition;
 import utils.access.op.FieldAccess;
 import utils.access.op.OrCondition;
 import utils.auth.ExecutionInfo;
-import utils.collections.ReferenceTool;
 import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
-import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 
 /**
@@ -125,6 +120,8 @@ public class Query {
 		result.putAll(accountCriteria);
 		result.remove("limit");
 		result.remove("from");
+		result.remove("updated-after");
+		result.remove("updated-before");
 		if (dataCriteria != null) result.putAll((Map<String,Object>) dataCriteria.asMongoQuery());
 		ObjectIdConversion.convertMidataIds(result, "_id");
 		return result;

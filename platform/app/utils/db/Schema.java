@@ -10,6 +10,6 @@ public class Schema {
 	    DBLayer.setCollectionsForDatabase(DBLayer.DB_USER, new String[] {"users", "researchusers", "hpusers", "admins", "providers", "research", "studykeywords", "tags", "plugins", "news", "studies", "codes", "formatinfo", "contentinfo", "formatgroups", "coding", "loinc", "usergroups", "devstats", "termsofuse", "pluginicons", "instancestats"});
 	    DBLayer.setCollectionsForDatabase(DBLayer.DB_MAPPING, new String[] {"aps", "apslist", "sessions" });
 	    DBLayer.setCollectionsForDatabase(DBLayer.DB_RECORD, new String[] {"records", "messages", "tasks", "vrecords", "indexes"});
-	    DBLayer.setCollectionsForDatabase(DBLayer.DB_ACCESS, new String[] {"circles", "spaces", "participation", "keys", "consents", "groupmember", "auditevents"});	  
+	    DBLayer.setCollectionsForDatabase(DBLayer.DB_ACCESS, new String[] {"circles", "spaces", "participation", "keys", "consents", "groupmember", "auditevents", "subscriptions"});
 	}
 }

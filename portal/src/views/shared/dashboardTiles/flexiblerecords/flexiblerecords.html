@@ -13,7 +13,7 @@
 			   </button>
 			</div>	
 		    <input type="checkbox" ng-model="record.marked" ng-if="view.setup.allowShare"/>
-			<span class="label label-info">{{record.created | date }}</span>
+			<span class="label label-info">{{record.created | date : 'dd.MM.yy'}}</span>
 			<span ng-show="record.owner != userId" class="label label-info">{{ record.ownerName }}</span>
 			<span ng-show="record.creator != userId && record.creatorName" class="label label-info">by {{ record.creatorName }}</span>			
 			<a href="javascript:;" ng-click="showDetails(record)">{{record.name}}</a>

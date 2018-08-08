@@ -35,6 +35,10 @@ server {
           add_header 'X-Content-Security-Policy' "default-src 'none'; script-src https://DOMAIN/components/ https://DOMAIN/api/ https://DOMAIN/; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; media-src 'none'; child-src https://DOMAIN/plugin/ https://localhost:9004 https://DOMAIN/v1/plugin_api/records/file; font-src 'self'; connect-src 'self'";
           add_header 'X-WebKit-CSP' "default-src 'none'; script-src https://DOMAIN/components/ https://DOMAIN/api/ https://DOMAIN/; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; media-src 'none'; child-src https://DOMAIN/plugin/ https://localhost:9004 https://DOMAIN/v1/plugin_api/records/file; font-src 'self'; connect-src 'self'";            
         }
+        
+        location /authservice {
+          return 301 "https://DOMAIN/oauth.html#/portal/oauth2$is_args$args";
+        }
 
         # Disabled unless completely open source
         #location /doc {
@@ -91,7 +95,10 @@ server {
            proxy_set_header X-Real-IP $remote_addr;
            proxy_http_version 1.1;
            proxy_cookie_path / "/; secure; HttpOnly";
-           client_max_body_size 100M;
+           proxy_request_buffering off;
+		   proxy_buffering off;
+           client_max_body_size 0;
+           
            add_header 'X-XSS-Protection' "1; mode=block" always;
            add_header 'X-Content-Type-Options' 'nosniff' always;
            add_header 'Strict-Transport-Security' "max-age=31536000; preload" always;             
@@ -101,14 +108,14 @@ server {
         }
          
         location /plugin {   
-           alias RUNDIR/visualizations;
+           alias PLUGINS_DIR;
               
            add_header 'X-XSS-Protection' "1; mode=block";
            add_header 'X-Content-Type-Options' 'nosniff';
            add_header 'Strict-Transport-Security' "max-age=31536000; preload";             
-           add_header 'Content-Security-Policy' "default-src 'none'; frame-ancestors https://DOMAIN; script-src https://DOMAIN/plugin/; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; media-src 'none'; child-src 'none'; font-src 'self'; connect-src 'self'";
-           add_header 'X-Content-Security-Policy' "default-src 'none'; frame-ancestors https://DOMAIN; script-src https://DOMAIN/plugin/; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; media-src 'none'; child-src 'none'; font-src 'self'; connect-src 'self'";
-           add_header 'X-WebKit-CSP' "default-src 'none'; frame-ancestors https://DOMAIN; script-src https://DOMAIN/plugin/; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; media-src 'none'; child-src 'none'; font-src 'self'; connect-src 'self'";                       
+           add_header 'Content-Security-Policy' "default-src 'none'; frame-ancestors https://DOMAIN https://DOMAIN:9002; script-src https://DOMAIN/plugin/; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; media-src 'none'; child-src 'none'; font-src 'self'; connect-src 'self' https://DOMAIN:9000";
+           add_header 'X-Content-Security-Policy' "default-src 'none'; frame-ancestors https://DOMAIN https://DOMAIN:9002; script-src https://DOMAIN/plugin/; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; media-src 'none'; child-src 'none'; font-src 'self'; connect-src 'self' https://DOMAIN:9000";
+           add_header 'X-WebKit-CSP' "default-src 'none'; frame-ancestors https://DOMAIN https://DOMAIN:9002; script-src https://DOMAIN/plugin/; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; media-src 'none'; child-src 'none'; font-src 'self'; connect-src 'self' https://DOMAIN:9000";                       
         }
                          
 }

@@ -1,7 +1,6 @@
 package utils.access.op;
 
 import java.io.Serializable;
-import java.util.Map;
 
 import utils.access.op.CompareCaseInsensitive.CompareCaseInsensitiveOperator;
 

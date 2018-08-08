@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 import org.bson.BSONObject;
 
@@ -16,15 +18,13 @@ import models.Member;
 import models.MidataId;
 import models.Plugin;
 import models.Space;
-import models.enums.UserRole;
-import play.Play;
-import play.libs.F;
-import play.libs.F.Promise;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.AccessLog;
+import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.PortalSessionToken;
@@ -46,6 +46,8 @@ import utils.json.JsonValidation.JsonValidationException;
 @Security.Authenticated(AnyRoleSecured.class)
 public class Spaces extends Controller {
 	
+
+	
     /**
      * retrieve a list of spaces of the current user matching some criteria
      * @return list of spaces
@@ -57,7 +59,7 @@ public class Spaces extends Controller {
 	public static Result get() throws JsonValidationException, AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
-		MidataId userId = new MidataId(request().username());
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		JsonValidation.validate(json, "properties", "fields");
 		
 		// get parameters
@@ -93,7 +95,7 @@ public class Spaces extends Controller {
 		JsonValidation.validate(json, "name", "visualization");
 		
 		// validate request
-		MidataId userId = new MidataId(request().username());
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		String name = JsonValidation.getString(json, "name");		
 		MidataId visualizationId = JsonValidation.getMidataId(json, "visualization" );					
 		String context = JsonValidation.getString(json, "context");
@@ -146,42 +148,6 @@ public class Spaces extends Controller {
 		return space;
 	}
 	
-	/*
-	@BodyParser.Of(BodyParser.Json.class)
-	@APICall
-	public static Result getPreviewUrlFromSetup() throws AppException {
-		// validate json
-		JsonNode json = request().body().asJson();				
-		JsonValidation.validate(json, "name", "visualization", "context", "rules");
-		
-		// get parameters
-		MidataId userId = new MidataId(request().username());
-		MidataId visualizationId = JsonValidation.getMidataId(json, "visualization");
-		String context = JsonValidation.getString(json, "context");
-		String name = JsonValidation.getString(json, "name");
-		
-		// execute
-		Space space = Space.getByOwnerVisualizationContext(userId, visualizationId, context, Sets.create("aps"));
-		Plugin visualization = Plugin.getById(visualizationId, Sets.create("filename", "previewUrl", "type"));		
-		if (space==null) {
-		   Member member = Member.getByIdAndVisualization(userId, visualizationId, Sets.create("aps"));
-		   if (member == null) throw new BadRequestException("error.internal", "Not installed");
-		
-		   space = Spaces.add(userId, name, visualizationId, visualization.type, context);
-		   		   
-		}
-						
-		if (visualization.previewUrl == null) return ok();
-		
-		// create encrypted authToken
-		SpaceToken spaceToken = new SpaceToken(space._id, userId);		
-		String visualizationServer = Play.application().configuration().getString("visualizations.server");
-		String url = "https://" + visualizationServer + "/" + visualization.filename + "/" + visualization.previewUrl;
-		url = url.replace(":authToken", spaceToken.encrypt(request()));
-		return ok(url);		
-				
-	}
-	*/
 
 	/**
 	 * delete a space of the current user
@@ -192,7 +158,7 @@ public class Spaces extends Controller {
 	@APICall
 	public static Result delete(String spaceIdString) throws AppException {
 		// validate request
-		MidataId userId = new MidataId(request().username());
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId spaceId = new MidataId(spaceIdString);
 		
 		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps"));
@@ -213,7 +179,7 @@ public class Spaces extends Controller {
 	@APICall
 	public static Result reset() throws AppException {
 		// validate request
-		MidataId userId = new MidataId(request().username());
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		
 		Set<Space> spaces = Space.getAllByOwner(userId, Sets.create("_id"));
 		
@@ -241,7 +207,7 @@ public class Spaces extends Controller {
 		JsonValidation.validate(json, "records");
 		
 		// validate request
-		MidataId userId = new MidataId(request().username());
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId spaceId = new MidataId(spaceIdString);
 		
 		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps"));
@@ -262,7 +228,7 @@ public class Spaces extends Controller {
 
 	@APICall
 	public static Result getToken(String spaceIdString) throws AppException {
-		MidataId userId = new MidataId(request().username());
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId spaceId = new MidataId(spaceIdString);
 		
 		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps"));
@@ -277,18 +243,18 @@ public class Spaces extends Controller {
 	}
 	
 	@APICall
-	public static Promise<Result> getUrl(String spaceIdString, String userId) throws AppException {
+	public static CompletionStage<Result> getUrl(String spaceIdString, String userId) throws AppException {
 		return getUrl(spaceIdString, true, userId);
 	}
 	
 	@APICall
-	public static Promise<Result> regetUrl(String spaceIdString) throws AppException {
+	public static CompletionStage<Result> regetUrl(String spaceIdString) throws AppException {
 		return getUrl(spaceIdString, false, null);
 	}
 	
 		
-	public static Promise<Result> getUrl(String spaceIdString, boolean auth, String targetUser) throws AppException {
-		MidataId userId = new MidataId(request().username());
+	public static CompletionStage<Result> getUrl(String spaceIdString, boolean auth, String targetUser) throws AppException {
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId spaceId = new MidataId(spaceIdString);
 		MidataId targetUserId = (targetUser != null) ? MidataId.from(targetUser) : userId;		
 		
@@ -305,7 +271,7 @@ public class Spaces extends Controller {
 		
 	    SpaceToken spaceToken = new SpaceToken(PortalSessionToken.session().handle, space._id, userId, targetUserId, true);
 			
-		String visualizationServer = "https://" + Play.application().configuration().getString("visualizations.server") + "/" + visualization.filename;
+		String visualizationServer = "https://" + InstanceConfig.getInstance().getConfig().getString("visualizations.server") + "/" + visualization.filename;
 		if (testing) visualizationServer = visualization.developmentServer;
 					
 		ObjectNode obj = Json.newObject();
@@ -320,23 +286,24 @@ public class Spaces extends Controller {
 		
 		if (visualization.type != null && visualization.type.equals("oauth2")) {
   		  BSONObject oauthmeta = RecordManager.instance.getMeta(userId, new MidataId(spaceIdString), "_oauth");  		  
-		  if (oauthmeta == null) return F.Promise.pure((Result) Plugins.oauthInfo(visualization, obj)); 
+		  if (oauthmeta == null) return CompletableFuture.completedFuture((Result) Plugins.oauthInfo(visualization, obj)); 
 			 
 		  Map<String, Object> data = oauthmeta.toMap();
 		  if (data != null && data.get("refreshToken") != null) {					
 		    return Plugins.requestAccessTokenOAuth2FromRefreshToken(spaceIdString, data, obj);
 		  }
+		  AccessLog.log("No refresh token requested.");
 		} 
 		if (visualization.type != null && visualization.type.equals("oauth1")) {
 	  		  BSONObject oauthmeta = RecordManager.instance.getMeta(userId, new MidataId(spaceIdString), "_oauth");  		  
-			  if (oauthmeta == null) return F.Promise.pure((Result) Plugins.oauthInfo(visualization, obj)); 
+			  if (oauthmeta == null) return CompletableFuture.completedFuture((Result) Plugins.oauthInfo(visualization, obj)); 
 				 		
 			  Map<String, Object> oauthData = oauthmeta.toMap();
-			  if (oauthData == null || oauthData.get("appId") == null || oauthData.get("oauthToken") == null || oauthData.get("oauthTokenSecret") == null) return F.Promise.pure((Result) Plugins.oauthInfo(visualization, obj));
+			  if (oauthData == null || oauthData.get("appId") == null || oauthData.get("oauthToken") == null || oauthData.get("oauthTokenSecret") == null) return CompletableFuture.completedFuture((Result) Plugins.oauthInfo(visualization, obj));
 
 		} 
 					
-		return F.Promise.pure((Result) ok(obj));
+		return CompletableFuture.completedFuture((Result) ok(obj));
 	
 	}
 	

@@ -17,7 +17,7 @@
           <td><a ui-sref="^.terms({ which : name(term), lang : term.language })">{{ term.name }}</a></td>
           <td>{{ term.version }}</td>
           <td>{{ term.language }}</td>
-          <td>{{ term.createdAt | date }}</td>         
+          <td>{{ term.createdAt | date : 'dd.MM.yy' }}</td>         
         </tr>
       </table>
       <p ng-show="terms.length == 0" translate="admin_terms.empty"></p>

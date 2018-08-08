@@ -12,25 +12,19 @@ import java.util.Set;
 
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
-import org.hl7.fhir.dstu3.model.Condition;
 import org.hl7.fhir.dstu3.model.Consent.ConsentActorComponent;
 import org.hl7.fhir.dstu3.model.Consent.ConsentState;
 import org.hl7.fhir.dstu3.model.Consent.ExceptComponent;
 import org.hl7.fhir.dstu3.model.Extension;
-import org.hl7.fhir.dstu3.model.Group;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Identifier;
-import org.hl7.fhir.dstu3.model.Observation;
+import org.hl7.fhir.dstu3.model.Period;
 import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.dstu3.model.StringType;
-import org.hl7.fhir.dstu3.model.codesystems.ConsentExceptType;
-import org.hl7.fhir.exceptions.FHIRException;
-import org.hl7.fhir.dstu3.model.Group.GroupMemberComponent;
-import org.hl7.fhir.dstu3.model.Group.GroupType;
-import org.hl7.fhir.dstu3.model.Period;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
@@ -39,7 +33,6 @@ import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.Create;
 import ca.uhn.fhir.rest.annotation.Elements;
-import ca.uhn.fhir.rest.annotation.History;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.IncludeParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
@@ -52,37 +45,28 @@ import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.api.SummaryEnum;
 import ca.uhn.fhir.rest.api.server.RequestDetails;
-import ca.uhn.fhir.rest.param.CompositeAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
-import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
 import ca.uhn.fhir.rest.server.exceptions.ForbiddenOperationException;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
-import ca.uhn.fhir.rest.server.exceptions.PreconditionFailedException;
-import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import controllers.Circles;
-import controllers.UserGroups;
 import controllers.members.HealthProvider;
 import models.Consent;
 import models.MidataId;
 import models.Plugin;
-import models.Record;
 import models.TypedMidataId;
 import models.User;
-import models.UserGroup;
-import models.UserGroupMember;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.EntityType;
-import models.enums.UserStatus;
 import models.enums.WritePermissionType;
 import utils.AccessLog;
 import utils.ErrorReporter;
@@ -210,7 +194,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		c.addExtension().setUrl("http://midata.coop/extensions/consent-name").setValue(new StringType(consentToConvert.name));
 		
 		String encoded = ctx.newJsonParser().encodeResourceToString(c);		
-		consentToConvert.fhirConsent = (DBObject) JSON.parse(encoded);				
+		consentToConvert.fhirConsent = BasicDBObject.parse(encoded);				
 	}
 			
 	   @Search()
@@ -332,6 +316,8 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 			paramMap.add("source", theSource);
 			paramMap.add("status", theStatus);
 			
+			paramMap.add("_lastUpdated", theLastUpdated);
+			
 	    	paramMap.setRevIncludes(theRevIncludes);
 	    	paramMap.setLastUpdated(theLastUpdated);
 	    	paramMap.setIncludes(theIncludes);
@@ -356,6 +342,8 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		builder.restriction("date", false, QueryBuilder.TYPE_DATETIME, "fhirConsent.dateTime");
 		builder.restriction("period", false, QueryBuilder.TYPE_DATETIME, "fhirConsent.period");
 		builder.restriction("status", false, QueryBuilder.TYPE_CODE, "fhirConsent.status");
+				
+		builder.restriction("_lastUpdated", false, QueryBuilder.TYPE_DATETIME, "lastUpdated");
 		
 		Set<String> authorized = null;
 		if (params.containsKey("actor")) {
@@ -599,7 +587,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 
 	@Override
 	public Date getLastUpdated(Consent record) {
-		return record.dateOfCreation;
+		return record.lastUpdated;
 	}	
 	
 	

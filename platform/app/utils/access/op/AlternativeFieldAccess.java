@@ -1,12 +1,8 @@
 package utils.access.op;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.bson.BSONObject;
-import org.bson.types.BasicBSONList;
 
 public class AlternativeFieldAccess implements Condition, Serializable {
 

@@ -7,8 +7,6 @@ import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Device;
 import org.hl7.fhir.dstu3.model.IdType;
 
-import org.hl7.fhir.instance.model.api.IBaseResource;
-
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.rest.annotation.Create;

@@ -2,7 +2,6 @@ package utils.db;
 
 import java.io.InputStream;
 
-import org.bson.BsonValue;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
@@ -12,9 +11,6 @@ import com.mongodb.client.gridfs.GridFSBuckets;
 import com.mongodb.client.gridfs.GridFSFindIterable;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.mongodb.client.gridfs.model.GridFSUploadOptions;
-import com.mongodb.gridfs.GridFS;
-import com.mongodb.gridfs.GridFSDBFile;
-import com.mongodb.gridfs.GridFSInputFile;
 
 import models.MidataId;
 import utils.AccessLog;
@@ -68,6 +64,12 @@ public class FileStorage {
 		if (filename == null) filename = gridfile.getFilename();
 				
 		return new FileData(fileSystem.openDownloadStream(fileid), filename, contentType);		
+	}
+	
+	public static void delete(ObjectId fileId) {
+		GridFSBucket fileSystem = GridFSBuckets.create(DBLayer.getFSDB(), FILE_STORAGE);
+		System.out.println("delete id="+fileId.toString());
+		fileSystem.delete(fileId);
 	}
 
 	/**

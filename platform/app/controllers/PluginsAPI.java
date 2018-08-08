@@ -2,12 +2,7 @@ package controllers;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -15,7 +10,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 import org.bson.BSONObject;
 
@@ -41,20 +39,15 @@ import models.User;
 import models.UserGroupMember;
 import models.enums.AggregationType;
 import models.enums.UserRole;
-import oauth.signpost.exception.OAuthCommunicationException;
-import oauth.signpost.exception.OAuthExpectationFailedException;
-import oauth.signpost.exception.OAuthMessageSignerException;
-import play.libs.F.Function;
-import play.libs.F.Function0;
-import play.libs.F.Promise;
 import play.libs.Json;
 import play.libs.oauth.OAuth.ConsumerKey;
 import play.libs.oauth.OAuth.OAuthCalculator;
 import play.libs.oauth.OAuth.RequestToken;
-import play.libs.ws.WS;
-import play.libs.ws.WSRequestHolder;
+import play.libs.ws.WSClient;
+import play.libs.ws.WSRequest;
 import play.libs.ws.WSResponse;
 import play.mvc.BodyParser;
+import play.mvc.BodyParser.DelegatingMultipartFormDataBodyParser;
 import play.mvc.Http.MultipartFormData;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
@@ -66,9 +59,9 @@ import utils.access.AccessContext;
 import utils.access.AccountCreationAccessContext;
 import utils.access.ConsentAccessContext;
 import utils.access.DBRecord;
+import utils.access.EncryptedFileHandle;
 import utils.access.RecordConversion;
 import utils.access.RecordManager;
-import utils.access.UserGroupAccessContext;
 import utils.auth.ExecutionInfo;
 import utils.auth.RecordToken;
 import utils.auth.Rights;
@@ -85,6 +78,7 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.largerequests.HugeBodyParser;
 import utils.stats.Stats;
 
 /**
@@ -93,6 +87,13 @@ import utils.stats.Stats;
  */
 public class PluginsAPI extends APIController {
 
+	
+	static WSClient ws;
+	
+	public static void init(WSClient ws1) {
+		ws = ws1;
+	}
+	
 	/**
 	 * handle OPTIONS requests. 
 	 * @return status ok
@@ -376,8 +377,7 @@ public class PluginsAPI extends APIController {
 	 * @return file
 	 * @throws AppException
 	 * @throws JsonValidationException
-	 */
-	@BodyParser.Of(BodyParser.Json.class)
+	 */	
 	@VisualizationCall	
 	public static Result getFile() throws AppException, JsonValidationException {
 		Stats.startRequest(request());
@@ -479,7 +479,7 @@ public class PluginsAPI extends APIController {
 	    createRecord(inf, record, null, null, null, context);		
 	}
 	
-	public static void createRecord(ExecutionInfo inf, Record record, InputStream fileData, String fileName, String contentType, AccessContext context) throws AppException  {
+	public static void createRecord(ExecutionInfo inf, Record record, EncryptedFileHandle fileData, String fileName, String contentType, AccessContext context) throws AppException  {
 		if (record.format==null) record.format = "application/json";
 		if (record.content==null) record.content = "other";
 		if (record.owner==null) record.owner = inf.ownerId;
@@ -578,14 +578,14 @@ public class PluginsAPI extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public static Result oAuth1Call() throws AppException {
+	public static CompletionStage<Result> oAuth1Call() throws AppException {
 	
 		// check whether the request is complete
 		JsonNode json = request().body().asJson();
 		try {
 			JsonValidation.validate(json, "authToken", "url");
 		} catch (JsonValidationException e) {
-			return badRequest(e.getMessage());
+			return CompletableFuture.completedFuture(badRequest(e.getMessage()));
 		}
 
 		// decrypt authToken and check whether a user exists who has the app installed
@@ -608,9 +608,9 @@ public class PluginsAPI extends APIController {
 		Plugin app;
 		try {			
 				app = Plugin.getById(appId, Sets.create("consumerKey", "consumerSecret", "apiUrl"));
-				if (app == null) return badRequest("Invalid authToken");			
+				if (app == null) return CompletableFuture.completedFuture(badRequest("Invalid authToken"));			
 		} catch (InternalServerException e) {
-			return badRequest(e.getMessage());
+			return CompletableFuture.completedFuture(badRequest(e.getMessage()));
 		}
 
 		String method = json.has("method") ? json.get("method").asText() : "GET";
@@ -624,43 +624,17 @@ public class PluginsAPI extends APIController {
 		AccessLog.log(app.consumerSecret);
 		AccessLog.log(oauthToken);
 		AccessLog.log(oauthTokenSecret);
-		OAuthCalculator calc = new OAuthCalculator(key, token);
-		try {
-			String url = json.get("url").asText();
-			if (app.apiUrl == null || !url.startsWith(app.apiUrl)) throw new BadRequestException("error.invalid.url", "API URL does not match URL in app definition.");
-		String signed = calc.sign(url);
-		AccessLog.log(signed);
-		URL target = new URL(signed);
+		//OAuthCalculator calc = new OAuthCalculator(key, token);
+
 		
-		HttpURLConnection con = (HttpURLConnection) target.openConnection();
-		/*con.setRequestMethod(method.toUpperCase());
-		if (body != null && !body.isNull()) {
-		   OutputStream out = con.getOutputStream();
-		   
-		}*/
-		con.connect();
-		InputStream str = con.getInputStream();
-		response().setContentType(con.getContentType());
-		//for (String hn : con.getHeaderFields().keySet()) response().setHeader(hn, con.getHeaderField(hn));		
-		return status(con.getResponseCode(), str);
+		String url = json.get("url").asText();
+		if (app.apiUrl == null || !url.startsWith(app.apiUrl)) throw new BadRequestException("error.invalid.url", "API URL does not match URL in app definition.");
 		
-		/*return wsh.get().map(new Function<WSResponse, Result>() {
-			public Result apply(WSResponse response) {
-				return ok(response.asJson());
-			}
-		});*/
-		
-		} catch (OAuthCommunicationException e) {
-			throw new InternalServerException("error.internal", e);
-		} catch (OAuthExpectationFailedException e2) {
-			throw new InternalServerException("error.internal", e2);
-		} catch (OAuthMessageSignerException e3) {
-			throw new InternalServerException("error.internal", e3);		
-		} catch (MalformedURLException e4) {
-			throw new InternalServerException("error.internal", e4);
-		} catch (IOException e5) {
-			throw new InternalServerException("error.internal", e5);
-		}
+		return ws.url(json.get("url").asText()).sign(new OAuthCalculator(key, token)).get().thenApplyAsync(
+				result -> { 
+					return status(result.getStatus(),result.getBodyAsBytes()).as(result.getContentType());					
+				});			
+	
 	}
 	
 	/**
@@ -728,7 +702,7 @@ public class PluginsAPI extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public static Promise<Result> oAuth2Call() throws AppException {
+	public static CompletionStage<Result> oAuth2Call() throws AppException {
 		
 		// check whether the request is complete
 		JsonNode json = request().body().asJson();
@@ -746,14 +720,12 @@ public class PluginsAPI extends APIController {
 		Plugin app = Plugin.getById(inf.pluginId);
 		if (app.apiUrl == null || !url.startsWith(app.apiUrl)) throw new BadRequestException("error.invalid.url", "API URL does not match URL in app definition.");
 		
-		Promise<WSResponse> response = oAuth2Call(inf, url, method, body);	
+		CompletionStage<WSResponse> response = oAuth2Call(inf, url, method, body);	
 		
-		Promise<Result> promise = response.map(new Function<WSResponse, Result>() {
-			public Result apply(WSResponse response) {				
-				String ct = response.getHeader("Content-Type");
-				if (ct!=null) response().setContentType(ct);
-				return ok(response.asJson());
-			}
+		CompletionStage<Result> promise = response.thenApply(response1 -> {			
+				Optional<String> ct = response1.getSingleHeader("Content-Type");
+				if (ct.isPresent()) return ok(response1.asJson()).as(ct.get());
+				else return ok(response1.asJson());			
 		});
 		return promise;
 	}
@@ -765,7 +737,7 @@ public class PluginsAPI extends APIController {
 	 * @return result of oauth request
 	 * @throws AppException
 	 */
-    public static Promise<WSResponse> oAuth2Call(ExecutionInfo inf, String url, String method, JsonNode body) throws AppException {
+    public static CompletionStage<WSResponse> oAuth2Call(ExecutionInfo inf, String url, String method, JsonNode body) throws AppException {
 				
     	BSONObject oauthMeta = RecordManager.instance.getMeta(inf.executorId, inf.targetAPS, "_oauth");
     	if (oauthMeta == null) throw new BadRequestException("error.notauthorized.action", "No valid oauth credentials.");
@@ -774,7 +746,7 @@ public class PluginsAPI extends APIController {
 		accessToken = tokens.get("accessToken");
 					
 		// perform OAuth API call on behalf of the app
-		WSRequestHolder holder = WS.url(url);
+		WSRequest holder = ws.url(url);
 		holder.setHeader("Authorization", "Bearer " + accessToken);
 		
 		if (method == null || method.equalsIgnoreCase("get")) return holder.get();
@@ -793,19 +765,28 @@ public class PluginsAPI extends APIController {
 	}
 	
 	/**
-	 * Accepts and stores files up to sizes of 2GB.
+	 * Accepts and stores files up to any size
 	 */
+    @BodyParser.Of(HugeBodyParser.class)
 	public static Result uploadFile() throws AppException {
+    	EncryptedFileHandle handle = null;
+    	
 		Stats.startRequest(request());
-		// allow cross origin request from app server
-		//String appServer = Play.application().configuration().getString("apps.server");
-		//response().setHeader("Access-Control-Allow-Origin", "https://" + appServer);
+		System.out.println("Start handle request");
 		try {
-		
+			
 		response().setHeader("Access-Control-Allow-Origin", "*");
-
+		
 		// check meta data
 		MultipartFormData formData = request().body().asMultipartFormData();
+		FilePart fileData = formData.getFile("file");
+		if (fileData == null) {
+			throw new BadRequestException("error.internal", "No file found.");
+		}
+		handle = (EncryptedFileHandle) fileData.getFile();			
+		String filename = fileData.getFilename();
+		String contentType = fileData.getContentType();
+				
 		Map<String, String[]> metaData = formData.asFormUrlEncoded();
 		if (!metaData.containsKey("authToken") || !metaData.containsKey("name")) {
 			throw new BadRequestException("error.internal", "At least one request parameter is missing.");
@@ -816,21 +797,13 @@ public class PluginsAPI extends APIController {
 			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
 	
-		ExecutionInfo authToken = ExecutionInfo.checkSpaceToken(request(), metaData.get("authToken")[0]);
+		ExecutionInfo authToken = ExecutionInfo.checkToken(request(), metaData.get("authToken")[0], false);
 		Stats.setPlugin(authToken.pluginId);
 		
+		System.out.println("Passed 1");
 		if (authToken.recordId != null) throw new BadRequestException("error.internal", "This view is readonly.");
 			try {
-							
-			// extract file from data
-			FilePart fileData = formData.getFile("file");
-			if (fileData == null) {
-				throw new BadRequestException("error.internal", "No file found.");
-			}
-			File file = fileData.getFile();
-			String filename = fileData.getFilename();
-			String contentType = fileData.getContentType();
-							
+																			
 			// create record
 			Record record = new Record();
 			record._id = new MidataId();
@@ -853,9 +826,9 @@ public class PluginsAPI extends APIController {
 					BasicDBObject att = new BasicDBObject(CMaps							
 							.map("title", filename)
 							.map("contentType", contentType)
-					        .map("size", file.length())
+					        .map("size", handle.getLength())
 					);
-					record.data = (DBObject) JSON.parse(data);
+					record.data = BasicDBObject.parse(data);
 					
 					Object rt = record.data.get("resourceType");
 					
@@ -878,22 +851,24 @@ public class PluginsAPI extends APIController {
 						.map("type", "file")
 						.map("title", filename)
 						.map("contentType", contentType)
-				        .map("size", file.length())
+				        .map("size", 0)
 				);
 			 		
 			}
 					
-			createRecord(authToken, record, new FileInputStream(file), filename, contentType, authToken.context);
+			createRecord(authToken, record, handle, filename, contentType, authToken.context);
 					
 			Stats.finishRequest(request(), "200");
 			ObjectNode obj = Json.newObject();
 			obj.put("_id", record._id.toString());
 			return ok(obj);
 		} catch (AppException e) {
+			if (handle != null) handle.removeAfterFailure();
 			return badRequest(e.getMessage());
 		} 
 			
 		} catch (Exception e2) {
+			if (handle != null) handle.removeAfterFailure();
 			ErrorReporter.report("Plugin API", ctx(), e2);
 			return internalServerError(e2.getMessage());			
 		} finally {
@@ -912,11 +887,8 @@ public class PluginsAPI extends APIController {
 	}
 	
 
-	private static Promise<Result> badRequestPromise(final String errorMessage) {
-		return Promise.promise(new Function0<Result>() {
-			public Result apply() {
-				return badRequest(errorMessage);
-			}
-		});
+	private static CompletionStage<Result> badRequestPromise(final String errorMessage) {
+		return CompletableFuture.completedFuture(badRequest(errorMessage));
+
 	}
 }

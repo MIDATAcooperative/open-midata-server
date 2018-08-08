@@ -11,6 +11,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bson.types.ObjectId;
 
@@ -28,6 +30,8 @@ import utils.AccessLog;
  *
  */
 public class DatabaseConversion {
+	
+	private static final String DOT = Pattern.quote("[dot]"); 
 	
 	private Object resolveEnums(Class type, Object source) {
 		if (type.isEnum()) {
@@ -61,10 +65,12 @@ public class DatabaseConversion {
 		if (inp instanceof Map) {
 			Map result = new HashMap();
 			for (Object key : ((Map) inp).keySet()) {
-				if (key != null && key.toString().startsWith("$")) {
-				  result.put("_"+key.toString(), todb(((Map) inp).get(key)));
+				Object key1 = key;
+				if (key != null && key instanceof String) key1 = ((String) key).replace(".","[dot]");
+				if (key1 != null && key1.toString().startsWith("$")) {
+				  result.put("_"+key1.toString(), todb(((Map) inp).get(key)));
 				} else {
-				  result.put(key, todb(((Map) inp).get(key)));
+				  result.put(key1, todb(((Map) inp).get(key)));
 				}
 			}
 			return result;
@@ -363,6 +369,8 @@ public class DatabaseConversion {
 	class ConvertMap extends Converter {		
 		private Converter conv;
 		
+		
+		
 		ConvertMap(Converter conv) { 			
 			this.conv = conv; 
 		}
@@ -372,11 +380,12 @@ public class DatabaseConversion {
 			BasicDBObject dbObject = (BasicDBObject) input;
 			
 			Map<String, Object> map = new HashMap<String, Object>();
-			for (Map.Entry<String,Object> entry : dbObject.entrySet()) {
-				if (entry.getKey().startsWith("_$"))
-					map.put(entry.getKey().substring(1), conv.convert(entry.getValue()));
+			for (Map.Entry<String,Object> entry : dbObject.entrySet()) {				
+				String k= entry.getKey();				
+				if (k.startsWith("_$"))
+					map.put(k.substring(1), conv.convert(entry.getValue()));
 				else 
-					map.put(entry.getKey(), conv.convert(entry.getValue()));
+					map.put(k, conv.convert(entry.getValue()));
 			}
 			return map;			
 		}		
@@ -474,11 +483,12 @@ public class DatabaseConversion {
 			if (input instanceof ObjectId) return new MidataId(input.toString());
 			else if (input instanceof Map) {
 				Map<String, Object> map = new HashMap<String, Object>();
-				for (Map.Entry<String,Object> entry : ((Map<String, Object>) input).entrySet()) {
+				for (Map.Entry<String,Object> entry : ((Map<String, Object>) input).entrySet()) {					
+					String k= entry.getKey().replaceAll(DOT, ".");					
 					if (entry.getKey().startsWith("_$"))
-						map.put(entry.getKey().substring(1), convert(entry.getValue()));
+						map.put(k.substring(1), convert(entry.getValue()));
 					else 
-						map.put(entry.getKey(), convert(entry.getValue()));
+						map.put(k, convert(entry.getValue()));
 				}
 				return map;
 			} else if (input instanceof List) {

@@ -4,6 +4,29 @@
     <div class="tab-pane active">
       <loader busy="status.isBusy !== false">
       <p class="alert alert-info" translate="studyrecords.empty">Once data is available it can be downloaded here.</p>
+      
+      <form class="form form-horizontal">
+       <formrow myid="startDate" label="studyrecords.startDate">
+	    <div class="input-group">
+          <input id="startDate" name="startDate" type="text" class="form-control" placeholder="" uib-datepicker-popup="dd.MM.yyyy"  ng-model="filter.startDate" is-open="datePickers.startDate" no-time datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+          <span class="input-group-btn">
+             <button type="button"  class="btn btn-default" ng-click="datePickers.startDate=true;"><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+        </div>
+        <formerror myid="startDate" type="date" message="error.invalid.date"></formerror>
+	  </formrow>
+	  <!-- 
+	  <formrow myid="endDate" label="studyrecords.endDate">
+	    <div class="input-group">
+          <input id="endDate" name="endDate" type="text" class="form-control" placeholder="" no-time uib-datepicker-popup="dd.MM.yyyy" ng-model="filter.endDate" is-open="datePickers.endDate" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+          <span class="input-group-btn">
+             <button type="button"  class="btn btn-default" ng-click="datePickers.endDate=true;"><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+        </div>
+        <formerror myid="endDate" type="date" message="error.invalid.date"></formerror>
+	  </formrow>
+      -->
+      
       <table class="table table-striped" ng-show="infos.length">	
       <tr>
         <th translate="studyrecords.group">Data Group</th>
@@ -17,6 +40,7 @@
 	      <td><button ng-show="!study.myRole.pseudo" ng-disabled="status.action == 'download' || !study.myRole.export" ng-click="fhirDownload(info, 'original')" href="javascript:" class="btn btn-xs btn-primary" translate="studyrecords.fhir_download_original_btn"></button>
       </tr>
       </table>
+      </form>
       <!-- 
 	  <button ng-disabled="status.action == 'download'" ng-click="download()" href="javascript:" ng-show="infos.length" class="btn btn-primary" translate="studyrecords.download_btn">Download</button>
 	   -->

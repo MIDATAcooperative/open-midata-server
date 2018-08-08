@@ -1,7 +1,5 @@
 package utils.access.op;
 
-import java.util.Map;
-
 /**
  * Condition in a mongo query
  *

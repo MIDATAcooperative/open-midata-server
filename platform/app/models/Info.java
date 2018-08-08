@@ -1,14 +1,15 @@
 package models;
 
+import java.util.Map;
+
 import models.enums.InfoType;
 import models.enums.Visibility;
 
 /**
  * Stores a piece of information about a study 
- * Currently not used
  *
  */
-public class Info {
+public class Info implements JsonSerializable {
 
 	/**
 	 * the type of information that is stored
@@ -16,22 +17,13 @@ public class Info {
 	public InfoType type;
 	
 	/**
-	 * the public label for this piece of information
-	 */	
-	public String label;
-	
-	/**
-	 * the actual value 
+	 * the actual value (localized)
 	 */
-    public String value;
+    public Map<String, String> value;
     
     /**
      * the level of visibility of this piece of information
      */
     public Visibility visibility;
-    
-    /**
-     * the display order 
-     */
-	public int order;
+        
 }

@@ -4,24 +4,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-
-import org.bson.BasicBSONObject;
 
 import models.Circle;
 import models.Consent;
 import models.MidataId;
 import models.StudyParticipation;
 import models.StudyRelated;
-import models.enums.ConsentType;
 import utils.AccessLog;
-import utils.collections.CMaps;
-import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.RequestTooLargeException;
@@ -76,7 +69,7 @@ public class Feature_AccountQuery extends Feature {
             	account = true;
             	Set<String> sets = query.restrictedBy("owner") ? query.getRestriction("owner") : Collections.singleton("all");    			    		
 
-    			if ((sets.contains("self") || sets.contains("all") || sets.contains(query.getApsId().toString())) && !query.restrictedBy("consent-after") && !query.restrictedBy("usergroup") && !query.restrictedBy("study") && !query.restrictedBy("shared-after")) {
+    			if ((sets.contains("self") || sets.contains("all") || sets.contains(query.getApsId().toString())) && !query.restrictedBy("consent-after") && !query.restrictedBy("usergroup") && !query.restrictedBy("study")) {
     				return new IdAndConsentFieldIterator(next.iterator(query), query.getContext(), query.getApsId(), query.returns("id"));						
     			} else {
     				return ProcessingTools.empty();
@@ -373,8 +366,8 @@ public class Feature_AccountQuery extends Feature {
 	    	//consents = new HashSet<Consent>(StudyParticipation.getActiveParticipantsByStudyAndGroupsAndIds(studies, studyGroups, q.getCache().getAccountOwner(), sets.contains("all") ? null : owners, Sets.create("name", "order", "owner", "ownerName", "type")));
 	    	long limit = 0;
 			if (q.restrictedBy("created-after")) limit = q.getMinCreatedTimestamp();
-			if (q.restrictedBy("updated-after")) limit = q.getMinUpdatedTimestamp();				
-			if (q.restrictedBy("shared-after")) limit = q.getMinSharedTimestamp();
+			if (q.restrictedBy("updated-after")) limit = Math.max(limit, q.getMinUpdatedTimestamp());				
+			if (q.restrictedBy("shared-after")) limit = Math.max(limit,  q.getMinSharedTimestamp());
 	    		    		
 			if (q.restrictedBy("study-related")) {				
 				consents = new ArrayList<Consent>(StudyRelated.getActiveByAuthorizedGroupAndStudy(q.getCache().getAccountOwner(), studyGroups, studies, sets.contains("all") ? null : owners, Consent.SMALL, limit));
@@ -394,8 +387,8 @@ public class Feature_AccountQuery extends Feature {
 			else {
 				long limit = 0;
 				if (q.restrictedBy("created-after")) limit = q.getMinCreatedTimestamp();
-				if (q.restrictedBy("updated-after")) limit = q.getMinUpdatedTimestamp();				
-				if (q.restrictedBy("shared-after")) limit = q.getMinSharedTimestamp();
+				if (q.restrictedBy("updated-after")) limit = Math.max(limit,  q.getMinUpdatedTimestamp());				
+				if (q.restrictedBy("shared-after")) limit = Math.max(limit,  q.getMinSharedTimestamp());
 
 				consents = new ArrayList<Consent>(q.getCache().getAllActiveConsentsByAuthorized(limit));
 				consents = applyLimit(consents, limit);
@@ -411,8 +404,8 @@ public class Feature_AccountQuery extends Feature {
 			if (!owners.isEmpty()) {
 				long limit = 0;
 				if (q.restrictedBy("created-after")) limit = q.getMinCreatedTimestamp();
-				if (q.restrictedBy("updated-after")) limit = q.getMinUpdatedTimestamp();				
-				if (q.restrictedBy("shared-after")) limit = q.getMinSharedTimestamp();
+				if (q.restrictedBy("updated-after")) limit = Math.max(limit,  q.getMinUpdatedTimestamp());				
+				if (q.restrictedBy("shared-after")) limit = Math.max(limit,  q.getMinSharedTimestamp());
 				
 				consents = q.getCache().getAllActiveByAuthorizedAndOwners(owners, limit);
 				consents = applyLimit(consents, limit);

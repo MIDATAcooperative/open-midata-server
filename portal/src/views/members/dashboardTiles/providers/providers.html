@@ -16,7 +16,7 @@
 	        <button ng-show="mayConfirm(memberkey)" class="btn btn-primary btn-xs" ng-click="confirm(memberkey)" translate="providers.confirm_btn"></button>
 	        <button ng-show="mayReject(memberkey)" class="btn btn-danger btn-xs" ng-click="reject(memberkey)" translate="providers.reject_btn"></button>
 	      </td>	      	         
-	      <td>{{ memberkey.confirmDate | date }}</td>
+	      <td>{{ memberkey.confirmDate | date : 'dd.MM.yy' }}</td>
 	    </tr>
 	  </tbody>
 	</table>

@@ -1,13 +1,7 @@
 package utils.access;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import models.MidataId;
 import utils.AccessLog;
 import utils.exceptions.AppException;
 
@@ -77,6 +71,9 @@ public class Feature_ProcessFilters extends Feature {
 		}
 		if (q.getMinDateUpdated() != null || q.getMaxDateUpdated() != null) {
 			result = new ProcessingTools.FilterByDateRange(result, "lastUpdated", q.getMinDateUpdated(), q.getMaxDateUpdated());
+		}
+		if (q.getMinDateShared() != null) {
+			result = new ProcessingTools.FilterBySharedDate(result, q.getMinDateShared(), null);
 		}
 
 		return result;

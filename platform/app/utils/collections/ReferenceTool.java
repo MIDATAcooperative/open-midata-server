@@ -12,7 +12,6 @@ import models.MidataId;
 import models.Record;
 import models.RecordsInfo;
 import models.StudyParticipation;
-import utils.AccessLog;
 import utils.exceptions.InternalServerException;
 
 public class ReferenceTool {

@@ -1,7 +1,5 @@
 package utils.access;
 
-import java.util.Collections;
-
 import models.MidataId;
 import models.Space;
 import utils.exceptions.AppException;

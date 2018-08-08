@@ -1,30 +1,41 @@
 package utils;
 
-import java.net.URLEncoder;
 import java.util.List;
 
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigException;
+
 import models.enums.InstanceType;
-import play.Play;
 
 public class InstanceConfig {
 
 	private static InstanceConfig instance;
+	
 	private InstanceType instanceType;
 	private String defaultHost;
 	private String portalServerDomain;
 	private String pluginServerDomain;
+	private String platformServer;
 	private String adminEmail;
+	private String portalOriginUrl;
 	
 	private String defaultLanguage;
 	private List<String> countries;
 	
-	public InstanceConfig() {
-		init();
+	
+	private Config config;
+	
+	public InstanceConfig(Config config) {
+		this.config = config;		
+		init();		
 	}
 	
-	public static InstanceConfig getInstance() {
-		if (instance == null) instance = new InstanceConfig();
+	public static InstanceConfig getInstance() {		
 		return instance;
+	}
+	
+	public static void setInstance(InstanceConfig instance1) {		
+		instance = instance1;
 	}
 	
     /**
@@ -63,6 +74,18 @@ public class InstanceConfig {
 		return pluginServerDomain;
 	}
 	
+	public String getPortalOriginUrl() {
+		return portalOriginUrl;
+	}
+	
+	/**
+	 * returns domain of backend
+	 * @return
+	 */
+	public String getPlatformServer() {
+		return platformServer;
+	}
+	
 	/**
 	 * returns the email adress for admin messages
 	 * @return email of admin
@@ -83,13 +106,18 @@ public class InstanceConfig {
 	 * returns the list of supported countries for this platform
 	 * @return
 	 */
-	public List<String> getCountries() {
+	/*public List<String> getCountries() {
 		return countries;
+	}*/
+	
+	public Config getConfig() {
+		return config;
 	}
 
 	public void init() {
-		String instanceTypeStr = Play.application().configuration().getString("instanceType");
-		
+		try {
+
+		String instanceTypeStr = config.getString("instanceType");	
 		if (instanceTypeStr.equals("local")) instanceType = InstanceType.LOCAL;
 		else if (instanceTypeStr.equals("demo")) instanceType = InstanceType.DEMO;
 		else if (instanceTypeStr.equals("test")) instanceType = InstanceType.TEST;
@@ -99,17 +127,26 @@ public class InstanceConfig {
 		if (instanceType.disableCORSProtection()) {
 		  defaultHost = "*";
 		} else {
-		  defaultHost = Play.application().configuration().getString("portal.originUrl");
+		  defaultHost = config.getString("portal.originUrl");
 		}
 		
-		pluginServerDomain = Play.application().configuration().getString("visualizations.server");
+		portalOriginUrl = config.getString("portal.originUrl");
 		
-		portalServerDomain = Play.application().configuration().getString("portal.server");
+		pluginServerDomain = config.getString("visualizations.server");
+		if (pluginServerDomain.endsWith("/plugin")) pluginServerDomain = pluginServerDomain.substring(0, pluginServerDomain.length()-"/plugin".length());
 		
-		adminEmail = Play.application().configuration().getString("emails.admin", "alexander.kreutz@midata.coop");// TODO change default email to something useful
+		portalServerDomain = config.getString("portal.server");
 		
-		defaultLanguage = Play.application().configuration().getString("default.language", "en");
+		platformServer = config.getString("platform.server");
 		
-		countries = Play.application().configuration().getStringList("default.countries");
+		adminEmail = config.getString("emails.admin");
+		
+		defaultLanguage = config.getString("default.language");
+		
+		//countries = config.getStringList("default.countries");
+		} catch (ConfigException e) {
+			System.out.println(e.toString());
+			throw e;
+		}
 	}
 }

@@ -1,10 +1,6 @@
 package utils.access;
 
-import java.util.Collections;
-
-import models.Consent;
 import models.MidataId;
-import models.enums.ConsentType;
 import utils.exceptions.AppException;
 
 public class AccountCreationAccessContext extends AccessContext {

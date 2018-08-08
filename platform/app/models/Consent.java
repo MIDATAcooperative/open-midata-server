@@ -12,17 +12,11 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.EntityType;
-import models.enums.UserRole;
-import models.enums.UserStatus;
 import models.enums.WritePermissionType;
 import utils.collections.CMaps;
-import utils.collections.ChainedMap;
-import utils.collections.ChainedSet;
 import utils.collections.Sets;
-import utils.db.DatabaseException;
 import utils.db.IncludeNullValues;
 import utils.db.NotMaterialized;
-import utils.db.OrderOperations;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
@@ -38,7 +32,7 @@ public class Consent extends Model implements Comparable<Consent> {
 	/**
 	 * constant for all fields of a consent
 	 */
-	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "ownerName", "name", "authorized", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "dateOfCreation", "sharingQuery", "externalOwner", "externalAuthorized", "writes", "dataupdate");
+	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "ownerName", "name", "authorized", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "dateOfCreation", "sharingQuery", "externalOwner", "externalAuthorized", "writes", "dataupdate", "lastUpdated");
 	
 	public @NotMaterialized final static Set<String> SMALL = Sets.create("owner", "ownerName", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "dateOfCreation", "sharingQuery", "externalOwner", "writes", "dataupdate");
 	
@@ -51,6 +45,11 @@ public class Consent extends Model implements Comparable<Consent> {
 	 * When this consent was created
 	 */
 	public Date dateOfCreation;
+
+	/**
+	 * When this consent was last updated
+	 */
+	public Date lastUpdated;
 	
 	/**
 	 * id of owner of this consent. The owner is the person who shares data.
@@ -226,8 +225,9 @@ public class Consent extends Model implements Comparable<Consent> {
 	}
 	
 	public void setStatus(ConsentStatus status) throws InternalServerException {
-		this.status = status;		
-		Model.set(Consent.class, collection, this._id, "status", status);
+		this.status = status;	
+		this.lastUpdated = new Date();
+		this.setMultiple(collection, Sets.create("status", "lastUpdated"));		
 	}
 	
 	public void add() throws InternalServerException {

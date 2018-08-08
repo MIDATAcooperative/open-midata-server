@@ -2,8 +2,6 @@ package utils.fhir;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -26,17 +24,13 @@ import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.HumanName;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Identifier;
-import org.hl7.fhir.dstu3.model.Observation;
 import org.hl7.fhir.dstu3.model.Patient;
-import org.hl7.fhir.dstu3.model.Patient.ContactComponent;
 import org.hl7.fhir.dstu3.model.Patient.PatientCommunicationComponent;
 import org.hl7.fhir.dstu3.model.StringType;
 import org.hl7.fhir.dstu3.model.UriType;
-import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
-import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
+import com.typesafe.config.Config;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
@@ -69,9 +63,7 @@ import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import controllers.Application;
 import controllers.Circles;
-import models.Circle;
 import models.Consent;
-import models.HCRelated;
 import models.HPUser;
 import models.HealthcareProvider;
 import models.Member;
@@ -86,22 +78,17 @@ import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.EMailStatus;
-import models.enums.EntityType;
 import models.enums.Gender;
+import models.enums.JoinMethod;
 import models.enums.SubUserRole;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import models.enums.WritePermissionType;
-import play.Play;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
-import utils.PasswordHash;
 import utils.RuntimeConstants;
-import utils.access.AccessContext;
-import utils.access.AccountCreationAccessContext;
-import utils.access.ConsentAccessContext;
 import utils.access.DBIterator;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
@@ -109,15 +96,12 @@ import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
-import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
-import utils.exceptions.InternalServerException;
-import utils.json.JsonExtraction;
-import utils.json.JsonValidation;
 
 public class PatientResourceProvider extends RecordBasedResourceProvider<Patient> implements IResourceProvider {
 
+	
 	public PatientResourceProvider() {
 		searchParamNameToPathMap.put("Patient.general-practitioner", "generalPractitioner");
 		searchParamNameToPathMap.put("Patient.link", "link.other");
@@ -634,8 +618,9 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		if (!thePatient.hasBirthDate()) throw new UnprocessableEntityException("Birth date required for patient");
 		if (!thePatient.hasAddress()) throw new UnprocessableEntityException("Country required for patient");
 		
-		String terms = "midata-terms-of-use--" + Play.application().configuration().getString("versions.midata-terms-of-use", "1.0");
-		String ppolicy = "midata-privacy-policy--" + Play.application().configuration().getString("versions.midata-privacy-policy", "1.0");
+		Config config = InstanceConfig.getInstance().getConfig();
+		String terms = "midata-terms-of-use--" + (config.hasPath("versions.midata-terms-of-use") ? config.getString("versions.midata-terms-of-use") : "1.0");
+		String ppolicy = "midata-privacy-policy--" + (config.hasPath("versions.midata-privacy-policy") ? config.getString("versions.midata-privacy-policy") : "1.0");
 		boolean termsOk = false;
 		boolean ppolicyOk = false;
 
@@ -870,7 +855,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			Set<UserFeature> studyReq = controllers.members.Studies.precheckRequestParticipation(null, studyId);
 			AccessLog.log("request part");
 			if (existing == null) {
-				part = controllers.members.Studies.requestParticipation(info, user._id, studyId, plugin._id);
+				part = controllers.members.Studies.requestParticipation(info, user._id, studyId, plugin._id, info().pluginId.equals(RuntimeConstants.instance.portalPlugin) ? JoinMethod.RESEARCHER : JoinMethod.APP);
 			} else {
 				part = controllers.members.Studies.match(executorId, user._id, studyId, plugin._id);
 			}

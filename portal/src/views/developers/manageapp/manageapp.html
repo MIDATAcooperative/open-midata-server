@@ -92,57 +92,10 @@
 		  <formrow myid="defaultSpaceContext" label="Default Dashboard" ng-show="app.type != 'mobile'">
 		    <input type="text" id="defaultSpaceContext" name="defaultSpaceContext" class="form-control" placeholder="Dashboard Name" ng-model="app.defaultSpaceContext">
 		    <p class="help-block" translate="manageapp.info.defaultSpaceContext"></p>
-		  </formrow>
-		  <formrow myid="query" label="manageapp.access_query_options" class="danger-change">
-		    <div class="checkbox">
-		      <label>
-		      <input type="checkbox" ng-model="query.self" ng-change="patchQuery('owner');requireLogout();">
-		      <span translate="manageapp.query.self"></span></label>
-		    </div>
-		    <div class="checkbox">
-		      <label>
-		      <input type="checkbox" ng-model="query.ownapp" ng-change="patchQuery('app');requireLogout();">
-		      <span translate="manageapp.query.ownapp"></span></label>
-		    </div>
-		    <div class="checkbox" ng-show="app.type == 'mobile'">
-		      <label>
-		      <input type="checkbox"  ng-model="query.learn" ng-change="patchQuery('learn');requireLogout();">
-		      <span translate="manageapp.query.learn"></span></label>
-		    </div>
-		    <div class="checkbox">
-		      <label>
-		      <input type="checkbox"  ng-model="query.all" ng-change="patchQuery('group');requireLogout();">
-		      <span translate="manageapp.query.all"></span></label>
-		    </div>
-		   </formrow> 
-		   <formrow myid="queryadd" label="manageapp.access_query_add" class="danger-change">
-		    <div class="col-sm-5">
-		      <select class="form-control" ng-model="query.system" ng-options="cs as cs.label | translate for cs in codesystems"></select>
-		    </div>
-		    <div class="col-sm-5">
-		      <input type="text" class="form-control" id="queryadd" name="queryadd" ng-model="query.code">
-		    </div>
-		    <div class="col-sm-2">
-		      <button class="btn btn-default" type="button" ng-click="addCode();requireLogout();" translate="common.add_btn"></button>
-		    </div>	
-		    <div class="col-sm-12" ng-show="codeerror">
-		    <p class="help-block"  translate="{{codeerror}}"></p>
-		    </div>
-		   </formrow>
-		   <formrow myid="query" label="manageapp.access_query_selection" ng-show="labels.length" class="danger-change">		    
-		    <div ng-repeat="label in labels" class="checkbox">
-		      <label>
-		      <input type="checkbox" ng-model="label.selected" ng-change="patchQuery(label.type, label);requireLogout();">
-		      {{ label.label }}</label>
-		    </div>
-		  </formrow>
-		  <formrow myid="defaultQuery" label="manageapp.access_query_json" class="danger-change">
-		    <textarea rows="5" id="defaultQuery" name="defaultQuery" class="form-control" placeholder="Description" ng-change="updateQuery();requireLogout();" ng-model="app.defaultQueryStr"></textarea>
-		    <formerror myid="defaultQuery" type="json" message="error.invalid.json" ></formerror>
-		    <formerror myid="defaultQuery" type="invalid" message="error.invalid.access_query" ></formerror>
-		    <p class="help-block" ng-show="app.type == 'mobile'" translate="manageapp.info.defaultQuery_mobile"></p> 
-		    <p class="help-block" ng-hide="app.type == 'mobile'" translate="manageapp.info.defaultQuery"></p>
-		    
+		  </formrow>		 
+		  <formrow myid="defaultQuery" label="manageapp.access_query_json" class="danger-change" ng-if="app._id">
+		    <accessquery query="app.defaultQuery" details="true" isapp="true"></accessquery>		    
+		    <a href="javascript:" ng-click="go('^.appquery')" translate="manageapp.queryeditor_btn"></a>
 		  </formrow>
 		  <formrow myid="writes" label="Write Mode" class="danger-change">
 		    <select class="form-control" name="writes" ng-model="app.writes" ng-change="requireLogout();" ng-options="mode as ('enum.writepermissiontype.'+mode)|translate for mode in writemodes"></select>

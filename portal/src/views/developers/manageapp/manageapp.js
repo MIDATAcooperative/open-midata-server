@@ -3,7 +3,7 @@ angular.module('portal')
 	
 	// init
 	$scope.error = null;
-	$scope.app = { version:0, tags:[], i18n : {}, requirements:[], defaultQuery:{}, tokenExchangeParams : "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>"  };
+	$scope.app = { version:0, tags:[], i18n : {}, requirements:[], defaultQuery:{ content:[] }, tokenExchangeParams : "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>"  };
 	$scope.status = new status(false, $scope);
 	$scope.allowDelete = $state.current.allowDelete;
 	$scope.allowExport = $state.current.allowExport;
@@ -46,7 +46,7 @@ angular.module('portal')
 			if (!$scope.app.requirements) { $scope.app.requirements = []; }
 			if ($scope.app.type === "oauth2" && ! ($scope.app.tokenExchangeParams) ) $scope.app.tokenExchangeParams = "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>";
 			$scope.app.defaultQueryStr = JSON.stringify($scope.app.defaultQuery);
-			$scope.updateQuery();
+			//$scope.updateQuery();
 			
 			if ($scope.app.linkedStudy) {
 				
@@ -62,106 +62,15 @@ angular.module('portal')
 		});
 	};
 	
-	$scope.updateQuery = function() {
-		$scope.codeerror = null;
-		if ($scope.myform && $scope.myform.queryadd) $scope.myform.queryadd.$invalid = false;
-		try {
-		  $scope.app.defaultQuery = JSON.parse($scope.app.defaultQueryStr);
-		var q = $scope.app.defaultQuery;
-		var is = function(f, v) {
-			return f && (f == v ||( f.length > 0 && f.indexOf(v) >= 0));
-		};
-		$scope.query.self = is(q.owner, "self");
-		$scope.query.ownapp = is(q.app, $scope.app.filename);
-		$scope.query.learn = is(q.learn, true);
-		$scope.query.all = is(q.group, "all");
-		
-		$scope.labels = [];
-		
-		if ($scope.app.defaultQuery.content) {
-			var patientFound = false;
-			angular.forEach($scope.app.defaultQuery.content, function(r) {
-			  if (r == "Patient") patientFound = true;
-			  labels.getContentLabel($translate.use(), r).then(function(lab) {
-				 $scope.labels.push({ type : "content", field : r, label : lab, selected : true }); 
-			  });
-			});
-			if (!patientFound) {
-				labels.getContentLabel($translate.use(), "Patient").then(function(lab) {
-					$scope.labels.push({ type : "content", field : "Patient", label : lab, selected : false }); 
-				});
-			}
-			
-		}
-		if ($scope.app.defaultQuery.group) {
-			angular.forEach($scope.app.defaultQuery.group, function(r) {
-				  labels.getGroupLabel($translate.use(), r).then(function(lab) {
-					 $scope.labels.push({ type : "group", field : r, label : lab, selected : true }); 
-				  });
-			});
-		}
-		} catch (e) {}	
-	};
-	
-	$scope.patchQuery = function(field, val) {
-		if (field == "owner") {
-			if ($scope.query.self) $scope.app.defaultQuery.owner = "self"; 
-			else $scope.app.defaultQuery.owner = undefined;
-		}
-		if (field == "app") {
-			if ($scope.query.ownapp) $scope.app.defaultQuery.app = $scope.app.filename; 
-			else $scope.app.defaultQuery.app = undefined;
-		}
-		if (field == "group") {
-			if ($scope.query.all) {
-				$scope.app.defaultQuery.group = ["all"]; 
-				$scope.app.defaultQuery["group-system"] = "v1";
-			}
-			else {
-				$scope.app.defaultQuery.group = undefined;
-				$scope.app.defaultQuery["group-system"] = undefined;
-			}
-		}
-		if (field == "learn") {
-			if ($scope.query.learn) {
-				$scope.app.defaultQuery.learn = true;
-				if (!$scope.app.defaultQuery.content) $scope.app.defaultQuery.content = [];
-			}
-			else $scope.app.defaultQuery.learn = undefined;
-		}
-		if (field == "content") {
-			if (!$scope.app.defaultQuery.content) $scope.app.defaultQuery.content = [];
-			if (val.selected) {
-				$scope.app.defaultQuery.content.push(val.field);
-			} else {
-				$scope.app.defaultQuery.content.splice($scope.app.defaultQuery.content.indexOf(val.field), 1);
-			}						
-		}
-		
-		$scope.app.defaultQueryStr = JSON.stringify($scope.app.defaultQuery);
-	};
-	
-	$scope.addCode = function() {	
-		
-		formats.searchCodes({ system : $scope.query.system.system, code : $scope.query.code }, ["content"])
-		.then(function(r) {
-			if (r.data && r.data.length == 1) {
-				$scope.patchQuery("content", { field : r.data[0].content, selected : true });
-				$scope.updateQuery();
-			} else {
-				$scope.codeerror = "error.unknown.code";
-				$scope.myform.queryadd.$invalid = true;
-			}
-		});
-	};
 	
 	// register app
 	$scope.updateApp = function() {
 		
 		$scope.submitted = true;	
 		
+		/*
 		if ($scope.app.defaultQueryStr != null && $scope.app.defaultQueryStr !== "") {
-		  try {
+		 try {
 			  
 		    $scope.app.defaultQuery = JSON.parse($scope.app.defaultQueryStr);
 		      $scope.myform.defaultQuery.$setValidity('json', true);
@@ -174,7 +83,7 @@ angular.module('portal')
 		} else {
 		  $scope.app.defaultQuery = null;
 		  $scope.myform.defaultQuery.$setValidity('json', true);
-		}
+		}*/
 						
 		angular.forEach($scope.languages, function(lang) {
 			if ($scope.app.i18n[lang] && $scope.app.i18n[lang].name === "") {
@@ -239,7 +148,7 @@ angular.module('portal')
 		if ($state.params.appId != null) { $scope.loadApp($state.params.appId); }
 		else {
 			$scope.app.defaultQueryStr = JSON.stringify($scope.app.defaultQuery);
-			$scope.updateQuery();
+			//$scope.updateQuery();
 			$scope.status.isBusy = false;
 		}		
 	});

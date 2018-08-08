@@ -13,8 +13,6 @@ import models.MidataId;
 import models.Model;
 import models.enums.APSSecurityLevel;
 import utils.collections.CMaps;
-import utils.collections.ChainedMap;
-import utils.db.DBLayer;
 import utils.db.IncludeNullValues;
 import utils.db.NotMaterialized;
 import utils.exceptions.AppException;
@@ -56,6 +54,11 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 	 * creation date as stored in aps
 	 */
 	public @NotMaterialized Date createdFromAps;
+	
+	/**
+	 * Sharing date (used only for some queries)
+	 */
+	public @NotMaterialized Date sharedAt;
 		
 	public BasicBSONObject meta;
 		

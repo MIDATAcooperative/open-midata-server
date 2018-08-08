@@ -66,7 +66,7 @@ public class News extends Controller {
 		// create new news item
 		NewsItem item = new NewsItem();
 		item._id = new MidataId();
-		item.creator = new MidataId(request().username());
+		item.creator = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		item.created = new Date();
 		item.expires = JsonValidation.getDate(json, "expires");
 		item.title = JsonValidation.getString(json, "title");
@@ -91,7 +91,7 @@ public class News extends Controller {
 
 		// create new news item
 		NewsItem item = NewsItem.get(CMaps.map("_id", JsonValidation.getMidataId(json, "_id")), NewsItem.ALL);
-		item.creator = new MidataId(request().username());
+		item.creator = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		
 		item.expires = JsonValidation.getDate(json, "expires");
 		item.title = JsonValidation.getString(json, "title");
@@ -107,7 +107,7 @@ public class News extends Controller {
 
 	/*
 	public static Result hide(String newsItemIdString) {
-		MidataId userId = new MidataId(request().username());
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId newsItemId = new MidataId(newsItemIdString);
 		try {
 			Member user = Member.get(new ChainedMap<String, MidataId>().put("_id", userId).get(), new ChainedSet<String>()

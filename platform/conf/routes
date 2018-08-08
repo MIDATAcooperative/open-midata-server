@@ -4,8 +4,6 @@
 
 # Test
 
-GET     /api/test                                            controllers.Application.test()
-GET     /api/test2                                           controllers.Application.test2()
 GET     /debug/aps/:id                                   controllers.Debug.get(id: String)
 GET     /api/ping                                            controllers.Debug.ping()
 OPTIONS /fhir/*all                                       controllers.FHIR.checkPreflight(all)
@@ -56,7 +54,6 @@ GET     /api/members/records/export                      controllers.Records.dow
 POST    /api/members/records/info                        controllers.Records.getInfo()
 GET     /api/members/records/:id/view                    controllers.Records.getRecordUrl(id: String)
 GET     /api/members/records/shared/:apsId               controllers.Records.getSharingDetails(apsId: String)
-GET     /api/records/redirect/:appId                         controllers.Records.onAuthorized(appId: String)
 POST    /api/members/records/shared                      controllers.Records.updateSharing()
 POST    /api/members/records/share                       controllers.Records.share()
 POST    /api/members/records/fix                         controllers.Records.fixAccount()
@@ -245,9 +242,6 @@ POST     /api/terms/search              controllers.Terms.search()
 
 # JS Routes
 GET     /api/assets/javascripts/routes  controllers.Application.javascriptRoutes()
-
-# Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
 # Mobile Public API
 OPTIONS /v1/auth            controllers.MobileAPI.checkPreflight()
