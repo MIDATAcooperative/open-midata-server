@@ -16,12 +16,12 @@
     "workspace" : "Workspace",
     "data" : "Data",
     "addresearcher" : "Add Researcher",
-    "organization" : "Organization"
+    "organization" : "Research Organization"
   },
   
   "researcher_organization" : {
-    "title" : "Organization",
-    "name" : "Org. Name",
+    "title" : "Research Organization",
+    "name" : "Name",
     "description" : "Description",
     "researchers" : "All researchers of your organization"
   },
@@ -75,9 +75,9 @@
     "no_change_warning" : "This setup cannot be changed anymore after Study has been validated.",
     "member_identity" : "Member Identity",
     "pseudonymous1" : "Pseudonymized Participation",
-    "pseudonymous2" : ", exported data reveals pseudonymized ID, year of birth, gender and country. Some researchers like study nurses may have access to full personal data.",
+    "pseudonymous2" : ", exported data reveals the pseudonymized identity, year of birth, gender and country. Some researchers like study nurses may have access to full personal data.",
     "anonymous" : "Anonymous Participation",
-    "anonymous2" : ", reveals pseudonymized ID, year of birth, gender and country. Pseudonymization mapping may not be accessed.",    
+    "anonymous2" : ", exported data reveals the spseudonymized identity, year of birth, gender and country. The pseudonymization mapping may not be accessed.",    
     "not_anonymous1" : "Not Pseudonymized",
     "not_anonymous2" : ", requests member to share full name, birthday and contact Information (address, phone, email)",
     "assistance" : "Assistance",

@@ -2,7 +2,7 @@
 
     "researcher_registration" : {
         "sign_up" : "Inscription en tant que chercheur",
-        "research_organization" : "Organisation de recherche",
+        "research_organization" : "Institut de recherche",
         "name" : "Nom",
         "description" : "Description",
         "research_user" : "Chercheur"
@@ -17,24 +17,14 @@
         "workspace" : "Workspace",
         "data" : "Données",
         "addresearcher" : "Ajouter un chercheur",
-
-        // TODO NEW: Organization
-        "organization" : "Organization"
+        "organization" : "Institut de recherche"
     },
 
     "researcher_organization" : {
-
-        // TODO NEW: Organization
-        "title" : "Organization",
-
-        // TODO NEW: Org. Name
-        "name" : "Org. Name",
-
-        // TODO NEW: Description
+        "title" : "Institut de recherche",
+        "name" : "Nom",
         "description" : "Description",
-
-        // TODO NEW: All researchers of your organization
-        "researchers" : "All researchers of your organization"
+        "researchers" : "Tous les chercheurs de votre institut"
     },
 
     "createstudy" : {
@@ -84,20 +74,10 @@
         "required_data" : "Données requises",
         "no_change_warning" : "Cette configuration ne peut plus être modifiée une fois l'étude validée.",
         "member_identity" : "Identité du membre",
-
-        // TODO NEW: Pseudonymized Participation
-        "pseudonymous1" : "Pseudonymized Participation",
-
-        // TODO NEW: , exported data reveals pseudonymized ID, year of birth, gender and country. Some researchers like study nurses may have access to full personal data.
-        "pseudonymous2" : ", exported data reveals pseudonymized ID, year of birth, gender and country. Some researchers like study nurses may have access to full personal data.",
-
-        // TODO NEW: Anonymous Participation
-        "anonymous" : "Anonymous Participation",
-
-        // TODO CHANGED
-        // OLD: , reveals pseudonymized ID, year of birth, gender and country
-        // NEW: , reveals pseudonymized ID, year of birth, gender and country. Pseudonymization mapping may not be accessed.
-        "anonymous2" : ", révèle l'ID pseudonymisée, l'année de naissance, le sexe et le pays",
+        "pseudonymous1" : "Participation pseudonymisée",
+        "pseudonymous2" : ", les données exportées révèlent l'identité pseudonyme, l'année de naissance, le sexe et le pays. Certains chercheurs, comme telles les study nurses, peuvent avoir accès à des données personnelles complètes.",
+        "anonymous" : "Participation anonyme",
+        "anonymous2" : ", les données exportées révèlent l'identité pseudonyme, l'année de naissance, le sexe et le pays. La cartographie de pseudonymisation n'est pas accessible.",
         "not_anonymous1" : "Pas pseudonymisé",
         "not_anonymous2" : ", requière que le membre partage son nom complet, date de naissance et informations de contact (adresse, téléphone, e-mail)",
         "assistance" : "Assistance",

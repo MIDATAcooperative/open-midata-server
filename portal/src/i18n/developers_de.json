@@ -2,7 +2,7 @@
 
     "developer_registration" : {
         "sign_up" : "Registrierung als Entwickler",
-        "reason_fillout" : "Um die Wartezeit bis zur Freigabe des Accounts zu reduzieren, geben Sie bitte die Kontaktperson und der Zweck der Registrierung sorgfältig ein, damit ein Administrator ihr Anfrage rasch bearbeiten kann.",
+        "reason_fillout" : "Um die Wartezeit bis zur Freigabe des Kontos zu reduzieren, geben Sie bitte die Kontaktperson und der Zweck der Registrierung sorgfältig ein, damit ein Administrator ihr Anfrage rasch bearbeiten kann.",
         "sign_up_btn" : "Als Entwickler registrieren"
     },
 
@@ -20,7 +20,7 @@
 
     "developer_testusers" : {
         "title" : "Testbenutzer",
-        "empty" : "Für diesen Account sind keine Testbenutzer registriert.",
+        "empty" : "Für dieses Konto sind keine Testbenutzer registriert.",
         "role" : "Rolle",
         "resetpw" : "Neues Kennwort",
         "description" : "Mit diesen Buttons können Sie weitere Benutzer für das Testen Ihrer Plugins registrieren. Bei den Testbenutzern werden die Plugins lokal ausgeführt (aus 'localhost') und nicht auf dem Server.",
@@ -59,9 +59,7 @@
             "ACCOUNT_UNLOCK" : "Konto vom Administrator freigeschaltet",
             "EMAIL_CHANGED_OLDADDRESS" : "E-Mail-Adresse geändert (an alte E-Mail-Adresse senden)",
             "EMAIL_CHANGED_NEWADDRESS" : "E-Mail-Adresse geändert (an neue E-Mail-Adresse senden)",
-
-            // TODO NEW: Password forgotten
-            "PASSWORD_FORGOTTEN" : "Password forgotten"
+            "PASSWORD_FORGOTTEN" : "Kennwort vergessen"
         }
     },
 
@@ -92,24 +90,12 @@
         "terms_of_use" : "Allgemeine Geschäftsbedingungen",
         "show_terms" : "Allgemeine Geschäftsbedingungen anzeigen",
         "unlock_code" : "Freischaltcode",
-
-        // TODO NEW: Disconnect All
-        "logout" : "Disconnect All",
-
-        // TODO NEW: Logout all users
-        "pleaseLogout1" : "Logout all users",
-
-        // TODO NEW: Disconnect from studies
-        "pleaseLogout2" : "Disconnect from studies",
-
-        // TODO NEW: [ Not required ]
-        "logout_optional" : "[ Not required ]",
-
-        // TODO NEW: [ required ]
-        "logout_required" : "[ required ]",
-
-        // TODO NEW: Changes to fields marked with !! will require to log out all users of that application.
-        "logout_explain" : "Changes to fields marked with !! will require to log out all users of that application.",
+        "logout" : "Alle trennen",
+        "pleaseLogout1" : "Alle Benutzer abmelden",
+        "pleaseLogout2" : "Von den Studien trennen",
+        "logout_optional" : "[ nicht erforderlich ]",
+        "logout_required" : "[ erforderlich ]",
+        "logout_explain" : "Änderungen an den mit !! gekennzeichneten Feldern erfordern die Abmeldung aller Benutzer dieser Anwendung.",
 
         "info" : {
             "filename" : "Dieser Name wird intern für die Kennung Ihrer App verwendet. Es sollte ein gültiger Identifikator sein (a-z, A-Z, 0-9, _).",
@@ -118,9 +104,7 @@
             "name" : "Der Name der App oder des Plugins für den Endbenutzer.",
             "description" : "Die Beschreibung des Plugins, die im Markplatz erscheinen wird.",
             "tokenExchangeParams" : "Der Standardwert ist client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> aber einige Dienste erfordern auch client_secret=<client_secret> oder kein client_id",
-
-            // TODO NEW: Resource updates done by this application produce no history entries. Use only if application does many and frequent updates.
-            "no_update_history" : "Resource updates done by this application produce no history entries. Use only if application does many and frequent updates.",
+            "no_update_history" : "FHIR Ressourcen-Updates, die von dieser Anwendung durchgeführt werden, erzeugen keine Historieneinträge. Nur verwenden, wenn die Anwendung viele und häufige Updates durchführt.",
             "resharesData" : "Die App darf Daten, auf die sie Zugriff hat, an Drittparteien weitergeben.",
             "allowsUserSearch" : "Benutzer dieser App dürfen nach anderen Benutzern der gleichen App suchen.",
             "defaultSpaceName" : "Titel der Kachel des Plugins auf dem Dashboard.",
@@ -131,9 +115,7 @@
             "defaultQuery_mobile" : "Filter, das den Zugriff der App auf die Daten begrenzt. Der Zugriff muss eingeschränkt werden nach 'code', 'content' oder 'group' und kann eingeschränkt werden nach 'format' oder 'owner'. Gültiges Beispiel (alle Observations): '{ \"group\" : \"all\", \"group-system\" : \"v1\", \"format\" : [\"fhir/Observation\" ] }'",
             "defaultQuery" : "Filter, das den Zugriff des Plugins auf die Daten begrenzt. Der Zugriff muss mindestens eingeschränkt werden nach 'code', 'content', 'group', 'format' oder 'owner'. Gültiges Beispiel (alle Observations): '{ \"format\" : [\"fhir/Observation\" ] }'",
             "defaultQuery_extra" : "Gültige Werte für 'code', 'content' oder 'format' sind im Developer Guide unter 'Format/Content' aufgelistet. Für erste Versionen kann der Vollzugriff erstattet werden mit { \"group\" : \"all\", \"group-system\" : \"v1\" }. Schränken Sie allerdings den Zugriff weiter ein, bevor das Plugin oder die App produktiv eingesetzt wird.",
-
-            // TODO NEW: You may specifiy multiple possible redirect URIs by seperating the URIs with a space
-            "redirectUri" : "You may specifiy multiple possible redirect URIs by seperating the URIs with a space",
+            "redirectUri" : "Sie können mehrere mögliche Redirect-URIs angeben, indem Sie die URIs durch ein Leerzeichen trennen.",
             "secret" : "Ihre App braucht dieses 'secret' um sich anmelden zu können. Wählen Sie es nach Belieben.",
             "mustParticipateInStudy" : "Benutzer müssen an der Studie teilnehmen, um diese App benutzen zu können.",
             "unlock_code" : "Wenn ausgefüllt, muss dieser Code vom Benutzer bei der Registrierung oder ersten Anmeldung bei MIDATA über die App eingegeben werden. Der Code ist nicht 'case sensitiv'."
@@ -158,9 +140,7 @@
             "learn" : "Alle Datentypen, die diese App schreibt, automatisch zum Data Access Filter hinzufügen. (MUSS ausgeschaltet werden bevor die App produktiv eingesetzt wird)",
             "all" : "Während der Entwicklung, Zugriff auf alle Daten des Benutzers erlauben. (MUSS durch ein geeignetes Data Access Filter ersetzt werden bevor das Plugin produktiv eingesetzt wird)"
         },
-
-        // TODO NEW: No Resource History
-        "no_update_history" : "No Resource History",
+        "no_update_history" : "Keine FHIR Ressourcenhistorie",
         "export_btn" : "Applikationsdefinition exportieren",
         "export_help" : "Exportieren Sie die Definition dieser Applikation, damit sie auf einem anderen Server importiert und verwendet werden kann.",
         "important" : "WICHTIG",
