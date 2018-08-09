@@ -80,6 +80,15 @@ public class FHIRServlet extends RestfulServer {
       myProviders.put("AllergyIntolerance", new AllergyIntoleranceResourceProvider());
       myProviders.put("Subscription", new SubscriptionResourceProvider());
       
+      myProviders.put("Encounter",  new EncounterResourceProvider()); 
+      myProviders.put("Flag",  new FlagResourceProvider()); 
+      myProviders.put("FamilyMemberHistory",  new FamilyMemberHistoryResourceProvider()); 
+      myProviders.put("DiagnosticReport",  new DiagnosticReportResourceProvider()); 
+      myProviders.put("ImagingStudy",  new ImagingStudyResourceProvider()); 
+      myProviders.put("MedicationAdministration",  new MedicationAdministrationResourceProvider()); 
+      myProviders.put("Immunization",  new ImmunizationResourceProvider()); 
+      myProviders.put("CarePlan",  new CarePlanResourceProvider());
+      
       resourceProviders.addAll(myProviders.values());
       setResourceProviders(resourceProviders);
       //setInterceptors(new PaginationSupport());
