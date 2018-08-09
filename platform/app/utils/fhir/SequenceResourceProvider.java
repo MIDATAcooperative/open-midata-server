@@ -159,7 +159,7 @@ public class SequenceResourceProvider extends RecordBasedResourceProvider<Sequen
 		builder.restriction("end", true, QueryBuilder.TYPE_STRING, "referenceSeq.windowEnd	"); // TODO implement type number
 		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
 		builder.restriction("start", true, QueryBuilder.TYPE_STRING, "referenceSeq.windowStart"); // TODO implement type number
-		builder.restriction("type", true, QueryBuilder.TYPE_STRING, "type"); // TODO implement type number
+		builder.restriction("type", true, QueryBuilder.TYPE_CODE, "type"); // TODO implement type number
 		
 		
 		// At last execute the constructed query
