@@ -1003,6 +1003,10 @@ public class Application extends APIController {
 				controllers.routes.javascript.Market.uploadIcon(),
 				controllers.routes.javascript.Market.deleteIcon(),
 				controllers.routes.javascript.Market.getIcon(),
+				controllers.routes.javascript.Market.getStudyAppLinks(),
+				controllers.routes.javascript.Market.insertStudyAppLink(),
+				controllers.routes.javascript.Market.deleteStudyAppLink(),
+				controllers.routes.javascript.Market.validateStudyAppLink(),
 								
 				// UserGroups
 				controllers.routes.javascript.UserGroups.search(),
