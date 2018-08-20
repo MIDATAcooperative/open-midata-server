@@ -169,7 +169,7 @@ public class Market extends APIController {
 			
 			
 			if (getRole().equals(UserRole.ADMIN) && withLogout) {
-				String linkedStudyCode = JsonValidation.getStringOrNull(json, "linkedStudyCode");
+				/*String linkedStudyCode = JsonValidation.getStringOrNull(json, "linkedStudyCode");
 				if (linkedStudyCode != null) {
 				  Study study = Study.getByCodeFromMember(linkedStudyCode, Sets.create("_id", "joinMethods", "executionStatus", "validationStatus", "participantSearchStatus"));
 				  if (study == null) throw new JsonValidationException("error.invalid.study", "linkedStudy", "invalid", "Unknown Study");
@@ -183,7 +183,7 @@ public class Market extends APIController {
 				  app.linkedStudy = null;
 				}
 				app.mustParticipateInStudy = JsonValidation.getBoolean(json, "mustParticipateInStudy");
-					
+					*/
 				
 			   String termsOfUse = JsonValidation.getStringOrNull(json, "termsOfUse");
 			   app.termsOfUse = termsOfUse;
@@ -846,19 +846,47 @@ public class Market extends APIController {
 	}
 	
 	@APICall
-	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result getStudyAppLinks(String type, String idStr) throws AppException {
 		Set<StudyAppLink> result = Collections.emptySet();
-		if (type.equals("study")) {
+		if (type.equals("study") || type.equals("study-use")) {
 			result = StudyAppLink.getByStudy(MidataId.from(idStr));
 			for (StudyAppLink sal : result) {
 				sal.app = Plugin.getById(sal.appId);
 			}
-		} else if (type.equals("app")) {
+			
+			if (type.equals("study-use")) {
+				Study study = Study.getById(MidataId.from(idStr), Sets.create("_id", "code","name","type", "description", "termsOfUse", "executionStatus","validationStatus", "participantSearchStatus","joinMethods"));
+				Iterator<StudyAppLink> sal_it = result.iterator();
+				while (sal_it.hasNext()) {
+					StudyAppLink sal = sal_it.next();					
+					if (!sal.isConfirmed() || !sal.usePeriod.contains(study.executionStatus)) sal_it.remove();
+					
+				}
+			}
+			
+		} else if (type.equals("app") || type.equals("app-use")) {
 			result = StudyAppLink.getByApp(MidataId.from(idStr));
+			for (StudyAppLink sal : result) {
+				Study study = Study.getById(sal.studyId, Sets.create("_id", "code","name", "type", "description", "termsOfUse", "executionStatus","validationStatus","participantSearchStatus", "joinMethods"));
+				sal.study = study;
+								
+			}
+			
+			if (type.equals("app-use")) {
+				Iterator<StudyAppLink> sal_it = result.iterator();
+				while (sal_it.hasNext()) {
+					StudyAppLink sal = sal_it.next();					
+					if (!sal.isConfirmed() || !sal.usePeriod.contains(sal.study.executionStatus)) sal_it.remove();
+					else if (!sal.study.participantSearchStatus.equals(ParticipantSearchStatus.SEARCHING)) {
+						sal.type.remove(StudyAppLinkType.OFFER_P);
+						if (sal.type.isEmpty()) sal_it.remove();
+					}
+				}
+			}
 		}
 		Map<String, Set<String>> mapping = new HashMap<String, Set<String>>();
 		mapping.put("Plugin", Plugin.ALL_PUBLIC);
+		mapping.put("Study", Sets.create("_id", "code","name","type", "description", "termsOfUse", "executionStatus", "validationStatus", "participantSearchStatus", "joinMethods"));
 		mapping.put("StudyAppLink", StudyAppLink.ALL);
 		
 		return ok(JsonOutput.toJson(result, mapping)).as("application/json");
@@ -869,7 +897,7 @@ public class Market extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result insertStudyAppLink() throws AppException {
         JsonNode json = request().body().asJson();		
-		JsonValidation.validate(json, "studyId", "appId", "type", "validationResearch", "validationDeveloper", "usePeriod", "shareToStudy" ,"restrictRead", "studyGroup");
+		JsonValidation.validate(json, "studyId", "appId", "type", "usePeriod");
 
 		
 		StudyAppLink link = new StudyAppLink();
@@ -878,9 +906,10 @@ public class Market extends APIController {
 		link.appId = JsonValidation.getMidataId(json, "appId");
 		link.restrictRead = JsonValidation.getBoolean(json, "restrictRead");
 		link.shareToStudy = JsonValidation.getBoolean(json, "shareToStudy");
+		link.studyGroup = JsonValidation.getStringOrNull(json, "studyGroup");
 		link.studyId = JsonValidation.getMidataId(json, "studyId");
 		link.type = JsonValidation.getEnumSet(json, "type", StudyAppLinkType.class);
-		link.usePeriod = JsonValidation.getEnumSet(json, "userPeriod", StudyExecutionStatus.class);
+		link.usePeriod = JsonValidation.getEnumSet(json, "usePeriod", StudyExecutionStatus.class);
 		
 		link.validationResearch = StudyValidationStatus.VALIDATION;
 		link.validationDeveloper = StudyValidationStatus.VALIDATION;
@@ -936,6 +965,28 @@ public class Market extends APIController {
 			link.validationResearch = StudyValidationStatus.VALIDATED;
 			link.validationDeveloper = StudyValidationStatus.VALIDATED;
 		} else throw new AuthException("error.notauthorized.action", "You are not authorized to do this action.");
+        
+        boolean autoValidDeveloper = true;
+        boolean autoValidResearcher = true;
+        if (link.type.contains(StudyAppLinkType.OFFER_P)) {
+        	autoValidDeveloper = false;
+        	autoValidResearcher = false;
+        }
+        if (link.type.contains(StudyAppLinkType.REQUIRE_P)) {
+        	autoValidDeveloper = false;
+        	autoValidResearcher = false;
+        }
+        if (link.type.contains(StudyAppLinkType.RECOMMEND_A)) {
+        	autoValidResearcher = false;
+        }
+        if (link.type.contains(StudyAppLinkType.AUTOADD_A)) {
+        	autoValidResearcher = false;
+        }
+        if (link.type.contains(StudyAppLinkType.DATALINK)) {
+        	autoValidResearcher = false;
+        }
+        if (autoValidDeveloper) link.validationDeveloper = StudyValidationStatus.VALIDATED;
+        if (autoValidResearcher) link.validationResearch = StudyValidationStatus.VALIDATED;
 	}
 	
 	

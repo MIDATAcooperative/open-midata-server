@@ -72,6 +72,7 @@ import models.MidataId;
 import models.Plugin;
 import models.Record;
 import models.Study;
+import models.StudyAppLink;
 import models.StudyParticipation;
 import models.User;
 import models.enums.AccountSecurityLevel;
@@ -80,6 +81,7 @@ import models.enums.ConsentStatus;
 import models.enums.EMailStatus;
 import models.enums.Gender;
 import models.enums.JoinMethod;
+import models.enums.StudyAppLinkType;
 import models.enums.SubUserRole;
 import models.enums.UserFeature;
 import models.enums.UserRole;
@@ -556,12 +558,15 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		}
 				
 		if (info().ownerId.equals(record.owner) && info().pluginId != null) {
-		  Plugin plugin = Plugin.getById(info().pluginId);		  
-		  if (plugin.linkedStudy != null) {
-			  StudyParticipation part = StudyParticipation.getByStudyAndMember(plugin.linkedStudy, record.owner, Sets.create("_id", "ownerName"));			  
-			  if (part != null && part.getOwnerName() != null) {
-				  resource.addIdentifier(new Identifier().setValue(part.getOwnerName()).setSystem("http://midata.coop/identifier/participant-name"));
-				  resource.addIdentifier(new Identifier().setValue(part._id.toString()).setSystem("http://midata.coop/identifier/participant-id"));
+		  Plugin plugin = Plugin.getById(info().pluginId);	
+		  Set<StudyAppLink> links = StudyAppLink.getByApp(plugin._id);
+		  for (StudyAppLink sal : links) {
+			  if (sal.isConfirmed() && (sal.type.contains(StudyAppLinkType.REQUIRE_P) || sal.type.contains(StudyAppLinkType.OFFER_P))) {
+				  StudyParticipation part = StudyParticipation.getByStudyAndMember(sal.studyId, record.owner, Sets.create("_id", "ownerName"));			  
+				  if (part != null && part.getOwnerName() != null) {
+					  resource.addIdentifier(new Identifier().setValue(part.getOwnerName()).setSystem("http://midata.coop/identifier/participant-name"));
+					  resource.addIdentifier(new Identifier().setValue(part._id.toString()).setSystem("http://midata.coop/identifier/participant-id"));
+				  }  
 			  }
 		  }
 		}

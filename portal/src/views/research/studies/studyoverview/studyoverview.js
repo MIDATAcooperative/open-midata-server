@@ -166,9 +166,14 @@ angular.module('portal')
 					$scope.tests.team = data.data.length > 1;
 				}).then(function() {
 				
-				apps.getApps( { "linkedStudy" : $scope.studyid }, [ "filename", "name" ])
-				.then(function(data) {
-					$scope.tests.applinked = data.data.length > 0;
+					return $scope.status.doBusy(server.get(jsRoutes.controllers.Market.getStudyAppLinks("study", $scope.studyid).url))
+				    .then(function(data) { 				
+						for (var i=0;i<data.data.length;i++) {
+							var sal = data.data[i];
+							if (sal.type.indexOf("OFFER_P")>=0 ||sal.type.indexOf("REQUIRE_P")>=0 ) $scope.tests.applinked = true;
+						}												
+					});	
+														
 				}).then(function() {
 				
 				server.post(jsRoutes.controllers.research.Studies.countParticipants($scope.studyid).url, JSON.stringify({ properties : { pstatus : "REQUEST" } }))
@@ -212,7 +217,7 @@ angular.module('portal')
 				
 				});
 				});
-				});
+				
 				
 		});
 	};

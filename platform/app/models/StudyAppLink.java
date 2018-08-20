@@ -20,21 +20,19 @@ import utils.sync.Instances;
  */
 public class StudyAppLink extends Model {
 	
-	private static final String collection = "studyapplink";
+	private @NotMaterialized static final String collection = "studyapplink";
 	
-	public static final Set<String> ALL_MATERIALIZED = Collections.unmodifiableSet(Sets.create("studyId", "appId", "type", "validationResearch", "validationDeveloper", "usePeriod", "shareToStudy" ,"restrictRead", "studyGroup"));
+	public @NotMaterialized static final Set<String> ALL_MATERIALIZED = Collections.unmodifiableSet(Sets.create("_id", "studyId", "appId", "type", "validationResearch", "validationDeveloper", "usePeriod", "shareToStudy" ,"restrictRead", "studyGroup", "userId"));
 	
-	public static final Set<String> ALL = Collections.unmodifiableSet(Sets.create("studyId", "appId", "type", "validationResearch", "validationDeveloper", "usePeriod", "shareToStudy" ,"restrictRead", "studyGroup", "studyCode", "studyName", "app"));
+	public @NotMaterialized static final Set<String> ALL = Collections.unmodifiableSet(Sets.create("_id", "studyId", "appId", "type", "validationResearch", "validationDeveloper", "usePeriod", "shareToStudy" ,"restrictRead", "studyGroup", "study", "app", "userId", "userLogin"));
 	
 	/**
 	 * which study is linked
 	 */
 	public MidataId studyId;
 	
-	public @NotMaterialized String studyCode;
-	
-	public @NotMaterialized String studyName;
-	
+	public @NotMaterialized Study study;
+			
 	/**
 	 * which application is linked
 	 */
@@ -67,6 +65,11 @@ public class StudyAppLink extends Model {
 	public boolean restrictRead;
 	
 	public String studyGroup;
+	
+	public MidataId userId;
+	
+	public @NotMaterialized String userLogin;
+		
 
 	public void add() throws InternalServerException {
 		Model.insert(collection, this);	
@@ -93,4 +96,9 @@ public class StudyAppLink extends Model {
 	public static Set<StudyAppLink> getByApp(MidataId app) throws AppException {
 		return Model.getAll(StudyAppLink.class, collection, CMaps.map("appId", app), ALL_MATERIALIZED);
 	}
+	
+	public boolean isConfirmed() {
+		return validationDeveloper.equals(StudyValidationStatus.VALIDATED) && validationResearch.equals(StudyValidationStatus.VALIDATED);
+	}
+		
 }

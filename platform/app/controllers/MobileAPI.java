@@ -28,6 +28,8 @@ import models.Record;
 import models.RecordsInfo;
 import models.ResearchUser;
 import models.Space;
+import models.Study;
+import models.StudyAppLink;
 import models.StudyParticipation;
 import models.User;
 import models.enums.AggregationType;
@@ -36,6 +38,7 @@ import models.enums.ConsentStatus;
 import models.enums.JoinMethod;
 import models.enums.MessageReason;
 import models.enums.ParticipationStatus;
+import models.enums.StudyAppLinkType;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import play.libs.Json;
@@ -117,19 +120,28 @@ public class MobileAPI extends Controller {
         	return false;
         }
         
-        if (app.mustParticipateInStudy && app.linkedStudy != null) {
-        	StudyParticipation sp = StudyParticipation.getByStudyAndMember(app.linkedStudy, appInstance.owner, Sets.create("status", "pstatus"));
-        	if (sp == null) {
-        		MobileAPI.removeAppInstance(appInstance);
-            	return false;
+        Set<StudyAppLink> links = StudyAppLink.getByApp(app._id);
+        for (StudyAppLink sal : links) {
+        	if (sal.isConfirmed() && sal.type.contains(StudyAppLinkType.REQUIRE_P)) {
+        		Study study = Study.getById(sal.studyId, Sets.create("executionStatus"));
+        		if (sal.usePeriod.contains(study.executionStatus)) {
+        		
+        		   StudyParticipation sp = StudyParticipation.getByStudyAndMember(sal.studyId, appInstance.owner, Sets.create("status", "pstatus"));
+        		   
+        		   if (sp == null) {
+	               		MobileAPI.removeAppInstance(appInstance);
+	                   	return false;
+	               	}
+	               	if ( 
+	               		sp.pstatus.equals(ParticipationStatus.MEMBER_RETREATED) || 
+	               		sp.pstatus.equals(ParticipationStatus.MEMBER_REJECTED) || 
+	               		sp.pstatus.equals(ParticipationStatus.RESEARCH_REJECTED)) {
+	               		throw new BadRequestException("error.blocked.consent", "Research consent expired or blocked.");
+	               	}
+        		   
+        		}
         	}
-        	if ( 
-        		sp.pstatus.equals(ParticipationStatus.MEMBER_RETREATED) || 
-        		sp.pstatus.equals(ParticipationStatus.MEMBER_REJECTED) || 
-        		sp.pstatus.equals(ParticipationStatus.RESEARCH_REJECTED)) {
-        		throw new BadRequestException("error.blocked.consent", "Research consent expired or blocked.");
-        	}
-        }
+        }                  
         
         return true;
 	}
@@ -232,7 +244,7 @@ public class MobileAPI extends Controller {
 				executor = autoConfirm ? user._id : null;
 				AccessLog.log("REINSTALL");
 				if (!autoConfirm && app.targetUserRole.equals(UserRole.RESEARCH)) throw new BadRequestException("error.invalid.study", "The research app is not properly linked to a study! Please log in as researcher and link the app properly.");
-				appInstance = installApp(executor, app._id, user, phrase, autoConfirm, false);
+				appInstance = installApp(executor, app._id, user, phrase, autoConfirm, Collections.emptySet());
 				if (executor != null) RecordManager.instance.clearCache();
 				executor = appInstance._id;
 	   		    meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
@@ -248,7 +260,8 @@ public class MobileAPI extends Controller {
 				
 		if (!phrase.equals(meta.get("phrase"))) return internalServerError("Internal error while validating consent");
 				
-		if (app.targetUserRole.equals(UserRole.RESEARCH)) {
+		if (app.targetUserRole.equals(UserRole.RESEARCH)) {			
+			
 		  BSONObject q = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_query");
           if (!q.containsField("link-study")) throw new BadRequestException("error.invalid.study", "The research app is not properly linked to a study! Please log in as researcher and link the app properly.");
 		}
@@ -299,25 +312,36 @@ public class MobileAPI extends Controller {
 		return ok(obj);
 	}
 	
-	public static MobileAppInstance installApp(MidataId executor, MidataId appId, User member, String phrase, boolean autoConfirm, boolean studyConfirm) throws AppException {
-		Plugin app = Plugin.getById(appId, Sets.create("name", "pluginVersion", "defaultQuery", "predefinedMessages", "linkedStudy", "mustParticipateInStudy", "termsOfUse", "writes"));
+	public static MobileAppInstance installApp(MidataId executor, MidataId appId, User member, String phrase, boolean autoConfirm, Set<MidataId> studyConfirm) throws AppException {
+		Plugin app = Plugin.getById(appId, Sets.create("name", "pluginVersion", "defaultQuery", "predefinedMessages", "termsOfUse", "writes"));
 
-		if (app.linkedStudy != null && app.mustParticipateInStudy && !studyConfirm) {
-			StudyParticipation sp = StudyParticipation.getByStudyAndMember(app.linkedStudy, member._id, Sets.create("status", "pstatus"));
-        	if (sp == null || 
-        		sp.pstatus.equals(ParticipationStatus.MEMBER_RETREATED) || 
-        		sp.pstatus.equals(ParticipationStatus.MEMBER_REJECTED) || 
-        		sp.pstatus.equals(ParticipationStatus.RESEARCH_REJECTED)) {
-        		throw new BadRequestException("error.missing.study_accept", "Study belonging to app must be accepted.");        		
-        	}
-			
+		Set<StudyAppLink> links = StudyAppLink.getByApp(appId);
+		
+		for (StudyAppLink sal : links) {
+			if (sal.isConfirmed()) {
+				
+				Study study = Study.getById(sal.studyId, Sets.create("executionStatus","validationStatus","participantSearchStatus"));
+				
+				if (study == null) throw new AppException("error.internal", "Study not found");
+				
+				if (!sal.usePeriod.contains(study.executionStatus)) sal.type = Collections.emptySet();
+				
+				if (sal.type.contains(StudyAppLinkType.REQUIRE_P) && sal.type.contains(StudyAppLinkType.OFFER_P) && !studyConfirm.contains(sal.studyId)) {
+					StudyParticipation sp = StudyParticipation.getByStudyAndMember(sal.studyId, member._id, Sets.create("status", "pstatus"));
+		        	if (sp == null || 
+		        		sp.pstatus.equals(ParticipationStatus.MEMBER_RETREATED) || 
+		        		sp.pstatus.equals(ParticipationStatus.MEMBER_REJECTED) || 
+		        		sp.pstatus.equals(ParticipationStatus.RESEARCH_REJECTED)) {
+		        		throw new BadRequestException("error.missing.study_accept", "Study belonging to app must be accepted.");        		
+		        	}
+				}
+				
+				if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.studyId))) {
+					controllers.members.Studies.precheckRequestParticipation(member._id, sal.studyId);
+				}
+			}
 		}
-		
-		if (app.linkedStudy != null && studyConfirm) {			
-			controllers.members.Studies.precheckRequestParticipation(member._id, app.linkedStudy);
-		}
-		
-		
+							
 		MobileAppInstance appInstance = new MobileAppInstance();
 		appInstance._id = new MidataId();
 		appInstance.owner = member._id;
@@ -355,8 +379,13 @@ public class MobileAPI extends Controller {
 		    RecordManager.instance.shareByQuery(executor, member._id, appInstance._id, app.defaultQuery);
 		}
 				
-		if (app.linkedStudy != null && studyConfirm) {								
-			controllers.members.Studies.requestParticipation(new ExecutionInfo(executor), member._id, app.linkedStudy, app._id, JoinMethod.APP);
+		for (StudyAppLink sal : links) {
+			if (sal.isConfirmed()) {		
+				if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.studyId))) {
+					RecordManager.instance.clearCache();
+			        controllers.members.Studies.requestParticipation(new ExecutionInfo(executor), member._id, sal.studyId, app._id, JoinMethod.APP);
+				}
+			}
 		}
 		
 		if (autoConfirm) {
@@ -369,8 +398,8 @@ public class MobileAPI extends Controller {
 			User.set(member._id, "apps", member.apps);
 		}
 		
-		if (app.termsOfUse != null) member.agreedToTerms(app.termsOfUse, app._id);
-				
+		if (app.termsOfUse != null) member.agreedToTerms(app.termsOfUse, app._id);					
+		
 		if (app.predefinedMessages!=null) {
 			if (!app._id.equals(member.initialApp)) {
 				Messager.sendMessage(app._id, MessageReason.FIRSTUSE_EXISTINGUSER, null, Collections.singleton(member._id), member.language, new HashMap<String, String>());	

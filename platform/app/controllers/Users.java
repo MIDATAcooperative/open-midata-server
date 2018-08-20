@@ -235,7 +235,7 @@ public class Users extends APIController {
 	public static Result updateAddress() throws AppException {
 		
 		JsonNode json = request().body().asJson();		
-		JsonValidation.validate(json, "user", "firstname", "lastname", "gender", "city", "zip", "country", "address1");
+		JsonValidation.validate(json, "user");//, "firstname", "lastname", "gender", "city", "zip", "country", "address1");
 							
 		MidataId userId = JsonValidation.getMidataId(json, "user");			
 		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
@@ -254,17 +254,24 @@ public class Users extends APIController {
 		
 		//user.email = email;
 		//user.emailLC = email.toLowerCase();
-		user.name = firstName + " " + lastName;
-		user.address1 = JsonValidation.getString(json, "address1");
-		user.address2 = JsonValidation.getString(json, "address2");
-		user.city = JsonValidation.getString(json, "city");
-		user.zip = JsonValidation.getString(json, "zip");
-		user.phone = JsonValidation.getString(json, "phone");
-		user.mobile = JsonValidation.getString(json, "mobile");
-		user.country = JsonValidation.getString(json, "country");
-		user.firstname = JsonValidation.getString(json, "firstname");
-		user.lastname = JsonValidation.getString(json, "lastname");
-		user.gender = JsonValidation.getEnum(json, "gender", Gender.class);				
+		if (json.has("country")) { 
+			JsonValidation.validate(json, "user", "firstname", "lastname", "gender", "city", "zip", "country", "address1");
+			
+			user.name = firstName + " " + lastName;
+			user.address1 = JsonValidation.getString(json, "address1");
+			user.address2 = JsonValidation.getString(json, "address2");
+			user.city = JsonValidation.getString(json, "city");
+			user.zip = JsonValidation.getString(json, "zip");
+			
+			user.country = JsonValidation.getString(json, "country");
+			user.firstname = JsonValidation.getString(json, "firstname");
+			user.lastname = JsonValidation.getString(json, "lastname");
+			user.gender = JsonValidation.getEnum(json, "gender", Gender.class);				
+		}
+		if (json.has("phone")) {
+		  user.phone = JsonValidation.getString(json, "phone");
+		  user.mobile = JsonValidation.getString(json, "mobile");
+		}
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_ADDRESS_CHANGE, user);
 		

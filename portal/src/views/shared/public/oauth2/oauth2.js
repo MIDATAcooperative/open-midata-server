@@ -2,7 +2,7 @@ angular.module('portal')
 .controller('OAuth2LoginCtrl', ['$scope', '$location', '$translate', 'server', '$state', 'status', 'session', 'apps', 'studies', 'oauth', 'views', 'labels', 'ENV', function($scope, $location, $translate, server, $state, status, session, apps, studies, oauth, views,labels, ENV) {
 	
 	// init
-	$scope.login = { role : "MEMBER"};	
+	$scope.login = { role : "MEMBER", confirmStudy:[] };	
 	$scope.error = null;
 	$scope.status = new status(false);
 	$scope.params = $location.search();
@@ -35,6 +35,21 @@ angular.module('portal')
 			$scope.device = oauth.getDeviceShort();
 			$scope.consent = "App: "+$scope.app.name+" (Device: "+$scope.device+")";
 			
+			$scope.status.doBusy(server.get(jsRoutes.controllers.Market.getStudyAppLinks("app-use", $scope.app._id).url))
+		    .then(function(data) {		    	
+		        $scope.links = [];
+		    	for (var l=0;l<data.data.length;l++) {
+		    		var link = data.data[l];
+		    		if (link.type.indexOf("OFFER_P")>=0) $scope.links.push(link);
+		    	}
+		    	console.log("Studies");
+				console.log($scope.links);
+				
+				oauth.app = $scope.app;
+				oauth.links = $scope.links;
+			});	
+			
+			/*
 			if ($scope.app.linkedStudy) {
 				$scope.status.doBusy(studies.search({ _id : $scope.app.linkedStudy }, ["code", "name", "description", "termsOfUse"]))
 				.then(function(studyresult) {
@@ -46,7 +61,7 @@ angular.module('portal')
 				 	  $scope.app.linkedStudyTermsOfUse = studyresult.data[0].termsOfUse;
 					}
 				});
-			}
+			}*/
 		});
 	};
 	
@@ -65,7 +80,7 @@ angular.module('portal')
 		$scope.status.doAction("login", oauth.login(false))
 		.then(function(result) {
 		  if (result === "CONFIRM" || result === "CONFIRM-STUDYOK") {
-			  if (result === "CONFIRM-STUDYOK") { $scope.app.linkedStudy = undefined; }
+			  if (result === "CONFIRM-STUDYOK") { $scope.links = []; }
 			  $scope.acceptConsent = true;
 			  $scope.prepareConfirm();
 		  } else if (result !== "ACTIVE") {
@@ -108,6 +123,14 @@ angular.module('portal')
 		$scope.error = null;
 		
 		if ($scope.login.unlockCode) oauth.setUnlockCode($scope.login.unlockCode);
+		console.log($scope.login);
+		for (var i=0;i<$scope.links.length;i++) {
+			console.log($scope.links[i]);
+			if ($scope.links[i].type.indexOf("OFFER_P") >=0 && $scope.links[i].type.indexOf("REQUIRE_P")>=0 && $scope.login.confirmStudy.indexOf($scope.links[i].studyId) < 0) {
+				$scope.error = { code : "error.missing.study_accept" };
+				return;
+			}
+		}
 		
 		$scope.status.doAction("login", oauth.login(true, $scope.login.confirmStudy))
 		.then(function(result) {
@@ -146,6 +169,24 @@ angular.module('portal')
 	$scope.getIconUrlBG = function() {
 		if (!$scope.app) return null;
 		return { "background-image" : "url('"+ENV.apiurl + "/api/shared/icon/LOGINPAGE/" + $scope.app.filename+"')" };
+	};
+	
+	$scope.toggle = function(array,itm) {	
+		var pos = array.indexOf(itm);
+		if (pos < 0) array.push(itm); else array.splice(pos, 1);
+   };
+   
+   $scope.getLinkLabel = function(link) {
+		if (link.study.type == "CLINICAL") {
+			if (link.type.indexOf("REQUIRE_P") >= 0) return "oauth2.confirm_study";
+			return "oauth2.confirm_study_opt";
+		}
+		if (link.study.type == "CITIZENSCIENCE") return "oauth2.confirm_citizen_science";		
+		if (link.study.type == "COMMUNITY") {
+			if (link.type.indexOf("REQUIRE_P") >= 0) return "oauth2.confirm_community";
+			return "oauth2.confirm_community_opt";
+		}
+		
 	};
 	
 	$scope.prepare();

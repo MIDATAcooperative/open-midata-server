@@ -122,7 +122,7 @@ public class Plugins extends APIController {
 		if (!properties.containsKey("status")) {
 			properties.put("status", EnumSet.of(PluginStatus.DEVELOPMENT, PluginStatus.BETA, PluginStatus.ACTIVE, PluginStatus.DEPRECATED));
 		}
-		ObjectIdConversion.convertMidataIds(properties, "_id", "creator", "recommendedPlugins", "linkedStudy");
+		ObjectIdConversion.convertMidataIds(properties, "_id", "creator", "recommendedPlugins");
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 
 		Rights.chk("Plugins.get", getRole(), properties, fields);
@@ -141,7 +141,7 @@ public class Plugins extends APIController {
 
 		String name = JsonValidation.getString(json, "name");
 
-		Set<String> fields = Sets.create("name", "description", "i18n", "defaultQuery", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "termsOfUse", "requirements",
+		Set<String> fields = Sets.create("name", "description", "i18n", "defaultQuery", "resharesData", "allowsUserSearch", "termsOfUse", "requirements",
 				"orgName", "unlockCode", "targetUserRole", "icons", "filename");
 		Plugin plugin = Plugin.get(CMaps.map("filename", name).map("type", "mobile"), fields);
 		if (plugin != null && plugin.unlockCode != null)

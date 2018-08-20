@@ -1261,7 +1261,7 @@ public class Studies extends APIController {
 			JsonValidation.validate(json, "device");
 			String device = JsonValidation.getString(json, "device");
 
-			MobileAppInstance appInstance = MobileAPI.installApp(userId, plugin._id, researcher, device, false, false);
+			MobileAppInstance appInstance = MobileAPI.installApp(userId, plugin._id, researcher, device, false, Collections.emptySet());
 			Map<String, Object> query = appInstance.sharingQuery;
 			query.put("study", studyId.toString());
 			if (restrictRead && group != null)

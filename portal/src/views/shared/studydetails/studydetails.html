@@ -77,7 +77,19 @@
 		                translate="studydetails.do_not_participate_btn"></button>
 				    <button ng-show="mayRetreatParticipation()" ng-click="retreatParticipation()" class="btn btn-danger"
 		                translate="studydetails.retreat_btn"></button>
-
+                    
+                    <div ng-show="links.length">
+                      <div class="extraspace">&nbsp;</div><div class="extraspace">&nbsp;</div>
+                      <p class="lead" translate="studydetails.recommended_apps"></p>
+                      <div ng-repeat="link in links">
+                        <div><b>{{ link.app.i18n[translate.use()].name || link.app.name }}</b></div>
+                        <div>{{ link.app.i18n[translate.use()].description || link.app.description }}</div>
+                        <div ng-show="link.app.type != 'mobile'">
+                          <button class="btn btn-default" ng-click="installApp(link.app)" translate="studydetails.use_app"></button>
+                        </div>
+                        <div class="extraspace"></div>
+                      </div>
+                    </div>
            
 
 
