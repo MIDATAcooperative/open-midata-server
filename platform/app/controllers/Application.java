@@ -214,7 +214,7 @@ public class Application extends APIController {
 		   String role = user.role.toString();
 		   
 		   AccessLog.log("send admin notification mail: "+user.getPublicIdentifier());	   
-	  	   Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), user.firstname+" "+user.lastname, "New MIDATA User", adminnotify.render(site, email, role).toString());
+	  	   Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), "Midata Admin", "New MIDATA User", adminnotify.render(site, email, role).toString());
 	   }
 	}
 			

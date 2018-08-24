@@ -722,7 +722,7 @@ public class Studies extends APIController {
 		String code = study.code;
 
 		AccessLog.log("send admin notification mail (study): " + code);
-		Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), "Admin", "Study to Validate", studynotify.render(site, name, code).toString());
+		Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), "Midata Admin", "Study to Validate", studynotify.render(site, name, code).toString());
 
 	}
 

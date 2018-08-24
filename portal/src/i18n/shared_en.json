@@ -1139,6 +1139,8 @@
   "accountwipe" : {
     "title" : "Close and Delete MIDATA Account",
     "hello" : "Dear {{name}},",
+    "hello_m" : "Dear {{name}},",
+    "hello_w" : "Dear {{name}},",
     "paragraph1" : "You would like to delete your MIDATA account irrevocably? That is of course possible.",
     "paragraph2" : "Please read the following information first:",
     "point1" : "If you delete your MIDATA account your personal data will no longer be available.",

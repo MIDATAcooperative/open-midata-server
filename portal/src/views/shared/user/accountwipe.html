@@ -6,7 +6,7 @@
 		  <div class="panel-body">
 			<loader busy="status.isBusy !== false">		
 			<div class="alert alert-warning"><strong translate="accountwipe.warning"></strong><p translate="accountwipe.final">This cannot be undone!</p></div>
-			<p translate="accountwipe.hello" translate-value-name="{{ user.name }}"></p>
+			<p translate="{{ getHello('accountwipe.hello' ) }}" translate-value-name="{{ user.name }}"></p>
 			<p translate="accountwipe.paragraph1"></p>
 			<p translate="accountwipe.paragraph2"></p>	
 			<ul>
