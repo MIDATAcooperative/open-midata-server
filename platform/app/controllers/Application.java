@@ -472,7 +472,7 @@ public class Application extends APIController {
 		
 		// This is a dummy query to check if provided passphrase works
 		try {
-		  RecordManager.instance.list(userId, userId, CMaps.map("format","zzzzzz"), Sets.create("name"));
+		  RecordManager.instance.list(userId, getRole(), userId, CMaps.map("format","zzzzzz"), Sets.create("name"));
 		} catch (InternalServerException e) { throw new BadRequestException("error.passphrase_old", "Old passphrase not correct."); }
 		
 		KeyManager.instance.changePassphrase(userId, passphrase);
@@ -662,7 +662,7 @@ public class Application extends APIController {
 		KeyManager.instance.persist(userId);
 		
 		try {
-		  RecordManager.instance.list(userId, userId, CMaps.map("format","zzzzzzz"), Sets.create("name"));
+		  RecordManager.instance.list(userId, getRole(), userId, CMaps.map("format","zzzzzzz"), Sets.create("name"));
 		} catch (InternalServerException e) {
 		  throw new BadRequestException("error.invalid.passphrase", "Bad Passphrase");
 		}
@@ -1003,6 +1003,10 @@ public class Application extends APIController {
 				controllers.routes.javascript.Market.uploadIcon(),
 				controllers.routes.javascript.Market.deleteIcon(),
 				controllers.routes.javascript.Market.getIcon(),
+				controllers.routes.javascript.Market.getStudyAppLinks(),
+				controllers.routes.javascript.Market.insertStudyAppLink(),
+				controllers.routes.javascript.Market.deleteStudyAppLink(),
+				controllers.routes.javascript.Market.validateStudyAppLink(),
 								
 				// UserGroups
 				controllers.routes.javascript.UserGroups.search(),

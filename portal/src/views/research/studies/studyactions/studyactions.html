@@ -1,22 +1,142 @@
    
-<div ng-controller="StudyActionsCtrl" ng-cloak>   
-   <div class="tab-content">
-	    <div class="tab-pane active">	
+<div ng-controller="StudyActionsCtrl">   
+   <div class="tab-content"  ng-cloak>
+	    <div class="tab-pane active">
+	    <form name="myform" novalidate class="css-form form-horizontal" ng-submit="submit()" role="form">	
 	       <loader busy="status.isBusy !== false">
 	       
-	       <p class="alert alert-info" translate="studyactions.description"></p>
-	       
+	          <p class="lead" translate="studyactions.related_apps"></p>
+	
+	          <div ng-hide="selection">
+	          <p translate="studyactions.empty" ng-hide="links.length"></p>
+	          <table class="table table-striped table-hover" ng-show="links.length">
+	            <tr>
+	              <th translate="studyactions.app"></th>
+	              <th translate="studyactions.type"></th>
+	              <th translate="studyactions.validation"></th>
+	              <th></th>
+	            </tr>
+	            <tr ng-repeat="link in links">
+	              <td ng-click="select(link);">{{ link.app.filename }}</td>
+	                <td>
+	                <div ng-repeat="type in link.type" translate="{{ 'studyactions.types_short.'+type }}"></span>
+	              </td>
+	              <td>
+	                <div ng-show="link.validationResearch != 'VALIDATED'">
+	                  <span class="glyphicon glyphicon-remove text-danger"></span>
+	                  <span translate="studyactions.status.not_validated_research"></span>
+	                </div>
+	                <div ng-show="link.validationDeveloper != 'VALIDATED'">
+	                  <span class="glyphicon glyphicon-remove text-danger"></span>
+	                  <span translate="studyactions.status.not_validated_developer"></span>
+	                </div>
+	                <div ng-show="link.validationDeveloper == 'VALIDATED' && link.validationResearch == 'VALIDATED'">
+	                  <span class="glyphicon glyphicon-ok text-success"></span>
+	                  <span translate="studyactions.status.validated"></span>
+	                </div>
+	                <div ng-show="link.usePeriod.indexOf(study.executionStatus)<0">
+	                  <span class="glyphicon glyphicon-remove text-danger"></span>
+	                  <span translate="studyactions.status.study_wrong_status"></span>
+	                </div>
+	                <div ng-show="link.type.indexOf('REQUIRE_P')>=0 && study.participantSearchStatus != 'SEARCHING'">
+	                  <span class="glyphicon glyphicon-remove text-danger"></span>
+	                  <span translate="error.closed.study"></span>
+	                </div>
+	                <div ng-show="(link.type.indexOf('REQUIRE_P')>=0 || link.type.indexOf('OFFER_P')>=0) && link.study.joinMethods.indexOf('APP') < 0">
+	                  <span class="glyphicon glyphicon-remove text-danger"></span>
+	                  <span translate="studyactions.status.study_no_app_participation"></span>
+	                </div>
+	                
+	              </td>
+	              <td>
+	                <button type="button" class="btn btn-xs btn-default" ng-click="select(link);" translate="studyactions.select_btn"></button>
+	                <button type="button" class="btn btn-xs btn-default" ng-click="validate(link);" translate="studyactions.validate_btn"></button>
+	                <button type="button" class="btn btn-xs btn-danger" ng-click="remove(link);" translate="common.delete_btn"></button>
+	              </td>
+	            </tr>
+	          </table>
+	         	
+	          <button type="button" class="btn btn-primary" translate="common.add_btn" ng-click="addNew()"></button>
+	         </div>
+	         <div ng-show="selection">
+	            <formrow myid="study" label="studyactions.study">
+	               <p class="form-control-static">{{ study.name }}</p>
+	            </formrow> 
+	            <formrow myid="app" label="studyactions.app">
+	               <input type="text" class="form-control" ng-change="appselection()" autocomplete="off" typeahead-on-select="appselection()" ng-model-options="{ debounce: 500 }" ng-model="selection.app.filename" uib-typeahead="app.filename for app in apps | filter:$viewValue | limitTo:8">
+	            </formrow>
+	            <formrow myid="apptype" label="">
+	               <p class="form-control-static" ng-show="selection.app.type">
+	                <span translate="{{ 'enum.plugintype.' + selection.app.type }}"></span>
+	                <span translate="studyactions.for"></span>
+		            <span translate="{{ 'enum.userrole.'+selection.app.targetUserRole }}"></span>	               
+	               </p>
+	               <p class="form-control-static" ng-hide="selection.app.type" translate="studyactions.no_valid_app">
+	               </p>
+	            </formrow>
+	            <formrow myid="type" label="studyactions.type">
+	              <div ng-repeat="type in types" class="checkbox">
+	                <label>
+	                  <input type="checkbox" ng-disabled="checkType(selection.app, type)" ng-checked="selection.type.indexOf(type)>=0" ng-click="toggle(selection.type, type);formChange();" >
+	                  <span translate="{{ 'studyactions.types.'+type }}"></span>
+	                </label>
+	              </div>
+	            </formrow>
+	            <formrow myid="usePeriod" label="studyactions.use_period">
+	              <div ng-repeat="period in periods" class="checkbox">
+	                <label>
+	                  <input type="checkbox" ng-checked="selection.usePeriod.indexOf(period)>=0" ng-click="toggle(selection.usePeriod, period);formChange();" >
+	                  <span translate="{{ 'studyactions.use_periods.'+period }}"></span>
+	                </label>
+	              </div>	              
+	            </formrow>
+	            <!-- <formrow myid="group" label="Group" ng-show="selection.type.indexOf('DATALINK')>=0">
+	              <select ng-model="selection.studyGroup" class="form-control" ng-change="changedGroup()" ng-options="group.name as group.name for group in study.groups">
+	                 <option value="" translate="studyactions.allgroups"></option>
+	              </select>
+	            </formrow>
+	            <formrow myid="shareToStudy" label="studyactions.shareback" ng-show="selection.type.indexOf('DATALINK')>=0">
+	               <div class="checkbox">
+	                 <label>
+	                   <input type="checkbox" name="shareToStudy" id="shareToStudy" ng-model="selection.shareToStudy">
+	                 </label> 
+	               </div>
+	             </formrow>
+	             <formrow myid="restrictRead" label="studyactions.restrict" ng-show="selection.studyGroup">
+	               <div class="checkbox">
+	                 <label>
+	                   <input type="checkbox" name="restrictRead" id="restrictRead" ng-model="selection.restrictRead">
+	                 </label> 
+	               </div>
+	             </formrow> -->
+	             <formrow myid="x" label="">
+	               <button class="btn btn-primary" type="submit" translate="common.submit_btn"></button>
+	               <button class="btn btn-default" type="button" translate="common.cancel_btn" ng-click="cancel();"></button>
+	             </formrow>
+	           </div>
+	     
+   		   </loader>
+   		   </form>       
+		</div>	
+	</div>
+	<div ng-hide="selection">
+	 <div ng-controller="StudyActionsCtrl2">
+	<div class="panel panel-primary">
+	    <div class="panel-heading" translate="studyactions.datalink"></div>
+	    <div class="panel-body">  
+	       <loader busy="status.isBusy !== false">	     
+	       <p class="alert alert-info" translate="studyactions.description"></p>  	
+	          	       
 	       <div ng-show="study.validationStatus == 'VALIDATED'">
+	       <p class="lead" translate="studyactions.aggregator_apps"></p>  
 	       <form name="myform" role="form" class="css-form form-horizontal" novalidate ng-submit="addApplication(myform)">
 	         <formrow myid="group" label="Group">
 	           <select ng-model="crit.group" class="form-control" ng-change="changedGroup()" ng-options="group.name as group.name for group in study.groups">
 	             <option value="" translate="studyactions.allgroups"></option>
 	           </select>
 	         </formrow>
-	       		   		   			  
-		   <!--  <button class="btn btn-default" ng-click="addTask();" translate="studyactions.add_task_btn"></button> -->
-           
-           <div >
+	        
+           <div>
              <formrow myid="plugin" label="studyactions.plugin">
                <select name="plugin" id="plugin" ng-model="crit.plugin" class="form-control" ng-options="plugin as plugin.name for plugin in plugins" required></select>
              </formrow>
@@ -38,8 +158,7 @@
                </div>
              </formrow>
             </div>
-            
-            <!-- <button type="button" class="btn btn-default" ng-click="setGroup();" translate="studyactions.select_group_btn"></button> -->
+                       
             <button type="submit" class="btn btn-default" ng-disabled="crit.plugin.type=='mobile' && group == null" translate="studyactions.add_application_btn"></button>          
      
            </form>                   
@@ -87,5 +206,8 @@
 		</div>
 	</div>
 	
+	</div>
+	
 	<div ng-include="'/views/shared/dashboard/dashboard.html'"></div>
+		</div>
 </div>

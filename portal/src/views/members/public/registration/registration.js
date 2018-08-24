@@ -1,7 +1,7 @@
 angular.module('portal')
 .controller('RegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', '$translate', 'languages', '$stateParams', 'oauth', '$document', 'views', 'dateService', '$window', function($scope, $state, server, status, session, $translate, languages, $stateParams, oauth, $document, views, dateService, $window) {
 	
-	$scope.registration = { language : $translate.use() };
+	$scope.registration = { language : $translate.use(), confirmStudy:[] };
 	$scope.languages = languages.all;
 	$scope.countries = languages.countries;
 	$scope.error = null;
@@ -35,6 +35,16 @@ angular.module('portal')
 	        	$scope.myform.appAgb.$invalid = true;
 	        	$scope.myform.appAgb.$error = { 'mustaccept' : true };
             }
+        }
+        
+        if ($scope.links) {
+	        for (var i=0;i<$scope.links.length;i++) {
+				console.log($scope.links[i]);
+				if ($scope.links[i].type.indexOf("OFFER_P") >=0 && $scope.links[i].type.indexOf("REQUIRE_P")>=0 && $scope.registration.confirmStudy.indexOf($scope.links[i].studyId) < 0) {
+					$scope.error = { code : "error.missing.study_accept" };
+					return;
+				}
+			}
         }
 		 
 
@@ -120,6 +130,11 @@ angular.module('portal')
 		views.setView("terms", def, "Terms");
 	};
 	
+	$scope.toggle = function(array,itm) {		
+		var pos = array.indexOf(itm);
+		if (pos < 0) array.push(itm); else array.splice(pos, 1);
+	};
+	
 	$scope.days = [];
 
 	$scope.months = [];
@@ -129,10 +144,24 @@ angular.module('portal')
 	
 	if (oauth.getAppname()) {		
 	   $scope.app = oauth.app;
+	   $scope.links = oauth.links;
 	}
 	
 	$scope.back = function() {
 		$window.history.back();
+	};
+	
+	$scope.getLinkLabel = function(link) {
+		if (link.study.type == "CLINICAL") {
+			if (link.type.indexOf("REQUIRE_P") >= 0) return "oauth2.confirm_study";
+			return "oauth2.confirm_study_opt";
+		}
+		if (link.study.type == "CITIZENSCIENCE") return "oauth2.confirm_citizen_science";		
+		if (link.study.type == "COMMUNITY") {
+			if (link.type.indexOf("REQUIRE_P") >= 0) return "oauth2.confirm_community";
+			return "oauth2.confirm_community_opt";
+		}
+		
 	};
 	
 }]);

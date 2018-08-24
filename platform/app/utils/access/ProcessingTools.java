@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.bson.BasicBSONObject;
+import org.bson.types.BasicBSONList;
+
 import models.MidataId;
 import models.Record;
 import utils.AccessLog;
@@ -288,6 +291,54 @@ public class ProcessingTools {
 		@Override
 		public String toString() {
 			return "filter(["+passed+"/"+filtered+"]"+property+","+chain.toString()+")";
+		}
+
+	}
+	
+	static class FilterByHiddenTag extends FilterIterator<DBRecord> {
+				
+
+		public FilterByHiddenTag(DBIterator<DBRecord> chain) throws AppException {
+			super(chain);					
+			if (chain.hasNext())
+				next();
+		}
+
+		@Override
+		public boolean contained(DBRecord record) {
+			if (record.isStream) return true;
+			BasicBSONList tags = (BasicBSONList) record.meta.get("tags");
+			return tags == null || !tags.contains("security:hidden");
+		}
+		
+		@Override
+		public String toString() {
+			return "no-hidden(["+passed+"/"+filtered+"] "+chain.toString()+")";
+		}
+
+	}
+	
+	static class ClearByHiddenTag extends FilterIterator<DBRecord> {
+		
+
+		public ClearByHiddenTag(DBIterator<DBRecord> chain) throws AppException {
+			super(chain);					
+			if (chain.hasNext())
+				next();
+		}
+
+		@Override
+		public boolean contained(DBRecord record) {
+			if (record.isStream) return true;
+			BasicBSONList tags = (BasicBSONList) record.meta.get("tags");
+			if (tags == null || !tags.contains("security:hidden")) return true;
+			record.data = new BasicBSONObject();
+			return true;
+		}
+		
+		@Override
+		public String toString() {
+			return "no-hidden(["+passed+"/"+filtered+"] "+chain.toString()+")";
 		}
 
 	}

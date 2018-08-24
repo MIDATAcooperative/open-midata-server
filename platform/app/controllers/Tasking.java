@@ -16,6 +16,7 @@ import models.Space;
 import models.Task;
 import models.enums.AggregationType;
 import models.enums.Frequency;
+import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
@@ -94,7 +95,7 @@ public class Tasking extends APIController {
 			case YEARLY: cal.set(Calendar.DAY_OF_YEAR, 1);dateLimit = cal.getTime(); break;
 			case ONCE: dateLimit = task.createdAt;
 			}
-			Collection<RecordsInfo> info = RecordManager.instance.info(who, task.shareBackTo, null, task.confirmQuery, AggregationType.ALL);
+			Collection<RecordsInfo> info = RecordManager.instance.info(who, UserRole.ANY, task.shareBackTo, null, task.confirmQuery, AggregationType.ALL);
 			if (info.size() == 1) {
 				RecordsInfo recInf = info.iterator().next();
 				if (recInf.count > 0 && recInf.newest.after(dateLimit)) task.done = true;

@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -33,12 +34,15 @@ import models.PluginIcon;
 import models.Plugin_i18n;
 import models.Space;
 import models.Study;
+import models.StudyAppLink;
 import models.User;
+import models.UserGroupMember;
 import models.enums.IconUse;
 import models.enums.JoinMethod;
 import models.enums.MessageReason;
 import models.enums.ParticipantSearchStatus;
 import models.enums.PluginStatus;
+import models.enums.StudyAppLinkType;
 import models.enums.StudyExecutionStatus;
 import models.enums.StudyValidationStatus;
 import models.enums.UserFeature;
@@ -59,6 +63,7 @@ import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.LostUpdateException;
 import utils.exceptions.AppException;
+import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
@@ -164,7 +169,7 @@ public class Market extends APIController {
 			
 			
 			if (getRole().equals(UserRole.ADMIN) && withLogout) {
-				String linkedStudyCode = JsonValidation.getStringOrNull(json, "linkedStudyCode");
+				/*String linkedStudyCode = JsonValidation.getStringOrNull(json, "linkedStudyCode");
 				if (linkedStudyCode != null) {
 				  Study study = Study.getByCodeFromMember(linkedStudyCode, Sets.create("_id", "joinMethods", "executionStatus", "validationStatus", "participantSearchStatus"));
 				  if (study == null) throw new JsonValidationException("error.invalid.study", "linkedStudy", "invalid", "Unknown Study");
@@ -178,7 +183,7 @@ public class Market extends APIController {
 				  app.linkedStudy = null;
 				}
 				app.mustParticipateInStudy = JsonValidation.getBoolean(json, "mustParticipateInStudy");
-					
+					*/
 				
 			   String termsOfUse = JsonValidation.getStringOrNull(json, "termsOfUse");
 			   app.termsOfUse = termsOfUse;
@@ -734,9 +739,8 @@ public class Market extends APIController {
 		
         PluginIcon icon = PluginIcon.getByPluginAndUse( id, iconUse);	
         if (icon == null || icon.status.equals(PluginStatus.DELETED)) return notFound();
-        
-        response().setContentType(icon.contentType);        			
-		return ok(icon.data);
+                        		
+		return ok(icon.data).as(icon.contentType);
 	}
 	
 	/**
@@ -840,4 +844,150 @@ public class Market extends APIController {
 		return ok();				
 		
 	}
+	
+	@APICall
+	public static Result getStudyAppLinks(String type, String idStr) throws AppException {
+		Set<StudyAppLink> result = Collections.emptySet();
+		if (type.equals("study") || type.equals("study-use")) {
+			result = StudyAppLink.getByStudy(MidataId.from(idStr));
+			for (StudyAppLink sal : result) {
+				sal.app = Plugin.getById(sal.appId);
+			}
+			
+			if (type.equals("study-use")) {
+				Study study = Study.getById(MidataId.from(idStr), Sets.create("_id", "code","name","type", "description", "termsOfUse", "executionStatus","validationStatus", "participantSearchStatus","joinMethods"));
+				Iterator<StudyAppLink> sal_it = result.iterator();
+				while (sal_it.hasNext()) {
+					StudyAppLink sal = sal_it.next();					
+					if (!sal.isConfirmed() || !sal.usePeriod.contains(study.executionStatus)) sal_it.remove();
+					
+				}
+			}
+			
+		} else if (type.equals("app") || type.equals("app-use")) {
+			result = StudyAppLink.getByApp(MidataId.from(idStr));
+			for (StudyAppLink sal : result) {
+				Study study = Study.getById(sal.studyId, Sets.create("_id", "code","name", "type", "description", "termsOfUse", "executionStatus","validationStatus","participantSearchStatus", "joinMethods"));
+				sal.study = study;
+								
+			}
+			
+			if (type.equals("app-use")) {
+				Iterator<StudyAppLink> sal_it = result.iterator();
+				while (sal_it.hasNext()) {
+					StudyAppLink sal = sal_it.next();					
+					if (!sal.isConfirmed() || !sal.usePeriod.contains(sal.study.executionStatus)) sal_it.remove();
+					else if (!sal.study.participantSearchStatus.equals(ParticipantSearchStatus.SEARCHING)) {
+						sal.type.remove(StudyAppLinkType.OFFER_P);
+						if (sal.type.isEmpty()) sal_it.remove();
+					}
+				}
+			}
+		}
+		Map<String, Set<String>> mapping = new HashMap<String, Set<String>>();
+		mapping.put("Plugin", Plugin.ALL_PUBLIC);
+		mapping.put("Study", Sets.create("_id", "code","name","type", "description", "termsOfUse", "executionStatus", "validationStatus", "participantSearchStatus", "joinMethods"));
+		mapping.put("StudyAppLink", StudyAppLink.ALL);
+		
+		return ok(JsonOutput.toJson(result, mapping)).as("application/json");
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public static Result insertStudyAppLink() throws AppException {
+        JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "studyId", "appId", "type", "usePeriod");
+
+		
+		StudyAppLink link = new StudyAppLink();
+									
+		link._id = new MidataId();
+		link.appId = JsonValidation.getMidataId(json, "appId");
+		link.restrictRead = JsonValidation.getBoolean(json, "restrictRead");
+		link.shareToStudy = JsonValidation.getBoolean(json, "shareToStudy");
+		link.studyGroup = JsonValidation.getStringOrNull(json, "studyGroup");
+		link.studyId = JsonValidation.getMidataId(json, "studyId");
+		link.type = JsonValidation.getEnumSet(json, "type", StudyAppLinkType.class);
+		link.usePeriod = JsonValidation.getEnumSet(json, "usePeriod", StudyExecutionStatus.class);
+		
+		link.validationResearch = StudyValidationStatus.VALIDATION;
+		link.validationDeveloper = StudyValidationStatus.VALIDATION;
+		
+		checkValidation(link);
+										
+		link.add();
+		
+		return ok();
+	}
+	
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public static Result deleteStudyAppLink(String id) throws AppException {		
+		StudyAppLink link = StudyAppLink.getById(MidataId.from(id));		
+		checkValidation(link);		
+		link.delete();		
+		return ok();
+	}
+	
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public static Result validateStudyAppLink(String id) throws AppException {
+		StudyAppLink link = StudyAppLink.getById(MidataId.from(id));		
+		checkValidation(link);
+		link.update();
+		return ok();
+	}
+	
+	private static void checkValidation(StudyAppLink link) throws AppException {
+		if (link == null) throw new BadRequestException("error.internal", "Unknown link");
+		
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		UserRole role = getRole();
+		
+		Plugin plugin = Plugin.getById(link.appId);   
+		if (plugin == null) throw new BadRequestException("error.internal", "Unknown plugin");
+		
+		Study study = Study.getById(link.studyId, Study.ALL);
+		if (study == null) throw new BadRequestException("error.internal", "Unknown study");
+		
+        if (role.equals(UserRole.DEVELOPER)) {		 
+		   if (!plugin.creator.equals(userId)) throw new AuthException("error.notauthorized.not_plugin_owner", "You are not authorized to change this plugin.");
+		   link.validationDeveloper = StudyValidationStatus.VALIDATED;
+		} else if (role.equals(UserRole.RESEARCH)) {
+			UserGroupMember self = UserGroupMember.getByGroupAndMember(link.studyId, userId);
+			if (self == null)
+				throw new AuthException("error.notauthorized.study", "User not member of study group");
+			if (!self.role.maySetup())
+				throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
+	        link.validationResearch = StudyValidationStatus.VALIDATED;
+		} else if (role.equals(UserRole.ADMIN)) {
+			link.validationResearch = StudyValidationStatus.VALIDATED;
+			link.validationDeveloper = StudyValidationStatus.VALIDATED;
+		} else throw new AuthException("error.notauthorized.action", "You are not authorized to do this action.");
+        
+        boolean autoValidDeveloper = true;
+        boolean autoValidResearcher = true;
+        if (link.type.contains(StudyAppLinkType.OFFER_P)) {
+        	autoValidDeveloper = false;
+        	autoValidResearcher = false;
+        }
+        if (link.type.contains(StudyAppLinkType.REQUIRE_P)) {
+        	autoValidDeveloper = false;
+        	autoValidResearcher = false;
+        }
+        if (link.type.contains(StudyAppLinkType.RECOMMEND_A)) {
+        	autoValidResearcher = false;
+        }
+        if (link.type.contains(StudyAppLinkType.AUTOADD_A)) {
+        	autoValidResearcher = false;
+        }
+        if (link.type.contains(StudyAppLinkType.DATALINK)) {
+        	autoValidResearcher = false;
+        }
+        if (autoValidDeveloper) link.validationDeveloper = StudyValidationStatus.VALIDATED;
+        if (autoValidResearcher) link.validationResearch = StudyValidationStatus.VALIDATED;
+	}
+	
+	
 }

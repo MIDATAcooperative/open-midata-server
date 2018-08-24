@@ -1,0 +1,51 @@
+
+<div class="tab-content">
+  <div class="tab-pane active">
+	
+	<div ng-app="studies" ng-controller="StudyInfoCtrl" ng-cloak>
+	<loader busy="status.isBusy !== false">
+	<p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	   
+	</p>
+	<h2 translate="studyinfo.title"></h2>
+	<p class="alert alert-info" translate="studyfields.no_change_warning"></p>
+	<form name="myform" novalidate class="css-form form-horizontal" ng-submit="submit()" role="form">
+	  <formrow myid="languages" label="studyinfo.showlanguages">
+	    <div ng-repeat="language in languages" class="checkbox col-sm-3">
+	      <label>
+	        <input type="checkbox" >
+	        <span translate="{{ language.name }}"></span>
+	      </label>
+	    </div>
+	  </formrow>
+	  	  
+	  
+	  <formrow myid="sections" label="studyinfo.showsections">
+	    <div ng-repeat="section in sections" class="checkbox col-sm-6">
+	      <label>
+	        <input type="checkbox" name="section" id="section" ng-model="display.section" ng-value="section">
+	        <span translate="{{ 'enum.infos.'+section | translate }}"></span>
+	      </label>
+	    </div>
+	  </formrow>
+	  
+	  <div ng-repeat="section in infos">
+	    
+	  <h3 translate="{{ 'enum.infos.'+section.type }}"></h3>
+	  <formrow myid="text" label="studyinfo.text">
+	    <div ng-repeat="lang in display.langs">
+	      <textarea ng-model="section.value[lang]">
+	      </textarea>
+	    </div>
+	  </formrow>
+	  
+	  </div>
+      <formrow myid="x" label="">
+        <button type="submit" class="btn btn-primary" ng-disabled="studyLocked()" translate="common.change_btn"></button>
+        <span class="text-success" ng-show="requiredDataOk"><span class="glyphicon glyphicon-ok"></span> <span translate="common.save_ok"></span></span>
+      </formrow>
+    </form>
+    
+    </loader>
+    </div>
+  </div>	
+</div>

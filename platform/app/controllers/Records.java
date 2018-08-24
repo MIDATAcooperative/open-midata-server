@@ -37,6 +37,7 @@ import models.enums.AggregationType;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
+import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
@@ -120,7 +121,7 @@ public class Records extends APIController {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 
 		// execute
-		Record target = RecordManager.instance.fetch(userId, tk);
+		Record target = RecordManager.instance.fetch(userId, getRole(), tk);
 		ReferenceTool.resolveOwners(Collections.singleton(target), true, true);
 		return ok(JsonOutput.toJson(target, "Record", Record.ALL_PUBLIC_WITHNAMES)).as("application/json");
 	}
@@ -156,7 +157,7 @@ public class Records extends APIController {
 		}
 
 		try {
-			records.addAll(RecordManager.instance.list(userId, aps, properties, fields));
+			records.addAll(RecordManager.instance.list(userId, getRole(), aps, properties, fields));
 		} catch (RequestTooLargeException e) {
 			return ok();
 		}
@@ -190,7 +191,7 @@ public class Records extends APIController {
 		AggregationType aggrType = json.has("summarize") ? JsonValidation.getEnum(json, "summarize", AggregationType.class) : AggregationType.GROUP;
 
 		try {
-			Collection<RecordsInfo> result = RecordManager.instance.info(userId, aps, null, properties, aggrType);
+			Collection<RecordsInfo> result = RecordManager.instance.info(userId, getRole(), aps, null, properties, aggrType);
 			return ok(Json.toJson(result));
 		} catch (RequestTooLargeException e) {
 			return status(202);
@@ -235,12 +236,12 @@ public class Records extends APIController {
 		result.set("query", Json.toJson(query));
 
 		if (readRecords) {
-			Set<String> recordsIds = RecordManager.instance.listRecordIds(userId, apsId);
+			Set<String> recordsIds = RecordManager.instance.listRecordIds(userId, getRole(), apsId);
 			result.set("records", Json.toJson(recordsIds));
 
 			try {
 				Map<String, Object> props = new HashMap<String, Object>();
-				Collection<RecordsInfo> infos = RecordManager.instance.info(userId, apsId, null, props, AggregationType.CONTENT);
+				Collection<RecordsInfo> infos = RecordManager.instance.info(userId, getRole(), apsId, null, props, AggregationType.CONTENT);
 				result.set("summary", Json.toJson(infos));
 			} catch (RequestTooLargeException e) {
 				result.putArray("summary");
@@ -437,7 +438,7 @@ public class Records extends APIController {
 
 				if (consent == null || consent.type.equals(ConsentType.EXTERNALSERVICE)) {
 					if (hasAccess) {
-						List<Record> recs = RecordManager.instance.list(userId, start, CMaps.map(query).map("flat", "true"), Sets.create("_id"));
+						List<Record> recs = RecordManager.instance.list(userId, UserRole.ANY, start, CMaps.map(query).map("flat", "true"), Sets.create("_id"));
 						Set<MidataId> remove = new HashSet<MidataId>();
 						for (Record r : recs)
 							remove.add(r._id);
@@ -514,7 +515,7 @@ public class Records extends APIController {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		RecordToken tk = Records.getRecordTokenFromString(recordIdString);
 
-		Record record = RecordManager.instance.fetch(userId, tk, Sets.create("format", "created"));
+		Record record = RecordManager.instance.fetch(userId, getRole(), tk, Sets.create("format", "created"));
 		if (record == null)
 			throw new BadRequestException("error.unknown.record", "Record not found!");
 		if (record.format == null)
@@ -529,7 +530,7 @@ public class Records extends APIController {
 			return ok();
 
 		// create encrypted authToken
-		SpaceToken spaceToken = new SpaceToken(PortalSessionToken.session().handle, new MidataId(tk.apsId), userId, new MidataId(tk.recordId));
+		SpaceToken spaceToken = new SpaceToken(PortalSessionToken.session().handle, new MidataId(tk.apsId), userId, getRole() ,new MidataId(tk.recordId));
 
 		String visualizationServer = "https://" + InstanceConfig.getInstance().getConfig().getString("visualizations.server") + "/" + visualization.filename + "/";
 
@@ -589,7 +590,7 @@ public class Records extends APIController {
 	public static Result downloadAccountData() throws AppException, IOException {
 
 		final MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-
+        final UserRole role = getRole();
 		AuditManager.instance.addAuditEvent(AuditEventType.DATA_EXPORT, executorId);
 
 		setAttachmentContentDisposition("yourdata.json");
@@ -597,7 +598,7 @@ public class Records extends APIController {
 		final String handle = PortalSessionToken.session().handle;
 
 		KeyManager.instance.continueSession(handle);
-		ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId));
+		ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId, role));
 		String headerStr = "{ \"resourceType\" : \"Bundle\", \"type\" : \"searchset\", \"entry\" : [ ";
 
 		boolean first = true;
@@ -609,7 +610,7 @@ public class Records extends APIController {
 			@Override
 			public Iterator<ByteString> create() throws Exception {
 				KeyManager.instance.continueSession(handle);
-				ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId));
+				ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId, role));
 
 				DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, executorId, CMaps.map("owner", "self"), RecordManager.COMPLETE_DATA);
 				return new RecIterator(allRecords);
@@ -638,7 +639,7 @@ public class Records extends APIController {
 					try {
 						StringBuffer out = new StringBuffer();
 						KeyManager.instance.continueSession(handle);
-						ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId));
+						ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId, role));
 						Record rec = it.next();
 						String format = rec.format.startsWith("fhir/") ? rec.format.substring("fhir/".length()) : "Basic";
 

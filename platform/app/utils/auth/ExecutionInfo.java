@@ -13,6 +13,7 @@ import models.MobileAppInstance;
 import models.Space;
 import models.User;
 import models.enums.ConsentStatus;
+import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.Http.Request;
 import utils.AccessLog;
@@ -37,6 +38,8 @@ public class ExecutionInfo {
 	
 	public MidataId recordId;
 	
+	public UserRole role;
+	
 	public Space space;
 	
 	public RequestCache cache = new RequestCache();
@@ -45,12 +48,13 @@ public class ExecutionInfo {
 	
 	public ExecutionInfo() {}
 	
-	public ExecutionInfo(MidataId executor) throws InternalServerException {
+	public ExecutionInfo(MidataId executor, UserRole role) throws InternalServerException {
 		this.executorId = executor;
 		this.ownerId = executor;
 		this.targetAPS = executor;
 		this.pluginId = RuntimeConstants.instance.portalPlugin;
 		this.context = RecordManager.instance.createContextFromAccount(executor);
+		this.role = role;
 	}
 	
 	public static ExecutionInfo checkToken(Request request, String token, boolean allowInactive) throws AppException {
@@ -82,7 +86,7 @@ public class ExecutionInfo {
 		KeyManager.instance.continueSession(authToken.handle);
 		ExecutionInfo result = new ExecutionInfo();
 		result.executorId = authToken.executorId;
-			
+		result.role = authToken.role;	
 		if (authToken.recordId != null) {
 			result.targetAPS = authToken.spaceId;
 			result.recordId = authToken.recordId;			
@@ -144,6 +148,7 @@ public class ExecutionInfo {
         
         ExecutionInfo result = new ExecutionInfo();
 		result.executorId = appInstance._id;
+		result.role = authToken.role;
         
 		if (appInstance.sharingQuery == null) {
 			appInstance.sharingQuery = RecordManager.instance.getMeta(authToken.appInstanceId, authToken.appInstanceId, "_query").toMap();

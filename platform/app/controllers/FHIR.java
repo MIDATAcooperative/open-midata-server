@@ -95,7 +95,7 @@ public class FHIR extends Controller {
 			    try {
 			      KeyManager.instance.continueSession(tk.getHandle());
 			    } catch (AuthException e) { return null; }	
-			    ResourceProvider.setExecutionInfo(new ExecutionInfo(tk.getUserId()));
+			    ResourceProvider.setExecutionInfo(new ExecutionInfo(tk.getUserId(), tk.getRole()));
 			}
 		}
         
@@ -164,7 +164,7 @@ public class FHIR extends Controller {
 			    try {
 				      KeyManager.instance.continueSession(tk.getHandle());
 			    } catch (AuthException e) { return null; }	
-			    ResourceProvider.setExecutionInfo(new ExecutionInfo(tk.getUserId()));
+			    ResourceProvider.setExecutionInfo(new ExecutionInfo(tk.getUserId(), tk.getRole()));
 			 }
 		}
         

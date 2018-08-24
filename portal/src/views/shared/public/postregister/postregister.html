@@ -133,7 +133,7 @@
                         
 						<p ng-show="codeSuccess" class="alert alert-success" translate="postregister.address_success"></p>
 						<p ng-show="mailSuccess" class="alert alert-success" translate="postregister.email_success"></p>
-						<p ng-show="error" class="alert alert-danger" translate="{{ error.code }}"></p>
+						<p ng-show="error" class="alert alert-danger" translate="{{ error.code || error }}"></p>
 					
 					</div>
 				</div>
