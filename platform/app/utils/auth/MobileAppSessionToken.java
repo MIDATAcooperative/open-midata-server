@@ -5,6 +5,7 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import models.MidataId;
+import models.enums.UserRole;
 import play.libs.Json;
 import utils.collections.CMaps;
 import utils.exceptions.InternalServerException;
@@ -29,15 +30,18 @@ public class MobileAppSessionToken {
 	 * the expiration timestamp of the token
 	 */
 	public long expiration;
+	
+	public UserRole role;
 
-	public MobileAppSessionToken(MidataId appInstanceId, String phrase, long expirationTime) {
+	public MobileAppSessionToken(MidataId appInstanceId, String phrase, long expirationTime, UserRole role) {
 		this.appInstanceId = appInstanceId;
 		this.passphrase = phrase;
 		this.expiration = expirationTime;
+		this.role = role;
 	}
 	
 	public String encrypt() throws InternalServerException {
-		Map<String, Object> map = CMaps.map("a", appInstanceId.toString()).map("p", passphrase).map("c", expiration);						
+		Map<String, Object> map = CMaps.map("a", appInstanceId.toString()).map("p", passphrase).map("c", expiration).map("r", role.toShortString());						
 		String json = Json.stringify(Json.toJson(map));
 		return TokenCrypto.encryptToken(json);
 	}
@@ -62,7 +66,9 @@ public class MobileAppSessionToken {
 			String phrase = json.get("p").asText();	
 			long expirationTime = json.get("c").asLong();
 		    if (expirationTime < System.currentTimeMillis()) return null;
-			return new MobileAppSessionToken(appInstanceId, phrase, expirationTime);
+		    String r = json.get("r").asText();
+		    UserRole role = UserRole.fromShortString(r);		    
+			return new MobileAppSessionToken(appInstanceId, phrase, expirationTime, role);
 		} catch (Exception e) {
 			return null;
 		}

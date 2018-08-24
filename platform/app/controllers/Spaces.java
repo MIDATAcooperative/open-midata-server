@@ -44,7 +44,7 @@ import utils.json.JsonValidation.JsonValidationException;
  *
  */
 @Security.Authenticated(AnyRoleSecured.class)
-public class Spaces extends Controller {
+public class Spaces extends APIController {
 	
 
 	
@@ -238,7 +238,7 @@ public class Spaces extends Controller {
 		}
 
 		// create encrypted authToken
-		SpaceToken spaceToken = new SpaceToken(PortalSessionToken.session().handle, space._id, userId);
+		SpaceToken spaceToken = new SpaceToken(PortalSessionToken.session().handle, space._id, userId, getRole());
 		return ok(spaceToken.encrypt(request()));
 	}
 	
@@ -269,7 +269,7 @@ public class Spaces extends Controller {
 		boolean testing = (visualization.creator.equals(PortalSessionToken.session().getDeveloper()) || visualization.creator.equals(userId)) && visualization.developmentServer != null && visualization.developmentServer.length()> 0; 
 		
 		
-	    SpaceToken spaceToken = new SpaceToken(PortalSessionToken.session().handle, space._id, userId, targetUserId, true);
+	    SpaceToken spaceToken = new SpaceToken(PortalSessionToken.session().handle, space._id, userId, targetUserId, getRole(), true);
 			
 		String visualizationServer = "https://" + InstanceConfig.getInstance().getConfig().getString("visualizations.server") + "/" + visualization.filename;
 		if (testing) visualizationServer = visualization.developmentServer;

@@ -34,7 +34,7 @@ angular.module('portal')
     ];
 			
 	$scope.loadApp = function(appId) {
-		$scope.status.doBusy(apps.getApps({ "_id" : appId }, ["creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion", "requirements", "termsOfUse", "orgName", "unlockCode", "writes", "icons", "apiUrl", "noUpdateHistory"]))
+		$scope.status.doBusy(apps.getApps({ "_id" : appId }, ["creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "unlockCode", "writes", "icons", "apiUrl", "noUpdateHistory"]))
 		.then(function(data) { 
 			$scope.app = data.data[0];			
 			if ($scope.app.status == "DEVELOPMENT" || $scope.app.status == "BETA") {
@@ -48,7 +48,7 @@ angular.module('portal')
 			$scope.app.defaultQueryStr = JSON.stringify($scope.app.defaultQuery);
 			//$scope.updateQuery();
 			
-			if ($scope.app.linkedStudy) {
+			/*if ($scope.app.linkedStudy) {
 				
 				$scope.status.doBusy(studies.search({ _id : $scope.app.linkedStudy }, ["code", "name"]))
 				.then(function(studyresult) {
@@ -58,7 +58,7 @@ angular.module('portal')
 					}
 				});
 				
-			}
+			}*/
 		});
 	};
 	
@@ -136,9 +136,9 @@ angular.module('portal')
 		}
 	};
 	
-	$scope.checkStudyEmpty = function() {
+	/*$scope.checkStudyEmpty = function() {
 		if ($scope.app && !$scope.app.linkedStudyCode) $scope.app.mustParticipateInStudy = false;
-	};
+	};*/
 	
 	$translatePartialLoader.addPart("developers");
 	
@@ -176,6 +176,11 @@ angular.module('portal')
 	
 	$scope.requireLogout = function() {
 		$scope.logoutRequired = true;
+	};
+	
+	$scope.getOAuthLogin = function() {
+		if (!$scope.app.redirectUri) return "";
+		return "/oauth.html#/portal/oauth2?response_type=code&client_id="+encodeURIComponent($scope.app.filename)+"&redirect_uri="+encodeURIComponent($scope.app.redirectUri.split(" ")[0]);
 	};
 	
 }]);

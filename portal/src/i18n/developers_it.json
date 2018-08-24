@@ -59,9 +59,7 @@
             "ACCOUNT_UNLOCK" : "Account sbloccato dall'amministratore",
             "EMAIL_CHANGED_OLDADDRESS" : "E-mail di accesso modificata (inviare al vecchio indirizzo e-mail)",
             "EMAIL_CHANGED_NEWADDRESS" : "E-mail di accesso modificata (inviare al nuovo indirizzo e-mail)",
-
-            // TODO NEW: Password forgotten
-            "PASSWORD_FORGOTTEN" : "Password forgotten"
+            "PASSWORD_FORGOTTEN" : "Password dimenticata"
         }
     },
 
@@ -92,24 +90,12 @@
         "terms_of_use" : "Condizioni generali di contratto",
         "show_terms" : "Mostra Condizioni generali di contratto",
         "unlock_code" : "Codice di registrazione",
-
-        // TODO NEW: Disconnect All
-        "logout" : "Disconnect All",
-
-        // TODO NEW: Logout all users
-        "pleaseLogout1" : "Logout all users",
-
-        // TODO NEW: Disconnect from studies
-        "pleaseLogout2" : "Disconnect from studies",
-
-        // TODO NEW: [ Not required ]
-        "logout_optional" : "[ Not required ]",
-
-        // TODO NEW: [ required ]
-        "logout_required" : "[ required ]",
-
-        // TODO NEW: Changes to fields marked with !! will require to log out all users of that application.
-        "logout_explain" : "Changes to fields marked with !! will require to log out all users of that application.",
+        "logout" : "Disconnetta tutti",
+        "pleaseLogout1" : "Disconnetta tutti gli utenti",
+        "pleaseLogout2" : "Disconnetta dagli studi",
+        "logout_optional" : "[ non richiesto ]",
+        "logout_required" : "[ richiesto ]",
+        "logout_explain" : "Le modifiche ai campi contrassegnati con !! richiedono il logout di tutti gli utenti di quell'applicazione.",
 
         "info" : {
             "filename" : "Questo nome è utilizzato internamente per identificare la propria applicazione. Deve essere un identificatore valido (a-z, A-Z, 0-9, _).",
@@ -118,9 +104,7 @@
             "name" : "Il nome, della propria applicazione o plugin, che sarà presentato all'utente finale.",
             "description" : "La descrizione del proprio plugin che sarà visualizzata anche nel punto contrassegnato.",
             "tokenExchangeParams" : "La definizione predefinita è client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> tuttavia alcuni servizi richiedono anche client_secret=<client_secret> oppure nessun client_id",
-
-            // TODO NEW: Resource updates done by this application produce no history entries. Use only if application does many and frequent updates.
-            "no_update_history" : "Resource updates done by this application produce no history entries. Use only if application does many and frequent updates.",
+            "no_update_history" : "Gli aggiornamenti delle risorse FHIR effettuati da questa applicazione non producono voci della cronologia. Utilizzare solo se l'applicazione esegue molti e frequenti aggiornamenti.",
             "resharesData" : "L'applicazione è autorizzata a ricondividere con terzi i dati a cui accede.",
             "allowsUserSearch" : "Gli utenti dell'applicazione sono autorizzati a cercare altri utenti della stessa applicazione.",
             "defaultSpaceName" : "Il titolo del riquadro del proprio plugin sul pannello di controllo.",
@@ -131,9 +115,7 @@
             "defaultQuery_mobile" : "Filtrare restringendo l'accesso dell'applicazione ai dati. L'accesso deve essere limitato per 'codice', 'contenuto' o 'gruppo' e può essere limitato per 'formato' o 'titolare'. Un esempio valido è il seguente (tutte le Osservazioni): '{ \"group\" : \"all\", \"group-system\" : \"v1\", \"format\" : [\"fhir/Observation\" ] }'",
             "defaultQuery" : "Filtrare restringendo l'accesso del plugin ai dati. L'accesso deve essere limitato per almeno una voce tra 'codice', 'contenuto', 'gruppo', 'formato' o 'titolare'. Un esempio valido è il seguente (tutte le Osservazioni): '{ \"format\" : [\"fhir/Observation\" ] }'",
             "defaultQuery_extra" : "Cercare i valori validi per 'codice', 'contenuto' o 'formato' nell'elenco 'Formato/Contenuto' della guida dello sviluppatore. Come prima versione è possibile iniziare con l'accesso a tutti i dati. A tale scopo utilizzare { \"group\" : \"all\", \"group-system\" : \"v1\" }. Raffinare il filtro prima che il plugin o l'applicazione entrino in produzione.",
-
-            // TODO NEW: You may specifiy multiple possible redirect URIs by seperating the URIs with a space
-            "redirectUri" : "You may specifiy multiple possible redirect URIs by seperating the URIs with a space",
+            "redirectUri" : "È possibile specificare più URI possibili per il reindirizzamento separandoli con uno spazio.",
             "secret" : "La propria applicazione necessiterà di questo 'segreto' durante l'accesso. Scegliere un qualsiasi elemento desiderato.",
             "mustParticipateInStudy" : "L'utente deve partecipare allo studio per utilizzare l'applicazione.",
             "unlock_code" : "Se compilato, questo codice deve essere inserito dall'utente per registrarsi o accedere per la prima volta a MIDATA tramite l'applicazione. Il codice non è sensibile ai caratteri maiuscoli/minuscoli."
@@ -158,9 +140,7 @@
             "learn" : "Aggiungere tutti i tipi di dati scritti dall'applicazione automaticamente al filtro di accesso ai dati. (DEVE essere disattivato prima che l'applicazione entri in produzione)",
             "all" : "Durante lo sviluppo, consentire l'accesso a tutti i dati dell'utente. (DEVE essere sostituito con un filtro di accesso ai dati adeguato prima che il plugin entri in produzione)"
         },
-
-        // TODO NEW: No Resource History
-        "no_update_history" : "No Resource History",
+        "no_update_history" : "No storia risorse FHIR",
         "export_btn" : "Esporta la definizione applicazione",
         "export_help" : "Esportare la definizione di questa applicazione, in modo che possa essere importata e utilizzata su un altro servizio.",
         "important" : "IMPORTANTE",

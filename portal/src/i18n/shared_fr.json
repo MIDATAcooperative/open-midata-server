@@ -212,15 +212,11 @@
             "user-registration" : "Inscription de l'utilisateur",
             "110122" : "Connexion",
             "user-password-change" : "Mot de passe modifié",
-
-            // TODO NEW: Password change requested
-            "user-password-change-request" : "Password change requested",
+            "user-password-change-request" : "Changement de mot de passe demandé",
             "user-passphrase-change" : "Passphrase modifiée",
             "user-address-change" : "Adresse postale modifiée",
             "user-email-change" : "Adresse e-mail modifiée",
-
-            // TODO NEW: User's birthday changed
-            "user-birthday-change" : "User's birthday changed",
+            "user-birthday-change" : "Date de naissance de l'utilisateur modifiée",
             "user-status-change" : "État du compte de l'utilisateur modifié",
             "user-email-confirmed" : "E-mail confirmé par l'utilisateur",
             "user-email-rejected" : "E-mail rejeté par l'utilisateur",
@@ -555,45 +551,13 @@
         "forgot_your_password" : "Mot de passe oublié?",
         "login_btn" : "Se connecter",
 
-
-        // TODO CHANGED
-        // OLD: undefined
-        // NEW: Dear study participant
         "info1" : "Chère participante, cher participant à une étude",
-
-        // TODO CHANGED
-        // OLD: undefined
-        // NEW: You already have a MIDATA account, log in with your email address and password.
         "info2" : "Vous avez déjà un compte MIDATA, connectez-vous avec votre adresse email et votre mot de passe.",
-
-        // TODO CHANGED
-        // OLD: undefined
-        // NEW: Your personal account gives you an overview of your study participation.
         "info3" : "Votre compte personnel vous donne un aperçu de votre participation aux études.",
-
-        // TODO CHANGED
-        // OLD: undefined
-        // NEW: Dear visitor
         "info4" : "Cher visiteur",
-
-        // TODO CHANGED
-        // OLD: undefined
-        // NEW: You do not yet have a MIDATA account and do not participate in a study?
-        "info5" : "Vous n'avez pas encore de compte MIDATA et ne participez pas à une étude ?",
-
-        // TODO CHANGED
-        // OLD: undefined
-        // NEW: Join the
+        "info5" : "Vous n'avez pas encore de compte MIDATA et ne participez pas à une étude?",
         "info6" : "Rejoignez le projet",
-
-        // TODO CHANGED
-        // OLD: undefined
-        // NEW: Ally Science
         "info6b" : "Ally Science",
-
-        // TODO CHANGED
-        // OLD: undefined
-        // NEW: project!
         "info6c" : "!"
     },
 
@@ -671,9 +635,7 @@
 
     "changeaddress" : {
         "title" : "Adresse postale et coordonnées",
-
-        // TODO NEW: Your account information has been updated.
-        "success" : "Your account information has been updated.",
+        "success" : "Votre profil a été mis à jour.",
         "update_btn" : "Mettre à jour"
     },
 
@@ -744,7 +706,7 @@
         "name" : "Prénom:",
         "email" : "E-mail:",
         "birthday" : "Date de naissance:",
-        "midataID" : "Account ID:",
+        "midataID" : "MIDATA ID:",
         "action" : "Plus...",
         "change_password_btn" : "Changer le mot de passe",
         "change_passphrase_btn" : "Modifier la phrase de passe",
@@ -754,9 +716,7 @@
         "reset_spaces_btn" : "Réinitialiser le portail",
         "export_btn" : "Exporter vos données",
         "delete_records_btn" : "Supprimer les enregistrements",
-
-        // TODO NEW: Delete Account
-        "wipe_account_btn" : "Delete Account",
+        "wipe_account_btn" : "Supprimer le compte",
         "account_repaired" : "Votre compte a été réparé.",
         "spaces_resetted" : "Votre configuration a été réinitialisée.",
         "settings" : "Paramètres",
@@ -932,10 +892,6 @@
         "no_account" : "Vous n'avez pas encore de compte?",
         "have_account" : "Avez-vous un compte MIDATA?",
         "have_account2" : "Parfait, connectez-vous.",
-
-        // TODO CHANGED
-        // OLD: Create Account
-        // NEW: Sign up
         "sign_up_btn" : "S'inscrire",
         "reshares_data" : "L'application peut partager les données auxquelles elle a accès avec des tiers.",
         "allows_user_search" : "Vos nom et adresse e-mail peuvent être consultés par d'autres personnes utilisant cette application.",
@@ -1057,7 +1013,6 @@
         "task_title" : "Titre de la tâche",
         "description" : "Description",
         "frequency" : "Fréquence",
-
         "survey_name" : "Remplir le sondage",
         "survey_description" : "Veuillez remplir les sondages que j'ai partagés avec votre compte.",
         "survey_title" : "Remplir un sondage"
@@ -1137,7 +1092,7 @@
 
     "changeemail" : {
         "title" : "Changer l'adresse e-mail du compte",
-        "midataId" : "ID MIDATA",
+        "midataId" : "MIDATA ID",
         "name" : "Nom",
         "old_email" : "Adresse e-mail actuelle",
         "new_email" : "Nouvelle adresse e-mail",
@@ -1158,74 +1113,34 @@
         "agb_signed" : "Vous avez signé les conditions générales.",
         "confirmed" : "Votre adresse postale a été confirmée.",
         "entercode" : "Une lettre contenant un code d'inscription vous a été envoyée. Veuillez saisir le code ici dès que vous l'avez reçu:",
-        "email_unvalidated" : "Votre adresse e-mail n'a pas encore été validée. Veuillez cliquer sur le lien que vous avez reçu dans l'e-mail de confirmation !",
+        "email_unvalidated" : "Votre adresse e-mail n'a pas encore été validée. Veuillez cliquer sur le lien que vous avez reçu dans l'e-mail de confirmation!",
         "request_membership_btn" : "Demander un contrat"
     },
 
     "accountwipe" : {
-
-        // TODO NEW: Close and Delete MIDATA Account
-        "title" : "Close and Delete MIDATA Account",
-
-        // TODO NEW: Dear {{name}},
-        "hello" : "Dear {{name}},",
-
-        // TODO NEW: You would like to delete your MIDATA account irrevocably? That is of course possible.
-        "paragraph1" : "You would like to delete your MIDATA account irrevocably? That is of course possible.",
-
-        // TODO NEW: Please read the following information first:
-        "paragraph2" : "Please read the following information first:",
-
-        // TODO NEW: If you delete your MIDATA account your personal data will no longer be available.
-        "point1" : "If you delete your MIDATA account your personal data will no longer be available.",
-
-        // TODO NEW: Data already shared for research will remain available to the studies it has been shared to up to the time of account deletion. No new data will be shared.
-        "point2" : "Data already shared for research will remain available to the studies it has been shared to up to the time of account deletion. No new data will be shared.",
-
-        // TODO NEW: MIDATA is not able to recover your deleted account.
-        "point3" : "MIDATA is not able to recover your deleted account.",
-
-        // TODO NEW: Warning
-        "warning" : "Warning",
-
-        // TODO NEW: This action cannot be undone.
-        "final" : "This action cannot be undone.",
-
-        // TODO NEW: If you really want to delete your MIDATA account enter your password for confirmation.
-        "paragraph3" : "If you really want to delete your MIDATA account enter your password for confirmation.",
-
-        // TODO NEW: Password
-        "password" : "Password",
-
-        // TODO NEW: Reason (optional)
-        "reason" : "Reason (optional)",
-
-        // TODO NEW: Please tell us why you want to delete your account. We are continously trying to improve the service.
-        "reason2" : "Please tell us why you want to delete your account. We are continously trying to improve the service.",
-
-        // TODO NEW: Close and Delete MIDATA Account
-        "wipe_btn" : "Close and Delete MIDATA Account",
-
-        // TODO NEW: Password not correct. Account not deleted.
-        "error" : "Password not correct. Account not deleted."
+        "title" : "Fermer et supprimer le compte MIDATA",
+        "hello" : "Chère/cher {{name}},",
+        "paragraph1" : "Vous souhaitez supprimer votre compte MIDATA irrévocablement? C'est bien sûr possible.",
+        "paragraph2" : "Veuillez d'abord lire les informations suivantes :",
+        "point1" : "Si vous supprimez votre compte MIDATA, vos données personnelles ne seront plus disponibles.",
+        "point2" : "Les données qui ont déjà été partagées avec des études continueront d'être disponibles dans l'étude.",
+        "point3" : "MIDATA n'est pas en mesure de récupérer votre compte supprimé.",
+        "warning" : "Avertissement",
+        "final" : "Cette action ne peut être annulée.",
+        "paragraph3" : "Si vous voulez vraiment supprimer votre compte MIDATA, entrez votre mot de passe pour confirmation.",
+        "password" : "Mot de passe",
+        "reason" : "Motif (facultatif)",
+        "reason2" : "Nous vous serions reconnaissants de nous indiquer le motif pour lequel vous supprimez votre compte. Nous essayons continuellement d'améliorer la plateforme MIDATA.",
+        "wipe_btn" : "Fermer et supprimer le compte MIDATA",
+        "error" : "Mot de passe incorrect. Le compte n'a pas été supprimé."
     },
 
     "serviceleave" : {
-
-        // TODO NEW: Done with your session?
-        "title" : "Done with your session?",
-
-        // TODO NEW: Thank you for your help!
-        "thankyou" : "Thank you for your help!",
-
-        // TODO NEW: End session and close window
-        "goodbye_btn" : "End session and close window",
-
-        // TODO NEW: You will be redirected to the calling page.
-        "logoutreturn" : "You will be redirected to the calling page.",
-
-        // TODO NEW: Logout and continue
-        "return_btn" : "Logout and continue"
+        "title" : "Vous avez terminé votre session?",
+        "thankyou" : "Merci pour votre aide!",
+        "goodbye_btn" : "Fin de la session et fermeture de la fenêtre",
+        "logoutreturn" : "Vous serez redirigé vers la page d'appel.",
+        "return_btn" : "Déconnectez-vous et continuez"
     },
 
     "-1" : "inconnu"

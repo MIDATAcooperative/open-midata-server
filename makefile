@@ -300,6 +300,7 @@ use-loadbalancer: /etc/ssl/certs/ssl-cert-snakeoil.pem
 	sudo apt-get install ssl-cert	
 	
 tasks/bugfixes:
+	mkdir -p ~/.config
 	sudo chown -R $$USER:$$GROUP ~/.config	
 	sudo chown -R $$USER:$$GROUP ~/.npm
 	touch tasks/bugfixes

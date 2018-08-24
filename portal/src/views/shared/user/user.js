@@ -16,7 +16,7 @@ angular.module('portal')
 	$scope.reqRole = $state.params.role;
 	
 	$scope.init = function() {
-		$scope.status.doBusy(users.getMembers({"_id": userId}, ["name", "email", "searchable", "language", "address1", "address2", "zip", "city", "country", "firstname", "lastname", "mobile", "phone", "emailStatus", "agbStatus", "contractStatus", "role", "subroles", "confirmedAt", "birthday", "midataID", "status"]))
+		$scope.status.doBusy(users.getMembers({"_id": userId}, ["name", "email", "searchable", "language", "address1", "address2", "zip", "city", "country", "firstname", "lastname", "mobile", "phone", "emailStatus", "agbStatus", "contractStatus", "role", "subroles", "confirmedAt", "birthday", "midataID", "status", "gender"]))
 		.then(function(results) {
 			$scope.user = results.data[0];
 		});
@@ -91,6 +91,12 @@ angular.module('portal')
 		$scope.status.doAction("wipe", server.post("/api/shared/users/wipe", JSON.stringify($scope.user))).then(function() {
 		  document.location.href="/#/public/login"; 
 	  },function(err) { $scope.error = err.data; });	  
+	};
+	
+	$scope.getHello = function(label) {
+		if ($scope.user.gender === "FEMALE") return label+"_w";
+		if ($scope.user.gender === "MALE") return label+"_m";
+		return label;
 	};
 	
 }]);

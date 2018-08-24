@@ -143,22 +143,24 @@
 					</fieldset>
 					<form-error myid="appAgb" type="mustaccept" message="error.missing.agb"></form-error>
 
-					<fieldset  ng-show="app.linkedStudy"
-						class="mi-at-input__fieldset mi-at-input--checkbox mi-at-input--checkbox-white">
-						<input id="confirmStudy" name="confirmStudy" ng-model="registration.confirmStudy" class="mi-at-input mi-at-input--checkbox"
-							type="checkbox" value="" floating-label /> <label for="confirmStudy" class="mi-at-text"> <span
-							translate="oauth2.confirm_study"></span> <a class="mi-at-input--checkbox-link" ng-show="app.linkedStudyTermsOfUse"
-							ng-click="terms({which : app.linkedStudyTermsOfUse });" href="javascript:"><span
-								class="mi-at-text mi-at-text--white mi-at-text--highlighted">{{ app.linkedStudyName }}</span></a></label>
-					</fieldset>
-
-
-					<div ng-show="app.linkedStudyName && !app.linkedStudyTermsOfUse" class="mi-or-auth__study_title">
-						<span class="mi-at-text mi-at-text--highlighted mi-at-text--white">{{ app.linkedStudyName }}</span>
-
-					</div>
-					<div ng-show="app.linkedStudyName && !app.linkedStudyTermsOfUse" class="mi-or-auth__study_description">
-						<span class="mi-at-text mi-at-text--smaller mi-at-text--white">{{ app.linkedStudyDescription }}</span>
+                    <div ng-repeat="link in links">
+						<fieldset  
+							class="mi-at-input__fieldset mi-at-input--checkbox mi-at-input--checkbox-white">
+							<input id="confirmStudy" name="confirmStudy" ng-checked="registration.confirmStudy.indexOf(link.study._id)>=0" ng-click="toggle(registration.confirmStudy, link.study._id);" class="mi-at-input mi-at-input--checkbox"
+								type="checkbox" value="" floating-label /> <label for="confirmStudy" class="mi-at-text"> <span
+								translate="{{ getLinkLabel(link) }}"></span> <a class="mi-at-input--checkbox-link" ng-show="link.study.termsOfUse"
+								ng-click="terms({which : link.study.termsOfUse });" href="javascript:"><span
+									class="mi-at-text mi-at-text--white mi-at-text--highlighted">{{ link.study.name }}</span></a></label>
+						</fieldset>
+	
+	
+						<div ng-show="!link.study.termsOfUse" class="mi-or-auth__study_title">
+							<span class="mi-at-text mi-at-text--highlighted mi-at-text--white">{{ link.study.name }}</span>
+	
+						</div>
+						<div ng-show="!link.study.termsOfUse" class="mi-or-auth__study_description">
+							<span class="mi-at-text mi-at-text--smaller mi-at-text--white">{{ link.study.description }}</span>
+						</div>
 					</div>
 
 					<form-error myid="confirmStudy" type="mustaccept" message="error.missing.study_accept"></form-error>

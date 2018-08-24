@@ -68,6 +68,8 @@
     "filename" : "Internal Name",
     "type" : "Application Type",
     "targetUserRole" : "Target Role",
+    "previewlogin" : "OAuth Login",
+    "previewlogin2" : "Preview OAuth Login Page",
     "edit_btn" : "Change Settings",
     "edit_help" : "Change the setup for your application.",
     "query_btn" : "Change Access Rights",
@@ -77,6 +79,8 @@
     "testfromlocal_help" : "During development, you can test the plugin code stored on your local computer on this instance.",
     "serverimport_btn" : "Test automatic import script.",
     "serverimport_help" : "If your plugin offers automatic import, you can test the script of your plugin that is normally run on the server on your local computer.",
+    "link_btn" : "Links with Studies",
+    "link_help" : "Apps may offer or require study participation. Studies may recommend plugin or app use.",    
     "icon_btn" : "Application Icons and Images",
     "icon_help" : "Upload and manage the icons and images to be used with your application. Provide images for the login screen, the consent acceptation screen, the MIDATA Store, etc.",
     "messages_btn" : "Application email Messages",
@@ -94,7 +98,7 @@
     "logout" : "Disconnect All",
     "pleaseLogout1" : "Logout all users",
     "pleaseLogout2" : "Disconnect from studies",
-    "logout_optional" : "[ Not required ]",
+    "logout_optional" : "[ not required ]",
     "logout_required" : "[ required ]",
     "logout_explain" : "Changes to fields marked with !! will require to log out all users of that application.",
       
@@ -105,15 +109,15 @@
        "name" : "The name of your app or plugin that will be presented to the end user.",
        "description" : "A description of your plugin that will also be shown on the marked place.",
        "tokenExchangeParams" : "Default is client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> but some services also require client_secret=<client_secret> or no client_id",
-       "no_update_history" : "Resource updates done by this application produce no history entries. Use only if application does many and frequent updates.",
+       "no_update_history" : "FHIR resource updates done by this application produce no history entries. Use only if application does many and frequent updates.",
        "resharesData" : "App is allowed to reshare data it has access to to 3rd party.",
        "allowsUserSearch" : "Users of the app are allowed to search for other users of the same app.",
        "defaultSpaceName" : "Title of the tile for your plugin on the dashboard.",
        "tags" : "Categories on MIDATA Store for which your plugin should be listed.",
        "url" : "URL of your plugins main page. If you use the template from MIDATA it is 'dist/index.html#?authToken=:authToken''",
        "previewUrl" : "URL of your plugins dashboard tile. Leave empty if you do not provide such a tile.",
-       "defaultSpaceContext" : "Choose 'Dashboard' for the default dashboard. Choose 'Config' if you write an import plugin.",       
-       "redirectUri" : "You may specifiy multiple possible redirect URIs by seperating the URIs with a space",
+       "defaultSpaceContext" : "Choose 'Dashboard' for the default dashboard. Choose 'Config' if you write an import plugin.",
+       "redirectUri" : "You may specifiy multiple possible redirect URIs by separating the URIs with a space.",
        "secret" : "Your app will need this 'secret' during login. Choose whatever you like.",
        "mustParticipateInStudy" : "User must participate in study in order to use app.",
        "unlock_code" : "If filled out, this code must be entered by the user in order to sign up or log in the first time to MIDATA using the app. The code is not case sensitive."       
@@ -130,7 +134,7 @@
     "optionalParticipation" : "Participation Optional",  
     "access_query_json" : "Data Access Filter",   
     "queryeditor_btn" : "Go to access rights editor",   
-    "no_update_history" : "No Resource History",
+    "no_update_history" : "No FHIR Resource History",
     "export_btn" : "Export Application Definition",
     "export_help" : "Export the definition of this application, so that it can be imported and used on another server.",
     "important" : "IMPORTANT",
@@ -179,5 +183,9 @@
      "file" : "Image file to upload",
      "file_help" : "Please resize and compress the image to a reasonable size before upload. Images larger than 1 MB will not be accepted.",
      "existing" : "Images linked to application"
+  },
+  
+  "applink" : {
+    "title" : "Links with Studies"
   }
 }

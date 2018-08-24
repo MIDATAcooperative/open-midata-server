@@ -44,6 +44,12 @@ public class News extends Controller {
 		
 		// get news items
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+		
+		if (properties.containsKey("from") && properties.containsKey("to")) {
+			properties.put("created", CMaps.map("$gte", JsonValidation.getDate(json.get("properties"), "from")).map("$lt", JsonValidation.getDate(json.get("properties"), "to")));
+			properties.remove("from");
+			properties.remove("to");
+		}
 		ObjectIdConversion.convertMidataIds(properties, "_id", "creator", "studyId");
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 		List<NewsItem> newsItems;

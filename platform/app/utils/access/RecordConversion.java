@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bson.BSONObject;
+import org.bson.types.BasicBSONList;
 
 import models.MidataId;
 import models.Record;
@@ -40,7 +41,13 @@ public class RecordConversion {
 		  if (code != null) {
 		    record.code = (code instanceof String) ? Collections.singleton((String) code) : new HashSet((Collection) code);
 		  }
-		  record.tags = (Set<String>) dbrecord.meta.get("tags");
+		  Object tags = dbrecord.meta.get("tags");
+		  if (tags != null) {
+			  record.tags = new HashSet<String>();
+			  for (Object o : ((BasicBSONList) tags)) {
+				  record.tags.add(o.toString());				  
+			  }
+		  }			
 		}
 		
 		record.owner = dbrecord.owner;
