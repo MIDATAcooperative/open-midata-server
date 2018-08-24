@@ -44,11 +44,13 @@ public class Feature_Versioning extends Feature {
 		
 		HistoryIterator(DBIterator<DBRecord> input, Query q) throws AppException {
 			this.query = q;
+			currentlist = new ArrayList<DBRecord>();
 			init(input);
 		}
 		
 		@Override
 		public DBIterator<DBRecord> advance(DBRecord record) throws AppException {
+			currentlist.clear();
 			Set<VersionedDBRecord> recs = VersionedDBRecord.getAllById(record._id, query.getFieldsFromDB());
 			for (VersionedDBRecord rec : recs) {				
 				rec.merge(record);

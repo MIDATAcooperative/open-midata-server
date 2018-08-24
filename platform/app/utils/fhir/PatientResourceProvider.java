@@ -124,7 +124,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		MidataId targetId = new MidataId(id);
 
 		ExecutionInfo info = info();
-		List<Record> allRecs = RecordManager.instance.list(info.executorId, info.context, CMaps.map("owner", targetId).map("format", "fhir/Patient").map("data", CMaps.map("id", targetId.toString())),
+		List<Record> allRecs = RecordManager.instance.list(info.executorId, info.role, info.context, CMaps.map("owner", targetId).map("format", "fhir/Patient").map("data", CMaps.map("id", targetId.toString())),
 				RecordManager.COMPLETE_DATA);
 
 		if (allRecs == null || allRecs.size() == 0)
@@ -148,7 +148,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			
 			ExecutionInfo info = info();
 			MidataId targetId = MidataId.from(theId.getIdPart());
-			List<Record> allRecs = RecordManager.instance.list(info.executorId, info.context, CMaps.map("owner", targetId).map("format", "fhir/Patient").map("data", CMaps.map("id", targetId.toString())),
+			List<Record> allRecs = RecordManager.instance.list(info.executorId, info.role, info.context, CMaps.map("owner", targetId).map("format", "fhir/Patient").map("data", CMaps.map("id", targetId.toString())),
 					RecordManager.COMPLETE_DATA);
 
 			if (allRecs == null || allRecs.size() == 0)
@@ -183,7 +183,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		String id = theId.getIdPart();
 		MidataId targetId = new MidataId(id);
 
-		List<Record> records = RecordManager.instance.list(info().executorId, info().context,
+		List<Record> records = RecordManager.instance.list(info().executorId, info().role, info().context,
 				CMaps.map("owner", targetId).map("format", "fhir/Patient").map("history", true).map("sort", "lastUpdated desc"), RecordManager.COMPLETE_DATA);
 		if (records.isEmpty())
 			throw new ResourceNotFoundException(theId);
@@ -473,7 +473,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 	}
 
 	public void updatePatientForAccount(Member member) throws AppException {
-		List<Record> allExisting = RecordManager.instance.list(info().executorId, member._id,
+		List<Record> allExisting = RecordManager.instance.list(info().executorId, info().role, member._id,
 				CMaps.map("format", "fhir/Patient").map("owner", member._id).map("data", CMaps.map("id", member._id.toString())), Record.ALL_PUBLIC);
 
 		if (allExisting.isEmpty()) {
@@ -497,7 +497,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		try {
 			info();
 		} catch (AuthenticationException e) {
-			ExecutionInfo inf = new ExecutionInfo(who);
+			ExecutionInfo inf = new ExecutionInfo(who, UserRole.MEMBER);
 			patientProvider.setExecutionInfo(inf);
 		}
 
@@ -804,7 +804,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			//Record record = newRecord("fhir/Patient");
 			record.owner = user._id;
 			prepare(record, thePatient);
-			info = new ExecutionInfo(user._id);
+			info = new ExecutionInfo(user._id, UserRole.MEMBER);
 			insertRecord(info, record, thePatient, info.context);
 
 			// if (user.emailLC!=null) Circles.fetchExistingConsents(user._id,

@@ -48,6 +48,7 @@ import play.mvc.Http;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.InstanceConfig;
+import utils.QueryTagTools;
 import utils.access.AccessContext;
 import utils.access.AppAccessContext;
 import utils.access.Feature_FormatGroups;
@@ -186,7 +187,7 @@ public class MobileAPI extends Controller {
 		MobileAppInstance appInstance = null;
 		String phrase;
 		Map<String, Object> meta = null;
-		
+		UserRole role = null;
 		KeyManager.instance.login(60000l, false);
 		if (json.has("refreshToken")) {
 			MobileAppToken refreshToken = MobileAppToken.decrypt(JsonValidation.getString(json, "refreshToken"));
@@ -200,7 +201,7 @@ public class MobileAPI extends Controller {
             Set<UserFeature> req = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(user.role);
             if (app.requirements != null) req.addAll(app.requirements);
             if (Application.loginHelperPreconditionsFailed(user, req) != null) return status(UNAUTHORIZED); 
-            
+            role = user.role;
             phrase = refreshToken.phrase;
             KeyManager.instance.unlock(appInstance._id, phrase);
             executor = appInstance._id;
@@ -213,7 +214,7 @@ public class MobileAPI extends Controller {
 			String username = JsonValidation.getEMail(json, "username");
 			String password = JsonValidation.getString(json, "password");
 			String device = JsonValidation.getStringOrNull(json, "device");
-			UserRole role = json.has("role") ? JsonValidation.getEnum(json, "role", UserRole.class) : UserRole.MEMBER;
+			role = json.has("role") ? JsonValidation.getEnum(json, "role", UserRole.class) : UserRole.MEMBER;
 			
 			if (device != null) phrase = device; else phrase = "???"+password;
 				
@@ -256,6 +257,7 @@ public class MobileAPI extends Controller {
 				meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
 				
 			}
+			role = user.role;
 		}
 				
 		if (!phrase.equals(meta.get("phrase"))) return internalServerError("Internal error while validating consent");
@@ -267,7 +269,7 @@ public class MobileAPI extends Controller {
 		}
 		
 		
-		return authResult(executor, appInstance, meta, phrase);
+		return authResult(executor, role, appInstance, meta, phrase);
 	}
 	
 	public static void removeAppInstance(MobileAppInstance appInstance) throws AppException {
@@ -288,8 +290,8 @@ public class MobileAPI extends Controller {
 	 * @return
 	 * @throws AppException
 	 */
-	public static Result authResult(MidataId executor, MobileAppInstance appInstance, Map<String, Object> meta, String phrase) throws AppException {
-		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, phrase, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME); 
+	public static Result authResult(MidataId executor, UserRole role, MobileAppInstance appInstance, Map<String, Object> meta, String phrase) throws AppException {
+		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, phrase, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME, role); 
         MobileAppToken refresh = new MobileAppToken(appInstance.applicationId, appInstance._id, appInstance.owner, phrase, System.currentTimeMillis());
 		
         meta.put("created", refresh.created);
@@ -383,7 +385,7 @@ public class MobileAPI extends Controller {
 			if (sal.isConfirmed()) {		
 				if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.studyId))) {
 					RecordManager.instance.clearCache();
-			        controllers.members.Studies.requestParticipation(new ExecutionInfo(executor), member._id, sal.studyId, app._id, JoinMethod.APP);
+			        controllers.members.Studies.requestParticipation(new ExecutionInfo(executor, member.getRole()), member._id, sal.studyId, app._id, JoinMethod.APP);
 				}
 			}
 		}
@@ -470,9 +472,8 @@ public class MobileAPI extends Controller {
 		// get record data
 		Collection<Record> records = null;
 		
-		AccessLog.log("NEW QUERY");
-					
-		records = RecordManager.instance.list(inf.executorId, inf.context, properties, fields);		  
+		AccessLog.log("NEW QUERY");		
+		records = RecordManager.instance.list(inf.executorId, inf.role, inf.context, properties, fields);		  
 				
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
 		
@@ -754,7 +755,7 @@ public class MobileAPI extends Controller {
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		AggregationType aggrType = JsonValidation.getEnum(json, "summarize", AggregationType.class);
 		
-	    Collection<RecordsInfo> result = RecordManager.instance.info(executor, targetAps, RecordManager.instance.createContextFromApp(executor, appInstance), properties, aggrType);
+	    Collection<RecordsInfo> result = RecordManager.instance.info(executor, authToken.role, targetAps, RecordManager.instance.createContextFromApp(executor, appInstance), properties, aggrType);
 						
 		return ok(Json.toJson(result));
 	}

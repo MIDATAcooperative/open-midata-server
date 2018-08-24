@@ -64,7 +64,7 @@ public class AccountPatches {
 	public static void formatPatch20160324(User user) throws AppException {
 		AccessLog.logBegin("start patch 2016 03 24");
 	   Set<String> formats = Sets.create("fhir/Observation/String", "fhir/Observation/Quantity", "fhir/Observation/CodeableConcept");
-	   List<Record> recs = RecordManager.instance.list(user._id, user._id, CMaps.map("format", formats).map("owner", "self"), RecordManager.COMPLETE_DATA);
+	   List<Record> recs = RecordManager.instance.list(user._id, UserRole.ANY, user._id, CMaps.map("format", formats).map("owner", "self"), RecordManager.COMPLETE_DATA);
 	   for (Record r : recs) {
 		   MidataId oldId = r._id;
 		   r._id = new MidataId();

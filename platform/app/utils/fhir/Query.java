@@ -95,7 +95,7 @@ public class Query {
 			accountCriteria.put("sort", String.join(",", sorts));
 		}
 				
-		List<Record> result = RecordManager.instance.list(info.executorId, info.context, accountCriteria, Sets.create("owner", "ownerName", "version", "created", "lastUpdated", "data"));
+		List<Record> result = RecordManager.instance.list(info.executorId, info.role, info.context, accountCriteria, Sets.create("owner", "ownerName", "version", "created", "lastUpdated", "data"));
 		
 		return result;
 	}
@@ -111,7 +111,7 @@ public class Query {
 			accountCriteria.put("sort", String.join(",", sorts));
 		}
 				
-		return RecordManager.instance.listIterator(info.executorId, info.context, accountCriteria, Sets.create("owner", "ownerName", "version", "created", "lastUpdated", "data"));
+		return RecordManager.instance.listIterator(info.executorId, info.role, info.context, accountCriteria, Sets.create("owner", "ownerName", "version", "created", "lastUpdated", "data"));
 				
 	}
 	

@@ -30,6 +30,7 @@ import models.enums.ParticipationStatus;
 import models.enums.StudyAppLinkType;
 import models.enums.UserFeature;
 import models.enums.UserRole;
+import models.enums.UserStatus;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
@@ -304,7 +305,7 @@ public class OAuth2 extends Controller {
         
         if (data==null) throw new BadRequestException("error.internal", "Missing request body of type form/urlencoded.");
         if (!data.containsKey("grant_type")) throw new BadRequestException("error.internal", "Missing grant_type");
-        
+        User user = null;
         String grant_type = data.get("grant_type")[0];
         if (grant_type.equals("refresh_token")) {
         	if (!data.containsKey("refresh_token")) throw new BadRequestException("error.internal", "Missing refresh_token");
@@ -319,7 +320,7 @@ public class OAuth2 extends Controller {
 			if (!verifyAppInstance(appInstance, refreshToken.ownerId, refreshToken.appId)) throw new BadRequestException("error.internal", "Bad refresh token.");
 			
 			Plugin app = Plugin.getById(appInstance.applicationId);
-			User user = User.getById(appInstance.owner, User.ALL_USER_INTERNAL);
+			user = User.getById(appInstance.owner, User.ALL_USER_INTERNAL);
 			Set<UserFeature> req = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(user.role);
 			if (app.requirements != null) req.addAll(app.requirements);
 			Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, req);
@@ -372,6 +373,9 @@ public class OAuth2 extends Controller {
     		appInstance = MobileAppInstance.getById(tk.appInstanceId, Sets.create("owner", "applicationId", "status", "passcode"));
     		phrase = tk.passphrase;
     		obj.put("state", tk.state);
+    		
+    		user = User.getById(appInstance.owner, Sets.create("role", "status"));
+    		if (user == null || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.BLOCKED)) throw new BadRequestException("error.internal", "invalid_grant");
         } else throw new BadRequestException("error.internal", "Unknown grant_type");
                				
 		if (appInstance == null) throw new NullPointerException();									
@@ -386,7 +390,7 @@ public class OAuth2 extends Controller {
 				
 		if (!phrase.equals(meta.get("phrase"))) throw new InternalServerException("error.internal", "Internal error while validating consent");
 						
-		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, phrase, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME); 
+		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, phrase, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME, user.role); 
         MobileAppToken refresh = new MobileAppToken(appInstance.applicationId, appInstance._id, appInstance.owner, phrase, System.currentTimeMillis());
 		
         meta.put("created", refresh.created);
