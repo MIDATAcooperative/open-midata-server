@@ -31,6 +31,7 @@ import akka.stream.javadsl.Source;
 import akka.util.ByteString;
 import controllers.APIController;
 import controllers.Circles;
+import controllers.Market;
 import controllers.MobileAPI;
 import controllers.Spaces;
 import controllers.members.HealthProvider;
@@ -915,6 +916,7 @@ public class Studies extends APIController {
 
 		// study.addHistory(new History(EventType.STUDY_STARTED, user, null));
 		study.setExecutionStatus(StudyExecutionStatus.RUNNING);
+		Market.updateActiveStatus(study);
 		AuditManager.instance.success();
 
 		return ok();
@@ -957,6 +959,9 @@ public class Studies extends APIController {
 		closeStudy(userId, study);
 		// study.addHistory(new History(EventType.STUDY_FINISHED, user, null));
 		study.setExecutionStatus(StudyExecutionStatus.FINISHED);
+		
+		Market.updateActiveStatus(study);
+		
 		AuditManager.instance.success();
 
 		return ok();
@@ -1015,6 +1020,8 @@ public class Studies extends APIController {
 
 		// study.addHistory(new History(EventType.STUDY_ABORTED, user, null));
 		study.setExecutionStatus(StudyExecutionStatus.ABORTED);
+		
+		Market.updateActiveStatus(study);
 
 		AuditManager.instance.success();
 		return ok();

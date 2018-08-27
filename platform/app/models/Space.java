@@ -107,6 +107,10 @@ public class Space extends Model implements Comparable<Space> {
 		return Model.get(Space.class, collection, CMaps.map("owner", ownerId).map("visualization", visualizationId).map("context", context), fields);
 	}
 	
+	public static Set<Space> getByOwnerVisualization(MidataId ownerId, MidataId visualizationId, Set<String> fields) throws InternalServerException {
+		return Model.getAll(Space.class, collection, CMaps.map("owner", ownerId).map("visualization", visualizationId), fields);
+	}
+	
 	public static Space getByOwnerSpecialContext(MidataId ownerId, String context, Set<String> fields) throws InternalServerException {
 		return Model.get(Space.class, collection, CMaps.map("owner", ownerId).map("context", context), fields);
 	}

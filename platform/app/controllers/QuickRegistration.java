@@ -66,7 +66,7 @@ public class QuickRegistration extends APIController {
 		
 		Set<StudyAppLink> links = StudyAppLink.getByApp(app._id);
 		for (StudyAppLink sal : links) {
-			if (sal.isConfirmed() && (sal.type.contains(StudyAppLinkType.OFFER_P) || sal.type.contains(StudyAppLinkType.REQUIRE_P))) {
+			if (sal.isConfirmed() && sal.active && (sal.type.contains(StudyAppLinkType.OFFER_P) || sal.type.contains(StudyAppLinkType.REQUIRE_P))) {
 				if (sal.type.contains(StudyAppLinkType.REQUIRE_P) && sal.type.contains(StudyAppLinkType.OFFER_P) && !confirmStudy.contains(sal.studyId)) {
 					throw new JsonValidationException("error.missing.study_accept", "confirmStudy", "mustaccept", "Study belonging to app must be accepted.");
 				}
