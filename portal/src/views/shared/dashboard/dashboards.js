@@ -744,7 +744,7 @@ angular.module('portal')
               ]
 	}			
 )
-.controller('DashboardCtrl', ['$scope', '$timeout', '$state', 'views', 'dashboards', 'spaces', 'portal', 'session', function($scope, $timeout, $state, views, dashboards, spaces, portal, session) {  
+.controller('DashboardCtrl', ['$scope', '$timeout', '$state', 'views', 'dashboards', 'spaces', 'portal', 'session', '$q', function($scope, $timeout, $state, views, dashboards, spaces, portal, session, $q) {  
 	   
 	  $scope.isReady = false;
 	  views.reset();
@@ -761,8 +761,15 @@ angular.module('portal')
 		 * $scope.layout[view.position].push(views.def(view)); });
 		 */
 	   
-	   portal.getConfig()
+	   var q = $q.when();
+	   
+	   if (dashid == "me") {
+		   q = q.then(function() { return spaces.autoadd(); });
+	   } 
+	   	
+	   q.then(function() { return portal.getConfig(); })
 	   .then(function(res) {
+		
 		  var conf = { add : [], remove : [] };
 		  if (res.data && res.data.dashboards && res.data.dashboards[dashid]) {
 			  conf = res.data.dashboards[dashid];

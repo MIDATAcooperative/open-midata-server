@@ -851,6 +851,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.Plugins.isInstalled(),
 				controllers.routes.javascript.Plugins.isAuthorized(),
 				controllers.routes.javascript.Plugins.getUrl(),
+				controllers.routes.javascript.Plugins.addMissingPlugins(),
 				
 				// News
 				controllers.routes.javascript.News.get(),

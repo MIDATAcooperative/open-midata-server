@@ -86,9 +86,8 @@ public class OAuth2 extends Controller {
         
         Set<StudyAppLink> links = StudyAppLink.getByApp(app._id);
         for (StudyAppLink sal : links) {
-        	if (sal.isConfirmed() && sal.type.contains(StudyAppLinkType.REQUIRE_P)) {
-        		Study study = Study.getById(sal.studyId, Sets.create("executionStatus"));
-        		if (sal.usePeriod.contains(study.executionStatus)) {
+        	if (sal.isConfirmed() && sal.active && sal.type.contains(StudyAppLinkType.REQUIRE_P)) {
+        		
         		
         		   StudyParticipation sp = StudyParticipation.getByStudyAndMember(sal.studyId, appInstance.owner, Sets.create("status", "pstatus"));
         		   
@@ -103,7 +102,7 @@ public class OAuth2 extends Controller {
 	               		throw new BadRequestException("error.blocked.consent", "Research consent expired or blocked.");
 	               	}
         		   
-        		}
+        		
         	}
         }        
         return true;
@@ -156,11 +155,9 @@ public class OAuth2 extends Controller {
 		
 		Set<StudyAppLink> links = StudyAppLink.getByApp(app._id);
 		for (StudyAppLink sal : links) {
-			if (sal.isConfirmed() && ((sal.type.contains(StudyAppLinkType.OFFER_P) && confirmStudy.contains(sal.studyId)) || sal.type.contains(StudyAppLinkType.REQUIRE_P))) {
-				Study study = Study.getById(sal.studyId, Sets.create("requirements", "executionStatus"));
-				if (sal.usePeriod.contains(study.executionStatus)) {
-				  if (study.requirements != null) requirements.addAll(study.requirements);
-				} else sal.type = Collections.emptySet();
+			if (sal.isConfirmed() && sal.active && ((sal.type.contains(StudyAppLinkType.OFFER_P) && confirmStudy.contains(sal.studyId)) || sal.type.contains(StudyAppLinkType.REQUIRE_P))) {
+				Study study = Study.getById(sal.studyId, Sets.create("requirements", "executionStatus"));				
+				if (study.requirements != null) requirements.addAll(study.requirements);				
 			}
 		}
 		
@@ -228,7 +225,7 @@ public class OAuth2 extends Controller {
 				AuditManager.instance.fail(0, "Confirmation required", "error.missing.confirmation");
 				boolean allRequired = true;
 				for (StudyAppLink sal : links) {
-					if (sal.isConfirmed() && (sal.type.contains(StudyAppLinkType.REQUIRE_P) || sal.type.contains(StudyAppLinkType.OFFER_P))) {
+					if (sal.isConfirmed() && sal.active && (sal.type.contains(StudyAppLinkType.REQUIRE_P) || sal.type.contains(StudyAppLinkType.OFFER_P))) {
 						allRequired = allRequired && checkAlreadyParticipatesInStudy(sal.studyId, user._id);
 					}
 				}

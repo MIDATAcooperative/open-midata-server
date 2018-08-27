@@ -22,9 +22,9 @@ public class StudyAppLink extends Model {
 	
 	private @NotMaterialized static final String collection = "studyapplink";
 	
-	public @NotMaterialized static final Set<String> ALL_MATERIALIZED = Collections.unmodifiableSet(Sets.create("_id", "studyId", "appId", "type", "validationResearch", "validationDeveloper", "usePeriod", "shareToStudy" ,"restrictRead", "studyGroup", "userId"));
+	public @NotMaterialized static final Set<String> ALL_MATERIALIZED = Collections.unmodifiableSet(Sets.create("_id", "studyId", "appId", "type", "validationResearch", "validationDeveloper", "usePeriod", "shareToStudy" ,"restrictRead", "studyGroup", "userId", "active"));
 	
-	public @NotMaterialized static final Set<String> ALL = Collections.unmodifiableSet(Sets.create("_id", "studyId", "appId", "type", "validationResearch", "validationDeveloper", "usePeriod", "shareToStudy" ,"restrictRead", "studyGroup", "study", "app", "userId", "userLogin"));
+	public @NotMaterialized static final Set<String> ALL = Collections.unmodifiableSet(Sets.create("_id", "studyId", "appId", "type", "validationResearch", "validationDeveloper", "usePeriod", "shareToStudy" ,"restrictRead", "studyGroup", "study", "app", "userId", "userLogin", "active"));
 	
 	/**
 	 * which study is linked
@@ -59,6 +59,8 @@ public class StudyAppLink extends Model {
 	 * during which execution states is the link valid
 	 */
 	public Set<StudyExecutionStatus> usePeriod;
+	
+	public boolean active;
 	
 	public boolean shareToStudy;
 	

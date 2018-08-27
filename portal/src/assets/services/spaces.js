@@ -19,6 +19,10 @@ angular.module('services')
 	   return server.post(jsRoutes.controllers.Spaces.get().url, JSON.stringify(data));
 	};
 	
+	service.autoadd = function() {
+		return server.post(jsRoutes.controllers.Plugins.addMissingPlugins().url, JSON.stringify({}));
+	};
+	
 	service.getUrl = function(spaceId, user) {
 	   return server.get(jsRoutes.controllers.Spaces.getUrl(spaceId, user).url);
 	};
