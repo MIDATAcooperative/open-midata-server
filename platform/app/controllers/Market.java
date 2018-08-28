@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ import models.Plugin_i18n;
 import models.Space;
 import models.Study;
 import models.StudyAppLink;
+import models.StudyParticipation;
 import models.User;
 import models.UserGroupMember;
 import models.enums.IconUse;
@@ -854,12 +856,11 @@ public class Market extends APIController {
 				sal.app = Plugin.getById(sal.appId);
 			}
 			
-			if (type.equals("study-use")) {
-				Study study = Study.getById(MidataId.from(idStr), Sets.create("_id", "code","name","type", "description", "termsOfUse", "executionStatus","validationStatus", "participantSearchStatus","joinMethods"));
+			if (type.equals("study-use")) {				
 				Iterator<StudyAppLink> sal_it = result.iterator();
 				while (sal_it.hasNext()) {
 					StudyAppLink sal = sal_it.next();					
-					if (!sal.isConfirmed() || !sal.usePeriod.contains(study.executionStatus)) sal_it.remove();
+					if (!sal.isConfirmed() || !sal.active) sal_it.remove();
 					
 				}
 			}
@@ -939,6 +940,19 @@ public class Market extends APIController {
 		return ok();
 	}
 	
+	public static void updateActiveStatus(Study study) throws AppException {
+		Set<StudyAppLink> links = StudyAppLink.getByStudy(study._id);
+		for (StudyAppLink link : links) updateActiveStatus(study, link);
+	}
+	
+	public static void updateActiveStatus(Study study, StudyAppLink link) throws AppException {
+		boolean oldactive = link.active;
+		link.active = link.isConfirmed() && link.usePeriod.contains(study.executionStatus);
+		if (link.active != oldactive) {
+			link.update();
+		}
+	}
+	
 	private static void checkValidation(StudyAppLink link) throws AppException {
 		if (link == null) throw new BadRequestException("error.internal", "Unknown link");
 		
@@ -987,6 +1001,8 @@ public class Market extends APIController {
         }
         if (autoValidDeveloper) link.validationDeveloper = StudyValidationStatus.VALIDATED;
         if (autoValidResearcher) link.validationResearch = StudyValidationStatus.VALIDATED;
+        
+        link.active = link.isConfirmed() && link.usePeriod.contains(study.executionStatus);
 	}
 	
 	

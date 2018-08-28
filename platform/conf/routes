@@ -229,11 +229,13 @@ POST    /api/apps/:id/access/oauth1     controllers.Plugins.requestAccessTokenOA
 # Visualizations
 POST    /api/plugins                    controllers.Plugins.get()
 POST    /api/plugins/info               controllers.Plugins.getInfo()
+POST    /api/plugins/autoinstall        controllers.Plugins.addMissingPlugins()
 PUT     /api/plugins/:id                controllers.Plugins.install(id: String)
 DELETE  /api/plugins/:id                controllers.Plugins.uninstall(id: String)
 GET     /api/plugins/:id/installed      controllers.Plugins.isInstalled(id: String)
 GET     /api/plugins/:id/authorized     controllers.Plugins.isAuthorized(id: String)
 GET     /api/plugins/:id/url            controllers.Plugins.getUrl(id: String)
+
 
 #Portal
 GET     /api/portal/config              controllers.PortalConfig.getConfig()

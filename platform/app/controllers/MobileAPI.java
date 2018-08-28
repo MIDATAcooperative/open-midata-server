@@ -123,9 +123,8 @@ public class MobileAPI extends Controller {
         
         Set<StudyAppLink> links = StudyAppLink.getByApp(app._id);
         for (StudyAppLink sal : links) {
-        	if (sal.isConfirmed() && sal.type.contains(StudyAppLinkType.REQUIRE_P)) {
-        		Study study = Study.getById(sal.studyId, Sets.create("executionStatus"));
-        		if (sal.usePeriod.contains(study.executionStatus)) {
+        	if (sal.isConfirmed() && sal.type.contains(StudyAppLinkType.REQUIRE_P) && sal.active) {
+        		
         		
         		   StudyParticipation sp = StudyParticipation.getByStudyAndMember(sal.studyId, appInstance.owner, Sets.create("status", "pstatus"));
         		   
@@ -140,7 +139,7 @@ public class MobileAPI extends Controller {
 	               		throw new BadRequestException("error.blocked.consent", "Research consent expired or blocked.");
 	               	}
         		   
-        		}
+        		
         	}
         }                  
         
@@ -321,12 +320,8 @@ public class MobileAPI extends Controller {
 		
 		for (StudyAppLink sal : links) {
 			if (sal.isConfirmed()) {
-				
-				Study study = Study.getById(sal.studyId, Sets.create("executionStatus","validationStatus","participantSearchStatus"));
-				
-				if (study == null) throw new AppException("error.internal", "Study not found");
-				
-				if (!sal.usePeriod.contains(study.executionStatus)) sal.type = Collections.emptySet();
+												
+				if (!sal.active) sal.type = Collections.emptySet();
 				
 				if (sal.type.contains(StudyAppLinkType.REQUIRE_P) && sal.type.contains(StudyAppLinkType.OFFER_P) && !studyConfirm.contains(sal.studyId)) {
 					StudyParticipation sp = StudyParticipation.getByStudyAndMember(sal.studyId, member._id, Sets.create("status", "pstatus"));
