@@ -23,6 +23,7 @@ import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.api.server.RequestDetails;
+import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
@@ -35,7 +36,6 @@ import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
-// TODO: Choose the correct super class and register in utils.fhir.FHIRServlet
 
 public class MedicationAdministrationResourceProvider extends RecordBasedResourceProvider<MedicationAdministration>
 		implements IResourceProvider {
@@ -78,7 +78,7 @@ public class MedicationAdministrationResourceProvider extends RecordBasedResourc
 			@Description(shortDefinition = "Return administrations of this medication code") @OptionalParam(name = "code") TokenAndListParam theCode,
 			@Description(shortDefinition = "Return administrations that share this encounter or episode of care") @OptionalParam(name = "context", targetTypes = {}) ReferenceAndListParam theContext,
 			@Description(shortDefinition = "Return administrations with this administration device identity") @OptionalParam(name = "device", targetTypes = {}) ReferenceAndListParam theDevice,
-			@Description(shortDefinition = "Date administration happened (or did not happen)") @OptionalParam(name = "effective-time") DateRangeParam theEffective_time,
+			@Description(shortDefinition = "Date administration happened (or did not happen)") @OptionalParam(name = "effective-time") DateAndListParam theEffective_time,
 			@Description(shortDefinition = "Return administrations with this external identifier") @OptionalParam(name = "identifier") TokenAndListParam theIdentifier,
 			@Description(shortDefinition = "Return administrations of this medication resource") @OptionalParam(name = "medication", targetTypes = {}) ReferenceAndListParam theMedication,
 			@Description(shortDefinition = "Administrations that were not made") @OptionalParam(name = "not-given") TokenAndListParam theNot_given,
@@ -155,18 +155,7 @@ public class MedicationAdministrationResourceProvider extends RecordBasedResourc
 		// Add handling for search on the "owner" of the record.
 		builder.recordOwnerReference("patient", "Patient", "subject");
 
-		// Add handling for search on the field that determines the MIDATA content type
-		// used.
-		builder.recordCodeRestriction("code", "code");
-
-		// Add handling for a multiTYPE search: "date" may be search on
-		// effectiveDateTime or effectivePeriod
-		// Note that path = "effective" and type = TYPE_DATETIME_OR_PERIOD
-		// If the search was only on effectiveDateTime then
-		// type would be TYPE_DATETIME and path would be "effectiveDateTime" instead
-		builder.restriction("date", true, QueryBuilder.TYPE_DATETIME_OR_PERIOD, "effective");
-		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
-
+		
 		// On some resources there are searches for "patient" and "subject" which are
 		// searches on the same field. patient is always the record owner
 		// subject may be something different than a person and may not be the record
@@ -226,8 +215,8 @@ public class MedicationAdministrationResourceProvider extends RecordBasedResourc
 	public void prepare(Record record, MedicationAdministration theMedicationAdministration) throws AppException {
 		// Task a : Set Record "content" field by using a code from the resource (or a
 		// fixed value or something else useful)
-		String display = setRecordCodeByCodeableConcept(record, null, "MedicationAdministration"); // TODO check code
-																									// line
+		String display = setRecordCodeByCodeableConcept(record, null, "MedicationAdministration"); 
+																								
 
 		// Task b : Create record name
 		String date = "No time";

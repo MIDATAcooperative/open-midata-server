@@ -22,6 +22,7 @@ import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.api.server.RequestDetails;
+import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
@@ -34,7 +35,6 @@ import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
-// TODO: Choose the correct super class and register in utils.fhir.FHIRServlet
 
 public class CarePlanResourceProvider extends RecordBasedResourceProvider<CarePlan> implements IResourceProvider {
 
@@ -94,7 +94,7 @@ public class CarePlanResourceProvider extends RecordBasedResourceProvider<CarePl
 
 			@Description(shortDefinition = "Detail type of activity") @OptionalParam(name = "activity-code") TokenAndListParam theActivity_code,
 
-			@Description(shortDefinition = "Specified date occurs within period specified by CarePlan.activity.timingSchedule") @OptionalParam(name = "activity-date") DateRangeParam theActivity_date,
+			@Description(shortDefinition = "Specified date occurs within period specified by CarePlan.activity.timingSchedule") @OptionalParam(name = "activity-date") DateAndListParam theActivity_date,
 
 			@Description(shortDefinition = "Activity details defined in specific resource") @OptionalParam(name = "activity-reference", targetTypes = {}) ReferenceAndListParam theActivity_reference,
 
@@ -108,7 +108,7 @@ public class CarePlanResourceProvider extends RecordBasedResourceProvider<CarePl
 
 			@Description(shortDefinition = "Created in context of") @OptionalParam(name = "context", targetTypes = {}) ReferenceAndListParam theContext,
 
-			@Description(shortDefinition = "Time period plan covers") @OptionalParam(name = "date") DateRangeParam theDate,
+			@Description(shortDefinition = "Time period plan covers") @OptionalParam(name = "date") DateAndListParam theDate,
 
 			@Description(shortDefinition = "Protocol or definition") @OptionalParam(name = "definition", targetTypes = {}) ReferenceAndListParam theDefinition,
 
@@ -201,6 +201,8 @@ public class CarePlanResourceProvider extends RecordBasedResourceProvider<CarePl
 		if (!builder.recordOwnerReference("subject", null, "subject"))
 			builder.restriction("subject", true, null, "subject");
 
+		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
+		
 		builder.restriction("activity-code", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "activity.detail.code");
 		builder.restriction("activity-date", true, QueryBuilder.TYPE_DATETIME_OR_PERIOD, "activity.detail.scheduled");
 		builder.restriction("activity-reference", true, null, "activity.reference");
@@ -212,13 +214,12 @@ public class CarePlanResourceProvider extends RecordBasedResourceProvider<CarePl
 		builder.restriction("date", true, QueryBuilder.TYPE_PERIOD, "period");
 		builder.restriction("definition", true, null, "definition");
 		builder.restriction("encounter", true, "Encounter", "context");
-		builder.restriction("goal", true, "Goal", "goal");
-		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
+		builder.restriction("goal", true, "Goal", "goal");		
 		builder.restriction("intent", true, QueryBuilder.TYPE_CODE, "intent");
 		builder.restriction("part-of", true, "CarePlan", "partOf");
 		builder.restriction("performer", true, null, "activity.detail.performer");
 		builder.restriction("replaces", true, "CarePlan", "replaces");
-		builder.restriction("status", true, QueryBuilder.TYPE_CODE, "status");
+		builder.restriction("status", false, QueryBuilder.TYPE_CODE, "status");
 
 		return query.execute(info);
 	}
@@ -256,7 +257,7 @@ public class CarePlanResourceProvider extends RecordBasedResourceProvider<CarePl
 	public void prepare(Record record, CarePlan theCarePlan) throws AppException {
 		// Task a : Set Record "content" field by using a code from the resource (or a
 		// fixed value or something else useful)
-		String display = setRecordCodeByCodeableConcept(record, null, "CarePlan");  // TODO check code line
+		String display = setRecordCodeByCodeableConcept(record, null, "CarePlan");  
 
 		// Task b : Create record name
 		String date = "No time";

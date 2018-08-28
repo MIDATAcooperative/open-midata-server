@@ -22,6 +22,7 @@ import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.api.server.RequestDetails;
+import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
@@ -62,7 +63,7 @@ public class FamilyMemberHistoryResourceProvider extends RecordBasedResourceProv
 
 			@Description(shortDefinition = "A search by a condition code") @OptionalParam(name = "code") TokenAndListParam theCode,
 
-			@Description(shortDefinition = "When history was captured/updated") @OptionalParam(name = "date") DateRangeParam theDate,
+			@Description(shortDefinition = "When history was captured/updated") @OptionalParam(name = "date") DateAndListParam theDate,
 
 			@Description(shortDefinition = "Instantiates protocol or definition") @OptionalParam(name = "definition", targetTypes = {}) ReferenceAndListParam theDefinition,
 
@@ -136,7 +137,7 @@ public class FamilyMemberHistoryResourceProvider extends RecordBasedResourceProv
 		builder.restriction("gender", true, QueryBuilder.TYPE_CODE, "gender");
 		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
 		builder.restriction("relationship", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "relationship");
-		builder.restriction("status", true, QueryBuilder.TYPE_CODE, "status");
+		builder.restriction("status", false, QueryBuilder.TYPE_CODE, "status");
 
 		return query.execute(info);
 	}

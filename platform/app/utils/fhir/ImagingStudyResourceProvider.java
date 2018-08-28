@@ -22,6 +22,7 @@ import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.api.server.RequestDetails;
+import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
@@ -35,7 +36,6 @@ import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
-// TODO: Choose the correct super class and register in utils.fhir.FHIRServlet
 
 public class ImagingStudyResourceProvider extends RecordBasedResourceProvider<ImagingStudy>
 		implements IResourceProvider {
@@ -94,7 +94,7 @@ public class ImagingStudyResourceProvider extends RecordBasedResourceProvider<Im
 
 			@Description(shortDefinition = "The identifier of the series of images") @OptionalParam(name = "series") UriAndListParam theSeries,
 
-			@Description(shortDefinition = "When the study was started") @OptionalParam(name = "started") DateRangeParam theStarted,
+			@Description(shortDefinition = "When the study was started") @OptionalParam(name = "started") DateAndListParam theStarted,
 
 			@Description(shortDefinition = "The study identifier for the image") @OptionalParam(name = "study") UriAndListParam theStudy,
 
@@ -158,16 +158,16 @@ public class ImagingStudyResourceProvider extends RecordBasedResourceProvider<Im
 		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient", "patient");
 	
+		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
 
 		builder.restriction("accession", true, QueryBuilder.TYPE_IDENTIFIER, "accession");
 		builder.restriction("basedon", true, null, "basedOn");
-		builder.restriction("bodysite", true, QueryBuilder.TYPE_CODE, "series.bodySite");
+		builder.restriction("bodysite", true, QueryBuilder.TYPE_CODING, "series.bodySite");
 		builder.restriction("context", true, null, "context");
 		builder.restriction("dicom-class", true, QueryBuilder.TYPE_URI, "series.instance.sopClass");
-		builder.restriction("endpoint", true, "Endpoint", "endpoint"); // TODO series.endpoint
-		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
-		builder.restriction("modality", true, QueryBuilder.TYPE_CODE, "series.modality");
-		builder.restriction("patient", true, "Patient", "patient");
+		builder.restriction("endpoint", true, "Endpoint", "series.endpoint"); 
+		
+		builder.restriction("modality", true, QueryBuilder.TYPE_CODING, "series.modality");		
 		builder.restriction("performer", true, "Practitioner", "series.performer");
 		builder.restriction("reason", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "reason");
 		builder.restriction("series", true, QueryBuilder.TYPE_URI, "series.uid");
@@ -211,7 +211,7 @@ public class ImagingStudyResourceProvider extends RecordBasedResourceProvider<Im
 	public void prepare(Record record, ImagingStudy theImagingStudy) throws AppException {
 		// Task a : Set Record "content" field by using a code from the resource (or a
 		// fixed value or something else useful)
-		String display = setRecordCodeByCodeableConcept(record, theImagingStudy.getProcedureCodeFirstRep(), "ImagingStudy"); // TODO check code line
+		String display = setRecordCodeByCodeableConcept(record, null, "ImagingStudy");
 
 		// Task b : Create record name
 		String date = "No time";

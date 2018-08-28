@@ -22,6 +22,7 @@ import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.api.server.RequestDetails;
+import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
@@ -34,7 +35,7 @@ import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
-// TODO: Choose the correct super class and register in utils.fhir.FHIRServlet
+
 
 public class DiagnosticReportResourceProvider extends RecordBasedResourceProvider<DiagnosticReport>
 		implements IResourceProvider {
@@ -89,7 +90,7 @@ public class DiagnosticReportResourceProvider extends RecordBasedResourceProvide
 
 			@Description(shortDefinition = "Healthcare event (Episode of Care or Encounter) related to the report") @OptionalParam(name = "context", targetTypes = {}) ReferenceAndListParam theContext,
 
-			@Description(shortDefinition = "The clinically relevant time of the report") @OptionalParam(name = "date") DateRangeParam theDate,
+			@Description(shortDefinition = "The clinically relevant time of the report") @OptionalParam(name = "date") DateAndListParam theDate,
 
 			@Description(shortDefinition = "A coded diagnosis on the report") @OptionalParam(name = "diagnosis") TokenAndListParam theDiagnosis,
 
@@ -99,7 +100,7 @@ public class DiagnosticReportResourceProvider extends RecordBasedResourceProvide
 
 			@Description(shortDefinition = "A reference to the image source.") @OptionalParam(name = "image", targetTypes = {}) ReferenceAndListParam theImage,
 
-			@Description(shortDefinition = "When the report was issued") @OptionalParam(name = "issued") DateRangeParam theIssued,
+			@Description(shortDefinition = "When the report was issued") @OptionalParam(name = "issued") DateAndListParam theIssued,
 
 			@Description(shortDefinition = "The subject of the report if a patient") @OptionalParam(name = "patient", targetTypes = {}) ReferenceAndListParam thePatient,
 
@@ -175,7 +176,7 @@ public class DiagnosticReportResourceProvider extends RecordBasedResourceProvide
 
 		// Add handling for search on the field that determines the MIDATA content type
 		// used.
-		// TODO builder.recordCodeRestriction("code", "code");
+		builder.recordCodeRestriction("code", "code");
 
 		if (!builder.recordOwnerReference("subject", null, "subject"))
 			builder.restriction("subject", true, null, "subject"); // TODO not so sure what to do here with patient and
@@ -183,18 +184,18 @@ public class DiagnosticReportResourceProvider extends RecordBasedResourceProvide
 
 		builder.restriction("based-on", true, null, "basedOn");
 		builder.restriction("category", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "category");
-		builder.restriction("code", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "period");
+		
 		builder.restriction("context", true, null, "context");
 		builder.restriction("date", true, QueryBuilder.TYPE_DATETIME_OR_PERIOD, "effective");
 		builder.restriction("diagnosis", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "codedDiagnosis");
 		builder.restriction("encounter", true, "Encounter", "encounter");
 		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
 		builder.restriction("image", true, "Media", "image.link");
-		builder.restriction("issued", true, QueryBuilder.TYPE_DATETIME, "location.period");
+		builder.restriction("issued", true, QueryBuilder.TYPE_DATETIME, "issued");
 		builder.restriction("performer", true, "Performer", "performer");
 		builder.restriction("result", true, "Observation", "result");
 		builder.restriction("specimen", true, "Specimen", "specimen");
-		builder.restriction("status", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "reason");
+		builder.restriction("status", true, QueryBuilder.TYPE_CODE, "status");
 
 		return query.execute(info);
 	}
@@ -232,7 +233,7 @@ public class DiagnosticReportResourceProvider extends RecordBasedResourceProvide
 	public void prepare(Record record, DiagnosticReport theDiagnosticReport) throws AppException {
 		// Task a : Set Record "content" field by using a code from the resource (or a
 		// fixed value or something else useful)
-		String display = setRecordCodeByCodeableConcept(record, null, "DiagnosticReport"); // TODO check code line, theDiagnosticReport.getCode() throws an exception.
+		String display = setRecordCodeByCodeableConcept(record, theDiagnosticReport.getCode(), "DiagnosticReport"); 
 
 		// Task b : Create record name
 		String date = "No time";

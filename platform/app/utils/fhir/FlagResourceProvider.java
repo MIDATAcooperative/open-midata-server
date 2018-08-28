@@ -63,7 +63,6 @@ import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.fhir.RecordBasedResourceProvider;
 
-// TODO: Choose the correct super class and register in utils.fhir.FHIRServlet
 
 public class FlagResourceProvider extends RecordBasedResourceProvider<Flag> implements IResourceProvider {
 
@@ -153,14 +152,14 @@ public class FlagResourceProvider extends RecordBasedResourceProvider<Flag> impl
 		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient", "subject");
 
-		builder.restriction("date", true, QueryBuilder.TYPE_DATETIME_OR_PERIOD, "period");
+		builder.restriction("date", true, QueryBuilder.TYPE_PERIOD, "period");
 		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
 
 		if (!builder.recordOwnerReference("subject", null, "subject"))
 			builder.restriction("subject", true, null, "subject");
 
 		builder.restriction("encounter", true, "Encounter", "encounter");
-		builder.restriction("author", true, "Author", "author");
+		builder.restriction("author", true, null, "author");
 
 		return query.execute(info);
 	}
@@ -198,7 +197,7 @@ public class FlagResourceProvider extends RecordBasedResourceProvider<Flag> impl
 	public void prepare(Record record, Flag theFlag) throws AppException {
 		// Task a : Set Record "content" field by using a code from the resource (or a
 		// fixed value or something else useful)
-		String display = setRecordCodeByCodeableConcept(record, theFlag.getCode(), "Flag"); // TODO check code line
+		String display = setRecordCodeByCodeableConcept(record, theFlag.getCode(), "Flag"); 
 
 		// Task b : Create record name
 		String date = "No time";

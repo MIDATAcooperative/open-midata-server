@@ -22,6 +22,7 @@ import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.api.server.RequestDetails;
+import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.NumberAndListParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
@@ -91,7 +92,7 @@ public class EncounterResourceProvider extends RecordBasedResourceProvider<Encou
 
 			@Description(shortDefinition = "inpatient | outpatient | ambulatory | emergency +") @OptionalParam(name = "class") TokenAndListParam theClass,
 
-			@Description(shortDefinition = "A date within the period the Encounter lasted") @OptionalParam(name = "date") DateRangeParam theDate,
+			@Description(shortDefinition = "A date within the period the Encounter lasted") @OptionalParam(name = "date") DateAndListParam theDate,
 
 			@Description(shortDefinition = "Reason the encounter takes place (resource)") @OptionalParam(name = "diagnosis", targetTypes = {}) ReferenceAndListParam theDiagnosis,
 
@@ -105,7 +106,7 @@ public class EncounterResourceProvider extends RecordBasedResourceProvider<Encou
 
 			@Description(shortDefinition = "Location the encounter takes place") @OptionalParam(name = "location", targetTypes = {}) ReferenceAndListParam theLocation,
 
-			@Description(shortDefinition = "Time period during which the patient was present at the location") @OptionalParam(name = "location-period") DateRangeParam theLocation_period,
+			@Description(shortDefinition = "Time period during which the patient was present at the location") @OptionalParam(name = "location-period") DateAndListParam theLocation_period,
 
 			@Description(shortDefinition = "Another Encounter this encounter is part of") @OptionalParam(name = "part-of", targetTypes = {}) ReferenceAndListParam thePart_of,
 
@@ -199,16 +200,19 @@ public class EncounterResourceProvider extends RecordBasedResourceProvider<Encou
 		
 		if (!builder.recordOwnerReference("subject", null, "subject")) builder.restriction("subject", true, null, "subject");  // TODO not so sure what to do here with patient and subject
 		
+		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
+		
 		builder.restriction("appointment", true, "Appointment", "appointment");
 		builder.restriction("class", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "class");
-		builder.restriction("date", true, QueryBuilder.TYPE_DATETIME_OR_PERIOD, "period");
+		builder.restriction("date", true, QueryBuilder.TYPE_PERIOD, "period");
+		builder.restriction("type", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "type");		
 		builder.restriction("diagnosis", true, null, "diagnosis.condition");
 		builder.restriction("episodeofcare", true, "EpisodeOfCare", "episodeOfCare");
-		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
+		
 		builder.restriction("incomingreferral", true, "ReferralRequest", "incomingReferral");
-		builder.restriction("length", true, null, "length"); // TODO create QueryBuilder.TYPE_NUMBER
+		builder.restriction("length", true, QueryBuilder.TYPE_QUANTITY, "length"); 
 		builder.restriction("location", true, "Location", "location.location");
-		builder.restriction("location-period", true, QueryBuilder.TYPE_DATETIME_OR_PERIOD, "location.period");
+		builder.restriction("location-period", true, QueryBuilder.TYPE_PERIOD, "location.period");
 		builder.restriction("part-of", true, "Encounter", "partOf");
 		builder.restriction("participant", true, null, "participant.individual");
 		builder.restriction("participant-type", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "participant.type");
@@ -216,8 +220,8 @@ public class EncounterResourceProvider extends RecordBasedResourceProvider<Encou
 		builder.restriction("reason", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "reason");
 		builder.restriction("service-provider", true, "Organization", "serviceProvider");
 		builder.restriction("special-arrangement", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "hospitalization.specialArrangement");
-		builder.restriction("status", true, QueryBuilder.TYPE_CODE, "status");
-		builder.restriction("type", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "type");
+		builder.restriction("status", false, QueryBuilder.TYPE_CODE, "status");
+		
 
 
 
@@ -257,7 +261,7 @@ public class EncounterResourceProvider extends RecordBasedResourceProvider<Encou
 	public void prepare(Record record, Encounter theEncounter) throws AppException {
 		// Task a : Set Record "content" field by using a code from the resource (or a
 		// fixed value or something else useful)
-		String display = setRecordCodeByCodeableConcept(record, null, "Encounter"); // TODO check code line
+		String display = setRecordCodeByCodeableConcept(record, null, "Encounter"); 
 
 		// Task b : Create record name
 		String date = "No time";

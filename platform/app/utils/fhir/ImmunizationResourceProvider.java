@@ -22,6 +22,7 @@ import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.api.server.RequestDetails;
+import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.NumberAndListParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
@@ -70,7 +71,7 @@ public class ImmunizationResourceProvider extends RecordBasedResourceProvider<Im
 
 			@Description(shortDefinition = "The language of the resource") @OptionalParam(name = "_language") StringAndListParam the_language,
 
-			@Description(shortDefinition = "Vaccination  (non)-Administration Date") @OptionalParam(name = "date") DateRangeParam theDate,
+			@Description(shortDefinition = "Vaccination  (non)-Administration Date") @OptionalParam(name = "date") DateAndListParam theDate,
 
 			@Description(shortDefinition = "Dose number within series") @OptionalParam(name = "dose-sequence") NumberAndListParam theDose_sequence,
 
@@ -90,7 +91,7 @@ public class ImmunizationResourceProvider extends RecordBasedResourceProvider<Im
 
 			@Description(shortDefinition = "Additional information on reaction") @OptionalParam(name = "reaction", targetTypes = {}) ReferenceAndListParam theReaction,
 
-			@Description(shortDefinition = "When reaction started") @OptionalParam(name = "reaction-date") DateRangeParam theReaction_date,
+			@Description(shortDefinition = "When reaction started") @OptionalParam(name = "reaction-date") DateAndListParam theReaction_date,
 
 			@Description(shortDefinition = "Why immunization occurred") @OptionalParam(name = "reason") TokenAndListParam theReason,
 
@@ -159,21 +160,21 @@ public class ImmunizationResourceProvider extends RecordBasedResourceProvider<Im
 		// Add handling for search on the "owner" of the record.
 		builder.recordOwnerReference("patient", "Patient", "patient"); // TODO patient -> patient?
 
-		builder.restriction("date", true, QueryBuilder.TYPE_DATETIME, "date");
-		builder.restriction("dose-sequence", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "vaccinationProtocol.doseSequence");
 		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
+		
+		builder.restriction("date", true, QueryBuilder.TYPE_DATETIME, "date");
+		builder.restriction("dose-sequence", true, QueryBuilder.TYPE_INTEGER, "vaccinationProtocol.doseSequence");
+		
 		builder.restriction("location", true, "Location", "location");
 		builder.restriction("lot-number", true, QueryBuilder.TYPE_STRING, "lotNumber");
 		builder.restriction("manufacturer", true, "Organization", "manufacturer");
-		builder.restriction("not-given", true, QueryBuilder.TYPE_BOOLEAN, "notGiven");
-		builder.restriction("patient", true, "Patient", "patient");
-		
+		builder.restriction("not-given", true, QueryBuilder.TYPE_BOOLEAN, "notGiven");			
 		builder.restriction("practitioner", true, "Practitioner", "practitioner.actor");
 		builder.restriction("reaction", true, "Observation", "reaction.detail");
 		builder.restriction("reaction-date", true, QueryBuilder.TYPE_DATETIME, "reaction.date");
 		builder.restriction("reason", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "explanation.reason");
 		builder.restriction("reason-not-given", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "explanation.reasonNotGiven");
-		builder.restriction("status", true, QueryBuilder.TYPE_CODE, "status");
+		builder.restriction("status", false, QueryBuilder.TYPE_CODE, "status");
 		builder.restriction("vaccine-code", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "vaccineCode");
 
 		return query.execute(info);
