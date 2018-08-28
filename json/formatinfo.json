@@ -24,3 +24,12 @@
 {"_id":{"$oid":"5b4df7656adfdcdde8e3247e"},"format":"fhir/Subscription","comment":"FHIR Subscription Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"5b4df7656adfdcdde8e3247f"},"format":"fhir/Consent","comment":"FHIR Consent Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"5b4df7656adfdcdde8e32480"},"format":"fhir/AuditLog","comment":"FHIR Audit Log Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"5b8514499210b300979f2a14"},"format":"fhir/CarePlan","comment":"FHIR CarePlan Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"5b8514499210b300979f2a15"},"format":"fhir/DiagnosticReport","comment":"FHIR DiagnosticReport Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"5b8514499210b300979f2a16"},"format":"fhir/Encounter","comment":"FHIR Encounter Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"5b8514499210b300979f2a17"},"format":"fhir/FamilyMemberHistory","comment":"FHIR FamilyMemberHistory Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"5b8514499210b300979f2a18"},"format":"fhir/Flag","comment":"FHIR Flag Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"5b8514499210b300979f2a19"},"format":"fhir/ImagingStudy","comment":"FHIR ImagingStudy Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"5b8514499210b300979f2a1a"},"format":"fhir/Immunization","comment":"FHIR Immunization Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"5b8514499210b300979f2a1b"},"format":"fhir/MedicationAdministration","comment":"FHIR MedicationAdministration Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"5b8514499210b300979f2a1c"},"format":"fhir/Sequence","comment":"FHIR Sequence Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
