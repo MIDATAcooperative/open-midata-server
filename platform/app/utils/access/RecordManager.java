@@ -34,8 +34,10 @@ import models.Space;
 import models.UserGroupMember;
 import models.enums.APSSecurityLevel;
 import models.enums.AggregationType;
+import models.enums.UserRole;
 import play.mvc.Http;
 import utils.AccessLog;
+import utils.QueryTagTools;
 import utils.auth.KeyManager;
 import utils.auth.RecordToken;
 import utils.collections.CMaps;
@@ -960,7 +962,7 @@ public class RecordManager {
 			RecordManager.instance.share(getCache(userId), targetaps, null, recs, ownerInformation);
 		}
 		if (pair.getLeft() != null) {
-			List<Record> recs = RecordManager.instance.list(userId, targetaps, CMaps.map(pair.getLeft()).map("flat", "true").map("owner", context.getSelf()), Sets.create("_id"));
+			List<Record> recs = RecordManager.instance.list(userId, UserRole.ANY, targetaps, CMaps.map(pair.getLeft()).map("flat", "true").map("owner", context.getSelf()), Sets.create("_id"));
 			Set<MidataId> remove = new HashSet<MidataId>();
 			for (Record r : recs) remove.add(r._id);
 			AccessLog.log("REMOVE DUPLICATES:"+remove.size());
@@ -1086,7 +1088,7 @@ public class RecordManager {
 	 * @return list of records matching properties
 	 * @throws AppException
 	 */
-	public List<Record> list(MidataId who, MidataId apsId,
+	public List<Record> list(MidataId who, UserRole role, MidataId apsId,
 			Map<String, Object> properties, Set<String> fields)
 			throws AppException {
 		AccessContext context = null;
@@ -1096,6 +1098,7 @@ public class RecordManager {
           if (consent != null) context =  createContextFromConsent(who, consent);
 		}
 		AccessLog.log("context="+context);
+		QueryTagTools.handleSecurityTags(role, properties, fields);
 		return QueryEngine.list(getCache(who), apsId, context, properties, fields);
 	}
 	
@@ -1112,15 +1115,25 @@ public class RecordManager {
 		return QueryEngine.listIterator(getCache(who), apsId, context, properties, fields);
 	}
 	
-	public DBIterator<Record> listIterator(MidataId who, AccessContext context,
+	public DBIterator<Record> listIterator(MidataId who, UserRole role, AccessContext context,
 			Map<String, Object> properties, Set<String> fields)
 			throws AppException {	
+		QueryTagTools.handleSecurityTags(role, properties, fields);
 		return QueryEngine.listIterator(getCache(who), context.getTargetAps(), context, properties, fields);
 	}
 	
+	/*
 	public List<Record> list(MidataId who, AccessContext context,
 			Map<String, Object> properties, Set<String> fields)
 			throws AppException {
+		return QueryEngine.list(getCache(who), context.getTargetAps(), context, properties, fields);
+	}
+	*/
+	
+	public List<Record> list(MidataId who, UserRole role, AccessContext context,
+			Map<String, Object> properties, Set<String> fields)
+			throws AppException {
+		QueryTagTools.handleSecurityTags(role, properties, fields);
 		return QueryEngine.list(getCache(who), context.getTargetAps(), context, properties, fields);
 	}
 	
@@ -1133,7 +1146,7 @@ public class RecordManager {
 	 * @return list of RecordsInfo objects containing a summary of the records
 	 * @throws AppException
 	 */
-	public Collection<RecordsInfo> info(MidataId who, MidataId aps, AccessContext context, Map<String, Object> properties, AggregationType aggrType) throws AppException {
+	public Collection<RecordsInfo> info(MidataId who, UserRole role, MidataId aps, AccessContext context, Map<String, Object> properties, AggregationType aggrType) throws AppException {
 		// Only allow specific properties as results are materialized
 		Map<String, Object> nproperties = new HashMap<String, Object>();
 		nproperties.put("streams", "true");
@@ -1168,7 +1181,7 @@ public class RecordManager {
 		    if (properties.containsKey("include-records")) {		    	
 			    for (RecordsInfo inf : result) {
 			    	if (inf.newestRecord != null) {
-			    		inf.newestRecordContent = fetch(who, aps, inf.newestRecord);
+			    		inf.newestRecordContent = fetch(who, role, aps, inf.newestRecord);
 			    	}
 			    }
 		    }
@@ -1188,8 +1201,8 @@ public class RecordManager {
 	 * @return the complete record (no attachment)
 	 * @throws AppException
 	 */
-	public Record fetch(MidataId who, RecordToken token) throws AppException {
-		return fetch(who, token, RecordManager.COMPLETE_DATA);
+	public Record fetch(MidataId who, UserRole role, RecordToken token) throws AppException {
+		return fetch(who, role, token, RecordManager.COMPLETE_DATA);
 	}
 	
 	/**
@@ -1237,9 +1250,9 @@ public class RecordManager {
 	 * @return the record to be returned
 	 * @throws AppException
 	 */
-	public Record fetch(MidataId who, RecordToken token, Set<String> fields)
+	public Record fetch(MidataId who, UserRole role, RecordToken token, Set<String> fields)
 			throws AppException {
-		List<Record> result = list(who, new MidataId(token.apsId),
+		List<Record> result = list(who, role, new MidataId(token.apsId),
 				CMaps.map("_id", new MidataId(token.recordId)), fields);
 		if (result.isEmpty())
 			return null;
@@ -1255,9 +1268,9 @@ public class RecordManager {
 	 * @return the record to be returned
 	 * @throws AppException
 	 */
-	public Record fetch(MidataId who, MidataId aps, MidataId recordId)
+	public Record fetch(MidataId who, UserRole role, MidataId aps, MidataId recordId)
 			throws AppException {
-		List<Record> result = list(who, aps, CMaps.map("_id", recordId),
+		List<Record> result = list(who, role, aps, CMaps.map("_id", recordId),
 				RecordManager.COMPLETE_DATA);
 		if (result.isEmpty())
 			return null;
@@ -1272,9 +1285,9 @@ public class RecordManager {
 	 * @return set with record ids as strings
 	 * @throws AppException
 	 */
-	public Set<String> listRecordIds(MidataId who, MidataId apsId)
+	public Set<String> listRecordIds(MidataId who, UserRole role, MidataId apsId)
 			throws AppException {
-		return listRecordIds(who, apsId, RecordManager.FULLAPS_LIMITED_SIZE);
+		return listRecordIds(who, role, apsId, RecordManager.FULLAPS_LIMITED_SIZE);
 	}
 
 	/**
@@ -1285,9 +1298,9 @@ public class RecordManager {
 	 * @return set with record ids as strings
 	 * @throws AppException
 	 */
-	public Set<String> listRecordIds(MidataId who, MidataId apsId,
+	public Set<String> listRecordIds(MidataId who, UserRole role, MidataId apsId,
 			Map<String, Object> properties) throws AppException {
-		List<Record> result = list(who, apsId, properties,
+		List<Record> result = list(who, role, apsId, properties,
 				RecordManager.INTERNALIDONLY);
 		Set<String> ids = new HashSet<String>();
 		for (Record record : result)
@@ -1302,7 +1315,7 @@ public class RecordManager {
 	 */
 	private void resetInfo(MidataId who) throws AppException {
 		AccessLog.logBegin("start reset info user="+who.toString());
-		List<Record> result = list(who, who, RecordManager.STREAMS_ONLY, Sets.create("_id", "owner"));
+		List<Record> result = list(who, UserRole.ANY, who, RecordManager.STREAMS_ONLY, Sets.create("_id", "owner"));
 		for (Record stream : result) {
 			try {
 			  AccessLog.log("reset stream:"+stream._id.toString());

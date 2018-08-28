@@ -25,14 +25,12 @@
             </tr><tr>
               <td translate="manageapp.status.title"></td>
               <td><b translate="{{ 'manageapp.status.'+app.status }}"></b></td>
-            </tr>
-            <tr>
-              <td translate="manageapp.linkedStudy"></td>
+            </tr>           
+            <tr ng-show="app.type == 'mobile'">
+              <td translate="manageapp.previewlogin"></td>
               <td>
-                <b ng-hide="app.linkedStudyName" translate="manageapp.nostudy"></b>
-                <b ng-show="app.linkedStudyName">
-              {{ app.linkedStudyName }} <span ng-show="app.mustParticipateInStudy" translate="manageapp.mustParticipateInStudy"></span><span ng-hide="app.mustParticipateInStudy" translate="manageapp.optionalParticipation"></span></td>
-                </b>
+                <a ng-href="{{ getOAuthLogin() }}" target="_blank" translate="manageapp.previewlogin2"></a>
+              </td>
             </tr>
           </table>
           <div class="extraspace"></div>
@@ -65,6 +63,13 @@
 				<div class="pull-left"><img width="80" class="img-responsive" src="/images/serverimport.jpg"></div>														   
 				<div><b translate="manageapp.serverimport_btn"></b></div>
 				<div translate="manageapp.serverimport_help"></div>																
+			  </td>
+			</tr>
+			<tr>
+			  <td ng-click="go('^.applink')">				    
+				<div class="pull-left"><img width="80" class="img-responsive" src="/images/link.jpg"></div>														   
+				<div><b translate="manageapp.link_btn"></b></div>
+				<div translate="manageapp.link_help"></div>																
 			  </td>
 			</tr>
 			<tr>

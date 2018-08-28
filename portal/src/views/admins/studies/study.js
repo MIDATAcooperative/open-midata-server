@@ -1,10 +1,12 @@
 angular.module('portal')
-.controller('AdminStudyCtrl', ['$scope', '$state', 'server', 'status', 'users', 'usergroups',  function($scope, $state, server, status, users, usergroups) {
+.controller('AdminStudyCtrl', ['$scope', '$state', 'server', 'status', 'users', 'usergroups', '$translatePartialLoader', function($scope, $state, server, status, users, usergroups, $translatePartialLoader) {
 	
 	$scope.studyid = $state.params.studyId;
 	$scope.study = {};
 	$scope.status = new status(true);
 	$scope.sortby = "user.lastname";
+	
+	$translatePartialLoader.addPart("researchers");
 		
 	$scope.reload = function() {
 			
@@ -21,6 +23,11 @@ angular.module('portal')
 			.then(function(data) {
 				$scope.members = data.data;
 			});
+			
+			$scope.status.doBusy(server.get(jsRoutes.controllers.Market.getStudyAppLinks("study", $scope.studyid).url))
+		    .then(function(data) { 				
+				$scope.links = data.data;												
+			});	
 			
 		});
 	};
@@ -81,6 +88,20 @@ angular.module('portal')
 	$scope.setSort = function(key) {
 		if ($scope.sortby==key) $scope.sortby = "-"+key;
 		else { $scope.sortby = key; }
+	};
+	
+	$scope.remove = function(link) {
+		  $scope.status.doAction("delete", server.delete(jsRoutes.controllers.Market.deleteStudyAppLink(link._id).url))
+		  .then(function() {
+			  $scope.reload();
+		  });
+	};
+	   
+	$scope.validate = function(link) {
+	     $scope.status.doAction("validate", server.post(jsRoutes.controllers.Market.validateStudyAppLink(link._id).url))
+		  .then(function() {
+			  $scope.reload();
+		  });
 	};
 	
 	$scope.reload();

@@ -1,11 +1,12 @@
 angular.module('portal')
-.controller('CreateStudyCtrl', ['$scope', '$state', 'server', 'status', function($scope, $state, server, status) {
+.controller('CreateStudyCtrl', ['$scope', '$state', 'server', 'status', 'studies', function($scope, $state, server, status, studies) {
 	
 	$scope.study = {};
 	$scope.studyId = $state.params.studyId;
 	$scope.error = null;
 	$scope.submitted = false;
 	$scope.status = new status(true, $scope);
+	$scope.studytypes = studies.studytypes;
 	
 	
 	$scope.reload = function() {
@@ -32,7 +33,7 @@ angular.module('portal')
 		
 		if ($scope.studyId) {
 		
-			   data = { name : $scope.study.name, description : $scope.study.description };
+			   data = { name : $scope.study.name, description : $scope.study.description, type : $scope.study.type };
 			   $scope.status.doAction("update", server.put(jsRoutes.controllers.research.Studies.update($scope.studyId).url, JSON.stringify(data)))
 			   .then(function(result) { $state.go('research.study.overview', { studyId : $scope.studyId }); });
 		

@@ -195,20 +195,7 @@
 		    <input id="termsOfUse" type="text" ng-disabled="!allowStudyConfig" name="termsOfUse" class="form-control" ng-change="requireLogout();" ng-model="app.termsOfUse" autocomplete="off" uib-typeahead="term.id as term.fullname for term in terms | filter:{fullname:$viewValue}">
 		    
 		     <p class="help-block" ng-show="app.termsOfUse"><a ui-sref="^.terms({ which:app.termsOfUse })" translate="manageapp.show_terms"></a></p> 
-		  </formrow>
-		  <formrow myid="linkedStudy" label="manageapp.linkedStudy" class="danger-change" >
-		    <input type="text" id="linkedStudy" ng-disabled="!allowStudyConfig" name="linkedStudy" class="form-control" ng-change="checkStudyEmpty();requireLogout();" placeholder="Study" ng-model="app.linkedStudyCode">
-		    <formerror myid="linkedStudy" type="invalid" message="error.unknown.study" ></formerror>
-		     <p class="help-block">{{ app.linkedStudyName }}</p> 
-		  </formrow>
-		   <formrow myid="mustParticipateInStudy" label="manageapp.mustParticipateInStudy" class="danger-change">
-		    <div class="checkbox">
-		    <label>
-		      <input type="checkbox" id="mustParticipateInStudy" ng-change="requireLogout();" ng-disabled="!allowStudyConfig || !app.linkedStudyCode" name="mustParticipateInStudy" ng-model="app.mustParticipateInStudy" value="true">
-		      <span translate="manageapp.info.mustParticipateInStudy"></span>
-		    </label>
-		    </div>
-		  </formrow>
+		  </formrow>		  
 		  </div>
 		
 		  

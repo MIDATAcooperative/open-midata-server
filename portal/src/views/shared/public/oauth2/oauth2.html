@@ -149,25 +149,25 @@
 				</section>
 				
 				
-				<section class="mi-or-auth__section mi-or-auth__section--study" ng-show="app.linkedStudy">
+				<section class="mi-or-auth__section mi-or-auth__section--study" ng-repeat="link in links">
 					<fieldset style="height:70px" class="mi-at-input__fieldset mi-at-input--checkbox mi-at-input--checkbox-white">
-						<input id="mi-at-input-" class="mi-at-input mi-at-input--checkbox" type="checkbox" value="" ng-model="login.confirmStudy"
+						<input id="mi-at-input-" class="mi-at-input mi-at-input--checkbox" type="checkbox" value="" ng-checked="login.confirmStudy.indexOf(link.study._id)>=0" ng-click="toggle(login.confirmStudy, link.study._id);"
 							floating-label  /> 
 						<label for="mi-at-input-checkbox" class="mi-at-text mi-at-text--white">
-						  <span translate="oauth2.confirm_study"></span>
-						  <a class="mi-at-text--white mi-at-input--checkbox-link" ng-show="app.linkedStudyTermsOfUse" ng-click="terms({which : app.linkedStudyTermsOfUse })" href="javascript:">{{ app.linkedStudyName }}</a>
+						  <span translate="{{ getLinkLabel(link) }}"></span>
+						  <a class="mi-at-text--white mi-at-input--checkbox-link" ng-show="link.termsOfUse" ng-click="terms({which : link.termsOfUse })" href="javascript:">{{ link.study.name }}</a>
 						 </label>
 					</fieldset>
 
-					<div class="mi-or-auth__study_title" ng-hide="app.linkedStudyTermsOfUse">
-						<span class="mi-at-text mi-at-text--highlighted mi-at-text--white">{{ app.linkedStudyName }}</span>
+					<div class="mi-or-auth__study_title" ng-hide="link.study.termsOfUse">
+						<span class="mi-at-text mi-at-text--highlighted mi-at-text--white">{{ link.study.name }}</span>
 
 					</div>
-					<div class="mi-or-auth__study_description" ng-hide="app.linkedStudyTermsOfUse">
-						<span class="mi-at-text mi-at-text--smaller mi-at-text--white">{{ app.linkedStudyDescription }}</span>
+					<div class="mi-or-auth__study_description" ng-hide="link.study.termsOfUse">
+						<span class="mi-at-text mi-at-text--smaller mi-at-text--white">{{ link.study.description }}</span>
 
-                        <div class="mi-at-link" ng-show="app.linkedStudyTermsOfUse">
-						  <a ng-click="terms({which : app.linkedStudyTermsOfUse })" href="javascript:" translate="registration.study_agb"></a>
+                        <div class="mi-at-link" ng-show="link.study.termsOfUse">
+						  <a ng-click="terms({which : link.study.termsOfUse })" href="javascript:" translate="registration.study_agb"></a>
 						</p>
 					</div>
 				</section>

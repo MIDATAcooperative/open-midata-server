@@ -41,6 +41,7 @@ import ca.uhn.fhir.util.UrlUtil;
 import models.MidataId;
 import models.Model;
 import models.Record;
+import models.enums.UserRole;
 import utils.ErrorReporter;
 import utils.access.VersionedDBRecord;
 import utils.auth.ExecutionInfo;
@@ -91,11 +92,12 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 	 * Retrives ExecutionInfo for current thread or default instance
 	 * @return ExecutionInfo
 	 */
-	public static ExecutionInfo info(MidataId executor) throws InternalServerException {
+	/*
+	public static ExecutionInfo info(MidataId executor, UserRole role) throws InternalServerException {
 		ExecutionInfo inf = tinfo.get();
-		if (inf == null) return new ExecutionInfo(executor);
+		if (inf == null) return new ExecutionInfo(executor, role);
 		return inf;
-	}
+	}*/
 	
 	/**
 	 * Returns the class of FHIR resources provided by this resource provider

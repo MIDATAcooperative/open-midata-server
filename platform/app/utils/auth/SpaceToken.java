@@ -5,6 +5,7 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import models.MidataId;
+import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.Http.Request;
 import sun.net.util.IPAddressUtil;
@@ -57,32 +58,37 @@ public class SpaceToken {
 	 */
 	public MidataId executorId;
 	
+	public UserRole role;
+	
 	public String handle;
 
-	public SpaceToken(String handle, MidataId spaceId, MidataId userId) {
+	public SpaceToken(String handle, MidataId spaceId, MidataId userId, UserRole role) {
 		this.handle = handle;
 		this.spaceId = spaceId;
 		this.userId = userId;
 		this.recordId = null;
+		this.role = role;
 	}
 	
-	public SpaceToken(String handle, MidataId spaceId, MidataId executorId, MidataId userId, boolean dummy) {
+	public SpaceToken(String handle, MidataId spaceId, MidataId executorId, MidataId userId, UserRole role, boolean dummy) {
 		this.handle = handle;
 		this.spaceId = spaceId;
 		this.userId = userId;
 		this.executorId = executorId;
 		this.recordId = null;
+		this.role = role;
 	}
 	
-	public SpaceToken(String handle, MidataId spaceId, MidataId userId, MidataId recordId, MidataId pluginId) {
+	public SpaceToken(String handle, MidataId spaceId, MidataId userId, UserRole role, MidataId recordId, MidataId pluginId) {
 		this.handle = handle;
 		this.spaceId = spaceId;
 		this.userId = userId;
 		this.recordId = recordId;
 		this.pluginId = pluginId;
+		this.role = role;
 	}
 	
-	public SpaceToken(String handle, MidataId spaceId, MidataId userId, MidataId recordId, MidataId pluginId, MidataId executorId) {
+	public SpaceToken(String handle, MidataId spaceId, MidataId userId, UserRole role, MidataId recordId, MidataId pluginId, MidataId executorId) {
 		this.handle = handle;
 		this.spaceId = spaceId;
 		this.userId = userId;
@@ -91,9 +97,10 @@ public class SpaceToken {
 		this.executorId = executorId;	
 		this.autoimport = true;
 		this.created = System.currentTimeMillis();
+		this.role = role;
 	}
 	
-	public SpaceToken(String handle, MidataId spaceId, MidataId userId, MidataId recordId, MidataId pluginId, MidataId executorId, long created, String remoteAddr, boolean autoimport) {
+	public SpaceToken(String handle, MidataId spaceId, MidataId userId, UserRole role, MidataId recordId, MidataId pluginId, MidataId executorId, long created, String remoteAddr, boolean autoimport) {
 		this.handle = handle;
 		this.spaceId = spaceId;
 		this.userId = userId;
@@ -103,13 +110,15 @@ public class SpaceToken {
 		this.created = created;
 		this.remoteAddress = remoteAddr;
 		this.autoimport = autoimport;
+		this.role = role;
 	}
 	
-	public SpaceToken(String handle, MidataId spaceId, MidataId userId, MidataId recordId) {
+	public SpaceToken(String handle, MidataId spaceId, MidataId userId, UserRole role, MidataId recordId) {
 		this.handle = handle;
 		this.spaceId = spaceId;
 		this.userId = userId;
 		this.recordId = recordId;
+		this.role = role;
 	}
 	
 	private static String remoteAddr(Request req) {
@@ -133,6 +142,7 @@ public class SpaceToken {
 				.get();
 		if (recordId != null) map.put("r", recordId.toString());
 		if (pluginId != null) map.put("p", pluginId.toString());
+		map.put("R", role.toShortString());
 		if (executorId != null && !executorId.equals(userId)) map.put("e", executorId.toString());
 		if (autoimport) map.put("a", "1");
 		map.put("c", Long.toString(this.created));
@@ -180,8 +190,9 @@ public class SpaceToken {
 			if (!remoteAddr.equals("all") && !remoteAddr.equals("::1")) {				
 			  if (!remoteAddr(request).equals(remoteAddr)) return null;
 			}
+			UserRole role = UserRole.fromShortString(json.get("R").asText());
 			
-			return new SpaceToken(handle, spaceId, userId, recordId, pluginId, executorId, created, remoteAddr, json.has("a"));
+			return new SpaceToken(handle, spaceId, userId, role, recordId, pluginId, executorId, created, remoteAddr, json.has("a"));
 		} catch (Exception e) {
 			return null;
 		}

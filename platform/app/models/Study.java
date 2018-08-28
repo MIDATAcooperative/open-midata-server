@@ -9,9 +9,11 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 
 import models.enums.AssistanceType;
 import models.enums.InformationType;
+import models.enums.JoinMethod;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ResearcherRole;
 import models.enums.StudyExecutionStatus;
+import models.enums.StudyType;
 import models.enums.StudyValidationStatus;
 import models.enums.UserFeature;
 import utils.collections.CMaps;
@@ -32,7 +34,7 @@ public class Study extends Model {
 	/**
 	 * constant set containing all fields
 	 */
-	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "owner", "createdBy", "createdAt", "description", "infos", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "anonymous");
+	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "type", "joinMethods", "owner", "createdBy", "createdAt", "description", "infos", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "anonymous");
 	
 	/**
 	 * name of study
@@ -40,7 +42,7 @@ public class Study extends Model {
 	public String name;
 	
 	/**
-	 * code of study (currently not used)
+	 * code of study 
 	 */
 	public String code;
 	
@@ -53,6 +55,16 @@ public class Study extends Model {
 	 * id of researcher who created the study
 	 */
 	public MidataId createdBy; // references ResearchUser
+	
+	/**
+	 * Type of research project
+	 */
+	public StudyType type;
+	
+	/**
+	 * Supported join methods
+	 */
+	public Set<JoinMethod> joinMethods;
 	
 	/**
 	 * date of creation of the study
@@ -260,6 +272,16 @@ public class Study extends Model {
     public void setDescription(String description) throws InternalServerException {
     	this.description = description;
     	Model.set(Study.class, collection, this._id, "description", description);
+    }
+    
+    public void setType(StudyType type) throws InternalServerException {
+    	this.type = type;
+    	Model.set(Study.class, collection, this._id, "type", type);
+    }
+    
+    public void setJoinMethods(Set<JoinMethod> joinMethods) throws InternalServerException {
+    	this.joinMethods = joinMethods;
+    	Model.set(Study.class, collection, this._id, "joinMethods", joinMethods);
     }
     
     public void setAutoJoinGroup(String autoJoinGroup) throws InternalServerException {

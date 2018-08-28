@@ -18,7 +18,7 @@
         "contract_confirm_required" : "Der unterschriebene Vertrag muss bestätigt werden",
         "no_email_confirm" : "E-Mail vom Benutzer noch nicht bestätigt",
         "email_rejected" : "E-Mail-Bestätigung vom Benutzer abgelehnt",
-        "not_admin_confirmed" : "Nicht vom Administrator bestätigte Accounts",
+        "not_admin_confirmed" : "Nicht vom Administrator bestätigte Konten",
         "overview" : "Übersicht",
         "specific_user" : "Bestimmter Benutzer",
         "role" : "Rolle",
@@ -28,7 +28,7 @@
     },
 
     "admin_address" : {
-        "title" : "Adresse des Mitglieds",
+        "title" : "Profil des Mitglieds",
         "midata_id" : "MIDATA-ID",
         "role" : "Rolle",
         "subroles" : "Subrolle(n)",
@@ -44,11 +44,9 @@
         "email_confirm_btn" : "E-Mail-Adresse bestätigen",
         "comment" : "Bemerkung",
         "add_comment_btn" : "Bemerkung hinzufügen",
-        "wipe_btn" : "Account entfernen",
+        "wipe_btn" : "Konto löschen",
         "change_email_btn" : "E-Mail-Adresse ändern",
-
-        // TODO NEW: Change Address / Birthday
-        "change_address_btn" : "Change Address / Birthday"
+        "change_address_btn" : "Profil ändern"
     },
 
     "admin_news" : {
@@ -148,9 +146,6 @@
 
     "admin_stats" : {
         "title" : "Statistiken",
-
-        // TODO NEW: 
-        "what" : "",
         "value" : "Gesamtzahl",
         "diff_yesterday" : "Diff. zu vor 1 Tag",
         "diff_week" : "Diff. zu vor 7 Tagen",

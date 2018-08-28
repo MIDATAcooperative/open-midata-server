@@ -13,6 +13,10 @@
 	    <td translate="admin_study.name"></td>
 	    <td>{{ study.name }}</td>
 	  </tr>
+	   <tr>
+	    <td translate="admin_study.type"></td>
+	    <td>{{ 'enum.studytype.' + study.type | translate }}</td>
+	  </tr>
 	  <tr>
         <td translate="admin_study.created_at"></td>
         <td>{{ study.createdAt | date : 'dd.MM.yy' }}</td>
@@ -41,7 +45,17 @@
 	    <td translate="admin_study.dataCreatedBefore"></td>
 	    <td>{{ study.dataCreatedBefore | date : 'dd.MM.yy' }}</td>
 	  </tr>
+	  <tr>
+	    <td translate="admin_study.joinmethods"></td>
+	    <td>
+	      <ul>
+		    <li ng-repeat="method in study.joinMethods" translate="{{'enum.joinmethod.'+method}}"></li>
+		  </ul>
+	    </td>
+	  </tr>
     </table>	
+      
+		  
     </loader>
     </div>
     </div>
@@ -61,6 +75,7 @@
 		  <ul>
 		    <li ng-repeat="req in study.requirements" translate="{{'enum.userfeature.'+req}}"></li>
 		  </ul>
+		
 		</div>
 	</div>
 	
@@ -105,6 +120,62 @@
 			</table>
       </div>
 	</div>
+	
+	 <div class="panel panel-primary">
+    <div class="panel-heading" translate="admin_study.links"></div>
+    <div class="panel-body">
+	
+	  <p translate="studyactions.empty" ng-hide="links.length"></p>
+	          <table class="table table-striped table-hover" ng-show="links.length">
+	            <tr>
+	              <th translate="studyactions.app"></th>
+	              <th translate="studyactions.type"></th>
+	              <th translate="studyactions.validation"></th>
+	              <th></th>
+	            </tr>
+	            <tr ng-repeat="link in links">
+	              <td ng-click="select(link);">{{ link.app.filename }}</td>
+	                <td>
+	                <div ng-repeat="type in link.type" translate="{{ 'studyactions.types_short.'+type }}"></span>
+	              </td>
+	              <td>
+	                <div ng-show="link.validationResearch != 'VALIDATED'">
+	                  <span class="glyphicon glyphicon-remove text-danger"></span>
+	                  <span translate="studyactions.status.not_validated_research"></span>
+	                </div>
+	                <div ng-show="link.validationDeveloper != 'VALIDATED'">
+	                  <span class="glyphicon glyphicon-remove text-danger"></span>
+	                  <span translate="studyactions.status.not_validated_developer"></span>
+	                </div>
+	                <div ng-show="link.validationDeveloper == 'VALIDATED' && link.validationResearch == 'VALIDATED'">
+	                  <span class="glyphicon glyphicon-ok text-success"></span>
+	                  <span translate="studyactions.status.validated"></span>
+	                </div>
+	                <div ng-show="link.usePeriod.indexOf(study.executionStatus)<0">
+	                  <span class="glyphicon glyphicon-remove text-danger"></span>
+	                  <span translate="studyactions.status.study_wrong_status"></span>
+	                </div>
+	                <div ng-show="link.type.indexOf('REQUIRE_P')>=0 && study.participantSearchStatus != 'SEARCHING'">
+	                  <span class="glyphicon glyphicon-remove text-danger"></span>
+	                  <span translate="error.closed.study"></span>
+	                </div>
+	                <div ng-show="(link.type.indexOf('REQUIRE_P')>=0 || link.type.indexOf('OFFER_P')>=0) && link.study.joinMethods.indexOf('APP') < 0">
+	                  <span class="glyphicon glyphicon-remove text-danger"></span>
+	                  <span translate="studyactions.status.study_no_app_participation"></span>
+	                </div>
+	                
+	              </td>
+	              <td>	               
+	                <button type="button" class="btn btn-xs btn-default" ng-click="validate(link);" translate="studyactions.validate_btn"></button>
+	                <button type="button" class="btn btn-xs btn-danger" ng-click="remove(link);" translate="common.delete_btn"></button>
+	              </td>
+	            </tr>
+	          </table>
+	  </div>
+	</div>
+	
+	
+	
     
     <div class="panel panel-primary">
     <div class="panel-heading" translate="admin_study.history"></div>

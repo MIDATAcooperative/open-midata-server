@@ -13,9 +13,13 @@
 		<input type="text" class="form-control" id="name" name="name" translate translate-attr-placeholder="createstudy.study_name" ng-model="study.name" ng-required="true">
 		<formerror myid="name" type="exists" message="error.exists.study"></formerror> 
       </formrow>
+      <formrow myid="type" label="createstudy.study_type"> 
+		<select class="form-control" id="type" name="type" ng-model="study.type" ng-required="true" ng-options="type as 'enum.studytype.'+type | translate for type in studytypes"></select>
+      </formrow>
       <formrow myid="description" label="createstudy.study_description">
         <textarea class="form-control" id="description" name="description" rows="5" ng-model="study.description" ng-required="true"></textarea>
       </formrow>
+   
       <formrow myid="x" label="">
         <button type="submit" class="btn btn-primary" translate="common.submit_btn"></button>
       </formrow>

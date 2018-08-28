@@ -16,12 +16,12 @@
     "workspace" : "Workspace",
     "data" : "Data",
     "addresearcher" : "Add Researcher",
-    "organization" : "Organization"
+    "organization" : "Research Organization"
   },
   
   "researcher_organization" : {
-    "title" : "Organization",
-    "name" : "Org. Name",
+    "title" : "Research Organization",
+    "name" : "Name",
     "description" : "Description",
     "researchers" : "All researchers of your organization"
   },
@@ -30,7 +30,8 @@
     "title" : "Create new study",
     "title2" : "Change study description",
     "study_name" : "Study name",
-    "study_description" : "Study description"
+    "study_type" : "Type of research",
+    "study_description" : "Study description"    
   },
   
   "studynav" : {
@@ -56,6 +57,10 @@
   },
   
   "studyactions" : {
+    "related_apps" : "Plugins related to the study",
+    "empty" : "No apps or plugins are linked to the study",
+    "aggregator_apps" : "Add research app to be used with YOUR account",
+    "datalink" : "Aggregators, Analysis & Interpretation Apps",
     "description" : "After the study has been validated, you can link plugins and external data processing services to it. These plugins or services must connect to MIDATA using the credentials of one of the members of the research team with sufficient rights.",
     "select_group_btn" : "Select Group",
     "allgroups" : "<All Groups>",
@@ -66,7 +71,44 @@
     "shareback" : "Application shares data with participant group(s)",
     "add_application_btn" : "Add Research Application",
     "linked_apps" : "Applications Consents",
-    "linked_spaces" : "Research Plugins"
+    "linked_spaces" : "Research Plugins",
+    "app" : "Application",    
+    "for" : "for",
+    "validation" : "Status",    
+    "status" : {       
+	   "validated" : "Confirmed",	   
+	   "not_validated_research" : "Not confirmed by researcher",
+	   "not_validated_developer" : "Not confirmed by developer",
+	   "study_wrong_status" : "Not active due to study status",
+	   "study_no_app_participation" : "Study does not allow to join using an app"	   
+    },
+    "select_btn" : "View",
+    "validate_btn" : "Confirm",
+    "study" : "Study",
+    "app.type" : "Application type",
+    "no_valid_app" : "No application selected",
+    "type" : "How are they linked?",
+    "types" : {
+       "OFFER_P" : "App or plugin offers study participation upon login/start",
+       "REQUIRE_P" : "Study participation is required to use the app or plugin",
+       "RECOMMEND_A" : "App or plugin is recommended by study",
+       "AUTOADD_A" : "Plugin is automatically added on study participation",
+       "DATALINK" : "App shares data to study participants"
+    },
+    "types_short" : {
+       "OFFER_P" : "Offer participation",
+       "REQUIRE_P" : "Require participation",
+       "RECOMMEND_A" : "Recommended",
+       "AUTOADD_A" : "Auto-Add",
+       "DATALINK" : "Data Share"
+    },
+    "use_period" : "When are they linked?",
+    "use_periods" : {
+      "PRE" : "Before the study has started",
+      "RUNNING" : "During the execution of the study",
+      "FINISHED" : "After the study is finished",
+      "ABORTED" : "When the study is aborted"
+    }	                                      
   },
   
   "studyfields" : {
@@ -74,9 +116,9 @@
     "no_change_warning" : "This setup cannot be changed anymore after Study has been validated.",
     "member_identity" : "Member Identity",
     "pseudonymous1" : "Pseudonymized Participation",
-    "pseudonymous2" : ", exported data reveals pseudonymized ID, year of birth, gender and country. Some researchers like study nurses may have access to full personal data.",
+    "pseudonymous2" : ", exported data reveals the pseudonymized identity, year of birth, gender and country. Some researchers like study nurses may have access to full personal data.",
     "anonymous" : "Anonymous Participation",
-    "anonymous2" : ", reveals pseudonymized ID, year of birth, gender and country. Pseudonymization mapping may not be accessed.",    
+    "anonymous2" : ", exported data reveals the spseudonymized identity, year of birth, gender and country. The pseudonymization mapping may not be accessed.",    
     "not_anonymous1" : "Not Pseudonymized",
     "not_anonymous2" : ", requests member to share full name, birthday and contact Information (address, phone, email)",
     "assistance" : "Assistance",
@@ -94,8 +136,9 @@
   
   "studyoverview" : {
     "name" : "Name",
-    "created_at" : "Created on:",
-    "created_by" : "Created by:",
+    "type" : "Type of Research",
+    "created_at" : "Created on",
+    "created_by" : "Created by",
     "description" : "Description",
     "code" : "Code",
     "validation_status" : "Validation Status",
@@ -174,6 +217,7 @@
     "endDate" : "Official end date",
     "dataCreatedBefore" : "Data freeze date",
     "sharing_query" : "Data Access Filter",
+    "join_methods" : "Allowed Ways of Joining",
     "queryeditor_btn" : "Edit",    
     "terms_of_use" : "General Terms and Conditions",
     "terms_of_use_hint" : "If the study General Terms and Conditions have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the ID you need to enter here.",

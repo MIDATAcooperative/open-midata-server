@@ -133,6 +133,7 @@ tasks/install-localmongo: trigger/install-localmongo
 	tar xzf mongodb-linux-x86_64-$(MONGO_VERSION).tgz
 	ln -s mongodb-linux-x86_64-$(MONGO_VERSION) mongodb
 	mkdir -p mongodb/data	
+	mkdir -p logs
 	cp config/mongod.conf mongodb/mongod.conf
 	sed -i 's|MONGODB_DATA_PATH|$(abspath mongodb/data)|' mongodb/mongod.conf
 	sed -i 's|MONGODB_LOG_PATH|$(abspath logs/mongod.log)|' mongodb/mongod.conf
@@ -227,7 +228,7 @@ tasks/reimport-plugins: trigger/reimport-plugins
 	cd json;make reimportplugins
 	touch tasks/reimport-plugins
 	
-tasks/build-mongodb: trigger/build-mongodb tasks/reimport-mongodb tasks/reimport-plugins
+tasks/build-mongodb: trigger/build-mongodb tasks/reimport-mongodb tasks/reimport-plugins $(wildcard json/*.js)
 	$(info ------------------------------)
 	$(info (Re-)creating database indexes)
 	$(info ------------------------------)
@@ -299,6 +300,7 @@ use-loadbalancer: /etc/ssl/certs/ssl-cert-snakeoil.pem
 	sudo apt-get install ssl-cert	
 	
 tasks/bugfixes:
+	mkdir -p ~/.config
 	sudo chown -R $$USER:$$GROUP ~/.config	
 	sudo chown -R $$USER:$$GROUP ~/.npm
 	touch tasks/bugfixes

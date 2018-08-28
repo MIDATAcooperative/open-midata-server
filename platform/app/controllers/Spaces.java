@@ -23,6 +23,7 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
@@ -43,7 +44,7 @@ import utils.json.JsonValidation.JsonValidationException;
  *
  */
 @Security.Authenticated(AnyRoleSecured.class)
-public class Spaces extends Controller {
+public class Spaces extends APIController {
 	
 
 	
@@ -237,7 +238,7 @@ public class Spaces extends Controller {
 		}
 
 		// create encrypted authToken
-		SpaceToken spaceToken = new SpaceToken(PortalSessionToken.session().handle, space._id, userId);
+		SpaceToken spaceToken = new SpaceToken(PortalSessionToken.session().handle, space._id, userId, getRole());
 		return ok(spaceToken.encrypt(request()));
 	}
 	
@@ -268,7 +269,7 @@ public class Spaces extends Controller {
 		boolean testing = (visualization.creator.equals(PortalSessionToken.session().getDeveloper()) || visualization.creator.equals(userId)) && visualization.developmentServer != null && visualization.developmentServer.length()> 0; 
 		
 		
-	    SpaceToken spaceToken = new SpaceToken(PortalSessionToken.session().handle, space._id, userId, targetUserId, true);
+	    SpaceToken spaceToken = new SpaceToken(PortalSessionToken.session().handle, space._id, userId, targetUserId, getRole(), true);
 			
 		String visualizationServer = "https://" + InstanceConfig.getInstance().getConfig().getString("visualizations.server") + "/" + visualization.filename;
 		if (testing) visualizationServer = visualization.developmentServer;
@@ -291,6 +292,7 @@ public class Spaces extends Controller {
 		  if (data != null && data.get("refreshToken") != null) {					
 		    return Plugins.requestAccessTokenOAuth2FromRefreshToken(spaceIdString, data, obj);
 		  }
+		  AccessLog.log("No refresh token requested.");
 		} 
 		if (visualization.type != null && visualization.type.equals("oauth1")) {
 	  		  BSONObject oauthmeta = RecordManager.instance.getMeta(userId, new MidataId(spaceIdString), "_oauth");  		  

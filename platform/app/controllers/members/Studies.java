@@ -26,6 +26,7 @@ import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.EntityType;
 import models.enums.InformationType;
+import models.enums.JoinMethod;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationCodeStatus;
 import models.enums.ParticipationStatus;
@@ -246,7 +247,11 @@ public class Studies extends APIController {
 			part.recruiter = code.recruiter;		
 			part.recruiterName = code.recruiterName;
 			part.pstatus = ParticipationStatus.CODE;
-		} else part.pstatus = ParticipationStatus.MATCH;
+			part.joinMethod = JoinMethod.CODE;
+		} else {
+			part.pstatus = ParticipationStatus.MATCH;
+			part.joinMethod = JoinMethod.ALGORITHM;
+		}
 		
 		//PatientResourceProvider.generatePatientForStudyParticipation(part, member);
 		
@@ -335,22 +340,24 @@ public class Studies extends APIController {
 		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, requirements);
 		if (notok != null && !notok.isEmpty()) requireUserFeature(notok.iterator().next());
 		
-		requestParticipation(new ExecutionInfo(userId), userId, studyId, null);		
+		requestParticipation(new ExecutionInfo(userId, getRole()), userId, studyId, null, JoinMethod.PORTAL);		
 		return ok();
 	}
 	
-	public static StudyParticipation requestParticipation(ExecutionInfo inf, MidataId userId, MidataId studyId, MidataId usingApp) throws AppException {
+	public static StudyParticipation requestParticipation(ExecutionInfo inf, MidataId userId, MidataId studyId, MidataId usingApp, JoinMethod joinMethod) throws AppException {
 		
 		
 		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country"));		
 		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "pstatus", "ownerName", "owner", "authorized", "sharingQuery", "validUntil", "createdBefore"));		
-		Study study = Study.getById(studyId, Sets.create("name", "executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "termsOfUse", "code", "autoJoinGroup"));
+		Study study = Study.getById(studyId, Sets.create("name", "joinMethods", "executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "termsOfUse", "code", "autoJoinGroup"));
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
 		
 		
 		if (participation == null) {
 			if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new JsonValidationException("error.closed.study", "code", "notsearching", "Study is not searching for participants.");
+			
+			if (study.joinMethods != null && !study.joinMethods.contains(joinMethod)) throw new JsonValidationException("error.closed.study", "code", "notsearching", "Study is not searching for participants using this channel."); 
 			
 			participation = createStudyParticipation(inf.executorId, study, user, null);
 										
@@ -360,7 +367,8 @@ public class Studies extends APIController {
 		if (participation.pstatus == ParticipationStatus.ACCEPTED || participation.pstatus == ParticipationStatus.REQUEST) return participation;				
 		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");
 		
-		participation.setPStatus(ParticipationStatus.REQUEST);						
+		participation.setPStatus(ParticipationStatus.REQUEST, joinMethod);	
+		
 		//participation.addHistory(new History(EventType.PARTICIPATION_REQUESTED, participation, user, null));
 		if (study.termsOfUse != null) user.agreedToTerms(study.termsOfUse, usingApp);		
 		if (study.requiredInformation.equals(InformationType.RESTRICTED)) {

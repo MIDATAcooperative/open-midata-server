@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('StudyDetailCtrl', ['$scope', '$state', 'server', 'views', 'session', 'users', 'studies', 'labels', '$window', '$translate', function($scope, $state, server, views, session, users, studies, labels, $window, $translate) {
+.controller('StudyDetailCtrl', ['$scope', '$state', 'server', 'views', 'session', 'users', 'studies', 'labels', '$window', '$translate', 'spaces', 'status', 'apps', function($scope, $state, server, views, session, users, studies, labels, $window, $translate, spaces, status, apps) {
 	
 	$scope.studyid = $state.params.studyId;
 	$scope.study = {};
@@ -8,6 +8,8 @@ angular.module('portal')
 	$scope.labels = [];
 	$scope.loading = true;
 	$scope.error = null;
+	$scope.translate = $translate;
+	$scope.status = new status(true);
 		
 	views.link("shared_with_study", "record", "record");
 	views.link("shared_with_study", "shareFrom", "share");
@@ -26,6 +28,18 @@ angular.module('portal')
 				$scope.research = data.research;
 				$scope.loading = false;
 				$scope.error = null;
+				
+				
+				server.get(jsRoutes.controllers.Market.getStudyAppLinks("study-use", $scope.study._id).url)
+			    .then(function(data) {		    	
+			        $scope.links = [];
+			    	for (var l=0;l<data.data.length;l++) {
+			    		var link = data.data[l];
+			    		if (link.type.indexOf("RECOMMEND_A")>=0) $scope.links.push(link);
+			    	}	
+			    	console.log("LINKS");
+			    	console.log($scope.links);
+				});	
 				
 				$scope.providers = [];
 				if (data.participation && data.participation.providers) {
@@ -92,7 +106,7 @@ angular.module('portal')
 	
 	$scope.mayRequestParticipation = function() {
 		return ($scope.participation != null && ( $scope.participation.pstatus == "MATCH" || $scope.participation.pstatus == "CODE" )) ||
-		   ($scope.participation == null && !$scope.locked && $scope.study.participantSearchStatus == 'SEARCHING' && $state.current.data.role == 'MEMBER');
+		   ($scope.participation == null && !$scope.locked && $scope.study.participantSearchStatus == 'SEARCHING' && $state.current.data.role == 'MEMBER' && (!$scope.study.joinMethods || $scope.study.joinMethods.indexOf("PORTAL")>=0 ));
 	};
 	
 	$scope.mayDeclineParticipation = function() {
@@ -154,6 +168,36 @@ angular.module('portal')
 	$scope.terms = function(def) {
 		console.log("TERMS");
 		views.setView("terms", { which : def }, "Terms");
+	};
+	
+	$scope.installApp = function(app) {
+		
+		
+		  spaces.get({ "owner": $scope.userId, "visualization" : app._id }, ["_id", "type"])
+		  .then(function(spaceresult) {
+			 if (spaceresult.data.length > 0) {
+				 var target = spaceresult.data[0];
+				 if (target.type === "oauth1" || target.type === "oauth2") {
+					 $state.go("^.importrecords", { "spaceId" : target._id, params : $state.params.params });
+				 } else { 
+				     $state.go("^.spaces", { spaceId : target._id, params : $state.params.params });
+				 }
+			 } else {	  				
+				$scope.status.doAction("install", apps.installPlugin(app._id, { applyRules : true }))
+				.then(function(result) {				
+					//session.login();
+					if (result.data && result.data._id) {
+					  if (app.type === "oauth1" || app.type === "oauth2") {
+						 $state.go("^.importrecords", { "spaceId" : result.data._id });
+					  } else { 
+					     $state.go('^.spaces', { spaceId : result.data._id });
+					  }
+					} else {
+					  $state.go('^.dashboard', { dashId : $scope.options.context });
+					}
+				});
+			 }
+		  });
 	};
 	
 }]);

@@ -7,6 +7,7 @@ import java.util.Set;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.Gender;
+import models.enums.JoinMethod;
 import models.enums.ParticipationStatus;
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -28,6 +29,8 @@ public class StudyParticipation extends Consent {
 	public String recruiterName; // replication of recruiter name
 	public Set<MidataId> providers; // (Optional) List of healthcare providers monitoring the member for this study.	
 	
+	public JoinMethod joinMethod;
+	
 	public int yearOfBirth;
 	public String country;
 	public Gender gender;
@@ -44,6 +47,10 @@ public class StudyParticipation extends Consent {
 	
 	public static Set<StudyParticipation> getAllByMember(MidataId member, Set<String> fields) throws InternalServerException {
 		return Model.getAll(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("owner", member), fields);
+	}
+	
+	public static Set<StudyParticipation> getAllActiveByMember(MidataId member, Set<String> fields) throws InternalServerException {
+		return Model.getAll(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("owner", member).map("pstatus", ParticipationStatus.ACCEPTED), fields);
 	}
 	
 	public static Set<StudyParticipation> getParticipantsByStudy(MidataId study, Set<String> fields) throws InternalServerException {
@@ -98,6 +105,12 @@ public class StudyParticipation extends Consent {
 	
 	public void setPStatus(ParticipationStatus newstatus) throws InternalServerException {
 		Model.set(StudyParticipation.class, collection, this._id, "pstatus", newstatus);
+	}
+	
+	public void setPStatus(ParticipationStatus newstatus, JoinMethod joinMethod) throws InternalServerException {
+		this.pstatus = newstatus;
+		this.joinMethod = joinMethod;
+		this.setMultiple(collection, Sets.create("pstatus", "joinMethod"));		
 	}
 	
 	public static void setManyGroup(Set<MidataId> ids, String group) throws InternalServerException {

@@ -16,7 +16,8 @@ var mapping = [
 		  { csv : "name", fhir : "name.text" },
 		  { csv : "gender", fhir : "gender" },
 		  { csv : "birthdate", fhir : "birthDate" },
-		  { csv : "participant-id", fhir : "identifier.value", filter : { "identifier.system" : "http://midata.coop/identifier/participant-id" }}
+		  { csv : "participant-id", fhir : "identifier.value", filter : { "identifier.system" : "http://midata.coop/identifier/participant-id" }},
+		  { csv : "join-date", fhir : "meta.lastUpdated" }
 	  ]
   },
   {

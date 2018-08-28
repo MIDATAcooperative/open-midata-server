@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('StudyRulesCtrl', ['$scope', '$state', 'server', 'status', 'terms', 'apps', 'labels', '$translate', 'formats', '$document', function($scope, $state, server, status, terms, apps, labels, $translate, formats, $document) {
+.controller('StudyRulesCtrl', ['$scope', '$state', 'server', 'status', 'terms', 'apps', 'labels', '$translate', 'formats', '$document', 'studies', function($scope, $state, server, status, terms, apps, labels, $translate, formats, $document, studies) {
    
    $scope.studyid = $state.params.studyId;
    $scope.status = new status(true, $scope);
@@ -13,6 +13,7 @@ angular.module('portal')
    };
    $scope.query = {};
    $scope.codesystems = formats.codesystems;
+   $scope.joinmethods = studies.joinmethods;
    
    $scope.reload = function() {
 	   	  
@@ -20,6 +21,8 @@ angular.module('portal')
 	    .then(function(data) { 				
 			$scope.study = data.data;	
 			if (!$scope.study.requirements) $scope.study.requirements = [];
+			if (!$scope.study.joinMethods) $scope.study.joinMethods = [];
+			
 			$scope.study.recordQueryStr = JSON.stringify($scope.study.recordQuery);
 			//if ($scope.study.recordQueryStr === "{}") $scope.study.recordQueryStr = "{ \"content\" : [] }";
 			//$scope.updateQuery();
@@ -43,7 +46,7 @@ angular.module('portal')
 			return;
 		}
    	   	   
-	   var data = { recordQuery : $scope.study.recordQuery, termsOfUse : $scope.study.termsOfUse, requirements: $scope.study.requirements, startDate : $scope.study.startDate, endDate : $scope.study.endDate, dataCreatedBefore : $scope.study.dataCreatedBefore };
+	   var data = { joinMethods : $scope.study.joinMethods, termsOfUse : $scope.study.termsOfUse, requirements: $scope.study.requirements, startDate : $scope.study.startDate, endDate : $scope.study.endDate, dataCreatedBefore : $scope.study.dataCreatedBefore };
 	   $scope.status.doAction("update", server.put(jsRoutes.controllers.research.Studies.update($scope.studyid).url, JSON.stringify(data)))
 	  .then(function(data) { 				
 		    $scope.reload();
