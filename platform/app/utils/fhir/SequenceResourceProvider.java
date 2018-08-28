@@ -65,8 +65,8 @@ public class SequenceResourceProvider extends RecordBasedResourceProvider<Sequen
 
 			@Description(shortDefinition = "Chromosome number of the reference sequence") @OptionalParam(name = "chromosome") TokenAndListParam theChromosome,
 
-			@Description(shortDefinition = "Search parameter for region of the reference DNA sequence string. This will refer to part of a locus or part of a gene where search region will be represented in 1-based system. Since the coordinateSystem can either be 0-based or 1-based, this search query will include the result of both coordinateSystem that contains the equivalent segment of the gene or whole genome sequence. For example, a search for sequence can be represented as `coordinate=1$lt345$gt123`, this means it will search for the Sequence resource on chromosome 1 and with position >123 and <345, where in 1-based system resource, all strings within region 1:124-344 will be revealed, while in 0-based system resource, all strings within region 1:123-344 will be revealed. You may want to check detail about 0-based v.s. 1-based above.") @OptionalParam(name = "coordinate", compositeTypes = {
-					TokenParam.class, NumberParam.class }) CompositeAndListParam<TokenParam, NumberParam> theCoordinate,
+			//@Description(shortDefinition = "Search parameter for region of the reference DNA sequence string. This will refer to part of a locus or part of a gene where search region will be represented in 1-based system. Since the coordinateSystem can either be 0-based or 1-based, this search query will include the result of both coordinateSystem that contains the equivalent segment of the gene or whole genome sequence. For example, a search for sequence can be represented as `coordinate=1$lt345$gt123`, this means it will search for the Sequence resource on chromosome 1 and with position >123 and <345, where in 1-based system resource, all strings within region 1:124-344 will be revealed, while in 0-based system resource, all strings within region 1:123-344 will be revealed. You may want to check detail about 0-based v.s. 1-based above.") @OptionalParam(name = "coordinate", compositeTypes = {
+			//		TokenParam.class, NumberParam.class }) CompositeAndListParam<TokenParam, NumberParam> theCoordinate,
 
 			@Description(shortDefinition = "End position (0-based exclusive, which menas the acid at this position will not be included, 1-based inclusive, which means the acid at this position will be included) of the reference sequence.") @OptionalParam(name = "end") NumberAndListParam theEnd,
 
@@ -103,7 +103,7 @@ public class SequenceResourceProvider extends RecordBasedResourceProvider<Sequen
 		paramMap.add("_id", the_id);
 		paramMap.add("_language", the_language);
 		paramMap.add("chromosome", theChromosome);
-		paramMap.add("coordinate", theCoordinate);
+		//paramMap.add("coordinate", theCoordinate);
 		paramMap.add("end", theEnd);
 		paramMap.add("identifier", theIdentifier);
 		paramMap.add("patient", thePatient);
@@ -141,25 +141,20 @@ public class SequenceResourceProvider extends RecordBasedResourceProvider<Sequen
 		builder.handleIdRestriction();
 
 		// Add handling for search on the "owner" of the record.
-		builder.recordOwnerReference("patient", "Patient", "subject");
-
-		// Add handling for search on the field that determines the MIDATA content type
-		// used.
-		builder.recordCodeRestriction("code", "code");
-
+		builder.recordOwnerReference("patient", "Patient", "patient");
+		
 
 		builder.restriction("chromosome", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "referenceSeq.chromosome");
 		
-
+		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
 
 		// TODO implement the coordinate search.
 		// builder.restriction("coordinate");
 
 		// Example for a restriction on a Codeable Concept:
-		builder.restriction("end", true, QueryBuilder.TYPE_STRING, "referenceSeq.windowEnd	"); // TODO implement type number
-		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
-		builder.restriction("start", true, QueryBuilder.TYPE_STRING, "referenceSeq.windowStart"); // TODO implement type number
-		builder.restriction("type", true, QueryBuilder.TYPE_CODE, "type"); // TODO implement type number
+		builder.restriction("end", true, QueryBuilder.TYPE_INTEGER, "referenceSeq.windowEnd	"); 		
+		builder.restriction("start", true, QueryBuilder.TYPE_INTEGER, "referenceSeq.windowStart"); 
+		builder.restriction("type", true, QueryBuilder.TYPE_CODE, "type"); 
 		
 		
 		// At last execute the constructed query
