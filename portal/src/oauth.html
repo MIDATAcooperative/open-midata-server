@@ -28,7 +28,8 @@
 		<link rel="stylesheet" href="/app2.css">
 		<!-- endbuild -->
 		
-		<script type="text/javascript" src="<!-- @echo BACKEND -->/api/assets/javascripts/routes" defer></script>									
+		<!--<script type="text/javascript" src="<!- - @echo BACKEND - ->/api/assets/javascripts/routes" defer></script>-->
+		<script type="text/javascript" src="@@BACKEND@@/api/assets/javascripts/routes" ></script>								
 		<!-- <script type="text/javascript" src="components/jquery-ui/jquery-ui.js" defer></script>  -->  
 		
 		<!-- build:js oauth.min.js -->				
@@ -44,7 +45,8 @@
 		<script type="text/javascript" src="oauthapp.js" defer></script>
 		<!-- endbuild -->
 	</head>
-	<body ng-app="portal" ng-csp="no-unsafe-eval" class="<!-- @echo NAME -->">
+	<!--<body ng-app="portal" ng-csp="no-unsafe-eval" class="<!- - @echo NAME - ->">-->
+<body ng-app="portal" ng-csp="no-unsafe-eval" class="@@NAME@@">
 	
 	  <div ng-if="false" class="fullheight start-color">	 
 			<div style="position: relative;" class="fullheight">
