@@ -12,6 +12,10 @@
  * with other pre-existing classes when integrated in other codebases.
  */
 
+ @import './colors';
+ @import './variables';
+ @import './mixins';
+
 /*
  ** Text-related classes
  */

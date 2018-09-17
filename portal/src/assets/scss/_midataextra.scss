@@ -1,3 +1,7 @@
+@import './colors';
+@import './typography';
+@import './placeholder_classes';
+
 .fullheight { height: 100%; }
 .start-color { @extend %mi-x-colored_gradient_background; }
 

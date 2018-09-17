@@ -33,13 +33,14 @@ var My_Plugins = [
 ];
 
 for (let i = 0; i < My_Definitions.html_files_to_add.length; i++) {
-    const html_file_name = My_Definitions.html_files_to_add[i];
+    const _definition = My_Definitions.html_files_to_add[i];
     My_Plugins.push(
         new HtmlWebpackPlugin({
-            template: path.resolve(CLIENT_DIR, html_file_name),
+            template: path.resolve(CLIENT_DIR, _definition.page),
             output: DIST_DIR,
             inject: 'head',
-            filename: html_file_name,
+            filename: _definition.page,
+            excludeChunks: _definition.exclude,
             BACKEND: instance.portal.backend,
             NAME: instance.portal.backend.substring(8).split(/[\.\:]/)[0]
         }))
@@ -81,13 +82,24 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.(le|sa|sc|c)ss$/,
+                test: /\.(le|c)ss$/,
                 use: [
                     MiniCssExtractPlugin.loader,
                     "css-loader",
                     //'postcss-loader',
                     'sass-loader',
                     'less-loader'
+                ]
+            },
+            {
+                test: /\.(sa|sc)ss$/,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    "css-loader",
+                    //'postcss-loader',
+                    'sass-loader'
+                    //,
+                    //'less-loader'
                 ]
             },
             {
