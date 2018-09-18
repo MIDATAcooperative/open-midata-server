@@ -29,7 +29,7 @@
 		<!-- endbuild -->
 		
 		<!--<script type="text/javascript" src="<!- - @echo BACKEND - ->/api/assets/javascripts/routes" defer></script>-->
-		<script type="text/javascript" src="@@BACKEND@@/api/assets/javascripts/routes" ></script>								
+		<script type="text/javascript" src="<%= htmlWebpackPlugin.options.BACKEND %>/api/assets/javascripts/routes" ></script>								
 		<!-- <script type="text/javascript" src="components/jquery-ui/jquery-ui.js" defer></script>  -->  
 		
 		<!-- build:js oauth.min.js -->				
@@ -46,12 +46,12 @@
 		<!-- endbuild -->
 	</head>
 	<!--<body ng-app="portal" ng-csp="no-unsafe-eval" class="<!- - @echo NAME - ->">-->
-<body ng-app="portal" ng-csp="no-unsafe-eval" class="@@NAME@@">
+<body ng-app="portal" ng-csp="no-unsafe-eval" class="<%= htmlWebpackPlugin.options.NAME %>">
 	
 	  <div ng-if="false" class="fullheight start-color">	 
 			<div style="position: relative;" class="fullheight">
 				<div id="loader">
-					<img src="/img/logo-midata--white.svg"" width="180" alt="MIDATA"></div>
+					<img src="/img/logo-midata--white.svg" width="180" alt="MIDATA"></div>
 			</div>
 
 	  </div>

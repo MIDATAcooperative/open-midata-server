@@ -2,6 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const My_Definitions = require('./webpack.definitions');
 const instance = require('./../config/instance.json');
 
@@ -17,8 +18,12 @@ var MODE_DISTRIBUTION = 'none'; // 'development'
  * Variables
  */
 var APP_NAME = 'portal';
-var DIST_DIR = path.resolve(__dirname, "destTEST");
+var DIST_DIR = path.resolve(__dirname, "dest");
+var DIST_IMAGES = path.resolve(DIST_DIR, "images");
+var DIST_IMG = path.resolve(DIST_DIR, "img");
 var CLIENT_DIR = path.resolve(__dirname, "src");
+var CLIENT_IMAGES = path.resolve(CLIENT_DIR, "assets", "images");
+var CLIENT_IMG = path.resolve(CLIENT_DIR, "assets", "img");
 var PUBLIC_PATH = '/' + APP_NAME + '/dist/';
 
 /**
@@ -26,6 +31,14 @@ var PUBLIC_PATH = '/' + APP_NAME + '/dist/';
  */
 var My_Plugins = [
     new CleanWebpackPlugin([DIST_DIR]),
+    new CopyWebpackPlugin([
+        { from: path.resolve(CLIENT_DIR, '**/*.html'), to: DIST_DIR, ignore: [ 'src/index.html', 'src/oauth.html' ], context: 'src/' },
+        { from: path.resolve(CLIENT_DIR, 'auth.js'), to: path.resolve(DIST_DIR, 'auth.js') },
+        { from: CLIENT_IMAGES, to: DIST_IMAGES },
+        { from: CLIENT_IMG, to: DIST_IMG },
+        { from: path.resolve(CLIENT_DIR, 'assets', 'fonts'), to:  path.resolve(DIST_DIR, 'fonts')}
+        //{ expand : true, cwd: 'src/assets/fonts/', src: ['*'], dest: 'dest/fonts' }
+    ]),
     new MiniCssExtractPlugin({
         filename: "[name].css",
         chunkFilename: "[id].css"
@@ -87,7 +100,7 @@ module.exports = {
                     MiniCssExtractPlugin.loader,
                     "css-loader",
                     //'postcss-loader',
-                    'sass-loader',
+                    //'sass-loader',
                     'less-loader'
                 ]
             },
