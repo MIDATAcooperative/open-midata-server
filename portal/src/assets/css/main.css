@@ -296,7 +296,7 @@ html {
         font-size: 12px;
         top: -20px; }
       .mi-at-input__fieldset--floating-label input {
-        position: relative .mi-at-input__fieldset--floating-label input; }
+        position: relative; }
         .mi-at-input__fieldset--floating-label input :required ~ label:before {
           content: '*';
           position: absolute; }
