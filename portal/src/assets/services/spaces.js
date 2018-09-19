@@ -65,6 +65,12 @@ angular.module('services')
 				$state.go("^.market", { tag : data.params.tag, context : (data.params.context || "me") });
 		  } else if (data.app === "newconsent") {
 			  $state.go("^.newconsent", { share : data.params.share });
+		  } else if (data.app === "profile") {
+			  $state.go("^.user", { userId : userId });			  
+		  } else if (data.app === "consent") {
+			  $state.go("^.consent", { consentId : data.params.consentId });
+		  } else if (data.app === "studies") {
+			  $state.go("^.studies", {  });
 		  } else if (data.app === "newrequest") {
 			  $state.go("^.newconsent", { share : data.params.share, request : true });
 		  } else {

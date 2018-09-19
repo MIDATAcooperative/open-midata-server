@@ -7,17 +7,17 @@
 			  <div class="panel-body">
 			    <p translate="help_welcome.starts"></p>
     <div class="row">
-      <div class="col-sm-2">
+      <div class="col-sm-2 spacesiconbar">
         <a href="javascript:" ng-click="use('fitness')"><img class="img-responsive" src="/images/fitness.jpeg">Fitness</a>
       </div>
-      <div class="col-sm-2">
+      <div class="col-sm-2 spacesiconbar">
         <a href="javascript:" ui-sref="^.market({ tag : 'Protocol' })"><img class="img-responsive" src="/images/papers.jpg">Health Documentation</a>
       </div>
-      <div class="col-sm-2">
+      <div class="col-sm-2 spacesiconbar">
         <a href="javascript:" ui-sref="^.market({ tag : 'Analysis' })"><img class="img-responsive" src="/images/question.jpeg">Analyze your Data</a>
       </div>
-      <div class="col-sm-2" ng-repeat="space in spaces" style="position:relative">
-        <div style="position:absolute;right:0px;"><a href="javascript:" ng-click="deleteSpace(space);"><span class="glyphicon glyphicon-remove-circle"></span></a></div>			     
+      <div class="col-sm-2 spacesiconbar" ng-repeat="space in spaces" style="position:relative">
+        <div style="position:absolute;right:16px;"><a href="javascript:" ng-click="deleteSpace(space);"><span class="glyphicon glyphicon-remove-circle"></span></a></div>			     
 	    <a href="javascript:" ui-sref="^.spaces({ spaceId : space._id })"><img class="img-responsive" ng-src="{{ getIconUrl(space) }}">{{ space.name}}</a>		 
 	  </div>
     </div>
