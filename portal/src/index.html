@@ -48,18 +48,25 @@
 
 <!-- Application style sheet -->
 <!-- build:css app.min.css -->
+<!-- FROM WEBPACK
 <link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap.min.css">
-<link rel="stylesheet" href="/app.css">  <!-- app.less -->
+<link rel="stylesheet" href="/app.css">  
+-->
 <!-- endbuild -->
 
 <!--<script type="text/javascript" src="<!- - @echo BACKEND - ->/api/assets/javascripts/routes" ></script>-->
 <script type="text/javascript" src="<%= htmlWebpackPlugin.options.BACKEND %>/api/assets/javascripts/routes" ></script>
+
+
+<!-- FROM WEBPACK
 <script type="text/javascript" src="components/jquery/dist/jquery.js" ></script>
 <script type="text/javascript" src="components/underscore/underscore-min.js" ></script>
 <script type="text/javascript" src="components/bootstrap/dist/js/bootstrap.js" ></script>
+-->
 <!-- <script type="text/javascript" src="components/jquery-ui/jquery-ui.js" defer></script>  -->
 
 <!-- build:js app.min.js -->
+<!-- FROM WEBPACK
 <script type="text/javascript" src="components/angular/angular.js" ></script>
 <script type="text/javascript" src="components/angular-bootstrap/ui-bootstrap.js" ></script>
 <script type="text/javascript" src="components/angular-sanitize/angular-sanitize.js" ></script>
@@ -74,6 +81,7 @@
 <script type="text/javascript" src="components/angular-utils-pagination/dirPagination.js" ></script>
 
 <script type="text/javascript" src="app.js" ></script>
+-->
 <!-- endbuild -->
 </head>
 <body ng-app="portal" ng-csp="no-unsafe-eval" class="<%= htmlWebpackPlugin.options.NAME %>">

@@ -239,7 +239,7 @@ tasks/build-portal: trigger/build-portal $(shell find portal -type f | sed 's/ /
 	$(info ------------------------------)
 	$(info Building Portal... )
 	$(info ------------------------------)
-	cd portal;npm install;bower update;grunt deploy;
+	cd portal;npm install; npm run prod:build;
 	touch tasks/build-portal
 	
 tasks/build-platform: $(shell find platform -name "*.java" | sed 's/ /\\ /g')

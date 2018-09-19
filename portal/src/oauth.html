@@ -24,15 +24,18 @@
 		<!-- Clear CSS defaults -->
 					
 		<!-- Application style sheet -->
-		<!-- build:css oauth.min.css -->		
+		<!-- build:css oauth.min.css -->	
+		<!-- FROM WEBPACK	
 		<link rel="stylesheet" href="/app2.css">
+		-->
 		<!-- endbuild -->
 		
 		<!--<script type="text/javascript" src="<!- - @echo BACKEND - ->/api/assets/javascripts/routes" defer></script>-->
 		<script type="text/javascript" src="<%= htmlWebpackPlugin.options.BACKEND %>/api/assets/javascripts/routes" ></script>								
 		<!-- <script type="text/javascript" src="components/jquery-ui/jquery-ui.js" defer></script>  -->  
 		
-		<!-- build:js oauth.min.js -->				
+		<!-- build:js oauth.min.js -->		
+		<!-- FROM WEBPACK			
         <script type="text/javascript" src="components/angular/angular.js" defer></script>   
         <script type="text/javascript" src="components/angular-sanitize/angular-sanitize.js" defer></script>             
         <script type="text/javascript" src="components/angular-translate/angular-translate.js" defer></script>
@@ -43,6 +46,7 @@
         <script type="text/javascript" src="components/angular-ui-router/release/angular-ui-router.js" defer></script> 
                                     		
 		<script type="text/javascript" src="oauthapp.js" defer></script>
+		-->
 		<!-- endbuild -->
 	</head>
 	<!--<body ng-app="portal" ng-csp="no-unsafe-eval" class="<!- - @echo NAME - ->">-->

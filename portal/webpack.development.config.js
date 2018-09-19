@@ -24,7 +24,7 @@ var DIST_IMG = path.resolve(DIST_DIR, "img");
 var CLIENT_DIR = path.resolve(__dirname, "src");
 var CLIENT_IMAGES = path.resolve(CLIENT_DIR, "assets", "images");
 var CLIENT_IMG = path.resolve(CLIENT_DIR, "assets", "img");
-var PUBLIC_PATH = '/' + APP_NAME + '/dist/';
+var PUBLIC_PATH = '/';// + APP_NAME + '/dist/';
 
 /**
  * Prepare the plugins
@@ -36,8 +36,8 @@ var My_Plugins = [
         { from: path.resolve(CLIENT_DIR, 'auth.js'), to: path.resolve(DIST_DIR, 'auth.js') },
         { from: CLIENT_IMAGES, to: DIST_IMAGES },
         { from: CLIENT_IMG, to: DIST_IMG },
-        { from: path.resolve(CLIENT_DIR, 'assets', 'fonts'), to:  path.resolve(DIST_DIR, 'fonts')}
-        //{ expand : true, cwd: 'src/assets/fonts/', src: ['*'], dest: 'dest/fonts' }
+        { from: path.resolve(CLIENT_DIR, 'assets', 'fonts'), to:  path.resolve(DIST_DIR, 'fonts')},
+        { from: path.resolve(CLIENT_DIR, 'i18n', '*.json'), to:  path.resolve(DIST_DIR, 'i18n'), context: 'src/i18n/' }
     ]),
     new MiniCssExtractPlugin({
         filename: "[name].css",
@@ -86,7 +86,7 @@ module.exports = {
         port: 9004,
         https: true,
         publicPath: PUBLIC_PATH,
-        openPage: APP_NAME + '/dist/index.html'
+        openPage: 'index.html'//APP_NAME + '/dist/index.html'
     },
 
     /**
