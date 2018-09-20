@@ -22,10 +22,10 @@ my_exports.entry.maincss = my_exports.entry.maincss.concat(glob.sync('./src/view
 my_exports.html_files_to_add = [
     {
         page:'index.html',
-        exclude: ['miniportal']
+        exclude: ['miniportal','minicss']
     },{
         page:'oauth.html',
-        exclude: ['mainportal','bootstrap']
+        exclude: ['mainportal','bootstrap','maincss']
     }];
 
 module.exports = my_exports;

@@ -83,10 +83,10 @@ module.exports = {
      */
     devServer: {
         contentBase: DIST_DIR,
-        port: 9004,
+        port: 9002,
         https: true,
         publicPath: PUBLIC_PATH,
-        openPage: 'index.html'//APP_NAME + '/dist/index.html'
+        openPage: ''//APP_NAME + '/dist/index.html'
     },
 
     /**

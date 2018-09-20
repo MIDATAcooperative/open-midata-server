@@ -9,10 +9,15 @@ require('@uirouter/angularjs/release/angular-ui-router');
 
 require('./oauthapp');
 require('./config');
-require.context('./assets', true, /^((?!(scss\/)).)*\.js$/);
 
-require.context('./views/shared/public/oauth2', true, /\.js$/);
-require.context('./views/shared/public/postregister', true, /\.js$/);
-require.context('./views/members/public/registration', true, /\.js$/);
-require.context('./views/shared/public/terms', true, /\.js$/);
-require.context('./views/shared/public/lostpw', true, /\.js$/);
+function importAll (r) {
+    r.keys().forEach(r);
+  }
+
+importAll(require.context('./assets', true, /^((?!(scss\/)).)*\.js$/));
+
+importAll(require.context('./views/shared/public/oauth2', true, /\.js$/));
+importAll(require.context('./views/shared/public/postregister', true, /\.js$/));
+importAll(require.context('./views/members/public/registration', true, /\.js$/));
+importAll(require.context('./views/shared/public/terms', true, /\.js$/));
+importAll(require.context('./views/shared/public/lostpw', true, /\.js$/));

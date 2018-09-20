@@ -17,5 +17,8 @@ require('angular-utils-pagination/dirPagination');
 
 require('./app');
 require('./config');
-require.context('./assets', true, /^((?!(scss\/)).)*\.js$/);
-require.context('./views', true, /\.js$/);
+function importAll (r) {
+    r.keys().forEach(r);
+  }
+importAll(require.context('./assets', true, /^((?!(scss\/)).)*\.js$/));
+importAll(require.context('./views', true, /\.js$/));
