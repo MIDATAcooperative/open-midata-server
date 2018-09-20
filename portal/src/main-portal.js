@@ -1,5 +1,5 @@
 global.jQuery = global.$ = require("jquery");
-require('underscore/underscore-min');
+global._ = require('underscore/underscore-min');
 require('bootstrap/dist/js/bootstrap');
 
 require('angular');
