@@ -225,6 +225,8 @@ public class MobileAPI extends Controller {
 			}
 			if (user == null) throw new BadRequestException("error.invalid.credentials", "Unknown user or bad password");
 			
+			AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user, app._id);
+			
 			if (!user.authenticationValid(password)) {
 				throw new BadRequestException("error.invalid.credentials",  "Unknown user or bad password");
 			}
@@ -267,6 +269,7 @@ public class MobileAPI extends Controller {
           if (!q.containsField("link-study")) throw new BadRequestException("error.invalid.study", "The research app is not properly linked to a study! Please log in as researcher and link the app properly.");
 		}
 		
+		AuditManager.instance.success();
 		
 		return authResult(executor, role, appInstance, meta, phrase);
 	}

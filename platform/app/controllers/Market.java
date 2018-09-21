@@ -18,6 +18,7 @@ import java.util.Set;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
+import org.bson.types.ObjectId;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -739,6 +740,13 @@ public class Market extends APIController {
 		IconUse iconUse = IconUse.valueOf(use);
 		if (iconUse == null) return notFound();
 		
+		if (ObjectId.isValid(id)) {
+			Plugin p = Plugin.getById(MidataId.from(id));
+			if (p != null) {
+			  id = p.filename;			
+			  if (p.icons == null || !p.icons.contains(iconUse)) id = "portal";
+			}
+		}		
         PluginIcon icon = PluginIcon.getByPluginAndUse( id, iconUse);	
         if (icon == null || icon.status.equals(PluginStatus.DELETED)) return notFound();
                         		
