@@ -1,5 +1,8 @@
 package utils.access;
 
+import org.bson.BSONObject;
+
+import controllers.Circles;
 import models.MidataId;
 import models.Space;
 import utils.exceptions.AppException;
@@ -8,6 +11,7 @@ public class SpaceAccessContext extends AccessContext {
 
 	private Space space;
 	private MidataId self;
+	private boolean sharingQuery;
 	
 	public SpaceAccessContext(Space space, APSCache cache, AccessContext parent, MidataId self) {
 		super(cache, parent);
@@ -55,7 +59,13 @@ public class SpaceAccessContext extends AccessContext {
 	
 	@Override
 	public boolean mayAccess(String content, String format) throws AppException {
-		return false;
+		if (!sharingQuery && space.query == null) {
+			  BSONObject q = RecordManager.instance.getMeta(cache.getExecutor(), space._id, "_query");
+			  if (q != null) space.query = q.toMap();			  
+			  sharingQuery = true;
+		}
+		
+		return Feature_FormatGroups.mayAccess(space.query, content, format);	
 	}
 	
 	public Space getInstance() {

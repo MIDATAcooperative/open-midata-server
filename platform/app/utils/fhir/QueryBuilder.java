@@ -834,10 +834,17 @@ public class QueryBuilder {
 	 * @param path path of CodeableConcept in FHIR record 
 	 */
 	public void recordCodeRestriction(String name, String path) throws AppException {
-		Set<String> codes = tokensToCodeSystemStrings(name);
+		Set<String> codes = tokensToCodeSystemStrings(name);		
 		if (codes != null) {
 			boolean allMidata = true;
-			for (String code : codes) if (!code.startsWith("http://midata.coop/codesystems/content ")) allMidata = false;
+			
+			for (String code : codes) {				
+				if (!code.startsWith("http://midata.coop/codesystems/content ")) allMidata = false;
+				if (code.startsWith("urn:")) {
+					restriction(name, false, TYPE_CODEABLE_CONCEPT, path);
+					return;
+				}
+			}			
 			if (!allMidata) {
 			    query.putAccount("code", codes);			
 			    restriction(name, false, TYPE_CODEABLE_CONCEPT, path);

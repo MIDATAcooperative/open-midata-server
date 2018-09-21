@@ -41,6 +41,8 @@ POST    /api/common/password/set                         controllers.Application
 
 POST    /api/members/news/add                            controllers.News.add()
 POST    /api/members/news/get                            controllers.News.get()
+OPTIONS /v1/news/get                                     controllers.PluginsAPI.checkPreflight()
+POST    /v1/news/get                                     controllers.News.getPublic()
 POST    /api/admin/news/update                           controllers.News.update()
 POST    /api/admin/news/delete/:id                       controllers.News.delete(id: String)
 

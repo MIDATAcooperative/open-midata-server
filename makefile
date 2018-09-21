@@ -36,7 +36,7 @@ pull:
 	git pull
 
 .PHONY: start
-start: /dev/shm/secret.conf start1 clear-secrets
+start: /var/log/midata/application.log /dev/shm/secret.conf start1 clear-secrets
 
 start1: 
 	if [ -e switches/use-hotdeploy ]; then sh ./hotdeploy.sh; fi;
@@ -323,6 +323,14 @@ tasks/bugfixes:
 	@cd /dev/shm;/usr/bin/mcrypt /dev/shm/secret.conf.gz.nc -z -a rijndael-128 -m cbc -d -k "$(DECRYPT_PW)"	
 	mv /dev/shm/secret.conf /dev/shm/db.conf
 	rm -f /dev/shm/secret.conf.gz.nc 
+
+/var/log/midata/application.log:
+	$(info ------------------------------)
+	$(info Setting up application log )
+	$(info ------------------------------)
+	sudo mkdir -p /var/log/midata
+	sudo chown $$USER:$$GROUP /var/log/midata
+	touch /var/log/midata/application.log
 
 clear-secrets:
 	@echo "Removing decrypted config files..."
