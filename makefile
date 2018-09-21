@@ -108,8 +108,7 @@ tasks/install-node: tasks/install-packages trigger/install-node
 	$(info Installing Node JS... )
 	$(info ------------------------------)
 	curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-	sudo apt-get install -y nodejs
-	sudo npm install -g bower grunt-cli
+	sudo apt-get install -y nodejs	
 	sudo chmod -R ugo+rx /usr/lib/node_modules
 	touch tasks/install-node
 
@@ -239,7 +238,7 @@ tasks/build-portal: trigger/build-portal $(shell find portal -type f | sed 's/ /
 	$(info ------------------------------)
 	$(info Building Portal... )
 	$(info ------------------------------)
-	cd portal;npm install; npm run prod:build;
+	cd portal;npm install;npm run prod:build;
 	touch tasks/build-portal
 	
 tasks/build-platform: $(shell find platform -name "*.java" | sed 's/ /\\ /g')
