@@ -1,0 +1,75 @@
+<div ng-controller="TimelineCtrl">
+  <div  class="midata-overlay borderless">
+    		<div class="panel panel-primary">
+			  <div class="panel-heading"><span translate="timeline.title"></span>
+			     
+			  </div>
+			  <div class="panel-body">
+			    <p translate="help_welcome.starts"></p>
+    <div class="row">
+      <div class="col-sm-2 spacesiconbar">
+        <a href="javascript:" ng-click="use('fitness')"><img class="img-responsive" src="/images/fitness.jpeg">Fitness</a>
+      </div>
+      <div class="col-sm-2 spacesiconbar">
+        <a href="javascript:" ui-sref="^.market({ tag : 'Protocol' })"><img class="img-responsive" src="/images/papers.jpg">Health Documentation</a>
+      </div>
+      <div class="col-sm-2 spacesiconbar">
+        <a href="javascript:" ui-sref="^.market({ tag : 'Analysis' })"><img class="img-responsive" src="/images/question.jpeg">Analyze your Data</a>
+      </div>
+      <div class="col-sm-2 spacesiconbar" ng-repeat="space in spaces" style="position:relative">
+        <div style="position:absolute;right:16px;"><a href="javascript:" ng-click="deleteSpace(space);"><span class="glyphicon glyphicon-remove-circle"></span></a></div>			     
+	    <a href="javascript:" ui-sref="^.spaces({ spaceId : space._id })"><img class="img-responsive" ng-src="{{ getIconUrl(space) }}">{{ space.name}}</a>		 
+	  </div>
+    </div>
+  
+			    
+	         	
+						<div class="row">
+							<div ng-class="{'col-lg-6': space.compare}">
+								<!-- Visualization -->
+								<loader busy="!space.trustedUrl">
+								<div id="iframe-placeholder">
+									<pluginframe id="iframe" height="600px" width="100%" mysrc="{{space.trustedUrl}}"></pluginframe>
+								</div>
+								</loader>
+							</div>
+							<div class="col-lg-6" ng-show="space.compare">
+								<!-- Visualization -->
+								<loader busy="!space.copy.trustedUrl">
+								<div id="iframe-placeholder-copy">
+									<pluginframe id="iframe-copy" height="600px" width="100%" mysrc="{{space.copy.trustedUrl}}" ng-show="space.copy.trustedUrl"></pluginframe>
+								</div>
+								</loader>
+							</div>
+						</div>
+						
+						<!-- 
+						<button class="btn btn-default" ng-hide="space.compare" ng-click="startCompare(space)">
+							<span class="glyphicon glyphicon-adjust"></span> <span translate="spaces.compare_btn"></span>
+						</button>
+						<button class="btn btn-default" ng-show="space.compare" ng-click="endCompare(space)">
+							<span class="glyphicon glyphicon-ban-circle"></span> <span translate="spaces.finish_comparing_btn"></span>
+						</button>
+						<button class="btn btn-danger" ng-click="deleteSpace(space)">
+							<span class="glyphicon glyphicon-remove-sign"></span> <span translate="spaces.delete_btn"></span>
+						</button>
+						<a class="btn btn-primary" ui-sref="^.recordsharing({ selectedType : 'spaces', selected : space._id})">
+						    <span class="glyphicon glyphicon-share"></span> <span translate="spaces.used_btn"></span>
+						</a>
+						<button class="btn btn-primary" ng-hide="space.compare" ng-click="startShare(space)">
+						    <span class="glyphicon glyphicon-share"></span><span translate="spaces.share_btn"></span>
+						</button> 
+						-->
+						
+				</div>
+			 </div>							 				
+		
+		<modal>
+	       <div ng-include="def.template"></div>
+	    </modal>
+		
+		
+		</div>
+	</div>
+	</div>
+</div>

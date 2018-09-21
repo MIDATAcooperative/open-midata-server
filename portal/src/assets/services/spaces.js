@@ -65,6 +65,12 @@ angular.module('services')
 				$state.go("^.market", { tag : data.params.tag, context : (data.params.context || "me") });
 		  } else if (data.app === "newconsent") {
 			  $state.go("^.newconsent", { share : data.params.share });
+		  } else if (data.app === "profile") {
+			  $state.go("^.user", { userId : userId });			  
+		  } else if (data.app === "consent") {
+			  $state.go("^.consent", { consentId : data.params.consentId });
+		  } else if (data.app === "studies") {
+			  $state.go("^.studies", {  });
 		  } else if (data.app === "newrequest") {
 			  $state.go("^.newconsent", { share : data.params.share, request : true });
 		  } else {
@@ -91,7 +97,7 @@ angular.module('services')
 									  if (app.type === "oauth1" || app.type === "oauth2") {
 										 $state.go("^.importrecords", { "spaceId" : result.data._id, params : JSON.stringify(data.params) });
 									  } else { 
-									     $state.go('^.spaces', { spaceId : result.data._id, user : data.user });
+									     $state.go('^.spaces', { spaceId : result.data._id, params : JSON.stringify(data.params), user : data.user });
 									  }
 									} else {
 									  $state.go('^.dashboard', { dashId : $scope.options.context });

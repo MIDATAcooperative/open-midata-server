@@ -36,7 +36,7 @@ pull:
 	git pull
 
 .PHONY: start
-start: /dev/shm/secret.conf start1 clear-secrets
+start: /var/log/midata/application.log /dev/shm/secret.conf start1 clear-secrets
 
 start1: 
 	if [ -e switches/use-hotdeploy ]; then sh ./hotdeploy.sh; fi;
@@ -108,8 +108,7 @@ tasks/install-node: tasks/install-packages trigger/install-node
 	$(info Installing Node JS... )
 	$(info ------------------------------)
 	curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-	sudo apt-get install -y nodejs
-	sudo npm install -g bower grunt-cli
+	sudo apt-get install -y nodejs	
 	sudo chmod -R ugo+rx /usr/lib/node_modules
 	touch tasks/install-node
 
@@ -239,7 +238,7 @@ tasks/build-portal: trigger/build-portal $(shell find portal -type f | sed 's/ /
 	$(info ------------------------------)
 	$(info Building Portal... )
 	$(info ------------------------------)
-	cd portal;npm install;bower update;grunt deploy;
+	cd portal;npm install;npm run prod:build;
 	touch tasks/build-portal
 	
 tasks/build-platform: $(shell find platform -name "*.java" | sed 's/ /\\ /g')
@@ -323,6 +322,14 @@ tasks/bugfixes:
 	@cd /dev/shm;/usr/bin/mcrypt /dev/shm/secret.conf.gz.nc -z -a rijndael-128 -m cbc -d -k "$(DECRYPT_PW)"	
 	mv /dev/shm/secret.conf /dev/shm/db.conf
 	rm -f /dev/shm/secret.conf.gz.nc 
+
+/var/log/midata/application.log:
+	$(info ------------------------------)
+	$(info Setting up application log )
+	$(info ------------------------------)
+	sudo mkdir -p /var/log/midata
+	sudo chown $$USER:$$GROUP /var/log/midata
+	touch /var/log/midata/application.log
 
 clear-secrets:
 	@echo "Removing decrypted config files..."

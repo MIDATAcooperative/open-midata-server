@@ -46,7 +46,7 @@ make update
 Terminal 2: (after Terminal 1 is ready)
 ```
 cd platform-private/portal
-grunt server
+npm run dev:server
 ```
 
 The local server will be at address: https://localhost:9002
