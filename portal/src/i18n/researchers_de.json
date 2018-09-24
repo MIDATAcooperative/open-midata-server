@@ -17,23 +17,11 @@
         "workspace" : "Workspace",
         "data" : "Daten",
         "addresearcher" : "Forscher hinzufügen",
-
-        // TODO CHANGED
-        // OLD: Organization
-        // NEW: Research Organization
         "organization" : "Forschungseinrichtung"
     },
 
     "researcher_organization" : {
-
-        // TODO CHANGED
-        // OLD: Organization
-        // NEW: Research Organization
         "title" : "Forschungseinrichtung",
-
-        // TODO CHANGED
-        // OLD: Org. Name
-        // NEW: Name
         "name" : "Name",
         "description" : "Beschreibung",
         "researchers" : "Alle Forscher Ihrer Einrichtung"
@@ -43,9 +31,7 @@
         "title" : "Neue Studie anlegen",
         "title2" : "Beschreibung der Studie ändern",
         "study_name" : "Name der Studie",
-
-        // TODO NEW: Type of research
-        "study_type" : "Type of research",
+        "study_type" : "Forschungsart",
         "study_description" : "Beschreibung der Studie"
     },
 
@@ -90,16 +76,8 @@
         "no_change_warning" : "Diese Konfiguration kann nicht mehr geändert werden, sobald die Studie validiert wurde.",
         "member_identity" : "Identität des Mitglieds",
         "pseudonymous1" : "Pseudonymisierte Teilnahme",
-
-        // TODO CHANGED
-        // OLD: , exported data reveals pseudonymized ID, year of birth, gender and country. Some researchers like study nurses may have access to full personal data.
-        // NEW: , exported data reveals the pseudonymized identity, year of birth, gender and country. Some researchers like study nurses may have access to full personal data.
         "pseudonymous2" : ", exportierte Daten zeigen die pseudonymisierte Identität, das Geburtsjahr, Geschlecht und Land. Einige Forscher wie z.B. Study Nurses haben möglicherweise Zugang zu vollständigen persönlichen Daten.",
         "anonymous" : "Anonyme Teilnahme",
-
-        // TODO CHANGED
-        // OLD: , reveals pseudonymized ID, year of birth, gender and country. Pseudonymization mapping may not be accessed.
-        // NEW: , exported data reveals the spseudonymized identity, year of birth, gender and country. The pseudonymization mapping may not be accessed.
         "anonymous2" : ", exportierte Daten zeigen die pseudonymisierte Identität, das Geburtsjahr, Geschlecht und Land. Das Pseudonymisierungs-Mapping ist nicht zugänglich.",
         "not_anonymous1" : "Nicht pseudonymisiert",
         "not_anonymous2" : ", bedingt, dass das Mitglied seinen vollständigen Namen, Geburtsdatum und Kontaktinformationen (Adresse, Telefon, E-Mail) teilt",
@@ -118,19 +96,9 @@
 
     "studyoverview" : {
         "name" : "Name",
-
-        // TODO NEW: Type of Research
-        "type" : "Type of Research",
-
-        // TODO CHANGED
-        // OLD: Created on:
-        // NEW: Created on
-        "created_at" : "Erstellt bei:",
-
-        // TODO CHANGED
-        // OLD: Created by:
-        // NEW: Created by
-        "created_by" : "Erstellt durch:",
+        "type" : "Forschungsart",
+        "created_at" : "Erstellt am",
+        "created_by" : "Erstellt durch",
         "description" : "Beschreibung",
         "code" : "Code",
         "validation_status" : "Status der Validierung",
@@ -193,12 +161,8 @@
 
     "studyrecords" : {
         "empty" : "Sobald Daten verfügbar sind, können diese hier heruntergeladen werden.",
-
-        // TODO NEW: Export start date (optional)
-        "startDate" : "Export start date (optional)",
-
-        // TODO NEW: Export end date (optional)
-        "endDate" : "Export end date (optional)",
+        "startDate" : "Startdatum des Exports (optional)",
+        "endDate" : "Enddatum des Exports (optional)",
         "group" : "Datengruppe",
         "number_of_records" : "# Einträge",
         "download_btn" : "Herunterladen",
@@ -212,17 +176,9 @@
         "startDate" : "Offizielles Startdatum",
         "endDate" : "Offizielles Enddatum",
         "dataCreatedBefore" : "Datenbestand eingefroren ab dem",
-
-        // TODO CHANGED
-        // OLD: Data Access Filter (JSON)
-        // NEW: Data Access Filter
-        "sharing_query" : "Data Access Filter (JSON)",
-
-        // TODO NEW: Allowed Ways of Joining
-        "join_methods" : "Allowed Ways of Joining",
-
-        // TODO NEW: Edit
-        "queryeditor_btn" : "Edit",
+        "sharing_query" : "Data Access Filter",
+        "join_methods" : "Erlaubte Teilnahmeverfahren",
+        "queryeditor_btn" : "Ändern",
         "terms_of_use" : "Allgemeine Geschäftsbedingungen",
         "terms_of_use_hint" : "Wenn die Allgemeine Geschäftsbedingungen der Studie vom Benutzer gelesen und akzeptiert werden müssen, senden Sie den Text bitte an MIDATA. Wir werden den Text im richtigen Format hochladen und Ihnen die ID mitteilen, die Sie hier eingeben müssen.",
         "show_terms" : "Allgemeine Geschäftsbedingungen anzeigen",

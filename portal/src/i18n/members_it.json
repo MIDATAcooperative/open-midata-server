@@ -3,10 +3,6 @@
     "member_login" : {
         "teaser" : "I miei dati - La nostra salute e sanità",
         "register_now" : "Iscriviti ora",
-
-        // TODO CHANGED
-        // OLD: Sign in
-        // NEW: Login
         "sign_in" : "Accesso"
     },
 

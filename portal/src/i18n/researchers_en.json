@@ -176,7 +176,7 @@
     "endDate" : "Official end date",
     "dataCreatedBefore" : "Data freeze date",
     "sharing_query" : "Data Access Filter",
-    "join_methods" : "Allowed Ways of Joining",
+    "join_methods" : "Allowed Participation Procedures",
     "queryeditor_btn" : "Edit",    
     "terms_of_use" : "General Terms and Conditions",
     "terms_of_use_hint" : "If the study General Terms and Conditions have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the ID you need to enter here.",

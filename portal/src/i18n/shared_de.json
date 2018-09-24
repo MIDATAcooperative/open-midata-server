@@ -92,9 +92,7 @@
             "study_group" : "Der Teilnehmer muss zuerst zu einer Gruppe zugeordnet werden.",
             "confirmation" : "Bestätigung durch Benutzer zuerst erforderlich.",
             "file" : "Keine Datei zum Hochladen ausgewählt",
-
-            // TODO NEW: No data selected
-            "access_query" : "No data selected"
+            "access_query" : "Keine Daten ausgewählt"
         },
 
         "unknown" : {
@@ -219,10 +217,6 @@
             "user-passphrase-change" : "Passphrase geändert",
             "user-address-change" : "Adresse des Benutzers geändert",
             "user-email-change" : "E-Mail des Benutzers geändert",
-
-            // TODO CHANGED
-            // OLD: User's birthday changed
-            // NEW: User's birth date changed
             "user-birthday-change" : "Geburtsdatum des Benutzers geändert",
             "user-status-change" : "Status des Benutzerkontos geändert",
             "user-email-confirmed" : "E-Mail bestätigt durch Benutzer",
@@ -326,38 +320,18 @@
             "MEMBER_RETREATED" : "Teilnehmer hat sich zurückgezogen"
         },
         "studytype" : {
-
-            // TODO NEW: Clinical Study
-            "CLINICAL" : "Clinical Study",
-
-            // TODO NEW: Citizen Science Project
-            "CITIZENSCIENCE" : "Citizen Science Project",
-
-            // TODO NEW: Community (Data use only for providing services back to the participants)
-            "COMMUNITY" : "Community (Data use only for providing services back to the participants)"
+            "CLINICAL" : "Klinische Studie",
+            "CITIZENSCIENCE" : "Citizen Science Projekt",
+            "COMMUNITY" : "Community (Datenverwendung nur für die Erbringung von Leistungen an die Teilnehmer)"
         },
         "joinmethod" : {
-
-            // TODO NEW: Participant uses linked app or software
-            "APP" : "Participant uses linked app or software",
-
-            // TODO NEW: Participant applies on MIDATA portal
-            "PORTAL" : "Participant applies on MIDATA portal",
-
-            // TODO NEW: Participant is manually registered by research team member
-            "RESEARCHER" : "Participant is manually registered by research team member",
-
-            // TODO NEW: Participant is registered by external software
-            "API" : "Participant is registered by external software",
-
-            // TODO NEW: Participant has been proposed by algorithm (not supported)
-            "ALGORITHM" : "Participant has been proposed by algorithm (not supported)",
-
-            // TODO NEW: Participant may join by entering a code (not supported)
-            "CODE" : "Participant may join by entering a code (not supported)",
-
-            // TODO NEW: Data is transferred from another study. (not supported)
-            "TRANSFER" : "Data is transferred from another study. (not supported)"
+            "APP" : "Der Teilnehmer nutzt verknüpfte App oder Software",
+            "PORTAL" : "Der Teilnehmer bewirbt sich auf dem MIDATA-Portal",
+            "RESEARCHER" : "Der Teilnehmer wird manuell durch das Mitglied des Forschungsteams registriert",
+            "API" : "Der Teilnehmer wird durch externe Software registriert",
+            "ALGORITHM" : "Der Teilnehmer wurde von einem Algorithmus vorgeschlagen (nicht unterstützt)",
+            "CODE" : "Der Teilnehmer kann durch Eingabe eines Codes beitreten (nicht unterstützt)",
+            "TRANSFER" : "Die Daten werden aus einer anderen Studie übernommen (nicht unterstützt)"
         },
         "studyexecutionstatus" : {
             "ABORTED" : "Durchführung abgebrochen",
@@ -544,10 +518,6 @@
         "firstname" : "Vorname",
         "lastname" : "Name",
         "gender" : "Geschlecht",
-
-        // TODO CHANGED
-        // OLD: Birthday
-        // NEW: Birth date
         "birthday" : "Geburtsdatum",
         "language" : "Bevorzugte Sprache",
         "day" : "Tag",
@@ -680,10 +650,6 @@
 
     "changeaddress" : {
         "title" : "Postadresse und Kontaktdaten",
-
-        // TODO CHANGED
-        // OLD: Your account information has been updated.
-        // NEW: Your profile has been updated.
         "success" : "Ihr Profil wurde aktualisiert.",
         "update_btn" : "Aktualisieren"
     },
@@ -731,10 +697,6 @@
         "duration" : "Dauer",
         "information_that_needs_sharing" : "Geforderte Daten",
         "information_restricted" : "Ihr Geschlecht, Geburtsjahr und Wohnsitzland",
-
-        // TODO CHANGED
-        // OLD: Your complete demographic data (name, birthday, address, ...)
-        // NEW: Your complete demographic data (name, birth date, address, ...)
         "information_demographic" : "Ihre kompletten demographischen Daten (Name, Geburtsdatum, Adresse, ...)",
         "records_with_format" : "Datensätze im Format:",
         "records_with_content" : "Datensätze mit Inhalt:",
@@ -758,15 +720,7 @@
         "user" : "Benutzer",
         "name" : "Name:",
         "email" : "E-Mail:",
-
-        // TODO CHANGED
-        // OLD: Date of birth:
-        // NEW: Birth date:
         "birthday" : "Geburtsdatum:",
-
-        // TODO CHANGED
-        // OLD: Account ID:
-        // NEW: MIDATA ID:
         "midataID" : "MIDATA ID:",
         "action" : "Mehr...",
         "change_password_btn" : "Kennwort ändern",
@@ -781,11 +735,7 @@
         "account_repaired" : "Ihr Konto wurde repariert.",
         "spaces_resetted" : "Ihre Konfiguration wurde zurückgesetzt.",
         "settings" : "Einstellungen",
-
-        // TODO CHANGED
-        // OLD: Change Address
-        // NEW: Change Profile
-        "change_address_btn" : "Adresse ändern",
+        "change_address_btn" : "Profil ändern",
         "searchable_short" : "Sichtbarkeit Ihres Kontos",
         "searchable" : "Können andere Benutzer Ihr Profil finden, wenn sie danach suchen?",
         "searchable_yes" : "Ja, ich will dass mein Name und meine E-Mail-Adresse für andere Benutzer sichtbar sind",
@@ -1187,10 +1137,6 @@
         "paragraph1" : "Sie möchten ihre MIDATA-Konto unwiderruflich löschen? Das ist selbstverständlich möglich.",
         "paragraph2" : "Lesen Sie zuerst die nachfolgende Information:",
         "point1" : "Wenn Sie Ihr MIDATA-Konto löschen, löschen Sie alle persönlichen Daten auf ihrem Konto unwiderruflich.",
-
-        // TODO CHANGED
-        // OLD: Data already shared for research will remain available to the studies it has been shared to up to the time of account deletion. No new data will be shared.
-        // NEW: Data already included in studies will continue to be available in the study.
         "point2" : "Daten die bereits in Studien eingeflossen sind, werden weiterhin in der Studie verfügbar sein.",
         "point3" : "MIDATA hat keine Möglichkeit, ein gelöschtes Konto wieder herzustellen.",
         "warning" : "Warnung",
@@ -1198,24 +1144,12 @@
         "paragraph3" : "Falls Sie das Konto dennoch löschen möchten, geben Sie bitte Ihr Kennwort ein",
         "password" : "Kennwort",
         "reason" : "Grund (optional)",
-
-        // TODO CHANGED
-        // OLD: Please tell us why you want to delete your account. We are continously trying to improve the service.
-        // NEW: We would be grateful if you could tell us why you are deleting your account. We are continually trying to improve the MIDATA platform.
         "reason2" : "Wir wären Ihnen dankbar, wenn Sie uns mitteilen könnten, warum Sie Ihr Konto löschen. Wir sind ständig bemüht, die MIDATA Plattform zu verbessern.",
         "wipe_btn" : "MIDATA-Konto schliessen und löschen",
-
-        // TODO CHANGED
-        // OLD: Password not correct. Account not deleted.
-        // NEW: Password not correct. The account has not been deleted.
         "error" : "Kennwort nicht korrekt. Das Konto wurde nicht gelöscht."
     },
 
     "serviceleave" : {
-
-        // TODO CHANGED
-        // OLD: Done with your session?
-        // NEW: You finished your session?
         "title" : "Haben Sie Ihre Session beendet?",
         "thankyou" : "Danke für Ihre Hilfe!",
         "goodbye_btn" : "Session beenden und Fenster schliessen",
@@ -1224,154 +1158,55 @@
     },
 
     "queryeditor" : {
-
-        // TODO NEW: Access Rights Editor
-        "title" : "Access Rights Editor",
-
-        // TODO NEW: Application
-        "app" : "Application",
-
-        // TODO NEW: Study
-        "study" : "Study",
-
-        // TODO NEW: List of accessable data types:
-        "summary" : "List of accessable data types:",
-
-        // TODO NEW: select
-        "select_btn" : "select",
-
-        // TODO NEW: Access Query
-        "access_query" : "Access Query",
-
-        // TODO NEW: Resource
-        "format" : "Resource",
-
-        // TODO NEW: Code
+        "title" : "Data Access Filter Editor",
+        "app" : "Applikation",
+        "study" : "Studie",
+        "summary" : "Liste der zugänglichen Datentypen:",
+        "access_query" : "Data Access Filter",
+        "format" : "Ressource",
         "code" : "Code",
-
-        // TODO NEW: to
-        "to" : "to",
-
-        // TODO NEW: Data Type
-        "content" : "Data Type",
-
-        // TODO NEW: Expert Mode
-        "expert_mode_btn" : "Expert Mode",
-
-        // TODO NEW: Basic Resources
-        "add_basic_btn" : "Basic Resources",
-
-        // TODO NEW: Add More Data Types
-        "add_data_btn" : "Add More Data Types",
-
-        // TODO NEW: Data Owner
-        "owner" : "Data Owner",
-
-        // TODO NEW: Use also shared data (from studies, friends, patients)
-        "owner_all" : "Use also shared data (from studies, friends, patients)",
-
-        // TODO NEW: Only data from the user of the application
-        "owner_self" : "Only data from the user of the application",
-
-        // TODO NEW: Also shared data
-        "short_owner_all" : "Also shared data",
-
-        // TODO NEW: Only own data
-        "short_owner_self" : "Only own data",
-
-        // TODO NEW: Source application
-        "source_app" : "Source application",
-
-        // TODO NEW: All sources
-        "short_app_all" : "All sources",
-
-        // TODO NEW: Only app:
-        "short_app_other" : "Only app:",
-
-        // TODO NEW: Use only data from this application
-        "app_self" : "Use only data from this application",
-
-        // TODO NEW: Use data from any source application
-        "app_all" : "Use data from any source application",
-
-        // TODO NEW: Use data from app:
-        "app_other" : "Use data from app:",
-
-        // TODO NEW: Additional Restrictions
-        "restrictions" : "Additional Restrictions",
-
-        // TODO NEW: Date
-        "data_period_restriction" : "Date",
-
-        // TODO NEW: Creation / Update time
-        "time_restriction" : "Creation / Update time",
-
-        // TODO NEW: Created after
-        "created-after" : "Created after",
-
-        // TODO NEW: Last updated after
-        "updated-after" : "Last updated after",
-
-        // TODO NEW: Effective date or period
-        "effective" : "Effective date or period",
-
-        // TODO NEW: User Defined Filter (JSON)
-        "custom_filter" : "User Defined Filter (JSON)",
-
-        // TODO NEW: Remove
-        "remove_btn" : "Remove",
-
-        // TODO NEW: Apply
-        "apply_btn" : "Apply",
-
-        // TODO NEW: Enter name, code, resource type or (part of) description of data type to add:
-        "newentry" : "Enter name, code, resource type or (part of) description of data type to add:",
-
-        // TODO NEW: Please select a result from the left to add or only a fragment from the right column.
-        "make_selection" : "Please select a result from the left to add or only a fragment from the right column.",
-
-        // TODO NEW: Match
-        "resultgroup" : "Match",
-
-        // TODO NEW: Contained types or codes
-        "resultdetail" : "Contained types or codes",
-
-        // TODO NEW: No matching datatypes found.
-        "search_empty" : "No matching datatypes found.",
-
-        // TODO NEW: Select which of these frequently required resources your app needs access to:
-        "select_resources" : "Select which of these frequently required resources your app needs access to:",
-
-        // TODO NEW: Save and exit
-        "save_exit_btn" : "Save and exit",
-
-        // TODO NEW: Cancel
-        "cancel_btn" : "Cancel",
-
-        // TODO NEW: Is the list of required data now complete and correct?
-        "check_okay" : "Is the list of required data now complete and correct?",
+        "to" : "bis",
+        "content" : "Datentype",
+        "expert_mode_btn" : "Expert-Modus",
+        "add_basic_btn" : "Basis-Ressourcen",
+        "add_data_btn" : "Weitere Datentypen hinzufügen",
+        "owner" : "Datenbesitzer",
+        "owner_all" : "Geteilte Daten ebenfalls verwenden (von Studien, Freunden, Patienten)",
+        "owner_self" : "Nur Daten vom Benutzer der Anwendung",
+        "short_owner_all" : "Auch geteilte Daten",
+        "short_owner_self" : "Nur eigene Daten",
+        "source_app" : "Quellapplikation",
+        "short_app_all" : "Alle Quellen",
+        "short_app_other" : "Nur die Applikation:",
+        "app_self" : "Nur Daten aus dieser Anwendung verwenden",
+        "app_all" : "Daten aus beliebigen Quellanwendungen verwenden",
+        "app_other" : "Daten aus der Applikation verwenden:",
+        "restrictions" : "Zusätzliche Einschränkungen",
+        "data_period_restriction" : "Datum",
+        "time_restriction" : "Erstellungs- / Aktualisierungsdatum",
+        "created-after" : "Erstellt nach",
+        "updated-after" : "Aktualisiert nach",
+        "effective" : "Effektivdatum oder Zeitraum",
+        "custom_filter" : "Benutzerdefinierte Filter (JSON)",
+        "remove_btn" : "Entfernen",
+        "apply_btn" : "Anwenden",
+        "newentry" : "Geben Sie Name, Code, Ressourcentyp oder (Teil-)Beschreibung des Datentyps ein, den Sie hinzufügen möchten:",
+        "make_selection" : "Bitte wählen Sie ein Ergebnis zum Hinzufügen von links oder nur ein Fragment aus der rechten Spalte.",
+        "resultgroup" : "Passt",
+        "resultdetail" : "Enthaltene Typen oder Codes",
+        "search_empty" : "Keinen passenden Datentyp gefunden.",
+        "select_resources" : "Wählen Sie aus, auf welche dieser häufig benötigten Ressourcen Ihre Anwendung zugreifen soll:",
+        "save_exit_btn" : "Speichern und beenden",
+        "cancel_btn" : "Abbrechen",
+        "check_okay" : "Ist die Liste der benötigten Daten nun vollständig und korrekt?",
         "ask" : {
-
-            // TODO NEW: Access to the audit event log
-            "AuditEvent" : "Access to the audit event log",
-
-            // TODO NEW: Access to consents of the application user with other users or applications
-            "Consent" : "Access to consents of the application user with other users or applications",
-
-            // TODO NEW: Access to group definitions (either teams of practitioners or researchers or groups defined as part of study results generation)
-            "Group" : "Access to group definitions (either teams of practitioners or researchers or groups defined as part of study results generation)",
-
-            // TODO NEW: Patient Records : Name, email, address of Midata account holders
-            "Patient" : "Patient Records : Name, email, address of Midata account holders",
-
-            // TODO NEW: Patient Records : Pseudonym, year of birth, country of study participants
-            "PseudonymizedPatient" : "Patient Records : Pseudonym, year of birth, country of study participants",
-
-            // TODO NEW: Practitioner Resource : Search for healthcare providers or researchers
-            "Practitioner" : "Practitioner Resource : Search for healthcare providers or researchers",
-
-            // TODO NEW: Access and manage subscriptions to external systems
-            "Subscription" : "Access and manage subscriptions to external systems"
+            "AuditEvent" : "Zugriff auf das Audit-Ereignisprotokoll",
+            "Consent" : "Zugriff auf Einwilligungen des Anwenders mit anderen Nutzern oder Anwendungen",
+            "Group" : "Zugang zu Gruppendefinitionen (entweder Teams von Gesundheitsfachpersonen oder Forschern oder Gruppen, die im Rahmen der Generierung von Studienergebnissen definiert wurden)",
+            "Patient" : "Patienten-Datensätze: Name, E-Mail, Adresse der MIDATA-Kontoinhabenden",
+            "PseudonymizedPatient" : "Patienten-Datensätze: Pseudonym, Geburtsjahr, Land der Studienteilnehmern",
+            "Practitioner" : "Ressource Practitioner: Suche nach Gesundheitsfachpersonen oder Forschern",
+            "Subscription" : "Zugriff und Verwaltung von Abonnements auf externe Systeme"
         }
     },
 

@@ -3,10 +3,6 @@
     "member_login" : {
         "teaser" : "Meine Daten - Unsere Gesundheit!",
         "register_now" : "Jetzt registrieren",
-
-        // TODO CHANGED
-        // OLD: Sign in
-        // NEW: Login
         "sign_in" : "Anmeldung"
     },
 

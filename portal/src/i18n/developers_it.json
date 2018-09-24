@@ -71,12 +71,8 @@
         "targetUserRole" : "Ruolo di destinazione",
         "edit_btn" : "Modifica impostazioni",
         "edit_help" : "Modifica la configurazione della tua applicazione.",
-
-        // TODO NEW: Change Access Rights
-        "query_btn" : "Change Access Rights",
-
-        // TODO NEW: Define which types of data your application may access
-        "query_help" : "Define which types of data your application may access",
+        "query_btn" : "Modifica Data Access Filter",
+        "query_help" : "Definisce i tipi di dati ai quali l'applicazione può accedere.",
         "tokenExchangeParams" : "Parametri OAuth2 per lo scambio di token",
         "testfromlocal_btn" : "Testa il tuo plugin da localhost",
         "testfromlocal_help" : "Durante lo sviluppo, è possibile testare il codice del plugin memorizzato nel proprio computer locale su questa istanza.",
@@ -99,10 +95,6 @@
         "logout" : "Disconnetta tutti",
         "pleaseLogout1" : "Disconnetta tutti gli utenti",
         "pleaseLogout2" : "Disconnetta dagli studi",
-
-        // TODO CHANGED
-        // OLD: [ Not required ]
-        // NEW: [ not required ]
         "logout_optional" : "[ non richiesto ]",
         "logout_required" : "[ richiesto ]",
         "logout_explain" : "Le modifiche ai campi contrassegnati con !! richiedono il logout di tutti gli utenti di quell'applicazione.",
@@ -114,10 +106,6 @@
             "name" : "Il nome, della propria applicazione o plugin, che sarà presentato all'utente finale.",
             "description" : "La descrizione del proprio plugin che sarà visualizzata anche nel punto contrassegnato.",
             "tokenExchangeParams" : "La definizione predefinita è client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> tuttavia alcuni servizi richiedono anche client_secret=<client_secret> oppure nessun client_id",
-
-            // TODO CHANGED
-            // OLD: Resource updates done by this application produce no history entries. Use only if application does many and frequent updates.
-            // NEW: FHIR resource updates done by this application produce no history entries. Use only if application does many and frequent updates.
             "no_update_history" : "Gli aggiornamenti delle risorse FHIR effettuati da questa applicazione non producono voci della cronologia. Utilizzare solo se l'applicazione esegue molti e frequenti aggiornamenti.",
             "resharesData" : "L'applicazione è autorizzata a ricondividere con terzi i dati a cui accede.",
             "allowsUserSearch" : "Gli utenti dell'applicazione sono autorizzati a cercare altri utenti della stessa applicazione.",
@@ -126,10 +114,6 @@
             "url" : "La pagina iniziale con l'URL dei propri plugin. Se si utilizza il modello di MIDATA è 'dist/index.html#?authToken=:authToken''",
             "previewUrl" : "Sezione del pannello di controllo con l'URL dei propri plugin. Lasciare vuoto se non si include questo riquadro.",
             "defaultSpaceContext" : "Scegliere 'Pannello' per il pannello di controllo predefinito. Scegliere 'Configurazione' se si scrive un plugin importato.",
-
-            // TODO CHANGED
-            // OLD: You may specifiy multiple possible redirect URIs by seperating the URIs with a space
-            // NEW: You may specifiy multiple possible redirect URIs by separating the URIs with a space.
             "redirectUri" : "È possibile specificare più URI possibili per il reindirizzamento separandoli con uno spazio.",
             "secret" : "La propria applicazione necessiterà di questo 'segreto' durante l'accesso. Scegliere un qualsiasi elemento desiderato.",
             "mustParticipateInStudy" : "L'utente deve partecipare allo studio per utilizzare l'applicazione.",
@@ -145,18 +129,8 @@
         },
         "nostudy" : "Non collegato a uno studio",
         "optionalParticipation" : "Partecipazione opzionale",
-
-        // TODO CHANGED
-        // OLD: Data Access Filter (JSON)
-        // NEW: Data Access Filter
-        "access_query_json" : "Filtro di accesso ai dati (JSON)",
-
-        // TODO NEW: Go to access rights editor
-        "queryeditor_btn" : "Go to access rights editor",
-
-        // TODO CHANGED
-        // OLD: No Resource History
-        // NEW: No FHIR Resource History
+        "access_query_json" : "Data Access Filter",
+        "queryeditor_btn" : "Va all'editor Data Access Filter",
         "no_update_history" : "No storia risorse FHIR",
         "export_btn" : "Esporta la definizione applicazione",
         "export_help" : "Esportare la definizione di questa applicazione, in modo che possa essere importata e utilizzata su un altro servizio.",
