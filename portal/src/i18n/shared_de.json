@@ -91,7 +91,8 @@
             "study_accept" : "Die Studienteilnahme muss akzeptiert werden.",
             "study_group" : "Der Teilnehmer muss zuerst zu einer Gruppe zugeordnet werden.",
             "confirmation" : "Bestätigung durch Benutzer zuerst erforderlich.",
-            "file" : "Keine Datei zum Hochladen ausgewählt"
+            "file" : "Keine Datei zum Hochladen ausgewählt",
+            "access_query" : "Keine Daten ausgewählt"
         },
 
         "unknown" : {
@@ -317,6 +318,20 @@
             "REQUEST" : "Teilnahme angefordert",
             "RESEARCH_REJECTED" : "Verworfen durch Forscher",
             "MEMBER_RETREATED" : "Teilnehmer hat sich zurückgezogen"
+        },
+        "studytype" : {
+            "CLINICAL" : "Klinische Studie",
+            "CITIZENSCIENCE" : "Citizen Science Projekt",
+            "COMMUNITY" : "Community (Datenverwendung nur für die Erbringung von Leistungen an die Teilnehmer)"
+        },
+        "joinmethod" : {
+            "APP" : "Der Teilnehmer nutzt verknüpfte App oder Software",
+            "PORTAL" : "Der Teilnehmer bewirbt sich auf dem MIDATA-Portal",
+            "RESEARCHER" : "Der Teilnehmer wird manuell durch das Mitglied des Forschungsteams registriert",
+            "API" : "Der Teilnehmer wird durch externe Software registriert",
+            "ALGORITHM" : "Der Teilnehmer wurde von einem Algorithmus vorgeschlagen (nicht unterstützt)",
+            "CODE" : "Der Teilnehmer kann durch Eingabe eines Codes beitreten (nicht unterstützt)",
+            "TRANSFER" : "Die Daten werden aus einer anderen Studie übernommen (nicht unterstützt)"
         },
         "studyexecutionstatus" : {
             "ABORTED" : "Durchführung abgebrochen",
@@ -720,8 +735,7 @@
         "account_repaired" : "Ihr Konto wurde repariert.",
         "spaces_resetted" : "Ihre Konfiguration wurde zurückgesetzt.",
         "settings" : "Einstellungen",
-        "address" : "Adresse und Kontaktinformationen",
-        "change_address_btn" : "Adresse ändern",
+        "change_address_btn" : "Profil ändern",
         "searchable_short" : "Sichtbarkeit Ihres Kontos",
         "searchable" : "Können andere Benutzer Ihr Profil finden, wenn sie danach suchen?",
         "searchable_yes" : "Ja, ich will dass mein Name und meine E-Mail-Adresse für andere Benutzer sichtbar sind",
@@ -1141,6 +1155,59 @@
         "goodbye_btn" : "Session beenden und Fenster schliessen",
         "logoutreturn" : "Sie werden zur aufrufenden Seite weitergeleitet.",
         "return_btn" : "Abmelden und fortfahren"
+    },
+
+    "queryeditor" : {
+        "title" : "Data Access Filter Editor",
+        "app" : "Applikation",
+        "study" : "Studie",
+        "summary" : "Liste der zugänglichen Datentypen:",
+        "access_query" : "Data Access Filter",
+        "format" : "Ressource",
+        "code" : "Code",
+        "to" : "bis",
+        "content" : "Datentype",
+        "expert_mode_btn" : "Expert-Modus",
+        "add_basic_btn" : "Basis-Ressourcen",
+        "add_data_btn" : "Weitere Datentypen hinzufügen",
+        "owner" : "Datenbesitzer",
+        "owner_all" : "Geteilte Daten ebenfalls verwenden (von Studien, Freunden, Patienten)",
+        "owner_self" : "Nur Daten vom Benutzer der Anwendung",
+        "short_owner_all" : "Auch geteilte Daten",
+        "short_owner_self" : "Nur eigene Daten",
+        "source_app" : "Quellapplikation",
+        "short_app_all" : "Alle Quellen",
+        "short_app_other" : "Nur die Applikation:",
+        "app_self" : "Nur Daten aus dieser Anwendung verwenden",
+        "app_all" : "Daten aus beliebigen Quellanwendungen verwenden",
+        "app_other" : "Daten aus der Applikation verwenden:",
+        "restrictions" : "Zusätzliche Einschränkungen",
+        "data_period_restriction" : "Datum",
+        "time_restriction" : "Erstellungs- / Aktualisierungsdatum",
+        "created-after" : "Erstellt nach",
+        "updated-after" : "Aktualisiert nach",
+        "effective" : "Effektivdatum oder Zeitraum",
+        "custom_filter" : "Benutzerdefinierte Filter (JSON)",
+        "remove_btn" : "Entfernen",
+        "apply_btn" : "Anwenden",
+        "newentry" : "Geben Sie Name, Code, Ressourcentyp oder (Teil-)Beschreibung des Datentyps ein, den Sie hinzufügen möchten:",
+        "make_selection" : "Bitte wählen Sie ein Ergebnis zum Hinzufügen von links oder nur ein Fragment aus der rechten Spalte.",
+        "resultgroup" : "Passt",
+        "resultdetail" : "Enthaltene Typen oder Codes",
+        "search_empty" : "Keinen passenden Datentyp gefunden.",
+        "select_resources" : "Wählen Sie aus, auf welche dieser häufig benötigten Ressourcen Ihre Anwendung zugreifen soll:",
+        "save_exit_btn" : "Speichern und beenden",
+        "cancel_btn" : "Abbrechen",
+        "check_okay" : "Ist die Liste der benötigten Daten nun vollständig und korrekt?",
+        "ask" : {
+            "AuditEvent" : "Zugriff auf das Audit-Ereignisprotokoll",
+            "Consent" : "Zugriff auf Einwilligungen des Anwenders mit anderen Nutzern oder Anwendungen",
+            "Group" : "Zugang zu Gruppendefinitionen (entweder Teams von Gesundheitsfachpersonen oder Forschern oder Gruppen, die im Rahmen der Generierung von Studienergebnissen definiert wurden)",
+            "Patient" : "Patienten-Datensätze: Name, E-Mail, Adresse der MIDATA-Kontoinhabenden",
+            "PseudonymizedPatient" : "Patienten-Datensätze: Pseudonym, Geburtsjahr, Land der Studienteilnehmern",
+            "Practitioner" : "Ressource Practitioner: Suche nach Gesundheitsfachpersonen oder Forschern",
+            "Subscription" : "Zugriff und Verwaltung von Abonnements auf externe Systeme"
+        }
     },
 
     "-1" : "unbekannt"

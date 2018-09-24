@@ -72,8 +72,8 @@
             "passcode" : "Codice password errato",
             "plugin" : "Il plugin è destinato a un ruolo diverso",
             "unlock_code" : "Codice di sblocco errato",
-            "access_query" : "Il filtro di accesso dati deve essere ristretto a 'contenuto' o 'gruppo'!",
-            "sharing" : "Il filtro di accesso dati contiene tipi di dati esclusi dalla configurazione dello studio.",
+            "access_query" : "Il filtro di accesso dati (Data Access Filter) deve essere ristretto a 'contenuto' o 'gruppo'!",
+            "sharing" : "Il filtro di accesso dati (Data Access Filter) contiene tipi di dati esclusi dalla configurazione dello studio.",
             "anonymous" : "Lo studio può essere anonimo soltanto se non è autorizzato nessuno ad accedere a dati presentati senza pseudonimi.",
             "url" : "URL non valido"
         },
@@ -91,7 +91,8 @@
             "study_accept" : "La partecipazione allo studio deve essere accettata.",
             "study_group" : "Il partecipante deve dapprima essere assegnato a un gruppo.",
             "confirmation" : "Per prima cosa è richiesta la conferma dell'utente.",
-            "file" : "Nessun file selezionato per il caricamento"
+            "file" : "Nessun file selezionato per il caricamento",
+            "access_query" : "Nessun dati selezionato"
         },
 
         "unknown" : {
@@ -317,6 +318,20 @@
             "REQUEST" : "Partecipazione richiesta",
             "RESEARCH_REJECTED" : "Rifiutato dal ricercatore",
             "MEMBER_RETREATED" : "Il partecipante si è ritirato"
+        },
+        "studytype" : {
+            "CLINICAL" : "Studio clinico",
+            "CITIZENSCIENCE" : "Progetto Scienza Cittadina",
+            "COMMUNITY" : "Comunità (utilizzo dei dati solo per la fornitura di servizi ai partecipanti)"
+        },
+        "joinmethod" : {
+            "APP" : "Il partecipante utilizza un'applicazione o un software collegato",
+            "PORTAL" : "Il partecipante si applica sul portale MIDATA",
+            "RESEARCHER" : "Il partecipante è registrato manualmente dal membro del team di ricerca",
+            "API" : "Il partecipante è iscrivi da un software esterno",
+            "ALGORITHM" : "Il partecipante è stato proposto da un algoritmo (non supportato)",
+            "CODE" : "Il partecipante può aderire inserendo un codice (non supportato)",
+            "TRANSFER" : "I dati vengono trasferiti da un altro studio (non supportato)"
         },
         "studyexecutionstatus" : {
             "ABORTED" : "Esecuzione interrotta",
@@ -720,8 +735,7 @@
         "account_repaired" : "Il tuo account è stato riparato.",
         "spaces_resetted" : "La tua configurazione è stata ripristinata.",
         "settings" : "Impostazioni",
-        "address" : "Indirizzo e info. di contatto",
-        "change_address_btn" : "Modifica indirizzo",
+        "change_address_btn" : "Modifica profilo",
         "searchable_short" : "Visibilità del proprio account",
         "searchable" : "Altri utenti possono trovare il tuo profilo durante la ricerca della tua e-mail?",
         "searchable_yes" : "Sì, voglio che il mio nome ed e-mail siano visibili ad altri utenti",
@@ -1141,6 +1155,59 @@
         "goodbye_btn" : "Termina sessione e chiudi finestra",
         "logoutreturn" : "Verrete reindirizzati alla pagina delle chiamate.",
         "return_btn" : "Disconnetti e continuare"
+    },
+
+    "queryeditor" : {
+        "title" : "Editor Access Rights Editor",
+        "app" : "Applicazione",
+        "study" : "Studio",
+        "summary" : "Elenco dei tipi di dati accessibili:",
+        "access_query" : "Data Access Filter",
+        "format" : "Risorsa",
+        "code" : "Codice",
+        "to" : "al",
+        "content" : "Tipo di dati",
+        "expert_mode_btn" : "Modo esperto",
+        "add_basic_btn" : "Risorse di base",
+        "add_data_btn" : "Aggiunta di altri tipi di dati",
+        "owner" : "Titolare dei dati",
+        "owner_all" : "Utilizza anche dati condivisi (studi, amici, pazienti)",
+        "owner_self" : "Solo dati dall'utente dell'applicazione",
+        "short_owner_all" : "Anche dati condivisi",
+        "short_owner_self" : "Solo dati propri",
+        "source_app" : "Applicazione sorgente",
+        "short_app_all" : "Tutti i sorgenti",
+        "short_app_other" : "Solo l'applicazione:",
+        "app_self" : "Utilizza solo i dati di questa applicazione",
+        "app_all" : "Utilizza dati da qualsiasi applicazione sorgente",
+        "app_other" : "Utilizzare i dati dall'applicazione:",
+        "restrictions" : "Restrizioni aggiuntive",
+        "data_period_restriction" : "Data",
+        "time_restriction" : "Creazione / Aggiornamento tempo",
+        "created-after" : "Creata dopo",
+        "updated-after" : "Ultimo aggiornamento dopo",
+        "effective" : "Data o periodo effettivo",
+        "custom_filter" : "Filtro personalizzato (JSON)",
+        "remove_btn" : "Rimuovi",
+        "apply_btn" : "Applica",
+        "newentry" : "Inserisce nome, codice, tipo di risorsa o descrizione (parziale) del tipo di dato da aggiungere:",
+        "make_selection" : "Seleziona un risultato da aggiungere da sinistra o solo un frammento dalla colonna di destra.",
+        "resultgroup" : "Corrisponde",
+        "resultdetail" : "Tipi o codici contenuti",
+        "search_empty" : "Non è stato trovato alcun tipo di dato corrispondente.",
+        "select_resources" : "Seleziona quale di queste risorse utilizzate di frequente l'applicazione deve accedere:",
+        "save_exit_btn" : "Salva e esci",
+        "cancel_btn" : "Annulla",
+        "check_okay" : "L'elenco dei dati richiesti è completo e corretto?",
+        "ask" : {
+            "AuditEvent" : "Accesso al registro eventi di verifica",
+            "Consent" : "Accesso ai consensi dell'utente dell'applicazione con altri utenti o applicazioni",
+            "Group" : "Accesso alle definizioni dei gruppi (gruppi di operatori sanitari o di ricercatori o gruppi definiti come parte della generazione dei risultati dello studio)",
+            "Patient" : "Dati paziente: nome, e-mail, indirizzo dei titolari di account MIDATA",
+            "PseudonymizedPatient" : "Dati paziente: pseudonimo, anno di nascita, paese di provenienza dei partecipanti allo studio",
+            "Practitioner" : "Risorsa Practitioner: ricerca di fornitori di assistenza sanitaria o ricercatori",
+            "Subscription" : "Accedere e gestire gli abbonamenti a un sistema esterno"
+        }
     },
 
     "-1" : "sconosciuto"

@@ -16,12 +16,12 @@
     "workspace" : "Workspace",
     "data" : "Data",
     "addresearcher" : "Add Researcher",
-    "organization" : "Organization"
+    "organization" : "Research Organization"
   },
   
   "researcher_organization" : {
-    "title" : "Organization",
-    "name" : "Org. Name",
+    "title" : "Research Organization",
+    "name" : "Name",
     "description" : "Description",
     "researchers" : "All researchers of your organization"
   },
@@ -30,7 +30,8 @@
     "title" : "Create new study",
     "title2" : "Change study description",
     "study_name" : "Study name",
-    "study_description" : "Study description"
+    "study_type" : "Type of research",
+    "study_description" : "Study description"    
   },
   
   "studynav" : {
@@ -74,9 +75,9 @@
     "no_change_warning" : "This setup cannot be changed anymore after Study has been validated.",
     "member_identity" : "Member Identity",
     "pseudonymous1" : "Pseudonymized Participation",
-    "pseudonymous2" : ", exported data reveals pseudonymized ID, year of birth, gender and country. Some researchers like study nurses may have access to full personal data.",
+    "pseudonymous2" : ", exported data reveals the pseudonymized identity, year of birth, gender and country. Some researchers like study nurses may have access to full personal data.",
     "anonymous" : "Anonymous Participation",
-    "anonymous2" : ", reveals pseudonymized ID, year of birth, gender and country. Pseudonymization mapping may not be accessed.",    
+    "anonymous2" : ", exported data reveals the spseudonymized identity, year of birth, gender and country. The pseudonymization mapping may not be accessed.",    
     "not_anonymous1" : "Not Pseudonymized",
     "not_anonymous2" : ", requests member to share full name, birthday and contact Information (address, phone, email)",
     "assistance" : "Assistance",
@@ -94,8 +95,9 @@
   
   "studyoverview" : {
     "name" : "Name",
-    "created_at" : "Created on:",
-    "created_by" : "Created by:",
+    "type" : "Type of Research",
+    "created_at" : "Created on",
+    "created_by" : "Created by",
     "description" : "Description",
     "code" : "Code",
     "validation_status" : "Validation Status",
@@ -158,6 +160,8 @@
   
   "studyrecords" : {
     "empty" : "Once data is available it can be downloaded here.",
+    "startDate" : "Export start date (optional)",
+    "endDate" : "Export end date (optional)",
     "group" : "Data Group",
     "number_of_records" : "# Records",
     "download_btn" : "Download",
@@ -171,9 +175,9 @@
     "startDate" : "Official start date",
     "endDate" : "Official end date",
     "dataCreatedBefore" : "Data freeze date",
-    "sharing_query" : "Data Access Filter (JSON)",
-    "sharing_query_options" : "Data Access Filter (Add)",
-    "sharing_query_selection" : "Data Access Filter (Selection)",
+    "sharing_query" : "Data Access Filter",
+    "join_methods" : "Allowed Ways of Joining",
+    "queryeditor_btn" : "Edit",    
     "terms_of_use" : "General Terms and Conditions",
     "terms_of_use_hint" : "If the study General Terms and Conditions have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the ID you need to enter here.",
     "show_terms" : "Show General Terms and Conditions",

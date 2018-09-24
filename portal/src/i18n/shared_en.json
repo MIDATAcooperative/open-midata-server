@@ -321,16 +321,16 @@
 	 "studytype" : {
 	   "CLINICAL" : "Clinical Study",
 	   "CITIZENSCIENCE" : "Citizen Science Project",
-	   "COMMUNITY" : "Community (Data use only for providing services back to the participants)"
+	   "COMMUNITY" : "Community (data use only for providing services back to the participants)"
 	 },
 	 "joinmethod" : {
 	   "APP" : "Participant uses linked app or software",
 	   "PORTAL" : "Participant applies on MIDATA portal",
 	   "RESEARCHER" : "Participant is manually registered by research team member",
 	   "API" : "Participant is registered by external software",
-	   "ALGORITHM" : "Participant has been proposed by algorithm (not supported)",
+	   "ALGORITHM" : "Participant has been proposed by an algorithm (not supported)",
 	   "CODE" : "Participant may join by entering a code (not supported)",
-	   "TRANSFER" : "Data is transferred from another study. (not supported)"	
+	   "TRANSFER" : "Data is transferred from another study (not supported)"	
 	 },
 	 "studyexecutionstatus" : {
 	   "ABORTED" : "Execution aborted",
@@ -1165,12 +1165,11 @@
   },
   
   "queryeditor" : {
-    "title" : "Access Rights Editor",
+    "title" : "Data Access Filter Editor",
     "app" : "Application",
     "study" : "Study",
     "summary" : "List of accessable data types:",
-    "select_btn" : "select",
-    "access_query" : "Access Query",
+    "access_query" : "Data Access Filter",
     "format" : "Resource",
     "code" : "Code",
     "to" : "to",
@@ -1185,13 +1184,13 @@
     "short_owner_self" : "Only own data",
     "source_app" : "Source application",
     "short_app_all" : "All sources",
-    "short_app_other" : "Only app:",
+    "short_app_other" : "Only application:",
     "app_self" : "Use only data from this application",
     "app_all" : "Use data from any source application",
-    "app_other" : "Use data from app:",    
+    "app_other" : "Use data from application:",    
     "restrictions" : "Additional Restrictions",
     "data_period_restriction" : "Date",
-    "time_restriction" : "Creation / Update time",
+    "time_restriction" : "Creation / Update date",
     "created-after" : "Created after",
     "updated-after" : "Last updated after",
     "effective" : "Effective date or period",
@@ -1199,21 +1198,21 @@
     "remove_btn" : "Remove",
     "apply_btn" : "Apply",
     "newentry" : "Enter name, code, resource type or (part of) description of data type to add:",
-    "make_selection" : "Please select a result from the left to add or only a fragment from the right column.",
+    "make_selection" : "Please select a result to add from the left or only a fragment from the right column.",
     "resultgroup" : "Match",
     "resultdetail" : "Contained types or codes",
-    "search_empty" : "No matching datatypes found.",
-    "select_resources" : "Select which of these frequently required resources your app needs access to:",
+    "search_empty" : "No matching datatype found.",
+    "select_resources" : "Select which of these frequently used resources your application needs access to:",
     "save_exit_btn" : "Save and exit",
     "cancel_btn" : "Cancel",
     "check_okay" : "Is the list of required data now complete and correct?",
     "ask" : {
       "AuditEvent" : "Access to the audit event log",
       "Consent" : "Access to consents of the application user with other users or applications",
-      "Group" : "Access to group definitions (either teams of practitioners or researchers or groups defined as part of study results generation)",
-      "Patient" : "Patient Records : Name, email, address of Midata account holders",
-      "PseudonymizedPatient" : "Patient Records : Pseudonym, year of birth, country of study participants",
-      "Practitioner" : "Practitioner Resource : Search for healthcare providers or researchers",
+      "Group" : "Access to group definitions (either teams of health providers or researchers or groups defined as part of study results generation)",
+      "Patient" : "Patient Records: name, email, address of MIDATA account holders",
+      "PseudonymizedPatient" : "Patient Records: pseudonym, year of birth, country of study participants",
+      "Practitioner" : "Practitioner Resource: search for health providers or researchers",
       "Subscription" : "Access and manage subscriptions to external systems"
     }
   },

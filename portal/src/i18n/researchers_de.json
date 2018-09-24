@@ -31,6 +31,7 @@
         "title" : "Neue Studie anlegen",
         "title2" : "Beschreibung der Studie ändern",
         "study_name" : "Name der Studie",
+        "study_type" : "Forschungsart",
         "study_description" : "Beschreibung der Studie"
     },
 
@@ -95,8 +96,9 @@
 
     "studyoverview" : {
         "name" : "Name",
-        "created_at" : "Erstellt bei:",
-        "created_by" : "Erstellt durch:",
+        "type" : "Forschungsart",
+        "created_at" : "Erstellt am",
+        "created_by" : "Erstellt durch",
         "description" : "Beschreibung",
         "code" : "Code",
         "validation_status" : "Status der Validierung",
@@ -159,6 +161,8 @@
 
     "studyrecords" : {
         "empty" : "Sobald Daten verfügbar sind, können diese hier heruntergeladen werden.",
+        "startDate" : "Startdatum des Exports (optional)",
+        "endDate" : "Enddatum des Exports (optional)",
         "group" : "Datengruppe",
         "number_of_records" : "# Einträge",
         "download_btn" : "Herunterladen",
@@ -172,9 +176,9 @@
         "startDate" : "Offizielles Startdatum",
         "endDate" : "Offizielles Enddatum",
         "dataCreatedBefore" : "Datenbestand eingefroren ab dem",
-        "sharing_query" : "Data Access Filter (JSON)",
-        "sharing_query_options" : "Data Access Filter (Hinzufügen)",
-        "sharing_query_selection" : "Data Access Filter (Auswahl)",
+        "sharing_query" : "Data Access Filter",
+        "join_methods" : "Erlaubte Teilnahmeverfahren",
+        "queryeditor_btn" : "Ändern",
         "terms_of_use" : "Allgemeine Geschäftsbedingungen",
         "terms_of_use_hint" : "Wenn die Allgemeine Geschäftsbedingungen der Studie vom Benutzer gelesen und akzeptiert werden müssen, senden Sie den Text bitte an MIDATA. Wir werden den Text im richtigen Format hochladen und Ihnen die ID mitteilen, die Sie hier eingeben müssen.",
         "show_terms" : "Allgemeine Geschäftsbedingungen anzeigen",

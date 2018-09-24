@@ -141,7 +141,7 @@ angular.module('portal')
 			for (var i2=0;i2<l;i2++) { 
 				var dat = result.data[i2];
 				for (var lang in dat.label) {					
-				  if (dat.label[lang].toLowerCase().indexOf(what) >= 0) {					 
+				  if (dat.label[lang].toLowerCase().indexOf(what) >= 0 || dat.name.toLowerCase().indexOf(what) >= 0) {					 
 					  addgroup(dat);
 				    
 				  }
@@ -186,7 +186,8 @@ angular.module('portal')
 		for (var i=0;i<$scope.blocks.length;i++) {
 			var block = $scope.blocks[i];			
 			var fb = {};
-			if (block.format) fb.format = [ block.format ];
+			if (block.format) fb.format = [ block.format ];		
+			if (block.system) fb["group-system"] = block.system;
 			if (block.owner && block.owner != "all") fb.owner = [ block.owner ];
 			if (block.app && block.app != "all") {
 				if (block.app == "self") fb.app = [ $scope.target.appname ];
@@ -211,15 +212,18 @@ angular.module('portal')
 			var k = JSON.stringify(fb);
 			if (block.code) k+="code";
 			if (block.content) k+="content";
+			if (block.group) k+="group";
 			
 			if (keys[k]) {
 				if (block.content) keys[k].content.push(block.content);
 				if (block.code) keys[k].code.push(block.code);
+				if (block.group) keys[k].group.push(block.group);
 			} else {
 				keys[k] = fb;
 				finalblocks.push(fb);
 				if (block.content) fb.content = [ block.content ];
 				if (block.code) fb.code = [ block.code ];
+				if (block.group) fb.group = [ block.group ];
 			}									
 								
 		}		
@@ -369,9 +373,11 @@ angular.module('portal')
 		
 		$scope.query.json = buildAccessQuery();
 		$scope.query.queryStr = JSON.stringify($scope.query.json);
+		console.log($scope.query.queryStr);
 	};
 	
 	$scope.selectBlock = function(block) {
+		console.log(block);
 		$scope.currentBlock = block;
 		
 		$scope.currentBlock.flags = {};

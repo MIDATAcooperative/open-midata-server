@@ -123,6 +123,7 @@
         "created_at" : "Créée le",
         "created_by" : "Créée par",
         "description" : "Description",
+        "joinmethods" : "Procédures de participation",
         "code" : "Code",
         "startDate" : "Date de début",
         "endDate" : "Date de fin",
