@@ -57,6 +57,10 @@
   },
   
   "studyactions" : {
+    "related_apps" : "Plugins related to the study",
+    "empty" : "No apps or plugins are linked to the study",
+    "aggregator_apps" : "Add research app to be used with YOUR account",
+    "datalink" : "Aggregators, Analysis & Interpretation Apps",
     "description" : "After the study has been validated, you can link plugins and external data processing services to it. These plugins or services must connect to MIDATA using the credentials of one of the members of the research team with sufficient rights.",
     "select_group_btn" : "Select Group",
     "allgroups" : "<All Groups>",
@@ -67,7 +71,44 @@
     "shareback" : "Application shares data with participant group(s)",
     "add_application_btn" : "Add Research Application",
     "linked_apps" : "Applications Consents",
-    "linked_spaces" : "Research Plugins"
+    "linked_spaces" : "Research Plugins",
+    "app" : "Application",    
+    "for" : "for",
+    "validation" : "Status",    
+    "status" : {       
+	   "validated" : "Confirmed",	   
+	   "not_validated_research" : "Not confirmed by researcher",
+	   "not_validated_developer" : "Not confirmed by developer",
+	   "study_wrong_status" : "Not active due to study status",
+	   "study_no_app_participation" : "Study does not allow to join using an app"	   
+    },
+    "select_btn" : "View",
+    "validate_btn" : "Confirm",
+    "study" : "Study",
+    "app.type" : "Application type",
+    "no_valid_app" : "No application selected",
+    "type" : "How are they linked?",
+    "types" : {
+       "OFFER_P" : "App or plugin offers study participation upon login/start",
+       "REQUIRE_P" : "Study participation is required to use the app or plugin",
+       "RECOMMEND_A" : "App or plugin is recommended by study",
+       "AUTOADD_A" : "Plugin is automatically added on study participation",
+       "DATALINK" : "App shares data to study participants"
+    },
+    "types_short" : {
+       "OFFER_P" : "Offer participation",
+       "REQUIRE_P" : "Require participation",
+       "RECOMMEND_A" : "Recommended",
+       "AUTOADD_A" : "Auto-Add",
+       "DATALINK" : "Data Share"
+    },
+    "use_period" : "When are they linked?",
+    "use_periods" : {
+      "PRE" : "Before the study has started",
+      "RUNNING" : "During the execution of the study",
+      "FINISHED" : "After the study is finished",
+      "ABORTED" : "When the study is aborted"
+    }	                                      
   },
   
   "studyfields" : {

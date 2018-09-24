@@ -64,7 +64,10 @@ angular.module('portal')
 	};
 	
 	$scope.changeAddress = function() {		
-        
+        if (!$scope.addressNeeded()) {
+        	$scope.registration = JSON.parse(JSON.stringify($scope.registration));
+        	$scope.registration.firstname = $scope.registration.lastname = $scope.registration.gender = $scope.registration.city = $scope.registration.zip = $scope.registration.country = $scope.registration.address1 = undefined;
+        }
 		$scope.submitted = true;	
 		if ($scope.error && $scope.error.field && $scope.error.type) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
 		$scope.error = null;
@@ -128,6 +131,8 @@ angular.module('portal')
 	  		      if (result !== "ACTIVE") {	  			    
 	  				  session.postLogin({ data : result}, $state);  
 	  			  }
+	  		  }, function(error) {
+	  			  $scope.error = error.data;
 	  		  });
 		} else if (funcresult) {
 		  session.postLogin(funcresult, $state);		

@@ -27,6 +27,7 @@ import models.HCRelated;
 import models.Member;
 import models.MemberKey;
 import models.MidataId;
+import models.MobileAppInstance;
 import models.RecordsInfo;
 import models.User;
 import models.UserGroup;
@@ -38,6 +39,7 @@ import models.enums.ConsentType;
 import models.enums.EntityType;
 import models.enums.MessageReason;
 import models.enums.UserFeature;
+import models.enums.UserRole;
 import models.enums.WritePermissionType;
 import play.mvc.BodyParser;
 import play.mvc.Result;
@@ -175,7 +177,7 @@ public class Circles extends APIController {
 			for (Consent consent : consents) {
 				if (consent.status.equals(ConsentStatus.ACTIVE)) {
 				  try {
-				    Collection<RecordsInfo> summary = RecordManager.instance.info(executor, consent._id, null, all, AggregationType.ALL);
+				    Collection<RecordsInfo> summary = RecordManager.instance.info(executor, UserRole.ANY, consent._id, null, all, AggregationType.ALL);
 				    if (summary.isEmpty()) consent.records = 0; else consent.records = summary.iterator().next().count;
 				  } catch (RequestTooLargeException e) { consent.records = -1; }
 				  catch (AppException e) {
@@ -229,7 +231,9 @@ public class Circles extends APIController {
 	public static Consent getConsentById(MidataId user, MidataId consentId, Set<String> fields) throws AppException {
 		fields.add("owner");
 		fields.add("authorized");
-		Consent consent = Consent.getByIdUnchecked(consentId, fields);		
+		Consent consent;
+		if (fields.contains("applicationId")) consent = MobileAppInstance.getById(consentId, fields); 
+		else consent = Consent.getByIdUnchecked(consentId, fields);		
 		if (consent == null) return null;
 		if (consent.owner != null && consent.owner.equals(user)) return consent;
 		if (consent.authorized.contains(user)) return consent;

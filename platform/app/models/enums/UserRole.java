@@ -1,5 +1,7 @@
 package models.enums;
 
+import utils.AccessLog;
+
 /**
  * The role of a user of the platform.
  *
@@ -34,5 +36,26 @@ public enum UserRole {
    /**
     * No specific role. This value may only be used for restrictions and not be assigned to a user account.
     */
-   ANY
+   ANY;
+   
+   public static UserRole fromShortString(String r) {
+	   AccessLog.log("from short string="+r);
+	   if (r == null || r.equals("m")) return UserRole.MEMBER;
+	   if (r.equals("r")) return UserRole.RESEARCH;
+	   else if (r.equals("d")) return UserRole.DEVELOPER;
+	   else if (r.equals("a")) return UserRole.ADMIN;
+	   else if (r.equals("p")) return UserRole.PROVIDER;
+	   return UserRole.ANY;
+   }
+   
+   public String toShortString() {
+	   switch (this) {
+	   case MEMBER: return "m";
+	   case RESEARCH: return "r";
+	   case DEVELOPER: return "d";
+	   case ADMIN: return "a";
+	   case PROVIDER: return "p";
+	   default: return "-";
+	   }
+   }
 }

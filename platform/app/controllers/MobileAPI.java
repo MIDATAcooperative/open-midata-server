@@ -28,6 +28,8 @@ import models.Record;
 import models.RecordsInfo;
 import models.ResearchUser;
 import models.Space;
+import models.Study;
+import models.StudyAppLink;
 import models.StudyParticipation;
 import models.User;
 import models.enums.AggregationType;
@@ -36,6 +38,7 @@ import models.enums.ConsentStatus;
 import models.enums.JoinMethod;
 import models.enums.MessageReason;
 import models.enums.ParticipationStatus;
+import models.enums.StudyAppLinkType;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import play.libs.Json;
@@ -45,6 +48,7 @@ import play.mvc.Http;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.InstanceConfig;
+import utils.QueryTagTools;
 import utils.access.AccessContext;
 import utils.access.AppAccessContext;
 import utils.access.Feature_FormatGroups;
@@ -117,19 +121,27 @@ public class MobileAPI extends Controller {
         	return false;
         }
         
-        if (app.mustParticipateInStudy && app.linkedStudy != null) {
-        	StudyParticipation sp = StudyParticipation.getByStudyAndMember(app.linkedStudy, appInstance.owner, Sets.create("status", "pstatus"));
-        	if (sp == null) {
-        		MobileAPI.removeAppInstance(appInstance);
-            	return false;
+        Set<StudyAppLink> links = StudyAppLink.getByApp(app._id);
+        for (StudyAppLink sal : links) {
+        	if (sal.isConfirmed() && sal.type.contains(StudyAppLinkType.REQUIRE_P) && sal.active) {
+        		
+        		
+        		   StudyParticipation sp = StudyParticipation.getByStudyAndMember(sal.studyId, appInstance.owner, Sets.create("status", "pstatus"));
+        		   
+        		   if (sp == null) {
+	               		MobileAPI.removeAppInstance(appInstance);
+	                   	return false;
+	               	}
+	               	if ( 
+	               		sp.pstatus.equals(ParticipationStatus.MEMBER_RETREATED) || 
+	               		sp.pstatus.equals(ParticipationStatus.MEMBER_REJECTED) || 
+	               		sp.pstatus.equals(ParticipationStatus.RESEARCH_REJECTED)) {
+	               		throw new BadRequestException("error.blocked.consent", "Research consent expired or blocked.");
+	               	}
+        		   
+        		
         	}
-        	if ( 
-        		sp.pstatus.equals(ParticipationStatus.MEMBER_RETREATED) || 
-        		sp.pstatus.equals(ParticipationStatus.MEMBER_REJECTED) || 
-        		sp.pstatus.equals(ParticipationStatus.RESEARCH_REJECTED)) {
-        		throw new BadRequestException("error.blocked.consent", "Research consent expired or blocked.");
-        	}
-        }
+        }                  
         
         return true;
 	}
@@ -174,7 +186,7 @@ public class MobileAPI extends Controller {
 		MobileAppInstance appInstance = null;
 		String phrase;
 		Map<String, Object> meta = null;
-		
+		UserRole role = null;
 		KeyManager.instance.login(60000l, false);
 		if (json.has("refreshToken")) {
 			MobileAppToken refreshToken = MobileAppToken.decrypt(JsonValidation.getString(json, "refreshToken"));
@@ -188,7 +200,7 @@ public class MobileAPI extends Controller {
             Set<UserFeature> req = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(user.role);
             if (app.requirements != null) req.addAll(app.requirements);
             if (Application.loginHelperPreconditionsFailed(user, req) != null) return status(UNAUTHORIZED); 
-            
+            role = user.role;
             phrase = refreshToken.phrase;
             KeyManager.instance.unlock(appInstance._id, phrase);
             executor = appInstance._id;
@@ -201,7 +213,7 @@ public class MobileAPI extends Controller {
 			String username = JsonValidation.getEMail(json, "username");
 			String password = JsonValidation.getString(json, "password");
 			String device = JsonValidation.getStringOrNull(json, "device");
-			UserRole role = json.has("role") ? JsonValidation.getEnum(json, "role", UserRole.class) : UserRole.MEMBER;
+			role = json.has("role") ? JsonValidation.getEnum(json, "role", UserRole.class) : UserRole.MEMBER;
 			
 			if (device != null) phrase = device; else phrase = "???"+password;
 				
@@ -212,6 +224,8 @@ public class MobileAPI extends Controller {
 			case RESEARCH: user = ResearchUser.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp", "failedLogins", "lastFailed"));break;
 			}
 			if (user == null) throw new BadRequestException("error.invalid.credentials", "Unknown user or bad password");
+			
+			AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user, app._id);
 			
 			if (!user.authenticationValid(password)) {
 				throw new BadRequestException("error.invalid.credentials",  "Unknown user or bad password");
@@ -232,7 +246,7 @@ public class MobileAPI extends Controller {
 				executor = autoConfirm ? user._id : null;
 				AccessLog.log("REINSTALL");
 				if (!autoConfirm && app.targetUserRole.equals(UserRole.RESEARCH)) throw new BadRequestException("error.invalid.study", "The research app is not properly linked to a study! Please log in as researcher and link the app properly.");
-				appInstance = installApp(executor, app._id, user, phrase, autoConfirm, false);
+				appInstance = installApp(executor, app._id, user, phrase, autoConfirm, Collections.emptySet());
 				if (executor != null) RecordManager.instance.clearCache();
 				executor = appInstance._id;
 	   		    meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
@@ -244,17 +258,20 @@ public class MobileAPI extends Controller {
 				meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
 				
 			}
+			role = user.role;
 		}
 				
 		if (!phrase.equals(meta.get("phrase"))) return internalServerError("Internal error while validating consent");
 				
-		if (app.targetUserRole.equals(UserRole.RESEARCH)) {
+		if (app.targetUserRole.equals(UserRole.RESEARCH)) {			
+			
 		  BSONObject q = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_query");
           if (!q.containsField("link-study")) throw new BadRequestException("error.invalid.study", "The research app is not properly linked to a study! Please log in as researcher and link the app properly.");
 		}
 		
+		AuditManager.instance.success();
 		
-		return authResult(executor, appInstance, meta, phrase);
+		return authResult(executor, role, appInstance, meta, phrase);
 	}
 	
 	public static void removeAppInstance(MobileAppInstance appInstance) throws AppException {
@@ -275,8 +292,8 @@ public class MobileAPI extends Controller {
 	 * @return
 	 * @throws AppException
 	 */
-	public static Result authResult(MidataId executor, MobileAppInstance appInstance, Map<String, Object> meta, String phrase) throws AppException {
-		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, phrase, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME); 
+	public static Result authResult(MidataId executor, UserRole role, MobileAppInstance appInstance, Map<String, Object> meta, String phrase) throws AppException {
+		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, phrase, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME, role); 
         MobileAppToken refresh = new MobileAppToken(appInstance.applicationId, appInstance._id, appInstance.owner, phrase, System.currentTimeMillis());
 		
         meta.put("created", refresh.created);
@@ -299,25 +316,32 @@ public class MobileAPI extends Controller {
 		return ok(obj);
 	}
 	
-	public static MobileAppInstance installApp(MidataId executor, MidataId appId, User member, String phrase, boolean autoConfirm, boolean studyConfirm) throws AppException {
-		Plugin app = Plugin.getById(appId, Sets.create("name", "pluginVersion", "defaultQuery", "predefinedMessages", "linkedStudy", "mustParticipateInStudy", "termsOfUse", "writes"));
+	public static MobileAppInstance installApp(MidataId executor, MidataId appId, User member, String phrase, boolean autoConfirm, Set<MidataId> studyConfirm) throws AppException {
+		Plugin app = Plugin.getById(appId, Sets.create("name", "pluginVersion", "defaultQuery", "predefinedMessages", "termsOfUse", "writes"));
 
-		if (app.linkedStudy != null && app.mustParticipateInStudy && !studyConfirm) {
-			StudyParticipation sp = StudyParticipation.getByStudyAndMember(app.linkedStudy, member._id, Sets.create("status", "pstatus"));
-        	if (sp == null || 
-        		sp.pstatus.equals(ParticipationStatus.MEMBER_RETREATED) || 
-        		sp.pstatus.equals(ParticipationStatus.MEMBER_REJECTED) || 
-        		sp.pstatus.equals(ParticipationStatus.RESEARCH_REJECTED)) {
-        		throw new BadRequestException("error.missing.study_accept", "Study belonging to app must be accepted.");        		
-        	}
-			
+		Set<StudyAppLink> links = StudyAppLink.getByApp(appId);
+		
+		for (StudyAppLink sal : links) {
+			if (sal.isConfirmed()) {
+												
+				if (!sal.active) sal.type = Collections.emptySet();
+				
+				if (sal.type.contains(StudyAppLinkType.REQUIRE_P) && sal.type.contains(StudyAppLinkType.OFFER_P) && !studyConfirm.contains(sal.studyId)) {
+					StudyParticipation sp = StudyParticipation.getByStudyAndMember(sal.studyId, member._id, Sets.create("status", "pstatus"));
+		        	if (sp == null || 
+		        		sp.pstatus.equals(ParticipationStatus.MEMBER_RETREATED) || 
+		        		sp.pstatus.equals(ParticipationStatus.MEMBER_REJECTED) || 
+		        		sp.pstatus.equals(ParticipationStatus.RESEARCH_REJECTED)) {
+		        		throw new BadRequestException("error.missing.study_accept", "Study belonging to app must be accepted.");        		
+		        	}
+				}
+				
+				if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.studyId))) {
+					controllers.members.Studies.precheckRequestParticipation(member._id, sal.studyId);
+				}
+			}
 		}
-		
-		if (app.linkedStudy != null && studyConfirm) {			
-			controllers.members.Studies.precheckRequestParticipation(member._id, app.linkedStudy);
-		}
-		
-		
+							
 		MobileAppInstance appInstance = new MobileAppInstance();
 		appInstance._id = new MidataId();
 		appInstance.owner = member._id;
@@ -355,8 +379,13 @@ public class MobileAPI extends Controller {
 		    RecordManager.instance.shareByQuery(executor, member._id, appInstance._id, app.defaultQuery);
 		}
 				
-		if (app.linkedStudy != null && studyConfirm) {								
-			controllers.members.Studies.requestParticipation(new ExecutionInfo(executor), member._id, app.linkedStudy, app._id, JoinMethod.APP);
+		for (StudyAppLink sal : links) {
+			if (sal.isConfirmed()) {		
+				if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.studyId))) {
+					RecordManager.instance.clearCache();
+			        controllers.members.Studies.requestParticipation(new ExecutionInfo(executor, member.getRole()), member._id, sal.studyId, app._id, JoinMethod.APP);
+				}
+			}
 		}
 		
 		if (autoConfirm) {
@@ -369,8 +398,8 @@ public class MobileAPI extends Controller {
 			User.set(member._id, "apps", member.apps);
 		}
 		
-		if (app.termsOfUse != null) member.agreedToTerms(app.termsOfUse, app._id);
-				
+		if (app.termsOfUse != null) member.agreedToTerms(app.termsOfUse, app._id);					
+		
 		if (app.predefinedMessages!=null) {
 			if (!app._id.equals(member.initialApp)) {
 				Messager.sendMessage(app._id, MessageReason.FIRSTUSE_EXISTINGUSER, null, Collections.singleton(member._id), member.language, new HashMap<String, String>());	
@@ -441,9 +470,8 @@ public class MobileAPI extends Controller {
 		// get record data
 		Collection<Record> records = null;
 		
-		AccessLog.log("NEW QUERY");
-					
-		records = RecordManager.instance.list(inf.executorId, inf.context, properties, fields);		  
+		AccessLog.log("NEW QUERY");		
+		records = RecordManager.instance.list(inf.executorId, inf.role, inf.context, properties, fields);		  
 				
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
 		
@@ -725,7 +753,7 @@ public class MobileAPI extends Controller {
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		AggregationType aggrType = JsonValidation.getEnum(json, "summarize", AggregationType.class);
 		
-	    Collection<RecordsInfo> result = RecordManager.instance.info(executor, targetAps, RecordManager.instance.createContextFromApp(executor, appInstance), properties, aggrType);
+	    Collection<RecordsInfo> result = RecordManager.instance.info(executor, authToken.role, targetAps, RecordManager.instance.createContextFromApp(executor, appInstance), properties, aggrType);
 						
 		return ok(Json.toJson(result));
 	}

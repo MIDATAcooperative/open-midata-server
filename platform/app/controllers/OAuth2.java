@@ -1,5 +1,6 @@
 package controllers;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -19,14 +20,17 @@ import models.MobileAppInstance;
 import models.Plugin;
 import models.ResearchUser;
 import models.Study;
+import models.StudyAppLink;
 import models.StudyParticipation;
 import models.User;
 import models.UserGroupMember;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.ParticipationStatus;
+import models.enums.StudyAppLinkType;
 import models.enums.UserFeature;
 import models.enums.UserRole;
+import models.enums.UserStatus;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
@@ -45,6 +49,7 @@ import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -79,19 +84,27 @@ public class OAuth2 extends Controller {
         	return false;
         }
         
-        if (app.mustParticipateInStudy && app.linkedStudy != null) {
-        	StudyParticipation sp = StudyParticipation.getByStudyAndMember(app.linkedStudy, appInstance.owner, Sets.create("status", "pstatus"));
-        	if (sp == null) {
-        		MobileAPI.removeAppInstance(appInstance);
-            	return false;
+        Set<StudyAppLink> links = StudyAppLink.getByApp(app._id);
+        for (StudyAppLink sal : links) {
+        	if (sal.isConfirmed() && sal.active && sal.type.contains(StudyAppLinkType.REQUIRE_P)) {
+        		
+        		
+        		   StudyParticipation sp = StudyParticipation.getByStudyAndMember(sal.studyId, appInstance.owner, Sets.create("status", "pstatus"));
+        		   
+        		   if (sp == null) {
+	               		MobileAPI.removeAppInstance(appInstance);
+	                   	return false;
+	               	}
+	               	if ( 
+	               		sp.pstatus.equals(ParticipationStatus.MEMBER_RETREATED) || 
+	               		sp.pstatus.equals(ParticipationStatus.MEMBER_REJECTED) || 
+	               		sp.pstatus.equals(ParticipationStatus.RESEARCH_REJECTED)) {
+	               		throw new BadRequestException("error.blocked.consent", "Research consent expired or blocked.");
+	               	}
+        		   
+        		
         	}
-        	if ( 
-        		sp.pstatus.equals(ParticipationStatus.MEMBER_RETREATED) || 
-        		sp.pstatus.equals(ParticipationStatus.MEMBER_REJECTED) || 
-        		sp.pstatus.equals(ParticipationStatus.RESEARCH_REJECTED)) {
-        		throw new BadRequestException("error.blocked.consent", "Research consent expired or blocked.");
-        	}
-        }
+        }        
         return true;
 	}
 	
@@ -113,12 +126,14 @@ public class OAuth2 extends Controller {
 		String code_challenge = JsonValidation.getStringOrNull(json, "code_challenge");
 	    String code_challenge_method = JsonValidation.getStringOrNull(json, "code_challenge_method");
 	    boolean confirmed = JsonValidation.getBoolean(json, "confirm");
-	    boolean confirmStudy = JsonValidation.getBoolean(json, "confirmStudy");
+	    Set<MidataId> confirmStudy = JsonExtraction.extractMidataIdSet(json.get("confirmStudy"));
 	   					
 	    // Validate Mobile App	
-		Plugin app = Plugin.getByFilename(name, Sets.create("type", "name", "redirectUri", "requirements", "linkedStudy", "termsOfUse", "unlockCode"));
+		Plugin app = Plugin.getByFilename(name, Sets.create("type", "name", "redirectUri", "requirements", "termsOfUse", "unlockCode"));
 		if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");		
 		if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
+		if (app.redirectUri==null) throw new InternalServerException("error.internal", "No redirect URI set for app.");
+		if (redirectUri==null || redirectUri.length()==0) throw new BadRequestException("error.internal", "Missing redirectUri in request.");
 		if (!redirectUri.equals(app.redirectUri)) {
 			String[] multiple = app.redirectUri.split(" ");
 			boolean found = false;
@@ -137,11 +152,16 @@ public class OAuth2 extends Controller {
 		
 		Set<UserFeature> requirements = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(role);
 		if (app.requirements != null) requirements.addAll(app.requirements);
-		if (app.linkedStudy != null && confirmStudy) {
-			Study study = Study.getById(app.linkedStudy, Sets.create("requirements"));			
-			if (study.requirements != null) requirements.addAll(study.requirements);
+		
+		Set<StudyAppLink> links = StudyAppLink.getByApp(app._id);
+		for (StudyAppLink sal : links) {
+			if (sal.isConfirmed() && sal.active && ((sal.type.contains(StudyAppLinkType.OFFER_P) && confirmStudy.contains(sal.studyId)) || sal.type.contains(StudyAppLinkType.REQUIRE_P))) {
+				Study study = Study.getById(sal.studyId, Sets.create("requirements", "executionStatus"));				
+				if (study.requirements != null) requirements.addAll(study.requirements);				
+			}
 		}
 		
+				
 		MobileAppInstance appInstance = null;		
 		Map<String, Object> meta = null;
 		
@@ -169,7 +189,17 @@ public class OAuth2 extends Controller {
 			  else if (ugms.size() > 1) {
 				  
 				  Set<MidataId> ids = new HashSet<MidataId>();
-				  for (UserGroupMember ugm : ugms) ids.add(ugm.userGroup);				  
+				  for (UserGroupMember ugm : ugms) ids.add(ugm.userGroup);	
+				  
+				  /*Set<MidataId> ids2 = new HashSet<MidataId>();
+				  for (StudyAppLink sal : links) {
+					  if (sal.isConfirmed() && sal.type.contains(StudyAppLinkType.DATALINK)) {
+						  ids2.add(sal.studyId);
+					  }
+				  }
+				  
+				  if (!ids2.isEmpty()) ids.retainAll(ids2);*/
+				  				  
 				  Set<Study> studies = Study.getAll(null, CMaps.map("_id", ids), Sets.create("_id", "name"));
 				  ObjectNode obj = Json.newObject();								
 				  obj.put("studies", JsonOutput.toJsonNode(studies, "Study", Sets.create("_id", "name")));					
@@ -193,7 +223,13 @@ public class OAuth2 extends Controller {
 		if (appInstance == null) {		
 			if (!confirmed) {
 				AuditManager.instance.fail(0, "Confirmation required", "error.missing.confirmation");
-				return checkAlreadyParticipatesInStudy(app.linkedStudy, user._id) ? ok("CONFIRM-STUDYOK") : ok("CONFIRM");
+				boolean allRequired = true;
+				for (StudyAppLink sal : links) {
+					if (sal.isConfirmed() && sal.active && (sal.type.contains(StudyAppLinkType.REQUIRE_P) || sal.type.contains(StudyAppLinkType.OFFER_P))) {
+						allRequired = allRequired && checkAlreadyParticipatesInStudy(sal.studyId, user._id);
+					}
+				}
+				return allRequired ? ok("CONFIRM-STUDYOK") : ok("CONFIRM");				
 			}
 			
 			if (app.unlockCode != null) {				
@@ -212,7 +248,13 @@ public class OAuth2 extends Controller {
    		    meta = RecordManager.instance.getMeta(executor, appInstance._id, "_app").toMap();
 		} else {				
 			if (!verifyAppInstance(appInstance, user._id, app._id)) {
-				return checkAlreadyParticipatesInStudy(app.linkedStudy, user._id) ? ok("CONFIRM-STUDYOK") : ok("CONFIRM");
+				boolean allRequired = true;
+				for (StudyAppLink sal : links) {
+					if (sal.isConfirmed() && (sal.type.contains(StudyAppLinkType.REQUIRE_P) || sal.type.contains(StudyAppLinkType.OFFER_P))) {
+						allRequired = allRequired && checkAlreadyParticipatesInStudy(sal.studyId, user._id);
+					}
+				}
+				return allRequired ? ok("CONFIRM-STUDYOK") : ok("CONFIRM");
 			}
 			KeyManager.instance.unlock(appInstance._id, phrase);
 			meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
@@ -260,7 +302,7 @@ public class OAuth2 extends Controller {
         
         if (data==null) throw new BadRequestException("error.internal", "Missing request body of type form/urlencoded.");
         if (!data.containsKey("grant_type")) throw new BadRequestException("error.internal", "Missing grant_type");
-        
+        User user = null;
         String grant_type = data.get("grant_type")[0];
         if (grant_type.equals("refresh_token")) {
         	if (!data.containsKey("refresh_token")) throw new BadRequestException("error.internal", "Missing refresh_token");
@@ -275,7 +317,7 @@ public class OAuth2 extends Controller {
 			if (!verifyAppInstance(appInstance, refreshToken.ownerId, refreshToken.appId)) throw new BadRequestException("error.internal", "Bad refresh token.");
 			
 			Plugin app = Plugin.getById(appInstance.applicationId);
-			User user = User.getById(appInstance.owner, User.ALL_USER_INTERNAL);
+			user = User.getById(appInstance.owner, User.ALL_USER_INTERNAL);
 			Set<UserFeature> req = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(user.role);
 			if (app.requirements != null) req.addAll(app.requirements);
 			Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, req);
@@ -294,14 +336,27 @@ public class OAuth2 extends Controller {
            
         } else if (grant_type.equals("authorization_code")) {
         	if (!data.containsKey("redirect_uri")) throw new BadRequestException("error.internal", "Missing redirect_uri");
-            if (!data.containsKey("client_id")) throw new BadRequestException("error.internal", "Missing client_id");
+            
             if (!data.containsKey("code")) throw new BadRequestException("error.internal", "Missing code");
+            
+            String client_id = null;
             
                             
             String code = data.get("code")[0];
             String redirect_uri = data.get("redirect_uri")[0];
-            String client_id = data.get("client_id")[0];
-    					
+            if (data.containsKey("client_id")) {
+              client_id = data.get("client_id")[0];
+            } else {
+            	String auth = request().getHeader("Authorization");
+            	if (auth != null && auth.startsWith("Basic")) {
+            		String authstr = auth.substring("Basic ".length());
+            		int p = authstr.indexOf(':');
+            		if (p > 0) client_id = authstr.substring(0, p);
+            	}
+            }
+    		
+            if (client_id == null) throw new BadRequestException("error.internal", "Missing client_id");
+            
     		OAuthCodeToken tk = OAuthCodeToken.decrypt(code);
     		if (tk == null) throw new BadRequestException("error.internal", "invalid_grant");
     		if (tk.created + OAUTH_CODE_LIFETIME < System.currentTimeMillis()) throw new BadRequestException("error.internal", "invalid_grant");
@@ -328,6 +383,9 @@ public class OAuth2 extends Controller {
     		appInstance = MobileAppInstance.getById(tk.appInstanceId, Sets.create("owner", "applicationId", "status", "passcode"));
     		phrase = tk.passphrase;
     		obj.put("state", tk.state);
+    		
+    		user = User.getById(appInstance.owner, Sets.create("role", "status"));
+    		if (user == null || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.BLOCKED)) throw new BadRequestException("error.internal", "invalid_grant");
         } else throw new BadRequestException("error.internal", "Unknown grant_type");
                				
 		if (appInstance == null) throw new NullPointerException();									
@@ -342,7 +400,7 @@ public class OAuth2 extends Controller {
 				
 		if (!phrase.equals(meta.get("phrase"))) throw new InternalServerException("error.internal", "Internal error while validating consent");
 						
-		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, phrase, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME); 
+		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, phrase, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME, user.role); 
         MobileAppToken refresh = new MobileAppToken(appInstance.applicationId, appInstance._id, appInstance.owner, phrase, System.currentTimeMillis());
 		
         meta.put("created", refresh.created);

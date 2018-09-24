@@ -97,20 +97,20 @@
                                 <formerror myid="appAgb" type="mustaccept" message="error.missing.agb"></formerror>
                               </formrow>
                               </div>
-                              <div ng-show="app.linkedStudy">
+                              <div ng-repeat="link in links">
 		            	       <formrow myid="confirmStudy" label="registration.study">
 		            	         <div class="checkbox">
 		            	           <label>
-		            	             <input type="checkbox" id="confirmStudy" name="confirmStudy" ng-model="registration.confirmStudy" ng-required="app.mustParticipateInStudy">
+		            	             <input type="checkbox" id="confirmStudy" name="confirmStudy" ng-checked="registration.confirmStudy.indexOf(link.study._id)>=0" ng-click="toggle(registration.confirmStudy, link.study._id);">
 		            	             <span translate="oauth2.confirm_study"></span>:
 		            	           </label>
 		            	         </div>
 		            	          <formerror myid="confirmStudy" type="mustaccept" message="error.missing.study_accept"></formerror>
-		            	          <p class="help-block" ng-show="app.linkedStudyTermsOfUse">
-		            	             <a ng-click="terms({which : app.linkedStudyTermsOfUse })" href="javascript:" translate="registration.study_agb"></a>
+		            	          <p class="help-block" ng-show="link.study.termsOfUse">
+		            	             <a ng-click="terms({which : link.study.termsOfUse })" href="javascript:" translate="registration.study_agb"></a>
 		            	           </p>
-		            	           <p class="help-block">{{ app.linkedStudyName }}</p>
-		            	           <p class="help-block">{{ app.linkedStudyDescription }}</p>
+		            	           <p class="help-block">{{ link.study.name }}</p>
+		            	           <p class="help-block">{{ link.study.description }}</p>
 		            	       </formrow>
 		            	     </div>
                               

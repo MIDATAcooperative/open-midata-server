@@ -41,6 +41,8 @@ POST    /api/common/password/set                         controllers.Application
 
 POST    /api/members/news/add                            controllers.News.add()
 POST    /api/members/news/get                            controllers.News.get()
+OPTIONS /v1/news/get                                     controllers.PluginsAPI.checkPreflight()
+POST    /v1/news/get                                     controllers.News.getPublic()
 POST    /api/admin/news/update                           controllers.News.update()
 POST    /api/admin/news/delete/:id                       controllers.News.delete(id: String)
 
@@ -88,6 +90,10 @@ PUT     /api/developers/plugins/:appId                   controllers.Market.upda
 DELETE  /api/developers/plugins/:appId            	     controllers.Market.deletePluginDeveloper(appId: String)
 GET     /api/developers/plugins/:appId/stats             controllers.Market.getPluginStats(appId: String)
 DELETE  /api/developers/plugins/:appId/stats             controllers.Market.deletePluginStats(appId: String)
+GET     /api/shared/links/:type/:id                      controllers.Market.getStudyAppLinks(type: String, id:String)
+POST    /api/shared/links                                controllers.Market.insertStudyAppLink()
+POST    /api/shared/links/:id                            controllers.Market.validateStudyAppLink(id: String)
+DELETE  /api/shared/links/:id                            controllers.Market.deleteStudyAppLink(id: String)
 
 PUT     /api/admins/plugins/:appId            	         controllers.Market.updatePluginStatus(appId: String)
 DELETE  /api/admins/plugins/:appId            	         controllers.Market.deletePlugin(appId: String)
@@ -225,11 +231,13 @@ POST    /api/apps/:id/access/oauth1     controllers.Plugins.requestAccessTokenOA
 # Visualizations
 POST    /api/plugins                    controllers.Plugins.get()
 POST    /api/plugins/info               controllers.Plugins.getInfo()
+POST    /api/plugins/autoinstall        controllers.Plugins.addMissingPlugins()
 PUT     /api/plugins/:id                controllers.Plugins.install(id: String)
 DELETE  /api/plugins/:id                controllers.Plugins.uninstall(id: String)
 GET     /api/plugins/:id/installed      controllers.Plugins.isInstalled(id: String)
 GET     /api/plugins/:id/authorized     controllers.Plugins.isAuthorized(id: String)
 GET     /api/plugins/:id/url            controllers.Plugins.getUrl(id: String)
+
 
 #Portal
 GET     /api/portal/config              controllers.PortalConfig.getConfig()

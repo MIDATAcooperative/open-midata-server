@@ -711,7 +711,9 @@
 	"request_participation_btn" : "Request Participation",
 	"do_not_participate_btn" : "Do not participate",
 	"retreat_btn" : "Retreat from participation",
-	"status" : "Status"
+	"status" : "Status",
+	"recommended_apps" : "Recommended Apps",
+	"use_app" : "Use now"
   },
 
   "user" : {
@@ -918,7 +920,11 @@
     "shares_group" : "Group: {{ group }}",
     "shares_format" : "Format: {{ format }}",
     "shares_content" : "Content: {{ content }}",
-    "confirm_study" : "I accept the terms of use of the application and to participate in the study"
+    "confirm_study" : "I accept the terms of use of the application and to participate in the study",
+    "confirm_study_opt" : "I accept to participate in the study",
+    "confirm_citizen_science" : "I accept to participate in the citizen science project",
+    "confirm_community" : "I accept the terms of use of the application and community services",
+    "confirm_community_opt" : "I accept to share data with the community service"
   },
 
   "dashboard" : {
@@ -1133,6 +1139,8 @@
   "accountwipe" : {
     "title" : "Close and Delete MIDATA Account",
     "hello" : "Dear {{name}},",
+    "hello_m" : "Dear {{name}},",
+    "hello_w" : "Dear {{name}},",
     "paragraph1" : "You would like to delete your MIDATA account irrevocably? That is of course possible.",
     "paragraph2" : "Please read the following information first:",
     "point1" : "If you delete your MIDATA account your personal data will no longer be available.",
@@ -1207,6 +1215,11 @@
       "Practitioner" : "Practitioner Resource: search for health providers or researchers",
       "Subscription" : "Access and manage subscriptions to external systems"
     }
+  },
+  
+  "timeline" : {
+    "spaces" : "Midata",
+    "title" : "Timeline"
   },
   
   "-1" : "unknown"

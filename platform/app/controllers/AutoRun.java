@@ -203,9 +203,9 @@ public class AutoRun extends APIController {
 			    	final String nodepath = InstanceConfig.getInstance().getConfig().getString("node.path");
 					final String visPath = InstanceConfig.getInstance().getConfig().getString("visualizations.path");
 							    	
-			    	final Plugin plugin = Plugin.getById(space.visualization, Sets.create("type", "filename", "name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret", "tokenExchangeParams"));
-					SpaceToken token = new SpaceToken(request.handle, space._id, space.owner, null, null, autorunner);
+			    	final Plugin plugin = Plugin.getById(space.visualization, Sets.create("type", "filename", "name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret", "tokenExchangeParams"));					
 					User tuser = User.getById(space.owner, Sets.create("language", "role"));					
+					SpaceToken token = new SpaceToken(request.handle, space._id, space.owner, tuser.role, null, null, autorunner);
 					final String lang = tuser.language != null ? tuser.language : InstanceConfig.getInstance().getDefaultLanguage();
 					final String tokenstr = token.encrypt();
 					final String owner = space.owner.toString();

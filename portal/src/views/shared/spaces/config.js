@@ -10,11 +10,11 @@ angular.module('portal')
 	      templateUrl: 'views/shared/spaces/spaces.html' 
 	    })
 	    .state('research.spaces', {
-	      url: '/spaces/:spaceId?url&params&user',
+	      url: '/spaces/:spaceId?url&params&user&study',
 	      templateUrl: 'views/shared/spaces/spaces.html' 
 	    })
 	    .state('research.study.spaces', {
-	      url: '/spaces/:spaceId?url&params&user',
+	      url: '/spaces/:spaceId?url&params&user&study',
 	      templateUrl: 'views/shared/spaces/spaces.html' 
 	    })
 	     .state('provider.spaces', {

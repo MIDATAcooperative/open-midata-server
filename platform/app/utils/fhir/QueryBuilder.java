@@ -17,6 +17,7 @@ import ca.uhn.fhir.rest.api.SortOrderEnum;
 import ca.uhn.fhir.rest.api.SummaryEnum;
 import ca.uhn.fhir.rest.param.CompositeParam;
 import ca.uhn.fhir.rest.param.DateParam;
+import ca.uhn.fhir.rest.param.NumberParam;
 import ca.uhn.fhir.rest.param.ParamPrefixEnum;
 import ca.uhn.fhir.rest.param.QuantityParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
@@ -62,6 +63,7 @@ public class QueryBuilder {
 	
 	public final static String TYPE_BOOLEAN = "boolean";
 	public final static String TYPE_STRING = "string";
+	public final static String TYPE_INTEGER = "integer";
 	public final static String TYPE_MARKDOWN = "string";
 	public final static String TYPE_URI = "uri";
 	
@@ -272,6 +274,8 @@ public class QueryBuilder {
 			return p+"Quantity.value|"+p+"Range.low.value";
 		} else if (t.equals(TYPE_RANGE)) {
 			return p+".low.value";
+		} else if (t.equals(TYPE_INTEGER)) {
+			return p;
 		} else if (t.equals(TYPE_URI)) {
 			return p;
 		} else return "null";
@@ -606,6 +610,41 @@ public class QueryBuilder {
 				} else if (qualifier == UriParamQualifierEnum.BELOW) {
 				  bld.addEq(path, uri, CompareCaseInsensitiveOperator.STARTSWITH); // should be case sensitive
 				} else throw new NotImplementedOperationException("ABOVE modifier not implemented.");
+			} else if (param instanceof NumberParam) {
+				NumberParam numberParam = (NumberParam) param;
+				
+				BigDecimal number = numberParam.getValue();
+				
+				ParamPrefixEnum prefix = numberParam.getPrefix();
+				if (prefix == null) prefix = ParamPrefixEnum.EQUAL;				
+				BigDecimal val = numberParam.getValue();               
+                
+                String lPath = path;
+				String hPath = path;
+				boolean simple = true;
+				
+			    switch (prefix) {
+				case GREATERTHAN: bld.addComp(hPath, CompareOperator.GT, val.doubleValue(), true);break;
+				case LESSTHAN: bld.addComp(lPath,CompareOperator.LT, val.doubleValue(), true);break;
+				case GREATERTHAN_OR_EQUALS:														
+					bld.addCompOr(lPath, CompareOperator.GE, val.doubleValue(), true);
+					if (!simple) bld.addCompOr(hPath, CompareOperator.GE, val.doubleValue(), true);					
+					break;
+				case LESSTHAN_OR_EQUALS:									
+					bld.addCompOr(lPath, CompareOperator.LE, val.doubleValue(), true);
+					if (!simple) bld.addCompOr(hPath, CompareOperator.LE, val.doubleValue(), true);										
+					break;			
+				case EQUAL:					
+					bld.addComp(lPath, CompareOperator.GE, val.doubleValue(), false);
+                    bld.addComp(hPath, CompareOperator.LE, val.doubleValue(), false);					
+					break;
+				case NOT_EQUAL:					
+					bld.addCompOr(lPath, CompareOperator.LT, val.doubleValue(), true);
+					bld.addCompOr(hPath, CompareOperator.GT, val.doubleValue(), true);
+					break;
+				default:throw new NullPointerException();
+				}			    			   
+                
 			}
 	}
 	
@@ -795,10 +834,17 @@ public class QueryBuilder {
 	 * @param path path of CodeableConcept in FHIR record 
 	 */
 	public void recordCodeRestriction(String name, String path) throws AppException {
-		Set<String> codes = tokensToCodeSystemStrings(name);
+		Set<String> codes = tokensToCodeSystemStrings(name);		
 		if (codes != null) {
 			boolean allMidata = true;
-			for (String code : codes) if (!code.startsWith("http://midata.coop/codesystems/content ")) allMidata = false;
+			
+			for (String code : codes) {				
+				if (!code.startsWith("http://midata.coop/codesystems/content ")) allMidata = false;
+				if (code.startsWith("urn:")) {
+					restriction(name, false, TYPE_CODEABLE_CONCEPT, path);
+					return;
+				}
+			}			
 			if (!allMidata) {
 			    query.putAccount("code", codes);			
 			    restriction(name, false, TYPE_CODEABLE_CONCEPT, path);

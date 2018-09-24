@@ -340,7 +340,7 @@ public class Studies extends APIController {
 		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, requirements);
 		if (notok != null && !notok.isEmpty()) requireUserFeature(notok.iterator().next());
 		
-		requestParticipation(new ExecutionInfo(userId), userId, studyId, null, JoinMethod.PORTAL);		
+		requestParticipation(new ExecutionInfo(userId, getRole()), userId, studyId, null, JoinMethod.PORTAL);		
 		return ok();
 	}
 	

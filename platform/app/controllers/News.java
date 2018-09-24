@@ -10,6 +10,7 @@ import java.util.Set;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import actions.APICall;
+import actions.VisualizationCall;
 import models.MidataId;
 import models.NewsItem;
 import play.libs.Json;
@@ -44,6 +45,38 @@ public class News extends Controller {
 		
 		// get news items
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+		
+		if (properties.containsKey("from") && properties.containsKey("to")) {
+			properties.put("created", CMaps.map("$gte", JsonValidation.getDate(json.get("properties"), "from")).map("$lt", JsonValidation.getDate(json.get("properties"), "to")));
+			properties.remove("from");
+			properties.remove("to");
+		}
+		ObjectIdConversion.convertMidataIds(properties, "_id", "creator", "studyId");
+		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
+		List<NewsItem> newsItems;
+		
+		newsItems = new ArrayList<NewsItem>(NewsItem.getAll(properties, fields));
+		
+		Collections.sort(newsItems);
+		return ok(Json.toJson(newsItems));
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)	
+	@VisualizationCall
+	public static Result getPublic() throws JsonValidationException, InternalServerException {
+		// validate json
+		JsonNode json = request().body().asJson();
+		
+		JsonValidation.validate(json, "properties", "fields");
+		
+		// get news items
+		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+		
+		if (properties.containsKey("from") && properties.containsKey("to")) {
+			properties.put("created", CMaps.map("$gte", JsonValidation.getDate(json.get("properties"), "from")).map("$lt", JsonValidation.getDate(json.get("properties"), "to")));
+			properties.remove("from");
+			properties.remove("to");
+		}
 		ObjectIdConversion.convertMidataIds(properties, "_id", "creator", "studyId");
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 		List<NewsItem> newsItems;

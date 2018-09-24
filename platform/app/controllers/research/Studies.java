@@ -31,6 +31,7 @@ import akka.stream.javadsl.Source;
 import akka.util.ByteString;
 import controllers.APIController;
 import controllers.Circles;
+import controllers.Market;
 import controllers.MobileAPI;
 import controllers.Spaces;
 import controllers.members.HealthProvider;
@@ -270,7 +271,7 @@ public class Studies extends APIController {
 			output = new OutputStreamWriter(zos);
 
 			Set<String> fields = Sets.create("owner", "ownerName", "app", "creator", "created", "name", "format", "content", "description", "data");
-			List<Record> allRecords = RecordManager.instance.list(executorId, executorId, CMaps.map("study", study._id).map("study-group", group.name), fields);
+			List<Record> allRecords = RecordManager.instance.list(executorId, UserRole.RESEARCH, executorId, CMaps.map("study", study._id).map("study-group", group.name), fields);
 
 			output.append(JsonOutput.toJson(allRecords, "Record", fields));
 
@@ -301,7 +302,7 @@ public class Studies extends APIController {
 		final MidataId studyid = new MidataId(id);
 		MidataId owner = PortalSessionToken.session().getOrg();
 		final MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-
+        final UserRole role = getRole();
 		final Study study = Study.getById(studyid, Sets.create("name", "executionStatus", "participantSearchStatus", "validationStatus", "owner", "groups", "createdBy", "code"));
 
 		if (study == null)
@@ -327,7 +328,7 @@ public class Studies extends APIController {
 		StringBuffer out = new StringBuffer();
 
 		KeyManager.instance.continueSession(handle);
-		ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId));
+		ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId, role));
 		out.append("{ \"resourceType\" : \"Bundle\", \"type\" : \"searchset\", \"entry\" : [ ");
 
 		boolean first = true;
@@ -353,7 +354,7 @@ public class Studies extends APIController {
 			@Override
 			public Iterator<ByteString> create() throws Exception {
 				KeyManager.instance.continueSession(handle);
-				ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId));
+				ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId, role));
 				DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, executorId, CMaps.map("export", mode).map("study", study._id).map("study-group", studyGroup).mapNotEmpty("shared-after",  startDate).mapNotEmpty("updated-before", endDate),
 						RecordManager.COMPLETE_DATA);
 				return new RecIterator(allRecords);
@@ -381,7 +382,7 @@ public class Studies extends APIController {
 					try {
 						StringBuffer out = new StringBuffer();
 						KeyManager.instance.continueSession(handle);
-						ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId));
+						ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId, role));
 						Record rec = it.next();
 						String format = rec.format.startsWith("fhir/") ? rec.format.substring("fhir/".length()) : "Basic";
 
@@ -722,7 +723,7 @@ public class Studies extends APIController {
 		String code = study.code;
 
 		AccessLog.log("send admin notification mail (study): " + code);
-		Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), "Admin", "Study to Validate", studynotify.render(site, name, code).toString());
+		Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), "Midata Admin", "Study to Validate", studynotify.render(site, name, code).toString());
 
 	}
 
@@ -915,6 +916,7 @@ public class Studies extends APIController {
 
 		// study.addHistory(new History(EventType.STUDY_STARTED, user, null));
 		study.setExecutionStatus(StudyExecutionStatus.RUNNING);
+		Market.updateActiveStatus(study);
 		AuditManager.instance.success();
 
 		return ok();
@@ -957,6 +959,9 @@ public class Studies extends APIController {
 		closeStudy(userId, study);
 		// study.addHistory(new History(EventType.STUDY_FINISHED, user, null));
 		study.setExecutionStatus(StudyExecutionStatus.FINISHED);
+		
+		Market.updateActiveStatus(study);
+		
 		AuditManager.instance.success();
 
 		return ok();
@@ -1015,6 +1020,8 @@ public class Studies extends APIController {
 
 		// study.addHistory(new History(EventType.STUDY_ABORTED, user, null));
 		study.setExecutionStatus(StudyExecutionStatus.ABORTED);
+		
+		Market.updateActiveStatus(study);
 
 		AuditManager.instance.success();
 		return ok();
@@ -1261,7 +1268,7 @@ public class Studies extends APIController {
 			JsonValidation.validate(json, "device");
 			String device = JsonValidation.getString(json, "device");
 
-			MobileAppInstance appInstance = MobileAPI.installApp(userId, plugin._id, researcher, device, false, false);
+			MobileAppInstance appInstance = MobileAPI.installApp(userId, plugin._id, researcher, device, false, Collections.emptySet());
 			Map<String, Object> query = appInstance.sharingQuery;
 			query.put("study", studyId.toString());
 			if (restrictRead && group != null)
@@ -1475,7 +1482,7 @@ public class Studies extends APIController {
 		ReferenceTool.resolveOwners(Collections.singleton(participation), true);
 
 		if (participation.status.equals(ConsentStatus.ACTIVE) || participation.status.equals(ConsentStatus.FROZEN)) {
-			Collection<RecordsInfo> stats = RecordManager.instance.info(userId, participation._id, RecordManager.instance.createContextFromConsent(userId, participation), CMaps.map(),
+			Collection<RecordsInfo> stats = RecordManager.instance.info(userId, UserRole.RESEARCH, participation._id, RecordManager.instance.createContextFromConsent(userId, participation), CMaps.map(),
 					AggregationType.ALL);
 			if (!stats.isEmpty())
 				participation.records = stats.iterator().next().count;

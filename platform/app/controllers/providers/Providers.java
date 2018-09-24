@@ -263,7 +263,7 @@ public class Providers extends APIController {
 		//MemberKey memberKey = MemberKey.getByIdAndOwner(consentId, memberId, Sets.create());
 
 		// create encrypted authToken
-		SpaceToken spaceToken = new SpaceToken(PortalSessionToken.session().handle, consentId, userId);
+		SpaceToken spaceToken = new SpaceToken(PortalSessionToken.session().handle, consentId, userId, getRole());
 		return ok(spaceToken.encrypt(request()));
 	}
 	

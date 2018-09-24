@@ -64,12 +64,12 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	public T getResourceById(@IdParam IIdType theId) throws AppException {
 		Record record;
 		if (theId.hasVersionIdPart()) {
-			List<Record> result = RecordManager.instance.list(info().executorId, info().context, CMaps.map("_id", new MidataId(theId.getIdPart())).map("version", theId.getVersionIdPart()), RecordManager.COMPLETE_DATA);
+			List<Record> result = RecordManager.instance.list(info().executorId, info().role, info().context, CMaps.map("_id", new MidataId(theId.getIdPart())).map("version", theId.getVersionIdPart()), RecordManager.COMPLETE_DATA);
 			record = result.isEmpty() ? null : result.get(0);
 		} else {
-		    record = RecordManager.instance.fetch(info().executorId, info().targetAPS, new MidataId(theId.getIdPart()));
+		    record = RecordManager.instance.fetch(info().executorId, info().role, info().targetAPS, new MidataId(theId.getIdPart()));
 		}
-		if (record == null) throw new ResourceNotFoundException(theId);					
+		if (record == null || record.data == null || !record.data.containsField("resourceType")) throw new ResourceNotFoundException(theId);					
 		IParser parser = ctx().newJsonParser();
 		T p = parser.parseResource(getResourceType(), record.data.toString());
 		processResource(record, p);		
@@ -78,12 +78,13 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	
 	@History()
 	public List<T> getHistory(@IdParam IIdType theId) throws AppException {
-	   List<Record> records = RecordManager.instance.list(info().executorId, info().context, CMaps.map("_id", new MidataId(theId.getIdPart())).map("history", true).map("sort","lastUpdated desc"), RecordManager.COMPLETE_DATA);
+	   List<Record> records = RecordManager.instance.list(info().executorId, info().role, info().context, CMaps.map("_id", new MidataId(theId.getIdPart())).map("history", true).map("sort","lastUpdated desc"), RecordManager.COMPLETE_DATA);
 	   if (records.isEmpty()) throw new ResourceNotFoundException(theId); 
 	   
 	   List<T> result = new ArrayList<T>(records.size());
 	   IParser parser = ctx().newJsonParser();
-	   for (Record record : records) {		   
+	   for (Record record : records) {	
+		    if (record.data == null || !record.data.containsField("resourceType")) continue;
 			T p = parser.parseResource(getResourceType(), record.data.toString());
 			processResource(record, p);
 			result.add(p);
@@ -95,6 +96,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	@Override
 	public void createPrepare(Record record, T theResource) throws AppException {		
 		prepare(record, theResource);
+		prepareTags(record, theResource);
 	}
 	
 	@Override
@@ -105,6 +107,23 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	@Override
 	public void updatePrepare(Record record, T theResource) throws AppException {		
 		prepare(record, theResource);	
+		prepareTags(record, theResource);
+	}
+	
+	public void prepareTags(Record record, T theResource) throws AppException {
+		boolean tagFound = false;
+		if (theResource.getMeta().hasSecurity()) {
+			List<Coding> codes = theResource.getMeta().getSecurity();
+			for (Coding c : codes) {
+				if (c.getSystem().equals("http://terminology.hl7.org/CodeSystem/v3-ActCode") && c.getCode().equals("PHY")) tagFound = true;
+			}
+		}
+		if (tagFound) {
+			if (record.tags == null) record.tags = new HashSet<String>();
+			record.tags.add("security:hidden");
+		} else {
+			if (record.tags != null) record.tags.remove("security:hidden");
+		}
 	}
 	
 	@Override
@@ -153,7 +172,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 			if (theId.getIdPart() == null || theId.getIdPart().length() == 0) throw new UnprocessableEntityException("id local part missing");
 			if (!isLocalId(theId)) throw new UnprocessableEntityException("id is not local resource");
 			
-			Record record = RecordManager.instance.fetch(info().executorId, info().targetAPS, new MidataId(theId.getIdPart()));
+			Record record = RecordManager.instance.fetch(info().executorId, info().role, info().targetAPS, new MidataId(theId.getIdPart()));
 			
 			if (record == null) throw new ResourceNotFoundException("Resource "+theId.getIdPart()+" not found."); 
 			if (!record.format.equals("fhir/"+theId.getResourceType())) throw new ResourceNotFoundException("Resource "+theId.getIdPart()+" has wrong resource type."); 

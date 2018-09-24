@@ -24,8 +24,11 @@ import models.Member;
 import models.MidataId;
 import models.Plugin;
 import models.Space;
+import models.StudyAppLink;
+import models.StudyParticipation;
 import models.User;
 import models.enums.PluginStatus;
+import models.enums.StudyAppLinkType;
 import models.enums.UserRole;
 import play.libs.Json;
 import play.libs.oauth.OAuth;
@@ -122,7 +125,7 @@ public class Plugins extends APIController {
 		if (!properties.containsKey("status")) {
 			properties.put("status", EnumSet.of(PluginStatus.DEVELOPMENT, PluginStatus.BETA, PluginStatus.ACTIVE, PluginStatus.DEPRECATED));
 		}
-		ObjectIdConversion.convertMidataIds(properties, "_id", "creator", "recommendedPlugins", "linkedStudy");
+		ObjectIdConversion.convertMidataIds(properties, "_id", "creator", "recommendedPlugins");
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 
 		Rights.chk("Plugins.get", getRole(), properties, fields);
@@ -141,7 +144,7 @@ public class Plugins extends APIController {
 
 		String name = JsonValidation.getString(json, "name");
 
-		Set<String> fields = Sets.create("name", "description", "i18n", "defaultQuery", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "termsOfUse", "requirements",
+		Set<String> fields = Sets.create("name", "description", "i18n", "defaultQuery", "resharesData", "allowsUserSearch", "termsOfUse", "requirements",
 				"orgName", "unlockCode", "targetUserRole", "icons", "filename");
 		Plugin plugin = Plugin.get(CMaps.map("filename", name).map("type", "mobile"), fields);
 		if (plugin != null && plugin.unlockCode != null)
@@ -173,17 +176,32 @@ public class Plugins extends APIController {
 			visualization = Plugin.getByFilename(visualizationIdString, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator", "status"));
 		}
 
+		if (visualization == null)
+			throw new BadRequestException("error.unknown.plugin", "Unknown Plugin");
+		
 		String spaceName = JsonValidation.getString(json, "spaceName");
-		boolean applyRules = JsonValidation.getBoolean(json, "applyRules");
-		// boolean createSpace = JsonValidation.getBoolean(json, "createSpace");
-
+		
+		String context = json.has("context") ? JsonValidation.getString(json, "context") : visualization.defaultSpaceContext;
+		MidataId study = json.has("study") ? JsonValidation.getMidataId(json, "study") : null;
+		
+        Space space = install(userId, visualization, context, spaceName, study);
+        
+        if (space != null) {
+		   return ok(JsonOutput.toJson(space, "Space", Space.ALL)).as("application/json");
+        }
+		
+		return ok();
+	}
+	
+	public static Space install(MidataId userId, Plugin visualization, String context, String spaceName, MidataId study) throws AppException {
+		
+							
 		if (visualization == null)
 			throw new BadRequestException("error.unknown.plugin", "Unknown Plugin");
 		if (visualization.status == PluginStatus.DELETED)
 			throw new BadRequestException("error.unknown.plugin", "Unknown Plugin");
-		visualizationId = visualization._id;
-
-		String context = json.has("context") ? JsonValidation.getString(json, "context") : visualization.defaultSpaceContext;
+		MidataId visualizationId = visualization._id;
+		
 		if (context == null)
 			context = "me";
 		if (context.equals("me") && visualization.defaultSpaceContext != null && visualization.defaultSpaceContext.length() > 0)
@@ -220,33 +238,27 @@ public class Plugins extends APIController {
 			Space space = null;
 			space = Spaces.add(userId, spaceName, visualizationId, visualization.type, context);
 
-			if (applyRules && space != null) {
-
-				if (json.has("query")) {
-					Map<String, Object> query = JsonExtraction.extractMap(json.get("query"));
+			if (space != null) {							
+				if (study != null) {
+					Map<String, Object> query = new HashMap<String, Object>(visualization.defaultQuery);
+					query.put("link-study", study.toString());
+					query.put("study", study.toString());
 					RecordManager.instance.shareByQuery(userId, userId, space._id, query);
 				} else {
-					MidataId study = json.has("study") ? JsonValidation.getMidataId(json, "study") : null;
-					if (study != null) {
-						Map<String, Object> query = new HashMap<String, Object>(visualization.defaultQuery);
-						query.put("link-study", study.toString());
-						query.put("study", study.toString());
-						RecordManager.instance.shareByQuery(userId, userId, space._id, query);
-					} else {
-						RecordManager.instance.shareByQuery(userId, userId, space._id, visualization.defaultQuery);
-					}
-
+					RecordManager.instance.shareByQuery(userId, userId, space._id, visualization.defaultQuery);
 				}
+				
 			}
 
-			if (json.has("config")) {
+			/*if (json.has("config")) {
 				Map<String, Object> config = JsonExtraction.extractMap(json.get("config"));
 				RecordManager.instance.setMeta(userId, space._id, "_config", config);
-			}
-			return ok(JsonOutput.toJson(space, "Space", Space.ALL)).as("application/json");
+			}*/
+			
+			return space;
 		}
 
-		return ok();
+		return null;
 	}
 
 	/**
@@ -662,5 +674,50 @@ public class Plugins extends APIController {
 		 * Promise.promise(new Function0<Result>() { public Result apply() {
 		 * return internalServerError(e.getMessage()); } }); }
 		 */
+	}
+	
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public static Result addMissingPlugins() throws AppException {
+		
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));				
+		addMissingPlugins(userId, getRole());				
+		return ok();
+		
+	}
+		
+	public static void addMissingPlugins(MidataId userId, UserRole role) throws AppException {
+							
+		if (role.equals(UserRole.MEMBER)) {
+			AccessLog.log("Looking for plugins to add...");
+			Set<StudyParticipation> parts = StudyParticipation.getAllActiveByMember(userId, Sets.create("study"));
+			
+			if (!parts.isEmpty()) {
+				Set<MidataId> apps = new HashSet<MidataId>();
+				for (StudyParticipation part : parts) {
+					Set<StudyAppLink> links = StudyAppLink.getByStudy(part.study);
+					for (StudyAppLink link : links) {
+						if (link.isConfirmed() && link.active && link.type.contains(StudyAppLinkType.AUTOADD_A)) {
+							apps.add(link.appId);
+						}
+					}
+				}
+				
+				if (!apps.isEmpty()) {
+					for (MidataId appId : apps) {
+					  AccessLog.log("Possible plugins to add: "+appId.toString());
+					  Set<Space> spaces = Space.getByOwnerVisualization(userId, appId, Sets.create("context"));
+					  if (spaces.isEmpty()) {
+						  Plugin visualization = Plugin.getById(appId, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator", "status"));
+						  AccessLog.log("add plugins: "+appId.toString());
+						  install(userId, visualization, null, null, null);
+					  }
+					} 
+					 
+				}
+				
+			}
+		}				
+		
 	}
 }

@@ -7,12 +7,15 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import actions.APICall;
 import models.Member;
+import models.MidataId;
 import models.MobileAppInstance;
 import models.Plugin;
 import models.Study;
+import models.StudyAppLink;
 import models.enums.AuditEventType;
 import models.enums.Gender;
 import models.enums.JoinMethod;
+import models.enums.StudyAppLinkType;
 import models.enums.SubUserRole;
 import models.enums.UserFeature;
 import models.enums.UserRole;
@@ -24,6 +27,7 @@ import utils.audit.AuditManager;
 import utils.auth.ExecutionInfo;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
+import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 
@@ -45,7 +49,7 @@ public class QuickRegistration extends APIController {
 		String appName = JsonValidation.getString(json, "app");
 		String studyName = null;
 		Study study = null;
-		boolean confirmStudy =  JsonValidation.getBoolean(json, "confirmStudy");
+		Set<MidataId> confirmStudy =  JsonExtraction.extractMidataIdSet(json.get("confirmStudy"));
 		
 		if (json.has("study")) { studyName = JsonValidation.getString(json, "study"); }
 						
@@ -60,14 +64,20 @@ public class QuickRegistration extends APIController {
 		Set<UserFeature> requirements = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(UserRole.MEMBER);
 		if (app.requirements != null) requirements.addAll(app.requirements);
 		
-		if (app.linkedStudy != null && app.mustParticipateInStudy && !confirmStudy) {
-			throw new JsonValidationException("error.missing.study_accept", "confirmStudy", "mustaccept", "Study belonging to app must be accepted.");
+		Set<StudyAppLink> links = StudyAppLink.getByApp(app._id);
+		for (StudyAppLink sal : links) {
+			if (sal.isConfirmed() && sal.active && (sal.type.contains(StudyAppLinkType.OFFER_P) || sal.type.contains(StudyAppLinkType.REQUIRE_P))) {
+				if (sal.type.contains(StudyAppLinkType.REQUIRE_P) && sal.type.contains(StudyAppLinkType.OFFER_P) && !confirmStudy.contains(sal.studyId)) {
+					throw new JsonValidationException("error.missing.study_accept", "confirmStudy", "mustaccept", "Study belonging to app must be accepted.");
+				}
+				
+				if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || confirmStudy.contains(sal.studyId)) {
+					Set<UserFeature> studyReq = controllers.members.Studies.precheckRequestParticipation(null, sal.studyId);
+					if (studyReq != null) requirements.addAll(studyReq);
+				}
+			}
 		}
-		if (app.linkedStudy != null && confirmStudy) {
-			Set<UserFeature> studyReq = controllers.members.Studies.precheckRequestParticipation(null, app.linkedStudy);
-			if (studyReq != null) requirements.addAll(studyReq);
-		}
-		
+				
 		if (studyName != null) {
 			study = Study.getByCodeFromMember(studyName, Study.ALL);
 						
@@ -148,7 +158,7 @@ public class QuickRegistration extends APIController {
 		
 		if (notok == null || notok.isEmpty()) {
 		
-			if (study != null) controllers.members.Studies.requestParticipation(new ExecutionInfo(user._id), user._id, study._id, user.initialApp, JoinMethod.RESEARCHER);
+			if (study != null) controllers.members.Studies.requestParticipation(new ExecutionInfo(user._id, user.role), user._id, study._id, user.initialApp, JoinMethod.RESEARCHER);
 			
 			if (device != null) {
 			   MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, device, true, confirmStudy);
