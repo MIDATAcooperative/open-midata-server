@@ -31,6 +31,7 @@
         "title" : "Créer une nouvelle étude",
         "title2" : "Modifier la description de l'étude",
         "study_name" : "Nom de l'étude",
+        "study_type" : "Type de recherche",
         "study_description" : "Description de l'étude"
     },
 
@@ -95,8 +96,9 @@
 
     "studyoverview" : {
         "name" : "Nom",
-        "created_at" : "Créé le:",
-        "created_by" : "Créé par:",
+        "type" : "Type de recherche",
+        "created_at" : "Créé le",
+        "created_by" : "Créé par",
         "description" : "Description",
         "code" : "Code",
         "validation_status" : "État de la validation",
@@ -159,6 +161,8 @@
 
     "studyrecords" : {
         "empty" : "Dès quelles sont disponibles, vous pourrez télécharger les données ici.",
+        "startDate" : "Date de début de l'exportation (optionnel)",
+        "endDate" : "Date de fin de l'exportation (optionnel)",
         "group" : "Groupe de données",
         "number_of_records" : "# enregistrements",
         "download_btn" : "Télécharger",
@@ -172,9 +176,9 @@
         "startDate" : "Date de début officielle",
         "endDate" : "Date de fin officielle",
         "dataCreatedBefore" : "Données figées dès le",
-        "sharing_query" : "Data Access Filter (JSON)",
-        "sharing_query_options" : "Data Access Filter (Ajouter)",
-        "sharing_query_selection" : "Data Access Filter (Sélection)",
+        "sharing_query" : "Data Access Filter",
+        "join_methods" : "Procédures de participation autorisées",
+        "queryeditor_btn" : "Modifier",
         "terms_of_use" : "Conditions générales",
         "terms_of_use_hint" : "Si les conditions générales de l'étude doivent être lues et acceptées par l'utilisateur, veuillez envoyer le texte à MIDATA. Nous téléchargerons le texte au bon format et vous fournirons l'ID que vous devez saisir ici.",
         "show_terms" : "Afficher les conditions générales",

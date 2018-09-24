@@ -31,6 +31,7 @@
         "title" : "Crea un nuovo studio",
         "title2" : "Modifica la descrizione dello studio",
         "study_name" : "Nome studio",
+        "study_type" : "Tipo di ricerca",
         "study_description" : "Descrizione studio"
     },
 
@@ -95,8 +96,9 @@
 
     "studyoverview" : {
         "name" : "Nome",
-        "created_at" : "Creato alle:",
-        "created_by" : "Creato da:",
+        "type" : "Tipo di ricerca",
+        "created_at" : "Creato alle",
+        "created_by" : "Creato da",
         "description" : "Descrizione",
         "code" : "Codice",
         "validation_status" : "Stato di convalida",
@@ -159,6 +161,8 @@
 
     "studyrecords" : {
         "empty" : "Una volta disponibili, i dati possono essere scaricati qui.",
+        "startDate" : "Data di inizio dell'esportazione (facoltativa)",
+        "endDate" : "Data di fine dell'esportazione (facoltativa)",
         "group" : "Gruppo di dati",
         "number_of_records" : "# record",
         "download_btn" : "Scarica",
@@ -172,9 +176,9 @@
         "startDate" : "Data di inizio ufficiale",
         "endDate" : "Data di fine ufficiale",
         "dataCreatedBefore" : "Data di congelamento dei dati",
-        "sharing_query" : "Filtro di accesso ai dati (JSON)",
-        "sharing_query_options" : "Filtro di accesso ai dati (Aggiungi)",
-        "sharing_query_selection" : "Filtro di accesso ai dati (Selezione)",
+        "sharing_query" : "Data Access Filter",
+        "join_methods" : "Procedure di partecipazione ammesse",
+        "queryeditor_btn" : "Modifica",
         "terms_of_use" : "Condizioni generali di contratto",
         "terms_of_use_hint" : "Se i Condizioni generali di contratto dello studio devono essere letti e accettati dall'utente, inviare il testo a MIDATA. Caricheremo il testo nel formato corretto e ti forniremo l'ID necessario da inserire qui.",
         "show_terms" : "Mostra Condizioni generali di contratto",
@@ -222,8 +226,8 @@
         "teamsetup_help" : "Se più persone sono coinvolte nello svolgimento dello studio, indicare tutte le persone coinvolte e il loro ruolo. Finché non si aggiungono altre persone, è possibile cambiare il proprio ruolo aggiungendo nuovamente sé stessi con un altro ruolo.",
         "groups" : "Gruppi di partecipanti definiti",
         "groups_help" : "Il tuo studio può avere uno o più gruppi di partecipanti. Definisci l'elenco dei gruppi di partecipanti.",
-        "sharingQuery" : "Filtro di accesso ai dati definito",
-        "sharingQuery_help" : "Il tuo studio deve dichiarare in modo esplicito a quali dati dei partecipanti accederà. Il filtro di accesso ai dati non può essere modificato dopo la convalida dello studio.",
+        "sharingQuery" : "Data Access Filter definito",
+        "sharingQuery_help" : "Il tuo studio deve dichiarare in modo esplicito a quali dati dei partecipanti accederà. Il filtro di accesso ai dati (Data Access Filter) non può essere modificato dopo la convalida dello studio.",
         "dates" : "Date di inizio e fine impostate",
         "dates_help" : "Le date di inizio e fine saranno mostrate ai partecipanti. Nessun dato sarà inserito nello studio dal momento in cui i dati vengono congelati.",
         "terms" : "Condizioni generali di contratto forniti",

@@ -2,13 +2,52 @@
 <xliff version="1.1" xml:lang="en">
     <file source-language="en" target-language="it" datatype="winres" original="shared_it.json">
         <body>
+            <group resname="error" id="error">
+                <group resname="missing" id="error.missing">
+                    <trans-unit resname="access_query" id="error.missing.access_query">
+                        <source>No data selected</source>
+                    </trans-unit>
+                </group>
+            </group>
             <group resname="enum" id="enum">
                 <group resname="eventtype" id="enum.eventtype">
-                    <trans-unit resname="user-password-change-request" id="enum.eventtype.user-password-change-request">
-                        <source>Password change requested</source>
-                    </trans-unit>
                     <trans-unit resname="user-birthday-change" id="enum.eventtype.user-birthday-change">
-                        <source>User's birthday changed</source>
+                        <source>User's birth date changed</source>
+                        <target>Data di nascita dell'utente modificata</target>
+                    </trans-unit>
+                </group>
+                <group resname="studytype" id="enum.studytype">
+                    <trans-unit resname="CLINICAL" id="enum.studytype.CLINICAL">
+                        <source>Clinical Study</source>
+                    </trans-unit>
+                    <trans-unit resname="CITIZENSCIENCE" id="enum.studytype.CITIZENSCIENCE">
+                        <source>Citizen Science Project</source>
+                    </trans-unit>
+                    <trans-unit resname="COMMUNITY" id="enum.studytype.COMMUNITY">
+                        <source>Community (Data use only for providing services back to the participants)</source>
+                    </trans-unit>
+                </group>
+                <group resname="joinmethod" id="enum.joinmethod">
+                    <trans-unit resname="APP" id="enum.joinmethod.APP">
+                        <source>Participant uses linked app or software</source>
+                    </trans-unit>
+                    <trans-unit resname="PORTAL" id="enum.joinmethod.PORTAL">
+                        <source>Participant applies on MIDATA portal</source>
+                    </trans-unit>
+                    <trans-unit resname="RESEARCHER" id="enum.joinmethod.RESEARCHER">
+                        <source>Participant is manually registered by research team member</source>
+                    </trans-unit>
+                    <trans-unit resname="API" id="enum.joinmethod.API">
+                        <source>Participant is registered by external software</source>
+                    </trans-unit>
+                    <trans-unit resname="ALGORITHM" id="enum.joinmethod.ALGORITHM">
+                        <source>Participant has been proposed by algorithm (not supported)</source>
+                    </trans-unit>
+                    <trans-unit resname="CODE" id="enum.joinmethod.CODE">
+                        <source>Participant may join by entering a code (not supported)</source>
+                    </trans-unit>
+                    <trans-unit resname="TRANSFER" id="enum.joinmethod.TRANSFER">
+                        <source>Data is transferred from another study. (not supported)</source>
                     </trans-unit>
                 </group>
                 <group resname="researcherrole" id="enum.researcherrole">
@@ -53,63 +92,48 @@
                 <trans-unit resname="password" id="registration.password">
                     <source>Password</source>
                 </trans-unit>
+                <trans-unit resname="birthday" id="registration.birthday">
+                    <source>Birth date</source>
+                    <target>Data di nascita</target>
+                </trans-unit>
             </group>
             <group resname="login" id="login">
                 <trans-unit resname="password" id="login.password">
                     <source>Password</source>
                 </trans-unit>
-                <trans-unit resname="info1" id="login.info1">
-                    <source>Dear study participant</source>
-                    <target>Caro partecipante allo studio</target>
-                </trans-unit>
-                <trans-unit resname="info2" id="login.info2">
-                    <source>You already have a MIDATA account, log in with your email address and password.</source>
-                    <target>Hai già un account MIDATA, accedi con il tuo indirizzo email e la tua password.</target>
-                </trans-unit>
-                <trans-unit resname="info3" id="login.info3">
-                    <source>Your personal account gives you an overview of your study participation.</source>
-                    <target>Il tuo account personale ti fornisce una panoramica della partecipazione allo studio.</target>
-                </trans-unit>
-                <trans-unit resname="info4" id="login.info4">
-                    <source>Dear visitor</source>
-                    <target>Caro visitatore</target>
-                </trans-unit>
-                <trans-unit resname="info5" id="login.info5">
-                    <source>You do not yet have a MIDATA account and do not participate in a study?</source>
-                    <target>Non hai ancora un account MIDATA e non partecipi ad uno studio?</target>
-                </trans-unit>
-                <trans-unit resname="info6" id="login.info6">
-                    <source>Join the</source>
-                    <target>Partecipa al progetto</target>
-                </trans-unit>
                 <trans-unit resname="info6b" id="login.info6b">
                     <source>Ally Science</source>
-                    <target>Ally Science</target>
-                </trans-unit>
-                <trans-unit resname="info6c" id="login.info6c">
-                    <source>project!</source>
-                    <target>!</target>
                 </trans-unit>
             </group>
             <group resname="changeaddress" id="changeaddress">
                 <trans-unit resname="success" id="changeaddress.success">
-                    <source>Your account information has been updated.</source>
+                    <source>Your profile has been updated.</source>
+                    <target>Il tuo profilo è stato aggiornato.</target>
+                </trans-unit>
+            </group>
+            <group resname="studydetails" id="studydetails">
+                <trans-unit resname="information_demographic" id="studydetails.information_demographic">
+                    <source>Your complete demographic data (name, birth date, address, ...)</source>
+                    <target>I propri dati demografici completi (nome, data di nascita, indirizzo, ...)</target>
                 </trans-unit>
             </group>
             <group resname="user" id="user">
-                <trans-unit resname="wipe_account_btn" id="user.wipe_account_btn">
-                    <source>Delete Account</source>
+                <trans-unit resname="birthday" id="user.birthday">
+                    <source>Birth date:</source>
+                    <target>Data di nascita:</target>
+                </trans-unit>
+                <trans-unit resname="midataID" id="user.midataID">
+                    <source>MIDATA ID:</source>
+                    <target>MIDATA ID:</target>
+                </trans-unit>
+                <trans-unit resname="change_address_btn" id="user.change_address_btn">
+                    <source>Change Profile</source>
+                    <target>Modifica indirizzo</target>
                 </trans-unit>
             </group>
             <group resname="records" id="records">
                 <trans-unit resname="just_name" id="records.just_name">
                     <source>{{name}}</source>
-                </trans-unit>
-            </group>
-            <group resname="oauth2" id="oauth2">
-                <trans-unit resname="sign_up_btn" id="oauth2.sign_up_btn">
-                    <source>Sign up</source>
-                    <target>Iscriviti</target>
                 </trans-unit>
             </group>
             <group resname="dashboard" id="dashboard">
@@ -130,77 +154,197 @@
                     <source>Account</source>
                 </trans-unit>
             </group>
+            <group resname="changeemail" id="changeemail">
+                <trans-unit resname="midataId" id="changeemail.midataId">
+                    <source>MIDATA ID</source>
+                </trans-unit>
+            </group>
             <group resname="accountwipe" id="accountwipe">
-                <trans-unit resname="title" id="accountwipe.title">
-                    <source>Close and Delete MIDATA Account</source>
-                </trans-unit>
-                <trans-unit resname="hello" id="accountwipe.hello">
-                    <source>Dear {{name}},</source>
-                </trans-unit>
-                <trans-unit resname="paragraph1" id="accountwipe.paragraph1">
-                    <source>You would like to delete your MIDATA account irrevocably? That is of course possible.</source>
-                </trans-unit>
-                <trans-unit resname="paragraph2" id="accountwipe.paragraph2">
-                    <source>Please read the following information first:</source>
-                </trans-unit>
-                <trans-unit resname="point1" id="accountwipe.point1">
-                    <source>If you delete your MIDATA account your personal data will no longer be available.</source>
-                </trans-unit>
                 <trans-unit resname="point2" id="accountwipe.point2">
-                    <source>Data already shared for research will remain available to the studies it has been shared to up to the time of account deletion. No new data will be shared.</source>
-                </trans-unit>
-                <trans-unit resname="point3" id="accountwipe.point3">
-                    <source>MIDATA is not able to recover your deleted account.</source>
-                </trans-unit>
-                <trans-unit resname="warning" id="accountwipe.warning">
-                    <source>Warning</source>
-                </trans-unit>
-                <trans-unit resname="final" id="accountwipe.final">
-                    <source>This action cannot be undone.</source>
-                </trans-unit>
-                <trans-unit resname="paragraph3" id="accountwipe.paragraph3">
-                    <source>If you really want to delete your MIDATA account enter your password for confirmation.</source>
+                    <source>Data already included in studies will continue to be available in the study.</source>
+                    <target>I dati già inclusi negli studi continueranno ad essere disponibili nello studio.</target>
                 </trans-unit>
                 <trans-unit resname="password" id="accountwipe.password">
                     <source>Password</source>
                 </trans-unit>
-                <trans-unit resname="reason" id="accountwipe.reason">
-                    <source>Reason (optional)</source>
-                </trans-unit>
                 <trans-unit resname="reason2" id="accountwipe.reason2">
-                    <source>Please tell us why you want to delete your account. We are continously trying to improve the service.</source>
-                </trans-unit>
-                <trans-unit resname="wipe_btn" id="accountwipe.wipe_btn">
-                    <source>Close and Delete MIDATA Account</source>
+                    <source>We would be grateful if you could tell us why you are deleting your account. We are continually trying to improve the MIDATA platform.</source>
+                    <target>Le saremmo grati se volesse comunicarci perché sta cancellando il suo account. Siamo costantemente impegnati a migliorare la piattaforma MIDATA.</target>
                 </trans-unit>
                 <trans-unit resname="error" id="accountwipe.error">
-                    <source>Password not correct. Account not deleted.</source>
+                    <source>Password not correct. The account has not been deleted.</source>
+                    <target>La password non è corretta. L'account non è stato eliminato.</target>
                 </trans-unit>
             </group>
             <group resname="serviceleave" id="serviceleave">
                 <trans-unit resname="title" id="serviceleave.title">
-                    <source>Done with your session?</source>
+                    <source>You finished your session?</source>
+                    <target>Avete terminato la vostra sessione?</target>
                 </trans-unit>
-                <trans-unit resname="thankyou" id="serviceleave.thankyou">
-                    <source>Thank you for your help!</source>
+            </group>
+            <group resname="queryeditor" id="queryeditor">
+                <trans-unit resname="title" id="queryeditor.title">
+                    <source>Access Rights Editor</source>
                 </trans-unit>
-                <trans-unit resname="goodbye_btn" id="serviceleave.goodbye_btn">
-                    <source>End session and close window</source>
+                <trans-unit resname="app" id="queryeditor.app">
+                    <source>Application</source>
                 </trans-unit>
-                <trans-unit resname="logoutreturn" id="serviceleave.logoutreturn">
-                    <source>You will be redirected to the calling page.</source>
+                <trans-unit resname="study" id="queryeditor.study">
+                    <source>Study</source>
                 </trans-unit>
-                <trans-unit resname="return_btn" id="serviceleave.return_btn">
-                    <source>Logout and continue</source>
+                <trans-unit resname="summary" id="queryeditor.summary">
+                    <source>List of accessable data types:</source>
                 </trans-unit>
+                <trans-unit resname="select_btn" id="queryeditor.select_btn">
+                    <source>select</source>
+                </trans-unit>
+                <trans-unit resname="access_query" id="queryeditor.access_query">
+                    <source>Access Query</source>
+                </trans-unit>
+                <trans-unit resname="format" id="queryeditor.format">
+                    <source>Resource</source>
+                </trans-unit>
+                <trans-unit resname="code" id="queryeditor.code">
+                    <source>Code</source>
+                </trans-unit>
+                <trans-unit resname="to" id="queryeditor.to">
+                    <source>to</source>
+                </trans-unit>
+                <trans-unit resname="content" id="queryeditor.content">
+                    <source>Data Type</source>
+                </trans-unit>
+                <trans-unit resname="expert_mode_btn" id="queryeditor.expert_mode_btn">
+                    <source>Expert Mode</source>
+                </trans-unit>
+                <trans-unit resname="add_basic_btn" id="queryeditor.add_basic_btn">
+                    <source>Basic Resources</source>
+                </trans-unit>
+                <trans-unit resname="add_data_btn" id="queryeditor.add_data_btn">
+                    <source>Add More Data Types</source>
+                </trans-unit>
+                <trans-unit resname="owner" id="queryeditor.owner">
+                    <source>Data Owner</source>
+                </trans-unit>
+                <trans-unit resname="owner_all" id="queryeditor.owner_all">
+                    <source>Use also shared data (from studies, friends, patients)</source>
+                </trans-unit>
+                <trans-unit resname="owner_self" id="queryeditor.owner_self">
+                    <source>Only data from the user of the application</source>
+                </trans-unit>
+                <trans-unit resname="short_owner_all" id="queryeditor.short_owner_all">
+                    <source>Also shared data</source>
+                </trans-unit>
+                <trans-unit resname="short_owner_self" id="queryeditor.short_owner_self">
+                    <source>Only own data</source>
+                </trans-unit>
+                <trans-unit resname="source_app" id="queryeditor.source_app">
+                    <source>Source application</source>
+                </trans-unit>
+                <trans-unit resname="short_app_all" id="queryeditor.short_app_all">
+                    <source>All sources</source>
+                </trans-unit>
+                <trans-unit resname="short_app_other" id="queryeditor.short_app_other">
+                    <source>Only app:</source>
+                </trans-unit>
+                <trans-unit resname="app_self" id="queryeditor.app_self">
+                    <source>Use only data from this application</source>
+                </trans-unit>
+                <trans-unit resname="app_all" id="queryeditor.app_all">
+                    <source>Use data from any source application</source>
+                </trans-unit>
+                <trans-unit resname="app_other" id="queryeditor.app_other">
+                    <source>Use data from app:</source>
+                </trans-unit>
+                <trans-unit resname="restrictions" id="queryeditor.restrictions">
+                    <source>Additional Restrictions</source>
+                </trans-unit>
+                <trans-unit resname="data_period_restriction" id="queryeditor.data_period_restriction">
+                    <source>Date</source>
+                </trans-unit>
+                <trans-unit resname="time_restriction" id="queryeditor.time_restriction">
+                    <source>Creation / Update time</source>
+                </trans-unit>
+                <trans-unit resname="created-after" id="queryeditor.created-after">
+                    <source>Created after</source>
+                </trans-unit>
+                <trans-unit resname="updated-after" id="queryeditor.updated-after">
+                    <source>Last updated after</source>
+                </trans-unit>
+                <trans-unit resname="effective" id="queryeditor.effective">
+                    <source>Effective date or period</source>
+                </trans-unit>
+                <trans-unit resname="custom_filter" id="queryeditor.custom_filter">
+                    <source>User Defined Filter (JSON)</source>
+                </trans-unit>
+                <trans-unit resname="remove_btn" id="queryeditor.remove_btn">
+                    <source>Remove</source>
+                </trans-unit>
+                <trans-unit resname="apply_btn" id="queryeditor.apply_btn">
+                    <source>Apply</source>
+                </trans-unit>
+                <trans-unit resname="newentry" id="queryeditor.newentry">
+                    <source>Enter name, code, resource type or (part of) description of data type to add:</source>
+                </trans-unit>
+                <trans-unit resname="make_selection" id="queryeditor.make_selection">
+                    <source>Please select a result from the left to add or only a fragment from the right column.</source>
+                </trans-unit>
+                <trans-unit resname="resultgroup" id="queryeditor.resultgroup">
+                    <source>Match</source>
+                </trans-unit>
+                <trans-unit resname="resultdetail" id="queryeditor.resultdetail">
+                    <source>Contained types or codes</source>
+                </trans-unit>
+                <trans-unit resname="search_empty" id="queryeditor.search_empty">
+                    <source>No matching datatypes found.</source>
+                </trans-unit>
+                <trans-unit resname="select_resources" id="queryeditor.select_resources">
+                    <source>Select which of these frequently required resources your app needs access to:</source>
+                </trans-unit>
+                <trans-unit resname="save_exit_btn" id="queryeditor.save_exit_btn">
+                    <source>Save and exit</source>
+                </trans-unit>
+                <trans-unit resname="cancel_btn" id="queryeditor.cancel_btn">
+                    <source>Cancel</source>
+                </trans-unit>
+                <trans-unit resname="check_okay" id="queryeditor.check_okay">
+                    <source>Is the list of required data now complete and correct?</source>
+                </trans-unit>
+                <group resname="ask" id="queryeditor.ask">
+                    <trans-unit resname="AuditEvent" id="queryeditor.ask.AuditEvent">
+                        <source>Access to the audit event log</source>
+                    </trans-unit>
+                    <trans-unit resname="Consent" id="queryeditor.ask.Consent">
+                        <source>Access to consents of the application user with other users or applications</source>
+                    </trans-unit>
+                    <trans-unit resname="Group" id="queryeditor.ask.Group">
+                        <source>Access to group definitions (either teams of practitioners or researchers or groups defined as part of study results generation)</source>
+                    </trans-unit>
+                    <trans-unit resname="Patient" id="queryeditor.ask.Patient">
+                        <source>Patient Records : Name, email, address of Midata account holders</source>
+                    </trans-unit>
+                    <trans-unit resname="PseudonymizedPatient" id="queryeditor.ask.PseudonymizedPatient">
+                        <source>Patient Records : Pseudonym, year of birth, country of study participants</source>
+                    </trans-unit>
+                    <trans-unit resname="Practitioner" id="queryeditor.ask.Practitioner">
+                        <source>Practitioner Resource : Search for healthcare providers or researchers</source>
+                    </trans-unit>
+                    <trans-unit resname="Subscription" id="queryeditor.ask.Subscription">
+                        <source>Access and manage subscriptions to external systems</source>
+                    </trans-unit>
+                </group>
             </group>
         </body>
     </file>
     <file source-language="en" target-language="it" datatype="winres" original="admins_it.json">
         <body>
             <group resname="admin_address" id="admin_address">
+                <trans-unit resname="title" id="admin_address.title">
+                    <source>Member Profile</source>
+                    <target>Profilo del membro</target>
+                </trans-unit>
                 <trans-unit resname="change_address_btn" id="admin_address.change_address_btn">
-                    <source>Change Address / Birthday</source>
+                    <source>Change Profile</source>
+                    <target>Modifica profilo</target>
                 </trans-unit>
             </group>
             <group resname="admin_plugins" id="admin_plugins">
@@ -209,14 +353,14 @@
                 </trans-unit>
             </group>
             <group resname="admin_study" id="admin_study">
+                <trans-unit resname="joinmethods" id="admin_study.joinmethods">
+                    <source>Join Methods</source>
+                </trans-unit>
                 <trans-unit resname="team" id="admin_study.team">
                     <source>Team</source>
                 </trans-unit>
             </group>
             <group resname="admin_stats" id="admin_stats">
-                <trans-unit resname="what" id="admin_stats.what">
-                    <source></source>
-                </trans-unit>
                 <trans-unit resname="indexPageCount" id="admin_stats.indexPageCount">
                     <source>DB Index Pages</source>
                 </trans-unit>
@@ -230,45 +374,40 @@
                     <source>Sandbox</source>
                 </trans-unit>
             </group>
-            <group resname="appmessages" id="appmessages">
-                <group resname="reasons" id="appmessages.reasons">
-                    <trans-unit resname="PASSWORD_FORGOTTEN" id="appmessages.reasons.PASSWORD_FORGOTTEN">
-                        <source>Password forgotten</source>
-                    </trans-unit>
-                </group>
-            </group>
             <group resname="manageapp" id="manageapp">
+                <trans-unit resname="query_btn" id="manageapp.query_btn">
+                    <source>Change Access Rights</source>
+                </trans-unit>
+                <trans-unit resname="query_help" id="manageapp.query_help">
+                    <source>Define which types of data your application may access</source>
+                </trans-unit>
                 <trans-unit resname="debug_btn" id="manageapp.debug_btn">
                     <source>API Tester Sandbox</source>
                 </trans-unit>
-                <trans-unit resname="logout" id="manageapp.logout">
-                    <source>Disconnect All</source>
-                </trans-unit>
-                <trans-unit resname="pleaseLogout1" id="manageapp.pleaseLogout1">
-                    <source>Logout all users</source>
-                </trans-unit>
-                <trans-unit resname="pleaseLogout2" id="manageapp.pleaseLogout2">
-                    <source>Disconnect from studies</source>
-                </trans-unit>
                 <trans-unit resname="logout_optional" id="manageapp.logout_optional">
-                    <source>[ Not required ]</source>
-                </trans-unit>
-                <trans-unit resname="logout_required" id="manageapp.logout_required">
-                    <source>[ required ]</source>
-                </trans-unit>
-                <trans-unit resname="logout_explain" id="manageapp.logout_explain">
-                    <source>Changes to fields marked with !! will require to log out all users of that application.</source>
+                    <source>[ not required ]</source>
+                    <target>[ non richiesto ]</target>
                 </trans-unit>
                 <group resname="info" id="manageapp.info">
                     <trans-unit resname="no_update_history" id="manageapp.info.no_update_history">
-                        <source>Resource updates done by this application produce no history entries. Use only if application does many and frequent updates.</source>
+                        <source>FHIR resource updates done by this application produce no history entries. Use only if application does many and frequent updates.</source>
+                        <target>Gli aggiornamenti delle risorse FHIR effettuati da questa applicazione non producono voci della cronologia. Utilizzare solo se l'applicazione esegue molti e frequenti aggiornamenti.</target>
                     </trans-unit>
                     <trans-unit resname="redirectUri" id="manageapp.info.redirectUri">
-                        <source>You may specifiy multiple possible redirect URIs by seperating the URIs with a space</source>
+                        <source>You may specifiy multiple possible redirect URIs by separating the URIs with a space.</source>
+                        <target>È possibile specificare più URI possibili per il reindirizzamento separandoli con uno spazio.</target>
                     </trans-unit>
                 </group>
+                <trans-unit resname="access_query_json" id="manageapp.access_query_json">
+                    <source>Data Access Filter</source>
+                    <target>Filtro di accesso ai dati (JSON)</target>
+                </trans-unit>
+                <trans-unit resname="queryeditor_btn" id="manageapp.queryeditor_btn">
+                    <source>Go to access rights editor</source>
+                </trans-unit>
                 <trans-unit resname="no_update_history" id="manageapp.no_update_history">
-                    <source>No Resource History</source>
+                    <source>No FHIR Resource History</source>
+                    <target>No storia risorse FHIR</target>
                 </trans-unit>
             </group>
             <group resname="appdebug" id="appdebug">
@@ -293,6 +432,12 @@
     </file>
     <file source-language="en" target-language="it" datatype="winres" original="members_it.json">
         <body>
+            <group resname="member_login" id="member_login">
+                <trans-unit resname="sign_in" id="member_login.sign_in">
+                    <source>Login</source>
+                    <target>Accesso</target>
+                </trans-unit>
+            </group>
             <group resname="help_welcome" id="help_welcome">
                 <trans-unit resname="menu_config" id="help_welcome.menu_config">
                     <source>Config</source>
@@ -329,21 +474,23 @@
         <body>
             <group resname="researcher_navbar" id="researcher_navbar">
                 <trans-unit resname="organization" id="researcher_navbar.organization">
-                    <source>Organization</source>
+                    <source>Research Organization</source>
+                    <target>Istituto di ricerca</target>
                 </trans-unit>
             </group>
             <group resname="researcher_organization" id="researcher_organization">
                 <trans-unit resname="title" id="researcher_organization.title">
-                    <source>Organization</source>
+                    <source>Research Organization</source>
+                    <target>Istituto di ricerca</target>
                 </trans-unit>
                 <trans-unit resname="name" id="researcher_organization.name">
-                    <source>Org. Name</source>
+                    <source>Name</source>
+                    <target>Nome</target>
                 </trans-unit>
-                <trans-unit resname="description" id="researcher_organization.description">
-                    <source>Description</source>
-                </trans-unit>
-                <trans-unit resname="researchers" id="researcher_organization.researchers">
-                    <source>All researchers of your organization</source>
+            </group>
+            <group resname="createstudy" id="createstudy">
+                <trans-unit resname="study_type" id="createstudy.study_type">
+                    <source>Type of research</source>
                 </trans-unit>
             </group>
             <group resname="studynav" id="studynav">
@@ -352,18 +499,46 @@
                 </trans-unit>
             </group>
             <group resname="studyfields" id="studyfields">
-                <trans-unit resname="pseudonymous1" id="studyfields.pseudonymous1">
-                    <source>Pseudonymized Participation</source>
-                </trans-unit>
                 <trans-unit resname="pseudonymous2" id="studyfields.pseudonymous2">
-                    <source>, exported data reveals pseudonymized ID, year of birth, gender and country. Some researchers like study nurses may have access to full personal data.</source>
-                </trans-unit>
-                <trans-unit resname="anonymous" id="studyfields.anonymous">
-                    <source>Anonymous Participation</source>
+                    <source>, exported data reveals the pseudonymized identity, year of birth, gender and country. Some researchers like study nurses may have access to full personal data.</source>
+                    <target>, i dati esportati rivelano l'identità pseudonimizzati, l'anno di nascita, il sesso e il paese. Alcuni ricercatori, come gli study nurses, possono avere accesso a dati personali completi.</target>
                 </trans-unit>
                 <trans-unit resname="anonymous2" id="studyfields.anonymous2">
-                    <source>, reveals pseudonymized ID, year of birth, gender and country. Pseudonymization mapping may not be accessed.</source>
-                    <target>, indica un ID pseudonimo, anno di nascita, sesso e nazione</target>
+                    <source>, exported data reveals the spseudonymized identity, year of birth, gender and country. The pseudonymization mapping may not be accessed.</source>
+                    <target>, i dati esportati rivelano l'identità pseudonimizzata, l'anno di nascita, il sesso e il paese. La mappatura della pseudonimizzazione non è accessibile.</target>
+                </trans-unit>
+            </group>
+            <group resname="studyoverview" id="studyoverview">
+                <trans-unit resname="type" id="studyoverview.type">
+                    <source>Type of Research</source>
+                </trans-unit>
+                <trans-unit resname="created_at" id="studyoverview.created_at">
+                    <source>Created on</source>
+                    <target>Creato alle:</target>
+                </trans-unit>
+                <trans-unit resname="created_by" id="studyoverview.created_by">
+                    <source>Created by</source>
+                    <target>Creato da:</target>
+                </trans-unit>
+            </group>
+            <group resname="studyrecords" id="studyrecords">
+                <trans-unit resname="startDate" id="studyrecords.startDate">
+                    <source>Export start date (optional)</source>
+                </trans-unit>
+                <trans-unit resname="endDate" id="studyrecords.endDate">
+                    <source>Export end date (optional)</source>
+                </trans-unit>
+            </group>
+            <group resname="studyrules" id="studyrules">
+                <trans-unit resname="sharing_query" id="studyrules.sharing_query">
+                    <source>Data Access Filter</source>
+                    <target>Filtro di accesso ai dati (JSON)</target>
+                </trans-unit>
+                <trans-unit resname="join_methods" id="studyrules.join_methods">
+                    <source>Allowed Ways of Joining</source>
+                </trans-unit>
+                <trans-unit resname="queryeditor_btn" id="studyrules.queryeditor_btn">
+                    <source>Edit</source>
                 </trans-unit>
             </group>
         </body>
