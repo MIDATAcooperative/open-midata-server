@@ -87,9 +87,18 @@ angular.module('portal')
 	};
 	
 	$scope.goBack = function() {
-	   $window.history.back();
-	   //spaces.get({ "_id" :  $scope.spaceId }, ["context"]).
-	   //then(function(result) { $state.go('^.dashboard', { dashId : result.data[0].context }); });
+		if ($state.params.user) {
+			$state.go("research.study.participant", { participantId : $state.params.user, studyId : $state.params.study });
+		} else {
+		   spaces.get({ "_id" :  $scope.spaceId }, ["context"]).
+		   then(function(result) { 
+			   if (!result.data || result.data[0].context == "me" || result.data[0].context == "mydata") {
+				 $state.go("^.overview");
+			   } else {
+			     $state.go('^.dashboard', { dashId : result.data[0].context }); 
+			   }
+		   });
+		}
 	};
 	
 	$scope.openAppLink = function(data) {
