@@ -101,7 +101,7 @@ angular.module('portal')
 				  if (app.type === "oauth1" || app.type === "oauth2") {
 					 $state.go("^.importrecords", { "spaceId" : result.data._id, params : JSON.stringify(data.params) });
 				  } else { 
-				     $state.go('^.spaces', { spaceId : result.data._id, user : $state.params.user });
+				     $state.go('^.spaces', { spaceId : result.data._id, user : $state.params.user, study : $state.params.study });
 				  }
 				} else {
 				  $state.go('^.dashboard', { dashId : $scope.options.context });
