@@ -62,15 +62,21 @@ angular.module('services')
 	
 	service.openAppLink = function($state, userId, data) {
 		  if (data.app === "market") {
-				$state.go("^.market", { tag : data.params.tag, context : (data.params.context || "me") });
+			  if (data.params.appId) {
+				  $state.go("^.visualization", { visualizationId : data.params.appId });
+			  } else $state.go("^.market", { tag : data.params.tag, context : (data.params.context || "me") });
 		  } else if (data.app === "newconsent") {
 			  $state.go("^.newconsent", { share : data.params.share });
 		  } else if (data.app === "profile") {
 			  $state.go("^.user", { userId : userId });			  
 		  } else if (data.app === "consent") {
 			  $state.go("^.consent", { consentId : data.params.consentId });
+		  } else if (data.app === "apps") {
+			  //if (data.params.studyId) $state.go("^.studydetails", { studyId : data.params.studyId });
+			  $state.go("^.apps", {  });
 		  } else if (data.app === "studies") {
-			  $state.go("^.studies", {  });
+			  if (data.params.studyId) $state.go("^.studydetails", { studyId : data.params.studyId });
+			  else $state.go("^.studies", {  });
 		  } else if (data.app === "newrequest") {
 			  $state.go("^.newconsent", { share : data.params.share, request : true });
 		  } else {
