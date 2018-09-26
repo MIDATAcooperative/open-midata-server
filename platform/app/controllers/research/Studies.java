@@ -1530,7 +1530,7 @@ public class Studies extends APIController {
 
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
 		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, Sets.create("name", "pstatus", "owner", "ownerName", "group"));
-		Study study = Study.getById(studyId, Sets.create("name", "executionStatus", "participantSearchStatus", "createdBy", "owner", "code"));
+		Study study = Study.getById(studyId, Sets.create("name", "executionStatus", "participantSearchStatus", "createdBy", "owner", "code", "type"));
 
 		if (study == null)
 			throw new BadRequestException("error.unknown.study", "Unknown Study");
@@ -1614,7 +1614,7 @@ public class Studies extends APIController {
 	}
 
 	public static void autoApproveCheck(MidataId app, MidataId studyid, MidataId owner) throws AppException {
-		Study study = Study.getById(studyid, Sets.create("_id", "participantSearchStatus", "executionStatus", "autoJoinGroup", "name", "code"));
+		Study study = Study.getById(studyid, Sets.create("_id", "participantSearchStatus", "executionStatus", "autoJoinGroup", "name", "code", "type"));
 		if (study != null && study.autoJoinGroup != null) {
 			if (study.participantSearchStatus.equals(ParticipantSearchStatus.SEARCHING)
 					&& (study.executionStatus.equals(StudyExecutionStatus.PRE) || study.executionStatus.equals(StudyExecutionStatus.RUNNING))) {
@@ -1706,7 +1706,7 @@ public class Studies extends APIController {
 
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
 		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, Sets.create("name", "pstatus", "owner", "ownerName"));
-		Study study = Study.getById(studyId, Sets.create("name", "executionStatus", "participantSearchStatus", "code", "owner", "createdBy"));
+		Study study = Study.getById(studyId, Sets.create("name", "executionStatus", "participantSearchStatus", "code", "owner", "createdBy", "type"));
 
 		if (study == null)
 			throw new BadRequestException("error.unknown.study", "Unknown Study");
@@ -1902,7 +1902,7 @@ public class Studies extends APIController {
 
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
 		Study study = Study.getById(studyid, Sets.create("name", "owner", "executionStatus", "participantSearchStatus", "validationStatus", "requiredInformation", "anonymous", "code", "startDate",
-				"endDate", "dataCreatedBefore"));
+				"endDate", "dataCreatedBefore", "type"));
 
 		if (study == null)
 			throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
