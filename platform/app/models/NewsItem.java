@@ -19,7 +19,7 @@ public class NewsItem extends Model implements Comparable<NewsItem> {
 	private static final String collection = "news";
 	
 	@NotMaterialized
-	public final static Set<String> ALL = Sets.create("creator", "created", "expires", "language", "title", "content", "url", "studyId", "broadcast");
+	public final static Set<String> ALL = Sets.create("creator", "created", "date", "layout", "expires", "language", "title", "content", "url", "studyId", "appId", /*"onlyParticipantsStudyId", "onlyUsersOfAppId",*/ "broadcast");
 
 	/**
 	 * the creator of the news item
@@ -32,7 +32,12 @@ public class NewsItem extends Model implements Comparable<NewsItem> {
 	public Date created;
 	
 	/**
-	 * The expiration date of this news item
+	 * The official date for this news item
+	 */
+	public Date date;
+	
+	/**
+	 * Does this news message expire
 	 */
 	public Date expires;
 	
@@ -52,6 +57,11 @@ public class NewsItem extends Model implements Comparable<NewsItem> {
 	public String content;
 	
 	/**
+	 * Layout selector
+	 */	
+	public String layout;
+	
+	/**
 	 * (optional) An external URL containing details of this news message
 	 */
 	public String url;
@@ -60,6 +70,21 @@ public class NewsItem extends Model implements Comparable<NewsItem> {
 	 * (optional) id of study this news item is about
 	 */
 	public MidataId studyId;
+	
+	/**
+	 * (optional) id of app this news item is about
+	 */
+	public MidataId appId;
+	
+	/**
+	 * (optional) show only to participants of study
+	 */
+	//public MidataId onlyParticipantsStudyId;
+	
+	/**
+	 * (optional) show only to users of app
+	 */
+	//public MidataId onlyUsersOfAppId;
 	
 	/**
 	 * whether this should be broadcast to all users

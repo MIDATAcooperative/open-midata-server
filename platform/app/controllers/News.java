@@ -73,11 +73,11 @@ public class News extends Controller {
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		
 		if (properties.containsKey("from") && properties.containsKey("to")) {
-			properties.put("created", CMaps.map("$gte", JsonValidation.getDate(json.get("properties"), "from")).map("$lt", JsonValidation.getDate(json.get("properties"), "to")));
+			properties.put("date", CMaps.map("$gte", JsonValidation.getDate(json.get("properties"), "from")).map("$lt", JsonValidation.getDate(json.get("properties"), "to")));
 			properties.remove("from");
 			properties.remove("to");
 		}
-		ObjectIdConversion.convertMidataIds(properties, "_id", "creator", "studyId");
+		ObjectIdConversion.convertMidataIds(properties, "_id", "creator", "studyId", "appId", "onlyParticipantsStudyId", "onlyUsersOfAppId");
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 		List<NewsItem> newsItems;
 		
@@ -86,6 +86,7 @@ public class News extends Controller {
 		Collections.sort(newsItems);
 		return ok(Json.toJson(newsItems));
 	}
+		
 
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
@@ -94,19 +95,25 @@ public class News extends Controller {
 		// validate json
 		JsonNode json = request().body().asJson();
 		
-		JsonValidation.validate(json, "title", "content", "expires");		
+		JsonValidation.validate(json, "title", "content", "date");		
 
 		// create new news item
 		NewsItem item = new NewsItem();
 		item._id = new MidataId();
 		item.creator = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		item.created = new Date();
+		item.date = JsonValidation.getDate(json, "date");
 		item.expires = JsonValidation.getDate(json, "expires");
+		item.appId = JsonValidation.getMidataId(json, "appId");
+		item.studyId = JsonValidation.getMidataId(json, "studyId");
+		//item.onlyParticipantsStudyId = JsonValidation.getMidataId(json, "onlyParticipantsStudyId");
+		//item.onlyUsersOfAppId = JsonValidation.getMidataId(json, "onlyUsersOfAppId");
 		item.title = JsonValidation.getString(json, "title");
 		item.content = JsonValidation.getString(json, "content");
+		item.layout = JsonValidation.getString(json, "layout");
 		item.language = JsonValidation.getString(json, "language");
 		item.url = JsonValidation.getStringOrNull(json, "url");
-		item.broadcast = true; /*JsonValidation.getBoolean(json, "broadcast");*/
+		item.broadcast = JsonValidation.getBoolean(json, "broadcast");
 		
 		NewsItem.add(item);
 		
@@ -120,18 +127,24 @@ public class News extends Controller {
 		// validate json
 		JsonNode json = request().body().asJson();
 		
-		JsonValidation.validate(json, "_id", "title", "content", "expires");		
+		JsonValidation.validate(json, "_id", "title", "content", "date");		
 
 		// create new news item
 		NewsItem item = NewsItem.get(CMaps.map("_id", JsonValidation.getMidataId(json, "_id")), NewsItem.ALL);
 		item.creator = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		
+		item.date = JsonValidation.getDate(json, "date");
 		item.expires = JsonValidation.getDate(json, "expires");
+		item.appId = JsonValidation.getMidataId(json, "appId");
+		item.studyId = JsonValidation.getMidataId(json, "studyId");
+		//item.onlyParticipantsStudyId = JsonValidation.getMidataId(json, "onlyParticipantsStudyId");
+		//item.onlyUsersOfAppId = JsonValidation.getMidataId(json, "onlyUsersOfAppId");
 		item.title = JsonValidation.getString(json, "title");
 		item.content = JsonValidation.getString(json, "content");
+		item.layout = JsonValidation.getString(json, "layout");
 		item.language = JsonValidation.getString(json, "language");
 		item.url = JsonValidation.getStringOrNull(json, "url");
-		item.broadcast = true; /*JsonValidation.getBoolean(json, "broadcast");*/
+		item.broadcast = JsonValidation.getBoolean(json, "broadcast");
 		
 		NewsItem.update(item);
 		
@@ -159,7 +172,6 @@ public class News extends Controller {
 	 * @return status 200
 	 * @throws InternalServerException
 	 */
-	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
 	@APICall
 	public static Result delete(String newsItemIdString) throws InternalServerException {

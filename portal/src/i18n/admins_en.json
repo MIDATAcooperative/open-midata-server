@@ -64,7 +64,17 @@
     "language" : "News language",
     "content" : "Content",
     "url" : "URL of full message",
-    "expires" : "Expiration date of message"
+    "expires" : "Expiration date of message",
+    "date" : "Official date",
+    "appId" : "Linked Application",
+    "studyId" : "Linked Study",
+    "layout" : "Layout", 
+    "layouts" : {
+      "small" : "Small (1x1)",
+      "wide" : "Wide (2x1)",
+      "high" : "High (1x2)",
+      "large" : "Large (2x2)"
+    }
   },
   
   "admin_registration" : {
