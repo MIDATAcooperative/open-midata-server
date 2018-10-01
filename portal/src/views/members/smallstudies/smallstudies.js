@@ -1,5 +1,5 @@
 angular.module('views')
-.controller('SmallStudiesCtrl', ['$scope', '$state', 'server', 'views', 'studies', 'status', function($scope, $state, server, views, studies, status) {
+.controller('SmallStudiesCtrl', ['$scope', '$state', 'server', 'views', 'studies', 'status', '$translate', function($scope, $state, server, views, studies, status, $translate) {
 	
 	$scope.studies = [];	
 	//$scope.view = views.getView($attrs.viewid || $scope.def.id);
@@ -39,18 +39,20 @@ angular.module('views')
 		    	ids.push(study.study);
 		    });
 		    
-		    $scope.status.doBusy(studies.search({ participantSearchStatus : "SEARCHING" }, ["name", "description", "participantSearchStatus", "executionStatus", "createdAt"])).
+		    $scope.status.doBusy(studies.search({ participantSearchStatus : "SEARCHING" }, ["name", "type", "infos", "description", "participantSearchStatus", "executionStatus", "createdAt", "joinMethods"])).
 			then(function (result) {
 				angular.forEach(result.data, function(study) {
 					var part = studyById[study._id];
 					if (!part) {
 						part = study;
-						part.pstatus = "MATCH";
+						part.pstatus = study.joinMethods.indexOf('PORTAL') >= 0 ? "MATCH" : "INFO";
 						part.studyName = part.name;
 						part.study = study._id;
 						$scope.results.push(part);
 					} else {
 						part.description = study.description;
+						part.infos = study.infos;
+						part.type = study.type;
 						part.participantSearchStatus = study.participantSearchStatus;
 						part.executionStatus = study.executionStatus;
 						part.createdAt = study.createdAt;
@@ -58,7 +60,7 @@ angular.module('views')
 				});				 
 			});
 		    
-		    $scope.status.doBusy(studies.search({ _id : ids  }, ["name", "description", "participantSearchStatus", "executionStatus"])).
+		    $scope.status.doBusy(studies.search({ _id : ids  }, ["name", "description", "participantSearchStatus", "executionStatus", "type", "infos", "joinMethods"])).
 			then(function (result) {
 				angular.forEach(result.data, function(study) {
 					var part = studyById[study._id];
@@ -87,6 +89,17 @@ angular.module('views')
 	
 	$scope.showDetails = function(study) {
 		$state.go('^.studydetails', { studyId : study._id });		
+	};
+	
+	$scope.getSummary = function(study) {
+		if (study.infos) {
+			for (var i=0;i<study.infos.length;i++) {
+				if (study.infos[i].type === "SUMMARY") {
+					return study.infos[i].value[$translate.use()] || study.infos[i].value.int || study.description;
+				}
+			}
+		}
+		return study.description;
 	};
 	
 	$scope.setTab(0);

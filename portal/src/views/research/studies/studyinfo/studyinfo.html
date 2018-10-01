@@ -5,44 +5,50 @@
 	<div ng-app="studies" ng-controller="StudyInfoCtrl" ng-cloak>
 	<loader busy="status.isBusy !== false">
 	<p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	   
-	</p>
-	<h2 translate="studyinfo.title"></h2>
-	<p class="alert alert-info" translate="studyfields.no_change_warning"></p>
+	</p>	
+	
+	<p translate="studyinfo.introduction"></p>
+	
 	<form name="myform" novalidate class="css-form form-horizontal" ng-submit="submit()" role="form">
+	  <formrow myid="visibility" label="studyinfo.visibility">
+	    <select ng-model="selection.visibility" class="form-control" ng-options="vis as ('studyinfo.visibilities.'+vis) | translate for vis in visibilities"></select>
+	  </formrow>
+	  	  
 	  <formrow myid="languages" label="studyinfo.showlanguages">
+	    <div class="checkbox col-sm-12">
+	      <label>
+	        <input type="checkbox" ng-disabled="true" ng-checked="selection.langs.indexOf('int')>=0" ng-click="toggle(selection.langs, 'int');">
+	        <span translate="enum.language.INT"></span>
+	      </label>
+	    </div>
 	    <div ng-repeat="language in languages" class="checkbox col-sm-3">
 	      <label>
-	        <input type="checkbox" >
+	        <input type="checkbox" ng-checked="selection.langs.indexOf(language.value)>=0" ng-click="toggle(selection.langs, language.value);">
 	        <span translate="{{ language.name }}"></span>
 	      </label>
 	    </div>
 	  </formrow>
-	  	  
+	  	  	
+      <p translate="studyinfo.introduction2"></p>	  	  	
 	  
-	  <formrow myid="sections" label="studyinfo.showsections">
-	    <div ng-repeat="section in sections" class="checkbox col-sm-6">
-	      <label>
-	        <input type="checkbox" name="section" id="section" ng-model="display.section" ng-value="section">
-	        <span translate="{{ 'enum.infos.'+section | translate }}"></span>
-	      </label>
-	    </div>
-	  </formrow>
-	  
-	  <div ng-repeat="section in infos">
+	  <div ng-repeat="section in infos | filter : { visibility : selection.visibility }">
 	    
-	  <h3 translate="{{ 'enum.infos.'+section.type }}"></h3>
-	  <formrow myid="text" label="studyinfo.text">
-	    <div ng-repeat="lang in display.langs">
-	      <textarea ng-model="section.value[lang]">
-	      </textarea>
-	    </div>
-	  </formrow>
+	  <p><b translate="{{ 'enum.infos.'+section.type }}"></b></p>
 	  
+	    <div class="extraspace" ng-repeat="lang in selection.langs">
+	      <div class="text-muted"><span translate="{{ 'enum.language.'+lang.toUpperCase() }}"></span>:</div>
+	      <textarea class="form-control" ng-disabled="studyLocked()" ng-model="section.value[lang]">
+	      </textarea>
+	      </formrow>
+	    </div>
+	  
+	    <hr>
 	  </div>
-      <formrow myid="x" label="">
-        <button type="submit" class="btn btn-primary" ng-disabled="studyLocked()" translate="common.change_btn"></button>
-        <span class="text-success" ng-show="requiredDataOk"><span class="glyphicon glyphicon-ok"></span> <span translate="common.save_ok"></span></span>
-      </formrow>
+    
+      <div class="extraspace"></div>
+      <button type="submit" class="btn btn-primary" ng-disabled="studyLocked()" translate="common.change_btn"></button>
+      <span class="text-success" ng-show="requiredDataOk"><span class="glyphicon glyphicon-ok"></span> <span translate="common.save_ok"></span></span>
+    
     </form>
     
     </loader>

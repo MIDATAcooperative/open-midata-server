@@ -20,10 +20,6 @@ public class Info implements JsonSerializable {
 	 * the actual value (localized)
 	 */
     public Map<String, String> value;
-    
-    /**
-     * the level of visibility of this piece of information
-     */
-    public Visibility visibility;
+        
         
 }
