@@ -10,7 +10,8 @@ angular.module('portal')
 	$scope.error = null;
 	$scope.translate = $translate;
 	$scope.status = new status(true);
-		
+	$scope.lang = $translate.use();	
+	
 	views.link("shared_with_study", "record", "record");
 	views.link("shared_with_study", "shareFrom", "share");
 	views.link("share", "record", "record");

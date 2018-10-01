@@ -20,15 +20,16 @@
 	  </thead>
 	  <tbody>
 	    <tr class="clickable" ng-repeat="study in filteredStudies = (results|filter : selection | orderBy : 'createdAt' : true )" ui-sref="^.studydetails({ studyId : study.study })">
-	      <td>
-	         <b>{{ study.studyName }}</b>
-	         <p>{{ study.description }}</p>
+	      <td>	         
+	         <b>{{ study.studyName }}</b> - <span class="small text-muted" translate="{{ 'enum.studytype.'+study.type }}"></span>
+	         <p>{{ getSummary(study) }}</p>
 	      </td>	  
 	      <td class="status-column">
 	        <span class="icon glyphicon glyphicon-ok-sign" ng-show="study.pstatus == 'ACCEPTED'"></span>
 	        <span class="icon glyphicon glyphicon-ok-circle" ng-show="study.pstatus == 'REQUEST'"></span>
 	        <span class="icon glyphicon glyphicon-ban-circle" ng-show="study.pstatus == 'MEMBER_REJECTED' || study.pstatus == 'RESEARCH_REJECTED'"></span>
 	        <button ui-sref="^.studydetails({ studyId : study.study })" class="btn btn-small btn-default" ng-show="study.pstatus == 'MATCH'">apply</button>
+	        <button ui-sref="^.studydetails({ studyId : study.study })" class="btn btn-small btn-default" ng-show="study.pstatus == 'INFO'">info</button>
 	      </td>
 	    </tr>
 	  </tbody>

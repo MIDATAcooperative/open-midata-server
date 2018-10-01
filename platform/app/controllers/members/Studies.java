@@ -300,14 +300,15 @@ public class Studies extends APIController {
 	   MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));	
 	   MidataId studyId = new MidataId(id);
 	   	   
-	   Set<String> studyFields = Sets.create("_id", "createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","infos","owner","participantRules","recordQuery","studyKeywords","requiredInformation","anonymous","assistance", "startDate", "endDate", "dataCreatedBefore", "termsOfUse");
+	   Set<String> studyFields = Sets.create("_id", "type", "createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","infos","infosPart", "owner","participantRules","recordQuery","studyKeywords","requiredInformation","anonymous","assistance", "startDate", "endDate", "dataCreatedBefore", "termsOfUse", "joinMethods");
 	   Set<String> consentFields = Sets.create("_id", "pstatus", "providers");
 	   Set<String> researchFields = Sets.create("_id", "name", "description");
 	   
 	   Study study = Study.getById(studyId, studyFields);
 	   StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, consentFields);
 	   Research research = Research.getById(study.owner, researchFields);
-	   
+	 
+	   if (participation == null || participation.pstatus != ParticipationStatus.ACCEPTED) study.infosPart = null;
 	   ObjectNode obj = Json.newObject();
 	   obj.put("study", JsonOutput.toJsonNode(study, "Study", studyFields));
 	   obj.put("participation", JsonOutput.toJsonNode(participation, "Consent", consentFields));

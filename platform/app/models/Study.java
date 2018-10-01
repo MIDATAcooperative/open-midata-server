@@ -34,7 +34,7 @@ public class Study extends Model {
 	/**
 	 * constant set containing all fields
 	 */
-	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "type", "joinMethods", "owner", "createdBy", "createdAt", "description", "infos", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "anonymous");
+	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "type", "joinMethods", "owner", "createdBy", "createdAt", "description", "infos", "infosPart", "infosInternal", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "anonymous");
 	
 	/**
 	 * name of study
@@ -95,6 +95,10 @@ public class Study extends Model {
 	 * additional informations about the study
 	 */
 	public List<Info> infos;
+	
+	public List<Info> infosPart;
+	
+	public List<Info> infosInternal;
 	
 	/**
 	 * ids of keywords describing the study
@@ -292,6 +296,21 @@ public class Study extends Model {
     public void setProcessFlags(Set<String> processFlags) throws InternalServerException {
     	this.processFlags = processFlags;
     	Model.set(Study.class, collection, this._id, "processFlags", processFlags);
+    }
+    
+    public void setInfos(List<Info> infos) throws InternalServerException {
+    	this.infos = infos;
+    	Model.set(Study.class, collection, this._id, "infos", infos);
+    }
+    
+    public void setInfosPart(List<Info> infosPart) throws InternalServerException {
+    	this.infosPart = infosPart;
+    	Model.set(Study.class, collection, this._id, "infosPart", infosPart);
+    }
+    
+    public void setInfosInternal(List<Info> infosInternal) throws InternalServerException {
+    	this.infosInternal = infosInternal;
+    	Model.set(Study.class, collection, this._id, "infosInternal", infosInternal);
     }
         
     

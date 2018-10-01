@@ -12,6 +12,7 @@ import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventAgentComponent;
 import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventEntityComponent;
 import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventOutcome;
 import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.CodeType;
 import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.Identifier;
 import org.hl7.fhir.dstu3.model.Reference;
@@ -52,8 +53,10 @@ import models.Plugin;
 import models.Study;
 import models.User;
 import models.UserGroupMember;
+import models.enums.AuditEventType;
 import models.enums.ConsentType;
 import models.enums.UserRole;
+import utils.AccessLog;
 import utils.auth.ExecutionInfo;
 import utils.collections.CMaps;
 import utils.db.ObjectIdConversion;
@@ -107,6 +110,8 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 		if (mae.statusKey != null) {
 			p.addExtension().setUrl("http://midata.coop/extensions/outcome-localekey").setValue(new StringType(mae.statusKey));
 		}
+		
+		//if (mae.event.equals(AuditEventType.STUDY_PARTICIPATION_APPROVED))
 		
 		return p;
 	}
@@ -336,6 +341,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 			aeec.setReference(new Reference("ResearchStudy/"+study._id.toString()));
 			aeec.setName(study.name);
 			aeec.setIdentifier(new Identifier().setValue(study.code));
+			aeec.addExtension("http://midata.coop/extension/research-type", new CodeType(study.type.toString()));
 		}
 				
 		
@@ -437,6 +443,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 		
 		//subtype	token	More specific type/id for the event	AuditEvent.subtype	
 		//type	token	Type/identifier of event	AuditEvent.type	
+		builder.restriction("type", false, QueryBuilder.TYPE_CODING, "fhirAuditEvent.type");
 		
 		builder.restriction("user", false, QueryBuilder.TYPE_IDENTIFIER, "fhirAuditEvent.agent.userId");
 		
@@ -451,6 +458,8 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 		}
 		
 		List<MidataAuditEvent> events = MidataAuditEvent.getAll(properties, MidataAuditEvent.ALL, limit);
+		AccessLog.log("RETURNED");
+		AccessLog.log("#events="+events.size());
 		return events;
 	}
 

@@ -6,7 +6,7 @@
 		
     <div class="panel panel-primary">
 				<div class="panel-heading">
-				  <span translate="studydetails.study"></span>
+				  <span translate="{{ 'enum.studytype.'+study.type }}"></span>
 				  <a ng-click="goBack()" href="javascript:" class="close-icon pull-right"><span class="glyphicon glyphicon-remove"></span></a>
 				</div>
 				<div class="panel-body">
@@ -48,9 +48,40 @@
 				<div class="panel-heading" translate="studydetails.status"></div>
 				<div class="panel-body">
                     
-                    <div class="lead" ng-hide="!participation.pstatus || participation.pstatus == 'MATCH'" translate="{{ 'enum.participationstatus.'+participation.pstatus }}"></div>
-					<div class="lead" ng-show="!participation.pstatus || participation.pstatus == 'MATCH'" translate="{{ 'enum.participantsearchstatus.'+study.participantSearchStatus }}"></div>
-					<div class="lead" translate="{{ 'enum.studyexecutionstatus.'+study.executionStatus }}"></div>
+                    <div class="" ng-hide="!participation.pstatus || participation.pstatus == 'MATCH'" translate="{{ 'enum.participationstatus.'+participation.pstatus }}"></div>
+					<div class="" ng-show="!participation.pstatus || participation.pstatus == 'MATCH'" translate="{{ 'enum.participantsearchstatus.'+study.participantSearchStatus }}"></div>
+					<div class="" translate="{{ 'enum.studyexecutionstatus.'+study.executionStatus }}"></div>
+					<div class="extraspace">&nbsp;</div>
+					    <div ng-show="mayRequestParticipation()">
+   				    
+   				      
+   				      
+   				      <p translate="studydetails.request_participation_help"></p>
+					  <button  ng-click="requestParticipation()" class="btn btn-primary"
+		                translate="studydetails.request_participation_btn"></button>
+		                
+		              
+		            </div>
+		            <div ng-show="mayDeclineParticipation()">
+		            
+		             
+		            
+		              <p translate="studydetails.do_not_participate_help"></p>
+	                <button  ng-click="noParticipation()" class="btn btn-danger"
+		                translate="studydetails.do_not_participate_btn"></button>
+		                
+		              
+		            </div>
+		            <div ng-show="mayRetreatParticipation()">
+		            
+		              
+		            
+		              <p translate="studydetails.retreat_help"></p>
+				    <button  ng-click="retreatParticipation()" class="btn btn-danger"
+		                translate="studydetails.retreat_btn"></button>
+		                
+		             
+                    </div>
 				</div>
 			</div>
 
@@ -62,22 +93,19 @@
 				
 				    <p class="lead">{{ study.name }}</p>
 				    <div class="line"></div>			
-					<p>{{ study.description }}</p>
+					<p ng-hide="study.infos.length">{{ study.description }}</p>
+					
+					<div ng-repeat="info in study.infos | filter : { 'type' : '!SUMMARY' }">
+					  <h4 ng-hide="info.type=='DESCRIPTION'" translate="{{ 'enum.infos.'+info.type }}"></h4>
+					  <p>{{ info.value[lang] || info.value.int }}</p>
+					</div>
+					
                     <p ng-show="study.termsOfUse">
 					  <a href="javascript:" ui-sref="^.terms({ which : study.termsOfUse })" translate="registration.study_agb"></a>
 					</p>
-
-					<p translate="studydetails.organization"></p>								
-					<p><i>{{ research.name }}</i></p>
-					<p><i>{{ research.description }}</i></p>
-					
-					<button ng-show="mayRequestParticipation()" ng-click="requestParticipation()" class="btn btn-primary"
-		                translate="studydetails.request_participation_btn"></button>
-	                <button ng-show="mayDeclineParticipation()" ng-click="noParticipation()" class="btn btn-danger"
-		                translate="studydetails.do_not_participate_btn"></button>
-				    <button ng-show="mayRetreatParticipation()" ng-click="retreatParticipation()" class="btn btn-danger"
-		                translate="studydetails.retreat_btn"></button>
                     
+                    <div class="extraspace">&nbsp;</div><div class="extraspace">&nbsp;</div>
+   				
                     <div ng-show="links.length">
                       <div class="extraspace">&nbsp;</div><div class="extraspace">&nbsp;</div>
                       <p class="lead" translate="studydetails.recommended_apps"></p>
