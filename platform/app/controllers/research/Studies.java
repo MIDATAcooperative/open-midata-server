@@ -22,6 +22,7 @@ import org.apache.commons.codec.binary.Base64InputStream;
 import org.hl7.fhir.dstu3.model.DomainResource;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonValueFormat;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 
@@ -64,6 +65,7 @@ import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.EntityType;
 import models.enums.Frequency;
+import models.enums.InfoType;
 import models.enums.InformationType;
 import models.enums.JoinMethod;
 import models.enums.ParticipantSearchStatus;
@@ -167,8 +169,7 @@ public class Studies extends APIController {
 		study.validationStatus = StudyValidationStatus.DRAFT;
 		study.participantSearchStatus = ParticipantSearchStatus.PRE;
 		study.executionStatus = StudyExecutionStatus.PRE;
-
-		study.infos = new ArrayList<Info>();
+		
 		study.participantRules = new HashSet<FilterRule>();
 		study.recordQuery = new HashMap<String, Object>();
 		study.requiredInformation = InformationType.RESTRICTED;
@@ -508,7 +509,7 @@ public class Studies extends APIController {
 		MidataId userid = MidataId.from(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId owner = PortalSessionToken.session().getOrg();
 
-		Set<String> fields = Sets.create("createdAt", "createdBy", "description", "executionStatus", "name", "participantSearchStatus", "validationStatus", "infos", "owner", "participantRules",
+		Set<String> fields = Sets.create("createdAt", "createdBy", "description", "executionStatus", "name", "participantSearchStatus", "validationStatus", "infos", "infosPart", "infosInternal", "owner", "participantRules",
 				"recordQuery", "studyKeywords", "code", "groups", "requiredInformation", "anonymous", "assistance", "termsOfUse", "requirements", "startDate", "endDate", "dataCreatedBefore", "myRole",
 				"processFlags", "autoJoinGroup", "type", "joinMethods");
 		Study study = Study.getById(studyid, fields);
@@ -537,7 +538,7 @@ public class Studies extends APIController {
 
 		MidataId studyid = new MidataId(id);
 
-		Set<String> fields = Sets.create("createdAt", "createdBy", "description", "executionStatus", "name", "participantSearchStatus", "validationStatus", "infos", "owner", "participantRules",
+		Set<String> fields = Sets.create("createdAt", "createdBy", "description", "executionStatus", "name", "participantSearchStatus", "validationStatus", "infos", "infosPart", "infosInternal", "owner", "participantRules",
 				"recordQuery", "studyKeywords", "code", "groups", "requiredInformation", "anonymous", "assistance", "termsOfUse", "requirements", "startDate", "endDate", "dataCreatedBefore", "type", "joinMethods");
 		Study study = Study.getById(studyid, fields);
 
@@ -1929,6 +1930,52 @@ public class Studies extends APIController {
 				autoApprove(null, study, userId, grp);
 			}
 		}
+		if (json.has("infos")) {
+			if (!self.role.maySetup()) 
+				throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
+			
+			JsonNode infos = json.get("infos");
+			List<Info> result = new ArrayList<Info>();
+			for (JsonNode info : infos) {
+			   Info inf = new Info();
+			   inf.type = JsonValidation.getEnum(info, "type", InfoType.class);
+			   inf.value = JsonExtraction.extractStringMap(info.get("value"));
+			   result.add(inf);
+			}
+			
+			study.setInfos(result);
+		}
+		if (json.has("infosPart")) {
+			if (!self.role.maySetup()) 
+				throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
+			
+			JsonNode infos = json.get("infosPart");
+			List<Info> result = new ArrayList<Info>();
+			for (JsonNode info : infos) {
+			   Info inf = new Info();
+			   inf.type = JsonValidation.getEnum(info, "type", InfoType.class);
+			   inf.value = JsonExtraction.extractStringMap(info.get("value"));
+			   result.add(inf);
+			}
+			
+			study.setInfosPart(result);
+		}
+		if (json.has("infosInternal")) {
+			if (!self.role.maySetup()) 
+				throw new BadRequestException("error.notauthorized.action", "User is not allowed to change study setup.");
+			
+			JsonNode infos = json.get("infosInternal");
+			List<Info> result = new ArrayList<Info>();
+			for (JsonNode info : infos) {
+			   Info inf = new Info();
+			   inf.type = JsonValidation.getEnum(info, "type", InfoType.class);
+			   inf.value = JsonExtraction.extractStringMap(info.get("value"));
+			   result.add(inf);
+			}
+			
+			study.setInfosInternal(result);
+		}
+
 
 		return ok();
 	}

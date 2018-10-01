@@ -188,6 +188,7 @@ angular.module('portal')
 					{ title : "study_checklist.phase1", page : ".", heading : true  },
 					{ title : "study_checklist.name", page : "^.description", required : true, done : $scope.study.name && $scope.study.description },
 					{ title : "study_checklist.teamsetup", page : "^.team", flag : "team", done : $scope.tests.team || $scope.study.processFlags.indexOf("team")>=0 },
+					{ title : "study_checklist.information", page : "^.info", required : false, done : ($scope.study.infos && $scope.study.infos.length) },
                     { title : "study_checklist.groups", page : "^.fields", required : true, done : $scope.study.groups.length },
                     { title : "study_checklist.sharingQuery", page : "^.rules", required : true, done : ($scope.study.recordQuery && ( JSON.stringify($scope.study.recordQuery) !== "{}")  ) },
                     { title : "study_checklist.dates", page : "^.rules", required : true, done : $scope.study.startDate || $scope.study.endDate || $scope.study.dataCreatedBefore },

@@ -6,19 +6,61 @@ angular.module('portal')
    $scope.languages = languages.all;
    $scope.sections = ["SUMMARY", "DESCRIPTION", "HOMEPAGE", "CONTACT", "INSTRUCTIONS", "PURPOSE", "AUDIENCE", "LOCATION", "PHASE", "SPONSOR", "SITE", "DEVICES", "COMMENT"];
    
-
+   $scope.allsections = {
+		   "ALL" : ["SUMMARY", "DESCRIPTION", "HOMEPAGE", "CONTACT", "INSTRUCTIONS", "PURPOSE", "AUDIENCE", "LOCATION", "PHASE", "SPONSOR", "SITE", "DEVICES", "COMMENT"],
+		   "PARTICIPANTS" : ["CONTACT", "INSTRUCTIONS", "DEVICES", "COMMENT"],
+		   "INTERNAL" : ["PURPOSE", "PHASE", "COMMENT"]
+   }
+   $scope.visibilities = ["ALL", "PARTICIPANTS", "INTERNAL"];
+   $scope.selection = { langs : ["int"], visibility : "ALL" };
+   
    $scope.reload = function() {
 	   	
 	   $scope.status.doBusy(server.get(jsRoutes.controllers.research.Studies.get($scope.studyid).url))
 	    .then(function(data) { 				
 			$scope.study = data.data;
 			$scope.study.recordQuery = undefined;
-			
-			$scope.infos = $scope.study.infos;
+						
+			$scope.generate();
 		});
    };
    
-       
+   $scope.generate = function() {
+	  var result = [];
+	  var byKey = {};
+	  if ($scope.study.infos) {
+		  angular.forEach($scope.study.infos, function(info) {
+			  info.visibility = "ALL";
+			  byKey[info.type+"_"+info.visibility] = info;
+		  });
+	  }
+	  if ($scope.study.infosPart) {
+		  angular.forEach($scope.study.infosPart, function(info) {
+			  info.visibility = "PARTICIPANTS";
+			  byKey[info.type+"_"+info.visibility] = info;
+		  });
+      }
+	  if ($scope.study.infosInternal) {
+		  angular.forEach($scope.study.infosInternal, function(info) {
+			  info.visibility = "INTERNAL";
+			  byKey[info.type+"_"+info.visibility] = info;
+		  });
+	  }
+	  angular.forEach($scope.visibilities, function(v) {
+		 angular.forEach($scope.allsections[v], function(s) {
+			var inf = byKey[s+"_"+v] || { type : s, visibility : v, value : {} };
+			result.push(inf);
+		 }); 
+	  });
+	  $scope.infos = result;
+   };
+   
+  
+  $scope.changevisible = function() {
+	$scope.sections = $scope.allsections[$scope.selection.visibility];  
+	console.log("DONE");
+  };
+   
   $scope.submit = function() {
 	 
    	   
@@ -27,6 +69,7 @@ angular.module('portal')
    	   } catch (e) { console.log(e); $scope.error = e.message;return; }
    	   */
 	   	$scope.submitted = true;	
+	   	/*
 		if ($scope.error && $scope.error.field && $scope.error.type) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
 		$scope.error = null;
 		
@@ -34,10 +77,23 @@ angular.module('portal')
 			var elem = $document[0].querySelector('input.ng-invalid');
 			if (elem && elem.focus) elem.focus();
 			return;
-		}
+		}*/
    	   	   
-	   var data = { infos : $scope.study.infos };
-	   $scope.status.doAction("update", server.put(jsRoutes.controllers.research.Studies.update($scope.studyid).url, JSON.stringify(data)))
+		var result = { ALL : [], PARTICIPANTS : [], INTERNAL : [] };
+		
+		angular.forEach($scope.infos, function(inf) {
+		  var used = false;
+		  if (inf.value && inf.value.int && inf.value.int.trim().length > 0) used = true;
+		  else angular.forEach(languages.all, function(l) {
+			 if (inf.value && inf.value[l.value] && inf.value[l.value].trim().length > 0) used = true; 
+		  });
+		  if (used) {
+			  result[inf.visibility].push(inf);
+		  }
+		
+		});
+	   var data = { infos : result.ALL, infosPart : result.PARTICIPANTS, infosInternal : result.INTERNAL };
+	   $scope.status.doAction("update", server.post(jsRoutes.controllers.research.Studies.updateNonSetup($scope.studyid).url, JSON.stringify(data)))
 	  .then(function(data) { 				
 		    $scope.reload();
 		    $scope.saveOk = true;
@@ -45,8 +101,14 @@ angular.module('portal')
    };
    
    $scope.studyLocked = function() {
-		 return (!$scope.study) || ($scope.study.validationStatus !== "DRAFT" && $scope.study.validationStatus !== "REJECTED") || !$scope.study.myRole.setup;
+		 return (!$scope.study) || /*($scope.study.validationStatus !== "DRAFT" && $scope.study.validationStatus !== "REJECTED") ||*/ !$scope.study.myRole.setup;
    };
+   
+   $scope.toggle = function(array,itm) {
+		console.log(array);
+		var pos = array.indexOf(itm);
+		if (pos < 0) array.push(itm); else array.splice(pos, 1);
+  };
    
    $scope.reload();
 }]);

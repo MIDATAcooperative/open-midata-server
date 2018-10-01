@@ -12,7 +12,7 @@ public enum InfoType {
    SUMMARY,
    
    /**
-    * What is this study doiing?
+    * What is this study doing?
     */
    DESCRIPTION,
    
@@ -40,6 +40,11 @@ public enum InfoType {
      * Limitations on who should participate
      */
   AUDIENCE,
+  
+  /**
+   * What is the timeframe for this study
+   */
+  DURATION,
   
    /**
     * State or region where this study is taking place
