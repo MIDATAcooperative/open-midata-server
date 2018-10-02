@@ -129,7 +129,7 @@ angular.module('portal')
 	$scope.doDelete = function() {
 		if ($state.current.allowDelete) {
 		    $scope.status.doAction('delete', apps.deletePlugin($scope.app))
-		    .then(function(data) { $state.go("^.plugins"); });
+		    .then(function(data) { $state.go("^.yourapps"); });
 		} else {
 			$scope.status.doAction('delete', apps.deletePluginDeveloper($scope.app))
 		    .then(function(data) { $state.go("^.yourapps"); });
