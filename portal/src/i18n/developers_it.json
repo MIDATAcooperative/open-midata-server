@@ -69,15 +69,35 @@
         "filename" : "Nome interno",
         "type" : "Tipo di applicazione",
         "targetUserRole" : "Ruolo di destinazione",
+
+        // TODO NEW: OAuth Login
+        "previewlogin" : "OAuth Login",
+
+        // TODO NEW: Preview OAuth Login Page
+        "previewlogin2" : "Preview OAuth Login Page",
         "edit_btn" : "Modifica impostazioni",
         "edit_help" : "Modifica la configurazione della tua applicazione.",
+
+        // TODO CHANGED
+        // OLD: Change Access Rights
+        // NEW: Change Data Access Filter
         "query_btn" : "Modifica Data Access Filter",
+
+        // TODO CHANGED
+        // OLD: Define which types of data your application may access
+        // NEW: Define which types of data your application may access.
         "query_help" : "Definisce i tipi di dati ai quali l'applicazione può accedere.",
         "tokenExchangeParams" : "Parametri OAuth2 per lo scambio di token",
         "testfromlocal_btn" : "Testa il tuo plugin da localhost",
         "testfromlocal_help" : "Durante lo sviluppo, è possibile testare il codice del plugin memorizzato nel proprio computer locale su questa istanza.",
         "serverimport_btn" : "Testa lo script dell'importazione automatica.",
         "serverimport_help" : "Se il proprio plugin offre l'importazione automatica, è possibile testare nel proprio computer locale lo script del plugin che è normalmente eseguito sul server.",
+
+        // TODO NEW: Links with Studies
+        "link_btn" : "Links with Studies",
+
+        // TODO NEW: Apps may offer or require study participation. Studies may recommend plugin or app use.
+        "link_help" : "Apps may offer or require study participation. Studies may recommend plugin or app use.",
         "icon_btn" : "Icone e immagini dell'applicazione",
         "icon_help" : "Caricare e gestire le icone e le immagini da utilizzare con la tua applicazione. Fornire immagini per la schermata di login, la schermata di accettazione del consenso, il MIDATA Store, ecc.",
         "messages_btn" : "Messaggi e-mail dell'applicazione",
@@ -130,6 +150,10 @@
         "nostudy" : "Non collegato a uno studio",
         "optionalParticipation" : "Partecipazione opzionale",
         "access_query_json" : "Data Access Filter",
+
+        // TODO CHANGED
+        // OLD: Go to access rights editor
+        // NEW: Go to the Data Access Filter editor
         "queryeditor_btn" : "Va all'editor Data Access Filter",
         "no_update_history" : "No storia risorse FHIR",
         "export_btn" : "Esporta la definizione applicazione",
@@ -180,5 +204,11 @@
         "file" : "File di immagine da caricare",
         "file_help" : "Ridimensionare e comprimere l'immagine a un formato ragionevole prima di caricarla. Le immagini più pesanti di 1 MB non saranno accettate.",
         "existing" : "Immagini collegate all'applicazione"
+    },
+
+    "applink" : {
+
+        // TODO NEW: Links with Studies
+        "title" : "Links with Studies"
     }
 }

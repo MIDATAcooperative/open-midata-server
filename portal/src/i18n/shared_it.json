@@ -18,6 +18,10 @@
         "edit_profile" : "Modifica profilo",
         "app_count" : "Applicazioni autorizzate",
         "study_count" : "Iscrizioni agli studi",
+
+        // TODO CHANGED
+        // OLD: Dashboard
+        // NEW: Timeline
         "me" : "Pannello",
         "view" : "Visualizzazione",
         "overview" : "Panoramica",
@@ -322,6 +326,10 @@
         "studytype" : {
             "CLINICAL" : "Studio clinico",
             "CITIZENSCIENCE" : "Progetto Scienza Cittadina",
+
+            // TODO CHANGED
+            // OLD: Community (Data use only for providing services back to the participants)
+            // NEW: Community
             "COMMUNITY" : "Comunità (utilizzo dei dati solo per la fornitura di servizi ai partecipanti)"
         },
         "joinmethod" : {
@@ -329,8 +337,16 @@
             "PORTAL" : "Il partecipante si applica sul portale MIDATA",
             "RESEARCHER" : "Il partecipante è registrato manualmente dal membro del team di ricerca",
             "API" : "Il partecipante è iscrivi da un software esterno",
+
+            // TODO CHANGED
+            // OLD: Participant has been proposed by algorithm (not supported)
+            // NEW: Participant has been proposed by an algorithm (not supported)
             "ALGORITHM" : "Il partecipante è stato proposto da un algoritmo (non supportato)",
             "CODE" : "Il partecipante può aderire inserendo un codice (non supportato)",
+
+            // TODO CHANGED
+            // OLD: Data is transferred from another study. (not supported)
+            // NEW: Data is transferred from another study (not supported)
             "TRANSFER" : "I dati vengono trasferiti da un altro studio (non supportato)"
         },
         "studyexecutionstatus" : {
@@ -396,7 +412,10 @@
             "DE" : "Tedesco",
             "IT" : "Italiano",
             "FR" : "Francese",
-            "NL" : "Olandese"
+            "NL" : "Olandese",
+
+            // TODO NEW: Default / Non localized
+            "INT" : "Default / Non localized"
         },
         "month" : {
             "01" : "Gen",
@@ -432,6 +451,47 @@
             "oauth1" : "OAuth 1",
             "oauth2" : "OAuth 2",
             "mobile" : "Applicazione (Smartphone, Web)"
+        },
+        "infos" : {
+
+            // TODO NEW: Short Summary
+            "SUMMARY" : "Short Summary",
+
+            // TODO NEW: What is this study doing?
+            "DESCRIPTION" : "What is this study doing?",
+
+            // TODO NEW: Link to project homepage
+            "HOMEPAGE" : "Link to project homepage",
+
+            // TODO NEW: Contact information
+            "CONTACT" : "Contact information",
+
+            // TODO NEW: Instructions for participants
+            "INSTRUCTIONS" : "Instructions for participants",
+
+            // TODO NEW: What is the purpose of this research?
+            "PURPOSE" : "What is the purpose of this research?",
+
+            // TODO NEW: Are there limitations on who should participate?
+            "AUDIENCE" : "Are there limitations on who should participate?",
+
+            // TODO NEW: At which state or region is this study taking place?
+            "LOCATION" : "At which state or region is this study taking place?",
+
+            // TODO NEW: What is the state of progression of the research taking place?
+            "PHASE" : "What is the state of progression of the research taking place?",
+
+            // TODO NEW: Who is initiator of the research and who is legally responsible?
+            "SPONSOR" : "Who is initiator of the research and who is legally responsible?",
+
+            // TODO NEW: At which site are activities beeing conducted?
+            "SITE" : "At which site are activities beeing conducted?",
+
+            // TODO NEW: Is there any special equipment required by a participant?
+            "DEVICES" : "Is there any special equipment required by a participant?",
+
+            // TODO NEW: Additional notes
+            "COMMENT" : "Additional notes"
         }
     },
 
@@ -709,10 +769,25 @@
         "history_who" : "Chi",
         "history_when" : "Quando",
         "history_comment" : "Commento",
+
+        // TODO NEW: If you want to be part of this research you may request participation.
+        "request_participation_help" : "If you want to be part of this research you may request participation.",
         "request_participation_btn" : "Richiedere la partecipazione",
+
+        // TODO NEW: If you do NOT want to participate you can click here. You will not be asked again and no data will be shared.
+        "do_not_participate_help" : "If you do NOT want to participate you can click here. You will not be asked again and no data will be shared.",
         "do_not_participate_btn" : "Non partecipare",
+
+        // TODO NEW: You are currently participating. If you no longer want to participate you may retreat from participation. Your shared data will be frozen at the moment of retreat and no new data will be shared. Once retreated you are not able to participate again.
+        "retreat_help" : "You are currently participating. If you no longer want to participate you may retreat from participation. Your shared data will be frozen at the moment of retreat and no new data will be shared. Once retreated you are not able to participate again.",
         "retreat_btn" : "Ritirarsi dalla partecipazione",
-        "status" : "Stato"
+        "status" : "Stato",
+
+        // TODO NEW: Recommended Apps
+        "recommended_apps" : "Recommended Apps",
+
+        // TODO NEW: Use now
+        "use_app" : "Use now"
     },
 
     "user" : {
@@ -919,7 +994,19 @@
         "shares_group" : "Gruppo: {{ group }}",
         "shares_format" : "Formato: {{ format }}",
         "shares_content" : "Contenuti: {{ content }}",
-        "confirm_study" : "Accetto le condizioni d'uso della domanda e di partecipare allo studio"
+        "confirm_study" : "Accetto le condizioni d'uso della domanda e di partecipare allo studio",
+
+        // TODO NEW: I accept to participate in the study
+        "confirm_study_opt" : "I accept to participate in the study",
+
+        // TODO NEW: I accept to participate in the citizen science project
+        "confirm_citizen_science" : "I accept to participate in the citizen science project",
+
+        // TODO NEW: I accept the terms of use of the application and community services
+        "confirm_community" : "I accept the terms of use of the application and community services",
+
+        // TODO NEW: I accept to share data with the community service
+        "confirm_community_opt" : "I accept to share data with the community service"
     },
 
     "dashboard" : {
@@ -1134,6 +1221,12 @@
     "accountwipe" : {
         "title" : "Chiudi e cancella account MIDATA",
         "hello" : "Cara/caro {{name}},",
+
+        // TODO NEW: Dear {{name}},
+        "hello_m" : "Dear {{name}},",
+
+        // TODO NEW: Dear {{name}},
+        "hello_w" : "Dear {{name}},",
         "paragraph1" : "Desiderate cancellare il vostro account MIDATA in modo irrevocabile? Ciò è ovviamente possibile.",
         "paragraph2" : "Si prega di leggere prima le seguenti informazioni:",
         "point1" : "Se si cancella l'account MIDATA, i dati personali non saranno più disponibili.",
@@ -1158,10 +1251,18 @@
     },
 
     "queryeditor" : {
+
+        // TODO CHANGED
+        // OLD: Access Rights Editor
+        // NEW: Data Access Filter Editor
         "title" : "Editor Access Rights Editor",
         "app" : "Applicazione",
         "study" : "Studio",
         "summary" : "Elenco dei tipi di dati accessibili:",
+
+        // TODO CHANGED
+        // OLD: Access Query
+        // NEW: Data Access Filter
         "access_query" : "Data Access Filter",
         "format" : "Risorsa",
         "code" : "Codice",
@@ -1177,12 +1278,24 @@
         "short_owner_self" : "Solo dati propri",
         "source_app" : "Applicazione sorgente",
         "short_app_all" : "Tutti i sorgenti",
+
+        // TODO CHANGED
+        // OLD: Only app:
+        // NEW: Only application:
         "short_app_other" : "Solo l'applicazione:",
         "app_self" : "Utilizza solo i dati di questa applicazione",
         "app_all" : "Utilizza dati da qualsiasi applicazione sorgente",
+
+        // TODO CHANGED
+        // OLD: Use data from app:
+        // NEW: Use data from application:
         "app_other" : "Utilizzare i dati dall'applicazione:",
         "restrictions" : "Restrizioni aggiuntive",
         "data_period_restriction" : "Data",
+
+        // TODO CHANGED
+        // OLD: Creation / Update time
+        // NEW: Creation / Update date
         "time_restriction" : "Creazione / Aggiornamento tempo",
         "created-after" : "Creata dopo",
         "updated-after" : "Ultimo aggiornamento dopo",
@@ -1191,10 +1304,22 @@
         "remove_btn" : "Rimuovi",
         "apply_btn" : "Applica",
         "newentry" : "Inserisce nome, codice, tipo di risorsa o descrizione (parziale) del tipo di dato da aggiungere:",
+
+        // TODO CHANGED
+        // OLD: Please select a result from the left to add or only a fragment from the right column.
+        // NEW: Please select a result to add from the left or only a fragment from the right column.
         "make_selection" : "Seleziona un risultato da aggiungere da sinistra o solo un frammento dalla colonna di destra.",
         "resultgroup" : "Corrisponde",
         "resultdetail" : "Tipi o codici contenuti",
+
+        // TODO CHANGED
+        // OLD: No matching datatypes found.
+        // NEW: No matching datatype found.
         "search_empty" : "Non è stato trovato alcun tipo di dato corrispondente.",
+
+        // TODO CHANGED
+        // OLD: Select which of these frequently required resources your app needs access to:
+        // NEW: Select which of these frequently used resources your application needs access to:
         "select_resources" : "Seleziona quale di queste risorse utilizzate di frequente l'applicazione deve accedere:",
         "save_exit_btn" : "Salva e esci",
         "cancel_btn" : "Annulla",
@@ -1202,12 +1327,37 @@
         "ask" : {
             "AuditEvent" : "Accesso al registro eventi di verifica",
             "Consent" : "Accesso ai consensi dell'utente dell'applicazione con altri utenti o applicazioni",
+
+            // TODO CHANGED
+            // OLD: Access to group definitions (either teams of practitioners or researchers or groups defined as part of study results generation)
+            // NEW: Access to group definitions (either teams of health providers or researchers or groups defined as part of study results generation)
             "Group" : "Accesso alle definizioni dei gruppi (gruppi di operatori sanitari o di ricercatori o gruppi definiti come parte della generazione dei risultati dello studio)",
+
+            // TODO CHANGED
+            // OLD: Patient Records : Name, email, address of Midata account holders
+            // NEW: Patient Records: name, email, address of MIDATA account holders
             "Patient" : "Dati paziente: nome, e-mail, indirizzo dei titolari di account MIDATA",
+
+            // TODO CHANGED
+            // OLD: Patient Records : Pseudonym, year of birth, country of study participants
+            // NEW: Patient Records: pseudonym, year of birth, country of study participants
             "PseudonymizedPatient" : "Dati paziente: pseudonimo, anno di nascita, paese di provenienza dei partecipanti allo studio",
+
+            // TODO CHANGED
+            // OLD: Practitioner Resource : Search for healthcare providers or researchers
+            // NEW: Practitioner Resource: search for health providers or researchers
             "Practitioner" : "Risorsa Practitioner: ricerca di fornitori di assistenza sanitaria o ricercatori",
             "Subscription" : "Accedere e gestire gli abbonamenti a un sistema esterno"
         }
+    },
+
+    "timeline" : {
+
+        // TODO NEW: Midata
+        "spaces" : "Midata",
+
+        // TODO NEW: Timeline
+        "title" : "Timeline"
     },
 
     "-1" : "sconosciuto"

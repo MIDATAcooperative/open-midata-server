@@ -65,7 +65,33 @@
         "language" : "Langue de la News",
         "content" : "Contenu",
         "url" : "URL du message complet",
-        "expires" : "Date d'expiration du message"
+        "expires" : "Date d'expiration du message",
+
+        // TODO NEW: Official date
+        "date" : "Official date",
+
+        // TODO NEW: Linked Application
+        "appId" : "Linked Application",
+
+        // TODO NEW: Linked Study
+        "studyId" : "Linked Study",
+
+        // TODO NEW: Layout
+        "layout" : "Layout",
+        "layouts" : {
+
+            // TODO NEW: Small (1x1)
+            "small" : "Small (1x1)",
+
+            // TODO NEW: Wide (2x1)
+            "wide" : "Wide (2x1)",
+
+            // TODO NEW: High (1x2)
+            "high" : "High (1x2)",
+
+            // TODO NEW: Large (2x2)
+            "large" : "Large (2x2)"
+        }
     },
 
     "admin_registration" : {
@@ -123,7 +149,14 @@
         "created_at" : "Créée le",
         "created_by" : "Créée par",
         "description" : "Description",
+
+        // TODO CHANGED
+        // OLD: Join Methods
+        // NEW: Participation procedures
         "joinmethods" : "Procédures de participation",
+
+        // TODO NEW: Type
+        "type" : "Type",
         "code" : "Code",
         "startDate" : "Date de début",
         "endDate" : "Date de fin",
@@ -140,6 +173,9 @@
         "team" : "Team",
         "role" : "Rôle",
         "history" : "Historique",
+
+        // TODO NEW: Linked Applications
+        "links" : "Linked Applications",
         "end_validation_btn" : "Finaliser la validation",
         "back_to_draft_btn" : "Revenir à l'ébauche",
         "delete_study_btn" : "Effacer l'étude"

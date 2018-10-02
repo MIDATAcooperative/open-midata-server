@@ -86,7 +86,7 @@
     "select_btn" : "View",
     "validate_btn" : "Confirm",
     "study" : "Study",
-    "app.type" : "Application type",
+    "app_type" : "Application type",
     "no_valid_app" : "No application selected",
     "type" : "How are they linked?",
     "types" : {
