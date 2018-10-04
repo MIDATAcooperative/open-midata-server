@@ -732,7 +732,8 @@
 	"retreat_btn" : "Retreat from participation",
 	"status" : "Status",
 	"recommended_apps" : "Recommended Apps",
-	"use_app" : "Use now"
+	"use_app" : "Use now",
+	"for_participants" : "Participation Info"
   },
 
   "user" : {

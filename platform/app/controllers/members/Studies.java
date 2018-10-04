@@ -137,7 +137,7 @@ public class Studies extends APIController {
 			code.status != ParticipationCodeStatus.SHARED && 
 			code.status != ParticipationCodeStatus.REUSEABLE) return inputerror("code","alreadyused","Participation code has expired.");
 		
-		Study study = Study.getById(code.study, Sets.create("name", "participantSearchStatus", "owner", "createdBy", "recordQuery", "code"));
+		Study study = Study.getById(code.study, Sets.create("name", "type", "participantSearchStatus", "owner", "createdBy", "recordQuery", "code"));
 				
 		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) return inputerror("code", "notsearching", "Study is not searching for participants.");
 		
@@ -397,7 +397,7 @@ public class Studies extends APIController {
 		
 		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country"));		
 		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "pstatus", "ownerName", "owner", "authorized", "sharingQuery", "validUntil", "createdBefore"));		
-		Study study = Study.getById(studyId, Sets.create("name", "executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "anonymous", "termsOfUse", "code"));
+		Study study = Study.getById(studyId, Sets.create("name", "type", "executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "anonymous", "termsOfUse", "code"));
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
 		
@@ -417,7 +417,7 @@ public class Studies extends APIController {
 				
 		Member user = userId != null ? Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country")) : null;		
 		StudyParticipation participation = userId != null ? StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "pstatus", "ownerName", "owner", "authorized", "sharingQuery", "validUntil", "createdBefore")) : null;		
-		Study study = Study.getById(studyId, Sets.create("executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "anonymous", "requirements", "code"));
+		Study study = Study.getById(studyId, Sets.create("type", "executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "anonymous", "requirements", "code"));
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
 		if (participation == null) {
