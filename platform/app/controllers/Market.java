@@ -603,14 +603,10 @@ public class Market extends APIController {
 	 * @return status ok
 	 * @throws JsonValidationException
 	 * @throws InternalServerException
-	 */
-	@BodyParser.Of(BodyParser.Json.class)
+	 */	
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
-	public static Result deletePlugin(String pluginIdStr) throws JsonValidationException, AppException {
-		// validate json
-		JsonNode json = request().body().asJson();
-			
+	public static Result deletePlugin(String pluginIdStr) throws JsonValidationException, AppException {		
 		// validate request		
 		MidataId pluginId = new MidataId(pluginIdStr);
 		
@@ -639,11 +635,12 @@ public class Market extends APIController {
 		}		 
 		app.status = PluginStatus.DELETED;
 		app.spotlighted = false;
+		String filename = app.filename;
 		app.filename = null;
 		
 	    try {
 	        app.update();
-	        PluginIcon.delete(app.filename);
+	        PluginIcon.delete(filename);
 	    } catch (LostUpdateException e) {
 	        throw new BadRequestException("error.concurrent.update", "Concurrent updates. Reload page and try again.");
 	    }

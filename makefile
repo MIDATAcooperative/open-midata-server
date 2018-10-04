@@ -288,6 +288,29 @@ $(CERTIFICATE_DIR)/selfsign.crt:
 	$(info ------------------------------)
 	mkdir -p $(CERTIFICATE_DIR)
 	openssl req -x509 -nodes -newkey rsa:2048 -keyout $(CERTIFICATE_DIR)/selfsign.key -out $(CERTIFICATE_DIR)/selfsign.crt -days 365
+
+order-certificate:
+	$(info ---------------------------------------------)
+	$(info Generate Certificate Request )
+	$(info ---------------------------------------------) 		
+	$(eval CSRFILE:=$(abspath $(CERTIFICATE_DIR)/$(DOMAIN)_$(YEAR).csr))
+	$(eval KEYFILE:=$(abspath $(CERTIFICATE_DIR)/$(DOMAIN)_$(YEAR).key))
+	openssl req -new -newkey rsa:2048 -nodes -keyout $(KEYFILE) -out $(CSRFILE)
+	chmod ugo-rwx $(KEYFILE)
+	@echo Here is your CSR:
+	@echo
+	@cat $(CSRFILE)
+	@echo
+	
+install-certificate:
+	$(info ---------------------------------------------)
+	$(info Install new certificate )
+	$(info ---------------------------------------------) 		
+	$(eval PEMFILE:=$(abspath $(CERTIFICATE_DIR)/$(DOMAIN)_$(YEAR).pem))
+	$(eval KEYFILE:=$(abspath $(CERTIFICATE_DIR)/$(DOMAIN)_$(YEAR).key))	
+	@read -p "Hit enter and copy certificate into editor (with certificate chain):" dummy
+	nano $(PEMFILE)		
+	echo "CERTIFICATE_PEM=$(PEMFILE)\nCERTIFICATE_KEY=$(KEYFILE)\n" > conf/certificate.conf	
 		
 use-loadbalancer: /etc/ssl/certs/ssl-cert-snakeoil.pem
 	echo "CERTIFICATE_PEM=/etc/ssl/certs/ssl-cert-snakeoil.pem\nCERTIFICATE_KEY=/etc/ssl/private/ssl-cert-snakeoil.key\n" >conf/certificate.conf

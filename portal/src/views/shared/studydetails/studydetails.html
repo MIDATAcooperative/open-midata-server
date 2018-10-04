@@ -91,14 +91,31 @@
 
 		<div class="col-sm-8">
 				
-				    <p class="lead">{{ study.name }}</p>
-				    <div class="line"></div>			
-					<p ng-hide="study.infos.length">{{ study.description }}</p>
+				    
+				    
+				    <div class="panel panel-primary" ng-if="study.infosPart.length">
+				        <div class="panel-heading" translate="studydetails.for_participants"></div>
+				        <div class="panel-body">
 					
+					    <div ng-repeat="info in study.infosPart | filter : { 'type' : '!SUMMARY' }">
+					       <h4 ng-hide="info.type=='DESCRIPTION'" translate="{{ 'enum.infos.'+info.type }}"></h4>
+					       <p>{{ info.value[lang] || info.value.int }}</p>
+					    </div> 
+					
+					</div></div>
+				    
+				    <p class="lead">{{ study.name }}</p>
+				    <div class="line"></div>	
+				    		
+					<p ng-hide="study.infos.length">{{ study.description }}</p>
+															
 					<div ng-repeat="info in study.infos | filter : { 'type' : '!SUMMARY' }">
 					  <h4 ng-hide="info.type=='DESCRIPTION'" translate="{{ 'enum.infos.'+info.type }}"></h4>
 					  <p>{{ info.value[lang] || info.value.int }}</p>
 					</div>
+					
+					
+				
 					
                     <p ng-show="study.termsOfUse">
 					  <a href="javascript:" ui-sref="^.terms({ which : study.termsOfUse })" translate="registration.study_agb"></a>

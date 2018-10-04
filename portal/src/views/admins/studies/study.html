@@ -59,6 +59,42 @@
     </loader>
     </div>
     </div>
+    
+    <div class="panel panel-primary">
+		<div class="panel-heading" translate="admin_study.infos"></div>
+		<div class="body">
+		  <div ng-repeat="info in study.infos">
+		    <h4 translate="{{ 'enum.infos.'+info.type }}"></h4>
+		    <div ng-repeat="(k,v) in info.value">
+		      <p><b>{{k}}:</b><br>{{v}}</p>
+		    </div>
+		  </div>
+		</div>
+	</div>
+	
+	<div class="panel panel-primary" ng-show="study.infosInternal.length">
+		<div class="panel-heading" translate="admin_study.infos_internal"></div>
+		<div class="body">
+		  <div ng-repeat="info in study.infosInternal">
+		    <h4 translate="{{ 'enum.infos.'+info.type }}"></h4>
+		    <div ng-repeat="(k,v) in info.value">
+		      <p><b>{{k}}:</b><br>{{v}}</p>
+		    </div>
+		  </div>
+		</div>
+	</div>
+	     
+	<div class="panel panel-primary" ng-show="study.infosPart.length">
+		<div class="panel-heading" translate="admin_study.infos_part"></div>
+		<div class="body">
+		  <div ng-repeat="info in study.infosPart">
+		    <h4 translate="{{ 'enum.infos.'+info.type }}"></h4>
+		    <div ng-repeat="(k,v) in info.value">
+		      <p><b>{{k}}:</b><br>{{v}}</p>
+		    </div>
+		  </div>
+		</div>
+	</div>      
         
     <div class="panel panel-primary">
 		<div class="panel-heading" translate="admin_study.required_information"></div>
