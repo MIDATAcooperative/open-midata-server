@@ -138,6 +138,10 @@
      "startDate" : "Start Date",
      "endDate" : "End Date",
      "dataCreatedBefore" : "Data freeze date",
+     
+     "infos" : "Public information",
+     "infos_part" : "Information for participants",
+     "infos_internal" : "Internal Information",     
      "required_information" : "Required Information",
      "anonymous" : "Anonymous",
      "required_assistance" : "Required Assistance",
