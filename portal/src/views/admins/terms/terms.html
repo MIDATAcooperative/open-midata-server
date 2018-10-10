@@ -5,6 +5,12 @@
 		<div class="panel-heading" translate="admin_terms.title">Terms</div>
 		<div class="body">
       <loader busy="status.isBusy !== false">
+      <form class="form-horizontal">
+      <formrow myid="name" label="admin_terms.restrict_name">
+        <input type="text" class="form-control" ng-model="filter.name">
+      </formrow>
+      </form>
+      
       <table class="table" ng-show="terms.length > 0">
         <tr>
           <th translate="admin_terms.name"></th>
@@ -13,12 +19,18 @@
           <th translate="admin_terms.createdAt"></th>  
           <th></th>        
         </tr>
-        <tr ng-repeat="term in terms">
-          <td><a ui-sref="^.terms({ which : name(term), lang : term.language })">{{ term.name }}</a></td>
-          <td>{{ term.version }}</td>
-          <td>{{ term.language }}</td>
-          <td>{{ term.createdAt | date : 'dd.MM.yy' }}</td>         
-        </tr>
+        <tbody ng-repeat="byname in terms | filter : byName">
+         <tr ng-repeat="byversion in byname">
+           <td><span ng-show="$first">{{ byversion[0].name }}</span></td>
+           <td>{{ byversion[0].version }}</td>
+           <td>
+             <span ng-repeat="term in byversion">
+               <a ui-sref="^.terms({ which : name(term), lang : term.language })">{{ term.language }}</a>
+             </span>
+           </td>
+           <td>{{ byversion[0].createdAt | date : 'dd.MM.yy' }}</td>
+         </tr>
+        </tbody>         
       </table>
       <p ng-show="terms.length == 0" translate="admin_terms.empty"></p>
       

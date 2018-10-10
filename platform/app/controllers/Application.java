@@ -1020,6 +1020,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.Terms.get(),
 				controllers.routes.javascript.Terms.search(),
 				controllers.routes.javascript.Terms.add(),
+				controllers.routes.javascript.Terms.agreedToTerms(),
 				
 		        // Portal
 		        controllers.routes.javascript.PortalConfig.getConfig(),

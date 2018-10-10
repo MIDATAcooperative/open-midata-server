@@ -18,6 +18,7 @@ import play.mvc.Security;
 import utils.InstanceConfig;
 import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
+import utils.auth.PreLoginSecured;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -90,6 +91,29 @@ public class Terms extends APIController {
 		String ppolicy = config.hasPath("versions.midata-privacy-policy") ? config.getString("versions.midata-privacy-policy") : "1.0";		
 		user.agreedToTerms("midata-terms-of-use--"+terms, user.initialApp);
 		user.agreedToTerms("midata-privacy-policy--"+ppolicy, user.initialApp);		
+	}
+	
+	
+	@APICall
+	@Security.Authenticated(PreLoginSecured.class)
+	@BodyParser.Of(BodyParser.Json.class)
+	public static Result agreedToTerms() throws AppException {
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		JsonNode json = request().body().asJson();
+		JsonValidation.validate(json, "terms", "app");
+		
+		String terms = JsonValidation.getString(json, "terms");
+		
+		if (terms.equals("midata-privacy-policy")) terms = InstanceConfig.getInstance().getPrivacyPolicy();
+		else if (terms.equals("midata-terms-of-use")) terms = InstanceConfig.getInstance().getTermsOfUse();
+		
+		MidataId app = JsonValidation.getMidataId(json, "app");
+		
+		User user = User.getById(userId, Sets.create(User.FOR_LOGIN));
+		if (user == null) throw new InternalServerException("error.internal", "Session user does not exist.");
+		user.agreedToTerms(terms, app);
+		
+		return Application.loginHelper(user);	
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)

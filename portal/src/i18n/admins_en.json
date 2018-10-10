@@ -114,7 +114,8 @@
     "name" : "Name",
     "version" : "Version",
     "language" : "Language",
-    "createdAt" : "Creation Date"
+    "createdAt" : "Creation Date",
+    "restrict_name" : "Filter by name"
   },
   
   "admin_manageterms" : {

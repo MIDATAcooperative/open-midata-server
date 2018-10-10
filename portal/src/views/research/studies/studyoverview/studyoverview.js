@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('StudyOverviewCtrl', ['$scope', '$state', 'server', 'status', 'usergroups', 'apps', function($scope, $state, server, status, usergroups, apps) {
+.controller('StudyOverviewCtrl', ['$scope', '$state', 'server', 'status', 'usergroups', 'apps', 'views', function($scope, $state, server, status, usergroups, apps, views) {
 	
 	$scope.studyid = $state.params.studyId;
 	$scope.study = {};
@@ -56,7 +56,12 @@ angular.module('portal')
 		       $scope.study.executionStatus == "RUNNING";
 	};
 	
-	$scope.startValidation = function() {
+	$scope.startValidation = function(conf) {
+		if (!conf) {
+			$scope.showConfirm("validation");
+			return;
+		}
+		views.disableView("confirm");
 		$scope.error = null;
 		
 		server.post(jsRoutes.controllers.research.Studies.startValidation($scope.studyid).url).
@@ -80,7 +85,12 @@ angular.module('portal')
 		});
 	};
 	
-	$scope.endParticipantSearch = function() {
+	$scope.endParticipantSearch = function(conf) {
+		if (!conf) {
+			$scope.showConfirm("end_participant_search");
+			return;
+		}
+		views.disableView("confirm");
 		$scope.error = null;
 		
 		server.post(jsRoutes.controllers.research.Studies.endParticipantSearch($scope.studyid).url).
@@ -92,7 +102,7 @@ angular.module('portal')
 		});
 	};
 	
-	$scope.startExecution = function() {
+	$scope.startExecution = function(conf) {
 		$scope.error = null;
 		
 		server.post(jsRoutes.controllers.research.Studies.startExecution($scope.studyid).url).
@@ -104,7 +114,12 @@ angular.module('portal')
 		});
 	};
 	
-	$scope.finishExecution = function() {
+	$scope.finishExecution = function(conf) {
+		if (!conf) {
+			$scope.showConfirm("finish_execution");
+			return;
+		}
+		views.disableView("confirm");
 		$scope.error = null;
 		
 		server.post(jsRoutes.controllers.research.Studies.finishExecution($scope.studyid).url).
@@ -116,7 +131,12 @@ angular.module('portal')
 		});
 	};
 	
-	$scope.abortExecution = function() {
+	$scope.abortExecution = function(conf) {
+		if (!conf) {
+			$scope.showConfirm("abort");
+			return;
+		}
+		views.disableView("confirm");
 		$scope.error = null;
 		
 		server.post(jsRoutes.controllers.research.Studies.abortExecution($scope.studyid).url).
@@ -126,6 +146,11 @@ angular.module('portal')
 		}, function(err) {
 			$scope.error = err.data;			
 		});
+	};
+	
+	$scope.showConfirm = function(what) {
+		$scope.confirm = { id : what };
+		views.setView("confirm", { id : what }, $scope.study.name);	
 	};
 	
 	$scope.addProcessTag = function(tag) {
@@ -141,7 +166,12 @@ angular.module('portal')
 		}
 	};
 	
-	$scope.delete = function() {
+	$scope.delete = function(conf) {
+		if (!conf) {
+			$scope.showConfirm("delete");
+			return;
+		}
+		views.disableView("confirm");
 		$scope.error = null;
 		
 		server.post(jsRoutes.controllers.research.Studies.delete($scope.studyid).url).
@@ -225,6 +255,10 @@ angular.module('portal')
 	
 	$scope.go = function(what) {
 		$state.go(what.page);
+	};
+	
+	$scope.cancel = function() {
+		views.disableView("confirm");
 	};
 	
 	$scope.reload();

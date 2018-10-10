@@ -52,6 +52,7 @@ import models.RecordsInfo;
 import models.ResearchUser;
 import models.Space;
 import models.Study;
+import models.StudyAppLink;
 import models.StudyGroup;
 import models.StudyParticipation;
 import models.StudyRelated;
@@ -2043,6 +2044,9 @@ public class Studies extends APIController {
 			StudyRelated.deleteByStudyAndParticipant(studyId, studyRelated._id);
 		}
 
+		Set<StudyAppLink> links = StudyAppLink.getByStudy(studyId);
+		for (StudyAppLink link : links) link.delete();
+		
 		Study.delete(studyId);
 
 		AuditManager.instance.success();

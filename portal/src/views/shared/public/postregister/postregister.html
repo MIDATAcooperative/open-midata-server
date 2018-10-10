@@ -1,5 +1,6 @@
 
-<div class="mi-or-blue container" ng-controller="PostRegisterCtrl" ng-cloak>
+<div ng-controller="PostRegisterCtrl" ng-cloak>
+  <div class="mi-or-blue container" ng-hide="view.active">
 	<div class="row">
 
 		<div class="col-sm-12">
@@ -26,6 +27,24 @@
 						</div>
 						
 						<div ng-hide="progress.PASSWORD_SET">
+						
+						<div ng-show="progress.NEWEST_TERMS_AGREED">
+						  <p translate="postregister.terms_agreed"></p>
+						  
+						  <a ng-click="terms({which : 'midata-terms-of-use'});" href="javascript:" translate="registration.agb3"></a>
+						  <div class="extraspace"></div>
+						  <button class="btn btn-primary btn-block" ng-disabled="status.action=='terms'" ng-click="agreedToTerms('midata-terms-of-use');" translate="postregister.agree_btn"></button>						
+						</div>
+						
+						<div ng-show="progress.NEWEST_PRIVACY_POLICY_AGREED && !progress.NEWEST_TERMS_AGREED">
+						  <p translate="postregister.privacy_policy_agreed"></p>
+						  <a ng-click="terms({which : 'midata-privacy-policy'});" href="javascript:" translate="registration.privacypolicy3"></a>
+						  <div class="extraspace"></div>
+						  <button class="btn btn-primary btn-block" ng-disabled="status.action=='terms'" ng-click="agreedToTerms('midata-privacy-policy');" translate="postregister.agree_btn"></button>
+						</div>
+						
+						<div ng-hide="progress.NEWEST_TERMS_AGREED || progress.NEWEST_PRIVACY_POLICY_AGREED">
+						
 						<div ng-show="progress.EMAIL_VERIFIED">
 							<p translate="postregister.email_instructions"></p>
 							<button class="btn btn-default" ng-click="resend()" translate="postregister.resend_btn"></button>
@@ -44,7 +63,7 @@
 							<hr>
 						</div>
 						
-						
+					
 
                         <div ng-show="progress.ADMIN_VERIFIED">
                           <p translate="postregister.admin_verified"></p>
@@ -128,7 +147,7 @@
 
 						</div>
                      </div>
-
+                    </div>
                        
                         
 						<p ng-show="codeSuccess" class="alert alert-success" translate="postregister.address_success"></p>
@@ -139,6 +158,10 @@
 				</div>
 			</div>
 		</div>
-
+     </div>
+	</div>
+	
+	<div class="mi-or-signup container" ng-show="view.active">
+		<div ng-include="'/views/shared/public/terms/terms-modal.html'"></div>
 	</div>
 </div>
