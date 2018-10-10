@@ -1,6 +1,8 @@
 package models.enums;
 
+import models.Member;
 import models.User;
+import utils.InstanceConfig;
 
 /**
  * Requirements that a user must fulfill to do some action (like participate in a study)
@@ -57,8 +59,22 @@ public enum UserFeature {
 	/**
 	 * the user account has a password
 	 */
-	PASSWORD_SET;
+	PASSWORD_SET,
+	
+	/**
+	 * the user account has a birthday
+	 */
+	BIRTHDAY_SET,
+			
+	/**
+	 * the user has agreed to the newest version of terms 
+	 */
+	NEWEST_TERMS_AGREED,
 		
+	/**
+	 * the user has agreed to the newest version of privacy policy
+	 */
+	NEWEST_PRIVACY_POLICY_AGREED;
 	/**
 	 * Does a user satisfy this feature?
 	 * @param user
@@ -76,6 +92,13 @@ public enum UserFeature {
 			case MIDATA_COOPERATIVE_MEMBER: return user.contractStatus.equals(ContractStatus.SIGNED);
 			case ADMIN_VERIFIED: return user.status.equals(UserStatus.ACTIVE);
 			case PASSWORD_SET: return user.password != null;
+			case BIRTHDAY_SET: return (!(user instanceof Member)) || ((Member) user).birthday != null;
+			case NEWEST_TERMS_AGREED:
+				InstanceConfig ic = InstanceConfig.getInstance();
+				return user.termsAgreed != null && user.termsAgreed.contains(ic.getTermsOfUse());
+			case NEWEST_PRIVACY_POLICY_AGREED:
+				ic = InstanceConfig.getInstance();
+				return user.termsAgreed != null && user.termsAgreed.contains(ic.getPrivacyPolicy());
 		}
 		return false;
 	}

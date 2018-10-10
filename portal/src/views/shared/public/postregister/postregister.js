@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('PostRegisterCtrl', ['$scope', '$state', '$stateParams', 'status', 'server', 'session', 'oauth', 'users', function($scope, $state, $stateParams, status, server, session, oauth, users) {
+.controller('PostRegisterCtrl', ['$scope', '$state', '$stateParams', 'status', 'server', 'session', 'oauth', 'users', 'views', function($scope, $state, $stateParams, status, server, session, oauth, users, views) {
 	
 	// init
 	$scope.passphrase = {};
@@ -12,6 +12,7 @@ angular.module('portal')
 	$scope.codeSuccess = false;
 	$scope.resentSuccess = false;
 	$scope.isoauth = false;
+	$scope.view = views.getView("terms");
 	
 	$scope.init = function() {
 	if ($stateParams.feature) {
@@ -161,7 +162,19 @@ angular.module('portal')
 		   $scope.retry();
 		});
 	};
-				
+		
+	$scope.terms = function(def) {
+		console.log("TERMS");
+		views.setView("terms", def, "Terms");
+	};
+	
+	$scope.agreedToTerms = function(terms) {
+		var data = { terms : terms, app : oauth.getAppname() ? oauth.app._id : null };
+		$scope.status.doAction('terms', server.post(jsRoutes.controllers.Terms.agreedToTerms().url, JSON.stringify(data) ))
+		.then(function(result) {
+	    	$scope.retry(result);	    	
+	    });	
+	};
 	
 	if ($stateParams.token && $state.current.data.mode) {
 		$scope.confirm();

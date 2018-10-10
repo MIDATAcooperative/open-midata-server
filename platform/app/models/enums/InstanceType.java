@@ -157,12 +157,12 @@ public enum InstanceType {
 	
 	public Set<UserFeature> defaultRequirementsPortalLogin(UserRole role) {
 		if (this == PERFTEST) return EnumSet.of(UserFeature.EMAIL_ENTERED);
-		if (role != UserRole.MEMBER) return EnumSet.of(UserFeature.EMAIL_VERIFIED, UserFeature.ADMIN_VERIFIED, UserFeature.PASSWORD_SET);
+		if (role != UserRole.MEMBER) return EnumSet.of(UserFeature.EMAIL_VERIFIED, UserFeature.ADMIN_VERIFIED, UserFeature.PASSWORD_SET, UserFeature.NEWEST_PRIVACY_POLICY_AGREED, UserFeature.NEWEST_TERMS_AGREED);
 		if (this == TEST || this == DEMO) {
-		   return EnumSet.of(UserFeature.EMAIL_VERIFIED, UserFeature.ADMIN_VERIFIED, UserFeature.PASSWORD_SET);
+		   return EnumSet.of(UserFeature.EMAIL_VERIFIED, UserFeature.ADMIN_VERIFIED, UserFeature.PASSWORD_SET, UserFeature.NEWEST_PRIVACY_POLICY_AGREED, UserFeature.NEWEST_TERMS_AGREED);
 		}
-		if (this == PROD) return EnumSet.of(UserFeature.EMAIL_ENTERED, UserFeature.PASSWORD_SET);
-		return EnumSet.of(UserFeature.EMAIL_VERIFIED, UserFeature.PASSWORD_SET);
+		if (this == PROD) return EnumSet.of(UserFeature.EMAIL_ENTERED, UserFeature.PASSWORD_SET, UserFeature.NEWEST_PRIVACY_POLICY_AGREED, UserFeature.NEWEST_TERMS_AGREED);
+		return EnumSet.of(UserFeature.EMAIL_VERIFIED, UserFeature.PASSWORD_SET, UserFeature.NEWEST_PRIVACY_POLICY_AGREED, UserFeature.NEWEST_TERMS_AGREED);
 	}
 	
     public Set<UserFeature> defaultRequirementsOAuthLogin(UserRole role) {

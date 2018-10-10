@@ -106,6 +106,23 @@
     <button ng-show="readyForStartExecution()" class="btn btn-primary" ng-click="startExecution()" translate="studyoverview.start_study_execution_btn"></button>
     <button ng-show="readyForFinishExecution()" class="btn btn-primary" ng-click="finishExecution()" translate="studyoverview.finish_study_btn"></button>
     <button ng-show="readyForDelete()" class="btn btn-danger" ng-click="delete()" translate="studyoverview.delete_study_btn"></button>
-    <button ng-show="readyForAbort()" class="btn btn-danger" ng-click="abortExecution()" translate="studyoverview.abort_study_btn"></button>
+    <button ng-show="readyForAbort()" class="btn btn-danger" ng-click="abortExecution()" translate="studyoverview.abort_study_btn"></button>   
+    
+    <modal viewid="confirm">
+      <div class="modal-body">
+      <p><span translate="studyoverview.name"></span>: <b>{{ study.name }}</b></p>	          
+      <p translate="{{ 'studyoverview.confirm.'+confirm.id }}"></p>
+      <p translate="studyoverview.confirm.are_you_sure"></p>
+      <div class="extraspace"></div>
+      </div>
+      <div class="modal-footer">
+      <button ng-show="confirm.id=='validation'" class="btn btn-primary" ng-click="startValidation(true)" translate="studyoverview.start_validation_btn"></button>      
+      <button ng-show="confirm.id=='end_participant_search'" class="btn btn-primary" ng-click="endParticipantSearch(true)" translate="studyoverview.end_participant_search_btn"></button>      
+      <button ng-show="confirm.id=='finish_execution'" class="btn btn-primary" ng-click="finishExecution(true)" translate="studyoverview.finish_study_btn"></button>
+      <button ng-show="confirm.id=='delete'" class="btn btn-danger" ng-click="delete(true)" translate="studyoverview.delete_study_btn"></button>
+      <button ng-show="confirm.id=='abort'" class="btn btn-danger" ng-click="abortExecution(true)" translate="studyoverview.abort_study_btn"></button>            
+      <button class="btn btn-default" translate="common.cancel_btn" ng-click="cancel()"></button>
+      </div>       
+    </modal>
     
 </div>
