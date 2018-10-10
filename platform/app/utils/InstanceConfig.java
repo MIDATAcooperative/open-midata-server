@@ -149,4 +149,20 @@ public class InstanceConfig {
 			throw e;
 		}
 	}
+	
+	/**
+	 * Get current version of terms of use
+	 * @return
+	 */
+	public String getTermsOfUse() {	
+	  return "midata-terms-of-use--" + (config.hasPath("versions.midata-terms-of-use") ? config.getString("versions.midata-terms-of-use") : "1.0");
+	}
+	
+	/**
+	 * Get current version of privacy policy
+	 * @return
+	 */
+	public String getPrivacyPolicy() {
+	   return "midata-privacy-policy--" + (config.hasPath("versions.midata-privacy-policy") ? config.getString("versions.midata-privacy-policy") : "1.0");		
+	}
 }

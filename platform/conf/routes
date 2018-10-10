@@ -247,6 +247,7 @@ POST    /api/portal/config              controllers.PortalConfig.setConfig()
 POST     /api/terms/get                 controllers.Terms.get()
 POST     /api/terms/add                 controllers.Terms.add()
 POST     /api/terms/search              controllers.Terms.search()
+POST     /api/terms/agreed              controllers.Terms.agreedToTerms()
 
 # JS Routes
 GET     /api/assets/javascripts/routes  controllers.Application.javascriptRoutes()

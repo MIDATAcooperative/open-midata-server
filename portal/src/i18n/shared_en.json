@@ -637,7 +637,11 @@
     "email_success" : "Email address has been confirmed.",
     "address_entered" : "Your postal address is required to use this service, please provide it.",
     "phone_entered" : "A mobile phone number is required to use this service, please provide it.",
-    "admin_verified" : "Your account must be unlocked by a MIDATA administrator. Please retry later. If your account has not been unlocked for more than 24 hours, please contact MIDATA."
+    "admin_verified" : "Your account must be unlocked by a MIDATA administrator. Please retry later. If your account has not been unlocked for more than 24 hours, please contact MIDATA.",
+    
+    "terms_agreed" : "The MIDATA terms and conditions have been updated. Please confirm that you agree to the new version.",
+    "privacy_policy_agreed" : "The MIDATA privacy policy has been updated. Please confirm that you agree to the new version.",
+    "agree_btn" : "I agree"
   },
 
   "changepassphrase" : {
