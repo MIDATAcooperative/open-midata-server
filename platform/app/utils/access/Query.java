@@ -19,6 +19,7 @@ import models.MidataId;
 import models.Plugin;
 import models.RecordGroup;
 import models.Study;
+import utils.AccessLog;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -55,8 +56,9 @@ public class Query {
 		this.cache = cache;
 		this.apsId = apsId;
 		this.context = context;
+		AccessLog.logQuery(apsId, properties, fields);
 		process();
-		//AccessLog.logQuery(apsId, properties, fields);
+		
 	}
 	
 	public Query(Map<String, Object> properties, Set<String> fields, APSCache cache, MidataId apsId, AccessContext context, boolean noinit)  {

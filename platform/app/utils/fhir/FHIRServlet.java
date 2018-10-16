@@ -89,11 +89,19 @@ public class FHIRServlet extends RestfulServer {
       myProviders.put("Immunization",  new ImmunizationResourceProvider()); 
       myProviders.put("CarePlan",  new CarePlanResourceProvider());
       myProviders.put("Sequence",  new SequenceResourceProvider());
-      
+                  
       resourceProviders.addAll(myProviders.values());
+      
+      List<Object> plainProviders = new ArrayList<Object>();
+      
+      plainProviders.add(new Transactions());
+      plainProviders.add(new MessageProcessor());
+      
       setResourceProviders(resourceProviders);
       //setInterceptors(new PaginationSupport());
-      setPlainProviders(new Transactions());
+      
+      
+      setPlainProviders(plainProviders);
       //setPagingProvider(new VirtualPaging());
       
       System.out.println("FHIR Servlet init end");

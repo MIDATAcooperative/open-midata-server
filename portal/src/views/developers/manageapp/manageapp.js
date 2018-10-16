@@ -24,7 +24,7 @@ angular.module('portal')
     ];
 	$scope.types = [
 	    { value : "visualization", label : "Plugin" },
-	    { value : "create", label : "Input Form (Deprecated)" },
+	    { value : "service", label : "Service" },
 	    { value : "oauth1", label : "OAuth 1 Import" },
 	    { value : "oauth2", label : "OAuth 2 Import" },
 	    { value : "mobile", label : "Mobile App" }
@@ -92,7 +92,7 @@ angular.module('portal')
 		});
 		
 		// check whether url contains ":authToken"
-		if ($scope.app.type && $scope.app.type !== "mobile" && $scope.app.url.indexOf(":authToken") < 0) {
+		if ($scope.app.type && $scope.app.type !== "mobile" && $scope.app.type !== "service" && $scope.app.url.indexOf(":authToken") < 0) {
 			$scope.myform.url.$setValidity('authToken', false);
 			//$scope.error = "Url must contain ':authToken' to receive the authorization token required to create records.";
 			return;

@@ -147,7 +147,7 @@ public class Market extends APIController {
 				app.pluginVersion = System.currentTimeMillis();
 				
 				try {
-				  Query.validate(app.defaultQuery, app.type.equals("mobile"));
+				  Query.validate(app.defaultQuery, app.type.equals("mobile") || app.type.equals("service"));
 				} catch (BadRequestException e) {
 				  throw new JsonValidationException(e.getLocaleKey(), "defaultQuery", "invalid", e.getMessage());
 				}
@@ -222,7 +222,7 @@ public class Market extends APIController {
 					app.tokenExchangeParams = JsonValidation.getStringOrNull(json, "tokenExchangeParams");
 				}
 			}
-			if (app.type.equals("mobile")) {
+			if (app.type.equals("mobile") || app.type.equals("service")) {
 				app.secret = JsonValidation.getStringOrNull(json, "secret");
 				app.redirectUri = JsonValidation.getStringOrNull(json, "redirectUri");
 			}
@@ -401,7 +401,7 @@ public class Market extends APIController {
 		} else if (type.equals("oauth2")) {
 			JsonValidation.validate(json, "filename", "name", "description", "url", "authorizationUrl", "accessTokenUrl",
 					"consumerKey", "consumerSecret", "scopeParameters", "apiUrl");
-		} else if (type.equals("mobile")) {
+		} else if (type.equals("mobile") || type.equals("service")) {
 			JsonValidation.validate(json, "filename", "name", "description", "secret");
 		} else if (type.equals("visualization")) {
 			JsonValidation.validate(json, "filename", "name", "description", "url");
@@ -460,7 +460,7 @@ public class Market extends APIController {
 		plugin.noUpdateHistory = JsonValidation.getBoolean(json, "noUpdateHistory");
 		
 		try {
-		    Query.validate(plugin.defaultQuery, plugin.type.equals("mobile"));
+		    Query.validate(plugin.defaultQuery, plugin.type.equals("mobile") || plugin.type.equals("service"));
 		} catch (BadRequestException e) {
 			throw new JsonValidationException(e.getLocaleKey(), "defaultQuery", "invalid", e.getMessage());
 		}
@@ -490,7 +490,7 @@ public class Market extends APIController {
 				plugin.tokenExchangeParams = JsonValidation.getStringOrNull(json, "tokenExchangeParams");
 			}
 		}
-		if (plugin.type.equals("mobile")) {
+		if (plugin.type.equals("mobile") || plugin.type.equals("service")) {
 			plugin.secret = JsonValidation.getStringOrNull(json, "secret");
 			plugin.redirectUri = JsonValidation.getStringOrNull(json, "redirectUri");
 		}
@@ -559,7 +559,7 @@ public class Market extends APIController {
 		if (predefinedMessages != null) app.predefinedMessages = predefinedMessages;
 		
 		try {
-		  Query.validate(app.defaultQuery, app.type.equals("mobile"));
+		  Query.validate(app.defaultQuery, app.type.equals("mobile") || app.type.equals("service"));
 		} catch (BadRequestException e) {
 			throw new JsonValidationException(e.getLocaleKey(), "defaultQuery", "invalid", e.getMessage());
 		}
@@ -591,7 +591,7 @@ public class Market extends APIController {
 				app.tokenExchangeParams = JsonValidation.getStringOrNull(json, "tokenExchangeParams");
 			}
 		}
-		if (app.type.equals("mobile")) {
+		if (app.type.equals("mobile") || app.type.equals("service")) {
 			app.secret = JsonValidation.getStringOrNull(json, "secret");
 			app.redirectUri = JsonValidation.getStringOrNull(json, "redirectUri");
 		}
@@ -621,7 +621,7 @@ public class Market extends APIController {
 		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
 		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
 
-		if (app.type.equals("mobile")) {
+		if (app.type.equals("mobile") || app.type.equals("service")) {
 			Set<MobileAppInstance> installations =  MobileAppInstance.getByApplication(pluginId, Sets.create("_id", "owner"));
 			for (MobileAppInstance inst : installations) {				
 				KeyManager.instance.deleteKey(inst._id);

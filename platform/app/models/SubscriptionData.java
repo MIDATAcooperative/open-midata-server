@@ -23,7 +23,7 @@ public class SubscriptionData extends Model {
 	private static String collection = "subscriptions";
 	
 	@NotMaterialized
-	public final static Set<String> ALL = Collections.unmodifiableSet(Sets.create("owner", "format", "lastUpdated", "active", "endDate", "fhirSubscription"));
+	public final static Set<String> ALL = Collections.unmodifiableSet(Sets.create("owner", "app", "format", "content", "lastUpdated", "active", "endDate", "fhirSubscription"));
 
 	/**
 	 * The owner of the subscription
@@ -31,9 +31,19 @@ public class SubscriptionData extends Model {
 	public MidataId owner;
 	
 	/**
+	 * The owner app of the subscription
+	 */
+	public MidataId app;
+	
+	/**
 	 * The type of data this subscription listens to
 	 */
 	public String format;
+	
+	/**
+	 * The type of content this subscription listens to
+	 */
+	public String content;
 	
 	/**
 	 * Last updated timestamp
@@ -86,7 +96,7 @@ public class SubscriptionData extends Model {
 	public static List<SubscriptionData> getByOwnerAndFormat(MidataId owner, String format, Set<String> fields) throws InternalServerException {
 		return Model.getAllList(SubscriptionData.class, collection, CMaps.map("format", format).map("owner", owner), fields, 0);
 	}
-	
+		
 	public static List<SubscriptionData> getAllActive(Set<String> fields) throws InternalServerException {
 		return Model.getAllList(SubscriptionData.class, collection, CMaps.map("active", true), fields, 0);
 	}

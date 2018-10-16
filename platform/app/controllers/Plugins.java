@@ -179,16 +179,23 @@ public class Plugins extends APIController {
 		if (visualization == null)
 			throw new BadRequestException("error.unknown.plugin", "Unknown Plugin");
 		
-		String spaceName = JsonValidation.getString(json, "spaceName");
-		
-		String context = json.has("context") ? JsonValidation.getString(json, "context") : visualization.defaultSpaceContext;
-		MidataId study = json.has("study") ? JsonValidation.getMidataId(json, "study") : null;
-		
-        Space space = install(userId, visualization, context, spaceName, study);
-        
-        if (space != null) {
-		   return ok(JsonOutput.toJson(space, "Space", Space.ALL)).as("application/json");
-        }
+		if (visualization.type.equals("mobile")) throw new BadRequestException("error.invalid.plugin", "Wrong app type.");
+
+		if (visualization.type.equals("service")) {
+			User user = User.getById(userId, User.ALL_USER_INTERNAL);
+			MobileAPI.installApp(userId, visualization._id, user, "-----", true, Collections.emptySet());
+		} else {
+			String spaceName = JsonValidation.getString(json, "spaceName");
+			
+			String context = json.has("context") ? JsonValidation.getString(json, "context") : visualization.defaultSpaceContext;
+			MidataId study = json.has("study") ? JsonValidation.getMidataId(json, "study") : null;
+			
+	        Space space = install(userId, visualization, context, spaceName, study);
+	        
+	        if (space != null) {
+			   return ok(JsonOutput.toJson(space, "Space", Space.ALL)).as("application/json");
+	        }
+		}
 		
 		return ok();
 	}
@@ -231,7 +238,7 @@ public class Plugins extends APIController {
 			}
 		}
 
-		if (!visualization.type.equals("mobile")) {
+		if (!visualization.type.equals("mobile") && !visualization.type.equals("service")) {
 			if (spaceName == null || spaceName.equals(""))
 				spaceName = visualization.name;
 

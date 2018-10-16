@@ -29,7 +29,14 @@
   },
   
   "developer_yourapps" : {
-    "title" : "Your Plugins"
+    "title" : "Your Plugins",
+    "empty" : "You have not registered any plugin yet.",
+    "register" : "Register a new plugin",
+    "name" : "Name",
+    "type" : "Type",
+    "role" : "Target Role",
+    "manage_btn" : "manage",
+    "debug_info_btn" : "debug info"
   },
   
   "appmessages" : {
@@ -58,7 +65,9 @@
 	   "ACCOUNT_UNLOCK" : "Account unlocked by the administrator",
 	   "EMAIL_CHANGED_OLDADDRESS" : "Login email changed (send to old email address)",
 	   "EMAIL_CHANGED_NEWADDRESS" : "Login email changed (send to new email address)",
-	   "PASSWORD_FORGOTTEN" : "Password forgotten"	   
+	   "PASSWORD_FORGOTTEN" : "Password forgotten",
+	   "RESOURCE_CHANGE" : "Change of resource [code]",
+	   "PROCESS_MESSAGE" : "Process FHIR messgage with event [code]"	   
     }		      
   },
   
@@ -105,7 +114,7 @@
     "info" : {
        "filename" : "This name is internally used to identify your app. Should be a valid identifier (a-z, A-Z, 0-9, _).",
        "targetUserRole" : "Is your app for a specific role only? Otherwise choose 'Any Role'.",
-       "type" : "Choose 'Plugin' if your app will run as MIDATA portal plugin. Choose 'Mobile App' for an external application. Choose 'OAuth1 Import' or 'OAuth2 Import' if you need to connect to an external server using OAuth1 or OAuth2.",
+       "type" : "Choose 'Plugin' if your app will run as MIDATA portal plugin. Choose 'Mobile App' for an external application. Choose 'Service' for a server-side only script. Choose 'OAuth1 Import' or 'OAuth2 Import' if you need to connect to an external server using OAuth1 or OAuth2.",
        "name" : "The name of your app or plugin that will be presented to the end user.",
        "description" : "A description of your plugin that will also be shown on the marked place.",
        "tokenExchangeParams" : "Default is client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> but some services also require client_secret=<client_secret> or no client_id",

@@ -1266,9 +1266,14 @@ public class Studies extends APIController {
 
 		}
 
-		if (plugin.type.equals("mobile")) {
-			JsonValidation.validate(json, "device");
-			String device = JsonValidation.getString(json, "device");
+		if (plugin.type.equals("mobile") || plugin.type.equals("service")) {
+			String device;
+			if (plugin.type.equals("mobile")) {
+			  JsonValidation.validate(json, "device");
+			  device = JsonValidation.getString(json, "device");
+			} else {
+			  device = "service";	
+			}
 
 			MobileAppInstance appInstance = MobileAPI.installApp(userId, plugin._id, researcher, device, false, Collections.emptySet());
 			Map<String, Object> query = appInstance.sharingQuery;

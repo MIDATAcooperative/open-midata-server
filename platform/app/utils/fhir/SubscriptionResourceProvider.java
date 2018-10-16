@@ -40,9 +40,11 @@ import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
 import ca.uhn.fhir.rest.server.exceptions.ForbiddenOperationException;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
+import models.ContentCode;
 import models.MidataId;
 import models.Plugin;
 import models.SubscriptionData;
+import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.access.Feature_FormatGroups;
 import utils.auth.ExecutionInfo;
@@ -279,10 +281,10 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	}
 				
 	
-	private static void mayShare(MidataId pluginId, Map<String, Object> query) throws AppException {
+	private static void mayShare(MidataId pluginId, String format, String content) throws AppException {
 		Plugin plugin = Plugin.getById(pluginId);
 		if (plugin == null || !plugin.resharesData) throw new ForbiddenOperationException("Plugin is not allowed to share data.");
-		if (!isSubQuery(plugin.defaultQuery, query)) throw new ForbiddenOperationException("Plugin is not allowed to share this type of data.");				
+		if (!isSubQuery(plugin.defaultQuery, CMaps.map("format", format).mapNotEmpty("content", content))) throw new ForbiddenOperationException("Plugin is not allowed to share this type of data.");				
 	}
 	
 	
@@ -304,11 +306,13 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 		
 		masterQuery.remove("group-system");
 		subQuery.remove("group-system");
-		
+		AccessLog.log("newtest:");
 	    for (Map.Entry<String, Object> entry : masterQuery.entrySet()) {
+	    	AccessLog.log("test subquery:"+entry.getKey());
 	    	if (!subQuery.containsKey(entry.getKey())) return false;
 	    	Set<String> master = utils.access.Query.getRestriction(entry.getValue(), entry.getKey());
 	    	Set<String> sub = utils.access.Query.getRestriction(subQuery.get(entry.getKey()), entry.getKey());
+	    	AccessLog.log("master="+master.toString()+" sub="+sub.toString());
 	    	if (!master.containsAll(sub)) return false;	    	
 	    }
 		return true;
@@ -318,10 +322,28 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	@Override
 	public void createPrepare(SubscriptionData subscriptionData, Subscription theResource) throws AppException {
 		if (!info().context.mayAccess("Subscription", "fhir/Subscription")) throw new ForbiddenOperationException("Plugin is not allowed to create subscriptions (Access Query)."); 
-		if (theResource.getStatus().equals(SubscriptionStatus.ACTIVE) || theResource.getStatus().equals(SubscriptionStatus.REQUESTED)) mayShare(info().pluginId, CMaps.map("content", theResource.getCriteria()));
+		
+        String crit = theResource.getCriteria();
+        int p = crit.indexOf("?");
+        if (p>0) {
+        	subscriptionData.format = "fhir/"+crit.substring(0, p);
+        	String q = crit.substring(p+1);
+        	if (q.startsWith("code=")) {
+        		String cnt = q.substring("code=".length());
+        		String content = ContentCode.getContentForSystemCode(cnt.replace('|', ' '));
+        		if (content != null) subscriptionData.content = content;
+        		else throw new InvalidRequestException("Not supported subscription criteria. Restrict using format 'system|code'");
+        	} else if (crit.equals("Observation")) subscriptionData.content = null; 
+        	else throw new InvalidRequestException("Not supported subscription criteria.");
+        } else {
+            subscriptionData.format = "fhir/"+crit;
+            subscriptionData.content = crit;
+        }
+        
+        if (theResource.getStatus().equals(SubscriptionStatus.ACTIVE) || theResource.getStatus().equals(SubscriptionStatus.REQUESTED)) mayShare(info().pluginId, subscriptionData.format, subscriptionData.content);
 		if (theResource.getStatus().equals(SubscriptionStatus.REQUESTED)) theResource.setStatus(SubscriptionStatus.ACTIVE);
         subscriptionData.active = theResource.getStatus().equals(SubscriptionStatus.ACTIVE);
-        subscriptionData.format = "fhir/"+theResource.getCriteria();
+        
         subscriptionData.endDate = theResource.getEnd();
         subscriptionData.lastUpdated = System.currentTimeMillis();       
         theResource.setId(subscriptionData._id.toString());
@@ -340,6 +362,7 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 		SubscriptionData subscriptionData = new SubscriptionData();
 		subscriptionData._id = new MidataId();
 		subscriptionData.owner = info().ownerId;
+		subscriptionData.app = info().pluginId;
 		return subscriptionData;
 	}
 

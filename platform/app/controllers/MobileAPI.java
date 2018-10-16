@@ -177,7 +177,7 @@ public class MobileAPI extends Controller {
 		Plugin app = Plugin.getByFilename(name, Sets.create("type", "name", "secret", "status", "targetUserRole"));
 		if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");
 		
-		if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
+		if (!app.type.equals("mobile") && !app.type.equals("service")) throw new InternalServerException("error.internal", "Wrong app type");
 		if (app.secret == null || !app.secret.equals(secret)) throw new BadRequestException("error.unknown.app", "Unknown app");
 		
 	
@@ -217,6 +217,8 @@ public class MobileAPI extends Controller {
 			
 			if (device != null) phrase = device; else phrase = "???"+password;
 				
+			if (app.type.equals("service")) phrase = "-----";
+			
 			User user = null;
 			switch (role) {
 			case MEMBER : user = Member.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp", "failedLogins", "lastFailed"));break;
@@ -317,7 +319,7 @@ public class MobileAPI extends Controller {
 	}
 	
 	public static MobileAppInstance installApp(MidataId executor, MidataId appId, User member, String phrase, boolean autoConfirm, Set<MidataId> studyConfirm) throws AppException {
-		Plugin app = Plugin.getById(appId, Sets.create("name", "pluginVersion", "defaultQuery", "predefinedMessages", "termsOfUse", "writes"));
+		Plugin app = Plugin.getById(appId, Sets.create("name", "type", "pluginVersion", "defaultQuery", "predefinedMessages", "termsOfUse", "writes"));
 
 		Set<StudyAppLink> links = StudyAppLink.getByApp(appId);
 		
@@ -345,7 +347,11 @@ public class MobileAPI extends Controller {
 		MobileAppInstance appInstance = new MobileAppInstance();
 		appInstance._id = new MidataId();
 		appInstance.owner = member._id;
-		appInstance.name = "App: "+ app.name+" (Device: "+phrase.substring(0, 3)+")";
+		if (app.type.equals("service")) {
+			appInstance.name = "Service: "+ app.name;
+		} else {
+		    appInstance.name = "App: "+ app.name+" (Device: "+phrase.substring(0, 3)+")";
+		}
 		appInstance.applicationId = app._id;	
 		appInstance.appVersion = app.pluginVersion;
 		
