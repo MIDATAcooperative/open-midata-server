@@ -552,6 +552,7 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
         // For each found content type...						
 		for (RecordsInfo code : groups) {
 			paramMap.setCount(count);
+			paramMap.setFrom(null);
 			paramMap.setContent(code.contents.iterator().next());
 			
 			// If there are only few records execute query without restriction
