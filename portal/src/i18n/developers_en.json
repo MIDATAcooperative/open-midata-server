@@ -83,6 +83,8 @@
     "edit_help" : "Change the setup for your application.",
     "query_btn" : "Change Data Access Filter",
     "query_help" : "Define which types of data your application may access.",
+    "subscriptions_btn" : "Change Default Subscriptions",
+    "subscriptions_help" : "Define triggers that cause an action on the MIDATA server",
     "tokenExchangeParams" : "OAuth2 Parameters for the Token Exchange", 
     "testfromlocal_btn" : "Test your plugin from localhost",
     "testfromlocal_help" : "During development, you can test the plugin code stored on your local computer on this instance.",
@@ -196,5 +198,25 @@
   
   "applink" : {
     "title" : "Links with Studies"
+  },
+  
+  "appsubscriptions" : {
+    "title" : "Default Subscriptions",
+    "empty" : "There are no default subscriptions defined.",
+    "trigger" : "Trigger",
+    "triggerDetail" : "Details",
+    "action" : "Action",
+    "params" : "Parameter",
+    "triggers" : {
+      "fhir_Consent" : "Consent changes",
+      "fhir_MessageHeader" : "FHIR message",
+      "fhir_Resource" : "Resource changes"
+    },
+    "actions" : {
+      "rest-hook" : "Call Rest-Hook",
+      "email": "Send E-mail",
+      "nodejs": "Call node script"
+    }
+	
   }
 }

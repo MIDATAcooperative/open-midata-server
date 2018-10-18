@@ -324,21 +324,7 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 		if (!info().context.mayAccess("Subscription", "fhir/Subscription")) throw new ForbiddenOperationException("Plugin is not allowed to create subscriptions (Access Query)."); 
 		
         String crit = theResource.getCriteria();
-        int p = crit.indexOf("?");
-        if (p>0) {
-        	subscriptionData.format = "fhir/"+crit.substring(0, p);
-        	String q = crit.substring(p+1);
-        	if (q.startsWith("code=")) {
-        		String cnt = q.substring("code=".length());
-        		String content = ContentCode.getContentForSystemCode(cnt.replace('|', ' '));
-        		if (content != null) subscriptionData.content = content;
-        		else throw new InvalidRequestException("Not supported subscription criteria. Restrict using format 'system|code'");
-        	} else if (crit.equals("Observation")) subscriptionData.content = null; 
-        	else throw new InvalidRequestException("Not supported subscription criteria.");
-        } else {
-            subscriptionData.format = "fhir/"+crit;
-            subscriptionData.content = crit;
-        }
+        populateSubscriptionCriteria(subscriptionData, crit);
         
         if (theResource.getStatus().equals(SubscriptionStatus.ACTIVE) || theResource.getStatus().equals(SubscriptionStatus.REQUESTED)) mayShare(info().pluginId, subscriptionData.format, subscriptionData.content);
 		if (theResource.getStatus().equals(SubscriptionStatus.REQUESTED)) theResource.setStatus(SubscriptionStatus.ACTIVE);
@@ -349,6 +335,24 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
         theResource.setId(subscriptionData._id.toString());
         String encoded = ctx.newJsonParser().encodeResourceToString(theResource);	
         subscriptionData.fhirSubscription = BasicDBObject.parse(encoded);
+	}
+	
+	public static void populateSubscriptionCriteria(SubscriptionData subscriptionData, String crit) throws InternalServerException {
+		 int p = crit.indexOf("?");
+	        if (p>0) {
+	        	subscriptionData.format = "fhir/"+crit.substring(0, p);
+	        	String q = crit.substring(p+1);
+	        	if (q.startsWith("code=")) {
+	        		String cnt = q.substring("code=".length());
+	        		String content = ContentCode.getContentForSystemCode(cnt.replace('|', ' '));
+	        		if (content != null) subscriptionData.content = content;
+	        		else throw new InvalidRequestException("Not supported subscription criteria. Restrict using format 'system|code'");
+	        	} else if (crit.equals("Observation")) subscriptionData.content = null; 
+	        	else throw new InvalidRequestException("Not supported subscription criteria.");
+	        } else {
+	            subscriptionData.format = "fhir/"+crit;
+	            subscriptionData.content = crit;
+	        }
 	}
 
 	@Override

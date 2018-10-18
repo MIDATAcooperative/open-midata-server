@@ -1,0 +1,44 @@
+
+<div  ng-controller="AppSubscriptionsCtrl">
+		
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+		  	<span translate="appsubscriptions.title"></span>		  	
+		</div>
+		<div class="body">
+		  <p ng-show="error && !error.field" translate="{{ error.code || error }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
+	      </p>
+		  <form name="myform" novalidate class="css-form form-horizontal" ng-submit="submit()">		    
+		    <formrow myid="name" label="appicon.name">
+		      <p class="form-control-static">{{ app.name }}</p>
+		    </formrow>
+		    <formrow myid="filename" label="appicon.internalname">
+		      <p class="form-control-static">{{ app.filename }}</p>
+		    </formrow>
+		  
+		    <p ng-hide="app.defaultSubscriptions.length" translate="appsubscriptions.empty"></p>
+		    <table class="table table-striped" ng-show="app.defaultSubscriptions.length">
+		      <tr>
+		        <th translate="appsubscriptions.trigger"></th>
+		        <th translate="appsubscriptions.triggerDetail"></th>
+		        <th translate="appsubscriptions.action"></th>
+		        <th translate="appsubscriptions.params"></th>
+		        <th>&nbsp;</th>
+		      </tr>
+		      <tr ng-repeat="subscription in app.defaultSubscriptions">
+		        <td><select class="form-control" ng-model="subscription.trigger" ng-options="trigger as ('appsubscriptions.triggers.'+trigger) | translate for trigger in triggers"></select></td>
+		        <td><input class="form-control" type="text" ng-show="subscription.trigger=='fhir_Resource'" ng-model="subscription.criteria"></td>
+		        <td><select class="form-control" ng-model="subscription.action" ng-options="action as ('appsubscriptions.actions.'+action) | translate for action in actions"></select></td>
+		        <td><input class="form-control" type="text" ng-show="subscription.action!='email'" ng-model="subscription.parameter"></td>
+		        <td><button class="btn btn-xs btn-default" ng-click="delete(subscription)" translate="common.delete_btn"></</button>
+		      </tr>
+		    </table>
+		    <formrow myid="x" label="">
+		      <button class="btn btn-default" type="button" ng-click="add()" translate="common.add_btn"></button>
+		      <button class="btn btn-primary" type="submit" translate="common.submit_btn"></button>
+		    </formrow>
+		  </form>
+		 </div>
+    </div>
+   
+</div>

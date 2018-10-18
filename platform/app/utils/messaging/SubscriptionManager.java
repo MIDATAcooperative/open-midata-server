@@ -123,15 +123,15 @@ public class SubscriptionManager {
 	    }
 	}
 	
-	public static void deactivateSubscriptions(MidataId userId, Plugin app) throws AppException {
+	public static void deactivateSubscriptions(MidataId userId, Plugin app, MidataId currentlyDeactivating) throws AppException {
 	  if (app.type.equals("mobile") || app.type.equals("service")) {
 	    Set<MobileAppInstance> mais = MobileAppInstance.getByApplicationAndOwner(app._id, userId, Sets.create("_id", "status"));
 	    for (MobileAppInstance mai : mais) {
-		    if (mai.status.equals(ConsentStatus.ACTIVE)) return;
+		    if (mai.status.equals(ConsentStatus.ACTIVE) && !mai._id.equals(currentlyDeactivating)) return;
 	    }
 	  } else {
 	     Set<Space> spaces = Space.getByOwnerVisualization(userId, app._id, Sets.create("_id"));
-	     if (spaces.size() > 0) return;
+	     if (spaces.size() > 1) return;
 	  }
 	  
 	  List<SubscriptionData> data = SubscriptionData.getByOwner(userId, CMaps.map("app", app), SubscriptionData.ALL);
@@ -470,7 +470,7 @@ class SubscriptionProcessor extends AbstractActor {
 						processRestHook(subscription._id, triggered, channel);
 					} else if (channel.getType().equals(SubscriptionChannelType.MESSAGE)) {
 						String endpoint = channel.getEndpoint();
-						if (endpoint != null && endpoint.startsWith("nodejs://")) processApplication(subscription, triggered, channel);
+						if (endpoint != null && endpoint.startsWith("node://")) processApplication(subscription, triggered, channel);
 					} else if (channel.getType().equals(SubscriptionChannelType.EMAIL)) {
 						processEmail(subscription, triggered, channel);
 					}
@@ -540,7 +540,7 @@ class SubscriptionProcessor extends AbstractActor {
 
 		String endpoint = channel.getEndpoint();
 		
-		String cmd = endpoint.substring("nodejs://".length());
+		String cmd = endpoint.substring("node://".length());
 		String visPath =  InstanceConfig.getInstance().getConfig().getString("visualizations.path")+"/"+plugin.filename+"/"+cmd;
 		
 		

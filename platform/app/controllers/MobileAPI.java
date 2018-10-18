@@ -72,6 +72,7 @@ import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.messaging.Messager;
+import utils.messaging.SubscriptionManager;
 import utils.stats.Stats;
 
 /**
@@ -280,6 +281,8 @@ public class MobileAPI extends Controller {
 		AccessLog.logBegin("start remove app instance");
 		// Device or password changed, regenerates consent				
 		Circles.consentStatusChange(appInstance.owner, appInstance, ConsentStatus.EXPIRED);
+		Plugin app = Plugin.getById(appInstance.applicationId);
+		if (app!=null) SubscriptionManager.deactivateSubscriptions(appInstance.owner, app, appInstance._id);
 		RecordManager.instance.deleteAPS(appInstance._id, appInstance.owner);									
 		Circles.removeQueries(appInstance.owner, appInstance._id);										
 		MobileAppInstance.delete(appInstance.owner, appInstance._id);
@@ -319,7 +322,7 @@ public class MobileAPI extends Controller {
 	}
 	
 	public static MobileAppInstance installApp(MidataId executor, MidataId appId, User member, String phrase, boolean autoConfirm, Set<MidataId> studyConfirm) throws AppException {
-		Plugin app = Plugin.getById(appId, Sets.create("name", "type", "pluginVersion", "defaultQuery", "predefinedMessages", "termsOfUse", "writes"));
+		Plugin app = Plugin.getById(appId, Sets.create("name", "type", "pluginVersion", "defaultQuery", "predefinedMessages", "termsOfUse", "writes", "defaultSubscriptions"));
 
 		Set<StudyAppLink> links = StudyAppLink.getByApp(appId);
 		
@@ -372,6 +375,7 @@ public class MobileAPI extends Controller {
     	
     	
     	MobileAppInstance.add(appInstance);	
+    	SubscriptionManager.activateSubscriptions(appInstance.owner, app);
 		KeyManager.instance.unlock(appInstance._id, phrase);	   		    
 		RecordManager.instance.createAnonymizedAPS(member._id, appInstance._id, appInstance._id, true);
 		

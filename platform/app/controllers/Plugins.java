@@ -64,6 +64,7 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.messaging.SubscriptionManager;
 import utils.stats.Stats;
 
 /**
@@ -171,9 +172,9 @@ public class Plugins extends APIController {
 		Plugin visualization = null;
 		if (MidataId.isValid(visualizationIdString)) {
 			visualizationId = new MidataId(visualizationIdString);
-			visualization = Plugin.getById(visualizationId, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator", "status"));
+			visualization = Plugin.getById(visualizationId, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator", "status", "defaultSubscriptions"));
 		} else {
-			visualization = Plugin.getByFilename(visualizationIdString, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator", "status"));
+			visualization = Plugin.getByFilename(visualizationIdString, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator", "status", "defaultSubscriptions"));
 		}
 
 		if (visualization == null)
@@ -264,6 +265,8 @@ public class Plugins extends APIController {
 			
 			return space;
 		}
+		
+		SubscriptionManager.activateSubscriptions(userId, visualization);
 
 		return null;
 	}
@@ -715,7 +718,7 @@ public class Plugins extends APIController {
 					  AccessLog.log("Possible plugins to add: "+appId.toString());
 					  Set<Space> spaces = Space.getByOwnerVisualization(userId, appId, Sets.create("context"));
 					  if (spaces.isEmpty()) {
-						  Plugin visualization = Plugin.getById(appId, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator", "status"));
+						  Plugin visualization = Plugin.getById(appId, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator", "status", "defaultSubscriptions"));
 						  AccessLog.log("add plugins: "+appId.toString());
 						  install(userId, visualization, null, null, null);
 					  }

@@ -28,6 +28,7 @@ import models.Member;
 import models.MemberKey;
 import models.MidataId;
 import models.MobileAppInstance;
+import models.Plugin;
 import models.RecordsInfo;
 import models.User;
 import models.UserGroup;
@@ -488,7 +489,8 @@ public class Circles extends APIController {
 		if (consent.type != ConsentType.CIRCLE && consent.type != ConsentType.EXTERNALSERVICE && consent.type != ConsentType.IMPLICIT) throw new BadRequestException("error.unsupported", "Operation not supported");
 				
 		switch (consent.type) {
-		case EXTERNALSERVICE:AuditManager.instance.addAuditEvent(AuditEventType.APP_DELETED, userId, consent);break;
+		case EXTERNALSERVICE:
+			AuditManager.instance.addAuditEvent(AuditEventType.APP_DELETED, userId, consent);break;
 		default: AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_DELETE, userId, consent);break;
 		}
 		
@@ -662,6 +664,17 @@ public class Circles extends APIController {
 			if (auth.contains(consent.owner)) { auth.remove(consent.owner); }
 			RecordManager.instance.unshareAPSRecursive(consent._id, consent.owner, consent.authorized);
 			Circles.removeQueries(consent.owner, consent._id);
+			if (consent.type.equals(ConsentType.EXTERNALSERVICE)) {
+				Plugin app;
+				if (consent instanceof MobileAppInstance) {
+				  app = Plugin.getById(((MobileAppInstance) consent).applicationId);
+				} else {
+				  MobileAppInstance mai = MobileAppInstance.getById(consent._id, Sets.create("applicationId"));
+				  app = Plugin.getById(mai.applicationId);
+				}
+				
+				SubscriptionManager.deactivateSubscriptions(consent.owner, app, consent._id);
+			}
 		}
 		if (newStatus != null && newStatus.equals(ConsentStatus.FROZEN)) {
 			Date now = new Date();
