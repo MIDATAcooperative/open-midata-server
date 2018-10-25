@@ -36,7 +36,7 @@ public class Studies extends APIController {
 	@APICall
 	
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result search() throws JsonValidationException, InternalServerException, AuthException {
+	public Result search() throws JsonValidationException, InternalServerException, AuthException {
 	   //MidataId user = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));	   
 	   JsonNode json = request().body().asJson();
 	   JsonValidation.validate(json, "properties", "fields");

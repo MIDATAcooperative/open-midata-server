@@ -90,7 +90,7 @@ public class Market extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)	
-	public static Result updatePlugin(String pluginIdStr) throws JsonValidationException, AppException {
+	public Result updatePlugin(String pluginIdStr) throws JsonValidationException, AppException {
 		if (!getRole().equals(UserRole.ADMIN) && !getRole().equals(UserRole.DEVELOPER)) return unauthorized();
 		// validate json
 		JsonNode json = request().body().asJson();
@@ -248,7 +248,7 @@ public class Market extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
-	public static Result updatePluginStatus(String pluginIdStr) throws JsonValidationException, AppException {
+	public Result updatePluginStatus(String pluginIdStr) throws JsonValidationException, AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
 			
@@ -274,7 +274,7 @@ public class Market extends APIController {
 		
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
-	public static Result exportPlugin(String pluginIdStr) throws JsonValidationException, AppException {
+	public Result exportPlugin(String pluginIdStr) throws JsonValidationException, AppException {
 			
 		// validate request		
 		MidataId pluginId = new MidataId(pluginIdStr);
@@ -299,7 +299,7 @@ public class Market extends APIController {
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
-	public static Result importPlugin() throws JsonValidationException, AppException {
+	public Result importPlugin() throws JsonValidationException, AppException {
         JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "base64");
 		String base64 = JsonValidation.getString(json, "base64");
@@ -386,7 +386,7 @@ public class Market extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(DeveloperSecured.class)
-	public static Result registerPlugin() throws JsonValidationException, AppException {
+	public Result registerPlugin() throws JsonValidationException, AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		
@@ -606,7 +606,7 @@ public class Market extends APIController {
 	 */	
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
-	public static Result deletePlugin(String pluginIdStr) throws JsonValidationException, AppException {		
+	public Result deletePlugin(String pluginIdStr) throws JsonValidationException, AppException {		
 		// validate request		
 		MidataId pluginId = new MidataId(pluginIdStr);
 		
@@ -656,7 +656,7 @@ public class Market extends APIController {
      */
     @APICall
     @Security.Authenticated(DeveloperSecured.class)
-    public static Result deletePluginDeveloper(String pluginIdStr) throws JsonValidationException, AppException {
+    public Result deletePluginDeveloper(String pluginIdStr) throws JsonValidationException, AppException {
             
         // validate request     
         MidataId pluginId = new MidataId(pluginIdStr);
@@ -692,7 +692,7 @@ public class Market extends APIController {
 		
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)	
-	public static Result getPluginStats(String pluginIdStr) throws JsonValidationException, AppException {
+	public Result getPluginStats(String pluginIdStr) throws JsonValidationException, AppException {
 		if (!getRole().equals(UserRole.ADMIN) && !getRole().equals(UserRole.DEVELOPER)) return unauthorized();
 		
 		MidataId pluginId = new MidataId(pluginIdStr);
@@ -709,7 +709,7 @@ public class Market extends APIController {
 	
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)	
-	public static Result deletePluginStats(String pluginIdStr) throws JsonValidationException, AppException {
+	public Result deletePluginStats(String pluginIdStr) throws JsonValidationException, AppException {
 		if (!getRole().equals(UserRole.ADMIN) && !getRole().equals(UserRole.DEVELOPER)) return unauthorized();
 		
 		MidataId pluginId = new MidataId(pluginIdStr);
@@ -733,7 +733,7 @@ public class Market extends APIController {
 	 * @throws AppException
 	 */
 	@APICall
-	public static Result getIcon(String use, String id) throws AppException {
+	public Result getIcon(String use, String id) throws AppException {
 		IconUse iconUse = IconUse.valueOf(use);
 		if (iconUse == null) return notFound();
 		
@@ -755,7 +755,7 @@ public class Market extends APIController {
 	 */	
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)	
-	public static Result uploadIcon(String pluginIdStr) throws AppException {
+	public Result uploadIcon(String pluginIdStr) throws AppException {
 		MidataId pluginId = MidataId.from(pluginIdStr);
 		try {
 		
@@ -831,7 +831,7 @@ public class Market extends APIController {
 	 */	
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)	
-	public static Result deleteIcon(String pluginIdStr, String useStr) throws AppException {
+	public Result deleteIcon(String pluginIdStr, String useStr) throws AppException {
 		MidataId pluginId = MidataId.from(pluginIdStr);
 		
 		IconUse use = IconUse.valueOf(useStr);
@@ -853,7 +853,7 @@ public class Market extends APIController {
 	}
 	
 	@APICall
-	public static Result getStudyAppLinks(String type, String idStr) throws AppException {
+	public Result getStudyAppLinks(String type, String idStr) throws AppException {
 		Set<StudyAppLink> result = Collections.emptySet();
 		if (type.equals("study") || type.equals("study-use")) {
 			result = StudyAppLink.getByStudy(MidataId.from(idStr));
@@ -901,7 +901,7 @@ public class Market extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result insertStudyAppLink() throws AppException {
+	public Result insertStudyAppLink() throws AppException {
         JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "studyId", "appId", "type", "usePeriod");
 
@@ -929,7 +929,7 @@ public class Market extends APIController {
 	
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result deleteStudyAppLink(String id) throws AppException {		
+	public Result deleteStudyAppLink(String id) throws AppException {		
 		StudyAppLink link = StudyAppLink.getById(MidataId.from(id));		
 		checkValidation(link);		
 		link.delete();		
@@ -938,7 +938,7 @@ public class Market extends APIController {
 	
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result validateStudyAppLink(String id) throws AppException {
+	public Result validateStudyAppLink(String id) throws AppException {
 		StudyAppLink link = StudyAppLink.getById(MidataId.from(id));		
 		checkValidation(link);
 		link.update();

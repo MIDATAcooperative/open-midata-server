@@ -56,7 +56,7 @@ public class Spaces extends APIController {
      */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result get() throws JsonValidationException, AppException {
+	public Result get() throws JsonValidationException, AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
@@ -89,7 +89,7 @@ public class Spaces extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result add() throws JsonValidationException, AppException {
+	public Result add() throws JsonValidationException, AppException {
 		// validate json
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "name", "visualization");
@@ -156,7 +156,7 @@ public class Spaces extends APIController {
 	 * @throws AppException
 	 */
 	@APICall
-	public static Result delete(String spaceIdString) throws AppException {
+	public Result delete(String spaceIdString) throws AppException {
 		// validate request
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId spaceId = new MidataId(spaceIdString);
@@ -177,7 +177,7 @@ public class Spaces extends APIController {
 	}
 	
 	@APICall
-	public static Result reset() throws AppException {
+	public Result reset() throws AppException {
 		// validate request
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		
@@ -201,7 +201,7 @@ public class Spaces extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result addRecords(String spaceIdString) throws JsonValidationException, AppException {
+	public Result addRecords(String spaceIdString) throws JsonValidationException, AppException {
 		// validate json
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "records");
@@ -227,7 +227,7 @@ public class Spaces extends APIController {
 	}
 
 	@APICall
-	public static Result getToken(String spaceIdString) throws AppException {
+	public Result getToken(String spaceIdString) throws AppException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId spaceId = new MidataId(spaceIdString);
 		
@@ -243,12 +243,12 @@ public class Spaces extends APIController {
 	}
 	
 	@APICall
-	public static CompletionStage<Result> getUrl(String spaceIdString, String userId) throws AppException {
+	public CompletionStage<Result> getUrl(String spaceIdString, String userId) throws AppException {
 		return getUrl(spaceIdString, true, userId);
 	}
 	
 	@APICall
-	public static CompletionStage<Result> regetUrl(String spaceIdString) throws AppException {
+	public CompletionStage<Result> regetUrl(String spaceIdString) throws AppException {
 		return getUrl(spaceIdString, false, null);
 	}
 	

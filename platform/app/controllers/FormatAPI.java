@@ -44,7 +44,7 @@ public class FormatAPI extends Controller {
 	 * @throws AppException
 	 */
 	@APICall
-	public static Result listGroups() throws AppException {
+	public Result listGroups() throws AppException {
 	    Collection<RecordGroup> groups = RecordGroup.getAll();
 	    return ok(Json.toJson(groups));
 	}
@@ -55,7 +55,7 @@ public class FormatAPI extends Controller {
 	 * @throws InternalServerException
 	 */
 	@APICall
-	public static Result listFormats() throws InternalServerException {
+	public Result listFormats() throws InternalServerException {
 	    Collection<FormatInfo> formats = FormatInfo.getAll(Collections.<String, String> emptyMap(), Sets.create("format", "comment", "visName"));
 	    return ok(Json.toJson(formats));
 	}
@@ -66,7 +66,7 @@ public class FormatAPI extends Controller {
 	 * @throws InternalServerException
 	 */
 	@APICall
-	public static Result listContents() throws InternalServerException {
+	public Result listContents() throws InternalServerException {
 	    Collection<ContentInfo> contents = ContentInfo.getAll(Collections.<String, String> emptyMap(), Sets.create("content", "security", "comment", "label", "defaultCode", "resourceType", "subType", "defaultUnit", "category", "source"));
 	    return ok(Json.toJson(contents));
 	}
@@ -77,7 +77,7 @@ public class FormatAPI extends Controller {
 	 * @throws InternalServerException
 	 */
 	@APICall
-	public static Result listCodes() throws InternalServerException {
+	public Result listCodes() throws InternalServerException {
 	    Collection<ContentCode> codes = ContentCode.getAll(Collections.<String, String> emptyMap(), Sets.create("system", "code", "display", "content"));
 	    return ok(Json.toJson(codes));
 	}
@@ -90,7 +90,7 @@ public class FormatAPI extends Controller {
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
-	public static Result createCode() throws AppException {
+	public Result createCode() throws AppException {
 		JsonNode json = request().body().asJson();
 		ContentCode cc = new ContentCode();
 		cc._id = new MidataId();
@@ -113,7 +113,7 @@ public class FormatAPI extends Controller {
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
-	public static Result updateCode(String id) throws AppException {
+	public Result updateCode(String id) throws AppException {
 		JsonNode json = request().body().asJson();
 		ContentCode cc = new ContentCode();
 		cc._id = new MidataId(id);
@@ -136,7 +136,7 @@ public class FormatAPI extends Controller {
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
-	public static Result deleteCode(String id) throws AppException {
+	public Result deleteCode(String id) throws AppException {
 		ContentCode.delete(new MidataId(id));				
 		return ok();
 	}
@@ -149,7 +149,7 @@ public class FormatAPI extends Controller {
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
-	public static Result createContent() throws AppException {
+	public Result createContent() throws AppException {
 		JsonNode json = request().body().asJson();
 		ContentInfo cc = new ContentInfo();
 		cc._id = new MidataId();
@@ -178,7 +178,7 @@ public class FormatAPI extends Controller {
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
-	public static Result updateContent(String id) throws AppException {
+	public Result updateContent(String id) throws AppException {
 		JsonNode json = request().body().asJson();
 		ContentInfo cc = new ContentInfo();
 		cc._id = new MidataId(id);
@@ -207,7 +207,7 @@ public class FormatAPI extends Controller {
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
-	public static Result deleteContent(String id) throws AppException {
+	public Result deleteContent(String id) throws AppException {
 		ContentInfo.delete(new MidataId(id));				
 		return ok();
 	}
@@ -215,7 +215,7 @@ public class FormatAPI extends Controller {
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
-	public static Result createGroup() throws AppException {
+	public Result createGroup() throws AppException {
 		JsonNode json = request().body().asJson();
 		RecordGroup cc = new RecordGroup();
 		cc._id = new MidataId();
@@ -234,7 +234,7 @@ public class FormatAPI extends Controller {
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
-	public static Result updateGroup(String id) throws AppException {
+	public Result updateGroup(String id) throws AppException {
 		JsonNode json = request().body().asJson();
 		RecordGroup cc = new RecordGroup();
 		cc._id = new MidataId(id);
@@ -252,7 +252,7 @@ public class FormatAPI extends Controller {
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
-	public static Result deleteGroup(String id) throws AppException {
+	public Result deleteGroup(String id) throws AppException {
 		RecordGroup.delete(new MidataId(id));	
 		Instances.cacheClear("content", null);
 		return ok();
@@ -266,13 +266,13 @@ public class FormatAPI extends Controller {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result searchCodingPortal() throws JsonValidationException, InternalServerException {
+	public Result searchCodingPortal() throws JsonValidationException, InternalServerException {
 		return searchCoding();
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public static Result searchCoding() throws JsonValidationException, InternalServerException {
+	public Result searchCoding() throws JsonValidationException, InternalServerException {
 		JsonNode json = request().body().asJson();
 		
         JsonValidation.validate(json, "properties", "fields");		
@@ -312,7 +312,7 @@ public class FormatAPI extends Controller {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public static Result searchContent() throws JsonValidationException, InternalServerException {
+	public Result searchContent() throws JsonValidationException, InternalServerException {
 		JsonNode json = request().body().asJson();
 		
         JsonValidation.validate(json, "properties", "fields");		
@@ -329,7 +329,7 @@ public class FormatAPI extends Controller {
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result searchContents() throws JsonValidationException, InternalServerException {
+	public Result searchContents() throws JsonValidationException, InternalServerException {
 		JsonNode json = request().body().asJson();
 		
         JsonValidation.validate(json, "properties", "fields");		

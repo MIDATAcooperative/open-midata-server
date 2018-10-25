@@ -39,7 +39,7 @@ public class FHIR extends Controller {
 	 * @return
 	 */
 	@MobileCall
-	public static Result checkPreflight(String all) {		
+	public Result checkPreflight(String all) {		
 		return ok();
 	}
 	
@@ -48,7 +48,7 @@ public class FHIR extends Controller {
 	 * @return
 	 */
 	@MobileCall
-	public static Result checkPreflightRoot() {		
+	public Result checkPreflightRoot() {		
 		return ok();
 	}
 	
@@ -61,7 +61,7 @@ public class FHIR extends Controller {
 	 */
 	@MobileCall
 	@BodyParser.Of(BodyParser.Raw.class) 
-	public static Result getRoot() throws AppException, IOException, ServletException {
+	public Result getRoot() throws AppException, IOException, ServletException {
 		return get("/");
 	}
 	
@@ -76,7 +76,7 @@ public class FHIR extends Controller {
 	 */
 	@MobileCall
 	@BodyParser.Of(BodyParser.Raw.class) 
-	public static Result get(String all) throws AppException, IOException, ServletException {
+	public Result get(String all) throws AppException, IOException, ServletException {
 		Stats.startRequest(request());
 		PlayHttpServletRequest req = new PlayHttpServletRequest(request());
 		PlayHttpServletResponse res = new PlayHttpServletResponse(response());
@@ -128,7 +128,7 @@ public class FHIR extends Controller {
 	 */
 	@MobileCall
 	@BodyParser.Of(value = BodyParser.Raw.class)
-	public static Result postRoot() throws AppException, IOException, ServletException {
+	public Result postRoot() throws AppException, IOException, ServletException {
 		return post("/");
 	}
 	
@@ -143,7 +143,7 @@ public class FHIR extends Controller {
 	 */
 	@MobileCall
 	@BodyParser.Of(value = BodyParser.Raw.class)
-	public static Result post(String all) throws AppException, IOException, ServletException {
+	public Result post(String all) throws AppException, IOException, ServletException {
 				
 		Stats.startRequest(request());
 		
@@ -195,7 +195,7 @@ public class FHIR extends Controller {
 	 */
 	@MobileCall
 	@BodyParser.Of(value = BodyParser.Raw.class)
-	public static Result putRoot() throws AppException, IOException, ServletException {
+	public Result putRoot() throws AppException, IOException, ServletException {
 		return put("/");
 	}
 	
@@ -210,7 +210,7 @@ public class FHIR extends Controller {
 	 */
 	@MobileCall
 	@BodyParser.Of(value = BodyParser.Raw.class)
-	public static Result put(String all) throws AppException, IOException, ServletException {
+	public Result put(String all) throws AppException, IOException, ServletException {
 		Stats.startRequest(request());
 		
 		PlayHttpServletRequest req = new PlayHttpServletRequest(request());
@@ -250,7 +250,7 @@ public class FHIR extends Controller {
 	 */
 	@MobileCall
 	@BodyParser.Of(BodyParser.Raw.class) 
-	public static Result deleteRoot() throws AppException, IOException, ServletException {
+	public Result deleteRoot() throws AppException, IOException, ServletException {
 		return delete("/");
 	}
 	
@@ -265,7 +265,7 @@ public class FHIR extends Controller {
 	 */
 	@MobileCall
 	@BodyParser.Of(BodyParser.Raw.class) 
-	public static Result delete(String all) throws AppException, IOException, ServletException {
+	public Result delete(String all) throws AppException, IOException, ServletException {
 		Stats.startRequest(request());
 		
 		PlayHttpServletRequest req = new PlayHttpServletRequest(request());

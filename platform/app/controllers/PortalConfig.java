@@ -35,7 +35,7 @@ public class PortalConfig extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result getConfig() throws JsonValidationException, AppException {
+	public Result getConfig() throws JsonValidationException, AppException {
 	
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		
@@ -57,7 +57,7 @@ public class PortalConfig extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result setConfig() throws JsonValidationException, AppException {
+	public Result setConfig() throws JsonValidationException, AppException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 
 		// validate json

@@ -100,7 +100,7 @@ public class PluginsAPI extends APIController {
 	 * @return status ok
 	 */
 	@VisualizationCall
-	public static Result checkPreflight() {		
+	public Result checkPreflight() {		
 		return ok();
 	}
  
@@ -112,7 +112,7 @@ public class PluginsAPI extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public static Result getIds() throws AppException, JsonValidationException  {		
+	public Result getIds() throws AppException, JsonValidationException  {		
 		// validate json
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "authToken");
@@ -135,7 +135,7 @@ public class PluginsAPI extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public static Result getConfig() throws JsonValidationException, AppException {
+	public Result getConfig() throws JsonValidationException, AppException {
 		
 		// validate json
 		JsonNode json = request().body().asJson();		
@@ -167,7 +167,7 @@ public class PluginsAPI extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public static Result getOAuthParams() throws JsonValidationException, AppException {
+	public Result getOAuthParams() throws JsonValidationException, AppException {
 		
 		// validate json
 		JsonNode json = request().body().asJson();		
@@ -194,7 +194,7 @@ public class PluginsAPI extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public static Result setConfig() throws JsonValidationException, AppException {
+	public Result setConfig() throws JsonValidationException, AppException {
 		Stats.startRequest(request());
 		// validate json
 		JsonNode json = request().body().asJson();
@@ -239,7 +239,7 @@ public class PluginsAPI extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public static Result cloneAs() throws JsonValidationException, AppException {
+	public Result cloneAs() throws JsonValidationException, AppException {
 		
 		// validate json
 		JsonNode json = request().body().asJson();
@@ -277,7 +277,7 @@ public class PluginsAPI extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public static Result getRecords() throws JsonValidationException, AppException {
+	public Result getRecords() throws JsonValidationException, AppException {
 		Stats.startRequest(request());
 		// validate json
 		JsonNode json = request().body().asJson();		
@@ -333,7 +333,7 @@ public class PluginsAPI extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public static Result getInfo() throws AppException, JsonValidationException {
+	public Result getInfo() throws AppException, JsonValidationException {
 		Stats.startRequest(request());
 		
 		// check whether the request is complete
@@ -379,7 +379,7 @@ public class PluginsAPI extends APIController {
 	 * @throws JsonValidationException
 	 */	
 	@VisualizationCall	
-	public static Result getFile() throws AppException, JsonValidationException {
+	public Result getFile() throws AppException, JsonValidationException {
 		Stats.startRequest(request());
 	
 		String authTokenStr = request().getQueryString("authToken");
@@ -409,7 +409,7 @@ public class PluginsAPI extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public static Result createRecord() throws AppException, JsonValidationException {
+	public Result createRecord() throws AppException, JsonValidationException {
 		Stats.startRequest(request());		
 		
 		// check whether the request is complete
@@ -578,7 +578,7 @@ public class PluginsAPI extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public static CompletionStage<Result> oAuth1Call() throws AppException {
+	public CompletionStage<Result> oAuth1Call() throws AppException {
 	
 		// check whether the request is complete
 		JsonNode json = request().body().asJson();
@@ -645,7 +645,7 @@ public class PluginsAPI extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public static Result updateRecord() throws AppException, JsonValidationException {
+	public Result updateRecord() throws AppException, JsonValidationException {
         Stats.startRequest(request());				
 		// check whether the request is complete
 		JsonNode json = request().body().asJson();		
@@ -702,7 +702,7 @@ public class PluginsAPI extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public static CompletionStage<Result> oAuth2Call() throws AppException {
+	public CompletionStage<Result> oAuth2Call() throws AppException {
 		
 		// check whether the request is complete
 		JsonNode json = request().body().asJson();
@@ -768,7 +768,7 @@ public class PluginsAPI extends APIController {
 	 * Accepts and stores files up to any size
 	 */
     @BodyParser.Of(HugeBodyParser.class)
-	public static Result uploadFile() throws AppException {
+	public Result uploadFile() throws AppException {
     	EncryptedFileHandle handle = null;
     	
 		Stats.startRequest(request());
@@ -880,7 +880,7 @@ public class PluginsAPI extends APIController {
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public static Result generateId() throws JsonValidationException, AppException {
+	public Result generateId() throws JsonValidationException, AppException {
 		JsonNode json = request().body().asJson();		
 		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());									
 		return ok(new MidataId().toString());
