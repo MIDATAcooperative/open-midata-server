@@ -235,7 +235,7 @@
 {"_id":{"$oid":"5a9e800579c721f679467ca4"},"system":"http://snomed.info/sct","code":"300910009","display":"Allergy to pollen","content":"allergy-to-pollen"}
 {"_id":{"$oid":"5a9ff0fe79c721f679468c91"},"system":"http://midata.coop","code":"living-location","display":"Living Location","content":"living-location"}
 {"_id":{"$oid":"5abcbc1e79c721baaaae8467"},"system":"http://midata.coop","code":"main-occupation-location-type","display":"Main Occupation Location Type","content":"main-occupation-location-type"}
-{"_id":{"$oid":"5ad9e81eaed6451e7ebef97f"},"system":"http://midata.coop","code":"MSMotTestDotDetail","display":"MS Motoriktest Punkte bewegen - Details pro Durchgang","content":"MSMotTestDotDetail"}
+{"_id":{"$oid":"5ad9e81eaed6451e7ebef97f"},"system":"http://midata.coop","code":"MSMotTestDotDetail","display":"MS Motoriktest Punkte bewegen - Details pro Punkt pro Durchgang","content":"MSMotTestDotDetail"}
 {"_id":{"$oid":"5ae72094aed6450f5126a020"},"system":"http://midata.coop","code":"MSMotNineHolePeg","display":"MS Motoriktest Nine-hole Peg","content":"MSMotNineHolePeg"}
 {"_id":{"$oid":"5ae9d640aed64509ec03dbe8"},"system":"http://loinc.org","code":"80404-7","display":"Heart rate variability","content":"loinc/80404-7"}
 {"_id":{"$oid":"5ae9d6abaed64509ec03dbea"},"system":"http://loinc.org","code":"39106-0","display":"Skin Temperatur","content":"loinc/39106-0"}
@@ -244,3 +244,4 @@
 {"_id":{"$oid":"5b0d6c1caed6451dd798d67a"},"system":"http://snomed.info/sct","code":"422673001","display":"Snellen visual acuity","content":"snomed/422673001"}
 {"_id":{"$oid":"5b3f7eb1cf569311e2c5f098"},"system":"http://snomed.info/sct","code":"434910001","display":"Interstitial fluid glucose concentration","content":"snomed/434910001"}
 {"_id":{"$oid":"5b4df89faed6453ed8fdcedc"},"system":"http://midata.coop","code":"Consent","display":"Consents on Midata","content":"Consent"}
+{"_id":{"$oid":"5bc97d4caed6450e6faeec43"},"system":"http://midata.coop","code":"MSMotTestDotRun","display":"MS Motoriktest Punkte bewegen, weitere Details pro Durchgang","content":"MSMotTestDotRun"}
