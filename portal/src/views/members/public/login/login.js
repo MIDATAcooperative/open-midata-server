@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('LoginCtrl', ['$scope', 'server', '$state', 'status', 'session', 'ENV', function($scope, server, $state, status, session, ENV) {
+.controller('LoginCtrl', ['$scope', 'server', '$state', 'status', 'session', 'ENV', 'crypto', function($scope, server, $state, status, session, ENV, crypto) {
 	
 	// init		
 	$scope.login = {};	
@@ -16,13 +16,17 @@ angular.module('portal')
 			$scope.error = { code : "error.missing.credentials" };
 			return;
 		}
-		
+		var pw = $scope.login.password;
 		// send the request
-		var data = {"email": $scope.login.email, "password": $scope.login.password};
-		$scope.status.doAction("login", server.post(jsRoutes.controllers.Application.authenticate().url, JSON.stringify(data))).
-		then(function(result) {
-			session.postLogin(result, $state);
-		}).
-		catch(function(err) { $scope.error = err.data; });
+		var data = {"email": $scope.login.email, "password": crypto.getHash($scope.login.password) };
+		var func = function(data) {
+			return $scope.status.doAction("login", server.post(jsRoutes.controllers.Application.authenticate().url, JSON.stringify(data)));
+		};
+		
+		session.performLogin(func, data, $scope.login.password)
+		.then(function(result) {
+		   session.postLogin(result, $state);
+		}).catch(function(err) { $scope.error = err.data; });
+				
 	};
 }]);

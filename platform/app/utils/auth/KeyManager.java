@@ -9,6 +9,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
@@ -25,6 +26,7 @@ import javax.crypto.NoSuchPaddingException;
 
 import akka.japi.Pair;
 import models.KeyInfo;
+import models.KeyInfoExtern;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.PersistedSession;
@@ -131,8 +133,7 @@ public class KeyManager implements KeySession {
 			PublicKey pubKey = keyFactory.generatePublic(spec);
 			 
 			Cipher c = Cipher.getInstance(CIPHERS[DEFAULT_CIPHER_ALG]);
-			c.init(Cipher.ENCRYPT_MODE, pubKey);
-		    
+			c.init(Cipher.ENCRYPT_MODE, pubKey);		 
 			byte[] cipherText = c.doFinal(EncryptionUtils.randomize(keyToEncrypt));
 			//c.doFinal(keyToEncrypt, 0, keyToEncrypt.length, cipherText);
 			byte[] result = new byte[cipherText.length+4];
@@ -205,6 +206,39 @@ public class KeyManager implements KeySession {
 		} catch (NoSuchAlgorithmException e) {
 			throw new InternalServerException("error.internal", e);
 		}
+	}
+	
+	public void saveExternalPrivateKey(MidataId user, String pk) throws InternalServerException {
+		 KeyInfoExtern keyInfoExtern = new KeyInfoExtern();
+		 keyInfoExtern._id = user;
+		 keyInfoExtern.privateKey = pk;
+		  
+		 KeyInfoExtern.update(keyInfoExtern);
+	}
+	
+	public void newFutureLogin(User user) throws AuthException, InternalServerException {
+		KeyManagerSession current = session.get();
+		current.newFutureLogin(user._id, user.publicExtKey);
+	}
+	
+	public byte[] readExternalPublicKey(String pub) throws InternalServerException {
+		
+		pub = pub.replaceAll("\\n", "");
+		pub = pub.replaceAll("\\r", "");		
+		pub = pub.replace("-----BEGIN PUBLIC KEY-----", "");		
+		pub = pub.replace("-----END PUBLIC KEY-----", "");
+		
+		try {
+		    KeyFactory kf = KeyFactory.getInstance("RSA");				    
+		    X509EncodedKeySpec keySpecX509 = new X509EncodedKeySpec(Base64.getDecoder().decode(pub));
+		    RSAPublicKey pubKey = (RSAPublicKey) kf.generatePublic(keySpecX509);
+		    return pubKey.getEncoded();
+		} catch (NoSuchAlgorithmException e) {
+			throw new InternalServerException("error.internal", "Internal error");
+		}
+        catch (InvalidKeySpecException e2) {
+        	throw new InternalServerException("error.internal", "Invalid key specification for external public key.");
+        }		
 	}
 	
 	public String login(long expire, boolean persistable) {
@@ -431,6 +465,25 @@ public class KeyManager implements KeySession {
 		}
 		
 		/**
+		 * Unlock a user or app instance account
+		 * 
+		 * The account stays unlocked until lock is called for the account
+		 * @param target id of user or app instance to unlock
+		 * @param passphrase the passphrase for the private key or null if no passphrase has been applied 
+		 * @throws InternalServerException
+		 */
+		public void unlock(MidataId target, String sessionCode, byte[] pubkey) throws InternalServerException, AuthException {
+			
+			FutureLogin fl = FutureLogin.getById(target);
+			byte[] aeskey = EncryptionUtils.derandomize(Base64.getDecoder().decode(sessionCode));			
+			byte[] pk = EncryptionUtils.decrypt(aeskey, fl.intPart);
+			pks.addKey(target.toString(), pk);
+			
+			newFutureLogin(target, pubkey);
+   
+		}
+		
+		/**
 		 * Unlock a user account using an alias and split key
 		 * 
 		 * The account stays unlocked until lock is called for the account
@@ -478,6 +531,18 @@ public class KeyManager implements KeySession {
 			
 			return split.first();
 			
+		}
+		
+		public void newFutureLogin(MidataId user, byte[] pubkey) throws AuthException, InternalServerException {
+            byte key[] = pks.getKey(user.toString());			
+			if (key == null) throw new AuthException("error.relogin", "Authorization Failure");		
+			
+			byte[] aesKey = EncryptionUtils.generateKey();			
+			FutureLogin futureLogin = new FutureLogin();
+			futureLogin._id = user;
+			futureLogin.intPart = EncryptionUtils.encrypt(aesKey, key);
+			futureLogin.extPartEnc = KeyManager.instance.encryptKey(pubkey, aesKey);            
+			futureLogin.set();
 		}
 		
 		/**
@@ -605,6 +670,11 @@ public class KeyManager implements KeySession {
 	@Override
 	public int unlock(MidataId target, String passphrase) throws InternalServerException {
 		return session.get().unlock(target, passphrase);		
+	}
+	
+	@Override
+	public void unlock(MidataId target, String sessionCode, byte[] pubkey) throws InternalServerException, AuthException {
+		session.get().unlock(target, sessionCode, pubkey);		
 	}
 
 	@Override

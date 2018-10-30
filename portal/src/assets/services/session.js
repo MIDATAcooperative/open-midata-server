@@ -1,5 +1,5 @@
 angular.module('services')
-.factory('session', ['$q', 'server', function($q, server) {
+.factory('session', ['$q', 'server', 'crypto', function($q, server, crypto) {
 	
 	var _states = {};
 	
@@ -8,6 +8,20 @@ angular.module('services')
 		user : null,
 		cache : {},
 			
+		performLogin : function(func, params, pw) {
+			return func(params).then(function(result) {
+				if (result.data == "compatibility-mode") {
+					params.nonHashed = pw;
+					return func(params);
+				} else if (result.data.challenge) {
+					params.sessionToken = crypto.keyChallenge(result.data.keyEncrypted, pw, result.data.challenge);
+					return func(params);
+				} else {
+					return result;
+				}
+			})		
+		},
+		
 		postLogin : function(result, $state) {
 			if (result.data.sessionToken) {
 				sessionStorage.token = result.data.sessionToken;

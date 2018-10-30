@@ -48,6 +48,17 @@ public interface KeySession {
 	 * @throws InternalServerException
 	 */
 	public void unlock(MidataId target, MidataId source, byte[] splitkey) throws InternalServerException;
+
+	/**
+	 * Unlock a user account with a session challenge response
+	 * @param target
+	 * @param sessionCode
+	 * @param pubkey
+	 * @throws InternalServerException
+	 * @throws AuthException
+	 */
+	void unlock(MidataId target, String sessionCode, byte[] pubkey) throws InternalServerException, AuthException;
+
 	
 	/**
 	 * Persist a session with an unlocked key across instances
@@ -80,4 +91,5 @@ public interface KeySession {
 	 */
 	public byte[] generateKeypairAndReturnPublicKeyInMemory(MidataId target, String passphrase) throws InternalServerException;
 
+	
 }

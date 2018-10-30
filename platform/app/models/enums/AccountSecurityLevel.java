@@ -23,5 +23,10 @@ public enum AccountSecurityLevel {
 	/**
 	 * Account is protected by externally stored keyfile (currently not supported)
 	 */
-	KEY_FILE         	
+	KEY_FILE,
+	
+	/**
+	 * Account is protected by only externally available password
+	 */
+	KEY_EXT_PASSWORD
 }

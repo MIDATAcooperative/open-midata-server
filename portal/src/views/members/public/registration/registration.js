@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('RegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', '$translate', 'languages', '$stateParams', 'oauth', '$document', 'views', 'dateService', '$window', function($scope, $state, server, status, session, $translate, languages, $stateParams, oauth, $document, views, dateService, $window) {
+.controller('RegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', '$translate', 'languages', '$stateParams', 'oauth', '$document', 'views', 'dateService', '$window', 'crypto', function($scope, $state, server, status, session, $translate, languages, $stateParams, oauth, $document, views, dateService, $window, crypto) {
 	
 	$scope.registration = { language : $translate.use(), confirmStudy:[] };
 	$scope.languages = languages.all;
@@ -11,11 +11,11 @@ angular.module('portal')
 	$scope.offline = (window.jsRoutes === undefined) || (window.jsRoutes.controllers === undefined);
 	
 	$scope.view = views.getView("terms");
-	
+				
 	// register new user
 	$scope.register = function() {		
 		
-        $scope.myform.password.$setValidity('compare', $scope.registration.password ==  $scope.registration.password2);
+        $scope.myform.password.$setValidity('compare', $scope.registration.password1 ==  $scope.registration.password2);
         $scope.myform.agb.$setValidity('mustaccept', $scope.registration.agb);        
         if (!$scope.registration.agb) {
         	
@@ -57,7 +57,7 @@ angular.module('portal')
 			return;
 		}
 		
-		if ($scope.registration.password !=  $scope.registration.password2) {
+		if ($scope.registration.password1 !=  $scope.registration.password2) {
 			$scope.error = { code : "error.invalid.password_repetition" };
 			return;
 		}		
@@ -82,6 +82,19 @@ angular.module('portal')
 			data.developer = $stateParams.developer;
 		}
 		
+		crypto.generateKeys($scope.registration.password1).then(function(keys) {
+			
+			$scope.registration.password = keys.pw_hash;
+			$scope.registration.pub = keys.pub;
+			$scope.registration.priv_pw = keys.priv_pw;
+			
+			var x1 = crypto.makeChallenge(keys.pub, "123456789012345678901234");
+			console.log(x1);
+			console.log(x1.length);
+			//console.log(crypto.keyChallenge(keys.priv_pw, "hello", x1));
+		
+		
+		
 		if (oauth.getAppname()) {		  
 		  data.app = oauth.getAppname();
 		  data.device = oauth.getDevice();
@@ -102,6 +115,8 @@ angular.module('portal')
 		  $scope.status.doAction("register", server.post(jsRoutes.controllers.Application.register().url, JSON.stringify(data))).
 		  then(function(data) { session.postLogin(data, $state); });
 		}
+		
+		});
 				
 	};
 	
