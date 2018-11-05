@@ -36,7 +36,11 @@ angular.module('portal')
 			        $scope.links = [];
 			    	for (var l=0;l<data.data.length;l++) {
 			    		var link = data.data[l];
-			    		if (link.type.indexOf("RECOMMEND_A")>=0) $scope.links.push(link);
+			    		if (link.type.indexOf("RECOMMEND_A")>=0) {
+			    			if (link.type.indexOf("REQUIRE_P")<0 || ($scope.participation && $scope.participation.pstatus=="ACCEPTED")) {
+			    			  $scope.links.push(link);
+			    			}
+			    		}
 			    	}	
 			    	console.log("LINKS");
 			    	console.log($scope.links);
