@@ -704,8 +704,13 @@ public class Plugins extends APIController {
 				}
 				
 				if (!apps.isEmpty()) {
+					//User user = User.getById(userId, Sets.create("apps", "visualizations"));
+										
 					for (MidataId appId : apps) {
 					  AccessLog.log("Possible plugins to add: "+appId.toString());
+					  //if (user.apps != null && user.apps.contains(appId)) continue;
+					  //if (user.visualizations != null && user.visualizations.contains(appId)) continue;
+					  
 					  Set<Space> spaces = Space.getByOwnerVisualization(userId, appId, Sets.create("context"));
 					  if (spaces.isEmpty()) {
 						  Plugin visualization = Plugin.getById(appId, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator", "status"));
