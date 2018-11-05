@@ -23,6 +23,7 @@ angular.module('portal')
 	.then(function(userId) {
 			$scope.userId = userId;
 			
+			spaces.autoadd().then(function() {
 			spaces.getSpacesOfUserContext(userId, "me").then(function(result) {
 				$scope.spaces = [];
 				angular.forEach(result.data, function(s) {
@@ -30,6 +31,7 @@ angular.module('portal')
 					  $scope.spaces.push(s);
 					}
 				});
+			});
 			});
 			
 			server.post(jsRoutes.controllers.Plugins.get().url, JSON.stringify({ "properties" : { "filename" : "timeline" }, "fields": ["_id", "type"] }))

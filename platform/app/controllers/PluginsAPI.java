@@ -3,6 +3,8 @@ package controllers;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -744,10 +746,12 @@ public class PluginsAPI extends APIController {
 		Map<String, String> tokens = oauthMeta.toMap();				
 		String accessToken;
 		accessToken = tokens.get("accessToken");
-					
+		try {
+		  url = url.replace("=<accessToken>", "="+URLEncoder.encode(accessToken,"UTF-8"));
+		} catch (UnsupportedEncodingException e) {}
 		// perform OAuth API call on behalf of the app
 		WSRequest holder = ws.url(url);
-		holder.setHeader("Authorization", "Bearer " + accessToken);
+		holder.addHeader("Authorization", "Bearer " + accessToken);
 		
 		if (method == null || method.equalsIgnoreCase("get")) return holder.get();
 		if (method.equalsIgnoreCase("post")) {
