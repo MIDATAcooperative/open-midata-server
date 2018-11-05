@@ -245,3 +245,4 @@
 {"_id":{"$oid":"5b3f7eb1cf569311e2c5f098"},"system":"http://snomed.info/sct","code":"434910001","display":"Interstitial fluid glucose concentration","content":"snomed/434910001"}
 {"_id":{"$oid":"5b4df89faed6453ed8fdcedc"},"system":"http://midata.coop","code":"Consent","display":"Consents on Midata","content":"Consent"}
 {"_id":{"$oid":"5bc97d4caed6450e6faeec43"},"system":"http://midata.coop","code":"MSMotTestDotRun","display":"MS Motoriktest Punkte bewegen, weitere Details pro Durchgang","content":"MSMotTestDotRun"}
+{"_id":{"$oid":"5bdc9eb5cf56934825cbe389"},"system":"http://snomed.info/sct","code":"57427004","display":"Handedness","content":"snomed/57427004"}
