@@ -213,17 +213,20 @@ public class MobileAPI extends Controller {
 			String username = JsonValidation.getEMail(json, "username");
 			String password = JsonValidation.getString(json, "password");
 			String device = JsonValidation.getStringOrNull(json, "device");
+			
 			role = json.has("role") ? JsonValidation.getEnum(json, "role", UserRole.class) : UserRole.MEMBER;
 			
 			if (device != null) phrase = device; else phrase = "???"+password;
 				
 			User user = null;
 			switch (role) {
-			case MEMBER : user = Member.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp", "failedLogins", "lastFailed"));break;
-			case PROVIDER : user = HPUser.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp", "failedLogins", "lastFailed"));break;
-			case RESEARCH: user = ResearchUser.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp", "failedLogins", "lastFailed"));break;
+			case MEMBER : user = Member.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp", "failedLogins", "lastFailed","publicExtKey"));break;
+			case PROVIDER : user = HPUser.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp", "failedLogins", "lastFailed","publicExtKey"));break;
+			case RESEARCH: user = ResearchUser.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp", "failedLogins", "lastFailed","publicExtKey"));break;
 			}
 			if (user == null) throw new BadRequestException("error.invalid.credentials", "Unknown user or bad password");
+			
+			
 			
 			AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user, app._id);
 			
@@ -351,7 +354,7 @@ public class MobileAPI extends Controller {
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.APP_FIRST_USE, app._id, member, null, appInstance, null, null);
 		
-        appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(appInstance._id, phrase);    	
+        appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(appInstance._id, null);    	
     	appInstance.passcode = Member.encrypt(phrase); 
     	appInstance.dateOfCreation = new Date();
     	appInstance.lastUpdated = appInstance.dateOfCreation;
@@ -363,13 +366,11 @@ public class MobileAPI extends Controller {
 		    
 		    appInstance.sharingQuery = app.defaultQuery;						   
 		}
-    	
-    	
+    	    	    	
     	MobileAppInstance.add(appInstance);	
-		KeyManager.instance.unlock(appInstance._id, phrase);	   		    
+			   		    
 		RecordManager.instance.createAnonymizedAPS(member._id, appInstance._id, appInstance._id, true);
-		
-		
+				
 		Map<String, Object> meta = new HashMap<String, Object>();
 		meta.put("phrase", phrase);
 		if (executor == null) executor = appInstance._id;
@@ -413,7 +414,7 @@ public class MobileAPI extends Controller {
 	
 	protected static MidataId prepareMobileExecutor(MobileAppInstance appInstance, MobileAppSessionToken tk) throws AppException {
 		KeyManager.instance.login(1000l*60l, false);
-		KeyManager.instance.unlock(tk.appInstanceId, tk.passphrase);
+		KeyManager.instance.unlock(tk.appInstanceId, tk.aeskey);
 		Map<String, Object> appobj = RecordManager.instance.getMeta(tk.appInstanceId, tk.appInstanceId, "_app").toMap();
 		if (appobj.containsKey("aliaskey") && appobj.containsKey("alias")) {
 			MidataId alias = new MidataId(appobj.get("alias").toString());

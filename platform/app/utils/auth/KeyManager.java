@@ -76,6 +76,11 @@ public class KeyManager implements KeySession {
 	 * private key is split into two parts
 	 */
 	public final static int KEYPROTECTION_SPLITKEY = 2;
+	
+	/**
+	 * private key is protected by AES key
+	 */
+	public final static int KEYPROTECTION_AESKEY = 3;
 		
 	
 	private Map<String, KeyRing> keySessions = new ConcurrentHashMap<String, KeyRing>();	
@@ -221,6 +226,11 @@ public class KeyManager implements KeySession {
 		current.newFutureLogin(user._id, user.publicExtKey);
 	}
 	
+	public String newAESKey(MidataId executor) throws AuthException, InternalServerException {
+		KeyManagerSession current = session.get();
+		return current.newAESKey(executor);
+	}
+	
 	public byte[] readExternalPublicKey(String pub) throws InternalServerException {
 		
 		pub = pub.replaceAll("\\n", "");
@@ -300,6 +310,15 @@ public class KeyManager implements KeySession {
 		KeyManagerSession current = session.get();
 		if (current != null) {
 			return current.getPersisted(executor);		
+		}
+		return null;
+	}
+	
+	public String currentHandleOptional(MidataId executor) throws AuthException {
+		KeyManagerSession current = session.get();
+		if (current != null) {
+			if (!current.pks.keys.containsKey(executor.toString())) return null;
+			return current.handle;		
 		}
 		return null;
 	}
@@ -457,6 +476,13 @@ public class KeyManager implements KeySession {
 	 				   pks.addKey(target.toString(), EncryptionUtils.applyKey(inf.privateKey, passphrase));
 					}
 					return KEYPROTECTION_PASSPHRASE;
+				} if (inf.type == KEYPROTECTION_AESKEY) {
+					if (passphrase != null) {
+					  byte[] aeskey = EncryptionUtils.derandomize(Base64.getDecoder().decode(passphrase));			
+					  byte[] pk = EncryptionUtils.decrypt(aeskey, inf.privateKey);
+					  pks.addKey(target.toString(), pk);
+					}
+					return KEYPROTECTION_AESKEY;
 				} else {
 					pks.addKey(target.toString(), inf.privateKey);
 					return KEYPROTECTION_NONE;
@@ -469,10 +495,13 @@ public class KeyManager implements KeySession {
 		 * 
 		 * The account stays unlocked until lock is called for the account
 		 * @param target id of user or app instance to unlock
-		 * @param passphrase the passphrase for the private key or null if no passphrase has been applied 
+		 * @param aeskey the passphrase for the private key or null if no passphrase has been applied 
 		 * @throws InternalServerException
 		 */
-		public void unlock(MidataId target, String sessionCode, byte[] pubkey) throws InternalServerException, AuthException {
+		public int unlock(MidataId target, String sessionCode, byte[] pubkey) throws InternalServerException, AuthException {
+			
+			if (pubkey == null) return unlock(target, sessionCode);
+			if (sessionCode == null) return KEYPROTECTION_AESKEY;
 			
 			FutureLogin fl = FutureLogin.getById(target);
 			byte[] aeskey = EncryptionUtils.derandomize(Base64.getDecoder().decode(sessionCode));			
@@ -481,6 +510,7 @@ public class KeyManager implements KeySession {
 			
 			newFutureLogin(target, pubkey);
    
+			return KEYPROTECTION_NONE;
 		}
 		
 		/**
@@ -543,6 +573,24 @@ public class KeyManager implements KeySession {
 			futureLogin.intPart = EncryptionUtils.encrypt(aesKey, key);
 			futureLogin.extPartEnc = KeyManager.instance.encryptKey(pubkey, aesKey);            
 			futureLogin.set();
+		}
+		
+		public String newAESKey(MidataId user) throws AuthException, InternalServerException {
+            byte key[] = pks.getKey(user.toString());			
+			if (key == null) throw new AuthException("error.relogin", "Authorization Failure");		
+			
+			byte[] aesKey = EncryptionUtils.generateKey();
+			
+			KeyInfo inf = KeyInfo.getById(user);
+			if (inf == null) {
+				inf = new KeyInfo();
+				inf._id = user;				
+			}
+			inf.privateKey = EncryptionUtils.encrypt(aesKey, key);
+			inf.type = KEYPROTECTION_AESKEY;
+			KeyInfo.update(inf);
+			
+			return Base64.getEncoder().encodeToString(EncryptionUtils.randomize(aesKey));
 		}
 		
 		/**
@@ -673,8 +721,8 @@ public class KeyManager implements KeySession {
 	}
 	
 	@Override
-	public void unlock(MidataId target, String sessionCode, byte[] pubkey) throws InternalServerException, AuthException {
-		session.get().unlock(target, sessionCode, pubkey);		
+	public int unlock(MidataId target, String sessionCode, byte[] pubkey) throws InternalServerException, AuthException {
+		return session.get().unlock(target, sessionCode, pubkey);		
 	}
 
 	@Override

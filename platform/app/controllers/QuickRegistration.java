@@ -12,6 +12,7 @@ import models.MobileAppInstance;
 import models.Plugin;
 import models.Study;
 import models.StudyAppLink;
+import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
 import models.enums.Gender;
 import models.enums.JoinMethod;
@@ -23,10 +24,14 @@ import models.enums.UserStatus;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import utils.InstanceConfig;
+import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.ExecutionInfo;
+import utils.auth.KeyManager;
+import utils.auth.PortalSessionToken;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
+import utils.fhir.PatientResourceProvider;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -149,8 +154,28 @@ public class QuickRegistration extends APIController {
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user, app._id);
 		
-		Application.registerCreateUser(user);
+		if (json.has("priv_pw")) {
+			  String pub = JsonValidation.getString(json, "pub");
+			  String pk = JsonValidation.getString(json, "priv_pw");
+			  		        	      		  		
+			  user.publicExtKey = KeyManager.instance.readExternalPublicKey(pub);
+			  
+			  KeyManager.instance.saveExternalPrivateKey(user._id, pk);			  
+			  KeyManager.instance.login(PortalSessionToken.LIFETIME, true);
+			  
+			  user.security = AccountSecurityLevel.KEY_EXT_PASSWORD;		
+			  user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(user._id, null);								
+			  Member.add(user);
+			  
+			  KeyManager.instance.newFutureLogin(user);	
 				
+			  user.myaps = RecordManager.instance.createPrivateAPS(user._id, user._id);
+			  Member.set(user._id, "myaps", user.myaps);
+				
+			  PatientResourceProvider.updatePatientForAccount(user._id);
+		} else {
+		      Application.registerCreateUser(user);
+		}
 		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, requirements);
 		
 		Circles.fetchExistingConsents(user._id, user.emailLC);

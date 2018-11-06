@@ -3,6 +3,7 @@ package controllers;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.bson.BSONObject;
@@ -122,7 +123,7 @@ public class OAuth2 extends Controller {
 		String state = JsonValidation.getString(json, "state");
 		String redirectUri = JsonValidation.getString(json, "redirectUri"); 
 		String device = JsonValidation.getString(json, "device");
-		
+			
 		String code_challenge = JsonValidation.getStringOrNull(json, "code_challenge");
 	    String code_challenge_method = JsonValidation.getStringOrNull(json, "code_challenge_method");
 	    boolean confirmed = JsonValidation.getBoolean(json, "confirm");
@@ -168,6 +169,7 @@ public class OAuth2 extends Controller {
 		
 		String username = JsonValidation.getEMail(json, "username");
 		String password = JsonValidation.getString(json, "password");
+		String sessionToken = JsonValidation.getStringOrNull(json, "sessionToken");
 		
 		String phrase = device;
 					
@@ -178,6 +180,12 @@ public class OAuth2 extends Controller {
 		case RESEARCH : user = ResearchUser.getByEmail(username, User.ALL_USER_INTERNAL);break; 
 		}
 		if (user == null) throw new BadRequestException("error.invalid.credentials", "Unknown user or bad password");
+		
+		if (user.publicExtKey == null) {
+			if (!json.has("nonHashed")) return ok("compatibility-mode");
+			password = JsonValidation.getString(json, "nonHashed");
+		}
+		
         boolean authenticationValid =  user.authenticationValid(password);   
 		MidataId studyContext = null;
 		if (role.equals(UserRole.RESEARCH) && authenticationValid) {
@@ -220,7 +228,12 @@ public class OAuth2 extends Controller {
 		
 		KeyManager.instance.login(60000l, false);
 		MidataId executor = null;
-		if (appInstance == null) {		
+		if (appInstance != null) {
+			if (verifyAppInstance(appInstance, user._id, app._id)) confirmed = true;
+			MobileAPI.removeAppInstance(appInstance);
+		}
+		
+		//if (appInstance == null) {		
 			if (!confirmed) {
 				AuditManager.instance.fail(0, "Confirmation required", "error.missing.confirmation");
 				boolean allRequired = true;
@@ -241,12 +254,14 @@ public class OAuth2 extends Controller {
 			  return Application.loginHelperResult(user, notok);
 			}
 			
-			boolean autoConfirm = KeyManager.instance.unlock(user._id, null) == KeyManager.KEYPROTECTION_NONE;
+			if (sessionToken == null) return Application.loginChallenge(user);
+			boolean autoConfirm = KeyManager.instance.unlock(user._id, sessionToken, user.publicExtKey) == KeyManager.KEYPROTECTION_NONE;
 			executor = autoConfirm ? user._id : null;
 			appInstance = MobileAPI.installApp(executor, app._id, user, phrase, autoConfirm, confirmStudy);				
 			if (executor == null) executor = appInstance._id;
    		    meta = RecordManager.instance.getMeta(executor, appInstance._id, "_app").toMap();
-		} else {				
+		/*} else {	
+						
 			if (!verifyAppInstance(appInstance, user._id, app._id)) {
 				boolean allRequired = true;
 				for (StudyAppLink sal : links) {
@@ -256,15 +271,18 @@ public class OAuth2 extends Controller {
 				}
 				return allRequired ? ok("CONFIRM-STUDYOK") : ok("CONFIRM");
 			}
-			KeyManager.instance.unlock(appInstance._id, phrase);
-			meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
-			executor = appInstance._id;
-		}
-		
-		if (notok != null) {
-		  return Application.loginHelperResult(user, notok);
-		}
-					
+			
+			if (sessionToken == null) return Application.loginChallenge(user);
+			
+			KeyManager.instance.unlock(user._id, sessionToken, user.publicExtKey);
+			meta = RecordManager.instance.getMeta(user._id, appInstance._id, "_app").toMap();
+			executor = user._id;
+			
+			if (notok != null) {
+				  return Application.loginHelperResult(user, notok);
+			}
+		}*/
+									
 		if (!phrase.equals(meta.get("phrase"))) throw new InternalServerException("error.internal", "Internal error while validating consent");
 		
 		if (role.equals(UserRole.RESEARCH) && studyContext != null) {
@@ -276,7 +294,9 @@ public class OAuth2 extends Controller {
 			  RecordManager.instance.setMeta(executor, appInstance._id, "_query", m.toMap());
 			}
 		}
-		OAuthCodeToken tk = new OAuthCodeToken(appInstance._id, phrase, System.currentTimeMillis(), state, code_challenge, code_challenge_method);
+		
+		String aeskey = KeyManager.instance.newAESKey(appInstance._id);
+		OAuthCodeToken tk = new OAuthCodeToken(appInstance._id, phrase, aeskey, System.currentTimeMillis(), state, code_challenge, code_challenge_method);
 									
 		ObjectNode obj = Json.newObject();								
 		obj.put("code", tk.encrypt());
@@ -295,7 +315,8 @@ public class OAuth2 extends Controller {
         MidataId appInstanceId = null;
         MobileAppInstance appInstance = null;
         Map<String, Object> meta = null;
-        String phrase = null;
+        
+        String aeskey = null;
         ObjectNode obj = Json.newObject();	      
         
         KeyManager.instance.login(60000l, false);
@@ -325,14 +346,16 @@ public class OAuth2 extends Controller {
 				return status(UNAUTHORIZED);
 			}                       
 			
-            phrase = refreshToken.phrase;
-            KeyManager.instance.unlock(appInstance._id, phrase);	
+            
+            KeyManager.instance.unlock(appInstance._id, refreshToken.phrase);	
             meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
                         
             if (refreshToken.created != ((Long) meta.get("created")).longValue()) {
             	return status(UNAUTHORIZED);
             }
             
+            aeskey = KeyManager.instance.newAESKey(appInstance._id);
+    		
            
         } else if (grant_type.equals("authorization_code")) {
         	if (!data.containsKey("redirect_uri")) throw new BadRequestException("error.internal", "Missing redirect_uri");
@@ -340,16 +363,16 @@ public class OAuth2 extends Controller {
             if (!data.containsKey("code")) throw new BadRequestException("error.internal", "Missing code");
             
             String client_id = null;
-            
+            String phrase = null;
                             
             String code = data.get("code")[0];
             String redirect_uri = data.get("redirect_uri")[0];
             if (data.containsKey("client_id")) {
               client_id = data.get("client_id")[0];
             } else {
-            	String auth = request().getHeader("Authorization");
-            	if (auth != null && auth.startsWith("Basic")) {
-            		String authstr = auth.substring("Basic ".length());
+            	Optional<String> authh = request().header("Authorization");
+            	if (authh.isPresent() && authh.get().startsWith("Basic")) {
+            		String authstr = authh.get().substring("Basic ".length());
             		int p = authstr.indexOf(':');
             		if (p > 0) client_id = authstr.substring(0, p);
             	}
@@ -382,26 +405,23 @@ public class OAuth2 extends Controller {
     		
     		appInstance = MobileAppInstance.getById(tk.appInstanceId, Sets.create("owner", "applicationId", "status", "passcode"));
     		phrase = tk.passphrase;
+    		aeskey = tk.aeskey;
     		obj.put("state", tk.state);
     		
     		user = User.getById(appInstance.owner, Sets.create("role", "status"));
     		if (user == null || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.BLOCKED)) throw new BadRequestException("error.internal", "invalid_grant");
+    		
+    		if (appInstance == null) throw new NullPointerException();												
+    		if (appInstance.passcode != null && !User.phraseValid(phrase, appInstance.passcode)) throw new BadRequestException("error.invalid.credentials", "Wrong password.");			
+    		KeyManager.instance.unlock(appInstance._id, aeskey != null ? aeskey : phrase);
+    	
+    		meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();							
+    		if (!phrase.equals(meta.get("phrase"))) throw new InternalServerException("error.internal", "Internal error while validating consent");
+    		
         } else throw new BadRequestException("error.internal", "Unknown grant_type");
-               				
-		if (appInstance == null) throw new NullPointerException();									
-			
-		if (appInstance.passcode != null && !User.phraseValid(phrase, appInstance.passcode)) throw new BadRequestException("error.invalid.credentials", "Wrong password.");
-		//	if (!verifyAppInstance(appInstance, user._id, app._id)) return badRequest("Access denied");
-		
-		KeyManager.instance.unlock(appInstance._id, phrase);
-		meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
-			
-		//}
-				
-		if (!phrase.equals(meta.get("phrase"))) throw new InternalServerException("error.internal", "Internal error while validating consent");
-						
-		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, phrase, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME, user.role); 
-        MobileAppToken refresh = new MobileAppToken(appInstance.applicationId, appInstance._id, appInstance.owner, phrase, System.currentTimeMillis());
+               											
+		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, aeskey, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME, user.role); 
+        MobileAppToken refresh = new MobileAppToken(appInstance.applicationId, appInstance._id, appInstance.owner, aeskey, System.currentTimeMillis());
 		
         meta.put("created", refresh.created);
         RecordManager.instance.setMeta(appInstance._id, appInstance._id, "_app", meta);

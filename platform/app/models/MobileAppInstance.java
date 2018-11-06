@@ -18,7 +18,7 @@ public class MobileAppInstance extends Consent {
 	 * public key of the application instance
 	 */
 	public byte[] publicKey;
-	
+			
 	/**
 	 * id of the plugin
 	 */

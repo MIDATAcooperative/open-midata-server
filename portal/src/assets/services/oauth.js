@@ -1,18 +1,18 @@
 angular.module('services')
-.factory('oauth', ['server', '$cookies', function(server, $cookies) {
+.factory('oauth', ['server', '$cookies', 'session', 'crypto', function(server, $cookies, session, crypto) {
 	var service = {};
 	var cred = {};
 	
 	var randomString = function() {
 		var charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIHJKLMNOPQRSTUVWXYZ_01234567890";
-		var crypto = window.crypto || window.msCrypto || {
+		var mycrypto = window.crypto || window.msCrypto || {
 			getRandomValues : function(vals) {
 				for (var i = 0; i < vals.length; i++) vals[i] = Math.floor(Math.random()*16000);
 			} 
 		};
 		            		       
 		var values = new Uint32Array(20);
-		crypto.getRandomValues(values);
+		mycrypto.getRandomValues(values);
 
 		var result = "";
 		for (var i = 0; i < 20; i++) {
@@ -75,14 +75,24 @@ angular.module('services')
 	service.login = function(confirm, confirmStudy) {	    	
 		cred.confirm = confirm || false;
 		cred.confirmStudy = confirmStudy || (confirm && cred.confirmStudy);
-		return server.post("/v1/authorize", JSON.stringify(cred)).
-		then(function(result) {				
+				
+		var pw = cred.password;
+		
+		var cred2 = JSON.parse(JSON.stringify(cred));
+		cred2.password = crypto.getHash(cred.password);		
+		var func = function(data) {
+			return server.post("/v1/authorize", JSON.stringify(cred2))
+		};
+		
+		return session.performLogin(func, cred2, pw)
+		.then(function(result) {
 			if (result.data.istatus === "ACTIVE") {							
-			  cred.appname = null;
-			  document.location.href = cred.redirectUri + "?state=" + encodeURIComponent(cred.state) + "&code=" + result.data.code;
-			  return "ACTIVE";
+				  cred.appname = null;
+				  document.location.href = cred.redirectUri + "?state=" + encodeURIComponent(cred.state) + "&code=" + result.data.code;
+				  return "ACTIVE";
 			} else
 			return result.data;
+			
 		});
 	};
 	

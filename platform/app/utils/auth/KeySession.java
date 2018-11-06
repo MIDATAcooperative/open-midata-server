@@ -57,7 +57,7 @@ public interface KeySession {
 	 * @throws InternalServerException
 	 * @throws AuthException
 	 */
-	void unlock(MidataId target, String sessionCode, byte[] pubkey) throws InternalServerException, AuthException;
+	public int unlock(MidataId target, String sessionCode, byte[] pubkey) throws InternalServerException, AuthException;
 
 	
 	/**

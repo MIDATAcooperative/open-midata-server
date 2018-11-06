@@ -581,12 +581,14 @@ public class Application extends APIController {
 		obj.put("user", JsonOutput.toJsonNode(user, "User", User.ALL_USER));
 		
 		if (user.status.equals(UserStatus.ACTIVE) || user.status.equals(UserStatus.NEW)) {			
-		   String handle = KeyManager.instance.currentHandle(user._id);
-		   PortalSessionToken token = null;		   	
-		   token = new PortalSessionToken(handle, user._id, UserRole.ANY, null, user.developer);
-		   obj.put("sessionToken", token.encrypt(request()));
-		   //KeyManager.instance.unlock(user._id, null);
-		   KeyManager.instance.persist(user._id);
+		   String handle = KeyManager.instance.currentHandleOptional(user._id);
+		   if (handle != null) {
+			   PortalSessionToken token = null;		   	
+			   token = new PortalSessionToken(handle, user._id, UserRole.ANY, null, user.developer);
+			   obj.put("sessionToken", token.encrypt(request()));
+			   //KeyManager.instance.unlock(user._id, null);
+			   KeyManager.instance.persist(user._id);
+		   }
 		}
 					
 		AuditManager.instance.success();
@@ -626,7 +628,7 @@ public class Application extends APIController {
 		if (!nosession) {
 			if (newVersion) {
 				if (sessionToken == null) {
-				  handle = KeyManager.instance.currentHandle(user._id);
+				  handle = KeyManager.instance.currentHandleOptional(user._id);
 				  if (handle == null) return loginChallenge(user);
 				} else {
 				  handle = KeyManager.instance.login(PortalSessionToken.LIFETIME, true);

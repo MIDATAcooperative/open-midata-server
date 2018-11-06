@@ -110,7 +110,7 @@ angular.module('portal')
 			}
 			if (sq.group) {
 				angular.forEach(sq.group, function(r) {
-					  labels.getGroupLabel($translate.use(), r).then(function(lab) {
+					  labels.getGroupLabel($translate.use(), sq["group-system"], r).then(function(lab) {
 						 $scope.labels.push(lab); 
 					  });
 				});
