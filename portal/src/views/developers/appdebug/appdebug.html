@@ -16,7 +16,24 @@
        
        </div>
         
-        
+       <div class="row extraspace">
+         <div class="col-xs-2">
+           <label>OAuth-Login:</label>
+           <div>
+           <a class="btn btn-default" ng-href="{{ getOAuthLogin() }}" translate="appdebug.login"></a>
+           </div>
+         </div>
+         <div class="col-xs-2">
+           <label>Device:</label>
+           <input type="text" class="form-control" ng-model="device">
+         </div>
+         
+         <div class="col-xs-8">
+           <label>Refresh-Token:</label>
+           <input type="text" class="form-control" ng-model="refreshToken">
+         </div>
+       </div>
+       
         
         <div class="row extraspace">
          <div class="col-xs-12"><label>Request to backend: {{ server }}</label></div>

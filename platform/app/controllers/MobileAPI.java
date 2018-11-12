@@ -167,26 +167,27 @@ public class MobileAPI extends Controller {
 	public static Result authenticate() throws AppException {
 				
         JsonNode json = request().body().asJson();		
-		JsonValidation.validate(json, "appname", "secret");
-		if (!json.has("refreshToken")) JsonValidation.validate(json, "username", "password" /*, "device" */);
+		//JsonValidation.validate(json, "appname", "secret");
+		if (!json.has("refreshToken")) JsonValidation.validate(json, "appname", "secret", "username", "password" /*, "device" */);
 					
 		String name = JsonValidation.getString(json, "appname");
 		String secret = JsonValidation.getString(json,"secret");
 				
 	    // Validate Mobile App	
-		Plugin app = Plugin.getByFilename(name, Sets.create("type", "name", "secret", "status", "targetUserRole"));
-		if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");
+		//Plugin app = Plugin.getByFilename(name, Sets.create("type", "name", "secret", "status", "targetUserRole"));
+		//if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");
 		
-		if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
-		if (app.secret == null || !app.secret.equals(secret)) throw new BadRequestException("error.unknown.app", "Unknown app");
+		//if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
+		//if (app.secret == null || !app.secret.equals(secret)) throw new BadRequestException("error.unknown.app", "Unknown app");
 		
 	
 		MidataId appInstanceId = null;
 		MidataId executor = null;
 		MobileAppInstance appInstance = null;
-		String phrase;
+		String phrase = null;
 		Map<String, Object> meta = null;
 		UserRole role = null;
+		Plugin app = null;
 		KeyManager.instance.login(60000l, false);
 		if (json.has("refreshToken")) {
 			MobileAppToken refreshToken = MobileAppToken.decrypt(JsonValidation.getString(json, "refreshToken"));
@@ -194,7 +195,13 @@ public class MobileAPI extends Controller {
 			appInstanceId = refreshToken.appInstanceId;
 			
 			appInstance = MobileAppInstance.getById(appInstanceId, Sets.create("owner", "applicationId", "status", "appVersion", "writes", "sharingQuery"));
-			if (!verifyAppInstance(appInstance, refreshToken.ownerId, refreshToken.appId)) throw new BadRequestException("error.invalid.token", "Bad refresh token.");            
+			if (!verifyAppInstance(appInstance, refreshToken.ownerId, refreshToken.appId)) throw new BadRequestException("error.invalid.token", "Bad refresh token.");
+			
+			app = Plugin.getById(appInstance.applicationId, Sets.create("type", "name", "secret", "status", "targetUserRole"));
+			if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");
+			
+			if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
+			
             if (!refreshToken.appId.equals(app._id)) throw new BadRequestException("error.invalid.token", "Bad refresh token.");
             User user = User.getById(appInstance.owner, User.ALL_USER_INTERNAL);
             Set<UserFeature> req = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(user.role);
@@ -202,15 +209,17 @@ public class MobileAPI extends Controller {
             if (Application.loginHelperPreconditionsFailed(user, req) != null) return status(UNAUTHORIZED); 
             role = user.role;
             phrase = refreshToken.phrase;
-            KeyManager.instance.unlock(appInstance._id, phrase);
+            if (KeyManager.instance.unlock(appInstance._id, phrase) == KeyManager.KEYPROTECTION_FAIL) return status(UNAUTHORIZED);
             executor = appInstance._id;
             meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
                         
             if (refreshToken.created != ((Long) meta.get("created")).longValue()) {
             	return status(UNAUTHORIZED);
             }
+            
+            phrase = KeyManager.instance.newAESKey(appInstance._id);
 		} else {
-			String username = JsonValidation.getEMail(json, "username");
+			/*String username = JsonValidation.getEMail(json, "username");
 			String password = JsonValidation.getString(json, "password");
 			String device = JsonValidation.getStringOrNull(json, "device");
 			
@@ -261,10 +270,10 @@ public class MobileAPI extends Controller {
 				meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
 				
 			}
-			role = user.role;
+			role = user.role;*/
 		}
 				
-		if (!phrase.equals(meta.get("phrase"))) return internalServerError("Internal error while validating consent");
+		//if (!phrase.equals(meta.get("phrase"))) return internalServerError("Internal error while validating consent");
 				
 		if (app.targetUserRole.equals(UserRole.RESEARCH)) {			
 			

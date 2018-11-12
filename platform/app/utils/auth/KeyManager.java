@@ -81,6 +81,11 @@ public class KeyManager implements KeySession {
 	 * private key is protected by AES key
 	 */
 	public final static int KEYPROTECTION_AESKEY = 3;
+	
+	/**
+	 * private key decryption failure
+	 */
+	public final static int KEYPROTECTION_FAIL = -1;
 		
 	
 	private Map<String, KeyRing> keySessions = new ConcurrentHashMap<String, KeyRing>();	
@@ -478,9 +483,12 @@ public class KeyManager implements KeySession {
 					return KEYPROTECTION_PASSPHRASE;
 				} if (inf.type == KEYPROTECTION_AESKEY) {
 					if (passphrase != null) {
-					  byte[] aeskey = EncryptionUtils.derandomize(Base64.getDecoder().decode(passphrase));			
-					  byte[] pk = EncryptionUtils.decrypt(aeskey, inf.privateKey);
-					  pks.addKey(target.toString(), pk);
+					   byte[] fullkey = Base64.getDecoder().decode(passphrase);
+					   if (EncryptionUtils.checkMatch(fullkey, inf.privateKey)) {
+					     byte[] aeskey = EncryptionUtils.derandomize(fullkey);			
+					     byte[] pk = EncryptionUtils.decrypt(aeskey, EncryptionUtils.derandomize(inf.privateKey));
+					     pks.addKey(target.toString(), pk);
+					   } else return KEYPROTECTION_FAIL;
 					}
 					return KEYPROTECTION_AESKEY;
 				} else {
@@ -586,11 +594,11 @@ public class KeyManager implements KeySession {
 				inf = new KeyInfo();
 				inf._id = user;				
 			}
-			inf.privateKey = EncryptionUtils.encrypt(aesKey, key);
+			inf.privateKey = EncryptionUtils.randomize(EncryptionUtils.encrypt(aesKey, key));
 			inf.type = KEYPROTECTION_AESKEY;
 			KeyInfo.update(inf);
 			
-			return Base64.getEncoder().encodeToString(EncryptionUtils.randomize(aesKey));
+			return Base64.getEncoder().encodeToString(EncryptionUtils.randomizeSameAs(aesKey, inf.privateKey));
 		}
 		
 		/**

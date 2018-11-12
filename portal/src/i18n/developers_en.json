@@ -162,7 +162,8 @@
   },
   
   "appdebug" : {
-    "title" : "API Tester"
+    "title" : "API Tester",
+    "login" : "Login"
   },
   
   "appicon" : {

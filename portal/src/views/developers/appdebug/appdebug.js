@@ -13,6 +13,7 @@ angular.module('portal')
        $scope.results = "empty";
        $scope.count = 1;
        $scope.saved = [];
+       $scope.device = "debug";
        
        //if ($scope.extra == null) $scope.extra = "";
 
@@ -79,16 +80,68 @@ angular.module('portal')
 	
 	$scope.status = new status(true);    
 	$scope.calls = [];
-			
+		
+	
+	var requestAccessToken = function(code) {
+		
+	    console.log("CODE: "+code);
+	    var body = "grant_type=authorization_code&redirect_uri=x&client_id="+encodeURIComponent($scope.app.filename)+"&code="+encodeURIComponent(code);	    
+	    $http.post(ENV.apiurl+"/v1/token", body, { headers : { 'Content-Type': 'application/x-www-form-urlencoded' } }).then(function(result) {
+		   console.log(result.data);
+		   
+		   $scope.authheader = "Bearer " + result.data.access_token;
+		   $scope.refreshToken = result.data.refresh_token;
+		   
+		}); 
+	};
+	
+	onAuthorized = function(url) {
+
+		var message = null;
+		var error = null;
+
+		var arguments1 = url.split("&");
+		var keys = _.map(arguments1, function(argument) { return argument.split("=")[0]; });
+		var values = _.map(arguments1, function(argument) { return argument.split("=")[1]; });
+		var params = _.object(keys, values);
+		
+		if (_.has(params, "error")) {
+			error = "The following error occurred: " + params.error + ". Please try again.";
+		} else if (_.has(params, "code")) {
+			message = "User authorization granted. Requesting access token...";
+			requestAccessToken(params.code);
+		} else if (_.has(params, "oauth_verifier")) {
+			message = "User authorization granted. Requesting access token...";
+			requestAccessToken(params.oauth_verifier, params);
+		} else {
+			error = "An unknown error occured while requesting authorization. Please try again.";
+		}
+ 
+		
+		
+		$scope.message = message;
+		$scope.error = error;
+		if (error) {
+			$scope.authorizing = false;
+		}
+	
+		//authWindow.close();
+	};	
+	
+	
 	$scope.init = function(userId, appId) {
 		$scope.userId = userId;
 		$scope.appId = appId;
 			    
-	    $scope.status.doBusy(apps.getApps({ "_id" : appId }, ["filename", "name", "targetUserRole", "secret"]))
+	    $scope.status.doBusy(apps.getApps({ "_id" : appId }, ["filename", "name", "targetUserRole", "secret", "redirectUri"]))
 		.then(function(data) { 
 			$scope.app = data.data[0];
+			//sessionStorage.returnTo = document.location.href;
+			//$scope.body = "{\n    \"appname\":\""+$scope.app.filename+"\",\n    \"device\" : \"debug\",\n    \"secret\" : \""+$scope.app.secret+"\",\n    \"username\" : \"FILLOUT\",\n    \"password\" : \"FILLOUT\",\n    \"role\" : \""+$scope.app.targetUserRole+"\"\n}";
 			
-			$scope.body = "{\n    \"appname\":\""+$scope.app.filename+"\",\n    \"device\" : \"debug\",\n    \"secret\" : \""+$scope.app.secret+"\",\n    \"username\" : \"FILLOUT\",\n    \"password\" : \"FILLOUT\",\n    \"role\" : \""+$scope.app.targetUserRole+"\"\n}";
+			if ($state.params.code) {
+				requestAccessToken($state.params.code);
+			}
 		});
 	};
 	
@@ -96,6 +149,12 @@ angular.module('portal')
 		$scope.init($scope.userId, $scope.appId);
 	};
 	
+	$scope.getOAuthLogin = function() {
+		if (!$scope.app || !$scope.app.redirectUri) return "";
+		var back = document.location.href;				
+		if (back.indexOf("?") > 0) back = back.substr(0, back.indexOf("?"));
+		return "/oauth.html#/portal/oauth2?response_type=code&client_id="+encodeURIComponent($scope.app.filename)+"&redirect_uri="+encodeURIComponent(back)+"&device_id="+encodeURIComponent($scope.device);
+	};
 		
 	$translatePartialLoader.addPart("developers");
 	

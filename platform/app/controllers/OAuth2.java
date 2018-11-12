@@ -135,7 +135,7 @@ public class OAuth2 extends Controller {
 		if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
 		if (app.redirectUri==null) throw new InternalServerException("error.internal", "No redirect URI set for app.");
 		if (redirectUri==null || redirectUri.length()==0) throw new BadRequestException("error.internal", "Missing redirectUri in request.");
-		if (!redirectUri.equals(app.redirectUri)) {
+		if (!redirectUri.equals(app.redirectUri) && !redirectUri.startsWith(InstanceConfig.getInstance().getPortalOriginUrl()+"/#/")) {
 			String[] multiple = app.redirectUri.split(" ");
 			boolean found = false;
 			// if length is 1 the URL has already been tested
@@ -228,9 +228,13 @@ public class OAuth2 extends Controller {
 		
 		KeyManager.instance.login(60000l, false);
 		MidataId executor = null;
+		boolean alreadyUnlocked = false;
 		if (appInstance != null) {
-			if (verifyAppInstance(appInstance, user._id, app._id)) confirmed = true;
-			MobileAPI.removeAppInstance(appInstance);
+			if (verifyAppInstance(appInstance, user._id, app._id)) {
+				confirmed = true;
+				alreadyUnlocked = true;
+			}
+			
 		}
 		
 		//if (appInstance == null) {		
@@ -245,7 +249,7 @@ public class OAuth2 extends Controller {
 				return allRequired ? ok("CONFIRM-STUDYOK") : ok("CONFIRM");				
 			}
 			
-			if (app.unlockCode != null) {				
+			if (app.unlockCode != null && !alreadyUnlocked) {				
 				String code = JsonValidation.getStringOrNull(json, "unlockCode");
 				if (code == null || !app.unlockCode.toUpperCase().equals(code.toUpperCase())) throw new JsonValidationException("error.invalid.unlock_code", "unlockCode", "invalid", "Invalid unlock code");
 			}			
@@ -257,6 +261,9 @@ public class OAuth2 extends Controller {
 			if (sessionToken == null) return Application.loginChallenge(user);
 			boolean autoConfirm = KeyManager.instance.unlock(user._id, sessionToken, user.publicExtKey) == KeyManager.KEYPROTECTION_NONE;
 			executor = autoConfirm ? user._id : null;
+			
+			if (alreadyUnlocked) MobileAPI.removeAppInstance(appInstance);
+			
 			appInstance = MobileAPI.installApp(executor, app._id, user, phrase, autoConfirm, confirmStudy);				
 			if (executor == null) executor = appInstance._id;
    		    meta = RecordManager.instance.getMeta(executor, appInstance._id, "_app").toMap();
@@ -347,7 +354,7 @@ public class OAuth2 extends Controller {
 			}                       
 			
             
-            KeyManager.instance.unlock(appInstance._id, refreshToken.phrase);	
+            if (KeyManager.instance.unlock(appInstance._id, refreshToken.phrase) == KeyManager.KEYPROTECTION_FAIL) return status(UNAUTHORIZED); 
             meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
                         
             if (refreshToken.created != ((Long) meta.get("created")).longValue()) {
@@ -404,6 +411,7 @@ public class OAuth2 extends Controller {
     		if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
     		
     		appInstance = MobileAppInstance.getById(tk.appInstanceId, Sets.create("owner", "applicationId", "status", "passcode"));
+    		if (appInstance == null) throw new BadRequestException("error.internal", "invalid_grant");
     		phrase = tk.passphrase;
     		aeskey = tk.aeskey;
     		obj.put("state", tk.state);
@@ -413,7 +421,7 @@ public class OAuth2 extends Controller {
     		
     		if (appInstance == null) throw new NullPointerException();												
     		if (appInstance.passcode != null && !User.phraseValid(phrase, appInstance.passcode)) throw new BadRequestException("error.invalid.credentials", "Wrong password.");			
-    		KeyManager.instance.unlock(appInstance._id, aeskey != null ? aeskey : phrase);
+    		if (KeyManager.instance.unlock(appInstance._id, aeskey != null ? aeskey : phrase) == KeyManager.KEYPROTECTION_FAIL) throw new BadRequestException("error.internal", "invalid_grant");
     	
     		meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();							
     		if (!phrase.equals(meta.get("phrase"))) throw new InternalServerException("error.internal", "Internal error while validating consent");

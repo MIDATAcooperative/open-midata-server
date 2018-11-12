@@ -179,7 +179,7 @@ angular.module('portal')
 	};
 	
 	$scope.getOAuthLogin = function() {
-		if (!$scope.app.redirectUri) return "";
+		if (!$scope.app || !$scope.app.redirectUri) return "";
 		return "/oauth.html#/portal/oauth2?response_type=code&client_id="+encodeURIComponent($scope.app.filename)+"&redirect_uri="+encodeURIComponent($scope.app.redirectUri.split(" ")[0]);
 	};
 	
