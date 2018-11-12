@@ -37,7 +37,7 @@ public class News extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result get() throws JsonValidationException, InternalServerException {
+	public Result get() throws JsonValidationException, InternalServerException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		
@@ -63,7 +63,7 @@ public class News extends Controller {
 	
 	@BodyParser.Of(BodyParser.Json.class)	
 	@VisualizationCall
-	public static Result getPublic() throws JsonValidationException, InternalServerException {
+	public Result getPublic() throws JsonValidationException, InternalServerException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		
@@ -91,7 +91,7 @@ public class News extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
 	@APICall
-	public static Result add() throws JsonValidationException, InternalServerException {
+	public Result add() throws JsonValidationException, InternalServerException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		
@@ -123,7 +123,7 @@ public class News extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
 	@APICall
-	public static Result update() throws JsonValidationException, InternalServerException {
+	public Result update() throws JsonValidationException, InternalServerException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		
@@ -174,7 +174,7 @@ public class News extends Controller {
 	 */
 	@Security.Authenticated(AdminSecured.class)
 	@APICall
-	public static Result delete(String newsItemIdString) throws InternalServerException {
+	public Result delete(String newsItemIdString) throws InternalServerException {
 			
 		MidataId newsItemId = new MidataId(newsItemIdString);
 		

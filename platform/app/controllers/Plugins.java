@@ -115,7 +115,7 @@ public class Plugins extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result get() throws JsonValidationException, InternalServerException, AuthException {
+	public Result get() throws JsonValidationException, InternalServerException, AuthException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		JsonValidation.validate(json, "properties", "fields");
@@ -137,7 +137,7 @@ public class Plugins extends APIController {
 
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result getInfo() throws JsonValidationException, InternalServerException, AuthException {
+	public Result getInfo() throws JsonValidationException, InternalServerException, AuthException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		JsonValidation.validate(json, "name");
@@ -164,7 +164,7 @@ public class Plugins extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result install(String visualizationIdString) throws AppException {
+	public Result install(String visualizationIdString) throws AppException {
 		JsonNode json = request().body().asJson();
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId visualizationId = null;
@@ -270,7 +270,7 @@ public class Plugins extends APIController {
 	 */
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result uninstall(String visualizationIdString) throws InternalServerException {
+	public Result uninstall(String visualizationIdString) throws InternalServerException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		Set<String> fields = Sets.create("visualizations", "apps");
 
@@ -293,7 +293,7 @@ public class Plugins extends APIController {
 	 */
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result isInstalled(String visualizationIdString) throws InternalServerException {
+	public Result isInstalled(String visualizationIdString) throws InternalServerException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId visualizationId = new MidataId(visualizationIdString);
 		boolean isInstalled = Member.getByIdAndVisualization(userId, visualizationId, Sets.create()) != null || Member.getByIdAndApp(userId, visualizationId, Sets.create()) != null;
@@ -311,7 +311,7 @@ public class Plugins extends APIController {
 	 */
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static CompletionStage<Result> isAuthorized(String spaceIdString) throws AppException {
+	public CompletionStage<Result> isAuthorized(String spaceIdString) throws AppException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 
 		BSONObject oauthmeta = RecordManager.instance.getMeta(userId, new MidataId(spaceIdString), "_oauth");
@@ -335,7 +335,7 @@ public class Plugins extends APIController {
 	 */
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result getUrl(String visualizationIdString) throws InternalServerException {
+	public Result getUrl(String visualizationIdString) throws InternalServerException {
 		MidataId visualizationId = new MidataId(visualizationIdString);
 		Map<String, MidataId> properties = new ChainedMap<String, MidataId>().put("_id", visualizationId).get();
 		Set<String> fields = new ChainedSet<String>().add("filename").add("url").get();
@@ -360,7 +360,7 @@ public class Plugins extends APIController {
 	 */
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result getUrlForConsent(String appIdString, String consentIdString) throws AppException {
+	public Result getUrlForConsent(String appIdString, String consentIdString) throws AppException {
 		// get app
 		MidataId appId = new MidataId(appIdString);
 		MidataId consentId = new MidataId(consentIdString);
@@ -383,7 +383,7 @@ public class Plugins extends APIController {
 
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result getRequestTokenOAuth1(String spaceIdString) throws AppException {
+	public Result getRequestTokenOAuth1(String spaceIdString) throws AppException {
 
 		// get app details
 		final MidataId spaceId = new MidataId(spaceIdString);
@@ -422,7 +422,7 @@ public class Plugins extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result requestAccessTokenOAuth1(String spaceIdString) throws JsonValidationException, AppException {
+	public Result requestAccessTokenOAuth1(String spaceIdString) throws JsonValidationException, AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		JsonValidation.validate(json, "code");
@@ -478,7 +478,7 @@ public class Plugins extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static CompletionStage<Result> requestAccessTokenOAuth2(String spaceIdString) throws AppException {
+	public CompletionStage<Result> requestAccessTokenOAuth2(String spaceIdString) throws AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		try {
@@ -678,7 +678,7 @@ public class Plugins extends APIController {
 	
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result addMissingPlugins() throws AppException {
+	public Result addMissingPlugins() throws AppException {
 		
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));				
 		addMissingPlugins(userId, getRole());				

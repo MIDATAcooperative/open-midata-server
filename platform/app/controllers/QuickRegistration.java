@@ -45,7 +45,7 @@ public class QuickRegistration extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result register() throws AppException {
+	public Result register() throws AppException {
 		// validate 
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "email", "password", "firstname", "lastname", "gender", "country", "app", "language");

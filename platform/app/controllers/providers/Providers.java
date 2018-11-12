@@ -61,7 +61,7 @@ public class Providers extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result register() throws AppException {
+	public Result register() throws AppException {
 		JsonNode json = request().body().asJson();
 		
 		JsonValidation.validate(json, "name", "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "language");
@@ -134,7 +134,7 @@ public class Providers extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result login() throws AppException {
+	public Result login() throws AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		
@@ -168,7 +168,7 @@ public class Providers extends APIController {
 	@Security.Authenticated(ProviderSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result search() throws JsonValidationException, InternalServerException {
+	public Result search() throws JsonValidationException, InternalServerException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		JsonNode json = request().body().asJson();
 			
@@ -201,7 +201,7 @@ public class Providers extends APIController {
      */
 	@Security.Authenticated(ProviderSecured.class)	
 	@APICall
-	public static Result list() throws JsonValidationException, InternalServerException {
+	public Result list() throws JsonValidationException, InternalServerException {
 		
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 
@@ -223,7 +223,7 @@ public class Providers extends APIController {
 	 */
 	@Security.Authenticated(ProviderSecured.class)	
 	@APICall
-	public static Result getMember(String id) throws JsonValidationException, AppException {
+	public Result getMember(String id) throws JsonValidationException, AppException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId memberId = new MidataId(id);
 		
@@ -252,7 +252,7 @@ public class Providers extends APIController {
 	@Security.Authenticated(ProviderSecured.class)
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result getVisualizationToken() throws JsonValidationException, InternalServerException {
+	public Result getVisualizationToken() throws JsonValidationException, InternalServerException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		JsonNode json = request().body().asJson();
 						

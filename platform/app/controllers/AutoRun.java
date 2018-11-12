@@ -88,7 +88,7 @@ public class AutoRun extends APIController {
 	 * @return
 	 * @throws AppException
 	 */
-	public static Result run() throws AppException {		  	     		
+	public Result run() throws AppException {		  	     		
 		manager.tell(new StartImport(), ActorRef.noSender());		
 		return ok();
 	}
