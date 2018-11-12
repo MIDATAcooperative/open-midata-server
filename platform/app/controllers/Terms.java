@@ -33,7 +33,7 @@ public class Terms extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
 	@APICall
-	public static Result add() throws AppException {
+	public Result add() throws AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
@@ -64,7 +64,7 @@ public class Terms extends APIController {
 	
 	@BodyParser.Of(BodyParser.Json.class)		
 	@APICall
-	public static Result get() throws JsonValidationException, InternalServerException {
+	public Result get() throws JsonValidationException, InternalServerException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		
@@ -97,7 +97,7 @@ public class Terms extends APIController {
 	@APICall
 	@Security.Authenticated(PreLoginSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result agreedToTerms() throws AppException {
+	public Result agreedToTerms() throws AppException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		JsonNode json = request().body().asJson();
 		JsonValidation.validate(json, "terms", "app");
@@ -119,7 +119,7 @@ public class Terms extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result search() throws JsonValidationException, InternalServerException {
+	public Result search() throws JsonValidationException, InternalServerException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		

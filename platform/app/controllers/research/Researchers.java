@@ -54,7 +54,7 @@ public class Researchers extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result register() throws AppException {
+	public Result register() throws AppException {
 		JsonNode json = request().body().asJson();
 		
 		JsonValidation.validate(json, "name", "email", "description", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "language");
@@ -101,7 +101,7 @@ public class Researchers extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result registerOther() throws AppException {
+	public Result registerOther() throws AppException {
 		
 		
 		JsonNode json = request().body().asJson();		
@@ -181,7 +181,7 @@ public class Researchers extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result login() throws AppException {
+	public Result login() throws AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		
@@ -206,7 +206,7 @@ public class Researchers extends APIController {
 
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result getOrganization(String id) throws AppException {
+	public Result getOrganization(String id) throws AppException {
 			
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId researchid = MidataId.from(id);
@@ -220,7 +220,7 @@ public class Researchers extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result updateOrganization(String id) throws AppException {
+	public Result updateOrganization(String id) throws AppException {
 		JsonNode json = request().body().asJson();
 		
 		JsonValidation.validate(json, "_id", "name", "description");

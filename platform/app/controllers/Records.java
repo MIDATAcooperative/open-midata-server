@@ -108,7 +108,7 @@ public class Records extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result get() throws JsonValidationException, AppException {
+	public Result get() throws JsonValidationException, AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		JsonValidation.validate(json, "_id");
@@ -137,7 +137,7 @@ public class Records extends APIController {
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result getRecords() throws AppException, JsonValidationException {
+	public Result getRecords() throws AppException, JsonValidationException {
 
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		JsonNode json = request().body().asJson();
@@ -177,7 +177,7 @@ public class Records extends APIController {
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result getInfo() throws AppException, JsonValidationException {
+	public Result getInfo() throws AppException, JsonValidationException {
 
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		JsonNode json = request().body().asJson();
@@ -209,7 +209,7 @@ public class Records extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result getSharingDetails(String aps) throws AppException {
+	public Result getSharingDetails(String aps) throws AppException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId apsId = new MidataId(aps);
 
@@ -261,7 +261,7 @@ public class Records extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
-	public static Result updateSpaces(String recordIdString) throws JsonValidationException, AppException {
+	public Result updateSpaces(String recordIdString) throws JsonValidationException, AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
 
@@ -299,7 +299,7 @@ public class Records extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result share() throws JsonValidationException, AppException {
+	public Result share() throws JsonValidationException, AppException {
 
 		JsonNode json = request().body().asJson();
 
@@ -335,7 +335,7 @@ public class Records extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result delete() throws JsonValidationException, AppException {
+	public Result delete() throws JsonValidationException, AppException {
 		JsonNode json = request().body().asJson();
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 
@@ -376,7 +376,7 @@ public class Records extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result updateSharing() throws JsonValidationException, AppException {
+	public Result updateSharing() throws JsonValidationException, AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		JsonValidation.validate(json, "records", "started", "stopped");
@@ -511,7 +511,7 @@ public class Records extends APIController {
 
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result getRecordUrl(String recordIdString) throws AppException {
+	public Result getRecordUrl(String recordIdString) throws AppException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		RecordToken tk = Records.getRecordTokenFromString(recordIdString);
 
@@ -555,7 +555,7 @@ public class Records extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result getFile(String id) throws AppException {
+	public Result getFile(String id) throws AppException {
 
 		RecordToken tk = getRecordTokenFromString(id);
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
@@ -577,7 +577,7 @@ public class Records extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result fixAccount() throws AppException {
+	public Result fixAccount() throws AppException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 
 		RecordManager.instance.fixAccount(userId);
@@ -587,7 +587,7 @@ public class Records extends APIController {
 
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result downloadAccountData() throws AppException, IOException {
+	public Result downloadAccountData() throws AppException, IOException {
 
 		final MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
         final UserRole role = getRole();

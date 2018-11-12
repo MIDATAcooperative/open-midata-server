@@ -31,7 +31,7 @@ public class Debug extends Controller {
 	 */
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result get(String id) throws JsonValidationException, AppException {
+	public Result get(String id) throws JsonValidationException, AppException {
 				
 		if (InstanceConfig.getInstance().getInstanceType().getDebugFunctionsAvailable()) {
 		
@@ -53,7 +53,7 @@ public class Debug extends Controller {
 	 * @throws AppException
 	 */
 	@APICall	
-	public static Result ping() throws AppException {
+	public Result ping() throws AppException {
 	  if (Admin.getByEmail("autorun-service", Sets.create("_id")) == null) throw new InternalServerException("error.db", "Database error");
 	  return ok();
 	}
