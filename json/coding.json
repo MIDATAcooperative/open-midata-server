@@ -246,3 +246,4 @@
 {"_id":{"$oid":"5b4df89faed6453ed8fdcedc"},"system":"http://midata.coop","code":"Consent","display":"Consents on Midata","content":"Consent"}
 {"_id":{"$oid":"5bc97d4caed6450e6faeec43"},"system":"http://midata.coop","code":"MSMotTestDotRun","display":"MS Motoriktest Punkte bewegen, weitere Details pro Durchgang","content":"MSMotTestDotRun"}
 {"_id":{"$oid":"5bdc9eb5cf56934825cbe389"},"system":"http://snomed.info/sct","code":"57427004","display":"Handedness","content":"snomed/57427004"}
+{"_id":{"$oid":"5beae5dabcbc8744d136b7c3"},"system":"http://snomed.info/sct","code":"418138009","display":"Patient condition finding","content":"snomed/418138009"}
