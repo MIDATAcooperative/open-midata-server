@@ -19,6 +19,8 @@ import models.Circle;
 import models.Consent;
 import models.HealthcareProvider;
 import models.InstanceStats;
+import models.KeyRecoveryData;
+import models.KeyRecoveryProcess;
 import models.Member;
 import models.MidataAuditEvent;
 import models.MidataId;
@@ -54,6 +56,7 @@ import utils.audit.AuditManager;
 import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
+import utils.auth.FutureLogin;
 import utils.auth.KeyManager;
 import utils.auth.PasswordResetToken;
 import utils.auth.PortalSessionToken;
@@ -409,6 +412,9 @@ public class Administration extends APIController {
 			HealthcareProvider.delete(PortalSessionToken.session().org);
 		}
 		
+		KeyRecoveryProcess.delete(userId);
+        KeyRecoveryData.delete(userId);
+        FutureLogin.delete(userId);
 		KeyManager.instance.deleteKey(userId);
 		selected.delete();
 		

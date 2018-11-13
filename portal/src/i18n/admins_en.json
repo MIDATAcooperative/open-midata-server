@@ -176,5 +176,14 @@
 	 "auditEventCount" : "Audit Events",
 	 "users" : "Active User Accounts",		       
      "consents" : "Consents"
+   },
+   
+   "admin_pwrecover" : {
+     "menu" : "Password Recovery",
+     "title" : "Password Recovery",
+     "empty" : "There is currently no recovery process running.",
+     "name" : "User",
+     "started" : "Date",
+     "share" : "Shares"     
    }
 }

@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('SetPasswordCtrl', ['$scope', 'server', '$location', function($scope, server, $location) {
+.controller('SetPasswordCtrl', ['$scope', 'server', '$location', 'crypto', function($scope, server, $location, crypto) {
 	
 	// init
 	$scope.setpw = {
@@ -23,10 +23,16 @@ angular.module('portal')
 			return;
 		}
 		
-		// send the request
-		var data = { "token": $scope.setpw.token, "password" : $scope.setpw.password };
-		server.post(jsRoutes.controllers.Application.setPasswordWithToken().url, JSON.stringify(data)).
-			then(function() { $scope.setpw.success = true; }, function(err) { $scope.error = err.data; });
+		crypto.generateKeys($scope.setpw.password).then(function(keys) {
+			var data = { "token": $scope.setpw.token };
+					
+			data.password = keys.pw_hash;
+			data.pub = keys.pub;
+			data.priv_pw = keys.priv_pw;
+			data.recovery = keys.recovery;
+		
+			return server.post(jsRoutes.controllers.Application.setPasswordWithToken().url, JSON.stringify(data));
+		}).then(function() { $scope.setpw.success = true; }, function(err) { $scope.error = err.data; });
 	};
 			
 }]);

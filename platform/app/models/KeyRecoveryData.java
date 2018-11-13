@@ -11,10 +11,10 @@ public class KeyRecoveryData extends Model {
 
 	protected @NotMaterialized static final String collection = "keyrecover";
 	
-	public Map<String, String> entries;
+	public Map<String, String> shares;
 	
 	public static KeyRecoveryData getById(MidataId id) throws InternalServerException {
-		return Model.get(KeyRecoveryData.class, collection, CMaps.map("_id", id), Sets.create("entries"));
+		return Model.get(KeyRecoveryData.class, collection, CMaps.map("_id", id), Sets.create("shares"));
 	}
 	
 	public static void add(KeyRecoveryData keyinfo) throws InternalServerException {

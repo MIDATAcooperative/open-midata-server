@@ -1,0 +1,39 @@
+<div ng-controller="PwRecoverCtrl">
+
+	<div class="panel panel-primary">
+		<div class="panel-heading" translate="admin_pwrecover.title"></div>
+		<div class="body">
+		    		           
+            <loader busy="status.isBusy !== false">
+
+            <input type="text" ng-model="criteria.me">
+			<div ng-if="members.length > 10">
+              <dir-pagination-controls pagination-id="recovertable" current-page="page.nr"></dir-pagination-controls>
+             </div>
+           
+			<table class="table table-striped" ng-show="members.length">
+
+				<tr>
+					<th translate="admin_pwrecover.name"></th>
+					<th translate="admin_pwrecover.started"></th>
+					<th translate="admin_pwrecover.share"></th>					
+					<th>&nbsp;</th>
+				</tr>
+								
+				<tr dir-paginate="member in members | itemsPerPage : 10" pagination-id="recovertable" current-page="page.nr">
+					<td><a href="javascript:" ui-sref="^.address({ userId : member._id })">{{ member.name || 'none' }}</a></td>
+					<td>{{ member.started | date : 'dd.MM.yy' }}</td>
+					<td>
+					  <textarea readonly rows="1" ng-click="copyToClip($event)" class="form-control">{{ member.encShares[criteria.me] }}</textarea>
+					  <input type="text" class="form-control" ng-model="member.shares[criteria.me]">
+                    </td>
+					<td><button ng-click="commit(member)" class="btn btn-xs btn-default">ok</button></td>					
+				</tr>
+			</table>
+
+            <p ng-show="members.length === 0" translate="admin_pwrecover.empty"></p>
+			
+			</loader>
+		</div>
+	</div>
+</div>

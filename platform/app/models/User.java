@@ -488,6 +488,9 @@ public class User extends Model implements Comparable<User> {
 		else this.flags.add(flag);
 		User.set(_id, "flags", flags);
 	}
-		
+	
+	public void updatePassword() throws AppException {
+		this.setMultiple(collection, Sets.create("password", "publicExtKey", "security"));
+	}
 	
 }

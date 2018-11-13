@@ -13,17 +13,13 @@ angular.module('services')
 	
 	
 	service.generateKeys = function(password) {
-		console.log(forge);
-						
+							
 		var def = $q.defer();
 		
 		rsa.generateKeyPair({bits: 2048, workers: 2}, function(err, keypair) {
 					
 			var result = {};
-			
-			console.log(keypair.privateKey);
-			console.log(keypair.publicKey);
-			
+									
 			result.priv_pw = forge.pki.encryptRsaPrivateKey(keypair.privateKey, password,
 					{legacy: true, algorithm: 'aes128'}); 
 			
@@ -35,37 +31,15 @@ angular.module('services')
 			var hash = forge.md.sha512.create();
 			hash.update(password);		
 			
-			result.pw_hash = hash.digest().toHex();
-			console.log(result);
+			result.pw_hash = hash.digest().toHex();	
 			
-			service.createRecoveryInfo(keypair.privateKey);
+			result.recovery = service.createRecoveryInfo(keypair.privateKey);
 			def.resolve(result);
 		});
 		
 		return def.promise;
 	};
-	
-	service.encryptKEM = function(pubkey, message) {
-		// generate and encapsulate a 16-byte secret key
-		var kdf1 = new forge.kem.kdf1(forge.md.sha1.create());
-		var kem = forge.kem.rsa.create(kdf1);
-		var result = kem.encrypt(pubkey, 16);
-		// result has 'encapsulation' and 'key'
-
-		// encrypt some bytes
-		var iv = forge.random.getBytesSync(12);		
-		var cipher = forge.cipher.createCipher('AES-GCM', result.key);
-		cipher.start({iv: iv});
-		cipher.update(forge.util.createBuffer(message));
-		cipher.finish();
-		var encrypted = cipher.output.getBytes();
-		var tag = cipher.mode.tag.getBytes();
-		console.log("ENC:");
-		console.log(encrypted);
-		console.log("TAG:");
-		console.log(tag);
-		return encrypted;
-	}; 
+		
 	
 	service.encryptPK_AES = function(privkeyStr) {
 		var key = forge.random.getBytesSync(16);
@@ -80,16 +54,12 @@ angular.module('services')
 	};
 	
 	service.decryptPK_AES = function(keyinfo) {
-		
-		console.log("A");		
-		var decipher = forge.cipher.createDecipher('AES-CBC', keyinfo.key);
-		console.log("B");
+				
+		var decipher = forge.cipher.createDecipher('AES-CBC', keyinfo.key);	
 		decipher.start({iv: forge.util.decode64(keyinfo.iv) });
-		console.log("C");
-		decipher.update(forge.util.createBuffer(forge.util.decode64(keyinfo.encrypted)));
-		console.log("D");
+		decipher.update(forge.util.createBuffer(forge.util.decode64(keyinfo.encrypted)));	
 		var result = decipher.finish(); // check 'result' for true/false
-		console.log(result);
+	
 		// outputs decrypted hex
 		return decipher.output.toString();
 		
@@ -98,42 +68,40 @@ angular.module('services')
 	service.createRecoveryInfo = function(pk) {
 		var pkstr = forge.pki.privateKeyToPem(pk);
 		var enc = service.encryptPK_AES(pkstr);
-		
-		console.log("PK:"+pkstr);
-		console.log(enc);
-		var pkhex = forge.util.binary.hex.encode(enc.key);
-		console.log("HEX:"+pkhex);
+			
+		var pkhex = forge.util.binary.hex.encode(enc.key);	
 		var shares = ssss.share(pkhex, recoveryPubKeys.length, 2);
-		console.log("SHARES:");
 		console.log(shares);
 		var recovery = { "encrypted" : forge.util.encode64(enc.encrypted.getBytes()), "iv" : forge.util.encode64(enc.iv) };
 		for (var idx = 0;idx < recoveryPubKeys.length; idx++) {
-			var pubkey = forge.pki.publicKeyFromPem(recoveryPubKeys[idx].key);
-			var encoded = forge.util.binary.hex.encode(shares[idx]);
-			console.log(encoded);
-			console.log("LEN:"+encoded.length);
+			var pubkey = forge.pki.publicKeyFromPem(recoveryPubKeys[idx].key);		
+			var encoded = shares[idx]; //forge.util.binary.hex.encode(shares[idx]);			
 						
 			var encrypted = pubkey.encrypt(encoded); //service.encryptKEM(pubkey, encoded);
 			recovery[recoveryPubKeys[idx].user] = forge.util.encode64(encrypted);
 		}
 		
-		return recovery;
-		/*
-		recovery.key = forge.util.hexToBytes(pkhex);
-		console.log(recovery);
+		return recovery;		
+	};
+	
+	service.dorecover = function(recovery, challenge) {
+		var rec = [];
+		angular.forEach(recovery, function(v,k) {
+			if (k!="encrypted" && k!="iv") rec.push(v);
+		});	
+		var combined = ssss.combine(rec);
+		recovery.key = forge.util.hexToBytes(combined);
+		var pkstr = service.decryptPK_AES(recovery);
+			
 		
-		var pkcheck = service.decryptPK_AES(recovery);
-		console.log(pkcheck);
-		console.log(pkcheck == pkstr);
-		*/
-		/*
-		var comb = ssss.combine( [ shares[0], shares[1] ] );
-
-		// convert back to UTF string
-		comb = ssss.hex2str(comb);
-		
-		console.log(comb);
-		console.log(comb == pkstr);*/
+		var challenge = forge.util.decode64(challenge);	
+		var pk = forge.pki.privateKeyFromPem(pkstr);	
+		return forge.util.encode64(pk.decrypt(challenge, "RSA-OAEP", {
+			  md: forge.md.sha256.create(),
+			  mgf1: {
+			    md: forge.md.sha1.create()
+			  }
+		}));
 	};
 	
 	service.getHash = function(password) {
@@ -155,11 +123,8 @@ angular.module('services')
 	};
 		
 	service.keyChallenge = function(priv_pw, password, challenge) {
-		var challenge = forge.util.decode64(challenge);
-		console.log("A:"+challenge);
-		var pk = forge.pki.decryptRsaPrivateKey(priv_pw, password);
-		console.log("B:"+pk);
-		console.log(challenge.length);
+		var challenge = forge.util.decode64(challenge);	
+		var pk = forge.pki.decryptRsaPrivateKey(priv_pw, password);	
 		return forge.util.encode64(pk.decrypt(challenge, "RSA-OAEP", {
 			  md: forge.md.sha256.create(),
 			  mgf1: {

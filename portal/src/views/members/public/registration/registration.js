@@ -87,6 +87,7 @@ angular.module('portal')
 			$scope.registration.password = keys.pw_hash;
 			$scope.registration.pub = keys.pub;
 			$scope.registration.priv_pw = keys.priv_pw;
+			$scope.registration.recovery = keys.recovery;
 			
 			//var x1 = crypto.makeChallenge(keys.pub, "123456789012345678901234");
 			//console.log(x1);

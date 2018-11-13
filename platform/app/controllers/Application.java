@@ -61,6 +61,7 @@ import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.fhir.PatientResourceProvider;
+import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -270,9 +271,8 @@ public class Application extends APIController {
 		    		   && user.resettoken.equals(token)
 		    		   && System.currentTimeMillis() - user.resettokenTs < EMAIL_TOKEN_LIFETIME) {	   
 			   
-		           		       
-		    	   user.password = Member.encrypt(password);
-			       user.set("password", user.password);
+		           PWRecovery.startRecovery(user, json);		       
+		    	   		    	   
 		       } else throw new BadRequestException("error.expired.token", "Password reset token has already expired.");
 		}
 		
@@ -435,8 +435,9 @@ public class Application extends APIController {
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
 	public Result changePassword() throws JsonValidationException, AppException {
+		return new PWRecovery().changePassword();
 		// validate 
-		JsonNode json = request().body().asJson();		
+		/*JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "oldPassword", "password");
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		
@@ -452,7 +453,7 @@ public class Application extends APIController {
 		       			
 		// response
 		AuditManager.instance.success();
-		return ok();		
+		return ok();*/		
 	}
 	
 	/**
@@ -777,6 +778,7 @@ public class Application extends APIController {
 		if (json.has("priv_pw")) {
 		  String pub = JsonValidation.getString(json, "pub");
 		  String pk = JsonValidation.getString(json, "priv_pw");
+		  Map<String, String> recover = JsonExtraction.extractStringMap(json.get("recovery"));
 		  		        	      		  		
 		  user.publicExtKey = KeyManager.instance.readExternalPublicKey(pub);
 		  
@@ -789,6 +791,7 @@ public class Application extends APIController {
 		  Member.add(user);
 		  
 		  KeyManager.instance.newFutureLogin(user);	
+		  PWRecovery.storeRecoveryData(user._id, recover);
 			
 		  user.myaps = RecordManager.instance.createPrivateAPS(user._id, user._id);
 		  Member.set(user._id, "myaps", user.myaps);
@@ -903,7 +906,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.QuickRegistration.register(),
 				controllers.routes.javascript.Application.requestPasswordResetToken(),
 				controllers.routes.javascript.Application.setPasswordWithToken(),
-				controllers.routes.javascript.Application.changePassword(),
+				controllers.routes.javascript.PWRecovery.changePassword(),
 				controllers.routes.javascript.Application.changePassphrase(),
 				controllers.routes.javascript.Application.providePassphrase(),
 				controllers.routes.javascript.Application.confirmAccountEmail(),
@@ -1064,6 +1067,9 @@ public class Application extends APIController {
 				controllers.admin.routes.javascript.Administration.adminWipeAccount(), 
 				controllers.admin.routes.javascript.Administration.deleteStudy(),
 				controllers.admin.routes.javascript.Administration.getStats(),
+				controllers.routes.javascript.PWRecovery.getUnfinished(),
+				controllers.routes.javascript.PWRecovery.storeRecoveryShare(),
+				controllers.routes.javascript.PWRecovery.finishRecovery(),
 				// Market				
 				controllers.routes.javascript.Market.registerPlugin(),
 				controllers.routes.javascript.Market.updatePlugin(),

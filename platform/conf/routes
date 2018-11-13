@@ -28,7 +28,7 @@ POST    /api/members/join                                controllers.QuickRegist
 POST    /api/members/login                               controllers.Application.authenticate()
 POST    /api/common/passphrase                           controllers.Application.providePassphrase()
 POST    /api/common/passphrase/change                    controllers.Application.changePassphrase()
-POST    /api/common/password/change                      controllers.Application.changePassword()
+POST    /api/common/password/change                      controllers.PWRecovery.changePassword()
 POST    /api/common/account/email/confirm                controllers.Application.confirmAccountEmail()
 POST    /api/common/account/email/request                controllers.Application.requestWelcomeMail()
 POST    /api/common/account/address/confirm              controllers.Application.confirmAccountAddress()
@@ -216,6 +216,9 @@ POST    /api/admins/changeBirthday                       controllers.admin.Admin
 POST    /api/admins/addcomment                           controllers.admin.Administration.addComment()
 POST    /api/admins/wipeaccount                          controllers.admin.Administration.adminWipeAccount()
 POST    /api/admin/stats                                 controllers.admin.Administration.getStats()
+GET		/api/admins/pwrecovery                           controllers.PWRecovery.getUnfinished()
+POST	/api/admins/pwrecovery                           controllers.PWRecovery.storeRecoveryShare()
+POST	/api/admins/pwrecovery/finish                    controllers.PWRecovery.finishRecovery()
 
 # Tasks
 POST    /api/shared/tasks/create         controllers.Tasking.add()
