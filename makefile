@@ -234,7 +234,7 @@ tasks/build-mongodb: trigger/build-mongodb tasks/reimport-mongodb tasks/reimport
 	cd json;make build	
 	touch tasks/build-mongodb
 	
-tasks/build-portal: trigger/build-portal $(shell find portal -type f | sed 's/ /\\ /g') config/instance.json
+tasks/build-portal: trigger/build-portal conf/recoverykeys.json $(shell find portal -type f | sed 's/ /\\ /g') config/instance.json
 	$(info ------------------------------)
 	$(info Building Portal... )
 	$(info ------------------------------)
@@ -326,6 +326,9 @@ tasks/bugfixes:
 	sudo chown -R $$USER:$$GROUP ~/.config	
 	sudo chown -R $$USER:$$GROUP ~/.npm
 	touch tasks/bugfixes
+
+conf/recoverykeys.json:
+	echo "[]" >conf/recoverykeys.json
 
 /dev/shm/secret.conf: platform/conf/application.conf platform/conf/secret.conf.gz.nc 
 	@echo "Decrypting configfile..."

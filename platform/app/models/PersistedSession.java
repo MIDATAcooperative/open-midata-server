@@ -42,7 +42,7 @@ public class PersistedSession extends Model {
 	}
 	
 	public void add() throws InternalServerException {
-		Model.insert(collection, this);
+		Model.upsert(collection, this);
 	}
 	
 

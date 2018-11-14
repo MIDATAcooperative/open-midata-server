@@ -39,6 +39,12 @@
     "confirmation_code" : "Confirmation Code:",
     "registration_date" : "Registration Date:",
     "confirmation_date" : "Confirmation Date:",
+    "security" : "Account protection",
+    "security_type" : {
+      "KEY" : "Private key on server",
+      "KEY_PASSPHRASE" : "PASSPHRASE protected private key",
+      "KEY_EXT_PASSWORD" : "Password protected private key"
+    },
     "last_login" : "Last Login:",
     "email_confirm_btn" : "Confirm Email Address",
     "comment" : "Comment",

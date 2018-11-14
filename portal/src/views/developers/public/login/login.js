@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('DeveloperLoginCtrl', ['$scope', 'server', '$state', 'status', 'session', function($scope, server, $state, status, session) {
+.controller('DeveloperLoginCtrl', ['$scope', 'server', '$state', 'status', 'session', 'crypto', function($scope, server, $state, status, session, crypto) {
 	
 	// init
 	$scope.login = {};	
@@ -16,12 +16,17 @@ angular.module('portal')
 			return;
 		}
 		
-		// send the request
-		var data = {"email": $scope.login.email, "password": $scope.login.password};
-		$scope.status.doAction("login", server.post(jsRoutes.controllers.Developers.login().url, JSON.stringify(data))).
-		then(function(result) {
-			session.postLogin(result, $state);			 
-		}).
-		catch(function(err) { $scope.error = err.data; });
+		// send the request		
+		var data = {"email": $scope.login.email, "password": crypto.getHash($scope.login.password)};
+		
+		var func = function(data) {
+			return $scope.status.doAction("login", server.post(jsRoutes.controllers.Developers.login().url, JSON.stringify(data)));
+		};
+		
+		session.performLogin(func, data, $scope.login.password)
+		.then(function(result) {
+		   session.postLogin(result, $state);
+		}).catch(function(err) { $scope.error = err.data; });
+				
 	};
 }]);

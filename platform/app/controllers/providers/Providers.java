@@ -2,6 +2,7 @@ package controllers.providers;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -11,6 +12,7 @@ import actions.APICall;
 import controllers.APIController;
 import controllers.Application;
 import controllers.Circles;
+import controllers.PWRecovery;
 import models.HCRelated;
 import models.HPUser;
 import models.HealthcareProvider;
@@ -43,6 +45,7 @@ import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -64,7 +67,7 @@ public class Providers extends APIController {
 	public Result register() throws AppException {
 		JsonNode json = request().body().asJson();
 		
-		JsonValidation.validate(json, "name", "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "language");
+		JsonValidation.validate(json, "name", "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "language", "pub", "priv_pw", "recovery");
 					
 		String name = JsonValidation.getString(json, "name");
 		if (HealthcareProvider.existsByName(name)) return inputerror("name", "exists", "A healthcare provider with this name already exists.");
@@ -110,17 +113,27 @@ public class Providers extends APIController {
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);
 		
-		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);
-		user.security = AccountSecurityLevel.KEY;
-				
+		
+		String pub = JsonValidation.getString(json, "pub");
+		String pk = JsonValidation.getString(json, "priv_pw");
+		Map<String, String> recover = JsonExtraction.extractStringMap(json.get("recovery"));
+			  		        	      		  		
+		user.publicExtKey = KeyManager.instance.readExternalPublicKey(pub);		  
+		KeyManager.instance.saveExternalPrivateKey(user._id, pk);		  
+		KeyManager.instance.login(PortalSessionToken.LIFETIME, true);
+			  
+		user.security = AccountSecurityLevel.KEY_EXT_PASSWORD;		
+		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(user._id, null);								
+		
 		HealthcareProvider.add(provider);
 		user.provider = provider._id;
 		HPUser.add(user);
-		
-		//KeyManager.instance.unlock(user._id, null);
-		
+			  
+		KeyManager.instance.newFutureLogin(user);	
+		PWRecovery.storeRecoveryData(user._id, recover);
+				
 		RecordManager.instance.createPrivateAPS(user._id, user._id);		
-		
+				
 		Application.sendWelcomeMail(user, null);
 		if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) Application.sendAdminNotificationMail(user);
 		
@@ -142,13 +155,22 @@ public class Providers extends APIController {
 		
 		String email = JsonValidation.getString(json, "email");
 		String password = JsonValidation.getString(json, "password");
+		String sessionToken = JsonValidation.getStringOrNull(json, "sessionToken"); 
+		
 		HPUser user = HPUser.getByEmail(email, Sets.create(User.FOR_LOGIN, "provider"));
 		
 		if (user == null) throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
-		AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user);
-		if (!user.authenticationValid(password)) {
-			throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
+		
+		if (user.publicExtKey == null) {
+			if (!json.has("nonHashed")) return ok("compatibility-mode");
+			password = JsonValidation.getString(json, "nonHashed");
 		}
+							
+		if (user.publicExtKey == null || sessionToken != null) AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user);
+		if (!user.authenticationValid(password)) {
+			throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");
+		}
+										
 		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.WIPED)) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
 
 		if (user.keywordsLC == null || user.keywordsLC.isEmpty()) {
@@ -156,7 +178,7 @@ public class Providers extends APIController {
 			user2.updateKeywords(true);
 		}
 		
-		return Application.loginHelper(user);					
+		return Application.loginHelper(user, sessionToken, false);							
 	}
 	
 	/**

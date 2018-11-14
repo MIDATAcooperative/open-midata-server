@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('PostRegisterCtrl', ['$scope', '$state', '$stateParams', 'status', 'server', 'session', 'oauth', 'users', 'views', function($scope, $state, $stateParams, status, server, session, oauth, users, views) {
+.controller('PostRegisterCtrl', ['$scope', '$state', '$stateParams', 'status', 'server', 'session', 'oauth', 'users', 'views', 'crypto', function($scope, $state, $stateParams, status, server, session, oauth, users, views, crypto) {
 	
 	// init
 	$scope.passphrase = {};
@@ -118,10 +118,19 @@ angular.module('portal')
 		}
 		$scope.error = null;
 		// send the request
-		var data = { token : $stateParams.token, mode : $state.current.data.mode,"password" : $scope.setpw.password };		
-		$scope.status.doAction('setpw', server.post(jsRoutes.controllers.Application.confirmAccountEmail().url, JSON.stringify(data)))
-		.then(function(result) {
-		   	$scope.retry(result);	    	
+		
+		crypto.generateKeys($scope.setpw.password).then(function(keys) {
+				
+			var data = { token : $stateParams.token, mode : $state.current.data.mode };		
+			data.password = keys.pw_hash;
+			data.pub = keys.pub;
+			data.priv_pw = keys.priv_pw;
+			data.recovery = keys.recovery;
+				
+			$scope.status.doAction('setpw', server.post(jsRoutes.controllers.Application.confirmAccountEmail().url, JSON.stringify(data)))
+			.then(function(result) {
+			   	$scope.retry(result);	    	
+			});
 		});
 	};
 	

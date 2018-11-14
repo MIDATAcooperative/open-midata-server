@@ -6,12 +6,8 @@ angular.module('services')
 	var rsa = forge.pki.rsa;
 	var ssss = require('../../secrets.js');
 	
-	var recoveryPubKeys = [
-		{ user : "ak", key : "-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6zaIr1vG7n5hrEV859e1ToClenORABtVEWhoNpruYHZMmK7p0G8S1nHJvqz8RK+W0KAwZe4L1nPRLWdPyPUbHGEWUNsqtABCHg/fxoyISqWKjLxoXg8K1kgdvNOybK9X4oLYGf+qcjb0adbxUQrEXgJT3us8EMh2tzDsmLhF5OFjWvXHl98/OhbMTL0Kr1XQ2amY9niUHvbNP8A/SpOxSVB5EewHZbcuKMQfV5YVbRFaiXta9qTwxPLDKbjX8LgTPg9Zz7En8M1/DDJi6tgExlIl0TS0WvO/8bflDECXqzuD3g0vRnlXKGJFQWfuvbOipDyFI7ymUCf62K4grYCEuwIDAQAB-----END PUBLIC KEY-----" },
-		{ user : "od", key : "-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArldtZzvrGrxcIbFLVzngc4CIpnBin+igYsMh3PcZbzq87NsoVyEukkFs3rcFXrpEk1bcG6NjLfEHGcgihZIPEWjEA2k5CYsXy0eKdG46MQfHbuNNnQYGm7SqlxyHuXIKxokAYqgPBk3vWAOUfK+QmyeKC3F+NcvT62yKlm++U7wsPKG1lrPCY8NaPuCvcZeY+HAXnREHQdp5sN4AlMb66yjdKAMCObGfAAbbuZRsi3zO/34SDP+7/jmJmm5SzmDadOymKqo3QC58oV0sZvrd/vh1Lv6XNTPbSX+Bg5+S+2jX21HV2IOhFbHJQt+vSxaE+8ggKDt5chxIYQDcKRMcaQIDAQAB-----END PUBLIC KEY-----" }
-	];
-	
-	
+	var recoveryPubKeys = require('../../../../conf/recoverykeys.json');
+		
 	service.generateKeys = function(password) {
 							
 		var def = $q.defer();

@@ -224,6 +224,8 @@ public class KeyManager implements KeySession {
 		 keyInfoExtern.privateKey = pk;
 		  
 		 KeyInfoExtern.update(keyInfoExtern);
+		 
+		 KeyInfo.delete(user);
 	}
 	
 	public void newFutureLogin(User user) throws AuthException, InternalServerException {
@@ -302,8 +304,10 @@ public class KeyManager implements KeySession {
 					KeyRing keyring = new KeyRing(psession.timeout, passkey);
 					keySessions.put(handle, keyring);
 					session.set(new KeyManagerSession(handle, keyring));
-					keyring.addKey(psession.user.toString(), EncryptionUtils.applyKey(psession.splitkey, passkey));
-					AccessLog.log("Key-Ring: Persisted session for executor:"+psession.user.toString());
+					if (psession.splitkey != null) {
+					  keyring.addKey(psession.user.toString(), EncryptionUtils.applyKey(psession.splitkey, passkey));
+					  AccessLog.log("Key-Ring: Persisted session for executor:"+psession.user.toString());
+					} else AccessLog.log("Key-Ring: Keyless session for executor:"+psession.user.toString());
 					return;
 				}
 			}
@@ -322,7 +326,7 @@ public class KeyManager implements KeySession {
 	public String currentHandleOptional(MidataId executor) throws AuthException {
 		KeyManagerSession current = session.get();
 		if (current != null) {
-			if (!current.pks.keys.containsKey(executor.toString())) return null;
+			// if (!current.pks.keys.containsKey(executor.toString())) return null;
 			return current.handle;		
 		}
 		return null;
@@ -472,8 +476,8 @@ public class KeyManager implements KeySession {
 		public int unlock(MidataId target, String passphrase) throws InternalServerException {
 			KeyInfo inf = KeyInfo.getById(target);
 			if (inf == null) {
-				pks.addKey(target.toString(), null);
-				return -1;
+				// pks.addKey(target.toString(), null);
+				return KEYPROTECTION_FAIL;
 			}
 			else {
 				if (inf.type == KEYPROTECTION_PASSPHRASE) {
@@ -641,16 +645,20 @@ public class KeyManager implements KeySession {
 		@Override
 		public void persist(MidataId target) throws AppException {
 			byte key[] = pks.getKey(target.toString());		
-			if (key == null) throw new AuthException("error.relogin", "Authorization Failure");
+			//if (key == null) throw new AuthException("error.relogin", "Authorization Failure");
 		
 			if (pks.passkey != null) {
-				byte[] split = EncryptionUtils.applyKey(key, pks.passkey);
-							
+											
 				PersistedSession session = new PersistedSession();
-				session.set_id(this.handle);
-				session.splitkey = split;
+				session.set_id(this.handle);				
 				session.timeout = pks.expire;
 				session.user = target;
+				
+				if (key != null) {
+				  byte[] split = EncryptionUtils.applyKey(key, pks.passkey);
+				  session.splitkey = split;
+				}
+				
 				session.add();				
 			} 
 		}

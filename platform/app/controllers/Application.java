@@ -260,6 +260,14 @@ public class Application extends APIController {
 			userId = JsonValidation.getMidataId(json, "userId");
 			token = JsonValidation.getString(json, "code");
 			role = JsonValidation.getString(json, "role");
+			
+			PortalSessionToken tk = PortalSessionToken.decrypt(request());
+		    
+		    if (tk != null) {
+			    try {
+			      KeyManager.instance.continueSession(tk.getHandle());
+			    } catch (AppException e) { return null; }
+		    }
 		}
 		
 		
@@ -271,7 +279,13 @@ public class Application extends APIController {
 		    		   && user.resettoken.equals(token)
 		    		   && System.currentTimeMillis() - user.resettokenTs < EMAIL_TOKEN_LIFETIME) {	   
 			   
-		           PWRecovery.startRecovery(user, json);		       
+		    	   KeyManager.instance.login(60000, false);
+		    	   int keytype = KeyManager.instance.unlock(user._id, null);
+		           if (keytype == KeyManager.KEYPROTECTION_FAIL || keytype == KeyManager.KEYPROTECTION_AESKEY) {
+		        	   PWRecovery.startRecovery(user, json);		       
+		           } else {
+		        	   PWRecovery.changePassword(user, json);		        	   		        	   
+		           }
 		    	   		    	   
 		       } else throw new BadRequestException("error.expired.token", "Password reset token has already expired.");
 		}
@@ -523,7 +537,7 @@ public class Application extends APIController {
 			password = JsonValidation.getString(json, "nonHashed");
 		}
 							
-		AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user);
+		if (user.publicExtKey == null || sessionToken != null) AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user);
 		if (!user.authenticationValid(password)) {
 			throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");
 		}
@@ -626,17 +640,17 @@ public class Application extends APIController {
 		
 		String handle = null;
 		
-		if (!nosession) {
+		//if (!nosession) {
 			if (newVersion) {
 				if (sessionToken == null) {
 				  handle = KeyManager.instance.currentHandleOptional(user._id);
-				  if (handle == null) return loginChallenge(user);
+				  if (handle == null && !nosession) return loginChallenge(user);
 				} else {
 				  handle = KeyManager.instance.login(PortalSessionToken.LIFETIME, true);
 				  KeyManager.instance.unlock(user._id, sessionToken, user.publicExtKey);		
 				}
 			} else handle =  KeyManager.instance.login(PortalSessionToken.LIFETIME, true);					
-		}		
+		//}		
 		Set<UserFeature> notok = loginHelperPreconditionsFailed(user, InstanceConfig.getInstance().getInstanceType().defaultRequirementsPortalLogin(user.role));
 	
 		if (user.role == UserRole.RESEARCH && !(user instanceof ResearchUser)) {
@@ -666,10 +680,14 @@ public class Application extends APIController {
 		} else {						
 		  int keytype = 0;
 		  if (!newVersion) {
-			  keytype = KeyManager.instance.unlock(user._id, null);				  		      
-			  user = PostLoginActions.check(user);			  
+			  keytype = KeyManager.instance.unlock(user._id, null);				  		      						 
 		  }
-		  if (keytype == 0 && !nosession) KeyManager.instance.persist(user._id);
+		  		  
+		  if (keytype == 0 && handle != null) {
+			  user = PostLoginActions.check(user);			  
+			  if (!nosession) KeyManager.instance.persist(user._id);
+          }
+		  
 		 				
 		  obj.put("keyType", keytype);
 		  obj.put("role", user.role.toString().toLowerCase());
@@ -780,10 +798,8 @@ public class Application extends APIController {
 		  String pk = JsonValidation.getString(json, "priv_pw");
 		  Map<String, String> recover = JsonExtraction.extractStringMap(json.get("recovery"));
 		  		        	      		  		
-		  user.publicExtKey = KeyManager.instance.readExternalPublicKey(pub);
-		  
-		  KeyManager.instance.saveExternalPrivateKey(user._id, pk);
-		  
+		  user.publicExtKey = KeyManager.instance.readExternalPublicKey(pub);		  
+		  KeyManager.instance.saveExternalPrivateKey(user._id, pk);		  
 		  KeyManager.instance.login(PortalSessionToken.LIFETIME, true);
 		  
 		  user.security = AccountSecurityLevel.KEY_EXT_PASSWORD;		

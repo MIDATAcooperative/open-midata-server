@@ -47,6 +47,7 @@ import utils.auth.OAuthCodeToken;
 import utils.auth.TokenCrypto;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.evolution.PostLoginActions;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
@@ -441,6 +442,15 @@ public class OAuth2 extends Controller {
         	controllers.research.Studies.autoApproveCheck(appInstance.applicationId, studyId, appInstance.owner);
         }
             	
+        if (meta.containsKey("aliaskey") && meta.containsKey("alias")) {
+			MidataId alias = new MidataId(meta.get("alias").toString());
+			byte[] key = (byte[]) meta.get("aliaskey");
+			KeyManager.instance.unlock(appInstance.owner, alias, key);			
+			RecordManager.instance.clearCache();
+			PostLoginActions.check(user);
+        }
+        
+        
 		// create encrypted authToken		
 											
 		obj.put("access_token", session.encrypt());

@@ -47,6 +47,7 @@ public class Developer extends User {
 		
 	
 	public static void add(Developer user) throws InternalServerException {
+		
 		Model.insert(collection, user);				
 	}
 	

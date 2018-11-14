@@ -415,12 +415,13 @@ public class Users extends APIController {
 		JsonValidation.validate(json, "_id", "password");
 		
 		String password = JsonValidation.getString(json, "password");
+		String passwordHash = JsonValidation.getString(json, "passwordHash");
 		String reason = JsonValidation.getStringOrNull(json, "reason");
 		MidataId check = JsonValidation.getMidataId(json, "_id");
 		if (!check.equals(userId)) throw new InternalServerException("error.internal", "Session mismatch for wipe account.");
 		
 		User user = User.getById(userId, User.FOR_LOGIN);
-		if (!user.authenticationValid(password)) {
+		if (!user.authenticationValid(password) && !user.authenticationValid(passwordHash)) {
 			throw new BadRequestException("accountwipe.error",  "Invalid password.");
 		}
 		

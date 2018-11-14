@@ -16,7 +16,7 @@ angular.module('portal')
 			$scope.error = { code : "error.missing.credentials" };
 			return;
 		}
-		var pw = $scope.login.password;
+		
 		// send the request
 		var data = {"email": $scope.login.email, "password": crypto.getHash($scope.login.password) };
 		var func = function(data) {

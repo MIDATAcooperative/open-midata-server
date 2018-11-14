@@ -31,6 +31,8 @@
 			  </tr><tr ng-show="member.developer">
 			  <td translate="admin_address.developer"></td><td>{{ member.developerName }}</td>
 			  </tr><tr>
+			  <td translate="admin_address.security"></td><td><span translate="{{ 'admin_address.security_type.'+member.security }}"></span></td>
+			  </tr><tr>
 			  <td translate="admin_address.status"></td><td><select ng-change="changeUser(member);" ng-model="member.status" class="form-control" ng-options="status as 'enum.userstatus.'+status | translate for status in stati"></select></td>
 			  </tr><tr>
 			  <td translate="admin_address.agb_status"></td><td><select ng-change="changeUser(member);" ng-model="member.agbStatus" class="form-control" ng-options="status as 'enum.contractstatus.'+status | translate for status in contractStati"></select></td>
