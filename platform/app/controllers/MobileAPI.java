@@ -51,6 +51,7 @@ import utils.InstanceConfig;
 import utils.QueryTagTools;
 import utils.access.AccessContext;
 import utils.access.AppAccessContext;
+import utils.access.EncryptionUtils;
 import utils.access.Feature_FormatGroups;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
@@ -60,6 +61,7 @@ import utils.auth.MobileAppSessionToken;
 import utils.auth.MobileAppToken;
 import utils.auth.RecordToken;
 import utils.auth.Rights;
+import utils.auth.TokenCrypto;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
 import utils.db.FileStorage.FileData;
@@ -219,7 +221,13 @@ public class MobileAPI extends Controller {
             
             phrase = KeyManager.instance.newAESKey(appInstance._id);
 		} else {
-			/*String username = JsonValidation.getEMail(json, "username");
+			/*app = Plugin.getByFilename(name, Sets.create("type", "name", "secret", "status", "targetUserRole"));
+			if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");
+			
+			if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
+			if (app.secret == null || !app.secret.equals(secret)) throw new BadRequestException("error.unknown.app", "Unknown app");
+			
+			String username = JsonValidation.getEMail(json, "username");
 			String password = JsonValidation.getString(json, "password");
 			String device = JsonValidation.getStringOrNull(json, "device");
 			
@@ -239,38 +247,47 @@ public class MobileAPI extends Controller {
 			
 			AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user, app._id);
 			
-			if (!user.authenticationValid(password)) {
+						
+			if (!user.authenticationValid(password) && !user.authenticationValid(TokenCrypto.sha512(password))) {
 				throw new BadRequestException("error.invalid.credentials",  "Unknown user or bad password");
 			}
 			Set<UserFeature> req = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(user.role);
 			if (app.requirements != null) req.addAll(app.requirements);
 			if (Application.loginHelperPreconditionsFailed(user, req)!=null) throw new BadRequestException("error.invalid.credentials",  "Login preconditions failed.");
 			
-			appInstance= getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode", "appVersion"));			
-			if (appInstance != null && !verifyAppInstance(appInstance, user._id, app._id)) {
-				AccessLog.log("CSCLEAR");
+			appInstance= getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode", "appVersion"));
+			
+			
+			String sessionToken = null;
+			
+			if (KeyManager.instance.unlock(user._id, sessionToken, user.publicExtKey) != KeyManager.KEYPROTECTION_NONE) {
+				throw new BadRequestException("error.invalid.credentials",  "Login failed."); 
+			}
+			
+			boolean isconfirmed = false;
+			if (appInstance != null) {
+				if (verifyAppInstance(appInstance, user._id, app._id)) {
+					isconfirmed = true;
+			    }
+				removeAppInstance(appInstance);				
 				appInstance = null;
 				RecordManager.instance.clearCache();
 			}
-						
-			if (appInstance == null) {									
-				boolean autoConfirm = InstanceConfig.getInstance().getInstanceType().autoconfirmConsentsMidataApi() && KeyManager.instance.unlock(user._id, null) == KeyManager.KEYPROTECTION_NONE;
-				executor = autoConfirm ? user._id : null;
-				AccessLog.log("REINSTALL");
-				if (!autoConfirm && app.targetUserRole.equals(UserRole.RESEARCH)) throw new BadRequestException("error.invalid.study", "The research app is not properly linked to a study! Please log in as researcher and link the app properly.");
-				appInstance = installApp(executor, app._id, user, phrase, autoConfirm, Collections.emptySet());
-				if (executor != null) RecordManager.instance.clearCache();
-				executor = appInstance._id;
-	   		    meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
-			} else {
-				
-				
-				KeyManager.instance.unlock(appInstance._id, phrase);
-				executor = appInstance._id;
-				meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
-				
-			}
-			role = user.role;*/
+																	
+			boolean autoConfirm = InstanceConfig.getInstance().getInstanceType().autoconfirmConsentsMidataApi() && KeyManager.instance.unlock(user._id, null) == KeyManager.KEYPROTECTION_NONE;
+			executor = autoConfirm ? user._id : null;
+			AccessLog.log("REINSTALL");
+			if (!autoConfirm && app.targetUserRole.equals(UserRole.RESEARCH)) throw new BadRequestException("error.invalid.study", "The research app is not properly linked to a study! Please log in as researcher and link the app properly.");
+			appInstance = installApp(executor, app._id, user, phrase, isconfirmed || autoConfirm, Collections.emptySet());
+			if (executor != null) RecordManager.instance.clearCache();
+			executor = appInstance._id;
+	   		meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
+		
+			role = user.role;
+			
+			phrase = KeyManager.instance.newAESKey(appInstance._id);	*/
+			
+			throw new InternalServerException("error.notimplemented", "This feature is not implemented.");
 		}
 				
 		//if (!phrase.equals(meta.get("phrase"))) return internalServerError("Internal error while validating consent");

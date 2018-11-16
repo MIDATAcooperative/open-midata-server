@@ -17,6 +17,8 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
 
+import com.google.common.io.BaseEncoding;
+
 import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.exceptions.AppException;
@@ -53,6 +55,19 @@ public class TokenCrypto {
 			md.update(input.getBytes("ASCII")); 
 			byte[] digest = md.digest();
 			return Base64.encodeBase64URLSafeString(digest);
+		} catch (NoSuchAlgorithmException e) {
+			throw new InternalServerException("error.internal", e);
+		} catch (UnsupportedEncodingException e7) {
+			throw new InternalServerException("error.internal", e7);
+		}
+	}
+	
+	public static String sha512(String input) throws InternalServerException {
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-512");
+			md.update(input.getBytes("UTF-8")); 
+			byte[] digest = md.digest();
+			return BaseEncoding.base16().lowerCase().encode(digest);
 		} catch (NoSuchAlgorithmException e) {
 			throw new InternalServerException("error.internal", e);
 		} catch (UnsupportedEncodingException e7) {

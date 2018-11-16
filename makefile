@@ -1,4 +1,4 @@
-include conf/*
+include conf/*.conf
 
 .PHONY: info
 info:
