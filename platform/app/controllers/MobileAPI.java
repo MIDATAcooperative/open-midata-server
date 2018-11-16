@@ -190,6 +190,7 @@ public class MobileAPI extends Controller {
 		Map<String, Object> meta = null;
 		UserRole role = null;
 		Plugin app = null;
+		boolean deprecated = false;
 		KeyManager.instance.login(60000l, false);
 		if (json.has("refreshToken")) {
 			MobileAppToken refreshToken = MobileAppToken.decrypt(JsonValidation.getString(json, "refreshToken"));
@@ -221,7 +222,8 @@ public class MobileAPI extends Controller {
             
             phrase = KeyManager.instance.newAESKey(appInstance._id);
 		} else {
-			/*app = Plugin.getByFilename(name, Sets.create("type", "name", "secret", "status", "targetUserRole"));
+			deprecated = true;
+			app = Plugin.getByFilename(name, Sets.create("type", "name", "secret", "status", "targetUserRole"));
 			if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");
 			
 			if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
@@ -258,36 +260,34 @@ public class MobileAPI extends Controller {
 			appInstance= getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode", "appVersion"));
 			
 			
-			String sessionToken = null;
-			
-			if (KeyManager.instance.unlock(user._id, sessionToken, user.publicExtKey) != KeyManager.KEYPROTECTION_NONE) {
-				throw new BadRequestException("error.invalid.credentials",  "Login failed."); 
-			}
-			
-			boolean isconfirmed = false;
-			if (appInstance != null) {
-				if (verifyAppInstance(appInstance, user._id, app._id)) {
-					isconfirmed = true;
-			    }
-				removeAppInstance(appInstance);				
+			if (appInstance != null && !verifyAppInstance(appInstance, user._id, app._id)) {
+				AccessLog.log("CSCLEAR");
 				appInstance = null;
 				RecordManager.instance.clearCache();
 			}
-																	
-			boolean autoConfirm = InstanceConfig.getInstance().getInstanceType().autoconfirmConsentsMidataApi() && KeyManager.instance.unlock(user._id, null) == KeyManager.KEYPROTECTION_NONE;
-			executor = autoConfirm ? user._id : null;
-			AccessLog.log("REINSTALL");
-			if (!autoConfirm && app.targetUserRole.equals(UserRole.RESEARCH)) throw new BadRequestException("error.invalid.study", "The research app is not properly linked to a study! Please log in as researcher and link the app properly.");
-			appInstance = installApp(executor, app._id, user, phrase, isconfirmed || autoConfirm, Collections.emptySet());
-			if (executor != null) RecordManager.instance.clearCache();
-			executor = appInstance._id;
-	   		meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
-		
+						
+			if (appInstance == null) {									
+				boolean autoConfirm = InstanceConfig.getInstance().getInstanceType().autoconfirmConsentsMidataApi() && KeyManager.instance.unlock(user._id, null) == KeyManager.KEYPROTECTION_NONE;
+				executor = autoConfirm ? user._id : null;
+				AccessLog.log("REINSTALL");
+				if (!autoConfirm && app.targetUserRole.equals(UserRole.RESEARCH)) throw new BadRequestException("error.invalid.study", "The research app is not properly linked to a study! Please log in as researcher and link the app properly.");
+				appInstance = installApp(executor, app._id, user, phrase, autoConfirm, Collections.emptySet());
+				KeyManager.instance.changePassphrase(appInstance._id, phrase);
+				if (executor != null) RecordManager.instance.clearCache();
+				executor = appInstance._id;
+	   		    meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
+			} else {
+								
+				KeyManager.instance.unlock(appInstance._id, phrase);
+				executor = appInstance._id;
+				meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();			
+            }
+							
 			role = user.role;
 			
-			phrase = KeyManager.instance.newAESKey(appInstance._id);	*/
+			//phrase = KeyManager.instance.newAESKey(appInstance._id);	
 			
-			throw new InternalServerException("error.notimplemented", "This feature is not implemented.");
+			//throw new InternalServerException("error.notimplemented", "This feature is not implemented.");
 		}
 				
 		//if (!phrase.equals(meta.get("phrase"))) return internalServerError("Internal error while validating consent");
@@ -300,7 +300,7 @@ public class MobileAPI extends Controller {
 		
 		AuditManager.instance.success();
 		
-		return authResult(executor, role, appInstance, meta, phrase);
+		return authResult(executor, role, appInstance, meta, phrase, deprecated);
 	}
 	
 	public static void removeAppInstance(MobileAppInstance appInstance) throws AppException {
@@ -321,7 +321,7 @@ public class MobileAPI extends Controller {
 	 * @return
 	 * @throws AppException
 	 */
-	public static Result authResult(MidataId executor, UserRole role, MobileAppInstance appInstance, Map<String, Object> meta, String phrase) throws AppException {
+	public static Result authResult(MidataId executor, UserRole role, MobileAppInstance appInstance, Map<String, Object> meta, String phrase, boolean deprecated) throws AppException {
 		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, phrase, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME, role); 
         MobileAppToken refresh = new MobileAppToken(appInstance.applicationId, appInstance._id, appInstance.owner, phrase, System.currentTimeMillis());
 		
@@ -341,6 +341,7 @@ public class MobileAPI extends Controller {
 		obj.put("refreshToken", refresh.encrypt());
 		obj.put("status", appInstance.status.toString());
 		obj.put("owner", appInstance.owner.toString());
+		if (deprecated) obj.put("warning", "You are using a deprecated API! Please use OAuth login instead!");
 															
 		return ok(obj);
 	}

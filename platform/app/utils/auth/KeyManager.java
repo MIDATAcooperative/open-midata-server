@@ -457,9 +457,8 @@ public class KeyManager implements KeySession {
 		public void changePassphrase(MidataId target, String newPassphrase) throws InternalServerException, AuthException {
 			byte[] oldKey = pks.getKey(target.toString());
 			if (oldKey == null) throw new AuthException("error.relogin", "Authorization Failure");		
-			KeyInfo keyinfo = KeyInfo.getById(target);
-			if (keyinfo == null) throw new InternalServerException("error.internal", "Private key info not found.");
-			
+			KeyInfo keyinfo = new KeyInfo();
+			keyinfo._id = target;						
 			keyinfo.privateKey = EncryptionUtils.applyKey(oldKey, newPassphrase);
 			keyinfo.type = KEYPROTECTION_PASSPHRASE;
 			KeyInfo.update(keyinfo);
