@@ -259,6 +259,16 @@ public class AutoRun extends APIController {
 						} else {
 							sender.tell(new ImportResult(-1), getSelf());
 						}
+					} else {
+					
+						Process p = new ProcessBuilder(nodepath, visPath+"/"+plugin.filename+"/server.js", tokenstr, lang).inheritIO().start();
+						try {
+						  p.waitFor();
+						  sender.tell(new ImportResult(p.exitValue()), getSelf());
+						} catch (InterruptedException e) {
+						  sender.tell(new ImportResult(-2), getSelf());
+						}
+					
 					}
 		    	} catch (Exception e) {
 		    		ErrorReporter.report("Autorun-Service", null, e);	

@@ -82,6 +82,7 @@ import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.largerequests.HugeBodyParser;
+import utils.messaging.SubscriptionManager;
 import utils.stats.Stats;
 
 /**
@@ -573,6 +574,8 @@ public class PluginsAPI extends APIController {
 				}
 			}
 		}
+		
+		SubscriptionManager.resourceChange(record);
 	}
 	
 	/**

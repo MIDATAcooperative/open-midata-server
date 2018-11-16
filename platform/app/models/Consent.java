@@ -164,6 +164,10 @@ public class Consent extends Model implements Comparable<Consent> {
 		return Model.getAll(Consent.class, collection, CMaps.map("_id", consentIds).map("authorized", executorId), fields);
 	}
 	
+	public static Set<Consent> getActiveByIdsAndOwner(Set<MidataId> consentIds, MidataId executorId, Set<String> fields) throws InternalServerException {
+		return Model.getAll(Consent.class, collection, CMaps.map("_id", consentIds).map("owner", executorId).map("status", ConsentStatus.ACTIVE), fields);
+	}
+	
 	public static Consent getByOwnerAndPasscode(MidataId ownerId, String passcode, Set<String> fields) throws InternalServerException {
 		return Model.get(Consent.class, collection, CMaps.map("owner", ownerId).map("passcode", passcode), fields);
 	}

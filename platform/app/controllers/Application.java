@@ -1092,6 +1092,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.Market.deletePlugin(),
 				controllers.routes.javascript.Market.deletePluginDeveloper(),
 				controllers.routes.javascript.Market.updatePluginStatus(),
+				controllers.routes.javascript.Market.updateDefaultSubscriptions(),
 				controllers.routes.javascript.Market.getPluginStats(),
 				controllers.routes.javascript.Market.deletePluginStats(),
 				controllers.routes.javascript.Market.importPlugin(),

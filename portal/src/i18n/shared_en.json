@@ -428,7 +428,7 @@
 	 },
 	 "plugintype" : {
 	   "visualization" : "Plugin",
-	   "create" : "Form",
+	   "service" : "Service",
 	   "oauth1" : "OAuth 1",
 	   "oauth2" : "OAuth 2",
 	   "mobile" : "App (Smartphone, Web)"

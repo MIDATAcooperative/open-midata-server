@@ -74,6 +74,7 @@ import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.messaging.Messager;
+import utils.messaging.SubscriptionManager;
 import utils.stats.Stats;
 
 /**
@@ -171,17 +172,9 @@ public class MobileAPI extends Controller {
         JsonNode json = request().body().asJson();		
 		//JsonValidation.validate(json, "appname", "secret");
 		if (!json.has("refreshToken")) JsonValidation.validate(json, "appname", "secret", "username", "password" /*, "device" */);
-					
-		String name = JsonValidation.getString(json, "appname");
-		String secret = JsonValidation.getString(json,"secret");
-				
-	    // Validate Mobile App	
-		//Plugin app = Plugin.getByFilename(name, Sets.create("type", "name", "secret", "status", "targetUserRole"));
-		//if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");
 		
-		//if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
-		//if (app.secret == null || !app.secret.equals(secret)) throw new BadRequestException("error.unknown.app", "Unknown app");
-		
+		//if (!app.type.equals("mobile") && !app.type.equals("service")) throw new InternalServerException("error.internal", "Wrong app type");
+		// if (app.secret == null || !app.secret.equals(secret)) throw new BadRequestException("error.unknown.app", "Unknown app");
 	
 		MidataId appInstanceId = null;
 		MidataId executor = null;
@@ -223,6 +216,9 @@ public class MobileAPI extends Controller {
             phrase = KeyManager.instance.newAESKey(appInstance._id);
 		} else {
 			deprecated = true;
+			String name = JsonValidation.getString(json, "appname");
+			String secret = JsonValidation.getString(json,"secret");
+				
 			app = Plugin.getByFilename(name, Sets.create("type", "name", "secret", "status", "targetUserRole"));
 			if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");
 			
@@ -237,6 +233,8 @@ public class MobileAPI extends Controller {
 			
 			if (device != null) phrase = device; else phrase = "???"+password;
 				
+			if (app.type.equals("service")) phrase = "-----";
+			
 			User user = null;
 			switch (role) {
 			case MEMBER : user = Member.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp", "failedLogins", "lastFailed","publicExtKey"));break;
@@ -307,6 +305,8 @@ public class MobileAPI extends Controller {
 		AccessLog.logBegin("start remove app instance");
 		// Device or password changed, regenerates consent				
 		Circles.consentStatusChange(appInstance.owner, appInstance, ConsentStatus.EXPIRED);
+		Plugin app = Plugin.getById(appInstance.applicationId);
+		if (app!=null) SubscriptionManager.deactivateSubscriptions(appInstance.owner, app, appInstance._id);
 		RecordManager.instance.deleteAPS(appInstance._id, appInstance.owner);									
 		Circles.removeQueries(appInstance.owner, appInstance._id);										
 		MobileAppInstance.delete(appInstance.owner, appInstance._id);
@@ -347,7 +347,7 @@ public class MobileAPI extends Controller {
 	}
 	
 	public static MobileAppInstance installApp(MidataId executor, MidataId appId, User member, String phrase, boolean autoConfirm, Set<MidataId> studyConfirm) throws AppException {
-		Plugin app = Plugin.getById(appId, Sets.create("name", "pluginVersion", "defaultQuery", "predefinedMessages", "termsOfUse", "writes"));
+		Plugin app = Plugin.getById(appId, Sets.create("name", "type", "pluginVersion", "defaultQuery", "predefinedMessages", "termsOfUse", "writes", "defaultSubscriptions"));
 
 		Set<StudyAppLink> links = StudyAppLink.getByApp(appId);
 		
@@ -375,7 +375,11 @@ public class MobileAPI extends Controller {
 		MobileAppInstance appInstance = new MobileAppInstance();
 		appInstance._id = new MidataId();
 		appInstance.owner = member._id;
-		appInstance.name = "App: "+ app.name+" (Device: "+phrase.substring(0, 3)+")";
+		if (app.type.equals("service")) {
+			appInstance.name = "Service: "+ app.name;
+		} else {
+		    appInstance.name = "App: "+ app.name+" (Device: "+phrase.substring(0, 3)+")";
+		}
 		appInstance.applicationId = app._id;	
 		appInstance.appVersion = app.pluginVersion;
 		
@@ -395,7 +399,10 @@ public class MobileAPI extends Controller {
 		}
     	    	    	
     	MobileAppInstance.add(appInstance);	
-			   		    
+
+    	SubscriptionManager.activateSubscriptions(appInstance.owner, app);
+		// KeyManager.instance.unlock(appInstance._id, phrase);	   		    
+
 		RecordManager.instance.createAnonymizedAPS(member._id, appInstance._id, appInstance._id, true);
 				
 		Map<String, Object> meta = new HashMap<String, Object>();
