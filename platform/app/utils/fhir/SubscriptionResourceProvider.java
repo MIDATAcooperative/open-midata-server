@@ -48,9 +48,11 @@ import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.access.Feature_FormatGroups;
 import utils.auth.ExecutionInfo;
+import utils.auth.KeyManager;
 import utils.collections.CMaps;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
+import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.messaging.SubscriptionManager;
@@ -367,6 +369,12 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 		subscriptionData._id = new MidataId();
 		subscriptionData.owner = info().ownerId;
 		subscriptionData.app = info().pluginId;
+		subscriptionData.instance = info().targetAPS;
+		try {
+		  subscriptionData.session = KeyManager.instance.currentHandle(info().ownerId);
+		} catch (AuthException e) {
+			throw new InvalidRequestException("Authorization problem.");
+		}
 		return subscriptionData;
 	}
 

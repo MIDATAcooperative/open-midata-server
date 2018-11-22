@@ -286,7 +286,7 @@ public class Market extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)	
-	public static Result updateDefaultSubscriptions(String pluginIdStr) throws JsonValidationException, AppException {
+	public Result updateDefaultSubscriptions(String pluginIdStr) throws JsonValidationException, AppException {
 		if (!getRole().equals(UserRole.ADMIN) && !getRole().equals(UserRole.DEVELOPER)) return unauthorized();
 		// validate json
 		JsonNode json = request().body().asJson();

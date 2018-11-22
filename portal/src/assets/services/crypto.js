@@ -28,6 +28,7 @@ angular.module('services')
 			hash.update(password);		
 			
 			result.pw_hash = hash.digest().toHex();	
+			result.recoverKey = forge.util.encode64(forge.random.getBytesSync(16));
 			
 			result.recovery = service.createRecoveryInfo(keypair.privateKey);
 			def.resolve(result);
@@ -67,7 +68,7 @@ angular.module('services')
 			
 		var pkhex = forge.util.binary.hex.encode(enc.key);	
 		var shares = ssss.share(pkhex, recoveryPubKeys.length, 2);
-		console.log(shares);
+		//console.log(shares);
 		var recovery = { "encrypted" : forge.util.encode64(enc.encrypted.getBytes()), "iv" : forge.util.encode64(enc.iv) };
 		for (var idx = 0;idx < recoveryPubKeys.length; idx++) {
 			var pubkey = forge.pki.publicKeyFromPem(recoveryPubKeys[idx].key);		
@@ -127,6 +128,64 @@ angular.module('services')
 			    md: forge.md.sha1.create()
 			  }
 		}));
+	};
+	
+	service.checkLocalRecovery = function(username, recoverKey, priv_pw, password) {
+		var hash = forge.md.sha256.create();
+		hash.update(username);
+		var key = hash.digest().toHex();
+		// if (localStorage["recover_"+key]) return;
+		
+		var pk = forge.pki.decryptRsaPrivateKey(priv_pw, password);
+		var pkstr = forge.pki.privateKeyToPem(pk);	
+		var iv = forge.random.getBytesSync(16);
+		var cipher = forge.cipher.createCipher('AES-CBC', forge.util.decode64(recoverKey));
+		cipher.start({iv: iv});
+		cipher.update(forge.util.createBuffer(pkstr));
+		cipher.finish();
+		var encrypted = cipher.output.getBytes();		
+		   //console.log(encrypted);     	
+		localStorage["recover_"+key] = JSON.stringify({ encrypted : forge.util.encode64(encrypted), iv : forge.util.encode64(iv) });
+		
+	};
+	
+	service.hasLocalRecovery = function(username) {
+		var hash = forge.md.sha256.create();
+		hash.update(username);
+		var key = hash.digest().toHex();
+		var rec = localStorage["recover_"+key];
+		if (rec) {
+			var parsed = JSON.parse(rec);
+			if (parsed.encrypted && parsed.iv) return true;
+		}
+		return false;
+	};
+	
+	service.keyChallengeLocal = function(username, recoverKey, challenge) {
+		var hash = forge.md.sha256.create();
+		hash.update(username);
+		var key = hash.digest().toHex();
+		var rec = localStorage["recover_"+key];
+		if (rec) {
+			var parsed = JSON.parse(rec);
+			if (parsed.encrypted && parsed.iv) {
+				var decipher = forge.cipher.createDecipher('AES-CBC', forge.util.decode64(recoverKey));	
+				decipher.start({iv: forge.util.decode64(parsed.iv) });
+				decipher.update(forge.util.createBuffer(forge.util.decode64(parsed.encrypted)));	
+				var result = decipher.finish(); // check 'result' for true/false
+				if (!result) return null;
+			    var pkstr = decipher.output.toString();			   
+				var pk = forge.pki.privateKeyFromPem(pkstr);
+				var challenge = forge.util.decode64(challenge);	
+				return forge.util.encode64(pk.decrypt(challenge, "RSA-OAEP", {
+					  md: forge.md.sha256.create(),
+					  mgf1: {
+					    md: forge.md.sha1.create()
+					  }
+				}));				
+			}
+		}
+		return null;
 	};
 	
 	

@@ -262,11 +262,9 @@ public class Plugins extends APIController {
 				Map<String, Object> config = JsonExtraction.extractMap(json.get("config"));
 				RecordManager.instance.setMeta(userId, space._id, "_config", config);
 			}*/
-			
+			SubscriptionManager.activateSubscriptions(userId, visualization, space._id);
 			return space;
-		}
-		
-		SubscriptionManager.activateSubscriptions(userId, visualization);
+		} 		
 
 		return null;
 	}

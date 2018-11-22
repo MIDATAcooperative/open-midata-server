@@ -23,7 +23,7 @@ public class SubscriptionData extends Model {
 	private static String collection = "subscriptions";
 	
 	@NotMaterialized
-	public final static Set<String> ALL = Collections.unmodifiableSet(Sets.create("owner", "app", "format", "content", "lastUpdated", "active", "endDate", "fhirSubscription"));
+	public final static Set<String> ALL = Collections.unmodifiableSet(Sets.create("owner", "app", "instance", "format", "content", "lastUpdated", "active", "endDate", "fhirSubscription", "session"));
 
 	/**
 	 * The owner of the subscription
@@ -34,6 +34,11 @@ public class SubscriptionData extends Model {
 	 * The owner app of the subscription
 	 */
 	public MidataId app;
+	
+	/**
+	 * The instance (appInstance or space)
+	 */
+	public MidataId instance;
 	
 	/**
 	 * The type of data this subscription listens to
@@ -64,6 +69,11 @@ public class SubscriptionData extends Model {
 	 * THe FHIR resource holding the subscription
 	 */
 	public BSONObject fhirSubscription;
+	
+	/**
+	 * Session information
+	 */
+	public String session;
 	
 	public void add() throws InternalServerException {
 		Model.insert(collection, this);	
@@ -99,6 +109,10 @@ public class SubscriptionData extends Model {
 		
 	public static List<SubscriptionData> getAllActive(Set<String> fields) throws InternalServerException {
 		return Model.getAllList(SubscriptionData.class, collection, CMaps.map("active", true), fields, 0);
+	}
+	
+	public static List<SubscriptionData> getAllActiveFormat(String format, Set<String> fields) throws InternalServerException {
+		return Model.getAllList(SubscriptionData.class, collection, CMaps.map("active", true).map("format", format), fields, 0);
 	}
 	
 	public static void setError(MidataId id, String error) throws InternalServerException {

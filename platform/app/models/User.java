@@ -43,9 +43,9 @@ public class User extends Model implements Comparable<User> {
 	protected static final @NotMaterialized String collection = "users";
 	public static final @NotMaterialized Set<String> NON_DELETED = Collections.unmodifiableSet(Sets.create(UserStatus.ACTIVE.toString(), UserStatus.NEW.toString(), UserStatus.BLOCKED.toString(), UserStatus.TIMEOUT.toString()));
 	public static final @NotMaterialized Set<String> ALL_USER = Collections.unmodifiableSet(Sets.create("_id", "email", "emailLC", "name", "role", "subroles", "accountVersion", "registeredAt",  "status", "contractStatus", "agbStatus", "emailStatus", "confirmedAt", "firstname", "lastname",	"gender", "city", "zip", "country", "address1", "address2", "phone", "mobile", "language", "searchable", "developer", "midataID", "termsAgreed"));
-	public static final @NotMaterialized Set<String> ALL_USER_INTERNAL = Collections.unmodifiableSet(Sets.create("email", "emailLC", "name", "role", "subroles", "accountVersion", "registeredAt",  "status", "contractStatus", "agbStatus", "emailStatus", "confirmedAt", "firstname", "lastname",	"gender", "city", "zip", "country", "address1", "address2", "phone", "mobile", "language", "searchable", "developer", "initialApp", "password", "apps", "midataID", "failedLogins", "lastFailed", "termsAgreed", "publicExtKey"));
+	public static final @NotMaterialized Set<String> ALL_USER_INTERNAL = Collections.unmodifiableSet(Sets.create("email", "emailLC", "name", "role", "subroles", "accountVersion", "registeredAt",  "status", "contractStatus", "agbStatus", "emailStatus", "confirmedAt", "firstname", "lastname",	"gender", "city", "zip", "country", "address1", "address2", "phone", "mobile", "language", "searchable", "developer", "initialApp", "password", "apps", "midataID", "failedLogins", "lastFailed", "termsAgreed", "publicExtKey", "recoverKey", "flags"));
 	public static final @NotMaterialized Set<String> PUBLIC = Collections.unmodifiableSet(Sets.create("email", "role", "status", "firstname", "lastname", "gender", "midataID"));
-	public static final @NotMaterialized Set<String> FOR_LOGIN = Collections.unmodifiableSet(Sets.create("firstname", "lastname", "email", "role", "password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "failedLogins", "lastFailed", "flags", "resettoken", "termsAgreed", "publicExtKey"));
+	public static final @NotMaterialized Set<String> FOR_LOGIN = Collections.unmodifiableSet(Sets.create("firstname", "lastname", "email", "role", "password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "failedLogins", "lastFailed", "flags", "resettoken", "termsAgreed", "publicExtKey", "recoverKey"));
 	
 			
 	/**
@@ -236,6 +236,10 @@ public class User extends Model implements Comparable<User> {
 	 */
 	public byte[] publicExtKey;
 		
+	/**
+	 * Used to encrypt recover information on client
+	 */
+	public String recoverKey;
 	
 	/**
 	 * Set of ids of installed forms/importers of the user
@@ -489,8 +493,13 @@ public class User extends Model implements Comparable<User> {
 		User.set(_id, "flags", flags);
 	}
 	
+	public void removeFlag(AccountActionFlags flag) throws AppException {
+		this.flags.remove(flag);
+		User.set(_id, "flags", flags);
+	}
+	
 	public void updatePassword() throws AppException {
-		this.setMultiple(collection, Sets.create("password", "publicExtKey", "security"));
+		this.setMultiple(collection, Sets.create("password", "publicExtKey", "security", "recoverKey"));
 	}
 	
 }

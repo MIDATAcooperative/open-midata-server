@@ -30,6 +30,7 @@ angular.module('portal')
 			data.pub = keys.pub;
 			data.priv_pw = keys.priv_pw;
 			data.recovery = keys.recovery;
+			data.recoveryKey = keys.recoveryKey;
 		
 			return server.post(jsRoutes.controllers.Application.setPasswordWithToken().url, JSON.stringify(data));
 		}).then(function() { $scope.setpw.success = true; }, function(err) { $scope.error = err.data; });

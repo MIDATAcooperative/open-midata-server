@@ -187,7 +187,10 @@ public class OAuth2 extends Controller {
 			password = JsonValidation.getString(json, "nonHashed");
 		}
 		
-        boolean authenticationValid =  user.authenticationValid(password);   
+		Result reccheck = PWRecovery.checkAuthentication(user, password, sessionToken);
+		if (reccheck != null) return reccheck;
+		
+        boolean authenticationValid =  true;   
 		MidataId studyContext = null;
 		if (role.equals(UserRole.RESEARCH) && authenticationValid) {
 			studyContext = json.has("studyLink") ? JsonValidation.getMidataId(json, "studyLink") : null;
@@ -447,7 +450,7 @@ public class OAuth2 extends Controller {
 			byte[] key = (byte[]) meta.get("aliaskey");
 			KeyManager.instance.unlock(appInstance.owner, alias, key);			
 			RecordManager.instance.clearCache();
-			PostLoginActions.check(user);
+			PostLoginActions.check(user);						
         }
         
         

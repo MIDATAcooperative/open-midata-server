@@ -1,5 +1,7 @@
 package controllers;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
@@ -8,16 +10,21 @@ import java.util.Map;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import actions.APICall;
+import models.KeyInfoExtern;
 import models.KeyRecoveryData;
 import models.KeyRecoveryProcess;
 import models.Member;
 import models.MidataId;
 import models.User;
+import models.enums.AccountActionFlags;
 import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
+import play.libs.Json;
 import play.mvc.BodyParser;
+import utils.PasswordHash;
 import utils.audit.AuditManager;
 import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
@@ -33,7 +40,7 @@ import utils.json.JsonValidation.JsonValidationException;
 import play.mvc.Result;
 import play.mvc.Security;
 
-// read -p "Enter encrypted:" x;printf $x| base64 -d |openssl rsautl -decrypt -inkey key.pem;echo
+// read -p "Enter Share:" x;printf $x| base64 -d |openssl rsautl -decrypt -inkey key.pem;echo
 
 public class PWRecovery extends APIController {
 
@@ -91,22 +98,32 @@ public class PWRecovery extends APIController {
 		
 		User user = User.getById(userid, User.ALL_USER_INTERNAL);
 		  	
-		FutureLogin fl = FutureLogin.getById(userid);
+		finishRecovery(user, proc, sessionToken);
+		
+		return ok();
+	}
+	
+	public static void finishRecovery(User user, KeyRecoveryProcess proc, String sessionToken) throws AppException {
+		FutureLogin fl = FutureLogin.getById(user._id);
 		fl.intPart = proc.intPart;
 		fl.set();
 		
-		KeyManager.instance.unlock(user._id, sessionToken, proc.nextPublicExtKey);		
+		if (sessionToken != null) KeyManager.instance.unlock(user._id, sessionToken, proc.nextPublicExtKey);		
 		
 		user.publicExtKey = proc.nextPublicExtKey;
 		user.password = proc.nextPassword;
 		user.security = AccountSecurityLevel.KEY_EXT_PASSWORD;		  
 		KeyManager.instance.saveExternalPrivateKey(user._id, proc.nextPk);
-		user.updatePassword();  
+		user.updatePassword();  		
 		KeyManager.instance.newFutureLogin(user);	
-		PWRecovery.storeRecoveryData(user._id, proc.nextShares);		
+		PWRecovery.storeRecoveryData(user._id, proc.nextShares);
+		user.removeFlag(AccountActionFlags.KEY_RECOVERY);
 		KeyRecoveryProcess.delete(user._id);
-		
-		return ok();
+	}
+	
+	public static void finishRecovery(User user) throws AppException {
+		KeyRecoveryProcess proc = KeyRecoveryProcess.getById(user._id);
+		finishRecovery(user, proc, null);
 	}
 	
 	
@@ -161,7 +178,10 @@ public class PWRecovery extends APIController {
 		String pk = JsonValidation.getString(json, "priv_pw");
 		Map<String, String> recover = JsonExtraction.extractStringMap(json.get("recovery"));		
 		user.password = Member.encrypt(password);
-		user.publicExtKey = KeyManager.instance.readExternalPublicKey(pub);		  
+		user.publicExtKey = KeyManager.instance.readExternalPublicKey(pub);		
+		
+		if (user.recoverKey == null) user.recoverKey = JsonValidation.getStringOrNull(json, "recoverKey");
+		
 		KeyManager.instance.saveExternalPrivateKey(user._id, pk);		  		  		 
 		user.security = AccountSecurityLevel.KEY_EXT_PASSWORD;				  								
 		user.updatePassword();		  
@@ -205,6 +225,50 @@ public class PWRecovery extends APIController {
     	Set<KeyRecoveryProcess> open = KeyRecoveryProcess.getUnfinished();
     	
     	return ok(JsonOutput.toJson(open, "KeyRecoveryProcess", KeyRecoveryProcess.ALL)).as("application/json");
+    }
+    
+    public static Result checkAuthentication(User user, String password, String sessionToken) throws AppException {
+    	try {
+	    	if (user.flags != null && user.flags.contains(AccountActionFlags.KEY_RECOVERY)) {
+	    		if (PasswordHash.validatePassword(password, user.password)) {
+	    			KeyRecoveryProcess.delete(user._id);
+	    			user.removeFlag(AccountActionFlags.KEY_RECOVERY);
+	    			return null;
+	    		} else {
+	    			KeyRecoveryProcess rec = KeyRecoveryProcess.getById(user._id);	    			
+		    		if (PasswordHash.validatePassword(password, rec.nextPassword)) {
+		    			if (sessionToken == null) {		    			
+			    			ObjectNode obj = Json.newObject();
+			    			
+			    			obj.put("challenge", rec.challenge);
+			    			//obj.put("keyEncrypted", key.privateKey);
+			    			//obj.put("pub", user.publicExtKey);
+			    			obj.put("recoverKey", user.recoverKey);
+			    			obj.put("userid", user._id.toString());
+			    			obj.put("tryrecover", true);
+			    			return ok(obj);
+		    			} else {
+		    				KeyManager.instance.login(60000, false);
+		    				finishRecovery(user, rec, sessionToken);
+		    				return Application.loginChallenge(user);
+		    			}
+		    				
+		    		} else {
+		    			user.authenticationValid(password);
+		    			throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");  	    			
+		    		}
+	    		}
+	    			    		
+	    	} else {
+	    		if (user.authenticationValid(password)) {
+	    			return null;
+	    		} else throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");
+	    	}
+    	} catch (NoSuchAlgorithmException e) {
+			throw new InternalServerException("error.internal", e);
+		} catch (InvalidKeySpecException e) {
+			throw new InternalServerException("error.internal", e);
+		}
     }
 	
 }

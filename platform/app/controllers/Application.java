@@ -25,6 +25,7 @@ import models.Member;
 import models.MidataId;
 import models.ResearchUser;
 import models.User;
+import models.enums.AccountActionFlags;
 import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
 import models.enums.ContractStatus;
@@ -282,7 +283,8 @@ public class Application extends APIController {
 		    	   KeyManager.instance.login(60000, false);
 		    	   int keytype = KeyManager.instance.unlock(user._id, null);
 		           if (keytype == KeyManager.KEYPROTECTION_FAIL || keytype == KeyManager.KEYPROTECTION_AESKEY) {
-		        	   PWRecovery.startRecovery(user, json);		       
+		        	   PWRecovery.startRecovery(user, json);	
+		        	   user.addFlag(AccountActionFlags.KEY_RECOVERY);
 		           } else {
 		        	   PWRecovery.changePassword(user, json);		        	   		        	   
 		           }
@@ -538,9 +540,9 @@ public class Application extends APIController {
 		}
 							
 		if (user.publicExtKey == null || sessionToken != null) AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user);
-		if (!user.authenticationValid(password)) {
-			throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");
-		}
+		
+		Result checkrecovery = PWRecovery.checkAuthentication(user, password, sessionToken);
+		if (checkrecovery != null) return checkrecovery;
 					
 		return loginHelper(user, sessionToken, false);					
 	
@@ -620,6 +622,8 @@ public class Application extends APIController {
 		obj.put("challenge", Base64.getEncoder().encodeToString(Arrays.copyOfRange(fl.extPartEnc, 4, fl.extPartEnc.length)));
 		obj.put("keyEncrypted", key.privateKey);
 		obj.put("pub", user.publicExtKey);
+		obj.put("recoverKey", user.recoverKey);
+		obj.put("userid", user._id.toString());
 		
 		return ok(obj);
 	}
@@ -803,7 +807,8 @@ public class Application extends APIController {
 		  KeyManager.instance.login(PortalSessionToken.LIFETIME, true);
 		  
 		  user.security = AccountSecurityLevel.KEY_EXT_PASSWORD;		
-		  user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(user._id, null);								
+		  user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(user._id, null);
+		  user.recoverKey = JsonValidation.getStringOrNull(json, "recoverKey");
 		  Member.add(user);
 		  
 		  KeyManager.instance.newFutureLogin(user);	

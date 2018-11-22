@@ -20,6 +20,7 @@ import akka.cluster.singleton.ClusterSingletonManagerSettings;
 import akka.cluster.singleton.ClusterSingletonProxy;
 import akka.cluster.singleton.ClusterSingletonProxySettings;
 import akka.routing.ActorRefRoutee;
+import akka.routing.RoundRobinPool;
 import akka.routing.RoundRobinRoutingLogic;
 import akka.routing.Routee;
 import akka.routing.Router;
@@ -29,6 +30,7 @@ import models.MidataId;
 import models.PersistedSession;
 import models.Plugin;
 import models.Space;
+import models.SubscriptionData;
 import models.User;
 import models.enums.UserRole;
 import play.mvc.Result;
@@ -42,6 +44,8 @@ import utils.auth.SpaceToken;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.messaging.SubscriptionProcessor;
+import utils.messaging.SubscriptionTriggered;
 import utils.sync.Instances;
 
 /**
@@ -193,9 +197,8 @@ public class AutoRun extends APIController {
 		      .build();
 		}
 				
-		public void doImport(ImportRequest message) throws Exception {		    
-		    	try {
-			    	ImportRequest request = (ImportRequest) message;
+		public void doImport(ImportRequest request) throws Exception {		    
+		    	try {			    	
 			    	KeyManager.instance.continueSession(request.handle);
 			    	MidataId autorunner = request.autorunner;
 			    	Space space = request.space;
@@ -287,6 +290,7 @@ public class AutoRun extends APIController {
 	public static class ImportManager extends AbstractActor {
 
 		private final Router workerRouter;
+		private final ActorRef processor;
 		private final int nrOfWorkers;
 		private int numberSuccess = 0;
 		private int numberFailure = 0;
@@ -304,7 +308,9 @@ public class AutoRun extends APIController {
 		      getContext().watch(r);
 		      routees.add(new ActorRefRoutee(r));
 		    }
-		    workerRouter = new Router(new RoundRobinRoutingLogic(), routees);					    
+		    workerRouter = new Router(new RoundRobinRoutingLogic(), routees);	
+		    		    
+		    processor = this.context().actorOf(new RoundRobinPool(5).props(Props.create(SubscriptionProcessor.class)), "subscriptionProcessor");
 		}
 		
 		
@@ -359,7 +365,14 @@ public class AutoRun extends APIController {
 			       workerRouter.route(new ImportRequest(handle, autorunner._id, space), getSelf());
 			    }
 				
-				AccessLog.log("Done scheduling Autoimport size="+autoImports.size());
+				AccessLog.log("Done scheduling old autoimport size="+autoImports.size());
+				
+				List<SubscriptionData> datas = SubscriptionData.getAllActiveFormat("time", SubscriptionData.ALL);
+				
+				for (SubscriptionData data : datas) {
+					processor.tell(new SubscriptionTriggered(data.owner, data.app, "time", null, null), getSelf());
+				}
+				
 			} catch (Exception e) {
 				ErrorReporter.report("Autorun-Service", null, e);	
 				throw e;

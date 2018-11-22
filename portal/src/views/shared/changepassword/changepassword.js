@@ -24,6 +24,7 @@ angular.module('portal')
 			data.pub = keys.pub;
 			data.priv_pw = keys.priv_pw;
 			data.recovery = keys.recovery;
+			data.recoverKey = keys.recoverKey;
 			return server.post(jsRoutes.controllers.PWRecovery.changePassword().url, JSON.stringify(data));
 		})).then(function() { $scope.success = true; });
 						 

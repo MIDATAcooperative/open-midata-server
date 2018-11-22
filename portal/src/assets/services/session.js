@@ -14,8 +14,15 @@ angular.module('services')
 					params.nonHashed = pw;
 					return func(params);
 				} else if (result.data.challenge) {
-					params.sessionToken = crypto.keyChallenge(result.data.keyEncrypted, pw, result.data.challenge);
-					return func(params);
+					if (result.data.tryrecover) {
+						params.sessionToken = crypto.keyChallengeLocal(result.data.userid, result.data.recoverKey, result.data.challenge);
+						if (!params.sessionToken) return { data : { requirements : ["KEYRECOVERY"] , status : "BLOCKED" } };
+						return session.performLogin(func, params, pw);
+					} else {
+						params.sessionToken = crypto.keyChallenge(result.data.keyEncrypted, pw, result.data.challenge);
+						if (result.data.recoverKey && result.data.recoverKey != "null") crypto.checkLocalRecovery(result.data.userid, result.data.recoverKey,result.data.keyEncrypted, pw);
+						return func(params);
+					}
 				} else {
 					return result;
 				}

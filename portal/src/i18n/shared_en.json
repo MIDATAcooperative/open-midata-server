@@ -641,7 +641,14 @@
     
     "terms_agreed" : "The MIDATA terms and conditions have been updated. Please confirm that you agree to the new version.",
     "privacy_policy_agreed" : "The MIDATA privacy policy has been updated. Please confirm that you agree to the new version.",
-    "agree_btn" : "I agree"
+    "agree_btn" : "I agree",
+    "keyrecovery" : {
+      "intro" : "The private key that is used to encrypt your accounts data needs to be recovered. In order to recover your key try one of these:",
+      "way1" : "Do you have any app using Midata where you are still logged in? If yes open that app and your key will be recovered. Try to login again afterwards.",
+      "way2" : "Have you logged in using a browser before? If yes try to log in using the same browser and device.",
+      "way3" : "Remember your old password again? If yes try to log in using your old password.",
+      "way4" : "Wait for Midata employees to do a manual key recovery. We will send you an email when the recovery has been done. Please wait up to seven days for the recovery to be completed."
+    }
   },
 
   "changepassphrase" : {

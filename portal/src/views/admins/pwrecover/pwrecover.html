@@ -6,7 +6,15 @@
 		    		           
             <loader busy="status.isBusy !== false">
 
-            <input type="text" ng-model="criteria.me">
+            <form class="css-form form-horizontal">
+               <formrow myid="me" label="admin_pwrecover.myid">
+            </form>
+            <input class="form-control" type="text" ng-model="criteria.me">
+            </formrow>
+            <p translate="admin_pwrecover.instr1"></p>
+            <p translate="admin_pwrecover.instr2"></p>
+            <input class="form-control" readonly ng-click="copyToClip($event)" value='read -p "Enter Share:" x;printf $x| base64 -d |openssl rsautl -decrypt -inkey recoverkey.pem;echo'">
+            </pre>
 			<div ng-if="members.length > 10">
               <dir-pagination-controls pagination-id="recovertable" current-page="page.nr"></dir-pagination-controls>
              </div>
@@ -16,7 +24,8 @@
 				<tr>
 					<th translate="admin_pwrecover.name"></th>
 					<th translate="admin_pwrecover.started"></th>
-					<th translate="admin_pwrecover.share"></th>					
+					<th translate="admin_pwrecover.share"></th>
+					<th translate="admin_pwrecover.decrypted"></th>						
 					<th>&nbsp;</th>
 				</tr>
 								
@@ -24,10 +33,11 @@
 					<td><a href="javascript:" ui-sref="^.address({ userId : member._id })">{{ member.name || 'none' }}</a></td>
 					<td>{{ member.started | date : 'dd.MM.yy' }}</td>
 					<td>
-					  <textarea readonly rows="1" ng-click="copyToClip($event)" class="form-control">{{ member.encShares[criteria.me] }}</textarea>
+					  <input type="text" style="width:70px" readonly ng-click="copyToClip($event)" class="form-control" ng-model="member.encShares[criteria.me]">
+					</td><td>
 					  <input type="text" class="form-control" ng-model="member.shares[criteria.me]">
                     </td>
-					<td><button ng-click="commit(member)" class="btn btn-xs btn-default">ok</button></td>					
+					<td><button ng-click="commit(member)" class="btn btn-sm btn-default">ok</button></td>					
 				</tr>
 			</table>
 
