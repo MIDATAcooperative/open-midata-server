@@ -150,7 +150,7 @@ public class SubscriptionProcessor extends AbstractActor {
 		String cmd = endpoint.substring("node://".length());
 		String visPath =  InstanceConfig.getInstance().getConfig().getString("visualizations.path")+"/"+plugin.filename+"/"+cmd;
 		
-		String handle = subscription.session;
+		String handle = ServiceHandler.decrypt(subscription.session);
 		
 		User user = User.getById(subscription.owner, Sets.create("status", "role", "language"));
 		

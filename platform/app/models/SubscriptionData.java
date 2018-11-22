@@ -73,10 +73,10 @@ public class SubscriptionData extends Model {
 	/**
 	 * Session information
 	 */
-	public String session;
+	public byte[] session;
 	
 	public void add() throws InternalServerException {
-		Model.insert(collection, this);	
+		Model.upsert(collection, this);	
 	}
 	
 	public void update() throws InternalServerException {
@@ -106,6 +106,11 @@ public class SubscriptionData extends Model {
 	public static List<SubscriptionData> getByOwnerAndFormat(MidataId owner, String format, Set<String> fields) throws InternalServerException {
 		return Model.getAllList(SubscriptionData.class, collection, CMaps.map("format", format).map("owner", owner), fields, 0);
 	}
+	
+	public static List<SubscriptionData> getByOwnerAndFormatAndInstance(MidataId owner, String format, MidataId instance, Set<String> fields) throws InternalServerException {
+		return Model.getAllList(SubscriptionData.class, collection, CMaps.map("format", format).map("owner", owner).map("instance", instance), fields, 0);
+	}
+		
 		
 	public static List<SubscriptionData> getAllActive(Set<String> fields) throws InternalServerException {
 		return Model.getAllList(SubscriptionData.class, collection, CMaps.map("active", true), fields, 0);

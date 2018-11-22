@@ -22,6 +22,7 @@ import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.collections.Sets;
+import utils.messaging.ServiceHandler;
 import utils.messaging.SubscriptionManager;
 
 /**
@@ -75,7 +76,14 @@ public class Instances {
 		AccessLog.log("broadcast reload message");
 		getBroadcast().tell(new ReloadMessage(collection, entry), ActorRef.noSender());
 	}
+	
+	public static void retrieveKey() {
+		getBroadcast().tell(new ReloadMessage("aeskey", null), ActorRef.noSender());
+	}
 
+	public static void sendKey(byte[] aeskey) {
+		getBroadcast().tell(new KeyMessage(aeskey), ActorRef.noSender());
+	}
 }
 
 /**
@@ -95,6 +103,16 @@ class ReloadMessage implements Serializable {
 	}
 }
 
+class KeyMessage implements Serializable {
+	
+	final byte[] aeskey;
+	
+	public KeyMessage(byte[] aeskey) {
+		this.aeskey = aeskey;
+	}
+	
+}
+
 /**
  * Actor for instance synchronization
  *
@@ -107,7 +125,8 @@ class InstanceSync extends AbstractActor {
 	@Override
 	public Receive createReceive() {
 	    return receiveBuilder()
-	      .match(ReloadMessage.class, this::reload)	      
+	      .match(ReloadMessage.class, this::reload)	
+	      .match(KeyMessage.class, this::setKey)
 	      .build();
 	}
 	
@@ -124,6 +143,8 @@ class InstanceSync extends AbstractActor {
 			   System.out.println("A");
 			   SubscriptionManager.subscriptionChangeLocal(msg.entry);
 			   System.out.println("B");
+		   } else if (msg.collection.equals("aeskey")) {
+			   ServiceHandler.shareKey();
 		   }
 		} catch (Exception e) {
 			ErrorReporter.report("Messager", null, e);	
@@ -131,6 +152,10 @@ class InstanceSync extends AbstractActor {
 		} finally {			
 			AccessLog.newRequest();	
 		}
+	}
+	
+	public void setKey(KeyMessage msg) {
+		ServiceHandler.setKey(msg.aeskey);
 	}
 	
 }

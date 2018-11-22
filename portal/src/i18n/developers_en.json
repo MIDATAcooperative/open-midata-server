@@ -211,7 +211,8 @@
     "triggers" : {
       "fhir_Consent" : "Consent changes",
       "fhir_MessageHeader" : "FHIR message",
-      "fhir_Resource" : "Resource changes"
+      "fhir_Resource" : "Resource changes",
+      "time" : "Daily"
     },
     "actions" : {
       "rest-hook" : "Call Rest-Hook",

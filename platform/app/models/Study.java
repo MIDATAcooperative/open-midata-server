@@ -177,6 +177,10 @@ public class Study extends Model {
      */
     public String autoJoinGroup;
     
+    public byte[] autoJoinKey;
+    
+    public MidataId autoJoinExecutor;
+    
     public static void add(Study study) throws InternalServerException {
 		Model.insert(collection, study);
 	 }
@@ -288,9 +292,11 @@ public class Study extends Model {
     	Model.set(Study.class, collection, this._id, "joinMethods", joinMethods);
     }
     
-    public void setAutoJoinGroup(String autoJoinGroup) throws InternalServerException {
+    public void setAutoJoinGroup(String autoJoinGroup, MidataId executor, byte[] key) throws InternalServerException {
     	this.autoJoinGroup = autoJoinGroup;
-    	Model.set(Study.class, collection, this._id, "autoJoinGroup", autoJoinGroup);
+    	this.autoJoinExecutor = executor;
+    	this.autoJoinKey = key;
+    	this.setMultiple(collection, Sets.create("autoJoinGroup", "autoJoinExecutor", "autoJoinKey"));
     }
     
     public void setProcessFlags(Set<String> processFlags) throws InternalServerException {

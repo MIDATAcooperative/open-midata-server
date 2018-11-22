@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.bson.BSONObject;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -25,6 +27,8 @@ import models.enums.AuditEventType;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import utils.PasswordHash;
+import utils.access.EncryptionUtils;
+import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
@@ -37,6 +41,7 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.messaging.ServiceHandler;
 import play.mvc.Result;
 import play.mvc.Security;
 
@@ -109,6 +114,22 @@ public class PWRecovery extends APIController {
 		fl.set();
 		
 		if (sessionToken != null) KeyManager.instance.unlock(user._id, sessionToken, proc.nextPublicExtKey);		
+		
+		if (user.email.equals("autorun-service")) {
+			proc.nextPassword = null;
+			BSONObject obj = RecordManager.instance.getMeta(user._id, user._id, "_aeskey");
+			if (obj == null) {
+				Map<String, Object> map = new HashMap<String, Object>();
+				byte[] key = EncryptionUtils.generateKey();
+				map.put("key", key);
+				RecordManager.instance.setMeta(user._id, user._id, "_aeskey", map);
+				ServiceHandler.setKey(key);
+			} else {
+				byte[] aeskey = (byte[]) obj.get("key");
+				ServiceHandler.setKey(aeskey);
+			}
+		}
+		
 		
 		user.publicExtKey = proc.nextPublicExtKey;
 		user.password = proc.nextPassword;

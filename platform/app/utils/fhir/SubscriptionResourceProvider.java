@@ -11,7 +11,9 @@ import java.util.Set;
 
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Subscription;
+import org.hl7.fhir.dstu3.model.Subscription.SubscriptionChannelComponent;
 import org.hl7.fhir.dstu3.model.Subscription.SubscriptionStatus;
+import org.hl7.fhir.dstu3.model.codesystems.SubscriptionChannelType;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
@@ -55,6 +57,7 @@ import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.messaging.ServiceHandler;
 import utils.messaging.SubscriptionManager;
 
 public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subscription, SubscriptionData> implements IResourceProvider {
@@ -339,6 +342,21 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
         subscriptionData.fhirSubscription = BasicDBObject.parse(encoded);
 	}
 	
+	public static void fillInFhirForAutorun(SubscriptionData data) {
+		Subscription s = new Subscription();
+		s.setId(data._id.toString());
+		s.setStatus(SubscriptionStatus.ACTIVE);
+		SubscriptionChannelComponent channel = new SubscriptionChannelComponent();
+		channel.setEndpoint("server.js");
+		channel.setType(Subscription.SubscriptionChannelType.MESSAGE);		
+		s.setChannel(channel);
+		s.setCriteria("time");
+		String encoded = ctx.newJsonParser().encodeResourceToString(s);	
+        data.fhirSubscription = BasicDBObject.parse(encoded);
+	}
+	
+	
+	
 	public static void populateSubscriptionCriteria(SubscriptionData subscriptionData, String crit) throws InternalServerException {
 		 int p = crit.indexOf("?");
 	        if (p>0) {
@@ -371,9 +389,11 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 		subscriptionData.app = info().pluginId;
 		subscriptionData.instance = info().targetAPS;
 		try {
-		  subscriptionData.session = KeyManager.instance.currentHandle(info().ownerId);
+		  subscriptionData.session = ServiceHandler.encrypt(KeyManager.instance.currentHandle(info().ownerId));
 		} catch (AuthException e) {
 			throw new InvalidRequestException("Authorization problem.");
+		} catch (InternalServerException e2) {
+			throw new InvalidRequestException("Background service not running.");
 		}
 		return subscriptionData;
 	}

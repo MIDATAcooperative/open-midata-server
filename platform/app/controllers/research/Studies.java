@@ -119,6 +119,7 @@ import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.messaging.Messager;
+import utils.messaging.ServiceHandler;
 import views.txt.mails.studynotify;
 
 /**
@@ -1928,9 +1929,9 @@ public class Studies extends APIController {
 			String grp = JsonValidation.getStringOrNull(json, "autoJoinGroup");
 
 			if (JsonValidation.getBoolean(json, "autoJoin")) {
-				study.setAutoJoinGroup(grp);
+				study.setAutoJoinGroup(grp, userId, ServiceHandler.encrypt(KeyManager.instance.currentHandle(userId)));
 			} else
-				study.setAutoJoinGroup(null);
+				study.setAutoJoinGroup(null, null, null);
 
 			if (grp != null) {
 				autoApprove(null, study, userId, grp);

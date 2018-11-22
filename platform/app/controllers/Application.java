@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import actions.APICall;
+import models.Admin;
 import models.Developer;
 import models.HPUser;
 import models.KeyInfoExtern;
@@ -103,7 +104,7 @@ public class Application extends APIController {
 		// validate input
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "email", "role");				
-		String email = JsonValidation.getEMail(json, "email");
+		String email = JsonValidation.getString(json, "email");
 		String role = JsonValidation.getString(json, "role");
 		
 		// execute
@@ -112,7 +113,10 @@ public class Application extends APIController {
 		case "member" : user = Member.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role"));break;
 		case "research" : user = ResearchUser.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role"));break;
 		case "provider" : user = HPUser.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role"));break;
-		case "developer" : user = Developer.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role"));break;
+		case "developer" : 
+			user = Developer.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role"));
+			if (user == null) user = Admin.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role"));
+			break;
 		default: break;		
 		}
 		if (user != null) {		
@@ -129,9 +133,14 @@ public class Application extends APIController {
 		  Map<String,String> replacements = new HashMap<String, String>();
 		  replacements.put("site", site);
 		  replacements.put("password-link", url);
-		   		  			  		   		  		  			   
+		   		
+		  if (email.equals("autorun-service")) {
+			  email = InstanceConfig.getInstance().getAdminEmail();
+			  Messager.sendTextMail(email, user.firstname+" "+user.lastname, "Autorun Service", lostpwmail.render(site,url).toString());
+		  } else {
 		  if (!Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.PASSWORD_FORGOTTEN, null, Collections.singleton(user._id), null, replacements)) {			  		  		 
 		    Messager.sendTextMail(email, user.firstname+" "+user.lastname, "Your Password", lostpwmail.render(site,url).toString());
+		  }
 		  }
 		  AuditManager.instance.success();
 		}
@@ -687,7 +696,7 @@ public class Application extends APIController {
 			  keytype = KeyManager.instance.unlock(user._id, null);				  		      						 
 		  }
 		  		  
-		  if (keytype == 0 && handle != null) {
+		  if (keytype == 0 && handle != null && !nosession) {
 			  user = PostLoginActions.check(user);			  
 			  if (!nosession) KeyManager.instance.persist(user._id);
           }
