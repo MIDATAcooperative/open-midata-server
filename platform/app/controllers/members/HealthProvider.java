@@ -54,7 +54,7 @@ public class HealthProvider extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
-	public static Result list() throws InternalServerException {
+	public Result list() throws InternalServerException {
 	      
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));	
 		Set<MemberKey> memberkeys = MemberKey.getByOwner(userId);
@@ -71,7 +71,7 @@ public class HealthProvider extends APIController {
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result search() throws AppException, JsonValidationException {
+	public Result search() throws AppException, JsonValidationException {
 		
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "properties", "fields");
@@ -126,7 +126,7 @@ public class HealthProvider extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result confirmConsent() throws AppException, JsonValidationException {
+	public Result confirmConsent() throws AppException, JsonValidationException {
 		
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		JsonNode json = request().body().asJson();
@@ -170,7 +170,7 @@ public class HealthProvider extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result rejectConsent() throws AppException, JsonValidationException {
+	public Result rejectConsent() throws AppException, JsonValidationException {
 		
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		JsonNode json = request().body().asJson();

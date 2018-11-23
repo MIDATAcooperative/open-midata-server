@@ -61,7 +61,7 @@ public class OAuth2 extends Controller {
 	 * @return status ok
 	 */
 	@MobileCall
-	public static Result checkPreflight() {		
+	public Result checkPreflight() {		
 		return ok();
 	}
  	
@@ -111,7 +111,7 @@ public class OAuth2 extends Controller {
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result login() throws AppException {
+	public Result login() throws AppException {
 				
         JsonNode json = request().body().asJson();		
         JsonValidation.validate(json, "appname", "username", "password", "device", "state", "redirectUri");
@@ -289,7 +289,7 @@ public class OAuth2 extends Controller {
 
 	@BodyParser.Of(BodyParser.FormUrlEncoded.class)
 	@MobileCall
-	public static Result authenticate() throws AppException {
+	public Result authenticate() throws AppException {
 				
         Map<String, String[]> data = request().body().asFormUrlEncoded();
         MidataId appInstanceId = null;

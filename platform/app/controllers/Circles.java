@@ -91,7 +91,7 @@ public class Circles extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
-	public static Result get() throws JsonValidationException, InternalServerException {
+	public Result get() throws JsonValidationException, InternalServerException {
 		// validate json
 		JsonNode json = request().body().asJson();
 						
@@ -119,7 +119,7 @@ public class Circles extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result listConsents() throws JsonValidationException, AppException, AuthException {
+	public Result listConsents() throws JsonValidationException, AppException, AuthException {
 		// validate json
 		JsonNode json = request().body().asJson();					
 		JsonValidation.validate(json, "properties", "fields");
@@ -252,7 +252,7 @@ public class Circles extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result add() throws JsonValidationException, AppException {
+	public Result add() throws JsonValidationException, AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		
@@ -439,7 +439,7 @@ public class Circles extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result joinByPasscode() throws JsonValidationException, AppException {
+	public Result joinByPasscode() throws JsonValidationException, AppException {
 		// validate json
 		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		JsonNode json = request().body().asJson();		
@@ -476,7 +476,7 @@ public class Circles extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result delete(String circleIdString) throws JsonValidationException, AppException {
+	public Result delete(String circleIdString) throws JsonValidationException, AppException {
 		// validate request
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId circleId = new MidataId(circleIdString);
@@ -521,7 +521,7 @@ public class Circles extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result addUsers(String circleIdString) throws JsonValidationException, AppException {
+	public Result addUsers(String circleIdString) throws JsonValidationException, AppException {
 		// validate json
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "users");
@@ -587,7 +587,7 @@ public class Circles extends APIController {
 	 */
 	@Security.Authenticated(MemberSecured.class)
 	@APICall
-	public static Result removeMember(String circleIdString, String memberIdString) throws JsonValidationException, AppException {
+	public Result removeMember(String circleIdString, String memberIdString) throws JsonValidationException, AppException {
 		// validate request
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId circleId = new MidataId(circleIdString);

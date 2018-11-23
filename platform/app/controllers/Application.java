@@ -78,7 +78,7 @@ public class Application extends APIController {
 	 * @return status ok
 	 */
 	@APICall
-	public static Result checkPreflight(String all) {				
+	public Result checkPreflight(String all) {				
 		return ok();
 	}
 
@@ -90,7 +90,7 @@ public class Application extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class) 
 	@APICall
-	public static Result requestPasswordResetToken() throws AppException {
+	public Result requestPasswordResetToken() throws AppException {
 		// validate input
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "email", "role");				
@@ -138,7 +138,7 @@ public class Application extends APIController {
 	 */	
 	@APICall	
 	@BodyParser.Of(BodyParser.Json.class) 
-	public static Result requestWelcomeMail() throws AppException {
+	public Result requestWelcomeMail() throws AppException {
 		
 		JsonNode json = request().body().asJson();	
 		JsonValidation.validate(json, "userId");				
@@ -226,7 +226,7 @@ public class Application extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result confirmAccountEmail() throws AppException {
+	public Result confirmAccountEmail() throws AppException {
 						
 		// validate 
 		JsonNode json = request().body().asJson();		
@@ -329,7 +329,7 @@ public class Application extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(PreLoginSecured.class)
-	public static Result confirmAccountAddress() throws AppException {
+	public Result confirmAccountAddress() throws AppException {
 		// validate 
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "confirmationCode");
@@ -414,7 +414,7 @@ public class Application extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result setPasswordWithToken() throws JsonValidationException, AppException {
+	public Result setPasswordWithToken() throws JsonValidationException, AppException {
 		return confirmAccountEmail();				
 	}
 	
@@ -427,7 +427,7 @@ public class Application extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result changePassword() throws JsonValidationException, AppException {
+	public Result changePassword() throws JsonValidationException, AppException {
 		// validate 
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "oldPassword", "password");
@@ -456,7 +456,7 @@ public class Application extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result changePassphrase() throws AppException {
+	public Result changePassphrase() throws AppException {
 		requireUserFeature(UserFeature.ADDRESS_VERIFIED);
 		
 		JsonNode json = request().body().asJson();		
@@ -491,7 +491,7 @@ public class Application extends APIController {
 	 */
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result authenticate() throws AppException {
+	public Result authenticate() throws AppException {
 		// validate 
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "email", "password");	
@@ -632,7 +632,7 @@ public class Application extends APIController {
 	
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result downloadToken() throws AppException {
+	public Result downloadToken() throws AppException {
 		PortalSessionToken current = PortalSessionToken.session();
 		PortalSessionToken token = new PortalSessionToken(current.getHandle(), current.getUserId(), current.getRole(), current.getOrg(), current.getDeveloper());
 		
@@ -650,7 +650,7 @@ public class Application extends APIController {
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result providePassphrase() throws AppException {
+	public Result providePassphrase() throws AppException {
 		// validate 
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "passphrase");
@@ -681,7 +681,7 @@ public class Application extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result register() throws AppException {
+	public Result register() throws AppException {
 		// validate 
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "country", "language","password");
@@ -805,7 +805,7 @@ public class Application extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result logout() {
+	public Result logout() {
 		
 		// execute
 		KeyManager.instance.logout();
@@ -820,7 +820,7 @@ public class Application extends APIController {
 	 */
 	
 	@APICall
-	public static Result javascriptRoutes() {
+	public Result javascriptRoutes() {
 		response().setContentType("text/javascript");
           return ok(JavaScriptReverseRouter.create("jsRoutes", 	
 				// Application

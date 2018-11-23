@@ -89,7 +89,7 @@ public class MobileAPI extends Controller {
 	 * @return status ok
 	 */
 	@MobileCall
-	public static Result checkPreflight() {		
+	public Result checkPreflight() {		
 		return ok();
 	}
 
@@ -164,7 +164,7 @@ public class MobileAPI extends Controller {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@MobileCall
-	public static Result authenticate() throws AppException {
+	public Result authenticate() throws AppException {
 				
         JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "appname", "secret");
@@ -445,7 +445,7 @@ public class MobileAPI extends Controller {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@MobileCall
-	public static Result getRecords() throws JsonValidationException, AppException {		
+	public Result getRecords() throws JsonValidationException, AppException {		
 		// validate json
 		Stats.startRequest(request());
 		
@@ -487,7 +487,7 @@ public class MobileAPI extends Controller {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@MobileCall	
-	public static Result getFile() throws AppException, JsonValidationException {
+	public Result getFile() throws AppException, JsonValidationException {
 		Stats.startRequest(request());
 		// validate json
 		JsonNode json = request().body().asJson();				
@@ -524,7 +524,7 @@ public class MobileAPI extends Controller {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@MobileCall
-	public static Result createRecord() throws AppException, JsonValidationException {
+	public Result createRecord() throws AppException, JsonValidationException {
 		Stats.startRequest(request());
 		
 		// check whether the request is complete
@@ -592,7 +592,7 @@ public class MobileAPI extends Controller {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@MobileCall
-	public static Result updateRecord() throws AppException, JsonValidationException {
+	public Result updateRecord() throws AppException, JsonValidationException {
 		
 		Stats.startRequest(request());
 		// check whether the request is complete
@@ -728,7 +728,7 @@ public class MobileAPI extends Controller {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@MobileCall
-	public static Result getInfo() throws AppException, JsonValidationException {
+	public Result getInfo() throws AppException, JsonValidationException {
  	
 		// check whether the request is complete
 		JsonNode json = request().body().asJson();				
@@ -760,7 +760,7 @@ public class MobileAPI extends Controller {
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@MobileCall
-	public static Result getConsents() throws JsonValidationException, AppException {		
+	public Result getConsents() throws JsonValidationException, AppException {		
 		// validate json
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "authToken", "properties", "fields");

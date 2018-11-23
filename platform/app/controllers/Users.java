@@ -77,7 +77,7 @@ public class Users extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result get() throws AppException, JsonValidationException {
+	public Result get() throws AppException, JsonValidationException {
 		// validate json
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "properties", "fields");
@@ -158,7 +158,7 @@ public class Users extends APIController {
 	 */
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result getCurrentUser() {
+	public Result getCurrentUser() {
 						
 		ObjectNode obj = Json.newObject();	
 		PortalSessionToken session = PortalSessionToken.session();
@@ -177,7 +177,7 @@ public class Users extends APIController {
      */
 	@Security.Authenticated(MemberSecured.class)
 	@APICall
-	public static Result search(String query) throws AppException {
+	public Result search(String query) throws AppException {
 		
 		requireUserFeature(UserFeature.EMAIL_VERIFIED);
 		
@@ -198,7 +198,7 @@ public class Users extends APIController {
 	 */
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result loadContacts() throws InternalServerException {
+	public Result loadContacts() throws InternalServerException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		Set<MidataId> contactIds = new HashSet<MidataId>();
 		Set<Member> contacts;
@@ -219,7 +219,7 @@ public class Users extends APIController {
 	 */
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result complete(String query) {
+	public Result complete(String query) {
 		return ok(Json.toJson(Collections.EMPTY_LIST)); //Search.complete(Type.USER, query)));
 	}
 	
@@ -232,7 +232,7 @@ public class Users extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(PreLoginSecured.class)
-	public static Result updateAddress() throws AppException {
+	public Result updateAddress() throws AppException {
 		
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "user");//, "firstname", "lastname", "gender", "city", "zip", "country", "address1");
@@ -317,7 +317,7 @@ public class Users extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result updateSettings() throws AppException {
+	public Result updateSettings() throws AppException {
 		// validate 
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "language");
@@ -350,7 +350,7 @@ public class Users extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(PreLoginSecured.class)
-	public static Result requestMembership() throws AppException {
+	public Result requestMembership() throws AppException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		return requestMembershipHelper(userId);
 	}
@@ -403,7 +403,7 @@ public class Users extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result accountWipe() throws AppException {
+	public Result accountWipe() throws AppException {
 		if (!InstanceConfig.getInstance().getInstanceType().getAccountWipeAvailable()) throw new InternalServerException("error.internal", "Only allowed on demo server");
 		
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));

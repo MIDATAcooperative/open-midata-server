@@ -47,7 +47,7 @@ public class Developers extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result register() throws AppException {
+	public Result register() throws AppException {
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "language", "reason");
 							
@@ -111,7 +111,7 @@ public class Developers extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result login() throws AppException {
+	public Result login() throws AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		
@@ -154,7 +154,7 @@ public class Developers extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(DeveloperSecured.class)
-	public static Result resetTestAccountPassword() throws AppException {
+	public Result resetTestAccountPassword() throws AppException {
 		JsonNode json = request().body().asJson();
 			
 		MidataId developerId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));

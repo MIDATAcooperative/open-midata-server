@@ -86,7 +86,7 @@ public class Administration extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
-	public static Result changeStatus() throws JsonValidationException, AppException {
+	public Result changeStatus() throws JsonValidationException, AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		
@@ -168,7 +168,7 @@ public class Administration extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
-	public static Result register() throws AppException {
+	public Result register() throws AppException {
 		requireSubUserRole(SubUserRole.SUPERADMIN);
 		
 		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
@@ -230,7 +230,7 @@ public class Administration extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
-	public static Result addComment() throws AppException {
+	public Result addComment() throws AppException {
 		requireSubUserRole(SubUserRole.USERADMIN);
 		
 		JsonNode json = request().body().asJson();		
@@ -257,7 +257,7 @@ public class Administration extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result changeUserEmail() throws AppException {
+	public Result changeUserEmail() throws AppException {
 		
 		
 		JsonNode json = request().body().asJson();		
@@ -323,7 +323,7 @@ public class Administration extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result changeBirthday() throws AppException {	
+	public Result changeBirthday() throws AppException {	
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "user", "birthday");
 							
@@ -359,7 +359,7 @@ public class Administration extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
-	public static Result adminWipeAccount() throws JsonValidationException, AppException {
+	public Result adminWipeAccount() throws JsonValidationException, AppException {
 		requireSubUserRole(SubUserRole.USERADMIN);
 		
 		JsonNode json = request().body().asJson();		
@@ -422,7 +422,7 @@ public class Administration extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
-	public static Result searchAuditLog() throws JsonValidationException, AppException {
+	public Result searchAuditLog() throws JsonValidationException, AppException {
 		JsonNode json = request().body().asJson();					
 		JsonValidation.validate(json, "properties", "fields");
 		
@@ -451,7 +451,7 @@ public class Administration extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
-	public static Result deleteStudy(String id) throws JsonValidationException, AppException {
+	public Result deleteStudy(String id) throws JsonValidationException, AppException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId owner = PortalSessionToken.session().getOrg();
 		MidataId studyid = new MidataId(id);
@@ -502,7 +502,7 @@ public class Administration extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
-	public static Result getStats() throws AppException {
+	public Result getStats() throws AppException {
 		JsonNode json = request().body().asJson();					
 		JsonValidation.validate(json, "properties");
 		
