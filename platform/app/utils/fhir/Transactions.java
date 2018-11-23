@@ -54,11 +54,13 @@ public class Transactions {
 		   if (verb == null) throw new UnprocessableEntityException("Missing HTTP Verb in transaction");
 		   if (verb.equals(HTTPVerb.POST)) {		   
 		     Resource res = nextEntry.getResource();
+		     if (res == null || res.getResourceType() == null || res.getResourceType().name() == null) throw new UnprocessableEntityException("Missing Resource Type inside Bundle entry");
 		     ResourceProvider provider = FHIRServlet.myProviders.get(res.getResourceType().name());
 		     if (provider == null) throw new UnprocessableEntityException("Resource Type not supported: "+res.getResourceType().name());
 		     steps.add(new CreateTransactionStep(provider, (DomainResource) res));
 		   } else if (verb.equals(HTTPVerb.PUT)) {
 			 Resource res = nextEntry.getResource();
+			 if (res == null || res.getResourceType() == null || res.getResourceType().name() == null) throw new UnprocessableEntityException("Missing Resource Type inside Bundle entry");
 			 ResourceProvider provider = FHIRServlet.myProviders.get(res.getResourceType().name());
 			 if (provider == null) throw new UnprocessableEntityException("Resource Type not supported: "+res.getResourceType().name());
 			 steps.add(new UpdateTransactionStep(provider, (DomainResource) res));
