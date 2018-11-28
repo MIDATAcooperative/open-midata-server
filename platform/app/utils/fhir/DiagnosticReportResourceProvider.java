@@ -3,10 +3,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.hl7.fhir.dstu3.model.Attachment;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.DiagnosticReport;
+import org.hl7.fhir.dstu3.model.DocumentReference;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.dstu3.model.DocumentReference.DocumentReferenceContentComponent;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
@@ -207,6 +210,18 @@ public class DiagnosticReportResourceProvider extends RecordBasedResourceProvide
 	public MethodOutcome createResource(@ResourceParam DiagnosticReport theDiagnosticReport) {
 		return super.createResource(theDiagnosticReport);
 	}
+	
+	@Override
+	public void createExecute(Record record, DiagnosticReport theDiagnosticReport) throws AppException {
+        Attachment attachment = null;
+		
+        List<Attachment> att = theDiagnosticReport.getPresentedForm();		
+		if (att != null && att.size() == 1) {
+			attachment = att.get(0);		
+		}
+		
+		insertRecord(record, theDiagnosticReport, attachment);
+	}	
 
 	// Construct a new empty MIDATA record that is initialized with the correct
 	// format.
