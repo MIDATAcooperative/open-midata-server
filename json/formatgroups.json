@@ -42,7 +42,7 @@
 {"_id":{"$oid":"583d69dcaed6451303c0586f"},"system":"v1","name":"tasks","label":{"de":"Aufgaben","en":"Tasks","fr":"Tâches"},"parent":"other","contents":["Task","karegenda/entry","karegenda/task"]}
 {"_id":{"$oid":"585936c6aed6452afe49088b"},"system":"v1","name":"communication","label":{"de":"Kommunikation","en":"Communication"},"parent":"other","contents":["Communication"]}
 {"_id":{"$oid":"58594553aed6452afe49088c"},"system":"v1","name":"work","label":{"de":"Arbeit","en":"Work related"},"parent":"lifestyle","contents":["main-occupation-location","main-occupation-location-type","work/field-of-occupation","work/level-of-employment","work/occupation"]}
-{"_id":{"$oid":"58773f8daed645135829ffbc"},"system":"v1","name":"condition","label":{"de":"Beschwerden","en":"Conditions"},"parent":"health","contents":["Condition","condition/icd-10-c9x"]}
+{"_id":{"$oid":"58773f8daed645135829ffbc"},"system":"v1","name":"condition","label":{"de":"Beschwerden","en":"Conditions"},"parent":"health","contents":["snomed/418138009","Condition","condition/icd-10-c9x"]}
 {"_id":{"$oid":"58773f8daed645135829ffbb"},"system":"v1","name":"goal","label":{"de":"Ziele","en":"Goals"},"parent":"health","contents":["Goal"]}
 {"_id":{"$oid":"5877408faed645135829ffbd"},"system":"v1","name":"milestones","label":{"de":"Meilensteine","en":"Milestones"},"parent":"lifestyle","contents":["milestones"]}
 {"_id":{"$oid":"58e60ed1aed6450f67436b75"},"system":"v1","name":"assessment","label":{"de":"Bewertungen","en":"Assessment"},"parent":"health","contents":["MiSensSmellThreshold","MSMotTestDotDetail","MSMotTestDot","MSMotTestDotRun","MSCogTestLab","MiSensTasteIntensity","MSTests","MSMotNineHolePeg","MiSensQuestionnaire","MSCogTestSDPrep","MSMotTestLine","MSCogTestSD","snomed/422673001"]}
