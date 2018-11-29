@@ -175,12 +175,14 @@ public class SubscriptionProcessor extends AbstractActor {
 		}
 		
 		String token = tk.encrypt();
+		
 		final String lang = user.language != null ? user.language : InstanceConfig.getInstance().getDefaultLanguage();
+		final String id = triggered.getResourceId() != null ? triggered.getResourceId().toString() : "-";
 		try {
 		  System.out.println("Build process...");
-		  Process p = new ProcessBuilder(nodepath, visPath, token, lang, "http://localhost:9001", subscription.owner.toString()).redirectError(Redirect.INHERIT).start();
+		  Process p = new ProcessBuilder(nodepath, visPath, token, lang, "http://localhost:9001", subscription.owner.toString(), id).redirectError(Redirect.INHERIT).start();
 		  System.out.println("Output...");
-		  PrintWriter out = new PrintWriter(new OutputStreamWriter(p.getOutputStream()));
+		  PrintWriter out = new PrintWriter(new OutputStreamWriter(p.getOutputStream()));		  
 		  out.println(triggered.resource);
 		  out.close();
 		  System.out.println("Output done...");

@@ -1,5 +1,6 @@
 package utils.messaging;
 
+import utils.InstanceConfig;
 import utils.access.EncryptionUtils;
 import utils.exceptions.InternalServerException;
 import utils.sync.Instances;
@@ -20,14 +21,23 @@ public class ServiceHandler {
 	}
 	
 	public static byte[] encrypt(String input) throws InternalServerException {
-		if (aeskey == null) throw new InternalServerException("error.internal", "Background service key missing");
+		if (aeskey == null) {
+			if (InstanceConfig.getInstance().getInstanceType().disableServiceKeyProtection()) {
+				aeskey = new byte[16+4];
+			} else throw new InternalServerException("error.internal", "Background service key missing");
+		}
 		return EncryptionUtils.randomizeSameAs(EncryptionUtils.encrypt(EncryptionUtils.derandomize(aeskey), input.getBytes()), aeskey);
 	}
 	
 	public static String decrypt(byte[] input) throws InternalServerException {
-		if (aeskey == null) throw new InternalServerException("error.internal", "Background service key missing");
+		if (input == null) return null;
+		if (aeskey == null) {
+			if (InstanceConfig.getInstance().getInstanceType().disableServiceKeyProtection()) {
+				aeskey = new byte[16+4];
+			} else throw new InternalServerException("error.internal", "Background service key missing");			
+		}		
 		if (!EncryptionUtils.checkMatch(aeskey,  input)) return null; 
-		return new String(EncryptionUtils.derandomize(EncryptionUtils.decrypt(EncryptionUtils.derandomize(aeskey), input)));
+		return new String(EncryptionUtils.decrypt(EncryptionUtils.derandomize(aeskey), EncryptionUtils.derandomize(input)));
 	}
 	
 	public static void startup() {

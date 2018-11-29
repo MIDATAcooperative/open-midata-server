@@ -140,6 +140,14 @@ public enum InstanceType {
 	}
 	
 	/**
+	 * Do not protect the background service key
+	 * @return
+	 */
+	public boolean disableServiceKeyProtection() {
+		return this == PERFTEST || this == LOCAL;
+	}
+	
+	/**
 	 * Is it allowed to use learn : true in access queries?
 	 * @return
 	 */

@@ -28,16 +28,22 @@ public class SubscriptionTriggered {
 	final String resource;
 	
 	/**
+	 * The id of the resource that was changed
+	 */
+	final MidataId resourceId;
+	
+	/**
 	 * Optional event code
 	 */
 	final String eventCode;
 	
-	public SubscriptionTriggered(MidataId affected, MidataId app, String type, String eventCode, String resource) {
+	public SubscriptionTriggered(MidataId affected, MidataId app, String type, String eventCode, String resource, MidataId resourceId) {
 		this.affected = affected;
 		this.app = app;
 		this.type = type;
 		this.resource = resource;
 		this.eventCode = eventCode;
+		this.resourceId = resourceId;
 	}
 
 	public MidataId getAffected() {
@@ -54,6 +60,10 @@ public class SubscriptionTriggered {
 
 	public String getResource() {
 		return resource;
+	}
+	
+	public MidataId getResourceId() {
+		return resourceId;
 	}
 
 	public String getEventCode() {

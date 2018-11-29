@@ -370,7 +370,7 @@ public class AutoRun extends APIController {
 				List<SubscriptionData> datas = SubscriptionData.getAllActiveFormat("time", SubscriptionData.ALL);
 				
 				for (SubscriptionData data : datas) {
-					processor.tell(new SubscriptionTriggered(data.owner, data.app, "time", null, null), getSelf());
+					processor.tell(new SubscriptionTriggered(data.owner, data.app, "time", null, null, null), getSelf());
 				}
 				
 			} catch (Exception e) {

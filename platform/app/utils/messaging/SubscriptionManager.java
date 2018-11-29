@@ -52,11 +52,13 @@ import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.access.RecordManager;
+import utils.auth.KeyManager;
 import utils.auth.SpaceToken;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
+import utils.fhir.FHIRTools;
 import utils.fhir.SubscriptionResourceProvider;
 import utils.sync.Instances;
 
@@ -122,6 +124,7 @@ public class SubscriptionManager {
 	    			newdata.format = dat.format;
 	    			newdata.lastUpdated = System.currentTimeMillis();
 	    			newdata.owner = userId;
+	    			newdata.session = ServiceHandler.encrypt(KeyManager.instance.currentHandle(userId));
 	    			newdata.add();
 	    		}
 	    	}
@@ -311,6 +314,7 @@ class SubscriptionChecker extends AbstractActor {
 	void resourceChange(ResourceChange change) {		
 		Set<MidataId> affected = new HashSet<MidataId>();
 		String resource = null;
+		MidataId resourceId = null;
 		String content = null;
 		if (change.getResource() instanceof Consent) {
 			Consent consent = (Consent) change.getResource();
@@ -323,7 +327,8 @@ class SubscriptionChecker extends AbstractActor {
 		} else if (change.getResource() instanceof Record) {
 			Record record = (Record) change.getResource();
 			content = record.content;
-			affected.add(record.owner);
+			resourceId = record._id;
+			affected.add(record.owner);			
 			try {
 			  Set<MidataId> alsoAffected = RecordManager.instance.findAllSharingAps(record.owner, record);
 			  RecordManager.instance.clear();
@@ -347,14 +352,14 @@ class SubscriptionChecker extends AbstractActor {
 		for (MidataId affectedUser : affected) {
 			if (withSubscription.contains(affectedUser)) {
 				
-				SubscriptionTriggered trigger = new SubscriptionTriggered(affectedUser, null, change.type, content, resource);				
+				SubscriptionTriggered trigger = new SubscriptionTriggered(affectedUser, null, change.type, content, resource, resourceId);				
 				processor.tell(trigger, getSelf());
 			}
 		}
 	}
 	
 	void processMessage(ProcessMessage message) {
-		SubscriptionTriggered trigger = new SubscriptionTriggered(message.executor, message.getApp(), "fhir/MessageHeader", message.getEventCode(), message.getMessage());				
+		SubscriptionTriggered trigger = new SubscriptionTriggered(message.executor, message.getApp(), "fhir/MessageHeader", message.getEventCode(), message.getMessage(), null);				
 		processor.forward(trigger, getContext());
 	}
 	
