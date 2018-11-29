@@ -29,9 +29,16 @@ angular.module('portal')
 			rec.encrypted = user.encShares.encrypted;
 			rec.iv = user.encShares.iv;
 			var response = crypto.dorecover(rec, user.challenge);
-			server.post(jsRoutes.controllers.PWRecovery.finishRecovery().url, JSON.stringify({ _id : user._id, session : response }));
+			server.post(jsRoutes.controllers.PWRecovery.finishRecovery().url, JSON.stringify({ _id : user._id, session : response }))
+			.then(function() {
+				user.success = true;
+			});
 		} else {
-		   server.post(jsRoutes.controllers.PWRecovery.storeRecoveryShare().url, JSON.stringify(user));
+		   server.post(jsRoutes.controllers.PWRecovery.storeRecoveryShare().url, JSON.stringify(user))
+		   .then(function() {
+			   user.success = true;
+		   });
+		   
 		}
 	};	
 	

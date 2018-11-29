@@ -74,10 +74,16 @@ class AutoJoinerActor extends AbstractActor {
 					
 						AccessLog.log("START AUTOJOIN");		
 						try {
-							KeyManager.instance.continueSession(ServiceHandler.decrypt(theStudy.autoJoinKey), theStudy.autoJoinExecutor);
+							String handle = ServiceHandler.decrypt(theStudy.autoJoinKey);
 							
-							RecordManager.instance.setAccountOwner(theStudy.autoJoinExecutor, theStudy.autoJoinExecutor);
+							if (handle == null) { // Main background service key not valid anymore
+								theStudy.autoJoinGroup = null;
+								theStudy.setAutoJoinGroup(null, null, null);
+								return;
+							}
 							
+							KeyManager.instance.continueSession(handle, theStudy.autoJoinExecutor);							
+							RecordManager.instance.setAccountOwner(theStudy.autoJoinExecutor, theStudy.autoJoinExecutor);							
 							AutoJoiner.approve(theStudy.autoJoinExecutor, theStudy, message.getUser(), message.getApp(), theStudy.autoJoinGroup);
 							
 							AccessLog.log("END AUTOJOIN");

@@ -959,8 +959,7 @@
   },
 
   "dashboard" : {
-    "help_welcome" : "Welcome to MIDATA",
-    "tasks" : "Tasks",
+    "help_welcome" : "Welcome to MIDATA",   
     "myviews" : "My Views",
     "mydata" : "My personal data",
     "mydata_text" : "Manage your health data. Enter new data and visualize existing data.",
@@ -1006,7 +1005,6 @@
 	"addusers" : "Add Users to Consent",
 	"shared_with_study" : "Shared records:",
 	"patient_records" : "Records of this patient:",
-	"addtask" : "Add Task",
 	"group_records" : "Records of this group:",
 	"study_records" : "Shared records:",
 	"addmore" : "Add more",
@@ -1057,30 +1055,7 @@
     "empty" : "Empty",
     "studies_found" : "Studies found:"
   },
-
-  "addtask" : {
-    "task_type" : "Task Type",
-    "task_title" : "Task Title",
-    "description" : "Description",
-    "frequency" : "Frequency",
-    "survey_name" : "Fill out survey",
-    "survey_description" : "Please fill out the surveys I shared with your account.",
-	"survey_title" : "Fill out survey"
-  },
-
-  "taskdetails" : {
-    "created_by" : "Created by:",
-    "frequency" : "How often:",
-    "plugin" : "Plugin:",
-    "do_now_btn" : "Do Now"
-  },
-
-  "tasks" : {
-    "empty" : "Empty",
-    "tasks_found" : "Tasks found:",
-    "more_btn" : "More..."
-  },
-
+  
   "addusers" : {
     "contacts" : "Existing contacts:",
     "all_users" : "All users",

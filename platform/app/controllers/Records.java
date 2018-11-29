@@ -287,43 +287,7 @@ public class Records extends APIController {
 
 		return ok();
 	}
-
-	/**
-	 * automatically share all records created in a space into a consent. Used
-	 * for tasks
-	 * 
-	 * @return status ok
-	 * @throws JsonValidationException
-	 * @throws InternalServerException
-	 */
-	@BodyParser.Of(BodyParser.Json.class)
-	@APICall
-	@Security.Authenticated(AnyRoleSecured.class)
-	public Result share() throws JsonValidationException, AppException {
-
-		JsonNode json = request().body().asJson();
-
-		JsonValidation.validate(json, "fromSpace", "toConsent");
-
-		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		MidataId fromSpace = JsonValidation.getMidataId(json, "fromSpace");
-		MidataId toConsent = JsonValidation.getMidataId(json, "toConsent");
-
-		Space space = Space.getByIdAndOwner(fromSpace, userId, Sets.create("autoShare"));
-		if (space == null)
-			throw new BadRequestException("error.unknown.space", "Bad space.");
-
-		Consent consent = Consent.getByIdAndOwner(toConsent, userId, Sets.create("type"));
-		if (consent == null)
-			throw new BadRequestException("error.unknown.consent", "Bad consent.");
-
-		if (space.autoShare == null)
-			space.autoShare = new HashSet<MidataId>();
-		space.autoShare.add(toConsent);
-		Space.set(space._id, "autoShare", space.autoShare);
-
-		return ok();
-	}
+	
 
 	/**
 	 * delete a record of the current user.

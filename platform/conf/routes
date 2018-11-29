@@ -57,7 +57,6 @@ POST    /api/members/records/info                        controllers.Records.get
 GET     /api/members/records/:id/view                    controllers.Records.getRecordUrl(id: String)
 GET     /api/members/records/shared/:apsId               controllers.Records.getSharingDetails(apsId: String)
 POST    /api/members/records/shared                      controllers.Records.updateSharing()
-POST    /api/members/records/share                       controllers.Records.share()
 POST    /api/members/records/fix                         controllers.Records.fixAccount()
 
 GET     /api/records/:id/file                                controllers.Records.getFile(id: String)
@@ -158,7 +157,6 @@ POST    /api/members/studies/:study/freeze              controllers.members.Stud
 POST    /api/research/studies/:study/update              controllers.research.Studies.updateParticipation(study: String)
 POST    /api/research/studies/:study/share/:group        controllers.research.Studies.shareWithGroup(study: String, group:String)
 POST    /api/research/studies/:study/addapp/:group       controllers.research.Studies.addApplication(study: String, group:String)
-POST    /api/research/studies/:study/task/:group         controllers.research.Studies.addTask(study: String, group:String)
 
 POST    /api/common/studies                              controllers.Studies.search()
 GET     /api/common/groups                               controllers.FormatAPI.listGroups()
@@ -217,14 +215,12 @@ POST    /api/admins/changeBirthday                       controllers.admin.Admin
 POST    /api/admins/addcomment                           controllers.admin.Administration.addComment()
 POST    /api/admins/wipeaccount                          controllers.admin.Administration.adminWipeAccount()
 POST    /api/admin/stats                                 controllers.admin.Administration.getStats()
+GET     /api/admin/health                                controllers.admin.Administration.getSystemHealth()
 GET		/api/admins/pwrecovery                           controllers.PWRecovery.getUnfinished()
 POST	/api/admins/pwrecovery                           controllers.PWRecovery.storeRecoveryShare()
 POST	/api/admins/pwrecovery/finish                    controllers.PWRecovery.finishRecovery()
+POST	/api/admins/pwrecovery/servicekey                controllers.PWRecovery.requestServiceKeyRecovery()
 
-# Tasks
-POST    /api/shared/tasks/create         controllers.Tasking.add()
-POST    /api/shared/tasks/list           controllers.Tasking.list()
-POST    /api/shared/tasks/execute/:taskid   controllers.Tasking.execute(taskid: String)
 
 # Apps
 

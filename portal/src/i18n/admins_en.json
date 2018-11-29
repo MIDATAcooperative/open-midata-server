@@ -181,7 +181,13 @@
 	 "groupCount" : "Teams (Healthcare and Research)",
 	 "auditEventCount" : "Audit Events",
 	 "users" : "Active User Accounts",		       
-     "consents" : "Consents"
+     "consents" : "Consents",
+     "health" : {
+       "title" : "System Health",
+       "servicekey" : "Background service key present?",
+       "requestkey_btn" : "Request Key Recovery",
+       "cluster" : "Cluster status"
+     }
    },
    
    "admin_pwrecover" : {

@@ -37,7 +37,10 @@
 					</td><td>
 					  <input type="text" class="form-control" ng-model="member.shares[criteria.me]">
                     </td>
-					<td><button ng-click="commit(member)" class="btn btn-sm btn-default">ok</button></td>					
+					<td>
+					  <button ng-click="commit(member)" class="btn btn-sm btn-default">ok</button>
+					  <span class="glyphicon glyphicon-ok text-success" ng-show="member.success"></span>
+					</td>					
 				</tr>
 			</table>
 

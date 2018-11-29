@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import actions.APICall;
+import models.Admin;
 import models.KeyInfoExtern;
 import models.KeyRecoveryData;
 import models.KeyRecoveryProcess;
@@ -116,11 +117,11 @@ public class PWRecovery extends APIController {
 		if (sessionToken != null) KeyManager.instance.unlock(user._id, sessionToken, proc.nextPublicExtKey);		
 		
 		if (user.email.equals("autorun-service")) {
-			proc.nextPassword = null;
+			
 			BSONObject obj = RecordManager.instance.getMeta(user._id, user._id, "_aeskey");
-			if (obj == null) {
+			if (obj == null || true) {
 				Map<String, Object> map = new HashMap<String, Object>();
-				byte[] key = EncryptionUtils.generateKey();
+				byte[] key = EncryptionUtils.randomize(EncryptionUtils.generateKey());
 				map.put("key", key);
 				RecordManager.instance.setMeta(user._id, user._id, "_aeskey", map);
 				ServiceHandler.setKey(key);
@@ -128,6 +129,7 @@ public class PWRecovery extends APIController {
 				byte[] aeskey = (byte[]) obj.get("key");
 				ServiceHandler.setKey(aeskey);
 			}
+			proc.nextPassword = null;
 		}
 		
 		
@@ -290,6 +292,19 @@ public class PWRecovery extends APIController {
 		} catch (InvalidKeySpecException e) {
 			throw new InternalServerException("error.internal", e);
 		}
+    }
+    
+    @BodyParser.Of(BodyParser.Json.class)
+    @APICall
+	@Security.Authenticated(AdminSecured.class)
+    public Result requestServiceKeyRecovery() throws AppException {
+    	JsonNode json = request().body().asJson();	
+    	KeyManager.instance.login(60000, false);
+    	User autorun = Admin.getByEmail("autorun-service", User.FOR_LOGIN);
+  	    KeyManager.instance.unlock(autorun._id, null);        
+      	PWRecovery.startRecovery(autorun, json);	
+      	autorun.addFlag(AccountActionFlags.KEY_RECOVERY);
+      	return ok();
     }
 	
 }

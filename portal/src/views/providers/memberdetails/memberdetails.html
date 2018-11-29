@@ -23,7 +23,7 @@
       <select class="form-control" ng-change="selectConsent(data.consent)" ng-model="data.consent" ng-options="consent.name for consent in consents"></select>
       </div><div class="col-sm-4">
       <button class="btn btn-default" ng-click="addData();" ng-hide="hideAdd">Share Data With Patient</button>
-      <button class="btn btn-default" ng-click="addTask();" ng-hide="hideAdd || consent==null">Add Task</button>
+      
       <button class="btn btn-default" ui-sref="^.newconsent({ owner : member._id })" translate="provider_memberdetails.propose_consent"></button>
       </div>
       </div>

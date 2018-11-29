@@ -21,12 +21,13 @@ public class ServiceHandler {
 	
 	public static byte[] encrypt(String input) throws InternalServerException {
 		if (aeskey == null) throw new InternalServerException("error.internal", "Background service key missing");
-		return EncryptionUtils.encrypt(aeskey, input.getBytes());
+		return EncryptionUtils.randomizeSameAs(EncryptionUtils.encrypt(EncryptionUtils.derandomize(aeskey), input.getBytes()), aeskey);
 	}
 	
 	public static String decrypt(byte[] input) throws InternalServerException {
 		if (aeskey == null) throw new InternalServerException("error.internal", "Background service key missing");
-		return new String(EncryptionUtils.decrypt(aeskey, input));
+		if (!EncryptionUtils.checkMatch(aeskey,  input)) return null; 
+		return new String(EncryptionUtils.derandomize(EncryptionUtils.decrypt(EncryptionUtils.derandomize(aeskey), input)));
 	}
 	
 	public static void startup() {

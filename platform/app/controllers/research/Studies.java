@@ -56,7 +56,6 @@ import models.StudyAppLink;
 import models.StudyGroup;
 import models.StudyParticipation;
 import models.StudyRelated;
-import models.Task;
 import models.User;
 import models.UserGroup;
 import models.UserGroupMember;
@@ -65,7 +64,6 @@ import models.enums.AssistanceType;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.EntityType;
-import models.enums.Frequency;
 import models.enums.InfoType;
 import models.enums.InformationType;
 import models.enums.JoinMethod;
@@ -1333,7 +1331,7 @@ public class Studies extends APIController {
 	 * @throws AppException
 	 * @throws JsonValidationException
 	 */
-	@Security.Authenticated(AnyRoleSecured.class)
+	/*@Security.Authenticated(AnyRoleSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public Result addTask(String id, String group) throws AppException, JsonValidationException {
@@ -1374,7 +1372,7 @@ public class Studies extends APIController {
 		}
 
 		return ok();
-	}
+	}*/
 
 	/**
 	 * list participation consents of all participants of a study

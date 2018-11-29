@@ -926,8 +926,7 @@ public class Application extends APIController {
 	 */
 	
 	@APICall
-	public Result javascriptRoutes() {
-		response().setContentType("text/javascript");
+	public Result javascriptRoutes() {		
           return ok(JavaScriptReverseRouter.create("jsRoutes", 	
 				// Application
 				
@@ -987,8 +986,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.Records.getRecords(),
 				controllers.routes.javascript.Records.getInfo(),	
 				controllers.routes.javascript.Records.getSharingDetails(),			
-				controllers.routes.javascript.Records.updateSharing(),
-				controllers.routes.javascript.Records.share(),	
+				controllers.routes.javascript.Records.updateSharing(),		
 				controllers.routes.javascript.Records.getFile(),
 				controllers.routes.javascript.Records.getRecordUrl(),
 				controllers.routes.javascript.Records.delete(),
@@ -1018,11 +1016,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.Users.complete(),
 				controllers.routes.javascript.Users.updateSettings(),
 				controllers.routes.javascript.Users.updateAddress(),
-				controllers.routes.javascript.Users.requestMembership(),
-				
-				controllers.routes.javascript.Tasking.add(),
-				controllers.routes.javascript.Tasking.list(),
-				controllers.routes.javascript.Tasking.execute(),
+				controllers.routes.javascript.Users.requestMembership(),						
 				
 				//Research
 				controllers.research.routes.javascript.Researchers.register(),
@@ -1057,8 +1051,7 @@ public class Application extends APIController {
 				controllers.research.routes.javascript.Studies.approveParticipation(),
 				controllers.research.routes.javascript.Studies.rejectParticipation(),	
 				controllers.research.routes.javascript.Studies.shareWithGroup(),
-				controllers.research.routes.javascript.Studies.addApplication(),
-				controllers.research.routes.javascript.Studies.addTask(),
+				controllers.research.routes.javascript.Studies.addApplication(),		
 				controllers.research.routes.javascript.Studies.getRequiredInformationSetup(),
 				controllers.research.routes.javascript.Studies.setRequiredInformationSetup(),
 				
@@ -1081,9 +1074,7 @@ public class Application extends APIController {
 				controllers.providers.routes.javascript.Providers.list(),
 				controllers.providers.routes.javascript.Providers.getMember(),
 				controllers.providers.routes.javascript.Providers.getVisualizationToken(),
-				
-				
-				
+								
 				// Developers
 				controllers.routes.javascript.Developers.register(),
 				controllers.routes.javascript.Developers.login(),
@@ -1097,9 +1088,11 @@ public class Application extends APIController {
 				controllers.admin.routes.javascript.Administration.adminWipeAccount(), 
 				controllers.admin.routes.javascript.Administration.deleteStudy(),
 				controllers.admin.routes.javascript.Administration.getStats(),
+				controllers.admin.routes.javascript.Administration.getSystemHealth(),
 				controllers.routes.javascript.PWRecovery.getUnfinished(),
 				controllers.routes.javascript.PWRecovery.storeRecoveryShare(),
 				controllers.routes.javascript.PWRecovery.finishRecovery(),
+				controllers.routes.javascript.PWRecovery.requestServiceKeyRecovery(),
 				// Market				
 				controllers.routes.javascript.Market.registerPlugin(),
 				controllers.routes.javascript.Market.updatePlugin(),
@@ -1134,7 +1127,7 @@ public class Application extends APIController {
 				
 		        // Portal
 		        controllers.routes.javascript.PortalConfig.getConfig(),
-		        controllers.routes.javascript.PortalConfig.setConfig()));
+		        controllers.routes.javascript.PortalConfig.setConfig())).as("text/javascript");
 				        
 		        
 	}

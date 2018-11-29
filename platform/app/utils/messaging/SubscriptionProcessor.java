@@ -152,6 +152,10 @@ public class SubscriptionProcessor extends AbstractActor {
 		
 		String handle = ServiceHandler.decrypt(subscription.session);
 		
+		if (handle == null) {
+			SubscriptionData.setError(subscription._id, "Background service key expired");
+		}
+		
 		User user = User.getById(subscription.owner, Sets.create("status", "role", "language"));
 		
 		if (user==null || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.BLOCKED)) return;

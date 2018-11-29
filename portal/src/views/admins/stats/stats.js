@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('AdminStatsCtrl', ['$scope', '$state', 'status', 'server',  '$filter', function($scope, $state, status, server, $filter) {
+.controller('AdminStatsCtrl', ['$scope', '$state', 'status', 'server',  '$filter', 'crypto', function($scope, $state, status, server, $filter, crypto) {
 
 	$scope.status = new status(true);    
 
@@ -20,7 +20,28 @@ angular.module('portal')
 			$scope.week = ordered[ordered.length-1];
 			
 		});
+		
+		$scope.status.doBusy(server.get(jsRoutes.controllers.admin.Administration.getSystemHealth().url))
+		.then(function(result) {
+			$scope.health = result.data;						
+		});
 	};
+	
+	$scope.requestKey = function() {
+		crypto.generateKeys("12345").then(function(keys) {
+			var data = {  };					
+			data.password = keys.pw_hash;
+			data.pub = keys.pub;
+			data.priv_pw = keys.priv_pw;
+			data.recovery = keys.recovery;
+			data.recoveryKey = keys.recoveryKey;
+		
+			return $scope.status.doAction("key", server.post(jsRoutes.controllers.PWRecovery.requestServiceKeyRecovery().url, JSON.stringify(data)));
+		}).then(function() {
+			$state.go("^.pwrecover");
+		});			
+	};
+	
 	
     $scope.refresh();
 
