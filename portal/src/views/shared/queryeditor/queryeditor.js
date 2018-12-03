@@ -111,7 +111,8 @@ angular.module('portal')
 			var l = result.data.length;		
 			for (var i=0;i<l;i++) {
 				var dat = result.data[i];
-				if (dat.code == what) {
+				console.log(dat.code);
+				if (dat.code.toLowerCase() == what) {
 					lookupContent(dat.content)
 					.then(lookup).then(add);
 				}
@@ -210,7 +211,7 @@ angular.module('portal')
 			}
 			
 			var k = JSON.stringify(fb);
-			if (block.code) k+="code";
+			if (block.code) k+="code/"+block.content;
 			if (block.content) k+="content";
 			if (block.group) k+="group";
 			
