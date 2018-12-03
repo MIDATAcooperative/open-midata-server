@@ -254,3 +254,4 @@
 {"_id":{"$oid":"5bffeba3bcbc8713949a63ad"},"system":"http://midata.coop","code":"MSMotTestLineRun","display":"MS Motoriktest Linie nachzeichnen - Ergebnis pro Hand und Methode","content":"MSMotTestLineRun"}
 {"_id":{"$oid":"5bffebd1cf5693351bf18dd6"},"system":"http://midata.coop","code":"MSMotTestLineDetails","display":"MS Motoriktest Linie nachzeichnen - Details pro Linie","content":"MSMotTestLineDetails"}
 {"_id":{"$oid":"5bffec22cf5693351bf18dd8"},"system":"http://midata.coop","code":"MSComposition","display":"MitrendS Sammelobjekt pro Testdurchlauf","content":"MSComposition"}
+{"_id":{"$oid":"5c054f0faed6451e85cebdcb"},"system":"http://midata.coop","code":"MSMotTestDotDetails","display":"MS Motoriktest Punkte bewegen - Details pro Punkt pro Durchgang","content":"MSMotTestDotDetail"}
