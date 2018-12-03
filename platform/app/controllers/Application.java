@@ -999,6 +999,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.Circles.addUsers(),
 				controllers.routes.javascript.Circles.removeMember(),
 				controllers.routes.javascript.Circles.listConsents(),
+				controllers.routes.javascript.Circles.listApps(),
 				controllers.routes.javascript.Circles.joinByPasscode(),
 				// Spaces
 				controllers.routes.javascript.Spaces.get(),

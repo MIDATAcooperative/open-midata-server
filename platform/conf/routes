@@ -76,7 +76,8 @@ POST    /api/members/circles                             controllers.Circles.add
 POST    /api/members/circles/get                         controllers.Circles.get()
 POST    /api/members/circles/join                        controllers.Circles.joinByPasscode()
 POST    /api/members/consents                            controllers.Circles.listConsents()
-
+POST    /api/members/apps                                controllers.Circles.listApps()
+ 
 DELETE  /api/members/circles/:id                         controllers.Circles.delete(id: String)
 POST    /api/members/circles/:id/users                   controllers.Circles.addUsers(id: String)
 

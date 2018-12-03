@@ -27,7 +27,7 @@
 		      </tr>
 		      <tr ng-repeat="subscription in app.defaultSubscriptions">
 		        <td><select class="form-control" ng-model="subscription.trigger" ng-options="trigger as ('appsubscriptions.triggers.'+trigger) | translate for trigger in triggers"></select></td>
-		        <td><input class="form-control" type="text" ng-show="subscription.trigger=='fhir_Resource'" ng-model="subscription.criteria"></td>
+		        <td><input class="form-control" type="text" ng-show="subscription.trigger=='fhir_Resource'" placeholder="Observation?code=http://loinc.org|12345" ng-model="subscription.criteria"></td>
 		        <td><select class="form-control" ng-model="subscription.action" ng-options="action as ('appsubscriptions.actions.'+action) | translate for action in actions"></select></td>
 		        <td><input class="form-control" type="text" ng-show="subscription.action!='email'" ng-model="subscription.parameter"></td>
 		        <td><button class="btn btn-xs btn-default" ng-click="delete(subscription)" translate="common.delete_btn"></</button>

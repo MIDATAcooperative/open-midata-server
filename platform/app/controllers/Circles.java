@@ -168,6 +168,27 @@ public class Circles extends APIController {
 		return ok(JsonOutput.toJson(consents, "Consent", fields)).as("application/json");
 	}
 	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public Result listApps() throws JsonValidationException, AppException, AuthException {
+		// validate json
+		JsonNode json = request().body().asJson();					
+		JsonValidation.validate(json, "fields");
+				
+		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
+		fields.add("type");
+						
+		List<MobileAppInstance> consents = null;
+	
+		MidataId owner = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		
+		consents = new ArrayList<MobileAppInstance>(MobileAppInstance.getByOwner(owner, fields));											
+		
+		//Collections.sort(circles);
+		return ok(JsonOutput.toJson(consents, "Consent", fields)).as("application/json");
+	}
+	
 	public static void fillConsentFields(MidataId executor, Collection<Consent> consents, Set<String> fields) throws AppException {
         
         AccessLog.log("consents size="+consents.size());

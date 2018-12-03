@@ -124,8 +124,8 @@ public class SubscriptionData extends Model {
 		Model.set(SubscriptionData.class, collection, id, "fhirSubscription.error", error);
 	}
 	
-	public static void setOff(MidataId id) throws InternalServerException {
+	public static void setOff(MidataId id) throws InternalServerException { 
 		Model.set(SubscriptionData.class, collection, id, "fhirSubscription.status", "off");
-		Model.set(SubscriptionData.class, collection, id, "active", "false");
+		Model.set(SubscriptionData.class, collection, id, "active", false);
 	}
 }

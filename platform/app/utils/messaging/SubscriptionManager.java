@@ -125,13 +125,20 @@ public class SubscriptionManager {
 	    			newdata.lastUpdated = System.currentTimeMillis();
 	    			newdata.owner = userId;
 	    			newdata.session = ServiceHandler.encrypt(KeyManager.instance.currentHandle(userId));
+	    			if (newdata.session == null) throw new NullPointerException();
 	    			newdata.add();
+	    			SubscriptionManager.subscriptionChange(newdata);
+	    			if (newdata.format.equals("init")) { 
+	    				subscriptionChecker.tell(new SubscriptionTriggered(userId, plugin._id, "init", "init", null, null), ActorRef.noSender());
+	    			}
 	    		}
 	    	}
+	    	
 	    }
 	}
 	
 	public static void deactivateSubscriptions(MidataId userId, Plugin app, MidataId currentlyDeactivating) throws AppException {
+	  AccessLog.log("deactiveSubscription: user="+userId+" plugin="+app._id+" instance="+currentlyDeactivating);
 	  if (app.type.equals("mobile") || app.type.equals("service")) {
 	    Set<MobileAppInstance> mais = MobileAppInstance.getByApplicationAndOwner(app._id, userId, Sets.create("_id", "status"));
 	    for (MobileAppInstance mai : mais) {
@@ -142,7 +149,8 @@ public class SubscriptionManager {
 	     if (spaces.size() > 1) return;
 	  }
 	  
-	  List<SubscriptionData> data = SubscriptionData.getByOwner(userId, CMaps.map("app", app), SubscriptionData.ALL);
+	  List<SubscriptionData> data = SubscriptionData.getByOwner(userId, CMaps.map("app", app._id), SubscriptionData.ALL);
+	  AccessLog.log("deactivating: "+data.size());
 	  for (SubscriptionData dat : data) {
 		  SubscriptionData.setOff(dat._id);
 	  }
@@ -295,6 +303,7 @@ class SubscriptionChecker extends AbstractActor {
 			   .match(ProcessMessage.class, this::processMessage)
 			   .match(SubscriptionChange.class, this::subscriptionChange)
 			   .match(MessageResponse.class, this::messageResponse)
+			   .match(SubscriptionTriggered.class, this::forwardSubscription)
 			   .build();
 	}
 		
@@ -378,6 +387,10 @@ class SubscriptionChecker extends AbstractActor {
 		} catch (Exception e) {
 			ErrorReporter.report("SubscriptionChecker", null, e);
 		}
+	}
+	
+	void forwardSubscription(SubscriptionTriggered triggered) {
+		processor.tell(triggered, getSelf());
 	}
 		
 }

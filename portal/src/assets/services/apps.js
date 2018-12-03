@@ -22,6 +22,11 @@ angular.module('services')
 		return service.getApps(properties2, fields);			
     };
     
+    service.listUserApps = function(fields) {
+		var data = { fields : fields };
+		return server.post(jsRoutes.controllers.Circles.listApps().url, JSON.stringify(data));
+	};
+    
     service.isVisualizationInstalled = function(visId) {
     	var def = $q.defer();
     	var inApps = $filter("filter")(session.user.apps, function(x){  return x == visId; });

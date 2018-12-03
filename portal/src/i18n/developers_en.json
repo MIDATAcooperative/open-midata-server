@@ -205,14 +205,15 @@
     "title" : "Default Subscriptions",
     "empty" : "There are no default subscriptions defined.",
     "trigger" : "Trigger",
-    "triggerDetail" : "Details",
+    "triggerDetail" : "FHIR Resource",
     "action" : "Action",
-    "params" : "Parameter",
+    "params" : "URL / Filename",
     "triggers" : {
       "fhir_Consent" : "Consent changes",
       "fhir_MessageHeader" : "FHIR message",
       "fhir_Resource" : "Resource changes",
-      "time" : "Daily"
+      "time" : "Daily",
+      "init" : "When added"
     },
     "actions" : {
       "rest-hook" : "Call Rest-Hook",

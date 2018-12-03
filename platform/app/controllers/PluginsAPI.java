@@ -241,6 +241,7 @@ public class PluginsAPI extends APIController {
 				data.session = ServiceHandler.encrypt(KeyManager.instance.currentHandle(space.owner));
 				SubscriptionResourceProvider.fillInFhirForAutorun(data);
 				data.add();
+				SubscriptionManager.subscriptionChange(data);
 				
 				
 				/*User autoRunner = Admin.getByEmail("autorun-service", Sets.create("_id"));

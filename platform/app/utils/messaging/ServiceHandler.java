@@ -1,5 +1,6 @@
 package utils.messaging;
 
+import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.access.EncryptionUtils;
 import utils.exceptions.InternalServerException;
@@ -36,7 +37,10 @@ public class ServiceHandler {
 				aeskey = new byte[16+4];
 			} else throw new InternalServerException("error.internal", "Background service key missing");			
 		}		
-		if (!EncryptionUtils.checkMatch(aeskey,  input)) return null; 
+		if (!EncryptionUtils.checkMatch(aeskey,  input)) {
+			AccessLog.log("Other version of background service key used!");
+			return null; 
+		}
 		return new String(EncryptionUtils.decrypt(EncryptionUtils.derandomize(aeskey), EncryptionUtils.derandomize(input)));
 	}
 	

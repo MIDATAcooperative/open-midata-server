@@ -70,6 +70,9 @@ public class SubscriptionTriggered {
 		return eventCode;
 	}
 	
-	
+	public String getDescription() {
+		if (eventCode != null) return type+" ["+eventCode+"]";
+		return type;
+	}
 			
 }

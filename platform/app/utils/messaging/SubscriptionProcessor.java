@@ -31,6 +31,7 @@ import models.enums.MessageReason;
 import models.enums.UserStatus;
 import play.libs.ws.WSRequest;
 import play.libs.ws.WSResponse;
+import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.auth.SpaceToken;
@@ -38,6 +39,7 @@ import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 import utils.fhir.SubscriptionResourceProvider;
+import utils.stats.Stats;
 import utils.sync.Instances;
 
 /**
@@ -46,6 +48,7 @@ import utils.sync.Instances;
  */
 public class SubscriptionProcessor extends AbstractActor {
 
+	public final static String TRIGGER = "EVENT";
 	@Override
 	public Receive createReceive() {
 		return receiveBuilder()
@@ -73,6 +76,9 @@ public class SubscriptionProcessor extends AbstractActor {
 				if (subscription.active && (subscription.content == null || subscription.content.equals(triggered.getEventCode())) && checkNotExpired(subscription)) {							
 					Subscription fhirSubscription = SubscriptionResourceProvider.subscription(subscription);
 					SubscriptionChannelComponent channel = fhirSubscription.getChannel();
+					
+					Stats.startRequest();
+					Stats.setPlugin(subscription.app);
 					if (channel.getType().equals(SubscriptionChannelType.RESTHOOK)) {					
 						processRestHook(subscription._id, triggered, channel);
 					} else if (channel.getType().equals(SubscriptionChannelType.MESSAGE)) {
@@ -81,10 +87,10 @@ public class SubscriptionProcessor extends AbstractActor {
 					} else if (channel.getType().equals(SubscriptionChannelType.EMAIL)) {
 						processEmail(subscription, triggered, channel);
 					}
-					
+					Stats.finishRequest(TRIGGER, triggered.getDescription(), null, "200", Collections.emptySet());
 				}
 			}
-		} catch (Exception e) {
+		} catch (Exception e) {			
 			ErrorReporter.report("Subscriptions", null, e);
 		}		
 	}
@@ -150,10 +156,13 @@ public class SubscriptionProcessor extends AbstractActor {
 		String cmd = endpoint.substring("node://".length());
 		String visPath =  InstanceConfig.getInstance().getConfig().getString("visualizations.path")+"/"+plugin.filename+"/"+cmd;
 		
+		AccessLog.log("sub session="+subscription.session);
 		String handle = ServiceHandler.decrypt(subscription.session);
 		
 		if (handle == null) {
 			SubscriptionData.setError(subscription._id, "Background service key expired");
+			if (true) throw new NullPointerException();
+			return;
 		}
 		
 		User user = User.getById(subscription.owner, Sets.create("status", "role", "language"));
@@ -168,18 +177,22 @@ public class SubscriptionProcessor extends AbstractActor {
 			for (MobileAppInstance mai : mais) {
 				if (mai.status.equals(ConsentStatus.ACTIVE)) { appInstanceId = mai._id; break; }
 			}
-			if (appInstanceId == null) return;			
+			if (appInstanceId == null) return;	
+			AccessLog.log("HANDLE="+handle);
+			if (subscription.app == null) throw new NullPointerException(); //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 			tk = new SpaceToken(handle, appInstanceId, subscription.owner, user.getRole(), null, subscription.app, subscription.owner);			
+			AccessLog.log("HANDLEPOST="+tk.handle+" space="+tk.spaceId.toString()+" app="+tk.pluginId);
 		} else {
+			AccessLog.log("BPART HANDLE="+handle);
 			tk = new SpaceToken(handle, subscription.instance, subscription.owner, user.getRole(), null, null, subscription.owner);
 		}
-		
+		AccessLog.log("pre enc handle="+tk.handle); 
 		String token = tk.encrypt();
-		
+		AccessLog.log("enc="+token);
 		final String lang = user.language != null ? user.language : InstanceConfig.getInstance().getDefaultLanguage();
 		final String id = triggered.getResourceId() != null ? triggered.getResourceId().toString() : "-";
 		try {
-		  System.out.println("Build process...");
+		  System.out.println("Build process...");		  
 		  Process p = new ProcessBuilder(nodepath, visPath, token, lang, "http://localhost:9001", subscription.owner.toString(), id).redirectError(Redirect.INHERIT).start();
 		  System.out.println("Output...");
 		  PrintWriter out = new PrintWriter(new OutputStreamWriter(p.getOutputStream()));		  
@@ -195,6 +208,9 @@ public class SubscriptionProcessor extends AbstractActor {
 		  System.out.println("Wait for input...");
 		  System.out.println(result.getResult());
 		  String r = result.getResult();
+		  
+		  Stats.finishRequest(TRIGGER, triggered.getDescription(), null, ""+p.exitValue(), Collections.emptySet());
+		  
 		  if (r != null && r.length() >0) {
 			 getSender().tell(new MessageResponse(r, p.exitValue()), getSelf());  
 		  } else {
