@@ -83,6 +83,11 @@ public enum MessageReason {
 	PASSWORD_FORGOTTEN,
 	
 	/**
+	 * Users private key has been recovered
+	 */
+	USER_PRIVATE_KEY_RECOVERED,
+	
+	/**
 	 * A resource has been changed
 	 */
 	RESOURCE_CHANGE,

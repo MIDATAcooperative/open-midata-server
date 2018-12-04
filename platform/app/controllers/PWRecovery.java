@@ -4,6 +4,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,9 +26,12 @@ import models.User;
 import models.enums.AccountActionFlags;
 import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
+import models.enums.MessageReason;
 import play.libs.Json;
 import play.mvc.BodyParser;
+import utils.InstanceConfig;
 import utils.PasswordHash;
+import utils.RuntimeConstants;
 import utils.access.EncryptionUtils;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
@@ -42,6 +46,7 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.messaging.Messager;
 import utils.messaging.ServiceHandler;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -105,6 +110,11 @@ public class PWRecovery extends APIController {
 		User user = User.getById(userid, User.ALL_USER_INTERNAL);
 		  	
 		finishRecovery(user, proc, sessionToken);
+		
+		Map<String,String> replacements = new HashMap<String, String>();
+		String site = "https://" + InstanceConfig.getInstance().getPortalServerDomain();		  			  		  		  
+		replacements.put("site", site);
+		Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.USER_PRIVATE_KEY_RECOVERED, null, Collections.singleton(user._id), null, replacements);
 		
 		return ok();
 	}

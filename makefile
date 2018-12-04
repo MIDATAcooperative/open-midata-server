@@ -328,7 +328,7 @@ tasks/bugfixes:
 	touch tasks/bugfixes
 
 conf/recoverykeys.json:
-	echo "[]" >conf/recoverykeys.json
+	echo '[ { "requiredKeys" : 1, "availableKeys" : 0 } ]' >conf/recoverykeys.json
 
 /dev/shm/secret.conf: platform/conf/application.conf platform/conf/secret.conf.gz.nc 
 	@echo "Decrypting configfile..."

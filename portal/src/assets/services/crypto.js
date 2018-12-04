@@ -65,20 +65,24 @@ angular.module('services')
 	service.createRecoveryInfo = function(pk) {
 		var pkstr = forge.pki.privateKeyToPem(pk);
 		var enc = service.encryptPK_AES(pkstr);
-			
+		var neededKeys = recoveryPubKeys[0].neededKeys;
 		var pkhex = forge.util.binary.hex.encode(enc.key);	
-		var shares = ssss.share(pkhex, recoveryPubKeys.length, 2);
+		var shares = ssss.share(pkhex, recoveryPubKeys.length-1, neededKeys);
 		//console.log(shares);
 		var recovery = { "encrypted" : forge.util.encode64(enc.encrypted.getBytes()), "iv" : forge.util.encode64(enc.iv) };
-		for (var idx = 0;idx < recoveryPubKeys.length; idx++) {
-			var pubkey = forge.pki.publicKeyFromPem(recoveryPubKeys[idx].key);		
+		for (var idx = 0;idx < recoveryPubKeys.length-1; idx++) {
+			var pubkey = forge.pki.publicKeyFromPem(recoveryPubKeys[idx+1].key);		
 			var encoded = shares[idx]; //forge.util.binary.hex.encode(shares[idx]);			
 						
 			var encrypted = pubkey.encrypt(encoded); //service.encryptKEM(pubkey, encoded);
-			recovery[recoveryPubKeys[idx].user] = forge.util.encode64(encrypted);
+			recovery[recoveryPubKeys[idx+1].user] = forge.util.encode64(encrypted);
 		}
 		
 		return recovery;		
+	};
+	
+	service.keysNeeded = function() {
+	  return recoveryPubKeys[0].neededKeys;
 	};
 	
 	service.dorecover = function(recovery, challenge) {

@@ -24,7 +24,7 @@ angular.module('portal')
 	
 	$scope.commit = function(user) {
 		console.log(Object.keys(user.shares).length);
-		if (Object.keys(user.shares).length == 2) {
+		if (Object.keys(user.shares).length == crypto.keysNeeded()) {
 			var rec = JSON.parse(JSON.stringify(user.shares));
 			rec.encrypted = user.encShares.encrypted;
 			rec.iv = user.encShares.iv;
