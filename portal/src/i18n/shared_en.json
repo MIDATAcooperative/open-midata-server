@@ -1194,7 +1194,7 @@
     "study" : "Study",
     "summary" : "List of accessable data types:",
     "access_query" : "Data Access Filter",
-    "format" : "Resource",
+    "format" : "Data Format",
     "code" : "Code",
     "to" : "to",
     "content" : "Data Type",
