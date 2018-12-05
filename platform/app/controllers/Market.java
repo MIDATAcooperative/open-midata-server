@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.BasicDBObject;
 
 import actions.APICall;
+import actions.MobileCall;
 import models.Developer;
 import models.MessageDefinition;
 import models.MidataId;
@@ -41,6 +42,7 @@ import models.Study;
 import models.StudyAppLink;
 import models.StudyParticipation;
 import models.SubscriptionData;
+import models.TestPluginCall;
 import models.User;
 import models.UserGroupMember;
 import models.enums.IconUse;
@@ -63,6 +65,7 @@ import utils.AccessLog;
 import utils.access.Query;
 import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
+import utils.auth.CodeGenerator;
 import utils.auth.DeveloperSecured;
 import utils.auth.KeyManager;
 import utils.collections.CMaps;
@@ -1070,5 +1073,41 @@ public class Market extends APIController {
         link.active = link.isConfirmed() && link.usePeriod.contains(study.executionStatus);
 	}
 	
+	@MobileCall
+	public Result getOpenDebugCalls(String handle) throws AppException {		
+		List<TestPluginCall> calls = TestPluginCall.getForHandle(handle);
+		TestPluginCall.delete(handle);
+		return ok(JsonOutput.toJson(calls, "TestPluginCall", TestPluginCall.ALL)).as("application/json");
+	}
+	
+	@APICall
+	@BodyParser.Of(BodyParser.Json.class)
+	@Security.Authenticated(AnyRoleSecured.class)
+	public Result setSubscriptionDebug() throws AppException {
+		JsonNode json = request().body().asJson();	
+		JsonValidation.validate(json, "plugin", "action");
+		
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId pluginId = JsonValidation.getMidataId(json, "plugin");
+		String action = JsonValidation.getString(json, "action");
+		
+		Plugin plugin = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
+	    if (plugin == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
+		
+		if (!getRole().equals(UserRole.ADMIN) && !userId.equals(plugin.creator)) throw new BadRequestException("error.not_authorized.not_plugin_owner", "Not your plugin!");
+					
+		if (plugin.debugHandle != null) {
+			TestPluginCall.delete(plugin.debugHandle);
+		}
+		if (action.equals("start")) {
+			plugin.debugHandle = CodeGenerator.nextUniqueCode();
+		} else {
+			plugin.debugHandle = null;
+		}
+		
+		Plugin.set(plugin._id, "debugHandle", plugin.debugHandle);
+		
+		return ok(JsonOutput.toJson(plugin, "Plugin", Sets.create("debugHandle")));
+	}
 	
 }

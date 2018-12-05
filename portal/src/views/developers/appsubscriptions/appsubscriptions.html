@@ -41,4 +41,20 @@
 		 </div>
     </div>
    
+   <div class="panel panel-primary">
+		<div class="panel-heading">
+		  	<span translate="appsubscriptions.debug.title"></span>		  	
+		</div>
+		<div class="body">
+		  <p translate="appsubscriptions.debug.description"></p>
+		  <p translate="appsubscriptions.debug.description2"></p>
+		  <p translate="appsubscriptions.debug.description3"></p>
+		  
+		  <button class="btn btn-default" ng-click="startDebug()" ng-hide="app.debugHandle" translate="appsubscriptions.debug.start_btn"></button>
+		  <button class="btn btn-default" ng-click="stopDebug()" ng-show="app.debugHandle" translate="appsubscriptions.debug.stop_btn"></button>
+		  <div class="extraspace"></div>
+		  <p ng-show="app.debugHandle" translate="appsubscriptions.debug.cmd_to_run"></p>
+		  <pre ng-show="app.debugHandle">node midata_tester.js {{ ENV.apiurl }} {{ app.debugHandle }}</pre>
+		</div>
+	</div>
 </div>

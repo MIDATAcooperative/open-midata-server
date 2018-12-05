@@ -8,9 +8,10 @@ angular.module('portal')
 	$scope.actions = ["rest-hook", "email", "nodejs"];
 	
 	$scope.status = new status(false, $scope);
+	$scope.ENV = ENV;
 			
 	$scope.loadApp = function(appId) {
-		$scope.status.doBusy(apps.getApps({ "_id" : appId }, ["version", "creator", "filename", "name", "description", "defaultSubscriptions" ]))
+		$scope.status.doBusy(apps.getApps({ "_id" : appId }, ["version", "creator", "filename", "name", "description", "defaultSubscriptions", "debugHandle" ]))
 		.then(function(data) { 
 			$scope.app = data.data[0];
 			var subscriptions = $scope.app.defaultSubscriptions;
@@ -102,6 +103,22 @@ angular.module('portal')
     	 .then(function() {
     		$state.go("^.manageapp", { appId : $scope.app._id }); 
     	 });
+    };
+    
+    $scope.startDebug = function() {
+    	var data = { plugin : $scope.app._id, action : "start" };
+        $scope.status.doAction("debug", server.post(jsRoutes.controllers.Market.setSubscriptionDebug().url, JSON.stringify(data)))
+        .then(function(result) {
+     	   $scope.app.debugHandle = result.data.debugHandle;
+        });
+    };
+    
+    $scope.stopDebug = function() {
+       var data = { plugin : $scope.app._id, action : "stop" };
+       $scope.status.doAction("debug", server.post(jsRoutes.controllers.Market.setSubscriptionDebug().url, JSON.stringify(data)))
+       .then(function(result) {
+    	   $scope.app.debugHandle = result.data.debugHandle;
+       });
     };
 		
 	$translatePartialLoader.addPart("developers");	

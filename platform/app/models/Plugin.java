@@ -45,7 +45,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "accessTokenUrl", "consumerKey", "consumerSecret","tokenExchangeParams",
 	                     "requestTokenUrl", "scopeParameters", "secret", "redirectUri", "developmentServer", "status", "i18n",
-	                     "predefinedMessages", "resharesData", "allowsUserSearch", "pluginVersion", "termsOfUse", "requirements", "orgName", "unlockCode", "writes", "icons", "apiUrl", "noUpdateHistory", "defaultSubscriptions");
+	                     "predefinedMessages", "resharesData", "allowsUserSearch", "pluginVersion", "termsOfUse", "requirements", "orgName", "unlockCode", "writes", "icons", "apiUrl", "noUpdateHistory", "defaultSubscriptions", "debugHandle");
 	
 	/**
 	 * constant containing all fields visible to anyone
@@ -283,6 +283,11 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	 * Subscriptions that are required to use this plugin
 	 */
 	public List<SubscriptionData> defaultSubscriptions;
+	
+	/**
+	 * Handle to connect subscription debugger to
+	 */
+	public String debugHandle;
 
 	@Override
 	public int compareTo(Plugin other) {

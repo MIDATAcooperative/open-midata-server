@@ -25,15 +25,18 @@ import models.MidataId;
 import models.MobileAppInstance;
 import models.Plugin;
 import models.SubscriptionData;
+import models.TestPluginCall;
 import models.User;
 import models.enums.ConsentStatus;
 import models.enums.MessageReason;
+import models.enums.PluginStatus;
 import models.enums.UserStatus;
 import play.libs.ws.WSRequest;
 import play.libs.ws.WSResponse;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
+import utils.auth.PortalSessionToken;
 import utils.auth.SpaceToken;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -165,7 +168,7 @@ public class SubscriptionProcessor extends AbstractActor {
 			return;
 		}
 		
-		User user = User.getById(subscription.owner, Sets.create("status", "role", "language"));
+		User user = User.getById(subscription.owner, Sets.create("status", "role", "language", "developer"));
 		
 		if (user==null || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.BLOCKED)) return;
 						
@@ -179,7 +182,8 @@ public class SubscriptionProcessor extends AbstractActor {
 			}
 			if (appInstanceId == null) return;	
 			AccessLog.log("HANDLE="+handle);
-			if (subscription.app == null) throw new NullPointerException(); //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+			if (subscription.app == null) throw new NullPointerException(); 
 			tk = new SpaceToken(handle, appInstanceId, subscription.owner, user.getRole(), null, subscription.app, subscription.owner);			
 			AccessLog.log("HANDLEPOST="+tk.handle+" space="+tk.spaceId.toString()+" app="+tk.pluginId);
 		} else {
@@ -191,6 +195,27 @@ public class SubscriptionProcessor extends AbstractActor {
 		AccessLog.log("enc="+token);
 		final String lang = user.language != null ? user.language : InstanceConfig.getInstance().getDefaultLanguage();
 		final String id = triggered.getResourceId() != null ? triggered.getResourceId().toString() : "-";
+		
+		boolean testing = (plugin.creator.equals(user.developer) || plugin.creator.equals(user._id)) && plugin.status.equals(PluginStatus.DEVELOPMENT);
+		
+		if (testing) {
+			plugin = Plugin.getById(plugin._id, Plugin.ALL_DEVELOPER);
+			if (plugin.debugHandle != null) {
+				TestPluginCall testcall = new TestPluginCall();
+				testcall._id = new MidataId();
+				testcall.handle = plugin.debugHandle;
+				testcall.lang = lang;
+				testcall.owner = subscription.owner.toString();
+				testcall.path = visPath;
+				testcall.resource = triggered.resource;
+				testcall.token = token;
+				testcall.resourceId = id;
+				testcall.add();
+				getSender().tell(new MessageResponse(null,-1), getSelf());
+				return;
+			}
+		}				
+		
 		try {
 		  System.out.println("Build process...");		  
 		  Process p = new ProcessBuilder(nodepath, visPath, token, lang, "http://localhost:9001", subscription.owner.toString(), id).redirectError(Redirect.INHERIT).start();

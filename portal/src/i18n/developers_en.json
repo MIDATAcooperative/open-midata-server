@@ -220,6 +220,15 @@
       "rest-hook" : "Call Rest-Hook",
       "email": "Send E-mail",
       "nodejs": "Call node script"
+    },
+    "debug" : {
+      "title" : "Test your backend code on your computer",
+      "description" : "You can test your server-side subscription processing code on your local computer.",
+      "description2" : "Download the subscription tester and run it with the given connection code.",
+      "description3" : "This works only with your developer account, any account created using your developer account and only as long as the application is in development.",
+      "start_btn" : "Start debugging",
+      "stop_btn" : "Stop debugging",
+      "cmd_to_run" : "Command to run on your computer:"
     }
 	
   }
