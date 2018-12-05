@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import utils.codesystems.Codesystems;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
@@ -43,6 +44,8 @@ public class ContentCode extends Model  {
 	  public String content;
 	  
 	  public @NotMaterialized static Map<String, String> contentForSystemCode = new ConcurrentHashMap<String, String>();
+	  
+	  public @NotMaterialized static Codesystems codesystems = new Codesystems();
 	  	
 	  /**
 	   * returns all coding entries matching the given criteria.
@@ -70,8 +73,9 @@ public class ContentCode extends Model  {
 		  String system = systemCode.substring(0, p);
 		  String code = systemCode.substring(p+1);
 		  
-		  if (system.equals("http://midata.coop/codesystems/content")) return code;
-		  
+		  String resultStr = codesystems.getContentForSystemCode(system, code);
+		  if (resultStr != null) return resultStr;
+		  		  
 		  ContentCode result = Model.get(ContentCode.class, collection, CMaps.map("system", system).map("code", code), Sets.create("content"));
 		  if (result != null) {
 			  contentForSystemCode.put(systemCode, result.content);
@@ -81,11 +85,29 @@ public class ContentCode extends Model  {
 		  return null;
 	  }
 	  
+	  /**
+	   * Lookup ContentCode by system+" "+code string. Splits string into system and code
+	   * @param systemCode
+	   * @return ContentCode
+	   * @throws InternalServerException
+	   */
 	  public static ContentCode getBySystemCode(String systemCode) throws InternalServerException {
 		  int p = systemCode.indexOf(' ');
 		  String system = systemCode.substring(0, p);
 		  String code = systemCode.substring(p+1);
 		  
+		  ContentCode result = Model.get(ContentCode.class, collection, CMaps.map("system", system).map("code", code), Sets.create("content"));
+		  return result;
+	  }
+	  
+	  /**
+	   * Lookup ContentCode by system and code
+	   * @param system
+	   * @param code
+	   * @return
+	   * @throws InternalServerException
+	   */
+	  public static ContentCode getBySystemCode(String system, String code) throws InternalServerException {
 		  ContentCode result = Model.get(ContentCode.class, collection, CMaps.map("system", system).map("code", code), Sets.create("content"));
 		  return result;
 	  }

@@ -12,6 +12,7 @@ import models.ContentCode;
 import models.RecordGroup;
 import utils.AccessLog;
 import utils.collections.CMaps;
+import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 
@@ -82,8 +83,10 @@ public class Feature_FormatGroups extends Feature {
     		} else {
     			exclude = new HashSet<String>();
     		}
-    		Set<String> contents = resolveContentNames(groupSystem, include, exclude);
-    		properties.put("content", contents);
+    		if (!(exclude.isEmpty() && include.contains("all"))) {
+    		  Set<String> contents = resolveContentNames(groupSystem, include, exclude);
+    		  properties.put("content", contents);
+    		}
     		properties.remove("group");
     		properties.remove("group-exclude");
     	} else if (properties.containsKey("code")) {
@@ -171,6 +174,11 @@ public class Feature_FormatGroups extends Feature {
     		properties.put("group-system", groupSystem);
     		properties.remove("content");
     	}
+    	
+    	if (!properties.containsKey("content") && !properties.containsKey("code") && !properties.containsKey("group") && !properties.containsKey("format")) {
+    		properties.put("group-system", "v1");
+    		properties.put("group", Sets.create("all"));
+    	}
     }
 		
 	private Set<String> prepareFilter(Query q) throws AppException {		
@@ -181,8 +189,10 @@ public class Feature_FormatGroups extends Feature {
 			
 			Set<String> exclude = new HashSet<String>();
 			if (q.restrictedBy("group-exclude")) exclude.addAll(q.getRestriction("group-exclude"));
-									
-			return resolveContentNames(groupSystem, q.getRestriction("group"), exclude);
+				
+			Set<String> include = q.getRestriction("group");
+			if (exclude.isEmpty() && include.contains("all")) return null;
+			return resolveContentNames(groupSystem, include, exclude);
 		    		  		    
 		    
 		} else if (q.restrictedBy("group-strict")) {           
