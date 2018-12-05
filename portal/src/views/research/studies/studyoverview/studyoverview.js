@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('StudyOverviewCtrl', ['$scope', '$state', 'server', 'status', 'usergroups', 'apps', 'views', function($scope, $state, server, status, usergroups, apps, views) {
+.controller('StudyOverviewCtrl', ['$scope', '$state', 'server', 'status', 'usergroups', 'apps', 'views', '$timeout', function($scope, $state, server, status, usergroups, apps, views, $timeout) {
 	
 	$scope.studyid = $state.params.studyId;
 	$scope.study = {};
@@ -173,13 +173,15 @@ angular.module('portal')
 		}
 		views.disableView("confirm");
 		$scope.error = null;
-		
-		server.post(jsRoutes.controllers.research.Studies.delete($scope.studyid).url).
-		then(function(data) { 				
-		    $state.go("research.studies");
+		$scope.status.doAction("delete",
+		$timeout(1000).then(function() {
+			return server.post(jsRoutes.controllers.research.Studies.delete($scope.studyid).url);
+		})).then(function(data) { 				
+			$state.go("research.studies");
 		},function(err) {
 			$scope.error = err;			
 		});
+		
 	};
 	
 	$scope.reload = function() {

@@ -1991,8 +1991,7 @@ public class Studies extends APIController {
 	 * @return 200 ok
 	 * @throws JsonValidationException
 	 * @throws InternalServerException
-	 */
-	@BodyParser.Of(BodyParser.Json.class)
+	 */	
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
 	public Result delete(String id) throws JsonValidationException, AppException {
