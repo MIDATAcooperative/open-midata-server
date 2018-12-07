@@ -54,7 +54,7 @@ public class Feature_ProcessFilters extends Feature {
 			result = new ProcessingTools.FilterByMetaSet(result, "name", q.getRestriction("name"), false);
 		}
 		if (q.restrictedBy("code")) {
-			result = new ProcessingTools.FilterSetByMetaSet(result, "code", q.getRestriction("code"), false);
+			result = new ProcessingTools.FilterSetByMetaSet(result, "code", q.getRestriction("code"), true);
 		}
 
 		if (indexQuery) {

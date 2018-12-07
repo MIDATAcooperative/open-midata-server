@@ -411,6 +411,9 @@ public class ProcessingTools {
 
 		@Override
 		public boolean contained(DBRecord record) {
+			if (noPostfilterStreams && record.isStream)
+				return true;
+			
 			Object v = record.meta.get(property);			
 			if (v == null)
 				return false;
