@@ -258,3 +258,6 @@
 {"_id":{"$oid":"5c078b16aed64512e74a4ea0"},"system":"http://snomed.info/sct","code":"364645004","display":"Eating feeding / drinking observable","content":"snomed/364645004"}
 {"_id":{"$oid":"5c078b65aed64512e74a4ea2"},"system":"http://snomed.info/sct","code":"248254009","display":"Quality of sleep","content":"snomed/248254009"}
 {"_id":{"$oid":"5c078c58aed64512e74a4ea4"},"system":"http://hl7.org/fhir/sid/icd-10","code":"G43","display":"Migräne","content":"condition/icd-10-g43"}
+{"_id":{"$oid":"5c0a3764aed6450b0383214d"},"system":"http://snomed.info/sct","code":"167641001","display":"Feces: bacteria present","content":"snomed/167641001"}
+{"_id":{"$oid":"5c0a37e0aed6450b03832150"},"system":"http://snomed.info/sct","code":"119339001","display":"Stool specimen","content":"snomed/119339001"}
+{"_id":{"$oid":"5c0a3830aed6450b03832151"},"system":"http://snomed.info/sct","code":"409822003","display":"Superkingdom Bacteria (organism)","content":"snomed/409822003"}
