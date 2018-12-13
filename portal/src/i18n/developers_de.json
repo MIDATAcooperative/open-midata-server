@@ -69,35 +69,19 @@
         "filename" : "Interner Name",
         "type" : "Applikationstyp",
         "targetUserRole" : "Zielrolle",
-
-        // TODO NEW: OAuth Login
-        "previewlogin" : "OAuth Login",
-
-        // TODO NEW: Preview OAuth Login Page
-        "previewlogin2" : "Preview OAuth Login Page",
+        "previewlogin" : "OAuth-Anmeldung",
+        "previewlogin2" : "Vorschau OAuth-Anmeldungsseite",
         "edit_btn" : "Einstellungen ändern",
         "edit_help" : "Ändern Sie die Einstellungen für Ihre Applikation.",
-
-        // TODO CHANGED
-        // OLD: Change Access Rights
-        // NEW: Change Data Access Filter
         "query_btn" : "Data Access Filter ändern",
-
-        // TODO CHANGED
-        // OLD: Define which types of data your application may access
-        // NEW: Define which types of data your application may access.
         "query_help" : "Definieren Sie, auf welche Arten von Daten Ihre Applikation zugreifen darf.",
         "tokenExchangeParams" : "OAuth2-Parameter für den Token-Austausch",
         "testfromlocal_btn" : "Testen Sie Ihr Plugin von localhost aus",
         "testfromlocal_help" : "Während der Entwicklung können Sie den Plugin-Code, der auf Ihrem lokalen Computer gespeichert ist, auf dieser Instanz testen.",
         "serverimport_btn" : "Automatisches Importskript testen.",
         "serverimport_help" : "Wenn Ihr Plugin einen automatischen Import bietet, können Sie das Skript Ihres Plugins, das normalerweise auf dem Server läuft, auf Ihrem lokalen Computer testen.",
-
-        // TODO NEW: Links with Studies
-        "link_btn" : "Links with Studies",
-
-        // TODO NEW: Apps may offer or require study participation. Studies may recommend plugin or app use.
-        "link_help" : "Apps may offer or require study participation. Studies may recommend plugin or app use.",
+        "link_btn" : "Verknüpfungen mit Studien",
+        "link_help" : "Apps können die Teilnahme an einer Studie anbieten oder verlangen. Studien können die Verwendung von Plugins oder Apps empfehlen.",
         "icon_btn" : "Icons und Bilder der Applikation",
         "icon_help" : "Laden und verwalten Sie die Icons und Bilder hoch, die mit Ihrer Applikation verwendet werden sollen. Stellen Sie Bilder für den Login-Bildschirm, den Zustimmungsbildschirm, den MIDATA Store usw. bereit.",
         "messages_btn" : "E-Mail-Nachrichten der Applikation",
@@ -150,10 +134,6 @@
         "nostudy" : "Nicht an eine Studie gebunden",
         "optionalParticipation" : "Teilnahme optional",
         "access_query_json" : "Data Access Filter",
-
-        // TODO CHANGED
-        // OLD: Go to access rights editor
-        // NEW: Go to the Data Access Filter editor
         "queryeditor_btn" : "Zum Data Access Filter Editor wechseln",
         "no_update_history" : "Keine FHIR Ressourcenhistorie",
         "export_btn" : "Applikationsdefinition exportieren",
@@ -207,8 +187,6 @@
     },
 
     "applink" : {
-
-        // TODO NEW: Links with Studies
-        "title" : "Links with Studies"
+        "title" : "Verknüpfungen mit Studien"
     }
 }

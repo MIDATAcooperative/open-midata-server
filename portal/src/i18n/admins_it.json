@@ -66,31 +66,15 @@
         "content" : "Contenuti",
         "url" : "URL del messaggio completo",
         "expires" : "Data di scadenza del messaggio",
-
-        // TODO NEW: Official date
-        "date" : "Official date",
-
-        // TODO NEW: Linked Application
-        "appId" : "Linked Application",
-
-        // TODO NEW: Linked Study
-        "studyId" : "Linked Study",
-
-        // TODO NEW: Layout
-        "layout" : "Layout",
+        "date" : "Data ufficiale",
+        "appId" : "Applicazione collegata",
+        "studyId" : "Studio collegato",
+        "layout" : "Disposizione",
         "layouts" : {
-
-            // TODO NEW: Small (1x1)
-            "small" : "Small (1x1)",
-
-            // TODO NEW: Wide (2x1)
-            "wide" : "Wide (2x1)",
-
-            // TODO NEW: High (1x2)
-            "high" : "High (1x2)",
-
-            // TODO NEW: Large (2x2)
-            "large" : "Large (2x2)"
+            "small" : "Piccolo (1x1)",
+            "wide" : "Largo (2x1)",
+            "high" : "Alto (1x2)",
+            "large" : "Grande (2x2)"
         }
     },
 
@@ -149,14 +133,8 @@
         "created_at" : "Creato il",
         "created_by" : "Creato da",
         "description" : "Descrizione",
-
-        // TODO CHANGED
-        // OLD: Join Methods
-        // NEW: Participation procedures
         "joinmethods" : "Procedure di partecipazione",
-
-        // TODO NEW: Type
-        "type" : "Type",
+        "type" : "Tipo",
         "code" : "Codice",
         "startDate" : "Data di inizio",
         "endDate" : "Data di fine",
@@ -173,9 +151,7 @@
         "team" : "Team",
         "role" : "Ruolo",
         "history" : "Storico",
-
-        // TODO NEW: Linked Applications
-        "links" : "Linked Applications",
+        "links" : "Applicazioni collegate",
         "end_validation_btn" : "Convalida completa",
         "back_to_draft_btn" : "Torna alla bozza",
         "delete_study_btn" : "Elimina studio"

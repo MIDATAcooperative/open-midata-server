@@ -66,31 +66,15 @@
         "content" : "Inhalt",
         "url" : "URL der vollständigen Nachricht",
         "expires" : "Ablaufdatum des News-Eintrags",
-
-        // TODO NEW: Official date
-        "date" : "Official date",
-
-        // TODO NEW: Linked Application
-        "appId" : "Linked Application",
-
-        // TODO NEW: Linked Study
-        "studyId" : "Linked Study",
-
-        // TODO NEW: Layout
-        "layout" : "Layout",
+        "date" : "Offizielles Datum",
+        "appId" : "Verknüpfte Applikation",
+        "studyId" : "Verknüpfte Studie",
+        "layout" : "Anordnung",
         "layouts" : {
-
-            // TODO NEW: Small (1x1)
-            "small" : "Small (1x1)",
-
-            // TODO NEW: Wide (2x1)
-            "wide" : "Wide (2x1)",
-
-            // TODO NEW: High (1x2)
-            "high" : "High (1x2)",
-
-            // TODO NEW: Large (2x2)
-            "large" : "Large (2x2)"
+            "small" : "Klein (1x1)",
+            "wide" : "Breit (2x1)",
+            "high" : "Hoch (1x2)",
+            "large" : "Gross (2x2)"
         }
     },
 
@@ -149,14 +133,8 @@
         "created_at" : "Erstellt am",
         "created_by" : "Erstellt von",
         "description" : "Beschreibung",
-
-        // TODO CHANGED
-        // OLD: Join Methods
-        // NEW: Participation procedures
         "joinmethods" : "Teilnahmeverfahren",
-
-        // TODO NEW: Type
-        "type" : "Type",
+        "type" : "Typ",
         "code" : "Code",
         "startDate" : "Startdatum",
         "endDate" : "Enddatum",
@@ -173,9 +151,7 @@
         "team" : "Team",
         "role" : "Rolle",
         "history" : "Historie",
-
-        // TODO NEW: Linked Applications
-        "links" : "Linked Applications",
+        "links" : "Verknüpfte Applikationen",
         "end_validation_btn" : "Validierung abschliessen",
         "back_to_draft_btn" : "Zurück zum Entwurf",
         "delete_study_btn" : "Studie löschen"

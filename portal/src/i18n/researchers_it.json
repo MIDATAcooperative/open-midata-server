@@ -37,9 +37,7 @@
 
     "studynav" : {
         "overview" : "Panoramica",
-
-        // TODO NEW: Information
-        "info" : "Information",
+        "info" : "Informazioni",
         "details" : "Dettagli",
         "rules" : "Regole",
         "actions" : "Applicazioni",
@@ -61,18 +59,10 @@
     },
 
     "studyactions" : {
-
-        // TODO NEW: Plugins related to the study
-        "related_apps" : "Plugins related to the study",
-
-        // TODO NEW: No apps or plugins are linked to the study
-        "empty" : "No apps or plugins are linked to the study",
-
-        // TODO NEW: Add research app to be used with YOUR account
-        "aggregator_apps" : "Add research app to be used with YOUR account",
-
-        // TODO NEW: Aggregators, Analysis & Interpretation Apps
-        "datalink" : "Aggregators, Analysis & Interpretation Apps",
+        "related_apps" : "Plugins relativi allo studio",
+        "empty" : "Nessuna applicazione o plugin è collegata allo studio",
+        "aggregator_apps" : "Aggiungiate un'applicazione di ricerca da utilizzare con il VOSTRO account",
+        "datalink" : "Aggregatori, applicazioni di analisi e interpretazione",
         "description" : "Una volta convalidato lo studio, è possibile collegarlo con link a plugin e servizi di elaborazione dati esterni. Tali plugin o servizi devono collegarsi a MIDATA utilizzando le credenziali di uno dei membri del team di ricerca avente i diritti pertinenti.",
         "select_group_btn" : "Seleziona gruppo",
         "allgroups" : "<Tutti i gruppi>",
@@ -84,100 +74,42 @@
         "add_application_btn" : "Aggiungi applicazione di ricerca",
         "linked_apps" : "Consensi dell'applicazione",
         "linked_spaces" : "Plugin di ricerca",
-
-        // TODO NEW: Application
-        "app" : "Application",
-
-        // TODO NEW: for
-        "for" : "for",
-
-        // TODO NEW: Status
-        "validation" : "Status",
+        "app" : "Applicazione",
+        "for" : "per",
+        "validation" : "Stato",
         "status" : {
-
-            // TODO NEW: Confirmed
-            "validated" : "Confirmed",
-
-            // TODO NEW: Not confirmed by researcher
-            "not_validated_research" : "Not confirmed by researcher",
-
-            // TODO NEW: Not confirmed by developer
-            "not_validated_developer" : "Not confirmed by developer",
-
-            // TODO NEW: Not active due to study status
-            "study_wrong_status" : "Not active due to study status",
-
-            // TODO NEW: Study does not allow to join using an app
-            "study_no_app_participation" : "Study does not allow to join using an app"
+            "validated" : "Confermato",
+            "not_validated_research" : "Non confermato dal ricercatore",
+            "not_validated_developer" : "Non confermato dallo sviluppatore",
+            "study_wrong_status" : "Non attivo a causa dello stato dello studio",
+            "study_no_app_participation" : "Lo studio non consente di partecipare utilizzando un'applicazione"
         },
-
-        // TODO NEW: View
-        "select_btn" : "View",
-
-        // TODO NEW: Confirm
-        "validate_btn" : "Confirm",
-
-        // TODO NEW: Study
-        "study" : "Study",
-
-        // TODO NEW: Application type
-        "app_type" : "Application type",
-
-        // TODO NEW: No application selected
-        "no_valid_app" : "No application selected",
-
-        // TODO NEW: How are they linked?
-        "type" : "How are they linked?",
+        "select_btn" : "Vista",
+        "validate_btn" : "Confermare",
+        "study" : "Studio",
+        "app_type" : "Tipo di applicazione",
+        "no_valid_app" : "Nessuna applicazione selezionata",
+        "type" : "Come sono collegati?",
         "types" : {
-
-            // TODO NEW: App or plugin offers study participation upon login/start
-            "OFFER_P" : "App or plugin offers study participation upon login/start",
-
-            // TODO NEW: Study participation is required to use the app or plugin
-            "REQUIRE_P" : "Study participation is required to use the app or plugin",
-
-            // TODO NEW: App or plugin is recommended by study
-            "RECOMMEND_A" : "App or plugin is recommended by study",
-
-            // TODO NEW: Plugin is automatically added on study participation
-            "AUTOADD_A" : "Plugin is automatically added on study participation",
-
-            // TODO NEW: App shares data to study participants
-            "DATALINK" : "App shares data to study participants"
+            "OFFER_P" : "L'applicazione o il plugin offre la partecipazione allo studio al momento del accedi/avvio",
+            "REQUIRE_P" : "La partecipazione allo studio è necessaria per utilizzare l'applicazione o il plugin",
+            "RECOMMEND_A" : "L'applicazione o il plugin è raccomandato dallo studio",
+            "AUTOADD_A" : "Il plugin viene aggiunto automaticamente alla partecipazione allo studio",
+            "DATALINK" : "L'applicazione condivide i dati con i partecipanti allo studio"
         },
         "types_short" : {
-
-            // TODO NEW: Offer participation
-            "OFFER_P" : "Offer participation",
-
-            // TODO NEW: Require participation
-            "REQUIRE_P" : "Require participation",
-
-            // TODO NEW: Recommended
-            "RECOMMEND_A" : "Recommended",
-
-            // TODO NEW: Auto-Add
-            "AUTOADD_A" : "Auto-Add",
-
-            // TODO NEW: Data Share
-            "DATALINK" : "Data Share"
+            "OFFER_P" : "Suggerire la partecipazione",
+            "REQUIRE_P" : "Richiedere la partecipazione",
+            "RECOMMEND_A" : "Raccomandato",
+            "AUTOADD_A" : "Aggiungere automaticamente",
+            "DATALINK" : "Condivisione dei dati"
         },
-
-        // TODO NEW: When are they linked?
-        "use_period" : "When are they linked?",
+        "use_period" : "Quando sono collegati?",
         "use_periods" : {
-
-            // TODO NEW: Before the study has started
-            "PRE" : "Before the study has started",
-
-            // TODO NEW: During the execution of the study
-            "RUNNING" : "During the execution of the study",
-
-            // TODO NEW: After the study is finished
-            "FINISHED" : "After the study is finished",
-
-            // TODO NEW: When the study is aborted
-            "ABORTED" : "When the study is aborted"
+            "PRE" : "Prima dell'inizio dello studio",
+            "RUNNING" : "Durante l'esecuzione dello studio",
+            "FINISHED" : "Dopo la fine dello studio",
+            "ABORTED" : "Quando lo studio è interrotto"
         }
     },
 
@@ -287,10 +219,6 @@
         "endDate" : "Data di fine ufficiale",
         "dataCreatedBefore" : "Data di congelamento dei dati",
         "sharing_query" : "Data Access Filter",
-
-        // TODO CHANGED
-        // OLD: Allowed Ways of Joining
-        // NEW: Allowed Participation Procedures
         "join_methods" : "Procedure di partecipazione ammesse",
         "queryeditor_btn" : "Modifica",
         "terms_of_use" : "Condizioni generali di contratto",
@@ -338,12 +266,8 @@
         "name_help" : "Il nome dello studio sarà mostrato ai partecipanti. La descrizione sarà disponibile sul portale durante l'accesso all'applicazione.",
         "teamsetup" : "Configurazione del team ricercatore",
         "teamsetup_help" : "Se più persone sono coinvolte nello svolgimento dello studio, indicare tutte le persone coinvolte e il loro ruolo. Finché non si aggiungono altre persone, è possibile cambiare il proprio ruolo aggiungendo nuovamente sé stessi con un altro ruolo.",
-
-        // TODO NEW: Provide public information about your research
-        "information" : "Provide public information about your research",
-
-        // TODO NEW: Public information will help MIDATA account holders to evaluate if your research is relevant for them.
-        "information_help" : "Public information will help MIDATA account holders to evaluate if your research is relevant for them.",
+        "information" : "Informazioni pubbliche sulla vostra ricerca",
+        "information_help" : "Le informazioni pubbliche aiuteranno i titolari di account MIDATA a valutare se la vostra ricerca è rilevante per loro.",
         "groups" : "Gruppi di partecipanti definiti",
         "groups_help" : "Il tuo studio può avere uno o più gruppi di partecipanti. Definisci l'elenco dei gruppi di partecipanti.",
         "sharingQuery" : "Data Access Filter definito",
@@ -382,32 +306,15 @@
     },
 
     "studyinfo" : {
-
-        // TODO NEW: Information
-        "title" : "Information",
-
-        // TODO NEW: Give additional information about the study. You can provide public information, additional instructions and contact information only visible to the participants and information for other researchers and administration. Texts are only meant as additional information and may be edited by you at any time.
-        "introduction" : "Give additional information about the study. You can provide public information, additional instructions and contact information only visible to the participants and information for other researchers and administration. Texts are only meant as additional information and may be edited by you at any time.",
-
-        // TODO NEW: All information is optional. You should give information only on topics that make sense in your research context.
-        "introduction2" : "All information is optional. You should give information only on topics that make sense in your research context.",
-
-
-        // TODO NEW: Information visible to
-        "visibility" : "Information visible to",
+        "title" : "Informazioni",
+        "introduction" : "Dare ulteriori informazioni sullo studio. È possibile fornire informazioni pubbliche, istruzioni aggiuntive e informazioni di contatto visibili solo ai partecipanti e informazioni per altri ricercatori e per l'amministrazione. I testi sono da intendersi solo come informazioni aggiuntive e possono essere modificati in qualsiasi momento.",
+        "introduction2" : "Tutte le informazioni sono facoltative. Dovresti dare informazioni solo su argomenti che hanno senso nel tuo contesto di ricerca.",
+        "visibility" : "Informazioni visibili a",
         "visibilities" : {
-
-            // TODO NEW: everybody
-            "ALL" : "everybody",
-
-            // TODO NEW: participants
-            "PARTICIPANTS" : "participants",
-
-            // TODO NEW: researchers and MIDATA only
-            "INTERNAL" : "researchers and MIDATA only"
+            "ALL" : "tutti",
+            "PARTICIPANTS" : "tutti i partecipanti",
+            "INTERNAL" : "solo ricercatori e MIDATA"
         },
-
-        // TODO NEW: Languages to edit
-        "showlanguages" : "Languages to edit"
+        "showlanguages" : "Lingue da editare"
     }
 }
