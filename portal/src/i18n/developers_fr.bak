@@ -68,15 +68,19 @@
     "filename" : "Internal Name",
     "type" : "Application Type",
     "targetUserRole" : "Target Role",
+    "previewlogin" : "OAuth Login",
+    "previewlogin2" : "Preview OAuth Login Page",
     "edit_btn" : "Change Settings",
     "edit_help" : "Change the setup for your application.",
-    "query_btn" : "Change Access Rights",
-    "query_help" : "Define which types of data your application may access",
+    "query_btn" : "Change Data Access Filter",
+    "query_help" : "Define which types of data your application may access.",
     "tokenExchangeParams" : "OAuth2 Parameters for the Token Exchange", 
     "testfromlocal_btn" : "Test your plugin from localhost",
     "testfromlocal_help" : "During development, you can test the plugin code stored on your local computer on this instance.",
     "serverimport_btn" : "Test automatic import script.",
     "serverimport_help" : "If your plugin offers automatic import, you can test the script of your plugin that is normally run on the server on your local computer.",
+    "link_btn" : "Links with Studies",
+    "link_help" : "Apps may offer or require study participation. Studies may recommend plugin or app use.",    
     "icon_btn" : "Application Icons and Images",
     "icon_help" : "Upload and manage the icons and images to be used with your application. Provide images for the login screen, the consent acceptation screen, the MIDATA Store, etc.",
     "messages_btn" : "Application email Messages",
@@ -127,9 +131,9 @@
       "DELETED" : "Deleted"
     },
     "nostudy" : "Not linked to a study",
-    "optionalParticipation" : "Participation Optional",  
-    "access_query_json" : "Data Access Filter",   
-    "queryeditor_btn" : "Go to access rights editor",   
+    "optionalParticipation" : "Participation Optional",
+    "access_query_json" : "Data Access Filter",
+    "queryeditor_btn" : "Go to the Data Access Filter editor",
     "no_update_history" : "No FHIR Resource History",
     "export_btn" : "Export Application Definition",
     "export_help" : "Export the definition of this application, so that it can be imported and used on another server.",
@@ -179,5 +183,9 @@
      "file" : "Image file to upload",
      "file_help" : "Please resize and compress the image to a reasonable size before upload. Images larger than 1 MB will not be accepted.",
      "existing" : "Images linked to application"
+  },
+  
+  "applink" : {
+    "title" : "Links with Studies"
   }
 }

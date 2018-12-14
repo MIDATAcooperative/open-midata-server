@@ -69,6 +69,8 @@
         "filename" : "Nom interne",
         "type" : "Type d'application",
         "targetUserRole" : "Rôle cible",
+        "previewlogin" : "Connexion OAuth",
+        "previewlogin2" : "Aperçu page de connexion OAuth",
         "edit_btn" : "Modifier la configuration",
         "edit_help" : "Modifiez la configuration de votre application.",
         "query_btn" : "Modifier le Data Access Filter",
@@ -78,6 +80,8 @@
         "testfromlocal_help" : "Pendant le développement, vous pouvez tester le code du plugin stocké sur votre ordinateur local sur cette instance.",
         "serverimport_btn" : "Tester le script d'importation automatique.",
         "serverimport_help" : "Si votre plugin offre l'importation automatique, vous pouvez tester le script de votre plugin, qui est normalement exécuté sur le serveur, sur votre ordinateur local.",
+        "link_btn" : "Liens avec des études",
+        "link_help" : "Les applications peuvent offrir ou exiger la participation à une étude. Les études peuvent recommander l'utilisation de plugins ou d'applications.",
         "icon_btn" : "Icônes et images de l'application",
         "icon_help" : "Téléchargez et gérez les icônes et les images à utiliser avec votre application. Fournissez des images pour l'écran de connexion, l'écran d'acceptation des consentements, le MIDATA Store, etc.",
         "messages_btn" : "Messages e-mail de l'application",
@@ -180,5 +184,9 @@
         "file" : "Fichier image à télécharger",
         "file_help" : "Veuillez redimensionner et compresser l'image à une taille raisonnable avant de la télécharger. Les images d'une taille supérieure à 1 MB ne seront pas acceptées.",
         "existing" : "Images liées à l'application"
+    },
+
+    "applink" : {
+        "title" : "Liens avec des études"
     }
 }

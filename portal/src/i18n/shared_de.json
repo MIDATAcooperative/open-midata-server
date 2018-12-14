@@ -18,7 +18,7 @@
         "edit_profile" : "Profil ändern",
         "app_count" : "Autorisierte Apps",
         "study_count" : "Studienteilnahmen",
-        "me" : "Dashboard",
+        "me" : "Timeline",
         "view" : "Ansehen",
         "overview" : "Übersicht",
         "messages" : "Nachrichten",
@@ -322,7 +322,7 @@
         "studytype" : {
             "CLINICAL" : "Klinische Studie",
             "CITIZENSCIENCE" : "Citizen Science Projekt",
-            "COMMUNITY" : "Community (Datenverwendung nur für die Erbringung von Leistungen an die Teilnehmer)"
+            "COMMUNITY" : "Community"
         },
         "joinmethod" : {
             "APP" : "Der Teilnehmer nutzt verknüpfte App oder Software",
@@ -396,7 +396,8 @@
             "DE" : "Deutsch",
             "IT" : "Italienisch",
             "FR" : "Französisch",
-            "NL" : "Niederländisch"
+            "NL" : "Niederländisch",
+            "INT" : "Standard / Nicht lokalisiert"
         },
         "month" : {
             "01" : "Jan",
@@ -432,6 +433,21 @@
             "oauth1" : "OAuth 1",
             "oauth2" : "OAuth 2",
             "mobile" : "App (Smartphone, Web)"
+        },
+        "infos" : {
+            "SUMMARY" : "Kurze Zusammenfassung",
+            "DESCRIPTION" : "Was bewirkt diese Studie?",
+            "HOMEPAGE" : "Link zur Projekthomepage",
+            "CONTACT" : "Kontaktinformationen",
+            "INSTRUCTIONS" : "Anweisungen für die Teilnehmer",
+            "PURPOSE" : "Was ist der Zweck dieser Forschung?",
+            "AUDIENCE" : "Gibt es Einschränkungen, wer teilnehmen soll?",
+            "LOCATION" : "In welchem Staat oder welcher Region findet dieses Projekt statt?",
+            "PHASE" : "Wie ist der Stand des Projektes?",
+            "SPONSOR" : "Wer ist Initiator des Projektes und wer ist rechtlich verantwortlich?",
+            "SITE" : "An welchem Standort werden Aktivitäten durchgeführt?",
+            "DEVICES" : "Gibt es eine spezielle Ausrüstung, die ein Teilnehmer benötigt?",
+            "COMMENT" : "Zusätzliche Anmerkungen"
         }
     },
 
@@ -709,10 +725,15 @@
         "history_who" : "Wer",
         "history_when" : "Wann",
         "history_comment" : "Bemerkung",
+        "request_participation_help" : "Wenn Sie an dieser Forschung teilnehmen möchten, können Sie die Teilnahme beantragen.",
         "request_participation_btn" : "Teilnahme anfordern",
+        "do_not_participate_help" : "Wenn Sie NICHT teilnehmen möchten, können Sie hier klicken. Sie werden nicht erneut gefragt und es werden keine Daten weitergegeben.",
         "do_not_participate_btn" : "Nicht teilnehmen",
+        "retreat_help" : "Sie nehmen an dieser Forschung derzeit teil. Wenn Sie nicht mehr teilnehmen möchten, können Sie sich von der Teilnahme zurückziehen. Ihre geteilten Daten werden zum Zeitpunkt des Rückzugs eingefroren und es werden keine neuen Daten weitergegeben. Einmal zurückgezogen, können Sie nicht mehr teilnehmen.",
         "retreat_btn" : "Teilnahme zurückgezogen",
-        "status" : "Status"
+        "status" : "Status",
+        "recommended_apps" : "Empfohlene Applikationen",
+        "use_app" : "Jetzt verwenden"
     },
 
     "user" : {
@@ -728,7 +749,7 @@
         "auditlog_btn" : "Audit Log anschauen",
         "change_email_btn" : "E-Mail Adresse ändern",
         "repair_account_btn" : "Konto reparieren",
-        "reset_spaces_btn" : "Reset Portal zurücksetzen",
+        "reset_spaces_btn" : "Portal zurücksetzen",
         "export_btn" : "Export Ihrer Daten",
         "delete_records_btn" : "Datensätze löschen",
         "wipe_account_btn" : "Konto löschen",
@@ -919,7 +940,11 @@
         "shares_group" : "Gruppe: {{ group }}",
         "shares_format" : "Format: {{ format }}",
         "shares_content" : "Inhalt: {{ content }}",
-        "confirm_study" : "Ich akzeptiere die Nutzungsbedingungen der Applikation und die Teilnahme an der Studie"
+        "confirm_study" : "Ich akzeptiere die Nutzungsbedingungen der Applikation und die Teilnahme an der Studie",
+        "confirm_study_opt" : "Ich akzeptiere die Teilnahme an der Studie",
+        "confirm_citizen_science" : "Ich akzeptiere die Teilnahme am Citizen Science Projekt",
+        "confirm_community" : "Ich akzeptiere die Nutzungsbedingungen der Applikation und der Community-Dienste",
+        "confirm_community_opt" : "Ich akzeptiere die Weitergabe von Daten an den Community-Dienst"
     },
 
     "dashboard" : {
@@ -1134,6 +1159,8 @@
     "accountwipe" : {
         "title" : "MIDATA-Konto schliessen und löschen",
         "hello" : "Liebe(r) {{name}},",
+        "hello_m" : "Lieber {{name}},",
+        "hello_w" : "Liebe {{name}},",
         "paragraph1" : "Sie möchten ihre MIDATA-Konto unwiderruflich löschen? Das ist selbstverständlich möglich.",
         "paragraph2" : "Lesen Sie zuerst die nachfolgende Information:",
         "point1" : "Wenn Sie Ihr MIDATA-Konto löschen, löschen Sie alle persönlichen Daten auf ihrem Konto unwiderruflich.",
@@ -1208,6 +1235,11 @@
             "Practitioner" : "Ressource Practitioner: Suche nach Gesundheitsfachpersonen oder Forschern",
             "Subscription" : "Zugriff und Verwaltung von Abonnements auf externe Systeme"
         }
+    },
+
+    "timeline" : {
+        "spaces" : "MIDATA",
+        "title" : "Timeline"
     },
 
     "-1" : "unbekannt"

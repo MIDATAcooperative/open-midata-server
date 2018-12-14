@@ -18,7 +18,7 @@
         "edit_profile" : "Modifier le profil",
         "app_count" : "Applications autorisées",
         "study_count" : "Inscriptions à des études",
-        "me" : "Moi",
+        "me" : "Timeline",
         "view" : "Examiner",
         "overview" : "Vue d'ensemble",
         "messages" : "Messages",
@@ -214,7 +214,7 @@
             "110122" : "Connexion",
             "user-password-change" : "Mot de passe modifié",
             "user-password-change-request" : "Changement de mot de passe demandé",
-            "user-passphrase-change" : "Passphrase modifiée",
+            "user-passphrase-change" : "Phrase secrète modifiée",
             "user-address-change" : "Adresse postale modifiée",
             "user-email-change" : "Adresse e-mail modifiée",
             "user-birthday-change" : "Date de naissance de l'utilisateur modifiée",
@@ -322,7 +322,7 @@
         "studytype" : {
             "CLINICAL" : "Étude clinique",
             "CITIZENSCIENCE" : "Projet de sciences citoyennes",
-            "COMMUNITY" : "Communauté (utilisation des données uniquement pour fournir des services aux participants)"
+            "COMMUNITY" : "Communauté"
         },
         "joinmethod" : {
             "APP" : "Le participant utilise une application ou un logiciel lié",
@@ -396,7 +396,8 @@
             "DE" : "allemand",
             "IT" : "italien",
             "FR" : "français",
-            "NL" : "néerlandais"
+            "NL" : "néerlandais",
+            "INT" : "Par défaut / Non localisé"
         },
         "month" : {
             "01" : "Jan.",
@@ -432,6 +433,21 @@
             "oauth1" : "OAuth 1",
             "oauth2" : "OAuth 2",
             "mobile" : "App (Smartphone, Web)"
+        },
+        "infos" : {
+            "SUMMARY" : "Résumé sommaire",
+            "DESCRIPTION" : "Que fait cette étude?",
+            "HOMEPAGE" : "Lien vers la page d'accueil du projet",
+            "CONTACT" : "Coordonnées de contact",
+            "INSTRUCTIONS" : "Instructions aux participants",
+            "PURPOSE" : "Quel est le but de cette recherche?",
+            "AUDIENCE" : "Y a-t-il des restrictions quant aux personnes qui devraient participer?",
+            "LOCATION" : "Dans quel état ou région ce projet se déroule-t-elle?",
+            "PHASE" : "Quel est l'état d'avancement du projet?",
+            "SPONSOR" : "Qui est l'initiateur du projet et qui est légalement responsable?",
+            "SITE" : "Sur quel site se déroulent les activités?",
+            "DEVICES" : "Un participant a-t-il besoin d'un équipement spécial?",
+            "COMMENT" : "Notes complémentaires"
         }
     },
 
@@ -709,10 +725,15 @@
         "history_who" : "Qui",
         "history_when" : "Quand",
         "history_comment" : "Commentaire",
+        "request_participation_help" : "Si vous souhaitez participer à ce projet de recherche, vous pouvez demander à y participer.",
         "request_participation_btn" : "Demande de participation",
+        "do_not_participate_help" : "Si vous ne voulez PAS participer, vous pouvez cliquer ici. Vous ne serez pas invité à nouveau et aucune donnée ne sera partagée.",
         "do_not_participate_btn" : "Ne participez pas",
+        "retreat_help" : "Vous participez actuellement à ce projet de recherche. Si vous ne voulez plus participer, vous pouvez vous retirer. Vos données partagées seront gelées au moment de la retraite et aucune nouvelle donnée ne sera partagée. Une fois retraité, vous ne pourrez plus participer.",
         "retreat_btn" : "Participation rétractée",
-        "status" : "État"
+        "status" : "État",
+        "recommended_apps" : "Applications recommandées",
+        "use_app" : "Utiliser maintenant"
     },
 
     "user" : {
@@ -724,7 +745,7 @@
         "midataID" : "MIDATA ID:",
         "action" : "Plus...",
         "change_password_btn" : "Changer le mot de passe",
-        "change_passphrase_btn" : "Modifier la phrase de passe",
+        "change_passphrase_btn" : "Modifier la phrase secrète",
         "auditlog_btn" : "Consulter l'Audit Log",
         "change_email_btn" : "Changer l'adresse e-mail",
         "repair_account_btn" : "Réparer le compte",
@@ -919,7 +940,11 @@
         "shares_group" : "Groupe: {{ group }}",
         "shares_format" : "Format: {{ format }}",
         "shares_content" : "Contenu: {{ content }}",
-        "confirm_study" : "J’accepte les conditions d’utilisation de l’application et de participer à l’étude"
+        "confirm_study" : "J’accepte les conditions d’utilisation de l’application et de participer à l’étude",
+        "confirm_study_opt" : "J'accepte de participer à l'étude",
+        "confirm_citizen_science" : "J'accepte de participer au projet de sciences citoyennes",
+        "confirm_community" : "J'accepte les conditions d'utilisation de l'application et des services communautaires",
+        "confirm_community_opt" : "J'accepte de partager mes données avec le service communautaire"
     },
 
     "dashboard" : {
@@ -1134,6 +1159,8 @@
     "accountwipe" : {
         "title" : "Fermer et supprimer le compte MIDATA",
         "hello" : "Chère/cher {{name}},",
+        "hello_m" : "Cher {{name}},",
+        "hello_w" : "Chère {{name}},",
         "paragraph1" : "Vous souhaitez supprimer votre compte MIDATA irrévocablement? C'est bien sûr possible.",
         "paragraph2" : "Veuillez d'abord lire les informations suivantes :",
         "point1" : "Si vous supprimez votre compte MIDATA, vos données personnelles ne seront plus disponibles.",
@@ -1208,6 +1235,11 @@
             "Practitioner" : "Ressource Practitioner: recherche de professionnels de la santé ou de chercheurs",
             "Subscription" : "Accéder et gérer les abonnements au système externe"
         }
+    },
+
+    "timeline" : {
+        "spaces" : "MIDATA",
+        "title" : "Timeline"
     },
 
     "-1" : "inconnu"

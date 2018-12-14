@@ -92,7 +92,7 @@
     "serverimport_btn" : "Test automatic import script.",
     "serverimport_help" : "If your plugin offers automatic import, you can test the script of your plugin that is normally run on the server on your local computer.",
     "link_btn" : "Links with Studies",
-    "link_help" : "Apps may offer or require study participation. Studies may recommend plugin or app use.",    
+    "link_help" : "Apps may offer or require participation to a study. Studies may recommend plugin or app use.",    
     "icon_btn" : "Application Icons and Images",
     "icon_help" : "Upload and manage the icons and images to be used with your application. Provide images for the login screen, the consent acceptation screen, the MIDATA Store, etc.",
     "messages_btn" : "Application email Messages",

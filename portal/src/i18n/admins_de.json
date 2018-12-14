@@ -65,7 +65,17 @@
         "language" : "Sprache des News-Eintrags",
         "content" : "Inhalt",
         "url" : "URL der vollständigen Nachricht",
-        "expires" : "Ablaufdatum des News-Eintrags"
+        "expires" : "Ablaufdatum des News-Eintrags",
+        "date" : "Offizielles Datum",
+        "appId" : "Verknüpfte Applikation",
+        "studyId" : "Verknüpfte Studie",
+        "layout" : "Anordnung",
+        "layouts" : {
+            "small" : "Klein (1x1)",
+            "wide" : "Breit (2x1)",
+            "high" : "Hoch (1x2)",
+            "large" : "Gross (2x2)"
+        }
     },
 
     "admin_registration" : {
@@ -124,6 +134,7 @@
         "created_by" : "Erstellt von",
         "description" : "Beschreibung",
         "joinmethods" : "Teilnahmeverfahren",
+        "type" : "Typ",
         "code" : "Code",
         "startDate" : "Startdatum",
         "endDate" : "Enddatum",
@@ -140,6 +151,7 @@
         "team" : "Team",
         "role" : "Rolle",
         "history" : "Historie",
+        "links" : "Verknüpfte Applikationen",
         "end_validation_btn" : "Validierung abschliessen",
         "back_to_draft_btn" : "Zurück zum Entwurf",
         "delete_study_btn" : "Studie löschen"

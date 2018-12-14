@@ -37,6 +37,7 @@
 
     "studynav" : {
         "overview" : "Übersicht",
+        "info" : "Informationen",
         "details" : "Details",
         "rules" : "Regeln",
         "actions" : "Applikationen",
@@ -58,6 +59,10 @@
     },
 
     "studyactions" : {
+        "related_apps" : "Plugins, die mit der Studie verknüpft sind",
+        "empty" : "Es sind keine Apps oder Plugins mit der Studie verknüpft",
+        "aggregator_apps" : "Fügen Sie eine Forschungs-Applikation hinzu, die IHR Konto verwendet",
+        "datalink" : "Aggregatoren, Analyse- und Interpretations-Apps",
         "description" : "Nach der Validierung der Studie können Sie Plugins und externe Datenverarbeitungsdienste mit der Studie verknüpfen. Diese Plugins oder Dienste müssen sich mit den Zugangsdaten eines Mitglieds des Forschungsteams an MIDATA anmelden, das über ausreichende Rechte verfügt.",
         "select_group_btn" : "Gruppe auswählen",
         "allgroups" : "<Alle Gruppen>",
@@ -68,7 +73,44 @@
         "shareback" : "Die Applikation teilt Daten mit Teilnehmergruppe(n)",
         "add_application_btn" : "Forschungsapplikation hinzufügen",
         "linked_apps" : "Zustimmungen für die Applikationen",
-        "linked_spaces" : "Forschungs-Plugins"
+        "linked_spaces" : "Forschungs-Plugins",
+        "app" : "Applikation",
+        "for" : "für",
+        "validation" : "Status",
+        "status" : {
+            "validated" : "Bestätigt",
+            "not_validated_research" : "Vom Forscher nicht bestätigt",
+            "not_validated_developer" : "Vom Entwickler nicht bestätigt",
+            "study_wrong_status" : "Nicht aktiv aufgrund des Studienstatus",
+            "study_no_app_participation" : "Die Studie erlaubt es nicht, über eine Applikation teilzunehmen"
+        },
+        "select_btn" : "Ansehen",
+        "validate_btn" : "Bestätigen",
+        "study" : "Studie",
+        "app_type" : "Applikationstyp",
+        "no_valid_app" : "Keine Applikation ausgewählt",
+        "type" : "Wie sind sie verknüpft?",
+        "types" : {
+            "OFFER_P" : "Die Applikation oder das Plugin bietet Studienteilnahme beim Anmelden/Start an",
+            "REQUIRE_P" : "Die Teilnahme an der Studie ist zwingend für die Nutzung der Applikation oder des Plugins",
+            "RECOMMEND_A" : "Die Applikation oder das Plugin wird von der Studie empfohlen",
+            "AUTOADD_A" : "Das Plugin wird bei Studienteilnahme automatisch hinzugefügt",
+            "DATALINK" : "Die Applikation teilt die Daten mit den Studienteilnehmern"
+        },
+        "types_short" : {
+            "OFFER_P" : "Teilnahme vorschlagen",
+            "REQUIRE_P" : "Teilnahme erforderlich",
+            "RECOMMEND_A" : "Empfohlen",
+            "AUTOADD_A" : "Automatisch hinzufügen",
+            "DATALINK" : "Datenteilung"
+        },
+        "use_period" : "Wann werden sie verknüpft?",
+        "use_periods" : {
+            "PRE" : "Bevor die Studie begonnen hat",
+            "RUNNING" : "Während der Durchführung der Studie",
+            "FINISHED" : "Nach Abschluss der Studie",
+            "ABORTED" : "Bei Abbruch der Studie"
+        }
     },
 
     "studyfields" : {
@@ -224,6 +266,8 @@
         "name_help" : "Der Studienname wird den Teilnehmern angezeigt. Die Beschreibung wird auf dem Portal, sowie bei der Anmeldung über eine App angezeigt.",
         "teamsetup" : "Einrichtung des Forschungsteams",
         "teamsetup_help" : "Wenn weitere Personen an der Studiendurchführung beteiligt sind, geben Sie alle involvierten Personen und deren Rolle an. Solange Sie keine weitere Personen hinzugefügt haben, können Sie Ihre Rolle ändern, indem Sie sich nochmal mit einer anderen Rolle hinzufügen.",
+        "information" : "Öffentliche Informationen über Ihre Forschung",
+        "information_help" : "Öffentliche Informationen werden den Inhabern von MIDATA-Konten helfen zu beurteilen, ob Ihre Forschung für sie relevant ist.",
         "groups" : "Teilnehmergruppen definiert",
         "groups_help" : "Ihre Studie kann eine oder mehrere Teilnehmergruppen umfassen. Bitte definieren Sie die Liste der Teilnehmergruppen.",
         "sharingQuery" : "Data Access Filter definiert",
@@ -259,5 +303,18 @@
         "exportdata" : "Daten exportiert",
         "exportdata_help" : "Export der Studiendaten als FHIR JSON Bundle (getrennt für jede Teilnehmergruppe).",
         "optional" : "(optional)"
+    },
+
+    "studyinfo" : {
+        "title" : "Informationen",
+        "introduction" : "Geben Sie zusätzliche Informationen über die Studie an. Sie können öffentliche Informationen, zusätzliche Anweisungen und Kontaktinformationen, die nur für die Teilnehmer sichtbar sind, sowie Informationen für andere Forscher und Verwaltungen bereitstellen. Texte sind nur als Zusatzinformation gedacht und können von Ihnen jederzeit bearbeitet werden.",
+        "introduction2" : "Alle Angaben sind freiwillig. Sie sollten nur über Themen informieren, die in Ihrem Forschungskontext sinnvoll sind.",
+        "visibility" : "Informationen sichtbar für",
+        "visibilities" : {
+            "ALL" : "alle",
+            "PARTICIPANTS" : "alle Teilnehmer",
+            "INTERNAL" : "nur die Forscher und MIDATA"
+        },
+        "showlanguages" : "Zu editierende Sprachen"
     }
 }
