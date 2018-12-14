@@ -429,7 +429,9 @@
         },
         "plugintype" : {
             "visualization" : "Plugin",
-            "create" : "Modulo",
+
+            // TODO NEW: Service
+            "service" : "Service",
             "oauth1" : "OAuth 1",
             "oauth2" : "OAuth 2",
             "mobile" : "Applicazione (Smartphone, Web)"
@@ -531,6 +533,12 @@
         "email" : "E-mail",
         "password" : "Password",
         "password_repetition" : "Ripetere la password",
+
+        // TODO NEW: Account Protection
+        "secure" : "Account Protection",
+
+        // TODO NEW: Please encrypt my account key with my PASSWORD. I promise to not forget my password.
+        "secure2" : "Please encrypt my account key with my PASSWORD. I promise to not forget my password.",
         "firstname" : "Nome",
         "lastname" : "Cognome",
         "gender" : "Sesso",
@@ -638,7 +646,34 @@
         "email_success" : "L'indirizzo e-mail è stato confermato.",
         "address_entered" : "Per utilizzare questo servizio è richiesto il tuo indirizzo postale; ti invitiamo a inserirlo.",
         "phone_entered" : "Per utilizzare questo servizio è richiesto un numero di telefono cellulare; ti invitiamo a inserirlo.",
-        "admin_verified" : "Il tuo account deve essere sbloccato da un amministratore MIDATA. Riprova più tardi. Se trascorse più di 24 ore il tuo account non è stato sbloccato, contatta MIDATA."
+        "admin_verified" : "Il tuo account deve essere sbloccato da un amministratore MIDATA. Riprova più tardi. Se trascorse più di 24 ore il tuo account non è stato sbloccato, contatta MIDATA.",
+
+
+        // TODO NEW: The MIDATA terms and conditions have been updated. Please confirm that you agree to the new version.
+        "terms_agreed" : "The MIDATA terms and conditions have been updated. Please confirm that you agree to the new version.",
+
+        // TODO NEW: The MIDATA privacy policy has been updated. Please confirm that you agree to the new version.
+        "privacy_policy_agreed" : "The MIDATA privacy policy has been updated. Please confirm that you agree to the new version.",
+
+        // TODO NEW: I agree
+        "agree_btn" : "I agree",
+        "keyrecovery" : {
+
+            // TODO NEW: The private key that is used to encrypt your accounts data needs to be recovered. In order to recover your key try one of these:
+            "intro" : "The private key that is used to encrypt your accounts data needs to be recovered. In order to recover your key try one of these:",
+
+            // TODO NEW: Do you have any app using Midata where you are still logged in? If yes open that app and your key will be recovered. Try to login again afterwards.
+            "way1" : "Do you have any app using Midata where you are still logged in? If yes open that app and your key will be recovered. Try to login again afterwards.",
+
+            // TODO NEW: Have you logged in using a browser before? If yes try to log in using the same browser and device.
+            "way2" : "Have you logged in using a browser before? If yes try to log in using the same browser and device.",
+
+            // TODO NEW: Remember your old password again? If yes try to log in using your old password.
+            "way3" : "Remember your old password again? If yes try to log in using your old password.",
+
+            // TODO NEW: Wait for Midata employees to do a manual key recovery. We will send you an email when the recovery has been done. Please wait up to seven days for the recovery to be completed.
+            "way4" : "Wait for Midata employees to do a manual key recovery. We will send you an email when the recovery has been done. Please wait up to seven days for the recovery to be completed."
+        }
     },
 
     "changepassphrase" : {
@@ -729,11 +764,18 @@
         "request_participation_btn" : "Richiedere la partecipazione",
         "do_not_participate_help" : "Se NON vuoi partecipare puoi cliccare qui. Non ti verrà chiesto di nuovo e nessun dato verrà condiviso.",
         "do_not_participate_btn" : "Non partecipare",
+
+        // TODO CHANGED
+        // OLD: You are currently participating. If you no longer want to participate you may retreat from participation. Your shared data will be frozen at the moment of retreat and no new data will be shared. Once retreated you are not able to participate again.
+        // NEW: You are currently participating to this research. If you no longer want to participate you may retreat from participation. Your shared data will be frozen at the moment of retreat and no new data will be shared. Once retreated you are not able to participate again.
         "retreat_help" : "Attualmente stai partecipando. Se non vuoi più partecipare puoi ritirarti dalla partecipazione. I vostri dati condivisi saranno congelati al momento del ritiro e non verranno condivisi nuovi dati. Una volta ritirato non sarai in grado di partecipare di nuovo.",
         "retreat_btn" : "Ritirarsi dalla partecipazione",
         "status" : "Stato",
         "recommended_apps" : "Applicazioni consigliate",
-        "use_app" : "Utilizzare ora"
+        "use_app" : "Utilizzare ora",
+
+        // TODO NEW: Participation Info
+        "for_participants" : "Participation Info"
     },
 
     "user" : {
@@ -949,7 +991,6 @@
 
     "dashboard" : {
         "help_welcome" : "Benvenuto in MIDATA",
-        "tasks" : "Attività",
         "myviews" : "Le mie visualizzazioni",
         "mydata" : "I miei dati personali",
         "mydata_text" : "Gestisci i tuoi dati relativi a salute e sanità. Inserisci i nuovi dati e visualizza quelli esistenti.",
@@ -995,7 +1036,6 @@
         "addusers" : "Aggiungi utenti al consenso",
         "shared_with_study" : "Record condivisi:",
         "patient_records" : "Record di questo paziente:",
-        "addtask" : "Aggiungi attività",
         "group_records" : "Record di questo gruppo:",
         "study_records" : "Record condivisi:",
         "addmore" : "Aggiungi altro",
@@ -1045,29 +1085,6 @@
     "flexiblestudies" : {
         "empty" : "Vuoto",
         "studies_found" : "Studi trovati:"
-    },
-
-    "addtask" : {
-        "task_type" : "Tipo di attività",
-        "task_title" : "Titolo dell'attività",
-        "description" : "Descrizione",
-        "frequency" : "Frequenza",
-        "survey_name" : "Compila il questionario",
-        "survey_description" : "Compila i questionari che ho condiviso con il tuo account.",
-        "survey_title" : "Compila il questionario"
-    },
-
-    "taskdetails" : {
-        "created_by" : "Creato da:",
-        "frequency" : "Con quale frequenza:",
-        "plugin" : "Plugin:",
-        "do_now_btn" : "Esegui ora"
-    },
-
-    "tasks" : {
-        "empty" : "Vuoto",
-        "tasks_found" : "Attività trovate:",
-        "more_btn" : "Altro..."
     },
 
     "addusers" : {
@@ -1190,6 +1207,10 @@
         "study" : "Studio",
         "summary" : "Elenco dei tipi di dati accessibili:",
         "access_query" : "Data Access Filter",
+
+        // TODO CHANGED
+        // OLD: Resource
+        // NEW: Data Format
         "format" : "Risorsa",
         "code" : "Codice",
         "to" : "al",
@@ -1238,6 +1259,10 @@
     },
 
     "timeline" : {
+
+        // TODO CHANGED
+        // OLD: Midata
+        // NEW: MIDATA
         "spaces" : "MIDATA",
         "title" : "Timeline"
     },

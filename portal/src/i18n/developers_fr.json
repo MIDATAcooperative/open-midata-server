@@ -30,7 +30,28 @@
     },
 
     "developer_yourapps" : {
-        "title" : "Vos plugins"
+        "title" : "Vos plugins",
+
+        // TODO NEW: You have not registered any plugin yet.
+        "empty" : "You have not registered any plugin yet.",
+
+        // TODO NEW: Register a new plugin
+        "register" : "Register a new plugin",
+
+        // TODO NEW: Name
+        "name" : "Name",
+
+        // TODO NEW: Type
+        "type" : "Type",
+
+        // TODO NEW: Target Role
+        "role" : "Target Role",
+
+        // TODO NEW: manage
+        "manage_btn" : "manage",
+
+        // TODO NEW: debug info
+        "debug_info_btn" : "debug info"
     },
 
     "appmessages" : {
@@ -59,7 +80,16 @@
             "ACCOUNT_UNLOCK" : "Compte validé par l'administrateur",
             "EMAIL_CHANGED_OLDADDRESS" : "Adresse e-mail changée (envoyer à l'ancienne adresse e-mail)",
             "EMAIL_CHANGED_NEWADDRESS" : "Adresse e-mail changée (envoyer à la nouvelle adresse e-mail)",
-            "PASSWORD_FORGOTTEN" : "Mot de passe oublié"
+            "PASSWORD_FORGOTTEN" : "Mot de passe oublié",
+
+            // TODO NEW: User key recovery completed
+            "USER_PRIVATE_KEY_RECOVERED" : "User key recovery completed",
+
+            // TODO NEW: Change of resource [code]
+            "RESOURCE_CHANGE" : "Change of resource [code]",
+
+            // TODO NEW: Process FHIR messgage with event [code]
+            "PROCESS_MESSAGE" : "Process FHIR messgage with event [code]"
         }
     },
 
@@ -75,12 +105,22 @@
         "edit_help" : "Modifiez la configuration de votre application.",
         "query_btn" : "Modifier le Data Access Filter",
         "query_help" : "Définissez les types de données auxquelles votre application peut accéder.",
+
+        // TODO NEW: Change Default Subscriptions
+        "subscriptions_btn" : "Change Default Subscriptions",
+
+        // TODO NEW: Define triggers that cause an action on the MIDATA server
+        "subscriptions_help" : "Define triggers that cause an action on the MIDATA server",
         "tokenExchangeParams" : "Paramètres OAuth2 pour l'échange du token",
         "testfromlocal_btn" : "Testez votre plugin depuis localhost",
         "testfromlocal_help" : "Pendant le développement, vous pouvez tester le code du plugin stocké sur votre ordinateur local sur cette instance.",
         "serverimport_btn" : "Tester le script d'importation automatique.",
         "serverimport_help" : "Si votre plugin offre l'importation automatique, vous pouvez tester le script de votre plugin, qui est normalement exécuté sur le serveur, sur votre ordinateur local.",
         "link_btn" : "Liens avec des études",
+
+        // TODO CHANGED
+        // OLD: Apps may offer or require study participation. Studies may recommend plugin or app use.
+        // NEW: Apps may offer or require participation to a study. Studies may recommend plugin or app use.
         "link_help" : "Les applications peuvent offrir ou exiger la participation à une étude. Les études peuvent recommander l'utilisation de plugins ou d'applications.",
         "icon_btn" : "Icônes et images de l'application",
         "icon_help" : "Téléchargez et gérez les icônes et les images à utiliser avec votre application. Fournissez des images pour l'écran de connexion, l'écran d'acceptation des consentements, le MIDATA Store, etc.",
@@ -106,6 +146,10 @@
         "info" : {
             "filename" : "Ce nom est utilisé (en interne) pour identifier votre app. Il doit s'agir d'un identificateur valide (a-z, A-Z, 0-9, _).",
             "targetUserRole" : "Votre app est-elle destinée à un rôle spécifique? Sinon, veuillez choisir 'Tous les rôles'.",
+
+            // TODO CHANGED
+            // OLD: Choose 'Plugin' if your app will run as MIDATA portal plugin. Choose 'Mobile App' for an external application. Choose 'OAuth1 Import' or 'OAuth2 Import' if you need to connect to an external server using OAuth1 or OAuth2.
+            // NEW: Choose 'Plugin' if your app will run as MIDATA portal plugin. Choose 'Mobile App' for an external application. Choose 'Service' for a server-side only script. Choose 'OAuth1 Import' or 'OAuth2 Import' if you need to connect to an external server using OAuth1 or OAuth2.
             "type" : "Choisissez 'Plugin' si votre app tourne en temps que plugin sur le portail MIDATA. Choisissez 'Mobile App' pour une app externe. Choisissez 'OAuth1 Import' ou 'OAuth2 Import' si vous vous connectez à un serveur externe par OAuth1 ou OAuth2.",
             "name" : "Le nom de l'app ou du plugin tel qu'il est affiché pour les utilisateurs finaux.",
             "description" : "La description du plugin qui sera affichée sur la place du marché.",
@@ -163,7 +207,10 @@
     },
 
     "appdebug" : {
-        "title" : "API Tester"
+        "title" : "API Tester",
+
+        // TODO NEW: Login
+        "login" : "Login"
     },
 
     "appicon" : {
@@ -188,5 +235,78 @@
 
     "applink" : {
         "title" : "Liens avec des études"
+    },
+
+    "appsubscriptions" : {
+
+        // TODO NEW: Default Subscriptions
+        "title" : "Default Subscriptions",
+
+        // TODO NEW: There are no default subscriptions defined.
+        "empty" : "There are no default subscriptions defined.",
+
+        // TODO NEW: Trigger
+        "trigger" : "Trigger",
+
+        // TODO NEW: FHIR Resource
+        "triggerDetail" : "FHIR Resource",
+
+        // TODO NEW: Action
+        "action" : "Action",
+
+        // TODO NEW: URL / Filename
+        "params" : "URL / Filename",
+        "triggers" : {
+
+            // TODO NEW: Consent changes
+            "fhir_Consent" : "Consent changes",
+
+            // TODO NEW: FHIR message
+            "fhir_MessageHeader" : "FHIR message",
+
+            // TODO NEW: Resource changes
+            "fhir_Resource" : "Resource changes",
+
+            // TODO NEW: Daily
+            "time" : "Daily",
+
+            // TODO NEW: When added
+            "init" : "When added"
+        },
+        "actions" : {
+
+            // TODO NEW: Call Rest-Hook
+            "rest-hook" : "Call Rest-Hook",
+
+            // TODO NEW: Send E-mail
+            "email" : "Send E-mail",
+
+            // TODO NEW: Call node script
+            "nodejs" : "Call node script"
+        },
+        "debug" : {
+
+            // TODO NEW: Test your backend code on your computer
+            "title" : "Test your backend code on your computer",
+
+            // TODO NEW: You can test your server-side subscription processing code on your local computer.
+            "description" : "You can test your server-side subscription processing code on your local computer.",
+
+            // TODO NEW: Download the subscription tester and run it with the given connection code.
+            "description2" : "Download the subscription tester and run it with the given connection code.",
+
+            // TODO NEW: This works only with your developer account, any account created using your developer account and only as long as the application is in development.
+            "description3" : "This works only with your developer account, any account created using your developer account and only as long as the application is in development.",
+
+            // TODO NEW: Start debugging
+            "start_btn" : "Start debugging",
+
+            // TODO NEW: Stop debugging
+            "stop_btn" : "Stop debugging",
+
+            // TODO NEW: Command to run on your computer:
+            "cmd_to_run" : "Command to run on your computer:"
+        }
+
     }
 }

@@ -62,11 +62,14 @@
         "related_apps" : "Plugins relativi allo studio",
         "empty" : "Nessuna applicazione o plugin è collegata allo studio",
         "aggregator_apps" : "Aggiungiate un'applicazione di ricerca da utilizzare con il VOSTRO account",
+
+        // TODO CHANGED
+        // OLD: Aggregators, Analysis & Interpretation Apps
+        // NEW: Aggregators, Analysis and Interpretation Apps
         "datalink" : "Aggregatori, applicazioni di analisi e interpretazione",
         "description" : "Una volta convalidato lo studio, è possibile collegarlo con link a plugin e servizi di elaborazione dati esterni. Tali plugin o servizi devono collegarsi a MIDATA utilizzando le credenziali di uno dei membri del team di ricerca avente i diritti pertinenti.",
         "select_group_btn" : "Seleziona gruppo",
         "allgroups" : "<Tutti i gruppi>",
-        "add_task_btn" : "Aggiungi attività per i partecipanti",
         "plugin" : "Applicazione di ricerca",
         "device" : "Codice dispositivo",
         "restrict" : "Limita lettura al questo gruppo",
@@ -91,17 +94,45 @@
         "no_valid_app" : "Nessuna applicazione selezionata",
         "type" : "Come sono collegati?",
         "types" : {
+
+            // TODO CHANGED
+            // OLD: App or plugin offers study participation upon login/start
+            // NEW: Application or plugin offers study participation upon login/start
             "OFFER_P" : "L'applicazione o il plugin offre la partecipazione allo studio al momento del accedi/avvio",
+
+            // TODO CHANGED
+            // OLD: Study participation is required to use the app or plugin
+            // NEW: Study participation is required to use the application or plugin
             "REQUIRE_P" : "La partecipazione allo studio è necessaria per utilizzare l'applicazione o il plugin",
+
+            // TODO CHANGED
+            // OLD: App or plugin is recommended by study
+            // NEW: Application or plugin is recommended by study
             "RECOMMEND_A" : "L'applicazione o il plugin è raccomandato dallo studio",
             "AUTOADD_A" : "Il plugin viene aggiunto automaticamente alla partecipazione allo studio",
+
+            // TODO CHANGED
+            // OLD: App shares data to study participants
+            // NEW: Application shares data to study participants
             "DATALINK" : "L'applicazione condivide i dati con i partecipanti allo studio"
         },
         "types_short" : {
+
+            // TODO CHANGED
+            // OLD: Offer participation
+            // NEW: Suggest participation
             "OFFER_P" : "Suggerire la partecipazione",
             "REQUIRE_P" : "Richiedere la partecipazione",
             "RECOMMEND_A" : "Raccomandato",
+
+            // TODO CHANGED
+            // OLD: Auto-Add
+            // NEW: Add automatically
             "AUTOADD_A" : "Aggiungere automaticamente",
+
+            // TODO CHANGED
+            // OLD: Data Share
+            // NEW: Data Sharing
             "DATALINK" : "Condivisione dei dati"
         },
         "use_period" : "Quando sono collegati?",
@@ -165,7 +196,27 @@
         "visitnow_btn" : "Visita pagina",
         "donow_btn" : "Attiva ora",
         "lastdone" : "Ultima fase su cui si è lavorato",
-        "nextstep" : "Prossima fase da eseguire"
+        "nextstep" : "Prossima fase da eseguire",
+        "confirm" : {
+
+            // TODO NEW: Setup cannot be changed anymore. Validation process by MIDATA will be started.
+            "validation" : "Setup cannot be changed anymore. Validation process by MIDATA will be started.",
+
+            // TODO NEW: No additional users will be able to participate anymore.
+            "end_participant_search" : "No additional users will be able to participate anymore.",
+
+            // TODO NEW: All study data will be frozen at this moment.
+            "finish_execution" : "All study data will be frozen at this moment.",
+
+            // TODO NEW: The research project will be completely wiped from the platform.
+            "delete" : "The research project will be completely wiped from the platform.",
+
+            // TODO NEW: All study data will be frozen at this moment. This project will be marked as failed.
+            "abort" : "All study data will be frozen at this moment. This project will be marked as failed.",
+
+            // TODO NEW: This operation cannot be undone. Are you sure?
+            "are_you_sure" : "This operation cannot be undone. Are you sure?"
+        }
     },
 
     "studyparticipant" : {
@@ -266,6 +317,10 @@
         "name_help" : "Il nome dello studio sarà mostrato ai partecipanti. La descrizione sarà disponibile sul portale durante l'accesso all'applicazione.",
         "teamsetup" : "Configurazione del team ricercatore",
         "teamsetup_help" : "Se più persone sono coinvolte nello svolgimento dello studio, indicare tutte le persone coinvolte e il loro ruolo. Finché non si aggiungono altre persone, è possibile cambiare il proprio ruolo aggiungendo nuovamente sé stessi con un altro ruolo.",
+
+        // TODO CHANGED
+        // OLD: Provide public information about your research
+        // NEW: Public information about your research
         "information" : "Informazioni pubbliche sulla vostra ricerca",
         "information_help" : "Le informazioni pubbliche aiuteranno i titolari di account MIDATA a valutare se la vostra ricerca è rilevante per loro.",
         "groups" : "Gruppi di partecipanti definiti",
@@ -309,10 +364,19 @@
         "title" : "Informazioni",
         "introduction" : "Dare ulteriori informazioni sullo studio. È possibile fornire informazioni pubbliche, istruzioni aggiuntive e informazioni di contatto visibili solo ai partecipanti e informazioni per altri ricercatori e per l'amministrazione. I testi sono da intendersi solo come informazioni aggiuntive e possono essere modificati in qualsiasi momento.",
         "introduction2" : "Tutte le informazioni sono facoltative. Dovresti dare informazioni solo su argomenti che hanno senso nel tuo contesto di ricerca.",
+
         "visibility" : "Informazioni visibili a",
         "visibilities" : {
             "ALL" : "tutti",
+
+            // TODO CHANGED
+            // OLD: participants
+            // NEW: all participants
             "PARTICIPANTS" : "tutti i partecipanti",
+
+            // TODO CHANGED
+            // OLD: researchers and MIDATA only
+            // NEW: only researchers and MIDATA
             "INTERNAL" : "solo ricercatori e MIDATA"
         },
         "showlanguages" : "Lingue da editare"

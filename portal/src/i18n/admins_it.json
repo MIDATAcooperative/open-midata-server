@@ -40,6 +40,20 @@
         "confirmation_code" : "Codice di conferma:",
         "registration_date" : "Data di registrazione:",
         "confirmation_date" : "Data di conferma:",
+
+        // TODO NEW: Account protection
+        "security" : "Account protection",
+        "security_type" : {
+
+            // TODO NEW: Private key on server
+            "KEY" : "Private key on server",
+
+            // TODO NEW: PASSPHRASE protected private key
+            "KEY_PASSPHRASE" : "PASSPHRASE protected private key",
+
+            // TODO NEW: Password protected private key
+            "KEY_EXT_PASSWORD" : "Password protected private key"
+        },
         "last_login" : "Ultimo accesso:",
         "email_confirm_btn" : "Conferma indirizzo e-mail",
         "comment" : "Commento",
@@ -115,7 +129,10 @@
         "name" : "Nome",
         "version" : "Versione",
         "language" : "Lingua",
-        "createdAt" : "Data di creazione"
+        "createdAt" : "Data di creazione",
+
+        // TODO NEW: Filter by name
+        "restrict_name" : "Filter by name"
     },
 
     "admin_manageterms" : {
@@ -139,6 +156,16 @@
         "startDate" : "Data di inizio",
         "endDate" : "Data di fine",
         "dataCreatedBefore" : "Data di congelamento dei dati",
+
+
+        // TODO NEW: Public information
+        "infos" : "Public information",
+
+        // TODO NEW: Information for participants
+        "infos_part" : "Information for participants",
+
+        // TODO NEW: Internal Information
+        "infos_internal" : "Internal Information",
         "required_information" : "Informazioni richieste",
         "anonymous" : "Anonimo",
         "required_assistance" : "Assistenza richiesta",
@@ -171,6 +198,53 @@
         "groupCount" : "Team (Assistenza sanitaria e Ricerca)",
         "auditEventCount" : "Eventi di revisione",
         "users" : "Account utente attivi",
-        "consents" : "Consensi"
+        "consents" : "Consensi",
+        "health" : {
+
+            // TODO NEW: System Health
+            "title" : "System Health",
+
+            // TODO NEW: Background service key present?
+            "servicekey" : "Background service key present?",
+
+            // TODO NEW: Request Key Recovery
+            "requestkey_btn" : "Request Key Recovery",
+
+            // TODO NEW: Cluster status
+            "cluster" : "Cluster status"
+        }
+    },
+
+    "admin_pwrecover" : {
+
+        // TODO NEW: Password Recovery
+        "menu" : "Password Recovery",
+
+        // TODO NEW: Password Recovery
+        "title" : "Password Recovery",
+
+        // TODO NEW: There is currently no recovery process running.
+        "empty" : "There is currently no recovery process running.",
+
+        // TODO NEW: User
+        "name" : "User",
+
+        // TODO NEW: Date
+        "started" : "Date",
+
+        // TODO NEW: Share
+        "share" : "Share",
+
+        // TODO NEW: Decrypted share
+        "decrypted" : "Decrypted share",
+
+        // TODO NEW: My recovery id
+        "myid" : "My recovery id",
+
+        // TODO NEW: Click on a share to copy the encrypted share into the clipboard.
+        "instr1" : "Click on a share to copy the encrypted share into the clipboard.",
+
+        // TODO NEW: Decrypt share on Ubuntu: (click line to copy it to clipboard)
+        "instr2" : "Decrypt share on Ubuntu: (click line to copy it to clipboard)"
     }
 }
