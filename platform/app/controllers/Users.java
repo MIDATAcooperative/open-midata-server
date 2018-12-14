@@ -16,6 +16,7 @@ import models.AccessPermissionSet;
 import models.Circle;
 import models.Consent;
 import models.Developer;
+import models.KeyInfoExtern;
 import models.KeyRecoveryData;
 import models.KeyRecoveryProcess;
 import models.Member;
@@ -467,6 +468,7 @@ public class Users extends APIController {
         KeyRecoveryData.delete(userId);
         FutureLogin.delete(userId);
 		KeyManager.instance.deleteKey(userId);
+		KeyInfoExtern.delete(userId);
 		
 		user = User.getById(userId, User.ALL_USER_INTERNAL);
 		user.delete();

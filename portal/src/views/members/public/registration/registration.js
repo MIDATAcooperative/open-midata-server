@@ -82,43 +82,45 @@ angular.module('portal')
 			data.developer = $stateParams.developer;
 		}
 		
-		crypto.generateKeys($scope.registration.password1).then(function(keys) {
-			
-			$scope.registration.password = keys.pw_hash;
-			$scope.registration.pub = keys.pub;
-			$scope.registration.priv_pw = keys.priv_pw;
-			$scope.registration.recoverKey = keys.recoverKey;
-			$scope.registration.recovery = keys.recovery;
-			
-			//var x1 = crypto.makeChallenge(keys.pub, "123456789012345678901234");
-			//console.log(x1);
-			//console.log(x1.length);
-			//console.log(crypto.keyChallenge(keys.priv_pw, "hello", x1));
 		
-		
-		
-		if (oauth.getAppname()) {		  
-		  data.app = oauth.getAppname();
-		  data.device = oauth.getDevice();
-		  if ($scope.registration.unlockCode) oauth.setUnlockCode($scope.registration.unlockCode);
-		  
-		  $scope.status.doAction("register", server.post(jsRoutes.controllers.QuickRegistration.register().url, JSON.stringify(data))).
-		  then(function(datax) { 			 
-			  oauth.setUser($scope.registration.email, $scope.registration.password);			  
-			  $scope.welcomemsg = true;	
+		var finishRegistration = function() { 
+			if (oauth.getAppname()) {		  
+			  data.app = oauth.getAppname();
+			  data.device = oauth.getDevice();
+			  if ($scope.registration.unlockCode) oauth.setUnlockCode($scope.registration.unlockCode);
 			  
-			  if ($scope.app && $scope.app.requirements && $scope.app.requirements.indexOf('EMAIL_VERIFIED') >= 0) {
-				  $scope.confirmWelcome(); 
-			  }
-		  });
-		  
-		} else {
-		
-		  $scope.status.doAction("register", server.post(jsRoutes.controllers.Application.register().url, JSON.stringify(data))).
-		  then(function(data) { session.postLogin(data, $state); });
-		}
-		
+			  $scope.status.doAction("register", server.post(jsRoutes.controllers.QuickRegistration.register().url, JSON.stringify(data))).
+			  then(function(datax) { 			 
+				  oauth.setUser($scope.registration.email, $scope.registration.password);			  
+				  $scope.welcomemsg = true;	
+				  
+				  if ($scope.app && $scope.app.requirements && $scope.app.requirements.indexOf('EMAIL_VERIFIED') >= 0) {
+					  $scope.confirmWelcome(); 
+				  }
+			  });
+			  
+			} else {
+			
+			  $scope.status.doAction("register", server.post(jsRoutes.controllers.Application.register().url, JSON.stringify(data))).
+			  then(function(data) { session.postLogin(data, $state); });
+			}
+			
+		};
+				
+		crypto.generateKeys($scope.registration.password1).then(function(keys) {				
+			if ($scope.registration.secure) {
+			  $scope.registration.password = keys.pw_hash;	
+			  $scope.registration.pub = keys.pub;
+			  $scope.registration.priv_pw = keys.priv_pw;
+			  $scope.registration.recoverKey = keys.recoverKey;
+			  $scope.registration.recovery = keys.recovery;
+			} else {
+			  $scope.registration.password = $scope.registration.password1;
+			};			
+		    finishRegistration();						
 		});
+		
+		
 				
 	};
 	

@@ -228,6 +228,11 @@ public class KeyManager implements KeySession {
 		 KeyInfo.delete(user);
 	}
 	
+	public void removeExternalPrivateKey(MidataId user) throws InternalServerException, AuthException {
+		KeyManagerSession current = session.get();
+		current.removeExternalPrivateKey(user);
+	}
+	
 	public void newFutureLogin(User user) throws AuthException, InternalServerException {
 		KeyManagerSession current = session.get();
 		current.newFutureLogin(user._id, user.publicExtKey);
@@ -278,15 +283,17 @@ public class KeyManager implements KeySession {
 	
 	public void continueSession(String fhandle, MidataId user) throws AppException {		
 		AccessLog.log("Key-Ring: continue session");
+		
 		int p = fhandle.indexOf(";");
 		String handle = p > 0 ? fhandle.substring(0, p) : fhandle;
+		boolean inlineKey = (p>0 && fhandle.charAt(p+1) == '+');
 		KeyRing ring = keySessions.get(handle);
 						
-		if (ring != null && user==null) {
+		if (ring != null && !inlineKey) {
 			session.set(new KeyManagerSession(handle, ring));
 			return;
 		} else if (p>0) {
-			if (fhandle.charAt(p+1) == '+') {
+			if (inlineKey) {
 				if (user != null) {
 					handle = new BigInteger(130, random).toString(32);
 					byte[] key = Base64.getDecoder().decode(fhandle.substring(p+2));
@@ -296,6 +303,8 @@ public class KeyManager implements KeySession {
 					keyring.addKey(user.toString(), key);
 					AccessLog.log("Key-Ring: Adding key for executor:"+user.toString());
 					return;
+				} else {
+					AccessLog.log("Key-Ring: Internal Sessiontoken used but no user given.");
 				}
 			} else {
 				PersistedSession psession = PersistedSession.getById(handle);
@@ -553,6 +562,19 @@ public class KeyManager implements KeySession {
 		public void deleteKey(MidataId target) throws InternalServerException {
 			KeyInfo.delete(target);
 			pks.remove(target.toString());
+		}
+		
+		protected void removeExternalPrivateKey(MidataId user) throws InternalServerException, AuthException {
+            byte key[] = pks.getKey(user.toString());			
+			if (key == null) throw new AuthException("error.relogin", "Authorization Failure");
+					
+			KeyInfo inf = new KeyInfo();
+		    inf._id = user;
+		    inf.privateKey = key;
+		    inf.type = KEYPROTECTION_NONE;
+		    KeyInfo.update(inf);
+		    
+		    KeyInfoExtern.delete(user);		    
 		}
 		
 		/**

@@ -8,7 +8,7 @@ angular.module('portal')
 			passwordRepeat : ""
 	};
 	$scope.error = null;
-		
+    $scope.secure = $location.search().ns != 1;		
 	// submit
 	$scope.submit = function() {
 		$scope.error = null;
@@ -25,13 +25,16 @@ angular.module('portal')
 		
 		crypto.generateKeys($scope.setpw.password).then(function(keys) {
 			var data = { "token": $scope.setpw.token };
-					
-			data.password = keys.pw_hash;
-			data.pub = keys.pub;
-			data.priv_pw = keys.priv_pw;
-			data.recovery = keys.recovery;
-			data.recoveryKey = keys.recoveryKey;
-		
+			
+			if ($scope.secure) {
+				data.password = keys.pw_hash;
+				data.pub = keys.pub;
+				data.priv_pw = keys.priv_pw;
+				data.recovery = keys.recovery;
+				data.recoveryKey = keys.recoveryKey;		
+			} else {
+				data.password = $scope.setpw.password;
+			}
 			return server.post(jsRoutes.controllers.Application.setPasswordWithToken().url, JSON.stringify(data));
 		}).then(function() { $scope.setpw.success = true; }, function(err) { $scope.error = err.data; });
 	};

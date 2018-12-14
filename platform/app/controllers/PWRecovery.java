@@ -190,12 +190,7 @@ public class PWRecovery extends APIController {
 		User user = User.getById(userId, User.ALL_USER_INTERNAL);
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE, user);
-		if (!user.authenticationValid(oldPasswordHash) && !user.authenticationValid(oldPassword)) throw new BadRequestException("error.invalid.password_old","Bad password.");
-		
-		String password = JsonValidation.getPassword(json, "password");
-		String pub = JsonValidation.getString(json, "pub");
-		String pk = JsonValidation.getString(json, "priv_pw");
-		Map<String, String> recover = JsonExtraction.extractStringMap(json.get("recovery"));
+		if (!user.authenticationValid(oldPasswordHash) && !user.authenticationValid(oldPassword)) throw new BadRequestException("error.invalid.password_old","Bad password.");				
 		
 		changePassword(user, json);
 								       			
@@ -207,19 +202,28 @@ public class PWRecovery extends APIController {
 	public static void changePassword(User user, JsonNode json) throws AppException {
 		
 		String password = JsonValidation.getPassword(json, "password");
-		String pub = JsonValidation.getString(json, "pub");
-		String pk = JsonValidation.getString(json, "priv_pw");
-		Map<String, String> recover = JsonExtraction.extractStringMap(json.get("recovery"));		
+		String pub = JsonValidation.getStringOrNull(json, "pub");
+		String pk = JsonValidation.getStringOrNull(json, "priv_pw");		
 		user.password = Member.encrypt(password);
-		user.publicExtKey = KeyManager.instance.readExternalPublicKey(pub);		
 		
-		if (user.recoverKey == null) user.recoverKey = JsonValidation.getStringOrNull(json, "recoverKey");
-		
-		KeyManager.instance.saveExternalPrivateKey(user._id, pk);		  		  		 
-		user.security = AccountSecurityLevel.KEY_EXT_PASSWORD;				  								
-		user.updatePassword();		  
-		KeyManager.instance.newFutureLogin(user);	
-		PWRecovery.storeRecoveryData(user._id, recover);
+		if (pub != null) {
+			Map<String, String> recover = JsonExtraction.extractStringMap(json.get("recovery"));	
+			user.publicExtKey = KeyManager.instance.readExternalPublicKey(pub);		
+			
+			if (user.recoverKey == null) user.recoverKey = JsonValidation.getStringOrNull(json, "recoverKey");
+			
+			KeyManager.instance.saveExternalPrivateKey(user._id, pk);		  		  		 
+			user.security = AccountSecurityLevel.KEY_EXT_PASSWORD;				  								
+			user.updatePassword();		  
+			KeyManager.instance.newFutureLogin(user);	
+			PWRecovery.storeRecoveryData(user._id, recover);
+		} else {
+			user.publicExtKey = null;
+			user.recoverKey = null;
+			user.security = AccountSecurityLevel.KEY;
+			KeyManager.instance.removeExternalPrivateKey(user._id);
+			user.updatePassword();
+		}
 		
 	}
 	

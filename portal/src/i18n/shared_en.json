@@ -530,6 +530,8 @@
     "email" : "EMail",
     "password" : "Password",
     "password_repetition" : "Repeat Password",
+    "secure" : "Account Protection",
+    "secure2" : "Please encrypt my account key with my PASSWORD. I promise to not forget my password.",
     "firstname" : "First Name",
     "lastname" : "Surname",
     "gender" : "Gender",

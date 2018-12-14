@@ -23,6 +23,7 @@ import models.Circle;
 import models.Consent;
 import models.HealthcareProvider;
 import models.InstanceStats;
+import models.KeyInfoExtern;
 import models.KeyRecoveryData;
 import models.KeyRecoveryProcess;
 import models.Member;
@@ -423,6 +424,8 @@ public class Administration extends APIController {
         KeyRecoveryData.delete(userId);
         FutureLogin.delete(userId);
 		KeyManager.instance.deleteKey(userId);
+		KeyInfoExtern.delete(userId);
+		
 		selected.delete();
 		
 		/*if (!User.exists(CMaps.map("organization", PortalSessionToken.session().org))) {

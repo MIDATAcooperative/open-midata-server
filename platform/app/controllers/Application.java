@@ -110,12 +110,12 @@ public class Application extends APIController {
 		// execute
 		User user = null;
 		switch (role) {
-		case "member" : user = Member.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role"));break;
-		case "research" : user = ResearchUser.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role"));break;
-		case "provider" : user = HPUser.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role"));break;
+		case "member" : user = Member.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security"));break;
+		case "research" : user = ResearchUser.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security"));break;
+		case "provider" : user = HPUser.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security"));break;
 		case "developer" : 
-			user = Developer.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role"));
-			if (user == null) user = Admin.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role"));
+			user = Developer.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security"));
+			if (user == null) user = Admin.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security"));
 			break;
 		default: break;		
 		}
@@ -128,7 +128,7 @@ public class Application extends APIController {
 			   
 		  String site = "https://" + InstanceConfig.getInstance().getPortalServerDomain();
 		  String url = site + "/#/portal/setpw?token=" + encrypted;
-			   
+		  if (user.security != AccountSecurityLevel.KEY_EXT_PASSWORD) url +="&ns=1";
 		  
 		  Map<String,String> replacements = new HashMap<String, String>();
 		  replacements.put("site", site);
@@ -652,18 +652,22 @@ public class Application extends APIController {
 		boolean newVersion = user.publicExtKey != null;
 		
 		String handle = null;
+		int keytype = 0;
 		
-		//if (!nosession) {
-			if (newVersion) {
-				if (sessionToken == null) {
-				  handle = KeyManager.instance.currentHandleOptional(user._id);
-				  if (handle == null && !nosession) return loginChallenge(user);
-				} else {
-				  handle = KeyManager.instance.login(PortalSessionToken.LIFETIME, true);
-				  KeyManager.instance.unlock(user._id, sessionToken, user.publicExtKey);		
-				}
-			} else handle =  KeyManager.instance.login(PortalSessionToken.LIFETIME, true);					
-		//}		
+		if (newVersion) {
+			if (sessionToken == null) {
+			  handle = KeyManager.instance.currentHandleOptional(user._id);
+			  if (handle == null && !nosession) return loginChallenge(user);
+			  keytype = KeyManager.KEYPROTECTION_AESKEY;
+			} else {
+			  handle = KeyManager.instance.login(PortalSessionToken.LIFETIME, true);
+			  keytype = KeyManager.instance.unlock(user._id, sessionToken, user.publicExtKey);		
+			}
+		} else {
+			handle =  KeyManager.instance.login(PortalSessionToken.LIFETIME, true);	
+			keytype = KeyManager.instance.unlock(user._id, null);	
+		}
+			
 		Set<UserFeature> notok = loginHelperPreconditionsFailed(user, InstanceConfig.getInstance().getInstanceType().defaultRequirementsPortalLogin(user.role));
 	
 		if (user.role == UserRole.RESEARCH && !(user instanceof ResearchUser)) {
@@ -691,16 +695,11 @@ public class Application extends APIController {
 		if (notok!=null) {
 		  return loginHelperResult(user, notok);
 		} else {						
-		  int keytype = 0;
-		  if (!newVersion) {
-			  keytype = KeyManager.instance.unlock(user._id, null);				  		      						 
-		  }
-		  		  
-		  if (keytype == 0 && handle != null && !nosession) {
+				 		  		  
+		  if (keytype == 0 && handle != null) {
 			  user = PostLoginActions.check(user);			  
-			  if (!nosession) KeyManager.instance.persist(user._id);
-          }
-		  
+			  KeyManager.instance.persist(user._id);
+          }		  
 		 				
 		  obj.put("keyType", keytype);
 		  obj.put("role", user.role.toString().toLowerCase());

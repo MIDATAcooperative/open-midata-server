@@ -84,7 +84,7 @@ angular.module('services')
 				//$cookies.put("session", userId);
 				//session.storedCookie = userId;
 				//userId = { "$oid" : userId };			
-				var data = {"properties": { "_id" : userId }, "fields": ["email", "firstname", "lastname", "visualizations", "apps", "midataID", "name", "role", "subroles", "developer"] };
+				var data = {"properties": { "_id" : userId }, "fields": ["email", "firstname", "lastname", "visualizations", "apps", "midataID", "name", "role", "subroles", "developer", "security"] };
 				session.org = result.org;
 				server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data))
 				.then(function(data) {
