@@ -64,7 +64,17 @@
     "language" : "News language",
     "content" : "Content",
     "url" : "URL of full message",
-    "expires" : "Expiration date of message"
+    "expires" : "Expiration date of message",
+    "date" : "Official date",
+    "appId" : "Linked Application",
+    "studyId" : "Linked Study",
+    "layout" : "Layout", 
+    "layouts" : {
+      "small" : "Small (1x1)",
+      "wide" : "Wide (2x1)",
+      "high" : "High (1x2)",
+      "large" : "Large (2x2)"
+    }
   },
   
   "admin_registration" : {
@@ -122,7 +132,8 @@
      "created_at" : "Created on",
      "created_by" : "Created by",
      "description" : "Description",
-     "joinmethods" : "Join Methods",
+     "joinmethods" : "Participation procedures",
+     "type" : "Type",    
      "code" : "Code",
      "startDate" : "Start Date",
      "endDate" : "End Date",
@@ -139,6 +150,7 @@
      "team" : "Team",
      "role" : "Role",
      "history" : "History",
+     "links" : "Linked Applications",
      "end_validation_btn" : "Complete Validation",
      "back_to_draft_btn" : "Back to Draft",
      "delete_study_btn" : "Delete Study"    

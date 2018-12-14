@@ -65,7 +65,17 @@
         "language" : "Langue de la News",
         "content" : "Contenu",
         "url" : "URL du message complet",
-        "expires" : "Date d'expiration du message"
+        "expires" : "Date d'expiration du message",
+        "date" : "Date officielle",
+        "appId" : "Application liée",
+        "studyId" : "Étude liée",
+        "layout" : "Mise en page",
+        "layouts" : {
+            "small" : "Petit (1x1)",
+            "wide" : "Large (2x1)",
+            "high" : "Haut (1x2)",
+            "large" : "Grand (2x2)"
+        }
     },
 
     "admin_registration" : {
@@ -124,6 +134,7 @@
         "created_by" : "Créée par",
         "description" : "Description",
         "joinmethods" : "Procédures de participation",
+        "type" : "Type",
         "code" : "Code",
         "startDate" : "Date de début",
         "endDate" : "Date de fin",
@@ -140,6 +151,7 @@
         "team" : "Team",
         "role" : "Rôle",
         "history" : "Historique",
+        "links" : "Applications liées",
         "end_validation_btn" : "Finaliser la validation",
         "back_to_draft_btn" : "Revenir à l'ébauche",
         "delete_study_btn" : "Effacer l'étude"

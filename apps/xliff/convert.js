@@ -134,7 +134,10 @@ function fetch(part, path) {
   return r;
 }
 
-function esc(str) {
+function esc(str, line) {
+	if (!str) {
+		console.log("Error in line: "+line);
+	}
 	return str.replace(/"/g,'\\"');
 }
 
@@ -189,19 +192,19 @@ function doprocess(info) {
 		  if (!targetVal) {		
 			  output.push("");
 			  output.push(spaces(wsIdx)+"// TODO NEW: "+srcVal);
-			  output.push(spaces(wsIdx)+'"'+srcLine.key+'" : "'+esc(srcVal)+'"'+(srcLine.komma ? "," : ""));
+			  output.push(spaces(wsIdx)+'"'+srcLine.key+'" : "'+esc(srcVal, srcLine.full)+'"'+(srcLine.komma ? "," : ""));
 			  xliff.push(xliffentry(srcLine.key, srcVal, null, srcLine.full));
 		  } else if (srcVal === refVal) {
 			  addcmt(srcLine.full, targetVal != srcVal);
 			  if (targetVal == srcVal) xliff.push(xliffentry(srcLine.key, srcVal, null, srcLine.full));
-			  output.push(spaces(wsIdx)+'"'+srcLine.key+'" : "'+esc(targetVal)+'"'+(srcLine.komma ? "," : ""));
+			  output.push(spaces(wsIdx)+'"'+srcLine.key+'" : "'+esc(targetVal, srcLine.full)+'"'+(srcLine.komma ? "," : ""));
 		  } else {
 			  addcmt(srcLine.full);
 			  output.push("");
 			  output.push(spaces(wsIdx)+"// TODO CHANGED");
 			  output.push(spaces(wsIdx)+"// OLD: "+refVal);
 			  output.push(spaces(wsIdx)+"// NEW: "+srcVal);
-			  output.push(spaces(wsIdx)+'"'+srcLine.key+'" : "'+esc(targetVal)+'"'+(srcLine.komma ? "," : ""));
+			  output.push(spaces(wsIdx)+'"'+srcLine.key+'" : "'+esc(targetVal, srcLine.full)+'"'+(srcLine.komma ? "," : ""));
 			  xliff.push(xliffentry(srcLine.key, srcVal, targetVal, srcLine.full));
 		  }
 		}

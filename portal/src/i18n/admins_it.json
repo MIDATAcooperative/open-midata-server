@@ -65,7 +65,17 @@
         "language" : "Lingua delle notizie",
         "content" : "Contenuti",
         "url" : "URL del messaggio completo",
-        "expires" : "Data di scadenza del messaggio"
+        "expires" : "Data di scadenza del messaggio",
+        "date" : "Data ufficiale",
+        "appId" : "Applicazione collegata",
+        "studyId" : "Studio collegato",
+        "layout" : "Disposizione",
+        "layouts" : {
+            "small" : "Piccolo (1x1)",
+            "wide" : "Largo (2x1)",
+            "high" : "Alto (1x2)",
+            "large" : "Grande (2x2)"
+        }
     },
 
     "admin_registration" : {
@@ -124,6 +134,7 @@
         "created_by" : "Creato da",
         "description" : "Descrizione",
         "joinmethods" : "Procedure di partecipazione",
+        "type" : "Tipo",
         "code" : "Codice",
         "startDate" : "Data di inizio",
         "endDate" : "Data di fine",
@@ -140,6 +151,7 @@
         "team" : "Team",
         "role" : "Ruolo",
         "history" : "Storico",
+        "links" : "Applicazioni collegate",
         "end_validation_btn" : "Convalida completa",
         "back_to_draft_btn" : "Torna alla bozza",
         "delete_study_btn" : "Elimina studio"

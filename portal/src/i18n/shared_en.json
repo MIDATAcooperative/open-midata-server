@@ -732,7 +732,7 @@
 	"request_participation_btn" : "Request Participation",
 	"do_not_participate_help" : "If you do NOT want to participate you can click here. You will not be asked again and no data will be shared.",
 	"do_not_participate_btn" : "Do not participate",
-	"retreat_help" : "You are currently participating. If you no longer want to participate you may retreat from participation. Your shared data will be frozen at the moment of retreat and no new data will be shared. Once retreated you are not able to participate again.",
+	"retreat_help" : "You are currently participating to this research. If you no longer want to participate you may retreat from participation. Your shared data will be frozen at the moment of retreat and no new data will be shared. Once retreated you are not able to participate again.",
 	"retreat_btn" : "Retreat from participation",
 	"status" : "Status",
 	"recommended_apps" : "Recommended Apps",
@@ -1242,7 +1242,7 @@
   },
   
   "timeline" : {
-    "spaces" : "Midata",
+    "spaces" : "MIDATA",
     "title" : "Timeline"
   },
   
