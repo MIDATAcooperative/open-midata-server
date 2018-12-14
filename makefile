@@ -323,6 +323,7 @@ use-loadbalancer: /etc/ssl/certs/ssl-cert-snakeoil.pem
 	
 tasks/bugfixes:
 	mkdir -p ~/.config
+	mkdir -p ~/.npm
 	sudo chown -R $$USER:$$GROUP ~/.config	
 	sudo chown -R $$USER:$$GROUP ~/.npm
 	touch tasks/bugfixes
