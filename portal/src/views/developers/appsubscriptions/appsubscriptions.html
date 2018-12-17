@@ -34,6 +34,8 @@
 		      </tr>
 		    </table>
 		    <formrow myid="x" label="">
+		      <a class="btn btn-default" ui-sref="^.manageapp({ appId : app._id })" translate="common.back_btn"></a>
+		
 		      <button class="btn btn-default" type="button" ng-click="add()" translate="common.add_btn"></button>
 		      <button class="btn btn-primary" type="submit" translate="common.submit_btn"></button>
 		    </formrow>
@@ -48,7 +50,7 @@
 		<div class="body">
 		  <p translate="appsubscriptions.debug.description"></p>
 		  <p translate="appsubscriptions.debug.description2"></p>
-		  <p translate="appsubscriptions.debug.description3"></p>
+		  <p translate="appsubscriptions.debug.description3"></p>		  
 		  
 		  <button class="btn btn-default" ng-click="startDebug()" ng-hide="app.debugHandle" translate="appsubscriptions.debug.start_btn"></button>
 		  <button class="btn btn-default" ng-click="stopDebug()" ng-show="app.debugHandle" translate="appsubscriptions.debug.stop_btn"></button>

@@ -35,8 +35,9 @@
 		
 		<p ng-hide="messages.length" translate="appmessages.empty"></p>
 		
-		<button class="btn btn-default" ng-click="addMessage()" translate="common.add_btn"></button>
 		<a class="btn btn-default" ui-sref="^.manageapp({ appId : app._id })" translate="common.back_btn"></a>
+		
+		<button class="btn btn-default" ng-click="addMessage()" translate="common.add_btn"></button>
 		
 		</div>
 		<div ng-show="selmsg">  		

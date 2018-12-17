@@ -91,7 +91,8 @@
        "study_group" : "Participant must first be assigned to a group.",
        "confirmation" : "Confirmation by user required first.",
        "file" : "No file for upload selected",
-       "access_query" : "No data selected"
+       "access_query" : "No data selected",
+       "plugin" : "This plugin does not exist in your account."
      },
 
      "unknown" : {

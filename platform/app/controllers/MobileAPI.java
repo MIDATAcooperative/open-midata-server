@@ -609,8 +609,7 @@ public class MobileAPI extends Controller {
 		}
 		record.name = name;
 		record.description = description;
-						
-		autoLearnAccessQuery(inf, record.format, record.content);
+								
 		PluginsAPI.createRecord(inf, record, null, null,null, inf.context);
 		
 		Stats.finishRequest(request(), "200", Collections.EMPTY_SET);
@@ -826,25 +825,7 @@ public class MobileAPI extends Controller {
 		
 		return ok(JsonOutput.toJson(consents, "Consent", fields)).as("application/json");
 	}
-	
-	public static void autoLearnAccessQuery(ExecutionInfo info, String format, String content) throws AppException {
-		if (! InstanceConfig.getInstance().getInstanceType().allowQueryLearning()) return;
 		
-		AccessContext context = info.context;
-		if (context instanceof AppAccessContext) {
-			AppAccessContext appcontext = (AppAccessContext) context;
-			if (!appcontext.getAppInstance().sharingQuery.containsKey("learn")) return;
-			
-			if (!context.mayAccess(null, format)) {
-				addToSharingQuery(info, appcontext.getAppInstance(), format, null);
-			}
-    	
-			if (!context.mayAccess(content, null)) {
-				addToSharingQuery(info, appcontext.getAppInstance(), null, content);
-			}
-			            
-		}		
-	}
 	
 	private static void addToSharingQuery(ExecutionInfo info, MobileAppInstance instance, String format, String content) throws AppException {
 		Plugin plugin = Plugin.getById(instance.applicationId, Plugin.ALL_DEVELOPER);

@@ -514,9 +514,7 @@ public class PluginsAPI extends APIController {
 		if (record.owner==null) record.owner = inf.ownerId;
 		
 		DBRecord dbrecord = RecordConversion.instance.toDB(record);
-        	
-		MobileAPI.autoLearnAccessQuery(inf, record.format, record.content);
-		
+        				
 		if (!record.owner.equals(inf.executorId) && !inf.executorId.equals(RuntimeConstants.instance.autorunService) && !(context instanceof ConsentAccessContext) && !(context instanceof AccountCreationAccessContext)) {
 			BSONObject query = RecordManager.instance.getMeta(inf.executorId, inf.targetAPS, "_query");
 			Set<Consent> consent = null;

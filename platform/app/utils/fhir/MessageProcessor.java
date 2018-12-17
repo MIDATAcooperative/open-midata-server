@@ -50,11 +50,14 @@ public class MessageProcessor {
 			}
 			AccessLog.log(result);
 			
-			IBaseResource retVal = ResourceProvider.ctx.newJsonParser().parseResource(result);
-			if (retVal instanceof Bundle) return (Bundle) retVal;
-			
 			Bundle resultBundle = new Bundle();
-			resultBundle.addEntry().setResource((Resource) retVal);
+			
+			if (result != null) {
+				IBaseResource retVal = ResourceProvider.ctx.newJsonParser().parseResource(result);
+				if (retVal instanceof Bundle) return (Bundle) retVal;
+							
+				resultBundle.addEntry().setResource((Resource) retVal);
+			}
 			return resultBundle;
 		}	
 

@@ -111,7 +111,7 @@ public class SubscriptionManager {
 	public static void activateSubscriptions(MidataId userId, Plugin plugin, MidataId instance) throws AppException {
 	    if (plugin.defaultSubscriptions != null) {
 	    	for (SubscriptionData dat : plugin.defaultSubscriptions) {
-	    		if (!dat.format.equals("fhir/MessageHeader")) {
+	    		//if (!dat.format.equals("fhir/MessageHeader")) {
 	    			SubscriptionData newdata = new SubscriptionData();
 	    			newdata._id = new MidataId();
 	    			newdata.format = dat.format;
@@ -131,7 +131,7 @@ public class SubscriptionManager {
 	    			if (newdata.format.equals("init")) { 
 	    				subscriptionChecker.tell(new SubscriptionTriggered(userId, plugin._id, "init", "init", null, null), ActorRef.noSender());
 	    			}
-	    		}
+	    		//}
 	    	}
 	    	
 	    }
@@ -368,6 +368,7 @@ class SubscriptionChecker extends AbstractActor {
 	}
 	
 	void processMessage(ProcessMessage message) {
+		System.out.println("Recieve and forward message");
 		SubscriptionTriggered trigger = new SubscriptionTriggered(message.executor, message.getApp(), "fhir/MessageHeader", message.getEventCode(), message.getMessage(), null);				
 		processor.forward(trigger, getContext());
 	}
