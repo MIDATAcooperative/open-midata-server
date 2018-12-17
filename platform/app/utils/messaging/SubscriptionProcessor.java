@@ -84,7 +84,7 @@ public class SubscriptionProcessor extends AbstractActor {
 			for (SubscriptionData subscription : allMatching) {	
 				System.out.println("ok:"+subscription.active+" "+subscription.content+" "+triggered.getEventCode());
 				if (subscription.active && (subscription.content == null || subscription.content.equals("MessageHeader") || subscription.content.equals(triggered.getEventCode())) && checkNotExpired(subscription)) {
-					System.out.println("ok3");
+					//System.out.println("ok3");
 					Subscription fhirSubscription = SubscriptionResourceProvider.subscription(subscription);
 					SubscriptionChannelComponent channel = fhirSubscription.getChannel();
 					
@@ -123,7 +123,7 @@ public class SubscriptionProcessor extends AbstractActor {
 		   int p = str.indexOf(':');
 		   if (p > 0) request.addHeader(str.substring(0, p).trim(), str.substring(p+1));
 	   }
-	   System.out.println("CALLING REST HOOK!");
+	   //System.out.println("CALLING REST HOOK!");
 	   CompletionStage<WSResponse> response = request.execute("POST");
 	   response.whenComplete((out, exception) -> {
 		   //System.out.println("COMPLETE REST HOOK");
@@ -135,7 +135,7 @@ public class SubscriptionProcessor extends AbstractActor {
 			   if (exception instanceof CompletionException) exception = exception.getCause();
 			   error = exception.toString();
 		   }
-		   System.out.println("A");
+		   //System.out.println("A");
 		   if (error != null) {
 			   try {
 				   SubscriptionData.setError(subscription, new Date().toString()+": "+error);
@@ -158,16 +158,16 @@ public class SubscriptionProcessor extends AbstractActor {
 	}
 	
 	void processApplication(SubscriptionData subscription, SubscriptionTriggered triggered, SubscriptionChannelComponent channel) throws InternalServerException {
-		System.out.println("prcApp app="+subscription.app);
+		//System.out.println("prcApp app="+subscription.app);
 		final String nodepath = InstanceConfig.getInstance().getConfig().getString("node.path");
 		Plugin plugin = Plugin.getById(subscription.app);
 		if (plugin == null) return;
-		System.out.println("prcApp2");
+		//System.out.println("prcApp2");
 		String endpoint = channel.getEndpoint();
 		
 		String cmd = endpoint.substring("node://".length());
 		String visPath =  InstanceConfig.getInstance().getConfig().getString("visualizations.path")+"/"+plugin.filename+"/"+cmd;
-		System.out.println("prcApp3");
+		//System.out.println("prcApp3");
 		AccessLog.log("sub session="+subscription.session);
 		String handle = ServiceHandler.decrypt(subscription.session);
 		
@@ -178,7 +178,7 @@ public class SubscriptionProcessor extends AbstractActor {
 		}
 		
 		User user = User.getById(subscription.owner, Sets.create("status", "role", "language", "developer"));
-		System.out.println("prcApp4");
+		//System.out.println("prcApp4");
 		if (user==null || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.BLOCKED)) return;
 						
 		SpaceToken tk = null;
@@ -190,23 +190,23 @@ public class SubscriptionProcessor extends AbstractActor {
 				if (mai.status.equals(ConsentStatus.ACTIVE)) { appInstanceId = mai._id; break; }
 			}
 			if (appInstanceId == null) return;	
-			AccessLog.log("HANDLE="+handle);
+			//AccessLog.log("HANDLE="+handle);
 
 			if (subscription.app == null) throw new NullPointerException(); 
 			tk = new SpaceToken(handle, appInstanceId, subscription.owner, user.getRole(), null, subscription.app, subscription.owner);			
-			AccessLog.log("HANDLEPOST="+tk.handle+" space="+tk.spaceId.toString()+" app="+tk.pluginId);
+			//AccessLog.log("HANDLEPOST="+tk.handle+" space="+tk.spaceId.toString()+" app="+tk.pluginId);
 		} else {
-			AccessLog.log("BPART HANDLE="+handle);
+			//AccessLog.log("BPART HANDLE="+handle);
 			tk = new SpaceToken(handle, subscription.instance, subscription.owner, user.getRole(), null, null, subscription.owner);
 		}
-		AccessLog.log("pre enc handle="+tk.handle); 
+		//AccessLog.log("pre enc handle="+tk.handle); 
 		String token = tk.encrypt();
-		AccessLog.log("enc="+token);
+		//AccessLog.log("enc="+token);
 		final String lang = user.language != null ? user.language : InstanceConfig.getInstance().getDefaultLanguage();
 		final String id = triggered.getResourceId() != null ? triggered.getResourceId().toString() : "-";
 		
 		boolean testing = (plugin.creator.equals(user.developer) || plugin.creator.equals(user._id)) /*&& plugin.status.equals(PluginStatus.DEVELOPMENT)*/;
-		System.out.println("prcApp5");
+		//System.out.println("prcApp5");
 		if (testing) {
 			plugin = Plugin.getById(plugin._id, Plugin.ALL_DEVELOPER);
 			if (plugin.debugHandle != null) {
@@ -224,7 +224,7 @@ public class SubscriptionProcessor extends AbstractActor {
 				return;
 			}
 		}				
-		System.out.println("prcApp6");
+		//System.out.println("prcApp6");
 		try {
 		  System.out.println("Build process...");		  
 		  Process p = new ProcessBuilder(nodepath, visPath, token, lang, "http://localhost:9001", subscription.owner.toString(), id).redirectError(Redirect.INHERIT).start();
