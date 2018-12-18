@@ -192,15 +192,7 @@
     },
 
     "admin_pwrecover" : {
-
-        // TODO CHANGED
-        // OLD: Password Recovery
-        // NEW: Key Recovery
         "menu" : "Récupération de clé",
-
-        // TODO CHANGED
-        // OLD: Password Recovery
-        // NEW: Key Recovery
         "title" : "Récupération de clé",
         "empty" : "Il n'y a actuellement aucun processus de récupération en cours d'exécution.",
         "name" : "Utilisateur",

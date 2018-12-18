@@ -69,10 +69,6 @@
             "PASSWORD_FORGOTTEN" : "Password dimenticata",
             "USER_PRIVATE_KEY_RECOVERED" : "Recupero chiavi utente completato",
             "RESOURCE_CHANGE" : "Cambio di risorsa [codice]",
-
-            // TODO CHANGED
-            // OLD: Process FHIR messgage with event [code]
-            // NEW: Process FHIR message with event [code]
             "PROCESS_MESSAGE" : "Elabora messaggio FHIR con evento [codice]"
         }
     },
@@ -80,9 +76,7 @@
     "manageapp" : {
         "overview" : "Panoramica dell'applicazione",
         "choose" : "Funzioni per gestire la propria applicazione",
-
-        // TODO NEW: defined
-        "defined" : "defined",
+        "defined" : "definito",
         "filename" : "Nome interno",
         "type" : "Tipo di applicazione",
         "targetUserRole" : "Ruolo di destinazione",
@@ -124,20 +118,8 @@
 
         "info" : {
             "filename" : "Questo nome è utilizzato internamente per identificare la propria applicazione. Deve essere un identificatore valido (a-z, A-Z, 0-9, _).",
-
-            // TODO CHANGED
-            // OLD: Is your app for a specific role only? Otherwise choose 'Any Role'.
-            // NEW: Is your application for a specific role only? Otherwise choose 'Any Role'.
             "targetUserRole" : "La propria applicazione è destinata esclusivamente a un ruolo specifico? In caso contrario scegliere 'Qualsiasi ruolo'.",
-
-            // TODO CHANGED
-            // OLD: Choose 'Plugin' if your app will run as MIDATA portal plugin. Choose 'Mobile App' for an external application. Choose 'Service' for a server-side only script. Choose 'OAuth1 Import' or 'OAuth2 Import' if you need to connect to an external server using OAuth1 or OAuth2.
-            // NEW: Choose 'Plugin' if your application will run on the MIDATA portal. Choose 'Mobile App' for an external application. Choose 'Service' for a server-side only script. Choose 'OAuth1 Import' or 'OAuth2 Import' if you need to connect to an external server using OAuth1 or OAuth2.
             "type" : "Scegliere 'Plugin' se la propria applicazione sarà eseguita sul portale MIDATA. Scegliere 'Mobile App' per un'applicazione esterna. Scegliere 'Servizio' per uno script solo lato server. Scegliere 'OAuth1 Import' o 'OAuth2 Import' se è necessario collegarsi a un server esterno utilizzando OAuth1 o OAuth2.",
-
-            // TODO CHANGED
-            // OLD: The name of your app or plugin that will be presented to the end user.
-            // NEW: The name of your application or plugin that will be presented to the end user.
             "name" : "Il nome, della propria applicazione o plugin, che sarà presentato all'utente finale.",
             "description" : "La descrizione del proprio plugin che sarà visualizzata anche nel punto contrassegnato.",
             "tokenExchangeParams" : "La definizione predefinita è client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> tuttavia alcuni servizi richiedono anche client_secret=<client_secret> oppure nessun client_id",
@@ -195,35 +177,15 @@
 
     "appdebug" : {
         "title" : "API Tester",
-
-        // TODO CHANGED
-        // OLD: Login
-        // NEW: Log in
         "login" : "Accedi",
-
-        // TODO NEW: OAuth Login
         "oauth_login" : "OAuth Login",
-
-        // TODO NEW: Device
         "device" : "Device",
-
-        // TODO NEW: Refresh-Token
-        "refresh_token" : "Refresh-Token",
-
-        // TODO NEW: Serverside Scripts
-        "backend_services" : "Serverside Scripts",
-
-        // TODO NEW: Username
-        "portal_username" : "Username",
-
-        // TODO NEW: Password
+        "refresh_token" : "Refresh Token",
+        "backend_services" : "Scripts lato server",
+        "portal_username" : "Nome utente",
         "portal_password" : "Password",
-
-        // TODO NEW: Use plugin instance:
-        "portal_login" : "Use plugin instance:",
-
-        // TODO NEW: Portal login + get space token
-        "portal_login_btn" : "Portal login + get space token"
+        "portal_login" : "Utilizza l'istanza del plugin:",
+        "portal_login_btn" : "Login al portale + ottenere token"
     },
 
     "appicon" : {
@@ -265,30 +227,14 @@
             "init" : "Quando aggiunto"
         },
         "actions" : {
-
-            // TODO CHANGED
-            // OLD: Call Rest-Hook
-            // NEW: Call REST hook
             "rest-hook" : "Chiamare un REST Hook",
-
-            // TODO CHANGED
-            // OLD: Send E-mail
-            // NEW: Send email
             "email" : "Inviare e-mail",
-
-            // TODO CHANGED
-            // OLD: Call node script
-            // NEW: Call Node.js script
             "nodejs" : "Chiamare Node.js script"
         },
         "debug" : {
             "title" : "Prova il vostro codice di backend sul vostro computer",
             "description" : "È possibile testare il codice di elaborazione dell'abbonamenti (Subscriptions) lato server sul computer locale.",
             "description2" : "Scaricare il tester di abbonamento  (Subscription) ed eseguirlo con il codice di connessione dato.",
-
-            // TODO CHANGED
-            // OLD: This works only with your developer account, any account created using your developer account and only as long as the application is in development.
-            // NEW: This works only with your developer account or any account created using your developer account and only as long as the application is in development.
             "description3" : "Questo funziona solo con il vostro account di sviluppatore o qualsiasi account creato utilizzando il vostro account di sviluppatore e solo fino a quando l'applicazione è in fase di sviluppo.",
             "start_btn" : "Iniziare il debugging",
             "stop_btn" : "Interrompere il debugging",

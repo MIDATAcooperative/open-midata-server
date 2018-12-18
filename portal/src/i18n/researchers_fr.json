@@ -81,10 +81,6 @@
             "not_validated_research" : "Non confirmé par le chercheur",
             "not_validated_developer" : "Non confirmé par le développeur",
             "study_wrong_status" : "Inactif en raison de l'état d'études",
-
-            // TODO CHANGED
-            // OLD: Study does not allow to join using an app
-            // NEW: Study does not allow to join using an application
             "study_no_app_participation" : "L'adhésion à l'étude n'est pas permise depuis une application"
         },
         "select_btn" : "Voir",

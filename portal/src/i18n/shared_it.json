@@ -87,19 +87,13 @@
             "groupsystem" : "È obbligatorio immettere il sistema del gruppo.",
             "token" : "Token mancante o errato.",
             "agb" : "Condizioni generali di contratto non accettate.",
-
-            // TODO CHANGED
-            // OLD: Privacy policy must be accepted.
-            // NEW: Privacy Policy must be accepted.
             "privacypolicy" : "Le politiche sulla privacy devono essere accettate.",
             "study_accept" : "La partecipazione allo studio deve essere accettata.",
             "study_group" : "Il partecipante deve dapprima essere assegnato a un gruppo.",
             "confirmation" : "Per prima cosa è richiesta la conferma dell'utente.",
             "file" : "Nessun file selezionato per il caricamento",
             "access_query" : "Nessun dati selezionato",
-
-            // TODO NEW: This plugin does not exist in your account.
-            "plugin" : "This plugin does not exist in your account."
+            "plugin" : "Questo plugin non esiste nel vostro account."
         },
 
         "unknown" : {
@@ -439,10 +433,6 @@
             "service" : "Servizio",
             "oauth1" : "OAuth 1",
             "oauth2" : "OAuth 2",
-
-            // TODO CHANGED
-            // OLD: App (Smartphone, Web)
-            // NEW: Appplication (Smartphone, Web)
             "mobile" : "Applicazione (Smartphone, Web)"
         },
         "infos" : {
@@ -543,10 +533,6 @@
         "password" : "Password",
         "password_repetition" : "Ripetere la password",
         "secure" : "Protezione dell'account",
-
-        // TODO CHANGED
-        // OLD: Please encrypt my account key with my PASSWORD. I promise to not forget my password.
-        // NEW: Encrypt my account key with my PASSWORD. Warning: if you forget your password, it may take several days to recover your account key!
         "secure2" : "Cripta la chiave del mio account con la mia PASSWORD. Attenzione: se si dimentica la password, potrebbero volerci diversi giorni per recuperare la chiave dell'account!",
         "firstname" : "Nome",
         "lastname" : "Cognome",
@@ -656,34 +642,14 @@
         "address_entered" : "Per utilizzare questo servizio è richiesto il tuo indirizzo postale; ti invitiamo a inserirlo.",
         "phone_entered" : "Per utilizzare questo servizio è richiesto un numero di telefono cellulare; ti invitiamo a inserirlo.",
         "admin_verified" : "Il tuo account deve essere sbloccato da un amministratore MIDATA. Riprova più tardi. Se trascorse più di 24 ore il tuo account non è stato sbloccato, contatta MIDATA.",
-
-        // TODO CHANGED
-        // OLD: The MIDATA terms and conditions have been updated. Please confirm that you agree to the new version.
-        // NEW: The MIDATA General Terms and Conditions have been updated. Please confirm that you agree to the new version.
         "terms_agreed" : "I Condizioni generali di contratto MIDATA sono stati aggiornati. Si prega di confermare di accettare la nuova versione.",
-
-        // TODO CHANGED
-        // OLD: The MIDATA privacy policy has been updated. Please confirm that you agree to the new version.
-        // NEW: The MIDATA Privacy Policy has been updated. Please confirm that you agree to the new version.
         "privacy_policy_agreed" : "La Dichiarazione sui dati personali di MIDATA è stata aggiornata. Si prega di confermare di accettare la nuova versione.",
         "agree_btn" : "Sono d'accordo",
         "keyrecovery" : {
-
-            // TODO CHANGED
-            // OLD: The private key that is used to encrypt your accounts data needs to be recovered. In order to recover your key try one of these:
-            // NEW: The private key that is used to encrypt your data needs to be recovered. In order to recover your key, try one of these options:
             "intro" : "La chiave privata utilizzata per crittografare i dati deve essere recuperata. Per recuperare la chiave, provare una di queste opzioni:",
-
-            // TODO CHANGED
-            // OLD: Do you have any app using Midata where you are still logged in? If yes open that app and your key will be recovered. Try to login again afterwards.
-            // NEW: Do you have any application using MIDATA where you are still logged in? If yes, open that application and your key will be recovered. Try to login again afterwards.
             "way1" : "Hai qualche applicazione che utilizza MIDATA dove sei ancora connesso? Se sì, apri l'applicazione e la tua chiave verrà recuperata. Prova ad effettuare nuovamente il login in seguito.",
             "way2" : "Hai già effettuato l'accesso utilizzando un browser? Se sì, prova ad accedere utilizzando lo stesso browser e lo stesso dispositivo.",
             "way3" : "Ricordi di nuovo la tua vecchia password? Se sì, prova ad accedere utilizzando la tua vecchia password.",
-
-            // TODO CHANGED
-            // OLD: Wait for Midata employees to do a manual key recovery. We will send you an email when the recovery has been done. Please wait up to seven days for the recovery to be completed.
-            // NEW: Wait for MIDATA employees to do a manual key recovery. MIDATA will send you an email when the recovery has been done. Please wait up to five working days for the recovery to be completed.
             "way4" : "Attendere che i dipendenti MIDATA eseguano un recupero manuale della chiave. MIDATA vi invierà un'e-mail quando il recupero è stato fatto. Attendere fino a cinque giorni lavorativi per completare il recupero."
         }
     },

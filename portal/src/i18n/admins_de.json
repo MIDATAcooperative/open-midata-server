@@ -192,15 +192,7 @@
     },
 
     "admin_pwrecover" : {
-
-        // TODO CHANGED
-        // OLD: Password Recovery
-        // NEW: Key Recovery
         "menu" : "Schlüssel-Wiederherstellung",
-
-        // TODO CHANGED
-        // OLD: Password Recovery
-        // NEW: Key Recovery
         "title" : "Schlüssel-Wiederherstellung",
         "empty" : "Derzeit läuft kein Wiederherstellungsprozess.",
         "name" : "Benutzer",
