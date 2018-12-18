@@ -86,7 +86,7 @@
        "groupsystem" : "Group system must be provided.",
        "token" : "Missing or bad token.",
        "agb" : "General Terms and Conditions not accepted.",
-       "privacypolicy" : "Privacy policy must be accepted.",
+       "privacypolicy" : "Privacy Policy must be accepted.",
        "study_accept" : "Study participation must be accepted.",
        "study_group" : "Participant must first be assigned to a group.",
        "confirmation" : "Confirmation by user required first.",
@@ -432,7 +432,7 @@
 	   "service" : "Service",
 	   "oauth1" : "OAuth 1",
 	   "oauth2" : "OAuth 2",
-	   "mobile" : "App (Smartphone, Web)"
+	   "mobile" : "Appplication (Smartphone, Web)"
 	 },
 	 "infos" : {
 	   "SUMMARY" : "Short Summary",
@@ -532,7 +532,7 @@
     "password" : "Password",
     "password_repetition" : "Repeat Password",
     "secure" : "Account Protection",
-    "secure2" : "Please encrypt my account key with my PASSWORD. I promise to not forget my password.",
+    "secure2" : "Encrypt my account key with my PASSWORD. Warning: if you forget your password, it may take several days to recover your account key!",
     "firstname" : "First Name",
     "lastname" : "Surname",
     "gender" : "Gender",
@@ -641,16 +641,15 @@
     "address_entered" : "Your postal address is required to use this service, please provide it.",
     "phone_entered" : "A mobile phone number is required to use this service, please provide it.",
     "admin_verified" : "Your account must be unlocked by a MIDATA administrator. Please retry later. If your account has not been unlocked for more than 24 hours, please contact MIDATA.",
-    
-    "terms_agreed" : "The MIDATA terms and conditions have been updated. Please confirm that you agree to the new version.",
-    "privacy_policy_agreed" : "The MIDATA privacy policy has been updated. Please confirm that you agree to the new version.",
+    "terms_agreed" : "The MIDATA General Terms and Conditions have been updated. Please confirm that you agree to the new version.",
+    "privacy_policy_agreed" : "The MIDATA Privacy Policy has been updated. Please confirm that you agree to the new version.",
     "agree_btn" : "I agree",
     "keyrecovery" : {
-      "intro" : "The private key that is used to encrypt your accounts data needs to be recovered. In order to recover your key try one of these:",
-      "way1" : "Do you have any app using Midata where you are still logged in? If yes open that app and your key will be recovered. Try to login again afterwards.",
+      "intro" : "The private key that is used to encrypt your data needs to be recovered. In order to recover your key, try one of these options:",
+      "way1" : "Do you have any application using MIDATA where you are still logged in? If yes, open that application and your key will be recovered. Try to login again afterwards.",
       "way2" : "Have you logged in using a browser before? If yes try to log in using the same browser and device.",
       "way3" : "Remember your old password again? If yes try to log in using your old password.",
-      "way4" : "Wait for Midata employees to do a manual key recovery. We will send you an email when the recovery has been done. Please wait up to seven days for the recovery to be completed."
+      "way4" : "Wait for MIDATA employees to do a manual key recovery. MIDATA will send you an email when the recovery has been done. Please wait up to five working days for the recovery to be completed."
     }
   },
 
@@ -962,7 +961,7 @@
   },
 
   "dashboard" : {
-    "help_welcome" : "Welcome to MIDATA",   
+    "help_welcome" : "Welcome to MIDATA",
     "myviews" : "My Views",
     "mydata" : "My personal data",
     "mydata_text" : "Manage your health data. Enter new data and visualize existing data.",

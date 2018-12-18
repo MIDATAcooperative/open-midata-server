@@ -5,34 +5,12 @@
             <group resname="navbar" id="navbar">
                 <trans-unit resname="me" id="navbar.me">
                     <source>Timeline</source>
-                    <target>Pannello</target>
                 </trans-unit>
             </group>
             <group resname="enum" id="enum">
-                <group resname="studytype" id="enum.studytype">
-                    <trans-unit resname="COMMUNITY" id="enum.studytype.COMMUNITY">
-                        <source>Community</source>
-                        <target>Comunità (utilizzo dei dati solo per la fornitura di servizi ai partecipanti)</target>
-                    </trans-unit>
-                </group>
-                <group resname="joinmethod" id="enum.joinmethod">
-                    <trans-unit resname="ALGORITHM" id="enum.joinmethod.ALGORITHM">
-                        <source>Participant has been proposed by an algorithm (not supported)</source>
-                        <target>Il partecipante è stato proposto da un algoritmo (non supportato)</target>
-                    </trans-unit>
-                    <trans-unit resname="TRANSFER" id="enum.joinmethod.TRANSFER">
-                        <source>Data is transferred from another study (not supported)</source>
-                        <target>I dati vengono trasferiti da un altro studio (non supportato)</target>
-                    </trans-unit>
-                </group>
                 <group resname="researcherrole" id="enum.researcherrole">
                     <trans-unit resname="SPONSOR" id="enum.researcherrole.SPONSOR">
                         <source>Sponsor</source>
-                    </trans-unit>
-                </group>
-                <group resname="language" id="enum.language">
-                    <trans-unit resname="INT" id="enum.language.INT">
-                        <source>Default / Non localized</source>
                     </trans-unit>
                 </group>
                 <group resname="month" id="enum.month">
@@ -53,52 +31,14 @@
                     <trans-unit resname="visualization" id="enum.plugintype.visualization">
                         <source>Plugin</source>
                     </trans-unit>
+                    <trans-unit resname="service" id="enum.plugintype.service">
+                        <source>Service</source>
+                    </trans-unit>
                     <trans-unit resname="oauth1" id="enum.plugintype.oauth1">
                         <source>OAuth 1</source>
                     </trans-unit>
                     <trans-unit resname="oauth2" id="enum.plugintype.oauth2">
                         <source>OAuth 2</source>
-                    </trans-unit>
-                </group>
-                <group resname="infos" id="enum.infos">
-                    <trans-unit resname="SUMMARY" id="enum.infos.SUMMARY">
-                        <source>Short Summary</source>
-                    </trans-unit>
-                    <trans-unit resname="DESCRIPTION" id="enum.infos.DESCRIPTION">
-                        <source>What is this study doing?</source>
-                    </trans-unit>
-                    <trans-unit resname="HOMEPAGE" id="enum.infos.HOMEPAGE">
-                        <source>Link to project homepage</source>
-                    </trans-unit>
-                    <trans-unit resname="CONTACT" id="enum.infos.CONTACT">
-                        <source>Contact information</source>
-                    </trans-unit>
-                    <trans-unit resname="INSTRUCTIONS" id="enum.infos.INSTRUCTIONS">
-                        <source>Instructions for participants</source>
-                    </trans-unit>
-                    <trans-unit resname="PURPOSE" id="enum.infos.PURPOSE">
-                        <source>What is the purpose of this research?</source>
-                    </trans-unit>
-                    <trans-unit resname="AUDIENCE" id="enum.infos.AUDIENCE">
-                        <source>Are there limitations on who should participate?</source>
-                    </trans-unit>
-                    <trans-unit resname="LOCATION" id="enum.infos.LOCATION">
-                        <source>At which state or region is this study taking place?</source>
-                    </trans-unit>
-                    <trans-unit resname="PHASE" id="enum.infos.PHASE">
-                        <source>What is the state of progression of the research taking place?</source>
-                    </trans-unit>
-                    <trans-unit resname="SPONSOR" id="enum.infos.SPONSOR">
-                        <source>Who is initiator of the research and who is legally responsible?</source>
-                    </trans-unit>
-                    <trans-unit resname="SITE" id="enum.infos.SITE">
-                        <source>At which site are activities beeing conducted?</source>
-                    </trans-unit>
-                    <trans-unit resname="DEVICES" id="enum.infos.DEVICES">
-                        <source>Is there any special equipment required by a participant?</source>
-                    </trans-unit>
-                    <trans-unit resname="COMMENT" id="enum.infos.COMMENT">
-                        <source>Additional notes</source>
                     </trans-unit>
                 </group>
             </group>
@@ -113,6 +53,12 @@
                 <trans-unit resname="password" id="registration.password">
                     <source>Password</source>
                 </trans-unit>
+                <trans-unit resname="secure" id="registration.secure">
+                    <source>Account Protection</source>
+                </trans-unit>
+                <trans-unit resname="secure2" id="registration.secure2">
+                    <source>Please encrypt my account key with my PASSWORD. I promise to not forget my password.</source>
+                </trans-unit>
             </group>
             <group resname="login" id="login">
                 <trans-unit resname="password" id="login.password">
@@ -122,21 +68,41 @@
                     <source>Ally Science</source>
                 </trans-unit>
             </group>
+            <group resname="postregister" id="postregister">
+                <trans-unit resname="terms_agreed" id="postregister.terms_agreed">
+                    <source>The MIDATA terms and conditions have been updated. Please confirm that you agree to the new version.</source>
+                </trans-unit>
+                <trans-unit resname="privacy_policy_agreed" id="postregister.privacy_policy_agreed">
+                    <source>The MIDATA privacy policy has been updated. Please confirm that you agree to the new version.</source>
+                </trans-unit>
+                <trans-unit resname="agree_btn" id="postregister.agree_btn">
+                    <source>I agree</source>
+                </trans-unit>
+                <group resname="keyrecovery" id="postregister.keyrecovery">
+                    <trans-unit resname="intro" id="postregister.keyrecovery.intro">
+                        <source>The private key that is used to encrypt your accounts data needs to be recovered. In order to recover your key try one of these:</source>
+                    </trans-unit>
+                    <trans-unit resname="way1" id="postregister.keyrecovery.way1">
+                        <source>Do you have any app using Midata where you are still logged in? If yes open that app and your key will be recovered. Try to login again afterwards.</source>
+                    </trans-unit>
+                    <trans-unit resname="way2" id="postregister.keyrecovery.way2">
+                        <source>Have you logged in using a browser before? If yes try to log in using the same browser and device.</source>
+                    </trans-unit>
+                    <trans-unit resname="way3" id="postregister.keyrecovery.way3">
+                        <source>Remember your old password again? If yes try to log in using your old password.</source>
+                    </trans-unit>
+                    <trans-unit resname="way4" id="postregister.keyrecovery.way4">
+                        <source>Wait for Midata employees to do a manual key recovery. We will send you an email when the recovery has been done. Please wait up to seven days for the recovery to be completed.</source>
+                    </trans-unit>
+                </group>
+            </group>
             <group resname="studydetails" id="studydetails">
-                <trans-unit resname="request_participation_help" id="studydetails.request_participation_help">
-                    <source>If you want to be part of this research you may request participation.</source>
-                </trans-unit>
-                <trans-unit resname="do_not_participate_help" id="studydetails.do_not_participate_help">
-                    <source>If you do NOT want to participate you can click here. You will not be asked again and no data will be shared.</source>
-                </trans-unit>
                 <trans-unit resname="retreat_help" id="studydetails.retreat_help">
-                    <source>You are currently participating. If you no longer want to participate you may retreat from participation. Your shared data will be frozen at the moment of retreat and no new data will be shared. Once retreated you are not able to participate again.</source>
+                    <source>You are currently participating to this research. If you no longer want to participate you may retreat from participation. Your shared data will be frozen at the moment of retreat and no new data will be shared. Once retreated you are not able to participate again.</source>
+                    <target>Attualmente stai partecipando. Se non vuoi più partecipare puoi ritirarti dalla partecipazione. I vostri dati condivisi saranno congelati al momento del ritiro e non verranno condivisi nuovi dati. Una volta ritirato non sarai in grado di partecipare di nuovo.</target>
                 </trans-unit>
-                <trans-unit resname="recommended_apps" id="studydetails.recommended_apps">
-                    <source>Recommended Apps</source>
-                </trans-unit>
-                <trans-unit resname="use_app" id="studydetails.use_app">
-                    <source>Use now</source>
+                <trans-unit resname="for_participants" id="studydetails.for_participants">
+                    <source>Participation Info</source>
                 </trans-unit>
             </group>
             <group resname="user" id="user">
@@ -149,28 +115,9 @@
                     <source>{{name}}</source>
                 </trans-unit>
             </group>
-            <group resname="oauth2" id="oauth2">
-                <trans-unit resname="confirm_study_opt" id="oauth2.confirm_study_opt">
-                    <source>I accept to participate in the study</source>
-                </trans-unit>
-                <trans-unit resname="confirm_citizen_science" id="oauth2.confirm_citizen_science">
-                    <source>I accept to participate in the citizen science project</source>
-                </trans-unit>
-                <trans-unit resname="confirm_community" id="oauth2.confirm_community">
-                    <source>I accept the terms of use of the application and community services</source>
-                </trans-unit>
-                <trans-unit resname="confirm_community_opt" id="oauth2.confirm_community_opt">
-                    <source>I accept to share data with the community service</source>
-                </trans-unit>
-            </group>
             <group resname="dashboard" id="dashboard">
                 <trans-unit resname="social" id="dashboard.social">
                     <source>Social</source>
-                </trans-unit>
-            </group>
-            <group resname="taskdetails" id="taskdetails">
-                <trans-unit resname="plugin" id="taskdetails.plugin">
-                    <source>Plugin:</source>
                 </trans-unit>
             </group>
             <group resname="auditlog" id="auditlog">
@@ -187,71 +134,23 @@
                 </trans-unit>
             </group>
             <group resname="accountwipe" id="accountwipe">
-                <trans-unit resname="hello_m" id="accountwipe.hello_m">
-                    <source>Dear {{name}},</source>
-                </trans-unit>
-                <trans-unit resname="hello_w" id="accountwipe.hello_w">
-                    <source>Dear {{name}},</source>
-                </trans-unit>
                 <trans-unit resname="password" id="accountwipe.password">
                     <source>Password</source>
                 </trans-unit>
             </group>
             <group resname="queryeditor" id="queryeditor">
-                <trans-unit resname="title" id="queryeditor.title">
-                    <source>Data Access Filter Editor</source>
-                    <target>Editor Access Rights Editor</target>
-                </trans-unit>
                 <trans-unit resname="access_query" id="queryeditor.access_query">
                     <source>Data Access Filter</source>
-                    <target>Data Access Filter</target>
                 </trans-unit>
-                <trans-unit resname="short_app_other" id="queryeditor.short_app_other">
-                    <source>Only application:</source>
-                    <target>Solo l'applicazione:</target>
+                <trans-unit resname="format" id="queryeditor.format">
+                    <source>Data Format</source>
+                    <target>Risorsa</target>
                 </trans-unit>
-                <trans-unit resname="app_other" id="queryeditor.app_other">
-                    <source>Use data from application:</source>
-                    <target>Utilizzare i dati dall'applicazione:</target>
-                </trans-unit>
-                <trans-unit resname="time_restriction" id="queryeditor.time_restriction">
-                    <source>Creation / Update date</source>
-                    <target>Creazione / Aggiornamento tempo</target>
-                </trans-unit>
-                <trans-unit resname="make_selection" id="queryeditor.make_selection">
-                    <source>Please select a result to add from the left or only a fragment from the right column.</source>
-                    <target>Seleziona un risultato da aggiungere da sinistra o solo un frammento dalla colonna di destra.</target>
-                </trans-unit>
-                <trans-unit resname="search_empty" id="queryeditor.search_empty">
-                    <source>No matching datatype found.</source>
-                    <target>Non è stato trovato alcun tipo di dato corrispondente.</target>
-                </trans-unit>
-                <trans-unit resname="select_resources" id="queryeditor.select_resources">
-                    <source>Select which of these frequently used resources your application needs access to:</source>
-                    <target>Seleziona quale di queste risorse utilizzate di frequente l'applicazione deve accedere:</target>
-                </trans-unit>
-                <group resname="ask" id="queryeditor.ask">
-                    <trans-unit resname="Group" id="queryeditor.ask.Group">
-                        <source>Access to group definitions (either teams of health providers or researchers or groups defined as part of study results generation)</source>
-                        <target>Accesso alle definizioni dei gruppi (gruppi di operatori sanitari o di ricercatori o gruppi definiti come parte della generazione dei risultati dello studio)</target>
-                    </trans-unit>
-                    <trans-unit resname="Patient" id="queryeditor.ask.Patient">
-                        <source>Patient Records: name, email, address of MIDATA account holders</source>
-                        <target>Dati paziente: nome, e-mail, indirizzo dei titolari di account MIDATA</target>
-                    </trans-unit>
-                    <trans-unit resname="PseudonymizedPatient" id="queryeditor.ask.PseudonymizedPatient">
-                        <source>Patient Records: pseudonym, year of birth, country of study participants</source>
-                        <target>Dati paziente: pseudonimo, anno di nascita, paese di provenienza dei partecipanti allo studio</target>
-                    </trans-unit>
-                    <trans-unit resname="Practitioner" id="queryeditor.ask.Practitioner">
-                        <source>Practitioner Resource: search for health providers or researchers</source>
-                        <target>Risorsa Practitioner: ricerca di fornitori di assistenza sanitaria o ricercatori</target>
-                    </trans-unit>
-                </group>
             </group>
             <group resname="timeline" id="timeline">
                 <trans-unit resname="spaces" id="timeline.spaces">
-                    <source>Midata</source>
+                    <source>MIDATA</source>
+                    <target>MIDATA</target>
                 </trans-unit>
                 <trans-unit resname="title" id="timeline.title">
                     <source>Timeline</source>
@@ -261,31 +160,19 @@
     </file>
     <file source-language="en" target-language="it" datatype="winres" original="admins_it.json">
         <body>
-            <group resname="admin_managenews" id="admin_managenews">
-                <trans-unit resname="date" id="admin_managenews.date">
-                    <source>Official date</source>
+            <group resname="admin_address" id="admin_address">
+                <trans-unit resname="security" id="admin_address.security">
+                    <source>Account protection</source>
                 </trans-unit>
-                <trans-unit resname="appId" id="admin_managenews.appId">
-                    <source>Linked Application</source>
-                </trans-unit>
-                <trans-unit resname="studyId" id="admin_managenews.studyId">
-                    <source>Linked Study</source>
-                </trans-unit>
-                <trans-unit resname="layout" id="admin_managenews.layout">
-                    <source>Layout</source>
-                </trans-unit>
-                <group resname="layouts" id="admin_managenews.layouts">
-                    <trans-unit resname="small" id="admin_managenews.layouts.small">
-                        <source>Small (1x1)</source>
+                <group resname="security_type" id="admin_address.security_type">
+                    <trans-unit resname="KEY" id="admin_address.security_type.KEY">
+                        <source>Private key on server</source>
                     </trans-unit>
-                    <trans-unit resname="wide" id="admin_managenews.layouts.wide">
-                        <source>Wide (2x1)</source>
+                    <trans-unit resname="KEY_PASSPHRASE" id="admin_address.security_type.KEY_PASSPHRASE">
+                        <source>PASSPHRASE protected private key</source>
                     </trans-unit>
-                    <trans-unit resname="high" id="admin_managenews.layouts.high">
-                        <source>High (1x2)</source>
-                    </trans-unit>
-                    <trans-unit resname="large" id="admin_managenews.layouts.large">
-                        <source>Large (2x2)</source>
+                    <trans-unit resname="KEY_EXT_PASSWORD" id="admin_address.security_type.KEY_EXT_PASSWORD">
+                        <source>Password protected private key</source>
                     </trans-unit>
                 </group>
             </group>
@@ -294,13 +181,20 @@
                     <source>MIDATA Store</source>
                 </trans-unit>
             </group>
-            <group resname="admin_study" id="admin_study">
-                <trans-unit resname="joinmethods" id="admin_study.joinmethods">
-                    <source>Participation procedures</source>
-                    <target>Procedure di partecipazione</target>
+            <group resname="admin_terms" id="admin_terms">
+                <trans-unit resname="restrict_name" id="admin_terms.restrict_name">
+                    <source>Filter by name</source>
                 </trans-unit>
-                <trans-unit resname="type" id="admin_study.type">
-                    <source>Type</source>
+            </group>
+            <group resname="admin_study" id="admin_study">
+                <trans-unit resname="infos" id="admin_study.infos">
+                    <source>Public information</source>
+                </trans-unit>
+                <trans-unit resname="infos_part" id="admin_study.infos_part">
+                    <source>Information for participants</source>
+                </trans-unit>
+                <trans-unit resname="infos_internal" id="admin_study.infos_internal">
+                    <source>Internal Information</source>
                 </trans-unit>
                 <trans-unit resname="sharing_query" id="admin_study.sharing_query">
                     <source>Data Access Filter</source>
@@ -308,14 +202,310 @@
                 <trans-unit resname="team" id="admin_study.team">
                     <source>Team</source>
                 </trans-unit>
-                <trans-unit resname="links" id="admin_study.links">
-                    <source>Linked Applications</source>
-                </trans-unit>
             </group>
             <group resname="admin_stats" id="admin_stats">
                 <trans-unit resname="indexPageCount" id="admin_stats.indexPageCount">
                     <source>DB Index Pages</source>
                 </trans-unit>
+                <group resname="health" id="admin_stats.health">
+                    <trans-unit resname="title" id="admin_stats.health.title">
+                        <source>System Health</source>
+                    </trans-unit>
+                    <trans-unit resname="servicekey" id="admin_stats.health.servicekey">
+                        <source>Background service key present?</source>
+                    </trans-unit>
+                    <trans-unit resname="requestkey_btn" id="admin_stats.health.requestkey_btn">
+                        <source>Request Key Recovery</source>
+                    </trans-unit>
+                    <trans-unit resname="cluster" id="admin_stats.health.cluster">
+                        <source>Cluster status</source>
+                    </trans-unit>
+                </group>
+            </group>
+            <group resname="admin_pwrecover" id="admin_pwrecover">
+                <trans-unit resname="menu" id="admin_pwrecover.menu">
+                    <source>Password Recovery</source>
+                </trans-unit>
+                <trans-unit resname="title" id="admin_pwrecover.title">
+                    <source>Password Recovery</source>
+                </trans-unit>
+                <trans-unit resname="empty" id="admin_pwrecover.empty">
+                    <source>There is currently no recovery process running.</source>
+                </trans-unit>
+                <trans-unit resname="name" id="admin_pwrecover.name">
+                    <source>User</source>
+                </trans-unit>
+                <trans-unit resname="started" id="admin_pwrecover.started">
+                    <source>Date</source>
+                </trans-unit>
+                <trans-unit resname="share" id="admin_pwrecover.share">
+                    <source>Share</source>
+                </trans-unit>
+                <trans-unit resname="decrypted" id="admin_pwrecover.decrypted">
+                    <source>Decrypted share</source>
+                </trans-unit>
+                <trans-unit resname="myid" id="admin_pwrecover.myid">
+                    <source>My recovery id</source>
+                </trans-unit>
+                <trans-unit resname="instr1" id="admin_pwrecover.instr1">
+                    <source>Click on a share to copy the encrypted share into the clipboard.</source>
+                </trans-unit>
+                <trans-unit resname="instr2" id="admin_pwrecover.instr2">
+                    <source>Decrypt share on Ubuntu: (click line to copy it to clipboard)</source>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+    <file source-language="en" target-language="it" datatype="winres" original="developers_it.json">
+        <body>
+            <group resname="developer_navbar" id="developer_navbar">
+                <trans-unit resname="sandbox" id="developer_navbar.sandbox">
+                    <source>Sandbox</source>
+                </trans-unit>
+            </group>
+            <group resname="developer_yourapps" id="developer_yourapps">
+                <trans-unit resname="empty" id="developer_yourapps.empty">
+                    <source>You have not registered any plugin yet.</source>
+                </trans-unit>
+                <trans-unit resname="register" id="developer_yourapps.register">
+                    <source>Register a new plugin</source>
+                </trans-unit>
+                <trans-unit resname="name" id="developer_yourapps.name">
+                    <source>Name</source>
+                </trans-unit>
+                <trans-unit resname="type" id="developer_yourapps.type">
+                    <source>Type</source>
+                </trans-unit>
+                <trans-unit resname="role" id="developer_yourapps.role">
+                    <source>Target Role</source>
+                </trans-unit>
+                <trans-unit resname="manage_btn" id="developer_yourapps.manage_btn">
+                    <source>manage</source>
+                </trans-unit>
+                <trans-unit resname="debug_info_btn" id="developer_yourapps.debug_info_btn">
+                    <source>debug info</source>
+                </trans-unit>
+            </group>
+            <group resname="appmessages" id="appmessages">
+                <group resname="reasons" id="appmessages.reasons">
+                    <trans-unit resname="USER_PRIVATE_KEY_RECOVERED" id="appmessages.reasons.USER_PRIVATE_KEY_RECOVERED">
+                        <source>User key recovery completed</source>
+                    </trans-unit>
+                    <trans-unit resname="RESOURCE_CHANGE" id="appmessages.reasons.RESOURCE_CHANGE">
+                        <source>Change of resource [code]</source>
+                    </trans-unit>
+                    <trans-unit resname="PROCESS_MESSAGE" id="appmessages.reasons.PROCESS_MESSAGE">
+                        <source>Process FHIR messgage with event [code]</source>
+                    </trans-unit>
+                </group>
+            </group>
+            <group resname="manageapp" id="manageapp">
+                <trans-unit resname="subscriptions_btn" id="manageapp.subscriptions_btn">
+                    <source>Change Default Subscriptions</source>
+                </trans-unit>
+                <trans-unit resname="subscriptions_help" id="manageapp.subscriptions_help">
+                    <source>Define triggers that cause an action on the MIDATA server</source>
+                </trans-unit>
+                <trans-unit resname="link_help" id="manageapp.link_help">
+                    <source>Apps may offer or require participation to a study. Studies may recommend plugin or app use.</source>
+                    <target>Le applicazioni possono offrire o richiedere la partecipazione a uno studio. Gli studi possono raccomandare l'uso di plugin o app.</target>
+                </trans-unit>
+                <trans-unit resname="debug_btn" id="manageapp.debug_btn">
+                    <source>API Tester Sandbox</source>
+                </trans-unit>
+                <group resname="info" id="manageapp.info">
+                    <trans-unit resname="type" id="manageapp.info.type">
+                        <source>Choose 'Plugin' if your app will run as MIDATA portal plugin. Choose 'Mobile App' for an external application. Choose 'Service' for a server-side only script. Choose 'OAuth1 Import' or 'OAuth2 Import' if you need to connect to an external server using OAuth1 or OAuth2.</source>
+                        <target>Scegliere 'Plugin' se la propria applicazione sarà eseguita come plugin del portale MIDATA. Scegliere 'Mobile App' per un'applicazione esterna. Scegliere 'OAuth1 Import' o 'OAuth2 Import' se è necessario collegarsi a un server esterno utilizzando OAuth1 o OAuth2.</target>
+                    </trans-unit>
+                </group>
+                <trans-unit resname="access_query_json" id="manageapp.access_query_json">
+                    <source>Data Access Filter</source>
+                </trans-unit>
+            </group>
+            <group resname="appdebug" id="appdebug">
+                <trans-unit resname="title" id="appdebug.title">
+                    <source>API Tester</source>
+                </trans-unit>
+                <trans-unit resname="login" id="appdebug.login">
+                    <source>Login</source>
+                </trans-unit>
+            </group>
+            <group resname="appicon" id="appicon">
+                <group resname="type" id="appicon.type">
+                    <trans-unit resname="image/jpeg" id="appicon.type.image/jpeg">
+                        <source>JPEG</source>
+                    </trans-unit>
+                    <trans-unit resname="image/png" id="appicon.type.image/png">
+                        <source>PNG</source>
+                    </trans-unit>
+                    <trans-unit resname="image/gif" id="appicon.type.image/gif">
+                        <source>GIF</source>
+                    </trans-unit>
+                </group>
+            </group>
+            <group resname="appsubscriptions" id="appsubscriptions">
+                <trans-unit resname="title" id="appsubscriptions.title">
+                    <source>Default Subscriptions</source>
+                </trans-unit>
+                <trans-unit resname="empty" id="appsubscriptions.empty">
+                    <source>There are no default subscriptions defined.</source>
+                </trans-unit>
+                <trans-unit resname="trigger" id="appsubscriptions.trigger">
+                    <source>Trigger</source>
+                </trans-unit>
+                <trans-unit resname="triggerDetail" id="appsubscriptions.triggerDetail">
+                    <source>FHIR Resource</source>
+                </trans-unit>
+                <trans-unit resname="action" id="appsubscriptions.action">
+                    <source>Action</source>
+                </trans-unit>
+                <trans-unit resname="params" id="appsubscriptions.params">
+                    <source>URL / Filename</source>
+                </trans-unit>
+                <group resname="triggers" id="appsubscriptions.triggers">
+                    <trans-unit resname="fhir_Consent" id="appsubscriptions.triggers.fhir_Consent">
+                        <source>Consent changes</source>
+                    </trans-unit>
+                    <trans-unit resname="fhir_MessageHeader" id="appsubscriptions.triggers.fhir_MessageHeader">
+                        <source>FHIR message</source>
+                    </trans-unit>
+                    <trans-unit resname="fhir_Resource" id="appsubscriptions.triggers.fhir_Resource">
+                        <source>Resource changes</source>
+                    </trans-unit>
+                    <trans-unit resname="time" id="appsubscriptions.triggers.time">
+                        <source>Daily</source>
+                    </trans-unit>
+                    <trans-unit resname="init" id="appsubscriptions.triggers.init">
+                        <source>When added</source>
+                    </trans-unit>
+                </group>
+                <group resname="actions" id="appsubscriptions.actions">
+                    <trans-unit resname="rest-hook" id="appsubscriptions.actions.rest-hook">
+                        <source>Call Rest-Hook</source>
+                    </trans-unit>
+                    <trans-unit resname="email" id="appsubscriptions.actions.email">
+                        <source>Send E-mail</source>
+                    </trans-unit>
+                    <trans-unit resname="nodejs" id="appsubscriptions.actions.nodejs">
+                        <source>Call node script</source>
+                    </trans-unit>
+                </group>
+                <group resname="debug" id="appsubscriptions.debug">
+                    <trans-unit resname="title" id="appsubscriptions.debug.title">
+                        <source>Test your backend code on your computer</source>
+                    </trans-unit>
+                    <trans-unit resname="description" id="appsubscriptions.debug.description">
+                        <source>You can test your server-side subscription processing code on your local computer.</source>
+                    </trans-unit>
+                    <trans-unit resname="description2" id="appsubscriptions.debug.description2">
+                        <source>Download the subscription tester and run it with the given connection code.</source>
+                    </trans-unit>
+                    <trans-unit resname="description3" id="appsubscriptions.debug.description3">
+                        <source>This works only with your developer account, any account created using your developer account and only as long as the application is in development.</source>
+                    </trans-unit>
+                    <trans-unit resname="start_btn" id="appsubscriptions.debug.start_btn">
+                        <source>Start debugging</source>
+                    </trans-unit>
+                    <trans-unit resname="stop_btn" id="appsubscriptions.debug.stop_btn">
+                        <source>Stop debugging</source>
+                    </trans-unit>
+                    <trans-unit resname="cmd_to_run" id="appsubscriptions.debug.cmd_to_run">
+                        <source>Command to run on your computer:</source>
+                    </trans-unit>
+                </group>
+            </group>
+        </body>
+    </file>
+    <file source-language="en" target-language="it" datatype="winres" original="researchers_it.json">
+        <body>
+            <group resname="studynav" id="studynav">
+                <trans-unit resname="team" id="studynav.team">
+                    <source>Team</source>
+                </trans-unit>
+            </group>
+            <group resname="studyactions" id="studyactions">
+                <trans-unit resname="datalink" id="studyactions.datalink">
+                    <source>Aggregators, Analysis and Interpretation Apps</source>
+                    <target>Aggregatori, applicazioni di analisi e interpretazione</target>
+                </trans-unit>
+                <group resname="types" id="studyactions.types">
+                    <trans-unit resname="OFFER_P" id="studyactions.types.OFFER_P">
+                        <source>Application or plugin offers study participation upon login/start</source>
+                        <target>L'applicazione o il plugin offre la partecipazione allo studio al momento del accedi/avvio</target>
+                    </trans-unit>
+                    <trans-unit resname="REQUIRE_P" id="studyactions.types.REQUIRE_P">
+                        <source>Study participation is required to use the application or plugin</source>
+                        <target>La partecipazione allo studio è necessaria per utilizzare l'applicazione o il plugin</target>
+                    </trans-unit>
+                    <trans-unit resname="RECOMMEND_A" id="studyactions.types.RECOMMEND_A">
+                        <source>Application or plugin is recommended by study</source>
+                        <target>L'applicazione o il plugin è raccomandato dallo studio</target>
+                    </trans-unit>
+                    <trans-unit resname="DATALINK" id="studyactions.types.DATALINK">
+                        <source>Application shares data to study participants</source>
+                        <target>L'applicazione condivide i dati con i partecipanti allo studio</target>
+                    </trans-unit>
+                </group>
+                <group resname="types_short" id="studyactions.types_short">
+                    <trans-unit resname="OFFER_P" id="studyactions.types_short.OFFER_P">
+                        <source>Suggest participation</source>
+                        <target>Suggerire la partecipazione</target>
+                    </trans-unit>
+                    <trans-unit resname="AUTOADD_A" id="studyactions.types_short.AUTOADD_A">
+                        <source>Add automatically</source>
+                        <target>Aggiungere automaticamente</target>
+                    </trans-unit>
+                    <trans-unit resname="DATALINK" id="studyactions.types_short.DATALINK">
+                        <source>Data Sharing</source>
+                        <target>Condivisione dei dati</target>
+                    </trans-unit>
+                </group>
+            </group>
+            <group resname="studyoverview" id="studyoverview">
+                <group resname="confirm" id="studyoverview.confirm">
+                    <trans-unit resname="validation" id="studyoverview.confirm.validation">
+                        <source>Setup cannot be changed anymore. Validation process by MIDATA will be started.</source>
+                    </trans-unit>
+                    <trans-unit resname="end_participant_search" id="studyoverview.confirm.end_participant_search">
+                        <source>No additional users will be able to participate anymore.</source>
+                    </trans-unit>
+                    <trans-unit resname="finish_execution" id="studyoverview.confirm.finish_execution">
+                        <source>All study data will be frozen at this moment.</source>
+                    </trans-unit>
+                    <trans-unit resname="delete" id="studyoverview.confirm.delete">
+                        <source>The research project will be completely wiped from the platform.</source>
+                    </trans-unit>
+                    <trans-unit resname="abort" id="studyoverview.confirm.abort">
+                        <source>All study data will be frozen at this moment. This project will be marked as failed.</source>
+                    </trans-unit>
+                    <trans-unit resname="are_you_sure" id="studyoverview.confirm.are_you_sure">
+                        <source>This operation cannot be undone. Are you sure?</source>
+                    </trans-unit>
+                </group>
+            </group>
+            <group resname="studyrules" id="studyrules">
+                <trans-unit resname="sharing_query" id="studyrules.sharing_query">
+                    <source>Data Access Filter</source>
+                </trans-unit>
+            </group>
+            <group resname="study_checklist" id="study_checklist">
+                <trans-unit resname="information" id="study_checklist.information">
+                    <source>Public information about your research</source>
+                    <target>Informazioni pubbliche sulla vostra ricerca</target>
+                </trans-unit>
+            </group>
+            <group resname="studyinfo" id="studyinfo">
+                <group resname="visibilities" id="studyinfo.visibilities">
+                    <trans-unit resname="PARTICIPANTS" id="studyinfo.visibilities.PARTICIPANTS">
+                        <source>all participants</source>
+                        <target>tutti i partecipanti</target>
+                    </trans-unit>
+                    <trans-unit resname="INTERNAL" id="studyinfo.visibilities.INTERNAL">
+                        <source>only researchers and MIDATA</source>
+                        <target>solo ricercatori e MIDATA</target>
+                    </trans-unit>
+                </group>
             </group>
         </body>
     </file>
@@ -339,70 +529,6 @@
             </group>
         </body>
     </file>
-    <file source-language="en" target-language="it" datatype="winres" original="developers_it.json">
-        <body>
-            <group resname="developer_navbar" id="developer_navbar">
-                <trans-unit resname="sandbox" id="developer_navbar.sandbox">
-                    <source>Sandbox</source>
-                </trans-unit>
-            </group>
-            <group resname="manageapp" id="manageapp">
-                <trans-unit resname="previewlogin" id="manageapp.previewlogin">
-                    <source>OAuth Login</source>
-                </trans-unit>
-                <trans-unit resname="previewlogin2" id="manageapp.previewlogin2">
-                    <source>Preview OAuth Login Page</source>
-                </trans-unit>
-                <trans-unit resname="query_btn" id="manageapp.query_btn">
-                    <source>Change Data Access Filter</source>
-                    <target>Modifica Data Access Filter</target>
-                </trans-unit>
-                <trans-unit resname="query_help" id="manageapp.query_help">
-                    <source>Define which types of data your application may access.</source>
-                    <target>Definisce i tipi di dati ai quali l'applicazione può accedere.</target>
-                </trans-unit>
-                <trans-unit resname="link_btn" id="manageapp.link_btn">
-                    <source>Links with Studies</source>
-                </trans-unit>
-                <trans-unit resname="link_help" id="manageapp.link_help">
-                    <source>Apps may offer or require study participation. Studies may recommend plugin or app use.</source>
-                </trans-unit>
-                <trans-unit resname="debug_btn" id="manageapp.debug_btn">
-                    <source>API Tester Sandbox</source>
-                </trans-unit>
-                <trans-unit resname="access_query_json" id="manageapp.access_query_json">
-                    <source>Data Access Filter</source>
-                </trans-unit>
-                <trans-unit resname="queryeditor_btn" id="manageapp.queryeditor_btn">
-                    <source>Go to the Data Access Filter editor</source>
-                    <target>Va all'editor Data Access Filter</target>
-                </trans-unit>
-            </group>
-            <group resname="appdebug" id="appdebug">
-                <trans-unit resname="title" id="appdebug.title">
-                    <source>API Tester</source>
-                </trans-unit>
-            </group>
-            <group resname="appicon" id="appicon">
-                <group resname="type" id="appicon.type">
-                    <trans-unit resname="image/jpeg" id="appicon.type.image/jpeg">
-                        <source>JPEG</source>
-                    </trans-unit>
-                    <trans-unit resname="image/png" id="appicon.type.image/png">
-                        <source>PNG</source>
-                    </trans-unit>
-                    <trans-unit resname="image/gif" id="appicon.type.image/gif">
-                        <source>GIF</source>
-                    </trans-unit>
-                </group>
-            </group>
-            <group resname="applink" id="applink">
-                <trans-unit resname="title" id="applink.title">
-                    <source>Links with Studies</source>
-                </trans-unit>
-            </group>
-        </body>
-    </file>
     <file source-language="en" target-language="it" datatype="winres" original="providers_it.json">
         <body>
             <group resname="provider_navbar" id="provider_navbar">
@@ -413,172 +539,6 @@
             <group resname="provider_usergroups" id="provider_usergroups">
                 <trans-unit resname="name" id="provider_usergroups.name">
                     <source>Team</source>
-                </trans-unit>
-            </group>
-        </body>
-    </file>
-    <file source-language="en" target-language="it" datatype="winres" original="researchers_it.json">
-        <body>
-            <group resname="studynav" id="studynav">
-                <trans-unit resname="info" id="studynav.info">
-                    <source>Information</source>
-                </trans-unit>
-                <trans-unit resname="team" id="studynav.team">
-                    <source>Team</source>
-                </trans-unit>
-            </group>
-            <group resname="studyactions" id="studyactions">
-                <trans-unit resname="related_apps" id="studyactions.related_apps">
-                    <source>Plugins related to the study</source>
-                </trans-unit>
-                <trans-unit resname="empty" id="studyactions.empty">
-                    <source>No apps or plugins are linked to the study</source>
-                </trans-unit>
-                <trans-unit resname="aggregator_apps" id="studyactions.aggregator_apps">
-                    <source>Add research app to be used with YOUR account</source>
-                </trans-unit>
-                <trans-unit resname="datalink" id="studyactions.datalink">
-                    <source>Aggregators, Analysis &amp; Interpretation Apps</source>
-                </trans-unit>
-                <trans-unit resname="app" id="studyactions.app">
-                    <source>Application</source>
-                </trans-unit>
-                <trans-unit resname="for" id="studyactions.for">
-                    <source>for</source>
-                </trans-unit>
-                <trans-unit resname="validation" id="studyactions.validation">
-                    <source>Status</source>
-                </trans-unit>
-                <group resname="status" id="studyactions.status">
-                    <trans-unit resname="validated" id="studyactions.status.validated">
-                        <source>Confirmed</source>
-                    </trans-unit>
-                    <trans-unit resname="not_validated_research" id="studyactions.status.not_validated_research">
-                        <source>Not confirmed by researcher</source>
-                    </trans-unit>
-                    <trans-unit resname="not_validated_developer" id="studyactions.status.not_validated_developer">
-                        <source>Not confirmed by developer</source>
-                    </trans-unit>
-                    <trans-unit resname="study_wrong_status" id="studyactions.status.study_wrong_status">
-                        <source>Not active due to study status</source>
-                    </trans-unit>
-                    <trans-unit resname="study_no_app_participation" id="studyactions.status.study_no_app_participation">
-                        <source>Study does not allow to join using an app</source>
-                    </trans-unit>
-                </group>
-                <trans-unit resname="select_btn" id="studyactions.select_btn">
-                    <source>View</source>
-                </trans-unit>
-                <trans-unit resname="validate_btn" id="studyactions.validate_btn">
-                    <source>Confirm</source>
-                </trans-unit>
-                <trans-unit resname="study" id="studyactions.study">
-                    <source>Study</source>
-                </trans-unit>
-                <trans-unit resname="app_type" id="studyactions.app_type">
-                    <source>Application type</source>
-                </trans-unit>
-                <trans-unit resname="no_valid_app" id="studyactions.no_valid_app">
-                    <source>No application selected</source>
-                </trans-unit>
-                <trans-unit resname="type" id="studyactions.type">
-                    <source>How are they linked?</source>
-                </trans-unit>
-                <group resname="types" id="studyactions.types">
-                    <trans-unit resname="OFFER_P" id="studyactions.types.OFFER_P">
-                        <source>App or plugin offers study participation upon login/start</source>
-                    </trans-unit>
-                    <trans-unit resname="REQUIRE_P" id="studyactions.types.REQUIRE_P">
-                        <source>Study participation is required to use the app or plugin</source>
-                    </trans-unit>
-                    <trans-unit resname="RECOMMEND_A" id="studyactions.types.RECOMMEND_A">
-                        <source>App or plugin is recommended by study</source>
-                    </trans-unit>
-                    <trans-unit resname="AUTOADD_A" id="studyactions.types.AUTOADD_A">
-                        <source>Plugin is automatically added on study participation</source>
-                    </trans-unit>
-                    <trans-unit resname="DATALINK" id="studyactions.types.DATALINK">
-                        <source>App shares data to study participants</source>
-                    </trans-unit>
-                </group>
-                <group resname="types_short" id="studyactions.types_short">
-                    <trans-unit resname="OFFER_P" id="studyactions.types_short.OFFER_P">
-                        <source>Offer participation</source>
-                    </trans-unit>
-                    <trans-unit resname="REQUIRE_P" id="studyactions.types_short.REQUIRE_P">
-                        <source>Require participation</source>
-                    </trans-unit>
-                    <trans-unit resname="RECOMMEND_A" id="studyactions.types_short.RECOMMEND_A">
-                        <source>Recommended</source>
-                    </trans-unit>
-                    <trans-unit resname="AUTOADD_A" id="studyactions.types_short.AUTOADD_A">
-                        <source>Auto-Add</source>
-                    </trans-unit>
-                    <trans-unit resname="DATALINK" id="studyactions.types_short.DATALINK">
-                        <source>Data Share</source>
-                    </trans-unit>
-                </group>
-                <trans-unit resname="use_period" id="studyactions.use_period">
-                    <source>When are they linked?</source>
-                </trans-unit>
-                <group resname="use_periods" id="studyactions.use_periods">
-                    <trans-unit resname="PRE" id="studyactions.use_periods.PRE">
-                        <source>Before the study has started</source>
-                    </trans-unit>
-                    <trans-unit resname="RUNNING" id="studyactions.use_periods.RUNNING">
-                        <source>During the execution of the study</source>
-                    </trans-unit>
-                    <trans-unit resname="FINISHED" id="studyactions.use_periods.FINISHED">
-                        <source>After the study is finished</source>
-                    </trans-unit>
-                    <trans-unit resname="ABORTED" id="studyactions.use_periods.ABORTED">
-                        <source>When the study is aborted</source>
-                    </trans-unit>
-                </group>
-            </group>
-            <group resname="studyrules" id="studyrules">
-                <trans-unit resname="sharing_query" id="studyrules.sharing_query">
-                    <source>Data Access Filter</source>
-                </trans-unit>
-                <trans-unit resname="join_methods" id="studyrules.join_methods">
-                    <source>Allowed Participation Procedures</source>
-                    <target>Procedure di partecipazione ammesse</target>
-                </trans-unit>
-            </group>
-            <group resname="study_checklist" id="study_checklist">
-                <trans-unit resname="information" id="study_checklist.information">
-                    <source>Provide public information about your research</source>
-                </trans-unit>
-                <trans-unit resname="information_help" id="study_checklist.information_help">
-                    <source>Public information will help MIDATA account holders to evaluate if your research is relevant for them.</source>
-                </trans-unit>
-            </group>
-            <group resname="studyinfo" id="studyinfo">
-                <trans-unit resname="title" id="studyinfo.title">
-                    <source>Information</source>
-                </trans-unit>
-                <trans-unit resname="introduction" id="studyinfo.introduction">
-                    <source>Give additional information about the study. You can provide public information, additional instructions and contact information only visible to the participants and information for other researchers and administration. Texts are only meant as additional information and may be edited by you at any time.</source>
-                </trans-unit>
-                <trans-unit resname="introduction2" id="studyinfo.introduction2">
-                    <source>All information is optional. You should give information only on topics that make sense in your research context.</source>
-                </trans-unit>
-                <trans-unit resname="visibility" id="studyinfo.visibility">
-                    <source>Information visible to</source>
-                </trans-unit>
-                <group resname="visibilities" id="studyinfo.visibilities">
-                    <trans-unit resname="ALL" id="studyinfo.visibilities.ALL">
-                        <source>everybody</source>
-                    </trans-unit>
-                    <trans-unit resname="PARTICIPANTS" id="studyinfo.visibilities.PARTICIPANTS">
-                        <source>participants</source>
-                    </trans-unit>
-                    <trans-unit resname="INTERNAL" id="studyinfo.visibilities.INTERNAL">
-                        <source>researchers and MIDATA only</source>
-                    </trans-unit>
-                </group>
-                <trans-unit resname="showlanguages" id="studyinfo.showlanguages">
-                    <source>Languages to edit</source>
                 </trans-unit>
             </group>
         </body>

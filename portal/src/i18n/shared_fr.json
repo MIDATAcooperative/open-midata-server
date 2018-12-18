@@ -87,7 +87,7 @@
             "groupsystem" : "Le système de groupe doit être fourni.",
             "token" : "Jeton manquant ou invalide.",
             "agb" : "Conditions générales pas acceptées.",
-            "privacypolicy" : "La déclaration de confidentialité doit être acceptée.",
+            "privacypolicy" : "La Déclaration de protection des données doit être acceptée.",
             "study_accept" : "La participation à l'étude doit être acceptée.",
             "study_group" : "Le participant doit d'abord être assigné à un groupe.",
             "confirmation" : "Confirmation par l'utilisateur requise en premier.",
@@ -429,10 +429,10 @@
         },
         "plugintype" : {
             "visualization" : "Plugin",
-            "create" : "Formulaire",
+            "service" : "Service",
             "oauth1" : "OAuth 1",
             "oauth2" : "OAuth 2",
-            "mobile" : "App (Smartphone, Web)"
+            "mobile" : "Appplication (Smartphone, Web)"
         },
         "infos" : {
             "SUMMARY" : "Résumé sommaire",
@@ -531,6 +531,8 @@
         "email" : "E-mail",
         "password" : "Mot de passe",
         "password_repetition" : "Répéter le mot de passe",
+        "secure" : "Protection du compte",
+        "secure2" : "Crypter ma clé de compte avec mon MOT DE PASSE. Attention: en cas d'oubli de votre mot de passe, la récupération de votre clé de compte peut durer plusieurs jours!",
         "firstname" : "Prénom",
         "lastname" : "Nom",
         "gender" : "Sexe",
@@ -554,7 +556,7 @@
         "agb2" : "J'accepte les",
         "agb3" : "Conditions générales",
         "privacypolicy2" : "et la",
-        "privacypolicy3" : "Déclaration de confidentialité",
+        "privacypolicy3" : "Déclaration de protection des données",
         "app_agb" : "Conditions de l'app",
         "app_agb2" : "J'accepte les",
         "app_agb3" : "Conditions générales de l'app",
@@ -638,7 +640,17 @@
         "email_success" : "L'adresse e-mail a déjà été confirmée.",
         "address_entered" : "Votre adresse postale est requise pour utiliser ce service, veuillez la saisir.",
         "phone_entered" : "Un numéro de téléphone mobile est requis pour utiliser ce service, veuillez le saisir.",
-        "admin_verified" : "Votre compte doit être validé par un administrateur MIDATA. Veuillez réessayer plus tard. Si votre compte n'a pas été validé sous 24 heures, veuillez contacter MIDATA."
+        "admin_verified" : "Votre compte doit être validé par un administrateur MIDATA. Veuillez réessayer plus tard. Si votre compte n'a pas été validé sous 24 heures, veuillez contacter MIDATA.",
+        "terms_agreed" : "Les Conditions Générales de MIDATA ont été mises à jour. Veuillez confirmer que vous acceptez la nouvelle version.",
+        "privacy_policy_agreed" : "La Déclaration de protection des données de MIDATA a été mise à jour. Veuillez confirmer que vous acceptez la nouvelle version.",
+        "agree_btn" : "Je suis d'accord",
+        "keyrecovery" : {
+            "intro" : "La clé privée utilisée pour crypter vos données doit être récupérée. Pour récupérer votre clé, essayez l'une des options suivantes:",
+            "way1" : "Avez-vous une application utilisant MIDATA où vous êtes encore connecté? Si oui, ouvrez cette application et votre clé sera récupérée. Essayez de vous connecter à nouveau par la suite.",
+            "way2" : "Vous êtes-vous déjà connecté à l'aide d'un navigateur? Si oui, essayez d'ouvrir une session en utilisant le même navigateur et le même appareil.",
+            "way3" : "Vous vous souvenez à nouveau de votre ancien mot de passe? Si oui, essayez de vous connecter en utilisant votre ancien mot de passe.",
+            "way4" : "Attendez que les employés de MIDATA effectuent une récupération manuelle de la clé. MIDATA vous enverra un e-mail lorsque la récupération sera terminée. Veuillez patienter jusqu'à cinq jours ouvrables pour que la récupération soit terminée."
+        }
     },
 
     "changepassphrase" : {
@@ -733,7 +745,8 @@
         "retreat_btn" : "Participation rétractée",
         "status" : "État",
         "recommended_apps" : "Applications recommandées",
-        "use_app" : "Utiliser maintenant"
+        "use_app" : "Utiliser maintenant",
+        "for_participants" : "Informations sur la participation"
     },
 
     "user" : {
@@ -949,7 +962,6 @@
 
     "dashboard" : {
         "help_welcome" : "Bienvenue sur MIDATA",
-        "tasks" : "Tâches",
         "myviews" : "Mes aperçus",
         "mydata" : "Mes données personelles",
         "mydata_text" : "Gérez vos données de santé. Saisissez en de nouvelles et visualisez les.",
@@ -995,7 +1007,6 @@
         "addusers" : "Ajouter des utilisateurs à ce consentement",
         "shared_with_study" : "Enregistrements partagés:",
         "patient_records" : "Enregistrements de ce patient:",
-        "addtask" : "Ajouter une tâche",
         "group_records" : "Enregistrements de ce groupe:",
         "study_records" : "Enregistrements partagés:",
         "addmore" : "Ajouter plus",
@@ -1045,29 +1056,6 @@
     "flexiblestudies" : {
         "empty" : "Vide",
         "studies_found" : "Études trouvées:"
-    },
-
-    "addtask" : {
-        "task_type" : "Type de tâche",
-        "task_title" : "Titre de la tâche",
-        "description" : "Description",
-        "frequency" : "Fréquence",
-        "survey_name" : "Remplir le sondage",
-        "survey_description" : "Veuillez remplir les sondages que j'ai partagés avec votre compte.",
-        "survey_title" : "Remplir un sondage"
-    },
-
-    "taskdetails" : {
-        "created_by" : "Créé par:",
-        "frequency" : "Fréquence:",
-        "plugin" : "Plugin:",
-        "do_now_btn" : "Faire maintenant"
-    },
-
-    "tasks" : {
-        "empty" : "Vide",
-        "tasks_found" : "Tâches trouvées:",
-        "more_btn" : "Plus..."
     },
 
     "addusers" : {
@@ -1190,7 +1178,7 @@
         "study" : "Étude",
         "summary" : "Liste des types de données accessibles:",
         "access_query" : "Data Access Filter",
-        "format" : "Ressource",
+        "format" : "Format de données",
         "code" : "Code",
         "to" : "au",
         "content" : "Type de données",

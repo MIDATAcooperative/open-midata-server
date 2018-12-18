@@ -40,6 +40,12 @@
         "confirmation_code" : "Codice di conferma:",
         "registration_date" : "Data di registrazione:",
         "confirmation_date" : "Data di conferma:",
+        "security" : "Protezione del conto",
+        "security_type" : {
+            "KEY" : "Chiave privata sul server",
+            "KEY_PASSPHRASE" : "Chiave privata protetta da PHRASE SEGRETA",
+            "KEY_EXT_PASSWORD" : "Chiave privata protetta da password"
+        },
         "last_login" : "Ultimo accesso:",
         "email_confirm_btn" : "Conferma indirizzo e-mail",
         "comment" : "Commento",
@@ -115,7 +121,8 @@
         "name" : "Nome",
         "version" : "Versione",
         "language" : "Lingua",
-        "createdAt" : "Data di creazione"
+        "createdAt" : "Data di creazione",
+        "restrict_name" : "Filtrare per nome"
     },
 
     "admin_manageterms" : {
@@ -139,6 +146,9 @@
         "startDate" : "Data di inizio",
         "endDate" : "Data di fine",
         "dataCreatedBefore" : "Data di congelamento dei dati",
+        "infos" : "Informazioni pubbliche",
+        "infos_part" : "Informazioni per i partecipanti",
+        "infos_internal" : "Informazioni interne",
         "required_information" : "Informazioni richieste",
         "anonymous" : "Anonimo",
         "required_assistance" : "Assistenza richiesta",
@@ -171,6 +181,25 @@
         "groupCount" : "Team (Assistenza sanitaria e Ricerca)",
         "auditEventCount" : "Eventi di revisione",
         "users" : "Account utente attivi",
-        "consents" : "Consensi"
+        "consents" : "Consensi",
+        "health" : {
+            "title" : "Stato del sistema",
+            "servicekey" : "Presente la chiave di servizio in background?",
+            "requestkey_btn" : "Richiedi recupero chiavi",
+            "cluster" : "Stato del cluster"
+        }
+    },
+
+    "admin_pwrecover" : {
+        "menu" : "Recupero della chiave",
+        "title" : "Recupero della chiave",
+        "empty" : "Attualmente non è in corso alcun processo di recupero.",
+        "name" : "Utente",
+        "started" : "Data",
+        "share" : "Share",
+        "decrypted" : "Share decrittato",
+        "myid" : "Il mio id di recupero",
+        "instr1" : "Fare clic su un share per copiare il share criptato negli appunti.",
+        "instr2" : "Decriptare il share su Ubuntu: (cliccare sulla linea per copiarla negli appunti)"
     }
 }

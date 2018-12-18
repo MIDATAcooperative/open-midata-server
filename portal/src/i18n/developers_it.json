@@ -30,7 +30,14 @@
     },
 
     "developer_yourapps" : {
-        "title" : "I tuoi plugin"
+        "title" : "I tuoi plugin",
+        "empty" : "Non hai ancora registrato nessun plugin.",
+        "register" : "Registra un nuovo plugin",
+        "name" : "Nome",
+        "type" : "Tipo",
+        "role" : "Ruolo target",
+        "manage_btn" : "maneggiare",
+        "debug_info_btn" : "Informazioni di debug"
     },
 
     "appmessages" : {
@@ -59,7 +66,10 @@
             "ACCOUNT_UNLOCK" : "Account sbloccato dall'amministratore",
             "EMAIL_CHANGED_OLDADDRESS" : "E-mail di accesso modificata (inviare al vecchio indirizzo e-mail)",
             "EMAIL_CHANGED_NEWADDRESS" : "E-mail di accesso modificata (inviare al nuovo indirizzo e-mail)",
-            "PASSWORD_FORGOTTEN" : "Password dimenticata"
+            "PASSWORD_FORGOTTEN" : "Password dimenticata",
+            "USER_PRIVATE_KEY_RECOVERED" : "Recupero chiavi utente completato",
+            "RESOURCE_CHANGE" : "Cambio di risorsa [codice]",
+            "PROCESS_MESSAGE" : "Elabora messaggio FHIR con evento [codice]"
         }
     },
 
@@ -75,6 +85,8 @@
         "edit_help" : "Modifica la configurazione della tua applicazione.",
         "query_btn" : "Modifica Data Access Filter",
         "query_help" : "Definisce i tipi di dati ai quali l'applicazione può accedere.",
+        "subscriptions_btn" : "Cambia abbonamenti (Subscriptions) predefiniti",
+        "subscriptions_help" : "Definire i trigger che causano un'azione sul server MIDATA",
         "tokenExchangeParams" : "Parametri OAuth2 per lo scambio di token",
         "testfromlocal_btn" : "Testa il tuo plugin da localhost",
         "testfromlocal_help" : "Durante lo sviluppo, è possibile testare il codice del plugin memorizzato nel proprio computer locale su questa istanza.",
@@ -106,7 +118,7 @@
         "info" : {
             "filename" : "Questo nome è utilizzato internamente per identificare la propria applicazione. Deve essere un identificatore valido (a-z, A-Z, 0-9, _).",
             "targetUserRole" : "La propria applicazione è destinata esclusivamente a un ruolo specifico? In caso contrario scegliere 'Qualsiasi ruolo'.",
-            "type" : "Scegliere 'Plugin' se la propria applicazione sarà eseguita come plugin del portale MIDATA. Scegliere 'Mobile App' per un'applicazione esterna. Scegliere 'OAuth1 Import' o 'OAuth2 Import' se è necessario collegarsi a un server esterno utilizzando OAuth1 o OAuth2.",
+            "type" : "Scegliere 'Plugin' se la propria applicazione sarà eseguita sul portale MIDATA. Scegliere 'Mobile App' per un'applicazione esterna. Scegliere 'Servizio' per uno script solo lato server. Scegliere 'OAuth1 Import' o 'OAuth2 Import' se è necessario collegarsi a un server esterno utilizzando OAuth1 o OAuth2.",
             "name" : "Il nome, della propria applicazione o plugin, che sarà presentato all'utente finale.",
             "description" : "La descrizione del proprio plugin che sarà visualizzata anche nel punto contrassegnato.",
             "tokenExchangeParams" : "La definizione predefinita è client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> tuttavia alcuni servizi richiedono anche client_secret=<client_secret> oppure nessun client_id",
@@ -163,7 +175,8 @@
     },
 
     "appdebug" : {
-        "title" : "API Tester"
+        "title" : "API Tester",
+        "login" : "Accedi"
     },
 
     "appicon" : {
@@ -188,5 +201,36 @@
 
     "applink" : {
         "title" : "Collegamenti con studi"
+    },
+
+    "appsubscriptions" : {
+        "title" : "Abbonamenti (Subscriptions) predefiniti",
+        "empty" : "Non ci sono abbonamenti (Subscriptions) predefiniti.",
+        "trigger" : "Trigger",
+        "triggerDetail" : "FHIR Resource",
+        "action" : "Azione",
+        "params" : "URL / Nome del file",
+        "triggers" : {
+            "fhir_Consent" : "Modifiche di consenso",
+            "fhir_MessageHeader" : "Messaggio FHIR",
+            "fhir_Resource" : "Modifiche di risorse",
+            "time" : "Quotidiano",
+            "init" : "Quando aggiunto"
+        },
+        "actions" : {
+            "rest-hook" : "Chiamare un REST Hook",
+            "email" : "Inviare e-mail",
+            "nodejs" : "Chiamare Node.js script"
+        },
+        "debug" : {
+            "title" : "Prova il vostro codice di backend sul vostro computer",
+            "description" : "È possibile testare il codice di elaborazione dell'abbonamenti (Subscriptions) lato server sul computer locale.",
+            "description2" : "Scaricare il tester di abbonamento  (Subscription) ed eseguirlo con il codice di connessione dato.",
+            "description3" : "Questo funziona solo con il vostro account di sviluppatore o qualsiasi account creato utilizzando il vostro account di sviluppatore e solo fino a quando l'applicazione è in fase di sviluppo.",
+            "start_btn" : "Iniziare il debugging",
+            "stop_btn" : "Interrompere il debugging",
+            "cmd_to_run" : "Comando da eseguire sul computer:"
+        }
+
     }
 }

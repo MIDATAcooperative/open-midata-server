@@ -66,9 +66,9 @@
 	   "EMAIL_CHANGED_OLDADDRESS" : "Login email changed (send to old email address)",
 	   "EMAIL_CHANGED_NEWADDRESS" : "Login email changed (send to new email address)",
 	   "PASSWORD_FORGOTTEN" : "Password forgotten",
-	   "USER_PRIVATE_KEY_RECOVERED" : "User key recovery completed", 
+	   "USER_PRIVATE_KEY_RECOVERED" : "User key recovery completed",
 	   "RESOURCE_CHANGE" : "Change of resource [code]",
-	   "PROCESS_MESSAGE" : "Process FHIR messgage with event [code]"	   
+	   "PROCESS_MESSAGE" : "Process FHIR message with event [code]"
     }		      
   },
   
@@ -117,9 +117,9 @@
       
     "info" : {
        "filename" : "This name is internally used to identify your app. Should be a valid identifier (a-z, A-Z, 0-9, _).",
-       "targetUserRole" : "Is your app for a specific role only? Otherwise choose 'Any Role'.",
-       "type" : "Choose 'Plugin' if your app will run as MIDATA portal plugin. Choose 'Mobile App' for an external application. Choose 'Service' for a server-side only script. Choose 'OAuth1 Import' or 'OAuth2 Import' if you need to connect to an external server using OAuth1 or OAuth2.",
-       "name" : "The name of your app or plugin that will be presented to the end user.",
+       "targetUserRole" : "Is your application for a specific role only? Otherwise choose 'Any Role'.",
+       "type" : "Choose 'Plugin' if your application will run on the MIDATA portal. Choose 'Mobile App' for an external application. Choose 'Service' for a server-side only script. Choose 'OAuth1 Import' or 'OAuth2 Import' if you need to connect to an external server using OAuth1 or OAuth2.",
+       "name" : "The name of your application or plugin that will be presented to the end user.",
        "description" : "A description of your plugin that will also be shown on the marked place.",
        "tokenExchangeParams" : "Default is client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> but some services also require client_secret=<client_secret> or no client_id",
        "no_update_history" : "FHIR resource updates done by this application produce no history entries. Use only if application does many and frequent updates.",
@@ -176,7 +176,7 @@
   
   "appdebug" : {
     "title" : "API Tester",
-    "login" : "Login",
+    "login" : "Log in",
     "oauth_login" : "OAuth Login",
     "device" : "Device",
     "refresh_token" : "Refresh-Token",
@@ -226,15 +226,15 @@
       "init" : "When added"
     },
     "actions" : {
-      "rest-hook" : "Call Rest-Hook",
-      "email": "Send E-mail",
-      "nodejs": "Call node script"
+      "rest-hook" : "Call REST hook",
+      "email": "Send email",
+      "nodejs": "Call Node.js script"
     },
     "debug" : {
       "title" : "Test your backend code on your computer",
       "description" : "You can test your server-side subscription processing code on your local computer.",
       "description2" : "Download the subscription tester and run it with the given connection code.",
-      "description3" : "This works only with your developer account, any account created using your developer account and only as long as the application is in development.",
+      "description3" : "This works only with your developer account or any account created using your developer account and only as long as the application is in development.",
       "start_btn" : "Start debugging",
       "stop_btn" : "Stop debugging",
       "cmd_to_run" : "Command to run on your computer:"
