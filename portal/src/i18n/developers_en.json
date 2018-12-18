@@ -179,12 +179,12 @@
     "login" : "Log in",
     "oauth_login" : "OAuth Login",
     "device" : "Device",
-    "refresh_token" : "Refresh-Token",
+    "refresh_token" : "Refresh Token",
     "backend_services" : "Serverside Scripts",
     "portal_username" : "Username",
     "portal_password" : "Password",
     "portal_login" : "Use plugin instance:",
-    "portal_login_btn" : "Portal login + get space token"      
+    "portal_login_btn" : "Portal login + get token"      
   },
   
   "appicon" : {

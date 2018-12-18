@@ -92,7 +92,8 @@
             "study_group" : "Le participant doit d'abord être assigné à un groupe.",
             "confirmation" : "Confirmation par l'utilisateur requise en premier.",
             "file" : "Aucun fichier à télécharger sélectionné",
-            "access_query" : "Aucune données sélectionnées"
+            "access_query" : "Aucune données sélectionnées",
+            "plugin" : "Ce plugin n'existe pas dans votre compte."
         },
 
         "unknown" : {

@@ -92,7 +92,8 @@
             "study_group" : "Il partecipante deve dapprima essere assegnato a un gruppo.",
             "confirmation" : "Per prima cosa è richiesta la conferma dell'utente.",
             "file" : "Nessun file selezionato per il caricamento",
-            "access_query" : "Nessun dati selezionato"
+            "access_query" : "Nessun dati selezionato",
+            "plugin" : "Questo plugin non esiste nel vostro account."
         },
 
         "unknown" : {

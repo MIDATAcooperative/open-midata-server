@@ -146,6 +146,7 @@
         "startDate" : "Startdatum",
         "endDate" : "Enddatum",
         "dataCreatedBefore" : "Datenbestand eingefroren ab dem",
+
         "infos" : "Öffentliche Informationen",
         "infos_part" : "Informationen für die Teilnehmer",
         "infos_internal" : "Interne Informationen",

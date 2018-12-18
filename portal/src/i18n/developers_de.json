@@ -76,6 +76,7 @@
     "manageapp" : {
         "overview" : "Applikations-Übersicht",
         "choose" : "Funktionen zur Verwaltung Ihrer Applikation",
+        "defined" : "definiert",
         "filename" : "Interner Name",
         "type" : "Applikationstyp",
         "targetUserRole" : "Zielrolle",
@@ -176,7 +177,15 @@
 
     "appdebug" : {
         "title" : "API Tester",
-        "login" : "Anmelden"
+        "login" : "Anmelden",
+        "oauth_login" : "OAuth Login",
+        "device" : "Device",
+        "refresh_token" : "Refresh Token",
+        "backend_services" : "Serverseitige Skripte",
+        "portal_username" : "Benutzername",
+        "portal_password" : "Kennwort",
+        "portal_login" : "Plugin-Instanz verwenden:",
+        "portal_login_btn" : "Portal-Login + Token erhalten"
     },
 
     "appicon" : {

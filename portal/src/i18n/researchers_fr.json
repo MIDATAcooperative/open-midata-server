@@ -103,7 +103,6 @@
             "AUTOADD_A" : "Ajouter automatiquement",
             "DATALINK" : "Partage des données"
         },
-
         "use_period" : "Quand sont-elles liées ?",
         "use_periods" : {
             "PRE" : "Avant que l'étude n'ait débuté",

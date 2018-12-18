@@ -146,6 +146,7 @@
         "startDate" : "Date de début",
         "endDate" : "Date de fin",
         "dataCreatedBefore" : "Données figées dès le",
+
         "infos" : "Informations publiques",
         "infos_part" : "Informations pour les participants",
         "infos_internal" : "Informations internes",

@@ -146,6 +146,7 @@
         "startDate" : "Data di inizio",
         "endDate" : "Data di fine",
         "dataCreatedBefore" : "Data di congelamento dei dati",
+
         "infos" : "Informazioni pubbliche",
         "infos_part" : "Informazioni per i partecipanti",
         "infos_internal" : "Informazioni interne",

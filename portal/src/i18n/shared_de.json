@@ -92,7 +92,8 @@
             "study_group" : "Der Teilnehmer muss zuerst zu einer Gruppe zugeordnet werden.",
             "confirmation" : "Bestätigung durch Benutzer zuerst erforderlich.",
             "file" : "Keine Datei zum Hochladen ausgewählt",
-            "access_query" : "Keine Daten ausgewählt"
+            "access_query" : "Keine Daten ausgewählt",
+            "plugin" : "Dieses Plugin existiert nicht in Ihrem Konto."
         },
 
         "unknown" : {

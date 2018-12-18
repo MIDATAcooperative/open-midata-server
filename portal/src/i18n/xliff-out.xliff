@@ -7,6 +7,17 @@
                     <source>Timeline</source>
                 </trans-unit>
             </group>
+            <group resname="error" id="error">
+                <group resname="missing" id="error.missing">
+                    <trans-unit resname="privacypolicy" id="error.missing.privacypolicy">
+                        <source>Privacy Policy must be accepted.</source>
+                        <target>Le politiche sulla privacy devono essere accettate.</target>
+                    </trans-unit>
+                    <trans-unit resname="plugin" id="error.missing.plugin">
+                        <source>This plugin does not exist in your account.</source>
+                    </trans-unit>
+                </group>
+            </group>
             <group resname="enum" id="enum">
                 <group resname="researcherrole" id="enum.researcherrole">
                     <trans-unit resname="SPONSOR" id="enum.researcherrole.SPONSOR">
@@ -31,14 +42,15 @@
                     <trans-unit resname="visualization" id="enum.plugintype.visualization">
                         <source>Plugin</source>
                     </trans-unit>
-                    <trans-unit resname="service" id="enum.plugintype.service">
-                        <source>Service</source>
-                    </trans-unit>
                     <trans-unit resname="oauth1" id="enum.plugintype.oauth1">
                         <source>OAuth 1</source>
                     </trans-unit>
                     <trans-unit resname="oauth2" id="enum.plugintype.oauth2">
                         <source>OAuth 2</source>
+                    </trans-unit>
+                    <trans-unit resname="mobile" id="enum.plugintype.mobile">
+                        <source>Appplication (Smartphone, Web)</source>
+                        <target>Applicazione (Smartphone, Web)</target>
                     </trans-unit>
                 </group>
             </group>
@@ -53,11 +65,9 @@
                 <trans-unit resname="password" id="registration.password">
                     <source>Password</source>
                 </trans-unit>
-                <trans-unit resname="secure" id="registration.secure">
-                    <source>Account Protection</source>
-                </trans-unit>
                 <trans-unit resname="secure2" id="registration.secure2">
-                    <source>Please encrypt my account key with my PASSWORD. I promise to not forget my password.</source>
+                    <source>Encrypt my account key with my PASSWORD. Warning: if you forget your password, it may take several days to recover your account key!</source>
+                    <target>Cripta la chiave del mio account con la mia PASSWORD. Attenzione: se si dimentica la password, potrebbero volerci diversi giorni per recuperare la chiave dell'account!</target>
                 </trans-unit>
             </group>
             <group resname="login" id="login">
@@ -70,40 +80,27 @@
             </group>
             <group resname="postregister" id="postregister">
                 <trans-unit resname="terms_agreed" id="postregister.terms_agreed">
-                    <source>The MIDATA terms and conditions have been updated. Please confirm that you agree to the new version.</source>
+                    <source>The MIDATA General Terms and Conditions have been updated. Please confirm that you agree to the new version.</source>
+                    <target>I Condizioni generali di contratto MIDATA sono stati aggiornati. Si prega di confermare di accettare la nuova versione.</target>
                 </trans-unit>
                 <trans-unit resname="privacy_policy_agreed" id="postregister.privacy_policy_agreed">
-                    <source>The MIDATA privacy policy has been updated. Please confirm that you agree to the new version.</source>
-                </trans-unit>
-                <trans-unit resname="agree_btn" id="postregister.agree_btn">
-                    <source>I agree</source>
+                    <source>The MIDATA Privacy Policy has been updated. Please confirm that you agree to the new version.</source>
+                    <target>La Dichiarazione sui dati personali di MIDATA è stata aggiornata. Si prega di confermare di accettare la nuova versione.</target>
                 </trans-unit>
                 <group resname="keyrecovery" id="postregister.keyrecovery">
                     <trans-unit resname="intro" id="postregister.keyrecovery.intro">
-                        <source>The private key that is used to encrypt your accounts data needs to be recovered. In order to recover your key try one of these:</source>
+                        <source>The private key that is used to encrypt your data needs to be recovered. In order to recover your key, try one of these options:</source>
+                        <target>La chiave privata utilizzata per crittografare i dati deve essere recuperata. Per recuperare la chiave, provare una di queste opzioni:</target>
                     </trans-unit>
                     <trans-unit resname="way1" id="postregister.keyrecovery.way1">
-                        <source>Do you have any app using Midata where you are still logged in? If yes open that app and your key will be recovered. Try to login again afterwards.</source>
-                    </trans-unit>
-                    <trans-unit resname="way2" id="postregister.keyrecovery.way2">
-                        <source>Have you logged in using a browser before? If yes try to log in using the same browser and device.</source>
-                    </trans-unit>
-                    <trans-unit resname="way3" id="postregister.keyrecovery.way3">
-                        <source>Remember your old password again? If yes try to log in using your old password.</source>
+                        <source>Do you have any application using MIDATA where you are still logged in? If yes, open that application and your key will be recovered. Try to login again afterwards.</source>
+                        <target>Hai qualche applicazione che utilizza MIDATA dove sei ancora connesso? Se sì, apri l'applicazione e la tua chiave verrà recuperata. Prova ad effettuare nuovamente il login in seguito.</target>
                     </trans-unit>
                     <trans-unit resname="way4" id="postregister.keyrecovery.way4">
-                        <source>Wait for Midata employees to do a manual key recovery. We will send you an email when the recovery has been done. Please wait up to seven days for the recovery to be completed.</source>
+                        <source>Wait for MIDATA employees to do a manual key recovery. MIDATA will send you an email when the recovery has been done. Please wait up to five working days for the recovery to be completed.</source>
+                        <target>Attendere che i dipendenti MIDATA eseguano un recupero manuale della chiave. MIDATA vi invierà un'e-mail quando il recupero è stato fatto. Attendere fino a cinque giorni lavorativi per completare il recupero.</target>
                     </trans-unit>
                 </group>
-            </group>
-            <group resname="studydetails" id="studydetails">
-                <trans-unit resname="retreat_help" id="studydetails.retreat_help">
-                    <source>You are currently participating to this research. If you no longer want to participate you may retreat from participation. Your shared data will be frozen at the moment of retreat and no new data will be shared. Once retreated you are not able to participate again.</source>
-                    <target>Attualmente stai partecipando. Se non vuoi più partecipare puoi ritirarti dalla partecipazione. I vostri dati condivisi saranno congelati al momento del ritiro e non verranno condivisi nuovi dati. Una volta ritirato non sarai in grado di partecipare di nuovo.</target>
-                </trans-unit>
-                <trans-unit resname="for_participants" id="studydetails.for_participants">
-                    <source>Participation Info</source>
-                </trans-unit>
             </group>
             <group resname="user" id="user">
                 <trans-unit resname="midataID" id="user.midataID">
@@ -142,15 +139,10 @@
                 <trans-unit resname="access_query" id="queryeditor.access_query">
                     <source>Data Access Filter</source>
                 </trans-unit>
-                <trans-unit resname="format" id="queryeditor.format">
-                    <source>Data Format</source>
-                    <target>Risorsa</target>
-                </trans-unit>
             </group>
             <group resname="timeline" id="timeline">
                 <trans-unit resname="spaces" id="timeline.spaces">
                     <source>MIDATA</source>
-                    <target>MIDATA</target>
                 </trans-unit>
                 <trans-unit resname="title" id="timeline.title">
                     <source>Timeline</source>
@@ -160,42 +152,12 @@
     </file>
     <file source-language="en" target-language="it" datatype="winres" original="admins_it.json">
         <body>
-            <group resname="admin_address" id="admin_address">
-                <trans-unit resname="security" id="admin_address.security">
-                    <source>Account protection</source>
-                </trans-unit>
-                <group resname="security_type" id="admin_address.security_type">
-                    <trans-unit resname="KEY" id="admin_address.security_type.KEY">
-                        <source>Private key on server</source>
-                    </trans-unit>
-                    <trans-unit resname="KEY_PASSPHRASE" id="admin_address.security_type.KEY_PASSPHRASE">
-                        <source>PASSPHRASE protected private key</source>
-                    </trans-unit>
-                    <trans-unit resname="KEY_EXT_PASSWORD" id="admin_address.security_type.KEY_EXT_PASSWORD">
-                        <source>Password protected private key</source>
-                    </trans-unit>
-                </group>
-            </group>
             <group resname="admin_plugins" id="admin_plugins">
                 <trans-unit resname="plugin_market" id="admin_plugins.plugin_market">
                     <source>MIDATA Store</source>
                 </trans-unit>
             </group>
-            <group resname="admin_terms" id="admin_terms">
-                <trans-unit resname="restrict_name" id="admin_terms.restrict_name">
-                    <source>Filter by name</source>
-                </trans-unit>
-            </group>
             <group resname="admin_study" id="admin_study">
-                <trans-unit resname="infos" id="admin_study.infos">
-                    <source>Public information</source>
-                </trans-unit>
-                <trans-unit resname="infos_part" id="admin_study.infos_part">
-                    <source>Information for participants</source>
-                </trans-unit>
-                <trans-unit resname="infos_internal" id="admin_study.infos_internal">
-                    <source>Internal Information</source>
-                </trans-unit>
                 <trans-unit resname="sharing_query" id="admin_study.sharing_query">
                     <source>Data Access Filter</source>
                 </trans-unit>
@@ -207,51 +169,18 @@
                 <trans-unit resname="indexPageCount" id="admin_stats.indexPageCount">
                     <source>DB Index Pages</source>
                 </trans-unit>
-                <group resname="health" id="admin_stats.health">
-                    <trans-unit resname="title" id="admin_stats.health.title">
-                        <source>System Health</source>
-                    </trans-unit>
-                    <trans-unit resname="servicekey" id="admin_stats.health.servicekey">
-                        <source>Background service key present?</source>
-                    </trans-unit>
-                    <trans-unit resname="requestkey_btn" id="admin_stats.health.requestkey_btn">
-                        <source>Request Key Recovery</source>
-                    </trans-unit>
-                    <trans-unit resname="cluster" id="admin_stats.health.cluster">
-                        <source>Cluster status</source>
-                    </trans-unit>
-                </group>
             </group>
             <group resname="admin_pwrecover" id="admin_pwrecover">
                 <trans-unit resname="menu" id="admin_pwrecover.menu">
-                    <source>Password Recovery</source>
+                    <source>Key Recovery</source>
+                    <target>Recupero della chiave</target>
                 </trans-unit>
                 <trans-unit resname="title" id="admin_pwrecover.title">
-                    <source>Password Recovery</source>
-                </trans-unit>
-                <trans-unit resname="empty" id="admin_pwrecover.empty">
-                    <source>There is currently no recovery process running.</source>
-                </trans-unit>
-                <trans-unit resname="name" id="admin_pwrecover.name">
-                    <source>User</source>
-                </trans-unit>
-                <trans-unit resname="started" id="admin_pwrecover.started">
-                    <source>Date</source>
+                    <source>Key Recovery</source>
+                    <target>Recupero della chiave</target>
                 </trans-unit>
                 <trans-unit resname="share" id="admin_pwrecover.share">
                     <source>Share</source>
-                </trans-unit>
-                <trans-unit resname="decrypted" id="admin_pwrecover.decrypted">
-                    <source>Decrypted share</source>
-                </trans-unit>
-                <trans-unit resname="myid" id="admin_pwrecover.myid">
-                    <source>My recovery id</source>
-                </trans-unit>
-                <trans-unit resname="instr1" id="admin_pwrecover.instr1">
-                    <source>Click on a share to copy the encrypted share into the clipboard.</source>
-                </trans-unit>
-                <trans-unit resname="instr2" id="admin_pwrecover.instr2">
-                    <source>Decrypt share on Ubuntu: (click line to copy it to clipboard)</source>
                 </trans-unit>
             </group>
         </body>
@@ -263,60 +192,33 @@
                     <source>Sandbox</source>
                 </trans-unit>
             </group>
-            <group resname="developer_yourapps" id="developer_yourapps">
-                <trans-unit resname="empty" id="developer_yourapps.empty">
-                    <source>You have not registered any plugin yet.</source>
-                </trans-unit>
-                <trans-unit resname="register" id="developer_yourapps.register">
-                    <source>Register a new plugin</source>
-                </trans-unit>
-                <trans-unit resname="name" id="developer_yourapps.name">
-                    <source>Name</source>
-                </trans-unit>
-                <trans-unit resname="type" id="developer_yourapps.type">
-                    <source>Type</source>
-                </trans-unit>
-                <trans-unit resname="role" id="developer_yourapps.role">
-                    <source>Target Role</source>
-                </trans-unit>
-                <trans-unit resname="manage_btn" id="developer_yourapps.manage_btn">
-                    <source>manage</source>
-                </trans-unit>
-                <trans-unit resname="debug_info_btn" id="developer_yourapps.debug_info_btn">
-                    <source>debug info</source>
-                </trans-unit>
-            </group>
             <group resname="appmessages" id="appmessages">
                 <group resname="reasons" id="appmessages.reasons">
-                    <trans-unit resname="USER_PRIVATE_KEY_RECOVERED" id="appmessages.reasons.USER_PRIVATE_KEY_RECOVERED">
-                        <source>User key recovery completed</source>
-                    </trans-unit>
-                    <trans-unit resname="RESOURCE_CHANGE" id="appmessages.reasons.RESOURCE_CHANGE">
-                        <source>Change of resource [code]</source>
-                    </trans-unit>
                     <trans-unit resname="PROCESS_MESSAGE" id="appmessages.reasons.PROCESS_MESSAGE">
-                        <source>Process FHIR messgage with event [code]</source>
+                        <source>Process FHIR message with event [code]</source>
+                        <target>Elabora messaggio FHIR con evento [codice]</target>
                     </trans-unit>
                 </group>
             </group>
             <group resname="manageapp" id="manageapp">
-                <trans-unit resname="subscriptions_btn" id="manageapp.subscriptions_btn">
-                    <source>Change Default Subscriptions</source>
-                </trans-unit>
-                <trans-unit resname="subscriptions_help" id="manageapp.subscriptions_help">
-                    <source>Define triggers that cause an action on the MIDATA server</source>
-                </trans-unit>
-                <trans-unit resname="link_help" id="manageapp.link_help">
-                    <source>Apps may offer or require participation to a study. Studies may recommend plugin or app use.</source>
-                    <target>Le applicazioni possono offrire o richiedere la partecipazione a uno studio. Gli studi possono raccomandare l'uso di plugin o app.</target>
+                <trans-unit resname="defined" id="manageapp.defined">
+                    <source>defined</source>
                 </trans-unit>
                 <trans-unit resname="debug_btn" id="manageapp.debug_btn">
                     <source>API Tester Sandbox</source>
                 </trans-unit>
                 <group resname="info" id="manageapp.info">
+                    <trans-unit resname="targetUserRole" id="manageapp.info.targetUserRole">
+                        <source>Is your application for a specific role only? Otherwise choose 'Any Role'.</source>
+                        <target>La propria applicazione è destinata esclusivamente a un ruolo specifico? In caso contrario scegliere 'Qualsiasi ruolo'.</target>
+                    </trans-unit>
                     <trans-unit resname="type" id="manageapp.info.type">
-                        <source>Choose 'Plugin' if your app will run as MIDATA portal plugin. Choose 'Mobile App' for an external application. Choose 'Service' for a server-side only script. Choose 'OAuth1 Import' or 'OAuth2 Import' if you need to connect to an external server using OAuth1 or OAuth2.</source>
-                        <target>Scegliere 'Plugin' se la propria applicazione sarà eseguita come plugin del portale MIDATA. Scegliere 'Mobile App' per un'applicazione esterna. Scegliere 'OAuth1 Import' o 'OAuth2 Import' se è necessario collegarsi a un server esterno utilizzando OAuth1 o OAuth2.</target>
+                        <source>Choose 'Plugin' if your application will run on the MIDATA portal. Choose 'Mobile App' for an external application. Choose 'Service' for a server-side only script. Choose 'OAuth1 Import' or 'OAuth2 Import' if you need to connect to an external server using OAuth1 or OAuth2.</source>
+                        <target>Scegliere 'Plugin' se la propria applicazione sarà eseguita sul portale MIDATA. Scegliere 'Mobile App' per un'applicazione esterna. Scegliere 'Servizio' per uno script solo lato server. Scegliere 'OAuth1 Import' o 'OAuth2 Import' se è necessario collegarsi a un server esterno utilizzando OAuth1 o OAuth2.</target>
+                    </trans-unit>
+                    <trans-unit resname="name" id="manageapp.info.name">
+                        <source>The name of your application or plugin that will be presented to the end user.</source>
+                        <target>Il nome, della propria applicazione o plugin, che sarà presentato all'utente finale.</target>
                     </trans-unit>
                 </group>
                 <trans-unit resname="access_query_json" id="manageapp.access_query_json">
@@ -328,7 +230,32 @@
                     <source>API Tester</source>
                 </trans-unit>
                 <trans-unit resname="login" id="appdebug.login">
-                    <source>Login</source>
+                    <source>Log in</source>
+                    <target>Accedi</target>
+                </trans-unit>
+                <trans-unit resname="oauth_login" id="appdebug.oauth_login">
+                    <source>OAuth Login</source>
+                </trans-unit>
+                <trans-unit resname="device" id="appdebug.device">
+                    <source>Device</source>
+                </trans-unit>
+                <trans-unit resname="refresh_token" id="appdebug.refresh_token">
+                    <source>Refresh-Token</source>
+                </trans-unit>
+                <trans-unit resname="backend_services" id="appdebug.backend_services">
+                    <source>Serverside Scripts</source>
+                </trans-unit>
+                <trans-unit resname="portal_username" id="appdebug.portal_username">
+                    <source>Username</source>
+                </trans-unit>
+                <trans-unit resname="portal_password" id="appdebug.portal_password">
+                    <source>Password</source>
+                </trans-unit>
+                <trans-unit resname="portal_login" id="appdebug.portal_login">
+                    <source>Use plugin instance:</source>
+                </trans-unit>
+                <trans-unit resname="portal_login_btn" id="appdebug.portal_login_btn">
+                    <source>Portal login + get space token</source>
                 </trans-unit>
             </group>
             <group resname="appicon" id="appicon">
@@ -345,73 +272,30 @@
                 </group>
             </group>
             <group resname="appsubscriptions" id="appsubscriptions">
-                <trans-unit resname="title" id="appsubscriptions.title">
-                    <source>Default Subscriptions</source>
-                </trans-unit>
-                <trans-unit resname="empty" id="appsubscriptions.empty">
-                    <source>There are no default subscriptions defined.</source>
-                </trans-unit>
                 <trans-unit resname="trigger" id="appsubscriptions.trigger">
                     <source>Trigger</source>
                 </trans-unit>
                 <trans-unit resname="triggerDetail" id="appsubscriptions.triggerDetail">
                     <source>FHIR Resource</source>
                 </trans-unit>
-                <trans-unit resname="action" id="appsubscriptions.action">
-                    <source>Action</source>
-                </trans-unit>
-                <trans-unit resname="params" id="appsubscriptions.params">
-                    <source>URL / Filename</source>
-                </trans-unit>
-                <group resname="triggers" id="appsubscriptions.triggers">
-                    <trans-unit resname="fhir_Consent" id="appsubscriptions.triggers.fhir_Consent">
-                        <source>Consent changes</source>
-                    </trans-unit>
-                    <trans-unit resname="fhir_MessageHeader" id="appsubscriptions.triggers.fhir_MessageHeader">
-                        <source>FHIR message</source>
-                    </trans-unit>
-                    <trans-unit resname="fhir_Resource" id="appsubscriptions.triggers.fhir_Resource">
-                        <source>Resource changes</source>
-                    </trans-unit>
-                    <trans-unit resname="time" id="appsubscriptions.triggers.time">
-                        <source>Daily</source>
-                    </trans-unit>
-                    <trans-unit resname="init" id="appsubscriptions.triggers.init">
-                        <source>When added</source>
-                    </trans-unit>
-                </group>
                 <group resname="actions" id="appsubscriptions.actions">
                     <trans-unit resname="rest-hook" id="appsubscriptions.actions.rest-hook">
-                        <source>Call Rest-Hook</source>
+                        <source>Call REST hook</source>
+                        <target>Chiamare un REST Hook</target>
                     </trans-unit>
                     <trans-unit resname="email" id="appsubscriptions.actions.email">
-                        <source>Send E-mail</source>
+                        <source>Send email</source>
+                        <target>Inviare e-mail</target>
                     </trans-unit>
                     <trans-unit resname="nodejs" id="appsubscriptions.actions.nodejs">
-                        <source>Call node script</source>
+                        <source>Call Node.js script</source>
+                        <target>Chiamare Node.js script</target>
                     </trans-unit>
                 </group>
                 <group resname="debug" id="appsubscriptions.debug">
-                    <trans-unit resname="title" id="appsubscriptions.debug.title">
-                        <source>Test your backend code on your computer</source>
-                    </trans-unit>
-                    <trans-unit resname="description" id="appsubscriptions.debug.description">
-                        <source>You can test your server-side subscription processing code on your local computer.</source>
-                    </trans-unit>
-                    <trans-unit resname="description2" id="appsubscriptions.debug.description2">
-                        <source>Download the subscription tester and run it with the given connection code.</source>
-                    </trans-unit>
                     <trans-unit resname="description3" id="appsubscriptions.debug.description3">
-                        <source>This works only with your developer account, any account created using your developer account and only as long as the application is in development.</source>
-                    </trans-unit>
-                    <trans-unit resname="start_btn" id="appsubscriptions.debug.start_btn">
-                        <source>Start debugging</source>
-                    </trans-unit>
-                    <trans-unit resname="stop_btn" id="appsubscriptions.debug.stop_btn">
-                        <source>Stop debugging</source>
-                    </trans-unit>
-                    <trans-unit resname="cmd_to_run" id="appsubscriptions.debug.cmd_to_run">
-                        <source>Command to run on your computer:</source>
+                        <source>This works only with your developer account or any account created using your developer account and only as long as the application is in development.</source>
+                        <target>Questo funziona solo con il vostro account di sviluppatore o qualsiasi account creato utilizzando il vostro account di sviluppatore e solo fino a quando l'applicazione è in fase di sviluppo.</target>
                     </trans-unit>
                 </group>
             </group>
@@ -425,62 +309,10 @@
                 </trans-unit>
             </group>
             <group resname="studyactions" id="studyactions">
-                <trans-unit resname="datalink" id="studyactions.datalink">
-                    <source>Aggregators, Analysis and Interpretation Apps</source>
-                    <target>Aggregatori, applicazioni di analisi e interpretazione</target>
-                </trans-unit>
-                <group resname="types" id="studyactions.types">
-                    <trans-unit resname="OFFER_P" id="studyactions.types.OFFER_P">
-                        <source>Application or plugin offers study participation upon login/start</source>
-                        <target>L'applicazione o il plugin offre la partecipazione allo studio al momento del accedi/avvio</target>
-                    </trans-unit>
-                    <trans-unit resname="REQUIRE_P" id="studyactions.types.REQUIRE_P">
-                        <source>Study participation is required to use the application or plugin</source>
-                        <target>La partecipazione allo studio è necessaria per utilizzare l'applicazione o il plugin</target>
-                    </trans-unit>
-                    <trans-unit resname="RECOMMEND_A" id="studyactions.types.RECOMMEND_A">
-                        <source>Application or plugin is recommended by study</source>
-                        <target>L'applicazione o il plugin è raccomandato dallo studio</target>
-                    </trans-unit>
-                    <trans-unit resname="DATALINK" id="studyactions.types.DATALINK">
-                        <source>Application shares data to study participants</source>
-                        <target>L'applicazione condivide i dati con i partecipanti allo studio</target>
-                    </trans-unit>
-                </group>
-                <group resname="types_short" id="studyactions.types_short">
-                    <trans-unit resname="OFFER_P" id="studyactions.types_short.OFFER_P">
-                        <source>Suggest participation</source>
-                        <target>Suggerire la partecipazione</target>
-                    </trans-unit>
-                    <trans-unit resname="AUTOADD_A" id="studyactions.types_short.AUTOADD_A">
-                        <source>Add automatically</source>
-                        <target>Aggiungere automaticamente</target>
-                    </trans-unit>
-                    <trans-unit resname="DATALINK" id="studyactions.types_short.DATALINK">
-                        <source>Data Sharing</source>
-                        <target>Condivisione dei dati</target>
-                    </trans-unit>
-                </group>
-            </group>
-            <group resname="studyoverview" id="studyoverview">
-                <group resname="confirm" id="studyoverview.confirm">
-                    <trans-unit resname="validation" id="studyoverview.confirm.validation">
-                        <source>Setup cannot be changed anymore. Validation process by MIDATA will be started.</source>
-                    </trans-unit>
-                    <trans-unit resname="end_participant_search" id="studyoverview.confirm.end_participant_search">
-                        <source>No additional users will be able to participate anymore.</source>
-                    </trans-unit>
-                    <trans-unit resname="finish_execution" id="studyoverview.confirm.finish_execution">
-                        <source>All study data will be frozen at this moment.</source>
-                    </trans-unit>
-                    <trans-unit resname="delete" id="studyoverview.confirm.delete">
-                        <source>The research project will be completely wiped from the platform.</source>
-                    </trans-unit>
-                    <trans-unit resname="abort" id="studyoverview.confirm.abort">
-                        <source>All study data will be frozen at this moment. This project will be marked as failed.</source>
-                    </trans-unit>
-                    <trans-unit resname="are_you_sure" id="studyoverview.confirm.are_you_sure">
-                        <source>This operation cannot be undone. Are you sure?</source>
+                <group resname="status" id="studyactions.status">
+                    <trans-unit resname="study_no_app_participation" id="studyactions.status.study_no_app_participation">
+                        <source>Study does not allow to join using an application</source>
+                        <target>Lo studio non consente di aderire utilizzando un'applicazione</target>
                     </trans-unit>
                 </group>
             </group>
@@ -488,24 +320,6 @@
                 <trans-unit resname="sharing_query" id="studyrules.sharing_query">
                     <source>Data Access Filter</source>
                 </trans-unit>
-            </group>
-            <group resname="study_checklist" id="study_checklist">
-                <trans-unit resname="information" id="study_checklist.information">
-                    <source>Public information about your research</source>
-                    <target>Informazioni pubbliche sulla vostra ricerca</target>
-                </trans-unit>
-            </group>
-            <group resname="studyinfo" id="studyinfo">
-                <group resname="visibilities" id="studyinfo.visibilities">
-                    <trans-unit resname="PARTICIPANTS" id="studyinfo.visibilities.PARTICIPANTS">
-                        <source>all participants</source>
-                        <target>tutti i partecipanti</target>
-                    </trans-unit>
-                    <trans-unit resname="INTERNAL" id="studyinfo.visibilities.INTERNAL">
-                        <source>only researchers and MIDATA</source>
-                        <target>solo ricercatori e MIDATA</target>
-                    </trans-unit>
-                </group>
             </group>
         </body>
     </file>
