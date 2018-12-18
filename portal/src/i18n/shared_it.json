@@ -54,8 +54,8 @@
             "credentials" : "Indirizzo e-mail o password errati.",
             "credentials_hint" : "Indirizzo e-mail o password errati. Stai tentando di accedere come titolare dell'account. Sei ",
             "password_repetition" : "La password e la ripetizione della password non coincidono!",
-            "passphrase_repetition" : "La frase password e la ripetizione della frase password non coincidono!",
-            "passphrase_old" : "La vecchia frase password non è corretta.",
+            "passphrase_repetition" : "La frase segreta e la ripetizione della frase segreta non coincidono!",
+            "passphrase_old" : "La vecchia frase segreta non è corretta.",
             "password_old" : "La vecchia password non è corretta.",
             "confirmation_code" : "Codice di conferma errato",
             "code" : "Codice sconosciuto per lo studio.",
@@ -68,7 +68,7 @@
             "string" : "Il campo deve essere di tipo a stringa",
             "token" : "Token di autorizzazione non valido. Accedere nuovamente.",
             "json" : "Immesso JSON non valido",
-            "passphrase" : "Frase password errata",
+            "passphrase" : "Frase segreta errata",
             "passcode" : "Codice password errato",
             "plugin" : "Il plugin è destinato a un ruolo diverso",
             "unlock_code" : "Codice di sblocco errato",
@@ -83,7 +83,7 @@
             "email" : "Inserire l'indirizzo e-mail.",
             "input_field" : "Compilare questo campo di immissione.",
             "newpassword" : "Inserire una nuova password!",
-            "passphrase" : "Immettere la frase password.",
+            "passphrase" : "Immettere la frase segreta.",
             "groupsystem" : "È obbligatorio immettere il sistema del gruppo.",
             "token" : "Token mancante o errato.",
             "agb" : "Condizioni generali di contratto non accettate.",
@@ -214,7 +214,7 @@
             "110122" : "Accesso",
             "user-password-change" : "Password modificata",
             "user-password-change-request" : "Cambio password richiesto",
-            "user-passphrase-change" : "Frase password modificata",
+            "user-passphrase-change" : "Frase segreta modificata",
             "user-address-change" : "Indirizzo dell'utente modificato",
             "user-email-change" : "E-mail dell'utente modificata",
             "user-birthday-change" : "Data di nascita dell'utente modificata",
@@ -429,9 +429,7 @@
         },
         "plugintype" : {
             "visualization" : "Plugin",
-
-            // TODO NEW: Service
-            "service" : "Service",
+            "service" : "Servizio",
             "oauth1" : "OAuth 1",
             "oauth2" : "OAuth 2",
             "mobile" : "Applicazione (Smartphone, Web)"
@@ -533,12 +531,8 @@
         "email" : "E-mail",
         "password" : "Password",
         "password_repetition" : "Ripetere la password",
-
-        // TODO NEW: Account Protection
-        "secure" : "Account Protection",
-
-        // TODO NEW: Please encrypt my account key with my PASSWORD. I promise to not forget my password.
-        "secure2" : "Please encrypt my account key with my PASSWORD. I promise to not forget my password.",
+        "secure" : "Protezione dell'account",
+        "secure2" : "Cripta la chiave del mio account con la mia PASSWORD. Attenzione: se si dimentica la password, potrebbero volerci diversi giorni per recuperare la chiave dell'account!",
         "firstname" : "Nome",
         "lastname" : "Cognome",
         "gender" : "Sesso",
@@ -619,11 +613,11 @@
     },
 
     "passphrase" : {
-        "title" : "Inserire la frase password",
-        "description" : "Il tuo account è protetto da una frase password.",
-        "passphrase" : "Frase password",
+        "title" : "Inserire la frase segreta",
+        "description" : "Il tuo account è protetto da una frase segreta.",
+        "passphrase" : "Frase segreta",
         "continue_btn" : "Continua",
-        "if_lost" : "Se hai perso la frase password, contatta support@midata.coop"
+        "if_lost" : "Se hai perso la frase segreta, contatta support@midata.coop"
     },
 
     "postregister" : {
@@ -647,47 +641,30 @@
         "address_entered" : "Per utilizzare questo servizio è richiesto il tuo indirizzo postale; ti invitiamo a inserirlo.",
         "phone_entered" : "Per utilizzare questo servizio è richiesto un numero di telefono cellulare; ti invitiamo a inserirlo.",
         "admin_verified" : "Il tuo account deve essere sbloccato da un amministratore MIDATA. Riprova più tardi. Se trascorse più di 24 ore il tuo account non è stato sbloccato, contatta MIDATA.",
-
-
-        // TODO NEW: The MIDATA terms and conditions have been updated. Please confirm that you agree to the new version.
-        "terms_agreed" : "The MIDATA terms and conditions have been updated. Please confirm that you agree to the new version.",
-
-        // TODO NEW: The MIDATA privacy policy has been updated. Please confirm that you agree to the new version.
-        "privacy_policy_agreed" : "The MIDATA privacy policy has been updated. Please confirm that you agree to the new version.",
-
-        // TODO NEW: I agree
-        "agree_btn" : "I agree",
+        "terms_agreed" : "I Condizioni generali di contratto MIDATA sono stati aggiornati. Si prega di confermare di accettare la nuova versione.",
+        "privacy_policy_agreed" : "La Dichiarazione sui dati personali di MIDATA è stata aggiornata. Si prega di confermare di accettare la nuova versione.",
+        "agree_btn" : "Sono d'accordo",
         "keyrecovery" : {
-
-            // TODO NEW: The private key that is used to encrypt your accounts data needs to be recovered. In order to recover your key try one of these:
-            "intro" : "The private key that is used to encrypt your accounts data needs to be recovered. In order to recover your key try one of these:",
-
-            // TODO NEW: Do you have any app using Midata where you are still logged in? If yes open that app and your key will be recovered. Try to login again afterwards.
-            "way1" : "Do you have any app using Midata where you are still logged in? If yes open that app and your key will be recovered. Try to login again afterwards.",
-
-            // TODO NEW: Have you logged in using a browser before? If yes try to log in using the same browser and device.
-            "way2" : "Have you logged in using a browser before? If yes try to log in using the same browser and device.",
-
-            // TODO NEW: Remember your old password again? If yes try to log in using your old password.
-            "way3" : "Remember your old password again? If yes try to log in using your old password.",
-
-            // TODO NEW: Wait for Midata employees to do a manual key recovery. We will send you an email when the recovery has been done. Please wait up to seven days for the recovery to be completed.
-            "way4" : "Wait for Midata employees to do a manual key recovery. We will send you an email when the recovery has been done. Please wait up to seven days for the recovery to be completed."
+            "intro" : "La chiave privata utilizzata per crittografare i dati deve essere recuperata. Per recuperare la chiave, provare una di queste opzioni:",
+            "way1" : "Hai qualche applicazione che utilizza MIDATA dove sei ancora connesso? Se sì, apri l'applicazione e la tua chiave verrà recuperata. Prova ad effettuare nuovamente il login in seguito.",
+            "way2" : "Hai già effettuato l'accesso utilizzando un browser? Se sì, prova ad accedere utilizzando lo stesso browser e lo stesso dispositivo.",
+            "way3" : "Ricordi di nuovo la tua vecchia password? Se sì, prova ad accedere utilizzando la tua vecchia password.",
+            "way4" : "Attendere che i dipendenti MIDATA eseguano un recupero manuale della chiave. MIDATA vi invierà un'e-mail quando il recupero è stato fatto. Attendere fino a cinque giorni lavorativi per completare il recupero."
         }
     },
 
     "changepassphrase" : {
-        "title" : "Modificare la frase password",
-        "description" : "La frase password è una protezione aggiuntiva (crittografia aggiuntiva) dei propri dati. Non è memorizzata sui nostri server. Si deve inserire la frase password a ogni accesso, per consentire la decrittazione dei propri dati. Se si perde la frase password, non si sarà più in grado di accedere ai propri dati!",
-        "if_unprotected" : "Se il proprio account non è ancora protetto da una frase password lasciare vuoto il campo 'Vecchia frase password'.",
-        "keep_passphrase_safe" : "Mantenere la propria frase password in un posto sicuro, non esiste una funzione per recuperarla. Se si perde la frase password, non si potrà più accedere ai propri dati!",
-        "old_passphrase" : "Vecchia frase password",
-        "new_passphrase" : "Nuova frase password",
-        "change_passphrase_btn" : "Modificare la frase password",
-        "repeat_finalizes" : "Ripetendo la nuova frase password la modifica diventa definitiva.",
-        "repeat_passphrase" : "Ripetere la nuova frase password",
-        "confirm_btn" : "Confermare la frase password",
-        "success" : "La frase password è stata modificata con successo!"
+        "title" : "Modificare la frase segreta",
+        "description" : "La frase segreta è una protezione aggiuntiva (crittografia aggiuntiva) dei propri dati. Non è memorizzata sui nostri server. Si deve inserire la frase segreta a ogni accesso, per consentire la decrittazione dei propri dati. Se si perde la frase segreta, non si sarà più in grado di accedere ai propri dati!",
+        "if_unprotected" : "Se il proprio account non è ancora protetto da una frase segreta lasciare vuoto il campo 'Vecchia frase segreta'.",
+        "keep_passphrase_safe" : "Mantenere la propria frase segreta in un posto sicuro, non esiste una funzione per recuperarla. Se si perde la frase segreta, non si potrà più accedere ai propri dati!",
+        "old_passphrase" : "Vecchia frase segreta",
+        "new_passphrase" : "Nuova frase segreta",
+        "change_passphrase_btn" : "Modificare la frase segreta",
+        "repeat_finalizes" : "Ripetendo la nuova frase segreta la modifica diventa definitiva.",
+        "repeat_passphrase" : "Ripetere la nuova frase segreta",
+        "confirm_btn" : "Confermare la frase segreta",
+        "success" : "La frase segreta è stata modificata con successo!"
     },
 
     "changepassword" : {
@@ -764,18 +741,12 @@
         "request_participation_btn" : "Richiedere la partecipazione",
         "do_not_participate_help" : "Se NON vuoi partecipare puoi cliccare qui. Non ti verrà chiesto di nuovo e nessun dato verrà condiviso.",
         "do_not_participate_btn" : "Non partecipare",
-
-        // TODO CHANGED
-        // OLD: You are currently participating. If you no longer want to participate you may retreat from participation. Your shared data will be frozen at the moment of retreat and no new data will be shared. Once retreated you are not able to participate again.
-        // NEW: You are currently participating to this research. If you no longer want to participate you may retreat from participation. Your shared data will be frozen at the moment of retreat and no new data will be shared. Once retreated you are not able to participate again.
-        "retreat_help" : "Attualmente stai partecipando. Se non vuoi più partecipare puoi ritirarti dalla partecipazione. I vostri dati condivisi saranno congelati al momento del ritiro e non verranno condivisi nuovi dati. Una volta ritirato non sarai in grado di partecipare di nuovo.",
+        "retreat_help" : "Attualmente stai partecipando a questa ricerca. Se non vuoi più partecipare puoi ritirarti dalla partecipazione. I vostri dati condivisi saranno congelati al momento del ritiro e non verranno condivisi nuovi dati. Una volta ritirato non sarai in grado di partecipare di nuovo.",
         "retreat_btn" : "Ritirarsi dalla partecipazione",
         "status" : "Stato",
         "recommended_apps" : "Applicazioni consigliate",
         "use_app" : "Utilizzare ora",
-
-        // TODO NEW: Participation Info
-        "for_participants" : "Participation Info"
+        "for_participants" : "Info sulla partecipazione"
     },
 
     "user" : {
@@ -787,7 +758,7 @@
         "midataID" : "MIDATA ID:",
         "action" : "Altro...",
         "change_password_btn" : "Modifica password",
-        "change_passphrase_btn" : "Modificare la frase password",
+        "change_passphrase_btn" : "Modificare la frase segreta",
         "auditlog_btn" : "Visualizza il registro di revisione",
         "change_email_btn" : "Modifica indirizzo e-mail",
         "repair_account_btn" : "Ripara account",
@@ -1207,11 +1178,7 @@
         "study" : "Studio",
         "summary" : "Elenco dei tipi di dati accessibili:",
         "access_query" : "Data Access Filter",
-
-        // TODO CHANGED
-        // OLD: Resource
-        // NEW: Data Format
-        "format" : "Risorsa",
+        "format" : "Formato dati",
         "code" : "Codice",
         "to" : "al",
         "content" : "Tipo di dati",
@@ -1259,10 +1226,6 @@
     },
 
     "timeline" : {
-
-        // TODO CHANGED
-        // OLD: Midata
-        // NEW: MIDATA
         "spaces" : "MIDATA",
         "title" : "Timeline"
     },
