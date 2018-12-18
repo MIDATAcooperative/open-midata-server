@@ -429,12 +429,10 @@
         },
         "plugintype" : {
             "visualization" : "Plugin",
-
-            // TODO NEW: Service
-            "service" : "Service",
+            "service" : "Dienst",
             "oauth1" : "OAuth 1",
             "oauth2" : "OAuth 2",
-            "mobile" : "App (Smartphone, Web)"
+            "mobile" : "Applikation (Smartphone, Web)"
         },
         "infos" : {
             "SUMMARY" : "Kurze Zusammenfassung",
@@ -533,12 +531,8 @@
         "email" : "E-Mail",
         "password" : "Kennwort",
         "password_repetition" : "Kennwort wiederholen",
-
-        // TODO NEW: Account Protection
-        "secure" : "Account Protection",
-
-        // TODO NEW: Please encrypt my account key with my PASSWORD. I promise to not forget my password.
-        "secure2" : "Please encrypt my account key with my PASSWORD. I promise to not forget my password.",
+        "secure" : "Schutz des Kontos",
+        "secure2" : "Mein Kontoschlüssel mit meinem KENNWORT verschlüsseln. Warnung: Wenn Sie Ihr Kennwort vergessen haben, kann es mehrere Tage dauern, bis Ihren Kontoschlüssel wiederhergestellt wird!",
         "firstname" : "Vorname",
         "lastname" : "Name",
         "gender" : "Geschlecht",
@@ -647,32 +641,15 @@
         "address_entered" : "Geben Sie bitte Ihre Postadresse ein, sie ist erforderlich, um diesen Dienst nutzen zu können.",
         "phone_entered" : "Geben Sie bitte Ihre Mobiltelefonnummer ein, sie ist erforderlich, um diesen Dienst nutzen zu können.",
         "admin_verified" : "Ihr Konto muss durch einen MIDATA Administrator freigeschaltet werden. Versuchen Sie es bitte später noch einmal. Falls Ihr Konto nicht innert 24 Stunden freigeschaltet wurde, kontaktieren sie bitte MIDATA.",
-
-
-        // TODO NEW: The MIDATA terms and conditions have been updated. Please confirm that you agree to the new version.
-        "terms_agreed" : "The MIDATA terms and conditions have been updated. Please confirm that you agree to the new version.",
-
-        // TODO NEW: The MIDATA privacy policy has been updated. Please confirm that you agree to the new version.
-        "privacy_policy_agreed" : "The MIDATA privacy policy has been updated. Please confirm that you agree to the new version.",
-
-        // TODO NEW: I agree
-        "agree_btn" : "I agree",
+        "terms_agreed" : "Die MIDATA Allgemeine Geschäftsbedingungen wurden aktualisiert. Bitte bestätigen Sie, dass Sie mit der neuen Version einverstanden sind.",
+        "privacy_policy_agreed" : "Die MIDATA Datenschutzerklärung wurde aktualisiert. Bitte bestätigen Sie, dass Sie mit der neuen Version einverstanden sind.",
+        "agree_btn" : "Ich stimme zu",
         "keyrecovery" : {
-
-            // TODO NEW: The private key that is used to encrypt your accounts data needs to be recovered. In order to recover your key try one of these:
-            "intro" : "The private key that is used to encrypt your accounts data needs to be recovered. In order to recover your key try one of these:",
-
-            // TODO NEW: Do you have any app using Midata where you are still logged in? If yes open that app and your key will be recovered. Try to login again afterwards.
-            "way1" : "Do you have any app using Midata where you are still logged in? If yes open that app and your key will be recovered. Try to login again afterwards.",
-
-            // TODO NEW: Have you logged in using a browser before? If yes try to log in using the same browser and device.
-            "way2" : "Have you logged in using a browser before? If yes try to log in using the same browser and device.",
-
-            // TODO NEW: Remember your old password again? If yes try to log in using your old password.
-            "way3" : "Remember your old password again? If yes try to log in using your old password.",
-
-            // TODO NEW: Wait for Midata employees to do a manual key recovery. We will send you an email when the recovery has been done. Please wait up to seven days for the recovery to be completed.
-            "way4" : "Wait for Midata employees to do a manual key recovery. We will send you an email when the recovery has been done. Please wait up to seven days for the recovery to be completed."
+            "intro" : "Der private Schlüssel, der zur Verschlüsselung Ihrer Daten verwendet wird, muss wiederhergestellt werden. Um Ihren Schlüssel wiederherzustellen, versuchen Sie eine dieser Optionen:",
+            "way1" : "Haben Sie eine Applikation die MIDATA benutzt, bei der Sie noch angemeldet sind? Wenn ja, öffnen Sie diese Applikation und Ihr Schlüssel wird wiederhergestellt. Versuchen Sie anschliessend, sich erneut anzumelden.",
+            "way2" : "Haben Sie sich schon einmal mit einem Browser angemeldet? Wenn ja, versuchen Sie, sich mit dem gleichen Browser und Gerät anzumelden.",
+            "way3" : "Erinnern Sie sich wieder an Ihr altes Kennwort? Wenn ja, versuchen Sie, sich mit Ihrem alten Kennwort anzumelden.",
+            "way4" : "Warten Sie, bis MIDATA-Mitarbeiter eine manuelle Schlüsselwiederherstellung durchgeführt haben. MIDATA sendet Ihnen eine E-Mail, wenn die Wiederherstellung abgeschlossen ist. Bitte warten Sie bis zu fünf Arbeitstage, bis die Wiederherstellung abgeschlossen ist."
         }
     },
 
@@ -764,18 +741,12 @@
         "request_participation_btn" : "Teilnahme anfordern",
         "do_not_participate_help" : "Wenn Sie NICHT teilnehmen möchten, können Sie hier klicken. Sie werden nicht erneut gefragt und es werden keine Daten weitergegeben.",
         "do_not_participate_btn" : "Nicht teilnehmen",
-
-        // TODO CHANGED
-        // OLD: You are currently participating. If you no longer want to participate you may retreat from participation. Your shared data will be frozen at the moment of retreat and no new data will be shared. Once retreated you are not able to participate again.
-        // NEW: You are currently participating to this research. If you no longer want to participate you may retreat from participation. Your shared data will be frozen at the moment of retreat and no new data will be shared. Once retreated you are not able to participate again.
         "retreat_help" : "Sie nehmen an dieser Forschung derzeit teil. Wenn Sie nicht mehr teilnehmen möchten, können Sie sich von der Teilnahme zurückziehen. Ihre geteilten Daten werden zum Zeitpunkt des Rückzugs eingefroren und es werden keine neuen Daten weitergegeben. Einmal zurückgezogen, können Sie nicht mehr teilnehmen.",
         "retreat_btn" : "Teilnahme zurückgezogen",
         "status" : "Status",
         "recommended_apps" : "Empfohlene Applikationen",
         "use_app" : "Jetzt verwenden",
-
-        // TODO NEW: Participation Info
-        "for_participants" : "Participation Info"
+        "for_participants" : "Teilnahme-Informationen"
     },
 
     "user" : {
@@ -1207,11 +1178,7 @@
         "study" : "Studie",
         "summary" : "Liste der zugänglichen Datentypen:",
         "access_query" : "Data Access Filter",
-
-        // TODO CHANGED
-        // OLD: Resource
-        // NEW: Data Format
-        "format" : "Ressource",
+        "format" : "Datenformat",
         "code" : "Code",
         "to" : "bis",
         "content" : "Datentype",
@@ -1259,10 +1226,6 @@
     },
 
     "timeline" : {
-
-        // TODO CHANGED
-        // OLD: Midata
-        // NEW: MIDATA
         "spaces" : "MIDATA",
         "title" : "Timeline"
     },

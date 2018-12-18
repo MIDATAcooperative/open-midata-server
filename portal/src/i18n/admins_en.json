@@ -191,8 +191,8 @@
    },
    
    "admin_pwrecover" : {
-     "menu" : "Password Recovery",
-     "title" : "Password Recovery",
+     "menu" : "Key Recovery",
+     "title" : "Key Recovery",
      "empty" : "There is currently no recovery process running.",
      "name" : "User",
      "started" : "Date",

@@ -40,19 +40,11 @@
         "confirmation_code" : "Bestätigungscode:",
         "registration_date" : "Registrierungsdatum:",
         "confirmation_date" : "Bestätigungsdatum:",
-
-        // TODO NEW: Account protection
-        "security" : "Account protection",
+        "security" : "Kontoschutz",
         "security_type" : {
-
-            // TODO NEW: Private key on server
-            "KEY" : "Private key on server",
-
-            // TODO NEW: PASSPHRASE protected private key
-            "KEY_PASSPHRASE" : "PASSPHRASE protected private key",
-
-            // TODO NEW: Password protected private key
-            "KEY_EXT_PASSWORD" : "Password protected private key"
+            "KEY" : "Privater Schlüssel auf dem Server",
+            "KEY_PASSPHRASE" : "PASSPHRASE geschützter privater Schlüssel",
+            "KEY_EXT_PASSWORD" : "Kennwort geschützter privater Schlüssel"
         },
         "last_login" : "Letzte Anmeldung:",
         "email_confirm_btn" : "E-Mail-Adresse bestätigen",
@@ -130,9 +122,7 @@
         "version" : "Version",
         "language" : "Sprache",
         "createdAt" : "Erstellungsdatum",
-
-        // TODO NEW: Filter by name
-        "restrict_name" : "Filter by name"
+        "restrict_name" : "Nach Name filtern"
     },
 
     "admin_manageterms" : {
@@ -156,16 +146,9 @@
         "startDate" : "Startdatum",
         "endDate" : "Enddatum",
         "dataCreatedBefore" : "Datenbestand eingefroren ab dem",
-
-
-        // TODO NEW: Public information
-        "infos" : "Public information",
-
-        // TODO NEW: Information for participants
-        "infos_part" : "Information for participants",
-
-        // TODO NEW: Internal Information
-        "infos_internal" : "Internal Information",
+        "infos" : "Öffentliche Informationen",
+        "infos_part" : "Informationen für die Teilnehmer",
+        "infos_internal" : "Interne Informationen",
         "required_information" : "Benötigte Informationen",
         "anonymous" : "Anonym",
         "required_assistance" : "Belegarzt benötigt",
@@ -200,51 +183,23 @@
         "users" : "Aktive Benutzerkonten",
         "consents" : "Zustimmungen",
         "health" : {
-
-            // TODO NEW: System Health
-            "title" : "System Health",
-
-            // TODO NEW: Background service key present?
-            "servicekey" : "Background service key present?",
-
-            // TODO NEW: Request Key Recovery
-            "requestkey_btn" : "Request Key Recovery",
-
-            // TODO NEW: Cluster status
-            "cluster" : "Cluster status"
+            "title" : "Systemzustand",
+            "servicekey" : "Hintergrundservice-Schlüssel vorhanden?",
+            "requestkey_btn" : "Schlüssel-Wiederherstellung anfordern",
+            "cluster" : "Clusterstatus"
         }
     },
 
     "admin_pwrecover" : {
-
-        // TODO NEW: Password Recovery
-        "menu" : "Password Recovery",
-
-        // TODO NEW: Password Recovery
-        "title" : "Password Recovery",
-
-        // TODO NEW: There is currently no recovery process running.
-        "empty" : "There is currently no recovery process running.",
-
-        // TODO NEW: User
-        "name" : "User",
-
-        // TODO NEW: Date
-        "started" : "Date",
-
-        // TODO NEW: Share
+        "menu" : "Schlüssel-Wiederherstellung",
+        "title" : "Schlüssel-Wiederherstellung",
+        "empty" : "Derzeit läuft kein Wiederherstellungsprozess.",
+        "name" : "Benutzer",
+        "started" : "Datum",
         "share" : "Share",
-
-        // TODO NEW: Decrypted share
-        "decrypted" : "Decrypted share",
-
-        // TODO NEW: My recovery id
-        "myid" : "My recovery id",
-
-        // TODO NEW: Click on a share to copy the encrypted share into the clipboard.
-        "instr1" : "Click on a share to copy the encrypted share into the clipboard.",
-
-        // TODO NEW: Decrypt share on Ubuntu: (click line to copy it to clipboard)
-        "instr2" : "Decrypt share on Ubuntu: (click line to copy it to clipboard)"
+        "decrypted" : "Entschlüsselte Share",
+        "myid" : "Meine Wiederherstellungs-ID",
+        "instr1" : "Klicken Sie auf einen Share, um den verschlüsselten Share in die Zwischenablage zu kopieren.",
+        "instr2" : "Entschlüsseln Sie den Share auf Ubuntu: (klick auf die Zeile, um sie in die Zwischenablage zu kopieren)"
     }
 }

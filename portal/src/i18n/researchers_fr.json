@@ -62,10 +62,6 @@
         "related_apps" : "Plugins liés à l'étude",
         "empty" : "Aucune application ou plugin n'est lié à l'étude",
         "aggregator_apps" : "Ajouter une application de recherche à utiliser avec VOTRE compte",
-
-        // TODO CHANGED
-        // OLD: Aggregators, Analysis & Interpretation Apps
-        // NEW: Aggregators, Analysis and Interpretation Apps
         "datalink" : "Agrégateurs, applications d'analyse et d'interprétation",
         "description" : "Une fois l'étude validée, vous pouvez y associer des plugins et des services externes de traitement de données. Ces plugins ou services doivent se connecter à MIDATA en utilisant les identifiants d'un des membres de l'équipe de recherche ayant des droits suffisants.",
         "select_group_btn" : "Sélectionnez un groupe",
@@ -85,9 +81,7 @@
             "not_validated_research" : "Non confirmé par le chercheur",
             "not_validated_developer" : "Non confirmé par le développeur",
             "study_wrong_status" : "Inactif en raison de l'état d'études",
-
-            // todo La participation ä l'étude ne peut pas être initié via une application
-            "study_no_app_participation" : "L'étude ne permet pas de s'inscrire par l'intermédiaire d'une application"
+            "study_no_app_participation" : "L'adhésion à l'étude n'est pas permise depuis une application"
         },
         "select_btn" : "Voir",
         "validate_btn" : "Confirmer",
@@ -96,45 +90,17 @@
         "no_valid_app" : "Aucune application sélectionnée",
         "type" : "Comment sont-elles liées?",
         "types" : {
-
-            // TODO CHANGED
-            // OLD: App or plugin offers study participation upon login/start
-            // NEW: Application or plugin offers study participation upon login/start
             "OFFER_P" : "L'application ou le plugin offre la participation à l'étude lors de la connexion/du démarrage",
-
-            // TODO CHANGED
-            // OLD: Study participation is required to use the app or plugin
-            // NEW: Study participation is required to use the application or plugin
             "REQUIRE_P" : "La participation à l'étude est requise pour utiliser l'application ou le plugin",
-
-            // TODO CHANGED
-            // OLD: App or plugin is recommended by study
-            // NEW: Application or plugin is recommended by study
             "RECOMMEND_A" : "L'application ou le plugin est recommandé par l'étude",
             "AUTOADD_A" : "Le plugin est automatiquement ajouté lors de la participation à l'étude",
-
-            // TODO CHANGED
-            // OLD: App shares data to study participants
-            // NEW: Application shares data to study participants
             "DATALINK" : "L'application partage les données avec les participants à l'étude"
         },
         "types_short" : {
-
-            // TODO CHANGED
-            // OLD: Offer participation
-            // NEW: Suggest participation
             "OFFER_P" : "Suggérer la participation",
             "REQUIRE_P" : "Exiger la participation",
             "RECOMMEND_A" : "Recommandé",
-
-            // TODO CHANGED
-            // OLD: Auto-Add
-            // NEW: Add automatically
             "AUTOADD_A" : "Ajouter automatiquement",
-
-            // TODO CHANGED
-            // OLD: Data Share
-            // NEW: Data Sharing
             "DATALINK" : "Partage des données"
         },
 
@@ -201,24 +167,12 @@
         "lastdone" : "Dernière étape traitée",
         "nextstep" : "Prochaine étape à effectuer",
         "confirm" : {
-
-            // TODO NEW: Setup cannot be changed anymore. Validation process by MIDATA will be started.
-            "validation" : "Setup cannot be changed anymore. Validation process by MIDATA will be started.",
-
-            // TODO NEW: No additional users will be able to participate anymore.
-            "end_participant_search" : "No additional users will be able to participate anymore.",
-
-            // TODO NEW: All study data will be frozen at this moment.
-            "finish_execution" : "All study data will be frozen at this moment.",
-
-            // TODO NEW: The research project will be completely wiped from the platform.
-            "delete" : "The research project will be completely wiped from the platform.",
-
-            // TODO NEW: All study data will be frozen at this moment. This project will be marked as failed.
-            "abort" : "All study data will be frozen at this moment. This project will be marked as failed.",
-
-            // TODO NEW: This operation cannot be undone. Are you sure?
-            "are_you_sure" : "This operation cannot be undone. Are you sure?"
+            "validation" : "La configuration ne peut plus être modifiée. Le processus de validation par MIDATA sera lancé.",
+            "end_participant_search" : "Aucun utilisateur supplémentaire ne pourra plus participer.",
+            "finish_execution" : "Toutes les données de l'étude seront gelées à ce moment.",
+            "delete" : "Le projet de recherche sera complètement effacé de la plate-forme.",
+            "abort" : "Toutes les données de l'étude seront gelées à ce moment. Ce projet sera marqué comme ayant échoué.",
+            "are_you_sure" : "Cette opération ne peut pas être annulée. Êtes-vous sûr?"
         }
     },
 
@@ -320,10 +274,6 @@
         "name_help" : "Le nom de l'étude sera affiché aux participants. La description est affichée sur le portail, ainsi que lors de la connexion via une application.",
         "teamsetup" : "Configuration de l'équipe de chercheurs",
         "teamsetup_help" : "Si davantage de personnes participent à la réalisation de l'étude, indiquez toutes les personnes concernées et leur rôle. Tant que vous n'avez pas ajouté d'autres personnes, vous pouvez changer votre propre rôle en vous ajoutant à nouveau avec un autre rôle.",
-
-        // TODO CHANGED
-        // OLD: Provide public information about your research
-        // NEW: Public information about your research
         "information" : "Informations publiques sur vos recherches",
         "information_help" : "L'information publique aidera les titulaires de comptes MIDATA à évaluer si vos recherches sont pertinentes pour eux.",
         "groups" : "Groupes de participants définis",
@@ -367,19 +317,10 @@
         "title" : "Informations",
         "introduction" : "Donnez des informations supplémentaires sur l'étude. Vous pouvez fournir des informations publiques, des instructions supplémentaires et des coordonnées visibles uniquement par les participants et des informations pour les autres chercheurs et l'administration. Les textes ne sont fournis qu'à titre d'information complémentaire et peuvent être modifiés par vous à tout moment.",
         "introduction2" : "Toutes les informations sont facultatives. Vous ne devriez donner des informations que sur des sujets qui ont un sens dans votre contexte de recherche.",
-
         "visibility" : "Informations visibles par",
         "visibilities" : {
             "ALL" : "tout le monde",
-
-            // TODO CHANGED
-            // OLD: participants
-            // NEW: all participants
             "PARTICIPANTS" : "tous les participants",
-
-            // TODO CHANGED
-            // OLD: researchers and MIDATA only
-            // NEW: only researchers and MIDATA
             "INTERNAL" : "uniquement les chercheurs et MIDATA"
         },
         "showlanguages" : "Langues à éditer"
