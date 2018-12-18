@@ -81,6 +81,10 @@
             "not_validated_research" : "Non confermato dal ricercatore",
             "not_validated_developer" : "Non confermato dallo sviluppatore",
             "study_wrong_status" : "Non attivo a causa dello stato dello studio",
+
+            // TODO CHANGED
+            // OLD: Study does not allow to join using an app
+            // NEW: Study does not allow to join using an application
             "study_no_app_participation" : "Lo studio non consente di aderire utilizzando un'applicazione"
         },
         "select_btn" : "Vista",

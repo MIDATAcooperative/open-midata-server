@@ -146,6 +146,7 @@
         "startDate" : "Date de début",
         "endDate" : "Date de fin",
         "dataCreatedBefore" : "Données figées dès le",
+
         "infos" : "Informations publiques",
         "infos_part" : "Informations pour les participants",
         "infos_internal" : "Informations internes",
@@ -191,7 +192,15 @@
     },
 
     "admin_pwrecover" : {
+
+        // TODO CHANGED
+        // OLD: Password Recovery
+        // NEW: Key Recovery
         "menu" : "Récupération de clé",
+
+        // TODO CHANGED
+        // OLD: Password Recovery
+        // NEW: Key Recovery
         "title" : "Récupération de clé",
         "empty" : "Il n'y a actuellement aucun processus de récupération en cours d'exécution.",
         "name" : "Utilisateur",

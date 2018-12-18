@@ -146,6 +146,7 @@
         "startDate" : "Startdatum",
         "endDate" : "Enddatum",
         "dataCreatedBefore" : "Datenbestand eingefroren ab dem",
+
         "infos" : "Öffentliche Informationen",
         "infos_part" : "Informationen für die Teilnehmer",
         "infos_internal" : "Interne Informationen",
@@ -191,7 +192,15 @@
     },
 
     "admin_pwrecover" : {
+
+        // TODO CHANGED
+        // OLD: Password Recovery
+        // NEW: Key Recovery
         "menu" : "Schlüssel-Wiederherstellung",
+
+        // TODO CHANGED
+        // OLD: Password Recovery
+        // NEW: Key Recovery
         "title" : "Schlüssel-Wiederherstellung",
         "empty" : "Derzeit läuft kein Wiederherstellungsprozess.",
         "name" : "Benutzer",
