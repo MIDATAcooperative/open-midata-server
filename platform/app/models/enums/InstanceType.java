@@ -146,14 +146,7 @@ public enum InstanceType {
 	public boolean disableServiceKeyProtection() {
 		return this == PERFTEST || this == LOCAL;
 	}
-	
-	/**
-	 * Is it allowed to use learn : true in access queries?
-	 * @return
-	 */
-	public boolean allowQueryLearning() {
-		return this == TEST || this == LOCAL || this == DEMO;
-	}
+		
 	
 	/**
 	 * Automatically confirm changed consents on login from Midata API

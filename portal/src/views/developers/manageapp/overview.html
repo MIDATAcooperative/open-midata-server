@@ -47,14 +47,14 @@
 			<tr>
 			  <td ng-click="go('^.appquery')">				    
 				<div class="pull-left"><img width="80" class="img-responsive" src="/images/question.jpg"></div>														   
-				<div><b translate="manageapp.query_btn"></b></div>
+				<div><b translate="manageapp.query_btn"></b><span class="badge" style="margin-left:10px" ng-show="hasCount(app.defaultQuery)">1 <span translate="manageapp.defined"></span></span><span class="badge" style="margin-left:10px" ng-hide="hasCount(app.defaultQuery)">0 <span translate="manageapp.defined"></span></span></div>
 				<div translate="manageapp.query_help"></div>																
 			  </td>
 			</tr>
 			<tr>
 			  <td ng-click="go('^.appsubscriptions')">				    
 				<div class="pull-left"><img width="80" class="img-responsive" src="/images/trigger.jpg"></div>														   
-				<div><b translate="manageapp.subscriptions_btn"></b></div>
+				<div><b translate="manageapp.subscriptions_btn"></b><span class="badge" style="margin-left:10px">{{ app.defaultSubscriptions.length || 0 }} <span translate="manageapp.defined"></span></span></div>
 				<div translate="manageapp.subscriptions_help"></div>																
 			  </td>
 			</tr>
@@ -81,15 +81,16 @@
 			</tr>
 			<tr>
 			  <td ng-click="go('^.appicon')">				    
-				<div class="pull-left"><img width="80" class="img-responsive" src="/images/editicons.jpg"></div>														   
-				<div><b translate="manageapp.icon_btn"></b></div>
-				<div translate="manageapp.icon_help"></div>																
+				<div class="pull-left" ><img width="80" class="img-responsive" src="/images/editicons.jpg"></div>														   
+				<div><b translate="manageapp.icon_btn"></b><span class="badge" style="margin-left:10px">{{ app.icons.length || 0 }} <span translate="manageapp.defined"></span></span></div>
+				<div translate="manageapp.icon_help"></div>	
+																	
 			  </td>
 			</tr>
 			<tr>
 			  <td ng-click="go('^.appmessages')">				    
 				<div class="pull-left"><img width="80" class="img-responsive" src="/images/mail.jpg"></div>														   
-				<div><b translate="manageapp.messages_btn"></b></div>
+				<div><b translate="manageapp.messages_btn"></b><span class="badge" style="margin-left:10px">{{ keyCount(app.predefinedMessages) }} <span translate="manageapp.defined"></span></span></div>
 				<div translate="manageapp.messages_help"></div>																
 			  </td>
 			</tr>

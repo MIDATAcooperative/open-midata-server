@@ -75,6 +75,7 @@
   "manageapp" : {
     "overview" : "Application Overview",
     "choose" : "Functions to manage your application",
+    "defined" : "defined",
     "filename" : "Internal Name",
     "type" : "Application Type",
     "targetUserRole" : "Target Role",
@@ -175,7 +176,15 @@
   
   "appdebug" : {
     "title" : "API Tester",
-    "login" : "Login"
+    "login" : "Login",
+    "oauth_login" : "OAuth Login",
+    "device" : "Device",
+    "refresh_token" : "Refresh-Token",
+    "backend_services" : "Serverside Scripts",
+    "portal_username" : "Username",
+    "portal_password" : "Password",
+    "portal_login" : "Use plugin instance:",
+    "portal_login_btn" : "Portal login + get space token"      
   },
   
   "appicon" : {
