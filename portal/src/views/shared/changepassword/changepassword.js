@@ -32,7 +32,7 @@ angular.module('portal')
 				data.password = $scope.pw.password;
 			}
 			return server.post(jsRoutes.controllers.PWRecovery.changePassword().url, JSON.stringify(data));			
-		})).then(function() { $scope.success = true; });
+		})).then(function() { $scope.success = true;session.login(); });
 						 
 	};
 	

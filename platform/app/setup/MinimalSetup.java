@@ -17,6 +17,7 @@ import models.enums.PluginStatus;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
+import utils.RuntimeConstants;
 import utils.access.RecordManager;
 import utils.auth.KeyManager;
 import utils.collections.Sets;
@@ -84,10 +85,10 @@ public class MinimalSetup {
 			RecordManager.instance.createPrivateAPS(developer._id, developer._id);
 		}	
 		
-		if (Admin.getByEmail("autorun-service", Sets.create("_id")) == null) {
+		if (Admin.getByEmail(RuntimeConstants.AUTORUN_USERNAME, Sets.create("_id")) == null) {
 			Admin admin = new Admin();
 			admin._id = new MidataId();
-			admin.email = "autorun-service";
+			admin.email = RuntimeConstants.AUTORUN_USERNAME;
 			admin.emailLC = admin.email.toLowerCase();
 			admin.password = null;
 			admin.role = UserRole.ADMIN;

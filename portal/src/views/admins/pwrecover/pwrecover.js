@@ -28,15 +28,21 @@ angular.module('portal')
 			var rec = JSON.parse(JSON.stringify(user.shares));
 			rec.encrypted = user.encShares.encrypted;
 			rec.iv = user.encShares.iv;
+			try {
 			var response = crypto.dorecover(rec, user.challenge);
 			server.post(jsRoutes.controllers.PWRecovery.finishRecovery().url, JSON.stringify({ _id : user._id, session : response }))
 			.then(function() {
-				user.success = true;
+				user.success = "[ok]";
 			});
+			} catch (e) {
+				console.log(e);
+				user.success = null;
+				user.fail = e.message;
+			}
 		} else {
 		   server.post(jsRoutes.controllers.PWRecovery.storeRecoveryShare().url, JSON.stringify(user))
 		   .then(function() {
-			   user.success = true;
+			   user.success = "["+Object.keys(user.shares).length+"/"+crypto.keysNeeded()+"]";
 		   });
 		   
 		}

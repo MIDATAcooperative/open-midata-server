@@ -37,6 +37,7 @@ import play.mvc.Result;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
+import utils.RuntimeConstants;
 import utils.ServerTools;
 import utils.access.RecordManager;
 import utils.auth.KeyManager;
@@ -356,13 +357,13 @@ public class AutoRun extends APIController {
 					ErrorReporter.report("stats service", null, e);
 				}
 								
-				User autorunner = Admin.getByEmail("autorun-service", Sets.create("_id"));
+				MidataId autorunner = RuntimeConstants.instance.autorunService;
 				String handle = KeyManager.instance.login(1000l*60l*60l*23l, false);
-				KeyManager.instance.unlock(autorunner._id, null);
+				KeyManager.instance.unlock(autorunner, null);
 				Set<Space> autoImports = Space.getAll(CMaps.map("autoImport", true), Sets.create("_id", "owner", "visualization"));
 				
 				for (Space space : autoImports) {										    
-			       workerRouter.route(new ImportRequest(handle, autorunner._id, space), getSelf());
+			       workerRouter.route(new ImportRequest(handle, autorunner, space), getSelf());
 			    }
 				
 				AccessLog.log("Done scheduling old autoimport size="+autoImports.size());

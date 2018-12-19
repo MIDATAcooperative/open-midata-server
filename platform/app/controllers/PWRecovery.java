@@ -126,19 +126,9 @@ public class PWRecovery extends APIController {
 		
 		if (sessionToken != null) KeyManager.instance.unlock(user._id, sessionToken, proc.nextPublicExtKey);		
 		
-		if (user.email.equals("autorun-service")) {
+		if (user.email.equals(RuntimeConstants.AUTORUN_USERNAME)) {
 			
-			BSONObject obj = RecordManager.instance.getMeta(user._id, user._id, "_aeskey");
-			if (obj == null || true) {
-				Map<String, Object> map = new HashMap<String, Object>();
-				byte[] key = EncryptionUtils.randomize(EncryptionUtils.generateKey());
-				map.put("key", key);
-				RecordManager.instance.setMeta(user._id, user._id, "_aeskey", map);
-				ServiceHandler.setKey(key);
-			} else {
-				byte[] aeskey = (byte[]) obj.get("key");
-				ServiceHandler.setKey(aeskey);
-			}
+			provideServiceKey(user);
 			proc.nextPassword = null;
 		}
 		
@@ -152,6 +142,20 @@ public class PWRecovery extends APIController {
 		PWRecovery.storeRecoveryData(user._id, proc.nextShares);
 		user.removeFlag(AccountActionFlags.KEY_RECOVERY);
 		KeyRecoveryProcess.delete(user._id);
+	}
+	
+	private static void provideServiceKey(User user) throws AppException {
+		BSONObject obj = RecordManager.instance.getMeta(user._id, user._id, "_aeskey");
+		if (obj == null || true) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			byte[] key = EncryptionUtils.randomize(EncryptionUtils.generateKey());
+			map.put("key", key);
+			RecordManager.instance.setMeta(user._id, user._id, "_aeskey", map);
+			ServiceHandler.setKey(key);
+		} else {
+			byte[] aeskey = (byte[]) obj.get("key");
+			ServiceHandler.setKey(aeskey);
+		}
 	}
 	
 	public static void finishRecovery(User user) throws AppException {
@@ -314,10 +318,18 @@ public class PWRecovery extends APIController {
     public Result requestServiceKeyRecovery() throws AppException {
     	JsonNode json = request().body().asJson();	
     	KeyManager.instance.login(60000, false);
-    	User autorun = Admin.getByEmail("autorun-service", User.FOR_LOGIN);
-  	    KeyManager.instance.unlock(autorun._id, null);        
-      	PWRecovery.startRecovery(autorun, json);	
-      	autorun.addFlag(AccountActionFlags.KEY_RECOVERY);
+    	User autorun = Admin.getByEmail(RuntimeConstants.AUTORUN_USERNAME, User.FOR_LOGIN);
+  	    int keytype = KeyManager.instance.unlock(autorun._id, null);
+  	    if (keytype == KeyManager.KEYPROTECTION_FAIL) {
+      	  PWRecovery.startRecovery(autorun, json);
+      	  autorun.addFlag(AccountActionFlags.KEY_RECOVERY);
+  	    } else {
+  	      PWRecovery.changePassword(autorun, json);	
+  	      autorun.password = null;
+  	      User.set(autorun._id, "password", null);
+		  provideServiceKey(autorun);
+  	    }
+      	
       	return ok();
     }
 	

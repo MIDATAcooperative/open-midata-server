@@ -8,5 +8,6 @@ angular.module('config', [])
     instance : instance.portal.backend.substring(8).split(/[\.\:]/)[0],
     instanceType : instance.instanceType,
     languages : instance.portal.languages,
-    countries : instance.portal.countries
+    countries : instance.portal.countries,
+    build : require('../package.json').version
 });

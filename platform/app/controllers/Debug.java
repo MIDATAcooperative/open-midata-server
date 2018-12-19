@@ -8,6 +8,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.InstanceConfig;
+import utils.RuntimeConstants;
 import utils.access.EncryptedAPS;
 import utils.auth.AnyRoleSecured;
 import utils.collections.Sets;
@@ -54,7 +55,7 @@ public class Debug extends Controller {
 	 */
 	@APICall	
 	public Result ping() throws AppException {
-	  if (Admin.getByEmail("autorun-service", Sets.create("_id")) == null) throw new InternalServerException("error.db", "Database error");
+	  if (Admin.getByEmail(RuntimeConstants.AUTORUN_USERNAME, Sets.create("_id")) == null) throw new InternalServerException("error.db", "Database error");
 	  return ok();
 	}
 	

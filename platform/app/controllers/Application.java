@@ -104,7 +104,7 @@ public class Application extends APIController {
 		// validate input
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "email", "role");				
-		String email = JsonValidation.getString(json, "email");
+		String email = JsonValidation.getEMail(json, "email");
 		String role = JsonValidation.getString(json, "role");
 		
 		// execute
@@ -133,15 +133,10 @@ public class Application extends APIController {
 		  Map<String,String> replacements = new HashMap<String, String>();
 		  replacements.put("site", site);
 		  replacements.put("password-link", url);
-		   		
-		  if (email.equals("autorun-service")) {
-			  email = InstanceConfig.getInstance().getAdminEmail();
-			  Messager.sendTextMail(email, user.firstname+" "+user.lastname, "Autorun Service", lostpwmail.render(site,url).toString());
-		  } else {
+		   				
 		  if (!Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.PASSWORD_FORGOTTEN, null, Collections.singleton(user._id), null, replacements)) {			  		  		 
 		    Messager.sendTextMail(email, user.firstname+" "+user.lastname, "Your Password", lostpwmail.render(site,url).toString());
-		  }
-		  }
+		  }		
 		  AuditManager.instance.success();
 		}
 			
