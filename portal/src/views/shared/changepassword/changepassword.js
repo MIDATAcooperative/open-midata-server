@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('ChangePasswordCtrl', ['$scope', '$state', 'status', 'server', function($scope, $state, status, server) {
+.controller('ChangePasswordCtrl', ['$scope', '$state', 'status', 'server', 'crypto', 'session', function($scope, $state, status, server, crypto, session) {
 	// init
 	$scope.error = null;
 	$scope.status = new status(false, $scope);
@@ -18,10 +18,27 @@ angular.module('portal')
 				
 		var data = $scope.pw;
 		
-		$scope.status.doAction("changePassword", server.post(jsRoutes.controllers.Application.changePassword().url, JSON.stringify(data))).
-		then(function() { $scope.success = true; });
+		$scope.status.doAction("changePassword", crypto.generateKeys($scope.pw.password).then(function(keys) {
+			
+			if ($scope.pw.secure) {
+				var data = { oldPassword : $scope.pw.oldPassword, oldPasswordHash : crypto.getHash($scope.pw.oldPassword) };
+				data.password = keys.pw_hash;
+				data.pub = keys.pub;
+				data.priv_pw = keys.priv_pw;
+				data.recovery = keys.recovery;
+				data.recoverKey = keys.recoverKey;
+			} else {
+				var data = { oldPassword : $scope.pw.oldPassword, oldPasswordHash : crypto.getHash($scope.pw.oldPassword) };
+				data.password = $scope.pw.password;
+			}
+			return server.post(jsRoutes.controllers.PWRecovery.changePassword().url, JSON.stringify(data));			
+		})).then(function() { $scope.success = true;session.login(); });
+						 
 	};
 	
+	session.currentUser.then(function() {
+		$scope.pw.secure = session.user.security == "KEY_EXT_PASSWORD";
+	});
 	$scope.status.isBusy = false;
 	
 }]);

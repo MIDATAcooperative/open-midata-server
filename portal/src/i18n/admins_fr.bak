@@ -39,6 +39,12 @@
     "confirmation_code" : "Confirmation Code:",
     "registration_date" : "Registration Date:",
     "confirmation_date" : "Confirmation Date:",
+    "security" : "Account protection",
+    "security_type" : {
+      "KEY" : "Private key on server",
+      "KEY_PASSPHRASE" : "PASSPHRASE protected private key",
+      "KEY_EXT_PASSWORD" : "Password protected private key"
+    },
     "last_login" : "Last Login:",
     "email_confirm_btn" : "Confirm Email Address",
     "comment" : "Comment",
@@ -64,7 +70,17 @@
     "language" : "News language",
     "content" : "Content",
     "url" : "URL of full message",
-    "expires" : "Expiration date of message"
+    "expires" : "Expiration date of message",
+    "date" : "Official date",
+    "appId" : "Linked Application",
+    "studyId" : "Linked Study",
+    "layout" : "Layout", 
+    "layouts" : {
+      "small" : "Small (1x1)",
+      "wide" : "Wide (2x1)",
+      "high" : "High (1x2)",
+      "large" : "Large (2x2)"
+    }
   },
   
   "admin_registration" : {
@@ -104,7 +120,8 @@
     "name" : "Name",
     "version" : "Version",
     "language" : "Language",
-    "createdAt" : "Creation Date"
+    "createdAt" : "Creation Date",
+    "restrict_name" : "Filter by name"
   },
   
   "admin_manageterms" : {
@@ -122,11 +139,16 @@
      "created_at" : "Created on",
      "created_by" : "Created by",
      "description" : "Description",
-     "joinmethods" : "Join Methods",
+     "joinmethods" : "Participation procedures",
+     "type" : "Type",    
      "code" : "Code",
      "startDate" : "Start Date",
      "endDate" : "End Date",
      "dataCreatedBefore" : "Data freeze date",
+     
+     "infos" : "Public information",
+     "infos_part" : "Information for participants",
+     "infos_internal" : "Internal Information",     
      "required_information" : "Required Information",
      "anonymous" : "Anonymous",
      "required_assistance" : "Required Assistance",
@@ -139,6 +161,7 @@
      "team" : "Team",
      "role" : "Role",
      "history" : "History",
+     "links" : "Linked Applications",
      "end_validation_btn" : "Complete Validation",
      "back_to_draft_btn" : "Back to Draft",
      "delete_study_btn" : "Delete Study"    
@@ -158,6 +181,25 @@
 	 "groupCount" : "Teams (Healthcare and Research)",
 	 "auditEventCount" : "Audit Events",
 	 "users" : "Active User Accounts",		       
-     "consents" : "Consents"
+     "consents" : "Consents",
+     "health" : {
+       "title" : "System Health",
+       "servicekey" : "Background service key present?",
+       "requestkey_btn" : "Request Key Recovery",
+       "cluster" : "Cluster status"
+     }
+   },
+   
+   "admin_pwrecover" : {
+     "menu" : "Key Recovery",
+     "title" : "Key Recovery",
+     "empty" : "There is currently no recovery process running.",
+     "name" : "User",
+     "started" : "Date",
+     "share" : "Share",
+     "decrypted" : "Decrypted share",
+     "myid" : "My recovery id",
+     "instr1" : "Click on a share to copy the encrypted share into the clipboard.",
+     "instr2" : "Decrypt share on Ubuntu: (click line to copy it to clipboard)"     
    }
 }

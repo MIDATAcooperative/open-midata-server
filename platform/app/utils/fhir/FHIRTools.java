@@ -13,6 +13,7 @@ import org.hl7.fhir.dstu3.model.Identifier;
 import org.hl7.fhir.dstu3.model.Period;
 import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.dstu3.model.Type;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 import ca.uhn.fhir.rest.param.ReferenceParam;
@@ -20,6 +21,7 @@ import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.HPUser;
 import models.Member;
 import models.MidataId;
+import models.Record;
 import models.TypedMidataId;
 import models.User;
 import models.UserGroup;
@@ -228,6 +230,14 @@ public class FHIRTools {
                .format(titleTimeFormatter);
     	}
     	return "";
+    }
+    
+    public static String fhirFromRecord(Record record) throws AppException {
+    	Object resourceType = record.data.get("resourceType");
+    	if (resourceType == null) return null;
+    	ResourceProvider prov = FHIRServlet.myProviders.get(resourceType.toString());
+    	if (prov == null) return null;
+    	return prov.serialize(prov.parse(record, prov.getResourceType()));    	
     }
 	
 	/*

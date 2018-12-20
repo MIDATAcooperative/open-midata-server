@@ -29,7 +29,14 @@
   },
   
   "developer_yourapps" : {
-    "title" : "Your Plugins"
+    "title" : "Your Plugins",
+    "empty" : "You have not registered any plugin yet.",
+    "register" : "Register a new plugin",
+    "name" : "Name",
+    "type" : "Type",
+    "role" : "Target Role",
+    "manage_btn" : "manage",
+    "debug_info_btn" : "debug info"
   },
   
   "appmessages" : {
@@ -58,13 +65,17 @@
 	   "ACCOUNT_UNLOCK" : "Account unlocked by the administrator",
 	   "EMAIL_CHANGED_OLDADDRESS" : "Login email changed (send to old email address)",
 	   "EMAIL_CHANGED_NEWADDRESS" : "Login email changed (send to new email address)",
-	   "PASSWORD_FORGOTTEN" : "Password forgotten"	   
+	   "PASSWORD_FORGOTTEN" : "Password forgotten",
+	   "USER_PRIVATE_KEY_RECOVERED" : "User key recovery completed",
+	   "RESOURCE_CHANGE" : "Change of resource [code]",
+	   "PROCESS_MESSAGE" : "Process FHIR message with event [code]"
     }		      
   },
   
   "manageapp" : {
     "overview" : "Application Overview",
     "choose" : "Functions to manage your application",
+    "defined" : "defined",
     "filename" : "Internal Name",
     "type" : "Application Type",
     "targetUserRole" : "Target Role",
@@ -74,13 +85,15 @@
     "edit_help" : "Change the setup for your application.",
     "query_btn" : "Change Data Access Filter",
     "query_help" : "Define which types of data your application may access.",
+    "subscriptions_btn" : "Change Default Subscriptions",
+    "subscriptions_help" : "Define triggers that cause an action on the MIDATA server",
     "tokenExchangeParams" : "OAuth2 Parameters for the Token Exchange", 
     "testfromlocal_btn" : "Test your plugin from localhost",
     "testfromlocal_help" : "During development, you can test the plugin code stored on your local computer on this instance.",
     "serverimport_btn" : "Test automatic import script.",
     "serverimport_help" : "If your plugin offers automatic import, you can test the script of your plugin that is normally run on the server on your local computer.",
     "link_btn" : "Links with Studies",
-    "link_help" : "Apps may offer or require study participation. Studies may recommend plugin or app use.",    
+    "link_help" : "Apps may offer or require participation to a study. Studies may recommend plugin or app use.",    
     "icon_btn" : "Application Icons and Images",
     "icon_help" : "Upload and manage the icons and images to be used with your application. Provide images for the login screen, the consent acceptation screen, the MIDATA Store, etc.",
     "messages_btn" : "Application email Messages",
@@ -104,9 +117,9 @@
       
     "info" : {
        "filename" : "This name is internally used to identify your app. Should be a valid identifier (a-z, A-Z, 0-9, _).",
-       "targetUserRole" : "Is your app for a specific role only? Otherwise choose 'Any Role'.",
-       "type" : "Choose 'Plugin' if your app will run as MIDATA portal plugin. Choose 'Mobile App' for an external application. Choose 'OAuth1 Import' or 'OAuth2 Import' if you need to connect to an external server using OAuth1 or OAuth2.",
-       "name" : "The name of your app or plugin that will be presented to the end user.",
+       "targetUserRole" : "Is your application for a specific role only? Otherwise choose 'Any Role'.",
+       "type" : "Choose 'Plugin' if your application will run on the MIDATA portal. Choose 'Mobile App' for an external application. Choose 'Service' for a server-side only script. Choose 'OAuth1 Import' or 'OAuth2 Import' if you need to connect to an external server using OAuth1 or OAuth2.",
+       "name" : "The name of your application or plugin that will be presented to the end user.",
        "description" : "A description of your plugin that will also be shown on the marked place.",
        "tokenExchangeParams" : "Default is client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> but some services also require client_secret=<client_secret> or no client_id",
        "no_update_history" : "FHIR resource updates done by this application produce no history entries. Use only if application does many and frequent updates.",
@@ -162,7 +175,16 @@
   },
   
   "appdebug" : {
-    "title" : "API Tester"
+    "title" : "API Tester",
+    "login" : "Log in",
+    "oauth_login" : "OAuth Login",
+    "device" : "Device",
+    "refresh_token" : "Refresh Token",
+    "backend_services" : "Serverside Scripts",
+    "portal_username" : "Username",
+    "portal_password" : "Password",
+    "portal_login" : "Use plugin instance:",
+    "portal_login_btn" : "Portal login + get token"      
   },
   
   "appicon" : {
@@ -187,5 +209,36 @@
   
   "applink" : {
     "title" : "Links with Studies"
+  },
+  
+  "appsubscriptions" : {
+    "title" : "Default Subscriptions",
+    "empty" : "There are no default subscriptions defined.",
+    "trigger" : "Trigger",
+    "triggerDetail" : "FHIR Resource",
+    "action" : "Action",
+    "params" : "URL / Filename",
+    "triggers" : {
+      "fhir_Consent" : "Consent changes",
+      "fhir_MessageHeader" : "FHIR message",
+      "fhir_Resource" : "Resource changes",
+      "time" : "Daily",
+      "init" : "When added"
+    },
+    "actions" : {
+      "rest-hook" : "Call REST hook",
+      "email": "Send email",
+      "nodejs": "Call Node.js script"
+    },
+    "debug" : {
+      "title" : "Test your backend code on your computer",
+      "description" : "You can test your server-side subscription processing code on your local computer.",
+      "description2" : "Download the subscription tester and run it with the given connection code.",
+      "description3" : "This works only with your developer account or any account created using your developer account and only as long as the application is in development.",
+      "start_btn" : "Start debugging",
+      "stop_btn" : "Stop debugging",
+      "cmd_to_run" : "Command to run on your computer:"
+    }
+	
   }
 }

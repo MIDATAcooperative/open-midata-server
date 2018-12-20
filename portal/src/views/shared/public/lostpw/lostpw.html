@@ -13,7 +13,7 @@
 							<p translate="lostpw.description"></p>
 							<form name="form" ng-submit="submit()" role="form" class="form form-horizontal">							  
 								<formrow myid="email" label="lostpw.email">
-								  <input type="email" class="form-control" ng-model="lostpw.email" style="margin-bottom:5px;" autofocus>
+								  <input type="text" class="form-control" ng-model="lostpw.email" style="margin-bottom:5px;" autofocus>
 								</formrow>
 								<div class="alert alert-danger" ng-show="error">
 								  <p translate="{{ error.code || error }}"></p>

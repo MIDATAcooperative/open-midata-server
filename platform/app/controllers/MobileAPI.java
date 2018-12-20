@@ -51,6 +51,7 @@ import utils.InstanceConfig;
 import utils.QueryTagTools;
 import utils.access.AccessContext;
 import utils.access.AppAccessContext;
+import utils.access.EncryptionUtils;
 import utils.access.Feature_FormatGroups;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
@@ -60,6 +61,7 @@ import utils.auth.MobileAppSessionToken;
 import utils.auth.MobileAppToken;
 import utils.auth.RecordToken;
 import utils.auth.Rights;
+import utils.auth.TokenCrypto;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
 import utils.db.FileStorage.FileData;
@@ -72,6 +74,7 @@ import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.messaging.Messager;
+import utils.messaging.SubscriptionManager;
 import utils.stats.Stats;
 
 /**
@@ -167,26 +170,20 @@ public class MobileAPI extends Controller {
 	public Result authenticate() throws AppException {
 				
         JsonNode json = request().body().asJson();		
-		JsonValidation.validate(json, "appname", "secret");
-		if (!json.has("refreshToken")) JsonValidation.validate(json, "username", "password" /*, "device" */);
-					
-		String name = JsonValidation.getString(json, "appname");
-		String secret = JsonValidation.getString(json,"secret");
-				
-	    // Validate Mobile App	
-		Plugin app = Plugin.getByFilename(name, Sets.create("type", "name", "secret", "status", "targetUserRole"));
-		if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");
+		//JsonValidation.validate(json, "appname", "secret");
+		if (!json.has("refreshToken")) JsonValidation.validate(json, "appname", "secret", "username", "password" /*, "device" */);
 		
-		if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
-		if (app.secret == null || !app.secret.equals(secret)) throw new BadRequestException("error.unknown.app", "Unknown app");
-		
+		//if (!app.type.equals("mobile") && !app.type.equals("service")) throw new InternalServerException("error.internal", "Wrong app type");
+		// if (app.secret == null || !app.secret.equals(secret)) throw new BadRequestException("error.unknown.app", "Unknown app");
 	
 		MidataId appInstanceId = null;
 		MidataId executor = null;
 		MobileAppInstance appInstance = null;
-		String phrase;
+		String phrase = null;
 		Map<String, Object> meta = null;
 		UserRole role = null;
+		Plugin app = null;
+		boolean deprecated = false;
 		KeyManager.instance.login(60000l, false);
 		if (json.has("refreshToken")) {
 			MobileAppToken refreshToken = MobileAppToken.decrypt(JsonValidation.getString(json, "refreshToken"));
@@ -194,7 +191,13 @@ public class MobileAPI extends Controller {
 			appInstanceId = refreshToken.appInstanceId;
 			
 			appInstance = MobileAppInstance.getById(appInstanceId, Sets.create("owner", "applicationId", "status", "appVersion", "writes", "sharingQuery"));
-			if (!verifyAppInstance(appInstance, refreshToken.ownerId, refreshToken.appId)) throw new BadRequestException("error.invalid.token", "Bad refresh token.");            
+			if (!verifyAppInstance(appInstance, refreshToken.ownerId, refreshToken.appId)) throw new BadRequestException("error.invalid.token", "Bad refresh token.");
+			
+			app = Plugin.getById(appInstance.applicationId, Sets.create("type", "name", "secret", "status", "targetUserRole"));
+			if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");
+			
+			if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
+			
             if (!refreshToken.appId.equals(app._id)) throw new BadRequestException("error.invalid.token", "Bad refresh token.");
             User user = User.getById(appInstance.owner, User.ALL_USER_INTERNAL);
             Set<UserFeature> req = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(user.role);
@@ -202,39 +205,59 @@ public class MobileAPI extends Controller {
             if (Application.loginHelperPreconditionsFailed(user, req) != null) return status(UNAUTHORIZED); 
             role = user.role;
             phrase = refreshToken.phrase;
-            KeyManager.instance.unlock(appInstance._id, phrase);
+            if (KeyManager.instance.unlock(appInstance._id, phrase) == KeyManager.KEYPROTECTION_FAIL) return status(UNAUTHORIZED);
             executor = appInstance._id;
             meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
                         
             if (refreshToken.created != ((Long) meta.get("created")).longValue()) {
             	return status(UNAUTHORIZED);
             }
+            
+            phrase = KeyManager.instance.newAESKey(appInstance._id);
 		} else {
+			deprecated = true;
+			String name = JsonValidation.getString(json, "appname");
+			String secret = JsonValidation.getString(json,"secret");
+				
+			app = Plugin.getByFilename(name, Sets.create("type", "name", "secret", "status", "targetUserRole"));
+			if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");
+			
+			if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
+			if (app.secret == null || !app.secret.equals(secret)) throw new BadRequestException("error.unknown.app", "Unknown app");
+			
 			String username = JsonValidation.getEMail(json, "username");
 			String password = JsonValidation.getString(json, "password");
 			String device = JsonValidation.getStringOrNull(json, "device");
+			
 			role = json.has("role") ? JsonValidation.getEnum(json, "role", UserRole.class) : UserRole.MEMBER;
 			
 			if (device != null) phrase = device; else phrase = "???"+password;
 				
+			if (app.type.equals("service")) phrase = "-----";
+			
 			User user = null;
 			switch (role) {
-			case MEMBER : user = Member.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp", "failedLogins", "lastFailed"));break;
-			case PROVIDER : user = HPUser.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp", "failedLogins", "lastFailed"));break;
-			case RESEARCH: user = ResearchUser.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp", "failedLogins", "lastFailed"));break;
+			case MEMBER : user = Member.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp", "failedLogins", "lastFailed","publicExtKey"));break;
+			case PROVIDER : user = HPUser.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp", "failedLogins", "lastFailed","publicExtKey"));break;
+			case RESEARCH: user = ResearchUser.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp", "failedLogins", "lastFailed","publicExtKey"));break;
 			}
 			if (user == null) throw new BadRequestException("error.invalid.credentials", "Unknown user or bad password");
 			
+			
+			
 			AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user, app._id);
 			
-			if (!user.authenticationValid(password)) {
+						
+			if (!user.authenticationValid(password) && !user.authenticationValid(TokenCrypto.sha512(password))) {
 				throw new BadRequestException("error.invalid.credentials",  "Unknown user or bad password");
 			}
 			Set<UserFeature> req = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(user.role);
 			if (app.requirements != null) req.addAll(app.requirements);
 			if (Application.loginHelperPreconditionsFailed(user, req)!=null) throw new BadRequestException("error.invalid.credentials",  "Login preconditions failed.");
 			
-			appInstance= getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode", "appVersion"));			
+			appInstance= getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode", "appVersion"));
+			
+			
 			if (appInstance != null && !verifyAppInstance(appInstance, user._id, app._id)) {
 				AccessLog.log("CSCLEAR");
 				appInstance = null;
@@ -247,21 +270,25 @@ public class MobileAPI extends Controller {
 				AccessLog.log("REINSTALL");
 				if (!autoConfirm && app.targetUserRole.equals(UserRole.RESEARCH)) throw new BadRequestException("error.invalid.study", "The research app is not properly linked to a study! Please log in as researcher and link the app properly.");
 				appInstance = installApp(executor, app._id, user, phrase, autoConfirm, Collections.emptySet());
+				KeyManager.instance.changePassphrase(appInstance._id, phrase);
 				if (executor != null) RecordManager.instance.clearCache();
 				executor = appInstance._id;
 	   		    meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
 			} else {
-				
-				
+								
 				KeyManager.instance.unlock(appInstance._id, phrase);
 				executor = appInstance._id;
-				meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
-				
-			}
+				meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();			
+            }
+							
 			role = user.role;
+			
+			//phrase = KeyManager.instance.newAESKey(appInstance._id);	
+			
+			//throw new InternalServerException("error.notimplemented", "This feature is not implemented.");
 		}
 				
-		if (!phrase.equals(meta.get("phrase"))) return internalServerError("Internal error while validating consent");
+		//if (!phrase.equals(meta.get("phrase"))) return internalServerError("Internal error while validating consent");
 				
 		if (app.targetUserRole.equals(UserRole.RESEARCH)) {			
 			
@@ -271,13 +298,15 @@ public class MobileAPI extends Controller {
 		
 		AuditManager.instance.success();
 		
-		return authResult(executor, role, appInstance, meta, phrase);
+		return authResult(executor, role, appInstance, meta, phrase, deprecated);
 	}
 	
 	public static void removeAppInstance(MobileAppInstance appInstance) throws AppException {
 		AccessLog.logBegin("start remove app instance");
 		// Device or password changed, regenerates consent				
 		Circles.consentStatusChange(appInstance.owner, appInstance, ConsentStatus.EXPIRED);
+		Plugin app = Plugin.getById(appInstance.applicationId);
+		if (app!=null) SubscriptionManager.deactivateSubscriptions(appInstance.owner, app, appInstance._id);
 		RecordManager.instance.deleteAPS(appInstance._id, appInstance.owner);									
 		Circles.removeQueries(appInstance.owner, appInstance._id);										
 		MobileAppInstance.delete(appInstance.owner, appInstance._id);
@@ -292,7 +321,7 @@ public class MobileAPI extends Controller {
 	 * @return
 	 * @throws AppException
 	 */
-	public static Result authResult(MidataId executor, UserRole role, MobileAppInstance appInstance, Map<String, Object> meta, String phrase) throws AppException {
+	public static Result authResult(MidataId executor, UserRole role, MobileAppInstance appInstance, Map<String, Object> meta, String phrase, boolean deprecated) throws AppException {
 		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, phrase, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME, role); 
         MobileAppToken refresh = new MobileAppToken(appInstance.applicationId, appInstance._id, appInstance.owner, phrase, System.currentTimeMillis());
 		
@@ -312,12 +341,13 @@ public class MobileAPI extends Controller {
 		obj.put("refreshToken", refresh.encrypt());
 		obj.put("status", appInstance.status.toString());
 		obj.put("owner", appInstance.owner.toString());
+		if (deprecated) obj.put("warning", "You are using a deprecated API! Please use OAuth login instead!");
 															
 		return ok(obj);
 	}
 	
 	public static MobileAppInstance installApp(MidataId executor, MidataId appId, User member, String phrase, boolean autoConfirm, Set<MidataId> studyConfirm) throws AppException {
-		Plugin app = Plugin.getById(appId, Sets.create("name", "pluginVersion", "defaultQuery", "predefinedMessages", "termsOfUse", "writes"));
+		Plugin app = Plugin.getById(appId, Sets.create("name", "type", "pluginVersion", "defaultQuery", "predefinedMessages", "termsOfUse", "writes", "defaultSubscriptions"));
 
 		Set<StudyAppLink> links = StudyAppLink.getByApp(appId);
 		
@@ -345,13 +375,17 @@ public class MobileAPI extends Controller {
 		MobileAppInstance appInstance = new MobileAppInstance();
 		appInstance._id = new MidataId();
 		appInstance.owner = member._id;
-		appInstance.name = "App: "+ app.name+" (Device: "+phrase.substring(0, 3)+")";
+		if (app.type.equals("service")) {
+			appInstance.name = "Service: "+ app.name;
+		} else {
+		    appInstance.name = "App: "+ app.name+" (Device: "+phrase.substring(0, 3)+")";
+		}
 		appInstance.applicationId = app._id;	
 		appInstance.appVersion = app.pluginVersion;
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.APP_FIRST_USE, app._id, member, null, appInstance, null, null);
 		
-        appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(appInstance._id, phrase);    	
+        appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(appInstance._id, null);    	
     	appInstance.passcode = Member.encrypt(phrase); 
     	appInstance.dateOfCreation = new Date();
     	appInstance.lastUpdated = appInstance.dateOfCreation;
@@ -363,13 +397,14 @@ public class MobileAPI extends Controller {
 		    
 		    appInstance.sharingQuery = app.defaultQuery;						   
 		}
-    	
-    	
+    	    	    	
     	MobileAppInstance.add(appInstance);	
-		KeyManager.instance.unlock(appInstance._id, phrase);	   		    
+
+    	SubscriptionManager.activateSubscriptions(appInstance.owner, app, appInstance._id);
+		// KeyManager.instance.unlock(appInstance._id, phrase);	   		    
+
 		RecordManager.instance.createAnonymizedAPS(member._id, appInstance._id, appInstance._id, true);
-		
-		
+				
 		Map<String, Object> meta = new HashMap<String, Object>();
 		meta.put("phrase", phrase);
 		if (executor == null) executor = appInstance._id;
@@ -413,7 +448,7 @@ public class MobileAPI extends Controller {
 	
 	protected static MidataId prepareMobileExecutor(MobileAppInstance appInstance, MobileAppSessionToken tk) throws AppException {
 		KeyManager.instance.login(1000l*60l, false);
-		KeyManager.instance.unlock(tk.appInstanceId, tk.passphrase);
+		KeyManager.instance.unlock(tk.appInstanceId, tk.aeskey);
 		Map<String, Object> appobj = RecordManager.instance.getMeta(tk.appInstanceId, tk.appInstanceId, "_app").toMap();
 		if (appobj.containsKey("aliaskey") && appobj.containsKey("alias")) {
 			MidataId alias = new MidataId(appobj.get("alias").toString());
@@ -574,8 +609,7 @@ public class MobileAPI extends Controller {
 		}
 		record.name = name;
 		record.description = description;
-						
-		autoLearnAccessQuery(inf, record.format, record.content);
+								
 		PluginsAPI.createRecord(inf, record, null, null,null, inf.context);
 		
 		Stats.finishRequest(request(), "200", Collections.EMPTY_SET);
@@ -791,25 +825,7 @@ public class MobileAPI extends Controller {
 		
 		return ok(JsonOutput.toJson(consents, "Consent", fields)).as("application/json");
 	}
-	
-	public static void autoLearnAccessQuery(ExecutionInfo info, String format, String content) throws AppException {
-		if (! InstanceConfig.getInstance().getInstanceType().allowQueryLearning()) return;
 		
-		AccessContext context = info.context;
-		if (context instanceof AppAccessContext) {
-			AppAccessContext appcontext = (AppAccessContext) context;
-			if (!appcontext.getAppInstance().sharingQuery.containsKey("learn")) return;
-			
-			if (!context.mayAccess(null, format)) {
-				addToSharingQuery(info, appcontext.getAppInstance(), format, null);
-			}
-    	
-			if (!context.mayAccess(content, null)) {
-				addToSharingQuery(info, appcontext.getAppInstance(), null, content);
-			}
-			            
-		}		
-	}
 	
 	private static void addToSharingQuery(ExecutionInfo info, MobileAppInstance instance, String format, String content) throws AppException {
 		Plugin plugin = Plugin.getById(instance.applicationId, Plugin.ALL_DEVELOPER);

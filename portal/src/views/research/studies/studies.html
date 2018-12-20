@@ -8,15 +8,15 @@
 	<table ng-show="results.length > 0" class="table table-hover">
 	  <thead>
 	    <tr>
-	      <th translate="studies.name"></th>
-	      <th translate="studies.validation"></th>
-	      <th translate="studies.participants"></th>
-	      <th translate="studies.execution"></th>
-	      <th translate="studies.creation_date"></th>
+	      <th sortby="name" translate="studies.name"></th>
+	      <th sortby="validationStatus" translate="studies.validation"></th>
+	      <th sortby="participantSearchStatus" translate="studies.participants"></th>
+	      <th sortby="executionStatus" translate="studies.execution"></th>
+	      <th sortby="createdAt" translate="studies.creation_date"></th>
 	    </tr>
 	  </thead>
 	  <tbody>
-	    <tr ng-repeat="study in results | orderBy : 'createdAt' : 1">
+	    <tr ng-repeat="study in results | orderBy : sortby">
 	      <td><a ui-sref="research.study.overview({ studyId : study._id})">{{ study.name }}</a></td>	  
 	      <td translate="{{ 'enum.studyvalidationstatus.'+study.validationStatus }}"></td>
 	      <td translate="{{ 'enum.participantsearchstatus.'+study.participantSearchStatus }}"></td>

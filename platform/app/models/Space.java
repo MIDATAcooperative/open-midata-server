@@ -58,15 +58,10 @@ public class Space extends Model implements Comparable<Space> {
 	/**
 	 * The internal name of the dashboard where this space is displayed
 	 */
-	public String context;
+	public String context;	
 	
 	/**
-	 * a list of consent ids into which new records created in this space are automatically shared
-	 */
-	public Set<MidataId> autoShare;
-	
-	/**
-	 * automatically run import
+	 * automatically run import (deprecated. now use FHIR Subscription)
 	 */
 	public boolean autoImport;
 	

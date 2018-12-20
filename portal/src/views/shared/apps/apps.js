@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('AppsCtrl', ['$scope', '$state', 'circles', 'session', 'views', 'status', 'ENV', 'server', 'spaces','apps', function($scope, $state, circles, session, views, status, ENV, server, spaces, apps) {
+.controller('AppsCtrl', ['$scope', '$state', 'session', 'views', 'status', 'ENV', 'server', 'spaces','apps', function($scope, $state, session, views, status, ENV, server, spaces, apps) {
 
 	$scope.status = new status(true);
 	$scope.targetRole = $state.current.data.role;
@@ -7,9 +7,12 @@ angular.module('portal')
 	$scope.greeting.text = "apps.greeting";
 		
 	loadConsents = function(userId) {	
-		$scope.status.doBusy(circles.listConsents({type : "EXTERNALSERVICE" }, [ "name", "authorized", "type", "status"]))
+		$scope.status.doBusy(apps.listUserApps([ "name", "authorized", "type", "status", "applicationId"]))
 		.then(function(data) {
-			$scope.apps = data.data;						
+			$scope.apps = data.data;
+			angular.forEach($scope.apps, function(app) {
+			  $scope.pluginToSpace[app.applicationId] = true;	
+			});
 		});
 	};
 		
@@ -54,8 +57,7 @@ angular.module('portal')
 	});
 	
 	$scope.install = function(app) {
-		
-		
+		  if ($scope.pluginToSpace[app._id] === true) return;
 		  spaces.get({ "owner": $scope.userId, "visualization" : app._id }, ["_id", "type"])
 		  .then(function(spaceresult) {
 			 if (spaceresult.data.length > 0) {
@@ -72,11 +74,17 @@ angular.module('portal')
 					if (result.data && result.data._id) {
 					  if (app.type === "oauth1" || app.type === "oauth2") {
 						 $state.go("^.importrecords", { "spaceId" : result.data._id });
+					  } else if (app.type === "service") {						  
+					     loadConsents($scope.userId);
 					  } else { 
 					     $state.go('^.spaces', { spaceId : result.data._id });
 					  }
 					} else {
-					  $state.go('^.dashboard', { dashId : $scope.options.context });
+						if (app.type === "service") {						  
+						  loadConsents($scope.userId);
+						} else {
+						  $state.go('^.dashboard', { dashId : $scope.options.context });
+						}
 					}
 				});
 			 }

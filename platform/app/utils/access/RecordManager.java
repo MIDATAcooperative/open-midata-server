@@ -1045,6 +1045,43 @@ public class RecordManager {
 		AccessLog.logEnd("end applying queries");
 	}
 	
+	public Set<MidataId> findAllSharingAps(MidataId executorId, Record record1) throws AppException {
+		 
+		    DBRecord record = RecordConversion.instance.toDB(record1);
+		    MidataId recordOwner = record1.owner;
+		    AccessContext context = new DummyAccessContext(getCache(executorId), record1.owner);
+		    Set<MidataId> result = new HashSet<MidataId>();
+		
+			Member member = Member.getById(recordOwner, Sets.create("rqueries", "queries"));
+			if (member.queries!=null) {
+				for (String key : member.queries.keySet()) {
+					//try {
+					Map<String, Object> query = member.queries.get(key);
+					if (QueryEngine.isInQuery(context, query, record)) {
+						result.add(new MidataId(key));						
+					}
+					//} catch (BadRequestException e) {
+				//		AccessLog.logException("error while sharing", e);
+				//	}  
+				}
+			}
+									
+			if (member.rqueries!=null) {
+				for (String key : member.rqueries.keySet()) {
+					//try {
+					Map<String, Object> query = member.rqueries.get(key);
+					if (QueryEngine.isInQuery(context, query, record)) {
+						result.add(new MidataId(key));						
+					}
+					//} catch (BadRequestException e) {
+					//	AccessLog.logException("error while sharing", e);
+					//}  
+				}
+			}
+		
+			return result;		
+	}
+	
     /**
      * Delete an access permission set
      * @param apsId id of APS

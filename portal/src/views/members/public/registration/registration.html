@@ -23,12 +23,22 @@
 							    <formerror myid="email" type="exists" message="error.exists.member"></formerror> 
 							  </formrow>
 							  <formrow myid="password" label="registration.password"> 
-							    <input type="password" class="form-control" id="password" name="password" translate translate-attr-placeholder="registration.password" ng-model="registration.password" required>
+							    <input type="password" class="form-control" id="password" name="password" translate translate-attr-placeholder="registration.password" ng-model="registration.password1" required>
 							    <formerror myid="password" type="compare" message="error.invalid.password_repetition"></formerror>  
 							    <formerror myid="password" type="tooshort" message="error.tooshort.password"></formerror>
 							    <formerror myid="password" type="tooweak" message="error.tooweak.password"></formerror>
 							  </formrow>
 							  <formrow myid="password2" label="registration.password_repetition"><input type="password" class="form-control" id="password2" name="password2" translate translate-attr-placeholder="registration.password" ng-model="registration.password2" required></formrow>
+							  </div>
+							  <formrow myid="secure" label="registration.secure">
+							    <div class="checkbox">
+							      <label>
+							      <input type="checkbox" ng-model="registration.secure">
+							      <span translate="registration.secure2"></span>
+							      </label>
+							    </div>
+							  </formrow>
+							  <div class="required">
 							  <formrow myid="firstname" label="registration.firstname"><input type="text" class="form-control" id="firstname" name="firstname" translate translate-attr-placeholder="registration.firstname" ng-model="registration.firstname" required></formrow>
 							  <formrow myid="lastname" label="registration.lastname"><input type="text" class="form-control" id="lastname" name="lastname" translate translate-attr-placeholder="registration.lastname" ng-model="registration.lastname" required></formrow>
 							  

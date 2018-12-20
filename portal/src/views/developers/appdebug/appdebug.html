@@ -16,7 +16,61 @@
        
        </div>
         
+       <div class="row extraspace" ng-show="app.type=='mobile'">
+         <div class="col-xs-2">
+           <label translate="appdebug.oauth_login">OAuth-Login:</label>
+           <div>
+           <a class="btn btn-default" ng-href="{{ getOAuthLogin() }}" translate="appdebug.login"></a>
+           </div>
+         </div>
+         <div class="col-xs-2">
+           <label translate="appdebug.device">Device:</label>
+           <input type="text" class="form-control" ng-model="device">
+         </div>
+         
+         <div class="col-xs-8">
+           <label translate="appdebug.refresh_token">Refresh-Token:</label>
+           <input type="text" class="form-control" ng-model="refreshToken">
+         </div>
+       </div>
+       
+       <div class="row extraspace" ng-show="app.type=='visualization'">
+      
+         <div class="col-xs-4">
+           <label translate="appdebug.portal_username">Username:</label>
+           <input type="text" class="form-control" ng-model="portal.username">
+         </div>
+         
+         <div class="col-xs-4">
+           <label translate="appdebug.portal_password">Password:</label>
+           <input type="password" class="form-control" ng-model="portal.password">
+         </div>
+         <div class="col-xs-4">
+           <label><span translate="appdebug.portal_login"></span> {{ app.name }}</label>
+           <div>
+           <a class="btn btn-default" ng-click="portalLogin()" translate="appdebug.portal_login_btn"></a>
+           </div>
+         </div>
+        </div>
+        <div class="row extraspace" ng-show="error">
+         <div class="col-xs-12" >
+           <div class="alert alert-danger" translate="{{ error.code || error}}"></div>           
+         </div>
+       </div>
+       
+       <div class="row extraspace" ng-show="app.defaultSubscriptions.length">
+         <div class="col-xs-2">
+          <label translate="appdebug.backend_services">Backend Services:</label>
+        <button class="btn btn-default" ng-click="startDebug()" ng-hide="app.debugHandle" translate="appsubscriptions.debug.start_btn"></button>
+		  <button class="btn btn-default" ng-click="stopDebug()" ng-show="app.debugHandle" translate="appsubscriptions.debug.stop_btn"></button>
+		 </div>
+		  <div class="col-xs-8">
+		  <label ng-show="app.debugHandle" translate="appsubscriptions.debug.cmd_to_run"></label>
+		  <pre ng-show="app.debugHandle">node midata_tester.js {{ server }} {{ app.debugHandle }}</pre>
+		  </div>
+        </div>
         
+
         
         <div class="row extraspace">
          <div class="col-xs-12"><label>Request to backend: {{ server }}</label></div>
@@ -44,6 +98,7 @@
         
         <div class="row">
         <div class="col-xs-12 extraspace">
+        <a href="javascript:" ui-sref="^.manageapp({appId:app._id})" class="btn btn-default" translate="common.back_btn"></a>
         <button class="btn btn-primary" type="button" ng-click="dosubmit();">submit</button> 
         <button class="btn btn-default" type="button" ng-click="dosave();">save</button>
         </div>

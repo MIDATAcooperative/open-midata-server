@@ -18,7 +18,7 @@
         "edit_profile" : "Modifica profilo",
         "app_count" : "Applicazioni autorizzate",
         "study_count" : "Iscrizioni agli studi",
-        "me" : "Pannello",
+        "me" : "Timeline",
         "view" : "Visualizzazione",
         "overview" : "Panoramica",
         "messages" : "Messaggi",
@@ -54,8 +54,8 @@
             "credentials" : "Indirizzo e-mail o password errati.",
             "credentials_hint" : "Indirizzo e-mail o password errati. Stai tentando di accedere come titolare dell'account. Sei ",
             "password_repetition" : "La password e la ripetizione della password non coincidono!",
-            "passphrase_repetition" : "La frase password e la ripetizione della frase password non coincidono!",
-            "passphrase_old" : "La vecchia frase password non è corretta.",
+            "passphrase_repetition" : "La frase segreta e la ripetizione della frase segreta non coincidono!",
+            "passphrase_old" : "La vecchia frase segreta non è corretta.",
             "password_old" : "La vecchia password non è corretta.",
             "confirmation_code" : "Codice di conferma errato",
             "code" : "Codice sconosciuto per lo studio.",
@@ -68,7 +68,7 @@
             "string" : "Il campo deve essere di tipo a stringa",
             "token" : "Token di autorizzazione non valido. Accedere nuovamente.",
             "json" : "Immesso JSON non valido",
-            "passphrase" : "Frase password errata",
+            "passphrase" : "Frase segreta errata",
             "passcode" : "Codice password errato",
             "plugin" : "Il plugin è destinato a un ruolo diverso",
             "unlock_code" : "Codice di sblocco errato",
@@ -83,7 +83,7 @@
             "email" : "Inserire l'indirizzo e-mail.",
             "input_field" : "Compilare questo campo di immissione.",
             "newpassword" : "Inserire una nuova password!",
-            "passphrase" : "Immettere la frase password.",
+            "passphrase" : "Immettere la frase segreta.",
             "groupsystem" : "È obbligatorio immettere il sistema del gruppo.",
             "token" : "Token mancante o errato.",
             "agb" : "Condizioni generali di contratto non accettate.",
@@ -92,7 +92,8 @@
             "study_group" : "Il partecipante deve dapprima essere assegnato a un gruppo.",
             "confirmation" : "Per prima cosa è richiesta la conferma dell'utente.",
             "file" : "Nessun file selezionato per il caricamento",
-            "access_query" : "Nessun dati selezionato"
+            "access_query" : "Nessun dati selezionato",
+            "plugin" : "Questo plugin non esiste nel vostro account."
         },
 
         "unknown" : {
@@ -214,7 +215,7 @@
             "110122" : "Accesso",
             "user-password-change" : "Password modificata",
             "user-password-change-request" : "Cambio password richiesto",
-            "user-passphrase-change" : "Frase password modificata",
+            "user-passphrase-change" : "Frase segreta modificata",
             "user-address-change" : "Indirizzo dell'utente modificato",
             "user-email-change" : "E-mail dell'utente modificata",
             "user-birthday-change" : "Data di nascita dell'utente modificata",
@@ -322,7 +323,7 @@
         "studytype" : {
             "CLINICAL" : "Studio clinico",
             "CITIZENSCIENCE" : "Progetto Scienza Cittadina",
-            "COMMUNITY" : "Comunità (utilizzo dei dati solo per la fornitura di servizi ai partecipanti)"
+            "COMMUNITY" : "Comunità"
         },
         "joinmethod" : {
             "APP" : "Il partecipante utilizza un'applicazione o un software collegato",
@@ -396,7 +397,8 @@
             "DE" : "Tedesco",
             "IT" : "Italiano",
             "FR" : "Francese",
-            "NL" : "Olandese"
+            "NL" : "Olandese",
+            "INT" : "Default / Non localizzato"
         },
         "month" : {
             "01" : "Gen",
@@ -428,10 +430,25 @@
         },
         "plugintype" : {
             "visualization" : "Plugin",
-            "create" : "Modulo",
+            "service" : "Servizio",
             "oauth1" : "OAuth 1",
             "oauth2" : "OAuth 2",
             "mobile" : "Applicazione (Smartphone, Web)"
+        },
+        "infos" : {
+            "SUMMARY" : "Breve riassunto",
+            "DESCRIPTION" : "Che cosa fa questo studio?",
+            "HOMEPAGE" : "Link alla homepage del progetto",
+            "CONTACT" : "Informazioni di contatto",
+            "INSTRUCTIONS" : "Istruzioni per i partecipanti",
+            "PURPOSE" : "Qual è lo scopo di questa ricerca?",
+            "AUDIENCE" : "Ci sono limitazioni su chi dovrebbe partecipare?",
+            "LOCATION" : "In quale stato o regione si svolge questo progetto?",
+            "PHASE" : "Qual è lo stato di avanzamento del progetto?",
+            "SPONSOR" : "Chi è l'iniziatore del progetto e chi è legalmente responsabile?",
+            "SITE" : "In quale sito si svolgono le attività?",
+            "DEVICES" : "C'è qualche attrezzatura speciale richiesta da un partecipante?",
+            "COMMENT" : "Note complementari"
         }
     },
 
@@ -515,6 +532,8 @@
         "email" : "E-mail",
         "password" : "Password",
         "password_repetition" : "Ripetere la password",
+        "secure" : "Protezione dell'account",
+        "secure2" : "Cripta la chiave del mio account con la mia PASSWORD. Attenzione: se si dimentica la password, potrebbero volerci diversi giorni per recuperare la chiave dell'account!",
         "firstname" : "Nome",
         "lastname" : "Cognome",
         "gender" : "Sesso",
@@ -595,11 +614,11 @@
     },
 
     "passphrase" : {
-        "title" : "Inserire la frase password",
-        "description" : "Il tuo account è protetto da una frase password.",
-        "passphrase" : "Frase password",
+        "title" : "Inserire la frase segreta",
+        "description" : "Il tuo account è protetto da una frase segreta.",
+        "passphrase" : "Frase segreta",
         "continue_btn" : "Continua",
-        "if_lost" : "Se hai perso la frase password, contatta support@midata.coop"
+        "if_lost" : "Se hai perso la frase segreta, contatta support@midata.coop"
     },
 
     "postregister" : {
@@ -622,21 +641,31 @@
         "email_success" : "L'indirizzo e-mail è stato confermato.",
         "address_entered" : "Per utilizzare questo servizio è richiesto il tuo indirizzo postale; ti invitiamo a inserirlo.",
         "phone_entered" : "Per utilizzare questo servizio è richiesto un numero di telefono cellulare; ti invitiamo a inserirlo.",
-        "admin_verified" : "Il tuo account deve essere sbloccato da un amministratore MIDATA. Riprova più tardi. Se trascorse più di 24 ore il tuo account non è stato sbloccato, contatta MIDATA."
+        "admin_verified" : "Il tuo account deve essere sbloccato da un amministratore MIDATA. Riprova più tardi. Se trascorse più di 24 ore il tuo account non è stato sbloccato, contatta MIDATA.",
+        "terms_agreed" : "I Condizioni generali di contratto MIDATA sono stati aggiornati. Si prega di confermare di accettare la nuova versione.",
+        "privacy_policy_agreed" : "La Dichiarazione sui dati personali di MIDATA è stata aggiornata. Si prega di confermare di accettare la nuova versione.",
+        "agree_btn" : "Sono d'accordo",
+        "keyrecovery" : {
+            "intro" : "La chiave privata utilizzata per crittografare i dati deve essere recuperata. Per recuperare la chiave, provare una di queste opzioni:",
+            "way1" : "Hai qualche applicazione che utilizza MIDATA dove sei ancora connesso? Se sì, apri l'applicazione e la tua chiave verrà recuperata. Prova ad effettuare nuovamente il login in seguito.",
+            "way2" : "Hai già effettuato l'accesso utilizzando un browser? Se sì, prova ad accedere utilizzando lo stesso browser e lo stesso dispositivo.",
+            "way3" : "Ricordi di nuovo la tua vecchia password? Se sì, prova ad accedere utilizzando la tua vecchia password.",
+            "way4" : "Attendere che i dipendenti MIDATA eseguano un recupero manuale della chiave. MIDATA vi invierà un'e-mail quando il recupero è stato fatto. Attendere fino a cinque giorni lavorativi per completare il recupero."
+        }
     },
 
     "changepassphrase" : {
-        "title" : "Modificare la frase password",
-        "description" : "La frase password è una protezione aggiuntiva (crittografia aggiuntiva) dei propri dati. Non è memorizzata sui nostri server. Si deve inserire la frase password a ogni accesso, per consentire la decrittazione dei propri dati. Se si perde la frase password, non si sarà più in grado di accedere ai propri dati!",
-        "if_unprotected" : "Se il proprio account non è ancora protetto da una frase password lasciare vuoto il campo 'Vecchia frase password'.",
-        "keep_passphrase_safe" : "Mantenere la propria frase password in un posto sicuro, non esiste una funzione per recuperarla. Se si perde la frase password, non si potrà più accedere ai propri dati!",
-        "old_passphrase" : "Vecchia frase password",
-        "new_passphrase" : "Nuova frase password",
-        "change_passphrase_btn" : "Modificare la frase password",
-        "repeat_finalizes" : "Ripetendo la nuova frase password la modifica diventa definitiva.",
-        "repeat_passphrase" : "Ripetere la nuova frase password",
-        "confirm_btn" : "Confermare la frase password",
-        "success" : "La frase password è stata modificata con successo!"
+        "title" : "Modificare la frase segreta",
+        "description" : "La frase segreta è una protezione aggiuntiva (crittografia aggiuntiva) dei propri dati. Non è memorizzata sui nostri server. Si deve inserire la frase segreta a ogni accesso, per consentire la decrittazione dei propri dati. Se si perde la frase segreta, non si sarà più in grado di accedere ai propri dati!",
+        "if_unprotected" : "Se il proprio account non è ancora protetto da una frase segreta lasciare vuoto il campo 'Vecchia frase segreta'.",
+        "keep_passphrase_safe" : "Mantenere la propria frase segreta in un posto sicuro, non esiste una funzione per recuperarla. Se si perde la frase segreta, non si potrà più accedere ai propri dati!",
+        "old_passphrase" : "Vecchia frase segreta",
+        "new_passphrase" : "Nuova frase segreta",
+        "change_passphrase_btn" : "Modificare la frase segreta",
+        "repeat_finalizes" : "Ripetendo la nuova frase segreta la modifica diventa definitiva.",
+        "repeat_passphrase" : "Ripetere la nuova frase segreta",
+        "confirm_btn" : "Confermare la frase segreta",
+        "success" : "La frase segreta è stata modificata con successo!"
     },
 
     "changepassword" : {
@@ -709,10 +738,16 @@
         "history_who" : "Chi",
         "history_when" : "Quando",
         "history_comment" : "Commento",
+        "request_participation_help" : "Se vuoi far parte di questa ricerca puoi richiedere la partecipazione.",
         "request_participation_btn" : "Richiedere la partecipazione",
+        "do_not_participate_help" : "Se NON vuoi partecipare puoi cliccare qui. Non ti verrà chiesto di nuovo e nessun dato verrà condiviso.",
         "do_not_participate_btn" : "Non partecipare",
+        "retreat_help" : "Attualmente stai partecipando a questa ricerca. Se non vuoi più partecipare puoi ritirarti dalla partecipazione. I vostri dati condivisi saranno congelati al momento del ritiro e non verranno condivisi nuovi dati. Una volta ritirato non sarai in grado di partecipare di nuovo.",
         "retreat_btn" : "Ritirarsi dalla partecipazione",
-        "status" : "Stato"
+        "status" : "Stato",
+        "recommended_apps" : "Applicazioni consigliate",
+        "use_app" : "Utilizzare ora",
+        "for_participants" : "Info sulla partecipazione"
     },
 
     "user" : {
@@ -724,7 +759,7 @@
         "midataID" : "MIDATA ID:",
         "action" : "Altro...",
         "change_password_btn" : "Modifica password",
-        "change_passphrase_btn" : "Modificare la frase password",
+        "change_passphrase_btn" : "Modificare la frase segreta",
         "auditlog_btn" : "Visualizza il registro di revisione",
         "change_email_btn" : "Modifica indirizzo e-mail",
         "repair_account_btn" : "Ripara account",
@@ -919,12 +954,15 @@
         "shares_group" : "Gruppo: {{ group }}",
         "shares_format" : "Formato: {{ format }}",
         "shares_content" : "Contenuti: {{ content }}",
-        "confirm_study" : "Accetto le condizioni d'uso della domanda e di partecipare allo studio"
+        "confirm_study" : "Accetto le condizioni d'uso della domanda e di partecipare allo studio",
+        "confirm_study_opt" : "Accetto di partecipare allo studio",
+        "confirm_citizen_science" : "Accetto di partecipare al progetto scienza cittadina",
+        "confirm_community" : "Accetto i termini di utilizzo dell'applicazione e dei servizi della comunità",
+        "confirm_community_opt" : "Accetto di condividere i dati con il servizio alla comunità"
     },
 
     "dashboard" : {
         "help_welcome" : "Benvenuto in MIDATA",
-        "tasks" : "Attività",
         "myviews" : "Le mie visualizzazioni",
         "mydata" : "I miei dati personali",
         "mydata_text" : "Gestisci i tuoi dati relativi a salute e sanità. Inserisci i nuovi dati e visualizza quelli esistenti.",
@@ -970,7 +1008,6 @@
         "addusers" : "Aggiungi utenti al consenso",
         "shared_with_study" : "Record condivisi:",
         "patient_records" : "Record di questo paziente:",
-        "addtask" : "Aggiungi attività",
         "group_records" : "Record di questo gruppo:",
         "study_records" : "Record condivisi:",
         "addmore" : "Aggiungi altro",
@@ -1020,29 +1057,6 @@
     "flexiblestudies" : {
         "empty" : "Vuoto",
         "studies_found" : "Studi trovati:"
-    },
-
-    "addtask" : {
-        "task_type" : "Tipo di attività",
-        "task_title" : "Titolo dell'attività",
-        "description" : "Descrizione",
-        "frequency" : "Frequenza",
-        "survey_name" : "Compila il questionario",
-        "survey_description" : "Compila i questionari che ho condiviso con il tuo account.",
-        "survey_title" : "Compila il questionario"
-    },
-
-    "taskdetails" : {
-        "created_by" : "Creato da:",
-        "frequency" : "Con quale frequenza:",
-        "plugin" : "Plugin:",
-        "do_now_btn" : "Esegui ora"
-    },
-
-    "tasks" : {
-        "empty" : "Vuoto",
-        "tasks_found" : "Attività trovate:",
-        "more_btn" : "Altro..."
     },
 
     "addusers" : {
@@ -1134,6 +1148,8 @@
     "accountwipe" : {
         "title" : "Chiudi e cancella account MIDATA",
         "hello" : "Cara/caro {{name}},",
+        "hello_m" : "Caro {{name}},",
+        "hello_w" : "Cara {{name}},",
         "paragraph1" : "Desiderate cancellare il vostro account MIDATA in modo irrevocabile? Ciò è ovviamente possibile.",
         "paragraph2" : "Si prega di leggere prima le seguenti informazioni:",
         "point1" : "Se si cancella l'account MIDATA, i dati personali non saranno più disponibili.",
@@ -1163,7 +1179,7 @@
         "study" : "Studio",
         "summary" : "Elenco dei tipi di dati accessibili:",
         "access_query" : "Data Access Filter",
-        "format" : "Risorsa",
+        "format" : "Formato dati",
         "code" : "Codice",
         "to" : "al",
         "content" : "Tipo di dati",
@@ -1208,6 +1224,11 @@
             "Practitioner" : "Risorsa Practitioner: ricerca di fornitori di assistenza sanitaria o ricercatori",
             "Subscription" : "Accedere e gestire gli abbonamenti a un sistema esterno"
         }
+    },
+
+    "timeline" : {
+        "spaces" : "MIDATA",
+        "title" : "Timeline"
     },
 
     "-1" : "sconosciuto"

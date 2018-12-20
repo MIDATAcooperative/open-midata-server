@@ -140,12 +140,13 @@ public enum InstanceType {
 	}
 	
 	/**
-	 * Is it allowed to use learn : true in access queries?
+	 * Do not protect the background service key
 	 * @return
 	 */
-	public boolean allowQueryLearning() {
-		return this == TEST || this == LOCAL || this == DEMO;
+	public boolean disableServiceKeyProtection() {
+		return this == PERFTEST || this == LOCAL;
 	}
+		
 	
 	/**
 	 * Automatically confirm changed consents on login from Midata API
@@ -157,7 +158,7 @@ public enum InstanceType {
 	
 	public Set<UserFeature> defaultRequirementsPortalLogin(UserRole role) {
 		if (this == PERFTEST) return EnumSet.of(UserFeature.EMAIL_ENTERED);
-		if (role != UserRole.MEMBER) return EnumSet.of(UserFeature.EMAIL_VERIFIED, UserFeature.ADMIN_VERIFIED, UserFeature.PASSWORD_SET, UserFeature.NEWEST_PRIVACY_POLICY_AGREED, UserFeature.NEWEST_TERMS_AGREED);
+		if (role != UserRole.MEMBER) return EnumSet.of(UserFeature.EMAIL_VERIFIED, UserFeature.ADMIN_VERIFIED, UserFeature.PASSWORD_SET /*, UserFeature.NEWEST_PRIVACY_POLICY_AGREED, UserFeature.NEWEST_TERMS_AGREED */);
 		if (this == TEST || this == DEMO) {
 		   return EnumSet.of(UserFeature.EMAIL_VERIFIED, UserFeature.ADMIN_VERIFIED, UserFeature.PASSWORD_SET, UserFeature.NEWEST_PRIVACY_POLICY_AGREED, UserFeature.NEWEST_TERMS_AGREED);
 		}

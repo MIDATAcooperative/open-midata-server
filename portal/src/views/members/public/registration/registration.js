@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('RegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', '$translate', 'languages', '$stateParams', 'oauth', '$document', 'views', 'dateService', '$window', function($scope, $state, server, status, session, $translate, languages, $stateParams, oauth, $document, views, dateService, $window) {
+.controller('RegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', '$translate', 'languages', '$stateParams', 'oauth', '$document', 'views', 'dateService', '$window', 'crypto', function($scope, $state, server, status, session, $translate, languages, $stateParams, oauth, $document, views, dateService, $window, crypto) {
 	
 	$scope.registration = { language : $translate.use(), confirmStudy:[] };
 	$scope.languages = languages.all;
@@ -11,11 +11,11 @@ angular.module('portal')
 	$scope.offline = (window.jsRoutes === undefined) || (window.jsRoutes.controllers === undefined);
 	
 	$scope.view = views.getView("terms");
-	
+				
 	// register new user
 	$scope.register = function() {		
 		
-        $scope.myform.password.$setValidity('compare', $scope.registration.password ==  $scope.registration.password2);
+        $scope.myform.password.$setValidity('compare', $scope.registration.password1 ==  $scope.registration.password2);
         $scope.myform.agb.$setValidity('mustaccept', $scope.registration.agb);        
         if (!$scope.registration.agb) {
         	
@@ -57,7 +57,7 @@ angular.module('portal')
 			return;
 		}
 		
-		if ($scope.registration.password !=  $scope.registration.password2) {
+		if ($scope.registration.password1 !=  $scope.registration.password2) {
 			$scope.error = { code : "error.invalid.password_repetition" };
 			return;
 		}		
@@ -82,26 +82,45 @@ angular.module('portal')
 			data.developer = $stateParams.developer;
 		}
 		
-		if (oauth.getAppname()) {		  
-		  data.app = oauth.getAppname();
-		  data.device = oauth.getDevice();
-		  if ($scope.registration.unlockCode) oauth.setUnlockCode($scope.registration.unlockCode);
-		  
-		  $scope.status.doAction("register", server.post(jsRoutes.controllers.QuickRegistration.register().url, JSON.stringify(data))).
-		  then(function(datax) { 			 
-			  oauth.setUser($scope.registration.email, $scope.registration.password);			  
-			  $scope.welcomemsg = true;	
-			  
-			  if ($scope.app && $scope.app.requirements && $scope.app.requirements.indexOf('EMAIL_VERIFIED') >= 0) {
-				  $scope.confirmWelcome(); 
-			  }
-		  });
-		  
-		} else {
 		
-		  $scope.status.doAction("register", server.post(jsRoutes.controllers.Application.register().url, JSON.stringify(data))).
-		  then(function(data) { session.postLogin(data, $state); });
-		}
+		var finishRegistration = function() { 
+			if (oauth.getAppname()) {		  
+			  data.app = oauth.getAppname();
+			  data.device = oauth.getDevice();
+			  if ($scope.registration.unlockCode) oauth.setUnlockCode($scope.registration.unlockCode);
+			  
+			  $scope.status.doAction("register", server.post(jsRoutes.controllers.QuickRegistration.register().url, JSON.stringify(data))).
+			  then(function(datax) { 			 
+				  oauth.setUser($scope.registration.email, $scope.registration.password);			  
+				  $scope.welcomemsg = true;	
+				  
+				  if ($scope.app && $scope.app.requirements && $scope.app.requirements.indexOf('EMAIL_VERIFIED') >= 0) {
+					  $scope.confirmWelcome(); 
+				  }
+			  });
+			  
+			} else {
+			
+			  $scope.status.doAction("register", server.post(jsRoutes.controllers.Application.register().url, JSON.stringify(data))).
+			  then(function(data) { session.postLogin(data, $state); });
+			}
+			
+		};
+				
+		crypto.generateKeys($scope.registration.password1).then(function(keys) {				
+			if ($scope.registration.secure) {
+			  $scope.registration.password = keys.pw_hash;	
+			  $scope.registration.pub = keys.pub;
+			  $scope.registration.priv_pw = keys.priv_pw;
+			  $scope.registration.recoverKey = keys.recoverKey;
+			  $scope.registration.recovery = keys.recovery;
+			} else {
+			  $scope.registration.password = $scope.registration.password1;
+			};			
+		    finishRegistration();						
+		});
+		
+		
 				
 	};
 	

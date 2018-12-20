@@ -3,7 +3,7 @@ angular.module('portal')
 	
 	$scope.results =[];
 	$scope.status = new status(true);
-	
+	$scope.sortby="-createdAt";   
 	
 	$scope.reload = function() {
 			
@@ -11,6 +11,11 @@ angular.module('portal')
 		.then(function(data) { 				
 				$scope.results = data.data;	
 		});
+	};
+	
+	$scope.setSort = function(key) {		
+		if ($scope.sortby==key) $scope.sortby = "-"+key;
+		else { $scope.sortby = key; }
 	};
 	
 	$scope.reload();

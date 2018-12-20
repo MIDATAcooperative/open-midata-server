@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('PassphraseCtrl', ['$scope', '$state', 'server', function($scope, $state, server) {
+.controller('PassphraseCtrl', ['$scope', '$state', 'server', 'session', function($scope, $state, server, session) {
 	
 	// init
 	$scope.passphrase = {};

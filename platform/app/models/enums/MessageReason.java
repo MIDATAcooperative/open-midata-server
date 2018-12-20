@@ -80,5 +80,20 @@ public enum MessageReason {
 	/**
 	 * User has forgotten his password
 	 */
-	PASSWORD_FORGOTTEN
+	PASSWORD_FORGOTTEN,
+	
+	/**
+	 * Users private key has been recovered
+	 */
+	USER_PRIVATE_KEY_RECOVERED,
+	
+	/**
+	 * A resource has been changed
+	 */
+	RESOURCE_CHANGE,
+	
+	/**
+	 * A FHIR message should be processed
+	 */
+	PROCESS_MESSAGE
 }

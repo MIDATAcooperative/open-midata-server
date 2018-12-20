@@ -9,8 +9,12 @@ import java.util.Map;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import actions.APICall;
+import akka.cluster.Cluster;
+import akka.cluster.ClusterEvent.CurrentClusterState;
 import controllers.APIController;
 import controllers.Application;
 import models.AccessPermissionSet;
@@ -19,6 +23,9 @@ import models.Circle;
 import models.Consent;
 import models.HealthcareProvider;
 import models.InstanceStats;
+import models.KeyInfoExtern;
+import models.KeyRecoveryData;
+import models.KeyRecoveryProcess;
 import models.Member;
 import models.MidataAuditEvent;
 import models.MidataId;
@@ -42,6 +49,7 @@ import models.enums.StudyExecutionStatus;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
+import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -54,6 +62,7 @@ import utils.audit.AuditManager;
 import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
+import utils.auth.FutureLogin;
 import utils.auth.KeyManager;
 import utils.auth.PasswordResetToken;
 import utils.auth.PortalSessionToken;
@@ -70,6 +79,8 @@ import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.messaging.Messager;
+import utils.messaging.ServiceHandler;
+import utils.sync.Instances;
 
 /**
  * functions for user administration. May only be used by the MIDATA admin.
@@ -409,7 +420,12 @@ public class Administration extends APIController {
 			HealthcareProvider.delete(PortalSessionToken.session().org);
 		}
 		
+		KeyRecoveryProcess.delete(userId);
+        KeyRecoveryData.delete(userId);
+        FutureLogin.delete(userId);
 		KeyManager.instance.deleteKey(userId);
+		KeyInfoExtern.delete(userId);
+		
 		selected.delete();
 		
 		/*if (!User.exists(CMaps.map("organization", PortalSessionToken.session().org))) {
@@ -515,6 +531,24 @@ public class Administration extends APIController {
 		return ok(JsonOutput.toJson(stats, "InstanceStats", InstanceStats.ALL_FIELDS));
 		
 	}
-	
+		
+	@APICall
+	@Security.Authenticated(AdminSecured.class)
+	public Result getSystemHealth() throws AppException {
+		ObjectNode obj = Json.newObject();
+		
+		ArrayNode memberinfo = Json.newArray();
+		CurrentClusterState state = Cluster.get(Instances.system()).state();
+		for (akka.cluster.Member member : state.getMembers()) {
+			ObjectNode info = Json.newObject();
+			info.put("address", member.address().toString());
+			info.put("status", member.status().toString());
+			memberinfo.add(info);
+		}
+		
+		obj.put("servicekey", ServiceHandler.keyAvailable());
+		obj.set("cluster", memberinfo);
+		return ok(obj);
+	}
 	
 }

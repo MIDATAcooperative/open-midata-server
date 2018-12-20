@@ -11,6 +11,16 @@
 					</div>
 					<div class="panel-body">
 							
+						<div ng-show="progress.KEYRECOVERY">
+						  <p translate="postregister.keyrecovery.intro"></p>
+						  <ul>
+						    <li translate="postregister.keyrecovery.way1"></li>
+						    <li translate="postregister.keyrecovery.way2"></li>
+						    <li translate="postregister.keyrecovery.way3"></li>
+						    <li translate="postregister.keyrecovery.way4"></li>
+						  </ul>
+						</div>
+							
 						<div ng-show="progress.PASSWORD_SET">
 						   <p translate="setpw.enter_new"></p>
 						   <form ng-submit="pwsubmit()" role="form" class="form form-horizontal">

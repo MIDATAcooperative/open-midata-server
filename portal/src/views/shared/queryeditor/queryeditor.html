@@ -9,7 +9,7 @@
 		<p ng-show="error && !error.field" translate="{{error.code || error}}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	   
 		</p>
 		
-		<div ng-show="app._id && app.type=='mobile'" class="alert alert-warning">
+		<div ng-show="app._id && (app.type=='mobile' || app.type=='service')" class="alert alert-warning">
 		   <strong translate="manageapp.important"></strong>
 		   <p ng-hide="app.targetUserRole=='RESEARCH'" translate="manageapp.logoutwarning"></p>
 		   <p ng-show="app.targetUserRole=='RESEARCH'" translate="manageapp.researchwarning"></p>		    

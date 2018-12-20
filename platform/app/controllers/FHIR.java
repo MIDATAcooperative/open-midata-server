@@ -93,7 +93,7 @@ public class FHIR extends Controller {
 				PortalSessionToken tk = PortalSessionToken.decrypt(request());
 			    if (tk == null || tk.getRole() == UserRole.ANY) return null;
 			    try {
-			      KeyManager.instance.continueSession(tk.getHandle());
+			      KeyManager.instance.continueSession(tk.getHandle(), tk.userId);
 			    } catch (AuthException e) { return null; }	
 			    ResourceProvider.setExecutionInfo(new ExecutionInfo(tk.getUserId(), tk.getRole()));
 			}
@@ -162,7 +162,7 @@ public class FHIR extends Controller {
 				PortalSessionToken tk = PortalSessionToken.decrypt(request());
 			    if (tk == null || tk.getRole() == UserRole.ANY) return null;
 			    try {
-				      KeyManager.instance.continueSession(tk.getHandle());
+				      KeyManager.instance.continueSession(tk.getHandle(), tk.userId);
 			    } catch (AuthException e) { return null; }	
 			    ResourceProvider.setExecutionInfo(new ExecutionInfo(tk.getUserId(), tk.getRole()));
 			 }

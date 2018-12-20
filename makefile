@@ -1,4 +1,4 @@
-include conf/*
+include conf/*.conf
 
 .PHONY: info
 info:
@@ -234,7 +234,7 @@ tasks/build-mongodb: trigger/build-mongodb tasks/reimport-mongodb tasks/reimport
 	cd json;make build	
 	touch tasks/build-mongodb
 	
-tasks/build-portal: trigger/build-portal $(shell find portal -type f | sed 's/ /\\ /g') config/instance.json
+tasks/build-portal: trigger/build-portal conf/recoverykeys.json $(shell find portal -type f | sed 's/ /\\ /g') config/instance.json
 	$(info ------------------------------)
 	$(info Building Portal... )
 	$(info ------------------------------)
@@ -323,9 +323,13 @@ use-loadbalancer: /etc/ssl/certs/ssl-cert-snakeoil.pem
 	
 tasks/bugfixes:
 	mkdir -p ~/.config
+	mkdir -p ~/.npm
 	sudo chown -R $$USER:$$GROUP ~/.config	
 	sudo chown -R $$USER:$$GROUP ~/.npm
 	touch tasks/bugfixes
+
+conf/recoverykeys.json:
+	echo '[ { "neededKeys" : 1, "availableKeys" : 0 } ]' >conf/recoverykeys.json
 
 /dev/shm/secret.conf: platform/conf/application.conf platform/conf/secret.conf.gz.nc 
 	@echo "Decrypting configfile..."

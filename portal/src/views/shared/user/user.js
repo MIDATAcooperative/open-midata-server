@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('UserCtrl', ['$scope', '$state', '$translate', 'ENV', 'users', 'status', 'session', 'server', 'languages', function($scope, $state, $translate, ENV, users, status, session, server, languages) {
+.controller('UserCtrl', ['$scope', '$state', '$translate', 'ENV', 'users', 'status', 'session', 'server', 'languages', 'crypto', function($scope, $state, $translate, ENV, users, status, session, server, languages, crypto) {
 	// init
 	$scope.status = new status(false);
 	$scope.user = {};
@@ -87,7 +87,7 @@ angular.module('portal')
 			$scope.error = { code : "accountwipe.error" };
 			return;
 		}
-		
+		$scope.user.passwordHash = crypto.getHash($scope.user.password);
 		$scope.status.doAction("wipe", server.post("/api/shared/users/wipe", JSON.stringify($scope.user))).then(function() {
 		  document.location.href="/#/public/login"; 
 	  },function(err) { $scope.error = err.data; });	  

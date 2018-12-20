@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -37,6 +38,7 @@ import models.Record;
 import models.RecordsInfo;
 import models.Space;
 import models.StudyRelated;
+import models.SubscriptionData;
 import models.User;
 import models.UserGroupMember;
 import models.enums.AggregationType;
@@ -66,6 +68,7 @@ import utils.access.EncryptedFileHandle;
 import utils.access.RecordConversion;
 import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
+import utils.auth.KeyManager;
 import utils.auth.RecordToken;
 import utils.auth.Rights;
 import utils.auth.SpaceToken;
@@ -77,11 +80,14 @@ import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.fhir.SubscriptionResourceProvider;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.largerequests.HugeBodyParser;
+import utils.messaging.ServiceHandler;
+import utils.messaging.SubscriptionManager;
 import utils.stats.Stats;
 
 /**
@@ -216,16 +222,38 @@ public class PluginsAPI extends APIController {
 		}
 		if (json.has("autoimport")) {
 			boolean auto = JsonValidation.getBoolean(json, "autoimport");
-			Space space = Space.getByIdAndOwner(spaceToken.spaceId, spaceToken.userId, Sets.create("autoImport", "owner"));
-			if (auto) {				
-				User autoRunner = Admin.getByEmail("autorun-service", Sets.create("_id"));
+			Space space = Space.getByIdAndOwner(spaceToken.spaceId, spaceToken.userId, Sets.create("autoImport", "owner", "visualization"));
+			List<SubscriptionData> entries = SubscriptionData.getByOwnerAndFormatAndInstance(space.owner, "time", space._id, SubscriptionData.ALL);
+			SubscriptionData data = null;
+			for (SubscriptionData d : entries) data = d;
+			if (auto) {		
+				
+				if (data == null) {
+					data = new SubscriptionData();
+					data._id = new MidataId();
+				}				
+				data.active = true;
+				data.app = space.visualization;
+				data.instance = space._id;
+				data.format = "time";
+				data.content = null;
+				data.lastUpdated = System.currentTimeMillis();
+				data.owner = space.owner;
+				data.session = ServiceHandler.encrypt(KeyManager.instance.currentHandle(space.owner));
+				SubscriptionResourceProvider.fillInFhirForAutorun(data);
+				data.add();
+				SubscriptionManager.subscriptionChange(data);
+				
+				
+				/*User autoRunner = Admin.getByEmail("autorun-service", Sets.create("_id"));
 				RecordManager.instance.shareAPS(space._id, spaceToken.executorId, Collections.singleton(autoRunner._id));
 				RecordManager.instance.materialize(spaceToken.executorId, space._id);
-				Space.set(space._id, "autoImport", auto);
+				Space.set(space._id, "autoImport", auto);*/
 			} else {
-				User autoRunner = Admin.getByEmail("autorun-service", Sets.create("_id"));
+				for (SubscriptionData data1 : entries) data1.setOff(data._id);
+				/*User autoRunner = Admin.getByEmail("autorun-service", Sets.create("_id"));
 				RecordManager.instance.unshareAPS(space._id, spaceToken.executorId, Collections.singleton(autoRunner._id));
-				Space.set(space._id, "autoImport", auto);
+				Space.set(space._id, "autoImport", auto);*/
 			}
 		}
 				
@@ -487,9 +515,7 @@ public class PluginsAPI extends APIController {
 		if (record.owner==null) record.owner = inf.ownerId;
 		
 		DBRecord dbrecord = RecordConversion.instance.toDB(record);
-        	
-		MobileAPI.autoLearnAccessQuery(inf, record.format, record.content);
-		
+        				
 		if (!record.owner.equals(inf.executorId) && !inf.executorId.equals(RuntimeConstants.instance.autorunService) && !(context instanceof ConsentAccessContext) && !(context instanceof AccountCreationAccessContext)) {
 			BSONObject query = RecordManager.instance.getMeta(inf.executorId, inf.targetAPS, "_query");
 			Set<Consent> consent = null;
@@ -573,6 +599,8 @@ public class PluginsAPI extends APIController {
 				}
 			}
 		}
+		
+		SubscriptionManager.resourceChange(record);
 	}
 	
 	/**

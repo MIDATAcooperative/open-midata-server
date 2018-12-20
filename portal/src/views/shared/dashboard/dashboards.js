@@ -9,13 +9,7 @@ angular.module('portal')
 			    active : true,
 			    position : "full"			    
 		    },  
-		    {
-		    	   id : "tasks",
-		    	   template : "/views/shared/dashboardTiles/tasks/tasks.html",
-		    	 
-		    	   active : true,
-		    	   position : "small"
-		    },
+		    
 		    /*
 		    {
 		    	   id : "createrecord",
@@ -524,14 +518,7 @@ angular.module('portal')
 				
 				  active : false,
 				  position : "modal"			 
-			},
-			{                        
-				  id : "addtask",
-				  template : "/views/shared/dashboardTiles/addtask/addtask.html",
-				
-				  active : false,
-				  position : "modal"			 
-			}              
+			}           
 	 ],
 	 "studyactions" : [
 	        			{
@@ -558,14 +545,7 @@ angular.module('portal')
 	        				
 	        				  active : false,
 	        				  position : "modal"			 
-	        			},
-	        			{                        
-	        				  id : "addtask",
-	        				  template : "/views/shared/dashboardTiles/addtask/addtask.html",
-	        				 
-	        				  active : false,
-	        				  position : "modal"			 
-	        			}              
+	        			}          
 	        	 ],
 	 "studyparticipant" : [
 			{

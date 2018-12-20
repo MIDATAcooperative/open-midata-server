@@ -1,6 +1,6 @@
 {
   "name": "MIDATA_portal",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "portal of MIDATA",
   "private": true,
   "devDependencies": {
@@ -37,6 +37,7 @@
     "bootstrap": "~3.3.7",
     "jquery": "~3.3.1",
     "jsonminify": "~0.4.1",
+    "node-forge": "^0.7.6",
     "underscore": "~1.8.3"
   },
   "scripts": {

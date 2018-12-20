@@ -22,6 +22,7 @@ import utils.auth.KeyManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.messaging.ServiceHandler;
 
 public class AutoJoiner {
 
@@ -66,24 +67,24 @@ class AutoJoinerActor extends AbstractActor {
 		try {
 		
 			
-			Study theStudy = Study.getById(message.getStudy(), Sets.create("_id", "participantSearchStatus", "executionStatus", "autoJoinGroup", "name", "code", "type"));				
-			if (theStudy != null && theStudy.autoJoinGroup != null) {
+			Study theStudy = Study.getById(message.getStudy(), Sets.create("_id", "participantSearchStatus", "executionStatus", "autoJoinGroup", "autoJoinExecutor", "autoJoinKey", "name", "code", "type"));				
+			if (theStudy != null && theStudy.autoJoinGroup != null && theStudy.autoJoinExecutor != null && theStudy.autoJoinKey != null) {
 				if (theStudy.participantSearchStatus.equals(ParticipantSearchStatus.SEARCHING) && (theStudy.executionStatus.equals(StudyExecutionStatus.PRE) || theStudy.executionStatus.equals(StudyExecutionStatus.RUNNING))) {
 					
-					Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByGroup(theStudy._id);
-					UserGroupMember ugm = null;
-					for (UserGroupMember ugmx : ugms) {		   
-					  if  (ugmx.role.manageParticipants()) { ugm = ugmx; }
-					}
 					
-					if (ugm != null) {
 						AccessLog.log("START AUTOJOIN");		
 						try {
-							String handle = KeyManager.instance.login(1000l*60l, false);
-							KeyManager.instance.unlock(ugm.member, null);
-							RecordManager.instance.setAccountOwner(ugm.member, ugm.member);
+							String handle = ServiceHandler.decrypt(theStudy.autoJoinKey);
 							
-							AutoJoiner.approve(ugm.member, theStudy, message.getUser(), message.getApp(), theStudy.autoJoinGroup);
+							if (handle == null) { // Main background service key not valid anymore
+								theStudy.autoJoinGroup = null;
+								theStudy.setAutoJoinGroup(null, null, null);
+								return;
+							}
+							
+							KeyManager.instance.continueSession(handle, theStudy.autoJoinExecutor);							
+							RecordManager.instance.setAccountOwner(theStudy.autoJoinExecutor, theStudy.autoJoinExecutor);							
+							AutoJoiner.approve(theStudy.autoJoinExecutor, theStudy, message.getUser(), message.getApp(), theStudy.autoJoinGroup);
 							
 							AccessLog.log("END AUTOJOIN");
 						} finally {
@@ -92,7 +93,7 @@ class AutoJoinerActor extends AbstractActor {
 						    ServerTools.endRequest();
 						}
 					
-					  }
+					
 										
 				}
 			}

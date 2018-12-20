@@ -83,7 +83,7 @@ public class ExecutionInfo {
 	
 	public static ExecutionInfo checkSpaceToken(SpaceToken authToken) throws AppException {		
 		AccessLog.logBegin("begin check 'space' type session token");
-		KeyManager.instance.continueSession(authToken.handle);
+		KeyManager.instance.continueSession(authToken.handle, authToken.executorId);
 		ExecutionInfo result = new ExecutionInfo();
 		result.executorId = authToken.executorId;
 		result.role = authToken.role;	
@@ -112,9 +112,26 @@ public class ExecutionInfo {
 			
 			result.context = RecordManager.instance.createContextFromSpace(result.executorId, space, result.ownerId);
 			
-		} else {
+		} else if (authToken.autoimport) {
+			MobileAppInstance appInstance = MobileAppInstance.getById(authToken.spaceId, Sets.create("owner", "applicationId", "autoShare", "status", "sharingQuery", "writes"));
+			if (appInstance == null) MobileAPI.invalidToken(); 
+
+		    if (!appInstance.status.equals(ConsentStatus.ACTIVE)) throw new BadRequestException("error.noconsent", "Consent needs to be confirmed before creating records!");
+		        
+		        
+			if (appInstance.sharingQuery == null) {
+				appInstance.sharingQuery = RecordManager.instance.getMeta(authToken.executorId, authToken.spaceId, "_query").toMap();
+			}
+									                                               
+			result.ownerId = appInstance.owner;
+			result.pluginId = appInstance.applicationId;
+			result.targetAPS = appInstance._id;
+			result.context = RecordManager.instance.createContextFromApp(result.executorId, appInstance);
 			
+		} else {
+									
 			Consent consent = Consent.getByIdAndAuthorized(authToken.spaceId, authToken.userId, Sets.create("owner"));
+						
 			if (consent == null) throw new BadRequestException("error.unknown.consent", "The current consent does no longer exist.");
 			
 			result.pluginId = authToken.pluginId;
@@ -144,7 +161,7 @@ public class ExecutionInfo {
         if (!allowInactive && !appInstance.status.equals(ConsentStatus.ACTIVE)) throw new BadRequestException("error.noconsent", "Consent needs to be confirmed before creating records!");
 
         KeyManager.instance.login(60000l, false);
-        KeyManager.instance.unlock(appInstance._id, authToken.passphrase);
+        KeyManager.instance.unlock(appInstance._id, authToken.aeskey);
         
         ExecutionInfo result = new ExecutionInfo();
 		result.executorId = appInstance._id;

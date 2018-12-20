@@ -1,5 +1,5 @@
 angular.module('services')
-.factory('session', ['$q', 'server', function($q, server) {
+.factory('session', ['$q', 'server', 'crypto', function($q, server, crypto) {
 	
 	var _states = {};
 	
@@ -8,6 +8,27 @@ angular.module('services')
 		user : null,
 		cache : {},
 			
+		performLogin : function(func, params, pw) {
+			return func(params).then(function(result) {
+				if (result.data == "compatibility-mode") {
+					params.nonHashed = pw;
+					return func(params);
+				} else if (result.data.challenge) {
+					if (result.data.tryrecover) {
+						params.sessionToken = crypto.keyChallengeLocal(result.data.userid, result.data.recoverKey, result.data.challenge);
+						if (!params.sessionToken) return { data : { requirements : ["KEYRECOVERY"] , status : "BLOCKED" } };
+						return session.performLogin(func, params, pw);
+					} else {
+						params.sessionToken = crypto.keyChallenge(result.data.keyEncrypted, pw, result.data.challenge);
+						if (result.data.recoverKey && result.data.recoverKey != "null") crypto.checkLocalRecovery(result.data.userid, result.data.recoverKey,result.data.keyEncrypted, pw);
+						return func(params);
+					}
+				} else {
+					return result;
+				}
+			})		
+		},
+		
 		postLogin : function(result, $state) {
 			if (result.data.sessionToken) {
 				sessionStorage.token = result.data.sessionToken;
@@ -63,7 +84,7 @@ angular.module('services')
 				//$cookies.put("session", userId);
 				//session.storedCookie = userId;
 				//userId = { "$oid" : userId };			
-				var data = {"properties": { "_id" : userId }, "fields": ["email", "firstname", "lastname", "visualizations", "apps", "midataID", "name", "role", "subroles", "developer"] };
+				var data = {"properties": { "_id" : userId }, "fields": ["email", "firstname", "lastname", "visualizations", "apps", "midataID", "name", "role", "subroles", "developer", "security"] };
 				session.org = result.org;
 				server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data))
 				.then(function(data) {

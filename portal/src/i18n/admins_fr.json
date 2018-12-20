@@ -40,6 +40,12 @@
         "confirmation_code" : "Code de confirmation:",
         "registration_date" : "Date de l'inscription:",
         "confirmation_date" : "Date de confirmation:",
+        "security" : "Protection du compte",
+        "security_type" : {
+            "KEY" : "Clé privée sur le serveur",
+            "KEY_PASSPHRASE" : "Clé privée protégée par PHRASE SECRÈTE",
+            "KEY_EXT_PASSWORD" : "Clé privée protégée par mot de passe"
+        },
         "last_login" : "Dernière connexion:",
         "email_confirm_btn" : "Confirmer l'adresse e-mail",
         "comment" : "Commentaire",
@@ -65,7 +71,17 @@
         "language" : "Langue de la News",
         "content" : "Contenu",
         "url" : "URL du message complet",
-        "expires" : "Date d'expiration du message"
+        "expires" : "Date d'expiration du message",
+        "date" : "Date officielle",
+        "appId" : "Application liée",
+        "studyId" : "Étude liée",
+        "layout" : "Mise en page",
+        "layouts" : {
+            "small" : "Petit (1x1)",
+            "wide" : "Large (2x1)",
+            "high" : "Haut (1x2)",
+            "large" : "Grand (2x2)"
+        }
     },
 
     "admin_registration" : {
@@ -105,7 +121,8 @@
         "name" : "Nom",
         "version" : "Version",
         "language" : "Langue",
-        "createdAt" : "Date de création"
+        "createdAt" : "Date de création",
+        "restrict_name" : "Filtrer par nom"
     },
 
     "admin_manageterms" : {
@@ -124,10 +141,15 @@
         "created_by" : "Créée par",
         "description" : "Description",
         "joinmethods" : "Procédures de participation",
+        "type" : "Type",
         "code" : "Code",
         "startDate" : "Date de début",
         "endDate" : "Date de fin",
         "dataCreatedBefore" : "Données figées dès le",
+
+        "infos" : "Informations publiques",
+        "infos_part" : "Informations pour les participants",
+        "infos_internal" : "Informations internes",
         "required_information" : "Informations requises",
         "anonymous" : "Anonyme",
         "required_assistance" : "Médecin agréé requis",
@@ -140,6 +162,7 @@
         "team" : "Team",
         "role" : "Rôle",
         "history" : "Historique",
+        "links" : "Applications liées",
         "end_validation_btn" : "Finaliser la validation",
         "back_to_draft_btn" : "Revenir à l'ébauche",
         "delete_study_btn" : "Effacer l'étude"
@@ -159,6 +182,25 @@
         "groupCount" : "Teams (Système de santé et recherche)",
         "auditEventCount" : "Événements d'audit",
         "users" : "Comptes d'utilisateurs actifs",
-        "consents" : "Consentements"
+        "consents" : "Consentements",
+        "health" : {
+            "title" : "État du système",
+            "servicekey" : "Clé de service d'arrière-plan présente?",
+            "requestkey_btn" : "Demande de récupération de clé",
+            "cluster" : "État du cluster"
+        }
+    },
+
+    "admin_pwrecover" : {
+        "menu" : "Récupération de clé",
+        "title" : "Récupération de clé",
+        "empty" : "Il n'y a actuellement aucun processus de récupération en cours d'exécution.",
+        "name" : "Utilisateur",
+        "started" : "Date",
+        "share" : "Share",
+        "decrypted" : "Share décrypté",
+        "myid" : "Mon id de récupération",
+        "instr1" : "Cliquez sur un share pour copier le share crypté dans le presse-papiers.",
+        "instr2" : "Décrypter le share sur Ubuntu: (cliquez sur la ligne pour la copier dans le presse-papiers)"
     }
 }

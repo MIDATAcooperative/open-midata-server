@@ -34,6 +34,7 @@ import utils.fhir.ResourceProvider;
 import utils.json.CustomObjectMapper;
 import utils.messaging.MailUtils;
 import utils.messaging.Messager;
+import utils.messaging.ServiceHandler;
 import utils.messaging.SubscriptionManager;
 import utils.servlet.PlayHttpServletConfig;
 import utils.stats.Stats;
@@ -116,6 +117,9 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 		
 		System.out.println("Messager");
 		Messager.init(system);
+		
+		System.out.println("Service Handler");
+		ServiceHandler.startup();
 		
 		System.out.println("Auto-Join");
 		AutoJoiner.init(system);

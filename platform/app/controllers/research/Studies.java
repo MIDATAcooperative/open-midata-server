@@ -56,7 +56,6 @@ import models.StudyAppLink;
 import models.StudyGroup;
 import models.StudyParticipation;
 import models.StudyRelated;
-import models.Task;
 import models.User;
 import models.UserGroup;
 import models.UserGroupMember;
@@ -65,7 +64,6 @@ import models.enums.AssistanceType;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.EntityType;
-import models.enums.Frequency;
 import models.enums.InfoType;
 import models.enums.InformationType;
 import models.enums.JoinMethod;
@@ -119,6 +117,7 @@ import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.messaging.Messager;
+import utils.messaging.ServiceHandler;
 import views.txt.mails.studynotify;
 
 /**
@@ -1266,9 +1265,14 @@ public class Studies extends APIController {
 
 		}
 
-		if (plugin.type.equals("mobile")) {
-			JsonValidation.validate(json, "device");
-			String device = JsonValidation.getString(json, "device");
+		if (plugin.type.equals("mobile") || plugin.type.equals("service")) {
+			String device;
+			if (plugin.type.equals("mobile")) {
+			  JsonValidation.validate(json, "device");
+			  device = JsonValidation.getString(json, "device");
+			} else {
+			  device = "service";	
+			}
 
 			MobileAppInstance appInstance = MobileAPI.installApp(userId, plugin._id, researcher, device, false, Collections.emptySet());
 			Map<String, Object> query = appInstance.sharingQuery;
@@ -1327,7 +1331,7 @@ public class Studies extends APIController {
 	 * @throws AppException
 	 * @throws JsonValidationException
 	 */
-	@Security.Authenticated(AnyRoleSecured.class)
+	/*@Security.Authenticated(AnyRoleSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public Result addTask(String id, String group) throws AppException, JsonValidationException {
@@ -1368,7 +1372,7 @@ public class Studies extends APIController {
 		}
 
 		return ok();
-	}
+	}*/
 
 	/**
 	 * list participation consents of all participants of a study
@@ -1923,9 +1927,9 @@ public class Studies extends APIController {
 			String grp = JsonValidation.getStringOrNull(json, "autoJoinGroup");
 
 			if (JsonValidation.getBoolean(json, "autoJoin")) {
-				study.setAutoJoinGroup(grp);
+				study.setAutoJoinGroup(grp, userId, ServiceHandler.encrypt(KeyManager.instance.currentHandle(userId)));
 			} else
-				study.setAutoJoinGroup(null);
+				study.setAutoJoinGroup(null, null, null);
 
 			if (grp != null) {
 				autoApprove(null, study, userId, grp);
