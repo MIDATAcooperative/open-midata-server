@@ -43,6 +43,8 @@ public class Instances {
 		//instanceURIs = Play.application().configuration().getStringList("servers");
 		actorSystem.actorOf(Props.create(InstanceSync.class), "instanceSync");	
 				
+		actorSystem.actorOf(Props.create(ClusterMonitor.class), "midataClusterMonitor");
+		
 		Iterable<String> routeesPaths = Collections.singletonList("/user/instanceSync");				
 		broadcast = actorSystem.actorOf(
 		    new ClusterRouterGroup(new BroadcastGroup(routeesPaths),
