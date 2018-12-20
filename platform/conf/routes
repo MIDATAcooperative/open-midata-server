@@ -28,7 +28,7 @@ POST    /api/members/join                                controllers.QuickRegist
 POST    /api/members/login                               controllers.Application.authenticate()
 POST    /api/common/passphrase                           controllers.Application.providePassphrase()
 POST    /api/common/passphrase/change                    controllers.Application.changePassphrase()
-POST    /api/common/password/change                      controllers.Application.changePassword()
+POST    /api/common/password/change                      controllers.PWRecovery.changePassword()
 POST    /api/common/account/email/confirm                controllers.Application.confirmAccountEmail()
 POST    /api/common/account/email/request                controllers.Application.requestWelcomeMail()
 POST    /api/common/account/address/confirm              controllers.Application.confirmAccountAddress()
@@ -57,7 +57,6 @@ POST    /api/members/records/info                        controllers.Records.get
 GET     /api/members/records/:id/view                    controllers.Records.getRecordUrl(id: String)
 GET     /api/members/records/shared/:apsId               controllers.Records.getSharingDetails(apsId: String)
 POST    /api/members/records/shared                      controllers.Records.updateSharing()
-POST    /api/members/records/share                       controllers.Records.share()
 POST    /api/members/records/fix                         controllers.Records.fixAccount()
 
 GET     /api/records/:id/file                                controllers.Records.getFile(id: String)
@@ -77,7 +76,8 @@ POST    /api/members/circles                             controllers.Circles.add
 POST    /api/members/circles/get                         controllers.Circles.get()
 POST    /api/members/circles/join                        controllers.Circles.joinByPasscode()
 POST    /api/members/consents                            controllers.Circles.listConsents()
-
+POST    /api/members/apps                                controllers.Circles.listApps()
+ 
 DELETE  /api/members/circles/:id                         controllers.Circles.delete(id: String)
 POST    /api/members/circles/:id/users                   controllers.Circles.addUsers(id: String)
 
@@ -87,6 +87,7 @@ DELETE  /api/members/circles/:id/users/:userId           controllers.Circles.rem
 
 POST    /api/developers/plugins                          controllers.Market.registerPlugin()
 PUT     /api/developers/plugins/:appId                   controllers.Market.updatePlugin(appId: String)
+POST    /api/developers/plugins/:appId/subscriptions     controllers.Market.updateDefaultSubscriptions(appId: String)
 DELETE  /api/developers/plugins/:appId            	     controllers.Market.deletePluginDeveloper(appId: String)
 GET     /api/developers/plugins/:appId/stats             controllers.Market.getPluginStats(appId: String)
 DELETE  /api/developers/plugins/:appId/stats             controllers.Market.deletePluginStats(appId: String)
@@ -104,6 +105,8 @@ GET      /api/admins/exportplugin/:appId                 controllers.Market.expo
 POST     /api/developers/plugins/:appId/icon             controllers.Market.uploadIcon(appId: String)
 DELETE   /api/developers/plugins/:appId/icon/:use        controllers.Market.deleteIcon(appId: String, use: String)
 GET      /api/shared/icon/:use/:id                       controllers.Market.getIcon(use:String, id:String)
+GET      /api/debug/getopencalls/:handle                 controllers.Market.getOpenDebugCalls(handle: String)
+POST     /api/debug/subscriptiondebug                    controllers.Market.setSubscriptionDebug()
 
 # Users
 
@@ -157,7 +160,6 @@ POST    /api/members/studies/:study/freeze              controllers.members.Stud
 POST    /api/research/studies/:study/update              controllers.research.Studies.updateParticipation(study: String)
 POST    /api/research/studies/:study/share/:group        controllers.research.Studies.shareWithGroup(study: String, group:String)
 POST    /api/research/studies/:study/addapp/:group       controllers.research.Studies.addApplication(study: String, group:String)
-POST    /api/research/studies/:study/task/:group         controllers.research.Studies.addTask(study: String, group:String)
 
 POST    /api/common/studies                              controllers.Studies.search()
 GET     /api/common/groups                               controllers.FormatAPI.listGroups()
@@ -216,11 +218,12 @@ POST    /api/admins/changeBirthday                       controllers.admin.Admin
 POST    /api/admins/addcomment                           controllers.admin.Administration.addComment()
 POST    /api/admins/wipeaccount                          controllers.admin.Administration.adminWipeAccount()
 POST    /api/admin/stats                                 controllers.admin.Administration.getStats()
+GET     /api/admin/health                                controllers.admin.Administration.getSystemHealth()
+GET		/api/admins/pwrecovery                           controllers.PWRecovery.getUnfinished()
+POST	/api/admins/pwrecovery                           controllers.PWRecovery.storeRecoveryShare()
+POST	/api/admins/pwrecovery/finish                    controllers.PWRecovery.finishRecovery()
+POST	/api/admins/pwrecovery/servicekey                controllers.PWRecovery.requestServiceKeyRecovery()
 
-# Tasks
-POST    /api/shared/tasks/create         controllers.Tasking.add()
-POST    /api/shared/tasks/list           controllers.Tasking.list()
-POST    /api/shared/tasks/execute/:taskid   controllers.Tasking.execute(taskid: String)
 
 # Apps
 

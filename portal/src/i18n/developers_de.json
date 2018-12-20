@@ -30,7 +30,14 @@
     },
 
     "developer_yourapps" : {
-        "title" : "Ihre Plugins"
+        "title" : "Ihre Plugins",
+        "empty" : "Sie haben noch kein Plugin registriert.",
+        "register" : "Neues Plugin registrieren",
+        "name" : "Name",
+        "type" : "Typ",
+        "role" : "Zielrolle",
+        "manage_btn" : " verwalten",
+        "debug_info_btn" : "Debug-Informationen"
     },
 
     "appmessages" : {
@@ -59,13 +66,17 @@
             "ACCOUNT_UNLOCK" : "Konto vom Administrator freigeschaltet",
             "EMAIL_CHANGED_OLDADDRESS" : "E-Mail-Adresse geändert (an alte E-Mail-Adresse senden)",
             "EMAIL_CHANGED_NEWADDRESS" : "E-Mail-Adresse geändert (an neue E-Mail-Adresse senden)",
-            "PASSWORD_FORGOTTEN" : "Kennwort vergessen"
+            "PASSWORD_FORGOTTEN" : "Kennwort vergessen",
+            "USER_PRIVATE_KEY_RECOVERED" : "Wiederherstellung des Benutzerschlüssels abgeschlossen",
+            "RESOURCE_CHANGE" : "Änderung einer Resource [code]",
+            "PROCESS_MESSAGE" : "FHIR-Nachricht mit Ereignis [Code] verarbeiten"
         }
     },
 
     "manageapp" : {
         "overview" : "Applikations-Übersicht",
         "choose" : "Funktionen zur Verwaltung Ihrer Applikation",
+        "defined" : "definiert",
         "filename" : "Interner Name",
         "type" : "Applikationstyp",
         "targetUserRole" : "Zielrolle",
@@ -75,6 +86,8 @@
         "edit_help" : "Ändern Sie die Einstellungen für Ihre Applikation.",
         "query_btn" : "Data Access Filter ändern",
         "query_help" : "Definieren Sie, auf welche Arten von Daten Ihre Applikation zugreifen darf.",
+        "subscriptions_btn" : "Standardabonnements (Subscriptions) ändern",
+        "subscriptions_help" : "Trigger definieren, die eine Aktion auf dem MIDATA-Server auslösen",
         "tokenExchangeParams" : "OAuth2-Parameter für den Token-Austausch",
         "testfromlocal_btn" : "Testen Sie Ihr Plugin von localhost aus",
         "testfromlocal_help" : "Während der Entwicklung können Sie den Plugin-Code, der auf Ihrem lokalen Computer gespeichert ist, auf dieser Instanz testen.",
@@ -106,7 +119,7 @@
         "info" : {
             "filename" : "Dieser Name wird intern für die Kennung Ihrer App verwendet. Es sollte ein gültiger Identifikator sein (a-z, A-Z, 0-9, _).",
             "targetUserRole" : "Ist Ihre App nur für eine spezifische Rolle bestimmt? Wenn nicht, wählen Sie 'Alle Rollen'.",
-            "type" : "Wählen Sie 'Plugin' wenn Ihre App im MIDATA-Portal laufen wird. Wählen Sie 'Mobile App' für eine externe App. Wählen Sie 'OAuth1 Import' oder 'OAuth2 Import' wenn Sie sich über OAuth1 oder OAuth2 mit einem externen Server verbinden.",
+            "type" : "Wählen Sie 'Plugin' wenn Ihre Applikation im MIDATA-Portal laufen wird. Wählen Sie 'Mobile App' für eine externe Applikation. Wählen Sie 'Service' für ein serverseitiges Skript. Wählen Sie 'OAuth1 Import' oder 'OAuth2 Import' wenn Sie sich über OAuth1 oder OAuth2 mit einem externen Server verbinden.",
             "name" : "Der Name der App oder des Plugins für den Endbenutzer.",
             "description" : "Die Beschreibung des Plugins, die im Markplatz erscheinen wird.",
             "tokenExchangeParams" : "Der Standardwert ist client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> aber einige Dienste erfordern auch client_secret=<client_secret> oder kein client_id",
@@ -163,7 +176,16 @@
     },
 
     "appdebug" : {
-        "title" : "API Tester"
+        "title" : "API Tester",
+        "login" : "Anmelden",
+        "oauth_login" : "OAuth Login",
+        "device" : "Device",
+        "refresh_token" : "Refresh Token",
+        "backend_services" : "Serverseitige Skripte",
+        "portal_username" : "Benutzername",
+        "portal_password" : "Kennwort",
+        "portal_login" : "Plugin-Instanz verwenden:",
+        "portal_login_btn" : "Portal-Login + Token erhalten"
     },
 
     "appicon" : {
@@ -188,5 +210,36 @@
 
     "applink" : {
         "title" : "Verknüpfungen mit Studien"
+    },
+
+    "appsubscriptions" : {
+        "title" : "Standardabonnements (Subscriptions)",
+        "empty" : "Es sind keine Standardabonnements (Subscriptions) definiert.",
+        "trigger" : "Trigger",
+        "triggerDetail" : "FHIR Ressource",
+        "action" : "Aktion",
+        "params" : "URL / Dateiname",
+        "triggers" : {
+            "fhir_Consent" : "Zustimmungsänderungen",
+            "fhir_MessageHeader" : "FHIR Nachricht",
+            "fhir_Resource" : "Ressourcenänderungen",
+            "time" : "Täglich",
+            "init" : "Wenn hinzugefügt"
+        },
+        "actions" : {
+            "rest-hook" : "REST Hook aufrufen",
+            "email" : "E-Mail versenden",
+            "nodejs" : "Node.js Script aufrufen"
+        },
+        "debug" : {
+            "title" : "Testen Sie Ihren Backend-Code auf Ihrem Computer",
+            "description" : "Sie können Ihren serverseitigen Verarbeitungscode für Abonnements (Subscriptions) auf Ihrem lokalen Computer testen.",
+            "description2" : "Laden Sie den Abonnement-Tester (Subscription) herunter und führen Sie ihn mit dem angegebenen Verbindungscode aus.",
+            "description3" : "Dies funktioniert nur mit Ihrem Entwicklerkonto oder einem Konto, das mit Ihrem Entwicklerkonto erstellt wurde, und nur so lange, wie sich die Anwendung in der Entwicklung befindet.",
+            "start_btn" : "Debugging starten",
+            "stop_btn" : "Debugging beenden",
+            "cmd_to_run" : "Befehl zur Ausführung auf Ihrem Computer:"
+        }
+
     }
 }

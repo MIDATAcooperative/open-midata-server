@@ -7,21 +7,21 @@
       <loader busy="status.isBusy !== false">
       <table class="table" ng-show="apps.length > 0">
         <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Target Role</th>
+          <th translate="developer_yourapps.name">Name</th>
+          <th translate="developer_yourapps.type">Type</th>
+          <th translate="developer_yourapps.role">Target Role</th>
           <th></th>
         </tr>
         <tr ng-repeat="app in apps">
           <td><a ui-sref="^.manageapp({ appId : app._id })">{{  app.name }}</a></td>
-          <td>{{ app.type }}</td>
-          <td>{{ app.targetUserRole }}</td>
-          <td><a class="btn btn-default btn-xs" ui-sref="^.manageapp({ appId : app._id })">manage</a> <a class="btn btn-default btn-xs" ui-sref="^.appstats({ appId : app._id })">debug info</a></td>
+          <td translate="{{ 'enum.plugintype.'+app.type }}"></td>
+          <td translate="{{ 'enum.userrole.'+app.targetUserRole }}"></td>
+          <td><a class="btn btn-default btn-xs" ui-sref="^.manageapp({ appId : app._id })" translate="developer_yourapps.manage_btn">manage</a> <a class="btn btn-default btn-xs" ui-sref="^.appstats({ appId : app._id })" translate="developer_yourapps.debug_info_btn">debug info</a></td>
         </tr>
       </table>
-      <p ng-show="apps.length == 0">You have not registered any plugin yet.</p>
+      <p ng-show="apps.length == 0" translate="developer_yourapps.empty"></p>
       
-      <a class="btn btn-default" ui-sref="developer.registerapp">Register a new plugin</a>
+      <a class="btn btn-default" ui-sref="developer.registerapp" translate="developer_yourapps.register">Register a new plugin</a>
       </loader>		
     </div>
   </div>		

@@ -3,6 +3,7 @@ package controllers;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -29,9 +30,11 @@ import utils.auth.CodeGenerator;
 import utils.auth.DeveloperSecured;
 import utils.auth.KeyManager;
 import utils.auth.PasswordResetToken;
+import utils.auth.PortalSessionToken;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
+import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 
 /**
@@ -49,7 +52,7 @@ public class Developers extends APIController {
 	@APICall
 	public Result register() throws AppException {
 		JsonNode json = request().body().asJson();		
-		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "language", "reason");
+		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "language", "reason", "priv_pw", "pub", "recovery");
 							
 		String email = JsonValidation.getEMail(json, "email");
 		if (Developer.existsByEMail(email)) return inputerror("email", "exists", "A user with this email address already exists.");
@@ -87,14 +90,23 @@ public class Developers extends APIController {
 		user.visualizations = new HashSet<MidataId>();
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);
-		
-		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);
-		user.security = AccountSecurityLevel.KEY;
 				
+		String pub = JsonValidation.getString(json, "pub");
+		String pk = JsonValidation.getString(json, "priv_pw");
+		Map<String, String> recover = JsonExtraction.extractStringMap(json.get("recovery"));
+			  		        	      		  		
+		user.publicExtKey = KeyManager.instance.readExternalPublicKey(pub);		  
+		KeyManager.instance.saveExternalPrivateKey(user._id, pk);		  
+		KeyManager.instance.login(PortalSessionToken.LIFETIME, true);
+			  
+		user.security = AccountSecurityLevel.KEY_EXT_PASSWORD;		
+		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(user._id, null);								
 		Developer.add(user);
-		
-		//KeyManager.instance.unlock(user._id, null);
-		RecordManager.instance.createPrivateAPS(user._id, user._id);
+			  
+	    KeyManager.instance.newFutureLogin(user);	
+		PWRecovery.storeRecoveryData(user._id, recover);
+				
+		RecordManager.instance.createPrivateAPS(user._id, user._id);				
 		
 		Application.sendWelcomeMail(user, null);
 		if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) Application.sendAdminNotificationMail(user);
@@ -119,29 +131,42 @@ public class Developers extends APIController {
 		
 		String email = JsonValidation.getString(json, "email");
 		String password = JsonValidation.getString(json, "password");
+		String sessionToken = JsonValidation.getStringOrNull(json, "sessionToken"); 
+		
 		Developer user = Developer.getByEmail(email, User.FOR_LOGIN);
 		
 		if (user == null) {
 			Admin adminuser = Admin.getByEmail(email, User.FOR_LOGIN);
 			if (adminuser != null) {
-				AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, adminuser);
-				if (!adminuser.authenticationValid(password)) {
-					throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
+				
+				if (adminuser.publicExtKey == null) {
+					if (!json.has("nonHashed")) return ok("compatibility-mode");
+					password = JsonValidation.getString(json, "nonHashed");
 				}
-						
-				return Application.loginHelper(adminuser);
+									
+				if (adminuser.publicExtKey == null || sessionToken != null) AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, adminuser);
+				if (!adminuser.authenticationValid(password)) {
+					throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");
+				}
+														
+				return Application.loginHelper(adminuser, sessionToken, false);
 				
 			}
 		}
 		
 		if (user == null) throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
-		AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user);
-		if (!user.authenticationValid(password)) {
-			throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
+		
+		if (user.publicExtKey == null) {
+			if (!json.has("nonHashed")) return ok("compatibility-mode");
+			password = JsonValidation.getString(json, "nonHashed");
 		}
-		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.WIPED)) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
-						
-		return Application.loginHelper(user);
+							
+		if (user.publicExtKey == null || sessionToken != null) AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user);
+		if (!user.authenticationValid(password)) {
+			throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");
+		}
+							
+		return Application.loginHelper(user, sessionToken, false);
 						
 		// if (keytype == 0 && AccessPermissionSet.getById(user._id) == null) RecordManager.instance.createPrivateAPS(user._id, user._id);		
 	}

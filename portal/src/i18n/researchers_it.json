@@ -66,7 +66,6 @@
         "description" : "Una volta convalidato lo studio, è possibile collegarlo con link a plugin e servizi di elaborazione dati esterni. Tali plugin o servizi devono collegarsi a MIDATA utilizzando le credenziali di uno dei membri del team di ricerca avente i diritti pertinenti.",
         "select_group_btn" : "Seleziona gruppo",
         "allgroups" : "<Tutti i gruppi>",
-        "add_task_btn" : "Aggiungi attività per i partecipanti",
         "plugin" : "Applicazione di ricerca",
         "device" : "Codice dispositivo",
         "restrict" : "Limita lettura al questo gruppo",
@@ -82,7 +81,7 @@
             "not_validated_research" : "Non confermato dal ricercatore",
             "not_validated_developer" : "Non confermato dallo sviluppatore",
             "study_wrong_status" : "Non attivo a causa dello stato dello studio",
-            "study_no_app_participation" : "Lo studio non consente di partecipare utilizzando un'applicazione"
+            "study_no_app_participation" : "Lo studio non consente di aderire utilizzando un'applicazione"
         },
         "select_btn" : "Vista",
         "validate_btn" : "Confermare",
@@ -165,7 +164,15 @@
         "visitnow_btn" : "Visita pagina",
         "donow_btn" : "Attiva ora",
         "lastdone" : "Ultima fase su cui si è lavorato",
-        "nextstep" : "Prossima fase da eseguire"
+        "nextstep" : "Prossima fase da eseguire",
+        "confirm" : {
+            "validation" : "La configurazione non può più essere modificata. Verrà avviato il processo di convalida da parte di MIDATA.",
+            "end_participant_search" : "Nessun altro utente potrà più partecipare.",
+            "finish_execution" : "Tutti i dati dello studio saranno congelati in questo momento.",
+            "delete" : "Il progetto di ricerca sarà completamente cancellato dalla piattaforma.",
+            "abort" : "Tutti i dati dello studio saranno congelati in questo momento. Questo progetto sarà contrassegnato come fallito.",
+            "are_you_sure" : "Questa operazione non può essere annullata. Sei sicuro?"
+        }
     },
 
     "studyparticipant" : {

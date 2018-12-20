@@ -65,7 +65,6 @@
     "description" : "After the study has been validated, you can link plugins and external data processing services to it. These plugins or services must connect to MIDATA using the credentials of one of the members of the research team with sufficient rights.",
     "select_group_btn" : "Select Group",
     "allgroups" : "<All Groups>",
-    "add_task_btn" : "Add Task for Participants",
     "plugin" : "Research Application",
     "device" : "Device Code",
     "restrict" : "Restrict read to this group",
@@ -81,7 +80,7 @@
 	   "not_validated_research" : "Not confirmed by researcher",
 	   "not_validated_developer" : "Not confirmed by developer",
 	   "study_wrong_status" : "Not active due to study status",
-	   "study_no_app_participation" : "Study does not allow to join using an app"	   
+	   "study_no_app_participation" : "Study does not allow to join using an application"	   
     },
     "select_btn" : "View",
     "validate_btn" : "Confirm",
@@ -316,7 +315,6 @@
      "title" : "Information",
      "introduction" : "Give additional information about the study. You can provide public information, additional instructions and contact information only visible to the participants and information for other researchers and administration. Texts are only meant as additional information and may be edited by you at any time.",
      "introduction2" : "All information is optional. You should give information only on topics that make sense in your research context.",
-     
      "visibility" : "Information visible to",
      "visibilities" : {
        "ALL" : "everybody",

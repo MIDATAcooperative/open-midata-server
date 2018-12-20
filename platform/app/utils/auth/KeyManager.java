@@ -9,6 +9,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
@@ -25,6 +26,7 @@ import javax.crypto.NoSuchPaddingException;
 
 import akka.japi.Pair;
 import models.KeyInfo;
+import models.KeyInfoExtern;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.PersistedSession;
@@ -74,6 +76,16 @@ public class KeyManager implements KeySession {
 	 * private key is split into two parts
 	 */
 	public final static int KEYPROTECTION_SPLITKEY = 2;
+	
+	/**
+	 * private key is protected by AES key
+	 */
+	public final static int KEYPROTECTION_AESKEY = 3;
+	
+	/**
+	 * private key decryption failure
+	 */
+	public final static int KEYPROTECTION_FAIL = -1;
 		
 	
 	private Map<String, KeyRing> keySessions = new ConcurrentHashMap<String, KeyRing>();	
@@ -131,8 +143,7 @@ public class KeyManager implements KeySession {
 			PublicKey pubKey = keyFactory.generatePublic(spec);
 			 
 			Cipher c = Cipher.getInstance(CIPHERS[DEFAULT_CIPHER_ALG]);
-			c.init(Cipher.ENCRYPT_MODE, pubKey);
-		    
+			c.init(Cipher.ENCRYPT_MODE, pubKey);		 
 			byte[] cipherText = c.doFinal(EncryptionUtils.randomize(keyToEncrypt));
 			//c.doFinal(keyToEncrypt, 0, keyToEncrypt.length, cipherText);
 			byte[] result = new byte[cipherText.length+4];
@@ -207,6 +218,51 @@ public class KeyManager implements KeySession {
 		}
 	}
 	
+	public void saveExternalPrivateKey(MidataId user, String pk) throws InternalServerException {
+		 KeyInfoExtern keyInfoExtern = new KeyInfoExtern();
+		 keyInfoExtern._id = user;
+		 keyInfoExtern.privateKey = pk;
+		  
+		 KeyInfoExtern.update(keyInfoExtern);
+		 
+		 KeyInfo.delete(user);
+	}
+	
+	public void removeExternalPrivateKey(MidataId user) throws InternalServerException, AuthException {
+		KeyManagerSession current = session.get();
+		current.removeExternalPrivateKey(user);
+	}
+	
+	public void newFutureLogin(User user) throws AuthException, InternalServerException {
+		KeyManagerSession current = session.get();
+		current.newFutureLogin(user._id, user.publicExtKey);
+	}
+	
+	public String newAESKey(MidataId executor) throws AuthException, InternalServerException {
+		KeyManagerSession current = session.get();
+		return current.newAESKey(executor);
+	}
+	
+	public byte[] readExternalPublicKey(String pub) throws InternalServerException {
+		
+		pub = pub.replaceAll("\\n", "");
+		pub = pub.replaceAll("\\r", "");		
+		pub = pub.replace("-----BEGIN PUBLIC KEY-----", "");		
+		pub = pub.replace("-----END PUBLIC KEY-----", "");
+		
+		try {
+		    KeyFactory kf = KeyFactory.getInstance("RSA");				    
+		    X509EncodedKeySpec keySpecX509 = new X509EncodedKeySpec(Base64.getDecoder().decode(pub));
+		    RSAPublicKey pubKey = (RSAPublicKey) kf.generatePublic(keySpecX509);
+		    return pubKey.getEncoded();
+		} catch (NoSuchAlgorithmException e) {
+			throw new InternalServerException("error.internal", "Internal error");
+		}
+        catch (InvalidKeySpecException e2) {
+        	throw new InternalServerException("error.internal", "Invalid key specification for external public key.");
+        }		
+	}
+	
 	public String login(long expire, boolean persistable) {
 		AccessLog.log("Key-Ring: new session with duration="+expire);
 		String handle;
@@ -227,15 +283,17 @@ public class KeyManager implements KeySession {
 	
 	public void continueSession(String fhandle, MidataId user) throws AppException {		
 		AccessLog.log("Key-Ring: continue session");
+		
 		int p = fhandle.indexOf(";");
 		String handle = p > 0 ? fhandle.substring(0, p) : fhandle;
+		boolean inlineKey = (p>0 && fhandle.charAt(p+1) == '+');
 		KeyRing ring = keySessions.get(handle);
 						
-		if (ring != null && user==null) {
+		if (ring != null && !inlineKey) {
 			session.set(new KeyManagerSession(handle, ring));
 			return;
 		} else if (p>0) {
-			if (fhandle.charAt(p+1) == '+') {
+			if (inlineKey) {
 				if (user != null) {
 					handle = new BigInteger(130, random).toString(32);
 					byte[] key = Base64.getDecoder().decode(fhandle.substring(p+2));
@@ -245,6 +303,8 @@ public class KeyManager implements KeySession {
 					keyring.addKey(user.toString(), key);
 					AccessLog.log("Key-Ring: Adding key for executor:"+user.toString());
 					return;
+				} else {
+					AccessLog.log("Key-Ring: Internal Sessiontoken used but no user given.");
 				}
 			} else {
 				PersistedSession psession = PersistedSession.getById(handle);
@@ -253,8 +313,10 @@ public class KeyManager implements KeySession {
 					KeyRing keyring = new KeyRing(psession.timeout, passkey);
 					keySessions.put(handle, keyring);
 					session.set(new KeyManagerSession(handle, keyring));
-					keyring.addKey(psession.user.toString(), EncryptionUtils.applyKey(psession.splitkey, passkey));
-					AccessLog.log("Key-Ring: Persisted session for executor:"+psession.user.toString());
+					if (psession.splitkey != null) {
+					  keyring.addKey(psession.user.toString(), EncryptionUtils.applyKey(psession.splitkey, passkey));
+					  AccessLog.log("Key-Ring: Persisted session for executor:"+psession.user.toString());
+					} else AccessLog.log("Key-Ring: Keyless session for executor:"+psession.user.toString());
 					return;
 				}
 			}
@@ -266,6 +328,15 @@ public class KeyManager implements KeySession {
 		KeyManagerSession current = session.get();
 		if (current != null) {
 			return current.getPersisted(executor);		
+		}
+		return null;
+	}
+	
+	public String currentHandleOptional(MidataId executor) throws AuthException {
+		KeyManagerSession current = session.get();
+		if (current != null) {
+			// if (!current.pks.keys.containsKey(executor.toString())) return null;
+			return current.handle;		
 		}
 		return null;
 	}
@@ -395,9 +466,8 @@ public class KeyManager implements KeySession {
 		public void changePassphrase(MidataId target, String newPassphrase) throws InternalServerException, AuthException {
 			byte[] oldKey = pks.getKey(target.toString());
 			if (oldKey == null) throw new AuthException("error.relogin", "Authorization Failure");		
-			KeyInfo keyinfo = KeyInfo.getById(target);
-			if (keyinfo == null) throw new InternalServerException("error.internal", "Private key info not found.");
-			
+			KeyInfo keyinfo = new KeyInfo();
+			keyinfo._id = target;						
 			keyinfo.privateKey = EncryptionUtils.applyKey(oldKey, newPassphrase);
 			keyinfo.type = KEYPROTECTION_PASSPHRASE;
 			KeyInfo.update(keyinfo);
@@ -414,8 +484,8 @@ public class KeyManager implements KeySession {
 		public int unlock(MidataId target, String passphrase) throws InternalServerException {
 			KeyInfo inf = KeyInfo.getById(target);
 			if (inf == null) {
-				pks.addKey(target.toString(), null);
-				return -1;
+				// pks.addKey(target.toString(), null);
+				return KEYPROTECTION_FAIL;
 			}
 			else {
 				if (inf.type == KEYPROTECTION_PASSPHRASE) {
@@ -423,11 +493,44 @@ public class KeyManager implements KeySession {
 	 				   pks.addKey(target.toString(), EncryptionUtils.applyKey(inf.privateKey, passphrase));
 					}
 					return KEYPROTECTION_PASSPHRASE;
+				} if (inf.type == KEYPROTECTION_AESKEY) {
+					if (passphrase != null) {
+					   byte[] fullkey = Base64.getDecoder().decode(passphrase);
+					   if (EncryptionUtils.checkMatch(fullkey, inf.privateKey)) {
+					     byte[] aeskey = EncryptionUtils.derandomize(fullkey);			
+					     byte[] pk = EncryptionUtils.decrypt(aeskey, EncryptionUtils.derandomize(inf.privateKey));
+					     pks.addKey(target.toString(), pk);
+					   } else return KEYPROTECTION_FAIL;
+					}
+					return KEYPROTECTION_AESKEY;
 				} else {
 					pks.addKey(target.toString(), inf.privateKey);
 					return KEYPROTECTION_NONE;
 				}
 			}
+		}
+		
+		/**
+		 * Unlock a user or app instance account
+		 * 
+		 * The account stays unlocked until lock is called for the account
+		 * @param target id of user or app instance to unlock
+		 * @param aeskey the passphrase for the private key or null if no passphrase has been applied 
+		 * @throws InternalServerException
+		 */
+		public int unlock(MidataId target, String sessionCode, byte[] pubkey) throws InternalServerException, AuthException {
+			
+			if (pubkey == null) return unlock(target, sessionCode);
+			if (sessionCode == null) return KEYPROTECTION_AESKEY;
+			
+			FutureLogin fl = FutureLogin.getById(target);
+			byte[] aeskey = EncryptionUtils.derandomize(Base64.getDecoder().decode(sessionCode));			
+			byte[] pk = EncryptionUtils.decrypt(aeskey, fl.intPart);
+			pks.addKey(target.toString(), pk);
+			
+			newFutureLogin(target, pubkey);
+   
+			return KEYPROTECTION_NONE;
 		}
 		
 		/**
@@ -461,6 +564,19 @@ public class KeyManager implements KeySession {
 			pks.remove(target.toString());
 		}
 		
+		protected void removeExternalPrivateKey(MidataId user) throws InternalServerException, AuthException {
+            byte key[] = pks.getKey(user.toString());			
+			if (key == null) throw new AuthException("error.relogin", "Authorization Failure");
+					
+			KeyInfo inf = new KeyInfo();
+		    inf._id = user;
+		    inf.privateKey = key;
+		    inf.type = KEYPROTECTION_NONE;
+		    KeyInfo.update(inf);
+		    
+		    KeyInfoExtern.delete(user);		    
+		}
+		
 		/**
 		 * Generates a key duplicate encoded with another key
 		 */
@@ -478,6 +594,36 @@ public class KeyManager implements KeySession {
 			
 			return split.first();
 			
+		}
+		
+		public void newFutureLogin(MidataId user, byte[] pubkey) throws AuthException, InternalServerException {
+            byte key[] = pks.getKey(user.toString());			
+			if (key == null) throw new AuthException("error.relogin", "Authorization Failure");		
+			
+			byte[] aesKey = EncryptionUtils.generateKey();			
+			FutureLogin futureLogin = new FutureLogin();
+			futureLogin._id = user;
+			futureLogin.intPart = EncryptionUtils.encrypt(aesKey, key);
+			futureLogin.extPartEnc = KeyManager.instance.encryptKey(pubkey, aesKey);            
+			futureLogin.set();
+		}
+		
+		public String newAESKey(MidataId user) throws AuthException, InternalServerException {
+            byte key[] = pks.getKey(user.toString());			
+			if (key == null) throw new AuthException("error.relogin", "Authorization Failure");		
+			
+			byte[] aesKey = EncryptionUtils.generateKey();
+			
+			KeyInfo inf = KeyInfo.getById(user);
+			if (inf == null) {
+				inf = new KeyInfo();
+				inf._id = user;				
+			}
+			inf.privateKey = EncryptionUtils.randomize(EncryptionUtils.encrypt(aesKey, key));
+			inf.type = KEYPROTECTION_AESKEY;
+			KeyInfo.update(inf);
+			
+			return Base64.getEncoder().encodeToString(EncryptionUtils.randomizeSameAs(aesKey, inf.privateKey));
 		}
 		
 		/**
@@ -520,16 +666,20 @@ public class KeyManager implements KeySession {
 		@Override
 		public void persist(MidataId target) throws AppException {
 			byte key[] = pks.getKey(target.toString());		
-			if (key == null) throw new AuthException("error.relogin", "Authorization Failure");
+			//if (key == null) throw new AuthException("error.relogin", "Authorization Failure");
 		
 			if (pks.passkey != null) {
-				byte[] split = EncryptionUtils.applyKey(key, pks.passkey);
-							
+											
 				PersistedSession session = new PersistedSession();
-				session.set_id(this.handle);
-				session.splitkey = split;
+				session.set_id(this.handle);				
 				session.timeout = pks.expire;
 				session.user = target;
+				
+				if (key != null) {
+				  byte[] split = EncryptionUtils.applyKey(key, pks.passkey);
+				  session.splitkey = split;
+				}
+				
 				session.add();				
 			} 
 		}
@@ -605,6 +755,11 @@ public class KeyManager implements KeySession {
 	@Override
 	public int unlock(MidataId target, String passphrase) throws InternalServerException {
 		return session.get().unlock(target, passphrase);		
+	}
+	
+	@Override
+	public int unlock(MidataId target, String sessionCode, byte[] pubkey) throws InternalServerException, AuthException {
+		return session.get().unlock(target, sessionCode, pubkey);		
 	}
 
 	@Override

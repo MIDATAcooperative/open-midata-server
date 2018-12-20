@@ -3,12 +3,15 @@ package controllers.research;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 import actions.APICall;
 import controllers.APIController;
 import controllers.Application;
+import controllers.PWRecovery;
+import models.Member;
 import models.MidataId;
 import models.Research;
 import models.ResearchUser;
@@ -36,6 +39,7 @@ import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -89,7 +93,45 @@ public class Researchers extends APIController {
 		Application.developerRegisteredAccountCheck(user, json);		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);
 		
-		register(user, research, null);
+		if (research != null && Research.existsByName(research.name)) throw new JsonValidationException("error.exists.organization", "name", "exists", "A research organization with this name already exists.");			
+		if (ResearchUser.existsByEMail(user.email)) throw new JsonValidationException("error.exists.user", "email", "exists", "A user with this email address already exists.");
+						
+		user.role = UserRole.RESEARCH;
+		user.subroles = EnumSet.noneOf(SubUserRole.class);
+		user.registeredAt = new Date();				
+		if (user.status == null) user.status = UserStatus.NEW;		
+		user.contractStatus = ContractStatus.REQUESTED;
+		user.agbStatus = ContractStatus.REQUESTED;
+		user.emailStatus = EMailStatus.UNVALIDATED;
+		user.confirmationCode = CodeGenerator.nextCode();
+				
+		user.apps = new HashSet<MidataId>();	
+		user.visualizations = new HashSet<MidataId>();
+				
+		String pub = JsonValidation.getString(json, "pub");
+		String pk = JsonValidation.getString(json, "priv_pw");
+		Map<String, String> recover = JsonExtraction.extractStringMap(json.get("recovery"));
+		  		        	      		  		
+		user.publicExtKey = KeyManager.instance.readExternalPublicKey(pub);		  
+		KeyManager.instance.saveExternalPrivateKey(user._id, pk);		  
+		KeyManager.instance.login(PortalSessionToken.LIFETIME, true);
+		  
+		user.security = AccountSecurityLevel.KEY_EXT_PASSWORD;		
+		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(user._id, null);								
+		if (research != null) {
+			  Research.add(research);
+			  user.organization = research._id;
+		}
+		ResearchUser.add(user);
+		  
+		KeyManager.instance.newFutureLogin(user);	
+		PWRecovery.storeRecoveryData(user._id, recover);
+			
+		RecordManager.instance.createPrivateAPS(user._id, user._id);
+						
+		Application.sendWelcomeMail(user, null);
+		if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) Application.sendAdminNotificationMail(user);
+				
 		return Application.loginHelper(user);		
 	}
 	
@@ -189,17 +231,25 @@ public class Researchers extends APIController {
 		
 		String email = JsonValidation.getString(json, "email");
 		String password = JsonValidation.getString(json, "password");
+		String sessionToken = JsonValidation.getStringOrNull(json, "sessionToken"); 
+		
 		ResearchUser user = ResearchUser.getByEmail(email, Sets.create(User.FOR_LOGIN, "organization"));
 		
 		if (user == null) throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
-		AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user);
 		
-		if (!user.authenticationValid(password)) {
-			throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
+		if (user.publicExtKey == null) {
+			if (!json.has("nonHashed")) return ok("compatibility-mode");
+			password = JsonValidation.getString(json, "nonHashed");
 		}
+							
+		if (user.publicExtKey == null || sessionToken != null) AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user);
+		if (!user.authenticationValid(password)) {
+			throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");
+		}
+										
 		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.WIPED)) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
 		
-		return Application.loginHelper(user); 
+		return Application.loginHelper(user, sessionToken, false); 
 				
 	}
 	

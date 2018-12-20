@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('ResearchRegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', '$translate', 'languages', '$stateParams', '$document', function($scope, $state, server, status, session, $translate, languages, $stateParams, $document) {
+.controller('ResearchRegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', '$translate', 'languages', '$stateParams', '$document', 'crypto', function($scope, $state, server, status, session, $translate, languages, $stateParams, $document, crypto) {
 	
 	$scope.registration = { language : $translate.use() };
 	$scope.languages = languages.all;
@@ -12,7 +12,7 @@ angular.module('portal')
 	// register new user
 	$scope.register = function() {
 
-		$scope.myform.password.$setValidity('compare', $scope.registration.password ==  $scope.registration.password2);
+		$scope.myform.password.$setValidity('compare', $scope.registration.password1 ==  $scope.registration.password2);
 		
 		$scope.submitted = true;	
 		if ($scope.error && $scope.error.field && $scope.error.type) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
@@ -31,8 +31,16 @@ angular.module('portal')
 			data.developer = $stateParams.developer;
 		}
 		
-		$scope.status.doAction("submit", server.post(jsRoutes.controllers.research.Researchers.register().url, JSON.stringify(data)))
-		.then(function(data) { session.postLogin(data, $state); });
+		crypto.generateKeys($scope.registration.password1).then(function(keys) {
+				
+				$scope.registration.password = keys.pw_hash;
+				$scope.registration.pub = keys.pub;
+				$scope.registration.priv_pw = keys.priv_pw;
+				$scope.registration.recovery = keys.recovery;
+		        $scope.status.doAction("submit", server.post(jsRoutes.controllers.research.Researchers.register().url, JSON.stringify(data)))
+		        .then(function(data) { session.postLogin(data, $state); });
+		        
+		});
 	};
 	
 	$scope.changeLanguage = function(lang) {

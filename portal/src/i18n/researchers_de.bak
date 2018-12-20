@@ -61,11 +61,10 @@
     "related_apps" : "Plugins related to the study",
     "empty" : "No apps or plugins are linked to the study",
     "aggregator_apps" : "Add research app to be used with YOUR account",
-    "datalink" : "Aggregators, Analysis & Interpretation Apps",
+    "datalink" : "Aggregators, Analysis and Interpretation Apps",
     "description" : "After the study has been validated, you can link plugins and external data processing services to it. These plugins or services must connect to MIDATA using the credentials of one of the members of the research team with sufficient rights.",
     "select_group_btn" : "Select Group",
     "allgroups" : "<All Groups>",
-    "add_task_btn" : "Add Task for Participants",
     "plugin" : "Research Application",
     "device" : "Device Code",
     "restrict" : "Restrict read to this group",
@@ -81,7 +80,7 @@
 	   "not_validated_research" : "Not confirmed by researcher",
 	   "not_validated_developer" : "Not confirmed by developer",
 	   "study_wrong_status" : "Not active due to study status",
-	   "study_no_app_participation" : "Study does not allow to join using an app"	   
+	   "study_no_app_participation" : "Study does not allow to join using an application"	   
     },
     "select_btn" : "View",
     "validate_btn" : "Confirm",
@@ -90,18 +89,18 @@
     "no_valid_app" : "No application selected",
     "type" : "How are they linked?",
     "types" : {
-       "OFFER_P" : "App or plugin offers study participation upon login/start",
-       "REQUIRE_P" : "Study participation is required to use the app or plugin",
-       "RECOMMEND_A" : "App or plugin is recommended by study",
+       "OFFER_P" : "Application or plugin offers study participation upon login/start",
+       "REQUIRE_P" : "Study participation is required to use the application or plugin",
+       "RECOMMEND_A" : "Application or plugin is recommended by study",
        "AUTOADD_A" : "Plugin is automatically added on study participation",
-       "DATALINK" : "App shares data to study participants"
+       "DATALINK" : "Application shares data to study participants"
     },
     "types_short" : {
-       "OFFER_P" : "Offer participation",
+       "OFFER_P" : "Suggest participation",
        "REQUIRE_P" : "Require participation",
        "RECOMMEND_A" : "Recommended",
-       "AUTOADD_A" : "Auto-Add",
-       "DATALINK" : "Data Share"
+       "AUTOADD_A" : "Add automatically",
+       "DATALINK" : "Data Sharing"
     },
     "use_period" : "When are they linked?",
     "use_periods" : {
@@ -164,7 +163,15 @@
     "visitnow_btn" : "Visit Page",
     "donow_btn" : "Trigger Now",
     "lastdone" : "Last step worked on",
-    "nextstep" : "Next step to do"
+    "nextstep" : "Next step to do",
+    "confirm" : {
+      "validation" : "Setup cannot be changed anymore. Validation process by MIDATA will be started.",
+      "end_participant_search" : "No additional users will be able to participate anymore.",      
+      "finish_execution" : "All study data will be frozen at this moment.",
+      "delete" : "The research project will be completely wiped from the platform.",
+      "abort" : "All study data will be frozen at this moment. This project will be marked as failed.",
+      "are_you_sure" : "This operation cannot be undone. Are you sure?"
+    }
   },
   
   "studyparticipant" : {
@@ -265,7 +272,7 @@
     "name_help" : "The study name will be shown to participants. The description will be available on the portal and during app login.",
     "teamsetup" : "Researcher team setup",
     "teamsetup_help" : "If more people are involved in carrying out the study, provide all involved persons and their role. As long as you have not added more people, you can change your own role by adding yourself again with another role.",
-    "information" : "Provide public information about your research",
+    "information" : "Public information about your research",
     "information_help" : "Public information will help MIDATA account holders to evaluate if your research is relevant for them.",
     "groups" : "Participant groups defined",
     "groups_help" : "Your study may have one or multiple groups of participants. Please define the list of participant groups.",
@@ -308,12 +315,11 @@
      "title" : "Information",
      "introduction" : "Give additional information about the study. You can provide public information, additional instructions and contact information only visible to the participants and information for other researchers and administration. Texts are only meant as additional information and may be edited by you at any time.",
      "introduction2" : "All information is optional. You should give information only on topics that make sense in your research context.",
-     
      "visibility" : "Information visible to",
      "visibilities" : {
        "ALL" : "everybody",
-       "PARTICIPANTS" : "participants",
-       "INTERNAL" : "researchers and MIDATA only"
+       "PARTICIPANTS" : "all participants",
+       "INTERNAL" : "only researchers and MIDATA"
      },
      "showlanguages" : "Languages to edit"
    }

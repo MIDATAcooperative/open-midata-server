@@ -20,6 +20,7 @@ import akka.cluster.singleton.ClusterSingletonManagerSettings;
 import akka.cluster.singleton.ClusterSingletonProxy;
 import akka.cluster.singleton.ClusterSingletonProxySettings;
 import akka.routing.ActorRefRoutee;
+import akka.routing.RoundRobinPool;
 import akka.routing.RoundRobinRoutingLogic;
 import akka.routing.Routee;
 import akka.routing.Router;
@@ -29,12 +30,14 @@ import models.MidataId;
 import models.PersistedSession;
 import models.Plugin;
 import models.Space;
+import models.SubscriptionData;
 import models.User;
 import models.enums.UserRole;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
+import utils.RuntimeConstants;
 import utils.ServerTools;
 import utils.access.RecordManager;
 import utils.auth.KeyManager;
@@ -42,6 +45,9 @@ import utils.auth.SpaceToken;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.messaging.ServiceHandler;
+import utils.messaging.SubscriptionProcessor;
+import utils.messaging.SubscriptionTriggered;
 import utils.sync.Instances;
 
 /**
@@ -193,9 +199,8 @@ public class AutoRun extends APIController {
 		      .build();
 		}
 				
-		public void doImport(ImportRequest message) throws Exception {		    
-		    	try {
-			    	ImportRequest request = (ImportRequest) message;
+		public void doImport(ImportRequest request) throws Exception {		    
+		    	try {			    	
 			    	KeyManager.instance.continueSession(request.handle);
 			    	MidataId autorunner = request.autorunner;
 			    	Space space = request.space;
@@ -259,6 +264,16 @@ public class AutoRun extends APIController {
 						} else {
 							sender.tell(new ImportResult(-1), getSelf());
 						}
+					} else {
+					
+						Process p = new ProcessBuilder(nodepath, visPath+"/"+plugin.filename+"/server.js", tokenstr, lang).inheritIO().start();
+						try {
+						  p.waitFor();
+						  sender.tell(new ImportResult(p.exitValue()), getSelf());
+						} catch (InterruptedException e) {
+						  sender.tell(new ImportResult(-2), getSelf());
+						}
+					
 					}
 		    	} catch (Exception e) {
 		    		ErrorReporter.report("Autorun-Service", null, e);	
@@ -277,6 +292,7 @@ public class AutoRun extends APIController {
 	public static class ImportManager extends AbstractActor {
 
 		private final Router workerRouter;
+		private final ActorRef processor;
 		private final int nrOfWorkers;
 		private int numberSuccess = 0;
 		private int numberFailure = 0;
@@ -294,7 +310,9 @@ public class AutoRun extends APIController {
 		      getContext().watch(r);
 		      routees.add(new ActorRefRoutee(r));
 		    }
-		    workerRouter = new Router(new RoundRobinRoutingLogic(), routees);					    
+		    workerRouter = new Router(new RoundRobinRoutingLogic(), routees);	
+		    		    
+		    processor = this.context().actorOf(new RoundRobinPool(5).props(Props.create(SubscriptionProcessor.class)), "subscriptionProcessor");
 		}
 		
 		
@@ -340,16 +358,25 @@ public class AutoRun extends APIController {
 					ErrorReporter.report("stats service", null, e);
 				}
 								
-				User autorunner = Admin.getByEmail("autorun-service", Sets.create("_id"));
+				MidataId autorunner = RuntimeConstants.instance.autorunService;
 				String handle = KeyManager.instance.login(1000l*60l*60l*23l, false);
-				KeyManager.instance.unlock(autorunner._id, null);
+				KeyManager.instance.unlock(autorunner, null);
 				Set<Space> autoImports = Space.getAll(CMaps.map("autoImport", true), Sets.create("_id", "owner", "visualization"));
 				
 				for (Space space : autoImports) {										    
-			       workerRouter.route(new ImportRequest(handle, autorunner._id, space), getSelf());
+			       workerRouter.route(new ImportRequest(handle, autorunner, space), getSelf());
 			    }
 				
-				AccessLog.log("Done scheduling Autoimport size="+autoImports.size());
+				AccessLog.log("Done scheduling old autoimport size="+autoImports.size());
+				
+				List<SubscriptionData> datas = SubscriptionData.getAllActiveFormat("time", SubscriptionData.ALL);
+				
+				for (SubscriptionData data : datas) {
+					processor.tell(new SubscriptionTriggered(data.owner, data.app, "time", null, null, null), getSelf());
+				}
+				
+				AccessLog.log("Done scheduling new autoimport size="+datas.size());
+				
 			} catch (Exception e) {
 				ErrorReporter.report("Autorun-Service", null, e);	
 				throw e;

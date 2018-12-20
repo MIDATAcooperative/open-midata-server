@@ -23,7 +23,7 @@ public class SubscriptionData extends Model {
 	private static String collection = "subscriptions";
 	
 	@NotMaterialized
-	public final static Set<String> ALL = Collections.unmodifiableSet(Sets.create("owner", "format", "lastUpdated", "active", "endDate", "fhirSubscription"));
+	public final static Set<String> ALL = Collections.unmodifiableSet(Sets.create("owner", "app", "instance", "format", "content", "lastUpdated", "active", "endDate", "fhirSubscription", "session"));
 
 	/**
 	 * The owner of the subscription
@@ -31,9 +31,24 @@ public class SubscriptionData extends Model {
 	public MidataId owner;
 	
 	/**
+	 * The owner app of the subscription
+	 */
+	public MidataId app;
+	
+	/**
+	 * The instance (appInstance or space)
+	 */
+	public MidataId instance;
+	
+	/**
 	 * The type of data this subscription listens to
 	 */
 	public String format;
+	
+	/**
+	 * The type of content this subscription listens to
+	 */
+	public String content;
 	
 	/**
 	 * Last updated timestamp
@@ -55,8 +70,13 @@ public class SubscriptionData extends Model {
 	 */
 	public BSONObject fhirSubscription;
 	
+	/**
+	 * Session information
+	 */
+	public byte[] session;
+	
 	public void add() throws InternalServerException {
-		Model.insert(collection, this);	
+		Model.upsert(collection, this);	
 	}
 	
 	public void update() throws InternalServerException {
@@ -87,16 +107,25 @@ public class SubscriptionData extends Model {
 		return Model.getAllList(SubscriptionData.class, collection, CMaps.map("format", format).map("owner", owner), fields, 0);
 	}
 	
+	public static List<SubscriptionData> getByOwnerAndFormatAndInstance(MidataId owner, String format, MidataId instance, Set<String> fields) throws InternalServerException {
+		return Model.getAllList(SubscriptionData.class, collection, CMaps.map("format", format).map("owner", owner).map("instance", instance), fields, 0);
+	}
+		
+		
 	public static List<SubscriptionData> getAllActive(Set<String> fields) throws InternalServerException {
 		return Model.getAllList(SubscriptionData.class, collection, CMaps.map("active", true), fields, 0);
+	}
+	
+	public static List<SubscriptionData> getAllActiveFormat(String format, Set<String> fields) throws InternalServerException {
+		return Model.getAllList(SubscriptionData.class, collection, CMaps.map("active", true).map("format", format), fields, 0);
 	}
 	
 	public static void setError(MidataId id, String error) throws InternalServerException {
 		Model.set(SubscriptionData.class, collection, id, "fhirSubscription.error", error);
 	}
 	
-	public static void setOff(MidataId id) throws InternalServerException {
+	public static void setOff(MidataId id) throws InternalServerException { 
 		Model.set(SubscriptionData.class, collection, id, "fhirSubscription.status", "off");
-		Model.set(SubscriptionData.class, collection, id, "active", "false");
+		Model.set(SubscriptionData.class, collection, id, "active", false);
 	}
 }

@@ -45,7 +45,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "accessTokenUrl", "consumerKey", "consumerSecret","tokenExchangeParams",
 	                     "requestTokenUrl", "scopeParameters", "secret", "redirectUri", "developmentServer", "status", "i18n",
-	                     "predefinedMessages", "resharesData", "allowsUserSearch", "pluginVersion", "termsOfUse", "requirements", "orgName", "unlockCode", "writes", "icons", "apiUrl", "noUpdateHistory");
+	                     "predefinedMessages", "resharesData", "allowsUserSearch", "pluginVersion", "termsOfUse", "requirements", "orgName", "unlockCode", "writes", "icons", "apiUrl", "noUpdateHistory", "defaultSubscriptions", "debugHandle");
 	
 	/**
 	 * constant containing all fields visible to anyone
@@ -55,7 +55,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	                     "targetUserRole", "spotlighted", "url", "addDataUrl", "previewUrl", "defaultSpaceName",
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "consumerKey", "scopeParameters", "status", "i18n", "lang", "predefinedMessages", "resharesData", "pluginVersion",
-	                     "termsOfUse", "requirements", "orgName", "unlockCode", "writes", "icons", "apiUrl", "noUpdateHistory");
+	                     "termsOfUse", "requirements", "orgName", "unlockCode", "writes", "icons", "apiUrl", "noUpdateHistory", "defaultSubscriptions");
 	
 	/**
 	 * timestamp of last change. Used to prevent lost updates.
@@ -200,7 +200,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	/**
 	 * the type of the plugin
 	 * 
-	 * type can be one of: visualization, create, oauth1, oauth2, mobile
+	 * type can be one of: visualization, service, oauth1, oauth2, mobile
 	 */
 	public String type;
 	
@@ -278,6 +278,16 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	 * Updates of resources performed with this plugin should not be recorded
 	 */
 	public boolean noUpdateHistory;
+	
+	/**
+	 * Subscriptions that are required to use this plugin
+	 */
+	public List<SubscriptionData> defaultSubscriptions;
+	
+	/**
+	 * Handle to connect subscription debugger to
+	 */
+	public String debugHandle;
 
 	@Override
 	public int compareTo(Plugin other) {
@@ -337,6 +347,12 @@ public class Plugin extends Model implements Comparable<Plugin> {
 		this.icons = icons;
 		Model.set(Plugin.class, collection, _id, "icons", icons);
 		Instances.cacheClear("plugin",  _id);
+	}
+	
+	public void updateDefaultSubscriptions(List<SubscriptionData> subscriptions) throws InternalServerException {
+        this.defaultSubscriptions = subscriptions;
+        Model.set(Plugin.class, collection, _id, "defaultSubscriptions", subscriptions);
+        Instances.cacheClear("plugin",  _id);
 	}
 
 

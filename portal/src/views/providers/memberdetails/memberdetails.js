@@ -58,12 +58,7 @@ angular.module('portal')
 			});
 		}
 	};
-	
-	$scope.addTask = function() {
-	
-	  views.setView("addtask", { "owner" : $scope.memberid, "shareBackTo" : $scope.consent._id });
-	 
-	};
+		
 		
 	$scope.reload();
 	

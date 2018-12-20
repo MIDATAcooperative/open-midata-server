@@ -289,6 +289,22 @@ public class EncryptionUtils {
 				
 		return result;
 	}
+	
+	public static byte[] randomizeSameAs(byte[] source, byte[] ref) {
+		byte[] key = new byte[4];
+		for (int i=0;i<4;i++) key[i] = ref[i];
+		byte[] result = new byte[source.length + 4];
+				
+		for (int i=0;i<4;i++) result[i] = key[i];
+		for (int i=0;i<source.length;i++) result[i+4] = (byte) (source[i] ^ result[i]);
+				
+		return result;
+	}
+	
+	public static boolean checkMatch(byte[] source1, byte[] source2) {
+		for (int i=0;i<4;i++) if (source1[i] != source2[i]) return false;
+		return true;
+	}
 
 	public static byte[] derandomize(byte[] source) {
 		byte[] result = new byte[source.length-4];

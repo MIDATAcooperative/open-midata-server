@@ -16,6 +16,9 @@ import models.AccessPermissionSet;
 import models.Circle;
 import models.Consent;
 import models.Developer;
+import models.KeyInfoExtern;
+import models.KeyRecoveryData;
+import models.KeyRecoveryProcess;
 import models.Member;
 import models.MidataId;
 import models.ResearchUser;
@@ -40,6 +43,7 @@ import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
+import utils.auth.FutureLogin;
 import utils.auth.KeyManager;
 import utils.auth.MemberSecured;
 import utils.auth.PortalSessionToken;
@@ -412,12 +416,13 @@ public class Users extends APIController {
 		JsonValidation.validate(json, "_id", "password");
 		
 		String password = JsonValidation.getString(json, "password");
+		String passwordHash = JsonValidation.getString(json, "passwordHash");
 		String reason = JsonValidation.getStringOrNull(json, "reason");
 		MidataId check = JsonValidation.getMidataId(json, "_id");
 		if (!check.equals(userId)) throw new InternalServerException("error.internal", "Session mismatch for wipe account.");
 		
 		User user = User.getById(userId, User.FOR_LOGIN);
-		if (!user.authenticationValid(password)) {
+		if (!user.authenticationValid(password) && !user.authenticationValid(passwordHash)) {
 			throw new BadRequestException("accountwipe.error",  "Invalid password.");
 		}
 		
@@ -459,8 +464,11 @@ public class Users extends APIController {
 		
 		//RecordManager.instance.wipe(userId, CMaps.map("owner", "self"));
 		//RecordManager.instance.wipe(userId, CMaps.map("owner", "self").map("streams", "true"));
-						
+        KeyRecoveryProcess.delete(userId);
+        KeyRecoveryData.delete(userId);
+        FutureLogin.delete(userId);
 		KeyManager.instance.deleteKey(userId);
+		KeyInfoExtern.delete(userId);
 		
 		user = User.getById(userId, User.ALL_USER_INTERNAL);
 		user.delete();

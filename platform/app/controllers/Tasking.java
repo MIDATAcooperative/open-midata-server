@@ -13,9 +13,7 @@ import models.MidataId;
 import models.Plugin;
 import models.RecordsInfo;
 import models.Space;
-import models.Task;
 import models.enums.AggregationType;
-import models.enums.Frequency;
 import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.BodyParser;
@@ -34,7 +32,7 @@ import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 
 /**
- * functions for managing user tasks
+ * This feature is no longer used
  *
  */
 public class Tasking extends APIController {
@@ -45,7 +43,7 @@ public class Tasking extends APIController {
 	 * @throws InternalServerException
 	 * @throws JsonValidationException
 	 */
-	@Security.Authenticated(AnyRoleSecured.class)
+	/*@Security.Authenticated(AnyRoleSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public Result add() throws InternalServerException, JsonValidationException {
@@ -72,7 +70,7 @@ public class Tasking extends APIController {
 		Task.add(task);		
 				
 		return ok();
-	}
+	}*/
 	
 	/**
 	 * check if tasks are done
@@ -80,7 +78,7 @@ public class Tasking extends APIController {
 	 * @param task task to be checked
 	 * @throws AppException
 	 */
-	public static void check(MidataId who, Task task) throws AppException {
+	/*public static void check(MidataId who, Task task) throws AppException {
 		Date dateLimit = new Date(System.currentTimeMillis());
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -101,14 +99,14 @@ public class Tasking extends APIController {
 				if (recInf.count > 0 && recInf.newest.after(dateLimit)) task.done = true;
 			}
 		}
-	}
+	}*/
 	
 	/**
 	 * retrieve list of tasks for current user
 	 * @return list of tasks
 	 * @throws AppException
 	 */
-	@Security.Authenticated(AnyRoleSecured.class)
+	/*@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
 	public Result list() throws AppException {
 		
@@ -122,7 +120,7 @@ public class Tasking extends APIController {
 			}
 		}
 		return ok(Json.toJson(tasks));
-	}
+	}*/
 	
 	/**
 	 * lets a user execute one of her tasks
@@ -130,7 +128,7 @@ public class Tasking extends APIController {
 	 * @return space to be shown
 	 * @throws AppException
 	 */
-	@Security.Authenticated(AnyRoleSecured.class)
+	/*@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
 	public Result execute(String taskIdStr) throws AppException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
@@ -163,7 +161,7 @@ public class Tasking extends APIController {
 		}
 				
 		return ok(JsonOutput.toJson(space, "Space", Space.ALL)).as("application/json");
-	}
+	}*/
 	
 
 }

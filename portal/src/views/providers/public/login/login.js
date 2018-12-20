@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('ProviderLoginCtrl', ['$scope', '$state', 'server', 'session', function($scope, $state, server, session) {
+.controller('ProviderLoginCtrl', ['$scope', '$state', 'server', 'session', 'crypto', function($scope, $state, server, session, crypto) {
 	
 	// init
 	$scope.login = {};
@@ -17,12 +17,17 @@ angular.module('portal')
 		
 		$scope.error = null;
 		
-		// send the request
-		var data = {"email": $scope.login.email, "password": $scope.login.password};
-		server.post(jsRoutes.controllers.providers.Providers.login().url, JSON.stringify(data))
+		var data = {"email": $scope.login.email, "password": crypto.getHash($scope.login.password) };
+		var func = function(data) {
+			return $scope.status.doAction("login", server.post(jsRoutes.controllers.providers.Providers.login().url, JSON.stringify(data)));
+		};
+		
+		session.performLogin(func, data, $scope.login.password)
 		.then(function(result) {
-			    session.postLogin(result, $state);
+		   session.postLogin(result, $state);
 		}).catch(function(err) { $scope.error = err.data; });
+		
+		
 	};
 	
 }]);

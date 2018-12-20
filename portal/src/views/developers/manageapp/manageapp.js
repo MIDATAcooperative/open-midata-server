@@ -24,7 +24,7 @@ angular.module('portal')
     ];
 	$scope.types = [
 	    { value : "visualization", label : "Plugin" },
-	    { value : "create", label : "Input Form (Deprecated)" },
+	    { value : "service", label : "Service" },
 	    { value : "oauth1", label : "OAuth 1 Import" },
 	    { value : "oauth2", label : "OAuth 2 Import" },
 	    { value : "mobile", label : "Mobile App" }
@@ -34,7 +34,7 @@ angular.module('portal')
     ];
 			
 	$scope.loadApp = function(appId) {
-		$scope.status.doBusy(apps.getApps({ "_id" : appId }, ["creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "unlockCode", "writes", "icons", "apiUrl", "noUpdateHistory"]))
+		$scope.status.doBusy(apps.getApps({ "_id" : appId }, ["creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "unlockCode", "writes", "icons", "apiUrl", "noUpdateHistory", "predefinedMessages", "defaultSubscriptions"]))
 		.then(function(data) { 
 			$scope.app = data.data[0];			
 			if ($scope.app.status == "DEVELOPMENT" || $scope.app.status == "BETA") {
@@ -92,7 +92,7 @@ angular.module('portal')
 		});
 		
 		// check whether url contains ":authToken"
-		if ($scope.app.type && $scope.app.type !== "mobile" && $scope.app.url.indexOf(":authToken") < 0) {
+		if ($scope.app.type && $scope.app.type !== "mobile" && $scope.app.type !== "service" && $scope.app.url && $scope.app.url.indexOf(":authToken") < 0) {
 			$scope.myform.url.$setValidity('authToken', false);
 			//$scope.error = "Url must contain ':authToken' to receive the authorization token required to create records.";
 			return;
@@ -179,8 +179,19 @@ angular.module('portal')
 	};
 	
 	$scope.getOAuthLogin = function() {
-		if (!$scope.app.redirectUri) return "";
+		if (!$scope.app || !$scope.app.redirectUri) return "";
 		return "/oauth.html#/portal/oauth2?response_type=code&client_id="+encodeURIComponent($scope.app.filename)+"&redirect_uri="+encodeURIComponent($scope.app.redirectUri.split(" ")[0]);
+	};
+	
+	$scope.keyCount = function(obj) {
+		if (!obj) return 0;
+		return Object.keys(obj).length;
+	};
+	
+	$scope.hasCount = function(obj) {
+		if (!obj) return false;
+		if (obj.content && obj.content.length==0) return false;
+		return Object.keys(obj).length > 0;
 	};
 	
 }]);

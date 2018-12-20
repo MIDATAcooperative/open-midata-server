@@ -1,5 +1,6 @@
 package utils.evolution;
 
+import controllers.PWRecovery;
 import models.User;
 import models.enums.AccountActionFlags;
 import models.enums.UserRole;
@@ -22,6 +23,10 @@ public class PostLoginActions {
 				AccessLog.log("Update of patient record required.");
 				PatientResourceProvider.updatePatientForAccount(user._id);
 				user.flags.remove(AccountActionFlags.UPDATE_FHIR);
+			}
+			
+			if (user.flags.contains(AccountActionFlags.KEY_RECOVERY)) {				
+				PWRecovery.finishRecovery(user);
 			}
 			
 			if (user.flags.isEmpty()) user.flags = null;

@@ -66,7 +66,6 @@
         "description" : "Une fois l'étude validée, vous pouvez y associer des plugins et des services externes de traitement de données. Ces plugins ou services doivent se connecter à MIDATA en utilisant les identifiants d'un des membres de l'équipe de recherche ayant des droits suffisants.",
         "select_group_btn" : "Sélectionnez un groupe",
         "allgroups" : "<Tous les groupes>",
-        "add_task_btn" : "Ajouter une tâche pour les participants",
         "plugin" : "Application vouée à la recherche",
         "device" : "Code de l'appareil",
         "restrict" : "Restreindre la lecture à ce groupe",
@@ -82,8 +81,7 @@
             "not_validated_research" : "Non confirmé par le chercheur",
             "not_validated_developer" : "Non confirmé par le développeur",
             "study_wrong_status" : "Inactif en raison de l'état d'études",
-            // todo La participation ä l'étude ne peut pas être initié via une application
-            "study_no_app_participation" : "L'étude ne permet pas de s'inscrire par l'intermédiaire d'une application"
+            "study_no_app_participation" : "L'adhésion à l'étude n'est pas permise depuis une application"
         },
         "select_btn" : "Voir",
         "validate_btn" : "Confirmer",
@@ -105,8 +103,6 @@
             "AUTOADD_A" : "Ajouter automatiquement",
             "DATALINK" : "Partage des données"
         },
-
-        // TODO NEW: When are they linked?
         "use_period" : "Quand sont-elles liées ?",
         "use_periods" : {
             "PRE" : "Avant que l'étude n'ait débuté",
@@ -168,7 +164,15 @@
         "visitnow_btn" : "Consulter la page",
         "donow_btn" : "Déclencher maintenant",
         "lastdone" : "Dernière étape traitée",
-        "nextstep" : "Prochaine étape à effectuer"
+        "nextstep" : "Prochaine étape à effectuer",
+        "confirm" : {
+            "validation" : "La configuration ne peut plus être modifiée. Le processus de validation par MIDATA sera lancé.",
+            "end_participant_search" : "Aucun utilisateur supplémentaire ne pourra plus participer.",
+            "finish_execution" : "Toutes les données de l'étude seront gelées à ce moment.",
+            "delete" : "Le projet de recherche sera complètement effacé de la plate-forme.",
+            "abort" : "Toutes les données de l'étude seront gelées à ce moment. Ce projet sera marqué comme ayant échoué.",
+            "are_you_sure" : "Cette opération ne peut pas être annulée. Êtes-vous sûr?"
+        }
     },
 
     "studyparticipant" : {

@@ -17,6 +17,9 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
 
+import com.google.common.io.BaseEncoding;
+
+import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -52,6 +55,19 @@ public class TokenCrypto {
 			md.update(input.getBytes("ASCII")); 
 			byte[] digest = md.digest();
 			return Base64.encodeBase64URLSafeString(digest);
+		} catch (NoSuchAlgorithmException e) {
+			throw new InternalServerException("error.internal", e);
+		} catch (UnsupportedEncodingException e7) {
+			throw new InternalServerException("error.internal", e7);
+		}
+	}
+	
+	public static String sha512(String input) throws InternalServerException {
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-512");
+			md.update(input.getBytes("UTF-8")); 
+			byte[] digest = md.digest();
+			return BaseEncoding.base16().lowerCase().encode(digest);
 		} catch (NoSuchAlgorithmException e) {
 			throw new InternalServerException("error.internal", e);
 		} catch (UnsupportedEncodingException e7) {
@@ -98,7 +114,7 @@ public class TokenCrypto {
 	}
 	
 	public static String decryptToken(String input) throws AppException {		
-		try {
+		try {			
 			byte[] encrypted = Base64.decodeBase64(input);
 			
 			byte[] sign = signToken(encrypted, 0, IV_LENGTH, encrypted, IV_LENGTH, encrypted.length - IV_LENGTH - HMAC_LENGTH);
@@ -108,15 +124,13 @@ public class TokenCrypto {
 					throw new BadRequestException("error.invalid.token", "Invalid token");
 				}			
 			}
-			
 			String ciperAlg = "AES/CBC/PKCS5Padding";
 			IvParameterSpec ips = new IvParameterSpec(encrypted,0,IV_LENGTH);
 			
 			Cipher c = Cipher.getInstance(ciperAlg);
 			c.init(Cipher.DECRYPT_MODE, tokenKey, ips);
 			 		
-			byte[] unencrypted = c.doFinal(encrypted,IV_LENGTH,encrypted.length - IV_LENGTH - HMAC_LENGTH);
-			
+			byte[] unencrypted = c.doFinal(encrypted,IV_LENGTH,encrypted.length - IV_LENGTH - HMAC_LENGTH);			
 			return new String(unencrypted, "utf-8");
 		} catch (BadPaddingException e) {
 			throw new InternalServerException("error.internal", e);

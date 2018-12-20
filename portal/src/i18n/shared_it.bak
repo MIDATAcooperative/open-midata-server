@@ -86,12 +86,13 @@
        "groupsystem" : "Group system must be provided.",
        "token" : "Missing or bad token.",
        "agb" : "General Terms and Conditions not accepted.",
-       "privacypolicy" : "Privacy policy must be accepted.",
+       "privacypolicy" : "Privacy Policy must be accepted.",
        "study_accept" : "Study participation must be accepted.",
        "study_group" : "Participant must first be assigned to a group.",
        "confirmation" : "Confirmation by user required first.",
        "file" : "No file for upload selected",
-       "access_query" : "No data selected"
+       "access_query" : "No data selected",
+       "plugin" : "This plugin does not exist in your account."
      },
 
      "unknown" : {
@@ -428,10 +429,10 @@
 	 },
 	 "plugintype" : {
 	   "visualization" : "Plugin",
-	   "create" : "Form",
+	   "service" : "Service",
 	   "oauth1" : "OAuth 1",
 	   "oauth2" : "OAuth 2",
-	   "mobile" : "App (Smartphone, Web)"
+	   "mobile" : "Appplication (Smartphone, Web)"
 	 },
 	 "infos" : {
 	   "SUMMARY" : "Short Summary",
@@ -530,6 +531,8 @@
     "email" : "EMail",
     "password" : "Password",
     "password_repetition" : "Repeat Password",
+    "secure" : "Account Protection",
+    "secure2" : "Encrypt my account key with my PASSWORD. Warning: if you forget your password, it may take several days to recover your account key!",
     "firstname" : "First Name",
     "lastname" : "Surname",
     "gender" : "Gender",
@@ -637,7 +640,17 @@
     "email_success" : "Email address has been confirmed.",
     "address_entered" : "Your postal address is required to use this service, please provide it.",
     "phone_entered" : "A mobile phone number is required to use this service, please provide it.",
-    "admin_verified" : "Your account must be unlocked by a MIDATA administrator. Please retry later. If your account has not been unlocked for more than 24 hours, please contact MIDATA."
+    "admin_verified" : "Your account must be unlocked by a MIDATA administrator. Please retry later. If your account has not been unlocked for more than 24 hours, please contact MIDATA.",
+    "terms_agreed" : "The MIDATA General Terms and Conditions have been updated. Please confirm that you agree to the new version.",
+    "privacy_policy_agreed" : "The MIDATA Privacy Policy has been updated. Please confirm that you agree to the new version.",
+    "agree_btn" : "I agree",
+    "keyrecovery" : {
+      "intro" : "The private key that is used to encrypt your data needs to be recovered. In order to recover your key, try one of these options:",
+      "way1" : "Do you have any application using MIDATA where you are still logged in? If yes, open that application and your key will be recovered. Try to login again afterwards.",
+      "way2" : "Have you logged in using a browser before? If yes try to log in using the same browser and device.",
+      "way3" : "Remember your old password again? If yes try to log in using your old password.",
+      "way4" : "Wait for MIDATA employees to do a manual key recovery. MIDATA will send you an email when the recovery has been done. Please wait up to five working days for the recovery to be completed."
+    }
   },
 
   "changepassphrase" : {
@@ -728,11 +741,12 @@
 	"request_participation_btn" : "Request Participation",
 	"do_not_participate_help" : "If you do NOT want to participate you can click here. You will not be asked again and no data will be shared.",
 	"do_not_participate_btn" : "Do not participate",
-	"retreat_help" : "You are currently participating. If you no longer want to participate you may retreat from participation. Your shared data will be frozen at the moment of retreat and no new data will be shared. Once retreated you are not able to participate again.",
+	"retreat_help" : "You are currently participating to this research. If you no longer want to participate you may retreat from participation. Your shared data will be frozen at the moment of retreat and no new data will be shared. Once retreated you are not able to participate again.",
 	"retreat_btn" : "Retreat from participation",
 	"status" : "Status",
 	"recommended_apps" : "Recommended Apps",
-	"use_app" : "Use now"
+	"use_app" : "Use now",
+	"for_participants" : "Participation Info"
   },
 
   "user" : {
@@ -948,7 +962,6 @@
 
   "dashboard" : {
     "help_welcome" : "Welcome to MIDATA",
-    "tasks" : "Tasks",
     "myviews" : "My Views",
     "mydata" : "My personal data",
     "mydata_text" : "Manage your health data. Enter new data and visualize existing data.",
@@ -994,7 +1007,6 @@
 	"addusers" : "Add Users to Consent",
 	"shared_with_study" : "Shared records:",
 	"patient_records" : "Records of this patient:",
-	"addtask" : "Add Task",
 	"group_records" : "Records of this group:",
 	"study_records" : "Shared records:",
 	"addmore" : "Add more",
@@ -1045,30 +1057,7 @@
     "empty" : "Empty",
     "studies_found" : "Studies found:"
   },
-
-  "addtask" : {
-    "task_type" : "Task Type",
-    "task_title" : "Task Title",
-    "description" : "Description",
-    "frequency" : "Frequency",
-    "survey_name" : "Fill out survey",
-    "survey_description" : "Please fill out the surveys I shared with your account.",
-	"survey_title" : "Fill out survey"
-  },
-
-  "taskdetails" : {
-    "created_by" : "Created by:",
-    "frequency" : "How often:",
-    "plugin" : "Plugin:",
-    "do_now_btn" : "Do Now"
-  },
-
-  "tasks" : {
-    "empty" : "Empty",
-    "tasks_found" : "Tasks found:",
-    "more_btn" : "More..."
-  },
-
+  
   "addusers" : {
     "contacts" : "Existing contacts:",
     "all_users" : "All users",
@@ -1189,7 +1178,7 @@
     "study" : "Study",
     "summary" : "List of accessable data types:",
     "access_query" : "Data Access Filter",
-    "format" : "Resource",
+    "format" : "Data Format",
     "code" : "Code",
     "to" : "to",
     "content" : "Data Type",
@@ -1237,7 +1226,7 @@
   },
   
   "timeline" : {
-    "spaces" : "Midata",
+    "spaces" : "MIDATA",
     "title" : "Timeline"
   },
   

@@ -30,6 +30,8 @@ angular.module('portal')
 		$scope.status.doBusy(apps.getAppInfo($scope.params.client_id))
 		.then(function(results) {
 			$scope.app = results.data;
+			if (!$scope.app || !$scope.app.targetUserRole) $scope.error ="error.unknown.app";
+			
 			$scope.login.role = $scope.app.targetUserRole === 'ANY'? "MEMBER" : $scope.app.targetUserRole;
 			oauth.init($scope.params.client_id, $scope.params.redirect_uri, $scope.params.state, $scope.params.code_challenge, $scope.params.code_challenge_method, $scope.params.device_id);
 			$scope.device = oauth.getDeviceShort();
@@ -110,7 +112,7 @@ angular.module('portal')
 			}
 			if (sq.group) {
 				angular.forEach(sq.group, function(r) {
-					  labels.getGroupLabel($translate.use(), r).then(function(lab) {
+					  labels.getGroupLabel($translate.use(), sq["group-system"], r).then(function(lab) {
 						 $scope.labels.push(lab); 
 					  });
 				});

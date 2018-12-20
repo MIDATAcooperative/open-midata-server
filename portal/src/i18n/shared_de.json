@@ -92,7 +92,8 @@
             "study_group" : "Der Teilnehmer muss zuerst zu einer Gruppe zugeordnet werden.",
             "confirmation" : "Bestätigung durch Benutzer zuerst erforderlich.",
             "file" : "Keine Datei zum Hochladen ausgewählt",
-            "access_query" : "Keine Daten ausgewählt"
+            "access_query" : "Keine Daten ausgewählt",
+            "plugin" : "Dieses Plugin existiert nicht in Ihrem Konto."
         },
 
         "unknown" : {
@@ -429,10 +430,10 @@
         },
         "plugintype" : {
             "visualization" : "Plugin",
-            "create" : "Formular",
+            "service" : "Dienst",
             "oauth1" : "OAuth 1",
             "oauth2" : "OAuth 2",
-            "mobile" : "App (Smartphone, Web)"
+            "mobile" : "Applikation (Smartphone, Web)"
         },
         "infos" : {
             "SUMMARY" : "Kurze Zusammenfassung",
@@ -531,6 +532,8 @@
         "email" : "E-Mail",
         "password" : "Kennwort",
         "password_repetition" : "Kennwort wiederholen",
+        "secure" : "Schutz des Kontos",
+        "secure2" : "Mein Kontoschlüssel mit meinem KENNWORT verschlüsseln. Warnung: Wenn Sie Ihr Kennwort vergessen haben, kann es mehrere Tage dauern, bis Ihren Kontoschlüssel wiederhergestellt wird!",
         "firstname" : "Vorname",
         "lastname" : "Name",
         "gender" : "Geschlecht",
@@ -638,7 +641,17 @@
         "email_success" : "Die E-Mail-Adresse wurde bestätigt.",
         "address_entered" : "Geben Sie bitte Ihre Postadresse ein, sie ist erforderlich, um diesen Dienst nutzen zu können.",
         "phone_entered" : "Geben Sie bitte Ihre Mobiltelefonnummer ein, sie ist erforderlich, um diesen Dienst nutzen zu können.",
-        "admin_verified" : "Ihr Konto muss durch einen MIDATA Administrator freigeschaltet werden. Versuchen Sie es bitte später noch einmal. Falls Ihr Konto nicht innert 24 Stunden freigeschaltet wurde, kontaktieren sie bitte MIDATA."
+        "admin_verified" : "Ihr Konto muss durch einen MIDATA Administrator freigeschaltet werden. Versuchen Sie es bitte später noch einmal. Falls Ihr Konto nicht innert 24 Stunden freigeschaltet wurde, kontaktieren sie bitte MIDATA.",
+        "terms_agreed" : "Die MIDATA Allgemeine Geschäftsbedingungen wurden aktualisiert. Bitte bestätigen Sie, dass Sie mit der neuen Version einverstanden sind.",
+        "privacy_policy_agreed" : "Die MIDATA Datenschutzerklärung wurde aktualisiert. Bitte bestätigen Sie, dass Sie mit der neuen Version einverstanden sind.",
+        "agree_btn" : "Ich stimme zu",
+        "keyrecovery" : {
+            "intro" : "Der private Schlüssel, der zur Verschlüsselung Ihrer Daten verwendet wird, muss wiederhergestellt werden. Um Ihren Schlüssel wiederherzustellen, versuchen Sie eine dieser Optionen:",
+            "way1" : "Haben Sie eine Applikation die MIDATA benutzt, bei der Sie noch angemeldet sind? Wenn ja, öffnen Sie diese Applikation und Ihr Schlüssel wird wiederhergestellt. Versuchen Sie anschliessend, sich erneut anzumelden.",
+            "way2" : "Haben Sie sich schon einmal mit einem Browser angemeldet? Wenn ja, versuchen Sie, sich mit dem gleichen Browser und Gerät anzumelden.",
+            "way3" : "Erinnern Sie sich wieder an Ihr altes Kennwort? Wenn ja, versuchen Sie, sich mit Ihrem alten Kennwort anzumelden.",
+            "way4" : "Warten Sie, bis MIDATA-Mitarbeiter eine manuelle Schlüsselwiederherstellung durchgeführt haben. MIDATA sendet Ihnen eine E-Mail, wenn die Wiederherstellung abgeschlossen ist. Bitte warten Sie bis zu fünf Arbeitstage, bis die Wiederherstellung abgeschlossen ist."
+        }
     },
 
     "changepassphrase" : {
@@ -733,7 +746,8 @@
         "retreat_btn" : "Teilnahme zurückgezogen",
         "status" : "Status",
         "recommended_apps" : "Empfohlene Applikationen",
-        "use_app" : "Jetzt verwenden"
+        "use_app" : "Jetzt verwenden",
+        "for_participants" : "Teilnahme-Informationen"
     },
 
     "user" : {
@@ -949,7 +963,6 @@
 
     "dashboard" : {
         "help_welcome" : "Willkommen bei MIDATA",
-        "tasks" : "Aufgaben",
         "myviews" : "Meine Ansichten",
         "mydata" : "Meine persönliche Daten",
         "mydata_text" : "Verwalten Sie Ihre Gesundheitsdaten. Erfassen Sie neue Daten und betrachten Sie bestehende Daten.",
@@ -995,7 +1008,6 @@
         "addusers" : "Benutzer zu dieser Zustimmung hinzufügen",
         "shared_with_study" : "Geteilte Datensätze:",
         "patient_records" : "Einträge dieses patienten:",
-        "addtask" : "Aufgabe hinzufügen",
         "group_records" : "Einträge dieser Gruppe:",
         "study_records" : "Geteilte Datensätze:",
         "addmore" : "Mehr hinzufügen",
@@ -1045,29 +1057,6 @@
     "flexiblestudies" : {
         "empty" : "Leer",
         "studies_found" : "Gefundene Studien:"
-    },
-
-    "addtask" : {
-        "task_type" : "Typ der Aufgabe",
-        "task_title" : "Titel der Aufgabe",
-        "description" : "Beschreibung",
-        "frequency" : "Häufigkeit",
-        "survey_name" : "Umfrage ausfüllen",
-        "survey_description" : "Füllen Sie bitte die Umfragen aus, die ich mit Ihrem Account teile.",
-        "survey_title" : "Umfrage ausfüllen"
-    },
-
-    "taskdetails" : {
-        "created_by" : "Erstellt durch:",
-        "frequency" : "Wie oft:",
-        "plugin" : "Plugin:",
-        "do_now_btn" : "Jetzt zu tun"
-    },
-
-    "tasks" : {
-        "empty" : "Leer",
-        "tasks_found" : "Gefundene Aufgaben:",
-        "more_btn" : "Mehr..."
     },
 
     "addusers" : {
@@ -1190,7 +1179,7 @@
         "study" : "Studie",
         "summary" : "Liste der zugänglichen Datentypen:",
         "access_query" : "Data Access Filter",
-        "format" : "Ressource",
+        "format" : "Datenformat",
         "code" : "Code",
         "to" : "bis",
         "content" : "Datentype",
