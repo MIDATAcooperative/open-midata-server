@@ -152,9 +152,11 @@ public class PWRecovery extends APIController {
 			map.put("key", key);
 			RecordManager.instance.setMeta(user._id, user._id, "_aeskey", map);
 			ServiceHandler.setKey(key);
+			ServiceHandler.shareKey();
 		} else {
 			byte[] aeskey = (byte[]) obj.get("key");
 			ServiceHandler.setKey(aeskey);
+			ServiceHandler.shareKey();
 		}
 	}
 	

@@ -2,7 +2,10 @@ package utils.messaging;
 
 import utils.AccessLog;
 import utils.InstanceConfig;
+import utils.RuntimeConstants;
 import utils.access.EncryptionUtils;
+import utils.auth.KeyManager;
+import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 import utils.sync.Instances;
 
@@ -18,6 +21,7 @@ public class ServiceHandler {
 	}
 	
 	public static boolean keyAvailable() {
+		startup();
 		return aeskey != null;
 	}
 	
