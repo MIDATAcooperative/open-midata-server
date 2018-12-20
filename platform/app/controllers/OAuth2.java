@@ -25,6 +25,7 @@ import models.StudyAppLink;
 import models.StudyParticipation;
 import models.User;
 import models.UserGroupMember;
+import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.ParticipationStatus;
@@ -262,7 +263,7 @@ public class OAuth2 extends Controller {
 			  return Application.loginHelperResult(user, notok);
 			}
 			
-			if (sessionToken == null) return Application.loginChallenge(user);
+			if (sessionToken == null && user.security.equals(AccountSecurityLevel.KEY_EXT_PASSWORD)) return Application.loginChallenge(user);
 			boolean autoConfirm = KeyManager.instance.unlock(user._id, sessionToken, user.publicExtKey) == KeyManager.KEYPROTECTION_NONE;
 			executor = autoConfirm ? user._id : null;
 			

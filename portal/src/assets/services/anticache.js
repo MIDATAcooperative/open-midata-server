@@ -1,5 +1,5 @@
 angular.module('services')
-.factory('preventTemplateCache', function($injector) {
+.factory('preventTemplateCache', ['$injector', function($injector) {
     var ENV = $injector.get('ENV');
 
     return {
@@ -14,7 +14,7 @@ angular.module('services')
         return config;
       }
     }
- })
-.config(function($httpProvider) {
+ }])
+.config(['$httpProvider', function($httpProvider) {
     $httpProvider.interceptors.push('preventTemplateCache');
-});
+}]);
