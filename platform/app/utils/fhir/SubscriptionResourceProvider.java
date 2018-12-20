@@ -360,7 +360,9 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	public static void populateSubscriptionCriteria(SubscriptionData subscriptionData, String crit) throws InternalServerException {
 		 int p = crit.indexOf("?");
 	        if (p>0) {
+	        	
 	        	subscriptionData.format = "fhir/"+crit.substring(0, p);
+	        	
 	        	String q = crit.substring(p+1);
 	        	if (q.startsWith("code=")) {
 	        		String cnt = q.substring("code=".length());
@@ -370,8 +372,14 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	        	} else if (crit.equals("Observation")) subscriptionData.content = null; 
 	        	else throw new InvalidRequestException("Not supported subscription criteria.");
 	        } else {
-	            subscriptionData.format = "fhir/"+crit;
-	            subscriptionData.content = crit;
+	        	if (crit.startsWith("time")) {
+		          subscriptionData.format="time";
+		          subscriptionData.content = null;
+		        } else {
+	              subscriptionData.format = "fhir/"+crit;
+	              subscriptionData.content = crit;
+		        }
+	           
 	        }
 	}
 

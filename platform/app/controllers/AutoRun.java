@@ -45,6 +45,7 @@ import utils.auth.SpaceToken;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.messaging.ServiceHandler;
 import utils.messaging.SubscriptionProcessor;
 import utils.messaging.SubscriptionTriggered;
 import utils.sync.Instances;
@@ -373,6 +374,8 @@ public class AutoRun extends APIController {
 				for (SubscriptionData data : datas) {
 					processor.tell(new SubscriptionTriggered(data.owner, data.app, "time", null, null, null), getSelf());
 				}
+				
+				AccessLog.log("Done scheduling new autoimport size="+datas.size());
 				
 			} catch (Exception e) {
 				ErrorReporter.report("Autorun-Service", null, e);	

@@ -105,10 +105,10 @@ class ReloadMessage implements Serializable {
 
 class KeyMessage implements Serializable {
 	
-	final byte[] aeskey;
+	final byte[] aeskey;	
 	
 	public KeyMessage(byte[] aeskey) {
-		this.aeskey = aeskey;
+		this.aeskey = aeskey;		
 	}
 	
 }

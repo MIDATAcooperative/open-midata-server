@@ -126,7 +126,7 @@ public class PWRecovery extends APIController {
 		
 		if (sessionToken != null) KeyManager.instance.unlock(user._id, sessionToken, proc.nextPublicExtKey);		
 		
-		if (user.email.equals(RuntimeConstants.AUTORUN_USERNAME)) {
+		if (user.email.equals(RuntimeConstants.BACKEND_SERVICE)) {
 			
 			provideServiceKey(user);
 			proc.nextPassword = null;
@@ -318,7 +318,7 @@ public class PWRecovery extends APIController {
     public Result requestServiceKeyRecovery() throws AppException {
     	JsonNode json = request().body().asJson();	
     	KeyManager.instance.login(60000, false);
-    	User autorun = Admin.getByEmail(RuntimeConstants.AUTORUN_USERNAME, User.FOR_LOGIN);
+    	User autorun = Admin.getByEmail(RuntimeConstants.BACKEND_SERVICE, User.FOR_LOGIN);
   	    int keytype = KeyManager.instance.unlock(autorun._id, null);
   	    if (keytype == KeyManager.KEYPROTECTION_FAIL) {
       	  PWRecovery.startRecovery(autorun, json);

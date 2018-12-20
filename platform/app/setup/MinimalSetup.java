@@ -112,6 +112,33 @@ public class MinimalSetup {
 			RecordManager.instance.createPrivateAPS(admin._id, admin._id);
 		}
 		
+		if (Admin.getByEmail(RuntimeConstants.BACKEND_SERVICE, Sets.create("_id")) == null) {
+			Admin admin = new Admin();
+			admin._id = new MidataId();
+			admin.email = RuntimeConstants.BACKEND_SERVICE;
+			admin.emailLC = admin.email.toLowerCase();
+			admin.password = null;
+			admin.role = UserRole.ADMIN;
+			admin.subroles = EnumSet.noneOf(SubUserRole.class);
+			admin.status = UserStatus.ACTIVE;
+			admin.contractStatus = ContractStatus.SIGNED;
+			admin.agbStatus = ContractStatus.SIGNED;	
+			admin.registeredAt = new Date();
+			admin.resettokenTs = 0;				
+			admin.confirmationCode = "";
+			admin.firstname = "Midata Backend";
+			admin.lastname = "Service";
+			admin.gender = Gender.OTHER;
+			admin.security = AccountSecurityLevel.KEY;
+			
+			admin.emailStatus = EMailStatus.VALIDATED;
+			admin.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(admin._id);
+			Admin.add(admin);
+			
+			//KeyManager.instance.unlock(admin._id, null);
+			RecordManager.instance.createPrivateAPS(admin._id, admin._id);
+		}
+		
 		if (Plugin.getByFilename("portal", Sets.create("_id")) == null ) {
 			Plugin portal = new Plugin();
 			portal._id = MidataId.from("588b53a7aed64509f5095def");

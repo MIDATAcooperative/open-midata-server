@@ -3,7 +3,7 @@ angular.module('portal')
 
 	$scope.status = new status(true);
 	$scope.page = { nr : 1 };
-	$scope.criteria = { me : "ak" };
+	$scope.criteria = { me : "" };
 	
 	$scope.reload = function(comeback) {	
 		$scope.status.doBusy(server.get(jsRoutes.controllers.PWRecovery.getUnfinished().url))

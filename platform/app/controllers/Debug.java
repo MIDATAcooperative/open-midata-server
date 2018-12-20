@@ -55,7 +55,7 @@ public class Debug extends Controller {
 	 */
 	@APICall	
 	public Result ping() throws AppException {
-	  if (Admin.getByEmail(RuntimeConstants.AUTORUN_USERNAME, Sets.create("_id")) == null) throw new InternalServerException("error.db", "Database error");
+	  if (Admin.getByEmail(RuntimeConstants.BACKEND_SERVICE, Sets.create("_id")) == null) throw new InternalServerException("error.db", "Database error");
 	  return ok();
 	}
 	

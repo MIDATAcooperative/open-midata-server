@@ -123,7 +123,7 @@ public class SubscriptionProcessor extends AbstractActor {
 		   int p = str.indexOf(':');
 		   if (p > 0) request.addHeader(str.substring(0, p).trim(), str.substring(p+1));
 	   }
-	   //System.out.println("CALLING REST HOOK!");
+	   System.out.println("CALLING REST HOOK!");
 	   CompletionStage<WSResponse> response = request.execute("POST");
 	   response.whenComplete((out, exception) -> {
 		   //System.out.println("COMPLETE REST HOOK");
@@ -158,7 +158,7 @@ public class SubscriptionProcessor extends AbstractActor {
 	}
 	
 	void processApplication(SubscriptionData subscription, SubscriptionTriggered triggered, SubscriptionChannelComponent channel) throws InternalServerException {
-		//System.out.println("prcApp app="+subscription.app);
+		System.out.println("prcApp app="+subscription.app);
 		final String nodepath = InstanceConfig.getInstance().getConfig().getString("node.path");
 		Plugin plugin = Plugin.getById(subscription.app);
 		if (plugin == null) return;
@@ -168,7 +168,7 @@ public class SubscriptionProcessor extends AbstractActor {
 		String cmd = endpoint.substring("node://".length());
 		String visPath =  InstanceConfig.getInstance().getConfig().getString("visualizations.path")+"/"+plugin.filename+"/"+cmd;
 		//System.out.println("prcApp3");
-		AccessLog.log("sub session="+subscription.session);
+		//AccessLog.log("sub session="+subscription.session);
 		String handle = ServiceHandler.decrypt(subscription.session);
 		
 		if (handle == null) {

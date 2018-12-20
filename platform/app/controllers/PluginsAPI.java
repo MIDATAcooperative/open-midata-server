@@ -236,6 +236,7 @@ public class PluginsAPI extends APIController {
 				data.app = space.visualization;
 				data.instance = space._id;
 				data.format = "time";
+				data.content = null;
 				data.lastUpdated = System.currentTimeMillis();
 				data.owner = space.owner;
 				data.session = ServiceHandler.encrypt(KeyManager.instance.currentHandle(space.owner));
