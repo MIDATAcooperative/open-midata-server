@@ -1,9 +1,10 @@
 angular.module('portal')
-.controller('ProviderLoginCtrl', ['$scope', '$state', 'server', 'session', 'crypto', function($scope, $state, server, session, crypto) {
+.controller('ProviderLoginCtrl', ['$scope', '$state', 'server', 'session', 'crypto', 'status', function($scope, $state, server, session, crypto, status) {
 	
 	// init
 	$scope.login = {};
 	$scope.error = null;
+	$scope.status = new status(false);
 	
 	$scope.offline = (window.jsRoutes === undefined) || (window.jsRoutes.controllers === undefined);
 	
