@@ -271,7 +271,7 @@ public class OAuth2 extends Controller {
 			boolean autoConfirm = KeyManager.instance.unlock(user._id, sessionToken, user.publicExtKey) == KeyManager.KEYPROTECTION_NONE;
 			executor = autoConfirm ? user._id : null;
 			
-			if (appInstance != null) {
+			if (appInstance != null && autoConfirm) {
 			  MobileAPI.refreshApp(appInstance, executor, app._id, user, phrase);	
 			} else {						
 			  appInstance = MobileAPI.installApp(executor, app._id, user, phrase, autoConfirm, confirmStudy);
