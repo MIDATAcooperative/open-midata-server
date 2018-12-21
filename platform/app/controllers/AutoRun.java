@@ -14,6 +14,7 @@ import org.joda.time.Seconds;
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Cancellable;
+import akka.actor.PoisonPill;
 import akka.actor.Props;
 import akka.cluster.singleton.ClusterSingletonManager;
 import akka.cluster.singleton.ClusterSingletonManagerSettings;
@@ -71,7 +72,7 @@ public class AutoRun extends APIController {
 		final ClusterSingletonManagerSettings settings =
 				  ClusterSingletonManagerSettings.create(Instances.system());
 		
-		managerSingleton = Instances.system().actorOf(ClusterSingletonManager.props(Props.create(ImportManager.class), null, settings), "autoimport");
+		managerSingleton = Instances.system().actorOf(ClusterSingletonManager.props(Props.create(ImportManager.class), PoisonPill.getInstance(), settings), "autoimport");
 		
 		final ClusterSingletonProxySettings proxySettings =
 			    ClusterSingletonProxySettings.create(Instances.system());

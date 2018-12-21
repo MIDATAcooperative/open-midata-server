@@ -115,7 +115,7 @@ public class OAuth2 extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public Result login() throws AppException {
-				
+			
         JsonNode json = request().body().asJson();		
         JsonValidation.validate(json, "appname", "username", "password", "device", "state", "redirectUri");
 
@@ -222,7 +222,11 @@ public class OAuth2 extends Controller {
 			}
 		}
 		
-		AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user, app._id);
+		
+		if (sessionToken != null || !user.security.equals(AccountSecurityLevel.KEY_EXT_PASSWORD)) {
+		  AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user, app._id);
+		}
+		
 		if (!authenticationValid) {
 			throw new BadRequestException("error.invalid.credentials",  "Unknown user or bad password");
 		}
@@ -238,7 +242,7 @@ public class OAuth2 extends Controller {
 			if (verifyAppInstance(appInstance, user._id, app._id)) {
 				confirmed = true;
 				alreadyUnlocked = true;
-			}
+			} else appInstance = null;
 			
 		}
 		
@@ -267,9 +271,11 @@ public class OAuth2 extends Controller {
 			boolean autoConfirm = KeyManager.instance.unlock(user._id, sessionToken, user.publicExtKey) == KeyManager.KEYPROTECTION_NONE;
 			executor = autoConfirm ? user._id : null;
 			
-			if (alreadyUnlocked) MobileAPI.removeAppInstance(appInstance);
-			
-			appInstance = MobileAPI.installApp(executor, app._id, user, phrase, autoConfirm, confirmStudy);				
+			if (appInstance != null) {
+			  MobileAPI.refreshApp(appInstance, executor, app._id, user, phrase);	
+			} else {						
+			  appInstance = MobileAPI.installApp(executor, app._id, user, phrase, autoConfirm, confirmStudy);
+			}
 			if (executor == null) executor = appInstance._id;
    		    meta = RecordManager.instance.getMeta(executor, appInstance._id, "_app").toMap();
 		/*} else {	

@@ -14,6 +14,7 @@ import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 
 import akka.actor.ActorRef;
+import akka.actor.PoisonPill;
 import akka.actor.Props;
 import akka.cluster.singleton.ClusterSingletonManager;
 import akka.cluster.singleton.ClusterSingletonManagerSettings;
@@ -58,7 +59,7 @@ public class IndexManager {
 				  ClusterSingletonManagerSettings.create(Instances.system());
 	
 		
-		indexSupervisorSingleton = Instances.system().actorOf(ClusterSingletonManager.props(Props.create(IndexSupervisor.class), null,
+		indexSupervisorSingleton = Instances.system().actorOf(ClusterSingletonManager.props(Props.create(IndexSupervisor.class), PoisonPill.getInstance(),
 				settings), "indexSupervisor");
 		
 		final ClusterSingletonProxySettings proxySettings =

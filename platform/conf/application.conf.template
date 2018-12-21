@@ -81,8 +81,7 @@ midata {
           seed-nodes = [
             CLUSTER_SERVER
           ]
- 
-          auto-down-unreachable-after = 10s
+           
         }
     }
  }

@@ -57,7 +57,8 @@ stop-platform:
 	$(info Locking and stopping platform)
 	$(info ------------------------------)
 	touch locks/lock
-	pkill -f sbt
+	-pkill -f sbt
+	-pkill -f java
 	
 
 .PHONY: lock

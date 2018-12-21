@@ -42,6 +42,10 @@ public class MobileAppInstance extends Consent {
 		Model.insert(collection, space);		
 	}
 	
+	public static void upsert(MobileAppInstance space) throws InternalServerException {
+		Model.upsert(collection, space);		
+	}
+	
 	public static MobileAppInstance getById(MidataId id, Set<String> fields) throws InternalServerException {
 		return Model.get(MobileAppInstance.class, collection, CMaps.map("_id", id), fields);
 	}
