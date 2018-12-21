@@ -369,6 +369,8 @@ public class MobileAPI extends Controller {
 		if (app.defaultQuery != null && !app.defaultQuery.isEmpty()) {			
 		    RecordManager.instance.shareByQuery(executor, member._id, appInstance._id, app.defaultQuery);
 		}
+		
+		MobileAPI.confirmMobileConsent(executor, appInstance._id);
 									
 		AuditManager.instance.success();
 		return appInstance;
