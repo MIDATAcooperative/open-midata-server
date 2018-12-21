@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletionStage;
 
+import akka.Done;
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
+import akka.actor.CoordinatedShutdown;
 import akka.actor.Props;
 import akka.actor.Terminated;
 import akka.cluster.routing.ClusterRouterGroup;
@@ -59,9 +61,10 @@ public class Instances {
 	/**
 	 * Shutdown synchronization
 	 */
-	public static CompletionStage<Terminated> shutdown() {
-		actorSystem.terminate();  
-		return actorSystem.getWhenTerminated();
+	public static CompletionStage<Done> shutdown() {
+		return CoordinatedShutdown.get(actorSystem).runAll(CoordinatedShutdown.jvmExitReason());
+		//actorSystem.terminate();  
+		//return actorSystem.getWhenTerminated();
 	}
 	
 	/**

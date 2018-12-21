@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 
 import com.typesafe.config.Config;
 
+import akka.Done;
 import akka.actor.ActorSystem;
 import akka.actor.Terminated;
 import controllers.AutoRun;
@@ -130,13 +131,14 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 				
 		lifecycle.addStopHook(() -> {
 			//AutoRun.shutdown();
-		    System.out.println("Stopping MongoDB");
-			DBLayer.close();
+		    
 			System.out.println("Shutting down Cluster");
-			CompletionStage<Terminated> result = Instances.shutdown();
+			CompletionStage<Done> result = Instances.shutdown();
 			
-			result.thenAccept(t -> { System.out.println("Terminated Cluster"); });
-			return result;		
+			return result.thenAccept(t -> {
+				System.out.println("Stopping MongoDB");
+				DBLayer.close();
+			 });				
 				
 		}); 
 		
