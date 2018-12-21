@@ -345,6 +345,33 @@ public class MobileAPI extends Controller {
 															
 		return ok(obj);
 	}
+
+	public static MobileAppInstance refreshApp(MobileAppInstance appInstance, MidataId executor, MidataId appId, User member, String phrase) throws AppException {
+		Plugin app = Plugin.getById(appId, Sets.create("name", "type", "pluginVersion", "defaultQuery", "predefinedMessages", "termsOfUse", "writes", "defaultSubscriptions"));
+													
+        appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(appInstance._id, null);    	
+    	appInstance.passcode = Member.encrypt(phrase);     	
+    	appInstance.lastUpdated = new Date();
+    	
+    	    	    	
+    	MobileAppInstance.upsert(appInstance);	
+
+        RecordManager.instance.deleteAPS(appInstance._id, executor);
+		RecordManager.instance.createAnonymizedAPS(member._id, appInstance._id, appInstance._id, true);
+				
+		Map<String, Object> meta = new HashMap<String, Object>();
+		meta.put("phrase", phrase);
+		if (executor == null) executor = appInstance._id;
+		RecordManager.instance.setMeta(executor, appInstance._id, "_app", meta);
+		
+		if (app.defaultQuery != null && !app.defaultQuery.isEmpty()) {			
+		    RecordManager.instance.shareByQuery(executor, member._id, appInstance._id, app.defaultQuery);
+		}
+									
+		AuditManager.instance.success();
+		return appInstance;
+
+	}
 	
 	public static MobileAppInstance installApp(MidataId executor, MidataId appId, User member, String phrase, boolean autoConfirm, Set<MidataId> studyConfirm) throws AppException {
 		Plugin app = Plugin.getById(appId, Sets.create("name", "type", "pluginVersion", "defaultQuery", "predefinedMessages", "termsOfUse", "writes", "defaultSubscriptions"));
