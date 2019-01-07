@@ -313,7 +313,7 @@ public class AutoRun extends APIController {
 		    }
 		    workerRouter = new Router(new RoundRobinRoutingLogic(), routees);	
 		    		    
-		    processor = this.context().actorOf(new RoundRobinPool(5).props(Props.create(SubscriptionProcessor.class)), "subscriptionProcessor");
+		    processor = this.context().actorOf(new RoundRobinPool(2).props(Props.create(SubscriptionProcessor.class)), "subscriptionProcessor");
 		}
 		
 		
