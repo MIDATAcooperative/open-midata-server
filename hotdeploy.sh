@@ -33,6 +33,7 @@ echo "Instance LOCKED for start..."
 touch locks/lock locks/apilock
 echo print 'Swapping Midata Server...'
 pkill -f java
+sleep 10s
 echo 'Starting new instance...'
 rm running
 ln -s $instance running		

@@ -43,6 +43,7 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.InstanceConfig;
+import utils.ServerTools;
 import utils.access.APS;
 import utils.access.DBIterator;
 import utils.access.Feature_FormatGroups;
@@ -573,11 +574,15 @@ public class Records extends APIController {
 
 			@Override
 			public Iterator<ByteString> create() throws Exception {
-				KeyManager.instance.continueSession(handle);
-				ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId, role));
-
-				DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, executorId, CMaps.map("owner", "self"), RecordManager.COMPLETE_DATA);
-				return new RecIterator(allRecords);
+				try {
+					KeyManager.instance.continueSession(handle);
+					ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId, role));
+	
+					DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, executorId, CMaps.map("owner", "self"), RecordManager.COMPLETE_DATA);
+					return new RecIterator(allRecords);
+				} finally {
+				  ServerTools.endRequest();
+				}
 			}
 
 			class RecIterator implements Iterator<ByteString> {
@@ -641,6 +646,8 @@ public class Records extends APIController {
 						throw new RuntimeException(e);
 					} catch (IOException e2) {
 						throw new RuntimeException(e2);
+					} finally {
+						ServerTools.endRequest();
 					}
 				}
 

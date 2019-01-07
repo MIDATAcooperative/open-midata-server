@@ -86,6 +86,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
 import utils.InstanceConfig;
+import utils.ServerTools;
 import utils.access.DBIterator;
 import utils.access.Feature_FormatGroups;
 import utils.access.Query;
@@ -354,11 +355,15 @@ public class Studies extends APIController {
 
 			@Override
 			public Iterator<ByteString> create() throws Exception {
-				KeyManager.instance.continueSession(handle);
-				ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId, role));
-				DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, executorId, CMaps.map("export", mode).map("study", study._id).map("study-group", studyGroup).mapNotEmpty("shared-after",  startDate).mapNotEmpty("updated-before", endDate),
-						RecordManager.COMPLETE_DATA);
-				return new RecIterator(allRecords);
+				try {
+					KeyManager.instance.continueSession(handle);
+					ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId, role));
+					DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, executorId, CMaps.map("export", mode).map("study", study._id).map("study-group", studyGroup).mapNotEmpty("shared-after",  startDate).mapNotEmpty("updated-before", endDate),
+							RecordManager.COMPLETE_DATA);
+					return new RecIterator(allRecords);
+				} finally {
+					ServerTools.endRequest();
+				}
 			}
 
 			class RecIterator implements Iterator<ByteString> {
@@ -421,6 +426,8 @@ public class Studies extends APIController {
 						throw new RuntimeException(e);
 					} catch (IOException e2) {
 						throw new RuntimeException(e2);
+					} finally {
+						ServerTools.endRequest();
 					}
 				}
 
