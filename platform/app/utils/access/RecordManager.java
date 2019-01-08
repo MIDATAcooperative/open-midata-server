@@ -34,6 +34,7 @@ import models.Space;
 import models.UserGroupMember;
 import models.enums.APSSecurityLevel;
 import models.enums.AggregationType;
+import models.enums.ConsentStatus;
 import models.enums.UserRole;
 import play.mvc.Http;
 import utils.AccessLog;
@@ -1132,7 +1133,10 @@ public class RecordManager {
 		if (who.equals(apsId)) context = createContextFromAccount(who);
 		else {
           Consent consent = Consent.getByIdUnchecked(apsId, Consent.ALL);
-          if (consent != null) context =  createContextFromConsent(who, consent);
+          if (consent != null) {
+        	  if (consent.status != ConsentStatus.ACTIVE && !consent.owner.equals(who)) return Collections.emptyList();
+        	  context =  createContextFromConsent(who, consent);
+          }
 		}
 		AccessLog.log("context="+context);
 		QueryTagTools.handleSecurityTags(role, properties, fields);
