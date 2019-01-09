@@ -2,18 +2,33 @@ angular.module('services')
 .factory('session', ['$q', 'server', 'crypto', function($q, server, crypto) {
 	
 	var _states = {};
+	var _retry = null;
 	
 	var session = {
 		currentUser : null,
 		user : null,
 		cache : {},
 			
+		retryLogin : function() {
+		   if (!_retry) return false;
+		   return session.performLogin(_retry.func, _retry.params, _retry.pw);	
+		},
+		
+		setSecurityToken : function(token) {
+			_retry.params.securityToken = token;
+		},
+		
 		performLogin : function(func, params, pw) {
+			console.log("performLogin");
+			_retry = null;
 			return func(params).then(function(result) {
+				console.log("performLogin A");
 				if (result.data == "compatibility-mode") {
 					params.nonHashed = pw;
-					return func(params);
+					console.log("performLogin B");
+					return session.performLogin(func, params, pw);
 				} else if (result.data.challenge) {
+					console.log("performLogin C");
 					if (result.data.tryrecover) {
 						params.sessionToken = crypto.keyChallengeLocal(result.data.userid, result.data.recoverKey, result.data.challenge);
 						if (!params.sessionToken) return { data : { requirements : ["KEYRECOVERY"] , status : "BLOCKED" } };
@@ -21,9 +36,23 @@ angular.module('services')
 					} else {
 						params.sessionToken = crypto.keyChallenge(result.data.keyEncrypted, pw, result.data.challenge);
 						if (result.data.recoverKey && result.data.recoverKey != "null") crypto.checkLocalRecovery(result.data.userid, result.data.recoverKey,result.data.keyEncrypted, pw);
-						return func(params);
+						return func(params).then(function(result1) {
+					       if (result1.data && result1.data.status) {
+						     console.log("STORE RETRY");
+						     _retry = { func : func, params : params, pw : pw };
+					       }
+					       return result1;
+						});
 					}
 				} else {
+					console.log("performLogin D");
+					if (result.data && result.data.status) {
+						console.log("STORE RETRY");
+						_retry = { func : func, params : params, pw : pw };
+					} else {
+						console.log("CLEAR RETRY");
+						_retry = null;
+					}
 					return result;
 				}
 			})		
@@ -71,7 +100,9 @@ angular.module('services')
 			}
 		},
 		
-		login : function(requiredRole) {			
+		login : function(requiredRole) {
+			console.log("login");
+			_retry = null;
 			var def  = $q.defer();		
 			server.get(jsRoutes.controllers.Users.getCurrentUser().url).
 			then(function(result1) {
@@ -102,6 +133,7 @@ angular.module('services')
 			session.org = null;
 			session.cache = {};
 			_states = {};
+			_retry = null;
 		},
 		
 		cacheGet : function(name) {

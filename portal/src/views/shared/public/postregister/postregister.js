@@ -147,13 +147,29 @@ angular.module('portal')
 		} else if (funcresult) {
 		  session.postLogin(funcresult, $state);		
 	    } else {
-	      try {
-	        $state.go("^.user",{userId:$scope.registration._id});
-	      } catch(e) {
-	    	$state.go("^.login");
+	      var r = session.retryLogin();
+	      if (!r) {	    	
+		      try {
+		        $state.go("^.user",{userId:$scope.registration._id});
+		      } catch(e) {
+		    	$state.go("^.login");
+		      }
+	      } else {
+	    	  r.then(function(result) {
+	    		  session.postLogin(result, $state);
+	    	  });
 	      }
 	    }
 		
+	};
+	
+	$scope.setSecurityToken = function() {
+		if (oauth.getAppname()) {
+			oauth.setSecurityToken($scope.setpw.securityToken);
+		} else {
+			session.setSecurityToken($scope.setpw.securityToken);
+		}
+		$scope.retry();
 	};
 	
 	$scope.addressNeeded = function() {

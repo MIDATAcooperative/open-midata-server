@@ -60,6 +60,10 @@ angular.module('services')
 		cred.unlockCode = code;
 	};
 	
+	service.setSecurityToken = function(token) {
+		cred.securityToken = token;
+	};
+	
 	service.getAppname =function() {
 		return cred.appname;
 	};

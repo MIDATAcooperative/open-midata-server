@@ -28,6 +28,7 @@ import models.SubscriptionData;
 import models.TestPluginCall;
 import models.User;
 import models.enums.ConsentStatus;
+import models.enums.MessageChannel;
 import models.enums.MessageReason;
 import models.enums.PluginStatus;
 import models.enums.UserStatus;
@@ -97,6 +98,8 @@ public class SubscriptionProcessor extends AbstractActor {
 						if (endpoint != null && endpoint.startsWith("node://")) processApplication(subscription, triggered, channel);
 					} else if (channel.getType().equals(SubscriptionChannelType.EMAIL)) {
 						processEmail(subscription, triggered, channel);
+					} else if (channel.getType().equals(SubscriptionChannelType.SMS)) {
+						processSMS(subscription, triggered, channel);
 					}
 					Stats.finishRequest(TRIGGER, triggered.getDescription(), null, "200", Collections.emptySet());
 				}
@@ -154,6 +157,16 @@ public class SubscriptionProcessor extends AbstractActor {
 		  Messager.sendMessage(subscription.app, MessageReason.PROCESS_MESSAGE, triggered.getEventCode(), Collections.singleton(subscription.owner), null, replacements);			
 		} else {
 		  Messager.sendMessage(subscription.app, MessageReason.RESOURCE_CHANGE, triggered.getType(), Collections.singleton(subscription.owner), null, replacements);
+		}
+	}
+	
+	void processSMS(SubscriptionData subscription, SubscriptionTriggered triggered, SubscriptionChannelComponent channel) throws AppException {
+		Map<String,String> replacements = new HashMap<String, String>();
+		System.out.println("process sms type="+triggered.getType()+"  "+triggered.getEventCode());
+		if (triggered.getType().equals("fhir/MessageHeader")) {
+		  Messager.sendMessage(subscription.app, MessageReason.PROCESS_MESSAGE, triggered.getEventCode(), Collections.singleton(subscription.owner), null, replacements, MessageChannel.SMS);			
+		} else {
+		  Messager.sendMessage(subscription.app, MessageReason.RESOURCE_CHANGE, triggered.getType(), Collections.singleton(subscription.owner), null, replacements, MessageChannel.SMS);
 		}
 	}
 	

@@ -232,6 +232,7 @@ public class Researchers extends APIController {
 		String email = JsonValidation.getString(json, "email");
 		String password = JsonValidation.getString(json, "password");
 		String sessionToken = JsonValidation.getStringOrNull(json, "sessionToken"); 
+		String securityToken = JsonValidation.getStringOrNull(json, "securityToken");
 		
 		ResearchUser user = ResearchUser.getByEmail(email, Sets.create(User.FOR_LOGIN, "organization"));
 		
@@ -249,7 +250,7 @@ public class Researchers extends APIController {
 										
 		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.WIPED)) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
 		
-		return Application.loginHelper(user, sessionToken, false); 
+		return Application.loginHelper(user, sessionToken, securityToken, false); 
 				
 	}
 	

@@ -132,6 +132,7 @@ public class Developers extends APIController {
 		String email = JsonValidation.getString(json, "email");
 		String password = JsonValidation.getString(json, "password");
 		String sessionToken = JsonValidation.getStringOrNull(json, "sessionToken"); 
+		String securityToken = JsonValidation.getStringOrNull(json, "securityToken");
 		
 		Developer user = Developer.getByEmail(email, User.FOR_LOGIN);
 		
@@ -149,7 +150,7 @@ public class Developers extends APIController {
 					throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");
 				}
 														
-				return Application.loginHelper(adminuser, sessionToken, false);
+				return Application.loginHelper(adminuser, sessionToken, securityToken, false);
 				
 			}
 		}
@@ -166,7 +167,7 @@ public class Developers extends APIController {
 			throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");
 		}
 							
-		return Application.loginHelper(user, sessionToken, false);
+		return Application.loginHelper(user, sessionToken, securityToken, false);
 						
 		// if (keytype == 0 && AccessPermissionSet.getById(user._id) == null) RecordManager.instance.createPrivateAPS(user._id, user._id);		
 	}

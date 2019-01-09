@@ -68,8 +68,10 @@ import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.messaging.Messager;
+import utils.messaging.SMSUtils;
 import views.txt.mails.adminnotify;
 import views.txt.mails.lostpwmail;
+import utils.auth.auth2factor.Authenticator;
 
 /**
  * Member login, registration and password reset functions 
@@ -300,7 +302,7 @@ public class Application extends APIController {
 		if (wanted != null) {
 			if (user!=null && !user.emailStatus.equals(EMailStatus.VALIDATED)) {
 				if (user.password == null) {					
-					return loginHelper(user, null, true);
+					return loginHelper(user, null, null, true);
 				}
 			       if (user.resettoken != null 		    		    
 			    		   && user.resettoken.equals(token)
@@ -344,7 +346,7 @@ public class Application extends APIController {
 		
 		user.set("resettoken", null);		
 		AuditManager.instance.success();		
-		return loginHelper(user, null, true);	
+		return loginHelper(user, null, null, true);	
 				
 	}
 	
@@ -384,7 +386,7 @@ public class Application extends APIController {
 		checkAccount(user);
 					
 		// response
-		return loginHelper(user, null, true);		
+		return loginHelper(user, null, null, true);		
 	}
 	
 	public static void checkAccount(User user) throws AppException {
@@ -526,6 +528,7 @@ public class Application extends APIController {
 		String email = JsonValidation.getEMail(json, "email");
 		String password = JsonValidation.getString(json, "password");
 		String sessionToken = JsonValidation.getStringOrNull(json, "sessionToken"); 
+		String securityToken = JsonValidation.getStringOrNull(json, "securityToken");
 		
 		// check status
 		Member user = Member.getByEmail(email , User.FOR_LOGIN);
@@ -548,7 +551,7 @@ public class Application extends APIController {
 		Result checkrecovery = PWRecovery.checkAuthentication(user, password, sessionToken);
 		if (checkrecovery != null) return checkrecovery;
 					
-		return loginHelper(user, sessionToken, false);					
+		return loginHelper(user, sessionToken, securityToken, false);					
 	
 	}
 	
@@ -640,10 +643,14 @@ public class Application extends APIController {
 	 * @throws AppException
 	 */
 	public static Result loginHelper(User user) throws AppException {
-		return loginHelper(user, null, false);
+		return loginHelper(user, null, null, false, true);
 	}
 	
-	public static Result loginHelper(User user, String sessionToken, boolean nosession) throws AppException {
+	public static Result loginHelper(User user, String sessionToken, String securityToken, boolean nosession) throws AppException {
+	    return	loginHelper(user, sessionToken, securityToken, nosession, false);
+	}
+	
+	public static Result loginHelper(User user, String sessionToken, String securityToken, boolean nosession, boolean skipTwoFactor) throws AppException {
 		boolean newVersion = user.publicExtKey != null;
 		
 		String handle = null;
@@ -665,6 +672,23 @@ public class Application extends APIController {
 			
 		Set<UserFeature> notok = loginHelperPreconditionsFailed(user, InstanceConfig.getInstance().getInstanceType().defaultRequirementsPortalLogin(user.role));
 	
+		if (notok!=null && skipTwoFactor) {
+			notok.remove(UserFeature.AUTH2FACTOR);
+			if (notok.isEmpty()) notok = null;
+		}
+		if (notok!=null && notok.contains(UserFeature.AUTH2FACTOR) && SMSUtils.isAvailable()) {
+			if (securityToken == null) {
+				Authenticator.startAuthentication(user._id, "Token", user.mobile);
+			} else {
+				Authenticator.checkAuthentication(user._id, securityToken);
+				notok.remove(UserFeature.AUTH2FACTOR);
+				if (notok.isEmpty()) {
+					notok = null;
+					Authenticator.finishAuthentication(user._id);
+				}
+			}
+		}
+		
 		if (user.role == UserRole.RESEARCH && !(user instanceof ResearchUser)) {
 			user = ResearchUser.getById(user._id, Sets.create(User.FOR_LOGIN, "organization"));
 		} else if (user.role == UserRole.PROVIDER && !(user instanceof HPUser)) {

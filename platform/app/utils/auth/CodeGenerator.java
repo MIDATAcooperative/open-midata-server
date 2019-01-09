@@ -22,6 +22,13 @@ public class CodeGenerator {
 	    return code;
 	}
 	
+	public static String nextToken() {
+	    String code = new BigInteger(130, random).toString(32);
+	    code = code.toUpperCase();
+	    code = code.substring(0,6);
+	    return code;
+	}
+	
 	/**
 	 * Generates a 8 digit code with a "-" after the 4th character
 	 * Uniqueness is not garanteed and must be check by the caller

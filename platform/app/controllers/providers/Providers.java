@@ -156,6 +156,7 @@ public class Providers extends APIController {
 		String email = JsonValidation.getString(json, "email");
 		String password = JsonValidation.getString(json, "password");
 		String sessionToken = JsonValidation.getStringOrNull(json, "sessionToken"); 
+		String securityToken = JsonValidation.getStringOrNull(json, "securityToken");
 		
 		HPUser user = HPUser.getByEmail(email, Sets.create(User.FOR_LOGIN, "provider"));
 		
@@ -178,7 +179,7 @@ public class Providers extends APIController {
 			user2.updateKeywords(true);
 		}
 		
-		return Application.loginHelper(user, sessionToken, false);							
+		return Application.loginHelper(user, sessionToken, securityToken, false);							
 	}
 	
 	/**
