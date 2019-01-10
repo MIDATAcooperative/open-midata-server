@@ -161,7 +161,9 @@ public class ExecutionInfo {
         if (!allowInactive && !appInstance.status.equals(ConsentStatus.ACTIVE)) throw new BadRequestException("error.noconsent", "Consent needs to be confirmed before creating records!");
 
         KeyManager.instance.login(60000l, false);
-        KeyManager.instance.unlock(appInstance._id, authToken.aeskey);
+        if (KeyManager.instance.unlock(appInstance._id, authToken.aeskey) == KeyManager.KEYPROTECTION_FAIL) {
+        	MobileAPI.invalidToken(); 
+        }
         
         ExecutionInfo result = new ExecutionInfo();
 		result.executorId = appInstance._id;
