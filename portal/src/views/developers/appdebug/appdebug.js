@@ -1,13 +1,13 @@
 angular.module('portal')
-.controller('AppDebugCtrl', ['$scope', '$state', 'session', 'server', 'status', '$translatePartialLoader', 'apps', '$http', 'ENV', 'crypto', function($scope, $state, session, server, status, $translatePartialLoader, apps, $http, ENV, crypto) {
+.controller('AppDebugCtrl', ['$scope', '$state', 'session', 'server', 'status', '$translatePartialLoader', 'apps', '$http', 'ENV', 'crypto', '$window', function($scope, $state, session, server, status, $translatePartialLoader, apps, $http, ENV, crypto, $window) {
 	
 	
 	
 	   $scope.server = ENV.apiurl;
-       $scope.url = "/v1/auth";
+       $scope.url = "/fhir/Patient";
        
 
-       $scope.type = "POST";
+       $scope.type = "GET";
        $scope.authheader = "";
        //$scope.extra = window.localStorage.extra;
        $scope.results = "empty";
@@ -151,10 +151,14 @@ angular.module('portal')
 	};
 	
 	$scope.getOAuthLogin = function() {
-		if (!$scope.app || !$scope.app.redirectUri) return "";
+		if (!$scope.app) return "";
 		var back = document.location.href;				
 		if (back.indexOf("?") > 0) back = back.substr(0, back.indexOf("?"));
 		return "/oauth.html#/portal/oauth2?response_type=code&client_id="+encodeURIComponent($scope.app.filename)+"&redirect_uri="+encodeURIComponent(back)+"&device_id="+encodeURIComponent($scope.device);
+	};
+	
+	$scope.doOauthLogin = function() {
+		$window.document.location.href = $scope.getOAuthLogin();
 	};
 	
 	 $scope.startDebug = function() {

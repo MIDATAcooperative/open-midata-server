@@ -135,8 +135,8 @@ public class OAuth2 extends Controller {
 		Plugin app = Plugin.getByFilename(name, Sets.create("type", "name", "redirectUri", "requirements", "termsOfUse", "unlockCode"));
 		if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");		
 		if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
-		if (app.redirectUri==null) throw new InternalServerException("error.internal", "No redirect URI set for app.");
 		if (redirectUri==null || redirectUri.length()==0) throw new BadRequestException("error.internal", "Missing redirectUri in request.");
+		if (app.redirectUri==null && !redirectUri.startsWith(InstanceConfig.getInstance().getPortalOriginUrl()+"/#/")) throw new InternalServerException("error.internal", "No redirect URI set for app.");		
 		if (!redirectUri.equals(app.redirectUri) && !redirectUri.startsWith(InstanceConfig.getInstance().getPortalOriginUrl()+"/#/")) {
 			String[] multiple = app.redirectUri.split(" ");
 			boolean found = false;
