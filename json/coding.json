@@ -261,3 +261,4 @@
 {"_id":{"$oid":"5c0a3764aed6450b0383214d"},"system":"http://snomed.info/sct","code":"167641001","display":"Feces: bacteria present","content":"snomed/167641001"}
 {"_id":{"$oid":"5c0a37e0aed6450b03832150"},"system":"http://snomed.info/sct","code":"119339001","display":"Stool specimen","content":"snomed/119339001"}
 {"_id":{"$oid":"5c0a3830aed6450b03832151"},"system":"http://snomed.info/sct","code":"409822003","display":"Superkingdom Bacteria (organism)","content":"snomed/409822003"}
+{"_id":{"$oid":"5c374a52aed645580113d3d4"},"system":"http://loinc.org","code":"24338-6","display":"Gas panel - Blood","content":"loinc/24338-6"}
