@@ -134,8 +134,8 @@ angular.module('portal')
 		});
 	};
 	
-	$scope.retry = function(funcresult) {
-		if (oauth.getAppname()) {
+	$scope.retry = function(funcresult, params) {
+		/*if (oauth.getAppname()) {
 	    	  oauth.login(true)
 	    	  .then(function(result) {
 	  		      if (result !== "ACTIVE") {	  			    
@@ -144,10 +144,11 @@ angular.module('portal')
 	  		  }, function(error) {
 	  			  $scope.error = error.data;
 	  		  });
-		} else if (funcresult) {
-		  session.postLogin(funcresult, $state);		
+		} else*/ if (funcresult) {
+		   if (funcresult.data.istatus === "ACTIVE") oauth.postLogin(result);
+		   else session.postLogin(funcresult, $state);		
 	    } else {
-	      var r = session.retryLogin();
+	      var r = session.retryLogin(params);
 	      if (!r) {	    	
 		      try {
 		        $state.go("^.user",{userId:$scope.registration._id});
@@ -156,20 +157,18 @@ angular.module('portal')
 		      }
 	      } else {
 	    	  r.then(function(result) {
-	    		  session.postLogin(result, $state);
+	    		  if (result.data.istatus === "ACTIVE") oauth.postLogin(result);
+	    		  else session.postLogin(result, $state);
+	    	  }, function(err) {
+	    		  $scope.error = err.data;
 	    	  });
 	      }
 	    }
 		
 	};
 	
-	$scope.setSecurityToken = function() {
-		if (oauth.getAppname()) {
-			oauth.setSecurityToken($scope.setpw.securityToken);
-		} else {
-			session.setSecurityToken($scope.setpw.securityToken);
-		}
-		$scope.retry();
+	$scope.setSecurityToken = function() {		
+		$scope.retry(null, { securityToken : $scope.setpw.securityToken });
 	};
 	
 	$scope.addressNeeded = function() {

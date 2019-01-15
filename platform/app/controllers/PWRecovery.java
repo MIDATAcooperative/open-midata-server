@@ -39,6 +39,7 @@ import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
 import utils.auth.FutureLogin;
 import utils.auth.KeyManager;
+import utils.auth.PortalSessionToken;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
@@ -270,7 +271,7 @@ public class PWRecovery extends APIController {
     	return ok(JsonOutput.toJson(open, "KeyRecoveryProcess", KeyRecoveryProcess.ALL)).as("application/json");
     }
     
-    public static Result checkAuthentication(User user, String password, String sessionToken) throws AppException {
+    public static Result checkAuthentication(PortalSessionToken token, User user, String password, String sessionToken) throws AppException {
     	try {
 	    	if (user.flags != null && user.flags.contains(AccountActionFlags.KEY_RECOVERY)) {
 	    		if (PasswordHash.validatePassword(password, user.password)) {
@@ -289,11 +290,12 @@ public class PWRecovery extends APIController {
 			    			obj.put("recoverKey", user.recoverKey);
 			    			obj.put("userid", user._id.toString());
 			    			obj.put("tryrecover", true);
+			    			obj.put("sessionToken", token.encrypt());
 			    			return ok(obj);
 		    			} else {
 		    				KeyManager.instance.login(60000, false);
 		    				finishRecovery(user, rec, sessionToken);
-		    				return Application.loginChallenge(user);
+		    				return Application.loginChallenge(token, user);
 		    			}
 		    				
 		    		} else {

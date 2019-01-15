@@ -158,6 +158,7 @@ angular.module('portal')
 	};
 	
 	$scope.doOauthLogin = function() {
+		sessionStorage.oldToken = sessionStorage.token;
 		$window.document.location.href = $scope.getOAuthLogin();
 	};
 	

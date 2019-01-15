@@ -26,7 +26,7 @@ public class SMSAPIProvider implements SMSProvider {
 	    holder.addQueryParameter("message", text);
 	    //holder.addQueryParameter("from", SENDER);
 		holder.addQueryParameter("format", "json");
-		//holder.addQueryParameter("test", "1");
+		holder.addQueryParameter("test", "1");
 		return holder.get().thenApply(response -> {
 			if (response.getStatus() != 200) {		
 				System.out.println(response.asJson().toString());

@@ -266,7 +266,7 @@ public class Spaces extends APIController {
 		
 		Plugin visualization = Plugin.getById(space.visualization, Sets.create("type", "name", "filename", "url", "previewUrl", "creator", "developmentServer", "accessTokenUrl", "authorizationUrl", "consumerKey", "scopeParameters"));
 
-		boolean testing = (visualization.creator.equals(PortalSessionToken.session().getDeveloper()) || visualization.creator.equals(userId)) && visualization.developmentServer != null && visualization.developmentServer.length()> 0; 
+		boolean testing = (visualization.creator.equals(PortalSessionToken.session().getDeveloperId()) || visualization.creator.equals(userId)) && visualization.developmentServer != null && visualization.developmentServer.length()> 0; 
 		
 		
 	    SpaceToken spaceToken = new SpaceToken(PortalSessionToken.session().handle, space._id, userId, targetUserId, getRole(), true);

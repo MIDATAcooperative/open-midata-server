@@ -34,7 +34,7 @@ public class ErrorReporter {
 		   path = "["+ctx.request().method()+"] "+ctx.request().host()+ctx.request().path();
 		   PortalSessionToken tsk = PortalSessionToken.session();
 		   if (tsk != null) {
-		     user = tsk.getRole().toString()+" "+tsk.getUserId().toString();
+		     user = tsk.getRole().toString()+" "+tsk.getOwnerId().toString();
 		   } 
 		} else path = "[internal] "+InstanceConfig.getInstance().getPortalServerDomain();
 		String timeStamp = new SimpleDateFormat("dd.MM.yyyy HH.mm.ss").format(new Date());
@@ -54,7 +54,7 @@ public class ErrorReporter {
 		   path = "["+ctx.request().method()+"] "+ctx.request().host()+ctx.request().path();
 		   PortalSessionToken tsk = PortalSessionToken.session();
 		   if (tsk != null) {
-		     user = tsk.getRole().toString()+" "+tsk.getUserId().toString();
+		     user = tsk.getRole().toString()+" "+tsk.getOwnerId().toString();
 		   } 
 		} else path = "[internal] "+InstanceConfig.getInstance().getPortalServerDomain();
 		String timeStamp = new SimpleDateFormat("dd.MM.yyyy HH.mm.ss").format(new Date());

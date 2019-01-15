@@ -45,7 +45,9 @@ public class Authenticator {
 		SecurityToken token = SecurityToken.getById(executor);
 		if (token == null) throw new BadRequestException("error.expired.securitytoken", "Token does not exist.");
 		if (token.created < System.currentTimeMillis() - TOKEN_EXPIRE_TIME) throw new BadRequestException("error.expired.token", "Token expired.");
-		if (!token.token.equals(code.toUpperCase())) throw new BadRequestException("error.invalid.securitytoken", "Token not correct.");
+		String tk1 = token.token.toUpperCase().replaceAll("0", "O");
+		String tk2 = code.toUpperCase().replaceAll("0", "O");
+		if (!tk1.equals(tk2)) throw new BadRequestException("error.invalid.securitytoken", "Token not correct.");
 		return true;
 	}
 	

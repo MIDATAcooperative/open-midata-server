@@ -18,7 +18,7 @@ public class PreLoginSecured extends Security.Authenticator {
 	    } catch (AppException e) { return null; }	    
 	   
 		// id is the user id in String form
-		return tk.getUserId().toString();
+		return tk.getOwnerId().toString();
 	}
 
 	@Override

@@ -58,7 +58,7 @@ import utils.audit.AuditManager;
 import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
 import utils.auth.MobileAppSessionToken;
-import utils.auth.MobileAppToken;
+import utils.auth.OAuthRefreshToken;
 import utils.auth.RecordToken;
 import utils.auth.Rights;
 import utils.auth.TokenCrypto;
@@ -186,7 +186,7 @@ public class MobileAPI extends Controller {
 		boolean deprecated = false;
 		KeyManager.instance.login(60000l, false);
 		if (json.has("refreshToken")) {
-			MobileAppToken refreshToken = MobileAppToken.decrypt(JsonValidation.getString(json, "refreshToken"));
+			OAuthRefreshToken refreshToken = OAuthRefreshToken.decrypt(JsonValidation.getString(json, "refreshToken"));
 			if (refreshToken.created + MobileAPI.DEFAULT_REFRESHTOKEN_EXPIRATION_TIME < System.currentTimeMillis()) return MobileAPI.invalidToken();
 			appInstanceId = refreshToken.appInstanceId;
 			
@@ -323,7 +323,7 @@ public class MobileAPI extends Controller {
 	 */
 	public static Result authResult(MidataId executor, UserRole role, MobileAppInstance appInstance, Map<String, Object> meta, String phrase, boolean deprecated) throws AppException {
 		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, phrase, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME, role); 
-        MobileAppToken refresh = new MobileAppToken(appInstance.applicationId, appInstance._id, appInstance.owner, phrase, System.currentTimeMillis());
+        OAuthRefreshToken refresh = new OAuthRefreshToken(appInstance.applicationId, appInstance._id, appInstance.owner, phrase, System.currentTimeMillis());
 		
         meta.put("created", refresh.created);
         RecordManager.instance.setMeta(executor, appInstance._id, "_app", meta);
