@@ -113,7 +113,7 @@ public class Terms extends APIController {
 		if (user == null) throw new InternalServerException("error.internal", "Session user does not exist.");
 		user.agreedToTerms(terms, app);
 		
-		return Application.loginHelper(user);	
+		return OAuth2.loginHelper();	
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)

@@ -149,7 +149,7 @@ public class Studies extends APIController {
 			return inputerror("name", "exists", "A study with this name already exists.");
 
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		MidataId research = PortalSessionToken.session().getOrg();
+		MidataId research = PortalSessionToken.session().getOrgId();
 
 		if (research == null)
 			throw new InternalServerException("error.internal", "No organization associated with session.");
@@ -229,7 +229,7 @@ public class Studies extends APIController {
 	@Security.Authenticated(ResearchSecured.class)
 	public Result download(String id) throws AppException, IOException {
 		MidataId studyid = new MidataId(id);
-		MidataId owner = PortalSessionToken.session().getOrg();
+		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 
 		Study study = Study.getById(studyid, Sets.create("name", "type", "executionStatus", "participantSearchStatus", "validationStatus", "owner", "groups", "createdBy", "code"));
@@ -302,7 +302,7 @@ public class Studies extends APIController {
 	public Result downloadFHIR(String id, final String studyGroup, final String mode) throws AppException, IOException {
 
 		final MidataId studyid = new MidataId(id);
-		MidataId owner = PortalSessionToken.session().getOrg();
+		MidataId owner = PortalSessionToken.session().getOrgId();
 		final MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
         final UserRole role = getRole();
 		final Study study = Study.getById(studyid, Sets.create("name", "type", "executionStatus", "participantSearchStatus", "validationStatus", "owner", "groups", "createdBy", "code"));
@@ -466,7 +466,7 @@ public class Studies extends APIController {
 	@Security.Authenticated(ResearchSecured.class)
 	public Result list() throws JsonValidationException, InternalServerException {
 		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		MidataId owner = PortalSessionToken.session().getOrg();
+		MidataId owner = PortalSessionToken.session().getOrgId();
 
 		Set<UserGroupMember> ugms = UserGroupMember.getAllByMember(executorId);
 		Set<MidataId> ids = new HashSet<MidataId>();
@@ -514,7 +514,7 @@ public class Studies extends APIController {
 
 		MidataId studyid = new MidataId(id);
 		MidataId userid = MidataId.from(request().attrs().get(play.mvc.Security.USERNAME));
-		MidataId owner = PortalSessionToken.session().getOrg();
+		MidataId owner = PortalSessionToken.session().getOrgId();
 
 		Set<String> fields = Sets.create("createdAt", "createdBy", "description", "executionStatus", "name", "participantSearchStatus", "validationStatus", "infos", "infosPart", "infosInternal", "owner", "participantRules",
 				"recordQuery", "studyKeywords", "code", "groups", "requiredInformation", "anonymous", "assistance", "termsOfUse", "requirements", "startDate", "endDate", "dataCreatedBefore", "myRole",
@@ -573,7 +573,7 @@ public class Studies extends APIController {
 		JsonValidation.validate(json, "count", "reuseable");
 
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		MidataId owner = PortalSessionToken.session().getOrg();
+		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
 
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
@@ -630,7 +630,7 @@ public class Studies extends APIController {
 	@Security.Authenticated(ResearchSecured.class)
 	public Result listCodes(String id) throws JsonValidationException, AppException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		MidataId owner = PortalSessionToken.session().getOrg();
+		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
 
 		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner", "executionStatus", "participantSearchStatus", "validationStatus"));
@@ -659,7 +659,7 @@ public class Studies extends APIController {
 	@Security.Authenticated(ResearchSecured.class)
 	public Result startValidation(String id) throws JsonValidationException, AppException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		MidataId owner = PortalSessionToken.session().getOrg();
+		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
 
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
@@ -813,7 +813,7 @@ public class Studies extends APIController {
 	@Security.Authenticated(ResearchSecured.class)
 	public Result startParticipantSearch(String id) throws JsonValidationException, AppException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		MidataId owner = PortalSessionToken.session().getOrg();
+		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
 
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
@@ -857,7 +857,7 @@ public class Studies extends APIController {
 	@Security.Authenticated(ResearchSecured.class)
 	public Result endParticipantSearch(String id) throws JsonValidationException, AppException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		MidataId owner = PortalSessionToken.session().getOrg();
+		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
 
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
@@ -899,7 +899,7 @@ public class Studies extends APIController {
 	@Security.Authenticated(ResearchSecured.class)
 	public Result startExecution(String id) throws JsonValidationException, AppException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		MidataId owner = PortalSessionToken.session().getOrg();
+		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
 
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
@@ -943,7 +943,7 @@ public class Studies extends APIController {
 	@Security.Authenticated(ResearchSecured.class)
 	public Result finishExecution(String id) throws JsonValidationException, AppException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		MidataId owner = PortalSessionToken.session().getOrg();
+		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
 
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
@@ -1004,7 +1004,7 @@ public class Studies extends APIController {
 	@Security.Authenticated(ResearchSecured.class)
 	public Result abortExecution(String id) throws JsonValidationException, AppException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		MidataId owner = PortalSessionToken.session().getOrg();
+		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
 
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
@@ -1155,7 +1155,7 @@ public class Studies extends APIController {
 	@Security.Authenticated(ResearchSecured.class)
 	public Result shareWithGroup(String id, String group) throws AppException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		MidataId owner = PortalSessionToken.session().getOrg();
+		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
 		if (group != null && (group.equals("undefined") || group.equals("null")))
 			group = null;
@@ -1538,7 +1538,7 @@ public class Studies extends APIController {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId studyId = new MidataId(id);
 		MidataId partId = new MidataId(JsonValidation.getString(json, "member"));
-		MidataId owner = PortalSessionToken.session().getOrg();
+		MidataId owner = PortalSessionToken.session().getOrgId();
 		String comment = JsonValidation.getString(json, "comment");
 
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
@@ -1660,7 +1660,7 @@ public class Studies extends APIController {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId studyId = new MidataId(id);
 		MidataId partId = new MidataId(JsonValidation.getString(json, "member"));
-		MidataId owner = PortalSessionToken.session().getOrg();
+		MidataId owner = PortalSessionToken.session().getOrgId();
 		String comment = JsonValidation.getString(json, "comment");
 
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
@@ -1714,7 +1714,7 @@ public class Studies extends APIController {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId studyId = new MidataId(id);
 		MidataId partId = new MidataId(JsonValidation.getString(json, "member"));
-		MidataId owner = PortalSessionToken.session().getOrg();
+		MidataId owner = PortalSessionToken.session().getOrgId();
 		String comment = JsonValidation.getString(json, "comment");
 
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
@@ -1749,7 +1749,7 @@ public class Studies extends APIController {
 	@Security.Authenticated(ResearchSecured.class)
 	public Result getRequiredInformationSetup(String id) throws JsonValidationException, AppException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		MidataId owner = PortalSessionToken.session().getOrg();
+		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
 
 		Study study = Study.getById(studyid, Sets.create("owner", "executionStatus", "participantSearchStatus", "validationStatus", "requiredInformation", "anonymous", "assistance"));
@@ -1777,7 +1777,7 @@ public class Studies extends APIController {
 		boolean anonymous = JsonValidation.getBoolean(json, "anonymous");
 
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		MidataId owner = PortalSessionToken.session().getOrg();
+		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
 
 		Study study = Study.getById(studyid, Sets.create("name", "type", "owner", "executionStatus", "participantSearchStatus", "validationStatus", "requiredInformation", "anonymous", "createdBy", "code"));
@@ -1823,7 +1823,7 @@ public class Studies extends APIController {
 		// JsonValidation.validate(json, "groups");
 
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		MidataId owner = PortalSessionToken.session().getOrg();
+		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
 
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
@@ -2003,7 +2003,7 @@ public class Studies extends APIController {
 	@Security.Authenticated(ResearchSecured.class)
 	public Result delete(String id) throws JsonValidationException, AppException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		MidataId owner = PortalSessionToken.session().getOrg();
+		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
 
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));

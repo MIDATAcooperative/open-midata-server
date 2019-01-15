@@ -417,7 +417,7 @@ public class Administration extends APIController {
 		}
 							
 		if (getRole().equals(UserRole.PROVIDER)) {
-			HealthcareProvider.delete(PortalSessionToken.session().org);
+			HealthcareProvider.delete(PortalSessionToken.session().orgId);
 		}
 		
 		KeyRecoveryProcess.delete(userId);
@@ -469,7 +469,7 @@ public class Administration extends APIController {
 	@Security.Authenticated(AdminSecured.class)
 	public Result deleteStudy(String id) throws JsonValidationException, AppException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		MidataId owner = PortalSessionToken.session().getOrg();
+		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
 		
 		

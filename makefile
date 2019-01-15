@@ -197,7 +197,8 @@ platform/conf/application.conf: platform/conf/application.conf.template conf/set
 	sed -i 's|MAIL_SECURITY_TARGET|$(MAIL_SECURITY_TARGET)|' platform/conf/application.conf
 	sed -i 's|MAIL_ADMIN|$(MAIL_ADMIN)|' platform/conf/application.conf
 	sed -i 's|DEFAULT_LANGUAGE|$(DEFAULT_LANGUAGE)|' platform/conf/application.conf
-	sed -i 's|ROOTDIR|$(abspath .)|' platform/conf/application.conf	
+	sed -i 's|ROOTDIR|$(abspath .)|' platform/conf/application.conf
+	sed -i 's|SMS_OAUTH_TOKEN|$(SMS_OAUTH_TOKEN)|' platform/conf/application.conf	
 	
 config/instance.json: config/instance-template.json conf/pathes.conf conf/setup.conf
 	$(info ------------------------------)

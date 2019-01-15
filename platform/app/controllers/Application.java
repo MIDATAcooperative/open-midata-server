@@ -24,6 +24,7 @@ import models.HPUser;
 import models.KeyInfoExtern;
 import models.Member;
 import models.MidataId;
+import models.Plugin;
 import models.ResearchUser;
 import models.User;
 import models.enums.AccountActionFlags;
@@ -50,6 +51,7 @@ import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
+import utils.auth.ExtendedSessionToken;
 import utils.auth.FutureLogin;
 import utils.auth.KeyManager;
 import utils.auth.PasswordResetToken;
@@ -68,8 +70,10 @@ import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.messaging.Messager;
+import utils.messaging.SMSUtils;
 import views.txt.mails.adminnotify;
 import views.txt.mails.lostpwmail;
+import utils.auth.auth2factor.Authenticator;
 
 /**
  * Member login, registration and password reset functions 
@@ -259,7 +263,13 @@ public class Application extends APIController {
 			// execute
 			userId = passwordResetToken.userId;
 			token = passwordResetToken.token;
-			role = passwordResetToken.role;		
+			role = passwordResetToken.role;	
+			
+			ExtendedSessionToken stoken = new ExtendedSessionToken();
+			stoken.userRole = UserRole.valueOf(role);
+			stoken.ownerId = userId;
+			stoken.set();
+			
 		} else {
 			JsonValidation.validate(json, "userId", "code", "role");
 			userId = JsonValidation.getMidataId(json, "userId");
@@ -300,7 +310,7 @@ public class Application extends APIController {
 		if (wanted != null) {
 			if (user!=null && !user.emailStatus.equals(EMailStatus.VALIDATED)) {
 				if (user.password == null) {					
-					return loginHelper(user, null, true);
+					return OAuth2.loginHelper();	
 				}
 			       if (user.resettoken != null 		    		    
 			    		   && user.resettoken.equals(token)
@@ -344,7 +354,7 @@ public class Application extends APIController {
 		
 		user.set("resettoken", null);		
 		AuditManager.instance.success();		
-		return loginHelper(user, null, true);	
+		return OAuth2.loginHelper();	
 				
 	}
 	
@@ -384,7 +394,7 @@ public class Application extends APIController {
 		checkAccount(user);
 					
 		// response
-		return loginHelper(user, null, true);		
+		return OAuth2.loginHelper();		
 	}
 	
 	public static void checkAccount(User user) throws AppException {
@@ -523,12 +533,18 @@ public class Application extends APIController {
 		// validate 
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "email", "password");	
-		String email = JsonValidation.getEMail(json, "email");
-		String password = JsonValidation.getString(json, "password");
-		String sessionToken = JsonValidation.getStringOrNull(json, "sessionToken"); 
+			
+		ExtendedSessionToken token = new ExtendedSessionToken();
+		
+		token.created = System.currentTimeMillis();                               
+	    token.userRole = json.has("role") ? JsonValidation.getEnum(json, "role", UserRole.class) : UserRole.MEMBER;                
+										    				
+		return OAuth2.loginHelper(token, json, null, null);
+		
+		
 		
 		// check status
-		Member user = Member.getByEmail(email , User.FOR_LOGIN);
+		/*Member user = Member.getByEmail(email , User.FOR_LOGIN);
 		if (user == null) {
 			Set<User> alts = User.getAllUser(CMaps.map("emailLC", email.toLowerCase()).map("status", User.NON_DELETED).map("role", Sets.create(UserRole.DEVELOPER.toString(), UserRole.RESEARCH.toString(), UserRole.PROVIDER.toString())), Sets.create("role"));
 			if (!alts.isEmpty()) {				
@@ -545,11 +561,11 @@ public class Application extends APIController {
 							
 		if (user.publicExtKey == null || sessionToken != null) AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user);
 		
-		Result checkrecovery = PWRecovery.checkAuthentication(user, password, sessionToken);
+		Result checkrecovery = PWRecovery.checkAuthentication(null, user, password, sessionToken);
 		if (checkrecovery != null) return checkrecovery;
 					
-		return loginHelper(user, sessionToken, false);					
-	
+		return loginHelper(user, sessionToken, securityToken, false);					
+	*/
 	}
 	
 	/*
@@ -588,7 +604,7 @@ public class Application extends APIController {
 		return missing;
 	}
 	
-	public static Result loginHelperResult(User user, Set<UserFeature> missing) throws AppException {
+	public static Result loginHelperResult(PortalSessionToken token, User user, Set<UserFeature> missing) throws AppException {
 		ObjectNode obj = Json.newObject();
 		obj.put("status", user.status.toString());
 		obj.put("contractStatus", user.contractStatus.toString());		
@@ -599,24 +615,28 @@ public class Application extends APIController {
 		obj.put("confirmationCode", user.confirmationCode == null);
 		obj.put("role", user.role.toString().toLowerCase());
 		obj.put("userId", user._id.toString());
-		obj.put("user", JsonOutput.toJsonNode(user, "User", User.ALL_USER));
+		obj.set("user", JsonOutput.toJsonNode(user, "User", User.ALL_USER));
+		token.setRemoteAddress(request());
+		obj.put("sessionToken", token.encrypt());
 		
+		/*
 		if (user.status.equals(UserStatus.ACTIVE) || user.status.equals(UserStatus.NEW)) {			
 		   String handle = KeyManager.instance.currentHandleOptional(user._id);
 		   if (handle != null) {
 			   PortalSessionToken token = null;		   	
 			   token = new PortalSessionToken(handle, user._id, UserRole.ANY, null, user.developer);
-			   obj.put("sessionToken", token.encrypt(request()));
+			   token.setRemoteAddress(request());
+			   obj.put("sessionToken", token.encrypt());
 			   //KeyManager.instance.unlock(user._id, null);
 			   KeyManager.instance.persist(user._id);
 		   }
-		}
+		}*/
 					
 		AuditManager.instance.success();
 		return ok(obj);
 	}
 	
-	public static Result loginChallenge(User user) throws InternalServerException {
+	public static Result loginChallenge(PortalSessionToken token, User user) throws InternalServerException {
 		FutureLogin fl = FutureLogin.getById(user._id);
 		
 		KeyInfoExtern key = KeyInfoExtern.getById(user._id);
@@ -628,22 +648,13 @@ public class Application extends APIController {
 		obj.put("pub", user.publicExtKey);
 		obj.put("recoverKey", user.recoverKey);
 		obj.put("userid", user._id.toString());
+		if (token != null) obj.put("sessionToken", token.encrypt());
 		
 		return ok(obj);
 	}
-	
-	/**
-	 * Helper function for all login / registration type functions.
-	 * Returns correct response to login request
-	 * @param user the user to be logged in. May have any role.
-	 * @return
-	 * @throws AppException
-	 */
-	public static Result loginHelper(User user) throws AppException {
-		return loginHelper(user, null, false);
-	}
-	
-	public static Result loginHelper(User user, String sessionToken, boolean nosession) throws AppException {
+				
+	/*
+	public static Result loginHelper(User user, String sessionToken, String securityToken, boolean nosession, boolean skipTwoFactor) throws AppException {
 		boolean newVersion = user.publicExtKey != null;
 		
 		String handle = null;
@@ -652,7 +663,7 @@ public class Application extends APIController {
 		if (newVersion) {
 			if (sessionToken == null) {
 			  handle = KeyManager.instance.currentHandleOptional(user._id);
-			  if (handle == null && !nosession) return loginChallenge(user);
+			  if (handle == null && !nosession) return loginChallenge(null, user); // XXX token
 			  keytype = KeyManager.KEYPROTECTION_AESKEY;
 			} else {
 			  handle = KeyManager.instance.login(PortalSessionToken.LIFETIME, true);
@@ -665,6 +676,23 @@ public class Application extends APIController {
 			
 		Set<UserFeature> notok = loginHelperPreconditionsFailed(user, InstanceConfig.getInstance().getInstanceType().defaultRequirementsPortalLogin(user.role));
 	
+		if (notok!=null && skipTwoFactor) {
+			notok.remove(UserFeature.AUTH2FACTOR);
+			if (notok.isEmpty()) notok = null;
+		}
+		if (notok!=null && notok.contains(UserFeature.AUTH2FACTOR) && SMSUtils.isAvailable()) {
+			if (securityToken == null) {
+				Authenticator.startAuthentication(user._id, "Token", user.mobile);
+			} else {
+				Authenticator.checkAuthentication(user._id, securityToken);
+				notok.remove(UserFeature.AUTH2FACTOR);
+				if (notok.isEmpty()) {
+					notok = null;
+					Authenticator.finishAuthentication(user._id);
+				}
+			}
+		}
+		
 		if (user.role == UserRole.RESEARCH && !(user instanceof ResearchUser)) {
 			user = ResearchUser.getById(user._id, Sets.create(User.FOR_LOGIN, "organization"));
 		} else if (user.role == UserRole.PROVIDER && !(user instanceof HPUser)) {
@@ -684,11 +712,12 @@ public class Application extends APIController {
 			   token = new PortalSessionToken(handle, user._id, user.role, null, user.developer);
 			}
 			
-			obj.put("sessionToken", token.encrypt(request()));
+			token.setRemoteAddress(request());
+			obj.put("sessionToken", token.encrypt());
 		}
 								
 		if (notok!=null) {
-		  return loginHelperResult(user, notok);
+		  return loginHelperResult(token, user, notok);
 		} else {						
 				 		  		  
 		  if (keytype == 0 && handle != null) {
@@ -705,16 +734,18 @@ public class Application extends APIController {
 	    
 	    AuditManager.instance.success();
 		return ok(obj);
-	}
+	}*/
 	
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
 	public Result downloadToken() throws AppException {
 		PortalSessionToken current = PortalSessionToken.session();
-		PortalSessionToken token = new PortalSessionToken(current.getHandle(), current.getUserId(), current.getRole(), current.getOrg(), current.getDeveloper());
+		PortalSessionToken token = new PortalSessionToken(current.getHandle(), current.getOwnerId(), current.getRole(), current.getOrgId(), current.getDeveloperId());
 		
 		ObjectNode obj = Json.newObject();
-		obj.put("token", token.encrypt(request(), 1000 * 10));
+		token.setRemoteAddress(request());
+		token.setTimeout(1000 * 10);
+		obj.put("token", token.encrypt());
 		
 		return ok(obj);
 	}
@@ -800,6 +831,7 @@ public class Application extends APIController {
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);
 		
+		String handle;
 		if (json.has("priv_pw")) {
 		  String pub = JsonValidation.getString(json, "pub");
 		  String pk = JsonValidation.getString(json, "priv_pw");
@@ -807,7 +839,7 @@ public class Application extends APIController {
 		  		        	      		  		
 		  user.publicExtKey = KeyManager.instance.readExternalPublicKey(pub);		  
 		  KeyManager.instance.saveExternalPrivateKey(user._id, pk);		  
-		  KeyManager.instance.login(PortalSessionToken.LIFETIME, true);
+		  handle = KeyManager.instance.login(PortalSessionToken.LIFETIME, true);
 		  
 		  user.security = AccountSecurityLevel.KEY_EXT_PASSWORD;		
 		  user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(user._id, null);
@@ -823,14 +855,15 @@ public class Application extends APIController {
 		  PatientResourceProvider.updatePatientForAccount(user._id);
 		  		  		  		  
 		} else {
-		  registerCreateUser(user);		
+		  handle = registerCreateUser(user);		
 		}
 		Circles.fetchExistingConsents(user._id, user.emailLC);
 		
 		sendWelcomeMail(user, null);
 		if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) sendAdminNotificationMail(user);
 		
-		return loginHelper(user);		
+		
+		return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle), json, null, user._id);				
 	}
 	
 	/**
@@ -867,17 +900,19 @@ public class Application extends APIController {
 	 * @param user the new user
 	 * @throws AppException
 	 */
-	public static void registerCreateUser(Member user) throws AppException {
+	public static String registerCreateUser(Member user) throws AppException {
 		user.security = AccountSecurityLevel.KEY;		
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);								
 		Member.add(user);
-		KeyManager.instance.login(PortalSessionToken.LIFETIME, true);
+		String handle = KeyManager.instance.login(PortalSessionToken.LIFETIME, true);
 		KeyManager.instance.unlock(user._id, null);	
 		
 		user.myaps = RecordManager.instance.createPrivateAPS(user._id, user._id);
 		Member.set(user._id, "myaps", user.myaps);
 		
 		PatientResourceProvider.updatePatientForAccount(user._id);
+		
+		return handle;
 	}
 	
 	/**
@@ -893,7 +928,7 @@ public class Application extends APIController {
 		   if (newuser.developer != null) {
 			  PortalSessionToken token = PortalSessionToken.decrypt(request());
 			  if (token == null) throw new AuthException("error.internal", "You need to be logged in as this developer");
-		     if (!newuser.developer.equals(token.userId)) throw new AuthException("error.internal", "You need to be logged in as this developer");
+		     if (!newuser.developer.equals(token.ownerId)) throw new AuthException("error.internal", "You need to be logged in as this developer");
 		     newuser.status = UserStatus.ACTIVE;
 		   }
 		}

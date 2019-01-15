@@ -60,6 +60,10 @@ angular.module('services')
 		cred.unlockCode = code;
 	};
 	
+	service.setSecurityToken = function(token) {
+		cred.securityToken = token;
+	};
+	
 	service.getAppname =function() {
 		return cred.appname;
 	};
@@ -88,12 +92,22 @@ angular.module('services')
 		.then(function(result) {
 			if (result.data.istatus === "ACTIVE") {							
 				  cred.appname = null;
+				  session.debugReturn();
 				  document.location.href = cred.redirectUri + "?state=" + encodeURIComponent(cred.state) + "&code=" + result.data.code;
 				  return "ACTIVE";
 			} else
 			return result.data;
 			
 		});
+	};
+	
+	service.postLogin = function(result) {
+		if (result.data.istatus === "ACTIVE") {							
+			  cred.appname = null;
+			  session.debugReturn();
+			  document.location.href = cred.redirectUri + "?state=" + encodeURIComponent(cred.state) + "&code=" + result.data.code;
+			  return "ACTIVE";
+		} else return result.data;
 	};
 	
 	return service;

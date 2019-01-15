@@ -27,6 +27,7 @@ import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.ExecutionInfo;
+import utils.auth.ExtendedSessionToken;
 import utils.auth.KeyManager;
 import utils.auth.PortalSessionToken;
 import utils.exceptions.AppException;
@@ -153,7 +154,7 @@ public class QuickRegistration extends APIController {
 		user.agreedToTerms(app.termsOfUse, user.initialApp);
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user, app._id);
-		
+		String handle;
 		if (json.has("priv_pw")) {
 			  String pub = JsonValidation.getString(json, "pub");
 			  String pk = JsonValidation.getString(json, "priv_pw");
@@ -161,7 +162,7 @@ public class QuickRegistration extends APIController {
 			  user.publicExtKey = KeyManager.instance.readExternalPublicKey(pub);
 			  
 			  KeyManager.instance.saveExternalPrivateKey(user._id, pk);			  
-			  KeyManager.instance.login(PortalSessionToken.LIFETIME, true);
+			  handle = KeyManager.instance.login(PortalSessionToken.LIFETIME, true);
 			  
 			  user.security = AccountSecurityLevel.KEY_EXT_PASSWORD;		
 			  user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(user._id, null);								
@@ -174,7 +175,7 @@ public class QuickRegistration extends APIController {
 				
 			  PatientResourceProvider.updatePatientForAccount(user._id);
 		} else {
-		      Application.registerCreateUser(user);
+		      handle = Application.registerCreateUser(user);
 		}
 		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, requirements);
 		
@@ -187,11 +188,12 @@ public class QuickRegistration extends APIController {
 			
 			if (device != null) {
 			   MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, device, true, confirmStudy);
+			   return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withAppInstance(appInstance), json, app, user._id);
 			}
 					
-			return Application.loginHelper(user);
+			return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device), json, app, user._id);
 		} else {
-			return Application.loginHelperResult(user, notok);
+			return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device), json, app, user._id);
 		}
 	}
 	

@@ -11,6 +11,7 @@ import models.MessageDefinition;
 import models.MidataId;
 import models.Plugin;
 import models.User;
+import models.enums.MessageChannel;
 import models.enums.MessageReason;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
@@ -23,30 +24,41 @@ import utils.exceptions.AppException;
 public class Messager {
 
 	private static ActorRef mailSender;
+	
+	private static ActorRef smsSender;
 		
 	private static ActorSystem system;
 	
 	public static void init(ActorSystem system1) {
 		system = system1;
 		mailSender = system.actorOf(Props.create(MailSender.class), "mailSender");
+		smsSender = system.actorOf(Props.create(SMSSender.class), "smsSender");
 	}
 	
 	public static void sendTextMail(String email, String fullname, String subject, String content) {		
 		mailSender.tell(new Message(email, fullname, subject, content), ActorRef.noSender());
 	}
 	
+	public static void sendSMS(String phone, String text) {
+		smsSender.tell(new SMS(phone, text), ActorRef.noSender());
+	}
+
 	public static boolean sendMessage(MidataId sourcePlugin, MessageReason reason, String code, Set targets, String defaultLanguage, Map<String, String> replacements) throws AppException {
+		return sendMessage(sourcePlugin, reason, code, targets, defaultLanguage, replacements, MessageChannel.EMAIL);
+	}
+	
+	public static boolean sendMessage(MidataId sourcePlugin, MessageReason reason, String code, Set targets, String defaultLanguage, Map<String, String> replacements, MessageChannel channel) throws AppException {
 		if (targets == null || targets.isEmpty()) return false;
 		Plugin plugin = Plugin.getById(sourcePlugin, Sets.create("predefinedMessages", "name"));
 		if (plugin.predefinedMessages != null) {
 		  replacements.put("plugin-name", plugin.name);
 		  replacements.put("midata-portal-url", "https://" + InstanceConfig.getInstance().getPortalServerDomain());
-		  return sendMessage(plugin.predefinedMessages, reason, code, targets, defaultLanguage, replacements);
+		  return sendMessage(plugin.predefinedMessages, reason, code, targets, defaultLanguage, replacements, channel);
 		}
 		return false;
 	}
 	
-	public static boolean sendMessage(Map<String, MessageDefinition> messageDefinitions, MessageReason reason, String code, Set targets, String defaultLanguage, Map<String, String> replacements) throws AppException {
+	public static boolean sendMessage(Map<String, MessageDefinition> messageDefinitions, MessageReason reason, String code, Set targets, String defaultLanguage, Map<String, String> replacements, MessageChannel channel) throws AppException {
 		if (targets.isEmpty()) return false;
 		
 		MessageDefinition msg = null; 
@@ -61,25 +73,25 @@ public class Messager {
 		  if (footerDefs != null) footers = footerDefs.text;
 		}
 		
-		sendMessage(msg, footers, targets, defaultLanguage, replacements);
+		sendMessage(msg, footers, targets, defaultLanguage, replacements, channel);
 		
 		return true;
 	}
 	
-	public static void sendMessage(MessageDefinition messageDefinition, Map<String, String> footers, Set targets, String defaultLanguage, Map<String, String> replacements) throws AppException {	
+	public static void sendMessage(MessageDefinition messageDefinition, Map<String, String> footers, Set targets, String defaultLanguage, Map<String, String> replacements, MessageChannel channel) throws AppException {	
 		for (Object target : targets) {
 			if (target instanceof MidataId) {
 				MidataId userId = (MidataId) target;
 				User user = User.getById(userId, Sets.create("email", "firstname", "lastname", "language"));
-				if (user != null) sendMessage(messageDefinition, footers, user, replacements);
+				if (user != null) sendMessage(messageDefinition, footers, user, replacements, channel);
 			} else if (target instanceof String) {
-				sendMessage(messageDefinition, footers, target.toString(), null, defaultLanguage, replacements);
+				sendMessage(messageDefinition, footers, target.toString(), null, defaultLanguage, replacements, channel);
 			}
 			
 		}
 	}
 	
-	public static void sendMessage(MessageDefinition messageDefinition, Map<String, String> footers, User member, Map<String, String> replacements) {				
+	public static void sendMessage(MessageDefinition messageDefinition, Map<String, String> footers, User member, Map<String, String> replacements, MessageChannel channel) {				
 		String email = member.email;
 		if (email == null) return;
 		String fullname = member.firstname+" "+member.lastname;
@@ -102,11 +114,19 @@ public class Messager {
 		    subject = subject.replaceAll(key, replacement.getValue());
 		    content = content.replaceAll(key, replacement.getValue());
 		}
+		String phone = member.mobile;
 		
-		Messager.sendTextMail(email, fullname, subject, content);
+		if (phone == null) phone = member.phone;
+		if (phone == null) channel = MessageChannel.EMAIL;
+		
+		if (channel.equals(MessageChannel.SMS)) {
+		   Messager.sendSMS(phone, content);
+		} else {
+		   Messager.sendTextMail(email, fullname, subject, content);
+		}
 	}
 	
-	public static void sendMessage(MessageDefinition messageDefinition, Map<String, String> footers, String email, String fullname, String language, Map<String, String> replacements) {				
+	public static void sendMessage(MessageDefinition messageDefinition, Map<String, String> footers, String email, String fullname, String language, Map<String, String> replacements, MessageChannel channel) {				
 
 		String subject = messageDefinition.title.get(language);
 		if (subject == null) subject = messageDefinition.title.get(InstanceConfig.getInstance().getDefaultLanguage());
@@ -138,7 +158,11 @@ public class Messager {
 		    content = content.replaceAll(key, replacement.getValue());
 		}
 		
-		Messager.sendTextMail(email, fullname, subject, content);
+		if (channel.equals(MessageChannel.SMS)) {
+		  Messager.sendSMS(email, content);
+		} else {
+		  Messager.sendTextMail(email, fullname, subject, content);
+		}
 	}
 }
 
@@ -160,7 +184,34 @@ class MailSender extends AbstractActor {
 			  MailUtils.sendTextMail(msg.getReceiverEmail(), msg.getReceiverName(), msg.getSubject(), msg.getText());
 			}			
 		} catch (Exception e) {
-			ErrorReporter.report("Messager", null, e);	
+			ErrorReporter.report("Messager (EMail)", null, e);	
+			throw e;
+		} finally {
+			ServerTools.endRequest();			
+		}
+	}
+	
+}
+
+class SMSSender extends AbstractActor {
+	
+	public SMSSender() {							    
+	}
+	
+	@Override
+	public Receive createReceive() {
+	    return receiveBuilder()
+	      .match(SMS.class, this::sendSMS)	      
+	      .build();
+	}
+		
+	public void sendSMS(SMS msg) throws Exception {
+		try {		
+			if (!InstanceConfig.getInstance().getInstanceType().disableMessaging()) {			  
+			   SMSUtils.sendSMS(msg.getPhone(), msg.getText());
+			}			
+		} catch (Exception e) {
+			ErrorReporter.report("Messager (SMS)", null, e);	
 			throw e;
 		} finally {
 			ServerTools.endRequest();			

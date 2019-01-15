@@ -2,7 +2,7 @@ angular.module('services')
 .factory('apps', ['server', '$q', 'session', '$filter', function(server, $q, session, $filter) {
 	var service = {};
 
-	service.userfeatures = ['EMAIL_ENTERED', 'EMAIL_VERIFIED', 'PHONE_ENTERED', 'PHONE_VERIFIED', 'ADDRESS_ENTERED' ,'ADDRESS_VERIFIED', 'PASSPORT_VERIFIED', 'MIDATA_COOPERATIVE_MEMBER', 'ADMIN_VERIFIED'];
+	service.userfeatures = ['EMAIL_ENTERED', 'EMAIL_VERIFIED', 'PHONE_ENTERED', 'PHONE_VERIFIED', 'AUTH2FACTOR', 'ADDRESS_ENTERED' ,'ADDRESS_VERIFIED', 'PASSPORT_VERIFIED', 'MIDATA_COOPERATIVE_MEMBER', 'ADMIN_VERIFIED'];
 	
 	service.writemodes = ['NONE', 'UPDATE_EXISTING', 'UPDATE_AND_CREATE', 'WRITE_ANY'];
 	

@@ -20,6 +20,18 @@
 						    <li translate="postregister.keyrecovery.way4"></li>
 						  </ul>
 						</div>
+						
+						<div ng-show="progress.AUTH2FACTOR">
+						   <p translate="postregister.auth2factor"></p>
+						   <form ng-submit="setSecurityToken()" role="form" class="form form-horizontal">
+						      <formrow myid="securityToken" label="postregister.securityToken">
+								<input type="text" class="form-control" floating-label ng-model="setpw.securityToken" style="margin-bottom:5px;" autofocus>
+							  </formrow>							  
+							  <div class="extraspace"></div>
+							  <button type="submit" ng-disabled="status.action=='token'" class="btn btn-primary btn-block" translate="postregister.securityToken_btn"></button>
+							  <div class="extraspace"></div>
+						   </form>
+						</div>
 							
 						<div ng-show="progress.PASSWORD_SET">
 						   <p translate="setpw.enter_new"></p>

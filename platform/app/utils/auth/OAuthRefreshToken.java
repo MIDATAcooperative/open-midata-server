@@ -16,7 +16,7 @@ import utils.exceptions.InternalServerException;
  * This token can be exchanged into a session token when the user logs in on his mobile device
  *
  */
-public class MobileAppToken {
+public class OAuthRefreshToken {
 
 	/**
 	 * the id of the application instance
@@ -43,7 +43,7 @@ public class MobileAppToken {
 	 */
 	public long created;
 
-	public MobileAppToken(MidataId appId, MidataId instanceId, MidataId ownerId, String phrase, long created) {
+	public OAuthRefreshToken(MidataId appId, MidataId instanceId, MidataId ownerId, String phrase, long created) {
 		this.appInstanceId = instanceId;
 		this.appId = appId;
 		this.ownerId = ownerId;
@@ -60,7 +60,7 @@ public class MobileAppToken {
 	/**
 	 * The secret passed here can be an arbitrary string, so check all possible exceptions.
 	 */
-	public static MobileAppToken decrypt(String unsafeSecret) {
+	public static OAuthRefreshToken decrypt(String unsafeSecret) {
 		try {
 			// decryptAES can throw DecoderException, but there is no way to catch it; catch all exceptions for now...
 			String plaintext = TokenCrypto.decryptToken(unsafeSecret);
@@ -70,7 +70,7 @@ public class MobileAppToken {
 			MidataId ownerId = new MidataId(json.get("o").asText());
 			String phrase = json.get("p").asText();		
 			long created = json.get("c").asLong();
-			return new MobileAppToken(appId, instanceId, ownerId, phrase, created);
+			return new OAuthRefreshToken(appId, instanceId, ownerId, phrase, created);
 		} catch (Exception e) {
 			return null;
 		}

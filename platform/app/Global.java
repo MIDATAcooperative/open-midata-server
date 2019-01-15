@@ -35,6 +35,8 @@ import utils.fhir.ResourceProvider;
 import utils.json.CustomObjectMapper;
 import utils.messaging.MailUtils;
 import utils.messaging.Messager;
+import utils.messaging.SMSAPIProvider;
+import utils.messaging.SMSUtils;
 import utils.messaging.ServiceHandler;
 import utils.messaging.SubscriptionManager;
 import utils.servlet.PlayHttpServletConfig;
@@ -57,6 +59,10 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 	    
 	    System.out.println("EMails");
 	    MailUtils.setInstance(new MailUtils(mailerClient, config));
+	    
+	    System.out.println("SMS");
+	    
+	    SMSUtils.setInstance(ws, config);
 	    
 	    System.out.println("Database connection");
 		try {

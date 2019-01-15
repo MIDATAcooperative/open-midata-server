@@ -74,7 +74,13 @@ public enum UserFeature {
 	/**
 	 * the user has agreed to the newest version of privacy policy
 	 */
-	NEWEST_PRIVACY_POLICY_AGREED;
+	NEWEST_PRIVACY_POLICY_AGREED,
+	
+	/**
+	 * user has been verified with 2-factory-authentication
+	 */
+	AUTH2FACTOR;
+	
 	/**
 	 * Does a user satisfy this feature?
 	 * @param user
@@ -99,6 +105,9 @@ public enum UserFeature {
 			case NEWEST_PRIVACY_POLICY_AGREED:
 				ic = InstanceConfig.getInstance();
 				return user.termsAgreed != null && user.termsAgreed.contains(ic.getPrivacyPolicy());
+			case AUTH2FACTOR:
+				// AUTH2FACTOR is handeled outside. If no phone is present this can be skipped. Use PHONE_ENTERED to force phone number to be present.
+				return user.mobile == null && user.phone == null;
 		}
 		return false;
 	}

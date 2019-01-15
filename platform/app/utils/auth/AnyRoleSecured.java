@@ -17,13 +17,13 @@ public class AnyRoleSecured extends Security.Authenticator {
 	@Override
 	public String getUsername(Context ctx) {
 	    PortalSessionToken tk = PortalSessionToken.decrypt(ctx.request());
-	    if (tk == null || tk.getRole() == UserRole.ANY) return null;
+	    if (tk == null || tk.getRole() == UserRole.ANY || tk instanceof ExtendedSessionToken) return null;
 	    try {
 	      KeyManager.instance.continueSession(tk.getHandle());
 	    } catch (AppException e) { return null; }	    
 	   
 		// id is the user id in String form
-		return tk.getUserId().toString();
+		return tk.getOwnerId().toString();
 	}
 
 	@Override

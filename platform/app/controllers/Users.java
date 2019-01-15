@@ -167,8 +167,8 @@ public class Users extends APIController {
 		ObjectNode obj = Json.newObject();	
 		PortalSessionToken session = PortalSessionToken.session();
 		obj.put("role", session.getRole().toString());
-		obj.put("user", session.getUserId().toString());
-		if (session.org != null) obj.put("org", session.org.toString());
+		obj.put("user", session.getOwnerId().toString());
+		if (session.orgId != null) obj.put("org", session.orgId.toString());
 																
 		return ok(obj);
 	}
