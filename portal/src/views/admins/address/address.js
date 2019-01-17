@@ -8,11 +8,11 @@ angular.module('portal')
     
 	$scope.reload = function() {
 		
-		$scope.status.doBusy(users.getMembers($scope.criteria, [ "midataID", "firstname", "lastname", "email", "role", "subroles", "status", "address1", "address2", "city", "confirmationCode", "agbStatus", "contractStatus", "emailStatus", "country", "email", "gender", "phone", "zip", "registeredAt", "login", "confirmedAt", "developer", "security" ]))
+		$scope.status.doBusy(users.getMembers($scope.criteria, [ "midataID", "firstname", "lastname", "email", "role", "subroles", "status", "address1", "address2", "city", "confirmationCode", "agbStatus", "contractStatus", "emailStatus", "country", "email", "gender", "phone", "zip", "registeredAt", "login", "confirmedAt", "developer", "security", "authType" ]))
 		.then(function(data) {
 			$scope.member = data.data[0];
 			if ($scope.member.role == "DEVELOPER") {
-				$scope.status.doBusy(users.getMembers({ _id : $stateParams.userId, role : "DEVELOPER" }, [ "midataID", "firstname", "lastname", "email", "role", "subroles", "status", "address1", "address2", "city", "confirmationCode", "agbStatus", "contractStatus", "emailStatus", "country", "email", "gender", "phone", "zip", "registeredAt", "login", "confirmedAt", "coach", "reason" ]))
+				$scope.status.doBusy(users.getMembers({ _id : $stateParams.userId, role : "DEVELOPER" }, [ "midataID", "firstname", "lastname", "email", "role", "subroles", "status", "address1", "address2", "city", "confirmationCode", "agbStatus", "contractStatus", "emailStatus", "country", "email", "gender", "phone", "zip", "registeredAt", "login", "confirmedAt", "coach", "reason", "security", "authType" ]))
 				.then(function(data2) { $scope.member = data2.data[0]; });
 			}
 			if ($scope.member.developer) {				
