@@ -9,7 +9,7 @@ public class SMSAPIProvider implements SMSProvider {
 
 	WSClient ws;
 	public final static String BASEURL = "https://api.smsapi.com/sms.do";
-	private String TOKEN = "hEF04ck2rNYoJMS3Z259PDD8Zg9PeZT8MxRQmwRg";
+	private String TOKEN = null;
 	private String SENDER = "midata";
 	
 	public SMSAPIProvider(WSClient ws, String token, String sender) {
@@ -26,7 +26,7 @@ public class SMSAPIProvider implements SMSProvider {
 	    holder.addQueryParameter("message", text);
 	    //holder.addQueryParameter("from", SENDER);
 		holder.addQueryParameter("format", "json");
-		holder.addQueryParameter("test", "1");
+		//holder.addQueryParameter("test", "1");
 		return holder.get().thenApply(response -> {
 			if (response.getStatus() != 200) {		
 				System.out.println(response.asJson().toString());

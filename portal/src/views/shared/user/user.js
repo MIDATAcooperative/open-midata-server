@@ -1,13 +1,14 @@
 angular.module('portal')
 .controller('UserCtrl', ['$scope', '$state', '$translate', 'ENV', 'users', 'status', 'session', 'server', 'languages', 'crypto', function($scope, $state, $translate, ENV, users, status, session, server, languages, crypto) {
 	// init
-	$scope.status = new status(false);
+	$scope.status = new status(false, $scope);
 	$scope.user = {};
 	$scope.msg = null;
 	$scope.beta = ENV.instanceType == "test" || ENV.instanceType == "local";
 	$scope.error = null;
 	
 	$scope.languages = languages.all;
+	$scope.authTypes = ["NONE", "SMS"];
 	
 	$scope.confirmation = { code : "" };
 	
@@ -16,7 +17,7 @@ angular.module('portal')
 	$scope.reqRole = $state.params.role;
 	
 	$scope.init = function() {
-		$scope.status.doBusy(users.getMembers({"_id": userId}, ["name", "email", "searchable", "language", "address1", "address2", "zip", "city", "country", "firstname", "lastname", "mobile", "phone", "emailStatus", "agbStatus", "contractStatus", "role", "subroles", "confirmedAt", "birthday", "midataID", "status", "gender"]))
+		$scope.status.doBusy(users.getMembers({"_id": userId}, ["name", "email", "searchable", "language", "address1", "address2", "zip", "city", "country", "firstname", "lastname", "mobile", "phone", "emailStatus", "agbStatus", "contractStatus", "role", "subroles", "confirmedAt", "birthday", "midataID", "status", "gender", "authType"]))
 		.then(function(results) {
 			$scope.user = results.data[0];
 		});
@@ -44,6 +45,16 @@ angular.module('portal')
 	};
 	
 	$scope.updateSettings = function() {
+		$scope.submitted = true;	
+		if ($scope.error && $scope.error.field && $scope.error.type && $scope.myform[$scope.error.field]) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
+		$scope.error = null;
+		if (! $scope.myform.$valid) {
+			var elem = $document[0].querySelector('input.ng-invalid');
+			if (elem && elem.focus) elem.focus();
+			return;
+		}
+		
+		
 		if ($scope.locked) $scope.user.searchable = false;
 		$scope.status.doAction("changesettings", users.updateSettings($scope.user))
 		.then(function() {

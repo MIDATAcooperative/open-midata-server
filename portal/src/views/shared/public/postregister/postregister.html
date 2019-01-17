@@ -149,7 +149,7 @@
 											ng-model="registration.zip" ng-required="addressNeeded()"></formrow>
 									</div>
 									<formrow myid="country" label="registration.country">
-									<select class="form-control" id="country" name="country" ng-model="registration.country" required><option value="CH"
+									<select class="form-control" id="country" name="country" ng-model="registration.country" ng-required="addressNeeded()"><option value="CH"
 											translate="enum.country.CH"></option></select></formrow>
 								</div>
 
@@ -160,7 +160,7 @@
 										ng-model="registration.phone"></formrow>
 									<div class="required">
 										<formrow myid="mobile" label="registration.mobile_phone">
-										<input type="text" class="form-control" id="mobile" name="mobile" 											ng-model="registration.mobile" ng-required="phoneNeeded()"></formrow>
+										<input type="text" class="form-control" id="mobile" name="mobile" ng-model="registration.mobile" ng-required="phoneNeeded()"></formrow>
 									</div>
 								</div>
 

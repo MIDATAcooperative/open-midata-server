@@ -16,6 +16,7 @@ import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
 import models.enums.Gender;
 import models.enums.JoinMethod;
+import models.enums.SecondaryAuthType;
 import models.enums.StudyAppLinkType;
 import models.enums.SubUserRole;
 import models.enums.UserFeature;
@@ -124,12 +125,12 @@ public class QuickRegistration extends APIController {
 		
 		user.password = Member.encrypt(password);
 						
-		user.address1 = JsonValidation.getString(json, "address1");
-		user.address2 = JsonValidation.getString(json, "address2");
-		user.city = JsonValidation.getString(json, "city");
-		user.zip  = JsonValidation.getString(json, "zip");
-		user.phone = JsonValidation.getString(json, "phone");
-		user.mobile = JsonValidation.getString(json, "mobile");
+		user.address1 = JsonValidation.getStringOrNull(json, "address1");
+		user.address2 = JsonValidation.getStringOrNull(json, "address2");
+		user.city = JsonValidation.getStringOrNull(json, "city");
+		user.zip  = JsonValidation.getStringOrNull(json, "zip");
+		user.phone = JsonValidation.getStringOrNull(json, "phone");
+		user.mobile = JsonValidation.getStringOrNull(json, "mobile");
 		user.country = JsonValidation.getString(json, "country");
 		user.firstname = JsonValidation.getString(json, "firstname"); 
 		user.lastname = JsonValidation.getString(json, "lastname");
@@ -137,6 +138,7 @@ public class QuickRegistration extends APIController {
 		user.birthday = JsonValidation.getDate(json, "birthday");
 		user.language = JsonValidation.getString(json, "language");
 		user.ssn = JsonValidation.getString(json, "ssn");
+		user.authType = InstanceConfig.getInstance().getInstanceType().is2FAMandatory(user.role) ? SecondaryAuthType.SMS : SecondaryAuthType.NONE;
 		
         Application.registerSetDefaultFields(user);		
 		

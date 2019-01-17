@@ -45,6 +45,7 @@ import models.enums.EMailStatus;
 import models.enums.Gender;
 import models.enums.MessageReason;
 import models.enums.ParticipationStatus;
+import models.enums.SecondaryAuthType;
 import models.enums.StudyExecutionStatus;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
@@ -216,6 +217,7 @@ public class Administration extends APIController {
 		user.agbStatus = ContractStatus.REQUESTED;
 		user.emailStatus = EMailStatus.UNVALIDATED;
 		user.confirmationCode = CodeGenerator.nextCode();
+		user.authType = SecondaryAuthType.SMS;
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, null, new MidataId(request().attrs().get(play.mvc.Security.USERNAME)), user);
 		

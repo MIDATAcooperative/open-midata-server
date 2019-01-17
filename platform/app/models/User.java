@@ -19,6 +19,7 @@ import models.enums.AuditEventType;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
 import models.enums.Gender;
+import models.enums.SecondaryAuthType;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
@@ -43,9 +44,9 @@ public class User extends Model implements Comparable<User> {
 	protected static final @NotMaterialized String collection = "users";
 	public static final @NotMaterialized Set<String> NON_DELETED = Collections.unmodifiableSet(Sets.create(UserStatus.ACTIVE.toString(), UserStatus.NEW.toString(), UserStatus.BLOCKED.toString(), UserStatus.TIMEOUT.toString()));
 	public static final @NotMaterialized Set<String> ALL_USER = Collections.unmodifiableSet(Sets.create("_id", "email", "emailLC", "name", "role", "subroles", "accountVersion", "registeredAt",  "status", "contractStatus", "agbStatus", "emailStatus", "confirmedAt", "firstname", "lastname",	"gender", "city", "zip", "country", "address1", "address2", "phone", "mobile", "language", "searchable", "developer", "midataID", "termsAgreed", "security"));
-	public static final @NotMaterialized Set<String> ALL_USER_INTERNAL = Collections.unmodifiableSet(Sets.create("email", "emailLC", "name", "role", "subroles", "accountVersion", "registeredAt",  "status", "contractStatus", "agbStatus", "emailStatus", "confirmedAt", "firstname", "lastname",	"gender", "city", "zip", "country", "address1", "address2", "phone", "mobile", "language", "searchable", "developer", "initialApp", "password", "apps", "midataID", "failedLogins", "lastFailed", "termsAgreed", "publicExtKey", "recoverKey", "flags", "security"));
+	public static final @NotMaterialized Set<String> ALL_USER_INTERNAL = Collections.unmodifiableSet(Sets.create("email", "emailLC", "name", "role", "subroles", "accountVersion", "registeredAt",  "status", "contractStatus", "agbStatus", "emailStatus", "confirmedAt", "firstname", "lastname",	"gender", "city", "zip", "country", "address1", "address2", "phone", "mobile", "language", "searchable", "developer", "initialApp", "password", "apps", "midataID", "failedLogins", "lastFailed", "termsAgreed", "publicExtKey", "recoverKey", "flags", "security", "authType"));
 	public static final @NotMaterialized Set<String> PUBLIC = Collections.unmodifiableSet(Sets.create("email", "role", "status", "firstname", "lastname", "gender", "midataID"));
-	public static final @NotMaterialized Set<String> FOR_LOGIN = Collections.unmodifiableSet(Sets.create("firstname", "lastname", "email", "role", "password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "failedLogins", "lastFailed", "flags", "resettoken", "termsAgreed", "publicExtKey", "recoverKey", "security", "phone", "mobile"));
+	public static final @NotMaterialized Set<String> FOR_LOGIN = Collections.unmodifiableSet(Sets.create("firstname", "lastname", "email", "role", "password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "failedLogins", "lastFailed", "flags", "resettoken", "termsAgreed", "publicExtKey", "recoverKey", "security", "phone", "mobile", "authType", "apps"));
 	
 			
 	/**
@@ -135,6 +136,11 @@ public class User extends Model implements Comparable<User> {
      * Status of email validation
      */
     public EMailStatus emailStatus;
+    
+    /**
+     * Type of two factor authentication
+     */
+    public SecondaryAuthType authType;
     
     /**
      * Code needed to confirm account. 

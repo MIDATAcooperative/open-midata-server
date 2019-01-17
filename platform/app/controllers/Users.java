@@ -32,6 +32,7 @@ import models.enums.ConsentType;
 import models.enums.ContractStatus;
 import models.enums.Gender;
 import models.enums.ParticipationStatus;
+import models.enums.SecondaryAuthType;
 import models.enums.SubUserRole;
 import models.enums.UserFeature;
 import models.enums.UserRole;
@@ -335,11 +336,30 @@ public class Users extends APIController {
 		String language = JsonValidation.getString(json, "language");
 					
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-				
-		User user = User.getById(userId, Sets.create("_id")); 
+		
+		SecondaryAuthType authType = JsonValidation.getEnum(json, "authType", SecondaryAuthType.class);
+		
+		if (authType.equals(SecondaryAuthType.SMS)) {
+			requireUserFeature(UserFeature.PHONE_ENTERED);
+		}
+		
+		if (authType.equals(SecondaryAuthType.NONE) && InstanceConfig.getInstance().getInstanceType().is2FAMandatory(getRole())) {
+			throw new JsonValidationException("error.missing.auth_type", "authType", "missing", "Two factor authentication is mandantory");
+		}
+		
+		// boolean sendMail = JsonValidation.getBoolean(json, "loginNotification");
+		
+		User user = User.getById(userId, Sets.create("_id", "flags")); 
 		
 		User.set(user._id, "searchable", searchable);
 		User.set(user._id, "language", language);
+		User.set(user._id, "authType", authType);
+		
+		/*if (sendMail) {
+			user.addFlag(AccountActionFlags.LOGIN_NOTIFICATION);
+		} else {
+			user.removeFlag(AccountActionFlags.LOGIN_NOTIFICATION);
+		}*/
 		
 		PatientResourceProvider.updatePatientForAccount(userId);
 		
