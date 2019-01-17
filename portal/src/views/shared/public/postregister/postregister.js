@@ -72,7 +72,9 @@ angular.module('portal')
 		$scope.submitted = true;	
 		if ($scope.error && $scope.error.field && $scope.error.type) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
 		$scope.error = null;
+		console.log("XXXX");
 		if (! $scope.myform.$valid) return;
+		console.log("XXXX2");
 		$scope.registration.user = $scope.registration._id;									
 		$scope.status.doAction("changeAddress", users.updateAddress($scope.registration)).
 		then(function(data) { 

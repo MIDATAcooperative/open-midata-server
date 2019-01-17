@@ -75,7 +75,7 @@
        "access_query" : "The Data Access Filter must restrict by 'content' or 'group'!",
        "sharing" : "The Data Access Filter contains data types that are excluded by the study configuration.",
        "anonymous" : "Study can only be anonymous if no one is allowed to access unpseudonymized data.",
-       "url" : "Invalid URL"
+       "url" : "Invalid URL"       
      },
 
      "missing" : {
@@ -93,7 +93,8 @@
        "confirmation" : "Confirmation by user required first.",
        "file" : "No file for upload selected",
        "access_query" : "No data selected",
-       "plugin" : "This plugin does not exist in your account."
+       "plugin" : "This plugin does not exist in your account.",
+       "auth_type" : "Two factor authentication is required for your type of account."
      },
 
      "unknown" : {
@@ -451,6 +452,10 @@
 	   "SITE" : "At which site are activities beeing conducted?",
 	   "DEVICES" : "Is there any special equipment required by a participant?",
 	   "COMMENT" : "Additional notes"
+	 },
+	 "secondaryauthtype" : {
+	   "NONE" : "No 2FA",
+	   "SMS" : "Two factor authentication using SMS"
 	 }
    },
 
@@ -781,6 +786,7 @@
 	"searchable_yes" : "Yes, I want my name and email to be visible to other users",
 	"searchable_no" : "No, I don't want that any other user sees my profile",
 	"searchable_info" : "This setting has no effect on your existing data sharing consents.",
+	"auth_type" : "Authentication",
 	"change_settings_btn" : "Change Settings",
 	"change_settings_success" : "Settings have been updated"
   },

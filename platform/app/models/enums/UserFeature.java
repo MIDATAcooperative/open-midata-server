@@ -106,6 +106,7 @@ public enum UserFeature {
 				ic = InstanceConfig.getInstance();
 				return user.termsAgreed != null && user.termsAgreed.contains(ic.getPrivacyPolicy());
 			case AUTH2FACTOR:
+				if (user.authType == null || user.authType.equals(SecondaryAuthType.NONE)) return true;
 				// AUTH2FACTOR is handeled outside. If no phone is present this can be skipped. Use PHONE_ENTERED to force phone number to be present.
 				return user.mobile == null && user.phone == null;
 		}

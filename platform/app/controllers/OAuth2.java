@@ -55,6 +55,7 @@ import utils.auth.OAuthCodeToken;
 import utils.auth.ExtendedSessionToken;
 import utils.auth.TokenCrypto;
 import utils.auth.auth2factor.Authenticator;
+import utils.auth.auth2factor.Authenticators;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.evolution.PostLoginActions;
@@ -588,20 +589,20 @@ public class OAuth2 extends Controller {
 		
 		if (token.ownerId != null) {			
 			switch (role) {
-			  case MEMBER : user = Member.getById(token.ownerId, User.ALL_USER_INTERNAL);break;
-			  case PROVIDER : user = HPUser.getById(token.ownerId, Sets.create(User.ALL_USER_INTERNAL, "provider"));break; 
-			  case RESEARCH : user = ResearchUser.getById(token.ownerId, Sets.create(User.ALL_USER_INTERNAL, "organization"));break;
-			  case DEVELOPER : user = Developer.getById(token.ownerId, User.ALL_USER_INTERNAL);break;
-			  case ADMIN : user = Admin.getById(token.ownerId, User.ALL_USER_INTERNAL);break;
+			  case MEMBER : user = Member.getById(token.ownerId, User.FOR_LOGIN);break;
+			  case PROVIDER : user = HPUser.getById(token.ownerId, Sets.create(User.FOR_LOGIN, "provider"));break; 
+			  case RESEARCH : user = ResearchUser.getById(token.ownerId, Sets.create(User.FOR_LOGIN, "organization"));break;
+			  case DEVELOPER : user = Developer.getById(token.ownerId, User.FOR_LOGIN);break;
+			  case ADMIN : user = Admin.getById(token.ownerId, User.FOR_LOGIN);break;
 			}
 			
 		} else {
 			String username = json.has("username") ? JsonValidation.getEMail(json, "username") : JsonValidation.getEMail(json, "email");
 		
 			switch (role) {
-			  case MEMBER : user = Member.getByEmail(username, User.ALL_USER_INTERNAL);break;
-			  case PROVIDER : user = HPUser.getByEmail(username, Sets.create(User.ALL_USER_INTERNAL, "provider"));break; 
-			  case RESEARCH : user = ResearchUser.getByEmail(username, Sets.create(User.ALL_USER_INTERNAL, "organization"));break;
+			  case MEMBER : user = Member.getByEmail(username, User.FOR_LOGIN);break;
+			  case PROVIDER : user = HPUser.getByEmail(username, Sets.create(User.FOR_LOGIN, "provider"));break; 
+			  case RESEARCH : user = ResearchUser.getByEmail(username, Sets.create(User.FOR_LOGIN, "organization"));break;
 			  case DEVELOPER : user = Developer.getByEmail(username, User.FOR_LOGIN);				
 				               if (user == null) {
 					              user = Admin.getByEmail(username, User.FOR_LOGIN);
@@ -691,23 +692,23 @@ public class OAuth2 extends Controller {
 			return;
 		}
 		
-		if (notok!=null && (notok.contains(UserFeature.EMAIL_VERIFIED) || notok.contains(UserFeature.ADMIN_VERIFIED) || notok.contains(UserFeature.ADDRESS_VERIFIED) || notok.contains(UserFeature.MIDATA_COOPERATIVE_MEMBER))) {
+		if (notok!=null && (notok.contains(UserFeature.EMAIL_VERIFIED) || notok.contains(UserFeature.ADMIN_VERIFIED) || notok.contains(UserFeature.ADDRESS_VERIFIED) || notok.contains(UserFeature.MIDATA_COOPERATIVE_MEMBER) || notok.contains(UserFeature.PHONE_ENTERED))) {
 			notok.remove(UserFeature.AUTH2FACTOR);
 			return;
 		}
 		
-		if (notok!=null && notok.contains(UserFeature.AUTH2FACTOR) && SMSUtils.isAvailable()) {
+		if (notok!=null && notok.contains(UserFeature.AUTH2FACTOR)) {
 			if (securityToken == null) {
-				Authenticator.startAuthentication(user._id, "Token", user.mobile);
+				Authenticators.getInstance(user.authType).startAuthentication(user._id, "Token", user);
 				notok.clear();
 				notok.add(UserFeature.AUTH2FACTOR);
 			} else {
-				Authenticator.checkAuthentication(user._id, securityToken);
+				Authenticators.getInstance(user.authType).checkAuthentication(user._id, user, securityToken);
 				token.securityToken = securityToken;
 				notok.remove(UserFeature.AUTH2FACTOR);
 				if (notok.isEmpty()) {
 					notok = null;
-					Authenticator.finishAuthentication(user._id);
+					Authenticators.getInstance(user.authType).finishAuthentication(user._id, user);
 				}
 			}
 		}
@@ -886,6 +887,11 @@ public class OAuth2 extends Controller {
 		
 		if (notok != null && !notok.isEmpty()) {
 		  if (token.handle != null) KeyManager.instance.persist(user._id);
+		  	
+		  if (notok.contains(UserFeature.EMAIL_VERIFIED) && !notok.contains(UserFeature.EMAIL_ENTERED)) notok = Collections.singleton(UserFeature.EMAIL_VERIFIED);
+		  if (notok.contains(UserFeature.ADMIN_VERIFIED)) notok = Collections.singleton(UserFeature.ADMIN_VERIFIED);
+		  
+		  
 		  return Application.loginHelperResult(token, user, notok);
 		}
 			

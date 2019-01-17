@@ -26,6 +26,7 @@ import models.enums.AuditEventType;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
 import models.enums.Gender;
+import models.enums.SecondaryAuthType;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
@@ -110,6 +111,7 @@ public class Providers extends APIController {
 		
 		user.apps = new HashSet<MidataId>();	
 		user.visualizations = new HashSet<MidataId>();
+		user.authType = SecondaryAuthType.SMS;
 		
 		Application.developerRegisteredAccountCheck(user, json);
 		

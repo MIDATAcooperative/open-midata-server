@@ -98,8 +98,10 @@
 		<div ng-cloak class="panel panel-primary">
 		  <div class="panel-heading" translate="user.settings"></div>
 		  <div class="panel-body">
+		    <form name="myform" novalidate class="css-form form-horizontal" ng-submit="updateSettings();" role="form">
 			<loader busy="status.isBusy !== false">
-			
+			<p ng-show="error && !error.field" translate="{{ error.code || error }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
+	                        </p>	
 			
 			<div class="row">
 				<p class="col-sm-2" translate="user.searchable_short"></p>
@@ -124,12 +126,19 @@
 				<p class="col-sm-2" translate="registration.language"></p>
 				<p class="col-sm-10"><select ng-model="user.language" class="form-control" ng-options="lang.value as lang.name | translate for lang in languages"></select></p>
 			</div>
-			<button class="btn btn-default" ng-disabled="status.action == 'changesettings'" ng-click="updateSettings();" translate="user.change_settings_btn"></button>
+			
+			<div class="row">
+				<p class="col-sm-2" translate="user.auth_type"></p>
+				<p class="col-sm-10"><select ng-model="user.authType" class="form-control" ng-options="mode as ('enum.secondaryauthtype.'+mode) | translate for mode in authTypes"></select></p>
+				<formerror myid="authType" type="missing" message="error.missing.auth_type"></formerror> 
+			</div>
+			<button class="btn btn-default" ng-disabled="status.action == 'changesettings'" type="submit" translate="user.change_settings_btn"></button>
 			
 			<div class="extraspace"></div>
 			<div ng-show="msgSettings" class="alert alert-info" translate="{{ msgSettings }}"></div>
-		
+		    
 			</loader>
+			</form>
 		  </div>
 		</div>			   
 		

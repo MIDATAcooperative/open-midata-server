@@ -35,6 +35,7 @@ import models.enums.EMailStatus;
 import models.enums.Gender;
 import models.enums.MessageReason;
 import models.enums.ParticipationInterest;
+import models.enums.SecondaryAuthType;
 import models.enums.SubUserRole;
 import models.enums.UserFeature;
 import models.enums.UserRole;
@@ -825,7 +826,8 @@ public class Application extends APIController {
 		user.birthday = JsonValidation.getDate(json, "birthday");
 		user.language = JsonValidation.getString(json, "language");
 		user.ssn = JsonValidation.getString(json, "ssn");										
-						
+		user.authType = SecondaryAuthType.NONE;	
+		
 		registerSetDefaultFields(user);				
 		developerRegisteredAccountCheck(user, json);
 		
@@ -930,6 +932,7 @@ public class Application extends APIController {
 			  if (token == null) throw new AuthException("error.internal", "You need to be logged in as this developer");
 		     if (!newuser.developer.equals(token.ownerId)) throw new AuthException("error.internal", "You need to be logged in as this developer");
 		     newuser.status = UserStatus.ACTIVE;
+		     newuser.authType = SecondaryAuthType.NONE;
 		   }
 		}
 	}

@@ -20,9 +20,12 @@ public class SMSUtils {
 	private static SMSUtils instance;
 	
 	public static void setInstance(WSClient ws, Config config) {
-		String token = config.getString("smsapi.token");
-		if (token != null && token.length()>0 && !token.equals("SMS_OAUTH_TOKEN")) {
-		  instance = new SMSUtils(new SMSAPIProvider(ws, config.getString("smsapi.token"), config.getString("smsapi.from")));
+		String provider = config.getString("sms.provider");
+		if (provider.equals("smsapi")) {
+			String token = config.getString("sms.token");
+			if (token != null && token.length()>0 && !token.equals("SMS_OAUTH_TOKEN")) {
+			  instance = new SMSUtils(new SMSAPIProvider(ws, token, config.getString("sms.from")));
+			}
 		}
 	}
 	

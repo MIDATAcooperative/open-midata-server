@@ -39,6 +39,8 @@ angular.module('services')
 		return devid;
 	};
 	
+	service.createDeviceId = getDeviceId;
+	
 	service.init = function(client_id, redirect_uri, state, code_challenge, code_challenge_method, devId) {
 	   cred.appname = client_id;
 	   cred.redirectUri = redirect_uri;
