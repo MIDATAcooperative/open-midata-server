@@ -40,9 +40,10 @@
 	                        </div>
 	                        
 	                        <p ng-show="offline" class="alert alert-danger" translate="error.offline"></p>
-							<form ng-submit="login()" role="form" ng-hide="offline">
+							<form ng-submit="dologin()" role="form" ng-hide="offline">
 								<input type="email" class="form-control" translate translate-attr-placeholder="login.email_address" ng-model="login.email" style="margin-bottom:5px;" autofocus>
 								<input type="password" class="form-control" translate translate-attr-placeholder="login.password" ng-model="login.password" style="margin-bottom:5px;">
+								<select class="form-control" ng-model="login.role" ng-options="role.value as role.name|translate for role in roles"></select>
 								<!-- TODO -->
 								<div class="checkbox">
 									<label class="checkbox" style="font-weight:normal;">

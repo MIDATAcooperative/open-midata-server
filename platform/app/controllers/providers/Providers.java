@@ -12,6 +12,7 @@ import actions.APICall;
 import controllers.APIController;
 import controllers.Application;
 import controllers.Circles;
+import controllers.OAuth2;
 import controllers.PWRecovery;
 import models.HCRelated;
 import models.HPUser;
@@ -25,6 +26,7 @@ import models.enums.AuditEventType;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
 import models.enums.Gender;
+import models.enums.SecondaryAuthType;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
@@ -36,6 +38,7 @@ import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.CodeGenerator;
+import utils.auth.ExtendedSessionToken;
 import utils.auth.KeyManager;
 import utils.auth.PortalSessionToken;
 import utils.auth.ProviderSecured;
@@ -108,6 +111,7 @@ public class Providers extends APIController {
 		
 		user.apps = new HashSet<MidataId>();	
 		user.visualizations = new HashSet<MidataId>();
+		user.authType = SecondaryAuthType.SMS;
 		
 		Application.developerRegisteredAccountCheck(user, json);
 		
@@ -120,7 +124,7 @@ public class Providers extends APIController {
 			  		        	      		  		
 		user.publicExtKey = KeyManager.instance.readExternalPublicKey(pub);		  
 		KeyManager.instance.saveExternalPrivateKey(user._id, pk);		  
-		KeyManager.instance.login(PortalSessionToken.LIFETIME, true);
+		String handle = KeyManager.instance.login(PortalSessionToken.LIFETIME, true);
 			  
 		user.security = AccountSecurityLevel.KEY_EXT_PASSWORD;		
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(user._id, null);								
@@ -137,7 +141,8 @@ public class Providers extends APIController {
 		Application.sendWelcomeMail(user, null);
 		if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) Application.sendAdminNotificationMail(user);
 		
-		return Application.loginHelper(user);		
+		return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle), json, null, user._id);
+		
 	}
 	
 	/**
@@ -148,37 +153,16 @@ public class Providers extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public Result login() throws AppException {
-		// validate json
 		JsonNode json = request().body().asJson();
-		
+			
 		JsonValidation.validate(json, "email", "password");
-		
-		String email = JsonValidation.getString(json, "email");
-		String password = JsonValidation.getString(json, "password");
-		String sessionToken = JsonValidation.getStringOrNull(json, "sessionToken"); 
-		
-		HPUser user = HPUser.getByEmail(email, Sets.create(User.FOR_LOGIN, "provider"));
-		
-		if (user == null) throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
-		
-		if (user.publicExtKey == null) {
-			if (!json.has("nonHashed")) return ok("compatibility-mode");
-			password = JsonValidation.getString(json, "nonHashed");
-		}
-							
-		if (user.publicExtKey == null || sessionToken != null) AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user);
-		if (!user.authenticationValid(password)) {
-			throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");
-		}
-										
-		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.WIPED)) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
-
-		if (user.keywordsLC == null || user.keywordsLC.isEmpty()) {
-			User user2 = User.getById(user._id, User.ALL_USER);
-			user2.updateKeywords(true);
-		}
-		
-		return Application.loginHelper(user, sessionToken, false);							
+			
+	    ExtendedSessionToken token = new ExtendedSessionToken();
+			
+		token.created = System.currentTimeMillis();                               
+		token.userRole = UserRole.PROVIDER;                
+											    				
+		return OAuth2.loginHelper(token, json, null, null);						
 	}
 	
 	/**

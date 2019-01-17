@@ -39,6 +39,8 @@ angular.module('services')
 		return devid;
 	};
 	
+	service.createDeviceId = getDeviceId;
+	
 	service.init = function(client_id, redirect_uri, state, code_challenge, code_challenge_method, devId) {
 	   cred.appname = client_id;
 	   cred.redirectUri = redirect_uri;
@@ -58,6 +60,10 @@ angular.module('services')
 	service.setUnlockCode = function(code) {
 		console.log("set:"+code);
 		cred.unlockCode = code;
+	};
+	
+	service.setSecurityToken = function(token) {
+		cred.securityToken = token;
 	};
 	
 	service.getAppname =function() {
@@ -88,12 +94,22 @@ angular.module('services')
 		.then(function(result) {
 			if (result.data.istatus === "ACTIVE") {							
 				  cred.appname = null;
+				  session.debugReturn();
 				  document.location.href = cred.redirectUri + "?state=" + encodeURIComponent(cred.state) + "&code=" + result.data.code;
 				  return "ACTIVE";
 			} else
 			return result.data;
 			
 		});
+	};
+	
+	service.postLogin = function(result) {
+		if (result.data.istatus === "ACTIVE") {							
+			  cred.appname = null;
+			  session.debugReturn();
+			  document.location.href = cred.redirectUri + "?state=" + encodeURIComponent(cred.state) + "&code=" + result.data.code;
+			  return "ACTIVE";
+		} else return result.data;
 	};
 	
 	return service;

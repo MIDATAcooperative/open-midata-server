@@ -17,6 +17,7 @@ import models.enums.AuditEventType;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
 import models.enums.Gender;
+import models.enums.SecondaryAuthType;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
@@ -28,6 +29,7 @@ import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.CodeGenerator;
 import utils.auth.DeveloperSecured;
+import utils.auth.ExtendedSessionToken;
 import utils.auth.KeyManager;
 import utils.auth.PasswordResetToken;
 import utils.auth.PortalSessionToken;
@@ -88,6 +90,7 @@ public class Developers extends APIController {
 		
 		user.apps = new HashSet<MidataId>();	
 		user.visualizations = new HashSet<MidataId>();
+		user.authType = SecondaryAuthType.SMS;
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);
 				
@@ -97,7 +100,7 @@ public class Developers extends APIController {
 			  		        	      		  		
 		user.publicExtKey = KeyManager.instance.readExternalPublicKey(pub);		  
 		KeyManager.instance.saveExternalPrivateKey(user._id, pk);		  
-		KeyManager.instance.login(PortalSessionToken.LIFETIME, true);
+		String handle = KeyManager.instance.login(PortalSessionToken.LIFETIME, true);
 			  
 		user.security = AccountSecurityLevel.KEY_EXT_PASSWORD;		
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(user._id, null);								
@@ -113,7 +116,8 @@ public class Developers extends APIController {
 		
 		Market.correctOwners();
 		
-		return Application.loginHelper(user);		
+		return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle), json, null, user._id);
+			
 	}
 	
 	/**
@@ -129,46 +133,13 @@ public class Developers extends APIController {
 		
 		JsonValidation.validate(json, "email", "password");
 		
-		String email = JsonValidation.getString(json, "email");
-		String password = JsonValidation.getString(json, "password");
-		String sessionToken = JsonValidation.getStringOrNull(json, "sessionToken"); 
+        ExtendedSessionToken token = new ExtendedSessionToken();
 		
-		Developer user = Developer.getByEmail(email, User.FOR_LOGIN);
-		
-		if (user == null) {
-			Admin adminuser = Admin.getByEmail(email, User.FOR_LOGIN);
-			if (adminuser != null) {
+		token.created = System.currentTimeMillis();                               
+	    token.userRole = UserRole.DEVELOPER;                
+										    				
+		return OAuth2.loginHelper(token, json, null, null);
 				
-				if (adminuser.publicExtKey == null) {
-					if (!json.has("nonHashed")) return ok("compatibility-mode");
-					password = JsonValidation.getString(json, "nonHashed");
-				}
-									
-				if (adminuser.publicExtKey == null || sessionToken != null) AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, adminuser);
-				if (!adminuser.authenticationValid(password)) {
-					throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");
-				}
-														
-				return Application.loginHelper(adminuser, sessionToken, false);
-				
-			}
-		}
-		
-		if (user == null) throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
-		
-		if (user.publicExtKey == null) {
-			if (!json.has("nonHashed")) return ok("compatibility-mode");
-			password = JsonValidation.getString(json, "nonHashed");
-		}
-							
-		if (user.publicExtKey == null || sessionToken != null) AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user);
-		if (!user.authenticationValid(password)) {
-			throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");
-		}
-							
-		return Application.loginHelper(user, sessionToken, false);
-						
-		// if (keytype == 0 && AccessPermissionSet.getById(user._id) == null) RecordManager.instance.createPrivateAPS(user._id, user._id);		
 	}
 	
 	/**

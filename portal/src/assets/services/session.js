@@ -9,11 +9,15 @@ angular.module('services')
 		cache : {},
 			
 		performLogin : function(func, params, pw) {
+			console.log("performLogin");
+			_retry = null;
 			return func(params).then(function(result) {
+				console.log("performLogin A");
 				if (result.data == "compatibility-mode") {
 					params.nonHashed = pw;
 					return func(params);
 				} else if (result.data.challenge) {
+					console.log("performLogin C");
 					if (result.data.tryrecover) {
 						params.sessionToken = crypto.keyChallengeLocal(result.data.userid, result.data.recoverKey, result.data.challenge);
 						if (!params.sessionToken) return { data : { requirements : ["KEYRECOVERY"] , status : "BLOCKED" } };
@@ -27,6 +31,11 @@ angular.module('services')
 					return result;
 				}
 			})		
+		},
+		
+		retryLogin : function(params) {
+			console.log("retryLogin");
+			return server.post("/v1/continue", params || {});
 		},
 		
 		postLogin : function(result, $state) {
@@ -71,7 +80,8 @@ angular.module('services')
 			}
 		},
 		
-		login : function(requiredRole) {			
+		login : function(requiredRole) {
+			console.log("login");		
 			var def  = $q.defer();		
 			server.get(jsRoutes.controllers.Users.getCurrentUser().url).
 			then(function(result1) {
@@ -101,7 +111,13 @@ angular.module('services')
 			sessionStorage.token = null;
 			session.org = null;
 			session.cache = {};
-			_states = {};
+			_states = {};			
+		},
+		 
+		debugReturn : function() {		
+			session.logout();
+			sessionStorage.token = sessionStorage.oldToken;
+			sessionStorage.oldToken = undefined;						
 		},
 		
 		cacheGet : function(name) {

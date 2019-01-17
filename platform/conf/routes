@@ -260,6 +260,7 @@ OPTIONS /v1/auth            controllers.MobileAPI.checkPreflight()
 POST    /v1/auth            controllers.MobileAPI.authenticate()
 
 POST    /v1/authorize            controllers.OAuth2.login()
+POST    /v1/continue            controllers.OAuth2.continuelogin()
 OPTIONS /v1/token            controllers.OAuth2.checkPreflight()
 POST    /v1/token            controllers.OAuth2.authenticate()
 

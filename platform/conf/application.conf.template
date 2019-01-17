@@ -22,6 +22,9 @@ default.language=DEFAULT_LANGUAGE
 versions.midata-terms-of-use=1.1
 versions.midata-privacy-policy=1.1
 
+sms.provider="SMS_PROVIDER"
+sms.token="SMS_OAUTH_TOKEN"
+sms.from=Midata
 
 # Maximum size for POST payloads
 # ~~~~~

@@ -72,7 +72,9 @@ angular.module('portal')
 		$scope.submitted = true;	
 		if ($scope.error && $scope.error.field && $scope.error.type) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
 		$scope.error = null;
+		console.log("XXXX");
 		if (! $scope.myform.$valid) return;
+		console.log("XXXX2");
 		$scope.registration.user = $scope.registration._id;									
 		$scope.status.doAction("changeAddress", users.updateAddress($scope.registration)).
 		then(function(data) { 
@@ -134,8 +136,8 @@ angular.module('portal')
 		});
 	};
 	
-	$scope.retry = function(funcresult) {
-		if (oauth.getAppname()) {
+	$scope.retry = function(funcresult, params) {
+		/*if (oauth.getAppname()) {
 	    	  oauth.login(true)
 	    	  .then(function(result) {
 	  		      if (result !== "ACTIVE") {	  			    
@@ -144,16 +146,31 @@ angular.module('portal')
 	  		  }, function(error) {
 	  			  $scope.error = error.data;
 	  		  });
-		} else if (funcresult) {
-		  session.postLogin(funcresult, $state);		
+		} else*/ if (funcresult) {
+		   if (funcresult.data.istatus === "ACTIVE") oauth.postLogin(result);
+		   else session.postLogin(funcresult, $state);		
 	    } else {
-	      try {
-	        $state.go("^.user",{userId:$scope.registration._id});
-	      } catch(e) {
-	    	$state.go("^.login");
+	      var r = session.retryLogin(params);
+	      if (!r) {	    	
+		      try {
+		        $state.go("^.user",{userId:$scope.registration._id});
+		      } catch(e) {
+		    	$state.go("^.login");
+		      }
+	      } else {
+	    	  r.then(function(result) {
+	    		  if (result.data.istatus === "ACTIVE") oauth.postLogin(result);
+	    		  else session.postLogin(result, $state);
+	    	  }, function(err) {
+	    		  $scope.error = err.data;
+	    	  });
 	      }
 	    }
 		
+	};
+	
+	$scope.setSecurityToken = function() {		
+		$scope.retry(null, { securityToken : $scope.setpw.securityToken });
 	};
 	
 	$scope.addressNeeded = function() {

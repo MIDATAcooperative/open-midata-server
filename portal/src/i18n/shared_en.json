@@ -57,6 +57,7 @@
        "passphrase_old" : "Old passphrase not correct.",
        "password_old" : "Old password not correct.",
        "confirmation_code" :"Bad confirmation code",
+       "securitytoken" : "Token not correct",
        "code" : "Unknown code for study.",
        "appcode" : "Unknown code for app.",
        "status_transition" : "Invalid status change",
@@ -74,7 +75,7 @@
        "access_query" : "The Data Access Filter must restrict by 'content' or 'group'!",
        "sharing" : "The Data Access Filter contains data types that are excluded by the study configuration.",
        "anonymous" : "Study can only be anonymous if no one is allowed to access unpseudonymized data.",
-       "url" : "Invalid URL"
+       "url" : "Invalid URL"       
      },
 
      "missing" : {
@@ -92,7 +93,8 @@
        "confirmation" : "Confirmation by user required first.",
        "file" : "No file for upload selected",
        "access_query" : "No data selected",
-       "plugin" : "This plugin does not exist in your account."
+       "plugin" : "This plugin does not exist in your account.",
+       "auth_type" : "Two factor authentication is required for your type of account."
      },
 
      "unknown" : {
@@ -154,7 +156,8 @@
      "expired" : {
        "token" : "This activation token has already expired. Please request a new one.",
        "tokenresent" : "This activation token has already expired. A new token has been sent to your email address right now. Please confirm your email address within 24 hours using the new token.",
-       "code" : "This participation code has expired."
+       "code" : "This participation code has expired.",
+       "securitytoken" : "This token has expired."
      },
 
      "already_done" : {
@@ -265,6 +268,7 @@
 	   "EMAIL_VERIFIED" : "Email address of user must have been verified",
 	   "PHONE_ENTERED" : "Mobile phone number of user must be known to the platform",
 	   "PHONE_VERIFIED" : "Mobile phone number of user must have been verified",
+	   "AUTH2FACTOR" : "2-Factor Authentication during Login",
 	   "ADDRESS_ENTERED" : "Post address of user must be known to the platform",
 	   "ADDRESS_VERIFIED" : "Post address of user must have been verified",
 	   "PASSPORT_VERIFIED" : "ID card of users must have been verified",
@@ -448,6 +452,10 @@
 	   "SITE" : "At which site are activities beeing conducted?",
 	   "DEVICES" : "Is there any special equipment required by a participant?",
 	   "COMMENT" : "Additional notes"
+	 },
+	 "secondaryauthtype" : {
+	   "NONE" : "No 2FA",
+	   "SMS" : "Two factor authentication using SMS"
 	 }
    },
 
@@ -643,6 +651,9 @@
     "admin_verified" : "Your account must be unlocked by a MIDATA administrator. Please retry later. If your account has not been unlocked for more than 24 hours, please contact MIDATA.",
     "terms_agreed" : "The MIDATA General Terms and Conditions have been updated. Please confirm that you agree to the new version.",
     "privacy_policy_agreed" : "The MIDATA Privacy Policy has been updated. Please confirm that you agree to the new version.",
+    "auth2factor" : "An authorization token has been send to your phone. Please enter it.",
+    "securityToken" : "Token",
+    "securityToken_btn" : "Send",
     "agree_btn" : "I agree",
     "keyrecovery" : {
       "intro" : "The private key that is used to encrypt your data needs to be recovered. In order to recover your key, try one of these options:",
@@ -775,6 +786,7 @@
 	"searchable_yes" : "Yes, I want my name and email to be visible to other users",
 	"searchable_no" : "No, I don't want that any other user sees my profile",
 	"searchable_info" : "This setting has no effect on your existing data sharing consents.",
+	"auth_type" : "Authentication",
 	"change_settings_btn" : "Change Settings",
 	"change_settings_success" : "Settings have been updated"
   },

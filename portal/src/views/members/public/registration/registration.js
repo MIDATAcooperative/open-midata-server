@@ -91,7 +91,7 @@ angular.module('portal')
 			  
 			  $scope.status.doAction("register", server.post(jsRoutes.controllers.QuickRegistration.register().url, JSON.stringify(data))).
 			  then(function(datax) { 			 
-				  oauth.setUser($scope.registration.email, $scope.registration.password);			  
+				  oauth.setUser($scope.registration.email, $scope.registration.password1);			  
 				  $scope.welcomemsg = true;	
 				  
 				  if ($scope.app && $scope.app.requirements && $scope.app.requirements.indexOf('EMAIL_VERIFIED') >= 0) {

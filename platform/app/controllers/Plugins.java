@@ -378,7 +378,7 @@ public class Plugins extends APIController {
 		// create encrypted authToken
 		SpaceToken appToken = new SpaceToken(PortalSessionToken.session().handle, consentId, userId, null, appId);
 
-		boolean testing = (app.creator.equals(PortalSessionToken.session().getDeveloper()) || app.creator.equals(userId)) && app.developmentServer != null && app.developmentServer.length() > 0;
+		boolean testing = (app.creator.equals(PortalSessionToken.session().getDeveloperId()) || app.creator.equals(userId)) && app.developmentServer != null && app.developmentServer.length() > 0;
 
 		String visualizationServer = "https://" + config.getString("visualizations.server") + "/" + app.filename;
 		if (testing)

@@ -16,6 +16,7 @@ import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
 import models.enums.Gender;
 import models.enums.JoinMethod;
+import models.enums.SecondaryAuthType;
 import models.enums.StudyAppLinkType;
 import models.enums.SubUserRole;
 import models.enums.UserFeature;
@@ -27,6 +28,7 @@ import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.ExecutionInfo;
+import utils.auth.ExtendedSessionToken;
 import utils.auth.KeyManager;
 import utils.auth.PortalSessionToken;
 import utils.exceptions.AppException;
@@ -123,12 +125,12 @@ public class QuickRegistration extends APIController {
 		
 		user.password = Member.encrypt(password);
 						
-		user.address1 = JsonValidation.getString(json, "address1");
-		user.address2 = JsonValidation.getString(json, "address2");
-		user.city = JsonValidation.getString(json, "city");
-		user.zip  = JsonValidation.getString(json, "zip");
-		user.phone = JsonValidation.getString(json, "phone");
-		user.mobile = JsonValidation.getString(json, "mobile");
+		user.address1 = JsonValidation.getStringOrNull(json, "address1");
+		user.address2 = JsonValidation.getStringOrNull(json, "address2");
+		user.city = JsonValidation.getStringOrNull(json, "city");
+		user.zip  = JsonValidation.getStringOrNull(json, "zip");
+		user.phone = JsonValidation.getStringOrNull(json, "phone");
+		user.mobile = JsonValidation.getStringOrNull(json, "mobile");
 		user.country = JsonValidation.getString(json, "country");
 		user.firstname = JsonValidation.getString(json, "firstname"); 
 		user.lastname = JsonValidation.getString(json, "lastname");
@@ -136,6 +138,7 @@ public class QuickRegistration extends APIController {
 		user.birthday = JsonValidation.getDate(json, "birthday");
 		user.language = JsonValidation.getString(json, "language");
 		user.ssn = JsonValidation.getString(json, "ssn");
+		user.authType = InstanceConfig.getInstance().getInstanceType().is2FAMandatory(user.role) ? SecondaryAuthType.SMS : SecondaryAuthType.NONE;
 		
         Application.registerSetDefaultFields(user);		
 		
@@ -153,7 +156,7 @@ public class QuickRegistration extends APIController {
 		user.agreedToTerms(app.termsOfUse, user.initialApp);
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user, app._id);
-		
+		String handle;
 		if (json.has("priv_pw")) {
 			  String pub = JsonValidation.getString(json, "pub");
 			  String pk = JsonValidation.getString(json, "priv_pw");
@@ -161,7 +164,7 @@ public class QuickRegistration extends APIController {
 			  user.publicExtKey = KeyManager.instance.readExternalPublicKey(pub);
 			  
 			  KeyManager.instance.saveExternalPrivateKey(user._id, pk);			  
-			  KeyManager.instance.login(PortalSessionToken.LIFETIME, true);
+			  handle = KeyManager.instance.login(PortalSessionToken.LIFETIME, true);
 			  
 			  user.security = AccountSecurityLevel.KEY_EXT_PASSWORD;		
 			  user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(user._id, null);								
@@ -174,7 +177,7 @@ public class QuickRegistration extends APIController {
 				
 			  PatientResourceProvider.updatePatientForAccount(user._id);
 		} else {
-		      Application.registerCreateUser(user);
+		      handle = Application.registerCreateUser(user);
 		}
 		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, requirements);
 		
@@ -187,11 +190,12 @@ public class QuickRegistration extends APIController {
 			
 			if (device != null) {
 			   MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, device, true, confirmStudy);
+			   return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withAppInstance(appInstance), json, app, user._id);
 			}
 					
-			return Application.loginHelper(user);
+			return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device), json, app, user._id);
 		} else {
-			return Application.loginHelperResult(user, notok);
+			return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device), json, app, user._id);
 		}
 	}
 	

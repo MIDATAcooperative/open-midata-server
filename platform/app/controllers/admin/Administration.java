@@ -45,6 +45,7 @@ import models.enums.EMailStatus;
 import models.enums.Gender;
 import models.enums.MessageReason;
 import models.enums.ParticipationStatus;
+import models.enums.SecondaryAuthType;
 import models.enums.StudyExecutionStatus;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
@@ -216,6 +217,7 @@ public class Administration extends APIController {
 		user.agbStatus = ContractStatus.REQUESTED;
 		user.emailStatus = EMailStatus.UNVALIDATED;
 		user.confirmationCode = CodeGenerator.nextCode();
+		user.authType = SecondaryAuthType.SMS;
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, null, new MidataId(request().attrs().get(play.mvc.Security.USERNAME)), user);
 		
@@ -417,7 +419,7 @@ public class Administration extends APIController {
 		}
 							
 		if (getRole().equals(UserRole.PROVIDER)) {
-			HealthcareProvider.delete(PortalSessionToken.session().org);
+			HealthcareProvider.delete(PortalSessionToken.session().orgId);
 		}
 		
 		KeyRecoveryProcess.delete(userId);
@@ -469,7 +471,7 @@ public class Administration extends APIController {
 	@Security.Authenticated(AdminSecured.class)
 	public Result deleteStudy(String id) throws JsonValidationException, AppException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		MidataId owner = PortalSessionToken.session().getOrg();
+		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
 		
 		

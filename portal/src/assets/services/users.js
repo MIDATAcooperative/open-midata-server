@@ -22,7 +22,7 @@ angular.module('services')
 	};
 	
 	service.updateSettings = function(user) {
-		var data = {"language": user.language, "searchable": user.searchable };
+		var data = {"language": user.language, "searchable": user.searchable, "authType" : user.authType };
 		return server.post(jsRoutes.controllers.Users.updateSettings().url, JSON.stringify(data));
 	};
 	
