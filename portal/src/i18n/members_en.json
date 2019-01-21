@@ -93,6 +93,8 @@
     "recruiting" : "Recruiting",
     "ongoing" : "Ongoing",
     "completed" : "Completed",
-    "stopped" : "Stopped"
+    "stopped" : "Stopped",
+    "infoapply" : "More Info & Participation",
+    "infoonly" : "More Information"
   }
 }

@@ -39,7 +39,11 @@
 		    </div>
 		  </button>
 		</div>
-		
+		<div ng-if="mode=='app'">
+		  <div><label translate="manageapp.write_mode"></label></div>
+		  <select class="form-control" name="writes" ng-model="app.writes" ng-change="requireLogout();" ng-options="mode as ('enum.writepermissiontype.'+mode)|translate for mode in writemodes"></select>
+		  <div class="extraspace"></div>
+		</div>
 		<hr>
 				
        
@@ -64,8 +68,14 @@
 		</div>
 		
 		<div ng-show="!currentBlock && !newentry && !expertmode && !target.askresources">
+		
+		  
+		
 		  <p translate="queryeditor.check_okay"></p>
 		   <div ng-if="mode=='app'">
+		    
+		  
+		   
 		    
 		  
 		    <div class="checkbox">

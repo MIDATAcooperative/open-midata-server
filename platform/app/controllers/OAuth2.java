@@ -382,7 +382,7 @@ public class OAuth2 extends Controller {
             if (client_id == null) throw new BadRequestException("error.internal", "Missing client_id");
             
     		ExtendedSessionToken tk = ExtendedSessionToken.decrypt(code);
-    		if (tk == null) throw new BadRequestException("error.internal", "invalid_grant");
+    		if (tk == null || tk.ownerId != null) throw new BadRequestException("error.internal", "invalid_grant");
     		if (tk.created + OAUTH_CODE_LIFETIME < System.currentTimeMillis()) throw new BadRequestException("error.internal", "invalid_grant");
     		//AccessLog.log("cs:"+tk.codeChallenge);
     		//AccessLog.log("csm:"+tk.codeChallengeMethod);

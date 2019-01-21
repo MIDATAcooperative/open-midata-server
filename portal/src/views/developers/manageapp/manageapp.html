@@ -97,7 +97,7 @@
 		    <accessquery query="app.defaultQuery" details="true" isapp="true"></accessquery>		    
 		    <a href="javascript:" ng-click="go('^.appquery')" translate="manageapp.queryeditor_btn"></a>
 		  </formrow>
-		  <formrow myid="writes" label="Write Mode" class="danger-change">
+		  <formrow myid="writes" label="manageapp.write_mode" class="danger-change">
 		    <select class="form-control" name="writes" ng-model="app.writes" ng-change="requireLogout();" ng-options="mode as ('enum.writepermissiontype.'+mode)|translate for mode in writemodes"></select>
 		  </formrow>
 		   <formrow myid="noUpdateHistory" label="manageapp.no_update_history" ng-show="app.targetUserRole=='RESEARCH'">

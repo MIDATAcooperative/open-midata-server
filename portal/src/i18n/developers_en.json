@@ -85,6 +85,7 @@
     "edit_help" : "Change the setup for your application.",
     "query_btn" : "Change Data Access Filter",
     "query_help" : "Define which types of data your application may access.",
+    "write_mode" : "Write Access",
     "subscriptions_btn" : "Change Default Subscriptions",
     "subscriptions_help" : "Define triggers that cause an action on the MIDATA server",
     "tokenExchangeParams" : "OAuth2 Parameters for the Token Exchange", 
