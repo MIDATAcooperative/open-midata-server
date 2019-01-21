@@ -376,7 +376,7 @@ public class Plugins extends APIController {
 		Plugin app = Plugins.getPluginAndCheckIfInstalled(appId, userId, Sets.create("filename", "type", "url", "creator"));
 
 		// create encrypted authToken
-		SpaceToken appToken = new SpaceToken(PortalSessionToken.session().handle, consentId, userId, null, appId);
+		SpaceToken appToken = new SpaceToken(PortalSessionToken.session().handle, consentId, userId, getRole(), appId);
 
 		boolean testing = (app.creator.equals(PortalSessionToken.session().getDeveloperId()) || app.creator.equals(userId)) && app.developmentServer != null && app.developmentServer.length() > 0;
 
