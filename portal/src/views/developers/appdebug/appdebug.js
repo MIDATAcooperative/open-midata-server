@@ -19,6 +19,11 @@ angular.module('portal')
        //if ($scope.extra == null) $scope.extra = "";
 
        $scope.dosubmit = function() {
+    	 if (!$scope.url.startsWith("/")) {
+    		 $scope.results = "Invalid URL: No '/' at beginning of path.";
+    		 return;
+    	 }  
+    	   
          var url = $scope.server + $scope.url;
          
        

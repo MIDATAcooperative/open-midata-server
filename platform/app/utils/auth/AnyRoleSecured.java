@@ -17,7 +17,7 @@ public class AnyRoleSecured extends Security.Authenticator {
 	@Override
 	public String getUsername(Context ctx) {
 	    PortalSessionToken tk = PortalSessionToken.decrypt(ctx.request());
-	    if (tk == null || tk.getRole() == UserRole.ANY || tk instanceof ExtendedSessionToken) return null;
+	    if (tk == null || tk.getRole() == UserRole.ANY || tk instanceof ExtendedSessionToken || tk.ownerId == null) return null;
 	    try {
 	      KeyManager.instance.continueSession(tk.getHandle());
 	    } catch (AppException e) { return null; }	    

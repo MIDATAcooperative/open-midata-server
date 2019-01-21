@@ -70,6 +70,7 @@ public class OAuthRefreshToken {
 			MidataId ownerId = new MidataId(json.get("o").asText());
 			String phrase = json.get("p").asText();		
 			long created = json.get("c").asLong();
+			if (json.has("f") || json.has("h")) return null;
 			return new OAuthRefreshToken(appId, instanceId, ownerId, phrase, created);
 		} catch (Exception e) {
 			return null;

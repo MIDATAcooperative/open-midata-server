@@ -8,6 +8,7 @@ angular.module('portal')
     $scope.target = { type : "study" };
     $scope.blocks = [];
     $scope.currentBlock = undefined;
+    $scope.writemodes = apps.writemodes;
     $scope.datePickers = {  };
     $scope.dateOptions = {
  	  	 formatYear: 'yy',
