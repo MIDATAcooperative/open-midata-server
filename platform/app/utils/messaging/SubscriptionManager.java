@@ -109,9 +109,11 @@ public class SubscriptionManager {
 	}
 	
 	public static void activateSubscriptions(MidataId userId, Plugin plugin, MidataId instance) throws AppException {
+		AccessLog.log("Check Default Subscriptions:"+plugin.defaultSubscriptions);
 	    if (plugin.defaultSubscriptions != null) {
 	    	for (SubscriptionData dat : plugin.defaultSubscriptions) {
 	    		//if (!dat.format.equals("fhir/MessageHeader")) {
+	    		    AccessLog.log("Add Subscription format="+dat.format);
 	    			SubscriptionData newdata = new SubscriptionData();
 	    			newdata._id = new MidataId();
 	    			newdata.format = dat.format;

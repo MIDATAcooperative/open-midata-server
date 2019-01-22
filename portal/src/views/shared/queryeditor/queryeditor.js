@@ -460,7 +460,7 @@ angular.module('portal')
 		} else if ($scope.mode == "app") {
 			$scope.app.defaultQuery = $scope.query.json;
 			$scope.status.doAction('submit', apps.updatePlugin($scope.app))
-			    .then(function() { $state.go("^.yourapps"); });
+			    .then(function() { $state.go("^.manageapp", { appId : $state.params.appId }); });
 		}
 	};
 	
