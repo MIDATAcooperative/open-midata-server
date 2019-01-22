@@ -65,6 +65,7 @@ angular.module('services')
 			 if (part.content) result.content.push.apply(result.content, part.content);
 			 if (part.format) result.format.push.apply(result.format, part.format);
 			 if (part.group) result.group.push.apply(result.group, part.group);
+			 if (part["group-system"]) result["group-system"] = part["group-system"];
 		 });
 		 return result;
 	  } else return query;
