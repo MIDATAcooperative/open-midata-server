@@ -64,7 +64,7 @@ public class MobileCallAction extends Action<MobileCall> {
 			return CompletableFuture.completedFuture((Result) internalServerError("err:"+e2.getMessage()));			
 		} finally {
 			long endTime = System.currentTimeMillis();
-			if (endTime - startTime > 1000l * 4l) {
+			if (endTime - startTime > configuration.maxtime()) {
 			   ErrorReporter.reportPerformance("Mobile API", ctx, endTime - startTime);
 			}	
 			

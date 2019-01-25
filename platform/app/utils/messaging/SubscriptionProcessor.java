@@ -218,7 +218,7 @@ public class SubscriptionProcessor extends AbstractActor {
 		final String lang = user.language != null ? user.language : InstanceConfig.getInstance().getDefaultLanguage();
 		final String id = triggered.getResourceId() != null ? triggered.getResourceId().toString() : "-";
 		
-		boolean testing = (plugin.creator.equals(user.developer) || plugin.creator.equals(user._id)) /*&& plugin.status.equals(PluginStatus.DEVELOPMENT)*/;
+		boolean testing = InstanceConfig.getInstance().getInstanceType().getDebugFunctionsAvailable() && (plugin.status.equals(PluginStatus.DEVELOPMENT) || plugin.status.equals(PluginStatus.BETA));
 		//System.out.println("prcApp5");
 		if (testing) {
 			plugin = Plugin.getById(plugin._id, Plugin.ALL_DEVELOPER);
@@ -231,9 +231,10 @@ public class SubscriptionProcessor extends AbstractActor {
 				testcall.path = visPath;
 				testcall.resource = triggered.resource;
 				testcall.token = token;
-				testcall.resourceId = id;
+				testcall.resourceId = id;				
+				testcall.returnPath = getSender().path().toSerializationFormatWithAddress(context().system().provider().getDefaultAddress());
 				testcall.add();
-				getSender().tell(new MessageResponse(null,0), getSelf());
+				//getSender().tell(new MessageResponse(null,0), getSelf());
 				return;
 			}
 		}				

@@ -15,5 +15,5 @@ import play.mvc.With;
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MobileCall {
-
+  public long maxtime() default 1000l * 4l;
 }

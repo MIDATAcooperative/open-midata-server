@@ -22,6 +22,7 @@ import org.hl7.fhir.dstu3.model.Subscription.SubscriptionChannelComponent;
 import org.hl7.fhir.dstu3.model.Subscription.SubscriptionChannelType;
 
 import akka.actor.AbstractActor;
+import akka.actor.ActorPath;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
@@ -165,6 +166,10 @@ public class SubscriptionManager {
 	
 	public static void subscriptionChangeLocal(MidataId owner) {
 		subscriptionChecker.tell(new SubscriptionChange(owner), ActorRef.noSender());
+	}
+	
+	public static void answer(String ref, int status, String content) {
+		system.provider().resolveActorRef(ref).tell(new MessageResponse(content, status), ActorRef.noSender());
 	}
 	    
 }
