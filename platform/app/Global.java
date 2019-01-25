@@ -90,6 +90,9 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 		  
 		  FHIR.servlet.init(new PlayHttpServletConfig());
 			
+		  System.out.println("Messager");
+		  Messager.init(system);
+		  
 		  System.out.println("Instances");
 		  Instances.init();
 		  
@@ -122,10 +125,7 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 		
 		System.out.println("Statistiks");
 		Stats.init(system);
-		
-		System.out.println("Messager");
-		Messager.init(system);
-		
+						
 		System.out.println("Service Handler");
 		ServiceHandler.startup();
 		
