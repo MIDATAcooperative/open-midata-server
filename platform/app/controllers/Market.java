@@ -62,6 +62,7 @@ import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
+import utils.InstanceConfig;
 import utils.access.Query;
 import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
@@ -80,6 +81,7 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.messaging.SubscriptionManager;
 
 /**
  * functions for controlling the "market" of plugins
@@ -1080,6 +1082,18 @@ public class Market extends APIController {
 		return ok(JsonOutput.toJson(calls, "TestPluginCall", TestPluginCall.ALL)).as("application/json");
 	}
 	
+	@MobileCall
+	@BodyParser.Of(BodyParser.Json.class)
+	public Result answerDebugCall(String handle) throws AppException {
+		JsonNode json = request().body().asJson();
+		String sender = JsonValidation.getJsonString(json, "returnPath");
+		String content = JsonValidation.getJsonString(json, "content");
+		int status = JsonValidation.getInteger(json, "status", -100, 10000);
+		SubscriptionManager.answer(sender, status, content);
+		return ok();  
+				
+	}
+	
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
@@ -1100,6 +1114,13 @@ public class Market extends APIController {
 			TestPluginCall.delete(plugin.debugHandle);
 		}
 		if (action.equals("start")) {
+			if (!InstanceConfig.getInstance().getInstanceType().getDebugFunctionsAvailable()) {
+				throw new BadRequestException("error.notauthorized.no_debug", "No debugging functions available on this instance.");
+			}
+			if (plugin.status != PluginStatus.DEVELOPMENT && plugin.status != PluginStatus.BETA) {
+				throw new BadRequestException("error.notauthorized.no_debug", "Plugin does not have 'development/beta' status.");
+			}
+			
 			plugin.debugHandle = CodeGenerator.nextUniqueCode();
 		} else {
 			plugin.debugHandle = null;

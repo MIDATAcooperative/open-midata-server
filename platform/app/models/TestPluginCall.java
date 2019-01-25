@@ -16,8 +16,9 @@ public class TestPluginCall extends Model {
 	protected @NotMaterialized static final String collection = "testcalls";
 	
 	public @NotMaterialized final static Set<String> ALL = 
-			 Sets.create("_id", "handle", "path", "token", "lang", "owner", "resource", "resourceId", "created");
+			 Sets.create("_id", "handle", "path", "token", "lang", "owner", "resource", "resourceId", "created", "returnPath");
 
+	public String returnPath;
 	
 	public String handle;
 	

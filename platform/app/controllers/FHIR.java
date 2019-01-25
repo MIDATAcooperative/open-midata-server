@@ -133,6 +133,19 @@ public class FHIR extends Controller {
 	}
 	
 	/**
+	 * POST action for FHIR process message
+	 * @return
+	 * @throws AppException
+	 * @throws IOException
+	 * @throws ServletException
+	 */
+	@MobileCall(maxtime = 60l * 1000l)
+	@BodyParser.Of(value = BodyParser.Raw.class)
+	public Result postProcessMessage(String p) throws AppException, IOException, ServletException {
+		return post("/$process-message");
+	}
+	
+	/**
 	 * generic handler for all FHIR post requests.
 	 * requests will be forwarded to the FHIR servlet.
 	 * @param all request path after /fhir
