@@ -90,8 +90,11 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 		  
 		  FHIR.servlet.init(new PlayHttpServletConfig());
 			
+		  System.out.println("Instances");
+		  Instances.init();
+		  
 		  System.out.println("Subscription Manager");
-		  SubscriptionManager.init(system, ws);
+		  SubscriptionManager.init(Instances.system(), ws);
 		  
 		  System.out.println("Minimal Setup");
 		  MinimalSetup.dosetup();
@@ -99,9 +102,7 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 		  System.out.println("Market");
 		  Market.correctOwners();
 		  
-		  System.out.println("Instances");
-		  Instances.init();
-		  
+		  		  
 		  System.out.println("Record Group");
 		  RecordGroup.load();		 
 		  

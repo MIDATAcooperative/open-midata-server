@@ -45,7 +45,8 @@
        "fields" : "You are not authorized to query the provided fields",
        "account" : "You are not authorized to access this account",
        "study" : "You are not authorized to access this study",
-       "not_plugin_owner" : "This is not your plugin"
+       "not_plugin_owner" : "This is not your plugin",
+       "no_debug" : "Debugging is only available for plugins during development or beta phase on non productive instances."       
      },
 
      "invalid" : {

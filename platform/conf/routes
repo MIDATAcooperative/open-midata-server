@@ -6,6 +6,7 @@
 
 GET     /debug/aps/:id                                   controllers.Debug.get(id: String)
 GET     /api/ping                                            controllers.Debug.ping()
+POST    /fhir/$p<\$process\-message>                           controllers.FHIR.postProcessMessage(p)
 OPTIONS /fhir/*all                                       controllers.FHIR.checkPreflight(all)
 GET     /fhir/*all                                       controllers.FHIR.get(all)
 POST    /fhir/*all                                       controllers.FHIR.post(all)
@@ -106,6 +107,7 @@ POST     /api/developers/plugins/:appId/icon             controllers.Market.uplo
 DELETE   /api/developers/plugins/:appId/icon/:use        controllers.Market.deleteIcon(appId: String, use: String)
 GET      /api/shared/icon/:use/:id                       controllers.Market.getIcon(use:String, id:String)
 GET      /api/debug/getopencalls/:handle                 controllers.Market.getOpenDebugCalls(handle: String)
+POST     /api/debug/getopencalls/:handle                 controllers.Market.answerDebugCall(handle: String)
 POST     /api/debug/subscriptiondebug                    controllers.Market.setSubscriptionDebug()
 
 # Users
