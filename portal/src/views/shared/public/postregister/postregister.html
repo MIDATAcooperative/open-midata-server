@@ -21,7 +21,7 @@
 						  </ul>
 						</div>
 						
-						<div ng-show="progress.AUTH2FACTOR">
+						<div ng-show="progress.AUTH2FACTOR || progress.PHONE_VERIFIED">
 						   <p translate="postregister.auth2factor"></p>
 						   <form ng-submit="setSecurityToken()" role="form" class="form form-horizontal">
 						      <formrow myid="securityToken" label="postregister.securityToken">
@@ -29,6 +29,11 @@
 							  </formrow>							  
 							  <div class="extraspace"></div>
 							  <button type="submit" ng-disabled="status.action=='token'" class="btn btn-primary btn-block" translate="postregister.securityToken_btn"></button>
+							  <div ng-show="progress.PHONE_VERIFIED">
+							    <div class="extraspace"></div>
+							    <p translate="postregister.no_token"></p>
+							    <button ng-click="noSecurityToken()" type="button" ng-disabled="status.action=='token'" class="btn btn-default btn-block" translate="postregister.no_token_btn"></button>
+							  </div>
 							  <div class="extraspace"></div>
 						   </form>
 						</div>
@@ -121,6 +126,53 @@
 								</div>
 							</div>
 							<hr>
+						</div>
+
+                       <div ng-show="progress.AUTH2FACTORSETUP">
+							<div translate="postregister.auth2factorsetup"></div>
+														
+							<div class="extraspace"></div>
+							<form name="myform2" novalidate class="css-form form-horizontal" ng-submit="changeAuthType()" role="form">
+							
+								<div ng-if="true" ng-init="myform=myform2">
+								  <div class="dynheight">
+									<formrow myid="authType" label="postregister.auth_type">									  
+                                      <div class="radio">
+                                         <label>
+									       <input type="radio" value="NONE" name="authType" ng-model="registration.authType" required>
+									       <span translate="postregister.auth_type_none"></span>
+									     </label>
+									  </div>
+									  <div class="radio">
+                                         <label>
+									       <input type="radio" value="SMS" name="authType" ng-model="registration.authType" required>
+									       <span translate="postregister.auth_type_sms"></span>
+									     </label>
+									  </div>
+									</formrow>
+									</div>
+									<formrow myid="mobile" label="registration.mobile_phone">
+									   <input type="text" class="form-control" id="mobile" name="mobile" ng-model="registration.mobile" ng-required="registration.authType=='SMS'">
+									</formrow>
+									<div class="dynheight">
+									<formrow myid="emailnotify" label="postregister.emailnotify">
+									  <div class="checkbox">
+									    <label>
+									      <input type="checkbox" id="emailnotify" name="emailnotify" ng-model="registration.emailnotify">
+									      <span translate="postregister.emailnotify2" translate-value-domain="{{ENV.apiurl}}"></span>
+									   </label>
+									  </div>
+									</formrow>
+									</div>
+									
+								</div>
+
+                               <div translate="postregister.auth2factorsetup2" translate-value-domain="{{ENV.apiurl}}"></div>
+                               <div class="extraspace"></div>
+								<button type="submit" ng-disabled="status.action=='changeAddress'" class="btn btn-primary" translate="changeaddress.update_btn"></button>
+							   <div class="extraspace"></div>
+							</form>
+
 						</div>
 
 

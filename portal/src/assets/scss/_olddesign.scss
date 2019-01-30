@@ -118,6 +118,7 @@ p, body {
       top: 3px;
       /* left: 23px; */
     }
+       
     
     .form-control {
       font-size: $font-size-normal;
@@ -136,6 +137,32 @@ p, body {
         color: $color-brand-black;
       }
     }
+          
+    
+  }
+  
+  .has-error .help-block {
+      margin-top:100px;
+   }
+  
+  .dynheight {
+    margin-bottom: 10px;
+    margin-top: 10px;
+    .form-group {
+      height: auto;
+      
+      &::after {
+			content: none;			
+			border-bottom: none;
+	  }
+    }
+    .form-group label {      
+        font-size: $font-size-normal;
+        position : static;
+        top:20px;
+        padding-top: 10px;
+        pointer-events : inherit;       
+    }
   }
   
   .form-control {
@@ -146,7 +173,7 @@ p, body {
     color: $color-brand-white;
   }
   
-  .alert-danger {
+  .has-error .help-block, .alert-danger {
     @extend .mi-at-text; 
     @extend .mi-at-text--smallest;
     @extend .mi-at-text--white;

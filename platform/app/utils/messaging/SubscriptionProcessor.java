@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.lang.ProcessBuilder.Redirect;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -13,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
 
 import org.hl7.fhir.dstu3.model.StringType;
 import org.hl7.fhir.dstu3.model.Subscription;
@@ -56,7 +58,8 @@ public class SubscriptionProcessor extends AbstractActor {
 	@Override
 	public Receive createReceive() {
 		return receiveBuilder()
-			   .match(SubscriptionTriggered.class, this::processSubscription)	      
+			   .match(SubscriptionTriggered.class, this::processSubscription)
+			   .match(RecheckMessage.class, this::answerDebugCall)
 			   .build();
 	}
 	
@@ -232,8 +235,14 @@ public class SubscriptionProcessor extends AbstractActor {
 				testcall.resource = triggered.resource;
 				testcall.token = token;
 				testcall.resourceId = id;				
-				testcall.returnPath = getSender().path().toSerializationFormatWithAddress(context().system().provider().getDefaultAddress());
+				testcall.answer = null;
+				testcall.answerStatus = TestPluginCall.NOTANSWERED;
 				testcall.add();
+				
+				getContext().getSystem().scheduler().scheduleOnce(
+					      Duration.ofSeconds(1),
+					      getSelf(), new RecheckMessage(testcall._id, 0), getContext().dispatcher(), getSender());
+				
 				//getSender().tell(new MessageResponse(null,0), getSelf());
 				return;
 			}
@@ -275,4 +284,32 @@ public class SubscriptionProcessor extends AbstractActor {
 		}
 		getSender().tell(new MessageResponse(null,-1), getSelf());
 	}	
+	
+	void answerDebugCall(RecheckMessage msg) {
+		try {
+			TestPluginCall call = TestPluginCall.getById(msg.id);
+			if (call != null) {
+				if (call.answerStatus != TestPluginCall.NOTANSWERED) {
+					TestPluginCall.delete(call.handle, call._id);
+					getSender().tell(new MessageResponse(call.answer, call.answerStatus), getSelf());
+				} else {
+					if (msg.count < 50) {
+						getContext().getSystem().scheduler().scheduleOnce(
+							      Duration.ofSeconds(1),
+							      getSelf(), new RecheckMessage(msg.id, msg.count + 1), getContext().dispatcher(), getSender());
+					
+					}
+				}
+			}
+		} catch (Exception e) {}
+	}
+}
+
+class RecheckMessage {
+	public final MidataId id;
+	public int count;
+	public RecheckMessage(MidataId id, int count) {
+		this.id = id;
+		this.count = count;
+	}
 }

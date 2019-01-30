@@ -455,8 +455,12 @@
 	   "COMMENT" : "Additional notes"
 	 },
 	 "secondaryauthtype" : {
-	   "NONE" : "No 2FA",
+	   "NONE" : "No second authentication factor",
 	   "SMS" : "Two factor authentication using SMS"
+	 },
+	 "accountnotifications" : {
+	   "NONE" : "No login notifications",
+	   "LOGIN" : "Send an email on each login"
 	 }
    },
 
@@ -655,6 +659,15 @@
     "auth2factor" : "An authorization token has been send to your phone. Please enter it.",
     "securityToken" : "Token",
     "securityToken_btn" : "Send",
+    "no_token" : "Please wait up to a minute for the token to arrive.",
+    "no_token_btn" : "I did not receive the token",
+    "auth2factorsetup" : "Please setup your security settings: Do you want to protect access to your account with a second factor in addition to your password?",
+    "auth2factorsetup2" : "You can change your settings later in your profile. Log into {{domain}} and click on your name on the top right.",
+    "auth_type" : "Authentication",
+    "auth_type_none" : "I do not want to use two factor authentication.",
+    "auth_type_sms" : "I want to use two factor authentication using SMS tokens. Please send a token on login to my mobile phone.",
+    "emailnotify" : "Notifications",
+    "emailnotify2" : "Please send me an email everytime I log into the Midata portal at {{domain}}.",
     "agree_btn" : "I agree",
     "keyrecovery" : {
       "intro" : "The private key that is used to encrypt your data needs to be recovered. In order to recover your key, try one of these options:",
@@ -788,6 +801,9 @@
 	"searchable_no" : "No, I don't want that any other user sees my profile",
 	"searchable_info" : "This setting has no effect on your existing data sharing consents.",
 	"auth_type" : "Authentication",
+	"auth_type2" : "Do you want to protect access to your account with a second factor in addition to your password?",
+	"notifications" : "Notifications",
+	"notifications2" : "Do you want to be notified if your account is used?",
 	"change_settings_btn" : "Change Settings",
 	"change_settings_success" : "Settings have been updated"
   },

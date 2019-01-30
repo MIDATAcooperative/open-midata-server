@@ -9,6 +9,7 @@ angular.module('portal')
 	
 	$scope.languages = languages.all;
 	$scope.authTypes = ["NONE", "SMS"];
+	$scope.notificationTypes = ["NONE", "LOGIN"];
 	
 	$scope.confirmation = { code : "" };
 	
@@ -17,7 +18,7 @@ angular.module('portal')
 	$scope.reqRole = $state.params.role;
 	
 	$scope.init = function() {
-		$scope.status.doBusy(users.getMembers({"_id": userId}, ["name", "email", "searchable", "language", "address1", "address2", "zip", "city", "country", "firstname", "lastname", "mobile", "phone", "emailStatus", "agbStatus", "contractStatus", "role", "subroles", "confirmedAt", "birthday", "midataID", "status", "gender", "authType"]))
+		$scope.status.doBusy(users.getMembers({"_id": userId}, ["name", "email", "searchable", "language", "address1", "address2", "zip", "city", "country", "firstname", "lastname", "mobile", "phone", "emailStatus", "agbStatus", "contractStatus", "role", "subroles", "confirmedAt", "birthday", "midataID", "status", "gender", "authType", "notifications"]))
 		.then(function(results) {
 			$scope.user = results.data[0];
 		});

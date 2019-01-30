@@ -33,7 +33,9 @@
 			  </tr><tr>
 			  <td translate="admin_address.security"></td><td><span translate="{{ 'admin_address.security_type.'+member.security }}"></span></td>			  
 			  </tr><tr>
-			  <td translate="admin_address.auth_type"></td><td><span translate="{{ 'enum.secondaryauthtype.'+(member.authType || 'NONE') }}"></span></td>			  
+			  <td translate="admin_address.auth_type"></td><td>
+			   <select ng-change="changeUser(member);" ng-model="member.authType" class="form-control" ng-options="authType as ('enum.secondaryauthtype.'+authType)|translate for authType in authTypes"></select>			  
+              </td>			  
 			  </tr><tr>
 			  <td translate="admin_address.status"></td><td><select ng-change="changeUser(member);" ng-model="member.status" class="form-control" ng-options="status as 'enum.userstatus.'+status | translate for status in stati"></select></td>
 			  </tr><tr>
@@ -42,6 +44,8 @@
 			  <td translate="admin_address.contract_status"></td><td><select ng-change="changeUser(member);" ng-model="member.contractStatus" class="form-control" ng-options="status as 'enum.contractstatus.'+status | translate for status in contractStati"></select></td>
 			  </tr><tr>
 			  <td translate="admin_address.email_status"></td><td><span translate="{{ 'enum.emailstatus.'+member.emailStatus }}"></span>  <button ng-show="member.emailStatus != 'VALIDATED'" ng-click="confirmEmail(member);" class="btn btn-xs btn-danger" translate="admin_address.email_confirm_btn"></button></td>
+			  </tr><tr>
+			  <td translate="admin_address.mobile_status"></td><td><span translate="{{ 'enum.emailstatus.'+(member.mobileStatus || 'UNVALIDATED') }}"></span>  <button ng-show="member.emailStatus != 'VALIDATED'" ng-click="confirmEmail(member);" class="btn btn-xs btn-danger" translate="admin_address.email_confirm_btn"></button></td>
 			  </tr><tr>
 			  <td translate="admin_address.confirmation_code"></td><td><b>{{ member.confirmationCode }}</b></td>
 			  </tr><tr>

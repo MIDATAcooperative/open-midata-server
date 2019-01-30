@@ -14,5 +14,6 @@ public enum AccountActionFlags {
 	/**
 	 * Recovery of account private key
 	 */
-	KEY_RECOVERY
+	KEY_RECOVERY,
+		
 }

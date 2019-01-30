@@ -38,6 +38,17 @@ angular.module('portal')
 	   .state('member.upgrade', {
 	      url: '/upgrade?role&feature',
 	      templateUrl: 'views/shared/public/postregister/postregister.html' 
-	   });
+	   })
+	   .state('research.upgrade', {
+	      url: '/upgrade?role&feature',
+	      templateUrl: 'views/shared/public/postregister/postregister.html' 
+	   })
+	   .state('developer.upgrade', {
+	      url: '/upgrade?role&feature',
+	      templateUrl: 'views/shared/public/postregister/postregister.html' 
+	   }).state('provider.upgrade', {
+		      url: '/upgrade?role&feature',
+		      templateUrl: 'views/shared/public/postregister/postregister.html' 
+		   });
 	   
 }]);

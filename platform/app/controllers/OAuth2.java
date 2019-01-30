@@ -2,6 +2,7 @@ package controllers;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -28,11 +29,16 @@ import models.StudyAppLink;
 import models.StudyParticipation;
 import models.User;
 import models.UserGroupMember;
+import models.enums.AccountActionFlags;
+import models.enums.AccountNotifications;
 import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
+import models.enums.EMailStatus;
+import models.enums.MessageReason;
 import models.enums.ParticipationStatus;
 import models.enums.PluginStatus;
+import models.enums.SecondaryAuthType;
 import models.enums.StudyAppLinkType;
 import models.enums.UserFeature;
 import models.enums.UserRole;
@@ -44,6 +50,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
 import utils.InstanceConfig;
+import utils.RuntimeConstants;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.KeyManager;
@@ -67,6 +74,7 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.messaging.Messager;
 import utils.messaging.SMSUtils;
 
 public class OAuth2 extends Controller {
@@ -560,6 +568,8 @@ public class OAuth2 extends Controller {
 			}
 		}
 		
+		if (requirements.contains(UserFeature.AUTH2FACTOR)) requirements.add(UserFeature.AUTH2FACTORSETUP);
+		
 		return requirements;
 	}
 	
@@ -692,9 +702,50 @@ public class OAuth2 extends Controller {
 			return;
 		}
 		
-		if (notok!=null && (notok.contains(UserFeature.EMAIL_VERIFIED) || notok.contains(UserFeature.ADMIN_VERIFIED) || notok.contains(UserFeature.ADDRESS_VERIFIED) || notok.contains(UserFeature.MIDATA_COOPERATIVE_MEMBER) || notok.contains(UserFeature.PHONE_ENTERED))) {
+		if (notok!=null && (notok.contains(UserFeature.EMAIL_VERIFIED) || notok.contains(UserFeature.ADMIN_VERIFIED) || notok.contains(UserFeature.ADDRESS_VERIFIED) || notok.contains(UserFeature.MIDATA_COOPERATIVE_MEMBER) || notok.contains(UserFeature.PHONE_ENTERED) || notok.contains(UserFeature.AUTH2FACTORSETUP))) {
 			notok.remove(UserFeature.AUTH2FACTOR);
+			notok.remove(UserFeature.PHONE_VERIFIED);
 			return;
+		}
+		
+		if (notok!=null && (notok.contains(UserFeature.AUTH2FACTOR))) {
+			if (user.authType == SecondaryAuthType.SMS && user.mobileStatus != EMailStatus.VALIDATED) {
+			  notok.remove(UserFeature.AUTH2FACTOR);
+			  notok.add(UserFeature.PHONE_VERIFIED);
+			}
+		}
+		
+		if (notok!=null && notok.contains(UserFeature.PHONE_VERIFIED)) {
+			if (securityToken == null) {
+				Authenticators.getInstance(SecondaryAuthType.SMS).startAuthentication(user._id, "Token", user);
+				notok.clear();
+				notok.add(UserFeature.PHONE_VERIFIED);
+			} else {
+				if (securityToken.equals("_FAIL")) {
+					user.mobile = null;
+					user.mobileStatus = EMailStatus.UNVALIDATED;
+					user.authType = null;					
+					User.set(user._id, "mobile", user.mobile);
+					User.set(user._id, "mobileStatus", user.mobileStatus);
+					User.set(user._id, "authType", user.authType);
+					Authenticators.getInstance(SecondaryAuthType.SMS).finishAuthentication(user._id, user);
+					notok.remove(UserFeature.PHONE_VERIFIED);
+					notok.remove(UserFeature.AUTH2FACTOR);
+					notok.add(UserFeature.AUTH2FACTORSETUP);
+				} else {
+				
+					Authenticators.getInstance(user.authType).checkAuthentication(user._id, user, securityToken);
+					token.securityToken = securityToken;
+					notok.remove(UserFeature.AUTH2FACTOR);
+					notok.remove(UserFeature.PHONE_VERIFIED);
+					user.mobileStatus = EMailStatus.VALIDATED;
+					User.set(user._id, "mobileStatus", user.mobileStatus);
+					if (notok.isEmpty()) {
+						notok = null;
+						Authenticators.getInstance(user.authType).finishAuthentication(user._id, user);
+					}
+				}
+			}
 		}
 		
 		if (notok!=null && notok.contains(UserFeature.AUTH2FACTOR)) {
@@ -813,7 +864,21 @@ public class OAuth2 extends Controller {
 	public Result continuelogin() throws AppException {
 		JsonNode json = request().body().asJson();		
        
-        ExtendedSessionToken token = (ExtendedSessionToken) PortalSessionToken.session();
+		PortalSessionToken token1 = PortalSessionToken.session();
+		ExtendedSessionToken token;
+		if (token1 instanceof ExtendedSessionToken) {
+           token = (ExtendedSessionToken) token1;
+		} else {
+			token = new ExtendedSessionToken();
+			token.ownerId = token1.ownerId;
+			token.orgId = token1.orgId;
+			token.developerId = token1.developerId;			
+			token.userRole = token1.userRole;
+            token.handle = token1.handle;			
+			token.created = token1.created;
+            token.remoteAddress = token1.remoteAddress;
+            token.setPortal();
+		}
         
         Plugin app = token.getPortal() ? null : validatePlugin(token, json);
                        
@@ -920,7 +985,11 @@ public class OAuth2 extends Controller {
 			if (keyType == 0 && token.handle != null) {
 				  user = PostLoginActions.check(user);			  
 				  KeyManager.instance.persist(user._id);
-	        }		  
+	        }	
+			
+			if (user.notifications != null && user.notifications == AccountNotifications.LOGIN) {
+				Messager.sendMessage(app != null ? app._id : RuntimeConstants.instance.portalPlugin, MessageReason.LOGIN, null, Collections.singleton(user._id), InstanceConfig.getInstance().getDefaultLanguage(), new HashMap<String, String>());
+			}
 			 				
 			obj.put("keyType", keyType);
 			obj.put("role", user.role.toString().toLowerCase());
