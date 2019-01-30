@@ -104,6 +104,11 @@
 	                        </p>	
 			
 			<div class="row">
+				<p class="col-sm-2" translate="registration.language"></p>
+				<p class="col-sm-10"><select ng-model="user.language" class="form-control" ng-options="lang.value as lang.name | translate for lang in languages"></select></p>
+			</div>
+			
+			<div class="row">
 				<p class="col-sm-2" translate="user.searchable_short"></p>
 				<div class="col-sm-10">
 				  <div translate="user.searchable"></div>
@@ -122,15 +127,35 @@
 				  <span class="help-block" translate="user.searchable_info"></span>
 				 </div>
 			</div>
-			<div class="row">
-				<p class="col-sm-2" translate="registration.language"></p>
-				<p class="col-sm-10"><select ng-model="user.language" class="form-control" ng-options="lang.value as lang.name | translate for lang in languages"></select></p>
+			
+			
+			<div class="row extraspace">
+				<div class="col-sm-2" translate="user.auth_type"></div>
+				<div class="col-sm-10">
+				  <div translate="user.auth_type2"></div>
+				  <div class="radio" ng-repeat="mode in authTypes">
+				    <label>
+				      <input type="radio" ng-disabled="locked" name="authType" ng-value="mode" ng-model="user.authType">
+				      <span translate="{{ 'enum.secondaryauthtype.'+mode }}"></span>
+				    </label>
+				  </div>
+				  <div class="has-error">
+				    <formerror myid="authType" type="missing" message="error.missing.auth_type"></formerror>
+				  </div> 
+				</div>
 			</div>
 			
-			<div class="row">
-				<p class="col-sm-2" translate="user.auth_type"></p>
-				<p class="col-sm-10"><select ng-model="user.authType" class="form-control" ng-options="mode as ('enum.secondaryauthtype.'+mode) | translate for mode in authTypes"></select></p>
-				<formerror myid="authType" type="missing" message="error.missing.auth_type"></formerror> 
+			<div class="row extraspace">
+				<div class="col-sm-2" translate="user.notifications"></div>
+				<div class="col-sm-10">
+			      <div translate="user.notifications2"></div>
+				  <div class="radio" ng-repeat="mode in notificationTypes">
+				    <label>
+				      <input type="radio" ng-disabled="locked" name="notifications" ng-value="mode" ng-model="user.notifications">
+				      <span translate="{{ 'enum.accountnotifications.'+mode }}"></span>
+				    </label>
+				  </div>							
+				</div>				 
 			</div>
 			<button class="btn btn-default" ng-disabled="status.action == 'changesettings'" type="submit" translate="user.change_settings_btn"></button>
 			

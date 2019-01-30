@@ -5,14 +5,15 @@ angular.module('portal')
     $scope.criteria = { _id : $stateParams.userId };		
 	$scope.stati = [ "NEW", "ACTIVE", "BLOCKED", "DELETED" ];
 	$scope.contractStati = [ "NEW", "REQUESTED", "PRINTED", "SIGNED" ];
+	$scope.authTypes = ["NONE", "SMS"]
     
 	$scope.reload = function() {
 		
-		$scope.status.doBusy(users.getMembers($scope.criteria, [ "midataID", "firstname", "lastname", "email", "role", "subroles", "status", "address1", "address2", "city", "confirmationCode", "agbStatus", "contractStatus", "emailStatus", "country", "email", "gender", "phone", "zip", "registeredAt", "login", "confirmedAt", "developer", "security", "authType" ]))
+		$scope.status.doBusy(users.getMembers($scope.criteria, [ "midataID", "firstname", "lastname", "email", "role", "subroles", "status", "address1", "address2", "city", "confirmationCode", "agbStatus", "contractStatus", "emailStatus", "mobileStatus", "country", "email", "gender", "phone", "zip", "registeredAt", "login", "confirmedAt", "developer", "security", "authType" ]))
 		.then(function(data) {
 			$scope.member = data.data[0];
 			if ($scope.member.role == "DEVELOPER") {
-				$scope.status.doBusy(users.getMembers({ _id : $stateParams.userId, role : "DEVELOPER" }, [ "midataID", "firstname", "lastname", "email", "role", "subroles", "status", "address1", "address2", "city", "confirmationCode", "agbStatus", "contractStatus", "emailStatus", "country", "email", "gender", "phone", "zip", "registeredAt", "login", "confirmedAt", "coach", "reason", "security", "authType" ]))
+				$scope.status.doBusy(users.getMembers({ _id : $stateParams.userId, role : "DEVELOPER" }, [ "midataID", "firstname", "lastname", "email", "role", "subroles", "status", "address1", "address2", "city", "confirmationCode", "agbStatus", "contractStatus", "emailStatus", "mobileStatus", "country", "email", "gender", "phone", "zip", "registeredAt", "login", "confirmedAt", "coach", "reason", "security", "authType" ]))
 				.then(function(data2) { $scope.member = data2.data[0]; });
 			}
 			if ($scope.member.developer) {				
@@ -25,7 +26,7 @@ angular.module('portal')
 	};
 	
 	$scope.changeUser = function(user) {		
-		administration.changeStatus(user._id, user.status, user.contractStatus, user.agbStatus).then(function() { $scope.reload(); });
+		administration.changeStatus(user._id, user.status, user.contractStatus, user.agbStatus, undefined, user.authType).then(function() { $scope.reload(); });
 	};	
 	
 	$scope.confirmEmail = function(user) {

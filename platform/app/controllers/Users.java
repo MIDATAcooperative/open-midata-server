@@ -27,9 +27,11 @@ import models.StudyParticipation;
 import models.User;
 import models.UserGroupMember;
 import models.enums.AccountActionFlags;
+import models.enums.AccountNotifications;
 import models.enums.AuditEventType;
 import models.enums.ConsentType;
 import models.enums.ContractStatus;
+import models.enums.EMailStatus;
 import models.enums.Gender;
 import models.enums.ParticipationStatus;
 import models.enums.SecondaryAuthType;
@@ -255,7 +257,7 @@ public class Users extends APIController {
 		String firstName = JsonValidation.getString(json, "firstname");
 		String lastName = JsonValidation.getString(json, "lastname");
 					
-		User user = User.getById(userId, User.ALL_USER); 
+		User user = User.getById(userId, User.ALL_USER_INTERNAL); 
 		
 		//user.email = email;
 		//user.emailLC = email.toLowerCase();
@@ -275,7 +277,26 @@ public class Users extends APIController {
 		}
 		if (json.has("phone")) {
 		  user.phone = JsonValidation.getString(json, "phone");
-		  user.mobile = JsonValidation.getString(json, "mobile");
+		  String mobile = JsonValidation.getString(json, "mobile");
+		  if (!mobile.equals(user.mobile)) {
+			  user.mobileStatus = EMailStatus.UNVALIDATED;
+			  user.mobile = mobile;  
+		  }
+		  
+		}
+		if (json.has("authType")) {			
+			user.authType = JsonValidation.getEnum(json, "authType", SecondaryAuthType.class);
+			
+			if (user.authType.equals(SecondaryAuthType.NONE) && InstanceConfig.getInstance().getInstanceType().is2FAMandatory(getRole())) {
+				throw new JsonValidationException("error.missing.auth_type", "authType", "missing", "Two factor authentication is mandantory");
+			}
+			
+			user.mobile = JsonValidation.getString(json, "mobile");
+			if (JsonValidation.getBoolean(json, "emailnotify")) {
+				user.notifications = AccountNotifications.LOGIN;
+			} else {
+				user.notifications = AccountNotifications.NONE;
+			}
 		}
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_ADDRESS_CHANGE, user);
@@ -289,10 +310,13 @@ public class Users extends APIController {
 		User.set(user._id, "zip", user.zip);
 		User.set(user._id, "phone", user.phone);
 		User.set(user._id, "mobile", user.mobile);
+		User.set(user._id, "mobileStatus", user.mobileStatus);
 		User.set(user._id, "country", user.country);
 		User.set(user._id, "firstname", user.firstname);
 		User.set(user._id, "lastname", user.lastname);
-		User.set(user._id, "gender", user.gender);		
+		User.set(user._id, "gender", user.gender);
+		User.set(user._id, "authType", user.authType);	
+		User.set(user._id, "notifications", user.notifications);
 		
 		user.updateKeywords(true);
 		
@@ -338,30 +362,25 @@ public class Users extends APIController {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		
 		SecondaryAuthType authType = JsonValidation.getEnum(json, "authType", SecondaryAuthType.class);
-		
-		if (authType.equals(SecondaryAuthType.SMS)) {
-			requireUserFeature(UserFeature.PHONE_ENTERED);
-		}
-		
+						
 		if (authType.equals(SecondaryAuthType.NONE) && InstanceConfig.getInstance().getInstanceType().is2FAMandatory(getRole())) {
 			throw new JsonValidationException("error.missing.auth_type", "authType", "missing", "Two factor authentication is mandantory");
 		}
 		
-		// boolean sendMail = JsonValidation.getBoolean(json, "loginNotification");
+		AccountNotifications sendMail = JsonValidation.getEnum(json, "notifications", AccountNotifications.class);
 		
-		User user = User.getById(userId, Sets.create("_id", "flags")); 
+		User user = User.getById(userId, Sets.create("_id", "notifications")); 
 		
 		User.set(user._id, "searchable", searchable);
 		User.set(user._id, "language", language);
 		User.set(user._id, "authType", authType);
-		
-		/*if (sendMail) {
-			user.addFlag(AccountActionFlags.LOGIN_NOTIFICATION);
-		} else {
-			user.removeFlag(AccountActionFlags.LOGIN_NOTIFICATION);
-		}*/
-		
+		User.set(user._id, "notifications", sendMail);
+						
 		PatientResourceProvider.updatePatientForAccount(userId);
+		
+		if (authType.equals(SecondaryAuthType.SMS)) {
+			requireUserFeature(UserFeature.PHONE_ENTERED);
+		}
 		
 		return ok();		
 	}

@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('PostRegisterCtrl', ['$scope', '$state', '$stateParams', 'status', 'server', 'session', 'oauth', 'users', 'views', 'crypto', function($scope, $state, $stateParams, status, server, session, oauth, users, views, crypto) {
+.controller('PostRegisterCtrl', ['$scope', '$state', '$stateParams', 'status', 'server', 'session', 'oauth', 'users', 'views', 'crypto', 'ENV', function($scope, $state, $stateParams, status, server, session, oauth, users, views, crypto, ENV) {
 	
 	// init
 	$scope.passphrase = {};
@@ -13,7 +13,8 @@ angular.module('portal')
 	$scope.resentSuccess = false;
 	$scope.isoauth = false;
 	$scope.view = views.getView("terms");
-	
+	$scope.ENV = ENV;
+    	
 	$scope.init = function() {
 	if ($stateParams.feature) {
 		$scope.progress = { requirements : [ $stateParams.feature ] };
@@ -69,14 +70,30 @@ angular.module('portal')
         	$scope.registration = JSON.parse(JSON.stringify($scope.registration));
         	$scope.registration.firstname = $scope.registration.lastname = $scope.registration.gender = $scope.registration.city = $scope.registration.zip = $scope.registration.country = $scope.registration.address1 = undefined;
         }
+        $scope.registration.authType = undefined;
 		$scope.submitted = true;	
 		if ($scope.error && $scope.error.field && $scope.error.type) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
 		$scope.error = null;
-		console.log("XXXX");
+		
 		if (! $scope.myform.$valid) return;
-		console.log("XXXX2");
+		
 		$scope.registration.user = $scope.registration._id;									
 		$scope.status.doAction("changeAddress", users.updateAddress($scope.registration)).
+		then(function(data) { 
+			$scope.retry();
+		});
+	};
+	
+	$scope.changeAuthType = function() {		
+        
+		$scope.submitted = true;	
+		if ($scope.error && $scope.error.field && $scope.error.type) $scope.myform2[$scope.error.field].$setValidity($scope.error.type, true);
+		$scope.error = null;
+		
+		if (! $scope.myform2.$valid) return;
+		console.log("XXXX2");
+		$scope.registration.user = $scope.registration._id;									
+		$scope.status.doAction("changeAddress", users.updateAddress({ user : $scope.registration._id, authType : $scope.registration.authType, mobile : $scope.registration.mobile, emailnotify : $scope.registration.emailnotify })).
 		then(function(data) { 
 			$scope.retry();
 		});
@@ -171,6 +188,10 @@ angular.module('portal')
 	
 	$scope.setSecurityToken = function() {		
 		$scope.retry(null, { securityToken : $scope.setpw.securityToken });
+	};
+	
+	$scope.noSecurityToken = function() {		
+		$scope.retry(null, { securityToken : "_FAIL" });
 	};
 	
 	$scope.addressNeeded = function() {

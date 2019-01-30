@@ -86,6 +86,7 @@ public class Developers extends APIController {
 		user.contractStatus = ContractStatus.REQUESTED;	
 		user.agbStatus = ContractStatus.REQUESTED;
 		user.emailStatus = EMailStatus.UNVALIDATED;
+		user.mobileStatus = EMailStatus.UNVALIDATED;
 		user.confirmationCode = CodeGenerator.nextCode();
 		
 		user.apps = new HashSet<MidataId>();	
