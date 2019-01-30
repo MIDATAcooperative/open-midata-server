@@ -1076,20 +1076,26 @@ public class Market extends APIController {
 	}
 	
 	@MobileCall
-	public Result getOpenDebugCalls(String handle) throws AppException {		
+	public Result getOpenDebugCalls(String handle) throws AppException {
+		AccessLog.log("Read open debug calls for handle: "+handle);
 		List<TestPluginCall> calls = TestPluginCall.getForHandle(handle);
-		TestPluginCall.delete(handle);
+		
+		//TestPluginCall.delete(handle);
 		return ok(JsonOutput.toJson(calls, "TestPluginCall", TestPluginCall.ALL)).as("application/json");
 	}
 	
 	@MobileCall
 	@BodyParser.Of(BodyParser.Json.class)
 	public Result answerDebugCall(String handle) throws AppException {
+		AccessLog.log("Answer debug call handle="+handle);
 		JsonNode json = request().body().asJson();
 		String sender = JsonValidation.getJsonString(json, "returnPath");
 		String content = JsonValidation.getJsonString(json, "content");
 		int status = JsonValidation.getInteger(json, "status", -100, 10000);
-		SubscriptionManager.answer(sender, status, content);
+		
+		TestPluginCall call = TestPluginCall.getForHandleAndId(handle, MidataId.from(sender));		
+		call.setAnswer(status, content);
+				
 		return ok();  
 				
 	}

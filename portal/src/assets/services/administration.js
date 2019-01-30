@@ -3,11 +3,12 @@ angular.module('services')
 	
 	var service = {};
 	
-	service.changeStatus = function(userId, status, contractStatus, agbStatus, emailStatus) {
+	service.changeStatus = function(userId, status, contractStatus, agbStatus, emailStatus, authType) {
 		var data = { user : userId, status : status };
 		if (contractStatus) { data.contractStatus = contractStatus; }
 		if (agbStatus) { data.agbStatus = agbStatus; }
 		if (emailStatus) { data.emailStatus = emailStatus; }
+		if (authType) { data.authType = authType; }
 		return server.post(jsRoutes.controllers.admin.Administration.changeStatus().url, JSON.stringify(data));
 	};
 	

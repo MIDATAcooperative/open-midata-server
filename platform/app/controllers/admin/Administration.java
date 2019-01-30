@@ -166,6 +166,16 @@ public class Administration extends APIController {
 			}
 		}
 		
+		if (json.has("authType")) {
+			SecondaryAuthType old = user.authType;
+			user.authType = JsonValidation.getEnum(json, "authType", SecondaryAuthType.class);
+			User.set(user._id, "authType", user.authType);
+			if (old != user.authType) {
+				if (old == null) old = SecondaryAuthType.NONE;
+				AuditManager.instance.addAuditEvent(AuditEventType.USER_ACCOUNT_CHANGE_BY_ADMIN, null, executorId, user, "2FA type "+old.toString()+" to "+user.authType.toString());
+			}
+		}
+		
 		Application.checkAccount(user);
 		
 		AuditManager.instance.success();

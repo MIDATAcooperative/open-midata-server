@@ -39,7 +39,7 @@ public class SMSAuthenticator implements Authenticator {
 		if (SMSUtils.isAvailable()) {
 		  Messager.sendSMS(phone, prompt+": "+token.token);
 		} else {
-		  Messager.sendTextMail(user.email, user.firstname+" "+user.lastname, "SMS Token", prompt+": "+token.token);
+		  Messager.sendTextMail(user.email, user.firstname+" "+user.lastname, "SMS for "+phone, prompt+": "+token.token);
 		}
 	}
 	

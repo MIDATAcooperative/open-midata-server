@@ -36,6 +36,7 @@
     "agb_status" : "T&Cs Status:",
     "contract_status" : "Contract Status:",
     "email_status" : "Email Status:",
+    "mobile_status" : "Mobile Validation Status:",
     "confirmation_code" : "Confirmation Code:",
     "registration_date" : "Registration Date:",
     "confirmation_date" : "Confirmation Date:",

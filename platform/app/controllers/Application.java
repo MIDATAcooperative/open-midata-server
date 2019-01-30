@@ -611,6 +611,7 @@ public class Application extends APIController {
 		obj.put("contractStatus", user.contractStatus.toString());		
 		obj.put("agbStatus", user.agbStatus.toString());
 		obj.put("emailStatus", user.emailStatus.toString());
+		obj.put("mobileStatus", user.mobileStatus == null ? EMailStatus.UNVALIDATED.toString() : user.mobileStatus.toString());
 		ArrayNode ar = obj.putArray("requirements");
 		for (UserFeature feature : missing) ar.add(feature.toString());
 		obj.put("confirmationCode", user.confirmationCode == null);
@@ -885,6 +886,7 @@ public class Application extends APIController {
 		user.contractStatus = ContractStatus.NEW;	
 		user.agbStatus = ContractStatus.NEW;
 		user.emailStatus = EMailStatus.UNVALIDATED;
+		user.mobileStatus = EMailStatus.UNVALIDATED;
 		user.confirmationCode = CodeGenerator.nextCode();
 		user.partInterest = ParticipationInterest.UNSET;
 							

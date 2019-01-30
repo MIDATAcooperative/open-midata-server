@@ -13,6 +13,7 @@ import models.Plugin;
 import models.User;
 import models.enums.MessageChannel;
 import models.enums.MessageReason;
+import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
@@ -151,9 +152,8 @@ public class Messager {
 		  replacements.put("lastname", "");	
 		}
 		replacements.put("email", email);
-		
 		for (Map.Entry<String, String> replacement : replacements.entrySet()) {
-			String key = "<"+replacement.getKey()+">";
+			String key = "<"+replacement.getKey()+">";			
 		    subject = subject.replaceAll(key, replacement.getValue());
 		    content = content.replaceAll(key, replacement.getValue());
 		}

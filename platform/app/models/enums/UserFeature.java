@@ -79,7 +79,12 @@ public enum UserFeature {
 	/**
 	 * user has been verified with 2-factory-authentication
 	 */
-	AUTH2FACTOR;
+	AUTH2FACTOR,
+	
+	/**
+	 * two factor authentication needs to be setup
+	 */
+	AUTH2FACTORSETUP;
 	
 	/**
 	 * Does a user satisfy this feature?
@@ -91,7 +96,7 @@ public enum UserFeature {
 			case EMAIL_ENTERED: return true;
 			case EMAIL_VERIFIED: return (user.emailStatus.equals(EMailStatus.VALIDATED) || user.emailStatus.equals(EMailStatus.EXTERN_VALIDATED));
 			case PHONE_ENTERED: return user.mobile != null && user.mobile.length() > 0;
-			case PHONE_VERIFIED: return false;
+			case PHONE_VERIFIED: return user.mobileStatus != null && user.mobileStatus == EMailStatus.VALIDATED;
 			case ADDRESS_ENTERED: return user.city != null && user.city.length() > 0 && user.zip != null && user.zip.length() > 0 && user.address1 != null;
 			case ADDRESS_VERIFIED: return user.agbStatus.equals(ContractStatus.SIGNED);
 			case PASSPORT_VERIFIED: return false;
@@ -109,6 +114,9 @@ public enum UserFeature {
 				if (user.authType == null || user.authType.equals(SecondaryAuthType.NONE)) return true;
 				// AUTH2FACTOR is handeled outside. If no phone is present this can be skipped. Use PHONE_ENTERED to force phone number to be present.
 				return user.mobile == null && user.phone == null;
+			case AUTH2FACTORSETUP:				
+				if (user.authType == null || (user.authType.equals(SecondaryAuthType.SMS) && user.mobile == null)) return false;
+				return true;
 		}
 		return false;
 	}

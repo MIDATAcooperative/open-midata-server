@@ -8,6 +8,11 @@ public enum MessageReason {
 	REGISTRATION,
 	
 	/**
+	 * Message send upon login
+	 */
+	LOGIN,
+	
+	/**
 	 * Message sent upon registration by another user
 	 */
 	REGISTRATION_BY_OTHER_PERSON, 
