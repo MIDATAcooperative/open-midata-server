@@ -264,7 +264,7 @@ public class Application extends APIController {
 			// execute
 			userId = passwordResetToken.userId;
 			token = passwordResetToken.token;
-			role = passwordResetToken.role;	
+			role = passwordResetToken.role.toUpperCase();	
 			
 			ExtendedSessionToken stoken = new ExtendedSessionToken();
 			stoken.userRole = UserRole.valueOf(role);
@@ -275,7 +275,7 @@ public class Application extends APIController {
 			JsonValidation.validate(json, "userId", "code", "role");
 			userId = JsonValidation.getMidataId(json, "userId");
 			token = JsonValidation.getString(json, "code");
-			role = JsonValidation.getString(json, "role");
+			role = JsonValidation.getString(json, "role").toUpperCase();
 			
 			PortalSessionToken tk = PortalSessionToken.decrypt(request());
 		    
