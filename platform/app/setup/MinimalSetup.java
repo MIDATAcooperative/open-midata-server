@@ -14,6 +14,7 @@ import models.enums.ContractStatus;
 import models.enums.EMailStatus;
 import models.enums.Gender;
 import models.enums.PluginStatus;
+import models.enums.SecondaryAuthType;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
@@ -51,6 +52,7 @@ public class MinimalSetup {
 			admin.security = AccountSecurityLevel.KEY;
 			
 			admin.emailStatus = EMailStatus.VALIDATED;
+			admin.authType = SecondaryAuthType.NONE;
 			admin.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(admin._id);
 			Admin.add(admin);
 			
@@ -76,7 +78,8 @@ public class MinimalSetup {
 			developer.gender = Gender.OTHER;
 			developer.security = AccountSecurityLevel.KEY;
 					
-			developer.emailStatus = EMailStatus.VALIDATED;			
+			developer.emailStatus = EMailStatus.VALIDATED;
+			developer.authType = SecondaryAuthType.NONE;
 			developer.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(developer._id);
 			
 			Developer.add(developer);
@@ -105,6 +108,7 @@ public class MinimalSetup {
 			admin.security = AccountSecurityLevel.KEY;
 			
 			admin.emailStatus = EMailStatus.VALIDATED;
+			admin.authType = SecondaryAuthType.NONE;
 			admin.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(admin._id);
 			Admin.add(admin);
 			
@@ -132,6 +136,7 @@ public class MinimalSetup {
 			admin.security = AccountSecurityLevel.KEY;
 			
 			admin.emailStatus = EMailStatus.VALIDATED;
+			admin.authType = SecondaryAuthType.NONE;
 			admin.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(admin._id);
 			Admin.add(admin);
 			
