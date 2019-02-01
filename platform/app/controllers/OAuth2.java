@@ -893,8 +893,21 @@ public class OAuth2 extends Controller {
 			JsonNode json = Json.newObject();
 			Plugin app = token.appId != null ? validatePlugin(token, json) : null;
 			return loginHelper(token, json, app, token.currentExecutor);
+		} else {
+			ExtendedSessionToken token = new ExtendedSessionToken();
+			token.ownerId = tk.ownerId;
+			token.orgId = tk.orgId;
+			token.developerId = tk.developerId;			
+			token.userRole = tk.userRole;
+            token.handle = tk.handle;			
+			token.created = tk.created;
+            token.remoteAddress = tk.remoteAddress;
+            token.currentExecutor = tk.ownerId;
+            token.setPortal();
+            JsonNode json = Json.newObject();
+            return loginHelper(token, json, null, token.currentExecutor);
 		}
-		throw new AuthException("error.internal", "Wrong token type");
+		//throw new AuthException("error.internal", "Wrong token type");
 	}
 	
 	public static Result loginHelper(ExtendedSessionToken token, JsonNode json, Plugin app, MidataId currentExecutor) throws AppException {
