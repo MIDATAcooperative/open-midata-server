@@ -168,7 +168,8 @@ public class PortalSessionToken {
 			if (secret == null || secret.length()==0) return null;
 									
 			PortalSessionToken result = PortalSessionToken.decrypt(secret);
-											
+			if (result == null) return null;			
+			
 			if (System.currentTimeMillis() > result.created + LIFETIME) {				
 				return null;
 			}
