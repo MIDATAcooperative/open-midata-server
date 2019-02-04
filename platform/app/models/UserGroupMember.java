@@ -77,6 +77,10 @@ public class UserGroupMember extends Model implements Comparable<Model> {
 		return Model.get(UserGroupMember.class, collection, CMaps.map("userGroup", group).map("member", member), ALL);
 	}
 	
+	public static UserGroupMember getByGroupAndActiveMember(MidataId group, MidataId member) throws InternalServerException {
+		return Model.get(UserGroupMember.class, collection, CMaps.map("userGroup", group).map("member", member).map("status", ConsentStatus.ACTIVE), ALL);
+	}
+	
 	public void add() throws InternalServerException {
 		Model.insert(collection, this);	
 	}

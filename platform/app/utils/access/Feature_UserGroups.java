@@ -62,7 +62,7 @@ public class Feature_UserGroups extends Feature {
 			MidataId usergroup = q.getMidataIdRestriction("usergroup").iterator().next();
 			
 			if (usergroup.equals(q.getCache().getAccountOwner())) return next.iterator(q);
-			UserGroupMember isMemberOfGroup = UserGroupMember.getByGroupAndMember(usergroup, q.getCache().getAccountOwner());
+			UserGroupMember isMemberOfGroup = UserGroupMember.getByGroupAndActiveMember(usergroup, q.getCache().getAccountOwner());
 			if (isMemberOfGroup == null) throw new InternalServerException("error.internal", "Not member of provided user group");
 			return doQueryAsGroup(isMemberOfGroup, q);					
 		}

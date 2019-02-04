@@ -1039,7 +1039,7 @@ public class Market extends APIController {
 		   if (!plugin.creator.equals(userId)) throw new AuthException("error.notauthorized.not_plugin_owner", "You are not authorized to change this plugin.");
 		   link.validationDeveloper = StudyValidationStatus.VALIDATED;
 		} else if (role.equals(UserRole.RESEARCH)) {
-			UserGroupMember self = UserGroupMember.getByGroupAndMember(link.studyId, userId);
+			UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(link.studyId, userId);
 			if (self == null)
 				throw new AuthException("error.notauthorized.study", "User not member of study group");
 			if (!self.role.maySetup())

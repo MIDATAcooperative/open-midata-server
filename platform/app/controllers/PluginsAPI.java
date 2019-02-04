@@ -521,7 +521,7 @@ public class PluginsAPI extends APIController {
 			Set<Consent> consent = null;
 			if (query != null && query.containsField("link-study")) {
 				MidataId groupId = MidataId.from(query.get("link-study"));
-                UserGroupMember ugm = UserGroupMember.getByGroupAndMember(groupId, inf.executorId);
+                UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(groupId, inf.executorId);
                 if (ugm != null) context = RecordManager.instance.createContextForUserGroup(ugm, context);
 				consent = Consent.getHealthcareOrResearchActiveByAuthorizedAndOwner(groupId, record.owner);
 			} else {

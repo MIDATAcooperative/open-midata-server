@@ -240,7 +240,7 @@ public class Studies extends APIController {
 		AuditManager.instance.addAuditEvent(AuditEventType.DATA_EXPORT, executorId, null, study);
 		setAttachmentContentDisposition("study.zip");
 
-		UserGroupMember self = UserGroupMember.getByGroupAndMember(studyid, executorId);
+		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyid, executorId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
 		if (!self.role.mayExportData())
@@ -317,7 +317,7 @@ public class Studies extends APIController {
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.DATA_EXPORT, executorId, null, study);
 
-		UserGroupMember self = UserGroupMember.getByGroupAndMember(studyid, executorId);
+		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyid, executorId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
 		if (!self.role.mayExportData())
@@ -468,7 +468,7 @@ public class Studies extends APIController {
 		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId owner = PortalSessionToken.session().getOrgId();
 
-		Set<UserGroupMember> ugms = UserGroupMember.getAllByMember(executorId);
+		Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByMember(executorId);
 		Set<MidataId> ids = new HashSet<MidataId>();
 		for (UserGroupMember ugm : ugms)
 			ids.add(ugm.userGroup);
@@ -521,7 +521,7 @@ public class Studies extends APIController {
 				"processFlags", "autoJoinGroup", "type", "joinMethods");
 		Study study = Study.getById(studyid, fields);
 
-		UserGroupMember ugm = UserGroupMember.getByGroupAndMember(studyid, userid);
+		UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(studyid, userid);
 		if (ugm != null)
 			study.myRole = ugm.role;
 		else
@@ -673,7 +673,7 @@ public class Studies extends APIController {
 		if (study.validationStatus == StudyValidationStatus.VALIDATION)
 			return badRequest("Validation is already in progress.");
 
-		UserGroupMember self = UserGroupMember.getByGroupAndMember(studyid, userId);
+		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyid, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
 		if (!self.role.maySetup())
@@ -830,7 +830,7 @@ public class Studies extends APIController {
 		if (study.participantSearchStatus != ParticipantSearchStatus.PRE && study.participantSearchStatus != ParticipantSearchStatus.CLOSED)
 			return badRequest("Study participant search already started.");
 
-		UserGroupMember self = UserGroupMember.getByGroupAndMember(studyid, userId);
+		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyid, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
 		if (!self.role.maySetup())
@@ -872,7 +872,7 @@ public class Studies extends APIController {
 		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING)
 			throw new BadRequestException("error.closed.study", "Study participant search already closed.");
 
-		UserGroupMember self = UserGroupMember.getByGroupAndMember(studyid, userId);
+		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyid, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
 		if (!self.role.maySetup())
@@ -916,7 +916,7 @@ public class Studies extends APIController {
 		if (study.executionStatus != StudyExecutionStatus.PRE)
 			throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
 
-		UserGroupMember self = UserGroupMember.getByGroupAndMember(studyid, userId);
+		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyid, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
 		if (!self.role.maySetup())
@@ -958,7 +958,7 @@ public class Studies extends APIController {
 		if (study.executionStatus != StudyExecutionStatus.RUNNING)
 			throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
 
-		UserGroupMember self = UserGroupMember.getByGroupAndMember(studyid, userId);
+		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyid, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
 		if (!self.role.maySetup())
@@ -1018,7 +1018,7 @@ public class Studies extends APIController {
 		// BadRequestException("error.invalid.status_transition", "Wrong study
 		// execution status.");
 
-		UserGroupMember self = UserGroupMember.getByGroupAndMember(studyid, userId);
+		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyid, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
 		if (!self.role.maySetup())
@@ -1168,7 +1168,7 @@ public class Studies extends APIController {
 		if (study.executionStatus != StudyExecutionStatus.RUNNING)
 			throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
 
-		UserGroupMember self = UserGroupMember.getByGroupAndMember(studyid, userId);
+		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyid, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
 
@@ -1222,7 +1222,7 @@ public class Studies extends APIController {
 		// BadRequestException("error.invalid.status_transition", "Wrong study
 		// execution status.");
 
-		UserGroupMember self = UserGroupMember.getByGroupAndMember(studyId, userId);
+		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyId, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
 		// if (!self.role.maySetup()) throw new
@@ -1402,7 +1402,7 @@ public class Studies extends APIController {
 		if (study == null)
 			throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 
-		UserGroupMember ugm = UserGroupMember.getByGroupAndMember(studyid, userId);
+		UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(studyid, userId);
 		if (ugm == null)
 			throw new BadRequestException("error.notauthorized.study", "Not member of study team");
 
@@ -1441,7 +1441,7 @@ public class Studies extends APIController {
 		if (study == null)
 			throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 
-		UserGroupMember ugm = UserGroupMember.getByGroupAndMember(studyid, userId);
+		UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(studyid, userId);
 		if (ugm == null)
 			throw new BadRequestException("error.notauthorized.study", "Not member of study team");
 
@@ -1476,7 +1476,7 @@ public class Studies extends APIController {
 		if (study == null)
 			throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 
-		UserGroupMember ugm = UserGroupMember.getByGroupAndMember(studyId, userId);
+		UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(studyId, userId);
 		if (ugm == null)
 			throw new BadRequestException("error.notauthorized.study", "Not member of study team");
 
@@ -1559,7 +1559,7 @@ public class Studies extends APIController {
 		if (participation.group == null)
 			throw new BadRequestException("error.missing.study_group", "No group assigned to participant.");
 
-		UserGroupMember self = UserGroupMember.getByGroupAndMember(studyId, userId);
+		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyId, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
 		if (!self.role.manageParticipants())
@@ -1586,7 +1586,7 @@ public class Studies extends APIController {
 		if (study.executionStatus != StudyExecutionStatus.PRE && study.executionStatus != StudyExecutionStatus.RUNNING)
 			throw new BadRequestException("error.no_alter.group", "Study is already running.");
 
-		UserGroupMember ugmm = UserGroupMember.getByGroupAndMember(study._id, userId);
+		UserGroupMember ugmm = UserGroupMember.getByGroupAndActiveMember(study._id, userId);
 		if (ugmm == null)
 			throw new BadRequestException("error.notauthorized.study", "Not member of study team");
 		if (!ugmm.role.manageParticipants())
@@ -1678,7 +1678,7 @@ public class Studies extends APIController {
 		if (participation.pstatus != ParticipationStatus.REQUEST)
 			return badRequest("Wrong participation status.");
 
-		UserGroupMember self = UserGroupMember.getByGroupAndMember(studyId, userId);
+		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyId, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
 		if (!self.role.manageParticipants())
@@ -1730,7 +1730,7 @@ public class Studies extends APIController {
 		if (study.executionStatus != StudyExecutionStatus.PRE && participation.pstatus == ParticipationStatus.ACCEPTED)
 			throw new BadRequestException("error.no_alter.group", "Study is already running.");
 
-		UserGroupMember self = UserGroupMember.getByGroupAndMember(studyId, userId);
+		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyId, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
 		if (!self.role.manageParticipants())
@@ -1787,7 +1787,7 @@ public class Studies extends APIController {
 
 		AuditManager.instance.addAuditEvent(AuditEventType.STUDY_SETUP_CHANGED, userId, null, study);
 
-		UserGroupMember self = UserGroupMember.getByGroupAndMember(studyid, userId);
+		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyid, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
 		if (!self.role.maySetup())
@@ -1835,7 +1835,7 @@ public class Studies extends APIController {
 
 		AuditManager.instance.addAuditEvent(AuditEventType.STUDY_SETUP_CHANGED, userId, null, study);
 
-		UserGroupMember self = UserGroupMember.getByGroupAndMember(studyid, userId);
+		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyid, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
 		if (!self.role.maySetup())
@@ -1920,7 +1920,7 @@ public class Studies extends APIController {
 		if (study == null)
 			throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 
-		UserGroupMember self = UserGroupMember.getByGroupAndMember(studyid, userId);
+		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyid, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
 
@@ -2018,7 +2018,7 @@ public class Studies extends APIController {
 		if (study.executionStatus != StudyExecutionStatus.PRE && study.executionStatus != StudyExecutionStatus.ABORTED)
 			throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
 
-		UserGroupMember self = UserGroupMember.getByGroupAndMember(studyid, userId);
+		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyid, userId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
 		if (!self.role.maySetup())
