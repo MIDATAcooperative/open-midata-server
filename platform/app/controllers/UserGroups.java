@@ -183,7 +183,7 @@ public class UserGroups extends APIController {
 		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId groupId = MidataId.from(groupIdStr);
 		
-		UserGroupMember execMember = UserGroupMember.getByGroupAndMember(groupId, executorId);
+		UserGroupMember execMember = UserGroupMember.getByGroupAndActiveMember(groupId, executorId);
 		if (execMember == null) throw new BadRequestException("error.invalid.usergroup", "Only members may delete a group");
 		
 		UserGroup userGroup = UserGroup.getById(groupId, Sets.create("_id", "status"));
@@ -234,7 +234,7 @@ public class UserGroups extends APIController {
 		MidataId groupId = JsonValidation.getMidataId(json, "group");
 		Set<MidataId> targetUserIds = JsonExtraction.extractMidataIdSet(json.get("members"));
 		
-		UserGroupMember self = UserGroupMember.getByGroupAndMember(groupId, executorId);
+		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(groupId, executorId);
 		if (self == null) throw new AuthException("error.notauthorized.action", "User not member of group");
 		if (!self.role.mayChangeTeam()) throw new BadRequestException("error.notauthorized.action", "User is not allowed to change team.");
 		
@@ -323,7 +323,7 @@ public class UserGroups extends APIController {
 		AuditManager.instance.addAuditEvent(AuditEventType.REMOVED_FROM_TEAM, null, executorId, targetUserId, null, groupId);
 		
 		if (targetUserId.equals(executorId)) throw new BadRequestException("error.invalid.user", "You cannot remove yourself from group.");
-		UserGroupMember self = UserGroupMember.getByGroupAndMember(groupId, executorId);
+		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(groupId, executorId);
 		if (self == null) throw new AuthException("error.internal", "User not member of group");
 						
 		UserGroupMember target = UserGroupMember.getByGroupAndMember(groupId, targetUserId);
