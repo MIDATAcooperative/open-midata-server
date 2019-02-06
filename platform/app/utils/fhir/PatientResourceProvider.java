@@ -473,6 +473,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 	}
 
 	public void updatePatientForAccount(Member member) throws AppException {
+		if (!member.role.equals(UserRole.MEMBER)) return;
 		List<Record> allExisting = RecordManager.instance.list(info().executorId, info().role, member._id,
 				CMaps.map("format", "fhir/Patient").map("owner", member._id).map("data", CMaps.map("id", member._id.toString())), Record.ALL_PUBLIC);
 
@@ -501,7 +502,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			patientProvider.setExecutionInfo(inf);
 		}
 
-		Member member = Member.getById(who, Sets.create("firstname", "lastname", "birthday", "midataID", "gender", "email", "phone", "city", "country", "zip", "address1", "address2", "emailLC", "language"));
+		Member member = Member.getById(who, Sets.create("firstname", "lastname", "birthday", "midataID", "gender", "email", "phone", "city", "country", "zip", "address1", "address2", "emailLC", "language", "role"));
 		patientProvider.updatePatientForAccount(member);
 	}
 

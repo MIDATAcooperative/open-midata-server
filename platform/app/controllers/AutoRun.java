@@ -216,7 +216,7 @@ public class AutoRun extends APIController {
 					final String tokenstr = token.encrypt();
 					final String owner = space.owner.toString();
 					final ActorRef sender = getSender();
-					if (tuser.role.equals(UserRole.DEVELOPER)) {
+					if (tuser.role.equals(UserRole.DEVELOPER) || tuser.role.equals(UserRole.ADMIN)) {
 						sender.tell(new ImportResult(0), getSelf());
 						return;
 					}

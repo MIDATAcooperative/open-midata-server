@@ -21,6 +21,7 @@ import models.AccessPermissionSet;
 import models.Admin;
 import models.Circle;
 import models.Consent;
+import models.Developer;
 import models.HealthcareProvider;
 import models.InstanceStats;
 import models.KeyInfoExtern;
@@ -57,6 +58,7 @@ import play.mvc.Security;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
 import utils.access.DBRecord;
+import utils.access.RecordManager;
 import utils.access.VersionedDBRecord;
 import utils.access.index.IndexPageModel;
 import utils.audit.AuditManager;
@@ -196,53 +198,78 @@ public class Administration extends APIController {
 		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		
 		JsonNode json = request().body().asJson();		
-		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "language", "subroles");
+		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "country", "language", "subroles");
 							
 		String email = JsonValidation.getEMail(json, "email");
-		if (Admin.existsByEMail(email)) return inputerror("email", "exists", "A user with this email address already exists.");
+		
+		User existing = Developer.getByEmail(email, User.ALL_USER);		
 				
 		Admin executingUser = Admin.getById(executorId, User.ALL_USER);
-		
-		Admin user = new Admin(email);
-		user._id = new MidataId();
-		user.role = UserRole.ADMIN;		
-		user.subroles = JsonValidation.getEnumSet(json, "subroles", SubUserRole.class);
-		user.address1 = JsonValidation.getString(json, "address1");
-		user.address2 = JsonValidation.getString(json, "address2");
-		user.city = JsonValidation.getString(json, "city");
-		user.zip  = JsonValidation.getString(json, "zip");
-		user.country = JsonValidation.getString(json, "country");
-		user.firstname = JsonValidation.getString(json, "firstname"); 
-		user.lastname = JsonValidation.getString(json, "lastname");
-		user.gender = JsonValidation.getEnum(json, "gender", Gender.class);
-		user.language = JsonValidation.getString(json, "language");
-		user.phone = JsonValidation.getString(json, "phone");
-		user.mobile = JsonValidation.getString(json, "mobile");
-		
-		user.password = Admin.encrypt(JsonValidation.getPassword(json, "password"));		
-		user.registeredAt = new Date();		
-		
-		user.status = UserStatus.NEW;		
-		user.contractStatus = ContractStatus.REQUESTED;	
-		user.agbStatus = ContractStatus.REQUESTED;
-		user.emailStatus = EMailStatus.UNVALIDATED;
-		user.confirmationCode = CodeGenerator.nextCode();
-		user.authType = SecondaryAuthType.SMS;
-		
-		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, null, new MidataId(request().attrs().get(play.mvc.Security.USERNAME)), user);
-		
-		user.apps = new HashSet<MidataId>();		
-		user.visualizations = new HashSet<MidataId>();
-		
-		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);
-		user.security = AccountSecurityLevel.KEY;
-				
-		Admin.add(user);
-							
-		Application.sendWelcomeMail(user, executingUser);
+						
+		Admin user;
+		if (existing != null) {
+			user = Admin.getById(existing._id, User.ALL_USER_INTERNAL);
+			AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, null, new MidataId(request().attrs().get(play.mvc.Security.USERNAME)), user);
+			user.role = UserRole.ADMIN;
+			user.subroles = JsonValidation.getEnumSet(json, "subroles", SubUserRole.class);
+			if (user.authType == SecondaryAuthType.NONE) {
+				user.authType = null;
+				user.set("authType", user.authType);
+			}
+			user.set("role", user.role);
+			user.set("subroles", user.subroles);
+			AuditManager.instance.success();
 			
-		AuditManager.instance.success();
-		return ok();		
+			ObjectNode obj = Json.newObject();
+			obj.put("_id", user._id.toString());			
+			return ok(obj);
+		} else {
+			user = new Admin(email);
+			user._id = new MidataId();
+			user.role = UserRole.ADMIN;		
+			user.subroles = JsonValidation.getEnumSet(json, "subroles", SubUserRole.class);
+			//user.address1 = JsonValidation.getString(json, "address1");
+			//user.address2 = JsonValidation.getString(json, "address2");
+			//user.city = JsonValidation.getString(json, "city");
+			//user.zip  = JsonValidation.getString(json, "zip");
+			user.country = JsonValidation.getString(json, "country");
+			user.firstname = JsonValidation.getString(json, "firstname"); 
+			user.lastname = JsonValidation.getString(json, "lastname");
+			user.gender = JsonValidation.getEnum(json, "gender", Gender.class);
+			user.language = JsonValidation.getString(json, "language");
+			//user.phone = JsonValidation.getString(json, "phone");
+			user.mobile = JsonValidation.getString(json, "mobile");
+			
+			//user.password = Admin.encrypt(JsonValidation.getPassword(json, "password"));		
+			user.registeredAt = new Date();		
+			
+			user.status = UserStatus.ACTIVE;		
+			user.contractStatus = ContractStatus.REQUESTED;	
+			user.agbStatus = ContractStatus.REQUESTED;
+			user.emailStatus = EMailStatus.UNVALIDATED;
+			user.confirmationCode = CodeGenerator.nextCode();
+			if (user.mobile != null && user.mobile.length() > 0) user.authType = SecondaryAuthType.SMS;
+			
+			AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, null, new MidataId(request().attrs().get(play.mvc.Security.USERNAME)), user);
+			
+			user.apps = new HashSet<MidataId>();		
+			user.visualizations = new HashSet<MidataId>();
+			
+			user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);
+			user.security = AccountSecurityLevel.KEY;
+					
+			Admin.add(user);
+							
+			RecordManager.instance.createPrivateAPS(user._id, user._id);						
+			PatientResourceProvider.updatePatientForAccount(user._id);
+			
+			Application.sendWelcomeMail(user, executingUser);
+				
+			AuditManager.instance.success();
+			ObjectNode obj = Json.newObject();
+			obj.put("_id", user._id.toString());			
+			return ok(obj);	
+		}
 	}
 	
 	/**

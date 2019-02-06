@@ -60,7 +60,8 @@ angular.module('portal')
 	$scope.isFile = function() {
 		return $scope.record && $scope.record.data && ($scope.record.data.resourceType === "Binary" || 
 		       ($scope.record.data.resourceType === "DocumentReference" && $scope.record.data.content) ||
-		       $scope.record.data.resourceType === "Media");
+		       $scope.record.data.resourceType === "Media" ||
+		       ($scope.record.data.resourceType === "DiagnosticReport" && $scope.record.data.presentedForm));
 	};
 	
 	$scope.openAppLink = function(data) {		

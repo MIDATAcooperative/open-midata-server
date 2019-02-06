@@ -3,6 +3,7 @@ package controllers;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -134,6 +135,7 @@ public class Users extends APIController {
 		
 		List<User> users;		
 		if (role != null && role == UserRole.DEVELOPER) {
+		  properties.put("role", EnumSet.of(UserRole.DEVELOPER, UserRole.ADMIN));
 		  users = new ArrayList<User>(Developer.getAll(properties, fields, 100));
 		} else if (role != null && role == UserRole.RESEARCH) {
 		  users = new ArrayList<User>(ResearchUser.getAll(properties, fields, 100));		

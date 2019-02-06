@@ -614,7 +614,7 @@ public class OAuth2 extends Controller {
 			  case PROVIDER : user = HPUser.getByEmail(username, Sets.create(User.FOR_LOGIN, "provider"));break; 
 			  case RESEARCH : user = ResearchUser.getByEmail(username, Sets.create(User.FOR_LOGIN, "organization"));break;
 			  case DEVELOPER : user = Developer.getByEmail(username, User.FOR_LOGIN);				
-				               if (user == null) {
+				               if (user == null || user.role == UserRole.ADMIN) {
 					              user = Admin.getByEmail(username, User.FOR_LOGIN);
 					              if (user != null) token.userRole = UserRole.ADMIN;
 				               }
@@ -965,7 +965,7 @@ public class OAuth2 extends Controller {
 		
 		if (notok != null && !notok.isEmpty()) {
 		  if (token.handle != null) KeyManager.instance.persist(user._id);
-		  	
+		  if (notok.contains(UserFeature.PASSWORD_SET)) notok = Collections.singleton(UserFeature.PASSWORD_SET);		  	
 		  if (notok.contains(UserFeature.EMAIL_VERIFIED) && !notok.contains(UserFeature.EMAIL_ENTERED)) notok = Collections.singleton(UserFeature.EMAIL_VERIFIED);
 		  if (notok.contains(UserFeature.ADMIN_VERIFIED)) notok = Collections.singleton(UserFeature.ADMIN_VERIFIED);
 		  

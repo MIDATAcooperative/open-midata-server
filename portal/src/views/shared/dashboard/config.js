@@ -11,6 +11,11 @@ angular.module('portal')
 	      templateUrl: 'views/shared/dashboard/dashboard.html',
 	      dashId : 'sandbox'
 	    })
+	    .state('admin.sandbox', {
+	      url: '/sandbox',
+	      templateUrl: 'views/shared/dashboard/dashboard.html',
+	      dashId : 'sandbox'
+	    })
 	    .state('member.dashboard', {
 	      url: '/dashboard/:dashId',
 	      templateUrl: 'views/shared/dashboard/dashboard.html',	      
@@ -25,6 +30,10 @@ angular.module('portal')
 	      templateUrl: 'views/shared/dashboard/dashboard.html'	      
 	    })
 	    .state('developer.dashboard', {
+	      url: '/dashboard/:dashId',
+	      templateUrl: 'views/shared/dashboard/dashboard.html'	     
+	    })
+	    .state('admin.dashboard', {
 	      url: '/dashboard/:dashId',
 	      templateUrl: 'views/shared/dashboard/dashboard.html'	     
 	    });

@@ -7,6 +7,8 @@ angular.module('portal')
 	$rootScope.greeting = {};
 	
 	$translatePartialLoader.addPart($state.current.data.locales);
+	console.log($state.current.data.locales);
+	if ($state.current.data.locales == "admins") $translatePartialLoader.addPart("developers");
 	
 	session.viewHeight = "600px";	
 	session.login($state.current.data.role);
