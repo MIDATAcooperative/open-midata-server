@@ -111,7 +111,7 @@ public class Providers extends APIController {
 		
 		user.apps = new HashSet<MidataId>();	
 		user.visualizations = new HashSet<MidataId>();
-		user.authType = SecondaryAuthType.SMS;
+		//user.authType = SecondaryAuthType.SMS;
 		
 		Application.developerRegisteredAccountCheck(user, json);
 		

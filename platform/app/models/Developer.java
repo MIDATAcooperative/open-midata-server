@@ -1,6 +1,7 @@
 package models;
 
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -34,11 +35,11 @@ public class Developer extends User {
 	public String coach;
 	
 	public static boolean existsByEMail(String email) throws InternalServerException {
-		return Model.exists(Developer.class, collection, CMaps.map("emailLC", email.toLowerCase()).map("role", UserRole.DEVELOPER).map("status", NON_DELETED));
+		return Model.exists(Developer.class, collection, CMaps.map("emailLC", email.toLowerCase()).map("role", EnumSet.of(UserRole.DEVELOPER, UserRole.ADMIN)).map("status", NON_DELETED));
 	}
 	
 	public static Developer getByEmail(String email, Set<String> fields) throws InternalServerException {
-		return Model.get(Developer.class, collection, CMaps.map("emailLC", email.toLowerCase()).map("role", UserRole.DEVELOPER).map("status", NON_DELETED), fields);
+		return Model.get(Developer.class, collection, CMaps.map("emailLC", email.toLowerCase()).map("role", EnumSet.of(UserRole.DEVELOPER, UserRole.ADMIN)).map("status", NON_DELETED), fields);
 	}
 	
 	public static Developer getById(MidataId id, Set<String> fields) throws InternalServerException {
@@ -56,7 +57,7 @@ public class Developer extends User {
 	}
 	
 	public UserRole getRole() {
-		return UserRole.DEVELOPER;
+		return role != null ? role : UserRole.DEVELOPER;
 	}
 	
 	public static Set<Developer> getAll(Map<String, ? extends Object> properties, Set<String> fields, int limit) throws InternalServerException {

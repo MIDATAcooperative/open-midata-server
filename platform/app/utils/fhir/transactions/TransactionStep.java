@@ -96,7 +96,7 @@ public abstract class TransactionStep {
 			response.setStatus("400 "+e.getMessage());				    
 		} else if (e instanceof InternalServerException) {
 			ErrorReporter.report("FHIR (transaction)", null, e);	
-			response.setStatus("500 "+e.getMessage());
+			response.setStatus("500 "+e.getMessage());			
 		} else {
 			ErrorReporter.report("FHIR (transaction)", null, e);
 			response.setStatus("500 "+e.getMessage());

@@ -8,5 +8,9 @@ angular.module('portal')
 	     .state('developer.provider_registration', {
 	      url: '/register_provider?developer',
 	      templateUrl: 'views/providers/public/registration/registration.html'
+	    })
+	     .state('admin.provider_registration', {
+	      url: '/register_provider?developer',
+	      templateUrl: 'views/providers/public/registration/registration.html'
 	    });
 }]);

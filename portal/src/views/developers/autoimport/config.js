@@ -4,5 +4,9 @@ angular.module('portal')
 	    .state('developer.autoimport', {
 	      url: '/app/:appId/autoimport',
 	      templateUrl: 'views/developers/autoimport/autoimport.html'
+	    })
+	    .state('admin.autoimport', {
+	      url: '/app/:appId/autoimport',
+	      templateUrl: 'views/developers/autoimport/autoimport.html'
 	    });
 }]);

@@ -1,13 +1,17 @@
 {
   "admin_navbar" : {
+    "admin" : "Admin",
     "members" : "Members",
     "auditlog" : "Audit",
     "news" : "News",
     "plugins" : "Plugins",
-	"content" : "Content",
+	"content" : "Content-Types",
 	"studies" : "Studies",
 	"terms" : "General Terms and Conditions",
-	"registration" : "Register an Administrator"
+	"registration" : "Register an Administrator",
+	"user_admin" : "User Administration",
+	"plugin_admin" : "Apps & Data",
+	"research_admin" : "Research & Public"
   },
   
   "admin_members" : {
@@ -86,7 +90,8 @@
   },
   
   "admin_registration" : {
-    "sign_up" : "Register a New Administrator"
+    "sign_up" : "Register a New Administrator",
+    "description" : "If you use the email of an existing developer account that account will be upgraded to an administrator account."
   },
   
   "admin_plugins" : {

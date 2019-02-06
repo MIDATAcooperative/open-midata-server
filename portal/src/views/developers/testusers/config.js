@@ -4,5 +4,9 @@ angular.module('portal')
 	    .state('developer.testusers', {
 	      url: '/testusers',
 	      templateUrl: 'views/developers/testusers/testusers.html'
+	    })
+	    .state('admin.testusers', {
+	      url: '/testusers',
+	      templateUrl: 'views/developers/testusers/testusers.html'
 	    });
 }]);

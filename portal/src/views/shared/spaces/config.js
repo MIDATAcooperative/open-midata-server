@@ -9,6 +9,10 @@ angular.module('portal')
 	      url: '/spaces/:spaceId?url&params',
 	      templateUrl: 'views/shared/spaces/spaces.html' 
 	    })
+	    .state('admin.spaces', {
+	      url: '/spaces/:spaceId?url&params',
+	      templateUrl: 'views/shared/spaces/spaces.html' 
+	    })
 	    .state('research.spaces', {
 	      url: '/spaces/:spaceId?url&params&user&study',
 	      templateUrl: 'views/shared/spaces/spaces.html' 

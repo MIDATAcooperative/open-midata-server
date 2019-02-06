@@ -36,6 +36,21 @@ angular.module('portal')
 	      url: '/records/:selectedType/:selected',
 	      templateUrl: 'views/shared/records/records.html' 
 	    })
+	    
+	    .state('admin.delete_records', {
+	      url: '/records-delete',
+		  templateUrl: 'views/shared/records/records.html',
+		  allowDelete : true,
+		})
+	    .state('admin.records', {
+	      url: '/records',
+	      templateUrl: 'views/shared/records/records.html' 
+	    })
+	    .state('admin.recordsharing', {
+	      url: '/records/:selectedType/:selected',
+	      templateUrl: 'views/shared/records/records.html' 
+	    })
+	    
 	    .state('research.records', {
 	      url: '/records',
 	      templateUrl: 'views/shared/records/records.html',

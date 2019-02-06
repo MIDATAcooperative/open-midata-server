@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import controllers.Circles;
+import models.APSNotExistingException;
 import models.AccessPermissionSet;
 import models.Circle;
 import models.Consent;
@@ -38,7 +39,7 @@ import utils.fhir.PatientResourceProvider;
 
 public class AccountPatches {
 
-	public static final int currentAccountVersion = 20171206;
+	public static final int currentAccountVersion = 20190206;
 	
 	public static boolean check(User user) throws AppException {
 		boolean isold = user.accountVersion < currentAccountVersion;
@@ -48,6 +49,7 @@ public class AccountPatches {
 		if (user.accountVersion < 20160902) { formatPatch20160902(user); }
 		if (user.accountVersion < 20161205) { formatPatch20161205(user); }
 		if (user.accountVersion < 20171206) { formatPatch20171206(user); }
+		if (user.accountVersion < 20190206) { formatPatch20190206(user); }
 		//if (user.accountVersion < 20180130) { formatPatch20180130(user); }
 		//if (user.accountVersion < 20170206) { formatPatch20170206(user); }
 		
@@ -216,6 +218,20 @@ public class AccountPatches {
 		makeCurrent(user, 20171206);
 						
 		AccessLog.logEnd("end patch 2017 12 06");
+	}
+	
+	public static void formatPatch20190206(User user) throws AppException {
+		AccessLog.logBegin("start patch 2019 02 06");
+		
+		if (user.role.equals(UserRole.ADMIN)) {
+			try {
+		      RecordManager.instance.getMeta(user._id, user._id, "test");
+			} catch (APSNotExistingException e) {
+			  RecordManager.instance.createPrivateAPS(user._id, user._id);
+			  PatientResourceProvider.updatePatientForAccount(user._id);
+			}
+			makeCurrent(user, 20190206);
+		}
 	}
 	
 	/*public static void formatPatch20180130(User user) throws AppException {

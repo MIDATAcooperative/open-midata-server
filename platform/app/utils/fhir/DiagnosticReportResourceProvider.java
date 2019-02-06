@@ -34,6 +34,7 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.Record;
+import utils.InstanceConfig;
 import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -283,6 +284,13 @@ public class DiagnosticReportResourceProvider extends RecordBasedResourceProvide
 		// Add subject field from record owner field if it is not already there
 		if (p.getSubject().isEmpty()) {
 			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
+		}
+								
+		for (Attachment attachment : p.getPresentedForm()) {			
+			if (attachment != null && attachment.getUrl() == null && attachment.getData() == null) {	
+			  String url = "https://"+InstanceConfig.getInstance().getPlatformServer()+"/v1/records/file?_id="+record._id;
+			  attachment.setUrl(url);
+			}
 		}
 	}
 }

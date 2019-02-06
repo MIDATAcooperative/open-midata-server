@@ -16,5 +16,9 @@ angular.module('portal')
 	     .state('developer.market', {
 	      url: '/market?context&tag',
 	      templateUrl: 'views/shared/market/market.html' 
+	    })
+	    .state('admin.market', {
+	      url: '/market?context&tag',
+	      templateUrl: 'views/shared/market/market.html' 
 	    });
 }]);

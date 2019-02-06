@@ -98,9 +98,9 @@ public class Market extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	@Security.Authenticated(AnyRoleSecured.class)	
+	@Security.Authenticated(DeveloperSecured.class)	
 	public Result updatePlugin(String pluginIdStr) throws JsonValidationException, AppException {
-		if (!getRole().equals(UserRole.ADMIN) && !getRole().equals(UserRole.DEVELOPER)) return unauthorized();
+		//if (!getRole().equals(UserRole.ADMIN) && !getRole().equals(UserRole.DEVELOPER)) return unauthorized();
 		// validate json
 		JsonNode json = request().body().asJson();
 			
@@ -290,9 +290,9 @@ public class Market extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	@Security.Authenticated(AnyRoleSecured.class)	
+	@Security.Authenticated(DeveloperSecured.class)	
 	public Result updateDefaultSubscriptions(String pluginIdStr) throws JsonValidationException, AppException {
-		if (!getRole().equals(UserRole.ADMIN) && !getRole().equals(UserRole.DEVELOPER)) return unauthorized();
+		//if (!getRole().equals(UserRole.ADMIN) && !getRole().equals(UserRole.DEVELOPER)) return unauthorized();
 		// validate json
 		JsonNode json = request().body().asJson();
 			
@@ -756,9 +756,9 @@ public class Market extends APIController {
 	}
 		
 	@APICall
-	@Security.Authenticated(AnyRoleSecured.class)	
+	@Security.Authenticated(DeveloperSecured.class)	
 	public Result getPluginStats(String pluginIdStr) throws JsonValidationException, AppException {
-		if (!getRole().equals(UserRole.ADMIN) && !getRole().equals(UserRole.DEVELOPER)) return unauthorized();
+		//if (!getRole().equals(UserRole.ADMIN) && !getRole().equals(UserRole.DEVELOPER)) return unauthorized();
 		
 		MidataId pluginId = new MidataId(pluginIdStr);
         MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));

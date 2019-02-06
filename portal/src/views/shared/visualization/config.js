@@ -16,5 +16,9 @@ angular.module('portal')
 	    .state('developer.visualization', {
 	      url: '/visualization/:visualizationId?name&context&query&params',
 	      templateUrl: 'views/shared/visualization/visualization.html'
+	    })
+	    .state('admin.visualization', {
+	      url: '/visualization/:visualizationId?name&context&query&params',
+	      templateUrl: 'views/shared/visualization/visualization.html'
 	    });
 }]);

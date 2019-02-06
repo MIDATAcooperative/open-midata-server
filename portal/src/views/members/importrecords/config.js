@@ -8,5 +8,9 @@ angular.module('portal')
 	    .state('developer.importrecords', {
 	      url: '/import/:spaceId',
 	      templateUrl: 'views/members/importrecords/importrecords.html'
+	    })
+	    .state('admin.importrecords', {
+	      url: '/import/:spaceId',
+	      templateUrl: 'views/members/importrecords/importrecords.html'
 	    });
 }]);

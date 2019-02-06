@@ -269,6 +269,7 @@ public class Application extends APIController {
 			ExtendedSessionToken stoken = new ExtendedSessionToken();
 			stoken.userRole = UserRole.valueOf(role);
 			stoken.ownerId = userId;
+			stoken.securityToken = "-";
 			stoken.set();
 			
 		} else {
@@ -295,8 +296,9 @@ public class Application extends APIController {
 		    		   && user.resettoken.equals(token)
 		    		   && System.currentTimeMillis() - user.resettokenTs < EMAIL_TOKEN_LIFETIME) {	   
 			   
-		    	   KeyManager.instance.login(60000, false);
+		    	   String handle = KeyManager.instance.login(60000, true);
 		    	   int keytype = KeyManager.instance.unlock(user._id, null);
+		    	   new ExtendedSessionToken().forUser(user).withSession(handle).set();
 		           if (keytype == KeyManager.KEYPROTECTION_FAIL || keytype == KeyManager.KEYPROTECTION_AESKEY) {
 		        	   PWRecovery.startRecovery(user, json);	
 		        	   user.addFlag(AccountActionFlags.KEY_RECOVERY);
@@ -354,7 +356,8 @@ public class Application extends APIController {
 		}
 		
 		user.set("resettoken", null);		
-		AuditManager.instance.success();		
+		AuditManager.instance.success();	
+		
 		return OAuth2.loginHelper();	
 				
 	}
@@ -827,7 +830,7 @@ public class Application extends APIController {
 		user.birthday = JsonValidation.getDate(json, "birthday");
 		user.language = JsonValidation.getString(json, "language");
 		user.ssn = JsonValidation.getString(json, "ssn");										
-		user.authType = SecondaryAuthType.NONE;	
+		//user.authType = SecondaryAuthType.NONE;	
 		
 		registerSetDefaultFields(user);				
 		developerRegisteredAccountCheck(user, json);
