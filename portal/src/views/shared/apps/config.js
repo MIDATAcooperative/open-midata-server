@@ -20,5 +20,10 @@ angular.module('portal')
 	      url: '/apps?circleId',
 	      templateUrl: 'views/shared/apps/apps.html',	      
 	      dashId : 'config'
+	    })
+	    .state('admin.apps', {
+	      url: '/apps?circleId',
+	      templateUrl: 'views/shared/apps/apps.html',	      
+	      dashId : 'config'
 	    });
 }]);

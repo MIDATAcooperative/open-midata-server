@@ -40,6 +40,10 @@ angular.module('portal')
 	    .state('developer.accountwipe', {
 	      url: '/accountwipe',
 	      templateUrl: 'views/shared/user/accountwipe.html' 
+	    })
+	    .state('admin.accountwipe', {
+	      url: '/accountwipe',
+	      templateUrl: 'views/shared/user/accountwipe.html' 
 	    });	 
 	       
 }]);

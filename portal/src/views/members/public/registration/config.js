@@ -12,5 +12,9 @@ angular.module('portal')
 	    .state('developer.member_registration', {
 	      url: '/register_member?developer',
 	      templateUrl: 'views/members/public/registration/registration.html'
+	    })
+	    .state('admin.member_registration', {
+	      url: '/register_member?developer',
+	      templateUrl: 'views/members/public/registration/registration.html'
 	    });
 }]);

@@ -91,7 +91,7 @@ angular.module('portal')
 		$scope.error = null;
 		
 		if (! $scope.myform2.$valid) return;
-		console.log("XXXX2");
+		
 		$scope.registration.user = $scope.registration._id;									
 		$scope.status.doAction("changeAddress", users.updateAddress({ user : $scope.registration._id, authType : $scope.registration.authType, mobile : $scope.registration.mobile, emailnotify : $scope.registration.emailnotify })).
 		then(function(data) { 
@@ -140,15 +140,34 @@ angular.module('portal')
 		
 		crypto.generateKeys($scope.setpw.password).then(function(keys) {
 				
-			var data = { token : $stateParams.token, mode : $state.current.data.mode };		
-			data.password = keys.pw_hash;
-			data.pub = keys.pub;
-			data.priv_pw = keys.priv_pw;
-			data.recovery = keys.recovery;
+			if ($scope.registration.secure) {
+				  $scope.registration.password = keys.pw_hash;	
+				  $scope.registration.pub = keys.pub;
+				  $scope.registration.priv_pw = keys.priv_pw;
+				  $scope.registration.recoverKey = keys.recoverKey;
+				  $scope.registration.recovery = keys.recovery;
+			} else {
+				  $scope.registration.password = $scope.registration.password1;
+			};	
+						
+			var data = { token : $stateParams.token, mode : $state.current.data.mode };	
+			if ($scope.setpw.secure) {
+			   data.password = keys.pw_hash;
+			   data.pub = keys.pub;
+			   data.priv_pw = keys.priv_pw;
+			   data.recovery = keys.recovery;
+			   data.recoverKey = keys.recoverKey;
+			} else {
+				data.password = $scope.setpw.password;
+			}
 				
 			$scope.status.doAction('setpw', server.post(jsRoutes.controllers.Application.confirmAccountEmail().url, JSON.stringify(data)))
 			.then(function(result) {
-			   	$scope.retry(result);	    	
+				if (result.data.challenge) {
+				   
+				} else {				
+			   	   $scope.retry(result);
+				}
 			});
 		});
 	};

@@ -9,6 +9,10 @@ angular.module('portal')
 	      url: '/timeline/?url&params',
 	      templateUrl: 'views/shared/timeline/timeline.html' 
 	    })
+	    .state('admin.timeline', {
+	      url: '/timeline/?url&params',
+	      templateUrl: 'views/shared/timeline/timeline.html' 
+	    })
 	    .state('research.timeline', {
 	      url: '/timeline/?url&params&user',
 	      templateUrl: 'views/shared/timeline/timeline.html' 

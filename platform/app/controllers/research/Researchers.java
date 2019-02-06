@@ -93,7 +93,7 @@ public class Researchers extends APIController {
 		user.password = ResearchUser.encrypt(JsonValidation.getPassword(json, "password"));		
 				
 		user._id = new MidataId();
-		user.authType = SecondaryAuthType.SMS;
+		//user.authType = SecondaryAuthType.SMS;
 		Application.developerRegisteredAccountCheck(user, json);		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);
 		
@@ -177,7 +177,7 @@ public class Researchers extends APIController {
 		user.organization = PortalSessionToken.session().orgId;
 		if (user.organization == null) throw new InternalServerException("error.internal", "No organization in session for register researcher!");
 		user.status = UserStatus.ACTIVE;
-		user.authType = SecondaryAuthType.SMS;
+		//user.authType = SecondaryAuthType.SMS;
 						
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, null, new MidataId(request().attrs().get(play.mvc.Security.USERNAME)), user);
 		register(user ,null, executingUser);

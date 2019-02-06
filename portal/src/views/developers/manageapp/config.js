@@ -35,5 +35,12 @@ angular.module('portal')
 		      allowDelete : true,
 		      allowStudyConfig : true,
 		      allowExport : true
-	   });
+	   })
+	   .state('admin.registerapp', {
+	      url: '/newapp',
+	      templateUrl: 'views/developers/manageapp/manageapp.html',
+	      allowDelete : false,
+	      allowStudyConfig : false,
+	      allowExport : false
+	    });
 }]);
