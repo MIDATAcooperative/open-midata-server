@@ -51,6 +51,7 @@ import utils.access.VersionedDBRecord;
 import utils.auth.ExecutionInfo;
 import utils.collections.CMaps;
 import utils.exceptions.AppException;
+import utils.largerequests.UnlinkedBinary;
 
 public abstract class RecordBasedResourceProvider<T extends DomainResource> extends ReadWriteResourceProvider<T, Record> {
 
@@ -234,27 +235,47 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		AccessLog.logBegin("begin insert FHIR record with attachment");
 							
 			InputStream data = null;
-			byte[] dataArray = attachment.getData();
-			if (dataArray != null)  data = new ByteArrayInputStream(dataArray);
-			else if (attachment.getUrl() != null) {
-				try {
-				  data = new URL(attachment.getUrl()).openStream();
-				} catch (MalformedURLException e) {
-					throw new UnprocessableEntityException("Malformed URL");
-				} catch (IOException e2) {
-					throw new UnprocessableEntityException("IO Exception");
-				}
-			} 
+			EncryptedFileHandle handle = null;
+			
 			String contentType = attachment.getContentType();
 			String fileName = attachment.getTitle();
 			
+			byte[] dataArray = attachment.getData();
+			if (dataArray != null)  data = new ByteArrayInputStream(dataArray);
+			else if (attachment.getUrl() != null) {
+				String url = attachment.getUrl();
+				
+				if (url.startsWith("midata-file://")) {
+					handle = EncryptedFileHandle.fromString(info().executorId, url);
+					if (handle == null) throw new UnprocessableEntityException("Malformed midata-file URL");
+					
+					UnlinkedBinary file = UnlinkedBinary.getById(handle.getId());
+					if (file==null || file.isExpired()) throw new UnprocessableEntityException("Midata-file URL has already expired.");
+					
+					if (!file.owner.equals(info().executorId)) throw new UnprocessableEntityException("Midata-file URL is not owned by you.");				
+					handle.rename(fileName);
+					file.delete();
+				} else {				
+					try {
+					  data = new URL(attachment.getUrl()).openStream();
+					} catch (MalformedURLException e) {
+						throw new UnprocessableEntityException("Malformed URL");
+					} catch (IOException e2) {
+						throw new UnprocessableEntityException("IO Exception");
+					}
+				}
+			} 
+						
 			attachment.setData(null);
 			attachment.setUrl(null);
 			
 			String encoded = ctx.newJsonParser().encodeResourceToString(resource);
 			record.data = (DBObject) JSON.parse(encoded);
 			
-			EncryptedFileHandle handle = RecordManager.instance.addFile(data, fileName, contentType);
+			if (data != null) {
+			   handle = RecordManager.instance.addFile(data, fileName, contentType);
+			}
+			if (handle == null) throw new UnprocessableEntityException("Missing attachment data");
 			PluginsAPI.createRecord(info(), record, handle, fileName, contentType, info().context);			
 		
 		AccessLog.logEnd("end insert FHIR record with attachment");

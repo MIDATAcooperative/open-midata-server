@@ -10,6 +10,7 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import utils.AccessLog;
+import utils.access.EncryptedFileHandle;
 import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
 import utils.auth.PortalSessionToken;
@@ -18,6 +19,8 @@ import utils.exceptions.AuthException;
 import utils.exceptions.InternalServerException;
 import utils.fhir.FHIRServlet;
 import utils.fhir.ResourceProvider;
+import utils.largerequests.BinaryFileBodyParser;
+import utils.largerequests.UnlinkedBinary;
 import utils.servlet.PlayHttpServletRequest;
 import utils.servlet.PlayHttpServletResponse;
 import utils.stats.Stats;
@@ -65,6 +68,31 @@ public class FHIR extends Controller {
 		return get("/");
 	}
 	
+	
+	private ExecutionInfo getExecutionInfo(PlayHttpServletRequest req) throws AppException {
+		String param = req.getHeader("Authorization");
+		
+		if (param != null && param.startsWith("Bearer ")) {
+	          ExecutionInfo info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()), false);
+	          Stats.setPlugin(info.pluginId);
+	          ResourceProvider.setExecutionInfo(info);
+	          return info;
+		} else {
+		 	 String portal = req.getHeader("X-Session-Token");
+			 if (portal != null) {
+				PortalSessionToken tk = PortalSessionToken.decrypt(request());
+			    if (tk == null || tk.getRole() == UserRole.ANY) return null;
+			    try {
+				      KeyManager.instance.continueSession(tk.getHandle(), tk.ownerId);
+			    } catch (AuthException e) { return null; }
+			    ExecutionInfo info = new ExecutionInfo(tk.getOwnerId(), tk.getRole());
+			    ResourceProvider.setExecutionInfo(info);
+			    return info;
+			 }
+		}
+		return null;
+	}
+	
 	/**
 	 * generic handler for all FHIR get requests.
 	 * requests will be forwarded to the FHIR servlet.
@@ -81,24 +109,8 @@ public class FHIR extends Controller {
 		PlayHttpServletRequest req = new PlayHttpServletRequest(request());
 		PlayHttpServletResponse res = new PlayHttpServletResponse(response());
 				
-		String param = req.getHeader("Authorization");
-				
-		if (param != null && param.startsWith("Bearer ")) {
-          ExecutionInfo info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()), false);
-          Stats.setPlugin(info.pluginId);
-          ResourceProvider.setExecutionInfo(info);
-		} else {
-			String portal = req.getHeader("X-Session-Token");
-			if (portal != null) {
-				PortalSessionToken tk = PortalSessionToken.decrypt(request());
-			    if (tk == null || tk.getRole() == UserRole.ANY) return null;
-			    try {
-			      KeyManager.instance.continueSession(tk.getHandle(), tk.ownerId);
-			    } catch (AuthException e) { return null; }	
-			    ResourceProvider.setExecutionInfo(new ExecutionInfo(tk.getOwnerId(), tk.getRole()));
-			}
-		}
-        
+		ExecutionInfo info = getExecutionInfo(req);
+		        
 		AccessLog.logBegin("begin FHIR get request: "+req.getRequestURI());
 		servlet.doGet(req, res);
 		AccessLog.logEnd("end FHIR get request");
@@ -109,13 +121,10 @@ public class FHIR extends Controller {
 			return status(res.getStatus(), res.getResponseWriter().toString()).as(res.getContentType());		
 		}
 		
-		if (res.getContentType() != null && res.getResponseStream() != null) {
-			
+		if (res.getContentType() != null && res.getResponseStream() != null) {		
 			return status(res.getStatus(), res.getResponseStream().toByteArray()).as(res.getContentType());
 		}
-		
-		
-		
+						
 		return status(res.getStatus());
 	}
 	
@@ -145,6 +154,8 @@ public class FHIR extends Controller {
 		return post("/$process-message");
 	}
 	
+	
+	
 	/**
 	 * generic handler for all FHIR post requests.
 	 * requests will be forwarded to the FHIR servlet.
@@ -163,24 +174,8 @@ public class FHIR extends Controller {
 		PlayHttpServletRequest req = new PlayHttpServletRequest(request());
 		PlayHttpServletResponse res = new PlayHttpServletResponse(response());
 				
-		String param = req.getHeader("Authorization");
-				
-		if (param != null && param.startsWith("Bearer ")) {
-	          ExecutionInfo info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()), false);
-	          Stats.setPlugin(info.pluginId);
-	          ResourceProvider.setExecutionInfo(info);
-		} else {
-		 	 String portal = req.getHeader("X-Session-Token");
-			 if (portal != null) {
-				PortalSessionToken tk = PortalSessionToken.decrypt(request());
-			    if (tk == null || tk.getRole() == UserRole.ANY) return null;
-			    try {
-				      KeyManager.instance.continueSession(tk.getHandle(), tk.ownerId);
-			    } catch (AuthException e) { return null; }	
-			    ResourceProvider.setExecutionInfo(new ExecutionInfo(tk.getOwnerId(), tk.getRole()));
-			 }
-		}
-        
+		ExecutionInfo info = getExecutionInfo(req);
+		        
 		AccessLog.logBegin("begin FHIR post request: "+req.getRequestURI());
 		servlet.doPost(req, res);
 		AccessLog.logEnd("end FHIR post request");
@@ -228,15 +223,9 @@ public class FHIR extends Controller {
 		
 		PlayHttpServletRequest req = new PlayHttpServletRequest(request());
 		PlayHttpServletResponse res = new PlayHttpServletResponse(response());
-				
-		String param = req.getHeader("Authorization");
-				
-		if (param != null && param.startsWith("Bearer ")) {
-          ExecutionInfo info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()), false);
-          Stats.setPlugin(info.pluginId);
-          ResourceProvider.setExecutionInfo(info);
-		} else ResourceProvider.setExecutionInfo(null);
-        
+			
+		ExecutionInfo info = getExecutionInfo(req);
+		        
 		AccessLog.log(req.getRequestURI());
 		servlet.doPut(req, res);
 		
@@ -284,13 +273,7 @@ public class FHIR extends Controller {
 		PlayHttpServletRequest req = new PlayHttpServletRequest(request());
 		PlayHttpServletResponse res = new PlayHttpServletResponse(response());
 				
-		String param = req.getHeader("Authorization");
-				
-		if (param != null && param.startsWith("Bearer ")) {
-          ExecutionInfo info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()), false);
-          Stats.setPlugin(info.pluginId);
-          ResourceProvider.setExecutionInfo(info);
-		}
+		ExecutionInfo info = getExecutionInfo(req);		
         
 		AccessLog.log(req.getRequestURI());
 		servlet.doDelete(req, res);
@@ -307,5 +290,36 @@ public class FHIR extends Controller {
 		}
 		
 		return status(res.getStatus());
+	}
+	
+	@MobileCall
+	@BodyParser.Of(value = BinaryFileBodyParser.class)
+	public Result binaryUpload() throws AppException, IOException, ServletException {
+				
+		Stats.startRequest(request());
+		
+		PlayHttpServletRequest req = new PlayHttpServletRequest(request());
+        	
+		EncryptedFileHandle handle = request().body().as(EncryptedFileHandle.class);							
+		ExecutionInfo info = null;
+		try {
+		    info = getExecutionInfo(req);
+		} finally {
+			if (info == null && handle != null) handle.removeAfterFailure();
+		}
+		
+		AccessLog.logBegin("begin FHIR binary post request: "+req.getRequestURI());	
+		String url = handle.serializeAsURL(info.executorId);
+		UnlinkedBinary file = new UnlinkedBinary();
+		file._id = handle.getId();
+		file.created = System.currentTimeMillis();
+		file.owner = info.executorId;
+		file.add();
+		
+		AccessLog.logEnd("end FHIR binary post request");
+		
+		Stats.finishRequest(request(), "201");	
+		
+		return created().withHeader("Location", url);
 	}
 }
