@@ -71,6 +71,12 @@ public class FileStorage {
 		System.out.println("delete id="+fileId.toString());
 		fileSystem.delete(fileId);
 	}
+	
+	public static void rename(ObjectId fileId, String filename) {
+		GridFSBucket fileSystem = GridFSBuckets.create(DBLayer.getFSDB(), FILE_STORAGE);
+		System.out.println("rename id="+fileId.toString());
+		fileSystem.rename(fileId, filename);
+	}
 
 	/**
 	 * Inner class used for passing back the filename along with the input stream when retrieving a file.

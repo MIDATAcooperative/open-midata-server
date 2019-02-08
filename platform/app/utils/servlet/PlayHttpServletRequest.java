@@ -2,6 +2,8 @@ package utils.servlet;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
@@ -28,6 +30,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpUpgradeHandler;
 import javax.servlet.http.Part;
 
+import akka.util.ByteString;
 import play.mvc.Http;
 import play.mvc.Http.RawBuffer;
 import utils.AccessLog;
@@ -99,8 +102,14 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 	public ServletInputStream getInputStream() throws IOException {
 		RawBuffer b = request.body().asRaw();
 		long l = b.size();
-			
-		return new PlayServletInputStream(new ByteArrayInputStream(b.asBytes().toArray()));
+		ByteString bstr = b.asBytes();
+		if (bstr != null) {
+		  return new PlayServletInputStream(new ByteArrayInputStream(bstr.toArray()));
+		} else {
+		  AccessLog.log("ServletInputStream: Read from file");
+		  File f = b.asFile();
+		  return new PlayServletInputStream(new FileInputStream(f));
+		}
 	}
 
 	@Override

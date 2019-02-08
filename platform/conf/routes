@@ -6,7 +6,8 @@
 
 GET     /debug/aps/:id                                   controllers.Debug.get(id: String)
 GET     /api/ping                                            controllers.Debug.ping()
-POST    /fhir/$p<\$process\-message>                           controllers.FHIR.postProcessMessage(p)
+POST    /fhir/$p<\$process\-message>                     controllers.FHIR.postProcessMessage(p)
+POST    /fhir/Binary                                     controllers.FHIR.binaryUpload()
 OPTIONS /fhir/*all                                       controllers.FHIR.checkPreflight(all)
 GET     /fhir/*all                                       controllers.FHIR.get(all)
 POST    /fhir/*all                                       controllers.FHIR.post(all)
