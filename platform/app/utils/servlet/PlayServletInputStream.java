@@ -1,7 +1,7 @@
 package utils.servlet;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
@@ -12,13 +12,13 @@ import javax.servlet.ServletInputStream;
  */
 public class PlayServletInputStream extends ServletInputStream {
 
-	private ByteArrayInputStream in;
+	private InputStream in;
 	
 	/**
 	 * Creates a new ServletInputStream from a ByteArrayInputStream
 	 * @param in the stream to use
 	 */
-	public PlayServletInputStream(ByteArrayInputStream in) {
+	public PlayServletInputStream(InputStream in) {
 		this.in = in;
 	}
 	

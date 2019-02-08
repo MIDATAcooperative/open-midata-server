@@ -11,6 +11,8 @@ import org.bson.BSONObject;
 import org.joda.time.DateTime;
 import org.joda.time.Seconds;
 
+import com.mongodb.MongoGridFSException;
+
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Cancellable;
@@ -45,7 +47,9 @@ import utils.auth.KeyManager;
 import utils.auth.SpaceToken;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.db.FileStorage;
 import utils.exceptions.AppException;
+import utils.largerequests.UnlinkedBinary;
 import utils.messaging.ServiceHandler;
 import utils.messaging.SubscriptionProcessor;
 import utils.messaging.SubscriptionTriggered;
@@ -351,14 +355,30 @@ public class AutoRun extends APIController {
 		public void startImport(StartImport message) throws Exception {
 			try {
 			
-				AccessLog.log("Starting Autoimport...");
+				AccessLog.log("Removing expired sessions...");
 				PersistedSession.deleteExpired();
+				
+				AccessLog.log("Removing unlinked files...");
+				try {
+				   List<UnlinkedBinary> files = UnlinkedBinary.getExpired();
+				   for (UnlinkedBinary file : files) {
+					   try {
+						 FileStorage.delete(file._id.toObjectId());
+					   } catch (MongoGridFSException e) {}					   
+					   file.delete();
+				   }
+				} catch (AppException e) {
+					ErrorReporter.report("remove unlinked files", null, e);
+				}
+				
+				AccessLog.log("Creating database statistics...");
 				try {
 				   Administration.createStats();
 				} catch (AppException e) {
 					ErrorReporter.report("stats service", null, e);
 				}
-								
+				
+				AccessLog.log("Starting Autoimport...");
 				MidataId autorunner = RuntimeConstants.instance.autorunService;
 				String handle = KeyManager.instance.login(1000l*60l*60l*23l, false);
 				KeyManager.instance.unlock(autorunner, null);
