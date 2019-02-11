@@ -56,7 +56,7 @@
 		  <button class="btn btn-default" ng-click="stopDebug()" ng-show="app.debugHandle" translate="appsubscriptions.debug.stop_btn"></button>
 		  <div class="extraspace"></div>
 		  <p ng-show="app.debugHandle" translate="appsubscriptions.debug.cmd_to_run"></p>
-		  <pre ng-show="app.debugHandle">node midata_tester.js {{ ENV.apiurl }} {{ app.debugHandle }}</pre>
+		  <pre ng-show="app.debugHandle">npx midata-tester {{ ENV.apiurl }} {{ app.debugHandle }}</pre>
 		</div>
 	</div>
 </div>
