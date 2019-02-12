@@ -84,7 +84,7 @@
 							<p translate="postregister.email_instructions"></p>
 							<button class="btn btn-default" ng-click="resend()" translate="postregister.resend_btn"></button>
 							<p ng-show="resentSuccess" class="alert alert-success" translate="postregister.resent_success"></p>
-							<button class="btn btn-default" ng-click="retry()" ng-show="isoauth" translate="postregister.retry_btn"></button>
+							<button class="btn btn-default" ng-click="retry()" translate="postregister.retry_btn"></button>
 							<hr>
 							<p class="extraspace" translate="postregister.email_code"></p>
 							<form class="form form-horizontal">
@@ -147,7 +147,7 @@
 									<formrow myid="authType" label="postregister.auth_type">									  
                                       <div class="radio">
                                          <label>
-									       <input type="radio" value="NONE" name="authType" ng-model="registration.authType" required>
+									       <input type="radio" value="NONE" name="authType" ng-init="registration.authType='SMS'" ng-model="registration.authType" required>
 									       <span translate="postregister.auth_type_none"></span>
 									     </label>
 									  </div>
