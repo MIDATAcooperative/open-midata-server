@@ -23,7 +23,7 @@ public class SubscriptionData extends Model {
 	private static String collection = "subscriptions";
 	
 	@NotMaterialized
-	public final static Set<String> ALL = Collections.unmodifiableSet(Sets.create("owner", "app", "instance", "format", "content", "lastUpdated", "active", "endDate", "fhirSubscription", "session"));
+	public final static Set<String> ALL = Collections.unmodifiableSet(Sets.create("_id", "owner", "app", "instance", "format", "content", "lastUpdated", "active", "endDate", "fhirSubscription", "session"));
 
 	/**
 	 * The owner of the subscription
