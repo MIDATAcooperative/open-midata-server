@@ -90,6 +90,11 @@ public class FHIR extends Controller {
 			    return info;
 			 }
 		}
+		if (param == null) {
+		   AccessLog.log("No authorization header and no portal session");
+		} else {
+		   AccessLog.log("No valid authorization header and no portal session");
+		}
 		return null;
 	}
 	
@@ -300,10 +305,23 @@ public class FHIR extends Controller {
 		
 		PlayHttpServletRequest req = new PlayHttpServletRequest(request());
         	
-		EncryptedFileHandle handle = request().body().as(EncryptedFileHandle.class);							
+		EncryptedFileHandle handle = request().body().as(EncryptedFileHandle.class);
+		
+		if (handle != null) {
+			AccessLog.log("File handle present");
+		} else {
+			AccessLog.log("No file handle present");
+		}
+		
 		ExecutionInfo info = null;
 		try {
+			AccessLog.log("Validating session...");
 		    info = getExecutionInfo(req);
+		    if (info != null) {
+		    	AccessLog.log("Execution context okay.");
+		    } else {
+		    	AccessLog.log("Execution context missing.");
+		    }
 		} finally {
 			if (info == null && handle != null) handle.removeAfterFailure();
 		}
