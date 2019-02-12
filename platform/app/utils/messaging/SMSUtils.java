@@ -26,6 +26,14 @@ public class SMSUtils {
 			if (token != null && token.length()>0 && !token.equals("SMS_OAUTH_TOKEN")) {
 			  instance = new SMSUtils(new SMSAPIProvider(ws, token, config.getString("sms.from")));
 			}
+		} else if (provider.equals("swisscom")) {
+			String token = config.getString("sms.token");
+			if (token != null && token.length()>0 && !token.equals("SMS_OAUTH_TOKEN")) {
+			  int p = token.indexOf(":");			   
+			  String clientid = token.substring(0, p);
+			  String clientsecret = token.substring(p+1);
+			  instance = new SMSUtils(new SMSSwisscomProvider(ws, clientid, clientsecret, config.getString("sms.from")));
+			}
 		}
 	}
 	

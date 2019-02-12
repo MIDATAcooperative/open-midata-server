@@ -307,6 +307,7 @@ public class FHIR extends Controller {
 		} finally {
 			if (info == null && handle != null) handle.removeAfterFailure();
 		}
+		if (info == null) return unauthorized();
 		
 		AccessLog.logBegin("begin FHIR binary post request: "+req.getRequestURI());	
 		String url = handle.serializeAsURL(info.executorId);
