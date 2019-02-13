@@ -34,7 +34,7 @@
     "angular-translate-storage-local": "^2.11.0",
     "angular-ui-bootstrap": "~2.5.0",
     "angular-utils-pagination": "~0.9.0",
-    "bootstrap": "~3.3.7",
+    "bootstrap": "~3.4",
     "jquery": "~3.3.1",
     "jsonminify": "~0.4.1",
     "node-forge": "^0.7.6",
