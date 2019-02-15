@@ -2,7 +2,7 @@ angular.module('portal')
 .config(["$stateProvider", function($stateProvider) {
 	   $stateProvider
 	    .state('member.studydetails', {
-	      url: '/study/:studyId',
+	      url: '/study/:studyId?action',
 	      templateUrl: 'views/shared/studydetails/studydetails.html',
 	      dashId : 'studydetails'
 	    })

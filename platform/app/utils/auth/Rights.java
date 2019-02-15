@@ -45,6 +45,7 @@ public class Rights {
 		
 		action("Users.getPROVIDER");
 		role(UserRole.MEMBER  , "_id", "address1", "address2", "city", "country", "email", "firstname", "gender", "lastname", "phone", "mobile", "name", "role", "subroles", "status", "zip");
+		role(UserRole.PROVIDER, "_id", "address1", "address2", "city", "country", "email", "firstname", "gender", "lastname", "phone", "mobile", "name", "role", "subroles", "status", "zip", "provider");
 		
 		action("Users.getRESEARCH");
 		role(UserRole.MEMBER, "_id", "role", "firstname", "lastname", "name", "status", "email", "searchable");

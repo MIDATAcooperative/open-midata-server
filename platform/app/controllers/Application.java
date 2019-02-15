@@ -255,6 +255,7 @@ public class Application extends APIController {
 		MidataId userId;
 		String token;
 		String role;
+		String handle = null;
 		
 		if (json.has("token")) {				
 			// check status
@@ -283,6 +284,7 @@ public class Application extends APIController {
 		    if (tk != null) {
 			    try {
 			      KeyManager.instance.continueSession(tk.getHandle());
+			      handle = tk.getHandle();
 			    } catch (AppException e) { return null; }
 		    }
 		}
@@ -296,15 +298,19 @@ public class Application extends APIController {
 		    		   && user.resettoken.equals(token)
 		    		   && System.currentTimeMillis() - user.resettokenTs < EMAIL_TOKEN_LIFETIME) {	   
 			   
-		    	   String handle = KeyManager.instance.login(60000, true);
-		    	   int keytype = KeyManager.instance.unlock(user._id, null);
-		    	   new ExtendedSessionToken().forUser(user).withSession(handle).set();
-		           if (keytype == KeyManager.KEYPROTECTION_FAIL || keytype == KeyManager.KEYPROTECTION_AESKEY) {
-		        	   PWRecovery.startRecovery(user, json);	
-		        	   user.addFlag(AccountActionFlags.KEY_RECOVERY);
-		           } else {
-		        	   PWRecovery.changePassword(user, json);		        	   		        	   
-		           }
+		    	   if (handle == null) {
+		    		   handle = KeyManager.instance.login(60000, true);		    	   
+		    	       int keytype = KeyManager.instance.unlock(user._id, null);
+		    	       
+		               if (keytype == KeyManager.KEYPROTECTION_FAIL || keytype == KeyManager.KEYPROTECTION_AESKEY) {
+		        	     PWRecovery.startRecovery(user, json);	
+		        	     user.addFlag(AccountActionFlags.KEY_RECOVERY);
+		        	     new ExtendedSessionToken().forUser(user).set();
+		               } else {
+		            	 new ExtendedSessionToken().forUser(user).withSession(handle).set();
+		        	     PWRecovery.changePassword(user, json);		        	   		        	   
+		               }
+		    	   } else PWRecovery.changePassword(user, json);
 		    	   		    	   
 		       } else throw new BadRequestException("error.expired.token", "Password reset token has already expired.");
 		}
@@ -1112,6 +1118,9 @@ public class Application extends APIController {
 				controllers.providers.routes.javascript.Providers.list(),
 				controllers.providers.routes.javascript.Providers.getMember(),
 				controllers.providers.routes.javascript.Providers.getVisualizationToken(),
+				controllers.providers.routes.javascript.Providers.registerOther(),				
+				controllers.providers.routes.javascript.Providers.getOrganization(),
+				controllers.providers.routes.javascript.Providers.updateOrganization(),
 								
 				// Developers
 				controllers.routes.javascript.Developers.register(),

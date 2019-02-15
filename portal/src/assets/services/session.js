@@ -1,5 +1,5 @@
 angular.module('services')
-.factory('session', ['$q', 'server', 'crypto', function($q, server, crypto) {
+.factory('session', ['$q', 'server', 'crypto', 'actions', function($q, server, crypto, actions) {
 	
 	var _states = {};
 	
@@ -44,7 +44,7 @@ angular.module('services')
 				console.log("Session started");
 			}
 			if (result.data.status) {
-				  $state.go("public.postregister", { progress : result.data }, { location : false });			
+				  $state.go("public.postregister", { progress : result.data, action : $state.params.action }, { location : false });			
 			} else if (result.data.role == "admin") {
 				if (result.data.keyType == 1) {
 					$state.go('public_developer.passphrase_admin', $state.params);
@@ -62,8 +62,10 @@ angular.module('services')
 				  $state.go('public.passphrase', $state.params);
 				} else {
 					console.log($state.params);
-				  if ($state.params.action) $state.go("member.service2", $state.params);
-				  else $state.go('member.overview');
+				  if ($state.params.action) {
+					  if (actions.showAction($state)) return;
+				  }
+				  $state.go('member.overview');
 				}
 			} else if (result.data.role == "provider") {
 				if (result.data.keyType == 1) {
@@ -111,6 +113,7 @@ angular.module('services')
 			sessionStorage.token = null;
 			session.org = null;
 			session.cache = {};
+			actions.logout();
 			_states = {};			
 		},
 		 

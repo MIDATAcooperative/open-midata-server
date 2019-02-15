@@ -253,7 +253,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 					if (file==null || file.isExpired()) throw new UnprocessableEntityException("Midata-file URL has already expired.");
 					
 					if (!file.owner.equals(info().executorId)) throw new UnprocessableEntityException("Midata-file URL is not owned by you.");				
-					handle.rename(fileName);
+					if (fileName!=null) handle.rename(fileName);
 					file.delete();
 				} else {				
 					try {

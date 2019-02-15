@@ -21,8 +21,16 @@
 				<li ui-sref-active="active"><a ui-sref="provider.dashboard({ dashId : 'research' })" translate="provider_navbar.research"></a></li>
 				<li ui-sref-active="active"><a ui-sref="provider.dashboard({ dashId : 'workspace' })" translate="provider_navbar.workspace"></a></li>
 				<li ui-sref-active="active"><a ui-sref="provider.circles" translate="navbar.consents"></a></li>
-				<li ui-sref-active="active"><a ui-sref="provider.usergroups" translate="provider_navbar.usergroups"></a></li>
-				<li ui-sref-active="active"><a ui-sref="provider.market({ context : 'PROVIDER' })" translate="provider_navbar.market"></a></li>
+				
+				 <li ui-sref-active="active" class="dropdown"><a href="javascript:" class="dropdown-toggle" data-toggle="dropdown" role="button"
+						aria-haspopup="true" aria-expanded="false"><span translate="provider_navbar.org"></span><span class="caret"></span></a>
+						<ul class="dropdown-menu">	
+						    <li><a ui-sref="provider.organization" translate="provider_navbar.organization"></a></li>
+						    <li><a ui-sref="provider.usergroups" translate="provider_navbar.usergroups"></a></li>											            				            				            				            
+						</ul>
+				</li>  
+																
+				<!-- <li ui-sref-active="active"><a ui-sref="provider.market({ context : 'PROVIDER' })" translate="provider_navbar.market"></a></li>  -->
 			</ul>
 			<ul class="nav navbar-nav navbar-right" ng-cloak>
 				<li><a ui-sref=".user({ userId : user._id})">{{user.name}}</a></li>

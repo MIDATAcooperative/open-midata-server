@@ -15,8 +15,23 @@
     "patients" : "Patients",
     "research" : "Research",
     "workspace" : "Workspace",
-    "market" : "MIDATA Store",    
+    "market" : "MIDATA Store",
+    "org" : "Intern",
+    "organization" : "Organization",    
 	"usergroups" : "Teams"
+  },
+  
+  "provider_organization" : {
+    "title" : "Organization",
+    "name" : "Name",
+    "description" : "Description",
+    "members" : "All members of your organization",
+    "addprovider" : "Register New Member"
+  },
+  
+  "addprovider" : {
+    "sign_up" : "Register health professional",
+    "success" : "User successfully registered"
   },
   
   "provider_patientsearch" : {

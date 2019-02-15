@@ -17,6 +17,7 @@ import models.AccessPermissionSet;
 import models.Circle;
 import models.Consent;
 import models.Developer;
+import models.HPUser;
 import models.KeyInfoExtern;
 import models.KeyRecoveryData;
 import models.KeyRecoveryProcess;
@@ -92,14 +93,17 @@ public class Users extends APIController {
 		
 		// get parameters
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
-		ObjectIdConversion.convertMidataIds(properties, "_id", "developer", "organization");
+		ObjectIdConversion.convertMidataIds(properties, "_id", "developer", "organization", "provider");
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 		
 		// check authorization
 		
-		if (!getRole().equals(UserRole.ADMIN) && !(getRole().equals(UserRole.RESEARCH) && properties.containsKey("role") && properties.get("role").equals("RESEARCH")) && !properties.containsKey("_id") && !properties.containsKey("developer") && !properties.containsKey("organization")) properties.put("searchable", true);
+		if (!getRole().equals(UserRole.ADMIN) && 
+			!(getRole().equals(UserRole.RESEARCH) && properties.containsKey("role") && properties.get("role").equals("RESEARCH")) &&
+			!(getRole().equals(UserRole.PROVIDER) && properties.containsKey("role") && properties.get("role").equals("PROVIDER")) &&
+			!properties.containsKey("_id") && !properties.containsKey("developer") && !properties.containsKey("organization")) properties.put("searchable", true);
 		boolean postcheck = false;		
-		if (!getRole().equals(UserRole.ADMIN) && !properties.containsKey("email") && !properties.containsKey("midataID") && !properties.containsKey("_id") && !properties.containsKey("developer") && !properties.containsKey("organization")) {
+		if (!getRole().equals(UserRole.ADMIN) && !properties.containsKey("email") && !properties.containsKey("midataID") && !properties.containsKey("_id") && !properties.containsKey("developer") && !properties.containsKey("organization") && !properties.containsKey("provider")) {
 			throw new AuthException("error.notauthorized.action", "Search must be restricted");
 		}
 		UserRole role = null;
@@ -138,7 +142,9 @@ public class Users extends APIController {
 		  properties.put("role", EnumSet.of(UserRole.DEVELOPER, UserRole.ADMIN));
 		  users = new ArrayList<User>(Developer.getAll(properties, fields, 100));
 		} else if (role != null && role == UserRole.RESEARCH) {
-		  users = new ArrayList<User>(ResearchUser.getAll(properties, fields, 100));		
+		  users = new ArrayList<User>(ResearchUser.getAll(properties, fields, 100));	
+		} else if (role != null && role == UserRole.PROVIDER) {
+		  users = new ArrayList<User>(HPUser.getAll(properties, fields));	
 		} else {
 		  users = new ArrayList<User>(Member.getAll(properties, fields, 100));
 		}
