@@ -11,7 +11,7 @@
 				<formrow myid="city" label="providersearch.city_or_zip"> 
 				  <input type="text" class="form-control" translate translate-attr-placeholder="providersearch.city_or_zip" ng-model="criteria.city"> 
 				</formrow>
-				<formrow myid="restrict" label="">
+				<formrow myid="restrict" label="" ng-show="role=='MEMBER'">
 				  <div class="checkbox">				
 				    <label>
 				      <input type="checkbox" ng-model="criteria.onlymine"><span translate="providersearch.only_with_contact"></span> 

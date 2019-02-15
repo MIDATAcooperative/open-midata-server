@@ -214,7 +214,7 @@ public class Circles extends APIController {
 		for (Consent consent : consents) {
 			if (consent.type.equals(ConsentType.STUDYRELATED) && consent.authorized != null) consent.authorized.clear();
 			
-			if (consent.sharingQuery == null) {
+			if (consent.sharingQuery == null && (consent.status == ConsentStatus.ACTIVE || consent.status == ConsentStatus.FROZEN || consent.owner == executor)) {
 				if (fields.contains("createdBefore") || fields.contains("validUntil")) {				
 					BasicBSONObject obj = (BasicBSONObject) RecordManager.instance.getMeta(executor, consent._id, "_filter");
 					if (obj != null) {

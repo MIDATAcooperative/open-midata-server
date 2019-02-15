@@ -156,15 +156,17 @@ public class Developers extends APIController {
 			
 		MidataId developerId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId targetUserId = JsonValidation.getMidataId(json, "user");
-		User target = User.getById(targetUserId, Sets.create("developer", "role", "password"));		
+		User target = User.getById(targetUserId, Sets.create("developer", "role", "password","security"));		
 		if (target == null || !target.developer.equals(developerId)) throw new BadRequestException("error.unknown.user", "No test user");
 		
 		PasswordResetToken token = new PasswordResetToken(target._id, target.role.toString().toLowerCase());
 		target.set("resettoken", token.token);
 		target.set("resettokenTs", System.currentTimeMillis());
 		String encrypted = token.encrypt();
-			   		
+					   	
 		String url = "/#/portal/setpw?token=" + encrypted;
+		
+		if (target.security != AccountSecurityLevel.KEY_EXT_PASSWORD) url+="&ns=1";
 						
 		return ok(url);		
 	}

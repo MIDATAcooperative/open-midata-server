@@ -4,7 +4,8 @@ angular.module('views')
     $scope.status = new status(true);
     $scope.criteria = { name : $state.params.name, city : $state.params.city, onlymine : false };
     $scope.view = $scope.def ? views.getView($scope.def.id) : views.getView("providersearch");
-    
+    $scope.role = $state.current.data.role;
+    console.log($scope.role);
     var dosearch = function(crit) {
     	$scope.status.doBusy(hc.search(crit, ["firstname", "lastname", "city", "zip", "address1"]))
     	.then(function(data) {

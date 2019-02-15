@@ -823,7 +823,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		if (hpuser != null) {
 			consentName = hpuser.firstname + " " + hpuser.lastname;
 			if (hpuser.provider != null) {
-				HealthcareProvider prov = HealthcareProvider.getById(hpuser.provider);
+				HealthcareProvider prov = HealthcareProvider.getById(hpuser.provider, HealthcareProvider.ALL);
 				if (prov != null)
 					consentName = prov.name;
 			}
