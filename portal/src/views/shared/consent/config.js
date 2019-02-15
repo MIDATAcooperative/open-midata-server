@@ -2,7 +2,7 @@ angular.module('portal')
 .config(["$stateProvider", function($stateProvider) {
 	   $stateProvider
 	    .state('member.newconsent', {
-	      url: '/newconsent?authorize&owner&share&request',	      
+	      url: '/newconsent?authorize&owner&share&request&action',	      
 	      templateUrl: 'views/shared/consent/newconsent.html',
 	      dashId : 'circles',
 	      role : 'MEMBER'

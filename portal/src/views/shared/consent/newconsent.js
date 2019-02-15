@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('NewConsentCtrl', ['$scope', '$state', '$translate', 'server', 'status', 'circles', 'hc', 'views', 'session', 'users', 'usergroups', 'records', 'labels', '$window', function($scope, $state, $translate, server, status, circles, hc, views, session, users, usergroups, records, labels, $window) {
+.controller('NewConsentCtrl', ['$scope', '$state', '$translate', 'server', 'status', 'circles', 'hc', 'views', 'session', 'users', 'usergroups', 'records', 'labels', '$window', 'actions', function($scope, $state, $translate, server, status, circles, hc, views, session, users, usergroups, records, labels, $window, actions) {
 	
 	$scope.types = [
 	                { value : "CIRCLE", label : "enum.consenttype.CIRCLE"},
@@ -125,7 +125,18 @@ angular.module('portal')
 			hc.search({ "_id" :  $state.params.authorize }, [ "firstname", "lastname", "city", "address1", "address2", "country"])
 			.then(function(data) {
 				$scope.authpersons = data.data;
-				$scope.consent.name = "Health Professional: "+$scope.authpersons[0].firstname+" "+$scope.authpersons[0].lastname;
+				if (data.data.length > 0) {
+				  $scope.consent.name = "Health Professional: "+$scope.authpersons[0].firstname+" "+$scope.authpersons[0].lastname;
+				}
+			});
+			
+			$scope.status.doBusy(usergroups.search({ "_id" : $state.params.authorize }, ["name"]))
+			.then(function(data2) {
+				angular.forEach(data2.data, function(userGroup) {
+					$scope.consent.entityType = "USERGROUP"
+					$scope.authteams.push(userGroup);
+					$scope.consent.name = "Health Team: "+$scope.authteams[0].name;
+				});
 			});
 		}
 		
@@ -165,10 +176,14 @@ angular.module('portal')
 			if ($scope.sharing && $scope.sharing.query) {
 			   records.share(result.data._id, null, $scope.consent.type, $scope.sharing.query)
 			   .then(function() { 
-				   $state.go("^.recordsharing", { selectedType : "circles", selected : result.data._id });
+				   if (!actions.showAction($state)) {
+				     $state.go("^.recordsharing", { selectedType : "circles", selected : result.data._id });
+				   }
 			   });
 			} else {
-			  $state.go("^.recordsharing", { selectedType : "circles", selected : result.data._id });
+			  if (!actions.showAction($state)) {
+			    $state.go("^.recordsharing", { selectedType : "circles", selected : result.data._id });
+			  }
 			}
 		});
 					
@@ -326,16 +341,27 @@ angular.module('portal')
 		$window.history.back();
 	};
 		
-	$scope.reinit = function() {
-		if ($state.params.callback || $state.params.action) {
-			$state.go("^.service2", $state.params);
-		} else {
-			$scope.init($scope.userId);
-		}
+	$scope.reinit = function() {		
+		if (!actions.showAction($state)) $scope.init($scope.userId);		
 	};
 	
 	session.currentUser.then(function(userId) {	
 	  $scope.init(userId);
 	});
+		
+	
+	$scope.getIconRole = function(item) {
+		if (!item) return "/images/account.jpg";
+		if (item == "team") return "/images/team.jpeg";
+		if (item == "app") return "/images/app.jpg";
+		if (item == "community") return "/images/community.jpeg";
+		if (item == "external") return "/images/account.jpg";
+		if (item == "reshare") return "/images/community.jpeg";
+		if (item._id == session.user._id) return "/images/account.jpg";
+		if (item.role == "MEMBER") return "/images/account.jpg";
+		if (item.role == "RESEARCH") return "/images/research2.jpeg";
+		if (item.role == "PROVIDER") return "/images/doctor.jpeg";
+		return "";
+	};
 }]);
 	

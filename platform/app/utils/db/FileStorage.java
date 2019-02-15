@@ -74,7 +74,7 @@ public class FileStorage {
 	
 	public static void rename(ObjectId fileId, String filename) {
 		GridFSBucket fileSystem = GridFSBuckets.create(DBLayer.getFSDB(), FILE_STORAGE);
-		System.out.println("rename id="+fileId.toString());
+		System.out.println("rename id="+fileId.toString()+" to "+filename);
 		fileSystem.rename(fileId, filename);
 	}
 

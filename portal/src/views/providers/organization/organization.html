@@ -1,0 +1,52 @@
+
+  
+  <div ng-controller="POrganizationCtrl" ng-cloak >
+    <div class="panel panel-primary">
+	<div class="panel-heading" translate="provider_organization.title">	 
+	</div>
+	<div class="panel-body">
+	<p ng-show="error && !error.field" translate="{{error.code || error}}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	   
+	</p>
+	<form name="myform" novalidate class="css-form form-horizontal" ng-submit="editorg()" role="form">
+	  <formrow myid="name" label="provider_organization.name"> 
+		<input type="text" class="form-control" id="name" ng-change="formChange()" name="name" ng-model="org.name" ng-required="true">
+		<formerror myid="name" type="exists" message="error.exists.research"></formerror> 
+      </formrow>
+      <!-- 
+      <formrow myid="description" label="provider_organization.description">
+        <textarea class="form-control" id="description" ng-change="formChange()" name="description" rows="5" ng-model="org.description" ng-required="true"></textarea>
+      </formrow>
+       -->
+      <formrow myid="x" label="">
+        <button type="submit" class="btn btn-primary" translate="common.submit_btn"></button>
+         <span class="text-success" ng-show="saveOk"><span class="glyphicon glyphicon-ok"></span> <span translate="common.save_ok"></span></span>
+      </formrow>
+    </form>	
+         
+    </div>
+    </div>
+    
+    <div class="panel panel-primary">
+	<div class="panel-heading" translate="provider_organization.members">	 
+	</div>
+	<div class="panel-body">
+	  <table class="table table-striped">
+	    <tr>
+	      <td translate="common.user.firstname" sortby="firstname"></td>
+	      <td translate="common.user.lastname" sortby="lastname"></td>
+	      <td translate="common.user.email" sortby="email"></td>
+	    </tr>
+	    <tr ng-repeat="person in persons|orderBy:sortby">
+	      <td>{{ person.firstname }}</td>
+	      <td>{{ person.lastname }}</td>
+	      <td>{{ person.email }}</td>
+	    </tr>
+	  </table>
+	  
+	  <a class="btn btn-default" ui-sref="provider.addprovider" translate="provider_organization.addprovider"></a>	  
+	</div>
+	</div>
+    
+    
+  </div>
+ 

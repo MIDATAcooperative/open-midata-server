@@ -37,7 +37,7 @@ public class APICallAction extends Action<APICall> {
     	  ctx.response().setHeader("Allow", "*");
     	  ctx.response().setHeader("Access-Control-Allow-Credentials", "true");
     	  ctx.response().setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS, PATCH");
-    	  ctx.response().setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie, X-Session-Token, Prefer");
+    	  ctx.response().setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie, X-Session-Token, Prefer, X-Filename");
     	  ctx.response().setHeader("Pragma", "no-cache");
     	  ctx.response().setHeader("Cache-Control", "no-cache, no-store");
     	  try {

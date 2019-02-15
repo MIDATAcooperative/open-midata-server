@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('StudyDetailCtrl', ['$scope', '$state', 'server', 'views', 'session', 'users', 'studies', 'labels', '$window', '$translate', 'spaces', 'status', 'apps', function($scope, $state, server, views, session, users, studies, labels, $window, $translate, spaces, status, apps) {
+.controller('StudyDetailCtrl', ['$scope', '$state', 'server', 'views', 'session', 'users', 'studies', 'labels', '$window', '$translate', 'spaces', 'status', 'apps', 'actions', function($scope, $state, server, views, session, users, studies, labels, $window, $translate, spaces, status, apps, actions) {
 	
 	$scope.studyid = $state.params.studyId;
 	$scope.study = {};
@@ -126,8 +126,10 @@ angular.module('portal')
 		$scope.error = null;
 		
 		server.post(jsRoutes.controllers.members.Studies.requestParticipation($scope.studyid).url).
-		then(function(data) { 				
-		    $scope.reload();
+		then(function(data) { 	
+			if (!actions.showAction($state)) {
+		      $scope.reload();
+			}
 		}, function(err) {
 			$scope.error = err.data;			
 		});

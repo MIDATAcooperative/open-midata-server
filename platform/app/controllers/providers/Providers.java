@@ -1,6 +1,7 @@
 package controllers.providers;
 
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -26,7 +27,6 @@ import models.enums.AuditEventType;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
 import models.enums.Gender;
-import models.enums.SecondaryAuthType;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
@@ -37,6 +37,7 @@ import play.mvc.Security;
 import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
+import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
 import utils.auth.ExtendedSessionToken;
 import utils.auth.KeyManager;
@@ -143,6 +144,87 @@ public class Providers extends APIController {
 		
 		return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle), json, null, user._id);
 		
+	}
+	
+	public static void register(HPUser user, HealthcareProvider provider, User executingUser) throws AppException {
+		
+		if (provider != null && HealthcareProvider.existsByName(provider.name)) throw new JsonValidationException("error.exists.organization", "name", "exists", "A healthcare provider with this name already exists.");			
+		if (HPUser.existsByEMail(user.email)) throw new JsonValidationException("error.exists.user", "email", "exists", "A user with this email address already exists.");
+				
+		if (user._id == null) user._id = new MidataId();
+		user.role = UserRole.PROVIDER;
+		user.subroles = EnumSet.noneOf(SubUserRole.class);
+		user.registeredAt = new Date();				
+		if (user.status == null) user.status = UserStatus.NEW;		
+		user.contractStatus = ContractStatus.REQUESTED;
+		user.agbStatus = ContractStatus.REQUESTED;
+		user.emailStatus = EMailStatus.UNVALIDATED;
+		user.confirmationCode = CodeGenerator.nextCode();
+		
+		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);
+		user.security = AccountSecurityLevel.KEY;
+		user.apps = new HashSet<MidataId>();	
+		user.visualizations = new HashSet<MidataId>();
+				
+		
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);
+		
+		if (provider != null) {
+			HealthcareProvider.add(provider);
+		    user.provider = provider._id;
+		}
+		HPUser.add(user);
+					
+		RecordManager.instance.createPrivateAPS(user._id, user._id);		
+		
+		Application.sendWelcomeMail(user, executingUser);
+		if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) Application.sendAdminNotificationMail(user);
+						
+	}
+	
+	/**
+	 * register a new research
+	 * @return status ok
+	 * @throws AppException	
+	 */
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(ProviderSecured.class)
+	public Result registerOther() throws AppException {
+		
+		
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "country", "language");
+							
+		String email = JsonValidation.getEMail(json, "email");
+			
+		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		User executingUser = User.getById(executorId, User.ALL_USER);
+		
+	    HPUser user = new HPUser(email);
+		
+	    user._id = new MidataId();
+		user.address1 = JsonValidation.getStringOrNull(json, "address1");
+		user.address2 = JsonValidation.getStringOrNull(json, "address2");
+		user.city = JsonValidation.getStringOrNull(json, "city");
+		user.zip  = JsonValidation.getStringOrNull(json, "zip");
+		user.country = JsonValidation.getString(json, "country");
+		user.firstname = JsonValidation.getString(json, "firstname"); 
+		user.lastname = JsonValidation.getString(json, "lastname");
+		user.gender = JsonValidation.getEnum(json, "gender", Gender.class);
+		user.language = JsonValidation.getString(json, "language");
+		user.phone = JsonValidation.getStringOrNull(json, "phone");
+		user.mobile = JsonValidation.getStringOrNull(json, "mobile");
+		user.provider = PortalSessionToken.session().orgId;
+		if (user.provider == null) throw new InternalServerException("error.internal", "No organization in session for register provider!");
+		user.status = UserStatus.ACTIVE;
+		//user.authType = SecondaryAuthType.SMS;
+						
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, null, new MidataId(request().attrs().get(play.mvc.Security.USERNAME)), user);
+		register(user ,null, executingUser);
+			
+		AuditManager.instance.success();
+		return ok();		
 	}
 	
 	/**
@@ -271,6 +353,46 @@ public class Providers extends APIController {
 		// create encrypted authToken
 		SpaceToken spaceToken = new SpaceToken(PortalSessionToken.session().handle, consentId, userId, getRole());
 		return ok(spaceToken.encrypt(request()));
+	}
+	
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public Result getOrganization(String id) throws AppException {
+			
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId providerid = MidataId.from(id);
+						
+		HealthcareProvider provider = HealthcareProvider.getById(providerid, HealthcareProvider.ALL);
+		if (provider == null) return notFound();						
+		return ok(JsonOutput.toJson(provider, "HealthcareProvider", HealthcareProvider.ALL));		
+	}
+
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(ProviderSecured.class)
+	public Result updateOrganization(String id) throws AppException {
+		JsonNode json = request().body().asJson();
+		
+		JsonValidation.validate(json, "_id", "name");
+					
+		String name = JsonValidation.getString(json, "name");				
+		//String description = JsonValidation.getString(json, "description");
+				
+		MidataId providerid = PortalSessionToken.session().getOrgId();
+		
+		if (!providerid.equals(JsonValidation.getMidataId(json, "_id"))) throw new InternalServerException("error.internal", "Tried to change other healthcare provider organization!");
+		
+		if (HealthcareProvider.existsByName(name, providerid)) throw new JsonValidationException("error.exists.organization", "name", "exists", "A healthcare provider organization with this name already exists.");			
+		
+		HealthcareProvider provider = HealthcareProvider.getById(providerid, HealthcareProvider.ALL);
+
+		if (provider == null) throw new InternalServerException("error.internal", "Healthcare provider organization not found.");
+		
+		provider.name = name;	
+		provider.set("name", provider.name);
+							
+		return ok();		
 	}
 	
 }

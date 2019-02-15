@@ -28,7 +28,7 @@ public class HPUser extends User {
 	public HPUser(String email) {		
 		this.email = email;
 		this.emailLC = email.toLowerCase();
-		
+		this.role = UserRole.PROVIDER;
 		login = new Date();		
 		subroles = EnumSet.noneOf(SubUserRole.class);
 	}

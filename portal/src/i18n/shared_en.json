@@ -894,6 +894,20 @@
 	"reject_btn" : "Reject this Consent",
     "delete_btn" : "Delete this Consent"
   },
+  
+  "editconsent2" : {
+    "date_of_creation" : "created at",
+    "valid_until" : "expires at",
+    "status_active" : "Active now",
+    "status_expired" : "Expired",
+    "status_unconfirmed" : "Needs confirmation",
+    "status_rejected" : "Rejected",
+    "status" : "Status",
+    "duration" : "Validity Period",
+    "external" : "External Application",
+    "community" : "Research Community",
+    "team" : "Team"
+  },
 
   "consents" : {
     "title" : "Consents",

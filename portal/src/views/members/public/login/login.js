@@ -5,7 +5,7 @@ angular.module('portal')
 	$scope.login = { role : "MEMBER" };	
 	$scope.error = null;
 	$scope.status = new status(false);
-	
+	$scope.action = $state.params.action;
 	$scope.offline = (window.jsRoutes === undefined) || (window.jsRoutes.controllers === undefined);	
 	$scope.notPublic = ENV.instanceType == "prod";
 	$scope.roles = [
@@ -14,6 +14,13 @@ angular.module('portal')
 		{ value : "RESEARCH" , name : "enum.userrole.RESEARCH"},
 		{ value : "DEVELOPER" , name : "enum.userrole.DEVELOPER"},
     ];
+	
+	if ($state.params.login) {
+		$scope.login.email = $state.params.login;
+	}
+	if ($state.params.role) {
+		$scope.login.role = $state.params.role;
+	}
 	
 	// login
 	$scope.dologin = function() {
