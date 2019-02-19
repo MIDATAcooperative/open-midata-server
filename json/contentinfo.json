@@ -249,3 +249,4 @@
 {"_id":{"$oid":"5c0a37e0aed6450b0383214f"},"content":"snomed/119339001","defaultCode":"http://snomed.info/sct 119339001","security":"MEDIUM","label":{"en":"Stool specimen"},"resourceType":"fhir/Specimen"}
 {"_id":{"$oid":"5c0a3830aed6450b03832152"},"content":"snomed/409822003","defaultCode":"http://snomed.info/sct 409822003","security":"MEDIUM","label":{"en":"Superkingdom Bacteria (organism)"},"resourceType":"fhir/Observation"}
 {"_id":{"$oid":"5c374a52aed645580113d3d5"},"content":"loinc/24338-6","defaultCode":"http://loinc.org 24338-6","security":"MEDIUM","label":{"en":"Gas panel - Blood"}}
+{"_id":{"$oid":"5c6c06e6aed645383cf5ea78"},"content":"MSCogTestSDRun","defaultCode":"http://midata.coop MSCogTestSDRun","security":"MEDIUM","label":{"en":"MS Kognitionstest Symbol-Digit Übungslauf"},"resourceType":"fhir/Observation"}
