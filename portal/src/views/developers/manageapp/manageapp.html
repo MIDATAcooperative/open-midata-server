@@ -24,9 +24,9 @@
 		    <p class="help-block" translate="manageapp.info.type"></p>
 		  </formrow>
 		  <formrow myid="requirements" label="Requirements" class="danger-change">
-		    <div class="checkbox" ng-repeat="req in requirements">
-		      <label>
-		        <input type="checkbox" ng-checked="app.requirements.indexOf(req)>=0" ng-click="toggle(app.requirements, req);requireLogout();">
+		    <div class="form-check" ng-repeat="req in requirements">
+		      <label class="form-check-label">
+		        <input class="form-check-label" type="checkbox" ng-checked="app.requirements.indexOf(req)>=0" ng-click="toggle(app.requirements, req);requireLogout();">
 		        <span translate="{{ 'enum.userfeature.'+req }}"></span>
 		      </label>
 		    </div>
@@ -53,7 +53,7 @@
 		  <formrow myid="x" label="Multi Language Support">
 		    <div class="help-block">
 		    <span ng-repeat="l in languages">
-		      <span ng-show="app.i18n[l].name"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>{{l}} </span>		      
+		      <span ng-show="app.i18n[l].name"><span class="fas fa-check" aria-hidden="true"></span>{{l}} </span>		      
 		    </span>
 		    </div>
 		  </formrow>
@@ -71,9 +71,9 @@
 		  </formrow>
 		  <hr>		  
 		  <formrow myid="tags" label="Tags">
-		    <div class="checkbox" ng-repeat="tagdef in tags">
-		      <label>
-		        <input type="checkbox" ng-checked="app.tags.indexOf(tagdef)>=0" ng-click="toggle(app.tags, tagdef)">
+		    <div class="form-check" ng-repeat="tagdef in tags">
+		      <label class="form-check-label">
+		        <input class="form-check-input" type="checkbox" ng-checked="app.tags.indexOf(tagdef)>=0" ng-click="toggle(app.tags, tagdef)">
 		        {{ tagdef }}
 		      </label>
 		    </div>
@@ -101,25 +101,25 @@
 		    <select class="form-control" name="writes" ng-model="app.writes" ng-change="requireLogout();" ng-options="mode as ('enum.writepermissiontype.'+mode)|translate for mode in writemodes"></select>
 		  </formrow>
 		   <formrow myid="noUpdateHistory" label="manageapp.no_update_history" ng-show="app.targetUserRole=='RESEARCH'">
-		    <div class="checkbox">
-		    <label>
-		      <input type="checkbox" id="noUpdateHistory" name="noUpdateHistory" ng-model="app.noUpdateHistory" value="true">
+		    <div class="form-check">
+		    <label class="form-check-label">
+		      <input class="form-check-input" type="checkbox" id="noUpdateHistory" name="noUpdateHistory" ng-model="app.noUpdateHistory" value="true">
 		      <span translate="manageapp.info.no_update_history"></span>
 		    </label>
 		    </div>
 		  </formrow>	
 		  <formrow myid="resharesData" label="Resharing" class="danger-change">
-		    <div class="checkbox">
-		    <label>
-		      <input type="checkbox" id="resharesData" name="resharesData" ng-change="requireLogout();" ng-model="app.resharesData" value="true">
+		    <div class="form-check">
+		    <label class="form-check-label">
+		      <input class="form-check-input" type="checkbox" id="resharesData" name="resharesData" ng-change="requireLogout();" ng-model="app.resharesData" value="true">
 		      <span translate="manageapp.info.resharesData"></span>
 		    </label>
 		    </div>
 		  </formrow>
 		   <formrow myid="allowsUserSearch" label="User Search" ng-show="app.type == 'mobile' || app.type == 'service'" class="danger-change">
-		    <div class="checkbox">
-		    <label>
-		      <input type="checkbox" id="allowsUserSearch" name="allowsUserSearch" ng-change="requireLogout();" ng-model="app.allowsUserSearch" value="true">
+		    <div class="form-check">
+		    <label class="form-check-label">
+		      <input class="form-check-input" type="checkbox" id="allowsUserSearch" name="allowsUserSearch" ng-change="requireLogout();" ng-model="app.allowsUserSearch" value="true">
 		      <span translate="manageapp.info.allowsUserSearch"></span>
 		    </label>
 		    </div>
@@ -162,7 +162,7 @@
 		    <p class="help-block" translate="manageapp.info.redirectUri"></p>
 		  </formrow>
 		   <formrow myid="developmentServer" label="Development Server" ng-hide="app.type == 'mobile' || app.type == 'service' || !app.developmentServer">
-		    <p class="form-control-static">{{ app.developmentServer }}</p>
+		    <p class="form-control-plaintext">{{ app.developmentServer }}</p>
 		  </formrow>
 		   <formrow myid="unlockCode" label="manageapp.unlock_code" ng-show="app.type == 'mobile'">
 		    <input type="text" id="unlockCode" name="unlockCode" class="form-control" ng-model="app.unlockCode">
@@ -171,9 +171,9 @@
 		  
 		  
 		   <formrow myid="withLogout" label="manageapp.logout" ng-if="app._id">
-		    <div class="checkbox">
-		      <label>
-		        <input type="checkbox" id="withLogout" name="withLogout" ng-model="app.withLogout" value="true" ng-required="logoutRequired">
+		    <div class="form-check">
+		      <label class="form-check-label">
+		        <input class="form-check-input" type="checkbox" id="withLogout" name="withLogout" ng-model="app.withLogout" value="true" ng-required="logoutRequired">
 		        <span translate="manageapp.pleaseLogout1"></span>
 		        <span ng-show="app.targetUserRole=='RESEARCH'"> / </span>
 		        <span ng-show="app.targetUserRole=='RESEARCH'" translate="manageapp.pleaseLogout2"></span>

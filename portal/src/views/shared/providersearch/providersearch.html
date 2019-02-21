@@ -12,9 +12,9 @@
 				  <input type="text" class="form-control" translate translate-attr-placeholder="providersearch.city_or_zip" ng-model="criteria.city"> 
 				</formrow>
 				<formrow myid="restrict" label="" ng-show="role=='MEMBER'">
-				  <div class="checkbox">				
-				    <label>
-				      <input type="checkbox" ng-model="criteria.onlymine"><span translate="providersearch.only_with_contact"></span> 
+				  <div class="form-check">				
+				    <label class="form-check-label">
+				      <input class="form-check-input" type="checkbox" ng-model="criteria.onlymine"><span translate="providersearch.only_with_contact"></span> 
 				    </label>
 				  </div>
 				</formrow>

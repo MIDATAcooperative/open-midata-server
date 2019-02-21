@@ -6,12 +6,12 @@
     <form name="myform" novalidate class="" ng-submit="setConfig()" role="form">
           
       <formrow myid="measures" label="help_setup.question_measures"> 
-        <div class="checkbox" ng-repeat="measure in measures"><label><input type="checkbox" ng-model="questions.measures[measure.id]"><span translate="{{measure.i18n || 'measure.'+measure.id }}"></label></div>
+        <div class="form-check" ng-repeat="measure in measures"><label class="form-check-label"><input class="form-check-input" type="checkbox" ng-model="questions.measures[measure.id]"><span translate="{{measure.i18n || 'measure.'+measure.id }}"></label></div>
       </formrow>
       <formrow myid="devices" label="help_setup.question_devices"> 
-        <div class="checkbox"><label><input type="checkbox" ng-model="questions.devices.fitbit"><span translate="help_setup.question_devices_answer1"></label></div>
-		<div class="checkbox"><label><input type="checkbox" ng-model="questions.devices.jawbone"><span translate="help_setup.question_devices_answer2"></label></div>		 
-		<div class="checkbox"><label><input type="checkbox" ng-model="questions.devices.withings"><span translate="help_setup.question_devices_answer3"></label></div>
+        <div class="form-check"><label class="form-check-label"><input class="form-check-input" type="checkbox" ng-model="questions.devices.fitbit"><span translate="help_setup.question_devices_answer1"></label></div>
+		<div class="form-check"><label class="form-check-label"><input class="form-check-input" type="checkbox" ng-model="questions.devices.jawbone"><span translate="help_setup.question_devices_answer2"></label></div>		 
+		<div class="form-check"><label class="form-check-label"><input class="form-check-input" type="checkbox" ng-model="questions.devices.withings"><span translate="help_setup.question_devices_answer3"></label></div>
       </formrow>	
       
       <p translate="help_setup.come_back"></p>

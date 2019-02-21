@@ -19,32 +19,32 @@
 		  </div>
 		  
 		 
-		  		  
-		<div class="row">	
-			<div class="pull-right col-sm-4" ng-show="displayAps.owner && compare!=null">
+		  	<div class="float-right col-sm-4" ng-show="displayAps.owner && compare!=null">
 			   <label for="selectedAps" translate="records.shared_with"></label>
 			  <select class="form-control" id="selectedAps" ng-model="selectedAps" ng-options="c as c.i18n | translate:{ name : c.name } group by ('enum.consenttype.'+c.type) | translate for c in compare" ng-change="loadSharingDetails()"></select>
 	        </div>	
-	        <div class="pull-right col-sm-4" ng-show="compare==null && selectedAps!=null && selectedType=='spaces'">
+	        <div class="float-right col-sm-4" ng-show="compare==null && selectedAps!=null && selectedType=='spaces'">
 			  <label for="selectedAps" translate="records.records_used_for_app"></label>	
 			  <a class="btn btn-default" ui-sref="^.spaces({ spaceId : selectedAps._id })" translate="records.back_to_plugin"></a>		  
-	        </div>		        
+	        </div>	  
+			
+					        
 	        <div class="col-sm-4">
 	           <label for="owner" ng-dblclick="showDebug()" translate="records.show"></label>
 	           <select class="form-control" id="owner" ng-model="displayAps" ng-options="c as c.i18n | translate:{ name : c.name } group by ('records.type_'+c.type) | translate for c in availableAps" ng-change="selectSet()"></select>
 	        </div>			
-        </div>	
+       
         
-        <div class="row"><div class="col-sm-12">
+        <div class=""><div class="col-sm-12">
           <form class="form">
-		    <div class="radio">
-		      <label>
-                <input type="radio" name="treetype" value="group" ng-model="treeMode" ng-click="setTreeMode('group');"> <span translate="records.by_group"></span> 
+		    <div class="form-check">
+		      <label class="form-check-label">
+                <input class="form-check-input" type="radio" name="treetype" value="group" ng-model="treeMode" ng-click="setTreeMode('group');"> <span translate="records.by_group"></span> 
               </label>
             </div>
-            <div class="radio">
-              <label class="radio-inline">
-                <input type="radio" name="treetype" value="plugin" ng-model="treeMode" ng-click="setTreeMode('plugin');"> <span translate="records.by_plugin"></span>
+            <div class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="radio" name="treetype" value="plugin" ng-model="treeMode" ng-click="setTreeMode('plugin');"> <span translate="records.by_plugin"></span>
               </label>
             </div>
           </form>
@@ -60,21 +60,21 @@
 		 
         <loader busy="status.isBusy !== false">					
 		<script type="text/ng-template"  id="tree_item_renderer.html">
-           <div class="pull-right sharebox" ng-show="selectedAps">	                				  
-				<button class="btn btn-xs btn-primary" ng-disabled="status.isBusy" ng-click="unshareGroup(data);" ng-show="isSharedGroup(data)">
-					<span class="glyphicon glyphicon-picture"></span><span translate="records.unshare"></span>
+           <div class="float-right sharebox" ng-show="selectedAps">	                				  
+				<button class="btn btn-sm btn-primary" ng-disabled="status.isBusy" ng-click="unshareGroup(data);" ng-show="isSharedGroup(data)">
+					<span class="fas fa-picture"></span><span translate="records.unshare"></span>
 				</button>
-				<button class="btn btn-xs btn-primary" ng-disabled="status.isBusy" ng-hide="isSharedGroup(data)" ng-click="shareGroup(data);">
-					<span class="glyphicon glyphicon-share"></span><span translate="records.share"></span>
+				<button class="btn btn-sm btn-primary" ng-disabled="status.isBusy" ng-hide="isSharedGroup(data)" ng-click="shareGroup(data);">
+					<span class="fas fa-share"></span><span translate="records.share"></span>
 			    </button>
 		   </div>	
            <h1>
               <span ng-show="data.children.length">
-              <span ng-click="setOpen(data,true);" ng-hide="data.open" class="treehandle glyphicon glyphicon-plus"></span>
-              <span ng-show="data.open && !data.type" ng-click="setOpen(data,false);" class="treehandle glyphicon glyphicon-minus"></span>
+              <span ng-click="setOpen(data,true);" ng-hide="data.open" class="treehandle fas fa-plus"></span>
+              <span ng-show="data.open && !data.type" ng-click="setOpen(data,false);" class="treehandle fas fa-minus"></span>
               </span>
-              <span ng-hide="data.children.length" class="treehandle glyphicon">&nbsp;</span>
-              <a href="javascript:" ng-click="showRecords(data);" ng-class="{ 'text-success' : isSharedGroup(data), 'format': data.type == 'content', 'nodata' : data.count == 0 }">{{data.fullLabel.fullLabel}}</a> <small>(<span ng-show="selectedAps">{{ data.countShared }} / </span>{{ data.count }})</small><button class="btn btn-xs btn-danger" ng-show="allowDelete" ng-dblclick="deleteGroup(data)" translate="records.delete_all_btn"></button></h1>
+              <span ng-hide="data.children.length" class="treehandle" style="padding:1px;padding-left:9px;">&nbsp;</span>
+              <a href="javascript:" ng-click="showRecords(data);" ng-class="{ 'text-success' : isSharedGroup(data), 'format': data.type == 'content', 'nodata' : data.count == 0 }">{{data.fullLabel.fullLabel}}</a> <small>(<span ng-show="selectedAps">{{ data.countShared }} / </span>{{ data.count }})</small><button class="btn btn-sm btn-danger" ng-show="allowDelete" ng-dblclick="deleteGroup(data)" translate="records.delete_all_btn"></button></h1>
            <div ng-show="data.open">          
            
             
@@ -96,9 +96,9 @@
 	    <div id="recdetailmodal" class="modal fade"> 
           <div class="modal-dialog modal-lg"> 
             <div class="modal-content"> 
-              <div class="modal-header">
+              <div class="modal-header">                
+                <h4 class="modal-title">{{selectedData.fullLabel.fullLabel}}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> 
-                <h4 class="modal-title">{{selectedData.fullLabel.fullLabel}}</h4> 
               </div>
               <div class="container" ng-if="selectedData.allRecords.length > 10">
               <dir-pagination-controls pagination-id="selectedData.id"></dir-pagination-controls>
@@ -106,16 +106,16 @@
 
            <ul class="list-group nospaceafter" ng-if="selectedData.allRecords.length > 0">
 				<li class="list-group-item" dir-paginate="record in selectedData.allRecords | itemsPerPage : 10" pagination-id="selectedData.id" ng-class="{ 'list-group-item-success' : ( isShared(record)) }">
-					<span class="label label-info">{{record.created | date : 'dd.MM.yy'}}</span>
-					<span ng-show="record.owner != userId" class="label label-info">{{ record.ownerName }}</span>
+					<span class="badge badge-info">{{record.created | date : 'dd.MM.yy'}}</span>
+					<span ng-show="record.owner != userId" class="badge badge-info">{{ record.ownerName }}</span>
 					<a href="javascript:;" ng-click="showDetails(record)">{{record.name}}</a>
-                    <button ng-show="allowDelete && isOwnRecord(record)" ng-dblclick="deleteRecord(record, selectedData)" class="btn btn-danger btn-xs" translate="records.delete"></button>
-                    <div class="pull-right" ng-hide="selectedAps==null">					   
-						<button class="btn btn-xs btn-primary" ng-disabled="status.isBusy" ng-click="unshare(record, selectedData);" ng-show="isShared(record)">
-							<span class="glyphicon glyphicon-picture"></span><span translate="records.unshare"></span>
+                    <button ng-show="allowDelete && isOwnRecord(record)" ng-dblclick="deleteRecord(record, selectedData)" class="btn btn-danger btn-sm" translate="records.delete"></button>
+                    <div class="float-right" ng-hide="selectedAps==null">					   
+						<button class="btn btn-sm btn-primary" ng-disabled="status.isBusy" ng-click="unshare(record, selectedData);" ng-show="isShared(record)">
+							<span class="fas fa-picture"></span><span translate="records.unshare"></span>
 						</button>
-						<button class="btn btn-xs btn-primary" ng-disabled="status.isBusy" ng-hide="isShared(record)" ng-class="{'disabled': !isOwnRecord(record)}" ng-click="share(record, selectedData);">
-							<span class="glyphicon glyphicon-share"></span><span translate="records.share"></span>
+						<button class="btn btn-sm btn-primary" ng-disabled="status.isBusy" ng-hide="isShared(record)" ng-class="{'disabled': !isOwnRecord(record)}" ng-click="share(record, selectedData);">
+							<span class="fas fa-share"></span><span translate="records.share"></span>
 						</button>
 					</div>										
 				</li>

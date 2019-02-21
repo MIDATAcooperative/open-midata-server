@@ -14,7 +14,7 @@ angular.module('portal')
 				
 	// register new user
 	$scope.register = function() {		
-		
+		console.log("A");
         $scope.myform.password.$setValidity('compare', $scope.registration.password1 ==  $scope.registration.password2);
         $scope.myform.agb.$setValidity('mustaccept', $scope.registration.agb);        
         if (!$scope.registration.agb) {
@@ -46,7 +46,7 @@ angular.module('portal')
 				}
 			}
         }
-		 
+        console.log("B"); 
 
 		$scope.submitted = true;	
 		if ($scope.error && $scope.error.field && $scope.error.type && $scope.myform[$scope.error.field]) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
@@ -54,11 +54,13 @@ angular.module('portal')
 		if (! $scope.myform.$valid) {
 			var elem = $document[0].querySelector('input.ng-invalid');
 			if (elem && elem.focus) elem.focus();
+			console.log("OUT");
 			return;
 		}
 		
 		if ($scope.registration.password1 !=  $scope.registration.password2) {
 			$scope.error = { code : "error.invalid.password_repetition" };
+			console.log("OUT2");
 			return;
 		}		
 				

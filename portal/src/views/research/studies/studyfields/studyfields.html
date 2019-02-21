@@ -53,7 +53,7 @@
       </formrow>
       <formrow myid="x" label="">
         <button type="submit" class="btn btn-primary" ng-disabled="studyLocked()" translate="common.change_btn"></button>
-        <span class="text-success" ng-show="requiredDataOk"><span class="glyphicon glyphicon-ok"></span> <span translate="common.save_ok"></span></span>
+        <span class="text-success" ng-show="requiredDataOk"><span class="fas fa-check"></span> <span translate="common.save_ok"></span></span>
       </formrow>
     </form>
     
@@ -73,7 +73,7 @@
     </table>
     <button class="btn btn-default" ng-click="addGroup();" translate="studyfields.add_group_btn" ng-disabled="studyLocked()"></button>
     <button class="btn btn-primary" ng-click="saveGroups()" ng-disabled="status.action == 'groups' || studyLocked()" translate="studyfields.save_changes_btn"></button>
-    <span class="text-success" ng-show="groupSaveOk"><span class="glyphicon glyphicon-ok"></span> <span translate="common.save_ok"></span></span>  
+    <span class="text-success" ng-show="groupSaveOk"><span class="fas fa-check"></span> <span translate="common.save_ok"></span></span>  
     </loader>
     </div>
     </div>	

@@ -25,7 +25,7 @@
 			
 			<form class="form-horizontal">
 				<div class="form-group">
-					<label for="receivers" class="col-md-2 control-label">To</label>
+					<label for="receivers" class="col-md-2 col-form-label">To</label>
 					<div class="col-md-10">
 						<p ng-hide="message.receivers.length">No receivers selected yet.</p>
 						<div ng-show="message.receivers.length">
@@ -41,18 +41,18 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="subject" class="col-md-2 control-label">Subject</label>
+					<label for="subject" class="col-md-2 col-form-label">Subject</label>
 					<div class="col-md-10">
 						<input type="text" id="subject" class="form-control" placeholder="Subject" ng-model="message.title">
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="description" class="col-md-2 control-label">Content</label>
+					<label for="description" class="col-md-2 col-form-label">Content</label>
 					<div class="col-md-10">
 						<textarea rows="5" id="description" class="form-control" placeholder="Content" ng-model="message.content"></textarea>
 					</div>
 				</div>
-				<div class="pull-right">
+				<div class="float-right">
 					<button type="button" class="btn btn-primary" ng-click="sendMessage()">Send</button>
 					<a ui-sref="^.messages" class="btn btn-default">Discard</a>
 				</div>

@@ -1,30 +1,27 @@
 <div class="colored">
 	<!-- Navbar -->
-	<header id="navbar" class="navbar navbar-default" role="navigation" ng-controller="NavbarCtrl">
+	<header id="navbar" class="navbar navbar-expand-lg navbar-light bg-light" role="navigation" ng-controller="NavbarCtrl">
 	  <div class="container">
 		<div class="navbar-header">
-			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-				<span class="sr-only">Toggle navigation</span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-			</button>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-ex1-collapse" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+             </button>
 			<a class="navbar-brand" ui-sref="research.studies">
 	        <span class="midata" id="logotype"><img src="/images/logo.png" style="height: 36px;"></span>
 	        </a>
 		</div>
 		<nav class="collapse navbar-collapse navbar-ex1-collapse">
-			<ul class="nav navbar-nav">            					
-				<li ui-sref-active="active"><a ui-sref="research.studies" translate="researcher_navbar.studies"></a></li>
-				<li ui-sref-active="active"><a ui-sref="research.circles" translate="navbar.consents"></a></li>
-				<li ui-sref-active="active"><a ui-sref="research.dashboard({ dashId : 'workspace' })" translate="researcher_navbar.workspace"></a></li>	
-				<li ui-sref-active="active"><a ui-sref="research.records" translate="researcher_navbar.data"></a></li>			
-				<li ui-sref-active="active"><a ui-sref="research.organization" translate="researcher_navbar.organization"></a></li>
+			<ul class="nav navbar-nav mr-auto">            					
+				<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="research.studies" translate="researcher_navbar.studies"></a></li>
+				<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="research.circles" translate="navbar.consents"></a></li>
+				<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="research.dashboard({ dashId : 'workspace' })" translate="researcher_navbar.workspace"></a></li>	
+				<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="research.records" translate="researcher_navbar.data"></a></li>			
+				<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="research.organization" translate="researcher_navbar.organization"></a></li>
 			</ul>
-			<ul class="nav navbar-nav navbar-right" ng-cloak>
-				<li><a ui-sref=".user({ userId : user._id})">{{user.name}}</a></li>
-				<li><a ng-click="logout()" href="javascript:">
-					<span class="glyphicon glyphicon-off"></span> <span translate="navbar.sign_out"></span>
+			<ul class="nav navbar-nav" ng-cloak>
+				<li class="nav-item"><a class="nav-link" ui-sref=".user({ userId : user._id})">{{user.name}}</a></li>
+				<li class="nav-item"><a class="nav-link" ng-click="logout()" href="javascript:">
+					<span class="fas fa-power-off"></span> <span translate="navbar.sign_out"></span>
 				</a></li>
 		    </ul>
 	    </nav>	    

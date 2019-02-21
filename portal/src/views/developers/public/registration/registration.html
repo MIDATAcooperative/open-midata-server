@@ -31,11 +31,11 @@
 							  <formrow myid="gender" label="registration.gender"><select class="form-control" id="gender" name="gender" ng-model="registration.gender" required><option value="FEMALE" translate="enum.gender.FEMALE">female</option><option value="MALE" translate="enum.gender.MALE"></option><option value="OTHER" translate="enum.gender.OTHER"></option></select></formrow>
 							  <formrow myid="birthday" label="registration.birthday">  
 							    <div class="input-group">
-							    <div class="input-group-addon" translate="registration.day"></div>
+							    <div class="input-group-prepend"><span class="input-group-text" translate="registration.day"></span></div>
 							    <select class="form-control " id="birthday" name="birthday" ng-model="registration.birthdayDay" ><option ng-repeat="day in days">{{ day }}</option></select>
-							    <div class="input-group-addon" translate="registration.month"></div>
+							    <div class="input-group-prepend"><span class="input-group-text" translate="registration.month"></span></div>
 							    <select class="form-control" id="birthdayMonth" name="birthdayMonth" ng-model="registration.birthdayMonth"><option ng-repeat="month in months">{{ month }}</option></select>
-							    <div class="input-group-addon" translate="registration.year"></div>
+							    <div class="input-group-prepend"><span class="input-group-text" translate="registration.year"></span></div>
 							    <select class="form-control" id="birthdayYear" name="birthdayYear" ng-model="registration.birthdayYear"><option ng-repeat="year in years">{{ year }}</option></select>
 							    </div>
 							  </formrow>							  

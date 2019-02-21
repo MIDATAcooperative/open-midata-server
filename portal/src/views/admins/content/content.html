@@ -13,22 +13,22 @@
          
          <script type="text/ng-template"  id="item_renderer.html">
          <div ng-repeat="group in groups | filter : { parent : fParent } | orderBy : 'name'">
-           <h3 ng-style="getStyle(group)">{{ group.name }}, {{ group.label[lang] }} <span class="badge" style="background-color:red" ng-show="group.problem">{{ group.problem }}</span><small>{{ getParents(group.parent) }}</small><button class="btn btn-xs btn-default" ng-click="editGroup(group)">edit</button><button class="btn btn-xs btn-default" ng-click="deleteGroup(group)">delete</button></h3>
+           <h3 ng-style="getStyle(group)">{{ group.name }}, {{ group.label[lang] }} <span class="badge" style="background-color:red" ng-show="group.problem">{{ group.problem }}</span><small>{{ getParents(group.parent) }}</small><button class="btn btn-sm btn-default" ng-click="editGroup(group)">edit</button><button class="btn btn-sm btn-default" ng-click="deleteGroup(group)">delete</button></h3>
          <ul>
          <li ng-repeat="contentEntry in group.contentEntries | orderBy : 'content'">
            <b ng-style="getStyle(contentEntry)">{{ contentEntry.content }}</b>
            {{ contentEntry.label[lang] }}
            ({{ contentEntry.security }})	           
-	       <button class="btn btn-xs btn-default" ng-click="addCode(contentEntry);">add</button>
-	       <button class="btn btn-xs btn-default" ng-click="editContent(contentEntry);">edit</button>
-	       <button class="btn btn-xs btn-default" ng-click="deleteContent(contentEntry);">delete</button>
+	       <button class="btn btn-sm btn-default" ng-click="addCode(contentEntry);">add</button>
+	       <button class="btn btn-sm btn-default" ng-click="editContent(contentEntry);">edit</button>
+	       <button class="btn btn-sm btn-default" ng-click="deleteContent(contentEntry);">delete</button>
 	           
            <ul>
              <li ng-repeat="code in codes | filter : { content : contentEntry.content } : true | orderBy : 'code' ">
                {{ code.system }} {{ code.version }} : <b ng-style="getStyle(code)">{{ code.code }}</b> = {{ code.display }}
-               <button class="btn btn-xs btn-default" ng-click="editCode(code);">edit</button>
-               <button ng-disabled="isDefaultFor(code, contentEntry)" class="btn btn-xs btn-default" ng-click="makeDefaultCode(code, contentEntry);">default</button>
-               <button class="btn btn-xs btn-default" ng-click="deleteCode(code);">delete</button>
+               <button class="btn btn-sm btn-default" ng-click="editCode(code);">edit</button>
+               <button ng-disabled="isDefaultFor(code, contentEntry)" class="btn btn-sm btn-default" ng-click="makeDefaultCode(code, contentEntry);">default</button>
+               <button class="btn btn-sm btn-default" ng-click="deleteCode(code);">delete</button>
              </li>
            </ul>
                     

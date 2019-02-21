@@ -2,12 +2,12 @@ angular.module('portal')
 .directive('formrow', ['views', function (views) {
     return {
       template: function(element, attrs) {
-    	  return '<div class="form-group" ng-class="{ \'has-error\' :  myform.' +
+    	  return '<div class="form-group form-row" ng-class="{ \'has-error\' :  myform.' +
     	          attrs.myid + 
-    	          '.$invalid && (myform.' + attrs.myid + '.$dirty || submitted) }">'+
-                  '<label for="'+attrs.myid+'" class="col-sm-4 control-label" translate="'+attrs.label+'"></label>'+
-                  '<div class="col-sm-8"><div class="" ng-transclude></div>'+
-                  '<p ng-show="myform.'+attrs.myid+'.$error.required && (myform.'+attrs.myid+'.$dirty || submitted)" class="help-block" translate="error.missing.input_field">'+
+    	          '.$invalid && (myform.' + attrs.myid + '.$dirty || submitted), \'was-validated\' : submitted }">'+
+                  '<label for="'+attrs.myid+'" class="col-sm-4 col-form-label midata-label" translate="'+attrs.label+'"></label>'+
+                  '<div class="col-sm-8"><div class="" ng-transclude-replace></div>'+
+                  '<p ng-show="myform.'+attrs.myid+'.$error.required && (myform.'+attrs.myid+'.$dirty || submitted)" class="invalid-feedback" translate="error.missing.input_field">'+
                   '</p></div></div>';
       },
       restrict: 'E',

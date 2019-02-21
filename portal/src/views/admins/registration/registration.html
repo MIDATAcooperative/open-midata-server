@@ -40,10 +40,12 @@
                              
                               <div ng-repeat="subrole in subroles">
                                 <formrow myid="{{subrole}}" label="">
-                                  <label class="checkbox">
-                                    <input type="checkbox" id="{{subrole}}" name="{{subrole}}" ng-checked="hasSubRole(subrole)" ng-click="changeSubRole(subrole)">
+                                  <div class="form-check">
+                                  <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" id="{{subrole}}" name="{{subrole}}" ng-checked="hasSubRole(subrole)" ng-click="changeSubRole(subrole)">
                                     <span translate="{{ 'enum.subuserrole.'+subrole }}"></span>
                                   </label>
+                                  </div>
                                 </formrow>
                               </div>
                              <button type="submit" ng-disabled="status.action=='register'" class="btn btn-lg btn-primary btn-block" translate="registration.sign_up_btn"></button>

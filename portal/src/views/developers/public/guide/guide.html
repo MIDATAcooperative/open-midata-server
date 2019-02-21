@@ -8,18 +8,18 @@
 		<div class="row">
 			<div class="col-sm-2">
 				<ul class="nav nav-pills nav-stacked">
-					<li ng-init="tab='home'" ng-class="{ 'active' : tab=='home' }"><a href="javascript:" ng-click="tab='home';">Home</a></li>
-					<li ng-class="{ 'active' : tab=='accounts' }"><a href="javascript:" ng-click="tab='accounts';">Developer Accounts</a></li>
-					<li ng-class="{ 'active' : tab=='mobile' }"><a href="javascript:" ng-click="tab='mobile';">Mobile Apps / External Apps</a></li>	
-					<li ng-class="{ 'active' : tab=='visualizations' }"><a href="javascript:" ng-click="tab='visualizations';">Plugins</a></li>										
-					<li ng-class="{ 'active' : tab=='fhir' }"><a href="javascript:" ng-click="tab='fhir';">FHIR API</a></li>
-					<li ng-class="{ 'active' : tab=='midata' }"><a href="javascript:" ng-click="tab='midata';">MIDATA API</a></li>								
-					<li ng-class="{ 'active' : tab=='formats' }"><a href="javascript:" ng-click="tab='formats';">Format/Content List</a></li>
+					<li class="nav-item" ng-init="tab='home'"><a ng-class="{ 'active' : tab=='home' }" class="nav-link" href="javascript:" ng-click="tab='home';">Home</a></li>
+					<li class="nav-item"><a ng-class="{ 'active' : tab=='accounts' }" class="nav-link" href="javascript:" ng-click="tab='accounts';">Developer Accounts</a></li>
+					<li class="nav-item"><a ng-class="{ 'active' : tab=='mobile' }" class="nav-link" href="javascript:" ng-click="tab='mobile';">Mobile Apps / External Apps</a></li>	
+					<li class="nav-item"><a ng-class="{ 'active' : tab=='visualizations' }" class="nav-link" href="javascript:" ng-click="tab='visualizations';">Plugins</a></li>										
+					<li class="nav-item"><a ng-class="{ 'active' : tab=='fhir' }" class="nav-link" href="javascript:" ng-click="tab='fhir';">FHIR API</a></li>
+					<li class="nav-item"><a ng-class="{ 'active' : tab=='midata' }" class="nav-link" href="javascript:" ng-click="tab='midata';">MIDATA API</a></li>								
+					<li class="nav-item"><a ng-class="{ 'active' : tab=='formats' }" class="nav-link" href="javascript:" ng-click="tab='formats';">Format/Content List</a></li>
 				</ul>
 			</div>
 			<div class="col-sm-10">
 				<div class="tab-content">
-					<div id="home" class="tab-pane fade" ng-class="{ 'active in' : tab=='home' }">
+					<div id="home" class="tab-pane " ng-class="{ 'active in' : tab=='home' }">
 					   			
 						<h2>Overview</h2>
 						<p>The developer's guide explains the general architecture of the
@@ -41,7 +41,7 @@
 						<p>If you want to develop a plugin for the MIDATA platform please contact us for additional information.
 						</p>
 					</div>
-					<div id="accounts" class="tab-pane fade" ng-class="{ 'active in' : tab=='accounts' }">
+					<div id="accounts" class="tab-pane " ng-class="{ 'active in' : tab=='accounts' }">
 						<h2>Developer Accounts</h2>
 						<p>If you want to develop a MIDATA plugin or mobile app you need a developer account.
 						   Please click on "Sign Up" on the top of this page and create your account. Using the 
@@ -52,7 +52,7 @@
 						   and final integration.
 						</p> 
 					</div>
-					<div id="fhir" class="tab-pane fade" ng-class="{ 'active in' : tab=='fhir' }">
+					<div id="fhir" class="tab-pane " ng-class="{ 'active in' : tab=='fhir' }">
 						<h2>FHIR API</h2>
 						<p class="alert alert-info">Please note that the API runs at <strong>{{ENV.apiurl}}/fhir</strong></p>
 						<p>The platform currently implements a limited version of the <a target="_blank" href="https://www.hl7.org/fhir">FHIR</a> API and supports <a target="_blank" href="http://docs.smarthealthit.org/">SMART on FHIR</a> authentication using the <b>public standalone</b> launch sequence.</p>
@@ -64,7 +64,7 @@
 						</ul>
 						<p>Here is a link to the conformance statement of the platform: <a target="_blank" ng-href="{{ENV.apiurl}}/fhir/metadata">Conformance Statement</a></p>
 					</div>					
-					<div id="visualizations" class="tab-pane fade" ng-class="{ 'active in' : tab=='visualizations' }">
+					<div id="visualizations" class="tab-pane " ng-class="{ 'active in' : tab=='visualizations' }">
 						<h2>Plugins</h2>
 						<p>Plugins run in the browser and have read and write access to a set of records. The set of records
 						available may be changed by the user. The application developer can propose a query that - if accepted by the user - 
@@ -134,7 +134,7 @@
 }</pre>						
 						
 					</div>
-					<div id="mobile" class="tab-pane fade" ng-class="{ 'active in' : tab=='mobile' }">
+					<div id="mobile" class="tab-pane " ng-class="{ 'active in' : tab=='mobile' }">
 						<h2>Mobile Apps / External Apps</h2>
 						<p>Mobile Apps are external applications that provide and/or query records from the platform.</p>
 						<h3>Registration using the developer account</h3>					
@@ -157,7 +157,7 @@
 						  tokens obtained from the MIDATA API are useable with the FHIR API.
 						</p>		
 					</div>
-					<div id="midata" class="tab-pane fade" ng-class="{ 'active in' : tab=='midata' }">
+					<div id="midata" class="tab-pane " ng-class="{ 'active in' : tab=='midata' }">
 					    <h2>MIDATA API</h2>
 						<p class="alert alert-info">Please note that the API runs at <strong>{{ENV.apiurl}}</strong></p>										
                         <h3>Authentication (Login)</h3>						
@@ -461,7 +461,7 @@ In the array case each record must match one entry in the array to qualify for t
    
                                    
 					</div>
-					<div id="formats" class="tab-pane fade" ng-class="{ 'active in' : tab=='formats' }">
+					<div id="formats" class="tab-pane " ng-class="{ 'active in' : tab=='formats' }">
 						<h2>List of formats, contents and codes</h2>
 						<p>The list of supported data formats is directly queried from the server and may be extended any time.</p>
 						<h3>Possible value for "format" field</h3>

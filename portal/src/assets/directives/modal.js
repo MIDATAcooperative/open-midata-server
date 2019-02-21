@@ -4,9 +4,9 @@ angular.module('portal')
       template: '<div class="modal fade">' + 
           '<div class="modal-dialog modal-lg">' + 
             '<div class="modal-content">' + 
-              '<div class="modal-header">' + 
-                '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' + 
-                '<h4 class="modal-title" translate="{{ view.title }}"></h4>' + 
+              '<div class="modal-header">' +                  
+                '<h4 class="modal-title" translate="{{ view.title }}"></h4>' +
+                '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
               '</div>' + 
               '<div class="" ng-transclude></div>' + 
             '</div>' + 

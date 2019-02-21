@@ -25,9 +25,9 @@
       </div>    
     </formrow>    
     <formrow myid="passcode" label="newconsent.use_passcode" ng-show="consent.type == 'HEALTHCARE' && consent.owner == userId">
-      <div class="checkbox">
-      <label> 
-        <input type="checkbox" ng-model="consent.usepasscode">
+      <div class="form-check">
+      <label class="form-check-label"> 
+        <input class="form-check-input" type="checkbox" ng-model="consent.usepasscode">
         <span translate="newconsent.use_passcode2"></span>
       </label>
       </div>
@@ -74,17 +74,17 @@
 		<button type="button" class="btn btn-default" ng-click="addUserGroup();" translate="newconsent.add_usergroup_btn"></button>
 	</formrow>
 	<formrow myid="writes" label="newconsent.writes">
-	  <div class="checkbox">
-	    <label>
-	      <input type="checkbox" ng-model="consent.writesBool"><span translate="newconsent.writes2"></span>
+	  <div class="form-check">
+	    <label class="form-check-label">
+	      <input class="form-check-input" type="checkbox" ng-model="consent.writesBool"><span translate="newconsent.writes2"></span>
 	    </label>
 	  </div>
 	</formrow>
 	
 	<formrow myid="reshare" label="newconsent.reshare">
-	  <div class="checkbox">
-	    <label>
-	      <input type="checkbox" ng-model="consent.reshare"><span translate="newconsent.reshare2"></span>
+	  <div class="form-check">
+	    <label class="form-check-label" >
+	      <input class="form-check-input" type="checkbox" ng-model="consent.reshare"><span translate="newconsent.reshare2"></span>
 	    </label>
 	  </div>
 	</formrow>
@@ -92,22 +92,22 @@
 	<formrow myid="validUntil" label="newconsent.expiration_date">
 	  <div class="input-group">
         <input id="validUntil" type="text" class="form-control" placeholder="Leave empty if none" no-time uib-datepicker-popup="dd.MM.yyyy" ng-model="consent.validUntil" is-open="datePickers.validUntil" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
-        <span class="input-group-btn">
-           <button type="button" class="btn btn-default" ng-click="datePickers.validUntil=true;"><i class="glyphicon glyphicon-calendar"></i></button>
+        <span class="input-group-append">
+           <button type="button" class="btn btn-default" ng-click="datePickers.validUntil=true;"><i class="fas fa-calendar"></i></button>
         </span>
       </div>
 	</formrow>
 	<formrow myid="createdBefore" label="newconsent.created_before">
 	  <div class="input-group">
         <input id="createdBefore" type="text" class="form-control" placeholder="Leave empty if none" no-time uib-datepicker-popup="dd.MM.yyyy" ng-model="consent.createdBefore" is-open="datePickers.createdBefore" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
-        <span class="input-group-btn">
-           <button type="button" class="btn btn-default" ng-click="datePickers.createdBefore=true;"><i class="glyphicon glyphicon-calendar"></i></button>
+        <span class="input-group-append">
+           <button type="button" class="btn btn-default" ng-click="datePickers.createdBefore=true;"><i class="fas fa-calendar"></i></button>
         </span>
       </div>
 	</formrow>
 	
 	<formrow myid="what" label="newconsent.share_what">
-	  <div class="form-control-static">
+	  <div class="form-control-plaintext">
 	  <p ng-hide="sharing.query.group" translate="newconsent.consent_empty"></p>
       <div ng-repeat="group in groupLabels" translate="editconsent.shares_group" translate-value-group="{{ group }}"></div>
 	  <div ng-repeat="group in groupExcludeLabels" translate="editconsent.excludes_group" translate-value-group="{{ group }}"></div>

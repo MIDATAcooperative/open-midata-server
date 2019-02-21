@@ -10,10 +10,10 @@
 	      </p>
 		  <form name="myform" novalidate class="css-form form-horizontal" ng-submit="submit()">		    
 		    <formrow myid="name" label="appicon.name">
-		      <p class="form-control-static">{{ app.name }}</p>
+		      <p class="form-control-plaintext">{{ app.name }}</p>
 		    </formrow>
 		    <formrow myid="filename" label="appicon.internalname">
-		      <p class="form-control-static">{{ app.filename }}</p>
+		      <p class="form-control-plaintext">{{ app.filename }}</p>
 		    </formrow>
 		  
 		    <p ng-hide="app.defaultSubscriptions.length" translate="appsubscriptions.empty"></p>
@@ -30,7 +30,7 @@
 		        <td><input class="form-control" type="text" ng-show="subscription.trigger=='fhir_Resource'" placeholder="Observation?code=http://loinc.org|12345" ng-model="subscription.criteria"></td>
 		        <td><select class="form-control" ng-model="subscription.action" ng-options="action as ('appsubscriptions.actions.'+action) | translate for action in actions"></select></td>
 		        <td><input class="form-control" type="text" ng-show="subscription.action!='email'" ng-model="subscription.parameter"></td>
-		        <td><button class="btn btn-xs btn-default" ng-click="delete(subscription)" translate="common.delete_btn"></</button>
+		        <td><button class="btn btn-sm btn-default" ng-click="delete(subscription)" translate="common.delete_btn"></</button>
 		      </tr>
 		    </table>
 		    <formrow myid="x" label="">

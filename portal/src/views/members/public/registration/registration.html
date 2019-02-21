@@ -31,9 +31,9 @@
 							  <formrow myid="password2" label="registration.password_repetition"><input type="password" class="form-control" id="password2" name="password2" translate translate-attr-placeholder="registration.password" ng-model="registration.password2" required></formrow>
 							  </div>
 							  <formrow myid="secure" label="registration.secure">
-							    <div class="checkbox">
-							      <label>
-							      <input type="checkbox" ng-model="registration.secure">
+							    <div class="form-check">
+							      <label class="form-check-label">
+							      <input class="form-check-input" type="checkbox" ng-model="registration.secure">
 							      <span translate="registration.secure2"></span>
 							      </label>
 							    </div>
@@ -47,13 +47,13 @@
 							  <formrow myid="birthday" label="registration.birthday">
 									
 							      <div class="row">										
-							        <div class="col-xs-3 col-sm-3">
+							        <div class="col-3 col-sm-3">
 										<input type="text" maxlength="2" class="form-control" id="birthday" name="birthday" translate translate-attr-placeholder="registration.day" ng-model="registration.birthdayDay" required pattern="[0123]?[0-9]">
 							        </div>											
-									<div class="col-xs-5 col-sm-6 selectplaceholder">
+									<div class="col-5 col-sm-6 selectplaceholder">
 							          <select  id="birthdayMonth" class="form-control" name="birthdayMonth" ng-model="registration.birthdayMonth" required><option ng-repeat="month in months" ng-value="month" translate="{{ 'enum.month.'+month }}"></option><option value="" selected disabled hidden translate="registration.month"></option></select>
 							        </div>											
-							        <div class="col-xs-4 col-sm-3">
+							        <div class="col-4 col-sm-3">
 									  <input type="text" maxlength="4" class="form-control" id="birthdayYear" name="birthdayYear" translate translate-attr-placeholder="registration.year" ng-model="registration.birthdayYear" required>
 							        </div>
 							     </div>
@@ -84,9 +84,9 @@
                               </formrow>
                               </div>
                               <formrow myid="agb" label="registration.agb">
-                                 <div class="checkbox">
-                                   <label>
-                                     <input type="checkbox" id="agb" name="agb" ng-model="registration.agb">
+                                 <div class="form-check">
+                                   <label class="form-check-label">
+                                     <input class="form-check-input" type="checkbox" id="agb" name="agb" ng-model="registration.agb">
                                      <span translate="registration.agb2"></span>
                                         <a ng-click="terms({which : 'midata-terms-of-use'});" href="javascript:" translate="registration.agb3"></a>
                                         <span translate="registration.privacypolicy2"></span>
@@ -97,9 +97,9 @@
                               </formrow>
                               <div ng-show="app.termsOfUse">
                               <formrow myid="appAgb" label="registration.app_agb">
-                                <div class="checkbox">
-                                 <label>
-                                    <input type="checkbox" id="appAgb" name="appAgb" ng-model="registration.appAgb">
+                                <div class="form-check">
+                                 <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" id="appAgb" name="appAgb" ng-model="registration.appAgb">
                                     <span translate="registration.app_agb2"></span>
                                     <a ng-click="terms({which : app.termsOfUse })" href="javascript:" translate="registration.app_agb3"></a>
                                  </label>
@@ -109,9 +109,9 @@
                               </div>
                               <div ng-repeat="link in links">
 		            	       <formrow myid="confirmStudy" label="registration.study">
-		            	         <div class="checkbox">
-		            	           <label>
-		            	             <input type="checkbox" id="confirmStudy" name="confirmStudy" ng-checked="registration.confirmStudy.indexOf(link.study._id)>=0" ng-click="toggle(registration.confirmStudy, link.study._id);">
+		            	         <div class="form-check">
+		            	           <label class="form-check-label">
+		            	             <input class="form-check-input" type="checkbox" id="confirmStudy" name="confirmStudy" ng-checked="registration.confirmStudy.indexOf(link.study._id)>=0" ng-click="toggle(registration.confirmStudy, link.study._id);">
 		            	             <span translate="oauth2.confirm_study"></span>:
 		            	           </label>
 		            	         </div>

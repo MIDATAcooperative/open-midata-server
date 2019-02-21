@@ -16,7 +16,7 @@
           <td><a ui-sref="^.manageapp({ appId : app._id })">{{  app.name }}</a></td>
           <td translate="{{ 'enum.plugintype.'+app.type }}"></td>
           <td translate="{{ 'enum.userrole.'+app.targetUserRole }}"></td>
-          <td><a class="btn btn-default btn-xs" ui-sref="^.manageapp({ appId : app._id })" translate="developer_yourapps.manage_btn">manage</a> <a class="btn btn-default btn-xs" ui-sref="^.appstats({ appId : app._id })" translate="developer_yourapps.debug_info_btn">debug info</a></td>
+          <td><a class="btn btn-default btn-sm" ui-sref="^.manageapp({ appId : app._id })" translate="developer_yourapps.manage_btn">manage</a> <a class="btn btn-default btn-sm" ui-sref="^.appstats({ appId : app._id })" translate="developer_yourapps.debug_info_btn">debug info</a></td>
         </tr>
       </table>
       <p ng-show="apps.length == 0" translate="developer_yourapps.empty"></p>

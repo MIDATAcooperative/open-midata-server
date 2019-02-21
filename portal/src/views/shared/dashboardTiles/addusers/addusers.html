@@ -4,8 +4,8 @@
 		
 	<div ng-show="contacts.length > 0">
 	   <p translate="addusers.contacts"></p>
-		<div class="checkbox" ng-repeat="contact in filteredContacts = (contacts | filter:isntMember)">
-			<label> <input type="checkbox" ng-model="contact.checked"> {{contact.firstname}} {{contact.lastname}} &lt;{{contact.email}}&gt;
+		<div class="form-check" ng-repeat="contact in filteredContacts = (contacts | filter:isntMember)">
+			<label class="form-check-label"> <input class="form-check-input" type="checkbox" ng-model="contact.checked"> {{contact.firstname}} {{contact.lastname}} &lt;{{contact.email}}&gt;
 			</label>
 		</div>
 		<p ng-show="filteredContacts.length === 0" translate="addusers.no_contacts_to_add"></p>
@@ -13,11 +13,11 @@
 	
 	<form class="form-horizontal" ng-submit="searchUsers()">
 	   <p translate="addusers.search_by_email"></p>
-		<div class="form-group">
-			<div class="col-xs-10">
+		<div class="form-group form-row">
+			<div class="col-10">
 				<input type="text" class="form-control" translate translate-attr-placeholder="addusers.search_user" ng-model="crit.userQuery" autofocus>
 			</div>
-			<div class="col-xs-2">
+			<div class="col-2">
 				<button type="submit" ng-disabled="!crit.userQuery" class="btn btn-primary form-control" translate="common.search_btn"></button>
 			</div>
 		</div>
@@ -25,8 +25,8 @@
 	<p ng-show="searching" translate="addusers.searching"></p>
 	<p ng-show="!searching && foundUsers.length === 0" translate="addusers.no_matching_users"></p>
 	<div ng-show="!searching && foundUsers.length > 0">
-		<div class="checkbox" ng-repeat="user in filteredUsers = (foundUsers | filter:isntMember)">
-			<label> <input type="checkbox" ng-model="user.checked"> {{user.name}}
+		<div class="form-check" ng-repeat="user in filteredUsers = (foundUsers | filter:isntMember)">
+			<label class="form-check-label"> <input class="form-check-input" type="checkbox" ng-model="user.checked"> {{user.name}}
 			</label>
 		</div>
 		<p ng-show="filteredUsers.length === 0" translate="addusers.no_new_found"></p>
