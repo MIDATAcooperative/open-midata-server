@@ -31,6 +31,9 @@ $fa-font-path:                "/fonts";
 .glyphicon-chevron-right { @extend .fa-chevron-right }
 .btn-default { @extend .btn-outline-secondary }
  
+.was-validated.has-error .form-control:valid { @extend .form-control.is-invalid } 
+.has-error .invalid-feedback { display:block; }
+ 
 .img-responsive {
     display: block;
     max-width: 100%;

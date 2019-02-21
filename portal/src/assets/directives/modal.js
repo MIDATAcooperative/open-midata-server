@@ -8,7 +8,7 @@ angular.module('portal')
                 '<h4 class="modal-title" translate="{{ view.title }}"></h4>' +
                 '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
               '</div>' + 
-              '<div class="" ng-transclude></div>' + 
+              '<div class="modal-body" ng-transclude></div>' + 
             '</div>' + 
           '</div>' + 
         '</div>',
