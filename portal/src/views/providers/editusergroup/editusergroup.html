@@ -6,10 +6,10 @@
   <loader busy="status.isBusy !== false">
   <form name="myform" class="css-form form-horizontal" ng-submit="create()" novalidate role="form">
     <formrow id="name" label="provider_editusergroup.name">
-      <p class="form-control-static">{{ usergroup.name }}</p>
+      <p class="form-control-plaintext">{{ usergroup.name }}</p>
     </formrow>    
     <formrow id="status" label="provider_editusergroup.status">
-      <p class="form-control-static" translate="{{ 'enum.userstatus.'+usergroup.status }}"></p>               
+      <p class="form-control-plaintext" translate="{{ 'enum.userstatus.'+usergroup.status }}"></p>               
     </formrow> 
   </form>	                
   

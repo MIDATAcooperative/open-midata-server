@@ -176,34 +176,34 @@
 	              </td>
 	              <td>
 	                <div ng-show="link.validationResearch != 'VALIDATED'">
-	                  <span class="glyphicon glyphicon-remove text-danger"></span>
+	                  <span class="fas fa-times text-danger"></span>
 	                  <span translate="studyactions.status.not_validated_research"></span>
 	                </div>
 	                <div ng-show="link.validationDeveloper != 'VALIDATED'">
-	                  <span class="glyphicon glyphicon-remove text-danger"></span>
+	                  <span class="fas fa-times text-danger"></span>
 	                  <span translate="studyactions.status.not_validated_developer"></span>
 	                </div>
 	                <div ng-show="link.validationDeveloper == 'VALIDATED' && link.validationResearch == 'VALIDATED'">
-	                  <span class="glyphicon glyphicon-ok text-success"></span>
+	                  <span class="fas fa-check text-success"></span>
 	                  <span translate="studyactions.status.validated"></span>
 	                </div>
 	                <div ng-show="link.usePeriod.indexOf(study.executionStatus)<0">
-	                  <span class="glyphicon glyphicon-remove text-danger"></span>
+	                  <span class="fas fa-times text-danger"></span>
 	                  <span translate="studyactions.status.study_wrong_status"></span>
 	                </div>
 	                <div ng-show="link.type.indexOf('REQUIRE_P')>=0 && study.participantSearchStatus != 'SEARCHING'">
-	                  <span class="glyphicon glyphicon-remove text-danger"></span>
+	                  <span class="fas fa-times text-danger"></span>
 	                  <span translate="error.closed.study"></span>
 	                </div>
 	                <div ng-show="(link.type.indexOf('REQUIRE_P')>=0 || link.type.indexOf('OFFER_P')>=0) && link.study.joinMethods.indexOf('APP') < 0">
-	                  <span class="glyphicon glyphicon-remove text-danger"></span>
+	                  <span class="fas fa-times text-danger"></span>
 	                  <span translate="studyactions.status.study_no_app_participation"></span>
 	                </div>
 	                
 	              </td>
 	              <td>	               
-	                <button type="button" class="btn btn-xs btn-default" ng-click="validate(link);" translate="studyactions.validate_btn"></button>
-	                <button type="button" class="btn btn-xs btn-danger" ng-click="remove(link);" translate="common.delete_btn"></button>
+	                <button type="button" class="btn btn-sm btn-default" ng-click="validate(link);" translate="studyactions.validate_btn"></button>
+	                <button type="button" class="btn btn-sm btn-danger" ng-click="remove(link);" translate="common.delete_btn"></button>
 	              </td>
 	            </tr>
 	          </table>

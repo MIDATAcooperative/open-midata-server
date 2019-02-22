@@ -14,8 +14,8 @@
 			  <span translate="common.user.phone"></span>: {{ member.phone }}
 			  </address>
 			  <div class="extraspace">
-			    <a class="btn btn-danger btn-xs" translate="admin_address.change_email_btn" ui-sref="^.changeemail({ userId : member._id })"></a>
-			    <a class="btn btn-danger btn-xs" translate="admin_address.change_address_btn" ui-sref="^.changeaddress({ userId : member._id })"></a>
+			    <a class="btn btn-danger btn-sm" translate="admin_address.change_email_btn" ui-sref="^.changeemail({ userId : member._id })"></a>
+			    <a class="btn btn-danger btn-sm" translate="admin_address.change_address_btn" ui-sref="^.changeaddress({ userId : member._id })"></a>
 			  </div>
 			  <table class="table table-striped table-bordered">
 			  <tr>
@@ -43,9 +43,9 @@
 			  </tr><tr>
 			  <td translate="admin_address.contract_status"></td><td><select ng-change="changeUser(member);" ng-model="member.contractStatus" class="form-control" ng-options="status as 'enum.contractstatus.'+status | translate for status in contractStati"></select></td>
 			  </tr><tr>
-			  <td translate="admin_address.email_status"></td><td><span translate="{{ 'enum.emailstatus.'+member.emailStatus }}"></span>  <button ng-show="member.emailStatus != 'VALIDATED'" ng-click="confirmEmail(member);" class="btn btn-xs btn-danger" translate="admin_address.email_confirm_btn"></button></td>
+			  <td translate="admin_address.email_status"></td><td><span translate="{{ 'enum.emailstatus.'+member.emailStatus }}"></span>  <button ng-show="member.emailStatus != 'VALIDATED'" ng-click="confirmEmail(member);" class="btn btn-sm btn-danger" translate="admin_address.email_confirm_btn"></button></td>
 			  </tr><tr>
-			  <td translate="admin_address.mobile_status"></td><td><span translate="{{ 'enum.emailstatus.'+(member.mobileStatus || 'UNVALIDATED') }}"></span>  <button ng-show="member.emailStatus != 'VALIDATED'" ng-click="confirmEmail(member);" class="btn btn-xs btn-danger" translate="admin_address.email_confirm_btn"></button></td>
+			  <td translate="admin_address.mobile_status"></td><td><span translate="{{ 'enum.emailstatus.'+(member.mobileStatus || 'UNVALIDATED') }}"></span>  <button ng-show="member.emailStatus != 'VALIDATED'" ng-click="confirmEmail(member);" class="btn btn-sm btn-danger" translate="admin_address.email_confirm_btn"></button></td>
 			  </tr><tr>
 			  <td translate="admin_address.confirmation_code"></td><td><b>{{ member.confirmationCode }}</b></td>
 			  </tr><tr>

@@ -23,35 +23,35 @@
 	              </td>
 	              <td>
 	                <div ng-show="link.validationResearch != 'VALIDATED'">
-	                  <span class="glyphicon glyphicon-remove text-danger"></span>
+	                  <span class="fas fa-times text-danger"></span>
 	                  <span translate="studyactions.status.not_validated_research"></span>
 	                </div>
 	                <div ng-show="link.validationDeveloper != 'VALIDATED'">
-	                  <span class="glyphicon glyphicon-remove text-danger"></span>
+	                  <span class="fas fa-times text-danger"></span>
 	                  <span translate="studyactions.status.not_validated_developer"></span>
 	                </div>
 	                <div ng-show="link.validationDeveloper == 'VALIDATED' && link.validationResearch == 'VALIDATED'">
-	                  <span class="glyphicon glyphicon-ok text-success"></span>
+	                  <span class="fas fa-check text-success"></span>
 	                  <span translate="studyactions.status.validated"></span>
 	                </div>
 	                <div ng-show="link.usePeriod.indexOf(study.executionStatus)<0">
-	                  <span class="glyphicon glyphicon-remove text-danger"></span>
+	                  <span class="fas fa-times text-danger"></span>
 	                  <span translate="studyactions.status.study_wrong_status"></span>
 	                </div>
 	                <div ng-show="link.type.indexOf('REQUIRE_P')>=0 && study.participantSearchStatus != 'SEARCHING'">
-	                  <span class="glyphicon glyphicon-remove text-danger"></span>
+	                  <span class="fas fa-times text-danger"></span>
 	                  <span translate="error.closed.study"></span>
 	                </div>
 	                <div ng-show="(link.type.indexOf('REQUIRE_P')>=0 || link.type.indexOf('OFFER_P')>=0) && link.study.joinMethods.indexOf('APP') < 0">
-	                  <span class="glyphicon glyphicon-remove text-danger"></span>
+	                  <span class="fas fa-times text-danger"></span>
 	                  <span translate="studyactions.status.study_no_app_participation"></span>
 	                </div>
 	                
 	              </td>
 	              <td>
-	                <button type="button" class="btn btn-xs btn-default" ng-click="select(link);" translate="studyactions.select_btn"></button>
-	                <button type="button" class="btn btn-xs btn-default" ng-click="validate(link);" translate="studyactions.validate_btn"></button>
-	                <button type="button" class="btn btn-xs btn-danger" ng-click="remove(link);" translate="common.delete_btn"></button>
+	                <button type="button" class="btn btn-sm btn-default" ng-click="select(link);" translate="studyactions.select_btn"></button>
+	                <button type="button" class="btn btn-sm btn-default" ng-click="validate(link);" translate="studyactions.validate_btn"></button>
+	                <button type="button" class="btn btn-sm btn-danger" ng-click="remove(link);" translate="common.delete_btn"></button>
 	              </td>
 	            </tr>
 	          </table>
@@ -60,32 +60,32 @@
 	         </div>
 	         <div ng-show="selection">
 	            <formrow myid="study" label="studyactions.study">
-	               <p class="form-control-static">{{ study.name }}</p>
+	               <p class="form-control-plaintext">{{ study.name }}</p>
 	            </formrow> 
 	            <formrow myid="app" label="studyactions.app">
 	               <input type="text" class="form-control" ng-change="appselection()" autocomplete="off" typeahead-on-select="appselection()" ng-model-options="{ debounce: 500 }" ng-model="selection.app.filename" uib-typeahead="app.filename for app in apps | filter:$viewValue | limitTo:8">
 	            </formrow>
 	            <formrow myid="apptype" label="">
-	               <p class="form-control-static" ng-show="selection.app.type">
+	               <p class="form-control-plaintext" ng-show="selection.app.type">
 	                <span translate="{{ 'enum.plugintype.' + selection.app.type }}"></span>
 	                <span translate="studyactions.for"></span>
 		            <span translate="{{ 'enum.userrole.'+selection.app.targetUserRole }}"></span>	               
 	               </p>
-	               <p class="form-control-static" ng-hide="selection.app.type" translate="studyactions.no_valid_app">
+	               <p class="form-control-plaintext" ng-hide="selection.app.type" translate="studyactions.no_valid_app">
 	               </p>
 	            </formrow>
 	            <formrow myid="type" label="studyactions.type">
-	              <div ng-repeat="type in types" class="checkbox">
-	                <label>
-	                  <input type="checkbox" ng-disabled="checkType(selection.app, type)" ng-checked="selection.type.indexOf(type)>=0" ng-click="toggle(selection.type, type);formChange();" >
+	              <div ng-repeat="type in types" class="form-check">
+	                <label class="form-check-label">
+	                  <input class="form-check-input" type="checkbox" ng-disabled="checkType(selection.app, type)" ng-checked="selection.type.indexOf(type)>=0" ng-click="toggle(selection.type, type);formChange();" >
 	                  <span translate="{{ 'studyactions.types.'+type }}"></span>
 	                </label>
 	              </div>
 	            </formrow>
 	            <formrow myid="usePeriod" label="studyactions.use_period">
-	              <div ng-repeat="period in periods" class="checkbox">
-	                <label>
-	                  <input type="checkbox" ng-checked="selection.usePeriod.indexOf(period)>=0" ng-click="toggle(selection.usePeriod, period);formChange();" >
+	              <div ng-repeat="period in periods" class="form-check">
+	                <label class="form-check-label">
+	                  <input class="form-check-input" type="checkbox" ng-checked="selection.usePeriod.indexOf(period)>=0" ng-click="toggle(selection.usePeriod, period);formChange();" >
 	                  <span translate="{{ 'studyactions.use_periods.'+period }}"></span>
 	                </label>
 	              </div>	              
@@ -144,16 +144,16 @@
                <input type="text" id="device" name="device"  ng-model="crit.device" class="form-control" required>
              </formrow>
               <formrow myid="shareback" label="studyactions.shareback">
-               <div class="checkbox">
-                 <label>
-                   <input type="checkbox" name="shareback" id="shareback" ng-model="crit.shareback">
+               <div class="form-check">
+                 <label class="form-check-label">
+                   <input class="form-check-input" type="checkbox" name="shareback" id="shareback" ng-model="crit.shareback">
                  </label> 
                </div>
              </formrow>
              <formrow myid="restrictread" label="studyactions.restrict" ng-show="crit.group">
-               <div class="checkbox">
-                 <label>
-                   <input type="checkbox" name="restrictread" id="restrictread" ng-model="crit.restrictread">
+               <div class="form-check">
+                 <label class="form-check-label">
+                   <input class="form-check-input" type="checkbox" name="restrictread" id="restrictread" ng-model="crit.restrictread">
                  </label> 
                </div>
              </formrow>
@@ -176,7 +176,7 @@
 			<tr ng-repeat="entry in me_menu">
 			  <td>
 			  <a href="javascript:" ng-click="showSpace(entry)" translate="{{entry.name}}"></a>
-			  <a href="javascript:" ng-click="deleteSpace(entry)" ng-disabled="status.action=='deleteConsent'" class="pull-right btn btn-danger btn-xs" translate="common.delete_btn"></a>
+			  <a href="javascript:" ng-click="deleteSpace(entry)" ng-disabled="status.action=='deleteConsent'" class="float-right btn btn-danger btn-sm" translate="common.delete_btn"></a>
 			  </td>
 			</tr>
 			</table>
@@ -200,7 +200,7 @@
 					<td><a ng-click="editConsent(consent);" href="javascript:">{{ consent.name }}</a></td>					
 					<td translate="{{ 'enum.consentstatus.'+consent.status }}"></td>					
 					<td>{{ consent.records }}</td>
-					<td><button ng-click="deleteConsent(consent)" ng-disabled="status.action=='deleteConsent'" class="btn btn-danger btn-xs" translate="common.delete_btn"></button>
+					<td><button ng-click="deleteConsent(consent)" ng-disabled="status.action=='deleteConsent'" class="btn btn-danger btn-sm" translate="common.delete_btn"></button>
 				</tr>
 			</table>
 		</div>

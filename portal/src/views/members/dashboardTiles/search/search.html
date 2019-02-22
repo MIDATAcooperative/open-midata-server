@@ -1,10 +1,10 @@
 <div class="body">
 	<form class="form-horizontal" ng-submit="searchRecords()">
-		<div class="form-group">
-			<div class="col-xs-10">
+		<div class="form-group form-row">
+			<div class="col-10">
 				<input type="text" class="form-control" placeholder="Search in your records" ng-model="criteria.query" autofocus>
 			</div>
-			<div class="col-xs-2">
+			<div class="col-2">
 				<button type="submit" class="btn btn-primary form-control">Search</button>
 			</div>
 		</div>
@@ -16,7 +16,7 @@
 	 <ul class="list-group" ng-show="!searching && foundRecords.length > 0">
 		<li class="list-group-item" ng-repeat="record in filteredRecords = (foundRecords | filter:isntInSpace)">
 		    <input type="checkbox" ng-model="record.checked"/>	
-		    <span class="label label-info">{{record.created | date : 'dd.MM.yy' }}</span>					
+		    <span class="badge badge-info">{{record.created | date : 'dd.MM.yy' }}</span>					
 			<a href="javascript:;" ng-click="showDetails(record)">{{record.name}}</a>												
 		</li>
 	</ul>

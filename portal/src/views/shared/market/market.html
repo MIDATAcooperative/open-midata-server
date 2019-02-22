@@ -13,18 +13,18 @@
 				<div class="panel panel-primary">
 					<div class="panel-heading">
 						<span translate="{{ 'enum.tags.'+(tag || 'Available') }}"></span> <a ng-click="goBack()" href="javascript:"
-							class="close-icon pull-right"><span class="glyphicon glyphicon-remove"></span></a>
+							class="close-icon float-right"><span class="fas fa-times"></span></a>
 					</div>
 					<div class="panel-body">
 						<p ng-hide="visualizations.spotlighted.length" translate="market.no_spotlighted_plugins"></p>
 						<table class="table table-hover clickable">
 						<tr ng-click="install(visualization)" ng-repeat="visualization in visualizations.spotlighted | filter : hasTag">
-							<!--  a class="pull-left" href="javascript:;" ng-click="showVisualizationDetails(visualization)"> <img class="media-object"
+							<!--  a class="float-left" href="javascript:;" ng-click="showVisualizationDetails(visualization)"> <img class="media-object"
 								ng-src="{{ getVisualizationImage(visualization) }}" alt="Icon">
 							</a -->
 							<td>
-							    <!--  div class="pull-right">
-								<button ng-click="showVisualizationDetails(visualization)" class="btn btn-xs btn-default" translate="market.install_now_btn"></button>
+							    <!--  div class="float-right">
+								<button ng-click="showVisualizationDetails(visualization)" class="btn btn-sm btn-default" translate="market.install_now_btn"></button>
 								</div -->
 								<b>{{ visualization.i18n[translate.use()].name ||
 									visualization.name}}</b>

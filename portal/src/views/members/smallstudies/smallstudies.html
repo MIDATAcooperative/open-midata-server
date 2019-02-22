@@ -2,10 +2,10 @@
     <loader busy="status.isBusy !== false">
     <div class="">
     <ul class="borderless nav nav-tabs">
-  <li role="presentation" ng-class="{'active' : tab==0 }"><a href="javascript:" ng-click="setTab(0)" translate="smallstudies.recruiting">Home</a></li>
-  <li role="presentation" ng-class="{'active' : tab==1 }"><a href="javascript:" ng-click="setTab(1)" translate="smallstudies.ongoing">Profile</a></li>
-  <li role="presentation" ng-class="{'active' : tab==2 }"><a href="javascript:" ng-click="setTab(2)" translate="smallstudies.completed">Messages</a></li>
-  <li role="presentation" ng-class="{'active' : tab==3 }"><a href="javascript:" ng-click="setTab(3)" translate="smallstudies.stopped">Messages</a></li>
+  <li class="nav-item" role="presentation"><a ng-class="{'active' : tab==0 }" class="nav-link" href="javascript:" ng-click="setTab(0)" translate="smallstudies.recruiting">Home</a></li>
+  <li class="nav-item" role="presentation"><a ng-class="{'active' : tab==1 }"class="nav-link" href="javascript:" ng-click="setTab(1)" translate="smallstudies.ongoing">Profile</a></li>
+  <li class="nav-item" role="presentation"><a ng-class="{'active' : tab==2 }" class="nav-link" href="javascript:" ng-click="setTab(2)" translate="smallstudies.completed">Messages</a></li>
+  <li class="nav-item" role="presentation"><a ng-class="{'active' : tab==3 }" class="nav-link" href="javascript:" ng-click="setTab(3)" translate="smallstudies.stopped">Messages</a></li>
     </ul>
     </div>
      <div class="tab-content">
@@ -25,9 +25,9 @@
 	         <p>{{ getSummary(study) }}</p>
 	      </td>	  
 	      <td class="status-column">
-	        <span class="icon glyphicon glyphicon-ok-sign" ng-show="study.pstatus == 'ACCEPTED'"></span>
-	        <span class="icon glyphicon glyphicon-ok-circle" ng-show="study.pstatus == 'REQUEST'"></span>
-	        <span class="icon glyphicon glyphicon-ban-circle" ng-show="study.pstatus == 'MEMBER_REJECTED' || study.pstatus == 'RESEARCH_REJECTED'"></span>
+	        <span class="icon fas fa-check-circle" ng-show="study.pstatus == 'ACCEPTED'"></span>
+	        <span class="icon fas fa-question-circle" ng-show="study.pstatus == 'REQUEST'"></span>
+	        <span class="icon fas fa-times-circle" ng-show="study.pstatus == 'MEMBER_REJECTED' || study.pstatus == 'RESEARCH_REJECTED'"></span>
 	        <button ui-sref="^.studydetails({ studyId : study.study })" class="btn btn-small btn-default" ng-show="study.pstatus == 'MATCH'" translate="smallstudies.infoapply">apply</button>
 	        <button ui-sref="^.studydetails({ studyId : study.study })" class="btn btn-small btn-default" ng-show="study.pstatus == 'INFO'" translate="smallstudies.infoonly">info</button>
 	      </td>

@@ -29,7 +29,7 @@
 	  <tr>
 	    <td translate="studyoverview.name"></td>
 	    <td>{{ study.name }}
-	    <a ng-show="readyForValidation()" class="btn btn-default btn-xs" ui-sref="^.description" translate="studyoverview.edit_description_btn"></button>
+	    <a ng-show="readyForValidation()" class="btn btn-default btn-sm" ui-sref="^.description" translate="studyoverview.edit_description_btn"></button>
 	    </td>
 	  </tr>
 	   <tr>
@@ -47,7 +47,7 @@
       <tr>
         <td translate="studyoverview.description"></td>
         <td>{{ study.description }}
-        <a ng-show="readyForValidation()" class="btn btn-default btn-xs" ui-sref="^.description" translate="studyoverview.edit_description_btn"></button>
+        <a ng-show="readyForValidation()" class="btn btn-default btn-sm" ui-sref="^.description" translate="studyoverview.edit_description_btn"></button>
         </td>
       </tr>      
       <tr>
@@ -79,9 +79,9 @@
           <td ui-sref="{{item.page}}">
             <span uib-tooltip="{{item.title+'_help' | translate }}" translate="{{item.title}}"></span>
           </td><td>
-            <div class="pull-right">           
-            <span ng-show="item.done" class="glyphicon glyphicon-ok"></span>
-            <span ng-show="!item.done && item.required" class="glyphicon glyphicon-exclamation-sign"></span>
+            <div class="float-right">           
+            <span ng-show="item.done" class="fas fa-check"></span>
+            <span ng-show="!item.done && item.required" class="fas fa-exclamation-sign"></span>
             <span ng-show="!item.done && !item.required && !item.heading" translate="study_checklist.optional"></span>
             </div>  
           </td>          

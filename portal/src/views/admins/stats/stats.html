@@ -3,22 +3,22 @@
     <div class="panel panel-primary">
 		<div class="panel-heading" translate="admin_stats.health.title"></div>
 		<div class="body">
-		   <table class="table table-striped table-condensed">
+		   <table class="table table-striped table-sm">
 		     <tr>
 		       <td translate="admin_stats.health.servicekey"></td>
 		       <td>
-		         <span class="glyphicon glyphicon-ok text-success" ng-show="health.servicekey"></span>
-		         <span class="glyphicon glyphicon-remove text-danger" ng-hide="health.servicekey"></span>
+		         <span class="fas fa-check text-success" ng-show="health.servicekey"></span>
+		         <span class="fas fa-times text-danger" ng-hide="health.servicekey"></span>
 		         {{ health.servicekey }}
-		         <button class="btn btn-primary btn-xs" translate="admin_stats.health.requestkey_btn" ng-disabled="status.action=='key'" ng-click="requestKey()" ng-hide="health.servicekey"></button>
+		         <button class="btn btn-primary btn-sm" translate="admin_stats.health.requestkey_btn" ng-disabled="status.action=='key'" ng-click="requestKey()" ng-hide="health.servicekey"></button>
 		       </td>
 		     </tr>
 		     <tr>
 		       <td translate="admin_stats.health.cluster"></td>
 		       <td>
 		         <div ng-repeat="member in health.cluster">
-		           <span class="glyphicon glyphicon-ok text-success" ng-show="member.status=='Up'"></span>
-		           <span class="glyphicon glyphicon-remove text-danger" ng-hide="member.status=='Up'"></span>
+		           <span class="fas fa-check text-success" ng-show="member.status=='Up'"></span>
+		           <span class="fas fa-times text-danger" ng-hide="member.status=='Up'"></span>
 		           {{ member.status }} :
 		           {{ member.address }}
 		         </div>		        
@@ -30,7 +30,7 @@
 		<div class="panel-heading" translate="admin_stats.title"></div>
 		<div class="body">
 		  <p class="lead">{{ today.date | date : 'dd.MM.yyyy HH:mm' }}</p>
-		  <table class="table table-striped table-condensed">
+		  <table class="table table-striped table-sm">
 		     <tr>
 		       <th></th>
 		       <th class="text-right" translate="admin_stats.value"></th>

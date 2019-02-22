@@ -40,7 +40,7 @@
 					<formrow myid="name" label="Title">
 					   <div class="input-group">
 					     <input id="name" type="text" class="form-control" ng-model="newconsent.name">
-					     <span class="input-group-btn">
+					     <span class="input-group-append">
 					        <button ng-click="addConsent();" ng-disabled="status.isBusy == 'createconsent'" class="btn btn-default">Add new consent</button>
 					     </span>
 					   </div> 
@@ -55,7 +55,7 @@
 					<formrow myid="passcode" label="Optional Access Passcode">
 					   <div class="input-group">
 				          <input type="text" class="form-control" id="passcode" name="passcode" ng-model="criteria.passcode">
-				          <span class="input-group-btn">
+				          <span class="input-group-append">
 				             <button ng-click="usePasscode();" ng-disabled="status.isBusy == 'usepasscode'" class="btn btn-default">Use passcode</button>
 				          </span>
 				       </div>

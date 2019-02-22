@@ -32,7 +32,7 @@
     <p><span translate="studyparticipant.shared_records"></span>: <b>{{ participation.records }}</b></p>
     
     
-    <div class="col-xs-3" ng-show="mayApproveParticipation(participation)">
+    <div class="col-3" ng-show="mayApproveParticipation(participation)">
     <select ng-model="participation.group" class="form-control" ng-change="changeGroup(participation)" ng-options="group.name as group.name for group in study.groups"></select>
     </div>
     
@@ -45,12 +45,12 @@
      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     Action <span class="caret"></span>
      </button>
-						<ul class="dropdown-menu">
-							<li ng-hide="me_menu.length"><a href="javascript:" ng-click="showApp('fhir-observation');" translate="dashboard.observations"></a></li>							
-							<li ng-repeat="entry in me_menu"><a href="javascript:" ng-click="showSpace(entry)" translate="{{entry.name}}"></a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="javascript:" ng-click="addSpace()"  translate="dashboard.install_btn"></a></li>
-						</ul>
+						<div class="dropdown-menu">
+							<a class="dropdown-item" ng-hide="me_menu.length" href="javascript:" ng-click="showApp('fhir-observation');" translate="dashboard.observations"></a>							
+							<a class="dropdown-item" ng-repeat="entry in me_menu" href="javascript:" ng-click="showSpace(entry)" translate="{{entry.name}}"></a>
+                            <div role="separator" class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="javascript:" ng-click="addSpace()" translate="dashboard.install_btn"></a>
+						</div>
 	</div>
     
     

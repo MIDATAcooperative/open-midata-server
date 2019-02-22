@@ -5,7 +5,7 @@
 		<div class="panel-heading" translate="manageapp.overview">		  	
 		</div>
 		<div class="body">
-	      <div class="pull-left" ng-if="hasIcon()" style="margin-right:10px">
+	      <div class="float-left" ng-if="hasIcon()" style="margin-right:10px">
 	        <img style="max-width:64px" ng-src="{{ getIconUrl() }}">
 	      </div>	
 		  <p class="lead">{{ app.name }}</p>
@@ -39,49 +39,49 @@
 		  <table class="table clickable">
 			<tr>
 			  <td ng-click="go('^.editapp')">				    
-				<div class="pull-left"><img width="80" class="img-responsive" src="/images/editapp.jpg"></div>														   
+				<div class="float-left"><img width="80" class="img-responsive" src="/images/editapp.jpg"></div>														   
 				<div><b translate="manageapp.edit_btn"></b></div>
 				<div translate="manageapp.edit_help"></div>																
 			  </td>
 			</tr>
 			<tr>
 			  <td ng-click="go('^.appquery')">				    
-				<div class="pull-left"><img width="80" class="img-responsive" src="/images/question.jpg"></div>														   
+				<div class="float-left"><img width="80" class="img-responsive" src="/images/question.jpg"></div>														   
 				<div><b translate="manageapp.query_btn"></b><span class="badge" style="margin-left:10px" ng-show="hasCount(app.defaultQuery)">1 <span translate="manageapp.defined"></span></span><span class="badge" style="margin-left:10px" ng-hide="hasCount(app.defaultQuery)">0 <span translate="manageapp.defined"></span></span></div>
 				<div translate="manageapp.query_help"></div>																
 			  </td>
 			</tr>
 			<tr>
 			  <td ng-click="go('^.appsubscriptions')">				    
-				<div class="pull-left"><img width="80" class="img-responsive" src="/images/trigger.jpg"></div>														   
+				<div class="float-left"><img width="80" class="img-responsive" src="/images/trigger.jpg"></div>														   
 				<div><b translate="manageapp.subscriptions_btn"></b><span class="badge" style="margin-left:10px">{{ app.defaultSubscriptions.length || 0 }} <span translate="manageapp.defined"></span></span></div>
 				<div translate="manageapp.subscriptions_help"></div>																
 			  </td>
 			</tr>
 			<tr ng-hide="app.type == 'mobile' || allowExport">
 			  <td ng-click="doInstall()">				    
-				<div class="pull-left"><img width="80" class="img-responsive" src="/images/testfromlocal.jpg"></div>														   
+				<div class="float-left"><img width="80" class="img-responsive" src="/images/testfromlocal.jpg"></div>														   
 				<div><b translate="manageapp.testfromlocal_btn"></b></div>
 				<div translate="manageapp.testfromlocal_help"></div>																
 			  </td>
 			</tr>
 			<tr ng-show="(app.type == 'oauth1' || app.type == 'oauth2') && !allowExport">
 			  <td ng-click="go('^.autoimport')">				    
-				<div class="pull-left"><img width="80" class="img-responsive" src="/images/serverimport.jpg"></div>														   
+				<div class="float-left"><img width="80" class="img-responsive" src="/images/serverimport.jpg"></div>														   
 				<div><b translate="manageapp.serverimport_btn"></b></div>
 				<div translate="manageapp.serverimport_help"></div>																
 			  </td>
 			</tr>
 			<tr>
 			  <td ng-click="go('^.applink')">				    
-				<div class="pull-left"><img width="80" class="img-responsive" src="/images/link.jpg"></div>														   
+				<div class="float-left"><img width="80" class="img-responsive" src="/images/link.jpg"></div>														   
 				<div><b translate="manageapp.link_btn"></b></div>
 				<div translate="manageapp.link_help"></div>																
 			  </td>
 			</tr>
 			<tr>
 			  <td ng-click="go('^.appicon')">				    
-				<div class="pull-left" ><img width="80" class="img-responsive" src="/images/editicons.jpg"></div>														   
+				<div class="float-left" ><img width="80" class="img-responsive" src="/images/editicons.jpg"></div>														   
 				<div><b translate="manageapp.icon_btn"></b><span class="badge" style="margin-left:10px">{{ app.icons.length || 0 }} <span translate="manageapp.defined"></span></span></div>
 				<div translate="manageapp.icon_help"></div>	
 																	
@@ -89,28 +89,28 @@
 			</tr>
 			<tr>
 			  <td ng-click="go('^.appmessages')">				    
-				<div class="pull-left"><img width="80" class="img-responsive" src="/images/mail.jpg"></div>														   
+				<div class="float-left"><img width="80" class="img-responsive" src="/images/mail.jpg"></div>														   
 				<div><b translate="manageapp.messages_btn"></b><span class="badge" style="margin-left:10px">{{ keyCount(app.predefinedMessages) }} <span translate="manageapp.defined"></span></span></div>
 				<div translate="manageapp.messages_help"></div>																
 			  </td>
 			</tr>
 			<tr>
 			  <td ng-click="go('^.appstats')">				    
-				<div class="pull-left"><img width="80" class="img-responsive" src="/images/stats.jpg"></div>														   
+				<div class="float-left"><img width="80" class="img-responsive" src="/images/stats.jpg"></div>														   
 				<div><b translate="manageapp.stats_btn"></b></div>
 				<div translate="manageapp.stats_help"></div>																
 			  </td>
 			</tr>
 			<tr>
 			  <td ng-click="go('^.appdebug')">				    
-				<div class="pull-left"><img width="80" class="img-responsive" src="/images/apitest.jpg"></div>														   
+				<div class="float-left"><img width="80" class="img-responsive" src="/images/apitest.jpg"></div>														   
 				<div><b translate="manageapp.debug_btn"></b></div>
 				<div translate="manageapp.debug_help"></div>																
 			  </td>
 			</tr>
 			<tr ng-show="allowExport">
 			  <td ng-click="exportPlugin()">				    
-				<div class="pull-left"><img width="80" class="img-responsive" src="/images/export.jpg"></div>														   
+				<div class="float-left"><img width="80" class="img-responsive" src="/images/export.jpg"></div>														   
 				<div><b translate="manageapp.export_btn"></b></div>
 				<div translate="manageapp.export_help"></div>																
 			  </td>

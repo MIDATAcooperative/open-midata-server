@@ -5,12 +5,10 @@ var my_exports = {};
 my_exports.entry = {
     miniportal: './src/main-miniportal.js',
     mainportal: './src/main-portal.js',
-
-    bootstrap: './node_modules/bootstrap/less/bootstrap.less',
-    
+       
     minicss: [
     ],
-    maincss: [
+    maincss: [ 
     ]
 };
 
@@ -25,7 +23,7 @@ my_exports.html_files_to_add = [
         exclude: ['miniportal','minicss']
     },{
         page:'oauth.html',
-        exclude: ['mainportal','bootstrap','maincss']
+        exclude: ['mainportal','maincss']
     }];
 
 module.exports = my_exports;

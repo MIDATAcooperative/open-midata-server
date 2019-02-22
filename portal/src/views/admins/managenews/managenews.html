@@ -16,8 +16,8 @@
 		  <formrow myid="date" label="admin_managenews.date">
 		      <div class="input-group">
 				  <input type="text" id="date" is-open="datePickers.dateOpened" no-time datepicker-options="dateOptions" close-text="Close" uib-datepicker-popup="dd.MM.yyyy" class="form-control" autofocus ng-model="newsItem.date">
-				  <span class="input-group-btn">
-                      <button type="button" class="btn btn-default" ng-click="datePickers.dateOpened=true;"><i class="glyphicon glyphicon-calendar"></i></button>
+				  <span class="input-group-append">
+                      <button type="button" class="btn btn-default" ng-click="datePickers.dateOpened=true;"><i class="fas fa-calendar"></i></button>
                   </span>
                </div>				  		  
 		  </formrow>
@@ -39,8 +39,8 @@
 		  <formrow myid="expires" label="admin_managenews.expires">
 		      <div class="input-group">
 				  <input type="text" id="date" is-open="datePickers.expiresOpened" no-time datepicker-options="dateOptions" close-text="Close" uib-datepicker-popup="dd.MM.yyyy" class="form-control" placeholder="Date" autofocus ng-model="newsItem.expires">
-				  <span class="input-group-btn">
-                      <button type="button" class="btn btn-default" ng-click="datePickers.expiresOpened=true;"><i class="glyphicon glyphicon-calendar"></i></button>
+				  <span class="input-group-append">
+                      <button type="button" class="btn btn-default" ng-click="datePickers.expiresOpened=true;"><i class="fas fa-calendar"></i></button>
                   </span>
                </div>				  		  
 		  </formrow>
@@ -55,7 +55,7 @@
 	               <input type="text" class="form-control" ng-change="studyselection(selection.study, 'studyId');" autocomplete="off" typeahead-on-select="studyselection(selection.study, 'studyId')" ng-model-options="{ debounce: 500 }" ng-model="selection.study.code" uib-typeahead="study.code for study in studies | filter:$viewValue | limitTo:8">
 	             </div>
 	             <div class="col-sm-9">
-	                 <p class="form-control-static">{{ selection.study.name }}</p>
+	                 <p class="form-control-plaintext">{{ selection.study.name }}</p>
 	             </div>
 	          </div>
 	      </formrow> 	  
@@ -66,7 +66,7 @@
 	               <input type="text" class="form-control" ng-change="appselection(selection.app, 'appId');" autocomplete="off" typeahead-on-select="appselection(selection.app, 'appId')" ng-model-options="{ debounce: 500 }" ng-model="selection.app.filename" uib-typeahead="app.filename for app in apps | filter:$viewValue | limitTo:8">
 	             </div>
 	             <div class="col-sm-9">
-	                 <p class="form-control-static">{{ selection.app.name }} {{ selection.app.orgName }}</p>
+	                 <p class="form-control-plaintext">{{ selection.app.name }} {{ selection.app.orgName }}</p>
 	             </div>
 	          </div>
 	      </formrow> 	
@@ -78,7 +78,7 @@
 	               <input type="text" class="form-control" ng-change="studyselection(selection.onlyStudy, 'onlyParticipantsStudyId');" autocomplete="off" typeahead-on-select="studyselection(selection.onlyStudy, 'onlyParticipantsStudyId')" ng-model-options="{ debounce: 500 }" ng-model="selection.onlyStudy.code" uib-typeahead="study.code for study in studies | filter:$viewValue | limitTo:8">
 	             </div>
 	             <div class="col-sm-9">
-	                 <p class="form-control-static">{{ selection.onlyStudy.name }}</p>
+	                 <p class="form-control-plaintext">{{ selection.onlyStudy.name }}</p>
 	             </div>
 	          </div>
 	      </formrow> 	  
@@ -89,7 +89,7 @@
 	               <input type="text" class="form-control" ng-change="appselection(selection.onlyApp, 'onlyUsersOfAppId');" autocomplete="off" typeahead-on-select="appselection(selection.onlyApp, 'onlyUsersOfAppId')" ng-model-options="{ debounce: 500 }" ng-model="selection.onlyApp.filename" uib-typeahead="app.filename for app in apps | filter:$viewValue | limitTo:8">
 	             </div>
 	             <div class="col-sm-9">
-	                 <p class="form-control-static">{{ selection.onlyApp.name }} {{ selection.onlyApp.orgName }}</p>
+	                 <p class="form-control-plaintext">{{ selection.onlyApp.name }} {{ selection.onlyApp.orgName }}</p>
 	             </div>
 	          </div>
 	      </formrow> 	

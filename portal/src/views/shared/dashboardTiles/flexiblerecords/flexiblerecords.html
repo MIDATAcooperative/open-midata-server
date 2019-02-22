@@ -7,13 +7,13 @@
     
     <ul class="list-group" ng-show="records.length > 0">
 		<li class="list-group-item rotate truncate" ng-repeat="record in records | limitTo: limit">
-		    <div class="pull-right" ng-if="view.setup.allowRemove">
-			   <button type="button" class="btn btn-xs btn-danger" ng-click="removeRecord(record)">
-				  <span class="glyphicon glyphicon-remove"></span>
+		    <div class="float-right" ng-if="view.setup.allowRemove">
+			   <button type="button" class="btn btn-sm btn-danger" ng-click="removeRecord(record)">
+				  <span class="fas fa-times"></span>
 			   </button>
 			</div>	
 		    <input type="checkbox" ng-model="record.marked" ng-if="view.setup.allowShare"/>
-			<span class="label label-info">{{record.created | date : 'dd.MM.yy'}}</span>
+			<span class="badge label-info">{{record.created | date : 'dd.MM.yy'}}</span>
 			<span ng-show="record.owner != userId" class="label label-info">{{ record.ownerName }}</span>
 			<span ng-show="record.creator != userId && record.creatorName" class="label label-info">by {{ record.creatorName }}</span>			
 			<a href="javascript:;" ng-click="showDetails(record)">{{record.name}}</a>

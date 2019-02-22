@@ -20,7 +20,7 @@
                <input type="password" style="display: none" id="fakePassword" name="fakePassword" value="" />
 	
 	           <formrow label="user.name">
-	             <p class="form-control-static">
+	             <p class="form-control-plaintext">
 	               {{ user.name }} ({{ "enum.userrole."+user.role | translate }})<br>
 	               {{ user.email }}	                
 	             </p>
@@ -32,7 +32,7 @@
 				</formrow>
 				
 				<formrow myid="reason" label="accountwipe.reason">
-				  <p class="form-control-static" translate="accountwipe.reason2"></p>
+				  <p class="form-control-plaintext" translate="accountwipe.reason2"></p>
 				  <textarea class="form-control" id="reason" name="reason" ng-model="user.reason"></textarea>
 				</formrow>
 	           
