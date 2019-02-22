@@ -40,13 +40,13 @@
 							   <formrow myid="birthday" label="registration.birthday">
 									
 							      <div class="row">										
-							        <div class="col-xs-3 col-sm-3">
+							        <div class="col-3 col-sm-3">
 										<input type="text" maxlength="2" class="form-control" id="birthday" name="birthday" translate translate-attr-placeholder="registration.day" ng-model="registration.birthdayDay" required pattern="[0123]?[0-9]">
 							        </div>											
-									<div class="col-xs-5 col-sm-6 selectplaceholder">
+									<div class="col-5 col-sm-6 selectplaceholder">
 							          <select  id="birthdayMonth" class="form-control" name="birthdayMonth" ng-model="registration.birthdayMonth" required><option ng-repeat="month in months" ng-value="month" translate="{{ 'enum.month.'+month }}"></option><option value="" selected disabled hidden translate="registration.month"></option></select>
 							        </div>											
-							        <div class="col-xs-4 col-sm-3">
+							        <div class="col-4 col-sm-3">
 									  <input type="text" maxlength="4" class="form-control" id="birthdayYear" name="birthdayYear" translate translate-attr-placeholder="registration.year" ng-model="registration.birthdayYear" required>
 							        </div>
 							     </div>

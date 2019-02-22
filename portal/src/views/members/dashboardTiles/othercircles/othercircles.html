@@ -5,12 +5,12 @@
     <p ng-hide="circles.length" class="body teaser" translate="{{ view.teaser }}"></p>
     <ul class="list-group" ng-show="circles.length > 0">
 		<li class="list-group-item rotate truncate" ng-repeat="circle in circles | limitTo : limit">
-		    <div class="pull-right" ng-if="view.setup.allowRemove">
-			   <button type="button" class="btn btn-xs btn-danger" ng-click="removeRecord(record)">
-				  <span class="glyphicon glyphicon-remove"></span>
+		    <div class="float-right" ng-if="view.setup.allowRemove">
+			   <button type="button" class="btn btn-sm btn-danger" ng-click="removeRecord(record)">
+				  <span class="fas fa-times"></span>
 			   </button>
 			</div>			    			
-			<span ng-show="circle.ownerName" class="label label-info">{{ circle.ownerName }}</span>					
+			<span ng-show="circle.ownerName" class="badge badge-info">{{ circle.ownerName }}</span>					
 			<a href="javascript:;" ng-click="showCircle(circle)">{{circle.name}}</a>
 												
 		</li>

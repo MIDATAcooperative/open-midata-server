@@ -16,7 +16,7 @@
 							
 							
 							 <formrow myid="studyname" label="addparticipant.study">
-	                           <p class="form-control-static">{{ study.name }}</p>
+	                           <p class="form-control-plaintext">{{ study.name }}</p>
 	                         </formrow>							
 									
 							<div ng-class="{ 'required' : emailNeeded() }">						  
@@ -37,13 +37,13 @@
 							    <formrow myid="birthday" label="registration.birthday">
 									
 							      <div class="row">										
-							        <div class="col-xs-3 col-sm-3">
+							        <div class="col-3 col-sm-3">
 										<input type="text" maxlength="2" class="form-control" id="birthday" name="birthday" translate translate-attr-placeholder="registration.day" ng-model="registration.birthdayDay" required pattern="[0123]?[0-9]">
 							        </div>											
-									<div class="col-xs-5 col-sm-6 selectplaceholder">
+									<div class="col-5 col-sm-6 selectplaceholder">
 							          <select  id="birthdayMonth" class="form-control" name="birthdayMonth" ng-model="registration.birthdayMonth" required><option ng-repeat="month in months" ng-value="month" translate="{{ 'enum.month.'+month }}"></option><option value="" selected disabled hidden translate="registration.month"></option></select>
 							        </div>											
-							        <div class="col-xs-4 col-sm-3">
+							        <div class="col-4 col-sm-3">
 									  <input type="text" maxlength="4" class="form-control" id="birthdayYear" name="birthdayYear" translate translate-attr-placeholder="registration.year" ng-model="registration.birthdayYear" required>
 							        </div>
 							     </div>
@@ -68,9 +68,9 @@
                               <formrow myid="mobile" label="registration.mobile_phone"><input type="text" class="form-control" id="mobile" name="mobile" translate translate-attr-placeholder="registration.mobile_phone" ng-required="phoneNeeded()" ng-model="registration.mobile"></formrow>
                              </div>
                              <formrow myid="agb" label="registration.agb">
-                                 <div class="checkbox">
-                                   <label>
-                                     <input type="checkbox" id="agb" name="agb" ng-model="registration.agb">
+                                 <div class="form-check">
+                                   <label class="form-check-label">
+                                     <input class="form-check-input" type="checkbox" id="agb" name="agb" ng-model="registration.agb">
                                      <span translate="addparticipant.hasaccepted"></span>:
                                         <a ng-click="terms({which : 'midata-terms-of-use'});" href="javascript:" translate="registration.agb3"></a>
                                    </label>
@@ -78,9 +78,9 @@
                                 <formerror myid="agb" type="mustaccept" message="error.missing.agb"></formerror>
                               </formrow>
                                <formrow myid="privacypolicy" label="">
-                                 <div class="checkbox">
-                                   <label>
-                                     <input type="checkbox" id="privacypolicy" name="privacypolicy" ng-model="registration.privacypolicy">
+                                 <div class="form-check">
+                                   <label class="form-check-label">
+                                     <input class="form-check-input" type="checkbox" id="privacypolicy" name="privacypolicy" ng-model="registration.privacypolicy">
                                      <span translate="addparticipant.hasaccepted"></span>:
                                         <a ng-click="terms({which : 'midata-privacy-policy'});" href="javascript:" translate="registration.privacypolicy3"></a>
                                    </label>

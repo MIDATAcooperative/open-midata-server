@@ -40,8 +40,8 @@
 	      <td><select ng-model="participant.group" class="form-control" ng-show="mayApproveParticipation(participant)" ng-change="changeGroup(participant)" ng-options="group.name as group.name for group in study.groups"></select><span ng-hide="mayApproveParticipation(participant)">{{ participant.group }}</span></td><td translate="{{ 'enum.participationstatus.'+ participant.pstatus }}"></td>
 	      <td>{{ participant.recruiterName }}</td>
 	      <td>
-	        <button ng-show="mayApproveParticipation(participant)" ng-click="approveParticipation(participant)" class="btn btn-success btn-xs" translate="studyparticipants.accept_btn"></button>
-	        <button ng-show="mayRejectParticipation(participant)" ng-click="rejectParticipation(participant)" class="btn btn-danger btn-xs" translate="studyparticipants.reject_btn"></button>
+	        <button ng-show="mayApproveParticipation(participant)" ng-click="approveParticipation(participant)" class="btn btn-success btn-sm" translate="studyparticipants.accept_btn"></button>
+	        <button ng-show="mayRejectParticipation(participant)" ng-click="rejectParticipation(participant)" class="btn btn-danger btn-sm" translate="studyparticipants.reject_btn"></button>
 	      </td>	      	        
 	    </tr>
 	  </tbody>
@@ -62,16 +62,16 @@
 	    <select ng-model="acceptall.autoJoinGroup" class="form-control" ng-options="group.name as group.name for group in study.groups"></select>
 	  </formrow>
 	  <formrow myid="autoJoin" label="studyparticipants.autojoin">
-	    <div class="checkbox">
-	      <label>
-	        <input type="checkbox" ng-model="acceptall.autoJoin">
+	    <div class="form-check">
+	      <label class="form-check-label">
+	        <input class="form-check-input" type="checkbox" ng-model="acceptall.autoJoin">
 	        <span translate="studyparticipants.autojoin2"></span>
 	      </label>
 	    </div>
 	  </formrow>
 	  <formrow myid="x" label="">
 	    <button type="button" class="btn btn-primary" ng-disabled="status.action=='change' || (acceptall.autoJoin && !acceptall.autoJoinGroup)" translate="common.submit_btn" ng-click="acceptAll()"></button>
-	    <span class="text-success" ng-show="saveOk"><span class="glyphicon glyphicon-ok"></span> <span translate="common.save_ok"></span></span>
+	    <span class="text-success" ng-show="saveOk"><span class="fas fa-check"></span> <span translate="common.save_ok"></span></span>
 	  </formrow>
 	</form>
 	</loader>

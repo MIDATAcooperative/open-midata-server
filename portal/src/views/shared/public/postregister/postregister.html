@@ -48,9 +48,9 @@
 								<input type="password" class="form-control" floating-label ng-model="setpw.passwordRepeat" style="margin-bottom:5px;">
 							  </formrow>
 							   <formrow myid="secure" label="registration.secure">
-							    <div class="checkbox">
-							      <label>
-							      <input type="checkbox" ng-model="setpw.secure">
+							    <div class="form-check">
+							      <label class="form-check-label">
+							      <input class="form-check-input" type="checkbox" ng-model="setpw.secure">
 							      <span translate="registration.secure2"></span>
 							      </label>
 							    </div>
@@ -164,9 +164,9 @@
 									</formrow>
 									<div class="dynheight">
 									<formrow myid="emailnotify" label="postregister.emailnotify">
-									  <div class="checkbox">
-									    <label>
-									      <input type="checkbox" id="emailnotify" name="emailnotify" ng-model="registration.emailnotify">
+									  <div class="form-check">
+									    <label class="form-check-label">
+									      <input class="form-check-input" type="checkbox" id="emailnotify" name="emailnotify" ng-model="registration.emailnotify">
 									      <span translate="postregister.emailnotify2" translate-value-domain="{{ENV.apiurl}}"></span>
 									   </label>
 									  </div>

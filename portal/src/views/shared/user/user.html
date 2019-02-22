@@ -38,16 +38,16 @@
   <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     <span translate="user.action"></span> <span class="caret"></span>
   </button>
-  <ul class="dropdown-menu">
-    <li><a href="javascript:" ng-show="user.status=='ACTIVE'" ui-sref="^.changepassphrase" translate="user.change_passphrase_btn"></a></li>
-    <li><a href="javascript:" ui-sref="^.changeemail" translate="user.change_email_btn"></a></li>
-    <li><a href="javascript:" ui-sref="^.auditlog" translate="user.auditlog_btn"></a></li>
-	<li><a href="javascript:" ng-disabled="msg" ng-click="fixAccount();" translate="user.repair_account_btn"></a></li>
-	<li><a href="javascript:" ng-disabled="msg" ng-click="resetSpaces();" translate="user.reset_spaces_btn"></a></li>
-	<li><a href="javascript:" ui-sref="^.delete_records" translate="user.delete_records_btn"></a></li>
-	<li><a href="javascript:" ng-click="exportAccount()" translate="user.export_btn"></a></li>
-	<li><a  href="javascript:" ng-show="user.role!='ADMIN'" ui-sref="^.accountwipe" translate="user.wipe_account_btn"></a></li>
-  </ul>
+  <div class="dropdown-menu">
+    <a class="dropdown-item" href="javascript:" ng-show="user.status=='ACTIVE'" ui-sref="^.changepassphrase" translate="user.change_passphrase_btn"></a>
+    <a class="dropdown-item" href="javascript:" ui-sref="^.changeemail" translate="user.change_email_btn"></a>
+    <a class="dropdown-item" href="javascript:" ui-sref="^.auditlog" translate="user.auditlog_btn"></a>
+	<a class="dropdown-item" href="javascript:" ng-disabled="msg" ng-click="fixAccount();" translate="user.repair_account_btn"></a>
+	<a class="dropdown-item" href="javascript:" ng-disabled="msg" ng-click="resetSpaces();" translate="user.reset_spaces_btn"></a>
+	<a class="dropdown-item" href="javascript:" ui-sref="^.delete_records" translate="user.delete_records_btn"></a>
+	<a class="dropdown-item" href="javascript:" ng-click="exportAccount()" translate="user.export_btn"></a>
+	<a class="dropdown-item" href="javascript:" ng-show="user.role!='ADMIN'" ui-sref="^.accountwipe" translate="user.wipe_account_btn"></a>
+  </div>
 </div>
 			     
 			     
@@ -84,7 +84,7 @@
 			    <div class="alert alert-danger" translate="{{confirmation.error}}" ng-show="confirmation.error"></div> 
 				<div class="input-group" >
 				  <input class="form-control" ng-model="confirmation.code" type="text">
-				  <div class="input-group-btn">
+				  <div class="input-group-append">
 					  <button class="btn btn-primary" ng-click="sendCode()" translate="postregister.enter_now_btn"></button>
 				  </div>							 
 				</div>
@@ -112,16 +112,16 @@
 				<p class="col-sm-2" translate="user.searchable_short"></p>
 				<div class="col-sm-10">
 				  <div translate="user.searchable"></div>
-				  <div class="radio">
-				    <label>
-				      <input type="radio" ng-disabled="locked" name="searchable" ng-value="true" ng-model="user.searchable">
-				      <span translate="user.searchable_yes"></span>
+				  <div class="form-check">
+				    <label class="form-check-label">
+				      <input class="form-check-input" type="radio" ng-disabled="locked" name="searchable" ng-value="true" ng-model="user.searchable">
+				      <span class="margin-left" translate="user.searchable_yes"></span>
 				    </label>
 				  </div>
-				  <div class="radio">
-				    <label>
-				      <input type="radio" ng-disabled="locked" name="searchable" ng-value="false" ng-model="user.searchable">
-				      <span translate="user.searchable_no"></span>
+				  <div class="form-check">
+				    <label class="form-check-label">
+				      <input class="form-check-input" type="radio" ng-disabled="locked" name="searchable" ng-value="false" ng-model="user.searchable">
+				      <span class="margin-left" translate="user.searchable_no"></span>
 				    </label>
 				  </div>
 				  <span class="help-block" translate="user.searchable_info"></span>
@@ -133,10 +133,10 @@
 				<div class="col-sm-2" translate="user.auth_type"></div>
 				<div class="col-sm-10">
 				  <div translate="user.auth_type2"></div>
-				  <div class="radio" ng-repeat="mode in authTypes">
-				    <label>
-				      <input type="radio" ng-disabled="locked" name="authType" ng-value="mode" ng-model="user.authType">
-				      <span translate="{{ 'enum.secondaryauthtype.'+mode }}"></span>
+				  <div class="form-check" ng-repeat="mode in authTypes">
+				    <label class="form-check-label">
+				      <input class="form-check-input" type="radio" ng-disabled="locked" name="authType" ng-value="mode" ng-model="user.authType">
+				      <span  class="margin-left" translate="{{ 'enum.secondaryauthtype.'+mode }}"></span>
 				    </label>
 				  </div>
 				  <div class="has-error">
@@ -149,10 +149,10 @@
 				<div class="col-sm-2" translate="user.notifications"></div>
 				<div class="col-sm-10">
 			      <div translate="user.notifications2"></div>
-				  <div class="radio" ng-repeat="mode in notificationTypes">
-				    <label>
-				      <input type="radio" ng-disabled="locked" name="notifications" ng-value="mode" ng-model="user.notifications">
-				      <span translate="{{ 'enum.accountnotifications.'+mode }}"></span>
+				  <div class="form-check" ng-repeat="mode in notificationTypes">
+				    <label class="form-check-label">
+				      <input class="form-check-input" type="radio" ng-disabled="locked" name="notifications" ng-value="mode" ng-model="user.notifications">
+				      <span  class="margin-left" translate="{{ 'enum.accountnotifications.'+mode }}"></span>
 				    </label>
 				  </div>							
 				</div>				 

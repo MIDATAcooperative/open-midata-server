@@ -22,11 +22,11 @@
 		      <td>{{ msg.code }}</td>
 		      <td>
 		        <span ng-repeat="l in languages" ng-click="showMessage(msg,l)">
-		          <span ng-show="msg.text[l]"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>{{l}} </span>		      
+		          <span ng-show="msg.text[l]"><span class="fas fa-check" aria-hidden="true"></span>{{l}} </span>		      
 		        </span>
 		      </td>
 		      <td>
-		       <button class="btn btn-xs btn-default" ng-click="showMessage(msg)" translate="common.view_btn"></button>
+		       <button class="btn btn-sm btn-default" ng-click="showMessage(msg)" translate="common.view_btn"></button>
 		      </td>
 		    </tr>
 		</table>
@@ -62,7 +62,7 @@
 		  <formrow myid="x" label="Multi Language Support">
 		    <div class="help-block">
 		     <span ng-repeat="l in languages" ng-click="showMessage(selmsg,l)">
-		          <span ng-show="selmsg.text[l]"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>{{l}} </span>		      
+		          <span ng-show="selmsg.text[l]"><span class="fas fa-check" aria-hidden="true"></span>{{l}} </span>		      
 		     </span>
 		    </div>
 		  </formrow>

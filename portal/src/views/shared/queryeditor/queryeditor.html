@@ -17,7 +17,7 @@
 		<div ng-show="blocks.length && !currentBlock && !target.askresources && !expertmode">
 		<p translate="queryeditor.summary"></p>
 		<div class="list-group">
-		  <button ng-repeat="block in blocks" class="list-group-item" ng-click="selectBlock(block);">
+		  <div ng-repeat="block in blocks" class="list-group-item" href="javascript:" ng-click="selectBlock(block);">
 		    <b>{{ block.display }}</b>
 		    <div ng-show="block.code">{{ block.code }}</div>
 		    <div>
@@ -37,7 +37,7 @@
 		    <div ng-show="block.customFilter">
 		      <span>Extra Filter: </span><span>{{ block.customFilterPath }}</span>: {{ block.customFilterValue }}
 		    </div>
-		  </button>
+		  </div>
 		</div>
 		<div ng-if="mode=='app'">
 		  <div><label translate="manageapp.write_mode"></label></div>
@@ -59,8 +59,8 @@
 		
 		<div ng-if="target.askresources">
 		  <p translate="queryeditor.select_resources"></p>
-		  <div ng-repeat="resource in target.askresources" class="checkbox">
-		    <label><input type="checkbox" ng-model="resource.selected">
+		  <div ng-repeat="resource in target.askresources" class="form-check">
+		    <label class="form-check-label"><input class="form-check-input" type="checkbox" ng-model="resource.selected">
 		      <b>{{ resource.display }}</b> {{ resource.text }}
 		    </label>
 		  </div>
@@ -72,15 +72,15 @@
 		  
 		
 		  <p translate="queryeditor.check_okay"></p>
-		   <div ng-if="mode=='app'">
+		   <div ng-if="mode=='app'" class="extraspace">
 		    
 		  
 		   
 		    
 		  
-		    <div class="checkbox">
-		      <label>
-		        <input type="checkbox" id="withLogout" name="withLogout" ng-model="app.withLogout" value="true" ng-required="logoutRequired">
+		    <div class="form-check">
+		      <label class="form-check-label">
+		        <input class="form-check-input" type="checkbox" id="withLogout" name="withLogout" ng-model="app.withLogout" value="true" ng-required="logoutRequired">
 		        <span translate="manageapp.pleaseLogout1"></span>
 		        <span ng-show="app.targetUserRole=='RESEARCH'"> / </span>
 		        <span ng-show="app.targetUserRole=='RESEARCH'" translate="manageapp.pleaseLogout2"></span>		        
@@ -92,8 +92,8 @@
 		  <button class="btn btn-default" ng-disabled="mode=='app' && !app.withLogout" ng-click="saveExit()" translate="queryeditor.save_exit_btn"></button>
 		  <button class="btn btn-default" ng-click="cancel()" translate="queryeditor.cancel_btn"></button>
 		  <br><br>
-		  <button class="btn btn-xs btn-default" ng-click="enableExpertMode()" translate="queryeditor.expert_mode_btn"></button>
-		  <button class="btn btn-xs btn-default" ng-show="mode=='app'" ng-click="basicAppResources()" translate="queryeditor.add_basic_btn"></button>
+		  <button class="btn btn-sm btn-default" ng-click="enableExpertMode()" translate="queryeditor.expert_mode_btn"></button>
+		  <button class="btn btn-sm btn-default" ng-show="mode=='app'" ng-click="basicAppResources()" translate="queryeditor.add_basic_btn"></button>
 		</div>
 		
 		<div ng-show="currentBlock">	
@@ -106,10 +106,10 @@
 		    <input type="text" class="form-control" ng-model="currentBlock.format" placeholder="fhir/Observation">
 		  </formrow>
 		  <formrow id="content" label="queryeditor.content" ng-show="currentBlock.content">
-		    <p class="form-control-static">{{ currentBlock.content }}</p>
+		    <p class="form-control-plaintext">{{ currentBlock.content }}</p>
 		  </formrow>
 		  <formrow id="content" label="queryeditor.code" ng-show="currentBlock.code">
-		    <p class="form-control-static">{{ currentBlock.code }}</p>
+		    <p class="form-control-plaintext">{{ currentBlock.code }}</p>
 		  </formrow>
 		  <formrow id="owner" label="queryeditor.owner" ng-show="mode=='app' && !currentBlock.flags.noowner">
 		    <div class="radio">
@@ -129,9 +129,9 @@
 		  </formrow>
 		  <div ng-show="mode=='study'">
 		  <formrow id="restrictions" label="queryeditor.restrictions" ng-show="timeModes.length || dataPeriodModes.length || currentBlock.flags.custom">
-		    <div class="checkbox" ng-if="timeModes.length"><label><input type="checkbox" ng-model="currentBlock.timeRestriction"><span translate="queryeditor.time_restriction"></span></label></div>
-		    <div class="checkbox" ng-if="dataPeriodModes.length"><label><input type="checkbox" ng-model="currentBlock.dataPeriodRestriction"><span translate="queryeditor.data_period_restriction"></span></label></div>
-		    <div class="checkbox" ng-if="currentBlock.flags.custom"><label><input type="checkbox" ng-model="currentBlock.customFilter"><span translate="queryeditor.custom_filter"></span></label></div>
+		    <div class="form-check" ng-if="timeModes.length"><label class="form-check-label"><input class="form-check-input" type="checkbox" ng-model="currentBlock.timeRestriction"><span translate="queryeditor.time_restriction"></span></label></div>
+		    <div class="form-check" ng-if="dataPeriodModes.length"><label class="form-check-label"><input class="form-check-input" type="checkbox" ng-model="currentBlock.dataPeriodRestriction"><span translate="queryeditor.data_period_restriction"></span></label></div>
+		    <div class="form-check" ng-if="currentBlock.flags.custom"><label class="form-check-label"><input class="form-check-input" type="checkbox" ng-model="currentBlock.customFilter"><span translate="queryeditor.custom_filter"></span></label></div>
 		  </formrow>
 		  <formrow id="timeRestriction" label="queryeditor.time_restriction" ng-if="currentBlock.timeRestriction">
 		     <div class="row"><div class="col-sm-3">		     
@@ -139,8 +139,8 @@
 		     </div>
 		     <div class="input-group col-sm-5">
 	          <input id="timeRestrictionDate" name="timeRestrictionDate" as-date type="text" class="form-control" placeholder="" uib-datepicker-popup="dd.MM.yyyy"  ng-model="currentBlock.timeRestrictionDate" is-open="datePickers.timeRestrictionDate" no-time datepicker-options="dateOptions" ng-required="false" close-text="Close" />
-	          <span class="input-group-btn">
-	             <button type="button"  class="btn btn-default" ng-click="datePickers.timeRestrictionDate=true;"><i class="glyphicon glyphicon-calendar"></i></button>
+	          <span class="input-group-append">
+	             <button type="button"  class="btn btn-default" ng-click="datePickers.timeRestrictionDate=true;"><i class="fas fa-calendar"></i></button>
 	          </span>
              </div>
              </div>
@@ -155,16 +155,16 @@
 		     <div class="col-sm-3">
 		     <div class="input-group">
 	          <input id="dataPeriodRestrictionStart" name="dataPeriodRestrictionStart" as-date type="text" class="form-control" placeholder="" uib-datepicker-popup="dd.MM.yyyy"  ng-model="currentBlock.dataPeriodRestrictionStart" is-open="datePickers.dataPeriodRestrictionStart" no-time datepicker-options="dateOptions" ng-required="false" close-text="Close" />
-	          <span class="input-group-btn">
-	             <button type="button"  class="btn btn-default" ng-click="datePickers.dataPeriodRestrictionStart=true;"><i class="glyphicon glyphicon-calendar"></i></button>
+	          <span class="input-group-append">
+	             <button type="button"  class="btn btn-default" ng-click="datePickers.dataPeriodRestrictionStart=true;"><i class="fas fa-calendar"></i></button>
 	          </span>
              </div>
-             </div><div class="col-sm-1"><p class="form-control-static" translate="queryeditor.to"></p></div>
+             </div><div class="col-sm-1"><p class="form-control-plaintext" translate="queryeditor.to"></p></div>
              <div class="col-sm-3">
 		     <div class="input-group">
 	          <input id="dataPeriodRestrictionEnd" name="dataPeriodRestrictionEnd" as-date type="text" class="form-control" placeholder="" uib-datepicker-popup="dd.MM.yyyy"  ng-model="currentBlock.dataPeriodRestrictionEnd" is-open="datePickers.dataPeriodRestrictionEnd" no-time datepicker-options="dateOptions" ng-required="false" close-text="Close" />
-	          <span class="input-group-btn">
-	             <button type="button"  class="btn btn-default" ng-click="datePickers.dataPeriodRestrictionEnd=true;"><i class="glyphicon glyphicon-calendar"></i></button>
+	          <span class="input-group-append">
+	             <button type="button"  class="btn btn-default" ng-click="datePickers.dataPeriodRestrictionEnd=true;"><i class="fas fa-calendar"></i></button>
 	          </span>
              </div>
              </div>

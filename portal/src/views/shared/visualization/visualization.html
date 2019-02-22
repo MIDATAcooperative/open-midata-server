@@ -4,7 +4,7 @@
 		
 		<div ng-cloak class="panel panel-primary">	
 		  <div class="panel-heading"><span translate="visualization.title"></span>
-		    <a ng-click="goBack()" href="javascript:" class="close-icon pull-right"><span class="glyphicon glyphicon-remove"></span></a> 
+		    <a ng-click="goBack()" href="javascript:" class="close-icon float-right"><span class="fas fa-times"></span></a> 
 		  </div>	
 		  <div class="panel-body">
 		    <loader busy="status.isBusy !== false">
@@ -19,33 +19,33 @@
 			
 			<p class="lead">{{ visualization.i18n[translate.use()].name || visualization.name}}</p>
 			<div class="row">
-				<p class="col-xs-2" translate="visualization.created_by"></p>
-				<p class="col-xs-10">{{visualization.creatorLogin}} <span ng-show="visualization.creator">({{visualization.creator}})</span></p>
+				<p class="col-2" translate="visualization.created_by"></p>
+				<p class="col-10">{{visualization.creatorLogin}} <span ng-show="visualization.creator">({{visualization.creator}})</span></p>
 			</div>
 			<div class="row" ng-show="visualization.orgName">
-				<p class="col-xs-2" translate="visualization.orgName"></p>
-				<p class="col-xs-10">{{visualization.orgName}}</p>
+				<p class="col-2" translate="visualization.orgName"></p>
+				<p class="col-10">{{visualization.orgName}}</p>
 			</div>
 			<div class="row">
-				<p class="col-xs-2" translate="visualization.description"></p>
-				<p class="col-xs-10">{{ visualization.i18n[translate.use()].description || visualization.description}}</p>
+				<p class="col-2" translate="visualization.description"></p>
+				<p class="col-10">{{ visualization.i18n[translate.use()].description || visualization.description}}</p>
 			</div>
 		
 			<div class="row">
-			    <p class="col-xs-2" translate="visualization.tile_name"></p>
-			    <p class="col-xs-10">			      
+			    <p class="col-2" translate="visualization.tile_name"></p>
+			    <p class="col-10">			      
 			      <input class="form-control" type="text" ng-model="options.spaceName" />			
                 </p>			    			        
 			</div>
 			<div class="row" ng-show="beta">
-			    <p class="col-xs-2" translate="visualization.install_location">Location:</p>
-			    <p class="col-xs-10">			      
+			    <p class="col-2" translate="visualization.install_location">Location:</p>
+			    <p class="col-10">			      
 			      <select class="form-control" ng-model="options.context" ng-options="context.value as context.label | translate for context in contexts"/>			
                 </p>			    			        
 			</div>
 			<div ng-if="options.query" class="row">
-			    <p class="col-xs-2"></p>
-			    <div class="col-xs-10">
+			    <p class="col-2"></p>
+			    <div class="col-10">
 			      <label>
 			        
 			        <span translate="visualization.grant_access"></span>
@@ -90,11 +90,11 @@
 			</div>
 			  
 		    <div ng-show="app.termsOfUse" class="row>
-		        <p class="col-xs-2" translate="registration.appAgb"></p>
-			    <p class="col-xs-10">	
-		      	    <div class="checkbox">
-                               <label>
-                                  <input type="checkbox" id="appAgb" name="appAgb" ng-model="options.appAgb">
+		        <p class="col-2" translate="registration.appAgb"></p>
+			    <p class="col-10">	
+		      	    <div class="form-check">
+                               <label class="form-check-label">
+                                  <input class="form-check-input" type="checkbox" id="appAgb" name="appAgb" ng-model="options.appAgb">
                                   <span translate="registration.app_agb2"></span>
                                   <a ng-click="terms({which : app.termsOfUse })" href="javascript:" translate="registration.app_agb3"></a>
                                </label>

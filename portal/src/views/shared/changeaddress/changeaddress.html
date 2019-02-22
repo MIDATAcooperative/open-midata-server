@@ -11,7 +11,7 @@
             <p ng-show="offline" class="alert alert-danger" translate="error.offline"></p>					
 			<form name="myform" novalidate class="css-form form-horizontal" ng-submit="changeAddress()" role="form">								  
 			  <formrow myid="email" label="registration.email">
-			    <p class="form-control-static">{{  registration.email }} <button class="btn btn-xs btn-default" translate="common.change_btn" ng-click="changeEmail();"></button></p>
+			    <p class="form-control-plaintext">{{  registration.email }} <button class="btn btn-sm btn-default" translate="common.change_btn" ng-click="changeEmail();"></button></p>
 			  </formrow>  
 			  <formrow myid="firstname" label="registration.firstname"><input type="text" class="form-control" id="firstname" name="firstname" translate translate-attr-placeholder="registration.firstname" ng-change="adrChange();" ng-model="registration.firstname" required></formrow>
 			  <formrow myid="lastname" label="registration.lastname"><input type="text" class="form-control" id="lastname" name="lastname" translate translate-attr-placeholder="registration.lastname" ng-change="adrChange();" ng-model="registration.lastname" required></formrow>
@@ -19,13 +19,13 @@
 			  <formrow myid="gender" label="registration.gender"><select class="form-control" id="gender" name="gender" ng-change="adrChange();" ng-model="registration.gender"><option value="FEMALE" translate="enum.gender.FEMALE">female</option><option value="MALE" translate="enum.gender.MALE"></option><option value="OTHER" translate="enum.gender.OTHER"></option></select></formrow>
 			  <formrow myid="birthday" label="registration.birthday" ng-if="registration.birthday">			
 				  <div class="row">										
-					  <div class="col-xs-3 col-sm-3">
+					  <div class="col-3 col-sm-3">
 							<input type="text" maxlength="2" class="form-control" id="birthday" name="birthday" translate translate-attr-placeholder="registration.day" ng-change="birthChange();" ng-model="registration.birthdayDay" required pattern="[0123]?[0-9]">
 					  </div>											
-					  <div class="col-xs-5 col-sm-6 selectplaceholder">
+					  <div class="col-5 col-sm-6 selectplaceholder">
 						   <select  id="birthdayMonth" class="form-control" name="birthdayMonth" ng-change="birthChange();" ng-model="registration.birthdayMonth" required><option ng-repeat="month in months" ng-value="month" translate="{{ 'enum.month.'+month }}"></option><option value="" selected disabled hidden translate="registration.month"></option></select>
 					  </div>											
-					  <div class="col-xs-4 col-sm-3">
+					  <div class="col-4 col-sm-3">
 						   <input type="text" maxlength="4" class="form-control" id="birthdayYear" name="birthdayYear" translate translate-attr-placeholder="registration.year" ng-change="birthChange();" ng-model="registration.birthdayYear" required>
 					  </div>
 				  </div>							 

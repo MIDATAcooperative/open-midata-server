@@ -94,6 +94,9 @@ angular.module('portal', [ 'ngCookies', 'ui.router', 'ui.bootstrap', 'services',
   $compileProvider.commentDirectivesEnabled(false);
   $compileProvider.cssClassDirectivesEnabled(false);  
 }])
+.config(['paginationTemplateProvider', function(paginationTemplateProvider) {
+    paginationTemplateProvider.setPath('assets/directives/dirPagination.tpl.html');
+}])
 .service('SessionInterceptor', ["$injector", "$q" , function($injector, $q) {
     var service = this;    
     service.responseError = function(response) {    	

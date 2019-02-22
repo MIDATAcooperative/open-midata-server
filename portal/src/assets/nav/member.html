@@ -1,64 +1,63 @@
 
 <!-- Navbar -->
 <div class="colored" ng-controller="NavbarCtrl">
-	<div id="navbar" class="navbar navbar-default" role="navigation" >
+	<div id="navbar" class="navbar navbar-expand-lg navbar-light bg-light" role="navigation" >
 		<script type="text/ng-template" id="userinfo.html">
-	   <div class="popoverbox">
+	   <div class="popoverbox"><div style="padding:10px;">
         <div><b>{{ user.firstname }} {{ user.lastname }}</b></div>
         <div>{{ user.email }}</div>
         <hr>
         <div><b style="min-width:40px;display:inline-block;">{{circles.apps}}</b><span translate="navbar.app_count"></span></div>
         <div><b style="min-width:40px;display:inline-block;">{{circles.studies}}</b><span translate="navbar.study_count"></span></div>
         <div class="extraspace"></div>
-        <a href="javascript:" ui-sref="member.user({ userId : user._id})" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> <span translate="navbar.edit_profile"></span></a>
-        <a href="javascript:" ng-click="logout()" class="btn btn-default"><span class="glyphicon glyphicon-off"></span> <span translate="navbar.sign_out"></span></a>
-       </div>
+        <a href="javascript:" ui-sref="member.user({ userId : user._id})" class="btn btn-sm btn-default"><span class="fas fa-pencil-alt"></span> <span translate="navbar.edit_profile"></span></a>
+        <a href="javascript:" ng-click="logout()" class="btn btn-sm btn-default"><span class="fas fa-power-off"></span> <span translate="navbar.sign_out"></span></a>
+       </div></div>
      </script>
 		<div class="container-fluid">
 			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-					<span class="sr-only" translate="navbar.toggle_navigation"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
-						class="icon-bar"></span>
-				</button>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-ex1-collapse" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+             </button>
 				<a class="navbar-brand" ui-sref="member.overview"> <span class="midata" id="logotype"><img src="/images/logo.png"
 						style="height: 36px;"></span>
 				</a>
 			</div>
 			<div class="collapse navbar-collapse navbar-ex1-collapse">
-				<ul class="hidden-xs nav navbar-nav navbar-right" ng-cloak>
-
-					<li><a href="javascript:" tabindex="0" uib-popover-template="'userinfo.html'" popover-trigger="'focus'" popover-append-to-body="true" popover-placement="auto bottom-left">{{user.name}}</a></li>
-
-				</ul>
-				<div class="hidden-md hidden-sm hidden-lg">
-					<div ng-include="'userinfo.html'"></div>
-					<hr>
-				</div>
-
-				<ul class="nav navbar-nav">
-					<li ui-sref-active="active"><a ui-sref="member.overview" translate="navbar.me"></a></li>
+				
+				<ul class="nav navbar-nav mr-auto">
+					<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="member.overview" translate="navbar.me"></a></li>
 
 
 
 					<!-- <li ng-show="beta" ui-sref-active="active"><a ui-sref="member.dashboard({ dashId : 'overview' })" translate="navbar.overview"></a></li> -->
 					<!-- <li ui-sref-active="active"><a ui-sref="member.messages">Messages</a></li> -->
-					<li ng-show="beta" ui-sref-active="active"><a ui-sref="member.records" translate="navbar.my_data"></a></li>
-					<li ng-show="beta" ui-sref-active="active"><a ui-sref="member.circles"><span translate="navbar.consents"></span> <span
+					<li class="nav-item" ng-show="beta" ui-sref-active="active"><a class="nav-link" ui-sref="member.records" translate="navbar.my_data"></a></li>
+					<li class="nav-item" ng-show="beta" ui-sref-active="active"><a class="nav-link" ui-sref="member.circles"><span translate="navbar.consents"></span> <span
 							ng-show="circles.unconfirmed" class="badge">{{circles.unconfirmed}}</span></a></li>
-					<li ui-sref-active="active"><a ui-sref="member.studies" translate="navbar.research"></a></li>
-					<li ui-sref-active="active"><a ui-sref="member.apps"><span translate="navbar.apps"></span></a></li>
+					<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="member.studies" translate="navbar.research"></a></li>
+					<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="member.apps"><span translate="navbar.apps"></span></a></li>
 
 					<!-- li ui-sref-active="active"><a ui-sref="member.dashboard({ dashId : 'help' })" translate="navbar.help"></a></li> -->
 
-					<li ui-sref-active="active" class="dropdown"><a href="javascript:" class="dropdown-toggle" data-toggle="dropdown" role="button"
+					<li class="nav-item dropdown" ui-sref-active="active"><a href="javascript:" class="dropdown-toggle nav-link" data-toggle="dropdown" role="button"
 						aria-haspopup="true" aria-expanded="false"><span class="caret"></span></a>
-						<ul class="dropdown-menu">
-							<li><a href="javascript:" ng-click="showApp('fhir-observation');" translate="dashboard.observations"></a></li>
-							<li><a href="javascript:" ng-click="showApp('calendar');" translate="dashboard.calendar"></a></li>
-							<li ng-repeat="entry in me_menu"><a href="javascript:" ng-click="showSpace(entry)" translate="{{entry.name}}"></a></li>
+						<div class="dropdown-menu">
+							<a class="dropdown-item" href="javascript:" ng-click="showApp('fhir-observation');" translate="dashboard.observations"></a>
+							<a class="dropdown-item" href="javascript:" ng-click="showApp('calendar');" translate="dashboard.calendar"></a>
+							<a ng-repeat="entry in me_menu" class="dropdown-item" href="javascript:" ng-click="showSpace(entry)" translate="{{entry.name}}"></a>
 
-						</ul></li>
+						</div></li>
 				</ul>
+				
+				<ul class="d-xs-none nav navbar-nav" ng-cloak>
+					<li class="nav-item"><a class="nav-link" href="javascript:" tabindex="0" uib-popover-template="'userinfo.html'" popover-trigger="'focus'" popover-popup-close-delay="100" popover-animation="false" popover-append-to-body="false" popover-placement="auto bottom-left">{{user.name}}</a></li>
+				</ul>
+				<div class="d-md-none d-sm-none d-lg-none">
+					<div ng-include="'userinfo.html'"></div>
+					<hr>
+				</div>
+				
 
 			</div>
 			<!--/.nav-collapse -->

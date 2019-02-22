@@ -7,7 +7,7 @@
     <div class="panel panel-primary">
 				<div class="panel-heading">
 				  <span translate="{{ 'enum.studytype.'+study.type }}"></span>
-				  <a ng-click="goBack()" href="javascript:" class="close-icon pull-right"><span class="glyphicon glyphicon-remove"></span></a>
+				  <a ng-click="goBack()" href="javascript:" class="close-icon float-right"><span class="fas fa-times"></span></a>
 				</div>
 				<div class="panel-body">
 		
@@ -155,7 +155,7 @@
 						translate="common.user.mobile_phone"></span>: {{ prov.mobile }}</span><br> <span ng-show="prov.email"><span
 						translate="common.user.email"></span>: {{ prov.email }}</span><br>
 				</address>
-				<button class="btn btn-danger btn-xs" ng-click="removeProvider(prov);" translate="studydetails.provider_remove_btn"></button>
+				<button class="btn btn-danger btn-sm" ng-click="removeProvider(prov);" translate="studydetails.provider_remove_btn"></button>
 			</div>
 			<div class="extraspace"></div>
 			<button class="btn btn-default" ng-click="addProvider()" translate="studydetails.provider_add_btn"></button>

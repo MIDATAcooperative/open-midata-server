@@ -13,7 +13,7 @@
         <tr ng-repeat="item in usergroups|orderBy:'name'">
           <td><a ui-sref="^.editusergroup({ groupId : item._id })">{{ item.name }}</a></td>
           <td translate="{{ 'enum.userstatus.'+item.status }}"></td>          
-          <td><button class="btn btn-danger btn-xs" ng-show="item.status != 'DELETED'" ng-disabled="status.action=='delete'" translate="common.delete_btn" ng-click="deleteGroup(item)"></button></td>
+          <td><button class="btn btn-danger btn-sm" ng-show="item.status != 'DELETED'" ng-disabled="status.action=='delete'" translate="common.delete_btn" ng-click="deleteGroup(item)"></button></td>
         </tr>
       </table>
       <p ng-show="usergroups.length == 0" translate="provider_usergroups.empty"></p>

@@ -10,10 +10,10 @@
 	      </p>
 		  <form name="myform" novalidate class="css-form form-horizontal" ng-submit="submit()">		    
 		    <formrow myid="name" label="appicon.name">
-		      <p class="form-control-static">{{ app.name }}</p>
+		      <p class="form-control-plaintext">{{ app.name }}</p>
 		    </formrow>
 		    <formrow myid="filename" label="appicon.internalname">
-		      <p class="form-control-static">{{ app.filename }}</p>
+		      <p class="form-control-plaintext">{{ app.filename }}</p>
 		    </formrow>
 		    <formrow myid="use" label="appicon.use.title">
 		      <select name="use" class="form-control" required ng-model="meta.use" ng-options="use as 'appicon.use.'+use | translate for use in uses"></select>

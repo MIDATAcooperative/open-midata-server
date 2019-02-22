@@ -11,13 +11,13 @@
 			<form name="myform" novalidate class="css-form form-horizontal" ng-submit="changeEmail()" role="form">
 
 				<formrow myid="midataId" label="changeemail.midataId">
-				  <p class="form-control-static">{{ member.midataId }}<span ng-hide="member.midataId" translate="changeemail.none"></span></p>
+				  <p class="form-control-plaintext">{{ member.midataId }}<span ng-hide="member.midataId" translate="changeemail.none"></span></p>
                 </formrow>
 			    <formrow myid="name" label="changeemail.name">
-				  <p class="form-control-static">{{ member.firstname }} {{ member.lastname }}</p>
+				  <p class="form-control-plaintext">{{ member.firstname }} {{ member.lastname }}</p>
                 </formrow>			  
 				<formrow myid="oldEmail" label="changeemail.old_email">
-				  <p class="form-control-static">{{ member.email }}<span ng-hide="member.email" translate="changeemail.none"></span></p>
+				  <p class="form-control-plaintext">{{ member.email }}<span ng-hide="member.email" translate="changeemail.none"></span></p>
                 </formrow>
 				<formrow myid="email" label="changeemail.new_email"> 
 				   <input type="text" class="form-control" id="email" name="email"

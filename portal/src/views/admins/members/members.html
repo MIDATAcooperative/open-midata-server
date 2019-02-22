@@ -16,7 +16,7 @@
 		      <formrow myid="lastname" label="common.user.lastname" ng-show="search.searchable">
 		        <div class="input-group">
 		        <input type="text" class="form-control" id="lastname" ng-model="search.criteria.lastname" >
-		        <div class="input-group-btn">
+		        <div class="input-group-append">
 		          <button class="btn btn-primary" ng-click="reload()" translate="common.search_btn"></button>
 		        </div>
 		        </div>
@@ -24,7 +24,7 @@
 		      <formrow myid="email" label="common.user.email" ng-show="search.searchable">
 		        <div class="input-group">
 		        <input type="text" class="form-control" id="email" ng-model="search.criteria.email" >
-		        <div class="input-group-btn">
+		        <div class="input-group-append">
 		          <button class="btn btn-primary" ng-click="reload()" translate="common.search_btn"></button>
 		        </div>
 		        </div>
@@ -55,10 +55,10 @@
 					<td>{{ member.lastname }}</td>
 					<td>{{ member.email }}</td>
 					<td>
-					  <span ng-show="member.developer" class="glyphicon glyphicon-link" title="tied to developer"></span>
-					  <span ng-show="member.emailStatus != 'VALIDATED' && member.emailStatus != 'EXTERN_VALIDATED'" class="glyphicon glyphicon-question-sign" title="email not confirmed"></span>					  
-					  <span ng-show="!member.login || member.login &lt; dateLimit" class="glyphicon glyphicon-time" title="last login older 1 month"></span>
-					  <span ng-show="member.security != 'KEY_EXT_PASSWORD'" class="glyphicon glyphicon-eye-open" title="Non standard key protection"></span>
+					  <span ng-show="member.developer" class="fas fa-link" title="tied to developer"></span>
+					  <span ng-show="member.emailStatus != 'VALIDATED' && member.emailStatus != 'EXTERN_VALIDATED'" class="fas fa-question-sign" title="email not confirmed"></span>					  
+					  <span ng-show="!member.login || member.login &lt; dateLimit" class="fas fa-clock" title="last login older 1 month"></span>
+					  <span ng-show="member.security != 'KEY_EXT_PASSWORD'" class="fas fa-eye" title="Non standard key protection"></span>
 					</td>
 					<td translate="{{ 'enum.userrole.'+member.role }}"></td>
 					<td><select ng-change="changeUser(member);" ng-model="member.status" class="form-control" ng-options="status as 'enum.userstatus.'+status | translate for status in stati"></select></td>

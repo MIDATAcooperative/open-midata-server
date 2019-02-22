@@ -2,7 +2,7 @@
  <div class="overlay-body">
  <div class="panel panel-primary">
   <div class="panel-heading"><span translate="editconsent.title"></span>: {{ consent.name }}
-  <a ng-click="goBack()" href="javascript:" class="close-icon pull-right"><span class="glyphicon glyphicon-remove"></span></a>    
+  <a ng-click="goBack()" href="javascript:" class="close-icon float-right"><span class="fas fa-times"></span></a>    
   </div>
   <div class="panel-body">
   <loader busy="status.isBusy !== false">
@@ -45,12 +45,12 @@
          <!-- 
      <div class="row">
      <div class="col-sm-12">
-      <p class="form-control-static" ng-show="consent.type == 'CIRCLE'" translate="editconsent.type_circle"></p>
-      <p class="form-control-static" ng-show="consent.type == 'HEALTHCARE'" translate="editconsent.type_healthcare"></p>
-      <p class="form-control-static" ng-show="consent.type == 'STUDYPARTICIPATION'" translate="editconsent.type_studyparticipation"></p>    
-      <p class="form-control-static" ng-show="consent.type == 'STUDYRELATED'" translate="editconsent.type_studyrelated"></p>
-      <p class="form-control-static" ng-show="consent.type == 'EXTERNALSERVICE'" translate="editconsent.type_externalservice"></p>
-      <p class="form-control-static" ng-show="consent.type == 'IMPLICIT'" translate="editconsent.type_implicit"></p>
+      <p class="form-control-plaintext" ng-show="consent.type == 'CIRCLE'" translate="editconsent.type_circle"></p>
+      <p class="form-control-plaintext" ng-show="consent.type == 'HEALTHCARE'" translate="editconsent.type_healthcare"></p>
+      <p class="form-control-plaintext" ng-show="consent.type == 'STUDYPARTICIPATION'" translate="editconsent.type_studyparticipation"></p>    
+      <p class="form-control-plaintext" ng-show="consent.type == 'STUDYRELATED'" translate="editconsent.type_studyrelated"></p>
+      <p class="form-control-plaintext" ng-show="consent.type == 'EXTERNALSERVICE'" translate="editconsent.type_externalservice"></p>
+      <p class="form-control-plaintext" ng-show="consent.type == 'IMPLICIT'" translate="editconsent.type_implicit"></p>
       </div>
       </div>
        -->
@@ -60,7 +60,7 @@
           <p><b translate="newconsent.who_is_owner"></b></p>
           
           <div class="well well-sm" ng-show="owner">
-          <img ng-src="{{getIconRole(owner)}}" class="pull-left consenticon">
+          <img ng-src="{{getIconRole(owner)}}" class="float-left consenticon">
           <div class="iconspace">
           <div translate="{{'enum.userrole.'+owner.role}}"></div>		  	
 		  <address>
@@ -74,7 +74,7 @@
 		  </div>
 		</div>
 		<div class="well well-sm" ng-show="consent.externalOwner">
-		  <img ng-src="/images/external.jpg" class="pull-left consenticon">
+		  <img ng-src="/images/external.jpg" class="float-left consenticon">
           <div class="iconspace">
 		    <span translate="editconsent.external"></span>: <strong>{{ consent.externalOwner }}</strong>
 		  </div>
@@ -83,19 +83,19 @@
        </div>
        <div class="col-sm-1">
          <div style="margin-top:60px" class="text-center">
-           <span style="font-size:40px" class="glyphicon glyphicon-arrow-right"></span>
+           <span style="font-size:40px" class="fas fa-arrow-right"></span>
          </div>
        </div>
        <div class="col-sm-6">
          <p><b translate="editconsent.people"></b></p>
           <div class="well well-sm" ng-show="consent.type=='EXTERNALSERVICE'">
-            <img ng-src="{{getIconRole('app')}}" class="consenticon pull-left">
+            <img ng-src="{{getIconRole('app')}}" class="consenticon float-left">
             <div class="iconspace">
               <strong translate="editconsent2.external"></strong>
             </div>
           </div>
           <div class="well well-sm" ng-show="consent.type=='STUDYRELATED'">
-            <img ng-src="{{getIconRole('community')}}" class="consenticon pull-left">
+            <img ng-src="{{getIconRole('community')}}" class="consenticon float-left">
             <div class="iconspace">
                <strong translate="editconsent2.community"></strong>
             </div>
@@ -103,7 +103,7 @@
          <div class="well well-sm" ng-repeat="person in authpersons">
           
 		  <button type="button" ng-click="removePerson(person)" class="close" aria-label="Delete" ng-show="mayChangeUsers()"><span aria-hidden="true">&times;</span></button>
-		  <img ng-src="{{getIconRole(person)}}" class="pull-left consenticon">
+		  <img ng-src="{{getIconRole(person)}}" class="float-left consenticon">
 		  <div class="iconspace">
 		  <div translate="{{'enum.userrole.'+person.role}}"></div>		
 		  <address>
@@ -119,21 +119,21 @@
 		</div>
 		<div class="well well-sm" ng-repeat="usergroup in authteams">
 		  <button type="button" ng-show="mayChangeUsers" ng-click="removePerson(usergroup)" class="close" aria-label="Delete"><span aria-hidden="true">&times;</span></button>
-		  <img ng-src="{{getIconRole('team')}}" class="pull-left consenticon">
+		  <img ng-src="{{getIconRole('team')}}" class="float-left consenticon">
 		  <div class="iconspace">
 		    <div translate="editconsent2.team"></div>	
 		    <strong>{{ usergroup.name }}</strong>
 		  </div>
 		</div>
 		<div class="well well-sm" ng-repeat="person in consent.externalAuthorized">
-		  <img ng-src="{{getIconRole('external')}}" class="pull-left consenticon">
+		  <img ng-src="{{getIconRole('external')}}" class="float-left consenticon">
 		  <div class="iconspace">
 		    <div translate="editconsent.external"></div>
 		    <strong>{{ person }}</strong>
 		  </div>
 		</div>
 		<div class="well well-sm" ng-show="consent.reshare">
-		  <img ng-src="{{getIconRole('reshare')}}" class="pull-left consenticon">
+		  <img ng-src="{{getIconRole('reshare')}}" class="float-left consenticon">
 		  <div class="iconspace">
 		     <span translate="editconsent.reshare"></span>
 		  </div>
@@ -154,7 +154,7 @@
 	
 	<p><b translate="editconsent.what_is_shared"></b></p>
 	  <!-- <div ng-show="groupLabels.length && groupLabels.length < 5">{{ groupLabels.join(", ") }}</div>  -->
-	  <ul ng-show="groupLabels.length" class="row">
+	  <ul ng-show="groupLabels.length">
 	    <li ng-repeat="label in groupLabels | orderBy : 'toString()'">{{ label }}</li>
 	  </ul>
 	  <div ng-show="groupExcludeLabels.length">
