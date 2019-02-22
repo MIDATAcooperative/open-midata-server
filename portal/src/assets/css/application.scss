@@ -87,8 +87,6 @@ body {
   position: absolute;
 }
 
-#header {
-}
 #maincontent {
 	padding-bottom:180px;   /* Height of the footer element */
 }
@@ -121,6 +119,9 @@ body {
 
 .margin-top { 
   margin-top:5px; 
+} 
+.margin-left { 
+   margin-left:5px; 
 } 
 
 .fullheight { height: 100%; }

@@ -19,9 +19,9 @@
     </address>
       <p>Pick consent:</p>
       <div class="row">
-      <div class="col-sm-8">
+      <div class="col-sm-7">
       <select class="form-control" ng-change="selectConsent(data.consent)" ng-model="data.consent" ng-options="consent.name for consent in consents"></select>
-      </div><div class="col-sm-4">
+      </div><div class="col-sm-5">
       <button class="btn btn-default" ng-click="addData();" ng-hide="hideAdd">Share Data With Patient</button>
       
       <button class="btn btn-default" ui-sref="^.newconsent({ owner : member._id })" translate="provider_memberdetails.propose_consent"></button>
