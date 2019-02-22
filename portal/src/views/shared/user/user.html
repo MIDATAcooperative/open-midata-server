@@ -115,13 +115,13 @@
 				  <div class="form-check">
 				    <label class="form-check-label">
 				      <input class="form-check-input" type="radio" ng-disabled="locked" name="searchable" ng-value="true" ng-model="user.searchable">
-				      <span translate="user.searchable_yes"></span>
+				      <span class="margin-left" translate="user.searchable_yes"></span>
 				    </label>
 				  </div>
 				  <div class="form-check">
 				    <label class="form-check-label">
 				      <input class="form-check-input" type="radio" ng-disabled="locked" name="searchable" ng-value="false" ng-model="user.searchable">
-				      <span translate="user.searchable_no"></span>
+				      <span class="margin-left" translate="user.searchable_no"></span>
 				    </label>
 				  </div>
 				  <span class="help-block" translate="user.searchable_info"></span>
@@ -136,7 +136,7 @@
 				  <div class="form-check" ng-repeat="mode in authTypes">
 				    <label class="form-check-label">
 				      <input class="form-check-input" type="radio" ng-disabled="locked" name="authType" ng-value="mode" ng-model="user.authType">
-				      <span translate="{{ 'enum.secondaryauthtype.'+mode }}"></span>
+				      <span  class="margin-left" translate="{{ 'enum.secondaryauthtype.'+mode }}"></span>
 				    </label>
 				  </div>
 				  <div class="has-error">
@@ -152,7 +152,7 @@
 				  <div class="form-check" ng-repeat="mode in notificationTypes">
 				    <label class="form-check-label">
 				      <input class="form-check-input" type="radio" ng-disabled="locked" name="notifications" ng-value="mode" ng-model="user.notifications">
-				      <span translate="{{ 'enum.accountnotifications.'+mode }}"></span>
+				      <span  class="margin-left" translate="{{ 'enum.accountnotifications.'+mode }}"></span>
 				    </label>
 				  </div>							
 				</div>				 
