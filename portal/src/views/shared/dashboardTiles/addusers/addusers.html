@@ -5,12 +5,12 @@
 	<div ng-show="contacts.length > 0">
 	   <p translate="addusers.contacts"></p>
 		<div class="form-check" ng-repeat="contact in filteredContacts = (contacts | filter:isntMember)">
-			<label class="form-check-label"> <input class="form-check-input" type="checkbox" ng-model="contact.checked"> {{contact.firstname}} {{contact.lastname}} &lt;{{contact.email}}&gt;
+			<label class="form-check-label"> <input class="form-check-input" type="checkbox" ng-model="contact.checked"> <span class="margin-left">{{contact.firstname}} {{contact.lastname}} &lt;{{contact.email}}&gt;</span>
 			</label>
 		</div>
 		<p ng-show="filteredContacts.length === 0" translate="addusers.no_contacts_to_add"></p>
 	</div>
-	
+	<hr>
 	<form class="form-horizontal" ng-submit="searchUsers()">
 	   <p translate="addusers.search_by_email"></p>
 		<div class="form-group form-row">
