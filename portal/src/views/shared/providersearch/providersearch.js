@@ -7,7 +7,7 @@ angular.module('views')
     $scope.role = $state.current.data.role;
     console.log($scope.role);
     var dosearch = function(crit) {
-    	$scope.status.doBusy(hc.search(crit, ["firstname", "lastname", "city", "zip", "address1"]))
+    	$scope.status.doBusy(hc.search(crit, ["firstname", "lastname", "city", "zip", "address1", "role"]))
     	.then(function(data) {
     		$scope.providers = data.data;
     	});

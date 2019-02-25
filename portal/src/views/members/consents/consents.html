@@ -24,14 +24,16 @@
 			<table class="table table-striped" ng-show="consents.length">
 
 				<tr>
-					<th translate="consents.name"></th>
-					<th translate="consents.type"></th>
-					<th translate="consents.status"></th>
+					<th sortby="name" translate="consents.name"></th>
+					<th sortby="dateOfCreation" translate="consents.date_of_creation"></th>
+					<th sortby="type" translate="consents.type"></th>
+					<th sortby="status" translate="consents.status"></th>
 					<th translate="consents.number_of_people"></th>
 					<th translate="consents.number_of_records"></th>
 				</tr>
-				<tr ng-repeat="consent in consents | orderBy : 'name'" ng-class="{ 'warning' : consent.status == 'UNCONFIRMED' }">
+				<tr ng-repeat="consent in consents | orderBy : sortby" ng-class="{ 'warning' : consent.status == 'UNCONFIRMED' }">
 					<td><a ng-click="editConsent(consent);" href="javascript:">{{ consent.name }}</a></td>
+					<td>{{ consent.dateOfCreation | date : 'dd.MM.yy' }}</td> 
 					<td translate="{{ 'enum.consenttype.'+consent.type }}"></td>
 					<td translate="{{ 'enum.consentstatus.'+consent.status }}"></td>
 					<td>{{ consent.authorized.length }}</td>

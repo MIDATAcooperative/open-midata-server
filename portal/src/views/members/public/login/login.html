@@ -46,12 +46,7 @@
 								<input type="password" class="form-control" translate translate-attr-placeholder="login.password" ng-model="login.password" style="margin-bottom:5px;">								
 								<select class="form-control" ng-model="login.role" ng-options="role.value as role.name|translate for role in roles"></select>
 								</div>
-								<!-- TODO -->
-								<div class="form-check form-group">
-									<label class="form-check-label" style="font-weight:normal;">
-										<input class="form-check-input" type="checkbox" value="remember-me"><span translate="login.remember_me"></span>
-									</label>
-								</div>
+								
 								<button type="submit" ng-disabled="status.action=='login'" class="btn btn-lg btn-primary btn-block" translate="login.sign_in_btn"></button>
 								<div class="margin-top">
 								  <a ui-sref='public.lostpw' translate="login.forgot_your_password"></a>

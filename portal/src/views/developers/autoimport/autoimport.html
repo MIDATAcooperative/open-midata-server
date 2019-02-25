@@ -23,9 +23,11 @@
 		  <div class="alert alert-warning" ng-show="!call.loggedIn">Please establish an OAuth session before testing.</div>
 		  <div class="alert alert-warning" ng-show="!call.autoImport">Please configure your plugin to use autoImport before testing.</div>		
 		  <p>When ready execute this command to test autoimport (paste as one line):</p>
-		  <div class="well" style="word-wrap:break-word">
+		  <div class="card">
+		  <div class="card-body" style="word-wrap:break-word">
            node server.js "{{ call.authToken }}" en {{baseurl}} {{userId}}
-		  </div>		 		  	  
+		  </div>		 	
+		  </div>	  	  
 	    </div>
     </div>
 </div>

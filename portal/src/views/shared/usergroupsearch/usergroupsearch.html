@@ -16,8 +16,9 @@
 			
 		 <loader busy="status.isBusy !== false">
 				   
-	       <div ng-repeat="usergroup in usergroups">
-	          <h1>{{ usergroup.name }}</h1>
+	       <div ng-repeat="usergroup in usergroups" class="card margin-top">
+	         <div class="card-header">{{ usergroup.name }}</div>
+	         <div class="card-body">	         
 	          <table class="table">
 	            <tr ng-repeat="member in usergroup.members">
 	              <td>{{ member.user.firstname }}</td>
@@ -25,8 +26,9 @@
 	              <td>{{ member.user.email }}</td>
 	            </tr>
 	          </table>
-	          <button class="btn btn-default" ng-click="addIndividuals(usergroup)" translate="usergroupsearch.add_individuals_btn"></button>
-	          <button class="btn btn-default" ng-click="addGroup(usergroup)" translate="usergroupsearch.add_group_btn"></button>
+	          <button class="btn btn-default col-5" ng-click="addIndividuals(usergroup)" translate="usergroupsearch.add_individuals_btn"></button>
+	          <button class="btn btn-default col-5" ng-click="addGroup(usergroup)" translate="usergroupsearch.add_group_btn"></button>
+	          </div>
 	       </div>
 	   
 	   

@@ -31,7 +31,8 @@
     
     
      <formrow myid="owner" label="newconsent.who_is_owner">
-		<div class="well well-sm" ng-show="owner">		  	
+		<div class="card" ng-show="owner">
+		 <div class="card-body">		  	
 		  <address>
 			<strong>{{ owner.firstname }} {{ owner.lastname }}</strong>
 			<span ng-show="owner.address1 || owner.city || owner.country"><br>{{ owner.address1 }}<br>
@@ -41,14 +42,18 @@
 			</span>
 			<span ng-show="owner.email"><span translate="common.user.email"></span>: {{ owner.email }}<br></span>
 		  </address>
+		  </div>
 		</div>
-		<div class="well well-sm" ng-show="consent.externalOwner">
-		  <span translate="editconsent.external"></span>: <strong>{{ consent.externalOwner }}</strong>
+		<div class="card" ng-show="consent.externalOwner">
+		  <div class="card-body">
+		    <span translate="editconsent.external"></span>: <strong>{{ consent.externalOwner }}</strong>
+		  </div>
 		</div>				
 	</formrow>
     
    <formrow id="share" label="editconsent.people" ng-show="consent.type != 'EXTERNALSERVICE'">
-		<div class="well well-sm" ng-repeat="person in authpersons">
+		<div class="card" ng-repeat="person in authpersons">
+		  <div class="card-body">
 		  <button type="button" ng-click="removePerson(person)" class="close" aria-label="Delete" ng-show="mayChangeUsers()"><span aria-hidden="true">&times;</span></button>	
 		  <address>
 			<strong>{{ person.firstname }} {{ person.lastname }} ({{ person.role }})</strong>
@@ -60,16 +65,23 @@
 			</span>
 			<span ng-show="person.email"><span translate="common.user.email"></span>: {{ person.email }}<br></span>
 		  </address>
+		  </div>
 		</div>
-		<div class="well well-sm" ng-repeat="usergroup in authteams">
+		<div class="card" ng-repeat="usergroup in authteams">
+		 <div class="card-body">
 		  <button type="button" ng-show="mayChangeUsers" ng-click="removePerson(usergroup)" class="close" aria-label="Delete"><span aria-hidden="true">&times;</span></button>	
 		  {{ usergroup.name }}
+		  </div>
 		</div>
-		<div class="well well-sm" ng-repeat="person in consent.externalAuthorized">
-		  <span translate="editconsent.external"></span>: <strong>{{ person }}</strong>
+		<div class="card" ng-repeat="person in consent.externalAuthorized">
+		  <div class="card-body">
+		    <span translate="editconsent.external"></span>: <strong>{{ person }}</strong>
+		  </div>
 		</div>
-		<button type="button" class="btn btn-default" ng-show="mayChangeUsers()" ng-click="addPeople();" translate="editconsent.add_people_btn"></button>
-		<button type="button" class="btn btn-default" ng-show="mayChangeUsers()" ng-click="addUserGroup();" translate="editconsent.add_usergroup_btn"></button>		
+		<div class="margin-top">
+		  <button type="button" class="btn btn-default" ng-show="mayChangeUsers()" ng-click="addPeople();" translate="editconsent.add_people_btn"></button>
+		  <button type="button" class="btn btn-default" ng-show="mayChangeUsers()" ng-click="addUserGroup();" translate="editconsent.add_usergroup_btn"></button>
+		</div>		
 	</formrow>
 	<formrow id="reshare" label="editconsent.reshare" ng-show="consent.type != 'EXTERNALSERVICE'">
 	  <div class="form-check">
