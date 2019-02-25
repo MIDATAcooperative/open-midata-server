@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('NewConsentCtrl', ['$scope', '$state', '$translate', 'server', 'status', 'circles', 'hc', 'views', 'session', 'users', 'usergroups', 'records', 'labels', '$window', 'actions', function($scope, $state, $translate, server, status, circles, hc, views, session, users, usergroups, records, labels, $window, actions) {
+.controller('NewConsentCtrl', ['$scope', '$state', '$translate', 'server', 'status', 'circles', 'hc', 'views', 'session', 'users', 'usergroups', 'records', 'labels', '$window', 'actions', '$filter', function($scope, $state, $translate, server, status, circles, hc, views, session, users, usergroups, records, labels, $window, actions, $filter) {
 	
 	$scope.types = [
 	                { value : "CIRCLE", label : "enum.consenttype.CIRCLE"},
@@ -25,10 +25,16 @@ angular.module('portal')
 	  	 formatYear: 'yy',
 	  	 startingDay: 1
 	};
+	$scope.options = {};
 	$scope.writeProtect = true;
 	views.reset();
-	
-	
+		
+	var getName = function(obj) {		
+		var dt = $filter('date')(new Date(),'dd.MM.yyyy');
+		if (obj.name) return obj.name+" "+dt;
+		if (obj.lastname) return obj.firstname+" "+obj.lastname+" "+dt;
+		return dt;		
+	}
 	$scope.init = function(userId) {
 		$scope.userId = userId;
 		
@@ -88,7 +94,7 @@ angular.module('portal')
 			});
 			
 		} else {
-			$scope.consent = { type : ($state.current.data.role === "PROVIDER" ? "HEALTHCARE" : "CIRCLE"), status : "ACTIVE", authorized : [], writes : "NONE" };
+			$scope.consent = { type : ($state.current.data.role === "PROVIDER" ? "HEALTHCARE" : null), status : "ACTIVE", authorized : [], writes : "NONE" };
 			views.disableView("records_shared");
 			
 			if ($state.params.owner != null) {
@@ -111,7 +117,7 @@ angular.module('portal')
 			}
 			
 			if ($scope.consent.owner) {				
-				users.getMembers({ "_id" : $scope.consent.owner }, [ "firstname", "lastname", "city", "address1", "address2", "country"])
+				users.getMembers({ "_id" : $scope.consent.owner }, [ "firstname", "lastname", "city", "address1", "address2", "country", "role"])
 				.then(function(result) { $scope.owner = result.data[0]; });
 			}
 			
@@ -122,11 +128,11 @@ angular.module('portal')
 			$scope.consent.type = "HEALTHCARE";			
 			$scope.consent.authorized = [ $state.params.authorize ];
 			
-			hc.search({ "_id" :  $state.params.authorize }, [ "firstname", "lastname", "city", "address1", "address2", "country"])
+			hc.search({ "_id" :  $state.params.authorize }, [ "firstname", "lastname", "city", "address1", "address2", "country", "role"])
 			.then(function(data) {
 				$scope.authpersons = data.data;
 				if (data.data.length > 0) {
-				  $scope.consent.name = "Health Professional: "+$scope.authpersons[0].firstname+" "+$scope.authpersons[0].lastname;
+				  $scope.consent.name = getName($scope.authpersons[0]);
 				}
 			});
 			
@@ -135,7 +141,7 @@ angular.module('portal')
 				angular.forEach(data2.data, function(userGroup) {
 					$scope.consent.entityType = "USERGROUP"
 					$scope.authteams.push(userGroup);
-					$scope.consent.name = "Health Team: "+$scope.authteams[0].name;
+					$scope.consent.name = getName($scope.authteams[0]);
 				});
 			});
 		}
@@ -161,6 +167,8 @@ angular.module('portal')
 	};
 	
 	$scope.create = function() {	
+		
+		if (!$scope.consent.name) $scope.consent.name = getName({});
 		
 		$scope.submitted = true;	
 		if ($scope.error && $scope.error.field && $scope.error.type) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
@@ -207,7 +215,8 @@ angular.module('portal')
 				  $scope.authpersons.splice($scope.authpersons.indexOf(person), 1);
 				  $scope.consent.authorized.splice($scope.consent.authorized.indexOf(person._id), 1);
 				  
-			}			
+			}	
+			if ($scope.consent.authorized.length==0) $scope.consent.entityType = undefined;
 		}
 	};
 	
@@ -217,15 +226,21 @@ angular.module('portal')
 			$scope.authteams.push(person);
 			$scope.consent.authorized.push(person._id);
 			$scope.consent.entityType = "USERGROUP";
+			if (!$scope.consent.name) $scope.consent.name = getName(person);
 		} else {
+			$scope.consent.entityType = "USER";
 		if (person.length) {
 			angular.forEach(person, function(p) { 
-				$scope.authpersons.push(p); 
-				$scope.consent.authorized.push(p._id);
+				if (p.role) {
+				  $scope.authpersons.push(p); 
+				  $scope.consent.authorized.push(p._id);
+				  if (!$scope.consent.name) $scope.consent.name = getName(p);
+				}
 			});
-		} else {
+		} else if (person.role) {
 		    $scope.authpersons.push(person);
 		    $scope.consent.authorized.push(person._id);
+		    if (!$scope.consent.name) $scope.consent.name = getName(person);
 		}
 		}
 		if ($scope.consentId) {
@@ -265,7 +280,8 @@ angular.module('portal')
 	
 	$scope.addYourself = function() {
 		$scope.consent.authorized.push(session.user._id);
-		users.getMembers({ "_id" : session.user._id }, [ "firstname", "lastname", "city", "address1", "address2", "country"])
+		$scope.consent.entityType = "USER";
+		users.getMembers({ "_id" : session.user._id }, [ "firstname", "lastname", "city", "address1", "address2", "country", "role"])
 		.then(function(result) { $scope.authpersons.push(result.data[0]); });		
 	};
 	
@@ -357,10 +373,10 @@ angular.module('portal')
 		if (item == "community") return "/images/community.jpeg";
 		if (item == "external") return "/images/account.jpg";
 		if (item == "reshare") return "/images/community.jpeg";
-		if (item._id == session.user._id) return "/images/account.jpg";
-		if (item.role == "MEMBER") return "/images/account.jpg";
+		if (session.user && item._id == session.user._id) return "/images/account.jpg";
+		if (item=="member" || item.role == "MEMBER") return "/images/account.jpg";
 		if (item.role == "RESEARCH") return "/images/research2.jpeg";
-		if (item.role == "PROVIDER") return "/images/doctor.jpeg";
+		if (item=="provider" || item.role == "PROVIDER") return "/images/doctor.jpeg";
 		return "";
 	};
 }]);

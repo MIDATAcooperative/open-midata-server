@@ -838,6 +838,7 @@
     "type" : "What type of consent do you want to create?",
     "share_with_members" : "I want to share data with other MIDATA account holders.",
     "share_with_provider" : "I want to share data with a health professional.",
+    "select" : "Select",
     "use_passcode" : "Include a passcode?",
     "use_passcode2" : "I do not know yet to whom I want to share the data. Please add a passcode to this consent that I can give to a health professional.",
     "choose_passcode" : "Choose a secure passcode",
@@ -855,7 +856,9 @@
     "created_before" : "Do not share data created after:",
     "share_what" : "What data do you want to share?",
     "consent_empty" : "This consent is empty at the beginning. You can select the data you want to share with this consent afterwards.",
-    "create_btn" : "Create and Data Selection"
+    "create_btn" : "Create and Data Selection",
+    "create2_btn" : "Agree to this consent", 
+    "extended_btn" : "Show advanced options"
   },
 
   "editconsent" : {
@@ -921,6 +924,7 @@
 	"status" : "Status",
 	"number_of_people" : "# People",
 	"number_of_records" : "# Records",
+	"date_of_creation" : "Creation Date",
 	"add_new_btn" : "Add new consent"
   },
 

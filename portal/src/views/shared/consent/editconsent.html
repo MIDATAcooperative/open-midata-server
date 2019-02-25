@@ -59,7 +59,8 @@
        <div class="col-sm-5"> 
           <p><b translate="newconsent.who_is_owner"></b></p>
           
-          <div class="well well-sm" ng-show="owner">
+          <div class="card" ng-show="owner">
+          <div class="card-body">
           <img ng-src="{{getIconRole(owner)}}" class="float-left consenticon">
           <div class="iconspace">
           <div translate="{{'enum.userrole.'+owner.role}}"></div>		  	
@@ -72,11 +73,14 @@
 			</span>			
 		  </address>
 		  </div>
+		  </div>
 		</div>
-		<div class="well well-sm" ng-show="consent.externalOwner">
+		<div class="card" ng-show="consent.externalOwner">
+		  <div class="card-body">
 		  <img ng-src="/images/external.jpg" class="float-left consenticon">
           <div class="iconspace">
 		    <span translate="editconsent.external"></span>: <strong>{{ consent.externalOwner }}</strong>
+		  </div>
 		  </div>
 		</div>
                         
@@ -88,20 +92,24 @@
        </div>
        <div class="col-sm-6">
          <p><b translate="editconsent.people"></b></p>
-          <div class="well well-sm" ng-show="consent.type=='EXTERNALSERVICE'">
+          <div class="card" ng-show="consent.type=='EXTERNALSERVICE'">
+            <div class="card-body">
             <img ng-src="{{getIconRole('app')}}" class="consenticon float-left">
             <div class="iconspace">
               <strong translate="editconsent2.external"></strong>
             </div>
+            </div>
           </div>
-          <div class="well well-sm" ng-show="consent.type=='STUDYRELATED'">
+          <div class="card" ng-show="consent.type=='STUDYRELATED'">
+            <div class="card-body">
             <img ng-src="{{getIconRole('community')}}" class="consenticon float-left">
             <div class="iconspace">
                <strong translate="editconsent2.community"></strong>
             </div>
+            </div>
           </div>
-         <div class="well well-sm" ng-repeat="person in authpersons">
-          
+         <div class="card" ng-repeat="person in authpersons">
+           <div class="card-body">
 		  <button type="button" ng-click="removePerson(person)" class="close" aria-label="Delete" ng-show="mayChangeUsers()"><span aria-hidden="true">&times;</span></button>
 		  <img ng-src="{{getIconRole(person)}}" class="float-left consenticon">
 		  <div class="iconspace">
@@ -116,32 +124,39 @@
 			</span>			
 		  </address>
 		  </div>
+		  </div>
 		</div>
-		<div class="well well-sm" ng-repeat="usergroup in authteams">
+		<div class="card" ng-repeat="usergroup in authteams">
+		  <div class="card-body">
 		  <button type="button" ng-show="mayChangeUsers" ng-click="removePerson(usergroup)" class="close" aria-label="Delete"><span aria-hidden="true">&times;</span></button>
 		  <img ng-src="{{getIconRole('team')}}" class="float-left consenticon">
 		  <div class="iconspace">
 		    <div translate="editconsent2.team"></div>	
 		    <strong>{{ usergroup.name }}</strong>
 		  </div>
+		  </div>
 		</div>
-		<div class="well well-sm" ng-repeat="person in consent.externalAuthorized">
+		<div class="card" ng-repeat="person in consent.externalAuthorized">
+		  <div class="card-body">
 		  <img ng-src="{{getIconRole('external')}}" class="float-left consenticon">
 		  <div class="iconspace">
 		    <div translate="editconsent.external"></div>
 		    <strong>{{ person }}</strong>
 		  </div>
+		  </div>
 		</div>
-		<div class="well well-sm" ng-show="consent.reshare">
+		<div class="card" ng-show="consent.reshare">
+		  <div class="card-body">
 		  <img ng-src="{{getIconRole('reshare')}}" class="float-left consenticon">
 		  <div class="iconspace">
 		     <span translate="editconsent.reshare"></span>
+		  </div>
 		  </div>
 		</div>
        </div>
      </div>
      
-    <div class="row" ng-show="consent.type != 'EXTERNALSERVICE'">
+    <div class="margin-top row" ng-show="consent.type != 'EXTERNALSERVICE'">
       <div class="col-sm-12">   	
 		<button type="button" class="btn btn-default" ng-show="mayChangeUsers()" ng-click="addPeople();" translate="editconsent.add_people_btn"></button>
 		<button type="button" class="btn btn-default" ng-show="mayChangeUsers()" ng-click="addUserGroup();" translate="editconsent.add_usergroup_btn"></button>
