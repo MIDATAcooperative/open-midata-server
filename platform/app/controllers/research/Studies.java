@@ -1886,6 +1886,11 @@ public class Studies extends APIController {
 		}
 		if (json.has("name")) {
 			study.setName(JsonValidation.getString(json, "name"));
+			UserGroup ug = UserGroup.getById(study._id, UserGroup.ALL);
+			ug.name = study.name;
+			ug.nameLC = ug.name.toLowerCase();
+			UserGroup.set(ug._id, "name", ug.name);
+			UserGroup.set(ug._id, "nameLC", ug.nameLC);
 		}
 		if (json.has("description")) {
 			study.setDescription(JsonValidation.getString(json, "description"));
@@ -2060,6 +2065,97 @@ public class Studies extends APIController {
 		Study.delete(studyId);
 
 		AuditManager.instance.success();
+	}
+	
+	@APICall
+	@Security.Authenticated(ResearchSecured.class)
+	public Result cloneToNew(String id) throws AppException {
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId owner = PortalSessionToken.session().getOrgId();
+		MidataId studyid = new MidataId(id);
+
+		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
+		Study study = Study.getById(studyid, Study.ALL);
+
+		if (study == null)
+			throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
+	
+		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyid, userId);
+		if (self == null)
+			throw new AuthException("error.notauthorized.action", "User not member of study group");
+
+		MidataId oldGroup = study._id;
+		
+		study._id = new MidataId();
+		
+		study.validationStatus = StudyValidationStatus.DRAFT;
+		study.executionStatus = StudyExecutionStatus.PRE;
+		study.participantSearchStatus = ParticipantSearchStatus.PRE;
+		study.name = "Copy of "+study.name;
+		if (Study.existsByName(study.name))
+		  return inputerror("name", "exists", "A study with this name already exists.");
+		
+		do {
+			study.code = CodeGenerator.nextUniqueCode();
+		} while (Study.existsByCode(study.code));
+		study.createdAt = new Date();
+		study.createdBy = userId;
+		study.processFlags = new HashSet<String>();
+		
+		UserGroup userGroup = new UserGroup();
+		userGroup.name = study.name;
+		userGroup.type = UserGroupType.RESEARCHTEAM;
+		userGroup.status = UserStatus.ACTIVE;
+		userGroup.creator = userId;
+		userGroup._id = study._id;
+		userGroup.nameLC = userGroup.name.toLowerCase();
+		userGroup.keywordsLC = new HashSet<String>();
+		userGroup.registeredAt = study.createdAt;
+		userGroup.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(userGroup._id, null);
+		GroupResourceProvider.updateMidataUserGroup(userGroup);
+		userGroup.add();
+		
+		Set<UserGroupMember> members = UserGroupMember.getAllActiveByGroup(oldGroup);
+		
+		for (UserGroupMember member : members) {
+			member._id = new MidataId();
+			member.userGroup = userGroup._id;
+			member.startDate = new Date();
+			member.status = ConsentStatus.ACTIVE;
+			
+			Map<String, Object> accessData = new HashMap<String, Object>();
+			accessData.put("aliaskey", KeyManager.instance.generateAlias(userGroup._id, member._id));
+			RecordManager.instance.createPrivateAPS(userId, member._id);
+			RecordManager.instance.setMeta(userId, member._id, "_usergroup", accessData);
+			member.add();
+			AuditManager.instance.addAuditEvent(AuditEventType.ADDED_AS_TEAM_MEMBER, null, userId, member.member, null, study._id);			
+		}
+						
+		RecordManager.instance.createPrivateAPS(userGroup._id, userGroup._id);
+
+		Study.add(study);
+		
+		Set<StudyAppLink> sals = StudyAppLink.getByStudy(oldGroup);
+		for (StudyAppLink sal : sals) {
+			StudyAppLink newLink = new StudyAppLink();
+			newLink._id = new MidataId();
+			newLink.active = false;
+			newLink.app = sal.app;
+			newLink.appId = sal.appId;
+			newLink.restrictRead = sal.restrictRead;
+			newLink.shareToStudy = sal.shareToStudy;
+			newLink.studyGroup = sal.studyGroup;
+			newLink.studyId = sal.studyId;
+			newLink.type = sal.type;
+			newLink.usePeriod = sal.usePeriod;
+			newLink.validationDeveloper = StudyValidationStatus.DRAFT;
+			newLink.validationResearch = StudyValidationStatus.DRAFT;
+			newLink.add();
+		}
+
+		AuditManager.instance.success();
+		
+		return ok(JsonOutput.toJson(study, "Study", Study.ALL));
 	}
 
 }

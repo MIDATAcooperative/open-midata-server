@@ -236,7 +236,7 @@ public class UserGroups extends APIController {
 		
 		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(groupId, executorId);
 		if (self == null) throw new AuthException("error.notauthorized.action", "User not member of group");
-		if (!self.role.mayChangeTeam()) throw new BadRequestException("error.notauthorized.action", "User is not allowed to change team.");
+		if (!self.getRole().mayChangeTeam()) throw new BadRequestException("error.notauthorized.action", "User is not allowed to change team.");
 		
 		Study study = Study.getById(groupId, Sets.create("anonymous"));
 		boolean anonymous = study != null && study.anonymous;

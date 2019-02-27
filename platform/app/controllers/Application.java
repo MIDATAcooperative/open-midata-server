@@ -1069,6 +1069,7 @@ public class Application extends APIController {
 				controllers.research.routes.javascript.Researchers.getOrganization(),
 				controllers.research.routes.javascript.Researchers.updateOrganization(),
 				controllers.research.routes.javascript.Studies.create(),
+				controllers.research.routes.javascript.Studies.cloneToNew(),
 				controllers.research.routes.javascript.Studies.list(),
 				controllers.research.routes.javascript.Studies.listAdmin(),
 				controllers.research.routes.javascript.Studies.get(),

@@ -99,6 +99,7 @@
     
   
     <a class="btn btn-default" ui-sref="research.studies" translate="common.back_btn"></a>
+    <button class="btn btn-default" ng-click="clone(false)" translate="studyoverview.clone_study_btn"></button>
      
     <button ng-show="readyForValidation()" class="btn btn-primary" ng-click="startValidation()" translate="studyoverview.start_validation_btn"></button>
     <button ng-show="readyForParticipantSearch()" class="btn btn-primary" ng-click="startParticipantSearch()" translate="studyoverview.start_participant_search_btn"></button>
@@ -107,7 +108,7 @@
     <button ng-show="readyForFinishExecution()" class="btn btn-primary" ng-click="finishExecution()" translate="studyoverview.finish_study_btn"></button>
     <button ng-show="readyForDelete()" class="btn btn-danger" ng-click="delete()" translate="studyoverview.delete_study_btn"></button>
     <button ng-show="readyForAbort()" class="btn btn-danger" ng-click="abortExecution()" translate="studyoverview.abort_study_btn"></button>   
-    
+        
     <modal viewid="confirm">
       <div class="modal-body">
       <p><span translate="studyoverview.name"></span>: <b>{{ study.name }}</b></p>	          
@@ -121,6 +122,7 @@
       <button ng-show="confirm.id=='finish_execution'" class="btn btn-primary" ng-click="finishExecution(true)" translate="studyoverview.finish_study_btn"></button>
       <button ng-show="confirm.id=='delete'" ng-disabled="status.action=='delete'" class="btn btn-danger" ng-click="delete(true)" translate="studyoverview.delete_study_btn"></button>
       <button ng-show="confirm.id=='abort'" class="btn btn-danger" ng-click="abortExecution(true)" translate="studyoverview.abort_study_btn"></button>            
+      <button ng-show="confirm.id=='clone'" class="btn btn-default" ng-click="clone(true)" translate="studyoverview.clone_study_btn"></button>
       <button class="btn btn-default" translate="common.cancel_btn" ng-click="cancel()"></button>
       </div>       
     </modal>

@@ -407,7 +407,7 @@ public class Feature_Streams extends Feature {
 		
 		if (targetAPS != null) {
 			AccessLog.log("add permission for owner");
-			unecrypted.isReadOnly = true;
+			if (!context.isIncluded(unecrypted)) unecrypted.isReadOnly = true;			
 			context.getCache().getAPS(result.owner, result.owner).addPermission(unecrypted, false);
 		}
 				

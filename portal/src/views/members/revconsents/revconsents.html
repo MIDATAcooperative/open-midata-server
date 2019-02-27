@@ -4,14 +4,14 @@
 		<div class="panel-heading" translate="consents.title"></div>
 		<div class="body">
 		  <form class="form">
-		    <div class="radio">
-		      <label>
-                <input type="radio" name="consenttype" value="option1" ng-click="changeView()"> <span translate="consents.where_owner"></span> 
+		    <div class="form-check">
+		      <label class="form-check-label">
+                <input class="form-check-input" type="radio" name="consenttype" value="option1" ng-click="changeView()"> <span class="margin-left" translate="consents.where_owner"></span> 
               </label>
             </div>
-            <div class="radio">
-              <label class="radio-inline">
-                <input type="radio" name="consenttype" value="option2" checked> <span translate="consents.where_authorized"></span>
+            <div class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="radio" name="consenttype" value="option2" checked> <span class="margin-left" translate="consents.where_authorized"></span>
               </label>
             </div>
           </form>

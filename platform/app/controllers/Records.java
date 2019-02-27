@@ -55,6 +55,7 @@ import utils.auth.KeyManager;
 import utils.auth.MemberSecured;
 import utils.auth.PortalSessionToken;
 import utils.auth.RecordToken;
+import utils.auth.ResearchSecured;
 import utils.auth.SpaceToken;
 import utils.collections.CMaps;
 import utils.collections.ReferenceTool;
@@ -72,6 +73,7 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.stats.Stats;
 
 /**
  * functions for handling the records
@@ -665,5 +667,51 @@ public class Records extends APIController {
 
 		// Serves this stream with 200 OK
 		return ok().chunked(outstream).as("application/json+fhir");
+	}
+	
+	@APICall
+	@Security.Authenticated(ResearchSecured.class)
+    public Result unshareRecord() throws AppException, JsonValidationException {
+				
+		// check whether the request is complete
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "properties", "target-study", "target-study-group");
+		
+		final MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+        final UserRole role = getRole();
+        
+		ExecutionInfo inf = new ExecutionInfo(executorId, role);		
+		        		
+    	Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+													
+		MidataId studyId = JsonValidation.getMidataId(json, "target-study");
+		String group = JsonValidation.getString(json, "target-study-group");	
+		
+		MobileAPI.unshareRecord(inf, studyId, group, properties);
+									
+		return ok();
+	}
+	
+	@APICall
+	@Security.Authenticated(ResearchSecured.class)
+    public Result shareRecord() throws AppException, JsonValidationException {
+				
+		// check whether the request is complete
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "properties", "target-study", "target-study-group");
+		
+		final MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+        final UserRole role = getRole();
+        
+		ExecutionInfo inf = new ExecutionInfo(executorId, role);		
+		        		
+    	Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+													
+		MidataId studyId = JsonValidation.getMidataId(json, "target-study");
+		String group = JsonValidation.getString(json, "target-study-group");	
+		
+		MobileAPI.shareRecord(inf, studyId, group, properties);
+									
+		return ok();
 	}
 }
