@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import actions.APICall;
 import models.AccessPermissionSet;
+import models.AccountStats;
 import models.Circle;
 import models.Consent;
 import models.Developer;
@@ -527,5 +528,15 @@ public class Users extends APIController {
 		}
 		
 		return ok();
+	}
+	
+	@Security.Authenticated(AnyRoleSecured.class)
+	@APICall
+	public Result getAccountStats() throws AppException {
+								
+		PortalSessionToken session = PortalSessionToken.session();
+		AccountStats stats = RecordManager.instance.getStats(session.ownerId);
+																	
+		return ok(JsonOutput.toJson(stats, "AccountStats", AccountStats.ALL));
 	}
 }

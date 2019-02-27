@@ -91,7 +91,13 @@ public class ExecutionInfo {
 			result.targetAPS = authToken.spaceId;
 			result.recordId = authToken.recordId;			
 			result.ownerId = authToken.userId;
-			result.context = RecordManager.instance.createContextFromAccount(authToken.executorId);
+			
+			Consent consent = Circles.getConsentById(authToken.userId, authToken.spaceId, Consent.ALL);
+			if (consent != null) {
+			  result.context = RecordManager.instance.createContextFromConsent(authToken.executorId, consent);
+			} else {
+			  result.context = RecordManager.instance.createContextFromAccount(authToken.executorId);
+			}
 			
 		} else if (authToken.pluginId == null) {							
 			Space space = Space.getByIdAndOwner(authToken.spaceId, authToken.autoimport ? authToken.userId : authToken.executorId, Sets.create("visualization", "app", "aps", "autoShare", "sharingQuery", "writes"));
@@ -130,7 +136,7 @@ public class ExecutionInfo {
 			
 		} else {
 									
-			Consent consent = Consent.getByIdAndAuthorized(authToken.spaceId, authToken.userId, Sets.create("owner"));
+			Consent consent = Consent.getByIdAndAuthorized(authToken.spaceId, authToken.userId, Consent.ALL);
 						
 			if (consent == null) throw new BadRequestException("error.unknown.consent", "The current consent does no longer exist.");
 			
@@ -139,6 +145,7 @@ public class ExecutionInfo {
 			result.ownerId = consent.owner;
 			result.context = RecordManager.instance.createContextFromConsent(result.executorId, consent);
 		}
+	   AccessLog.log("using as context:"+result.context.toString());
 	   AccessLog.logEnd("end check 'space' type session token");
 	   return result;	
 		
