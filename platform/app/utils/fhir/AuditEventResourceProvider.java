@@ -391,7 +391,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 		  } else {
 			Set<MidataId> allowedIds = new HashSet<MidataId>();
 			allowedIds.add(info.executorId);
-			for (UserGroupMember ugm : ugms) if (ugm.role.auditLogAccess()) allowedIds.add(ugm.userGroup);
+			for (UserGroupMember ugm : ugms) if (ugm.getRole().auditLogAccess()) allowedIds.add(ugm.userGroup);
 			query.putAccount("authorized", allowedIds);
 		  }
 		  authrestricted = true;
