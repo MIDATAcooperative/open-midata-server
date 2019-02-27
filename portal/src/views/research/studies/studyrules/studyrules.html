@@ -11,8 +11,10 @@
 	<p class="alert alert-danger" ng-show="error" translate="{{ error.code || error }}"></p>
 		
 	  <formrow myid="recordQuery" label="studyrules.sharing_query">
-	     <accessquery query="study.recordQuery" details="true"></accessquery>	     
+	     <accessquery query="study.recordQuery" details="true"></accessquery>	  
+	     <div class="margin-top">   
 	     <a href="javascript:" ui-sref="^.queryeditor" class="btn btn-default" translate="studyrules.queryeditor_btn"></a>
+	     </div>
       </formrow>
     
       <formrow myid="startDate" label="studyrules.startDate">
@@ -56,7 +58,7 @@
 		 <div class="form-check" ng-repeat="method in joinmethods">
 		    <label class="form-check-label">
 		        <input class="form-check-input" type="checkbox" ng-disabled="studyLocked()" ng-checked="study.joinMethods.indexOf(method)>=0" ng-click="toggle(study.joinMethods, method);formChange();">
-		        <span translate="{{ 'enum.joinmethod.'+method }}"></span>
+		        <span class="margin-left" translate="{{ 'enum.joinmethod.'+method }}"></span>
 		    </label>
 		 </div>
 	  </formrow>
@@ -65,7 +67,7 @@
 		 <div class="form-check" ng-repeat="req in requirements">
 		    <label class="form-check-label">
 		        <input class="form-check-input" type="checkbox" ng-disabled="studyLocked()" ng-checked="study.requirements.indexOf(req)>=0" ng-click="toggle(study.requirements, req);formChange();">
-		        <span translate="{{ 'enum.userfeature.'+req }}"></span>
+		        <span class="margin-left" translate="{{ 'enum.userfeature.'+req }}"></span>
 		    </label>
 		 </div>
 	  </formrow>

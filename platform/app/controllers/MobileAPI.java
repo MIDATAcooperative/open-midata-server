@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -31,6 +32,7 @@ import models.Space;
 import models.Study;
 import models.StudyAppLink;
 import models.StudyParticipation;
+import models.StudyRelated;
 import models.User;
 import models.enums.AggregationType;
 import models.enums.AuditEventType;
@@ -719,9 +721,9 @@ public class MobileAPI extends Controller {
 				
 		Stats.finishRequest(request(), "200", Collections.EMPTY_SET);						
 		return ok();
-	}
+	}*/
 	
-    public static Result unshareRecord() throws AppException, JsonValidationException {
+    public Result unshareRecord() throws AppException, JsonValidationException {
 		
 		Stats.startRequest(request());
 		// check whether the request is complete
@@ -732,27 +734,32 @@ public class MobileAPI extends Controller {
 		Stats.setPlugin(inf.pluginId);	
 		        		
     	Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
-								
-		if (properties.get("format") == null) throw new BadRequestException("error.internal", "No format");
-		
-		
+													
 		MidataId studyId = JsonValidation.getMidataId(json, "target-study");
-		String group = JsonValidation.getString(json, "target-study-group");		
-		Set<StudyRelated> srs = StudyRelated.getActiveByOwnerGroupAndStudy(inf.executorId, group, studyId, Sets.create("_id"));
+		String group = JsonValidation.getString(json, "target-study-group");	
 		
-		List<Record> recs = RecordManager.instance.list(inf.executorId, inf.targetAPS, properties, Sets.create("_id"));
+		unshareRecord(inf, studyId, group, properties);
+									
+		return ok();
+	}
+    
+    public static int unshareRecord(ExecutionInfo inf, MidataId studyId, String group, Map<String, Object> properties) throws AppException, JsonValidationException {
+				
+		if (properties.get("format") == null) throw new BadRequestException("error.internal", "No format");		
+		Set<StudyRelated> srs = StudyRelated.getActiveByOwnerGroupAndStudy(inf.executorId, group, studyId, Sets.create("_id"));		
+		List<Record> recs = RecordManager.instance.list(inf.executorId, inf.role, inf.context, properties, Sets.create("_id"));
 		
 		if (!srs.isEmpty()) {
 			for (StudyRelated sr : srs ) {
 			  RecordManager.instance.unshare(inf.executorId, sr._id, recs);
 			}
-		}								
-								
-		return ok();
+		}																		
+		
+		return recs.size();
 	}
-	
+
     
-    public static Result shareRecord() throws AppException, JsonValidationException {
+    public Result shareRecord() throws AppException, JsonValidationException {
 		
 		Stats.startRequest(request());
 		// check whether the request is complete
@@ -763,15 +770,22 @@ public class MobileAPI extends Controller {
 		Stats.setPlugin(inf.pluginId);	
 		        		
     	Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
-								
-		if (properties.get("format") == null) throw new BadRequestException("error.internal", "No format");
-		
-		
+												
 		MidataId studyId = JsonValidation.getMidataId(json, "target-study");
 		String group = JsonValidation.getString(json, "target-study-group");		
+	
+		shareRecord(inf, studyId, group, properties);
+																	
+		return ok();
+	}
+	
+    public static int shareRecord(ExecutionInfo inf, MidataId studyId, String group, Map<String, Object> properties) throws AppException, JsonValidationException {
+										
+		if (properties.get("format") == null) throw new BadRequestException("error.internal", "No format");
+							
 		Set<StudyRelated> srs = StudyRelated.getActiveByOwnerGroupAndStudy(inf.executorId, group, studyId, Sets.create("_id"));
 		
-		List<Record> recs = RecordManager.instance.list(inf.executorId, inf.targetAPS, properties, Sets.create("_id"));
+		List<Record> recs = RecordManager.instance.list(inf.executorId, inf.role, inf.context, properties, Sets.create("_id"));
 		
 		if (!srs.isEmpty()) {
 			for (StudyRelated sr : srs ) {
@@ -779,9 +793,8 @@ public class MobileAPI extends Controller {
 			}
 		}								
 								
-		return ok();
+		return recs.size();
 	}
-	*/
 			
 	
 	

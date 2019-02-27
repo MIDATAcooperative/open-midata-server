@@ -148,6 +148,24 @@ angular.module('portal')
 		});
 	};
 	
+	$scope.clone = function(conf) {
+		if (!conf) {
+			$scope.showConfirm("clone");
+			return;
+		}
+		views.disableView("confirm");
+		$scope.error = null;
+		
+		$timeout(1000).then(function() {
+			server.post(jsRoutes.controllers.research.Studies.cloneToNew($scope.studyid).url).
+			then(function(data) { 				
+			    $state.go("research.study.description", { studyId : data.data._id });
+			}, function(err) {
+				$scope.error = err.data;			
+			});
+		});
+	};
+	
 	$scope.showConfirm = function(what) {
 		$scope.confirm = { id : what };
 		views.setView("confirm", { id : what }, $scope.study.name);	

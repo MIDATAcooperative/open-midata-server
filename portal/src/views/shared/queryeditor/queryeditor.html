@@ -112,19 +112,19 @@
 		    <p class="form-control-plaintext">{{ currentBlock.code }}</p>
 		  </formrow>
 		  <formrow id="owner" label="queryeditor.owner" ng-show="mode=='app' && !currentBlock.flags.noowner">
-		    <div class="radio">
-		      <label><input type="radio" ng-model="currentBlock.owner" value="self"><span translate="queryeditor.owner_self"></span></label>
-		    </div><div class="radio">
-		      <label><input type="radio" ng-model="currentBlock.owner" value="all"><span translate="queryeditor.owner_all"></span></label>
+		    <div class="form-check">
+		      <label class="form-check-label"><input class="form-check-input" type="radio" ng-model="currentBlock.owner" value="self"><span translate="queryeditor.owner_self"></span></label>
+		    </div><div class="form-check">
+		      <label class="form-check-label"><input class="form-check-input" type="radio" ng-model="currentBlock.owner" value="all"><span translate="queryeditor.owner_all"></span></label>
 		    </div>
 		  </formrow>
 		  <formrow id="owner" label="queryeditor.source_app" ng-show="!currentBlock.flags.noapp">
-		    <div class="radio" ng-show="target.appname">
-		      <label><input type="radio" ng-model="currentBlock.app"  value="self"><span translate="queryeditor.app_self"></span></label>
-		    </div><div class="radio">
-		      <label><input type="radio" ng-model="currentBlock.app" value="all"><span translate="queryeditor.app_all"></span></label>
-		    </div><div class="radio">
-		      <label><input type="radio" ng-model="currentBlock.app" value="other"><span translate="queryeditor.app_other"></span><input type="text" ng-model="currentBlock.appName"></label>
+		    <div class="form-check" ng-show="target.appname">
+		      <label class="form-check-label"><input class="form-check-input"  type="radio" ng-model="currentBlock.app"  value="self"><span translate="queryeditor.app_self"></span></label>
+		    </div><div class="form-check">
+		      <label class="form-check-label"><input class="form-check-input"  type="radio" ng-model="currentBlock.app" value="all"><span translate="queryeditor.app_all"></span></label>
+		    </div><div class="form-check">
+		      <label class="form-check-label"><input class="form-check-input"  type="radio" ng-model="currentBlock.app" value="other"><span translate="queryeditor.app_other"></span><input type="text" ng-model="currentBlock.appName"></label>
 		    </div>
 		  </formrow>
 		  <div ng-show="mode=='study'">
@@ -135,7 +135,7 @@
 		  </formrow>
 		  <formrow id="timeRestriction" label="queryeditor.time_restriction" ng-if="currentBlock.timeRestriction">
 		     <div class="row"><div class="col-sm-3">		     
-		     <select class="col-sm-6 form-control" ng-model="currentBlock.timeRestrictionMode" ng-options="timeMode as 'queryeditor.'+timeMode | translate for timeMode in timeModes"></select>
+		     <select class="form-control" ng-model="currentBlock.timeRestrictionMode" ng-options="timeMode as 'queryeditor.'+timeMode | translate for timeMode in timeModes"></select>
 		     </div>
 		     <div class="input-group col-sm-5">
 	          <input id="timeRestrictionDate" name="timeRestrictionDate" as-date type="text" class="form-control" placeholder="" uib-datepicker-popup="dd.MM.yyyy"  ng-model="currentBlock.timeRestrictionDate" is-open="datePickers.timeRestrictionDate" no-time datepicker-options="dateOptions" ng-required="false" close-text="Close" />

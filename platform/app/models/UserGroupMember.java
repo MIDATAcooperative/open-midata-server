@@ -52,6 +52,12 @@ public class UserGroupMember extends Model implements Comparable<Model> {
 	 */
 	public ResearcherRole role;
 	
+	public ResearcherRole getRole() {
+		if (role != null) return role;
+		role = ResearcherRole.HC();		
+		return role;
+	}
+	
 	
 	@NotMaterialized
 	public User user;
