@@ -158,6 +158,7 @@
     "finish_study_btn" : "Finish Study",
     "delete_study_btn" : "Delete Study",
     "abort_study_btn" : "Abort Study",
+    "clone_study_btn" : "Copy to new project",
     "workflow" : "Workflow Information",
     "markdone_btn" : "Not Required, Mark as Done",
     "visitnow_btn" : "Visit Page",
@@ -170,6 +171,7 @@
       "finish_execution" : "All study data will be frozen at this moment.",
       "delete" : "The research project will be completely wiped from the platform.",
       "abort" : "All study data will be frozen at this moment. This project will be marked as failed.",
+      "clone" : "This will clone the projects settings into a new research project. The new projects workflow will be reset. No participants will be transferred to the new project. This project will remain unchanged.",
       "are_you_sure" : "This operation cannot be undone. Are you sure?"
     }
   },

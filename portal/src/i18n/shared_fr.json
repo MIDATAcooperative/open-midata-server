@@ -46,7 +46,10 @@
             "fields" : "Vous n'êtes pas autorisé à consulter les champs demandés",
             "account" : "Vous n'êtes pas autorisé à accéder à ce compte",
             "study" : "Vous n'êtes pas autorisé à accéder à cette étude",
-            "not_plugin_owner" : "Ce n'est pas votre plugin"
+            "not_plugin_owner" : "Ce n'est pas votre plugin",
+
+            // TODO NEW: Debugging is only available for plugins during development or beta phase on non productive instances.
+            "no_debug" : "Debugging is only available for plugins during development or beta phase on non productive instances."
         },
 
         "invalid" : {
@@ -58,6 +61,9 @@
             "passphrase_old" : "Ancienne phrase secrète incorrecte.",
             "password_old" : "L'ancien mot de passe n'est pas correct.",
             "confirmation_code" : "Code de confirmation incorrect",
+
+            // TODO NEW: Token not correct
+            "securitytoken" : "Token not correct",
             "code" : "Code d'étude inconnu.",
             "appcode" : "Code d'app inconnu",
             "status_transition" : "Changement d'état invalide",
@@ -93,7 +99,10 @@
             "confirmation" : "Confirmation par l'utilisateur requise en premier.",
             "file" : "Aucun fichier à télécharger sélectionné",
             "access_query" : "Aucune données sélectionnées",
-            "plugin" : "Ce plugin n'existe pas dans votre compte."
+            "plugin" : "Ce plugin n'existe pas dans votre compte.",
+
+            // TODO NEW: Two factor authentication is required for your type of account.
+            "auth_type" : "Two factor authentication is required for your type of account."
         },
 
         "unknown" : {
@@ -155,7 +164,10 @@
         "expired" : {
             "token" : "Ce jeton d'activation est expiré. Veuillez en demander un nouveau.",
             "tokenresent" : "Ce jeton d'activation est expiré. Un nouveau jeton d'activation a été envoyé par e-mail à l'instant. Veuillez valider votre adresse e-mail dans les 24 heures à l'aide du nouveau jeton.",
-            "code" : "Ce code de participation a expiré."
+            "code" : "Ce code de participation a expiré.",
+
+            // TODO NEW: This token has expired.
+            "securitytoken" : "This token has expired."
         },
 
         "already_done" : {
@@ -266,6 +278,9 @@
             "EMAIL_VERIFIED" : "L'adresse e-mail de l'utilisateur doit avoir été vérifiée",
             "PHONE_ENTERED" : "Le n° de téléphone mobile de l'utilisateur doit être renseigné sur la plateforme",
             "PHONE_VERIFIED" : "Le n° de téléphone mobile de l'utilisateur doit avoir été vérifié",
+
+            // TODO NEW: 2-Factor Authentication during Login
+            "AUTH2FACTOR" : "2-Factor Authentication during Login",
             "ADDRESS_ENTERED" : "L'adresse postale de l'utilisateur doit être renseigné sur la plateforme",
             "ADDRESS_VERIFIED" : "L'adresse postale de l'utilisateur doit avoir été vérifiée",
             "PASSPORT_VERIFIED" : "La carte d'identité de l'utilisateur doit avoir été vérifiée.",
@@ -449,6 +464,22 @@
             "SITE" : "Sur quel site se déroulent les activités?",
             "DEVICES" : "Un participant a-t-il besoin d'un équipement spécial?",
             "COMMENT" : "Notes complémentaires"
+        },
+        "secondaryauthtype" : {
+
+            // TODO NEW: No second authentication factor
+            "NONE" : "No second authentication factor",
+
+            // TODO NEW: Two factor authentication using SMS
+            "SMS" : "Two factor authentication using SMS"
+        },
+        "accountnotifications" : {
+
+            // TODO NEW: No login notifications
+            "NONE" : "No login notifications",
+
+            // TODO NEW: Send an email on each login
+            "LOGIN" : "Send an email on each login"
         }
     },
 
@@ -644,6 +675,42 @@
         "admin_verified" : "Votre compte doit être validé par un administrateur MIDATA. Veuillez réessayer plus tard. Si votre compte n'a pas été validé sous 24 heures, veuillez contacter MIDATA.",
         "terms_agreed" : "Les Conditions Générales de MIDATA ont été mises à jour. Veuillez confirmer que vous acceptez la nouvelle version.",
         "privacy_policy_agreed" : "La Déclaration de protection des données de MIDATA a été mise à jour. Veuillez confirmer que vous acceptez la nouvelle version.",
+
+        // TODO NEW: An authorization token has been send to your phone. Please enter it.
+        "auth2factor" : "An authorization token has been send to your phone. Please enter it.",
+
+        // TODO NEW: Token
+        "securityToken" : "Token",
+
+        // TODO NEW: Send
+        "securityToken_btn" : "Send",
+
+        // TODO NEW: Please wait up to a minute for the token to arrive.
+        "no_token" : "Please wait up to a minute for the token to arrive.",
+
+        // TODO NEW: I did not receive the token
+        "no_token_btn" : "I did not receive the token",
+
+        // TODO NEW: Please setup your security settings: Do you want to protect access to your account with a second factor in addition to your password?
+        "auth2factorsetup" : "Please setup your security settings: Do you want to protect access to your account with a second factor in addition to your password?",
+
+        // TODO NEW: You can change your settings later in your profile. Log into {{domain}} and click on your name on the top right.
+        "auth2factorsetup2" : "You can change your settings later in your profile. Log into {{domain}} and click on your name on the top right.",
+
+        // TODO NEW: Authentication
+        "auth_type" : "Authentication",
+
+        // TODO NEW: I do not want to use two factor authentication.
+        "auth_type_none" : "I do not want to use two factor authentication.",
+
+        // TODO NEW: I want to use two factor authentication using SMS tokens. Please send a token on login to my mobile phone.
+        "auth_type_sms" : "I want to use two factor authentication using SMS tokens. Please send a token on login to my mobile phone.",
+
+        // TODO NEW: Notifications
+        "emailnotify" : "Notifications",
+
+        // TODO NEW: Please send me an email everytime I log into the Midata portal at {{domain}}.
+        "emailnotify2" : "Please send me an email everytime I log into the Midata portal at {{domain}}.",
         "agree_btn" : "Je suis d'accord",
         "keyrecovery" : {
             "intro" : "La clé privée utilisée pour crypter vos données doit être récupérée. Pour récupérer votre clé, essayez l'une des options suivantes:",
@@ -767,6 +834,9 @@
         "export_btn" : "Exporter vos données",
         "delete_records_btn" : "Supprimer les enregistrements",
         "wipe_account_btn" : "Supprimer le compte",
+
+        // TODO NEW: Calculate Account Metrics
+        "metrics_btn" : "Calculate Account Metrics",
         "account_repaired" : "Votre compte a été réparé.",
         "spaces_resetted" : "Votre configuration a été réinitialisée.",
         "settings" : "Paramètres",
@@ -776,6 +846,18 @@
         "searchable_yes" : "Oui, je veux que mon nom et mon adresse e-mail soient visible pour d'autres utilisateurs",
         "searchable_no" : "Non, je ne veux pas que d'autres utilisateurs voient mon profil",
         "searchable_info" : "Ce réglage n'a aucun effet sur les partages que vous avez déjà accordés.",
+
+        // TODO NEW: Authentication
+        "auth_type" : "Authentication",
+
+        // TODO NEW: Do you want to protect access to your account with a second factor in addition to your password?
+        "auth_type2" : "Do you want to protect access to your account with a second factor in addition to your password?",
+
+        // TODO NEW: Notifications
+        "notifications" : "Notifications",
+
+        // TODO NEW: Do you want to be notified if your account is used?
+        "notifications2" : "Do you want to be notified if your account is used?",
         "change_settings_btn" : "Modifier les paramètres",
         "change_settings_success" : "Les paramètres ont été mis à jour"
     },
@@ -810,6 +892,9 @@
         "type" : "Quel type de consentement souhaitez-vous créer?",
         "share_with_members" : "Je veux partager des données avec d'autres membres MIDATA.",
         "share_with_provider" : "Je veux partager des données avec un professionnel de la santé.",
+
+        // TODO NEW: Select
+        "select" : "Select",
         "use_passcode" : "Inclure un code d'accès?",
         "use_passcode2" : "Je ne sais pas encore avec qui je vais partager mes données. Saisir un code d'accès que je pourrai transmettre à un professionnel de la santé.",
         "choose_passcode" : "Choissiez un code d'accès sûr",
@@ -827,7 +912,13 @@
         "created_before" : "Ne partager les données qui ont ete créées après le:",
         "share_what" : "Quelle(s) donnée(s) désirez vous partager?",
         "consent_empty" : "Ce consentement ne partage initialement aucune données. Vous pouvez sélectionner les données que vous désirez partager par la suite.",
-        "create_btn" : "Créer et sélectionner les données"
+        "create_btn" : "Créer et sélectionner les données",
+
+        // TODO NEW: Agree to this consent
+        "create2_btn" : "Agree to this consent",
+
+        // TODO NEW: Show advanced options
+        "extended_btn" : "Show advanced options"
     },
 
     "editconsent" : {
@@ -867,6 +958,42 @@
         "delete_btn" : "Supprimer ce consentement"
     },
 
+    "editconsent2" : {
+
+        // TODO NEW: created at
+        "date_of_creation" : "created at",
+
+        // TODO NEW: expires at
+        "valid_until" : "expires at",
+
+        // TODO NEW: Active now
+        "status_active" : "Active now",
+
+        // TODO NEW: Expired
+        "status_expired" : "Expired",
+
+        // TODO NEW: Needs confirmation
+        "status_unconfirmed" : "Needs confirmation",
+
+        // TODO NEW: Rejected
+        "status_rejected" : "Rejected",
+
+        // TODO NEW: Status
+        "status" : "Status",
+
+        // TODO NEW: Validity Period
+        "duration" : "Validity Period",
+
+        // TODO NEW: External Application
+        "external" : "External Application",
+
+        // TODO NEW: Research Community
+        "community" : "Research Community",
+
+        // TODO NEW: Team
+        "team" : "Team"
+    },
+
     "consents" : {
         "title" : "Consentements",
         "description" : "Les consentements permettent de donner access à vos données à d'autres utilisateurs (professionnels de la santé, amis, chercheurs, ...). Cette page vous permet de gérer vos consentements et d'en créer de nouveaux.",
@@ -879,6 +1006,9 @@
         "status" : "État",
         "number_of_people" : "# personnes",
         "number_of_records" : "# enregistrements",
+
+        // TODO NEW: Creation Date
+        "date_of_creation" : "Creation Date",
         "add_new_btn" : "Ajouter un consentement"
     },
 
@@ -920,6 +1050,15 @@
         "type_global" : "Global",
         "type_study" : "Recherche",
         "type_circle" : "Autres utilisateurs",
+
+        // TODO NEW: Research Projects
+        "type_studyrelated" : "Research Projects",
+
+        // TODO NEW: Practitioners
+        "type_hcrelated" : "Practitioners",
+
+        // TODO NEW: Implicit
+        "type_implicit" : "Implicit",
         "show" : "Afficher:",
         "my_data" : "Mes données",
         "all_data" : "Toutes les données",

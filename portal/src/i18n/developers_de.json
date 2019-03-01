@@ -69,7 +69,10 @@
             "PASSWORD_FORGOTTEN" : "Kennwort vergessen",
             "USER_PRIVATE_KEY_RECOVERED" : "Wiederherstellung des Benutzerschlüssels abgeschlossen",
             "RESOURCE_CHANGE" : "Änderung einer Resource [code]",
-            "PROCESS_MESSAGE" : "FHIR-Nachricht mit Ereignis [Code] verarbeiten"
+            "PROCESS_MESSAGE" : "FHIR-Nachricht mit Ereignis [Code] verarbeiten",
+
+            // TODO NEW: Login Notification (if enabled by user)
+            "LOGIN" : "Login Notification (if enabled by user)"
         }
     },
 
@@ -86,6 +89,9 @@
         "edit_help" : "Ändern Sie die Einstellungen für Ihre Applikation.",
         "query_btn" : "Data Access Filter ändern",
         "query_help" : "Definieren Sie, auf welche Arten von Daten Ihre Applikation zugreifen darf.",
+
+        // TODO NEW: Write Access
+        "write_mode" : "Write Access",
         "subscriptions_btn" : "Standardabonnements (Subscriptions) ändern",
         "subscriptions_help" : "Trigger definieren, die eine Aktion auf dem MIDATA-Server auslösen",
         "tokenExchangeParams" : "OAuth2-Parameter für den Token-Austausch",
@@ -180,11 +186,19 @@
         "login" : "Anmelden",
         "oauth_login" : "OAuth Login",
         "device" : "Device",
+
+        // TODO CHANGED
+        // OLD: Refresh-Token
+        // NEW: Refresh Token
         "refresh_token" : "Refresh Token",
         "backend_services" : "Serverseitige Skripte",
         "portal_username" : "Benutzername",
         "portal_password" : "Kennwort",
         "portal_login" : "Plugin-Instanz verwenden:",
+
+        // TODO CHANGED
+        // OLD: Portal login + get space token
+        // NEW: Portal login + get token
         "portal_login_btn" : "Portal-Login + Token erhalten"
     },
 

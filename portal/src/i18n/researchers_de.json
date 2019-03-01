@@ -159,6 +159,9 @@
         "finish_study_btn" : "Studie beenden",
         "delete_study_btn" : "Studie löschen",
         "abort_study_btn" : "Studie abbrechen",
+
+        // TODO NEW: Copy to new project
+        "clone_study_btn" : "Copy to new project",
         "workflow" : "Informationen zum Workflow",
         "markdone_btn" : "Nicht erforderlich, als erledigt markieren",
         "visitnow_btn" : "Seite besuchen",
@@ -171,6 +174,9 @@
             "finish_execution" : "Alle Studiendaten werden zu diesem Zeitpunkt eingefroren.",
             "delete" : "Das Forschungsprojekt wird vollständig von der Plattform gestrichen.",
             "abort" : "Alle Studiendaten werden zu diesem Zeitpunkt eingefroren. Dieses Projekt wird als fehlgeschlagen markiert.",
+
+            // TODO NEW: This will clone the projects settings into a new research project. The new projects workflow will be reset. No participants will be transferred to the new project. This project will remain unchanged.
+            "clone" : "This will clone the projects settings into a new research project. The new projects workflow will be reset. No participants will be transferred to the new project. This project will remain unchanged.",
             "are_you_sure" : "Dieser Vorgang kann nicht rückgängig gemacht werden. Sind Sie sicher?"
         }
     },

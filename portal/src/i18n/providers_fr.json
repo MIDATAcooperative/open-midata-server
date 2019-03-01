@@ -17,7 +17,40 @@
         "research" : "Recherche",
         "workspace" : "Workspace",
         "market" : "MIDATA Store",
+
+        // TODO NEW: Intern
+        "org" : "Intern",
+
+        // TODO NEW: Organization
+        "organization" : "Organization",
         "usergroups" : "Teams"
+    },
+
+    "provider_organization" : {
+
+        // TODO NEW: Organization
+        "title" : "Organization",
+
+        // TODO NEW: Name
+        "name" : "Name",
+
+        // TODO NEW: Description
+        "description" : "Description",
+
+        // TODO NEW: All members of your organization
+        "members" : "All members of your organization",
+
+        // TODO NEW: Register New Member
+        "addprovider" : "Register New Member"
+    },
+
+    "addprovider" : {
+
+        // TODO NEW: Register health professional
+        "sign_up" : "Register health professional",
+
+        // TODO NEW: User successfully registered
+        "success" : "User successfully registered"
     },
 
     "provider_patientsearch" : {
@@ -32,6 +65,9 @@
         "title" : "Teams",
         "name" : "Team",
         "status" : "État",
+
+        // TODO NEW: Public
+        "searchable" : "Public",
         "empty" : "Vous ne faites pas partie d'un team."
     },
 
@@ -46,6 +82,9 @@
         "former_members" : "Anciens membres",
         "name" : "Nom du team",
         "status" : "État",
+
+        // TODO NEW: Findable by Account Holders
+        "searchable" : "Findable by Account Holders",
         "startDate" : "Membre depuis",
         "endDate" : "Membre jusqu'au"
     },

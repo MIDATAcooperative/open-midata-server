@@ -94,6 +94,12 @@
         "recruiting" : "Recrutement",
         "ongoing" : "En cours",
         "completed" : "Achevée",
-        "stopped" : "Stoppée"
+        "stopped" : "Stoppée",
+
+        // TODO NEW: More Info & Participation
+        "infoapply" : "More Info & Participation",
+
+        // TODO NEW: More Information
+        "infoonly" : "More Information"
     }
 }

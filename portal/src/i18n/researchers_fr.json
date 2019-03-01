@@ -159,6 +159,9 @@
         "finish_study_btn" : "Terminer la recherche",
         "delete_study_btn" : "Effacer la recherche",
         "abort_study_btn" : "Annuler l'étude",
+
+        // TODO NEW: Copy to new project
+        "clone_study_btn" : "Copy to new project",
         "workflow" : "Informations sur le flux de travail",
         "markdone_btn" : "Non requis, marquer comme fait",
         "visitnow_btn" : "Consulter la page",
@@ -171,6 +174,9 @@
             "finish_execution" : "Toutes les données de l'étude seront gelées à ce moment.",
             "delete" : "Le projet de recherche sera complètement effacé de la plate-forme.",
             "abort" : "Toutes les données de l'étude seront gelées à ce moment. Ce projet sera marqué comme ayant échoué.",
+
+            // TODO NEW: This will clone the projects settings into a new research project. The new projects workflow will be reset. No participants will be transferred to the new project. This project will remain unchanged.
+            "clone" : "This will clone the projects settings into a new research project. The new projects workflow will be reset. No participants will be transferred to the new project. This project will remain unchanged.",
             "are_you_sure" : "Cette opération ne peut pas être annulée. Êtes-vous sûr?"
         }
     },

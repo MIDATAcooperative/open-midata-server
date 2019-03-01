@@ -1,14 +1,30 @@
 {
 
     "admin_navbar" : {
+
+        // TODO NEW: Admin
+        "admin" : "Admin",
         "members" : "Membres",
         "auditlog" : "Audit",
         "news" : "News",
         "plugins" : "Plugins",
+
+        // TODO CHANGED
+        // OLD: Content
+        // NEW: Content-Types
         "content" : "Contenu",
         "studies" : "Études",
         "terms" : "Conditions générales",
-        "registration" : "Inscrire un administrateur"
+        "registration" : "Inscrire un administrateur",
+
+        // TODO NEW: User Administration
+        "user_admin" : "User Administration",
+
+        // TODO NEW: Apps & Data
+        "plugin_admin" : "Apps & Data",
+
+        // TODO NEW: Research & Public
+        "research_admin" : "Research & Public"
     },
 
     "admin_members" : {
@@ -37,10 +53,16 @@
         "agb_status" : "État des CG:",
         "contract_status" : "État du contrat:",
         "email_status" : "État de l'e-mail:",
+
+        // TODO NEW: Mobile Validation Status:
+        "mobile_status" : "Mobile Validation Status:",
         "confirmation_code" : "Code de confirmation:",
         "registration_date" : "Date de l'inscription:",
         "confirmation_date" : "Date de confirmation:",
         "security" : "Protection du compte",
+
+        // TODO NEW: 2FA method
+        "auth_type" : "2FA method",
         "security_type" : {
             "KEY" : "Clé privée sur le serveur",
             "KEY_PASSPHRASE" : "Clé privée protégée par PHRASE SECRÈTE",
@@ -85,7 +107,10 @@
     },
 
     "admin_registration" : {
-        "sign_up" : "Inscrire un nouvel administrateur"
+        "sign_up" : "Inscrire un nouvel administrateur",
+
+        // TODO NEW: If you use the email of an existing developer account that account will be upgraded to an administrator account.
+        "description" : "If you use the email of an existing developer account that account will be upgraded to an administrator account."
     },
 
     "admin_plugins" : {

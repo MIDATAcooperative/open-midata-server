@@ -69,7 +69,10 @@
             "PASSWORD_FORGOTTEN" : "Password dimenticata",
             "USER_PRIVATE_KEY_RECOVERED" : "Recupero chiavi utente completato",
             "RESOURCE_CHANGE" : "Cambio di risorsa [codice]",
-            "PROCESS_MESSAGE" : "Elabora messaggio FHIR con evento [codice]"
+            "PROCESS_MESSAGE" : "Elabora messaggio FHIR con evento [codice]",
+
+            // TODO NEW: Login Notification (if enabled by user)
+            "LOGIN" : "Login Notification (if enabled by user)"
         }
     },
 
@@ -86,6 +89,9 @@
         "edit_help" : "Modifica la configurazione della tua applicazione.",
         "query_btn" : "Modifica Data Access Filter",
         "query_help" : "Definisce i tipi di dati ai quali l'applicazione può accedere.",
+
+        // TODO NEW: Write Access
+        "write_mode" : "Write Access",
         "subscriptions_btn" : "Cambia abbonamenti (Subscriptions) predefiniti",
         "subscriptions_help" : "Definire i trigger che causano un'azione sul server MIDATA",
         "tokenExchangeParams" : "Parametri OAuth2 per lo scambio di token",
@@ -180,11 +186,19 @@
         "login" : "Accedi",
         "oauth_login" : "OAuth Login",
         "device" : "Device",
+
+        // TODO CHANGED
+        // OLD: Refresh-Token
+        // NEW: Refresh Token
         "refresh_token" : "Refresh Token",
         "backend_services" : "Scripts lato server",
         "portal_username" : "Nome utente",
         "portal_password" : "Password",
         "portal_login" : "Utilizza l'istanza del plugin:",
+
+        // TODO CHANGED
+        // OLD: Portal login + get space token
+        // NEW: Portal login + get token
         "portal_login_btn" : "Login al portale + ottenere token"
     },
 
