@@ -77,7 +77,7 @@ public class UserGroups extends APIController {
 			properties.put("_id", ids);
 		} else {
 			Rights.chk("UserGroups.search", getRole(), properties, fields);
-			//if (!properties.containsKey("_id")) properties.put("searchable", true);
+			if (!properties.containsKey("_id")) properties.put("searchable", true);
 		}
 		
 		Set<UserGroup> groups = UserGroup.getAllUserGroup(properties, fields);
@@ -211,6 +211,8 @@ public class UserGroups extends APIController {
 			}
 			
 			userGroup.status = UserStatus.DELETED;
+			userGroup.searchable = false;
+			UserGroup.set(userGroup._id, "searchable", userGroup.searchable);
 			UserGroup.set(userGroup._id, "status", userGroup.status);
 			
 			GroupResourceProvider.updateMidataUserGroup(userGroup);
@@ -219,8 +221,24 @@ public class UserGroups extends APIController {
 		return ok();
 	}
 	
-	public static Result editUserGroup() {
-		return ok();
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public Result editUserGroup(String groupIdStr) throws AppException {
+		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId groupId = MidataId.from(groupIdStr);
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "name");
+		
+		UserGroupMember execMember = UserGroupMember.getByGroupAndActiveMember(groupId, executorId);
+		if (execMember == null) throw new BadRequestException("error.invalid.usergroup", "Only members may edit a group");
+		
+		UserGroup userGroup = UserGroup.getById(groupId, UserGroup.ALL);
+
+		boolean searchable = JsonValidation.getBoolean(json, "searchable");
+		userGroup.set("searchable", searchable);
+		
+		return ok(JsonOutput.toJson(userGroup, "UserGroup", UserGroup.ALL)).as("application/json");
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)

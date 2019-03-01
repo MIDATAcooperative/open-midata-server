@@ -211,6 +211,7 @@ POST    /api/shared/usergroups/search                     controllers.UserGroups
 POST    /api/shared/usergroups/members                    controllers.UserGroups.listUserGroupMembers()
 POST    /api/shared/usergroups/create                     controllers.UserGroups.createUserGroup()
 POST    /api/shared/usergroups/delete/:group              controllers.UserGroups.deleteUserGroup(group: String)
+POST    /api/shared/usergroups/edit/:group                controllers.UserGroups.editUserGroup(group: String)
 POST    /api/shared/usergroups/adduser                    controllers.UserGroups.addMembersToUserGroup()
 POST    /api/shared/usergroups/removeuser                 controllers.UserGroups.deleteUserGroupMembership()
 

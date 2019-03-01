@@ -7,11 +7,13 @@
       <table class="table" ng-show="usergroups.length > 0">
         <tr>
           <th translate="provider_usergroups.name"></th>
+          <th translate="provider_usergroups.searchable"></th>
           <th translate="provider_usergroups.status"></th>  
           <th></th>        
         </tr>
         <tr ng-repeat="item in usergroups|orderBy:'name'">
           <td><a ui-sref="^.editusergroup({ groupId : item._id })">{{ item.name }}</a></td>
+          <td><input type="checkbox" disabled ng-model="item.searchable"></td>
           <td translate="{{ 'enum.userstatus.'+item.status }}"></td>          
           <td><button class="btn btn-danger btn-sm" ng-show="item.status != 'DELETED'" ng-disabled="status.action=='delete'" translate="common.delete_btn" ng-click="deleteGroup(item)"></button></td>
         </tr>
