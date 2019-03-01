@@ -29,7 +29,9 @@ $fa-font-path:                "/fonts";
 .glyphicon { @extend .fas }
 .glyphicon-chevron-left { @extend .fa-chevron-left }
 .glyphicon-chevron-right { @extend .fa-chevron-right }
+.navbar-toggler-icon { @extend .fas; @extend .fa-list-alt; }
 .btn-default { @extend .btn-outline-secondary }
+.in { @extend .show }
  
 .was-validated.has-error .form-control:valid { @extend .form-control.is-invalid } 
 .has-error .invalid-feedback { display:block; }
@@ -202,7 +204,7 @@ tr .asc::after {
 
 .spacesiconbar {
   display:flex;
-  justify-content:flex-end;
+  justify-content:flex-start;
   flex-direction:column;
   height:140px;
 }
@@ -337,9 +339,7 @@ body { background-color:#f0f0f0 }
 }
 
 .panel-primary .panel-heading {
-  /* background-color:#c6851d;
-  color: #ffffff; */
-  background-color:#ffffff;
+  /* background-color:#ffffff; */
   color: $primary;
   font-weight: bold;
   padding: 10px 15px;

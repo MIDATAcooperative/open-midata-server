@@ -1278,7 +1278,10 @@
   
   "timeline" : {
     "spaces" : "MIDATA",
-    "title" : "Timeline"
+    "title" : "Timeline",
+    "fitness" : "Fitness",
+    "health" : "Health Documentation",
+    "analyze" : "Analyze your Data"
   },
   
   "-1" : "unknown"
