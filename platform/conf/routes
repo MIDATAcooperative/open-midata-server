@@ -115,6 +115,7 @@ POST     /api/debug/subscriptiondebug                    controllers.Market.setS
 
 POST    /api/members/users/get                           controllers.Users.get()
 GET     /api/shared/users/current                        controllers.Users.getCurrentUser()
+GET     /api/shared/users/stats                          controllers.Users.getAccountStats()
 GET     /api/shared/users/contacts                      controllers.Users.loadContacts()
 GET     /api/members/users/search/:query                 controllers.Users.search(query: String)
 GET     /api/shared/users/complete/:query                controllers.Users.complete(query: String)
@@ -210,6 +211,7 @@ POST    /api/shared/usergroups/search                     controllers.UserGroups
 POST    /api/shared/usergroups/members                    controllers.UserGroups.listUserGroupMembers()
 POST    /api/shared/usergroups/create                     controllers.UserGroups.createUserGroup()
 POST    /api/shared/usergroups/delete/:group              controllers.UserGroups.deleteUserGroup(group: String)
+POST    /api/shared/usergroups/edit/:group                controllers.UserGroups.editUserGroup(group: String)
 POST    /api/shared/usergroups/adduser                    controllers.UserGroups.addMembersToUserGroup()
 POST    /api/shared/usergroups/removeuser                 controllers.UserGroups.deleteUserGroupMembership()
 

@@ -27,6 +27,15 @@
 				<p class="col-sm-10">{{user.midataID }}</p>
 			</div>
 			
+			<div class="row" ng-show="stats">
+			  <p class="col-2 text-muted">Consents Out</p><p class="col-10 text-muted">{{ stats.numConsentsOwner }}</p>
+			  <p class="col-2 text-muted">Consents In</p><p class="col-10 text-muted">{{ stats.numConsentsAuth }}</p>
+			  <p class="col-2 text-muted">Streams Self</p><p class="col-10 text-muted">{{ stats.numOwnStreams }}</p>
+			  <p class="col-2 text-muted">Streams Extern</p><p class="col-10 text-muted">{{ stats.numOtherStreams }}</p>			  			  			  
+			  <p class="col-2 text-muted">Groups</p><p class="col-10 text-muted">{{ stats.numUserGroups }}</p>
+			</div>
+			
+			
 			<div class="row" ng-show="isSelf">
 			  <div class="col-sm-12">
 			  
@@ -46,6 +55,7 @@
 	<a class="dropdown-item" href="javascript:" ng-disabled="msg" ng-click="resetSpaces();" translate="user.reset_spaces_btn"></a>
 	<a class="dropdown-item" href="javascript:" ui-sref="^.delete_records" translate="user.delete_records_btn"></a>
 	<a class="dropdown-item" href="javascript:" ng-click="exportAccount()" translate="user.export_btn"></a>
+	<a class="dropdown-item" href="javascript:" ng-show="beta" ng-click="metrics()" translate="user.metrics_btn"></a>
 	<a class="dropdown-item" href="javascript:" ng-show="user.role!='ADMIN'" ui-sref="^.accountwipe" translate="user.wipe_account_btn"></a>
   </div>
 </div>
@@ -56,6 +66,9 @@
 			     
 			  </div>			  
 			</div>
+			
+			
+			
 			<div class="extraspace"></div>
 			<div ng-show="msg" class="alert alert-info" translate="{{ msg }}"></div>
 			

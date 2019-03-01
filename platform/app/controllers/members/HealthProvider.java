@@ -3,6 +3,7 @@ package controllers.members;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,6 +20,7 @@ import models.HPUser;
 import models.MemberKey;
 import models.MidataId;
 import models.User;
+import models.UserGroupMember;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
@@ -26,6 +28,7 @@ import models.enums.UserRole;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.MemberSecured;
@@ -185,6 +188,11 @@ public class HealthProvider extends APIController {
     public static void rejectConsent(MidataId userId, MidataId consentId) throws AppException, JsonValidationException {
 		
 		MemberKey target = MemberKey.getByIdAndOwner(consentId, userId, Consent.ALL);
+			
+		if (target==null) {
+			rejectConsentAsAuthorized(userId, consentId);
+			return;
+		}
 		
 		if (target.type.equals(ConsentType.EXTERNALSERVICE)) {
 		   AuditManager.instance.addAuditEvent(AuditEventType.APP_REJECTED, userId, target);
@@ -200,8 +208,38 @@ public class HealthProvider extends APIController {
 	
 		AuditManager.instance.success();
 	}
-	
     
+    public static void rejectConsentAsAuthorized(MidataId userId, MidataId consentId) throws AppException, JsonValidationException {
+	   Consent consent = Circles.getConsentById(userId, consentId, Consent.ALL);
+	   if (consent == null) throw new BadRequestException("error.notfound.consent", "Consent not found");
+	   
+	   if (consent.status != ConsentStatus.ACTIVE) return;
+	   AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_REJECTED, userId, consent);
+	   if (consent.authorized.contains(userId)) {
+		   
+		   if (consent.authorized.size() > 1) {
+			   consent.authorized.remove(userId);		   		   		   
+			   Consent.set(consent._id, "authorized", consent.authorized);
+			   Consent.set(consent._id, "lastUpdated", new Date());				
+			   RecordManager.instance.unshareAPSRecursive(consent._id, userId, Collections.singleton(userId));
+		   } else Circles.consentStatusChange(userId, consent, ConsentStatus.REJECTED);
+	   } else {
+		   Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByMember(userId);
+		   for (UserGroupMember ugm : ugms) {
+			   if (consent.authorized.contains(ugm.userGroup)) {
+				   
+				   if (consent.authorized.size() > 1) {
+					   consent.authorized.remove(ugm.userGroup);
+					   Consent.set(consent._id, "authorized", consent.authorized);
+					   Consent.set(consent._id, "lastUpdated", new Date());				
+					   RecordManager.instance.unshareAPSRecursive(consent._id, userId, Collections.singleton(ugm.userGroup));
+				   } else Circles.consentStatusChange(userId, consent, ConsentStatus.REJECTED);
+			   }
+		   }
+	   }
+	   AuditManager.instance.success();
+	   	   
+    }
 	
 
 }

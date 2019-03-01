@@ -135,11 +135,11 @@ angular.module('portal')
 			
 		} else {
 		
-			circles.listConsents({ "member": userId }, ["name","owner", "ownerName"])
+			circles.listConsents({ "member": userId }, ["name","owner", "ownerName", "type"])
 			.then(function(results) {
 				//$scope.availableAps = [{ name : "Your Data", aps:userId, owner : "self"  }, { name : "All Data", aps:userId, owner : "all"}];
 				angular.forEach(results.data, function(circle) { 
-					$scope.availableAps.push({ i18n:"records.shared", name:circle.ownerName, aps:circle._id, type : "circle" });
+					$scope.availableAps.push({ i18n:"records.shared", name:circle.ownerName, aps:circle._id, type : circle.type.toLowerCase() });
 				});
 			});
 		}

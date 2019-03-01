@@ -12,6 +12,7 @@ import models.MidataId;
 import models.Record;
 import models.RecordsInfo;
 import models.StudyParticipation;
+import models.enums.ConsentType;
 import utils.exceptions.InternalServerException;
 
 public class ReferenceTool {
@@ -86,9 +87,18 @@ public class ReferenceTool {
 		
 		for (Consent circle : circles) {
 			if (owners && (circle.owner != null && circle.getOwnerName() == null)) {
+				
+				if (circle.type == ConsentType.STUDYRELATED) {
+					String name = circle.name;					  
+					if (name.startsWith("Study:")) name = name.substring("Study:".length());
+					circle.setOwnerName(name);
+				} else {
+				
 				String key = circle.owner.toString();
 				String name = members.get(key);
 				if (name == null) {
+					
+										
 					Member member = Member.getById(circle.owner, fullName);
 					if (member != null) {
 						name = member.lastname + ", " + member.firstname;
@@ -96,6 +106,8 @@ public class ReferenceTool {
 					}
 				}			
 				circle.setOwnerName(name);
+				
+				}
 			}
 		
 		}

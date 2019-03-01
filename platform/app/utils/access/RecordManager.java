@@ -21,6 +21,7 @@ import org.bson.types.BasicBSONList;
 import controllers.Circles;
 import models.APSNotExistingException;
 import models.AccessPermissionSet;
+import models.AccountStats;
 import models.Consent;
 import models.ContentCode;
 import models.ContentInfo;
@@ -1134,7 +1135,7 @@ public class RecordManager {
 		else {
           Consent consent = Consent.getByIdUnchecked(apsId, Consent.ALL);
           if (consent != null) {
-        	  if (consent.status != ConsentStatus.ACTIVE && !consent.owner.equals(who)) return Collections.emptyList();
+        	  if (consent.status != ConsentStatus.ACTIVE && consent.status != ConsentStatus.FROZEN && !consent.owner.equals(who)) return Collections.emptyList();
         	  context =  createContextFromConsent(who, consent);
           }
 		}
@@ -1490,6 +1491,24 @@ public class RecordManager {
 		}
 		wipe(who, toWipe);
 		
+	}
+	
+	public AccountStats getStats(MidataId userId) throws AppException {
+		AccountStats result = new AccountStats();
+		result.numConsentsOwner = Consent.count(userId);
+		Set<MidataId> auth = new HashSet<MidataId>();
+		auth.add(userId);
+		for (UserGroupMember ugm : UserGroupMember.getAllActiveByMember(userId)) {
+			auth.add(ugm.userGroup);
+			result.numUserGroups++;
+		}
+		result.numConsentsAuth = Consent.countAuth(auth);
+		DBIterator<DBRecord> it = QueryEngine.listInternalIterator(getCache(userId), userId, new AccountAccessContext(getCache(userId), null), CMaps.map("streams","only").map("owner","self").map("flat",true), Sets.create("_id"));
+		while (it.hasNext()) { it.next();result.numOwnStreams++;result.numOtherStreams--; }
+		it = QueryEngine.listInternalIterator(getCache(userId), userId, new AccountAccessContext(getCache(userId), null), CMaps.map("streams","only").map("flat",true), Sets.create("_id"));
+		while (it.hasNext()) { it.next();result.numOtherStreams++; }
+		
+		return result;
 	}
 	
 	public void clearIndexes(MidataId userId) throws AppException {

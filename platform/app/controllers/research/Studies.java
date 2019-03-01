@@ -686,18 +686,18 @@ public class Studies extends APIController {
 
 		// Checks
 
+		Map<String, Object> properties = new HashMap<String, Object>(study.recordQuery);
+		Feature_FormatGroups.convertQueryToContents(properties);
+		
 		if (study.requiredInformation.equals(InformationType.RESTRICTED)) {
-
-			Map<String, Object> properties = new HashMap<String, Object>(study.recordQuery);
-			Feature_FormatGroups.convertQueryToContents(properties);
-
-			// if (!properties.containsKey("content")) throw new
-			// BadRequestException("error.invalid.access_query", "Query does not
-			// restrict content.");
+				
 			if (Query.getAnyRestrictionFromQuery(properties, "content").contains("Patient"))
 				throw new BadRequestException("error.invalid.sharing", "Restricted study may not share Patient records.");
 
 		}
+		if (Query.getAnyRestrictionFromQuery(properties, "content").contains("PseudonymizedPatient"))
+			throw new BadRequestException("error.invalid.sharing", "Studies should not explicitely share pseudonymized patient records.");
+
 
 		AuditManager.instance.addAuditEvent(AuditEventType.STUDY_VALIDATION_REQUESTED, userId, null, study);
 		// study.addHistory(new History(EventType.VALIDATION_REQUESTED, user,

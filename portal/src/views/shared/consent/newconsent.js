@@ -37,7 +37,8 @@ angular.module('portal')
 	}
 	$scope.init = function(userId) {
 		$scope.userId = userId;
-		
+		$scope.authpersons = [];
+		$scope.authteams = [];
 		
 		if ($state.params.consentId) {
 			$scope.consentId = $state.params.consentId;
@@ -311,7 +312,7 @@ angular.module('portal')
 	
 	$scope.mayReject = function() {
 		if (! $scope.consent) return false;
-		if ($scope.consent.owner !== $scope.userId) return false;
+		//if ($scope.consent.owner !== $scope.userId) return false;
 		return ($scope.consent.status == 'UNCONFIRMED' || $scope.consent.status == 'ACTIVE') && $scope.consent.type != 'STUDYPARTICIPATION';
 	};
 	

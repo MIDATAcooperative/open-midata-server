@@ -7,6 +7,13 @@
   <form name="myform" class="css-form form-horizontal" ng-submit="create()" novalidate role="form">
     <formrow id="name" label="provider_editusergroup.name">
       <p class="form-control-plaintext">{{ usergroup.name }}</p>
+    </formrow> 
+    <formrow id="status" label="provider_editusergroup.searchable">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" ng-model="usergroup.searchable" ng-change="edit();">
+        <div class="margin-left"><span class="text-success" ng-show="saveOk"><span class="fas fa-check"></span> <span translate="common.save_ok"></span></span></div>
+      </div>
+                     
     </formrow>    
     <formrow id="status" label="provider_editusergroup.status">
       <p class="form-control-plaintext" translate="{{ 'enum.userstatus.'+usergroup.status }}"></p>               

@@ -125,7 +125,7 @@ public class Records extends APIController {
 
 		// execute
 		Record target = RecordManager.instance.fetch(userId, getRole(), tk);
-		ReferenceTool.resolveOwners(Collections.singleton(target), true, true);
+		if (target != null) ReferenceTool.resolveOwners(Collections.singleton(target), true, true);
 		return ok(JsonOutput.toJson(target, "Record", Record.ALL_PUBLIC_WITHNAMES)).as("application/json");
 	}
 
