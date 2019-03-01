@@ -7,18 +7,24 @@
 			  <div class="panel-body">
 			    <p translate="help_welcome.starts"></p>
     <div class="row">
-      <div class="col-sm-2 spacesiconbar">
-        <a href="javascript:" ng-click="use('fitness')"><img class="img-responsive" src="/images/fitness.jpeg">Fitness</a>
+      <div class="col-6 col-md-3 col-lg-2 spacesiconbar" style="position:relative">
+        <a href="javascript:" ng-click="use('fitness')"><img class="img-responsive" src="/images/fitness.jpeg"></a>
+        <div class="position:relative"><a href="javascript:" ng-click="use('fitness')" translate="timeline.fitness">Fitness</a></div>
       </div>
-      <div class="col-sm-2 spacesiconbar">
-        <a href="javascript:" ui-sref="^.market({ tag : 'Protocol' })"><img class="img-responsive" src="/images/papers.jpg">Health Documentation</a>
+      <div class="col-6 col-md-3 col-lg-2 spacesiconbar" style="position:relative">
+        <a href="javascript:" ui-sref="^.market({ tag : 'Protocol' })"><img class="img-responsive" src="/images/papers.jpg"></a>
+        <div class="position:relative"><a href="javascript:" ui-sref="^.market({ tag : 'Protocol' })" translate="timeline.health">Health Documentation</a></div>
       </div>
-      <div class="col-sm-2 spacesiconbar">
-        <a href="javascript:" ui-sref="^.market({ tag : 'Analysis' })"><img class="img-responsive" src="/images/question.jpeg">Analyze your Data</a>
+      <div class="col-6 col-md-3 col-lg-2 spacesiconbar" style="position:relative">
+        <a href="javascript:" ui-sref="^.market({ tag : 'Analysis' })"><img class="img-responsive" src="/images/question.jpeg"></a>
+        <div class="position:relative"><a href="javascript:" ui-sref="^.market({ tag : 'Analysis' })" translate="timeline.analyze">Analyze your Data</a></div>
       </div>
-      <div class="col-sm-2 spacesiconbar" ng-repeat="space in spaces" style="position:relative">
-        <div style="position:absolute;right:16px;"><a href="javascript:" ng-click="deleteSpace(space);"><span class="fas fa-times-circle"></span></a></div>			     
-	    <a href="javascript:" ui-sref="^.spaces({ spaceId : space._id })"><img class="img-responsive" ng-src="{{ getIconUrl(space) }}">{{ space.name}}</a>		 
+      <div class="col-6 col-md-3 col-lg-2 spacesiconbar" ng-repeat="space in spaces" style="position:relative">        			     
+	    <a href="javascript:" ui-sref="^.spaces({ spaceId : space._id })"><img class="img-responsive" ng-src="{{ getIconUrl(space) }}"></a>
+	    <div class="position:relative">
+	      <div style="position:absolute;right:16px;"><a href="javascript:" ng-click="deleteSpace(space);"><span class="fas fa-times-circle"></span></a></div>
+	      <a href="javascript:" ui-sref="^.spaces({ spaceId : space._id })">{{ space.name}}</a>
+	    </div>		 
 	  </div>
     </div>
   
