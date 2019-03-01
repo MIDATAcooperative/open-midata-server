@@ -26,7 +26,7 @@ angular.module('portal')
 				$scope.members = data.data;
 			});
 			
-			$scope.status.doBusy(usergroups.search({ "_id" : $state.params.groupId }, ["name", "status" ]))
+			$scope.status.doBusy(usergroups.search({ "_id" : $state.params.groupId }, ["name", "status", "searchable" ]))
 			.then(function(data) {				
 				$scope.usergroup = $scope.myform = data.data[0];								                						
 			});
@@ -50,6 +50,11 @@ angular.module('portal')
 			$state.go("^.editusergroup", { groupId : data.data._id });						 
 		});
 				
+	};
+	
+	$scope.edit = function() {
+		$scope.saveOk = false;
+		usergroups.editUserGroup($scope.usergroup).then(function() { $scope.saveOk = true; });
 	};
 	
 	$scope.removePerson = function(person) {

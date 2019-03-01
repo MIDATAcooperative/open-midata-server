@@ -270,4 +270,12 @@ public class Consent extends Model implements Comparable<Consent> {
 	public static long count(ConsentType type) throws AppException {
 		return Model.count(Consent.class, collection, CMaps.map("type", type));
 	}
+	
+	public static long count(MidataId owner) throws AppException {
+		return Model.count(Consent.class, collection, CMaps.map("owner", owner));
+	}
+	
+	public static long countAuth(Set<MidataId> auth) throws AppException {
+		return Model.count(Consent.class, collection, CMaps.map("authorized", auth));
+	}
 }

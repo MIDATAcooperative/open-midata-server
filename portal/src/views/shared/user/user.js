@@ -24,8 +24,16 @@ angular.module('portal')
 			$scope.user.authType = $scope.user.authType || "NONE";
 			$scope.user.notifications = $scope.user.notifications || "NONE";
 		});
+		
+		
 	};
 	
+	$scope.metrics = function() {
+		$scope.stats = {};
+		server.get("/api/shared/users/stats").then(function(results) {
+			   $scope.stats = results.data;
+		});
+	};
 	
 	session.currentUser.then(function(myUserId) { 		
 		

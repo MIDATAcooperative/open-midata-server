@@ -1164,7 +1164,8 @@ public class Application extends APIController {
 				// UserGroups
 				controllers.routes.javascript.UserGroups.search(),
 				controllers.routes.javascript.UserGroups.createUserGroup(),
-				controllers.routes.javascript.UserGroups.deleteUserGroup(),
+				controllers.routes.javascript.UserGroups.deleteUserGroup(), 
+				controllers.routes.javascript.UserGroups.editUserGroup(),
 				controllers.routes.javascript.UserGroups.addMembersToUserGroup(),
 				controllers.routes.javascript.UserGroups.deleteUserGroupMembership(),
 				controllers.routes.javascript.UserGroups.listUserGroupMembers(),

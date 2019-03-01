@@ -46,6 +46,7 @@
     "title" : "Teams",
     "name" : "Team",
     "status" : "Status",
+    "searchable" : "Public",
     "empty" : "You are not part of a team."
   },
   
@@ -60,6 +61,7 @@
     "former_members" : "Former Members",
     "name" : "Team Name",
     "status" : "Status",
+    "searchable" : "Findable by Account Holders",
     "startDate" : "Member From",
     "endDate" : "Member Until"
   },
