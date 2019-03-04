@@ -398,8 +398,7 @@ public class Users extends APIController {
 	 * Request MIDATA membership of current user
 	 * @return 200 ok
 	 * @throws AppException
-	 */
-	@BodyParser.Of(BodyParser.Json.class)
+	 */	
 	@APICall
 	@Security.Authenticated(PreLoginSecured.class)
 	public Result requestMembership() throws AppException {
