@@ -623,7 +623,7 @@ public class Application extends APIController {
 		obj.put("mobileStatus", user.mobileStatus == null ? EMailStatus.UNVALIDATED.toString() : user.mobileStatus.toString());
 		ArrayNode ar = obj.putArray("requirements");
 		for (UserFeature feature : missing) ar.add(feature.toString());
-		obj.put("confirmationCode", user.confirmationCode == null);
+		obj.put("confirmationCode", user.confirmedAt != null);
 		obj.put("role", user.role.toString().toLowerCase());
 		obj.put("userId", user._id.toString());
 		obj.set("user", JsonOutput.toJsonNode(user, "User", User.ALL_USER));
