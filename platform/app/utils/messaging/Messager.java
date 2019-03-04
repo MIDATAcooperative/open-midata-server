@@ -101,6 +101,9 @@ public class Messager {
 		String content = messageDefinition.text.get(member.language);
 		if (content == null) content = messageDefinition.text.get(InstanceConfig.getInstance().getDefaultLanguage());
 		
+		if (subject==null) subject = "No subject";
+		if (content == null) return;
+		
 		if (footers != null) {
 			String footer = footers.get(member.language);
 			if (footer == null) footer = footers.get(InstanceConfig.getInstance().getDefaultLanguage());

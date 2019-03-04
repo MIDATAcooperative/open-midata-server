@@ -29,8 +29,8 @@
 							  </formrow>							  
 							  <div class="extraspace"></div>
 							  <button type="submit" ng-disabled="status.action=='token'" class="btn btn-primary btn-block" translate="postregister.securityToken_btn"></button>
-							  <div ng-show="progress.PHONE_VERIFIED">
-							    <p ng-show="error" class="alert alert-danger" translate="{{ error.code || error }}"></p>
+							  <p ng-show="error" class="alert alert-danger" translate="{{ error.code || error }}"></p>
+							  <div ng-show="progress.PHONE_VERIFIED">							   
 							    <div class="extraspace"></div>
 							    <p translate="postregister.no_token"></p>
 							    <button ng-click="noSecurityToken()" type="button" ng-disabled="status.action=='token'" class="btn btn-default btn-block" translate="postregister.no_token_btn"></button>
