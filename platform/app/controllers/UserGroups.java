@@ -71,7 +71,14 @@ public class UserGroups extends APIController {
 			properties.remove("member");
 			Rights.chk("UserGroups.searchOwn", getRole(), properties, fields);
 		    
-			Set<UserGroupMember> ugms = UserGroupMember.getAllByMember(executorId);
+			Set<UserGroupMember> ugms = null; UserGroupMember.getAllByMember(executorId);
+			
+			if (properties.containsKey("active")) {
+				properties.remove("active");
+				ugms = UserGroupMember.getAllActiveByMember(executorId);
+			} else {
+			   ugms = UserGroupMember.getAllByMember(executorId);
+			}
 			Set<MidataId> ids = new HashSet<MidataId>();
 			for (UserGroupMember ugm : ugms) ids.add(ugm.userGroup);
 			properties.put("_id", ids);

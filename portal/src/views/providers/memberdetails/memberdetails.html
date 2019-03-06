@@ -9,13 +9,13 @@
 	</p>
 	 <address>	
 	  <strong>{{ member.firstname }} {{ member.lastname }}</strong><br>
-	{{ member.address1 }}<br>
-	{{ member.address2 }}<br>
-	{{ member.zip }} {{ member.city }}<br>
+	<span ng-show="member.address1">{{ member.address1 }}<br></span>
+	<span ng-show="member.address2">{{ member.address2 }}<br></span>
+	<span ng-show="member.zip||member.city">{{ member.zip }} {{ member.city }}<br></span>
 	{{ member.country }}<br>
-	  <span ng-show="member.phone">Phone: {{ member.phone }}</span><br>
-	  <span ng-show="member.mobile">Mobile: {{ member.mobile }}</span><br>	  
-	  <span ng-show="member.email">Email: {{ member.email }}</span><br>
+	  <span ng-show="member.phone">Phone: {{ member.phone }}<br></span>
+	  <span ng-show="member.mobile">Mobile: {{ member.mobile }}<br></span>	  
+	  <span ng-show="member.email">Email: {{ member.email }}<br></span>
     </address>
       <p>Pick consent:</p>
       <div class="row">

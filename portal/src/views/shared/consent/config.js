@@ -18,7 +18,7 @@ angular.module('portal')
 	        dashId : 'circles'
 	    })
 	    .state('provider.newconsent', {
-	      url: '/newconsent?authorize&owner&share&request',	      
+	      url: '/newconsent?authorize&owner&share&request&extowner',	      
 	      templateUrl: 'views/shared/consent/newconsent.html',
 	      dashId : 'circles',
 	      role : 'PROVIDER'

@@ -5,7 +5,7 @@
   <div class="panel-body">
    
   <form name="myform" class="css-form form-horizontal" ng-submit="create()" novalidate role="form">
-    <p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
+    <p ng-show="error && !error.field" translate="{{ error.code || error }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
 	</p>	
     
     <div class="row" ng-show="!consent.type">
@@ -53,20 +53,21 @@
 			</span>			
 		  </address>
 		  </div>
-		  </div>
-		  
-		  <div class="margin-top">
-		    <button ng-hide="owner" type="button" class="btn btn-default" ng-click="setOwner();" translate="newconsent.set_owner_btn"></button>
-		  </div> 		
+		  </div>		 
+		   		
 		  
 		</div>
 		<div class="card" ng-show="consent.externalOwner">
 		  <div class="card-body">
-		  <img ng-src="/images/external.jpg" class="float-left consenticon">
+		  <img ng-src="/images/question.jpeg" class="float-left consenticon">
           <div class="iconspace">
-		    <span translate="editconsent.external"></span>: <strong>{{ consent.externalOwner }}</strong>
+		    <div translate="editconsent.external"></div>
+		    <div><strong>{{ consent.externalOwner }}</strong></div>
 		  </div>
 		  </div>
+		</div>
+		<div class="margin-top">
+		    <button ng-hide="owner || consent.externalOwner" type="button" class="btn btn-default" ng-click="setOwner();" translate="newconsent.set_owner_btn"></button>
 		</div>
                         
        </div>
@@ -218,13 +219,13 @@
       </div>
 	</formrow>
 	<formrow myid="name" label="newconsent.name">
-      <input id="name" name="name" type="text" class="form-control" ng-model="consent.name" required>
+      <input id="name" name="name" type="text" class="form-control" ng-model="consent.name">
     </formrow>
     </div>
     
     <div ng-show="consent.type" class="margin-top">
       <span ng-hide="consent.query">
-        <button ng-show="consent.authorized.length || consent.usepasscode" type="submit" class="btn btn-primary" translate="newconsent.create_btn"></button>
+        <button ng-show="consent.authorized.length || consent.usepasscode || consent.externalAuthorized" type="submit" class="btn btn-primary" translate="newconsent.create_btn"></button>
       </span>
       <span ng-show="consent.query">
         <button ng-show="consent.authorized.length || consent.usepasscode" type="submit" class="btn btn-primary" translate="newconsent.create2_btn"></button>

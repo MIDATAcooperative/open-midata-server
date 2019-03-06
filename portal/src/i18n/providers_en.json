@@ -35,7 +35,19 @@
   },
   
   "provider_patientsearch" : {
-     "title" : "Patient Search"
+     "title" : "Patient Search",
+     "email" : "E-Mail",
+     "or" : "or",
+     "midataid" : "Midata ID",
+     "birthday" : "Birthday",
+     "searching" : "Searching...",
+     "address" : "Address",
+     "show_patient_btn" : "Show Patient",
+     "consents" : "Consents with this patient",
+     "add_new_consent" : "Add new consent",
+     "usergroup" : "Team (optional)",
+     "passcode" : "Access Passcode (optional)",
+     "add_new_consent_btn" : "Add new consent"
   },
   
   "provider_patients" : {

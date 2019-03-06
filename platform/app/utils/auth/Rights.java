@@ -86,7 +86,7 @@ public class Rights {
 		role(UserRole.ANY, "_id", "creator", "name", "registeredAt", "searchable", "status", "type", "member", "role");
 
 		action("UserGroups.searchOwn");
-		role(UserRole.ANY, "_id", "creator", "name", "registeredAt", "searchable", "status", "type", "member", "role");
+		role(UserRole.ANY, "_id", "creator", "name", "registeredAt", "searchable", "status", "type", "member", "role", "active");
 	}
 	
 	public static void chk(String action, UserRole role, Map<String, Object> props, Set<String> fields) throws InternalServerException, AuthException {
