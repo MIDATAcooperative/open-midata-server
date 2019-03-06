@@ -52,6 +52,13 @@ angular.module('views')
 		var userIds = _.map(usersToAdd, function(user) { return user._id; });
 		userIds = _.uniq(userIds, false, function(userId) { return userId; });
 		console.log(usersToAdd);
+
+		if ((!$scope.foundUsers || $scope.foundUsers.length===0) && usersToAdd.length === 0 && $scope.view.setup.callback) {
+			$scope.view.setup.callback($scope.crit.userQuery);
+			return;
+		}
+		
+		
 		if (usersToAdd.length === 0) return;
 		if ($scope.view.setup.callback) {
 		   $scope.view.setup.callback(usersToAdd);

@@ -191,13 +191,13 @@ public class Users extends APIController {
      * @return list of users (json)
      * @throws AppException
      */
-	@Security.Authenticated(MemberSecured.class)
+	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
 	public Result search(String query) throws AppException {
 		
 		requireUserFeature(UserFeature.EMAIL_VERIFIED);
 		
-		Set<String> fields =  Sets.create("firstname", "lastname", "name");
+		Set<String> fields =  Sets.create("firstname", "lastname", "name", "role");
 		Set<Member> result = Member.getAll(CMaps.map("emailLC", query.toLowerCase()).map("searchable", true).map("status", User.NON_DELETED).map("role", UserRole.MEMBER), fields);
 		
 		for (Member member : result) {
