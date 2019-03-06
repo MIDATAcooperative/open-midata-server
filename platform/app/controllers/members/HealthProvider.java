@@ -155,7 +155,10 @@ public class HealthProvider extends APIController {
 		if (target.status.equals(ConsentStatus.UNCONFIRMED)) {
 			if (target.type.equals(ConsentType.EXTERNALSERVICE)) {
 				MobileAPI.confirmMobileConsent(userId, consentId);
-			}			
+			}	
+			if (target.externalAuthorized != null && !target.externalAuthorized.isEmpty()) {
+				throw new BadRequestException("error.invalid.consent_members", "Consent has external persons.");
+			}
 			target.setConfirmDate(new Date());			
 			Circles.consentStatusChange(userId, target, ConsentStatus.ACTIVE);
 			Circles.sendConsentNotifications(userId, target, ConsentStatus.ACTIVE);

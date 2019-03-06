@@ -196,7 +196,7 @@
 					<th translate="consents.number_of_records"></th>
 					<th></th>
 				</tr>
-				<tr ng-repeat="consent in consents | orderBy : 'name'" ng-class="{ 'warning' : consent.status == 'UNCONFIRMED' }">
+				<tr ng-repeat="consent in consents | orderBy : 'name'" ng-class="{ 'table-warning' : consent.status == 'UNCONFIRMED' }">
 					<td><a ng-click="editConsent(consent);" href="javascript:">{{ consent.name }}</a></td>					
 					<td translate="{{ 'enum.consentstatus.'+consent.status }}"></td>					
 					<td>{{ consent.records }}</td>

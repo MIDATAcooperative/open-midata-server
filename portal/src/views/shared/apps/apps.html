@@ -9,7 +9,7 @@
 
 			<table class="table table-hover clickable" ng-show="apps.length">
 				
-				<tr ng-repeat="app in apps | orderBy : 'name'" ng-class="{ 'warning' : app.status == 'UNCONFIRMED' }" ng-click="editConsent(app);">
+				<tr ng-repeat="app in apps | orderBy : 'name'" ng-class="{ 'table-warning' : app.status == 'UNCONFIRMED' }" ng-click="editConsent(app);">
 					<td>{{ app.name }}</td>				
 					<td class="status-column">
 					  <span class="icon fas fa-check-circle" ng-show="app.status == 'ACTIVE'"></span>

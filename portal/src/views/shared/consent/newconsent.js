@@ -99,7 +99,10 @@ angular.module('portal')
 			views.disableView("records_shared");
 			
 			if ($state.params.owner != null) {
-				$scope.consent.owner = $state.params.owner;				
+				$scope.consent.owner = $state.params.owner;
+			} else if ($state.params.extowner) {
+				$scope.consent.externalOwner = $state.params.extowner;
+				$scope.owner = null;
 			} else if ($state.params.request) {
 				$scope.addYourself();
 				$scope.owner = null;
@@ -202,6 +205,7 @@ angular.module('portal')
 		if ($scope.consentId) {
 		server.delete(jsRoutes.controllers.Circles.removeMember($scope.consent._id, person._id).url).
 			then(function() {
+				$scope.consent.authorized.splice($scope.consent.authorized.indexOf(person._id), 1);
 				if ($scope.consent.entityType == "USERGROUP") {
 				  $scope.authteams.splice($scope.authteams.indexOf(person), 1);
 				} else {
@@ -211,7 +215,7 @@ angular.module('portal')
 		} else {
 			if ($scope.consent.entityType == "USERGROUP") {
 				  $scope.authteams.splice($scope.authteams.indexOf(person), 1);
-				  $scope.constent.authorized.splice($scope.consent.authorized.indexOf(person._id), 1);
+				  $scope.consent.authorized.splice($scope.consent.authorized.indexOf(person._id), 1);
 			} else {
 				  $scope.authpersons.splice($scope.authpersons.indexOf(person), 1);
 				  $scope.consent.authorized.splice($scope.consent.authorized.indexOf(person._id), 1);
@@ -230,19 +234,23 @@ angular.module('portal')
 			if (!$scope.consent.name) $scope.consent.name = getName(person);
 		} else {
 			$scope.consent.entityType = "USER";
-		if (person.length) {
-			angular.forEach(person, function(p) { 
-				if (p.role) {
-				  $scope.authpersons.push(p); 
-				  $scope.consent.authorized.push(p._id);
-				  if (!$scope.consent.name) $scope.consent.name = getName(p);
-				}
-			});
-		} else if (person.role) {
-		    $scope.authpersons.push(person);
-		    $scope.consent.authorized.push(person._id);
-		    if (!$scope.consent.name) $scope.consent.name = getName(person);
-		}
+			if (typeof person == "string") {
+				if ($scope.consent.authorized && $scope.consent.authorized.length) return;
+				if (!$scope.consent.externalAuthorized) $scope.consent.externalAuthorized = [];
+				$scope.consent.externalAuthorized.push(person);
+			} else if (person.length) {
+				angular.forEach(person, function(p) { 
+					if (p.role) {
+					  $scope.authpersons.push(p); 
+					  $scope.consent.authorized.push(p._id);
+					  if (!$scope.consent.name) $scope.consent.name = getName(p);
+					}
+				});
+		    } else if (person.role) {
+			    $scope.authpersons.push(person);
+			    $scope.consent.authorized.push(person._id);
+			    if (!$scope.consent.name) $scope.consent.name = getName(person);
+		    }
 		}
 		if ($scope.consentId) {
 			circles.addUsers($scope.consentId, $scope.consent.authorized, isTeam ? "USERGROUP" : "USER" );
@@ -265,10 +273,14 @@ angular.module('portal')
     var setOwnerPerson = function(person, isTeam) {	
 		
 		if (isTeam) return;			
-		if (person.length) person = person[0];
+		if (angular.isArray(person)) person = person[0];
 			
-		$scope.owner = person;
-		$scope.consent.owner = person._id;								
+		if (person._id) {
+		  $scope.owner = person;
+		  $scope.consent.owner = person._id;
+		} else if (person != null) {
+			$scope.consent.externalOwner = person;
+		}
 	};
 	
 	$scope.setOwner = function() {		
@@ -331,7 +343,16 @@ angular.module('portal')
 	$scope.mayChangeUsers = function() {
 		if (! $scope.consent) return false;
 		if ($scope.writeProtect) return false;
+		if ($scope.consent.status == 'ACTIVE' && $scope.consent.authorized.length==1) return false;
 		
+		return true;
+	};
+	
+	$scope.mayAddPeople = function() {
+		if (! $scope.consent) return false;	
+		if ($scope.consent.type == "EXTERNALSERVICE") return false;
+		if ($scope.consent.type == "STUDYRELATED") return false;
+		if ($scope.consent.type == "IMPLICIT") return false;
 		
 		return true;
 	};
@@ -372,7 +393,7 @@ angular.module('portal')
 		if (item == "team") return "/images/team.jpeg";
 		if (item == "app") return "/images/app.jpg";
 		if (item == "community") return "/images/community.jpeg";
-		if (item == "external") return "/images/account.jpg";
+		if (item == "external") return "/images/question.jpeg";
 		if (item == "reshare") return "/images/community.jpeg";
 		if (session.user && item._id == session.user._id) return "/images/account.jpg";
 		if (item=="member" || item.role == "MEMBER") return "/images/account.jpg";

@@ -1,5 +1,6 @@
 package controllers.providers;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -15,6 +16,7 @@ import controllers.Application;
 import controllers.Circles;
 import controllers.OAuth2;
 import controllers.PWRecovery;
+import models.Consent;
 import models.HCRelated;
 import models.HPUser;
 import models.HealthcareProvider;
@@ -24,6 +26,7 @@ import models.MidataId;
 import models.User;
 import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
+import models.enums.ConsentType;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
 import models.enums.Gender;
@@ -256,27 +259,37 @@ public class Providers extends APIController {
 	@Security.Authenticated(ProviderSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public Result search() throws JsonValidationException, InternalServerException {
+	public Result search() throws JsonValidationException, AppException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		JsonNode json = request().body().asJson();
+		
+		Member result = null;
+		boolean removeIfNoConsents = false;
+		Set<String> memberFields = Sets.create("firstname","birthday", "lastname","city","zip","country","email","phone","mobile","ssn","address1","address2", "searchable");
+		
+		if (json.has("email")) {
+			String email = JsonValidation.getString(json, "email");
+			result = Member.getByEmail(email, memberFields);
+			if (result!=null && !result.searchable) removeIfNoConsents = true;
+		} else {		
+			JsonValidation.validate(json, "midataID", "birthday");
 			
-		JsonValidation.validate(json, "midataID", "birthday");
-		
-		String midataID = JsonValidation.getString(json, "midataID");
-		Date birthday = JsonValidation.getDate(json, "birthday");
-		
-		Set<String> memberFields = Sets.create("firstname","birthday", "lastname","city","zip","country","email","phone","mobile","ssn","address1","address2");
-		Member result = Member.getByMidataIDAndBirthday(midataID, birthday, memberFields);
+			String midataID = JsonValidation.getString(json, "midataID");
+			Date birthday = JsonValidation.getDate(json, "birthday");
+					
+			result = Member.getByMidataIDAndBirthday(midataID, birthday, memberFields);
+		}
 		if (result == null) return ok();
 		
 		HPUser hpuser = HPUser.getById(userId, Sets.create("provider", "firstname", "lastname", "email"));
 		
 		//MemberKeys.getOrCreate(hpuser, result);
-		Set<MemberKey> memberKeys = MemberKey.getByOwnerAndAuthorizedPerson(result._id, userId);
-		
+		Collection<Consent> memberKeys = Circles.getConsentsAuthorized(userId, CMaps.map("type", ConsentType.HEALTHCARE).map("owner", result._id), Consent.ALL);
+		if (memberKeys.isEmpty() && removeIfNoConsents) return ok();
+				
 		ObjectNode obj = Json.newObject();
-		obj.put("member", JsonOutput.toJsonNode(result, "User", memberFields));
-		obj.put("consents", JsonOutput.toJsonNode(memberKeys, "Consent", MemberKey.ALL));
+		obj.set("member", JsonOutput.toJsonNode(result, "User", memberFields));
+		obj.set("consents", JsonOutput.toJsonNode(memberKeys, "Consent", Consent.ALL));
 		
 		return ok(Json.toJson(obj));
 	}
@@ -315,7 +328,7 @@ public class Providers extends APIController {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		MidataId memberId = new MidataId(id);
 		
-		Set<MemberKey> memberKeys = MemberKey.getByOwnerAndAuthorizedPerson(memberId, userId);
+		Collection<Consent> memberKeys = Circles.getConsentsAuthorized(userId, CMaps.map("type", ConsentType.HEALTHCARE).map("owner", memberId), Consent.ALL);		
 		if (memberKeys.isEmpty()) throw new BadRequestException("error.notauthorized.account", "You are not authorized.");
 		
 		Set<HCRelated> backconsent = HCRelated.getByAuthorizedAndOwner(memberId,  userId);
@@ -326,7 +339,7 @@ public class Providers extends APIController {
 		
 		ObjectNode obj = Json.newObject();
 		obj.put("member", JsonOutput.toJsonNode(result, "User", memberFields));
-		obj.put("consents", JsonOutput.toJsonNode(memberKeys, "Consent", MemberKey.ALL));
+		obj.put("consents", JsonOutput.toJsonNode(memberKeys, "Consent", Consent.ALL));
 		obj.put("backwards", JsonOutput.toJsonNode(backconsent, "Consent", Sets.create("_id", "name", "owner") ));
 		return ok(obj);
 	}
