@@ -16,7 +16,7 @@ angular.module('portal')
 	};
 	
 	$scope.selectPatient = function(patient) {
-		$state.go('^.memberdetails', { memberId : patient._id });		
+		$state.go('^.memberdetails', { user : patient._id });		
 	};
 	
     $scope.dosearch();	

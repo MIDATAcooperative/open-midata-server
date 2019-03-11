@@ -25,6 +25,7 @@
       <button class="btn btn-default" ng-click="addData();" ng-hide="hideAdd">Share Data With Patient</button>
       
       <button class="btn btn-default" ui-sref="^.newconsent({ owner : member._id })" translate="provider_memberdetails.propose_consent"></button>
+            
       </div>
       </div>
       </loader>
@@ -35,26 +36,9 @@
       
     
     <div ng-include="'/views/shared/dashboard/dashboard.html'"></div>
+    <div ng-include="'/views/shared/timeline/timeline.html'"></div>
        
-    
-    
-               <div class="btn-group" ng-show="!loadingApps && apps.length > 0 && consent!=null">
-					<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-						<span class="fas fa-plus"></span> Create or import a new record
-					</button>
-					<div class="dropdown-menu" role="menu">
-						<a class="dropdown-item" ng-repeat="app in apps" href="javascript:;" ng-click="createOrImport(app)">{{app.name}}</a>						
-					</div>
-			   </div>
-			   
-			    <div class="btn-group" ng-show="!loadingVisualizations && visualizations.length > 0 && consent!= null">
-					<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-						<span class="fas fa-plus"></span> Use a visualization
-					</button>
-					<div class="dropdown-menu" role="menu">
-						<a class="dropdown-item" ng-repeat="visualization in visualizations" href="javascript:;" ng-click="useVisualization(visualization)">{{visualization.name}}</a>
-					</div>
-			   </div>
+                     
     <a ui-sref="^.patientsearch" class="btn btn-default">Back</a>
     
             

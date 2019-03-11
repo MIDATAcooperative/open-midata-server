@@ -76,7 +76,7 @@ class QueryEngine {
 		if (AccessLog.detailedLog) AccessLog.logBegin("Begin list from memory #recs="+records.size());
 		APS inMemory = new Feature_InMemoryQuery(records);
 		context.getCache().addAPS(inMemory);
-		Feature qm = new Feature_Or(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_ContentFilter(inMemory))));		
+		Feature qm = new Feature_Or(new Feature_ContextRestrictions(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_ContentFilter(inMemory)))));		
 		DBIterator<DBRecord> recs = qm.iterator(new Query(properties, Sets.create("_id"), context.getCache(), inMemory.getId(),context));		
 		List<DBRecord> result = ProcessingTools.collect(recs);		
 		if (AccessLog.detailedLog) AccessLog.logEnd("End list from memory #recs="+result.size());
@@ -220,10 +220,10 @@ class QueryEngine {
     		AccessLog.log("with usergroup");
     		properties = new HashMap<String, Object>(properties);
     		properties.put("usergroup", userGroup);
-    		qm = new Feature_Pagination(new Feature_Sort(new Feature_Or(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(false, new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams()))))))))))));
+    		qm = new Feature_Pagination(new Feature_Sort(new Feature_Or(new Feature_ContextRestrictions(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(false, new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))))))))))));
     	} else {    	
     	   APS target = cache.getAPS(aps);    	
-    	   qm = new Feature_Pagination(new Feature_Sort(new Feature_Or(new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_Prefetch(true, new Feature_UserGroups(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))))))))))))));
+    	   qm = new Feature_Pagination(new Feature_Sort(new Feature_Or(new Feature_ContextRestrictions(new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_Prefetch(true, new Feature_UserGroups(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams()))))))))))))))));
     	}
     	Query q = new Query(properties, fields, cache, aps, context);
     	AccessLog.logQuery(q.getApsId(), q.getProperties(), q.getFields());
@@ -295,8 +295,13 @@ class QueryEngine {
     
     protected static DBIterator<DBRecord> combineIterator(Query query, Map<String, Object> properties, Feature qm) throws AppException {
     	if (properties.containsKey("$or")) {
-      	  Collection<Map<String, Object>> col = (Collection<Map<String, Object>>) properties.get("$or");      	  
-      	  return ProcessingTools.multiQuery(qm, query, ProcessingTools.dbiterator("", col.iterator()));
+    	  Map<String, Object> comb = Feature_QueryRedirect.combineQuery(properties, query.getProperties());
+      	  if (comb != null) {
+      		query = new Query(comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext());
+    	
+      	    Collection<Map<String, Object>> col = (Collection<Map<String, Object>>) properties.get("$or");        	  
+      	    return ProcessingTools.multiQuery(qm, query, ProcessingTools.dbiterator("", col.iterator()));
+      	  } else return ProcessingTools.empty();
       	        	
         } else {
           Map<String, Object> comb = Feature_QueryRedirect.combineQuery(properties, query.getProperties());

@@ -41,7 +41,7 @@ angular.module('portal')
 	};
 	
 	$scope.selectPatient = function() {
-		$state.go('^.memberdetails', { memberId : $scope.member._id });		
+		$state.go('^.memberdetails', { user : $scope.member._id });		
 	};
 	
 	$scope.addConsent = function() {	

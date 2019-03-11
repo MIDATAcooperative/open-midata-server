@@ -201,12 +201,21 @@ public class AndCondition implements Condition, Serializable {
 	@Override
 	public Map<String, Object> asMongoQuery() {
 		Map<String, Object> result = new HashMap<String, Object>();
-		//List<Object> parts = new ArrayList<Object>();
+		boolean complex = false;
+		List<Object> parts = new ArrayList<Object>();
 		for (Condition check : checks) {
 			Map<String, Object> part = (Map<String, Object>) check.asMongoQuery(); 
-			result.putAll(part);
+			parts.add(part); 
+			for (Map.Entry<String, Object> entry : part.entrySet()) {
+				if (result.containsKey(entry.getKey())) {
+					complex = true;
+				} else result.put(entry.getKey(), entry.getValue());
+			}			
 		}
-		//result.put("$and", parts);
+		if (complex) {
+			result.clear();
+			result.put("$and", parts);
+		} 		
 		return result;
 	}
 	

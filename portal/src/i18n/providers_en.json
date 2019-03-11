@@ -80,7 +80,10 @@
   
   "provider_memberdetails" : {
     "propose_consent" : "Request Consent"
-   }
-  
+   },
+   
+   "help_welcome" : {
+     "starts" : "Some ideas to start with MIDATA:"
+   }  
   
 }
