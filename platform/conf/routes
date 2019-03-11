@@ -237,7 +237,7 @@ POST	/api/admins/pwrecovery/servicekey                controllers.PWRecovery.req
 
 # Apps
 
-GET     /api/plugins/:id/url/:consent      controllers.Plugins.getUrlForConsent(id: String, consent: String)
+# GET     /api/plugins/:id/url/:consent      controllers.Plugins.getUrlForConsent(id: String, consent: String)
 POST    /api/apps/:id/access/oauth2     controllers.Plugins.requestAccessTokenOAuth2(id: String)
 GET     /api/apps/:id/request/oauth1    controllers.Plugins.getRequestTokenOAuth1(id: String)
 POST    /api/apps/:id/access/oauth1     controllers.Plugins.requestAccessTokenOAuth1(id: String)

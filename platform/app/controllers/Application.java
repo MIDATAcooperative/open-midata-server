@@ -987,7 +987,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.Application.downloadToken(),
 				
 				// Apps										
-				controllers.routes.javascript.Plugins.getUrlForConsent(),
+				//controllers.routes.javascript.Plugins.getUrlForConsent(),
 				controllers.routes.javascript.Plugins.requestAccessTokenOAuth2(),
 				controllers.routes.javascript.Plugins.getRequestTokenOAuth1(),
 				controllers.routes.javascript.Plugins.requestAccessTokenOAuth1(),

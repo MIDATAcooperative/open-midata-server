@@ -88,7 +88,11 @@ angular.module('portal')
 	
 	$scope.goBack = function() {
 		if ($state.params.user) {
-			$state.go("research.study.participant", { participantId : $state.params.user, studyId : $state.params.study });
+			if ($state.current.data.role=="RESEARCH") {
+			  $state.go("research.study.participant", { participantId : $state.params.user, studyId : $state.params.study });
+			} else {
+			  $state.go("provider.memberdetails", { user : $state.params.user });
+			}
 		} else {
 		   spaces.get({ "_id" :  $scope.spaceId }, ["context"]).
 		   then(function(result) { 
@@ -102,6 +106,8 @@ angular.module('portal')
 	};
 	
 	$scope.openAppLink = function(data) {
+		data = data || {};
+		data.user = $state.params.user;
 		spaces.openAppLink($state, $scope.userId, data);	 
 	};
 	

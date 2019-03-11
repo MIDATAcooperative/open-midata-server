@@ -57,6 +57,7 @@ import models.enums.AuditEventType;
 import models.enums.ConsentType;
 import models.enums.UserRole;
 import utils.AccessLog;
+import utils.access.op.AndCondition;
 import utils.auth.ExecutionInfo;
 import utils.collections.CMaps;
 import utils.db.ObjectIdConversion;
@@ -387,12 +388,13 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 		if (!current.role.equals(UserRole.ADMIN)) {
 		  Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByMember(info().executorId);
 		  if (ugms.isEmpty()) {
-		    query.putAccount("authorized", info.executorId);
+		    query.putDataCondition(new AndCondition(CMaps.map("authorized", info.executorId)).optimize());
 		  } else {
 			Set<MidataId> allowedIds = new HashSet<MidataId>();
 			allowedIds.add(info.executorId);
 			for (UserGroupMember ugm : ugms) if (ugm.getRole().auditLogAccess()) allowedIds.add(ugm.userGroup);
-			query.putAccount("authorized", allowedIds);
+			query.putDataCondition(new AndCondition(CMaps.map("authorized", CMaps.map("$in", allowedIds))).optimize());
+			//query.putAccount("authorized", allowedIds);
 		  }
 		  authrestricted = true;
 		}
@@ -405,7 +407,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 		if (params.containsKey("agent")) {
 		  List<ReferenceParam> agents = builder.resolveReferences("agent", null);
 		   if (agents != null && !authrestricted) {
-			query.putAccount("authorized", FHIRTools.referencesToIds(agents));
+			   query.putDataCondition(new AndCondition(CMaps.map("authorized", CMaps.map("$in", FHIRTools.referencesToIds(agents)))).optimize());			
 		   }
 		}
 		
@@ -431,8 +433,9 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 		
 		if (params.containsKey("patient")) {
 			List<ReferenceParam> patients = builder.resolveReferences("patient", null);
-			if (patients != null && !authrestricted) {
-				query.putAccount("authorized", FHIRTools.referencesToIds(patients));
+			if (patients != null) {
+				query.putDataCondition(new AndCondition(CMaps.map("authorized", CMaps.map("$in",FHIRTools.referencesToIds(patients)))).optimize());
+				//query.putAccount("authorized", FHIRTools.referencesToIds(patients));
 			}
 		}
 		//patient	reference	Direct reference to resource	AuditEvent.agent.reference | AuditEvent.entity.reference

@@ -16,9 +16,9 @@ angular.module('portal')
 	    .state('research.timeline', {
 	      url: '/timeline/?url&params&user',
 	      templateUrl: 'views/shared/timeline/timeline.html' 
-	    })	   
-	     .state('provider.timeline', {
-	      url: '/timeline/?url&params',
+	    })
+	    .state('provider.timeline', {
+	      url: '/timeline/?url&params&user',
 	      templateUrl: 'views/shared/timeline/timeline.html' 
 	    });
 }]);

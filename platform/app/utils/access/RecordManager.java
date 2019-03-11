@@ -1517,7 +1517,7 @@ public class RecordManager {
 	
 	public SpaceAccessContext createContextFromSpace(MidataId executorId, Space space, MidataId self) throws InternalServerException {
 		return new SpaceAccessContext(space, getCache(executorId), null, self);
-	}
+	}	
 	
 	public ConsentAccessContext createContextFromConsent(MidataId executorId, Consent consent) throws AppException {
 		return new ConsentAccessContext(consent, getCache(executorId), null);

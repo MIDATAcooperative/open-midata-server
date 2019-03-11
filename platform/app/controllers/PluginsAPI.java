@@ -520,11 +520,14 @@ public class PluginsAPI extends APIController {
 			BSONObject query = RecordManager.instance.getMeta(inf.executorId, inf.targetAPS, "_query");
 			Set<Consent> consent = null;
 			if (query != null && query.containsField("link-study")) {
+				
 				MidataId groupId = MidataId.from(query.get("link-study"));
                 UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(groupId, inf.executorId);
                 if (ugm != null) context = RecordManager.instance.createContextForUserGroup(ugm, context);
 				consent = Consent.getHealthcareOrResearchActiveByAuthorizedAndOwner(groupId, record.owner);
+				
 			} else {
+				
 			    consent = Consent.getHealthcareOrResearchActiveByAuthorizedAndOwner(inf.executorId, record.owner);
 			}
 									
@@ -532,7 +535,8 @@ public class PluginsAPI extends APIController {
 			AccessContext contextWithConsent = null;
 			for (Consent c : consent) {
 				ConsentAccessContext cac = new ConsentAccessContext(c, context);
-				if (cac.mayCreateRecord(dbrecord)) {
+				
+				if (cac.mayCreateRecord(dbrecord)) {				
 					contextWithConsent = cac;
 					break;
 				}

@@ -20,6 +20,8 @@ import utils.AccessLog;
 import utils.RuntimeConstants;
 import utils.access.AccessContext;
 import utils.access.RecordManager;
+import utils.access.SpaceAccessContext;
+import utils.collections.CMaps;
 import utils.collections.RequestCache;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -118,6 +120,10 @@ public class ExecutionInfo {
 			
 			result.context = RecordManager.instance.createContextFromSpace(result.executorId, space, result.ownerId);
 			
+			if (result.role.equals(UserRole.PROVIDER) && !result.ownerId.equals(result.executorId)) {
+				result.context = ((SpaceAccessContext) result.context).withRestrictions(CMaps.map("consent-type-exclude", "HEALTHCARE"));
+			}
+			
 		} else if (authToken.autoimport) {
 			MobileAppInstance appInstance = MobileAppInstance.getById(authToken.spaceId, Sets.create("owner", "applicationId", "autoShare", "status", "sharingQuery", "writes"));
 			if (appInstance == null) MobileAPI.invalidToken(); 
@@ -134,17 +140,7 @@ public class ExecutionInfo {
 			result.targetAPS = appInstance._id;
 			result.context = RecordManager.instance.createContextFromApp(result.executorId, appInstance);
 			
-		} else {
-									
-			Consent consent = Consent.getByIdAndAuthorized(authToken.spaceId, authToken.userId, Consent.ALL);
-						
-			if (consent == null) throw new BadRequestException("error.unknown.consent", "The current consent does no longer exist.");
-			
-			result.pluginId = authToken.pluginId;
-			result.targetAPS = consent._id;
-			result.ownerId = consent.owner;
-			result.context = RecordManager.instance.createContextFromConsent(result.executorId, consent);
-		}
+		} 
 	   AccessLog.log("using as context:"+result.context.toString());
 	   AccessLog.logEnd("end check 'space' type session token");
 	   return result;	
