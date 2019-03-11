@@ -79,8 +79,13 @@
   },
   
   "provider_memberdetails" : {
-    "propose_consent" : "Request Consent"
-   }
-  
+    "propose_consent" : "Request Consent",
+    "pick_consent" : "Select a consent to display individual records",
+    "share_btn" : "Share data with patient"
+   },
+   
+   "help_welcome" : {
+     "starts" : "Some ideas to start with MIDATA:"
+   }  
   
 }

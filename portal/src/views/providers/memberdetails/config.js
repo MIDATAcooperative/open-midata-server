@@ -2,7 +2,7 @@ angular.module('portal')
 .config(["$stateProvider", function($stateProvider) {
 	   $stateProvider
 	    .state('provider.memberdetails', {
-	      url: '/members/:memberId',
+	      url: '/patient?url&params&user',
 	      templateUrl: 'views/providers/memberdetails/memberdetails.html',
 	      dashId : 'memberdetails'
 	    });

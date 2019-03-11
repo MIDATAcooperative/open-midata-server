@@ -8,7 +8,8 @@ angular.module('portal')
 	$scope.spaceId = $state.params.spaceId;
 	$scope.space = { "_id" : $scope.spaceId };
 	$scope.params = $state.params.params ? JSON.parse($state.params.params) : null;
-	
+	$scope.targetUser = $state.params.user;
+	$scope.role = $state.current.data.role;
     $scope.status = new status(true);
 	
 	$scope.def = views.def( {                        
@@ -82,37 +83,8 @@ angular.module('portal')
 		// set src attribute of iframe to avoid creating an entry in the browser history
 		iframe.attr("src", space.trustedUrl);
 		$("#iframe-placeholder").append(iframe);
-	};
-	
-	
-	
-					
-	
-	// start side-by-side display of current visualization
-	$scope.startCompare = function(space) {
-		// copy relevant properties
-		space.copy = {};
-		space.copy._id =  "copy-" + space._id;
-		space.copy.name = space.name;
-		space.copy.trustedUrl = space.trustedUrl;
+	}							
 		
-		// detach/attach iframe to force loading
-		//reloadIframe(space.copy);
-		
-		// start side-by-side display
-		space.compare = true;
-	};
-
-	// end side-by-side display of current visualization
-	$scope.endCompare = function(space) {
-		space.compare = false;
-		space.copy = {};
-	};
-	
-	$scope.startShare = function(space) {
-		views.setView("share", { space : space._id });
-	};
-	
 	
 	// delete a space
 	$scope.deleteSpace = function(space) {
@@ -129,11 +101,13 @@ angular.module('portal')
 	};
 	
 	$scope.openAppLink = function(data) {
+		data = data || {};
+		data.user = $state.params.user;
 		spaces.openAppLink($state, $scope.userId, data);	 
 	};
 	
 	$scope.use = function(view) {
-		spaces.openAppLink($state, $scope.userId, { app : view});
+		spaces.openAppLink($state, $scope.userId, { app : view, user : $state.params.user });
 	};
 	
 	$scope.getIconUrl = function(space) {

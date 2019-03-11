@@ -3,6 +3,8 @@ package utils.access.op;
 import java.io.Serializable;
 import java.util.Set;
 
+import utils.collections.CMaps;
+
 /**
  * check if object is in a list of objects
  *
@@ -49,7 +51,7 @@ public class InCondition implements Condition, Serializable {
 	}
 
 	@Override
-	public Object asMongoQuery() {
+	public Object asMongoQuery() {		
 		return val;
 	}
 	

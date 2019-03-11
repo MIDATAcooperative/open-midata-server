@@ -15,7 +15,7 @@
 			    <div ng-show="entry.extension[0].valueString">{{ entry.extension[0].valueString | translate }}</div>	      			    			   
 			  </div>
 			  <div class="col-sm-6 col-md-4">
-			    <div>{{ entry.agent[0].name }} <span ng-show="entry.agent[0].role[0].coding[0].code != 'MEMBER'" class="label label-default" translate="{{ 'enum.userrole.'+entry.agent[0].role[0].coding[0].code }}"></span></div>
+			    <div>{{ entry.agent[0].name }} <span ng-show="entry.agent[0].role[0].coding[0].code != 'MEMBER'" class="badge badge-info" translate="{{ 'enum.userrole.'+entry.agent[0].role[0].coding[0].code }}"></span></div>
 			    <div class="text-primary">{{ entry.agent[0].userId.value }}</div>
 			    <div ng-show="entry.agent.length>1"><i><span translate="auditlog.via"></span> {{ entry.agent[1].name }}</i></div>  
 			  </div>			  

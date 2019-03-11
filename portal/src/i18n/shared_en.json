@@ -971,6 +971,8 @@
 	"type_studyrelated" : "Research Projects",
 	"type_hcrelated" : "Practitioners",
 	"type_implicit" : "Implicit",
+	"type_healthcare" : "Doctor / Hospital",
+	"type_studyparticipation" : "Research",
 	"show" : "Show:",
 	"my_data" : "My Data",
 	"all_data" : "All Data",

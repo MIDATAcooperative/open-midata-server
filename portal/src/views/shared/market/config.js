@@ -6,7 +6,7 @@ angular.module('portal')
 	      templateUrl: 'views/shared/market/market.html' 
 	    })
 	    .state('provider.market', {
-	      url: '/market?context&tag',
+	      url: '/market?context&tag&user',
 	      templateUrl: 'views/shared/market/market.html' 
 	    })
 	    .state('research.market', {
