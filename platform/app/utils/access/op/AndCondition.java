@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import models.MidataId;
 import scala.NotImplementedError;
 
 /**
@@ -133,6 +134,8 @@ public class AndCondition implements Condition, Serializable {
 	       return new AndCondition((Map<String,Object>) fragment); 
 	    } else if (fragment instanceof Condition) {
 	    	return (Condition) fragment;
+	    } else if (fragment instanceof MidataId) {
+	    	return new EqualsSingleValueCondition((Comparable) fragment);
 	    } else {
 	       throw new NotImplementedError();
 	    }

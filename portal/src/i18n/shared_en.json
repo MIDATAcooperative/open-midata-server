@@ -1157,6 +1157,7 @@
     "HEALTHCARE" : "Consent (Health Provider)",
     "MEMBER" : "Account",
     "PROVIDER" : "Account (Health Provider)",
+    "HCRELATED" : "Account (Account Holder)",
     "RESEARCH" : "Account (Researcher)",
     "ADMIN" : "Account (Administrator)",
     "DEVELOPER" : "Account (Developer)"

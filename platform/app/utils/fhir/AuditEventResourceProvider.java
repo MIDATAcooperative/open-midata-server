@@ -419,7 +419,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 		if (params.containsKey("entity")) {
 			List<ReferenceParam> entities = builder.resolveReferences("entity", null);
 			if (entities != null) {
-				query.putAccount("about", FHIRTools.referencesToIds(entities));
+				query.putAccount("about", ObjectIdConversion.toMidataIds(FHIRTools.referencesToIds(entities)));
 			}
 		}
 		builder.restriction("entity", false, null, "fhirAuditEvent.entity.reference");
@@ -434,7 +434,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 		if (params.containsKey("patient")) {
 			List<ReferenceParam> patients = builder.resolveReferences("patient", null);
 			if (patients != null) {
-				query.putDataCondition(new AndCondition(CMaps.map("authorized", CMaps.map("$in",FHIRTools.referencesToIds(patients)))).optimize());
+				query.putDataCondition(new AndCondition(CMaps.map("authorized", CMaps.map("$in",ObjectIdConversion.toMidataIds(FHIRTools.referencesToIds(patients))))).optimize());
 				//query.putAccount("authorized", FHIRTools.referencesToIds(patients));
 			}
 		}
