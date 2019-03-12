@@ -245,32 +245,6 @@ class ProcessMessage {
 	
 }
 
-class MessageResponse {
-	final String response;
-	
-	final int errorcode;
-	
-	MessageResponse(String response, int errorcode) {
-		this.response = response;
-		this.errorcode = errorcode;
-	}
-
-	public String getResponse() {
-		return response;
-	}
-	
-	
-	
-	public int getErrorcode() {
-		return errorcode;
-	}
-
-	public String toString() {
-		return response;
-	}
-		
-}
-
 /**
  * Message: A subscription of a user has changed
  *
@@ -345,6 +319,12 @@ class SubscriptionChecker extends AbstractActor {
 			content = record.content;
 			resourceId = record._id;
 			affected.add(record.owner);			
+			
+			/* TODO : The following section is not broken it should just be performance optimized somehow.
+			 * It determines which user accounts subscriptions need to be triggered by a resource change.
+			 * Without this section only the account owner of the changed resource is notified.
+			 */
+			/*
 			try {
 			  Set<MidataId> alsoAffected = RecordManager.instance.findAllSharingAps(record.owner, record);
 			  RecordManager.instance.clear();
@@ -363,6 +343,7 @@ class SubscriptionChecker extends AbstractActor {
 			    }
 			  }
 			} catch (AppException e) {}
+			*/
 		}
 		
 		for (MidataId affectedUser : affected) {
