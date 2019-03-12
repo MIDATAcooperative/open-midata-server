@@ -62,6 +62,10 @@ public class KeyRecoveryProcess extends Model {
 		return Model.getAll(KeyRecoveryProcess.class, collection, CMaps.map("ready", false), ALL, 1000);
 	}
 	
+	public static long count() throws InternalServerException {
+		return Model.count(KeyRecoveryProcess.class, collection, CMaps.map("ready", false));
+	}
+	
 	public static KeyRecoveryProcess getById(MidataId id) throws InternalServerException {
 		return Model.get(KeyRecoveryProcess.class, collection, CMaps.map("_id", id), ALL);
 	}
