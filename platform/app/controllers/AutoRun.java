@@ -29,6 +29,7 @@ import akka.routing.Routee;
 import akka.routing.Router;
 import controllers.admin.Administration;
 import models.Admin;
+import models.KeyRecoveryProcess;
 import models.MidataId;
 import models.PersistedSession;
 import models.Plugin;
@@ -50,6 +51,8 @@ import utils.collections.Sets;
 import utils.db.FileStorage;
 import utils.exceptions.AppException;
 import utils.largerequests.UnlinkedBinary;
+import utils.messaging.MailUtils;
+import utils.messaging.MessageResponse;
 import utils.messaging.ServiceHandler;
 import utils.messaging.SubscriptionProcessor;
 import utils.messaging.SubscriptionTriggered;
@@ -191,6 +194,15 @@ public class AutoRun extends APIController {
 		
 	}
 	
+	public static class SendEndReport implements Serializable {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -6171207037975268555L;
+		
+	}
+	
 	/**
 	 * Akka actor that runs the plugin of a specific space
 	 *
@@ -302,6 +314,20 @@ public class AutoRun extends APIController {
 		private int numberSuccess = 0;
 		private int numberFailure = 0;
 		private static Cancellable importer;
+		private static Cancellable endReport;
+		
+		private long startTime = 0;
+		private long startRemoveUnlinkedFiles = 0;
+		private long startCreateDatabaseStats = 0;
+		private long startAutoimport = 0;
+		private long endScheduling = 0;
+		private int countUnlinkedFiles = 0;
+		private int errorCount = 0;
+		private int countOldImports = 0;
+		private int countNewImports = 0;
+		private int openRecoveries = 0;
+		private boolean reportSend = true;
+		private StringBuffer errors;
 		
 		/**
 		 * Constructor
@@ -328,6 +354,7 @@ public class AutoRun extends APIController {
 			super.postStop();
 			
 			importer.cancel();
+			if (endReport != null) endReport.cancel();
 		}
 
 
@@ -340,7 +367,8 @@ public class AutoRun extends APIController {
 	                Duration.ofSeconds(nextExecutionInSeconds(4, 0)),
 	                Duration.ofHours(24),
 	                manager, new StartImport(),
-	                Instances.system().dispatcher(), null);		
+	                Instances.system().dispatcher(), null);
+						
 		}
 
 
@@ -349,18 +377,43 @@ public class AutoRun extends APIController {
 		    return receiveBuilder()
 		      .match(StartImport.class, this::startImport)
 		      .match(ImportResult.class, this::processResult)
+		      .match(MessageResponse.class, this::processResultNew)
+		      .match(SendEndReport.class, this::reportEnd)
 		      .build();
 		}
 		
 		public void startImport(StartImport message) throws Exception {
-			try {
 			
+			if (!reportSend) reportEnd();
+			
+			startTime = 0;
+			startRemoveUnlinkedFiles = 0;
+			startCreateDatabaseStats = 0;
+			startAutoimport = 0;
+			endScheduling = 0;
+			countUnlinkedFiles = 0;
+			errorCount = 0;
+			countOldImports = 0;
+			countNewImports = 0;
+			openRecoveries = 0;
+			reportSend = false;
+			errors = new StringBuffer();
+			
+			endReport = getContext().system().scheduler().scheduleOnce(
+	                Duration.ofHours(3),
+	                manager, new SendEndReport(),
+	                Instances.system().dispatcher(), null);	
+			
+			try {
+			    startTime = System.currentTimeMillis();
 				AccessLog.log("Removing expired sessions...");
 				PersistedSession.deleteExpired();
 				
+				startRemoveUnlinkedFiles = System.currentTimeMillis();
 				AccessLog.log("Removing unlinked files...");
 				try {
 				   List<UnlinkedBinary> files = UnlinkedBinary.getExpired();
+				   countUnlinkedFiles = files.size();
 				   for (UnlinkedBinary file : files) {
 					   try {
 						 FileStorage.delete(file._id.toObjectId());
@@ -369,15 +422,20 @@ public class AutoRun extends APIController {
 				   }
 				} catch (AppException e) {
 					ErrorReporter.report("remove unlinked files", null, e);
+					errorCount++;
 				}
 				
+				startCreateDatabaseStats = System.currentTimeMillis();
 				AccessLog.log("Creating database statistics...");
 				try {
 				   Administration.createStats();
+				   openRecoveries = (int) KeyRecoveryProcess.count();
 				} catch (AppException e) {
 					ErrorReporter.report("stats service", null, e);
+					errorCount++;
 				}
 				
+				startAutoimport = System.currentTimeMillis();
 				AccessLog.log("Starting Autoimport...");
 				MidataId autorunner = RuntimeConstants.instance.autorunService;
 				String handle = KeyManager.instance.login(1000l*60l*60l*23l, false);
@@ -387,17 +445,17 @@ public class AutoRun extends APIController {
 				for (Space space : autoImports) {										    
 			       workerRouter.route(new ImportRequest(handle, autorunner, space), getSelf());
 			    }
-				
+				countOldImports = autoImports.size();
 				AccessLog.log("Done scheduling old autoimport size="+autoImports.size());
 				
 				List<SubscriptionData> datas = SubscriptionData.getAllActiveFormat("time", SubscriptionData.ALL);
-				
+				countNewImports = datas.size();
 				for (SubscriptionData data : datas) {
 					processor.tell(new SubscriptionTriggered(data.owner, data.app, "time", null, null, null), getSelf());
 				}
 				
 				AccessLog.log("Done scheduling new autoimport size="+datas.size());
-				
+				endScheduling = System.currentTimeMillis();
 			} catch (Exception e) {
 				ErrorReporter.report("Autorun-Service", null, e);	
 				throw e;
@@ -407,10 +465,60 @@ public class AutoRun extends APIController {
 
 		}
 		
-		public void processResult(ImportResult result) throws Exception {							
-				if (result.exitCode == 0) numberSuccess++; else numberFailure++;
-				AccessLog.log("Autoimport success="+numberSuccess+" fail="+numberFailure);
+		public void reportEnd(SendEndReport msg) {
+			reportEnd();
 		}
+		
+		public void reportEnd() {
+			if (reportSend) return;
+			
+			reportSend = true;
+			long end = System.currentTimeMillis();
+			String report = "Cleaning up sessions :"+(startRemoveUnlinkedFiles-startTime)+" ms\n";
+			report += "Cleaning up unused file uploads: "+(startCreateDatabaseStats-startRemoveUnlinkedFiles)+" ms\n";
+			report += "Create database statistics: "+(startAutoimport-startCreateDatabaseStats)+" ms\n";
+			report += "Schedule auto-imports: "+(endScheduling-startAutoimport)+" ms\n";
+			report += "Execute auto-import: "+(end-endScheduling)+" ms\n";
+			report += "--------------------\n";
+			report += "Total time for service: "+(end-startTime)+" ms\n";
+			report += "\n\n";
+			report += "# Old style auto-imports: "+countOldImports+" \n";
+			report += "# New style auto-imports: "+countNewImports+" \n";			
+			report += "# Errors during scheduling: "+errorCount+" \n";
+			report += "# Errors during import: "+numberFailure+" \n";
+			report += "# Success messages: "+numberSuccess+" \n\n";
+			report += "# Open Recovery Processes: "+openRecoveries+" \n\n";
+			report += errors.toString();
+			
+			String email = InstanceConfig.getInstance().getConfig().getString("errorreports.targetemail");
+			String fullname = InstanceConfig.getInstance().getConfig().getString("errorreports.targetname");
+			String server = InstanceConfig.getInstance().getPlatformServer();
+			MailUtils.sendTextMail(email, fullname, "Autoimport "+server, report);
+			
+			if (endReport != null) {
+				endReport.cancel();
+				endReport = null;				
+			}
+		}
+		
+		public void processResult(ImportResult result) throws Exception {							
+				if (result.exitCode == 0) numberSuccess++; else {
+					numberFailure++;
+					errors.append(result.exitCode+" error (old)\n");
+				}
+				AccessLog.log("Autoimport success="+numberSuccess+" fail="+numberFailure);
+				if (numberSuccess+numberFailure >= countOldImports + countNewImports) reportEnd();
+		}
+		
+		public void processResultNew(MessageResponse result) throws Exception {							
+			if (result.getErrorcode() == 0) numberSuccess++; else {
+				numberFailure++;
+				String msg = (result.getResponse() != null && result.getResponse().length()<1024) ? result.getResponse() : "error (new)";
+				errors.append(result.getErrorcode()+" "+msg+"\n");
+			}
+			AccessLog.log("Autoimport success="+numberSuccess+" fail="+numberFailure);
+			if (numberSuccess+numberFailure >= countOldImports + countNewImports) reportEnd();
+	    }
 		
 	}
 	
