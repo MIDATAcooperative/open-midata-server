@@ -422,6 +422,8 @@ public class AutoRun extends APIController {
 			countOldImports = 0;
 			countNewImports = 0;
 			openRecoveries = 0;
+			numberSuccess = 0;
+			numberFailure = 0;
 			reportSend = false;
 			errors = new StringBuffer();
 			
