@@ -223,6 +223,11 @@ public class PluginsAPI extends APIController {
 		if (json.has("autoimport")) {
 			boolean auto = JsonValidation.getBoolean(json, "autoimport");
 			Space space = Space.getByIdAndOwner(spaceToken.spaceId, spaceToken.userId, Sets.create("autoImport", "owner", "visualization"));
+			if (space==null) throw new InternalServerException("error.internal", "Space not found.");
+			
+			// Disable old style import
+			Space.set(space._id, "autoImport", false);
+			
 			List<SubscriptionData> entries = SubscriptionData.getByOwnerAndFormatAndInstance(space.owner, "time", space._id, SubscriptionData.ALL);
 			SubscriptionData data = null;
 			for (SubscriptionData d : entries) data = d;
