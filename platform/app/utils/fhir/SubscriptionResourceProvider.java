@@ -347,7 +347,7 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 		s.setId(data._id.toString());
 		s.setStatus(SubscriptionStatus.ACTIVE);
 		SubscriptionChannelComponent channel = new SubscriptionChannelComponent();
-		channel.setEndpoint("server.js");
+		channel.setEndpoint("node://server.js");
 		channel.setType(Subscription.SubscriptionChannelType.MESSAGE);		
 		s.setChannel(channel);
 		s.setCriteria("time");
