@@ -16,6 +16,7 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 
+import org.bson.BSONObject;
 import org.hl7.fhir.dstu3.model.StringType;
 import org.hl7.fhir.dstu3.model.Subscription;
 import org.hl7.fhir.dstu3.model.Subscription.SubscriptionChannelComponent;
@@ -23,6 +24,8 @@ import org.hl7.fhir.dstu3.model.Subscription.SubscriptionChannelType;
 
 import akka.actor.AbstractActor;
 import akka.actor.AbstractActor.Receive;
+import controllers.Plugins;
+import akka.actor.ActorRef;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.Plugin;
@@ -39,6 +42,9 @@ import play.libs.ws.WSResponse;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
+import utils.ServerTools;
+import utils.access.RecordManager;
+import utils.auth.KeyManager;
 import utils.auth.PortalSessionToken;
 import utils.auth.SpaceToken;
 import utils.collections.Sets;
@@ -66,26 +72,10 @@ public class SubscriptionProcessor extends AbstractActor {
 	void processSubscription(SubscriptionTriggered triggered) {
 		try {		
 			List<SubscriptionData> allMatching = null;
-			/*if (triggered.getApp() != null) {
-				System.out.println("get plugin");
-			  Plugin pl = Plugin.getById(triggered.getApp());
-			  if (pl == null) return;
-			  for (SubscriptionData dat : pl.defaultSubscriptions) {
-				  System.out.println("search");
-				  if (dat.format.equals(triggered.getType())) {
-					  if (allMatching == null) allMatching = new ArrayList<SubscriptionData>(2);
-					  allMatching.add(dat);
-					  dat.active = true;
-					  dat.app = pl._id;
-					  System.out.println("add");
-				  }
-			  }
-			  if (allMatching == null) return;
-			  System.out.println("ok1");
-			} else {*/
-			  allMatching = SubscriptionData.getByOwnerAndFormat(triggered.affected, triggered.type, SubscriptionData.ALL);
-			// }
-			  boolean answered = false;
+		
+			allMatching = SubscriptionData.getByOwnerAndFormat(triggered.affected, triggered.type, SubscriptionData.ALL);
+			
+			boolean answered = false;
 			for (SubscriptionData subscription : allMatching) {	
 				System.out.println("ok:"+subscription.active+" "+subscription.content+" "+triggered.getEventCode());
 				if (subscription.active && (subscription.content == null || subscription.content.equals("MessageHeader") || subscription.content.equals(triggered.getEventCode())) && checkNotExpired(subscription)) {
@@ -117,11 +107,12 @@ public class SubscriptionProcessor extends AbstractActor {
 			}
 			if (!answered) {
 				//System.out.println("SEND DEFAULT ANSWER");
-				getSender().tell(new MessageResponse("No action",-1), getSelf());
+				String app = triggered.getApp() != null ? triggered.getApp().toString() : null;
+				getSender().tell(new MessageResponse("No action",-1, app), getSelf());
 			}
 		} catch (Exception e) {			
 			ErrorReporter.report("Subscriptions", null, e);
-			getSender().tell(new MessageResponse("Exception: "+e.toString(),-1), getSelf());
+			getSender().tell(new MessageResponse("Exception: "+e.toString(),-1, null), getSelf());
 			
 		}		
 	}
@@ -175,7 +166,7 @@ public class SubscriptionProcessor extends AbstractActor {
 		} else {
 		  Messager.sendMessage(subscription.app, MessageReason.RESOURCE_CHANGE, triggered.getType(), Collections.singleton(subscription.owner), null, replacements);
 		}
-		getSender().tell(new MessageResponse(null,0), getSelf());
+		getSender().tell(new MessageResponse(null,0,"internal:mail"), getSelf());
 	}
 	
 	void processSMS(SubscriptionData subscription, SubscriptionTriggered triggered, SubscriptionChannelComponent channel) throws AppException {
@@ -186,33 +177,31 @@ public class SubscriptionProcessor extends AbstractActor {
 		} else {
 		  Messager.sendMessage(subscription.app, MessageReason.RESOURCE_CHANGE, triggered.getType(), Collections.singleton(subscription.owner), null, replacements, MessageChannel.SMS);
 		}
-		getSender().tell(new MessageResponse(null,0), getSelf());
+		getSender().tell(new MessageResponse(null,0,"internal:sms"), getSelf());
 	}
 	
-	boolean processApplication(SubscriptionData subscription, SubscriptionTriggered triggered, SubscriptionChannelComponent channel) throws InternalServerException {
+	boolean processApplication(SubscriptionData subscription, SubscriptionTriggered triggered, SubscriptionChannelComponent channel) throws AppException {
 		System.out.println("prcApp app="+subscription.app);
-		final String nodepath = InstanceConfig.getInstance().getConfig().getString("node.path");
+		
 		Plugin plugin = Plugin.getById(subscription.app);
 		if (plugin == null) return false;
 		//System.out.println("prcApp2");
-		String endpoint = channel.getEndpoint();
+		String endpoint = channel.getEndpoint();		
 		
-		String cmd = endpoint.substring("node://".length());
-		String visPath =  InstanceConfig.getInstance().getConfig().getString("visualizations.path")+"/"+plugin.filename+"/"+cmd;
 		//System.out.println("prcApp3");
 		//AccessLog.log("sub session="+subscription.session);
 		String handle = ServiceHandler.decrypt(subscription.session);
 		
 		if (handle == null) {
 			SubscriptionData.setError(subscription._id, "Background service key expired");
-			if (true) throw new NullPointerException("Background service key expired");
-			return false;
+			getSender().tell(new MessageResponse("Service key expired",-1, plugin.filename), getSelf());						
+			return true;
 		}
 		
 		User user = User.getById(subscription.owner, Sets.create("status", "role", "language", "developer"));
 		//System.out.println("prcApp4");
 		if (user==null || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.BLOCKED)) return false;
-						
+        final ActorRef sender = getSender();						
 		SpaceToken tk = null;
 		if (plugin.type.equals("mobile") || plugin.type.equals("service")) {
 			Set<MobileAppInstance> mais = MobileAppInstance.getByApplicationAndOwner(plugin._id, user._id, Sets.create("status"));
@@ -227,16 +216,49 @@ public class SubscriptionProcessor extends AbstractActor {
 			if (subscription.app == null) throw new NullPointerException(); 
 			tk = new SpaceToken(handle, appInstanceId, subscription.owner, user.getRole(), null, subscription.app, subscription.owner);			
 			//AccessLog.log("HANDLEPOST="+tk.handle+" space="+tk.spaceId.toString()+" app="+tk.pluginId);
+			
+			runProcess(getSender(), plugin, triggered, subscription, user, tk.encrypt(), endpoint);
+		} else if (plugin.type.equals("oauth2")) {
+			try {
+				KeyManager.instance.continueSession(handle, subscription.owner);
+			
+				BSONObject oauthmeta = RecordManager.instance.getMeta(subscription.owner, subscription.instance, "_oauth");
+				if (oauthmeta != null) {
+					if (oauthmeta.get("refreshToken") != null) {
+						tk = new SpaceToken(handle, subscription.instance, subscription.owner, user.getRole(), null, null, subscription.owner);
+						final String token = tk.encrypt();
+						Plugins.requestAccessTokenOAuth2FromRefreshToken(handle, subscription.owner, plugin, subscription.instance.toString(), oauthmeta.toMap()).thenAcceptAsync(success1 -> {
+							    boolean success = (Boolean) success1;
+								if (success) {
+									runProcess(sender, plugin, triggered, subscription, user, token, endpoint);
+								} else {
+									sender.tell(new MessageResponse("OAuth 2 failed",-1, plugin.filename), getSelf());	
+								}
+						});
+					} else {
+						sender.tell(new MessageResponse("OAuth 2 no refresh token",-1, plugin.filename), getSelf());						
+					}
+				} else {
+					sender.tell(new MessageResponse("OAuth 2 no data",-1, plugin.filename), getSelf());
+				}			
+			} finally {
+				ServerTools.endRequest();
+			}
 		} else {
 			//AccessLog.log("BPART HANDLE="+handle);
 			tk = new SpaceToken(handle, subscription.instance, subscription.owner, user.getRole(), null, null, subscription.owner);
+			runProcess(getSender(), plugin, triggered, subscription, user, tk.encrypt(), endpoint);
 		}
-		//AccessLog.log("pre enc handle="+tk.handle); 
-		String token = tk.encrypt();
-		//AccessLog.log("enc="+token);
+		return true;
+	}	
+	
+	private void runProcess(ActorRef sender, Plugin plugin, SubscriptionTriggered triggered, SubscriptionData subscription, User user, String token, String endpoint) {
+		try {
+		String cmd = endpoint.substring("node://".length());
+		String visPath =  InstanceConfig.getInstance().getConfig().getString("visualizations.path")+"/"+plugin.filename+"/"+cmd;
 		final String lang = user.language != null ? user.language : InstanceConfig.getInstance().getDefaultLanguage();
 		final String id = triggered.getResourceId() != null ? triggered.getResourceId().toString() : "-";
-		
+		final String nodepath = InstanceConfig.getInstance().getConfig().getString("node.path");
 		boolean testing = InstanceConfig.getInstance().getInstanceType().getDebugFunctionsAvailable() && (plugin.status.equals(PluginStatus.DEVELOPMENT) || plugin.status.equals(PluginStatus.BETA));
 		//System.out.println("prcApp5");
 		if (testing) {
@@ -259,12 +281,11 @@ public class SubscriptionProcessor extends AbstractActor {
 					      Duration.ofSeconds(1),
 					      getSelf(), new RecheckMessage(testcall._id, 0), getContext().dispatcher(), getSender());
 				
-				//getSender().tell(new MessageResponse(null,0), getSelf());
-				return true;
+				//getSender().tell(new MessageResponse(null,0), getSelf());				
 			}
 		}				
 		//System.out.println("prcApp6");
-		try {
+		
 		  System.out.println("Build process...");		  
 		  Process p = new ProcessBuilder(nodepath, visPath, token, lang, "http://localhost:9001", subscription.owner.toString(), id).redirectError(Redirect.INHERIT).start();
 		  //System.out.println("Output...");
@@ -285,22 +306,16 @@ public class SubscriptionProcessor extends AbstractActor {
 		  Stats.finishRequest(TRIGGER, triggered.getDescription(), null, ""+p.exitValue(), Collections.emptySet());
 		  
 		  if (r != null && r.length() >0) {
-			 getSender().tell(new MessageResponse(r, p.exitValue()), getSelf());  
+			 sender.tell(new MessageResponse(r, p.exitValue(), plugin.filename), getSelf());  
 		  } else {
-			 getSender().tell(new MessageResponse(null, p.exitValue()), getSelf());
+			 sender.tell(new MessageResponse(null, p.exitValue(), plugin.filename), getSelf());
 		  } 
 		  		    
-		  System.out.println("Response sended");
-		  return true;
-		  
-		} catch (InterruptedException e) {
-			
-		} catch (IOException e2) {
-			
-		}
-		getSender().tell(new MessageResponse("Process execution failed",-1), getSelf());
-		return true;
-	}	
+		  System.out.println("Response sended");		 		  
+		} catch (Exception e) {			
+			sender.tell(new MessageResponse("Failed: "+e.toString(),-1, plugin.filename), getSelf());	
+		} 				
+	}
 	
 	void answerDebugCall(RecheckMessage msg) {
 		try {
@@ -308,7 +323,7 @@ public class SubscriptionProcessor extends AbstractActor {
 			if (call != null) {
 				if (call.answerStatus != TestPluginCall.NOTANSWERED) {
 					TestPluginCall.delete(call.handle, call._id);
-					getSender().tell(new MessageResponse(call.answer, call.answerStatus), getSelf());
+					getSender().tell(new MessageResponse(call.answer, call.answerStatus, null), getSelf());
 				} else {
 					if (msg.count < 50) {
 						getContext().getSystem().scheduler().scheduleOnce(

@@ -160,13 +160,17 @@ public class AutoRun extends APIController {
 		private static final long serialVersionUID = 2863510695436070968L;
 		
 		private final int exitCode;
+		private final String message;
+		private final String plugin;
 
 		/**
 		 * Construct import result
 		 * @param exitCode
 		 */
-		public ImportResult(int exitCode) {
+		public ImportResult(int exitCode, String message, String plugin) {
 			this.exitCode = exitCode;
+			this.message = message;
+			this.plugin = plugin;
 		}
 		
 		/**
@@ -176,6 +180,23 @@ public class AutoRun extends APIController {
 		public int getExitCode() {
 			return exitCode;
 		}
+
+		/**
+		 * Get error message
+		 * @return
+		 */
+		public String getMessage() {
+			return message;
+		}
+
+		/**
+		 * Returns internal name of plugin
+		 * @return
+		 */
+		public String getPlugin() {
+			return plugin;
+		}
+						
 		
 		
 	}
@@ -224,16 +245,21 @@ public class AutoRun extends APIController {
 			        
 			    	final String nodepath = InstanceConfig.getInstance().getConfig().getString("node.path");
 					final String visPath = InstanceConfig.getInstance().getConfig().getString("visualizations.path");
-							    	
-			    	final Plugin plugin = Plugin.getById(space.visualization, Sets.create("type", "filename", "name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret", "tokenExchangeParams"));					
+					final ActorRef sender = getSender();		    	
+			    	final Plugin plugin = Plugin.getById(space.visualization, Sets.create("type", "filename", "name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret", "tokenExchangeParams"));
+			    	if (plugin==null) {
+						sender.tell(new ImportResult(-1, "Plugin not existing", null), getSelf());
+						return;
+					}
+			    	
 					User tuser = User.getById(space.owner, Sets.create("language", "role"));					
 					SpaceToken token = new SpaceToken(request.handle, space._id, space.owner, tuser.role, null, null, autorunner);
 					final String lang = tuser.language != null ? tuser.language : InstanceConfig.getInstance().getDefaultLanguage();
 					final String tokenstr = token.encrypt();
 					final String owner = space.owner.toString();
-					final ActorRef sender = getSender();
+					
 					if (tuser.role.equals(UserRole.DEVELOPER) || tuser.role.equals(UserRole.ADMIN)) {
-						sender.tell(new ImportResult(0), getSelf());
+						sender.tell(new ImportResult(0, "Ignore autoimport for developer/admin", plugin.filename), getSelf());
 						return;
 					}
 		
@@ -250,12 +276,12 @@ public class AutoRun extends APIController {
 											Process p = new ProcessBuilder(nodepath, visPath+"/"+plugin.filename+"/server.js", tokenstr, lang, "http://localhost:9001", owner).inheritIO().start();
 											try {
 											  p.waitFor();
-											  sender.tell(new ImportResult(p.exitValue()), getSelf());
+											  sender.tell(new ImportResult(p.exitValue(), null, plugin.filename), getSelf());
 											} catch (InterruptedException e) {
-												sender.tell(new ImportResult(-2), getSelf());
+												sender.tell(new ImportResult(-2, "Interrupted", plugin.filename), getSelf());
 											}
 										} else {
-											sender.tell(new ImportResult(-1), getSelf());
+											sender.tell(new ImportResult(-1, "Authorization failed (OAuth2)", plugin.filename), getSelf());
 										}
 									} catch (IOException e) {
 										ErrorReporter.report("Autorun-Service", null, e);
@@ -263,7 +289,7 @@ public class AutoRun extends APIController {
 								});
 		
 							} else {
-								sender.tell(new ImportResult(-1), getSelf());
+								sender.tell(new ImportResult(-1, "No refresh token available (OAuth2)", plugin.filename), getSelf());
 							}
 						} else {}
 					} else if (plugin.type != null && plugin.type.equals("oauth1")) {
@@ -274,21 +300,21 @@ public class AutoRun extends APIController {
 							Process p = new ProcessBuilder(nodepath, visPath+"/"+plugin.filename+"/server.js", tokenstr, lang).inheritIO().start();
 							try {
 							  p.waitFor();
-							  sender.tell(new ImportResult(p.exitValue()), getSelf());
+							  sender.tell(new ImportResult(p.exitValue(), null, plugin.filename), getSelf());
 							} catch (InterruptedException e) {
-								sender.tell(new ImportResult(-2), getSelf());
+								sender.tell(new ImportResult(-2, "Interrupted", plugin.filename), getSelf());
 							}
 						} else {
-							sender.tell(new ImportResult(-1), getSelf());
+							sender.tell(new ImportResult(-1, "No oauth1 info available", plugin.filename), getSelf());
 						}
 					} else {
 					
 						Process p = new ProcessBuilder(nodepath, visPath+"/"+plugin.filename+"/server.js", tokenstr, lang).inheritIO().start();
 						try {
 						  p.waitFor();
-						  sender.tell(new ImportResult(p.exitValue()), getSelf());
+						  sender.tell(new ImportResult(p.exitValue(), null, plugin.filename), getSelf());
 						} catch (InterruptedException e) {
-						  sender.tell(new ImportResult(-2), getSelf());
+						  sender.tell(new ImportResult(-2, "Interrupted", plugin.filename), getSelf());
 						}
 					
 					}
@@ -504,7 +530,8 @@ public class AutoRun extends APIController {
 		public void processResult(ImportResult result) throws Exception {							
 				if (result.exitCode == 0) numberSuccess++; else {
 					numberFailure++;
-					errors.append(result.exitCode+" error (old)\n");
+					String msg = (result.getMessage() != null && result.getMessage().length()<1024) ? result.getMessage() : "error";
+					errors.append(result.exitCode+" "+(result.getPlugin()!=null?result.getPlugin():"")+" "+msg+" (old)\n");
 				}
 				AccessLog.log("Autoimport success="+numberSuccess+" fail="+numberFailure);
 				if (numberSuccess+numberFailure >= countOldImports + countNewImports) reportEnd();
