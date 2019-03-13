@@ -543,7 +543,7 @@ public class AutoRun extends APIController {
 			if (result.getErrorcode() == 0) numberSuccess++; else {
 				numberFailure++;
 				String msg = (result.getResponse() != null && result.getResponse().length()<1024) ? result.getResponse() : "error (new)";
-				errors.append(result.getErrorcode()+" "+msg+"\n");
+				errors.append(result.getErrorcode()+" "+(result.getPlugin()!=null?result.getPlugin():"")+" "+msg+"\n");
 			}
 			AccessLog.log("Autoimport success="+numberSuccess+" fail="+numberFailure);
 			if (numberSuccess+numberFailure >= countOldImports + countNewImports) reportEnd();
