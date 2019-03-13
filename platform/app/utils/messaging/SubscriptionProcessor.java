@@ -219,19 +219,24 @@ public class SubscriptionProcessor extends AbstractActor {
 			
 			runProcess(getSender(), plugin, triggered, subscription, user, tk.encrypt(), endpoint);
 		} else if (plugin.type.equals("oauth2")) {
+			System.out.println("NEW OAUTH2 - 1");
 			try {
 				KeyManager.instance.continueSession(handle, subscription.owner);
 			
 				BSONObject oauthmeta = RecordManager.instance.getMeta(subscription.owner, subscription.instance, "_oauth");
 				if (oauthmeta != null) {
+					System.out.println("NEW OAUTH2 - 2");
 					if (oauthmeta.get("refreshToken") != null) {
 						tk = new SpaceToken(handle, subscription.instance, subscription.owner, user.getRole(), null, null, subscription.owner);
 						final String token = tk.encrypt();
+						System.out.println("NEW OAUTH2 - 3");
 						Plugins.requestAccessTokenOAuth2FromRefreshToken(handle, subscription.owner, plugin, subscription.instance.toString(), oauthmeta.toMap()).thenAcceptAsync(success1 -> {
 							    boolean success = (Boolean) success1;
 								if (success) {
+									System.out.println("NEW OAUTH2 - 4");
 									runProcess(sender, plugin, triggered, subscription, user, token, endpoint);
 								} else {
+									System.out.println("NEW OAUTH2 - 4B");
 									sender.tell(new MessageResponse("OAuth 2 failed",-1, plugin.filename), getSelf());	
 								}
 						});
