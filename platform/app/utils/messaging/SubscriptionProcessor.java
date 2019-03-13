@@ -230,7 +230,8 @@ public class SubscriptionProcessor extends AbstractActor {
 						tk = new SpaceToken(handle, subscription.instance, subscription.owner, user.getRole(), null, null, subscription.owner);
 						final String token = tk.encrypt();
 						System.out.println("NEW OAUTH2 - 3");
-						Plugins.requestAccessTokenOAuth2FromRefreshToken(handle, subscription.owner, plugin, subscription.instance.toString(), oauthmeta.toMap()).thenAcceptAsync(success1 -> {
+						Plugin plugin2 = Plugin.getById(plugin._id, Sets.create("type", "filename", "name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret", "tokenExchangeParams"));
+						Plugins.requestAccessTokenOAuth2FromRefreshToken(handle, subscription.owner, plugin2, subscription.instance.toString(), oauthmeta.toMap()).thenAcceptAsync(success1 -> {
 							    boolean success = (Boolean) success1;
 								if (success) {
 									System.out.println("NEW OAUTH2 - 4");
