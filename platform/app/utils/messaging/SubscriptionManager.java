@@ -169,7 +169,7 @@ public class SubscriptionManager {
 	}
 	
 	public static void answer(String ref, int status, String content) {
-		system.provider().resolveActorRef(ref).tell(new MessageResponse(content, status), ActorRef.noSender());
+		system.provider().resolveActorRef(ref).tell(new MessageResponse(content, status, null), ActorRef.noSender());
 	}
 	    
 }
