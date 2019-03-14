@@ -110,6 +110,11 @@ class ReloadMessage implements Serializable {
 
 class KeyMessage implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4044888802031833L;
+	
 	final byte[] aeskey;	
 	
 	public KeyMessage(byte[] aeskey) {

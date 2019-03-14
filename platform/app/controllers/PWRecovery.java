@@ -147,7 +147,7 @@ public class PWRecovery extends APIController {
 	
 	private static void provideServiceKey(User user) throws AppException {
 		BSONObject obj = RecordManager.instance.getMeta(user._id, user._id, "_aeskey");
-		if (obj == null || true) {
+		if (obj == null) {
 			Map<String, Object> map = new HashMap<String, Object>();
 			byte[] key = EncryptionUtils.randomize(EncryptionUtils.generateKey());
 			map.put("key", key);

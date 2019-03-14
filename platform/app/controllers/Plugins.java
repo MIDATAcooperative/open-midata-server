@@ -645,7 +645,7 @@ public class Plugins extends APIController {
 		return promise.thenApply(response -> {
 
 			try {
-			KeyManager.instance.continueSession(sessionHandle);
+			KeyManager.instance.continueSession(sessionHandle, userId);
 			AccessLog.log("OAUTH POST: "+post);
 			AccessLog.log("OAUTH RESPONSE: "+response.getBody());
 			JsonNode jsonNode = response.asJson();
