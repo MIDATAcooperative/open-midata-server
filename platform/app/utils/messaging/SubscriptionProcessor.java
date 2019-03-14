@@ -26,6 +26,7 @@ import akka.actor.AbstractActor;
 import akka.actor.AbstractActor.Receive;
 import controllers.Plugins;
 import akka.actor.ActorRef;
+import models.APSNotExistingException;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.Plugin;
@@ -186,7 +187,10 @@ public class SubscriptionProcessor extends AbstractActor {
 		System.out.println("prcApp app="+subscription.app);
 		
 		Plugin plugin = Plugin.getById(subscription.app);
-		if (plugin == null) return false;
+		if (plugin == null) {
+			subscription.disable();
+			return false;
+		}
 		//System.out.println("prcApp2");
 		String endpoint = channel.getEndpoint();		
 		
@@ -196,13 +200,16 @@ public class SubscriptionProcessor extends AbstractActor {
 		
 		if (handle == null) {
 			SubscriptionData.setError(subscription._id, "Background service key expired");
-			getSender().tell(new MessageResponse("Service key expired",-1, plugin.filename), getSelf());						
+			getSender().tell(new MessageResponse("Service key expired",-1, plugin.filename), getSelf());			
 			return true;
 		}
 		
 		User user = User.getById(subscription.owner, Sets.create("status", "role", "language", "developer"));
 		//System.out.println("prcApp4");
-		if (user==null || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.BLOCKED)) return false;
+		if (user==null || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.BLOCKED)) {
+			subscription.disable();
+			return false;
+		}
         final ActorRef sender = getSender();						
 		SpaceToken tk = null;
 		if (plugin.type.equals("mobile") || plugin.type.equals("service")) {
@@ -224,7 +231,7 @@ public class SubscriptionProcessor extends AbstractActor {
 			System.out.println("NEW OAUTH2 - 1");
 			try {
 				KeyManager.instance.continueSession(handle, subscription.owner);
-			
+               			
 				BSONObject oauthmeta = RecordManager.instance.getMeta(subscription.owner, subscription.instance, "_oauth");
 				if (oauthmeta != null) {
 					System.out.println("NEW OAUTH2 - 2");
@@ -248,7 +255,10 @@ public class SubscriptionProcessor extends AbstractActor {
 					}
 				} else {
 					sender.tell(new MessageResponse("OAuth 2 no data",-1, plugin.filename), getSelf());
-				}			
+				}	
+			} catch (APSNotExistingException e) {
+				subscription.disable();
+				sender.tell(new MessageResponse("Space no longer existing - disabled",-1, plugin.filename), getSelf());
 			} finally {
 				ServerTools.endRequest();
 			}

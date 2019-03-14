@@ -27,6 +27,7 @@ import models.MidataId;
 import models.ResearchUser;
 import models.Space;
 import models.StudyParticipation;
+import models.SubscriptionData;
 import models.User;
 import models.UserGroupMember;
 import models.enums.AccountActionFlags;
@@ -474,7 +475,9 @@ public class Users extends APIController {
 		}
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_ACCOUNT_DELETED, userId);
-						
+		
+		SubscriptionData.deleteByOwner(user._id);
+		
 		Set<Space> spaces = Space.getAllByOwner(userId, Space.ALL);
 		for (Space space : spaces) {
 			RecordManager.instance.deleteAPS(space._id, userId);
