@@ -159,6 +159,16 @@ public class SubscriptionManager {
 	  }
 	}
 	
+	public static void deactivateSubscriptions(MidataId userId, MidataId instance) throws InternalServerException {
+		  AccessLog.log("deactiveSubscription: user="+userId+" instance="+instance);
+		  
+		  List<SubscriptionData> data = SubscriptionData.getByOwner(userId, CMaps.map("instance", instance).map("active", true), SubscriptionData.ALL);
+		  AccessLog.log("deactivating: "+data.size());
+		  for (SubscriptionData dat : data) {
+			  SubscriptionData.setOff(dat._id);
+		  }
+	}
+	
 	public static void subscriptionChange(SubscriptionData subscriptionData) {
 		Instances.cacheClear("SubscriptionData", subscriptionData.owner);
 		//subscriptionChecker.tell(new SubscriptionChange(subscriptionData.owner), ActorRef.noSender());

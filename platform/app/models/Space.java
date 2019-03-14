@@ -11,6 +11,7 @@ import utils.db.DatabaseException;
 import utils.db.NotMaterialized;
 import utils.db.OrderOperations;
 import utils.exceptions.InternalServerException;
+import utils.messaging.SubscriptionManager;
 
 /**
  * data model class for a "Space".
@@ -139,7 +140,7 @@ public class Space extends Model implements Comparable<Space> {
 				throw new InternalServerException("error.internal", e);
 			}
         }
-		
+		SubscriptionManager.deactivateSubscriptions(ownerId, spaceId);
 		Model.delete(Space.class, collection, properties);
 	}
 
