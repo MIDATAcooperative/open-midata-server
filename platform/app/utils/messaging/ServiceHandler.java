@@ -29,7 +29,10 @@ public class ServiceHandler {
 		if (aeskey == null) {
 			if (InstanceConfig.getInstance().getInstanceType().disableServiceKeyProtection()) {
 				aeskey = new byte[16+4];
-			} else throw new InternalServerException("error.internal", "Background service key missing");
+			} else {
+				utils.sync.Instances.retrieveKey();
+				throw new InternalServerException("error.internal", "Background service key missing");
+			}
 		}
 		return EncryptionUtils.randomizeSameAs(EncryptionUtils.encrypt(EncryptionUtils.derandomize(aeskey), input.getBytes()), aeskey);
 	}
@@ -39,7 +42,10 @@ public class ServiceHandler {
 		if (aeskey == null) {
 			if (InstanceConfig.getInstance().getInstanceType().disableServiceKeyProtection()) {
 				aeskey = new byte[16+4];
-			} else throw new InternalServerException("error.internal", "Background service key missing");			
+			} else {
+				utils.sync.Instances.retrieveKey();
+				throw new InternalServerException("error.internal", "Background service key missing");			
+			}
 		}		
 		if (!EncryptionUtils.checkMatch(aeskey,  input)) {
 			AccessLog.log("Other version of background service key used!");
