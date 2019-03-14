@@ -103,14 +103,14 @@ public class SubscriptionProcessor extends AbstractActor {
 					}
 					Stats.finishRequest(TRIGGER, triggered.getDescription(), null, "200", Collections.emptySet());
 					//System.out.println("ok4");
-					
+			
+					if (!answered) {
+						//System.out.println("SEND DEFAULT ANSWER");
+						String app = triggered.getApp() != null ? triggered.getApp().toString() : null;
+						getSender().tell(new MessageResponse("No action",-1, app), getSelf());
+					}
 				}
-				
-				if (!answered) {
-					//System.out.println("SEND DEFAULT ANSWER");
-					String app = triggered.getApp() != null ? triggered.getApp().toString() : null;
-					getSender().tell(new MessageResponse("No action",-1, app), getSelf());
-				}
+							
 			}
 			
 		} catch (Exception e) {			
