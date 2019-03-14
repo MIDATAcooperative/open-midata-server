@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -477,9 +478,13 @@ public class AutoRun extends APIController {
 				AccessLog.log("Done scheduling old autoimport size="+autoImports.size());
 				
 				List<SubscriptionData> datas = SubscriptionData.getAllActiveFormat("time", SubscriptionData.ALL);
+				Set<MidataId> done = new HashSet<MidataId>();
 				countNewImports = datas.size();
 				for (SubscriptionData data : datas) {
-					processor.tell(new SubscriptionTriggered(data.owner, data.app, "time", null, null, null), getSelf());
+					if (!done.contains(data.owner)) {
+					  done.add(data.owner);
+					  processor.tell(new SubscriptionTriggered(data.owner, data.app, "time", null, null, null), getSelf());
+					}
 				}
 				
 				AccessLog.log("Done scheduling new autoimport size="+datas.size());
