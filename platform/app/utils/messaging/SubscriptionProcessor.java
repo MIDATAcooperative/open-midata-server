@@ -74,10 +74,10 @@ public class SubscriptionProcessor extends AbstractActor {
 			List<SubscriptionData> allMatching = null;
 		
 			allMatching = SubscriptionData.getByOwnerAndFormat(triggered.affected, triggered.type, SubscriptionData.ALL);
-			
-			boolean answered = false;
+						
 			for (SubscriptionData subscription : allMatching) {	
 				System.out.println("ok:"+subscription.active+" "+subscription.content+" "+triggered.getEventCode());
+				boolean answered = false;
 				if (subscription.active && (subscription.content == null || subscription.content.equals("MessageHeader") || subscription.content.equals(triggered.getEventCode())) && checkNotExpired(subscription)) {
 					//System.out.println("ok3");
 					Subscription fhirSubscription = SubscriptionResourceProvider.subscription(subscription);
@@ -104,12 +104,14 @@ public class SubscriptionProcessor extends AbstractActor {
 					//System.out.println("ok4");
 					
 				}
+				
+				if (!answered) {
+					//System.out.println("SEND DEFAULT ANSWER");
+					String app = triggered.getApp() != null ? triggered.getApp().toString() : null;
+					getSender().tell(new MessageResponse("No action",-1, app), getSelf());
+				}
 			}
-			if (!answered) {
-				//System.out.println("SEND DEFAULT ANSWER");
-				String app = triggered.getApp() != null ? triggered.getApp().toString() : null;
-				getSender().tell(new MessageResponse("No action",-1, app), getSelf());
-			}
+			
 		} catch (Exception e) {			
 			ErrorReporter.report("Subscriptions", null, e);
 			getSender().tell(new MessageResponse("Exception: "+e.toString(),-1, null), getSelf());
