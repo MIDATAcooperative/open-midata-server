@@ -69,7 +69,8 @@
             "PASSWORD_FORGOTTEN" : "Password dimenticata",
             "USER_PRIVATE_KEY_RECOVERED" : "Recupero chiavi utente completato",
             "RESOURCE_CHANGE" : "Cambio di risorsa [codice]",
-            "PROCESS_MESSAGE" : "Elabora messaggio FHIR con evento [codice]"
+            "PROCESS_MESSAGE" : "Elabora messaggio FHIR con evento [codice]",
+            "LOGIN" : "Notifica di accesso (se abilitata dall'utente)"
         }
     },
 
@@ -86,6 +87,7 @@
         "edit_help" : "Modifica la configurazione della tua applicazione.",
         "query_btn" : "Modifica Data Access Filter",
         "query_help" : "Definisce i tipi di dati ai quali l'applicazione può accedere.",
+        "write_mode" : "Accesso in scrittura",
         "subscriptions_btn" : "Cambia abbonamenti (Subscriptions) predefiniti",
         "subscriptions_help" : "Definire i trigger che causano un'azione sul server MIDATA",
         "tokenExchangeParams" : "Parametri OAuth2 per lo scambio di token",

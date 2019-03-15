@@ -159,6 +159,7 @@
         "finish_study_btn" : "Termina studio",
         "delete_study_btn" : "Elimina studio",
         "abort_study_btn" : "Interrompi studio",
+        "clone_study_btn" : "Copia su nuovo progetto",
         "workflow" : "Informazioni sul flusso di lavoro",
         "markdone_btn" : "Non richiesto, contrassegnare come eseguito",
         "visitnow_btn" : "Visita pagina",
@@ -171,6 +172,7 @@
             "finish_execution" : "Tutti i dati dello studio saranno congelati in questo momento.",
             "delete" : "Il progetto di ricerca sarà completamente cancellato dalla piattaforma.",
             "abort" : "Tutti i dati dello studio saranno congelati in questo momento. Questo progetto sarà contrassegnato come fallito.",
+            "clone" : "Questo clonerà le impostazioni del progetto in un nuovo progetto di ricerca. Il flusso di lavoro del nuovo progetto verrà ripristinato. Nessun partecipante sarà trasferito al nuovo progetto. Questo progetto rimarrà invariato.",
             "are_you_sure" : "Questa operazione non può essere annullata. Sei sicuro?"
         }
     },

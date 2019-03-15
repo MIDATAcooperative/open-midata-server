@@ -1,13 +1,17 @@
 {
   "admin_navbar" : {
+    "admin" : "Admin",
     "members" : "Members",
     "auditlog" : "Audit",
     "news" : "News",
     "plugins" : "Plugins",
-	"content" : "Content",
+	"content" : "Content-Types",
 	"studies" : "Studies",
 	"terms" : "General Terms and Conditions",
-	"registration" : "Register an Administrator"
+	"registration" : "Register an Administrator",
+	"user_admin" : "User Administration",
+	"plugin_admin" : "Apps & Data",
+	"research_admin" : "Research & Public"
   },
   
   "admin_members" : {
@@ -36,10 +40,12 @@
     "agb_status" : "T&Cs Status:",
     "contract_status" : "Contract Status:",
     "email_status" : "Email Status:",
+    "mobile_status" : "Mobile Validation Status:",
     "confirmation_code" : "Confirmation Code:",
     "registration_date" : "Registration Date:",
     "confirmation_date" : "Confirmation Date:",
     "security" : "Account protection",
+    "auth_type" : "2FA method",
     "security_type" : {
       "KEY" : "Private key on server",
       "KEY_PASSPHRASE" : "PASSPHRASE protected private key",
@@ -84,7 +90,8 @@
   },
   
   "admin_registration" : {
-    "sign_up" : "Register a New Administrator"
+    "sign_up" : "Register a New Administrator",
+    "description" : "If you use the email of an existing developer account that account will be upgraded to an administrator account."
   },
   
   "admin_plugins" : {

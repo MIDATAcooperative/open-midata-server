@@ -15,8 +15,23 @@
     "patients" : "Patients",
     "research" : "Research",
     "workspace" : "Workspace",
-    "market" : "MIDATA Store",    
+    "market" : "MIDATA Store",
+    "org" : "Intern",
+    "organization" : "Organization",    
 	"usergroups" : "Teams"
+  },
+  
+  "provider_organization" : {
+    "title" : "Organization",
+    "name" : "Name",
+    "description" : "Description",
+    "members" : "All members of your organization",
+    "addprovider" : "Register New Member"
+  },
+  
+  "addprovider" : {
+    "sign_up" : "Register health professional",
+    "success" : "User successfully registered"
   },
   
   "provider_patientsearch" : {
@@ -31,6 +46,7 @@
     "title" : "Teams",
     "name" : "Team",
     "status" : "Status",
+    "searchable" : "Public",
     "empty" : "You are not part of a team."
   },
   
@@ -45,6 +61,7 @@
     "former_members" : "Former Members",
     "name" : "Team Name",
     "status" : "Status",
+    "searchable" : "Findable by Account Holders",
     "startDate" : "Member From",
     "endDate" : "Member Until"
   },

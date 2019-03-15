@@ -1,14 +1,18 @@
 {
 
     "admin_navbar" : {
+        "admin" : "Admin",
         "members" : "Membri",
         "auditlog" : "Revisione",
         "news" : "Notizie",
         "plugins" : "Plugin",
-        "content" : "Contenuti",
+        "content" : "Tipi di contenuto",
         "studies" : "Studi",
         "terms" : "Condizioni generali di contratto",
-        "registration" : "Registra amministratore"
+        "registration" : "Registra amministratore",
+        "user_admin" : "Amministrazione utenti",
+        "plugin_admin" : "Applicazioni & Dati",
+        "research_admin" : "Ricerca & Pubblico"
     },
 
     "admin_members" : {
@@ -37,10 +41,12 @@
         "agb_status" : "Stato dei CGC:",
         "contract_status" : "Stato del contratto:",
         "email_status" : "Stato dell'e-mail:",
+        "mobile_status" : "Stato del numero di telefono mobile:",
         "confirmation_code" : "Codice di conferma:",
         "registration_date" : "Data di registrazione:",
         "confirmation_date" : "Data di conferma:",
         "security" : "Protezione del conto",
+        "auth_type" : "Metodo 2FA",
         "security_type" : {
             "KEY" : "Chiave privata sul server",
             "KEY_PASSPHRASE" : "Chiave privata protetta da PHRASE SEGRETA",
@@ -85,7 +91,8 @@
     },
 
     "admin_registration" : {
-        "sign_up" : "Registrare un nuovo amministratore"
+        "sign_up" : "Registrare un nuovo amministratore",
+        "description" : "Se si utilizza l'e-mail di un account di sviluppatore esistente, tale account verrà aggiornato a un account amministratore."
     },
 
     "admin_plugins" : {

@@ -1,14 +1,18 @@
 {
 
     "admin_navbar" : {
+        "admin" : "Admin",
         "members" : "Mitglieder",
         "auditlog" : "Audit",
         "news" : "News",
         "plugins" : "Plugins",
-        "content" : "Inhalt",
+        "content" : "Inhaltstypen",
         "studies" : "Studien",
         "terms" : "Allgemeine Geschäftsbedingungen",
-        "registration" : "Administrator registrieren"
+        "registration" : "Administrator registrieren",
+        "user_admin" : "Benutzerverwaltung",
+        "plugin_admin" : "Applikationen & Daten",
+        "research_admin" : "Forschung & Öffentlichkeit"
     },
 
     "admin_members" : {
@@ -37,10 +41,12 @@
         "agb_status" : "Status AGB:",
         "contract_status" : "Status Vertrag:",
         "email_status" : "Status E-Mail:",
+        "mobile_status" : "Status Mobiltelefonnummer:",
         "confirmation_code" : "Bestätigungscode:",
         "registration_date" : "Registrierungsdatum:",
         "confirmation_date" : "Bestätigungsdatum:",
         "security" : "Kontoschutz",
+        "auth_type" : "2FA-Methode",
         "security_type" : {
             "KEY" : "Privater Schlüssel auf dem Server",
             "KEY_PASSPHRASE" : "PASSPHRASE geschützter privater Schlüssel",
@@ -85,7 +91,8 @@
     },
 
     "admin_registration" : {
-        "sign_up" : "Neuen Administrator registrieren"
+        "sign_up" : "Neuen Administrator registrieren",
+        "description" : "Wenn Sie die E-Mail-Adresse eines vorhandenen Entwicklerkontos verwenden, wird dieses Konto auf ein Administratorkonto aktualisiert."
     },
 
     "admin_plugins" : {
