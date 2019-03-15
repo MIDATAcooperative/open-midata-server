@@ -172,6 +172,10 @@
             "finish_execution" : "Alle Studiendaten werden zu diesem Zeitpunkt eingefroren.",
             "delete" : "Das Forschungsprojekt wird vollständig von der Plattform gestrichen.",
             "abort" : "Alle Studiendaten werden zu diesem Zeitpunkt eingefroren. Dieses Projekt wird als fehlgeschlagen markiert.",
+
+            // TODO CHANGED
+            // OLD: This will clone the projects settings into a new research project. The new projects workflow will be reset. No participants will be transferred to the new project. This project will remain unchanged.
+            // NEW: This will clone the project's settings into a new research project. The workflow of the new project will be reset. No participants will be transferred to the new project. This project will remain unchanged.
             "clone" : "Dadurch werden die Projekteinstellungen in ein neues Forschungsprojekt kopiert. Der Workflow des neuen Projektes wird zurückgesetzt. Es werden keine Teilnehmer in das neue Projekt übernommen. Dieses Projekt bleibt unverändert.",
             "are_you_sure" : "Dieser Vorgang kann nicht rückgängig gemacht werden. Sind Sie sicher?"
         }

@@ -172,6 +172,10 @@
             "finish_execution" : "Tutti i dati dello studio saranno congelati in questo momento.",
             "delete" : "Il progetto di ricerca sarà completamente cancellato dalla piattaforma.",
             "abort" : "Tutti i dati dello studio saranno congelati in questo momento. Questo progetto sarà contrassegnato come fallito.",
+
+            // TODO CHANGED
+            // OLD: This will clone the projects settings into a new research project. The new projects workflow will be reset. No participants will be transferred to the new project. This project will remain unchanged.
+            // NEW: This will clone the project's settings into a new research project. The workflow of the new project will be reset. No participants will be transferred to the new project. This project will remain unchanged.
             "clone" : "Questo clonerà le impostazioni del progetto in un nuovo progetto di ricerca. Il flusso di lavoro del nuovo progetto verrà ripristinato. Nessun partecipante sarà trasferito al nuovo progetto. Questo progetto rimarrà invariato.",
             "are_you_sure" : "Questa operazione non può essere annullata. Sei sicuro?"
         }

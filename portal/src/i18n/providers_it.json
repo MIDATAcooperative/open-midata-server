@@ -17,6 +17,10 @@
         "research" : "Ricerca",
         "workspace" : "Spazio di lavoro",
         "market" : "MIDATA Store",
+
+        // TODO CHANGED
+        // OLD: Intern
+        // NEW: Enterprise
         "org" : "Impresa",
         "organization" : "Organizzazione",
         "usergroups" : "Team"
@@ -36,7 +40,43 @@
     },
 
     "provider_patientsearch" : {
-        "title" : "Ricerca paziente"
+        "title" : "Ricerca paziente",
+
+        // TODO NEW: E-Mail
+        "email" : "E-Mail",
+
+        // TODO NEW: or
+        "or" : "or",
+
+        // TODO NEW: Midata ID
+        "midataid" : "Midata ID",
+
+        // TODO NEW: Birthday
+        "birthday" : "Birthday",
+
+        // TODO NEW: Searching...
+        "searching" : "Searching...",
+
+        // TODO NEW: Address
+        "address" : "Address",
+
+        // TODO NEW: Show Patient
+        "show_patient_btn" : "Show Patient",
+
+        // TODO NEW: Consents with this patient
+        "consents" : "Consents with this patient",
+
+        // TODO NEW: Add new consent
+        "add_new_consent" : "Add new consent",
+
+        // TODO NEW: Team (optional)
+        "usergroup" : "Team (optional)",
+
+        // TODO NEW: Access Passcode (optional)
+        "passcode" : "Access Passcode (optional)",
+
+        // TODO NEW: Add new consent
+        "add_new_consent_btn" : "Add new consent"
     },
 
     "provider_patients" : {
@@ -68,6 +108,18 @@
     },
 
     "provider_memberdetails" : {
-        "propose_consent" : "Richiedi consenso"
+        "propose_consent" : "Richiedi consenso",
+
+        // TODO NEW: Select a consent to display individual records
+        "pick_consent" : "Select a consent to display individual records",
+
+        // TODO NEW: Share data with patient
+        "share_btn" : "Share data with patient"
+    },
+
+    "help_welcome" : {
+
+        // TODO NEW: Some ideas to start with MIDATA:
+        "starts" : "Some ideas to start with MIDATA:"
     }
 }

@@ -59,6 +59,10 @@
             "passphrase_old" : "Ancienne phrase secrète incorrecte.",
             "password_old" : "L'ancien mot de passe n'est pas correct.",
             "confirmation_code" : "Code de confirmation incorrect",
+
+            // TODO CHANGED
+            // OLD: Token not correct
+            // NEW: Code not correct
             "securitytoken" : "Code incorrect",
             "code" : "Code d'étude inconnu.",
             "appcode" : "Code d'app inconnu",
@@ -77,7 +81,10 @@
             "access_query" : "Le filtre d'accès aux données (Data Access Filter) doit être limité par 'contenu' ou 'groupe'!",
             "sharing" : "Le filtre d'accès aux données (Data Access Filter) contient des types de données qui sont exclus par la configuration de l'étude.",
             "anonymous" : "L'étude ne peut être anonyme que si personne n'est autorisé à accéder à des données non pseudonymisées.",
-            "url" : "URL invalide"
+            "url" : "URL invalide",
+
+            // TODO NEW: Consent may only be confirmed once all external persons have joined Midata.
+            "consent_members" : "Consent may only be confirmed once all external persons have joined Midata."
         },
 
         "missing" : {
@@ -159,6 +166,10 @@
             "token" : "Ce token d'activation est expiré. Veuillez en demander un nouveau.",
             "tokenresent" : "Ce token d'activation est expiré. Un nouveau token d'activation a été envoyé par e-mail à l'instant. Veuillez valider votre adresse e-mail dans les 24 heures à l'aide du nouveau token.",
             "code" : "Ce code de participation a expiré.",
+
+            // TODO CHANGED
+            // OLD: This token has expired.
+            // NEW: This code has expired.
             "securitytoken" : "Ce code a expiré."
         },
 
@@ -270,6 +281,10 @@
             "EMAIL_VERIFIED" : "L'adresse e-mail de l'utilisateur doit avoir été vérifiée",
             "PHONE_ENTERED" : "Le n° de téléphone mobile de l'utilisateur doit être renseigné sur la plateforme",
             "PHONE_VERIFIED" : "Le n° de téléphone mobile de l'utilisateur doit avoir été vérifié",
+
+            // TODO CHANGED
+            // OLD: 2-Factor Authentication during Login
+            // NEW: 2-Factor Authentication on login
             "AUTH2FACTOR" : "Authentification à 2 facteurs à la connexion",
             "ADDRESS_ENTERED" : "L'adresse postale de l'utilisateur doit être renseigné sur la plateforme",
             "ADDRESS_VERIFIED" : "L'adresse postale de l'utilisateur doit avoir été vérifiée",
@@ -657,17 +672,41 @@
         "admin_verified" : "Votre compte doit être validé par un administrateur MIDATA. Veuillez réessayer plus tard. Si votre compte n'a pas été validé sous 24 heures, veuillez contacter MIDATA.",
         "terms_agreed" : "Les Conditions Générales de MIDATA ont été mises à jour. Veuillez confirmer que vous acceptez la nouvelle version.",
         "privacy_policy_agreed" : "La Déclaration de protection des données de MIDATA a été mise à jour. Veuillez confirmer que vous acceptez la nouvelle version.",
+
+        // TODO CHANGED
+        // OLD: An authorization token has been send to your phone. Please enter it.
+        // NEW: An authorization code has been send to your phone. Please enter it.
         "auth2factor" : "Un code d'autorisation a été envoyé sur votre téléphone. Veuillez l'entrer.",
+
+        // TODO CHANGED
+        // OLD: Token
+        // NEW: Code
         "securityToken" : "Code",
         "securityToken_btn" : "Envoyer",
+
+        // TODO CHANGED
+        // OLD: Please wait up to a minute for the token to arrive.
+        // NEW: Please wait up to a minute for the code to arrive.
         "no_token" : "Veuillez attendre jusqu'à une minute que le code arrive.",
+
+        // TODO CHANGED
+        // OLD: I did not receive the token
+        // NEW: I did not receive the code
         "no_token_btn" : "Je n'ai pas reçu le code",
         "auth2factorsetup" : "Veuillez configurer vos paramètres de sécurité: voulez-vous protéger l'accès à votre compte avec un deuxième facteur en plus de votre mot de passe?",
         "auth2factorsetup2" : "Vous pouvez modifier vos paramètres ultérieurement dans votre profil. Connectez-vous à {{domain}} et cliquez sur votre nom en haut à droite.",
         "auth_type" : "Authentification",
         "auth_type_none" : "Je ne veux pas utiliser l'authentification à deux facteurs.",
+
+        // TODO CHANGED
+        // OLD: I want to use two factor authentication using SMS tokens. Please send a token on login to my mobile phone.
+        // NEW: I want to use two factor authentication using SMS codes. Please send a code to my mobile phone at login.
         "auth_type_sms" : "Je veux utiliser l'authentification à deux facteurs par codes SMS. Veuillez m'envoyer un code sur mon téléphone portable lorsque je me connecte.",
         "emailnotify" : "Notifications",
+
+        // TODO CHANGED
+        // OLD: Please send me an email everytime I log into the Midata portal at {{domain}}.
+        // NEW: Please send me an email everytime I log into the MIDATA portal at {{domain}}.
         "emailnotify2" : "Veuillez m'envoyer un e-mail chaque fois que je me connecte au portail MIDATA à {{domain}}.",
         "agree_btn" : "Je suis d'accord",
         "keyrecovery" : {
@@ -901,7 +940,15 @@
     },
 
     "editconsent2" : {
+
+        // TODO CHANGED
+        // OLD: created at
+        // NEW: created on
         "date_of_creation" : "créé le",
+
+        // TODO CHANGED
+        // OLD: expires at
+        // NEW: expires on
         "valid_until" : "expire le",
         "status_active" : "Actif maintenant",
         "status_expired" : "Expiré",
@@ -969,8 +1016,18 @@
         "type_study" : "Recherche",
         "type_circle" : "Autres utilisateurs",
         "type_studyrelated" : "Projets de recherche",
+
+        // TODO CHANGED
+        // OLD: Practitioners
+        // NEW: Health professionals
         "type_hcrelated" : "Professionnels de la santé",
         "type_implicit" : "Implicite",
+
+        // TODO NEW: Doctor / Hospital
+        "type_healthcare" : "Doctor / Hospital",
+
+        // TODO NEW: Research
+        "type_studyparticipation" : "Research",
         "show" : "Afficher:",
         "my_data" : "Mes données",
         "all_data" : "Toutes les données",
@@ -1155,6 +1212,9 @@
         "HEALTHCARE" : "Consentement (Professionnel de la santé)",
         "MEMBER" : "Compte",
         "PROVIDER" : "Compte (Professionnel de la santé)",
+
+        // TODO NEW: Account (Account Holder)
+        "HCRELATED" : "Account (Account Holder)",
         "RESEARCH" : "Compte (Chercheur)",
         "ADMIN" : "Compte (Administrateur)",
         "DEVELOPER" : "Account (Développeur)"
@@ -1279,7 +1339,16 @@
 
     "timeline" : {
         "spaces" : "MIDATA",
-        "title" : "Timeline"
+        "title" : "Timeline",
+
+        // TODO NEW: Fitness
+        "fitness" : "Fitness",
+
+        // TODO NEW: Health Documentation
+        "health" : "Health Documentation",
+
+        // TODO NEW: Analyze your Data
+        "analyze" : "Analyze your Data"
     },
 
     "-1" : "inconnu"
