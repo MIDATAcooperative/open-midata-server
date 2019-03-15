@@ -98,7 +98,11 @@ public class IndexPage {
 		}
 		if (toload.isEmpty()) return;
 		Set<IndexPageModel> result = IndexPageModel.getMultipleById(toload);
-		for (IndexPageModel r : result) root.loadedPages.put(r._id, new IndexPage(this.key, r, root, this.depth + 1));		
+		for (IndexPageModel r : result) {
+			IndexPage loaded = new IndexPage(this.key, r, root, this.depth + 1);
+			if (loaded.model.lockTime > root.getVersion()) throw new LostUpdateException();
+			root.loadedPages.put(r._id, loaded);		
+		}
 	}
 	
 	public MidataId getId() {
