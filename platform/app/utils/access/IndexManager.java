@@ -340,9 +340,7 @@ public class IndexManager {
 			removeRecords(root, cond, ids);
 		}
 	}*/
-	public void removeRecords(APSCache cache, MidataId user, List<IndexMatch> records, MidataId indexId, Condition[] cond) throws AppException {
-		IndexPseudonym pseudo = getIndexPseudonym(cache, user, user, false);
-		if (pseudo == null) return;
+	public void removeRecords(APSCache cache, MidataId user, List<IndexMatch> records, MidataId indexId, Condition[] cond, IndexPseudonym pseudo) throws AppException {		
 		AccessLog.logBegin("start removing outdated entries from indexes #recs="+records.size());
 	
 		IndexDefinition def = IndexDefinition.getById(indexId);		

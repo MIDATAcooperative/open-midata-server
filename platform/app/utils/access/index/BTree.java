@@ -851,6 +851,7 @@ public class BTree
                   siblingNode.mKeys[i] = null;
               }
               btNode.mCurrentKeyNum += siblingNode.mCurrentKeyNum;
+              siblingNode.mCurrentKeyNum = 0;
           }
           else {
               for (i = 0; i < btNode.mCurrentKeyNum; ++i) {
@@ -859,6 +860,7 @@ public class BTree
               }
               siblingNode.mCurrentKeyNum += btNode.mCurrentKeyNum;
               btNode.mKeys[btNode.mCurrentKeyNum] = null;
+              btNode.mCurrentKeyNum = 0;
           }
   
           // Shift the parent keys accordingly after the merge of child nodes

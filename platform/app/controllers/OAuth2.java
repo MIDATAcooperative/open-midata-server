@@ -702,9 +702,15 @@ public class OAuth2 extends Controller {
 			return;
 		}
 		
-		if (notok!=null && (notok.contains(UserFeature.EMAIL_VERIFIED) || notok.contains(UserFeature.ADMIN_VERIFIED) || notok.contains(UserFeature.ADDRESS_VERIFIED) || notok.contains(UserFeature.MIDATA_COOPERATIVE_MEMBER) || notok.contains(UserFeature.PHONE_ENTERED) || notok.contains(UserFeature.AUTH2FACTORSETUP))) {
+		if (notok!=null && (notok.contains(UserFeature.EMAIL_VERIFIED) || notok.contains(UserFeature.ADMIN_VERIFIED) || notok.contains(UserFeature.ADDRESS_VERIFIED) || notok.contains(UserFeature.MIDATA_COOPERATIVE_MEMBER) || notok.contains(UserFeature.PHONE_ENTERED))) {
 			notok.remove(UserFeature.AUTH2FACTOR);
 			notok.remove(UserFeature.AUTH2FACTORSETUP);
+			notok.remove(UserFeature.PHONE_VERIFIED);
+			return;
+		}
+		
+		if (notok!=null && notok.contains(UserFeature.AUTH2FACTORSETUP)) {
+			notok.remove(UserFeature.AUTH2FACTOR);			
 			notok.remove(UserFeature.PHONE_VERIFIED);
 			return;
 		}
