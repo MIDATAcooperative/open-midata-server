@@ -724,7 +724,7 @@ public class OAuth2 extends Controller {
 		
 		if (notok!=null && notok.contains(UserFeature.PHONE_VERIFIED)) {
 			if (securityToken == null) {
-				Authenticators.getInstance(SecondaryAuthType.SMS).startAuthentication(user._id, "Token", user);
+				Authenticators.getInstance(SecondaryAuthType.SMS).startAuthentication(user._id, "Code", user);
 				notok.clear();
 				notok.add(UserFeature.PHONE_VERIFIED);
 			} else {
