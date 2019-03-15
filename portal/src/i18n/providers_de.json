@@ -17,7 +17,22 @@
         "research" : "Forschung",
         "workspace" : "Workspace",
         "market" : "MIDATA Store",
+        "org" : "Unternehmen",
+        "organization" : "Organisation",
         "usergroups" : "Teams"
+    },
+
+    "provider_organization" : {
+        "title" : "Organisation",
+        "name" : "Name",
+        "description" : "Beschreibung",
+        "members" : "Alle Mitglieder Ihrer Organisation",
+        "addprovider" : "Neues Mitglied registrieren"
+    },
+
+    "addprovider" : {
+        "sign_up" : "Gesundheitsfachperson registrieren",
+        "success" : "Benutzer erfolgreich registriert"
     },
 
     "provider_patientsearch" : {
@@ -32,6 +47,7 @@
         "title" : "Teams",
         "name" : "Team",
         "status" : "Status",
+        "searchable" : "Öffentlich",
         "empty" : "Sie sind nicht Mitglied eines Teams."
     },
 
@@ -46,6 +62,7 @@
         "former_members" : "Ehemalige Mitglieder",
         "name" : "Name des Teams",
         "status" : "Status",
+        "searchable" : "Auffindbar für Kontoinhaber",
         "startDate" : "Mitglied seit",
         "endDate" : "Mitglied bis"
     },

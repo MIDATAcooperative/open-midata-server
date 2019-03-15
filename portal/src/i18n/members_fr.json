@@ -86,7 +86,6 @@
         "empty" : "Vous n'avez enregistré aucun contact comme professionel de la santé."
     },
 
-
     "smallstudies" : {
         "greeting" : "Voulez-vous venir en aide et partager vos données pour une étude?",
         "studies" : "Études",
@@ -94,6 +93,8 @@
         "recruiting" : "Recrutement",
         "ongoing" : "En cours",
         "completed" : "Achevée",
-        "stopped" : "Stoppée"
+        "stopped" : "Stoppée",
+        "infoapply" : "Plus d'informations & participation",
+        "infoonly" : "Plus d'informations"
     }
 }

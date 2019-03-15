@@ -12,7 +12,7 @@
     },
 
     "developer_navbar" : {
-        "yourapps" : "Vos Plugins",
+        "yourapps" : "Vos plugins",
         "sandbox" : "Sandbox",
         "records" : "Enregistrements de test",
         "testusers" : "Utilisateurs de test"
@@ -69,7 +69,8 @@
             "PASSWORD_FORGOTTEN" : "Mot de passe oublié",
             "USER_PRIVATE_KEY_RECOVERED" : "Récupération de la clé utilisateur terminée",
             "RESOURCE_CHANGE" : "Modification d'une ressource [code]",
-            "PROCESS_MESSAGE" : "Traiter le message FHIR avec l'événement [code]"
+            "PROCESS_MESSAGE" : "Traiter le message FHIR avec l'événement [code]",
+            "LOGIN" : "Notification de connexion (si activée par l'utilisateur)"
         }
     },
 
@@ -86,6 +87,7 @@
         "edit_help" : "Modifiez la configuration de votre application.",
         "query_btn" : "Modifier le Data Access Filter",
         "query_help" : "Définissez les types de données auxquelles votre application peut accéder.",
+        "write_mode" : "Accès en écriture",
         "subscriptions_btn" : "Modifier les abonnements (Subscriptions) par défaut",
         "subscriptions_help" : "Définir les triggers qui provoquent une action sur le serveur MIDATA",
         "tokenExchangeParams" : "Paramètres OAuth2 pour l'échange du token",

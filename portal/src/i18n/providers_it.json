@@ -17,7 +17,22 @@
         "research" : "Ricerca",
         "workspace" : "Spazio di lavoro",
         "market" : "MIDATA Store",
+        "org" : "Impresa",
+        "organization" : "Organizzazione",
         "usergroups" : "Team"
+    },
+
+    "provider_organization" : {
+        "title" : "Organizzazione",
+        "name" : "Nome",
+        "description" : "Descrizione",
+        "members" : "Tutti i membri della vostra organizzazione",
+        "addprovider" : "Iscrivere nuovo membro"
+    },
+
+    "addprovider" : {
+        "sign_up" : "Iscrivere operatore sanitario",
+        "success" : "Utente iscritto con successo"
     },
 
     "provider_patientsearch" : {
@@ -32,6 +47,7 @@
         "title" : "Team",
         "name" : "Team",
         "status" : "Stato",
+        "searchable" : "Pubblico",
         "empty" : "Non fai parte di un team."
     },
 
@@ -46,6 +62,7 @@
         "former_members" : "Membri precedenti",
         "name" : "Nome del team",
         "status" : "Stato",
+        "searchable" : "Trovabile dai titolari di account",
         "startDate" : "Membro da",
         "endDate" : "Membro fino a"
     },

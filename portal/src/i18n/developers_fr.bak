@@ -68,7 +68,8 @@
 	   "PASSWORD_FORGOTTEN" : "Password forgotten",
 	   "USER_PRIVATE_KEY_RECOVERED" : "User key recovery completed",
 	   "RESOURCE_CHANGE" : "Change of resource [code]",
-	   "PROCESS_MESSAGE" : "Process FHIR message with event [code]"
+	   "PROCESS_MESSAGE" : "Process FHIR message with event [code]",
+	   "LOGIN" : "Login Notification (if enabled by user)"
     }		      
   },
   
@@ -85,6 +86,7 @@
     "edit_help" : "Change the setup for your application.",
     "query_btn" : "Change Data Access Filter",
     "query_help" : "Define which types of data your application may access.",
+    "write_mode" : "Write Access",
     "subscriptions_btn" : "Change Default Subscriptions",
     "subscriptions_help" : "Define triggers that cause an action on the MIDATA server",
     "tokenExchangeParams" : "OAuth2 Parameters for the Token Exchange", 
@@ -179,12 +181,12 @@
     "login" : "Log in",
     "oauth_login" : "OAuth Login",
     "device" : "Device",
-    "refresh_token" : "Refresh-Token",
+    "refresh_token" : "Refresh Token",
     "backend_services" : "Serverside Scripts",
     "portal_username" : "Username",
     "portal_password" : "Password",
     "portal_login" : "Use plugin instance:",
-    "portal_login_btn" : "Portal login + get space token"      
+    "portal_login_btn" : "Portal login + get token"      
   },
   
   "appicon" : {
