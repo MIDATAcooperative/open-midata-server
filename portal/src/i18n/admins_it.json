@@ -1,30 +1,18 @@
 {
 
     "admin_navbar" : {
-
-        // TODO NEW: Admin
         "admin" : "Admin",
         "members" : "Membri",
         "auditlog" : "Revisione",
         "news" : "Notizie",
         "plugins" : "Plugin",
-
-        // TODO CHANGED
-        // OLD: Content
-        // NEW: Content-Types
-        "content" : "Contenuti",
+        "content" : "Tipi di contenuto",
         "studies" : "Studi",
         "terms" : "Condizioni generali di contratto",
         "registration" : "Registra amministratore",
-
-        // TODO NEW: User Administration
-        "user_admin" : "User Administration",
-
-        // TODO NEW: Apps & Data
-        "plugin_admin" : "Apps & Data",
-
-        // TODO NEW: Research & Public
-        "research_admin" : "Research & Public"
+        "user_admin" : "Amministrazione utenti",
+        "plugin_admin" : "Applicazioni & Dati",
+        "research_admin" : "Ricerca & Pubblico"
     },
 
     "admin_members" : {
@@ -53,16 +41,12 @@
         "agb_status" : "Stato dei CGC:",
         "contract_status" : "Stato del contratto:",
         "email_status" : "Stato dell'e-mail:",
-
-        // TODO NEW: Mobile Validation Status:
-        "mobile_status" : "Mobile Validation Status:",
+        "mobile_status" : "Stato del numero di telefono mobile:",
         "confirmation_code" : "Codice di conferma:",
         "registration_date" : "Data di registrazione:",
         "confirmation_date" : "Data di conferma:",
         "security" : "Protezione del conto",
-
-        // TODO NEW: 2FA method
-        "auth_type" : "2FA method",
+        "auth_type" : "Metodo 2FA",
         "security_type" : {
             "KEY" : "Chiave privata sul server",
             "KEY_PASSPHRASE" : "Chiave privata protetta da PHRASE SEGRETA",
@@ -108,9 +92,7 @@
 
     "admin_registration" : {
         "sign_up" : "Registrare un nuovo amministratore",
-
-        // TODO NEW: If you use the email of an existing developer account that account will be upgraded to an administrator account.
-        "description" : "If you use the email of an existing developer account that account will be upgraded to an administrator account."
+        "description" : "Se si utilizza l'e-mail di un account di sviluppatore esistente, tale account verrà aggiornato a un account amministratore."
     },
 
     "admin_plugins" : {

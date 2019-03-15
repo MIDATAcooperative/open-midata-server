@@ -17,40 +17,22 @@
         "research" : "Ricerca",
         "workspace" : "Spazio di lavoro",
         "market" : "MIDATA Store",
-
-        // TODO NEW: Intern
-        "org" : "Intern",
-
-        // TODO NEW: Organization
-        "organization" : "Organization",
+        "org" : "Impresa",
+        "organization" : "Organizzazione",
         "usergroups" : "Team"
     },
 
     "provider_organization" : {
-
-        // TODO NEW: Organization
-        "title" : "Organization",
-
-        // TODO NEW: Name
-        "name" : "Name",
-
-        // TODO NEW: Description
-        "description" : "Description",
-
-        // TODO NEW: All members of your organization
-        "members" : "All members of your organization",
-
-        // TODO NEW: Register New Member
-        "addprovider" : "Register New Member"
+        "title" : "Organizzazione",
+        "name" : "Nome",
+        "description" : "Descrizione",
+        "members" : "Tutti i membri della vostra organizzazione",
+        "addprovider" : "Iscrivere nuovo membro"
     },
 
     "addprovider" : {
-
-        // TODO NEW: Register health professional
-        "sign_up" : "Register health professional",
-
-        // TODO NEW: User successfully registered
-        "success" : "User successfully registered"
+        "sign_up" : "Iscrivere operatore sanitario",
+        "success" : "Utente iscritto con successo"
     },
 
     "provider_patientsearch" : {
@@ -65,9 +47,7 @@
         "title" : "Team",
         "name" : "Team",
         "status" : "Stato",
-
-        // TODO NEW: Public
-        "searchable" : "Public",
+        "searchable" : "Pubblico",
         "empty" : "Non fai parte di un team."
     },
 
@@ -82,9 +62,7 @@
         "former_members" : "Membri precedenti",
         "name" : "Nome del team",
         "status" : "Stato",
-
-        // TODO NEW: Findable by Account Holders
-        "searchable" : "Findable by Account Holders",
+        "searchable" : "Trovabile dai titolari di account",
         "startDate" : "Membro da",
         "endDate" : "Membro fino a"
     },

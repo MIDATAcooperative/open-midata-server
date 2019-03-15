@@ -86,7 +86,6 @@
         "empty" : "Sie haben keine Kontakte als Gesundheitsfachperson registriert."
     },
 
-
     "smallstudies" : {
         "greeting" : "Wollen Sie helfen und Ihre Daten für eine Studie teilen?",
         "studies" : "Studien",
@@ -95,11 +94,7 @@
         "ongoing" : "Laufend",
         "completed" : "Abgeschlossen",
         "stopped" : "Gestoppt",
-
-        // TODO NEW: More Info & Participation
-        "infoapply" : "More Info & Participation",
-
-        // TODO NEW: More Information
-        "infoonly" : "More Information"
+        "infoapply" : "Weitere Informationen & Teilnahme",
+        "infoonly" : "Weitere Informationen"
     }
 }

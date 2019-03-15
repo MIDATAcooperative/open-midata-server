@@ -12,7 +12,7 @@
     },
 
     "developer_navbar" : {
-        "yourapps" : "Vos Plugins",
+        "yourapps" : "Vos plugins",
         "sandbox" : "Sandbox",
         "records" : "Enregistrements de test",
         "testusers" : "Utilisateurs de test"
@@ -70,9 +70,7 @@
             "USER_PRIVATE_KEY_RECOVERED" : "Récupération de la clé utilisateur terminée",
             "RESOURCE_CHANGE" : "Modification d'une ressource [code]",
             "PROCESS_MESSAGE" : "Traiter le message FHIR avec l'événement [code]",
-
-            // TODO NEW: Login Notification (if enabled by user)
-            "LOGIN" : "Login Notification (if enabled by user)"
+            "LOGIN" : "Notification de connexion (si activée par l'utilisateur)"
         }
     },
 
@@ -89,9 +87,7 @@
         "edit_help" : "Modifiez la configuration de votre application.",
         "query_btn" : "Modifier le Data Access Filter",
         "query_help" : "Définissez les types de données auxquelles votre application peut accéder.",
-
-        // TODO NEW: Write Access
-        "write_mode" : "Write Access",
+        "write_mode" : "Accès en écriture",
         "subscriptions_btn" : "Modifier les abonnements (Subscriptions) par défaut",
         "subscriptions_help" : "Définir les triggers qui provoquent une action sur le serveur MIDATA",
         "tokenExchangeParams" : "Paramètres OAuth2 pour l'échange du token",
@@ -186,19 +182,11 @@
         "login" : "Se connecter",
         "oauth_login" : "OAuth Login",
         "device" : "Device",
-
-        // TODO CHANGED
-        // OLD: Refresh-Token
-        // NEW: Refresh Token
         "refresh_token" : "Refresh Token",
         "backend_services" : "Scripts côté serveur",
         "portal_username" : "Nom d'utilisateur",
         "portal_password" : "Mot de passe",
         "portal_login" : "Utilisez l'instance de plugin:",
-
-        // TODO CHANGED
-        // OLD: Portal login + get space token
-        // NEW: Portal login + get token
         "portal_login_btn" : "Connexion au portail + obtention du token"
     },
 

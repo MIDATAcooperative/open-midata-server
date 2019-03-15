@@ -17,40 +17,22 @@
         "research" : "Recherche",
         "workspace" : "Workspace",
         "market" : "MIDATA Store",
-
-        // TODO NEW: Intern
-        "org" : "Intern",
-
-        // TODO NEW: Organization
-        "organization" : "Organization",
+        "org" : "Entreprise",
+        "organization" : "Organisation",
         "usergroups" : "Teams"
     },
 
     "provider_organization" : {
-
-        // TODO NEW: Organization
-        "title" : "Organization",
-
-        // TODO NEW: Name
-        "name" : "Name",
-
-        // TODO NEW: Description
+        "title" : "Organisation",
+        "name" : "Nom",
         "description" : "Description",
-
-        // TODO NEW: All members of your organization
-        "members" : "All members of your organization",
-
-        // TODO NEW: Register New Member
-        "addprovider" : "Register New Member"
+        "members" : "Tous les membres de votre organisation",
+        "addprovider" : "Inscrire un nouveau membre"
     },
 
     "addprovider" : {
-
-        // TODO NEW: Register health professional
-        "sign_up" : "Register health professional",
-
-        // TODO NEW: User successfully registered
-        "success" : "User successfully registered"
+        "sign_up" : "Inscrire un professionnel de la santé",
+        "success" : "Utilisateur inscrit avec succès"
     },
 
     "provider_patientsearch" : {
@@ -65,9 +47,7 @@
         "title" : "Teams",
         "name" : "Team",
         "status" : "État",
-
-        // TODO NEW: Public
-        "searchable" : "Public",
+        "searchable" : "Publique",
         "empty" : "Vous ne faites pas partie d'un team."
     },
 
@@ -82,9 +62,7 @@
         "former_members" : "Anciens membres",
         "name" : "Nom du team",
         "status" : "État",
-
-        // TODO NEW: Findable by Account Holders
-        "searchable" : "Findable by Account Holders",
+        "searchable" : "Trouvable par les titulaires de compte",
         "startDate" : "Membre depuis",
         "endDate" : "Membre jusqu'au"
     },

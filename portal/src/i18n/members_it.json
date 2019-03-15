@@ -86,7 +86,6 @@
         "empty" : "Non hai registrato alcun contatto come operatore sanitario."
     },
 
-
     "smallstudies" : {
         "greeting" : "Desideri aiutare gli studi con la condivisione dei tuoi dati?",
         "studies" : "Studi",
@@ -95,11 +94,7 @@
         "ongoing" : "In corso",
         "completed" : "Completato",
         "stopped" : "Interrotto",
-
-        // TODO NEW: More Info & Participation
-        "infoapply" : "More Info & Participation",
-
-        // TODO NEW: More Information
-        "infoonly" : "More Information"
+        "infoapply" : "Ulteriori informazioni & partecipazione",
+        "infoonly" : "Ulteriori informazioni"
     }
 }
