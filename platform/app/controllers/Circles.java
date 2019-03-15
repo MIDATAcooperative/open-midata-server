@@ -287,7 +287,8 @@ public class Circles extends APIController {
 		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		String name = JsonValidation.getString(json, "name");
 		MidataId userId = JsonValidation.getMidataId(json, "owner");
-		if (userId == null) userId = executorId;
+		String externalOwner = JsonValidation.getStringOrNull(json, "externalOwner");
+		if (userId == null && externalOwner == null) userId = executorId;
 		String passcode = json.has("passcode") ? JsonValidation.getPassword(json, "passcode") : null;
 						
 		/*if (Consent.existsByOwnerAndName(userId, name)) {
@@ -305,7 +306,7 @@ public class Circles extends APIController {
 		switch (type) {
 		case CIRCLE : 			
 			consent = new Circle();
-			((Circle) consent).order = Circle.getMaxOrder(userId) + 1;
+			if (userId!=null) ((Circle) consent).order = Circle.getMaxOrder(userId) + 1;
 			patientRecord = true;
 			consent.writes = WritePermissionType.NONE;
 			break;
@@ -337,27 +338,33 @@ public class Circles extends APIController {
 		}
 					
 		consent.owner = userId;
+		consent.externalOwner = externalOwner;
 		consent.name = name;		
 		consent.authorized = new HashSet<MidataId>();
-		consent.status = userId.equals(executorId) ? ConsentStatus.ACTIVE : ConsentStatus.UNCONFIRMED;
+		consent.status = (userId!=null && userId.equals(executorId)) ? ConsentStatus.ACTIVE : ConsentStatus.UNCONFIRMED;
 		consent.validUntil = validUntil;
 		consent.createdBefore = createdBefore;
 		if (json.has("writes")) {
 		  consent.writes = JsonValidation.getEnum(json, "writes", WritePermissionType.class);
 		}
-		if (! userId.equals(executorId)) consent.authorized.add(executorId);
-				
-		addConsent(executorId, consent, patientRecord, passcode, false);
-			
-		
 		
 		if (json.has("authorized")) {
 			Set<MidataId> newMemberIds = ObjectIdConversion.toMidataIds(JsonExtraction.extractStringSet(json.get("authorized")));
 			if (!newMemberIds.isEmpty()) {
 				EntityType entityType = json.has("entityType") ? JsonValidation.getEnum(json, "entityType", EntityType.class) : null;
-				addUsers(executorId, entityType, consent, newMemberIds);
+				consent.entityType = entityType;
+				consent.authorized = newMemberIds;
+				//addUsers(executorId, entityType, consent, newMemberIds);
 			}
 		}
+		if (json.has("externalAuthorized")) {
+			Set<String> extMails = JsonExtraction.extractStringSet(json.get("externalAuthorized"));
+			consent.externalAuthorized = extMails;			
+		}
+		
+		if ((userId==null || !userId.equals(executorId)) && consent.authorized.size()==0) consent.authorized.add(executorId);
+			
+		addConsent(executorId, consent, patientRecord, passcode, false);					
 		
 		return ok(JsonOutput.toJson(consent, "Consent", Consent.ALL)).as("application/json");
 	}
@@ -370,9 +377,31 @@ public class Circles extends APIController {
 			
 		AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_CREATE, executorId, consent);
 		
+		if (consent.externalOwner != null) {
+			Member member = Member.getByEmail(consent.externalOwner, Sets.create("_id"));
+			if (member != null) {
+				consent.owner = member._id;
+				consent.externalOwner = null;
+			}
+		}
+		if (consent.externalAuthorized != null) {
+			Set<String> externalAuthorized = new HashSet<String>();
+			for (String ext : consent.externalAuthorized) {
+				Member member = Member.getByEmail(ext, Sets.create("_id"));
+				if (member != null) {
+					consent.authorized.add(member._id);
+				} else externalAuthorized.add(ext);
+			}
+			if (externalAuthorized.isEmpty()) consent.externalAuthorized = null;
+			else {
+				consent.externalAuthorized = externalAuthorized;
+				consent.status = ConsentStatus.UNCONFIRMED;
+			}
+		}
+		
 		if (consent.status != ConsentStatus.DRAFT && consent.status != ConsentStatus.UNCONFIRMED && !force && consent.type != ConsentType.IMPLICIT) {
 			if (consent.owner == null || !consent.owner.equals(executorId)) throw new AuthException("error.invalid.consent", "You must be owner to create active consents!");
-		}
+		}		
 		
 		if (consent.owner != null) {
 			RecordManager.instance.createAnonymizedAPS(consent.owner, executorId, consent._id, true);
@@ -464,10 +493,18 @@ public class Circles extends APIController {
 	public Result joinByPasscode() throws JsonValidationException, AppException {
 		// validate json
 		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId groupExecutorId = executorId;
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "passcode", "owner");
 		String passcode = JsonValidation.getString(json, "passcode");
 		MidataId ownerId = JsonValidation.getMidataId(json, "owner");
+		MidataId userGroupId = JsonValidation.getMidataId(json, "usergroup");
+		
+		if (userGroupId!=null) {
+			UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(userGroupId, executorId);
+			if (ugm==null) throw new BadRequestException("error.invalid.usergroup", "Bad Usergroup");
+			groupExecutorId = ugm.userGroup;
+		}
 		
 		try {
 		   String hpasscode = PasswordHash.createHashGivenSalt(passcode.toCharArray(), ownerId.toByteArray());
@@ -475,9 +512,16 @@ public class Circles extends APIController {
 		   Consent consent = Consent.getByOwnerAndPasscode(ownerId, hpasscode, Sets.create("name","authorized"));
 		   if (consent == null) throw new BadRequestException("error.invalid.passcode", "Bad passcode");
 		   
-		   KeyManager.instance.unlock(consent._id, passcode);		  
-		   RecordManager.instance.shareAPS(consent._id, consent._id, Collections.singleton(executorId));		   
-		   consent.authorized.add(executorId);
+		   KeyManager.instance.unlock(consent._id, passcode);
+		   
+		   
+		   
+		   RecordManager.instance.shareAPS(consent._id, consent._id, Collections.singleton(groupExecutorId));		   
+		   consent.authorized.add(groupExecutorId);
+		   if (!groupExecutorId.equals(executorId)) {
+		     consent.entityType = EntityType.USERGROUP;
+		     Consent.set(consent._id, "entityType", consent.entityType);
+		   }
 		   Consent.set(consent._id, "authorized", consent.authorized);
 		   Consent.set(consent._id, "lastUpdated", new Date());
 		

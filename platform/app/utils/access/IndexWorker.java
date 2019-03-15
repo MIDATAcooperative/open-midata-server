@@ -107,7 +107,7 @@ public class IndexWorker extends AbstractActor {
 			
 			  IndexRemoveMsg msg = (IndexRemoveMsg) message;
 			  
-			  IndexManager.instance.removeRecords(cache, executor, msg.getRecords(), msg.getIndexId(), msg.getCondition());
+			  IndexManager.instance.removeRecords(cache, executor, msg.getRecords(), msg.getIndexId(), msg.getCondition(), pseudo);
 				
 		} catch (Exception e) {
 			ErrorReporter.report("Messager", null, e);	

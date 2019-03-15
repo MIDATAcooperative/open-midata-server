@@ -1,5 +1,7 @@
 package utils.access;
 
+import java.util.Map;
+
 import models.MidataId;
 import utils.exceptions.AppException;
 
@@ -36,6 +38,10 @@ public abstract class AccessContext {
 	public abstract MidataId getOwnerPseudonymized();
 	
 	public abstract String getOwnerName();
+	
+	public Map<String, Object> getQueryRestrictions() {
+		if (parent != null) return parent.getQueryRestrictions(); else return null;
+	}
 	
 	public AccessContext getParent() {
 		return parent;

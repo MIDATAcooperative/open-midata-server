@@ -75,9 +75,9 @@
     <div class="panel-heading" translate="studyoverview.checklist"></div>
     <div class="panel-body">
       <table class="table table-hover">
-        <tr class="clickable"  ng-repeat="item in checklist" ng-class="{ 'success' : item.done, 'danger' : item.required && !item.done, 'warning' : !item.required && !item.done && !item.heading, 'heading' : item.heading }">
+        <tr class="clickable"  ng-repeat="item in checklist" ng-class="{ 'table-success' : item.done, 'table-danger' : item.required && !item.done, 'table-warning' : !item.required && !item.done && !item.heading, 'table-heading' : item.heading }">
           <td ui-sref="{{item.page}}">
-            <span uib-tooltip="{{item.title+'_help' | translate }}" translate="{{item.title}}"></span>
+            <span uib-tooltip="{{item.title+'_help' | translate }}" popover-popup-close-delay="500" popover-animation="false" popover-append-to-body="false" popover-placement="auto bottom-left" translate="{{item.title}}"></span>
           </td><td>
             <div class="float-right">           
             <span ng-show="item.done" class="fas fa-check"></span>

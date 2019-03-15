@@ -202,7 +202,7 @@ public class Plugins extends APIController {
 	}
 	
 	public static Space install(MidataId userId, Plugin visualization, String context, String spaceName, MidataId study) throws AppException {
-		
+		AccessLog.log("install userId="+userId.toString()+" context="+context+" study="+study);
 							
 		if (visualization == null)
 			throw new BadRequestException("error.unknown.plugin", "Unknown Plugin");
@@ -251,6 +251,7 @@ public class Plugins extends APIController {
 					Map<String, Object> query = new HashMap<String, Object>(visualization.defaultQuery);
 					query.put("link-study", study.toString());
 					query.put("study", study.toString());
+					AccessLog.log("set link");
 					RecordManager.instance.shareByQuery(userId, userId, space._id, query);
 				} else {
 					RecordManager.instance.shareByQuery(userId, userId, space._id, visualization.defaultQuery);
@@ -366,7 +367,7 @@ public class Plugins extends APIController {
 	 * @throws AppException
 	 * @return URL
 	 */
-	@Security.Authenticated(AnyRoleSecured.class)
+	/*@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
 	public Result getUrlForConsent(String appIdString, String consentIdString) throws AppException {
 		// get app
@@ -387,7 +388,7 @@ public class Plugins extends APIController {
 		url = url.replace(":authToken", appToken.encrypt(request()));
 
 		return ok(url);
-	}
+	}*/
 
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
@@ -644,7 +645,7 @@ public class Plugins extends APIController {
 		return promise.thenApply(response -> {
 
 			try {
-			KeyManager.instance.continueSession(sessionHandle);
+			KeyManager.instance.continueSession(sessionHandle, userId);
 			AccessLog.log("OAUTH POST: "+post);
 			AccessLog.log("OAUTH RESPONSE: "+response.getBody());
 			JsonNode jsonNode = response.asJson();

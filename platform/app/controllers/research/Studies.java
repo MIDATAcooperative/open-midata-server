@@ -1282,6 +1282,7 @@ public class Studies extends APIController {
 			}
 
 			MobileAppInstance appInstance = MobileAPI.installApp(userId, plugin._id, researcher, device, false, Collections.emptySet());
+			KeyManager.instance.changePassphrase(appInstance._id, device);
 			Map<String, Object> query = appInstance.sharingQuery;
 			query.put("study", studyId.toString());
 			if (restrictRead && group != null)

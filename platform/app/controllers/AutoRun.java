@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -29,6 +30,7 @@ import akka.routing.Routee;
 import akka.routing.Router;
 import controllers.admin.Administration;
 import models.Admin;
+import models.KeyRecoveryProcess;
 import models.MidataId;
 import models.PersistedSession;
 import models.Plugin;
@@ -50,6 +52,8 @@ import utils.collections.Sets;
 import utils.db.FileStorage;
 import utils.exceptions.AppException;
 import utils.largerequests.UnlinkedBinary;
+import utils.messaging.MailUtils;
+import utils.messaging.MessageResponse;
 import utils.messaging.ServiceHandler;
 import utils.messaging.SubscriptionProcessor;
 import utils.messaging.SubscriptionTriggered;
@@ -157,13 +161,17 @@ public class AutoRun extends APIController {
 		private static final long serialVersionUID = 2863510695436070968L;
 		
 		private final int exitCode;
+		private final String message;
+		private final String plugin;
 
 		/**
 		 * Construct import result
 		 * @param exitCode
 		 */
-		public ImportResult(int exitCode) {
+		public ImportResult(int exitCode, String message, String plugin) {
 			this.exitCode = exitCode;
+			this.message = message;
+			this.plugin = plugin;
 		}
 		
 		/**
@@ -173,6 +181,23 @@ public class AutoRun extends APIController {
 		public int getExitCode() {
 			return exitCode;
 		}
+
+		/**
+		 * Get error message
+		 * @return
+		 */
+		public String getMessage() {
+			return message;
+		}
+
+		/**
+		 * Returns internal name of plugin
+		 * @return
+		 */
+		public String getPlugin() {
+			return plugin;
+		}
+						
 		
 		
 	}
@@ -188,6 +213,15 @@ public class AutoRun extends APIController {
 		 * 
 		 */
 		private static final long serialVersionUID = 1459275213447427228L;
+		
+	}
+	
+	public static class SendEndReport implements Serializable {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -6171207037975268555L;
 		
 	}
 	
@@ -212,16 +246,21 @@ public class AutoRun extends APIController {
 			        
 			    	final String nodepath = InstanceConfig.getInstance().getConfig().getString("node.path");
 					final String visPath = InstanceConfig.getInstance().getConfig().getString("visualizations.path");
-							    	
-			    	final Plugin plugin = Plugin.getById(space.visualization, Sets.create("type", "filename", "name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret", "tokenExchangeParams"));					
+					final ActorRef sender = getSender();		    	
+			    	final Plugin plugin = Plugin.getById(space.visualization, Sets.create("type", "filename", "name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret", "tokenExchangeParams"));
+			    	if (plugin==null) {
+						sender.tell(new ImportResult(-1, "Plugin not existing", null), getSelf());
+						return;
+					}
+			    	
 					User tuser = User.getById(space.owner, Sets.create("language", "role"));					
 					SpaceToken token = new SpaceToken(request.handle, space._id, space.owner, tuser.role, null, null, autorunner);
 					final String lang = tuser.language != null ? tuser.language : InstanceConfig.getInstance().getDefaultLanguage();
 					final String tokenstr = token.encrypt();
 					final String owner = space.owner.toString();
-					final ActorRef sender = getSender();
+					
 					if (tuser.role.equals(UserRole.DEVELOPER) || tuser.role.equals(UserRole.ADMIN)) {
-						sender.tell(new ImportResult(0), getSelf());
+						sender.tell(new ImportResult(0, "Ignore autoimport for developer/admin", plugin.filename), getSelf());
 						return;
 					}
 		
@@ -238,12 +277,12 @@ public class AutoRun extends APIController {
 											Process p = new ProcessBuilder(nodepath, visPath+"/"+plugin.filename+"/server.js", tokenstr, lang, "http://localhost:9001", owner).inheritIO().start();
 											try {
 											  p.waitFor();
-											  sender.tell(new ImportResult(p.exitValue()), getSelf());
+											  sender.tell(new ImportResult(p.exitValue(), null, plugin.filename), getSelf());
 											} catch (InterruptedException e) {
-												sender.tell(new ImportResult(-2), getSelf());
+												sender.tell(new ImportResult(-2, "Interrupted", plugin.filename), getSelf());
 											}
 										} else {
-											sender.tell(new ImportResult(-1), getSelf());
+											sender.tell(new ImportResult(-1, "Authorization failed (OAuth2)", plugin.filename), getSelf());
 										}
 									} catch (IOException e) {
 										ErrorReporter.report("Autorun-Service", null, e);
@@ -251,7 +290,7 @@ public class AutoRun extends APIController {
 								});
 		
 							} else {
-								sender.tell(new ImportResult(-1), getSelf());
+								sender.tell(new ImportResult(-1, "No refresh token available (OAuth2)", plugin.filename), getSelf());
 							}
 						} else {}
 					} else if (plugin.type != null && plugin.type.equals("oauth1")) {
@@ -262,21 +301,21 @@ public class AutoRun extends APIController {
 							Process p = new ProcessBuilder(nodepath, visPath+"/"+plugin.filename+"/server.js", tokenstr, lang).inheritIO().start();
 							try {
 							  p.waitFor();
-							  sender.tell(new ImportResult(p.exitValue()), getSelf());
+							  sender.tell(new ImportResult(p.exitValue(), null, plugin.filename), getSelf());
 							} catch (InterruptedException e) {
-								sender.tell(new ImportResult(-2), getSelf());
+								sender.tell(new ImportResult(-2, "Interrupted", plugin.filename), getSelf());
 							}
 						} else {
-							sender.tell(new ImportResult(-1), getSelf());
+							sender.tell(new ImportResult(-1, "No oauth1 info available", plugin.filename), getSelf());
 						}
 					} else {
 					
 						Process p = new ProcessBuilder(nodepath, visPath+"/"+plugin.filename+"/server.js", tokenstr, lang).inheritIO().start();
 						try {
 						  p.waitFor();
-						  sender.tell(new ImportResult(p.exitValue()), getSelf());
+						  sender.tell(new ImportResult(p.exitValue(), null, plugin.filename), getSelf());
 						} catch (InterruptedException e) {
-						  sender.tell(new ImportResult(-2), getSelf());
+						  sender.tell(new ImportResult(-2, "Interrupted", plugin.filename), getSelf());
 						}
 					
 					}
@@ -302,6 +341,20 @@ public class AutoRun extends APIController {
 		private int numberSuccess = 0;
 		private int numberFailure = 0;
 		private static Cancellable importer;
+		private static Cancellable endReport;
+		
+		private long startTime = 0;
+		private long startRemoveUnlinkedFiles = 0;
+		private long startCreateDatabaseStats = 0;
+		private long startAutoimport = 0;
+		private long endScheduling = 0;
+		private int countUnlinkedFiles = 0;
+		private int errorCount = 0;
+		private int countOldImports = 0;
+		private int countNewImports = 0;
+		private int openRecoveries = 0;
+		private boolean reportSend = true;
+		private StringBuffer errors;
 		
 		/**
 		 * Constructor
@@ -328,6 +381,7 @@ public class AutoRun extends APIController {
 			super.postStop();
 			
 			importer.cancel();
+			if (endReport != null) endReport.cancel();
 		}
 
 
@@ -340,7 +394,8 @@ public class AutoRun extends APIController {
 	                Duration.ofSeconds(nextExecutionInSeconds(4, 0)),
 	                Duration.ofHours(24),
 	                manager, new StartImport(),
-	                Instances.system().dispatcher(), null);		
+	                Instances.system().dispatcher(), null);
+						
 		}
 
 
@@ -349,18 +404,45 @@ public class AutoRun extends APIController {
 		    return receiveBuilder()
 		      .match(StartImport.class, this::startImport)
 		      .match(ImportResult.class, this::processResult)
+		      .match(MessageResponse.class, this::processResultNew)
+		      .match(SendEndReport.class, this::reportEnd)
 		      .build();
 		}
 		
 		public void startImport(StartImport message) throws Exception {
-			try {
 			
+			if (!reportSend) reportEnd();
+			
+			startTime = 0;
+			startRemoveUnlinkedFiles = 0;
+			startCreateDatabaseStats = 0;
+			startAutoimport = 0;
+			endScheduling = 0;
+			countUnlinkedFiles = 0;
+			errorCount = 0;
+			countOldImports = 0;
+			countNewImports = 0;
+			openRecoveries = 0;
+			numberSuccess = 0;
+			numberFailure = 0;
+			reportSend = false;
+			errors = new StringBuffer();
+			
+			endReport = getContext().system().scheduler().scheduleOnce(
+	                Duration.ofHours(3),
+	                manager, new SendEndReport(),
+	                Instances.system().dispatcher(), null);	
+			
+			try {
+			    startTime = System.currentTimeMillis();
 				AccessLog.log("Removing expired sessions...");
 				PersistedSession.deleteExpired();
 				
+				startRemoveUnlinkedFiles = System.currentTimeMillis();
 				AccessLog.log("Removing unlinked files...");
 				try {
 				   List<UnlinkedBinary> files = UnlinkedBinary.getExpired();
+				   countUnlinkedFiles = files.size();
 				   for (UnlinkedBinary file : files) {
 					   try {
 						 FileStorage.delete(file._id.toObjectId());
@@ -369,15 +451,20 @@ public class AutoRun extends APIController {
 				   }
 				} catch (AppException e) {
 					ErrorReporter.report("remove unlinked files", null, e);
+					errorCount++;
 				}
 				
+				startCreateDatabaseStats = System.currentTimeMillis();
 				AccessLog.log("Creating database statistics...");
 				try {
 				   Administration.createStats();
+				   openRecoveries = (int) KeyRecoveryProcess.count();
 				} catch (AppException e) {
 					ErrorReporter.report("stats service", null, e);
+					errorCount++;
 				}
 				
+				startAutoimport = System.currentTimeMillis();
 				AccessLog.log("Starting Autoimport...");
 				MidataId autorunner = RuntimeConstants.instance.autorunService;
 				String handle = KeyManager.instance.login(1000l*60l*60l*23l, false);
@@ -387,17 +474,21 @@ public class AutoRun extends APIController {
 				for (Space space : autoImports) {										    
 			       workerRouter.route(new ImportRequest(handle, autorunner, space), getSelf());
 			    }
-				
+				countOldImports = autoImports.size();
 				AccessLog.log("Done scheduling old autoimport size="+autoImports.size());
 				
 				List<SubscriptionData> datas = SubscriptionData.getAllActiveFormat("time", SubscriptionData.ALL);
-				
+				Set<MidataId> done = new HashSet<MidataId>();
+				countNewImports = datas.size();
 				for (SubscriptionData data : datas) {
-					processor.tell(new SubscriptionTriggered(data.owner, data.app, "time", null, null, null), getSelf());
+					if (!done.contains(data.owner)) {
+					  done.add(data.owner);
+					  processor.tell(new SubscriptionTriggered(data.owner, data.app, "time", null, null, null), getSelf());
+					}
 				}
 				
 				AccessLog.log("Done scheduling new autoimport size="+datas.size());
-				
+				endScheduling = System.currentTimeMillis();
 			} catch (Exception e) {
 				ErrorReporter.report("Autorun-Service", null, e);	
 				throw e;
@@ -407,10 +498,61 @@ public class AutoRun extends APIController {
 
 		}
 		
-		public void processResult(ImportResult result) throws Exception {							
-				if (result.exitCode == 0) numberSuccess++; else numberFailure++;
-				AccessLog.log("Autoimport success="+numberSuccess+" fail="+numberFailure);
+		public void reportEnd(SendEndReport msg) {
+			reportEnd();
 		}
+		
+		public void reportEnd() {
+			if (reportSend) return;
+			
+			reportSend = true;
+			long end = System.currentTimeMillis();
+			String report = "Cleaning up sessions :"+(startRemoveUnlinkedFiles-startTime)+" ms\n";
+			report += "Cleaning up unused file uploads: "+(startCreateDatabaseStats-startRemoveUnlinkedFiles)+" ms\n";
+			report += "Create database statistics: "+(startAutoimport-startCreateDatabaseStats)+" ms\n";
+			report += "Schedule auto-imports: "+(endScheduling-startAutoimport)+" ms\n";
+			report += "Execute auto-import: "+(end-endScheduling)+" ms\n";
+			report += "--------------------\n";
+			report += "Total time for service: "+(end-startTime)+" ms\n";
+			report += "\n\n";
+			report += "# Old style auto-imports: "+countOldImports+" \n";
+			report += "# New style auto-imports: "+countNewImports+" \n";			
+			report += "# Errors during scheduling: "+errorCount+" \n";
+			report += "# Errors during import: "+numberFailure+" \n";
+			report += "# Success messages: "+numberSuccess+" \n\n";
+			report += "# Open Recovery Processes: "+openRecoveries+" \n\n";
+			report += errors.toString();
+			
+			String email = InstanceConfig.getInstance().getConfig().getString("errorreports.targetemail");
+			String fullname = InstanceConfig.getInstance().getConfig().getString("errorreports.targetname");
+			String server = InstanceConfig.getInstance().getPlatformServer();
+			MailUtils.sendTextMail(email, fullname, "Autoimport "+server, report);
+			
+			if (endReport != null) {
+				endReport.cancel();
+				endReport = null;				
+			}
+		}
+		
+		public void processResult(ImportResult result) throws Exception {							
+				if (result.exitCode == 0) numberSuccess++; else {
+					numberFailure++;
+					String msg = (result.getMessage() != null && result.getMessage().length()<1024) ? result.getMessage() : "error";
+					errors.append(result.exitCode+" "+(result.getPlugin()!=null?result.getPlugin():"")+" "+msg+" (old)\n");
+				}
+				AccessLog.log("Autoimport success="+numberSuccess+" fail="+numberFailure);
+				if (numberSuccess+numberFailure >= countOldImports + countNewImports) reportEnd();
+		}
+		
+		public void processResultNew(MessageResponse result) throws Exception {							
+			if (result.getErrorcode() == 0) numberSuccess++; else {
+				numberFailure++;
+				String msg = (result.getResponse() != null && result.getResponse().length()<1024) ? result.getResponse() : "error (new)";
+				errors.append(result.getErrorcode()+" "+(result.getPlugin()!=null?result.getPlugin():"")+" "+msg+"\n");
+			}
+			AccessLog.log("Autoimport success="+numberSuccess+" fail="+numberFailure);
+			if (numberSuccess+numberFailure >= countOldImports + countNewImports) reportEnd();
+	    }
 		
 	}
 	

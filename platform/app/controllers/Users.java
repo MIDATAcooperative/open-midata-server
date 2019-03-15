@@ -27,6 +27,7 @@ import models.MidataId;
 import models.ResearchUser;
 import models.Space;
 import models.StudyParticipation;
+import models.SubscriptionData;
 import models.User;
 import models.UserGroupMember;
 import models.enums.AccountActionFlags;
@@ -191,13 +192,13 @@ public class Users extends APIController {
      * @return list of users (json)
      * @throws AppException
      */
-	@Security.Authenticated(MemberSecured.class)
+	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
 	public Result search(String query) throws AppException {
 		
 		requireUserFeature(UserFeature.EMAIL_VERIFIED);
 		
-		Set<String> fields =  Sets.create("firstname", "lastname", "name");
+		Set<String> fields =  Sets.create("firstname", "lastname", "name", "role");
 		Set<Member> result = Member.getAll(CMaps.map("emailLC", query.toLowerCase()).map("searchable", true).map("status", User.NON_DELETED).map("role", UserRole.MEMBER), fields);
 		
 		for (Member member : result) {
@@ -398,8 +399,7 @@ public class Users extends APIController {
 	 * Request MIDATA membership of current user
 	 * @return 200 ok
 	 * @throws AppException
-	 */
-	@BodyParser.Of(BodyParser.Json.class)
+	 */	
 	@APICall
 	@Security.Authenticated(PreLoginSecured.class)
 	public Result requestMembership() throws AppException {
@@ -475,7 +475,9 @@ public class Users extends APIController {
 		}
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_ACCOUNT_DELETED, userId);
-						
+		
+		SubscriptionData.deleteByOwner(user._id);
+		
 		Set<Space> spaces = Space.getAllByOwner(userId, Space.ALL);
 		for (Space space : spaces) {
 			RecordManager.instance.deleteAPS(space._id, userId);

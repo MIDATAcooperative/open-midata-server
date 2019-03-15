@@ -702,8 +702,15 @@ public class OAuth2 extends Controller {
 			return;
 		}
 		
-		if (notok!=null && (notok.contains(UserFeature.EMAIL_VERIFIED) || notok.contains(UserFeature.ADMIN_VERIFIED) || notok.contains(UserFeature.ADDRESS_VERIFIED) || notok.contains(UserFeature.MIDATA_COOPERATIVE_MEMBER) || notok.contains(UserFeature.PHONE_ENTERED) || notok.contains(UserFeature.AUTH2FACTORSETUP))) {
+		if (notok!=null && (notok.contains(UserFeature.EMAIL_VERIFIED) || notok.contains(UserFeature.ADMIN_VERIFIED) || notok.contains(UserFeature.ADDRESS_VERIFIED) || notok.contains(UserFeature.MIDATA_COOPERATIVE_MEMBER) || notok.contains(UserFeature.PHONE_ENTERED))) {
 			notok.remove(UserFeature.AUTH2FACTOR);
+			notok.remove(UserFeature.AUTH2FACTORSETUP);
+			notok.remove(UserFeature.PHONE_VERIFIED);
+			return;
+		}
+		
+		if (notok!=null && notok.contains(UserFeature.AUTH2FACTORSETUP)) {
+			notok.remove(UserFeature.AUTH2FACTOR);			
 			notok.remove(UserFeature.PHONE_VERIFIED);
 			return;
 		}
@@ -717,7 +724,7 @@ public class OAuth2 extends Controller {
 		
 		if (notok!=null && notok.contains(UserFeature.PHONE_VERIFIED)) {
 			if (securityToken == null) {
-				Authenticators.getInstance(SecondaryAuthType.SMS).startAuthentication(user._id, "Token", user);
+				Authenticators.getInstance(SecondaryAuthType.SMS).startAuthentication(user._id, "Code", user);
 				notok.clear();
 				notok.add(UserFeature.PHONE_VERIFIED);
 			} else {

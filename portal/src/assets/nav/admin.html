@@ -4,7 +4,7 @@
 	  
 		<div class="container">
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-ex1-collapse" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+                <span class="fas fa-list"></span>
              </button>
 			<a class="navbar-brand" ui-sref="admin.stats">
 	        <span class="midata" id="logotype"><img src="/images/logo.png" style="height: 36px;"></span>
@@ -42,7 +42,7 @@
 			<ul class="nav navbar-nav" ng-cloak>
 				<li class="nav-item"><a class="nav-link" ui-sref=".user({ userId : user._id})">{{user.name}}</a></li>
 				<li class="nav-item"><a class="nav-link" ng-click="logout()" href="javascript:">
-					<span class="fas fa-power-off"></span> Sign out
+					<span class="fas fa-power-off"></span> <span translate="navbar.sign_out"></span>
 				</a></li>
 		    </ul>
 	    </nav>	  

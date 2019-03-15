@@ -23,13 +23,13 @@
 			<table class="table table-striped" ng-show="consents.length">
 
 				<tr>
-					<th translate="consents.ownerName"></th>
-					<th translate="consents.name"></th>
-					<th translate="consents.type"></th>
-					<th translate="consents.status"></th>					
+					<th sortby="ownerName" translate="consents.ownerName"></th>
+					<th sortby="name" translate="consents.name"></th>
+					<th sortby="type" translate="consents.type"></th>
+					<th sortby="status" translate="consents.status"></th>					
 					<th translate="consents.number_of_records"></th>
 				</tr>
-				<tr ng-repeat="consent in consents | orderBy : 'ownerName'">
+				<tr ng-repeat="consent in consents | orderBy : sortby">
 					<td><a ng-click="editConsent(consent);" href="javascript:">{{ consent.ownerName || consent.externalOwner }}</a></td>
 					<td>{{ consent.name }}</td>
 					<td translate="{{ 'enum.consenttype.'+consent.type }}"></td>

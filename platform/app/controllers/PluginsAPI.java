@@ -223,6 +223,11 @@ public class PluginsAPI extends APIController {
 		if (json.has("autoimport")) {
 			boolean auto = JsonValidation.getBoolean(json, "autoimport");
 			Space space = Space.getByIdAndOwner(spaceToken.spaceId, spaceToken.userId, Sets.create("autoImport", "owner", "visualization"));
+			if (space==null) throw new InternalServerException("error.internal", "Space not found.");
+			
+			// Disable old style import
+			Space.set(space._id, "autoImport", false);
+			
 			List<SubscriptionData> entries = SubscriptionData.getByOwnerAndFormatAndInstance(space.owner, "time", space._id, SubscriptionData.ALL);
 			SubscriptionData data = null;
 			for (SubscriptionData d : entries) data = d;
@@ -520,11 +525,14 @@ public class PluginsAPI extends APIController {
 			BSONObject query = RecordManager.instance.getMeta(inf.executorId, inf.targetAPS, "_query");
 			Set<Consent> consent = null;
 			if (query != null && query.containsField("link-study")) {
+				
 				MidataId groupId = MidataId.from(query.get("link-study"));
                 UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(groupId, inf.executorId);
                 if (ugm != null) context = RecordManager.instance.createContextForUserGroup(ugm, context);
 				consent = Consent.getHealthcareOrResearchActiveByAuthorizedAndOwner(groupId, record.owner);
+				
 			} else {
+				
 			    consent = Consent.getHealthcareOrResearchActiveByAuthorizedAndOwner(inf.executorId, record.owner);
 			}
 									
@@ -532,7 +540,8 @@ public class PluginsAPI extends APIController {
 			AccessContext contextWithConsent = null;
 			for (Consent c : consent) {
 				ConsentAccessContext cac = new ConsentAccessContext(c, context);
-				if (cac.mayCreateRecord(dbrecord)) {
+				
+				if (cac.mayCreateRecord(dbrecord)) {				
 					contextWithConsent = cac;
 					break;
 				}

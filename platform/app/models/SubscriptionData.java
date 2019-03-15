@@ -128,4 +128,14 @@ public class SubscriptionData extends Model {
 		Model.set(SubscriptionData.class, collection, id, "fhirSubscription.status", "off");
 		Model.set(SubscriptionData.class, collection, id, "active", false);
 	}
+	
+	public void disable() throws InternalServerException { 
+		setOff(this._id);
+	}
+	
+	public static void deleteByOwner(MidataId owner) throws InternalServerException {
+		if (owner == null) throw new NullPointerException();
+		Model.delete(SubscriptionData.class, collection, CMaps.map("owner", owner));
+	}
+		
 }

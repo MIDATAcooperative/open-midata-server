@@ -76,7 +76,8 @@
        "access_query" : "The Data Access Filter must restrict by 'content' or 'group'!",
        "sharing" : "The Data Access Filter contains data types that are excluded by the study configuration.",
        "anonymous" : "Study can only be anonymous if no one is allowed to access unpseudonymized data.",
-       "url" : "Invalid URL"       
+       "url" : "Invalid URL",
+       "consent_members" : "Consent may only be confirmed once all external persons have joined Midata."       
      },
 
      "missing" : {
@@ -665,7 +666,7 @@
     "auth2factorsetup2" : "You can change your settings later in your profile. Log into {{domain}} and click on your name on the top right.",
     "auth_type" : "Authentication",
     "auth_type_none" : "I do not want to use two factor authentication.",
-    "auth_type_sms" : "I want to use two factor authentication using SMS codes. Please send a code to my mobile phone on login.",
+    "auth_type_sms" : "I want to use two factor authentication using SMS codes. Please send a code to my mobile phone at login.",
     "emailnotify" : "Notifications",
     "emailnotify2" : "Please send me an email everytime I log into the MIDATA portal at {{domain}}.",
     "agree_btn" : "I agree",
@@ -970,6 +971,8 @@
 	"type_studyrelated" : "Research Projects",
 	"type_hcrelated" : "Health professionals",
 	"type_implicit" : "Implicit",
+	"type_healthcare" : "Doctor / Hospital",
+	"type_studyparticipation" : "Research",
 	"show" : "Show:",
 	"my_data" : "My Data",
 	"all_data" : "All Data",
@@ -1154,6 +1157,7 @@
     "HEALTHCARE" : "Consent (Health Provider)",
     "MEMBER" : "Account",
     "PROVIDER" : "Account (Health Provider)",
+    "HCRELATED" : "Account (Account Holder)",
     "RESEARCH" : "Account (Researcher)",
     "ADMIN" : "Account (Administrator)",
     "DEVELOPER" : "Account (Developer)"
@@ -1278,7 +1282,10 @@
   
   "timeline" : {
     "spaces" : "MIDATA",
-    "title" : "Timeline"
+    "title" : "Timeline",
+    "fitness" : "Fitness",
+    "health" : "Health Documentation",
+    "analyze" : "Analyze your Data"
   },
   
   "-1" : "unknown"

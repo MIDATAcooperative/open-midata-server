@@ -144,10 +144,15 @@ p, body {
   .has-error .help-block {
       margin-top:100px;
    }
+   
+   .invalid-feedback {
+      position:absolute;
+      margin-top: 50px;
+   }
   
   .dynheight {
-    margin-bottom: 10px;
-    margin-top: 10px;
+    margin-bottom: 30px;
+    margin-top: 30px;
     .form-group {
       height: auto;
       
@@ -157,11 +162,24 @@ p, body {
 	  }
     }
     .form-group label {      
-        font-size: $font-size-normal;
+        /* font-size: $font-size-normal; */
         position : static;
         top:20px;
         padding-top: 10px;
         pointer-events : inherit;       
+    }
+    
+    .form-check-label {
+       font-size: $font-size-normal;
+       
+       span {
+         margin-left:40px;
+         display:block;
+       }
+    }
+    
+    .form-check-input {
+       float:left;
     }
   }
   
@@ -173,7 +191,7 @@ p, body {
     color: $color-brand-white;
   }
   
-  .has-error .help-block, .alert-danger {
+  .has-error .help-block, .alert-danger, .invalid-feedback {
     @extend .mi-at-text; 
     @extend .mi-at-text--smallest;
     @extend .mi-at-text--white;
@@ -202,8 +220,43 @@ p, body {
 }
 
 
+input[type=radio] {
+		appearance: none;
+		width: 20px;
+		height: 20px;
+		position: relative;
+		left: 0px;
+		border: solid 1px #ffffff;
+		border-radius: 8px;
 
+		&:after {
+			content: '';
+			width: 8px;
+			height: 8px;
+			position: absolute;
+			top: 4px;
+			left: 4px;
+			border: 5px solid #ffffff;
+			border-radius: 4px;
+			background: transparent;
+			opacity: 0;
+			
+		}
 
+		&:hover {
+			&::after {
+				opacity: 0.5;
+			}
 
+			~ label {
+				cursor: pointer;
+				color: $color-brand-white;
+			}
+		}
 
-
+		&:checked {
+			&::after {
+				opacity: 1;
+			}
+		}
+	}

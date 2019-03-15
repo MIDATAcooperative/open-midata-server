@@ -29,7 +29,8 @@
 							  </formrow>							  
 							  <div class="extraspace"></div>
 							  <button type="submit" ng-disabled="status.action=='token'" class="btn btn-primary btn-block" translate="postregister.securityToken_btn"></button>
-							  <div ng-show="progress.PHONE_VERIFIED">
+							  <p ng-show="error" class="alert alert-danger" translate="{{ error.code || error }}"></p>
+							  <div ng-show="progress.PHONE_VERIFIED">							   
 							    <div class="extraspace"></div>
 							    <p translate="postregister.no_token"></p>
 							    <button ng-click="noSecurityToken()" type="button" ng-disabled="status.action=='token'" class="btn btn-default btn-block" translate="postregister.no_token_btn"></button>
@@ -58,6 +59,7 @@
 							  <div class="extraspace"></div>
 							  <button type="submit" ng-disabled="status.action=='setpw'" class="btn btn-primary btn-block" translate="setpw.set_new_btn"></button>
 							  <div class="extraspace"></div>
+							  <p ng-show="error" class="alert alert-danger" translate="{{ error.code || error }}"></p>
 						   </form>
 						</div>
 						
@@ -68,7 +70,8 @@
 						  
 						  <a ng-click="terms({which : 'midata-terms-of-use'});" href="javascript:" translate="registration.agb3"></a>
 						  <div class="extraspace"></div>
-						  <button class="btn btn-primary btn-block" ng-disabled="status.action=='terms'" ng-click="agreedToTerms('midata-terms-of-use');" translate="postregister.agree_btn"></button>						
+						  <button class="btn btn-primary btn-block" ng-disabled="status.action=='terms'" ng-click="agreedToTerms('midata-terms-of-use');" translate="postregister.agree_btn"></button>
+						  <p ng-show="error" class="alert alert-danger" translate="{{ error.code || error }}"></p>						
 						</div>
 						
 						<div ng-show="progress.NEWEST_PRIVACY_POLICY_AGREED && !progress.NEWEST_TERMS_AGREED">
@@ -76,6 +79,7 @@
 						  <a ng-click="terms({which : 'midata-privacy-policy'});" href="javascript:" translate="registration.privacypolicy3"></a>
 						  <div class="extraspace"></div>
 						  <button class="btn btn-primary btn-block" ng-disabled="status.action=='terms'" ng-click="agreedToTerms('midata-privacy-policy');" translate="postregister.agree_btn"></button>
+						  <p ng-show="error" class="alert alert-danger" translate="{{ error.code || error }}"></p>
 						</div>
 						
 						<div ng-hide="progress.NEWEST_TERMS_AGREED || progress.NEWEST_PRIVACY_POLICY_AGREED">
@@ -94,7 +98,7 @@
 						    </form>
 							<div class="extraspace"></div>	
 							<button class="btn btn-primary btn-block" ng-click="enterMailCode(passphrase.code)" translate="postregister.enter_now_btn"></button>
-								
+							<p ng-show="error" class="alert alert-danger" translate="{{ error.code || error }}"></p>
 							<hr>
 						</div>
 						
@@ -126,7 +130,7 @@
 									  </formrow>
 									  </form>
 									  <button class="btn btn-primary btn-block" ng-click="sendCode()" translate="postregister.enter_now_btn"></button>
-									
+									<p ng-show="error" class="alert alert-danger" translate="{{ error.code || error }}"></p>
 									
 								</div>
 								<div ng-show="progress.confirmationCode">
@@ -145,15 +149,15 @@
 								<div ng-if="true" ng-init="myform=myform2">
 								  <div class="dynheight">
 									<formrow myid="authType" label="postregister.auth_type">									  
-                                      <div class="radio">
-                                         <label>
-									       <input type="radio" value="NONE" name="authType" ng-init="registration.authType='SMS'" ng-model="registration.authType" required>
+                                      <div class="form-check">
+                                         <label class="form-check-label">
+									       <input class="form-check-input" type="radio" value="NONE" name="authType" ng-init="registration.authType='SMS'" ng-model="registration.authType" required>
 									       <span translate="postregister.auth_type_none"></span>
 									     </label>
 									  </div>
-									  <div class="radio">
-                                         <label>
-									       <input type="radio" value="SMS" name="authType" ng-model="registration.authType" required>
+									  <div class="form-check">
+                                         <label class="form-check-label">
+									       <input class="form-check-input" type="radio" value="SMS" name="authType" ng-model="registration.authType" required>
 									       <span translate="postregister.auth_type_sms"></span>
 									     </label>
 									  </div>
@@ -164,7 +168,7 @@
 									</formrow>
 									<div class="dynheight">
 									<formrow myid="emailnotify" label="postregister.emailnotify">
-									  <div class="form-check">
+									  <div class="form-check mi-at-input--checkbox mi-at-input--checkbox-white">
 									    <label class="form-check-label">
 									      <input class="form-check-input" type="checkbox" id="emailnotify" name="emailnotify" ng-model="registration.emailnotify">
 									      <span translate="postregister.emailnotify2" translate-value-domain="{{ENV.apiurl}}"></span>
@@ -179,6 +183,7 @@
                                <div class="extraspace"></div>
 								<button type="submit" ng-disabled="status.action=='changeAddress'" class="btn btn-primary" translate="changeaddress.update_btn"></button>
 							   <div class="extraspace"></div>
+							   <p ng-show="error" class="alert alert-danger" translate="{{ error.code || error }}"></p>
 							</form>
 
 						</div>
@@ -225,6 +230,7 @@
 								</div>
 
 								<button type="submit" ng-disabled="status.action=='changeAddress'" class="btn btn-primary" translate="changeaddress.update_btn"></button>
+								<p ng-show="error" class="alert alert-danger" translate="{{ error.code || error }}"></p>
 							</form>
 
 						</div>
@@ -234,7 +240,6 @@
                         
 						<p ng-show="codeSuccess" class="alert alert-success" translate="postregister.address_success"></p>
 						<p ng-show="mailSuccess" class="alert alert-success" translate="postregister.email_success"></p>
-						<p ng-show="error" class="alert alert-danger" translate="{{ error.code || error }}"></p>
 					
 					</div>
 				</div>

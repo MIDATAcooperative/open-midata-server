@@ -1,6 +1,7 @@
 package utils.access;
 
 import models.MidataId;
+import utils.AccessLog;
 import utils.collections.CMaps;
 import utils.exceptions.AppException;
 
@@ -53,8 +54,7 @@ public class Feature_Pseudonymization extends Feature {
 		@Override
 		public DBRecord next() throws AppException {
 			DBRecord r = chain.next();
-			if (r.context.mustPseudonymize()) {
-
+			if (r.context.mustPseudonymize()) {              
 				r.owner = r.context.getOwnerPseudonymized();
 
 				String name = r.context.getOwnerName();
@@ -80,7 +80,7 @@ public class Feature_Pseudonymization extends Feature {
 				if (ct.equals("Patient"))
 					r.meta = null;
 
-			} else {
+			} else {				
 				r.owner = r.context.getOwner();
 			}
 

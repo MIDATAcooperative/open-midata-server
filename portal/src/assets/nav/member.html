@@ -14,10 +14,10 @@
         <a href="javascript:" ng-click="logout()" class="btn btn-sm btn-default"><span class="fas fa-power-off"></span> <span translate="navbar.sign_out"></span></a>
        </div></div>
      </script>
-		<div class="container-fluid">
+		<div class="container">
 			<div class="navbar-header">
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-ex1-collapse" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+                <span class="fas fa-list"></span>
              </button>
 				<a class="navbar-brand" ui-sref="member.overview"> <span class="midata" id="logotype"><img src="/images/logo.png"
 						style="height: 36px;"></span>
@@ -34,7 +34,7 @@
 					<!-- <li ui-sref-active="active"><a ui-sref="member.messages">Messages</a></li> -->
 					<li class="nav-item" ng-show="beta" ui-sref-active="active"><a class="nav-link" ui-sref="member.records" translate="navbar.my_data"></a></li>
 					<li class="nav-item" ng-show="beta" ui-sref-active="active"><a class="nav-link" ui-sref="member.circles"><span translate="navbar.consents"></span> <span
-							ng-show="circles.unconfirmed" class="badge">{{circles.unconfirmed}}</span></a></li>
+							ng-show="circles.unconfirmed" class="badge badge-info">{{circles.unconfirmed}}</span></a></li>
 					<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="member.studies" translate="navbar.research"></a></li>
 					<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="member.apps"><span translate="navbar.apps"></span></a></li>
 

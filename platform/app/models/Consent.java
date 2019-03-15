@@ -34,7 +34,7 @@ public class Consent extends Model implements Comparable<Consent> {
 	 */
 	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "ownerName", "name", "authorized", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "dateOfCreation", "sharingQuery", "externalOwner", "externalAuthorized", "writes", "dataupdate", "lastUpdated");
 	
-	public @NotMaterialized final static Set<String> SMALL = Sets.create("owner", "ownerName", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "dateOfCreation", "sharingQuery", "externalOwner", "writes", "dataupdate");
+	public @NotMaterialized final static Set<String> SMALL = Sets.create("owner", "ownerName", "name", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "dateOfCreation", "sharingQuery", "externalOwner", "writes", "dataupdate");
 	
 	/**
 	 * constant for all FHIR fields of a consent

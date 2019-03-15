@@ -34,6 +34,7 @@ import models.Plugin;
 import models.Space;
 import models.Study;
 import models.StudyParticipation;
+import models.SubscriptionData;
 import models.User;
 import models.UserGroup;
 import models.UserGroupMember;
@@ -420,6 +421,8 @@ public class Administration extends APIController {
 		
 		User selected = User.getById(userId, User.ALL_USER);
 		if (!selected.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.invalid.status",  "User must have status deleted to be wiped.");
+		
+		SubscriptionData.deleteByOwner(selected._id);
 		
 		Set<Space> spaces = Space.getAllByOwner(userId, Space.ALL);
 		for (Space space : spaces) {

@@ -1,7 +1,7 @@
 angular.module('portal')
 .controller('MemberDetailsCtrl', ['$scope', '$state', 'server', 'views', 'circles', 'session', 'status', function($scope, $state, server, views, circles, session, status) {
 	
-	$scope.memberid = $state.params.memberId;
+	$scope.memberid = $state.params.user;
 	$scope.member = {};	
 	$scope.status = new status(true);
 	$scope.data = { consent : null };
@@ -65,7 +65,6 @@ angular.module('portal')
 	// For adding new records
 	$scope.error = null;
 	
-	$scope.loadingApps = true;	
 	$scope.userId = null;
 	$scope.apps = [];
 	
@@ -74,45 +73,9 @@ angular.module('portal')
 	session.currentUser.then(
 		function(userId) {
 			$scope.userId = userId;
-			$scope.getApps(userId);			
 		});
 	
-	// get apps
-	$scope.getApps = function(userId) {
-		var properties = {"_id": userId};
-		var fields = ["apps", "visualizations"];
-		var data = {"properties": properties, "fields": fields};
-		server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
-			then(function(users1) {
-				var users = users1.data;
-				$scope.getAppDetails(users[0].apps);
-				$scope.getVisualizationDetails(users[0].visualizations);
-			}, function(err) { $scope.error = "Failed to load apps: " + err.data; });
-	};
-	
-	// get name and type for app ids
-	$scope.getAppDetails = function(appIds) {
-		var properties = {"_id": appIds, "type" : ["create","oauth1","oauth2"] };
-		var fields = ["name", "type"];
-		var data = {"properties": properties, "fields": fields};
-		server.post(jsRoutes.controllers.Plugins.get().url, JSON.stringify(data)).
-			then(function(apps) {
-				$scope.apps = apps.data;
-				$scope.loadingApps = false;
-			}, function(err) { $scope.error = "Failed to load apps: " + err.data; });
-	};
-	
-	// get name and type for app ids
-	$scope.getVisualizationDetails = function(visualizationIds) {
-		var properties = {"_id": visualizationIds, type: ["visualization"] };
-		var fields = ["name", "type"];
-		var data = {"properties": properties, "fields": fields};
-		server.post(jsRoutes.controllers.Plugins.get().url, JSON.stringify(data)).
-			then(function(visualizations) {
-				$scope.visualizations = visualizations.data;
-				$scope.loadingVisualizations = false;
-			}, function(err) { $scope.error = "Failed to load apps: " + err.data; });
-	};
+
 	
 	/*
 	$scope.createOrImport = function(app) {
@@ -124,12 +87,7 @@ angular.module('portal')
 	};
 	*/
 	
-	// Visualizations
-	$scope.loadingVisualizations = true;
-	$scope.visualizations = [];
-	
-	$scope.useVisualization = function(visualization) {		
-		$state.go("^.usevisualization", { memberId : $scope.member._id , visualizationId : visualization._id, consentId : $scope.consent._id });				
-	};
+
+		
 	
 }]);

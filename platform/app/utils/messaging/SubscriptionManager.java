@@ -159,6 +159,16 @@ public class SubscriptionManager {
 	  }
 	}
 	
+	public static void deactivateSubscriptions(MidataId userId, MidataId instance) throws InternalServerException {
+		  AccessLog.log("deactiveSubscription: user="+userId+" instance="+instance);
+		  
+		  List<SubscriptionData> data = SubscriptionData.getByOwner(userId, CMaps.map("instance", instance).map("active", true), SubscriptionData.ALL);
+		  AccessLog.log("deactivating: "+data.size());
+		  for (SubscriptionData dat : data) {
+			  SubscriptionData.setOff(dat._id);
+		  }
+	}
+	
 	public static void subscriptionChange(SubscriptionData subscriptionData) {
 		Instances.cacheClear("SubscriptionData", subscriptionData.owner);
 		//subscriptionChecker.tell(new SubscriptionChange(subscriptionData.owner), ActorRef.noSender());
@@ -169,7 +179,7 @@ public class SubscriptionManager {
 	}
 	
 	public static void answer(String ref, int status, String content) {
-		system.provider().resolveActorRef(ref).tell(new MessageResponse(content, status), ActorRef.noSender());
+		system.provider().resolveActorRef(ref).tell(new MessageResponse(content, status, null), ActorRef.noSender());
 	}
 	    
 }
@@ -243,32 +253,6 @@ class ProcessMessage {
 	}
 	
 	
-}
-
-class MessageResponse {
-	final String response;
-	
-	final int errorcode;
-	
-	MessageResponse(String response, int errorcode) {
-		this.response = response;
-		this.errorcode = errorcode;
-	}
-
-	public String getResponse() {
-		return response;
-	}
-	
-	
-	
-	public int getErrorcode() {
-		return errorcode;
-	}
-
-	public String toString() {
-		return response;
-	}
-		
 }
 
 /**
@@ -345,6 +329,12 @@ class SubscriptionChecker extends AbstractActor {
 			content = record.content;
 			resourceId = record._id;
 			affected.add(record.owner);			
+			
+			/* TODO : The following section is not broken it should just be performance optimized somehow.
+			 * It determines which user accounts subscriptions need to be triggered by a resource change.
+			 * Without this section only the account owner of the changed resource is notified.
+			 */
+			/*
 			try {
 			  Set<MidataId> alsoAffected = RecordManager.instance.findAllSharingAps(record.owner, record);
 			  RecordManager.instance.clear();
@@ -363,6 +353,7 @@ class SubscriptionChecker extends AbstractActor {
 			    }
 			  }
 			} catch (AppException e) {}
+			*/
 		}
 		
 		for (MidataId affectedUser : affected) {

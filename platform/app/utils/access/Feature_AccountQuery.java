@@ -329,6 +329,20 @@ public class Feature_AccountQuery extends Feature {
 		return consents;
 	}
 	
+	private static List<Consent> applyTypeFilters(Query q, List<Consent> consents) throws AppException {
+		Set<String> types = q.getRestrictionOrNull("consent-type-exclude");
+		if (types != null && !consents.isEmpty()) {			
+			List<Consent> filtered = new ArrayList<Consent>(consents.size());
+						
+			for (Consent consent : consents) {
+			   if (!types.contains(consent.type.toString())) filtered.add(consent);
+			   else if (consent.owner.equals(q.getContext().getSelf())) filtered.add(consent);
+			}
+			return filtered;
+		}
+		return consents;
+	}
+	
 	protected static boolean mainApsIncluded(Query q) throws AppException {
 		if (!q.restrictedBy("owner")) return true;
 		Set<String> sets = q.getRestrictionOrNull("owner");
@@ -336,7 +350,7 @@ public class Feature_AccountQuery extends Feature {
 	}
 	
 	protected static boolean allApsIncluded(Query q) throws BadRequestException {
-		if (!q.restrictedBy("owner") && !q.restrictedBy("study-group")) return true;
+		if (!q.restrictedBy("owner") && !q.restrictedBy("study-group") && !q.restrictedBy("consent-type-exclude")) return true;
 		return false;
 	}
 	
@@ -413,7 +427,7 @@ public class Feature_AccountQuery extends Feature {
 			}
 		}
 		consents = applyConsentTimeFilter(q, consents);
-		
+		consents = applyTypeFilters(q, consents);
 		if (prefetch) {
 			if (consents.size() > MIN_FOR_ACCELERATION) {
 				FasterDecryptTool.accelerate(q, consents);

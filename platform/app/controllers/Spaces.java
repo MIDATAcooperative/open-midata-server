@@ -38,6 +38,7 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.messaging.SubscriptionManager;
 
 /**
  * functions for managing spaces (instances of plugins)
@@ -168,6 +169,7 @@ public class Spaces extends APIController {
 		}
 		
 		Circles.removeQueries(userId, spaceId);
+		//SubscriptionManager.deactivateSubscriptions(userId, spaceId);
 		RecordManager.instance.deleteAPS(space._id, userId);
 		
 		// delete space		

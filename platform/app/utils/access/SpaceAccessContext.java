@@ -1,5 +1,7 @@
 package utils.access;
 
+import java.util.Map;
+
 import org.bson.BSONObject;
 
 import controllers.Circles;
@@ -12,12 +14,20 @@ public class SpaceAccessContext extends AccessContext {
 	private Space space;
 	private MidataId self;
 	private boolean sharingQuery;
+	private Map<String, Object> restrictions;
+		
 	
 	public SpaceAccessContext(Space space, APSCache cache, AccessContext parent, MidataId self) {
 		super(cache, parent);
 		this.space = space;
 		this.self = self;
 	}
+	
+	public SpaceAccessContext withRestrictions(Map<String, Object> restrictions) {
+		this.restrictions = restrictions;
+		return this;
+	}
+	
 	@Override
 	public boolean mayCreateRecord(DBRecord record) throws AppException {
 		return parent==null || parent.mayCreateRecord(record);
@@ -70,6 +80,10 @@ public class SpaceAccessContext extends AccessContext {
 	
 	public Space getInstance() {
 		return space;
+	}
+	
+	public Map<String, Object> getQueryRestrictions() {
+		return restrictions;
 	}
 
 }

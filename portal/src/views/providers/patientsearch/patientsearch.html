@@ -4,64 +4,78 @@
        </div>
 		<div class="panel-body">
 			<form name="myform" novalidate class="css-form form-horizontal" ng-submit="dosearch()" role="form">
-				<formrow myid="midataID" label="Midata ID">
-				<input type="text" class="form-control" id="midataID" name="midataID" ng-model="criteria.midataID"></formrow>
-				<formrow myid="birthday" label="Birthday">
-				<input type="text" class="form-control" id="birthday" name="birthday" ng-model="criteria.birthday"></formrow>
-				
-				<button type="submit" class="btn btn-primary">Search</button>
+			  <div class="row">
+			    <div class="col-sm-6">
+			    <formrow myid="email" label="provider_patientsearch.email">
+				   <input type="text" class="form-control" id="midataID" name="midataID" ng-model="criteria.email" ng-required="!criteria.midataID">
 				</formrow>
+			    </div>
+			    <div class="col-sm-1">
+			      <p class="form-control-plaintext" translate="provider_patientsearch.or"></p>
+			    </div>
+			    <div class="col-sm-5">
+				<formrow myid="midataID" label="provider_patientsearch.midataid">
+				   <input type="text" class="form-control" id="midataID" name="midataID" ng-model="criteria.midataID" ng-required="!criteria.email">
+				</formrow>
+				<formrow myid="birthday" label="provider_patientsearch.birthday">
+				   <input type="text" class="form-control" id="birthday" name="birthday" ng-model="criteria.birthday" ng-required="criteria.midataID">
+				</formrow>
+				</div>
+			</div>
+			
+			<div ng-show="searched">
+		
+				    <formrow myid="team" label="provider_patientsearch.usergroup">
+				      <select class="form-control" ng-model="newconsent.usergroup" ng-options="ug._id as ug.name for ug in usergroups"></select>
+				    </formrow>
+				    <formrow myid="passcode" label="provider_patientsearch.passcode">
+					   <div class="input-group">
+				          <input type="text" class="form-control" id="passcode" name="passcode" ng-model="criteria.passcode">				          
+				       </div>
+				    </formrow>				    					
+				    					 						
+			</div>		
+			
+				<button type="submit" class="btn btn-primary" translate="common.search_btn"></button>
+				<button ng-show="searched" ng-click="addConsent();" ng-disabled="status.isBusy == 'createconsent'" class="btn btn-default" translate="provider_patientsearch.add_new_consent_btn"></button>
+				
 			</form>
-			<p ng-show="status.isBusy === true">Searching...</p>
+			<p ng-show="status.isBusy === true" translate="provider_patientsearch.searching"></p>
 		</div>
 	</div>
 	<div ng-show="member">
+	   <div class="row">
+	     <div class="col-sm-6">
 		<div class="panel panel-primary">
+		   <div class="panel-heading" translate="provider_patientsearch.address">
+		   </div>
 			<div class="panel-body">
+			  			   
 				<address>
 					<strong>{{ member.firstname }} {{ member.lastname }}</strong><br> {{ member.address1 }}<br> {{ member.address2 }}<br> {{
-					member.zip }} {{ member.city }}<br> {{ member.country }}<br> <span ng-show="member.phone">Phone: {{ member.phone }}</span><br>
-					<span ng-show="member.mobile">Mobile: {{ member.mobile }}</span><br> <span ng-show="member.ssn">SSN: {{ member.ssn }}</span><br>
-					<span ng-show="member.email">Email: {{ member.email }}</span><br>
+					member.zip }} {{ member.city }}<br> {{ member.country }}<br> <span ng-show="member.phone"><span translate="common.user.phone"></span>: {{ member.phone }}</span><br>
+					<span ng-show="member.mobile"><span translate="common.user.mobile_phone"></span>: {{ member.mobile }}</span><br> <span ng-show="member.ssn"><span translate="common.user.ssn"></span>: {{ member.ssn }}</span><br>
+					<span ng-show="member.email"><span translate="common.user.email"></span>: {{ member.email }}</span><br>
 				</address>
-				<div ng-show="consents.length > 0">
-					<p>Consents with this patient:</p>
-					<ul>
-						<li ng-repeat="consent in consents">{{ consent.name }}</li>
-					</ul>
-				</div>
-				<button class="btn btn-primary" ng-show="consents.length>0" ng-click="selectPatient();">Show Patient</button>
+																
+				<button class="btn btn-primary" ng-show="consents.length>0" ng-click="selectPatient();" translate="provider_patientsearch.show_patient_btn"></button>
 			</div>
 		</div>
-		<div class="panel panel-primary">
-			<div class="panel-heading">Add new consent</div>
-			<div class="panel-body">
-				<form>
-					<formrow myid="name" label="Title">
-					   <div class="input-group">
-					     <input id="name" type="text" class="form-control" ng-model="newconsent.name">
-					     <span class="input-group-append">
-					        <button ng-click="addConsent();" ng-disabled="status.isBusy == 'createconsent'" class="btn btn-default">Add new consent</button>
-					     </span>
-					   </div> 
-					 </formrow>					
-				</form>
-			</div>
 		</div>
-		<div class="panel panel-primary">
-			<div class="panel-heading">Add consent using passcode</div>
+		<div class="col-sm-6">
+		   <div class="panel panel-primary">
+		    <div class="panel-heading" translate="provider_patientsearch.consents">		      
+		    </div>
 			<div class="panel-body">
-				<form>
-					<formrow myid="passcode" label="Optional Access Passcode">
-					   <div class="input-group">
-				          <input type="text" class="form-control" id="passcode" name="passcode" ng-model="criteria.passcode">
-				          <span class="input-group-append">
-				             <button ng-click="usePasscode();" ng-disabled="status.isBusy == 'usepasscode'" class="btn btn-default">Use passcode</button>
-				          </span>
-				       </div>
-				    </formrow>				    					
-				</form>
-			</div>
+			   
+			  	<ul>
+					<li ng-repeat="consent in consents"><a href="javascript:" ui-sref="^.editconsent({consentId:consent._id})">{{ consent.name }} (<span translate="{{'enum.consentstatus.'+consent.status}}"></span>)</a></li>
+				</ul>							
+			
+		    </div>
+		   </div>
+		</div>
 		</div>
 	</div>
+	
 </div>
