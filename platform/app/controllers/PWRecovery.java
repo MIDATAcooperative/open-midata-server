@@ -328,7 +328,9 @@ public class PWRecovery extends APIController {
       	  PWRecovery.startRecovery(autorun, json);
       	  autorun.addFlag(AccountActionFlags.KEY_RECOVERY);
   	    } else {
-  	      PWRecovery.changePassword(autorun, json);	
+  	      if (!InstanceConfig.getInstance().getInstanceType().simpleServiceKeyProtection()) {
+  	        PWRecovery.changePassword(autorun, json);
+  	      }
   	      autorun.password = null;
   	      User.set(autorun._id, "password", null);
 		  provideServiceKey(autorun);
