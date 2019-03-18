@@ -264,3 +264,21 @@
 {"_id":{"$oid":"5c374a52aed645580113d3d4"},"system":"http://loinc.org","code":"24338-6","display":"Gas panel - Blood","content":"loinc/24338-6"}
 {"_id":{"$oid":"5c6c06e6aed645383cf5ea79"},"system":"http://midata.coop","code":"MSCogTestSDRun","display":"MS Kognitionstest Symbol-Digit Übungslauf","content":"MSCogTestSDRun"}
 {"_id":{"$oid":"5c6d7ee1cf569317003af995"},"system":"http://midata.coop","code":"MSCogTestSDPrepRun","display":"MS Kognitionstest Symbol-Digit Probelauf Durchführung","content":"MSCogTestSDPrepRun"}
+{"_id":{"$oid":"5c8fbcd0cf5693588200f9d7"},"system":"http://midata.coop","code":"MSCogTestBVMTTrial","display":"MS Kognitionstest BVMT - Versuch","content":"MSCogTestBVMTTrial"}
+{"_id":{"$oid":"5c8fbcd0bcbc8736a320f866"},"system":"http://midata.coop","code":"MSCogTestBVMT","display":"MS Kognitionstest BVMT","content":"MSCogTestBVMT"}
+{"_id":{"$oid":"5c8fbcd0cf5693588200f9d8"},"system":"http://midata.coop","code":"MSCogTestBVMTTrialResult","display":"MS Kognitionstest BVMT - Versuchsergebnis","content":"MSCogTestBVMTTrialResult"}
+{"_id":{"$oid":"5c8fbd35bcbc8736a320f868"},"system":"http://midata.coop","code":"MSCogTestBVMTRecognition","display":"MS Kognitionstest BVMT - Erkennung","content":"MSCogTestBVMTRecognition"}
+{"_id":{"$oid":"5c8fbd35bcbc8736a320f869"},"system":"http://midata.coop","code":"MSCogTestBVMTRecognitionAnswer","display":"MS Kognitionstest BVMT - Erkennungsvorkommnis","content":"MSCogTestBVMTRecognitionAnswer"}
+{"_id":{"$oid":"5c8fbe8fcf5693588200f9dc"},"system":"http://snomed.info/sct","code":"405166007","display":"Nausea and vomiting status","content":"snomed/405166007"}
+{"_id":{"$oid":"5c8fbe8fcf5693588200f9dd"},"system":"http://snomed.info/sct","code":"281004000","display":"Visual function","content":"snomed/281004000"}
+{"_id":{"$oid":"5c8fbefecf5693588200f9df"},"system":"http://snomed.info/sct","code":"363918005","display":"Speech observable","content":"snomed/363918005"}
+{"_id":{"$oid":"5c8fbefebcbc8736a320f86d"},"system":"http://snomed.info/sct","code":"162306000","display":"Headache character","content":"snomed/162306000"}
+{"_id":{"$oid":"5c8fbf7acf5693588200f9e2"},"system":"http://snomed.info/sct","code":"285854004","display":"Emotion","content":"snomed/285854004"}
+{"_id":{"$oid":"5c8fbf7abcbc8736a320f86f"},"system":"http://snomed.info/sct","code":"397686008","display":"Sense of smell, function","content":"snomed/397686008"}
+{"_id":{"$oid":"5c8fbfefcf5693588200f9e4"},"system":"http://snomed.info/sct","code":"37993006","display":"Yawning, function","content":"snomed/37993006"}
+{"_id":{"$oid":"5c8fbfefcf5693588200f9e5"},"system":"http://snomed.info/sct","code":"247325003","display":"Altered sensation of skin","content":"snomed/247325003"}
+{"_id":{"$oid":"5c8fc086bcbc8736a320f873"},"system":"http://snomed.info/sct","code":"246613004","display":"General reaction to light","content":"snomed/246613004"}
+{"_id":{"$oid":"5c8fc086cf5693588200f9e8"},"system":"http://snomed.info/sct","code":"373573001","display":"Clinical finding present","content":"snomed/373573001"}
+{"_id":{"$oid":"5c8fc086bcbc8736a320f874"},"system":"http://snomed.info/sct","code":"118222006","display":"General finding of observation of patient","content":"snomed/118222006"}
+{"_id":{"$oid":"5c8fc0f0bcbc8736a320f876"},"system":"http://snomed.info/sct","code":"66523006","display":"Female reproductive function","content":"snomed/66523006"}
+{"_id":{"$oid":"5c8fc0f0cf5693588200f9ea"},"system":"http://snomed.info/sct","code":"363870007","display":"Mental state, behavior / psychosocial function observable","content":"snomed/363870007"}

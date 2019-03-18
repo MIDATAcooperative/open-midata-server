@@ -146,6 +146,14 @@ public enum InstanceType {
 	public boolean disableServiceKeyProtection() {
 		return this == PERFTEST || this == LOCAL;
 	}
+	
+	/**
+	 * Do not use key protection on service user account
+	 * @return
+	 */
+	public boolean simpleServiceKeyProtection() {
+		return this == DEMO;
+	}
 		
 	
 	/**
