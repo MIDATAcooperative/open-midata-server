@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -225,6 +226,16 @@ public class AutoRun extends APIController {
 		
 	}
 	
+	public static class ImportTick implements Serializable {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -3167900067513655444L;
+		
+		
+	}
+	
 	/**
 	 * Akka actor that runs the plugin of a specific space
 	 *
@@ -335,6 +346,7 @@ public class AutoRun extends APIController {
 	 */
 	public static class ImportManager extends AbstractActor {
 
+		public final static int PARALLEL = 2;
 		private final Router workerRouter;
 		private final ActorRef processor;
 		private final int nrOfWorkers;
@@ -342,6 +354,7 @@ public class AutoRun extends APIController {
 		private int numberFailure = 0;
 		private static Cancellable importer;
 		private static Cancellable endReport;
+		private static Cancellable speedControl;
 		
 		private long startTime = 0;
 		private long startRemoveUnlinkedFiles = 0;
@@ -356,11 +369,21 @@ public class AutoRun extends APIController {
 		private boolean reportSend = true;
 		private StringBuffer errors;
 		
+		String handle;
+		List<SubscriptionData> datas;
+		Iterator<SubscriptionData> datasIt;
+		List<Space> autoImports;
+		Iterator<Space> autoImportsIt;
+		Set<MidataId> done;
+		
+		private int countSlow = 0;
+		private boolean isSlow = false;
+		
 		/**
 		 * Constructor
 		 */
 		public ImportManager() {
-			this.nrOfWorkers = 1; // For Testing if less performance warnings occur
+			this.nrOfWorkers = PARALLEL; // For Testing if less performance warnings occur
 			
 		    List<Routee> routees = new ArrayList<Routee>();
 		    for (int i = 0; i < nrOfWorkers; i++) {
@@ -370,7 +393,7 @@ public class AutoRun extends APIController {
 		    }
 		    workerRouter = new Router(new RoundRobinRoutingLogic(), routees);	
 		    		    
-		    processor = this.context().actorOf(new RoundRobinPool(2).props(Props.create(SubscriptionProcessor.class)), "subscriptionProcessor");
+		    processor = this.context().actorOf(new RoundRobinPool(PARALLEL).props(Props.create(SubscriptionProcessor.class)), "subscriptionProcessor");
 		}
 		
 		
@@ -381,6 +404,7 @@ public class AutoRun extends APIController {
 			super.postStop();
 			
 			importer.cancel();
+			if (speedControl != null) speedControl.cancel();
 			if (endReport != null) endReport.cancel();
 		}
 
@@ -406,6 +430,7 @@ public class AutoRun extends APIController {
 		      .match(ImportResult.class, this::processResult)
 		      .match(MessageResponse.class, this::processResultNew)
 		      .match(SendEndReport.class, this::reportEnd)
+		      .match(ImportTick.class, this::importTick)
 		      .build();
 		}
 		
@@ -425,7 +450,15 @@ public class AutoRun extends APIController {
 			openRecoveries = 0;
 			numberSuccess = 0;
 			numberFailure = 0;
+			isSlow = false;
+			countSlow = 0;
 			reportSend = false;
+			handle = null;
+			datas = null;
+			datasIt = null;
+			autoImports = null;
+			autoImportsIt = null;
+		    done = null;
 			errors = new StringBuffer();
 			
 			endReport = getContext().system().scheduler().scheduleOnce(
@@ -466,25 +499,29 @@ public class AutoRun extends APIController {
 				
 				startAutoimport = System.currentTimeMillis();
 				AccessLog.log("Starting Autoimport...");
-				MidataId autorunner = RuntimeConstants.instance.autorunService;
-				String handle = KeyManager.instance.login(1000l*60l*60l*23l, false);
-				KeyManager.instance.unlock(autorunner, null);
-				Set<Space> autoImports = Space.getAll(CMaps.map("autoImport", true), Sets.create("_id", "owner", "visualization"));
 				
-				for (Space space : autoImports) {										    
-			       workerRouter.route(new ImportRequest(handle, autorunner, space), getSelf());
-			    }
+				handle = KeyManager.instance.login(1000l*60l*60l*23l, false);
+				MidataId autorunner = RuntimeConstants.instance.autorunService;
+				KeyManager.instance.unlock(autorunner, null);
+				autoImports = new ArrayList<Space>(Space.getAll(CMaps.map("autoImport", true), Sets.create("_id", "owner", "visualization")));
+				autoImportsIt = autoImports.iterator();
+				
 				countOldImports = autoImports.size();
 				AccessLog.log("Done scheduling old autoimport size="+autoImports.size());
 				
-				List<SubscriptionData> datas = SubscriptionData.getAllActiveFormat("time", SubscriptionData.ALL);
-				Set<MidataId> done = new HashSet<MidataId>();
+				datas = SubscriptionData.getAllActiveFormat("time", SubscriptionData.ALL);
+				datasIt = datas.iterator();
+				done = new HashSet<MidataId>();
 				countNewImports = datas.size();
-				for (SubscriptionData data : datas) {
-					if (!done.contains(data.owner)) {
-					  done.add(data.owner);
-					  processor.tell(new SubscriptionTriggered(data.owner, data.app, "time", null, null, null), getSelf());
-					}
+				
+				
+				speedControl = getContext().system().scheduler().schedule(Duration.ofSeconds(10),
+		                Duration.ofSeconds(10),
+		                manager, new ImportTick(),
+		                Instances.system().dispatcher(), null);	
+				
+				for (int i=0;i<PARALLEL;i++) {
+					importTick();
 				}
 				
 				AccessLog.log("Done scheduling new autoimport size="+datas.size());
@@ -498,12 +535,47 @@ public class AutoRun extends APIController {
 
 		}
 		
+		public void importTick(ImportTick msg) {
+						
+			if (!isSlow) { isSlow = true;return; }				
+			
+			countSlow++;
+			for (int i=0;i<PARALLEL;i++) {
+				importTick();
+			}
+		}
+		
+		public void importTick() {
+			boolean foundone = false;
+			if (autoImportsIt.hasNext()) {
+				Space space = autoImportsIt.next();
+				MidataId autorunner = RuntimeConstants.instance.autorunService;
+				
+				isSlow = false;
+				workerRouter.route(new ImportRequest(handle, autorunner, space), getSelf());
+			} else while (datasIt.hasNext() && !foundone) {
+				SubscriptionData data = datasIt.next();
+				if (!done.contains(data.owner)) {
+					  done.add(data.owner);
+					  foundone = true;
+					  isSlow = false;
+					  processor.tell(new SubscriptionTriggered(data.owner, data.app, "time", null, null, null), getSelf());
+				}
+			}			
+			
+		}
+		
 		public void reportEnd(SendEndReport msg) {
 			reportEnd();
 		}
 		
 		public void reportEnd() {
 			if (reportSend) return;
+			
+			if (speedControl != null) {
+				speedControl.cancel();
+				speedControl = null;
+			}
 			
 			reportSend = true;
 			long end = System.currentTimeMillis();
@@ -519,14 +591,22 @@ public class AutoRun extends APIController {
 			report += "# New style auto-imports: "+countNewImports+" \n";			
 			report += "# Errors during scheduling: "+errorCount+" \n";
 			report += "# Errors during import: "+numberFailure+" \n";
-			report += "# Success messages: "+numberSuccess+" \n\n";
+			report += "# Success messages: "+numberSuccess+" \n";
+			report += "# Slow imports: "+countSlow+" \n\n";
 			report += "# Open Recovery Processes: "+openRecoveries+" \n\n";
 			report += errors.toString();
+						
+			handle = null;
+			datas = null;
+			datasIt = null;
+			autoImports = null;
+			autoImportsIt = null;
+		    done = null;
 			
 			String email = InstanceConfig.getInstance().getConfig().getString("errorreports.targetemail");
 			String fullname = InstanceConfig.getInstance().getConfig().getString("errorreports.targetname");
 			String server = InstanceConfig.getInstance().getPlatformServer();
-			MailUtils.sendTextMail(email, fullname, "Autoimport "+server, report);
+			MailUtils.sendTextMail(email, fullname, "Autoimport "+server, report);									
 			
 			if (endReport != null) {
 				endReport.cancel();
@@ -541,7 +621,9 @@ public class AutoRun extends APIController {
 					errors.append(result.exitCode+" "+(result.getPlugin()!=null?result.getPlugin():"")+" "+msg+" (old)\n");
 				}
 				AccessLog.log("Autoimport success="+numberSuccess+" fail="+numberFailure);
+				
 				if (numberSuccess+numberFailure >= countOldImports + countNewImports) reportEnd();
+				else importTick();
 		}
 		
 		public void processResultNew(MessageResponse result) throws Exception {							
@@ -552,6 +634,7 @@ public class AutoRun extends APIController {
 			}
 			AccessLog.log("Autoimport success="+numberSuccess+" fail="+numberFailure);
 			if (numberSuccess+numberFailure >= countOldImports + countNewImports) reportEnd();
+			else importTick();
 	    }
 		
 	}
