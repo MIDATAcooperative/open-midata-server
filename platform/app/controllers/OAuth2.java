@@ -642,8 +642,11 @@ public class OAuth2 extends Controller {
 		String sessionToken = JsonValidation.getStringOrNull(json, "sessionToken");
 				
 		if (user.publicExtKey == null) {
-			if (!json.has("nonHashed")) return ok("compatibility-mode");
-			password = JsonValidation.getString(json, "nonHashed");
+			if (!json.has("nonHashed")) {
+			  if (password.length() > 50) return ok("compatibility-mode");
+			} else {
+			   password = JsonValidation.getString(json, "nonHashed");
+			}
 		}
 		
 		try {
