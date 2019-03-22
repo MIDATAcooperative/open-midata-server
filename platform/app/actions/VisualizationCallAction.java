@@ -15,6 +15,7 @@ import utils.InstanceConfig;
 import utils.ServerTools;
 import utils.audit.AuditManager;
 import utils.exceptions.BadRequestException;
+import utils.exceptions.PluginException;
 import utils.exceptions.RequestTooLargeException;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.stats.Stats;
@@ -70,6 +71,11 @@ public class VisualizationCallAction extends Action<VisualizationCall> {
     		if (Stats.enabled) Stats.finishRequest(ctx.request(), e3.getStatusCode()+"");
     		AuditManager.instance.fail(400, e3.getMessage(), e3.getLocaleKey());
     		return CompletableFuture.completedFuture((Result) badRequest(e3.getMessage()));
+    	} catch (PluginException e4) {
+    		ErrorReporter.reportPluginProblem("Plugin API", ctx, e4);
+    		if (Stats.enabled) Stats.finishRequest(ctx.request(), "400");
+    		AuditManager.instance.fail(400, e4.getMessage(), e4.getLocaleKey());
+    		return CompletableFuture.completedFuture((Result) badRequest(e4.getMessage()));
 		} catch (Exception e2) {					
 			ErrorReporter.report("Plugin API", ctx, e2);
 			if (Stats.enabled) Stats.finishRequest(ctx.request(), "500");

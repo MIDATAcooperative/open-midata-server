@@ -422,7 +422,9 @@ public class User extends Model implements Comparable<User> {
 		Model.set(User.class, collection, userId, field, value);
 	}		
 	
-	public void agreedToTerms(String terms, MidataId app) throws AppException {		
+	public void agreedToTerms(String terms, MidataId app) throws AppException {
+		if (terms == null || terms.length() == 0) return;
+		
 		User u2 = User.getById(this._id, Sets.create("termsAgreed"));
 		if (u2 != null) this.termsAgreed = u2.termsAgreed;
 		if (this.termsAgreed==null) this.termsAgreed = new HashSet<String>();

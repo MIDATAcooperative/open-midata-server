@@ -33,6 +33,7 @@
      "offline" : "The backend is currently offline! Please contact support@midata.coop if the problem persists.",
      "internal" : "An internal error occured. Please contact support@midata.coop if the problem persists.",
      "internal_db" : "An internal database error occured. Please contact support@midata.coop if the problem persists.",
+     "plugin" : "An application specific error occured. Please contact application developer or support@midata.coop if the problem persists.",
      "relogin" : "Please relogin",
      "noconsent" : "No active consent that allows to add data for target person.",
      "unsupported" : "Operation not supported",

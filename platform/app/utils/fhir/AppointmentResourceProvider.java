@@ -255,7 +255,7 @@ public class AppointmentResourceProvider extends RecordBasedResourceProvider<App
 	public void prepare(Record record, Appointment theAppointment) throws AppException {
 		// Set Record code and content
 		
-		ContentInfo.setRecordCodeAndContent(record, null, "Appointment");								
+		ContentInfo.setRecordCodeAndContent(info().pluginId, record, null, "Appointment");								
 		
 		String display = theAppointment.getDescription();
 		record.name = display != null ? display : "Appointment";

@@ -13,6 +13,7 @@ import utils.ErrorReporter;
 import utils.ServerTools;
 import utils.audit.AuditManager;
 import utils.exceptions.BadRequestException;
+import utils.exceptions.PluginException;
 import utils.exceptions.RequestTooLargeException;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.stats.Stats;
@@ -57,6 +58,11 @@ public class MobileCallAction extends Action<MobileCall> {
     	} catch (RequestTooLargeException e4) {
     		if (Stats.enabled) Stats.finishRequest(ctx.request(), "202");
     		return CompletableFuture.completedFuture((Result) status(202, e4.getMessage()));
+    	} catch (PluginException e5) {
+    		ErrorReporter.reportPluginProblem("Mobile API", ctx, e5);
+    		if (Stats.enabled) Stats.finishRequest(ctx.request(), "400");
+			AuditManager.instance.fail(400, e5.getMessage(), e5.getLocaleKey());
+			return CompletableFuture.completedFuture((Result) status(400, e5.getMessage()));
 		} catch (Exception e2) {			
 			ErrorReporter.report("Mobile API", ctx, e2);
 			if (Stats.enabled) Stats.finishRequest(ctx.request(), "500");

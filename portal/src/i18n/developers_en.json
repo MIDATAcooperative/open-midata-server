@@ -116,6 +116,7 @@
     "logout_optional" : "[ not required ]",
     "logout_required" : "[ required ]",
     "logout_explain" : "Changes to fields marked with !! will require to log out all users of that application.",
+    "send_reports" : "Send error reports",  
       
     "info" : {
        "filename" : "This name is internally used to identify your app. Should be a valid identifier (a-z, A-Z, 0-9, _).",
@@ -135,7 +136,8 @@
        "redirectUri" : "You may specifiy multiple possible redirect URIs by separating the URIs with a space.",
        "secret" : "Your app will need this 'secret' during login. Choose whatever you like.",
        "mustParticipateInStudy" : "User must participate in study in order to use app.",
-       "unlock_code" : "If filled out, this code must be entered by the user in order to sign up or log in the first time to MIDATA using the app. The code is not case sensitive."       
+       "unlock_code" : "If filled out, this code must be entered by the user in order to sign up or log in the first time to MIDATA using the app. The code is not case sensitive.",
+       "send_reports" : "Notify developer ({{user}}) by email on errors causes by this application."        
     },
     "status" : {
       "title" : "Application Status",

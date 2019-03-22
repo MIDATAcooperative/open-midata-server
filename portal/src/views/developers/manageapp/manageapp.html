@@ -168,6 +168,12 @@
 		    <input type="text" id="unlockCode" name="unlockCode" class="form-control" ng-model="app.unlockCode">
 		    <p class="help-block" translate="manageapp.info.unlock_code"></p>
 		  </formrow>
+		   <formrow myid="sendReports" label="manageapp.send_reports">
+		      <div class="form-check">
+		         <input type="checkbox" id="sendReports" name="sendReports" class="form-check-input" ng-model="app.sendReports">
+		         <label for="sendReports" class="form-check-label" translate="manageapp.info.send_reports" translate-value-user="{{app.creatorLogin}}"></label>
+		      </div>		    
+		  </formrow>
 		  
 		  
 		   <formrow myid="withLogout" label="manageapp.logout" ng-if="app._id">
