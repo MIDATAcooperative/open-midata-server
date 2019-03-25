@@ -19,6 +19,10 @@ public enum AuditEventType {
 	
 	USER_ADDRESS_CHANGE(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-address-change", "User address changed"), AuditEventAction.U),
 	
+	USER_SETTINGS_CHANGE(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-settings-change", "User settings changed"), AuditEventAction.U),
+	
+	USER_PHONE_CHANGE(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-phone-change", "User settings changed"), AuditEventAction.U),
+	
 	USER_EMAIL_CHANGE(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-email-change", "Email changed"), AuditEventAction.U),
 	
 	USER_BIRTHDAY_CHANGE(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-birthday-change", "Birthday changed"), AuditEventAction.U),

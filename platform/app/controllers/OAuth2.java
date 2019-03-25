@@ -702,7 +702,8 @@ public class OAuth2 extends Controller {
 		String securityToken = JsonValidation.getStringOrNull(json, "securityToken");
 				
 		if (notok!=null && token.securityToken != null) {
-			notok.remove(UserFeature.AUTH2FACTOR);		
+			notok.remove(UserFeature.AUTH2FACTOR);
+			notok.remove(UserFeature.PHONE_VERIFIED);		
 			return;
 		}
 		
@@ -761,7 +762,7 @@ public class OAuth2 extends Controller {
 		
 		if (notok!=null && notok.contains(UserFeature.AUTH2FACTOR)) {
 			if (securityToken == null) {
-				Authenticators.getInstance(user.authType).startAuthentication(user._id, "Token", user);
+				Authenticators.getInstance(user.authType).startAuthentication(user._id, "Code", user);
 				notok.clear();
 				notok.add(UserFeature.AUTH2FACTOR);
 			} else {
