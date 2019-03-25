@@ -190,7 +190,7 @@ public class DeviceResourceProvider extends RecordBasedResourceProvider<Device> 
 	public void prepare(Record record, Device theDevice) throws AppException {
 		// Set Record code and content
 				
-		ContentInfo.setRecordCodeAndContent(record, null, "Device");			
+		ContentInfo.setRecordCodeAndContent(info().pluginId, record, null, "Device");			
 		record.name = "Device";
 				
 		if (cleanAndSetRecordOwner(record, theDevice.getPatient())) theDevice.setPatient(null);

@@ -265,7 +265,7 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
 	}
     
             
-    public void prepare(Record record, Basic theBasic) {
+    public void prepare(Record record, Basic theBasic) throws AppException {
     	
     	record.code = new HashSet<String>(); 
 		String display = setRecordCodeByCodeableConcept(record, theBasic.getCode(), "Basic");

@@ -176,6 +176,7 @@ public class Market extends APIController {
 			app.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");
 			
 			app.unlockCode = JsonValidation.getStringOrNull(json, "unlockCode");
+			app.sendReports = JsonValidation.getBoolean(json, "sendReports");
 			
 			app.i18n = new HashMap<String, Plugin_i18n>();
 			
@@ -596,7 +597,8 @@ public class Market extends APIController {
 		app.noUpdateHistory = JsonValidation.getBoolean(json, "noUpdateHistory");
 		app.writes = JsonValidation.getEnum(json, "writes", WritePermissionType.class);
 		app.i18n = new HashMap<String, Plugin_i18n>();
-		app.pluginVersion = System.currentTimeMillis();			
+		app.pluginVersion = System.currentTimeMillis();	
+		app.sendReports = false;
 		
 		Map<String, MessageDefinition> predefinedMessages = parseMessages(json);
 		if (predefinedMessages != null) app.predefinedMessages = predefinedMessages;

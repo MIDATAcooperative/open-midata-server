@@ -200,7 +200,12 @@ public class SubscriptionProcessor extends AbstractActor {
 		
 		if (handle == null) {
 			SubscriptionData.setError(subscription._id, "Background service key expired");
-			getSender().tell(new MessageResponse("Service key expired",-1, plugin.filename), getSelf());			
+			getSender().tell(new MessageResponse("Service key expired",-1, plugin.filename), getSelf());
+			try {
+				throw new InternalServerException("error.internal", "Missing service key subscription: "+subscription._id);
+			} catch (InternalServerException e) {
+				ErrorReporter.report("Subscription-Processor", null, e);
+			}
 			return true;
 		}
 		

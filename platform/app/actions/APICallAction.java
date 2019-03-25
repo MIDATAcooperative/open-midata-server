@@ -17,6 +17,7 @@ import utils.ServerTools;
 import utils.audit.AuditManager;
 import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
+import utils.exceptions.PluginException;
 import utils.json.JsonValidation.JsonValidationException;
 
 /**
@@ -76,7 +77,13 @@ public class APICallAction extends Action<APICall> {
     			if (e3.getRequiredSubUserRole() != null) node.put("requiredSubUserRole", e3.getRequiredSubUserRole().toString());
     			return CompletableFuture.completedFuture((Result) forbidden(node));
     		}
-    		    
+    	} catch (PluginException e3) {
+    		ErrorReporter.reportPluginProblem("Portal", ctx, e3);
+    		AuditManager.instance.fail(400, e3.getMessage(), null);
+    		return CompletableFuture.completedFuture((Result) badRequest(
+				    Json.newObject()
+                    .put("code", e3.getLocaleKey())
+                    .put("message", e3.getMessage())));
 		} catch (Exception e2) {	
 			ErrorReporter.report("Portal", ctx, e2);
 			AuditManager.instance.fail(500, e2.getMessage(), null);

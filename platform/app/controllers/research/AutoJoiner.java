@@ -22,6 +22,8 @@ import utils.auth.KeyManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
+import utils.messaging.MailUtils;
 import utils.messaging.ServiceHandler;
 
 public class AutoJoiner {
@@ -79,6 +81,11 @@ class AutoJoinerActor extends AbstractActor {
 							if (handle == null) { // Main background service key not valid anymore
 								theStudy.autoJoinGroup = null;
 								theStudy.setAutoJoinGroup(null, null, null);
+								try {
+									throw new InternalServerException("error.internal", "Missing service key for study:"+theStudy.code+"("+theStudy.name+")");
+								} catch (InternalServerException e) {
+									ErrorReporter.report("Auto-Join", null, e);
+								}
 								return;
 							}
 							

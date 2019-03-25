@@ -363,9 +363,11 @@ public class Studies extends APIController {
 			participation = createStudyParticipation(inf.executorId, study, user, null);
 										
 		}
+				
+		if (participation.pstatus == ParticipationStatus.ACCEPTED || participation.pstatus == ParticipationStatus.REQUEST) return participation;
+		
 		AuditManager.instance.addAuditEvent(AuditEventType.STUDY_PARTICIPATION_REQUESTED, userId, participation, study);
 		
-		if (participation.pstatus == ParticipationStatus.ACCEPTED || participation.pstatus == ParticipationStatus.REQUEST) return participation;				
 		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");
 		
 		participation.setPStatus(ParticipationStatus.REQUEST, joinMethod);	

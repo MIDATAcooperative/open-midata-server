@@ -632,7 +632,7 @@ public class MobileAPI extends Controller {
 		record.format = format;
 		
 			
-		ContentInfo.setRecordCodeAndContent(record, code, content);
+		ContentInfo.setRecordCodeAndContent(inf.pluginId, record, code, content);
 				
 		try {
 			record.data = BasicDBObject.parse(data);

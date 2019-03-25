@@ -12,6 +12,7 @@ import utils.db.NotMaterialized;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.exceptions.PluginException;
 import utils.json.JsonValidation.JsonValidationException;
 
 /**
@@ -76,7 +77,7 @@ public class ContentInfo extends Model {
 	
 	private @NotMaterialized static Map<String, ContentInfo> byName = new ConcurrentHashMap<String, ContentInfo>();
 	
-	public static ContentInfo getByName(String name) throws AppException {		
+	public static ContentInfo getByName(String name) throws BadRequestException, InternalServerException {		
 			ContentInfo r = byName.get(name);		
 			if (r != null) return r;
 			r = Model.get(ContentInfo.class, collection, CMaps.map("content", name), ALL);
@@ -91,7 +92,8 @@ public class ContentInfo extends Model {
 		byName.clear();
 	}
 	
-	public static void setRecordCodeAndContent(Record record, Set<String> code, String content) throws JsonValidationException, AppException {
+	public static void setRecordCodeAndContent(MidataId pluginId, Record record, Set<String> code, String content) throws PluginException, InternalServerException {
+		try {
 		if (content != null && ContentInfo.isCoding(content)) {
 			code = Collections.singleton(content);
 			content = null;
@@ -102,19 +104,25 @@ public class ContentInfo extends Model {
 			  String ncontent = ContentCode.getContentForSystemCode(c);
 			  if (ncontent != null) {
 				  if (content == null) content = ncontent;
-				  else if (!content.equals(ncontent)) throw new JsonValidationException("error.field", "Record codes do not provide same content '"+code.toString()+"'!");
+				  else if (!content.equals(ncontent)) {
+					  throw new PluginException(pluginId, "error.plugin", "A FHIR resource send by this plugin contains multiple codes. The resulting content type is ambiguous. Code: '"+code.toString()+"'");
+				  }
 			  }
 			}
-			if (content == null) throw new JsonValidationException("error.field", "Unknown record codes '"+code.toString()+"'!");
+			if (content == null) 			
+				throw new PluginException(pluginId, "error.plugin", "A FHIR resource send by this plugin contains a code that has not been registered with the platform: '"+code.toString()+"'");	
 		} else if (content != null ){
 			ContentInfo ci = ContentInfo.getByName(content);
 			content = ci.content;
 			code = Collections.singleton(ci.defaultCode);			
 		} else {
-			throw new BadRequestException("error.field", "Neither code nor content-type available for record.");
+			throw new PluginException(pluginId, "error.plugin", "A FHIR resource send by this plugin does not contain any code to be used as content-type. Please recheck if FHIR resources are compatible to the FHIR specification. Record format is '"+record.format+"'");
 		}
 		record.code = code;
 		record.content = content;
+		} catch (BadRequestException e) {
+			throw new PluginException(pluginId, "error.plugin", e.getMessage());
+		}
 	}
 	
 	public static boolean isCoding(String name) {
