@@ -303,7 +303,7 @@ public class SubscriptionProcessor extends AbstractActor {
 				getContext().getSystem().scheduler().scheduleOnce(
 					      Duration.ofSeconds(1),
 					      getSelf(), new RecheckMessage(testcall._id, 0), getContext().dispatcher(), getSender());
-				
+				return;
 				//getSender().tell(new MessageResponse(null,0), getSelf());				
 			}
 		}				

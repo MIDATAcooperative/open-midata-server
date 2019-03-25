@@ -434,7 +434,7 @@ public class MobileAPI extends Controller {
     	    	    	
     	MobileAppInstance.add(appInstance);	
 
-    	SubscriptionManager.activateSubscriptions(appInstance.owner, app, appInstance._id);
+        // SubscriptionManager.activateSubscriptions(appInstance.owner, app, appInstance._id);
 		// KeyManager.instance.unlock(appInstance._id, phrase);	   		    
 
 		RecordManager.instance.createAnonymizedAPS(member._id, appInstance._id, appInstance._id, true);

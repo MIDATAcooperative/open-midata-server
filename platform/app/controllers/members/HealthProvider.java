@@ -19,6 +19,8 @@ import models.Consent;
 import models.HPUser;
 import models.MemberKey;
 import models.MidataId;
+import models.MobileAppInstance;
+import models.Plugin;
 import models.User;
 import models.UserGroupMember;
 import models.enums.AuditEventType;
@@ -43,6 +45,7 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.messaging.SubscriptionManager;
 
 /**
  * functions about interaction with health providers
@@ -155,6 +158,11 @@ public class HealthProvider extends APIController {
 		if (target.status.equals(ConsentStatus.UNCONFIRMED)) {
 			if (target.type.equals(ConsentType.EXTERNALSERVICE)) {
 				MobileAPI.confirmMobileConsent(userId, consentId);
+				
+				MobileAppInstance mai = MobileAppInstance.getById(target._id, Sets.create("applicationId"));
+				Plugin plugin = Plugin.getById(mai.applicationId);
+				SubscriptionManager.activateSubscriptions(userId, plugin, mai._id);
+				
 			}	
 			if (target.externalAuthorized != null && !target.externalAuthorized.isEmpty()) {
 				throw new BadRequestException("error.invalid.consent_members", "Consent has external persons.");
