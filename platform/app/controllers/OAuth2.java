@@ -70,6 +70,7 @@ import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.exceptions.PluginException;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
@@ -410,7 +411,7 @@ public class OAuth2 extends Controller {
     	    // Validate Mobile App	
     		Plugin app = Plugin.getByFilename(client_id, Sets.create("type", "name", "secret"));
     		if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");		
-    		if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
+    		if (!app.type.equals("mobile")) throw new PluginException(app._id,"error.plugin", "Wrong application type. Only smartphone/web type applications may use the OAuth login.");
     		
     		appInstance = MobileAppInstance.getById(tk.appInstanceId, Sets.create("owner", "applicationId", "status", "passcode"));
     		if (appInstance == null) throw new BadRequestException("error.internal", "invalid_grant");
@@ -503,13 +504,13 @@ public class OAuth2 extends Controller {
 		
 		// Check app
 		if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");		
-		if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
+		if (!app.type.equals("mobile")) throw new PluginException(app._id,"error.plugin", "Wrong application type. Only smartphone/web type applications may use the OAuth login.");
 		
 		// Check redirect URI
 		if (token.appId == null) {
 			String redirectUri = JsonValidation.getString(json, "redirectUri");
-			if (app.redirectUri==null) throw new InternalServerException("error.internal", "No redirect URI set for app.");
-			if (redirectUri==null || redirectUri.length()==0) throw new BadRequestException("error.internal", "Missing redirectUri in request.");
+			if (app.redirectUri==null) throw new PluginException(app._id,"error.plugin", "No redirect URI set for this application. Check settings in developer portal.");
+			if (redirectUri==null || redirectUri.length()==0) throw new PluginException(app._id,"error.plugin", "Missing redirect URI in request to OAuth login page.");
 			if (!redirectUri.equals(app.redirectUri) && !redirectUri.startsWith(InstanceConfig.getInstance().getPortalOriginUrl()+"/#/")) {
 				String[] multiple = app.redirectUri.split(" ");
 				boolean found = false;
@@ -521,7 +522,7 @@ public class OAuth2 extends Controller {
 						}
 					}
 				}
-				if (!found) throw new InternalServerException("error.internal", "Wrong redirect uri");
+				if (!found) throw new PluginException(app._id,"error.plugin", "Redirect URI provided to request does not match redirect URI(s) set in developer portal.");
 			}
 		}
 		
@@ -642,8 +643,11 @@ public class OAuth2 extends Controller {
 		String sessionToken = JsonValidation.getStringOrNull(json, "sessionToken");
 				
 		if (user.publicExtKey == null) {
-			if (!json.has("nonHashed")) return ok("compatibility-mode");
-			password = JsonValidation.getString(json, "nonHashed");
+			if (!json.has("nonHashed")) {
+			  if (password.length() > 50) return ok("compatibility-mode");
+			} else {
+			   password = JsonValidation.getString(json, "nonHashed");
+			}
 		}
 		
 		try {

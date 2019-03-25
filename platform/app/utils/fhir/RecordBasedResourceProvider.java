@@ -51,6 +51,8 @@ import utils.access.VersionedDBRecord;
 import utils.auth.ExecutionInfo;
 import utils.collections.CMaps;
 import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
+import utils.exceptions.PluginException;
 import utils.largerequests.UnlinkedBinary;
 
 public abstract class RecordBasedResourceProvider<T extends DomainResource> extends ReadWriteResourceProvider<T, Record> {
@@ -316,11 +318,11 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	 * @param cc CodeableConcept to set
 	 * @return display of codeable concept
 	 */
-	protected String setRecordCodeByCodeableConcept(Record record, CodeableConcept cc, String defaultContent) {
+	protected String setRecordCodeByCodeableConcept(Record record, CodeableConcept cc, String defaultContent) throws InternalServerException {
 	  return setRecordCodeByCodings(record, cc != null ? cc.getCoding() : null, defaultContent);
 	}
 	
-	protected String setRecordCodeByCodings(Record record, List<Coding> codings, String defaultContent) {
+	protected String setRecordCodeByCodings(Record record, List<Coding> codings, String defaultContent) throws InternalServerException {
 		  record.code = new HashSet<String>(); 
 		  String display = null;
 		  try {
@@ -332,13 +334,13 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 				}
 			  }	  
 			  
-				ContentInfo.setRecordCodeAndContent(record, record.code, null);
+				ContentInfo.setRecordCodeAndContent(info().pluginId, record, record.code, null);
 			  
 			  } else {
-				  ContentInfo.setRecordCodeAndContent(record, null, defaultContent);
+				  ContentInfo.setRecordCodeAndContent(info().pluginId, record, null, defaultContent);
 			  }
-		  } catch (AppException e) {
-			    ErrorReporter.report("FHIR (set record code)", null, e);	
+		  } catch (PluginException e) {
+			    ErrorReporter.reportPluginProblem("FHIR (set record code)", null, e);	
 				throw new UnprocessableEntityException("Error determining MIDATA record code.");
 		  }
 		  return display;

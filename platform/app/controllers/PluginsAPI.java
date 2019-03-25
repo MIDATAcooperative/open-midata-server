@@ -80,6 +80,7 @@ import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.exceptions.PluginException;
 import utils.fhir.SubscriptionResourceProvider;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
@@ -484,7 +485,7 @@ public class PluginsAPI extends APIController {
 		record.format = format;
 		
 		
-		ContentInfo.setRecordCodeAndContent(record, code, content);		
+		ContentInfo.setRecordCodeAndContent(authToken.pluginId, record, code, content);		
 					
 		try {
 			record.data = (DBObject) JSON.parse(data);
@@ -549,7 +550,7 @@ public class PluginsAPI extends APIController {
 			if (contextWithConsent == null) throw new InternalServerException("error.internal", "Record may not be created!");
 			context = contextWithConsent;
 		} else if (!context.mayCreateRecord(dbrecord)) {
-			throw new InternalServerException("error.internal", "Record may not be created!");			
+			throw new PluginException(inf.pluginId, "error.plugin", "Record may not be created. Please check access filter and permissions in developer portal.");					
 		}
 		
 		//MidataId targetAPS = targetConsent != null ? targetConsent : inf.targetAPS;
@@ -859,7 +860,7 @@ public class PluginsAPI extends APIController {
 			String[] contents = metaData.get("content");
 			String[] codes = metaData.get("code");
 			
-			ContentInfo.setRecordCodeAndContent(record, codes != null ? new HashSet<String>(Arrays.asList(codes)) : null, contents != null ? contents[0] : null);					
+			ContentInfo.setRecordCodeAndContent(authToken.pluginId, record, codes != null ? new HashSet<String>(Arrays.asList(codes)) : null, contents != null ? contents[0] : null);					
 						
 			if (metaData.containsKey("data")) {
 				String data = metaData.get("data")[0];

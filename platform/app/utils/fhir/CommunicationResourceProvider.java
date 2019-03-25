@@ -261,7 +261,7 @@ public class CommunicationResourceProvider extends RecordBasedResourceProvider<C
 		// Set Record code and content
 		
 		
-		ContentInfo.setRecordCodeAndContent(record, null, "Communication");
+		ContentInfo.setRecordCodeAndContent(info().pluginId, record, null, "Communication");
 		
 		String date = theCommunication.hasSentElement() ? theCommunication.getSentElement().toHumanDisplay() : "Not sent";			
 		record.name = date;
