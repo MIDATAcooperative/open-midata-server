@@ -222,6 +222,8 @@
 	   "user-password-change-request" : "Password change requested",
 	   "user-passphrase-change" : "Passphrase changed",
 	   "user-address-change" :"User's address changed",
+	   "user-phone-change" :"User's phone number changed",
+	   "user-settings-change" :"User's settings changed",
 	   "user-email-change" :"User's email changed",
 	   "user-birthday-change" : "User's birth date changed",
 	   "user-status-change" : "Status of user account changed",

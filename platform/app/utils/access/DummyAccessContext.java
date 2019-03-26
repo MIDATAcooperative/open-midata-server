@@ -67,5 +67,10 @@ public class DummyAccessContext extends AccessContext {
 	public boolean mayAccess(String content, String format) throws AppException {		
 		return false;
 	}
+	
+	@Override
+	public boolean mayContainRecordsFromMultipleOwners() {		
+		return false;
+	}
 
 }

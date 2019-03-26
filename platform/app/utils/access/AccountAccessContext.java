@@ -62,4 +62,9 @@ public class AccountAccessContext extends AccessContext {
 		return true;
 	}
 
+	@Override
+	public boolean mayContainRecordsFromMultipleOwners() {		
+		return false;
+	}
+
 }

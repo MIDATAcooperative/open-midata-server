@@ -42,7 +42,7 @@ public class ErrorReporter {
 		     user = tsk.getRole().toString()+" "+tsk.getOwnerId().toString();
 		   } 
 		} else path = "[internal] "+InstanceConfig.getInstance().getPortalServerDomain();
-		String timeStamp = new SimpleDateFormat("dd.MM.yyyy HH.mm.ss").format(new Date());
+		String timeStamp = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(new Date());
 		if (e!=null) AccessLog.logException("Uncatched Exception:", e);
 		String txt = "Instance: "+InstanceConfig.getInstance().getPortalServerDomain()+"\nTime:"+timeStamp+"\nInterface: "+fromWhere+"\nPortal Session: "+user+"\nPath: "+path+"\n\n"+AccessLog.getReport();
 		MailUtils.sendTextMail(bugReportEmail, bugReportName, "Error Report: "+path, txt);
@@ -63,7 +63,7 @@ public class ErrorReporter {
 				return;
 			}
 	
-			String timeStamp = new SimpleDateFormat("dd.MM.yyyy HH.mm.ss").format(new Date());
+			String timeStamp = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(new Date());
 			String txt = "Dear Developer,\n\non "+timeStamp+"\nthe plugin/app called '"+plg.name+"' (internal: '"+plg.filename+"')\non the MIDATA instance at '"+InstanceConfig.getInstance().getPortalServerDomain()+"'\nhas caused this error:\n\n"+e.getMessage()+"\n\nThis is an automated email send by the MIDATA platform.\nYou can turn off reporting for this application in the application settings.";				
 			
 			if (plg.sendReports) {						

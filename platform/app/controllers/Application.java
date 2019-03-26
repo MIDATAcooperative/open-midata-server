@@ -270,7 +270,7 @@ public class Application extends APIController {
 			ExtendedSessionToken stoken = new ExtendedSessionToken();
 			stoken.userRole = UserRole.valueOf(role);
 			stoken.ownerId = userId;
-			stoken.securityToken = "-";
+			if (password==null) stoken.securityToken = "-";
 			stoken.set();
 			
 		} else {
@@ -663,89 +663,7 @@ public class Application extends APIController {
 		
 		return ok(obj);
 	}
-				
-	/*
-	public static Result loginHelper(User user, String sessionToken, String securityToken, boolean nosession, boolean skipTwoFactor) throws AppException {
-		boolean newVersion = user.publicExtKey != null;
-		
-		String handle = null;
-		int keytype = 0;
-		
-		if (newVersion) {
-			if (sessionToken == null) {
-			  handle = KeyManager.instance.currentHandleOptional(user._id);
-			  if (handle == null && !nosession) return loginChallenge(null, user); // XXX token
-			  keytype = KeyManager.KEYPROTECTION_AESKEY;
-			} else {
-			  handle = KeyManager.instance.login(PortalSessionToken.LIFETIME, true);
-			  keytype = KeyManager.instance.unlock(user._id, sessionToken, user.publicExtKey);		
-			}
-		} else {
-			handle =  KeyManager.instance.login(PortalSessionToken.LIFETIME, true);	
-			keytype = KeyManager.instance.unlock(user._id, null);	
-		}
-			
-		Set<UserFeature> notok = loginHelperPreconditionsFailed(user, InstanceConfig.getInstance().getInstanceType().defaultRequirementsPortalLogin(user.role));
-	
-		if (notok!=null && skipTwoFactor) {
-			notok.remove(UserFeature.AUTH2FACTOR);
-			if (notok.isEmpty()) notok = null;
-		}
-		if (notok!=null && notok.contains(UserFeature.AUTH2FACTOR) && SMSUtils.isAvailable()) {
-			if (securityToken == null) {
-				Authenticator.startAuthentication(user._id, "Token", user.mobile);
-			} else {
-				Authenticator.checkAuthentication(user._id, securityToken);
-				notok.remove(UserFeature.AUTH2FACTOR);
-				if (notok.isEmpty()) {
-					notok = null;
-					Authenticator.finishAuthentication(user._id);
-				}
-			}
-		}
-		
-		if (user.role == UserRole.RESEARCH && !(user instanceof ResearchUser)) {
-			user = ResearchUser.getById(user._id, Sets.create(User.FOR_LOGIN, "organization"));
-		} else if (user.role == UserRole.PROVIDER && !(user instanceof HPUser)) {
-			user = HPUser.getById(user._id, Sets.create(User.FOR_LOGIN, "organization"));
-		}
-		
-		PortalSessionToken token = null;
-	
-		ObjectNode obj = Json.newObject();
 					
-		if (handle != null) {
-			if (user instanceof HPUser) {
-			   token = new PortalSessionToken(handle, user._id, user.role, ((HPUser) user).provider, user.developer);		  
-			} else if (user instanceof ResearchUser) {
-			   token = new PortalSessionToken(handle, user._id, user.role, ((ResearchUser) user).organization, user.developer);		  
-			} else {
-			   token = new PortalSessionToken(handle, user._id, user.role, null, user.developer);
-			}
-			
-			token.setRemoteAddress(request());
-			obj.put("sessionToken", token.encrypt());
-		}
-								
-		if (notok!=null) {
-		  return loginHelperResult(token, user, notok);
-		} else {						
-				 		  		  
-		  if (keytype == 0 && handle != null) {
-			  user = PostLoginActions.check(user);			  
-			  KeyManager.instance.persist(user._id);
-          }		  
-		 				
-		  obj.put("keyType", keytype);
-		  obj.put("role", user.role.toString().toLowerCase());
-		  obj.set("subroles", Json.toJson(user.subroles));
-		  obj.set("lastLogin", Json.toJson(user.login));
-		}
-	    User.set(user._id, "login", new Date());
-	    
-	    AuditManager.instance.success();
-		return ok(obj);
-	}*/
 	
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)

@@ -45,7 +45,7 @@ public class ConsentAccessContext extends AccessContext{
 			  consent.sharingQuery = Circles.getQueries(consent.owner, consent._id);
 			  sharingQuery = true;
 		}
-		
+		if (consent.sharingQuery == null) return false;
 		return !QueryEngine.listFromMemory(this, consent.sharingQuery, Collections.singletonList(record)).isEmpty() && (parent==null || parent.mayCreateRecord(record));
 		
 	}
@@ -122,6 +122,11 @@ public class ConsentAccessContext extends AccessContext{
 		}
 		
 		return Feature_FormatGroups.mayAccess(consent.sharingQuery, content, format);		
+	}
+	
+	@Override
+	public boolean mayContainRecordsFromMultipleOwners() {		
+		return consent.type == ConsentType.EXTERNALSERVICE;
 	}
 
 }

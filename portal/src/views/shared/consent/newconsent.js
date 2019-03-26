@@ -96,6 +96,7 @@ angular.module('portal')
 			
 		} else {
 			$scope.consent = { type : ($state.current.data.role === "PROVIDER" ? "HEALTHCARE" : null), status : "ACTIVE", authorized : [], writes : "NONE" };
+			if ($state.current.data.role === "PROVIDER") $scope.consent.writesBool = true;
 			views.disableView("records_shared");
 			
 			if ($state.params.owner != null) {
@@ -178,10 +179,9 @@ angular.module('portal')
 		if ($scope.error && $scope.error.field && $scope.error.type) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
 		$scope.error = null;		
 		if (! $scope.myform.$valid) return;
+						
+		$scope.consent.writes = $scope.consent.writesBool ? "UPDATE_AND_CREATE" : "NONE";		
 				
-		$scope.consent.writes = $scope.consent.writesBool ? "UPDATE_AND_CREATE" : "NONE";
-		
-		
 		$scope.status.doAction("create", circles.createNew($scope.consent))		
 		.then(function(result) {
 			$scope.consent = result.data;

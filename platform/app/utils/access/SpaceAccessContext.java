@@ -85,5 +85,10 @@ public class SpaceAccessContext extends AccessContext {
 	public Map<String, Object> getQueryRestrictions() {
 		return restrictions;
 	}
+	
+	@Override
+	public boolean mayContainRecordsFromMultipleOwners() {		
+		return true;
+	}
 
 }

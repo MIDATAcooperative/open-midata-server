@@ -552,7 +552,7 @@ public class OAuth2 extends Controller {
 	private static final Set<UserFeature> determineRequirements(ExtendedSessionToken token, Plugin app, Set<StudyAppLink> links, Set<MidataId> confirmStudy) throws AppException {
 		Set<UserFeature> requirements;
 		if (token.userRole == null) throw new NullPointerException();
-		
+		if (confirmStudy==null) confirmStudy = Collections.emptySet();
 		if (app == null) {
 			requirements = InstanceConfig.getInstance().getInstanceType().defaultRequirementsPortalLogin(token.userRole);
 			return requirements;
@@ -702,7 +702,8 @@ public class OAuth2 extends Controller {
 		String securityToken = JsonValidation.getStringOrNull(json, "securityToken");
 				
 		if (notok!=null && token.securityToken != null) {
-			notok.remove(UserFeature.AUTH2FACTOR);		
+			notok.remove(UserFeature.AUTH2FACTOR);
+			notok.remove(UserFeature.PHONE_VERIFIED);		
 			return;
 		}
 		
@@ -761,7 +762,7 @@ public class OAuth2 extends Controller {
 		
 		if (notok!=null && notok.contains(UserFeature.AUTH2FACTOR)) {
 			if (securityToken == null) {
-				Authenticators.getInstance(user.authType).startAuthentication(user._id, "Token", user);
+				Authenticators.getInstance(user.authType).startAuthentication(user._id, "Code", user);
 				notok.clear();
 				notok.add(UserFeature.AUTH2FACTOR);
 			} else {
@@ -821,7 +822,7 @@ public class OAuth2 extends Controller {
 	private static MobileAppInstance loginAppInstance(ExtendedSessionToken token, MobileAppInstance appInstance, User user, boolean autoConfirm) throws AppException {
 		if (appInstance != null && autoConfirm) {
 			  MobileAPI.refreshApp(appInstance, token.currentExecutor, token.appId, user, token.device);	
-		} else {						
+		} else {				  
 			  appInstance = MobileAPI.installApp(token.currentExecutor, token.appId, user, token.device, autoConfirm, token.confirmations);
 		}
 		if (token.currentExecutor == null) token.currentExecutor = appInstance._id;
@@ -998,6 +999,8 @@ public class OAuth2 extends Controller {
 			ObjectNode obj = Json.newObject();								
 			obj.put("code", token.asCodeExchangeToken().encrypt());
 			obj.put("istatus", appInstance.status.toString());
+			
+			AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user, app._id);
 			
 			AuditManager.instance.success();
 					

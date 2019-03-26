@@ -382,8 +382,9 @@ public class MobileAPI extends Controller {
 	
 	public static MobileAppInstance installApp(MidataId executor, MidataId appId, User member, String phrase, boolean autoConfirm, Set<MidataId> studyConfirm) throws AppException {
 		Plugin app = Plugin.getById(appId, Sets.create("name", "type", "pluginVersion", "defaultQuery", "predefinedMessages", "termsOfUse", "writes", "defaultSubscriptions"));
-
+       
 		Set<StudyAppLink> links = StudyAppLink.getByApp(appId);
+		if (studyConfirm==null) studyConfirm = Collections.emptySet();
 		
 		for (StudyAppLink sal : links) {
 			if (sal.isConfirmed()) {
