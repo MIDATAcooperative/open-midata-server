@@ -75,7 +75,9 @@ public class SubscriptionProcessor extends AbstractActor {
 			List<SubscriptionData> allMatching = null;
 		
 			allMatching = SubscriptionData.getByOwnerAndFormat(triggered.affected, triggered.type, SubscriptionData.ALL);
-						
+				
+			boolean anyAnswered = false;
+			
 			for (SubscriptionData subscription : allMatching) {	
 				System.out.println("ok:"+subscription.active+" "+subscription.content+" "+triggered.getEventCode());
 				boolean answered = false;
@@ -97,9 +99,11 @@ public class SubscriptionProcessor extends AbstractActor {
 					} else if (channel.getType().equals(SubscriptionChannelType.EMAIL)) {
 						processEmail(subscription, triggered, channel);
 						answered = true;
+						anyAnswered = true;
 					} else if (channel.getType().equals(SubscriptionChannelType.SMS)) {
 						processSMS(subscription, triggered, channel);
 						answered = true;
+						anyAnswered = true;
 					}
 					Stats.finishRequest(TRIGGER, triggered.getDescription(), null, "200", Collections.emptySet());
 					//System.out.println("ok4");
@@ -108,9 +112,14 @@ public class SubscriptionProcessor extends AbstractActor {
 						//System.out.println("SEND DEFAULT ANSWER");
 						String app = triggered.getApp() != null ? triggered.getApp().toString() : null;
 						getSender().tell(new MessageResponse("No action",-1, app), getSelf());
+						anyAnswered = true;
 					}
 				}
-							
+				
+				if (!anyAnswered) {
+					String app = triggered.getApp() != null ? triggered.getApp().toString() : null;
+					getSender().tell(new MessageResponse("No action",-1, app), getSelf());
+				}
 			}
 			
 		} catch (Exception e) {			

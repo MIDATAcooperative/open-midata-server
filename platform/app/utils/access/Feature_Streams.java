@@ -457,5 +457,70 @@ public class Feature_Streams extends Feature {
 			return Pair.of(inputQuery, null);
 		}
 	}
+	
+	public static void streamJoin(AccessContext context) throws AppException {
+		AccessLog.logBegin("start streams optimization");
+		List<DBRecord> streams = QueryEngine.listInternal(context.getCache(), context.getTargetAps(), context, CMaps.map("owner", "self").map("streams","only"), Sets.create(streamFields));
+		Map<String, List<DBRecord>> ordered = new HashMap<String, List<DBRecord>>();
+		AccessLog.log("found streams: "+streams.size());
+		// Sort streams
+		for (DBRecord stream : streams) {
+			String key = "";
+			boolean skip = false;
+			for (String field : streamFields) {
+				Object o = stream.meta.get(field); 
+				if (o==null) skip = true;
+				key+=(o!=null?o.toString():"null")+"//";
+			}
+			if (skip) continue;
+			List<DBRecord> recs = ordered.get(key);
+			if (recs == null) {
+				recs = new ArrayList<DBRecord>();
+				ordered.put(key, recs);
+			}
+			recs.add(stream);
+		}
+		
+		// Check streams
+		for (String key : ordered.keySet()) {
+			AccessLog.log(key);
+			List<DBRecord> streamrecs = ordered.get(key);
+			if (streamrecs.size() > 2) {
+				AccessLog.logBegin("start optimize streams :"+key);
+				Map<String, Object> props = CMaps.map("owner","self");
+				for (String field : streamFields) props.put(field, streamrecs.get(0).meta.get(field));
+				List<DBRecord> recs = QueryEngine.listInternal(context.getCache(), context.getTargetAps(), context, props, Sets.create(streamFields,"_id"));
+				AccessLog.log("Number of streams in group="+streamrecs.size());
+				AccessLog.log("Number of records="+recs.size());
+				// Do not optimize for full streams
+				if (recs.size() > 1000) {
+					AccessLog.logEnd("end optimize streams :"+key+" (too many entries)");
+					continue;
+				}
+				
+				DBRecord newstream = createStream(context, context.getOwner(), context.getTargetAps(), props, false);
+				APS newstreamaps = context.getCache().getAPS(newstream._id, context.getOwner());
+				newstreamaps.addPermission(recs, false);
+				AccessLog.log("Change records and remove from old stream");
+				
+				for (DBRecord record : recs) {															
+					record.stream = newstream._id;
+					DBRecord.set(record._id, "stream", record.stream);
+					if (record.direct) {
+						record.direct = false;
+						DBRecord.set(record._id, "direct", false);
+					} else {
+						APS oldstreamaps = context.getCache().getAPS(record.stream, record.owner);
+						oldstreamaps.removePermission(record);
+					}																				
+				}
+				
+				RecordManager.instance.wipe(context.getOwner(), streamrecs);
+				AccessLog.logEnd("end optimize streams :"+key);
+			}
+		}
+		
+		AccessLog.logEnd("end streams optimization");
+	}
     
 }

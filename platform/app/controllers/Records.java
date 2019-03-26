@@ -282,7 +282,7 @@ public class Records extends APIController {
 
 		for (Space space : spaces) {
 			if (spaceIds.contains(space._id)) {
-				RecordManager.instance.share(userId, owner.myaps, space._id, recordIds, false);
+				RecordManager.instance.share(userId, owner.myaps, space._id, recordIds, true);
 			} else {
 				RecordManager.instance.unshare(userId, space._id, recordIds);
 			}
@@ -381,6 +381,7 @@ public class Records extends APIController {
 				if (space == null) {
 					throw new BadRequestException("error.unknown.consent", "Consent not found");
 				}
+				withMember = true;
 			} else {
 				ConsentType type = consent.type;
 
@@ -388,7 +389,7 @@ public class Records extends APIController {
 					throw new BadRequestException("error.no_alter.consent", "Consents for studies may not be altered.");
 				if (!userId.equals(consent.owner) && !consent.status.equals(ConsentStatus.UNCONFIRMED))
 					throw new BadRequestException("error.no_alter.consent", "Consent may not be altered.");
-				withMember = !type.equals(ConsentType.STUDYPARTICIPATION);
+				withMember = false;
 				hasAccess = userId.equals(consent.owner);
 				apsOwner = consent.owner;
 			}

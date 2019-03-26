@@ -519,6 +519,7 @@ public class PluginsAPI extends APIController {
 		if (record.format==null) record.format = "application/json";
 		if (record.content==null) record.content = "other";
 		if (record.owner==null) record.owner = inf.ownerId;
+		if (record.name==null) record.name="unnamed";
 		
 		DBRecord dbrecord = RecordConversion.instance.toDB(record);
         				
@@ -568,15 +569,16 @@ public class PluginsAPI extends APIController {
 		if (inf.executorId.equals(inf.ownerId)) {
 			while (myContext != null) {
 				if (!myContext.isIncluded(dbrecord)) {
-					RecordManager.instance.share(inf.executorId, inf.ownerId, myContext.getTargetAps(), records, false);
+					RecordManager.instance.share(inf.executorId, inf.ownerId, myContext.getTargetAps(), records, !myContext.getOwner().equals(dbrecord.owner));
 				}
 				myContext = myContext.getParent();
 			}									
 		} else {
-			myContext = myContext.getParent();
+			
+			myContext = myContext.getParent();			
 			while (myContext != null) {
 				if (!myContext.isIncluded(dbrecord)) {
-					RecordManager.instance.share(inf.executorId, context.getTargetAps(), myContext.getTargetAps(), records, false);
+					RecordManager.instance.share(inf.executorId, context.getTargetAps(), myContext.getTargetAps(), records, !myContext.getOwner().equals(dbrecord.owner));
 				}
 				myContext = myContext.getParent();
 			}					

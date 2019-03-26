@@ -309,7 +309,13 @@ public class Users extends APIController {
 			}
 		}
 		
-		AuditManager.instance.addAuditEvent(AuditEventType.USER_ADDRESS_CHANGE, user);
+		if (json.has("country")) {
+		  AuditManager.instance.addAuditEvent(AuditEventType.USER_ADDRESS_CHANGE, user);
+		} else if (json.has("phone")) {
+		  AuditManager.instance.addAuditEvent(AuditEventType.USER_PHONE_CHANGE, user);
+		} else {
+		  AuditManager.instance.addAuditEvent(AuditEventType.USER_SETTINGS_CHANGE, user);
+		}
 		
 		//User.set(user._id, "email", user.email);
 		//User.set(user._id, "emailLC", user.emailLC);
