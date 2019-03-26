@@ -80,8 +80,10 @@ public class Feature_Pseudonymization extends Feature {
 				if (ct.equals("Patient"))
 					r.meta = null;
 
-			} else {				
-				r.owner = r.context.getOwner();
+			} else {		
+				if (!r.context.mayContainRecordsFromMultipleOwners() || r.owner==null) {
+				  r.owner = r.context.getOwner();
+				} 
 			}
 
 			return r;

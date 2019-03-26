@@ -378,6 +378,7 @@ public class Query {
 	private void process() throws AppException {
 		 if (properties.containsKey("$or")) return; //throw new InternalServerException("error.internal", "Query may not contain or");
 		 if (fields.contains("group") && !fields.contains("content")) fields.add("content");
+		 if (fields.contains("ownerName") && !fields.contains("owner")) fields.add("owner");
 		
 		 if (properties.containsKey("history-date") || properties.containsKey("version") || properties.containsKey("history") || isStreamOnlyQuery()) properties.put("deleted", true);
 		

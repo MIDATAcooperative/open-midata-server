@@ -85,4 +85,9 @@ public class AppAccessContext extends AccessContext {
 	public boolean produceHistory() {
 		return !plugin.noUpdateHistory;
 	}
+	
+	@Override
+	public boolean mayContainRecordsFromMultipleOwners() {		
+		return true;
+	}
 }

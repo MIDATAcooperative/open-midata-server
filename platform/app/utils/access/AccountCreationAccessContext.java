@@ -58,5 +58,10 @@ public class AccountCreationAccessContext extends AccessContext {
 	public boolean mayAccess(String content, String format) throws AppException {
 		return true;
 	}
+	
+	@Override
+	public boolean mayContainRecordsFromMultipleOwners() {		
+		return false;
+	}
 
 }

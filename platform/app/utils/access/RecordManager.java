@@ -339,7 +339,7 @@ public class RecordManager {
 	
 	protected void shareUnchecked(List<DBRecord> recordEntries, List<DBRecord> alreadyContained, APS apswrapper, boolean withOwnerInformation) throws AppException {
 		
-		withOwnerInformation = false; // Preparing to remove this feature completely
+		// withOwnerInformation = false; // Preparing to remove this feature completely
 		
 		if (alreadyContained.size() == recordEntries.size()) {
         	
@@ -748,7 +748,7 @@ public class RecordManager {
 		AccessLog.logEnd("end deleteRecord");
 	}
 	
-	private void wipe(MidataId executingPerson, List<DBRecord> recs) throws AppException {
+	protected void wipe(MidataId executingPerson, List<DBRecord> recs) throws AppException {
 		APSCache cache = getCache(executingPerson);
 		if (recs.size() == 0) return;
 		
@@ -1429,6 +1429,8 @@ public class RecordManager {
 		}
 		
 		AccessLog.logEnd("end searching for empty streams");
+		
+		Feature_Streams.streamJoin(createContextFromAccount(userId));
 	}
 	
 	public void checkRecordsInAPS(MidataId userId, MidataId apsId, boolean instreams) throws AppException {
