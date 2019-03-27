@@ -336,7 +336,7 @@ public class Feature_Streams extends Feature {
 	
 
 	public static void placeNewRecordInStream(AccessContext context, DBRecord record, MidataId alternateAps) throws AppException {
-		 Map<String, Object> props = new HashMap<String, Object>();
+		 Map<String, Object> props = new HashMap<String, Object>();		
 		 if (record.stream == null) {
 			  for (String field : streamFields) props.put(field, record.meta.get(field));
 			  if (context.getCache().getAPS(record.owner, record.owner).isAccessible()) {		 
@@ -489,7 +489,7 @@ public class Feature_Streams extends Feature {
 				AccessLog.logBegin("start optimize streams :"+key);
 				Map<String, Object> props = CMaps.map("owner","self");
 				for (String field : streamFields) props.put(field, streamrecs.get(0).meta.get(field));
-				List<DBRecord> recs = QueryEngine.listInternal(context.getCache(), context.getTargetAps(), context, props, Sets.create(streamFields,"_id"));
+				List<DBRecord> recs = QueryEngine.listInternal(context.getCache(), context.getTargetAps(), context, props, Sets.create(streamFields,"_id","owner"));
 				AccessLog.log("Number of streams in group="+streamrecs.size());
 				AccessLog.log("Number of records="+recs.size());
 				// Do not optimize for full streams
@@ -503,16 +503,16 @@ public class Feature_Streams extends Feature {
 				newstreamaps.addPermission(recs, false);
 				AccessLog.log("Change records and remove from old stream");
 				
-				for (DBRecord record : recs) {															
-					record.stream = newstream._id;
-					DBRecord.set(record._id, "stream", record.stream);
+				for (DBRecord record : recs) {																				
 					if (record.direct) {
 						record.direct = false;
 						DBRecord.set(record._id, "direct", false);
 					} else {
 						APS oldstreamaps = context.getCache().getAPS(record.stream, record.owner);
 						oldstreamaps.removePermission(record);
-					}																				
+					}
+					record.stream = newstream._id;
+					DBRecord.set(record._id, "stream", record.stream);
 				}
 				
 				RecordManager.instance.wipe(context.getOwner(), streamrecs);
