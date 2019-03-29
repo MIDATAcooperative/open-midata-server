@@ -270,6 +270,7 @@ public class Application extends APIController {
 			ExtendedSessionToken stoken = new ExtendedSessionToken();
 			stoken.userRole = UserRole.valueOf(role);
 			stoken.ownerId = userId;
+			stoken.created = System.currentTimeMillis();
 			if (password==null) stoken.securityToken = "-";
 			stoken.set();
 			
@@ -299,7 +300,7 @@ public class Application extends APIController {
 		    		   && System.currentTimeMillis() - user.resettokenTs < EMAIL_TOKEN_LIFETIME) {	   
 			   
 		    	   if (handle == null) {
-		    		   handle = KeyManager.instance.login(60000, true);		    	   
+		    		   handle = KeyManager.instance.login(PortalSessionToken.LIFETIME, true);		    	   
 		    	       int keytype = KeyManager.instance.unlock(user._id, null);
 		    	       
 		               if (keytype == KeyManager.KEYPROTECTION_FAIL || keytype == KeyManager.KEYPROTECTION_AESKEY) {

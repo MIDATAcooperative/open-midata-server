@@ -10,6 +10,11 @@
 		
 		   <p translate="serviceleave.thankyou"></p>
 		   
+		   <div ng-show="!callback">
+		     <p translate="serviceleave.continue">		   
+		     </p>
+		     <button type="button" class="btn btn-primary" translate="serviceleave.logout_btn" ng-click="logout();"></button>
+		   </div>
 		   <div ng-show="callback=='close'">
 		     <button class="btn btn-primary" translate="serviceleave.goodbye_btn" ng-click="close();"></button>
 		   </div>

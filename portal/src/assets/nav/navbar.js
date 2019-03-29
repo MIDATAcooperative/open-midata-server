@@ -5,17 +5,20 @@ angular.module('portal')
 	$scope.user = { subroles:[] };	
 	$scope.beta = ENV.beta;	
 	$rootScope.greeting = {};
-	
-	$translatePartialLoader.addPart($state.current.data.locales);
-	console.log($state.current.data.locales);
+		
+		
+	$translatePartialLoader.addPart($state.current.data.locales);	
 	if ($state.current.data.locales == "admins") $translatePartialLoader.addPart("developers");
 	
 	session.viewHeight = "600px";	
 	session.login($state.current.data.role);
 	
+	$scope.locked = function() {
+		return $state.params.action != null;	
+	};	
 	
 	$scope.updateNav = function() {
-		$scope.circles = circles;
+		$scope.circles = circles;		
 		circles.unconfirmed = 0;
 		// get current user
 		session.currentUser.then(function(userId) {			
@@ -77,6 +80,7 @@ angular.module('portal')
 }])
 .controller('PublicNavbarCtrl', ['$scope', '$state', '$translate', '$translatePartialLoader', 'session', 'ENV', function($scope, $state, $translate, $translatePartialLoader, session, ENV) {
 	$scope.notPublic = ENV.instanceType == "prod";
+	$scope.action = $state.params.action;	
 	
 	if (!$state.current.data || !$state.current.data.keep) session.logout();
 	$translatePartialLoader.addPart($state.current.data.locales);	

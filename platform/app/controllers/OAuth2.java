@@ -489,7 +489,7 @@ public class OAuth2 extends Controller {
 	 * @return
 	 * @throws AppException
 	 */
-	private static final Plugin validatePlugin(ExtendedSessionToken token, JsonNode json) throws AppException {
+	static final Plugin validatePlugin(ExtendedSessionToken token, JsonNode json) throws AppException {
 		
 		
 		// MIDATA PORTAL ??
