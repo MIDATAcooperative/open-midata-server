@@ -2,7 +2,7 @@
    	<div class="welcome" ng-controller="LoginCtrl" ng-cloak >
 		<div id="mainheader"><div class="container"><div class="row">
 			<!-- Login -->
-			<div class="col-sm-12" style="margin-top:30px;margin-bottom:30px;font-family:Sans-serif;color:white">
+			<div class="col-sm-12 d-none d-md-block" style="margin-top:30px;margin-bottom:30px;font-family:Sans-serif;color:white">
 
               <div ng-hide="notPublic" style="margin-bottom:40px"></div>
               
@@ -27,6 +27,11 @@
 		              		<h3 class="panel-title" translate="member_login.sign_in"></h3>
 		            	</div>
 		            	<div class="panel-body">
+		            	    <div class="alert alert-info" ng-show="serviceLogin">
+		            	      <strong class="alert-heading" translate="login.service_login"></strong>                 
+                              <div translate="login.service_login2"></div>                              
+                            </div>
+		            	
 			            	<div ng-show="error" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
 			            	  <span translate="{{ error.code || error }}"></span>
 			            	  <span ng-if="error.code == 'error.invalid.credentials_hint'">
@@ -50,6 +55,10 @@
 								<button type="submit" ng-disabled="status.action=='login'" class="btn btn-lg btn-primary btn-block" translate="login.sign_in_btn"></button>
 								<div class="margin-top">
 								  <a ui-sref='public.lostpw' translate="login.forgot_your_password"></a>
+								</div>
+								<div class="margin-top" ng-show="serviceLogin">
+								  <hr>
+								  <a class="btn btn-primary btn-block" ui-sref="^.registration({action:action})" translate="login.no_account"></a>
 								</div>
 							</form>
 		            	</div>

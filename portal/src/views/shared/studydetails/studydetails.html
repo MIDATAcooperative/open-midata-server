@@ -82,6 +82,10 @@
 		                
 		             
                     </div>
+                     <div ng-show="maySkip()" class="margin-top">		            		              		            		              
+				    <button  ng-click="skip()" class="btn btn-default"
+		                translate="common.skip_btn"></button>		                		             
+                    </div>
 				</div>
 			</div>
 
@@ -91,7 +95,10 @@
 
 		<div class="col-sm-8">
 				
-				    
+			<div class="alert alert-info" ng-show="pleaseReview">
+                 <h4 class="alert-heading" translate="studydetails.please_review1"></h4>
+                 <p translate="studydetails.please_review2"></p>
+            </div>
 				    
 				    <div class="panel panel-primary" ng-if="study.infosPart.length">
 				        <div class="panel-heading" translate="studydetails.for_participants"></div>

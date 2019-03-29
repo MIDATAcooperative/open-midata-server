@@ -6,6 +6,12 @@
   </div>
   <div class="panel-body">
   <loader busy="status.isBusy !== false">
+  <div class="alert alert-info" translate ng-show="pleaseReview">
+    <h4 class="alert-heading" translate="editconsent.please_review1"></h4>
+    <p ng-show="consent.status=='UNCONFIRMED'" translate="editconsent.please_review2a"></p>
+    <p ng-hide="consent.status=='UNCONFIRMED'" translate="editconsent.please_review2b"></p>
+  </div>
+  
   <p ng-hide="consent" class="alert alert-warning" translate="error.unknown.consent"></p>
   <form ng-show="consent" name="myform" class="css-form form-horizontal" ng-submit="create()" novalidate role="form">
     <div class="row">  
@@ -179,9 +185,9 @@
 	  <button class="btn btn-default" ng-show="mayChangeData()" ui-sref="^.recordsharing({ selected : consentId, selectedType : 'circles' })" translate="editconsent.view_change_selection_btn"></button>
 	
 	
-	
 
-	<a  ui-sref="^.circles" class="btn btn-default" translate="common.back_btn"></a>
+	<a  ui-sref="^.circles" class="btn btn-default" ng-hide="maySkip()" translate="common.back_btn"></a>
+	<button type="button" ng-click="skip();" ng-show="maySkip()" class="btn btn-default" translate="common.skip_btn"></button>
 	<button type="button" ng-click="confirmConsent();" ng-show="mayConfirm()" class="btn btn-primary" translate="editconsent.confirm_btn"></button>
 	<button type="button" ng-click="rejectConsent();" ng-show="mayReject()" class="btn btn-danger" translate="editconsent.reject_btn"></button>
     <button type="button" ng-click="deleteConsent();" ng-show="mayDelete()" class="btn btn-danger" translate="editconsent.delete_btn"></button>

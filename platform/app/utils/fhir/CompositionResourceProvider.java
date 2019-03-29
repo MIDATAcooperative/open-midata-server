@@ -330,7 +330,14 @@ public class CompositionResourceProvider extends RecordBasedResourceProvider<Com
 		// Task a : Set Record "content" field by using a code from the resource (or a fixed value or something else useful)
 		setRecordCodeByCodeableConcept(record, theComposition.getType(), null);
 		
-		record.name = theComposition.getTitle();		
+		record.name = theComposition.getTitle();
+		if (record.name == null && theComposition.hasDate()) {
+			try {
+				record.name = FHIRTools.stringFromDateTime(theComposition.getDateElement());
+			} catch (Exception e) {				
+			}			
+		}
+		if (record.name == null) record.name = "Composition";
 
 		// Task c : Set record owner based on subject and clean subject if this was possible
 		Reference subjectRef = theComposition.getSubject();

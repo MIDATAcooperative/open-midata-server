@@ -11,6 +11,7 @@ angular.module('portal')
 	$scope.translate = $translate;
 	$scope.status = new status(true);
 	$scope.lang = $translate.use();	
+	$scope.pleaseReview= ($state.params.action != null);
 	
 	views.link("shared_with_study", "record", "record");
 	views.link("shared_with_study", "shareFrom", "share");
@@ -122,6 +123,16 @@ angular.module('portal')
 		return $scope.participation != null && $scope.participation.pstatus == "ACCEPTED";
 	};
 	
+	$scope.maySkip = function() {
+		return $state.params.action != null;
+	};
+	
+	$scope.skip = function() {
+		if (!actions.showAction($state)) {
+		      $scope.reload();
+		}
+	};
+	
 	$scope.requestParticipation = function() {
 		$scope.error = null;
 		
@@ -140,7 +151,9 @@ angular.module('portal')
 		
 		server.post(jsRoutes.controllers.members.Studies.noParticipation($scope.studyid).url).
 		then(function(data) { 				
-		    $scope.reload();
+			if (!actions.showAction($state)) {
+			      $scope.reload();
+		    }
 		}, function(err) {
 			$scope.error = err.data;			
 		});
@@ -151,7 +164,9 @@ angular.module('portal')
 		
 		server.post(jsRoutes.controllers.members.Studies.retreatParticipation($scope.studyid).url).
 		then(function(data) { 				
-		    $scope.reload();
+			if (!actions.showAction($state)) {
+			      $scope.reload();
+			}
 		}, function(err) {
 			$scope.error = err.data;			
 		});
