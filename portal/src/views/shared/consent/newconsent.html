@@ -4,6 +4,10 @@
   </div>
   <div class="panel-body">
    
+  <div class="alert alert-info" translate ng-show="pleaseReview">
+    <h4 class="alert-heading" translate="newconsent.please_review1"></h4>
+    <p translate="newconsent.please_review2"></p>
+  </div>
   <form name="myform" class="css-form form-horizontal" ng-submit="create()" novalidate role="form">
     <p ng-show="error && !error.field" translate="{{ error.code || error }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
 	</p>	
@@ -224,8 +228,14 @@
     </div>
     
     <div ng-show="consent.type" class="margin-top">
+      <button type="button" ng-click="skip();" ng-show="maySkip()" class="btn btn-default" translate="common.skip_btn"></button>
       <span ng-hide="consent.query">
-        <button ng-show="consent.authorized.length || consent.usepasscode || consent.externalAuthorized" type="submit" class="btn btn-primary" translate="newconsent.create_btn"></button>
+        <span ng-hide="pleaseReview">
+          <button ng-show="consent.authorized.length || consent.usepasscode || consent.externalAuthorized" type="submit" class="btn btn-primary" translate="newconsent.create_btn"></button>
+        </span>
+        <span ng-show="pleaseReview">
+          <button ng-show="consent.authorized.length || consent.usepasscode || consent.externalAuthorized" type="submit" class="btn btn-primary" translate="newconsent.create2_btn"></button>
+        </span>
       </span>
       <span ng-show="consent.query">
         <button ng-show="consent.authorized.length || consent.usepasscode" type="submit" class="btn btn-primary" translate="newconsent.create2_btn"></button>

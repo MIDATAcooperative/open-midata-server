@@ -478,6 +478,7 @@
     "view_btn" : "View",
     "submit_btn" : "Submit",
     "delete_btn" : "Delete",
+    "skip_btn" : "Skip (No change)",
     "or" : "or",
     "save_ok" : "Successfully Saved",
     "yesno" : {
@@ -600,6 +601,9 @@
     "sign_in_btn" : "Log in",
     "forgot_your_password" : "Forgot your password?",
     "login_btn" : "Log in",
+    "service_login" : "Confirmation-Request Login",
+    "service_login2" : "After login you will be asked for confirmation of consents and/or participation with research projects.",
+    "no_account" : "I do not have a Midata account yet.",
     
     "info1" : "Dear study participant",
     "info2" : "You already have a MIDATA account, log in with your email address and password.",
@@ -775,7 +779,9 @@
 	"status" : "Status",
 	"recommended_apps" : "Recommended Apps",
 	"use_app" : "Use now",
-	"for_participants" : "Participation Info"
+	"for_participants" : "Participation Info",
+	"please_review1" : "Decide about participation",
+    "please_review2" : "Please review this research project. Do you want to participate? Click on 'Skip (No change)' if you want to leave this page without any changes."	
   },
 
   "user" : {
@@ -863,7 +869,9 @@
     "consent_empty" : "This consent is empty at the beginning. You can select the data you want to share with this consent afterwards.",
     "create_btn" : "Create and Data Selection",
     "create2_btn" : "Agree to this consent", 
-    "extended_btn" : "Show advanced options"
+    "extended_btn" : "Show advanced options",
+    "please_review1" : "New proposed consent",
+    "please_review2" : "Do you agree to this new consent? Please check content and click on the 'Agree to this consent' button if you agree. Otherwise click on the 'Skip (No change)' button."
   },
 
   "editconsent" : {
@@ -900,7 +908,10 @@
 	"view_change_selection_btn" : "View/Change data selection",
 	"confirm_btn" : "Confirm this Consent",
 	"reject_btn" : "Reject this Consent",
-    "delete_btn" : "Delete this Consent"
+    "delete_btn" : "Delete this Consent",
+    "please_review1" : "Consent for review",
+    "please_review2a" : "Please review this consent. Please click on 'Confirm this Consent' if you agree. Click on 'Reject this consent' if you do not agree.",
+    "please_review2b" : "Please review this existing consent. Click on 'Skip (No change)' button to leave this page without any changes. Click on 'Reject this consent' if you do not agree any longer. "
   },
   
   "editconsent2" : {
@@ -1225,6 +1236,8 @@
   "serviceleave" : {
     "title" : "You finished your session?",
     "thankyou" : "Thank you for your help!",
+    "continue" : "Please use the top menu to continue your session or log out.",
+    "logout_btn" : "Sign out",
     "goodbye_btn" : "End session and close window",
     "logoutreturn" : "You will be redirected to the calling page.",
     "return_btn" : "Logout and continue"

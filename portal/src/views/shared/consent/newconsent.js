@@ -27,6 +27,7 @@ angular.module('portal')
 	};
 	$scope.options = {};
 	$scope.writeProtect = true;
+	$scope.pleaseReview= ($state.params.action != null);
 	views.reset();
 		
 	var getName = function(obj) {		
@@ -362,6 +363,16 @@ angular.module('portal')
 		if ($scope.writeProtect) return false;
 		
 		return true;
+	};
+	
+	$scope.maySkip = function() {
+		return $state.params.action != null && $scope.consent && $scope.consent.status != "UNCONFIRMED";
+	};
+	
+	$scope.skip = function() {
+		if (!actions.showAction($state)) {
+		      $scope.reload();
+		}
 	};
 	
 	$scope.showStudyDetails = function() {

@@ -8,6 +8,9 @@ angular.module('portal')
 	$scope.action = $state.params.action;
 	$scope.offline = (window.jsRoutes === undefined) || (window.jsRoutes.controllers === undefined);	
 	$scope.notPublic = ENV.instanceType == "prod";
+	
+	$scope.serviceLogin = ($state.params.action != null);	
+	
 	$scope.roles = [
 		{ value : "MEMBER", name : "enum.userrole.MEMBER" },
 		{ value : "PROVIDER" , name : "enum.userrole.PROVIDER"},
