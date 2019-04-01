@@ -91,6 +91,7 @@ public class FHIRServlet extends RestfulServer {
       myProviders.put("Sequence",  new SequenceResourceProvider());
       myProviders.put("Composition", new CompositionResourceProvider());
       myProviders.put("Specimen", new SpecimenResourceProvider());
+      myProviders.put("Location", new LocationResourceProvider());
       
       resourceProviders.addAll(myProviders.values());
       
