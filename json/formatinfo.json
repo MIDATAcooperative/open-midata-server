@@ -35,3 +35,4 @@
 {"_id":{"$oid":"5b8514499210b300979f2a1c"},"format":"fhir/Sequence","comment":"FHIR Sequence Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"5b8514499210b300979f2a1d"},"format":"fhir/Composition","comment":"FHIR Composition Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"5c051eac49a2b9fefed18b0c"},"format":"fhir/Specimen","comment":"FHIR Specimen Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"5ca1db3ebaf9748016abfd0c"},"format":"fhir/Location","comment":"FHIR Location Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
