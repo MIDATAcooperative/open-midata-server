@@ -1,6 +1,7 @@
 package controllers;
 
 import java.util.EnumSet;
+import java.util.Map;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -160,6 +161,7 @@ public class QuickRegistration extends APIController {
 		if (json.has("priv_pw")) {
 			  String pub = JsonValidation.getString(json, "pub");
 			  String pk = JsonValidation.getString(json, "priv_pw");
+			  Map<String, String> recover = JsonExtraction.extractStringMap(json.get("recovery"));
 			  		        	      		  		
 			  user.publicExtKey = KeyManager.instance.readExternalPublicKey(pub);
 			  
@@ -167,10 +169,12 @@ public class QuickRegistration extends APIController {
 			  handle = KeyManager.instance.login(PortalSessionToken.LIFETIME, true);
 			  
 			  user.security = AccountSecurityLevel.KEY_EXT_PASSWORD;		
-			  user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(user._id, null);								
+			  user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(user._id, null);
+			  user.recoverKey = JsonValidation.getStringOrNull(json, "recoverKey");
 			  Member.add(user);
 			  
 			  KeyManager.instance.newFutureLogin(user);	
+			  PWRecovery.storeRecoveryData(user._id, recover);
 				
 			  user.myaps = RecordManager.instance.createPrivateAPS(user._id, user._id);
 			  Member.set(user._id, "myaps", user.myaps);

@@ -49,4 +49,4 @@
 {"_id":{"$oid":"5909f37caed6450e198a9451"},"system":"v1","name":"behavior","label":{"de":"Verhalten","en":"Behavior"},"parent":"health","contents":["snomed/285854004","snomed/274776000","loinc/63582-1","snomed/363870007","behavior/craves-for-drugs","snomed/160573003","snomed/364645004"]}
 {"_id":{"$oid":"598025dbaed6450a5c70f846"},"system":"v1","name":"habits","label":{"de":"Gewohnheiten","en":"Habits"},"parent":"lifestyle","contents":["snomed/57427004"]}
 {"_id":{"$oid":"59a3fa4eaed645237854253d"},"system":"v1","name":"media","label":{"de":"Medien","en":"Media"},"parent":"other","contents":["profile/picture"]}
-{"_id":{"$oid":"5a9e4dec79c721367b535431"},"system":"v1","name":"publicinfo","label":{"de":"Öffentliche Informationen","en":"Public Information","it":"Informazioni pubbliche","fr":"Informations publiques"},"parent":"other","contents":["public/pollen-forecast"]}
+{"_id":{"$oid":"5a9e4dec79c721367b535431"},"system":"v1","name":"publicinfo","label":{"de":"Öffentliche Informationen","en":"Public Information","it":"Informazioni pubbliche","fr":"Informations publiques"},"parent":"other","contents":["public/pollen-measure","public/pollen-forecast"]}
