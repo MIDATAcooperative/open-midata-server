@@ -116,11 +116,12 @@ public class SubscriptionProcessor extends AbstractActor {
 						anyAnswered = true;
 					}
 				}
-				
-				if (!anyAnswered) {
-					String app = triggered.getApp() != null ? triggered.getApp().toString() : null;
-					getSender().tell(new MessageResponse("No action",-1, app), getSelf());
-				}
+								
+			}
+			
+			if (!anyAnswered) {
+				String app = triggered.getApp() != null ? triggered.getApp().toString() : null;
+				getSender().tell(new MessageResponse("No action",-1, app), getSelf());
 			}
 			
 		} catch (Exception e) {			
