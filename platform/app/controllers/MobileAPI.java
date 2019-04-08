@@ -554,8 +554,7 @@ public class MobileAPI extends Controller {
 	 * @return file
 	 * @throws AppException
 	 * @throws JsonValidationException
-	 */
-	@BodyParser.Of(BodyParser.Json.class)
+	 */	
 	@MobileCall	
 	public Result getFile() throws AppException, JsonValidationException {
 		Stats.startRequest(request());

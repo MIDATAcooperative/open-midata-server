@@ -73,7 +73,7 @@ public class RecordManager {
 	public final static Set<String> COMPLETE_DATA_WITH_WATCHES = Collections.unmodifiableSet(Sets.create("id", "owner",
 			"app", "creator", "created", "name", "format",  "content", "code", "description", "isStream", "lastUpdated",
 			"data", "group", "watches", "stream"));
-	public final static Set<String> SHARING_FIELDS = Collections.unmodifiableSet(Sets.create("_id", "key", "owner", "format", "content", "created", "name", "isStream", "stream"));
+	public final static Set<String> SHARING_FIELDS = Collections.unmodifiableSet(Sets.create("_id", "key", "owner", "format", "content", "created", "name", "isStream", "stream", "app"));
 	
 	//public final static String STREAM_TYPE = "Stream";
 	public final static Map<String, Object> STREAMS_ONLY = Collections.unmodifiableMap(CMaps.map("streams", "only").map("flat", "true"));
