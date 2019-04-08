@@ -768,7 +768,8 @@ public class Application extends APIController {
 		  String pk = JsonValidation.getString(json, "priv_pw");
 		  Map<String, String> recover = JsonExtraction.extractStringMap(json.get("recovery"));
 		  		        	      		  		
-		  user.publicExtKey = KeyManager.instance.readExternalPublicKey(pub);		  
+		  user.publicExtKey = KeyManager.instance.readExternalPublicKey(pub);
+		  
 		  KeyManager.instance.saveExternalPrivateKey(user._id, pk);		  
 		  handle = KeyManager.instance.login(PortalSessionToken.LIFETIME, true);
 		  

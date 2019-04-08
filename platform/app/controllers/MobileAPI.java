@@ -725,6 +725,8 @@ public class MobileAPI extends Controller {
 		return ok();
 	}*/
 	
+	@MobileCall	
+	@BodyParser.Of(BodyParser.Json.class)
     public Result unshareRecord() throws AppException, JsonValidationException {
 		
 		Stats.startRequest(request());
@@ -760,7 +762,8 @@ public class MobileAPI extends Controller {
 		return recs.size();
 	}
 
-    
+    @MobileCall	
+    @BodyParser.Of(BodyParser.Json.class)
     public Result shareRecord() throws AppException, JsonValidationException {
 		
 		Stats.startRequest(request());

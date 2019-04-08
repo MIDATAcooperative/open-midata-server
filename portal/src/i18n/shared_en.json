@@ -278,7 +278,8 @@
 	   "ADDRESS_VERIFIED" : "Post address of user must have been verified",
 	   "PASSPORT_VERIFIED" : "ID card of users must have been verified",
 	   "MIDATA_COOPERATIVE_MEMBER" : "User must be member of the cooperative",
-	   "ADMIN_VERIFIED" : "Account must have been unlocked by a MIDATA administrator"
+	   "ADMIN_VERIFIED" : "Account must have been unlocked by a MIDATA administrator",
+	   "BIRTHDAY_SET" : "The birthday of the user must be known"
 	 },
 	 "writepermissiontype" : {
 	   "NONE" : "No data may be written.",
@@ -555,6 +556,7 @@
     "lastname" : "Surname",
     "gender" : "Gender",
     "birthday" : "Birth date",
+    "birthday2" : "Birth date (format: 31.12.1999)",
     "language" : "Preferred Language",
     "day" : "Day",
     "month" : "Month",
@@ -661,6 +663,7 @@
     "email_success" : "Email address has been confirmed.",
     "address_entered" : "Your postal address is required to use this service, please provide it.",
     "phone_entered" : "A mobile phone number is required to use this service, please provide it.",
+    "birthday_entered" : "A valid birthdate is required to use this service. Please add your birthdate to your account information. (Format example: 31.12.1999)",
     "admin_verified" : "Your account must be unlocked by a MIDATA administrator. Please retry later. If your account has not been unlocked for more than 24 hours, please contact MIDATA.",
     "terms_agreed" : "The MIDATA General Terms and Conditions have been updated. Please confirm that you agree to the new version.",
     "privacy_policy_agreed" : "The MIDATA Privacy Policy has been updated. Please confirm that you agree to the new version.",

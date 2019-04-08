@@ -23,11 +23,11 @@ angular.module('portal')
         	$scope.myform.agb.$error = { 'mustaccept' : true };
         }
 
-        
+        $scope.myform.birthday.$setValidity('date', true);
         if ($scope.registration.birthdayDay) {
           $scope.myform.birthday.$setValidity('date', dateService.isValidDate($scope.registration.birthdayDay, $scope.registration.birthdayMonth, $scope.registration.birthdayYear));
         }
-				
+        
      
         if ($scope.app && $scope.app.termsOfUse) {
         	$scope.myform.appAgb.$setValidity('mustaccept', $scope.registration.appAgb);
@@ -71,7 +71,17 @@ angular.module('portal')
 		var d = $scope.registration.birthdayDate;
 		
 		if (d) {
-			$scope.registration.birthday = d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+			var dparts = d.split("\.");
+			if (dparts.length != 3 || !dateService.isValidDate(dparts[0],dparts[1],dparts[2])) {
+			  $scope.myform.birthday.$setValidity('date', false);
+			  return;
+			} else {
+				if (dparts[2].length==2) dparts[2] = "19"+dparts[2];
+				$scope.registration.birthday = dparts[2]+"-"+pad(dparts[1])+"-"+pad(dparts[0]);
+				console.log($scope.registration.birthday);
+			}
+			
+			//$scope.registration.birthday = d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
 		} else {
         $scope.registration.birthday = $scope.registration.birthdayYear + "-" + 
                                        pad($scope.registration.birthdayMonth) + "-" +
@@ -154,6 +164,10 @@ angular.module('portal')
 	$scope.toggle = function(array,itm) {		
 		var pos = array.indexOf(itm);
 		if (pos < 0) array.push(itm); else array.splice(pos, 1);
+	};
+	
+	$scope.removeDateError = function() {
+		$scope.myform.birthday.$setValidity('date', true);
 	};
 	
 	$scope.days = [];
