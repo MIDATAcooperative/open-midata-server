@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('PostRegisterCtrl', ['$scope', '$state', '$stateParams', 'status', 'server', 'session', 'oauth', 'users', 'views', 'crypto', 'ENV', function($scope, $state, $stateParams, status, server, session, oauth, users, views, crypto, ENV) {
+.controller('PostRegisterCtrl', ['$scope', '$state', '$stateParams', 'status', 'server', 'session', 'oauth', 'users', 'views', 'crypto', 'ENV', 'dateService', function($scope, $state, $stateParams, status, server, session, oauth, users, views, crypto, ENV, dateService) {
 	
 	// init
 	$scope.passphrase = {};
@@ -79,6 +79,37 @@ angular.module('portal')
 		
 		$scope.registration.user = $scope.registration._id;									
 		$scope.status.doAction("changeAddress", users.updateAddress($scope.registration)).
+		then(function(data) { 
+			$scope.retry();
+		});
+	};
+	
+	$scope.changeBirthday = function() {		
+        
+		$scope.submitted = true;	
+		if ($scope.error && $scope.error.field && $scope.error.type) $scope.myformb[$scope.error.field].$setValidity($scope.error.type, true);
+		$scope.error = null;
+		
+		
+        var d = $scope.registration.birthdayDate;
+        var pad = function(n){
+		    return ("0" + n).slice(-2);
+		};
+		
+		var dparts = d.split("\.");
+		if (dparts.length != 3 || !dateService.isValidDate(dparts[0],dparts[1],dparts[2])) {
+		  $scope.myformb.birthday.$setValidity('date', false);
+		  return;
+		} else {
+			if (dparts[2].length==2) dparts[2] = "19"+dparts[2];
+			$scope.registration.birthday = dparts[2]+"-"+pad(dparts[1])+"-"+pad(dparts[0]);
+			console.log($scope.registration.birthday);
+		}					
+		
+		if (! $scope.myformb.$valid) return;
+		var upd = { user : $scope.registration._id, birthday : $scope.registration.birthday};
+											
+		$scope.status.doAction("changeAddress", server.post(jsRoutes.controllers.admin.Administration.changeBirthday().url, JSON.stringify(upd))).
 		then(function(data) { 
 			$scope.retry();
 		});
@@ -232,6 +263,10 @@ angular.module('portal')
 	$scope.terms = function(def) {
 		console.log("TERMS");
 		views.setView("terms", def, "Terms");
+	};
+	
+	$scope.removeDateError = function() {
+		$scope.myformb.birthday.$setValidity('date', true);
 	};
 	
 	$scope.agreedToTerms = function(terms) {

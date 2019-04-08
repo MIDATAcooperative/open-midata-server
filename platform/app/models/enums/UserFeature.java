@@ -1,5 +1,7 @@
 package models.enums;
 
+import java.util.Date;
+
 import models.Member;
 import models.User;
 import utils.InstanceConfig;
@@ -103,7 +105,10 @@ public enum UserFeature {
 			case MIDATA_COOPERATIVE_MEMBER: return user.contractStatus.equals(ContractStatus.SIGNED);
 			case ADMIN_VERIFIED: return user.status.equals(UserStatus.ACTIVE);
 			case PASSWORD_SET: return user.password != null;
-			case BIRTHDAY_SET: return (!(user instanceof Member)) || ((Member) user).birthday != null;
+			case BIRTHDAY_SET: 
+				if (!(user instanceof Member)) return true;
+				Member member = (Member) user;
+				return member.birthday != null && member.birthday.before(new Date(System.currentTimeMillis()-60l*60l*24l*365l*3l));
 			case NEWEST_TERMS_AGREED:
 				InstanceConfig ic = InstanceConfig.getInstance();
 				return user.termsAgreed != null && user.termsAgreed.contains(ic.getTermsOfUse());

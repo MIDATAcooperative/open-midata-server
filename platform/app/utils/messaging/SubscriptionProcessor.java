@@ -94,7 +94,8 @@ public class SubscriptionProcessor extends AbstractActor {
 					} else if (channel.getType().equals(SubscriptionChannelType.MESSAGE)) {
 						String endpoint = channel.getEndpoint();
 						if (endpoint != null && endpoint.startsWith("node://")) {
-							answered = processApplication(subscription, triggered, channel) || answered;							
+							answered = processApplication(subscription, triggered, channel) || answered;
+							if (answered) anyAnswered = true;
 						}						
 					} else if (channel.getType().equals(SubscriptionChannelType.EMAIL)) {
 						processEmail(subscription, triggered, channel);

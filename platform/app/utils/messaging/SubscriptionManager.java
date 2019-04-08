@@ -109,9 +109,18 @@ public class SubscriptionManager {
 		}
 	}
 	
-	public static void activateSubscriptions(MidataId userId, Plugin plugin, MidataId instance) throws AppException {
+	public static void activateSubscriptions(MidataId userId, Plugin plugin, MidataId instance, boolean cleanold) throws AppException {
 		AccessLog.log("Check Default Subscriptions:"+plugin.defaultSubscriptions);
 	    if (plugin.defaultSubscriptions != null) {
+	
+	    	if (cleanold) {
+		    	List<SubscriptionData> data = SubscriptionData.getByOwner(userId, CMaps.map("app", plugin._id), SubscriptionData.ALL);
+		    		    	
+		    	for (SubscriptionData dat : data) {
+		    		dat.delete();
+		    	}
+	    	}
+	    	
 	    	for (SubscriptionData dat : plugin.defaultSubscriptions) {
 	    		//if (!dat.format.equals("fhir/MessageHeader")) {
 	    		    AccessLog.log("Add Subscription format="+dat.format);
@@ -155,7 +164,7 @@ public class SubscriptionManager {
 	  List<SubscriptionData> data = SubscriptionData.getByOwner(userId, CMaps.map("app", app._id), SubscriptionData.ALL);
 	  AccessLog.log("deactivating: "+data.size());
 	  for (SubscriptionData dat : data) {
-		  SubscriptionData.setOff(dat._id);
+		  dat.delete();//SubscriptionData.setOff(dat._id);
 	  }
 	}
 	

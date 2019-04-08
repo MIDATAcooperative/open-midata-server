@@ -161,7 +161,7 @@ public class HealthProvider extends APIController {
 				
 				MobileAppInstance mai = MobileAppInstance.getById(target._id, Sets.create("applicationId"));
 				Plugin plugin = Plugin.getById(mai.applicationId);
-				SubscriptionManager.activateSubscriptions(userId, plugin, mai._id);
+				SubscriptionManager.activateSubscriptions(userId, plugin, mai._id, true);
 				
 			}	
 			if (target.externalAuthorized != null && !target.externalAuthorized.isEmpty()) {

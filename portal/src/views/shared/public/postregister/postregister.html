@@ -188,6 +188,25 @@
 
 						</div>
 
+	                    <div ng-show="progress.BIRTHDAY_SET">
+	                      <div translate="postregister.birthday_entered"></div>
+	                      <div style="margin-top:20px"></div>
+	                      
+	                      <form name="myformb" novalidate class="css-form form-horizontal" ng-submit="changeBirthday()" role="form">
+	                      <div ng-if="true" ng-init="myform=myformb">
+	                      <formrow myid="birthday" label="registration.birthday"> <input required id="mi-at-input-date-of-birth"
+								id="birthday" name="birthday" class="form-control" ng-change="removeDateError()" ng-pattern="'[0-3]?[0-9]\.[0-1]?[0-9]\.[0-9][0-9][0-9][0-9]'" type="text" value="" ng-model="registration.birthdayDate"
+								  />
+							
+							 <formerror myid="birthday" type="date" message="error.invalid.date"></formerror>
+						     <formerror myid="birthday" type="pattern" message="error.invalid.date"></formerror>	  
+						   </formrow>
+						   <div style="margin-top:30px"></div>
+						   <button type="submit" ng-disabled="status.action=='changeAddress'" class="btn btn-primary" translate="changeaddress.update_btn"></button>
+						   <p ng-show="error" class="alert alert-danger" translate="{{ error.code || error }}"></p>
+						   </div>
+						   </form>
+	                    </div>
 
 						<div ng-show="progress.ADDRESS_ENTERED || progress.PHONE_ENTERED">
 							<div ng-show="progress.ADDRESS_ENTERED" translate="postregister.address_entered"></div>
