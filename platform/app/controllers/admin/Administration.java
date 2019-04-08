@@ -70,6 +70,7 @@ import utils.auth.FutureLogin;
 import utils.auth.KeyManager;
 import utils.auth.PasswordResetToken;
 import utils.auth.PortalSessionToken;
+import utils.auth.PreLoginSecured;
 import utils.auth.Rights;
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -373,7 +374,7 @@ public class Administration extends APIController {
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	@Security.Authenticated(AnyRoleSecured.class)
+	@Security.Authenticated(PreLoginSecured.class)
 	public Result changeBirthday() throws AppException {	
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "user", "birthday");

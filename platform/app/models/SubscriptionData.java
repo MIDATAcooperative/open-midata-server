@@ -133,6 +133,10 @@ public class SubscriptionData extends Model {
 		setOff(this._id);
 	}
 	
+	public void delete() throws InternalServerException { 
+		Model.delete(SubscriptionData.class, collection, CMaps.map("_id", _id));
+	}
+		
 	public static void deleteByOwner(MidataId owner) throws InternalServerException {
 		if (owner == null) throw new NullPointerException();
 		Model.delete(SubscriptionData.class, collection, CMaps.map("owner", owner));

@@ -51,10 +51,11 @@
 								<option value="FEMALE" translate="enum.gender.FEMALE">female</option>
 								<option value="MALE" translate="enum.gender.MALE"></option>
 								<option value="OTHER" translate="enum.gender.OTHER"></option></select></formrowfloat>
-							<formrowfloat myid="birthday" label="registration.birthday"> <input required id="mi-at-input-date-of-birth"
-								id="birthday" name="birthday" class="mi-at-input mi-at-input--date" type="date" value="" ng-model="registration.birthdayDate"
-								floating-label placeholder="mm/dd/yyyy" /> </formrowfloat>
+							<formrowfloat myid="birthday" label="registration.birthday2"> <input required id="mi-at-input-date-of-birth"
+								id="birthday" name="birthday" class="mi-at-input mi-at-input--date" ng-change="removeDateError()" ng-pattern="'[0-3]?[0-9]\.[0-1]?[0-9]\.[0-9][0-9][0-9][0-9]'" type="text" value="" ng-model="registration.birthdayDate"
+								floating-label  /> </formrowfloat>
 							<form-error myid="birthday" type="date" message="error.invalid.date"></form-error>
+							<form-error myid="birthday" type="pattern" message="error.invalid.date"></form-error>
 
 							<formrowfloat myid="language" type="select">
 							<select class="mi-at-select" id="language" ng-model="registration.language" ng-change="changeLanguage(registration.language);"
