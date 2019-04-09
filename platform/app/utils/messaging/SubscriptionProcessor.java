@@ -82,6 +82,9 @@ public class SubscriptionProcessor extends AbstractActor {
 				System.out.println("ok:"+subscription.active+" "+subscription.content+" "+triggered.getEventCode());
 				boolean answered = false;
 				if (subscription.active && (subscription.content == null || subscription.content.equals("MessageHeader") || subscription.content.equals(triggered.getEventCode())) && checkNotExpired(subscription)) {
+					if (triggered.getType().equals("fhir/MessageHeader") && (!triggered.getApp().equals(subscription.app))) continue;
+					
+					
 					//System.out.println("ok3");
 					Subscription fhirSubscription = SubscriptionResourceProvider.subscription(subscription);
 					SubscriptionChannelComponent channel = fhirSubscription.getChannel();
