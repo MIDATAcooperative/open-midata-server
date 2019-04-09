@@ -1,5 +1,7 @@
 package utils.collections;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,8 +48,10 @@ public class CMaps {
 	 * @return new Map
 	 */
 	public static NChainedMap<String, Object> or(Map<String, Object>... properties) {
-		NChainedMap<String,Object> result = new NChainedMap<String,Object>();		
-		result.put("$or", properties);
+		NChainedMap<String,Object> result = new NChainedMap<String,Object>();
+		List itms = new ArrayList();
+		for (Map<String,Object> part : properties) itms.add(part);
+		result.put("$or", itms);
 		return result;
 	}
 	
@@ -57,8 +61,10 @@ public class CMaps {
 	 * @return
 	 */
 	public static NChainedMap<String, Object> and(Map<String, Object>... properties) {
-		NChainedMap<String,Object> result = new NChainedMap<String,Object>();		
-		result.put("$and", properties);
+		NChainedMap<String,Object> result = new NChainedMap<String,Object>();
+		List itms = new ArrayList();
+		for (Map<String,Object> part : properties) itms.add(part);
+		result.put("$and", itms);
 		return result;
 	}
 	

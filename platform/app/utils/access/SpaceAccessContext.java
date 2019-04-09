@@ -48,7 +48,7 @@ public class SpaceAccessContext extends AccessContext {
 	}
 	@Override
 	public boolean isIncluded(DBRecord record) throws AppException {
-		return record.owner.equals(cache.getAccountOwner());
+		return record.owner.equals(space.owner);
 	}
 	@Override
 	public String getOwnerName() {		
@@ -56,11 +56,11 @@ public class SpaceAccessContext extends AccessContext {
 	}
 	@Override
 	public MidataId getOwner() {
-		return cache.getAccountOwner();
+		return space.owner; //cache.getAccountOwner();
 	}
 	@Override
 	public MidataId getOwnerPseudonymized() {
-		return cache.getAccountOwner();
+		return space.owner;
 	}
 	@Override
 	public MidataId getSelf() {

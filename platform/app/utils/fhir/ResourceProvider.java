@@ -344,7 +344,7 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 																													
 				if (rt != null && rt.equals("Patient")) {
 					String tId = target.getIdPart();
-					if (tId.equals(info().executorId.toString())) {
+					if (tId.equals(info().ownerId.toString())) {
 						
 					} else {
 						//cleanSubject = false;

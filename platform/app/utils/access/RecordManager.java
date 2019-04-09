@@ -686,7 +686,7 @@ public class RecordManager {
 			
 			if (record.format != null && !rec.meta.getString("format").equals(record.format)) throw new InternalServerException("error.invalid.request", "Tried to change record format during update.");
 			if (record.content != null && !rec.meta.getString("content").equals(record.content)) throw new InternalServerException("error.invalid.request", "Tried to change record content type during update.");
-			if (record.owner != null && !rec.owner.equals(record.owner)) throw new InternalServerException("error.invalid.request", "Tried to change record owner during update.");
+			if (record.owner != null && !rec.owner.equals(record.owner)) throw new InternalServerException("error.invalid.request", "Tried to change record owner during update! new="+record.owner.toString()+" old="+rec.owner.toString());
 			
 			VersionedDBRecord vrec = null;
 			
