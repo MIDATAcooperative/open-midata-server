@@ -62,9 +62,9 @@ public class IndexCompare implements Condition, Serializable {
 	@Override
 	public boolean isInBounds(Object low, Object high) {		
 		if (op == CompareCaseInsensitiveOperator.STARTSWITH) {
-			return (low == null || val.compareTo(IndexCompare.first(low, val.length())) >= 0) && (high == null || val.compareTo(IndexCompare.first(high, val.length())) < 0);			
+			return (low == null || val.compareTo(IndexCompare.first(low, val.length())) >= 0) && (high == null || val.compareTo(IndexCompare.first(high, val.length())) <= 0);			
 		} else
-		return (low == null || val.compareTo(low.toString()) >= 0) && (high == null || val.compareTo(high.toString()) < 0);
+		return (low == null || val.compareTo(low.toString()) >= 0) && (high == null || val.compareTo(high.toString()) <= 0);
 	}
 
 	@Override
