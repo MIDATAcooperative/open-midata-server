@@ -279,20 +279,26 @@ public class IndexPage {
 		Collection<IndexKey> result = new ArrayList<IndexKey>();
 		
 		
-		if (mIsLeaf) {
+		//if (mIsLeaf) {
+			//AccessLog.log("IS LEAF KEYS="+mCurrentKeyNum);
+			
 			for (int i=0;i<mCurrentKeyNum;i++)  {			
 				boolean match = conditionCompare(key, mKeys[i].getKey());						
 				if (match) {
+					//AccessLog.log("MATCH ID ("+i+")="+mKeys[i].getId().toString()+" VAL="+mKeys[i].getKey()[0].toString());
 					result.add(mKeys[i]);
-				}			
+				} 
 			}
-		} else {
+		//} else {
+		  if (!mIsLeaf) {
 			List<Integer> ids = null;
 			int matchId = -1;
+			//AccessLog.log("NON LEAF KEYS="+mCurrentKeyNum);
 			for (int i=0;i<=mCurrentKeyNum;i++) {	
-				
+			  	
 				boolean match = conditionCompare(key, i==0 ? null : mKeys[i-1].getKey(), i == mCurrentKeyNum ? null : mKeys[i].getKey());						
 				if (match) {
+					//AccessLog.log("match="+match);
 					if (matchId == -1) matchId = i;
 					else {
 						if (ids == null) {
