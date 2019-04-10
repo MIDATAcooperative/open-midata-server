@@ -53,7 +53,7 @@ public class InIndexCondition implements Condition, Serializable {
 	@Override
 	public boolean isInBounds(Object low, Object high) {		
 		for (String v : val) {
-		  boolean match = (low == null || v.compareTo(low.toString()) >= 0) && (high == null || v.compareTo(high.toString()) < 0);
+		  boolean match = (low == null || v.compareTo(low.toString()) >= 0) && (high == null || v.compareTo(high.toString()) <= 0);
 		  if (match) return true;
 		}
 		return false;

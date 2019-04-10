@@ -51,7 +51,7 @@ public class EqualsSingleValueCondition implements Condition, Serializable {
 
 	@Override
 	public boolean isInBounds(Object low, Object high) {
-		return (low == null || val.compareTo(low) >= 0) && (high == null || val.compareTo(high) < 0);
+		return (low == null || val.compareTo(low) >= 0) && (high == null || val.compareTo(high) <= 0);
 	}
 
 	@Override
