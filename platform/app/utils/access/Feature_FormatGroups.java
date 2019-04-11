@@ -175,7 +175,7 @@ public class Feature_FormatGroups extends Feature {
     		properties.remove("content");
     	}
     	
-    	if (!properties.containsKey("content") && !properties.containsKey("code") && !properties.containsKey("group") && !properties.containsKey("format")) {
+    	if (!properties.containsKey("content") && !properties.containsKey("code") && !properties.containsKey("group") && !properties.containsKey("format") && !properties.containsKey("$or")) {
     		properties.put("group-system", "v1");
     		properties.put("group", Sets.create("all"));
     	}

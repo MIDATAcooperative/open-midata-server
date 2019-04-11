@@ -551,6 +551,7 @@
         "lastname" : "Name",
         "gender" : "Geschlecht",
         "birthday" : "Geburtsdatum",
+        "birthday2" : "Geburtsdatum (Format: 31.12.1999)",
         "language" : "Bevorzugte Sprache",
         "day" : "Tag",
         "month" : "Monat",

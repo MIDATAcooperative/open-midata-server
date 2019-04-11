@@ -551,6 +551,7 @@
         "lastname" : "Nom",
         "gender" : "Sexe",
         "birthday" : "Date de naissance",
+        "birthday2" : "Date de naissance (Format: 31.12.1999)",
         "language" : "Langue préférée",
         "day" : "Jour",
         "month" : "Mois",
