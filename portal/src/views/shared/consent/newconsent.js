@@ -88,6 +88,7 @@ angular.module('portal')
 				    $scope.sharing = results.data;
 				    
 				    if ($scope.sharing.query) {
+				    	$scope.sharing.query = labels.simplifyQuery($scope.sharing.query);				    	
 				    	if ($scope.sharing.query["group-exclude"] && !angular.isArray($scope.sharing.query["group-exclude"])) { $scope.sharing.query["group-exclude"] = [ $scope.sharing.query["group-exclude"] ]; }
 				    	if ($scope.sharing.query.group && !angular.isArray($scope.sharing.query.group)) { $scope.sharing.query.group = [ $scope.sharing.query.group ]; }
 				    	$scope.updateSharingLabels();
@@ -160,10 +161,28 @@ angular.module('portal')
 	$scope.updateSharingLabels = function() {
 		$scope.groupLabels = [];
 		$scope.groupExcludeLabels = [];
-		if ($scope.sharing && $scope.sharing.query && $scope.sharing.query.group) { 
-			angular.forEach($scope.sharing.query.group, function(grp) { 
-				labels.getGroupLabel($scope.lang, $scope.sharing.query["group-system"] || "v1", grp).then(function(label) { $scope.groupLabels.push(label); });
-			});
+		if ($scope.sharing && $scope.sharing.query) {
+			var sq = $scope.sharing.query;
+		
+		 
+			
+			if (sq.content) {
+				angular.forEach(sq.content, function(r) {
+				  if (r === "Patient" || r === "Group" || r === "Person" || r === "Practitioner") return;
+				  labels.getContentLabel($translate.use(), r).then(function(lab) {
+					 $scope.groupLabels.push(lab); 
+				  });
+				});
+			}
+			if (sq.group) {
+				angular.forEach(sq.group, function(r) {
+					  labels.getGroupLabel($translate.use(), sq["group-system"], r).then(function(lab) {
+						 $scope.groupLabels.push(lab); 
+					  });
+				});
+			}
+			
+			
 			if ($scope.sharing.query["group-exclude"]) {
 				angular.forEach($scope.sharing.query["group-exclude"], function(grp) { 
 					labels.getGroupLabel($scope.lang, $scope.sharing.query["group-system"] || "v1", grp).then(function(label) { $scope.groupExcludeLabels.push(label); });
