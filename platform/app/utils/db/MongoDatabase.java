@@ -412,7 +412,7 @@ public class MongoDatabase extends Database {
 					for (Object v : ((Collection<?>) property)) al.add(conversion.toDBObjectValue(v));
 					dbObject.put(key, new BasicDBObject("$in", al));
 				}
-			} else if (key.equals("$and")) {
+			} else if (key.equals("$and") || key.equals("$or")) {
 				ArrayList al = new ArrayList();
 				for (Object v : ((Collection<?>) property)) al.add(toDBObject(model, (Map<String, Object>) v));
 				dbObject.put(key, al);
