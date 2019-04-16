@@ -45,6 +45,7 @@ import play.mvc.Security;
 import utils.InstanceConfig;
 import utils.ServerTools;
 import utils.access.APS;
+import utils.access.AccessContext;
 import utils.access.DBIterator;
 import utils.access.Feature_FormatGroups;
 import utils.access.RecordManager;
@@ -160,7 +161,7 @@ public class Records extends APIController {
 		}
 
 		try {
-			records.addAll(RecordManager.instance.list(userId, getRole(), aps, properties, fields));
+			records.addAll(RecordManager.instance.list(userId, getRole(), RecordManager.instance.createContext(userId, aps), properties, fields));
 		} catch (RequestTooLargeException e) {
 			return ok();
 		}
@@ -194,7 +195,7 @@ public class Records extends APIController {
 		AggregationType aggrType = json.has("summarize") ? JsonValidation.getEnum(json, "summarize", AggregationType.class) : AggregationType.GROUP;
 
 		try {
-			Collection<RecordsInfo> result = RecordManager.instance.info(userId, getRole(), aps, null, properties, aggrType);
+			Collection<RecordsInfo> result = RecordManager.instance.info(userId, getRole(), aps, RecordManager.instance.createContext(userId, aps), properties, aggrType);
 			return ok(Json.toJson(result));
 		} catch (RequestTooLargeException e) {
 			return status(202);
@@ -218,19 +219,22 @@ public class Records extends APIController {
 
 		Map<String, Object> query = null;
 		boolean readRecords = true;
+		AccessContext context = null;
 
-		Consent consent = Circles.getConsentById(userId, apsId, Sets.create("owner", "authorized", "status", "type", "sharingQuery"));
+		Consent consent = Circles.getConsentById(userId, apsId, Sets.create(Consent.SMALL, "authorized"));
 		if (consent != null) {
 
 			Circles.fillConsentFields(userId, Collections.singleton(consent), Sets.create("sharingQuery"));
 			query = consent.sharingQuery;
 			if (!consent.status.equals(ConsentStatus.ACTIVE) && !userId.equals(consent.owner))
 				readRecords = false;
+			context = RecordManager.instance.createContextFromConsent(userId, consent);
 		} else {
 			BSONObject b = RecordManager.instance.getMeta(userId, apsId, APS.QUERY);
 			if (b != null) {
 				query = b.toMap();
 			}
+			context = RecordManager.instance.createContext(userId, apsId);
 		}
 		if (query != null)
 			Feature_FormatGroups.convertQueryToGroups("v1", query);
@@ -239,12 +243,12 @@ public class Records extends APIController {
 		result.set("query", Json.toJson(query));
 
 		if (readRecords) {
-			Set<String> recordsIds = RecordManager.instance.listRecordIds(userId, getRole(), apsId);
+			Set<String> recordsIds = RecordManager.instance.listRecordIds(userId, getRole(), context);
 			result.set("records", Json.toJson(recordsIds));
 
 			try {
 				Map<String, Object> props = new HashMap<String, Object>();
-				Collection<RecordsInfo> infos = RecordManager.instance.info(userId, getRole(), apsId, null, props, AggregationType.CONTENT);
+				Collection<RecordsInfo> infos = RecordManager.instance.info(userId, getRole(), apsId, context, props, AggregationType.CONTENT);
 				result.set("summary", Json.toJson(infos));
 			} catch (RequestTooLargeException e) {
 				result.putArray("summary");
@@ -406,7 +410,7 @@ public class Records extends APIController {
 
 				if (consent == null || consent.type.equals(ConsentType.EXTERNALSERVICE)) {
 					if (hasAccess) {
-						List<Record> recs = RecordManager.instance.list(userId, UserRole.ANY, start, CMaps.map(query).map("flat", "true"), Sets.create("_id"));
+						List<Record> recs = RecordManager.instance.list(userId, UserRole.ANY, RecordManager.instance.createContext(userId, start), CMaps.map(query).map("flat", "true"), Sets.create("_id"));
 						Set<MidataId> remove = new HashSet<MidataId>();
 						for (Record r : recs)
 							remove.add(r._id);
@@ -581,7 +585,7 @@ public class Records extends APIController {
 					KeyManager.instance.continueSession(handle);
 					ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId, role));
 	
-					DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, executorId, CMaps.map("owner", "self"), RecordManager.COMPLETE_DATA);
+					DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, role, RecordManager.instance.createContextFromAccount(executorId), CMaps.map("owner", "self"), RecordManager.COMPLETE_DATA);
 					return new RecIterator(allRecords);
 				} finally {
 				  ServerTools.endRequest();

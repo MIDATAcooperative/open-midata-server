@@ -70,7 +70,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 			List<Record> result = RecordManager.instance.list(info().executorId, info().role, info().context, CMaps.map("_id", new MidataId(theId.getIdPart())).map("version", theId.getVersionIdPart()), RecordManager.COMPLETE_DATA);
 			record = result.isEmpty() ? null : result.get(0);
 		} else {
-		    record = RecordManager.instance.fetch(info().executorId, info().role, info().targetAPS, new MidataId(theId.getIdPart()));
+		    record = RecordManager.instance.fetch(info().executorId, info().role, info().context, new MidataId(theId.getIdPart()));
 		}
 		if (record == null || record.data == null || !record.data.containsField("resourceType")) throw new ResourceNotFoundException(theId);					
 		IParser parser = ctx().newJsonParser();
@@ -175,7 +175,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 			if (theId.getIdPart() == null || theId.getIdPart().length() == 0) throw new UnprocessableEntityException("id local part missing");
 			if (!isLocalId(theId)) throw new UnprocessableEntityException("id is not local resource");
 			
-			Record record = RecordManager.instance.fetch(info().executorId, info().role, info().targetAPS, new MidataId(theId.getIdPart()));
+			Record record = RecordManager.instance.fetch(info().executorId, info().role, info().context, new MidataId(theId.getIdPart()));
 			
 			if (record == null) throw new ResourceNotFoundException("Resource "+theId.getIdPart()+" not found."); 
 			if (!record.format.equals("fhir/"+theId.getResourceType())) throw new ResourceNotFoundException("Resource "+theId.getIdPart()+" has wrong resource type."); 

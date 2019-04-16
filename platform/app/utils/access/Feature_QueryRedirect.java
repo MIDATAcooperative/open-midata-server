@@ -153,10 +153,11 @@ public class Feature_QueryRedirect extends Feature {
 		return result;
 	}*/
 	
-	public static Map<String, Object> combineQuery(Map<String,Object> properties, Map<String,Object> query) throws InternalServerException {
-		
+	public static Map<String, Object> combineQuery(Map<String,Object> properties, Map<String,Object> query, AccessContext context) throws AppException {
+		//AccessLog.log("COMBINE WITH:"+properties.toString());
 		Map<String, Object> combined = new HashMap<String,Object>();
 		combined.putAll(properties);
+		Query.resolveConstants(combined, context);
 		for (String key : query.keySet()) {
 			if (key.equals("$or")) continue;
 			if (combined.containsKey(key)) {

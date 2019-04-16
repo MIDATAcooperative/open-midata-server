@@ -143,9 +143,9 @@ public class Circles extends APIController {
 			consents = (c!=null) ? Collections.singletonList(c) : Collections.<Consent>emptyList();
 		} else if (properties.containsKey("member")) {
 		  properties.remove("member");
-		  consents = new ArrayList<Consent>(getConsentsAuthorized(owner, properties, fields));
+		  consents = new ArrayList<Consent>(getConsentsAuthorized(owner, properties, Consent.ALL));
 		} else {
-		  consents = new ArrayList<Consent>(Consent.getAllByOwner(owner, properties, fields, RETURNED_CONSENT_LIMIT));
+		  consents = new ArrayList<Consent>(Consent.getAllByOwner(owner, properties, Consent.ALL, RETURNED_CONSENT_LIMIT));
 		}
 		
 		fillConsentFields(owner, consents, fields);
@@ -199,7 +199,7 @@ public class Circles extends APIController {
 			for (Consent consent : consents) {
 				if (consent.status.equals(ConsentStatus.ACTIVE)) {
 				  try {
-				    Collection<RecordsInfo> summary = RecordManager.instance.info(executor, UserRole.ANY, consent._id, null, all, AggregationType.ALL);
+				    Collection<RecordsInfo> summary = RecordManager.instance.info(executor, UserRole.ANY, consent._id, RecordManager.instance.createContextFromConsent(executor, consent), all, AggregationType.ALL);
 				    if (summary.isEmpty()) consent.records = 0; else consent.records = summary.iterator().next().count;
 				  } catch (RequestTooLargeException e) { consent.records = -1; }
 				  catch (AppException e) {
