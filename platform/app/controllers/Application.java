@@ -521,7 +521,7 @@ public class Application extends APIController {
 		
 		// This is a dummy query to check if provided passphrase works
 		try {
-		  RecordManager.instance.list(userId, getRole(), userId, CMaps.map("format","zzzzzz"), Sets.create("name"));
+		  RecordManager.instance.list(userId, getRole(), RecordManager.instance.createContextFromAccount(userId), CMaps.map("format","zzzzzz"), Sets.create("name"));
 		} catch (InternalServerException e) { throw new BadRequestException("error.passphrase_old", "Old passphrase not correct."); }
 		
 		KeyManager.instance.changePassphrase(userId, passphrase);
@@ -700,7 +700,7 @@ public class Application extends APIController {
 		KeyManager.instance.persist(userId);
 		
 		try {
-		  RecordManager.instance.list(userId, getRole(), userId, CMaps.map("format","zzzzzzz"), Sets.create("name"));
+		  RecordManager.instance.list(userId, getRole(),  RecordManager.instance.createContextFromAccount(userId), CMaps.map("format","zzzzzzz"), Sets.create("name"));
 		} catch (InternalServerException e) {
 		  throw new BadRequestException("error.invalid.passphrase", "Bad Passphrase");
 		}
@@ -955,6 +955,8 @@ public class Application extends APIController {
 				controllers.routes.javascript.Records.delete(),
 				controllers.routes.javascript.Records.fixAccount(),
 				controllers.routes.javascript.Records.downloadAccountData(),
+				controllers.routes.javascript.Records.shareRecord(),
+				controllers.routes.javascript.Records.unshareRecord(),
 				// Circles
 				controllers.routes.javascript.Circles.get(),
 				controllers.routes.javascript.Circles.add(),

@@ -324,5 +324,17 @@
        "INTERNAL" : "only researchers and MIDATA"
      },
      "showlanguages" : "Languages to edit"
+   },
+   
+   "researcher_sharing" : {
+     "format" : "Resource Type",
+     "content" : "Content Type",
+     "app" : "Application",
+     "time" : "Time Restriction",
+     "studyGroup" : "Study Group",
+     "share_btn" : "Share",
+     "unshare_btn" : "Unshare",
+     "search_btn" : "Search"
+     
    }
 }
