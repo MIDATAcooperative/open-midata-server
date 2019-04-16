@@ -276,14 +276,14 @@ class QueryEngine {
       	  Collection<Map<String, Object>> col = (Collection<Map<String, Object>>) properties.get("$or");
       	  List<DBRecord> result = Collections.emptyList();
       	  for (Map<String, Object> prop : col) {
-      		  Map<String, Object> comb = Feature_QueryRedirect.combineQuery(prop, query.getProperties());
+      		  Map<String, Object> comb = Feature_QueryRedirect.combineQuery(prop, query.getProperties(), query.getContext());
       		  if (comb != null) {
       			result = QueryEngine.combine(result, qm.query(new Query(comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext())));
       		  }
       	  }
       	  return result;
         } else {
-          Map<String, Object> comb = Feature_QueryRedirect.combineQuery(properties, query.getProperties());
+          Map<String, Object> comb = Feature_QueryRedirect.combineQuery(properties, query.getProperties(), query.getContext());
     	  if (comb != null) {
     		  return qm.query(new Query(comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext()));
     	  } else {
@@ -295,7 +295,7 @@ class QueryEngine {
     
     protected static DBIterator<DBRecord> combineIterator(Query query, Map<String, Object> properties, Feature qm) throws AppException {
     	if (properties.containsKey("$or")) {
-    	  Map<String, Object> comb = Feature_QueryRedirect.combineQuery(properties, query.getProperties());
+    	  Map<String, Object> comb = Feature_QueryRedirect.combineQuery(properties, query.getProperties(), query.getContext());
       	  if (comb != null) {
       		query = new Query(comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext());
     	
@@ -304,7 +304,7 @@ class QueryEngine {
       	  } else return ProcessingTools.empty();
       	        	
         } else {
-          Map<String, Object> comb = Feature_QueryRedirect.combineQuery(properties, query.getProperties());
+          Map<String, Object> comb = Feature_QueryRedirect.combineQuery(properties, query.getProperties(), query.getContext());
     	  if (comb != null) {
     		  return qm.iterator(new Query(comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext()).setFromRecord(query.getFromRecord()));
     	  } else {

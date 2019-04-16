@@ -273,7 +273,7 @@ public class Studies extends APIController {
 			output = new OutputStreamWriter(zos);
 
 			Set<String> fields = Sets.create("owner", "ownerName", "app", "creator", "created", "name", "format", "content", "description", "data");
-			List<Record> allRecords = RecordManager.instance.list(executorId, UserRole.RESEARCH, executorId, CMaps.map("study", study._id).map("study-group", group.name), fields);
+			List<Record> allRecords = RecordManager.instance.list(executorId, UserRole.RESEARCH, RecordManager.instance.createContextFromAccount(executorId), CMaps.map("study", study._id).map("study-group", group.name), fields);
 
 			output.append(JsonOutput.toJson(allRecords, "Record", fields));
 
@@ -358,7 +358,7 @@ public class Studies extends APIController {
 				try {
 					KeyManager.instance.continueSession(handle);
 					ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId, role));
-					DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, executorId, CMaps.map("export", mode).map("study", study._id).map("study-group", studyGroup).mapNotEmpty("shared-after",  startDate).mapNotEmpty("updated-before", endDate),
+					DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, role, RecordManager.instance.createContextFromAccount(executorId), CMaps.map("export", mode).map("study", study._id).map("study-group", studyGroup).mapNotEmpty("shared-after",  startDate).mapNotEmpty("updated-before", endDate),
 							RecordManager.COMPLETE_DATA);
 					return new RecIterator(allRecords);
 				} finally {

@@ -465,7 +465,8 @@ class APSImplementation extends APS {
 		boolean result = obj.containsField(record._id.toString());
 		if (result) {
 			obj.remove(record._id.toString());				
-		    if (obj.isEmpty()) APSEntry.cleanupRows(eaps.getPermissions());
+		    if (obj.isEmpty()) APSEntry.cleanupRows(eaps.getPermissions());		    
+		    
 		    addHistory(record._id, record.isStream, true);
 		}
 		return result;
@@ -571,12 +572,24 @@ class APSImplementation extends APS {
 	private void addHistory(MidataId recordId, boolean isStream, boolean isRemove) throws AppException {
 		BasicBSONList history = (BasicBSONList) eaps.getPermissions().get("_history");
 		if (history != null) {
-			BasicBSONObject newEntry = new BasicBSONObject();
-			newEntry.put("r", recordId.toString());
-			if (isStream) newEntry.put("s", isStream);
-			newEntry.put("ts", System.currentTimeMillis());
-			if (isRemove) newEntry.put("d", true);
-			history.add(newEntry);
+			
+			if (isRemove) {
+				Iterator<Object> it = history.iterator();
+				while (it.hasNext()) {
+				   Object ob = it.next();
+				   if (ob instanceof BasicBSONObject) {
+					   String id = ((BasicBSONObject) ob).getString("r");
+					   if (id!=null && recordId.toString().equals(id)) it.remove();
+				   }
+				}				
+			} else {			
+				BasicBSONObject newEntry = new BasicBSONObject();
+				newEntry.put("r", recordId.toString());
+				if (isStream) newEntry.put("s", isStream);
+				newEntry.put("ts", System.currentTimeMillis());
+				//if (isRemove) newEntry.put("d", true);
+				history.add(newEntry);
+			}
 		}
 	}
 	

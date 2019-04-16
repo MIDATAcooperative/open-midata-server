@@ -1,0 +1,45 @@
+   
+<div ng-controller="StudySharingCtrl">   
+   <div class="tab-content"  ng-cloak>
+	  <div class="tab-pane active">
+	    <form novalidate class="css-form form-horizontal" ng-submit="search()" role="form">
+	        <p ng-show="error && !error.field" translate="{{ error.code || error }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
+	        </p>	
+	          <formrow myid="format" label="researcher_sharing.format"> 
+				  <select class="form-control" id="format" name="format" ng-model="crit.format" ng-options="format for format in formats"></select>
+			  </formrow>
+			  <formrow myid="content" label="researcher_sharing.content"> 
+				  <select class="form-control" id="content" name="content" ng-model="crit.content" ng-options="content for content in contents"></select>
+			  </formrow>
+			  <formrow myid="app" label="researcher_sharing.app"> 
+				  <select class="form-control" id="app" name="app" ng-model="crit.app" ng-options="app as appNames[app] for app in apps"></select>
+			  </formrow>
+			  <formrow myid="time" label="researcher_sharing.time">
+			    <div class="row">
+			    <div class="col-sm-4"> 
+				  <select class="form-control" id="content" name="content" ng-model="crit.timeCrit" ng-options="timeCrit for timeCrit in timeCrits"></select>
+				</div>
+				<div class="col-sm-8">
+				  <input type="text" class="form-control" ng-model="crit.time">
+				</div>
+				</div>
+			  </formrow>
+			  <formrow myid="studyGroup" label="researcher_sharing.studyGroup">
+			      <select class="form-control" id="studyGroup" name="studyGroup" ng-model="crit.studyGroup" ng-options="studyGroup.name as studyGroup.name for studyGroup in studyGroups" required></select>
+			  </formrow>
+			<button class="btn btn-default" ng-click="search()" translate="researcher_sharing.search_btn"></button>
+			<button class="btn btn-default" type="button" ng-click="share()" translate="researcher_sharing.share_btn"></button>
+			<button class="btn btn-default" type="button" ng-click="unshare()" translate="researcher_sharing.unshare_btn"></button>
+			<p>{{ found }}</p>
+			<table class="table table-striped">
+			  <tr ng-repeat="result in results" ng-class="{'table-success' : result.selected }">
+			    <td><input type="checkbox"></td>
+			    <td>{{ result.name }}</td>
+			    <td>{{ result.created | date }}</td>
+			    <td>{{ result.selected }}</td>
+			  </tr>
+			</table>
+	    </form>
+	  </div>
+	</div>	
+</div>

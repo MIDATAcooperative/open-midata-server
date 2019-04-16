@@ -473,8 +473,14 @@ public class Query {
 		 }
 		 */
 		 
+		 resolveConstants(properties, context);		 	
+		 
+		 if (fetchFromDB) fieldsFromDB.add("encrypted");
+	}
+	
+	public static void resolveConstants(Map<String, Object> properties, AccessContext context) throws AppException {
 		 if (properties.containsKey("app")) {
-			 Set<String> apps = getRestriction("app");
+			 Set<String> apps = getRestriction(properties.get("app"), "app");
 			 Set<String> resolved = new HashSet<String>();
 			 for (Object app : apps) {
 				 if (!MidataId.isValid(app.toString())) {
@@ -487,7 +493,7 @@ public class Query {
 		 }
 		 
 		 if (properties.containsKey("study")) {
-			 Set<String> studies = getRestriction("study");
+			 Set<String> studies = getRestriction(properties.get("study"), "study");
 			 Set<String> resolved = new HashSet<String>();
 			 for (Object study : studies) {
 				 if (!MidataId.isValid(study.toString())) {
@@ -500,7 +506,7 @@ public class Query {
 		 }
 		 
 		 if (properties.containsKey("owner")) {
-			 Set<String> owners = getRestriction("owner");
+			 Set<String> owners = getRestriction(properties.get("owner"), "owner");
 			 Set<Object> resolved = new HashSet<Object>();
 			 for (Object owner : owners) {
 				 //AccessLog.log("check owner:"+owner.toString());
@@ -519,7 +525,7 @@ public class Query {
 		 }
 		 
 		 if (properties.containsKey("code") && !properties.containsKey("content")) {
-			 Set<String> codes = getRestriction("code");
+			 Set<String> codes = getRestriction(properties.get("code"), "code");
 			 Set<String> contents = new HashSet<String>();
 			 for (String code : codes) {
 				 String content = ContentCode.getContentForSystemCode(code);
@@ -528,8 +534,6 @@ public class Query {
 			 }
 			 properties.put("content", contents);
 		 }
-		 
-		 if (fetchFromDB) fieldsFromDB.add("encrypted");
 	}
 	
 	public static int getTimeFromDate(Date dt) {

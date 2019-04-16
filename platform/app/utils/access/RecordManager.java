@@ -1143,19 +1143,7 @@ public class RecordManager {
 		QueryTagTools.handleSecurityTags(role, properties, fields);
 		return QueryEngine.list(getCache(who), apsId, context, properties, fields);
 	}
-	
-	public DBIterator<Record> listIterator(MidataId who, MidataId apsId,
-			Map<String, Object> properties, Set<String> fields)
-			throws AppException {
-		AccessContext context = null;
-		if (who.equals(apsId)) context = createContextFromAccount(who);
-		else {
-          Consent consent = Consent.getByIdUnchecked(apsId, Consent.ALL);
-          if (consent != null) context =  createContextFromConsent(who, consent);
-		}
-		AccessLog.log("context="+context);
-		return QueryEngine.listIterator(getCache(who), apsId, context, properties, fields);
-	}
+		
 	
 	public DBIterator<Record> listIterator(MidataId who, UserRole role, AccessContext context,
 			Map<String, Object> properties, Set<String> fields)
@@ -1223,7 +1211,7 @@ public class RecordManager {
 		    if (properties.containsKey("include-records")) {		    	
 			    for (RecordsInfo inf : result) {
 			    	if (inf.newestRecord != null) {
-			    		inf.newestRecordContent = fetch(who, role, aps, inf.newestRecord);
+			    		inf.newestRecordContent = fetch(who, role, context, inf.newestRecord);
 			    	}
 			    }
 		    }
@@ -1255,7 +1243,7 @@ public class RecordManager {
 	 * @throws AppException
 	 */
 	public FileData fetchFile(MidataId who, RecordToken token) throws AppException {		
-		List<DBRecord> result = QueryEngine.listInternal(getCache(who), new MidataId(token.apsId), null, CMaps.map("_id", new MidataId(token.recordId)), Sets.create("key", "data"));
+		List<DBRecord> result = QueryEngine.listInternal(getCache(who), new MidataId(token.apsId), createContext(who, MidataId.from(token.apsId)), CMaps.map("_id", new MidataId(token.recordId)), Sets.create("key", "data"));
 				
 		if (result.size() != 1) throw new InternalServerException("error.internal.notfound", "Unknown Record");
 		DBRecord rec = result.get(0);
@@ -1294,7 +1282,7 @@ public class RecordManager {
 	 */
 	public Record fetch(MidataId who, UserRole role, RecordToken token, Set<String> fields)
 			throws AppException {
-		List<Record> result = list(who, role, new MidataId(token.apsId),
+		List<Record> result = list(who, role, createContext(who, MidataId.from(token.apsId)),
 				CMaps.map("_id", new MidataId(token.recordId)), fields);
 		if (result.isEmpty())
 			return null;
@@ -1310,9 +1298,9 @@ public class RecordManager {
 	 * @return the record to be returned
 	 * @throws AppException
 	 */
-	public Record fetch(MidataId who, UserRole role, MidataId aps, MidataId recordId)
+	public Record fetch(MidataId who, UserRole role, AccessContext context, MidataId recordId)
 			throws AppException {
-		List<Record> result = list(who, role, aps, CMaps.map("_id", recordId),
+		List<Record> result = list(who, role, context, CMaps.map("_id", recordId),
 				RecordManager.COMPLETE_DATA);
 		if (result.isEmpty())
 			return null;
@@ -1327,9 +1315,9 @@ public class RecordManager {
 	 * @return set with record ids as strings
 	 * @throws AppException
 	 */
-	public Set<String> listRecordIds(MidataId who, UserRole role, MidataId apsId)
+	public Set<String> listRecordIds(MidataId who, UserRole role, AccessContext context)
 			throws AppException {
-		return listRecordIds(who, role, apsId, RecordManager.FULLAPS_LIMITED_SIZE);
+		return listRecordIds(who, role, context, RecordManager.FULLAPS_LIMITED_SIZE);
 	}
 
 	/**
@@ -1340,9 +1328,9 @@ public class RecordManager {
 	 * @return set with record ids as strings
 	 * @throws AppException
 	 */
-	public Set<String> listRecordIds(MidataId who, UserRole role, MidataId apsId,
+	public Set<String> listRecordIds(MidataId who, UserRole role, AccessContext context,
 			Map<String, Object> properties) throws AppException {
-		List<Record> result = list(who, role, apsId, properties,
+		List<Record> result = list(who, role, context, properties,
 				RecordManager.INTERNALIDONLY);
 		Set<String> ids = new HashSet<String>();
 		for (Record record : result)
@@ -1357,7 +1345,7 @@ public class RecordManager {
 	 */
 	private void resetInfo(MidataId who) throws AppException {
 		AccessLog.logBegin("start reset info user="+who.toString());
-		List<Record> result = list(who, UserRole.ANY, who, RecordManager.STREAMS_ONLY, Sets.create("_id", "owner"));
+		List<Record> result = list(who, UserRole.ANY, RecordManager.instance.createContextFromAccount(who), RecordManager.STREAMS_ONLY, Sets.create("_id", "owner"));
 		for (Record stream : result) {
 			try {
 			  AccessLog.log("reset stream:"+stream._id.toString());
@@ -1527,6 +1515,22 @@ public class RecordManager {
 	
 	public AccountAccessContext createContextFromAccount(MidataId executorId) throws InternalServerException {
 		return new AccountAccessContext(getCache(executorId), null);
+	}
+	
+	public AccessContext createContext(MidataId executor, MidataId aps) throws AppException {
+		if (executor.equals(aps)) return createContextFromAccount(executor);
+		else {
+          Consent consent = Consent.getByIdUnchecked(aps, Consent.ALL);
+          if (consent != null) {
+        	  if (consent.status != ConsentStatus.ACTIVE && consent.status != ConsentStatus.FROZEN && !consent.owner.equals(executor)) throw new InternalServerException("error.internal",  "Consent creation not possible");
+        	  return  createContextFromConsent(executor, consent);
+          }
+          
+          Space space = Space.getByIdAndOwner(aps, executor, Space.ALL);
+          if (space != null) return createContextFromSpace(executor, space, space.owner);
+		}
+		
+		throw new InternalServerException("error.internal",  "Consent creation not possible");
 	}
 	
 	public AppAccessContext createContextFromApp(MidataId executorId, MobileAppInstance app) throws InternalServerException {

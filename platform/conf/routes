@@ -60,6 +60,8 @@ GET     /api/members/records/:id/view                    controllers.Records.get
 GET     /api/members/records/shared/:apsId               controllers.Records.getSharingDetails(apsId: String)
 POST    /api/members/records/shared                      controllers.Records.updateSharing()
 POST    /api/members/records/fix                         controllers.Records.fixAccount()
+POST    /api/members/records/share                       controllers.Records.shareRecord()
+POST    /api/members/records/unshare                       controllers.Records.unshareRecord()
 
 GET     /api/records/:id/file                                controllers.Records.getFile(id: String)
 

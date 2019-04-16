@@ -122,18 +122,8 @@ public class PluginsAPI extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
 	public Result getIds() throws AppException, JsonValidationException  {		
-		// validate json
-		JsonNode json = request().body().asJson();		
-		JsonValidation.validate(json, "authToken");
+		return ok();
 		
-		// decrypt authToken 
-		SpaceToken spaceToken = SpaceToken.decryptAndSession(request(), json.get("authToken").asText());
-		if (spaceToken == null) {
-			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
-		}
-				
-		Set<MidataId> tokens = ObjectIdConversion.toMidataIds(RecordManager.instance.listRecordIds(spaceToken.executorId, spaceToken.role, spaceToken.spaceId));		
-		return ok(Json.toJson(tokens));
 	}
 
 	/**
