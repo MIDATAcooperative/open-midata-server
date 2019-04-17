@@ -24,8 +24,20 @@
         "role" : "Rolle",
         "resetpw" : "Neues Passwort",
         "description" : "Mit diesen Buttons können Sie weitere Benutzer für das Testen Ihrer Plugins registrieren. Bei den Testbenutzern werden die Plugins lokal ausgeführt (aus 'localhost') und nicht auf dem Server.",
+
+        // TODO CHANGED
+        // OLD: Register Account Holder
+        // NEW: Register an Account Holder
         "register_member_btn" : "Kontoinhaber registrieren",
+
+        // TODO CHANGED
+        // OLD: Register Health Provider
+        // NEW: Register a Health Professional
         "register_hp_btn" : "Gesundheitsfachperson registrieren",
+
+        // TODO CHANGED
+        // OLD: Register Researcher
+        // NEW: Register a Researcher
         "register_researcher_btn" : "Forscher registrieren"
     },
 
@@ -118,6 +130,9 @@
         "logout_required" : "[ erforderlich ]",
         "logout_explain" : "Änderungen an den mit !! gekennzeichneten Feldern erfordern die Abmeldung aller Benutzer dieser Applikation.",
 
+        // TODO NEW: Send error reports
+        "send_reports" : "Send error reports",
+
         "info" : {
             "filename" : "Dieser Name wird intern für die Kennung Ihrer App verwendet. Es sollte ein gültiger Identifikator sein (a-z, A-Z, 0-9, _).",
             "targetUserRole" : "Ist Ihre App nur für eine spezifische Rolle bestimmt? Wenn nicht, wählen Sie 'Alle Rollen'.",
@@ -136,7 +151,10 @@
             "redirectUri" : "Sie können mehrere mögliche Redirect-URIs angeben, indem Sie die URIs durch ein Leerzeichen trennen.",
             "secret" : "Ihre App braucht dieses 'secret' um sich anmelden zu können. Wählen Sie es nach Belieben.",
             "mustParticipateInStudy" : "Benutzer müssen an der Studie teilnehmen, um diese App benutzen zu können.",
-            "unlock_code" : "Wenn ausgefüllt, muss dieser Code vom Benutzer bei der Registrierung oder ersten Anmeldung bei MIDATA über die App eingegeben werden. Der Code ist nicht 'case sensitiv'."
+            "unlock_code" : "Wenn ausgefüllt, muss dieser Code vom Benutzer bei der Registrierung oder ersten Anmeldung bei MIDATA über die App eingegeben werden. Der Code ist nicht 'case sensitiv'.",
+
+            // TODO NEW: Notify developer ({{user}}) by email on errors causes by this application.
+            "send_reports" : "Notify developer ({{user}}) by email on errors causes by this application."
         },
         "status" : {
             "title" : "Applikations-Status",

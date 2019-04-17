@@ -325,5 +325,33 @@
             "INTERNAL" : "nur die Forscher und MIDATA"
         },
         "showlanguages" : "Zu editierende Sprachen"
+    },
+
+    "researcher_sharing" : {
+
+        // TODO NEW: Resource Type
+        "format" : "Resource Type",
+
+        // TODO NEW: Content Type
+        "content" : "Content Type",
+
+        // TODO NEW: Application
+        "app" : "Application",
+
+        // TODO NEW: Time Restriction
+        "time" : "Time Restriction",
+
+        // TODO NEW: Study Group
+        "studyGroup" : "Study Group",
+
+        // TODO NEW: Share
+        "share_btn" : "Share",
+
+        // TODO NEW: Unshare
+        "unshare_btn" : "Unshare",
+
+        // TODO NEW: Search
+        "search_btn" : "Search"
+
     }
 }

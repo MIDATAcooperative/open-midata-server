@@ -1,13 +1,25 @@
 {
 
     "provider_registration" : {
+
+        // TODO CHANGED
+        // OLD: Registration as a Healthcare Provider
+        // NEW: Registration as a Health Professional
         "sign_up" : "Registrierung als Gesundheitsfachperson",
+
+        // TODO CHANGED
+        // OLD: Healthcare Provider
+        // NEW: Health Professional
         "provider" : "Gesundheitsfachperson",
         "user" : "Benutzer",
         "name" : "Name"
     },
 
     "provider_login" : {
+
+        // TODO CHANGED
+        // OLD: Healthcare Provider Login
+        // NEW: Health Professional Login
         "title" : "Login als Gesundheitsfachperson"
     },
 
@@ -37,8 +49,16 @@
 
     "provider_patientsearch" : {
         "title" : "Patient suchen",
+
+        // TODO CHANGED
+        // OLD: E-Mail
+        // NEW: email
         "email" : "E-Mail",
         "or" : "oder",
+
+        // TODO CHANGED
+        // OLD: Midata ID
+        // NEW: MIDATA ID
         "midataid" : "MIDATA ID",
         "birthday" : "Geburtsdatum",
         "searching" : "Suche...",
@@ -47,6 +67,10 @@
         "consents" : "Zustimmungen zu diesem Patienten",
         "add_new_consent" : "Neue Zustimmung hinzufügen",
         "usergroup" : "Team (optional)",
+
+        // TODO CHANGED
+        // OLD: Access Passcode (optional)
+        // NEW: Access Code (optional)
         "passcode" : "Zugangscode (optional)",
         "add_new_consent_btn" : "Neue Zustimmung hinzufügen"
     },
@@ -82,6 +106,10 @@
     "provider_memberdetails" : {
         "propose_consent" : "Zustimmung anfragen",
         "pick_consent" : "Wählen Sie eine Zustimmung zur Anzeige einzelner Datensätze aus",
+
+        // TODO CHANGED
+        // OLD: Share data with patient
+        // NEW: Share data with the patient
         "share_btn" : "Daten mit dem Patienten teilen"
     },
 

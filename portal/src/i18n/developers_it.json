@@ -24,8 +24,20 @@
         "role" : "Ruolo",
         "resetpw" : "Nuova password",
         "description" : "Utilizzando questi pulsanti è possibile registrare utenti aggiuntivi per testare i propri plugin. Gli utenti di test eseguono i plugin localmente (da 'localhost') e non sul server.",
+
+        // TODO CHANGED
+        // OLD: Register Account Holder
+        // NEW: Register an Account Holder
         "register_member_btn" : "Registrare un titolare di account",
+
+        // TODO CHANGED
+        // OLD: Register Health Provider
+        // NEW: Register a Health Professional
         "register_hp_btn" : "Registrare un professionista sanitario",
+
+        // TODO CHANGED
+        // OLD: Register Researcher
+        // NEW: Register a Researcher
         "register_researcher_btn" : "Registrare un ricercatore"
     },
 
@@ -118,6 +130,9 @@
         "logout_required" : "[ richiesto ]",
         "logout_explain" : "Le modifiche ai campi contrassegnati con !! richiedono il logout di tutti gli utenti di quell'applicazione.",
 
+        // TODO NEW: Send error reports
+        "send_reports" : "Send error reports",
+
         "info" : {
             "filename" : "Questo nome è utilizzato internamente per identificare la propria applicazione. Deve essere un identificatore valido (a-z, A-Z, 0-9, _).",
             "targetUserRole" : "La propria applicazione è destinata esclusivamente a un ruolo specifico? In caso contrario scegliere 'Qualsiasi ruolo'.",
@@ -136,7 +151,10 @@
             "redirectUri" : "È possibile specificare più URI possibili per il reindirizzamento separandoli con uno spazio.",
             "secret" : "La propria applicazione necessiterà di questo 'segreto' durante l'accesso. Scegliere un qualsiasi elemento desiderato.",
             "mustParticipateInStudy" : "L'utente deve partecipare allo studio per utilizzare l'applicazione.",
-            "unlock_code" : "Se compilato, questo codice deve essere inserito dall'utente per registrarsi o accedere per la prima volta a MIDATA tramite l'applicazione. Il codice non è sensibile ai caratteri maiuscoli/minuscoli."
+            "unlock_code" : "Se compilato, questo codice deve essere inserito dall'utente per registrarsi o accedere per la prima volta a MIDATA tramite l'applicazione. Il codice non è sensibile ai caratteri maiuscoli/minuscoli.",
+
+            // TODO NEW: Notify developer ({{user}}) by email on errors causes by this application.
+            "send_reports" : "Notify developer ({{user}}) by email on errors causes by this application."
         },
         "status" : {
             "title" : "Stato dell'applicazione",

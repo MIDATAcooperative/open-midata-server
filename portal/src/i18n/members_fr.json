@@ -83,6 +83,10 @@
         "confirmation_date" : "Date de confirmation",
         "confirm_btn" : "confirmer",
         "reject_btn" : "refuser",
+
+        // TODO CHANGED
+        // OLD: You have not registered any contacts as a healthcare provider.
+        // NEW: You have not registered any contacts as a healthcare professional.
         "empty" : "Vous n'avez enregistré aucun contact en tant que professionel de la santé."
     },
 

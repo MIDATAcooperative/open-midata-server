@@ -24,8 +24,20 @@
         "role" : "Rôle",
         "resetpw" : "Nouveau mot de passe",
         "description" : "A l'aide de ces boutons, vous pouvez créer des utilisateurs additionnels afin de tester vos plugins. Pour ces utilisateurs, les plugins sont exécutés localement (depuis 'localhost') et non pas sur le serveur.",
+
+        // TODO CHANGED
+        // OLD: Register Account Holder
+        // NEW: Register an Account Holder
         "register_member_btn" : "Créer un compte personnel",
+
+        // TODO CHANGED
+        // OLD: Register Health Provider
+        // NEW: Register a Health Professional
         "register_hp_btn" : "Créer un compte professionnel de la santé",
+
+        // TODO CHANGED
+        // OLD: Register Researcher
+        // NEW: Register a Researcher
         "register_researcher_btn" : "Créer un compte chercheur"
     },
 
@@ -118,6 +130,9 @@
         "logout_required" : "[ requis ]",
         "logout_explain" : "Les modifications apportées aux champs marqués par !! exigent la déconnexion de tous les utilisateurs de cette application.",
 
+        // TODO NEW: Send error reports
+        "send_reports" : "Send error reports",
+
         "info" : {
             "filename" : "Ce nom est utilisé (en interne) pour identifier votre app. Il doit s'agir d'un identificateur valide (a-z, A-Z, 0-9, _).",
             "targetUserRole" : "Votre app est-elle destinée à un rôle spécifique? Sinon, veuillez choisir 'Tous les rôles'.",
@@ -136,7 +151,10 @@
             "redirectUri" : "Vous pouvez spécifier plusieurs URIs de redirection possibles en séparant les URIs avec un espace.",
             "secret" : "Votre app aura besoin de ce 'secret' pour se connecter. Choisissez le librement.",
             "mustParticipateInStudy" : "Les utilisateurs doivent participer à l'étude afin de pouvoir utiliser l'app.",
-            "unlock_code" : "Si renseigné, ce code doit être saisi par l'utilisateur lors de l'inscription ou lors de la première connexion à MIDATA par cette app. Le code n'est pas sensible à la casse."
+            "unlock_code" : "Si renseigné, ce code doit être saisi par l'utilisateur lors de l'inscription ou lors de la première connexion à MIDATA par cette app. Le code n'est pas sensible à la casse.",
+
+            // TODO NEW: Notify developer ({{user}}) by email on errors causes by this application.
+            "send_reports" : "Notify developer ({{user}}) by email on errors causes by this application."
         },
         "status" : {
             "title" : "État de l'application",
