@@ -172,10 +172,6 @@
             "finish_execution" : "Toutes les données de l'étude seront gelées à ce moment.",
             "delete" : "Le projet de recherche sera complètement effacé de la plate-forme.",
             "abort" : "Toutes les données de l'étude seront gelées à ce moment. Ce projet sera marqué comme ayant échoué.",
-
-            // TODO CHANGED
-            // OLD: This will clone the projects settings into a new research project. The new projects workflow will be reset. No participants will be transferred to the new project. This project will remain unchanged.
-            // NEW: This will clone the project's settings into a new research project. The workflow of the new project will be reset. No participants will be transferred to the new project. This project will remain unchanged.
             "clone" : "Cela clonera les paramètres du projet dans un nouveau projet de recherche. Le flux de travail du nouveau projet sera réinitialisé. Aucun participant ne sera transféré au nouveau projet. Ce projet restera inchangé.",
             "are_you_sure" : "Cette opération ne peut pas être annulée. Êtes-vous sûr?"
         }

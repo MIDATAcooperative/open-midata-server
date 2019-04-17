@@ -1,14 +1,14 @@
 {
 
     "provider_registration" : {
-        "sign_up" : "Iscrizione come operatore sanitario",
-        "provider" : "Operatore sanitario",
+        "sign_up" : "Iscrizione come professionista sanitario",
+        "provider" : "Professionista sanitario",
         "user" : "Utente",
         "name" : "Nome"
     },
 
     "provider_login" : {
-        "title" : "Accesso come operatore sanitario"
+        "title" : "Accesso come professionista sanitario"
     },
 
     "provider_navbar" : {
@@ -17,10 +17,6 @@
         "research" : "Ricerca",
         "workspace" : "Spazio di lavoro",
         "market" : "MIDATA Store",
-
-        // TODO CHANGED
-        // OLD: Intern
-        // NEW: Enterprise
         "org" : "Impresa",
         "organization" : "Organizzazione",
         "usergroups" : "Team"
@@ -35,48 +31,24 @@
     },
 
     "addprovider" : {
-        "sign_up" : "Iscrivere operatore sanitario",
+        "sign_up" : "Iscrivere professionista sanitario",
         "success" : "Utente iscritto con successo"
     },
 
     "provider_patientsearch" : {
         "title" : "Ricerca paziente",
-
-        // TODO NEW: E-Mail
-        "email" : "E-Mail",
-
-        // TODO NEW: or
-        "or" : "or",
-
-        // TODO NEW: Midata ID
-        "midataid" : "Midata ID",
-
-        // TODO NEW: Birthday
-        "birthday" : "Birthday",
-
-        // TODO NEW: Searching...
-        "searching" : "Searching...",
-
-        // TODO NEW: Address
-        "address" : "Address",
-
-        // TODO NEW: Show Patient
-        "show_patient_btn" : "Show Patient",
-
-        // TODO NEW: Consents with this patient
-        "consents" : "Consents with this patient",
-
-        // TODO NEW: Add new consent
-        "add_new_consent" : "Add new consent",
-
-        // TODO NEW: Team (optional)
-        "usergroup" : "Team (optional)",
-
-        // TODO NEW: Access Passcode (optional)
-        "passcode" : "Access Passcode (optional)",
-
-        // TODO NEW: Add new consent
-        "add_new_consent_btn" : "Add new consent"
+        "email" : "e-mail",
+        "or" : "o",
+        "midataid" : "MIDATA ID",
+        "birthday" : "Data di nascita",
+        "searching" : "Ricerca...",
+        "address" : "Indirizzo",
+        "show_patient_btn" : "Mostra paziente",
+        "consents" : "Consensi a questo paziente",
+        "add_new_consent" : "Aggiungi nuovo consenso",
+        "usergroup" : "Team (opzionale)",
+        "passcode" : "Codice di accesso (opzionale)",
+        "add_new_consent_btn" : "Aggiungi nuovo consenso"
     },
 
     "provider_patients" : {
@@ -109,17 +81,11 @@
 
     "provider_memberdetails" : {
         "propose_consent" : "Richiedi consenso",
-
-        // TODO NEW: Select a consent to display individual records
-        "pick_consent" : "Select a consent to display individual records",
-
-        // TODO NEW: Share data with patient
-        "share_btn" : "Share data with patient"
+        "pick_consent" : "Selezionare un consenso per visualizzare i singoli record",
+        "share_btn" : "Condividere dati con il paziente"
     },
 
     "help_welcome" : {
-
-        // TODO NEW: Some ideas to start with MIDATA:
-        "starts" : "Some ideas to start with MIDATA:"
+        "starts" : "Alcune idee per iniziare con MIDATA:"
     }
 }

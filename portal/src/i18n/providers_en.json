@@ -1,13 +1,13 @@
 {
   "provider_registration" : {
-    "sign_up" : "Registration as a Healthcare Provider",
-    "provider" : "Healthcare Provider",
+    "sign_up" : "Registration as a Health Professional",
+    "provider" : "Health Professional",
     "user" : "User",
     "name" : "Name"
   },
   
   "provider_login" : {
-    "title" : "Healthcare Provider Login"
+    "title" : "Health Professional Login"
   },
   
   "provider_navbar" : {
@@ -36,9 +36,9 @@
   
   "provider_patientsearch" : {
      "title" : "Patient Search",
-     "email" : "E-Mail",
+     "email" : "email",
      "or" : "or",
-     "midataid" : "Midata ID",
+     "midataid" : "MIDATA ID",
      "birthday" : "Birthday",
      "searching" : "Searching...",
      "address" : "Address",
@@ -46,7 +46,7 @@
      "consents" : "Consents with this patient",
      "add_new_consent" : "Add new consent",
      "usergroup" : "Team (optional)",
-     "passcode" : "Access Passcode (optional)",
+     "passcode" : "Access Code (optional)",
      "add_new_consent_btn" : "Add new consent"
   },
   
@@ -81,7 +81,7 @@
   "provider_memberdetails" : {
     "propose_consent" : "Request Consent",
     "pick_consent" : "Select a consent to display individual records",
-    "share_btn" : "Share data with patient"
+    "share_btn" : "Share data with the patient"
    },
    
    "help_welcome" : {

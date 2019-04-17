@@ -59,10 +59,6 @@
             "passphrase_old" : "La vecchia frase segreta non è corretta.",
             "password_old" : "La vecchia password non è corretta.",
             "confirmation_code" : "Codice di conferma errato",
-
-            // TODO CHANGED
-            // OLD: Token not correct
-            // NEW: Code not correct
             "securitytoken" : "Codice non corretto",
             "code" : "Codice sconosciuto per lo studio.",
             "appcode" : "Codice sconosciuto per l'applicazione.",
@@ -82,9 +78,7 @@
             "sharing" : "Il filtro di accesso dati (Data Access Filter) contiene tipi di dati esclusi dalla configurazione dello studio.",
             "anonymous" : "Lo studio può essere anonimo soltanto se non è autorizzato nessuno ad accedere a dati presentati senza pseudonimi.",
             "url" : "URL non valido",
-
-            // TODO NEW: Consent may only be confirmed once all external persons have joined Midata.
-            "consent_members" : "Consent may only be confirmed once all external persons have joined Midata."
+            "consent_members" : "Questo consenso può essere confermato solo dopo che tutte le persone esterne hanno aderito a MIDATA."
         },
 
         "missing" : {
@@ -166,10 +160,6 @@
             "token" : "Questo token di attivazione è già scaduto. Richiederne uno nuovo.",
             "tokenresent" : "Questo token di attivazione è già scaduto. Un nuovo token è stato appena inviato al tuo indirizzo e-mail. Conferma il tuo indirizzo e-mail entro 24 ore utilizzando il nuovo token.",
             "code" : "Questo codice di partecipazione è scaduto.",
-
-            // TODO CHANGED
-            // OLD: This token has expired.
-            // NEW: This code has expired.
             "securitytoken" : "Questo codice è scaduto."
         },
 
@@ -281,10 +271,6 @@
             "EMAIL_VERIFIED" : "L'indirizzo e-mail dell'utente deve essere stato verificato",
             "PHONE_ENTERED" : "Il numero di telefono mobile dell'utente deve essere conosciuto nella piattaforma",
             "PHONE_VERIFIED" : "Il numero di telefono mobile dell'utente deve essere stato verificato",
-
-            // TODO CHANGED
-            // OLD: 2-Factor Authentication during Login
-            // NEW: 2-Factor Authentication on login
             "AUTH2FACTOR" : "Autenticazione a 2 fattori all'accesso",
             "ADDRESS_ENTERED" : "L'indirizzo postale dell'utente deve essere conosciuto nella piattaforma",
             "ADDRESS_VERIFIED" : "L'indirizzo postare dell'utente deve essere stato verificato",
@@ -561,7 +547,7 @@
         "password" : "Password",
         "password_repetition" : "Ripetere la password",
         "secure" : "Protezione dell'account",
-        "secure2" : "Cripta la chiave del mio account con la mia PASSWORD. Attenzione: se si dimentica la password, potrebbero volerci diversi giorni per recuperare la chiave dell'account!",
+        "secure2" : "Aumentare la protezione dei miei dati con un ulteriore livello di sicurezza. Attenzione: se dimentico la mia password, potrebbero volerci alcuni giorni prima di poterla reimpostare.",
         "firstname" : "Nome",
         "lastname" : "Cognome",
         "gender" : "Sesso",
@@ -672,41 +658,17 @@
         "admin_verified" : "Il tuo account deve essere sbloccato da un amministratore MIDATA. Riprova più tardi. Se trascorse più di 24 ore il tuo account non è stato sbloccato, contatta MIDATA.",
         "terms_agreed" : "I Condizioni generali di contratto MIDATA sono stati aggiornati. Si prega di confermare di accettare la nuova versione.",
         "privacy_policy_agreed" : "La Dichiarazione sui dati personali di MIDATA è stata aggiornata. Si prega di confermare di accettare la nuova versione.",
-
-        // TODO CHANGED
-        // OLD: An authorization token has been send to your phone. Please enter it.
-        // NEW: An authorization code has been send to your phone. Please enter it.
         "auth2factor" : "Un codice di autorizzazione è stato inviato al vostro telefono. Per favore, inseriscilo.",
-
-        // TODO CHANGED
-        // OLD: Token
-        // NEW: Code
         "securityToken" : "Codice",
         "securityToken_btn" : "Inviare",
-
-        // TODO CHANGED
-        // OLD: Please wait up to a minute for the token to arrive.
-        // NEW: Please wait up to a minute for the code to arrive.
         "no_token" : "Si prega di attendere fino a un minuto per l'arrivo del codice.",
-
-        // TODO CHANGED
-        // OLD: I did not receive the token
-        // NEW: I did not receive the code
         "no_token_btn" : "Non ho ricevuto il codice",
         "auth2factorsetup" : "Configura le impostazioni di sicurezza: vuole proteggere l'accesso al vostro account con un secondo fattore oltre alla vostra password?",
         "auth2factorsetup2" : "È possibile modificare le impostazioni in un secondo momento nel proprio profilo. Accedi {{domain}}} e clicca sul vostro nome in alto a destra.",
         "auth_type" : "Autenticazione",
         "auth_type_none" : "Non voglio usare l'autenticazione a due fattori.",
-
-        // TODO CHANGED
-        // OLD: I want to use two factor authentication using SMS tokens. Please send a token on login to my mobile phone.
-        // NEW: I want to use two factor authentication using SMS codes. Please send a code to my mobile phone at login.
         "auth_type_sms" : "Voglio usare l'autenticazione a due fattori con codici SMS. Si prega di inviare un codice al mio telefono cellulare all'accesso.",
         "emailnotify" : "Notifiche",
-
-        // TODO CHANGED
-        // OLD: Please send me an email everytime I log into the Midata portal at {{domain}}.
-        // NEW: Please send me an email everytime I log into the MIDATA portal at {{domain}}.
         "emailnotify2" : "Inviami un'e-mail ogni volta che accedo al portale MIDATA all'indirizzo {{domain}}.",
         "agree_btn" : "Sono d'accordo",
         "keyrecovery" : {
@@ -940,15 +902,7 @@
     },
 
     "editconsent2" : {
-
-        // TODO CHANGED
-        // OLD: created at
-        // NEW: created on
         "date_of_creation" : "creato il",
-
-        // TODO CHANGED
-        // OLD: expires at
-        // NEW: expires on
         "valid_until" : "scade il",
         "status_active" : "Attivo ora",
         "status_expired" : "Scaduto",
@@ -1016,18 +970,10 @@
         "type_study" : "Ricerca",
         "type_circle" : "Altri utenti",
         "type_studyrelated" : "Progetti di ricerca",
-
-        // TODO CHANGED
-        // OLD: Practitioners
-        // NEW: Health professionals
         "type_hcrelated" : "Professionisti dell'assistenza sanitaria",
         "type_implicit" : "Implicito",
-
-        // TODO NEW: Doctor / Hospital
-        "type_healthcare" : "Doctor / Hospital",
-
-        // TODO NEW: Research
-        "type_studyparticipation" : "Research",
+        "type_healthcare" : "Medico / Ospedale",
+        "type_studyparticipation" : "Ricerca",
         "show" : "Mostra:",
         "my_data" : "I miei dati",
         "all_data" : "Tutti i dati",
@@ -1212,9 +1158,7 @@
         "HEALTHCARE" : "Consenso (Fornitore di prestazioni sanitarie)",
         "MEMBER" : "Account",
         "PROVIDER" : "Account (Fornitore di prestazioni sanitarie)",
-
-        // TODO NEW: Account (Account Holder)
-        "HCRELATED" : "Account (Account Holder)",
+        "HCRELATED" : "Account (Titolare di account)",
         "RESEARCH" : "Account (Ricercatore)",
         "ADMIN" : "Account (Amministratore)",
         "DEVELOPER" : "Account (Sviluppatore)"
@@ -1340,15 +1284,9 @@
     "timeline" : {
         "spaces" : "MIDATA",
         "title" : "Timeline",
-
-        // TODO NEW: Fitness
         "fitness" : "Fitness",
-
-        // TODO NEW: Health Documentation
-        "health" : "Health Documentation",
-
-        // TODO NEW: Analyze your Data
-        "analyze" : "Analyze your Data"
+        "health" : "Dati medici",
+        "analyze" : "Analisi dati"
     },
 
     "-1" : "sconosciuto"

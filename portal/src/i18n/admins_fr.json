@@ -6,19 +6,11 @@
         "auditlog" : "Audit",
         "news" : "News",
         "plugins" : "Plugins",
-
-        // TODO CHANGED
-        // OLD: Content-Types
-        // NEW: Content Types
         "content" : "Types de contenu",
         "studies" : "Études",
         "terms" : "Conditions générales",
         "registration" : "Inscrire un administrateur",
         "user_admin" : "Administration des utilisateurs",
-
-        // TODO CHANGED
-        // OLD: Apps & Data
-        // NEW: Applications & Data
         "plugin_admin" : "Applications & Données",
         "research_admin" : "Recherche & Public"
     },
@@ -35,44 +27,20 @@
         "specific_user" : "Utilisateur spécifique",
         "role" : "Rôle",
         "status" : "État",
-
-        // TODO CHANGED
-        // OLD: MIDATA-ID
-        // NEW: MIDATA ID
-        "midata_id" : "MIDATA-ID",
+        "midata_id" : "MIDATA ID",
         "empty" : "Aucun utilisateur correspondant trouvé."
     },
 
     "admin_address" : {
         "title" : "Profil du membre",
-
-        // TODO CHANGED
-        // OLD: MIDATA-ID
-        // NEW: MIDATA ID
-        "midata_id" : "MIDATA-ID",
+        "midata_id" : "MIDATA ID",
         "role" : "Rôle",
         "subroles" : "Sous-rôle(s)",
         "developer" : "Appartient au développeur:",
         "status" : "État:",
-
-        // TODO CHANGED
-        // OLD: T&Cs Status:
-        // NEW: Status T&Cs:
         "agb_status" : "État des CG:",
-
-        // TODO CHANGED
-        // OLD: Contract Status:
-        // NEW: Status Contract:
         "contract_status" : "État du contrat:",
-
-        // TODO CHANGED
-        // OLD: Email Status:
-        // NEW: Status Email:
         "email_status" : "État de l'e-mail:",
-
-        // TODO CHANGED
-        // OLD: Mobile Validation Status:
-        // NEW: Status Mobile Phone Number:
         "mobile_status" : "État du n° de téléphone mobile:",
         "confirmation_code" : "Code de confirmation:",
         "registration_date" : "Date de l'inscription:",
@@ -124,10 +92,6 @@
 
     "admin_registration" : {
         "sign_up" : "Inscrire un nouvel administrateur",
-
-        // TODO CHANGED
-        // OLD: If you use the email of an existing developer account that account will be upgraded to an administrator account.
-        // NEW: If you use the email address of an existing developer account, that account will be upgraded to an administrator account.
         "description" : "Si vous utilisez l'adresse e-mail d'un compte développeur existant, ce compte sera mis à niveau vers un compte administrateur."
     },
 

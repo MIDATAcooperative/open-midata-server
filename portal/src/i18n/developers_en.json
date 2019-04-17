@@ -23,9 +23,9 @@
     "role" : "Role",
     "resetpw" : "New Password",
     "description" : "Using these buttons you can register additional users for testing your plugins. By test users, plugins are run locally (from 'localhost') and not on the server.",
-    "register_member_btn" : "Register Account Holder",
-    "register_hp_btn" : "Register Health Provider",
-    "register_researcher_btn" : "Register Researcher"
+    "register_member_btn" : "Register an Account Holder",
+    "register_hp_btn" : "Register a Health Professional",
+    "register_researcher_btn" : "Register a Researcher"
   },
   
   "developer_yourapps" : {
