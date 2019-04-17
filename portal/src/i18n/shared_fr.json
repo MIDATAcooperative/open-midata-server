@@ -77,7 +77,8 @@
             "access_query" : "Le filtre d'accès aux données (Data Access Filter) doit être limité par 'contenu' ou 'groupe'!",
             "sharing" : "Le filtre d'accès aux données (Data Access Filter) contient des types de données qui sont exclus par la configuration de l'étude.",
             "anonymous" : "L'étude ne peut être anonyme que si personne n'est autorisé à accéder à des données non pseudonymisées.",
-            "url" : "URL invalide"
+            "url" : "URL invalide",
+            "consent_members" : "Ce consentement ne pourra être confirmé que lorsque toutes les personnes externes auront rejoint MIDATA."
         },
 
         "missing" : {
@@ -546,7 +547,7 @@
         "password" : "Mot de passe",
         "password_repetition" : "Répéter le mot de passe",
         "secure" : "Protection du compte",
-        "secure2" : "Crypter ma clé de compte avec mon MOT DE PASSE. Attention: en cas d'oubli de votre mot de passe, la récupération de votre clé de compte peut durer plusieurs jours!",
+        "secure2" : "Augmenter la protection de mes données avec un niveau de sécurité supplémentaire. Attention: si j'oublie mon mot de passe, cela peut prendre quelques jours avant que je puisse le réinitialiser.",
         "firstname" : "Prénom",
         "lastname" : "Nom",
         "gender" : "Sexe",
@@ -972,6 +973,8 @@
         "type_studyrelated" : "Projets de recherche",
         "type_hcrelated" : "Professionnels de la santé",
         "type_implicit" : "Implicite",
+        "type_healthcare" : "Médecin / Hôpital",
+        "type_studyparticipation" : "Recherche",
         "show" : "Afficher:",
         "my_data" : "Mes données",
         "all_data" : "Toutes les données",
@@ -1156,6 +1159,7 @@
         "HEALTHCARE" : "Consentement (Professionnel de la santé)",
         "MEMBER" : "Compte",
         "PROVIDER" : "Compte (Professionnel de la santé)",
+        "HCRELATED" : "Compte (Titulaire de compte)",
         "RESEARCH" : "Compte (Chercheur)",
         "ADMIN" : "Compte (Administrateur)",
         "DEVELOPER" : "Account (Développeur)"
@@ -1280,7 +1284,10 @@
 
     "timeline" : {
         "spaces" : "MIDATA",
-        "title" : "Timeline"
+        "title" : "Timeline",
+        "fitness" : "Fitness",
+        "health" : "Données médicales",
+        "analyze" : "Analyse de données"
     },
 
     "-1" : "inconnu"

@@ -1,14 +1,14 @@
 {
 
     "provider_registration" : {
-        "sign_up" : "Iscrizione come operatore sanitario",
-        "provider" : "Operatore sanitario",
+        "sign_up" : "Iscrizione come professionista sanitario",
+        "provider" : "Professionista sanitario",
         "user" : "Utente",
         "name" : "Nome"
     },
 
     "provider_login" : {
-        "title" : "Accesso come operatore sanitario"
+        "title" : "Accesso come professionista sanitario"
     },
 
     "provider_navbar" : {
@@ -31,12 +31,24 @@
     },
 
     "addprovider" : {
-        "sign_up" : "Iscrivere operatore sanitario",
+        "sign_up" : "Iscrivere professionista sanitario",
         "success" : "Utente iscritto con successo"
     },
 
     "provider_patientsearch" : {
-        "title" : "Ricerca paziente"
+        "title" : "Ricerca paziente",
+        "email" : "e-mail",
+        "or" : "o",
+        "midataid" : "MIDATA ID",
+        "birthday" : "Data di nascita",
+        "searching" : "Ricerca...",
+        "address" : "Indirizzo",
+        "show_patient_btn" : "Mostra paziente",
+        "consents" : "Consensi a questo paziente",
+        "add_new_consent" : "Aggiungi nuovo consenso",
+        "usergroup" : "Team (opzionale)",
+        "passcode" : "Codice di accesso (opzionale)",
+        "add_new_consent_btn" : "Aggiungi nuovo consenso"
     },
 
     "provider_patients" : {
@@ -68,6 +80,12 @@
     },
 
     "provider_memberdetails" : {
-        "propose_consent" : "Richiedi consenso"
+        "propose_consent" : "Richiedi consenso",
+        "pick_consent" : "Selezionare un consenso per visualizzare i singoli record",
+        "share_btn" : "Condividere dati con il paziente"
+    },
+
+    "help_welcome" : {
+        "starts" : "Alcune idee per iniziare con MIDATA:"
     }
 }

@@ -5,12 +5,12 @@
     "auditlog" : "Audit",
     "news" : "News",
     "plugins" : "Plugins",
-	"content" : "Content-Types",
+	"content" : "Content Types",
 	"studies" : "Studies",
 	"terms" : "General Terms and Conditions",
 	"registration" : "Register an Administrator",
 	"user_admin" : "User Administration",
-	"plugin_admin" : "Apps & Data",
+	"plugin_admin" : "Applications & Data",
 	"research_admin" : "Research & Public"
   },
   
@@ -26,21 +26,21 @@
     "specific_user" : "Specific User",
     "role" : "Role",
     "status" : "Status",
-    "midata_id" : "MIDATA-ID",
+    "midata_id" : "MIDATA ID",
     "empty" : "No matching users found."
   },
 
   "admin_address" : {
     "title" : "Member Profile",
-    "midata_id" : "MIDATA-ID",
+    "midata_id" : "MIDATA ID",
     "role" : "Role",
     "subroles" : "Sub-Role(s)",
     "developer" : "Belongs to Developer:",
     "status" : "Status:",
-    "agb_status" : "T&Cs Status:",
-    "contract_status" : "Contract Status:",
-    "email_status" : "Email Status:",
-    "mobile_status" : "Mobile Validation Status:",
+    "agb_status" : "Status T&Cs:",
+    "contract_status" : "Status Contract:",
+    "email_status" : "Status Email:",
+    "mobile_status" : "Status Mobile Phone Number:",
     "confirmation_code" : "Confirmation Code:",
     "registration_date" : "Registration Date:",
     "confirmation_date" : "Confirmation Date:",
@@ -91,7 +91,7 @@
   
   "admin_registration" : {
     "sign_up" : "Register a New Administrator",
-    "description" : "If you use the email of an existing developer account that account will be upgraded to an administrator account."
+    "description" : "If you use the email address of an existing developer account, that account will be upgraded to an administrator account."
   },
   
   "admin_plugins" : {

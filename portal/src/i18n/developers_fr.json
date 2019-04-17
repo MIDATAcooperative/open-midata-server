@@ -25,8 +25,8 @@
         "resetpw" : "Nouveau mot de passe",
         "description" : "A l'aide de ces boutons, vous pouvez créer des utilisateurs additionnels afin de tester vos plugins. Pour ces utilisateurs, les plugins sont exécutés localement (depuis 'localhost') et non pas sur le serveur.",
         "register_member_btn" : "Créer un compte personnel",
-        "register_hp_btn" : "Créer un professionnel de la santé",
-        "register_researcher_btn" : "Créer un chercheur"
+        "register_hp_btn" : "Créer un compte professionnel de la santé",
+        "register_researcher_btn" : "Créer un compte chercheur"
     },
 
     "developer_yourapps" : {

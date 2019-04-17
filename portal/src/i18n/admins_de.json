@@ -27,13 +27,13 @@
         "specific_user" : "Bestimmter Benutzer",
         "role" : "Rolle",
         "status" : "Status",
-        "midata_id" : "MIDATA-ID",
+        "midata_id" : "MIDATA ID",
         "empty" : "Kein passender Benutzer gefunden."
     },
 
     "admin_address" : {
         "title" : "Profil des Mitglieds",
-        "midata_id" : "MIDATA-ID",
+        "midata_id" : "MIDATA ID",
         "role" : "Rolle",
         "subroles" : "Subrolle(n)",
         "developer" : "Gehört dem Entwickler:",
@@ -50,7 +50,7 @@
         "security_type" : {
             "KEY" : "Privater Schlüssel auf dem Server",
             "KEY_PASSPHRASE" : "PASSPHRASE geschützter privater Schlüssel",
-            "KEY_EXT_PASSWORD" : "Kennwort geschützter privater Schlüssel"
+            "KEY_EXT_PASSWORD" : "Passwort geschützter privater Schlüssel"
         },
         "last_login" : "Letzte Anmeldung:",
         "email_confirm_btn" : "E-Mail-Adresse bestätigen",

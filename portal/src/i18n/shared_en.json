@@ -78,7 +78,7 @@
        "sharing" : "The Data Access Filter contains data types that are excluded by the study configuration.",
        "anonymous" : "Study can only be anonymous if no one is allowed to access unpseudonymized data.",
        "url" : "Invalid URL",
-       "consent_members" : "Consent may only be confirmed once all external persons have joined Midata."       
+       "consent_members" : "This consent may only be confirmed once all external persons have joined MIDATA."       
      },
 
      "missing" : {
@@ -551,7 +551,7 @@
     "password" : "Password",
     "password_repetition" : "Repeat Password",
     "secure" : "Account Protection",
-    "secure2" : "Encrypt my account key with my PASSWORD. Warning: if you forget your password, it may take several days to recover your account key!",
+    "secure2" : "Increase the protection of my data with an additional security level. Warning: if I forget my password, it may take a few days until I can reset it.",
     "firstname" : "First Name",
     "lastname" : "Surname",
     "gender" : "Gender",
@@ -1303,8 +1303,8 @@
     "spaces" : "MIDATA",
     "title" : "Timeline",
     "fitness" : "Fitness",
-    "health" : "Health Documentation",
-    "analyze" : "Analyze your Data"
+    "health" : "Health Data",
+    "analyze" : "Data Analysis"
   },
   
   "-1" : "unknown"

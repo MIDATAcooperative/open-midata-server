@@ -83,7 +83,7 @@
         "confirmation_date" : "Date de confirmation",
         "confirm_btn" : "confirmer",
         "reject_btn" : "refuser",
-        "empty" : "Vous n'avez enregistré aucun contact comme professionel de la santé."
+        "empty" : "Vous n'avez enregistré aucun contact en tant que professionel de la santé."
     },
 
     "smallstudies" : {
