@@ -83,7 +83,7 @@
         "confirmation_date" : "Data di conferma",
         "confirm_btn" : "conferma",
         "reject_btn" : "rifiuta",
-        "empty" : "Non hai registrato alcun contatto come operatore sanitario."
+        "empty" : "Non hai registrato alcun contatto come professionista sanitario."
     },
 
     "smallstudies" : {

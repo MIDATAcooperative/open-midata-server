@@ -27,13 +27,13 @@
         "specific_user" : "Utente specifico",
         "role" : "Ruolo",
         "status" : "Stato",
-        "midata_id" : "ID-MIDATA",
+        "midata_id" : "MIDATA ID",
         "empty" : "Non è stato trovato alcun utente corrispondente."
     },
 
     "admin_address" : {
         "title" : "Profilo del membro",
-        "midata_id" : "ID-MIDATA",
+        "midata_id" : "MIDATA ID",
         "role" : "Ruolo",
         "subroles" : "Sotto-ruolo/i",
         "developer" : "Appartiene allo sviluppatore:",

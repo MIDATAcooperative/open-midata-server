@@ -36,7 +36,19 @@
     },
 
     "provider_patientsearch" : {
-        "title" : "Patient suchen"
+        "title" : "Patient suchen",
+        "email" : "E-Mail",
+        "or" : "oder",
+        "midataid" : "MIDATA ID",
+        "birthday" : "Geburtsdatum",
+        "searching" : "Suche...",
+        "address" : "Adresse",
+        "show_patient_btn" : "Patient anzeigen",
+        "consents" : "Zustimmungen zu diesem Patienten",
+        "add_new_consent" : "Neue Zustimmung hinzufügen",
+        "usergroup" : "Team (optional)",
+        "passcode" : "Zugangscode (optional)",
+        "add_new_consent_btn" : "Neue Zustimmung hinzufügen"
     },
 
     "provider_patients" : {
@@ -68,6 +80,12 @@
     },
 
     "provider_memberdetails" : {
-        "propose_consent" : "Zustimmung anfragen"
+        "propose_consent" : "Zustimmung anfragen",
+        "pick_consent" : "Wählen Sie eine Zustimmung zur Anzeige einzelner Datensätze aus",
+        "share_btn" : "Daten mit dem Patienten teilen"
+    },
+
+    "help_welcome" : {
+        "starts" : "Einige Ideen, um mit MIDATA zu beginnen:"
     }
 }

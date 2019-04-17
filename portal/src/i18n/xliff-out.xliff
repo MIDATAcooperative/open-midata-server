@@ -1,214 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1" xml:lang="en">
-    <file source-language="en" target-language="it" datatype="winres" original="members_it.json">
-        <body>
-            <group resname="help_welcome" id="help_welcome">
-                <trans-unit resname="menu_config" id="help_welcome.menu_config">
-                    <source>Config</source>
-                </trans-unit>
-            </group>
-            <group resname="help_setup" id="help_setup">
-                <trans-unit resname="question_devices_answer1" id="help_setup.question_devices_answer1">
-                    <source>Fitbit</source>
-                </trans-unit>
-                <trans-unit resname="question_devices_answer2" id="help_setup.question_devices_answer2">
-                    <source>Jawbone</source>
-                </trans-unit>
-                <trans-unit resname="question_devices_answer3" id="help_setup.question_devices_answer3">
-                    <source>Withings</source>
-                </trans-unit>
-            </group>
-            <group resname="smallstudies" id="smallstudies">
-                <trans-unit resname="infoapply" id="smallstudies.infoapply">
-                    <source>More Info &amp; Participation</source>
-                </trans-unit>
-                <trans-unit resname="infoonly" id="smallstudies.infoonly">
-                    <source>More Information</source>
-                </trans-unit>
-            </group>
-        </body>
-    </file>
-    <file source-language="en" target-language="it" datatype="winres" original="admins_it.json">
-        <body>
-            <group resname="admin_navbar" id="admin_navbar">
-                <trans-unit resname="admin" id="admin_navbar.admin">
-                    <source>Admin</source>
-                </trans-unit>
-                <trans-unit resname="content" id="admin_navbar.content">
-                    <source>Content-Types</source>
-                    <target>Contenuti</target>
-                </trans-unit>
-                <trans-unit resname="user_admin" id="admin_navbar.user_admin">
-                    <source>User Administration</source>
-                </trans-unit>
-                <trans-unit resname="plugin_admin" id="admin_navbar.plugin_admin">
-                    <source>Apps &amp; Data</source>
-                </trans-unit>
-                <trans-unit resname="research_admin" id="admin_navbar.research_admin">
-                    <source>Research &amp; Public</source>
-                </trans-unit>
-            </group>
-            <group resname="admin_address" id="admin_address">
-                <trans-unit resname="mobile_status" id="admin_address.mobile_status">
-                    <source>Mobile Validation Status:</source>
-                </trans-unit>
-                <trans-unit resname="auth_type" id="admin_address.auth_type">
-                    <source>2FA method</source>
-                </trans-unit>
-            </group>
-            <group resname="admin_registration" id="admin_registration">
-                <trans-unit resname="description" id="admin_registration.description">
-                    <source>If you use the email of an existing developer account that account will be upgraded to an administrator account.</source>
-                </trans-unit>
-            </group>
-            <group resname="admin_plugins" id="admin_plugins">
-                <trans-unit resname="plugin_market" id="admin_plugins.plugin_market">
-                    <source>MIDATA Store</source>
-                </trans-unit>
-            </group>
-            <group resname="admin_study" id="admin_study">
-                <trans-unit resname="sharing_query" id="admin_study.sharing_query">
-                    <source>Data Access Filter</source>
-                </trans-unit>
-                <trans-unit resname="team" id="admin_study.team">
-                    <source>Team</source>
-                </trans-unit>
-            </group>
-            <group resname="admin_stats" id="admin_stats">
-                <trans-unit resname="indexPageCount" id="admin_stats.indexPageCount">
-                    <source>DB Index Pages</source>
-                </trans-unit>
-            </group>
-            <group resname="admin_pwrecover" id="admin_pwrecover">
-                <trans-unit resname="share" id="admin_pwrecover.share">
-                    <source>Share</source>
-                </trans-unit>
-            </group>
-        </body>
-    </file>
-    <file source-language="en" target-language="it" datatype="winres" original="providers_it.json">
-        <body>
-            <group resname="provider_navbar" id="provider_navbar">
-                <trans-unit resname="market" id="provider_navbar.market">
-                    <source>MIDATA Store</source>
-                </trans-unit>
-                <trans-unit resname="org" id="provider_navbar.org">
-                    <source>Intern</source>
-                </trans-unit>
-                <trans-unit resname="organization" id="provider_navbar.organization">
-                    <source>Organization</source>
-                </trans-unit>
-            </group>
-            <group resname="provider_organization" id="provider_organization">
-                <trans-unit resname="title" id="provider_organization.title">
-                    <source>Organization</source>
-                </trans-unit>
-                <trans-unit resname="name" id="provider_organization.name">
-                    <source>Name</source>
-                </trans-unit>
-                <trans-unit resname="description" id="provider_organization.description">
-                    <source>Description</source>
-                </trans-unit>
-                <trans-unit resname="members" id="provider_organization.members">
-                    <source>All members of your organization</source>
-                </trans-unit>
-                <trans-unit resname="addprovider" id="provider_organization.addprovider">
-                    <source>Register New Member</source>
-                </trans-unit>
-            </group>
-            <group resname="addprovider" id="addprovider">
-                <trans-unit resname="sign_up" id="addprovider.sign_up">
-                    <source>Register health professional</source>
-                </trans-unit>
-                <trans-unit resname="success" id="addprovider.success">
-                    <source>User successfully registered</source>
-                </trans-unit>
-            </group>
-            <group resname="provider_usergroups" id="provider_usergroups">
-                <trans-unit resname="name" id="provider_usergroups.name">
-                    <source>Team</source>
-                </trans-unit>
-                <trans-unit resname="searchable" id="provider_usergroups.searchable">
-                    <source>Public</source>
-                </trans-unit>
-            </group>
-            <group resname="provider_editusergroup" id="provider_editusergroup">
-                <trans-unit resname="searchable" id="provider_editusergroup.searchable">
-                    <source>Findable by Account Holders</source>
-                </trans-unit>
-            </group>
-        </body>
-    </file>
-    <file source-language="en" target-language="it" datatype="winres" original="developers_it.json">
-        <body>
-            <group resname="developer_navbar" id="developer_navbar">
-                <trans-unit resname="sandbox" id="developer_navbar.sandbox">
-                    <source>Sandbox</source>
-                </trans-unit>
-            </group>
-            <group resname="appmessages" id="appmessages">
-                <group resname="reasons" id="appmessages.reasons">
-                    <trans-unit resname="LOGIN" id="appmessages.reasons.LOGIN">
-                        <source>Login Notification (if enabled by user)</source>
-                    </trans-unit>
-                </group>
-            </group>
-            <group resname="manageapp" id="manageapp">
-                <trans-unit resname="write_mode" id="manageapp.write_mode">
-                    <source>Write Access</source>
-                </trans-unit>
-                <trans-unit resname="debug_btn" id="manageapp.debug_btn">
-                    <source>API Tester Sandbox</source>
-                </trans-unit>
-                <trans-unit resname="access_query_json" id="manageapp.access_query_json">
-                    <source>Data Access Filter</source>
-                </trans-unit>
-            </group>
-            <group resname="appdebug" id="appdebug">
-                <trans-unit resname="title" id="appdebug.title">
-                    <source>API Tester</source>
-                </trans-unit>
-                <trans-unit resname="oauth_login" id="appdebug.oauth_login">
-                    <source>OAuth Login</source>
-                </trans-unit>
-                <trans-unit resname="device" id="appdebug.device">
-                    <source>Device</source>
-                </trans-unit>
-                <trans-unit resname="refresh_token" id="appdebug.refresh_token">
-                    <source>Refresh Token</source>
-                    <target>Refresh Token</target>
-                </trans-unit>
-                <trans-unit resname="portal_password" id="appdebug.portal_password">
-                    <source>Password</source>
-                </trans-unit>
-                <trans-unit resname="portal_login_btn" id="appdebug.portal_login_btn">
-                    <source>Portal login + get token</source>
-                    <target>Login al portale + ottenere token</target>
-                </trans-unit>
-            </group>
-            <group resname="appicon" id="appicon">
-                <group resname="type" id="appicon.type">
-                    <trans-unit resname="image/jpeg" id="appicon.type.image/jpeg">
-                        <source>JPEG</source>
-                    </trans-unit>
-                    <trans-unit resname="image/png" id="appicon.type.image/png">
-                        <source>PNG</source>
-                    </trans-unit>
-                    <trans-unit resname="image/gif" id="appicon.type.image/gif">
-                        <source>GIF</source>
-                    </trans-unit>
-                </group>
-            </group>
-            <group resname="appsubscriptions" id="appsubscriptions">
-                <trans-unit resname="trigger" id="appsubscriptions.trigger">
-                    <source>Trigger</source>
-                </trans-unit>
-                <trans-unit resname="triggerDetail" id="appsubscriptions.triggerDetail">
-                    <source>FHIR Resource</source>
-                </trans-unit>
-            </group>
-        </body>
-    </file>
     <file source-language="en" target-language="it" datatype="winres" original="shared_it.json">
         <body>
             <group resname="navbar" id="navbar">
@@ -217,31 +8,27 @@
                 </trans-unit>
             </group>
             <group resname="error" id="error">
-                <group resname="notauthorized" id="error.notauthorized">
-                    <trans-unit resname="no_debug" id="error.notauthorized.no_debug">
-                        <source>Debugging is only available for plugins during development or beta phase on non productive instances.</source>
-                    </trans-unit>
-                </group>
                 <group resname="invalid" id="error.invalid">
                     <trans-unit resname="securitytoken" id="error.invalid.securitytoken">
-                        <source>Token not correct</source>
+                        <source>Code not correct</source>
+                        <target>Codice non corretto</target>
                     </trans-unit>
-                </group>
-                <group resname="missing" id="error.missing">
-                    <trans-unit resname="auth_type" id="error.missing.auth_type">
-                        <source>Two factor authentication is required for your type of account.</source>
+                    <trans-unit resname="consent_members" id="error.invalid.consent_members">
+                        <source>Consent may only be confirmed once all external persons have joined Midata.</source>
                     </trans-unit>
                 </group>
                 <group resname="expired" id="error.expired">
                     <trans-unit resname="securitytoken" id="error.expired.securitytoken">
-                        <source>This token has expired.</source>
+                        <source>This code has expired.</source>
+                        <target>Questo codice è scaduto.</target>
                     </trans-unit>
                 </group>
             </group>
             <group resname="enum" id="enum">
                 <group resname="userfeature" id="enum.userfeature">
                     <trans-unit resname="AUTH2FACTOR" id="enum.userfeature.AUTH2FACTOR">
-                        <source>2-Factor Authentication during Login</source>
+                        <source>2-Factor Authentication on login</source>
+                        <target>Autenticazione a 2 fattori all'accesso</target>
                     </trans-unit>
                 </group>
                 <group resname="researcherrole" id="enum.researcherrole">
@@ -274,22 +61,6 @@
                         <source>OAuth 2</source>
                     </trans-unit>
                 </group>
-                <group resname="secondaryauthtype" id="enum.secondaryauthtype">
-                    <trans-unit resname="NONE" id="enum.secondaryauthtype.NONE">
-                        <source>No second authentication factor</source>
-                    </trans-unit>
-                    <trans-unit resname="SMS" id="enum.secondaryauthtype.SMS">
-                        <source>Two factor authentication using SMS</source>
-                    </trans-unit>
-                </group>
-                <group resname="accountnotifications" id="enum.accountnotifications">
-                    <trans-unit resname="NONE" id="enum.accountnotifications.NONE">
-                        <source>No login notifications</source>
-                    </trans-unit>
-                    <trans-unit resname="LOGIN" id="enum.accountnotifications.LOGIN">
-                        <source>Send an email on each login</source>
-                    </trans-unit>
-                </group>
             </group>
             <group resname="common" id="common">
                 <group resname="yesno" id="common.yesno">
@@ -313,122 +84,58 @@
             </group>
             <group resname="postregister" id="postregister">
                 <trans-unit resname="auth2factor" id="postregister.auth2factor">
-                    <source>An authorization token has been send to your phone. Please enter it.</source>
+                    <source>An authorization code has been send to your phone. Please enter it.</source>
+                    <target>Un codice di autorizzazione è stato inviato al vostro telefono. Per favore, inseriscilo.</target>
                 </trans-unit>
                 <trans-unit resname="securityToken" id="postregister.securityToken">
-                    <source>Token</source>
-                </trans-unit>
-                <trans-unit resname="securityToken_btn" id="postregister.securityToken_btn">
-                    <source>Send</source>
+                    <source>Code</source>
+                    <target>Codice</target>
                 </trans-unit>
                 <trans-unit resname="no_token" id="postregister.no_token">
-                    <source>Please wait up to a minute for the token to arrive.</source>
+                    <source>Please wait up to a minute for the code to arrive.</source>
+                    <target>Si prega di attendere fino a un minuto per l'arrivo del codice.</target>
                 </trans-unit>
                 <trans-unit resname="no_token_btn" id="postregister.no_token_btn">
-                    <source>I did not receive the token</source>
-                </trans-unit>
-                <trans-unit resname="auth2factorsetup" id="postregister.auth2factorsetup">
-                    <source>Please setup your security settings: Do you want to protect access to your account with a second factor in addition to your password?</source>
-                </trans-unit>
-                <trans-unit resname="auth2factorsetup2" id="postregister.auth2factorsetup2">
-                    <source>You can change your settings later in your profile. Log into {{domain}} and click on your name on the top right.</source>
-                </trans-unit>
-                <trans-unit resname="auth_type" id="postregister.auth_type">
-                    <source>Authentication</source>
-                </trans-unit>
-                <trans-unit resname="auth_type_none" id="postregister.auth_type_none">
-                    <source>I do not want to use two factor authentication.</source>
+                    <source>I did not receive the code</source>
+                    <target>Non ho ricevuto il codice</target>
                 </trans-unit>
                 <trans-unit resname="auth_type_sms" id="postregister.auth_type_sms">
-                    <source>I want to use two factor authentication using SMS tokens. Please send a token on login to my mobile phone.</source>
-                </trans-unit>
-                <trans-unit resname="emailnotify" id="postregister.emailnotify">
-                    <source>Notifications</source>
+                    <source>I want to use two factor authentication using SMS codes. Please send a code to my mobile phone at login.</source>
+                    <target>Voglio usare l'autenticazione a due fattori con codici SMS. Si prega di inviare un codice al mio telefono cellulare all'accesso.</target>
                 </trans-unit>
                 <trans-unit resname="emailnotify2" id="postregister.emailnotify2">
-                    <source>Please send me an email everytime I log into the Midata portal at {{domain}}.</source>
+                    <source>Please send me an email everytime I log into the MIDATA portal at {{domain}}.</source>
+                    <target>Inviami un'e-mail ogni volta che accedo al portale MIDATA all'indirizzo {{domain}}.</target>
                 </trans-unit>
             </group>
             <group resname="user" id="user">
                 <trans-unit resname="midataID" id="user.midataID">
                     <source>MIDATA ID:</source>
                 </trans-unit>
-                <trans-unit resname="metrics_btn" id="user.metrics_btn">
-                    <source>Calculate Account Metrics</source>
-                </trans-unit>
-                <trans-unit resname="auth_type" id="user.auth_type">
-                    <source>Authentication</source>
-                </trans-unit>
-                <trans-unit resname="auth_type2" id="user.auth_type2">
-                    <source>Do you want to protect access to your account with a second factor in addition to your password?</source>
-                </trans-unit>
-                <trans-unit resname="notifications" id="user.notifications">
-                    <source>Notifications</source>
-                </trans-unit>
-                <trans-unit resname="notifications2" id="user.notifications2">
-                    <source>Do you want to be notified if your account is used?</source>
-                </trans-unit>
-            </group>
-            <group resname="newconsent" id="newconsent">
-                <trans-unit resname="select" id="newconsent.select">
-                    <source>Select</source>
-                </trans-unit>
-                <trans-unit resname="create2_btn" id="newconsent.create2_btn">
-                    <source>Agree to this consent</source>
-                </trans-unit>
-                <trans-unit resname="extended_btn" id="newconsent.extended_btn">
-                    <source>Show advanced options</source>
-                </trans-unit>
             </group>
             <group resname="editconsent2" id="editconsent2">
                 <trans-unit resname="date_of_creation" id="editconsent2.date_of_creation">
-                    <source>created at</source>
+                    <source>created on</source>
+                    <target>creato il</target>
                 </trans-unit>
                 <trans-unit resname="valid_until" id="editconsent2.valid_until">
-                    <source>expires at</source>
-                </trans-unit>
-                <trans-unit resname="status_active" id="editconsent2.status_active">
-                    <source>Active now</source>
-                </trans-unit>
-                <trans-unit resname="status_expired" id="editconsent2.status_expired">
-                    <source>Expired</source>
-                </trans-unit>
-                <trans-unit resname="status_unconfirmed" id="editconsent2.status_unconfirmed">
-                    <source>Needs confirmation</source>
-                </trans-unit>
-                <trans-unit resname="status_rejected" id="editconsent2.status_rejected">
-                    <source>Rejected</source>
-                </trans-unit>
-                <trans-unit resname="status" id="editconsent2.status">
-                    <source>Status</source>
-                </trans-unit>
-                <trans-unit resname="duration" id="editconsent2.duration">
-                    <source>Validity Period</source>
-                </trans-unit>
-                <trans-unit resname="external" id="editconsent2.external">
-                    <source>External Application</source>
-                </trans-unit>
-                <trans-unit resname="community" id="editconsent2.community">
-                    <source>Research Community</source>
+                    <source>expires on</source>
+                    <target>scade il</target>
                 </trans-unit>
                 <trans-unit resname="team" id="editconsent2.team">
                     <source>Team</source>
                 </trans-unit>
             </group>
-            <group resname="consents" id="consents">
-                <trans-unit resname="date_of_creation" id="consents.date_of_creation">
-                    <source>Creation Date</source>
-                </trans-unit>
-            </group>
             <group resname="records" id="records">
-                <trans-unit resname="type_studyrelated" id="records.type_studyrelated">
-                    <source>Research Projects</source>
-                </trans-unit>
                 <trans-unit resname="type_hcrelated" id="records.type_hcrelated">
-                    <source>Practitioners</source>
+                    <source>Health professionals</source>
+                    <target>Professionisti dell'assistenza sanitaria</target>
                 </trans-unit>
-                <trans-unit resname="type_implicit" id="records.type_implicit">
-                    <source>Implicit</source>
+                <trans-unit resname="type_healthcare" id="records.type_healthcare">
+                    <source>Doctor / Hospital</source>
+                </trans-unit>
+                <trans-unit resname="type_studyparticipation" id="records.type_studyparticipation">
+                    <source>Research</source>
                 </trans-unit>
                 <trans-unit resname="just_name" id="records.just_name">
                     <source>{{name}}</source>
@@ -445,6 +152,9 @@
                 </trans-unit>
                 <trans-unit resname="MEMBER" id="auditlog.MEMBER">
                     <source>Account</source>
+                </trans-unit>
+                <trans-unit resname="HCRELATED" id="auditlog.HCRELATED">
+                    <source>Account (Account Holder)</source>
                 </trans-unit>
             </group>
             <group resname="changeemail" id="changeemail">
@@ -469,6 +179,233 @@
                 <trans-unit resname="title" id="timeline.title">
                     <source>Timeline</source>
                 </trans-unit>
+                <trans-unit resname="fitness" id="timeline.fitness">
+                    <source>Fitness</source>
+                </trans-unit>
+                <trans-unit resname="health" id="timeline.health">
+                    <source>Health Documentation</source>
+                </trans-unit>
+                <trans-unit resname="analyze" id="timeline.analyze">
+                    <source>Analyze your Data</source>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+    <file source-language="en" target-language="it" datatype="winres" original="admins_it.json">
+        <body>
+            <group resname="admin_navbar" id="admin_navbar">
+                <trans-unit resname="admin" id="admin_navbar.admin">
+                    <source>Admin</source>
+                </trans-unit>
+                <trans-unit resname="content" id="admin_navbar.content">
+                    <source>Content Types</source>
+                    <target>Tipi di contenuto</target>
+                </trans-unit>
+                <trans-unit resname="plugin_admin" id="admin_navbar.plugin_admin">
+                    <source>Applications &amp; Data</source>
+                    <target>Applicazioni &amp; Dati</target>
+                </trans-unit>
+            </group>
+            <group resname="admin_members" id="admin_members">
+                <trans-unit resname="midata_id" id="admin_members.midata_id">
+                    <source>MIDATA ID</source>
+                    <target>ID-MIDATA</target>
+                </trans-unit>
+            </group>
+            <group resname="admin_address" id="admin_address">
+                <trans-unit resname="midata_id" id="admin_address.midata_id">
+                    <source>MIDATA ID</source>
+                    <target>ID-MIDATA</target>
+                </trans-unit>
+                <trans-unit resname="agb_status" id="admin_address.agb_status">
+                    <source>Status T&amp;Cs:</source>
+                    <target>Stato dei CGC:</target>
+                </trans-unit>
+                <trans-unit resname="contract_status" id="admin_address.contract_status">
+                    <source>Status Contract:</source>
+                    <target>Stato del contratto:</target>
+                </trans-unit>
+                <trans-unit resname="email_status" id="admin_address.email_status">
+                    <source>Status Email:</source>
+                    <target>Stato dell'e-mail:</target>
+                </trans-unit>
+                <trans-unit resname="mobile_status" id="admin_address.mobile_status">
+                    <source>Status Mobile Phone Number:</source>
+                    <target>Stato del numero di telefono mobile:</target>
+                </trans-unit>
+            </group>
+            <group resname="admin_registration" id="admin_registration">
+                <trans-unit resname="description" id="admin_registration.description">
+                    <source>If you use the email address of an existing developer account, that account will be upgraded to an administrator account.</source>
+                    <target>Se si utilizza l'e-mail di un account di sviluppatore esistente, tale account verrà aggiornato a un account amministratore.</target>
+                </trans-unit>
+            </group>
+            <group resname="admin_plugins" id="admin_plugins">
+                <trans-unit resname="plugin_market" id="admin_plugins.plugin_market">
+                    <source>MIDATA Store</source>
+                </trans-unit>
+            </group>
+            <group resname="admin_study" id="admin_study">
+                <trans-unit resname="sharing_query" id="admin_study.sharing_query">
+                    <source>Data Access Filter</source>
+                </trans-unit>
+                <trans-unit resname="team" id="admin_study.team">
+                    <source>Team</source>
+                </trans-unit>
+            </group>
+            <group resname="admin_stats" id="admin_stats">
+                <trans-unit resname="indexPageCount" id="admin_stats.indexPageCount">
+                    <source>DB Index Pages</source>
+                </trans-unit>
+            </group>
+            <group resname="admin_pwrecover" id="admin_pwrecover">
+                <trans-unit resname="share" id="admin_pwrecover.share">
+                    <source>Share</source>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+    <file source-language="en" target-language="it" datatype="winres" original="developers_it.json">
+        <body>
+            <group resname="developer_navbar" id="developer_navbar">
+                <trans-unit resname="sandbox" id="developer_navbar.sandbox">
+                    <source>Sandbox</source>
+                </trans-unit>
+            </group>
+            <group resname="manageapp" id="manageapp">
+                <trans-unit resname="debug_btn" id="manageapp.debug_btn">
+                    <source>API Tester Sandbox</source>
+                </trans-unit>
+                <trans-unit resname="access_query_json" id="manageapp.access_query_json">
+                    <source>Data Access Filter</source>
+                </trans-unit>
+            </group>
+            <group resname="appdebug" id="appdebug">
+                <trans-unit resname="title" id="appdebug.title">
+                    <source>API Tester</source>
+                </trans-unit>
+                <trans-unit resname="oauth_login" id="appdebug.oauth_login">
+                    <source>OAuth Login</source>
+                </trans-unit>
+                <trans-unit resname="device" id="appdebug.device">
+                    <source>Device</source>
+                </trans-unit>
+                <trans-unit resname="refresh_token" id="appdebug.refresh_token">
+                    <source>Refresh Token</source>
+                </trans-unit>
+                <trans-unit resname="portal_password" id="appdebug.portal_password">
+                    <source>Password</source>
+                </trans-unit>
+            </group>
+            <group resname="appicon" id="appicon">
+                <group resname="type" id="appicon.type">
+                    <trans-unit resname="image/jpeg" id="appicon.type.image/jpeg">
+                        <source>JPEG</source>
+                    </trans-unit>
+                    <trans-unit resname="image/png" id="appicon.type.image/png">
+                        <source>PNG</source>
+                    </trans-unit>
+                    <trans-unit resname="image/gif" id="appicon.type.image/gif">
+                        <source>GIF</source>
+                    </trans-unit>
+                </group>
+            </group>
+            <group resname="appsubscriptions" id="appsubscriptions">
+                <trans-unit resname="trigger" id="appsubscriptions.trigger">
+                    <source>Trigger</source>
+                </trans-unit>
+                <trans-unit resname="triggerDetail" id="appsubscriptions.triggerDetail">
+                    <source>FHIR Resource</source>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+    <file source-language="en" target-language="it" datatype="winres" original="members_it.json">
+        <body>
+            <group resname="help_welcome" id="help_welcome">
+                <trans-unit resname="menu_config" id="help_welcome.menu_config">
+                    <source>Config</source>
+                </trans-unit>
+            </group>
+            <group resname="help_setup" id="help_setup">
+                <trans-unit resname="question_devices_answer1" id="help_setup.question_devices_answer1">
+                    <source>Fitbit</source>
+                </trans-unit>
+                <trans-unit resname="question_devices_answer2" id="help_setup.question_devices_answer2">
+                    <source>Jawbone</source>
+                </trans-unit>
+                <trans-unit resname="question_devices_answer3" id="help_setup.question_devices_answer3">
+                    <source>Withings</source>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+    <file source-language="en" target-language="it" datatype="winres" original="providers_it.json">
+        <body>
+            <group resname="provider_navbar" id="provider_navbar">
+                <trans-unit resname="market" id="provider_navbar.market">
+                    <source>MIDATA Store</source>
+                </trans-unit>
+                <trans-unit resname="org" id="provider_navbar.org">
+                    <source>Enterprise</source>
+                    <target>Impresa</target>
+                </trans-unit>
+            </group>
+            <group resname="provider_patientsearch" id="provider_patientsearch">
+                <trans-unit resname="email" id="provider_patientsearch.email">
+                    <source>E-Mail</source>
+                </trans-unit>
+                <trans-unit resname="or" id="provider_patientsearch.or">
+                    <source>or</source>
+                </trans-unit>
+                <trans-unit resname="midataid" id="provider_patientsearch.midataid">
+                    <source>Midata ID</source>
+                </trans-unit>
+                <trans-unit resname="birthday" id="provider_patientsearch.birthday">
+                    <source>Birthday</source>
+                </trans-unit>
+                <trans-unit resname="searching" id="provider_patientsearch.searching">
+                    <source>Searching...</source>
+                </trans-unit>
+                <trans-unit resname="address" id="provider_patientsearch.address">
+                    <source>Address</source>
+                </trans-unit>
+                <trans-unit resname="show_patient_btn" id="provider_patientsearch.show_patient_btn">
+                    <source>Show Patient</source>
+                </trans-unit>
+                <trans-unit resname="consents" id="provider_patientsearch.consents">
+                    <source>Consents with this patient</source>
+                </trans-unit>
+                <trans-unit resname="add_new_consent" id="provider_patientsearch.add_new_consent">
+                    <source>Add new consent</source>
+                </trans-unit>
+                <trans-unit resname="usergroup" id="provider_patientsearch.usergroup">
+                    <source>Team (optional)</source>
+                </trans-unit>
+                <trans-unit resname="passcode" id="provider_patientsearch.passcode">
+                    <source>Access Passcode (optional)</source>
+                </trans-unit>
+                <trans-unit resname="add_new_consent_btn" id="provider_patientsearch.add_new_consent_btn">
+                    <source>Add new consent</source>
+                </trans-unit>
+            </group>
+            <group resname="provider_usergroups" id="provider_usergroups">
+                <trans-unit resname="name" id="provider_usergroups.name">
+                    <source>Team</source>
+                </trans-unit>
+            </group>
+            <group resname="provider_memberdetails" id="provider_memberdetails">
+                <trans-unit resname="pick_consent" id="provider_memberdetails.pick_consent">
+                    <source>Select a consent to display individual records</source>
+                </trans-unit>
+                <trans-unit resname="share_btn" id="provider_memberdetails.share_btn">
+                    <source>Share data with patient</source>
+                </trans-unit>
+            </group>
+            <group resname="help_welcome" id="help_welcome">
+                <trans-unit resname="starts" id="help_welcome.starts">
+                    <source>Some ideas to start with MIDATA:</source>
+                </trans-unit>
             </group>
         </body>
     </file>
@@ -480,12 +417,10 @@
                 </trans-unit>
             </group>
             <group resname="studyoverview" id="studyoverview">
-                <trans-unit resname="clone_study_btn" id="studyoverview.clone_study_btn">
-                    <source>Copy to new project</source>
-                </trans-unit>
                 <group resname="confirm" id="studyoverview.confirm">
                     <trans-unit resname="clone" id="studyoverview.confirm.clone">
-                        <source>This will clone the projects settings into a new research project. The new projects workflow will be reset. No participants will be transferred to the new project. This project will remain unchanged.</source>
+                        <source>This will clone the project's settings into a new research project. The workflow of the new project will be reset. No participants will be transferred to the new project. This project will remain unchanged.</source>
+                        <target>Questo clonerà le impostazioni del progetto in un nuovo progetto di ricerca. Il flusso di lavoro del nuovo progetto verrà ripristinato. Nessun partecipante sarà trasferito al nuovo progetto. Questo progetto rimarrà invariato.</target>
                     </trans-unit>
                 </group>
             </group>

@@ -24,9 +24,9 @@
         "role" : "Ruolo",
         "resetpw" : "Nuova password",
         "description" : "Utilizzando questi pulsanti è possibile registrare utenti aggiuntivi per testare i propri plugin. Gli utenti di test eseguono i plugin localmente (da 'localhost') e non sul server.",
-        "register_member_btn" : "Registra titolare account",
-        "register_hp_btn" : "Registra fornitore di prestazioni sanitarie",
-        "register_researcher_btn" : "Registra ricercatore"
+        "register_member_btn" : "Registrare un titolare di account",
+        "register_hp_btn" : "Registrare un professionista sanitario",
+        "register_researcher_btn" : "Registrare un ricercatore"
     },
 
     "developer_yourapps" : {

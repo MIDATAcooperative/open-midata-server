@@ -52,12 +52,12 @@
 
         "invalid" : {
             "email" : "Bitte eine gültige E-Mail-Adresse eingeben.",
-            "credentials" : "Ungültige E-Mail-Adresse oder Kennwort!",
-            "credentials_hint" : "Ungültige E-Mail-Adresse oder Kennwort. Sie versuchen sich als Kontoinhabende anzumelden. Sind Sie ",
-            "password_repetition" : "Kennwort und Kennwortwiederholung stimmen nicht überein!",
+            "credentials" : "Ungültige E-Mail-Adresse oder Passwort!",
+            "credentials_hint" : "Ungültige E-Mail-Adresse oder Passwort. Sie versuchen sich als Kontoinhabende anzumelden. Sind Sie ",
+            "password_repetition" : "Passwort und Passwortwiederholung stimmen nicht überein!",
             "passphrase_repetition" : "Passphrase und Passphrase-Wiederholung stimmen nicht überein!",
             "passphrase_old" : "Alte Passphrase nicht korrekt.",
-            "password_old" : "Altes Kennwort nicht korrekt.",
+            "password_old" : "Altes Passwort nicht korrekt.",
             "confirmation_code" : "Ungültiger Bestätigungscode",
             "securitytoken" : "Code nicht korrekt",
             "code" : "Ungültiger Studien-Code.",
@@ -77,14 +77,15 @@
             "access_query" : "Der Datenzugriffsfilter (Data Access Filter) muss nach 'content' oder 'group' einschränken!",
             "sharing" : "Der Datenzugriffsfilter (Data Access Filter) beinhaltet Datentypen, die von der Studienkonfiguration ausgeschlossen sind.",
             "anonymous" : "Die Studie kann nur dann anonym sein, wenn niemand auf unpseudonymisierte Daten zugreifen darf.",
-            "url" : "Ungültige URL"
+            "url" : "Ungültige URL",
+            "consent_members" : "Diese Zustimmung kann erst bestätigt werden, wenn alle externen Personen MIDATA beigetreten sind."
         },
 
         "missing" : {
-            "credentials" : "Bitte Ihre E-Mail-Adresse und Kennwort eingeben.",
+            "credentials" : "Bitte Ihre E-Mail-Adresse und Passwort eingeben.",
             "email" : "Geben Sie bitte Ihre E-Mail-Adresse ein.",
             "input_field" : "Füllen Sie bitte dieses Eingabefeld aus.",
-            "newpassword" : "Geben Sie bitte ein neues Kennwort ein!",
+            "newpassword" : "Geben Sie bitte ein neues Passwort ein!",
             "passphrase" : "Geben Sie bitte Ihre Passphrase ein.",
             "groupsystem" : "Das Gruppensystem muss angegeben sein.",
             "token" : "Fehlendes oder falsches Token.",
@@ -217,8 +218,8 @@
             "TERMS_OF_USE_AGREED" : "Allgemeine Geschäftsbedingungen zugestimmt",
             "user-registration" : "Benutzerregistrierung ",
             "110122" : "Anmeldung",
-            "user-password-change" : "Kennwort geändert",
-            "user-password-change-request" : "Kennwortänderung beantragt",
+            "user-password-change" : "Passwort geändert",
+            "user-password-change-request" : "Passwortänderung beantragt",
             "user-passphrase-change" : "Passphrase geändert",
             "user-address-change" : "Adresse des Benutzers geändert",
             "user-email-change" : "E-Mail des Benutzers geändert",
@@ -541,12 +542,12 @@
     "registration" : {
         "sign_up" : "Registrierung",
         "mandantory_fields" : "Bitte füllen Sie die folgenden Felder aus, die mit einem Sternchen (*) gekennzeichneten Felder sind Pflichtfelder.",
-        "password_policy" : "Das Kennwort muss mindestens 8 Zeichen lang sein (Buchstaben und Ziffern).",
+        "password_policy" : "Das Passwort muss mindestens 8 Zeichen lang sein (Buchstaben und Ziffern).",
         "email" : "E-Mail",
-        "password" : "Kennwort",
-        "password_repetition" : "Kennwort wiederholen",
+        "password" : "Passwort",
+        "password_repetition" : "Passwort wiederholen",
         "secure" : "Schutz des Kontos",
-        "secure2" : "Mein Kontoschlüssel mit meinem KENNWORT verschlüsseln. Warnung: Wenn Sie Ihr Kennwort vergessen haben, kann es mehrere Tage dauern, bis Ihren Kontoschlüssel wiederhergestellt wird!",
+        "secure2" : "Schutz meiner Daten mit einer zusätzlichen Sicherheitsstufe erhöhen. Warnung: sollte ich mein Passwort vergessen, kann es einige Tage dauern bis ich es neu setzten kann.",
         "firstname" : "Vorname",
         "lastname" : "Name",
         "gender" : "Geschlecht",
@@ -592,15 +593,15 @@
 
     "login" : {
         "email_address" : "E-Mail Adresse",
-        "password" : "Kennwort",
+        "password" : "Passwort",
         "study" : "Studie",
         "remember_me" : "Angemeldet bleiben",
         "sign_in_btn" : "Anmelden",
-        "forgot_your_password" : "Kennwort vergessen?",
+        "forgot_your_password" : "Passwort vergessen?",
         "login_btn" : "Anmelden",
 
         "info1" : "Liebe Studienteilnehmerin, Lieber Studienteilnehmer",
-        "info2" : "Sie haben bereits ein MIDATA-Konto, melden Sie sich mit Ihrer E-Mail-Adresse und ihrem Kennwort an.",
+        "info2" : "Sie haben bereits ein MIDATA-Konto, melden Sie sich mit Ihrer E-Mail-Adresse und ihrem Passwort an.",
         "info3" : "Ihr persönliches Konto gibt Ihnen einen Überblick über Ihre Studienteilnahme.",
         "info4" : "Liebe Besucherin, lieber Besucher",
         "info5" : "Sie haben noch kein MIDATA-Konto und nehmen an keiner Studie teil?",
@@ -610,20 +611,20 @@
     },
 
     "lostpw" : {
-        "title" : "Kennwort Assistent - Schritt 1",
-        "description" : "Geben Sie die mit Ihrem Konto assoziierte E-Mail Adresse ein und klicken Sie auf 'Weiter'. Sie werden eine E-Mail erhalten, mit einem Link zu einer Seite wo sie ein neues Kennwort setzen können.",
+        "title" : "Passwort Assistent - Schritt 1",
+        "description" : "Geben Sie die mit Ihrem Konto assoziierte E-Mail Adresse ein und klicken Sie auf 'Weiter'. Sie werden eine E-Mail erhalten, mit einem Link zu einer Seite wo sie ein neues Passwort setzen können.",
         "email" : "E-Mail Adresse",
         "continue" : "Weiter",
-        "success" : "Eine E-Mail mit Anweisungen für das Zurücksetzen Ihres Kennworts wurde Ihnen zugesandt."
+        "success" : "Eine E-Mail mit Anweisungen für das Zurücksetzen Ihres Passworts wurde Ihnen zugesandt."
     },
 
     "setpw" : {
-        "title" : "Kennwort Assistent - Schritt 2",
-        "new_password" : "Neues Kennwort",
-        "new_password_repeat" : "Kennwort wiederholen",
-        "enter_new" : "Erfassen Sie bitte ein neues Kennwort für Ihr Konto.",
-        "set_new_btn" : "Neues Kennwort setzen",
-        "success" : "Ihr neues Kennwort wurde erfolgreich gesetzt.",
+        "title" : "Passwort Assistent - Schritt 2",
+        "new_password" : "Neues Passwort",
+        "new_password_repeat" : "Passwort wiederholen",
+        "enter_new" : "Erfassen Sie bitte ein neues Passwort für Ihr Konto.",
+        "set_new_btn" : "Neues Passwort setzen",
+        "success" : "Ihr neues Passwort wurde erfolgreich gesetzt.",
         "back_to_login" : "Zurück zur Anmeldung."
     },
 
@@ -663,7 +664,7 @@
         "securityToken_btn" : "Senden",
         "no_token" : "Bitte warten Sie bis zu einer Minute, bis der Code eintrifft.",
         "no_token_btn" : "Ich habe den Code nicht erhalten",
-        "auth2factorsetup" : "Bitte richten Sie Ihre Sicherheitseinstellungen ein: Möchten Sie den Zugang zu Ihrem Konto zusätzlich zu Ihrem Kennwort durch einen zweiten Faktor schützen?",
+        "auth2factorsetup" : "Bitte richten Sie Ihre Sicherheitseinstellungen ein: Möchten Sie den Zugang zu Ihrem Konto zusätzlich zu Ihrem Passwort durch einen zweiten Faktor schützen?",
         "auth2factorsetup2" : "Sie können Ihre Einstellungen später in Ihrem Profil ändern. Melden Sie sich bei {{domain}} an und klicken Sie oben rechts auf Ihren Namen.",
         "auth_type" : "Authentifizierung",
         "auth_type_none" : "Ich möchte keine Zwei-Faktor-Authentifizierung verwenden.",
@@ -675,7 +676,7 @@
             "intro" : "Der private Schlüssel, der zur Verschlüsselung Ihrer Daten verwendet wird, muss wiederhergestellt werden. Um Ihren Schlüssel wiederherzustellen, versuchen Sie eine dieser Optionen:",
             "way1" : "Haben Sie eine Applikation die MIDATA benutzt, bei der Sie noch angemeldet sind? Wenn ja, öffnen Sie diese Applikation und Ihr Schlüssel wird wiederhergestellt. Versuchen Sie anschliessend, sich erneut anzumelden.",
             "way2" : "Haben Sie sich schon einmal mit einem Browser angemeldet? Wenn ja, versuchen Sie, sich mit dem gleichen Browser und Gerät anzumelden.",
-            "way3" : "Erinnern Sie sich wieder an Ihr altes Kennwort? Wenn ja, versuchen Sie, sich mit Ihrem alten Kennwort anzumelden.",
+            "way3" : "Erinnern Sie sich wieder an Ihr altes Passwort? Wenn ja, versuchen Sie, sich mit Ihrem alten Passwort anzumelden.",
             "way4" : "Warten Sie, bis MIDATA-Mitarbeiter eine manuelle Schlüsselwiederherstellung durchgeführt haben. MIDATA sendet Ihnen eine E-Mail, wenn die Wiederherstellung abgeschlossen ist. Bitte warten Sie bis zu fünf Arbeitstage, bis die Wiederherstellung abgeschlossen ist."
         }
     },
@@ -695,12 +696,12 @@
     },
 
     "changepassword" : {
-        "title" : "Kennwort ändern",
-        "old_password" : "Altes Kennwort",
-        "new_password" : "Neues Kennwort",
-        "repeat_password" : "Neues Kennwort wiederholen",
-        "change_btn" : "Kennwort ändern",
-        "success" : "Das Kennwort wurde geändert!"
+        "title" : "Passwort ändern",
+        "old_password" : "Altes Passwort",
+        "new_password" : "Neues Passwort",
+        "repeat_password" : "Neues Passwort wiederholen",
+        "change_btn" : "Passwort ändern",
+        "success" : "Das Passwort wurde geändert!"
     },
 
     "changeaddress" : {
@@ -784,7 +785,7 @@
         "birthday" : "Geburtsdatum:",
         "midataID" : "MIDATA ID:",
         "action" : "Mehr...",
-        "change_password_btn" : "Kennwort ändern",
+        "change_password_btn" : "Passwort ändern",
         "change_passphrase_btn" : "Passphrase ändern",
         "auditlog_btn" : "Audit Log anschauen",
         "change_email_btn" : "E-Mail Adresse ändern",
@@ -804,7 +805,7 @@
         "searchable_no" : "Nein, ich will nicht dass andere Benutzer mein Profil sehen",
         "searchable_info" : "Diese Einstellung hat keinen Einfluss auf die Zustimmungen, die Sie bereits erteilt haben.",
         "auth_type" : "Authentifizierung",
-        "auth_type2" : "Möchten Sie den Zugang zu Ihrem Konto zusätzlich zu Ihrem Kennwort mit einem zweiten Faktor schützen?",
+        "auth_type2" : "Möchten Sie den Zugang zu Ihrem Konto zusätzlich zu Ihrem Passwort mit einem zweiten Faktor schützen?",
         "notifications" : "Benachrichtigungen",
         "notifications2" : "Möchten Sie benachrichtigt werden, wenn Ihr Konto genutzt wird?",
         "change_settings_btn" : "Einstellungen ändern",
@@ -972,6 +973,8 @@
         "type_studyrelated" : "Forschungsprojekte",
         "type_hcrelated" : "Gesundheitsfachpersonen",
         "type_implicit" : "Implizit",
+        "type_healthcare" : "Arzt / Spital",
+        "type_studyparticipation" : "Forschung",
         "show" : "Ansehen:",
         "my_data" : "Meine Daten",
         "all_data" : "Alle Daten",
@@ -1156,6 +1159,7 @@
         "HEALTHCARE" : "Zustimmung (Gesundheitsfachperson)",
         "MEMBER" : "Account",
         "PROVIDER" : "Account (Gesundheitsfachperson)",
+        "HCRELATED" : "Account (Kontoinhaber)",
         "RESEARCH" : "Account (Forscher)",
         "ADMIN" : "Account (Administrator)",
         "DEVELOPER" : "Account (Entwickler)"
@@ -1209,12 +1213,12 @@
         "point3" : "MIDATA hat keine Möglichkeit, ein gelöschtes Konto wieder herzustellen.",
         "warning" : "Warnung",
         "final" : "Die Löschung das Kontos kann nicht rückgängig gemacht werden!",
-        "paragraph3" : "Falls Sie das Konto dennoch löschen möchten, geben Sie bitte Ihr Kennwort ein",
-        "password" : "Kennwort",
+        "paragraph3" : "Falls Sie das Konto dennoch löschen möchten, geben Sie bitte Ihr Passwort ein",
+        "password" : "Passwort",
         "reason" : "Grund (optional)",
         "reason2" : "Wir wären Ihnen dankbar, wenn Sie uns mitteilen könnten, warum Sie Ihr Konto löschen. Wir sind ständig bemüht, die MIDATA Plattform zu verbessern.",
         "wipe_btn" : "MIDATA-Konto schliessen und löschen",
-        "error" : "Kennwort nicht korrekt. Das Konto wurde nicht gelöscht."
+        "error" : "Passwort nicht korrekt. Das Konto wurde nicht gelöscht."
     },
 
     "serviceleave" : {
@@ -1280,7 +1284,10 @@
 
     "timeline" : {
         "spaces" : "MIDATA",
-        "title" : "Timeline"
+        "title" : "Timeline",
+        "fitness" : "Fitness",
+        "health" : "Gesundheitsdaten",
+        "analyze" : "Datenanalyse"
     },
 
     "-1" : "unbekannt"
