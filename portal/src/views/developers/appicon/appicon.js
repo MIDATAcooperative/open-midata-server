@@ -9,6 +9,7 @@ angular.module('portal')
 	$scope.meta = { };
 			
 	$scope.loadApp = function(appId) {
+		$scope.appId=appId;
 		$scope.status.doBusy(apps.getApps({ "_id" : appId }, ["creator", "filename", "name", "description", "icons" ]))
 		.then(function(data) { 
 			$scope.app = data.data[0];			

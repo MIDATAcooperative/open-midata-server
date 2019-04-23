@@ -286,7 +286,9 @@ public class Application extends APIController {
 			    try {
 			      KeyManager.instance.continueSession(tk.getHandle());
 			      handle = tk.getHandle();
-			    } catch (AppException e) { return null; }
+			    } catch (AppException e) { return unauthorized(); }
+		    } else {
+		    	return unauthorized();
 		    }
 		}
 		

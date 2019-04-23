@@ -161,7 +161,7 @@ angular.module('portal')
 	};
 	
 	$scope.go = function(where) {
-		$state.go(where, { appId : $scope.app._id });
+		$state.go(where, { appId : $state.params.appId });
 	};
 	
 	$scope.hasIcon = function() {
