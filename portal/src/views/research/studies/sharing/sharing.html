@@ -28,8 +28,8 @@
 			      <select class="form-control" id="studyGroup" name="studyGroup" ng-change="change()" ng-model="crit.studyGroup" ng-options="studyGroup.name as studyGroup.name for studyGroup in studyGroups" ng-required="true"></select>
 			  </formrow>
 			<button class="btn btn-default" type="submit " translate="researcher_sharing.search_btn"></button>
-			<button class="btn btn-default" type="button" ng-click="share()" translate="researcher_sharing.share_btn"></button>
-			<button class="btn btn-default" type="button" ng-click="unshare()" translate="researcher_sharing.unshare_btn"></button>
+			<button class="btn btn-default" type="button" ng-disabled="!found" ng-click="share()" translate="researcher_sharing.share_btn"></button>
+			<button class="btn btn-default" type="button" ng-disabled="!found" ng-click="unshare()" translate="researcher_sharing.unshare_btn"></button>
 			<div class="extraspace">&nbsp;</div>
 			<p ng-show="found"><span>Records found: </span>{{ found }}</p>
 			<table class="table table-striped" ng-show="results.length">
