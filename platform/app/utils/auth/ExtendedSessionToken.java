@@ -199,5 +199,10 @@ public class ExtendedSessionToken extends PortalSessionToken {
     	this.appId = appInstance.applicationId;    	
     	return this;
     }
+    
+    public ExtendedSessionToken withConfirmations(Set<MidataId> confirmations) {
+    	this.confirmations = confirmations;
+    	return this;
+    }
 	
 }
