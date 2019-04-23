@@ -1361,8 +1361,7 @@ public class RecordManager {
 	 * @throws AppException
 	 */
 	public void fixAccount(MidataId userId) throws AppException {
-		
-		resetInfo(userId);		
+				
 		IndexManager.instance.clearIndexes(getCache(userId), userId);
 		
 		APSCache cache = getCache(userId);
@@ -1417,6 +1416,8 @@ public class RecordManager {
 		}
 		
 		AccessLog.logEnd("end searching for empty streams");
+		
+		resetInfo(userId);
 		
 		Feature_Streams.streamJoin(createContextFromAccount(userId));
 	}
