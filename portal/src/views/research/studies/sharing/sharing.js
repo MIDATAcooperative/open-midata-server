@@ -43,7 +43,7 @@ angular.module('portal')
 		if (crit.timeCrit == "updated-after") properties["updated-after"] = crit.time;
 		if (crit.timeCrit == "updated-before") properties["updated-before"] = crit.time;
 		return properties;
-	}
+	};
 	
 	var sharedQuery = function() {
 		var properties = buildQuery();
@@ -52,13 +52,31 @@ angular.module('portal')
 		properties["study-related"] = true;
 		properties.owner = undefined;
 		return properties;
-	}
+	};
+	
+	var sharingQuery = function() {
+		var properties = buildQuery();
+		if ($scope.ids.length>0) {
+			properties._id = $scope.ids;			
+		}
+		return properties;
+	};
+	
+	$scope.dosearch = function() {
+		$scope.submitted = true;
+        $scope.error = null;		
+		if (! $scope.myform.$valid) return;
+		$scope.search();
+	};
 	
 	$scope.search = function() {
 		var properties = buildQuery();
 		var sq = sharedQuery();
+		$scope.ids = [];
+		$scope.results = null;
+		$scope.error = null;
 		console.log(properties);
-		$scope.status.doAction("search", records.getRecords($scope.userId, properties, ["_id", "name", "created"]))
+		$scope.status.doAction("search", records.getRecords($scope.userId, properties, ["_id", "name", "created","format","app"]))
 		.then(function(result) {
 			$scope.results = result.data;
 			$scope.found = result.data.length;
@@ -72,7 +90,8 @@ angular.module('portal')
 				for (var i2=0;i2<result2.data.length;i2++) {
 					var r = map[result2.data[i2]._id];
 					if (r) r.selected = true;
-				}				
+				}	
+				$scope.submitted = false;
 			});
 			
 		});
@@ -80,8 +99,9 @@ angular.module('portal')
 	
 	$scope.share = function() {
 		console.log("SHARE");
+		$scope.error = null;
 		var data = {
-			"properties" : buildQuery(), 
+			"properties" : sharingQuery(), 
 			"target-study" : $scope.studyId, 
 			"target-study-group" : $scope.crit.studyGroup
 		};
@@ -92,8 +112,9 @@ angular.module('portal')
 	};
 	
 	$scope.unshare = function() {
+		$scope.error = null;
 		var data = {
-				"properties" : buildQuery(), 
+				"properties" : sharingQuery(), 
 				"target-study" : $scope.studyId, 
 				"target-study-group" : $scope.crit.studyGroup
 			};
@@ -101,6 +122,20 @@ angular.module('portal')
 		.then(function(result) {
 			$scope.search();
 		});
+	};
+	
+	$scope.change = function() {
+		$scope.results = [];
+		$scope.submitted = false;
+		$scope.error = null;
+		$scope.found = 0;
+		$scope.ids = [];
+	};
+	
+	$scope.toggle = function(array,itm) {
+		console.log(array);
+		var pos = array.indexOf(itm);
+		if (pos < 0) array.push(itm); else array.splice(pos, 1);
 	};
 
 	session.currentUser.then(function(userId) { $scope.reload(userId); });
