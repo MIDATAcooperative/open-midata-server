@@ -11,6 +11,7 @@ angular.module('portal')
 	$scope.ENV = ENV;
 			
 	$scope.loadApp = function(appId) {
+		$scope.appId=appId;
 		$scope.status.doBusy(apps.getApps({ "_id" : appId }, ["version", "creator", "filename", "name", "description", "defaultSubscriptions", "debugHandle" ]))
 		.then(function(data) { 
 			$scope.app = data.data[0];
