@@ -419,7 +419,7 @@ public class OAuth2 extends Controller {
     		aeskey = tk.aeskey;
     		obj.put("state", tk.state);
     		
-    		user = User.getById(appInstance.owner, Sets.create("role", "status"));
+    		user = User.getById(appInstance.owner, User.ALL_USER_INTERNAL);
     		if (user == null || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.BLOCKED)) throw new BadRequestException("error.internal", "invalid_grant");
     		
     		if (appInstance == null) throw new NullPointerException();												
@@ -449,10 +449,10 @@ public class OAuth2 extends Controller {
 			byte[] key = (byte[]) meta.get("aliaskey");
 			KeyManager.instance.unlock(appInstance.owner, alias, key);			
 			RecordManager.instance.clearCache();
-			PostLoginActions.check(user);						
-        }
-        
-        
+			PostLoginActions.check(user);												
+        } else {
+			RecordManager.instance.setAccountOwner(appInstance._id, appInstance.owner);			
+		}                
 		// create encrypted authToken		
 											
 		obj.put("access_token", session.encrypt());
