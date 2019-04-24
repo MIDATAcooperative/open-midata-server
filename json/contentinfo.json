@@ -270,3 +270,4 @@
 {"_id":{"$oid":"5c8fc0f0cf5693588200f9e9"},"content":"snomed/363870007","defaultCode":"http://snomed.info/sct 363870007","security":"MEDIUM","label":{"en":"Mental state, behavior / psychosocial function observable"},"resourceType":"fhir/Observation"}
 {"_id":{"$oid":"5c8fc0f0bcbc8736a320f875"},"content":"snomed/66523006","defaultCode":"http://snomed.info/sct 66523006","security":"MEDIUM","label":{"en":"Female reproductive function"},"resourceType":"fhir/Observation"}
 {"_id":{"$oid":"5ca202aabcbc87497d84ec27"},"content":"public/pollen-measure","defaultCode":"http://midata.coop pollen-measure","security":"MEDIUM","label":{"en":"Pollen Measure"},"resourceType":"fhir/Observation"}
+{"_id":{"$oid":"5cc00fa4aed645171c80ab9f"},"content":"public/pollen-image","defaultCode":"http://midata.coop pollen-image","security":"MEDIUM","label":{"en":"Pollen Image"},"resourceType":"fhir/Media"}
