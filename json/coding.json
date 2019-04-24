@@ -283,3 +283,4 @@
 {"_id":{"$oid":"5c8fc0f0bcbc8736a320f876"},"system":"http://snomed.info/sct","code":"66523006","display":"Female reproductive function","content":"snomed/66523006"}
 {"_id":{"$oid":"5c8fc0f0cf5693588200f9ea"},"system":"http://snomed.info/sct","code":"363870007","display":"Mental state, behavior / psychosocial function observable","content":"snomed/363870007"}
 {"_id":{"$oid":"5ca202aacf569343a962ffa6"},"system":"http://midata.coop","code":"pollen-measure","display":"Pollen Measure","content":"public/pollen-measure"}
+{"_id":{"$oid":"5cc00fa4aed645171c80aba0"},"system":"http://midata.coop","code":"pollen-image","display":"Pollen Image","content":"public/pollen-image"}
