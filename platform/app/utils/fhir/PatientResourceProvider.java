@@ -587,10 +587,11 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 	 * acc)); }
 	 */
 	
-
-	public Record init() {
-		return newRecord("fhir/Patient");
+	@Override
+	public String getRecordFormat() {	
+		return "fhir/Patient";
 	}
+	
 	
 	@Override
 	public void updatePrepare(Record record, Patient theResource) throws AppException {	

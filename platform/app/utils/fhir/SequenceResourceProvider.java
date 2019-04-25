@@ -169,11 +169,12 @@ public class SequenceResourceProvider extends RecordBasedResourceProvider<Sequen
 		return super.createResource(theSequence);
 	}
 
-	// Construct a new empty MIDATA record that is initialized with the correct
-	// format.
-	public Record init() {
-		return newRecord("fhir/Sequence");
-	}
+	@Override
+	public String getRecordFormat() {	
+		return "fhir/Sequence";
+	}	
+	
+	
 
 	// This method is required if it is allowed to update the resource.
 	// Just change the resource type

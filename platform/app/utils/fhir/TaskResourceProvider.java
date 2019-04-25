@@ -318,7 +318,11 @@ public class TaskResourceProvider extends RecordBasedResourceProvider<Task> impl
 		shareWithPersons(record, personRefs, consent);
 	}
 	
-	public Record init() { return newRecord("fhir/Task"); }
+	@Override
+	public String getRecordFormat() {	
+		return "fhir/Task";
+	}	
+		
 	
 	@Update
 	@Override

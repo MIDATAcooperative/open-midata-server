@@ -457,9 +457,12 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 	public MethodOutcome createResource(@ResourceParam Observation theObservation) {
 		return super.createResource(theObservation);
 	}
-			
-	// Construct a new empty MIDATA record that is initialized with the correct format.
-	public Record init() { return newRecord("fhir/Observation"); }
+		
+	@Override
+	public String getRecordFormat() {	
+		return "fhir/Observation";
+	}
+		
 
 	// This method is required if it is allowed to update the resource.
 	// Just change the resource type

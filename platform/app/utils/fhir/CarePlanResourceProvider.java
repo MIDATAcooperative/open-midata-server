@@ -232,11 +232,11 @@ public class CarePlanResourceProvider extends RecordBasedResourceProvider<CarePl
 		return super.createResource(theCarePlan);
 	}
 
-	// Construct a new empty MIDATA record that is initialized with the correct
-	// format.
-	public Record init() {
-		return newRecord("fhir/CarePlan");
+	@Override
+	public String getRecordFormat() {	
+		return "fhir/CarePlan";
 	}
+	
 
 	// This method is required if it is allowed to update the resource.
 	// Just change the resource type

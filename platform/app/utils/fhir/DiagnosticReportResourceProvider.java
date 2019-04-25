@@ -224,11 +224,11 @@ public class DiagnosticReportResourceProvider extends RecordBasedResourceProvide
 		insertRecord(record, theDiagnosticReport, attachment);
 	}	
 
-	// Construct a new empty MIDATA record that is initialized with the correct
-	// format.
-	public Record init() {
-		return newRecord("fhir/DiagnosticReport");
-	}
+	@Override
+	public String getRecordFormat() {	
+		return "fhir/DiagnosticReport";
+	}	
+
 
 	// This method is required if it is allowed to update the resource.
 	// Just change the resource type

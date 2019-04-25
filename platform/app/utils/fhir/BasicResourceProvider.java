@@ -75,7 +75,7 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
 			List<Record> result = RecordManager.instance.list(info().executorId, info().role, info().context, CMaps.map("_id", new MidataId(theId.getIdPart())).map("version", theId.getVersionIdPart()), RecordManager.COMPLETE_DATA);
 			record = result.isEmpty() ? null : result.get(0);
 		} else {
-		    record = RecordManager.instance.fetch(info().executorId, info().role, info().context, new MidataId(theId.getIdPart()));
+		    record = RecordManager.instance.fetch(info().executorId, info().role, info().context, new MidataId(theId.getIdPart()), null);
 		}
 		if (record == null) throw new ResourceNotFoundException(theId);		
     	    	
@@ -284,6 +284,11 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
 	}
 
     public Record init() { return newRecord("fhir/Basic"); }
+
+	@Override
+	public String getRecordFormat() {		
+		return null;
+	}
    
 
 }

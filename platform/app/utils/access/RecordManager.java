@@ -285,9 +285,27 @@ public class RecordManager {
 		if (fromAPS.equals(toAPS)) return;
         AccessLog.logBegin("begin share: who="+who.toString()+" from="+fromAPS.toString()+" to="+toAPS.toString()+" count="+(records!=null ? records.size() : "?"));
 		APS apswrapper = cache.getAPS(toAPS, toAPSOwner);
-		List<DBRecord> recordEntries = QueryEngine.listInternal(cache, fromAPS, null,
-				records != null ? CMaps.map("_id", records) : RecordManager.FULLAPS_FLAT,
-				RecordManager.SHARING_FIELDS);
+		
+		List<DBRecord> recordEntries = null;
+		
+		if (records != null) {
+			boolean failed = false;
+			for (MidataId id : records) {
+				DBRecord target = cache.lookupRecordInCache(id);
+				if (target != null) {
+					if (recordEntries == null) recordEntries = new ArrayList<DBRecord>();
+					recordEntries.add(target);
+				} else failed = true;
+			}
+			if (failed) recordEntries = null;
+			
+		}
+		
+		if (recordEntries == null) {
+			recordEntries = QueryEngine.listInternal(cache, fromAPS, null,
+					records != null ? CMaps.map("_id", records) : RecordManager.FULLAPS_FLAT,
+					RecordManager.SHARING_FIELDS);
+		}
 		
 		List<DBRecord> alreadyContained = QueryEngine.isContainedInAps(cache, toAPS, recordEntries);
 		AccessLog.log("to-share: "+recordEntries.size()+" already="+alreadyContained.size());
@@ -919,6 +937,7 @@ public class RecordManager {
 			else context.getCache().touchAPS(apswrapper.getId());
 		    
 		    //Feature_Expiration.check(getCache(executingPerson), apswrapper);
+		    context.getCache().addNewRecord(unencrypted);
 		    
 		    RecordManager.instance.applyQueries(context, unencrypted.owner, unencrypted, alternateAps != null ? alternateAps : unencrypted.owner);
 			
@@ -1211,7 +1230,7 @@ public class RecordManager {
 		    if (properties.containsKey("include-records")) {		    	
 			    for (RecordsInfo inf : result) {
 			    	if (inf.newestRecord != null) {
-			    		inf.newestRecordContent = fetch(who, role, context, inf.newestRecord);
+			    		inf.newestRecordContent = fetch(who, role, context, inf.newestRecord, null);
 			    	}
 			    }
 		    }
@@ -1298,9 +1317,9 @@ public class RecordManager {
 	 * @return the record to be returned
 	 * @throws AppException
 	 */
-	public Record fetch(MidataId who, UserRole role, AccessContext context, MidataId recordId)
+	public Record fetch(MidataId who, UserRole role, AccessContext context, MidataId recordId, String format)
 			throws AppException {
-		List<Record> result = list(who, role, context, CMaps.map("_id", recordId),
+		List<Record> result = list(who, role, context, CMaps.map("_id", recordId).mapNotEmpty("format", format),
 				RecordManager.COMPLETE_DATA);
 		if (result.isEmpty())
 			return null;

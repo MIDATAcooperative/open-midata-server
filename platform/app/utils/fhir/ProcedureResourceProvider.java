@@ -231,8 +231,13 @@ public class ProcedureResourceProvider extends RecordBasedResourceProvider<Proce
 	public MethodOutcome createResource(@ResourceParam Procedure theProcedure) {
 		return super.createResource(theProcedure);
 	}
-			
-	public Record init() { return newRecord("fhir/Procedure"); }
+		
+	@Override
+	public String getRecordFormat() {	
+		return "fhir/Procedure";
+	}
+	
+	
 
 	@Update
 	@Override

@@ -172,11 +172,11 @@ public class FlagResourceProvider extends RecordBasedResourceProvider<Flag> impl
 		return super.createResource(theFlag);
 	}
 
-	// Construct a new empty MIDATA record that is initialized with the correct
-	// format.
-	public Record init() {
-		return newRecord("fhir/Flag");
+	@Override
+	public String getRecordFormat() {	
+		return "fhir/Flag";
 	}
+	
 
 	// This method is required if it is allowed to update the resource.
 	// Just change the resource type

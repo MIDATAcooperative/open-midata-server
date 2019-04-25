@@ -74,13 +74,17 @@ class QueryEngine {
 	
 	public static List<DBRecord> listFromMemory(AccessContext context, Map<String, Object> properties, List<DBRecord> records) throws AppException {
 		if (AccessLog.detailedLog) AccessLog.logBegin("Begin list from memory #recs="+records.size());
+		List<DBRecord> result = ProcessingTools.collect(listFromMemoryIterator(context,properties,records));		
+		if (AccessLog.detailedLog) AccessLog.logEnd("End list from memory #recs="+result.size());
+		return result;
+	}
+	
+	public static DBIterator<DBRecord> listFromMemoryIterator(AccessContext context, Map<String, Object> properties, List<DBRecord> records) throws AppException {		
 		APS inMemory = new Feature_InMemoryQuery(records);
 		context.getCache().addAPS(inMemory);
 		Feature qm = new Feature_Or(new Feature_ContextRestrictions(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_ContentFilter(inMemory)))));		
-		DBIterator<DBRecord> recs = qm.iterator(new Query(properties, Sets.create("_id"), context.getCache(), inMemory.getId(),context));		
-		List<DBRecord> result = ProcessingTools.collect(recs);		
-		if (AccessLog.detailedLog) AccessLog.logEnd("End list from memory #recs="+result.size());
-		return result;
+		DBIterator<DBRecord> recs = qm.iterator(new Query(properties, Sets.create("_id"), context.getCache(), inMemory.getId(),context));							
+		return recs;
 	}
 	
 	private static String getInfoKey(AggregationType aggrType, String group, String content, String format, MidataId owner, String app) {
@@ -272,7 +276,8 @@ class QueryEngine {
       */  
     
     protected static List<DBRecord> combine(Query query, Map<String, Object> properties, Feature qm) throws AppException {
-    	if (properties.containsKey("$or")) {
+    	return ProcessingTools.collect(combineIterator(query, properties, qm));
+    	/*if (properties.containsKey("$or")) {
       	  Collection<Map<String, Object>> col = (Collection<Map<String, Object>>) properties.get("$or");
       	  List<DBRecord> result = Collections.emptyList();
       	  for (Map<String, Object> prop : col) {
@@ -290,11 +295,28 @@ class QueryEngine {
     		  AccessLog.log("empty combine");
     	  }
       	  return Collections.emptyList();
-        }
+        }*/
     }
     
     protected static DBIterator<DBRecord> combineIterator(Query query, Map<String, Object> properties, Feature qm) throws AppException {
     	if (properties.containsKey("$or")) {
+    	  boolean nosplit = query.restrictedBy("_id");
+    	  
+    	  if (nosplit) {
+    		  List<DBRecord> results = qm.query(query);
+    		  
+    		  if (results.isEmpty()) return ProcessingTools.empty();
+    		  
+    		  Query query_no_id = new Query(query, Collections.emptyMap());
+    		  query_no_id.getProperties().remove("_id");
+    		  
+    		  APS inMemory = new Feature_InMemoryQuery(results);
+    		  query.getCache().addAPS(inMemory);
+    		  Feature qmm = new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_ContentFilter(inMemory)));		
+    		      		  
+    		  return combineIterator(query_no_id, properties, qmm);
+    	  }
+    		    		    		
     	  Map<String, Object> comb = Feature_QueryRedirect.combineQuery(properties, query.getProperties(), query.getContext());
       	  if (comb != null) {
       		query = new Query(comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext());

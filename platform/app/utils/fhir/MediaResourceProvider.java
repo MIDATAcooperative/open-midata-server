@@ -189,7 +189,11 @@ public class MediaResourceProvider extends RecordBasedResourceProvider<Media> im
 		insertRecord(record, theMedia, attachment);		
 	}	
 	
-	public Record init() { return newRecord("fhir/Media"); }
+	@Override
+	public String getRecordFormat() {	
+		return "fhir/Media";
+	}
+	
 
 	/*
 	@Update

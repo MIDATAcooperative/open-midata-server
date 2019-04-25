@@ -325,8 +325,12 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 	public MethodOutcome createResource(@ResourceParam Group theGroup) {
 		return super.createResource(theGroup);
 	}
-			
-	public Record init() { return newRecord("fhir/Group"); }
+		
+	@Override
+	public String getRecordFormat() {	
+		return "fhir/Group";
+	}
+	
 
 	@Update
 	@Override

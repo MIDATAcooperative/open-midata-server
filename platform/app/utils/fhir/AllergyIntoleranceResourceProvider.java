@@ -217,8 +217,12 @@ public class AllergyIntoleranceResourceProvider extends RecordBasedResourceProvi
 	public MethodOutcome createResource(@ResourceParam AllergyIntolerance theAllergyIntolerance) {
 		return super.createResource(theAllergyIntolerance);
 	}
-			
-	public Record init() { return newRecord("fhir/AllergyIntolerance"); }
+		
+	
+	@Override
+	public String getRecordFormat() {	
+		return "fhir/AllergyIntolerance";
+	}	
 
 	@Update
 	@Override

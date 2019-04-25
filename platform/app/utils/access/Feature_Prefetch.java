@@ -67,23 +67,26 @@ public class Feature_Prefetch extends Feature {
 		    		MidataId owner = streamUG.getStoredOwner();
 		    		if (nextWithUserGroup == null) nextWithUserGroup = new Feature_UserGroups(next);
 	    		    partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("flat", "true").map("usergroup", c2.getAccountOwner()).map("owner", owner).map("stream", record.stream).map("quick",  record), nextWithUserGroup);
+	    		    if (partResult.isEmpty()) partResult = null;	    		   
 		    	  }
 		    	}
 		    	
 		    	// This "study" section is just a hack to fetch researcher shared data faster until a general solution is found
 		    	if (partResult == null && q.restrictedBy("study") && !q.restrictedBy("owner"))	{
+		    		AccessLog.log("study related variant");
 		    		partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("flat", "true").map("stream", record.stream).map("study-related", true).map("quick",  record), next);
 		    		if (partResult.isEmpty()) partResult = null;
 		    	}
 		    	
 		    	if (partResult == null) {	
-		    				    		
+		    		AccessLog.log("last");		    		
 		    		//if (true) throw new NullPointerException();
 		    		partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("flat", "true").map("stream", record.stream).map("quick",  record), next);
 		    	}
 		    	
 		    }		 
-		  } else {			  
+		  } else {	
+			  AccessLog.log("no stream given");	
 			  partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("flat", "true").map("streams", "true"), next);
 		  }
 		  
