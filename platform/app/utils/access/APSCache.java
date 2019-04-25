@@ -31,6 +31,7 @@ public class APSCache {
 	private MidataId accountOwner;
 	
 	private Map<MidataId, Consent> consentCache;
+	private Map<MidataId, DBRecord> newRecordCache;
 	private Map<MidataId, MidataId[]> ownerToConsent;
 	
 	private Set<MidataId> touchedConsents = null;
@@ -289,5 +290,15 @@ public class APSCache {
 		}
 		touchedConsents = null;
 		touchedAPS = null;
+	}
+	
+	public void addNewRecord(DBRecord record) {
+		if (newRecordCache == null) newRecordCache = new HashMap<MidataId, DBRecord>();
+		newRecordCache.put(record._id, record);
+	}
+	
+	public DBRecord lookupRecordInCache(MidataId id) {
+		if (newRecordCache == null) return null;
+		return newRecordCache.get(id);
 	}
 }
