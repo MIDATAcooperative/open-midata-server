@@ -274,8 +274,11 @@ public class SpecimenResourceProvider extends RecordBasedResourceProvider<Specim
 		return super.createResource(theSpecimen);
 	}
 			
-	// Construct a new empty MIDATA record that is initialized with the correct format.
-	public Record init() { return newRecord("fhir/Specimen"); }
+	@Override
+	public String getRecordFormat() {	
+		return "fhir/Specimen";
+	}	
+			
 
 	// This method is required if it is allowed to update the resource.
 	// Just change the resource type

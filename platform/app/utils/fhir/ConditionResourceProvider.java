@@ -246,8 +246,10 @@ public class ConditionResourceProvider extends RecordBasedResourceProvider<Condi
 		return super.createResource(theCondition);
 	}
 		
-	
-	public Record init() { return newRecord("fhir/Condition"); }
+	@Override
+	public String getRecordFormat() {	
+		return "fhir/Condition";
+	}	
 
 	@Update
 	@Override

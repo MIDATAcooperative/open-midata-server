@@ -186,11 +186,11 @@ public class ImagingStudyResourceProvider extends RecordBasedResourceProvider<Im
 		return super.createResource(theImagingStudy);
 	}
 
-	// Construct a new empty MIDATA record that is initialized with the correct
-	// format.
-	public Record init() {
-		return newRecord("fhir/ImagingStudy");
+	@Override
+	public String getRecordFormat() {	
+		return "fhir/ImagingStudy";
 	}
+	
 
 	// This method is required if it is allowed to update the resource.
 	// Just change the resource type

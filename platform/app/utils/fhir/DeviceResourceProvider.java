@@ -177,8 +177,11 @@ public class DeviceResourceProvider extends RecordBasedResourceProvider<Device> 
 		return super.createResource(theDevice);
 	}
 		
+	@Override
+	public String getRecordFormat() {	
+		return "fhir/Device";
+	}	
 	
-	public Record init() { return newRecord("fhir/Device"); }
 
 	@Update
 	@Override

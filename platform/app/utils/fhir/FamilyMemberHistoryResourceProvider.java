@@ -150,11 +150,11 @@ public class FamilyMemberHistoryResourceProvider extends RecordBasedResourceProv
 		return super.createResource(theFamilyMemberHistory);
 	}
 
-	// Construct a new empty MIDATA record that is initialized with the correct
-	// format.
-	public Record init() {
-		return newRecord("fhir/FamilyMemberHistory");
-	}
+	@Override
+	public String getRecordFormat() {	
+		return "fhir/FamilyMemberHistory";
+	}	
+	
 
 	// This method is required if it is allowed to update the resource.
 	// Just change the resource type

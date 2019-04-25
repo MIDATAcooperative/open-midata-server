@@ -154,9 +154,12 @@ public class GoalResourceProvider extends RecordBasedResourceProvider<Goal> impl
 	public MethodOutcome createResource(@ResourceParam Goal theGoal) {
 		return super.createResource(theGoal);
 	}
-		
 	
-	public Record init() { return newRecord("fhir/Goal"); }
+	@Override
+	public String getRecordFormat() {	
+		return "fhir/Goal";
+	}
+			
 
 	@Update
 	@Override

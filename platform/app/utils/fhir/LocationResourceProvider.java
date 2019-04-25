@@ -212,8 +212,12 @@ public class LocationResourceProvider extends RecordBasedResourceProvider<Locati
 		return super.createResource(theLocation);
 	}
 		
+	@Override
+	public String getRecordFormat() {	
+		return "fhir/Location";
+	}
 	
-	public Record init() { return newRecord("fhir/Location"); }
+	
 
 	@Update
 	@Override
