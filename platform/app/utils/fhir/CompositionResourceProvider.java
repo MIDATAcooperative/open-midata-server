@@ -309,9 +309,12 @@ public class CompositionResourceProvider extends RecordBasedResourceProvider<Com
 	public MethodOutcome createResource(@ResourceParam Composition theComposition) {
 		return super.createResource(theComposition);
 	}
-			
-	// Construct a new empty MIDATA record that is initialized with the correct format.
-	public Record init() { return newRecord("fhir/Composition"); }
+		
+	@Override
+	public String getRecordFormat() {	
+		return "fhir/Composition";
+	}
+		
 
 	// This method is required if it is allowed to update the resource.
 	// Just change the resource type

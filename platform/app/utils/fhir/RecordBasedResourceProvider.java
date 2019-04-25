@@ -58,6 +58,14 @@ import utils.largerequests.UnlinkedBinary;
 public abstract class RecordBasedResourceProvider<T extends DomainResource> extends ReadWriteResourceProvider<T, Record> {
 
 	/**
+	 * Returns the format field of the records or null
+	 * @return
+	 */
+	public abstract String getRecordFormat();
+	
+	public Record init() { return newRecord(getRecordFormat()); }
+	
+	/**
 	 * Default implementation to retrieve a FHIR resource by id.
 	 * @param theId ID of resource to be retrieved
 	 * @return Resource read from database
@@ -70,7 +78,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 			List<Record> result = RecordManager.instance.list(info().executorId, info().role, info().context, CMaps.map("_id", new MidataId(theId.getIdPart())).map("version", theId.getVersionIdPart()), RecordManager.COMPLETE_DATA);
 			record = result.isEmpty() ? null : result.get(0);
 		} else {
-		    record = RecordManager.instance.fetch(info().executorId, info().role, info().context, new MidataId(theId.getIdPart()));
+		    record = RecordManager.instance.fetch(info().executorId, info().role, info().context, new MidataId(theId.getIdPart()), getRecordFormat());
 		}
 		if (record == null || record.data == null || !record.data.containsField("resourceType")) throw new ResourceNotFoundException(theId);					
 		IParser parser = ctx().newJsonParser();
@@ -175,7 +183,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 			if (theId.getIdPart() == null || theId.getIdPart().length() == 0) throw new UnprocessableEntityException("id local part missing");
 			if (!isLocalId(theId)) throw new UnprocessableEntityException("id is not local resource");
 			
-			Record record = RecordManager.instance.fetch(info().executorId, info().role, info().context, new MidataId(theId.getIdPart()));
+			Record record = RecordManager.instance.fetch(info().executorId, info().role, info().context, new MidataId(theId.getIdPart()), getRecordFormat());
 			
 			if (record == null) throw new ResourceNotFoundException("Resource "+theId.getIdPart()+" not found."); 
 			if (!record.format.equals("fhir/"+theId.getResourceType())) throw new ResourceNotFoundException("Resource "+theId.getIdPart()+" has wrong resource type."); 

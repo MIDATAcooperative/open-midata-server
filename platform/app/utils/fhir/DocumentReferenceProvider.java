@@ -356,7 +356,11 @@ public class DocumentReferenceProvider extends RecordBasedResourceProvider<Docum
 		insertRecord(record, theDocumentReference, attachment);
 	}	
 	
-	public Record init() { return newRecord("fhir/DocumentReference"); }
+	@Override
+	public String getRecordFormat() {	
+		return "fhir/DocumentReference";
+	}	
+
 
 	@Update
 	@Override

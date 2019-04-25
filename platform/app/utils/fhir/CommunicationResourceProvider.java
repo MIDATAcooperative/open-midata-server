@@ -248,7 +248,10 @@ public class CommunicationResourceProvider extends RecordBasedResourceProvider<C
 		}
 	}
 	
-	public Record init() { return newRecord("fhir/Communication"); }
+	@Override
+	public String getRecordFormat() {	
+		return "fhir/Communication";
+	}
 
 	@Update
 	@Override

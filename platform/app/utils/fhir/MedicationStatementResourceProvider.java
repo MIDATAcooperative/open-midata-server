@@ -195,8 +195,12 @@ public class MedicationStatementResourceProvider extends RecordBasedResourceProv
 	public MethodOutcome createResource(@ResourceParam MedicationStatement theMedicationStatement) {
 		return super.createResource(theMedicationStatement);
 	}
-			
-	public Record init() { return newRecord("fhir/MedicationStatement"); }
+	
+	@Override
+	public String getRecordFormat() {	
+		return "fhir/MedicationStatement";
+	}
+	
 
 	@Update
 	@Override

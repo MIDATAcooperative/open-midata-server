@@ -185,8 +185,12 @@ public class EpisodeOfCareResourceProvider extends RecordBasedResourceProvider<E
 	public MethodOutcome createResource(@ResourceParam EpisodeOfCare theEpisodeOfCare) {
 		return super.createResource(theEpisodeOfCare);
 	}
-			
-	public Record init() { return newRecord("fhir/EpisodeOfCare"); }
+		
+	@Override
+	public String getRecordFormat() {	
+		return "fhir/EpisodeOfCare";
+	}	
+
 
 	@Update
 	@Override

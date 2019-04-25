@@ -247,9 +247,10 @@ public class AppointmentResourceProvider extends RecordBasedResourceProvider<App
 				
 	}
 	
-		
-	public Record init() { return newRecord("fhir/Appointment"); }
-
+	@Override
+	public String getRecordFormat() {	
+		return "fhir/Appointment";
+	}		
 	
 
 	public void prepare(Record record, Appointment theAppointment) throws AppException {

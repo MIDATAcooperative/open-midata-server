@@ -209,8 +209,10 @@ public class QuestionnaireResponseResourceProvider extends RecordBasedResourcePr
 		return super.createResource(theQuestionnaireResponse);
 	}
 		
-	
-	public Record init() { return newRecord("fhir/QuestionnaireResponse"); }
+	@Override
+	public String getRecordFormat() {	
+		return "fhir/QuestionnaireResponse";
+	}	
 
 	@Update
 	@Override
