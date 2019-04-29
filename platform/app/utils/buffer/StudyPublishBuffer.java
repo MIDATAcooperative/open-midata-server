@@ -41,7 +41,7 @@ public class StudyPublishBuffer {
 	 * @throws AppException
 	 */
 	public void add(ExecutionInfo inf, Record record) throws AppException {
-		if (inf == null) this.inf = inf;
+		if (this.inf == null) this.inf = inf;
 		if (inf != this.inf) throw new InternalServerException("error.internal", "Execution context changed.");
 		if (records_to_publish == null) records_to_publish = new HashSet<MidataId>();
 		records_to_publish.add(record._id);
