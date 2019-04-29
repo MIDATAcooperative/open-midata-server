@@ -2,6 +2,7 @@ package utils.access;
 
 import models.MidataId;
 import utils.AccessLog;
+import utils.access.ProcessingTools.BlockwiseLoad;
 import utils.collections.CMaps;
 import utils.exceptions.AppException;
 
@@ -59,6 +60,10 @@ public class Feature_Pseudonymization extends Feature {
 
 				String name = r.context.getOwnerName();
 				if (oname && name != null) {
+					
+					if (r.encrypted == null && !(chain instanceof BlockwiseLoad)) {
+						this.chain = new ProcessingTools.BlockwiseLoad(chain, q, 101);
+					}
 					
 					QueryEngine.fetchFromDB(q, r);
 					RecordEncryption.decryptRecord(r);
