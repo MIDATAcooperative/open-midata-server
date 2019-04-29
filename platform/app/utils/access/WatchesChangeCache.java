@@ -34,7 +34,7 @@ public class WatchesChangeCache {
 			addWatchingAps = null;
 		}
 		if (removeWatchingAps != null) {
-			AccessLog.log("Removing watches for records #recs="+addWatchingAps.size());
+			AccessLog.log("Removing watches for records #recs="+removeWatchingAps.size());
 			for (Map.Entry<DBRecord, Set<MidataId>> entry : removeWatchingAps.entrySet()) {
 				try {
 				   RecordLifecycle.removeWatchingAps(entry.getKey(), entry.getValue());
