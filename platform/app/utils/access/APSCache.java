@@ -36,6 +36,7 @@ public class APSCache {
 	
 	private Set<MidataId> touchedConsents = null;
 	private Set<MidataId> touchedAPS = null;
+	private WatchesChangeCache changedPermissions = null;
 	
 	private long consentLimit;
 	private Set<UserGroupMember> userGroupMember;
@@ -263,27 +264,56 @@ public class APSCache {
 		consentCache.clear();
 	}
 	
+	/**
+	 * touch a consent (update last data update time)
+	 * @param consentId
+	 */
 	public void touchConsent(MidataId consentId) {
 		if (touchedConsents == null) touchedConsents = new HashSet<MidataId>();
 		touchedConsents.add(consentId);
 	}
 	
+	/**
+	 * touch an APS (update last update time)
+	 * @param apsId
+	 */
 	public void touchAPS(MidataId apsId) {
 		if (touchedAPS == null) touchedAPS = new HashSet<MidataId>();
 		touchedAPS.add(apsId);
 	}
 	
+	/**
+	 * create or retrieve cache for watching APS changes
+	 * @return
+	 */
+	public WatchesChangeCache changeWatches() {
+		if (changedPermissions == null) changedPermissions = new WatchesChangeCache();
+		return changedPermissions;
+	}
+	
+	/**
+	 * flush buffered touches and changes to DB
+	 * @throws AppException
+	 */
 	public void finishTouch() throws AppException {
+		if (changedPermissions != null) {
+			changedPermissions.save();
+			changedPermissions = null;
+		}
+		
 		if (touchedAPS != null) {
+			AccessLog.log("touching aps #aps="+touchedAPS.size());
 			for (MidataId id : touchedAPS) {
 			   getAPS(id).touch();
 			}
 		}
 		
 		if (touchedConsents != null) {
+			AccessLog.log("touching consents #consents="+touchedConsents.size());
 			Consent.updateTimestamp(touchedConsents, System.currentTimeMillis(), System.currentTimeMillis() + 1000l * 60l);
 		}
 		if (subcache != null) {
+			AccessLog.log("flushing subcaches #caches="+subcache.size());
 			for (APSCache sub : subcache.values()) {
 				sub.finishTouch();
 			}
@@ -292,11 +322,20 @@ public class APSCache {
 		touchedAPS = null;
 	}
 	
+	/**
+	 * buffer new record in new record cache
+	 * @param record
+	 */
 	public void addNewRecord(DBRecord record) {
 		if (newRecordCache == null) newRecordCache = new HashMap<MidataId, DBRecord>();
 		newRecordCache.put(record._id, record);
 	}
 	
+	/**
+	 * lookup a new record from new record cache
+	 * @param id
+	 * @return
+	 */
 	public DBRecord lookupRecordInCache(MidataId id) {
 		if (newRecordCache == null) return null;
 		return newRecordCache.get(id);
