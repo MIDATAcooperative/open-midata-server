@@ -15,6 +15,7 @@ import models.MidataId;
 import models.UserGroupMember;
 import utils.AccessLog;
 import utils.auth.EncryptionNotSupportedException;
+import utils.buffer.WatchesChangeBuffer;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 import utils.exceptions.RequestTooLargeException;
@@ -36,7 +37,7 @@ public class APSCache {
 	
 	private Set<MidataId> touchedConsents = null;
 	private Set<MidataId> touchedAPS = null;
-	private WatchesChangeCache changedPermissions = null;
+	private WatchesChangeBuffer changedPermissions = null;
 	
 	private long consentLimit;
 	private Set<UserGroupMember> userGroupMember;
@@ -286,8 +287,8 @@ public class APSCache {
 	 * create or retrieve cache for watching APS changes
 	 * @return
 	 */
-	public WatchesChangeCache changeWatches() {
-		if (changedPermissions == null) changedPermissions = new WatchesChangeCache();
+	public WatchesChangeBuffer changeWatches() {
+		if (changedPermissions == null) changedPermissions = new WatchesChangeBuffer();
 		return changedPermissions;
 	}
 	

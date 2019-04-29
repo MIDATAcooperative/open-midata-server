@@ -26,6 +26,7 @@ import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import ca.uhn.fhir.util.FhirTerser;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.auth.ExecutionInfo;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.fhir.transactions.CreateTransactionStep;
@@ -74,50 +75,56 @@ public class Transactions {
 		   
 	   }
 	   	  
+	   ExecutionInfo inf = ResourceProvider.info();
+	   inf.cache.getStudyPublishBuffer().setLazy(true);
 	   
-	   if (type.equals(BundleType.TRANSACTION)) {
-		   
-		   for (TransactionStep step : steps) step.init();
-		   resolveReferences(steps);
-		   boolean failed = false;
-		   
-		   for (TransactionStep step : steps) {
-			   try {
-			     step.prepare();
-			   } catch (BaseServerResponseException e) {
-				 failed = true;
-				 step.setResultBasedOnException(e);					 
-				 throw e;
-			   } catch (BadRequestException e1) {
-				  failed = true;
-				 step.setResultBasedOnException(e1);
-				 throw new UnprocessableEntityException(e1.getMessage());
-			   } catch (AppException e2) {
-				 failed = true;
-				  step.setResultBasedOnException(e2);
-				 throw e2;
-			   } catch (NullPointerException e3) {
-				  failed = true;
-				  step.setResultBasedOnException(e3);
-				 throw e3;
+	   try {
+		   if (type.equals(BundleType.TRANSACTION)) {
+			   
+			   for (TransactionStep step : steps) step.init();
+			   resolveReferences(steps);
+			   boolean failed = false;
+			   
+			   for (TransactionStep step : steps) {
+				   try {
+				     step.prepare();
+				   } catch (BaseServerResponseException e) {
+					 failed = true;
+					 step.setResultBasedOnException(e);					 
+					 throw e;
+				   } catch (BadRequestException e1) {
+					  failed = true;
+					 step.setResultBasedOnException(e1);
+					 throw new UnprocessableEntityException(e1.getMessage());
+				   } catch (AppException e2) {
+					 failed = true;
+					  step.setResultBasedOnException(e2);
+					 throw e2;
+				   } catch (NullPointerException e3) {
+					  failed = true;
+					  step.setResultBasedOnException(e3);
+					 throw e3;
+				   }
+			   }		   
+			   if (!failed) {
+			     for (TransactionStep step : steps) step.execute();
 			   }
-		   }		   
-		   if (!failed) {
-		     for (TransactionStep step : steps) step.execute();
-		   }
-	   } else {
-		   for (TransactionStep step : steps) step.init();
-		   resolveReferences(steps);
-		   for (TransactionStep step : steps) {
-			   try {				 				
-			     step.prepare();
-			     step.execute();
-			   } catch (BaseServerResponseException e) {
-				  step.setResultBasedOnException(e);			
-			   } catch (AppException e2) {
-				  step.setResultBasedOnException(e2);
+		   } else {
+			   for (TransactionStep step : steps) step.init();
+			   resolveReferences(steps);
+			   for (TransactionStep step : steps) {
+				   try {				 				
+				     step.prepare();
+				     step.execute();
+				   } catch (BaseServerResponseException e) {
+					  step.setResultBasedOnException(e);			
+				   } catch (AppException e2) {
+					  step.setResultBasedOnException(e2);
+				   }
 			   }
 		   }
+	   } finally {
+		   inf.cache.getStudyPublishBuffer().save();
 	   }
 	   	   
 	   Bundle retVal = new Bundle();		 
