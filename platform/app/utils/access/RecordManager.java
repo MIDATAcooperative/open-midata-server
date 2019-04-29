@@ -310,7 +310,7 @@ public class RecordManager {
 		List<DBRecord> alreadyContained = QueryEngine.isContainedInAps(cache, toAPS, recordEntries);
 		AccessLog.log("to-share: "+recordEntries.size()+" already="+alreadyContained.size());
 		
-		shareUnchecked(recordEntries, alreadyContained, apswrapper, withOwnerInformation);
+		shareUnchecked(cache, recordEntries, alreadyContained, apswrapper, withOwnerInformation);
         
         AccessLog.logEnd("end share");
 	}
@@ -351,11 +351,11 @@ public class RecordManager {
 		AccessLog.log("check if contained in target aps");
 		List<DBRecord> alreadyContained = QueryEngine.isContainedInAps(cache, toAPS, recordEntries);		
 		
-		shareUnchecked(recordEntries, alreadyContained, apswrapper, withOwnerInformation);
+		shareUnchecked(cache, recordEntries, alreadyContained, apswrapper, withOwnerInformation);
         
 	}
 	
-	protected void shareUnchecked(List<DBRecord> recordEntries, List<DBRecord> alreadyContained, APS apswrapper, boolean withOwnerInformation) throws AppException {
+	protected void shareUnchecked(APSCache cache, List<DBRecord> recordEntries, List<DBRecord> alreadyContained, APS apswrapper, boolean withOwnerInformation) throws AppException {
 		
 		// withOwnerInformation = false; // Preparing to remove this feature completely
 		
@@ -367,7 +367,7 @@ public class RecordManager {
         if (alreadyContained.size() == 0) {		
 		    apswrapper.addPermission(recordEntries, withOwnerInformation);
 		    for (DBRecord rec : recordEntries) {		    	
-		    	RecordLifecycle.addWatchingAps(rec, apswrapper.getId());
+		    	cache.changeWatches().addWatchingAps(rec, apswrapper.getId());
 		    }
         } else {
         	Set<MidataId> contained = new HashSet<MidataId>();
@@ -377,7 +377,7 @@ public class RecordManager {
         		if (!contained.contains(rec._id)) filtered.add(rec);
         	}
         	apswrapper.addPermission(filtered, withOwnerInformation);
-        	for (DBRecord rec : filtered) RecordLifecycle.addWatchingAps(rec, apswrapper.getId());
+        	for (DBRecord rec : filtered) cache.changeWatches().addWatchingAps(rec, apswrapper.getId());
         }
 	}
 
@@ -497,11 +497,12 @@ public class RecordManager {
 		if (records.size() == 0) return;
 		
         AccessLog.logBegin("begin unshare who="+who.toString()+" aps="+apsId.toString()+" #recs="+records.size());
-		APS apswrapper = getCache(who).getAPS(apsId);
+        APSCache cache = getCache(who);
+		APS apswrapper = cache.getAPS(apsId);
 		List<DBRecord> recordEntries = QueryEngine.listInternal(getCache(who), apsId, null,
 				CMaps.map("_id", records), Sets.create("_id", "format", "content", "watches"));		
 		apswrapper.removePermission(recordEntries);
-		for (DBRecord rec : recordEntries) RecordLifecycle.removeWatchingAps(rec, apsId);
+		for (DBRecord rec : recordEntries) cache.changeWatches().removeWatchingAps(rec, apsId);
 		AccessLog.logEnd("end unshare");
 	}
 	
@@ -771,6 +772,8 @@ public class RecordManager {
 		if (recs.size() == 0) return;
 		
 		AccessLog.logBegin("begin wipe #records="+recs.size());
+		cache.finishTouch();
+		
 		Set<MidataId> streams = new HashSet<MidataId>();
 		
 		Iterator<DBRecord> it = recs.iterator();
@@ -1028,7 +1031,7 @@ public class RecordManager {
 						try {
 						  MidataId targetAps = new MidataId(key);
 						  APS apswrapper = context.getCache().getAPS(targetAps, userId);
-						  RecordManager.instance.shareUnchecked(Collections.singletonList(record), Collections.<DBRecord>emptyList(), apswrapper, true);
+						  RecordManager.instance.shareUnchecked(context.getCache(),Collections.singletonList(record), Collections.<DBRecord>emptyList(), apswrapper, true);
 						} catch (APSNotExistingException e) {
 							
 						}
@@ -1050,7 +1053,7 @@ public class RecordManager {
 						try {
 						  MidataId targetAps = new MidataId(key);
 						  APS apswrapper = context.getCache().getAPS(targetAps, userId);
-						  RecordManager.instance.shareUnchecked(Collections.singletonList(record), Collections.<DBRecord>emptyList(), apswrapper, true);
+						  RecordManager.instance.shareUnchecked(context.getCache(),Collections.singletonList(record), Collections.<DBRecord>emptyList(), apswrapper, true);
 						} catch (APSNotExistingException e) {
 							
 						}
@@ -1112,24 +1115,19 @@ public class RecordManager {
 	public void deleteAPS(MidataId apsId, MidataId executorId) throws AppException {
 		AccessLog.logBegin("begin deleteAPS aps="+apsId.toString()+" executor="+executorId.toString());
 		
-		APS apswrapper = getCache(executorId).getAPS(apsId);
+		APSCache cache = getCache(executorId);
+		APS apswrapper = cache.getAPS(apsId);
 		try {
 		List<DBRecord> recordEntries = QueryEngine.listInternal(getCache(executorId), apsId, null, CMaps.map("ignore-redirect", true),
 				Sets.create("_id", "watches"));		
 		
-			for (DBRecord rec : recordEntries) {
-				try {
-				  RecordLifecycle.removeWatchingAps(rec, apsId);
-				} catch (AppException e) {
-				  AccessLog.logException("error while deleting APS during remove watch", e);
-				} catch (NullPointerException e2) {
-				  AccessLog.logException("error while deleting APS during remove watch", e2);	
-				}
+			for (DBRecord rec : recordEntries) {		
+				cache.changeWatches().removeWatchingAps(rec, apsId);				
 			}
 		} catch (AppException e) {
 			AccessLog.logException("error while deleting APS", e);
 		}
-		
+		cache.changeWatches().save();
 		AccessPermissionSet.delete(apsId);
 		AccessLog.logEnd("end deleteAPS");
 	}
