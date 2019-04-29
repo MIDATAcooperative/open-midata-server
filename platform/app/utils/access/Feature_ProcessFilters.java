@@ -3,6 +3,7 @@ package utils.access;
 import java.util.Set;
 
 import utils.AccessLog;
+import utils.access.Feature_Pseudonymization.PseudonymIterator;
 import utils.exceptions.AppException;
 
 public class Feature_ProcessFilters extends Feature {
@@ -38,6 +39,11 @@ public class Feature_ProcessFilters extends Feature {
 
 		result = new ProcessingTools.DecryptRecords(result, minTime, checkDelete);
 
+		boolean oname = q.returns("ownerName");
+		if (q.returns("owner") || oname || q.returns("data") || q.returns("name")) {
+			result = new Feature_Pseudonymization.PseudonymIterator(result, q, oname);		
+		}
+		
 		result = new ProcessingTools.FilterNoMeta(result);
 
 		if (q.restrictedBy("history-date")) {
