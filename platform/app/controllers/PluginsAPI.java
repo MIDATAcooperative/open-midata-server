@@ -588,17 +588,8 @@ public class PluginsAPI extends APIController {
 		/* Publication of study results */ 
 		if (record.owner.equals(inf.executorId)) {
 			BSONObject query = RecordManager.instance.getMeta(inf.executorId, inf.targetAPS, "_query");
-			if (query != null && query.containsField("target-study")) {
-				Map<String, Object> q = query.toMap(); 
-				MidataId studyId = MidataId.from(q.get("target-study"));
-				Object groupObj = q.get("target-study-group");
-				String group = groupObj != null ? groupObj.toString() : null;
-				Set<StudyRelated> srs = StudyRelated.getActiveByOwnerGroupAndStudy(inf.executorId, group, studyId, Sets.create("_id"));
-				if (!srs.isEmpty()) {
-					for (StudyRelated sr : srs ) {
-					  RecordManager.instance.share(inf.executorId, inf.ownerId, sr._id, records, false);
-					}
-				}
+			if (query != null && query.containsField("target-study")) {				
+				inf.cache.getStudyPublishBuffer().add(inf, record);						
 			}
 		}
 		

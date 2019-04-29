@@ -1,4 +1,4 @@
-package utils.access;
+package utils.buffer;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,12 +8,14 @@ import java.util.Set;
 import models.MidataId;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.access.DBRecord;
+import utils.access.RecordLifecycle;
 
 /**
  * Cache for changing watching APS of records
  *
  */
-public class WatchesChangeCache {
+public class WatchesChangeBuffer {
 
 	private Map<DBRecord, Set<MidataId>> addWatchingAps;
 	private Map<DBRecord, Set<MidataId>> removeWatchingAps;
