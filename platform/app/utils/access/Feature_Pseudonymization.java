@@ -27,15 +27,16 @@ public class Feature_Pseudonymization extends Feature {
 
 		DBIterator<DBRecord> result = next.iterator(q);
 
-		boolean oname = q.returns("ownerName");
+		// moved to ProcessFilters
+		/*boolean oname = q.returns("ownerName");
 		if (q.returns("owner") || oname || q.returns("data") || q.returns("name")) {
 			return new PseudonymIterator(result, q, oname);		
-		}
+		}*/
 
 		return result;
 	}
 	
-	static class PseudonymIterator implements DBIterator<DBRecord> {
+	public static class PseudonymIterator implements DBIterator<DBRecord> {
 
 		private DBIterator<DBRecord> chain;
 		private Query q;
@@ -55,36 +56,26 @@ public class Feature_Pseudonymization extends Feature {
 		@Override
 		public DBRecord next() throws AppException {
 			DBRecord r = chain.next();
-			if (r.context.mustPseudonymize()) {              
-				r.owner = r.context.getOwnerPseudonymized();
-
-				String name = r.context.getOwnerName();
-				if (oname && name != null) {
-					
-					if (r.encrypted == null && !(chain instanceof ProcessingTools.FilterNoMeta)) {
-						this.chain = new ProcessingTools.FilterNoMeta(new ProcessingTools.BlockwiseLoad(chain, q, 101));
+			if (r.context.mustPseudonymize()) {
+				if (r.meta != null) {
+					r.owner = r.context.getOwnerPseudonymized();
+	
+					String name = r.context.getOwnerName();
+					if (oname && name != null) {															
+						r.meta.put("ownerName", name);
 					}
-					
-					QueryEngine.fetchFromDB(q, r);
-					RecordEncryption.decryptRecord(r);
-					
-					r.meta.put("ownerName", name);
-
+	
+					// Bugfix for older records
+					String creator = r.meta.getString("creator");
+					if (creator != null && creator.equals(r.context.getOwner().toString())) {
+						r.meta.remove("creator");
+					}
+	
+					String ct = r.meta.getString("content");
+													
+					if (ct.equals("Patient"))
+						r.meta = null;
 				}
-
-				// Bugfix for older records
-				String creator = r.meta.getString("creator");
-				if (creator != null && creator.equals(r.context.getOwner().toString())) {
-					r.meta.remove("creator");
-				}
-
-				String ct = r.meta.getString("content");
-				
-				
-				
-				if (ct.equals("Patient"))
-					r.meta = null;
-
 			} else {		
 				if (!r.context.mayContainRecordsFromMultipleOwners() || r.owner==null) {
 				  r.owner = r.context.getOwner();
