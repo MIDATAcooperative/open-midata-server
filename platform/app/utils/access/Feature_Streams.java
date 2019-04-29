@@ -397,7 +397,7 @@ public class Feature_Streams extends Feature {
 		RecordEncryption.encryptRecord(result);		
 	    DBRecord.add(result);
 	    
-	    if (targetAPS != null) RecordLifecycle.addWatchingAps(result, targetAPS);
+	    if (targetAPS != null) context.getCache().changeWatches().addWatchingAps(result, targetAPS);
 
 	    AccessLog.log("create aps for stream");
 	    

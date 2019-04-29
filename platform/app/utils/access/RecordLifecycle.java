@@ -24,7 +24,8 @@ public class RecordLifecycle {
 	 * @param aps id of aps that wants to watch for changes
 	 * @throws AppException
 	 */
-	public static void addWatchingAps(DBRecord rec, MidataId aps) throws AppException {
+	public static void addWatchingAps(DBRecord rec, Set<MidataId> apses) throws AppException {
+		if (apses.isEmpty()) return;
 		DBRecord record = DBRecord.getById(rec._id, Sets.create("encWatches"));
 		if (record == null) throw new InternalServerException("error.internal", "Record with id "+rec._id.toString()+" not found in database. Account or consent needs repair?");
 		record.key = rec.key;
@@ -32,8 +33,14 @@ public class RecordLifecycle {
 		record.meta = null;
 		RecordEncryption.decryptRecord(record);
 		if (record.watches == null) record.watches = new BasicDBList();
-		if (!record.watches.contains(aps.toString())) {
-			record.watches.add(aps.toString());
+		boolean changed = false;
+		for (MidataId aps : apses) {
+			if (!record.watches.contains(aps.toString())) {
+				record.watches.add(aps.toString());
+				changed = true;
+			}
+		}
+		if (changed) {
 			RecordEncryption.encryptRecord(record);
 			DBRecord.set(record._id, "encWatches", record.encWatches);
 		}
@@ -45,15 +52,22 @@ public class RecordLifecycle {
 	 * @param aps id of aps that no longer wants to watch for changes
 	 * @throws AppException
 	 */
-	public static void removeWatchingAps(DBRecord rec, MidataId aps) throws AppException  {
+	public static void removeWatchingAps(DBRecord rec, Set<MidataId> apses) throws AppException  {
+		if (apses.isEmpty()) return;
 		DBRecord record = DBRecord.getById(rec._id, Sets.create("encWatches"));
 		record.key = rec.key;
 		record.security = rec.security;
 		record.meta = null;
 		if (record.encWatches == null) return;
 		RecordEncryption.decryptRecord(record);
-		if (record.watches.contains(aps.toString())) {
-			record.watches.remove(aps.toString());
+		boolean changed = false;
+		for (MidataId aps : apses) {
+			if (record.watches.contains(aps.toString())) {
+				record.watches.remove(aps.toString());
+				changed = true;
+			}
+		}
+		if (changed) {
 			RecordEncryption.encryptRecord(record);
 			DBRecord.set(record._id, "encWatches", record.encWatches);
 		}
