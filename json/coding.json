@@ -284,3 +284,12 @@
 {"_id":{"$oid":"5c8fc0f0cf5693588200f9ea"},"system":"http://snomed.info/sct","code":"363870007","display":"Mental state, behavior / psychosocial function observable","content":"snomed/363870007"}
 {"_id":{"$oid":"5ca202aacf569343a962ffa6"},"system":"http://midata.coop","code":"pollen-measure","display":"Pollen Measure","content":"public/pollen-measure"}
 {"_id":{"$oid":"5cc00fa4aed645171c80aba0"},"system":"http://midata.coop","code":"pollen-image","display":"Pollen Image","content":"public/pollen-image"}
+{"_id":{"$oid":"5cc85387aed6452c8c5214ea"},"system":"http://loinc.org","code":"9279-1","display":"Respiratory rate","content":"loinc/9279-1"}
+{"_id":{"$oid":"5cc853caaed6452c8c5214eb"},"system":"http://snomed.info/sct","code":"86290005","display":"Respiratory rate","content":"loinc/9279-1"}
+{"_id":{"$oid":"5cc8541aaed6452c8c5214ed"},"system":"http://loinc.org","code":"8637-1","display":"R-R interval","content":"loinc/8637-1"}
+{"_id":{"$oid":"5cc85472aed6452c8c5214ee"},"system":"http://snomed.info/sct","code":"251833007","display":"Energy Expenditure","content":"snomed/251833007"}
+{"_id":{"$oid":"5cc854bfaed6452c8c5214f0"},"system":"http://snomed.info/sct","code":"229819007","display":"Tobacco use and exposure","content":"loinc/63582-1"}
+{"_id":{"$oid":"5cc85f5aaed6452c8c5214f2"},"system":"http://snomed.info/sct","code":"230056004","display":"Cigarette consumption","content":"loinc/63582-1"}
+{"_id":{"$oid":"5cc86322aed64535da11812e"},"system":"http://snomed.info/sct","code":"276361009","display":"Waist circumference","content":"snomed/276361009"}
+{"_id":{"$oid":"5cc86374aed64535da118130"},"system":"http://snomed.info/sct","code":"58314002","display":"Ulnar pulse","content":"snomed/58314002"}
+{"_id":{"$oid":"5cc8644baed64535da118132"},"system":"http://www.stroke.usz.ch","code":"reuse","display":"REUSE Questionnaire","content":"reuse"}
