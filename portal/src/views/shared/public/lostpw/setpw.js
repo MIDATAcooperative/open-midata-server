@@ -22,6 +22,7 @@ angular.module('portal')
 			$scope.error = { code : "error.invalid.password_repetition" };
 			return;
 		}
+		$scope.submitted = true;
 		
 		crypto.generateKeys($scope.setpw.password).then(function(keys) {
 			var data = { "token": $scope.setpw.token };
@@ -36,7 +37,7 @@ angular.module('portal')
 				data.password = $scope.setpw.password;
 			}
 			return server.post(jsRoutes.controllers.Application.setPasswordWithToken().url, JSON.stringify(data));
-		}).then(function() { $scope.setpw.success = true; }, function(err) { $scope.error = err.data; });
+		}).then(function() { $scope.setpw.success = true;$scope.submitted=false; }, function(err) { $scope.error = err.data;$scope.submitted=false; });
 	};
 			
 }]);
