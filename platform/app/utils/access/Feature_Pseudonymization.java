@@ -56,30 +56,32 @@ public class Feature_Pseudonymization extends Feature {
 		@Override
 		public DBRecord next() throws AppException {
 			DBRecord r = chain.next();
-			if (r.context.mustPseudonymize()) {
-				if (r.meta != null) {
-					r.owner = r.context.getOwnerPseudonymized();
-	
-					String name = r.context.getOwnerName();
-					if (oname && name != null) {															
-						r.meta.put("ownerName", name);
+			if (r.context != null) {
+				if (r.context.mustPseudonymize()) {
+					if (r.meta != null) {
+						r.owner = r.context.getOwnerPseudonymized();
+		
+						String name = r.context.getOwnerName();
+						if (oname && name != null) {															
+							r.meta.put("ownerName", name);
+						}
+		
+						// Bugfix for older records
+						String creator = r.meta.getString("creator");
+						if (creator != null && creator.equals(r.context.getOwner().toString())) {
+							r.meta.remove("creator");
+						}
+		
+						String ct = r.meta.getString("content");
+														
+						if (ct.equals("Patient"))
+							r.meta = null;
 					}
-	
-					// Bugfix for older records
-					String creator = r.meta.getString("creator");
-					if (creator != null && creator.equals(r.context.getOwner().toString())) {
-						r.meta.remove("creator");
-					}
-	
-					String ct = r.meta.getString("content");
-													
-					if (ct.equals("Patient"))
-						r.meta = null;
+				} else {		
+					if (!r.context.mayContainRecordsFromMultipleOwners() || r.owner==null) {
+					  r.owner = r.context.getOwner();
+					} 
 				}
-			} else {		
-				if (!r.context.mayContainRecordsFromMultipleOwners() || r.owner==null) {
-				  r.owner = r.context.getOwner();
-				} 
 			}
 
 			return r;
