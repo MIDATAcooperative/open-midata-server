@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.hl7.fhir.dstu3.model.Attachment;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
@@ -122,19 +123,26 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	}
 	
 	public void prepareTags(Record record, T theResource) throws AppException {
-		boolean tagFound = false;
+		//boolean hiddenTagFound = false;
+		Set<String> tags = new HashSet<String>();
 		if (theResource.getMeta().hasSecurity()) {
 			List<Coding> codes = theResource.getMeta().getSecurity();
 			for (Coding c : codes) {
-				if (c.getSystem().equals("http://terminology.hl7.org/CodeSystem/v3-ActCode") && c.getCode().equals("PHY")) tagFound = true;
+				if (c.getSystem().equals("http://terminology.hl7.org/CodeSystem/v3-ActCode") && c.getCode().equals("PHY")) {
+					//hiddenTagFound = true;
+					tags.add("security:hidden");
+				} else if (c.getSystem().equals("http://terminology.hl7.org/CodeSystem/v3-Confidentiality") && c.getCode().equals("U")) {
+					tags.add("security:public");				
+				}
 			}
 		}
-		if (tagFound) {
+		record.tags = tags.isEmpty() ? null : tags;
+		/*if (tagFound) {
 			if (record.tags == null) record.tags = new HashSet<String>();
 			record.tags.add("security:hidden");
 		} else {
 			if (record.tags != null) record.tags.remove("security:hidden");
-		}
+		}*/
 	}
 	
 	@Override

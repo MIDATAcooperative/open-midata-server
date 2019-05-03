@@ -7,8 +7,10 @@ import java.util.HashMap;
 
 import models.Admin;
 import models.Developer;
+import models.Member;
 import models.MidataId;
 import models.Plugin;
+import models.UserGroup;
 import models.enums.AccountSecurityLevel;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
@@ -16,6 +18,7 @@ import models.enums.Gender;
 import models.enums.PluginStatus;
 import models.enums.SecondaryAuthType;
 import models.enums.SubUserRole;
+import models.enums.UserGroupType;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import utils.RuntimeConstants;
@@ -142,6 +145,43 @@ public class MinimalSetup {
 			
 			//KeyManager.instance.unlock(admin._id, null);
 			RecordManager.instance.createPrivateAPS(admin._id, admin._id);
+		}
+		
+		if (Member.getByEmail(RuntimeConstants.PUBLIC_USER, Sets.create("_id")) == null) {
+			Member publicUser = new Member();
+			publicUser._id = new MidataId("5ccab0dcaed6452048f2b010");
+			publicUser.email = RuntimeConstants.PUBLIC_USER;
+			publicUser.emailLC = publicUser.email.toLowerCase();
+			publicUser.password = null;
+			publicUser.role = UserRole.MEMBER;
+			publicUser.subroles = EnumSet.noneOf(SubUserRole.class);
+			publicUser.status = UserStatus.ACTIVE;
+			publicUser.contractStatus = ContractStatus.SIGNED;
+			publicUser.agbStatus = ContractStatus.SIGNED;	
+			publicUser.registeredAt = new Date();
+			publicUser.resettokenTs = 0;				
+			publicUser.confirmationCode = "";
+			publicUser.firstname = "Account";
+			publicUser.lastname = "Public";
+			publicUser.gender = Gender.OTHER;
+			publicUser.security = AccountSecurityLevel.KEY;
+			
+			publicUser.emailStatus = EMailStatus.VALIDATED;
+			publicUser.authType = SecondaryAuthType.NONE;
+			publicUser.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(publicUser._id);
+			Member.add(publicUser);			
+			//KeyManager.instance.unlock(admin._id, null);
+						
+			UserGroup ug = new UserGroup();
+			ug._id = RuntimeConstants.publicGroup;
+			ug.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(ug._id);
+			ug.registeredAt = new Date();
+			ug.name = RuntimeConstants.PUBLIC_GROUP;
+			ug.creator = publicUser._id;
+			ug.status = UserStatus.ACTIVE;
+			ug.add();
+			
+			RecordManager.instance.createAnonymizedAPS(publicUser._id, ug._id, publicUser._id, false);
 		}
 		
 		if (Plugin.getByFilename("portal", Sets.create("_id")) == null ) {

@@ -13,6 +13,7 @@ import models.Record;
 import models.RecordsInfo;
 import models.StudyParticipation;
 import models.enums.ConsentType;
+import utils.RuntimeConstants;
 import utils.exceptions.InternalServerException;
 
 public class ReferenceTool {
@@ -21,7 +22,7 @@ public class ReferenceTool {
 	
 	public static void resolveOwners(Collection<Record> records, boolean owners, boolean creators) throws InternalServerException {
 		Map<String, String> members = new HashMap<String, String>();		
-		
+		members.put(RuntimeConstants.instance.publicUser.toString(), "-");
 		for (Record record : records) {
 			if (owners && (record.owner != null && record.ownerName == null)) {
 				String key = record.owner.toString();

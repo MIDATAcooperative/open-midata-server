@@ -1,9 +1,14 @@
 <ul class="list-group">
   <li ng-repeat="block in blocks" class="list-group-item">
 	<span>{{ block.display }} <span ng-show="block.code && details">( {{ block.code }} )</span></span>		    
-		    <div ng-show="details">
-		      <span ng-show="isapp && block.owner && block.owner != 'all'" translate="{{ 'queryeditor.short_owner_'+block.owner }}"></span>
-		      <span ng-show="isapp && (!block.owner || block.owner == 'all')" translate="queryeditor.short_owner_all"></span> 		      
+		    <div ng-show="details">		    
+		      <span ng-show="isapp && block.owner && block.owner != 'all' && (!block.public || block.public=='no')" translate="{{ 'queryeditor.short_owner_'+block.owner }}"></span>		      
+		      <span ng-show="isapp && block.public == 'no' && (!block.owner || block.owner == 'all')" translate="queryeditor.short_owner_all"></span>
+		      <span ng-show="block.public == 'only'" translate="queryeditor.short_public_only"></span>
+		      <span ng-show="block.public == 'also' && (!block.owner || block.owner == 'all')" translate="queryeditor.short_public_also"></span> 
+		      <span ng-show="block.public == 'also' && block.owner != 'all'" translate="queryeditor.short_public_also_self"></span>
+		
+		    
 		      <span ng-show="block.app && block.app != 'all'"><span translate="queryeditor.short_app_other"></span> {{ block.appName }}</span>		      
 		    </div>		   
 		    

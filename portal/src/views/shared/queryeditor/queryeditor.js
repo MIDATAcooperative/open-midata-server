@@ -191,6 +191,7 @@ angular.module('portal')
 			if (block.format) fb.format = [ block.format ];		
 			if (block.system) fb["group-system"] = block.system;
 			if (block.owner && block.owner != "all") fb.owner = [ block.owner ];
+			if (block["public"] && block["public"] != "no") fb["public"] = block["public"];
 			if (block.app && block.app != "all") {
 				if (block.app == "self") fb.app = [ $scope.target.appname ];
 				else fb.app = [ block.appName ];
@@ -282,6 +283,7 @@ angular.module('portal')
 			if (ac("code")) nblock.code = ac("code");		
 			if (ac("group")) nblock.group = ac("group");
 			if (ac("group-system")) nblock.system = ac("group-system");
+			if (ac("public")) nblock["public"] = ac("public") || "no";
 			if (ac("created-after")) {
 				nblock.timeRestriction = true;
 				nblock.timeRestrictionMode = "created-after";
@@ -346,7 +348,7 @@ angular.module('portal')
 	};
 	
 	$scope.addContent = function(content, code) {
-		var newblock = { display : content.display, isnew : true, owner : "all", app : "all"  };
+		var newblock = { display : content.display, isnew : true, owner : "all", app : "all", "public" : "no"  };
 		if (content.format) newblock.format = content.format;
 		if (content.content) { newblock.content = content.content; }
 		if (content.group) { newblock.group = content.group; newblock.system = content.system; }
@@ -359,6 +361,7 @@ angular.module('portal')
 	};
 	
 	$scope.applyBlock = function() {
+		if ($scope.currentBlock["public"] == "only") $scope.currentBlock.owner = "all";
 		if ($scope.currentBlock.format && $scope.currentBlock.format.lengh===0) $scope.currentBlock.format = undefined;
 		if ($scope.currentBlock.isnew) {
 			$scope.blocks.push($scope.currentBlock);

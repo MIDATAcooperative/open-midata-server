@@ -7,7 +7,12 @@ import java.util.Map;
 import utils.RuntimeConstants;
 import utils.auth.KeyManager;
 import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
 
+/**
+ * Allow queries that access a common public data pool
+ *
+ */
 public class Feature_PublicData extends Feature {
 
 	private Feature next;
@@ -59,8 +64,7 @@ public class Feature_PublicData extends Feature {
 
 	protected DBIterator<DBRecord> doQueryAsPublic(Query q) throws AppException {		
 		
-		KeyManager.instance.unlock(RuntimeConstants.instance.publicUser, null);
-		APSCache subcache = q.getCache().getSubCache(RuntimeConstants.instance.publicUser);
+		APSCache subcache = getPublicAPSCache(q.getCache());
 		
 		Map<String, Object> newprops = new HashMap<String, Object>();
 		newprops.putAll(q.getProperties());
@@ -71,6 +75,14 @@ public class Feature_PublicData extends Feature {
 		DBIterator<DBRecord> result = next.iterator(qnew);
 		
 		return result;	
+	}
+	
+	protected static APSCache getPublicAPSCache(APSCache cache) throws InternalServerException {
+		if (cache.getAccountOwner().equals(RuntimeConstants.instance.publicUser)) return cache;
+		if (!cache.hasSubCache(RuntimeConstants.instance.publicGroup)) KeyManager.instance.unlock(RuntimeConstants.instance.publicGroup, null);
+		APSCache subcache = cache.getSubCache(RuntimeConstants.instance.publicGroup);
+		subcache.setAccountOwner(RuntimeConstants.instance.publicUser);
+		return subcache;
 	}
 				
 		

@@ -1,7 +1,8 @@
 package utils.access;
 
 import models.MidataId;
-import models.UserGroupMember;
+import models.Record;
+import utils.RuntimeConstants;
 import utils.exceptions.AppException;
 
 public class PublicAccessContext extends AccessContext {
@@ -11,8 +12,8 @@ public class PublicAccessContext extends AccessContext {
 	}
 	
 	@Override
-	public boolean mayCreateRecord(DBRecord record) throws AppException {
-		return true;
+	public boolean mayCreateRecord(DBRecord record) throws AppException {		
+		return parent.mayCreateRecord(record) && record.owner.equals(RuntimeConstants.instance.publicUser);
 	}
 
 	@Override
@@ -21,8 +22,8 @@ public class PublicAccessContext extends AccessContext {
 	}
 
 	@Override
-	public boolean mayUpdateRecord() {
-		return false; // XXXXXXXXXXXXXXXXXX creator only
+	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) {
+		return newVersion.tags != null && newVersion.tags.contains("security:public");
 	}
 
 	@Override
@@ -32,24 +33,24 @@ public class PublicAccessContext extends AccessContext {
 
 	@Override
 	public MidataId getTargetAps() {
-		return cache.getAccountOwner();
+		return RuntimeConstants.instance.publicUser;
 	}
 	
 	@Override
 	public String getOwnerName() {		
-		return null;
+		return "Public";
 	}
 	@Override
 	public MidataId getOwner() {
-		return cache.getAccountOwner();
+		return RuntimeConstants.instance.publicUser;
 	}
 	@Override
 	public MidataId getOwnerPseudonymized() {
-		return cache.getAccountOwner();
+		return RuntimeConstants.instance.publicUser;
 	}
 	@Override
 	public MidataId getSelf() {
-		return cache.getAccountOwner();
+		return RuntimeConstants.instance.publicUser;
 	}
 	@Override
 	public boolean mayAccess(String content, String format) throws AppException {

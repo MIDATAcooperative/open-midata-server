@@ -5,6 +5,7 @@ import java.util.Collections;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.Plugin;
+import models.Record;
 import utils.exceptions.AppException;
 
 public class AppAccessContext extends AccessContext {
@@ -29,10 +30,10 @@ public class AppAccessContext extends AccessContext {
 	}
 
 	@Override
-	public boolean mayUpdateRecord() {
+	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) {
 		if (instance.writes == null) return true;
 		if (!instance.writes.isUpdateAllowed()) return false;
-		if (parent != null) return parent.mayUpdateRecord();
+		if (parent != null) return parent.mayUpdateRecord(stored, newVersion);
 		return true;
 	}
 

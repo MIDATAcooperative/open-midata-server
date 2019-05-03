@@ -82,7 +82,7 @@ public class Feature_ProcessFilters extends Feature {
 			result = new ProcessingTools.FilterBySharedDate(result, q.getMinDateShared(), null);
 		}
 		if (q.restrictedBy("remove-hidden")) {
-			result = new ProcessingTools.FilterByHiddenTag(result);
+			result = new ProcessingTools.FilterByTag(result, "security:hidden", false);
 		}
 		if (q.restrictedBy("clear-hidden")) {
 			result = new ProcessingTools.ClearByHiddenTag(result);

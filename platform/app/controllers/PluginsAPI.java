@@ -65,6 +65,7 @@ import utils.access.AccountCreationAccessContext;
 import utils.access.ConsentAccessContext;
 import utils.access.DBRecord;
 import utils.access.EncryptedFileHandle;
+import utils.access.PublicAccessContext;
 import utils.access.RecordConversion;
 import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
@@ -511,9 +512,14 @@ public class PluginsAPI extends APIController {
 		if (record.owner==null) record.owner = inf.ownerId;
 		if (record.name==null) record.name="unnamed";
 		
+		if (record.tags != null && record.tags.contains("security:public")) {
+			record.owner = RuntimeConstants.instance.publicUser;
+			context = RecordManager.instance.createPublicContext(inf.executorId, context);
+		}
+		
 		DBRecord dbrecord = RecordConversion.instance.toDB(record);
         				
-		if (!record.owner.equals(inf.executorId) && !inf.executorId.equals(RuntimeConstants.instance.autorunService) && !(context instanceof ConsentAccessContext) && !(context instanceof AccountCreationAccessContext)) {
+		if (!record.owner.equals(inf.executorId) && !inf.executorId.equals(RuntimeConstants.instance.autorunService) && !(context instanceof ConsentAccessContext) && !(context instanceof AccountCreationAccessContext) && !(context instanceof PublicAccessContext)) {
 			BSONObject query = RecordManager.instance.getMeta(inf.executorId, inf.targetAPS, "_query");
 			Set<Consent> consent = null;
 			if (query != null && query.containsField("link-study")) {
