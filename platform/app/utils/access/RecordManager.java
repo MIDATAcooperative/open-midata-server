@@ -40,6 +40,7 @@ import models.enums.UserRole;
 import play.mvc.Http;
 import utils.AccessLog;
 import utils.QueryTagTools;
+import utils.RuntimeConstants;
 import utils.auth.KeyManager;
 import utils.auth.RecordToken;
 import utils.collections.CMaps;
@@ -696,7 +697,7 @@ public class RecordManager {
 			if (record.data == null) throw new BadRequestException("error.internal", "Missing data");		
 			
 			DBRecord rec = result.get(0);
-			if (!rec.context.mayUpdateRecord()) throw new InternalServerException("error.internal", "Record may not be updated!");
+			if (!rec.context.mayUpdateRecord(rec, record)) throw new InternalServerException("error.internal", "Record may not be updated!");
 			
 			String storedVersion = rec.meta.getString("version");
 			if (storedVersion == null) storedVersion = VersionedDBRecord.INITIAL_VERSION;
@@ -1158,7 +1159,7 @@ public class RecordManager {
 		}
 		AccessLog.log("context="+context);
 		QueryTagTools.handleSecurityTags(role, properties, fields);
-		return QueryEngine.list(getCache(who), apsId, context, properties, fields);
+		return QueryEngine.list(context.getCache(), apsId, context, properties, fields);
 	}
 		
 	
@@ -1166,7 +1167,7 @@ public class RecordManager {
 			Map<String, Object> properties, Set<String> fields)
 			throws AppException {	
 		QueryTagTools.handleSecurityTags(role, properties, fields);
-		return QueryEngine.listIterator(getCache(who), context.getTargetAps(), context, properties, fields);
+		return QueryEngine.listIterator(context.getCache(), context.getTargetAps(), context, properties, fields);
 	}
 	
 	/*
@@ -1181,7 +1182,7 @@ public class RecordManager {
 			Map<String, Object> properties, Set<String> fields)
 			throws AppException {
 		QueryTagTools.handleSecurityTags(role, properties, fields);
-		return QueryEngine.list(getCache(who), context.getTargetAps(), context, properties, fields);
+		return QueryEngine.list(context.getCache(), context.getTargetAps(), context, properties, fields);
 	}
 	
 	/**
@@ -1210,6 +1211,7 @@ public class RecordManager {
 		if (properties.containsKey("content")) nproperties.put("content", properties.get("content"));
 		if (properties.containsKey("content/*")) nproperties.put("content/*", properties.get("content/*"));
 		if (properties.containsKey("app")) nproperties.put("app", properties.get("app"));
+		if (properties.containsKey("public")) nproperties.put("public", properties.get("public"));
 		if (properties.containsKey("group")) nproperties.put("group", properties.get("group"));
 		if (properties.containsKey("code")) {
 			Set<String> codes = Query.getRestriction(properties.get("code"), "code");
@@ -1223,7 +1225,7 @@ public class RecordManager {
 		}
 		
 		try {
-		    Collection<RecordsInfo> result = QueryEngine.info(getCache(who), aps, context, nproperties, aggrType);
+		    Collection<RecordsInfo> result = QueryEngine.info(context.getCache(), aps, context, nproperties, aggrType);
 		    
 		    if (properties.containsKey("include-records")) {		    	
 			    for (RecordsInfo inf : result) {
@@ -1535,8 +1537,13 @@ public class RecordManager {
 		return new AccountAccessContext(getCache(executorId), null);
 	}
 	
+	public PublicAccessContext createPublicContext(MidataId executorId, AccessContext parent) throws InternalServerException {
+		return new PublicAccessContext(Feature_PublicData.getPublicAPSCache(getCache(executorId)), parent);
+	}
+	
 	public AccessContext createContext(MidataId executor, MidataId aps) throws AppException {
 		if (executor.equals(aps)) return createContextFromAccount(executor);
+		else if (aps.equals(RuntimeConstants.instance.publicUser)) return createPublicContext(executor, createContextFromAccount(executor));
 		else {
           Consent consent = Consent.getByIdUnchecked(aps, Consent.ALL);
           if (consent != null) {

@@ -1,6 +1,7 @@
 package utils.access;
 
 import models.MidataId;
+import models.Record;
 import utils.exceptions.AppException;
 
 public class DummyAccessContext extends AccessContext {
@@ -29,7 +30,7 @@ public class DummyAccessContext extends AccessContext {
 	}
 
 	@Override
-	public boolean mayUpdateRecord() {		
+	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) {		
 		return false;
 	}
 

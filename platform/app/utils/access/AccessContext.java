@@ -3,6 +3,7 @@ package utils.access;
 import java.util.Map;
 
 import models.MidataId;
+import models.Record;
 import utils.exceptions.AppException;
 
 public abstract class AccessContext {
@@ -19,7 +20,7 @@ public abstract class AccessContext {
 	
 	public abstract boolean isIncluded(DBRecord record) throws AppException;
 	
-	public abstract boolean mayUpdateRecord();
+	public abstract boolean mayUpdateRecord(DBRecord stored, Record newVersion);
 	
 	public abstract boolean mustPseudonymize();
 	

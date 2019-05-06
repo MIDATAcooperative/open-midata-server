@@ -6,6 +6,7 @@ import org.bson.BSONObject;
 
 import controllers.Circles;
 import models.MidataId;
+import models.Record;
 import models.Space;
 import utils.exceptions.AppException;
 
@@ -34,7 +35,7 @@ public class SpaceAccessContext extends AccessContext {
 	}
 
 	@Override
-	public boolean mayUpdateRecord() {
+	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) {
 		return true;
 	}
 
