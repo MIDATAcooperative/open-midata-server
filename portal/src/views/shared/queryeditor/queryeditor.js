@@ -285,7 +285,7 @@ angular.module('portal')
 			if (ac("code")) nblock.code = ac("code");		
 			if (ac("group")) nblock.group = ac("group");
 			if (ac("group-system")) nblock.system = ac("group-system");
-			if (ac("public")) nblock["public"] = ac("public") || "no";
+			nblock["public"] = ac("public") || "no";
 			if (ac("created-after")) {
 				nblock.timeRestriction = true;
 				nblock.timeRestrictionMode = "created-after";
@@ -320,7 +320,8 @@ angular.module('portal')
 			}
 			if (ac("owner")) {
 				nblock.owner = noarray(ac("owner"));
-			}		
+			}
+			console.log(nblock);
 			angular.forEach(unwrap(unwrap(unwrap(unwrap(unwrap([ nblock ],"group"),"code"),"content"),"app"),"format"), function(r) {
 				if (!r.app) r.app = "all";
 				if (r.app == $scope.target.appname) { r.app = "self";r.appName = $scope.target.appname; }
