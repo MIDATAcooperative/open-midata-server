@@ -2,6 +2,7 @@ package utils.access;
 
 import models.MidataId;
 import models.Record;
+import utils.AccessLog;
 import utils.RuntimeConstants;
 import utils.exceptions.AppException;
 
@@ -22,8 +23,9 @@ public class PublicAccessContext extends AccessContext {
 	}
 
 	@Override
-	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) {
-		return newVersion.tags != null && newVersion.tags.contains("security:public");
+	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) {		
+		return newVersion.tags != null && newVersion.tags.contains("security:public") &&
+			   newVersion.creator != null && newVersion.creator.toString().equals(stored.meta.getString("creator"));
 	}
 
 	@Override

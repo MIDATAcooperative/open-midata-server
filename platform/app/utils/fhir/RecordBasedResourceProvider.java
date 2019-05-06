@@ -117,7 +117,8 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	}
 	
 	@Override
-	public void updatePrepare(Record record, T theResource) throws AppException {		
+	public void updatePrepare(Record record, T theResource) throws AppException {
+		record.creator = info().executorId;
 		prepare(record, theResource);	
 		prepareTags(record, theResource);
 	}

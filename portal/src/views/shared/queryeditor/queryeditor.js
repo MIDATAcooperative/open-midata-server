@@ -193,7 +193,9 @@ angular.module('portal')
 			if (block.owner && block.owner != "all") fb.owner = [ block.owner ];
 			if (block["public"] && block["public"] != "no") fb["public"] = block["public"];
 			if (block.app && block.app != "all") {
-				if (block.app == "self") fb.app = [ $scope.target.appname ];
+				if (block.app == "self") {
+					fb.app = [ $scope.target.appname ];					
+				}
 				else fb.app = [ block.appName ];
 			}
 			if (block.timeRestriction && block.timeRestrictionMode) {
@@ -321,7 +323,7 @@ angular.module('portal')
 			}		
 			angular.forEach(unwrap(unwrap(unwrap(unwrap(unwrap([ nblock ],"group"),"code"),"content"),"app"),"format"), function(r) {
 				if (!r.app) r.app = "all";
-				if (r.app == $scope.target.appname) { r.app = "self"; }
+				if (r.app == $scope.target.appname) { r.app = "self";r.appName = $scope.target.appname; }
 				else if (r.app !== "all") { r.appName = r.app; r.app = "other"; }
 				if (!r.owner) r.owner = "all";
 				if (r.content) {
@@ -374,6 +376,7 @@ angular.module('portal')
 		if (!$scope.currentBlock.dataPeriodRestriction) {
 			$scope.currentBlock.dataPeriodRestrictionStart = $scope.currentBlock.dataPeriodRestrictionEnd = $scope.currentBlock.dataPeriodRestrictionMode = undefined; 
 		}
+		if ($scope.currentBlock.app == "self") {$scope.currentBlock.appName = $scope.target.appname; }
 		$scope.currentBlock = undefined;
 		
 		$scope.query.json = buildAccessQuery();
@@ -400,7 +403,7 @@ angular.module('portal')
 		
 		if ($scope.currentBlock.flags.effective) {
 			$scope.dataPeriodModes.push("effective");
-		}
+		}		
 		
 		$scope.newentry = undefined;
 	};
