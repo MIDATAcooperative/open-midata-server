@@ -133,6 +133,8 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 					tags.add("security:hidden");
 				} else if (c.getSystem().equals("http://terminology.hl7.org/CodeSystem/v3-Confidentiality") && c.getCode().equals("U")) {
 					tags.add("security:public");				
+				} else if (c.getSystem().equals("http://midata.coop/codesystems/security") && c.getCode().equals("public")) {
+					tags.add("security:public");
 				}
 			}
 		}

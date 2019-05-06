@@ -23,6 +23,11 @@ public class Feature_ContentFilter extends Feature {
 		if (q.restrictedBy("app")) chain = new ProcessingTools.FilterByMetaSet(chain, "app", q.getIdRestrictionDB("app"), false);	
 		if (q.restrictedBy("public")) {
 			String mode = q.getStringRestriction("public");
+			
+			// TODO Please remove once ally science is setup correctly
+			if (mode.equals("only")) mode = "also";
+			// END Remove
+			
 			if (mode.equals("only")) chain = new ProcessingTools.FilterByTag(chain, "security:public", true);
 		} else {
 			chain = new ProcessingTools.FilterByTag(chain, "security:public", false);			

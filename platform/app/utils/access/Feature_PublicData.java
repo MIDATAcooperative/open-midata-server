@@ -26,6 +26,10 @@ public class Feature_PublicData extends Feature {
 		if (q.restrictedBy("public") && q.getApsId().equals(q.getCache().getAccountOwner())) {
 			String mode = q.getStringRestriction("public");
 			
+			// TODO Please remove once ally science is setup correctly
+			if (mode.equals("only")) mode = "also";
+			// END Remove
+			
 			if (mode.equals("only")) return doQueryAsPublic(q);
 			else if (mode.equals("also")) return new PrivateThenPublicIterator(next, q);										
 		}
