@@ -5,6 +5,7 @@ import java.util.Collections;
 import controllers.Circles;
 import models.Consent;
 import models.MidataId;
+import models.Record;
 import models.enums.ConsentType;
 import utils.AccessLog;
 import utils.exceptions.AppException;
@@ -51,7 +52,7 @@ public class ConsentAccessContext extends AccessContext{
 	}
 
 	@Override
-	public boolean mayUpdateRecord() {
+	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) {
 		AccessLog.log("called");
 		if (consent.writes == null) return false;
 		if (!consent.writes.isUpdateAllowed()) return false;
@@ -60,10 +61,10 @@ public class ConsentAccessContext extends AccessContext{
 			AccessLog.log("called 3");
 			if (parent != null && parent instanceof UserGroupAccessContext && parent.parent != null) {
 				AccessLog.log("called 4");
-				return parent.parent.mayUpdateRecord();
+				return parent.parent.mayUpdateRecord(stored, newVersion);
 			}
 		}
-		if (parent != null) return parent.mayUpdateRecord();
+		if (parent != null) return parent.mayUpdateRecord(stored, newVersion);
 		return true;
 	}
 

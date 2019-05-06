@@ -1,6 +1,7 @@
 package utils.access;
 
 import models.MidataId;
+import models.Record;
 import utils.exceptions.AppException;
 
 public class AccountCreationAccessContext extends AccessContext {
@@ -15,7 +16,7 @@ public class AccountCreationAccessContext extends AccessContext {
 	}
 
 	@Override
-	public boolean mayUpdateRecord() {		
+	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) {		
 		return true;
 	}
 

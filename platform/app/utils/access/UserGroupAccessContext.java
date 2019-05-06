@@ -1,6 +1,7 @@
 package utils.access;
 
 import models.MidataId;
+import models.Record;
 import models.UserGroupMember;
 import utils.exceptions.AppException;
 
@@ -23,8 +24,8 @@ public class UserGroupAccessContext extends AccessContext {
 	}
 
 	@Override
-	public boolean mayUpdateRecord() {
-		return ugm.getRole().mayWriteData() && parent.mayUpdateRecord();
+	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) {
+		return ugm.getRole().mayWriteData() && parent.mayUpdateRecord(stored, newVersion);
 	}
 
 	@Override

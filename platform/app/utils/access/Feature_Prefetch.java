@@ -6,7 +6,9 @@ import java.util.List;
 
 import models.MidataId;
 import utils.AccessLog;
+import utils.RuntimeConstants;
 import utils.collections.CMaps;
+import utils.collections.NChainedMap;
 import utils.exceptions.AppException;
 
 public class Feature_Prefetch extends Feature {
@@ -53,8 +55,13 @@ public class Feature_Prefetch extends Feature {
 		  List<DBRecord> partResult = null;	
 		
 		  if (record.stream != null) {
-		    APS stream = q.getCache().getAPS(record.stream);		    
-		    if (stream.isAccessible()) {	
+		    APS stream = q.getCache().getAPS(record.stream);
+		    if (stream.hasAccess(RuntimeConstants.instance.publicGroup)) {
+		    	AccessLog.log("public");
+		    	NChainedMap<String, Object> props = CMaps.map("_id", record._id).map("flat", "true").map("stream", record.stream).map("owner", RuntimeConstants.instance.publicUser).map("quick",  record);
+		    	if (!q.restrictedBy("public")) props = props.map("public","only");
+		    	partResult = QueryEngine.combine(q, props, next);
+		    } else if (stream.isAccessible()) {	
 		    	AccessLog.log("direct");		
 		    	MidataId owner = stream.getStoredOwner();
 		    	partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("flat", "true").map("stream", record.stream).map("owner", owner).map("quick",  record), next);

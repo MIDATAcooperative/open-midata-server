@@ -21,8 +21,11 @@
 		    <b>{{ block.display }}</b>
 		    <div ng-show="block.code">{{ block.code }}</div>
 		    <div>
-		      <span class="text-success" ng-show="mode=='app' && block.owner && block.owner != 'all'" translate="{{ 'queryeditor.short_owner_'+block.owner }}"></span>
-		      <span class="text-danger" ng-show="mode=='app' && (!block.owner || block.owner == 'all')" translate="queryeditor.short_owner_all"></span> 
+		      <span class="text-success" ng-show="mode=='app' && block.owner && block.owner != 'all' && (!block.public || block.public=='no')" translate="{{ 'queryeditor.short_owner_'+block.owner }}"></span>		      
+		      <span class="text-danger" ng-show="mode=='app' && block.public == 'no' && (!block.owner || block.owner == 'all')" translate="queryeditor.short_owner_all"></span>
+		      <span class="text-info" ng-show="block.public == 'only'" translate="{{ 'queryeditor.short_public_only' }}"></span>
+		      <span class="text-danger" ng-show="block.public == 'also' && (!block.owner || block.owner == 'all')" translate="{{ 'queryeditor.short_public_also' }}"></span> 
+		      <span class="text-danger" ng-show="block.public == 'also' && block.owner != 'all'" translate="{{ 'queryeditor.short_public_also_self' }}"></span>
 		      <span ng-show="mode=='app'"> / </span>
 		      <span class="text-danger" ng-show="block.app && block.app != 'all'"><span translate="queryeditor.short_app_other"></span> {{ block.appName }}</span>
 		      <span class="text-success" ng-show="!block.app || block.app == 'all'" translate="queryeditor.short_app_all"></span>
@@ -111,11 +114,23 @@
 		  <formrow id="content" label="queryeditor.code" ng-show="currentBlock.code">
 		    <p class="form-control-plaintext">{{ currentBlock.code }}</p>
 		  </formrow>
+		  <formrow id="public" label="queryeditor.public" ng-show="mode=='app'">
+		    <div class="form-check">
+		      <label class="form-check-label"><input class="form-check-input"  type="radio" ng-model="currentBlock.public" value="no"><span translate="queryeditor.public_no"></span></label>
+		    </div>
+		    <div class="form-check">
+		      <label class="form-check-label"><input class="form-check-input"  type="radio" ng-model="currentBlock.public"  value="only"><span translate="queryeditor.public_only"></span></label>
+		    </div>
+		    <div class="form-check">
+		      <label class="form-check-label"><input class="form-check-input"  type="radio" ng-model="currentBlock.public" value="also"><span translate="queryeditor.public_also"></span></label>
+		    </div>
+		  </formrow>
+		  
 		  <formrow id="owner" label="queryeditor.owner" ng-show="mode=='app' && !currentBlock.flags.noowner">
 		    <div class="form-check">
-		      <label class="form-check-label"><input class="form-check-input" type="radio" ng-model="currentBlock.owner" value="self"><span translate="queryeditor.owner_self"></span></label>
+		      <label class="form-check-label"><input class="form-check-input" type="radio" ng-model="currentBlock.owner" ng-disabled="currentBlock.public=='only'" value="self"><span translate="queryeditor.owner_self"></span></label>
 		    </div><div class="form-check">
-		      <label class="form-check-label"><input class="form-check-input" type="radio" ng-model="currentBlock.owner" value="all"><span translate="queryeditor.owner_all"></span></label>
+		      <label class="form-check-label"><input class="form-check-input" type="radio" ng-model="currentBlock.owner" ng-disabled="currentBlock.public=='only'" value="all"><span translate="queryeditor.owner_all"></span></label>
 		    </div>
 		  </formrow>
 		  <formrow id="owner" label="queryeditor.source_app" ng-show="!currentBlock.flags.noapp">

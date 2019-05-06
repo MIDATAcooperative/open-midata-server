@@ -26,6 +26,7 @@ import models.TypedMidataId;
 import models.User;
 import models.UserGroup;
 import models.enums.UserRole;
+import utils.RuntimeConstants;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
@@ -55,7 +56,7 @@ public class FHIRTools {
 	 * @throws InternalServerException
 	 */
 	public static Reference getReferenceToUser(MidataId id, String defName) throws AppException {
-	    
+	    if (RuntimeConstants.instance.publicUser.equals(id)) return null;
 		if (defName != null) return new Reference().setDisplay(defName).setReference("Patient/"+id.toString());				
 		
 		User user = ResourceProvider.info().cache.getUserById(id);

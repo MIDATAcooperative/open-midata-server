@@ -14,6 +14,7 @@ import models.MidataId;
 import models.StudyParticipation;
 import models.UserGroupMember;
 import models.enums.ResearcherRole;
+import utils.RuntimeConstants;
 import utils.auth.KeyManager;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -174,6 +175,9 @@ public class Feature_UserGroups extends Feature {
 	}
 	
 	protected static APSCache findApsCacheToUse(APSCache cache, MidataId targetAps) throws AppException {
+		APS target = cache.getAPS(targetAps);
+		if (target.hasAccess(RuntimeConstants.instance.publicGroup)) return Feature_PublicData.getPublicAPSCache(cache);
+		
 		UserGroupMember ugm = identifyUserGroupMember(cache, targetAps);
 		return findApsCacheToUse(cache, ugm);			
 	}

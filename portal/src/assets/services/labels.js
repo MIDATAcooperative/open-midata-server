@@ -62,6 +62,7 @@ angular.module('services')
 		  
 	     var result = { content : [], group : [], format : [] };
 		 angular.forEach(query.$or, function(part) {
+			 if (part["public"]=="only") return;
 			 if (part.content) result.content.push.apply(result.content, part.content);
 			 if (part.format) result.format.push.apply(result.format, part.format);
 			 if (part.group) result.group.push.apply(result.group, part.group);
@@ -116,6 +117,7 @@ angular.module('services')
 			if (ac("code")) nblock.code = ac("code");			
 			if (ac("group")) nblock.group = ac("group");
 			if (ac("group-system")) nblock.system = ac("group-system");
+			if (ac("public")) nblock["public"] = ac("public");
 			if (ac("created-after")) {
 				nblock.timeRestrictionMode = "created-after";
 				nblock.timeRestrictionDate = ac("created-after");

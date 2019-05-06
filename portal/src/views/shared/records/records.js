@@ -28,7 +28,7 @@ angular.module('portal')
 	session.currentUser
 	.then(function(userId) {		
 			$scope.userId = userId;
-			$scope.availableAps = [{ i18n : "records.my_data" , name : "My Data", aps:userId, owner : "self", type : "global"  }, { i18n:"records.all_data", name : "All Data", aps:userId, owner : "all", type : "global" }];
+			$scope.availableAps = [{ i18n : "records.my_data" , name : "My Data", aps:userId, owner : "self", type : "global"  }, { i18n:"records.all_data", name : "All Data", aps:userId, owner : "all", type : "global" }, { i18n:"records.public_data", name : "Public Data", aps:userId, "public" : "only", type : "global" }];
 			$scope.displayAps = $scope.availableAps[0];
 			var n = "RecordsCtrl_"+$state.current.name;
 			session.load(n, $scope, ["open", "treeMode"]);
@@ -66,7 +66,7 @@ angular.module('portal')
 		
 		$scope.treeMode = mode;
 		
-		$scope.status.doBusy($scope.getInfos($scope.displayAps.aps, $scope.displayAps.owner, $scope.displayAps.study))
+		$scope.status.doBusy($scope.getInfos($scope.displayAps.aps, $scope.displayAps.owner, $scope.displayAps.study, $scope.displayAps["public"]))
 		.then(function() {				
 		   $scope.loadSharingDetails();				 			
 		});
@@ -75,11 +75,12 @@ angular.module('portal')
 	
 	
 	// get records
-	$scope.getRecords = function(userId, owner, group, study, groupObj) {
+	$scope.getRecords = function(userId, owner, group, study, public_mode, groupObj) {
 		//$scope.loadingRecords = true;
 		var properties = {};
 		if (owner) properties.owner = owner;
 		if (study) properties.study = study;
+		if (public_mode) properties["public"] = public_mode;
 		if (groupObj && groupObj.plugin) {
 			properties.app = groupObj.plugin;
 			properties.content = groupObj.content;
@@ -98,11 +99,12 @@ angular.module('portal')
 		});
 	};
 	
-	$scope.getInfos = function(userId, owner, study) {
+	$scope.getInfos = function(userId, owner, study, public_mode) {
 		
 		var properties = {};
 		if (owner) properties.owner = owner;
 		if (study) properties.study = study;
+		if (public_mode) properties["public"] = public_mode;
 		if ($scope.debug) properties.streams = "true";
 		return $scope.status.doBusy(records.getInfos(userId, properties, $scope.treeMode === "plugin" ? "CONTENT_PER_APP" : "CONTENT")).
 		then(function(results) {
@@ -146,14 +148,14 @@ angular.module('portal')
 	};
 	
 	$scope.selectSet = function() {
-		$scope.getInfos($scope.displayAps.aps, $scope.displayAps.owner, $scope.displayAps.study)
+		$scope.getInfos($scope.displayAps.aps, $scope.displayAps.owner, $scope.displayAps.study, $scope.displayAps["public"])
 		.then(function() { $scope.loadSharingDetails(); });
 		
 	};
 	
 	$scope.showDebug = function() {
 		$scope.debug = true;
-		$scope.getInfos($scope.displayAps.aps, $scope.displayAps.owner, $scope.displayAps.study)
+		$scope.getInfos($scope.displayAps.aps, $scope.displayAps.owner, $scope.displayAps.study, $scope.displayAps["public"])
 		.then(function() { $scope.loadSharingDetails(); });
 		
 	};
@@ -432,7 +434,7 @@ angular.module('portal')
 		$scope.selectedData = group;
 		if (!group.loaded) {
 			group.loaded = true;
-			$scope.getRecords($scope.displayAps.aps, $scope.displayAps.owner, group.name, $scope.displayAps.study, group);
+			$scope.getRecords($scope.displayAps.aps, $scope.displayAps.owner, group.name, $scope.displayAps.study, $scope.displayAps["public"], group);
 		}
 		$("#recdetailmodal").modal('show');
 	};

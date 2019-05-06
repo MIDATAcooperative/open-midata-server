@@ -295,11 +295,15 @@ public class ProcessingTools {
 
 	}
 	
-	static class FilterByHiddenTag extends FilterIterator<DBRecord> {
+	static class FilterByTag extends FilterIterator<DBRecord> {
 				
+		private String tag;
+		private boolean must_be_present;
 
-		public FilterByHiddenTag(DBIterator<DBRecord> chain) throws AppException {
-			super(chain);					
+		public FilterByTag(DBIterator<DBRecord> chain, String tag, boolean must_be_present) throws AppException {
+			super(chain);	
+			this.tag = tag;
+			this.must_be_present = must_be_present;
 			if (chain.hasNext())
 				next();
 		}
@@ -307,13 +311,14 @@ public class ProcessingTools {
 		@Override
 		public boolean contained(DBRecord record) {
 			if (record.isStream) return true;
-			BasicBSONList tags = (BasicBSONList) record.meta.get("tags");
-			return tags == null || !tags.contains("security:hidden");
+			Collection tags = (Collection) record.meta.get("tags");
+			if (must_be_present) return tags != null && tags.contains(tag);
+			return tags == null || !tags.contains(tag);
 		}
 		
 		@Override
 		public String toString() {
-			return "no-hidden(["+passed+"/"+filtered+"] "+chain.toString()+")";
+			return "tag-filter(["+passed+"/"+filtered+"] "+(must_be_present?"":"no ")+tag+" "+chain.toString()+")";
 		}
 
 	}
