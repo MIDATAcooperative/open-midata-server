@@ -117,7 +117,7 @@ public class FHIR extends Controller {
 		PlayHttpServletResponse res = new PlayHttpServletResponse(response());
 				
 		ExecutionInfo info = getExecutionInfo(req);
-        UsageStatsRecorder.protokoll(info.pluginId, UsageAction.GET);		        
+        if (info != null && info.pluginId != null) UsageStatsRecorder.protokoll(info.pluginId, UsageAction.GET);		        
 		AccessLog.logBegin("begin FHIR get request: "+req.getRequestURI());
 		servlet.doGet(req, res);
 		AccessLog.logEnd("end FHIR get request");
@@ -182,7 +182,7 @@ public class FHIR extends Controller {
 		PlayHttpServletResponse res = new PlayHttpServletResponse(response());
 				
 		ExecutionInfo info = getExecutionInfo(req);
-		UsageStatsRecorder.protokoll(info.pluginId, UsageAction.POST);   
+		if (info != null && info.pluginId != null) UsageStatsRecorder.protokoll(info.pluginId, UsageAction.POST);   
 		
 		AccessLog.logBegin("begin FHIR post request: "+req.getRequestURI());
 		servlet.doPost(req, res);
@@ -233,7 +233,7 @@ public class FHIR extends Controller {
 		PlayHttpServletResponse res = new PlayHttpServletResponse(response());
 			
 		ExecutionInfo info = getExecutionInfo(req);
-		UsageStatsRecorder.protokoll(info.pluginId, UsageAction.PUT);        
+		if (info != null && info.pluginId != null) UsageStatsRecorder.protokoll(info.pluginId, UsageAction.PUT);        
 		
 		AccessLog.log(req.getRequestURI());
 		servlet.doPut(req, res);
@@ -283,7 +283,7 @@ public class FHIR extends Controller {
 		PlayHttpServletResponse res = new PlayHttpServletResponse(response());
 				
 		ExecutionInfo info = getExecutionInfo(req);		
-		UsageStatsRecorder.protokoll(info.pluginId, UsageAction.DELETE);
+		if (info != null && info.pluginId != null) UsageStatsRecorder.protokoll(info.pluginId, UsageAction.DELETE);
 		
 		AccessLog.log(req.getRequestURI());
 		servlet.doDelete(req, res);

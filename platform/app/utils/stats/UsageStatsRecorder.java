@@ -34,10 +34,12 @@ public class UsageStatsRecorder {
 	}
 
 	public static void protokoll(MidataId object, String objectName, UsageAction action) {
+		if (object==null) return;
 		statsRecorder.tell(new UsageStatsMessage(object, objectName, action), ActorRef.noSender());
 	}
 
 	public static void protokoll(MidataId object, UsageAction action) {
+		if (object==null) return;
 		statsRecorder.tell(new UsageStatsMessage(object, null, action), ActorRef.noSender());
 	}
 	
