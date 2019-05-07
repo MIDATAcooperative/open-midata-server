@@ -40,6 +40,7 @@ import models.enums.ParticipationStatus;
 import models.enums.PluginStatus;
 import models.enums.SecondaryAuthType;
 import models.enums.StudyAppLinkType;
+import models.enums.UsageAction;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.UserStatus;
@@ -77,6 +78,7 @@ import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.messaging.Messager;
 import utils.messaging.SMSUtils;
+import utils.stats.UsageStatsRecorder;
 
 public class OAuth2 extends Controller {
 
@@ -366,7 +368,8 @@ public class OAuth2 extends Controller {
             
             aeskey = KeyManager.instance.newAESKey(appInstance._id);
     		
-           
+            UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.REFRESH);
+            
         } else if (grant_type.equals("authorization_code")) {
         	if (!data.containsKey("redirect_uri")) throw new BadRequestException("error.internal", "Missing redirect_uri");
             
@@ -429,6 +432,7 @@ public class OAuth2 extends Controller {
     		meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();							
     		if (!phrase.equals(meta.get("phrase"))) throw new InternalServerException("error.internal", "Internal error while validating consent");
     		
+    		UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.LOGIN);
         } else throw new BadRequestException("error.internal", "Unknown grant_type");
                											
 		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, aeskey, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME, user.role); 
@@ -1018,6 +1022,8 @@ public class OAuth2 extends Controller {
 			if (user.notifications != null && user.notifications == AccountNotifications.LOGIN) {
 				Messager.sendMessage(app != null ? app._id : RuntimeConstants.instance.portalPlugin, MessageReason.LOGIN, null, Collections.singleton(user._id), InstanceConfig.getInstance().getDefaultLanguage(), new HashMap<String, String>());
 			}
+			
+			UsageStatsRecorder.protokoll(RuntimeConstants.instance.portalPlugin, "portal", UsageAction.LOGIN);
 			 				
 			obj.put("keyType", keyType);
 			obj.put("role", user.role.toString().toLowerCase());

@@ -37,6 +37,7 @@ import models.enums.MessageReason;
 import models.enums.ParticipationInterest;
 import models.enums.SecondaryAuthType;
 import models.enums.SubUserRole;
+import models.enums.UsageAction;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.UserStatus;
@@ -72,6 +73,7 @@ import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.messaging.Messager;
 import utils.messaging.SMSUtils;
+import utils.stats.UsageStatsRecorder;
 import views.txt.mails.adminnotify;
 import views.txt.mails.lostpwmail;
 import utils.auth.auth2factor.Authenticator;
@@ -795,7 +797,7 @@ public class Application extends APIController {
 		
 		sendWelcomeMail(user, null);
 		if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) sendAdminNotificationMail(user);
-		
+		UsageStatsRecorder.protokoll(RuntimeConstants.instance.portalPlugin, "portal", UsageAction.REGISTRATION);
 		
 		return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle), json, null, user._id);				
 	}
@@ -1060,6 +1062,7 @@ public class Application extends APIController {
 				controllers.admin.routes.javascript.Administration.adminWipeAccount(), 
 				controllers.admin.routes.javascript.Administration.deleteStudy(),
 				controllers.admin.routes.javascript.Administration.getStats(),
+				controllers.admin.routes.javascript.Administration.getUsageStats(),
 				controllers.admin.routes.javascript.Administration.getSystemHealth(),
 				controllers.routes.javascript.PWRecovery.getUnfinished(),
 				controllers.routes.javascript.PWRecovery.storeRecoveryShare(),

@@ -28,7 +28,7 @@
 	</div>
 	<div class="panel panel-primary">
 		<div class="panel-heading" translate="admin_stats.title"></div>
-		<div class="body">
+		<div class="body">		  
 		  <p class="lead">{{ today.date | date : 'dd.MM.yyyy HH:mm' }}</p>
 		  <table class="table table-striped table-sm">
 		     <tr>
@@ -131,8 +131,9 @@
 		     </tr>
 		     
 		  </table>
-		  
-	
+		  <div class="margin-top">
+		  <a href="javascript:" ui-sref="^.usagestats" translate="admin_stats.showusage"></a>
+	      </div>
           	
         </div>
 	</div>
