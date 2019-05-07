@@ -22,7 +22,8 @@
 				            <a class="dropdown-item" ng-show="hasSubRole('SUPERADMIN')" ui-sref="admin.registration" translate="admin_navbar.registration"></a>
 				            <div role="separator" class="dropdown-divider" ng-show="hasSubRole('USERADMIN') || hasSubRole('SUPERADMIN')"></div>
 				            <div class="dropdown-header" ng-show="hasSubRole('PLUGINADMIN') || hasSubRole('CONTENTADMIN')" translate="admin_navbar.plugin_admin"></div>
-				            <a class="dropdown-item" ng-show="hasSubRole('PLUGINADMIN')" ui-sref="admin.yourapps" translate="admin_navbar.plugins"></a>				            
+				            <a class="dropdown-item" ng-show="hasSubRole('PLUGINADMIN')" ui-sref="admin.yourapps" translate="admin_navbar.plugins"></a>
+				            <a class="dropdown-item" ng-show="hasSubRole('PLUGINADMIN')" ui-sref="admin.usagestats" translate="admin_navbar.usagestats"></a>				            
 				            <a class="dropdown-item" ng-show="hasSubRole('CONTENTADMIN')" ui-sref="admin.content" translate="admin_navbar.content"></a>
 				            <a class="dropdown-item" ng-show="hasSubRole('PLUGINADMIN')" ui-sref="admin.viewterms" translate="admin_navbar.terms"></a>
 				            <div role="separator" class="dropdown-divider" ng-show="hasSubRole('PLUGINADMIN') || hasSubRole('CONTENTADMIN')"></div>

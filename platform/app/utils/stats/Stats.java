@@ -13,7 +13,7 @@ import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import models.MidataId;
-import models.PluginDevStats;
+import models.stats.PluginDevStats;
 import play.mvc.Http.Request;
 import utils.ErrorReporter;
 import utils.InstanceConfig;

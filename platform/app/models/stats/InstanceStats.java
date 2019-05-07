@@ -1,10 +1,11 @@
-package models;
+package models.stats;
 
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
+import models.Model;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;

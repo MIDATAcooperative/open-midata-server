@@ -9,6 +9,8 @@ db.instancestats.createIndex({ "date" : 1 });
 db.studyapplink.createIndex({ "studyId" : 1 });
 db.studyapplink.createIndex({ "appId" : 1 });
 
+db.usagestats.createIndex({ "date" : 1, "object" : 1, "action" : 1 }, { "unique" : true });
+
 db.users.update({ emailLC : "development@midata.coop", role : "DEVELOPER" }, { $set : { email : "developers@midata.coop", emailLC : "developers@midata.coop" }})
 db.plugins.find({ creator : ObjectId("55eff624e4b0b767e88f92b9") }).forEach(function(e) { db.plugins.update({ _id : e._id }, { $set : { creatorLogin : "developers@midata.coop" }})});
 

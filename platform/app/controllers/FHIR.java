@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 
 import actions.MobileCall;
+import models.enums.UsageAction;
 import models.enums.UserRole;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
@@ -24,6 +25,7 @@ import utils.largerequests.UnlinkedBinary;
 import utils.servlet.PlayHttpServletRequest;
 import utils.servlet.PlayHttpServletResponse;
 import utils.stats.Stats;
+import utils.stats.UsageStatsRecorder;
 
 /**
  * FHIR Server
@@ -115,7 +117,7 @@ public class FHIR extends Controller {
 		PlayHttpServletResponse res = new PlayHttpServletResponse(response());
 				
 		ExecutionInfo info = getExecutionInfo(req);
-		        
+        UsageStatsRecorder.protokoll(info.pluginId, UsageAction.GET);		        
 		AccessLog.logBegin("begin FHIR get request: "+req.getRequestURI());
 		servlet.doGet(req, res);
 		AccessLog.logEnd("end FHIR get request");
@@ -180,7 +182,8 @@ public class FHIR extends Controller {
 		PlayHttpServletResponse res = new PlayHttpServletResponse(response());
 				
 		ExecutionInfo info = getExecutionInfo(req);
-		        
+		UsageStatsRecorder.protokoll(info.pluginId, UsageAction.POST);   
+		
 		AccessLog.logBegin("begin FHIR post request: "+req.getRequestURI());
 		servlet.doPost(req, res);
 		AccessLog.logEnd("end FHIR post request");
@@ -230,7 +233,8 @@ public class FHIR extends Controller {
 		PlayHttpServletResponse res = new PlayHttpServletResponse(response());
 			
 		ExecutionInfo info = getExecutionInfo(req);
-		        
+		UsageStatsRecorder.protokoll(info.pluginId, UsageAction.PUT);        
+		
 		AccessLog.log(req.getRequestURI());
 		servlet.doPut(req, res);
 		
@@ -279,7 +283,8 @@ public class FHIR extends Controller {
 		PlayHttpServletResponse res = new PlayHttpServletResponse(response());
 				
 		ExecutionInfo info = getExecutionInfo(req);		
-        
+		UsageStatsRecorder.protokoll(info.pluginId, UsageAction.DELETE);
+		
 		AccessLog.log(req.getRequestURI());
 		servlet.doDelete(req, res);
 		

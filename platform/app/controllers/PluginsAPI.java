@@ -42,6 +42,7 @@ import models.SubscriptionData;
 import models.User;
 import models.UserGroupMember;
 import models.enums.AggregationType;
+import models.enums.UsageAction;
 import models.enums.UserRole;
 import play.libs.Json;
 import play.libs.oauth.OAuth.ConsumerKey;
@@ -91,6 +92,7 @@ import utils.largerequests.HugeBodyParser;
 import utils.messaging.ServiceHandler;
 import utils.messaging.SubscriptionManager;
 import utils.stats.Stats;
+import utils.stats.UsageStatsRecorder;
 
 /**
  * API functions to be used by MIDATA plugins
@@ -315,6 +317,7 @@ public class PluginsAPI extends APIController {
 						
 		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());
 		Stats.setPlugin(inf.pluginId);
+		UsageStatsRecorder.protokoll(inf.pluginId, UsageAction.GET);
 		
 		Collection<Record> records = getRecords(inf, properties, fields);
 				
@@ -448,7 +451,8 @@ public class PluginsAPI extends APIController {
 		ExecutionInfo authToken = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());
 		Stats.setPlugin(authToken.pluginId);
 		if (authToken.recordId != null) throw new BadRequestException("error.internal", "This view is readonly.");
-																														
+		UsageStatsRecorder.protokoll(authToken.pluginId, UsageAction.POST);	
+		
 		String data = JsonValidation.getJsonString(json, "data");
 		String name = JsonValidation.getString(json, "name");
 		String description = JsonValidation.getString(json, "description");
@@ -683,7 +687,8 @@ public class PluginsAPI extends APIController {
 		ExecutionInfo authToken = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());
 				
 		if (authToken.recordId != null) throw new BadRequestException("error.internal", "This view is readonly.");
-																																	
+		UsageStatsRecorder.protokoll(authToken.pluginId, UsageAction.PUT);				
+		
 		String data = JsonValidation.getJsonString(json, "data");
 		
 		//String name = JsonValidation.getString(json, "name");

@@ -20,6 +20,7 @@ import models.enums.JoinMethod;
 import models.enums.SecondaryAuthType;
 import models.enums.StudyAppLinkType;
 import models.enums.SubUserRole;
+import models.enums.UsageAction;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.UserStatus;
@@ -38,6 +39,7 @@ import utils.fhir.PatientResourceProvider;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.stats.UsageStatsRecorder;
 
 public class QuickRegistration extends APIController {
 
@@ -187,6 +189,7 @@ public class QuickRegistration extends APIController {
 		
 		Circles.fetchExistingConsents(user._id, user.emailLC);
 		Application.sendWelcomeMail(app._id, user, null);
+		UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.REGISTRATION);
 		
 		if (notok == null || notok.isEmpty()) {
 		

@@ -230,6 +230,7 @@ POST    /api/admins/changeBirthday                       controllers.admin.Admin
 POST    /api/admins/addcomment                           controllers.admin.Administration.addComment()
 POST    /api/admins/wipeaccount                          controllers.admin.Administration.adminWipeAccount()
 POST    /api/admin/stats                                 controllers.admin.Administration.getStats()
+POST    /api/admin/usage                                 controllers.admin.Administration.getUsageStats()
 GET     /api/admin/health                                controllers.admin.Administration.getSystemHealth()
 GET		/api/admins/pwrecovery                           controllers.PWRecovery.getUnfinished()
 POST	/api/admins/pwrecovery                           controllers.PWRecovery.storeRecoveryShare()

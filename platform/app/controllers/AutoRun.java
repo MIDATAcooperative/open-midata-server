@@ -639,7 +639,7 @@ public class AutoRun extends APIController {
 		
 	}
 	
-	private static int nextExecutionInSeconds(int hour, int minute){
+	public static int nextExecutionInSeconds(int hour, int minute){
 		return Seconds.secondsBetween(
 				new DateTime(),
 				nextExecution(hour, minute)
