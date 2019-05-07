@@ -23,7 +23,6 @@ import models.Circle;
 import models.Consent;
 import models.Developer;
 import models.HealthcareProvider;
-import models.InstanceStats;
 import models.KeyInfoExtern;
 import models.KeyRecoveryData;
 import models.KeyRecoveryProcess;
@@ -52,6 +51,8 @@ import models.enums.StudyExecutionStatus;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
+import models.stats.InstanceStats;
+import models.stats.UsageStats;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
@@ -85,6 +86,7 @@ import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.messaging.Messager;
 import utils.messaging.ServiceHandler;
+import utils.stats.UsageStatsRecorder;
 import utils.sync.Instances;
 
 /**
@@ -573,6 +575,22 @@ public class Administration extends APIController {
 		Set<InstanceStats> stats = InstanceStats.getAll(properties);		
 		return ok(JsonOutput.toJson(stats, "InstanceStats", InstanceStats.ALL_FIELDS));
 		
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(AdminSecured.class)
+	public Result getUsageStats() throws AppException {
+		JsonNode json = request().body().asJson();					
+		JsonValidation.validate(json, "properties");
+		
+		UsageStatsRecorder.flush();
+		
+		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));	
+		ObjectIdConversion.convertMidataIds(properties, "_id", "object");
+						
+		Set<UsageStats> stats = UsageStats.getAll(properties);		
+		return ok(JsonOutput.toJson(stats, "UsageStats", UsageStats.ALL));		
 	}
 		
 	@APICall

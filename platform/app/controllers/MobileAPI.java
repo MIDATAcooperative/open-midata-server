@@ -41,6 +41,7 @@ import models.enums.JoinMethod;
 import models.enums.MessageReason;
 import models.enums.ParticipationStatus;
 import models.enums.StudyAppLinkType;
+import models.enums.UsageAction;
 import models.enums.UserFeature;
 import models.enums.UserRole;
 import play.libs.Json;
@@ -78,6 +79,7 @@ import utils.json.JsonValidation.JsonValidationException;
 import utils.messaging.Messager;
 import utils.messaging.SubscriptionManager;
 import utils.stats.Stats;
+import utils.stats.UsageStatsRecorder;
 
 /**
  * functions for mobile APPs
@@ -216,6 +218,8 @@ public class MobileAPI extends Controller {
             }
             
             phrase = KeyManager.instance.newAESKey(appInstance._id);
+            
+            UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.REFRESH);
 		} else {
 			deprecated = true;
 			String name = JsonValidation.getString(json, "appname");
@@ -283,7 +287,7 @@ public class MobileAPI extends Controller {
 				executor = appInstance._id;
 				meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();			
             }
-							
+			UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.LOGIN);							
 			role = user.role;
 			
 			//phrase = KeyManager.instance.newAESKey(appInstance._id);	
@@ -476,7 +480,7 @@ public class MobileAPI extends Controller {
 			} 
 			Messager.sendMessage(app._id, MessageReason.FIRSTUSE_ANYUSER, null, Collections.singleton(member._id), member.language, new HashMap<String, String>());								
 		}
-			
+        UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.INSTALL);			
 		AuditManager.instance.success();
 		return appInstance;
 	}
@@ -532,6 +536,7 @@ public class MobileAPI extends Controller {
 		if (inf == null) return invalidToken(); 
 							
         Stats.setPlugin(inf.pluginId);
+        UsageStatsRecorder.protokoll(inf.pluginId, UsageAction.GET);
         
         if (!((AppAccessContext) inf.context).getAppInstance().status.equals(ConsentStatus.ACTIVE)) {
         	return ok(JsonOutput.toJson(Collections.EMPTY_LIST, "Record", fields)).as("application/json");
@@ -603,7 +608,8 @@ public class MobileAPI extends Controller {
 		
 		ExecutionInfo inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false);
 		Stats.setPlugin(inf.pluginId);	
-					
+		UsageStatsRecorder.protokoll(inf.pluginId, UsageAction.POST);	
+		
 		String data = JsonValidation.getJsonString(json, "data");
 		String name = JsonValidation.getString(json, "name");
 		String description = JsonValidation.getString(json, "description");
@@ -669,6 +675,7 @@ public class MobileAPI extends Controller {
 		
 		ExecutionInfo inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false);
 		Stats.setPlugin(inf.pluginId);	
+		UsageStatsRecorder.protokoll(inf.pluginId, UsageAction.PUT);
 		
         String data = JsonValidation.getJsonString(json, "data");
 						
