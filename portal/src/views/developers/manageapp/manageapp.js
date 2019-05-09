@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('ManageAppCtrl', ['$scope', '$state', '$translatePartialLoader', 'server', 'apps', 'status', 'studies', 'languages', 'terms', 'labels', '$translate', 'formats', 'ENV', function($scope, $state, $translatePartialLoader, server, apps, status, studies, languages, terms, labels, $translate, formats, ENV) {
+.controller('ManageAppCtrl', ['$scope', '$state', '$translatePartialLoader', 'server', 'apps', 'status', 'studies', 'languages', 'terms', 'labels', '$translate', 'formats', 'ENV', 'session', function($scope, $state, $translatePartialLoader, server, apps, status, studies, languages, terms, labels, $translate, formats, ENV, session) {
 	
 	// init
 	$scope.error = null;
@@ -13,6 +13,7 @@ angular.module('portal')
 	$scope.writemodes = apps.writemodes;
 	$scope.query = {};
 	$scope.codesystems = formats.codesystems;
+	$scope.user = { subroles:[] };
 	
 	$scope.sel = { lang : 'de' };
 	$scope.targetUserRoles = [
@@ -142,8 +143,10 @@ angular.module('portal')
 	
 	$translatePartialLoader.addPart("developers");
 	
-	terms.search({}, ["name", "version", "language", "title"])
-	.then(function(result) {
+	session.currentUser.then(function(userId) {			
+		$scope.user = session.user;	
+	    return terms.search({}, ["name", "version", "language", "title"]);
+	}).then(function(result) {
 		$scope.terms = result.data;
 		if ($state.params.appId != null) { $scope.loadApp($state.params.appId); }
 		else {
@@ -192,6 +195,10 @@ angular.module('portal')
 		if (!obj) return false;
 		if (obj.content && obj.content.length==0) return false;
 		return Object.keys(obj).length > 0;
+	};
+	
+	$scope.hasSubRole = function(subRole) {	
+		return $scope.user.subroles.indexOf(subRole) >= 0;
 	};
 	
 }]);

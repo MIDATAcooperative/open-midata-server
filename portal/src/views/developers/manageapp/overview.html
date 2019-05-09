@@ -26,11 +26,16 @@
               <td translate="manageapp.status.title"></td>
               <td><b translate="{{ 'manageapp.status.'+app.status }}"></b></td>
             </tr>           
-            <tr ng-show="app.type == 'mobile'">
-              <td translate="manageapp.previewlogin"></td>
+            <tr>
+              <td translate="manageapp.creator"></td>
               <td>
-                <a ng-href="{{ getOAuthLogin() }}" target="_blank" translate="manageapp.previewlogin2"></a>
+                <span ng-if="hasSubRole('USERADMIN')"><a ui-sref="^.address({userId : app.creator })"><b>{{ app.creatorLogin }}</b></a></span>
+                <span ng-if="!hasSubRole('USERADMIN')"><b>{{ app.creatorLogin }}</b></span>
               </td>
+            </tr>
+            <tr>
+              <td translate="manageapp.organization"></td>
+              <td><b>{{ app.orgName || "-" }}</b></td>
             </tr>
           </table>
           <div class="extraspace"></div>
