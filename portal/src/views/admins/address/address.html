@@ -17,6 +17,9 @@
 			    <a class="btn btn-danger btn-sm" translate="admin_address.change_email_btn" ui-sref="^.changeemail({ userId : member._id })"></a>
 			    <a class="btn btn-danger btn-sm" translate="admin_address.change_address_btn" ui-sref="^.changeaddress({ userId : member._id })"></a>
 			  </div>
+			  <div class="extraspace" ng-show="member.role=='DEVELOPER' || member.role=='ADMIN'">
+			     <a href="javascript:" ui-sref="^.yourapps({creator:member.email})" translate="admin_address.show_apps_created"></a>
+			  </div>
 			  <table class="table table-striped table-bordered">
 			  <tr>
 			  <td translate="admin_address.midata_id"></td><td>{{ member.midataID }}</td>

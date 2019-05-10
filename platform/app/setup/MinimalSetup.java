@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
 
+import models.AccessPermissionSet;
 import models.Admin;
 import models.Developer;
 import models.Member;
@@ -182,7 +183,16 @@ public class MinimalSetup {
 			ug.add();
 			
 			RecordManager.instance.createAnonymizedAPS(publicUser._id, ug._id, publicUser._id, false);
+			RecordManager.instance.createPrivateAPS(ug._id, ug._id);
 		}
+		
+		// Bugfix for test instance - remove after next update
+		if (AccessPermissionSet.getById(RuntimeConstants.publicGroup)==null) {
+			KeyManager.instance.login(5000, false);
+			KeyManager.instance.unlock(RuntimeConstants.publicGroup, null);
+			RecordManager.instance.createPrivateAPS(RuntimeConstants.publicGroup, RuntimeConstants.publicGroup);
+		}
+		// End bugfix
 		
 		if (Plugin.getByFilename("portal", Sets.create("_id")) == null ) {
 			Plugin portal = new Plugin();

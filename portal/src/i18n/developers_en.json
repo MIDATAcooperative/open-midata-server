@@ -79,9 +79,7 @@
     "defined" : "defined",
     "filename" : "Internal Name",
     "type" : "Application Type",
-    "targetUserRole" : "Target Role",
-    "previewlogin" : "OAuth Login",
-    "previewlogin2" : "Preview OAuth Login Page",
+    "targetUserRole" : "Target Role",  
     "edit_btn" : "Change Settings",
     "edit_help" : "Change the setup for your application.",
     "query_btn" : "Change Data Access Filter",
@@ -137,7 +135,7 @@
        "secret" : "Your app will need this 'secret' during login. Choose whatever you like.",
        "mustParticipateInStudy" : "User must participate in study in order to use app.",
        "unlock_code" : "If filled out, this code must be entered by the user in order to sign up or log in the first time to MIDATA using the app. The code is not case sensitive.",
-       "send_reports" : "Notify developer ({{user}}) by email on errors causes by this application."        
+       "send_reports" : "Notify developer ({{user}}) by email on errors caused by this application."        
     },
     "status" : {
       "title" : "Application Status",
@@ -158,7 +156,9 @@
     "export_help" : "Export the definition of this application, so that it can be imported and used on another server.",
     "important" : "IMPORTANT",
     "logoutwarning" : "Changing the application definition will log out all users from that application. They will have to confirm the use of the application again on next login.",
-    "researchwarning" : "Changing the application definition will unlink this research application from all studies!"		    
+    "researchwarning" : "Changing the application definition will unlink this research application from all studies!",
+    "creator" : "Creator",
+    "organization" : "Organization"		    
   },
   
   "appstats" : {

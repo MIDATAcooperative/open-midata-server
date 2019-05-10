@@ -33,6 +33,7 @@
 
   "admin_address" : {
     "title" : "Member Profile",
+    "show_apps_created" : "Show apps created by this developer",
     "midata_id" : "MIDATA ID",
     "role" : "Role",
     "subroles" : "Sub-Role(s)",

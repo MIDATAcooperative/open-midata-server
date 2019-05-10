@@ -31,5 +31,6 @@ angular.module('portal')
 	};
 	
 	session.load("PluginsCtrl", $scope, ["search", "page"]);
+	if ($state.params.creator) $scope.search.criteria.creatorLogin = $state.params.creator;
 	session.currentUser.then(function(userId) { $scope.init(userId); });
 }]);
