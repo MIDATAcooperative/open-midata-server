@@ -364,7 +364,7 @@ angular.module('portal')
 	};
 	
 	$scope.applyBlock = function() {
-		if ($scope.currentBlock["public"] == "only") $scope.currentBlock.owner = "all";
+		if ($scope.currentBlock["public"] == "only" || $scope.currentBlock["public"] == "also" ) $scope.currentBlock.owner = "all";
 		if ($scope.currentBlock.format && $scope.currentBlock.format.lengh===0) $scope.currentBlock.format = undefined;
 		if ($scope.currentBlock.isnew) {
 			$scope.blocks.push($scope.currentBlock);

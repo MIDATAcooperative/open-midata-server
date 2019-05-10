@@ -273,7 +273,8 @@ public class IndexManager {
 		return matches;		
 	}
 	
-	public void triggerUpdate(IndexPseudonym pseudo, APSCache cache, MidataId user, IndexDefinition idx, Set<MidataId> targetAps) throws AppException {			
+	public void triggerUpdate(IndexPseudonym pseudo, APSCache cache, MidataId user, IndexDefinition idx, Set<MidataId> targetAps) throws AppException {
+		//AccessLog.log("TRIGGER UPDATE "+user+" aps="+(targetAps!=null?targetAps.toString():"null"));
 		indexSupervisor.tell(new IndexUpdateMsg(idx._id, user, pseudo, KeyManager.instance.currentHandle(user), targetAps), null);		
 	}
 	

@@ -14,6 +14,7 @@ import java.util.Set;
 import models.Consent;
 import models.MidataId;
 import utils.AccessLog;
+import utils.RuntimeConstants;
 import utils.access.index.IndexDefinition;
 import utils.access.index.IndexMatch;
 import utils.access.index.IndexRoot;
@@ -60,8 +61,9 @@ public class Feature_Indexes extends Feature {
 
 			if (!q.restrictedBy("format"))
 				throw new BadRequestException("error.invalid.query", "Queries using an index must be restricted by format!");
-
-			IndexPseudonym pseudo = IndexManager.instance.getIndexPseudonym(q.getCache(), q.getCache().getExecutor(), q.getApsId(), false);
+		
+			boolean forceCreate = q.getCache().getExecutor().equals(RuntimeConstants.publicGroup) && q.getApsId().equals(RuntimeConstants.instance.publicUser);
+			IndexPseudonym pseudo = IndexManager.instance.getIndexPseudonym(q.getCache(), q.getCache().getExecutor(), q.getApsId(), forceCreate);
 
 			if (pseudo == null) {
 				List<DBRecord> recs = next.query(q);
@@ -206,24 +208,7 @@ public class Feature_Indexes extends Feature {
 		} else
 			return next.iterator(q);
 	}
-
-	/*
-	 * static class IdListFilter extends
-	 * ProcessingTools.FilterIterator<DBRecord> {
-	 * 
-	 * private Set<MidataId> ids;
-	 * 
-	 * public IdListFilter(Iterator<DBRecord> chain, Set<MidataId> ids) {
-	 * super(chain); this.ids = ids; }
-	 * 
-	 * 
-	 * @Override public boolean contained(DBRecord obj) { return
-	 * (ids.contains(obj._id)); }
-	 * 
-	 * 
-	 * }
-	 */
-
+	
 	public class IndexIterator extends Feature.MultiSource<AccessContext> {
 
 		private Query q;
