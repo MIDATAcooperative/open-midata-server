@@ -59,13 +59,13 @@ angular.module('portal')
 	
 	
 	$scope.resourceOptions = {
-	  "fhir/AuditEvent" : ["noapp", "noowner", "notime"], 
-	  "fhir/Consent" : ["noapp", "noowner", "notime"],
+	  "fhir/AuditEvent" : ["noapp", "noowner", "notime", "nopublic"], 
+	  "fhir/Consent" : ["noapp", "noowner", "notime", "nopublic"],
 	  "fhir/Group" : ["noowner"],
-	  "fhir/Patient" : ["noapp", "notime"],
-	  "fhir/Person" : ["noapp", "noowner", "notime"],
+	  "fhir/Patient" : ["noapp", "notime", "nopublic"],
+	  "fhir/Person" : ["noapp", "noowner", "notime", "nopublic"],
 	  "fhir/Practitioner" : ["noapp", "noowner", "notime"],
-	  "fhir/Subscription" : ["noapp", "noowner", "notime"],
+	  "fhir/Subscription" : ["noapp", "noowner", "notime", "nopublic"],
       "fhir/Observation" : ["effective"],
       "fhir/QuestionnaireResponse" : ["custom"],
       "fhir/DocumentReference" : []	
@@ -112,7 +112,7 @@ angular.module('portal')
 			var l = result.data.length;		
 			for (var i=0;i<l;i++) {
 				var dat = result.data[i];
-				console.log(dat.code);
+				//console.log(dat.code);
 				if (dat.code.toLowerCase() == what) {
 					lookupContent(dat.content)
 					.then(lookup).then(add);
@@ -178,7 +178,7 @@ angular.module('portal')
 	var lookupContent = function(name) {
 		return formats.searchContents({ content : name }, ["content", "label", "resourceType"])
 		.then(function(result) {
-			if (result.data.length == 1) return { key : result.data[0].content, content : result.data[0].content, display : result.data[0].label[$translate.use()] };
+			if (result.data.length == 1) return { key : result.data[0].content, format : result.data[0].resourceType, content : result.data[0].content, display : result.data[0].label[$translate.use()] };
 		});
 	};
 	
@@ -449,8 +449,9 @@ angular.module('portal')
 	$scope.addPreselection = function() {
 		angular.forEach($scope.target.askresources, function(r) {
 			if (r.selected) {
-				r.selected = undefined;
-				$scope.blocks.push(r);
+				r.selected = undefined;				
+				$scope.addContent(r);
+				$scope.applyBlock();
 			}
 		});
 		$scope.target.askresources = undefined;
