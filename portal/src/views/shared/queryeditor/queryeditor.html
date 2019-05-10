@@ -128,9 +128,9 @@
 		  
 		  <formrow id="owner" label="queryeditor.owner" ng-show="mode=='app' && !currentBlock.flags.noowner">
 		    <div class="form-check">
-		      <label class="form-check-label"><input class="form-check-input" type="radio" ng-model="currentBlock.owner" ng-disabled="currentBlock.public=='only'" value="self"><span translate="queryeditor.owner_self"></span></label>
+		      <label class="form-check-label"><input class="form-check-input" type="radio" ng-model="currentBlock.owner" ng-disabled="currentBlock.public!='no'" value="self"><span translate="queryeditor.owner_self"></span></label>
 		    </div><div class="form-check">
-		      <label class="form-check-label"><input class="form-check-input" type="radio" ng-model="currentBlock.owner" ng-disabled="currentBlock.public=='only'" value="all"><span translate="queryeditor.owner_all"></span></label>
+		      <label class="form-check-label"><input class="form-check-input" type="radio" ng-model="currentBlock.owner" ng-disabled="currentBlock.public!='no'" value="all"><span translate="queryeditor.owner_all"></span></label>
 		    </div>
 		  </formrow>
 		  <formrow id="owner" label="queryeditor.source_app" ng-show="!currentBlock.flags.noapp">
