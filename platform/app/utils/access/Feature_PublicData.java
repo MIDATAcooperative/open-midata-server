@@ -74,6 +74,8 @@ public class Feature_PublicData extends Feature {
 		newprops.putAll(q.getProperties());
 		newprops.put("public", "only");
 		newprops.remove("usergroup");
+		newprops.remove("study");
+		newprops.remove("study-group");
 		
 		Query qnew = new Query(newprops, q.getFields(), subcache, RuntimeConstants.instance.publicUser, new PublicAccessContext(subcache, q.getContext())).setFromRecord(q.getFromRecord());
 		DBIterator<DBRecord> result = next.iterator(qnew);
