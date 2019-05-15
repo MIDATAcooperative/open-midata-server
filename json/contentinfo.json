@@ -277,3 +277,4 @@
 {"_id":{"$oid":"5cc86322aed64535da11812f"},"content":"snomed/276361009","defaultCode":"http://snomed.info/sct 276361009","security":"MEDIUM","label":{"de":"Bauchumfang","en":"Waist circumference"},"resourceType":"fhir/Observation"}
 {"_id":{"$oid":"5cc86374aed64535da118131"},"content":"snomed/58314002","defaultCode":"http://snomed.info/sct 58314002","security":"MEDIUM","label":{"en":"Ulnar pulse"},"resourceType":"fhir/Observation"}
 {"_id":{"$oid":"5cc8644baed64535da118133"},"content":"reuse","defaultCode":"http://www.stroke.usz.ch reuse","security":"MEDIUM","label":{"de":"REUSE Fragebogen","en":"REUSE Questionnaire"}}
+{"_id":{"$oid":"5cdbbd4eaed6450b57441962"},"content":"snomed/263897001","defaultCode":"http://snomed.info/sct 263897001","security":"MEDIUM","label":{"en":"Feeling tense (finding)"}}
