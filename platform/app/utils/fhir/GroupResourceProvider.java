@@ -302,7 +302,7 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 			Set<UserGroup> groups = UserGroup.getAllUserGroup(properties, UserGroup.FHIR);
 			List<IBaseResource> result = new ArrayList<IBaseResource>();
 			for (UserGroup group : groups) {
-				result.add(readGroupFromMidataUserGroup(group, addMembers));
+				if (group.fhirGroup != null) result.add(readGroupFromMidataUserGroup(group, addMembers));
 			}
 			
 			List<IBaseResource> normal = super.search(params);
