@@ -293,3 +293,5 @@
 {"_id":{"$oid":"5cc86322aed64535da11812e"},"system":"http://snomed.info/sct","code":"276361009","display":"Waist circumference","content":"snomed/276361009"}
 {"_id":{"$oid":"5cc86374aed64535da118130"},"system":"http://snomed.info/sct","code":"58314002","display":"Ulnar pulse","content":"snomed/58314002"}
 {"_id":{"$oid":"5cc8644baed64535da118132"},"system":"http://www.stroke.usz.ch","code":"reuse","display":"REUSE Questionnaire","content":"reuse"}
+{"_id":{"$oid":"5cdbbac6aed6450b57441961"},"system":"http://loinc.org","code":"51855-5","display":"Patient Note","content":"diary"}
+{"_id":{"$oid":"5cdbbd4eaed6450b57441963"},"system":"http://snomed.info/sct","code":"263897001","display":"Feeling tense (finding)","content":"snomed/263897001"}
