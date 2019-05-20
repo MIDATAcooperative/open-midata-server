@@ -6,10 +6,10 @@
     <div class="body">
       <loader busy="status.isBusy !== false">
          <select ng-model="lang" ng-options="l for l in languages"></select>
-         <button class="btn btn-primary" ng-click="newCode();">New Code</button>
-         <button class="btn btn-primary" ng-click="addGroup();">New Group</button>
-         <button class="btn btn-primary" ng-click="save();">Save Changes</button>
-         <button class="btn btn-primary" ng-click="translate()">Translate</button>
+         <button ng-disabled="saving" class="btn btn-primary" ng-click="newCode();">New Code</button>
+         <button ng-disabled="saving" class="btn btn-primary" ng-click="addGroup();">New Group</button>
+         <button ng-disabled="saving" class="btn btn-primary" ng-click="save();">Save Changes</button>
+         <button ng-disabled="saving" class="btn btn-primary" ng-click="translate()">Translate</button>
          
          <script type="text/ng-template"  id="item_renderer.html">
          <div ng-repeat="group in groups | filter : { parent : fParent } | orderBy : 'name'">
