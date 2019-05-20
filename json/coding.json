@@ -295,3 +295,6 @@
 {"_id":{"$oid":"5cc8644baed64535da118132"},"system":"http://www.stroke.usz.ch","code":"reuse","display":"REUSE Questionnaire","content":"reuse"}
 {"_id":{"$oid":"5cdbbac6aed6450b57441961"},"system":"http://loinc.org","code":"51855-5","display":"Patient Note","content":"diary"}
 {"_id":{"$oid":"5cdbbd4eaed6450b57441963"},"system":"http://snomed.info/sct","code":"263897001","display":"Feeling tense (finding)","content":"snomed/263897001"}
+{"_id":{"$oid":"5ce24858aed6450e3ca65843"},"system":"http://midata.coop","code":"MSMotTestDotPrepRun","display":"MS Motoriktest Punkte bewegen Probelauf Durchführung – Ergebnisse pro Hand","content":"MSMotTestDotPrepRun"}
+{"_id":{"$oid":"5ce248ceaed6450e3ca65846"},"system":"http://midata.coop","code":"MSMotTestDotPrepRunDetails","display":"MS Motoriktest Punkte bewegen Probelauf Durchführung - Details pro Durchgang","content":"MSMotTestDotPrepRunDetails"}
+{"_id":{"$oid":"5ce24939aed6450e3ca65848"},"system":"http://midata.coop","code":"MSMotTestDotPrepDetail","display":"MS Motoriktest Punkte bewegen Probelauf Durchführung - Details pro Punkt pro Durchgang","content":"MSMotTestDotPrepDetail"}

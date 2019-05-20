@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('ContentEditorCtrl', ['$scope', '$state', 'views', 'session', 'formats', 'status', 'languages', function($scope, $state, views, session, formats, status, languages) {
+.controller('ContentEditorCtrl', ['$scope', '$state', 'views', 'session', 'formats', 'status', 'languages', '$q', '$timeout', function($scope, $state, views, session, formats, status, languages, $q, $timeout) {
 
 	$scope.status = new status(true);
 	$scope.lang = "en";
@@ -7,12 +7,16 @@ angular.module('portal')
     $scope.nameToGroup = {};
     $scope.nameToContent = {};
     $scope.groupSystem = "v1";
+    $scope.saving = false;
     $scope.languages = languages.array;
     $scope.resourceTypes = ["", "fhir/Observation", "fhir/DocumentReference"];
     $scope.subTypes = ["", "Quantity", "CodeableConcept", "String", "Range", "Ratio", "SampledData", "Attachment", "Time", "DateTime", "Period", "component"];
     $scope.categories = ["", "social-history", "vital-signs", "imaging", "laboratory", "procedure", "survey", "exam", "therapy", "fitness" ];
 	
-	$scope.init = function() {		
+	$scope.init = function() {	
+		  $scope.nameToGroup = {};
+	      $scope.nameToContent = {};
+		
 		  $scope.status.doBusy(formats.listCodes())
 		  .then(function(data) { $scope.codes = data.data;$scope.prepare(); });		  		  
 		  
@@ -134,61 +138,79 @@ angular.module('portal')
 	};
 	
 	$scope.save = function() {
-		var running = 0;
-		var done = function() {
-			running--;
-			if (running <= 0) {
-				$scope.init();
-			}
-		};
-		
-		angular.forEach($scope.groups, function(group) {
-			if (group.action == "create") {
-				running++;
-				formats.createGroup(group).then(done);
-				group.action = null;
-			} else if (group.action == "update") {
-				running++;
-				formats.updateGroup(group).then(done);
-				group.action = null;
-			} else if (group.action == "delete" && group._id != null) {
-				running++;
-				formats.deleteGroup(group).then(done);
-				group.action = null;
+		$scope.saving = true;
+		var next = $q.when();
+					
+		angular.forEach($scope.codes, function(code) {
+			if (code.action == "delete" && code._id != null) {
+				next = next.then(function() {
+				  code.action = null;				
+				  return formats.deleteCode(code);
+				});
 			}
 		});
 		
 		angular.forEach($scope.contents, function(content) {
 			if (content.action == "create") {
-				running++;
-				formats.createContent(content).then(done);
-				content.action = null;
+				next = next.then(function() {
+					content.action = null;
+				    return formats.createContent(content);
+				});
 			} else if (content.action == "update") {
-				running++;
-				formats.updateContent(content).then(done);
-				content.action = null;
-			} else if (content.action == "delete" && content._id != null) {
-				running++;
-				formats.deleteContent(content).then(done);
-				content.action = null;
-			}
+				next = next.then(function() {
+					content.action = null;				
+				    return formats.updateContent(content);
+				});
+			} 
 		});
 		
 		angular.forEach($scope.codes, function(code) {
 			if (code.action == "create") {
-				running++;
-				formats.createCode(code).then(done);
-				code.action = null;
+				next = next.then(function() {
+					code.action = null;
+				    return formats.createCode(code);
+				});
 			} else if (code.action == "update") {
-				running++;
-				formats.updateCode(code).then(done);
-				code.action = null;
-			} else if (code.action == "delete" && code._id != null) {
-				running++;
-				formats.deleteCode(code).then(done);
-				code.action = null;
+				next = next.then(function() {
+					code.action = null;				
+				    return formats.updateCode(code);
+				});
+			} 
+		});
+						
+		angular.forEach($scope.groups, function(group) {
+			if (group.action == "create") {
+				next = next.then(function() {
+					group.action = null;				
+				    return formats.createGroup(group);
+				});
+				
+			} else if (group.action == "update") {
+				next = next.then(function() {
+					group.action = null;
+				  return formats.updateGroup(group);
+				});
+			} else if (group.action == "delete" && group._id != null) {
+				next = next.then(function() {
+					group.action = null;				
+				    return formats.deleteGroup(group);
+				});
 			}
 		});
+		
+					
+		
+		angular.forEach($scope.contents, function(content) {
+			if (content.action == "delete" && content._id != null) {
+				next = next.then(function() {
+					content.action = null;				
+				    return formats.deleteContent(content);
+				});
+			}
+		});
+		
+		
+		next.then(function() { $timeout(function() { $scope.saving = false; $scope.init(); }, 2000); });
 	};
 	
 	$scope.init();

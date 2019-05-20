@@ -93,7 +93,8 @@ public class FormatAPI extends Controller {
 	public Result createCode() throws AppException {
 		JsonNode json = request().body().asJson();
 		ContentCode cc = new ContentCode();
-		cc._id = new MidataId();
+		MidataId id = JsonValidation.getMidataId(json, "_id");
+		cc._id = id != null ? id : new MidataId();		
 		cc.code = JsonValidation.getString(json, "code");
 		cc.content = JsonValidation.getString(json, "content");
 		cc.display = JsonValidation.getString(json, "display");
@@ -152,7 +153,8 @@ public class FormatAPI extends Controller {
 	public Result createContent() throws AppException {
 		JsonNode json = request().body().asJson();
 		ContentInfo cc = new ContentInfo();
-		cc._id = new MidataId();
+		MidataId id = JsonValidation.getMidataId(json, "_id");
+		cc._id = id != null ? id : new MidataId();
 		cc.defaultCode = JsonValidation.getString(json, "defaultCode");
 		cc.content = JsonValidation.getString(json, "content");
 		cc.security = JsonValidation.getEnum(json, "security",  APSSecurityLevel.class);
@@ -218,7 +220,8 @@ public class FormatAPI extends Controller {
 	public Result createGroup() throws AppException {
 		JsonNode json = request().body().asJson();
 		RecordGroup cc = new RecordGroup();
-		cc._id = new MidataId();
+		MidataId id = JsonValidation.getMidataId(json, "_id");
+		cc._id = id != null ? id : new MidataId();		
 		cc.name = JsonValidation.getString(json, "name");
 		cc.system = JsonValidation.getString(json, "system");
 		cc.parent = JsonValidation.getString(json, "parent");
