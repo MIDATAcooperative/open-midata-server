@@ -8,7 +8,6 @@ import models.MidataId;
 import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.Http.Request;
-import sun.net.util.IPAddressUtil;
 import utils.AccessLog;
 import utils.collections.ChainedMap;
 import utils.exceptions.AppException;
