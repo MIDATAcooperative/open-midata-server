@@ -6,13 +6,15 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.CodeableConcept;
-import org.hl7.fhir.dstu3.model.Coding;
-import org.hl7.fhir.dstu3.model.DateTimeType;
-import org.hl7.fhir.dstu3.model.Identifier;
-import org.hl7.fhir.dstu3.model.Period;
-import org.hl7.fhir.dstu3.model.Reference;
-import org.hl7.fhir.dstu3.model.Type;
+import org.hl7.fhir.r4.model.CanonicalType;
+import org.hl7.fhir.r4.model.CodeableConcept;
+import org.hl7.fhir.r4.model.Coding;
+import org.hl7.fhir.r4.model.DateTimeType;
+import org.hl7.fhir.r4.model.Identifier;
+import org.hl7.fhir.r4.model.Period;
+import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.Type;
+import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
@@ -239,6 +241,12 @@ public class FHIRTools {
     	ResourceProvider prov = FHIRServlet.myProviders.get(resourceType.toString());
     	if (prov == null) return null;
     	return prov.serialize(prov.parse(record, prov.getResourceType()));    	
+    }
+    
+    public static IIdType convertToId(CanonicalType canonical) {
+    	if (canonical == null) return null;
+    	String ref = canonical.getValue();
+    	return new IdType(ref);
     }
 	
 	/*

@@ -6,14 +6,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.CodeableConcept;
-import org.hl7.fhir.dstu3.model.Coding;
-import org.hl7.fhir.dstu3.model.Group;
-import org.hl7.fhir.dstu3.model.Group.GroupMemberComponent;
-import org.hl7.fhir.dstu3.model.Group.GroupType;
-import org.hl7.fhir.dstu3.model.IdType;
-import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.CodeableConcept;
+import org.hl7.fhir.r4.model.Coding;
+import org.hl7.fhir.r4.model.Group;
+import org.hl7.fhir.r4.model.Group.GroupMemberComponent;
+import org.hl7.fhir.r4.model.Group.GroupType;
+import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 

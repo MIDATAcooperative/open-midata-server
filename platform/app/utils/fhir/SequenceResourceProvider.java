@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.DateTimeType;
-import org.hl7.fhir.dstu3.model.IdType;
-import org.hl7.fhir.dstu3.model.Reference;
-import org.hl7.fhir.dstu3.model.Sequence;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.DateTimeType;
+import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.MolecularSequence;
+import org.hl7.fhir.r4.model.Reference;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
@@ -39,22 +39,22 @@ import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
-public class SequenceResourceProvider extends RecordBasedResourceProvider<Sequence> implements IResourceProvider {
+public class SequenceResourceProvider extends RecordBasedResourceProvider<MolecularSequence> implements IResourceProvider {
 
 	// Provide one default constructor
 	public SequenceResourceProvider() {
 
-		searchParamNameToPathMap.put("Sequence:patient", "patient");
+		searchParamNameToPathMap.put("MolecularSequence:patient", "patient");
 
-		searchParamNameToTypeMap.put("Sequence:patient", Sets.create("Patient"));
+		searchParamNameToTypeMap.put("MolecularSequence:patient", Sets.create("Patient"));
 
-		registerSearches("Sequence", getClass(), "getSequence");
+		registerSearches("MolecularSequence", getClass(), "getSequence");
 	}
 
 	// Return corresponding FHIR class
 	@Override
-	public Class<Sequence> getResourceType() {
-		return Sequence.class;
+	public Class<MolecularSequence> getResourceType() {
+		return MolecularSequence.class;
 	}
 
 	@Search()
@@ -83,7 +83,7 @@ public class SequenceResourceProvider extends RecordBasedResourceProvider<Sequen
 			@IncludeParam(reverse = true) Set<Include> theRevIncludes,
 			@Description(shortDefinition = "Only return resources which were last updated as specified by the given range") @OptionalParam(name = "_lastUpdated") DateRangeParam theLastUpdated,
 
-			@IncludeParam(allow = { "Sequence:patient", "*" }) Set<Include> theIncludes,
+			@IncludeParam(allow = { "MolecularSequence:patient", "*" }) Set<Include> theIncludes,
 
 			@Sort SortSpec theSort,
 
@@ -165,7 +165,7 @@ public class SequenceResourceProvider extends RecordBasedResourceProvider<Sequen
 	// Just change the resource type
 	@Create
 	@Override
-	public MethodOutcome createResource(@ResourceParam Sequence theSequence) {
+	public MethodOutcome createResource(@ResourceParam MolecularSequence theSequence) {
 		return super.createResource(theSequence);
 	}
 
@@ -180,7 +180,7 @@ public class SequenceResourceProvider extends RecordBasedResourceProvider<Sequen
 	// Just change the resource type
 	@Update
 	@Override
-	public MethodOutcome updateResource(@IdParam IdType theId, @ResourceParam Sequence theSequence) {
+	public MethodOutcome updateResource(@IdParam IdType theId, @ResourceParam MolecularSequence theSequence) {
 		return super.updateResource(theId, theSequence);
 	}
 
@@ -192,7 +192,7 @@ public class SequenceResourceProvider extends RecordBasedResourceProvider<Sequen
 	// The name should describe the content, should not reveal secrets.
 	// c) If the "subject" is the record owner he should be removed from the FHIR
 	// representation
-	public void prepare(Record record, Sequence theSequence) throws AppException {
+	public void prepare(Record record, MolecularSequence theSequence) throws AppException {
 		// Task a : Set Record "content" field by using a code from the resource (or a
 		// fixed value or something else useful)
 		String display = setRecordCodeByCodeableConcept(record, null, "Sequence"); // TODO check line
@@ -217,7 +217,7 @@ public class SequenceResourceProvider extends RecordBasedResourceProvider<Sequen
 	// Prepare a FHIR resource for output to the user
 	// Basically re-add the stuff that was taken away by prepare
 	@Override
-	public void processResource(Record record, Sequence p) throws AppException {
+	public void processResource(Record record, MolecularSequence p) throws AppException {
 		// Add _id field and meta section
 		super.processResource(record, p);
 

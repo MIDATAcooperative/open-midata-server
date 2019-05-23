@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.Coding;
-import org.hl7.fhir.dstu3.model.Extension;
-import org.hl7.fhir.dstu3.model.IdType;
-import org.hl7.fhir.dstu3.model.Patient;
-import org.hl7.fhir.dstu3.model.Questionnaire;
-import org.hl7.fhir.dstu3.model.QuestionnaireResponse;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.CanonicalType;
+import org.hl7.fhir.r4.model.Coding;
+import org.hl7.fhir.r4.model.Extension;
+import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.Questionnaire;
+import org.hl7.fhir.r4.model.QuestionnaireResponse;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 import ca.uhn.fhir.model.api.Include;
@@ -232,8 +233,8 @@ public class QuestionnaireResponseResourceProvider extends RecordBasedResourcePr
 			  codings.add(coding);
 		}
 		if (codings.isEmpty()) {
-			IIdType questions = theQuestionnaireResponse.getQuestionnaire().getReferenceElement();
-			if (questions != null && !questions.isEmpty()) {
+			IIdType questions = FHIRTools.convertToId(theQuestionnaireResponse.getQuestionnaireElement());
+			if (questions != null && !questions.isEmpty()) {				
 				Questionnaire q = (Questionnaire) FHIRServlet.myProviders.get("Questionnaire").getResourceById(questions);
 				codings = q.getCode();
 				if (codings != null) {

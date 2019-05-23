@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.IdType;
-import org.hl7.fhir.dstu3.model.MedicationAdministration;
-import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.MedicationAdministration;
+import org.hl7.fhir.r4.model.Reference;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;

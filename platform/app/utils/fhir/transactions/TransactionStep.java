@@ -1,10 +1,10 @@
 package utils.fhir.transactions;
 
-import org.hl7.fhir.dstu3.model.BaseResource;
-import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
-import org.hl7.fhir.dstu3.model.Bundle.BundleEntryResponseComponent;
-import org.hl7.fhir.dstu3.model.DomainResource;
-import org.hl7.fhir.dstu3.model.Resource;
+import org.hl7.fhir.r4.model.BaseResource;
+import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
+import org.hl7.fhir.r4.model.Bundle.BundleEntryResponseComponent;
+import org.hl7.fhir.r4.model.DomainResource;
+import org.hl7.fhir.r4.model.Resource;
 
 import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
 import models.Model;

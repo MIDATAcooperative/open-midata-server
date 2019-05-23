@@ -3,13 +3,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.Attachment;
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.DiagnosticReport;
-import org.hl7.fhir.dstu3.model.DocumentReference;
-import org.hl7.fhir.dstu3.model.IdType;
-import org.hl7.fhir.dstu3.model.Reference;
-import org.hl7.fhir.dstu3.model.DocumentReference.DocumentReferenceContentComponent;
+import org.hl7.fhir.r4.model.Attachment;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.DiagnosticReport;
+import org.hl7.fhir.r4.model.DocumentReference;
+import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.DocumentReference.DocumentReferenceContentComponent;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;

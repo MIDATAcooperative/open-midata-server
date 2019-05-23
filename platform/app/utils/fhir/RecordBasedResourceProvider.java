@@ -13,12 +13,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.Attachment;
-import org.hl7.fhir.dstu3.model.CodeableConcept;
-import org.hl7.fhir.dstu3.model.Coding;
-import org.hl7.fhir.dstu3.model.DomainResource;
-import org.hl7.fhir.dstu3.model.Extension;
-import org.hl7.fhir.dstu3.model.IdType;
+import org.hl7.fhir.r4.model.Attachment;
+import org.hl7.fhir.r4.model.CodeableConcept;
+import org.hl7.fhir.r4.model.Coding;
+import org.hl7.fhir.r4.model.DomainResource;
+import org.hl7.fhir.r4.model.Extension;
+import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 

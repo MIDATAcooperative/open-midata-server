@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.IdType;
-import org.hl7.fhir.dstu3.model.Subscription;
-import org.hl7.fhir.dstu3.model.Subscription.SubscriptionChannelComponent;
-import org.hl7.fhir.dstu3.model.Subscription.SubscriptionStatus;
-import org.hl7.fhir.dstu3.model.codesystems.SubscriptionChannelType;
+import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.Subscription;
+import org.hl7.fhir.r4.model.Subscription.SubscriptionChannelComponent;
+import org.hl7.fhir.r4.model.Subscription.SubscriptionStatus;
+import org.hl7.fhir.r4.model.codesystems.SubscriptionChannelType;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
@@ -113,15 +113,15 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	
 	/*
 	public static void updateMidataConsent(models.Consent consentToConvert) throws AppException {
-		org.hl7.fhir.dstu3.model.Consent c = new org.hl7.fhir.dstu3.model.Consent();
+		org.hl7.fhir.r4.model.Consent c = new org.hl7.fhir.r4.model.Consent();
 
 		c.setId(consentToConvert._id.toString());
 		
 		switch (consentToConvert.status) {
-		case ACTIVE:c.setStatus(org.hl7.fhir.dstu3.model.Consent.ConsentState.ACTIVE);break;
-		case UNCONFIRMED:c.setStatus(org.hl7.fhir.dstu3.model.Consent.ConsentState.PROPOSED);break;
-		case REJECTED:c.setStatus(org.hl7.fhir.dstu3.model.Consent.ConsentState.REJECTED);break;
-		case EXPIRED:c.setStatus(org.hl7.fhir.dstu3.model.Consent.ConsentState.INACTIVE);break;
+		case ACTIVE:c.setStatus(org.hl7.fhir.r4.model.Consent.ConsentState.ACTIVE);break;
+		case UNCONFIRMED:c.setStatus(org.hl7.fhir.r4.model.Consent.ConsentState.PROPOSED);break;
+		case REJECTED:c.setStatus(org.hl7.fhir.r4.model.Consent.ConsentState.REJECTED);break;
+		case EXPIRED:c.setStatus(org.hl7.fhir.r4.model.Consent.ConsentState.INACTIVE);break;
 		}
 		
 		String categoryCode = consentToConvert.categoryCode;

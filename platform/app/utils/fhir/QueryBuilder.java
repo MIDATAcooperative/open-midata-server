@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.BaseResource;
+import org.hl7.fhir.r4.model.BaseResource;
 
 import ca.uhn.fhir.model.api.IQueryParameterType;
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;

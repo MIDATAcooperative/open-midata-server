@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.IdType;
-import org.hl7.fhir.dstu3.model.Reference;
-import org.hl7.fhir.dstu3.model.Task;
-import org.hl7.fhir.dstu3.model.Task.TaskRestrictionComponent;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.Task;
+import org.hl7.fhir.r4.model.Task.TaskRestrictionComponent;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 import ca.uhn.fhir.model.api.Include;

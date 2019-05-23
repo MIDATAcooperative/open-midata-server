@@ -3,11 +3,11 @@ package utils.fhir;
 import java.util.List;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.Attachment;
-import org.hl7.fhir.dstu3.model.Base64BinaryType;
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.Media;
-import org.hl7.fhir.dstu3.model.Patient;
+import org.hl7.fhir.r4.model.Attachment;
+import org.hl7.fhir.r4.model.Base64BinaryType;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Media;
+import org.hl7.fhir.r4.model.Patient;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;

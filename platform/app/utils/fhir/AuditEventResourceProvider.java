@@ -7,16 +7,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.AuditEvent;
-import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventAgentComponent;
-import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventEntityComponent;
-import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventOutcome;
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.CodeType;
-import org.hl7.fhir.dstu3.model.Coding;
-import org.hl7.fhir.dstu3.model.Identifier;
-import org.hl7.fhir.dstu3.model.Reference;
-import org.hl7.fhir.dstu3.model.StringType;
+import org.hl7.fhir.r4.model.AuditEvent;
+import org.hl7.fhir.r4.model.AuditEvent.AuditEventAgentComponent;
+import org.hl7.fhir.r4.model.AuditEvent.AuditEventEntityComponent;
+import org.hl7.fhir.r4.model.AuditEvent.AuditEventOutcome;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.CodeType;
+import org.hl7.fhir.r4.model.Coding;
+import org.hl7.fhir.r4.model.Identifier;
+import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 import com.mongodb.BasicDBObject;
@@ -98,8 +98,13 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 	public AuditEvent readAuditEventFromMidataAuditEvent(MidataAuditEvent mae) throws AppException {
 		
 		IParser parser = ctx().newJsonParser();
-		
-		AuditEvent p = parser.parseResource(getResourceType(), mae.fhirAuditEvent.toString());
+				
+		Object data = mae.fhirAuditEvent;
+		FHIRVersionConvert.rename(data, "reference", "who", "agent");
+		FHIRVersionConvert.rename(data, FHIRVersionConvert.MODE_IDENTIFIER_TO_STRING, "userId", "altId", "agent");
+		FHIRVersionConvert.rename(data, "reference", "what", "entity");		
+		AccessLog.log("content="+data.toString());
+		AuditEvent p = parser.parseResource(getResourceType(), data.toString());
 						
 		switch (mae.status) {
 		case 0:p.setOutcome(AuditEventOutcome._0);break;
@@ -296,15 +301,15 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 			
 			if (anonymize != null && actorUser._id.equals(anonymize)) {
 				actor.setName(affectedConsent.getOwnerName());
-				actor.setReference(new Reference("Patient/"+affectedConsent._id.toString()));
+				actor.setWho(new Reference("Patient/"+affectedConsent._id.toString()));
 			} else {			
 				if (actorUser.role.equals(UserRole.MEMBER)) {
-					actor.setReference(new Reference("Patient/"+actorUser._id.toString()));
+					actor.setWho(new Reference("Patient/"+actorUser._id.toString()));
 				} else if (actorUser.role.equals(UserRole.PROVIDER)) {
-					actor.setReference(new Reference("Practitioner/"+actorUser._id.toString()));
+					actor.setWho(new Reference("Practitioner/"+actorUser._id.toString()));
 				}
 				actor.setName(actorUser.firstname+" "+actorUser.lastname);
-				actor.setUserId(new Identifier().setValue(actorUser.getPublicIdentifier()));
+				actor.setAltId(actorUser.getPublicIdentifier());
 			}
 		}
 		if (modifiedUser != null) {
@@ -313,23 +318,24 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 			
 			if (anonymize != null && modifiedUser._id.equals(anonymize)) {
 				aeec.setName(affectedConsent.getOwnerName());
-				aeec.setReference(new Reference("Patient/"+affectedConsent._id.toString()));
+				aeec.setWhat(new Reference("Patient/"+affectedConsent._id.toString()));
 			} else {
 				if (modifiedUser.role == UserRole.PROVIDER) {			   
-				   aeec.setReference(new Reference("Practitioner/"+modifiedUser._id.toString()));
+				   aeec.setWhat(new Reference("Practitioner/"+modifiedUser._id.toString()).setDisplay(modifiedUser.getPublicIdentifier()));
 				} else {			   
-				   aeec.setReference(new Reference("Patient/"+modifiedUser._id.toString()));
+				   aeec.setWhat(new Reference("Patient/"+modifiedUser._id.toString()).setDisplay(modifiedUser.getPublicIdentifier()));
 				}
 			}
 			
 			aeec.setName(modifiedUser.firstname+" "+modifiedUser.lastname);
-			aeec.setIdentifier(new Identifier().setValue(modifiedUser.getPublicIdentifier()));
+			
+			//aeec.setIdentifier(new Identifier().setValue(modifiedUser.getPublicIdentifier()));
 		}
 				
 		if (affectedConsent != null) {
 			AuditEventEntityComponent aeec = ae.addEntity();			
 			aeec.setType(new Coding().setSystem("http://midata.coop/codesystems/consent-type").setCode(affectedConsent.type.toString()));			
-			aeec.setReference(new Reference("Consent/"+affectedConsent._id.toString()));
+			aeec.setWhat(new Reference("Consent/"+affectedConsent._id.toString()));
 			if (affectedConsent.type.equals(ConsentType.STUDYPARTICIPATION) && affectedConsent.getOwnerName() != null) {
 			   aeec.setName(affectedConsent.getOwnerName());
 			} else {
@@ -339,9 +345,9 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 		if (study != null) {
 			AuditEventEntityComponent aeec = ae.addEntity();
 			aeec.setType(new Coding().setSystem("http://hl7.org/fhir/resource-types").setCode("ResearchStudy"));
-			aeec.setReference(new Reference("ResearchStudy/"+study._id.toString()));
+			aeec.setWhat(new Reference("ResearchStudy/"+study._id.toString()).setDisplay(study.code));
 			aeec.setName(study.name);
-			aeec.setIdentifier(new Identifier().setValue(study.code));
+			//aeec.setIdentifier(new Identifier().setValue(study.code));
 			aeec.addExtension("http://midata.coop/extension/research-type", new CodeType(study.type.toString()));
 		}
 				
@@ -357,7 +363,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 			  AuditEventAgentComponent actor = ae.addAgent();
 			  actor.addRole().addCoding().setSystem("http://dicom.nema.org/resources/ontology/DCM").setCode("110150");
 			  actor.setName(plugin.name);
-			  actor.setUserId(new Identifier().setValue(appUsed.toString()));
+			  actor.setWho(new Reference().setIdentifier(new Identifier().setValue(appUsed.toString())));
 			}
 		}
 		

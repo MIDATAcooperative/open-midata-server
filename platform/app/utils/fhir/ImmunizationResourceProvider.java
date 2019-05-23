@@ -3,10 +3,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.IdType;
-import org.hl7.fhir.dstu3.model.Immunization;
-import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.Immunization;
+import org.hl7.fhir.r4.model.Reference;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
@@ -216,9 +216,9 @@ public class ImmunizationResourceProvider extends RecordBasedResourceProvider<Im
 
 		// Task b : Create record name
 		String date = "No time";
-		if (theImmunization.hasDateElement()) {
+		if (theImmunization.hasOccurrenceDateTimeType()) {
 			try {
-				date = FHIRTools.stringFromDateTime(theImmunization.getDateElement());
+				date = FHIRTools.stringFromDateTime(theImmunization.getOccurrenceDateTimeType());
 			} catch (Exception e) {
 				throw new UnprocessableEntityException("Cannot process effectiveDateTime");
 			}

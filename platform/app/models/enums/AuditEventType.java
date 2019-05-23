@@ -1,7 +1,7 @@
 package models.enums;
 
-import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventAction;
-import org.hl7.fhir.dstu3.model.Coding;
+import org.hl7.fhir.r4.model.AuditEvent.AuditEventAction;
+import org.hl7.fhir.r4.model.Coding;
 
 
 public enum AuditEventType {

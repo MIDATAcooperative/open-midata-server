@@ -3,10 +3,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.IdType;
-import org.hl7.fhir.dstu3.model.ImagingStudy;
-import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.ImagingStudy;
+import org.hl7.fhir.r4.model.Reference;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
@@ -226,9 +226,9 @@ public class ImagingStudyResourceProvider extends RecordBasedResourceProvider<Im
 
 		// Task c : Set record owner based on subject and clean subject if this was
 		// possible
-		Reference subjectRef = theImagingStudy.getPatient(); // TODO correct to use patient?
+		Reference subjectRef = theImagingStudy.getSubject(); // TODO correct to use patient?
 		if (cleanAndSetRecordOwner(record, subjectRef))
-			theImagingStudy.setPatient(null);
+			theImagingStudy.setSubject(null);
 
 		// Other cleaning tasks: Remove _id from FHIR representation and remove "meta"
 		// section
@@ -244,8 +244,8 @@ public class ImagingStudyResourceProvider extends RecordBasedResourceProvider<Im
 		super.processResource(record, p);
 
 		// Add subject field from record owner field if it is not already there
-		if (p.getPatient().isEmpty()) {  // TODO correct to use patient?
-			p.setPatient(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
+		if (p.getSubject().isEmpty()) {  // TODO correct to use patient?
+			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
 	}
 }
