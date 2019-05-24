@@ -235,4 +235,9 @@ public class PersonResourceProvider extends ResourceProvider<Person, User> imple
 		}
 		return result;
 	}
+
+	@Override
+	protected void convertToR4(Object in) {
+		// Not needed. Generation on the fly		
+	}
 }

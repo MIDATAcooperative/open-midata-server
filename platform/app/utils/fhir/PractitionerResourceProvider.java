@@ -203,4 +203,9 @@ public class PractitionerResourceProvider extends ResourceProvider<Practitioner,
 		}
 		return result;
 	}
+
+	@Override
+	protected void convertToR4(Object in) {
+		// Not needed. Generation on the fly		
+	}
 }

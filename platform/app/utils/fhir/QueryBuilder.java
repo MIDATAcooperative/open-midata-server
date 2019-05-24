@@ -54,6 +54,7 @@ public class QueryBuilder {
 	public final static String TYPE_DATETIME = "DateTime";
 	public final static String TYPE_PERIOD = "Period";
 	public final static String TYPE_DATETIME_OR_PERIOD = "DateTime|Period";
+	public final static String TYPE_DATETIME_OR_PERIOD_OR_INSTANT = "DateTime|Period|Instant";
 
 	public final static String TYPE_CODEABLE_CONCEPT = "CodeableConcept";
 	public final static String TYPE_CODING = "Coding";
@@ -248,6 +249,8 @@ public class QueryBuilder {
 	public String sortPath(String t, String p) {
 		if (t.equals(TYPE_DATETIME_OR_PERIOD)) {
 			return p+"DateTime|"+p+"Period.start";
+		} else if (t.equals(TYPE_DATETIME_OR_PERIOD_OR_INSTANT)) {
+			return p+"DateTime|"+p+"Period.start|Instant";
 		} else if (t.equals(TYPE_STRING)) {
 			return p;
 		} else if (t.equals(TYPE_CODE)) {

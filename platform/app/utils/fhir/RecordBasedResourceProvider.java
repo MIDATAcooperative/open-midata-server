@@ -81,9 +81,12 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		} else {
 		    record = RecordManager.instance.fetch(info().executorId, info().role, info().context, new MidataId(theId.getIdPart()), getRecordFormat());
 		}
-		if (record == null || record.data == null || !record.data.containsField("resourceType")) throw new ResourceNotFoundException(theId);					
+		if (record == null || record.data == null || !record.data.containsField("resourceType")) throw new ResourceNotFoundException(theId);
+		
+		Object data = record.data;
+		convertToR4(record._id, data);
 		IParser parser = ctx().newJsonParser();
-		T p = parser.parseResource(getResourceType(), record.data.toString());
+		T p = parser.parseResource(getResourceType(), data.toString());
 		processResource(record, p);		
 		return p;
 	}
@@ -97,7 +100,9 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	   IParser parser = ctx().newJsonParser();
 	   for (Record record : records) {	
 		    if (record.data == null || !record.data.containsField("resourceType")) continue;
-			T p = parser.parseResource(getResourceType(), record.data.toString());
+		    Object data = record.data;
+			convertToR4(record._id, data);
+			T p = parser.parseResource(getResourceType(), data.toString());
 			processResource(record, p);
 			result.add(p);
 	   }
@@ -163,7 +168,8 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	    IParser parser = ctx().newJsonParser();
 	    for (Record rec : result) {
 	    	if (rec.data != null) {
-	    		try {
+	    		try {	    			
+	    			convertToR4(rec._id, rec.data);
 	    			T p = parser.parseResource(resultClass, rec.data.toString());
 	    			processResource(rec, p);											
 	    			parsed.add(p);

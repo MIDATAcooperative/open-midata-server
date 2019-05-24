@@ -92,9 +92,11 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	 * @return FHIR person
 	 * @throws AppException
 	 */
-	public Subscription readSubscriptionFromMidataSubscription(SubscriptionData subscriptionToConvert) throws AppException {		
+	public Subscription readSubscriptionFromMidataSubscription(SubscriptionData subscriptionToConvert) throws AppException {
+		Object data = subscriptionToConvert.fhirSubscription;
+		convertToR4(subscriptionToConvert._id, data);
 		IParser parser = ctx().newJsonParser();		
-		Subscription result = parser.parseResource(getResourceType(), subscriptionToConvert.fhirSubscription.toString());
+		Subscription result = parser.parseResource(getResourceType(), data.toString());
 				
 		return result;
 	}
@@ -445,6 +447,12 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	@Override
 	public Date getLastUpdated(SubscriptionData record) {
 		return new Date(record.lastUpdated);
+	}
+
+	@Override
+	protected void convertToR4(Object in) {
+		// TODO Auto-generated method stub
+		
 	}	
 	
 	

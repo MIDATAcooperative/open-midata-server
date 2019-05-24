@@ -358,9 +358,11 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 		return cleanSubject;
 	}
 	
+	protected void convertToR4(MidataId id, Object in) {
+		if (FHIRVersionConvert.doConvert(id)) convertToR4(in);
+	}
 	
-		
-		
-	
+	protected abstract void convertToR4(Object in);
+					
 
 }

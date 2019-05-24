@@ -100,10 +100,9 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 		IParser parser = ctx().newJsonParser();
 				
 		Object data = mae.fhirAuditEvent;
-		FHIRVersionConvert.rename(data, "reference", "who", "agent");
-		FHIRVersionConvert.rename(data, FHIRVersionConvert.MODE_IDENTIFIER_TO_STRING, "userId", "altId", "agent");
-		FHIRVersionConvert.rename(data, "reference", "what", "entity");		
-		AccessLog.log("content="+data.toString());
+		
+		convertToR4(mae._id, data);
+				
 		AuditEvent p = parser.parseResource(getResourceType(), data.toString());
 						
 		switch (mae.status) {
@@ -479,6 +478,13 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 			result.add(readAuditEventFromMidataAuditEvent(mae));
 		}								
 		return result;
+	}
+
+	@Override
+	protected void convertToR4(Object data) {
+		FHIRVersionConvert.rename(data, "reference", "who", "agent");
+		FHIRVersionConvert.rename(data, FHIRVersionConvert.MODE_IDENTIFIER_TO_STRING, "userId", "altId", "agent");
+		FHIRVersionConvert.rename(data, "reference", "what", "entity");				
 	}
 
  	

@@ -114,6 +114,8 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		if (consentToConvert.fhirConsent==null) {
 			Circles.fillConsentFields(info().executorId, Collections.singleton(consentToConvert), models.Consent.FHIR);
 			updateMidataConsent(consentToConvert);
+		} else {
+			convertToR4(consentToConvert._id, consentToConvert.fhirConsent);
 		}
 		IParser parser = ctx().newJsonParser();
 		AccessLog.log(consentToConvert.fhirConsent.toString());
@@ -594,6 +596,12 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 	@Override
 	public Date getLastUpdated(Consent record) {
 		return record.lastUpdated;
+	}
+
+	@Override
+	protected void convertToR4(Object in) {
+		// TODO Auto-generated method stub
+		
 	}	
 	
 	
