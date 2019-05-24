@@ -114,7 +114,7 @@ public class Administration extends APIController {
 		MidataId userId = JsonValidation.getMidataId(json, "user");
 		UserStatus status = JsonValidation.getEnum(json, "status", UserStatus.class);
 		
-		User user = User.getById(userId, User.ALL_USER_INTERNAL); //Sets.create("status", "contractStatus", "agbStatus", "subroles", "confirmedAt", "emailStatus"));
+		User user = User.getByIdAlsoDeleted(userId, User.ALL_USER_INTERNAL); //Sets.create("status", "contractStatus", "agbStatus", "subroles", "confirmedAt", "emailStatus"));
 		
 		
 		
@@ -295,7 +295,7 @@ public class Administration extends APIController {
 		
 		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));				
 		
-		User targetUser = User.getById(userId, User.ALL_USER);
+		User targetUser = User.getByIdAlsoDeleted(userId, User.ALL_USER);
 		AuditManager.instance.addAuditEvent(AuditEventType.INTERNAL_COMMENT, null, executorId, targetUser, comment);
 		AuditManager.instance.success();
 		//targetUser.addHistory(new History(EventType.INTERNAL_COMMENT, admin, comment));
@@ -327,7 +327,7 @@ public class Administration extends APIController {
 		  requireSubUserRole(SubUserRole.USERADMIN);
 		}
 		
-		User targetUser = User.getById(userId, User.ALL_USER);
+		User targetUser = User.getByIdAlsoDeleted(userId, User.ALL_USER);
 		if (targetUser.email != null && targetUser.email.equals(email)) return ok();
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_CHANGE, null, executorId, targetUser, targetUser.email + " -> "+email);
@@ -422,7 +422,7 @@ public class Administration extends APIController {
 		MidataId userId = JsonValidation.getMidataId(json, "user");
 		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		
-		User selected = User.getById(userId, User.ALL_USER);
+		User selected = User.getByIdAlsoDeleted(userId, User.ALL_USER);
 		if (!selected.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.invalid.status",  "User must have status deleted to be wiped.");
 		
 		SubscriptionData.deleteByOwner(selected._id);

@@ -18,7 +18,7 @@
 								<div class="alert alert-danger" ng-show="error">
 								  <p translate="{{ error.code || error }}"></p>
 							    </div>
-								<button type="submit" class="btn btn-primary btn-block" translate="lostpw.continue"></button>
+								<button type="submit" class="btn btn-primary btn-block" ng-disabled="status.action=='pw'" translate="lostpw.continue"></button>
 							</form>							
 														
 		            	</div>

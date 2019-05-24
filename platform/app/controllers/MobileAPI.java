@@ -204,6 +204,7 @@ public class MobileAPI extends Controller {
 			
             if (!refreshToken.appId.equals(app._id)) throw new BadRequestException("error.invalid.token", "Bad refresh token.");
             User user = User.getById(appInstance.owner, User.ALL_USER_INTERNAL);
+            if (user == null) return status(UNAUTHORIZED); 
             Set<UserFeature> req = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(user.role);
             if (app.requirements != null) req.addAll(app.requirements);
             if (Application.loginHelperPreconditionsFailed(user, req) != null) return status(UNAUTHORIZED); 

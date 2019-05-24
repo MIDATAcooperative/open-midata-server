@@ -278,6 +278,7 @@ angular.module('portal')
 	};
 	
 	if ($stateParams.token && $state.current.data.mode) {
+		$scope.tokenIncluded = true;
 		$scope.confirm();
 	}
 	
