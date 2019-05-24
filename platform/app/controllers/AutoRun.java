@@ -264,7 +264,11 @@ public class AutoRun extends APIController {
 						return;
 					}
 			    	
-					User tuser = User.getById(space.owner, Sets.create("language", "role"));					
+					User tuser = User.getById(space.owner, Sets.create("language", "role"));		
+					if (tuser == null) {
+						sender.tell(new ImportResult(0, "Ignore autoimport for deleted user", plugin.filename), getSelf());
+						return;
+					}
 					SpaceToken token = new SpaceToken(request.handle, space._id, space.owner, tuser.role, null, null, autorunner);
 					final String lang = tuser.language != null ? tuser.language : InstanceConfig.getInstance().getDefaultLanguage();
 					final String tokenstr = token.encrypt();

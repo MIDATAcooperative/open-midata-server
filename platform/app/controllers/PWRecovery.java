@@ -191,9 +191,7 @@ public class PWRecovery extends APIController {
 		
 		String oldPassword = JsonValidation.getString(json, "oldPassword");
 		String oldPasswordHash = JsonValidation.getString(json, "oldPasswordHash");
-		
-		
-		
+						
 		User user = User.getById(userId, User.ALL_USER_INTERNAL);
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE, user);

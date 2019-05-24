@@ -351,6 +351,7 @@ public class OAuth2 extends Controller {
 			
 			Plugin app = Plugin.getById(appInstance.applicationId);
 			user = User.getById(appInstance.owner, User.ALL_USER_INTERNAL);
+			if (user == null) return status(UNAUTHORIZED); 
 			Set<UserFeature> req = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(user.role);
 			if (app.requirements != null) req.addAll(app.requirements);
 			Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, req);

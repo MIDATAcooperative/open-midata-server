@@ -256,7 +256,7 @@
                      </div>
                     </div>
                        
-                        
+                        <p ng-show="error && tokenIncluded" class="alert alert-danger" translate="{{ error.code || error }}"></p>
 						<p ng-show="codeSuccess" class="alert alert-success" translate="postregister.address_success"></p>
 						<p ng-show="mailSuccess" class="alert alert-success" translate="postregister.email_success"></p>
 					
