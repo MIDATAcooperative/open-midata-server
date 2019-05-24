@@ -88,7 +88,7 @@ public class FHIRTools {
 		String rt = userRef.getResourceType();
 		MidataId id = MidataId.from(userRef.getIdPart());
 		
-		User user = User.getById(id, Sets.create("role"));
+		User user = User.getByIdAlsoDeleted(id, Sets.create("role"));
 		if (user == null) throw new UnprocessableEntityException("Invalid Person Reference");
 		if (rt != null) {
 				if (rt.equals("Patient") && user.role != UserRole.MEMBER) throw new UnprocessableEntityException("Invalid Patient reference");

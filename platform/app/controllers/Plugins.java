@@ -283,7 +283,7 @@ public class Plugins extends APIController {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		Set<String> fields = Sets.create("visualizations", "apps");
 
-		User user = User.getById(userId, fields);
+		User user = User.getByIdAlsoDeleted(userId, fields);
 		user.visualizations.remove(new MidataId(visualizationIdString));
 		user.apps.remove(new MidataId(visualizationIdString));
 		User.set(userId, "visualizations", user.visualizations);

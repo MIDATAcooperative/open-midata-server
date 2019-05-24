@@ -119,7 +119,7 @@ angular.module('portal')
 			
 		};
 				
-		crypto.generateKeys($scope.registration.password1).then(function(keys) {				
+		$scope.status.doAction("register", crypto.generateKeys($scope.registration.password1)).then(function(keys) {				
 			if ($scope.registration.secure) {
 			  $scope.registration.password = keys.pw_hash;	
 			  $scope.registration.pub = keys.pub;
@@ -137,10 +137,11 @@ angular.module('portal')
 	};
 	
 	$scope.confirmWelcome = function() {
-		oauth.login(true, $scope.registration.confirmStudy).then(function(result) {
-		  //$scope.welcomemsg = false;
-		  if (result !== "ACTIVE") { session.postLogin({ data : result}, $state);}
-		});	
+		$scope.status.doAction("register", oauth.login(true, $scope.registration.confirmStudy)) 
+	    .then(function(result) {
+			  //$scope.welcomemsg = false;
+			  if (result !== "ACTIVE") { session.postLogin({ data : result}, $state);}
+		});			
 	};
 	
 	$scope.changeLanguage = function(lang) {

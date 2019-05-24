@@ -801,7 +801,7 @@ public class Circles extends APIController {
 		String category = consent.categoryCode;
 		if (category == null) category = consent.type.toString();
 		
-		User sender = User.getById(executorId, Sets.create("firstname", "lastname", "role", "email", "language"));
+		User sender = User.getByIdAlsoDeleted(executorId, Sets.create("firstname", "lastname", "role", "email", "language"));
 		replacements.put("executor-firstname", sender.firstname);
 		replacements.put("executor-lastname", sender.lastname);
 		replacements.put("executor-email", sender.email);
@@ -811,7 +811,7 @@ public class Circles extends APIController {
 				replacements.put("grantor-lastname", sender.lastname);
 				replacements.put("grantor-email", sender.email);
 			} else if (consent.owner != null) {
-				User owner = User.getById(consent.owner, Sets.create("firstname", "lastname", "role", "email", "language"));
+				User owner = User.getByIdAlsoDeleted(consent.owner, Sets.create("firstname", "lastname", "role", "email", "language"));
 				replacements.put("grantor-firstname", owner.firstname);
 				replacements.put("grantor-lastname", owner.lastname);
 				replacements.put("grantor-email", owner.email);
