@@ -289,6 +289,11 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
 	public String getRecordFormat() {		
 		return null;
 	}
+
+	@Override
+	protected void convertToR4(Object in) {
+		// Nothing to do		
+	}
    
 
 }

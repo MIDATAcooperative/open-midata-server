@@ -483,7 +483,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 	@Override
 	protected void convertToR4(Object data) {
 		FHIRVersionConvert.rename(data, "reference", "who", "agent");
-		FHIRVersionConvert.rename(data, FHIRVersionConvert.MODE_IDENTIFIER_TO_STRING, "userId", "altId", "agent");
+		FHIRVersionConvert.rename(data, "userId.value", "altId", "agent");
 		FHIRVersionConvert.rename(data, "reference", "what", "entity");				
 	}
 

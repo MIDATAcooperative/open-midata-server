@@ -58,50 +58,62 @@ public class DeviceResourceProvider extends RecordBasedResourceProvider<Device> 
 			@OptionalParam(name="_id")
 			StringAndListParam theId, 
 			  
+ 			@Description(shortDefinition="A server defined search that may match any of the string fields in Device.deviceName or Device.type.")
+			@OptionalParam(name="device-name")
+			StringAndListParam theDevice_name, 
+
 			@Description(shortDefinition="Instance id from manufacturer, owner, and others")
 			@OptionalParam(name="identifier")
-			TokenAndListParam theIdentifier, 
-			    
+			TokenAndListParam theIdentifier,
+
 			@Description(shortDefinition="A location, where the resource is found")
 			@OptionalParam(name="location", targetTypes={  } )
 			ReferenceAndListParam theLocation, 
-			   
+
 			@Description(shortDefinition="The manufacturer of the device")
 			@OptionalParam(name="manufacturer")
 			StringAndListParam theManufacturer, 
-			   
+
 			@Description(shortDefinition="The model of the device")
 			@OptionalParam(name="model")
 			StringAndListParam theModel, 
-			   
+
 			@Description(shortDefinition="The organization responsible for the device")
 			@OptionalParam(name="organization", targetTypes={  } )
 			ReferenceAndListParam theOrganization, 
-			   
+
 			@Description(shortDefinition="Patient information, if the resource is affixed to a person")
 			@OptionalParam(name="patient", targetTypes={  } )
 			ReferenceAndListParam thePatient, 
-			   
+
+			@Description(shortDefinition="active | inactive | entered-in-error | unknown")
+			@OptionalParam(name="status")
+			TokenAndListParam theStatus,
+
 			@Description(shortDefinition="The type of the device")
 			@OptionalParam(name="type")
-			TokenAndListParam theType, 
-			   
-			@Description(shortDefinition="Barcode string (udi)")
-			@OptionalParam(name="udicarrier")
-			TokenAndListParam theUdicarrier, 
-			   
+			TokenAndListParam theType,
+
+			@Description(shortDefinition="UDI Barcode (RFID or other technology) string in *HRF* format.")
+			@OptionalParam(name="udi-carrier")
+			StringAndListParam theUdi_carrier, 
+
+			@Description(shortDefinition="The udi Device Identifier (DI)")
+			@OptionalParam(name="udi-di")
+			StringAndListParam theUdi_di, 
+
 			@Description(shortDefinition="Network address to contact device")
 			@OptionalParam(name="url")
-			UriAndListParam theUrl, 
-			
+			UriAndListParam theUrl, 	
+
 			@IncludeParam(reverse=true)
 			Set<Include> theRevIncludes,
 			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
 			@OptionalParam(name="_lastUpdated")
 			DateRangeParam theLastUpdated, 
-			
+
 			@IncludeParam(allow= {
-					"Device:location" ,
+					"Device:location" , 
 					"Device:organization" ,
 					"Device:patient" ,
 					"*"
@@ -126,14 +138,17 @@ public class DeviceResourceProvider extends RecordBasedResourceProvider<Device> 
 
 		paramMap.add("_id", theId);
 		
+		paramMap.add("device-name", theDevice_name);
 		paramMap.add("identifier", theIdentifier);
 		paramMap.add("location", theLocation);
 		paramMap.add("manufacturer", theManufacturer);
 		paramMap.add("model", theModel);
 		paramMap.add("organization", theOrganization);
 		paramMap.add("patient", thePatient);
+		paramMap.add("status", theStatus);
 		paramMap.add("type", theType);
-		paramMap.add("udicarrier", theUdicarrier);
+		paramMap.add("udi-carrier", theUdi_carrier);
+		paramMap.add("udi-di", theUdi_di);
 		paramMap.add("url", theUrl);
 		
 		paramMap.setRevIncludes(theRevIncludes);
@@ -160,12 +175,12 @@ public class DeviceResourceProvider extends RecordBasedResourceProvider<Device> 
 		builder.restriction("device-name", false, QueryBuilder.TYPE_STRING, "udi", QueryBuilder.TYPE_STRING, "type.coding.display", QueryBuilder.TYPE_STRING, "type.text");
         builder.restriction("location", true, "Location", "location");
 		builder.restriction("manufacturer", true, QueryBuilder.TYPE_STRING, "manufacturer");	
-		builder.restriction("model", true, QueryBuilder.TYPE_STRING, "model");
+		builder.restriction("model", true, QueryBuilder.TYPE_STRING, "modelNumber");
 		builder.restriction("organization", true, "Organization", "owner");
 		builder.restriction("status", true, QueryBuilder.TYPE_CODE, "status");	
 		builder.restriction("type", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "type");
-		builder.restriction("udi-carrier", true, QueryBuilder.TYPE_STRING, "udi.carrierHRF", QueryBuilder.TYPE_STRING, "udi.carrierAIDC");
-		builder.restriction("udi-di", true, QueryBuilder.TYPE_STRING, "udi.deviceIdentifier");
+		builder.restriction("udi-carrier", true, QueryBuilder.TYPE_STRING, "udiCarrier.carrierHRF", QueryBuilder.TYPE_STRING, "udi.carrierAIDC");
+		builder.restriction("udi-di", true, QueryBuilder.TYPE_STRING, "udiCarrier.deviceIdentifier");
 		builder.restriction("url", true, QueryBuilder.TYPE_URI, "url");
 														
 		return query.execute(info);
@@ -214,6 +229,13 @@ public class DeviceResourceProvider extends RecordBasedResourceProvider<Device> 
 	public void clean(Device theDevice) {
 		
 		super.clean(theDevice);
+	}
+
+	@Override
+	protected void convertToR4(Object in) {
+		FHIRVersionConvert.rename(in, "udi", "udiCarrier");
+		FHIRVersionConvert.rename(in, "model", "modelNumber");
+		
 	}
 
 }

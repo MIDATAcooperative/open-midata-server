@@ -28,6 +28,7 @@ import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
+import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.Record;
@@ -41,9 +42,8 @@ public class FamilyMemberHistoryResourceProvider extends RecordBasedResourceProv
 		implements IResourceProvider {
 
 	public FamilyMemberHistoryResourceProvider() {
-		searchParamNameToPathMap.put("FamilyMemberHistory:definition", "definition");
-		searchParamNameToTypeMap.put("FamilyMemberHistory:definition", Sets.create("Questionnaire", "PlanDefinition"));
-		
+		searchParamNameToPathMap.put("FamilyMemberHistory:instantiates-canonical", "instantiatesCanonical");
+				
 		searchParamNameToPathMap.put("FamilyMemberHistory:patient", "patient");
 		searchParamNameToTypeMap.put("FamilyMemberHistory:patient", Sets.create("Patient"));
 
@@ -61,29 +61,57 @@ public class FamilyMemberHistoryResourceProvider extends RecordBasedResourceProv
 
 			@Description(shortDefinition = "The language of the resource") @OptionalParam(name = "_language") StringAndListParam the_language,
 
-			@Description(shortDefinition = "A search by a condition code") @OptionalParam(name = "code") TokenAndListParam theCode,
-
-			@Description(shortDefinition = "When history was captured/updated") @OptionalParam(name = "date") DateAndListParam theDate,
-
-			@Description(shortDefinition = "Instantiates protocol or definition") @OptionalParam(name = "definition", targetTypes = {}) ReferenceAndListParam theDefinition,
-
-			@Description(shortDefinition = "A search by a gender code of a family member") @OptionalParam(name = "gender") TokenAndListParam theGender,
-
-			@Description(shortDefinition = "A search by a record identifier") @OptionalParam(name = "identifier") TokenAndListParam theIdentifier,
-
-			@Description(shortDefinition = "The identity of a subject to list family member history items for") @OptionalParam(name = "patient", targetTypes = {}) ReferenceAndListParam thePatient,
-
-			@Description(shortDefinition = "A search by a relationship type") @OptionalParam(name = "relationship") TokenAndListParam theRelationship,
-
-			@Description(shortDefinition = "partial | completed | entered-in-error | health-unknown") @OptionalParam(name = "status") TokenAndListParam theStatus,
-
-			@RawParam Map<String, List<String>> theAdditionalRawParams,
-
-			@IncludeParam(reverse = true) Set<Include> theRevIncludes,
-			@Description(shortDefinition = "Only return resources which were last updated as specified by the given range") @OptionalParam(name = "_lastUpdated") DateRangeParam theLastUpdated,
-
-			@IncludeParam(allow = { "FamilyMemberHistory:definition", "FamilyMemberHistory:patient",
-					"*" }) Set<Include> theIncludes,
+ 			@Description(shortDefinition="A search by a condition code")
+  			@OptionalParam(name="code")
+  			TokenAndListParam theCode,
+    
+  			@Description(shortDefinition="When history was recorded or last updated")
+  			@OptionalParam(name="date")
+  			DateAndListParam theDate, 
+    
+  			@Description(shortDefinition="A search by a record identifier")
+  			@OptionalParam(name="identifier")
+  			TokenAndListParam theIdentifier,
+    
+  			@Description(shortDefinition="Instantiates FHIR protocol or definition")
+  			@OptionalParam(name="instantiates-canonical", targetTypes={  } )
+  			ReferenceAndListParam theInstantiates_canonical, 
+    
+  			@Description(shortDefinition="Instantiates external protocol or definition")
+  			@OptionalParam(name="instantiates-uri")
+  			UriAndListParam theInstantiates_uri, 
+    
+  			@Description(shortDefinition="The identity of a subject to list family member history items for")
+  			@OptionalParam(name="patient", targetTypes={  } )
+  			ReferenceAndListParam thePatient, 
+    
+  			@Description(shortDefinition="A search by a relationship type")
+  			@OptionalParam(name="relationship")
+  			TokenAndListParam theRelationship,
+    
+  			@Description(shortDefinition="A search by a sex code of a family member")
+  			@OptionalParam(name="sex")
+  			TokenAndListParam theSex,
+    
+ 			@Description(shortDefinition="partial | completed | entered-in-error | health-unknown")
+ 			@OptionalParam(name="status")
+ 			TokenAndListParam theStatus,
+ 
+ 			@RawParam
+ 			Map<String, List<String>> theAdditionalRawParams,
+ 
+ 			@IncludeParam(reverse=true)
+ 			Set<Include> theRevIncludes,
+ 			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
+ 			@OptionalParam(name="_lastUpdated")
+ 			DateRangeParam theLastUpdated, 
+ 
+ 			@IncludeParam(allow= {
+ 					"FamilyMemberHistory:instantiates-canonical" ,
+ 					"FamilyMemberHistory:patient" ,
+ 					"*"
+ 			}) 
+ 			Set<Include> theIncludes,
 
 			@Sort SortSpec theSort,
 
@@ -101,11 +129,12 @@ public class FamilyMemberHistoryResourceProvider extends RecordBasedResourceProv
 		paramMap.add("_language", the_language);
 		paramMap.add("code", theCode);
 		paramMap.add("date", theDate);
-		paramMap.add("definition", theDefinition);
-		paramMap.add("gender", theGender);
 		paramMap.add("identifier", theIdentifier);
+		paramMap.add("instantiates-canonical", theInstantiates_canonical);
+		paramMap.add("instantiates-uri", theInstantiates_uri);
 		paramMap.add("patient", thePatient);
 		paramMap.add("relationship", theRelationship);
+		paramMap.add("sex", theSex);
 		paramMap.add("status", theStatus);
 		paramMap.setRevIncludes(theRevIncludes);
 		paramMap.setLastUpdated(theLastUpdated);
@@ -133,8 +162,8 @@ public class FamilyMemberHistoryResourceProvider extends RecordBasedResourceProv
 
 		builder.restriction("code", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "condition.code");
 		builder.restriction("date", true, QueryBuilder.TYPE_DATETIME, "date");
-		builder.restriction("definition", true, null, "definition");
-		builder.restriction("gender", true, QueryBuilder.TYPE_CODE, "gender");
+		builder.restriction("instantiates-canonical", true, null, "instantiatesCcanonical");
+		builder.restriction("sex", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "sex");
 		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
 		builder.restriction("relationship", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "relationship");
 		builder.restriction("status", false, QueryBuilder.TYPE_CODE, "status");
@@ -212,5 +241,11 @@ public class FamilyMemberHistoryResourceProvider extends RecordBasedResourceProv
 		if (p.getPatient().isEmpty()) {
 			p.setPatient(FHIRTools.getReferenceToUser(record.owner, record.ownerName)); // TODO is it currect to use patient?
 		}
+	}
+
+	@Override
+	protected void convertToR4(Object in) {
+		// No action
+		
 	}
 }

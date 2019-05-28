@@ -48,10 +48,12 @@ public class DocumentReferenceProvider extends RecordBasedResourceProvider<Docum
 		searchParamNameToPathMap.put("DocumentReference:authenticator", "authenticator");
 		searchParamNameToPathMap.put("DocumentReference:author", "author");
 		searchParamNameToPathMap.put("DocumentReference:custodian", "custodian");
+		searchParamNameToTypeMap.put("DocumentReference:custodian", Sets.create("Organization"));
 		searchParamNameToPathMap.put("DocumentReference:encounter", "encounter");
+		searchParamNameToTypeMap.put("DocumentReference:encounter", Sets.create("Encounter","EpisodeOfCare"));
 		searchParamNameToPathMap.put("DocumentReference:patient", "subject");
 		searchParamNameToTypeMap.put("DocumentReference:patient", Sets.create("Patient"));
-		searchParamNameToPathMap.put("DocumentReference:related-ref", "context.related.ref");
+		searchParamNameToPathMap.put("DocumentReference:related", "context.related");
 		searchParamNameToPathMap.put("DocumentReference:relatesto", "relatesTo.target");
 		searchParamNameToPathMap.put("DocumentReference:subject", "subject");	
 		
@@ -72,155 +74,124 @@ public class DocumentReferenceProvider extends RecordBasedResourceProvider<Docum
 			@OptionalParam(name="_language")
 			StringAndListParam theResourceLanguage, 
 			 
-			/*
-			@Description(shortDefinition="Search the contents of the resource's data using a fulltext search")
-			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_CONTENT)
-			StringAndListParam theFtContent, 
-			 
-			@Description(shortDefinition="Search the contents of the resource's narrative using a fulltext search")
-			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_TEXT)
-			StringAndListParam theFtText, 
-			 
-			@Description(shortDefinition="Search for resources which have the given tag")
-			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_TAG)
-			TokenAndListParam theSearchForTag, 
-			 
-			@Description(shortDefinition="Search for resources which have the given security labels")
-			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_SECURITY)
-			TokenAndListParam theSearchForSecurity, 
-			   
-			@Description(shortDefinition="Search for resources which have the given profile")
-			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_PROFILE)
-			UriAndListParam theSearchForProfile, 
-			 */
-			/*
-			@Description(shortDefinition="Return resources linked to by the given target")
-			@OptionalParam(name="_has")
-			HasAndListParam theHas, 
-			 */
-			 
-			@Description(shortDefinition="")
-			@OptionalParam(name="identifier")
-			TokenAndListParam theIdentifier, 
-			   
-			@Description(shortDefinition="")
-			@OptionalParam(name="subject", targetTypes={  } )
-			ReferenceAndListParam theSubject, 
-			   
-			@Description(shortDefinition="")
-			@OptionalParam(name="type")
-			TokenAndListParam theType, 
-			  
-			@Description(shortDefinition="")
-			@OptionalParam(name="class")
-			TokenAndListParam theClass, 
-			   
-			@Description(shortDefinition="")
-			@OptionalParam(name="author", targetTypes={  } )
-			ReferenceAndListParam theAuthor, 
-			   
-			@Description(shortDefinition="")
-			@OptionalParam(name="custodian", targetTypes={  } )
-			ReferenceAndListParam theCustodian, 
-			
-			@Description(shortDefinition="")
-			@OptionalParam(name="authenticator", targetTypes={  } )
-			ReferenceAndListParam theAuthenticator, 
-			  
-			@Description(shortDefinition="")
-			@OptionalParam(name="created")
-			DateAndListParam theCreated, 
-			    
-			@Description(shortDefinition="")
-			@OptionalParam(name="indexed")
-			DateAndListParam theIndexed, 
-			   
-			@Description(shortDefinition="")
-			@OptionalParam(name="status")
-			TokenAndListParam theStatus, 
-			  
-			@Description(shortDefinition="")
-			@OptionalParam(name="relatesto", targetTypes={  } )
-			ReferenceAndListParam theRelatesto, 
-			  
-			@Description(shortDefinition="")
-			@OptionalParam(name="relation")
-			TokenAndListParam theRelation, 
-			   
-			@Description(shortDefinition="")
-			@OptionalParam(name="description")
-			StringAndListParam theDescription, 
-			  
-			@Description(shortDefinition="")
-			@OptionalParam(name="securitylabel")
-			TokenAndListParam theSecuritylabel, 
-			  
-			@Description(shortDefinition="")
-			@OptionalParam(name="format")
-			TokenAndListParam theFormat, 
-			  
-			@Description(shortDefinition="")
-			@OptionalParam(name="language")
-			TokenAndListParam theLanguage, 
-			  
-			@Description(shortDefinition="")
-			@OptionalParam(name="location")
-			UriAndListParam theLocation, 
-			 
-			@Description(shortDefinition="")
-			@OptionalParam(name="event")
-			TokenAndListParam theEvent, 
-			  
-			@Description(shortDefinition="")
-			@OptionalParam(name="period")
+			@Description(shortDefinition="Who/what authenticated the document")
+  			@OptionalParam(name="authenticator", targetTypes={  } )
+  			ReferenceAndListParam theAuthenticator, 
+    
+  			@Description(shortDefinition="Who and/or what authored the document")
+  			@OptionalParam(name="author", targetTypes={  } )
+  			ReferenceAndListParam theAuthor, 
+    
+  			@Description(shortDefinition="Categorization of document")
+  			@OptionalParam(name="category")
+  			TokenAndListParam theCategory,
+    
+  			@Description(shortDefinition="Mime type of the content, with charset etc.")
+  			@OptionalParam(name="contenttype")
+  			TokenAndListParam theContenttype,
+    
+  			@Description(shortDefinition="Organization which maintains the document")
+  			@OptionalParam(name="custodian", targetTypes={  } )
+  			ReferenceAndListParam theCustodian, 
+    
+  			@Description(shortDefinition="When this document reference was created")
+  			@OptionalParam(name="date")
+  			DateAndListParam theDate, 
+    
+  			@Description(shortDefinition="Human-readable description")
+  			@OptionalParam(name="description")
+  			StringAndListParam theDescription, 
+    
+  			@Description(shortDefinition="Context of the document  content")
+  			@OptionalParam(name="encounter", targetTypes={  } )
+  			ReferenceAndListParam theEncounter, 
+    
+ 			@Description(shortDefinition="Main clinical acts documented")
+ 			@OptionalParam(name="event")
+ 			TokenAndListParam theEvent,
+   
+ 			@Description(shortDefinition="Kind of facility where patient was seen")
+ 			@OptionalParam(name="facility")
+ 			TokenAndListParam theFacility,
+   
+ 			@Description(shortDefinition="Format/content rules for the document")
+ 			@OptionalParam(name="format")
+ 			TokenAndListParam theFormat,
+   
+ 			@Description(shortDefinition="Master Version Specific Identifier")
+ 			@OptionalParam(name="identifier")
+ 			TokenAndListParam theIdentifier,
+   
+ 			@Description(shortDefinition="Human language of the content (BCP-47)")
+ 			@OptionalParam(name="language")
+ 			TokenAndListParam theLanguage,
+   
+ 			@Description(shortDefinition="Uri where the data can be found")
+ 			@OptionalParam(name="location")
+ 			UriAndListParam theLocation, 
+   
+ 			@Description(shortDefinition="Who/what is the subject of the document")
+ 			@OptionalParam(name="patient", targetTypes={  } )
+ 			ReferenceAndListParam thePatient, 
+   
+ 			@Description(shortDefinition="Time of service that is being documented")
+ 			@OptionalParam(name="period")
 			DateAndListParam thePeriod, 
-			  
-			@Description(shortDefinition="")
-			@OptionalParam(name="facility")
-			TokenAndListParam theFacility, 
-			   
-			@Description(shortDefinition="")
-			@OptionalParam(name="patient", targetTypes={  Patient.class   } )
-			ReferenceAndListParam thePatient, 
-			  
-			@Description(shortDefinition="")
-			@OptionalParam(name="setting")
-			TokenAndListParam theSetting, 
-			  
-			@Description(shortDefinition="")
-			@OptionalParam(name="related-id")
-			TokenAndListParam theRelated_id, 
-			  
-			@Description(shortDefinition="")
-			@OptionalParam(name="related-ref", targetTypes={  } )
-			ReferenceAndListParam theRelated_ref, 
-			   
-			@Description(shortDefinition="")
-			@OptionalParam(name="encounter", targetTypes={  } )
-			ReferenceAndListParam theEncounter, 
-			   
-			@Description(shortDefinition="Combination of relation and relatesTo")
-			@OptionalParam(name="relatesto-relation", compositeTypes= { ReferenceParam.class, TokenParam.class })
-			CompositeAndListParam<ReferenceParam, TokenParam> theRelatesto_relation,
-			
-			@IncludeParam(reverse=true)
-			Set<Include> theRevIncludes,
-			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
-			@OptionalParam(name="_lastUpdated")
-			DateRangeParam theLastUpdated, 
-			 
-			@IncludeParam(allow= {
-						"DocumentReference:authenticator" ,
-						"DocumentReference:author" ,
-						"DocumentReference:custodian" ,
-						"DocumentReference:encounter" ,
-						"DocumentReference:patient" ,
-						"DocumentReference:related-ref" ,
-						"DocumentReference:relatesto" ,
-						"DocumentReference:subject" ,
-						"*"
-			}) 
-			Set<Include> theIncludes,
+   
+ 			@Description(shortDefinition="Related identifiers or resources")
+ 			@OptionalParam(name="related", targetTypes={  } )
+ 			ReferenceAndListParam theRelated, 
+   
+ 			@Description(shortDefinition="Target of the relationship")
+ 			@OptionalParam(name="relatesto", targetTypes={  } )
+ 			ReferenceAndListParam theRelatesto, 
+   
+ 			@Description(shortDefinition="replaces | transforms | signs | appends")
+ 			@OptionalParam(name="relation")
+ 			TokenAndListParam theRelation,
+   
+ 			@Description(shortDefinition="Combination of relation and relatesTo")
+ 			@OptionalParam(name="relationship", compositeTypes= { ReferenceParam.class, TokenParam.class })
+ 			CompositeAndListParam<ReferenceParam, TokenParam> theRelationship,
+   
+ 			@Description(shortDefinition="Document security-tags")
+ 			@OptionalParam(name="security-label")
+ 			TokenAndListParam theSecurity_label,
+   
+ 			@Description(shortDefinition="Additional details about where the content was created (e.g. clinical specialty)")
+ 			@OptionalParam(name="setting")
+ 			TokenAndListParam theSetting,
+   
+ 			@Description(shortDefinition="current | superseded | entered-in-error")
+ 			@OptionalParam(name="status")
+ 			TokenAndListParam theStatus,
+   
+ 			@Description(shortDefinition="Who/what is the subject of the document")
+ 			@OptionalParam(name="subject", targetTypes={  } )
+ 			ReferenceAndListParam theSubject, 
+   
+ 			@Description(shortDefinition="Kind of document (LOINC if possible)")
+ 			@OptionalParam(name="type")
+ 			TokenAndListParam theType,
+  		 
+ 			@IncludeParam(reverse=true)
+ 			Set<Include> theRevIncludes,
+ 			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
+ 			@OptionalParam(name="_lastUpdated")
+ 			DateRangeParam theLastUpdated, 
+ 
+ 			@IncludeParam(allow= {
+ 					"DocumentReference:authenticator" ,
+ 					"DocumentReference:author" ,
+ 					"DocumentReference:custodian" ,
+ 					"DocumentReference:encounter" ,
+ 					"DocumentReference:patient" ,
+ 					"DocumentReference:related" ,
+ 					"DocumentReference:relatesto" ,
+ 					"DocumentReference:subject" ,
+ 					"*"
+ 			}) 
+ 			Set<Include> theIncludes,
 			
 			@Sort 
 			SortSpec theSort,
@@ -247,32 +218,31 @@ public class DocumentReferenceProvider extends RecordBasedResourceProvider<Docum
 		paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_PROFILE, theSearchForProfile);
 		*/
 		//paramMap.add("_has", theHas);
-		paramMap.add("identifier", theIdentifier);
-		paramMap.add("subject", theSubject);
-		paramMap.add("type", theType);
-		paramMap.add("class", theClass);
-		paramMap.add("author", theAuthor);
-		paramMap.add("custodian", theCustodian);
 		paramMap.add("authenticator", theAuthenticator);
-		paramMap.add("created", theCreated);
-		paramMap.add("indexed", theIndexed);
-		paramMap.add("status", theStatus);
-		paramMap.add("relatesto", theRelatesto);
-		paramMap.add("relation", theRelation);
+		paramMap.add("author", theAuthor);
+		paramMap.add("category", theCategory);
+		paramMap.add("contenttype", theContenttype);
+		paramMap.add("custodian", theCustodian);
+		paramMap.add("date", theDate);
 		paramMap.add("description", theDescription);
-		paramMap.add("securitylabel", theSecuritylabel);
+		paramMap.add("encounter", theEncounter);
+		paramMap.add("event", theEvent);
+		paramMap.add("facility", theFacility);
 		paramMap.add("format", theFormat);
+		paramMap.add("identifier", theIdentifier);
 		paramMap.add("language", theLanguage);
 		paramMap.add("location", theLocation);
-		paramMap.add("event", theEvent);
-		paramMap.add("period", thePeriod);
-		paramMap.add("facility", theFacility);
 		paramMap.add("patient", thePatient);
+		paramMap.add("period", thePeriod);
+		paramMap.add("related", theRelated);
+		paramMap.add("relatesto", theRelatesto);
+		paramMap.add("relation", theRelation);
+		paramMap.add("relationship", theRelationship);
+		paramMap.add("security-label", theSecurity_label);
 		paramMap.add("setting", theSetting);
-		paramMap.add("related-id", theRelated_id);
-		paramMap.add("related-ref", theRelated_ref);
-		paramMap.add("encounter", theEncounter);
-		paramMap.add("relatesto-relation", theRelatesto_relation);
+		paramMap.add("status", theStatus);
+		paramMap.add("subject", theSubject);
+		paramMap.add("type", theType);
 		paramMap.setRevIncludes(theRevIncludes);
 		paramMap.setLastUpdated(theLastUpdated);
 		paramMap.setIncludes(theIncludes);
@@ -303,13 +273,14 @@ public class DocumentReferenceProvider extends RecordBasedResourceProvider<Docum
 		builder.restriction("authenticator", true, null, "authenticator");
 		
 		builder.restriction("author", true, null, "author");
+				
+		builder.restriction("category", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "category|class");
 		
-		builder.restriction("class", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "class");
-		builder.restriction("created", true, QueryBuilder.TYPE_DATETIME, "created");
+		builder.restriction("date", true, QueryBuilder.TYPE_DATETIME, "date|created");	
 		builder.restriction("custodian", true, "Organization", "custodian");
 		
 		builder.restriction("description", true, QueryBuilder.TYPE_STRING, "description");
-		builder.restriction("encounter", true, "Encounter", "context.encounter");
+		builder.restriction("encounter", true, null, "context.encounter");
 		
 		builder.restriction("event", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "context.event");
 		builder.restriction("facility", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "context.facilityType");
@@ -321,8 +292,7 @@ public class DocumentReferenceProvider extends RecordBasedResourceProvider<Docum
 		//builder.restriction("patient", "Patient", true, "subject");
 		
 		builder.restriction("period", true, QueryBuilder.TYPE_PERIOD, "context.period");
-		builder.restriction("related-id", true, QueryBuilder.TYPE_IDENTIFIER, "context.related.identifier");
-		builder.restriction("related-ref", true, null, "context.related.ref");
+		builder.restriction("related", true, null, "context.related");		
 		
 		builder.restriction("relatesto", true, "DocumentReference", "relatesTo.target");
 		
@@ -419,5 +389,12 @@ public class DocumentReferenceProvider extends RecordBasedResourceProvider<Docum
 		
     	return ctx.newJsonParser().encodeResourceToString(theDocumentReference);
     }
+
+	@Override
+	protected void convertToR4(Object in) {
+		FHIRVersionConvert.rename(in, "class", "category");
+		FHIRVersionConvert.rename(in, "created", "date");
+		
+	}
 
 }

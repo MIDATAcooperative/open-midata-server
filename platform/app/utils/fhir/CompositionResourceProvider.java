@@ -84,8 +84,8 @@ public class CompositionResourceProvider extends RecordBasedResourceProvider<Com
 		// For each existing search parameter that has a "reference" type that cannot reference
 		// to any resource add one line:
 		// searchParamNameToTypeMap.put("Resource:search-name", Sets.create("TargetResourceTyp1", ...));			
-		searchParamNameToTypeMap.put("Composition:attester", Sets.create("Practitioner","Organization", "Patient"));
-		searchParamNameToTypeMap.put("Composition:author", Sets.create("Practitioner", "Device", "Patient", "RelatedPerson"));
+		searchParamNameToTypeMap.put("Composition:attester", Sets.create("Practitioner", "Organization", "Patient", "PractitionerRole", "RelatedPerson"));
+		searchParamNameToTypeMap.put("Composition:author", Sets.create("Practitioner", "Organization", "Device", "Patient", "PractitionerRole", "RelatedPerson"));
 		searchParamNameToTypeMap.put("Composition:encounter", Sets.create("Encounter"));
 		searchParamNameToTypeMap.put("Composition:patient", Sets.create("Patient"));
 		searchParamNameToTypeMap.put("Composition:related-ref", Sets.create("Composition"));
@@ -112,7 +112,7 @@ public class CompositionResourceProvider extends RecordBasedResourceProvider<Com
 
 			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
 
-			@Description(shortDefinition="Who attested the composition")
+ 			@Description(shortDefinition="Who attested the composition")
   			@OptionalParam(name="attester", targetTypes={  } )
   			ReferenceAndListParam theAttester, 
     
@@ -121,8 +121,8 @@ public class CompositionResourceProvider extends RecordBasedResourceProvider<Com
   			ReferenceAndListParam theAuthor, 
     
   			@Description(shortDefinition="Categorization of Composition")
-  			@OptionalParam(name="class")
-  			TokenAndListParam theClass,
+  			@OptionalParam(name="category")
+  			TokenAndListParam theCategory,
     
   			@Description(shortDefinition="As defined by affinity domain")
   			@OptionalParam(name="confidentiality")
@@ -144,7 +144,7 @@ public class CompositionResourceProvider extends RecordBasedResourceProvider<Com
   			@OptionalParam(name="entry", targetTypes={  } )
   			ReferenceAndListParam theEntry, 
     
- 			@Description(shortDefinition="Logical identifier of composition (version-independent)")
+ 			@Description(shortDefinition="Version-independent identifier for the Composition")
  			@OptionalParam(name="identifier")
  			TokenAndListParam theIdentifier,
    
@@ -154,7 +154,7 @@ public class CompositionResourceProvider extends RecordBasedResourceProvider<Com
    
  			@Description(shortDefinition="The period covered by the documentation")
  			@OptionalParam(name="period")
- 			DateAndListParam thePeriod, 
+			DateAndListParam thePeriod, 
    
  			@Description(shortDefinition="Target of the relationship")
  			@OptionalParam(name="related-id")
@@ -183,25 +183,25 @@ public class CompositionResourceProvider extends RecordBasedResourceProvider<Com
  			@Description(shortDefinition="Kind of composition (LOINC if possible)")
  			@OptionalParam(name="type")
  			TokenAndListParam theType,
-									
-			@IncludeParam(reverse=true)
-			Set<Include> theRevIncludes,
-			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
-			@OptionalParam(name="_lastUpdated")
-			DateRangeParam theLastUpdated, 
-			
-			// This often needs to be cleaned up after copy/paste
-			@IncludeParam(allow= {
-					"Composition:attester",
-					"Composition:author" ,
-					"Composition:encounter" ,
-					"Composition:entry" ,
-					"Composition:patient" ,
-					"Composition:related-ref" ,
-					"Composition:subject" , 					
-					"*"
-			}) 
-			Set<Include> theIncludes,
+  			
+
+ 			@IncludeParam(reverse=true)
+ 			Set<Include> theRevIncludes,
+ 			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
+ 			@OptionalParam(name="_lastUpdated")
+ 			DateRangeParam theLastUpdated, 
+ 
+ 			@IncludeParam(allow= {
+ 					"Composition:attester" ,
+ 					"Composition:author" ,
+ 					"Composition:encounter" ,
+ 					"Composition:entry" ,
+ 					"Composition:patient" ,
+ 					"Composition:related-ref" ,
+ 					"Composition:subject" ,
+ 					"*"
+ 			}) 
+ 			Set<Include> theIncludes,
 								
 			@Sort SortSpec theSort,		
 			
@@ -223,7 +223,7 @@ public class CompositionResourceProvider extends RecordBasedResourceProvider<Com
 			
 		paramMap.add("attester", theAttester);
 		paramMap.add("author", theAuthor);
-		paramMap.add("class", theClass);
+		paramMap.add("category", theCategory);
 		paramMap.add("confidentiality", theConfidentiality);
 		paramMap.add("context", theContext);
 		paramMap.add("date", theDate);
@@ -282,9 +282,10 @@ public class CompositionResourceProvider extends RecordBasedResourceProvider<Com
     	
         builder.restriction("title", true, QueryBuilder.TYPE_STRING, "title");
         
-        builder.restriction("attester", true, null, "attester.party");
+        builder.restriction("attester", true, null, "attester.party");        
         builder.restriction("author", true, null, "author");	
-        builder.restriction("class", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "class");	
+        builder.restriction("category", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "category|class");
+        
         builder.restriction("confidentiality", true, QueryBuilder.TYPE_CODE, "confidentiality");	
         builder.restriction("context", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "event.code");
         
@@ -441,6 +442,12 @@ public class CompositionResourceProvider extends RecordBasedResourceProvider<Com
 		BundleEntryComponent entry = retVal.addEntry();
 		entry.setResource(resource);
 		entry.setFullUrl(FHIRServlet.getBaseUrl()+"/"+resource.getId());
+	}
+
+	@Override
+	protected void convertToR4(Object in) {
+		FHIRVersionConvert.rename(in, "class", "category");
+		
 	}
 	
 

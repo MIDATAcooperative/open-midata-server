@@ -47,15 +47,13 @@ public class DiagnosticReportResourceProvider extends RecordBasedResourceProvide
 	public DiagnosticReportResourceProvider() {
 		searchParamNameToPathMap.put("DiagnosticReport:based-on", "basedOn");
 		searchParamNameToTypeMap.put("DiagnosticReport:based-on", Sets.create("ReferralRequest", "CarePlan", "MedicationRequest", "NutritionOrder", "ProcedureRequest", "ImmunizationRecommendation"));
+				
 		
-		searchParamNameToPathMap.put("DiagnosticReport:context", "context");
-		searchParamNameToTypeMap.put("DiagnosticReport:context", Sets.create("EpisodeOfCare", "Encounter"));
-		
-		searchParamNameToPathMap.put("DiagnosticReport:encounter", "context");
+		searchParamNameToPathMap.put("DiagnosticReport:encounter", "encounter");
 		searchParamNameToTypeMap.put("DiagnosticReport:encounter", Sets.create("Encounter"));
 		
-		searchParamNameToPathMap.put("DiagnosticReport:image", "image.link");
-		searchParamNameToTypeMap.put("DiagnosticReport:image", Sets.create("Media"));
+		searchParamNameToPathMap.put("DiagnosticReport:media", "media.link");
+		searchParamNameToTypeMap.put("DiagnosticReport:media", Sets.create("Media"));
 		
 		searchParamNameToPathMap.put("DiagnosticReport:patient", "subject");
 		searchParamNameToTypeMap.put("DiagnosticReport:patient", Sets.create("Patient"));
@@ -86,47 +84,89 @@ public class DiagnosticReportResourceProvider extends RecordBasedResourceProvide
 
 			@Description(shortDefinition = "The language of the resource") @OptionalParam(name = "_language") StringAndListParam the_language,
 
-			@Description(shortDefinition = "Reference to the procedure request.") @OptionalParam(name = "based-on", targetTypes = {}) ReferenceAndListParam theBased_on,
-
-			@Description(shortDefinition = "Which diagnostic discipline/department created the report") @OptionalParam(name = "category") TokenAndListParam theCategory,
-
-			@Description(shortDefinition = "The code for the report as a whole, as opposed to codes for the atomic results, ch are the names on the observation resource referred to from the result") @OptionalParam(name = "code") TokenAndListParam theCode,
-
-			@Description(shortDefinition = "Healthcare event (Episode of Care or Encounter) related to the report") @OptionalParam(name = "context", targetTypes = {}) ReferenceAndListParam theContext,
-
-			@Description(shortDefinition = "The clinically relevant time of the report") @OptionalParam(name = "date") DateAndListParam theDate,
-
-			@Description(shortDefinition = "A coded diagnosis on the report") @OptionalParam(name = "diagnosis") TokenAndListParam theDiagnosis,
-
-			@Description(shortDefinition = "The Encounter when the order was made") @OptionalParam(name = "encounter", targetTypes = {}) ReferenceAndListParam theEncounter,
-
-			@Description(shortDefinition = "An identifier for the report") @OptionalParam(name = "identifier") TokenAndListParam theIdentifier,
-
-			@Description(shortDefinition = "A reference to the image source.") @OptionalParam(name = "image", targetTypes = {}) ReferenceAndListParam theImage,
-
-			@Description(shortDefinition = "When the report was issued") @OptionalParam(name = "issued") DateAndListParam theIssued,
-
-			@Description(shortDefinition = "The subject of the report if a patient") @OptionalParam(name = "patient", targetTypes = {}) ReferenceAndListParam thePatient,
-
-			@Description(shortDefinition = "Who was the source of the report (organization)") @OptionalParam(name = "performer", targetTypes = {}) ReferenceAndListParam thePerformer,
-
-			@Description(shortDefinition = "Link to an atomic result (observation resource)") @OptionalParam(name = "result", targetTypes = {}) ReferenceAndListParam theResult,
-
-			@Description(shortDefinition = "The specimen details") @OptionalParam(name = "specimen", targetTypes = {}) ReferenceAndListParam theSpecimen,
-
-			@Description(shortDefinition = "The status of the report") @OptionalParam(name = "status") TokenAndListParam theStatus,
-
-			@Description(shortDefinition = "The subject of the report") @OptionalParam(name = "subject", targetTypes = {}) ReferenceAndListParam theSubject,
-
-			@RawParam Map<String, List<String>> theAdditionalRawParams,
-
-			@IncludeParam(reverse = true) Set<Include> theRevIncludes,
-			@Description(shortDefinition = "Only return resources which were last updated as specified by the given range") @OptionalParam(name = "_lastUpdated") DateRangeParam theLastUpdated,
-
-			@IncludeParam(allow = { "DiagnosticReport:based-on", "DiagnosticReport:context",
-					"DiagnosticReport:encounter", "DiagnosticReport:image", "DiagnosticReport:patient",
-					"DiagnosticReport:performer", "DiagnosticReport:result", "DiagnosticReport:specimen",
-					"DiagnosticReport:subject", "*" }) Set<Include> theIncludes,
+			@Description(shortDefinition="Reference to the service request.")
+  			@OptionalParam(name="based-on", targetTypes={  } )
+  			ReferenceAndListParam theBased_on, 
+    
+  			@Description(shortDefinition="Which diagnostic discipline/department created the report")
+  			@OptionalParam(name="category")
+  			TokenAndListParam theCategory,
+    
+  			@Description(shortDefinition="The code for the report, as opposed to codes for the atomic results, which are the names on the observation resource referred to from the result")
+  			@OptionalParam(name="code")
+  			TokenAndListParam theCode,
+    
+  			@Description(shortDefinition="A coded conclusion (interpretation/impression) on the report")
+  			@OptionalParam(name="conclusion")
+  			TokenAndListParam theConclusion,
+    
+  			@Description(shortDefinition="The clinically relevant time of the report")
+  			@OptionalParam(name="date")
+  			DateAndListParam theDate, 
+    
+  			@Description(shortDefinition="The Encounter when the order was made")
+  			@OptionalParam(name="encounter", targetTypes={  } )
+  			ReferenceAndListParam theEncounter, 
+    
+  			@Description(shortDefinition="An identifier for the report")
+  			@OptionalParam(name="identifier")
+  			TokenAndListParam theIdentifier,
+    
+  			@Description(shortDefinition="When the report was issued")
+  			@OptionalParam(name="issued")
+			DateAndListParam theIssued, 
+    
+ 			@Description(shortDefinition="A reference to the image source.")
+ 			@OptionalParam(name="media", targetTypes={  } )
+ 			ReferenceAndListParam theMedia, 
+   
+ 			@Description(shortDefinition="The subject of the report if a patient")
+ 			@OptionalParam(name="patient", targetTypes={  } )
+ 			ReferenceAndListParam thePatient, 
+   
+ 			@Description(shortDefinition="Who is responsible for the report")
+ 			@OptionalParam(name="performer", targetTypes={  } )
+ 			ReferenceAndListParam thePerformer, 
+   
+ 			@Description(shortDefinition="Link to an atomic result (observation resource)")
+ 			@OptionalParam(name="result", targetTypes={  } )
+ 			ReferenceAndListParam theResult, 
+   
+ 			@Description(shortDefinition="Who was the source of the report")
+ 			@OptionalParam(name="results-interpreter", targetTypes={  } )
+ 			ReferenceAndListParam theResults_interpreter, 
+   
+ 			@Description(shortDefinition="The specimen details")
+ 			@OptionalParam(name="specimen", targetTypes={  } )
+ 			ReferenceAndListParam theSpecimen, 
+   
+ 			@Description(shortDefinition="The status of the report")
+ 			@OptionalParam(name="status")
+ 			TokenAndListParam theStatus,
+   
+ 			@Description(shortDefinition="The subject of the report")
+ 			@OptionalParam(name="subject", targetTypes={  } )
+ 			ReferenceAndListParam theSubject, 
+  			
+ 			@IncludeParam(reverse=true)
+ 			Set<Include> theRevIncludes,
+ 			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
+ 			@OptionalParam(name="_lastUpdated")
+ 			DateRangeParam theLastUpdated, 
+ 
+ 			@IncludeParam(allow= {
+ 					"DiagnosticReport:based-on" ,
+ 					"DiagnosticReport:encounter" ,
+ 					"DiagnosticReport:media" ,
+ 					"DiagnosticReport:patient" ,
+ 					"DiagnosticReport:performer" ,
+ 					"DiagnosticReport:result" ,
+ 					"DiagnosticReport:results-interpreter" ,
+ 					"DiagnosticReport:specimen" ,
+ 					"DiagnosticReport:subject" ,
+ 					"*"
+ 			}) 
+ 			Set<Include> theIncludes,
 
 			@Sort SortSpec theSort,
 
@@ -145,16 +185,16 @@ public class DiagnosticReportResourceProvider extends RecordBasedResourceProvide
 		paramMap.add("based-on", theBased_on);
 		paramMap.add("category", theCategory);
 		paramMap.add("code", theCode);
-		paramMap.add("context", theContext);
+		paramMap.add("conclusion", theConclusion);
 		paramMap.add("date", theDate);
-		paramMap.add("diagnosis", theDiagnosis);
 		paramMap.add("encounter", theEncounter);
 		paramMap.add("identifier", theIdentifier);
-		paramMap.add("image", theImage);
 		paramMap.add("issued", theIssued);
+		paramMap.add("media", theMedia);
 		paramMap.add("patient", thePatient);
 		paramMap.add("performer", thePerformer);
 		paramMap.add("result", theResult);
+		paramMap.add("results-interpreter", theResults_interpreter);
 		paramMap.add("specimen", theSpecimen);
 		paramMap.add("status", theStatus);
 		paramMap.add("subject", theSubject);
@@ -188,16 +228,17 @@ public class DiagnosticReportResourceProvider extends RecordBasedResourceProvide
 
 		builder.restriction("based-on", true, null, "basedOn");
 		builder.restriction("category", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "category");
-		
+		builder.restriction("conclusion", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "conclusionCode");
 		builder.restriction("context", true, null, "context");
 		builder.restriction("date", true, QueryBuilder.TYPE_DATETIME_OR_PERIOD, "effective");
 		builder.restriction("diagnosis", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "codedDiagnosis");
 		builder.restriction("encounter", true, "Encounter", "encounter");
 		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
-		builder.restriction("image", true, "Media", "image.link");
+		builder.restriction("media", true, "Media", "media.link|image.link");
 		builder.restriction("issued", true, QueryBuilder.TYPE_DATETIME, "issued");
 		builder.restriction("performer", true, "Performer", "performer");
 		builder.restriction("result", true, "Observation", "result");
+		builder.restriction("results-interpreter", true, null, "resultsInterpreter");
 		builder.restriction("specimen", true, "Specimen", "specimen");
 		builder.restriction("status", true, QueryBuilder.TYPE_CODE, "status");
 
@@ -292,5 +333,11 @@ public class DiagnosticReportResourceProvider extends RecordBasedResourceProvide
 			  attachment.setUrl(url);
 			}
 		}
+	}
+
+	@Override
+	protected void convertToR4(Object in) {
+		FHIRVersionConvert.rename(in, "image", "media");
+		
 	}
 }

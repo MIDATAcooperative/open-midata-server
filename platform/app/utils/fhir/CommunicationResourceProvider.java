@@ -30,6 +30,7 @@ import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
+import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import controllers.Circles;
@@ -47,7 +48,9 @@ public class CommunicationResourceProvider extends RecordBasedResourceProvider<C
 
 	public CommunicationResourceProvider() {
 		searchParamNameToPathMap.put("Communication:based-on", "basedOn");
-		searchParamNameToPathMap.put("Communication:context", "context");
+		searchParamNameToPathMap.put("Communication:part-of", "partOf");
+		searchParamNameToPathMap.put("Communication:instantiates-canonical", "instantiatesCanonical");
+		searchParamNameToPathMap.put("Communication:encounter", "encounter");
 		searchParamNameToPathMap.put("Communication:patient", "subject");
 		searchParamNameToTypeMap.put("Communication:patient", Sets.create("Patient"));
 		searchParamNameToPathMap.put("Communication:recipient", "recipient");
@@ -74,70 +77,84 @@ public class CommunicationResourceProvider extends RecordBasedResourceProvider<C
 			StringAndListParam theResourceLanguage, 
 						
 			    
-			@Description(shortDefinition="")
-			@OptionalParam(name="identifier")
-			TokenAndListParam theIdentifier, 
-			  
-			@Description(shortDefinition="")
-			@OptionalParam(name="category")
-			TokenAndListParam theCategory, 
-			   
-			@Description(shortDefinition="")
-			@OptionalParam(name="sender", targetTypes={  } )
-			ReferenceAndListParam theSender, 
-			    
-			@Description(shortDefinition="")
-			@OptionalParam(name="recipient", targetTypes={  } )
-			ReferenceAndListParam theRecipient, 
-			    
-			@Description(shortDefinition="")
-			@OptionalParam(name="medium")
-			TokenAndListParam theMedium, 
-			   
-			@Description(shortDefinition="")
-			@OptionalParam(name="status")
-			TokenAndListParam theStatus, 
-			   
-			@Description(shortDefinition="")
-			@OptionalParam(name="context", targetTypes={  } )
-			ReferenceAndListParam theContext, 
-			   
-			@Description(shortDefinition="")
-			@OptionalParam(name="sent")
+  			@Description(shortDefinition="Request fulfilled by this communication")
+  			@OptionalParam(name="based-on", targetTypes={  } )
+  			ReferenceAndListParam theBased_on, 
+    
+  			@Description(shortDefinition="Message category")
+  			@OptionalParam(name="category")
+  			TokenAndListParam theCategory,
+    
+  			@Description(shortDefinition="Encounter created as part of")
+  			@OptionalParam(name="encounter", targetTypes={  } )
+  			ReferenceAndListParam theEncounter, 
+    
+  			@Description(shortDefinition="Unique identifier")
+  			@OptionalParam(name="identifier")
+  			TokenAndListParam theIdentifier,
+    
+  			@Description(shortDefinition="Instantiates FHIR protocol or definition")
+  			@OptionalParam(name="instantiates-canonical", targetTypes={  } )
+  			ReferenceAndListParam theInstantiates_canonical, 
+    
+  			@Description(shortDefinition="Instantiates external protocol or definition")
+  			@OptionalParam(name="instantiates-uri")
+  			UriAndListParam theInstantiates_uri, 
+    
+  			@Description(shortDefinition="A channel of communication")
+  			@OptionalParam(name="medium")
+  			TokenAndListParam theMedium,
+    
+  			@Description(shortDefinition="Part of this action")
+  			@OptionalParam(name="part-of", targetTypes={  } )
+  			ReferenceAndListParam thePart_of, 
+    
+ 			@Description(shortDefinition="Focus of message")
+ 			@OptionalParam(name="patient", targetTypes={  } )
+ 			ReferenceAndListParam thePatient, 
+   
+ 			@Description(shortDefinition="When received")
+ 			@OptionalParam(name="received")
+ 			DateAndListParam theReceived, 
+   
+ 			@Description(shortDefinition="Message recipient")
+ 			@OptionalParam(name="recipient", targetTypes={  } )
+ 			ReferenceAndListParam theRecipient, 
+   
+ 			@Description(shortDefinition="Message sender")
+ 			@OptionalParam(name="sender", targetTypes={  } )
+ 			ReferenceAndListParam theSender, 
+   
+ 			@Description(shortDefinition="When sent")
+ 			@OptionalParam(name="sent")
 			DateAndListParam theSent, 
-			   
-			@Description(shortDefinition="")
-			@OptionalParam(name="received")
-			DateAndListParam theReceived, 
-			  
-			@Description(shortDefinition="")
-			@OptionalParam(name="subject", targetTypes={  } )
-			ReferenceAndListParam theSubject, 
-			  
-			@Description(shortDefinition="")
-			@OptionalParam(name="patient", targetTypes={  Patient.class   } )
-			ReferenceAndListParam thePatient, 
-			   
-			@Description(shortDefinition="")
-			@OptionalParam(name="based-on", targetTypes={  } )
-			ReferenceAndListParam theBased_on, 
-			 
-			@IncludeParam(reverse=true)
-			Set<Include> theRevIncludes,
-			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
-			@OptionalParam(name="_lastUpdated")
-			DateRangeParam theLastUpdated, 
-			 
-			@IncludeParam(allow= {
-					"Communication:based-on" ,
-					"Communication:context" ,
-					"Communication:patient" ,
-					"Communication:recipient" ,
-					"Communication:sender" ,
-					"Communication:subject" ,
-					"*"
-			}) 
-			Set<Include> theIncludes,
+   
+ 			@Description(shortDefinition="preparation | in-progress | not-done | suspended | aborted | completed | entered-in-error")
+ 			@OptionalParam(name="status")
+ 			TokenAndListParam theStatus,
+   
+ 			@Description(shortDefinition="Focus of message")
+ 			@OptionalParam(name="subject", targetTypes={  } )
+ 			ReferenceAndListParam theSubject, 
+  		
+ 			@IncludeParam(reverse=true)
+ 			Set<Include> theRevIncludes,
+ 			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
+ 			@OptionalParam(name="_lastUpdated")
+ 			DateRangeParam theLastUpdated, 
+ 
+ 			@IncludeParam(allow= {
+ 					"Communication:based-on" ,
+ 					"Communication:encounter" ,
+ 					"Communication:instantiates-canonical" ,
+ 					"Communication:part-of" ,
+ 					"Communication:patient" ,
+ 					"Communication:recipient" ,
+ 					"Communication:sender" ,
+ 					"Communication:subject" ,
+ 					"*"
+ 			}) 
+ 			Set<Include> theIncludes,
 			 									
 			@Sort SortSpec theSort,
 
@@ -155,18 +172,20 @@ public class CommunicationResourceProvider extends RecordBasedResourceProvider<C
 		paramMap.add("_id", theId);
 		paramMap.add("_language", theResourceLanguage);	
 	
-		paramMap.add("identifier", theIdentifier);
 		paramMap.add("category", theCategory);
-		paramMap.add("sender", theSender);
-		paramMap.add("recipient", theRecipient);
+		paramMap.add("encounter", theEncounter);
+		paramMap.add("identifier", theIdentifier);
+		paramMap.add("instantiates-canonical", theInstantiates_canonical);
+		paramMap.add("instantiates-uri", theInstantiates_uri);
 		paramMap.add("medium", theMedium);
-		paramMap.add("status", theStatus);
-		paramMap.add("context", theContext);
-		paramMap.add("sent", theSent);
-		paramMap.add("received", theReceived);
-		paramMap.add("subject", theSubject);
+		paramMap.add("part-of", thePart_of);
 		paramMap.add("patient", thePatient);
-		paramMap.add("based-on", theBased_on);
+		paramMap.add("received", theReceived);
+		paramMap.add("recipient", theRecipient);
+		paramMap.add("sender", theSender);
+		paramMap.add("sent", theSent);
+		paramMap.add("status", theStatus);
+		paramMap.add("subject", theSubject);
 		
 		paramMap.setRevIncludes(theRevIncludes);
 		paramMap.setLastUpdated(theLastUpdated);
@@ -197,7 +216,10 @@ public class CommunicationResourceProvider extends RecordBasedResourceProvider<C
 		if (!builder.recordOwnerReference("subject", null, "subject")) builder.restriction("subject", true, null, "subject");
 				
 		builder.restriction("category", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "category");
-		builder.restriction("context", true, null, "context");
+		builder.restriction("encounter", true, "Encounter", "encounter");
+		builder.restriction("instantiates-canonical", true, null, "instantiatesCanonical");
+		builder.restriction("instantiates-uri", true, QueryBuilder.TYPE_URI, "instantiatesUri");
+		builder.restriction("part-of", true, null, "partOf");
 		builder.restriction("medium", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "medium");
 		builder.restriction("sender", true, null, "sender");
 		builder.restriction("status", true, QueryBuilder.TYPE_CODE, "status");	
@@ -291,6 +313,12 @@ public class CommunicationResourceProvider extends RecordBasedResourceProvider<C
 		if (p.getSubject().isEmpty()) {			
 			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
+	}
+
+	@Override
+	protected void convertToR4(Object in) {
+		// No action
+		
 	}
 	
 

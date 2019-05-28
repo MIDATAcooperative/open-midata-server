@@ -81,7 +81,8 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 		// For each existing search parameter that has a "reference" type add one line:
 		// searchParamNameToPathMap.put("Resource:search-name", "path from search specification");
 		searchParamNameToPathMap.put("Observation:based-on", "basedOn");
-		searchParamNameToPathMap.put("Observation:context", "context");
+		searchParamNameToPathMap.put("Observation:part-of", "partOf");
+		
 		searchParamNameToPathMap.put("Observation:device", "device");
 		searchParamNameToPathMap.put("Observation:encounter", "encounter");
 		searchParamNameToPathMap.put("Observation:patient", "subject");
@@ -89,11 +90,13 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 		// For each existing search parameter that has a "reference" type that cannot reference
 		// to any resource add one line:
 		// searchParamNameToTypeMap.put("Resource:search-name", Sets.create("TargetResourceTyp1", ...));			
-		searchParamNameToTypeMap.put("Observation:patient", Sets.create("Patient"));
-		
-		
+		searchParamNameToTypeMap.put("Observation:patient", Sets.create("Patient"));				
 		searchParamNameToPathMap.put("Observation:performer", "performer");
-		searchParamNameToPathMap.put("Observation:related-target", "related.target");
+		
+		searchParamNameToPathMap.put("Observation:derived-from", "derivedFrom");
+		searchParamNameToPathMap.put("Observation:has-member", "hasMember");
+		searchParamNameToTypeMap.put("Observation:has-member", Sets.create("Observation", "MolecularSequence", "QuestionnaireResponse"));
+		
 		searchParamNameToPathMap.put("Observation:specimen", "specimen");
 		searchParamNameToPathMap.put("Observation:subject", "subject");				
 		
@@ -638,7 +641,7 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 	@Override
 	protected void convertToR4(Object in) {
 		FHIRVersionConvert.rename(in, FHIRVersionConvert.MODE_STRING_TO_ANNOTATIONS, "comment", "note");
-		
+		FHIRVersionConvert.convertRelated(in);		
 	}
 	
 

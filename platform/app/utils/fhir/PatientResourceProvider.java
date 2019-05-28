@@ -891,4 +891,10 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		AuditManager.instance.success();
 	}
 
+	@Override
+	protected void convertToR4(Object in) {
+		// Nothing to do
+		
+	}
+
 }

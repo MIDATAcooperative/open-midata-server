@@ -234,4 +234,10 @@ public class FlagResourceProvider extends RecordBasedResourceProvider<Flag> impl
 			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
 	}
+
+	@Override
+	protected void convertToR4(Object in) {
+		// Nothing to do
+		
+	}
 }

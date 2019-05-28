@@ -28,6 +28,7 @@ import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
+import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.Record;
@@ -50,18 +51,14 @@ public class CarePlanResourceProvider extends RecordBasedResourceProvider<CarePl
 		
 		searchParamNameToPathMap.put("CarePlan:condition", "addresses");
 		searchParamNameToTypeMap.put("CarePlan:condition", Sets.create("Condition"));
-		
-		searchParamNameToPathMap.put("CarePlan:context", "context");
-		searchParamNameToTypeMap.put("CarePlan:context", Sets.create("EpisodeOfCare", "Encounter"));
-		
-		searchParamNameToPathMap.put("CarePlan:definition", "definition");
-		searchParamNameToTypeMap.put("CarePlan:definition", Sets.create("Questionnaire", "PlanDefinition"));
-		
+							
 		searchParamNameToPathMap.put("CarePlan:encounter", "context");
 		searchParamNameToTypeMap.put("CarePlan:encounter", Sets.create("Encounter"));
 		
 		searchParamNameToPathMap.put("CarePlan:goal", "goal");
 		searchParamNameToTypeMap.put("CarePlan:goal", Sets.create("Goal"));
+		
+		searchParamNameToPathMap.put("CarePlan:instantiates-canonical", "instantiatesCanonical");
 		
 		searchParamNameToPathMap.put("CarePlan:part-of", "partOf");
 		searchParamNameToTypeMap.put("CarePlan:part-of", Sets.create("CarePlan"));
@@ -92,55 +89,111 @@ public class CarePlanResourceProvider extends RecordBasedResourceProvider<CarePl
 
 			@Description(shortDefinition = "The language of the resource") @OptionalParam(name = "_language") StringAndListParam the_language,
 
-			@Description(shortDefinition = "Detail type of activity") @OptionalParam(name = "activity-code") TokenAndListParam theActivity_code,
-
-			@Description(shortDefinition = "Specified date occurs within period specified by CarePlan.activity.timingSchedule") @OptionalParam(name = "activity-date") DateAndListParam theActivity_date,
-
-			@Description(shortDefinition = "Activity details defined in specific resource") @OptionalParam(name = "activity-reference", targetTypes = {}) ReferenceAndListParam theActivity_reference,
-
-			@Description(shortDefinition = "Fulfills care plan") @OptionalParam(name = "based-on", targetTypes = {}) ReferenceAndListParam theBased_on,
-
-			@Description(shortDefinition = "Who's involved in plan?") @OptionalParam(name = "care-team", targetTypes = {}) ReferenceAndListParam theCare_team,
-
-			@Description(shortDefinition = "Type of plan") @OptionalParam(name = "category") TokenAndListParam theCategory,
-
-			@Description(shortDefinition = "Health issues this plan addresses") @OptionalParam(name = "condition", targetTypes = {}) ReferenceAndListParam theCondition,
-
-			@Description(shortDefinition = "Created in context of") @OptionalParam(name = "context", targetTypes = {}) ReferenceAndListParam theContext,
-
-			@Description(shortDefinition = "Time period plan covers") @OptionalParam(name = "date") DateAndListParam theDate,
-
-			@Description(shortDefinition = "Protocol or definition") @OptionalParam(name = "definition", targetTypes = {}) ReferenceAndListParam theDefinition,
-
-			@Description(shortDefinition = "Created in context of") @OptionalParam(name = "encounter", targetTypes = {}) ReferenceAndListParam theEncounter,
-
-			@Description(shortDefinition = "Desired outcome of plan") @OptionalParam(name = "goal", targetTypes = {}) ReferenceAndListParam theGoal,
-
-			@Description(shortDefinition = "External Ids for this plan") @OptionalParam(name = "identifier") TokenAndListParam theIdentifier,
-
-			@Description(shortDefinition = "proposal | plan | order | option") @OptionalParam(name = "intent") TokenAndListParam theIntent,
-
-			@Description(shortDefinition = "Part of referenced CarePlan") @OptionalParam(name = "part-of", targetTypes = {}) ReferenceAndListParam thePart_of,
-
-			@Description(shortDefinition = "Who care plan is for") @OptionalParam(name = "patient", targetTypes = {}) ReferenceAndListParam thePatient,
-
-			@Description(shortDefinition = "Matches if the practitioner is listed as a performer in any of the \"simple\" activities.  (For performers of the detailed activities, chain through the activitydetail search parameter.)") @OptionalParam(name = "performer", targetTypes = {}) ReferenceAndListParam thePerformer,
-
-			@Description(shortDefinition = "CarePlan replaced by this CarePlan") @OptionalParam(name = "replaces", targetTypes = {}) ReferenceAndListParam theReplaces,
-
-			@Description(shortDefinition = "draft | active | suspended | completed | entered-in-error | cancelled | unknown") @OptionalParam(name = "status") TokenAndListParam theStatus,
-
-			@Description(shortDefinition = "Who care plan is for") @OptionalParam(name = "subject", targetTypes = {}) ReferenceAndListParam theSubject,
-
-			@RawParam Map<String, List<String>> theAdditionalRawParams,
-
-			@IncludeParam(reverse = true) Set<Include> theRevIncludes,
-			@Description(shortDefinition = "Only return resources which were last updated as specified by the given range") @OptionalParam(name = "_lastUpdated") DateRangeParam theLastUpdated,
-
-			@IncludeParam(allow = { "CarePlan:activity-reference", "CarePlan:based-on", "CarePlan:care-team",
-					"CarePlan:condition", "CarePlan:context", "CarePlan:definition", "CarePlan:encounter",
-					"CarePlan:goal", "CarePlan:part-of", "CarePlan:patient", "CarePlan:performer", "CarePlan:replaces",
-					"CarePlan:subject", "*" }) Set<Include> theIncludes,
+  			@Description(shortDefinition="Detail type of activity")
+  			@OptionalParam(name="activity-code")
+  			TokenAndListParam theActivity_code,
+    
+  			@Description(shortDefinition="Specified date occurs within period specified by CarePlan.activity.detail.scheduled[x]")
+  			@OptionalParam(name="activity-date")
+  			DateAndListParam theActivity_date, 
+    
+  			@Description(shortDefinition="Activity details defined in specific resource")
+  			@OptionalParam(name="activity-reference", targetTypes={  } )
+  			ReferenceAndListParam theActivity_reference, 
+    
+  			@Description(shortDefinition="Fulfills CarePlan")
+  			@OptionalParam(name="based-on", targetTypes={  } )
+  			ReferenceAndListParam theBased_on, 
+    
+  			@Description(shortDefinition="Who's involved in plan?")
+  			@OptionalParam(name="care-team", targetTypes={  } )
+  			ReferenceAndListParam theCare_team, 
+    
+  			@Description(shortDefinition="Type of plan")
+  			@OptionalParam(name="category")
+  			TokenAndListParam theCategory,
+    
+  			@Description(shortDefinition="Health issues this plan addresses")
+  			@OptionalParam(name="condition", targetTypes={  } )
+  			ReferenceAndListParam theCondition, 
+    
+  			@Description(shortDefinition="Time period plan covers")
+  			@OptionalParam(name="date")
+			DateAndListParam theDate, 
+    
+ 			@Description(shortDefinition="Encounter created as part of")
+ 			@OptionalParam(name="encounter", targetTypes={  } )
+ 			ReferenceAndListParam theEncounter, 
+   
+ 			@Description(shortDefinition="Desired outcome of plan")
+ 			@OptionalParam(name="goal", targetTypes={  } )
+ 			ReferenceAndListParam theGoal, 
+   
+ 			@Description(shortDefinition="External Ids for this plan")
+ 			@OptionalParam(name="identifier")
+ 			TokenAndListParam theIdentifier,
+   
+ 			@Description(shortDefinition="Instantiates FHIR protocol or definition")
+ 			@OptionalParam(name="instantiates-canonical", targetTypes={  } )
+ 			ReferenceAndListParam theInstantiates_canonical, 
+   
+ 			@Description(shortDefinition="Instantiates external protocol or definition")
+ 			@OptionalParam(name="instantiates-uri")
+ 			UriAndListParam theInstantiates_uri, 
+   
+ 			@Description(shortDefinition="proposal | plan | order | option")
+ 			@OptionalParam(name="intent")
+ 			TokenAndListParam theIntent,
+   
+ 			@Description(shortDefinition="Part of referenced CarePlan")
+ 			@OptionalParam(name="part-of", targetTypes={  } )
+ 			ReferenceAndListParam thePart_of, 
+   
+ 			@Description(shortDefinition="Who the care plan is for")
+ 			@OptionalParam(name="patient", targetTypes={  } )
+ 			ReferenceAndListParam thePatient, 
+   
+ 			@Description(shortDefinition="Matches if the practitioner is listed as a performer in any of the \"simple\" activities.  (For performers of the detailed activities, chain through the activitydetail search parameter.)")
+ 			@OptionalParam(name="performer", targetTypes={  } )
+ 			ReferenceAndListParam thePerformer, 
+   
+ 			@Description(shortDefinition="CarePlan replaced by this CarePlan")
+ 			@OptionalParam(name="replaces", targetTypes={  } )
+ 			ReferenceAndListParam theReplaces, 
+   
+ 			@Description(shortDefinition="draft | active | suspended | completed | entered-in-error | cancelled | unknown")
+ 			@OptionalParam(name="status")
+ 			TokenAndListParam theStatus,
+   
+ 			@Description(shortDefinition="Who the care plan is for")
+ 			@OptionalParam(name="subject", targetTypes={  } )
+ 			ReferenceAndListParam theSubject, 
+ 
+ 			@RawParam
+ 			Map<String, List<String>> theAdditionalRawParams,
+ 
+ 			@IncludeParam(reverse=true)
+ 			Set<Include> theRevIncludes,
+ 			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
+ 			@OptionalParam(name="_lastUpdated")
+ 			DateRangeParam theLastUpdated, 
+ 
+ 			@IncludeParam(allow= {
+ 					"CarePlan:activity-reference" ,
+ 					"CarePlan:based-on" ,
+ 					"CarePlan:care-team" ,
+ 					"CarePlan:condition" ,
+ 					"CarePlan:encounter" ,
+ 					"CarePlan:goal" ,
+ 					"CarePlan:instantiates-canonical" ,
+ 					"CarePlan:part-of" ,
+ 					"CarePlan:patient" ,
+ 					"CarePlan:performer" ,
+ 					"CarePlan:replaces" ,
+ 					"CarePlan:subject" ,
+ 					"*"
+ 			}) 
+ 			Set<Include> theIncludes,
 			@Sort SortSpec theSort,
 
 			@ca.uhn.fhir.rest.annotation.Count Integer theCount,
@@ -162,12 +215,12 @@ public class CarePlanResourceProvider extends RecordBasedResourceProvider<CarePl
 		paramMap.add("care-team", theCare_team);
 		paramMap.add("category", theCategory);
 		paramMap.add("condition", theCondition);
-		paramMap.add("context", theContext);
 		paramMap.add("date", theDate);
-		paramMap.add("definition", theDefinition);
 		paramMap.add("encounter", theEncounter);
 		paramMap.add("goal", theGoal);
 		paramMap.add("identifier", theIdentifier);
+		paramMap.add("instantiates-canonical", theInstantiates_canonical);
+		paramMap.add("instantiates-uri", theInstantiates_uri);
 		paramMap.add("intent", theIntent);
 		paramMap.add("part-of", thePart_of);
 		paramMap.add("patient", thePatient);
@@ -210,9 +263,10 @@ public class CarePlanResourceProvider extends RecordBasedResourceProvider<CarePl
 		builder.restriction("care-team", true, "CareTeam", "careTeam");
 		builder.restriction("category", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "category");
 		builder.restriction("condition", true, "Condition", "addresses");
-		builder.restriction("context", true, null, "context");
+		
 		builder.restriction("date", true, QueryBuilder.TYPE_PERIOD, "period");
-		builder.restriction("definition", true, null, "definition");
+		builder.restriction("instantiates-canonical", true, null, "instantiatesCanonical");
+		builder.restriction("instantiates-uri", true, QueryBuilder.TYPE_URI, "instantiatesUri");
 		builder.restriction("encounter", true, "Encounter", "context");
 		builder.restriction("goal", true, "Goal", "goal");		
 		builder.restriction("intent", true, QueryBuilder.TYPE_CODE, "intent");
@@ -293,5 +347,11 @@ public class CarePlanResourceProvider extends RecordBasedResourceProvider<CarePl
 		if (p.getSubject().isEmpty()) {
 			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
+	}
+
+	@Override
+	protected void convertToR4(Object in) {
+		
+		
 	}
 }
