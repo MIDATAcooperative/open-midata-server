@@ -182,6 +182,12 @@ public class Administration extends APIController {
 			}
 		}
 		
+		if (json.has("subroles") && !executorId.equals(user._id)) {
+			Set<SubUserRole> roles = JsonValidation.getEnumSet(json, "subroles", SubUserRole.class);
+			user.subroles = roles;
+			User.set(user._id, "subroles", user.subroles);
+		}
+		
 		Application.checkAccount(user);
 		
 		AuditManager.instance.success();

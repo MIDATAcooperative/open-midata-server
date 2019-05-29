@@ -52,6 +52,18 @@ angular.module('portal')
 		});
 	};
 	
+	$scope.addSubRole = function(subrole) {
+		if (!$scope.member.subroles) $scope.member.subroles = [];
+		if (!$scope.member.subroles.indexOf(subrole)>=0) $scope.member.subroles.push(subrole);
+		administration.changeStatus($scope.member._id, $scope.member.status, null, null, null, null, $scope.member.subroles);
+	};
+	
+	$scope.removeSubRole = function(subrole) {
+		if (!$scope.member.subroles) return;
+		if ($scope.member.subroles.indexOf(subrole)>=0) $scope.member.subroles.splice($scope.member.subroles.indexOf(subrole), 1);
+		administration.changeStatus($scope.member._id, $scope.member.status, null, null, null, null, $scope.member.subroles);
+	};
+	
 	$scope.reload();
 
 }]);

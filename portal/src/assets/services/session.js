@@ -177,7 +177,11 @@ angular.module('services')
         	    lookup[array[i][name]] = array[i];
         	}
         	return lookup;
-        }
+        },
+        
+        hasSubRole : function(subRole) {	
+    		return session.user && session.user.subroles && session.user.subroles.indexOf(subRole) >= 0;
+    	}
     };
 	
 	
