@@ -91,7 +91,7 @@ public class Providers extends APIController {
 		HPUser user = new HPUser(email);
 		user._id = new MidataId();
 		user.role = UserRole.PROVIDER;		
-		user.subroles.add(SubUserRole.MANAGER);
+		user.subroles.add(SubUserRole.MASTER);
 		user.address1 = JsonValidation.getString(json, "address1");
 		user.address2 = JsonValidation.getString(json, "address2");
 		user.city = JsonValidation.getString(json, "city");
@@ -156,7 +156,7 @@ public class Providers extends APIController {
 				
 		if (user._id == null) user._id = new MidataId();
 		user.role = UserRole.PROVIDER;
-		user.subroles = EnumSet.of(SubUserRole.MASTER);
+		user.subroles = EnumSet.noneOf(SubUserRole.class);
 		user.registeredAt = new Date();				
 		if (user.status == null) user.status = UserStatus.NEW;		
 		user.contractStatus = ContractStatus.REQUESTED;
