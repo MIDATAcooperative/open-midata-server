@@ -51,11 +51,14 @@ public class ImmunizationResourceProvider extends RecordBasedResourceProvider<Im
 		searchParamNameToPathMap.put("Immunization:patient", "patient");
 		searchParamNameToTypeMap.put("Immunization:patient", Sets.create("Patient"));
 		
-		searchParamNameToPathMap.put("Immunization:practitioner", "practitioner.actor");
-		searchParamNameToTypeMap.put("Immunization:practitioner", Sets.create("Practitioner"));
+		searchParamNameToPathMap.put("Immunization:performer", "performer.actor");
+		searchParamNameToTypeMap.put("Immunization:performer", Sets.create("Practitioner", "Organization", "PractitionerRole"));
 		
 		searchParamNameToPathMap.put("Immunization:reaction", "reaction.detail");
 		searchParamNameToTypeMap.put("Immunization:reaction", Sets.create("Observation"));
+		
+		searchParamNameToPathMap.put("Immunization:reason-reference", ".reasonReference");
+		searchParamNameToTypeMap.put("Immunization:reason-reference", Sets.create("Condition", "Observation", "DiagnosticReport"));
 
 		registerSearches("Immunization", getClass(), "getImmunization");
 	}
@@ -71,43 +74,86 @@ public class ImmunizationResourceProvider extends RecordBasedResourceProvider<Im
 
 			@Description(shortDefinition = "The language of the resource") @OptionalParam(name = "_language") StringAndListParam the_language,
 
-			@Description(shortDefinition = "Vaccination  (non)-Administration Date") @OptionalParam(name = "date") DateAndListParam theDate,
-
-			@Description(shortDefinition = "Dose number within series") @OptionalParam(name = "dose-sequence") NumberAndListParam theDose_sequence,
-
-			@Description(shortDefinition = "Business identifier") @OptionalParam(name = "identifier") TokenAndListParam theIdentifier,
-
-			@Description(shortDefinition = "The service delivery location or facility in which the vaccine was / was to be administered") @OptionalParam(name = "location", targetTypes = {}) ReferenceAndListParam theLocation,
-
-			@Description(shortDefinition = "Vaccine Lot Number") @OptionalParam(name = "lot-number") StringAndListParam theLot_number,
-
-			@Description(shortDefinition = "Vaccine Manufacturer") @OptionalParam(name = "manufacturer", targetTypes = {}) ReferenceAndListParam theManufacturer,
-
-			@Description(shortDefinition = "Administrations which were not given") @OptionalParam(name = "notgiven") TokenAndListParam theNotgiven,
-
-			@Description(shortDefinition = "The patient for the vaccination record") @OptionalParam(name = "patient", targetTypes = {}) ReferenceAndListParam thePatient,
-
-			@Description(shortDefinition = "The practitioner who played a role in the vaccination") @OptionalParam(name = "practitioner", targetTypes = {}) ReferenceAndListParam thePractitioner,
-
-			@Description(shortDefinition = "Additional information on reaction") @OptionalParam(name = "reaction", targetTypes = {}) ReferenceAndListParam theReaction,
-
-			@Description(shortDefinition = "When reaction started") @OptionalParam(name = "reaction-date") DateAndListParam theReaction_date,
-
-			@Description(shortDefinition = "Why immunization occurred") @OptionalParam(name = "reason") TokenAndListParam theReason,
-
-			@Description(shortDefinition = "Explanation of reason vaccination was not administered") @OptionalParam(name = "reason-not-given") TokenAndListParam theReason_not_given,
-
-			@Description(shortDefinition = "Immunization event status") @OptionalParam(name = "status") TokenAndListParam theStatus,
-
-			@Description(shortDefinition = "Vaccine Product Administered") @OptionalParam(name = "vaccine-code") TokenAndListParam theVaccine_code,
-
-			@RawParam Map<String, List<String>> theAdditionalRawParams,
-
-			@IncludeParam(reverse = true) Set<Include> theRevIncludes,
-			@Description(shortDefinition = "Only return resources which were last updated as specified by the given range") @OptionalParam(name = "_lastUpdated") DateRangeParam theLastUpdated,
-
-			@IncludeParam(allow = { "Immunization:location", "Immunization:manufacturer", "Immunization:patient",
-					"Immunization:practitioner", "Immunization:reaction", "*" }) Set<Include> theIncludes,
+  			@Description(shortDefinition="Vaccination  (non)-Administration Date")
+  			@OptionalParam(name="date")
+  			DateAndListParam theDate, 
+    
+  			@Description(shortDefinition="Business identifier")
+  			@OptionalParam(name="identifier")
+  			TokenAndListParam theIdentifier,
+    
+  			@Description(shortDefinition="The service delivery location or facility in which the vaccine was / was to be administered")
+  			@OptionalParam(name="location", targetTypes={  } )
+  			ReferenceAndListParam theLocation, 
+    
+  			@Description(shortDefinition="Vaccine Lot Number")
+  			@OptionalParam(name="lot-number")
+  			StringAndListParam theLot_number, 
+    
+  			@Description(shortDefinition="Vaccine Manufacturer")
+  			@OptionalParam(name="manufacturer", targetTypes={  } )
+  			ReferenceAndListParam theManufacturer, 
+    
+  			@Description(shortDefinition="The patient for the vaccination record")
+  			@OptionalParam(name="patient", targetTypes={  } )
+  			ReferenceAndListParam thePatient, 
+    
+  			@Description(shortDefinition="The practitioner or organization who played a role in the vaccination")
+  			@OptionalParam(name="performer", targetTypes={  } )
+  			ReferenceAndListParam thePerformer, 
+    
+  			@Description(shortDefinition="Additional information on reaction")
+  			@OptionalParam(name="reaction", targetTypes={  } )
+  			ReferenceAndListParam theReaction, 
+    
+ 			@Description(shortDefinition="When reaction started")
+ 			@OptionalParam(name="reaction-date")
+			DateAndListParam theReaction_date, 
+   
+ 			@Description(shortDefinition="Reason why the vaccine was administered")
+ 			@OptionalParam(name="reason-code")
+ 			TokenAndListParam theReason_code,
+   
+ 			@Description(shortDefinition="Why immunization occurred")
+ 			@OptionalParam(name="reason-reference", targetTypes={  } )
+ 			ReferenceAndListParam theReason_reference, 
+   
+ 			@Description(shortDefinition="The series being followed by the provider")
+ 			@OptionalParam(name="series")
+ 			StringAndListParam theSeries, 
+   
+ 			@Description(shortDefinition="Immunization event status")
+ 			@OptionalParam(name="status")
+ 			TokenAndListParam theStatus,
+   
+ 			@Description(shortDefinition="Reason why the vaccine was not administered")
+ 			@OptionalParam(name="status-reason")
+ 			TokenAndListParam theStatus_reason,
+   
+ 			@Description(shortDefinition="The target disease the dose is being administered against")
+ 			@OptionalParam(name="target-disease")
+ 			TokenAndListParam theTarget_disease,
+   
+ 			@Description(shortDefinition="Vaccine Product Administered")
+ 			@OptionalParam(name="vaccine-code")
+ 			TokenAndListParam theVaccine_code,
+  			
+ 			@IncludeParam(reverse=true)
+ 			Set<Include> theRevIncludes,
+ 			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
+ 			@OptionalParam(name="_lastUpdated")
+ 			DateRangeParam theLastUpdated, 
+ 
+ 			@IncludeParam(allow= {
+ 					"Immunization:location" ,
+ 					"Immunization:manufacturer" ,
+ 					"Immunization:patient" ,
+ 					"Immunization:performer" ,
+ 					"Immunization:reaction" ,
+ 					"Immunization:reason-reference" ,
+ 					"*"
+ 			}) 
+ 			Set<Include> theIncludes,
 			@Sort SortSpec theSort,
 
 			@ca.uhn.fhir.rest.annotation.Count Integer theCount,
@@ -123,19 +169,20 @@ public class ImmunizationResourceProvider extends RecordBasedResourceProvider<Im
 		paramMap.add("_id", the_id);
 		paramMap.add("_language", the_language);
 		paramMap.add("date", theDate);
-		paramMap.add("dose-sequence", theDose_sequence);
 		paramMap.add("identifier", theIdentifier);
 		paramMap.add("location", theLocation);
 		paramMap.add("lot-number", theLot_number);
 		paramMap.add("manufacturer", theManufacturer);
-		paramMap.add("notgiven", theNotgiven);
 		paramMap.add("patient", thePatient);
-		paramMap.add("practitioner", thePractitioner);
+		paramMap.add("performer", thePerformer);
 		paramMap.add("reaction", theReaction);
 		paramMap.add("reaction-date", theReaction_date);
-		paramMap.add("reason", theReason);
-		paramMap.add("reason-not-given", theReason_not_given);
+		paramMap.add("reason-code", theReason_code);
+		paramMap.add("reason-reference", theReason_reference);
+		paramMap.add("series", theSeries);
 		paramMap.add("status", theStatus);
+		paramMap.add("status-reason", theStatus_reason);
+		paramMap.add("target-disease", theTarget_disease);
 		paramMap.add("vaccine-code", theVaccine_code);
 
 		paramMap.setRevIncludes(theRevIncludes);
@@ -158,23 +205,26 @@ public class ImmunizationResourceProvider extends RecordBasedResourceProvider<Im
 		builder.handleIdRestriction();
 
 		// Add handling for search on the "owner" of the record.
-		builder.recordOwnerReference("patient", "Patient", "patient"); // TODO patient -> patient?
+		builder.recordOwnerReference("patient", "Patient", "patient"); 
 
 		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
 		
-		builder.restriction("date", true, QueryBuilder.TYPE_DATETIME, "date");
-		builder.restriction("dose-sequence", true, QueryBuilder.TYPE_INTEGER, "vaccinationProtocol.doseSequence");
+		builder.restriction("date", true, QueryBuilder.TYPE_DATETIME, "occurrenceDateTime");		
 		
 		builder.restriction("location", true, "Location", "location");
 		builder.restriction("lot-number", true, QueryBuilder.TYPE_STRING, "lotNumber");
 		builder.restriction("manufacturer", true, "Organization", "manufacturer");
-		builder.restriction("not-given", true, QueryBuilder.TYPE_BOOLEAN, "notGiven");			
+		builder.restriction("performer", true, null, "performer.actor");				
 		builder.restriction("practitioner", true, "Practitioner", "practitioner.actor");
 		builder.restriction("reaction", true, "Observation", "reaction.detail");
 		builder.restriction("reaction-date", true, QueryBuilder.TYPE_DATETIME, "reaction.date");
 		builder.restriction("reason", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "explanation.reason");
-		builder.restriction("reason-not-given", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "explanation.reasonNotGiven");
+		builder.restriction("reason-code", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "reasonCode");
+		builder.restriction("reason-reference", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "reasonReference");
+		builder.restriction("series", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "protocolApplied.series");
 		builder.restriction("status", false, QueryBuilder.TYPE_CODE, "status");
+		builder.restriction("status-reason", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "statusReason");
+		builder.restriction("target-disease", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "protocolApplied.targetDisease");
 		builder.restriction("vaccine-code", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "vaccineCode");
 
 		return query.execute(info);
@@ -248,5 +298,11 @@ public class ImmunizationResourceProvider extends RecordBasedResourceProvider<Im
 		if (p.getPatient().isEmpty()) {
 			p.setPatient(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
+	}
+
+	@Override
+	protected void convertToR4(Object in) {
+		FHIRVersionConvert.rename(in, "date", "occurenceDateTime");
+		
 	}
 }

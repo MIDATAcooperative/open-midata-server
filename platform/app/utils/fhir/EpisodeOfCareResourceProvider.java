@@ -42,8 +42,8 @@ public class EpisodeOfCareResourceProvider extends RecordBasedResourceProvider<E
 		searchParamNameToTypeMap.put("EpisodeOfCare:care-manager" , Sets.create("Practitioner"));
 		searchParamNameToPathMap.put("EpisodeOfCare:condition", "diagnosis.condition");
 		searchParamNameToTypeMap.put("EpisodeOfCare:condition" , Sets.create("Condition"));
-		searchParamNameToPathMap.put("EpisodeOfCare:incomingreferral", "referralRequest");
-		searchParamNameToTypeMap.put("EpisodeOfCare:incomingreferral" , Sets.create("ServiceRequest"));
+		searchParamNameToPathMap.put("EpisodeOfCare:incoming-referral", "referralRequest");
+		searchParamNameToTypeMap.put("EpisodeOfCare:incoming-referral" , Sets.create("ServiceRequest"));
 		searchParamNameToPathMap.put("EpisodeOfCare:organization" , "managingOrganization");
 		searchParamNameToTypeMap.put("EpisodeOfCare:organization" , Sets.create("Organization"));
 		searchParamNameToPathMap.put("EpisodeOfCare:patient" , "patient");
@@ -67,57 +67,57 @@ public class EpisodeOfCareResourceProvider extends RecordBasedResourceProvider<E
 			@OptionalParam(name="_language")
 			StringAndListParam the_language, 
 			    
-			@Description(shortDefinition="Care manager/care co-ordinator for the patient")
-			@OptionalParam(name="care-manager", targetTypes={  } )
-			ReferenceAndListParam theCare_manager, 
-			   
-			@Description(shortDefinition="Conditions/problems/diagnoses this episode of care is for")
-			@OptionalParam(name="condition", targetTypes={  } )
-			ReferenceAndListParam theCondition, 
-			  
-			@Description(shortDefinition="The provided date search value falls within the episode of care's period")
-			@OptionalParam(name="date")
-			DateAndListParam theDate, 
-			   
-			@Description(shortDefinition="Business Identifier(s) relevant for this EpisodeOfCare")
-			@OptionalParam(name="identifier")
-			TokenAndListParam theIdentifier, 
-			   
-			@Description(shortDefinition="Incoming Referral Request")
-			@OptionalParam(name="incomingreferral", targetTypes={  } )
-			ReferenceAndListParam theIncomingreferral, 
-			   
-			@Description(shortDefinition="The organization that has assumed the specific responsibilities of this EpisodeOfCare")
-			@OptionalParam(name="organization", targetTypes={  } )
-			ReferenceAndListParam theOrganization, 
-			   
-			@Description(shortDefinition="The patient who is the focus of this episode of care")
-			@OptionalParam(name="patient", targetTypes={  } )
-			ReferenceAndListParam thePatient, 
-			  
-			@Description(shortDefinition="The current status of the Episode of Care as provided (does not check the status history collection)")
-			@OptionalParam(name="status")
-			TokenAndListParam theStatus, 
-			   
-			@Description(shortDefinition="Type/class  - e.g. specialist referral, disease management")
-			@OptionalParam(name="type")
-			TokenAndListParam theType, 
-			
-			@IncludeParam(reverse=true)
-			Set<Include> theRevIncludes,
-			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
-			@OptionalParam(name="_lastUpdated")
-			DateRangeParam theLastUpdated, 
-			
-			@IncludeParam(allow= {
-						"EpisodeOfCare:care-manager" ,
-						"EpisodeOfCare:condition" ,
-						"EpisodeOfCare:incomingreferral" ,
-						"EpisodeOfCare:organization" ,
-						"EpisodeOfCare:patient" , 
-						"*"
-			}) 
-			Set<Include> theIncludes,
+			@Description(shortDefinition="Care manager/care coordinator for the patient")
+  			@OptionalParam(name="care-manager", targetTypes={  } )
+  			ReferenceAndListParam theCare_manager, 
+    
+  			@Description(shortDefinition="Conditions/problems/diagnoses this episode of care is for")
+  			@OptionalParam(name="condition", targetTypes={  } )
+  			ReferenceAndListParam theCondition, 
+    
+  			@Description(shortDefinition="The provided date search value falls within the episode of care's period")
+  			@OptionalParam(name="date")
+  			DateAndListParam theDate, 
+    
+  			@Description(shortDefinition="Business Identifier(s) relevant for this EpisodeOfCare")
+  			@OptionalParam(name="identifier")
+  			TokenAndListParam theIdentifier,
+    
+  			@Description(shortDefinition="Incoming Referral Request")
+  			@OptionalParam(name="incoming-referral", targetTypes={  } )
+  			ReferenceAndListParam theIncoming_referral, 
+    
+  			@Description(shortDefinition="The organization that has assumed the specific responsibilities of this EpisodeOfCare")
+  			@OptionalParam(name="organization", targetTypes={  } )
+  			ReferenceAndListParam theOrganization, 
+    
+  			@Description(shortDefinition="The patient who is the focus of this episode of care")
+  			@OptionalParam(name="patient", targetTypes={  } )
+  			ReferenceAndListParam thePatient, 
+    
+  			@Description(shortDefinition="The current status of the Episode of Care as provided (does not check the status history collection)")
+  			@OptionalParam(name="status")
+  			TokenAndListParam theStatus,
+    
+ 			@Description(shortDefinition="Type/class  - e.g. specialist referral, disease management")
+ 			@OptionalParam(name="type")
+ 			TokenAndListParam theType,
+  			
+ 			@IncludeParam(reverse=true)
+ 			Set<Include> theRevIncludes,
+ 			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
+ 			@OptionalParam(name="_lastUpdated")
+ 			DateRangeParam theLastUpdated, 
+ 
+ 			@IncludeParam(allow= {
+ 					"EpisodeOfCare:care-manager" ,
+ 					"EpisodeOfCare:condition" ,
+ 					"EpisodeOfCare:incoming-referral" ,
+ 					"EpisodeOfCare:organization" ,
+ 					"EpisodeOfCare:patient" ,
+ 					"*"
+ 			}) 
+ 			Set<Include> theIncludes,
 			 			
 			@Sort 
 			SortSpec theSort,
@@ -140,7 +140,7 @@ public class EpisodeOfCareResourceProvider extends RecordBasedResourceProvider<E
 		paramMap.add("condition", theCondition);
 		paramMap.add("date", theDate);
 		paramMap.add("identifier", theIdentifier);
-		paramMap.add("incomingreferral", theIncomingreferral);
+		paramMap.add("incoming-referral", theIncoming_referral);
 		paramMap.add("organization", theOrganization);
 		paramMap.add("patient", thePatient);
 		paramMap.add("status", theStatus);
@@ -171,7 +171,7 @@ public class EpisodeOfCareResourceProvider extends RecordBasedResourceProvider<E
 		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");		
 		builder.restriction("condition", true, "Condition", "diagnosis.condition");
 		builder.restriction("date", true, QueryBuilder.TYPE_PERIOD, "period");
-        builder.restriction("incomingreferral", true, "ServiceRequest", "referralRequest");		
+        builder.restriction("incoming-referral", true, "ServiceRequest", "referralRequest");		
         builder.restriction("organization", true, "Organization", "managingOrganization");
         builder.restriction("care-manager", true, "Practitioner", "careManager");	
 						
@@ -226,6 +226,11 @@ public class EpisodeOfCareResourceProvider extends RecordBasedResourceProvider<E
 		if (p.getPatient().isEmpty()) {			
 			p.setPatient(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
+	}
+
+	@Override
+	protected void convertToR4(Object in) {
+		// Nothing to do		
 	}
 	
 

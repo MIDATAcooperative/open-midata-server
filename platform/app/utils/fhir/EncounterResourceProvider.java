@@ -42,18 +42,21 @@ import utils.exceptions.AppException;
 public class EncounterResourceProvider extends RecordBasedResourceProvider<Encounter> implements IResourceProvider {
 
 	public EncounterResourceProvider() {
+		searchParamNameToPathMap.put("Encounter:account", "account");
+		searchParamNameToTypeMap.put("Encounter:account", Sets.create("Account"));
+		
 		searchParamNameToPathMap.put("Encounter:appointment", "appointment");
 		searchParamNameToTypeMap.put("Encounter:appointment", Sets.create("Appointment"));
+		
+		searchParamNameToPathMap.put("Encounter:based-on", "basedOn");
+		searchParamNameToTypeMap.put("Encounter:based-on", Sets.create("ServiceRequest"));
 		
 		searchParamNameToPathMap.put("Encounter:diagnosis", "diagnosis.condition");
 		searchParamNameToTypeMap.put("Encounter:diagnosis", Sets.create("Condition", "Procedure"));
 		
-		searchParamNameToPathMap.put("Encounter:episodeofcare", "episodeOfCare");
-		searchParamNameToTypeMap.put("Encounter:episodeofcare", Sets.create("EpisodeOfCare"));
-		
-		searchParamNameToPathMap.put("Encounter:incomingreferral", "incomingReferral");
-		searchParamNameToTypeMap.put("Encounter:incomingreferral", Sets.create("ReferralRequest"));
-		
+		searchParamNameToPathMap.put("Encounter:episode-of-care", "episodeOfCare");
+		searchParamNameToTypeMap.put("Encounter:episode-of-care", Sets.create("EpisodeOfCare"));
+						
 		searchParamNameToPathMap.put("Encounter:location", "location.location");
 		searchParamNameToTypeMap.put("Encounter:location", Sets.create("Location"));
 		
@@ -61,13 +64,16 @@ public class EncounterResourceProvider extends RecordBasedResourceProvider<Encou
 		searchParamNameToTypeMap.put("Encounter:part-of", Sets.create("Encounter"));
 		
 		searchParamNameToPathMap.put("Encounter:participant", "participant.individual");
-		searchParamNameToTypeMap.put("Encounter:participant", Sets.create("Practitioner", "RelatedPerson"));
+		searchParamNameToTypeMap.put("Encounter:participant", Sets.create("Practitioner", "PractitionerRole", "RelatedPerson"));
 		
 		searchParamNameToPathMap.put("Encounter:patient", "subject");
 		searchParamNameToTypeMap.put("Encounter:patient", Sets.create("Patient"));
 		
 		searchParamNameToPathMap.put("Encounter:practitioner", "participant.individual");
 		searchParamNameToTypeMap.put("Encounter:practitioner", Sets.create("Practitioner"));
+		
+		searchParamNameToPathMap.put("Encounter:reason-reference", "reasonReference");
+		searchParamNameToTypeMap.put("Encounter:reason-reference", Sets.create("Condition", "Observation", "Procedure", "ImmunizationRecommendation"));
 		
 		searchParamNameToPathMap.put("Encounter:service-provider", "serviceProvider");
 		searchParamNameToTypeMap.put("Encounter:service-provider", Sets.create("Organization"));
@@ -273,14 +279,15 @@ public class EncounterResourceProvider extends RecordBasedResourceProvider<Encou
 		// GO ON
 		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
 		
+		builder.restriction("account", true, "Account", "account");
+		
 		builder.restriction("appointment", true, "Appointment", "appointment");
+		builder.restriction("based-on", true, "ServiceRequest", "basedOn");
 		builder.restriction("class", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "class");
 		builder.restriction("date", true, QueryBuilder.TYPE_PERIOD, "period");
 		builder.restriction("type", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "type");		
 		builder.restriction("diagnosis", true, null, "diagnosis.condition");
-		builder.restriction("episodeofcare", true, "EpisodeOfCare", "episodeOfCare");
-		
-		builder.restriction("incomingreferral", true, "ReferralRequest", "incomingReferral");
+		builder.restriction("episode-of-care", true, "EpisodeOfCare", "episodeOfCare");				
 		builder.restriction("length", true, QueryBuilder.TYPE_QUANTITY, "length"); 
 		builder.restriction("location", true, "Location", "location.location");
 		builder.restriction("location-period", true, QueryBuilder.TYPE_PERIOD, "location.period");
@@ -288,7 +295,8 @@ public class EncounterResourceProvider extends RecordBasedResourceProvider<Encou
 		builder.restriction("participant", true, null, "participant.individual");
 		builder.restriction("participant-type", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "participant.type");
 		builder.restriction("practitioner", true, null, "participant.individual");
-		builder.restriction("reason", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "reason");
+		builder.restriction("reason-code", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "reasonCode");
+		builder.restriction("reason-reference", true, null, "reasonReference");
 		builder.restriction("service-provider", true, "Organization", "serviceProvider");
 		builder.restriction("special-arrangement", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "hospitalization.specialArrangement");
 		builder.restriction("status", false, QueryBuilder.TYPE_CODE, "status");
@@ -368,5 +376,11 @@ public class EncounterResourceProvider extends RecordBasedResourceProvider<Encou
 		if (p.getSubject().isEmpty()) {
 			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
+	}
+
+	@Override
+	protected void convertToR4(Object in) {
+		// Nothing to do
+		
 	}
 }
