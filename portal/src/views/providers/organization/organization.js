@@ -38,6 +38,10 @@ angular.module('portal')
 	
 	};
 	
+	$scope.isMasterUser = function() {
+		return session.hasSubRole('MASTER');
+	};
+	
 	$scope.formChange = function() {
 		$scope.saveOk = false;
 	};
