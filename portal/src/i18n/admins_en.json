@@ -59,7 +59,9 @@
     "add_comment_btn" : "Add Comment",
     "wipe_btn" : "Wipe Account",
     "change_email_btn" : "Change Email Address",
-    "change_address_btn" : "Change Profile"
+    "change_address_btn" : "Change Profile",
+    "make_master_btn" : "Add master user role",
+    "remove_master_btn" : "Revoke master user role"
   },
   
   "admin_news" : {

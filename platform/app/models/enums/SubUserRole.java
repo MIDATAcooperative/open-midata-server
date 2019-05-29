@@ -27,6 +27,11 @@ public enum SubUserRole {
    MONITOR,
    
    /**
+    * the user is a MASTER user that may register other users with the same role and organization
+    */
+   MASTER,
+   
+   /**
     * the user with UserRole ADMIN is a user administrator
     */
    USERADMIN,
