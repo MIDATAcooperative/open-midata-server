@@ -63,27 +63,72 @@ public class SequenceResourceProvider extends RecordBasedResourceProvider<Molecu
 
 			@Description(shortDefinition = "The language of the resource") @OptionalParam(name = "_language") StringAndListParam the_language,
 
-			@Description(shortDefinition = "Chromosome number of the reference sequence") @OptionalParam(name = "chromosome") TokenAndListParam theChromosome,
-
-			//@Description(shortDefinition = "Search parameter for region of the reference DNA sequence string. This will refer to part of a locus or part of a gene where search region will be represented in 1-based system. Since the coordinateSystem can either be 0-based or 1-based, this search query will include the result of both coordinateSystem that contains the equivalent segment of the gene or whole genome sequence. For example, a search for sequence can be represented as `coordinate=1$lt345$gt123`, this means it will search for the Sequence resource on chromosome 1 and with position >123 and <345, where in 1-based system resource, all strings within region 1:124-344 will be revealed, while in 0-based system resource, all strings within region 1:123-344 will be revealed. You may want to check detail about 0-based v.s. 1-based above.") @OptionalParam(name = "coordinate", compositeTypes = {
-			//		TokenParam.class, NumberParam.class }) CompositeAndListParam<TokenParam, NumberParam> theCoordinate,
-
-			@Description(shortDefinition = "End position (0-based exclusive, which menas the acid at this position will not be included, 1-based inclusive, which means the acid at this position will be included) of the reference sequence.") @OptionalParam(name = "end") NumberAndListParam theEnd,
-
-			@Description(shortDefinition = "The unique identity for a particular sequence") @OptionalParam(name = "identifier") TokenAndListParam theIdentifier,
-
-			@Description(shortDefinition = "The subject that the observation is about") @OptionalParam(name = "patient", targetTypes = {}) ReferenceAndListParam thePatient,
-
-			@Description(shortDefinition = "Start position (0-based inclusive, 1-based inclusive, that means the nucleic acid or amino acid at this position will be included) of the reference sequence.") @OptionalParam(name = "start") NumberAndListParam theStart,
-
-			@Description(shortDefinition = "Amino Acid Sequence/ DNA Sequence / RNA Sequence") @OptionalParam(name = "type") TokenAndListParam theType,
-
-			@RawParam Map<String, List<String>> theAdditionalRawParams,
-
-			@IncludeParam(reverse = true) Set<Include> theRevIncludes,
-			@Description(shortDefinition = "Only return resources which were last updated as specified by the given range") @OptionalParam(name = "_lastUpdated") DateRangeParam theLastUpdated,
-
-			@IncludeParam(allow = { "MolecularSequence:patient", "*" }) Set<Include> theIncludes,
+  			@Description(shortDefinition="Chromosome number of the reference sequence")
+  			@OptionalParam(name="chromosome")
+  			TokenAndListParam theChromosome,
+    
+  			@Description(shortDefinition="Search parameter by chromosome and variant coordinate. This will refer to part of a locus or part of a gene where search region will be represented in 1-based system. Since the coordinateSystem can either be 0-based or 1-based, this search query will include the result of both coordinateSystem that contains the equivalent segment of the gene or whole genome sequence. For example, a search for sequence can be represented as `chromosome-variant-coordinate=1$lt345$gt123`, this means it will search for the MolecularSequence resource with variants on chromosome 1 and with position >123 and <345, where in 1-based system resource, all strings within region 1:124-344 will be revealed, while in 0-based system resource, all strings within region 1:123-344 will be revealed. You may want to check detail about 0-based v.s. 1-based above.")
+  			@OptionalParam(name="chromosome-variant-coordinate", compositeTypes= { TokenParam.class, NumberParam.class })
+  			CompositeAndListParam<TokenParam, NumberParam> theChromosome_variant_coordinate,
+    
+  			@Description(shortDefinition="Search parameter by chromosome and window. This will refer to part of a locus or part of a gene where search region will be represented in 1-based system. Since the coordinateSystem can either be 0-based or 1-based, this search query will include the result of both coordinateSystem that contains the equivalent segment of the gene or whole genome sequence. For example, a search for sequence can be represented as `chromosome-window-coordinate=1$lt345$gt123`, this means it will search for the MolecularSequence resource with a window on chromosome 1 and with position >123 and <345, where in 1-based system resource, all strings within region 1:124-344 will be revealed, while in 0-based system resource, all strings within region 1:123-344 will be revealed. You may want to check detail about 0-based v.s. 1-based above.")
+  			@OptionalParam(name="chromosome-window-coordinate", compositeTypes= { TokenParam.class, NumberParam.class })
+  			CompositeAndListParam<TokenParam, NumberParam> theChromosome_window_coordinate,
+    
+  			@Description(shortDefinition="The unique identity for a particular sequence")
+  			@OptionalParam(name="identifier")
+  			TokenAndListParam theIdentifier,
+    
+  			@Description(shortDefinition="The subject that the observation is about")
+  			@OptionalParam(name="patient", targetTypes={  } )
+  			ReferenceAndListParam thePatient, 
+    
+  			@Description(shortDefinition="Reference Sequence of the sequence")
+  			@OptionalParam(name="referenceseqid")
+  			TokenAndListParam theReferenceseqid,
+    
+  			@Description(shortDefinition="Search parameter by reference sequence and variant coordinate. This will refer to part of a locus or part of a gene where search region will be represented in 1-based system. Since the coordinateSystem can either be 0-based or 1-based, this search query will include the result of both coordinateSystem that contains the equivalent segment of the gene or whole genome sequence. For example, a search for sequence can be represented as `referenceSeqId-variant-coordinate=NC_000001.11$lt345$gt123`, this means it will search for the MolecularSequence resource with variants on NC_000001.11 and with position >123 and <345, where in 1-based system resource, all strings within region NC_000001.11:124-344 will be revealed, while in 0-based system resource, all strings within region NC_000001.11:123-344 will be revealed. You may want to check detail about 0-based v.s. 1-based above.")
+  			@OptionalParam(name="referenceseqid-variant-coordinate", compositeTypes= { TokenParam.class, NumberParam.class })
+  			CompositeAndListParam<TokenParam, NumberParam> theReferenceseqid_variant_coordinate,
+    
+  			@Description(shortDefinition="Search parameter by reference sequence and window. This will refer to part of a locus or part of a gene where search region will be represented in 1-based system. Since the coordinateSystem can either be 0-based or 1-based, this search query will include the result of both coordinateSystem that contains the equivalent segment of the gene or whole genome sequence. For example, a search for sequence can be represented as `referenceSeqId-window-coordinate=NC_000001.11$lt345$gt123`, this means it will search for the MolecularSequence resource with a window on NC_000001.11 and with position >123 and <345, where in 1-based system resource, all strings within region NC_000001.11:124-344 will be revealed, while in 0-based system resource, all strings within region NC_000001.11:123-344 will be revealed. You may want to check detail about 0-based v.s. 1-based above.")
+  			@OptionalParam(name="referenceseqid-window-coordinate", compositeTypes= { TokenParam.class, NumberParam.class })
+  			CompositeAndListParam<TokenParam, NumberParam> theReferenceseqid_window_coordinate,
+    
+ 			@Description(shortDefinition="Amino Acid Sequence/ DNA Sequence / RNA Sequence")
+ 			@OptionalParam(name="type")
+ 			TokenAndListParam theType,
+   
+ 			@Description(shortDefinition="End position (0-based exclusive, which menas the acid at this position will not be included, 1-based inclusive, which means the acid at this position will be included) of the variant.")
+ 			@OptionalParam(name="variant-end")
+ 			NumberAndListParam theVariant_end, 
+   
+ 			@Description(shortDefinition="Start position (0-based inclusive, 1-based inclusive, that means the nucleic acid or amino acid at this position will be included) of the variant.")
+ 			@OptionalParam(name="variant-start")
+ 			NumberAndListParam theVariant_start, 
+   
+ 			@Description(shortDefinition="End position (0-based exclusive, which menas the acid at this position will not be included, 1-based inclusive, which means the acid at this position will be included) of the reference sequence.")
+ 			@OptionalParam(name="window-end")
+ 			NumberAndListParam theWindow_end, 
+   
+ 			@Description(shortDefinition="Start position (0-based inclusive, 1-based inclusive, that means the nucleic acid or amino acid at this position will be included) of the reference sequence.")
+ 			@OptionalParam(name="window-start")
+ 			NumberAndListParam theWindow_start, 
+ 
+ 			@RawParam
+ 			Map<String, List<String>> theAdditionalRawParams,
+ 
+ 			@IncludeParam(reverse=true)
+ 			Set<Include> theRevIncludes,
+ 			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
+ 			@OptionalParam(name="_lastUpdated")
+ 			DateRangeParam theLastUpdated, 
+ 
+ 			@IncludeParam(allow= {
+ 					"MolecularSequence:patient",
+ 					"*"
+ 			}) 
+ 			Set<Include> theIncludes,
 
 			@Sort SortSpec theSort,
 
@@ -103,13 +148,18 @@ public class SequenceResourceProvider extends RecordBasedResourceProvider<Molecu
 		paramMap.add("_id", the_id);
 		paramMap.add("_language", the_language);
 		paramMap.add("chromosome", theChromosome);
-		//paramMap.add("coordinate", theCoordinate);
-		paramMap.add("end", theEnd);
+		paramMap.add("chromosome-variant-coordinate", theChromosome_variant_coordinate);
+		paramMap.add("chromosome-window-coordinate", theChromosome_window_coordinate);
 		paramMap.add("identifier", theIdentifier);
 		paramMap.add("patient", thePatient);
-		paramMap.add("start", theStart);
+		paramMap.add("referenceseqid", theReferenceseqid);
+		paramMap.add("referenceseqid-variant-coordinate", theReferenceseqid_variant_coordinate);
+		paramMap.add("referenceseqid-window-coordinate", theReferenceseqid_window_coordinate);
 		paramMap.add("type", theType);
-
+		paramMap.add("variant-end", theVariant_end);
+		paramMap.add("variant-start", theVariant_start);
+		paramMap.add("window-end", theWindow_end);
+		paramMap.add("window-start", theWindow_start);
 		paramMap.setRevIncludes(theRevIncludes);
 		paramMap.setLastUpdated(theLastUpdated);
 		paramMap.setIncludes(theIncludes);
@@ -225,6 +275,12 @@ public class SequenceResourceProvider extends RecordBasedResourceProvider<Molecu
 		if (p.getPatient().isEmpty()) {
 			p.setPatient(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
+	}
+
+	@Override
+	protected void convertToR4(Object in) {
+		// No action
+		
 	}
 
 }

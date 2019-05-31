@@ -483,7 +483,7 @@ public class PluginsAPI extends APIController {
 		ContentInfo.setRecordCodeAndContent(authToken.pluginId, record, code, content);		
 					
 		try {
-			record.data = (DBObject) JSON.parse(data);
+			record.data = BasicDBObject.parse(data);
 		} catch (JSONParseException e) {
 			throw new BadRequestException("error.invalid.json", "Record data is invalid JSON.");
 		}
@@ -708,7 +708,7 @@ public class PluginsAPI extends APIController {
 		record.lastUpdated = new Date();		
 							
 		try {
-			record.data = (DBObject) JSON.parse(data);
+			record.data = BasicDBObject.parse(data);
 		} catch (JSONParseException e) {
 			throw new BadRequestException("error.invalid.json", "Record data is invalid JSON.");
 		}

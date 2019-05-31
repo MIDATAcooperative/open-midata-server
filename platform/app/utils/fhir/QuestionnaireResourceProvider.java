@@ -20,11 +20,15 @@ import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.api.server.RequestDetails;
+import ca.uhn.fhir.rest.param.CompositeAndListParam;
 import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
+import ca.uhn.fhir.rest.param.QuantityAndListParam;
+import ca.uhn.fhir.rest.param.QuantityParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
+import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import models.Record;
@@ -54,64 +58,92 @@ public class QuestionnaireResourceProvider extends RecordBasedResourceProvider<Q
 			@OptionalParam(name="_language")
 			StringAndListParam theResourceLanguage, 
 			
-			@Description(shortDefinition="A code that corresponds to one of its items in the questionnaire")
-			@OptionalParam(name="code")
-			TokenAndListParam theCode, 
-			    
-			@Description(shortDefinition="The questionnaire publication date")
-			@OptionalParam(name="date")
-			DateRangeParam theDate, 
-			   
-			@Description(shortDefinition="The description of the questionnaire")
-			@OptionalParam(name="description")
-			StringAndListParam theDescription, 
-			   
-			@Description(shortDefinition="The time during which the questionnaire is intended to be in use")
-			@OptionalParam(name="effective")
+  			@Description(shortDefinition="A code that corresponds to one of its items in the questionnaire")
+  			@OptionalParam(name="code")
+  			TokenAndListParam theCode,
+    
+  			@Description(shortDefinition="A use context assigned to the questionnaire")
+  			@OptionalParam(name="context")
+  			TokenAndListParam theContext,
+    
+  			@Description(shortDefinition="A quantity- or range-valued use context assigned to the questionnaire")
+  			@OptionalParam(name="context-quantity")
+  			QuantityAndListParam theContext_quantity, 
+    
+  			@Description(shortDefinition="A type of use context assigned to the questionnaire")
+  			@OptionalParam(name="context-type")
+  			TokenAndListParam theContext_type,
+    
+  			@Description(shortDefinition="A use context type and quantity- or range-based value assigned to the questionnaire")
+  			@OptionalParam(name="context-type-quantity", compositeTypes= { TokenParam.class, QuantityParam.class })
+  			CompositeAndListParam<TokenParam, QuantityParam> theContext_type_quantity,
+    
+  			@Description(shortDefinition="A use context type and value assigned to the questionnaire")
+  			@OptionalParam(name="context-type-value", compositeTypes= { TokenParam.class, TokenParam.class })
+  			CompositeAndListParam<TokenParam, TokenParam> theContext_type_value,
+    
+  			@Description(shortDefinition="The questionnaire publication date")
+  			@OptionalParam(name="date")
+  			DateAndListParam theDate, 
+    
+  			@Description(shortDefinition="ElementDefinition - details for the item")
+  			@OptionalParam(name="definition")
+  			UriAndListParam theDefinition, 
+    
+ 			@Description(shortDefinition="The description of the questionnaire")
+ 			@OptionalParam(name="description")
+ 			StringAndListParam theDescription, 
+   
+ 			@Description(shortDefinition="The time during which the questionnaire is intended to be in use")
+ 			@OptionalParam(name="effective")
 			DateAndListParam theEffective, 
-			   
-			@Description(shortDefinition="External identifier for the questionnaire")
-			@OptionalParam(name="identifier")
-			TokenAndListParam theIdentifier, 
-			   
-			@Description(shortDefinition="Intended jurisdiction for the questionnaire")
-			@OptionalParam(name="jurisdiction")
-			TokenAndListParam theJurisdiction, 
-			   
-			@Description(shortDefinition="Computationally friendly name of the questionnaire")
-			@OptionalParam(name="name")
-			StringAndListParam theName, 
-			   
-			@Description(shortDefinition="Name of the publisher of the questionnaire")
-			@OptionalParam(name="publisher")
-			StringAndListParam thePublisher, 
-			  
-			@Description(shortDefinition="The current status of the questionnaire")
-			@OptionalParam(name="status")
-			TokenAndListParam theStatus, 
-			 
-			@Description(shortDefinition="The human-friendly name of the questionnaire")
-			@OptionalParam(name="title")
-			StringAndListParam theTitle, 
-			  
-			@Description(shortDefinition="The uri that identifies the questionnaire")
-			@OptionalParam(name="url")
-			UriAndListParam theUrl, 
-			  
-			@Description(shortDefinition="The business version of the questionnaire")
-			@OptionalParam(name="version")
-			TokenAndListParam theVersion, 
-			
-			@IncludeParam(reverse=true)
-			Set<Include> theRevIncludes,
-			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
-			@OptionalParam(name="_lastUpdated")
-			DateRangeParam theLastUpdated, 
-			 
-			@IncludeParam(allow= {
-					"*"
-			}) 
-			Set<Include> theIncludes,
+   
+ 			@Description(shortDefinition="External identifier for the questionnaire")
+ 			@OptionalParam(name="identifier")
+ 			TokenAndListParam theIdentifier,
+   
+ 			@Description(shortDefinition="Intended jurisdiction for the questionnaire")
+ 			@OptionalParam(name="jurisdiction")
+ 			TokenAndListParam theJurisdiction,
+   
+ 			@Description(shortDefinition="Computationally friendly name of the questionnaire")
+ 			@OptionalParam(name="name")
+ 			StringAndListParam theName, 
+   
+ 			@Description(shortDefinition="Name of the publisher of the questionnaire")
+ 			@OptionalParam(name="publisher")
+ 			StringAndListParam thePublisher, 
+   
+ 			@Description(shortDefinition="The current status of the questionnaire")
+ 			@OptionalParam(name="status")
+ 			TokenAndListParam theStatus,
+   
+ 			@Description(shortDefinition="Resource that can be subject of QuestionnaireResponse")
+ 			@OptionalParam(name="subject-type")
+ 			TokenAndListParam theSubject_type,
+   
+ 			@Description(shortDefinition="The human-friendly name of the questionnaire")
+ 			@OptionalParam(name="title")
+ 			StringAndListParam theTitle, 
+   
+ 			@Description(shortDefinition="The uri that identifies the questionnaire")
+ 			@OptionalParam(name="url")
+ 			UriAndListParam theUrl, 
+   
+ 			@Description(shortDefinition="The business version of the questionnaire")
+ 			@OptionalParam(name="version")
+ 			TokenAndListParam theVersion,
+  			
+ 			@IncludeParam(reverse=true)
+ 			Set<Include> theRevIncludes,
+ 			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
+ 			@OptionalParam(name="_lastUpdated")
+ 			DateRangeParam theLastUpdated, 
+ 
+ 			@IncludeParam(allow= {
+ 				"*"
+ 			}) 
+ 			Set<Include> theIncludes,
 			
 			
 			@Sort SortSpec theSort,
@@ -131,7 +163,13 @@ public class QuestionnaireResourceProvider extends RecordBasedResourceProvider<Q
 		paramMap.add("_language", theResourceLanguage);
 		
 		paramMap.add("code", theCode);
+		paramMap.add("context", theContext);
+		paramMap.add("context-quantity", theContext_quantity);
+		paramMap.add("context-type", theContext_type);
+		paramMap.add("context-type-quantity", theContext_type_quantity);
+		paramMap.add("context-type-value", theContext_type_value);
 		paramMap.add("date", theDate);
+		paramMap.add("definition", theDefinition);
 		paramMap.add("description", theDescription);
 		paramMap.add("effective", theEffective);
 		paramMap.add("identifier", theIdentifier);
@@ -139,6 +177,7 @@ public class QuestionnaireResourceProvider extends RecordBasedResourceProvider<Q
 		paramMap.add("name", theName);
 		paramMap.add("publisher", thePublisher);
 		paramMap.add("status", theStatus);
+		paramMap.add("subject-type", theSubject_type);
 		paramMap.add("title", theTitle);
 		paramMap.add("url", theUrl);
 		paramMap.add("version", theVersion);
@@ -164,8 +203,17 @@ public class QuestionnaireResourceProvider extends RecordBasedResourceProvider<Q
 		builder.handleIdRestriction();
 						
 		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
-		builder.restriction("code", true, QueryBuilder.TYPE_CODING, "item.code");	
+		builder.restriction("code", true, QueryBuilder.TYPE_CODING, "item.code");
+		builder.restriction("context", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "usecontext.valueCodeableConcept");
+		builder.restriction("context-quantity", true, QueryBuilder.TYPE_QUANTITY_OR_RANGE, "usecontext.value");
+		builder.restriction("context-type", true, QueryBuilder.TYPE_CODE, "usecontext.code");
+		
+		builder.restriction("context-type-quantity", "usecontext.code", "usecontext.value", QueryBuilder.TYPE_CODE, QueryBuilder.TYPE_QUANTITY_OR_RANGE);		
+		builder.restriction("context-type-value", "usecontext.code", "usecontext.valueCodeableConcept", QueryBuilder.TYPE_CODE, QueryBuilder.TYPE_CODEABLE_CONCEPT);
+		
 		builder.restriction("date", true, QueryBuilder.TYPE_DATETIME, "date");	
+		builder.restriction("definition", true, QueryBuilder.TYPE_URI, "item.definition");
+		
 		builder.restriction("description", true, QueryBuilder.TYPE_MARKDOWN, "description");
 		builder.restriction("effective", true, QueryBuilder.TYPE_PERIOD, "effectivePeriod");
 		builder.restriction("jurisdiction", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "jurisdiction");	
@@ -220,6 +268,12 @@ public class QuestionnaireResourceProvider extends RecordBasedResourceProvider<Q
 	public void clean(Questionnaire theQuestionnaire) {
 		
 		super.clean(theQuestionnaire);
+	}
+
+	@Override
+	protected void convertToR4(Object in) {
+		// Currently no action
+		
 	}
 
 }

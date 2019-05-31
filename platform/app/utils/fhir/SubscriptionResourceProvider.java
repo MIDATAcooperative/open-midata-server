@@ -94,7 +94,7 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	 */
 	public Subscription readSubscriptionFromMidataSubscription(SubscriptionData subscriptionToConvert) throws AppException {
 		Object data = subscriptionToConvert.fhirSubscription;
-		convertToR4(subscriptionToConvert._id, data);
+		convertToR4(subscriptionToConvert, data);
 		IParser parser = ctx().newJsonParser();		
 		Subscription result = parser.parseResource(getResourceType(), data.toString());
 				
@@ -151,7 +151,7 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 		c.addExtension().setUrl("http://midata.coop/extensions/consent-name").setValue(new StringType(consentToConvert.name));
 		
 		String encoded = ctx.newJsonParser().encodeResourceToString(c);		
-		consentToConvert.fhirConsent = (DBObject) JSON.parse(encoded);				
+		consentToConvert.fhirConsent = BasicDBObject.parse(encoded);				
 	}
 		*/	
 	   @Search()

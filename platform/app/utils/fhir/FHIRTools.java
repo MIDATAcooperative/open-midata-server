@@ -254,7 +254,7 @@ public class FHIRTools {
 		MidataId mongoId = new MidataId(id);
 		User user = User.getById(mongoId, PERSON);
 		IParser parser = ResourceProvider.ctx.newJsonParser();
-	    user.person = (DBObject) JSON.parse(parser.encodeResourceToString(person));
+	    user.person = BasicDBObject.parse(parser.encodeResourceToString(person));
 	    User.set(mongoId, "person", user.person);		
 	}
 	*/

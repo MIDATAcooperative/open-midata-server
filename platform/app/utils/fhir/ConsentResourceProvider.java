@@ -115,7 +115,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 			Circles.fillConsentFields(info().executorId, Collections.singleton(consentToConvert), models.Consent.FHIR);
 			updateMidataConsent(consentToConvert);
 		} else {
-			convertToR4(consentToConvert._id, consentToConvert.fhirConsent);
+			convertToR4(consentToConvert, consentToConvert.fhirConsent);
 		}
 		IParser parser = ctx().newJsonParser();
 		AccessLog.log(consentToConvert.fhirConsent.toString());

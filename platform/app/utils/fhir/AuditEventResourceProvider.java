@@ -101,7 +101,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 				
 		Object data = mae.fhirAuditEvent;
 		
-		convertToR4(mae._id, data);
+		convertToR4(mae, data);
 				
 		AuditEvent p = parser.parseResource(getResourceType(), data.toString());
 						

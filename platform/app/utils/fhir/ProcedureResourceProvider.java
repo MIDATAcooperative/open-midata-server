@@ -21,11 +21,13 @@ import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.api.server.RequestDetails;
+import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
+import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.Record;
@@ -39,10 +41,8 @@ public class ProcedureResourceProvider extends RecordBasedResourceProvider<Proce
 						
 		searchParamNameToPathMap.put("Procedure:based-on" ,"basedOn");
 		searchParamNameToTypeMap.put("Procedure:based-on" , Sets.create("CarePlan", "ServiceRequest"));
-		searchParamNameToPathMap.put("Procedure:context" , "context");
-		searchParamNameToTypeMap.put("Procedure:context-on" , Sets.create("EpisodeOfCare", "Encounter"));
-		searchParamNameToPathMap.put("Procedure:definition" , "definition");
-		searchParamNameToTypeMap.put("Procedure:definition" , Sets.create("PlanDefinition", "HealthcareService", "ActivityDefinition"));
+		searchParamNameToPathMap.put("Procedure:instantiates-canonical" , "instantiatesCanonical");
+		searchParamNameToTypeMap.put("Procedure:instantiates-canonical" , Sets.create("Questionnaire", "Measure", "PlanDefinition", "OperationDefinition", "ActivityDefinition"));		
 		searchParamNameToPathMap.put("Procedure:encounter" , "context");
 		searchParamNameToTypeMap.put("Procedure:encounter" , Sets.create("Encounter"));
 		searchParamNameToPathMap.put("Procedure:location" , "location");
@@ -52,7 +52,7 @@ public class ProcedureResourceProvider extends RecordBasedResourceProvider<Proce
 		searchParamNameToPathMap.put("Procedure:patient" , "subject");
 		searchParamNameToTypeMap.put("Procedure:patient" , Sets.create("Patient"));
 		searchParamNameToPathMap.put("Procedure:performer" , "performer.actor");
-		searchParamNameToTypeMap.put("Procedure:performer" , Sets.create("Practitioner", "Organization", "Device", "Patient", "RelatedPerson"));
+		searchParamNameToTypeMap.put("Procedure:performer" , Sets.create("Practitioner", "Organization", "Device", "Patient", "RelatedPerson", "PractitionerRole"));
 		searchParamNameToPathMap.put("Procedure:subject" , "subject");
 		searchParamNameToTypeMap.put("Procedure:subject" , Sets.create("Patient", "Group"));
 		
@@ -78,43 +78,43 @@ public class ProcedureResourceProvider extends RecordBasedResourceProvider<Proce
   			@Description(shortDefinition="A request for this procedure")
   			@OptionalParam(name="based-on", targetTypes={  } )
   			ReferenceAndListParam theBased_on, 
-   
+    
   			@Description(shortDefinition="Classification of the procedure")
   			@OptionalParam(name="category")
-  			TokenAndListParam theCategory, 
+  			TokenAndListParam theCategory,
     
   			@Description(shortDefinition="A code to identify a  procedure")
   			@OptionalParam(name="code")
-  			TokenAndListParam theCode, 
+  			TokenAndListParam theCode,
     
-  			@Description(shortDefinition="Encounter or episode associated with the procedure")
-  			@OptionalParam(name="context", targetTypes={  } )
-  			ReferenceAndListParam theContext, 
-    
-  			@Description(shortDefinition="Date/Period the procedure was performed")
+  			@Description(shortDefinition="When the procedure was performed")
   			@OptionalParam(name="date")
-  			DateRangeParam theDate, 
+  			DateAndListParam theDate, 
     
-  			@Description(shortDefinition="Instantiates protocol or definition")
-  			@OptionalParam(name="definition", targetTypes={  } )
-  			ReferenceAndListParam theDefinition, 
-    
-  			@Description(shortDefinition="Search by encounter")
- 			@OptionalParam(name="encounter", targetTypes={  } )
+  			@Description(shortDefinition="Encounter created as part of")
+  			@OptionalParam(name="encounter", targetTypes={  } )
   			ReferenceAndListParam theEncounter, 
     
   			@Description(shortDefinition="A unique identifier for a procedure")
- 			@OptionalParam(name="identifier")
-  			TokenAndListParam theIdentifier, 
+  			@OptionalParam(name="identifier")
+  			TokenAndListParam theIdentifier,
     
-  			@Description(shortDefinition="Where the procedure happened")
-  			@OptionalParam(name="location", targetTypes={  } )
-  			ReferenceAndListParam theLocation, 
+  			@Description(shortDefinition="Instantiates FHIR protocol or definition")
+  			@OptionalParam(name="instantiates-canonical", targetTypes={  } )
+  			ReferenceAndListParam theInstantiates_canonical, 
+    
+  			@Description(shortDefinition="Instantiates external protocol or definition")
+  			@OptionalParam(name="instantiates-uri")
+  			UriAndListParam theInstantiates_uri, 
+    
+ 			@Description(shortDefinition="Where the procedure happened")
+ 			@OptionalParam(name="location", targetTypes={  } )
+ 			ReferenceAndListParam theLocation, 
    
  			@Description(shortDefinition="Part of referenced event")
  			@OptionalParam(name="part-of", targetTypes={  } )
  			ReferenceAndListParam thePart_of, 
-  
+   
  			@Description(shortDefinition="Search by subject - a patient")
  			@OptionalParam(name="patient", targetTypes={  } )
  			ReferenceAndListParam thePatient, 
@@ -123,33 +123,41 @@ public class ProcedureResourceProvider extends RecordBasedResourceProvider<Proce
  			@OptionalParam(name="performer", targetTypes={  } )
  			ReferenceAndListParam thePerformer, 
    
- 			@Description(shortDefinition="preparation | in-progress | suspended | aborted | completed | entered-in-error | unknown")
+ 			@Description(shortDefinition="Coded reason procedure performed")
+ 			@OptionalParam(name="reason-code")
+ 			TokenAndListParam theReason_code,
+   
+ 			@Description(shortDefinition="The justification that the procedure was performed")
+ 			@OptionalParam(name="reason-reference", targetTypes={  } )
+ 			ReferenceAndListParam theReason_reference, 
+   
+ 			@Description(shortDefinition="preparation | in-progress | not-done | suspended | aborted | completed | entered-in-error | unknown")
  			@OptionalParam(name="status")
- 			TokenAndListParam theStatus, 
+ 			TokenAndListParam theStatus,
    
  			@Description(shortDefinition="Search by subject")
  			@OptionalParam(name="subject", targetTypes={  } )
-			ReferenceAndListParam theSubject, 
+ 			ReferenceAndListParam theSubject,  		
  
  			@IncludeParam(reverse=true)
-			Set<Include> theRevIncludes,
+ 			Set<Include> theRevIncludes,
  			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
  			@OptionalParam(name="_lastUpdated")
  			DateRangeParam theLastUpdated, 
  
  			@IncludeParam(allow= {
-				"Procedure:based-on" ,
-				"Procedure:context" ,
-				"Procedure:definition" ,
-				"Procedure:encounter" ,
-				"Procedure:location" ,
-				"Procedure:part-of" ,
-				"Procedure:patient" ,
-				"Procedure:performer" ,
-				"Procedure:subject" ,
-	             "*"
-			}) 
-			Set<Include> theIncludes,
+ 					"Procedure:based-on" ,
+ 					"Procedure:encounter" ,
+ 					"Procedure:instantiates-canonical" ,
+ 					"Procedure:location" ,
+ 					"Procedure:part-of" ,
+ 					"Procedure:patient" ,
+ 					"Procedure:performer" ,
+ 					"Procedure:reason-reference" ,
+ 					"Procedure:subject" ,
+ 					"*"
+ 			}) 
+ 			Set<Include> theIncludes,
 		
 			@Sort 
 			SortSpec theSort,
@@ -171,15 +179,17 @@ public class ProcedureResourceProvider extends RecordBasedResourceProvider<Proce
 		paramMap.add("based-on", theBased_on);
 		paramMap.add("category", theCategory);
 		paramMap.add("code", theCode);
-		paramMap.add("context", theContext);
 		paramMap.add("date", theDate);
-		paramMap.add("definition", theDefinition);
 		paramMap.add("encounter", theEncounter);
 		paramMap.add("identifier", theIdentifier);
+		paramMap.add("instantiates-canonical", theInstantiates_canonical);
+		paramMap.add("instantiates-uri", theInstantiates_uri);
 		paramMap.add("location", theLocation);
 		paramMap.add("part-of", thePart_of);
 		paramMap.add("patient", thePatient);
 		paramMap.add("performer", thePerformer);
+		paramMap.add("reason-code", theReason_code);
+		paramMap.add("reason-reference", theReason_reference);
 		paramMap.add("status", theStatus);
 		paramMap.add("subject", theSubject);
 		
@@ -213,14 +223,17 @@ public class ProcedureResourceProvider extends RecordBasedResourceProvider<Proce
 	
 		builder.restriction("based-on", true, null, "basedOn");
 		builder.restriction("category", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "category");	
-		
-		builder.restriction("context", true, null, "context");
+				
 		builder.restriction("date", true, QueryBuilder.TYPE_DATETIME_OR_PERIOD, "performed");
-		builder.restriction("definition", true, null, "definition");	
-		builder.restriction("encounter", true, "Encounter", "context");	
+		
+		builder.restriction("encounter", true, "Encounter", "encounter");	
+		builder.restriction("instantiates-canonical", true, null, "instantiatesCanonical");
+		builder.restriction("instantiates-uri", true, QueryBuilder.TYPE_URI, "instantiatesUri");
 		builder.restriction("location", true, "Location", "location");
 		builder.restriction("part-of", true, null, "partOf");	
 		builder.restriction("performer", true, null, "performer.actor");
+		builder.restriction("reason-code", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "reasonCode");
+		builder.restriction("reason-reference", true, null, "reasonReference");
 		builder.restriction("status", false, QueryBuilder.TYPE_CODE, "status");	
 					
 		return query.execute(info);
@@ -274,6 +287,12 @@ public class ProcedureResourceProvider extends RecordBasedResourceProvider<Proce
 		if (p.getSubject().isEmpty()) {			
 			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
+	}
+
+	@Override
+	protected void convertToR4(Object in) {
+		// No action
+		
 	}
 	
 

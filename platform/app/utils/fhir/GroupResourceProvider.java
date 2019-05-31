@@ -17,6 +17,7 @@ import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
@@ -137,7 +138,7 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 		p.addIdentifier().setSystem("http://midata.coop/identifier/group-name").setValue(groupToConvert.name);
 		
 		String encoded = ctx.newJsonParser().encodeResourceToString(p);		
-		groupToConvert.fhirGroup = (DBObject) JSON.parse(encoded);				
+		groupToConvert.fhirGroup = BasicDBObject.parse(encoded);				
 	}
 			
 	   @Search()

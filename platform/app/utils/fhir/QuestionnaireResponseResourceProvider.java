@@ -45,12 +45,22 @@ public class QuestionnaireResponseResourceProvider extends RecordBasedResourcePr
 	public QuestionnaireResponseResourceProvider() {
 		searchParamNameToPathMap.put("QuestionnaireResponse:author", "author");
 		searchParamNameToPathMap.put("QuestionnaireResponse:based-on", "basedOn");
-		searchParamNameToPathMap.put("QuestionnaireResponse:context", "context");
+		searchParamNameToTypeMap.put("QuestionnaireResponse:based-on", Sets.create("CarePlan", "ServiceRequest"));
+		
+		searchParamNameToPathMap.put("QuestionnaireResponse:encounter", "encounter");
+		searchParamNameToTypeMap.put("QuestionnaireResponse:encounter", Sets.create("Encounter"));
+		
+		searchParamNameToPathMap.put("QuestionnaireResponse:part-of", "partOf");
+		searchParamNameToTypeMap.put("QuestionnaireResponse:part-of", Sets.create("Observation", "Procedure"));
+		
+		
 		searchParamNameToPathMap.put("QuestionnaireResponse:parent", "parent");
 		searchParamNameToPathMap.put("QuestionnaireResponse:patient", "subject");
 		searchParamNameToTypeMap.put("QuestionnaireResponse:patient", Sets.create("Patient"));
 		searchParamNameToPathMap.put("QuestionnaireResponse:questionnaire", "questionnaire");
+		searchParamNameToTypeMap.put("QuestionnaireResponse:questionnaire", Sets.create("Questionnaire"));
 		searchParamNameToPathMap.put("QuestionnaireResponse:source", "source");
+		searchParamNameToTypeMap.put("QuestionnaireResponse:source", Sets.create("Practitioner", "Patient", "PractitionerRole", "RelatedPerson"));
 		searchParamNameToPathMap.put("QuestionnaireResponse:subject", "subject");	
 		
 		registerSearches("QuestionnaireResponse", getClass(), "getQuestionnaireResponse");
@@ -77,68 +87,68 @@ public class QuestionnaireResponseResourceProvider extends RecordBasedResourcePr
 			HasAndListParam theHas, 
 			 */ 
 			   
-			@Description(shortDefinition="The status of the questionnaire response")
-			@OptionalParam(name="status")
-			TokenAndListParam theStatus, 
-			   
-			@Description(shortDefinition="When the questionnaire was authored")
-			@OptionalParam(name="authored")
-			DateAndListParam theAuthored, 
-			   
-			@Description(shortDefinition="The subject of the questionnaire")
-			@OptionalParam(name="subject", targetTypes={  } )
-			ReferenceAndListParam theSubject, 
-			   
-			@Description(shortDefinition="The author of the questionnaire")
-			@OptionalParam(name="author", targetTypes={  } )
-			ReferenceAndListParam theAuthor, 
-			  
-			@Description(shortDefinition="The questionnaire the answers are provided for")
-			@OptionalParam(name="questionnaire", targetTypes={  } )
-			ReferenceAndListParam theQuestionnaire, 
-			   
-			@Description(shortDefinition="Encounter or episode during which questionnaire was authored")
-			@OptionalParam(name="context", targetTypes={  } )
-			ReferenceAndListParam theContext, 
-			   
-			@Description(shortDefinition="The patient that is the subject of the questionnaire")
-			@OptionalParam(name="patient", targetTypes={  Patient.class   } )
-			ReferenceAndListParam thePatient, 
-			   
-			@Description(shortDefinition="")
-			@OptionalParam(name="source", targetTypes={  } )
-			ReferenceAndListParam theSource, 
-			   
-			@Description(shortDefinition="The unique identifier for the questionnaire response")
-			@OptionalParam(name="identifier")
-			TokenAndListParam theIdentifier, 
-			   
-			@Description(shortDefinition="Plan/proposal/order fulfilled by this questionnaire response")
-			@OptionalParam(name="based-on", targetTypes={  } )
-			ReferenceAndListParam theBased_on, 
-			   
-			@Description(shortDefinition="Procedure or observation this questionnaire response is part of")
-			@OptionalParam(name="parent", targetTypes={  } )
-			ReferenceAndListParam theParent, 
-			 
-			@IncludeParam(reverse=true)
-			Set<Include> theRevIncludes,
-			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
-			@OptionalParam(name="_lastUpdated")
-			DateRangeParam theLastUpdated, 
-			 
-			@IncludeParam(allow= {
-					"QuestionnaireResponse:author" ,
-					"QuestionnaireResponse:based-on" ,
-					"QuestionnaireResponse:context" ,
-					"QuestionnaireResponse:parent" ,
-					"QuestionnaireResponse:patient" ,
-					"QuestionnaireResponse:questionnaire" ,
-					"QuestionnaireResponse:source" ,
-					"QuestionnaireResponse:subject" ,
-					"*"
-			}) 
-			Set<Include> theIncludes,
+ 			@Description(shortDefinition="The author of the questionnaire response")
+  			@OptionalParam(name="author", targetTypes={  } )
+  			ReferenceAndListParam theAuthor, 
+    
+  			@Description(shortDefinition="When the questionnaire response was last changed")
+  			@OptionalParam(name="authored")
+  			DateAndListParam theAuthored, 
+    
+  			@Description(shortDefinition="Plan/proposal/order fulfilled by this questionnaire response")
+  			@OptionalParam(name="based-on", targetTypes={  } )
+  			ReferenceAndListParam theBased_on, 
+    
+  			@Description(shortDefinition="Encounter associated with the questionnaire response")
+  			@OptionalParam(name="encounter", targetTypes={  } )
+  			ReferenceAndListParam theEncounter, 
+    
+  			@Description(shortDefinition="The unique identifier for the questionnaire response")
+  			@OptionalParam(name="identifier")
+  			TokenAndListParam theIdentifier,
+    
+  			@Description(shortDefinition="Procedure or observation this questionnaire response was performed as a part of")
+  			@OptionalParam(name="part-of", targetTypes={  } )
+  			ReferenceAndListParam thePart_of, 
+    
+  			@Description(shortDefinition="The patient that is the subject of the questionnaire response")
+  			@OptionalParam(name="patient", targetTypes={  } )
+  			ReferenceAndListParam thePatient, 
+    
+  			@Description(shortDefinition="The questionnaire the answers are provided for")
+  			@OptionalParam(name="questionnaire", targetTypes={  } )
+  			ReferenceAndListParam theQuestionnaire, 
+    
+ 			@Description(shortDefinition="The individual providing the information reflected in the questionnaire respose")
+ 			@OptionalParam(name="source", targetTypes={  } )
+ 			ReferenceAndListParam theSource, 
+   
+ 			@Description(shortDefinition="The status of the questionnaire response")
+ 			@OptionalParam(name="status")
+ 			TokenAndListParam theStatus,
+   
+ 			@Description(shortDefinition="The subject of the questionnaire response")
+ 			@OptionalParam(name="subject", targetTypes={  } )
+ 			ReferenceAndListParam theSubject,   		
+ 
+ 			@IncludeParam(reverse=true)
+ 			Set<Include> theRevIncludes,
+ 			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
+ 			@OptionalParam(name="_lastUpdated")
+ 			DateRangeParam theLastUpdated, 
+ 
+ 			@IncludeParam(allow= {
+ 					"QuestionnaireResponse:author" ,
+ 					"QuestionnaireResponse:based-on" ,
+ 					"QuestionnaireResponse:encounter" ,
+ 					"QuestionnaireResponse:part-of" ,
+ 					"QuestionnaireResponse:patient" ,
+ 					"QuestionnaireResponse:questionnaire" ,
+ 					"QuestionnaireResponse:source" ,
+ 					"QuestionnaireResponse:subject" ,
+ 					"*"
+ 			}) 
+ 			Set<Include> theIncludes,
 			
 			@Sort SortSpec theSort,
 
@@ -157,17 +167,17 @@ public class QuestionnaireResponseResourceProvider extends RecordBasedResourcePr
 		paramMap.add("_language", theResourceLanguage);
 		
 		// paramMap.add("_has", theHas);
-		paramMap.add("status", theStatus);
-		paramMap.add("authored", theAuthored);
-		paramMap.add("subject", theSubject);
 		paramMap.add("author", theAuthor);
-		paramMap.add("questionnaire", theQuestionnaire);
-		paramMap.add("context", theContext);
-		paramMap.add("patient", thePatient);
-		paramMap.add("source", theSource);
-		paramMap.add("identifier", theIdentifier);
+		paramMap.add("authored", theAuthored);
 		paramMap.add("based-on", theBased_on);
-		paramMap.add("parent", theParent);
+		paramMap.add("encounter", theEncounter);
+		paramMap.add("identifier", theIdentifier);
+		paramMap.add("part-of", thePart_of);
+		paramMap.add("patient", thePatient);
+		paramMap.add("questionnaire", theQuestionnaire);
+		paramMap.add("source", theSource);
+		paramMap.add("status", theStatus);
+		paramMap.add("subject", theSubject);
 		
 		paramMap.setRevIncludes(theRevIncludes);
 		paramMap.setLastUpdated(theLastUpdated);
@@ -195,7 +205,8 @@ public class QuestionnaireResponseResourceProvider extends RecordBasedResourcePr
 		builder.restriction("authored", true, QueryBuilder.TYPE_DATETIME, "authored");
 		builder.restriction("author", true, null, "author");
 		builder.restriction("based-on", true, null, "basedOn");
-		builder.restriction("context", true, null, "context");		
+		builder.restriction("encounter", true, "Encounter", "encounter");
+		builder.restriction("part-of", true, null, "partOf");
 		builder.restriction("parent", true, null, "parent");
 		builder.restriction("questionnaire", true, "Questionnaire", "questionnaire");
 		builder.restriction("source", true, null, "source");
@@ -273,6 +284,12 @@ public class QuestionnaireResponseResourceProvider extends RecordBasedResourcePr
 	public void clean(QuestionnaireResponse theQuestionnaireResponse) {
 		
 		super.clean(theQuestionnaireResponse);
+	}
+
+	@Override
+	protected void convertToR4(Object in) {
+		// No action
+		
 	}
 
 }
