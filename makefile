@@ -108,7 +108,7 @@ tasks/install-node: tasks/install-packages trigger/install-node
 	$(info ------------------------------)
 	$(info Installing Node JS... )
 	$(info ------------------------------)
-	curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+	curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
 	sudo apt-get install -y nodejs	
 	sudo chmod -R ugo+rx /usr/lib/node_modules
 	touch tasks/install-node
@@ -241,7 +241,7 @@ tasks/build-portal: trigger/build-portal conf/recoverykeys.json $(shell find por
 	$(info ------------------------------)
 	$(info Building Portal... )
 	$(info ------------------------------)
-	cd portal;npm install;npm run prod:build;
+	cd portal;rm package-lock.json;npm install;npm run prod:build;
 	touch tasks/build-portal
 	
 tasks/build-platform: $(shell find platform -name "*.java" | sed 's/ /\\ /g')

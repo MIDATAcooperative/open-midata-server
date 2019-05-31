@@ -91,7 +91,7 @@ public class Providers extends APIController {
 		HPUser user = new HPUser(email);
 		user._id = new MidataId();
 		user.role = UserRole.PROVIDER;		
-		user.subroles.add(SubUserRole.MANAGER);
+		user.subroles.add(SubUserRole.MASTER);
 		user.address1 = JsonValidation.getString(json, "address1");
 		user.address2 = JsonValidation.getString(json, "address2");
 		user.city = JsonValidation.getString(json, "city");
@@ -195,6 +195,7 @@ public class Providers extends APIController {
 	@Security.Authenticated(ProviderSecured.class)
 	public Result registerOther() throws AppException {
 		
+		requireSubUserRole(SubUserRole.MASTER);
 		
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "country", "language");
@@ -221,6 +222,7 @@ public class Providers extends APIController {
 		user.provider = PortalSessionToken.session().orgId;
 		if (user.provider == null) throw new InternalServerException("error.internal", "No organization in session for register provider!");
 		user.status = UserStatus.ACTIVE;
+		
 		//user.authType = SecondaryAuthType.SMS;
 						
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, null, new MidataId(request().attrs().get(play.mvc.Security.USERNAME)), user);
@@ -385,6 +387,8 @@ public class Providers extends APIController {
 	@APICall
 	@Security.Authenticated(ProviderSecured.class)
 	public Result updateOrganization(String id) throws AppException {
+		requireSubUserRole(SubUserRole.MASTER);
+		
 		JsonNode json = request().body().asJson();
 		
 		JsonValidation.validate(json, "_id", "name");

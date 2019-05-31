@@ -92,7 +92,7 @@ angular.module('portal')
 			  else {
 				  session.postLogin({ data : result}, $state);  
 			  }
-		  }
+		  } else { $scope.doneLock = true; }
 		})
 		.catch(function(err) { $scope.error = err.data; });
 	};	

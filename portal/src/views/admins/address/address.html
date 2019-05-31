@@ -26,7 +26,11 @@
 			  </tr><tr>
 			  <td translate="admin_address.role"></td><td translate="{{ 'enum.userrole.'+ member.role }}"></td>
 			  </tr><tr>
-			  <td translate="admin_address.subroles"></td><td><div ng-repeat="subrole in member.subroles" translate="{{ 'enum.subuserrole.'+subrole }}"></div></td>
+			  <td translate="admin_address.subroles"></td><td>
+			    <div ng-repeat="subrole in member.subroles" translate="{{ 'enum.subuserrole.'+subrole }}"></div>
+			    <button ng-show="(member.role=='PROVIDER' || member.role=='RESEARCH') && member.subroles.indexOf('MASTER') < 0" ng-click="addSubRole('MASTER')" class="btn btn-default btn-sm" translate="admin_address.make_master_btn"></button>
+			    <button ng-show="(member.role=='PROVIDER' || member.role=='RESEARCH') && !(member.subroles.indexOf('MASTER') < 0)" ng-click="removeSubRole('MASTER')" class="btn btn-default btn-sm" translate="admin_address.remove_master_btn"></button>
+			  </td>
 			  </tr><tr ng-show="member.coach">
 			  <td translate="registration.coach"></td><td>{{ member.coach }}</td>
 			  </tr><tr ng-show="member.reason">

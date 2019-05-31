@@ -368,6 +368,7 @@
 	   "NURSE" : "Nurse",
 	   "MANAGER" : "Manager",
 	   "MONITOR" : "Monitor",
+	   "MASTER" : "Master User",
 	   "USERADMIN" : "User Admin",
 	   "STUDYADMIN" : "Study Admin",
 	   "CONTENTADMIN" : "Content Admin",

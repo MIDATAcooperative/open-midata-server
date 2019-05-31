@@ -38,7 +38,7 @@
 					  <input type="text" class="form-control" ng-model="member.shares[criteria.me]">
                     </td>
 					<td>
-					  <button ng-click="commit(member)" class="btn btn-sm btn-default">ok</button>
+					  <button ng-click="commit(member)" ng-disabled="member.success" class="btn btn-sm btn-default">ok</button>
 					  <span class="fas fa-check text-success" ng-show="member.success"></span>
 					  <span class="fas fa-times text-danger" ng-show="member.fail"></span>
 					  {{ member.success }}{{ member.fail }}

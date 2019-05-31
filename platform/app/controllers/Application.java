@@ -117,20 +117,25 @@ public class Application extends APIController {
 		// execute
 		User user = null;
 		switch (role) {
-		case "member" : user = Member.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security"));break;
-		case "research" : user = ResearchUser.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security"));break;
-		case "provider" : user = HPUser.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security"));break;
+		case "member" : user = Member.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs"));break;
+		case "research" : user = ResearchUser.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs"));break;
+		case "provider" : user = HPUser.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs"));break;
 		case "developer" : 
-			user = Developer.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security"));
-			if (user == null) user = Admin.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security"));
+			user = Developer.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs"));
+			if (user == null) user = Admin.getByEmail(email, Sets.create("firstname", "lastname","email","password", "role", "security","resettoken","resettokenTs"));
 			break;
 		default: break;		
 		}
 		if (user != null) {		
 		  AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE_REQUEST, user._id);
-		  PasswordResetToken token = new PasswordResetToken(user._id, role);
-		  user.set("resettoken", token.token);
-		  user.set("resettokenTs", System.currentTimeMillis());
+		  PasswordResetToken token;
+		  if (user.resettoken != null && user.resettokenTs > 0 && System.currentTimeMillis() - user.resettokenTs < EMAIL_TOKEN_LIFETIME - 1000l * 60l * 60l) {
+			  token = new PasswordResetToken(user._id, role, user.resettoken);
+		  } else {		  
+			  token = new PasswordResetToken(user._id, role);
+			  user.set("resettoken", token.token);
+			  user.set("resettokenTs", System.currentTimeMillis());
+		  }
 		  String encrypted = token.encrypt();
 			   
 		  String site = "https://" + InstanceConfig.getInstance().getPortalServerDomain();
@@ -296,6 +301,7 @@ public class Application extends APIController {
 		
 		
 		User user = User.getById(userId, Sets.create(User.FOR_LOGIN, "resettoken", "resettokenTs", "registeredAt", "confirmedAt", "previousEMail"));
+		if (user == null)  throw new BadRequestException("error.unknown.user", "User not found");
 		
 		if (user!=null && password != null) {				
 			 AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE, userId);
@@ -316,7 +322,15 @@ public class Application extends APIController {
 		        	     PWRecovery.changePassword(user, json);		        	   		        	   
 		               }
 		    	   } else PWRecovery.changePassword(user, json);
-		    	   		    	   
+		    	   		
+		    	   if (user.emailStatus == EMailStatus.UNVALIDATED && wanted == null) {
+		    		   // Implicit confirmation of email address by having received password reset mail
+		    		   AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_CONFIRMED, user);			       		    	   		         
+		               user.emailStatus = EMailStatus.VALIDATED;
+			           user.set("emailStatus", EMailStatus.VALIDATED);		 
+		    	   }
+		    	   
+		    	   user.set("resettoken", null);	
 		       } else throw new BadRequestException("error.expired.token", "Password reset token has already expired.");
 		}
 		
@@ -366,7 +380,7 @@ public class Application extends APIController {
 			}
 		}
 		
-		user.set("resettoken", null);		
+			
 		AuditManager.instance.success();	
 		
 		return OAuth2.loginHelper();	

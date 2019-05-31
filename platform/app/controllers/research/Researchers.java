@@ -101,7 +101,7 @@ public class Researchers extends APIController {
 		if (ResearchUser.existsByEMail(user.email)) throw new JsonValidationException("error.exists.user", "email", "exists", "A user with this email address already exists.");
 						
 		user.role = UserRole.RESEARCH;
-		user.subroles = EnumSet.noneOf(SubUserRole.class);
+		user.subroles = EnumSet.of(SubUserRole.MASTER);
 		user.registeredAt = new Date();				
 		if (user.status == null) user.status = UserStatus.NEW;		
 		user.contractStatus = ContractStatus.REQUESTED;
@@ -150,7 +150,7 @@ public class Researchers extends APIController {
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
 	public Result registerOther() throws AppException {
-		
+		requireSubUserRole(SubUserRole.MASTER);
 		
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "country", "language");
@@ -263,6 +263,8 @@ public class Researchers extends APIController {
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
 	public Result updateOrganization(String id) throws AppException {
+		requireSubUserRole(SubUserRole.MASTER);
+		
 		JsonNode json = request().body().asJson();
 		
 		JsonValidation.validate(json, "_id", "name", "description");

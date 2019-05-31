@@ -1,9 +1,10 @@
 angular.module('portal')
-.controller('LostPasswordCtrl', ['$scope', '$state', 'server', '$window', function($scope, $state, server, $window) {
+.controller('LostPasswordCtrl', ['$scope', '$state', 'server', '$window', 'status', function($scope, $state, server, $window, status) {
 	
 	// init
 	$scope.lostpw = {};
 	$scope.error = null;
+	$scope.status = new status(false, $scope);
 		
 	// submit
 	$scope.submit = function() {
@@ -17,7 +18,7 @@ angular.module('portal')
 		
 		// send the request
 		var data = { "email": $scope.lostpw.email, "role" : $state.current.data.role };
-		server.post(jsRoutes.controllers.Application.requestPasswordResetToken().url, JSON.stringify(data)).
+		$scope.status.doAction("pw",server.post(jsRoutes.controllers.Application.requestPasswordResetToken().url, JSON.stringify(data))).
 			then(function() { 
 				$scope.lostpw.success = true; 
 			}, function(err) { $scope.error = err.data; });

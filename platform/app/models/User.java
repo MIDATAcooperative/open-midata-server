@@ -407,6 +407,10 @@ public class User extends Model implements Comparable<User> {
 	}
 	
 	public static User getById(MidataId id, Set<String> fields) throws InternalServerException {
+		return Model.get(User.class, collection, CMaps.map("_id", id).map("status", NON_DELETED), fields);
+	}
+	
+	public static User getByIdAlsoDeleted(MidataId id, Set<String> fields) throws InternalServerException {
 		return Model.get(User.class, collection, CMaps.map("_id", id), fields);
 	}
 	
