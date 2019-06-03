@@ -69,14 +69,14 @@ public class MobileCallAction extends Action<MobileCall> {
 			AuditManager.instance.fail(500, e2.getMessage(), null);
 			return CompletableFuture.completedFuture((Result) internalServerError("err:"+e2.getMessage()));			
 		} finally {
-			long endTime = System.currentTimeMillis();
-			if (endTime - startTime > configuration.maxtime()) {
-			   ErrorReporter.reportPerformance("Mobile API", ctx, endTime - startTime);
-			}	
-			
-			ServerTools.endRequest();
-						
-					 							  
+			try {
+				long endTime = System.currentTimeMillis();
+				if (endTime - startTime > configuration.maxtime()) {
+				   ErrorReporter.reportPerformance("Mobile API", ctx, endTime - startTime);
+				}	
+			} finally {
+			    ServerTools.endRequest();
+			}											 							 
 		}
     }
 }

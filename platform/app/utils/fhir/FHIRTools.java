@@ -88,7 +88,9 @@ public class FHIRTools {
 	 */
 	public static MidataId getUserIdFromReference(IIdType userRef) throws AppException {
 		String rt = userRef.getResourceType();
-		MidataId id = MidataId.from(userRef.getIdPart());
+		String idpart = userRef.getIdPart();
+		if (!MidataId.isValid(idpart)) throw new UnprocessableEntityException("Invalid reference to person. Maybe this is an id from another platform or a placeholder?");
+		MidataId id = MidataId.from(idpart);
 		
 		User user = User.getByIdAlsoDeleted(id, Sets.create("role"));
 		if (user == null) throw new UnprocessableEntityException("Invalid Person Reference");
