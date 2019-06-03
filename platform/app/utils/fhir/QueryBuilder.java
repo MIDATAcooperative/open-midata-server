@@ -676,7 +676,9 @@ public class QueryBuilder {
 			
 			if (orResult != null) {
 				keep = new HashSet<String>();
-				for (ReferenceParam r : orResult) keep.add(r.getIdPart());
+				for (ReferenceParam r : orResult) {					
+					keep.add(r.getIdPart());
+				}
 			}
 			
 			orResult = new ArrayList<ReferenceParam>();
@@ -701,15 +703,16 @@ public class QueryBuilder {
                            resultList = FHIRServlet.myProviders.get(targetType).search(params);
                         }
                         for (BaseResource br : resultList) {
-                        	if (keep == null || keep.contains(br.getId())) orResult.add(new ReferenceParam(br.getId()));
+                        	ReferenceParam rp = new ReferenceParam(br.getId());                        	
+                        	if (keep == null || keep.contains(rp.getIdPart())) orResult.add(rp);
                         }
 						
 						AccessLog.log("RT:"+r.getResourceType());
 						AccessLog.log("CHAINXX"+r.getChain()); 	
-					   AccessLog.log("CHAINXV "+r.toTokenParam(ResourceProvider.ctx).getSystem());
-					   AccessLog.log("CHAINXV2 "+r.toTokenParam(ResourceProvider.ctx).getValue());
+					   //AccessLog.log("CHAINXV "+r.toTokenParam(ResourceProvider.ctx).getSystem());
+					   //AccessLog.log("CHAINXV2 "+r.toTokenParam(ResourceProvider.ctx).getValue());
 					} else
-					if (r.getIdPart() != null) {
+					if (r.getIdPart() != null) {						
 						if (keep == null || keep.contains(r.getIdPart())) orResult.add(r);					
 					}
 					
@@ -717,8 +720,7 @@ public class QueryBuilder {
 			}
 			
 
-		}
-		
+		}		
 		return orResult;		
 	}
 	
