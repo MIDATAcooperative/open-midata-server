@@ -13,8 +13,13 @@ angular.module('portal')
        $scope.results = "empty";
        $scope.count = 1;
        $scope.saved = [];
-       $scope.device = "debug";
+       $scope.device = sessionStorage.oldDevice || "debug";
        $scope.portal = { username : "", password : "" };
+       $scope.releases = [
+    	   { name : "FHIR STU3", header : "fhirVersion=3.0" },
+    	   { name : "FHIR R4", header : "fhirVersion=4.0" }
+       ];
+       $scope.fhirRelease = sessionStorage.oldFhirRelease || "fhirVersion=4.0";
        
        //if ($scope.extra == null) $scope.extra = "";
 
@@ -39,9 +44,10 @@ angular.module('portal')
          }
          }
          
-         var call = { method: $scope.type, url: url, data : body }; 
+         var call = { method: $scope.type, url: url, data : body, headers:{} }; 
          if ($scope.authheader) call.headers = { "Authorization" : $scope.authheader, "Prefer" : "return=representation" };
-
+         call.headers.Accept = "application/fhir+json; "+$scope.fhirRelease;
+         
          $scope.results = "Processing request...";
         
          
@@ -164,6 +170,8 @@ angular.module('portal')
 	
 	$scope.doOauthLogin = function() {
 		sessionStorage.oldToken = sessionStorage.token;
+		sessionStorage.oldDevice = $scope.device;
+		sessionStorage.oldFhirRelease = $scope.fhirRelease;
 		$window.document.location.href = $scope.getOAuthLogin();
 	};
 	
