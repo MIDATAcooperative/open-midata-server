@@ -107,16 +107,23 @@
 	<div id="wrapper">
 		<div id="maincontent" ui-view ng-cloak></div>
 		<footer id="footer">
-			<div class="container">
-				<p translate="footer.copyright"
-					translate-value-now="{{ currentDate | date:'yyyy' }}">(c) ETH Zürich</p>
-
-				<ul>
-					<li><a href="https://www.midata.coop" translate="footer.homepage">MIDATA Homepage</a></li>
-					<li><a ui-sref="public.terms({which : 'midata-terms-of-use'})" translate="registration.agb3">Terms of Use</a></li>
-					<li><a ui-sref="public.terms({which : 'midata-privacy-policy'})" translate="registration.privacypolicy3">Privacy Policy</a></li>
+			<div class="container-fluid">
+			  <div class="row">
+			    <div class="col-lg-6">
+				
+				<ul class="menu nav">
+					<li class="nav-item"><a class="nav-link" href="https://www.midata.coop" translate="footer.homepage">MIDATA Homepage</a></li>
+					<li class="nav-item"><a class="nav-link" href="https://www.midata.coop/impressum" translate="footer.impressum">Impressum</a></li>
+					<li class="nav-item"><a class="nav-link" ui-sref="public.terms({which : 'midata-terms-of-use'})" translate="registration.agb3">Terms of Use</a></li>
+					<li class="nav-item"><a class="nav-link" ui-sref="public.terms({which : 'midata-privacy-policy'})" translate="registration.privacypolicy3">Privacy Policy</a></li>
 
 				</ul>
+				
+				</div><div class="col-lg-6">
+				<p translate="footer.copyright"
+					translate-value-now="{{ currentDate | date:'yyyy' }}">(c) ETH Zürich</p>
+				</div>
+			  </div>
 			</div>
 		</footer>
 	</div>
