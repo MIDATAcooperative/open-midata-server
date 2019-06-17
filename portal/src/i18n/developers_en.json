@@ -92,8 +92,8 @@
     "testfromlocal_help" : "During development, you can test the plugin code stored on your local computer on this instance.",
     "serverimport_btn" : "Test automatic import script.",
     "serverimport_help" : "If your plugin offers automatic import, you can test the script of your plugin that is normally run on the server on your local computer.",
-    "link_btn" : "Links with Studies",
-    "link_help" : "Apps may offer or require participation to a study. Studies may recommend plugin or app use.",    
+    "link_btn" : "Links with research projects or external parties",
+    "link_help" : "Apps may offer or require participation to a research project. Research projects may recommend plugin or app use. App use may be linked to consents with providers or teams.",    
     "icon_btn" : "Application Icons and Images",
     "icon_help" : "Upload and manage the icons and images to be used with your application. Provide images for the login screen, the consent acceptation screen, the MIDATA Store, etc.",
     "messages_btn" : "Application email Messages",
@@ -214,7 +214,16 @@
   },
   
   "applink" : {
-    "title" : "Links with Studies"
+    "title" : "Links with projects or providers",
+    "add_research_btn" : "Add link with research project",
+    "add_provider_btn" : "Add link with provider",
+    "target" : "Target",
+    "provider" : "Healthcare Provider (login)",
+    "identifier" : "Identifier for this link",
+    "types" : {
+      "REQUIRE_P" : "Consent must be accepted",
+      "OFFER_P" : "Consent is offered upon login/registration"
+    }
   },
   
   "appsubscriptions" : {

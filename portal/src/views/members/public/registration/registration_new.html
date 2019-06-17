@@ -155,16 +155,16 @@
                     <div ng-repeat="link in links">
 						<fieldset  
 							class="mi-at-input__fieldset mi-at-input--checkbox mi-at-input--checkbox-white">
-							<input id="confirmStudy" name="confirmStudy" ng-checked="registration.confirmStudy.indexOf(link.study._id)>=0" ng-click="toggle(registration.confirmStudy, link.study._id);" class="mi-at-input mi-at-input--checkbox"
+							<input id="confirmStudy" name="confirmStudy" ng-checked="registration.confirmStudy.indexOf(link.studyId || link.userId)>=0" ng-click="toggle(registration.confirmStudy, link.studyId || link.userId);" class="mi-at-input mi-at-input--checkbox"
 								type="checkbox" value="" floating-label /> <label for="confirmStudy" class="mi-at-text"> <span
 								translate="{{ getLinkLabel(link) }}"></span> <a class="mi-at-input--checkbox-link" ng-show="link.study.termsOfUse"
 								ng-click="terms({which : link.study.termsOfUse });" href="javascript:"><span
-									class="mi-at-text mi-at-text--white mi-at-text--highlighted">{{ link.study.name }}</span></a></label>
+									class="mi-at-text mi-at-text--white mi-at-text--highlighted">{{ link.study.name }} {{ link.provider.name }}</span></a></label>
 						</fieldset>
 	
 	
 						<div ng-show="!link.study.termsOfUse" class="mi-or-auth__study_title">
-							<span class="mi-at-text mi-at-text--highlighted mi-at-text--white">{{ link.study.name }}</span>
+							<span class="mi-at-text mi-at-text--highlighted mi-at-text--white">{{ link.study.name }} {{ link.provider.name }}</span>
 	
 						</div>
 						<div ng-show="!link.study.termsOfUse" class="mi-or-auth__study_description">

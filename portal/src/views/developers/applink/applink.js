@@ -1,11 +1,12 @@
 angular.module('portal')
-.controller('AppLinkCtrl', ['$scope', '$state', 'server', 'apps', 'status', 'circles', 'spaces', 'studies', '$q', '$translatePartialLoader', function($scope, $state, server, apps, status, circles, spaces, studies, $q, $translatePartialLoader) {
+.controller('AppLinkCtrl', ['$scope', '$state', 'server', 'apps', 'status', 'circles', 'spaces', 'studies', '$q', '$translatePartialLoader', 'users', function($scope, $state, server, apps, status, circles, spaces, studies, $q, $translatePartialLoader, users) {
 	
 	$scope.appId = $state.params.appId;
 	$scope.crit = { group : "" };
 	$scope.status = new status(true, $scope);
 	
 	$scope.types = studies.linktypes;
+	$scope.types2 = ["OFFER_P", "REQUIRE_P"];
 	$scope.periods = studies.executionStati;
 	$scope.selection = undefined;
 	
@@ -18,6 +19,7 @@ angular.module('portal')
 	$scope.reload = function() {
 	
 		$scope.selection = null;
+		$scope.submitted = false;	
 		
 		$scope.status.doBusy(apps.getApps({ "_id" : $state.params.appId }, ["creator", "filename", "name", "description", "icons", "type", "targetUserRole" ]))
 		.then(function(data) { 
@@ -26,7 +28,7 @@ angular.module('portal')
 		
 		$scope.status.doBusy(server.get(jsRoutes.controllers.Market.getStudyAppLinks("app", $scope.appId).url))
 	    .then(function(data) { 				
-			$scope.links = data.data;												
+			$scope.links = data.data;				
 		});	
 		
 		$scope.status.doBusy(studies.search({ validationStatus : "VALIDATED" }, ["_id", "code", "name" ]))
@@ -35,8 +37,12 @@ angular.module('portal')
 		});
 	};
 	
-	$scope.addNew = function() {
-		$scope.selection = { app : {}, study:{}, type:[], usePeriod:[] };
+	$scope.addNewResearch = function() {
+		$scope.selection = { linkTargetType : "STUDY", app : {}, study:{}, type:[], usePeriod:[] };
+	};
+	
+	$scope.addNewProvider = function() {
+		$scope.selection = { linkTargetType : "ORGANIZATION", app : {}, provider:{}, type:[] };
 	};
 	
 	$scope.formChange = function() {
@@ -76,6 +82,17 @@ angular.module('portal')
 		});
    };
    
+   /*$scope.userselection = function() {
+	   $scope.status.doBusy(users.getMembers({ email : $scope.selection.userLogin, role : "PROVIDER" }, ["_id", "email", "name", "provider" ]))
+		.then(function(data) {
+			if (data.data && data.data.length == 1) {
+			  $scope.selection.userId = data.data[0]._id;
+			  $scope.selection.userLogin = data.data[0].email;
+			  $scope.selection.providerId = data.data[0].provider;
+			}
+		});
+   };*/
+   
    $scope.remove = function(link) {
 	  $scope.status.doAction("delete", server.delete(jsRoutes.controllers.Market.deleteStudyAppLink(link._id).url))
 	  .then(function() {
@@ -107,7 +124,7 @@ angular.module('portal')
 		if ($scope.selection._id) {
 			first = $scope.status.doAction("delete", server.delete(jsRoutes.controllers.Market.deleteStudyAppLink($scope.selection._id).url));
 		} else first = $q.when();
-		first.then(function() { $scope.status.doAction("submit", server.post(jsRoutes.controllers.Market.insertStudyAppLink().url, $scope.selection))
+		first.then(function() { $scope.selection._id = undefined; $scope.status.doAction("submit", server.post(jsRoutes.controllers.Market.insertStudyAppLink().url, $scope.selection))
 		.then(function() {
 			  $scope.reload();
 		}); });

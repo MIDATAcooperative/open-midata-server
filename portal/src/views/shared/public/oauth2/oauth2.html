@@ -151,7 +151,7 @@
 				
 				<section class="mi-or-auth__section mi-or-auth__section--study" ng-repeat="link in links">
 					<fieldset style="height:70px" class="mi-at-input__fieldset mi-at-input--checkbox mi-at-input--checkbox-white">
-						<input id="mi-at-input-" class="mi-at-input mi-at-input--checkbox" type="checkbox" value="" ng-checked="login.confirmStudy.indexOf(link.study._id)>=0" ng-click="toggle(login.confirmStudy, link.study._id);"
+						<input id="mi-at-input-" class="mi-at-input mi-at-input--checkbox" type="checkbox" value="" ng-checked="login.confirmStudy.indexOf(link.studyId || link.userId)>=0" ng-click="toggle(login.confirmStudy, link.studyId || link.userId);"
 							floating-label  /> 
 						<label for="mi-at-input-checkbox" class="mi-at-text mi-at-text--white">
 						  <span translate="{{ getLinkLabel(link) }}"></span>
@@ -160,7 +160,7 @@
 					</fieldset>
 
 					<div class="mi-or-auth__study_title" ng-hide="link.study.termsOfUse">
-						<span class="mi-at-text mi-at-text--highlighted mi-at-text--white">{{ link.study.name }}</span>
+						<span class="mi-at-text mi-at-text--highlighted mi-at-text--white">{{ link.study.name }} {{ link.provider.name }}</span>
 
 					</div>
 					<div class="mi-or-auth__study_description" ng-hide="link.study.termsOfUse">

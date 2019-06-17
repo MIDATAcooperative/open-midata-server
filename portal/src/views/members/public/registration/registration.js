@@ -41,7 +41,11 @@ angular.module('portal')
 	        for (var i=0;i<$scope.links.length;i++) {
 				console.log($scope.links[i]);
 				if ($scope.links[i].type.indexOf("OFFER_P") >=0 && $scope.links[i].type.indexOf("REQUIRE_P")>=0 && $scope.registration.confirmStudy.indexOf($scope.links[i].studyId) < 0) {
-					$scope.error = { code : "error.missing.study_accept" };
+					if ($scope.links[i].linkTargetType == "ORGANIZATION") {
+					   $scope.error = { code : "error.missing.consent_accept" };
+					} else {
+					   $scope.error = { code : "error.missing.study_accept" };
+					}
 					return;
 				}
 			}
@@ -188,6 +192,10 @@ angular.module('portal')
 	};
 	
 	$scope.getLinkLabel = function(link) {
+		if (link.linkTargetType == "ORGANIZATION") {
+			if (link.type.indexOf("REQUIRE_P") >= 0) return "oauth2.confirm_provider";
+			return "oauth2.confirm_provider_opt";
+		} 
 		if (link.study.type == "CLINICAL") {
 			if (link.type.indexOf("REQUIRE_P") >= 0) return "oauth2.confirm_study";
 			return "oauth2.confirm_study_opt";

@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import actions.APICall;
 import actions.MobileCall;
 import models.Admin;
+import models.Consent;
 import models.Developer;
 import models.HPUser;
 import models.Member;
@@ -35,6 +36,7 @@ import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.EMailStatus;
+import models.enums.LinkTargetType;
 import models.enums.MessageReason;
 import models.enums.ParticipationStatus;
 import models.enums.PluginStatus;
@@ -51,6 +53,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
 import utils.InstanceConfig;
+import utils.LinkTools;
 import utils.RuntimeConstants;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
@@ -114,7 +117,13 @@ public class OAuth2 extends Controller {
         for (StudyAppLink sal : links) {
         	if (sal.isConfirmed() && sal.active && sal.type.contains(StudyAppLinkType.REQUIRE_P)) {
         		
-        		
+        		if (sal.linkTargetType == LinkTargetType.ORGANIZATION) {
+      			  Consent c = LinkTools.findConsentForAppLink(appInstance.owner, sal);
+      			  if (c == null) {
+      				  MobileAPI.removeAppInstance(appInstance);
+		                  return false;
+      			  }
+      		   } else {
         		   StudyParticipation sp = StudyParticipation.getByStudyAndMember(sal.studyId, appInstance.owner, Sets.create("status", "pstatus"));
         		   
         		   if (sp == null) {
@@ -127,7 +136,7 @@ public class OAuth2 extends Controller {
 	               		sp.pstatus.equals(ParticipationStatus.RESEARCH_REJECTED)) {
 	               		throw new BadRequestException("error.blocked.consent", "Research consent expired or blocked.");
 	               	}
-        		   
+      		   }
         		
         	}
         }        
@@ -569,8 +578,10 @@ public class OAuth2 extends Controller {
 		
 		for (StudyAppLink sal : links) {
 			if (sal.isConfirmed() && sal.active && ((sal.type.contains(StudyAppLinkType.OFFER_P) && confirmStudy.contains(sal.studyId)) || sal.type.contains(StudyAppLinkType.REQUIRE_P))) {
-				Study study = Study.getById(sal.studyId, Sets.create("requirements", "executionStatus"));				
-				if (study.requirements != null) requirements.addAll(study.requirements);				
+				if (sal.linkTargetType == null || sal.linkTargetType == LinkTargetType.STUDY) {
+					Study study = Study.getById(sal.studyId, Sets.create("requirements", "executionStatus"));				
+					if (study.requirements != null) requirements.addAll(study.requirements);		
+				}
 			}
 		}
 		
@@ -815,7 +826,12 @@ public class OAuth2 extends Controller {
 			boolean allRequired = true;
 			for (StudyAppLink sal : links) {
 				if (sal.isConfirmed() && sal.active && (sal.type.contains(StudyAppLinkType.REQUIRE_P) || sal.type.contains(StudyAppLinkType.OFFER_P))) {
-					allRequired = allRequired && checkAlreadyParticipatesInStudy(sal.studyId, token.ownerId);
+					if (sal.linkTargetType == LinkTargetType.ORGANIZATION) {
+					  Consent existingConsent = LinkTools.findConsentForAppLink(token.ownerId, sal);
+					  allRequired = allRequired && (existingConsent != null);
+					} else {
+					  allRequired = allRequired && checkAlreadyParticipatesInStudy(sal.studyId, token.ownerId);
+					}
 				}
 			}
 			return allRequired ? ok("CONFIRM-STUDYOK") : ok("CONFIRM");				
