@@ -82,9 +82,15 @@ angular.module('portal')
 	$scope.notPublic = ENV.instanceType == "prod";
 	$scope.action = $state.params.action;	
 	
+	$scope.hideCookieBar = localStorage.hideCookieBar;
+	
 	if (!$state.current.data || !$state.current.data.keep) session.logout();
 	$translatePartialLoader.addPart($state.current.data.locales);	
 	$scope.changeLanguage = function(lang) {
 		$translate.use(lang);
+	};
+	
+	$scope.dismissCookieBar = function() {
+	  localStorage.hideCookieBar = $scope.hideCookieBar = true;
 	};
 }]);

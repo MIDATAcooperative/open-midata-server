@@ -1,7 +1,22 @@
 <!-- Navbar -->
 <div class="colored">
-	<header id="pubnavbar" class="navbar navbar-expand-lg navbar-light bg-light" role="navigation" ng-controller="PublicNavbarCtrl">
+    <header ng-controller="PublicNavbarCtrl">
+    
+     <div class="cookie-bar" ng-hide="hideCookieBar">
+	         <div class="row align-items-center">
+	            <div class="col"><p class="cell"><span translate="navbar.cookiebanner">Diese Website verwendet Cookies. Weitere Informationen finden Sie unter</span> <a class="ctcc-more-info-link" tabindex="0" href="javascript:" ui-sref="public.terms({which : 'midata-privacy-policy'})" translate="navbar.privacypolicy">Datenschutzerklärung</a>.</p>
+                </div>
+	            <div class="col-auto"><div class="cell"><a class="btn btn-primary" href="javascript:" ng-click="dismissCookieBar()" translate="navbar.cookiebanner_close_btn">Schliessen</a></div></div>
+	       </div>
+     </div>
+    
+	<div id="pubnavbar" class="navbar navbar-expand-lg navbar-light bg-light" role="navigation" >
+	
+	
+	
 		<div class="container">
+		  
+		
 			<div class="navbar-header">
 			
 			 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-ex1-collapse" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,6 +40,7 @@
 				</ul>
 			</div>
 		</div>
+	 </div>
 	</header>
 </div>	
 	<div style="position: relative; overflow: hidden;">
