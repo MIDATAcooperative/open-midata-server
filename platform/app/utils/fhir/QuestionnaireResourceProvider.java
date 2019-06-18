@@ -232,7 +232,17 @@ public class QuestionnaireResourceProvider extends RecordBasedResourceProvider<Q
 	public MethodOutcome createResource(@ResourceParam Questionnaire theQuestionnaire) {
 		return super.createResource(theQuestionnaire);
 	}
+	
+	
 		
+	@Override
+	public void createPrepare(Record record, Questionnaire theResource) throws AppException {
+        if (!theResource.hasUrl()) {
+        	theResource.setUrl(FHIRServlet.getBaseUrl()+"/Questionnaire/"+record._id);
+        }
+		super.createPrepare(record, theResource);
+	}
+
 	@Override
 	public String getRecordFormat() {	
 		return "fhir/Questionnaire";

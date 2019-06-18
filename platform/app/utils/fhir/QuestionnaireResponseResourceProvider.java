@@ -208,7 +208,7 @@ public class QuestionnaireResponseResourceProvider extends RecordBasedResourcePr
 		builder.restriction("encounter", true, "Encounter", "encounter");
 		builder.restriction("part-of", true, null, "partOf");
 		builder.restriction("parent", true, null, "parent");
-		builder.restriction("questionnaire", true, "Questionnaire", "questionnaire");
+		builder.restriction("questionnaire", true, QueryBuilder.TYPE_CANONICAL, "questionnaire");
 		builder.restriction("source", true, null, "source");
 		builder.restriction("status", true, QueryBuilder.TYPE_CODE, "status");		
 				

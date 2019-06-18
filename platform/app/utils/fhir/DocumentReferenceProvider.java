@@ -276,7 +276,7 @@ public class DocumentReferenceProvider extends RecordBasedResourceProvider<Docum
 				
 		builder.restriction("category", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "category|class");
 		
-		builder.restriction("date", true, QueryBuilder.TYPE_DATETIME, "date|created");	
+		builder.restriction("date", true, QueryBuilder.TYPE_DATETIME, "date|indexed");	
 		builder.restriction("custodian", true, "Organization", "custodian");
 		
 		builder.restriction("description", true, QueryBuilder.TYPE_STRING, "description");
@@ -393,7 +393,7 @@ public class DocumentReferenceProvider extends RecordBasedResourceProvider<Docum
 	@Override
 	protected void convertToR4(Object in) {
 		FHIRVersionConvert.rename(in, "class", "category");
-		FHIRVersionConvert.rename(in, "created", "date");
+		FHIRVersionConvert.rename(in, "indexed", "date");
 		
 	}
 
