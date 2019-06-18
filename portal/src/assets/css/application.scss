@@ -208,6 +208,47 @@ footer {
    }
 }
 
+.cookie-bar {
+    background-color: #333;
+    padding: 1rem 0;
+
+    p {
+       color: #FFF;
+       margin-bottom: 0;
+
+       a {
+         color: #FFF;
+         text-decoration: underline;
+       }
+    }
+
+    .cell {  
+      padding-right: 15px;
+      padding-left: 15px;
+    }
+
+   
+	.btn-primary {
+	    background-image: radial-gradient(circle at top right, #38bfb9, #4491f9) !important;
+	    border: 0;
+	    color: #FFF;
+	    transition: color 0.25s ease-out, background-image 0.25s ease-out;
+          
+            border-radius: 8px;
+            text-transform: uppercase;
+            padding: 0.45em 2em;        
+
+
+	}
+
+	.btn-primary:hover {   
+	    background-image: radial-gradient(circle at top left, #38bfb9, #4491f9) !important;
+	    border: 0;
+	    color: #000;
+	}
+}
+
+
 .loader {
   min-height:300px;position:relative;
   

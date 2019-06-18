@@ -11,6 +11,9 @@
    },
 
    "navbar" : {
+      "cookiebanner" : "This website uses cookies. For more information, see",
+      "privacypolicy" : "Privacy Policy",
+      "cookiebanner_close_btn" : "Close",
 	  "toggle_navigation": "Toggle navigation",	 
 	  "login" : "Log in",
 	  "sign_up" : "Sign Up",
