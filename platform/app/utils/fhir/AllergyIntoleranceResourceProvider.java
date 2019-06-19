@@ -3,10 +3,10 @@ package utils.fhir;
 import java.util.List;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.AllergyIntolerance;
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.IdType;
-import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.r4.model.AllergyIntolerance;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.Reference;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
@@ -194,7 +194,7 @@ public class AllergyIntoleranceResourceProvider extends RecordBasedResourceProvi
 
 		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
 		builder.restriction("code", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "code", QueryBuilder.TYPE_CODEABLE_CONCEPT, "reaction.substance");
-		builder.restriction("date", true, QueryBuilder.TYPE_DATETIME, "assertedDate");
+		builder.restriction("date", true, QueryBuilder.TYPE_DATETIME, "recordedDate|assertedDate");
 		
 		builder.restriction("asserter", true, null, "asserter");				        
 		builder.restriction("last-date", true, QueryBuilder.TYPE_DATETIME, "lastOccurrence");			
@@ -206,8 +206,8 @@ public class AllergyIntoleranceResourceProvider extends RecordBasedResourceProvi
 		builder.restriction("type", false, QueryBuilder.TYPE_CODE, "type");
 		builder.restriction("criticality", false, QueryBuilder.TYPE_CODE, "criticality");
 		builder.restriction("category", false, QueryBuilder.TYPE_CODE, "category");	
-		builder.restriction("clinical-status", false, QueryBuilder.TYPE_CODE, "clinicalStatus");			
-		builder.restriction("verification-status", false, QueryBuilder.TYPE_CODE, "verificationStatus");	
+		builder.restriction("clinical-status", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "clinicalStatus");			
+		builder.restriction("verification-status", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "verificationStatus");	
 								
 		return query.execute(info);
 	}
@@ -251,6 +251,13 @@ public class AllergyIntoleranceResourceProvider extends RecordBasedResourceProvi
 		if (p.getPatient().isEmpty()) {			
 			p.setPatient(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
+	}
+
+	@Override
+	protected void convertToR4(Object in) {
+		FHIRVersionConvert.convertCodeToCodesystem(in, "clinicalStatus", "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical");
+		FHIRVersionConvert.convertCodeToCodesystem(in, "verificationStatus", "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification");
+		FHIRVersionConvert.rename(in, "assertedDate", "recordedDate");
 	}
 	
 

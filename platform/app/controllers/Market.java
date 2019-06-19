@@ -29,6 +29,8 @@ import com.mongodb.BasicDBObject;
 import actions.APICall;
 import actions.MobileCall;
 import models.Developer;
+import models.HPUser;
+import models.HealthcareProvider;
 import models.MessageDefinition;
 import models.MidataId;
 import models.MobileAppInstance;
@@ -46,6 +48,7 @@ import models.User;
 import models.UserGroupMember;
 import models.enums.IconUse;
 import models.enums.JoinMethod;
+import models.enums.LinkTargetType;
 import models.enums.MessageReason;
 import models.enums.ParticipantSearchStatus;
 import models.enums.PluginStatus;
@@ -54,6 +57,7 @@ import models.enums.StudyExecutionStatus;
 import models.enums.StudyValidationStatus;
 import models.enums.UserFeature;
 import models.enums.UserRole;
+import models.enums.UserStatus;
 import models.enums.WritePermissionType;
 import models.stats.PluginDevStats;
 import play.mvc.BodyParser;
@@ -940,25 +944,38 @@ public class Market extends APIController {
 		} else if (type.equals("app") || type.equals("app-use")) {
 			result = StudyAppLink.getByApp(MidataId.from(idStr));
 			for (StudyAppLink sal : result) {
-				Study study = Study.getById(sal.studyId, Sets.create("_id", "code","name", "type", "description", "termsOfUse", "executionStatus","validationStatus","participantSearchStatus", "joinMethods"));
-				sal.study = study;
+				if (sal.linkTargetType == null || sal.linkTargetType == LinkTargetType.STUDY) {
+				  Study study = Study.getById(sal.studyId, Sets.create("_id", "code","name", "type", "description", "termsOfUse", "executionStatus","validationStatus","participantSearchStatus", "joinMethods"));
+				  sal.study = study;
+				  sal.termsOfUse = study.termsOfUse;
+				} else {					
+				  HealthcareProvider prov = HealthcareProvider.getById(sal.providerId, HealthcareProvider.ALL);
+				  sal.provider = prov;
+				  HPUser user = HPUser.getById(sal.userId, Sets.create("email"));
+				  sal.userLogin = user.email;
+				}
 								
 			}
 			
 			if (type.equals("app-use")) {
 				Iterator<StudyAppLink> sal_it = result.iterator();
 				while (sal_it.hasNext()) {
-					StudyAppLink sal = sal_it.next();					
-					if (!sal.isConfirmed() || !sal.usePeriod.contains(sal.study.executionStatus)) sal_it.remove();
-					else if (!sal.study.participantSearchStatus.equals(ParticipantSearchStatus.SEARCHING)) {
-						sal.type.remove(StudyAppLinkType.OFFER_P);
-						if (sal.type.isEmpty()) sal_it.remove();
+					StudyAppLink sal = sal_it.next();	
+					if (sal.linkTargetType == LinkTargetType.ORGANIZATION) {
+						if (!sal.isConfirmed()) sal_it.remove();
+					} else {
+						if (!sal.isConfirmed() || !sal.usePeriod.contains(sal.study.executionStatus)) sal_it.remove();
+						else if (!sal.study.participantSearchStatus.equals(ParticipantSearchStatus.SEARCHING)) {
+							sal.type.remove(StudyAppLinkType.OFFER_P);
+							if (sal.type.isEmpty()) sal_it.remove();
+						}
 					}
 				}
 			}
 		}
 		Map<String, Set<String>> mapping = new HashMap<String, Set<String>>();
 		mapping.put("Plugin", Plugin.ALL_PUBLIC);
+		mapping.put("HealthcareProvider", HealthcareProvider.ALL);
 		mapping.put("Study", Sets.create("_id", "code","name","type", "description", "termsOfUse", "executionStatus", "validationStatus", "participantSearchStatus", "joinMethods"));
 		mapping.put("StudyAppLink", StudyAppLink.ALL);
 		
@@ -969,13 +986,18 @@ public class Market extends APIController {
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
 	public Result insertStudyAppLink() throws AppException {
-        JsonNode json = request().body().asJson();		
+        JsonNode json = request().body().asJson();	
+        
+        LinkTargetType lt = JsonValidation.getEnum(json, "linkTargetType", LinkTargetType.class);
+        if (lt != null && lt.equals(LinkTargetType.ORGANIZATION)) return insertAppLink();
+        
 		JsonValidation.validate(json, "studyId", "appId", "type", "usePeriod");
 
 		
 		StudyAppLink link = new StudyAppLink();
 									
 		link._id = new MidataId();
+		link.linkTargetType = LinkTargetType.STUDY;
 		link.appId = JsonValidation.getMidataId(json, "appId");
 		link.restrictRead = JsonValidation.getBoolean(json, "restrictRead");
 		link.shareToStudy = JsonValidation.getBoolean(json, "shareToStudy");
@@ -993,6 +1015,41 @@ public class Market extends APIController {
 		
 		return ok();
 	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public Result insertAppLink() throws AppException {
+        JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "userLogin", "appId", "type");
+
+		
+		StudyAppLink link = new StudyAppLink();
+									
+		link._id = new MidataId();
+		link.linkTargetType = LinkTargetType.ORGANIZATION;
+		link.appId = JsonValidation.getMidataId(json, "appId");				
+		link.type = JsonValidation.getEnumSet(json, "type", StudyAppLinkType.class);
+		link.identifier = JsonValidation.getString(json, "identifier");
+		link.termsOfUse = JsonValidation.getStringOrNull(json, "termsOfUse");
+		
+		HPUser user = HPUser.getByEmail(JsonValidation.getString(json, "userLogin"), Sets.create("status","provider"));
+		if (user == null || user.status != UserStatus.ACTIVE) throw new JsonValidationException("error.invalid.user", "User not found or not active");
+		HealthcareProvider prov = HealthcareProvider.getById(user.provider, HealthcareProvider.ALL);
+		if (prov == null) throw new JsonValidationException("error.invalid.user", "User not found or not active");
+		link.providerId = prov._id;
+		link.userId = user._id;
+				
+		link.validationResearch = StudyValidationStatus.VALIDATION;
+		link.validationDeveloper = StudyValidationStatus.VALIDATION;
+		
+		checkValidation(link);
+										
+		link.add();
+		
+		return ok();
+	}
+
 	
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
@@ -1033,14 +1090,12 @@ public class Market extends APIController {
 		
 		Plugin plugin = Plugin.getById(link.appId);   
 		if (plugin == null) throw new BadRequestException("error.internal", "Unknown plugin");
-		
-		Study study = Study.getById(link.studyId, Study.ALL);
-		if (study == null) throw new BadRequestException("error.internal", "Unknown study");
+				
 		
         if (role.equals(UserRole.DEVELOPER)) {		 
 		   if (!plugin.creator.equals(userId)) throw new AuthException("error.notauthorized.not_plugin_owner", "You are not authorized to change this plugin.");
 		   link.validationDeveloper = StudyValidationStatus.VALIDATED;
-		} else if (role.equals(UserRole.RESEARCH)) {
+		} else if (role.equals(UserRole.RESEARCH) && link.studyId != null) {
 			UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(link.studyId, userId);
 			if (self == null)
 				throw new AuthException("error.notauthorized.study", "User not member of study group");
@@ -1054,6 +1109,7 @@ public class Market extends APIController {
         
         boolean autoValidDeveloper = true;
         boolean autoValidResearcher = true;
+        
         if (link.type.contains(StudyAppLinkType.OFFER_P)) {
         	autoValidDeveloper = false;
         	autoValidResearcher = false;
@@ -1071,10 +1127,19 @@ public class Market extends APIController {
         if (link.type.contains(StudyAppLinkType.DATALINK)) {
         	autoValidResearcher = false;
         }
+        if (link.linkTargetType == LinkTargetType.ORGANIZATION) {
+        	autoValidResearcher = true;
+        }
         if (autoValidDeveloper) link.validationDeveloper = StudyValidationStatus.VALIDATED;
         if (autoValidResearcher) link.validationResearch = StudyValidationStatus.VALIDATED;
         
-        link.active = link.isConfirmed() && link.usePeriod.contains(study.executionStatus);
+        if (link.linkTargetType == null || link.linkTargetType == LinkTargetType.STUDY) {
+  		  Study study = Study.getById(link.studyId, Study.ALL);
+  		  if (study == null) throw new BadRequestException("error.internal", "Unknown study");
+  		  link.active = link.isConfirmed() && link.usePeriod.contains(study.executionStatus);
+  		} else {
+          link.active = link.isConfirmed();
+  		}
 	}
 	
 	@MobileCall

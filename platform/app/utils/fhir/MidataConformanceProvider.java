@@ -2,10 +2,10 @@ package utils.fhir;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.hl7.fhir.dstu3.hapi.rest.server.ServerCapabilityStatementProvider;
-import org.hl7.fhir.dstu3.model.CapabilityStatement;
-import org.hl7.fhir.dstu3.model.Extension;
-import org.hl7.fhir.dstu3.model.UriType;
+import org.hl7.fhir.r4.hapi.rest.server.ServerCapabilityStatementProvider;
+import org.hl7.fhir.r4.model.CapabilityStatement;
+import org.hl7.fhir.r4.model.Extension;
+import org.hl7.fhir.r4.model.UriType;
 
 import ca.uhn.fhir.rest.annotation.Metadata;
 import utils.InstanceConfig;

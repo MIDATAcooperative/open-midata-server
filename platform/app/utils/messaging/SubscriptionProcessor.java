@@ -17,10 +17,10 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 
 import org.bson.BSONObject;
-import org.hl7.fhir.dstu3.model.StringType;
-import org.hl7.fhir.dstu3.model.Subscription;
-import org.hl7.fhir.dstu3.model.Subscription.SubscriptionChannelComponent;
-import org.hl7.fhir.dstu3.model.Subscription.SubscriptionChannelType;
+import org.hl7.fhir.r4.model.StringType;
+import org.hl7.fhir.r4.model.Subscription;
+import org.hl7.fhir.r4.model.Subscription.SubscriptionChannelComponent;
+import org.hl7.fhir.r4.model.Subscription.SubscriptionChannelType;
 
 import akka.actor.AbstractActor;
 import akka.actor.AbstractActor.Receive;

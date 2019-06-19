@@ -3,10 +3,10 @@ package utils.fhir;
 import java.util.List;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.IdType;
-import org.hl7.fhir.dstu3.model.MedicationStatement;
-import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.MedicationStatement;
+import org.hl7.fhir.r4.model.Reference;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
@@ -62,67 +62,66 @@ public class MedicationStatementResourceProvider extends RecordBasedResourceProv
 			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
 
 		
-			@Description(shortDefinition="Returns statements of this category of medicationstatement")
-			@OptionalParam(name="category")
-			TokenAndListParam theCategory, 
-			  
-			@Description(shortDefinition="Return statements of this medication code")
-			@OptionalParam(name="code")
-			TokenAndListParam theCode, 
-			   
-			@Description(shortDefinition="Returns statements for a specific context (episode or episode of Care).")
-			@OptionalParam(name="context", targetTypes={  } )
-			ReferenceAndListParam theContext, 
-			   
-			@Description(shortDefinition="Date when patient was taking (or not taking) the medication")
-			@OptionalParam(name="effective")
-			DateAndListParam theEffective, 
-			    
-			@Description(shortDefinition="Return statements with this external identifier")
-			@OptionalParam(name="identifier")
-			TokenAndListParam theIdentifier, 
-			   
-			@Description(shortDefinition="Return statements of this medication reference")
-			@OptionalParam(name="medication", targetTypes={  } )
-			ReferenceAndListParam theMedication, 
-			   
-			@Description(shortDefinition="Returns statements that are part of another event.")
-			@OptionalParam(name="part-of", targetTypes={  } )
-			ReferenceAndListParam thePart_of, 
-			   
-			@Description(shortDefinition="Returns statements for a specific patient.")
-			@OptionalParam(name="patient", targetTypes={  } )
-			ReferenceAndListParam thePatient, 
-			   
-			@Description(shortDefinition="Who or where the information in the statement came from")
-			@OptionalParam(name="source", targetTypes={  } )
-			ReferenceAndListParam theSource, 
-			   
-			@Description(shortDefinition="Return statements that match the given status")
-			@OptionalParam(name="status")
-			TokenAndListParam theStatus, 
-			  
-			@Description(shortDefinition="The identity of a patient, animal or group to list statements for")
-			@OptionalParam(name="subject", targetTypes={  } )
-			ReferenceAndListParam theSubject, 
-			 
-				
-			@IncludeParam(reverse=true)
-			Set<Include> theRevIncludes,
-			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
-			@OptionalParam(name="_lastUpdated")
-			DateRangeParam theLastUpdated, 
-			 
-			@IncludeParam(allow= {
-					"MedicationStatement:context" ,
-					"MedicationStatement:medication" ,
-					"MedicationStatement:part-of" ,
-					"MedicationStatement:patient" ,
-					"MedicationStatement:source" ,
-					"MedicationStatement:subject" ,
-					"*"
-			}) 
-			Set<Include> theIncludes,
+ 			@Description(shortDefinition="Returns statements of this category of medicationstatement")
+  			@OptionalParam(name="category")
+  			TokenAndListParam theCategory,
+    
+  			@Description(shortDefinition="Return statements of this medication code")
+  			@OptionalParam(name="code")
+  			TokenAndListParam theCode,
+    
+  			@Description(shortDefinition="Returns statements for a specific context (episode or episode of Care).")
+  			@OptionalParam(name="context", targetTypes={  } )
+  			ReferenceAndListParam theContext, 
+    
+  			@Description(shortDefinition="Date when patient was taking (or not taking) the medication")
+  			@OptionalParam(name="effective")
+  			DateAndListParam theEffective, 
+    
+  			@Description(shortDefinition="Return statements with this external identifier")
+  			@OptionalParam(name="identifier")
+  			TokenAndListParam theIdentifier,
+    
+  			@Description(shortDefinition="Return statements of this medication reference")
+  			@OptionalParam(name="medication", targetTypes={  } )
+  			ReferenceAndListParam theMedication, 
+    
+  			@Description(shortDefinition="Returns statements that are part of another event.")
+  			@OptionalParam(name="part-of", targetTypes={  } )
+  			ReferenceAndListParam thePart_of, 
+    
+  			@Description(shortDefinition="Returns statements for a specific patient.")
+  			@OptionalParam(name="patient", targetTypes={  } )
+  			ReferenceAndListParam thePatient, 
+    
+ 			@Description(shortDefinition="Who or where the information in the statement came from")
+ 			@OptionalParam(name="source", targetTypes={  } )
+ 			ReferenceAndListParam theSource, 
+   
+ 			@Description(shortDefinition="Return statements that match the given status")
+ 			@OptionalParam(name="status")
+ 			TokenAndListParam theStatus,
+   
+ 			@Description(shortDefinition="The identity of a patient, animal or group to list statements for")
+ 			@OptionalParam(name="subject", targetTypes={  } )
+ 			ReferenceAndListParam theSubject,   		
+ 
+ 			@IncludeParam(reverse=true)
+ 			Set<Include> theRevIncludes,
+ 			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
+ 			@OptionalParam(name="_lastUpdated")
+ 			DateRangeParam theLastUpdated, 
+ 
+ 			@IncludeParam(allow= {
+ 					"MedicationStatement:context" ,
+ 					"MedicationStatement:medication" ,
+ 					"MedicationStatement:part-of" ,
+ 					"MedicationStatement:patient" ,
+ 					"MedicationStatement:source" ,
+ 					"MedicationStatement:subject" ,
+ 					"*"
+ 			}) 
+ 			Set<Include> theIncludes,
 			 			
 			@Sort 
 			SortSpec theSort,
@@ -237,6 +236,12 @@ public class MedicationStatementResourceProvider extends RecordBasedResourceProv
 		if (p.getSubject().isEmpty()) {			
 			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
+	}
+
+	@Override
+	protected void convertToR4(Object in) {
+		// No action
+		
 	}
 	
 

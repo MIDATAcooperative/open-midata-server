@@ -1,6 +1,7 @@
 package controllers;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import javax.servlet.ServletException;
 
@@ -36,7 +37,8 @@ public class FHIR extends Controller {
 	/**
 	 * FHIR Servlet (uses HAPI FHIR)
 	 */
-	public static FHIRServlet servlet;
+	public static FHIRServlet servlet_r4;
+	public static utils.fhir_stu3.FHIRServlet servlet_stu3;
 	
 	/**
 	 * Handling of OPTIONS requests for all pathes except root path
@@ -57,6 +59,21 @@ public class FHIR extends Controller {
 		return ok();
 	}
 	
+	/**
+	 * Determine FHIR Version to be used by looking at content-type and accept headers
+	 * @return fhir version as integer (3 or 4)
+	 */
+	public int getFhirVersion() {
+		Optional<String> contentType = request().contentType();
+		if (contentType.isPresent()) {
+			if (contentType.get().indexOf("fhirVersion=4.")>0) return 4;
+		}
+		Optional<String> accept = request().header("Accept");
+		if (accept.isPresent()) {
+			if (accept.get().indexOf("fhirVersion=4.")>0) return 4;
+		}
+		return 3;
+	}
 	/**
 	 * GET Action on root path
 	 * @return
@@ -119,7 +136,10 @@ public class FHIR extends Controller {
 		ExecutionInfo info = getExecutionInfo(req);
         if (info != null && info.pluginId != null) UsageStatsRecorder.protokoll(info.pluginId, UsageAction.GET);		        
 		AccessLog.logBegin("begin FHIR get request: "+req.getRequestURI());
-		servlet.doGet(req, res);
+		switch(getFhirVersion()) {
+		  case 4:servlet_r4.doGet(req, res);break;
+		  default: servlet_stu3.doGet(req, res);
+		}
 		AccessLog.logEnd("end FHIR get request");
 			
 		
@@ -185,7 +205,10 @@ public class FHIR extends Controller {
 		if (info != null && info.pluginId != null) UsageStatsRecorder.protokoll(info.pluginId, UsageAction.POST);   
 		
 		AccessLog.logBegin("begin FHIR post request: "+req.getRequestURI());
-		servlet.doPost(req, res);
+		switch(getFhirVersion()) {
+		  case 4:servlet_r4.doPost(req, res);break;
+		  default: servlet_stu3.doPost(req, res);
+		}
 		AccessLog.logEnd("end FHIR post request");
 		
 		Stats.finishRequest(request(), String.valueOf(res.getStatus()));
@@ -236,7 +259,10 @@ public class FHIR extends Controller {
 		if (info != null && info.pluginId != null) UsageStatsRecorder.protokoll(info.pluginId, UsageAction.PUT);        
 		
 		AccessLog.log(req.getRequestURI());
-		servlet.doPut(req, res);
+		switch(getFhirVersion()) {
+		  case 4:servlet_r4.doPut(req, res);break;
+		  default: servlet_stu3.doPut(req, res);
+		}
 		
 		Stats.finishRequest(request(), String.valueOf(res.getStatus()));
 		
@@ -286,7 +312,10 @@ public class FHIR extends Controller {
 		if (info != null && info.pluginId != null) UsageStatsRecorder.protokoll(info.pluginId, UsageAction.DELETE);
 		
 		AccessLog.log(req.getRequestURI());
-		servlet.doDelete(req, res);
+		switch(getFhirVersion()) {
+		  case 4:servlet_r4.doDelete(req, res);break;
+		  default: servlet_stu3.doDelete(req, res);
+		}
 		
 		Stats.finishRequest(request(), String.valueOf(res.getStatus()));
 		

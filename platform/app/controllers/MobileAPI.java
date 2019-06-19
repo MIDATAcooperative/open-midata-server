@@ -38,6 +38,7 @@ import models.enums.AggregationType;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.JoinMethod;
+import models.enums.LinkTargetType;
 import models.enums.MessageReason;
 import models.enums.ParticipationStatus;
 import models.enums.StudyAppLinkType;
@@ -51,6 +52,7 @@ import play.mvc.Http;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.InstanceConfig;
+import utils.LinkTools;
 import utils.QueryTagTools;
 import utils.access.AccessContext;
 import utils.access.AppAccessContext;
@@ -132,21 +134,26 @@ public class MobileAPI extends Controller {
         for (StudyAppLink sal : links) {
         	if (sal.isConfirmed() && sal.type.contains(StudyAppLinkType.REQUIRE_P) && sal.active) {
         		
-        		
-        		   StudyParticipation sp = StudyParticipation.getByStudyAndMember(sal.studyId, appInstance.owner, Sets.create("status", "pstatus"));
-        		   
-        		   if (sp == null) {
-	               		MobileAPI.removeAppInstance(appInstance);
-	                   	return false;
-	               	}
-	               	if ( 
-	               		sp.pstatus.equals(ParticipationStatus.MEMBER_RETREATED) || 
-	               		sp.pstatus.equals(ParticipationStatus.MEMBER_REJECTED) || 
-	               		sp.pstatus.equals(ParticipationStatus.RESEARCH_REJECTED)) {
-	               		throw new BadRequestException("error.blocked.consent", "Research consent expired or blocked.");
-	               	}
-        		   
-        		
+        		   if (sal.linkTargetType == LinkTargetType.ORGANIZATION) {
+        			  Consent c = LinkTools.findConsentForAppLink(appInstance.owner, sal);
+        			  if (c == null) {
+        				  MobileAPI.removeAppInstance(appInstance);
+		                  return false;
+        			  }
+        		   } else {
+	        		   StudyParticipation sp = StudyParticipation.getByStudyAndMember(sal.studyId, appInstance.owner, Sets.create("status", "pstatus"));
+	        		   
+	        		   if (sp == null) {
+		               		MobileAPI.removeAppInstance(appInstance);
+		                   	return false;
+		               	}
+		               	if ( 
+		               		sp.pstatus.equals(ParticipationStatus.MEMBER_RETREATED) || 
+		               		sp.pstatus.equals(ParticipationStatus.MEMBER_REJECTED) || 
+		               		sp.pstatus.equals(ParticipationStatus.RESEARCH_REJECTED)) {
+		               		throw new BadRequestException("error.blocked.consent", "Research consent expired or blocked.");
+		               	}
+        		   }        		
         	}
         }                  
         
@@ -396,18 +403,26 @@ public class MobileAPI extends Controller {
 												
 				if (!sal.active) sal.type = Collections.emptySet();
 				
-				if (sal.type.contains(StudyAppLinkType.REQUIRE_P) && sal.type.contains(StudyAppLinkType.OFFER_P) && !studyConfirm.contains(sal.studyId)) {
-					StudyParticipation sp = StudyParticipation.getByStudyAndMember(sal.studyId, member._id, Sets.create("status", "pstatus"));
-		        	if (sp == null || 
-		        		sp.pstatus.equals(ParticipationStatus.MEMBER_RETREATED) || 
-		        		sp.pstatus.equals(ParticipationStatus.MEMBER_REJECTED) || 
-		        		sp.pstatus.equals(ParticipationStatus.RESEARCH_REJECTED)) {
-		        		throw new BadRequestException("error.missing.study_accept", "Study belonging to app must be accepted.");        		
-		        	}
-				}
+				if (sal.linkTargetType == LinkTargetType.ORGANIZATION) {
+					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) && sal.type.contains(StudyAppLinkType.OFFER_P) && !studyConfirm.contains(sal.userId)) {
+						Consent consent = LinkTools.findConsentForAppLink(member._id, sal);						
+						if (consent==null) throw new BadRequestException("error.missing.consent_accept", "Consent belonging to app must be accepted.");
+					}
+				} else {
 				
-				if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.studyId))) {
-					controllers.members.Studies.precheckRequestParticipation(member._id, sal.studyId);
+					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) && sal.type.contains(StudyAppLinkType.OFFER_P) && !studyConfirm.contains(sal.studyId)) {
+						StudyParticipation sp = StudyParticipation.getByStudyAndMember(sal.studyId, member._id, Sets.create("status", "pstatus"));
+			        	if (sp == null || 
+			        		sp.pstatus.equals(ParticipationStatus.MEMBER_RETREATED) || 
+			        		sp.pstatus.equals(ParticipationStatus.MEMBER_REJECTED) || 
+			        		sp.pstatus.equals(ParticipationStatus.RESEARCH_REJECTED)) {
+			        		throw new BadRequestException("error.missing.study_accept", "Study belonging to app must be accepted.");        		
+			        	}
+					}
+					
+					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.studyId))) {
+						controllers.members.Studies.precheckRequestParticipation(member._id, sal.studyId);
+					}
 				}
 			}
 		}
@@ -455,7 +470,13 @@ public class MobileAPI extends Controller {
 		}
 				
 		for (StudyAppLink sal : links) {
-			if (sal.isConfirmed()) {		
+			if (sal.isConfirmed()) {	
+				if (sal.linkTargetType == LinkTargetType.ORGANIZATION) {
+					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.userId))) {					
+						RecordManager.instance.clearCache();
+						LinkTools.createConsentForAppLink(member._id, sal);
+					}
+				} else
 				if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.studyId))) {
 					RecordManager.instance.clearCache();
 			        controllers.members.Studies.requestParticipation(new ExecutionInfo(executor, member.getRole()), member._id, sal.studyId, app._id, JoinMethod.APP);

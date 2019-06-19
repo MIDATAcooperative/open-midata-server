@@ -415,11 +415,13 @@ public class Circles extends APIController {
 						
 		//consentSettingChange(executorId, consent);
 		//prepareConsent(consent); - done by consentStatusChange
-		consentStatusChange(executorId, consent, null, patientRecord);
-		
-		if (consent.status.equals(ConsentStatus.ACTIVE) && patientRecord) autosharePatientRecord(executorId, consent);
 		
 		consent.add();
+		
+		consentStatusChange(executorId, consent, null, patientRecord);		
+		if (consent.status.equals(ConsentStatus.ACTIVE) && patientRecord) autosharePatientRecord(executorId, consent);
+		
+		
 								
 		if (consent.status == ConsentStatus.UNCONFIRMED) {
 			sendConsentNotifications(executorId, consent, consent.status);

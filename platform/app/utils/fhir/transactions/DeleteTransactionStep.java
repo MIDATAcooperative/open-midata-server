@@ -1,6 +1,6 @@
 package utils.fhir.transactions;
 
-import org.hl7.fhir.dstu3.model.DomainResource;
+import org.hl7.fhir.r4.model.DomainResource;
 
 import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
 import models.Model;

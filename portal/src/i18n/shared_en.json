@@ -1,7 +1,8 @@
 {
    "footer" : {
-     "copyright" : "©{{now}} ETH Zürich",
+     "copyright" : "MIDATA Genossenschaft – c/o EvalueScience AG – Pfingstweidstrasse 16 – 8005 Zürich",
      "homepage" : "MIDATA Homepage",
+     "impressum" : "Impressum",
      "portals" : "Midata Portals:",
      "for_members" : "For Account Holders",
 	 "for_researchers" : "For Research Organizations",
@@ -10,6 +11,9 @@
    },
 
    "navbar" : {
+      "cookiebanner" : "This website uses cookies. For more information, see",
+      "privacypolicy" : "Privacy Policy",
+      "cookiebanner_close_btn" : "Close",
 	  "toggle_navigation": "Toggle navigation",	 
 	  "login" : "Log in",
 	  "sign_up" : "Sign Up",
@@ -93,6 +97,7 @@
        "privacypolicy" : "Privacy Policy must be accepted.",
        "study_accept" : "Study participation must be accepted.",
        "study_group" : "Participant must first be assigned to a group.",
+       "consent_accept" : "Consent must be given to continue",
        "confirmation" : "Confirmation by user required first.",
        "file" : "No file for upload selected",
        "access_query" : "No data selected",
@@ -1026,6 +1031,8 @@
     "shares_group" : "Group: {{ group }}",
     "shares_format" : "Format: {{ format }}",
     "shares_content" : "Content: {{ content }}",
+    "confirm_provider" : "I accept to share data with this external provider",
+    "confirm_provider_opt" : "I accept to share data with this external provider",
     "confirm_study" : "I accept the terms of use of the application and to participate in the study",
     "confirm_study_opt" : "I accept to participate in the study",
     "confirm_citizen_science" : "I accept to participate in the citizen science project",

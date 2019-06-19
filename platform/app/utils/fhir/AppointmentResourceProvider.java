@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.Appointment;
-import org.hl7.fhir.dstu3.model.Appointment.AppointmentParticipantComponent;
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.IdType;
-import org.hl7.fhir.dstu3.model.Location;
-import org.hl7.fhir.dstu3.model.Patient;
-import org.hl7.fhir.dstu3.model.Practitioner;
+import org.hl7.fhir.r4.model.Appointment;
+import org.hl7.fhir.r4.model.Appointment.AppointmentParticipantComponent;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.Location;
+import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.Practitioner;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 import ca.uhn.fhir.model.api.Include;
@@ -49,7 +49,12 @@ public class AppointmentResourceProvider extends RecordBasedResourceProvider<App
 		searchParamNameToTypeMap.put("Appointment:patient", Sets.create("Patient"));
 		searchParamNameToPathMap.put("Appointment:practitioner", "participant.actor");
 		searchParamNameToTypeMap.put("Appointment:practitioner", Sets.create("Practitioner"));
-		
+		searchParamNameToPathMap.put("Appointment:based-on", "basedOn");
+		searchParamNameToTypeMap.put("Appointment:based-on", Sets.create("ServiceRequest"));
+		searchParamNameToPathMap.put("Appointment:reason-reference", "reasonReference");
+		searchParamNameToPathMap.put("Appointment:supporting-info", "supportingInformation");
+		searchParamNameToPathMap.put("Appointment:slot", "slot");
+		searchParamNameToTypeMap.put("Appointment:slot", Sets.create("Slot"));
 		registerSearches("Appointment", getClass(), "getAppointment");
 	}
 	
@@ -67,89 +72,92 @@ public class AppointmentResourceProvider extends RecordBasedResourceProvider<App
 			@Description(shortDefinition="The resource language")
 			@OptionalParam(name="_language")
 			StringAndListParam theResourceLanguage, 
-			/*  
-			@Description(shortDefinition="Search the contents of the resource's data using a fulltext search")
-			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_CONTENT)
-			StringAndListParam theFtContent, 
-			 
-			@Description(shortDefinition="Search the contents of the resource's narrative using a fulltext search")
-			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_TEXT)
-			StringAndListParam theFtText, 
-			 
-			@Description(shortDefinition="Search for resources which have the given tag")
-			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_TAG)
-			TokenAndListParam theSearchForTag, 
-			 
-			@Description(shortDefinition="Search for resources which have the given security labels")
-			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_SECURITY)
-			TokenAndListParam theSearchForSecurity, 
-			  
-			@Description(shortDefinition="Search for resources which have the given profile")
-			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_PROFILE)
-			UriAndListParam theSearchForProfile, 
-			*/
-			/*
-			@Description(shortDefinition="Return resources linked to by the given target")
-			@OptionalParam(name="_has")
-			HasAndListParam theHas, 
-			 */
-			   
-			@Description(shortDefinition="Appointment date/time.")
-			@OptionalParam(name="date")
-			DateAndListParam theDate, 
-			   
-			@Description(shortDefinition="The overall status of the appointment")
-			@OptionalParam(name="status")
-			TokenAndListParam theStatus, 
-			    
-			@Description(shortDefinition="Any one of the individuals participating in the appointment")
-			@OptionalParam(name="actor", targetTypes={  } )
-			ReferenceAndListParam theActor, 
-			    
-			@Description(shortDefinition="The Participation status of the subject, or other participant on the appointment. Can be used to locate participants that have not responded to meeting requests.")
-			@OptionalParam(name="part-status")
-			TokenAndListParam thePart_status, 
-			    
-			@Description(shortDefinition="One of the individuals of the appointment is this patient")
-			@OptionalParam(name="patient", targetTypes={  Patient.class   } )
-			ReferenceAndListParam thePatient, 
-			    
-			@Description(shortDefinition="One of the individuals of the appointment is this practitioner")
-			@OptionalParam(name="practitioner", targetTypes={  Practitioner.class   } )
-			ReferenceAndListParam thePractitioner, 
-			   
-			@Description(shortDefinition="This location is listed in the participants of the appointment")
-			@OptionalParam(name="location", targetTypes={  Location.class   } )
-			ReferenceAndListParam theLocation, 
-			    
-			@Description(shortDefinition="An Identifier of the Appointment")
-			@OptionalParam(name="identifier")
-			TokenAndListParam theIdentifier, 
-			    
-			@Description(shortDefinition="")
-			@OptionalParam(name="appointment-type")
-			TokenAndListParam theAppointment_type, 
-			   
-			@Description(shortDefinition="")
-			@OptionalParam(name="service-type")
-			TokenAndListParam theService_type, 
-			 
-			@IncludeParam(reverse=true)
-			Set<Include> theRevIncludes,
-			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
-		    @OptionalParam(name="_lastUpdated")
-			DateRangeParam theLastUpdated, 
-			 
-			@IncludeParam(allow= {
-						"Appointment:actor" ,
-						"Appointment:location" ,
-						"Appointment:patient" ,
-						"Appointment:practitioner" ,
-						"*"
-			})   
-			
-			
-			Set<Include> theIncludes,
+  			@Description(shortDefinition="Any one of the individuals participating in the appointment")
+  			@OptionalParam(name="actor", targetTypes={  } )
+  			ReferenceAndListParam theActor, 
+    
+  			@Description(shortDefinition="The style of appointment or patient that has been booked in the slot (not service type)")
+  			@OptionalParam(name="appointment-type")
+  			TokenAndListParam theAppointment_type,
+    
+  			@Description(shortDefinition="The service request this appointment is allocated to assess")
+  			@OptionalParam(name="based-on", targetTypes={  } )
+  			ReferenceAndListParam theBased_on, 
+    
+  			@Description(shortDefinition="Appointment date/time.")
+  			@OptionalParam(name="date")
+  			DateAndListParam theDate, 
+    
+  			@Description(shortDefinition="An Identifier of the Appointment")
+  			@OptionalParam(name="identifier")
+  			TokenAndListParam theIdentifier,
+    
+  			@Description(shortDefinition="This location is listed in the participants of the appointment")
+  			@OptionalParam(name="location", targetTypes={  } )
+  			ReferenceAndListParam theLocation, 
+    
+  			@Description(shortDefinition="The Participation status of the subject, or other participant on the appointment. Can be used to locate participants that have not responded to meeting requests.")
+  			@OptionalParam(name="part-status")
+  			TokenAndListParam thePart_status,
+    
+  			@Description(shortDefinition="One of the individuals of the appointment is this patient")
+  			@OptionalParam(name="patient", targetTypes={  } )
+  			ReferenceAndListParam thePatient, 
+    
+ 			@Description(shortDefinition="One of the individuals of the appointment is this practitioner")
+ 			@OptionalParam(name="practitioner", targetTypes={  } )
+ 			ReferenceAndListParam thePractitioner, 
+   
+ 			@Description(shortDefinition="Coded reason this appointment is scheduled")
+ 			@OptionalParam(name="reason-code")
+ 			TokenAndListParam theReason_code,
+   
+ 			@Description(shortDefinition="Reason the appointment is to take place (resource)")
+ 			@OptionalParam(name="reason-reference", targetTypes={  } )
+ 			ReferenceAndListParam theReason_reference, 
+   
+ 			@Description(shortDefinition="A broad categorization of the service that is to be performed during this appointment")
+ 			@OptionalParam(name="service-category")
+ 			TokenAndListParam theService_category,
+   
+ 			@Description(shortDefinition="The specific service that is to be performed during this appointment")
+ 			@OptionalParam(name="service-type")
+ 			TokenAndListParam theService_type,
+   
+ 			@Description(shortDefinition="The slots that this appointment is filling")
+ 			@OptionalParam(name="slot", targetTypes={  } )
+ 			ReferenceAndListParam theSlot, 
+   
+ 			@Description(shortDefinition="The specialty of a practitioner that would be required to perform the service requested in this appointment")
+ 			@OptionalParam(name="specialty")
+ 			TokenAndListParam theSpecialty,
+   
+ 			@Description(shortDefinition="The overall status of the appointment")
+ 			@OptionalParam(name="status")
+ 			TokenAndListParam theStatus,
+   
+ 			@Description(shortDefinition="Additional information to support the appointment")
+ 			@OptionalParam(name="supporting-info", targetTypes={  } )
+ 			ReferenceAndListParam theSupporting_info, 
+  		
+ 			@IncludeParam(reverse=true)
+ 			Set<Include> theRevIncludes,
+ 			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
+ 			@OptionalParam(name="_lastUpdated")
+ 			DateRangeParam theLastUpdated, 
+ 
+ 			@IncludeParam(allow= {
+ 					"Appointment:actor" ,
+ 					"Appointment:based-on" ,
+ 					"Appointment:location" ,
+ 					"Appointment:patient" ,
+ 					"Appointment:practitioner" ,
+ 					"Appointment:reason-reference" ,
+ 					"Appointment:slot" ,
+ 					"Appointment:supporting-info" ,
+ 					"*"
+ 			}) 
+ 			Set<Include> theIncludes,
 			 									
 			@Sort SortSpec theSort,
 
@@ -167,16 +175,23 @@ public class AppointmentResourceProvider extends RecordBasedResourceProvider<App
 		paramMap.add("_id", theId);
 		paramMap.add("_language", theResourceLanguage);
 		
-		paramMap.add("date", theDate);
-		paramMap.add("status", theStatus);
 		paramMap.add("actor", theActor);
+		paramMap.add("appointment-type", theAppointment_type);
+		paramMap.add("based-on", theBased_on);
+		paramMap.add("date", theDate);
+		paramMap.add("identifier", theIdentifier);
+		paramMap.add("location", theLocation);
 		paramMap.add("part-status", thePart_status);
 		paramMap.add("patient", thePatient);
 		paramMap.add("practitioner", thePractitioner);
-		paramMap.add("location", theLocation);
-		paramMap.add("identifier", theIdentifier);
-		paramMap.add("appointment-type", theAppointment_type);
+		paramMap.add("reason-code", theReason_code);
+		paramMap.add("reason-reference", theReason_reference);
+		paramMap.add("service-category", theService_category);
 		paramMap.add("service-type", theService_type);
+		paramMap.add("slot", theSlot);
+		paramMap.add("specialty", theSpecialty);
+		paramMap.add("status", theStatus);
+		paramMap.add("supporting-info", theSupporting_info);
 	
 		paramMap.setRevIncludes(theRevIncludes);
 		paramMap.setLastUpdated(theLastUpdated);
@@ -206,7 +221,13 @@ public class AppointmentResourceProvider extends RecordBasedResourceProvider<App
 		builder.restriction("location", true, "Location", "participant.actor");
 		builder.restriction("appointment-type", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "appointmentType");
 		builder.restriction("service-type", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "serviceType");
-								  
+		builder.restriction("service-category", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "serviceCategory");
+		builder.restriction("based-on", true, "ServiceRequest", "basedOn");
+		builder.restriction("reason-code", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "reasonCode");
+		builder.restriction("reason-reference", true, null, "reasonReference");
+		builder.restriction("slot", true, "Slot", "slot");
+		builder.restriction("specialty", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "specialty");
+		builder.restriction("supporting-info", true, null, "supportingInformation");
 		return query.execute(info);
 	}
 
@@ -276,6 +297,12 @@ public class AppointmentResourceProvider extends RecordBasedResourceProvider<App
 	public void processResource(Record record, Appointment p) throws AppException {
 		super.processResource(record, p);
 		
+		
+	}
+
+	@Override
+	protected void convertToR4(Object in) {
+		// TODO Auto-generated method stub
 		
 	}
 

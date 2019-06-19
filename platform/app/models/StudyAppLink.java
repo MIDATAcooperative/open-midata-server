@@ -1,8 +1,10 @@
 package models;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 
+import models.enums.LinkTargetType;
 import models.enums.StudyAppLinkType;
 import models.enums.StudyExecutionStatus;
 import models.enums.StudyValidationStatus;
@@ -15,22 +17,35 @@ import utils.exceptions.InternalServerException;
 import utils.sync.Instances;
 
 /**
- * Link between a study and an application
+ * Link between an application and research projects or providers
  *
  */
 public class StudyAppLink extends Model {
 	
 	private @NotMaterialized static final String collection = "studyapplink";
 	
-	public @NotMaterialized static final Set<String> ALL_MATERIALIZED = Collections.unmodifiableSet(Sets.create("_id", "studyId", "appId", "type", "validationResearch", "validationDeveloper", "usePeriod", "shareToStudy" ,"restrictRead", "studyGroup", "userId", "active"));
+	public @NotMaterialized static final Set<String> ALL_MATERIALIZED = Collections.unmodifiableSet(Sets.create("_id", "linkTargetType", "studyId", "appId", "type", "validationResearch", "validationDeveloper", "usePeriod", "shareToStudy" ,"restrictRead", "studyGroup", "userId", "providerId", "active", "what", "identifier", "termsOfUse"));
 	
-	public @NotMaterialized static final Set<String> ALL = Collections.unmodifiableSet(Sets.create("_id", "studyId", "appId", "type", "validationResearch", "validationDeveloper", "usePeriod", "shareToStudy" ,"restrictRead", "studyGroup", "study", "app", "userId", "userLogin", "active"));
+	public @NotMaterialized static final Set<String> ALL = Collections.unmodifiableSet(Sets.create("_id", "linkTargetType", "studyId", "appId", "type", "validationResearch", "validationDeveloper", "usePeriod", "shareToStudy" ,"restrictRead", "studyGroup", "study", "app", "userId", "userLogin", "providerId", "provider", "active", "what", "identifier", "termsOfUse"));
 	
 	/**
-	 * which study is linked
+	 * Type of link
+	 */
+	public LinkTargetType linkTargetType;
+	
+	/**
+	 * An identifier for this link
+	 */
+	public String identifier;
+	
+	/**
+	 * which study is linked (may be null)
 	 */
 	public MidataId studyId;
 	
+	/**
+	 * the study that is linked (may be null)
+	 */
 	public @NotMaterialized Study study;
 			
 	/**
@@ -38,6 +53,9 @@ public class StudyAppLink extends Model {
 	 */
 	public MidataId appId;
 	
+	/**
+	 * the application that is linked
+	 */
 	public @NotMaterialized Plugin app;
 			
 	/**
@@ -60,6 +78,9 @@ public class StudyAppLink extends Model {
 	 */
 	public Set<StudyExecutionStatus> usePeriod;
 	
+	/**
+	 * is this link currently active
+	 */
 	public boolean active;
 	
 	public boolean shareToStudy;
@@ -68,11 +89,36 @@ public class StudyAppLink extends Model {
 	
 	public String studyGroup;
 	
+	/**
+	 * which user account is linked
+	 */
 	public MidataId userId;
 	
+	/**
+	 * which user account is linked
+	 */	
 	public @NotMaterialized String userLogin;
+	
+	/**
+	 * which provider is linked (may be null)
+	 */
+	public MidataId providerId;
+	
+	/**
+	 * the provider that is linked
+	 */
+	public @NotMaterialized HealthcareProvider provider;
+	
+	/**
+	 * the access filter to be used (may be null for default)
+	 */
+	public Map<String, Object> what;
+	
+	/**
+	 * Terms of use (if not taken from research project)
+	 */
+	public String termsOfUse;
 		
-
 	public void add() throws InternalServerException {
 		Model.insert(collection, this);	
 	}

@@ -3,10 +3,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.Encounter;
-import org.hl7.fhir.dstu3.model.IdType;
-import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Encounter;
+import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.Reference;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
@@ -25,6 +25,7 @@ import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.NumberAndListParam;
+import ca.uhn.fhir.rest.param.QuantityAndListParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.param.StringParam;
@@ -41,18 +42,21 @@ import utils.exceptions.AppException;
 public class EncounterResourceProvider extends RecordBasedResourceProvider<Encounter> implements IResourceProvider {
 
 	public EncounterResourceProvider() {
+		searchParamNameToPathMap.put("Encounter:account", "account");
+		searchParamNameToTypeMap.put("Encounter:account", Sets.create("Account"));
+		
 		searchParamNameToPathMap.put("Encounter:appointment", "appointment");
 		searchParamNameToTypeMap.put("Encounter:appointment", Sets.create("Appointment"));
+		
+		searchParamNameToPathMap.put("Encounter:based-on", "basedOn");
+		searchParamNameToTypeMap.put("Encounter:based-on", Sets.create("ServiceRequest"));
 		
 		searchParamNameToPathMap.put("Encounter:diagnosis", "diagnosis.condition");
 		searchParamNameToTypeMap.put("Encounter:diagnosis", Sets.create("Condition", "Procedure"));
 		
-		searchParamNameToPathMap.put("Encounter:episodeofcare", "episodeOfCare");
-		searchParamNameToTypeMap.put("Encounter:episodeofcare", Sets.create("EpisodeOfCare"));
-		
-		searchParamNameToPathMap.put("Encounter:incomingreferral", "incomingReferral");
-		searchParamNameToTypeMap.put("Encounter:incomingreferral", Sets.create("ReferralRequest"));
-		
+		searchParamNameToPathMap.put("Encounter:episode-of-care", "episodeOfCare");
+		searchParamNameToTypeMap.put("Encounter:episode-of-care", Sets.create("EpisodeOfCare"));
+						
 		searchParamNameToPathMap.put("Encounter:location", "location.location");
 		searchParamNameToTypeMap.put("Encounter:location", Sets.create("Location"));
 		
@@ -60,13 +64,16 @@ public class EncounterResourceProvider extends RecordBasedResourceProvider<Encou
 		searchParamNameToTypeMap.put("Encounter:part-of", Sets.create("Encounter"));
 		
 		searchParamNameToPathMap.put("Encounter:participant", "participant.individual");
-		searchParamNameToTypeMap.put("Encounter:participant", Sets.create("Practitioner", "RelatedPerson"));
+		searchParamNameToTypeMap.put("Encounter:participant", Sets.create("Practitioner", "PractitionerRole", "RelatedPerson"));
 		
 		searchParamNameToPathMap.put("Encounter:patient", "subject");
 		searchParamNameToTypeMap.put("Encounter:patient", Sets.create("Patient"));
 		
 		searchParamNameToPathMap.put("Encounter:practitioner", "participant.individual");
 		searchParamNameToTypeMap.put("Encounter:practitioner", Sets.create("Practitioner"));
+		
+		searchParamNameToPathMap.put("Encounter:reason-reference", "reasonReference");
+		searchParamNameToTypeMap.put("Encounter:reason-reference", Sets.create("Condition", "Observation", "Procedure", "ImmunizationRecommendation"));
 		
 		searchParamNameToPathMap.put("Encounter:service-provider", "serviceProvider");
 		searchParamNameToTypeMap.put("Encounter:service-provider", Sets.create("Organization"));
@@ -88,57 +95,124 @@ public class EncounterResourceProvider extends RecordBasedResourceProvider<Encou
 
 			@Description(shortDefinition = "The language of the resource") @OptionalParam(name = "_language") StringAndListParam the_language,
 
-			@Description(shortDefinition = "The appointment that scheduled this encounter") @OptionalParam(name = "appointment", targetTypes = {}) ReferenceAndListParam theAppointment,
+  			@Description(shortDefinition="The set of accounts that may be used for billing for this Encounter")
+			@OptionalParam(name="account", targetTypes={  } )
+			ReferenceAndListParam theAccount, 
 
-			@Description(shortDefinition = "inpatient | outpatient | ambulatory | emergency +") @OptionalParam(name = "class") TokenAndListParam theClass,
+			@Description(shortDefinition="The appointment that scheduled this encounter")
+			@OptionalParam(name="appointment", targetTypes={  } )
+			ReferenceAndListParam theAppointment, 
 
-			@Description(shortDefinition = "A date within the period the Encounter lasted") @OptionalParam(name = "date") DateAndListParam theDate,
+			@Description(shortDefinition="The ServiceRequest that initiated this encounter")
+			@OptionalParam(name="based-on", targetTypes={  } )
+			ReferenceAndListParam theBased_on, 
 
-			@Description(shortDefinition = "Reason the encounter takes place (resource)") @OptionalParam(name = "diagnosis", targetTypes = {}) ReferenceAndListParam theDiagnosis,
+			@Description(shortDefinition="Classification of patient encounter")
+			@OptionalParam(name="class")
+			TokenAndListParam theClass,
 
-			@Description(shortDefinition = "Episode(s) of care that this encounter should be recorded against") @OptionalParam(name = "episodeofcare", targetTypes = {}) ReferenceAndListParam theEpisodeofcare,
+			@Description(shortDefinition="A date within the period the Encounter lasted")
+			@OptionalParam(name="date")
+			DateAndListParam theDate, 
 
-			@Description(shortDefinition = "Identifier(s) by which this encounter is known") @OptionalParam(name = "identifier") TokenAndListParam theIdentifier,
+			@Description(shortDefinition="The diagnosis or procedure relevant to the encounter")
+			@OptionalParam(name="diagnosis", targetTypes={  } )
+			ReferenceAndListParam theDiagnosis, 
 
-			@Description(shortDefinition = "The ReferralRequest that initiated this encounter") @OptionalParam(name = "incomingreferral", targetTypes = {}) ReferenceAndListParam theIncomingreferral,
+			@Description(shortDefinition="Episode(s) of care that this encounter should be recorded against")
+			@OptionalParam(name="episode-of-care", targetTypes={  } )
+			ReferenceAndListParam theEpisode_of_care, 
 
-			@Description(shortDefinition = "Length of encounter in days") @OptionalParam(name = "length") NumberAndListParam theLength,
+			@Description(shortDefinition="Identifier(s) by which this encounter is known")
+			@OptionalParam(name="identifier")
+			TokenAndListParam theIdentifier,
 
-			@Description(shortDefinition = "Location the encounter takes place") @OptionalParam(name = "location", targetTypes = {}) ReferenceAndListParam theLocation,
+			@Description(shortDefinition="Length of encounter in days")
+			@OptionalParam(name="length")
+			QuantityAndListParam theLength, 
 
-			@Description(shortDefinition = "Time period during which the patient was present at the location") @OptionalParam(name = "location-period") DateAndListParam theLocation_period,
+			@Description(shortDefinition="Location the encounter takes place")
+			@OptionalParam(name="location", targetTypes={  } )
+			ReferenceAndListParam theLocation, 
 
-			@Description(shortDefinition = "Another Encounter this encounter is part of") @OptionalParam(name = "part-of", targetTypes = {}) ReferenceAndListParam thePart_of,
+			@Description(shortDefinition="Time period during which the patient was present at the location")
+			@OptionalParam(name="location-period")
+			DateAndListParam theLocation_period, 
 
-			@Description(shortDefinition = "Persons involved in the encounter other than the patient") @OptionalParam(name = "participant", targetTypes = {}) ReferenceAndListParam theParticipant,
+			@Description(shortDefinition="Another Encounter this encounter is part of")
+			@OptionalParam(name="part-of", targetTypes={  } )
+			ReferenceAndListParam thePart_of, 
 
-			@Description(shortDefinition = "Role of participant in encounter") @OptionalParam(name = "participant-type") TokenAndListParam theParticipant_type,
+			@Description(shortDefinition="Persons involved in the encounter other than the patient")
+			@OptionalParam(name="participant", targetTypes={  } )
+			ReferenceAndListParam theParticipant, 
 
-			@Description(shortDefinition = "The patient ro group present at the encounter") @OptionalParam(name = "patient", targetTypes = {}) ReferenceAndListParam thePatient,
+			@Description(shortDefinition="Role of participant in encounter")
+			@OptionalParam(name="participant-type")
+			TokenAndListParam theParticipant_type,
 
-			@Description(shortDefinition = "Persons involved in the encounter other than the patient") @OptionalParam(name = "practitioner", targetTypes = {}) ReferenceAndListParam thePractitioner,
+			@Description(shortDefinition="The patient or group present at the encounter")
+			@OptionalParam(name="patient", targetTypes={  } )
+			ReferenceAndListParam thePatient, 
 
-			@Description(shortDefinition = "Reason the encounter takes place (code)") @OptionalParam(name = "reason") TokenAndListParam theReason,
+			@Description(shortDefinition="Persons involved in the encounter other than the patient")
+			@OptionalParam(name="practitioner", targetTypes={  } )
+			ReferenceAndListParam thePractitioner, 
 
-			@Description(shortDefinition = "The custodian organization of this Encounter record") @OptionalParam(name = "service-provider", targetTypes = {}) ReferenceAndListParam theService_provider,
+			@Description(shortDefinition="Coded reason the encounter takes place")
+			@OptionalParam(name="reason-code")
+			TokenAndListParam theReason_code,
 
-			@Description(shortDefinition = "Wheelchair, translator, stretcher, etc.") @OptionalParam(name = "special-arrangement") TokenAndListParam theSpecial_arrangement,
+			@Description(shortDefinition="Reason the encounter takes place (reference)")
+			@OptionalParam(name="reason-reference", targetTypes={  } )
+			ReferenceAndListParam theReason_reference, 
 
-			@Description(shortDefinition = "planned | arrived | triaged | in-progress | onleave | finished | cancelled +") @OptionalParam(name = "status") TokenAndListParam theStatus,
+			@Description(shortDefinition="The organization (facility) responsible for this encounter")
+			@OptionalParam(name="service-provider", targetTypes={  } )
+			ReferenceAndListParam theService_provider, 
 
-			@Description(shortDefinition = "The patient ro group present at the encounter") @OptionalParam(name = "subject", targetTypes = {}) ReferenceAndListParam theSubject,
+			@Description(shortDefinition="Wheelchair, translator, stretcher, etc.")
+			@OptionalParam(name="special-arrangement")
+			TokenAndListParam theSpecial_arrangement,
 
-			@Description(shortDefinition = "Specific type of encounter") @OptionalParam(name = "type") TokenAndListParam theType,
+			@Description(shortDefinition="planned | arrived | triaged | in-progress | onleave | finished | cancelled +")
+			@OptionalParam(name="status")
+			TokenAndListParam theStatus,
 
-			@RawParam Map<String, List<String>> theAdditionalRawParams,
+			@Description(shortDefinition="The patient or group present at the encounter")
+			@OptionalParam(name="subject", targetTypes={  } )
+			ReferenceAndListParam theSubject, 
 
-			@IncludeParam(reverse = true) Set<Include> theRevIncludes,
-			@Description(shortDefinition = "Only return resources which were last updated as specified by the given range") @OptionalParam(name = "_lastUpdated") DateRangeParam theLastUpdated,
+			@Description(shortDefinition="Specific type of encounter")
+			@OptionalParam(name="type")
+			TokenAndListParam theType,
 
-			@IncludeParam(allow = { "Encounter:appointment", "Encounter:diagnosis", "Encounter:episodeofcare",
-					"Encounter:incomingreferral", "Encounter:location", "Encounter:part-of", "Encounter:participant",
-					"Encounter:patient", "Encounter:practitioner", "Encounter:service-provider", "Encounter:subject",
-					"*" }) Set<Include> theIncludes,
+			@RawParam
+			Map<String, List<String>> theAdditionalRawParams,
+
+			@IncludeParam(reverse=true)
+			Set<Include> theRevIncludes,
+			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
+			@OptionalParam(name="_lastUpdated")
+			DateRangeParam theLastUpdated, 
+
+			@IncludeParam(allow= {
+					"Encounter:account" ,
+					"Encounter:appointment" ,
+					"Encounter:based-on" ,
+					"Encounter:diagnosis" ,
+					"Encounter:episode-of-care" ,
+					"Encounter:location" ,
+					"Encounter:part-of" ,
+					"Encounter:participant" ,
+					"Encounter:patient" ,
+					"Encounter:practitioner" ,
+					"Encounter:reason-reference" ,
+					"Encounter:service-provider" ,
+					"Encounter:subject" ,
+					"*"
+			}) 
+			Set<Include> theIncludes,
 
 			@Sort SortSpec theSort,
 
@@ -154,13 +228,14 @@ public class EncounterResourceProvider extends RecordBasedResourceProvider<Encou
 
 		paramMap.add("_id", the_id);
 		paramMap.add("_language", the_language);
+		paramMap.add("account", theAccount);
 		paramMap.add("appointment", theAppointment);
+		paramMap.add("based-on", theBased_on);
 		paramMap.add("class", theClass);
 		paramMap.add("date", theDate);
 		paramMap.add("diagnosis", theDiagnosis);
-		paramMap.add("episodeofcare", theEpisodeofcare);
+		paramMap.add("episode-of-care", theEpisode_of_care);
 		paramMap.add("identifier", theIdentifier);
-		paramMap.add("incomingreferral", theIncomingreferral);
 		paramMap.add("length", theLength);
 		paramMap.add("location", theLocation);
 		paramMap.add("location-period", theLocation_period);
@@ -169,7 +244,8 @@ public class EncounterResourceProvider extends RecordBasedResourceProvider<Encou
 		paramMap.add("participant-type", theParticipant_type);
 		paramMap.add("patient", thePatient);
 		paramMap.add("practitioner", thePractitioner);
-		paramMap.add("reason", theReason);
+		paramMap.add("reason-code", theReason_code);
+		paramMap.add("reason-reference", theReason_reference);
 		paramMap.add("service-provider", theService_provider);
 		paramMap.add("special-arrangement", theSpecial_arrangement);
 		paramMap.add("status", theStatus);
@@ -200,16 +276,18 @@ public class EncounterResourceProvider extends RecordBasedResourceProvider<Encou
 		
 		if (!builder.recordOwnerReference("subject", null, "subject")) builder.restriction("subject", true, null, "subject");  // TODO not so sure what to do here with patient and subject
 		
+		// GO ON
 		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
 		
+		builder.restriction("account", true, "Account", "account");
+		
 		builder.restriction("appointment", true, "Appointment", "appointment");
+		builder.restriction("based-on", true, "ServiceRequest", "basedOn");
 		builder.restriction("class", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "class");
 		builder.restriction("date", true, QueryBuilder.TYPE_PERIOD, "period");
 		builder.restriction("type", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "type");		
 		builder.restriction("diagnosis", true, null, "diagnosis.condition");
-		builder.restriction("episodeofcare", true, "EpisodeOfCare", "episodeOfCare");
-		
-		builder.restriction("incomingreferral", true, "ReferralRequest", "incomingReferral");
+		builder.restriction("episode-of-care", true, "EpisodeOfCare", "episodeOfCare");				
 		builder.restriction("length", true, QueryBuilder.TYPE_QUANTITY, "length"); 
 		builder.restriction("location", true, "Location", "location.location");
 		builder.restriction("location-period", true, QueryBuilder.TYPE_PERIOD, "location.period");
@@ -217,7 +295,8 @@ public class EncounterResourceProvider extends RecordBasedResourceProvider<Encou
 		builder.restriction("participant", true, null, "participant.individual");
 		builder.restriction("participant-type", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "participant.type");
 		builder.restriction("practitioner", true, null, "participant.individual");
-		builder.restriction("reason", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "reason");
+		builder.restriction("reason-code", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "reasonCode");
+		builder.restriction("reason-reference", true, null, "reasonReference");
 		builder.restriction("service-provider", true, "Organization", "serviceProvider");
 		builder.restriction("special-arrangement", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "hospitalization.specialArrangement");
 		builder.restriction("status", false, QueryBuilder.TYPE_CODE, "status");
@@ -297,5 +376,11 @@ public class EncounterResourceProvider extends RecordBasedResourceProvider<Encou
 		if (p.getSubject().isEmpty()) {
 			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
+	}
+
+	@Override
+	protected void convertToR4(Object in) {
+		// Nothing to do
+		
 	}
 }

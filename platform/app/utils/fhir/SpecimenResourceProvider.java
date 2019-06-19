@@ -7,16 +7,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.DateTimeType;
-import org.hl7.fhir.dstu3.model.IdType;
-import org.hl7.fhir.dstu3.model.IntegerType;
-import org.hl7.fhir.dstu3.model.Observation;
-import org.hl7.fhir.dstu3.model.Period;
-import org.hl7.fhir.dstu3.model.Reference;
-import org.hl7.fhir.dstu3.model.Resource;
-import org.hl7.fhir.dstu3.model.Specimen;
-import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.DateTimeType;
+import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.IntegerType;
+import org.hl7.fhir.r4.model.Observation;
+import org.hl7.fhir.r4.model.Period;
+import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.Resource;
+import org.hl7.fhir.r4.model.Specimen;
+import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 
@@ -76,10 +76,10 @@ public class SpecimenResourceProvider extends RecordBasedResourceProvider<Specim
 		// For each existing search parameter that has a "reference" type that cannot reference
 		// to any resource add one line:
 		// searchParamNameToTypeMap.put("Resource:search-name", Sets.create("TargetResourceTyp1", ...));			
-		searchParamNameToTypeMap.put("Specimen:collector", Sets.create("Practitioner"));				
+		searchParamNameToTypeMap.put("Specimen:collector", Sets.create("Practitioner", "PractitionerRole"));				
 		searchParamNameToTypeMap.put("Specimen:parent", Sets.create("Specimen"));
 		searchParamNameToTypeMap.put("Specimen:patient", Sets.create("Patient"));
-		searchParamNameToTypeMap.put("Specimen:subject", Sets.create("Group", "Device", "Patient", "Substance"));
+		searchParamNameToTypeMap.put("Specimen:subject", Sets.create("Group", "Device", "Patient", "Substance", "Location"));
 								
 		// Use name of @Search function as last parameter
 		registerSearches("Specimen", getClass(), "getSpecimen");
@@ -112,7 +112,7 @@ public class SpecimenResourceProvider extends RecordBasedResourceProvider<Specim
   			@OptionalParam(name="_language")
   			StringAndListParam the_language, 
     
-  			@Description(shortDefinition="The accession number associated with the specimen")
+ 			@Description(shortDefinition="The accession number associated with the specimen")
   			@OptionalParam(name="accession")
   			TokenAndListParam theAccession,
     
@@ -158,8 +158,8 @@ public class SpecimenResourceProvider extends RecordBasedResourceProvider<Specim
    
  			@Description(shortDefinition="The specimen type")
  			@OptionalParam(name="type")
- 			TokenAndListParam theType,  			
- 
+ 			TokenAndListParam theType,
+  			
  			@IncludeParam(reverse=true)
  			Set<Include> theRevIncludes,
  			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
@@ -245,7 +245,7 @@ public class SpecimenResourceProvider extends RecordBasedResourceProvider<Specim
         // Note that path = "effective" and type = TYPE_DATETIME_OR_PERIOD
         // If the search was only on effectiveDateTime then
         // type would be TYPE_DATETIME and path would be "effectiveDateTime" instead
-		builder.restriction("date", true, QueryBuilder.TYPE_DATETIME_OR_PERIOD, "collection.collected");
+		builder.restriction("collected", true, QueryBuilder.TYPE_DATETIME_OR_PERIOD, "collection.collected");
 		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
 		
 		// On some resources there are searches for "patient" and "subject" which are 
@@ -256,7 +256,7 @@ public class SpecimenResourceProvider extends RecordBasedResourceProvider<Specim
 	
 		builder.restriction("accession", true, QueryBuilder.TYPE_IDENTIFIER, "accessionIdentifier");
 		builder.restriction("bodysite", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "collection.bodySite");	
-		builder.restriction("collector", true, "Practitioner", "collection.collector");	
+		builder.restriction("collector", true, null, "collection.collector");	
 		builder.restriction("container", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "container.type");	
 		builder.restriction("container-id", true, QueryBuilder.TYPE_IDENTIFIER, "container.identifier");	
 		builder.restriction("parent", true, "Specimen", "parent");
@@ -328,6 +328,12 @@ public class SpecimenResourceProvider extends RecordBasedResourceProvider<Specim
 		if (p.getSubject().isEmpty()) {			
 			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
+	}
+
+	@Override
+	protected void convertToR4(Object in) {
+		// No action
+		
 	}
 		
 	

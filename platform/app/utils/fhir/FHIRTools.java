@@ -6,13 +6,15 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.CodeableConcept;
-import org.hl7.fhir.dstu3.model.Coding;
-import org.hl7.fhir.dstu3.model.DateTimeType;
-import org.hl7.fhir.dstu3.model.Identifier;
-import org.hl7.fhir.dstu3.model.Period;
-import org.hl7.fhir.dstu3.model.Reference;
-import org.hl7.fhir.dstu3.model.Type;
+import org.hl7.fhir.r4.model.CanonicalType;
+import org.hl7.fhir.r4.model.CodeableConcept;
+import org.hl7.fhir.r4.model.Coding;
+import org.hl7.fhir.r4.model.DateTimeType;
+import org.hl7.fhir.r4.model.Identifier;
+import org.hl7.fhir.r4.model.Period;
+import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.Type;
+import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
@@ -86,7 +88,9 @@ public class FHIRTools {
 	 */
 	public static MidataId getUserIdFromReference(IIdType userRef) throws AppException {
 		String rt = userRef.getResourceType();
-		MidataId id = MidataId.from(userRef.getIdPart());
+		String idpart = userRef.getIdPart();
+		if (!MidataId.isValid(idpart)) throw new UnprocessableEntityException("Invalid reference to person. Maybe this is an id from another platform or a placeholder?");
+		MidataId id = MidataId.from(idpart);
 		
 		User user = User.getByIdAlsoDeleted(id, Sets.create("role"));
 		if (user == null) throw new UnprocessableEntityException("Invalid Person Reference");
@@ -240,13 +244,19 @@ public class FHIRTools {
     	if (prov == null) return null;
     	return prov.serialize(prov.parse(record, prov.getResourceType()));    	
     }
+    
+    public static IIdType convertToId(CanonicalType canonical) {
+    	if (canonical == null) return null;
+    	String ref = canonical.getValue();
+    	return new IdType(ref);
+    }
 	
 	/*
 	public static void updatePersonRecordOfUser(String id, Person person) throws InternalServerException {
 		MidataId mongoId = new MidataId(id);
 		User user = User.getById(mongoId, PERSON);
 		IParser parser = ResourceProvider.ctx.newJsonParser();
-	    user.person = (DBObject) JSON.parse(parser.encodeResourceToString(person));
+	    user.person = BasicDBObject.parse(parser.encodeResourceToString(person));
 	    User.set(mongoId, "person", user.person);		
 	}
 	*/

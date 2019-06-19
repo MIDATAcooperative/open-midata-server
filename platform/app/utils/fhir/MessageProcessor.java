@@ -1,11 +1,11 @@
 package utils.fhir;
 
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.Resource;
-import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
-import org.hl7.fhir.dstu3.model.Enumerations.ResourceType;
-import org.hl7.fhir.dstu3.model.MessageHeader;
-import org.hl7.fhir.dstu3.model.OperationOutcome;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Resource;
+import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
+import org.hl7.fhir.r4.model.Enumerations.ResourceType;
+import org.hl7.fhir.r4.model.MessageHeader;
+import org.hl7.fhir.r4.model.OperationOutcome;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 
 import ca.uhn.fhir.rest.annotation.Operation;
@@ -36,7 +36,7 @@ public class MessageProcessor {
 			if (mh==null || mh.getResourceType() == null || !mh.getResourceType().toString().equals("MessageHeader")) throw new InvalidRequestException("Missing MessageHeader at beginning of bundle");
 			
 			MessageHeader mhr = (MessageHeader) mh;
-			String eventCode = mhr.getEvent().getCode();
+			String eventCode = mhr.hasEventCoding() ? mhr.getEventCoding().getCode() : mhr.getEventUriType().getValue();
 			
 			String inputBundle = ResourceProvider.ctx.newJsonParser().encodeResourceToString(content);
 			

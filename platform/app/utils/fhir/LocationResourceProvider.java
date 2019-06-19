@@ -3,9 +3,9 @@ package utils.fhir;
 import java.util.List;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.IdType;
-import org.hl7.fhir.dstu3.model.Location;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.Location;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
@@ -23,6 +23,7 @@ import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.QuantityAndListParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
+import ca.uhn.fhir.rest.param.SpecialAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
@@ -59,7 +60,7 @@ public class LocationResourceProvider extends RecordBasedResourceProvider<Locati
 			@OptionalParam(name="_id")
 			StringAndListParam theId, 
 			  
-			@Description(shortDefinition="A (part of the) address of the location")
+ 			@Description(shortDefinition="A (part of the) address of the location")
   			@OptionalParam(name="address")
   			StringAndListParam theAddress, 
     
@@ -93,7 +94,11 @@ public class LocationResourceProvider extends RecordBasedResourceProvider<Locati
     
  			@Description(shortDefinition="A portion of the location's name or alias")
  			@OptionalParam(name="name")
- 			StringAndListParam theName,     			
+ 			StringAndListParam theName, 
+   
+ 			// @Description(shortDefinition="Search for locations where the location.position is near to, or within a specified distance of, the provided coordinates expressed as [latitude]|[longitude]|[distance]|[units] (using the WGS84 datum, see notes).If the units are omitted, then kms should be assumed. If the distance is omitted, then the server can use its own discretion as to what distances should be considered near (and units are irrelevant)Servers may search using various techniques that might have differing accuracies, depending on implementation efficiency.Requires the near-distance parameter to be provided also")
+ 			// @OptionalParam(name="near")
+ 			// SpecialAndListParam theNear,
    
  			@Description(shortDefinition="Searches for locations (typically bed/room) that have an operational status (e.g. contaminated, housekeeping)")
  			@OptionalParam(name="operational-status")
@@ -114,20 +119,20 @@ public class LocationResourceProvider extends RecordBasedResourceProvider<Locati
  			@Description(shortDefinition="A code for the type of location")
  			@OptionalParam(name="type")
  			TokenAndListParam theType,
-			
-			@IncludeParam(reverse=true)
-			Set<Include> theRevIncludes,
-			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
-			@OptionalParam(name="_lastUpdated")
-			DateRangeParam theLastUpdated, 
-			
-			@IncludeParam(allow= {					
-		 			"Location:endpoint" ,
-		 			"Location:organization" ,
-		 			"Location:partof", 					
-					"*"
-			}) 
-			Set<Include> theIncludes,
+  			
+ 			@IncludeParam(reverse=true)
+ 			Set<Include> theRevIncludes,
+ 			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
+ 			@OptionalParam(name="_lastUpdated")
+ 			DateRangeParam theLastUpdated, 
+ 
+ 			@IncludeParam(allow= {
+ 					"Location:endpoint" ,
+ 					"Location:organization" ,
+ 					"Location:partof" ,
+ 					"*"
+ 			}) 
+ 			Set<Include> theIncludes,
 					
 			@Sort 
 			SortSpec theSort,
@@ -147,7 +152,7 @@ public class LocationResourceProvider extends RecordBasedResourceProvider<Locati
 
 		paramMap.add("_id", theId);
 		
-		paramMap.add("address", theAddress);
+ 		paramMap.add("address", theAddress);
 		paramMap.add("address-city", theAddress_city);
 		paramMap.add("address-country", theAddress_country);
 		paramMap.add("address-postalcode", theAddress_postalcode);
@@ -157,12 +162,11 @@ public class LocationResourceProvider extends RecordBasedResourceProvider<Locati
 		paramMap.add("identifier", theIdentifier);
 		paramMap.add("name", theName);
 		//paramMap.add("near", theNear);
-		//paramMap.add("near-distance", theNear_distance);
 		paramMap.add("operational-status", theOperational_status);
 		paramMap.add("organization", theOrganization);
 		paramMap.add("partof", thePartof);
 		paramMap.add("status", theStatus);
-		paramMap.add("type", theType);	
+		paramMap.add("type", theType);
 		
 		paramMap.setRevIncludes(theRevIncludes);
 		paramMap.setLastUpdated(theLastUpdated);
@@ -246,6 +250,12 @@ public class LocationResourceProvider extends RecordBasedResourceProvider<Locati
 	public void clean(Location theLocation) {
 		
 		super.clean(theLocation);
+	}
+
+	@Override
+	protected void convertToR4(Object in) {
+		// No action
+		
 	}
 
 }

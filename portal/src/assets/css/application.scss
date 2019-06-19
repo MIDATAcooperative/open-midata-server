@@ -94,8 +94,7 @@ body {
 	padding-bottom:180px;   /* Height of the footer element */
 }
 #footer {
-	width:100%;
-	height:150px;
+	width:100%;	
 	position:absolute;
 	bottom:0;
 	left:0;
@@ -135,11 +134,120 @@ body {
   display: none !important;
 }
 
+
 footer {
-  background-color: #e0e0e0;
-  border-top:1px solid #c0c0c0;
-  padding-top:20px;
+ background-color:#333;
+ overflow:hidden;
+ padding-right:.9375rem;
+ padding-left:.9375rem;
+
+ a {
+   color:#FFF !important;
+   text-decoration:underline !important;
+   font-size:.875rem;
+   font-size:14px;
+ }
+ a:hover, a:visited, a:active {
+   color:#FFF;
+ }
+
+ a:focus {
+  outline: none;
+ }
+
+ p {
+   color:#FFF;
+   font-size:.875rem;
+   font-size:14px;
+ }
+ .menu {
+   margin:1rem 0;
+  }
+  @media print, screen and (min-width: 60em) {
+    .menu {
+      margin:0;
+    }
+  }
+
+  .menu li {
+     border-left:solid 1px #FFF;
+     margin:.5rem 0;
+
+     a {
+       padding-top:0;
+       padding-bottom:0;
+     }
+   }
+   @media print, screen and (min-width: 60em) {
+      .menu li {
+        margin:0;
+
+       a {
+         padding-top:.7rem;
+         padding-bottom:.7rem;
+       }
+      }
+   }
+   .menu li:first-child {
+      border-left:0;
+   }
+   .menu li:first-child a {
+      padding-left:0;
+   }
 }
+@media print, screen and (min-width: 60em) {
+  footer {
+    height:100px;
+    .menu {
+      padding-top:30px
+     }
+    p {
+      line-height:100px;
+      text-align: right;
+     }
+   }
+}
+
+.cookie-bar {
+    background-color: #333;
+    padding: 1rem 0;
+
+    p {
+       color: #FFF;
+       margin-bottom: 0;
+
+       a {
+         color: #FFF;
+         text-decoration: underline;
+       }
+    }
+
+    .cell {  
+      padding-right: 15px;
+      padding-left: 15px;
+    }
+
+   
+	.btn-primary {
+	    background-image: radial-gradient(circle at top right, #38bfb9, #4491f9) !important;
+	    border: 0;
+	    color: #FFF;
+	    transition: color 0.25s ease-out, background-image 0.25s ease-out;
+          
+            border-radius: 8px;
+            text-transform: uppercase;
+            padding: 0.45em 2em;        
+
+
+	}
+
+	.btn-primary:hover {   
+	    background-image: radial-gradient(circle at top left, #38bfb9, #4491f9) !important;
+	    border: 0;
+	    color: #000;
+	}
+}
+
 
 .loader {
   min-height:300px;position:relative;

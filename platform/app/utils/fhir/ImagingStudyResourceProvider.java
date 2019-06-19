@@ -3,10 +3,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.IdType;
-import org.hl7.fhir.dstu3.model.ImagingStudy;
-import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.ImagingStudy;
+import org.hl7.fhir.r4.model.Reference;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
@@ -42,10 +42,13 @@ public class ImagingStudyResourceProvider extends RecordBasedResourceProvider<Im
 
 	public ImagingStudyResourceProvider() {
 		searchParamNameToPathMap.put("ImagingStudy:basedon", "basedOn");
-		searchParamNameToTypeMap.put("ImagingStudy:basedon", Sets.create("ReferralRequest", "CarePlan", "ProcedureRequest"));
+		searchParamNameToTypeMap.put("ImagingStudy:basedon", Sets.create("Appointment", "AppointmentResponse", "CarePlan", "Task", "ServiceRequest"));
 		
-		searchParamNameToPathMap.put("ImagingStudy:context", "context");
-		searchParamNameToTypeMap.put("ImagingStudy:context", Sets.create("EpisodeOfCare", "Encounter"));
+		searchParamNameToPathMap.put("ImagingStudy:context", "encounter");
+		searchParamNameToTypeMap.put("ImagingStudy:context", Sets.create("Encounter"));
+		
+		searchParamNameToPathMap.put("ImagingStudy:interpreter", "interpreter");
+		searchParamNameToTypeMap.put("ImagingStudy:interpreter", Sets.create("Practitioner", "PractitionerRole"));
 		
 		searchParamNameToPathMap.put("ImagingStudy:endpoint", "endpoint"); // TODO ImagingStudy.endpoint | ImagingStudy.series.endpoint
 		searchParamNameToTypeMap.put("ImagingStudy:endpoint", Sets.create("Endpoint"));
@@ -53,8 +56,7 @@ public class ImagingStudyResourceProvider extends RecordBasedResourceProvider<Im
 		searchParamNameToPathMap.put("ImagingStudy:patient", "patient");
 		searchParamNameToTypeMap.put("ImagingStudy:patient", Sets.create("Patient"));
 		
-		searchParamNameToPathMap.put("ImagingStudy:performer", "series.performer");
-		searchParamNameToTypeMap.put("ImagingStudy:performer", Sets.create("Practitioner"));
+		searchParamNameToPathMap.put("ImagingStudy:performer", "series.performer.actor");		
 
 		registerSearches("ImagingStudy", getClass(), "getImagingStudy");
 	}
@@ -70,43 +72,95 @@ public class ImagingStudyResourceProvider extends RecordBasedResourceProvider<Im
 
 			@Description(shortDefinition = "The language of the resource") @OptionalParam(name = "_language") StringAndListParam the_language,
 
-			@Description(shortDefinition = "The accession identifier for the study") @OptionalParam(name = "accession") TokenAndListParam theAccession,
-
-			@Description(shortDefinition = "The order for the image") @OptionalParam(name = "basedon", targetTypes = {}) ReferenceAndListParam theBasedon,
-
-			@Description(shortDefinition = "The body site studied") @OptionalParam(name = "bodysite") TokenAndListParam theBodysite,
-
-			@Description(shortDefinition = "The context of the study") @OptionalParam(name = "context", targetTypes = {}) ReferenceAndListParam theContext,
-
-			@Description(shortDefinition = "The type of the instance") @OptionalParam(name = "dicom-class") UriAndListParam theDicom_class,
-
-			@Description(shortDefinition = "The endpoint for te study or series") @OptionalParam(name = "endpoint", targetTypes = {}) ReferenceAndListParam theEndpoint,
-
-			@Description(shortDefinition = "Other identifiers for the Study") @OptionalParam(name = "identifier") TokenAndListParam theIdentifier,
-
-			@Description(shortDefinition = "The modality of the series") @OptionalParam(name = "modality") TokenAndListParam theModality,
-
-			@Description(shortDefinition = "Who the study is about") @OptionalParam(name = "patient", targetTypes = {}) ReferenceAndListParam thePatient,
-
-			@Description(shortDefinition = "The person who performed the study") @OptionalParam(name = "performer", targetTypes = {}) ReferenceAndListParam thePerformer,
-
-			@Description(shortDefinition = "The reason for the study") @OptionalParam(name = "reason") TokenAndListParam theReason,
-
-			@Description(shortDefinition = "The identifier of the series of images") @OptionalParam(name = "series") UriAndListParam theSeries,
-
-			@Description(shortDefinition = "When the study was started") @OptionalParam(name = "started") DateAndListParam theStarted,
-
-			@Description(shortDefinition = "The study identifier for the image") @OptionalParam(name = "study") UriAndListParam theStudy,
-
-			@Description(shortDefinition = "The instance unique identifier") @OptionalParam(name = "uid") UriAndListParam theUid,
-
-			@RawParam Map<String, List<String>> theAdditionalRawParams,
-
-			@IncludeParam(reverse = true) Set<Include> theRevIncludes,
-			@Description(shortDefinition = "Only return resources which were last updated as specified by the given range") @OptionalParam(name = "_lastUpdated") DateRangeParam theLastUpdated,
-
-			@IncludeParam(allow = { "ImagingStudy:basedon", "ImagingStudy:context", "ImagingStudy:endpoint",
-					"ImagingStudy:patient", "ImagingStudy:performer", "*" }) Set<Include> theIncludes,
+  			@Description(shortDefinition="The order for the image")
+  			@OptionalParam(name="basedon", targetTypes={  } )
+  			ReferenceAndListParam theBasedon, 
+    
+  			@Description(shortDefinition="The body site studied")
+  			@OptionalParam(name="bodysite")
+  			TokenAndListParam theBodysite,
+    
+  			@Description(shortDefinition="The type of the instance")
+  			@OptionalParam(name="dicom-class")
+  			TokenAndListParam theDicom_class,
+    
+  			@Description(shortDefinition="The context of the study")
+  			@OptionalParam(name="encounter", targetTypes={  } )
+  			ReferenceAndListParam theEncounter, 
+    
+  			@Description(shortDefinition="The endpoint for the study or series")
+  			@OptionalParam(name="endpoint", targetTypes={  } )
+  			ReferenceAndListParam theEndpoint, 
+    
+  			@Description(shortDefinition="Identifiers for the Study, such as DICOM Study Instance UID and Accession number")
+  			@OptionalParam(name="identifier")
+  			TokenAndListParam theIdentifier,
+    
+  			@Description(shortDefinition="SOP Instance UID for an instance")
+  			@OptionalParam(name="instance")
+  			TokenAndListParam theInstance,
+    
+  			@Description(shortDefinition="Who interpreted the images")
+  			@OptionalParam(name="interpreter", targetTypes={  } )
+  			ReferenceAndListParam theInterpreter, 
+    
+ 			@Description(shortDefinition="The modality of the series")
+ 			@OptionalParam(name="modality")
+ 			TokenAndListParam theModality,
+   
+ 			@Description(shortDefinition="Who the study is about")
+ 			@OptionalParam(name="patient", targetTypes={  } )
+ 			ReferenceAndListParam thePatient, 
+   
+ 			@Description(shortDefinition="The person who performed the study")
+ 			@OptionalParam(name="performer", targetTypes={  } )
+ 			ReferenceAndListParam thePerformer, 
+   
+ 			@Description(shortDefinition="The reason for the study")
+ 			@OptionalParam(name="reason")
+ 			TokenAndListParam theReason,
+   
+ 			@Description(shortDefinition="The referring physician")
+ 			@OptionalParam(name="referrer", targetTypes={  } )
+ 			ReferenceAndListParam theReferrer, 
+   
+ 			@Description(shortDefinition="DICOM Series Instance UID for a series")
+ 			@OptionalParam(name="series")
+ 			TokenAndListParam theSeries,
+   
+ 			@Description(shortDefinition="When the study was started")
+ 			@OptionalParam(name="started")
+ 			DateAndListParam theStarted, 
+   
+ 			@Description(shortDefinition="The status of the study")
+ 			@OptionalParam(name="status")
+ 			TokenAndListParam theStatus,
+   
+ 			@Description(shortDefinition="Who the study is about")
+ 			@OptionalParam(name="subject", targetTypes={  } )
+ 			ReferenceAndListParam theSubject, 
+ 
+ 			@RawParam
+ 			Map<String, List<String>> theAdditionalRawParams,
+ 
+ 			@IncludeParam(reverse=true)
+ 			Set<Include> theRevIncludes,
+ 			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
+ 			@OptionalParam(name="_lastUpdated")
+ 			DateRangeParam theLastUpdated, 
+ 
+ 			@IncludeParam(allow= {
+ 					"ImagingStudy:basedon" ,
+ 					"ImagingStudy:encounter" ,
+ 					"ImagingStudy:endpoint" ,
+ 					"ImagingStudy:interpreter" ,
+ 					"ImagingStudy:patient" ,
+ 					"ImagingStudy:performer" ,
+ 					"ImagingStudy:referrer" ,
+ 					"ImagingStudy:subject" ,
+ 					"*"
+ 			}) 
+ 			Set<Include> theIncludes,
 
 			@Sort SortSpec theSort,
 
@@ -122,21 +176,23 @@ public class ImagingStudyResourceProvider extends RecordBasedResourceProvider<Im
 
 		paramMap.add("_id", the_id);
 		paramMap.add("_language", the_language);
-		paramMap.add("accession", theAccession);
 		paramMap.add("basedon", theBasedon);
 		paramMap.add("bodysite", theBodysite);
-		paramMap.add("context", theContext);
 		paramMap.add("dicom-class", theDicom_class);
+		paramMap.add("encounter", theEncounter);
 		paramMap.add("endpoint", theEndpoint);
 		paramMap.add("identifier", theIdentifier);
+		paramMap.add("instance", theInstance);
+		paramMap.add("interpreter", theInterpreter);
 		paramMap.add("modality", theModality);
 		paramMap.add("patient", thePatient);
 		paramMap.add("performer", thePerformer);
 		paramMap.add("reason", theReason);
+		paramMap.add("referrer", theReferrer);
 		paramMap.add("series", theSeries);
 		paramMap.add("started", theStarted);
-		paramMap.add("study", theStudy);
-		paramMap.add("uid", theUid);
+		paramMap.add("status", theStatus);
+		paramMap.add("subject", theSubject);
 
 		paramMap.setRevIncludes(theRevIncludes);
 		paramMap.setLastUpdated(theLastUpdated);
@@ -159,21 +215,23 @@ public class ImagingStudyResourceProvider extends RecordBasedResourceProvider<Im
 		builder.recordOwnerReference("patient", "Patient", "patient");
 	
 		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
-
-		builder.restriction("accession", true, QueryBuilder.TYPE_IDENTIFIER, "accession");
+		
 		builder.restriction("basedon", true, null, "basedOn");
 		builder.restriction("bodysite", true, QueryBuilder.TYPE_CODING, "series.bodySite");
-		builder.restriction("context", true, null, "context");
+		builder.restriction("encounter", true, "Encounter", "encounter");
 		builder.restriction("dicom-class", true, QueryBuilder.TYPE_URI, "series.instance.sopClass");
 		builder.restriction("endpoint", true, "Endpoint", "series.endpoint"); 
+		builder.restriction("instance", true, QueryBuilder.TYPE_ID, "series.instance.uid");
+		builder.restriction("interpreter", true, null, "interpreter");
 		
 		builder.restriction("modality", true, QueryBuilder.TYPE_CODING, "series.modality");		
-		builder.restriction("performer", true, "Practitioner", "series.performer");
-		builder.restriction("reason", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "reason");
-		builder.restriction("series", true, QueryBuilder.TYPE_URI, "series.uid");
+		builder.restriction("performer", true, null, "series.performer.actor");
+		builder.restriction("reason", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "reasonCode");
+		builder.restriction("referrer", true, null, "referrer");
+		builder.restriction("series", true, QueryBuilder.TYPE_ID, "series.uid");
 		builder.restriction("started", true, QueryBuilder.TYPE_DATETIME, "started");
-		builder.restriction("study", true, QueryBuilder.TYPE_URI, "uid");
-		builder.restriction("uid", true, QueryBuilder.TYPE_URI, "series.instance.uid");
+		builder.restriction("study", true, QueryBuilder.TYPE_URI, "uid");		
+		builder.restriction("status", true, QueryBuilder.TYPE_CODE, "status");
 
 		return query.execute(info);
 	}
@@ -226,9 +284,9 @@ public class ImagingStudyResourceProvider extends RecordBasedResourceProvider<Im
 
 		// Task c : Set record owner based on subject and clean subject if this was
 		// possible
-		Reference subjectRef = theImagingStudy.getPatient(); // TODO correct to use patient?
+		Reference subjectRef = theImagingStudy.getSubject(); // TODO correct to use patient?
 		if (cleanAndSetRecordOwner(record, subjectRef))
-			theImagingStudy.setPatient(null);
+			theImagingStudy.setSubject(null);
 
 		// Other cleaning tasks: Remove _id from FHIR representation and remove "meta"
 		// section
@@ -244,8 +302,14 @@ public class ImagingStudyResourceProvider extends RecordBasedResourceProvider<Im
 		super.processResource(record, p);
 
 		// Add subject field from record owner field if it is not already there
-		if (p.getPatient().isEmpty()) {  // TODO correct to use patient?
-			p.setPatient(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
+		if (p.getSubject().isEmpty()) {  // TODO correct to use patient?
+			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
+	}
+
+	@Override
+	protected void convertToR4(Object in) {
+		// No action
+		
 	}
 }

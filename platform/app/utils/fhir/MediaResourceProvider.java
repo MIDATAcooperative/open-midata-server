@@ -3,11 +3,11 @@ package utils.fhir;
 import java.util.List;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.Attachment;
-import org.hl7.fhir.dstu3.model.Base64BinaryType;
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.Media;
-import org.hl7.fhir.dstu3.model.Patient;
+import org.hl7.fhir.r4.model.Attachment;
+import org.hl7.fhir.r4.model.Base64BinaryType;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Media;
+import org.hl7.fhir.r4.model.Patient;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
@@ -20,6 +20,7 @@ import ca.uhn.fhir.rest.annotation.Sort;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.api.server.RequestDetails;
+import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
@@ -35,6 +36,15 @@ import utils.exceptions.AppException;
 public class MediaResourceProvider extends RecordBasedResourceProvider<Media> implements IResourceProvider {
 
 	public MediaResourceProvider() {
+		searchParamNameToPathMap.put("Media:based-on", "basedOn");
+		searchParamNameToTypeMap.put("Media:based-on", Sets.create("CarePlan", "ServiceRequest"));
+		
+		searchParamNameToPathMap.put("Media:device", "device");
+		searchParamNameToTypeMap.put("Media:device", Sets.create("Device", "DeviceMetric"));
+		
+		searchParamNameToPathMap.put("Media:encounter", "encounter");
+		searchParamNameToTypeMap.put("Media:encounter", Sets.create("Encounter"));
+		
 		searchParamNameToPathMap.put("Media:operator", "operator");
 		searchParamNameToPathMap.put("Media:patient", "subject");
 		searchParamNameToTypeMap.put("Media:patient", Sets.create("Patient"));
@@ -59,51 +69,74 @@ public class MediaResourceProvider extends RecordBasedResourceProvider<Media> im
 			StringAndListParam theResourceLanguage, 
 			 			
 			    
-			@Description(shortDefinition="")
-			@OptionalParam(name="type")
-			TokenAndListParam theType, 
-			    
-			@Description(shortDefinition="")
-			@OptionalParam(name="subtype")
-			TokenAndListParam theSubtype, 
-			    
-			@Description(shortDefinition="")
-			@OptionalParam(name="identifier")
-			TokenAndListParam theIdentifier, 
-			   
-			@Description(shortDefinition="")
-			@OptionalParam(name="created")
-			DateRangeParam theCreated, 
-			    
-			@Description(shortDefinition="")
-			@OptionalParam(name="subject", targetTypes={  } )
-			ReferenceAndListParam theSubject, 
-			   
-			@Description(shortDefinition="")
-			@OptionalParam(name="operator", targetTypes={  } )
-			ReferenceAndListParam theOperator, 
-			   
-			@Description(shortDefinition="")
-			@OptionalParam(name="view")
-			TokenAndListParam theView, 
-			    
-			@Description(shortDefinition="")
-			@OptionalParam(name="patient", targetTypes={  Patient.class   } )
-			ReferenceAndListParam thePatient, 
-			 
-			@IncludeParam(reverse=true)
-			Set<Include> theRevIncludes,
-			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
-			@OptionalParam(name="_lastUpdated")
-			DateRangeParam theLastUpdated, 
-			 
-			@IncludeParam(allow= {
-						"Media:operator" ,
-						"Media:patient" ,
-						"Media:subject" ,					
-						"*"
-			}) 
-			Set<Include> theIncludes,
+ 			@Description(shortDefinition="Procedure that caused this media to be created")
+  			@OptionalParam(name="based-on", targetTypes={  } )
+  			ReferenceAndListParam theBased_on, 
+    
+  			@Description(shortDefinition="When Media was collected")
+  			@OptionalParam(name="created")
+  			DateAndListParam theCreated, 
+    
+  			@Description(shortDefinition="Observing Device")
+  			@OptionalParam(name="device", targetTypes={  } )
+  			ReferenceAndListParam theDevice, 
+    
+  			@Description(shortDefinition="Encounter associated with media")
+  			@OptionalParam(name="encounter", targetTypes={  } )
+  			ReferenceAndListParam theEncounter, 
+    
+  			@Description(shortDefinition="Identifier(s) for the image")
+  			@OptionalParam(name="identifier")
+  			TokenAndListParam theIdentifier,
+    
+  			@Description(shortDefinition="The type of acquisition equipment/process")
+  			@OptionalParam(name="modality")
+  			TokenAndListParam theModality,
+    
+  			@Description(shortDefinition="The person who generated the image")
+  			@OptionalParam(name="operator", targetTypes={  } )
+  			ReferenceAndListParam theOperator, 
+    
+  			@Description(shortDefinition="Who/What this Media is a record of")
+  			@OptionalParam(name="patient", targetTypes={  } )
+  			ReferenceAndListParam thePatient, 
+    
+ 			@Description(shortDefinition="Observed body part")
+ 			@OptionalParam(name="site")
+ 			TokenAndListParam theSite,
+   
+ 			@Description(shortDefinition="preparation | in-progress | not-done | suspended | aborted | completed | entered-in-error | unknown")
+ 			@OptionalParam(name="status")
+ 			TokenAndListParam theStatus,
+   
+ 			@Description(shortDefinition="Who/What this Media is a record of")
+ 			@OptionalParam(name="subject", targetTypes={  } )
+ 			ReferenceAndListParam theSubject, 
+   
+ 			@Description(shortDefinition="Classification of media as image, video, or audio")
+ 			@OptionalParam(name="type")
+ 			TokenAndListParam theType,
+   
+ 			@Description(shortDefinition="Imaging view, e.g. Lateral or Antero-posterior")
+ 			@OptionalParam(name="view")
+ 			TokenAndListParam theView,
+  			 
+ 			@IncludeParam(reverse=true)
+ 			Set<Include> theRevIncludes,
+ 			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
+ 			@OptionalParam(name="_lastUpdated")
+ 			DateRangeParam theLastUpdated, 
+ 
+ 			@IncludeParam(allow= {
+ 					"Media:based-on" ,
+ 					"Media:device" ,
+ 					"Media:encounter" ,
+ 					"Media:operator" ,
+ 					"Media:patient" ,
+ 					"Media:subject" ,
+ 					"*"
+ 			}) 
+ 			Set<Include> theIncludes,
 			 			
 			@Sort 
 			SortSpec theSort,
@@ -131,15 +164,19 @@ public class MediaResourceProvider extends RecordBasedResourceProvider<Media> im
 		*/
 		//paramMap.add("_has", theHas);
 		
-		paramMap.add("identifier", theIdentifier);						
-		paramMap.add("type", theType);
-		paramMap.add("subtype", theSubtype);
-		paramMap.add("identifier", theIdentifier);
+		paramMap.add("based-on", theBased_on);
 		paramMap.add("created", theCreated);
-		paramMap.add("subject", theSubject);
+		paramMap.add("device", theDevice);
+		paramMap.add("encounter", theEncounter);
+		paramMap.add("identifier", theIdentifier);
+		paramMap.add("modality", theModality);
 		paramMap.add("operator", theOperator);
-		paramMap.add("view", theView);
 		paramMap.add("patient", thePatient);
+		paramMap.add("site", theSite);
+		paramMap.add("status", theStatus);
+		paramMap.add("subject", theSubject);
+		paramMap.add("type", theType);
+		paramMap.add("view", theView);
 		
 		paramMap.setRevIncludes(theRevIncludes);
 		paramMap.setLastUpdated(theLastUpdated);
@@ -164,14 +201,16 @@ public class MediaResourceProvider extends RecordBasedResourceProvider<Media> im
 		builder.recordCodeRestriction("view", "view");
 				
 		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
-		builder.restriction("created", true, QueryBuilder.TYPE_DATETIME, "content.creation");
+		builder.restriction("created", true, QueryBuilder.TYPE_DATETIME_OR_PERIOD, "created");
 		
 		if (!builder.recordOwnerReference("subject", null, "subject")) builder.restriction("subject", true, null, "subject");
 		
-		//builder.restriction("subject", null, true, "subject");
-		builder.restriction("operator", true, "Practitioner", "operator");		
-		builder.restriction("subtype", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "subtype");
-		builder.restriction("type", false, QueryBuilder.TYPE_CODE, "type");		
+		builder.restriction("based-on", true, null, "basedOn");
+		builder.restriction("device", true, null, "device");
+		builder.restriction("encounter", true, "Encounter", "encounter");
+		builder.restriction("modality", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "modality");	
+		builder.restriction("operator", true, null, "operator");				
+		builder.restriction("type", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "type");		
 		
 		return query.execute(info);
 	}
@@ -245,5 +284,11 @@ public class MediaResourceProvider extends RecordBasedResourceProvider<Media> im
 		}
     	return ctx.newJsonParser().encodeResourceToString(theMedia);
     }
+
+	@Override
+	protected void convertToR4(Object in) {
+		FHIRVersionConvert.rename(in, "subtype", "modality");
+		
+	}
 
 }
