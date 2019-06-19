@@ -12,9 +12,10 @@ libraryDependencies += guice
 libraryDependencies ++= Seq(
     ws,
     "org.mongodb" % "mongo-java-driver" % "3.6.3",
-    "ca.uhn.hapi.fhir" % "hapi-fhir-base" % "3.6.0",
-    "ca.uhn.hapi.fhir" % "hapi-fhir-structures-dstu3" % "3.6.0",  	    
-    "ca.uhn.hapi.fhir" % "hapi-fhir-server" % "3.6.0",
+    "ca.uhn.hapi.fhir" % "hapi-fhir-base" % "3.7.0",
+    "ca.uhn.hapi.fhir" % "hapi-fhir-structures-dstu3" % "3.7.0",
+    "ca.uhn.hapi.fhir" % "hapi-fhir-structures-r4" % "3.7.0",  	    
+    "ca.uhn.hapi.fhir" % "hapi-fhir-server" % "3.7.0",
     "org.thymeleaf" % "thymeleaf" % "3.0.1.RELEASE",
     "com.fasterxml.jackson.core" % "jackson-core" % "2.8.3",
     "com.fasterxml.jackson.core" % "jackson-databind" % "2.8.3",

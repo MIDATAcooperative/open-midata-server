@@ -13,15 +13,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.Attachment;
-import org.hl7.fhir.dstu3.model.CodeableConcept;
-import org.hl7.fhir.dstu3.model.Coding;
-import org.hl7.fhir.dstu3.model.DomainResource;
-import org.hl7.fhir.dstu3.model.Extension;
-import org.hl7.fhir.dstu3.model.IdType;
+import org.hl7.fhir.r4.model.Attachment;
+import org.hl7.fhir.r4.model.CodeableConcept;
+import org.hl7.fhir.r4.model.Coding;
+import org.hl7.fhir.r4.model.DomainResource;
+import org.hl7.fhir.r4.model.Extension;
+import org.hl7.fhir.r4.model.IdType;
+import org.bson.BasicBSONObject;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
@@ -81,9 +83,12 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		} else {
 		    record = RecordManager.instance.fetch(info().executorId, info().role, info().context, new MidataId(theId.getIdPart()), getRecordFormat());
 		}
-		if (record == null || record.data == null || !record.data.containsField("resourceType")) throw new ResourceNotFoundException(theId);					
+		if (record == null || record.data == null || !record.data.containsField("resourceType")) throw new ResourceNotFoundException(theId);
+		
+		Object data = record.data;
+		convertToR4(record, data);
 		IParser parser = ctx().newJsonParser();
-		T p = parser.parseResource(getResourceType(), record.data.toString());
+		T p = parser.parseResource(getResourceType(), data.toString());
 		processResource(record, p);		
 		return p;
 	}
@@ -97,7 +102,9 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	   IParser parser = ctx().newJsonParser();
 	   for (Record record : records) {	
 		    if (record.data == null || !record.data.containsField("resourceType")) continue;
-			T p = parser.parseResource(getResourceType(), record.data.toString());
+		    Object data = record.data;
+			convertToR4(record, data);
+			T p = parser.parseResource(getResourceType(), data.toString());
 			processResource(record, p);
 			result.add(p);
 	   }
@@ -163,7 +170,8 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	    IParser parser = ctx().newJsonParser();
 	    for (Record rec : result) {
 	    	if (rec.data != null) {
-	    		try {
+	    		try {	    			
+	    			convertToR4(rec, rec.data);
 	    			T p = parser.parseResource(resultClass, rec.data.toString());
 	    			processResource(rec, p);											
 	    			parsed.add(p);
@@ -226,7 +234,8 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	public static void insertRecord(ExecutionInfo info, Record record, IBaseResource resource, AccessContext targetConsent) throws AppException {
 		AccessLog.logBegin("begin insert FHIR record");		    
 			String encoded = ctx.newJsonParser().encodeResourceToString(resource);			
-			record.data = (DBObject) JSON.parse(encoded);	
+			record.data = BasicDBObject.parse(encoded);	
+			record.addTag("fhir:r4");
 			try {
 			  PluginsAPI.createRecord(info, record, targetConsent);			
 			} finally {
@@ -291,7 +300,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 			attachment.setUrl(null);
 			
 			String encoded = ctx.newJsonParser().encodeResourceToString(resource);
-			record.data = (DBObject) JSON.parse(encoded);
+			record.data = BasicDBObject.parse(encoded);
 			
 			if (data != null) {
 			   handle = RecordManager.instance.addFile(data, fileName, contentType);
@@ -305,7 +314,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	public void updateRecord(Record record, IBaseResource resource) throws AppException {
 		if (resource.getMeta() != null && resource.getMeta().getVersionId() != null && !record.version.equals(resource.getMeta().getVersionId())) throw new ResourceVersionConflictException("Wrong resource version supplied!") ;
 		String encoded = ctx.newJsonParser().encodeResourceToString(resource);
-		record.data = (DBObject) JSON.parse(encoded);	
+		record.data = BasicDBObject.parse(encoded);	
 		record.version = resource.getMeta().getVersionId();
 		record.version = RecordManager.instance.updateRecord(info().executorId, info().context, record);
 	
@@ -395,5 +404,9 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	@Override
 	public Date getLastUpdated(Record record) {
 		return record.lastUpdated != null ? record.lastUpdated : record.created;
+	}
+	
+	protected void convertToR4(Record fromDB, Object in) {
+		if (fromDB.tags == null || !fromDB.tags.contains("fhir:r4")) convertToR4(in);		
 	}
 }

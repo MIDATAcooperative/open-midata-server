@@ -83,13 +83,15 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 		
 		// Init FHIR
 		System.out.println("FHIR Servlet");
-		FHIR.servlet = new FHIRServlet();
-		
+		FHIR.servlet_r4 = new FHIRServlet();
+		FHIR.servlet_stu3 = new utils.fhir_stu3.FHIRServlet();
 		try {
 			
-		  FHIR.servlet.setFhirContext(ResourceProvider.ctx);
+		  FHIR.servlet_r4.setFhirContext(ResourceProvider.ctx);
+		  FHIR.servlet_stu3.setFhirContext(utils.fhir_stu3.ResourceProvider.ctx);
 		  
-		  FHIR.servlet.init(new PlayHttpServletConfig());
+		  FHIR.servlet_r4.init(new PlayHttpServletConfig());
+		  FHIR.servlet_stu3.init(new PlayHttpServletConfig());
 			
 		  System.out.println("Messager");
 		  Messager.init(system);

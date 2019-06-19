@@ -75,9 +75,12 @@
         <div class="row extraspace">
          <div class="col-12"><label>Request to backend: {{ server }}</label></div>
          <div class="col-2">           
+           <select class="form-control" ng-model="fhirRelease" ng-options="rel.header as rel.name for rel in releases"></select>
+         </div>
+         <div class="col-2">           
            <select class="form-control" ng-model="type"><option>GET</option><option>POST</option><option>PUT</option><option>DELETE</option></select>
          </div>
-         <div class="col-10">
+         <div class="col-8">
          <input type="text" class="form-control" ng-model="url">
          </div>
         </div>

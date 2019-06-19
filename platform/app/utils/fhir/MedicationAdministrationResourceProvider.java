@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.IdType;
-import org.hl7.fhir.dstu3.model.MedicationAdministration;
-import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.MedicationAdministration;
+import org.hl7.fhir.r4.model.Reference;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
@@ -55,10 +55,10 @@ public class MedicationAdministrationResourceProvider extends RecordBasedResourc
 
 		searchParamNameToPathMap.put("MedicationAdministration:performer", "performer.action");
 		searchParamNameToTypeMap.put("MedicationAdministration:performer",
-				Sets.create("Practitioner", "Device", "Patient", "RelatedPerson"));
+				Sets.create("Practitioner", "Device", "Patient", "RelatedPerson", "PractitionerRole"));
 
-		searchParamNameToPathMap.put("MedicationAdministration:prescription", "prescription");
-		searchParamNameToTypeMap.put("MedicationAdministration:prescription", Sets.create("MedicationRequest"));
+		searchParamNameToPathMap.put("MedicationAdministration:request", "request");
+		searchParamNameToTypeMap.put("MedicationAdministration:request", Sets.create("MedicationRequest"));
 
 		searchParamNameToPathMap.put("MedicationAdministration:subject", "subject");
 		searchParamNameToTypeMap.put("MedicationAdministration:subject", Sets.create("Group", "Patient"));
@@ -75,34 +75,78 @@ public class MedicationAdministrationResourceProvider extends RecordBasedResourc
 	public Bundle getMedicationAdministration(
 			@Description(shortDefinition = "The ID of the resource") @OptionalParam(name = "_id") TokenAndListParam the_id,
 			@Description(shortDefinition = "The language of the resource") @OptionalParam(name = "_language") StringAndListParam the_language,
-			@Description(shortDefinition = "Return administrations of this medication code") @OptionalParam(name = "code") TokenAndListParam theCode,
-			@Description(shortDefinition = "Return administrations that share this encounter or episode of care") @OptionalParam(name = "context", targetTypes = {}) ReferenceAndListParam theContext,
-			@Description(shortDefinition = "Return administrations with this administration device identity") @OptionalParam(name = "device", targetTypes = {}) ReferenceAndListParam theDevice,
-			@Description(shortDefinition = "Date administration happened (or did not happen)") @OptionalParam(name = "effective-time") DateAndListParam theEffective_time,
-			@Description(shortDefinition = "Return administrations with this external identifier") @OptionalParam(name = "identifier") TokenAndListParam theIdentifier,
-			@Description(shortDefinition = "Return administrations of this medication resource") @OptionalParam(name = "medication", targetTypes = {}) ReferenceAndListParam theMedication,
-			@Description(shortDefinition = "Administrations that were not made") @OptionalParam(name = "not-given") TokenAndListParam theNot_given,
-			@Description(shortDefinition = "The identity of a patient to list administrations  for") @OptionalParam(name = "patient", targetTypes = {}) ReferenceAndListParam thePatient,
-			@Description(shortDefinition = "The identify of the individual who administered the medication") @OptionalParam(name = "performer", targetTypes = {}) ReferenceAndListParam thePerformer,
-
-			@Description(shortDefinition = "The identity of a prescription to list administrations from") @OptionalParam(name = "prescription", targetTypes = {}) ReferenceAndListParam thePrescription,
-
-			@Description(shortDefinition = "Reasons for administering the medication") @OptionalParam(name = "reason-given") TokenAndListParam theReason_given,
-
-			@Description(shortDefinition = "Reasons for not administering the medication") @OptionalParam(name = "reason-not-given") TokenAndListParam theReason_not_given,
-
-			@Description(shortDefinition = "MedicationAdministration event status (for example one of active/paused/completed/nullified)") @OptionalParam(name = "status") TokenAndListParam theStatus,
-
-			@Description(shortDefinition = "The identify of the individual or group to list administrations for") @OptionalParam(name = "subject", targetTypes = {}) ReferenceAndListParam theSubject,
-
-			@RawParam Map<String, List<String>> theAdditionalRawParams,
-
-			@IncludeParam(reverse = true) Set<Include> theRevIncludes,
-			@Description(shortDefinition = "Only return resources which were last updated as specified by the given range") @OptionalParam(name = "_lastUpdated") DateRangeParam theLastUpdated,
-			@IncludeParam(allow = { "MedicationAdministration:context", "MedicationAdministration:device",
-					"MedicationAdministration:medication", "MedicationAdministration:patient",
-					"MedicationAdministration:performer", "MedicationAdministration:prescription",
-					"MedicationAdministration:subject", "*" }) Set<Include> theIncludes,
+ 			@Description(shortDefinition="Return administrations of this medication code")
+  			@OptionalParam(name="code")
+  			TokenAndListParam theCode,
+    
+  			@Description(shortDefinition="Return administrations that share this encounter or episode of care")
+  			@OptionalParam(name="context", targetTypes={  } )
+  			ReferenceAndListParam theContext, 
+    
+  			@Description(shortDefinition="Return administrations with this administration device identity")
+  			@OptionalParam(name="device", targetTypes={  } )
+  			ReferenceAndListParam theDevice, 
+    
+  			@Description(shortDefinition="Date administration happened (or did not happen)")
+  			@OptionalParam(name="effective-time")
+  			DateAndListParam theEffective_time, 
+    
+  			@Description(shortDefinition="Return administrations with this external identifier")
+  			@OptionalParam(name="identifier")
+  			TokenAndListParam theIdentifier,
+    
+  			@Description(shortDefinition="Return administrations of this medication resource")
+  			@OptionalParam(name="medication", targetTypes={  } )
+  			ReferenceAndListParam theMedication, 
+    
+  			@Description(shortDefinition="The identity of a patient to list administrations  for")
+  			@OptionalParam(name="patient", targetTypes={  } )
+  			ReferenceAndListParam thePatient, 
+    
+  			@Description(shortDefinition="The identity of the individual who administered the medication")
+  			@OptionalParam(name="performer", targetTypes={  } )
+  			ReferenceAndListParam thePerformer, 
+    
+ 			@Description(shortDefinition="Reasons for administering the medication")
+ 			@OptionalParam(name="reason-given")
+ 			TokenAndListParam theReason_given,
+   
+ 			@Description(shortDefinition="Reasons for not administering the medication")
+ 			@OptionalParam(name="reason-not-given")
+ 			TokenAndListParam theReason_not_given,
+   
+ 			@Description(shortDefinition="The identity of a request to list administrations from")
+ 			@OptionalParam(name="request", targetTypes={  } )
+ 			ReferenceAndListParam theRequest, 
+   
+ 			@Description(shortDefinition="MedicationAdministration event status (for example one of active/paused/completed/nullified)")
+ 			@OptionalParam(name="status")
+ 			TokenAndListParam theStatus,
+   
+ 			@Description(shortDefinition="The identity of the individual or group to list administrations for")
+ 			@OptionalParam(name="subject", targetTypes={  } )
+ 			ReferenceAndListParam theSubject, 
+ 
+ 			@RawParam
+ 			Map<String, List<String>> theAdditionalRawParams,
+ 
+ 			@IncludeParam(reverse=true)
+ 			Set<Include> theRevIncludes,
+ 			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
+ 			@OptionalParam(name="_lastUpdated")
+ 			DateRangeParam theLastUpdated, 
+ 
+ 			@IncludeParam(allow= {
+ 					"MedicationAdministration:context" ,
+ 					"MedicationAdministration:device" ,
+ 					"MedicationAdministration:medication" ,
+ 					"MedicationAdministration:patient" ,
+ 					"MedicationAdministration:performer" ,
+ 					"MedicationAdministration:request" ,
+ 					"MedicationAdministration:subject" ,
+ 					"*"
+ 			}) 
+ 			Set<Include> theIncludes,
 
 			@Sort SortSpec theSort,
 
@@ -124,15 +168,13 @@ public class MedicationAdministrationResourceProvider extends RecordBasedResourc
 		paramMap.add("effective-time", theEffective_time);
 		paramMap.add("identifier", theIdentifier);
 		paramMap.add("medication", theMedication);
-		paramMap.add("not-given", theNot_given);
 		paramMap.add("patient", thePatient);
 		paramMap.add("performer", thePerformer);
-		paramMap.add("prescription", thePrescription);
 		paramMap.add("reason-given", theReason_given);
 		paramMap.add("reason-not-given", theReason_not_given);
+		paramMap.add("request", theRequest);
 		paramMap.add("status", theStatus);
 		paramMap.add("subject", theSubject);
-
 		paramMap.setRevIncludes(theRevIncludes);
 		paramMap.setLastUpdated(theLastUpdated);
 		paramMap.setIncludes(theIncludes);
@@ -165,17 +207,16 @@ public class MedicationAdministrationResourceProvider extends RecordBasedResourc
 		if (!builder.recordOwnerReference("subject", null, "subject"))
 			builder.restriction("subject", true, null, "subject");
 
+		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
 		builder.restriction("code", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "medicationCodeableConcept");
 		builder.restriction("context", true, null, "context");
 		builder.restriction("device", true, "Device", "device");
-		builder.restriction("effective-time", true, QueryBuilder.TYPE_DATETIME_OR_PERIOD, "effective");
-		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
-		builder.restriction("medication", true, "Medication", "medicationReference");
-		builder.restriction("not-given", true, QueryBuilder.TYPE_BOOLEAN, "notGiven");
+		builder.restriction("effective-time", true, QueryBuilder.TYPE_DATETIME_OR_PERIOD, "effective");		
+		builder.restriction("medication", true, "Medication", "medicationReference");		
 		builder.restriction("performer", true, null, "performer.actor");
-		builder.restriction("prescription", true, "MedicationRequest", "prescription");
+		builder.restriction("request", true, "MedicationRequest", "request");		
 		builder.restriction("reason-given", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "reasonCode");
-		builder.restriction("reason-not-given", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "reasonNotGiven");
+		builder.restriction("reason-not-given", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "statusReason");
 		builder.restriction("status", true, QueryBuilder.TYPE_CODE, "status");
 
 		return query.execute(info);
@@ -255,5 +296,11 @@ public class MedicationAdministrationResourceProvider extends RecordBasedResourc
 		if (p.getSubject().isEmpty()) {
 			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
+	}
+
+	@Override
+	protected void convertToR4(Object in) {
+		// No action
+		
 	}
 }

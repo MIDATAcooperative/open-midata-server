@@ -6,17 +6,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.CodeableConcept;
-import org.hl7.fhir.dstu3.model.Coding;
-import org.hl7.fhir.dstu3.model.Group;
-import org.hl7.fhir.dstu3.model.Group.GroupMemberComponent;
-import org.hl7.fhir.dstu3.model.Group.GroupType;
-import org.hl7.fhir.dstu3.model.IdType;
-import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.CodeableConcept;
+import org.hl7.fhir.r4.model.Coding;
+import org.hl7.fhir.r4.model.Group;
+import org.hl7.fhir.r4.model.Group.GroupMemberComponent;
+import org.hl7.fhir.r4.model.Group.GroupType;
+import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
@@ -66,6 +67,13 @@ import utils.stats.Stats;
 public class GroupResourceProvider extends RecordBasedResourceProvider<Group> implements IResourceProvider {
 
 	public GroupResourceProvider() {
+		
+		searchParamNameToPathMap.put("Group:managing-entity" , "managingEntity");
+		searchParamNameToTypeMap.put("Group:managing-entity" , Sets.create("Practitioner", "Organization", "PractitionerRole", "RelatedPerson"));
+		
+		searchParamNameToPathMap.put("Group:member" , "member.entity");
+		searchParamNameToTypeMap.put("Group:member" , Sets.create("Practitioner", "Organization", "PractitionerRole", "RelatedPerson"));
+		
 		registerSearches("Group", getClass(), "getGroup");
 	}
 	
@@ -130,7 +138,7 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 		p.addIdentifier().setSystem("http://midata.coop/identifier/group-name").setValue(groupToConvert.name);
 		
 		String encoded = ctx.newJsonParser().encodeResourceToString(p);		
-		groupToConvert.fhirGroup = (DBObject) JSON.parse(encoded);				
+		groupToConvert.fhirGroup = BasicDBObject.parse(encoded);				
 	}
 			
 	   @Search()
@@ -144,51 +152,57 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 	    		StringAndListParam theResourceLanguage, 
 	    		   
 	    		@Description(shortDefinition="Descriptive or actual")
-	    		@OptionalParam(name="actual")
-	    		TokenAndListParam theActual, 
-	    		    
-	    		@Description(shortDefinition="Kind of characteristic")
-	    		@OptionalParam(name="characteristic")
-	    		TokenAndListParam theCharacteristic, 
-	    		    
-	    		@Description(shortDefinition="A composite of both characteristic and value")
-	    		@OptionalParam(name="characteristic-value", compositeTypes= { TokenParam.class, TokenParam.class })
-	    		CompositeAndListParam<TokenParam, TokenParam> theCharacteristic_value,
-	    		    
-	    		@Description(shortDefinition="The kind of resources contained")
-	    		@OptionalParam(name="code")
-	    		TokenAndListParam theCode, 
-	    		    
-	    		@Description(shortDefinition="Group includes or excludes")
-	    		@OptionalParam(name="exclude")
-	    		TokenAndListParam theExclude, 
-	    		    
-	    		@Description(shortDefinition="Unique id")
-	    		@OptionalParam(name="identifier")
-	    		TokenAndListParam theIdentifier, 
-	    		    
-	    		@Description(shortDefinition="Reference to the group member")
-	    		@OptionalParam(name="member", targetTypes={  } )
-	    		ReferenceAndListParam theMember, 
-	    		   
-	    		@Description(shortDefinition="The type of resources the group contains")
-	    		@OptionalParam(name="type")
-	    		TokenAndListParam theType, 
-	    		   
-	    		@Description(shortDefinition="Value held by characteristic")
-	    		@OptionalParam(name="value")
-	    		TokenAndListParam theValue, 
-	    		 
-	    		@IncludeParam(reverse=true)
-	    		Set<Include> theRevIncludes,
-	    		@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
-	    		@OptionalParam(name="_lastUpdated")
-	    		DateRangeParam theLastUpdated, 
-	    		 
-	    		@IncludeParam(allow= {
-	    						"Group:member", "*"
-	    		}) 
-	    		Set<Include> theIncludes,
+	  			@OptionalParam(name="actual")
+	  			TokenAndListParam theActual,
+	    
+	  			@Description(shortDefinition="Kind of characteristic")
+	  			@OptionalParam(name="characteristic")
+	  			TokenAndListParam theCharacteristic,
+	    
+	  			@Description(shortDefinition="A composite of both characteristic and value")
+	  			@OptionalParam(name="characteristic-value", compositeTypes= { TokenParam.class, TokenParam.class })
+	  			CompositeAndListParam<TokenParam, TokenParam> theCharacteristic_value,
+	    
+	  			@Description(shortDefinition="The kind of resources contained")
+	  			@OptionalParam(name="code")
+	  			TokenAndListParam theCode,
+	    
+	  			@Description(shortDefinition="Group includes or excludes")
+	  			@OptionalParam(name="exclude")
+	  			TokenAndListParam theExclude,
+	    
+	  			@Description(shortDefinition="Unique id")
+	  			@OptionalParam(name="identifier")
+	  			TokenAndListParam theIdentifier,
+	    
+	  			@Description(shortDefinition="Entity that is the custodian of the Group's definition")
+	  			@OptionalParam(name="managing-entity", targetTypes={  } )
+	  			ReferenceAndListParam theManaging_entity, 
+	    
+	  			@Description(shortDefinition="Reference to the group member")
+	  			@OptionalParam(name="member", targetTypes={  } )
+	  			ReferenceAndListParam theMember, 
+	    
+	 			@Description(shortDefinition="The type of resources the group contains")
+	 			@OptionalParam(name="type")
+	 			TokenAndListParam theType,
+	   
+	 			@Description(shortDefinition="Value held by characteristic")
+	 			@OptionalParam(name="value")
+	 			TokenAndListParam theValue,	 	 			
+	 
+	 			@IncludeParam(reverse=true)
+	 			Set<Include> theRevIncludes,
+	 			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
+	 			@OptionalParam(name="_lastUpdated")
+	 			DateRangeParam theLastUpdated, 
+	 
+	 			@IncludeParam(allow= {
+	 					"Group:managing-entity" ,
+	 					"Group:member" ,
+						"*"
+	 			}) 
+	 			Set<Include> theIncludes,
 	    		 			
 	    		@Sort 
 	    		SortSpec theSort,
@@ -210,15 +224,16 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 	    	
 	    	paramMap.add("_id", theId);
 			paramMap.add("_language", theResourceLanguage);
-	    	paramMap.add("actual", theActual);
-	    	paramMap.add("characteristic", theCharacteristic);
-	    	paramMap.add("characteristic-value", theCharacteristic_value);
-	    	paramMap.add("code", theCode);
-	    	paramMap.add("exclude", theExclude);
-	    	paramMap.add("identifier", theIdentifier);
-	    	paramMap.add("member", theMember);
-	    	paramMap.add("type", theType);
-	    	paramMap.add("value", theValue);
+			paramMap.add("actual", theActual);
+ 			paramMap.add("characteristic", theCharacteristic);
+ 			paramMap.add("characteristic-value", theCharacteristic_value);
+ 			paramMap.add("code", theCode);
+ 			paramMap.add("exclude", theExclude);
+ 			paramMap.add("identifier", theIdentifier);
+ 			paramMap.add("managing-entity", theManaging_entity);
+ 			paramMap.add("member", theMember);
+ 			paramMap.add("type", theType);
+ 			paramMap.add("value", theValue);
 	    	paramMap.setRevIncludes(theRevIncludes);
 	    	paramMap.setLastUpdated(theLastUpdated);
 	    	paramMap.setIncludes(theIncludes);
@@ -241,7 +256,8 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 		
 		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
 		builder.restriction("code", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "code");
-		builder.restriction("member", true, null, "member.entity");	
+		builder.restriction("member", true, null, "member.entity");
+		builder.restriction("managing-entity", true, null, "managingEntity");	
 		builder.restriction("type", true, QueryBuilder.TYPE_CODE, "type");
 		
 		builder.restriction("characteristic", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "characteristic.code");
@@ -345,6 +361,12 @@ public class GroupResourceProvider extends RecordBasedResourceProvider<Group> im
 		
 		clean(theGroup);
  
+	}
+
+	@Override
+	protected void convertToR4(Object in) {
+		// No action
+		
 	}	
  	
 }

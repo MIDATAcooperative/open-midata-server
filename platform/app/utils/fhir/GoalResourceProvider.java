@@ -3,10 +3,10 @@ package utils.fhir;
 import java.util.List;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.Goal;
-import org.hl7.fhir.dstu3.model.IdType;
-import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Goal;
+import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.Reference;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
@@ -55,42 +55,50 @@ public class GoalResourceProvider extends RecordBasedResourceProvider<Goal> impl
 			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
 
 			
-			@Description(shortDefinition="E.g. Treatment, dietary, behavioral, etc.")
-			@OptionalParam(name="category")
-			TokenAndListParam theCategory, 
-			  
-			@Description(shortDefinition="External Ids for this goal")
-			@OptionalParam(name="identifier")
-			TokenAndListParam theIdentifier, 
-			    
-			@Description(shortDefinition="Who this goal is intended for")
-			@OptionalParam(name="patient", targetTypes={  } )
-			ReferenceAndListParam thePatient, 
-			   
-			@Description(shortDefinition="proposed | planned | accepted | rejected | in-progress | achieved | sustaining | on-hold | cancelled | on-target | ahead-of-target | behind-target | entered-in-error")
-			@OptionalParam(name="status")
-			TokenAndListParam theStatus, 
-			    
-			@Description(shortDefinition="Who this goal is intended for")
-			@OptionalParam(name="subject", targetTypes={  } )
-			ReferenceAndListParam theSubject, 
-			    
-			@Description(shortDefinition="Reach goal on or before")
-			@OptionalParam(name="targetdate")
-			DateAndListParam theTargetdate, 
-			  
-			@IncludeParam(reverse=true)
-			Set<Include> theRevIncludes,
-			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
-			@OptionalParam(name="_lastUpdated")
-			DateRangeParam theLastUpdated, 
-			 
-			@IncludeParam(allow= {
-						"Goal:patient" ,
-						"Goal:subject" ,
-						"*"
-			}) 
-			Set<Include> theIncludes,
+  			@Description(shortDefinition="in-progress | improving | worsening | no-change | achieved | sustaining | not-achieved | no-progress | not-attainable")
+  			@OptionalParam(name="achievement-status")
+  			TokenAndListParam theAchievement_status,
+    
+  			@Description(shortDefinition="E.g. Treatment, dietary, behavioral, etc.")
+  			@OptionalParam(name="category")
+  			TokenAndListParam theCategory,
+    
+  			@Description(shortDefinition="External Ids for this goal")
+  			@OptionalParam(name="identifier")
+  			TokenAndListParam theIdentifier,
+    
+  			@Description(shortDefinition="proposed | planned | accepted | active | on-hold | completed | cancelled | entered-in-error | rejected")
+  			@OptionalParam(name="lifecycle-status")
+  			TokenAndListParam theLifecycle_status,
+    
+  			@Description(shortDefinition="Who this goal is intended for")
+  			@OptionalParam(name="patient", targetTypes={  } )
+  			ReferenceAndListParam thePatient, 
+    
+  			@Description(shortDefinition="When goal pursuit begins")
+  			@OptionalParam(name="start-date")
+  			DateAndListParam theStart_date, 
+    
+  			@Description(shortDefinition="Who this goal is intended for")
+  			@OptionalParam(name="subject", targetTypes={  } )
+  			ReferenceAndListParam theSubject, 
+    
+  			@Description(shortDefinition="Reach goal on or before")
+  			@OptionalParam(name="target-date")
+  			DateAndListParam theTarget_date, 
+   			 
+ 			@IncludeParam(reverse=true)
+ 			Set<Include> theRevIncludes,
+ 			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
+ 			@OptionalParam(name="_lastUpdated")
+ 			DateRangeParam theLastUpdated, 
+ 
+ 			@IncludeParam(allow= {
+ 					"Goal:patient" ,
+ 					"Goal:subject" ,
+ 					"*"
+ 			}) 
+ 			Set<Include> theIncludes,
 						
 			@Sort 
 			SortSpec theSort,
@@ -111,12 +119,14 @@ public class GoalResourceProvider extends RecordBasedResourceProvider<Goal> impl
 		paramMap.add("_id", theId);
 		paramMap.add("_language", theResourceLanguage);
 		
+		paramMap.add("achievement-status", theAchievement_status);
 		paramMap.add("category", theCategory);
 		paramMap.add("identifier", theIdentifier);
+		paramMap.add("lifecycle-status", theLifecycle_status);
 		paramMap.add("patient", thePatient);
-		paramMap.add("status", theStatus);
+		paramMap.add("start-date", theStart_date);
 		paramMap.add("subject", theSubject);
-		paramMap.add("targetdate", theTargetdate);
+		paramMap.add("target-date", theTarget_date);
 	
 		paramMap.setRevIncludes(theRevIncludes);
 		paramMap.setLastUpdated(theLastUpdated);
@@ -143,8 +153,10 @@ public class GoalResourceProvider extends RecordBasedResourceProvider<Goal> impl
 		
 		if (!builder.recordOwnerReference("subject", null, "subject")) builder.restriction("subject", true, null, "subject");		
 		
-		builder.restriction("status", true, QueryBuilder.TYPE_CODE, "status");
-		builder.restriction("targetdate", true, QueryBuilder.TYPE_DATETIME, "targetDate");				
+		builder.restriction("achievement-status", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "achievementStatus");
+		builder.restriction("lifecycle-status", true, QueryBuilder.TYPE_CODE, "lifecycleStatus|status");
+		builder.restriction("start-date", true, QueryBuilder.TYPE_DATETIME, "startDate");
+		builder.restriction("target-date", true, QueryBuilder.TYPE_DATETIME, "target.dueDate");
 		
 		return query.execute(info);
 	}
@@ -189,6 +201,12 @@ public class GoalResourceProvider extends RecordBasedResourceProvider<Goal> impl
 		if (p.getSubject().isEmpty()) {
 			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
+	}
+
+	@Override
+	protected void convertToR4(Object in) {
+		FHIRVersionConvert.rename(in, "status", "lifecycleStatus");
+		
 	}
 	
 

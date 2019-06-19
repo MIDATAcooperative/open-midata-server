@@ -11,11 +11,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.DomainResource;
-import org.hl7.fhir.dstu3.model.IdType;
-import org.hl7.fhir.dstu3.model.Reference;
-import org.hl7.fhir.dstu3.model.Resource;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.DomainResource;
+import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.instance.model.api.IBaseReference;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
@@ -56,11 +56,11 @@ import utils.exceptions.RequestTooLargeException;
 public  abstract class ResourceProvider<T extends DomainResource, M extends Model> implements IResourceProvider {
 
 		
-	public static FhirContext ctx = FhirContext.forDstu3();
+	public static FhirContext ctx = FhirContext.forR4();
 	
 	/**
 	 * Returns FHIR context class
-	 * @return FHIR context for DSTU3
+	 * @return FHIR context for R4
 	 */
 	public static FhirContext ctx() {
 		return ctx;
@@ -358,9 +358,11 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 		return cleanSubject;
 	}
 	
+	protected void convertToR4(M fromDB, Object in) {
+		if (FHIRVersionConvert.doConvert(fromDB._id)) convertToR4(in);
+	}
 	
-		
-		
-	
+	protected abstract void convertToR4(Object in);
+					
 
 }

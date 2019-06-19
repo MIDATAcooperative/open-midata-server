@@ -19,7 +19,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.codec.binary.Base64InputStream;
-import org.hl7.fhir.dstu3.model.DomainResource;
+import org.hl7.fhir.r4.model.DomainResource;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonValueFormat;

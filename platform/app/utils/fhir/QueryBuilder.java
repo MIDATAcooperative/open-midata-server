@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.BaseResource;
+import org.hl7.fhir.r4.model.BaseResource;
 
 import ca.uhn.fhir.model.api.IQueryParameterType;
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
@@ -54,6 +54,7 @@ public class QueryBuilder {
 	public final static String TYPE_DATETIME = "DateTime";
 	public final static String TYPE_PERIOD = "Period";
 	public final static String TYPE_DATETIME_OR_PERIOD = "DateTime|Period";
+	public final static String TYPE_DATETIME_OR_PERIOD_OR_INSTANT = "DateTime|Period|Instant";
 
 	public final static String TYPE_CODEABLE_CONCEPT = "CodeableConcept";
 	public final static String TYPE_CODING = "Coding";
@@ -63,9 +64,12 @@ public class QueryBuilder {
 	
 	public final static String TYPE_BOOLEAN = "boolean";
 	public final static String TYPE_STRING = "string";
+	public final static String TYPE_ID = "string";
 	public final static String TYPE_INTEGER = "integer";
 	public final static String TYPE_MARKDOWN = "string";
 	public final static String TYPE_URI = "uri";
+	
+	public final static String TYPE_CANONICAL = "canonical";
 	
 	public final static String TYPE_QUANTITY = "Quantity";
 	public final static String TYPE_RANGE = "Range";
@@ -248,6 +252,8 @@ public class QueryBuilder {
 	public String sortPath(String t, String p) {
 		if (t.equals(TYPE_DATETIME_OR_PERIOD)) {
 			return p+"DateTime|"+p+"Period.start";
+		} else if (t.equals(TYPE_DATETIME_OR_PERIOD_OR_INSTANT)) {
+			return p+"DateTime|"+p+"Period.start|Instant";
 		} else if (t.equals(TYPE_STRING)) {
 			return p;
 		} else if (t.equals(TYPE_CODE)) {
@@ -400,39 +406,44 @@ public class QueryBuilder {
 			} else if (param instanceof ReferenceParam) {
 				ReferenceParam referenceParam = (ReferenceParam) param;
 				
-				if (referenceParam.getChain() != null) {
-					List<ReferenceParam> resolved = followChain(referenceParam, type);
-					if (resolved.isEmpty()) {
-						bld.addEq(path+".reference", "__false");
+				if (type != null && type.equals(QueryBuilder.TYPE_CANONICAL)) {				
+					bld.addEq(path, referenceParam.getValue());
+				} else {
+				
+					if (referenceParam.getChain() != null) {
+						List<ReferenceParam> resolved = followChain(referenceParam, type);
+						if (resolved.isEmpty()) {
+							bld.addEq(path+".reference", "__false");
+						} else {
+						
+						for (ReferenceParam rp : resolved) {
+						   
+							String id = rp.getIdPart();
+							String resType = rp.getResourceType();					
+							if (id != null) {
+								if (resType != null) {
+									bld.addEq(path+".reference", resType+"/"+id);
+									bld.or();
+								} else {
+									bld.addEq(path+".reference", "/"+id, CompareCaseInsensitiveOperator.ENDSWITH);
+									bld.or();
+								}
+							}
+						
+						}
+						}
 					} else {
 					
-					for (ReferenceParam rp : resolved) {
-					   
-						String id = rp.getIdPart();
-						String resType = rp.getResourceType();					
+						String id = referenceParam.getIdPart();
+						String resType = referenceParam.getResourceType();					
 						if (id != null) {
 							if (resType != null) {
 								bld.addEq(path+".reference", resType+"/"+id);
-								bld.or();
 							} else {
 								bld.addEq(path+".reference", "/"+id, CompareCaseInsensitiveOperator.ENDSWITH);
-								bld.or();
 							}
-						}
-					
+						} 
 					}
-					}
-				} else {
-				
-					String id = referenceParam.getIdPart();
-					String resType = referenceParam.getResourceType();					
-					if (id != null) {
-						if (resType != null) {
-							bld.addEq(path+".reference", resType+"/"+id);
-						} else {
-							bld.addEq(path+".reference", "/"+id, CompareCaseInsensitiveOperator.ENDSWITH);
-						}
-					} 
 				}
 			} else if (param instanceof DateParam) {
 				DateParam dateParam = (DateParam) param;
@@ -503,6 +514,9 @@ public class QueryBuilder {
 				} else if (type.equals(TYPE_DATETIME_OR_PERIOD)) {
 					lPath = path+"DateTime|"+path+"Period.start|null";
 					hPath = path+"DateTime|"+path+"Period.end|null";
+				} else if (type.equals(TYPE_DATETIME_OR_PERIOD_OR_INSTANT)) {
+					lPath = path+"DateTime|"+path+"Period.start|"+path+"Instant|null";
+					hPath = path+"DateTime|"+path+"Period.end|"+path+"Instant|null";
 				} else throw new NullPointerException();
 				
 				if (prefix==null) prefix = ParamPrefixEnum.EQUAL;

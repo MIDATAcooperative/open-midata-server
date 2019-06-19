@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.IdType;
-import org.hl7.fhir.dstu3.model.Subscription;
-import org.hl7.fhir.dstu3.model.Subscription.SubscriptionChannelComponent;
-import org.hl7.fhir.dstu3.model.Subscription.SubscriptionStatus;
-import org.hl7.fhir.dstu3.model.codesystems.SubscriptionChannelType;
+import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.Subscription;
+import org.hl7.fhir.r4.model.Subscription.SubscriptionChannelComponent;
+import org.hl7.fhir.r4.model.Subscription.SubscriptionStatus;
+import org.hl7.fhir.r4.model.codesystems.SubscriptionChannelType;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
@@ -92,9 +92,11 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	 * @return FHIR person
 	 * @throws AppException
 	 */
-	public Subscription readSubscriptionFromMidataSubscription(SubscriptionData subscriptionToConvert) throws AppException {		
+	public Subscription readSubscriptionFromMidataSubscription(SubscriptionData subscriptionToConvert) throws AppException {
+		Object data = subscriptionToConvert.fhirSubscription;
+		convertToR4(subscriptionToConvert, data);
 		IParser parser = ctx().newJsonParser();		
-		Subscription result = parser.parseResource(getResourceType(), subscriptionToConvert.fhirSubscription.toString());
+		Subscription result = parser.parseResource(getResourceType(), data.toString());
 				
 		return result;
 	}
@@ -113,15 +115,15 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	
 	/*
 	public static void updateMidataConsent(models.Consent consentToConvert) throws AppException {
-		org.hl7.fhir.dstu3.model.Consent c = new org.hl7.fhir.dstu3.model.Consent();
+		org.hl7.fhir.r4.model.Consent c = new org.hl7.fhir.r4.model.Consent();
 
 		c.setId(consentToConvert._id.toString());
 		
 		switch (consentToConvert.status) {
-		case ACTIVE:c.setStatus(org.hl7.fhir.dstu3.model.Consent.ConsentState.ACTIVE);break;
-		case UNCONFIRMED:c.setStatus(org.hl7.fhir.dstu3.model.Consent.ConsentState.PROPOSED);break;
-		case REJECTED:c.setStatus(org.hl7.fhir.dstu3.model.Consent.ConsentState.REJECTED);break;
-		case EXPIRED:c.setStatus(org.hl7.fhir.dstu3.model.Consent.ConsentState.INACTIVE);break;
+		case ACTIVE:c.setStatus(org.hl7.fhir.r4.model.Consent.ConsentState.ACTIVE);break;
+		case UNCONFIRMED:c.setStatus(org.hl7.fhir.r4.model.Consent.ConsentState.PROPOSED);break;
+		case REJECTED:c.setStatus(org.hl7.fhir.r4.model.Consent.ConsentState.REJECTED);break;
+		case EXPIRED:c.setStatus(org.hl7.fhir.r4.model.Consent.ConsentState.INACTIVE);break;
 		}
 		
 		String categoryCode = consentToConvert.categoryCode;
@@ -149,7 +151,7 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 		c.addExtension().setUrl("http://midata.coop/extensions/consent-name").setValue(new StringType(consentToConvert.name));
 		
 		String encoded = ctx.newJsonParser().encodeResourceToString(c);		
-		consentToConvert.fhirConsent = (DBObject) JSON.parse(encoded);				
+		consentToConvert.fhirConsent = BasicDBObject.parse(encoded);				
 	}
 		*/	
 	   @Search()
@@ -445,6 +447,12 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	@Override
 	public Date getLastUpdated(SubscriptionData record) {
 		return new Date(record.lastUpdated);
+	}
+
+	@Override
+	protected void convertToR4(Object in) {
+		// TODO Auto-generated method stub
+		
 	}	
 	
 	

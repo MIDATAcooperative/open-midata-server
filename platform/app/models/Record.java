@@ -1,6 +1,7 @@
 package models;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.bson.BSONObject;
@@ -191,6 +192,11 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	public void addTag(String tag) {
+		if (this.tags == null) this.tags = new HashSet<String>();
+		this.tags.add(tag);
 	}
 	
 	
