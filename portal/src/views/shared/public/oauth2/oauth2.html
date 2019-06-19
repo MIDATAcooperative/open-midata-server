@@ -151,24 +151,21 @@
 				
 				<section class="mi-or-auth__section mi-or-auth__section--study" ng-repeat="link in links">
 					<fieldset style="height:70px" class="mi-at-input__fieldset mi-at-input--checkbox mi-at-input--checkbox-white">
-						<input id="mi-at-input-" class="mi-at-input mi-at-input--checkbox" type="checkbox" value="" ng-checked="login.confirmStudy.indexOf(link.study._id)>=0" ng-click="toggle(login.confirmStudy, link.study._id);"
+						<input id="mi-at-input-" class="mi-at-input mi-at-input--checkbox" type="checkbox" value="" ng-checked="login.confirmStudy.indexOf(link.studyId || link.userId)>=0" ng-click="toggle(login.confirmStudy, link.studyId || link.userId);"
 							floating-label  /> 
 						<label for="mi-at-input-checkbox" class="mi-at-text mi-at-text--white">
 						  <span translate="{{ getLinkLabel(link) }}"></span>
-						  <a class="mi-at-text--white mi-at-input--checkbox-link" ng-show="link.study.termsOfUse" ng-click="terms({which : link.study.termsOfUse })" href="javascript:">{{ link.study.name }}</a>
+						  <a class="mi-at-text--white mi-at-input--checkbox-link" ng-show="link.termsOfUse" ng-click="terms({which : link.termsOfUse })" href="javascript:">{{ link.study.name }} {{ link.provider.name }}</a>
 						 </label>
 					</fieldset>
 
-					<div class="mi-or-auth__study_title" ng-hide="link.study.termsOfUse">
-						<span class="mi-at-text mi-at-text--highlighted mi-at-text--white">{{ link.study.name }}</span>
+					<div class="mi-or-auth__study_title" ng-hide="link.termsOfUse">
+						<span class="mi-at-text mi-at-text--highlighted mi-at-text--white">{{ link.study.name }} {{ link.provider.name }}</span>
 
 					</div>
-					<div class="mi-or-auth__study_description" ng-hide="link.study.termsOfUse">
+					<div class="mi-or-auth__study_description" ng-hide="link.termsOfUse">
 						<span class="mi-at-text mi-at-text--smaller mi-at-text--white">{{ link.study.description }}</span>
-
-                        <div class="mi-at-link" ng-show="link.study.termsOfUse">
-						  <a ng-click="terms({which : link.study.termsOfUse })" href="javascript:" translate="registration.study_agb"></a>
-						</p>
+                      
 					</div>
 				</section>
 				<div class="mi-or-auth__fields_checkboxes"></div>
