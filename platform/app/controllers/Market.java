@@ -947,6 +947,7 @@ public class Market extends APIController {
 				if (sal.linkTargetType == null || sal.linkTargetType == LinkTargetType.STUDY) {
 				  Study study = Study.getById(sal.studyId, Sets.create("_id", "code","name", "type", "description", "termsOfUse", "executionStatus","validationStatus","participantSearchStatus", "joinMethods"));
 				  sal.study = study;
+				  sal.termsOfUse = study.termsOfUse;
 				} else {					
 				  HealthcareProvider prov = HealthcareProvider.getById(sal.providerId, HealthcareProvider.ALL);
 				  sal.provider = prov;
@@ -1030,6 +1031,7 @@ public class Market extends APIController {
 		link.appId = JsonValidation.getMidataId(json, "appId");				
 		link.type = JsonValidation.getEnumSet(json, "type", StudyAppLinkType.class);
 		link.identifier = JsonValidation.getString(json, "identifier");
+		link.termsOfUse = JsonValidation.getStringOrNull(json, "termsOfUse");
 		
 		HPUser user = HPUser.getByEmail(JsonValidation.getString(json, "userLogin"), Sets.create("status","provider"));
 		if (user == null || user.status != UserStatus.ACTIVE) throw new JsonValidationException("error.invalid.user", "User not found or not active");

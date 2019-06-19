@@ -24,9 +24,9 @@ public class StudyAppLink extends Model {
 	
 	private @NotMaterialized static final String collection = "studyapplink";
 	
-	public @NotMaterialized static final Set<String> ALL_MATERIALIZED = Collections.unmodifiableSet(Sets.create("_id", "linkTargetType", "studyId", "appId", "type", "validationResearch", "validationDeveloper", "usePeriod", "shareToStudy" ,"restrictRead", "studyGroup", "userId", "providerId", "active", "what", "identifier"));
+	public @NotMaterialized static final Set<String> ALL_MATERIALIZED = Collections.unmodifiableSet(Sets.create("_id", "linkTargetType", "studyId", "appId", "type", "validationResearch", "validationDeveloper", "usePeriod", "shareToStudy" ,"restrictRead", "studyGroup", "userId", "providerId", "active", "what", "identifier", "termsOfUse"));
 	
-	public @NotMaterialized static final Set<String> ALL = Collections.unmodifiableSet(Sets.create("_id", "linkTargetType", "studyId", "appId", "type", "validationResearch", "validationDeveloper", "usePeriod", "shareToStudy" ,"restrictRead", "studyGroup", "study", "app", "userId", "userLogin", "providerId", "provider", "active", "what", "identifier"));
+	public @NotMaterialized static final Set<String> ALL = Collections.unmodifiableSet(Sets.create("_id", "linkTargetType", "studyId", "appId", "type", "validationResearch", "validationDeveloper", "usePeriod", "shareToStudy" ,"restrictRead", "studyGroup", "study", "app", "userId", "userLogin", "providerId", "provider", "active", "what", "identifier", "termsOfUse"));
 	
 	/**
 	 * Type of link
@@ -113,8 +113,12 @@ public class StudyAppLink extends Model {
 	 * the access filter to be used (may be null for default)
 	 */
 	public Map<String, Object> what;
+	
+	/**
+	 * Terms of use (if not taken from research project)
+	 */
+	public String termsOfUse;
 		
-
 	public void add() throws InternalServerException {
 		Model.insert(collection, this);	
 	}

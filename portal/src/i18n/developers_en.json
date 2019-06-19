@@ -220,6 +220,9 @@
     "target" : "Target",
     "provider" : "Healthcare Provider (login)",
     "identifier" : "Identifier for this link",
+    "terms_of_use" : "Terms of use",
+    "terms_of_use_hint" : "If special terms of use have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the ID you need to enter here.",
+    "show_terms" : "Preview terms of use",
     "types" : {
       "REQUIRE_P" : "Consent must be accepted",
       "OFFER_P" : "Consent is offered upon login/registration"

@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('AppLinkCtrl', ['$scope', '$state', 'server', 'apps', 'status', 'circles', 'spaces', 'studies', '$q', '$translatePartialLoader', 'users', function($scope, $state, server, apps, status, circles, spaces, studies, $q, $translatePartialLoader, users) {
+.controller('AppLinkCtrl', ['$scope', '$state', 'server', 'apps', 'status', 'circles', 'spaces', 'studies', '$q', '$translatePartialLoader', 'users', 'terms', function($scope, $state, server, apps, status, circles, spaces, studies, $q, $translatePartialLoader, users, terms) {
 	
 	$scope.appId = $state.params.appId;
 	$scope.crit = { group : "" };
@@ -132,5 +132,10 @@ angular.module('portal')
       
 		
    $scope.reload();
+   
+   terms.search({}, ["name", "version", "language", "title"])
+	.then(function(result) {
+		$scope.terms = result.data;
+	});
 	
 }]);

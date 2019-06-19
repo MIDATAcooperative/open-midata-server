@@ -108,6 +108,11 @@
 	            </formrow>	       
 	            <formrow myid="identifier" label="applink.identifier">
 	               <input type="text" class="form-control" ng-model="selection.identifier">
+	            </formrow>
+	            <formrow myid="termsOfUse" label="applink.terms_of_use" >	    
+	               <input id="termsOfUse" type="text" name="termsOfUse" class="form-control" ng-model="selection.termsOfUse" autocomplete="off" uib-typeahead="term.id as term.fullname for term in terms | filter:{fullname:$viewValue}">		    
+	                  <p class="help-block" ng-show="selection.termsOfUse"><a ui-sref="^.terms({ which:selection.termsOfUse })" translate="applink.show_terms"></a></p>
+	                  <p class="help-block" translate="applink.terms_of_use_hint"></p> 
 	            </formrow>	            
 	            <formrow myid="type" label="studyactions.type">
 	              <div ng-repeat="type in types2" class="form-check">
