@@ -298,3 +298,9 @@
 {"_id":{"$oid":"5ce24858aed6450e3ca65843"},"system":"http://midata.coop","code":"MSMotTestDotPrepRun","display":"MS Motoriktest Punkte bewegen Probelauf Durchführung – Ergebnisse pro Hand","content":"MSMotTestDotPrepRun"}
 {"_id":{"$oid":"5ce248ceaed6450e3ca65846"},"system":"http://midata.coop","code":"MSMotTestDotPrepRunDetails","display":"MS Motoriktest Punkte bewegen Probelauf Durchführung - Details pro Durchgang","content":"MSMotTestDotPrepRunDetails"}
 {"_id":{"$oid":"5ce24939aed6450e3ca65848"},"system":"http://midata.coop","code":"MSMotTestDotPrepDetail","display":"MS Motoriktest Punkte bewegen Probelauf Durchführung - Details pro Punkt pro Durchgang","content":"MSMotTestDotPrepDetail"}
+{"_id":{"$oid":"5d0c8dfcaed645119c75fa47"},"system":"http://loinc.org","code":"24467-3","display":"CD3+​CD4+​ (T4 helper) cells [#/​volume] in Blood","content":"loinc/24467-3"}
+{"_id":{"$oid":"5d0c8dfcaed645119c75fa48"},"system":"http://loinc.org","code":"8123-2","display":"CD3+​CD4+​ (T4 helper) cells/​100 cells in Blood","content":"loinc/8123-2"}
+{"_id":{"$oid":"5d0c8e99aed645119c75fa4c"},"system":"http://loinc.org","code":"14135-8","display":"CD3+​CD8+​ (T8 suppressor cells) cells [#/​volume] in Blood","content":"loinc/14135-8"}
+{"_id":{"$oid":"5d0c8e99aed645119c75fa4d"},"system":"http://loinc.org","code":"8101-8","display":"CD3+​CD8+​ (T8 suppressor cells) cells/​100 cells in Blood","content":"loinc/8101-8"}
+{"_id":{"$oid":"5d0c8f25aed645119c75fa50"},"system":"http://loinc.org","code":"54218-3","display":"CD3+​CD4+​ (T4 helper) cells/​CD3+​CD8+​ (T8 suppressor cells) cells [# Ratio] in Blood","content":"loinc/54218-3"}
+{"_id":{"$oid":"5d0c8f25aed645119c75fa51"},"system":"http://loinc.org","code":"21008-8","display":"HIV 1 RNA [#/​volume] (viral load) in Serum or Plasma by Probe","content":"loinc/21008-8"}
