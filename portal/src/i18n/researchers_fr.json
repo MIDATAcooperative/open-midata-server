@@ -328,30 +328,13 @@
     },
 
     "researcher_sharing" : {
-
-        // TODO NEW: Resource Type
-        "format" : "Resource Type",
-
-        // TODO NEW: Content Type
-        "content" : "Content Type",
-
-        // TODO NEW: Application
+        "format" : "Type de ressource",
+        "content" : "Type de contenu",
         "app" : "Application",
-
-        // TODO NEW: Time Restriction
-        "time" : "Time Restriction",
-
-        // TODO NEW: Study Group
-        "studyGroup" : "Study Group",
-
-        // TODO NEW: Share
-        "share_btn" : "Share",
-
-        // TODO NEW: Unshare
-        "unshare_btn" : "Unshare",
-
-        // TODO NEW: Search
-        "search_btn" : "Search"
-
+        "time" : "Limitation de temps",
+        "studyGroup" : "Groupe de l'étude",
+        "share_btn" : "Partager",
+        "unshare_btn" : "Ne plus partager",
+        "search_btn" : "Rechercher"
     }
 }

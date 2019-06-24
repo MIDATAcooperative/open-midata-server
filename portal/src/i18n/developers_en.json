@@ -111,7 +111,7 @@
     "show_terms" : "Show General Terms and Conditions",
     "unlock_code" : "Code for registration",  
     "logout" : "Disconnect All",
-    "pleaseLogout1" : "Logout all users",
+    "pleaseLogout1" : "Log out all users",
     "pleaseLogout2" : "Disconnect from studies",
     "logout_optional" : "[ not required ]",
     "logout_required" : "[ required ]",

@@ -33,7 +33,7 @@
      "offline" : "The backend is currently offline! Please contact support@midata.coop if the problem persists.",
      "internal" : "An internal error occured. Please contact support@midata.coop if the problem persists.",
      "internal_db" : "An internal database error occured. Please contact support@midata.coop if the problem persists.",
-     "plugin" : "An application specific error occured. Please contact application developer or support@midata.coop if the problem persists.",
+     "plugin" : "An application specific error occured. Please contact the application developer or support@midata.coop if the problem persists.",
      "relogin" : "Please relogin",
      "noconsent" : "No active consent that allows to add data for target person.",
      "unsupported" : "Operation not supported",
@@ -279,7 +279,7 @@
 	   "PASSPORT_VERIFIED" : "ID card of users must have been verified",
 	   "MIDATA_COOPERATIVE_MEMBER" : "User must be member of the cooperative",
 	   "ADMIN_VERIFIED" : "Account must have been unlocked by a MIDATA administrator",
-	   "BIRTHDAY_SET" : "The birthday of the user must be known"
+	   "BIRTHDAY_SET" : "The date of birth of the user must be known"
 	 },
 	 "writepermissiontype" : {
 	   "NONE" : "No data may be written.",
@@ -479,7 +479,7 @@
     "view_btn" : "View",
     "submit_btn" : "Submit",
     "delete_btn" : "Delete",
-    "skip_btn" : "Skip (No change)",
+    "skip_btn" : "Skip (no change)",
     "or" : "or",
     "save_ok" : "Successfully Saved",
     "yesno" : {
@@ -603,9 +603,9 @@
     "sign_in_btn" : "Log in",
     "forgot_your_password" : "Forgot your password?",
     "login_btn" : "Log in",
-    "service_login" : "Confirmation-Request Login",
-    "service_login2" : "After login you will be asked for confirmation of consents and/or participation with research projects.",
-    "no_account" : "I do not have a Midata account yet.",
+    "service_login" : "Login for Confirmation Request",
+    "service_login2" : "At your next login, you will be asked for confirmation of consents and/or participation with research projects.",
+    "no_account" : "I do not have a MIDATA account yet.",
     
     "info1" : "Dear study participant",
     "info2" : "You already have a MIDATA account, log in with your email address and password.",
@@ -660,10 +660,10 @@
     "code_intructions" : "A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.",
     "code_done" : "You have provided the confirmation code. You may login after the signed contract has arrived at MIDATA.",
     "enter_now_btn" : "Enter now",
-    "email_success" : "Email address has been confirmed.",
+    "email_success" : "Thank you for confirming your email address.",
     "address_entered" : "Your postal address is required to use this service, please provide it.",
     "phone_entered" : "A mobile phone number is required to use this service, please provide it.",
-    "birthday_entered" : "A valid birthdate is required to use this service. Please add your birthdate to your account information. (Format example: 31.12.1999)",
+    "birthday_entered" : "A valid date of birth is required to use this service. Please add your date of birth to your account information. (Format example: 31.12.1999)",
     "admin_verified" : "Your account must be unlocked by a MIDATA administrator. Please retry later. If your account has not been unlocked for more than 24 hours, please contact MIDATA.",
     "terms_agreed" : "The MIDATA General Terms and Conditions have been updated. Please confirm that you agree to the new version.",
     "privacy_policy_agreed" : "The MIDATA Privacy Policy has been updated. Please confirm that you agree to the new version.",
@@ -912,9 +912,9 @@
 	"confirm_btn" : "Confirm this Consent",
 	"reject_btn" : "Reject this Consent",
     "delete_btn" : "Delete this Consent",
-    "please_review1" : "Consent for review",
-    "please_review2a" : "Please review this consent. Please click on 'Confirm this Consent' if you agree. Click on 'Reject this consent' if you do not agree.",
-    "please_review2b" : "Please review this existing consent. Click on 'Skip (No change)' button to leave this page without any changes. Click on 'Reject this consent' if you do not agree any longer. "
+    "please_review1" : "Consent to review",
+    "please_review2a" : "Please review this consent. Click on 'Confirm this Consent' if you agree. Click on 'Reject this Consent' if you do not agree.",
+    "please_review2b" : "Please review this existing consent. Click on 'Skip (No change)' button to leave this page without any changes. Click on 'Reject this Consent' if you do not agree any longer."
   },
   
   "editconsent2" : {
@@ -1240,10 +1240,10 @@
     "title" : "You finished your session?",
     "thankyou" : "Thank you for your help!",
     "continue" : "Please use the top menu to continue your session or log out.",
-    "logout_btn" : "Sign out",
+    "logout_btn" : "Log out",
     "goodbye_btn" : "End session and close window",
     "logoutreturn" : "You will be redirected to the calling page.",
-    "return_btn" : "Logout and continue"
+    "return_btn" : "Log out and continue"
   },
   
   "queryeditor" : {

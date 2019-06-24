@@ -34,9 +34,7 @@
         "offline" : "Der Server ist momentan nicht verfügbar! Bitte versuchen Sie es später  wieder.",
         "internal" : "Ein interner Fehler ist aufgetreten. Kontaktieren Sie bitte support@midata.coop, falls das Problem weiterhin besteht.",
         "internal_db" : "Ein interner Datenbank-Fehler ist aufgetreten. Kontaktieren Sie bitte support@midata.coop, falls das Problem weiterhin besteht.",
-
-        // TODO NEW: An application specific error occured. Please contact application developer or support@midata.coop if the problem persists.
-        "plugin" : "An application specific error occured. Please contact application developer or support@midata.coop if the problem persists.",
+        "plugin" : "Es ist ein anwendungsspezifischer Fehler aufgetreten. Bitte kontaktieren Sie den Anwendungsentwickler oder support@midata.coop, wenn das Problem weiterhin besteht.",
         "relogin" : "Melden Sie sich bitte erneut an",
         "noconsent" : "Keine aktive Zustimmung vorhanden, die es erlaubt Daten bei der Zielperson hinzuzufügen.",
         "unsupported" : "Operation nicht unterstützt",
@@ -81,10 +79,6 @@
             "sharing" : "Der Datenzugriffsfilter (Data Access Filter) beinhaltet Datentypen, die von der Studienkonfiguration ausgeschlossen sind.",
             "anonymous" : "Die Studie kann nur dann anonym sein, wenn niemand auf unpseudonymisierte Daten zugreifen darf.",
             "url" : "Ungültige URL",
-
-            // TODO CHANGED
-            // OLD: Consent may only be confirmed once all external persons have joined Midata.
-            // NEW: This consent may only be confirmed once all external persons have joined MIDATA.
             "consent_members" : "Diese Zustimmung kann erst bestätigt werden, wenn alle externen Personen MIDATA beigetreten sind."
         },
 
@@ -229,12 +223,8 @@
             "user-password-change-request" : "Passwortänderung beantragt",
             "user-passphrase-change" : "Passphrase geändert",
             "user-address-change" : "Adresse des Benutzers geändert",
-
-            // TODO NEW: User's phone number changed
-            "user-phone-change" : "User's phone number changed",
-
-            // TODO NEW: User's settings changed
-            "user-settings-change" : "User's settings changed",
+            "user-phone-change" : "Die Telefonnummer des Benutzers wurde geändert",
+            "user-settings-change" : "Benutzereinstellungen geändert",
             "user-email-change" : "E-Mail des Benutzers geändert",
             "user-birthday-change" : "Geburtsdatum des Benutzers geändert",
             "user-status-change" : "Status des Benutzerkontos geändert",
@@ -290,9 +280,7 @@
             "PASSPORT_VERIFIED" : "Die ID-Karte des Benutzers muss geprüft worden sein",
             "MIDATA_COOPERATIVE_MEMBER" : "Der Benutzer muss Mitglied der Genossenschaft sein",
             "ADMIN_VERIFIED" : "Das Konto muss von einem MIDATA Administrator freigeschaltet worden sein",
-
-            // TODO NEW: The birthday of the user must be known
-            "BIRTHDAY_SET" : "The birthday of the user must be known"
+            "BIRTHDAY_SET" : "Der Geburtsdatum des Benutzers muss bekannt sein"
         },
         "writepermissiontype" : {
             "NONE" : "Keine Daten können geschrieben werden.",
@@ -492,9 +480,7 @@
         "view_btn" : "Vorschau",
         "submit_btn" : "Abschicken",
         "delete_btn" : "Löschen",
-
-        // TODO NEW: Skip (No change)
-        "skip_btn" : "Skip (No change)",
+        "skip_btn" : "Überspringen (keine Änderung)",
         "or" : "oder",
         "save_ok" : "Erfolgreich gespeichert",
         "yesno" : {
@@ -566,19 +552,11 @@
         "password" : "Passwort",
         "password_repetition" : "Passwort wiederholen",
         "secure" : "Schutz des Kontos",
-
-        // TODO CHANGED
-        // OLD: Encrypt my account key with my PASSWORD. Warning: if you forget your password, it may take several days to recover your account key!
-        // NEW: Increase the protection of my data with an additional security level. Warning: if I forget my password, it may take a few days until I can reset it.
         "secure2" : "Schutz meiner Daten mit einer zusätzlichen Sicherheitsstufe erhöhen. Warnung: sollte ich mein Passwort vergessen, kann es einige Tage dauern bis ich es neu setzten kann.",
         "firstname" : "Vorname",
         "lastname" : "Name",
         "gender" : "Geschlecht",
         "birthday" : "Geburtsdatum",
-
-        // TODO CHANGED
-        // OLD: undefined
-        // NEW: Birth date (format: 31.12.1999)
         "birthday2" : "Geburtsdatum (Format: 31.12.1999)",
         "language" : "Bevorzugte Sprache",
         "day" : "Tag",
@@ -626,15 +604,9 @@
         "sign_in_btn" : "Anmelden",
         "forgot_your_password" : "Passwort vergessen?",
         "login_btn" : "Anmelden",
-
-        // TODO NEW: Confirmation-Request Login
-        "service_login" : "Confirmation-Request Login",
-
-        // TODO NEW: After login you will be asked for confirmation of consents and/or participation with research projects.
-        "service_login2" : "After login you will be asked for confirmation of consents and/or participation with research projects.",
-
-        // TODO NEW: I do not have a Midata account yet.
-        "no_account" : "I do not have a Midata account yet.",
+        "service_login" : "Anmeldung für Bestätigungsanfrage",
+        "service_login2" : "Bei Ihrer nächsten Anmeldung werden Sie um eine Bestätigung der Zustimmung und/oder Teilnahme an Forschungsprojekten gebeten.",
+        "no_account" : "Ich habe noch keinen MIDATA-Account.",
 
         "info1" : "Liebe Studienteilnehmerin, Lieber Studienteilnehmer",
         "info2" : "Sie haben bereits ein MIDATA-Konto, melden Sie sich mit Ihrer E-Mail-Adresse und ihrem Passwort an.",
@@ -689,12 +661,10 @@
         "code_intructions" : "Ein Brief mit einem Bestätigungscode wurde an Ihre Postadresse versandt. Geben Sie bitte den Bestätigungscode ein, um Zugriff auf die Plattform zu erhalten.",
         "code_done" : "Sie haben den Bestätigungscode eingegeben. Sie werden sich anmelden können sobald Ihr unterschriebener Vertrag bei MIDATA eingetroffen ist.",
         "enter_now_btn" : "Jetzt eingeben",
-        "email_success" : "Die E-Mail-Adresse wurde bestätigt.",
+        "email_success" : "Vielen Dank, dass Sie Ihre E-Mail-Adresse bestätigt haben.",
         "address_entered" : "Geben Sie bitte Ihre Postadresse ein, sie ist erforderlich, um diesen Dienst nutzen zu können.",
         "phone_entered" : "Geben Sie bitte Ihre Mobiltelefonnummer ein, sie ist erforderlich, um diesen Dienst nutzen zu können.",
-
-        // TODO NEW: A valid birthdate is required to use this service. Please add your birthdate to your account information. (Format example: 31.12.1999)
-        "birthday_entered" : "A valid birthdate is required to use this service. Please add your birthdate to your account information. (Format example: 31.12.1999)",
+        "birthday_entered" : "Für die Nutzung dieses Dienstes ist ein gültiges Geburtsdatum erforderlich. Bitte fügen Sie Ihr Geburtsdatum zu Ihren Kontoinformationen hinzu. (Formatbeispiel: 31.12.1999)",
         "admin_verified" : "Ihr Konto muss durch einen MIDATA Administrator freigeschaltet werden. Versuchen Sie es bitte später noch einmal. Falls Ihr Konto nicht innert 24 Stunden freigeschaltet wurde, kontaktieren sie bitte MIDATA.",
         "terms_agreed" : "Die MIDATA Allgemeine Geschäftsbedingungen wurden aktualisiert. Bitte bestätigen Sie, dass Sie mit der neuen Version einverstanden sind.",
         "privacy_policy_agreed" : "Die MIDATA Datenschutzerklärung wurde aktualisiert. Bitte bestätigen Sie, dass Sie mit der neuen Version einverstanden sind.",
@@ -814,12 +784,8 @@
         "recommended_apps" : "Empfohlene Applikationen",
         "use_app" : "Jetzt verwenden",
         "for_participants" : "Teilnahme-Informationen",
-
-        // TODO NEW: Decide about participation
-        "please_review1" : "Decide about participation",
-
-        // TODO NEW: Please review this research project. Do you want to participate? Click on 'Skip (No change)' if you want to leave this page without any changes.
-        "please_review2" : "Please review this research project. Do you want to participate? Click on 'Skip (No change)' if you want to leave this page without any changes."
+        "please_review1" : "Entscheidung über die Teilnahme",
+        "please_review2" : "Bitte überprüfen Sie dieses Forschungsprojekt. Möchten Sie teilnehmen? Klicken Sie auf 'Überspringen (keine Änderung)', wenn Sie diese Seite ohne Änderungen verlassen möchten."
     },
 
     "user" : {
@@ -908,12 +874,8 @@
         "create_btn" : "Erstellen und Daten wählen",
         "create2_btn" : "Diese Zustimmung akzeptieren",
         "extended_btn" : "Erweiterte Optionen anzeigen",
-
-        // TODO NEW: New proposed consent
-        "please_review1" : "New proposed consent",
-
-        // TODO NEW: Do you agree to this new consent? Please check content and click on the 'Agree to this consent' button if you agree. Otherwise click on the 'Skip (No change)' button.
-        "please_review2" : "Do you agree to this new consent? Please check content and click on the 'Agree to this consent' button if you agree. Otherwise click on the 'Skip (No change)' button."
+        "please_review1" : "Neuer Zustimmungsvorschlag",
+        "please_review2" : "Sind Sie mit dieser neuen Zustimmung einverstanden? Bitte überprüfen Sie den Inhalt und klicken Sie auf die Schaltfläche 'Diese Zustimmung akzeptieren', wenn Sie damit einverstanden sind. Andernfalls klicken Sie auf die Schaltfläche 'Überspringen (Keine Änderung)'."
     },
 
     "editconsent" : {
@@ -949,17 +911,11 @@
         "excludes_group" : "Schliesst alle Einträge die dieser Gruppe gehören aus: {{ group }}",
         "view_change_selection_btn" : "Auswahl ansehen/ändern",
         "confirm_btn" : "Diese Zustimmung bestätigen",
-        "reject_btn" : "Diese Zustimmung verwerfen",
+        "reject_btn" : "Diese Zustimmung ablehnen",
         "delete_btn" : "Diese Zustimmung löschen",
-
-        // TODO NEW: Consent for review
-        "please_review1" : "Consent for review",
-
-        // TODO NEW: Please review this consent. Please click on 'Confirm this Consent' if you agree. Click on 'Reject this consent' if you do not agree.
-        "please_review2a" : "Please review this consent. Please click on 'Confirm this Consent' if you agree. Click on 'Reject this consent' if you do not agree.",
-
-        // TODO NEW: Please review this existing consent. Click on 'Skip (No change)' button to leave this page without any changes. Click on 'Reject this consent' if you do not agree any longer. 
-        "please_review2b" : "Please review this existing consent. Click on 'Skip (No change)' button to leave this page without any changes. Click on 'Reject this consent' if you do not agree any longer. "
+        "please_review1" : "Zustimmung zu überprüfen",
+        "please_review2a" : "Bitte überprüfen Sie diese Zustimmung. Klicken Sie auf 'Diese Zustimmung bestätigen', wenn Sie damit einverstanden sind. Klicken Sie auf 'Diese Zustimmung ablehnen', wenn Sie nicht einverstanden sind.",
+        "please_review2b" : "Bitte überprüfen Sie diese bestehende Zustimmung. Klicken Sie auf die Schaltfläche 'Überspringen (Keine Änderung)', um diese Seite ohne Änderungen zu verlassen. Klicken Sie auf 'Diese Zustimmung ablehnen', wenn Sie nicht mehr einverstanden sind."
     },
 
     "editconsent2" : {
@@ -1284,12 +1240,8 @@
     "serviceleave" : {
         "title" : "Haben Sie Ihre Session beendet?",
         "thankyou" : "Danke für Ihre Hilfe!",
-
-        // TODO NEW: Please use the top menu to continue your session or log out.
-        "continue" : "Please use the top menu to continue your session or log out.",
-
-        // TODO NEW: Sign out
-        "logout_btn" : "Sign out",
+        "continue" : "Bitte benutzen Sie das Hauptmenü, um Ihre Sitzung fortzusetzen oder sich abzumelden.",
+        "logout_btn" : "Abmelden",
         "goodbye_btn" : "Session beenden und Fenster schliessen",
         "logoutreturn" : "Sie werden zur aufrufenden Seite weitergeleitet.",
         "return_btn" : "Abmelden und fortfahren"
@@ -1352,15 +1304,7 @@
         "spaces" : "MIDATA",
         "title" : "Timeline",
         "fitness" : "Fitness",
-
-        // TODO CHANGED
-        // OLD: Health Documentation
-        // NEW: Health Data
         "health" : "Gesundheitsdaten",
-
-        // TODO CHANGED
-        // OLD: Analyze your Data
-        // NEW: Data Analysis
         "analyze" : "Datenanalyse"
     },
 
