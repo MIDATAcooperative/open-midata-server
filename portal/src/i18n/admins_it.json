@@ -6,6 +6,9 @@
         "auditlog" : "Revisione",
         "news" : "Notizie",
         "plugins" : "Plugin",
+
+        // TODO NEW: Application usage stats
+        "usagestats" : "Application usage stats",
         "content" : "Tipi di contenuto",
         "studies" : "Studi",
         "terms" : "Condizioni generali di contratto",
@@ -33,6 +36,9 @@
 
     "admin_address" : {
         "title" : "Profilo del membro",
+
+        // TODO NEW: Show apps created by this developer
+        "show_apps_created" : "Show apps created by this developer",
         "midata_id" : "MIDATA ID",
         "role" : "Ruolo",
         "subroles" : "Sotto-ruolo/i",
@@ -58,7 +64,13 @@
         "add_comment_btn" : "Aggiungi commento",
         "wipe_btn" : "Elimina account",
         "change_email_btn" : "Modifica indirizzo e-mail",
-        "change_address_btn" : "Modifica profilo"
+        "change_address_btn" : "Modifica profilo",
+
+        // TODO NEW: Add master user role
+        "make_master_btn" : "Add master user role",
+
+        // TODO NEW: Revoke master user role
+        "remove_master_btn" : "Revoke master user role"
     },
 
     "admin_news" : {
@@ -177,6 +189,9 @@
 
     "admin_stats" : {
         "title" : "Statistiche",
+
+        // TODO NEW: Show system usage per application
+        "showusage" : "Show system usage per application",
         "value" : "Conteggio totale",
         "diff_yesterday" : "Diff. a 1 giorno fa",
         "diff_week" : "Diff. a 7 giorni fa",
@@ -209,5 +224,41 @@
         "myid" : "Il mio id di recupero",
         "instr1" : "Fare clic su un share per copiare il share criptato negli appunti.",
         "instr2" : "Decriptare il share su Ubuntu: (cliccare sulla linea per copiarla negli appunti)"
+    },
+
+    "usagestats" : {
+
+        // TODO NEW: Usage statistics
+        "title" : "Usage statistics",
+
+        // TODO NEW: Date
+        "date" : "Date",
+
+        // TODO NEW: App/Plugin
+        "object" : "App/Plugin",
+
+        // TODO NEW: Registration
+        "REGISTRATION" : "Registration",
+
+        // TODO NEW: Login
+        "LOGIN" : "Login",
+
+        // TODO NEW: Continue
+        "REFRESH" : "Continue",
+
+        // TODO NEW: Install
+        "INSTALL" : "Install",
+
+        // TODO NEW: Read
+        "GET" : "Read",
+
+        // TODO NEW: Write
+        "POST" : "Write",
+
+        // TODO NEW: Update
+        "PUT" : "Update",
+
+        // TODO NEW: Delete
+        "DELETE" : "Delete"
     }
 }

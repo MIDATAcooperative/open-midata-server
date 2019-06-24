@@ -27,7 +27,10 @@
         "name" : "Name",
         "description" : "Beschreibung",
         "members" : "Alle Mitglieder Ihrer Organisation",
-        "addprovider" : "Neues Mitglied registrieren"
+        "addprovider" : "Neues Mitglied registrieren",
+
+        // TODO NEW: You must be master user to update your organization or register new users for the organization. Please contact support if you think you should have master user permissions.
+        "master_user" : "You must be master user to update your organization or register new users for the organization. Please contact support if you think you should have master user permissions."
     },
 
     "addprovider" : {

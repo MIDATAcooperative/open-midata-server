@@ -81,8 +81,6 @@
         "filename" : "Nom interne",
         "type" : "Type d'application",
         "targetUserRole" : "Rôle cible",
-        "previewlogin" : "Connexion OAuth",
-        "previewlogin2" : "Aperçu page de connexion OAuth",
         "edit_btn" : "Modifier la configuration",
         "edit_help" : "Modifiez la configuration de votre application.",
         "query_btn" : "Modifier le Data Access Filter",
@@ -95,7 +93,15 @@
         "testfromlocal_help" : "Pendant le développement, vous pouvez tester le code du plugin stocké sur votre ordinateur local sur cette instance.",
         "serverimport_btn" : "Tester le script d'importation automatique.",
         "serverimport_help" : "Si votre plugin offre l'importation automatique, vous pouvez tester le script de votre plugin, qui est normalement exécuté sur le serveur, sur votre ordinateur local.",
+
+        // TODO CHANGED
+        // OLD: Links with Studies
+        // NEW: Links with research projects or external parties
         "link_btn" : "Liens avec des études",
+
+        // TODO CHANGED
+        // OLD: Apps may offer or require participation to a study. Studies may recommend plugin or app use.
+        // NEW: Apps may offer or require participation to a research project. Research projects may recommend plugin or app use. App use may be linked to consents with providers or teams.
         "link_help" : "Les applications peuvent offrir ou exiger la participation à une étude. Les études peuvent recommander l'utilisation de plugins ou d'applications.",
         "icon_btn" : "Icônes et images de l'application",
         "icon_help" : "Téléchargez et gérez les icônes et les images à utiliser avec votre application. Fournissez des images pour l'écran de connexion, l'écran d'acceptation des consentements, le MIDATA Store, etc.",
@@ -112,6 +118,10 @@
         "show_terms" : "Afficher les Conditions Générales",
         "unlock_code" : "Code d'activation",
         "logout" : "Déconnecter tout le monde",
+
+        // TODO CHANGED
+        // OLD: Logout all users
+        // NEW: Log out all users
         "pleaseLogout1" : "Déconnexion de tous les utilisateurs",
         "pleaseLogout2" : "Déconnecter des études",
         "logout_optional" : "[ non requis ]",
@@ -138,6 +148,10 @@
             "secret" : "Votre app aura besoin de ce 'secret' pour se connecter. Choisissez le librement.",
             "mustParticipateInStudy" : "Les utilisateurs doivent participer à l'étude afin de pouvoir utiliser l'app.",
             "unlock_code" : "Si renseigné, ce code doit être saisi par l'utilisateur lors de l'inscription ou lors de la première connexion à MIDATA par cette app. Le code n'est pas sensible à la casse.",
+
+            // TODO CHANGED
+            // OLD: Notify developer ({{user}}) by email on errors causes by this application.
+            // NEW: Notify developer ({{user}}) by email on errors caused by this application.
             "send_reports" : "Avertir le développeur ({{utilisateur}}) par e-mail des erreurs causées par cette application."
         },
         "status" : {
@@ -153,11 +167,23 @@
         "access_query_json" : "Data Access Filter",
         "queryeditor_btn" : "Aller à l'éditeur du Data Access Filter",
         "no_update_history" : "Pas d'historique des ressources FHIR",
+
+        // TODO NEW: Usage Statistics
+        "usagestats_btn" : "Usage Statistics",
+
+        // TODO NEW: Analyze the usage frequency of the application.
+        "usagestats_help" : "Analyze the usage frequency of the application.",
         "export_btn" : "Exporter la définition de l'application",
         "export_help" : "Exportez la définition de cette application, pour qu'elle puisse être importée et utilisée sur un autre serveur.",
         "important" : "IMPORTANT",
         "logoutwarning" : "Changer la définition de l'application déconnectera tous les utilisateurs de cette application. Ils devront confirmer à nouveau l'utilisation de l'application à la prochaine connexion.",
-        "researchwarning" : "Changer la définition de l'application dissociera cette application de recherche de toutes les études!"
+        "researchwarning" : "Changer la définition de l'application dissociera cette application de recherche de toutes les études!",
+
+        // TODO NEW: Creator
+        "creator" : "Creator",
+
+        // TODO NEW: Organization
+        "organization" : "Organization"
     },
 
     "appstats" : {
@@ -213,7 +239,43 @@
     },
 
     "applink" : {
-        "title" : "Liens avec des études"
+
+        // TODO CHANGED
+        // OLD: Links with Studies
+        // NEW: Links with projects or providers
+        "title" : "Liens avec des études",
+
+        // TODO NEW: Add link with research project
+        "add_research_btn" : "Add link with research project",
+
+        // TODO NEW: Add link with provider
+        "add_provider_btn" : "Add link with provider",
+
+        // TODO NEW: Target
+        "target" : "Target",
+
+        // TODO NEW: Healthcare Provider (login)
+        "provider" : "Healthcare Provider (login)",
+
+        // TODO NEW: Identifier for this link
+        "identifier" : "Identifier for this link",
+
+        // TODO NEW: Terms of use
+        "terms_of_use" : "Terms of use",
+
+        // TODO NEW: If special terms of use have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the ID you need to enter here.
+        "terms_of_use_hint" : "If special terms of use have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the ID you need to enter here.",
+
+        // TODO NEW: Preview terms of use
+        "show_terms" : "Preview terms of use",
+        "types" : {
+
+            // TODO NEW: Consent must be accepted
+            "REQUIRE_P" : "Consent must be accepted",
+
+            // TODO NEW: Consent is offered upon login/registration
+            "OFFER_P" : "Consent is offered upon login/registration"
+        }
     },
 
     "appsubscriptions" : {

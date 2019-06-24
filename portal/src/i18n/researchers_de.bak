@@ -23,7 +23,8 @@
     "title" : "Research Organization",
     "name" : "Name",
     "description" : "Description",
-    "researchers" : "All researchers of your organization"
+    "researchers" : "All researchers of your organization",
+    "master_user" : "You must be master user to update your organization or register new users for the organization. Please contact support if you think you should have master user permissions."
   },
   
   "createstudy" : {
@@ -334,7 +335,6 @@
      "studyGroup" : "Study Group",
      "share_btn" : "Share",
      "unshare_btn" : "Unshare",
-     "search_btn" : "Search"
-     
+     "search_btn" : "Search"  
    }
 }

@@ -1,8 +1,15 @@
 {
 
     "footer" : {
+
+        // TODO CHANGED
+        // OLD: ©{{now}} ETH Zürich
+        // NEW: MIDATA Genossenschaft – c/o EvalueScience AG – Pfingstweidstrasse 16 – 8005 Zürich
         "copyright" : "©{{now}} ETH Zürich",
         "homepage" : "MIDATA Homepage",
+
+        // TODO NEW: Impressum
+        "impressum" : "Impressum",
         "portals" : "MIDATA Portale:",
         "for_members" : "Für Kontoinhabende",
         "for_researchers" : "Für Forschungseinrichtungen",
@@ -11,6 +18,15 @@
     },
 
     "navbar" : {
+
+        // TODO NEW: This website uses cookies. For more information, see
+        "cookiebanner" : "This website uses cookies. For more information, see",
+
+        // TODO NEW: Privacy Policy
+        "privacypolicy" : "Privacy Policy",
+
+        // TODO NEW: Close
+        "cookiebanner_close_btn" : "Close",
         "toggle_navigation" : "Navigation an/aus",
         "login" : "Anmelden",
         "sign_up" : "Registrieren",
@@ -34,6 +50,10 @@
         "offline" : "Der Server ist momentan nicht verfügbar! Bitte versuchen Sie es später  wieder.",
         "internal" : "Ein interner Fehler ist aufgetreten. Kontaktieren Sie bitte support@midata.coop, falls das Problem weiterhin besteht.",
         "internal_db" : "Ein interner Datenbank-Fehler ist aufgetreten. Kontaktieren Sie bitte support@midata.coop, falls das Problem weiterhin besteht.",
+
+        // TODO CHANGED
+        // OLD: An application specific error occured. Please contact application developer or support@midata.coop if the problem persists.
+        // NEW: An application specific error occured. Please contact the application developer or support@midata.coop if the problem persists.
         "plugin" : "Es ist ein anwendungsspezifischer Fehler aufgetreten. Bitte kontaktieren Sie den Anwendungsentwickler oder support@midata.coop, wenn das Problem weiterhin besteht.",
         "relogin" : "Melden Sie sich bitte erneut an",
         "noconsent" : "Keine aktive Zustimmung vorhanden, die es erlaubt Daten bei der Zielperson hinzuzufügen.",
@@ -94,6 +114,9 @@
             "privacypolicy" : "Die Datenschutzerklärung muss akzeptiert werden.",
             "study_accept" : "Die Studienteilnahme muss akzeptiert werden.",
             "study_group" : "Der Teilnehmer muss zuerst zu einer Gruppe zugeordnet werden.",
+
+            // TODO NEW: Consent must be given to continue
+            "consent_accept" : "Consent must be given to continue",
             "confirmation" : "Bestätigung durch Benutzer zuerst erforderlich.",
             "file" : "Keine Datei zum Hochladen ausgewählt",
             "access_query" : "Keine Daten ausgewählt",
@@ -280,6 +303,10 @@
             "PASSPORT_VERIFIED" : "Die ID-Karte des Benutzers muss geprüft worden sein",
             "MIDATA_COOPERATIVE_MEMBER" : "Der Benutzer muss Mitglied der Genossenschaft sein",
             "ADMIN_VERIFIED" : "Das Konto muss von einem MIDATA Administrator freigeschaltet worden sein",
+
+            // TODO CHANGED
+            // OLD: The birthday of the user must be known
+            // NEW: The date of birth of the user must be known
             "BIRTHDAY_SET" : "Der Geburtsdatum des Benutzers muss bekannt sein"
         },
         "writepermissiontype" : {
@@ -369,6 +396,9 @@
             "NURSE" : "Pflegefachperson",
             "MANAGER" : "Manager",
             "MONITOR" : "Aufsichtsperson",
+
+            // TODO NEW: Master User
+            "MASTER" : "Master User",
             "USERADMIN" : "Verwaltung der Benutzer",
             "STUDYADMIN" : "Verwaltung der Studien",
             "CONTENTADMIN" : "Verwaltung der Datentypen",
@@ -480,6 +510,10 @@
         "view_btn" : "Vorschau",
         "submit_btn" : "Abschicken",
         "delete_btn" : "Löschen",
+
+        // TODO CHANGED
+        // OLD: Skip (No change)
+        // NEW: Skip (no change)
         "skip_btn" : "Überspringen (keine Änderung)",
         "or" : "oder",
         "save_ok" : "Erfolgreich gespeichert",
@@ -604,8 +638,20 @@
         "sign_in_btn" : "Anmelden",
         "forgot_your_password" : "Passwort vergessen?",
         "login_btn" : "Anmelden",
+
+        // TODO CHANGED
+        // OLD: Confirmation-Request Login
+        // NEW: Login for Confirmation Request
         "service_login" : "Anmeldung für Bestätigungsanfrage",
+
+        // TODO CHANGED
+        // OLD: After login you will be asked for confirmation of consents and/or participation with research projects.
+        // NEW: At your next login, you will be asked for confirmation of consents and/or participation with research projects.
         "service_login2" : "Bei Ihrer nächsten Anmeldung werden Sie um eine Bestätigung der Zustimmung und/oder Teilnahme an Forschungsprojekten gebeten.",
+
+        // TODO CHANGED
+        // OLD: I do not have a Midata account yet.
+        // NEW: I do not have a MIDATA account yet.
         "no_account" : "Ich habe noch keinen MIDATA-Account.",
 
         "info1" : "Liebe Studienteilnehmerin, Lieber Studienteilnehmer",
@@ -661,9 +707,17 @@
         "code_intructions" : "Ein Brief mit einem Bestätigungscode wurde an Ihre Postadresse versandt. Geben Sie bitte den Bestätigungscode ein, um Zugriff auf die Plattform zu erhalten.",
         "code_done" : "Sie haben den Bestätigungscode eingegeben. Sie werden sich anmelden können sobald Ihr unterschriebener Vertrag bei MIDATA eingetroffen ist.",
         "enter_now_btn" : "Jetzt eingeben",
+
+        // TODO CHANGED
+        // OLD: Email address has been confirmed.
+        // NEW: Thank you for confirming your email address.
         "email_success" : "Vielen Dank, dass Sie Ihre E-Mail-Adresse bestätigt haben.",
         "address_entered" : "Geben Sie bitte Ihre Postadresse ein, sie ist erforderlich, um diesen Dienst nutzen zu können.",
         "phone_entered" : "Geben Sie bitte Ihre Mobiltelefonnummer ein, sie ist erforderlich, um diesen Dienst nutzen zu können.",
+
+        // TODO CHANGED
+        // OLD: A valid birthdate is required to use this service. Please add your birthdate to your account information. (Format example: 31.12.1999)
+        // NEW: A valid date of birth is required to use this service. Please add your date of birth to your account information. (Format example: 31.12.1999)
         "birthday_entered" : "Für die Nutzung dieses Dienstes ist ein gültiges Geburtsdatum erforderlich. Bitte fügen Sie Ihr Geburtsdatum zu Ihren Kontoinformationen hinzu. (Formatbeispiel: 31.12.1999)",
         "admin_verified" : "Ihr Konto muss durch einen MIDATA Administrator freigeschaltet werden. Versuchen Sie es bitte später noch einmal. Falls Ihr Konto nicht innert 24 Stunden freigeschaltet wurde, kontaktieren sie bitte MIDATA.",
         "terms_agreed" : "Die MIDATA Allgemeine Geschäftsbedingungen wurden aktualisiert. Bitte bestätigen Sie, dass Sie mit der neuen Version einverstanden sind.",
@@ -913,8 +967,20 @@
         "confirm_btn" : "Diese Zustimmung bestätigen",
         "reject_btn" : "Diese Zustimmung ablehnen",
         "delete_btn" : "Diese Zustimmung löschen",
+
+        // TODO CHANGED
+        // OLD: Consent for review
+        // NEW: Consent to review
         "please_review1" : "Zustimmung zu überprüfen",
+
+        // TODO CHANGED
+        // OLD: Please review this consent. Please click on 'Confirm this Consent' if you agree. Click on 'Reject this consent' if you do not agree.
+        // NEW: Please review this consent. Click on 'Confirm this Consent' if you agree. Click on 'Reject this Consent' if you do not agree.
         "please_review2a" : "Bitte überprüfen Sie diese Zustimmung. Klicken Sie auf 'Diese Zustimmung bestätigen', wenn Sie damit einverstanden sind. Klicken Sie auf 'Diese Zustimmung ablehnen', wenn Sie nicht einverstanden sind.",
+
+        // TODO CHANGED
+        // OLD: Please review this existing consent. Click on 'Skip (No change)' button to leave this page without any changes. Click on 'Reject this consent' if you do not agree any longer. 
+        // NEW: Please review this existing consent. Click on 'Skip (No change)' button to leave this page without any changes. Click on 'Reject this Consent' if you do not agree any longer.
         "please_review2b" : "Bitte überprüfen Sie diese bestehende Zustimmung. Klicken Sie auf die Schaltfläche 'Überspringen (Keine Änderung)', um diese Seite ohne Änderungen zu verlassen. Klicken Sie auf 'Diese Zustimmung ablehnen', wenn Sie nicht mehr einverstanden sind."
     },
 
@@ -983,6 +1049,9 @@
         "back_to_plugin" : "Zurück zur Betrachtung",
         "by_group" : "Nach Zustimmungstyp gruppiert",
         "by_plugin" : "Nach Applikation gruppiert",
+
+        // TODO NEW: Non personal public data
+        "public_data" : "Non personal public data",
         "type_global" : "Global",
         "type_study" : "Forschung",
         "type_circle" : "Andere Benutzer",
@@ -1025,6 +1094,12 @@
         "shares_group" : "Gruppe: {{ group }}",
         "shares_format" : "Format: {{ format }}",
         "shares_content" : "Inhalt: {{ content }}",
+
+        // TODO NEW: I accept to share data with this external provider
+        "confirm_provider" : "I accept to share data with this external provider",
+
+        // TODO NEW: I accept to share data with this external provider
+        "confirm_provider_opt" : "I accept to share data with this external provider",
         "confirm_study" : "Ich akzeptiere die Nutzungsbedingungen der Applikation und die Teilnahme an der Studie",
         "confirm_study_opt" : "Ich akzeptiere die Teilnahme an der Studie",
         "confirm_citizen_science" : "Ich akzeptiere die Teilnahme am Citizen Science Projekt",
@@ -1241,9 +1316,17 @@
         "title" : "Haben Sie Ihre Session beendet?",
         "thankyou" : "Danke für Ihre Hilfe!",
         "continue" : "Bitte benutzen Sie das Hauptmenü, um Ihre Sitzung fortzusetzen oder sich abzumelden.",
+
+        // TODO CHANGED
+        // OLD: Sign out
+        // NEW: Log out
         "logout_btn" : "Abmelden",
         "goodbye_btn" : "Session beenden und Fenster schliessen",
         "logoutreturn" : "Sie werden zur aufrufenden Seite weitergeleitet.",
+
+        // TODO CHANGED
+        // OLD: Logout and continue
+        // NEW: Log out and continue
         "return_btn" : "Abmelden und fortfahren"
     },
 
@@ -1265,12 +1348,33 @@
         "owner_self" : "Nur Daten vom Benutzer der Anwendung",
         "short_owner_all" : "Auch geteilte Daten",
         "short_owner_self" : "Nur eigene Daten",
+
+        // TODO NEW: Only public data
+        "short_public_only" : "Only public data",
+
+        // TODO NEW: Public, shared and own data
+        "short_public_also" : "Public, shared and own data",
+
+        // TODO NEW: Public and own data
+        "short_public_also_self" : "Public and own data",
         "source_app" : "Quellapplikation",
         "short_app_all" : "Alle Quellen",
         "short_app_other" : "Nur die Applikation:",
         "app_self" : "Nur Daten aus dieser Anwendung verwenden",
         "app_all" : "Daten aus beliebigen Quellanwendungen verwenden",
         "app_other" : "Daten aus der Applikation verwenden:",
+
+        // TODO NEW: Public Data
+        "public" : "Public Data",
+
+        // TODO NEW: Use public data only
+        "public_only" : "Use public data only",
+
+        // TODO NEW: Use public and other data
+        "public_also" : "Use public and other data",
+
+        // TODO NEW: Do not use public data
+        "public_no" : "Do not use public data",
         "restrictions" : "Zusätzliche Einschränkungen",
         "data_period_restriction" : "Datum",
         "time_restriction" : "Erstellungs- / Aktualisierungsdatum",
