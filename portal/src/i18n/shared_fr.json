@@ -34,6 +34,7 @@
         "offline" : "La plateforme est actuellement indisponible! Veuilez contacter support@midata.coop si le problème persiste.",
         "internal" : "Une erreur interne est survenue. Veuilez contacter support@midata.coop si le problème persiste.",
         "internal_db" : "Une erreur interne lié à la base de donnée est survenue. Veuilez contacter support@midata.coop si le problème persiste.",
+        "plugin" : "Une erreur spécifique à l'application s'est produite. Veuillez contacter le développeur de l'application ou support@midata.coop si le problème persiste.",
         "relogin" : "Veuillez vous reconnecter",
         "noconsent" : "Il n'y a pas de consentement actif permettant l'ajout de donnée à cette personne.",
         "unsupported" : "Opération non supportée",
@@ -222,6 +223,8 @@
             "user-password-change-request" : "Changement de mot de passe demandé",
             "user-passphrase-change" : "Phrase secrète modifiée",
             "user-address-change" : "Adresse postale modifiée",
+            "user-phone-change" : "N° de téléphone de l'utilisateur modifié",
+            "user-settings-change" : "Paramètres de l'utilisateur modifiés",
             "user-email-change" : "Adresse e-mail modifiée",
             "user-birthday-change" : "Date de naissance de l'utilisateur modifiée",
             "user-status-change" : "État du compte de l'utilisateur modifié",
@@ -276,7 +279,8 @@
             "ADDRESS_VERIFIED" : "L'adresse postale de l'utilisateur doit avoir été vérifiée",
             "PASSPORT_VERIFIED" : "La carte d'identité de l'utilisateur doit avoir été vérifiée.",
             "MIDATA_COOPERATIVE_MEMBER" : "L'utilisateur doit être membre de la cooperative.",
-            "ADMIN_VERIFIED" : "Le compte doit avoir été validé par un administrateur MIDATA"
+            "ADMIN_VERIFIED" : "Le compte doit avoir été validé par un administrateur MIDATA",
+            "BIRTHDAY_SET" : "La date de naissance de l'utilisateur doit être connue"
         },
         "writepermissiontype" : {
             "NONE" : "Aucunes données ne peuvent être enregistrées.",
@@ -476,6 +480,7 @@
         "view_btn" : "Aperçu",
         "submit_btn" : "Envoyer",
         "delete_btn" : "Supprimer",
+        "skip_btn" : "Ignorer (aucune modification)",
         "or" : "ou",
         "save_ok" : "Enregistrement effectué",
         "yesno" : {
@@ -552,7 +557,7 @@
         "lastname" : "Nom",
         "gender" : "Sexe",
         "birthday" : "Date de naissance",
-        "birthday2" : "Date de naissance (Format: 31.12.1999)",
+        "birthday2" : "Date de naissance (format: 31.12.1999)",
         "language" : "Langue préférée",
         "day" : "Jour",
         "month" : "Mois",
@@ -599,6 +604,9 @@
         "sign_in_btn" : "Se connecter",
         "forgot_your_password" : "Mot de passe oublié?",
         "login_btn" : "Se connecter",
+        "service_login" : "Connexion pour demande de confirmation",
+        "service_login2" : "Lors votre prochaine connexion, on vous demandera de confirmer votre consentement et/ou votre participation à des projets de recherche.",
+        "no_account" : "Je n'ai pas encore de compte MIDATA.",
 
         "info1" : "Chère participante, cher participant à une étude",
         "info2" : "Vous avez déjà un compte MIDATA, connectez-vous avec votre adresse email et votre mot de passe.",
@@ -653,9 +661,10 @@
         "code_intructions" : "Une lettre contenant un code de confirmation vous a été adressée par la poste. Veuillez saisir ce code de confirmation pour pouvoir accéder à la plateforme.",
         "code_done" : "Vous avez saisi le code de confirmation. Vous pourrez vous connecter dès que le contrat signé sera parvenu à MIDATA.",
         "enter_now_btn" : "Entrer maintenant",
-        "email_success" : "L'adresse e-mail a déjà été confirmée.",
+        "email_success" : "Merci d’avoir confirmé votre adresse e-mail.",
         "address_entered" : "Votre adresse postale est requise pour utiliser ce service, veuillez la saisir.",
         "phone_entered" : "Un numéro de téléphone mobile est requis pour utiliser ce service, veuillez le saisir.",
+        "birthday_entered" : "Une date de naissance valide est requise pour utiliser ce service. Veuillez ajouter votre date de naissance aux informations de votre compte. (Exemple de format : 31.12.1999)",
         "admin_verified" : "Votre compte doit être validé par un administrateur MIDATA. Veuillez réessayer plus tard. Si votre compte n'a pas été validé sous 24 heures, veuillez contacter MIDATA.",
         "terms_agreed" : "Les Conditions Générales de MIDATA ont été mises à jour. Veuillez confirmer que vous acceptez la nouvelle version.",
         "privacy_policy_agreed" : "La Déclaration de protection des données de MIDATA a été mise à jour. Veuillez confirmer que vous acceptez la nouvelle version.",
@@ -774,7 +783,9 @@
         "status" : "État",
         "recommended_apps" : "Applications recommandées",
         "use_app" : "Utiliser maintenant",
-        "for_participants" : "Informations sur la participation"
+        "for_participants" : "Informations sur la participation",
+        "please_review1" : "Décider de participer",
+        "please_review2" : "Veuillez passer en revue ce projet de recherche. Voulez-vous y participer? Cliquez sur 'Ignorer (aucune modification)' si vous voulez quitter cette page sans changement."
     },
 
     "user" : {
@@ -862,7 +873,9 @@
         "consent_empty" : "Ce consentement ne partage initialement aucune données. Vous pouvez sélectionner les données que vous désirez partager par la suite.",
         "create_btn" : "Créer et sélectionner les données",
         "create2_btn" : "Accepter ce consentement",
-        "extended_btn" : "Afficher les options avancées"
+        "extended_btn" : "Afficher les options avancées",
+        "please_review1" : "Nouveau consentement proposé",
+        "please_review2" : "Êtes-vous d'accord avec ce nouveau consentement? Veuillez vérifier le contenu et cliquer sur le bouton 'Accepter ce consentement' si vous êtes d'accord. Sinon, cliquez sur le bouton 'Ignorer (aucune modification)'."
     },
 
     "editconsent" : {
@@ -899,7 +912,10 @@
         "view_change_selection_btn" : "Voir/changer la selection des données",
         "confirm_btn" : "Confirmer ce consentement",
         "reject_btn" : "Rejeter ce consentement",
-        "delete_btn" : "Supprimer ce consentement"
+        "delete_btn" : "Supprimer ce consentement",
+        "please_review1" : "Consentement à examiner",
+        "please_review2a" : "Veuillez examiner ce consentement. Cliquez sur 'Confirmer ce consentement' si vous êtes d'accord. Cliquez sur 'Rejeter ce consentement' si vous n'êtes pas d'accord.",
+        "please_review2b" : "Veuillez examiner ce consentement existant. Cliquez sur le bouton 'Ignorer (aucune modification)' pour quitter cette page sans aucun changement. Cliquez sur 'Rejeter ce consentement' si vous n'êtes plus d'accord."
     },
 
     "editconsent2" : {
@@ -1224,6 +1240,8 @@
     "serviceleave" : {
         "title" : "Vous avez terminé votre session?",
         "thankyou" : "Merci pour votre aide!",
+        "continue" : "Veuillez utiliser le menu principal pour continuer votre session ou vous déconnecter.",
+        "logout_btn" : "Se déconnecter",
         "goodbye_btn" : "Fin de la session et fermeture de la fenêtre",
         "logoutreturn" : "Vous serez redirigé vers la page d'appel.",
         "return_btn" : "Déconnectez-vous et continuez"

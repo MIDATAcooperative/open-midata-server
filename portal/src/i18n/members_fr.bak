@@ -82,7 +82,7 @@
 	"confirmation_date" : "Confirmation Date",
     "confirm_btn" : "confirm",
     "reject_btn" : "reject",
-    "empty" : "You have not registered any contacts as a healthcare provider." 
+    "empty" : "You have not registered any contacts as a healthcare professional." 
   },
   
   "smallstudies" : {

@@ -117,6 +117,7 @@
         "logout_optional" : "[ non richiesto ]",
         "logout_required" : "[ richiesto ]",
         "logout_explain" : "Le modifiche ai campi contrassegnati con !! richiedono il logout di tutti gli utenti di quell'applicazione.",
+        "send_reports" : "Inviare i rapporti di errore",
 
         "info" : {
             "filename" : "Questo nome è utilizzato internamente per identificare la propria applicazione. Deve essere un identificatore valido (a-z, A-Z, 0-9, _).",
@@ -136,7 +137,8 @@
             "redirectUri" : "È possibile specificare più URI possibili per il reindirizzamento separandoli con uno spazio.",
             "secret" : "La propria applicazione necessiterà di questo 'segreto' durante l'accesso. Scegliere un qualsiasi elemento desiderato.",
             "mustParticipateInStudy" : "L'utente deve partecipare allo studio per utilizzare l'applicazione.",
-            "unlock_code" : "Se compilato, questo codice deve essere inserito dall'utente per registrarsi o accedere per la prima volta a MIDATA tramite l'applicazione. Il codice non è sensibile ai caratteri maiuscoli/minuscoli."
+            "unlock_code" : "Se compilato, questo codice deve essere inserito dall'utente per registrarsi o accedere per la prima volta a MIDATA tramite l'applicazione. Il codice non è sensibile ai caratteri maiuscoli/minuscoli.",
+            "send_reports" : "Notificare lo sviluppatore ({{utente}}}) via e-mail sulle cause di errore di questa applicazione."
         },
         "status" : {
             "title" : "Stato dell'applicazione",

@@ -8,27 +8,28 @@
                 </trans-unit>
             </group>
             <group resname="error" id="error">
+                <trans-unit resname="plugin" id="error.plugin">
+                    <source>An application specific error occured. Please contact application developer or support@midata.coop if the problem persists.</source>
+                </trans-unit>
                 <group resname="invalid" id="error.invalid">
-                    <trans-unit resname="securitytoken" id="error.invalid.securitytoken">
-                        <source>Code not correct</source>
-                        <target>Codice non corretto</target>
-                    </trans-unit>
                     <trans-unit resname="consent_members" id="error.invalid.consent_members">
-                        <source>Consent may only be confirmed once all external persons have joined Midata.</source>
-                    </trans-unit>
-                </group>
-                <group resname="expired" id="error.expired">
-                    <trans-unit resname="securitytoken" id="error.expired.securitytoken">
-                        <source>This code has expired.</source>
-                        <target>Questo codice è scaduto.</target>
+                        <source>This consent may only be confirmed once all external persons have joined MIDATA.</source>
+                        <target>Questo consenso può essere confermato solo dopo che tutte le persone esterne hanno aderito a MIDATA.</target>
                     </trans-unit>
                 </group>
             </group>
             <group resname="enum" id="enum">
+                <group resname="eventtype" id="enum.eventtype">
+                    <trans-unit resname="user-phone-change" id="enum.eventtype.user-phone-change">
+                        <source>User's phone number changed</source>
+                    </trans-unit>
+                    <trans-unit resname="user-settings-change" id="enum.eventtype.user-settings-change">
+                        <source>User's settings changed</source>
+                    </trans-unit>
+                </group>
                 <group resname="userfeature" id="enum.userfeature">
-                    <trans-unit resname="AUTH2FACTOR" id="enum.userfeature.AUTH2FACTOR">
-                        <source>2-Factor Authentication on login</source>
-                        <target>Autenticazione a 2 fattori all'accesso</target>
+                    <trans-unit resname="BIRTHDAY_SET" id="enum.userfeature.BIRTHDAY_SET">
+                        <source>The birthday of the user must be known</source>
                     </trans-unit>
                 </group>
                 <group resname="researcherrole" id="enum.researcherrole">
@@ -63,6 +64,9 @@
                 </group>
             </group>
             <group resname="common" id="common">
+                <trans-unit resname="skip_btn" id="common.skip_btn">
+                    <source>Skip (No change)</source>
+                </trans-unit>
                 <group resname="yesno" id="common.yesno">
                     <trans-unit resname="false" id="common.yesno.false">
                         <source>No</source>
@@ -73,39 +77,43 @@
                 <trans-unit resname="password" id="registration.password">
                     <source>Password</source>
                 </trans-unit>
+                <trans-unit resname="secure2" id="registration.secure2">
+                    <source>Increase the protection of my data with an additional security level. Warning: if I forget my password, it may take a few days until I can reset it.</source>
+                    <target>Aumentare la protezione dei miei dati con un ulteriore livello di sicurezza. Attenzione: se dimentico la mia password, potrebbero volerci alcuni giorni prima di poterla reimpostare.</target>
+                </trans-unit>
+                <trans-unit resname="birthday2" id="registration.birthday2">
+                    <source>Birth date (format: 31.12.1999)</source>
+                    <target>Data di nascita (Formato: 31.12.1999)</target>
+                </trans-unit>
             </group>
             <group resname="login" id="login">
                 <trans-unit resname="password" id="login.password">
                     <source>Password</source>
+                </trans-unit>
+                <trans-unit resname="service_login" id="login.service_login">
+                    <source>Confirmation-Request Login</source>
+                </trans-unit>
+                <trans-unit resname="service_login2" id="login.service_login2">
+                    <source>After login you will be asked for confirmation of consents and/or participation with research projects.</source>
+                </trans-unit>
+                <trans-unit resname="no_account" id="login.no_account">
+                    <source>I do not have a Midata account yet.</source>
                 </trans-unit>
                 <trans-unit resname="info6b" id="login.info6b">
                     <source>Ally Science</source>
                 </trans-unit>
             </group>
             <group resname="postregister" id="postregister">
-                <trans-unit resname="auth2factor" id="postregister.auth2factor">
-                    <source>An authorization code has been send to your phone. Please enter it.</source>
-                    <target>Un codice di autorizzazione è stato inviato al vostro telefono. Per favore, inseriscilo.</target>
+                <trans-unit resname="birthday_entered" id="postregister.birthday_entered">
+                    <source>A valid birthdate is required to use this service. Please add your birthdate to your account information. (Format example: 31.12.1999)</source>
                 </trans-unit>
-                <trans-unit resname="securityToken" id="postregister.securityToken">
-                    <source>Code</source>
-                    <target>Codice</target>
+            </group>
+            <group resname="studydetails" id="studydetails">
+                <trans-unit resname="please_review1" id="studydetails.please_review1">
+                    <source>Decide about participation</source>
                 </trans-unit>
-                <trans-unit resname="no_token" id="postregister.no_token">
-                    <source>Please wait up to a minute for the code to arrive.</source>
-                    <target>Si prega di attendere fino a un minuto per l'arrivo del codice.</target>
-                </trans-unit>
-                <trans-unit resname="no_token_btn" id="postregister.no_token_btn">
-                    <source>I did not receive the code</source>
-                    <target>Non ho ricevuto il codice</target>
-                </trans-unit>
-                <trans-unit resname="auth_type_sms" id="postregister.auth_type_sms">
-                    <source>I want to use two factor authentication using SMS codes. Please send a code to my mobile phone at login.</source>
-                    <target>Voglio usare l'autenticazione a due fattori con codici SMS. Si prega di inviare un codice al mio telefono cellulare all'accesso.</target>
-                </trans-unit>
-                <trans-unit resname="emailnotify2" id="postregister.emailnotify2">
-                    <source>Please send me an email everytime I log into the MIDATA portal at {{domain}}.</source>
-                    <target>Inviami un'e-mail ogni volta che accedo al portale MIDATA all'indirizzo {{domain}}.</target>
+                <trans-unit resname="please_review2" id="studydetails.please_review2">
+                    <source>Please review this research project. Do you want to participate? Click on 'Skip (No change)' if you want to leave this page without any changes.</source>
                 </trans-unit>
             </group>
             <group resname="user" id="user">
@@ -113,30 +121,31 @@
                     <source>MIDATA ID:</source>
                 </trans-unit>
             </group>
+            <group resname="newconsent" id="newconsent">
+                <trans-unit resname="please_review1" id="newconsent.please_review1">
+                    <source>New proposed consent</source>
+                </trans-unit>
+                <trans-unit resname="please_review2" id="newconsent.please_review2">
+                    <source>Do you agree to this new consent? Please check content and click on the 'Agree to this consent' button if you agree. Otherwise click on the 'Skip (No change)' button.</source>
+                </trans-unit>
+            </group>
+            <group resname="editconsent" id="editconsent">
+                <trans-unit resname="please_review1" id="editconsent.please_review1">
+                    <source>Consent for review</source>
+                </trans-unit>
+                <trans-unit resname="please_review2a" id="editconsent.please_review2a">
+                    <source>Please review this consent. Please click on 'Confirm this Consent' if you agree. Click on 'Reject this consent' if you do not agree.</source>
+                </trans-unit>
+                <trans-unit resname="please_review2b" id="editconsent.please_review2b">
+                    <source>Please review this existing consent. Click on 'Skip (No change)' button to leave this page without any changes. Click on 'Reject this consent' if you do not agree any longer. </source>
+                </trans-unit>
+            </group>
             <group resname="editconsent2" id="editconsent2">
-                <trans-unit resname="date_of_creation" id="editconsent2.date_of_creation">
-                    <source>created on</source>
-                    <target>creato il</target>
-                </trans-unit>
-                <trans-unit resname="valid_until" id="editconsent2.valid_until">
-                    <source>expires on</source>
-                    <target>scade il</target>
-                </trans-unit>
                 <trans-unit resname="team" id="editconsent2.team">
                     <source>Team</source>
                 </trans-unit>
             </group>
             <group resname="records" id="records">
-                <trans-unit resname="type_hcrelated" id="records.type_hcrelated">
-                    <source>Health professionals</source>
-                    <target>Professionisti dell'assistenza sanitaria</target>
-                </trans-unit>
-                <trans-unit resname="type_healthcare" id="records.type_healthcare">
-                    <source>Doctor / Hospital</source>
-                </trans-unit>
-                <trans-unit resname="type_studyparticipation" id="records.type_studyparticipation">
-                    <source>Research</source>
-                </trans-unit>
                 <trans-unit resname="just_name" id="records.just_name">
                     <source>{{name}}</source>
                 </trans-unit>
@@ -153,9 +162,6 @@
                 <trans-unit resname="MEMBER" id="auditlog.MEMBER">
                     <source>Account</source>
                 </trans-unit>
-                <trans-unit resname="HCRELATED" id="auditlog.HCRELATED">
-                    <source>Account (Account Holder)</source>
-                </trans-unit>
             </group>
             <group resname="changeemail" id="changeemail">
                 <trans-unit resname="midataId" id="changeemail.midataId">
@@ -165,6 +171,14 @@
             <group resname="accountwipe" id="accountwipe">
                 <trans-unit resname="password" id="accountwipe.password">
                     <source>Password</source>
+                </trans-unit>
+            </group>
+            <group resname="serviceleave" id="serviceleave">
+                <trans-unit resname="continue" id="serviceleave.continue">
+                    <source>Please use the top menu to continue your session or log out.</source>
+                </trans-unit>
+                <trans-unit resname="logout_btn" id="serviceleave.logout_btn">
+                    <source>Sign out</source>
                 </trans-unit>
             </group>
             <group resname="queryeditor" id="queryeditor">
@@ -183,10 +197,12 @@
                     <source>Fitness</source>
                 </trans-unit>
                 <trans-unit resname="health" id="timeline.health">
-                    <source>Health Documentation</source>
+                    <source>Health Data</source>
+                    <target>Dati medici</target>
                 </trans-unit>
                 <trans-unit resname="analyze" id="timeline.analyze">
-                    <source>Analyze your Data</source>
+                    <source>Data Analysis</source>
+                    <target>Analisi dati</target>
                 </trans-unit>
             </group>
         </body>
@@ -197,47 +213,15 @@
                 <trans-unit resname="admin" id="admin_navbar.admin">
                     <source>Admin</source>
                 </trans-unit>
-                <trans-unit resname="content" id="admin_navbar.content">
-                    <source>Content Types</source>
-                    <target>Tipi di contenuto</target>
-                </trans-unit>
-                <trans-unit resname="plugin_admin" id="admin_navbar.plugin_admin">
-                    <source>Applications &amp; Data</source>
-                    <target>Applicazioni &amp; Dati</target>
-                </trans-unit>
             </group>
             <group resname="admin_members" id="admin_members">
                 <trans-unit resname="midata_id" id="admin_members.midata_id">
                     <source>MIDATA ID</source>
-                    <target>ID-MIDATA</target>
                 </trans-unit>
             </group>
             <group resname="admin_address" id="admin_address">
                 <trans-unit resname="midata_id" id="admin_address.midata_id">
                     <source>MIDATA ID</source>
-                    <target>ID-MIDATA</target>
-                </trans-unit>
-                <trans-unit resname="agb_status" id="admin_address.agb_status">
-                    <source>Status T&amp;Cs:</source>
-                    <target>Stato dei CGC:</target>
-                </trans-unit>
-                <trans-unit resname="contract_status" id="admin_address.contract_status">
-                    <source>Status Contract:</source>
-                    <target>Stato del contratto:</target>
-                </trans-unit>
-                <trans-unit resname="email_status" id="admin_address.email_status">
-                    <source>Status Email:</source>
-                    <target>Stato dell'e-mail:</target>
-                </trans-unit>
-                <trans-unit resname="mobile_status" id="admin_address.mobile_status">
-                    <source>Status Mobile Phone Number:</source>
-                    <target>Stato del numero di telefono mobile:</target>
-                </trans-unit>
-            </group>
-            <group resname="admin_registration" id="admin_registration">
-                <trans-unit resname="description" id="admin_registration.description">
-                    <source>If you use the email address of an existing developer account, that account will be upgraded to an administrator account.</source>
-                    <target>Se si utilizza l'e-mail di un account di sviluppatore esistente, tale account verrà aggiornato a un account amministratore.</target>
                 </trans-unit>
             </group>
             <group resname="admin_plugins" id="admin_plugins">
@@ -265,6 +249,122 @@
             </group>
         </body>
     </file>
+    <file source-language="en" target-language="it" datatype="winres" original="members_it.json">
+        <body>
+            <group resname="help_welcome" id="help_welcome">
+                <trans-unit resname="menu_config" id="help_welcome.menu_config">
+                    <source>Config</source>
+                </trans-unit>
+            </group>
+            <group resname="help_setup" id="help_setup">
+                <trans-unit resname="question_devices_answer1" id="help_setup.question_devices_answer1">
+                    <source>Fitbit</source>
+                </trans-unit>
+                <trans-unit resname="question_devices_answer2" id="help_setup.question_devices_answer2">
+                    <source>Jawbone</source>
+                </trans-unit>
+                <trans-unit resname="question_devices_answer3" id="help_setup.question_devices_answer3">
+                    <source>Withings</source>
+                </trans-unit>
+            </group>
+            <group resname="providers" id="providers">
+                <trans-unit resname="empty" id="providers.empty">
+                    <source>You have not registered any contacts as a healthcare professional.</source>
+                    <target>Non hai registrato alcun contatto come professionista sanitario.</target>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+    <file source-language="en" target-language="it" datatype="winres" original="providers_it.json">
+        <body>
+            <group resname="provider_registration" id="provider_registration">
+                <trans-unit resname="sign_up" id="provider_registration.sign_up">
+                    <source>Registration as a Health Professional</source>
+                    <target>Iscrizione come professionista sanitario</target>
+                </trans-unit>
+                <trans-unit resname="provider" id="provider_registration.provider">
+                    <source>Health Professional</source>
+                    <target>Professionista sanitario</target>
+                </trans-unit>
+            </group>
+            <group resname="provider_login" id="provider_login">
+                <trans-unit resname="title" id="provider_login.title">
+                    <source>Health Professional Login</source>
+                    <target>Accesso come professionista sanitario</target>
+                </trans-unit>
+            </group>
+            <group resname="provider_navbar" id="provider_navbar">
+                <trans-unit resname="market" id="provider_navbar.market">
+                    <source>MIDATA Store</source>
+                </trans-unit>
+            </group>
+            <group resname="provider_patientsearch" id="provider_patientsearch">
+                <trans-unit resname="email" id="provider_patientsearch.email">
+                    <source>email</source>
+                    <target>e-mail</target>
+                </trans-unit>
+                <trans-unit resname="midataid" id="provider_patientsearch.midataid">
+                    <source>MIDATA ID</source>
+                    <target>MIDATA ID</target>
+                </trans-unit>
+                <trans-unit resname="passcode" id="provider_patientsearch.passcode">
+                    <source>Access Code (optional)</source>
+                    <target>Codice di accesso (opzionale)</target>
+                </trans-unit>
+            </group>
+            <group resname="provider_usergroups" id="provider_usergroups">
+                <trans-unit resname="name" id="provider_usergroups.name">
+                    <source>Team</source>
+                </trans-unit>
+            </group>
+            <group resname="provider_memberdetails" id="provider_memberdetails">
+                <trans-unit resname="share_btn" id="provider_memberdetails.share_btn">
+                    <source>Share data with the patient</source>
+                    <target>Condividere dati con il paziente</target>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+    <file source-language="en" target-language="it" datatype="winres" original="researchers_it.json">
+        <body>
+            <group resname="studynav" id="studynav">
+                <trans-unit resname="team" id="studynav.team">
+                    <source>Team</source>
+                </trans-unit>
+            </group>
+            <group resname="studyrules" id="studyrules">
+                <trans-unit resname="sharing_query" id="studyrules.sharing_query">
+                    <source>Data Access Filter</source>
+                </trans-unit>
+            </group>
+            <group resname="researcher_sharing" id="researcher_sharing">
+                <trans-unit resname="format" id="researcher_sharing.format">
+                    <source>Resource Type</source>
+                </trans-unit>
+                <trans-unit resname="content" id="researcher_sharing.content">
+                    <source>Content Type</source>
+                </trans-unit>
+                <trans-unit resname="app" id="researcher_sharing.app">
+                    <source>Application</source>
+                </trans-unit>
+                <trans-unit resname="time" id="researcher_sharing.time">
+                    <source>Time Restriction</source>
+                </trans-unit>
+                <trans-unit resname="studyGroup" id="researcher_sharing.studyGroup">
+                    <source>Study Group</source>
+                </trans-unit>
+                <trans-unit resname="share_btn" id="researcher_sharing.share_btn">
+                    <source>Share</source>
+                </trans-unit>
+                <trans-unit resname="unshare_btn" id="researcher_sharing.unshare_btn">
+                    <source>Unshare</source>
+                </trans-unit>
+                <trans-unit resname="search_btn" id="researcher_sharing.search_btn">
+                    <source>Search</source>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
     <file source-language="en" target-language="it" datatype="winres" original="developers_it.json">
         <body>
             <group resname="developer_navbar" id="developer_navbar">
@@ -272,10 +372,32 @@
                     <source>Sandbox</source>
                 </trans-unit>
             </group>
+            <group resname="developer_testusers" id="developer_testusers">
+                <trans-unit resname="register_member_btn" id="developer_testusers.register_member_btn">
+                    <source>Register an Account Holder</source>
+                    <target>Registrare un titolare di account</target>
+                </trans-unit>
+                <trans-unit resname="register_hp_btn" id="developer_testusers.register_hp_btn">
+                    <source>Register a Health Professional</source>
+                    <target>Registrare un professionista sanitario</target>
+                </trans-unit>
+                <trans-unit resname="register_researcher_btn" id="developer_testusers.register_researcher_btn">
+                    <source>Register a Researcher</source>
+                    <target>Registrare un ricercatore</target>
+                </trans-unit>
+            </group>
             <group resname="manageapp" id="manageapp">
                 <trans-unit resname="debug_btn" id="manageapp.debug_btn">
                     <source>API Tester Sandbox</source>
                 </trans-unit>
+                <trans-unit resname="send_reports" id="manageapp.send_reports">
+                    <source>Send error reports</source>
+                </trans-unit>
+                <group resname="info" id="manageapp.info">
+                    <trans-unit resname="send_reports" id="manageapp.info.send_reports">
+                        <source>Notify developer ({{user}}) by email on errors causes by this application.</source>
+                    </trans-unit>
+                </group>
                 <trans-unit resname="access_query_json" id="manageapp.access_query_json">
                     <source>Data Access Filter</source>
                 </trans-unit>
@@ -316,117 +438,6 @@
                 </trans-unit>
                 <trans-unit resname="triggerDetail" id="appsubscriptions.triggerDetail">
                     <source>FHIR Resource</source>
-                </trans-unit>
-            </group>
-        </body>
-    </file>
-    <file source-language="en" target-language="it" datatype="winres" original="members_it.json">
-        <body>
-            <group resname="help_welcome" id="help_welcome">
-                <trans-unit resname="menu_config" id="help_welcome.menu_config">
-                    <source>Config</source>
-                </trans-unit>
-            </group>
-            <group resname="help_setup" id="help_setup">
-                <trans-unit resname="question_devices_answer1" id="help_setup.question_devices_answer1">
-                    <source>Fitbit</source>
-                </trans-unit>
-                <trans-unit resname="question_devices_answer2" id="help_setup.question_devices_answer2">
-                    <source>Jawbone</source>
-                </trans-unit>
-                <trans-unit resname="question_devices_answer3" id="help_setup.question_devices_answer3">
-                    <source>Withings</source>
-                </trans-unit>
-            </group>
-        </body>
-    </file>
-    <file source-language="en" target-language="it" datatype="winres" original="providers_it.json">
-        <body>
-            <group resname="provider_navbar" id="provider_navbar">
-                <trans-unit resname="market" id="provider_navbar.market">
-                    <source>MIDATA Store</source>
-                </trans-unit>
-                <trans-unit resname="org" id="provider_navbar.org">
-                    <source>Enterprise</source>
-                    <target>Impresa</target>
-                </trans-unit>
-            </group>
-            <group resname="provider_patientsearch" id="provider_patientsearch">
-                <trans-unit resname="email" id="provider_patientsearch.email">
-                    <source>E-Mail</source>
-                </trans-unit>
-                <trans-unit resname="or" id="provider_patientsearch.or">
-                    <source>or</source>
-                </trans-unit>
-                <trans-unit resname="midataid" id="provider_patientsearch.midataid">
-                    <source>Midata ID</source>
-                </trans-unit>
-                <trans-unit resname="birthday" id="provider_patientsearch.birthday">
-                    <source>Birthday</source>
-                </trans-unit>
-                <trans-unit resname="searching" id="provider_patientsearch.searching">
-                    <source>Searching...</source>
-                </trans-unit>
-                <trans-unit resname="address" id="provider_patientsearch.address">
-                    <source>Address</source>
-                </trans-unit>
-                <trans-unit resname="show_patient_btn" id="provider_patientsearch.show_patient_btn">
-                    <source>Show Patient</source>
-                </trans-unit>
-                <trans-unit resname="consents" id="provider_patientsearch.consents">
-                    <source>Consents with this patient</source>
-                </trans-unit>
-                <trans-unit resname="add_new_consent" id="provider_patientsearch.add_new_consent">
-                    <source>Add new consent</source>
-                </trans-unit>
-                <trans-unit resname="usergroup" id="provider_patientsearch.usergroup">
-                    <source>Team (optional)</source>
-                </trans-unit>
-                <trans-unit resname="passcode" id="provider_patientsearch.passcode">
-                    <source>Access Passcode (optional)</source>
-                </trans-unit>
-                <trans-unit resname="add_new_consent_btn" id="provider_patientsearch.add_new_consent_btn">
-                    <source>Add new consent</source>
-                </trans-unit>
-            </group>
-            <group resname="provider_usergroups" id="provider_usergroups">
-                <trans-unit resname="name" id="provider_usergroups.name">
-                    <source>Team</source>
-                </trans-unit>
-            </group>
-            <group resname="provider_memberdetails" id="provider_memberdetails">
-                <trans-unit resname="pick_consent" id="provider_memberdetails.pick_consent">
-                    <source>Select a consent to display individual records</source>
-                </trans-unit>
-                <trans-unit resname="share_btn" id="provider_memberdetails.share_btn">
-                    <source>Share data with patient</source>
-                </trans-unit>
-            </group>
-            <group resname="help_welcome" id="help_welcome">
-                <trans-unit resname="starts" id="help_welcome.starts">
-                    <source>Some ideas to start with MIDATA:</source>
-                </trans-unit>
-            </group>
-        </body>
-    </file>
-    <file source-language="en" target-language="it" datatype="winres" original="researchers_it.json">
-        <body>
-            <group resname="studynav" id="studynav">
-                <trans-unit resname="team" id="studynav.team">
-                    <source>Team</source>
-                </trans-unit>
-            </group>
-            <group resname="studyoverview" id="studyoverview">
-                <group resname="confirm" id="studyoverview.confirm">
-                    <trans-unit resname="clone" id="studyoverview.confirm.clone">
-                        <source>This will clone the project's settings into a new research project. The workflow of the new project will be reset. No participants will be transferred to the new project. This project will remain unchanged.</source>
-                        <target>Questo clonerà le impostazioni del progetto in un nuovo progetto di ricerca. Il flusso di lavoro del nuovo progetto verrà ripristinato. Nessun partecipante sarà trasferito al nuovo progetto. Questo progetto rimarrà invariato.</target>
-                    </trans-unit>
-                </group>
-            </group>
-            <group resname="studyrules" id="studyrules">
-                <trans-unit resname="sharing_query" id="studyrules.sharing_query">
-                    <source>Data Access Filter</source>
                 </trans-unit>
             </group>
         </body>

@@ -197,7 +197,7 @@
         "only_first_shown" : "Es werden nur die ersten 1000 übereinstimmenden Zustimmungen angezeigt.",
         "recruiter" : "Anwerber",
         "accept_btn" : "Annehmen",
-        "reject_btn" : "Verwerfen",
+        "reject_btn" : "Ablehnen",
         "add_participant_btn" : "Teilnehmer hinzufügen",
         "empty" : "Diese Studie hat noch keine Teilnehmer, die den Suchkriterien entsprechen.",
         "search_type" : "Suchen",
@@ -325,5 +325,17 @@
             "INTERNAL" : "nur die Forscher und MIDATA"
         },
         "showlanguages" : "Zu editierende Sprachen"
+    },
+
+    "researcher_sharing" : {
+        "format" : "Ressourcentyp",
+        "content" : "Inhaltstyp",
+        "app" : "Applikation",
+        "time" : "Zeitliche Beschränkung",
+        "studyGroup" : "Studiengruppe",
+        "share_btn" : "Teilen",
+        "unshare_btn" : "Nicht mehr teilen",
+        "search_btn" : "Suchen"
+
     }
 }
