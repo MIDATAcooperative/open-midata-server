@@ -85,6 +85,7 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
+import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.ServerTools;
 import utils.access.DBIterator;
@@ -379,6 +380,7 @@ public class Studies extends APIController {
 					try {
 						return it.hasNext();
 					} catch (AppException e) {
+						ErrorReporter.report("study export", null, e);
 						throw new RuntimeException(e);
 					}
 				}
@@ -423,8 +425,10 @@ public class Studies extends APIController {
 						// first = false;
 						return ByteString.fromString(out.toString());
 					} catch (AppException e) {
+						ErrorReporter.report("study export", null, e);
 						throw new RuntimeException(e);
 					} catch (IOException e2) {
+						ErrorReporter.report("study export", null, e2);
 						throw new RuntimeException(e2);
 					} finally {
 						ServerTools.endRequest();

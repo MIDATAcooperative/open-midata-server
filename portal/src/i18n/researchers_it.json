@@ -325,5 +325,17 @@
             "INTERNAL" : "solo ricercatori e MIDATA"
         },
         "showlanguages" : "Lingue da editare"
+    },
+
+    "researcher_sharing" : {
+        "format" : "Tipo di risorsa",
+        "content" : "Tipo di contenuto",
+        "app" : "Applicazione",
+        "time" : "Limitazione del tempo",
+        "studyGroup" : "Gruppo di studio",
+        "share_btn" : "Condividere",
+        "unshare_btn" : "Non condividere più",
+        "search_btn" : "Ricerca"
+
     }
 }

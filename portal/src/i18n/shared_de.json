@@ -34,6 +34,7 @@
         "offline" : "Der Server ist momentan nicht verfügbar! Bitte versuchen Sie es später  wieder.",
         "internal" : "Ein interner Fehler ist aufgetreten. Kontaktieren Sie bitte support@midata.coop, falls das Problem weiterhin besteht.",
         "internal_db" : "Ein interner Datenbank-Fehler ist aufgetreten. Kontaktieren Sie bitte support@midata.coop, falls das Problem weiterhin besteht.",
+        "plugin" : "Es ist ein anwendungsspezifischer Fehler aufgetreten. Bitte kontaktieren Sie den Anwendungsentwickler oder support@midata.coop, wenn das Problem weiterhin besteht.",
         "relogin" : "Melden Sie sich bitte erneut an",
         "noconsent" : "Keine aktive Zustimmung vorhanden, die es erlaubt Daten bei der Zielperson hinzuzufügen.",
         "unsupported" : "Operation nicht unterstützt",
@@ -222,6 +223,8 @@
             "user-password-change-request" : "Passwortänderung beantragt",
             "user-passphrase-change" : "Passphrase geändert",
             "user-address-change" : "Adresse des Benutzers geändert",
+            "user-phone-change" : "Die Telefonnummer des Benutzers wurde geändert",
+            "user-settings-change" : "Benutzereinstellungen geändert",
             "user-email-change" : "E-Mail des Benutzers geändert",
             "user-birthday-change" : "Geburtsdatum des Benutzers geändert",
             "user-status-change" : "Status des Benutzerkontos geändert",
@@ -276,7 +279,8 @@
             "ADDRESS_VERIFIED" : "Die Postadresse des Benutzers muss geprüft worden sein",
             "PASSPORT_VERIFIED" : "Die ID-Karte des Benutzers muss geprüft worden sein",
             "MIDATA_COOPERATIVE_MEMBER" : "Der Benutzer muss Mitglied der Genossenschaft sein",
-            "ADMIN_VERIFIED" : "Das Konto muss von einem MIDATA Administrator freigeschaltet worden sein"
+            "ADMIN_VERIFIED" : "Das Konto muss von einem MIDATA Administrator freigeschaltet worden sein",
+            "BIRTHDAY_SET" : "Der Geburtsdatum des Benutzers muss bekannt sein"
         },
         "writepermissiontype" : {
             "NONE" : "Keine Daten können geschrieben werden.",
@@ -476,6 +480,7 @@
         "view_btn" : "Vorschau",
         "submit_btn" : "Abschicken",
         "delete_btn" : "Löschen",
+        "skip_btn" : "Überspringen (keine Änderung)",
         "or" : "oder",
         "save_ok" : "Erfolgreich gespeichert",
         "yesno" : {
@@ -599,6 +604,9 @@
         "sign_in_btn" : "Anmelden",
         "forgot_your_password" : "Passwort vergessen?",
         "login_btn" : "Anmelden",
+        "service_login" : "Anmeldung für Bestätigungsanfrage",
+        "service_login2" : "Bei Ihrer nächsten Anmeldung werden Sie um eine Bestätigung der Zustimmung und/oder Teilnahme an Forschungsprojekten gebeten.",
+        "no_account" : "Ich habe noch keinen MIDATA-Account.",
 
         "info1" : "Liebe Studienteilnehmerin, Lieber Studienteilnehmer",
         "info2" : "Sie haben bereits ein MIDATA-Konto, melden Sie sich mit Ihrer E-Mail-Adresse und ihrem Passwort an.",
@@ -653,9 +661,10 @@
         "code_intructions" : "Ein Brief mit einem Bestätigungscode wurde an Ihre Postadresse versandt. Geben Sie bitte den Bestätigungscode ein, um Zugriff auf die Plattform zu erhalten.",
         "code_done" : "Sie haben den Bestätigungscode eingegeben. Sie werden sich anmelden können sobald Ihr unterschriebener Vertrag bei MIDATA eingetroffen ist.",
         "enter_now_btn" : "Jetzt eingeben",
-        "email_success" : "Die E-Mail-Adresse wurde bestätigt.",
+        "email_success" : "Vielen Dank, dass Sie Ihre E-Mail-Adresse bestätigt haben.",
         "address_entered" : "Geben Sie bitte Ihre Postadresse ein, sie ist erforderlich, um diesen Dienst nutzen zu können.",
         "phone_entered" : "Geben Sie bitte Ihre Mobiltelefonnummer ein, sie ist erforderlich, um diesen Dienst nutzen zu können.",
+        "birthday_entered" : "Für die Nutzung dieses Dienstes ist ein gültiges Geburtsdatum erforderlich. Bitte fügen Sie Ihr Geburtsdatum zu Ihren Kontoinformationen hinzu. (Formatbeispiel: 31.12.1999)",
         "admin_verified" : "Ihr Konto muss durch einen MIDATA Administrator freigeschaltet werden. Versuchen Sie es bitte später noch einmal. Falls Ihr Konto nicht innert 24 Stunden freigeschaltet wurde, kontaktieren sie bitte MIDATA.",
         "terms_agreed" : "Die MIDATA Allgemeine Geschäftsbedingungen wurden aktualisiert. Bitte bestätigen Sie, dass Sie mit der neuen Version einverstanden sind.",
         "privacy_policy_agreed" : "Die MIDATA Datenschutzerklärung wurde aktualisiert. Bitte bestätigen Sie, dass Sie mit der neuen Version einverstanden sind.",
@@ -774,7 +783,9 @@
         "status" : "Status",
         "recommended_apps" : "Empfohlene Applikationen",
         "use_app" : "Jetzt verwenden",
-        "for_participants" : "Teilnahme-Informationen"
+        "for_participants" : "Teilnahme-Informationen",
+        "please_review1" : "Entscheidung über die Teilnahme",
+        "please_review2" : "Bitte überprüfen Sie dieses Forschungsprojekt. Möchten Sie teilnehmen? Klicken Sie auf 'Überspringen (keine Änderung)', wenn Sie diese Seite ohne Änderungen verlassen möchten."
     },
 
     "user" : {
@@ -862,7 +873,9 @@
         "consent_empty" : "Diese Zustimmung teilt zu Beginn keine Daten. Sie können die Daten, die Sie darüber teilen wollen, später wählen.",
         "create_btn" : "Erstellen und Daten wählen",
         "create2_btn" : "Diese Zustimmung akzeptieren",
-        "extended_btn" : "Erweiterte Optionen anzeigen"
+        "extended_btn" : "Erweiterte Optionen anzeigen",
+        "please_review1" : "Neuer Zustimmungsvorschlag",
+        "please_review2" : "Sind Sie mit dieser neuen Zustimmung einverstanden? Bitte überprüfen Sie den Inhalt und klicken Sie auf die Schaltfläche 'Diese Zustimmung akzeptieren', wenn Sie damit einverstanden sind. Andernfalls klicken Sie auf die Schaltfläche 'Überspringen (Keine Änderung)'."
     },
 
     "editconsent" : {
@@ -898,8 +911,11 @@
         "excludes_group" : "Schliesst alle Einträge die dieser Gruppe gehören aus: {{ group }}",
         "view_change_selection_btn" : "Auswahl ansehen/ändern",
         "confirm_btn" : "Diese Zustimmung bestätigen",
-        "reject_btn" : "Diese Zustimmung verwerfen",
-        "delete_btn" : "Diese Zustimmung löschen"
+        "reject_btn" : "Diese Zustimmung ablehnen",
+        "delete_btn" : "Diese Zustimmung löschen",
+        "please_review1" : "Zustimmung zu überprüfen",
+        "please_review2a" : "Bitte überprüfen Sie diese Zustimmung. Klicken Sie auf 'Diese Zustimmung bestätigen', wenn Sie damit einverstanden sind. Klicken Sie auf 'Diese Zustimmung ablehnen', wenn Sie nicht einverstanden sind.",
+        "please_review2b" : "Bitte überprüfen Sie diese bestehende Zustimmung. Klicken Sie auf die Schaltfläche 'Überspringen (Keine Änderung)', um diese Seite ohne Änderungen zu verlassen. Klicken Sie auf 'Diese Zustimmung ablehnen', wenn Sie nicht mehr einverstanden sind."
     },
 
     "editconsent2" : {
@@ -1224,6 +1240,8 @@
     "serviceleave" : {
         "title" : "Haben Sie Ihre Session beendet?",
         "thankyou" : "Danke für Ihre Hilfe!",
+        "continue" : "Bitte benutzen Sie das Hauptmenü, um Ihre Sitzung fortzusetzen oder sich abzumelden.",
+        "logout_btn" : "Abmelden",
         "goodbye_btn" : "Session beenden und Fenster schliessen",
         "logoutreturn" : "Sie werden zur aufrufenden Seite weitergeleitet.",
         "return_btn" : "Abmelden und fortfahren"
