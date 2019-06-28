@@ -92,9 +92,9 @@ public class ProcessingTools {
 		return input;
 	}
 
-	public static DBIterator<DBRecord> limit(Map<String, Object> properties, DBIterator<DBRecord> input) {
-		if (properties.containsKey("limit")) {
-			Object limitObj = properties.get("limit");
+	public static DBIterator<DBRecord> limit(Map<String, Object> properties, DBIterator<DBRecord> input) {		
+		Object limitObj = properties.get("limit");
+		if (limitObj != null) {			
 			int limit = (int) Integer.parseInt(limitObj.toString());
 			return new LimitIterator<DBRecord>(limit, input);
 		} else
