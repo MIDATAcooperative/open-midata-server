@@ -2,7 +2,7 @@ var midata = require('./src/midata-research');
 var assert = require('assert');
 var fs = require('fs'); 
 
-const server = "https://test.midata.coop";
+const server = "https://ch.midata.coop";
 
 var stream = fs.createWriteStream("export.json");
 let counter = 0;
