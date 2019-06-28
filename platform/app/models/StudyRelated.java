@@ -33,6 +33,10 @@ public class StudyRelated extends Consent {
 		return Model.getAll(StudyRelated.class, collection, CMaps.map("authorized", authorized).map("type", ConsentType.STUDYRELATED).mapNotEmpty("group", group).map("study", studyId).map("status", ConsentStatus.ACTIVE).mapNotEmpty("owner", owners).map("dataupdate", CMaps.map("$gte", since)), fields);
 	}
 	
+	public static Set<StudyRelated> getActiveByAuthorizedAndIds(MidataId authorized, Set<MidataId> ids) throws InternalServerException {
+		return Model.getAll(StudyRelated.class, collection, CMaps.map("authorized", authorized).map("type", ConsentType.STUDYRELATED).map("_id", ids).map("status", ConsentStatus.ACTIVE), Consent.SMALL);
+	}
+	
 	public static Set<StudyRelated> getByStudy(MidataId studyId, Set<String> fields) throws InternalServerException {
 		return Model.getAll(StudyRelated.class, collection, CMaps.map("type", ConsentType.STUDYRELATED).map("study", studyId), fields);
 	}

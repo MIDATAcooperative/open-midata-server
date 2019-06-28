@@ -12,6 +12,7 @@ import java.util.Set;
 import models.AccessPermissionSet;
 import models.Consent;
 import models.MidataId;
+import models.StudyRelated;
 import models.UserGroupMember;
 import utils.AccessLog;
 import utils.auth.EncryptionNotSupportedException;
@@ -244,6 +245,7 @@ public class APSCache {
 			  return result;
 			} else {
 			  List<Consent> result = new ArrayList<Consent>(Consent.getAllActiveByAuthorizedAndOwners(getAccountOwner(), owners));
+			  if (result.isEmpty()) result.addAll(StudyRelated.getActiveByAuthorizedAndIds(getAccountOwner(), owners));
 			  cache(result);
 			  MidataId[] ids = new MidataId[result.size()];
 			  int idx = 0;
@@ -254,6 +256,7 @@ public class APSCache {
 		}
 				
 		List<Consent> result = new ArrayList<Consent>(Consent.getAllActiveByAuthorizedAndOwners(getAccountOwner(), owners));
+		result.addAll(StudyRelated.getActiveByAuthorizedAndIds(getAccountOwner(), owners));
 		cache(result);
 		return result;
 		
