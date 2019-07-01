@@ -1,6 +1,6 @@
 {
    "footer" : {
-     "copyright" : "MIDATA Genossenschaft – c/o EvalueScience AG – Pfingstweidstrasse 16 – 8005 Zürich",
+     "copyright" : "©{{now}} ETH Zürich",
      "homepage" : "MIDATA Homepage",
      "impressum" : "Impressum",
      "portals" : "Midata Portals:",

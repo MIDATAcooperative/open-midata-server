@@ -18,9 +18,9 @@ angular.module('portal')
 	$scope.sel = { lang : 'de' };
 	$scope.targetUserRoles = [
         { value : "ANY", label : "Any Role" },
-	    { value : "MEMBER", label : "MIDATA Members" },
+	    { value : "MEMBER", label : "Account Holders" },
 	    { value : "PROVIDER", label : "Healthcare Providers" },
-	    { value : "RESEARCH", label : "Research" },
+	    { value : "RESEARCH", label : "Researchers" },
 	    { value : "DEVELOPER", label : "Developers" }
     ];
 	$scope.types = [
