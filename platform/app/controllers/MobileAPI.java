@@ -242,6 +242,7 @@ public class MobileAPI extends Controller {
 			String username = JsonValidation.getEMail(json, "username");
 			String password = JsonValidation.getString(json, "password");
 			String device = JsonValidation.getStringOrNull(json, "device");
+			if (device != null && device.length()<4) throw new BadRequestException("error.illegal.device", "Value for device is too short.");
 			
 			role = json.has("role") ? JsonValidation.getEnum(json, "role", UserRole.class) : UserRole.MEMBER;
 			

@@ -16,7 +16,7 @@
 		    <p class="help-block" translate="manageapp.info.filename"></p>
 		  </formrow>
 		  <formrow myid="targetUserRole" label="manageapp.targetUserRole" class="danger-change">
-		    <select id="targetUserRole" name="targetUserRole" class="form-control" ng-change="requireLogout();" ng-model="app.targetUserRole" ng-options="role.value as role.label for role in targetUserRoles" required></select>
+		    <select id="targetUserRole" name="targetUserRole" class="form-control" ng-change="requireLogout();" ng-model="app.targetUserRole" ng-options="role.value as ('enum.userrole.'+role.value) | translate for role in targetUserRoles" required></select>
 		    <p class="help-block" translate="manageapp.info.targetUserRole"></p>
 		  </formrow>
 		  <formrow myid="type" label="manageapp.type" class="danger-change">

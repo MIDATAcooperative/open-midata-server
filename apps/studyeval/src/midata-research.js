@@ -66,12 +66,12 @@ class Midata {
 		return this;
 	}
 	
-	loginResearcher(user, password) {
+	loginResearcher(user, password, otherRole) {
 		var session = this.session;
 		
 		session.username = user;
 		session.password = password;
-		session.role = "RESEARCH";
+		session.role = otherRole || "RESEARCH";
 		
 		assert(session.username, "No username set");
 		assert(session.password, "No password set");

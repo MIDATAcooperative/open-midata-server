@@ -87,8 +87,8 @@ public class Query {
 	
 	public Query withoutTime() throws AppException {
 		Query r = new Query(properties, fields, cache, apsId, context, true);
-		properties.remove("shared-after");
-		process();
+		r.properties.remove("shared-after");
+		r.process();
 		return r;
 	}
 	
