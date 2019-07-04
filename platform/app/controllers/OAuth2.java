@@ -883,7 +883,8 @@ public class OAuth2 extends Controller {
         token.userRole = json.has("role") ? JsonValidation.getEnum(json, "role", UserRole.class) : UserRole.MEMBER;                
 		token.state = JsonValidation.getString(json, "state");
 		token.device = JsonValidation.getString(json, "device");
-									    				
+			
+		if (token.device != null && token.device.length()<4) throw new BadRequestException("error.illegal.device", "Value for device is too short.");
 	    // Validate Mobile App	
 		Plugin app = validatePlugin(token, json);		
 		readyCodeChallenge(token, json);
