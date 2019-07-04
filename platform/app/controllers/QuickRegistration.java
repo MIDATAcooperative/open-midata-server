@@ -114,6 +114,8 @@ public class QuickRegistration extends APIController {
 		String password = JsonValidation.getPassword(json, "password");
 		String device = JsonValidation.getStringOrNull(json, "device");
 
+		if (device != null && device.length()<4) throw new BadRequestException("error.illegal.device", "Value for device is too short.");
+		
 		// check status
 		if (Member.existsByEMail(email)) {
 		  throw new BadRequestException("error.exists.user", "A user with this email address already exists.");

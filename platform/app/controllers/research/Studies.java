@@ -1281,6 +1281,7 @@ public class Studies extends APIController {
 			if (plugin.type.equals("mobile")) {
 			  JsonValidation.validate(json, "device");
 			  device = JsonValidation.getString(json, "device");
+			  if (device != null && device.length()<4) throw new BadRequestException("error.illegal.device", "Value for device is too short.");
 			} else {
 			  device = "service";	
 			}
