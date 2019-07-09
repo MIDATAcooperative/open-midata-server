@@ -131,7 +131,7 @@
             "allowsUserSearch" : "Benutzer dieser App dürfen nach anderen Benutzern der gleichen App suchen.",
             "defaultSpaceName" : "Titel der Kachel des Plugins auf dem Dashboard.",
             "tags" : "Kategorien unter welchen das Plugin im MIDATA Store erscheinen wird.",
-            "url" : "URL der Hauptseite des Plugins. Wenn Sie das MIDATA-Template verwenden ist es 'dist/index.html#?authToken=:authToken''",
+            "url" : "URL der Hauptseite des Plugins. Wenn Sie das MIDATA-Template verwenden ist es 'dist/index.html#!?authToken=:authToken''",
             "previewUrl" : "URL der Dashboard-Kachel des Plugins. Leer lassen falls keine solche Kachel angeboten wird.",
             "defaultSpaceContext" : "Wählen Sie 'Dashboard' für das Standard-Dashboard. Wählen Sie 'Konfiguration' für ein Import-Plugin.",
             "redirectUri" : "Sie können mehrere mögliche Redirect-URIs angeben, indem Sie die URIs durch ein Leerzeichen trennen.",
