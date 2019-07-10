@@ -19,6 +19,7 @@ angular.module('portal')
 			$scope.status.doBusy(server.get(jsRoutes.controllers.research.Studies.get($scope.studyId).url))
 			.then(function(data) { 				
 				$scope.study = data.data;
+				$scope.lockChanges = !$scope.study.myRole.export;
 				$scope.infos = [];
 				angular.forEach($scope.study.groups, function(group) {
 					var inf = { group : group.name, count:"-1" };
@@ -44,6 +45,12 @@ angular.module('portal')
 	};
 	
 	$scope.fhirDownload = function(what, mode) {
+		$scope.error = null;
+		var startDateStr = document.getElementById("startDate").value;		
+		if (startDateStr && startDateStr.trim().length > 0 && (!$scope.filter.startDate || !$scope.filter.startDate.getTime || !$scope.filter.startDate.getTime()>0)) {
+			$scope.error = "error.invalid.date";
+			return;
+		}
 		$scope.status.doAction("download", server.token())
 		.then(function(response) {
 		  var urlParams = "";
