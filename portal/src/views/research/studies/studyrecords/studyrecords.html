@@ -3,9 +3,14 @@
    <div class="tab-content">
     <div class="tab-pane active">
       <loader busy="status.isBusy !== false">
-      <p class="alert alert-info" translate="studyrecords.empty">Once data is available it can be downloaded here.</p>
+      <p class="alert alert-info" translate="studyrecords.empty" ng-show="study.myRole.export">Once data is available it can be downloaded here.</p>
       
-      <form class="form form-horizontal">
+      <p class="alert alert-warning" translate="studyrecords.wrongrole" ng-hide="study.myRole.export"></p>
+      
+      <p ng-show="error && !error.field" translate="{{error.code || error }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	   
+	  </p>
+      
+      <form name="myform" novalidate class="form form-horizontal">
        <formrow myid="startDate" label="studyrecords.startDate">
 	    <div class="input-group">
           <input id="startDate" name="startDate" type="text" class="form-control" placeholder="" uib-datepicker-popup="dd.MM.yyyy"  ng-model="filter.startDate" is-open="datePickers.startDate" no-time datepicker-options="dateOptions" ng-required="false" close-text="Close" />
