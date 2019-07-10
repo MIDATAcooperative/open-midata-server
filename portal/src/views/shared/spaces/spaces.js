@@ -8,13 +8,14 @@ angular.module('portal')
 	$scope.spaceId = $state.params.spaceId;
 	$scope.space = { "_id" : $scope.spaceId };
 	$scope.params = $state.params.params ? JSON.parse($state.params.params) : null;
-	
-	
-	// get current user
+			
 	session.currentUser
 	.then(function(userId) {
 			$scope.userId = userId;
-			getAuthToken($scope.space, $state.params.user);
+			
+			if ($state.params.app && !$state.params.spaceId) {				
+				$scope.openAppLink({ app : $state.params.app });
+			} else getAuthToken($scope.space, $state.params.user);
 	});
 			
 	// get the authorization token for the current space
@@ -109,6 +110,10 @@ angular.module('portal')
 		data = data || {};
 		data.user = $state.params.user;
 		spaces.openAppLink($state, $scope.userId, data);	 
+	};
+	
+	$scope.notLocked = function() {
+		return !$state.params.app;
 	};
 	
 }]);

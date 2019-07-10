@@ -11,6 +11,10 @@ angular.module('portal')
 			params.login = $state.params.login;
 		}
 		
+		if ($state.params.pluginName) {
+			actions.push({ ac : "use", c : $state.params.pluginName });
+		}
+		
 		if ($state.params.consent) {
 			actions.push({ ac : "confirm", c : $state.params.consent });
 		} else {

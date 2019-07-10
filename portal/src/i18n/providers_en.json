@@ -3,7 +3,7 @@
     "sign_up" : "Registration as a Health Professional",
     "provider" : "Health Professional",
     "user" : "User",
-    "name" : "Name"
+    "name" : "(Organization) Name"
   },
   
   "provider_login" : {

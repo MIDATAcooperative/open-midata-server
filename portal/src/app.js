@@ -58,7 +58,7 @@ angular.module('portal', [ 'ngCookies', 'ui.router', 'ui.bootstrap', 'services',
       url: '/provider',
       data : { role : 'PROVIDER', locales : 'providers' },
       templateUrl: 'assets/nav/provider.html'
-    })
+    })  
     .state('developer', {
       url: '/developer',
       data : { role : 'DEVELOPER', locales : 'developers' },

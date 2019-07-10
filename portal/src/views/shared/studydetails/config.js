@@ -5,7 +5,7 @@ angular.module('portal')
 	      url: '/study/:studyId?action',
 	      templateUrl: 'views/shared/studydetails/studydetails.html',
 	      dashId : 'studydetails'
-	    })
+	    })	  
 	    .state('provider.studydetails', {
 	      url: '/study/:studyId',
 	      templateUrl: 'views/shared/studydetails/studydetails.html',

@@ -1,5 +1,5 @@
 angular.module('services')
-.factory('actions', ['server', 'circles', function(server, circles) {
+.factory('actions', ['server', 'circles', 'spaces', function(server, circles, spaces) {
 	var service = {};
 	var current = null;
 	var acarray = null;
@@ -17,12 +17,23 @@ angular.module('services')
 		return true;
 	};
 	
-	service.showAction = function($state, override) {
+	service.hasMore = function() {
+	   return hasActions(acarray);	
+	};
+	
+	service.getAppName = function($state) {
+		var ac = getActions($state);
+		if (hasActions(ac) && ac[0].ac == "use") return ac[0].c;
+		return null;
+	};
+	
+	service.showAction = function($state, override) {		
 		acarray = override || getActions($state) || acarray;
 		if (!hasActions(acarray)) return false;
 			
 		
 		current = acarray[0];
+				
 		var action = current.ac;
 		if (!action) return false;
 		
@@ -36,6 +47,9 @@ angular.module('services')
 		} else if (action == "study") {
 			$state.go("member.studydetails", { studyId : current.s, action : JSON.stringify(acarray.slice(1)) });
 			return true;
+		} else if (action == "use") {
+			$state.go("member.spaces", { app : current.c, action : JSON.stringify(acarray.slice(1)) });			
+		    return true;
 		} else if (action == "leave") {
 			$state.go("member.serviceleave", { callback : current.c });
 			return true;
