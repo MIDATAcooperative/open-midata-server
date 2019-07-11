@@ -28,6 +28,7 @@ import com.google.common.collect.Lists;
 
 import actions.APICall;
 import akka.NotUsed;
+import akka.stream.ActorAttributes;
 import akka.stream.javadsl.Source;
 import akka.util.ByteString;
 import controllers.APIController;
@@ -393,30 +394,34 @@ public class Studies extends APIController {
 				public ByteString next() {
 					try {
 						System.out.println("start study export next record");
-						AccessLog.log("start study export next record");
+						//AccessLog.log("start study export next record");
 						StringBuffer out = new StringBuffer();
 						KeyManager.instance.continueSession(handle);
+						System.out.println("set exe");
 						ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId, role));
-						Record rec = it.next();
+						System.out.println("call next");
+						long start = System.currentTimeMillis();
+						Record rec = it.next();						
+						System.out.println("lasted="+(System.currentTimeMillis()-start));
 						System.out.println("got record:"+(rec != null));
 						if (rec._id == null) System.out.println("no id");
 						if (rec.owner == null) System.out.println("no owner");
 						System.out.println("record:"+rec._id.toString()+" ow="+rec.owner.toString());
-						AccessLog.log("got record:"+(rec != null));						
+						//AccessLog.log("got record:"+(rec != null));						
 						
 						String format = rec.format.startsWith("fhir/") ? rec.format.substring("fhir/".length()) : "Basic";
 
 						ResourceProvider<DomainResource, Model> prov = FHIRServlet.myProviders.get(format);
 						DomainResource r = prov.parse(rec, prov.getResourceType());
 						System.out.println("got parsed:"+(r != null));
-						AccessLog.log("got parsed:"+(r != null));
+						//AccessLog.log("got parsed:"+(r != null));
 						
 						String location = FHIRServlet.getBaseUrl() + "/" + prov.getResourceType().getSimpleName() + "/" + rec._id.toString() + "/_history/" + rec.version;
 						if (r != null) {
 							String ser = prov.serialize(r);
 							int attpos = ser.indexOf(FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING);
 							System.out.println("binary pos:"+attpos);
-							AccessLog.log("binary pos:"+attpos);
+							//AccessLog.log("binary pos:"+attpos);
 							if (attpos > 0) {
 								out.append("," + "{ \"fullUrl\" : \"" + location + "\", \"resource\" : " + ser.substring(0, attpos));
 								FileData fileData = RecordManager.instance.fetchFile(executorId, new RecordToken(rec._id.toString(), rec.stream.toString()));
@@ -441,14 +446,15 @@ public class Studies extends APIController {
 						}
 						// first = false;
 						System.out.println("done record");
-						AccessLog.log("done record");
+						//AccessLog.log("done record");
 						return ByteString.fromString(out.toString());
-					} catch (Exception e) {
+					} catch (Throwable e) {
 						System.out.println("EXCEPTION");
 						e.printStackTrace();
-						ErrorReporter.report("study export", null, e);
+						if (e instanceof Exception) ErrorReporter.report("study export", null, (Exception) e);
 						throw new RuntimeException(e);					
 					} finally {
+						System.out.println("FINALLY:"+AccessLog.getReport());
 						ServerTools.endRequest();
 					}
 				}
@@ -468,8 +474,8 @@ public class Studies extends APIController {
 		AuditManager.instance.success();
 
 		Source<ByteString, NotUsed> header = Source.single(ByteString.fromString(out.toString()));
-		Source<ByteString, NotUsed> footer = Source.single(ByteString.fromString("] }"));
-		Source<ByteString, NotUsed> main = Source.fromIterator(creator);
+		Source<ByteString, NotUsed> footer = Source.single(ByteString.fromString("] }"));		
+		Source<ByteString, NotUsed> main = Source.fromIterator(creator).withAttributes(ActorAttributes.dispatcher("my-thread-pool-dispatcher"));
 
 		Source<ByteString, NotUsed> outstream = header.concat(main).concat(footer);
 
