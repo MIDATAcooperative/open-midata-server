@@ -380,9 +380,9 @@ public class Studies extends APIController {
 				@Override
 				public boolean hasNext() {
 					try {
-						System.out.println("hasNext");
+						//System.out.println("hasNext");
 						boolean v = it.hasNext();
-						System.out.println("next = "+v);
+						//System.out.println("next = "+v);
 						return v;
 					} catch (Exception e) {
 						ErrorReporter.report("study export", null, e);
@@ -393,34 +393,34 @@ public class Studies extends APIController {
 				@Override
 				public ByteString next() {
 					try {
-						System.out.println("start study export next record");
+						//System.out.println("start study export next record");
 						//AccessLog.log("start study export next record");
 						StringBuffer out = new StringBuffer();
 						KeyManager.instance.continueSession(handle);
-						System.out.println("set exe");
+						//System.out.println("set exe");
 						ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId, role));
-						System.out.println("call next");
+						//System.out.println("call next");
 						long start = System.currentTimeMillis();
 						Record rec = it.next();						
-						System.out.println("lasted="+(System.currentTimeMillis()-start));
-						System.out.println("got record:"+(rec != null));
+						//System.out.println("lasted="+(System.currentTimeMillis()-start));
+						//System.out.println("got record:"+(rec != null));
 						if (rec._id == null) System.out.println("no id");
 						if (rec.owner == null) System.out.println("no owner");
-						System.out.println("record:"+rec._id.toString()+" ow="+rec.owner.toString());
+						//System.out.println("record:"+rec._id.toString()+" ow="+rec.owner.toString());
 						//AccessLog.log("got record:"+(rec != null));						
 						
 						String format = rec.format.startsWith("fhir/") ? rec.format.substring("fhir/".length()) : "Basic";
 
 						ResourceProvider<DomainResource, Model> prov = FHIRServlet.myProviders.get(format);
 						DomainResource r = prov.parse(rec, prov.getResourceType());
-						System.out.println("got parsed:"+(r != null));
+						//System.out.println("got parsed:"+(r != null));
 						//AccessLog.log("got parsed:"+(r != null));
 						
 						String location = FHIRServlet.getBaseUrl() + "/" + prov.getResourceType().getSimpleName() + "/" + rec._id.toString() + "/_history/" + rec.version;
 						if (r != null) {
 							String ser = prov.serialize(r);
 							int attpos = ser.indexOf(FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING);
-							System.out.println("binary pos:"+attpos);
+							//System.out.println("binary pos:"+attpos);
 							//AccessLog.log("binary pos:"+attpos);
 							if (attpos > 0) {
 								out.append("," + "{ \"fullUrl\" : \"" + location + "\", \"resource\" : " + ser.substring(0, attpos));
@@ -445,16 +445,17 @@ public class Studies extends APIController {
 							out.append((",") + "{ \"fullUrl\" : \"" + location + "\" } ");
 						}
 						// first = false;
-						System.out.println("done record");
+						//System.out.println("done record");
 						//AccessLog.log("done record");
 						return ByteString.fromString(out.toString());
 					} catch (Throwable e) {
 						System.out.println("EXCEPTION");
+						System.out.println(AccessLog.getReport());
 						e.printStackTrace();
 						if (e instanceof Exception) ErrorReporter.report("study export", null, (Exception) e);
 						throw new RuntimeException(e);					
 					} finally {
-						System.out.println("FINALLY:"+AccessLog.getReport());
+						//System.out.println("FINALLY:"+AccessLog.getReport());
 						ServerTools.endRequest();
 					}
 				}
@@ -462,15 +463,7 @@ public class Studies extends APIController {
 			}
 
 		};
-
-		// for (Consent part : parts) {
-
-		/*
-		 * } catch (Exception e) { AccessLog.logException("download", e);
-		 * ErrorReporter.report("Study Download", null, e); } finally {
-		 * ServerTools.endRequest(); }
-		 */
-
+		
 		AuditManager.instance.success();
 
 		Source<ByteString, NotUsed> header = Source.single(ByteString.fromString(out.toString()));
