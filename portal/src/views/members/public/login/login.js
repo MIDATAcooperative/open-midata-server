@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('LoginCtrl', ['$scope', 'server', '$state', 'status', 'session', 'ENV', 'crypto', function($scope, server, $state, status, session, ENV, crypto) {
+.controller('LoginCtrl', ['$scope', 'server', '$state', 'status', 'session', 'ENV', 'crypto', 'actions', 'apps', function($scope, server, $state, status, session, ENV, crypto, actions, apps) {
 	
 	// init		
 	$scope.login = { role : "MEMBER" };	
@@ -25,6 +25,15 @@ angular.module('portal')
 		$scope.login.role = $state.params.role;
 	}
 	
+	var appName = actions.getAppName($state);
+    if (appName) {    	
+    	apps.getAppInfo(appName, "visualization")
+		.then(function(results) {
+			$scope.app = results.data;
+			if (!$scope.app) { $scope.fatalError("error.unknown.plugin"); }
+        }, function() { $scope.fatalError("error.unknown.plugin"); });
+    }
+	
 	// login
 	$scope.dologin = function() {
 		// check user input
@@ -44,5 +53,21 @@ angular.module('portal')
 		   session.postLogin(result, $state);
 		}).catch(function(err) { $scope.error = err.data; });
 				
+	};
+	
+	$scope.fatalError = function(err) {
+		$scope.error = err;
+		$scope.serviceLogin = false;
+		$scope.status.action = "login";
+	};
+	
+	$scope.hasIcon = function() {
+		if (!$scope.app || !$scope.app.icons) return false;
+		return $scope.app.icons.indexOf("LOGINPAGE") >= 0;
+	};
+	
+	$scope.getIconUrl = function() {
+		if (!$scope.app) return null;
+		return ENV.apiurl + "/api/shared/icon/LOGINPAGE/" + $scope.app.filename;
 	};
 }]);

@@ -64,7 +64,7 @@ angular.module('services')
 					console.log($state.params);
 				  if ($state.params.action) {
 					  if (actions.showAction($state)) return;
-				  }
+				  }				 
 				  $state.go('member.overview');
 				}
 			} else if (result.data.role == "provider") {

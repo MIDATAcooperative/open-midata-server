@@ -24,12 +24,16 @@
 				<div class="panel-container" style="max-width:330px; padding-top:30px; margin:0 auto;">
 					<div class="panel panel-primary">
 		            	<div class="panel-heading">
-		              		<h3 class="panel-title" translate="member_login.sign_in"></h3>
+		              		<h3 class="panel-title"><span translate="member_login.sign_in"></span><span ng-show="app"> - {{ app.i18n[translate.use()].name || app.name }}</span></h3>
 		            	</div>
 		            	<div class="panel-body">
-		            	    <div class="alert alert-info" ng-show="serviceLogin">
+		            	    <div class="alert alert-info" ng-show="serviceLogin && !app">
 		            	      <strong class="alert-heading" translate="login.service_login"></strong>                 
-                              <div translate="login.service_login2"></div>                              
+                              <div ng-hide="app" translate="login.service_login2"></div>                                                     
+                            </div>
+                            
+                            <div ng-if="app" class="extraspace">
+                              <center><img ng-if="hasIcon()" ng-src="{{getIconUrl()}}"></center>																        
                             </div>
 		            	
 			            	<div ng-show="error" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">

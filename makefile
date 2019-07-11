@@ -241,7 +241,7 @@ tasks/build-portal: trigger/build-portal conf/recoverykeys.json $(shell find por
 	$(info ------------------------------)
 	$(info Building Portal... )
 	$(info ------------------------------)
-	cd portal;rm package-lock.json;npm install;npm run prod:build;
+	cd portal;npm ci;npm run prod:build;
 	touch tasks/build-portal
 	
 tasks/build-platform: $(shell find platform -name "*.java" | sed 's/ /\\ /g')

@@ -1,9 +1,10 @@
 angular.module('portal')
-.controller('ServiceLeaveCtrl', ['$scope', 'server', '$state', '$window', 'session', function($scope, server, $state, $window, session) {
+.controller('ServiceLeaveCtrl', ['$scope', 'server', '$state', '$window', 'session', 'actions', function($scope, server, $state, $window, session, actions) {
 	
 	
 	$scope.init = function() {
 		console.log("init leave");
+		actions.logout();
 		if ($state.params.callback) {
 			$scope.callback = $state.params.callback;			
 		}

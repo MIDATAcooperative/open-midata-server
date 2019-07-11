@@ -11,7 +11,7 @@ angular.module('views')
     });
     
     $scope.test = function(vis) {
-    	apps.isVisualizationInstalled(vis.id)
+    	apps.isVisualizationInstalled(session, vis.id)
 		.then(function(result) {
 			
 			if (result.data == "true" || result.data === true) {

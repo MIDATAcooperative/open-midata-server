@@ -144,10 +144,12 @@ public class Plugins extends APIController {
 		JsonValidation.validate(json, "name");
 
 		String name = JsonValidation.getString(json, "name");
+		String type = JsonValidation.getStringOrNull(json, "type");
+		if (type == null || !type.equals("visualization")) type = "mobile";
 
 		Set<String> fields = Sets.create("name", "description", "i18n", "defaultQuery", "resharesData", "allowsUserSearch", "termsOfUse", "requirements",
 				"orgName", "unlockCode", "targetUserRole", "icons", "filename");
-		Plugin plugin = Plugin.get(CMaps.map("filename", name).map("type", "mobile"), fields);
+		Plugin plugin = Plugin.get(CMaps.map("filename", name).map("type", type), fields);
 		if (plugin != null && plugin.unlockCode != null)
 			plugin.unlockCode = "true";
 

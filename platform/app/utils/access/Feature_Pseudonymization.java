@@ -23,7 +23,7 @@ public class Feature_Pseudonymization extends Feature {
 
 			q.getProperties().put("usergroup", study);
 
-		}
+		}				
 
 		DBIterator<DBRecord> result = next.iterator(q);
 

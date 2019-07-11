@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('NavbarCtrl', ['$scope', '$state', '$translate', '$translatePartialLoader', 'server', 'session', 'ENV', 'spaces', 'circles', '$rootScope', function($scope, $state, $translate, $translatePartialLoader, server, session, ENV, spaces, circles, $rootScope) {
+.controller('NavbarCtrl', ['$scope', '$state', '$translate', '$translatePartialLoader', 'server', 'session', 'ENV', 'spaces', 'circles', '$rootScope', 'actions', function($scope, $state, $translate, $translatePartialLoader, server, session, ENV, spaces, circles, $rootScope, actions) {
 	
 	// init
 	$scope.user = { subroles:[] };	
@@ -14,7 +14,7 @@ angular.module('portal')
 	session.login($state.current.data.role);
 	
 	$scope.locked = function() {
-		return $state.params.action != null;	
+		return $state.params.action != null || actions.hasMore();	
 	};	
 	
 	$scope.updateNav = function() {
@@ -75,6 +75,10 @@ angular.module('portal')
 	
 	$scope.showApp = function(app) {
 		spaces.openAppLink($state, $scope.userId, { app : app });
+	};
+	
+	$scope.home = function(page) {
+		if (!actions.showAction($state)) $state.go(page);
 	};
 	
 }])
