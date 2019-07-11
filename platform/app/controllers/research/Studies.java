@@ -394,7 +394,7 @@ public class Studies extends APIController {
 				public ByteString next() {
 					try {
 						System.out.println("start study export next record");
-						AccessLog.log("start study export next record");
+						//AccessLog.log("start study export next record");
 						StringBuffer out = new StringBuffer();
 						KeyManager.instance.continueSession(handle);
 						System.out.println("set exe");
@@ -407,21 +407,21 @@ public class Studies extends APIController {
 						if (rec._id == null) System.out.println("no id");
 						if (rec.owner == null) System.out.println("no owner");
 						System.out.println("record:"+rec._id.toString()+" ow="+rec.owner.toString());
-						AccessLog.log("got record:"+(rec != null));						
+						//AccessLog.log("got record:"+(rec != null));						
 						
 						String format = rec.format.startsWith("fhir/") ? rec.format.substring("fhir/".length()) : "Basic";
 
 						ResourceProvider<DomainResource, Model> prov = FHIRServlet.myProviders.get(format);
 						DomainResource r = prov.parse(rec, prov.getResourceType());
 						System.out.println("got parsed:"+(r != null));
-						AccessLog.log("got parsed:"+(r != null));
+						//AccessLog.log("got parsed:"+(r != null));
 						
 						String location = FHIRServlet.getBaseUrl() + "/" + prov.getResourceType().getSimpleName() + "/" + rec._id.toString() + "/_history/" + rec.version;
 						if (r != null) {
 							String ser = prov.serialize(r);
 							int attpos = ser.indexOf(FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING);
 							System.out.println("binary pos:"+attpos);
-							AccessLog.log("binary pos:"+attpos);
+							//AccessLog.log("binary pos:"+attpos);
 							if (attpos > 0) {
 								out.append("," + "{ \"fullUrl\" : \"" + location + "\", \"resource\" : " + ser.substring(0, attpos));
 								FileData fileData = RecordManager.instance.fetchFile(executorId, new RecordToken(rec._id.toString(), rec.stream.toString()));
@@ -446,7 +446,7 @@ public class Studies extends APIController {
 						}
 						// first = false;
 						System.out.println("done record");
-						AccessLog.log("done record");
+						//AccessLog.log("done record");
 						return ByteString.fromString(out.toString());
 					} catch (Throwable e) {
 						System.out.println("EXCEPTION");
