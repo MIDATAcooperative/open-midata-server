@@ -212,6 +212,7 @@
   
   "studyrecords" : {
     "empty" : "Once data is available it can be downloaded here.",
+    "wrongrole" : "You need to have the 'export' permission to export data!",
     "startDate" : "Export start date (optional)",
     "endDate" : "Export end date (optional)",
     "group" : "Data Group",
