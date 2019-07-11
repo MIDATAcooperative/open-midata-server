@@ -24,4 +24,4 @@ platform/conf/secret.conf.gz.nc
 .project
 nginx/sites-available/*
 portal/.tmp/*
-**/package-lock.json
+
