@@ -46,7 +46,7 @@ public class Rights {
 		action("Users.getPROVIDER");
 		role(UserRole.MEMBER  , "_id", "address1", "address2", "city", "country", "email", "firstname", "gender", "lastname", "phone", "mobile", "name", "role", "subroles", "status", "zip");
 		role(UserRole.PROVIDER, "_id", "address1", "address2", "city", "country", "email", "firstname", "gender", "lastname", "phone", "mobile", "name", "role", "subroles", "status", "zip", "provider");
-		role(UserRole.DEVELOPER, "_id", "address1", "address2", "city", "country", "email", "firstname", "gender", "lastname", "phone", "mobile", "name", "role", "subroles", "status", "zip", "provider","searchable");
+		role(UserRole.DEVELOPER, "_id", "address1", "address2", "city", "country", "email", "firstname", "gender", "lastname", "phone", "mobile", "name", "role", "subroles", "status", "zip", "provider","searchable", "developer");
 		role(UserRole.ADMIN, "_id", "address1", "address2", "city", "contractStatus", "agbStatus", "country", "email", "emailLC", "firstname", "gender", "lastname", "login", "mobile", "name", "phone", "registeredAt", "role", "subroles", "security", "status", "zip", "midataID", "birthday", "confirmationCode", "emailStatus", "mobileStatus", "confirmedAt", "reason", "coach", "developer", "language", "searchable", "authType", "notifications");		
 		
 		action("Users.getRESEARCH");

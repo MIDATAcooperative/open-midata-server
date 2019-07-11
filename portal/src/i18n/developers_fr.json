@@ -131,7 +131,7 @@
             "allowsUserSearch" : "Les utilisateurs de l'app sont autorisés à rechercher d'autres utilisateurs de la même app.",
             "defaultSpaceName" : "Titre de la tuile du plugin sur le tableau de bord.",
             "tags" : "Catégories sous lesquelles le plugin sera listé dans le MIDATA Store.",
-            "url" : "URL de la page principale du plugin. Si vous utilisez le modèle MIDATA, c'est 'dist/index.html#?authToken=:authToken''",
+            "url" : "URL de la page principale du plugin. Si vous utilisez le modèle MIDATA, c'est 'dist/index.html#!?authToken=:authToken''",
             "previewUrl" : "URL de la tuile du tableau de bord du plugin. Laisser vide si une telle tuile n'est pas fournie.",
             "defaultSpaceContext" : "Choisissez 'Tableau de bord' pour le tableau de bord standard. Choisissez 'Configuration' pour un plugin d'importation.",
             "redirectUri" : "Vous pouvez spécifier plusieurs URIs de redirection possibles en séparant les URIs avec un espace.",

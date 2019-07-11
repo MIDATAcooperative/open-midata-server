@@ -1,5 +1,5 @@
 angular.module('services')
-.factory('apps', ['server', '$q', 'session', '$filter', function(server, $q, session, $filter) {
+.factory('apps', ['server', '$q', '$filter', function(server, $q, $filter) {
 	var service = {};
 
 	service.userfeatures = ['EMAIL_ENTERED', 'EMAIL_VERIFIED', 'PHONE_ENTERED', 'PHONE_VERIFIED', 'AUTH2FACTOR', 'ADDRESS_ENTERED' ,'ADDRESS_VERIFIED', 'BIRTHDAY_SET', 'PASSPORT_VERIFIED', 'MIDATA_COOPERATIVE_MEMBER', 'ADMIN_VERIFIED'];
@@ -11,12 +11,13 @@ angular.module('services')
 	   return server.post(jsRoutes.controllers.Plugins.get().url, JSON.stringify(data));
     };
     
-    service.getAppInfo = function(name) {
+    service.getAppInfo = function(name, type) {
     	   var data = { "name": name };
+    	   if (type) data.type = type;
  	   return server.post(jsRoutes.controllers.Plugins.getInfo().url, JSON.stringify(data));
      };
     
-    service.getAppsOfUser = function(types, fields) {
+    service.getAppsOfUser = function(session, types, fields) {
 		var appIds = session.user.apps;
 		var properties2 = { "_id": session.user.apps, "type" : types };		
 		return service.getApps(properties2, fields);			
@@ -27,7 +28,7 @@ angular.module('services')
 		return server.post(jsRoutes.controllers.Circles.listApps().url, JSON.stringify(data));
 	};
     
-    service.isVisualizationInstalled = function(visId) {
+    service.isVisualizationInstalled = function(session, visId) {
     	var def = $q.defer();
     	var inApps = $filter("filter")(session.user.apps, function(x){  return x == visId; });
     	if (inApps.length > 0) {

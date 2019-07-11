@@ -6,7 +6,7 @@ angular.module('portal')
 	      templateUrl: 'views/shared/consent/newconsent.html',
 	      dashId : 'circles',
 	      role : 'MEMBER'
-	    })
+	    })	
 	    .state('member.editconsent', {
 	      url: '/consent/:consentId',	      
 	      templateUrl: 'views/shared/consent/editconsent.html',

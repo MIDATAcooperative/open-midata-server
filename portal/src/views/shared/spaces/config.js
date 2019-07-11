@@ -2,7 +2,7 @@ angular.module('portal')
 .config(["$stateProvider", function($stateProvider) {
 	   $stateProvider
 	    .state('member.spaces', {
-	      url: '/spaces/:spaceId?url&params',
+	      url: '/spaces/:spaceId?url&params&app&action',
 	      templateUrl: 'views/shared/spaces/spaces.html' 
 	    })
 	    .state('developer.spaces', {
