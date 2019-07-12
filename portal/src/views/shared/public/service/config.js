@@ -16,5 +16,13 @@ angular.module('portal')
 	    .state('member.serviceleave', {
 	      url: '/serviceleave?app&callback',
 	      templateUrl: 'views/shared/public/service/serviceleave.html' 
+	    })
+	    .state('provider.serviceleave', {
+	      url: '/serviceleave?app&callback',
+	      templateUrl: 'views/shared/public/service/serviceleave.html' 
+	    })
+	    .state('research.serviceleave', {
+	      url: '/serviceleave?app&callback',
+	      templateUrl: 'views/shared/public/service/serviceleave.html' 
 	    });
 }]);

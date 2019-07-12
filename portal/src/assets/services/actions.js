@@ -27,7 +27,9 @@ angular.module('services')
 		return null;
 	};
 	
-	service.showAction = function($state, override) {		
+	service.showAction = function($state, role, override) {
+				
+		role = role || $state.current.data.role.toLowerCase();
 		acarray = override || getActions($state) || acarray;
 		if (!hasActions(acarray)) return false;
 			
@@ -39,19 +41,19 @@ angular.module('services')
 		
 		if (action == "consent") {			
 		    var what = current.s.split(",");
-			$state.go("member.newconsent", { share : JSON.stringify({"group":what}), authorize : current.a, action : JSON.stringify(acarray.slice(1)) });
+			$state.go(role+".newconsent", { share : JSON.stringify({"group":what}), authorize : current.a, action : JSON.stringify(acarray.slice(1)) });
 			return true;
 		} else if (action == "confirm") {
-			$state.go("member.service_consent", { consentId : current.c, action : JSON.stringify(acarray.slice(1)) })
+			$state.go(role+".service_consent", { consentId : current.c, action : JSON.stringify(acarray.slice(1)) })
 			return true;
 		} else if (action == "study") {
-			$state.go("member.studydetails", { studyId : current.s, action : JSON.stringify(acarray.slice(1)) });
+			$state.go(role+".studydetails", { studyId : current.s, action : JSON.stringify(acarray.slice(1)) });
 			return true;
 		} else if (action == "use") {
-			$state.go("member.spaces", { app : current.c, action : JSON.stringify(acarray.slice(1)) });			
+			$state.go(role+".spaces", { app : current.c, action : JSON.stringify(acarray.slice(1)) });			
 		    return true;
 		} else if (action == "leave") {
-			$state.go("member.serviceleave", { callback : current.c });
+			$state.go(role+".serviceleave", { callback : current.c });
 			return true;
 		} else if (action == "unconfirmed") {
 			
@@ -60,10 +62,10 @@ angular.module('services')
 		   		
 		   circles.listConsents(props  , ["_id"]).then(function(result) {
 				 if (result.data.length > 0) {				
-					 $state.go("member.service_consent", { consentId : result.data[0]._id, action : JSON.stringify(acarray)  });					 
+					 $state.go(role+".service_consent", { consentId : result.data[0]._id, action : JSON.stringify(acarray)  });					 
 				 } else {
 					 acarray.splice(0,1);
-				     service.showAction($state, acarray);	 
+				     service.showAction($state, role, acarray);	 
 				 }				 
 		   });
 		   return true;

@@ -6,12 +6,12 @@
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-ex1-collapse" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="fas fa-list"></span>
              </button>
-			<a class="navbar-brand" ui-sref="research.studies">
+			<a class="navbar-brand" ng-click="home('research.studies');" href="javascript:">
 	        <span class="midata" id="logotype"><img src="/images/logo.png" style="height: 36px;"></span>
 	        </a>
 		</div>
 		<nav class="collapse navbar-collapse navbar-ex1-collapse">
-			<ul class="nav navbar-nav mr-auto">            					
+			<ul class="nav navbar-nav mr-auto" ng-class="{'vishidden':locked()}">            					
 				<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="research.studies" translate="researcher_navbar.studies"></a></li>
 				<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="research.circles" translate="navbar.consents"></a></li>
 				<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="research.dashboard({ dashId : 'workspace' })" translate="researcher_navbar.workspace"></a></li>	
