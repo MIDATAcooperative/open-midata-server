@@ -14,7 +14,7 @@ angular.module('portal')
 	      templateUrl: 'views/shared/spaces/spaces.html' 
 	    })
 	    .state('research.spaces', {
-	      url: '/spaces/:spaceId?url&params&user&study',
+	      url: '/spaces/:spaceId?url&params&user&study&app&action',
 	      templateUrl: 'views/shared/spaces/spaces.html' 
 	    })
 	    .state('research.study.spaces', {
@@ -22,7 +22,7 @@ angular.module('portal')
 	      templateUrl: 'views/shared/spaces/spaces.html' 
 	    })
 	     .state('provider.spaces', {
-	      url: '/spaces/:spaceId?url&params&user',
+	      url: '/spaces/:spaceId?url&params&user&app&action',
 	      templateUrl: 'views/shared/spaces/spaces.html' 
 	    });
 }]);

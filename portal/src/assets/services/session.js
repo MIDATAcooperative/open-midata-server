@@ -63,7 +63,7 @@ angular.module('services')
 				} else {
 					console.log($state.params);
 				  if ($state.params.action) {
-					  if (actions.showAction($state)) return;
+					  if (actions.showAction($state, "member")) return;
 				  }				 
 				  $state.go('member.overview');
 				}
@@ -71,6 +71,9 @@ angular.module('services')
 				if (result.data.keyType == 1) {
 				  $state.go('public_provider.passphrase', $state.params);
 				} else {
+				  if ($state.params.action) {
+					  if (actions.showAction($state, "provider")) return;
+				  }	
 				  $state.go('provider.patientsearch');
 				}
 			} else if (result.data.role == "research") {
