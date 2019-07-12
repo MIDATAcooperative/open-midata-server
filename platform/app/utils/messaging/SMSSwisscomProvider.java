@@ -33,7 +33,7 @@ public class SMSSwisscomProvider implements SMSProvider {
 		
 		holder.addHeader("Authorization", CLIENTSECRET);
 		ObjectNode body = Json.newObject();
-		body.put("from", SENDER);
+		//body.put("from", SENDER);
 		body.put("to", phone);
 		body.put("text", text);
 					    
