@@ -36,7 +36,7 @@ public class SMSAuthenticator implements Authenticator {
 		String phone = user.mobile;
 		if (phone == null) phone = user.phone;
 		
-		if (SMSUtils.isAvailable()) {
+		if (SMSUtils.isAvailable() && !phone.equals("@email")) {
 		  Messager.sendSMS(phone, prompt+": "+token.token);
 		} else {
 		  Messager.sendTextMail(user.email, user.firstname+" "+user.lastname, "SMS for "+phone, prompt+": "+token.token);
