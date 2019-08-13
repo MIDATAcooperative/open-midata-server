@@ -612,7 +612,6 @@
     "service_login" : "Login for Confirmation Request",
     "service_login2" : "At your next login, you will be asked for confirmation of consents and/or participation with research projects.",
     "no_account" : "I do not have a MIDATA account yet.",
-    
     "info1" : "Dear study participant",
     "info2" : "You already have a MIDATA account, log in with your email address and password.",
     "info3" : "Your personal account gives you an overview of your study participation.",
@@ -1032,7 +1031,7 @@
     "shares_format" : "Format: {{ format }}",
     "shares_content" : "Content: {{ content }}",
     "confirm_provider" : "I accept to share data with this external provider",
-    "confirm_provider_opt" : "I accept to share data with this external provider",
+    "confirm_provider_opt" : "I accept to share data with this external provider (optional)",
     "confirm_study" : "I accept the terms of use of the application and to participate in the study",
     "confirm_study_opt" : "I accept to participate in the study",
     "confirm_citizen_science" : "I accept to participate in the citizen science project",

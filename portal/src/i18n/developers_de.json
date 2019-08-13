@@ -93,16 +93,8 @@
         "testfromlocal_help" : "Während der Entwicklung können Sie den Plugin-Code, der auf Ihrem lokalen Computer gespeichert ist, auf dieser Instanz testen.",
         "serverimport_btn" : "Automatisches Importskript testen.",
         "serverimport_help" : "Wenn Ihr Plugin einen automatischen Import bietet, können Sie das Skript Ihres Plugins, das normalerweise auf dem Server läuft, auf Ihrem lokalen Computer testen.",
-
-        // TODO CHANGED
-        // OLD: Links with Studies
-        // NEW: Links with research projects or external parties
-        "link_btn" : "Verknüpfungen mit Studien",
-
-        // TODO CHANGED
-        // OLD: Apps may offer or require participation to a study. Studies may recommend plugin or app use.
-        // NEW: Apps may offer or require participation to a research project. Research projects may recommend plugin or app use. App use may be linked to consents with providers or teams.
-        "link_help" : "Apps können die Teilnahme an einer Studie anbieten oder verlangen. Studien können die Verwendung von Plugins oder Apps empfehlen.",
+        "link_btn" : "Verknüpfungen mit Forschungsprojekten oder externen Parteien",
+        "link_help" : "Applikationen können die Teilnahme an einem Forschungsprojekt vorschlagen oder erfordern. Forschungsprojekte können die Verwendung von Plugins oder Applikationen empfehlen. Die Nutzung der Anwendung kann die Zustimmung zur Dateneinsicht durch Gesundheitsfachpersonen oder Teams bedingen.",
         "icon_btn" : "Icons und Bilder der Applikation",
         "icon_help" : "Laden und verwalten Sie die Icons und Bilder hoch, die mit Ihrer Applikation verwendet werden sollen. Stellen Sie Bilder für den Login-Bildschirm, den Zustimmungsbildschirm, den MIDATA Store usw. bereit.",
         "messages_btn" : "E-Mail-Nachrichten der Applikation",
@@ -118,10 +110,6 @@
         "show_terms" : "Allgemeine Geschäftsbedingungen anzeigen",
         "unlock_code" : "Freischaltcode",
         "logout" : "Alle trennen",
-
-        // TODO CHANGED
-        // OLD: Logout all users
-        // NEW: Log out all users
         "pleaseLogout1" : "Alle Benutzer abmelden",
         "pleaseLogout2" : "Von den Studien trennen",
         "logout_optional" : "[ nicht erforderlich ]",
@@ -148,10 +136,6 @@
             "secret" : "Ihre App braucht dieses 'secret' um sich anmelden zu können. Wählen Sie es nach Belieben.",
             "mustParticipateInStudy" : "Benutzer müssen an der Studie teilnehmen, um diese App benutzen zu können.",
             "unlock_code" : "Wenn ausgefüllt, muss dieser Code vom Benutzer bei der Registrierung oder ersten Anmeldung bei MIDATA über die App eingegeben werden. Der Code ist nicht 'case sensitiv'.",
-
-            // TODO CHANGED
-            // OLD: Notify developer ({{user}}) by email on errors causes by this application.
-            // NEW: Notify developer ({{user}}) by email on errors caused by this application.
             "send_reports" : "Den Entwickler ({{user}}) per E-Mail über Fehler benachrichtigen, die durch diese Anwendung verursacht werden."
         },
         "status" : {
@@ -167,23 +151,15 @@
         "access_query_json" : "Data Access Filter",
         "queryeditor_btn" : "Zum Data Access Filter Editor wechseln",
         "no_update_history" : "Keine FHIR Ressourcenhistorie",
-
-        // TODO NEW: Usage Statistics
-        "usagestats_btn" : "Usage Statistics",
-
-        // TODO NEW: Analyze the usage frequency of the application.
-        "usagestats_help" : "Analyze the usage frequency of the application.",
+        "usagestats_btn" : "Nutzungsstatistiken",
+        "usagestats_help" : "Nutzungshäufigkeit der Applikation analysieren.",
         "export_btn" : "Applikationsdefinition exportieren",
         "export_help" : "Exportieren Sie die Definition dieser Applikation, damit sie auf einem anderen Server importiert und verwendet werden kann.",
         "important" : "WICHTIG",
         "logoutwarning" : "Bei einer Änderung der Applikationsdefinition, werden alle Benutzer von dieser Applikation getrennt. Sie müssen die Verwendung der Applikation bei der nächsten Anmeldung erneut bestätigen.",
         "researchwarning" : "Eine Änderung der Applikationsdefinition entkoppelt diese Forschungsapplikation von allen Studien!",
-
-        // TODO NEW: Creator
-        "creator" : "Creator",
-
-        // TODO NEW: Organization
-        "organization" : "Organization"
+        "creator" : "Ersteller",
+        "organization" : "Organisation"
     },
 
     "appstats" : {
@@ -239,42 +215,18 @@
     },
 
     "applink" : {
-
-        // TODO CHANGED
-        // OLD: Links with Studies
-        // NEW: Links with projects or providers
-        "title" : "Verknüpfungen mit Studien",
-
-        // TODO NEW: Add link with research project
-        "add_research_btn" : "Add link with research project",
-
-        // TODO NEW: Add link with provider
-        "add_provider_btn" : "Add link with provider",
-
-        // TODO NEW: Target
-        "target" : "Target",
-
-        // TODO NEW: Healthcare Provider (login)
-        "provider" : "Healthcare Provider (login)",
-
-        // TODO NEW: Identifier for this link
-        "identifier" : "Identifier for this link",
-
-        // TODO NEW: Terms of use
-        "terms_of_use" : "Terms of use",
-
-        // TODO NEW: If special terms of use have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the ID you need to enter here.
-        "terms_of_use_hint" : "If special terms of use have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the ID you need to enter here.",
-
-        // TODO NEW: Preview terms of use
-        "show_terms" : "Preview terms of use",
+        "title" : "Verknüpfungen mit Forschungsprojekten und Gesundheitsfachpersonen",
+        "add_research_btn" : "Verknüpfen mit Forschungsprojekt",
+        "add_provider_btn" : "Verknüpfen mit Gesundheitsfachperson",
+        "target" : "Ziel",
+        "provider" : "Gesundheitsfachperson (Anmeldung)",
+        "identifier" : "Identifikator für diesen Link",
+        "terms_of_use" : "Nutzungsbedingungen",
+        "terms_of_use_hint" : "Wenn besondere Nutzungsbedingungen gelesen und vom Nutzer akzeptiert werden müssen, senden Sie den Text bitte an MIDATA. Wir werden den Text im richtigen Format hochladen und Ihnen den Identifikator mitteilen, den Sie hier eingeben müssen.",
+        "show_terms" : "Nutzungsbedingungen einsehen",
         "types" : {
-
-            // TODO NEW: Consent must be accepted
-            "REQUIRE_P" : "Consent must be accepted",
-
-            // TODO NEW: Consent is offered upon login/registration
-            "OFFER_P" : "Consent is offered upon login/registration"
+            "REQUIRE_P" : "Die Zustimmung muss akzeptiert werden",
+            "OFFER_P" : "Die Zustimmung wird bei der Anmeldung/Registrierung erteilt"
         }
     },
 

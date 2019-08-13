@@ -25,9 +25,7 @@
         "name" : "Nom",
         "description" : "Description",
         "researchers" : "Tous les chercheurs de votre institut",
-
-        // TODO NEW: You must be master user to update your organization or register new users for the organization. Please contact support if you think you should have master user permissions.
-        "master_user" : "You must be master user to update your organization or register new users for the organization. Please contact support if you think you should have master user permissions."
+        "master_user" : "Vous devez être un utilisateur maître pour mettre à jour votre organisation ou inscrire de nouveaux utilisateurs pour l'organisation. Veuillez contacter le support MIDATA si vous pensez que vous devriez avoir les permissions de l'utilisateur maître."
     },
 
     "createstudy" : {
