@@ -6,6 +6,7 @@
         "auditlog" : "Revisione",
         "news" : "Notizie",
         "plugins" : "Plugin",
+        "usagestats" : "Statistiche sull'uso dell'applicazione",
         "content" : "Tipi di contenuto",
         "studies" : "Studi",
         "terms" : "Condizioni generali di contratto",
@@ -33,6 +34,7 @@
 
     "admin_address" : {
         "title" : "Profilo del membro",
+        "show_apps_created" : "Mostra le applicazioni create da questo sviluppatore",
         "midata_id" : "MIDATA ID",
         "role" : "Ruolo",
         "subroles" : "Sotto-ruolo/i",
@@ -58,7 +60,9 @@
         "add_comment_btn" : "Aggiungi commento",
         "wipe_btn" : "Elimina account",
         "change_email_btn" : "Modifica indirizzo e-mail",
-        "change_address_btn" : "Modifica profilo"
+        "change_address_btn" : "Modifica profilo",
+        "make_master_btn" : "Aggiungi ruolo utente master",
+        "remove_master_btn" : "Revoca il ruolo utente master"
     },
 
     "admin_news" : {
@@ -177,6 +181,7 @@
 
     "admin_stats" : {
         "title" : "Statistiche",
+        "showusage" : "Mostra l'utilizzo del sistema per applicazione",
         "value" : "Conteggio totale",
         "diff_yesterday" : "Diff. a 1 giorno fa",
         "diff_week" : "Diff. a 7 giorni fa",
@@ -209,5 +214,19 @@
         "myid" : "Il mio id di recupero",
         "instr1" : "Fare clic su un share per copiare il share criptato negli appunti.",
         "instr2" : "Decriptare il share su Ubuntu: (cliccare sulla linea per copiarla negli appunti)"
+    },
+
+    "usagestats" : {
+        "title" : "Statistiche d'uso",
+        "date" : "Data",
+        "object" : "App/Plugin",
+        "REGISTRATION" : "Registration",
+        "LOGIN" : "Login",
+        "REFRESH" : "Session",
+        "INSTALL" : "Activation",
+        "GET" : "Read",
+        "POST" : "Write",
+        "PUT" : "Update",
+        "DELETE" : "Delete"
     }
 }

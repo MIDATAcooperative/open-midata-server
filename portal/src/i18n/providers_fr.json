@@ -27,7 +27,8 @@
         "name" : "Nom",
         "description" : "Description",
         "members" : "Tous les membres de votre organisation",
-        "addprovider" : "Inscrire un nouveau membre"
+        "addprovider" : "Inscrire un nouveau membre",
+        "master_user" : "Vous devez être un utilisateur maître pour mettre à jour votre organisation ou inscrire de nouveaux utilisateurs pour l'organisation. Veuillez contacter le support MIDATA si vous pensez que vous devriez avoir les permissions de l'utilisateur maître."
     },
 
     "addprovider" : {

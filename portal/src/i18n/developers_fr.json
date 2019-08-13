@@ -81,8 +81,6 @@
         "filename" : "Nom interne",
         "type" : "Type d'application",
         "targetUserRole" : "Rôle cible",
-        "previewlogin" : "Connexion OAuth",
-        "previewlogin2" : "Aperçu page de connexion OAuth",
         "edit_btn" : "Modifier la configuration",
         "edit_help" : "Modifiez la configuration de votre application.",
         "query_btn" : "Modifier le Data Access Filter",
@@ -95,8 +93,8 @@
         "testfromlocal_help" : "Pendant le développement, vous pouvez tester le code du plugin stocké sur votre ordinateur local sur cette instance.",
         "serverimport_btn" : "Tester le script d'importation automatique.",
         "serverimport_help" : "Si votre plugin offre l'importation automatique, vous pouvez tester le script de votre plugin, qui est normalement exécuté sur le serveur, sur votre ordinateur local.",
-        "link_btn" : "Liens avec des études",
-        "link_help" : "Les applications peuvent offrir ou exiger la participation à une étude. Les études peuvent recommander l'utilisation de plugins ou d'applications.",
+        "link_btn" : "Liens avec des projets de recherche ou des parties externes",
+        "link_help" : "Les applications peuvent proposer ou nécessiter la participation à un projet de recherche. Les projets de recherche peuvent recommander l'utilisation de plugins ou d'applications. L'utilisation de l'application peut nécessiter le consentement de l'utilisateur à ce que des professionnels de la santé ou des teams consultent ses données.",
         "icon_btn" : "Icônes et images de l'application",
         "icon_help" : "Téléchargez et gérez les icônes et les images à utiliser avec votre application. Fournissez des images pour l'écran de connexion, l'écran d'acceptation des consentements, le MIDATA Store, etc.",
         "messages_btn" : "Messages e-mail de l'application",
@@ -153,11 +151,15 @@
         "access_query_json" : "Data Access Filter",
         "queryeditor_btn" : "Aller à l'éditeur du Data Access Filter",
         "no_update_history" : "Pas d'historique des ressources FHIR",
+        "usagestats_btn" : "Statistiques d'utilisation",
+        "usagestats_help" : "Analyser la fréquence d'utilisation de l'application.",
         "export_btn" : "Exporter la définition de l'application",
         "export_help" : "Exportez la définition de cette application, pour qu'elle puisse être importée et utilisée sur un autre serveur.",
         "important" : "IMPORTANT",
         "logoutwarning" : "Changer la définition de l'application déconnectera tous les utilisateurs de cette application. Ils devront confirmer à nouveau l'utilisation de l'application à la prochaine connexion.",
-        "researchwarning" : "Changer la définition de l'application dissociera cette application de recherche de toutes les études!"
+        "researchwarning" : "Changer la définition de l'application dissociera cette application de recherche de toutes les études!",
+        "creator" : "Créateur",
+        "organization" : "Organisation"
     },
 
     "appstats" : {
@@ -213,7 +215,19 @@
     },
 
     "applink" : {
-        "title" : "Liens avec des études"
+        "title" : "Liens avec des projets de recherche ou des professionnels de la santé",
+        "add_research_btn" : "Lier à un projet de recherche",
+        "add_provider_btn" : "Lier à un professionnel de la santé",
+        "target" : "Cible",
+        "provider" : "Professionnel de la santé (connexion)",
+        "identifier" : "Identifiant pour ce lien",
+        "terms_of_use" : "Conditions d'utilisation",
+        "terms_of_use_hint" : "Si des conditions d'utilisation particulières doivent être lues et acceptées par l'utilisateur, veuillez envoyer le texte à MIDATA. Nous téléchargerons le texte au bon format et vous fournirons l'identifiant que vous devez entrer ici.",
+        "show_terms" : "Afficher les conditions d'utilisation",
+        "types" : {
+            "REQUIRE_P" : "Le consentement doit être accepté",
+            "OFFER_P" : "Le consentement est proposé au moment de la connexion ou de l'inscription"
+        }
     },
 
     "appsubscriptions" : {

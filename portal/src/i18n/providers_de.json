@@ -27,7 +27,8 @@
         "name" : "Name",
         "description" : "Beschreibung",
         "members" : "Alle Mitglieder Ihrer Organisation",
-        "addprovider" : "Neues Mitglied registrieren"
+        "addprovider" : "Neues Mitglied registrieren",
+        "master_user" : "Sie müssen Master-Benutzer sein, um Ihre Organisation zu aktualisieren oder neue Benutzer für die Organisation zu registrieren. Bitte wenden Sie sich an den MIDATA-Support, wenn Sie der Meinung sind, dass Sie über Master-Benutzerberechtigungen verfügen sollten."
     },
 
     "addprovider" : {

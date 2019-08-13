@@ -93,7 +93,7 @@
     "serverimport_btn" : "Test automatic import script.",
     "serverimport_help" : "If your plugin offers automatic import, you can test the script of your plugin that is normally run on the server on your local computer.",
     "link_btn" : "Links with research projects or external parties",
-    "link_help" : "Apps may offer or require participation to a research project. Research projects may recommend plugin or app use. App use may be linked to consents with providers or teams.",    
+    "link_help" : "Applications may suggest or require participation in a research project. Research projects may recommend the use of plugins or applications. Use of the application may require a user's consent to healthcare professionals or teams to view their data.",
     "icon_btn" : "Application Icons and Images",
     "icon_help" : "Upload and manage the icons and images to be used with your application. Provide images for the login screen, the consent acceptation screen, the MIDATA Store, etc.",
     "messages_btn" : "Application email Messages",
@@ -214,15 +214,15 @@
   },
   
   "applink" : {
-    "title" : "Links with projects or providers",
-    "add_research_btn" : "Add link with research project",
-    "add_provider_btn" : "Add link with provider",
+    "title" : "Links with research projects or health professionals",
+    "add_research_btn" : "Link to research project",
+    "add_provider_btn" : "Link to health professional",
     "target" : "Target",
-    "provider" : "Healthcare Provider (login)",
+    "provider" : "Health professional (login)",
     "identifier" : "Identifier for this link",
     "terms_of_use" : "Terms of use",
-    "terms_of_use_hint" : "If special terms of use have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the ID you need to enter here.",
-    "show_terms" : "Preview terms of use",
+    "terms_of_use_hint" : "If special terms of use have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the identifier you need to enter here.",
+    "show_terms" : "View terms of use",
     "types" : {
       "REQUIRE_P" : "Consent must be accepted",
       "OFFER_P" : "Consent is offered upon login/registration"

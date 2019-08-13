@@ -24,7 +24,8 @@
         "title" : "Forschungseinrichtung",
         "name" : "Name",
         "description" : "Beschreibung",
-        "researchers" : "Alle Forscher Ihrer Einrichtung"
+        "researchers" : "Alle Forscher Ihrer Einrichtung",
+        "master_user" : "Sie müssen Master-Benutzer sein, um Ihre Organisation zu aktualisieren oder neue Benutzer für die Organisation zu registrieren. Bitte wenden Sie sich an den MIDATA-Support, wenn Sie der Meinung sind, dass Sie über Master-Benutzerberechtigungen verfügen sollten."
     },
 
     "createstudy" : {
@@ -336,6 +337,5 @@
         "share_btn" : "Teilen",
         "unshare_btn" : "Nicht mehr teilen",
         "search_btn" : "Suchen"
-
     }
 }
