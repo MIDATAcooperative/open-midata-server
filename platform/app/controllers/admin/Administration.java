@@ -476,6 +476,7 @@ public class Administration extends APIController {
         FutureLogin.delete(userId);
 		KeyManager.instance.deleteKey(userId);
 		KeyInfoExtern.delete(userId);
+		AccessPermissionSet.delete(userId);
 		
 		selected.delete();
 		

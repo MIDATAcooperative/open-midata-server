@@ -525,6 +525,7 @@ public class Users extends APIController {
         FutureLogin.delete(userId);
 		KeyManager.instance.deleteKey(userId);
 		KeyInfoExtern.delete(userId);
+		AccessPermissionSet.delete(userId);
 		
 		user = User.getById(userId, User.ALL_USER_INTERNAL);
 		user.delete();
