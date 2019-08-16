@@ -243,6 +243,16 @@ public class QuestionnaireResourceProvider extends RecordBasedResourceProvider<Q
 		super.createPrepare(record, theResource);
 	}
 
+	
+	
+	@Override
+	public void updatePrepare(Record record, Questionnaire theResource) throws AppException {
+		if (!theResource.hasUrl()) {
+        	theResource.setUrl(FHIRServlet.getBaseUrl()+"/Questionnaire/"+record._id);
+        }
+		super.updatePrepare(record, theResource);
+	}
+
 	@Override
 	public String getRecordFormat() {	
 		return "fhir/Questionnaire";
