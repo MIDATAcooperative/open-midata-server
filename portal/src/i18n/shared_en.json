@@ -28,7 +28,7 @@
 	  "my_data" : "My Data",
 	  "consents" : "Sharing",
 	  "research" : "Research",
-	  "apps" : "Apps",
+	  "apps" : "Applications",
 	  "config" : "Configuration",
 	  "help" : "Help"
    },
@@ -50,8 +50,8 @@
        "fields" : "You are not authorized to query the provided fields",
        "account" : "You are not authorized to access this account",
        "study" : "You are not authorized to access this study",
-       "not_plugin_owner" : "This is not your plugin",
-       "no_debug" : "Debugging is only available for plugins during development or beta phase on non productive instances."       
+       "not_plugin_owner" : "This is not your application",
+       "no_debug" : "Debugging is only available for applications during development or beta phase on non productive instances."       
      },
 
      "invalid" : {
@@ -76,7 +76,7 @@
        "json" : "Invalid JSON provided",
        "passphrase" : "Bad passphrase",
        "passcode": "Bad passcode",
-       "plugin" : "Plugin is intended for a different role",
+       "plugin" : "Application is intended for a different role",
        "unlock_code" : "Incorrect unlock code",
        "access_query" : "The Data Access Filter must restrict by 'content' or 'group'!",
        "sharing" : "The Data Access Filter contains data types that are excluded by the study configuration.",
@@ -125,7 +125,7 @@
        "provider" : "A healthcare provider with this name already exists.",
        "research" : "A research organisation with this name already exists.",
        "passcode" : "Please choose a different passcode!",
-       "plugin" : "A plugin with the same name already exists.",
+       "plugin" : "An application with the same name already exists.",
        "study" : "A study with this name already exists."
      },
 
@@ -340,7 +340,7 @@
 	   "COMMUNITY" : "Community"
 	 },
 	 "joinmethod" : {
-	   "APP" : "Participant uses linked app or software",
+	   "APP" : "Participant uses linked application",
 	   "PORTAL" : "Participant applies on MIDATA portal",
 	   "RESEARCHER" : "Participant is manually registered by research team member",
 	   "API" : "Participant is registered by external software",
@@ -377,7 +377,7 @@
 	   "USERADMIN" : "User Admin",
 	   "STUDYADMIN" : "Study Admin",
 	   "CONTENTADMIN" : "Content Admin",
-	   "PLUGINADMIN" : "Plugin Admin",
+	   "PLUGINADMIN" : "Application Admin",
 	   "NEWSWRITER" : "News Author",
 	   "SUPERADMIN" : "Super Admin",
 	   "TRIALUSER" : "Trial User",
@@ -523,7 +523,7 @@
      "test" : {
         "name" : "Test Instance (test.midata.coop)",
         "intro": "This is a test instance of the MIDATA platform.",
-        "purpose" : "This instance may be used to develop and test new apps and plugins for MIDATA in a safe environment. It is also used to test new versions of the portal and the backend before the other instances are updated.",
+        "purpose" : "This instance may be used to develop and test new applications for MIDATA in a safe environment. It is also used to test new versions of the portal and the backend before the other instances are updated.",
         "access" : "Register your own developer account. After validation by a MIDATA administrator, you may register test users, researchers and health providers without additional validation.",
         "uptime" : "There is no guarantee on availability. Expect updates of the instance to happen as needed. If possible, updates are done between 12:00 and 13:00 central european time, but may occur more than once a day if problems occur.",
         "data" : "Store only test data on this instance. Data may be wiped, accounts may be deleted if necessary. Records may become corrupted by bugs. There is no backup of the data."
@@ -771,7 +771,7 @@
     "records_with_content" : "Records that have content:",
     "records_with_group" : "Records that belong to group:",
     "records_with_owner" : "Records that belong to owner:",
-    "records_from_app" : "Records created by app:",
+    "records_from_app" : "Records created by application:",
     "owner_self" : "Your own records",
     "participation_history" : "Participation History",
     "history_event" : "Event",
@@ -904,7 +904,7 @@
     "type_healthcare" : "This consent shares data with healthcare professionals.",
     "type_studyparticipation" : "This consent shares data with research for use in a study.",
     "type_studyrelated" : "This consent shares research data to a study participant.",
-    "type_externalservice" : "This consent shares data with a mobile app or external service.",
+    "type_externalservice" : "This consent shares data with an application.",
     "type_implicit" : "This implicitely created consent shares messages with their receivers.",
     "status_active" : "This consent is active.",
     "status_expired" : "This consent is expired. Data is no longer shared.",
@@ -984,7 +984,7 @@
 	"delete_instructions6" : "In order to permanently delete all records of a certain category, double click on the 'delete all' button to the right of the category.",
 	"shared_with" : "Shared With:",
 	"records_used_for_app" : "Records used for app",
-	"back_to_plugin" : "Back to Visualization",
+	"back_to_plugin" : "Back",
 	"by_group" : "Grouped by type of content",
 	"by_plugin" : "Grouped by application",
 	"public_data" : "Non personal public data",
@@ -1018,7 +1018,7 @@
     "have_account" : "You have a MIDATA account?",
     "have_account2" : "Perfect, log in here",
     "sign_up_btn" : "Sign up",
-    "reshares_data" : "App may share data it has access to to third parties.",
+    "reshares_data" : "Application may share data it has access to to third parties.",
     "allows_user_search" : "Your name and email address may be searched by other people using this app.",
     "requesting_app" : "needs access to your data.",
     "sign_in" : "MIDATA login for:",
@@ -1177,7 +1177,7 @@
     "via" : "via",
     "CIRCLE" : "Consent",
     "ResearchStudy" : "Study",
-    "EXTERNALSERVICE" : "App",
+    "EXTERNALSERVICE" : "Application",
     "STUDYPARTICIPATION" : "Participation",
     "HEALTHCARE" : "Consent (Health Provider)",
     "MEMBER" : "Account",

@@ -4,7 +4,7 @@
     "members" : "Members",
     "auditlog" : "Audit",
     "news" : "News",
-    "plugins" : "Plugins",
+    "plugins" : "Applications",
     "usagestats" : "Application usage statistics",
 	"content" : "Content Types",
 	"studies" : "Studies",
@@ -99,11 +99,11 @@
   },
   
   "admin_plugins" : {
-    "title" : "Plugins",
+    "title" : "Applications",
     "developer" : "Filter by Developer",
-    "name" : "Filter by Appname",
+    "name" : "Filter by Application",
     "organisation" : "Filter by Organisation",
-    "empty" : "There are no apps or plugins yet.",
+    "empty" : "There are no applications yet.",
     "plugin_name" : "Name",
     "plugin_developer" : "Developer",
     "plugin_type" : "Type",
@@ -111,11 +111,11 @@
     "plugin_market" : "MIDATA Store",
     "plugin_stats" : "Stats",
     "plugin_status" : "Status",
-    "add_definition_btn" : "Import Plugin Definition"
+    "add_definition_btn" : "Import Application Definition"
   },
   
   "admin_defineplugin" : {
-    "title" : "Import Plugin Definition",
+    "title" : "Import Application Definition",
     "definition" : "Definition (JSON)"  
   },
   
@@ -187,7 +187,7 @@
 	 "recordCount" : "Records in DB",
 	 "vRecordCount" : "Archived Records",
 	 "indexPageCount" : "DB Index Pages",
-	 "appCount" : "Apps and Plugins",
+	 "appCount" : "Applications",
 	 "languages" : "User Languages",
 	 "runningStudyCount" : "Running Studies",
 	 "groupCount" : "Teams (Healthcare and Research)",
@@ -218,7 +218,7 @@
    "usagestats" : {
       "title" : "Usage statistics",
       "date" : "Date",
-      "object" : "App/Plugin",
+      "object" : "Application",
       "REGISTRATION" : "Registration",
       "LOGIN" : "Login",
       "REFRESH" : "Session",
