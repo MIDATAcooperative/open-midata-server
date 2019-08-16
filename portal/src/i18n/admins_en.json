@@ -4,10 +4,10 @@
     "members" : "Members",
     "auditlog" : "Audit",
     "news" : "News",
-    "plugins" : "Plugins",
+    "plugins" : "Applications",
     "usagestats" : "Application usage statistics",
 	"content" : "Content Types",
-	"studies" : "Studies",
+	"studies" : "Projects",
 	"terms" : "General Terms and Conditions",
 	"registration" : "Register an Administrator",
 	"user_admin" : "User Administration",
@@ -83,7 +83,7 @@
     "expires" : "Expiration date of message",
     "date" : "Official date",
     "appId" : "Linked Application",
-    "studyId" : "Linked Study",
+    "studyId" : "Linked Project",
     "layout" : "Layout", 
     "layouts" : {
       "small" : "Small (1x1)",
@@ -99,11 +99,11 @@
   },
   
   "admin_plugins" : {
-    "title" : "Plugins",
+    "title" : "Applications",
     "developer" : "Filter by Developer",
-    "name" : "Filter by Appname",
+    "name" : "Filter by Application",
     "organisation" : "Filter by Organisation",
-    "empty" : "There are no apps or plugins yet.",
+    "empty" : "There are no applications yet.",
     "plugin_name" : "Name",
     "plugin_developer" : "Developer",
     "plugin_type" : "Type",
@@ -111,18 +111,18 @@
     "plugin_market" : "MIDATA Store",
     "plugin_stats" : "Stats",
     "plugin_status" : "Status",
-    "add_definition_btn" : "Import Plugin Definition"
+    "add_definition_btn" : "Import Application Definition"
   },
   
   "admin_defineplugin" : {
-    "title" : "Import Plugin Definition",
+    "title" : "Import Application Definition",
     "definition" : "Definition (JSON)"  
   },
   
   "admin_studies" : {
-    "title" : "Studies",
+    "title" : "Research Projects",
     "criteria" : "Search criteria",
-    "empty" : "No matching studies found."
+    "empty" : "No matching projects found."
   },
   
   "admin_terms" : {
@@ -145,7 +145,7 @@
   },
   
   "admin_study" : {
-     "title" : "Study",
+     "title" : "Research Project",
      "name" : "Name",
      "created_at" : "Created on",
      "created_by" : "Created by",
@@ -175,7 +175,7 @@
      "links" : "Linked Applications",
      "end_validation_btn" : "Complete Validation",
      "back_to_draft_btn" : "Back to Draft",
-     "delete_study_btn" : "Delete Study"    
+     "delete_study_btn" : "Delete Project"    
   },
   
   "admin_stats" : {
@@ -187,9 +187,9 @@
 	 "recordCount" : "Records in DB",
 	 "vRecordCount" : "Archived Records",
 	 "indexPageCount" : "DB Index Pages",
-	 "appCount" : "Apps and Plugins",
+	 "appCount" : "Applications",
 	 "languages" : "User Languages",
-	 "runningStudyCount" : "Running Studies",
+	 "runningStudyCount" : "Running Projects",
 	 "groupCount" : "Teams (Healthcare and Research)",
 	 "auditEventCount" : "Audit Events",
 	 "users" : "Active User Accounts",		       
@@ -218,7 +218,7 @@
    "usagestats" : {
       "title" : "Usage statistics",
       "date" : "Date",
-      "object" : "App/Plugin",
+      "object" : "Application",
       "REGISTRATION" : "Registration",
       "LOGIN" : "Login",
       "REFRESH" : "Session",

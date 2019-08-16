@@ -219,7 +219,7 @@ public class Plugins extends APIController {
 
 		User user = User.getById(userId, Sets.create("visualizations", "apps", "role", "developer"));
 
-		boolean testing = visualization.creator.equals(user._id) || (user.developer != null && visualization.creator.equals(user.developer));
+		boolean testing = visualization.creator != null && (visualization.creator.equals(user._id) || (user.developer != null && visualization.creator.equals(user.developer)));
 
 		if (!user.role.equals(visualization.targetUserRole) && !visualization.targetUserRole.equals(UserRole.ANY) && !testing) {
 			throw new BadRequestException("error.invalid.plugin", "Visualization is for a different role. Your role:" + user.role);
