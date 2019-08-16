@@ -20,7 +20,7 @@
 	  "sign_out" : "Log out",
 	  "edit_profile" : "Edit Profile",
 	  "app_count" : "Authorized apps",
-	  "study_count" : "Studies enrollments",
+	  "study_count" : "Project enrollments",
 	  "me" : "Timeline",
 	  "view" : "View",
       "overview" : "Overview",
@@ -28,7 +28,7 @@
 	  "my_data" : "My Data",
 	  "consents" : "Sharing",
 	  "research" : "Research",
-	  "apps" : "Apps",
+	  "apps" : "Applications",
 	  "config" : "Configuration",
 	  "help" : "Help"
    },
@@ -49,9 +49,9 @@
        "action" : "You are not authorized to do this action",
        "fields" : "You are not authorized to query the provided fields",
        "account" : "You are not authorized to access this account",
-       "study" : "You are not authorized to access this study",
-       "not_plugin_owner" : "This is not your plugin",
-       "no_debug" : "Debugging is only available for plugins during development or beta phase on non productive instances."       
+       "study" : "You are not authorized to access this research project",
+       "not_plugin_owner" : "This is not your application",
+       "no_debug" : "Debugging is only available for applications during development or beta phase on non productive instances."       
      },
 
      "invalid" : {
@@ -64,7 +64,7 @@
        "password_old" : "Old password not correct.",
        "confirmation_code" :"Bad confirmation code",
        "securitytoken" : "Code not correct",
-       "code" : "Unknown code for study.",
+       "code" : "Unknown code for research project.",
        "appcode" : "Unknown code for app.",
        "status_transition" : "Invalid status change",
        "date" : "Invalid value for date field",
@@ -76,11 +76,11 @@
        "json" : "Invalid JSON provided",
        "passphrase" : "Bad passphrase",
        "passcode": "Bad passcode",
-       "plugin" : "Plugin is intended for a different role",
+       "plugin" : "Application is intended for a different role",
        "unlock_code" : "Incorrect unlock code",
        "access_query" : "The Data Access Filter must restrict by 'content' or 'group'!",
-       "sharing" : "The Data Access Filter contains data types that are excluded by the study configuration.",
-       "anonymous" : "Study can only be anonymous if no one is allowed to access unpseudonymized data.",
+       "sharing" : "The Data Access Filter contains data types that are excluded by the project configuration.",
+       "anonymous" : "Research project can only be anonymous if no one is allowed to access unpseudonymized data.",
        "url" : "Invalid URL",
        "consent_members" : "This consent may only be confirmed once all external persons have joined MIDATA."       
      },
@@ -95,7 +95,7 @@
        "token" : "Missing or bad token.",
        "agb" : "General Terms and Conditions not accepted.",
        "privacypolicy" : "Privacy Policy must be accepted.",
-       "study_accept" : "Study participation must be accepted.",
+       "study_accept" : "Project participation must be accepted.",
        "study_group" : "Participant must first be assigned to a group.",
        "consent_accept" : "Consent must be given to continue",
        "confirmation" : "Confirmation by user required first.",
@@ -110,13 +110,13 @@
        "app" : "Unknown application",
        "space" : "The requested space does no longer exist.",
        "consent" : "Consent not found",
-       "study" : "Study does not exist.",
+       "study" : "Research project does not exist.",
        "content" : "Record Content-Type is not registered with the platform.",
        "group" : "Unknown group name",
        "code" : "Unknown code",
        "record" : "Unknown record",
        "user" : "User does not exist",
-       "participation" : "Study Participation not found."
+       "participation" : "Research project participation not found."
      },
 
      "exists" : {
@@ -125,8 +125,8 @@
        "provider" : "A healthcare provider with this name already exists.",
        "research" : "A research organisation with this name already exists.",
        "passcode" : "Please choose a different passcode!",
-       "plugin" : "A plugin with the same name already exists.",
-       "study" : "A study with this name already exists."
+       "plugin" : "An application with the same name already exists.",
+       "study" : "A research project with this name already exists."
      },
 
      "blocked" : {
@@ -134,17 +134,17 @@
        "password1" : "Too many missed login attempts. Please wait 1 minute before next attempt.",
        "password5" : "Too many missed login attempts. Please wait 5 minutes before next attempt.",
        "password60" : "Too many missed login attempts. Please wait 1 hour before next attempt.",
-       "participation" : "Account holder is not allowed to participate in study.",
+       "participation" : "Account holder is not allowed to participate in research project.",
        "consent" : "The consent for using this app has been revoked. To reenable the app, delete the rejected or expired consent on the MIDATA portal.",
        "app" : "You are allowed to use this app on a maximum of 10 devices. Please delete unused consents on the MIDATA portal." 
      },
 
      "closed" : {
-       "study" : "Study not searching for participants."
+       "study" : "Research project not searching for participants."
      },
 
      "notvalidated" : {
-       "study" : "Study must be validated before."
+       "study" : "Research project must be validated before."
      },
 
      "tooshort" : {
@@ -173,9 +173,9 @@
      },
 
      "no_alter" : {
-       "consent" : "Consents for studies may not be altered.",
-       "study" : "Setup can only be changed as long as study is in draft phase.",
-       "group" : "Group of participant can only be changed if study is not running or no participant accepted yet."
+       "consent" : "Consents for research projects may not be altered.",
+       "study" : "Setup can only be changed as long as research project is in draft phase.",
+       "group" : "Group of participant can only be changed if research project is not running or no participant accepted yet."
      },
      
      "too_large" : {
@@ -204,16 +204,16 @@
 	   "PARTICIPATION_APPROVED" : "Participation approved",
 	   "GROUP_ASSIGNED" : "Group assigned",
 	   "VALIDATION_REQUESTED" : "Validation requested",
-	   "STUDY_VALIDATED" : "Study validated",
-	   "STUDY_REJECTED" : "Study rejected",
+	   "STUDY_VALIDATED" : "Research project validated",
+	   "STUDY_REJECTED" : "Research project rejected",
 	   "PARTICIPANT_SEARCH_STARTED" : "Participant search started",
 	   "PARTICIPANT_SEARCH_CLOSED" : "Participant search closed",
 	   "CODES_GENERATED" : "Codes generated",
-	   "STUDY_STARTED" : "Study started",
-	   "STUDY_FINISHED" : "Study finished",
-	   "STUDY_ABORTED" : "Study aborted",
+	   "STUDY_STARTED" : "Research project started",
+	   "STUDY_FINISHED" : "Research project finished",
+	   "STUDY_ABORTED" : "Research project aborted",
 	   "REQUIRED_INFORMATION_CHANGED" : "Required information changed",
-	   "STUDY_SETUP_CHANGED" : "Study setup changed",
+	   "STUDY_SETUP_CHANGED" : "Project setup changed",
 	   "MEMBERSHIP_REQUEST" : "Membership requested",
 	   "CONTACT_ADDRESS_CHANGED" : "Address changed",
 	   "CONTRACT_SEND" : "Contract sent",
@@ -245,22 +245,22 @@
 	   "consent-approved": "Consent approved",
 	   "consent-rejected" : "Consent rejected",
 	   "consent-deleted" : "Consent deleted",
-	   "study-participation-requested" : "Study participation requested",
-	   "study-participation-member-rejected" : "Study participation rejected by member",
-	   "study-participation-research-rejected" : "Study participation rejected by researcher",
-	   "study-participation-member-retreat" : "Account holder retreated from study participation",
-	   "study-participation-approved" :"Study participation approved",
-	   "study-participation-group-assigned" : "Study participation group assigned",
-	   "study-validation-requested" : "Study validation requested",
-	   "study-validated" : "Study validated",
-	   "study-rejected" : "Study rejected",
-	   "study-participant-search-started" : "Study participant search started",
-	   "study-participant-search-closed" : "Study participant search closed",
-	   "study-started" : "Study started",
-	   "study-finished" : "Study finished",
-	   "study-aborted" : "Study aborted",
-	   "110105" : "Entire Study deleted",
-	   "study-setup-changed" : "Study changed",
+	   "study-participation-requested" : "Project participation requested",
+	   "study-participation-member-rejected" : "Project participation rejected by member",
+	   "study-participation-research-rejected" : "Project participation rejected by researcher",
+	   "study-participation-member-retreat" : "Account holder retreated from project participation",
+	   "study-participation-approved" :"Project participation approved",
+	   "study-participation-group-assigned" : "Project participation group assigned",
+	   "study-validation-requested" : "Project validation requested",
+	   "study-validated" : "Research project validated",
+	   "study-rejected" : "Research project rejected",
+	   "study-participant-search-started" : "Project participant search started",
+	   "study-participant-search-closed" : "Project participant search closed",
+	   "study-started" : "Research project started",
+	   "study-finished" : "Research project finished",
+	   "study-aborted" : "Research project aborted",
+	   "110105" : "Entire project deleted",
+	   "study-setup-changed" : "Research project changed",
 	   "data-deletion" : "Data deleted",
        "data-export" : "Data exported",
        "data-import" : "Data import",
@@ -304,8 +304,8 @@
 	   "EXTERNALSERVICE" : "External Application",
 	   "HCRELATED" : "Healthcare",
 	   "HEALTHCARE" : "Doctor / Hospital",
-	   "STUDYPARTICIPATION" : "Study",
-	   "STUDYRELATED" : "Study information",
+	   "STUDYPARTICIPATION" : "Research project",
+	   "STUDYRELATED" : "Research project information",
 	   "IMPLICIT" : "Messaging"
 	 },
 	 "contractstatus" : {
@@ -340,13 +340,13 @@
 	   "COMMUNITY" : "Community"
 	 },
 	 "joinmethod" : {
-	   "APP" : "Participant uses linked app or software",
+	   "APP" : "Participant uses linked application",
 	   "PORTAL" : "Participant applies on MIDATA portal",
 	   "RESEARCHER" : "Participant is manually registered by research team member",
 	   "API" : "Participant is registered by external software",
 	   "ALGORITHM" : "Participant has been proposed by an algorithm (not supported)",
 	   "CODE" : "Participant may join by entering a code (not supported)",
-	   "TRANSFER" : "Data is transferred from another study (not supported)"	
+	   "TRANSFER" : "Data is transferred from another research project (not supported)"	
 	 },
 	 "studyexecutionstatus" : {
 	   "ABORTED" : "Execution aborted",
@@ -356,8 +356,8 @@
 	 },
 	 "studyvalidationstatus" : {
 	   "DRAFT" : "Draft (Not Validated)",
-	   "REJECTED" : "Study rejected by MIDATA",
-	   "VALIDATED" : "Study has been validated",
+	   "REJECTED" : "Project rejected by MIDATA",
+	   "VALIDATED" : "Project has been validated",
 	   "VALIDATION" : "Validation running"
 	 },
 	 "userrole" : {
@@ -375,13 +375,13 @@
 	   "MONITOR" : "Monitor",
 	   "MASTER" : "Master User",
 	   "USERADMIN" : "User Admin",
-	   "STUDYADMIN" : "Study Admin",
+	   "STUDYADMIN" : "Project Admin",
 	   "CONTENTADMIN" : "Content Admin",
-	   "PLUGINADMIN" : "Plugin Admin",
+	   "PLUGINADMIN" : "Application Admin",
 	   "NEWSWRITER" : "News Author",
 	   "SUPERADMIN" : "Super Admin",
 	   "TRIALUSER" : "Trial User",
-	   "STUDYPARTICIPANT" : "Study Participant",
+	   "STUDYPARTICIPANT" : "Project Participant",
 	   "APPUSER" : "App User",
 	   "NONMEMBERUSER" : "Validated Account Holder",
 	   "MEMBEROFCOOPERATIVE" : "Member of Cooperative"
@@ -452,13 +452,13 @@
 	 },
 	 "infos" : {
 	   "SUMMARY" : "Short Summary",
-	   "DESCRIPTION" : "What is this study doing?",
+	   "DESCRIPTION" : "What is this research project doing?",
 	   "HOMEPAGE" : "Link to project homepage",
 	   "CONTACT" : "Contact information",
 	   "INSTRUCTIONS" : "Instructions for participants",
 	   "PURPOSE" : "What is the purpose of this research?",
 	   "AUDIENCE" : "Are there limitations on who should participate?",
-	   "LOCATION" : "At which state or region is this study taking place?",
+	   "LOCATION" : "At which state or region is this project taking place?",
 	   "PHASE" : "What is the state of progression of the research taking place?",
 	   "SPONSOR" : "Who is initiator of the research and who is legally responsible?",
 	   "SITE" : "At which site are activities beeing conducted?",
@@ -523,7 +523,7 @@
      "test" : {
         "name" : "Test Instance (test.midata.coop)",
         "intro": "This is a test instance of the MIDATA platform.",
-        "purpose" : "This instance may be used to develop and test new apps and plugins for MIDATA in a safe environment. It is also used to test new versions of the portal and the backend before the other instances are updated.",
+        "purpose" : "This instance may be used to develop and test new applications for MIDATA in a safe environment. It is also used to test new versions of the portal and the backend before the other instances are updated.",
         "access" : "Register your own developer account. After validation by a MIDATA administrator, you may register test users, researchers and health providers without additional validation.",
         "uptime" : "There is no guarantee on availability. Expect updates of the instance to happen as needed. If possible, updates are done between 12:00 and 13:00 central european time, but may occur more than once a day if problems occur.",
         "data" : "Store only test data on this instance. Data may be wiped, accounts may be deleted if necessary. Records may become corrupted by bugs. There is no backup of the data."
@@ -586,7 +586,7 @@
     "app_agb" : "App Terms",
     "app_agb2" : "I accept the",
     "app_agb3" : "App General Terms and Conditions",    
-    "study_agb" : "Study Terms",
+    "study_agb" : "Project Terms",
     "sign_up_btn" : "Create Account",
     "unlock_code" : "Unlock Code",
     "already_have_account" : "I already have an account",
@@ -604,7 +604,7 @@
   "login" : {
     "email_address" : "Email address",
     "password" : "Password",
-    "study" : "Study",
+    "study" : "Project",
     "remember_me" : "Remember me",
     "sign_in_btn" : "Log in",
     "forgot_your_password" : "Forgot your password?",
@@ -612,12 +612,11 @@
     "service_login" : "Login for Confirmation Request",
     "service_login2" : "At your next login, you will be asked for confirmation of consents and/or participation with research projects.",
     "no_account" : "I do not have a MIDATA account yet.",
-    
-    "info1" : "Dear study participant",
+    "info1" : "Dear project participant",
     "info2" : "You already have a MIDATA account, log in with your email address and password.",
-    "info3" : "Your personal account gives you an overview of your study participation.",
+    "info3" : "Your personal account gives you an overview of your project participation.",
     "info4" : "Dear visitor",
-    "info5" : "You do not yet have a MIDATA account and do not participate in a study?",
+    "info5" : "You do not yet have a MIDATA account and do not participate in a research project?",
     "info6" : "Join the",
     "info6b" : "Ally Science",
     "info6c" : "project!"
@@ -758,9 +757,9 @@
   },
 
   "studydetails" : {
-    "study" : "Study",    
+    "study" : "Research project",    
     "organization" : "Organization performing the research:",
-    "providers_monitoring" : "Healthcare Providers monitoring the study",
+    "providers_monitoring" : "Healthcare Providers monitoring the research",
     "no_providers" : "None",
     "provider_remove_btn" : "Remove",
     "provider_add_btn" : "Add",
@@ -772,7 +771,7 @@
     "records_with_content" : "Records that have content:",
     "records_with_group" : "Records that belong to group:",
     "records_with_owner" : "Records that belong to owner:",
-    "records_from_app" : "Records created by app:",
+    "records_from_app" : "Records created by application:",
     "owner_self" : "Your own records",
     "participation_history" : "Participation History",
     "history_event" : "Event",
@@ -903,9 +902,9 @@
     "consent_empty" : "This consent does not share any data at the moment.",
     "type_circle" : "This consent shares data with other MIDATA account holders.",
     "type_healthcare" : "This consent shares data with healthcare professionals.",
-    "type_studyparticipation" : "This consent shares data with research for use in a study.",
-    "type_studyrelated" : "This consent shares research data to a study participant.",
-    "type_externalservice" : "This consent shares data with a mobile app or external service.",
+    "type_studyparticipation" : "This consent shares data with research for use in a research project.",
+    "type_studyrelated" : "This consent shares research data to a project participant.",
+    "type_externalservice" : "This consent shares data with an application.",
     "type_implicit" : "This implicitely created consent shares messages with their receivers.",
     "status_active" : "This consent is active.",
     "status_expired" : "This consent is expired. Data is no longer shared.",
@@ -985,7 +984,7 @@
 	"delete_instructions6" : "In order to permanently delete all records of a certain category, double click on the 'delete all' button to the right of the category.",
 	"shared_with" : "Shared With:",
 	"records_used_for_app" : "Records used for app",
-	"back_to_plugin" : "Back to Visualization",
+	"back_to_plugin" : "Back",
 	"by_group" : "Grouped by type of content",
 	"by_plugin" : "Grouped by application",
 	"public_data" : "Non personal public data",
@@ -1001,7 +1000,7 @@
 	"my_data" : "My Data",
 	"all_data" : "All Data",
 	"all" : "Personal Data",
-	"study" : "Study: {{name}}",
+	"study" : "Project: {{name}}",
 	"shared" : "Shared by: {{name}}",
 	"just_name" : "{{name}}",
 	"share" : "share",
@@ -1019,7 +1018,7 @@
     "have_account" : "You have a MIDATA account?",
     "have_account2" : "Perfect, log in here",
     "sign_up_btn" : "Sign up",
-    "reshares_data" : "App may share data it has access to to third parties.",
+    "reshares_data" : "Application may share data it has access to to third parties.",
     "allows_user_search" : "Your name and email address may be searched by other people using this app.",
     "requesting_app" : "needs access to your data.",
     "sign_in" : "MIDATA login for:",
@@ -1032,9 +1031,9 @@
     "shares_format" : "Format: {{ format }}",
     "shares_content" : "Content: {{ content }}",
     "confirm_provider" : "I accept to share data with this external provider",
-    "confirm_provider_opt" : "I accept to share data with this external provider",
-    "confirm_study" : "I accept the terms of use of the application and to participate in the study",
-    "confirm_study_opt" : "I accept to participate in the study",
+    "confirm_provider_opt" : "I accept to share data with this external provider (optional)",
+    "confirm_study" : "I accept the terms of use of the application and to participate in the project",
+    "confirm_study_opt" : "I accept to participate in the project",
     "confirm_citizen_science" : "I accept to participate in the citizen science project",
     "confirm_community" : "I accept the terms of use of the application and community services",
     "confirm_community_opt" : "I accept to share data with the community service"
@@ -1048,7 +1047,7 @@
 	"social" : "Social",
     "social_text" : "Share your data with friends. Communicate with people sharing your health situation. Motivate yourself by competition with others.",
 	"research" : "Research",
-	"research_text" : "Participate in studies. Inform yourself about current research.",
+	"research_text" : "Participate in research projects. Inform yourself about current research.",
     "health" : "Health",
  	"health_text" : "Share data with your doctor. Search for health professionals.",
     "help" : "Help",
@@ -1073,9 +1072,9 @@
 	"records" : "Records",
     "share" : "Share",
     "details" : "Details",
-    "yourstudies" : "Studies you are involved:",
-	"studies_teaser" : "If you want to participate in research, configure your research settings. You will be contacted in this tile if you match a studies requirements.",
-	"newstudies" : "New Studies",
+    "yourstudies" : "Research projects you are involved:",
+	"studies_teaser" : "If you want to participate in research, configure your research settings. You will be contacted in this tile if you match a projects requirements.",
+	"newstudies" : "New Research Projects",
 	"newsconfig" : "News",
 	"newsconfig_teaser" : "There are currently no announcements",
 	"researchnews" : "Research News",
@@ -1094,7 +1093,7 @@
 	"install_btn" : "Add more",
 	"observations" : "Measures",
 	"calendar" : "Calendar",
-	"smallstudies" : "Studies"
+	"smallstudies" : "Research Projects"
    },
 
    "measure" : {
@@ -1135,7 +1134,7 @@
 
   "flexiblestudies" : {
     "empty" : "Empty",
-    "studies_found" : "Studies found:"
+    "studies_found" : "Research projects found:"
   },
   
   "addusers" : {
@@ -1177,8 +1176,8 @@
     "refresh_btn" : "Refresh",
     "via" : "via",
     "CIRCLE" : "Consent",
-    "ResearchStudy" : "Study",
-    "EXTERNALSERVICE" : "App",
+    "ResearchStudy" : "Research Project",
+    "EXTERNALSERVICE" : "Application",
     "STUDYPARTICIPATION" : "Participation",
     "HEALTHCARE" : "Consent (Health Provider)",
     "MEMBER" : "Account",
@@ -1211,7 +1210,7 @@
   
   "member_user" : {
     "account_status" : "Account Status",
-	"studyparticipant" : "Your account has been set up for participation in a study. Functionality is limited. You may upgrade your user account to a full account.",
+	"studyparticipant" : "Your account has been set up for participation in a project. Functionality is limited. You may upgrade your user account to a full account.",
 	"appuser" : "Your account has been registered by an external application. Functionality is limited. You may upgrade your user account to a full account.",
 	"memberofcooperative" : "You are a member of the MIDATA cooperative.",
 	"nonmemberuser" : "You have a full user account but you are no member of the MIDATA cooperative.",
@@ -1233,7 +1232,7 @@
     "paragraph1" : "You would like to delete your MIDATA account irrevocably? That is of course possible.",
     "paragraph2" : "Please read the following information first:",
     "point1" : "If you delete your MIDATA account your personal data will no longer be available.",
-    "point2" : "Data already included in studies will continue to be available in the study.",
+    "point2" : "Data already included in research projects will continue to be available in the project.",
     "point3" : "MIDATA is not able to recover your deleted account.",    
     "warning" : "Warning",
     "final" : "This action cannot be undone.",
@@ -1258,7 +1257,7 @@
   "queryeditor" : {
     "title" : "Data Access Filter Editor",
     "app" : "Application",
-    "study" : "Study",
+    "study" : "Research Project",
     "summary" : "List of accessable data types:",
     "access_query" : "Data Access Filter",
     "format" : "Data Format",
@@ -1269,7 +1268,7 @@
     "add_basic_btn" : "Basic Resources",
     "add_data_btn" : "Add More Data Types",
     "owner" : "Data Owner",
-    "owner_all" : "Use also shared data (from studies, friends, patients)",
+    "owner_all" : "Use also shared data (from projects, friends, patients)",
     "owner_self" : "Only data from the user of the application",
     "short_owner_all" : "Also shared data",
     "short_owner_self" : "Only own data",
@@ -1307,9 +1306,9 @@
     "ask" : {
       "AuditEvent" : "Access to the audit event log",
       "Consent" : "Access to consents of the application user with other users or applications",
-      "Group" : "Access to group definitions (either teams of health providers or researchers or groups defined as part of study results generation)",
+      "Group" : "Access to group definitions (either teams of health providers or researchers or groups defined as part of research project results generation)",
       "Patient" : "Patient Records: name, email, address of MIDATA account holders",
-      "PseudonymizedPatient" : "Patient Records: pseudonym, year of birth, country of study participants",
+      "PseudonymizedPatient" : "Patient Records: pseudonym, year of birth, country of research project participants",
       "Practitioner" : "Practitioner Resource: search for health providers or researchers",
       "Subscription" : "Access and manage subscriptions to external systems"
     }

@@ -81,8 +81,6 @@
         "filename" : "Interner Name",
         "type" : "Applikationstyp",
         "targetUserRole" : "Zielrolle",
-        "previewlogin" : "OAuth-Anmeldung",
-        "previewlogin2" : "Vorschau OAuth-Anmeldungsseite",
         "edit_btn" : "Einstellungen ändern",
         "edit_help" : "Ändern Sie die Einstellungen für Ihre Applikation.",
         "query_btn" : "Data Access Filter ändern",
@@ -95,8 +93,8 @@
         "testfromlocal_help" : "Während der Entwicklung können Sie den Plugin-Code, der auf Ihrem lokalen Computer gespeichert ist, auf dieser Instanz testen.",
         "serverimport_btn" : "Automatisches Importskript testen.",
         "serverimport_help" : "Wenn Ihr Plugin einen automatischen Import bietet, können Sie das Skript Ihres Plugins, das normalerweise auf dem Server läuft, auf Ihrem lokalen Computer testen.",
-        "link_btn" : "Verknüpfungen mit Studien",
-        "link_help" : "Apps können die Teilnahme an einer Studie anbieten oder verlangen. Studien können die Verwendung von Plugins oder Apps empfehlen.",
+        "link_btn" : "Verknüpfungen mit Forschungsprojekten oder externen Parteien",
+        "link_help" : "Applikationen können die Teilnahme an einem Forschungsprojekt vorschlagen oder erfordern. Forschungsprojekte können die Verwendung von Plugins oder Applikationen empfehlen. Die Nutzung der Anwendung kann die Zustimmung zur Dateneinsicht durch Gesundheitsfachpersonen oder Teams bedingen.",
         "icon_btn" : "Icons und Bilder der Applikation",
         "icon_help" : "Laden und verwalten Sie die Icons und Bilder hoch, die mit Ihrer Applikation verwendet werden sollen. Stellen Sie Bilder für den Login-Bildschirm, den Zustimmungsbildschirm, den MIDATA Store usw. bereit.",
         "messages_btn" : "E-Mail-Nachrichten der Applikation",
@@ -153,11 +151,15 @@
         "access_query_json" : "Data Access Filter",
         "queryeditor_btn" : "Zum Data Access Filter Editor wechseln",
         "no_update_history" : "Keine FHIR Ressourcenhistorie",
+        "usagestats_btn" : "Nutzungsstatistiken",
+        "usagestats_help" : "Nutzungshäufigkeit der Applikation analysieren.",
         "export_btn" : "Applikationsdefinition exportieren",
         "export_help" : "Exportieren Sie die Definition dieser Applikation, damit sie auf einem anderen Server importiert und verwendet werden kann.",
         "important" : "WICHTIG",
         "logoutwarning" : "Bei einer Änderung der Applikationsdefinition, werden alle Benutzer von dieser Applikation getrennt. Sie müssen die Verwendung der Applikation bei der nächsten Anmeldung erneut bestätigen.",
-        "researchwarning" : "Eine Änderung der Applikationsdefinition entkoppelt diese Forschungsapplikation von allen Studien!"
+        "researchwarning" : "Eine Änderung der Applikationsdefinition entkoppelt diese Forschungsapplikation von allen Studien!",
+        "creator" : "Ersteller",
+        "organization" : "Organisation"
     },
 
     "appstats" : {
@@ -213,7 +215,19 @@
     },
 
     "applink" : {
-        "title" : "Verknüpfungen mit Studien"
+        "title" : "Verknüpfungen mit Forschungsprojekten und Gesundheitsfachpersonen",
+        "add_research_btn" : "Verknüpfen mit Forschungsprojekt",
+        "add_provider_btn" : "Verknüpfen mit Gesundheitsfachperson",
+        "target" : "Ziel",
+        "provider" : "Gesundheitsfachperson (Anmeldung)",
+        "identifier" : "Identifikator für diesen Link",
+        "terms_of_use" : "Nutzungsbedingungen",
+        "terms_of_use_hint" : "Wenn besondere Nutzungsbedingungen gelesen und vom Nutzer akzeptiert werden müssen, senden Sie den Text bitte an MIDATA. Wir werden den Text im richtigen Format hochladen und Ihnen den Identifikator mitteilen, den Sie hier eingeben müssen.",
+        "show_terms" : "Nutzungsbedingungen einsehen",
+        "types" : {
+            "REQUIRE_P" : "Die Zustimmung muss akzeptiert werden",
+            "OFFER_P" : "Die Zustimmung wird bei der Anmeldung/Registrierung erteilt"
+        }
     },
 
     "appsubscriptions" : {

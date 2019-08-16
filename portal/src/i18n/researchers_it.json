@@ -24,7 +24,8 @@
         "title" : "Istituto di ricerca",
         "name" : "Nome",
         "description" : "Descrizione",
-        "researchers" : "Tutti i ricercatori dell vostro istituto"
+        "researchers" : "Tutti i ricercatori dell vostro istituto",
+        "master_user" : "Devi essere un utente master per aggiornare la propria organizzazione o iscrivere nuovi utenti per l'organizzazione. Si prega di contattare il supporto MIDATA se si pensa che si dovrebbero avere le autorizzazioni di utente master."
     },
 
     "createstudy" : {
@@ -336,6 +337,5 @@
         "share_btn" : "Condividere",
         "unshare_btn" : "Non condividere più",
         "search_btn" : "Ricerca"
-
     }
 }

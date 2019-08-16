@@ -5,6 +5,7 @@
     "auditlog" : "Audit",
     "news" : "News",
     "plugins" : "Plugins",
+    "usagestats" : "Application usage stats",
 	"content" : "Content Types",
 	"studies" : "Studies",
 	"terms" : "General Terms and Conditions",
@@ -32,6 +33,7 @@
 
   "admin_address" : {
     "title" : "Member Profile",
+    "show_apps_created" : "Show apps created by this developer",
     "midata_id" : "MIDATA ID",
     "role" : "Role",
     "subroles" : "Sub-Role(s)",
@@ -57,7 +59,9 @@
     "add_comment_btn" : "Add Comment",
     "wipe_btn" : "Wipe Account",
     "change_email_btn" : "Change Email Address",
-    "change_address_btn" : "Change Profile"
+    "change_address_btn" : "Change Profile",
+    "make_master_btn" : "Add master user role",
+    "remove_master_btn" : "Revoke master user role"
   },
   
   "admin_news" : {
@@ -176,6 +180,7 @@
   
   "admin_stats" : {
      "title" : "Statistics",
+     "showusage" : "Show system usage per application",
 	 "value" : "Total count",
 	 "diff_yesterday" : "Diff. to 1 day ago",
 	 "diff_week" : "Diff. to 7 days ago",
@@ -208,5 +213,19 @@
      "myid" : "My recovery id",
      "instr1" : "Click on a share to copy the encrypted share into the clipboard.",
      "instr2" : "Decrypt share on Ubuntu: (click line to copy it to clipboard)"     
+   },
+   
+   "usagestats" : {
+      "title" : "Usage statistics",
+      "date" : "Date",
+      "object" : "App/Plugin",
+      "REGISTRATION" : "Registration",
+      "LOGIN" : "Login",
+      "REFRESH" : "Continue",
+      "INSTALL" : "Install",
+      "GET" : "Read",
+      "POST" : "Write",
+      "PUT" : "Update",
+      "DELETE" : "Delete"
    }
 }

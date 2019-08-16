@@ -160,9 +160,11 @@ public class ExecutionInfo {
 		AccessLog.logBegin("begin check 'mobile' type session token");
 		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare", "status", "sharingQuery", "writes"));
         if (appInstance == null) MobileAPI.invalidToken(); 
-
+        if (appInstance.status.equals(ConsentStatus.REJECTED) || appInstance.status.equals(ConsentStatus.EXPIRED) || appInstance.status.equals(ConsentStatus.FROZEN)) MobileAPI.invalidToken();
+        
         if (!allowInactive && !appInstance.status.equals(ConsentStatus.ACTIVE)) throw new BadRequestException("error.noconsent", "Consent needs to be confirmed before creating records!");
-
+        
+        
         KeyManager.instance.login(60000l, false);
         if (KeyManager.instance.unlock(appInstance._id, authToken.aeskey) == KeyManager.KEYPROTECTION_FAIL) {
         	MobileAPI.invalidToken(); 

@@ -7,7 +7,7 @@
   
   "member_quickregistration" : {
     "sign_up" : "Sign up",
-    "study" : "Study*",
+    "study" : "Research project*",
     "app" : "App to be used*",
     "app_password" : "Password for app",
     "account_password" : "Account Password",
@@ -64,14 +64,14 @@
   },
   
   "yourstudies" : {
-    "study" : "Study",
+    "study" : "Research Project",
     "status" : "Status",
-    "empty" : "You do not participate in any study."
+    "empty" : "You do not participate in any research project."
   },
   
   "entercode" : {
-    "title" : "Join a research study by entering a participation code.",
-    "description" : "Join a study by entering a code:",
+    "title" : "Join a research project by entering a participation code.",
+    "description" : "Join a research project by entering a code:",
     "code" : "Participation Code",
     "continue_btn" : "Continue"
   },
@@ -86,8 +86,8 @@
   },
   
   "smallstudies" : {
-    "greeting" : "Want to help studies by sharing your data?",
-    "studies" : "Studies",
+    "greeting" : "Want to help research projects by sharing your data?",
+    "studies" : "Projects",
     "status" : "Enrollment",
     "recruiting" : "Recruiting",
     "ongoing" : "Ongoing",
