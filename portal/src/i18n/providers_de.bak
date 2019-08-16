@@ -3,7 +3,7 @@
     "sign_up" : "Registration as a Health Professional",
     "provider" : "Health Professional",
     "user" : "User",
-    "name" : "Name"
+    "name" : "(Organization) Name"
   },
   
   "provider_login" : {
@@ -27,7 +27,7 @@
     "description" : "Description",
     "members" : "All members of your organization",
     "addprovider" : "Register New Member",
-    "master_user" : "You must be master user to update your organization or register new users for the organization. Please contact support if you think you should have master user permissions."
+    "master_user" : "You must be master user to update your organization or register new users for the organization. Please contact the MIDATA support if you think you should have master user permissions."
   },
   
   "addprovider" : {

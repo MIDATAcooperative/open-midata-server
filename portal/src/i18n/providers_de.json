@@ -4,6 +4,10 @@
         "sign_up" : "Registrierung als Gesundheitsfachperson",
         "provider" : "Gesundheitsfachperson",
         "user" : "Benutzer",
+
+        // TODO CHANGED
+        // OLD: Name
+        // NEW: (Organization) Name
         "name" : "Name"
     },
 
@@ -28,6 +32,10 @@
         "description" : "Beschreibung",
         "members" : "Alle Mitglieder Ihrer Organisation",
         "addprovider" : "Neues Mitglied registrieren",
+
+        // TODO CHANGED
+        // OLD: You must be master user to update your organization or register new users for the organization. Please contact support if you think you should have master user permissions.
+        // NEW: You must be master user to update your organization or register new users for the organization. Please contact the MIDATA support if you think you should have master user permissions.
         "master_user" : "Sie müssen Master-Benutzer sein, um Ihre Organisation zu aktualisieren oder neue Benutzer für die Organisation zu registrieren. Bitte wenden Sie sich an den MIDATA-Support, wenn Sie der Meinung sind, dass Sie über Master-Benutzerberechtigungen verfügen sollten."
     },
 

@@ -5,9 +5,21 @@
         "members" : "Mitglieder",
         "auditlog" : "Audit",
         "news" : "News",
+
+        // TODO CHANGED
+        // OLD: Plugins
+        // NEW: Applications
         "plugins" : "Plugins",
+
+        // TODO CHANGED
+        // OLD: Application usage stats
+        // NEW: Application usage statistics
         "usagestats" : "Statistik der Applikationsnutzung",
         "content" : "Inhaltstypen",
+
+        // TODO CHANGED
+        // OLD: Studies
+        // NEW: Projects
         "studies" : "Studien",
         "terms" : "Allgemeine Geschäftsbedingungen",
         "registration" : "Administrator registrieren",
@@ -34,6 +46,10 @@
 
     "admin_address" : {
         "title" : "Profil des Mitglieds",
+
+        // TODO CHANGED
+        // OLD: Show apps created by this developer
+        // NEW: Show the applications created by this developer
         "show_apps_created" : "Von diesem Entwickler erstellten Anwendungen anzeigen",
         "midata_id" : "MIDATA ID",
         "role" : "Rolle",
@@ -84,6 +100,10 @@
         "expires" : "Ablaufdatum des News-Eintrags",
         "date" : "Offizielles Datum",
         "appId" : "Verknüpfte Applikation",
+
+        // TODO CHANGED
+        // OLD: Linked Study
+        // NEW: Linked Project
         "studyId" : "Verknüpfte Studie",
         "layout" : "Anordnung",
         "layouts" : {
@@ -100,10 +120,22 @@
     },
 
     "admin_plugins" : {
+
+        // TODO CHANGED
+        // OLD: Plugins
+        // NEW: Applications
         "title" : "Plugins",
         "developer" : "Nach Entwickler filtern",
+
+        // TODO CHANGED
+        // OLD: Filter by Appname
+        // NEW: Filter by Application
         "name" : "Nach Applikationsname filtern",
         "organisation" : "Nach Organisation filtern",
+
+        // TODO CHANGED
+        // OLD: There are no apps or plugins yet.
+        // NEW: There are no applications yet.
         "empty" : "Es gibt noch keine Apps oder Plugins.",
         "plugin_name" : "Name",
         "plugin_developer" : "Entwickler",
@@ -112,17 +144,33 @@
         "plugin_market" : "MIDATA Store",
         "plugin_stats" : "Statistiken",
         "plugin_status" : "Status",
+
+        // TODO CHANGED
+        // OLD: Import Plugin Definition
+        // NEW: Import Application Definition
         "add_definition_btn" : "Plugin-Definition importieren"
     },
 
     "admin_defineplugin" : {
+
+        // TODO CHANGED
+        // OLD: Import Plugin Definition
+        // NEW: Import Application Definition
         "title" : "Plugin-Definition importieren",
         "definition" : "Definition (JSON)"
     },
 
     "admin_studies" : {
+
+        // TODO CHANGED
+        // OLD: Studies
+        // NEW: Research Projects
         "title" : "Studien",
         "criteria" : "Suchkriterien",
+
+        // TODO CHANGED
+        // OLD: No matching studies found.
+        // NEW: No matching projects found.
         "empty" : "Keine passende Studie gefunden."
     },
 
@@ -146,6 +194,10 @@
     },
 
     "admin_study" : {
+
+        // TODO CHANGED
+        // OLD: Study
+        // NEW: Research Project
         "title" : "Studie",
         "name" : "Name",
         "created_at" : "Erstellt am",
@@ -176,6 +228,10 @@
         "links" : "Verknüpfte Applikationen",
         "end_validation_btn" : "Validierung abschliessen",
         "back_to_draft_btn" : "Zurück zum Entwurf",
+
+        // TODO CHANGED
+        // OLD: Delete Study
+        // NEW: Delete Project
         "delete_study_btn" : "Studie löschen"
     },
 
@@ -188,8 +244,16 @@
         "recordCount" : "Datensätze in DB",
         "vRecordCount" : "Archivierte Datensätze",
         "indexPageCount" : "DB Index Pages",
+
+        // TODO CHANGED
+        // OLD: Apps and Plugins
+        // NEW: Applications
         "appCount" : "Apps und Plugins",
         "languages" : "Benutzersprachen",
+
+        // TODO CHANGED
+        // OLD: Running Studies
+        // NEW: Running Projects
         "runningStudyCount" : "Laufende Studien",
         "groupCount" : "Teams (Gesundheitswesen und Forschung)",
         "auditEventCount" : "Audit-Ereignisse",
@@ -219,10 +283,22 @@
     "usagestats" : {
         "title" : "Nutzungsstatistiken",
         "date" : "Datum",
+
+        // TODO CHANGED
+        // OLD: App/Plugin
+        // NEW: Application
         "object" : "App/Plugin",
         "REGISTRATION" : "Registration",
         "LOGIN" : "Login",
+
+        // TODO CHANGED
+        // OLD: Continue
+        // NEW: Session
         "REFRESH" : "Session",
+
+        // TODO CHANGED
+        // OLD: Install
+        // NEW: Activation
         "INSTALL" : "Activation",
         "GET" : "Read",
         "POST" : "Write",

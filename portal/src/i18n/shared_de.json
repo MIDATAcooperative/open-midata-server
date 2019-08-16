@@ -1,6 +1,10 @@
 {
 
     "footer" : {
+
+        // TODO CHANGED
+        // OLD: MIDATA Genossenschaft – c/o EvalueScience AG – Pfingstweidstrasse 16 – 8005 Zürich
+        // NEW: ©{{now}} ETH Zürich
         "copyright" : "©{{now}} ETH Zürich",
         "homepage" : "MIDATA Homepage",
         "impressum" : "Impressum",
@@ -21,6 +25,10 @@
         "sign_out" : "Abmelden",
         "edit_profile" : "Profil ändern",
         "app_count" : "Autorisierte Apps",
+
+        // TODO CHANGED
+        // OLD: Studies enrollments
+        // NEW: Project enrollments
         "study_count" : "Studienteilnahmen",
         "me" : "Timeline",
         "view" : "Ansehen",
@@ -29,6 +37,10 @@
         "my_data" : "Meine Daten",
         "consents" : "Teilen",
         "research" : "Forschung",
+
+        // TODO CHANGED
+        // OLD: Apps
+        // NEW: Applications
         "apps" : "Apps",
         "config" : "Konfiguration",
         "help" : "Hilfe"
@@ -50,8 +62,20 @@
             "action" : "Sie sind nicht berechtigt diese Aktion auszuführen",
             "fields" : "Sie sind nicht berechtigt diese Felder abzufragen",
             "account" : "Sie sind nicht berechtigt auf dieses Konto zuzugreifen",
+
+            // TODO CHANGED
+            // OLD: You are not authorized to access this study
+            // NEW: You are not authorized to access this research project
             "study" : "Sie sind nicht berechtigt diese Studie einzusehen",
+
+            // TODO CHANGED
+            // OLD: This is not your plugin
+            // NEW: This is not your application
             "not_plugin_owner" : "Dies ist nicht Ihr Plugin",
+
+            // TODO CHANGED
+            // OLD: Debugging is only available for plugins during development or beta phase on non productive instances.
+            // NEW: Debugging is only available for applications during development or beta phase on non productive instances.
             "no_debug" : "Debugging ist nur für Plugins während der Entwicklungs- oder Beta-Phase auf nicht produktiven Instanzen verfügbar."
         },
 
@@ -65,6 +89,10 @@
             "password_old" : "Altes Passwort nicht korrekt.",
             "confirmation_code" : "Ungültiger Bestätigungscode",
             "securitytoken" : "Code nicht korrekt",
+
+            // TODO CHANGED
+            // OLD: Unknown code for study.
+            // NEW: Unknown code for research project.
             "code" : "Ungültiger Studien-Code.",
             "appcode" : "Unbekannter App-Code.",
             "status_transition" : "Ungültiger Zustandswechsel",
@@ -77,10 +105,22 @@
             "json" : "Ungültiges JSON",
             "passphrase" : "Falsches Passphrase",
             "passcode" : "Falscher Zugangscode",
+
+            // TODO CHANGED
+            // OLD: Plugin is intended for a different role
+            // NEW: Application is intended for a different role
             "plugin" : "Dieses Plugin ist nur für eine andere Rolle vorgesehen",
             "unlock_code" : "Falscher Freischaltcode",
             "access_query" : "Der Datenzugriffsfilter (Data Access Filter) muss nach 'content' oder 'group' einschränken!",
+
+            // TODO CHANGED
+            // OLD: The Data Access Filter contains data types that are excluded by the study configuration.
+            // NEW: The Data Access Filter contains data types that are excluded by the project configuration.
             "sharing" : "Der Datenzugriffsfilter (Data Access Filter) beinhaltet Datentypen, die von der Studienkonfiguration ausgeschlossen sind.",
+
+            // TODO CHANGED
+            // OLD: Study can only be anonymous if no one is allowed to access unpseudonymized data.
+            // NEW: Research project can only be anonymous if no one is allowed to access unpseudonymized data.
             "anonymous" : "Die Studie kann nur dann anonym sein, wenn niemand auf unpseudonymisierte Daten zugreifen darf.",
             "url" : "Ungültige URL",
             "consent_members" : "Diese Zustimmung kann erst bestätigt werden, wenn alle externen Personen MIDATA beigetreten sind."
@@ -96,6 +136,10 @@
             "token" : "Fehlendes oder falsches Token.",
             "agb" : "Allgemeine Geschäftsbedingungen nicht akzeptiert.",
             "privacypolicy" : "Die Datenschutzerklärung muss akzeptiert werden.",
+
+            // TODO CHANGED
+            // OLD: Study participation must be accepted.
+            // NEW: Project participation must be accepted.
             "study_accept" : "Die Studienteilnahme muss akzeptiert werden.",
             "study_group" : "Der Teilnehmer muss zuerst zu einer Gruppe zugeordnet werden.",
             "consent_accept" : "Die Zustimmung muss erteilt werden, um fortzufahren",
@@ -111,12 +155,20 @@
             "app" : "Unbekannte Applikation",
             "space" : "Der angefordete Bereich existiert nicht mehr.",
             "consent" : "Zustimmung nicht gefunden",
+
+            // TODO CHANGED
+            // OLD: Study does not exist.
+            // NEW: Research project does not exist.
             "study" : "Diese Studie existiert nicht.",
             "content" : "Der Content-Type dieses Datensatzes ist nicht auf der Plattform registriert.",
             "group" : "Unbekannter Gruppenname",
             "code" : "Unbekannter Code",
             "record" : "Unbekannter Datensatz",
             "user" : "Dieser Benutzer existiert nicht",
+
+            // TODO CHANGED
+            // OLD: Study Participation not found.
+            // NEW: Research project participation not found.
             "participation" : "Studienteilnahme nicht gefunden."
         },
 
@@ -126,7 +178,15 @@
             "provider" : "Eine Gesundheitsfachperson mit diesem Namen existiert bereits.",
             "research" : "Eine Forschungseinrichtung mit diesem Namen existiert bereits.",
             "passcode" : "Wählen Sie bitte einen anderen Zugangscode!",
+
+            // TODO CHANGED
+            // OLD: A plugin with the same name already exists.
+            // NEW: An application with the same name already exists.
             "plugin" : "Ein Plugin mit diesem Namen existiert bereits.",
+
+            // TODO CHANGED
+            // OLD: A study with this name already exists.
+            // NEW: A research project with this name already exists.
             "study" : "Eine Studie mit diesem Namen existiert bereits."
         },
 
@@ -135,16 +195,28 @@
             "password1" : "Zu viele falsche Anmeldeversuche. Bitte warten Sie 1 Minute vor dem nächsten Versuch.",
             "password5" : "Zu viele falsche Anmeldeversuche. Bitte warten Sie 5 Minuten vor dem nächsten Versuch.",
             "password60" : "Zu viele falsche Anmeldeversuche. Bitte warten Sie 1 Stunde vor dem nächsten Versuch.",
+
+            // TODO CHANGED
+            // OLD: Account holder is not allowed to participate in study.
+            // NEW: Account holder is not allowed to participate in research project.
             "participation" : "Dieser Kontoinhabende ist nicht berechtigt, an einer Studie teilzunehmen.",
             "consent" : "Die Zustimmung, diese App zu nutzen, wurde widerrufen. Falls Sie diese App wieder nutzen möchten, müssen Sie die zurückgewiesene oder abgelaufene Zustimmung auf dem MIDATA-Portal löschen.",
             "app" : "Sie dürfen diese App auf maximal 10 Geräten nutzen. Löschen Sie bitte nicht mehr genutzte Zustimmungen auf dem MIDATA-Portal."
         },
 
         "closed" : {
+
+            // TODO CHANGED
+            // OLD: Study not searching for participants.
+            // NEW: Research project not searching for participants.
             "study" : "Für diese Studie werden keine Teilnehmer gesucht."
         },
 
         "notvalidated" : {
+
+            // TODO CHANGED
+            // OLD: Study must be validated before.
+            // NEW: Research project must be validated before.
             "study" : "Diese Studie muss zuerst validiert werden."
         },
 
@@ -174,8 +246,20 @@
         },
 
         "no_alter" : {
+
+            // TODO CHANGED
+            // OLD: Consents for studies may not be altered.
+            // NEW: Consents for research projects may not be altered.
             "consent" : "Zustimmungen für Studien können nicht verändert werden.",
+
+            // TODO CHANGED
+            // OLD: Setup can only be changed as long as study is in draft phase.
+            // NEW: Setup can only be changed as long as research project is in draft phase.
             "study" : "Der Studienaufbau kann nur während der Entwurfsphase geändert werden.",
+
+            // TODO CHANGED
+            // OLD: Group of participant can only be changed if study is not running or no participant accepted yet.
+            // NEW: Group of participant can only be changed if research project is not running or no participant accepted yet.
             "group" : "Die Teilnehmergruppe kann nur geändert werden, wenn die Studie noch nicht gestartet wurde oder wenn noch keine Teilnehmer angenommen wurden."
         },
 
@@ -205,15 +289,39 @@
             "PARTICIPATION_APPROVED" : "Teilnahme angenommen",
             "GROUP_ASSIGNED" : "Gruppe zugewiesen",
             "VALIDATION_REQUESTED" : "Validierung angefordert",
+
+            // TODO CHANGED
+            // OLD: Study validated
+            // NEW: Research project validated
             "STUDY_VALIDATED" : "Studie validiert",
+
+            // TODO CHANGED
+            // OLD: Study rejected
+            // NEW: Research project rejected
             "STUDY_REJECTED" : "Studie verworfen",
             "PARTICIPANT_SEARCH_STARTED" : "Teilnehmersuche gestartet",
             "PARTICIPANT_SEARCH_CLOSED" : "Teilnehmersuche beendet",
             "CODES_GENERATED" : "Codes generiert",
+
+            // TODO CHANGED
+            // OLD: Study started
+            // NEW: Research project started
             "STUDY_STARTED" : "Studie gestartet",
+
+            // TODO CHANGED
+            // OLD: Study finished
+            // NEW: Research project finished
             "STUDY_FINISHED" : "Studie beendet",
+
+            // TODO CHANGED
+            // OLD: Study aborted
+            // NEW: Research project aborted
             "STUDY_ABORTED" : "Studie abgebrochen",
             "REQUIRED_INFORMATION_CHANGED" : "Erforderliche Informationen geändert",
+
+            // TODO CHANGED
+            // OLD: Study setup changed
+            // NEW: Project setup changed
             "STUDY_SETUP_CHANGED" : "Studienaufbau geändert",
             "MEMBERSHIP_REQUEST" : "Mitgliedschaft erforderlich",
             "CONTACT_ADDRESS_CHANGED" : "Adresse geändert",
@@ -246,21 +354,85 @@
             "consent-approved" : "Zustimmung genehmigt",
             "consent-rejected" : "Zustimmung verworfen",
             "consent-deleted" : "Zustimmung gelöscht",
+
+            // TODO CHANGED
+            // OLD: Study participation requested
+            // NEW: Project participation requested
             "study-participation-requested" : "Studienteilnahme angefordert",
+
+            // TODO CHANGED
+            // OLD: Study participation rejected by member
+            // NEW: Project participation rejected by member
             "study-participation-member-rejected" : "Studienteilnahme durch Teilnehmenden verworfen",
+
+            // TODO CHANGED
+            // OLD: Study participation rejected by researcher
+            // NEW: Project participation rejected by researcher
             "study-participation-research-rejected" : "Studienteilnahme durch Forschenden verworfen",
+
+            // TODO CHANGED
+            // OLD: Account holder retreated from study participation
+            // NEW: Account holder retreated from project participation
             "study-participation-member-retreat" : "Der Studienteilnehmer hat sich aus der Studie zurückgezogen",
+
+            // TODO CHANGED
+            // OLD: Study participation approved
+            // NEW: Project participation approved
             "study-participation-approved" : "Studienteilnahme genehmigt",
+
+            // TODO CHANGED
+            // OLD: Study participation group assigned
+            // NEW: Project participation group assigned
             "study-participation-group-assigned" : "Studienteilnehmergruppe zugewiesen",
+
+            // TODO CHANGED
+            // OLD: Study validation requested
+            // NEW: Project validation requested
             "study-validation-requested" : "Studienvalidierung angefordert",
+
+            // TODO CHANGED
+            // OLD: Study validated
+            // NEW: Research project validated
             "study-validated" : "Studie validiert",
+
+            // TODO CHANGED
+            // OLD: Study rejected
+            // NEW: Research project rejected
             "study-rejected" : "Studie verworfen",
+
+            // TODO CHANGED
+            // OLD: Study participant search started
+            // NEW: Project participant search started
             "study-participant-search-started" : "Suche nach Studienteilnehmer gestartet",
+
+            // TODO CHANGED
+            // OLD: Study participant search closed
+            // NEW: Project participant search closed
             "study-participant-search-closed" : "Suche nach Studienteilnehmer abgeschlossen",
+
+            // TODO CHANGED
+            // OLD: Study started
+            // NEW: Research project started
             "study-started" : "Studie gestartet",
+
+            // TODO CHANGED
+            // OLD: Study finished
+            // NEW: Research project finished
             "study-finished" : "Studie abgeschlossen",
+
+            // TODO CHANGED
+            // OLD: Study aborted
+            // NEW: Research project aborted
             "study-aborted" : "Studie abgebrochen",
+
+            // TODO CHANGED
+            // OLD: Entire Study deleted
+            // NEW: Entire project deleted
             "110105" : "Gesamte Studie gelöscht",
+
+            // TODO CHANGED
+            // OLD: Study changed
+            // NEW: Research project changed
             "study-setup-changed" : "Studie geändert",
             "data-deletion" : "Daten gelöscht",
             "data-export" : "Daten exportiert",
@@ -305,7 +477,15 @@
             "EXTERNALSERVICE" : "Externe Applikation",
             "HCRELATED" : "Gesundheitswesen",
             "HEALTHCARE" : "Arzt / Spital",
+
+            // TODO CHANGED
+            // OLD: Study
+            // NEW: Research project
             "STUDYPARTICIPATION" : "Studie",
+
+            // TODO CHANGED
+            // OLD: Study information
+            // NEW: Research project information
             "STUDYRELATED" : "Informationen zur Studie",
             "IMPLICIT" : "Nachrichtenaustausch"
         },
@@ -341,12 +521,20 @@
             "COMMUNITY" : "Community"
         },
         "joinmethod" : {
+
+            // TODO CHANGED
+            // OLD: Participant uses linked app or software
+            // NEW: Participant uses linked application
             "APP" : "Der Teilnehmer nutzt verknüpfte App oder Software",
             "PORTAL" : "Der Teilnehmer bewirbt sich auf dem MIDATA-Portal",
             "RESEARCHER" : "Der Teilnehmer wird manuell durch das Mitglied des Forschungsteams registriert",
             "API" : "Der Teilnehmer wird durch externe Software registriert",
             "ALGORITHM" : "Der Teilnehmer wurde von einem Algorithmus vorgeschlagen (nicht unterstützt)",
             "CODE" : "Der Teilnehmer kann durch Eingabe eines Codes beitreten (nicht unterstützt)",
+
+            // TODO CHANGED
+            // OLD: Data is transferred from another study (not supported)
+            // NEW: Data is transferred from another research project (not supported)
             "TRANSFER" : "Die Daten werden aus einer anderen Studie übernommen (nicht unterstützt)"
         },
         "studyexecutionstatus" : {
@@ -357,7 +545,15 @@
         },
         "studyvalidationstatus" : {
             "DRAFT" : "Entwurf (nicht validiert)",
+
+            // TODO CHANGED
+            // OLD: Study rejected by MIDATA
+            // NEW: Project rejected by MIDATA
             "REJECTED" : "Studie durch MIDATA abgelehnt",
+
+            // TODO CHANGED
+            // OLD: Study has been validated
+            // NEW: Project has been validated
             "VALIDATED" : "Studie wurde validiert",
             "VALIDATION" : "Validierung am Laufen"
         },
@@ -376,12 +572,24 @@
             "MONITOR" : "Aufsichtsperson",
             "MASTER" : "Master-Benutzer",
             "USERADMIN" : "Verwaltung der Benutzer",
+
+            // TODO CHANGED
+            // OLD: Study Admin
+            // NEW: Project Admin
             "STUDYADMIN" : "Verwaltung der Studien",
             "CONTENTADMIN" : "Verwaltung der Datentypen",
+
+            // TODO CHANGED
+            // OLD: Plugin Admin
+            // NEW: Application Admin
             "PLUGINADMIN" : "Verwaltung der Plugins",
             "NEWSWRITER" : "News-Author",
             "SUPERADMIN" : "Super-Administrator",
             "TRIALUSER" : "Probebenutzer",
+
+            // TODO CHANGED
+            // OLD: Study Participant
+            // NEW: Project Participant
             "STUDYPARTICIPANT" : "Studienteilnehmer",
             "APPUSER" : "App-Benutzer",
             "NONMEMBERUSER" : "Validierter Benutzer",
@@ -453,12 +661,20 @@
         },
         "infos" : {
             "SUMMARY" : "Kurze Zusammenfassung",
+
+            // TODO CHANGED
+            // OLD: What is this study doing?
+            // NEW: What is this research project doing?
             "DESCRIPTION" : "Was bewirkt diese Studie?",
             "HOMEPAGE" : "Link zur Projekthomepage",
             "CONTACT" : "Kontaktinformationen",
             "INSTRUCTIONS" : "Anweisungen für die Teilnehmer",
             "PURPOSE" : "Was ist der Zweck dieser Forschung?",
             "AUDIENCE" : "Gibt es Einschränkungen, wer teilnehmen soll?",
+
+            // TODO CHANGED
+            // OLD: At which state or region is this study taking place?
+            // NEW: At which state or region is this project taking place?
             "LOCATION" : "In welchem Staat oder welcher Region findet dieses Projekt statt?",
             "PHASE" : "Wie ist der Stand des Projektes?",
             "SPONSOR" : "Wer ist Initiator des Projektes und wer ist rechtlich verantwortlich?",
@@ -524,6 +740,10 @@
         "test" : {
             "name" : "Test-Instanz (test.midata.coop)",
             "intro" : "Dies ist eine Testinstanz der MIDATA-Plattform.",
+
+            // TODO CHANGED
+            // OLD: This instance may be used to develop and test new apps and plugins for MIDATA in a safe environment. It is also used to test new versions of the portal and the backend before the other instances are updated.
+            // NEW: This instance may be used to develop and test new applications for MIDATA in a safe environment. It is also used to test new versions of the portal and the backend before the other instances are updated.
             "purpose" : "Diese Instanz kann benutzt werden, um Apps und MIDATA-Plugins in einer sicheren Umgebung zu entwickeln und zu testen. Sie wird auch verwendet, um neue Versionen des Portals und des Backends zu testen, bevor die anderen Instanzen aktualisiert werden.",
             "access" : "Registrieren Sie Ihr eigenes Entwicklerkonto. Nach Validierung durch einen MIDATA-Administrator, können Sie Testkonten für Nutzer, Forscher und Gesundheitsfachpersonen registrieren ohne zusätzliche Validierung.",
             "uptime" : "Es gibt keine Garantie über die Verfügbarkeit. Die Instanz kann jederzeit nach Bedarf aktualisiert werden. Wenn möglich, werden Updates zwischen 12:00 und 13:00 mitteleuropäische Zeit ausgeführt, können aber bei Problemen auch mehrmals pro Tag auftreten.",
@@ -587,6 +807,10 @@
         "app_agb" : "App-Bestimmungen",
         "app_agb2" : "Ich akzeptiere die",
         "app_agb3" : "Allgemeine Geschäftsbedingungen der App",
+
+        // TODO CHANGED
+        // OLD: Study Terms
+        // NEW: Project Terms
         "study_agb" : "Studienbestimmungen",
         "sign_up_btn" : "Konto erstellen",
         "unlock_code" : "Freischaltcode",
@@ -605,6 +829,10 @@
     "login" : {
         "email_address" : "E-Mail Adresse",
         "password" : "Passwort",
+
+        // TODO CHANGED
+        // OLD: Study
+        // NEW: Project
         "study" : "Studie",
         "remember_me" : "Angemeldet bleiben",
         "sign_in_btn" : "Anmelden",
@@ -613,10 +841,22 @@
         "service_login" : "Anmeldung für Bestätigungsanfrage",
         "service_login2" : "Bei Ihrer nächsten Anmeldung werden Sie um eine Bestätigung der Zustimmung und/oder Teilnahme an Forschungsprojekten gebeten.",
         "no_account" : "Ich habe noch keinen MIDATA-Account.",
+
+        // TODO CHANGED
+        // OLD: Dear study participant
+        // NEW: Dear project participant
         "info1" : "Liebe Studienteilnehmerin, Lieber Studienteilnehmer",
         "info2" : "Sie haben bereits ein MIDATA-Konto, melden Sie sich mit Ihrer E-Mail-Adresse und ihrem Passwort an.",
+
+        // TODO CHANGED
+        // OLD: Your personal account gives you an overview of your study participation.
+        // NEW: Your personal account gives you an overview of your project participation.
         "info3" : "Ihr persönliches Konto gibt Ihnen einen Überblick über Ihre Studienteilnahme.",
         "info4" : "Liebe Besucherin, lieber Besucher",
+
+        // TODO CHANGED
+        // OLD: You do not yet have a MIDATA account and do not participate in a study?
+        // NEW: You do not yet have a MIDATA account and do not participate in a research project?
         "info5" : "Sie haben noch kein MIDATA-Konto und nehmen an keiner Studie teil?",
         "info6" : "Machen Sie beim Projekt",
         "info6b" : "Ally Science",
@@ -758,8 +998,16 @@
     },
 
     "studydetails" : {
+
+        // TODO CHANGED
+        // OLD: Study
+        // NEW: Research project
         "study" : "Studie",
         "organization" : "Forschungseinrichtung:",
+
+        // TODO CHANGED
+        // OLD: Healthcare Providers monitoring the study
+        // NEW: Healthcare Providers monitoring the research
         "providers_monitoring" : "Betreuende Fachpersonen der Studie",
         "no_providers" : "Keine",
         "provider_remove_btn" : "Entfernen",
@@ -772,6 +1020,10 @@
         "records_with_content" : "Datensätze mit Inhalt:",
         "records_with_group" : "Datensätze die der Gruppe gehören:",
         "records_with_owner" : "Datensätze die dem Besitzer gehören:",
+
+        // TODO CHANGED
+        // OLD: Records created by app:
+        // NEW: Records created by application:
         "records_from_app" : "Datensätze erstellt durch eine App:",
         "owner_self" : "Ihre eigene Datensätze",
         "participation_history" : "Historie der Teilnahme",
@@ -903,8 +1155,20 @@
         "consent_empty" : "Diese Zustimmung teilt momentan keine Daten.",
         "type_circle" : "Diese Zustimmung teilt Daten mit anderen MIDATA Kontoinhabenden.",
         "type_healthcare" : "Diese Zustimmung teilt Daten mit Gesundheitsfachpersonen.",
+
+        // TODO CHANGED
+        // OLD: This consent shares data with research for use in a study.
+        // NEW: This consent shares data with research for use in a research project.
         "type_studyparticipation" : "Diese Zustimmung teilt Daten mit einer Forschungseinrichtung im Rahmen einer Studie.",
+
+        // TODO CHANGED
+        // OLD: This consent shares research data to a study participant.
+        // NEW: This consent shares research data to a project participant.
         "type_studyrelated" : "Diese Zustimmung teilt Forschungsdaten mit einem Studienteilnehmer.",
+
+        // TODO CHANGED
+        // OLD: This consent shares data with a mobile app or external service.
+        // NEW: This consent shares data with an application.
         "type_externalservice" : "Diese Zustimmung teilt Daten mit einer mobilen App oder mit einem externen Dienst.",
         "type_implicit" : "Diese implizit erstellte Zustimmung erteilt den Empfängern Zugriff auf die für sie bestimmten Meldungen.",
         "status_active" : "Diese Zustimmung ist aktiv.",
@@ -985,6 +1249,10 @@
         "delete_instructions6" : "Um alle Datensätze einer bestimmten Kategorie permanent zu löschen, Doppelklicken Sie auf den Button 'alle löschen' rechts neben der Kategorie.",
         "shared_with" : "Geteilt mit:",
         "records_used_for_app" : "Datensätze die durch die App genutzt weden",
+
+        // TODO CHANGED
+        // OLD: Back to Visualization
+        // NEW: Back
         "back_to_plugin" : "Zurück zur Betrachtung",
         "by_group" : "Nach Zustimmungstyp gruppiert",
         "by_plugin" : "Nach Applikation gruppiert",
@@ -1001,6 +1269,10 @@
         "my_data" : "Meine Daten",
         "all_data" : "Alle Daten",
         "all" : "Persönliche Daten",
+
+        // TODO CHANGED
+        // OLD: Study: {{name}}
+        // NEW: Project: {{name}}
         "study" : "Studie: {{name}}",
         "shared" : "Geteilt durch: {{name}}",
         "just_name" : "{{name}}",
@@ -1019,6 +1291,10 @@
         "have_account" : "Sie besitzen ein MIDATA Konto?",
         "have_account2" : "Perfekt, melden Sie sich an",
         "sign_up_btn" : "Registrieren",
+
+        // TODO CHANGED
+        // OLD: App may share data it has access to to third parties.
+        // NEW: Application may share data it has access to to third parties.
         "reshares_data" : "Die Applikation darf Daten, auf die sie Zugriff hat, an Dritte weitergeben.",
         "allows_user_search" : "Ihr Name und Ihre E-Mail-Adresse können von anderen Personen, die diese Applikation verwenden, durchsucht werden.",
         "requesting_app" : "benötigt Zugriff auf Ihre Daten.",
@@ -1032,8 +1308,20 @@
         "shares_format" : "Format: {{ format }}",
         "shares_content" : "Inhalt: {{ content }}",
         "confirm_provider" : "Ich akzeptiere die Weitergabe von Daten an diesen externen Anbieter",
+
+        // TODO CHANGED
+        // OLD: I accept to share data with this external provider
+        // NEW: I accept to share data with this external provider (optional)
         "confirm_provider_opt" : "Ich akzeptiere die Weitergabe von Daten an diesen externen Anbieter (optional)",
+
+        // TODO CHANGED
+        // OLD: I accept the terms of use of the application and to participate in the study
+        // NEW: I accept the terms of use of the application and to participate in the project
         "confirm_study" : "Ich akzeptiere die Nutzungsbedingungen der Applikation und die Teilnahme an der Studie",
+
+        // TODO CHANGED
+        // OLD: I accept to participate in the study
+        // NEW: I accept to participate in the project
         "confirm_study_opt" : "Ich akzeptiere die Teilnahme an der Studie",
         "confirm_citizen_science" : "Ich akzeptiere die Teilnahme am Citizen Science Projekt",
         "confirm_community" : "Ich akzeptiere die Nutzungsbedingungen der Applikation und der Community-Dienste",
@@ -1048,6 +1336,10 @@
         "social" : "Sozial",
         "social_text" : "Teile Sie Ihre Daten mit Freunden. Kommunizieren Sie mit Personen im selben Gesundheitszustand wie Sie. Motivieren Sie sich im Wettbewerb mit Anderen.",
         "research" : "Forschung",
+
+        // TODO CHANGED
+        // OLD: Participate in studies. Inform yourself about current research.
+        // NEW: Participate in research projects. Inform yourself about current research.
         "research_text" : "An Studien teilnehmen. Informieren Sie sich über aktuelle Forschung.",
         "health" : "Gesundheit",
         "health_text" : "Teilen Sie Daten mit Ihrem Arzt. Suche nach Gesundheitsfachperson.",
@@ -1073,8 +1365,20 @@
         "records" : "Datensätze",
         "share" : "Teilen",
         "details" : "Details",
+
+        // TODO CHANGED
+        // OLD: Studies you are involved:
+        // NEW: Research projects you are involved:
         "yourstudies" : "Studien in die Sie involviert sind:",
+
+        // TODO CHANGED
+        // OLD: If you want to participate in research, configure your research settings. You will be contacted in this tile if you match a studies requirements.
+        // NEW: If you want to participate in research, configure your research settings. You will be contacted in this tile if you match a projects requirements.
         "studies_teaser" : "Wenn Sie an der Forschung teilnehmen wollen, konfigurieren Sie bitte Ihre Forschungs-Einstellungen. Sie werden hier kontaktiert, falls Sie die Voraussetzungen für eine Studie erfüllen.",
+
+        // TODO CHANGED
+        // OLD: New Studies
+        // NEW: New Research Projects
         "newstudies" : "Neue Studien",
         "newsconfig" : "News",
         "newsconfig_teaser" : "Momentan gibt es keine Ankündigungen",
@@ -1094,6 +1398,10 @@
         "install_btn" : "Neues Plugin installieren",
         "observations" : "Messwerte",
         "calendar" : "Kalender",
+
+        // TODO CHANGED
+        // OLD: Studies
+        // NEW: Research Projects
         "smallstudies" : "Studien"
     },
 
@@ -1135,6 +1443,10 @@
 
     "flexiblestudies" : {
         "empty" : "Leer",
+
+        // TODO CHANGED
+        // OLD: Studies found:
+        // NEW: Research projects found:
         "studies_found" : "Gefundene Studien:"
     },
 
@@ -1177,7 +1489,15 @@
         "refresh_btn" : "Aktualisieren",
         "via" : "durch",
         "CIRCLE" : "Zustimmung",
+
+        // TODO CHANGED
+        // OLD: Study
+        // NEW: Research Project
         "ResearchStudy" : "Studie",
+
+        // TODO CHANGED
+        // OLD: App
+        // NEW: Application
         "EXTERNALSERVICE" : "App",
         "STUDYPARTICIPATION" : "Teilnahme",
         "HEALTHCARE" : "Zustimmung (Gesundheitsfachperson)",
@@ -1211,6 +1531,10 @@
 
     "member_user" : {
         "account_status" : "Kontostand",
+
+        // TODO CHANGED
+        // OLD: Your account has been set up for participation in a study. Functionality is limited. You may upgrade your user account to a full account.
+        // NEW: Your account has been set up for participation in a project. Functionality is limited. You may upgrade your user account to a full account.
         "studyparticipant" : "Ihr Konto wurde eingerichtet, um an eine Studie teilzunehmen. Die Funktionalität ist begrenzt. Sie können Ihr Konto in ein vollwertiges Konto umwandeln.",
         "appuser" : "Ihr Konto wurde durch eine externe Applikation eingerichtet. Die Funktionalität ist begrenzt. Sie können Ihr Konto in ein vollwertiges Konto umwandeln.",
         "memberofcooperative" : "Sie sind Mitglied der MIDATA Genossenschaft.",
@@ -1233,6 +1557,10 @@
         "paragraph1" : "Sie möchten ihre MIDATA-Konto unwiderruflich löschen? Das ist selbstverständlich möglich.",
         "paragraph2" : "Lesen Sie zuerst die nachfolgende Information:",
         "point1" : "Wenn Sie Ihr MIDATA-Konto löschen, löschen Sie alle persönlichen Daten auf ihrem Konto unwiderruflich.",
+
+        // TODO CHANGED
+        // OLD: Data already included in studies will continue to be available in the study.
+        // NEW: Data already included in research projects will continue to be available in the project.
         "point2" : "Daten die bereits in Studien eingeflossen sind, werden weiterhin in der Studie verfügbar sein.",
         "point3" : "MIDATA hat keine Möglichkeit, ein gelöschtes Konto wieder herzustellen.",
         "warning" : "Warnung",
@@ -1258,6 +1586,10 @@
     "queryeditor" : {
         "title" : "Data Access Filter Editor",
         "app" : "Applikation",
+
+        // TODO CHANGED
+        // OLD: Study
+        // NEW: Research Project
         "study" : "Studie",
         "summary" : "Liste der zugänglichen Datentypen:",
         "access_query" : "Data Access Filter",
@@ -1269,6 +1601,10 @@
         "add_basic_btn" : "Basis-Ressourcen",
         "add_data_btn" : "Weitere Datentypen hinzufügen",
         "owner" : "Datenbesitzer",
+
+        // TODO CHANGED
+        // OLD: Use also shared data (from studies, friends, patients)
+        // NEW: Use also shared data (from projects, friends, patients)
         "owner_all" : "Geteilte Daten ebenfalls verwenden (von Studien, Freunden, Patienten)",
         "owner_self" : "Nur Daten vom Benutzer der Anwendung",
         "short_owner_all" : "Auch geteilte Daten",
@@ -1307,8 +1643,16 @@
         "ask" : {
             "AuditEvent" : "Zugriff auf das Audit-Ereignisprotokoll",
             "Consent" : "Zugriff auf Einwilligungen des Anwenders mit anderen Nutzern oder Anwendungen",
+
+            // TODO CHANGED
+            // OLD: Access to group definitions (either teams of health providers or researchers or groups defined as part of study results generation)
+            // NEW: Access to group definitions (either teams of health providers or researchers or groups defined as part of research project results generation)
             "Group" : "Zugang zu Gruppendefinitionen (entweder Teams von Gesundheitsfachpersonen oder Forschern oder Gruppen, die im Rahmen der Generierung von Studienergebnissen definiert wurden)",
             "Patient" : "Patienten-Datensätze: Name, E-Mail, Adresse der MIDATA-Kontoinhabenden",
+
+            // TODO CHANGED
+            // OLD: Patient Records: pseudonym, year of birth, country of study participants
+            // NEW: Patient Records: pseudonym, year of birth, country of research project participants
             "PseudonymizedPatient" : "Patienten-Datensätze: Pseudonym, Geburtsjahr, Land der Studienteilnehmern",
             "Practitioner" : "Ressource Practitioner: Suche nach Gesundheitsfachpersonen oder Forschern",
             "Subscription" : "Zugriff und Verwaltung von Abonnements auf externe Systeme"

@@ -8,6 +8,10 @@
 
     "member_quickregistration" : {
         "sign_up" : "Iscrizione",
+
+        // TODO CHANGED
+        // OLD: Study*
+        // NEW: Research project*
         "study" : "Studio*",
         "app" : "Applicazione da usare*",
         "app_password" : "Password dell'applicazione",
@@ -65,13 +69,29 @@
     },
 
     "yourstudies" : {
+
+        // TODO CHANGED
+        // OLD: Study
+        // NEW: Research Project
         "study" : "Studio",
         "status" : "Stato",
+
+        // TODO CHANGED
+        // OLD: You do not participate in any study.
+        // NEW: You do not participate in any research project.
         "empty" : "Non partecipi ad alcun studio."
     },
 
     "entercode" : {
+
+        // TODO CHANGED
+        // OLD: Join a research study by entering a participation code.
+        // NEW: Join a research project by entering a participation code.
         "title" : "Aderisci a uno studio di ricerca inserendo un codice di partecipazione.",
+
+        // TODO CHANGED
+        // OLD: Join a study by entering a code:
+        // NEW: Join a research project by entering a code:
         "description" : "Aderisci a uno studio inserendo un codice:",
         "code" : "Codice di partecipazione",
         "continue_btn" : "Continua"
@@ -87,7 +107,15 @@
     },
 
     "smallstudies" : {
+
+        // TODO CHANGED
+        // OLD: Want to help studies by sharing your data?
+        // NEW: Want to help research projects by sharing your data?
         "greeting" : "Desideri aiutare gli studi con la condivisione dei tuoi dati?",
+
+        // TODO CHANGED
+        // OLD: Studies
+        // NEW: Projects
         "studies" : "Studi",
         "status" : "Iscrizione",
         "recruiting" : "Reclutamento",

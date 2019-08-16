@@ -12,6 +12,10 @@
     },
 
     "developer_navbar" : {
+
+        // TODO CHANGED
+        // OLD: Your Plugins
+        // NEW: Your Applications
         "yourapps" : "Vos plugins",
         "sandbox" : "Sandbox",
         "records" : "Enregistrements de test",
@@ -23,6 +27,10 @@
         "empty" : "Il n'y a aucun utilisateur de test inscrit sous ce compte.",
         "role" : "Rôle",
         "resetpw" : "Nouveau mot de passe",
+
+        // TODO CHANGED
+        // OLD: Using these buttons you can register additional users for testing your plugins. By test users, plugins are run locally (from 'localhost') and not on the server.
+        // NEW: Using these buttons you can register additional users for testing your applications. Using test users, plugins are run locally (from 'localhost') and not on the server.
         "description" : "A l'aide de ces boutons, vous pouvez créer des utilisateurs additionnels afin de tester vos plugins. Pour ces utilisateurs, les plugins sont exécutés localement (depuis 'localhost') et non pas sur le serveur.",
         "register_member_btn" : "Créer un compte personnel",
         "register_hp_btn" : "Créer un compte professionnel de la santé",
@@ -30,8 +38,20 @@
     },
 
     "developer_yourapps" : {
+
+        // TODO CHANGED
+        // OLD: Your Plugins
+        // NEW: Your Applications
         "title" : "Vos plugins",
+
+        // TODO CHANGED
+        // OLD: You have not registered any plugin yet.
+        // NEW: You have not registered any application yet.
         "empty" : "Vous n'avez encore enregistré aucun plugin.",
+
+        // TODO CHANGED
+        // OLD: Register a new plugin
+        // NEW: Register a new application
         "register" : "Enregistrer un nouveau plugin",
         "name" : "Nom",
         "type" : "Type",
@@ -41,10 +61,18 @@
     },
 
     "appmessages" : {
+
+        // TODO CHANGED
+        // OLD: Predefined Messages for App:
+        // NEW: Predefined Messages for Application:
         "title" : "Messages spécifiques à l'app:",
         "reason" : "Événement (déclencheur)",
         "code" : "Code",
         "languages" : "Langues",
+
+        // TODO CHANGED
+        // OLD: There are no app specfic messages defined yet.
+        // NEW: There are no application specfic messages defined yet.
         "empty" : "Aucun message spécifique à l'app défini.",
         "lang" : "Langue",
         "msgtitle" : "Libellé du message",
@@ -94,6 +122,10 @@
         "serverimport_btn" : "Tester le script d'importation automatique.",
         "serverimport_help" : "Si votre plugin offre l'importation automatique, vous pouvez tester le script de votre plugin, qui est normalement exécuté sur le serveur, sur votre ordinateur local.",
         "link_btn" : "Liens avec des projets de recherche ou des parties externes",
+
+        // TODO CHANGED
+        // OLD: Apps may offer or require participation to a research project. Research projects may recommend plugin or app use. App use may be linked to consents with providers or teams.
+        // NEW: Applications may suggest or require participation in a research project. Research projects may recommend the use of applications. Use of the application may require a user's consent to healthcare professionals or teams to view their data.
         "link_help" : "Les applications peuvent proposer ou nécessiter la participation à un projet de recherche. Les projets de recherche peuvent recommander l'utilisation de plugins ou d'applications. L'utilisation de l'application peut nécessiter le consentement de l'utilisateur à ce que des professionnels de la santé ou des teams consultent ses données.",
         "icon_btn" : "Icônes et images de l'application",
         "icon_help" : "Téléchargez et gérez les icônes et les images à utiliser avec votre application. Fournissez des images pour l'écran de connexion, l'écran d'acceptation des consentements, le MIDATA Store, etc.",
@@ -103,7 +135,15 @@
         "stats_help" : "Consultez des statistiques et des conseils pour améliorer les différents types d'appels API envoyés par votre application au serveur.",
         "debug_btn" : "API Tester Sandbox",
         "debug_help" : "Connectez-vous en tant qu'application et testez les requêtes contre le backend MIDATA",
+
+        // TODO CHANGED
+        // OLD: Study linked to App (Code)
+        // NEW: Project linked to App (Code)
         "linkedStudy" : "Étude liée à l'app (code)",
+
+        // TODO CHANGED
+        // OLD: Study Participation Required
+        // NEW: Research Project Participation Required
         "mustParticipateInStudy" : "Participation à l'étude requise",
         "admin_only" : "Seul un administrateur MIDATA peut modifier cette section. Veuillez faire une demande de changement si nécessaire.",
         "terms_of_use" : "Conditions Générales",
@@ -111,6 +151,10 @@
         "unlock_code" : "Code d'activation",
         "logout" : "Déconnecter tout le monde",
         "pleaseLogout1" : "Déconnexion de tous les utilisateurs",
+
+        // TODO CHANGED
+        // OLD: Disconnect from studies
+        // NEW: Disconnect from research projects
         "pleaseLogout2" : "Déconnecter des études",
         "logout_optional" : "[ non requis ]",
         "logout_required" : "[ requis ]",
@@ -118,22 +162,54 @@
         "send_reports" : "Envoyer les rapports d'erreurs",
 
         "info" : {
+
+            // TODO CHANGED
+            // OLD: This name is internally used to identify your app. Should be a valid identifier (a-z, A-Z, 0-9, _).
+            // NEW: This name is internally used to identify your application. Should be a valid identifier (a-z, A-Z, 0-9, _).
             "filename" : "Ce nom est utilisé (en interne) pour identifier votre app. Il doit s'agir d'un identificateur valide (a-z, A-Z, 0-9, _).",
             "targetUserRole" : "Votre app est-elle destinée à un rôle spécifique? Sinon, veuillez choisir 'Tous les rôles'.",
+
+            // TODO CHANGED
+            // OLD: Choose 'Plugin' if your application will run on the MIDATA portal. Choose 'Mobile App' for an external application. Choose 'Service' for a server-side only script. Choose 'OAuth1 Import' or 'OAuth2 Import' if you need to connect to an external server using OAuth1 or OAuth2.
+            // NEW: Choose 'Plugin' if your application will run on the MIDATA portal. Choose 'Application (Smartphone, Web)' for an external application. Choose 'Service' for a server-side only script. Choose 'OAuth1 Import' or 'OAuth2 Import' if you need to connect to an external server using OAuth1 or OAuth2.
             "type" : "Choisissez 'Plugin' si votre application sera exécutée sur le portail MIDATA. Choisissez 'Mobile App' pour une application externe. Choisissez 'Service' pour un script exécuté côté serveur uniquement. Choisissez 'OAuth1 Import' ou 'OAuth2 Import' si vous vous connectez à un serveur externe par OAuth1 ou OAuth2.",
+
+            // TODO CHANGED
+            // OLD: The name of your application or plugin that will be presented to the end user.
+            // NEW: The name of your application that will be presented to the end user.
             "name" : "Le nom de l'app ou du plugin tel qu'il est affiché pour les utilisateurs finaux.",
+
+            // TODO CHANGED
+            // OLD: A description of your plugin that will also be shown on the marked place.
+            // NEW: A description of your application that will also be shown on the marked place.
             "description" : "La description du plugin qui sera affichée sur la place du marché.",
             "tokenExchangeParams" : "La valeur par défaut est client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> mais certains services nécessitent également client_secret=<client_secret> ou pas de client_id",
             "no_update_history" : "Les mises à jour des ressources FHIR effectuées par cette application ne produisent aucune entrée d'historique. N'utiliser que si l'application fait de nombreuses et fréquentes mises à jour.",
+
+            // TODO CHANGED
+            // OLD: App is allowed to reshare data it has access to to 3rd party.
+            // NEW: Application is allowed to reshare data it has access to to 3rd party.
             "resharesData" : "L'app est autorisée à transmettre les données auxquelles elle a accès à des tierces parties.",
+
+            // TODO CHANGED
+            // OLD: Users of the app are allowed to search for other users of the same app.
+            // NEW: Users of the application are allowed to search for other users of the same application.
             "allowsUserSearch" : "Les utilisateurs de l'app sont autorisés à rechercher d'autres utilisateurs de la même app.",
             "defaultSpaceName" : "Titre de la tuile du plugin sur le tableau de bord.",
             "tags" : "Catégories sous lesquelles le plugin sera listé dans le MIDATA Store.",
+
+            // TODO CHANGED
+            // OLD: URL of your plugins main page. If you use the template from MIDATA it is 'dist/index.html#?authToken=:authToken''
+            // NEW: URL of your plugins main page. If you use the template from MIDATA it is 'dist/index.html#!?authToken=:authToken''
             "url" : "URL de la page principale du plugin. Si vous utilisez le modèle MIDATA, c'est 'dist/index.html#!?authToken=:authToken''",
             "previewUrl" : "URL de la tuile du tableau de bord du plugin. Laisser vide si une telle tuile n'est pas fournie.",
             "defaultSpaceContext" : "Choisissez 'Tableau de bord' pour le tableau de bord standard. Choisissez 'Configuration' pour un plugin d'importation.",
             "redirectUri" : "Vous pouvez spécifier plusieurs URIs de redirection possibles en séparant les URIs avec un espace.",
             "secret" : "Votre app aura besoin de ce 'secret' pour se connecter. Choisissez le librement.",
+
+            // TODO CHANGED
+            // OLD: User must participate in study in order to use app.
+            // NEW: User must participate in research project in order to use application.
             "mustParticipateInStudy" : "Les utilisateurs doivent participer à l'étude afin de pouvoir utiliser l'app.",
             "unlock_code" : "Si renseigné, ce code doit être saisi par l'utilisateur lors de l'inscription ou lors de la première connexion à MIDATA par cette app. Le code n'est pas sensible à la casse.",
             "send_reports" : "Avertir le développeur ({{utilisateur}}) par e-mail des erreurs causées par cette application."
@@ -146,6 +222,10 @@
             "DEPRECATED" : "Obsolète - ne doit plus être utilisée",
             "DELETED" : "Supprimée"
         },
+
+        // TODO CHANGED
+        // OLD: Not linked to a study
+        // NEW: Not linked to a research project
         "nostudy" : "Non lié à une étude",
         "optionalParticipation" : "Participation optionnelle",
         "access_query_json" : "Data Access Filter",
@@ -157,6 +237,10 @@
         "export_help" : "Exportez la définition de cette application, pour qu'elle puisse être importée et utilisée sur un autre serveur.",
         "important" : "IMPORTANT",
         "logoutwarning" : "Changer la définition de l'application déconnectera tous les utilisateurs de cette application. Ils devront confirmer à nouveau l'utilisation de l'application à la prochaine connexion.",
+
+        // TODO CHANGED
+        // OLD: Changing the application definition will unlink this research application from all studies!
+        // NEW: Changing the application definition will unlink this research application from all projects!
         "researchwarning" : "Changer la définition de l'application dissociera cette application de recherche de toutes les études!",
         "creator" : "Créateur",
         "organization" : "Organisation"
@@ -196,6 +280,10 @@
 
     "appicon" : {
         "title" : "Icônes et images",
+
+        // TODO CHANGED
+        // OLD: Plugin/App Name
+        // NEW: Application Name
         "name" : "Nom du plugin/de l'app",
         "internalname" : "Nom interne",
         "use" : {
@@ -215,14 +303,38 @@
     },
 
     "applink" : {
+
+        // TODO CHANGED
+        // OLD: Links with projects or providers
+        // NEW: Links with research projects or health professionals
         "title" : "Liens avec des projets de recherche ou des professionnels de la santé",
+
+        // TODO CHANGED
+        // OLD: Add link with research project
+        // NEW: Link to research project
         "add_research_btn" : "Lier à un projet de recherche",
+
+        // TODO CHANGED
+        // OLD: Add link with provider
+        // NEW: Link to health professional
         "add_provider_btn" : "Lier à un professionnel de la santé",
         "target" : "Cible",
+
+        // TODO CHANGED
+        // OLD: Healthcare Provider (login)
+        // NEW: Health professional (login)
         "provider" : "Professionnel de la santé (connexion)",
         "identifier" : "Identifiant pour ce lien",
         "terms_of_use" : "Conditions d'utilisation",
+
+        // TODO CHANGED
+        // OLD: If special terms of use have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the ID you need to enter here.
+        // NEW: If special terms of use have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the identifier you need to enter here.
         "terms_of_use_hint" : "Si des conditions d'utilisation particulières doivent être lues et acceptées par l'utilisateur, veuillez envoyer le texte à MIDATA. Nous téléchargerons le texte au bon format et vous fournirons l'identifiant que vous devez entrer ici.",
+
+        // TODO CHANGED
+        // OLD: Preview terms of use
+        // NEW: View terms of use
         "show_terms" : "Afficher les conditions d'utilisation",
         "types" : {
             "REQUIRE_P" : "Le consentement doit être accepté",
