@@ -2,7 +2,7 @@
   "researcher_registration" : {
     "sign_up" : "Registration as a Researcher",
     "research_organization" : "Research Organization",
-    "name" : "Name",
+    "name" : "Organization Name",
     "description" : "Description",
     "research_user" : "Researcher"
   },
@@ -273,7 +273,7 @@
     "phase1" : "Phase 1 : Draft",
     "phase1_help" : "Draft",
     "name" : "Project name and description defined",
-    "name_help" : "The project name will be shown to participants. The description will be available on the portal and during app login.",
+    "name_help" : "The project name will be shown to participants. The description will be available on the portal and during application login.",
     "teamsetup" : "Researcher team setup",
     "teamsetup_help" : "If more people are involved in carrying out the project, provide all involved persons and their role. As long as you have not added more people, you can change your own role by adding yourself again with another role.",
     "information" : "Public information about your research",
@@ -283,7 +283,7 @@
     "sharingQuery" : "Data Access Filter defined",
     "sharingQuery_help" : "Your project has to explicitely state which data of the participants it will access. The Data Access Filter cannot be changed after the project has been validated.",
     "dates" : "Start and end dates set",
-    "dates_help" : "Start and end date will be shown to the participants. No data will flow into the project from the moment the data is frozen.",
+    "dates_help" : "Start and end date will be shown to the participants. No additional data will flow into the project from the moment the data is frozen.",
     "terms" : "General Terms and Conditions provided",
     "terms_help" : "If the projects General Terms and Conditions have to be confirmed online by the participants, please contact MIDATA.",
     "validation" : "Project validation requested",

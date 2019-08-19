@@ -3,6 +3,10 @@
     "researcher_registration" : {
         "sign_up" : "Inscription en tant que chercheur",
         "research_organization" : "Institut de recherche",
+
+        // TODO CHANGED
+        // OLD: Name
+        // NEW: Organization Name
         "name" : "Nom de l'institut",
         "description" : "Description",
         "research_user" : "Chercheur"
@@ -274,6 +278,10 @@
         "phase1" : "Phase 1 : Ébauche",
         "phase1_help" : "Ébauche",
         "name" : "Nom et description du projet définis",
+
+        // TODO CHANGED
+        // OLD: The project name will be shown to participants. The description will be available on the portal and during app login.
+        // NEW: The project name will be shown to participants. The description will be available on the portal and during application login.
         "name_help" : "Le nom du projet sera affiché aux participants. La description est affichée sur le portail, ainsi que lors de la connexion via une application.",
         "teamsetup" : "Configuration de l'équipe de chercheurs",
         "teamsetup_help" : "Si davantage de personnes participent à la réalisation du projet, indiquez toutes les personnes concernées et leur rôle. Tant que vous n'avez pas ajouté d'autres personnes, vous pouvez changer votre propre rôle en vous ajoutant à nouveau avec un autre rôle.",
@@ -284,6 +292,10 @@
         "sharingQuery" : "Data Access Filter défini",
         "sharingQuery_help" : "Votre projet doit indiquer explicitement les données des participants auxquelles elle accédera. Le filtre d'accès aux données (Data Access Filter) ne peut pas être modifié après la validation du projet.",
         "dates" : "Dates de début et de fin fixées",
+
+        // TODO CHANGED
+        // OLD: Start and end date will be shown to the participants. No data will flow into the project from the moment the data is frozen.
+        // NEW: Start and end date will be shown to the participants. No additional data will flow into the project from the moment the data is frozen.
         "dates_help" : "Les dates de début et de fin seront affichées aux participants. Aucunes données supplémentaires ne seront transmise au projet à partir du moment où les données sont gelées.",
         "terms" : "Conditions générales fournies",
         "terms_help" : "Si les conditions générales du projet doivent être confirmées en ligne par les participants, veuillez contacter MIDATA.",
