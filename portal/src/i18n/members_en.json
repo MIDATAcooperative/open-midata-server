@@ -8,8 +8,8 @@
   "member_quickregistration" : {
     "sign_up" : "Sign up",
     "study" : "Research project*",
-    "app" : "App to be used*",
-    "app_password" : "Password for app",
+    "app" : "Application to be used*",
+    "app_password" : "Password for application",
     "account_password" : "Account Password",
     "repeat_account_password" : "Repeat Account Password"
   },
@@ -86,7 +86,7 @@
   },
   
   "smallstudies" : {
-    "greeting" : "Want to help research projects by sharing your data?",
+    "greeting" : "Do you want to support a research project by sharing your data?",
     "studies" : "Projects",
     "status" : "Enrollment",
     "recruiting" : "Recruiting",

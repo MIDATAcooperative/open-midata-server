@@ -3,7 +3,7 @@
     "researcher_registration" : {
         "sign_up" : "Iscrizione come ricercatore",
         "research_organization" : "Istituto di ricerca",
-        "name" : "Nome",
+        "name" : "Nome del istituto",
         "description" : "Descrizione",
         "research_user" : "Ricercatore"
     },
@@ -13,11 +13,7 @@
     },
 
     "researcher_navbar" : {
-
-        // TODO CHANGED
-        // OLD: Studies
-        // NEW: Projects
-        "studies" : "Studi",
+        "studies" : "Progetti",
         "workspace" : "Spazio di lavoro",
         "data" : "Dati",
         "addresearcher" : "Aggiungi ricercatore",
@@ -29,35 +25,15 @@
         "name" : "Nome",
         "description" : "Descrizione",
         "researchers" : "Tutti i ricercatori dell vostro istituto",
-
-        // TODO CHANGED
-        // OLD: You must be master user to update your organization or register new users for the organization. Please contact support if you think you should have master user permissions.
-        // NEW: You must be master user to update your organization or register new users for the organization. Please contact the MIDATA support if you think you should have master user permissions.
         "master_user" : "Devi essere un utente master per aggiornare la propria organizzazione o iscrivere nuovi utenti per l'organizzazione. Si prega di contattare il supporto MIDATA se si pensa che si dovrebbero avere le autorizzazioni di utente master."
     },
 
     "createstudy" : {
-
-        // TODO CHANGED
-        // OLD: Create new study
-        // NEW: Create new research project
-        "title" : "Crea un nuovo studio",
-
-        // TODO CHANGED
-        // OLD: Change study description
-        // NEW: Change project description
-        "title2" : "Modifica la descrizione dello studio",
-
-        // TODO CHANGED
-        // OLD: Study name
-        // NEW: Project name
-        "study_name" : "Nome studio",
+        "title" : "Crea un nuovo progetto di ricerca",
+        "title2" : "Modifica la descrizione del progetto",
+        "study_name" : "Nome progetto",
         "study_type" : "Tipo di ricerca",
-
-        // TODO CHANGED
-        // OLD: Study description
-        // NEW: Project description
-        "study_description" : "Descrizione studio"
+        "study_description" : "Descrizione progetto"
     },
 
     "studynav" : {
@@ -73,54 +49,22 @@
     },
 
     "studies" : {
-
-        // TODO CHANGED
-        // OLD: Studies
-        // NEW: Research Projects
-        "title" : "Studi",
+        "title" : "Progetti di ricerca",
         "name" : "Nome",
         "validation" : "Convalida",
         "participants" : "Partecipanti",
         "execution" : "Esecuzione",
         "creation_date" : "Creato",
-
-        // TODO CHANGED
-        // OLD: No studies have been created yet for your organisation.
-        // NEW: No research projects have been created yet for your organisation.
-        "empty" : "Non è stato ancora creato alcuno studio per la tua organizzazione.",
-
-        // TODO CHANGED
-        // OLD: Create new study
-        // NEW: Create new project
-        "create_btn" : "Crea un nuovo studio"
+        "empty" : "Non è stato ancora creato alcun progetto di ricerca per la tua organizzazione.",
+        "create_btn" : "Crea un nuovo progetto"
     },
 
     "studyactions" : {
-
-        // TODO CHANGED
-        // OLD: Plugins related to the study
-        // NEW: Applications related to the project
-        "related_apps" : "Plugins relativi allo studio",
-
-        // TODO CHANGED
-        // OLD: No apps or plugins are linked to the study
-        // NEW: No applications are linked to the project
-        "empty" : "Nessuna applicazione o plugin è collegata allo studio",
-
-        // TODO CHANGED
-        // OLD: Add research app to be used with YOUR account
-        // NEW: Add research application to be used with YOUR account
+        "related_apps" : "Applicazioni relativi al progetto",
+        "empty" : "Nessuna applicazione è collegata al progetto",
         "aggregator_apps" : "Aggiungiate un'applicazione di ricerca da utilizzare con il VOSTRO account",
-
-        // TODO CHANGED
-        // OLD: Aggregators, Analysis and Interpretation Apps
-        // NEW: Aggregators, Analysis and Interpretation Applications
         "datalink" : "Aggregatori, applicazioni di analisi e interpretazione",
-
-        // TODO CHANGED
-        // OLD: After the study has been validated, you can link plugins and external data processing services to it. These plugins or services must connect to MIDATA using the credentials of one of the members of the research team with sufficient rights.
-        // NEW: After the research project has been validated, you can link applications like plugins and external data processing services to it. These applications must connect to MIDATA using the credentials of one of the members of the research team with sufficient rights.
-        "description" : "Una volta convalidato lo studio, è possibile collegarlo con link a plugin e servizi di elaborazione dati esterni. Tali plugin o servizi devono collegarsi a MIDATA utilizzando le credenziali di uno dei membri del team di ricerca avente i diritti pertinenti.",
+        "description" : "Dopo che il progetto di ricerca è stato convalidato, è possibile collegare ad esso applicazioni come plugin e servizi esterni di elaborazione dati. Queste applicazioni devono connettersi a MIDATA utilizzando le credenziali di uno dei membri del team di ricerca con sufficienti diritti.",
         "select_group_btn" : "Seleziona gruppo",
         "allgroups" : "<Tutti i gruppi>",
         "plugin" : "Applicazione di ricerca",
@@ -137,53 +81,21 @@
             "validated" : "Confermato",
             "not_validated_research" : "Non confermato dal ricercatore",
             "not_validated_developer" : "Non confermato dallo sviluppatore",
-
-            // TODO CHANGED
-            // OLD: Not active due to study status
-            // NEW: Not active due to research project status
-            "study_wrong_status" : "Non attivo a causa dello stato dello studio",
-
-            // TODO CHANGED
-            // OLD: Study does not allow to join using an application
-            // NEW: Research project does not allow to join using an application
-            "study_no_app_participation" : "Lo studio non consente di aderire utilizzando un'applicazione"
+            "study_wrong_status" : "Non attivo a causa dello stato del progetto di ricerca",
+            "study_no_app_participation" : "Lo progetto di ricerca non consente di aderire utilizzando un'applicazione"
         },
         "select_btn" : "Vista",
         "validate_btn" : "Confermare",
-
-        // TODO CHANGED
-        // OLD: Study
-        // NEW: Research Project
-        "study" : "Studio",
+        "study" : "Progetto di ricerca",
         "app_type" : "Tipo di applicazione",
         "no_valid_app" : "Nessuna applicazione selezionata",
         "type" : "Come sono collegati?",
         "types" : {
-
-            // TODO CHANGED
-            // OLD: Application or plugin offers study participation upon login/start
-            // NEW: Application offers project participation upon login/start
-            "OFFER_P" : "L'applicazione o il plugin offre la partecipazione allo studio al momento del accedi/avvio",
-
-            // TODO CHANGED
-            // OLD: Study participation is required to use the application or plugin
-            // NEW: Project participation is required to use the application
-            "REQUIRE_P" : "La partecipazione allo studio è necessaria per utilizzare l'applicazione o il plugin",
-
-            // TODO CHANGED
-            // OLD: Application or plugin is recommended by study
-            // NEW: Application is recommended by project
-            "RECOMMEND_A" : "L'applicazione o il plugin è raccomandato dallo studio",
-
-            // TODO CHANGED
-            // OLD: Plugin is automatically added on study participation
-            // NEW: Plugin is automatically added on project participation
-            "AUTOADD_A" : "Il plugin viene aggiunto automaticamente alla partecipazione allo studio",
-
-            // TODO CHANGED
-            // OLD: Application shares data to study participants
-            // NEW: Application shares data to project participants
-            "DATALINK" : "L'applicazione condivide i dati con i partecipanti allo studio"
+            "OFFER_P" : "L'applicazione offre la partecipazione al progetto al momento del accedi/avvio",
+            "REQUIRE_P" : "La partecipazione al progetto è necessaria per utilizzare l'applicazione",
+            "RECOMMEND_A" : "L'applicazione è raccomandato dal progetto",
+            "AUTOADD_A" : "Il plugin viene aggiunto automaticamente alla partecipazione al progetto",
+            "DATALINK" : "L'applicazione condivide i dati con i partecipanti al progetto"
         },
         "types_short" : {
             "OFFER_P" : "Suggerire la partecipazione",
@@ -194,36 +106,16 @@
         },
         "use_period" : "Quando sono collegati?",
         "use_periods" : {
-
-            // TODO CHANGED
-            // OLD: Before the study has started
-            // NEW: Before the project has started
-            "PRE" : "Prima dell'inizio dello studio",
-
-            // TODO CHANGED
-            // OLD: During the execution of the study
-            // NEW: During the execution of the project
-            "RUNNING" : "Durante l'esecuzione dello studio",
-
-            // TODO CHANGED
-            // OLD: After the study is finished
-            // NEW: After the project is finished
-            "FINISHED" : "Dopo la fine dello studio",
-
-            // TODO CHANGED
-            // OLD: When the study is aborted
-            // NEW: When the project is aborted
-            "ABORTED" : "Quando lo studio è interrotto"
+            "PRE" : "Prima dell'inizio del progetto",
+            "RUNNING" : "Durante l'esecuzione del progetto",
+            "FINISHED" : "Dopo la fine del progetto",
+            "ABORTED" : "Quando lo progetto è interrotto"
         }
     },
 
     "studyfields" : {
         "required_data" : "Dati richiesti",
-
-        // TODO CHANGED
-        // OLD: This setup cannot be changed anymore after Study has been validated.
-        // NEW: This setup cannot be changed anymore after the project has been validated.
-        "no_change_warning" : "Una volta convalidato lo studio, questa configurazione non potrà più essere modificata.",
+        "no_change_warning" : "Una volta convalidato lo progetto, questa configurazione non potrà più essere modificata.",
         "member_identity" : "Identità del membro",
         "pseudonymous1" : "Partecipazione pseudonimizzata",
         "pseudonymous2" : ", i dati esportati rivelano l'identità pseudonimizzati, l'anno di nascita, il sesso e il paese. Alcuni ricercatori, come gli study nurses, possono avere accesso a dati personali completi.",
@@ -234,8 +126,8 @@
         "assistance" : "Assistenza",
         "no_assistance1" : "Nessuno",
         "no_assistance2" : " - il membro MIDATA partecipa in modo autonomo.",
-        "assistance1" : "Professionista del settore sanitario",
-        "assistance2" : " - il membro MIDATA necessita di assistenza da parte di un professionista del settore sanitario.",
+        "assistance1" : "Professionista sanitario",
+        "assistance2" : " - il membro MIDATA necessita di assistenza da parte di un professionista sanitario.",
         "groups" : "Gruppi di partecipanti",
         "groups_empty" : "Non è ancora stato definito alcun gruppo di partecipanti.",
         "group_name" : "Nome del gruppo",
@@ -261,33 +153,13 @@
         "when" : "Quando",
         "comment" : "Commento",
         "edit_description_btn" : "Modifica",
-
-        // TODO CHANGED
-        // OLD: Request Study Validation
-        // NEW: Request Project Validation
-        "start_validation_btn" : "Richiedi convalida dello studio",
+        "start_validation_btn" : "Richiedi convalida del progetto",
         "start_participant_search_btn" : "Inizia a cercare i partecipanti",
         "end_participant_search_btn" : "Termina la ricerca dei partecipanti",
-
-        // TODO CHANGED
-        // OLD: Start Study Execution
-        // NEW: Start Project Execution
-        "start_study_execution_btn" : "Inizia l'esecuzione dello studio",
-
-        // TODO CHANGED
-        // OLD: Finish Study
-        // NEW: Finish Project
-        "finish_study_btn" : "Termina studio",
-
-        // TODO CHANGED
-        // OLD: Delete Study
-        // NEW: Delete Project
-        "delete_study_btn" : "Elimina studio",
-
-        // TODO CHANGED
-        // OLD: Abort Study
-        // NEW: Abort Project
-        "abort_study_btn" : "Interrompi studio",
+        "start_study_execution_btn" : "Inizia l'esecuzione del progetto",
+        "finish_study_btn" : "Termina progetto",
+        "delete_study_btn" : "Elimina progetto",
+        "abort_study_btn" : "Interrompi progetto",
         "clone_study_btn" : "Copia su nuovo progetto",
         "workflow" : "Informazioni sul flusso di lavoro",
         "markdone_btn" : "Non richiesto, contrassegnare come eseguito",
@@ -298,17 +170,9 @@
         "confirm" : {
             "validation" : "La configurazione non può più essere modificata. Verrà avviato il processo di convalida da parte di MIDATA.",
             "end_participant_search" : "Nessun altro utente potrà più partecipare.",
-
-            // TODO CHANGED
-            // OLD: All study data will be frozen at this moment.
-            // NEW: All project data will be frozen at this moment.
-            "finish_execution" : "Tutti i dati dello studio saranno congelati in questo momento.",
+            "finish_execution" : "Tutti i dati del progetto saranno congelati in questo momento.",
             "delete" : "Il progetto di ricerca sarà completamente cancellato dalla piattaforma.",
-
-            // TODO CHANGED
-            // OLD: All study data will be frozen at this moment. This project will be marked as failed.
-            // NEW: All project data will be frozen at this moment. This project will be marked as failed.
-            "abort" : "Tutti i dati dello studio saranno congelati in questo momento. Questo progetto sarà contrassegnato come fallito.",
+            "abort" : "Tutti i dati del progetto saranno congelati in questo momento. Questo progetto sarà contrassegnato come fallito.",
             "clone" : "Questo clonerà le impostazioni del progetto in un nuovo progetto di ricerca. Il flusso di lavoro del nuovo progetto verrà ripristinato. Nessun partecipante sarà trasferito al nuovo progetto. Questo progetto rimarrà invariato.",
             "are_you_sure" : "Questa operazione non può essere annullata. Sei sicuro?"
         }
@@ -336,11 +200,7 @@
         "accept_btn" : "Accetta",
         "reject_btn" : "Rifiuta",
         "add_participant_btn" : "Aggiungi partecipante",
-
-        // TODO CHANGED
-        // OLD: This study does not have any participants matching your search criteria yet.
-        // NEW: This research project does not have any participants matching your search criteria yet.
-        "empty" : "Questo studio non ha ancora alcun partecipante che corrisponda ai tuoi criteri di ricerca.",
+        "empty" : "Questo progetto di ricerca non ha ancora alcun partecipante che corrisponda ai tuoi criteri di ricerca.",
         "search_type" : "Cerca",
         "all" : "Tutti i partecipanti",
         "request" : "Candidati in attesa di una decisione",
@@ -348,18 +208,12 @@
         "retreated" : "Partecipanti che si sono ritirati",
         "acceptall" : "Accetta tutte le richieste e assegna nuovi partecipanti al gruppo di partecipanti",
         "autojoin" : "Accetta automaticamente",
-
-        // TODO CHANGED
-        // OLD: Accept all participation requests and assign new participants to the selected group as soon as the research application linked to this study connects.
-        // NEW: Accept all participation requests and assign new participants to the selected group as soon as the research application linked to this project connects.
-        "autojoin2" : "Accetta tutte le richieste di partecipazione e assegna nuovi partecipanti al gruppo selezionato non appena si connette l'applicazione di ricerca collegata tramite link a questo studio."
+        "autojoin2" : "Accetta tutte le richieste di partecipazione e assegna nuovi partecipanti al gruppo selezionato non appena si connette l'applicazione di ricerca collegata tramite link a questo progetto."
     },
 
     "studyrecords" : {
         "empty" : "Una volta disponibili, i dati possono essere scaricati qui.",
-
-        // TODO NEW: You need to have the 'export' permission to export data!
-        "wrongrole" : "You need to have the 'export' permission to export data!",
+        "wrongrole" : "È necessario avere il permesso 'esportare' per esportare i dati!",
         "startDate" : "Data di inizio dell'esportazione (facoltativa)",
         "endDate" : "Data di fine dell'esportazione (facoltativa)",
         "group" : "Gruppo di dati",
@@ -370,16 +224,8 @@
     },
 
     "studyrules" : {
-
-        // TODO CHANGED
-        // OLD: Study Rules
-        // NEW: Project Rules
-        "title" : "Regole dello studio",
-
-        // TODO CHANGED
-        // OLD: This setup cannot be changed anymore after Study has been validated.
-        // NEW: This setup cannot be changed anymore after the project has been validated.
-        "no_change_warning" : "Una volta convalidato lo studio, questa configurazione non potrà più essere modificata.",
+        "title" : "Regole del progetto",
+        "no_change_warning" : "Una volta convalidato lo progetto, questa configurazione non potrà più essere modificata.",
         "startDate" : "Data di inizio ufficiale",
         "endDate" : "Data di fine ufficiale",
         "dataCreatedBefore" : "Data di congelamento dei dati",
@@ -387,11 +233,7 @@
         "join_methods" : "Procedure di partecipazione ammesse",
         "queryeditor_btn" : "Modifica",
         "terms_of_use" : "Condizioni generali di contratto",
-
-        // TODO CHANGED
-        // OLD: If the study General Terms and Conditions have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the ID you need to enter here.
-        // NEW: If the projects General Terms and Conditions have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the ID you need to enter here.
-        "terms_of_use_hint" : "Se i Condizioni generali di contratto dello studio devono essere letti e accettati dall'utente, inviare il testo a MIDATA. Caricheremo il testo nel formato corretto e ti forniremo l'ID necessario da inserire qui.",
+        "terms_of_use_hint" : "Se i Condizioni generali di contratto del progetto devono essere letti e accettati dall'utente, inviare il testo a MIDATA. Caricheremo il testo nel formato corretto e ti forniremo l'ID necessario da inserire qui.",
         "show_terms" : "Mostra Condizioni generali di contratto",
         "requirements" : "Requisiti"
     },
@@ -403,17 +245,9 @@
 
     "addparticipant" : {
         "sign_up" : "Registrazione partecipante",
-
-        // TODO CHANGED
-        // OLD: Study
-        // NEW: Project
-        "study" : "Studio",
+        "study" : "Progetto",
         "hasaccepted" : "Il partecipante ha accettato",
-
-        // TODO CHANGED
-        // OLD: A new participant has been added to your study.
-        // NEW: A new participant has been added to your project.
-        "success" : "Un nuovo partecipante è stato aggiunto al tuo studio."
+        "success" : "Un nuovo partecipante è stato aggiunto al tuo progetto."
     },
 
     "studyteam" : {
@@ -432,143 +266,59 @@
             "changeTeam" : "Modifica il team",
             "auditLog" : "Visualizza il registro di revisione",
             "participants" : "Gestisci i partecipanti",
-
-            // TODO CHANGED
-            // OLD: Setup Study
-            // NEW: Setup Project
-            "setup" : "Configura studio"
+            "setup" : "Configura progetto"
         }
     },
 
     "study_checklist" : {
         "phase1" : "Fase 1: bozza",
         "phase1_help" : "Bozza",
-
-        // TODO CHANGED
-        // OLD: Study name and description defined
-        // NEW: Project name and description defined
-        "name" : "Nome e descrizione studio definiti",
-
-        // TODO CHANGED
-        // OLD: The study name will be shown to participants. The description will be available on the portal and during app login.
-        // NEW: The project name will be shown to participants. The description will be available on the portal and during app login.
-        "name_help" : "Il nome dello studio sarà mostrato ai partecipanti. La descrizione sarà disponibile sul portale durante l'accesso all'applicazione.",
+        "name" : "Nome e descrizione progetto definiti",
+        "name_help" : "Il nome del progetto sarà mostrato ai partecipanti. La descrizione sarà disponibile sul portale durante l'accesso all'applicazione.",
         "teamsetup" : "Configurazione del team ricercatore",
-
-        // TODO CHANGED
-        // OLD: If more people are involved in carrying out the study, provide all involved persons and their role. As long as you have not added more people, you can change your own role by adding yourself again with another role.
-        // NEW: If more people are involved in carrying out the project, provide all involved persons and their role. As long as you have not added more people, you can change your own role by adding yourself again with another role.
-        "teamsetup_help" : "Se più persone sono coinvolte nello svolgimento dello studio, indicare tutte le persone coinvolte e il loro ruolo. Finché non si aggiungono altre persone, è possibile cambiare il proprio ruolo aggiungendo nuovamente sé stessi con un altro ruolo.",
+        "teamsetup_help" : "Se più persone sono coinvolte nello svolgimento del progetto, indicare tutte le persone coinvolte e il loro ruolo. Finché non si aggiungono altre persone, è possibile cambiare il proprio ruolo aggiungendo nuovamente sé stessi con un altro ruolo.",
         "information" : "Informazioni pubbliche sulla vostra ricerca",
         "information_help" : "Le informazioni pubbliche aiuteranno i titolari di account MIDATA a valutare se la vostra ricerca è rilevante per loro.",
         "groups" : "Gruppi di partecipanti definiti",
-
-        // TODO CHANGED
-        // OLD: Your study may have one or multiple groups of participants. Please define the list of participant groups.
-        // NEW: Your project may have one or multiple groups of participants. Please define the list of participant groups.
-        "groups_help" : "Il tuo studio può avere uno o più gruppi di partecipanti. Definisci l'elenco dei gruppi di partecipanti.",
+        "groups_help" : "Il tuo progetto può avere uno o più gruppi di partecipanti. Definisci l'elenco dei gruppi di partecipanti.",
         "sharingQuery" : "Data Access Filter definito",
-
-        // TODO CHANGED
-        // OLD: Your study has to explicitely state which data of the participants it will access. The Data Access Filter cannot be changed after study has been validated.
-        // NEW: Your project has to explicitely state which data of the participants it will access. The Data Access Filter cannot be changed after the project has been validated.
-        "sharingQuery_help" : "Il tuo studio deve dichiarare in modo esplicito a quali dati dei partecipanti accederà. Il filtro di accesso ai dati (Data Access Filter) non può essere modificato dopo la convalida dello studio.",
+        "sharingQuery_help" : "Il tuo progetto deve dichiarare in modo esplicito a quali dati dei partecipanti accederà. Il filtro di accesso ai dati (Data Access Filter) non può essere modificato dopo la convalida del progetto.",
         "dates" : "Date di inizio e fine impostate",
-
-        // TODO CHANGED
-        // OLD: Start and end date will be shown to the participants. No data will flow into the study from the moment the data is frozen.
-        // NEW: Start and end date will be shown to the participants. No data will flow into the project from the moment the data is frozen.
-        "dates_help" : "Le date di inizio e fine saranno mostrate ai partecipanti. Nessun dato sarà inserito nello studio dal momento in cui i dati vengono congelati.",
+        "dates_help" : "Le date di inizio e fine saranno mostrate ai partecipanti.  Nessun dato aggiuntivo confluirà nel progetto dal momento in cui i dati vengono congelati.",
         "terms" : "Condizioni generali di contratto forniti",
-
-        // TODO CHANGED
-        // OLD: If the study General Terms and Conditions have to be confirmed online by the participants, please contact MIDATA.
-        // NEW: If the projects General Terms and Conditions have to be confirmed online by the participants, please contact MIDATA.
-        "terms_help" : "Se i Condizioni generali di contratto dello studio devono essere confermati online dai partecipanti, contattare MIDATA.",
-
-        // TODO CHANGED
-        // OLD: Study validation requested
-        // NEW: Project validation requested
-        "validation" : "Convalida dello studio richiesta",
-
-        // TODO CHANGED
-        // OLD: Validation will be done by MIDATA after it has been requested. The study may no longer be changed after validation has been requested.
-        // NEW: Validation will be done by MIDATA after it has been requested. The project may no longer be changed after validation has been requested.
-        "validation_help" : "Una volta richiesta, la convalida sarà eseguita da MIDATA. Lo studio non potrà più essere modificato dopo la richiesta di convalida.",
-
-        // TODO CHANGED
-        // OLD: Study validated by MIDATA
-        // NEW: Project validated by MIDATA
-        "validation_passed" : "Studio convalidato da MIDATA",
-
-        // TODO CHANGED
-        // OLD: Please wait until study has been validated.
-        // NEW: Please wait until project has been validated.
-        "validation_passed_help" : "Attendere finché lo studio non è stato convalidato.",
+        "terms_help" : "Se i Condizioni generali di contratto del progetto devono essere confermati online dai partecipanti, contattare MIDATA.",
+        "validation" : "Convalida del progetto richiesta",
+        "validation_help" : "Una volta richiesta, la convalida sarà eseguita da MIDATA. Lo progetto non potrà più essere modificato dopo la richiesta di convalida.",
+        "validation_passed" : "Progetto convalidato da MIDATA",
+        "validation_passed_help" : "Attendere finché lo progetto non è stato convalidato.",
         "phase2" : "Fase 2: preparazione",
         "phase2_help" : "Preparazione",
         "applications" : "Applicazione di ricerca aggiunta",
-
-        // TODO CHANGED
-        // OLD: You can link plugins and external data processing services to your study. These may read the participants' data and/or share aggregated data back to the participants. These plugins or services must connect to MIDATA using the credentials of one of the members of the research team with sufficient rights.
-        // NEW: You can link applications like plugins and external data processing services to your project. These may read the participants' data and/or share aggregated data back to the participants. These applications must connect to MIDATA using the credentials of one of the members of the research team with sufficient rights.
-        "applications_help" : "È possibile collegare con link al proprio studio i plugin e i servizi di elaborazione dei dati esterni. I plugin e servizi possono leggere i dati dei partecipanti e/o ri-condividere con loro dei dati aggregati. Plugin e servizi devono collegarsi a MIDATA utilizzando le credenziali di uno dei membri del team di ricerca avente i diritti pertinenti.",
-
-        // TODO CHANGED
-        // OLD: App has been linked with study
-        // NEW: Application has been linked with project
-        "applinked" : "L'applicazione è stata collegata con link al proprio studio",
-
-        // TODO CHANGED
-        // OLD: To link an application to your study, please send to MIDATA the code of your study and the name of the application you want to have linked.
-        // NEW: To link an application to your project, please send to MIDATA the code of your project and the name of the application you want to have linked.
-        "applinked_help" : "Per collegare con link un'applicazione al proprio studio, inviare a MIDATA il codice dello studio e il nome dell'applicazione che si desidera collegare con link.",
+        "applications_help" : "Potete collegare al vostro progetto applicazioni come plugin e servizi esterni di elaborazione dati. Questi possono leggere i dati dei partecipanti e/o condividere dati aggregati con i partecipanti. Queste applicazioni devono connettersi a MIDATA utilizzando le credenziali di uno dei membri del team di ricerca con sufficienti diritti.",
+        "applinked" : "L'applicazione è stata collegata al progetto",
+        "applinked_help" : "Per collegare un'applicazione al vostro progetto, inviare a MIDATA il codice del progetto e il nome dell'applicazione che si desidera collegare.",
         "partsearchstart" : "La ricerca dei partecipanti è iniziata",
-
-        // TODO CHANGED
-        // OLD: As long as participant search is not started it is not possible to participate to the study. Apps which require study participation may not be used.
-        // NEW: As long as participant search is not started it is not possible to participate to the project. Applications which require project participation may not be used.
-        "partsearchstart_help" : "Fino a quando non inizia la ricerca del partecipante, non è possibile partecipare allo studio. Le applicazioni che richiedono la partecipazione allo studio non possono essere utilizzate.",
+        "partsearchstart_help" : "Fino a quando non inizia la ricerca del partecipante, non è possibile partecipare al progetto. Le applicazioni che richiedono la partecipazione al progetto non possono essere utilizzate.",
         "phase3" : "Fase 3: esecuzione",
         "phase3_help" : "Esecuzione",
         "executionstart" : "Esecuzione iniziata",
-
-        // TODO CHANGED
-        // OLD: Marks this study as officially started.
-        // NEW: Marks this project as officially started.
-        "executionstart_help" : "Contrassegna questo studio come iniziato ufficialmente.",
+        "executionstart_help" : "Contrassegna questo progetto come iniziato ufficialmente.",
         "acceptedpart" : "Partecipanti assegnati al gruppo e accettati",
         "acceptedpart_help" : "I nuovi partecipanti devono essere assegnati a un gruppo di partecipanti ed essere accettati o rifiutati.",
         "phase4" : "Fase 4: completamento",
         "phase4_help" : "Completamento",
         "partsearchend" : "La ricerca dei partecipanti è terminata",
         "partsearchend_help" : "Una volta terminata la ricerca dei partecipanti, non sarà più possibile reclutarne di nuovi.",
-
-        // TODO CHANGED
-        // OLD: Study ended
-        // NEW: Project ended
-        "execend" : "Studio concluso",
-
-        // TODO CHANGED
-        // OLD: When the study is ended data are immediately frozen. The data stay available for download.
-        // NEW: When the project is ended data are immediately frozen. The data stay available for download.
-        "execend_help" : "Quando lo studio è terminato, i dati vengono immediatamente congelati. I dati restano disponibili per il download.",
+        "execend" : "Progetto concluso",
+        "execend_help" : "Quando lo progetto è terminato, i dati vengono immediatamente congelati. I dati restano disponibili per il download.",
         "exportdata" : "Dati esportati",
-
-        // TODO CHANGED
-        // OLD: Export the study data as FHIR JSON Bundle (separate for each participant group).
-        // NEW: Export the project data as FHIR JSON Bundle (separate for each participant group).
-        "exportdata_help" : "Esportare i dati dello studio come Bundle FHIR JSON (separati per ciascun gruppo di partecipanti).",
+        "exportdata_help" : "Esportare i dati del progetto come Bundle FHIR JSON (separati per ciascun gruppo di partecipanti).",
         "optional" : "(opzionale)"
     },
 
     "studyinfo" : {
         "title" : "Informazioni",
-
-        // TODO CHANGED
-        // OLD: Give additional information about the study. You can provide public information, additional instructions and contact information only visible to the participants and information for other researchers and administration. Texts are only meant as additional information and may be edited by you at any time.
-        // NEW: Give additional information about the research project. You can provide public information, additional instructions and contact information only visible to the participants and information for other researchers and administration. Texts are only meant as additional information and may be edited by you at any time.
-        "introduction" : "Dare ulteriori informazioni sullo studio. È possibile fornire informazioni pubbliche, istruzioni aggiuntive e informazioni di contatto visibili solo ai partecipanti e informazioni per altri ricercatori e per l'amministrazione. I testi sono da intendersi solo come informazioni aggiuntive e possono essere modificati in qualsiasi momento.",
+        "introduction" : "Dare ulteriori informazioni sul progetto di ricerca. È possibile fornire informazioni pubbliche, istruzioni aggiuntive e informazioni di contatto visibili solo ai partecipanti e informazioni per altri ricercatori e per l'amministrazione. I testi sono da intendersi solo come informazioni aggiuntive e possono essere modificati in qualsiasi momento.",
         "introduction2" : "Tutte le informazioni sono facoltative. Dovresti dare informazioni solo su argomenti che hanno senso nel tuo contesto di ricerca.",
         "visibility" : "Informazioni visibili a",
         "visibilities" : {
@@ -584,11 +334,7 @@
         "content" : "Tipo di contenuto",
         "app" : "Applicazione",
         "time" : "Limitazione del tempo",
-
-        // TODO CHANGED
-        // OLD: Study Group
-        // NEW: Project Group
-        "studyGroup" : "Gruppo di studio",
+        "studyGroup" : "Gruppo di progetto",
         "share_btn" : "Condividere",
         "unshare_btn" : "Non condividere più",
         "search_btn" : "Ricerca"

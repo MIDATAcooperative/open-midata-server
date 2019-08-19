@@ -2,13 +2,9 @@
 
     "provider_registration" : {
         "sign_up" : "Inscription en tant que professionnel de la santé",
-        "provider" : "Professionnel de la santé",
-        "user" : "Utilisateur",
-
-        // TODO CHANGED
-        // OLD: Name
-        // NEW: (Organization) Name
-        "name" : "Nom"
+        "provider" : "Établissement de santé",
+        "user" : "Professionnel de la santé",
+        "name" : "Nom de l'établissement"
     },
 
     "provider_login" : {
@@ -32,10 +28,6 @@
         "description" : "Description",
         "members" : "Tous les membres de votre organisation",
         "addprovider" : "Inscrire un nouveau membre",
-
-        // TODO CHANGED
-        // OLD: You must be master user to update your organization or register new users for the organization. Please contact support if you think you should have master user permissions.
-        // NEW: You must be master user to update your organization or register new users for the organization. Please contact the MIDATA support if you think you should have master user permissions.
         "master_user" : "Vous devez être un utilisateur maître pour mettre à jour votre organisation ou inscrire de nouveaux utilisateurs pour l'organisation. Veuillez contacter le support MIDATA si vous pensez que vous devriez avoir les permissions de l'utilisateur maître."
     },
 

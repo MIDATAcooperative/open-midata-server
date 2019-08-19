@@ -5,22 +5,10 @@
         "members" : "Membri",
         "auditlog" : "Revisione",
         "news" : "Notizie",
-
-        // TODO CHANGED
-        // OLD: Plugins
-        // NEW: Applications
-        "plugins" : "Plugin",
-
-        // TODO CHANGED
-        // OLD: Application usage stats
-        // NEW: Application usage statistics
+        "plugins" : "Applicazioni",
         "usagestats" : "Statistiche sull'uso dell'applicazione",
         "content" : "Tipi di contenuto",
-
-        // TODO CHANGED
-        // OLD: Studies
-        // NEW: Projects
-        "studies" : "Studi",
+        "studies" : "Progetti",
         "terms" : "Condizioni generali di contratto",
         "registration" : "Registra amministratore",
         "user_admin" : "Amministrazione utenti",
@@ -46,10 +34,6 @@
 
     "admin_address" : {
         "title" : "Profilo del membro",
-
-        // TODO CHANGED
-        // OLD: Show apps created by this developer
-        // NEW: Show the applications created by this developer
         "show_apps_created" : "Mostra le applicazioni create da questo sviluppatore",
         "midata_id" : "MIDATA ID",
         "role" : "Ruolo",
@@ -100,11 +84,7 @@
         "expires" : "Data di scadenza del messaggio",
         "date" : "Data ufficiale",
         "appId" : "Applicazione collegata",
-
-        // TODO CHANGED
-        // OLD: Linked Study
-        // NEW: Linked Project
-        "studyId" : "Studio collegato",
+        "studyId" : "Progetto collegato",
         "layout" : "Disposizione",
         "layouts" : {
             "small" : "Piccolo (1x1)",
@@ -120,23 +100,11 @@
     },
 
     "admin_plugins" : {
-
-        // TODO CHANGED
-        // OLD: Plugins
-        // NEW: Applications
-        "title" : "Plugin",
+        "title" : "Applicazioni",
         "developer" : "Filtra per sviluppatore",
-
-        // TODO CHANGED
-        // OLD: Filter by Appname
-        // NEW: Filter by Application
-        "name" : "Filtra per nome applicazione",
+        "name" : "Filtra per applicazione",
         "organisation" : "Filtra per organizzazione",
-
-        // TODO CHANGED
-        // OLD: There are no apps or plugins yet.
-        // NEW: There are no applications yet.
-        "empty" : "Non ci sono ancora applicazioni o plugin.",
+        "empty" : "Non ci sono ancora applicazioni.",
         "plugin_name" : "Nome",
         "plugin_developer" : "Sviluppatore",
         "plugin_type" : "Tipo",
@@ -144,34 +112,18 @@
         "plugin_market" : "MIDATA Store",
         "plugin_stats" : "Statist.",
         "plugin_status" : "Stato",
-
-        // TODO CHANGED
-        // OLD: Import Plugin Definition
-        // NEW: Import Application Definition
-        "add_definition_btn" : "Importa definizione plugin"
+        "add_definition_btn" : "Importa definizione applicazione"
     },
 
     "admin_defineplugin" : {
-
-        // TODO CHANGED
-        // OLD: Import Plugin Definition
-        // NEW: Import Application Definition
-        "title" : "Importa definizione plugin",
+        "title" : "Importa definizione applicazione",
         "definition" : "Definizione (JSON)"
     },
 
     "admin_studies" : {
-
-        // TODO CHANGED
-        // OLD: Studies
-        // NEW: Research Projects
-        "title" : "Studi",
+        "title" : "Progetti di ricerca",
         "criteria" : "Criteri di ricerca",
-
-        // TODO CHANGED
-        // OLD: No matching studies found.
-        // NEW: No matching projects found.
-        "empty" : "Non è stato trovato alcuno studio corrispondente."
+        "empty" : "Non è stato trovato alcun progetto corrispondente."
     },
 
     "admin_terms" : {
@@ -194,11 +146,7 @@
     },
 
     "admin_study" : {
-
-        // TODO CHANGED
-        // OLD: Study
-        // NEW: Research Project
-        "title" : "Studio",
+        "title" : "Progetto di ricerca",
         "name" : "Nome",
         "created_at" : "Creato il",
         "created_by" : "Creato da",
@@ -228,11 +176,7 @@
         "links" : "Applicazioni collegate",
         "end_validation_btn" : "Convalida completa",
         "back_to_draft_btn" : "Torna alla bozza",
-
-        // TODO CHANGED
-        // OLD: Delete Study
-        // NEW: Delete Project
-        "delete_study_btn" : "Elimina studio"
+        "delete_study_btn" : "Elimina progetto"
     },
 
     "admin_stats" : {
@@ -244,17 +188,9 @@
         "recordCount" : "Record nel DB",
         "vRecordCount" : "Record archivistica",
         "indexPageCount" : "DB Index Pages",
-
-        // TODO CHANGED
-        // OLD: Apps and Plugins
-        // NEW: Applications
-        "appCount" : "Applicazioni e plugin",
+        "appCount" : "Applicazioni",
         "languages" : "Lingue dell'utente",
-
-        // TODO CHANGED
-        // OLD: Running Studies
-        // NEW: Running Projects
-        "runningStudyCount" : "Studi in esecuzione",
+        "runningStudyCount" : "Progetti in esecuzione",
         "groupCount" : "Team (Assistenza sanitaria e Ricerca)",
         "auditEventCount" : "Eventi di revisione",
         "users" : "Account utente attivi",
@@ -283,22 +219,10 @@
     "usagestats" : {
         "title" : "Statistiche d'uso",
         "date" : "Data",
-
-        // TODO CHANGED
-        // OLD: App/Plugin
-        // NEW: Application
-        "object" : "App/Plugin",
+        "object" : "Applicazione",
         "REGISTRATION" : "Registration",
         "LOGIN" : "Login",
-
-        // TODO CHANGED
-        // OLD: Continue
-        // NEW: Session
         "REFRESH" : "Session",
-
-        // TODO CHANGED
-        // OLD: Install
-        // NEW: Activation
         "INSTALL" : "Activation",
         "GET" : "Read",
         "POST" : "Write",
