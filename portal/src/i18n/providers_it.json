@@ -2,9 +2,9 @@
 
     "provider_registration" : {
         "sign_up" : "Iscrizione come professionista sanitario",
-        "provider" : "Professionista sanitario",
-        "user" : "Utente",
-        "name" : "Nome"
+        "provider" : "Struttura sanitaria",
+        "user" : "Professionista sanitario",
+        "name" : "Nome della struttura"
     },
 
     "provider_login" : {

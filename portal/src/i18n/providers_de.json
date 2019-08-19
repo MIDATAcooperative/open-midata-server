@@ -2,9 +2,9 @@
 
     "provider_registration" : {
         "sign_up" : "Registrierung als Gesundheitsfachperson",
-        "provider" : "Gesundheitsfachperson",
-        "user" : "Benutzer",
-        "name" : "Name"
+        "provider" : "Gesundheitseinrichtung",
+        "user" : "Gesundheitsfachperson",
+        "name" : "Einrichtungsname"
     },
 
     "provider_login" : {

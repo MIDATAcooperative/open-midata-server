@@ -8,7 +8,7 @@
 
     "member_quickregistration" : {
         "sign_up" : "Iscrizione",
-        "study" : "Studio*",
+        "study" : "Progetto di ricerca*",
         "app" : "Applicazione da usare*",
         "app_password" : "Password dell'applicazione",
         "account_password" : "Password account",
@@ -65,14 +65,14 @@
     },
 
     "yourstudies" : {
-        "study" : "Studio",
+        "study" : "Progetto di ricerca",
         "status" : "Stato",
-        "empty" : "Non partecipi ad alcun studio."
+        "empty" : "Non partecipi ad alcun progetto di ricerca."
     },
 
     "entercode" : {
-        "title" : "Aderisci a uno studio di ricerca inserendo un codice di partecipazione.",
-        "description" : "Aderisci a uno studio inserendo un codice:",
+        "title" : "Aderisci a un progetto di ricerca inserendo un codice di partecipazione.",
+        "description" : "Aderisci a un progetto di ricerca inserendo un codice:",
         "code" : "Codice di partecipazione",
         "continue_btn" : "Continua"
     },
@@ -87,8 +87,8 @@
     },
 
     "smallstudies" : {
-        "greeting" : "Desideri aiutare gli studi con la condivisione dei tuoi dati?",
-        "studies" : "Studi",
+        "greeting" : "Vuoi sostenere un progetto di ricerca condividendo i tuoi dati?",
+        "studies" : "Progetti",
         "status" : "Iscrizione",
         "recruiting" : "Reclutamento",
         "ongoing" : "In corso",

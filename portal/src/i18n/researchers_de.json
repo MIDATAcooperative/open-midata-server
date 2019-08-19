@@ -3,7 +3,7 @@
     "researcher_registration" : {
         "sign_up" : "Registrierung als Forscher",
         "research_organization" : "Forschungseinrichtung",
-        "name" : "Name",
+        "name" : "Einrichtungsname",
         "description" : "Beschreibung",
         "research_user" : "Forscher"
     },
@@ -13,7 +13,7 @@
     },
 
     "researcher_navbar" : {
-        "studies" : "Studien",
+        "studies" : "Projekte",
         "workspace" : "Workspace",
         "data" : "Daten",
         "addresearcher" : "Forscher hinzufügen",
@@ -29,11 +29,11 @@
     },
 
     "createstudy" : {
-        "title" : "Neue Studie anlegen",
-        "title2" : "Beschreibung der Studie ändern",
-        "study_name" : "Name der Studie",
+        "title" : "Neues Forschungsprojekt anlegen",
+        "title2" : "Beschreibung des Forschungsprojektes ändern",
+        "study_name" : "Name des Forschungsprojektes",
         "study_type" : "Forschungsart",
-        "study_description" : "Beschreibung der Studie"
+        "study_description" : "Projektbeschreibung"
     },
 
     "studynav" : {
@@ -49,27 +49,27 @@
     },
 
     "studies" : {
-        "title" : "Studien",
+        "title" : "Forschungsprojekte",
         "name" : "Name",
         "validation" : "Validierung",
         "participants" : "Teilnehmer",
         "execution" : "Durchführung",
         "creation_date" : "Erstellt",
-        "empty" : "Für Ihre Forschungseinrichtung wurde bisher keine Studie angelegt.",
-        "create_btn" : "Neue Studie anlegen"
+        "empty" : "Für Ihre Forschungseinrichtung wurde bisher kein Forschungsprojekt angelegt.",
+        "create_btn" : "Neues Forschungsprojekt anlegen"
     },
 
     "studyactions" : {
-        "related_apps" : "Plugins, die mit der Studie verknüpft sind",
-        "empty" : "Es sind keine Apps oder Plugins mit der Studie verknüpft",
+        "related_apps" : "Applikationen, die mit dem Projekt verknüpft sind",
+        "empty" : "Keine Applikation ist mit dem Projekt verknüpft",
         "aggregator_apps" : "Fügen Sie eine Forschungs-Applikation hinzu, die IHR Konto verwendet",
-        "datalink" : "Aggregatoren, Analyse- und Interpretations-Apps",
-        "description" : "Nach der Validierung der Studie können Sie Plugins und externe Datenverarbeitungsdienste mit der Studie verknüpfen. Diese Plugins oder Dienste müssen sich mit den Zugangsdaten eines Mitglieds des Forschungsteams an MIDATA anmelden, das über ausreichende Rechte verfügt.",
+        "datalink" : "Aggregatoren, Analyse- und Interpretations-Applikationen",
+        "description" : "Nach der Validierung des Forschungsprojektes können Sie Applikationen wie Plugins und externe Datenverarbeitungsdienste mit dem Projekt verknüpfen. Diese Applikationen müssen sich mit den Zugangsdaten eines Mitglieds des Forschungsteams an MIDATA anmelden, das über ausreichende Rechte verfügt.",
         "select_group_btn" : "Gruppe auswählen",
         "allgroups" : "<Alle Gruppen>",
         "plugin" : "Forschungsapplikation",
         "device" : "Code des Gerätes",
-        "restrict" : "Lesen auf diese Studiengruppe beschränken",
+        "restrict" : "Lesen auf diese Gruppe beschränken",
         "shareback" : "Die Applikation teilt Daten mit Teilnehmergruppe(n)",
         "add_application_btn" : "Forschungsapplikation hinzufügen",
         "linked_apps" : "Zustimmungen für die Applikationen",
@@ -81,21 +81,21 @@
             "validated" : "Bestätigt",
             "not_validated_research" : "Vom Forscher nicht bestätigt",
             "not_validated_developer" : "Vom Entwickler nicht bestätigt",
-            "study_wrong_status" : "Nicht aktiv aufgrund des Studienstatus",
-            "study_no_app_participation" : "Die Studie erlaubt es nicht, sich über eine Applikation anzuschliessen"
+            "study_wrong_status" : "Nicht aktiv aufgrund des Status des Forschungsprojektes",
+            "study_no_app_participation" : "Das Forschungsprojekt erlaubt es nicht, über eine Applikation beizutreten"
         },
         "select_btn" : "Ansehen",
         "validate_btn" : "Bestätigen",
-        "study" : "Studie",
+        "study" : "Forschungsprojekt",
         "app_type" : "Applikationstyp",
         "no_valid_app" : "Keine Applikation ausgewählt",
         "type" : "Wie sind sie verknüpft?",
         "types" : {
-            "OFFER_P" : "Die Applikation oder das Plugin bietet Studienteilnahme beim Anmelden/Start an",
-            "REQUIRE_P" : "Die Teilnahme an der Studie ist zwingend für die Nutzung der Applikation oder des Plugins",
-            "RECOMMEND_A" : "Die Applikation oder das Plugin wird von der Studie empfohlen",
-            "AUTOADD_A" : "Das Plugin wird bei Studienteilnahme automatisch hinzugefügt",
-            "DATALINK" : "Die Applikation teilt die Daten mit den Studienteilnehmern"
+            "OFFER_P" : "Die Applikation bietet Projektteilnahme beim Anmelden/Start an",
+            "REQUIRE_P" : "Die Teilnahme am Forschungsprojekt ist zwingend für die Nutzung der Applikation",
+            "RECOMMEND_A" : "Die Applikation wird vom Forschungsprojekt empfohlen",
+            "AUTOADD_A" : "Das Plugin wird bei Projektteilnahme automatisch hinzugefügt",
+            "DATALINK" : "Die Applikation teilt die Daten mit den Projektteilnehmern"
         },
         "types_short" : {
             "OFFER_P" : "Teilnahme vorschlagen",
@@ -106,16 +106,16 @@
         },
         "use_period" : "Wann werden sie verknüpft?",
         "use_periods" : {
-            "PRE" : "Bevor die Studie begonnen hat",
-            "RUNNING" : "Während der Durchführung der Studie",
-            "FINISHED" : "Nach Abschluss der Studie",
-            "ABORTED" : "Bei Abbruch der Studie"
+            "PRE" : "Bevor das Projekt begonnen hat",
+            "RUNNING" : "Während der Durchführung des Projektes",
+            "FINISHED" : "Nach Abschluss des Projektes",
+            "ABORTED" : "Bei Abbruch des Projektes"
         }
     },
 
     "studyfields" : {
         "required_data" : "Erforderliche Daten",
-        "no_change_warning" : "Diese Konfiguration kann nicht mehr geändert werden, sobald die Studie validiert wurde.",
+        "no_change_warning" : "Diese Konfiguration kann nicht mehr geändert werden, sobald das Projekt validiert wurde.",
         "member_identity" : "Identität des Mitglieds",
         "pseudonymous1" : "Pseudonymisierte Teilnahme",
         "pseudonymous2" : ", exportierte Daten zeigen die pseudonymisierte Identität, das Geburtsjahr, Geschlecht und Land. Einige Forscher wie z.B. Study Nurses haben möglicherweise Zugang zu vollständigen persönlichen Daten.",
@@ -153,13 +153,13 @@
         "when" : "Wann",
         "comment" : "Anmerkung",
         "edit_description_btn" : "Ändern",
-        "start_validation_btn" : "Validierung der Studie anfordern",
+        "start_validation_btn" : "Validierung des Projektes anfordern",
         "start_participant_search_btn" : "Suche nach Teilnehmer starten",
         "end_participant_search_btn" : "Suche nach Teilnehmer beenden",
-        "start_study_execution_btn" : "Durchführung der Studie starten",
-        "finish_study_btn" : "Studie beenden",
-        "delete_study_btn" : "Studie löschen",
-        "abort_study_btn" : "Studie abbrechen",
+        "start_study_execution_btn" : "Durchführung des Projektes starten",
+        "finish_study_btn" : "Projekt beenden",
+        "delete_study_btn" : "Projekt löschen",
+        "abort_study_btn" : "Projekt abbrechen",
         "clone_study_btn" : "In neues Projekt kopieren",
         "workflow" : "Informationen zum Workflow",
         "markdone_btn" : "Nicht erforderlich, als erledigt markieren",
@@ -170,9 +170,9 @@
         "confirm" : {
             "validation" : "Das Setup kann nicht mehr geändert werden. Der Validierungsprozess durch MIDATA wird gestartet.",
             "end_participant_search" : "Es werden keine weiteren Benutzer mehr teilnehmen können.",
-            "finish_execution" : "Alle Studiendaten werden zu diesem Zeitpunkt eingefroren.",
+            "finish_execution" : "Alle Projektdaten werden zu diesem Zeitpunkt eingefroren.",
             "delete" : "Das Forschungsprojekt wird vollständig von der Plattform gestrichen.",
-            "abort" : "Alle Studiendaten werden zu diesem Zeitpunkt eingefroren. Dieses Projekt wird als fehlgeschlagen markiert.",
+            "abort" : "Alle Projektdaten werden zu diesem Zeitpunkt eingefroren. Dieses Projekt wird als fehlgeschlagen markiert.",
             "clone" : "Dadurch werden die Projekteinstellungen in ein neues Forschungsprojekt kopiert. Der Workflow des neuen Projektes wird zurückgesetzt. Es werden keine Teilnehmer in das neue Projekt übernommen. Dieses Projekt bleibt unverändert.",
             "are_you_sure" : "Dieser Vorgang kann nicht rückgängig gemacht werden. Sind Sie sicher?"
         }
@@ -200,7 +200,7 @@
         "accept_btn" : "Annehmen",
         "reject_btn" : "Ablehnen",
         "add_participant_btn" : "Teilnehmer hinzufügen",
-        "empty" : "Diese Studie hat noch keine Teilnehmer, die den Suchkriterien entsprechen.",
+        "empty" : "Dieses Forschungsprojekt hat noch keine Teilnehmer, die den Suchkriterien entsprechen.",
         "search_type" : "Suchen",
         "all" : "Alle Teilnehmer",
         "request" : "Kandidaten, welche auf eine Entscheidung warten",
@@ -208,11 +208,12 @@
         "retreated" : "Teilnehmer, welche sich zurückgezogen haben",
         "acceptall" : "Alle Anfragen annehmen und die neuen Teilnehmer zuordnen an der Teilnehmergruppe",
         "autojoin" : "Automatische Annahme",
-        "autojoin2" : "Alle Teilnahmewünsche annehmen und neue Teilnehmer der ausgewählten Gruppe zuweisen, sobald sich die Forschungsapplikation, die mit dieser Studie verknüpft ist, verbindet."
+        "autojoin2" : "Alle Teilnahmewünsche annehmen und neue Teilnehmer der ausgewählten Gruppe zuweisen, sobald sich die Forschungsapplikation verbindet, die mit diesem Projekt verknüpft ist."
     },
 
     "studyrecords" : {
         "empty" : "Sobald Daten verfügbar sind, können diese hier heruntergeladen werden.",
+        "wrongrole" : "Für den Datenexport benötigen Sie die Berechtigung 'Export'!",
         "startDate" : "Startdatum des Exports (optional)",
         "endDate" : "Enddatum des Exports (optional)",
         "group" : "Datengruppe",
@@ -223,8 +224,8 @@
     },
 
     "studyrules" : {
-        "title" : "Regel der Studie",
-        "no_change_warning" : "Diese Konfiguration kann nicht mehr geändert werden, sobald die Studie validiert wurde.",
+        "title" : "Regeln des Projektes",
+        "no_change_warning" : "Diese Konfiguration kann nicht mehr geändert werden, sobald das Projekt validiert wurde.",
         "startDate" : "Offizielles Startdatum",
         "endDate" : "Offizielles Enddatum",
         "dataCreatedBefore" : "Datenbestand eingefroren ab dem",
@@ -232,7 +233,7 @@
         "join_methods" : "Erlaubte Teilnahmeverfahren",
         "queryeditor_btn" : "Ändern",
         "terms_of_use" : "Allgemeine Geschäftsbedingungen",
-        "terms_of_use_hint" : "Wenn die Allgemeine Geschäftsbedingungen der Studie vom Benutzer gelesen und akzeptiert werden müssen, senden Sie den Text bitte an MIDATA. Wir werden den Text im richtigen Format hochladen und Ihnen die ID mitteilen, die Sie hier eingeben müssen.",
+        "terms_of_use_hint" : "Wenn die Allgemeine Geschäftsbedingungen des Projektes vom Benutzer gelesen und akzeptiert werden müssen, senden Sie den Text bitte an MIDATA. Wir werden den Text im richtigen Format hochladen und Ihnen die ID mitteilen, die Sie hier eingeben müssen.",
         "show_terms" : "Allgemeine Geschäftsbedingungen anzeigen",
         "requirements" : "Anforderungen"
     },
@@ -244,9 +245,9 @@
 
     "addparticipant" : {
         "sign_up" : "Teilnehmer registrieren",
-        "study" : "Studie",
+        "study" : "Projekt",
         "hasaccepted" : "Der Teilnehmer hat zugesagt",
-        "success" : "Ein neuer Teilnehmer wurde Ihrer Studie hinzugefügt."
+        "success" : "Ein neuer Teilnehmer wurde Ihrem Projekt hinzugefügt."
     },
 
     "studyteam" : {
@@ -265,59 +266,59 @@
             "changeTeam" : "Team ändern",
             "auditLog" : "Audit Log anschauen",
             "participants" : "Teilnehmer verwalten",
-            "setup" : "Einrichtung der Studie"
+            "setup" : "Einrichtung des Projektes"
         }
     },
 
     "study_checklist" : {
         "phase1" : "Phase 1 : Entwurf",
         "phase1_help" : "Entwurf",
-        "name" : "Studienname und Beschreibung definiert",
-        "name_help" : "Der Studienname wird den Teilnehmern angezeigt. Die Beschreibung wird auf dem Portal, sowie bei der Anmeldung über eine App angezeigt.",
+        "name" : "Projektname und Beschreibung definiert",
+        "name_help" : "Der Projektname wird den Teilnehmern angezeigt. Die Beschreibung wird auf dem Portal, sowie bei der Anmeldung über eine Applikation angezeigt.",
         "teamsetup" : "Einrichtung des Forschungsteams",
-        "teamsetup_help" : "Wenn weitere Personen an der Studiendurchführung beteiligt sind, geben Sie alle involvierten Personen und deren Rolle an. Solange Sie keine weitere Personen hinzugefügt haben, können Sie Ihre Rolle ändern, indem Sie sich nochmal mit einer anderen Rolle hinzufügen.",
+        "teamsetup_help" : "Wenn weitere Personen an der Projektdurchführung beteiligt sind, geben Sie alle involvierten Personen und deren Rolle an. Solange Sie keine weitere Personen hinzugefügt haben, können Sie Ihre Rolle ändern, indem Sie sich nochmal mit einer anderen Rolle hinzufügen.",
         "information" : "Öffentliche Informationen über Ihre Forschung",
         "information_help" : "Öffentliche Informationen werden den Inhabern von MIDATA-Konten helfen zu beurteilen, ob Ihre Forschung für sie relevant ist.",
         "groups" : "Teilnehmergruppen definiert",
-        "groups_help" : "Ihre Studie kann eine oder mehrere Teilnehmergruppen umfassen. Bitte definieren Sie die Liste der Teilnehmergruppen.",
+        "groups_help" : "Ihr Projekt kann eine oder mehrere Teilnehmergruppen umfassen. Bitte definieren Sie die Liste der Teilnehmergruppen.",
         "sharingQuery" : "Data Access Filter definiert",
-        "sharingQuery_help" : "Für Ihre Studie muss klar festgelegt sein, auf welche Daten der Teilnehmer sie zugreifen wird. Der Datenzugriffsfilter (Data Access Filter) kann nach der Validierung der Studie nicht mehr geändert werden.",
+        "sharingQuery_help" : "Für Ihr Projekt muss klar festgelegt sein, auf welche Daten der Teilnehmer sie zugreifen wird. Der Datenzugriffsfilter (Data Access Filter) kann nach der Validierung des Projektes nicht mehr geändert werden.",
         "dates" : "Start- und Enddatum gesetzt",
-        "dates_help" : "Start- und Enddatum werden den Teilnehmern angezeigt. Ab dem Zeitpunkt wo der Datenbestand eingefroren wird, fliessen keine Daten mehr in der Studie.",
+        "dates_help" : "Start- und Enddatum werden den Teilnehmern angezeigt. Ab dem Zeitpunkt wo der Datenbestand eingefroren wird, fliessen keine weitere Daten mehr im Projekt.",
         "terms" : "Allgemeine Geschäftsbedingungen geliefert",
-        "terms_help" : "Sollten die Allgemeinen Geschäftsbedingungen der Studie von den Teilnehmern online bestätigt werden müssen, wenden Sie sich bitte an MIDATA.",
-        "validation" : "Studienvalidierung angefordert",
-        "validation_help" : "Die Validierung wird durch MIDATA erfolgen, nachdem sie angefordert wurde. Die Studie kann nach der Anforderung zur Validierung nicht mehr geändert werden.",
-        "validation_passed" : "Studie validiert durch MIDATA",
-        "validation_passed_help" : "Warten Sie bitte, bis die Studie validiert wurde.",
+        "terms_help" : "Sollten die Allgemeinen Geschäftsbedingungen des Projektes von den Teilnehmern online bestätigt werden müssen, wenden Sie sich bitte an MIDATA.",
+        "validation" : "Projektvalidierung angefordert",
+        "validation_help" : "Die Validierung wird durch MIDATA erfolgen, nachdem sie angefordert wurde. Das Projekt kann nach der Anforderung zur Validierung nicht mehr geändert werden.",
+        "validation_passed" : "Projekt validiert durch MIDATA",
+        "validation_passed_help" : "Warten Sie bitte, bis das Projekt validiert wurde.",
         "phase2" : "Phase 2 : Vorbereitung",
         "phase2_help" : "Vorbereitung",
         "applications" : "Forschungsapplikation hinzugefügt",
-        "applications_help" : "Sie können Plugins und externe Datenverarbeitungsdienste mit Ihrer Studie verknüpfen. Diese können die Daten der Teilnehmer lesen und/oder aggregierte Daten an die Teilnehmer zurückgeben. Diese Plugins oder Dienste müssen sich mit den Zugangsdaten eines Mitglieds des Forschungsteams an MIDATA anmelden, das über ausreichende Rechte verfügt.",
-        "applinked" : "Eine App wurde mit der Studie verknüpft",
-        "applinked_help" : "Um eine Applikation mit Ihrer Studie zu verknüpfen, senden Sie bitte den Code Ihrer Studie und den Namen Ihrer Applikation, die Sie verknüpft haben möchten an MIDATA.",
+        "applications_help" : "Sie können Applikationen wie Plugins und externe Datenverarbeitungsdienste mit Ihrem Projekt verknüpfen. Diese können die Daten der Teilnehmer lesen und/oder aggregierte Daten an die Teilnehmer zurückgeben. Diese Applikationen müssen sich mit den Zugangsdaten eines Mitglieds des Forschungsteams an MIDATA anmelden, das über ausreichende Rechte verfügt.",
+        "applinked" : "Eine Applikation wurde mit dem Projekt verknüpft",
+        "applinked_help" : "Um eine Applikation mit Ihrem Projekt zu verknüpfen, senden Sie bitte den Code Ihres Projektes und den Namen Ihrer Applikation, die Sie verknüpft haben möchten, an MIDATA.",
         "partsearchstart" : "Suche nach Teilnehmer gestartet",
-        "partsearchstart_help" : "Solange die Teilnehmersuche nicht gestartet wird, ist es nicht möglich, an der Studie teilzunehmen. Applikationen, die eine Studienteilnahme erfordern, dürfen nicht verwendet werden.",
+        "partsearchstart_help" : "Solange die Teilnehmersuche nicht gestartet wird, ist es nicht möglich, am Projekt teilzunehmen. Applikationen, die eine Projektteilnahme erfordern, dürfen nicht verwendet werden.",
         "phase3" : "Phase 3 : Durchführung",
         "phase3_help" : "Durchführung",
         "executionstart" : "Durchführung gestartet",
-        "executionstart_help" : "Kennzeichnet diese Studie als offiziell gestartet.",
+        "executionstart_help" : "Kennzeichnet dieses Projekt als offiziell gestartet.",
         "acceptedpart" : "Teilnehmer an Gruppen zugeordnet und akzeptiert",
         "acceptedpart_help" : "Neue Teilnehmer müssen einer Teilnehmergruppe zugeordnet und akzeptiert oder abgelehnt werden.",
         "phase4" : "Phase 4 : Beendigung",
         "phase4_help" : "Beendigung",
         "partsearchend" : "Suche nach Teilnehmer beendet",
         "partsearchend_help" : "Nach Beendigung der Teilnehmersuche dürfen keine neuen Teilnehmer mehr rekrutiert werden.",
-        "execend" : "Studie beendet",
-        "execend_help" : "Nach Beendigung der Studie werden die Daten sofort eingefroren. Die Daten stehen weiterhin zum Download zur Verfügung.",
+        "execend" : "Projekt beendet",
+        "execend_help" : "Nach Beendigung des Projektes werden die Daten sofort eingefroren. Die Daten stehen weiterhin zum Download zur Verfügung.",
         "exportdata" : "Daten exportiert",
-        "exportdata_help" : "Export der Studiendaten als FHIR JSON Bundle (getrennt für jede Teilnehmergruppe).",
+        "exportdata_help" : "Export der Projektdaten als FHIR JSON Bundle (getrennt für jede Teilnehmergruppe).",
         "optional" : "(optional)"
     },
 
     "studyinfo" : {
         "title" : "Informationen",
-        "introduction" : "Geben Sie zusätzliche Informationen über die Studie an. Sie können öffentliche Informationen, zusätzliche Anweisungen und Kontaktinformationen, die nur für die Teilnehmer sichtbar sind, sowie Informationen für andere Forscher und Verwaltungen bereitstellen. Texte sind nur als Zusatzinformation gedacht und können von Ihnen jederzeit bearbeitet werden.",
+        "introduction" : "Geben Sie zusätzliche Informationen über das Forschungsprojekt an. Sie können öffentliche Informationen, zusätzliche Anweisungen und Kontaktinformationen, die nur für die Teilnehmer sichtbar sind, sowie Informationen für andere Forscher und Verwaltungen bereitstellen. Texte sind nur als Zusatzinformation gedacht und können von Ihnen jederzeit bearbeitet werden.",
         "introduction2" : "Alle Angaben sind freiwillig. Sie sollten nur über Themen informieren, die in Ihrem Forschungskontext sinnvoll sind.",
         "visibility" : "Informationen sichtbar für",
         "visibilities" : {
@@ -333,7 +334,7 @@
         "content" : "Inhaltstyp",
         "app" : "Applikation",
         "time" : "Zeitliche Beschränkung",
-        "studyGroup" : "Studiengruppe",
+        "studyGroup" : "Projektgruppe",
         "share_btn" : "Teilen",
         "unshare_btn" : "Nicht mehr teilen",
         "search_btn" : "Suchen"

@@ -5,10 +5,10 @@
         "members" : "Membri",
         "auditlog" : "Revisione",
         "news" : "Notizie",
-        "plugins" : "Plugin",
+        "plugins" : "Applicazioni",
         "usagestats" : "Statistiche sull'uso dell'applicazione",
         "content" : "Tipi di contenuto",
-        "studies" : "Studi",
+        "studies" : "Progetti",
         "terms" : "Condizioni generali di contratto",
         "registration" : "Registra amministratore",
         "user_admin" : "Amministrazione utenti",
@@ -84,7 +84,7 @@
         "expires" : "Data di scadenza del messaggio",
         "date" : "Data ufficiale",
         "appId" : "Applicazione collegata",
-        "studyId" : "Studio collegato",
+        "studyId" : "Progetto collegato",
         "layout" : "Disposizione",
         "layouts" : {
             "small" : "Piccolo (1x1)",
@@ -100,11 +100,11 @@
     },
 
     "admin_plugins" : {
-        "title" : "Plugin",
+        "title" : "Applicazioni",
         "developer" : "Filtra per sviluppatore",
-        "name" : "Filtra per nome applicazione",
+        "name" : "Filtra per applicazione",
         "organisation" : "Filtra per organizzazione",
-        "empty" : "Non ci sono ancora applicazioni o plugin.",
+        "empty" : "Non ci sono ancora applicazioni.",
         "plugin_name" : "Nome",
         "plugin_developer" : "Sviluppatore",
         "plugin_type" : "Tipo",
@@ -112,18 +112,18 @@
         "plugin_market" : "MIDATA Store",
         "plugin_stats" : "Statist.",
         "plugin_status" : "Stato",
-        "add_definition_btn" : "Importa definizione plugin"
+        "add_definition_btn" : "Importa definizione applicazione"
     },
 
     "admin_defineplugin" : {
-        "title" : "Importa definizione plugin",
+        "title" : "Importa definizione applicazione",
         "definition" : "Definizione (JSON)"
     },
 
     "admin_studies" : {
-        "title" : "Studi",
+        "title" : "Progetti di ricerca",
         "criteria" : "Criteri di ricerca",
-        "empty" : "Non è stato trovato alcuno studio corrispondente."
+        "empty" : "Non è stato trovato alcun progetto corrispondente."
     },
 
     "admin_terms" : {
@@ -146,7 +146,7 @@
     },
 
     "admin_study" : {
-        "title" : "Studio",
+        "title" : "Progetto di ricerca",
         "name" : "Nome",
         "created_at" : "Creato il",
         "created_by" : "Creato da",
@@ -176,7 +176,7 @@
         "links" : "Applicazioni collegate",
         "end_validation_btn" : "Convalida completa",
         "back_to_draft_btn" : "Torna alla bozza",
-        "delete_study_btn" : "Elimina studio"
+        "delete_study_btn" : "Elimina progetto"
     },
 
     "admin_stats" : {
@@ -188,9 +188,9 @@
         "recordCount" : "Record nel DB",
         "vRecordCount" : "Record archivistica",
         "indexPageCount" : "DB Index Pages",
-        "appCount" : "Applicazioni e plugin",
+        "appCount" : "Applicazioni",
         "languages" : "Lingue dell'utente",
-        "runningStudyCount" : "Studi in esecuzione",
+        "runningStudyCount" : "Progetti in esecuzione",
         "groupCount" : "Team (Assistenza sanitaria e Ricerca)",
         "auditEventCount" : "Eventi di revisione",
         "users" : "Account utente attivi",
@@ -219,7 +219,7 @@
     "usagestats" : {
         "title" : "Statistiche d'uso",
         "date" : "Data",
-        "object" : "App/Plugin",
+        "object" : "Applicazione",
         "REGISTRATION" : "Registration",
         "LOGIN" : "Login",
         "REFRESH" : "Session",

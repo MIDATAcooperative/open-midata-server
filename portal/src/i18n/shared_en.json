@@ -51,7 +51,7 @@
        "account" : "You are not authorized to access this account",
        "study" : "You are not authorized to access this research project",
        "not_plugin_owner" : "This is not your application",
-       "no_debug" : "Debugging is only available for applications during development or beta phase on non productive instances."       
+       "no_debug" : "Application debugging is only available during development or beta phase on non productive instances."       
      },
 
      "invalid" : {
@@ -65,7 +65,7 @@
        "confirmation_code" :"Bad confirmation code",
        "securitytoken" : "Code not correct",
        "code" : "Unknown code for research project.",
-       "appcode" : "Unknown code for app.",
+       "appcode" : "Unknown code for application.",
        "status_transition" : "Invalid status change",
        "date" : "Invalid value for date field",
        "day" : "Enter a valid day of month (1 - 31)",
@@ -76,11 +76,11 @@
        "json" : "Invalid JSON provided",
        "passphrase" : "Bad passphrase",
        "passcode": "Bad passcode",
-       "plugin" : "Application is intended for a different role",
+       "plugin" : "Application is intended for another role",
        "unlock_code" : "Incorrect unlock code",
        "access_query" : "The Data Access Filter must restrict by 'content' or 'group'!",
        "sharing" : "The Data Access Filter contains data types that are excluded by the project configuration.",
-       "anonymous" : "Research project can only be anonymous if no one is allowed to access unpseudonymized data.",
+       "anonymous" : "A research project can only be anonymous if no one is allowed to access unpseudonymized data.",
        "url" : "Invalid URL",
        "consent_members" : "This consent may only be confirmed once all external persons have joined MIDATA."       
      },
@@ -135,8 +135,8 @@
        "password5" : "Too many missed login attempts. Please wait 5 minutes before next attempt.",
        "password60" : "Too many missed login attempts. Please wait 1 hour before next attempt.",
        "participation" : "Account holder is not allowed to participate in research project.",
-       "consent" : "The consent for using this app has been revoked. To reenable the app, delete the rejected or expired consent on the MIDATA portal.",
-       "app" : "You are allowed to use this app on a maximum of 10 devices. Please delete unused consents on the MIDATA portal." 
+       "consent" : "The consent for using this application has been revoked. To reenable the application, delete the rejected or expired consent on the MIDATA portal.",
+       "app" : "You are allowed to use this application on a maximum of 10 devices. Please delete unused consents on the MIDATA portal." 
      },
 
      "closed" : {
@@ -340,7 +340,7 @@
 	   "COMMUNITY" : "Community"
 	 },
 	 "joinmethod" : {
-	   "APP" : "Participant uses linked application",
+	   "APP" : "Participant uses the linked application",
 	   "PORTAL" : "Participant applies on MIDATA portal",
 	   "RESEARCHER" : "Participant is manually registered by research team member",
 	   "API" : "Participant is registered by external software",
@@ -382,7 +382,7 @@
 	   "SUPERADMIN" : "Super Admin",
 	   "TRIALUSER" : "Trial User",
 	   "STUDYPARTICIPANT" : "Project Participant",
-	   "APPUSER" : "App User",
+	   "APPUSER" : "Application User",
 	   "NONMEMBERUSER" : "Validated Account Holder",
 	   "MEMBEROFCOOPERATIVE" : "Member of Cooperative"
 	 },
@@ -448,7 +448,7 @@
 	   "service" : "Service",
 	   "oauth1" : "OAuth 1",
 	   "oauth2" : "OAuth 2",
-	   "mobile" : "Appplication (Smartphone, Web)"
+	   "mobile" : "Application (Smartphone, Web)"
 	 },
 	 "infos" : {
 	   "SUMMARY" : "Short Summary",
@@ -593,7 +593,6 @@
     "more" : "Have a few more seconds to spare? We'd be happy if you could give us a bit more details about you ☺️",
     "generous" : "I'm feeling generous today, show me the fields!",
     "hide_optional" : "Hide optional fields",
-    
     "welcome_title" : "Welcome",
     "welcome_text1" : "Your MIDATA account has just been created. A confirmation email has been sent to you.",
     "welcome_text2" : "Please click on the link in the email within 24 hours to complete your registration.",
@@ -616,7 +615,7 @@
     "info2" : "You already have a MIDATA account, log in with your email address and password.",
     "info3" : "Your personal account gives you an overview of your project participation.",
     "info4" : "Dear visitor",
-    "info5" : "You do not yet have a MIDATA account and do not participate in a research project?",
+    "info5" : "You do not yet have a MIDATA account and do not participate in any research project?",
     "info6" : "Join the",
     "info6b" : "Ally Science",
     "info6c" : "project!"
@@ -758,8 +757,8 @@
 
   "studydetails" : {
     "study" : "Research project",    
-    "organization" : "Organization performing the research:",
-    "providers_monitoring" : "Healthcare Providers monitoring the research",
+    "organization" : "Organization performing the project:",
+    "providers_monitoring" : "Healthcare professionals monitoring the project",
     "no_providers" : "None",
     "provider_remove_btn" : "Remove",
     "provider_add_btn" : "Add",
@@ -902,8 +901,8 @@
     "consent_empty" : "This consent does not share any data at the moment.",
     "type_circle" : "This consent shares data with other MIDATA account holders.",
     "type_healthcare" : "This consent shares data with healthcare professionals.",
-    "type_studyparticipation" : "This consent shares data with research for use in a research project.",
-    "type_studyrelated" : "This consent shares research data to a project participant.",
+    "type_studyparticipation" : "This consent shares data with a research project.",
+    "type_studyrelated" : "This consent shares data with a project participant.",
     "type_externalservice" : "This consent shares data with an application.",
     "type_implicit" : "This implicitely created consent shares messages with their receivers.",
     "status_active" : "This consent is active.",
@@ -983,7 +982,7 @@
     "delete_instructions5" : "on the 'delete' button to the right of the record.",
 	"delete_instructions6" : "In order to permanently delete all records of a certain category, double click on the 'delete all' button to the right of the category.",
 	"shared_with" : "Shared With:",
-	"records_used_for_app" : "Records used for app",
+	"records_used_for_app" : "Records used by the application",
 	"back_to_plugin" : "Back",
 	"by_group" : "Grouped by type of content",
 	"by_plugin" : "Grouped by application",
@@ -1232,7 +1231,7 @@
     "paragraph1" : "You would like to delete your MIDATA account irrevocably? That is of course possible.",
     "paragraph2" : "Please read the following information first:",
     "point1" : "If you delete your MIDATA account your personal data will no longer be available.",
-    "point2" : "Data already included in research projects will continue to be available in the project.",
+    "point2" : "Data already included in research projects will continue to be available in these projects.",
     "point3" : "MIDATA is not able to recover your deleted account.",    
     "warning" : "Warning",
     "final" : "This action cannot be undone.",
@@ -1306,10 +1305,10 @@
     "ask" : {
       "AuditEvent" : "Access to the audit event log",
       "Consent" : "Access to consents of the application user with other users or applications",
-      "Group" : "Access to group definitions (either teams of health providers or researchers or groups defined as part of research project results generation)",
+      "Group" : "Access to group definitions (teams of health professionals or researchers as well as project-specific groups)",
       "Patient" : "Patient Records: name, email, address of MIDATA account holders",
       "PseudonymizedPatient" : "Patient Records: pseudonym, year of birth, country of research project participants",
-      "Practitioner" : "Practitioner Resource: search for health providers or researchers",
+      "Practitioner" : "Practitioner Resource: search for health professionals or researchers",
       "Subscription" : "Access and manage subscriptions to external systems"
     }
   },
