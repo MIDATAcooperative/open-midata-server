@@ -3,10 +3,6 @@
     "researcher_registration" : {
         "sign_up" : "Registrierung als Forscher",
         "research_organization" : "Forschungseinrichtung",
-
-        // TODO CHANGED
-        // OLD: Name
-        // NEW: Organization Name
         "name" : "Einrichtungsname",
         "description" : "Beschreibung",
         "research_user" : "Forscher"
@@ -278,10 +274,6 @@
         "phase1" : "Phase 1 : Entwurf",
         "phase1_help" : "Entwurf",
         "name" : "Projektname und Beschreibung definiert",
-
-        // TODO CHANGED
-        // OLD: The project name will be shown to participants. The description will be available on the portal and during app login.
-        // NEW: The project name will be shown to participants. The description will be available on the portal and during application login.
         "name_help" : "Der Projektname wird den Teilnehmern angezeigt. Die Beschreibung wird auf dem Portal, sowie bei der Anmeldung über eine Applikation angezeigt.",
         "teamsetup" : "Einrichtung des Forschungsteams",
         "teamsetup_help" : "Wenn weitere Personen an der Projektdurchführung beteiligt sind, geben Sie alle involvierten Personen und deren Rolle an. Solange Sie keine weitere Personen hinzugefügt haben, können Sie Ihre Rolle ändern, indem Sie sich nochmal mit einer anderen Rolle hinzufügen.",
@@ -292,10 +284,6 @@
         "sharingQuery" : "Data Access Filter definiert",
         "sharingQuery_help" : "Für Ihr Projekt muss klar festgelegt sein, auf welche Daten der Teilnehmer sie zugreifen wird. Der Datenzugriffsfilter (Data Access Filter) kann nach der Validierung des Projektes nicht mehr geändert werden.",
         "dates" : "Start- und Enddatum gesetzt",
-
-        // TODO CHANGED
-        // OLD: Start and end date will be shown to the participants. No data will flow into the project from the moment the data is frozen.
-        // NEW: Start and end date will be shown to the participants. No additional data will flow into the project from the moment the data is frozen.
         "dates_help" : "Start- und Enddatum werden den Teilnehmern angezeigt. Ab dem Zeitpunkt wo der Datenbestand eingefroren wird, fliessen keine weitere Daten mehr im Projekt.",
         "terms" : "Allgemeine Geschäftsbedingungen geliefert",
         "terms_help" : "Sollten die Allgemeinen Geschäftsbedingungen des Projektes von den Teilnehmern online bestätigt werden müssen, wenden Sie sich bitte an MIDATA.",

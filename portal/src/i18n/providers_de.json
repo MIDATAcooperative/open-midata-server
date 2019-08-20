@@ -2,20 +2,8 @@
 
     "provider_registration" : {
         "sign_up" : "Registrierung als Gesundheitsfachperson",
-
-        // TODO CHANGED
-        // OLD: Health Professional
-        // NEW: Health Facility
         "provider" : "Gesundheitseinrichtung",
-
-        // TODO CHANGED
-        // OLD: User
-        // NEW: Health Professional
         "user" : "Gesundheitsfachperson",
-
-        // TODO CHANGED
-        // OLD: (Organization) Name
-        // NEW: Facility Name
         "name" : "Einrichtungsname"
     },
 

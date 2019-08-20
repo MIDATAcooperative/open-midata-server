@@ -3,10 +3,6 @@
     "researcher_registration" : {
         "sign_up" : "Iscrizione come ricercatore",
         "research_organization" : "Istituto di ricerca",
-
-        // TODO CHANGED
-        // OLD: Name
-        // NEW: Organization Name
         "name" : "Nome del istituto",
         "description" : "Descrizione",
         "research_user" : "Ricercatore"
@@ -278,10 +274,6 @@
         "phase1" : "Fase 1: bozza",
         "phase1_help" : "Bozza",
         "name" : "Nome e descrizione progetto definiti",
-
-        // TODO CHANGED
-        // OLD: The project name will be shown to participants. The description will be available on the portal and during app login.
-        // NEW: The project name will be shown to participants. The description will be available on the portal and during application login.
         "name_help" : "Il nome del progetto sarà mostrato ai partecipanti. La descrizione sarà disponibile sul portale durante l'accesso all'applicazione.",
         "teamsetup" : "Configurazione del team ricercatore",
         "teamsetup_help" : "Se più persone sono coinvolte nello svolgimento del progetto, indicare tutte le persone coinvolte e il loro ruolo. Finché non si aggiungono altre persone, è possibile cambiare il proprio ruolo aggiungendo nuovamente sé stessi con un altro ruolo.",
@@ -292,10 +284,6 @@
         "sharingQuery" : "Data Access Filter definito",
         "sharingQuery_help" : "Il tuo progetto deve dichiarare in modo esplicito a quali dati dei partecipanti accederà. Il filtro di accesso ai dati (Data Access Filter) non può essere modificato dopo la convalida del progetto.",
         "dates" : "Date di inizio e fine impostate",
-
-        // TODO CHANGED
-        // OLD: Start and end date will be shown to the participants. No data will flow into the project from the moment the data is frozen.
-        // NEW: Start and end date will be shown to the participants. No additional data will flow into the project from the moment the data is frozen.
         "dates_help" : "Le date di inizio e fine saranno mostrate ai partecipanti.  Nessun dato aggiuntivo confluirà nel progetto dal momento in cui i dati vengono congelati.",
         "terms" : "Condizioni generali di contratto forniti",
         "terms_help" : "Se i Condizioni generali di contratto del progetto devono essere confermati online dai partecipanti, contattare MIDATA.",

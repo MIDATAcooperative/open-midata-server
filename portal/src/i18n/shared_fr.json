@@ -52,10 +52,6 @@
             "account" : "Vous n'êtes pas autorisé à accéder à ce compte",
             "study" : "Vous n'êtes pas autorisé à accéder à ce projet",
             "not_plugin_owner" : "Ce n'est pas votre application",
-
-            // TODO CHANGED
-            // OLD: Debugging is only available for applications during development or beta phase on non productive instances.
-            // NEW: Application debugging is only available during development or beta phase on non productive instances.
             "no_debug" : "Le débogage d'applications n'est disponible qu'en phase de développement ou en phase bêta sur les instances non productives."
         },
 
@@ -70,10 +66,6 @@
             "confirmation_code" : "Code de confirmation incorrect",
             "securitytoken" : "Code incorrect",
             "code" : "Code de projet inconnu.",
-
-            // TODO CHANGED
-            // OLD: Unknown code for app.
-            // NEW: Unknown code for application.
             "appcode" : "Code d'application inconnu",
             "status_transition" : "Changement d'état invalide",
             "date" : "Valeur invalide pour le champ date",
@@ -85,18 +77,10 @@
             "json" : "JSON fourni invalide",
             "passphrase" : "Mauvaise phrase secrète",
             "passcode" : "Mauvais NIP",
-
-            // TODO CHANGED
-            // OLD: Application is intended for a different role
-            // NEW: Application is intended for another role
             "plugin" : "Cette application est prévue pour un autre rôle",
             "unlock_code" : "Code d'activation incorrect",
             "access_query" : "Le filtre d'accès aux données (Data Access Filter) doit être limité par 'contenu' ou 'groupe'!",
             "sharing" : "Le filtre d'accès aux données (Data Access Filter) contient des types de données qui sont exclus par la configuration du projet.",
-
-            // TODO CHANGED
-            // OLD: Research project can only be anonymous if no one is allowed to access unpseudonymized data.
-            // NEW: A research project can only be anonymous if no one is allowed to access unpseudonymized data.
             "anonymous" : "Un projet de recherche ne peut être anonyme que si personne n'est autorisé à accéder à des données non pseudonymisées.",
             "url" : "URL invalide",
             "consent_members" : "Ce consentement ne pourra être confirmé que lorsque toutes les personnes externes auront rejoint MIDATA."
@@ -152,15 +136,7 @@
             "password5" : "Trop d'essais de connexion manqués. Veuillez attendre 5 minutes avant la prochaine tentative.",
             "password60" : "Trop d'essais de connexion manqués. Veuillez attendre 1 heure avant la prochaine tentative.",
             "participation" : "Le titulaire du compte n'est pas autorisé à participer au projet de recherche.",
-
-            // TODO CHANGED
-            // OLD: The consent for using this app has been revoked. To reenable the app, delete the rejected or expired consent on the MIDATA portal.
-            // NEW: The consent for using this application has been revoked. To reenable the application, delete the rejected or expired consent on the MIDATA portal.
             "consent" : "Le consentement pour l'utilisation de cette application a été révoqué. Si vous désirez utiliser cette application à nouveau, veuillez supprimer le consentement rejeté ou expiré sur le portail web.",
-
-            // TODO CHANGED
-            // OLD: You are allowed to use this app on a maximum of 10 devices. Please delete unused consents on the MIDATA portal.
-            // NEW: You are allowed to use this application on a maximum of 10 devices. Please delete unused consents on the MIDATA portal.
             "app" : "Vous pouvez utiliser cette application sur 10 appareils au maximum. Veuillez effacer les consentements non utilisés sur le portail MIDATA."
         },
 
@@ -365,10 +341,6 @@
             "COMMUNITY" : "Communauté"
         },
         "joinmethod" : {
-
-            // TODO CHANGED
-            // OLD: Participant uses linked application
-            // NEW: Participant uses the linked application
             "APP" : "Le participant utilise l'application liée",
             "PORTAL" : "Le participant s'inscrit sur le portail MIDATA",
             "RESEARCHER" : "Le participant est enrôlé manuellement par un membre de l'équipe de recherche",
@@ -411,10 +383,6 @@
             "SUPERADMIN" : "Super administrateur",
             "TRIALUSER" : "Utilisateur à l'essai",
             "STUDYPARTICIPANT" : "Participant au projet",
-
-            // TODO CHANGED
-            // OLD: App User
-            // NEW: Application User
             "APPUSER" : "Utilisateur d'application",
             "NONMEMBERUSER" : "Titulaire de compte validé",
             "MEMBEROFCOOPERATIVE" : "Membre de la cooperative"
@@ -481,10 +449,6 @@
             "service" : "Service",
             "oauth1" : "OAuth 1",
             "oauth2" : "OAuth 2",
-
-            // TODO CHANGED
-            // OLD: Appplication (Smartphone, Web)
-            // NEW: Application (Smartphone, Web)
             "mobile" : "Application (Smartphone, Web)"
         },
         "infos" : {
@@ -652,10 +616,6 @@
         "info2" : "Vous avez déjà un compte MIDATA, connectez-vous avec votre adresse email et votre mot de passe.",
         "info3" : "Votre compte personnel vous donne un aperçu de votre participation aux projets.",
         "info4" : "Cher visiteur",
-
-        // TODO CHANGED
-        // OLD: You do not yet have a MIDATA account and do not participate in a research project?
-        // NEW: You do not yet have a MIDATA account and do not participate in any research project?
         "info5" : "Vous n'avez pas encore de compte MIDATA et ne participez à aucun projet de recherche?",
         "info6" : "Rejoignez le projet",
         "info6b" : "Ally Science",
@@ -798,15 +758,7 @@
 
     "studydetails" : {
         "study" : "Projet de recherche",
-
-        // TODO CHANGED
-        // OLD: Organization performing the research:
-        // NEW: Organization performing the project:
         "organization" : "Organisme de recherche",
-
-        // TODO CHANGED
-        // OLD: Healthcare Providers monitoring the research
-        // NEW: Healthcare professionals monitoring the project
         "providers_monitoring" : "Professionnels de la santé qui encadrent le projet",
         "no_providers" : "Aucun",
         "provider_remove_btn" : "supprimer",
@@ -950,15 +902,7 @@
         "consent_empty" : "Ce consentement ne partage actuellement aucunes données.",
         "type_circle" : "Ce consentement partage des données avec d'autres membres MIDATA.",
         "type_healthcare" : "Ce consentement partage des données avec des professionnels de la santé.",
-
-        // TODO CHANGED
-        // OLD: This consent shares data with research for use in a research project.
-        // NEW: This consent shares data with a research project.
         "type_studyparticipation" : "Ce consentement partage des données avec un projet de recherche.",
-
-        // TODO CHANGED
-        // OLD: This consent shares research data to a project participant.
-        // NEW: This consent shares data with a project participant.
         "type_studyrelated" : "Ce consentement partage des données avec un participant d'un projet.",
         "type_externalservice" : "Ce consentement partage des données avec une application.",
         "type_implicit" : "Ce consentement créé implicitement permet aux destinataires de lire les messages les concernant.",
@@ -1039,10 +983,6 @@
         "delete_instructions5" : "sur le bouton 'supprimer' à droite de l'enregistrement.",
         "delete_instructions6" : "Afin de supprimer de façon permanente tous les enregistrements d'une certaine catégorie, double cliquez sur le bouton 'supprimer tout' à droite de la catégorie.",
         "shared_with" : "Partagé avec:",
-
-        // TODO CHANGED
-        // OLD: Records used for app
-        // NEW: Records used by the application
         "records_used_for_app" : "Enregistrements utilisés par l'application",
         "back_to_plugin" : "Retour",
         "by_group" : "Grouper par contenu",
@@ -1292,10 +1232,6 @@
         "paragraph1" : "Vous souhaitez supprimer votre compte MIDATA irrévocablement? C'est bien sûr possible.",
         "paragraph2" : "Veuillez d'abord lire les informations suivantes :",
         "point1" : "Si vous supprimez votre compte MIDATA, vos données personnelles ne seront plus disponibles.",
-
-        // TODO CHANGED
-        // OLD: Data already included in research projects will continue to be available in the project.
-        // NEW: Data already included in research projects will continue to be available in these projects.
         "point2" : "Les données qui ont déjà été partagées avec des projets de recherche continueront d'être disponibles dans ces projets.",
         "point3" : "MIDATA n'est pas en mesure de récupérer votre compte supprimé.",
         "warning" : "Avertissement",
@@ -1370,17 +1306,9 @@
         "ask" : {
             "AuditEvent" : "Accès au journal des événements d'audit",
             "Consent" : "Accès aux consentements de l'utilisateur de l'application avec d'autres utilisateurs ou applications",
-
-            // TODO CHANGED
-            // OLD: Access to group definitions (either teams of health providers or researchers or groups defined as part of research project results generation)
-            // NEW: Access to group definitions (teams of health professionals or researchers as well as project-specific groups)
             "Group" : "Accès aux définitions des groupes (équipes de professionnels de la santé ou de chercheurs ainsi que groupes propres aux projets)",
             "Patient" : "Données patients: nom, courriel, adresse électronique, adresse des titulaires de comptes MIDATA",
             "PseudonymizedPatient" : "Données patients: pseudonyme, année de naissance, pays des participants au projet de recherche",
-
-            // TODO CHANGED
-            // OLD: Practitioner Resource: search for health providers or researchers
-            // NEW: Practitioner Resource: search for health professionals or researchers
             "Practitioner" : "Ressource Practitioner: recherche de professionnels de la santé ou de chercheurs",
             "Subscription" : "Accéder et gérer les abonnements au système externe"
         }

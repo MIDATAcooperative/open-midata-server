@@ -2,20 +2,8 @@
 
     "provider_registration" : {
         "sign_up" : "Inscription en tant que professionnel de la santé",
-
-        // TODO CHANGED
-        // OLD: Health Professional
-        // NEW: Health Facility
         "provider" : "Établissement de santé",
-
-        // TODO CHANGED
-        // OLD: User
-        // NEW: Health Professional
         "user" : "Professionnel de la santé",
-
-        // TODO CHANGED
-        // OLD: (Organization) Name
-        // NEW: Facility Name
         "name" : "Nom de l'établissement"
     },
 

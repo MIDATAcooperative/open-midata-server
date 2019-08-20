@@ -53,15 +53,7 @@
         "reasons" : {
             "REGISTRATION" : "Inscription d'un nouvel utilisateur",
             "REGISTRATION_BY_OTHER_PERSON" : "Inscription d'un nouvel utilisateur par une autre personne",
-
-            // TODO CHANGED
-            // OLD: First use of app
-            // NEW: First use of application
             "FIRSTUSE_ANYUSER" : "Première utilisation de l'application",
-
-            // TODO CHANGED
-            // OLD: First use of app (if no registration email sent)
-            // NEW: First use of application (if no registration email sent)
             "FIRSTUSE_EXISTINGUSER" : "Première utilisation de l'application (si pas d'e-mail d'inscription envoyé)",
             "CONSENT_REQUEST_OWNER_INVITED" : "Consentement proposé (cédant, invitation)",
             "CONSENT_REQUEST_OWNER_EXISTING" : "Consentement proposé (cédant, utilisateur)",
@@ -96,10 +88,6 @@
         "write_mode" : "Accès en écriture",
         "subscriptions_btn" : "Modifier les abonnements (Subscriptions) par défaut",
         "subscriptions_help" : "Définir les triggers qui provoquent une action sur le serveur MIDATA",
-
-        // TODO CHANGED
-        // OLD: OAuth2 Parameters for the Token Exchange
-        // NEW: OAuth 2 Parameters for the Token Exchange
         "tokenExchangeParams" : "Paramètres OAuth 2 pour l'échange du token",
         "testfromlocal_btn" : "Testez votre plugin depuis localhost",
         "testfromlocal_help" : "Pendant le développement, vous pouvez tester le code du plugin stocké sur votre ordinateur local sur cette instance.",
@@ -114,15 +102,7 @@
         "stats_btn" : "Statistiques sur les erreurs et les performances",
         "stats_help" : "Consultez des statistiques et des conseils pour améliorer les différents types d'appels API envoyés par votre application au serveur.",
         "debug_btn" : "API Tester Sandbox",
-
-        // TODO CHANGED
-        // OLD: Login as app and test queries against the MIDATA backend.
-        // NEW: Login as application and test queries against the MIDATA backend.
         "debug_help" : "Connectez-vous en tant qu'application et testez les requêtes contre le backend MIDATA",
-
-        // TODO CHANGED
-        // OLD: Project linked to App (Code)
-        // NEW: Project linked to the application (code)
         "linkedStudy" : "Projet lié à l'application (code)",
         "mustParticipateInStudy" : "Participation au projet de recherche requise",
         "admin_only" : "Seul un administrateur MIDATA peut modifier cette section. Veuillez faire une demande de changement si nécessaire.",
@@ -140,16 +120,8 @@
         "info" : {
             "filename" : "Ce nom est utilisé (en interne) pour identifier votre application. Il doit s'agir d'un identificateur valide (a-z, A-Z, 0-9, _).",
             "targetUserRole" : "Votre application est-elle destinée à un rôle spécifique? Sinon, veuillez choisir 'Tous les rôles'.",
-
-            // TODO CHANGED
-            // OLD: Choose 'Plugin' if your application will run on the MIDATA portal. Choose 'Application (Smartphone, Web)' for an external application. Choose 'Service' for a server-side only script. Choose 'OAuth1 Import' or 'OAuth2 Import' if you need to connect to an external server using OAuth1 or OAuth2.
-            // NEW: Choose 'Plugin' if your application will run on the MIDATA portal. Choose 'Application (Smartphone, Web)' for an external application. Choose 'Service' for a server-side only script. Choose 'OAuth 1' or 'OAuth 2' if you need to connect to an external server using OAuth 1 or OAuth 2.
             "type" : "Choisissez 'Plugin' si votre application sera exécutée sur le portail MIDATA. Choisissez 'Application (Smartphone, Web)' pour une application externe. Choisissez 'Service' pour un script exécuté côté serveur uniquement. Choisissez 'OAuth 1' ou 'OAuth 2' si vous vous connectez à un serveur externe par OAuth 1 ou OAuth 2.",
             "name" : "Le nom de votre application tel qu'il est affiché pour les utilisateurs finaux.",
-
-            // TODO CHANGED
-            // OLD: A description of your application that will also be shown on the marked place.
-            // NEW: The description of your application that will be shown on the Marketplace.
             "description" : "La description de votre application qui sera affichée sur la Marketplace.",
             "tokenExchangeParams" : "La valeur par défaut est client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> mais certains services nécessitent également client_secret=<client_secret> ou pas de client_id",
             "no_update_history" : "Les mises à jour des ressources FHIR effectuées par cette application ne produisent aucune entrée d'historique. N'utiliser que si l'application fait de nombreuses et fréquentes mises à jour.",
@@ -161,20 +133,8 @@
             "previewUrl" : "URL de la tuile du tableau de bord du plugin. Laisser vide si une telle tuile n'est pas fournie.",
             "defaultSpaceContext" : "Choisissez 'Tableau de bord' pour le tableau de bord standard. Choisissez 'Configuration' pour un plugin d'importation.",
             "redirectUri" : "Vous pouvez spécifier plusieurs URIs de redirection possibles en séparant les URIs avec un espace.",
-
-            // TODO CHANGED
-            // OLD: Your app will need this 'secret' during login. Choose whatever you like.
-            // NEW: Your application will need this 'secret' during login. Choose whatever you like.
             "secret" : "Votre application aura besoin de ce 'secret' pour se connecter. Choisissez le librement.",
-
-            // TODO CHANGED
-            // OLD: User must participate in research project in order to use application.
-            // NEW: Users must participate in research project in order to use this application.
-            "mustParticipateInStudy" : "Les utilisateurs doivent participer au projet de recherche  afin de pouvoir utiliser l'application.",
-
-            // TODO CHANGED
-            // OLD: If filled out, this code must be entered by the user in order to sign up or log in the first time to MIDATA using the app. The code is not case sensitive.
-            // NEW: If filled out, this code must be entered by the user in order to sign up or log in the first time to MIDATA using the application. The code is not case sensitive.
+            "mustParticipateInStudy" : "Les utilisateurs doivent participer au projet de recherche afin de pouvoir utiliser l'application.",
             "unlock_code" : "Si renseigné, ce code doit être saisi par l'utilisateur lors de l'inscription ou lors de la première connexion à MIDATA par cette app. Le code n'est pas sensible à la casse.",
             "send_reports" : "Avertir le développeur ({{utilisateur}}) par e-mail des erreurs causées par cette application."
         },

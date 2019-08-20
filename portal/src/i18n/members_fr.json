@@ -9,15 +9,7 @@
     "member_quickregistration" : {
         "sign_up" : "Inscription",
         "study" : "Projet de recherche*",
-
-        // TODO CHANGED
-        // OLD: App to be used*
-        // NEW: Application to be used*
         "app" : "Application utilisée*",
-
-        // TODO CHANGED
-        // OLD: Password for app
-        // NEW: Password for application
         "app_password" : "Mot de passe de l'application",
         "account_password" : "Mot de passe du compte",
         "repeat_account_password" : "Répéter le mot de passe du compte"
@@ -95,10 +87,6 @@
     },
 
     "smallstudies" : {
-
-        // TODO CHANGED
-        // OLD: Want to help research projects by sharing your data?
-        // NEW: Do you want to support a research project by sharing your data?
         "greeting" : "Voulez-vous soutenir un projet de recherche en partageant vos données?",
         "studies" : "Projets",
         "status" : "Inscription",
