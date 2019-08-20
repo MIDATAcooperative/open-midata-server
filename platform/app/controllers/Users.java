@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -94,10 +96,11 @@ public class Users extends APIController {
 		JsonValidation.validate(json, "properties", "fields");
 		
 		// get parameters
-		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));		
 		ObjectIdConversion.convertMidataIds(properties, "_id", "developer", "organization", "provider");
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 		
+		Map<String, Object> properties_mod = new HashMap<String, Object>(properties);
 		// check authorization
 		
 		if (!getRole().equals(UserRole.ADMIN) && 
@@ -129,26 +132,31 @@ public class Users extends APIController {
 		  
 		}
 
-		if (!getRole().equals(UserRole.ADMIN)) properties.put("status", User.NON_DELETED);
+		if (!getRole().equals(UserRole.ADMIN)) properties_mod.put("status", User.NON_DELETED);
 		
 		// execute		
 		if (fields.contains("name")) { fields.add("firstname"); fields.add("lastname"); }	
 		
 		if (properties.containsKey("email")) {
-			properties.put("emailLC", properties.get("email").toString().toLowerCase());
-			properties.remove("email");
-		}				
+			properties_mod.put("emailLC", properties.get("email").toString().toLowerCase());
+			properties_mod.remove("email");
+		}
+		if (properties.get("lastname") instanceof String ) {
+			String lastname = (String) properties.get("lastname");
+			properties_mod.put("keywordsLC", lastname.toLowerCase());
+			properties_mod.put("lastname", Pattern.compile("^"+lastname+"$", Pattern.CASE_INSENSITIVE));
+		}
 		
 		List<User> users;		
 		if (role != null && role == UserRole.DEVELOPER) {
-		  properties.put("role", EnumSet.of(UserRole.DEVELOPER, UserRole.ADMIN));
-		  users = new ArrayList<User>(Developer.getAll(properties, fields, 100));
+		  properties_mod.put("role", EnumSet.of(UserRole.DEVELOPER, UserRole.ADMIN));
+		  users = new ArrayList<User>(Developer.getAll(properties_mod, fields, 100));
 		} else if (role != null && role == UserRole.RESEARCH) {
-		  users = new ArrayList<User>(ResearchUser.getAll(properties, fields, 100));	
+		  users = new ArrayList<User>(ResearchUser.getAll(properties_mod, fields, 100));	
 		} else if (role != null && role == UserRole.PROVIDER) {
-		  users = new ArrayList<User>(HPUser.getAll(properties, fields));	
+		  users = new ArrayList<User>(HPUser.getAll(properties_mod, fields));	
 		} else {
-		  users = new ArrayList<User>(Member.getAll(properties, fields, 100));
+		  users = new ArrayList<User>(Member.getAll(properties_mod, fields, 100));
 		}
 		
 		if (postcheck) {

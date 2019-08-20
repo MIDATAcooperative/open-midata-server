@@ -86,6 +86,8 @@ public class Providers extends APIController {
 		
 		provider._id = new MidataId();
 		provider.name = name;
+		provider.description = JsonValidation.getStringOrNull(json, "description");
+		provider.url = JsonValidation.getStringOrNull(json, "url");
 		//research.description = JsonValidation.getString(json, "description");
 		
 		HPUser user = new HPUser(email);
@@ -407,7 +409,9 @@ public class Providers extends APIController {
 		if (provider == null) throw new InternalServerException("error.internal", "Healthcare provider organization not found.");
 		
 		provider.name = name;	
-		provider.set("name", provider.name);
+		provider.description = JsonValidation.getStringOrNull(json, "description");
+		provider.url = JsonValidation.getStringOrNull(json, "url");
+		provider.setMultiple(Sets.create("name", "description", "url"));
 							
 		return ok();		
 	}
