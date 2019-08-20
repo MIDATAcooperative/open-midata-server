@@ -12,12 +12,14 @@
 	  <formrow myid="name" label="provider_organization.name"> 
 		<input type="text" class="form-control" id="name" ng-readonly="!isMasterUser()" ng-change="formChange()" name="name" ng-model="org.name" ng-required="true">
 		<formerror myid="name" type="exists" message="error.exists.research"></formerror> 
-      </formrow>
-      <!-- 
+      </formrow>     
       <formrow myid="description" label="provider_organization.description">
-        <textarea class="form-control" id="description" ng-change="formChange()" name="description" rows="5" ng-model="org.description" ng-required="true"></textarea>
+        <textarea class="form-control" id="description" ng-readonly="!isMasterUser()" ng-change="formChange()" name="description" rows="5" ng-model="org.description"></textarea>
       </formrow>
-       -->
+      <formrow myid="url" label="provider_organization.url">
+        <input type="text" class="form-control" id="url" ng-readonly="!isMasterUser()" ng-change="formChange()" name="url" ng-model="org.url">
+      </formrow>
+     
       <formrow myid="x" label="">
         <button type="submit" ng-disabled="!isMasterUser()" class="btn btn-primary" translate="common.submit_btn"></button>
          <span class="text-success" ng-show="saveOk"><span class="fas fa-check"></span> <span translate="common.save_ok"></span></span>
