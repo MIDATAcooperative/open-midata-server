@@ -1,9 +1,9 @@
 {
   "provider_registration" : {
     "sign_up" : "Registration as a Health Professional",
-    "provider" : "Health Professional",
-    "user" : "User",
-    "name" : "(Organization) Name"
+    "provider" : "Health Facility",
+    "user" : "Health Professional",
+    "name" : "Facility Name"
   },
   
   "provider_login" : {

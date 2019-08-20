@@ -134,7 +134,7 @@
             "defaultSpaceContext" : "Choisissez 'Tableau de bord' pour le tableau de bord standard. Choisissez 'Configuration' pour un plugin d'importation.",
             "redirectUri" : "Vous pouvez spécifier plusieurs URIs de redirection possibles en séparant les URIs avec un espace.",
             "secret" : "Votre application aura besoin de ce 'secret' pour se connecter. Choisissez le librement.",
-            "mustParticipateInStudy" : "Les utilisateurs doivent participer au projet de recherche  afin de pouvoir utiliser l'application.",            
+            "mustParticipateInStudy" : "Les utilisateurs doivent participer au projet de recherche afin de pouvoir utiliser l'application.",
             "unlock_code" : "Si renseigné, ce code doit être saisi par l'utilisateur lors de l'inscription ou lors de la première connexion à MIDATA par cette app. Le code n'est pas sensible à la casse.",
             "send_reports" : "Avertir le développeur ({{utilisateur}}) par e-mail des erreurs causées par cette application."
         },
