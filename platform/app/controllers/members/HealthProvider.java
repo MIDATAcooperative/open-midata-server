@@ -27,6 +27,7 @@ import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.UserRole;
+import models.enums.UserStatus;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -113,6 +114,7 @@ public class HealthProvider extends APIController {
 			}
 		}
 		properties.put("role", UserRole.PROVIDER);
+		properties.put("status", UserStatus.ACTIVE);
 		
 		List<HPUser> users = new ArrayList<HPUser>(HPUser.getAll(properties, fields));
 		

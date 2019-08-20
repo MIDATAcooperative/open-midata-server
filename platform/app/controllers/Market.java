@@ -129,12 +129,13 @@ public class Market extends APIController {
 			if (withLogout) {
 				String filename = JsonValidation.getString(json, "filename"); // .toLowerCase(); We have existing plugins with mixed case
 				if (!app.filename.equals(filename)) {
+					filename = filename.toLowerCase();
 					
 					if (Plugin.exists(CMaps.map("filename", filename).map("status", EnumSet.of(PluginStatus.ACTIVE, PluginStatus.BETA, PluginStatus.DEPRECATED, PluginStatus.DEVELOPMENT)))) {
 						throw new BadRequestException("error.exists.plugin", "A plugin with the same filename already exists.");
 					}
 					
-					app.filename = JsonValidation.getString(json, "filename"); 
+					app.filename = filename; 
 				}
 			}
 				
@@ -483,7 +484,7 @@ public class Market extends APIController {
 		plugin.creatorLogin = dev.email;
 		
 		plugin.version = JsonValidation.getLong(json, "version");		
-		plugin.filename = JsonValidation.getStringOrNull(json, "filename");
+		plugin.filename = filename;
 		plugin.name = JsonValidation.getStringOrNull(json, "name");
 		plugin.orgName = JsonValidation.getStringOrNull(json, "orgName");
 		plugin.description = JsonValidation.getStringOrNull(json, "description");

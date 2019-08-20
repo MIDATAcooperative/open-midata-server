@@ -2,7 +2,7 @@
 		<div class="row">
 			<!-- Registration -->
 			<div class="col-sm-12">
-				<div class="panel-container" style="max-width:630px; padding-top:120px; margin:0 auto;">
+				<div class="panel-container" style="max-width:630px; padding-top:30px; margin:0 auto;">
 					<div class="panel panel-primary">
 		            	<div class="panel-heading">
 		              		<h3 class="panel-title" translate="provider_registration.sign_up"></h3>
@@ -17,8 +17,12 @@
 							  <formrow myid="name" label="provider_registration.name"> 
 							    <input type="text" class="form-control" id="name" name="name" translate translate-attr-placeholder="provider_registration.name" ng-model="registration.name" ng-required="true">
 							    <formerror myid="name" type="exists" message="error.exists.provider"></formerror> 
-							  </formrow>							  
+							  </formrow>	
+							  </div>
+							  <formrow myid="description" label="provider_registration.description"><textarea class="form-control" id="description" name="description" rows="5" ng-model="registration.description" ng-required="false"></textarea></formrow>
+							  <formrow myid="url" label="provider_registration.url"><input type="text" class="form-control" id="url" name="url" placeholder="https://www.example.com" ng-model="registration.url"></formrow>  						  
 							 <h3 translate="provider_registration.user"></h3>
+							 <div class="required">
 							  <formrow myid="email" label="registration.email">
 							    <input type="email" class="form-control" id="email" name="email" translate translate-attr-placeholder="registration.email" ng-model="registration.email" required>
 							    <formerror myid="email" type="email" message="error.invalid.email" ></formerror> 

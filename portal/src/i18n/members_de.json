@@ -8,9 +8,9 @@
 
     "member_quickregistration" : {
         "sign_up" : "Registrieren",
-        "study" : "Studie*",
-        "app" : "Benutzte App*",
-        "app_password" : "Passwort der App",
+        "study" : "Forschungsprojekt*",
+        "app" : "Benutzte Applikation*",
+        "app_password" : "Passwort der Applikation",
         "account_password" : "Passwort des Kontos",
         "repeat_account_password" : "Passwort des Kontos wiederholen"
     },
@@ -65,14 +65,14 @@
     },
 
     "yourstudies" : {
-        "study" : "Studie",
+        "study" : "Forschungsprojekt",
         "status" : "Status",
-        "empty" : "Sie nehmen an keiner Studie teil."
+        "empty" : "Sie nehmen an keinem Forschungsprojekt teil."
     },
 
     "entercode" : {
-        "title" : "An Forschungsstudie mittels Teilnahmecode beitreten.",
-        "description" : "An Studie mittels Code beitreten:",
+        "title" : "An Forschungsprojekt mittels Teilnahmecode beitreten.",
+        "description" : "An Forschungsprojekt mittels Code beitreten:",
         "code" : "Teilnahmecode",
         "continue_btn" : "Weiter"
     },
@@ -87,8 +87,8 @@
     },
 
     "smallstudies" : {
-        "greeting" : "Wollen Sie helfen und Ihre Daten für eine Studie teilen?",
-        "studies" : "Studien",
+        "greeting" : "Möchten Sie ein Forschungsprojekt durch die Weitergabe Ihrer Daten unterstützen?",
+        "studies" : "Projekte",
         "status" : "Anmeldung",
         "recruiting" : "Rekrutierung",
         "ongoing" : "Laufend",
