@@ -304,3 +304,5 @@
 {"_id":{"$oid":"5d0c8e99aed645119c75fa4d"},"system":"http://loinc.org","code":"8101-8","display":"CD3+​CD8+​ (T8 suppressor cells) cells/​100 cells in Blood","content":"loinc/8101-8"}
 {"_id":{"$oid":"5d0c8f25aed645119c75fa50"},"system":"http://loinc.org","code":"54218-3","display":"CD3+​CD4+​ (T4 helper) cells/​CD3+​CD8+​ (T8 suppressor cells) cells [# Ratio] in Blood","content":"loinc/54218-3"}
 {"_id":{"$oid":"5d0c8f25aed645119c75fa51"},"system":"http://loinc.org","code":"21008-8","display":"HIV 1 RNA [#/​volume] (viral load) in Serum or Plasma by Probe","content":"loinc/21008-8"}
+{"_id":{"$oid":"5d6d1deeaed6452211ffe428"},"system":"http://midata.coop","code":"MSMotTestLinePrepDetails","display":"MS Motoriktest Linie nachzeichnen Probelauf - Details pro Linie","content":"MSMotTestLinePrepDetails"}
+{"_id":{"$oid":"5d6d1e48aed6452211ffe42a"},"system":"http://midata.coop","code":"MSMotTestLinePrepRun","display":"MS Motoriktest Linie nachzeichnen Probelauf - Ergebnis pro Hand und Methode","content":"MSMotTestLinePrepRun"}
