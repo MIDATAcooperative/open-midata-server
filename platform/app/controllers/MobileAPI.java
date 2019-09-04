@@ -1,5 +1,6 @@
 package controllers;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -58,6 +59,7 @@ import utils.access.AccessContext;
 import utils.access.AppAccessContext;
 import utils.access.EncryptionUtils;
 import utils.access.Feature_FormatGroups;
+import utils.access.Feature_QueryRedirect;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.ExecutionInfo;
@@ -383,7 +385,7 @@ public class MobileAPI extends Controller {
 		RecordManager.instance.setMeta(executor, appInstance._id, "_app", meta);
 		
 		if (app.defaultQuery != null && !app.defaultQuery.isEmpty()) {			
-		    RecordManager.instance.shareByQuery(executor, member._id, appInstance._id, app.defaultQuery);
+		    RecordManager.instance.shareByQuery(executor, member._id, appInstance._id, Feature_QueryRedirect.simplifyAccessFilter(app.defaultQuery));
 		}
 		
 		MobileAPI.confirmMobileConsent(executor, appInstance._id);
@@ -451,7 +453,7 @@ public class MobileAPI extends Controller {
 			
 		    Feature_FormatGroups.convertQueryToContents(app.defaultQuery);
 		    
-		    appInstance.sharingQuery = app.defaultQuery;						   
+		    appInstance.sharingQuery = Feature_QueryRedirect.simplifyAccessFilter(app.defaultQuery);						   
 		}
     	    	    	
     	MobileAppInstance.add(appInstance);	
@@ -467,7 +469,7 @@ public class MobileAPI extends Controller {
 		RecordManager.instance.setMeta(executor, appInstance._id, "_app", meta);
 		
 		if (app.defaultQuery != null && !app.defaultQuery.isEmpty()) {			
-		    RecordManager.instance.shareByQuery(executor, member._id, appInstance._id, app.defaultQuery);
+		    RecordManager.instance.shareByQuery(executor, member._id, appInstance._id, appInstance.sharingQuery);
 		}
 				
 		for (StudyAppLink sal : links) {
@@ -602,12 +604,18 @@ public class MobileAPI extends Controller {
 		  info = ExecutionInfo.checkToken(request(), param2, false);
 		} else throw new BadRequestException("error.auth", "Please provide authorization token as 'Authorization' header or 'authToken' request parameter.");
 					
-		MidataId recordId = json != null ? JsonValidation.getMidataId(json, "_id") : new MidataId(request().getQueryString("_id"));			
+		MidataId recordId = json != null ? JsonValidation.getMidataId(json, "_id") : new MidataId(request().getQueryString("_id"));
+		
+		return getFile(info, recordId, false);
+	}
+	
+	public static Result getFile(ExecutionInfo info, MidataId recordId, boolean asAttachment) throws AppException {					
 		FileData fileData = RecordManager.instance.fetchFile(info.executorId, new RecordToken(recordId.toString(), info.targetAPS.toString()));
 		if (fileData == null) return badRequest();
 		String contentType = "application/binary";
 		if (fileData.contentType != null) contentType = fileData.contentType;
-		//response().setHeader("Content-Disposition", "attachment; filename=" + fileData.filename);
+		if (contentType.startsWith("data:")) contentType = "application/binary";
+		if (asAttachment) PluginsAPI.setAttachmentContentDisposition(fileData.filename);
 		
 		Stats.finishRequest(request(), "200", Collections.EMPTY_SET);
 		return ok(fileData.inputStream).as(contentType);
@@ -821,7 +829,15 @@ public class MobileAPI extends Controller {
 		
 		List<Record> recs = RecordManager.instance.list(inf.executorId, inf.role, inf.context, properties, Sets.create("_id"));
 		
-		if (!srs.isEmpty()) {
+		if (!recs.isEmpty()) {
+			
+			if (srs.isEmpty()) {				
+				Study study = Study.getById(studyId, Study.ALL);
+				Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyId, group, Sets.create());
+				controllers.research.Studies.joinSharing(inf.executorId, inf.executorId, study, group, false, new ArrayList<StudyParticipation>(parts));
+				srs = StudyRelated.getActiveByOwnerGroupAndStudy(inf.executorId, group, studyId, Sets.create("_id"));
+			}
+			
 			for (StudyRelated sr : srs ) {
 			  RecordManager.instance.share(inf.executorId, inf.executorId, sr._id, sr.owner, properties, false);
 			}
@@ -904,56 +920,4 @@ public class MobileAPI extends Controller {
 		return ok(JsonOutput.toJson(consents, "Consent", fields)).as("application/json");
 	}
 		
-	
-	private static void addToSharingQuery(ExecutionInfo info, MobileAppInstance instance, String format, String content) throws AppException {
-		Plugin plugin = Plugin.getById(instance.applicationId, Plugin.ALL_DEVELOPER);
-		if (!plugin.defaultQuery.containsKey("learn")) {
-			return;
-		}
-		if (format != null && plugin.defaultQuery.containsKey("format")) {
-			
-			((Collection) plugin.defaultQuery.get("format")).add(format);					
-			
-			if (!instance.sharingQuery.containsKey("format")) {
-				instance.sharingQuery.put("format", Collections.singleton(format));
-			} else {
-				((Collection) instance.sharingQuery.get("format")).add(format);		
-			}
-		}
-		if (content != null && plugin.defaultQuery.containsKey("content")) {
-			
-			((Collection) plugin.defaultQuery.get("content")).add(content);					
-			
-			if (!instance.sharingQuery.containsKey("content")) {
-				instance.sharingQuery.put("content", Collections.singleton(content));
-			} else {
-				((Collection) instance.sharingQuery.get("content")).add(content);		
-			}
-		}
-		try {
-		  plugin.pluginVersion = System.currentTimeMillis();
-		  plugin.update();
-		} catch (LostUpdateException e) {}
-		RecordManager.instance.shareByQuery(info.executorId, info.ownerId, info.targetAPS, instance.sharingQuery);
-		instance.appVersion = plugin.pluginVersion;
-		MobileAppInstance.set(instance._id, "appVersion", instance.appVersion);
-	}
-	
-	private static void addToSharingQuery(ExecutionInfo info, Space instance, String format, String content) throws AppException {
-		Plugin plugin = Plugin.getById(instance.visualization, Plugin.ALL_DEVELOPER);
-		if (!plugin.defaultQuery.containsKey("learn")) {
-			return;
-		}
-		if (format != null && plugin.defaultQuery.containsKey("format")) {			
-			((Collection) plugin.defaultQuery.get("format")).add(format);											
-		}
-		if (content != null && plugin.defaultQuery.containsKey("content")) {			
-			((Collection) plugin.defaultQuery.get("content")).add(content);								
-		}
-		try {
-		  plugin.pluginVersion = System.currentTimeMillis();
-		  plugin.update();
-		} catch (LostUpdateException e) {}
-		RecordManager.instance.shareByQuery(info.executorId, info.ownerId, info.targetAPS, plugin.defaultQuery);		
-	}
 }

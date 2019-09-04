@@ -35,7 +35,7 @@ angular.module('portal')
 	};
 	
 	$scope.addNew = function() {
-		$scope.selection = { app : {}, type:[], usePeriod:[] };
+		$scope.selection = { app : {}, type:[], usePeriod:[], linkTargetType : "STUDY" };
 	};
 	
 	$scope.formChange = function() {
