@@ -459,7 +459,7 @@ public class Studies extends APIController {
 		participation.setPStatus(ParticipationStatus.MEMBER_REJECTED);		
 		//participation.addHistory(new History(EventType.NO_PARTICIPATION, participation, user, null));
 		Circles.consentStatusChange(userId, participation, ConsentStatus.REJECTED);
-		
+		controllers.research.Studies.leaveSharing(userId, studyId, userId);
 		AuditManager.instance.success();
 		return ok();
 	}
@@ -506,7 +506,7 @@ public class Studies extends APIController {
 		}
 		//participation.addHistory(new History(EventType.NO_PARTICIPATION, participation, user, null));
 		Circles.consentStatusChange(executor, participation, ConsentStatus.FROZEN);				
-		
+		controllers.research.Studies.leaveSharing(executor, studyId, userId);
 	}
 		
 }

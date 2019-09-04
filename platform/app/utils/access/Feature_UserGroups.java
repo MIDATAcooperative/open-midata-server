@@ -134,7 +134,7 @@ public class Feature_UserGroups extends Feature {
 		if (ugm.role.pseudonymizedAccess()) {
 			
 			 if (q.restrictedBy("owner")) {
-				   Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroupsAndIds(q.restrictedBy("study") ? q.getMidataIdRestriction("study") : null, q.getRestrictionOrNull("study-group"), group, q.getMidataIdRestriction("owner"), Sets.create("name", "order", "owner", "ownerName", "type"));
+				   Set<StudyParticipation> parts = StudyParticipation.getActiveOrRetreatedParticipantsByStudyAndGroupsAndIds(q.restrictedBy("study") ? q.getMidataIdRestriction("study") : null, q.getRestrictionOrNull("study-group"), group, q.getMidataIdRestriction("owner"), Sets.create("name", "order", "owner", "ownerName", "type"));
 				   Set<String> owners = new HashSet<String>();
 				   for (StudyParticipation part : parts) {
 					  owners.add(part.owner.toString());

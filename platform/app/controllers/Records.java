@@ -533,11 +533,15 @@ public class Records extends APIController {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 
 		if (tk == null)
-			throw new BadRequestException("error.invalid.token", "Bad token");
-
+			throw new BadRequestException("error.invalid.token", "Bad token");		
+		
 		FileData fileData = RecordManager.instance.fetchFile(userId, tk);
+		
+		String contentType = "application/binary";
+		if (fileData.contentType != null) contentType = fileData.contentType;
+		if (contentType.startsWith("data:")) contentType = "application/binary";
 		setAttachmentContentDisposition(fileData.filename);
-		return ok(fileData.inputStream);
+		return ok(fileData.inputStream).as(contentType);
 	}
 
 	/**

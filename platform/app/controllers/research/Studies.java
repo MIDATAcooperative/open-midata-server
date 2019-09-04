@@ -91,6 +91,7 @@ import utils.InstanceConfig;
 import utils.ServerTools;
 import utils.access.DBIterator;
 import utils.access.Feature_FormatGroups;
+import utils.access.Feature_QueryRedirect;
 import utils.access.Query;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
@@ -260,7 +261,7 @@ public class Studies extends APIController {
 
 		Writer output = new OutputStreamWriter(zos);
 		for (StudyGroup group : study.groups) {
-			Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(study._id, group.name, Sets.create("ownerName", "yearOfBirth", "country", "gender", "group"));
+			Set<StudyParticipation> parts = StudyParticipation.getActiveOrRetreatedParticipantsByStudyAndGroup(study._id, group.name, Sets.create("ownerName", "yearOfBirth", "country", "gender", "group"));
 
 			// for (StudyParticipation part : parts) {
 			output.append(JsonOutput.toJson(parts, "Consent", Sets.create("ownerName", "yearOfBirth", "country", "gender", "group")));
@@ -1161,6 +1162,13 @@ public class Studies extends APIController {
 
 		Circles.addUsers(executor, study._id, EntityType.USER, sr, ids);
 	}
+	
+	public static void leaveSharing(MidataId executor, MidataId studyId, MidataId partId) throws AppException {
+		AccessLog.logBegin("begin leave sharing of study part="+partId+" study="+studyId);
+		Set<StudyRelated> rels = StudyRelated.getActiveByAuthorizedGroupAndStudy(partId, null, Collections.singleton(studyId), null, StudyRelated.ALL, 0l);
+		for (StudyRelated rel : rels) Circles.removeMember(executor, rel, partId);
+		AccessLog.logEnd("end leave sharing of study");
+	}
 
 	/**
 	 * share records with a group of participants of a study
@@ -1329,7 +1337,7 @@ public class Studies extends APIController {
 			Space space = null;
 			space = Spaces.add(userId, plugin.defaultSpaceName, plugin._id, plugin.type, study.code + ":" + (group != null ? group : ""));
 
-			Map<String, Object> query = new HashMap<String, Object>(plugin.defaultQuery);
+			Map<String, Object> query = new HashMap<String, Object>(Feature_QueryRedirect.simplifyAccessFilter(plugin.defaultQuery));
 			query.put("study", studyId.toString());
 			if (restrictRead && group != null)
 				query.put("study-group", group);
@@ -1710,6 +1718,7 @@ public class Studies extends APIController {
 		// participation.addHistory(new
 		// History(EventType.PARTICIPATION_REJECTED, user, comment));
 		Circles.consentStatusChange(userId, participation, ConsentStatus.REJECTED);
+		leaveSharing(userId, studyId, partId);
 		participation.setPStatus(ParticipationStatus.RESEARCH_REJECTED);
 		AuditManager.instance.success();
 

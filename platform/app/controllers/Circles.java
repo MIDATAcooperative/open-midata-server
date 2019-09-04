@@ -669,6 +669,12 @@ public class Circles extends APIController {
 		// remove member from circle (implicit: if present)
 		MidataId memberId = new MidataId(memberIdString);
 		
+        removeMember(userId, consent, memberId);
+		 
+		return ok();
+	}
+	
+	public static void removeMember(MidataId executor, Consent consent, MidataId memberId) throws AppException {
 		consent.authorized.remove(memberId);
 		Consent.set(consent._id, "authorized", consent.authorized);
 		Consent.set(consent._id, "lastUpdated", new Date());
@@ -676,9 +682,8 @@ public class Circles extends APIController {
 		Set<MidataId> memberIds = new HashSet<MidataId>();
 		memberIds.add(memberId);
 		
-		RecordManager.instance.unshareAPSRecursive(consent._id, userId, memberIds);
-		
-		return ok();
+		RecordManager.instance.unshareAPSRecursive(consent._id, executor, memberIds);
+
 	}
 	
 	public static void consentExpired(MidataId executor, MidataId consentId) throws AppException {
