@@ -415,20 +415,15 @@ public class PluginsAPI extends APIController {
 		String authTokenStr = request().getQueryString("authToken");
 		String id = request().getQueryString("id");
 		
-		// decrypt authToken and check whether space with corresponding owner exists
-		SpaceToken authToken = SpaceToken.decryptAndSession(request(), authTokenStr);
-		if (authToken == null) {
+		ExecutionInfo info = ExecutionInfo.checkToken(request(), authTokenStr, false);		
+		if (info == null) {
 			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
-		Stats.setPlugin(authToken.pluginId);
+		Stats.setPlugin(info.pluginId);
 		
-		MidataId recordId = new MidataId(id);			
-		FileData fileData = RecordManager.instance.fetchFile(authToken.executorId, new RecordToken(recordId.toString(), authToken.spaceId.toString()));
-		if (fileData == null) return badRequest();
-		setAttachmentContentDisposition(fileData.filename);
+		MidataId recordId = new MidataId(id);	
 		
-		Stats.finishRequest(request(), "200");
-		return ok(fileData.inputStream);
+		return MobileAPI.getFile(info, recordId, true);		
 	}
 	
 	/**

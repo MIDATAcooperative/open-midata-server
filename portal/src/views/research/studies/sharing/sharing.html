@@ -2,6 +2,7 @@
 <div ng-controller="StudySharingCtrl">   
    <div class="tab-content"  ng-cloak>
 	  <div class="tab-pane active">
+	     <p translate="researcher_sharing.description"></p>
 	    <form name="myform" novalidate class="css-form form-horizontal" ng-submit="dosearch()" role="form">
 	        <p ng-show="error && !error.field" translate="{{ error.code || error }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
 	        </p>	

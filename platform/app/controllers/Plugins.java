@@ -45,6 +45,7 @@ import play.mvc.Security;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.ServerTools;
+import utils.access.Feature_QueryRedirect;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.KeyManager;
@@ -248,16 +249,14 @@ public class Plugins extends APIController {
 			Space space = null;
 			space = Spaces.add(userId, spaceName, visualizationId, visualization.type, context);
 
-			if (space != null) {							
+			if (space != null) {
+				Map<String, Object> query = new HashMap<String, Object>(Feature_QueryRedirect.simplifyAccessFilter(visualization.defaultQuery));
 				if (study != null) {
-					Map<String, Object> query = new HashMap<String, Object>(visualization.defaultQuery);
 					query.put("link-study", study.toString());
 					query.put("study", study.toString());
-					AccessLog.log("set link");
-					RecordManager.instance.shareByQuery(userId, userId, space._id, query);
-				} else {
-					RecordManager.instance.shareByQuery(userId, userId, space._id, visualization.defaultQuery);
-				}
+					AccessLog.log("set link");					
+				} 
+				RecordManager.instance.shareByQuery(userId, userId, space._id, query);
 				
 			}
 

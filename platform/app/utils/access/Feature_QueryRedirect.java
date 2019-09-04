@@ -4,13 +4,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bson.BasicBSONObject;
 
 import models.MidataId;
 import utils.AccessLog;
 import utils.collections.CMaps;
+import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
@@ -213,7 +217,88 @@ public class Feature_QueryRedirect extends Feature {
 		//List<DBRecord> r = FormatHandling.findStreams(new Query(query, Sets.create("_id","key"),  cache, true);
 	}
 
-
+	/**
+	 * create a unique key(string) for an access filter
+	 * @param in
+	 * @param ignore
+	 * @return
+	 */
+	private static String createKey(Map<String, Object> in, Set<String> ignore) {
+		StringBuilder result = new StringBuilder();
+		for (Map.Entry<String, Object> entry : in.entrySet()) {
+			if (ignore.contains(entry.getKey())) continue;
+			result.append(entry.getKey());
+			if (entry.getValue() == null) {
+				result.append(":null");
+			} else if (entry.getValue() instanceof Set) {
+				result.append("::");
+				result.append(entry.getValue().toString());
+			} else {
+				result.append("::");
+				result.append(entry.getValue().toString());
+			}
+		}
+		return result.toString();
+	}
+	
+	/**
+	 * or-combine two values of an access filter
+	 * @param in1
+	 * @param in2
+	 * @return
+	 */
+	private static Collection combineParam(Object in1, Object in2) {
+		if (in1==null || in2==null) return null;
+		Set result = new HashSet();
+		if (in1 instanceof Collection) result.addAll((Collection) in1);
+		else result.add(in1);
+		if (in2 instanceof Collection) result.addAll((Collection) in2);
+		else result.add(in2);
+		return result;
+	}
+	
+	/**
+	 * set field of access filter or remove it if value is null
+	 * @param target
+	 * @param name
+	 * @param value
+	 */
+	private static void setOrRemove(Map<String, Object> target, String name, Object value) {		
+		if (value == null) target.remove(name);
+		else target.put(name, value);
+	}
+	
+	/**
+	 * simplify access filters with $or by combining all parts that only differ in content and code into one part.
+	 * @param in
+	 * @return
+	 */
+    public static Map<String, Object> simplifyAccessFilter(Map<String, Object> in) {
+    	//AccessLog.log("simplifyAccessFilter");
+    	if (!in.containsKey("$or")) return in;
+    	Map<String, Object> out = new HashMap<String, Object>();
+    	Set<String> ignore = Sets.create("code","content");
+    	out.putAll(in);
+    	List<Map<String, Object>> newOr = new ArrayList<Map<String,Object>>();
+    	Map<String, Map<String, Object>> summarize = new HashMap<String, Map<String, Object>>();
+    	
+    	Collection<Map<String, Object>> parts = (Collection<Map<String, Object>>) in.get("$or");
+		for (Map<String, Object> part : parts) {
+			String key = createKey(part, ignore);
+			if (summarize.containsKey(key)) {				
+				Map<String, Object> existing = summarize.get(key);
+				setOrRemove(existing, "code", combineParam(existing.get("code"), part.get("code")));
+				setOrRemove(existing, "content", combineParam(existing.get("content"), part.get("content")));				
+			} else {				
+				Map<String, Object> copy = new HashMap<String,Object>(part); 
+				summarize.put(key, copy);
+				newOr.add(copy);
+			}						
+		}
+		out.put("$or", newOr);
+		//AccessLog.log("out="+out.toString());
+		return out;
+    }
 	
 
 }
