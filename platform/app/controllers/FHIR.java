@@ -64,7 +64,7 @@ public class FHIR extends Controller {
 	 * @return fhir version as integer (3 or 4)
 	 */
 	public int getFhirVersion() {
-		Optional<String> contentType = request().contentType();
+		Optional<String> contentType = request().header("Content-Type");
 		if (contentType.isPresent()) {
 			if (contentType.get().indexOf("fhirVersion=4.")>0) return 4;
 		}
