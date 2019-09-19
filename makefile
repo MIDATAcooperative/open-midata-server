@@ -140,6 +140,13 @@ tasks/install-localmongo: trigger/install-localmongo
 	rm mongodb-linux-x86_64-$(MONGO_VERSION).tgz			
 	touch tasks/install-localmongo
 
+update-mongodb:
+	wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-$(MONGO_VERSION).tgz
+	tar xzf mongodb-linux-x86_64-$(MONGO_VERSION).tgz
+	mv mongodb/mongod.conf mongodb-linux-x86_64-$(MONGO_VERSION)
+	mv mongodb/data mongodb-linux-x86_64-$(MONGO_VERSION)/data	
+	ln -sfT mongodb-linux-x86_64-$(MONGO_VERSION) mongodb	
+	rm mongodb-linux-x86_64-$(MONGO_VERSION).tgz
 	
 platform/conf/secret.conf.gz.nc:		
 	$(info ------------------------------)
