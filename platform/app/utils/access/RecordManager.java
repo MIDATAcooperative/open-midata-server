@@ -1547,7 +1547,7 @@ public class RecordManager {
 		else {
           Consent consent = Consent.getByIdUnchecked(aps, Consent.ALL);
           if (consent != null) {
-        	  if (consent.status != ConsentStatus.ACTIVE && consent.status != ConsentStatus.FROZEN && !consent.owner.equals(executor)) throw new InternalServerException("error.internal",  "Consent creation not possible");
+        	  if (consent.status != ConsentStatus.ACTIVE && consent.status != ConsentStatus.FROZEN && !consent.owner.equals(executor)) throw new InternalServerException("error.internal",  "Consent-Context creation not possible");
         	  return  createContextFromConsent(executor, consent);
           }
           

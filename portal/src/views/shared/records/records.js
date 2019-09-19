@@ -137,7 +137,7 @@ angular.module('portal')
 			
 		} else {
 		
-			circles.listConsents({ "member": userId }, ["name","owner", "ownerName", "type"])
+			circles.listConsents({ "member": userId, "status" : ["ACTIVE","FROZEN"] }, ["name","owner", "ownerName", "type"])
 			.then(function(results) {
 				//$scope.availableAps = [{ name : "Your Data", aps:userId, owner : "self"  }, { name : "All Data", aps:userId, owner : "all"}];
 				angular.forEach(results.data, function(circle) { 
