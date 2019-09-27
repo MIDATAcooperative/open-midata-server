@@ -502,7 +502,9 @@ public class ProcessingTools {
     			AccessLog.log("Record with _id "+record._id.toString()+" has not created date!");
     			return false;
     		}
-    		if (record.sharedAt != null && record.sharedAt.after(cmp)) cmp = record.sharedAt;
+    		if (record.sharedAt != null && record.sharedAt.after(cmp)) {
+    			cmp = record.sharedAt;    			
+    		}    		
     		if (minDate != null && cmp.before(minDate)) return false;
 			if (maxDate != null && cmp.after(maxDate)) return false;
 			return true;

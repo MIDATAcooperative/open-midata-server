@@ -52,7 +52,7 @@
 			  </tr><tr>
 			  <td translate="admin_address.email_status"></td><td><span translate="{{ 'enum.emailstatus.'+member.emailStatus }}"></span>  <button ng-show="member.emailStatus != 'VALIDATED'" ng-click="confirmEmail(member);" class="btn btn-sm btn-danger" translate="admin_address.email_confirm_btn"></button></td>
 			  </tr><tr>
-			  <td translate="admin_address.mobile_status"></td><td><span translate="{{ 'enum.emailstatus.'+(member.mobileStatus || 'UNVALIDATED') }}"></span>  <button ng-show="member.emailStatus != 'VALIDATED'" ng-click="confirmEmail(member);" class="btn btn-sm btn-danger" translate="admin_address.email_confirm_btn"></button></td>
+			  <td translate="admin_address.mobile_status"></td><td><span translate="{{ 'enum.emailstatus.'+(member.mobileStatus || 'UNVALIDATED') }}"></span></td>
 			  </tr><tr>
 			  <td translate="admin_address.confirmation_code"></td><td><b>{{ member.confirmationCode }}</b></td>
 			  </tr><tr>

@@ -189,6 +189,7 @@
     "backend_services" : "Serverside Scripts",
     "portal_username" : "Username",
     "portal_password" : "Password",
+    "portal_role" : "Role",
     "portal_login" : "Use plugin instance:",
     "portal_login_btn" : "Portal login + get token"      
   },

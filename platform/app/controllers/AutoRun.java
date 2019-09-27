@@ -530,6 +530,8 @@ public class AutoRun extends APIController {
 				
 				AccessLog.log("Done scheduling new autoimport size="+datas.size());
 				endScheduling = System.currentTimeMillis();
+				
+				if (countOldImports + countNewImports == 0) reportEnd();
 			} catch (Exception e) {
 				ErrorReporter.report("Autorun-Service", null, e);	
 				throw e;
