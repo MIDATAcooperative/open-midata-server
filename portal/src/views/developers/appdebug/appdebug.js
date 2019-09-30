@@ -14,12 +14,18 @@ angular.module('portal')
        $scope.count = 1;
        $scope.saved = [];
        $scope.device = sessionStorage.oldDevice || "debug";
-       $scope.portal = { username : "", password : "" };
+       $scope.portal = { username : "", password : "", role:"MEMBER" };
        $scope.releases = [
     	   { name : "FHIR STU3", header : "fhirVersion=3.0" },
     	   { name : "FHIR R4", header : "fhirVersion=4.0" }
        ];
        $scope.fhirRelease = sessionStorage.oldFhirRelease || "fhirVersion=4.0";
+       
+       $scope.roles = [
+   		{ value : "MEMBER", name : "enum.userrole.MEMBER" },
+   		{ value : "PROVIDER" , name : "enum.userrole.PROVIDER"},
+   		{ value : "RESEARCH" , name : "enum.userrole.RESEARCH"}   		
+       ];
        
        //if ($scope.extra == null) $scope.extra = "";
 
@@ -193,7 +199,7 @@ angular.module('portal')
 	 
 	 $scope.portalLogin = function() {
 		 $scope.error = null;
-		 var data = {"email": $scope.portal.username, "password": crypto.getHash($scope.portal.password) };
+		 var data = {"email": $scope.portal.username, "password": crypto.getHash($scope.portal.password), "role":$scope.portal.role };
 		 var func = function(data) {
 				return server.post(jsRoutes.controllers.Application.authenticate().url, JSON.stringify(data));
 		 };

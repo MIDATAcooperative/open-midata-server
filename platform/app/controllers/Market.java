@@ -736,7 +736,7 @@ public class Market extends APIController {
         
         Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
         if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
-        if (!app.creator.equals(userId)) throw new BadRequestException("error.auth", "You are not owner of this plugin.");
+        if (app.creator==null || !app.creator.equals(userId)) throw new BadRequestException("error.auth", "You are not owner of this plugin.");
         if (app.status != PluginStatus.DEVELOPMENT && app.status != PluginStatus.BETA) throw new BadRequestException("error.auth", "Plugin may not be deleted. Ask an admin.");
               
         deletePlugin(pluginId);        
@@ -750,7 +750,7 @@ public class Market extends APIController {
 	   Set<Plugin> plugins = Plugin.getAll(CMaps.map(), Sets.create("_id", "creator", "creatorLogin"));
 	   
 	   for (Plugin plg : plugins) {
-		   Developer u = Developer.getById(plg.creator, Sets.create("email"));
+		   Developer u = plg.creator==null ? null : Developer.getById(plg.creator, Sets.create("email"));
 		   if (u == null && plg.creatorLogin != null) {
 			   u = Developer.getByEmail(plg.creatorLogin, Sets.create("_id", "email"));
 			   if (u != null) {
@@ -772,7 +772,7 @@ public class Market extends APIController {
         
         Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
         if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
-        if (!getRole().equals(UserRole.ADMIN) && !app.creator.equals(userId)) throw new BadRequestException("error.auth", "You are not owner of this plugin.");
+        if (!getRole().equals(UserRole.ADMIN) && (app.creator==null || !app.creator.equals(userId))) throw new BadRequestException("error.auth", "You are not owner of this plugin.");
    
 		List<PluginDevStats> stats = new ArrayList(PluginDevStats.getByPlugin(pluginId, PluginDevStats.ALL));
 		
@@ -789,7 +789,7 @@ public class Market extends APIController {
         
         Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
         if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
-        if (!getRole().equals(UserRole.ADMIN) && !app.creator.equals(userId)) throw new BadRequestException("error.auth", "You are not owner of this plugin.");
+        if (!getRole().equals(UserRole.ADMIN) && (app.creator==null || !app.creator.equals(userId))) throw new BadRequestException("error.auth", "You are not owner of this plugin.");
    
 		PluginDevStats.deleteByPlugin(pluginId);
 		
@@ -846,7 +846,7 @@ public class Market extends APIController {
 					
 			Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
 			if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");			
-			if (!app.creator.equals(userId) && !getRole().equals(UserRole.ADMIN)) throw new BadRequestException("error.not_authorized.not_plugin_owner", "Not your plugin!");
+			if ((app.creator==null || !app.creator.equals(userId)) && !getRole().equals(UserRole.ADMIN)) throw new BadRequestException("error.not_authorized.not_plugin_owner", "Not your plugin!");
 		
 			
 			// extract file from data
@@ -913,7 +913,7 @@ public class Market extends APIController {
 					
 		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
 		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");			
-		if (!app.creator.equals(userId) && !getRole().equals(UserRole.ADMIN)) throw new BadRequestException("error.not_authorized.not_plugin_owner", "Not your plugin!");
+		if ((app.creator==null || !app.creator.equals(userId)) && !getRole().equals(UserRole.ADMIN)) throw new BadRequestException("error.not_authorized.not_plugin_owner", "Not your plugin!");
 				
 		PluginIcon.delete(app.filename, use);
 				
@@ -1094,7 +1094,7 @@ public class Market extends APIController {
 				
 		
         if (role.equals(UserRole.DEVELOPER)) {		 
-		   if (!plugin.creator.equals(userId)) throw new AuthException("error.notauthorized.not_plugin_owner", "You are not authorized to change this plugin.");
+		   if (plugin.creator==null || !plugin.creator.equals(userId)) throw new AuthException("error.notauthorized.not_plugin_owner", "You are not authorized to change this plugin.");
 		   link.validationDeveloper = StudyValidationStatus.VALIDATED;
 		} else if (role.equals(UserRole.RESEARCH) && link.studyId != null) {
 			UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(link.studyId, userId);

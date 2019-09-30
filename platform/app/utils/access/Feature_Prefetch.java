@@ -97,7 +97,10 @@ public class Feature_Prefetch extends Feature {
 			  partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("flat", "true").map("streams", "true"), next);
 		  }
 		  
-		  
+		  // Keep sharedAt from input if we got one
+		  if (record.sharedAt != null && partResult != null) {
+			  for (DBRecord r : partResult) r.sharedAt = record.sharedAt;
+		  }
 		  
 		  results = QueryEngine.combine(results,  partResult);
 		}
