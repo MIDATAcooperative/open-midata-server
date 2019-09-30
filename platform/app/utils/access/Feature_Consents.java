@@ -47,7 +47,9 @@ public class Feature_Consents extends Feature {
 					if (r.isStream) {
 						Query q2 = new Query(q, CMaps.map("stream", r._id));
 						List<DBRecord> subresult = QueryEngine.onlyWithKey(next.query(q2));
-						for (DBRecord r2 : subresult) r2.sharedAt = r.sharedAt; 
+						for (DBRecord r2 : subresult) {
+							r2.sharedAt = r.sharedAt; 							
+						}
 	                    result = QueryEngine.combine(result, subresult);
 					} else if (!onlyStreams) QueryEngine.combine(result, Collections.singletonList(r));
 				}

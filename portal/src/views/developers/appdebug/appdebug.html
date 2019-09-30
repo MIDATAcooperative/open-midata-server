@@ -36,16 +36,20 @@
        
        <div class="row extraspace" ng-show="app.type=='visualization'">
       
-         <div class="col-4">
+         <div class="col-3">
            <label translate="appdebug.portal_username">Username:</label>
            <input type="text" class="form-control" ng-model="portal.username">
          </div>
          
-         <div class="col-4">
+         <div class="col-3">
            <label translate="appdebug.portal_password">Password:</label>
            <input type="password" class="form-control" ng-model="portal.password">
          </div>
-         <div class="col-4">
+         <div class="col-3">
+           <label translate="appdebug.portal_role">Role:</label>
+           <select ng-model="portal.role" class="form-control" ng-options="role.value as role.name|translate for role in roles"></select>
+         </div>
+         <div class="col-3">
            <label><span translate="appdebug.portal_login"></span> {{ app.name }}</label>
            <div>
            <a class="btn btn-default" ng-click="portalLogin()" translate="appdebug.portal_login_btn"></a>

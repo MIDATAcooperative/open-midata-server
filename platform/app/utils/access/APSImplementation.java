@@ -612,7 +612,7 @@ class APSImplementation extends APS {
 				DBRecord r = new DBRecord();
 				r._id = new MidataId(entry.getString("r"));
 				r.isStream = entry.containsField("s");	
-				r.sharedAt = new Date(ts);
+				r.sharedAt = new Date(ts);				
 				result.add(r);
 			}
 		}
