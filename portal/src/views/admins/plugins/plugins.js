@@ -30,6 +30,10 @@ angular.module('portal')
 	  return x === "" ? undefined : x;
 	};
 	
+	$scope.filterByName = function(item) {
+        return !$scope.search.name || (item && item.name.toLowerCase().indexOf($scope.search.name.toLowerCase())>=0 || item.filename.toLowerCase().indexOf($scope.search.name.toLowerCase())>=0);
+    };
+	
 	session.load("PluginsCtrl", $scope, ["search", "page"]);
 	if ($state.params.creator) $scope.search.criteria.creatorLogin = $state.params.creator;
 	session.currentUser.then(function(userId) { $scope.init(userId); });
