@@ -25,6 +25,7 @@ import utils.collections.CMaps;
 import utils.collections.RequestCache;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 
@@ -83,7 +84,8 @@ public class ExecutionInfo {
 		
 	}
 	
-	public static ExecutionInfo checkSpaceToken(SpaceToken authToken) throws AppException {		
+	public static ExecutionInfo checkSpaceToken(SpaceToken authToken) throws AppException {	
+		if (authToken == null) throw new BadRequestException("error.notauthorized.account", "You are not authorized.");
 		AccessLog.logBegin("begin check 'space' type session token");
 		KeyManager.instance.continueSession(authToken.handle, authToken.executorId);
 		ExecutionInfo result = new ExecutionInfo();

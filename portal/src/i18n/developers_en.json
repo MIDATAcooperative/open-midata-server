@@ -33,6 +33,7 @@
     "empty" : "You have not registered any application yet.",
     "register" : "Register a new application",
     "name" : "Name",
+    "filename" : "Internal",
     "type" : "Type",
     "role" : "Target Role",
     "manage_btn" : "manage",
