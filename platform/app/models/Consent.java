@@ -2,6 +2,7 @@ package models;
 
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -257,7 +258,7 @@ public class Consent extends Model implements Comparable<Consent> {
 		this.ownerName = ownerName;
 	}
 	
-	public String getOwnerName() {
+	public String getOwnerName() { 
 		return ownerName;
 	}
 
@@ -277,5 +278,9 @@ public class Consent extends Model implements Comparable<Consent> {
 	
 	public static long countAuth(Set<MidataId> auth) throws AppException {
 		return Model.count(Consent.class, collection, CMaps.map("authorized", auth));
+	}
+	
+	public static List<Consent> getBroken() throws AppException {
+		return Model.getAllList(Consent.class, collection, CMaps.map("fhirConsent", CMaps.map("$exists", false)), ALL, 1000);
 	}
 }
