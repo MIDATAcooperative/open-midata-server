@@ -412,11 +412,9 @@ public class Circles extends APIController {
 			      RecordManager.instance.setMeta(executorId, consent._id, "_config", CMaps.map("passcode", passcode));			  		
 			}
 		}
-						
-		//consentSettingChange(executorId, consent);
-		//prepareConsent(consent); - done by consentStatusChange
+								
 		
-		consent.add();
+		//consent.add();
 		
 		consentStatusChange(executorId, consent, null, patientRecord);		
 		if (consent.status.equals(ConsentStatus.ACTIVE) && patientRecord) autosharePatientRecord(executorId, consent);
@@ -758,7 +756,7 @@ public class Circles extends APIController {
 			Circles.removeQueries(consent.owner, consent._id);
 		}
 		
-		prepareConsent(consent);
+		prepareConsent(consent, newStatus == null);
 	}
 	 
 	
@@ -792,9 +790,14 @@ public class Circles extends APIController {
 	 * @param consent
 	 * @throws AppException
 	 */
-	public static void prepareConsent(Consent consent) throws AppException {
-		ConsentResourceProvider.updateMidataConsent(consent);
+	public static void prepareConsent(Consent consent, boolean isNew) throws AppException {
+		ConsentResourceProvider.updateMidataConsent(consent);		
 		if (consent.authorized == null && consent.type != ConsentType.EXTERNALSERVICE) throw new InternalServerException("error.internal", "Missing authorized");
+		if (isNew) {
+			consent.add();
+		} else {
+			Consent.set(consent._id, "fhirConsent", consent.fhirConsent);
+		}
 		SubscriptionManager.resourceChange(consent);
 	}
 	
@@ -854,7 +857,7 @@ public class Circles extends APIController {
 			consent.externalAuthorized.remove(emailLC);
 			Consent.set(consent._id, "externalAuthorized", consent.externalAuthorized);
 			
-			prepareConsent(consent);
+			prepareConsent(consent, false);
 		}
 		
 		consents = Consent.getByExternalOwnerEmail(emailLC);
@@ -868,7 +871,7 @@ public class Circles extends APIController {
 			Consent.set(consent._id, "owner", consent.owner);
 			Consent.set(consent._id, "externalOwner", consent.externalOwner);
 			
-			prepareConsent(consent);
+			prepareConsent(consent, false);
 		}
 	}
 	
