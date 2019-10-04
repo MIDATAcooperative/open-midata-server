@@ -70,6 +70,7 @@ public class FHIRTools {
 	}
 	
 	public static Reference getReferenceToUser(User user) throws AppException {
+		if (user==null) return null;
 		String type = "RelatedPerson";
 		switch (user.role) {
 		case MEMBER : type = "Patient";break;
