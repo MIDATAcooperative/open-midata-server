@@ -34,6 +34,8 @@ import utils.auth.KeyManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
+import utils.fhir.ConsentResourceProvider;
 import utils.fhir.GroupResourceProvider;
 import utils.fhir.PatientResourceProvider;
 
@@ -274,6 +276,18 @@ public class AccountPatches {
 		for (Consent consent : consents) {
 			RecordManager.instance.deleteAPS(consent._id, userId);
 			Circle.delete(userId, consent._id);
+		}
+	}
+	
+	public static void fixFhirConsents() throws AppException {
+		boolean foundSome = true;
+		while (foundSome) {
+		    List<Consent> consents = Consent.getBroken();
+		    if (consents.size() == 0) foundSome = false;
+			for (Consent consent : consents) {				
+				ConsentResourceProvider.updateMidataConsent(consent);		
+				Consent.set(consent._id, "fhirConsent", consent.fhirConsent);
+			}
 		}
 	}
 	

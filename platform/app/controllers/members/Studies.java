@@ -273,8 +273,8 @@ public class Studies extends APIController {
 		  part.history.add(codedentererd);
 		} */
 		
-		Circles.prepareConsent(part);
-		StudyParticipation.add(part);		
+		Circles.prepareConsent(part, true);
+		//StudyParticipation.add(part);		
 		Circles.setQuery(executor, member._id, part._id, study.recordQuery);
 		Circles.consentSettingChange(executor, part);
 		

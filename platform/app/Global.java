@@ -29,6 +29,7 @@ import utils.InstanceConfig;
 import utils.RuntimeConstants;
 import utils.db.DBLayer;
 import utils.db.DatabaseException;
+import utils.evolution.AccountPatches;
 import utils.exceptions.AppException;
 import utils.fhir.FHIRServlet;
 import utils.fhir.ResourceProvider;
@@ -139,6 +140,9 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 		System.out.println("Auto-Run");
 		AutoRun.init();
 		
+		try {
+		   AccountPatches.fixFhirConsents();
+		} catch (AppException e) { e.printStackTrace(); }
 				
 		lifecycle.addStopHook(() -> {
 			//AutoRun.shutdown();

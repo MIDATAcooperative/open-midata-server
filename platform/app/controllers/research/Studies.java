@@ -1080,8 +1080,7 @@ public class Studies extends APIController {
 			consent.writes = WritePermissionType.UPDATE_EXISTING;
 
 			RecordManager.instance.createAnonymizedAPS(ownerId, ownerId, consent._id, true);
-			Circles.prepareConsent(consent);
-			consent.add();
+			Circles.prepareConsent(consent, true);			
 			Circles.addUsers(ownerId, EntityType.USERGROUP, consent, Collections.singleton(study._id));
 
 			reference = consent;
@@ -1106,8 +1105,8 @@ public class Studies extends APIController {
 		consent.writes = WritePermissionType.NONE;
 
 		RecordManager.instance.createAnonymizedAPS(ownerId, study._id, consent._id, true);
-		Circles.prepareConsent(consent);
-		consent.add();
+		Circles.prepareConsent(consent, true);
+		
 		RecordManager.instance.copyAPS(executor, reference._id, consent._id, ownerId);
 		return consent;
 	}
