@@ -209,7 +209,8 @@
 		
 		  
 		  <formrow myid="x" label="">
-		    <a href="javascript:" ui-sref="^.manageapp({appId:app._id})" class="btn btn-default" translate="common.back_btn"></a>
+		    <a href="javascript:" ng-show="app._id" ui-sref="^.manageapp({appId:app._id})" class="btn btn-default" translate="common.back_btn"></a>
+		    <a href="javascript:" ng-hide="app._id" ui-sref="^.yourapps" class="btn btn-default" translate="common.back_btn"></a>
 		    <button type="submit" ng-disabled="status.action=='submit'" class="btn btn-primary">Submit</button>		    		   
 		    <button type="button" class="btn btn-danger" ng-show="allowDelete" ng-click="doDelete()" ng-disabled="status.action=='delete'" translate="common.delete_btn"></button>		    
 		  </formrow>		  

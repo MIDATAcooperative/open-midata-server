@@ -1103,6 +1103,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.Market.setSubscriptionDebug(),
 				controllers.routes.javascript.Market.addReview(),
 				controllers.routes.javascript.Market.getReviews(),
+				controllers.routes.javascript.Market.getSoftwareChangeLog(),
 								
 				// UserGroups
 				controllers.routes.javascript.UserGroups.search(),

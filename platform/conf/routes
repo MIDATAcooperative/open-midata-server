@@ -96,6 +96,7 @@ DELETE  /api/developers/plugins/:appId            	     controllers.Market.delet
 GET     /api/developers/plugins/:appId/stats             controllers.Market.getPluginStats(appId: String)
 DELETE  /api/developers/plugins/:appId/stats             controllers.Market.deletePluginStats(appId: String)
 GET     /api/developers/plugins/:appId/reviews           controllers.Market.getReviews(appId: String)
+GET     /api/shared/changelog                            controllers.Market.getSoftwareChangeLog()
 POST    /api/admins/addreview                            controllers.Market.addReview()
 GET     /api/shared/links/:type/:id                      controllers.Market.getStudyAppLinks(type: String, id:String)
 POST    /api/shared/links                                controllers.Market.insertStudyAppLink()

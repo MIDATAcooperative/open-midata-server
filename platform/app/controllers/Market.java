@@ -41,6 +41,7 @@ import models.Plugin;
 import models.PluginIcon;
 import models.PluginReview;
 import models.Plugin_i18n;
+import models.SoftwareChangeLog;
 import models.Space;
 import models.Study;
 import models.StudyAppLink;
@@ -1272,4 +1273,10 @@ public class Market extends APIController {
 		return ok();
 	}
 	
+	@APICall	
+	public Result getSoftwareChangeLog() throws AppException {
+		List<SoftwareChangeLog> result = SoftwareChangeLog.getAll();
+		
+		return ok(JsonOutput.toJson(result, "SoftwareChangeLog", SoftwareChangeLog.ALL)).as("application/json");
+	}
 }

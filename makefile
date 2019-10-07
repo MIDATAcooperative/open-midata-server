@@ -237,7 +237,14 @@ tasks/reimport-plugins: trigger/reimport-plugins
 	cd json;make reimportplugins
 	touch tasks/reimport-plugins
 	
-tasks/build-mongodb: trigger/build-mongodb tasks/reimport-mongodb tasks/reimport-plugins $(wildcard json/*.js)
+tasks/changelog: CHANGELOG.tsv
+	$(info ------------------------------)
+	$(info Updating Changelog...)
+	$(info ------------------------------)
+	cd json;make changelog
+	touch tasks/changelog
+		
+tasks/build-mongodb: trigger/build-mongodb tasks/changelog tasks/reimport-mongodb tasks/reimport-plugins $(wildcard json/*.js)
 	$(info ------------------------------)
 	$(info (Re-)creating database indexes)
 	$(info ------------------------------)

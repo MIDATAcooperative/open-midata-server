@@ -1322,6 +1322,12 @@
     "analyze" : "Data Analysis"
   },
   
+  "changelog" : {
+    "F" : "New Feature",
+    "B" : "Bugfix",
+    "I" : "Improvement" 
+  },
+  
   "-1" : "unknown"
     
 }
