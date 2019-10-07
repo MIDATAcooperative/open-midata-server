@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,6 +29,7 @@ import com.mongodb.BasicDBObject;
 
 import actions.APICall;
 import actions.MobileCall;
+import models.Admin;
 import models.Developer;
 import models.HPUser;
 import models.HealthcareProvider;
@@ -37,7 +39,9 @@ import models.MobileAppInstance;
 import models.Model;
 import models.Plugin;
 import models.PluginIcon;
+import models.PluginReview;
 import models.Plugin_i18n;
+import models.SoftwareChangeLog;
 import models.Space;
 import models.Study;
 import models.StudyAppLink;
@@ -46,12 +50,14 @@ import models.SubscriptionData;
 import models.TestPluginCall;
 import models.User;
 import models.UserGroupMember;
+import models.enums.AppReviewChecklist;
 import models.enums.IconUse;
 import models.enums.JoinMethod;
 import models.enums.LinkTargetType;
 import models.enums.MessageReason;
 import models.enums.ParticipantSearchStatus;
 import models.enums.PluginStatus;
+import models.enums.ReviewStatus;
 import models.enums.StudyAppLinkType;
 import models.enums.StudyExecutionStatus;
 import models.enums.StudyValidationStatus;
@@ -123,7 +129,10 @@ public class Market extends APIController {
 		boolean msgOnly = JsonValidation.getBoolean(json, "msgOnly");
 		
 		Map<String, MessageDefinition> predefinedMessages = parseMessages(json);
-		if (predefinedMessages != null) app.predefinedMessages = predefinedMessages;
+		if (predefinedMessages != null) {
+			app.predefinedMessages = predefinedMessages;
+			markReviewObsolete(app._id, AppReviewChecklist.MAILS);
+		}
 		
 		if (!msgOnly) { 
 			if (withLogout) {
@@ -151,6 +160,8 @@ public class Market extends APIController {
 			
 			
 			if (withLogout) {
+				Map<String, Object> oldDefaultQuery = app.defaultQuery;
+				
 				app.type = JsonValidation.getString(json, "type");
 				app.requirements = JsonExtraction.extractEnumSet(json, "requirements", UserFeature.class);
 				app.targetUserRole = JsonValidation.getEnum(json, "targetUserRole", UserRole.class);
@@ -165,10 +176,15 @@ public class Market extends APIController {
 				} catch (BadRequestException e) {
 				  throw new JsonValidationException(e.getLocaleKey(), "defaultQuery", "invalid", e.getMessage());
 				}
+				
+				if (app.defaultQuery != null && !app.defaultQuery.equals(oldDefaultQuery)) {
+					markReviewObsolete(app._id, AppReviewChecklist.ACCESS_FILTER);
+				}
 			}
 			
 			app.noUpdateHistory = JsonValidation.getBoolean(json, "noUpdateHistory");
 			app.orgName = JsonValidation.getStringOrNull(json, "orgName");
+			app.publisher = JsonValidation.getStringOrNull(json, "publisher");
 			app.description = JsonValidation.getStringOrNull(json, "description");				
 			app.url = JsonValidation.getStringOrNull(json, "url");
 			app.previewUrl = JsonValidation.getStringOrNull(json, "previewUrl");
@@ -487,6 +503,7 @@ public class Market extends APIController {
 		plugin.filename = filename;
 		plugin.name = JsonValidation.getStringOrNull(json, "name");
 		plugin.orgName = JsonValidation.getStringOrNull(json, "orgName");
+		plugin.publisher = JsonValidation.getStringOrNull(json, "publisher");
 		plugin.description = JsonValidation.getStringOrNull(json, "description");
 		plugin.spotlighted = JsonValidation.getBoolean(json, "spotlighted");
 		plugin.type = JsonValidation.getString(json, "type");
@@ -583,6 +600,7 @@ public class Market extends APIController {
 	
 	private static void parsePlugin(Plugin app, JsonNode json) throws JsonValidationException, AppException {
 		app.orgName = JsonValidation.getStringOrNull(json, "orgName");
+		app.publisher = JsonValidation.getStringOrNull(json, "publisher");
 		app.description = JsonValidation.getStringOrNull(json, "description");		
 		app.type = JsonValidation.getString(json, "type");
 		app.url = JsonValidation.getStringOrNull(json, "url");
@@ -889,6 +907,8 @@ public class Market extends APIController {
 			app.icons.add(use);
 			app.updateIcons(app.icons);
 			
+			markReviewObsolete(app._id, AppReviewChecklist.ICONS);
+			
 			return ok();
 		
 		} catch (IOException e) {
@@ -1014,6 +1034,8 @@ public class Market extends APIController {
 										
 		link.add();
 		
+		markReviewObsolete(link.appId, AppReviewChecklist.PROJECTS);
+		
 		return ok();
 	}
 	
@@ -1047,6 +1069,8 @@ public class Market extends APIController {
 		checkValidation(link);
 										
 		link.add();
+		
+		markReviewObsolete(link.appId, AppReviewChecklist.PROJECTS);
 		
 		return ok();
 	}
@@ -1205,4 +1229,54 @@ public class Market extends APIController {
 		return ok(JsonOutput.toJson(plugin, "Plugin", Sets.create("debugHandle")));
 	}
 	
+	public void markReviewObsolete(MidataId pluginId, AppReviewChecklist check) throws AppException {
+		List<PluginReview> reviews = PluginReview.getReviews(pluginId, check);
+		for (PluginReview review : reviews) review.markObsolete();
+	}
+	
+	@APICall
+	@Security.Authenticated(DeveloperSecured.class)	
+	public Result getReviews(String pluginIdStr) throws AppException {
+		MidataId pluginId = new MidataId(pluginIdStr);
+        MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+        
+        Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
+        if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
+        if (!getRole().equals(UserRole.ADMIN) && (app.creator==null || !app.creator.equals(userId))) throw new BadRequestException("error.auth", "You are not owner of this plugin.");
+   
+		List<PluginReview> reviews = PluginReview.getReviews(pluginId);
+		
+		return ok(JsonOutput.toJson(reviews, "PluginReview", PluginReview.ALL)).as("application/json");
+	}
+	
+	@APICall
+	@Security.Authenticated(AdminSecured.class)
+	@BodyParser.Of(BodyParser.Json.class)
+	public Result addReview() throws AppException {
+		JsonNode json = request().body().asJson();	
+		JsonValidation.validate(json, "pluginId", "check", "status");
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		
+		Admin me = Admin.getById(userId, Sets.create("email"));
+		
+		PluginReview review = new PluginReview();
+		review._id = new MidataId();
+		review.pluginId = JsonValidation.getMidataId(json, "pluginId");
+		review.check = JsonValidation.getEnum(json, "check", AppReviewChecklist.class);
+		review.timestamp = new Date(System.currentTimeMillis());
+		review.userId = userId; 
+		review.userLogin = me.email;
+		review.comment = JsonValidation.getStringOrNull(json, "comment");
+		review.status = JsonValidation.getEnum(json, "status", ReviewStatus.class);
+		
+		review.add();
+		return ok();
+	}
+	
+	@APICall	
+	public Result getSoftwareChangeLog() throws AppException {
+		List<SoftwareChangeLog> result = SoftwareChangeLog.getAll();
+		
+		return ok(JsonOutput.toJson(result, "SoftwareChangeLog", SoftwareChangeLog.ALL)).as("application/json");
+	}
 }

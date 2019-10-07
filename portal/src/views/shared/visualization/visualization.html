@@ -26,6 +26,10 @@
 				<p class="col-2" translate="visualization.orgName"></p>
 				<p class="col-10">{{visualization.orgName}}</p>
 			</div>
+			<div class="row" ng-show="visualization.publisher">
+				<p class="col-2" translate="visualization.publisher"></p>
+				<p class="col-10">{{visualization.publisher}}</p>
+			</div>
 			<div class="row">
 				<p class="col-2" translate="visualization.description"></p>
 				<p class="col-10">{{ visualization.i18n[translate.use()].description || visualization.description}}</p>

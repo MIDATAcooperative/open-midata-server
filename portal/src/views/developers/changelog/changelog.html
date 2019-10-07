@@ -1,0 +1,23 @@
+<div ng-controller="ChangeLogCtrl" ng-cloak>
+	
+			
+					<div class="panel panel-primary">
+		            	<div class="panel-heading">
+		              		Server Change Log
+		            	</div>
+		            	<div class="panel-body">
+		            	
+		            	  <div ng-repeat="entry in changelog" class="row">
+		            	    <div class="col-2"><br>{{ entry.published | date : 'dd.MM.yyyy HH:mm' }}</div>
+		            	    <div class="col-10">
+		            	      <div class="text-muted" translate="{{ 'changelog.'+entry.type }}"></div>
+		            	      <b>{{ entry.title }}</b>
+		            	      <p>{{ entry.description }}</p>
+		            	    </div>
+		            	  </div>
+		            	</div>
+		            </div>
+		     
+		   
+</div>
+		    

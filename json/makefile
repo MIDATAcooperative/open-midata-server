@@ -104,6 +104,9 @@ reimport:
 	$(mongoimport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c coding --file coding.json --drop --upsertFields _id
 	$(mongoimport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c loinc --type csv --file loinc.csv --drop --headerline 
 	
+changelog:
+	$(mongoimport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c changelog --type tsv --file ../CHANGELOG.tsv --headerline --upsertFields changeId
+		
 reimportplugins:
 	$(mongoimport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c plugins --file plugins.json --upsert --upsertFields filename
 	$(mongoimport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c pluginicons --file pluginicons.json --upsert --upsertFields plugin,use
