@@ -74,14 +74,14 @@ endif
 	rm -f /dev/shm/secret.conf.gz.nc 
 
 build:	
-	@$(client) $(user.pw) $(user.db)/$(mongo.user.database) mongo-setup-user.js	
-	@$(client) $(access.pw) $(access.db)/$(mongo.access.database) mongo-setup-access.js
-	@$(client) $(record.pw) $(record.db)/$(mongo.record.database) mongo-setup-record.js
+	@$(client) $(user.pw) --host $(user.db) $(mongo.user.database) mongo-setup-user.js	
+	@$(client) $(access.pw) --host $(access.db) $(mongo.access.database) mongo-setup-access.js
+	@$(client) $(record.pw) --host $(record.db) $(mongo.record.database) mongo-setup-record.js
 	
 sharding:
-	@$(client) $(mapping.pw) $(mapping.db)/$(mongo.mapping.database) init-sharding-mapping.js	
-	@$(client) $(access.pw) $(access.db)/$(mongo.access.database) init-sharding-access.js
-	@$(client) $(record.pw) $(record.db)/$(mongo.record.database) init-sharding-record.js
+	@$(client) $(mapping.pw) --host $(mapping.db) $(mongo.mapping.database) init-sharding-mapping.js	
+	@$(client) $(access.pw) --host $(access.db) $(mongo.access.database) init-sharding-access.js
+	@$(client) $(record.pw) --host $(record.db) $(mongo.record.database) init-sharding-record.js
 
 export:
 	@$(mongoexport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c formatgroups -o formatgroups.json
