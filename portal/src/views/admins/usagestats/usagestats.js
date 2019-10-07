@@ -19,7 +19,7 @@ angular.module('portal')
     };
 		
 	$scope.loadApp = function(appId) {
-		$scope.status.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "filename", "name", "description", "tags", "targetUserRole","i18n", "orgName"]))
+		$scope.status.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "filename", "name", "description", "tags", "targetUserRole","i18n", "orgName", "publisher"]))
 		.then(function(data) { 
 			$scope.app = data.data[0];			
 		})

@@ -28,7 +28,7 @@ angular.module('portal')
 			$scope.links = data.data;												
 		});	
 		
-		$scope.status.doBusy(apps.getApps({ }, ["_id", "filename", "name", "orgName", "type", "targetUserRole"]))
+		$scope.status.doBusy(apps.getApps({ }, ["_id", "filename", "name", "orgName", "publisher", "type", "targetUserRole"]))
 		.then(function(data) {
 			$scope.apps = data.data;
 		});
@@ -66,7 +66,7 @@ angular.module('portal')
    };
    
    $scope.appselection = function() {
-	   $scope.status.doBusy(apps.getApps({ filename : $scope.selection.app.filename }, ["_id", "filename", "name", "orgName", "type", "targetUserRole"]))
+	   $scope.status.doBusy(apps.getApps({ filename : $scope.selection.app.filename }, ["_id", "filename", "name", "orgName", "publisher", "type", "targetUserRole"]))
 		.then(function(data) {
 			if (data.data && data.data.length == 1) {
 			  $scope.selection.appId = data.data[0]._id;

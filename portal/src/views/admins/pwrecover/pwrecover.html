@@ -14,7 +14,9 @@
             <p translate="admin_pwrecover.instr1"></p>
             <p translate="admin_pwrecover.instr2"></p>
             <input class="form-control" readonly ng-click="copyToClip($event)" value='read -p "Enter Share:" x;printf $x| base64 -d |openssl rsautl -decrypt -inkey recoverykey.pem;echo'">
-            </pre>
+            <p translate="admin_pwrecover.instr3"></p>
+            <input class="form-control" readonly ng-click="copyToClip($event)" value='read -p "Enter Share:" x;printf $x| base64 -D |openssl rsautl -decrypt -inkey recoverykey.pem;echo'">
+            
 			<div ng-if="members.length > 10">
               <dir-pagination-controls pagination-id="recovertable" current-page="page.nr"></dir-pagination-controls>
              </div>
