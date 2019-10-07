@@ -1101,6 +1101,8 @@ public class Application extends APIController {
 				controllers.routes.javascript.Market.deleteStudyAppLink(),
 				controllers.routes.javascript.Market.validateStudyAppLink(),
 				controllers.routes.javascript.Market.setSubscriptionDebug(),
+				controllers.routes.javascript.Market.addReview(),
+				controllers.routes.javascript.Market.getReviews(),
 								
 				// UserGroups
 				controllers.routes.javascript.UserGroups.search(),

@@ -831,6 +831,7 @@
     "success" : "You have successfully installed a new plugin.",
     "created_by" : "Created by:",
     "orgName" : "Organization:",
+    "publisher" : "Publisher:",
     "description" : "Description:",
     "tile_name" : "Tile Name:",
     "install_location" : "Location:",

@@ -14,6 +14,7 @@ angular.module('portal')
 	$scope.query = {};
 	$scope.codesystems = formats.codesystems;
 	$scope.user = { subroles:[] };
+	$scope.checks = [ "CONCEPT", "DATA_MODEL", "CODE_REVIEW", "TEST_CONCEPT", "TEST_PROTOKOLL", "CONTRACT" ];
 	
 	$scope.sel = { lang : 'de' };
 	$scope.targetUserRoles = [
@@ -35,7 +36,7 @@ angular.module('portal')
     ];
 			
 	$scope.loadApp = function(appId) {
-		$scope.status.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "unlockCode", "writes", "icons", "apiUrl", "noUpdateHistory", "predefinedMessages", "defaultSubscriptions", "sendReports"]))
+		$scope.status.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "writes", "icons", "apiUrl", "noUpdateHistory", "predefinedMessages", "defaultSubscriptions", "sendReports"]))
 		.then(function(data) { 
 			$scope.app = data.data[0];			
 			if ($scope.app.status == "DEVELOPMENT" || $scope.app.status == "BETA") {
@@ -60,6 +61,15 @@ angular.module('portal')
 				});
 				
 			}*/
+		});
+		
+		$scope.status.doBusy(server.get(jsRoutes.controllers.Market.getReviews(appId).url))
+		.then(function(reviews) {
+			$scope.reviews = {};
+			for (var i=0;i<reviews.data.length;i++) {
+				var status = reviews.data[i].status;
+				$scope.reviews[reviews.data[i].check] = (status == "OBSOLETE" ? null : status);
+			}			
 		});
 	};
 	

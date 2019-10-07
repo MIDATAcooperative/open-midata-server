@@ -37,6 +37,14 @@
               <td translate="manageapp.organization"></td>
               <td><b>{{ app.orgName || "-" }}</b></td>
             </tr>
+            <tr>
+              <td translate="manageapp.publisher"></td>
+              <td><b>{{ app.publisher || "-" }}</b></td>
+            </tr>
+            <tr>
+              <td translate="manageapp.reviews"></td>
+              <td><div class="container"><div class="row"><div ng-repeat="check in checks" class="col-lg-4"><span ng-class="{ 'text-success' : reviews[check] == 'ACCEPTED', 'text-danger' : reviews[check] == 'NEEDS_FIXING', 'text-dark' : !reviews[check] }"><span ng-show="reviews[check]=='ACCEPTED'" class="fas fa-check"></span><span ng-show="reviews[check]=='NEEDS_FIXING'" class="fas fa-exclamation"></span><span ng-hide="reviews[check]" class="fas fa-times"></span> <span translate="{{'appreviews.'+check}}"></span></span></div></div></div></td>
+            </tr>
           </table>
           <div class="extraspace"></div>
 		  
@@ -45,21 +53,21 @@
 			<tr>
 			  <td ng-click="go('^.editapp')">				    
 				<div class="float-left"><img width="80" class="img-responsive" src="/images/editapp.jpg"></div>														   
-				<div><b translate="manageapp.edit_btn"></b></div>
+				<div><b translate="manageapp.edit_btn"></b> <span class="badge" ng-class="{ 'badge-success' : reviews.DESCRIPTION=='ACCEPTED', 'badge-danger' : reviews.DESCRIPTION=='NEEDS_FIXING', 'badge-light' : !reviews.DESCRIPTION }" style="margin-left:10px"><span ng-show="reviews.DESCRIPTION" translate="{{'manageapp.'+reviews.DESCRIPTION}}"></span><span ng-hide="reviews.DESCRIPTION" translate="manageapp.not_reviewed"></span></span></div>
 				<div translate="manageapp.edit_help"></div>																
 			  </td>
 			</tr>
 			<tr>
 			  <td ng-click="go('^.appquery')">				    
 				<div class="float-left"><img width="80" class="img-responsive" src="/images/question.jpg"></div>														   
-				<div><b translate="manageapp.query_btn"></b><span class="badge" style="margin-left:10px" ng-show="hasCount(app.defaultQuery)">1 <span translate="manageapp.defined"></span></span><span class="badge" style="margin-left:10px" ng-hide="hasCount(app.defaultQuery)">0 <span translate="manageapp.defined"></span></span></div>
+				<div><b translate="manageapp.query_btn"></b><span class="badge" style="margin-left:10px" ng-show="hasCount(app.defaultQuery)">1 <span translate="manageapp.defined"></span></span><span class="badge" style="margin-left:10px" ng-hide="hasCount(app.defaultQuery)">0 <span translate="manageapp.defined"></span></span> <span class="badge" ng-class="{ 'badge-success' : reviews.ACCESS_FILTER=='ACCEPTED', 'badge-danger' : reviews.ACCESS_FILTER=='NEEDS_FIXING', 'badge-light' : !reviews.ACCESS_FILTER }" style="margin-left:10px"><span ng-show="reviews.ACCESS_FILTER" translate="{{'manageapp.'+reviews.ACCESS_FILTER}}"></span><span ng-hide="reviews.ACCESS_FILTER" translate="manageapp.not_reviewed"></span></span></div>
 				<div translate="manageapp.query_help"></div>																
 			  </td>
 			</tr>
 			<tr>
 			  <td ng-click="go('^.appsubscriptions')">				    
 				<div class="float-left"><img width="80" class="img-responsive" src="/images/trigger.jpg"></div>														   
-				<div><b translate="manageapp.subscriptions_btn"></b><span class="badge" style="margin-left:10px">{{ app.defaultSubscriptions.length || 0 }} <span translate="manageapp.defined"></span></span></div>
+				<div><b translate="manageapp.subscriptions_btn"></b><span class="badge" style="margin-left:10px">{{ app.defaultSubscriptions.length || 0 }} <span translate="manageapp.defined"></span></span> </div>
 				<div translate="manageapp.subscriptions_help"></div>																
 			  </td>
 			</tr>
@@ -80,14 +88,14 @@
 			<tr>
 			  <td ng-click="go('^.applink')">				    
 				<div class="float-left"><img width="80" class="img-responsive" src="/images/link.jpg"></div>														   
-				<div><b translate="manageapp.link_btn"></b></div>
+				<div><b translate="manageapp.link_btn"></b> <span class="badge" ng-class="{ 'badge-success' : reviews.PROJECTS=='ACCEPTED', 'badge-danger' : reviews.PROJECTS=='NEEDS_FIXING', 'badge-light' : !reviews.PROJECTS }" style="margin-left:10px"><span ng-show="reviews.PROJECTS" translate="{{'manageapp.'+reviews.PROJECTS}}"></span><span ng-hide="reviews.PROJECTS" translate="manageapp.not_reviewed"></span></span></div>
 				<div translate="manageapp.link_help"></div>																
 			  </td>
 			</tr>
 			<tr>
 			  <td ng-click="go('^.appicon')">				    
 				<div class="float-left" ><img width="80" class="img-responsive" src="/images/editicons.jpg"></div>														   
-				<div><b translate="manageapp.icon_btn"></b><span class="badge" style="margin-left:10px">{{ app.icons.length || 0 }} <span translate="manageapp.defined"></span></span></div>
+				<div><b translate="manageapp.icon_btn"></b><span class="badge" style="margin-left:10px">{{ app.icons.length || 0 }} <span translate="manageapp.defined"></span></span> <span class="badge" ng-class="{ 'badge-success' : reviews.ICONS=='ACCEPTED', 'badge-danger' : reviews.ICONS=='NEEDS_FIXING', 'badge-light' : !reviews.ICONS }" style="margin-left:10px"><span ng-show="reviews.ICONS" translate="{{'manageapp.'+reviews.ICONS}}"></span><span ng-hide="reviews.ICONS" translate="manageapp.not_reviewed"></span></span></div>
 				<div translate="manageapp.icon_help"></div>	
 																	
 			  </td>
@@ -95,14 +103,14 @@
 			<tr>
 			  <td ng-click="go('^.appmessages')">				    
 				<div class="float-left"><img width="80" class="img-responsive" src="/images/mail.jpg"></div>														   
-				<div><b translate="manageapp.messages_btn"></b><span class="badge" style="margin-left:10px">{{ keyCount(app.predefinedMessages) }} <span translate="manageapp.defined"></span></span></div>
+				<div><b translate="manageapp.messages_btn"></b><span class="badge" style="margin-left:10px">{{ keyCount(app.predefinedMessages) }} <span translate="manageapp.defined"></span></span> <span class="badge" ng-class="{ 'badge-success' : reviews.MAILS=='ACCEPTED', 'badge-danger' : reviews.MAILS=='NEEDS_FIXING', 'badge-light' : !reviews.MAILS }" style="margin-left:10px"><span ng-show="reviews.MAILS" translate="{{'manageapp.'+reviews.MAILS}}"></span><span ng-hide="reviews.MAILS" translate="manageapp.not_reviewed"></span></span></div>
 				<div translate="manageapp.messages_help"></div>																
 			  </td>
 			</tr>
 			<tr>
 			  <td ng-click="go('^.appstats')">				    
 				<div class="float-left"><img width="80" class="img-responsive" src="/images/stats.jpg"></div>														   
-				<div><b translate="manageapp.stats_btn"></b></div>
+				<div><b translate="manageapp.stats_btn"></b> <span class="badge" ng-class="{ 'badge-success' : reviews.QUERIES=='ACCEPTED', 'badge-danger' : reviews.QUERIES=='NEEDS_FIXING', 'badge-light' : !reviews.QUERIES }" style="margin-left:10px"><span ng-show="reviews.QUERIES" translate="{{'manageapp.'+reviews.QUERIES}}"></span><span ng-hide="reviews.QUERIES" translate="manageapp.not_reviewed"></span></span></div>
 				<div translate="manageapp.stats_help"></div>																
 			  </td>
 			</tr>
@@ -125,6 +133,13 @@
 				<div class="float-left"><img width="80" class="img-responsive" src="/images/export.jpg"></div>														   
 				<div><b translate="manageapp.export_btn"></b></div>
 				<div translate="manageapp.export_help"></div>																
+			  </td>
+			</tr>
+			<tr>
+			  <td ng-click="go('^.appreviews')">				    
+				<div class="float-left"><img width="80" class="img-responsive" src="/images/checked.jpg"></div>														   
+				<div><b translate="manageapp.appreviews_btn"></b></div>
+				<div translate="manageapp.appreviews_help"></div>																
 			  </td>
 			</tr>
 			
