@@ -1,5 +1,5 @@
 changeId	developed	committer	type	title	description
 id0001	07.10.2019	a.kreutz	F	Software Change Log	Added a software change log that all developers may view.
-id0002	07.10.2019	a.kreutz	F	Application Review Functions added	Each application should now be reviewed before it is deployed to the production system. A new "Reviews" page is available from the application overview page. Also the application overview marks passed reviews in green. 
+id0002	07.10.2019	a.kreutz	F	Application Review Functions added	Each application should now be reviewed before it is deployed to the production system. A new 'Reviews' page is available from the application overview page. Also the application overview marks passed reviews in green. 
 id0003	07.10.2019	a.kreutz	B	Fixed: 'Back' on 'New Application' page	The 'back' button at the bottom of the new application page does no longer lead to a non existing page.
 id0004	07.10.2019	a.kreutz	I	Publisher meta-field added	Applications and Plugins may now have a publishing organization in addition to the developing organization. Enter the publisher on the application settings page. 
