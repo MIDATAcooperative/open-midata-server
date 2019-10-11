@@ -60,7 +60,7 @@
 		  <hr>	
 		  		  	
 		  <formrow myid="x" label="Multi Language Support">
-		    <div class="help-block">
+		    <div class="form-text text-muted">
 		     <span ng-repeat="l in languages" ng-click="showMessage(selmsg,l)">
 		          <span ng-show="selmsg.text[l]"><span class="fas fa-check" aria-hidden="true"></span>{{l}} </span>		      
 		     </span>
@@ -78,7 +78,7 @@
 		  </formrow>
 		  <formrow myid="text" label="appmessages.text">
 		    <textarea rows="5" id="text" name="text" class="form-control" ng-model="selmsg.text[sel.lang]"></textarea>
-		    <div class="help-block">
+		    <div class="form-text text-muted">
 		      <span translate="appmessages.available_tags"></span>:
 		      <code ng-repeat="tag in tags[selmsg.reason]">&lt;{{ tag }}&gt;</code>
 		    </div>
