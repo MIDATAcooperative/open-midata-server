@@ -50,8 +50,8 @@
       
       <formrow myid="termsOfUse" label="studyrules.terms_of_use" >	    
 	    <input id="termsOfUse" type="text" name="termsOfUse" class="form-control" ng-change="formChange()" ng-disabled="studyLocked()" ng-model="study.termsOfUse" autocomplete="off" uib-typeahead="term.id as term.fullname for term in terms | filter:{fullname:$viewValue}">		    
-	    <p class="help-block" ng-show="study.termsOfUse"><a ui-sref="research.terms({ which:study.termsOfUse })" translate="studyrules.show_terms"></a></p>
-	    <p class="help-block" translate="studyrules.terms_of_use_hint"></p> 
+	    <p class="form-text text-muted" ng-show="study.termsOfUse"><a ui-sref="research.terms({ which:study.termsOfUse })" translate="studyrules.show_terms"></a></p>
+	    <p class="form-text text-muted" translate="studyrules.terms_of_use_hint"></p> 
 	  </formrow>
        
        <formrow myid="joinMethods" label="studyrules.join_methods">
