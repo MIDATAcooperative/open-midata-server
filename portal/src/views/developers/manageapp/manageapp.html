@@ -13,15 +13,15 @@
 	      </p>	
 		  <formrow myid="filename" label="manageapp.filename" class="danger-change">
 		    <input type="text" id="filename" name="filename" class="form-control" ng-change="requireLogout();" ng-model="app.filename" autofocus required>
-		    <p class="help-block" translate="manageapp.info.filename"></p>
+		    <p class="form-text text-muted" translate="manageapp.info.filename"></p>
 		  </formrow>
 		  <formrow myid="targetUserRole" label="manageapp.targetUserRole" class="danger-change">
 		    <select id="targetUserRole" name="targetUserRole" class="form-control" ng-change="requireLogout();" ng-model="app.targetUserRole" ng-options="role.value as ('enum.userrole.'+role.value) | translate for role in targetUserRoles" required></select>
-		    <p class="help-block" translate="manageapp.info.targetUserRole"></p>
+		    <p class="form-text text-muted" translate="manageapp.info.targetUserRole"></p>
 		  </formrow>
 		  <formrow myid="type" label="manageapp.type" class="danger-change">
 		    <select id="type" name="type" class="form-control" ng-model="app.type" ng-change="requireLogout();" ng-options="type.value as ('enum.plugintype.'+type.value) | translate for type in types" required></select>
-		    <p class="help-block" translate="manageapp.info.type"></p>
+		    <p class="form-text text-muted" translate="manageapp.info.type"></p>
 		  </formrow>
 		  <formrow myid="requirements" label="Requirements" class="danger-change">
 		    <div class="form-check" ng-repeat="req in requirements">
@@ -34,15 +34,15 @@
 		  <hr>
 		  <formrow myid="name" label="Name">
 		    <input type="text" id="name" name="name" class="form-control" placeholder="Name" ng-model="app.name" required>
-		    <p class="help-block" translate="manageapp.info.name"></p>
+		    <p class="form-text text-muted" translate="manageapp.info.name"></p>
 		  </formrow>
 		  <formrow myid="description" label="Description">
 		    <textarea rows="5" id="description" name="description" class="form-control" placeholder="Description" ng-model="app.description" required></textarea>
-		    <p class="help-block" translate="manageapp.info.description"></p>
+		    <p class="form-text text-muted" translate="manageapp.info.description"></p>
 		  </formrow>
 		  <formrow myid="defaultSpaceName" label="Tile Name" ng-show="app.type != 'mobile' && app.type != 'service'">
 		    <input type="text" id="defaultSpaceName" name="defaultSpaceName" class="form-control" placeholder="Tile Name" ng-model="app.defaultSpaceName">
-		    <p class="help-block" translate="manageapp.info.defaultSpaceName"></p>
+		    <p class="form-text text-muted" translate="manageapp.info.defaultSpaceName"></p>
 		  </formrow>
 		  <formrow myid="orgName" label="Organization Name">
 		    <input type="text" id="orgName" name="orgName" class="form-control" ng-model="app.orgName">		 
@@ -54,7 +54,7 @@
 		 
 		  <hr>
 		  <formrow myid="x" label="Multi Language Support">
-		    <div class="help-block">
+		    <div class="form-text text-muted">
 		    <span ng-repeat="l in languages">
 		      <span ng-show="app.i18n[l].name"><span class="fas fa-check" aria-hidden="true"></span>{{l}} </span>		      
 		    </span>
@@ -80,21 +80,21 @@
 		        {{ tagdef }}
 		      </label>
 		    </div>
-		    <p class="help-block" translate="manageapp.info.tags"></p>
+		    <p class="form-text text-muted" translate="manageapp.info.tags"></p>
 		  </formrow>  		
 		
 		  <formrow myid="url" label="URL" ng-hide="app.type == 'mobile' || app.type == 'service'">
 		    <input type="text" id="url" name="url" class="form-control" placeholder="URL (must include &quot;:authToken&quot;)" ng-model="app.url">
 		    <formerror myid="url" type="authToken" message="Url must contain ':authToken' to receive the authorization token required to create records." ></formerror>
-		    <p class="help-block" translate="manageapp.info.url"></p>
+		    <p class="form-text text-muted" translate="manageapp.info.url"></p>
 		  </formrow>
 		  <formrow myid="previewUrl" label="Dashboard Tile URL" ng-hide="app.type == 'mobile' || app.type == 'service'">
 		    <input type="text" id="previewUrl" name="previewUrl" class="form-control" placeholder="URL (must include &quot;:authToken&quot;)" ng-model="app.previewUrl">
-		    <p class="help-block" translate="manageapp.info.previewUrl"></p>
+		    <p class="form-text text-muted" translate="manageapp.info.previewUrl"></p>
 		  </formrow>		 
 		  <formrow myid="defaultSpaceContext" label="Default Dashboard" ng-show="app.type != 'mobile' && app.type != 'service'">
 		    <input type="text" id="defaultSpaceContext" name="defaultSpaceContext" class="form-control" placeholder="Dashboard Name" ng-model="app.defaultSpaceContext">
-		    <p class="help-block" translate="manageapp.info.defaultSpaceContext"></p>
+		    <p class="form-text text-muted" translate="manageapp.info.defaultSpaceContext"></p>
 		  </formrow>		 
 		  <formrow myid="defaultQuery" label="manageapp.access_query_json" class="danger-change" ng-if="app._id">
 		    <accessquery query="app.defaultQuery" details="true" isapp="true"></accessquery>		    
@@ -142,7 +142,7 @@
 		  </formrow>
 		  <formrow myid="tokenExchangeParams" label="manageapp.tokenExchangeParams" ng-show="app.type == 'oauth2'">
 		    <input type="text" id="tokenExchangeParams" name="tokenExchangeParams" class="form-control" ng-model="app.tokenExchangeParams">
-		    <p class="help-block" translate="manageapp.info.tokenExchangeParams"></p>
+		    <p class="form-text text-muted" translate="manageapp.info.tokenExchangeParams"></p>
 		  </formrow>
 		  <formrow myid="consumerKey" label="Consumer Key" ng-show="app.type == 'oauth1' || app.type == 'oauth2'">
 		    <input type="text" id="consumerKey" name="consumerKey" class="form-control" placeholder="Consumer key" ng-model="app.consumerKey">
@@ -158,18 +158,18 @@
 		  </formrow>
 		  <formrow myid="secret" label="Application Secret" ng-show="app.type == 'mobile' || app.type == 'service'">
 		    <input type="text" id="secret" name="secret" class="form-control" placeholder="Secret" ng-model="app.secret">
-		    <p class="help-block" translate="manageapp.info.secret"></p>
+		    <p class="form-text text-muted" translate="manageapp.info.secret"></p>
 		  </formrow>
 		  <formrow myid="redirectUri" label="Redirect URI (optional, required for OAuth2 login)" ng-show="app.type == 'mobile'">
 		    <input type="text" id="redirectUri" name="redirectUri" class="form-control" placeholder="Redirect URI" ng-model="app.redirectUri">
-		    <p class="help-block" translate="manageapp.info.redirectUri"></p>
+		    <p class="form-text text-muted" translate="manageapp.info.redirectUri"></p>
 		  </formrow>
 		   <formrow myid="developmentServer" label="Development Server" ng-hide="app.type == 'mobile' || app.type == 'service' || !app.developmentServer">
 		    <p class="form-control-plaintext">{{ app.developmentServer }}</p>
 		  </formrow>
 		   <formrow myid="unlockCode" label="manageapp.unlock_code" ng-show="app.type == 'mobile'">
 		    <input type="text" id="unlockCode" name="unlockCode" class="form-control" ng-model="app.unlockCode">
-		    <p class="help-block" translate="manageapp.info.unlock_code"></p>
+		    <p class="form-text text-muted" translate="manageapp.info.unlock_code"></p>
 		  </formrow>
 		   <formrow myid="sendReports" label="manageapp.send_reports">
 		      <div class="form-check">
@@ -203,7 +203,7 @@
 		  <formrow myid="termsOfUse" label="manageapp.terms_of_use" class="danger-change">
 		    <input id="termsOfUse" type="text" ng-disabled="!allowStudyConfig" name="termsOfUse" class="form-control" ng-change="requireLogout();" ng-model="app.termsOfUse" autocomplete="off" uib-typeahead="term.id as term.fullname for term in terms | filter:{fullname:$viewValue}">
 		    
-		     <p class="help-block" ng-show="app.termsOfUse"><a ui-sref="^.terms({ which:app.termsOfUse })" translate="manageapp.show_terms"></a></p> 
+		     <p class="form-text text-muted" ng-show="app.termsOfUse"><a ui-sref="^.terms({ which:app.termsOfUse })" translate="manageapp.show_terms"></a></p> 
 		  </formrow>		  
 		  </div>
 		

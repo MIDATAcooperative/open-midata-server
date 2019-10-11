@@ -472,6 +472,11 @@
 	 "accountnotifications" : {
 	   "NONE" : "No login notifications",
 	   "LOGIN" : "Send an email on each login"
+	 },
+	 "entitytype" : {
+	   "USER" : "User",
+	   "USERGROUP" : "Team",
+	   "ORGANIZATION" : "Organization"
 	 }
    },
 
@@ -1325,7 +1330,8 @@
   "changelog" : {
     "F" : "New Feature",
     "B" : "Bugfix",
-    "I" : "Improvement" 
+    "I" : "Improvement",
+    "S" : "Bugfix" 
   },
   
   "-1" : "unknown"

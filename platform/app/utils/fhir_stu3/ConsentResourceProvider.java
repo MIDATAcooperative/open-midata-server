@@ -510,6 +510,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
         
 		if (theResource.getStatus() == ConsentState.ACTIVE) {
 			mayShare(info().pluginId, consent.sharingQuery);
+			if (!info().executorId.equals(consent.owner)) throw new InvalidRequestException("Only consent owner may create active consents");
 			consent.status = ConsentStatus.ACTIVE;
 		} else if (theResource.getStatus() != ConsentState.PROPOSED) {
 			throw new ForbiddenOperationException("consent status not supported for creation.");
@@ -540,7 +541,8 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 	public void updatePrepare(Consent consent, org.hl7.fhir.dstu3.model.Consent theResource) throws AppException {
         		
 		if ((theResource.getStatus() == ConsentState.ACTIVE || theResource.getStatus() == ConsentState.REJECTED) && consent.status == ConsentStatus.UNCONFIRMED) {
-			mayShare(info().pluginId, consent.sharingQuery);        									
+			mayShare(info().pluginId, consent.sharingQuery);  
+			if (theResource.getStatus() == ConsentState.ACTIVE && !info().executorId.equals(consent.owner)) throw new InvalidRequestException("Only consent owner may change consents to active consents");
 		}
 		
 	}
