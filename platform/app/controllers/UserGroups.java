@@ -21,6 +21,7 @@ import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.ResearcherRole;
 import models.enums.UserGroupType;
+import models.enums.UserRole;
 import models.enums.UserStatus;
 import play.mvc.BodyParser;
 import play.mvc.Result;
@@ -84,7 +85,7 @@ public class UserGroups extends APIController {
 			properties.put("_id", ids);
 		} else {
 			Rights.chk("UserGroups.search", getRole(), properties, fields);
-			if (!properties.containsKey("_id")) properties.put("searchable", true);
+			if (!properties.containsKey("_id") && !getRole().equals(UserRole.ADMIN)) properties.put("searchable", true);
 		}
 		
 		Set<UserGroup> groups = UserGroup.getAllUserGroup(properties, fields);

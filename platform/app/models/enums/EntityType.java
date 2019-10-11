@@ -14,5 +14,10 @@ public enum EntityType {
 	/**
 	 * UserGroups 
 	 */
-	USERGROUP
+	USERGROUP,
+	
+	/**
+	 * Organizations
+	 */
+	ORGANIZATION
 }

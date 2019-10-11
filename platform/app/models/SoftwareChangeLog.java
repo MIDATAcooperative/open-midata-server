@@ -58,7 +58,13 @@ public class SoftwareChangeLog extends Model {
 	 */
 	public static List<SoftwareChangeLog> getAll() throws AppException {
 		List<SoftwareChangeLog> result = Model.getAllList(SoftwareChangeLog.class, collection, CMaps.map(), ALL, 100, "_id", -1);
-		for (SoftwareChangeLog entry : result) entry.published = entry._id.getCreationDate();
+		for (SoftwareChangeLog entry : result) {
+			entry.published = entry._id.getCreationDate();
+			if (entry.type != null && entry.type.equals("S")) {
+				entry.title = "Fixed issue '"+entry.changeId+"'";
+				entry.description = "";
+			}
+		}
 		return result;	
 	}
 	
