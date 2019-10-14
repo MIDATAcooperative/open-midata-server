@@ -75,6 +75,7 @@ public class APICallAction extends Action<APICall> {
     			ObjectNode node = Json.newObject();
     			if (e3.getRequiredFeature() != null) node.put("requiredFeature", e3.getRequiredFeature().toString());
     			if (e3.getRequiredSubUserRole() != null) node.put("requiredSubUserRole", e3.getRequiredSubUserRole().toString());
+    			if (e3.getPluginId() != null) node.put("pluginId", e3.getPluginId().toString());
     			return CompletableFuture.completedFuture((Result) forbidden(node));
     		}
     	} catch (PluginException e3) {

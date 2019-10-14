@@ -45,7 +45,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "accessTokenUrl", "consumerKey", "consumerSecret","tokenExchangeParams",
 	                     "requestTokenUrl", "scopeParameters", "secret", "redirectUri", "developmentServer", "status", "i18n",
-	                     "predefinedMessages", "resharesData", "allowsUserSearch", "pluginVersion", "termsOfUse", "requirements", "orgName", "publisher", "unlockCode", "writes", "icons", "apiUrl", "noUpdateHistory", "defaultSubscriptions", "debugHandle", "sendReports");
+	                     "predefinedMessages", "resharesData", "allowsUserSearch", "pluginVersion", "termsOfUse", "requirements", "orgName", "publisher", "unlockCode", "writes", "icons", "apiUrl", "noUpdateHistory", "defaultSubscriptions", "debugHandle", "sendReports", "licenceDef");
 	
 	/**
 	 * constant containing all fields visible to anyone
@@ -55,7 +55,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	                     "targetUserRole", "spotlighted", "url", "addDataUrl", "previewUrl", "defaultSpaceName",
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "consumerKey", "scopeParameters", "status", "i18n", "lang", "predefinedMessages", "resharesData", "pluginVersion",
-	                     "termsOfUse", "requirements", "orgName", "publisher", "unlockCode", "writes", "icons", "apiUrl", "noUpdateHistory", "defaultSubscriptions");
+	                     "termsOfUse", "requirements", "orgName", "publisher", "unlockCode", "writes", "icons", "apiUrl", "noUpdateHistory", "defaultSubscriptions", "licenceDef");
 	
 	/**
 	 * timestamp of last change. Used to prevent lost updates.
@@ -298,6 +298,11 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	 * Send error reports to developer
 	 */
 	public boolean sendReports;
+	
+	/**
+	 * What type of licence is required to use this application
+	 */
+	public LicenceDefinition licenceDef;
 
 	@Override
 	public int compareTo(Plugin other) {
@@ -347,6 +352,15 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	public void update() throws InternalServerException, LostUpdateException {		
 		try {
 		   DBLayer.secureUpdate(this, collection, "version", "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status", "i18n", "predefinedMessages", "resharesData", "allowsUserSearch", "pluginVersion", "termsOfUse", "requirements", "orgName", "publisher", "unlockCode", "writes", "apiUrl", "noUpdateHistory", "sendReports" );
+		   Instances.cacheClear("plugin",  _id);
+		} catch (DatabaseException e) {
+			throw new InternalServerException("error.internal_db", e);
+		}
+	}
+	
+	public void updateLicenceDef() throws InternalServerException, LostUpdateException {		
+		try {
+		   DBLayer.secureUpdate(this, collection, "version", "licenceDef");
 		   Instances.cacheClear("plugin",  _id);
 		} catch (DatabaseException e) {
 			throw new InternalServerException("error.internal_db", e);

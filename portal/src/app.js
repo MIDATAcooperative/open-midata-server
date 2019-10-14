@@ -113,7 +113,7 @@ angular.module('portal', [ 'ngCookies', 'ui.router', 'ui.bootstrap', 'services',
         		var p = $state.current.name.split(".")[0];
         		console.log($state.current);
         		console.log(p);
-        		$state.go(p+".upgrade", { role : response.data.requiredSubUserRole, feature : response.data.requiredFeature });
+        		$state.go(p+".upgrade", { role : response.data.requiredSubUserRole, feature : response.data.requiredFeature, pluginId : response.data.pluginId });
         	}
         }
         return $q.reject(response);

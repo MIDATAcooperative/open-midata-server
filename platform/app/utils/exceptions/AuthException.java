@@ -1,5 +1,6 @@
 package utils.exceptions;
 
+import models.MidataId;
 import models.enums.SubUserRole;
 import models.enums.UserFeature;
 
@@ -12,6 +13,7 @@ public class AuthException extends AppException {
 	private static final long serialVersionUID = 1L;
 	private SubUserRole requiredSubUserRole = null;
 	private UserFeature requiredFeature = null;
+	private MidataId pluginId = null;
 	
 
 	public AuthException(String localeKey, Throwable cause) {
@@ -32,12 +34,22 @@ public class AuthException extends AppException {
 		this.requiredFeature = required;
 	}
 	
+	public AuthException(String localeKey, String msg, UserFeature required, MidataId pluginId) {
+		super(localeKey, msg);
+		this.requiredFeature = required;
+		this.pluginId = pluginId;
+	}
+	
 	public SubUserRole getRequiredSubUserRole() {
 		return requiredSubUserRole;
 	}
 	
 	public UserFeature getRequiredFeature() {
 		return requiredFeature;
+	}
+	
+	public MidataId getPluginId() {
+		return pluginId;
 	}
 
 }

@@ -100,6 +100,7 @@ import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
 import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
+import utils.auth.LicenceChecker;
 import utils.auth.PortalSessionToken;
 import utils.auth.RecordToken;
 import utils.auth.ResearchSecured;
@@ -1273,6 +1274,11 @@ public class Studies extends APIController {
 		if (plugin.targetUserRole != UserRole.RESEARCH)
 			throw new BadRequestException("error.invalid.plugin", "Wrong target role.");
 
+		MidataId licence = null;
+		if (LicenceChecker.licenceRequired(plugin)) {
+			licence = LicenceChecker.hasValidLicence(userId, plugin, null);
+			if (licence==null) throw new AuthException("error.missing.licence", "No licence found.", UserFeature.VALID_LICENCE);
+		}
 		User researcher = User.getById(userId, Sets.create("apps", "password", "firstname", "lastname", "email", "language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode",
 				"accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));
 
@@ -1334,7 +1340,7 @@ public class Studies extends APIController {
 		} else {
 
 			Space space = null;
-			space = Spaces.add(userId, plugin.defaultSpaceName, plugin._id, plugin.type, study.code + ":" + (group != null ? group : ""));
+			space = Spaces.add(userId, plugin.defaultSpaceName, plugin._id, plugin.type, study.code + ":" + (group != null ? group : ""), licence);
 
 			Map<String, Object> query = new HashMap<String, Object>(Feature_QueryRedirect.simplifyAccessFilter(plugin.defaultQuery));
 			query.put("study", studyId.toString());

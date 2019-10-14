@@ -282,10 +282,10 @@ public class PluginsAPI extends APIController {
 		}
 		Map<String, Object> config = JsonExtraction.extractMap(json.get("config"));
 		String name = JsonValidation.getString(json, "name");
-		Space current = Space.getByIdAndOwner(spaceToken.spaceId, spaceToken.userId, Sets.create("context", "visualization", "app"));
+		Space current = Space.getByIdAndOwner(spaceToken.spaceId, spaceToken.userId, Sets.create("context", "visualization", "app", "licence"));
 		if (current == null) throw new BadRequestException("error.unknown.space", "The current space does no longer exist.");
 		
-		Space space = Spaces.add(spaceToken.userId, name, current.visualization, current.type, current.context);		
+		Space space = Spaces.add(spaceToken.userId, name, current.visualization, current.type, current.context, current.licence);		
 		BSONObject bquery = RecordManager.instance.getMeta(spaceToken.executorId, spaceToken.spaceId, "_query");		
 		Map<String, Object> query;
 		if (bquery != null) {

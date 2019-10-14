@@ -27,7 +27,7 @@ public class Space extends Model implements Comparable<Space> {
 	/**
 	 * constant set containing all fields of this class
 	 */
-	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name","owner", "visualization", "type", "order", "type", "context", "autoShare");
+	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name","owner", "visualization", "type", "order", "type", "context", "autoShare", "licence");
 
 	/**
 	 * the name of the space.
@@ -72,6 +72,11 @@ public class Space extends Model implements Comparable<Space> {
 	 * This field is not directly stored in the database but in the APS that belongs to this space.
 	 */
 	public @NotMaterialized Map<String, Object> query;
+	
+	/**
+	 * Licence used for access
+	 */
+	public MidataId licence;
 	
 
 	@Override

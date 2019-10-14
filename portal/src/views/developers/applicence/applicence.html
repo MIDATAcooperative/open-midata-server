@@ -1,0 +1,49 @@
+
+	<div ng-controller="AppLicenceCtrl">
+		
+		<div class="panel panel-primary">
+		<div class="panel-heading">
+		  	<span translate="applicence.title"></span>
+		  	{{ app.filename }}			
+		</div>
+		<div class="body">
+		
+		  		
+		<form name="myform" novalidate role="form" class="form-horizontal" >
+		  <p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
+	      </p>	
+		  	
+		  <formrow myid="name" label="appicon.name">
+		     <p class="form-control-plaintext">{{ app.name }}</p>
+		  </formrow>
+		  
+		  <formrow myid="filename" label="appicon.internalname">
+		     <p class="form-control-plaintext">{{ app.filename }}</p>
+		  </formrow>
+		  
+		  <formrow myid="required" label="applicence.required">
+		    <div class="form-check">		      
+		      <input class="form-check-input" type="checkbox" ng-model="licence.required">		        
+		      
+		    </div>
+		  </formrow>  
+		  
+		  <formrow myid="allowedEntities" label="applicence.allowedEntities" ng-show="licence.required">
+		    <div class="form-check" ng-repeat="entity in entities">
+		      <input class="form-check-input" type="checkbox" ng-checked="licence.allowedEntities.indexOf(entity)>=0" ng-click="toggle(licence.allowedEntities, entity)">
+		      <label class="form-check-label">		       
+		        <span translate="{{'enum.entitytype.'+entity}}"></span>
+		      </label>
+		    </div>		   
+		  </formrow>  			  
+		  		    		  
+		  <formrow myid="x" label="">
+  		    <a href="javascript:" ui-sref="^.manageapp({appId:appId})" class="btn btn-default" translate="common.back_btn"></a>		      
+		    <button type="button" ng-click="updateApp()" ng-disabled="status.action=='submit'" class="btn btn-primary" translate="common.submit_btn"></button>	
+		    	    
+		  </formrow>
+	     </form>	  
+		</div>
+		
+	</div>
+	</div></div>
