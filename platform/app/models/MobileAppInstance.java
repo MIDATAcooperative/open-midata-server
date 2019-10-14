@@ -30,6 +30,11 @@ public class MobileAppInstance extends Consent {
 	 * version of plugin at time of consent creation
 	 */
 	public long appVersion;
+	
+	/**
+	 * Licence
+	 */
+	public MidataId licence;
 		
 	
 	public MobileAppInstance() {

@@ -36,18 +36,18 @@ angular.module('portal')
 		      data : { mode : "REJECTED" }
 		})
 	   .state('member.upgrade', {
-	      url: '/upgrade?role&feature',
+	      url: '/upgrade?role&feature&pluginId',
 	      templateUrl: 'views/shared/public/postregister/postregister.html' 
 	   })
 	   .state('research.upgrade', {
-	      url: '/upgrade?role&feature',
+	      url: '/upgrade?role&feature&pluginId',
 	      templateUrl: 'views/shared/public/postregister/postregister.html' 
 	   })
 	   .state('developer.upgrade', {
-	      url: '/upgrade?role&feature',
+	      url: '/upgrade?role&feature&pluginId',
 	      templateUrl: 'views/shared/public/postregister/postregister.html' 
 	   }).state('provider.upgrade', {
-		      url: '/upgrade?role&feature',
+		      url: '/upgrade?role&feature&pluginId',
 		      templateUrl: 'views/shared/public/postregister/postregister.html' 
 		   });
 	   

@@ -1,0 +1,33 @@
+
+<div ng-controller="LicensesCtrl">
+		
+ 	<div class="panel panel-primary">
+		<div class="panel-heading" translate="admin_licenses.title"></div>
+		<div class="body">
+      <loader busy="status.isBusy !== false">
+      <table class="table" ng-show="licenses.length">
+        <tr>
+          <th translate="admin_licenses.appName"></th>
+          <th translate="admin_licenses.licenseeType"></th>
+          <th translate="admin_licenses.licenseeName"></th>          
+          <th translate="admin_licenses.expireDate"></th>  
+          <th></th>        
+        </tr>
+        <tr ng-repeat="licence in licenses">
+          <td>{{ licence.appName }}</td>
+          <td>{{ licence.licenseeType }}</td>
+          <td>{{ licence.licenseeName }}</td>
+          <td>{{ licence.expireDate | date : 'dd.MM.yy' }}</td>
+        </tr>
+      </table>
+      <p ng-show="licenses.length == 0" translate="admin_licenses.empty"></p>
+      
+      <a class="btn btn-primary" translate="common.add_btn" ui-sref="^.newlicence"></a> 
+            
+      </loader>		
+    </div>
+  </div>		
+
+		  	
+</div>
+	

@@ -58,6 +58,7 @@ import utils.RuntimeConstants;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.KeyManager;
+import utils.auth.LicenceChecker;
 import utils.auth.MobileAppSessionToken;
 import utils.auth.OAuthRefreshToken;
 import utils.auth.PortalSessionToken;
@@ -355,12 +356,17 @@ public class OAuth2 extends Controller {
         	if (refreshToken.created + MobileAPI.DEFAULT_REFRESHTOKEN_EXPIRATION_TIME < System.currentTimeMillis()) return MobileAPI.invalidToken();
 			appInstanceId = refreshToken.appInstanceId;
 			
-			appInstance = MobileAppInstance.getById(appInstanceId, Sets.create("owner", "appVersion", "applicationId", "status"));
+			appInstance = MobileAppInstance.getById(appInstanceId, Sets.create("owner", "appVersion", "applicationId", "status", "licence"));
 			if (!verifyAppInstance(appInstance, refreshToken.ownerId, refreshToken.appId)) throw new BadRequestException("error.internal", "Bad refresh token.");
 			
 			Plugin app = Plugin.getById(appInstance.applicationId);
 			user = User.getById(appInstance.owner, User.ALL_USER_INTERNAL);
-			if (user == null) return status(UNAUTHORIZED); 
+			if (user == null) return status(UNAUTHORIZED);
+			
+			if (!LicenceChecker.checkAppInstance(user._id, app, appInstance)) {
+				return status(UNAUTHORIZED);
+			}
+						
 			Set<UserFeature> req = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(user.role);
 			if (app.requirements != null) req.addAll(app.requirements);
 			Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, req);
@@ -511,9 +517,9 @@ public class OAuth2 extends Controller {
 		Plugin app;
 		if (token.appId == null) {
 		   String name = JsonValidation.getString(json, "appname");
-		   app = Plugin.getByFilename(name, Sets.create("type", "name", "redirectUri", "requirements", "termsOfUse", "unlockCode"));
+		   app = Plugin.getByFilename(name, Sets.create("type", "name", "redirectUri", "requirements", "termsOfUse", "unlockCode", "licenceDef"));
 		} else {			
-		   app = Plugin.getById(token.appId, Sets.create("type", "name", "redirectUri", "requirements", "termsOfUse", "unlockCode"));			
+		   app = Plugin.getById(token.appId, Sets.create("type", "name", "redirectUri", "requirements", "termsOfUse", "unlockCode", "licenceDef"));			
 		}
 		
 		// Check app
@@ -799,7 +805,7 @@ public class OAuth2 extends Controller {
 		
 		if (token.device == null || token.appId == null || token.ownerId == null) throw new NullPointerException();
 		
-        MobileAppInstance appInstance = MobileAPI.getAppInstance(token.device, token.appId, token.ownerId, Sets.create("owner", "applicationId", "status", "passcode", "appVersion"));		
+        MobileAppInstance appInstance = MobileAPI.getAppInstance(token.device, token.appId, token.ownerId, Sets.create("owner", "applicationId", "status", "passcode", "appVersion", "licence"));		
 		
 		//KeyManager.instance.login(60000l, false);		
 		
@@ -995,6 +1001,10 @@ public class OAuth2 extends Controller {
 		   throw new JsonValidationException("error.invalid.unlock_code", "unlockCode", "invalid", "Invalid unlock code");
 		}
 		
+		if (app != null && !LicenceChecker.checkAppInstance(user._id, app, appInstance)) {
+			return Application.loginHelperResult(token, user, Collections.singleton(UserFeature.VALID_LICENCE));
+		}
+	
 		checkTwoFactorRequired(token, json, user, notok);
 		
 		if (notok != null && !notok.isEmpty()) {
