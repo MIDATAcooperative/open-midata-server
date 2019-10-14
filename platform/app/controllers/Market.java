@@ -33,6 +33,8 @@ import models.Admin;
 import models.Developer;
 import models.HPUser;
 import models.HealthcareProvider;
+import models.Licence;
+import models.LicenceDefinition;
 import models.MessageDefinition;
 import models.MidataId;
 import models.MobileAppInstance;
@@ -49,8 +51,11 @@ import models.StudyParticipation;
 import models.SubscriptionData;
 import models.TestPluginCall;
 import models.User;
+import models.UserGroup;
 import models.UserGroupMember;
 import models.enums.AppReviewChecklist;
+import models.enums.ConsentStatus;
+import models.enums.EntityType;
 import models.enums.IconUse;
 import models.enums.JoinMethod;
 import models.enums.LinkTargetType;
@@ -79,9 +84,11 @@ import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
 import utils.auth.DeveloperSecured;
 import utils.auth.KeyManager;
+import utils.auth.Rights;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.LostUpdateException;
+import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
@@ -296,6 +303,38 @@ public class Market extends APIController {
 		try {
 		   app.update();
 		   PluginIcon.updateStatus(app.filename, app.status);
+		} catch (LostUpdateException e) {
+			throw new BadRequestException("error.concurrent.update", "Concurrent updates. Reload page and try again.");
+		}
+		
+		return ok();
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(DeveloperSecured.class)
+	public Result updateLicence(String pluginIdStr) throws JsonValidationException, AppException {
+		// validate json
+		JsonNode json = request().body().asJson();
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		// validate request		
+		MidataId pluginId = new MidataId(pluginIdStr);
+		
+		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
+		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
+		
+		if (!getRole().equals(UserRole.ADMIN) && !userId.equals(app.creator)) throw new BadRequestException("error.not_authorized.not_plugin_owner", "Not your plugin!");
+		
+		app.version = JsonValidation.getLong(json, "version");
+		
+		if (JsonValidation.getBoolean(json, "required")) {
+		  LicenceDefinition licenceDef = new LicenceDefinition();		
+		  licenceDef.allowedEntities = JsonValidation.getEnumSet(json, "allowedEntities", EntityType.class);								
+		  app.licenceDef = licenceDef;
+		} else app.licenceDef = null;
+		
+		try {
+		   app.updateLicenceDef();		   
 		} catch (LostUpdateException e) {
 			throw new BadRequestException("error.concurrent.update", "Concurrent updates. Reload page and try again.");
 		}
@@ -665,6 +704,12 @@ public class Market extends APIController {
 		}
 		
 		parseSubscriptions(app, json);
+		
+		if (json.has("licenceDef")) {
+			JsonNode lic = json.get("licenceDef");
+			app.licenceDef = new LicenceDefinition();
+			app.licenceDef.allowedEntities = JsonValidation.getEnumSet(lic, "allowedEntities", EntityType.class);
+		} else app.licenceDef = null;
 	}
 	
 	private static void parseSubscriptions(Plugin app, JsonNode json) throws JsonValidationException, InternalServerException {
@@ -1278,5 +1323,77 @@ public class Market extends APIController {
 		List<SoftwareChangeLog> result = SoftwareChangeLog.getAll();
 		
 		return ok(JsonOutput.toJson(result, "SoftwareChangeLog", SoftwareChangeLog.ALL)).as("application/json");
+	}
+	
+	@APICall
+	@Security.Authenticated(AdminSecured.class)
+	@BodyParser.Of(BodyParser.Json.class)
+	public Result addLicence() throws AppException {
+		JsonNode json = request().body().asJson();	
+		JsonValidation.validate(json, "appId", "licenseeId", "licenseeType");
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		
+		Admin me = Admin.getById(userId, Sets.create("email"));
+		
+		Licence licence = new Licence();
+		licence._id = new MidataId();
+		licence.appId = JsonValidation.getMidataId(json, "appId");
+		licence.licenseeId = JsonValidation.getMidataId(json, "licenseeId");
+		licence.licenseeType = JsonValidation.getEnum(json, "licenseeType", EntityType.class);
+		licence.expireDate = JsonValidation.getDate(json, "expireDate");
+		
+		Plugin plugin = Plugin.getById(licence.appId, Plugin.ALL_DEVELOPER);
+		if (plugin == null) throw new BadRequestException("error.unknown.plugin", "Plugin does not exist");
+		if (plugin.licenceDef == null) throw new BadRequestException("error.notrequired.licence", "No licence required.");
+		if (!plugin.licenceDef.allowedEntities.contains(licence.licenseeType)) throw new BadRequestException("error.invalid.entity_type", "Licensee Type not allowed");
+		licence.appName = plugin.name;
+		
+		switch (licence.licenseeType) {
+		case USER:
+			User user = User.getById(licence.licenseeId, Sets.create("email", "status"));
+			if (user == null) throw new BadRequestException("error.unknown.user", "User does not exist");
+			if (user.status != UserStatus.ACTIVE && user.status != UserStatus.NEW) throw new BadRequestException("error.unknown.user", "Bad user status");
+			licence.licenseeName = user.email;
+			break;
+		case USERGROUP:
+			UserGroup ug = UserGroup.getById(licence.licenseeId, UserGroup.ALL);
+			if (ug == null) throw new BadRequestException("error.unknown.group", "Usergroup does not exist");
+			if (ug.status != UserStatus.ACTIVE) throw new BadRequestException("error.unknown.group", "Usergroup not active");
+			licence.licenseeName = ug.name;
+			break;
+		case ORGANIZATION:
+			HealthcareProvider prov = HealthcareProvider.getById(licence.licenseeId, HealthcareProvider.ALL);
+			if (prov == null) throw new BadRequestException("error.unknown.organization", "Healthcare Provider does not exist");
+			licence.licenseeName = prov.name;
+			break;
+		}
+		
+		licence.status = ConsentStatus.ACTIVE;
+		licence.grantedBy = userId;
+		licence.grantedByLogin = me.email;
+		licence.creationDate = new Date(System.currentTimeMillis());
+			
+		licence.add();
+		
+		return ok();
+	}
+	
+	@APICall
+	@Security.Authenticated(AdminSecured.class)
+	@BodyParser.Of(BodyParser.Json.class)
+	public Result searchLicenses() throws AppException {
+		JsonNode json = request().body().asJson();
+		JsonValidation.validate(json, "properties");
+
+		// get visualizations
+		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+		
+		ObjectIdConversion.convertMidataIds(properties, "_id", "creator", "recommendedPlugins");
+		Set<String> fields = Licence.ALL;
+		
+		List<Licence> licences = new ArrayList<Licence>(Licence.getAll(properties));
+
+		//Collections.sort(licences);
+		return ok(JsonOutput.toJson(licences, "Licence", fields)).as("application/json");
 	}
 }

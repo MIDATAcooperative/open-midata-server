@@ -92,6 +92,7 @@ DELETE  /api/members/circles/:id/users/:userId           controllers.Circles.rem
 POST    /api/developers/plugins                          controllers.Market.registerPlugin()
 PUT     /api/developers/plugins/:appId                   controllers.Market.updatePlugin(appId: String)
 POST    /api/developers/plugins/:appId/subscriptions     controllers.Market.updateDefaultSubscriptions(appId: String)
+POST    /api/developers/plugins/:appId/licence           controllers.Market.updateLicence(appId: String)
 DELETE  /api/developers/plugins/:appId            	     controllers.Market.deletePluginDeveloper(appId: String)
 GET     /api/developers/plugins/:appId/stats             controllers.Market.getPluginStats(appId: String)
 DELETE  /api/developers/plugins/:appId/stats             controllers.Market.deletePluginStats(appId: String)
@@ -115,7 +116,8 @@ GET      /api/shared/icon/:use/:id                       controllers.Market.getI
 GET      /api/debug/getopencalls/:handle                 controllers.Market.getOpenDebugCalls(handle: String)
 POST     /api/debug/getopencalls/:handle                 controllers.Market.answerDebugCall(handle: String)
 POST     /api/debug/subscriptiondebug                    controllers.Market.setSubscriptionDebug()
-
+POST     /api/admins/licences/add                        controllers.Market.addLicence()
+POST     /api/admins/licences/search                     controllers.Market.searchLicenses()
 # Users
 
 POST    /api/members/users/get                           controllers.Users.get()

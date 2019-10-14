@@ -86,7 +86,12 @@ public enum UserFeature {
 	/**
 	 * two factor authentication needs to be setup
 	 */
-	AUTH2FACTORSETUP;
+	AUTH2FACTORSETUP,
+	
+	/**
+	 * A valid licence is required
+	 */
+	VALID_LICENCE;
 	
 	/**
 	 * Does a user satisfy this feature?
@@ -121,6 +126,8 @@ public enum UserFeature {
 				return user.mobile == null && user.phone == null;
 			case AUTH2FACTORSETUP:				
 				if (user.authType == null || (user.authType.equals(SecondaryAuthType.SMS) && user.mobile == null)) return false;
+				return true;
+			case VALID_LICENCE:
 				return true;
 		}
 		return false;

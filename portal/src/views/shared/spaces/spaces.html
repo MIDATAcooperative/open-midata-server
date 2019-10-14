@@ -9,8 +9,9 @@
 			    <a ng-click="goBack()" href="javascript:" class="close-icon float-right" ng-show="notLocked()"><span class="fas fa-times"></span></a> 
 			  </div>
 			  <div class="panel-body">	
-			
-						<div class="row">
+			            <p ng-show="error && !error.field" translate="{{ error.code || error }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	            
+	        </p>	
+						<div ng-hide="error" class="row">
 							<div class="col-12" ng-class="{'col-lg-6': space.compare}">
 								<!-- Visualization -->
 								<loader busy="!space.trustedUrl">

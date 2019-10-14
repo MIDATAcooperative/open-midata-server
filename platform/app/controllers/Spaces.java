@@ -18,6 +18,7 @@ import models.Member;
 import models.MidataId;
 import models.Plugin;
 import models.Space;
+import models.enums.UserFeature;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
@@ -27,11 +28,13 @@ import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
+import utils.auth.LicenceChecker;
 import utils.auth.PortalSessionToken;
 import utils.auth.SpaceToken;
 import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
+import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
@@ -107,10 +110,16 @@ public class Spaces extends APIController {
 		if (json.has("query")) query = JsonExtraction.extractMap(json.get("query"));
 		if (json.has("config")) config = JsonExtraction.extractMap(json.get("config"));
 		
-		Plugin plg = Plugin.getById(visualizationId, Sets.create("type"));
-				
+		Plugin plg = Plugin.getById(visualizationId, Sets.create("type","licenceDef"));
+			
+		MidataId licence = null;
+		if (LicenceChecker.licenceRequired(plg)) {
+			licence = LicenceChecker.hasValidLicence(userId, plg, null);
+			if (licence == null) throw new AuthException("error.missing.licence", "No licence found.", UserFeature.VALID_LICENCE);
+		}
+		
 		// execute		
-		Space space = add(userId, name, visualizationId, plg.type, context);
+		Space space = add(userId, name, visualizationId, plg.type, context, licence);
 		
 		if (query != null) {
 			RecordManager.instance.shareByQuery(userId, userId, space._id, query);		
@@ -132,7 +141,7 @@ public class Spaces extends APIController {
 	 * @return
 	 * @throws InternalServerException
 	 */
-	public static Space add(MidataId userId, String name, MidataId visualizationId, String type, String context) throws AppException {
+	public static Space add(MidataId userId, String name, MidataId visualizationId, String type, String context, MidataId licence) throws AppException {
 						
 		// create new space
 		Space space = new Space();
@@ -143,6 +152,7 @@ public class Spaces extends APIController {
 		space.visualization = visualizationId;
 		space.context = context;
 		space.type = type;
+		space.licence = licence;
 		RecordManager.instance.createPrivateAPS(userId, space._id);
 		
 		Space.add(space);		
@@ -260,16 +270,19 @@ public class Spaces extends APIController {
 		MidataId spaceId = new MidataId(spaceIdString);
 		MidataId targetUserId = (targetUser != null) ? MidataId.from(targetUser) : userId;		
 		
-		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps", "visualization", "type", "name"));
+		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps", "visualization", "type", "name","licence"));
 		
 		if (space==null) {
 		  throw new InternalServerException("error.internal", "No space with this id exists.");
 		}
 		
-		Plugin visualization = Plugin.getById(space.visualization, Sets.create("type", "name", "filename", "url", "previewUrl", "creator", "developmentServer", "accessTokenUrl", "authorizationUrl", "consumerKey", "scopeParameters"));
+		Plugin visualization = Plugin.getById(space.visualization, Sets.create("type", "name", "filename", "url", "previewUrl", "creator", "developmentServer", "accessTokenUrl", "authorizationUrl", "consumerKey", "scopeParameters","licenceDef"));
 
 		boolean testing = visualization.creator != null && (visualization.creator.equals(PortalSessionToken.session().getDeveloperId()) || visualization.creator.equals(userId)) && visualization.developmentServer != null && visualization.developmentServer.length()> 0; 
-		
+
+		if (!testing && LicenceChecker.licenceRequired(visualization)) {
+			LicenceChecker.checkSpace(userId, visualization, space);
+		}
 		
 	    SpaceToken spaceToken = new SpaceToken(PortalSessionToken.session().handle, space._id, userId, targetUserId, getRole(), true);
 			

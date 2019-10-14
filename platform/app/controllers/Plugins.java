@@ -29,6 +29,7 @@ import models.StudyParticipation;
 import models.User;
 import models.enums.PluginStatus;
 import models.enums.StudyAppLinkType;
+import models.enums.UserFeature;
 import models.enums.UserRole;
 import play.libs.Json;
 import play.libs.oauth.OAuth;
@@ -49,6 +50,7 @@ import utils.access.Feature_QueryRedirect;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.KeyManager;
+import utils.auth.LicenceChecker;
 import utils.auth.PortalSessionToken;
 import utils.auth.Rights;
 import utils.auth.SpaceToken;
@@ -175,9 +177,9 @@ public class Plugins extends APIController {
 		Plugin visualization = null;
 		if (MidataId.isValid(visualizationIdString)) {
 			visualizationId = new MidataId(visualizationIdString);
-			visualization = Plugin.getById(visualizationId, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator", "status", "defaultSubscriptions"));
+			visualization = Plugin.getById(visualizationId, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator", "status", "defaultSubscriptions", "licenceDef"));
 		} else {
-			visualization = Plugin.getByFilename(visualizationIdString, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator", "status", "defaultSubscriptions"));
+			visualization = Plugin.getByFilename(visualizationIdString, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator", "status", "defaultSubscriptions", "licenceDef"));
 		}
 
 		if (visualization == null)
@@ -225,6 +227,12 @@ public class Plugins extends APIController {
 		if (!user.role.equals(visualization.targetUserRole) && !visualization.targetUserRole.equals(UserRole.ANY) && !testing) {
 			throw new BadRequestException("error.invalid.plugin", "Visualization is for a different role. Your role:" + user.role);
 		}
+		
+		MidataId licence = null;
+		if (!testing && LicenceChecker.licenceRequired(visualization)) {
+			licence = LicenceChecker.hasValidLicence(user._id, visualization, null);
+			if (licence == null) throw new AuthException("error.missing.licence", "No licence found.", UserFeature.VALID_LICENCE);
+		}
 
 		if (visualization.type.equals("visualization")) {
 			if (user.visualizations == null)
@@ -247,7 +255,7 @@ public class Plugins extends APIController {
 				spaceName = visualization.name;
 
 			Space space = null;
-			space = Spaces.add(userId, spaceName, visualizationId, visualization.type, context);
+			space = Spaces.add(userId, spaceName, visualizationId, visualization.type, context, licence);
 
 			if (space != null) {
 				Map<String, Object> query = new HashMap<String, Object>(Feature_QueryRedirect.simplifyAccessFilter(visualization.defaultQuery));
@@ -723,7 +731,7 @@ public class Plugins extends APIController {
 					  
 					  Set<Space> spaces = Space.getByOwnerVisualization(userId, appId, Sets.create("context"));
 					  if (spaces.isEmpty()) {
-						  Plugin visualization = Plugin.getById(appId, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator", "status", "defaultSubscriptions"));
+						  Plugin visualization = Plugin.getById(appId, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator", "status", "defaultSubscriptions","licenceDef"));
 						  AccessLog.log("add plugins: "+appId.toString());
 						  install(userId, visualization, null, null, null);
 					  }

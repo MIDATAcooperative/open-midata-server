@@ -9,6 +9,7 @@
 	"content" : "Content Types",
 	"studies" : "Projects",
 	"terms" : "General Terms and Conditions",
+	"licenses" : "Licenses",
 	"registration" : "Register an Administrator",
 	"user_admin" : "User Administration",
 	"plugin_admin" : "Applications & Data",
@@ -214,6 +215,25 @@
      "instr1" : "Click on a share to copy the encrypted share into the clipboard.",
      "instr2" : "Decrypt share on UBUNTU: (click line to copy it to clipboard)",
      "instr3" : "Decrypt share on MAC: (click line to copy it to clipboard)"     
+   },
+   
+   "admin_licenses" : {
+     "title" : "Licenses", 
+     "appName" : "Application",
+     "licenseeType" : "Licensee Type",     
+     "licenseeName" : "Licensee",
+     "expireDate" : "Expires",
+     "empty" : "No matching licenses found."     
+   },
+   
+   "admin_addlicence" : {
+     "title1" : "New Licence",
+     "title2" : "Edit Licence",
+     "app" : "Application",
+     "licenseeType" : "Licensee Type",
+     "role" : "User Role",
+     "licensee" : "Licensee",
+     "expireDate" : "Date of expiration"
    },
    
    "usagestats" : {

@@ -21,6 +21,12 @@
 						  </ul>
 						</div>
 						
+						<div ng-show="progress.VALID_LICENCE">
+						  <p translate="postregister.licence.intro"></p>
+						  <p>&nbsp;</p>
+						  <p translate="postregister.licence.text"></p>						  
+						</div>
+						
 						<div ng-show="progress.AUTH2FACTOR || progress.PHONE_VERIFIED">
 						   <p translate="postregister.auth2factor"></p>
 						   <form ng-submit="setSecurityToken()" role="form" class="form form-horizontal">

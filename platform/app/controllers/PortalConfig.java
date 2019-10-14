@@ -66,7 +66,7 @@ public class PortalConfig extends APIController {
 		
 		Space configspace = Space.getByOwnerSpecialContext(userId, "portal", Sets.create("name"));
 		if (configspace == null) {			
-			configspace = Spaces.add(userId, "portal", null, null, "portal");
+			configspace = Spaces.add(userId, "portal", null, null, "portal", null);
 		}
 		
 		Map<String, Object> config = JsonExtraction.extractMap(json.get("config"));

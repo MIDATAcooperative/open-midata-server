@@ -26,6 +26,9 @@ angular.module('portal')
 			$scope.title = result.data.name;
 			var url = spaces.mainUrl(result.data, $translate.use(), $scope.params);			
 			space.trustedUrl = $sce.trustAsResourceUrl(url);
+		},function(err) {
+			if (err.data && err.data.code) $scope.error = err.data.code;
+			console.log(err);
 		});
 	};
 	

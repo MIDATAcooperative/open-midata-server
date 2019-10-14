@@ -82,7 +82,8 @@
        "sharing" : "The Data Access Filter contains data types that are excluded by the project configuration.",
        "anonymous" : "A research project can only be anonymous if no one is allowed to access unpseudonymized data.",
        "url" : "Invalid URL",
-       "consent_members" : "This consent may only be confirmed once all external persons have joined MIDATA."       
+       "consent_members" : "This consent may only be confirmed once all external persons have joined MIDATA.",
+       "entity_type" : "Invalid entity type"       
      },
 
      "missing" : {
@@ -102,7 +103,8 @@
        "file" : "No file for upload selected",
        "access_query" : "No data selected",
        "plugin" : "This plugin does not exist in your account.",
-       "auth_type" : "Two factor authentication is required for your type of account."
+       "auth_type" : "Two factor authentication is required for your type of account.",
+       "licence" : "A valid licence is required to use this application."
      },
 
      "unknown" : {
@@ -115,8 +117,9 @@
        "group" : "Unknown group name",
        "code" : "Unknown code",
        "record" : "Unknown record",
-       "user" : "User does not exist",
-       "participation" : "Research project participation not found."
+       "user" : "User does not exist",      
+       "participation" : "Research project participation not found.",
+       "organization" : "Organization does not exist."
      },
 
      "exists" : {
@@ -180,6 +183,10 @@
      
      "too_large" : {
        "file" : "The file is too large (maximum 1 MB)."
+     },
+     
+     "notrequired" : {
+       "licence" : "No licence is required for this application"
      }
 
    },
@@ -695,6 +702,10 @@
       "way2" : "Have you logged in using a browser before? If yes try to log in using the same browser and device.",
       "way3" : "Remember your old password again? If yes try to log in using your old password.",
       "way4" : "Wait for MIDATA employees to do a manual key recovery. MIDATA will send you an email when the recovery has been done. Please wait up to five working days for the recovery to be completed."
+    },
+    "licence" : {
+      "intro" : "A licence is required to use this application.",
+      "text" : "Please contact support@midata.coop to obtain a valid licence."
     }
   },
 
