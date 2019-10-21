@@ -544,14 +544,16 @@ public class AutoRun extends APIController {
 		public void importTick(ImportTick msg) {
 						
 			if (!isSlow) { isSlow = true;return; }				
-			
-			countSlow++;
+									
+			boolean startedSome = false;
 			for (int i=0;i<PARALLEL;i++) {
-				importTick();
+				if (importTick()) startedSome = true;
 			}
+			
+			if (startedSome) countSlow++;
 		}
 		
-		public void importTick() {
+		public boolean importTick() {
 			boolean foundone = false;
 			if (autoImportsIt.hasNext()) {
 				Space space = autoImportsIt.next();
@@ -559,6 +561,8 @@ public class AutoRun extends APIController {
 				
 				isSlow = false;
 				workerRouter.route(new ImportRequest(handle, autorunner, space), getSelf());
+				
+				return true;
 			} else while (datasIt.hasNext() && !foundone) {
 				SubscriptionData data = datasIt.next();
 				if (!done.contains(data.owner)) {
@@ -566,9 +570,10 @@ public class AutoRun extends APIController {
 					  foundone = true;
 					  isSlow = false;
 					  processor.tell(new SubscriptionTriggered(data.owner, data.app, "time", null, null, null), getSelf());
+					  return true;
 				}
 			}			
-			
+			return false;
 		}
 		
 		public void reportEnd(SendEndReport msg) {
