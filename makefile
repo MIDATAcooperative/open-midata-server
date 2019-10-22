@@ -288,11 +288,12 @@ nginx/sites-available/%: nginx/templates/% conf/setup.conf conf/pathes.conf conf
 	sed -i 's|PLUGINS_DIR|$(PLUGINS_DIR)/plugin_active|' nginx/sites-available/$*
 	sed -i 's|RUNDIR|$(abspath running)|' nginx/sites-available/$* 
 	
-tasks/setup-nginx: nginx/sites-available/sslredirect nginx/sites-available/webpages $(CERTIFICATE_PEM) $(CERTIFICATE_DIR)/dhparams.pem
+tasks/setup-nginx: nginx/sites-available/sslredirect nginx/sites-available/webpages nginx/conf.d/noversion.conf $(CERTIFICATE_PEM) $(CERTIFICATE_DIR)/dhparams.pem
 	$(info ------------------------------)
 	$(info Configuring NGINX... )
 	$(info ------------------------------)	
 	sudo cp nginx/sites-available/* /etc/nginx/sites-available
+	sudo cp nginx/conf.d/* /etc/nginx/conf.d
 	sudo rm -f /etc/nginx/sites-enabled/*
 	sudo ln -s /etc/nginx/sites-available/sslredirect /etc/nginx/sites-enabled/sslredirect || true
 	sudo ln -s /etc/nginx/sites-available/webpages /etc/nginx/sites-enabled/ || true	
