@@ -1155,7 +1155,7 @@ public class RecordManager {
           if (consent != null) {
         	  if (consent.status != ConsentStatus.ACTIVE && consent.status != ConsentStatus.FROZEN && !consent.owner.equals(who)) return Collections.emptyList();
         	  context =  createContextFromConsent(who, consent);
-          }
+          } else return Collections.emptyList(); 
 		}
 		AccessLog.log("context="+context);
 		QueryTagTools.handleSecurityTags(role, properties, fields);
