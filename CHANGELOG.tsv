@@ -6,3 +6,5 @@ id0004	07.10.2019	a.kreutz	I	Publisher meta-field added	Applications and Plugins
 id0005	09.10.2019	a.kreutz	I	Hide security critical CHANGELOG entries	Text/Description from security critical entries of the changelog are not displayed online.  
 id0006	09.10.2019	a.kreutz	S	Fixed: Only consent owner may confirm!	Only consent owner may set consent status to active using the API. Changed for STU3 and R4.
 id0007	14.10.2019	a.kreutz	F	Licence checker for apps and plugins	Applications may now require a licence to be used. Licences may be issued to single users, teams or organizations. For the initial release licences may be granted by an administrator only and may have a time restriction.
+id0008	22.10.2019	a.kreutz	S	Remove version number from nginx. Security fixes for 2Fa login. 
+id0009	22.10.2019	a.kreutz	I	Updated library versions for portal.
