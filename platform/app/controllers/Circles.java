@@ -287,7 +287,7 @@ public class Circles extends APIController {
 		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		String name = JsonValidation.getString(json, "name");
 		MidataId userId = JsonValidation.getMidataId(json, "owner");
-		String externalOwner = JsonValidation.getStringOrNull(json, "externalOwner");
+		String externalOwner = JsonValidation.getEMail(json, "externalOwner");
 		if (userId == null && externalOwner == null) userId = executorId;
 		String passcode = json.has("passcode") ? JsonValidation.getPassword(json, "passcode") : null;
 						
@@ -359,6 +359,7 @@ public class Circles extends APIController {
 		}
 		if (json.has("externalAuthorized")) {
 			Set<String> extMails = JsonExtraction.extractStringSet(json.get("externalAuthorized"));
+			for (String s : extMails) if (!JsonValidation.isEMail(s)) throw new JsonValidationException("error.invalid.email", "externalAuthorized", "invalid", "Invalid email");
 			consent.externalAuthorized = extMails;			
 		}
 		
@@ -387,6 +388,7 @@ public class Circles extends APIController {
 		if (consent.externalAuthorized != null) {
 			Set<String> externalAuthorized = new HashSet<String>();
 			for (String ext : consent.externalAuthorized) {
+				if (!JsonValidation.isEMail(ext)) throw new BadRequestException("error.invalid.email", "Invalid email");
 				Member member = Member.getByEmail(ext, Sets.create("_id"));
 				if (member != null) {
 					consent.authorized.add(member._id);

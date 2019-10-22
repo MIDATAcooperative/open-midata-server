@@ -104,11 +104,18 @@ public class JsonValidation {
 		return pw;
 	}
 	
-	public static String getEMail(JsonNode json, String field) throws JsonValidationException {
+	public static String getEMail(JsonNode json, String field) throws JsonValidationException {				
 		String email = json.path(field).asText();
+		if (email != null) email = email.trim();
+		if (email == null || email.length() == 0) return null;
 		if (!email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) throw new JsonValidationException("error.invalid.email", field, "noemail", "Please enter a valid email address.");
 		return email;
 	}
+	
+	public static boolean isEMail(String email) {
+	  if (email==null || !email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) return false;
+	  return true;
+	}	
 	
 	public static Date getDate(JsonNode json, String field) throws JsonValidationException {
 		JsonNode dateNode = json.path(field);

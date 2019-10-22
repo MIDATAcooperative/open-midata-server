@@ -11,6 +11,13 @@ angular.module('portal')
 	// register new user
 	$scope.register = function() {		
 		
+		var pwvalid = crypto.isValidPassword($scope.registration.password1); 
+        $scope.myform.password.$setValidity('tooshort', pwvalid);
+        if (!pwvalid) {
+        	$scope.myform.password.$invalid = true;
+        	$scope.myform.password.$error = { 'tooshort' : true };
+        }
+		
         $scope.myform.password.$setValidity('compare', $scope.registration.password1 ==  $scope.registration.password2);
 		
 		$scope.submitted = true;	

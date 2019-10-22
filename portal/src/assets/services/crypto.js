@@ -194,6 +194,11 @@ angular.module('services')
 		return null;
 	};
 	
+	service.isValidPassword = function(pw) {
+		if (!pw || !pw.length || pw.length < 8) return false;
+		return true;
+	};
+	
 	
 	return service;
 	

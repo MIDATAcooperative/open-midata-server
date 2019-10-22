@@ -151,7 +151,7 @@
      },
 
      "tooshort" : {
-       "password" : "Passwords must be at least 8 characters long.",
+       "password" : "Passwords must be at least 8 characters long and should contain upper/lower case letters, numbers and special characters.",
        "passphrase" : "Passphrases must be at least 8 characters long."
      },
 

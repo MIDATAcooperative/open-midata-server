@@ -18,6 +18,13 @@ angular.module('portal')
 			$scope.error = { code : "error.missing.newpassword" };
 			return;
 		}
+		
+		var pwvalid = crypto.isValidPassword($scope.setpw.password);         
+        if (!pwvalid) {
+        	$scope.error = { code : "error.tooshort.password" };
+        	return;
+        }
+		
 		if (!$scope.setpw.passwordRepeat || $scope.setpw.passwordRepeat !== $scope.setpw.password) {
 			$scope.error = { code : "error.invalid.password_repetition" };
 			return;
