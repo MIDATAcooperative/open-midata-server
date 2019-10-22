@@ -1,6 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const My_Definitions = require('./webpack.definitions');
@@ -27,7 +27,7 @@ var CLIENT_IMG = path.resolve(CLIENT_DIR, "assets", "img");
  * Prepare the plugins
  */
 var My_Plugins = [
-    new CleanWebpackPlugin([DIST_DIR]),
+    new CleanWebpackPlugin(),
     new CopyWebpackPlugin([
         { from: path.resolve(CLIENT_DIR, '**/*.html'), to: DIST_DIR, ignore: [ 'src/index.html', 'src/oauth.html' ], context: 'src/' },
         { from: path.resolve(CLIENT_DIR, 'auth.js'), to: path.resolve(DIST_DIR, 'auth.js') },
