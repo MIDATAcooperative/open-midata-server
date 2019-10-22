@@ -49,6 +49,8 @@ public class MailUtils {
 		System.out.println("Start send mail to "+email+" at "+new Date().toString());
 		Email mail = new Email();
 		    
+		fullname = fullname.replace(">", "").replace("<", "").replace("\"", "").replace("\\", "").replace("'", "");
+		
 		mail.setSubject(subject);
 		mail.addTo(fullname +"<" + email + ">");
 		mail.setFrom(config.getString("smtp.from"));	
