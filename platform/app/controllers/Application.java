@@ -645,7 +645,9 @@ public class Application extends APIController {
 		obj.put("confirmationCode", user.confirmedAt != null);
 		obj.put("role", user.role.toString().toLowerCase());
 		obj.put("userId", user._id.toString());
-		obj.set("user", JsonOutput.toJsonNode(user, "User", User.ALL_USER));
+		if (token.is2FAVerified(user)) {
+		  obj.set("user", JsonOutput.toJsonNode(user, "User", User.ALL_USER));
+		}
 		token.setRemoteAddress(request());
 		obj.put("sessionToken", token.encrypt());
 		

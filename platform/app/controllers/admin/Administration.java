@@ -396,7 +396,11 @@ public class Administration extends APIController {
 		}				
 				
 		Member user = Member.getById(userId, Sets.create("_id", "birthday", "firstname", "lastname", "email", "role", "flags")); 
-						
+				
+		if (!PortalSessionToken.session().is2FAVerified(user)) {
+		   throw new InternalServerException("error.internal", "birthday change tried without verification");	  
+		}
+		
 		Date birthDay = JsonValidation.getDate(json, "birthday");
 		if (user != null && birthDay != null && !birthDay.equals(user.birthday)) {
 			

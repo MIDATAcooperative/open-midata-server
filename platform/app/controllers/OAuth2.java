@@ -723,25 +723,36 @@ public class OAuth2 extends Controller {
 				
 		String securityToken = JsonValidation.getStringOrNull(json, "securityToken");
 				
+		// If 2FA is already done we do not need to check again
 		if (notok!=null && token.securityToken != null) {
 			notok.remove(UserFeature.AUTH2FACTOR);
 			notok.remove(UserFeature.PHONE_VERIFIED);		
 			return;
 		}
 		
-		if (notok!=null && (notok.contains(UserFeature.EMAIL_VERIFIED) || notok.contains(UserFeature.ADMIN_VERIFIED) || notok.contains(UserFeature.ADDRESS_VERIFIED) || notok.contains(UserFeature.MIDATA_COOPERATIVE_MEMBER) || notok.contains(UserFeature.PHONE_ENTERED))) {
+		// If 2FA is enabled (for other apps) and address or birthday must be changed do 2FA 
+		if (notok!=null && (notok.contains(UserFeature.ADDRESS_ENTERED) || notok.contains(UserFeature.BIRTHDAY_SET) || notok.contains(UserFeature.NEWEST_PRIVACY_POLICY_AGREED) || notok.contains(UserFeature.NEWEST_TERMS_AGREED))) {			
+			if (user.authType != null && user.authType != SecondaryAuthType.NONE) {
+				notok.add(UserFeature.AUTH2FACTOR);
+			}
+		}
+		
+		// Do not do 2FA if no phone number present, account email not confirmed (but required) or admin unlock required 
+		if (notok!=null && (notok.contains(UserFeature.EMAIL_VERIFIED) || notok.contains(UserFeature.ADMIN_VERIFIED) || notok.contains(UserFeature.PHONE_ENTERED))) {
 			notok.remove(UserFeature.AUTH2FACTOR);
 			notok.remove(UserFeature.AUTH2FACTORSETUP);
 			notok.remove(UserFeature.PHONE_VERIFIED);
 			return;
 		}
 		
+		// If 2FA is not setup yet do not ask for it
 		if (notok!=null && notok.contains(UserFeature.AUTH2FACTORSETUP)) {
 			notok.remove(UserFeature.AUTH2FACTOR);			
 			notok.remove(UserFeature.PHONE_VERIFIED);
 			return;
 		}
-		
+					
+		// If 2FA is required but phone not validated yet, validate phone instead
 		if (notok!=null && (notok.contains(UserFeature.AUTH2FACTOR))) {
 			if (user.authType == SecondaryAuthType.SMS && user.mobileStatus != EMailStatus.VALIDATED) {
 			  notok.remove(UserFeature.AUTH2FACTOR);
@@ -749,6 +760,7 @@ public class OAuth2 extends Controller {
 			}
 		}
 		
+		// Do phone verification
 		if (notok!=null && notok.contains(UserFeature.PHONE_VERIFIED)) {
 			if (securityToken == null) {
 				Authenticators.getInstance(SecondaryAuthType.SMS).startAuthentication(user._id, "Code", user);
@@ -782,6 +794,7 @@ public class OAuth2 extends Controller {
 			}
 		}
 		
+		// Do 2FA
 		if (notok!=null && notok.contains(UserFeature.AUTH2FACTOR)) {
 			if (securityToken == null) {
 				Authenticators.getInstance(user.authType).startAuthentication(user._id, "Code", user);

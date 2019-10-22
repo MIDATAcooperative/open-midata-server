@@ -7,6 +7,13 @@ angular.module('portal')
 	
     $scope.changePassword = function() {		
 		
+    	var pwvalid = crypto.isValidPassword($scope.pw.password); 
+        $scope.myform.password.$setValidity('tooshort', pwvalid);
+        if (!pwvalid) {
+        	$scope.myform.password.$invalid = true;
+        	$scope.myform.password.$error = { 'tooshort' : true };
+        }
+    	
         $scope.myform.password.$setValidity('compare', $scope.pw.password ==  $scope.pw.password2);
 		
 		$scope.submitted = true;

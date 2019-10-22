@@ -8,6 +8,7 @@ import java.util.Set;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import models.MidataId;
+import models.User;
 import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.Http.Request;
@@ -215,6 +216,10 @@ public class PortalSessionToken {
 		result.remoteAddress = this.remoteAddress;
 				
 		return result;
+	}
+	
+	public boolean is2FAVerified(User user) {
+		return true;
 	}
 	
 	private static ThreadLocal<PortalSessionToken> session = new ThreadLocal<PortalSessionToken>();

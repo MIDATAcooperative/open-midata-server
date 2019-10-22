@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.User;
+import models.enums.EMailStatus;
+import models.enums.SecondaryAuthType;
 import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.Http.Request;
@@ -204,5 +206,10 @@ public class ExtendedSessionToken extends PortalSessionToken {
     	this.confirmations = confirmations;
     	return this;
     }
+    
+    public boolean is2FAVerified(User user) {
+    	if (user.mobileStatus == EMailStatus.VALIDATED && user.authType != null && user.authType != SecondaryAuthType.NONE && this.securityToken==null) return false;
+    	return true;
+	}
 	
 }
