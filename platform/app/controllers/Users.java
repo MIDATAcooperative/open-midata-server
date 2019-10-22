@@ -52,6 +52,7 @@ import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
+import utils.auth.ExtendedSessionToken;
 import utils.auth.FutureLogin;
 import utils.auth.KeyManager;
 import utils.auth.MemberSecured;
@@ -268,19 +269,22 @@ public class Users extends APIController {
 		//Check authorization except for change self
 		if (!executorId.equals(userId)) {
 		  requireSubUserRole(SubUserRole.USERADMIN);
-		}			
-		
-
+		} 
+		 			
 		//String email = JsonValidation.getEMail(json, "email");
 		String firstName = JsonValidation.getString(json, "firstname");
 		String lastName = JsonValidation.getString(json, "lastname");
 					
-		User user = User.getById(userId, User.ALL_USER_INTERNAL); 
+		User user = User.getById(userId, User.ALL_USER_INTERNAL);
 		
+		if (!PortalSessionToken.session().is2FAVerified(user)) {
+		  throw new InternalServerException("error.internal", "address change tried without verification");	  
+		}
+				
 		//user.email = email;
 		//user.emailLC = email.toLowerCase();
 		if (json.has("country")) { 
-			JsonValidation.validate(json, "user", "firstname", "lastname", "gender", "city", "zip", "country", "address1");
+			JsonValidation.validate(json, "user", "firstname", "lastname", "city", "zip", "country", "address1");
 			
 			user.name = firstName + " " + lastName;
 			user.address1 = JsonValidation.getString(json, "address1");
@@ -291,9 +295,12 @@ public class Users extends APIController {
 			user.country = JsonValidation.getString(json, "country");
 			user.firstname = JsonValidation.getString(json, "firstname");
 			user.lastname = JsonValidation.getString(json, "lastname");
-			user.gender = JsonValidation.getEnum(json, "gender", Gender.class);				
+			if (json.has("gender")) {
+			  user.gender = JsonValidation.getEnum(json, "gender", Gender.class);
+			}
 		}
 		if (json.has("phone")) {
+		  
 		  user.phone = JsonValidation.getString(json, "phone");
 		  String mobile = JsonValidation.getString(json, "mobile");
 		  if (!mobile.equals(user.mobile)) {
@@ -302,7 +309,8 @@ public class Users extends APIController {
 		  }
 		  
 		}
-		if (json.has("authType")) {			
+		if (json.has("authType")) {
+			
 			user.authType = JsonValidation.getEnum(json, "authType", SecondaryAuthType.class);
 			
 			if (user.authType.equals(SecondaryAuthType.NONE) && InstanceConfig.getInstance().getInstanceType().is2FAMandatory(getRole())) {

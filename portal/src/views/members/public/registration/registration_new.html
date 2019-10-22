@@ -46,11 +46,8 @@
 
 
 							<formrowfloat myid="gender" type="select">
-							<select class="mi-at-select" id="gender" name="gender" ng-model="registration.gender" required><option value=""
-									 selected disabled>{{ 'registration.gender' | translate}} *</option>
-								<option value="FEMALE" translate="enum.gender.FEMALE">female</option>
-								<option value="MALE" translate="enum.gender.MALE"></option>
-								<option value="OTHER" translate="enum.gender.OTHER"></option></select></formrowfloat>
+							<select class="mi-at-select" id="gender" name="gender" ng-model="registration.gender" ng-options="gender as 'enum.gender.'+gender | translate for gender in genders" required><option value=""
+									 selected disabled>{{ 'registration.gender' | translate}} *</option></select></formrowfloat>
 							<formrowfloat myid="birthday" label="registration.birthday2"> <input required id="mi-at-input-date-of-birth"
 								id="birthday" name="birthday" class="mi-at-input mi-at-input--date" ng-change="removeDateError()" ng-pattern="'[0-3]?[0-9]\.[0-1]?[0-9]\.[0-9][0-9][0-9][0-9]'" type="text" value="" ng-model="registration.birthdayDate"
 								floating-label  /> </formrowfloat>

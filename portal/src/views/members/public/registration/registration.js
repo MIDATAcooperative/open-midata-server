@@ -7,6 +7,7 @@ angular.module('portal')
 	$scope.error = null;
 	$scope.flags = {};
 	$scope.status = new status(false, $scope);
+	$scope.genders = ["FEMALE","MALE","OTHER"];
 	
 	$scope.offline = (window.jsRoutes === undefined) || (window.jsRoutes.controllers === undefined);
 	
@@ -36,6 +37,14 @@ angular.module('portal')
 	        	$scope.myform.appAgb.$error = { 'mustaccept' : true };
             }
         }
+        
+        var pwvalid = crypto.isValidPassword($scope.registration.password1); 
+        $scope.myform.password.$setValidity('tooshort', pwvalid);
+        if (!pwvalid) {
+        	$scope.myform.password.$invalid = true;
+        	$scope.myform.password.$error = { 'tooshort' : true };
+        }
+        
         
         if ($scope.links) {
 	        for (var i=0;i<$scope.links.length;i++) {
