@@ -52,6 +52,7 @@
   "author": "Alexander Kreutz",
   "license": "BSD-2-Clause",
   "browserslist": [
+    "> 1%",
     "last 2 versions"
   ]
 }
