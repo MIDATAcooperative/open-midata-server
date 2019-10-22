@@ -109,12 +109,8 @@ footer {
 }
 
 #mainheader {
-		background: #32c6b6 ; /* Old Browsers */
-		/* autoprefixer: off */
-		background: -webkit-radial-gradient(top right,#32c6b6,#1490d1); /*Safari 5.1-6*/
-		background: -o-radial-gradient(top right,#32c6b6,#1490d1); /*Opera 11.1-12*/
-		background: -moz-radial-gradient(top right,#32c6b6,#1490d1); /*Fx 3.6-15*/
-		background: radial-gradient(top right, #32c6b6, #1490d1); /*Standard*/
+		background: #32c6b6; 		
+		background: radial-gradient(circle at top right, #32c6b6, #1490d1); 
     opacity: 1;
     width: 100%;
     h1 {
