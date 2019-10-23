@@ -116,10 +116,10 @@ public enum UserFeature {
 				return member.birthday != null && member.birthday.before(new Date(System.currentTimeMillis()-60l*60l*24l*365l*3l));
 			case NEWEST_TERMS_AGREED:
 				InstanceConfig ic = InstanceConfig.getInstance();
-				return user.termsAgreed != null && user.termsAgreed.contains(ic.getTermsOfUse());
+				return user.termsAgreed != null && user.termsAgreed.contains(ic.getTermsOfUse(user.role));
 			case NEWEST_PRIVACY_POLICY_AGREED:
 				ic = InstanceConfig.getInstance();
-				return user.termsAgreed != null && user.termsAgreed.contains(ic.getPrivacyPolicy());
+				return user.termsAgreed != null && user.termsAgreed.contains(ic.getPrivacyPolicy(user.role));
 			case AUTH2FACTOR:
 				if (user.authType == null || user.authType.equals(SecondaryAuthType.NONE)) return true;
 				// AUTH2FACTOR is handeled outside. If no phone is present this can be skipped. Use PHONE_ENTERED to force phone number to be present.

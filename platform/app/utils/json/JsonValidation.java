@@ -28,7 +28,7 @@ public class JsonValidation {
 			throw new JsonValidationException("error.missing.json", "No json found.");
 		} else {
 			for (String requiredField : requiredFields) {
-				if (!json.has(requiredField)) {
+				if (!json.has(requiredField) || (json.get(requiredField).isTextual() && json.get(requiredField).asText().isEmpty())) {
 					throw new JsonValidationException("error.missing.input_field", requiredField, "required", "Request parameter '" + requiredField + "' not found.");
 				}
 			}
