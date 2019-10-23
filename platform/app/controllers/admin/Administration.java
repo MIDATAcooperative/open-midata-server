@@ -128,6 +128,14 @@ public class Administration extends APIController {
 			Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.ACCOUNT_UNLOCK, null, Collections.singleton(user._id), null, new HashMap<String, String>());			
 		}
 		
+		if (user.status != oldstatus && user.status == UserStatus.ACTIVE) {
+		  AuditManager.instance.addAuditEvent(AuditEventType.USER_STATUS_CHANGE_ACTIVE, null, executorId, user);
+		}
+		
+		if (user.status != oldstatus && user.status == UserStatus.BLOCKED) {
+		  AuditManager.instance.addAuditEvent(AuditEventType.USER_STATUS_CHANGE_BLOCKED, null, executorId, user);
+		}
+		  
 		if (user.status != oldstatus && user.status == UserStatus.DELETED) {
 			AuditManager.instance.addAuditEvent(AuditEventType.USER_ACCOUNT_DELETED, null, executorId, user);
 			User.set(user._id, "searchable", false);			

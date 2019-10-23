@@ -284,13 +284,18 @@ public class Users extends APIController {
 		//user.email = email;
 		//user.emailLC = email.toLowerCase();
 		if (json.has("country")) { 
-			JsonValidation.validate(json, "user", "firstname", "lastname", "city", "zip", "country", "address1");
+						
+			if (user.city != null && user.city.length()>0) {
+				JsonValidation.validate(json, "user", "firstname", "lastname", "city", "zip", "country", "address1");
+			} else {
+				JsonValidation.validate(json, "user", "firstname", "lastname", "country");	
+			}
 			
 			user.name = firstName + " " + lastName;
-			user.address1 = JsonValidation.getString(json, "address1");
-			user.address2 = JsonValidation.getString(json, "address2");
-			user.city = JsonValidation.getString(json, "city");
-			user.zip = JsonValidation.getString(json, "zip");
+			user.address1 = JsonValidation.getStringOrNull(json, "address1");
+			user.address2 = JsonValidation.getStringOrNull(json, "address2");
+			user.city = JsonValidation.getStringOrNull(json, "city");
+			user.zip = JsonValidation.getStringOrNull(json, "zip");
 			
 			user.country = JsonValidation.getString(json, "country");
 			user.firstname = JsonValidation.getString(json, "firstname");

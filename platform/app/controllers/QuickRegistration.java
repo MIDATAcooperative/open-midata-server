@@ -142,7 +142,7 @@ public class QuickRegistration extends APIController {
 		user.gender = JsonValidation.getEnum(json, "gender", Gender.class);
 		user.birthday = JsonValidation.getDate(json, "birthday");
 		user.language = JsonValidation.getString(json, "language");
-		user.ssn = JsonValidation.getString(json, "ssn");
+		//user.ssn = JsonValidation.getString(json, "ssn");
 		//user.authType = InstanceConfig.getInstance().getInstanceType().is2FAMandatory(user.role) ? SecondaryAuthType.SMS : SecondaryAuthType.NONE;
 		
         Application.registerSetDefaultFields(user);		

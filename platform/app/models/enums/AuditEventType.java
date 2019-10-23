@@ -28,7 +28,9 @@ public enum AuditEventType {
 	USER_BIRTHDAY_CHANGE(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-birthday-change", "Birthday changed"), AuditEventAction.U),
 	
 	// Not done
-	USER_STATUS_CHANGE(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-status-change", "User status changed"), AuditEventAction.U),
+	USER_STATUS_CHANGE_ACTIVE(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-status-change-active", "User status changed to active"), AuditEventAction.U),
+	
+	USER_STATUS_CHANGE_BLOCKED(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-status-change-blocked", "User status changed to blocked"), AuditEventAction.U),
 	
 	USER_EMAIL_CONFIRMED(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-email-confirmed", "User email confirmed"), AuditEventAction.U),
 	
