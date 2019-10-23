@@ -86,11 +86,11 @@ public class Terms extends APIController {
 	}
 	
 	public static void addAgreedToDefaultTerms(User user) throws AppException {
-		Config config = InstanceConfig.getInstance().getConfig();
-		String terms = config.hasPath("versions.midata-terms-of-use") ? config.getString("versions.midata-terms-of-use") : "1.0";
-		String ppolicy = config.hasPath("versions.midata-privacy-policy") ? config.getString("versions.midata-privacy-policy") : "1.0";		
-		user.agreedToTerms("midata-terms-of-use--"+terms, user.initialApp);
-		user.agreedToTerms("midata-privacy-policy--"+ppolicy, user.initialApp);		
+		String terms = InstanceConfig.getInstance().getTermsOfUse(user.role);
+		String ppolicy = InstanceConfig.getInstance().getPrivacyPolicy(user.role);
+				
+		user.agreedToTerms(terms, user.initialApp);
+		user.agreedToTerms(ppolicy, user.initialApp);		
 	}
 	
 	
@@ -103,14 +103,16 @@ public class Terms extends APIController {
 		JsonValidation.validate(json, "terms", "app");
 		
 		String terms = JsonValidation.getString(json, "terms");
-		
-		if (terms.equals("midata-privacy-policy")) terms = InstanceConfig.getInstance().getPrivacyPolicy();
-		else if (terms.equals("midata-terms-of-use")) terms = InstanceConfig.getInstance().getTermsOfUse();
-		
+				
 		MidataId app = JsonValidation.getMidataId(json, "app");
 		
 		User user = User.getById(userId, Sets.create(User.FOR_LOGIN));
 		if (user == null) throw new InternalServerException("error.internal", "Session user does not exist.");
+		
+		if (terms.equals("midata-privacy-policy")) terms = InstanceConfig.getInstance().getPrivacyPolicy(user.role);
+		else if (terms.equals("midata-terms-of-use")) terms = InstanceConfig.getInstance().getTermsOfUse(user.role);
+		
+		
 		user.agreedToTerms(terms, app);
 		
 		return OAuth2.loginHelper();	

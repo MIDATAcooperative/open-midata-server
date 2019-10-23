@@ -6,6 +6,7 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigException;
 
 import models.enums.InstanceType;
+import models.enums.UserRole;
 
 public class InstanceConfig {
 
@@ -154,7 +155,7 @@ public class InstanceConfig {
 	 * Get current version of terms of use
 	 * @return
 	 */
-	public String getTermsOfUse() {	
+	public String getTermsOfUse(UserRole role) {	
 	  return "midata-terms-of-use--" + (config.hasPath("versions.midata-terms-of-use") ? config.getString("versions.midata-terms-of-use") : "1.0");
 	}
 	
@@ -162,7 +163,7 @@ public class InstanceConfig {
 	 * Get current version of privacy policy
 	 * @return
 	 */
-	public String getPrivacyPolicy() {
+	public String getPrivacyPolicy(UserRole role) {
 	   return "midata-privacy-policy--" + (config.hasPath("versions.midata-privacy-policy") ? config.getString("versions.midata-privacy-policy") : "1.0");		
 	}
 }

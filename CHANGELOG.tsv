@@ -8,3 +8,6 @@ id0006	09.10.2019	a.kreutz	S	Fixed: Only consent owner may confirm!	Only consent
 id0007	14.10.2019	a.kreutz	F	Licence checker for apps and plugins	Applications may now require a licence to be used. Licences may be issued to single users, teams or organizations. For the initial release licences may be granted by an administrator only and may have a time restriction.
 id0008	22.10.2019	a.kreutz	S	Remove version number from nginx. Security fixes for 2Fa login. 
 id0009	22.10.2019	a.kreutz	I	Updated library versions for portal.
+id0010	23.10.2019	a.kreutz	B	Fixed fullscreen view for plugins did not work.
+id0011	23.10.2019	a.kreutz	B	Address only required on profile if already present.
+id0012	23.10.2019	a.kreutz	I	Account unlocked/locked status changes are recorded in Audit Log.  

@@ -766,15 +766,15 @@ public class Application extends APIController {
 		user.address2 = JsonValidation.getStringOrNull(json, "address2");
 		user.city = JsonValidation.getStringOrNull(json, "city");
 		user.zip  = JsonValidation.getStringOrNull(json, "zip");
-		user.phone = JsonValidation.getString(json, "phone");
-		user.mobile = JsonValidation.getString(json, "mobile");
+		user.phone = JsonValidation.getStringOrNull(json, "phone");
+		user.mobile = JsonValidation.getStringOrNull(json, "mobile");
 		user.country = JsonValidation.getString(json, "country");
 		user.firstname = JsonValidation.getString(json, "firstname"); 
 		user.lastname = JsonValidation.getString(json, "lastname");
 		user.gender = JsonValidation.getEnum(json, "gender", Gender.class);
 		user.birthday = JsonValidation.getDate(json, "birthday");
 		user.language = JsonValidation.getString(json, "language");
-		user.ssn = JsonValidation.getString(json, "ssn");										
+		//user.ssn = JsonValidation.getString(json, "ssn");										
 		//user.authType = SecondaryAuthType.NONE;	
 		
 		registerSetDefaultFields(user);				
