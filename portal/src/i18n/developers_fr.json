@@ -34,6 +34,9 @@
         "empty" : "Vous n'avez encore enregistré aucune application.",
         "register" : "Enregistrer une nouvelle application",
         "name" : "Nom",
+
+        // TODO NEW: Internal
+        "filename" : "Internal",
         "type" : "Type",
         "role" : "Rôle cible",
         "manage_btn" : "gérer",
@@ -103,6 +106,18 @@
         "stats_help" : "Consultez des statistiques et des conseils pour améliorer les différents types d'appels API envoyés par votre application au serveur.",
         "debug_btn" : "API Tester Sandbox",
         "debug_help" : "Connectez-vous en tant qu'application et testez les requêtes contre le backend MIDATA",
+
+        // TODO NEW: Reviews
+        "appreviews_btn" : "Reviews",
+
+        // TODO NEW: Reviews conducted for this application
+        "appreviews_help" : "Reviews conducted for this application",
+
+        // TODO NEW: Licence
+        "applicence_btn" : "Licence",
+
+        // TODO NEW: Does the user require a licence to use this application?
+        "applicence_help" : "Does the user require a licence to use this application?",
         "linkedStudy" : "Projet lié à l'application (code)",
         "mustParticipateInStudy" : "Participation au projet de recherche requise",
         "admin_only" : "Seul un administrateur MIDATA peut modifier cette section. Veuillez faire une demande de changement si nécessaire.",
@@ -117,6 +132,14 @@
         "logout_explain" : "Les modifications apportées aux champs marqués par !! exigent la déconnexion de tous les utilisateurs de cette application.",
         "send_reports" : "Envoyer les rapports d'erreurs",
 
+        // TODO NEW: Not reviewed yet
+        "not_reviewed" : "Not reviewed yet",
+
+        // TODO NEW: Reviewed
+        "ACCEPTED" : "Reviewed",
+
+        // TODO NEW: Needs Fixing
+        "NEEDS_FIXING" : "Needs Fixing",
         "info" : {
             "filename" : "Ce nom est utilisé (en interne) pour identifier votre application. Il doit s'agir d'un identificateur valide (a-z, A-Z, 0-9, _).",
             "targetUserRole" : "Votre application est-elle destinée à un rôle spécifique? Sinon, veuillez choisir 'Tous les rôles'.",
@@ -159,7 +182,13 @@
         "logoutwarning" : "Changer la définition de l'application déconnectera tous les utilisateurs de cette application. Ils devront confirmer à nouveau l'utilisation de l'application à la prochaine connexion.",
         "researchwarning" : "Changer la définition de l'application dissociera cette application de recherche de tous les projets!",
         "creator" : "Créateur",
-        "organization" : "Organisation"
+        "organization" : "Organisation",
+
+        // TODO NEW: Publisher
+        "publisher" : "Publisher",
+
+        // TODO NEW: Reviews
+        "reviews" : "Reviews"
     },
 
     "appstats" : {
@@ -190,6 +219,9 @@
         "backend_services" : "Scripts côté serveur",
         "portal_username" : "Nom d'utilisateur",
         "portal_password" : "Mot de passe",
+
+        // TODO NEW: Role
+        "portal_role" : "Role",
         "portal_login" : "Utilisez l'instance de plugin:",
         "portal_login_btn" : "Connexion au portail + obtention du token"
     },
@@ -259,5 +291,92 @@
             "cmd_to_run" : "Commande à exécuter sur votre ordinateur:"
         }
 
+    },
+
+    "appreviews" : {
+
+        // TODO NEW: Review
+        "review_btn" : "Review",
+
+        // TODO NEW: Application Reviews
+        "title" : "Application Reviews",
+
+        // TODO NEW: Application Name
+        "name" : "Application Name",
+
+        // TODO NEW: Review Type
+        "check" : "Review Type",
+
+        // TODO NEW: Date
+        "date" : "Date",
+
+        // TODO NEW: Signed by
+        "userLogin" : "Signed by",
+
+        // TODO NEW: Comment
+        "comment" : "Comment",
+
+        // TODO NEW: Status
+        "status" : "Status",
+
+        // TODO NEW: No reviews have been done yet on this instance.
+        "noreviews" : "No reviews have been done yet on this instance.",
+
+        // TODO NEW: Application Concept
+        "CONCEPT" : "Application Concept",
+
+        // TODO NEW: Data Model
+        "DATA_MODEL" : "Data Model",
+
+        // TODO NEW: Access Filter
+        "ACCESS_FILTER" : "Access Filter",
+
+        // TODO NEW: Queries
+        "QUERIES" : "Queries",
+
+        // TODO NEW: Description
+        "DESCRIPTION" : "Description",
+
+        // TODO NEW: Icons
+        "ICONS" : "Icons",
+
+        // TODO NEW: Mail Texts
+        "MAILS" : "Mail Texts",
+
+        // TODO NEW: Projects
+        "PROJECTS" : "Projects",
+
+        // TODO NEW: Code Review
+        "CODE_REVIEW" : "Code Review",
+
+        // TODO NEW: Test Concept
+        "TEST_CONCEPT" : "Test Concept",
+
+        // TODO NEW: Test Protokoll
+        "TEST_PROTOKOLL" : "Test Protokoll",
+
+        // TODO NEW: Contract
+        "CONTRACT" : "Contract",
+
+        // TODO NEW: Passed
+        "ACCEPTED" : "Passed",
+
+        // TODO NEW: Needs fixing
+        "NEEDS_FIXING" : "Needs fixing",
+
+        // TODO NEW: Obsolete
+        "OBSOLETE" : "Obsolete"
+    },
+
+    "applicence" : {
+
+        // TODO NEW: Licence
+        "title" : "Licence",
+
+        // TODO NEW: Licence required?
+        "required" : "Licence required?",
+
+        // TODO NEW: Allowed entities
+        "allowedEntities" : "Allowed entities"
     }
 }

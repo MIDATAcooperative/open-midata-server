@@ -34,6 +34,9 @@
         "empty" : "Sie haben noch keine Applikation registriert.",
         "register" : "Neue Applikation registrieren",
         "name" : "Name",
+
+        // TODO NEW: Internal
+        "filename" : "Internal",
         "type" : "Typ",
         "role" : "Zielrolle",
         "manage_btn" : " verwalten",
@@ -103,6 +106,18 @@
         "stats_help" : "Hier finden Sie Statistiken und Hinweise zur Verbesserung der verschiedenen Arten von API-Aufrufen, die Ihre Applikation an den Server sendet.",
         "debug_btn" : "API Tester Sandbox",
         "debug_help" : "Melden Sie sich als Applikation an und testen Sie Abfragen gegen das MIDATA-Backend.",
+
+        // TODO NEW: Reviews
+        "appreviews_btn" : "Reviews",
+
+        // TODO NEW: Reviews conducted for this application
+        "appreviews_help" : "Reviews conducted for this application",
+
+        // TODO NEW: Licence
+        "applicence_btn" : "Licence",
+
+        // TODO NEW: Does the user require a licence to use this application?
+        "applicence_help" : "Does the user require a licence to use this application?",
         "linkedStudy" : "Mit der Applikation verknüpftes Projekt (Code)",
         "mustParticipateInStudy" : "Teilnahme am Forschungsprojekt erforderlich",
         "admin_only" : "Nur ein MIDATA Administrator darf diesen Abschnitt ändern. Bitte fordern Sie bei Bedarf Änderungen an.",
@@ -117,6 +132,14 @@
         "logout_explain" : "Änderungen an den mit !! gekennzeichneten Feldern erfordern die Abmeldung aller Benutzer dieser Applikation.",
         "send_reports" : "Fehlerberichte senden",
 
+        // TODO NEW: Not reviewed yet
+        "not_reviewed" : "Not reviewed yet",
+
+        // TODO NEW: Reviewed
+        "ACCEPTED" : "Reviewed",
+
+        // TODO NEW: Needs Fixing
+        "NEEDS_FIXING" : "Needs Fixing",
         "info" : {
             "filename" : "Dieser Name wird intern für die Kennung Ihrer Applikation verwendet. Es sollte ein gültiger Identifikator sein (a-z, A-Z, 0-9, _).",
             "targetUserRole" : "Ist Ihre Applikation nur für eine spezifische Rolle bestimmt? Wenn nicht, wählen Sie 'Alle Rollen'.",
@@ -159,7 +182,13 @@
         "logoutwarning" : "Bei einer Änderung der Applikationsdefinition, werden alle Benutzer von dieser Applikation getrennt. Sie müssen die Verwendung der Applikation bei der nächsten Anmeldung erneut bestätigen.",
         "researchwarning" : "Eine Änderung der Applikationsdefinition entkoppelt diese Forschungsapplikation von allen Projekten!",
         "creator" : "Ersteller",
-        "organization" : "Organisation"
+        "organization" : "Organisation",
+
+        // TODO NEW: Publisher
+        "publisher" : "Publisher",
+
+        // TODO NEW: Reviews
+        "reviews" : "Reviews"
     },
 
     "appstats" : {
@@ -190,6 +219,9 @@
         "backend_services" : "Serverseitige Skripte",
         "portal_username" : "Benutzername",
         "portal_password" : "Passwort",
+
+        // TODO NEW: Role
+        "portal_role" : "Role",
         "portal_login" : "Plugin-Instanz verwenden:",
         "portal_login_btn" : "Portal-Login + Token erhalten"
     },
@@ -259,5 +291,92 @@
             "cmd_to_run" : "Befehl zur Ausführung auf Ihrem Computer:"
         }
 
+    },
+
+    "appreviews" : {
+
+        // TODO NEW: Review
+        "review_btn" : "Review",
+
+        // TODO NEW: Application Reviews
+        "title" : "Application Reviews",
+
+        // TODO NEW: Application Name
+        "name" : "Application Name",
+
+        // TODO NEW: Review Type
+        "check" : "Review Type",
+
+        // TODO NEW: Date
+        "date" : "Date",
+
+        // TODO NEW: Signed by
+        "userLogin" : "Signed by",
+
+        // TODO NEW: Comment
+        "comment" : "Comment",
+
+        // TODO NEW: Status
+        "status" : "Status",
+
+        // TODO NEW: No reviews have been done yet on this instance.
+        "noreviews" : "No reviews have been done yet on this instance.",
+
+        // TODO NEW: Application Concept
+        "CONCEPT" : "Application Concept",
+
+        // TODO NEW: Data Model
+        "DATA_MODEL" : "Data Model",
+
+        // TODO NEW: Access Filter
+        "ACCESS_FILTER" : "Access Filter",
+
+        // TODO NEW: Queries
+        "QUERIES" : "Queries",
+
+        // TODO NEW: Description
+        "DESCRIPTION" : "Description",
+
+        // TODO NEW: Icons
+        "ICONS" : "Icons",
+
+        // TODO NEW: Mail Texts
+        "MAILS" : "Mail Texts",
+
+        // TODO NEW: Projects
+        "PROJECTS" : "Projects",
+
+        // TODO NEW: Code Review
+        "CODE_REVIEW" : "Code Review",
+
+        // TODO NEW: Test Concept
+        "TEST_CONCEPT" : "Test Concept",
+
+        // TODO NEW: Test Protokoll
+        "TEST_PROTOKOLL" : "Test Protokoll",
+
+        // TODO NEW: Contract
+        "CONTRACT" : "Contract",
+
+        // TODO NEW: Passed
+        "ACCEPTED" : "Passed",
+
+        // TODO NEW: Needs fixing
+        "NEEDS_FIXING" : "Needs fixing",
+
+        // TODO NEW: Obsolete
+        "OBSOLETE" : "Obsolete"
+    },
+
+    "applicence" : {
+
+        // TODO NEW: Licence
+        "title" : "Licence",
+
+        // TODO NEW: Licence required?
+        "required" : "Licence required?",
+
+        // TODO NEW: Allowed entities
+        "allowedEntities" : "Allowed entities"
     }
 }

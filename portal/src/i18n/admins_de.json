@@ -10,6 +10,9 @@
         "content" : "Inhaltstypen",
         "studies" : "Projekte",
         "terms" : "Allgemeine Geschäftsbedingungen",
+
+        // TODO NEW: Licenses
+        "licenses" : "Licenses",
         "registration" : "Administrator registrieren",
         "user_admin" : "Benutzerverwaltung",
         "plugin_admin" : "Applikationen & Daten",
@@ -213,7 +216,59 @@
         "decrypted" : "Entschlüsselte Share",
         "myid" : "Meine Wiederherstellungs-ID",
         "instr1" : "Klicken Sie auf einen Share, um den verschlüsselten Share in die Zwischenablage zu kopieren.",
-        "instr2" : "Entschlüsseln Sie den Share auf Ubuntu: (klick auf die Zeile, um sie in die Zwischenablage zu kopieren)"
+
+        // TODO CHANGED
+        // OLD: Decrypt share on Ubuntu: (click line to copy it to clipboard)
+        // NEW: Decrypt share on UBUNTU: (click line to copy it to clipboard)
+        "instr2" : "Entschlüsseln Sie den Share auf Ubuntu: (klick auf die Zeile, um sie in die Zwischenablage zu kopieren)",
+
+        // TODO NEW: Decrypt share on MAC: (click line to copy it to clipboard)
+        "instr3" : "Decrypt share on MAC: (click line to copy it to clipboard)"
+    },
+
+    "admin_licenses" : {
+
+        // TODO NEW: Licenses
+        "title" : "Licenses",
+
+        // TODO NEW: Application
+        "appName" : "Application",
+
+        // TODO NEW: Licensee Type
+        "licenseeType" : "Licensee Type",
+
+        // TODO NEW: Licensee
+        "licenseeName" : "Licensee",
+
+        // TODO NEW: Expires
+        "expireDate" : "Expires",
+
+        // TODO NEW: No matching licenses found.
+        "empty" : "No matching licenses found."
+    },
+
+    "admin_addlicence" : {
+
+        // TODO NEW: New Licence
+        "title1" : "New Licence",
+
+        // TODO NEW: Edit Licence
+        "title2" : "Edit Licence",
+
+        // TODO NEW: Application
+        "app" : "Application",
+
+        // TODO NEW: Licensee Type
+        "licenseeType" : "Licensee Type",
+
+        // TODO NEW: User Role
+        "role" : "User Role",
+
+        // TODO NEW: Licensee
+        "licensee" : "Licensee",
+
+        // TODO NEW: Date of expiration
+        "expireDate" : "Date of expiration"
     },
 
     "usagestats" : {

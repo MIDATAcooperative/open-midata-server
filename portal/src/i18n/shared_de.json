@@ -83,7 +83,10 @@
             "sharing" : "Der Datenzugriffsfilter (Data Access Filter) beinhaltet Datentypen, die von der Projektkonfiguration ausgeschlossen sind.",
             "anonymous" : "Ein Forschungsprojekt kann nur dann anonym sein, wenn niemand auf unpseudonymisierte Daten zugreifen darf.",
             "url" : "Ungültige URL",
-            "consent_members" : "Diese Zustimmung kann erst bestätigt werden, wenn alle externen Personen MIDATA beigetreten sind."
+            "consent_members" : "Diese Zustimmung kann erst bestätigt werden, wenn alle externen Personen MIDATA beigetreten sind.",
+
+            // TODO NEW: Invalid entity type
+            "entity_type" : "Invalid entity type"
         },
 
         "missing" : {
@@ -103,7 +106,10 @@
             "file" : "Keine Datei zum Hochladen ausgewählt",
             "access_query" : "Keine Daten ausgewählt",
             "plugin" : "Dieses Plugin existiert nicht in Ihrem Konto.",
-            "auth_type" : "Für Ihren Kontotyp ist eine Zwei-Faktor-Authentifizierung erforderlich."
+            "auth_type" : "Für Ihren Kontotyp ist eine Zwei-Faktor-Authentifizierung erforderlich.",
+
+            // TODO NEW: A valid licence is required to use this application.
+            "licence" : "A valid licence is required to use this application."
         },
 
         "unknown" : {
@@ -117,7 +123,10 @@
             "code" : "Unbekannter Code",
             "record" : "Unbekannter Datensatz",
             "user" : "Dieser Benutzer existiert nicht",
-            "participation" : "Teilnahme an Forschungsprojekt nicht gefunden."
+            "participation" : "Teilnahme an Forschungsprojekt nicht gefunden.",
+
+            // TODO NEW: Organization does not exist.
+            "organization" : "Organization does not exist."
         },
 
         "exists" : {
@@ -149,6 +158,10 @@
         },
 
         "tooshort" : {
+
+            // TODO CHANGED
+            // OLD: Passwords must be at least 8 characters long.
+            // NEW: Passwords must be at least 8 characters long and should contain upper/lower case letters, numbers and special characters.
             "password" : "Kennwörter müssen mindestens 8 Zeichen lang sein.",
             "passphrase" : "Passphrasen müssen mindestens 8 Zeichen lang sein."
         },
@@ -181,6 +194,12 @@
 
         "too_large" : {
             "file" : "Die Datei ist zu gross (maximal 1 MB)."
+        },
+
+        "notrequired" : {
+
+            // TODO NEW: No licence is required for this application
+            "licence" : "No licence is required for this application"
         }
 
     },
@@ -232,7 +251,12 @@
             "user-settings-change" : "Benutzereinstellungen geändert",
             "user-email-change" : "E-Mail des Benutzers geändert",
             "user-birthday-change" : "Geburtsdatum des Benutzers geändert",
-            "user-status-change" : "Status des Benutzerkontos geändert",
+
+            // TODO NEW: User account unlocked
+            "user-status-change-active" : "User account unlocked",
+
+            // TODO NEW: User account blocked
+            "user-status-change-blocked" : "User account blocked",
             "user-email-confirmed" : "E-Mail bestätigt durch Benutzer",
             "user-email-rejected" : "E-Mail verworfen durch Benutzer",
             "user-account-change-by-admin" : "Benutzerkonto durch einen Administrator geändert",
@@ -473,6 +497,17 @@
         "accountnotifications" : {
             "NONE" : "Keine Anmeldungs-Benachrichtigungen",
             "LOGIN" : "E-Mail bei jeder Anmeldung senden"
+        },
+        "entitytype" : {
+
+            // TODO NEW: User
+            "USER" : "User",
+
+            // TODO NEW: Team
+            "USERGROUP" : "Team",
+
+            // TODO NEW: Organization
+            "ORGANIZATION" : "Organization"
         }
     },
 
@@ -691,6 +726,14 @@
             "way2" : "Haben Sie sich schon einmal mit einem Browser angemeldet? Wenn ja, versuchen Sie, sich mit dem gleichen Browser und Gerät anzumelden.",
             "way3" : "Erinnern Sie sich wieder an Ihr altes Passwort? Wenn ja, versuchen Sie, sich mit Ihrem alten Passwort anzumelden.",
             "way4" : "Warten Sie, bis MIDATA-Mitarbeiter eine manuelle Schlüsselwiederherstellung durchgeführt haben. MIDATA sendet Ihnen eine E-Mail, wenn die Wiederherstellung abgeschlossen ist. Bitte warten Sie bis zu fünf Arbeitstage, bis die Wiederherstellung abgeschlossen ist."
+        },
+        "licence" : {
+
+            // TODO NEW: A licence is required to use this application.
+            "intro" : "A licence is required to use this application.",
+
+            // TODO NEW: Please contact support@midata.coop to obtain a valid licence.
+            "text" : "Please contact support@midata.coop to obtain a valid licence."
         }
     },
 
@@ -832,6 +875,9 @@
         "success" : "Ein neus Plugin wurde erfolgreich installiert.",
         "created_by" : "Erstellt durch:",
         "orgName" : "Organisation:",
+
+        // TODO NEW: Publisher:
+        "publisher" : "Publisher:",
         "description" : "Beschreibung:",
         "tile_name" : "Name der Kachel:",
         "install_location" : "Standort:",
@@ -910,6 +956,10 @@
         "status_expired" : "Diese Zustimmung ist abgelaufen. Daten werden nicht mehr geteilt.",
         "status_unconfirmed" : "Diese Zustimmung benötigt eine Bestätigung durch ihren Besitzer.",
         "status_rejected" : "Diese Zustimmung wurde durch ihren Besitzer verworfen.",
+
+        // TODO CHANGED
+        // OLD: This consent shares {{count}} records.
+        // NEW: This consent shares currently {{count}} records.
         "shares_records" : "Diese Zustimmung teilt derzeit {{count}} Datensätze.",
         "shares_group" : "Teilt alle Einträge die dieser Gruppe gehören: {{ group }}",
         "excludes_group" : "Schliesst alle Einträge die dieser Gruppe gehören aus: {{ group }}",
@@ -920,8 +970,16 @@
         "please_review1" : "Zustimmung zu überprüfen",
         "please_review2a" : "Bitte überprüfen Sie diese Zustimmung. Klicken Sie auf 'Diese Zustimmung bestätigen', wenn Sie damit einverstanden sind. Klicken Sie auf 'Diese Zustimmung ablehnen', wenn Sie nicht einverstanden sind.",
         "please_review2b" : "Bitte überprüfen Sie diese bestehende Zustimmung. Klicken Sie auf die Schaltfläche 'Überspringen (Keine Änderung)', um diese Seite ohne Änderungen zu verlassen. Klicken Sie auf 'Diese Zustimmung ablehnen', wenn Sie nicht mehr einverstanden sind.",
-         "you" : "Sie",
-         "restrictions" : "Weitere Einschränkungen?"
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: You
+        "you" : "Sie",
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: Further restrictions?
+        "restrictions" : "Weitere Einschränkungen?"
     },
 
     "editconsent2" : {
@@ -1322,6 +1380,21 @@
         "fitness" : "Fitness",
         "health" : "Gesundheitsdaten",
         "analyze" : "Datenanalyse"
+    },
+
+    "changelog" : {
+
+        // TODO NEW: New Feature
+        "F" : "New Feature",
+
+        // TODO NEW: Bugfix
+        "B" : "Bugfix",
+
+        // TODO NEW: Improvement
+        "I" : "Improvement",
+
+        // TODO NEW: Bugfix
+        "S" : "Bugfix"
     },
 
     "-1" : "unbekannt"

@@ -82,7 +82,8 @@
        "sharing" : "The Data Access Filter contains data types that are excluded by the project configuration.",
        "anonymous" : "A research project can only be anonymous if no one is allowed to access unpseudonymized data.",
        "url" : "Invalid URL",
-       "consent_members" : "This consent may only be confirmed once all external persons have joined MIDATA."       
+       "consent_members" : "This consent may only be confirmed once all external persons have joined MIDATA.",
+       "entity_type" : "Invalid entity type"       
      },
 
      "missing" : {
@@ -102,7 +103,8 @@
        "file" : "No file for upload selected",
        "access_query" : "No data selected",
        "plugin" : "This plugin does not exist in your account.",
-       "auth_type" : "Two factor authentication is required for your type of account."
+       "auth_type" : "Two factor authentication is required for your type of account.",
+       "licence" : "A valid licence is required to use this application."
      },
 
      "unknown" : {
@@ -115,8 +117,9 @@
        "group" : "Unknown group name",
        "code" : "Unknown code",
        "record" : "Unknown record",
-       "user" : "User does not exist",
-       "participation" : "Research project participation not found."
+       "user" : "User does not exist",      
+       "participation" : "Research project participation not found.",
+       "organization" : "Organization does not exist."
      },
 
      "exists" : {
@@ -148,7 +151,7 @@
      },
 
      "tooshort" : {
-       "password" : "Passwords must be at least 8 characters long.",
+       "password" : "Passwords must be at least 8 characters long and should contain upper/lower case letters, numbers and special characters.",
        "passphrase" : "Passphrases must be at least 8 characters long."
      },
 
@@ -180,6 +183,10 @@
      
      "too_large" : {
        "file" : "The file is too large (maximum 1 MB)."
+     },
+     
+     "notrequired" : {
+       "licence" : "No licence is required for this application"
      }
 
    },
@@ -231,7 +238,8 @@
 	   "user-settings-change" :"User's settings changed",
 	   "user-email-change" :"User's email changed",
 	   "user-birthday-change" : "User's birth date changed",
-	   "user-status-change" : "Status of user account changed",
+	   "user-status-change-active" : "User account unlocked",
+	   "user-status-change-blocked" : "User account blocked",
 	   "user-email-confirmed" : "Email confirmed by user",
 	   "user-email-rejected" : "Email rejected by user",
 	   "user-account-change-by-admin" : "User account changed by an administrator",
@@ -472,6 +480,11 @@
 	 "accountnotifications" : {
 	   "NONE" : "No login notifications",
 	   "LOGIN" : "Send an email on each login"
+	 },
+	 "entitytype" : {
+	   "USER" : "User",
+	   "USERGROUP" : "Team",
+	   "ORGANIZATION" : "Organization"
 	 }
    },
 
@@ -690,6 +703,10 @@
       "way2" : "Have you logged in using a browser before? If yes try to log in using the same browser and device.",
       "way3" : "Remember your old password again? If yes try to log in using your old password.",
       "way4" : "Wait for MIDATA employees to do a manual key recovery. MIDATA will send you an email when the recovery has been done. Please wait up to five working days for the recovery to be completed."
+    },
+    "licence" : {
+      "intro" : "A licence is required to use this application.",
+      "text" : "Please contact support@midata.coop to obtain a valid licence."
     }
   },
 
@@ -831,6 +848,7 @@
     "success" : "You have successfully installed a new plugin.",
     "created_by" : "Created by:",
     "orgName" : "Organization:",
+    "publisher" : "Publisher:",
     "description" : "Description:",
     "tile_name" : "Tile Name:",
     "install_location" : "Location:",
@@ -909,7 +927,7 @@
     "status_expired" : "This consent is expired. Data is no longer shared.",
     "status_unconfirmed" : "This consent needs confirmation by its owner.",
     "status_rejected" : "This consent has been rejected by its owner.",
-    "shares_records" : "This consent shares {{count}} records.",
+    "shares_records" : "This consent shares currently {{count}} records.",
     "shares_group" : "Shares all records belonging to group: {{ group }}",
 	"excludes_group" : "Excluded are records belonging to group: {{ group }}",
 	"view_change_selection_btn" : "View/Change data selection",
@@ -918,7 +936,9 @@
     "delete_btn" : "Delete this Consent",
     "please_review1" : "Consent to review",
     "please_review2a" : "Please review this consent. Click on 'Confirm this Consent' if you agree. Click on 'Reject this Consent' if you do not agree.",
-    "please_review2b" : "Please review this existing consent. Click on 'Skip (No change)' button to leave this page without any changes. Click on 'Reject this Consent' if you do not agree any longer."
+    "please_review2b" : "Please review this existing consent. Click on 'Skip (No change)' button to leave this page without any changes. Click on 'Reject this Consent' if you do not agree any longer.",
+    "you" : "You",
+    "restrictions" : "Further restrictions?"
   },
   
   "editconsent2" : {
@@ -1319,6 +1339,13 @@
     "fitness" : "Fitness",
     "health" : "Health Data",
     "analyze" : "Data Analysis"
+  },
+  
+  "changelog" : {
+    "F" : "New Feature",
+    "B" : "Bugfix",
+    "I" : "Improvement",
+    "S" : "Bugfix" 
   },
   
   "-1" : "unknown"

@@ -44,7 +44,8 @@
     "participants" : "Participants",
     "records" : "Records",
     "results" : "Results",
-    "team" : "Team"
+    "team" : "Team",
+    "sharing" : "Published Records"
   },
   
   "studies" : {
@@ -329,6 +330,7 @@
    },
    
    "researcher_sharing" : {
+     "description" : "Share or unshare records from your account with groups of study participants",
      "format" : "Resource Type",
      "content" : "Content Type",
      "app" : "Application",

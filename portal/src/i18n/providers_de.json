@@ -4,7 +4,13 @@
         "sign_up" : "Registrierung als Gesundheitsfachperson",
         "provider" : "Gesundheitseinrichtung",
         "user" : "Gesundheitsfachperson",
-        "name" : "Einrichtungsname"
+        "name" : "Einrichtungsname",
+
+        // TODO NEW: Description
+        "description" : "Description",
+
+        // TODO NEW: Homepage URL
+        "url" : "Homepage URL"
     },
 
     "provider_login" : {
@@ -26,6 +32,9 @@
         "title" : "Organisation",
         "name" : "Name",
         "description" : "Beschreibung",
+
+        // TODO NEW: Homepage URL
+        "url" : "Homepage URL",
         "members" : "Alle Mitglieder Ihrer Organisation",
         "addprovider" : "Neues Mitglied registrieren",
         "master_user" : "Sie müssen Master-Benutzer sein, um Ihre Organisation zu aktualisieren oder neue Benutzer für die Organisation zu registrieren. Bitte wenden Sie sich an den MIDATA-Support, wenn Sie der Meinung sind, dass Sie über Master-Benutzerberechtigungen verfügen sollten."
