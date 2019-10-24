@@ -910,7 +910,7 @@
         "status_expired" : "Diese Zustimmung ist abgelaufen. Daten werden nicht mehr geteilt.",
         "status_unconfirmed" : "Diese Zustimmung benötigt eine Bestätigung durch ihren Besitzer.",
         "status_rejected" : "Diese Zustimmung wurde durch ihren Besitzer verworfen.",
-        "shares_records" : "Diese Zustimmung teilt {{count}} Datensätze.",
+        "shares_records" : "Diese Zustimmung teilt derzeit {{count}} Datensätze.",
         "shares_group" : "Teilt alle Einträge die dieser Gruppe gehören: {{ group }}",
         "excludes_group" : "Schliesst alle Einträge die dieser Gruppe gehören aus: {{ group }}",
         "view_change_selection_btn" : "Auswahl ansehen/ändern",
@@ -919,7 +919,9 @@
         "delete_btn" : "Diese Zustimmung löschen",
         "please_review1" : "Zustimmung zu überprüfen",
         "please_review2a" : "Bitte überprüfen Sie diese Zustimmung. Klicken Sie auf 'Diese Zustimmung bestätigen', wenn Sie damit einverstanden sind. Klicken Sie auf 'Diese Zustimmung ablehnen', wenn Sie nicht einverstanden sind.",
-        "please_review2b" : "Bitte überprüfen Sie diese bestehende Zustimmung. Klicken Sie auf die Schaltfläche 'Überspringen (Keine Änderung)', um diese Seite ohne Änderungen zu verlassen. Klicken Sie auf 'Diese Zustimmung ablehnen', wenn Sie nicht mehr einverstanden sind."
+        "please_review2b" : "Bitte überprüfen Sie diese bestehende Zustimmung. Klicken Sie auf die Schaltfläche 'Überspringen (Keine Änderung)', um diese Seite ohne Änderungen zu verlassen. Klicken Sie auf 'Diese Zustimmung ablehnen', wenn Sie nicht mehr einverstanden sind.",
+         "you" : "Sie",
+         "restrictions" : "Weitere Einschränkungen?"
     },
 
     "editconsent2" : {

@@ -10,8 +10,8 @@
         <div><b style="min-width:40px;display:inline-block;">{{circles.apps}}</b><span translate="navbar.app_count"></span></div>
         <div><b style="min-width:40px;display:inline-block;">{{circles.studies}}</b><span translate="navbar.study_count"></span></div>
         <div class="extraspace"></div>
-        <a href="javascript:" ui-sref="member.user({ userId : user._id})" class="btn btn-sm btn-default"><span class="fas fa-pencil-alt"></span> <span translate="navbar.edit_profile"></span></a>
-        <a href="javascript:" ng-click="logout()" class="btn btn-sm btn-default"><span class="fas fa-power-off"></span> <span translate="navbar.sign_out"></span></a>
+        <a href="javascript:" data-toggle="collapse" data-target=".navbar-collapse.show" ui-sref="member.user({ userId : user._id})" class="btn btn-sm btn-default"><span class="fas fa-pencil-alt"></span> <span translate="navbar.edit_profile"></span></a>
+        <a href="javascript:" data-toggle="collapse" data-target=".navbar-collapse.show" ng-click="logout()" class="btn btn-sm btn-default"><span class="fas fa-power-off"></span> <span translate="navbar.sign_out"></span></a>
        </div></div>
      </script>
 		<div class="container">
@@ -25,27 +25,27 @@
 			</div>
 			<div class="collapse navbar-collapse navbar-ex1-collapse">
 				
-				<ul class="nav navbar-nav mr-auto" ng-class="{'vishidden':locked()}">
-					<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="member.overview" translate="navbar.me"></a></li>
+				<ul class="nav navbar-nav mr-auto" ng-class="{'vishidden d-none d-md-flex':locked()}">
+					<li class="nav-item" ui-sref-active="active"><a class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" ui-sref="member.overview" translate="navbar.me"></a></li>
 
 
 
 					<!-- <li ng-show="beta" ui-sref-active="active"><a ui-sref="member.dashboard({ dashId : 'overview' })" translate="navbar.overview"></a></li> -->
 					<!-- <li ui-sref-active="active"><a ui-sref="member.messages">Messages</a></li> -->
-					<li class="nav-item" ng-show="beta" ui-sref-active="active"><a class="nav-link" ui-sref="member.records" translate="navbar.my_data"></a></li>
-					<li class="nav-item" ng-show="beta" ui-sref-active="active"><a class="nav-link" ui-sref="member.circles"><span translate="navbar.consents"></span> <span
+					<li class="nav-item" ng-show="beta" ui-sref-active="active"><a class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" ui-sref="member.records" translate="navbar.my_data"></a></li>
+					<li class="nav-item" ng-show="beta" ui-sref-active="active"><a class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" ui-sref="member.circles"><span translate="navbar.consents"></span> <span
 							ng-show="circles.unconfirmed" class="badge badge-info">{{circles.unconfirmed}}</span></a></li>
-					<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="member.studies" translate="navbar.research"></a></li>
-					<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="member.apps"><span translate="navbar.apps"></span></a></li>
+					<li class="nav-item" ui-sref-active="active"><a class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" ui-sref="member.studies" translate="navbar.research"></a></li>
+					<li class="nav-item" ui-sref-active="active"><a class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" ui-sref="member.apps"><span translate="navbar.apps"></span></a></li>
 
 					<!-- li ui-sref-active="active"><a ui-sref="member.dashboard({ dashId : 'help' })" translate="navbar.help"></a></li> -->
 
 					<li class="nav-item dropdown" ui-sref-active="active"><a href="javascript:" class="dropdown-toggle nav-link" data-toggle="dropdown" role="button"
 						aria-haspopup="true" aria-expanded="false"><span class="caret"></span></a>
 						<div class="dropdown-menu">
-							<a class="dropdown-item" href="javascript:" ng-click="showApp('fhir-observation');" translate="dashboard.observations"></a>
-							<a class="dropdown-item" href="javascript:" ng-click="showApp('calendar');" translate="dashboard.calendar"></a>
-							<a ng-repeat="entry in me_menu" class="dropdown-item" href="javascript:" ng-click="showSpace(entry)" translate="{{entry.name}}"></a>
+							<a class="dropdown-item" href="javascript:" data-toggle="collapse" data-target=".navbar-collapse.show" ng-click="showApp('fhir-observation');" translate="dashboard.observations"></a>
+							<a class="dropdown-item" href="javascript:" data-toggle="collapse" data-target=".navbar-collapse.show" ng-click="showApp('calendar');" translate="dashboard.calendar"></a>
+							<a ng-repeat="entry in me_menu" class="dropdown-item" href="javascript:" data-toggle="collapse" data-target=".navbar-collapse.show" ng-click="showSpace(entry)" translate="{{entry.name}}"></a>
 
 						</div></li>
 				</ul>
