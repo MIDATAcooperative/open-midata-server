@@ -927,7 +927,7 @@
     "status_expired" : "This consent is expired. Data is no longer shared.",
     "status_unconfirmed" : "This consent needs confirmation by its owner.",
     "status_rejected" : "This consent has been rejected by its owner.",
-    "shares_records" : "This consent shares {{count}} records.",
+    "shares_records" : "This consent shares currently {{count}} records.",
     "shares_group" : "Shares all records belonging to group: {{ group }}",
 	"excludes_group" : "Excluded are records belonging to group: {{ group }}",
 	"view_change_selection_btn" : "View/Change data selection",
@@ -936,7 +936,9 @@
     "delete_btn" : "Delete this Consent",
     "please_review1" : "Consent to review",
     "please_review2a" : "Please review this consent. Click on 'Confirm this Consent' if you agree. Click on 'Reject this Consent' if you do not agree.",
-    "please_review2b" : "Please review this existing consent. Click on 'Skip (No change)' button to leave this page without any changes. Click on 'Reject this Consent' if you do not agree any longer."
+    "please_review2b" : "Please review this existing consent. Click on 'Skip (No change)' button to leave this page without any changes. Click on 'Reject this Consent' if you do not agree any longer.",
+    "you" : "You",
+    "restrictions" : "Further restrictions?"
   },
   
   "editconsent2" : {

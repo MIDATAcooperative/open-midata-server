@@ -37,6 +37,15 @@ $fa-font-path:                "/fonts";
 .has-error .invalid-feedback { display:block; }
 .vishidden { visibility:hidden; } 
  
+
+.borderless {
+  @media (max-width: 767px) { margin-top:-10px; }
+}
+
+.navbar .nav-item {
+  @media (max-width: 767px) { margin-left:10px;border-bottom:1px solid #e0e0e0; }
+}
+
 .img-responsive {
     display: block;
     max-width: 100%;
@@ -91,7 +100,7 @@ body {
 }
 
 #maincontent {
-	padding-bottom:180px;   /* Height of the footer element */
+	padding-bottom:160px;   /* Height of the footer element */
 }
 #footer {
 	width:100%;
@@ -422,6 +431,8 @@ body { background-color:#f0f0f0 }
 
 .panel {
   background-color:#ffffff;
+
+  @media (min-width: 768px) {
   -webkit-box-shadow: 7px 7px 4px -4px rgba(0,0,0,0.5);
   -moz-box-shadow: 7px 7px 4px -4px rgba(0,0,0,0.5);
   box-shadow: 7px 7px 4px -4px rgba(0,0,0,0.5);
@@ -429,6 +440,7 @@ body { background-color:#f0f0f0 }
   -moz-border-radius: 5px 5px 5px 5px;
   -webkit-border-radius: 5px 5px 5px 5px;
   border: 1px solid #d0d0d0;
+  }
   margin-bottom: 20px;
 }
 

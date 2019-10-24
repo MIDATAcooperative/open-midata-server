@@ -27,6 +27,7 @@ angular.module('portal')
 	};
 	$scope.options = {};
 	$scope.writeProtect = true;
+	$scope.isSimple = true;
 	$scope.pleaseReview= ($state.params.action != null);
 	views.reset();
 		
@@ -42,6 +43,7 @@ angular.module('portal')
 		$scope.authteams = [];
 		
 		if ($state.params.consentId) {
+			$scope.isSimple = true;
 			$scope.consentId = $state.params.consentId;
 			
 			$scope.status.doBusy(circles.listConsents({ "_id" : $state.params.consentId }, ["name", "type", "status", "owner", "authorized", "entityType", "createdBefore", "validUntil", "externalOwner", "externalAuthorized", "sharingQuery", "dateOfCreation", "writes" ]))
@@ -51,7 +53,10 @@ angular.module('portal')
 					return;
 				}								
 				
-				$scope.consent = $scope.myform = data.data[0];		
+				$scope.consent = $scope.myform = data.data[0];
+				
+				if ($scope.consent.type === "CIRCLE") $scope.isSimple = false;
+				
 				if ($scope.consent.status === "ACTIVE" || $scope.consent.owner === $scope.userId) {
 				  views.setView("records_shared", { aps : $state.params.consentId, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowRemove : false, allowAdd : false, type : "circles" });
 				} else {
@@ -97,6 +102,7 @@ angular.module('portal')
 			});
 			
 		} else {
+			$scope.isSimple = false;
 			$scope.consent = { type : ($state.current.data.role === "PROVIDER" ? "HEALTHCARE" : null), status : "ACTIVE", authorized : [], writes : "NONE" };
 			if ($state.current.data.role === "PROVIDER") $scope.consent.writesBool = true;
 			views.disableView("records_shared");
@@ -311,6 +317,8 @@ angular.module('portal')
 		views.setView("usergroupsearch", { callback : addPerson });					
 	};
 	
+	
+	
 	$scope.addYourself = function() {
 		$scope.consent.authorized.push(session.user._id);
 		$scope.consent.entityType = "USER";
@@ -364,7 +372,7 @@ angular.module('portal')
 		if (! $scope.consent) return false;
 		if ($scope.writeProtect) return false;
 		if ($scope.consent.status == 'ACTIVE' && $scope.consent.authorized.length==1) return false;
-		
+		if ($scope.isSimple) return false;
 		return true;
 	};
 	
@@ -373,19 +381,23 @@ angular.module('portal')
 		if ($scope.consent.type == "EXTERNALSERVICE") return false;
 		if ($scope.consent.type == "STUDYRELATED") return false;
 		if ($scope.consent.type == "IMPLICIT") return false;
-		
+		if ($scope.isSimple) return false;
 		return true;
 	};
 	
 	$scope.mayChangeData = function() {
 		if (! $scope.consent) return false;
 		if ($scope.writeProtect) return false;
-		
+		if ($scope.isSimple) return false;
 		return true;
 	};
 	
 	$scope.maySkip = function() {
 		return $state.params.action != null && $scope.consent && $scope.consent.status != "UNCONFIRMED";
+	};
+	
+	$scope.mayBack = function() {
+		return !$state.params.action;
 	};
 	
 	$scope.skip = function() {
