@@ -29,14 +29,14 @@
 			</div>
 			<div class="collapse navbar-collapse navbar-ex1-collapse">
 				<ul class="nav navbar-nav mr-auto">
-					<li class="nav-item"><a class="nav-link" ui-sref=".login({action:action})" translate="navbar.login"></a></li>
-					<li class="nav-item"><a class="nav-link" ng-hide="notPublic" ui-sref=".registration({action:action})" translate="navbar.sign_up"></a></li>
+					<li class="nav-item"><a class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" ui-sref=".login({action:action})" translate="navbar.login"></a></li>
+					<li class="nav-item"><a class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" ng-hide="notPublic" ui-sref=".registration({action:action})" translate="navbar.sign_up"></a></li>
 				</ul>
 				<ul class="nav navbar-nav">
-					<li class="nav-item"><a class="nav-link" ng-click="changeLanguage('en')" href="javascript:">en</a></li>
-					<li class="nav-item"><a class="nav-link" ng-click="changeLanguage('de')" href="javascript:">de</a></li>
-					<li class="nav-item"><a class="nav-link" ng-click="changeLanguage('fr')" href="javascript:">fr</a></li>
-					<li class="nav-item"><a class="nav-link" ng-click="changeLanguage('it')" href="javascript:">it</a></li>
+					<li class="nav-item"><a class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" ng-click="changeLanguage('en')" href="javascript:">en</a></li>
+					<li class="nav-item"><a class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" ng-click="changeLanguage('de')" href="javascript:">de</a></li>
+					<li class="nav-item"><a class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" ng-click="changeLanguage('fr')" href="javascript:">fr</a></li>
+					<li class="nav-item"><a class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" ng-click="changeLanguage('it')" href="javascript:">it</a></li>
 				</ul>
 			</div>
 		</div>

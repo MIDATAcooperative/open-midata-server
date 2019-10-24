@@ -13,14 +13,14 @@
 		<nav class="collapse navbar-collapse navbar-ex1-collapse">
 			<ul class="nav navbar-nav mr-auto">            	
 				<!-- <li ui-sref-active="active"><a ui-sref="developer.messages">Messages</a></li> -->
-				<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="developer.yourapps" translate="developer_navbar.yourapps"></a></li>
-				<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="developer.sandbox" translate="developer_navbar.sandbox"></a></li>
-				<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="developer.records" translate="developer_navbar.records"></a></li>
-				<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="developer.testusers" translate="developer_navbar.testusers"></a></li>
+				<li class="nav-item" ui-sref-active="active"><a class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" ui-sref="developer.yourapps" translate="developer_navbar.yourapps"></a></li>
+				<li class="nav-item" ui-sref-active="active"><a class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" ui-sref="developer.sandbox" translate="developer_navbar.sandbox"></a></li>
+				<li class="nav-item" ui-sref-active="active"><a class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" ui-sref="developer.records" translate="developer_navbar.records"></a></li>
+				<li class="nav-item" ui-sref-active="active"><a class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" ui-sref="developer.testusers" translate="developer_navbar.testusers"></a></li>
 			</ul>
 			<ul class="nav navbar-nav" ng-cloak>
-				<li class="nav-item"><a class="nav-link" ui-sref=".user({ userId : user._id})">{{user.name}}</a></li>
-				<li class="nav-item"><a class="nav-link" ng-click="logout()" href="javascript:">
+				<li class="nav-item"><a class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" ui-sref=".user({ userId : user._id})">{{user.name}}</a></li>
+				<li class="nav-item"><a class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" ng-click="logout()" href="javascript:">
 					<span class="fas fa-power-off"></span> <span translate="navbar.sign_out"></span>
 				</a></li>
 		    </ul>

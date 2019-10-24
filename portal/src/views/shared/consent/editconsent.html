@@ -2,11 +2,11 @@
  <div class="overlay-body">
  <div class="panel panel-primary">
   <div class="panel-heading"><span translate="editconsent.title"></span>: {{ consent.name }}
-  <a ng-click="goBack()" href="javascript:" class="close-icon float-right"><span class="fas fa-times"></span></a>    
+  <a ng-click="goBack()" ng-show="mayBack()" href="javascript:" class="close-icon float-right"><span class="fas fa-times"></span></a>    
   </div>
   <div class="panel-body">
   <loader busy="status.isBusy !== false">
-  <div class="alert alert-info" translate ng-show="pleaseReview">
+  <div class="alert alert-info d-none d-md-block" ng-show="pleaseReview">
     <h4 class="alert-heading" translate="editconsent.please_review1"></h4>
     <p ng-show="consent.status=='UNCONFIRMED'" translate="editconsent.please_review2a"></p>
     <p ng-hide="consent.status=='UNCONFIRMED'" translate="editconsent.please_review2b"></p>
@@ -15,11 +15,8 @@
   <p ng-hide="consent" class="alert alert-warning" translate="error.unknown.consent"></p>
   <form ng-show="consent" name="myform" class="css-form form-horizontal" ng-submit="create()" novalidate role="form">
     <div class="row">  
-     
-      
-     
-      
-      <div class="col-sm-6">
+                      
+      <div class="col-md-6">
       
         <div><small translate="editconsent2.status"></small></div>
         
@@ -30,7 +27,7 @@
         <span class="lead text-danger" ng-show="consent.status == 'REJECTED'" translate="editconsent2.status_rejected"></span>
         </div>
               
-        <div class="col-sm-6">
+        <div class="col-md-6">
         <div><small translate="editconsent2.duration"></small></div>
            <div class="lead">
     
@@ -48,16 +45,16 @@
       </div>
       
      </div>	         
-      
+      <div class="extraspace"></div>
     
      <div class="row">
-       <div class="col-sm-5"> 
+       <div class="col-md-5" ng-class="{ 'd-none d-md-block' : (owner && owner._id == userId) }"> 
           <p><b translate="newconsent.who_is_owner"></b></p>
           
-          <div class="card" ng-show="owner">
+          <div  ng-show="owner && owner._id != userId">
           <div class="card-body">
           <img ng-src="{{getIconRole(owner)}}" class="float-left consenticon">
-          <div class="iconspace">
+          <div class="iconspace" ng-show="owner._id != userId">
           <div translate="{{'enum.userrole.'+owner.role}}"></div>		  	
 		  <address>
 			<strong>{{ owner.firstname }} {{ owner.lastname }}</strong>
@@ -68,11 +65,16 @@
 			</span>			
 		  </address>
 		  </div>
-		  </div>		 
-		   		
 		  
+		  </div>		 		   				 
 		</div>
-		<div class="card" ng-show="consent.externalOwner">
+		<div  ng-show="owner._id == userId">
+		  <div class="card-body">
+		    <img ng-src="{{getIconRole(owner)}}" class="float-left consenticon">
+		    <div class="iconspace"><div>&nbsp;</div><strong translate="editconsent.you"></strong></div>
+		  </div>
+		</div>
+		<div  ng-show="consent.externalOwner">
 		  <div class="card-body">
 		  <img ng-src="/images/question.jpeg" class="float-left consenticon">
           <div class="iconspace">
@@ -81,16 +83,16 @@
 		  </div>
 		  </div>
 		</div>
-                        
+        <div class="extraspace"></div>                
        </div>
-       <div class="col-sm-1">
+       <div class="col-md-1 d-none d-md-block">
          <div style="margin-top:60px" class="text-center">
            <span style="font-size:40px" class="fas fa-arrow-right"></span>
          </div>
        </div>
-       <div class="col-sm-6">
+       <div class="col-md-6">
          <p><b translate="editconsent.people"></b></p>
-          <div class="card" ng-show="consent.type=='EXTERNALSERVICE'">
+          <div  ng-show="consent.type=='EXTERNALSERVICE'">
             <div class="card-body">
             <img ng-src="{{getIconRole('app')}}" class="consenticon float-left">
             <div class="iconspace">
@@ -98,7 +100,7 @@
             </div>
             </div>
           </div>
-          <div class="card" ng-show="consent.type=='STUDYRELATED'">
+          <div  ng-show="consent.type=='STUDYRELATED'">
             <div class="card-body">
             <img ng-src="{{getIconRole('community')}}" class="consenticon float-left">
             <div class="iconspace">
@@ -106,7 +108,7 @@
             </div>
             </div>
           </div>
-         <div class="card" ng-repeat="person in authpersons">
+         <div  ng-repeat="person in authpersons">
            <div class="card-body">
 		  <button type="button" ng-click="removePerson(person)" class="close" aria-label="Delete" ng-show="mayChangeUsers()"><span aria-hidden="true">&times;</span></button>
 		  <img ng-src="{{getIconRole(person)}}" class="float-left consenticon">
@@ -124,9 +126,9 @@
 		  </div>
 		  </div>
 		</div>
-		<div class="card" ng-repeat="usergroup in authteams">
+		<div  ng-repeat="usergroup in authteams">
 		  <div class="card-body">
-		  <button type="button" ng-show="mayChangeUsers" ng-click="removePerson(usergroup)" class="close" aria-label="Delete"><span aria-hidden="true">&times;</span></button>
+		  <button type="button" ng-show="mayChangeUsers()" ng-click="removePerson(usergroup)" class="close" aria-label="Delete"><span aria-hidden="true">&times;</span></button>
 		  <img ng-src="{{getIconRole('team')}}" class="float-left consenticon">
 		  <div class="iconspace">
 		    <div translate="editconsent2.team"></div>	
@@ -134,7 +136,7 @@
 		  </div>
 		  </div>
 		</div>
-		<div class="card" ng-repeat="person in consent.externalAuthorized">
+		<div  ng-repeat="person in consent.externalAuthorized">
 		  <div class="card-body">
 		  <img ng-src="{{getIconRole('external')}}" class="float-left consenticon">
 		  <div class="iconspace">
@@ -143,7 +145,7 @@
 		  </div>
 		  </div>
 		</div>
-		<div class="card" ng-show="consent.reshare">
+		<div  ng-show="consent.reshare">
 		  <div class="card-body">
 		  <img ng-src="{{getIconRole('reshare')}}" class="float-left consenticon">
 		  <div class="iconspace">
@@ -155,8 +157,9 @@
 		<div class="margin-top" ng-show="mayAddPeople()">
 		<button type="button" class="btn btn-default" ng-class="{ 'btn-sm' : consent.authorized.length }" ng-show="consent.owner != userId && consent.authorized.indexOf(userId)<0" ng-click="addYourself();" translate="newconsent.add_yourself_btn"></button>
 		<button type="button" class="btn btn-default" ng-class="{ 'btn-sm' : consent.authorized.length }" ng-show="consent.entityType!='USERGROUP'" ng-click="addPeople();" translate="newconsent.add_person_btn"></button>
-		<button type="button" class="btn btn-default" ng-class="{ 'btn-sm' : consent.authorized.length }" ng-show="consent.entityType!='USER' && consent.type!='CIRCLE'" ng-click="addUserGroup();" translate="newconsent.add_usergroup_btn"></button>
-	   </div>
+		<button type="button" class="btn btn-default" ng-class="{ 'btn-sm' : consent.authorized.length }" ng-show="consent.entityType!='USER' && consent.type!='CIRCLE'" ng-click="addUserGroup();" translate="newconsent.add_usergroup_btn"></button>				
+	    </div>
+	    <div class="extraspace"></div>
 		
        </div>
      </div>
@@ -175,6 +178,8 @@
 	
 	  <p ng-show="sharing.records.length == 0 && !sharing.query.group.length" translate="editconsent.consent_empty"></p>
 	  <p ng-show="sharing.records.length" translate="editconsent.shares_records" translate-value-count="{{ sharing.records.length }}"  ></p>
+	  <div class="extraspace"></div>
+	  <p><b translate="editconsent.restrictions"></b></p>
 	  <p>{{ ('enum.writepermissiontype.'+(consent.writes || 'NONE'))|translate }}</p>
 	  <p ng-show="consent.createdBefore"><span translate="editconsent.created_before"></span>:{{ consent.createdBefore | date : 'dd.MM.yy'}} 
 	</p>
@@ -185,18 +190,34 @@
 	  <button class="btn btn-default" ng-show="mayChangeData()" ui-sref="^.recordsharing({ selected : consentId, selectedType : 'circles' })" translate="editconsent.view_change_selection_btn"></button>
 	
 	
-
-	<a  ui-sref="^.circles" class="btn btn-default" ng-hide="maySkip()" translate="common.back_btn"></a>
+    <div class="d-block d-md-none">	
+    <div ng-show="pleaseReview">
+    <hr>    
+    <p ng-show="consent.status=='UNCONFIRMED'" translate="editconsent.please_review2a"></p>
+    <p ng-hide="consent.status=='UNCONFIRMED'" translate="editconsent.please_review2b"></p>
+    </div>
+    
+	<button type="button" ng-click="confirmConsent();" ng-show="mayConfirm()" class="btn btn-primary btn-lg btn-block" translate="editconsent.confirm_btn"></button>
+	<button type="button" ng-click="rejectConsent();" ng-show="mayReject()" class="btn btn-danger btn-block" translate="editconsent.reject_btn"></button>
+    <button type="button" ng-click="deleteConsent();" ng-show="mayDelete()" class="btn btn-danger btn-block" translate="editconsent.delete_btn"></button>
+    <a  ui-sref="^.circles" class="btn btn-default btn-block" ng-show="mayBack()" translate="common.back_btn"></a>
+	<button type="button" ng-click="skip();" ng-show="maySkip()" class="btn btn-default btn-block" translate="common.skip_btn"></button>
+    </div>
+    <div class="d-none d-md-block">
+    <a  ui-sref="^.circles" class="btn btn-default" ng-show="mayBack()" translate="common.back_btn"></a>
 	<button type="button" ng-click="skip();" ng-show="maySkip()" class="btn btn-default" translate="common.skip_btn"></button>
 	<button type="button" ng-click="confirmConsent();" ng-show="mayConfirm()" class="btn btn-primary" translate="editconsent.confirm_btn"></button>
 	<button type="button" ng-click="rejectConsent();" ng-show="mayReject()" class="btn btn-danger" translate="editconsent.reject_btn"></button>
     <button type="button" ng-click="deleteConsent();" ng-show="mayDelete()" class="btn btn-danger" translate="editconsent.delete_btn"></button>
+    </div>
     <!--  <button type="button" ng-click="showStudyDetails();" ng-show="consent.type == 'STUDYPARTICIPATION'" class="btn btn-default">Show Study</button> -->
   </form>	
   </loader>		
 </div>
 </div>
-<div ng-include="'/views/shared/dashboard/dashboard.html'"></div>
+<div class="d-none d-md-block">
+  <div ng-include="'/views/shared/dashboard/dashboard.html'"></div>
+</div>
 </div>
 </div>
 	
