@@ -101,7 +101,10 @@ tasks/install-packages: trigger/install-packages
 	$(info ------------------------------)
 	$(info Installing Packages... )
 	$(info ------------------------------)
-	sudo apt-get install git curl openssl openjdk-8-jdk nginx mcrypt unzip ruby-sass	
+	sudo apt-get install git curl openssl openjdk-8-jdk mcrypt unzip ruby-sass software-properties-common
+	sudo add-apt-repository ppa:nginx/stable
+	sudo apt-get update
+	sudo apt-get install nginx	
 	touch tasks/install-packages
 	
 tasks/install-node: tasks/install-packages trigger/install-node
