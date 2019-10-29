@@ -5,12 +5,8 @@
         "provider" : "Établissement de santé",
         "user" : "Professionnel de la santé",
         "name" : "Nom de l'établissement",
-
-        // TODO NEW: Description
         "description" : "Description",
-
-        // TODO NEW: Homepage URL
-        "url" : "Homepage URL"
+        "url" : "URL de la page d'accueil"
     },
 
     "provider_login" : {
@@ -32,9 +28,7 @@
         "title" : "Organisation",
         "name" : "Nom",
         "description" : "Description",
-
-        // TODO NEW: Homepage URL
-        "url" : "Homepage URL",
+        "url" : "URL de la page d'accueil",
         "members" : "Tous les membres de votre organisation",
         "addprovider" : "Inscrire un nouveau membre",
         "master_user" : "Vous devez être un utilisateur maître pour mettre à jour votre organisation ou inscrire de nouveaux utilisateurs pour l'organisation. Veuillez contacter le support MIDATA si vous pensez que vous devriez avoir les permissions de l'utilisateur maître."

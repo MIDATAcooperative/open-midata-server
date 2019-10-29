@@ -46,9 +46,7 @@
         "records" : "Einträge",
         "results" : "Ergebnisse",
         "team" : "Team",
-
-        // TODO NEW: Published Records
-        "sharing" : "Published Records"
+        "sharing" : "Veröffentlichte Datensätze"
     },
 
     "studies" : {
@@ -333,9 +331,7 @@
     },
 
     "researcher_sharing" : {
-
-        // TODO NEW: Share or unshare records from your account with groups of study participants
-        "description" : "Share or unshare records from your account with groups of study participants",
+        "description" : "Datensätze von Ihrem Konto mit Gruppen von Projektteilnehmern teilen oder nicht mehr teilen",
         "format" : "Ressourcentyp",
         "content" : "Inhaltstyp",
         "app" : "Applikation",

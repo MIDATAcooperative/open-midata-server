@@ -5,11 +5,7 @@
         "provider" : "Gesundheitseinrichtung",
         "user" : "Gesundheitsfachperson",
         "name" : "Einrichtungsname",
-
-        // TODO NEW: Description
-        "description" : "Description",
-
-        // TODO NEW: Homepage URL
+        "description" : "Beschreibung",
         "url" : "Homepage URL"
     },
 
@@ -32,8 +28,6 @@
         "title" : "Organisation",
         "name" : "Name",
         "description" : "Beschreibung",
-
-        // TODO NEW: Homepage URL
         "url" : "Homepage URL",
         "members" : "Alle Mitglieder Ihrer Organisation",
         "addprovider" : "Neues Mitglied registrieren",

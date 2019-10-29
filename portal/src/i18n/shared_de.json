@@ -84,9 +84,7 @@
             "anonymous" : "Ein Forschungsprojekt kann nur dann anonym sein, wenn niemand auf unpseudonymisierte Daten zugreifen darf.",
             "url" : "Ungültige URL",
             "consent_members" : "Diese Zustimmung kann erst bestätigt werden, wenn alle externen Personen MIDATA beigetreten sind.",
-
-            // TODO NEW: Invalid entity type
-            "entity_type" : "Invalid entity type"
+            "entity_type" : "Ungültiger Entitätstyp"
         },
 
         "missing" : {
@@ -107,9 +105,7 @@
             "access_query" : "Keine Daten ausgewählt",
             "plugin" : "Dieses Plugin existiert nicht in Ihrem Konto.",
             "auth_type" : "Für Ihren Kontotyp ist eine Zwei-Faktor-Authentifizierung erforderlich.",
-
-            // TODO NEW: A valid licence is required to use this application.
-            "licence" : "A valid licence is required to use this application."
+            "licence" : "Für die Nutzung dieser Applikation ist eine gültige Lizenz erforderlich."
         },
 
         "unknown" : {
@@ -124,9 +120,7 @@
             "record" : "Unbekannter Datensatz",
             "user" : "Dieser Benutzer existiert nicht",
             "participation" : "Teilnahme an Forschungsprojekt nicht gefunden.",
-
-            // TODO NEW: Organization does not exist.
-            "organization" : "Organization does not exist."
+            "organization" : "Die Organisation existiert nicht."
         },
 
         "exists" : {
@@ -158,16 +152,12 @@
         },
 
         "tooshort" : {
-
-            // TODO CHANGED
-            // OLD: Passwords must be at least 8 characters long.
-            // NEW: Passwords must be at least 8 characters long and should contain upper/lower case letters, numbers and special characters.
-            "password" : "Kennwörter müssen mindestens 8 Zeichen lang sein.",
+            "password" : "Das Passwort muss mindestens 8 Zeichen lang sein und einen Buchstaben und eine Ziffer enthalten.",
             "passphrase" : "Passphrasen müssen mindestens 8 Zeichen lang sein."
         },
 
         "tooweak" : {
-            "password" : "Kennwörter müssen Klein-/Grossbuchstaben, Ziffern und Sonderzeichen enthalten.",
+            "password" : "Das Passwort muss mindestens einen Buchstaben und eine Ziffer enthalten.",
             "passphrase" : "Passphrasen müssen Klein-/Grossbuchstaben, Ziffern und Sonderzeichen enthalten."
         },
 
@@ -197,9 +187,7 @@
         },
 
         "notrequired" : {
-
-            // TODO NEW: No licence is required for this application
-            "licence" : "No licence is required for this application"
+            "licence" : "Für diese Applikation ist keine Lizenz erforderlich"
         }
 
     },
@@ -251,12 +239,8 @@
             "user-settings-change" : "Benutzereinstellungen geändert",
             "user-email-change" : "E-Mail des Benutzers geändert",
             "user-birthday-change" : "Geburtsdatum des Benutzers geändert",
-
-            // TODO NEW: User account unlocked
-            "user-status-change-active" : "User account unlocked",
-
-            // TODO NEW: User account blocked
-            "user-status-change-blocked" : "User account blocked",
+            "user-status-change-active" : "Benutzerkonto entsperrt",
+            "user-status-change-blocked" : "Benutzerkonto gesperrt",
             "user-email-confirmed" : "E-Mail bestätigt durch Benutzer",
             "user-email-rejected" : "E-Mail verworfen durch Benutzer",
             "user-account-change-by-admin" : "Benutzerkonto durch einen Administrator geändert",
@@ -499,15 +483,9 @@
             "LOGIN" : "E-Mail bei jeder Anmeldung senden"
         },
         "entitytype" : {
-
-            // TODO NEW: User
-            "USER" : "User",
-
-            // TODO NEW: Team
+            "USER" : "Benutzer",
             "USERGROUP" : "Team",
-
-            // TODO NEW: Organization
-            "ORGANIZATION" : "Organization"
+            "ORGANIZATION" : "Organisation"
         }
     },
 
@@ -588,7 +566,7 @@
     "registration" : {
         "sign_up" : "Registrierung",
         "mandantory_fields" : "Bitte füllen Sie die folgenden Felder aus, die mit einem Sternchen (*) gekennzeichneten Felder sind Pflichtfelder.",
-        "password_policy" : "Das Passwort muss mindestens 8 Zeichen lang sein (Buchstaben und Ziffern).",
+        "password_policy" : "Das Passwort muss mindestens 8 Zeichen lang sein und einen Buchstaben und eine Ziffer enthalten.",
         "email" : "E-Mail",
         "password" : "Passwort",
         "password_repetition" : "Passwort wiederholen",
@@ -728,12 +706,8 @@
             "way4" : "Warten Sie, bis MIDATA-Mitarbeiter eine manuelle Schlüsselwiederherstellung durchgeführt haben. MIDATA sendet Ihnen eine E-Mail, wenn die Wiederherstellung abgeschlossen ist. Bitte warten Sie bis zu fünf Arbeitstage, bis die Wiederherstellung abgeschlossen ist."
         },
         "licence" : {
-
-            // TODO NEW: A licence is required to use this application.
-            "intro" : "A licence is required to use this application.",
-
-            // TODO NEW: Please contact support@midata.coop to obtain a valid licence.
-            "text" : "Please contact support@midata.coop to obtain a valid licence."
+            "intro" : "Für die Nutzung dieser Applikation ist eine Lizenz erforderlich.",
+            "text" : "Bitte kontaktieren Sie support@midata.coop, um eine gültige Lizenz zu erhalten."
         }
     },
 
@@ -875,9 +849,7 @@
         "success" : "Ein neus Plugin wurde erfolgreich installiert.",
         "created_by" : "Erstellt durch:",
         "orgName" : "Organisation:",
-
-        // TODO NEW: Publisher:
-        "publisher" : "Publisher:",
+        "publisher" : "Herausgeber:",
         "description" : "Beschreibung:",
         "tile_name" : "Name der Kachel:",
         "install_location" : "Standort:",
@@ -956,10 +928,6 @@
         "status_expired" : "Diese Zustimmung ist abgelaufen. Daten werden nicht mehr geteilt.",
         "status_unconfirmed" : "Diese Zustimmung benötigt eine Bestätigung durch ihren Besitzer.",
         "status_rejected" : "Diese Zustimmung wurde durch ihren Besitzer verworfen.",
-
-        // TODO CHANGED
-        // OLD: This consent shares {{count}} records.
-        // NEW: This consent shares currently {{count}} records.
         "shares_records" : "Diese Zustimmung teilt derzeit {{count}} Datensätze.",
         "shares_group" : "Teilt alle Einträge die dieser Gruppe gehören: {{ group }}",
         "excludes_group" : "Schliesst alle Einträge die dieser Gruppe gehören aus: {{ group }}",
@@ -970,15 +938,7 @@
         "please_review1" : "Zustimmung zu überprüfen",
         "please_review2a" : "Bitte überprüfen Sie diese Zustimmung. Klicken Sie auf 'Diese Zustimmung bestätigen', wenn Sie damit einverstanden sind. Klicken Sie auf 'Diese Zustimmung ablehnen', wenn Sie nicht einverstanden sind.",
         "please_review2b" : "Bitte überprüfen Sie diese bestehende Zustimmung. Klicken Sie auf die Schaltfläche 'Überspringen (Keine Änderung)', um diese Seite ohne Änderungen zu verlassen. Klicken Sie auf 'Diese Zustimmung ablehnen', wenn Sie nicht mehr einverstanden sind.",
-
-        // TODO CHANGED
-        // OLD: undefined
-        // NEW: You
         "you" : "Sie",
-
-        // TODO CHANGED
-        // OLD: undefined
-        // NEW: Further restrictions?
         "restrictions" : "Weitere Einschränkungen?"
     },
 
@@ -1383,17 +1343,9 @@
     },
 
     "changelog" : {
-
-        // TODO NEW: New Feature
-        "F" : "New Feature",
-
-        // TODO NEW: Bugfix
+        "F" : "Neues Feature",
         "B" : "Bugfix",
-
-        // TODO NEW: Improvement
-        "I" : "Improvement",
-
-        // TODO NEW: Bugfix
+        "I" : "Verbesserung",
         "S" : "Bugfix"
     },
 
