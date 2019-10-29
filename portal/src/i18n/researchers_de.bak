@@ -55,7 +55,7 @@
     "participants" : "Participants",
     "execution" : "Execution",
     "creation_date" : "Created",
-    "empty" : "No research projects have been created yet for your organisation.",
+    "empty" : "No research projects have been created yet for your organization.",
     "create_btn" : "Create new project"
   },
   
@@ -117,12 +117,12 @@
     "required_data" : "Required data",
     "no_change_warning" : "This setup cannot be changed anymore after the project has been validated.",
     "member_identity" : "Member Identity",
-    "pseudonymous1" : "Pseudonymized Participation",
+    "pseudonymous1" : "Pseudonymized participation",
     "pseudonymous2" : ", exported data reveals the pseudonymized identity, year of birth, gender and country. Some researchers like study nurses may have access to full personal data.",
     "anonymous" : "Anonymous Participation",
-    "anonymous2" : ", exported data reveals the spseudonymized identity, year of birth, gender and country. The pseudonymization mapping may not be accessed.",    
-    "not_anonymous1" : "Not Pseudonymized",
-    "not_anonymous2" : ", requests member to share full name, birthday and contact Information (address, phone, email)",
+    "anonymous2" : ", exported data reveals the pseudonymized identity, year of birth, gender and country. The pseudonymization mapping may not be accessed.",
+    "not_anonymous1" : "Not pseudonymized",
+    "not_anonymous2" : ", requests member to share full name, date of birth and contact Information (address, phone, email)",
     "assistance" : "Assistance",
     "no_assistance1" : "None",
     "no_assistance2" : " - the MIDATA member participates alone.",
@@ -181,7 +181,7 @@
   "studyparticipant" : {
     "participant" : "Participant:",
     "gender" : "Gender:",
-    "year" : "Year of Birth:",
+    "year" : "Year of birth:",
     "country" : "Country:",
     "status" : "Status:",
     "group" : "Group:",
@@ -330,7 +330,7 @@
    },
    
    "researcher_sharing" : {
-     "description" : "Share or unshare records from your account with groups of study participants",
+     "description" : "Share or unshare records from your account with groups of project participants",
      "format" : "Resource Type",
      "content" : "Content Type",
      "app" : "Application",

@@ -44,6 +44,10 @@
         "email" : "E-Mail",
         "or" : "oder",
         "midataid" : "MIDATA ID",
+
+        // TODO CHANGED
+        // OLD: Birthday
+        // NEW: Date of birth
         "birthday" : "Geburtsdatum",
         "searching" : "Suche...",
         "address" : "Adresse",

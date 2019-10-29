@@ -105,6 +105,10 @@
             "access_query" : "Keine Daten ausgewählt",
             "plugin" : "Dieses Plugin existiert nicht in Ihrem Konto.",
             "auth_type" : "Für Ihren Kontotyp ist eine Zwei-Faktor-Authentifizierung erforderlich.",
+
+            // TODO CHANGED
+            // OLD: A valid licence is required to use this application.
+            // NEW: A valid license is required to use this application.
             "licence" : "Für die Nutzung dieser Applikation ist eine gültige Lizenz erforderlich."
         },
 
@@ -127,6 +131,10 @@
             "user" : "Eine Person mit dieser E-Mail ist bereits registriert.",
             "member" : "Eine Person mit dieser E-Mail ist bereits registriert.",
             "provider" : "Eine Gesundheitsfachperson mit diesem Namen existiert bereits.",
+
+            // TODO CHANGED
+            // OLD: A research organisation with this name already exists.
+            // NEW: A research organization with this name already exists.
             "research" : "Eine Forschungseinrichtung mit diesem Namen existiert bereits.",
             "passcode" : "Wählen Sie bitte einen anderen Zugangscode!",
             "plugin" : "Eine Applikation mit diesem Namen existiert bereits.",
@@ -152,11 +160,19 @@
         },
 
         "tooshort" : {
+
+            // TODO CHANGED
+            // OLD: Passwords must be at least 8 characters long and should contain upper/lower case letters, numbers and special characters.
+            // NEW: The password must be at least 8 characters long and contain one letter and one digit.
             "password" : "Das Passwort muss mindestens 8 Zeichen lang sein und einen Buchstaben und eine Ziffer enthalten.",
             "passphrase" : "Passphrasen müssen mindestens 8 Zeichen lang sein."
         },
 
         "tooweak" : {
+
+            // TODO CHANGED
+            // OLD: Passwords should contain upper/lower case letters, numbers and special characters.
+            // NEW: The password must contain at least one letter and one digit.
             "password" : "Das Passwort muss mindestens einen Buchstaben und eine Ziffer enthalten.",
             "passphrase" : "Passphrasen müssen Klein-/Grossbuchstaben, Ziffern und Sonderzeichen enthalten."
         },
@@ -187,6 +203,10 @@
         },
 
         "notrequired" : {
+
+            // TODO CHANGED
+            // OLD: No licence is required for this application
+            // NEW: No license is required for this application
             "licence" : "Für diese Applikation ist keine Lizenz erforderlich"
         }
 
@@ -238,6 +258,10 @@
             "user-phone-change" : "Die Telefonnummer des Benutzers wurde geändert",
             "user-settings-change" : "Benutzereinstellungen geändert",
             "user-email-change" : "E-Mail des Benutzers geändert",
+
+            // TODO CHANGED
+            // OLD: User's birth date changed
+            // NEW: User's date of birth changed
             "user-birthday-change" : "Geburtsdatum des Benutzers geändert",
             "user-status-change-active" : "Benutzerkonto entsperrt",
             "user-status-change-blocked" : "Benutzerkonto gesperrt",
@@ -566,6 +590,10 @@
     "registration" : {
         "sign_up" : "Registrierung",
         "mandantory_fields" : "Bitte füllen Sie die folgenden Felder aus, die mit einem Sternchen (*) gekennzeichneten Felder sind Pflichtfelder.",
+
+        // TODO CHANGED
+        // OLD: Password must be at least 8 characters long (letters and digits).
+        // NEW: The password must be at least 8 characters long and contain one letter and one digit.
         "password_policy" : "Das Passwort muss mindestens 8 Zeichen lang sein und einen Buchstaben und eine Ziffer enthalten.",
         "email" : "E-Mail",
         "password" : "Passwort",
@@ -575,7 +603,15 @@
         "firstname" : "Vorname",
         "lastname" : "Name",
         "gender" : "Geschlecht",
+
+        // TODO CHANGED
+        // OLD: Birth date
+        // NEW: Date of birth
         "birthday" : "Geburtsdatum",
+
+        // TODO CHANGED
+        // OLD: Birth date (format: 31.12.1999)
+        // NEW: Date of birth (format: 31.12.1999)
         "birthday2" : "Geburtsdatum (Format: 31.12.1999)",
         "language" : "Bevorzugte Sprache",
         "day" : "Tag",
@@ -706,7 +742,15 @@
             "way4" : "Warten Sie, bis MIDATA-Mitarbeiter eine manuelle Schlüsselwiederherstellung durchgeführt haben. MIDATA sendet Ihnen eine E-Mail, wenn die Wiederherstellung abgeschlossen ist. Bitte warten Sie bis zu fünf Arbeitstage, bis die Wiederherstellung abgeschlossen ist."
         },
         "licence" : {
+
+            // TODO CHANGED
+            // OLD: A licence is required to use this application.
+            // NEW: A license is required to use this application.
             "intro" : "Für die Nutzung dieser Applikation ist eine Lizenz erforderlich.",
+
+            // TODO CHANGED
+            // OLD: Please contact support@midata.coop to obtain a valid licence.
+            // NEW: Please contact support@midata.coop to obtain a valid license.
             "text" : "Bitte kontaktieren Sie support@midata.coop, um eine gültige Lizenz zu erhalten."
         }
     },
@@ -783,6 +827,10 @@
         "duration" : "Dauer",
         "information_that_needs_sharing" : "Geforderte Daten",
         "information_restricted" : "Ihr Geschlecht, Geburtsjahr und Wohnsitzland",
+
+        // TODO CHANGED
+        // OLD: Your complete demographic data (name, birth date, address, ...)
+        // NEW: Your complete demographic data (name, date of birth, address, ...)
         "information_demographic" : "Ihre kompletten demographischen Daten (Name, Geburtsdatum, Adresse, ...)",
         "records_with_format" : "Datensätze im Format:",
         "records_with_content" : "Datensätze mit Inhalt:",
@@ -814,6 +862,10 @@
         "user" : "Benutzer",
         "name" : "Name:",
         "email" : "E-Mail:",
+
+        // TODO CHANGED
+        // OLD: Birth date:
+        // NEW: Date of birth:
         "birthday" : "Geburtsdatum:",
         "midataID" : "MIDATA ID:",
         "action" : "Mehr...",

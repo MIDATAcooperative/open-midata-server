@@ -105,6 +105,10 @@
             "access_query" : "Nessun dati selezionato",
             "plugin" : "Questo plugin non esiste nel vostro account.",
             "auth_type" : "L'autenticazione a due fattori è necessaria per il vostro tipo di account.",
+
+            // TODO CHANGED
+            // OLD: A valid licence is required to use this application.
+            // NEW: A valid license is required to use this application.
             "licence" : "Per utilizzare questa applicazione è necessaria una licenza valida."
         },
 
@@ -127,6 +131,10 @@
             "user" : "Una persona è già registrata con questo indirizzo e-mail.",
             "member" : "Una persona è già registrata con questo indirizzo e-mail.",
             "provider" : "Un fornitore di prestazioni sanitarie con questo nome esiste già.",
+
+            // TODO CHANGED
+            // OLD: A research organisation with this name already exists.
+            // NEW: A research organization with this name already exists.
             "research" : "Un'organizzazione di ricerca con questo nome esiste già.",
             "passcode" : "Scegliere un codice password diverso!",
             "plugin" : "Esiste già un'applicazione con lo stesso nome.",
@@ -152,11 +160,19 @@
         },
 
         "tooshort" : {
+
+            // TODO CHANGED
+            // OLD: Passwords must be at least 8 characters long and should contain upper/lower case letters, numbers and special characters.
+            // NEW: The password must be at least 8 characters long and contain one letter and one digit.
             "password" : "La password deve essere lunga almeno 8 caratteri e contenere una lettera e una cifra.",
             "passphrase" : "Le frasi password devono essere composte da almeno 8 caratteri."
         },
 
         "tooweak" : {
+
+            // TODO CHANGED
+            // OLD: Passwords should contain upper/lower case letters, numbers and special characters.
+            // NEW: The password must contain at least one letter and one digit.
             "password" : "La password deve contenere almeno una lettera e una cifra.",
             "passphrase" : "Le frasi password devono contenere lettere maiuscole/minuscole, numeri e caratteri speciali."
         },
@@ -187,6 +203,10 @@
         },
 
         "notrequired" : {
+
+            // TODO CHANGED
+            // OLD: No licence is required for this application
+            // NEW: No license is required for this application
             "licence" : "Non è richiesta alcuna licenza per questa applicazione"
         }
 
@@ -238,6 +258,10 @@
             "user-phone-change" : "Numero di telefono dell'utente modificato",
             "user-settings-change" : "Impostazioni dell'utente modificate",
             "user-email-change" : "E-mail dell'utente modificata",
+
+            // TODO CHANGED
+            // OLD: User's birth date changed
+            // NEW: User's date of birth changed
             "user-birthday-change" : "Data di nascita dell'utente modificata",
             "user-status-change-active" : "Account utente sbloccato",
             "user-status-change-blocked" : "Account utente bloccato",
@@ -566,6 +590,10 @@
     "registration" : {
         "sign_up" : "Registrazione",
         "mandantory_fields" : "Inserire le informazioni qui sotto, i campi contrassegnati da un asterisco * sono obbligatori.",
+
+        // TODO CHANGED
+        // OLD: Password must be at least 8 characters long (letters and digits).
+        // NEW: The password must be at least 8 characters long and contain one letter and one digit.
         "password_policy" : "La password deve essere lunga almeno 8 caratteri e contenere una lettera e una cifra.",
         "email" : "E-mail",
         "password" : "Password",
@@ -575,7 +603,15 @@
         "firstname" : "Nome",
         "lastname" : "Cognome",
         "gender" : "Sesso",
+
+        // TODO CHANGED
+        // OLD: Birth date
+        // NEW: Date of birth
         "birthday" : "Data di nascita",
+
+        // TODO CHANGED
+        // OLD: Birth date (format: 31.12.1999)
+        // NEW: Date of birth (format: 31.12.1999)
         "birthday2" : "Data di nascita (formato: 31.12.1999)",
         "language" : "Lingua preferita",
         "day" : "Giorno",
@@ -706,7 +742,15 @@
             "way4" : "Attendere che i dipendenti MIDATA eseguano un recupero manuale della chiave. MIDATA vi invierà un'e-mail quando il recupero è stato fatto. Attendere fino a cinque giorni lavorativi per completare il recupero."
         },
         "licence" : {
+
+            // TODO CHANGED
+            // OLD: A licence is required to use this application.
+            // NEW: A license is required to use this application.
             "intro" : "Per utilizzare questa applicazione è necessaria una licenza.",
+
+            // TODO CHANGED
+            // OLD: Please contact support@midata.coop to obtain a valid licence.
+            // NEW: Please contact support@midata.coop to obtain a valid license.
             "text" : "Si prega di contattare support@midata.coop per ottenere una licenza valida."
         }
     },
@@ -783,6 +827,10 @@
         "duration" : "Durata",
         "information_that_needs_sharing" : "Dati richiesti",
         "information_restricted" : "Indicare sesso, anno di nascita e nazione di residenza",
+
+        // TODO CHANGED
+        // OLD: Your complete demographic data (name, birth date, address, ...)
+        // NEW: Your complete demographic data (name, date of birth, address, ...)
         "information_demographic" : "I propri dati demografici completi (nome, data di nascita, indirizzo, ...)",
         "records_with_format" : "Record con il formato:",
         "records_with_content" : "Record con i contenuti:",
@@ -814,6 +862,10 @@
         "user" : "Utente",
         "name" : "Nome:",
         "email" : "E-mail:",
+
+        // TODO CHANGED
+        // OLD: Birth date:
+        // NEW: Date of birth:
         "birthday" : "Data di nascita:",
         "midataID" : "MIDATA ID:",
         "action" : "Altro...",

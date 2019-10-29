@@ -56,6 +56,10 @@
         "participants" : "Partecipanti",
         "execution" : "Esecuzione",
         "creation_date" : "Creato",
+
+        // TODO CHANGED
+        // OLD: No research projects have been created yet for your organisation.
+        // NEW: No research projects have been created yet for your organization.
         "empty" : "Non è stato ancora creato alcun progetto di ricerca per la tua organizzazione.",
         "create_btn" : "Crea un nuovo progetto"
     },
@@ -118,11 +122,27 @@
         "required_data" : "Dati richiesti",
         "no_change_warning" : "Una volta convalidato lo progetto, questa configurazione non potrà più essere modificata.",
         "member_identity" : "Identità del membro",
+
+        // TODO CHANGED
+        // OLD: Pseudonymized Participation
+        // NEW: Pseudonymized participation
         "pseudonymous1" : "Partecipazione pseudonimizzata",
         "pseudonymous2" : ", i dati esportati rivelano l'identità pseudonimizzati, l'anno di nascita, il sesso e il paese. Alcuni ricercatori, come gli study nurses, possono avere accesso a dati personali completi.",
         "anonymous" : "Partecipazione anonima",
+
+        // TODO CHANGED
+        // OLD: , exported data reveals the spseudonymized identity, year of birth, gender and country. The pseudonymization mapping may not be accessed.
+        // NEW: , exported data reveals the pseudonymized identity, year of birth, gender and country. The pseudonymization mapping may not be accessed.
         "anonymous2" : ", i dati esportati rivelano l'identità pseudonimizzata, l'anno di nascita, il sesso e il paese. La mappatura della pseudonimizzazione non è accessibile.",
+
+        // TODO CHANGED
+        // OLD: Not Pseudonymized
+        // NEW: Not pseudonymized
         "not_anonymous1" : "Senza pseudonimo",
+
+        // TODO CHANGED
+        // OLD: , requests member to share full name, birthday and contact Information (address, phone, email)
+        // NEW: , requests member to share full name, date of birth and contact Information (address, phone, email)
         "not_anonymous2" : ", richiede al membro di condividere il nome completo, la data di nascita e le informazioni di contatto (indirizzo, telefono, e-mail)",
         "assistance" : "Assistenza",
         "no_assistance1" : "Nessuno",
@@ -182,6 +202,10 @@
     "studyparticipant" : {
         "participant" : "Partecipante:",
         "gender" : "Sesso:",
+
+        // TODO CHANGED
+        // OLD: Year of Birth:
+        // NEW: Year of birth:
         "year" : "Anno di nascita:",
         "country" : "Nazione:",
         "status" : "Stato:",
@@ -331,6 +355,10 @@
     },
 
     "researcher_sharing" : {
+
+        // TODO CHANGED
+        // OLD: Share or unshare records from your account with groups of study participants
+        // NEW: Share or unshare records from your account with groups of project participants
         "description" : "Condividi o non condividi i record del vostro account con gruppi di partecipanti al progetto",
         "format" : "Tipo di risorsa",
         "content" : "Tipo di contenuto",

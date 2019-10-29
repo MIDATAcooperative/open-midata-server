@@ -48,6 +48,10 @@
 
     "accountdata" : {
         "midata_id" : "ID MIDATA:",
+
+        // TODO CHANGED
+        // OLD: Birthday:
+        // NEW: Date of birth:
         "birthday" : "Date de naissance:",
         "change_btn" : "Modifier"
     },

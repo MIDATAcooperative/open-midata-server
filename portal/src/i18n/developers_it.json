@@ -106,7 +106,15 @@
         "debug_help" : "Accedere come interrogazioni di applicazione e test nei confronti del backend MIDATA.",
         "appreviews_btn" : "Recensioni",
         "appreviews_help" : "Recensioni condotte per questa applicazione",
+
+        // TODO CHANGED
+        // OLD: Licence
+        // NEW: License
         "applicence_btn" : "Licenza",
+
+        // TODO CHANGED
+        // OLD: Does the user require a licence to use this application?
+        // NEW: Does the user require a license to use this application?
         "applicence_help" : "L'utente richiede una licenza per utilizzare questa applicazione?",
         "linkedStudy" : "Progetto collegato con link all'applicazione (codice)",
         "mustParticipateInStudy" : "Richiesta la partecipazione al progetto di ricerca",
@@ -277,6 +285,10 @@
         "name" : "Nome dell'applicazione",
         "check" : "Tipo di recensione",
         "date" : "Data",
+
+        // TODO CHANGED
+        // OLD: Signed by
+        // NEW: Reviewed by
         "userLogin" : "Recensito da",
         "comment" : "Commento",
         "status" : "Stato",
@@ -291,15 +303,31 @@
         "PROJECTS" : "Progetti",
         "CODE_REVIEW" : "Revisione del codice",
         "TEST_CONCEPT" : "Concetto di test",
+
+        // TODO CHANGED
+        // OLD: Test Protokoll
+        // NEW: Test Protocol
         "TEST_PROTOKOLL" : "Protocolo di test",
         "CONTRACT" : "Contratto",
+
+        // TODO CHANGED
+        // OLD: Passed
+        // NEW: Accepted
         "ACCEPTED" : "Accettate",
         "NEEDS_FIXING" : "Correzione richiesta",
         "OBSOLETE" : "Obsolete"
     },
 
     "applicence" : {
+
+        // TODO CHANGED
+        // OLD: Licence
+        // NEW: License
         "title" : "Licenza",
+
+        // TODO CHANGED
+        // OLD: Licence required?
+        // NEW: License required?
         "required" : "È richiesta una licenza?",
         "allowedEntities" : "Entità permesse"
     }
