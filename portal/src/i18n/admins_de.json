@@ -10,6 +10,7 @@
         "content" : "Inhaltstypen",
         "studies" : "Projekte",
         "terms" : "Allgemeine Geschäftsbedingungen",
+        "licenses" : "Lizenzen",
         "registration" : "Administrator registrieren",
         "user_admin" : "Benutzerverwaltung",
         "plugin_admin" : "Applikationen & Daten",
@@ -213,7 +214,27 @@
         "decrypted" : "Entschlüsselte Share",
         "myid" : "Meine Wiederherstellungs-ID",
         "instr1" : "Klicken Sie auf einen Share, um den verschlüsselten Share in die Zwischenablage zu kopieren.",
-        "instr2" : "Entschlüsseln Sie den Share auf Ubuntu: (klick auf die Zeile, um sie in die Zwischenablage zu kopieren)"
+        "instr2" : "Share unter UBUNTU entschlüsseln: (klick auf die Zeile, um sie in die Zwischenablage zu kopieren)",
+        "instr3" : "Share unter MAC OS entschlüsseln: (klick auf die Zeile, um sie in die Zwischenablage zu kopieren)"
+    },
+
+    "admin_licenses" : {
+        "title" : "Lizenzen",
+       "appName" : "Applikation",
+        "licenseeType" : "Lizenznehmer-Typ",
+        "licenseeName" : "Lizenznehmer",
+        "expireDate" : "Läuft ab",
+        "empty" : "Keine passenden Lizenzen gefunden."
+    },
+
+    "admin_addlicence" : {
+        "title1" : "Neue Lizenz",
+        "title2" : "Lizenz ändern",
+        "app" : "Applikation",
+        "licenseeType" : "Typ des Lizenznehmers",
+        "role" : "Benutzerrolle",
+        "licensee" : "Lizenznehmer",
+        "expireDate" : "Ablaufdatum"
     },
 
     "usagestats" : {

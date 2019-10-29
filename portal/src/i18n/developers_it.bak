@@ -33,6 +33,7 @@
     "empty" : "You have not registered any application yet.",
     "register" : "Register a new application",
     "name" : "Name",
+    "filename" : "Internal",
     "type" : "Type",
     "role" : "Target Role",
     "manage_btn" : "manage",
@@ -102,6 +103,10 @@
     "stats_help" : "View statistics and hints for improvements about the various types of API calls your application sends to the server.",    
     "debug_btn" : "API Tester Sandbox",
     "debug_help" : "Login as application and test queries against the MIDATA backend.",
+    "appreviews_btn" : "Reviews",
+    "appreviews_help" : "Reviews conducted for this application",
+    "applicence_btn" : "Licence",
+    "applicence_help" : "Does the user require a licence to use this application?",
     "linkedStudy" : "Project linked to the application (code)",
     "mustParticipateInStudy" : "Research Project Participation Required",
     "admin_only" : "Only a MIDATA administrator may change this section. Please request changes if required.",
@@ -115,7 +120,9 @@
     "logout_required" : "[ required ]",
     "logout_explain" : "Changes to fields marked with !! will require to log out all users of that application.",
     "send_reports" : "Send error reports",  
-      
+    "not_reviewed" : "Not reviewed yet",
+    "ACCEPTED" : "Reviewed",
+    "NEEDS_FIXING" : "Needs Fixing",  
     "info" : {
        "filename" : "This name is internally used to identify your application. Should be a valid identifier (a-z, A-Z, 0-9, _).",
        "targetUserRole" : "Is your application for a specific role only? Otherwise choose 'Any Role'.",
@@ -158,7 +165,9 @@
     "logoutwarning" : "Changing the application definition will log out all users from that application. They will have to confirm the use of the application again on next login.",
     "researchwarning" : "Changing the application definition will unlink this research application from all projects!",
     "creator" : "Creator",
-    "organization" : "Organization"		    
+    "organization" : "Organization",
+    "publisher" : "Publisher",
+    "reviews" : "Reviews"		    
   },
   
   "appstats" : {
@@ -189,6 +198,7 @@
     "backend_services" : "Serverside Scripts",
     "portal_username" : "Username",
     "portal_password" : "Password",
+    "portal_role" : "Role",
     "portal_login" : "Use plugin instance:",
     "portal_login_btn" : "Portal login + get token"      
   },
@@ -258,5 +268,38 @@
       "cmd_to_run" : "Command to run on your computer:"
     }
 	
+  },
+  
+  "appreviews" : {
+    "review_btn" : "Review",
+    "title" : "Application Reviews",
+    "name" : "Application Name",
+    "check" : "Review Type",
+    "date" : "Date", 
+    "userLogin" : "Signed by",
+    "comment" : "Comment",
+    "status" : "Status",
+    "noreviews" : "No reviews have been done yet on this instance.",
+    "CONCEPT" : "Application Concept",
+    "DATA_MODEL" : "Data Model",
+    "ACCESS_FILTER" : "Access Filter",
+    "QUERIES" : "Queries",
+    "DESCRIPTION" : "Description",
+    "ICONS" : "Icons",
+    "MAILS" : "Mail Texts",
+    "PROJECTS" : "Projects",
+    "CODE_REVIEW" : "Code Review",
+    "TEST_CONCEPT" : "Test Concept",
+    "TEST_PROTOKOLL" : "Test Protokoll",
+    "CONTRACT" : "Contract",
+    "ACCEPTED" : "Passed",
+    "NEEDS_FIXING" : "Needs fixing",
+    "OBSOLETE" : "Obsolete"
+  },
+  
+  "applicence" : {
+    "title" : "Licence",
+    "required" : "Licence required?",
+    "allowedEntities" : "Allowed entities"
   }
 }

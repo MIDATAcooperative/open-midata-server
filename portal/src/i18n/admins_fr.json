@@ -10,6 +10,7 @@
         "content" : "Types de contenu",
         "studies" : "Projets",
         "terms" : "Conditions générales",
+        "licenses" : "Licences",
         "registration" : "Inscrire un administrateur",
         "user_admin" : "Administration des utilisateurs",
         "plugin_admin" : "Applications & Données",
@@ -213,7 +214,27 @@
         "decrypted" : "Share décrypté",
         "myid" : "Mon id de récupération",
         "instr1" : "Cliquez sur un share pour copier le share crypté dans le presse-papiers.",
-        "instr2" : "Décrypter le share sur Ubuntu: (cliquez sur la ligne pour la copier dans le presse-papiers)"
+        "instr2" : "Décrypter le share sous UBUNTU: (cliquez sur la ligne pour la copier dans le presse-papiers)",
+        "instr3" : "Décrypter le share sous MAC OS: (cliquez sur la ligne pour la copier dans le presse-papiers)"
+    },
+
+    "admin_licenses" : {
+        "title" : "Licences",
+        "appName" : "Application",
+        "licenseeType" : "Type de licence",
+        "licenseeName" : "Titulaire",
+        "expireDate" : "Expire",
+        "empty" : "Aucune licence correspondante trouvée."
+    },
+
+    "admin_addlicence" : {
+        "title1" : "Nouvelle licence",
+        "title2" : "Modifier la licence",
+        "app" : "Application",
+        "licenseeType" : "Type de titulaire",
+        "role" : "Rôle de l'utilisateur",
+        "licensee" : "Titulaire",
+        "expireDate" : "Date d'expiration"
     },
 
     "usagestats" : {

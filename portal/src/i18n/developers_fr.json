@@ -34,6 +34,7 @@
         "empty" : "Vous n'avez encore enregistré aucune application.",
         "register" : "Enregistrer une nouvelle application",
         "name" : "Nom",
+        "filename" : "Interne",
         "type" : "Type",
         "role" : "Rôle cible",
         "manage_btn" : "gérer",
@@ -103,6 +104,10 @@
         "stats_help" : "Consultez des statistiques et des conseils pour améliorer les différents types d'appels API envoyés par votre application au serveur.",
         "debug_btn" : "API Tester Sandbox",
         "debug_help" : "Connectez-vous en tant qu'application et testez les requêtes contre le backend MIDATA",
+        "appreviews_btn" : "Revues",
+        "appreviews_help" : "Revues effectuées pour cette application",
+        "applicence_btn" : "Licence",
+        "applicence_help" : "L'utilisateur a-t-il besoin d'une licence pour utiliser cette application?",
         "linkedStudy" : "Projet lié à l'application (code)",
         "mustParticipateInStudy" : "Participation au projet de recherche requise",
         "admin_only" : "Seul un administrateur MIDATA peut modifier cette section. Veuillez faire une demande de changement si nécessaire.",
@@ -116,7 +121,9 @@
         "logout_required" : "[ requis ]",
         "logout_explain" : "Les modifications apportées aux champs marqués par !! exigent la déconnexion de tous les utilisateurs de cette application.",
         "send_reports" : "Envoyer les rapports d'erreurs",
-
+        "not_reviewed" : "Pas encore revu",
+        "ACCEPTED" : "Revu",
+        "NEEDS_FIXING" : "Correction requise",
         "info" : {
             "filename" : "Ce nom est utilisé (en interne) pour identifier votre application. Il doit s'agir d'un identificateur valide (a-z, A-Z, 0-9, _).",
             "targetUserRole" : "Votre application est-elle destinée à un rôle spécifique? Sinon, veuillez choisir 'Tous les rôles'.",
@@ -159,7 +166,9 @@
         "logoutwarning" : "Changer la définition de l'application déconnectera tous les utilisateurs de cette application. Ils devront confirmer à nouveau l'utilisation de l'application à la prochaine connexion.",
         "researchwarning" : "Changer la définition de l'application dissociera cette application de recherche de tous les projets!",
         "creator" : "Créateur",
-        "organization" : "Organisation"
+        "organization" : "Organisation",
+        "publisher" : "Éditeur",
+        "reviews" : "Revues"
     },
 
     "appstats" : {
@@ -190,6 +199,7 @@
         "backend_services" : "Scripts côté serveur",
         "portal_username" : "Nom d'utilisateur",
         "portal_password" : "Mot de passe",
+        "portal_role" : "Rôle",
         "portal_login" : "Utilisez l'instance de plugin:",
         "portal_login_btn" : "Connexion au portail + obtention du token"
     },
@@ -259,5 +269,38 @@
             "cmd_to_run" : "Commande à exécuter sur votre ordinateur:"
         }
 
+    },
+
+    "appreviews" : {
+        "review_btn" : "Revue",
+        "title" : "Revues d'applications",
+        "name" : "Nom de l'application",
+        "check" : "Type de revue",
+        "date" : "Date",
+        "userLogin" : "Revu par",
+        "comment" : "Commentaire",
+        "status" : "État",
+        "noreviews" : "Aucune revue n'a encore été faite sur cette instance.",
+        "CONCEPT" : "Concept de l'application",
+        "DATA_MODEL" : "Modèle de données",
+        "ACCESS_FILTER" : "Access Filter",
+        "QUERIES" : "Queries",
+        "DESCRIPTION" : "Description",
+        "ICONS" : "Icônes",
+        "MAILS" : "Textes d'e-mails",
+        "PROJECTS" : "Projets",
+        "CODE_REVIEW" : "Revue de code",
+        "TEST_CONCEPT" : "Concept de test",
+        "TEST_PROTOKOLL" : "Protocole de test",
+        "CONTRACT" : "Contrat",
+        "ACCEPTED" : "Accepté",
+        "NEEDS_FIXING" : "Correction requise",
+        "OBSOLETE" : "Obsolète"
+    },
+
+    "applicence" : {
+        "title" : "Licence",
+        "required" : "Licence requise?",
+        "allowedEntities" : "Entités admises"
     }
 }

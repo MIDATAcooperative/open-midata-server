@@ -83,7 +83,8 @@
             "sharing" : "Der Datenzugriffsfilter (Data Access Filter) beinhaltet Datentypen, die von der Projektkonfiguration ausgeschlossen sind.",
             "anonymous" : "Ein Forschungsprojekt kann nur dann anonym sein, wenn niemand auf unpseudonymisierte Daten zugreifen darf.",
             "url" : "Ungültige URL",
-            "consent_members" : "Diese Zustimmung kann erst bestätigt werden, wenn alle externen Personen MIDATA beigetreten sind."
+            "consent_members" : "Diese Zustimmung kann erst bestätigt werden, wenn alle externen Personen MIDATA beigetreten sind.",
+            "entity_type" : "Ungültiger Entitätstyp"
         },
 
         "missing" : {
@@ -103,7 +104,8 @@
             "file" : "Keine Datei zum Hochladen ausgewählt",
             "access_query" : "Keine Daten ausgewählt",
             "plugin" : "Dieses Plugin existiert nicht in Ihrem Konto.",
-            "auth_type" : "Für Ihren Kontotyp ist eine Zwei-Faktor-Authentifizierung erforderlich."
+            "auth_type" : "Für Ihren Kontotyp ist eine Zwei-Faktor-Authentifizierung erforderlich.",
+            "licence" : "Für die Nutzung dieser Applikation ist eine gültige Lizenz erforderlich."
         },
 
         "unknown" : {
@@ -117,7 +119,8 @@
             "code" : "Unbekannter Code",
             "record" : "Unbekannter Datensatz",
             "user" : "Dieser Benutzer existiert nicht",
-            "participation" : "Teilnahme an Forschungsprojekt nicht gefunden."
+            "participation" : "Teilnahme an Forschungsprojekt nicht gefunden.",
+            "organization" : "Die Organisation existiert nicht."
         },
 
         "exists" : {
@@ -149,12 +152,12 @@
         },
 
         "tooshort" : {
-            "password" : "Kennwörter müssen mindestens 8 Zeichen lang sein.",
+            "password" : "Das Passwort muss mindestens 8 Zeichen lang sein und einen Buchstaben und eine Ziffer enthalten.",
             "passphrase" : "Passphrasen müssen mindestens 8 Zeichen lang sein."
         },
 
         "tooweak" : {
-            "password" : "Kennwörter müssen Klein-/Grossbuchstaben, Ziffern und Sonderzeichen enthalten.",
+            "password" : "Das Passwort muss mindestens einen Buchstaben und eine Ziffer enthalten.",
             "passphrase" : "Passphrasen müssen Klein-/Grossbuchstaben, Ziffern und Sonderzeichen enthalten."
         },
 
@@ -181,6 +184,10 @@
 
         "too_large" : {
             "file" : "Die Datei ist zu gross (maximal 1 MB)."
+        },
+
+        "notrequired" : {
+            "licence" : "Für diese Applikation ist keine Lizenz erforderlich"
         }
 
     },
@@ -232,7 +239,8 @@
             "user-settings-change" : "Benutzereinstellungen geändert",
             "user-email-change" : "E-Mail des Benutzers geändert",
             "user-birthday-change" : "Geburtsdatum des Benutzers geändert",
-            "user-status-change" : "Status des Benutzerkontos geändert",
+            "user-status-change-active" : "Benutzerkonto entsperrt",
+            "user-status-change-blocked" : "Benutzerkonto gesperrt",
             "user-email-confirmed" : "E-Mail bestätigt durch Benutzer",
             "user-email-rejected" : "E-Mail verworfen durch Benutzer",
             "user-account-change-by-admin" : "Benutzerkonto durch einen Administrator geändert",
@@ -473,6 +481,11 @@
         "accountnotifications" : {
             "NONE" : "Keine Anmeldungs-Benachrichtigungen",
             "LOGIN" : "E-Mail bei jeder Anmeldung senden"
+        },
+        "entitytype" : {
+            "USER" : "Benutzer",
+            "USERGROUP" : "Team",
+            "ORGANIZATION" : "Organisation"
         }
     },
 
@@ -553,7 +566,7 @@
     "registration" : {
         "sign_up" : "Registrierung",
         "mandantory_fields" : "Bitte füllen Sie die folgenden Felder aus, die mit einem Sternchen (*) gekennzeichneten Felder sind Pflichtfelder.",
-        "password_policy" : "Das Passwort muss mindestens 8 Zeichen lang sein (Buchstaben und Ziffern).",
+        "password_policy" : "Das Passwort muss mindestens 8 Zeichen lang sein und einen Buchstaben und eine Ziffer enthalten.",
         "email" : "E-Mail",
         "password" : "Passwort",
         "password_repetition" : "Passwort wiederholen",
@@ -691,6 +704,10 @@
             "way2" : "Haben Sie sich schon einmal mit einem Browser angemeldet? Wenn ja, versuchen Sie, sich mit dem gleichen Browser und Gerät anzumelden.",
             "way3" : "Erinnern Sie sich wieder an Ihr altes Passwort? Wenn ja, versuchen Sie, sich mit Ihrem alten Passwort anzumelden.",
             "way4" : "Warten Sie, bis MIDATA-Mitarbeiter eine manuelle Schlüsselwiederherstellung durchgeführt haben. MIDATA sendet Ihnen eine E-Mail, wenn die Wiederherstellung abgeschlossen ist. Bitte warten Sie bis zu fünf Arbeitstage, bis die Wiederherstellung abgeschlossen ist."
+        },
+        "licence" : {
+            "intro" : "Für die Nutzung dieser Applikation ist eine Lizenz erforderlich.",
+            "text" : "Bitte kontaktieren Sie support@midata.coop, um eine gültige Lizenz zu erhalten."
         }
     },
 
@@ -832,6 +849,7 @@
         "success" : "Ein neus Plugin wurde erfolgreich installiert.",
         "created_by" : "Erstellt durch:",
         "orgName" : "Organisation:",
+        "publisher" : "Herausgeber:",
         "description" : "Beschreibung:",
         "tile_name" : "Name der Kachel:",
         "install_location" : "Standort:",
@@ -920,8 +938,8 @@
         "please_review1" : "Zustimmung zu überprüfen",
         "please_review2a" : "Bitte überprüfen Sie diese Zustimmung. Klicken Sie auf 'Diese Zustimmung bestätigen', wenn Sie damit einverstanden sind. Klicken Sie auf 'Diese Zustimmung ablehnen', wenn Sie nicht einverstanden sind.",
         "please_review2b" : "Bitte überprüfen Sie diese bestehende Zustimmung. Klicken Sie auf die Schaltfläche 'Überspringen (Keine Änderung)', um diese Seite ohne Änderungen zu verlassen. Klicken Sie auf 'Diese Zustimmung ablehnen', wenn Sie nicht mehr einverstanden sind.",
-         "you" : "Sie",
-         "restrictions" : "Weitere Einschränkungen?"
+        "you" : "Sie",
+        "restrictions" : "Weitere Einschränkungen?"
     },
 
     "editconsent2" : {
@@ -1322,6 +1340,13 @@
         "fitness" : "Fitness",
         "health" : "Gesundheitsdaten",
         "analyze" : "Datenanalyse"
+    },
+
+    "changelog" : {
+        "F" : "Neues Feature",
+        "B" : "Bugfix",
+        "I" : "Verbesserung",
+        "S" : "Bugfix"
     },
 
     "-1" : "unbekannt"

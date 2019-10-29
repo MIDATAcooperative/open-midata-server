@@ -1,53 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1" xml:lang="en">
-    <file source-language="en" target-language="it" datatype="winres" original="providers_it.json">
-        <body>
-            <group resname="provider_registration" id="provider_registration">
-                <trans-unit resname="name" id="provider_registration.name">
-                    <source>(Organization) Name</source>
-                    <target>Nome</target>
-                </trans-unit>
-            </group>
-            <group resname="provider_navbar" id="provider_navbar">
-                <trans-unit resname="market" id="provider_navbar.market">
-                    <source>MIDATA Store</source>
-                </trans-unit>
-            </group>
-            <group resname="provider_organization" id="provider_organization">
-                <trans-unit resname="master_user" id="provider_organization.master_user">
-                    <source>You must be master user to update your organization or register new users for the organization. Please contact the MIDATA support if you think you should have master user permissions.</source>
-                    <target>Devi essere un utente master per aggiornare la propria organizzazione o iscrivere nuovi utenti per l'organizzazione. Si prega di contattare il supporto MIDATA se si pensa che si dovrebbero avere le autorizzazioni di utente master.</target>
-                </trans-unit>
-            </group>
-            <group resname="provider_patientsearch" id="provider_patientsearch">
-                <trans-unit resname="midataid" id="provider_patientsearch.midataid">
-                    <source>MIDATA ID</source>
-                </trans-unit>
-            </group>
-            <group resname="provider_usergroups" id="provider_usergroups">
-                <trans-unit resname="name" id="provider_usergroups.name">
-                    <source>Team</source>
-                </trans-unit>
-            </group>
-        </body>
-    </file>
     <file source-language="en" target-language="it" datatype="winres" original="admins_it.json">
         <body>
             <group resname="admin_navbar" id="admin_navbar">
                 <trans-unit resname="admin" id="admin_navbar.admin">
                     <source>Admin</source>
                 </trans-unit>
-                <trans-unit resname="plugins" id="admin_navbar.plugins">
-                    <source>Applications</source>
-                    <target>Plugin</target>
-                </trans-unit>
-                <trans-unit resname="usagestats" id="admin_navbar.usagestats">
-                    <source>Application usage statistics</source>
-                    <target>Statistiche sull'uso dell'applicazione</target>
-                </trans-unit>
-                <trans-unit resname="studies" id="admin_navbar.studies">
-                    <source>Projects</source>
-                    <target>Studi</target>
+                <trans-unit resname="licenses" id="admin_navbar.licenses">
+                    <source>Licenses</source>
                 </trans-unit>
             </group>
             <group resname="admin_members" id="admin_members">
@@ -56,96 +16,84 @@
                 </trans-unit>
             </group>
             <group resname="admin_address" id="admin_address">
-                <trans-unit resname="show_apps_created" id="admin_address.show_apps_created">
-                    <source>Show the applications created by this developer</source>
-                    <target>Mostra le applicazioni create da questo sviluppatore</target>
-                </trans-unit>
                 <trans-unit resname="midata_id" id="admin_address.midata_id">
                     <source>MIDATA ID</source>
                 </trans-unit>
             </group>
-            <group resname="admin_managenews" id="admin_managenews">
-                <trans-unit resname="studyId" id="admin_managenews.studyId">
-                    <source>Linked Project</source>
-                    <target>Studio collegato</target>
-                </trans-unit>
-            </group>
             <group resname="admin_plugins" id="admin_plugins">
-                <trans-unit resname="title" id="admin_plugins.title">
-                    <source>Applications</source>
-                    <target>Plugin</target>
-                </trans-unit>
-                <trans-unit resname="name" id="admin_plugins.name">
-                    <source>Filter by Application</source>
-                    <target>Filtra per nome applicazione</target>
-                </trans-unit>
-                <trans-unit resname="empty" id="admin_plugins.empty">
-                    <source>There are no applications yet.</source>
-                    <target>Non ci sono ancora applicazioni o plugin.</target>
-                </trans-unit>
                 <trans-unit resname="plugin_market" id="admin_plugins.plugin_market">
                     <source>MIDATA Store</source>
                 </trans-unit>
-                <trans-unit resname="add_definition_btn" id="admin_plugins.add_definition_btn">
-                    <source>Import Application Definition</source>
-                    <target>Importa definizione plugin</target>
-                </trans-unit>
-            </group>
-            <group resname="admin_defineplugin" id="admin_defineplugin">
-                <trans-unit resname="title" id="admin_defineplugin.title">
-                    <source>Import Application Definition</source>
-                    <target>Importa definizione plugin</target>
-                </trans-unit>
-            </group>
-            <group resname="admin_studies" id="admin_studies">
-                <trans-unit resname="title" id="admin_studies.title">
-                    <source>Research Projects</source>
-                    <target>Studi</target>
-                </trans-unit>
-                <trans-unit resname="empty" id="admin_studies.empty">
-                    <source>No matching projects found.</source>
-                    <target>Non è stato trovato alcuno studio corrispondente.</target>
-                </trans-unit>
             </group>
             <group resname="admin_study" id="admin_study">
-                <trans-unit resname="title" id="admin_study.title">
-                    <source>Research Project</source>
-                    <target>Studio</target>
-                </trans-unit>
                 <trans-unit resname="sharing_query" id="admin_study.sharing_query">
                     <source>Data Access Filter</source>
                 </trans-unit>
                 <trans-unit resname="team" id="admin_study.team">
                     <source>Team</source>
                 </trans-unit>
-                <trans-unit resname="delete_study_btn" id="admin_study.delete_study_btn">
-                    <source>Delete Project</source>
-                    <target>Elimina studio</target>
-                </trans-unit>
             </group>
             <group resname="admin_stats" id="admin_stats">
                 <trans-unit resname="indexPageCount" id="admin_stats.indexPageCount">
                     <source>DB Index Pages</source>
-                </trans-unit>
-                <trans-unit resname="appCount" id="admin_stats.appCount">
-                    <source>Applications</source>
-                    <target>Applicazioni e plugin</target>
-                </trans-unit>
-                <trans-unit resname="runningStudyCount" id="admin_stats.runningStudyCount">
-                    <source>Running Projects</source>
-                    <target>Studi in esecuzione</target>
                 </trans-unit>
             </group>
             <group resname="admin_pwrecover" id="admin_pwrecover">
                 <trans-unit resname="share" id="admin_pwrecover.share">
                     <source>Share</source>
                 </trans-unit>
+                <trans-unit resname="instr2" id="admin_pwrecover.instr2">
+                    <source>Decrypt share on UBUNTU: (click line to copy it to clipboard)</source>
+                    <target>Decriptare il share su Ubuntu: (cliccare sulla linea per copiarla negli appunti)</target>
+                </trans-unit>
+                <trans-unit resname="instr3" id="admin_pwrecover.instr3">
+                    <source>Decrypt share on MAC: (click line to copy it to clipboard)</source>
+                </trans-unit>
+            </group>
+            <group resname="admin_licenses" id="admin_licenses">
+                <trans-unit resname="title" id="admin_licenses.title">
+                    <source>Licenses</source>
+                </trans-unit>
+                <trans-unit resname="appName" id="admin_licenses.appName">
+                    <source>Application</source>
+                </trans-unit>
+                <trans-unit resname="licenseeType" id="admin_licenses.licenseeType">
+                    <source>Licensee Type</source>
+                </trans-unit>
+                <trans-unit resname="licenseeName" id="admin_licenses.licenseeName">
+                    <source>Licensee</source>
+                </trans-unit>
+                <trans-unit resname="expireDate" id="admin_licenses.expireDate">
+                    <source>Expires</source>
+                </trans-unit>
+                <trans-unit resname="empty" id="admin_licenses.empty">
+                    <source>No matching licenses found.</source>
+                </trans-unit>
+            </group>
+            <group resname="admin_addlicence" id="admin_addlicence">
+                <trans-unit resname="title1" id="admin_addlicence.title1">
+                    <source>New Licence</source>
+                </trans-unit>
+                <trans-unit resname="title2" id="admin_addlicence.title2">
+                    <source>Edit Licence</source>
+                </trans-unit>
+                <trans-unit resname="app" id="admin_addlicence.app">
+                    <source>Application</source>
+                </trans-unit>
+                <trans-unit resname="licenseeType" id="admin_addlicence.licenseeType">
+                    <source>Licensee Type</source>
+                </trans-unit>
+                <trans-unit resname="role" id="admin_addlicence.role">
+                    <source>User Role</source>
+                </trans-unit>
+                <trans-unit resname="licensee" id="admin_addlicence.licensee">
+                    <source>Licensee</source>
+                </trans-unit>
+                <trans-unit resname="expireDate" id="admin_addlicence.expireDate">
+                    <source>Date of expiration</source>
+                </trans-unit>
             </group>
             <group resname="usagestats" id="usagestats">
-                <trans-unit resname="object" id="usagestats.object">
-                    <source>Application</source>
-                    <target>App/Plugin</target>
-                </trans-unit>
                 <trans-unit resname="REGISTRATION" id="usagestats.REGISTRATION">
                     <source>Registration</source>
                 </trans-unit>
@@ -154,11 +102,9 @@
                 </trans-unit>
                 <trans-unit resname="REFRESH" id="usagestats.REFRESH">
                     <source>Session</source>
-                    <target>Session</target>
                 </trans-unit>
                 <trans-unit resname="INSTALL" id="usagestats.INSTALL">
                     <source>Activation</source>
-                    <target>Activation</target>
                 </trans-unit>
                 <trans-unit resname="GET" id="usagestats.GET">
                     <source>Read</source>
@@ -175,14 +121,40 @@
             </group>
         </body>
     </file>
-    <file source-language="en" target-language="it" datatype="winres" original="members_it.json">
+    <file source-language="en" target-language="it" datatype="winres" original="providers_it.json">
         <body>
-            <group resname="member_quickregistration" id="member_quickregistration">
-                <trans-unit resname="study" id="member_quickregistration.study">
-                    <source>Research project*</source>
-                    <target>Studio*</target>
+            <group resname="provider_registration" id="provider_registration">
+                <trans-unit resname="description" id="provider_registration.description">
+                    <source>Description</source>
+                </trans-unit>
+                <trans-unit resname="url" id="provider_registration.url">
+                    <source>Homepage URL</source>
                 </trans-unit>
             </group>
+            <group resname="provider_navbar" id="provider_navbar">
+                <trans-unit resname="market" id="provider_navbar.market">
+                    <source>MIDATA Store</source>
+                </trans-unit>
+            </group>
+            <group resname="provider_organization" id="provider_organization">
+                <trans-unit resname="url" id="provider_organization.url">
+                    <source>Homepage URL</source>
+                </trans-unit>
+            </group>
+            <group resname="provider_patientsearch" id="provider_patientsearch">
+                <trans-unit resname="midataid" id="provider_patientsearch.midataid">
+                    <source>MIDATA ID</source>
+                </trans-unit>
+            </group>
+            <group resname="provider_usergroups" id="provider_usergroups">
+                <trans-unit resname="name" id="provider_usergroups.name">
+                    <source>Team</source>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+    <file source-language="en" target-language="it" datatype="winres" original="members_it.json">
+        <body>
             <group resname="help_welcome" id="help_welcome">
                 <trans-unit resname="menu_config" id="help_welcome.menu_config">
                     <source>Config</source>
@@ -199,143 +171,53 @@
                     <source>Withings</source>
                 </trans-unit>
             </group>
-            <group resname="yourstudies" id="yourstudies">
-                <trans-unit resname="study" id="yourstudies.study">
-                    <source>Research Project</source>
-                    <target>Studio</target>
-                </trans-unit>
-                <trans-unit resname="empty" id="yourstudies.empty">
-                    <source>You do not participate in any research project.</source>
-                    <target>Non partecipi ad alcun studio.</target>
-                </trans-unit>
-            </group>
-            <group resname="entercode" id="entercode">
-                <trans-unit resname="title" id="entercode.title">
-                    <source>Join a research project by entering a participation code.</source>
-                    <target>Aderisci a uno studio di ricerca inserendo un codice di partecipazione.</target>
-                </trans-unit>
-                <trans-unit resname="description" id="entercode.description">
-                    <source>Join a research project by entering a code:</source>
-                    <target>Aderisci a uno studio inserendo un codice:</target>
-                </trans-unit>
-            </group>
-            <group resname="smallstudies" id="smallstudies">
-                <trans-unit resname="greeting" id="smallstudies.greeting">
-                    <source>Want to help research projects by sharing your data?</source>
-                    <target>Desideri aiutare gli studi con la condivisione dei tuoi dati?</target>
-                </trans-unit>
-                <trans-unit resname="studies" id="smallstudies.studies">
-                    <source>Projects</source>
-                    <target>Studi</target>
-                </trans-unit>
-            </group>
         </body>
     </file>
     <file source-language="en" target-language="it" datatype="winres" original="developers_it.json">
         <body>
             <group resname="developer_navbar" id="developer_navbar">
-                <trans-unit resname="yourapps" id="developer_navbar.yourapps">
-                    <source>Your Applications</source>
-                    <target>I tuoi plugin</target>
-                </trans-unit>
                 <trans-unit resname="sandbox" id="developer_navbar.sandbox">
                     <source>Sandbox</source>
                 </trans-unit>
             </group>
-            <group resname="developer_testusers" id="developer_testusers">
-                <trans-unit resname="description" id="developer_testusers.description">
-                    <source>Using these buttons you can register additional users for testing your applications. Using test users, plugins are run locally (from 'localhost') and not on the server.</source>
-                    <target>Utilizzando questi pulsanti è possibile registrare utenti aggiuntivi per testare i propri plugin. Gli utenti di test eseguono i plugin localmente (da 'localhost') e non sul server.</target>
-                </trans-unit>
-            </group>
             <group resname="developer_yourapps" id="developer_yourapps">
-                <trans-unit resname="title" id="developer_yourapps.title">
-                    <source>Your Applications</source>
-                    <target>I tuoi plugin</target>
-                </trans-unit>
-                <trans-unit resname="empty" id="developer_yourapps.empty">
-                    <source>You have not registered any application yet.</source>
-                    <target>Non hai ancora registrato nessun plugin.</target>
-                </trans-unit>
-                <trans-unit resname="register" id="developer_yourapps.register">
-                    <source>Register a new application</source>
-                    <target>Registra un nuovo plugin</target>
-                </trans-unit>
-            </group>
-            <group resname="appmessages" id="appmessages">
-                <trans-unit resname="title" id="appmessages.title">
-                    <source>Predefined Messages for Application:</source>
-                    <target>Messaggi predefiniti per l'applicazione:</target>
-                </trans-unit>
-                <trans-unit resname="empty" id="appmessages.empty">
-                    <source>There are no application specfic messages defined yet.</source>
-                    <target>Non esistono ancora messaggi definiti per l'applicazione.</target>
+                <trans-unit resname="filename" id="developer_yourapps.filename">
+                    <source>Internal</source>
                 </trans-unit>
             </group>
             <group resname="manageapp" id="manageapp">
-                <trans-unit resname="link_help" id="manageapp.link_help">
-                    <source>Applications may suggest or require participation in a research project. Research projects may recommend the use of applications. Use of the application may require a user's consent to healthcare professionals or teams to view their data.</source>
-                    <target>Le applicazioni possono suggerire o richiedere la partecipazione a un progetto di ricerca. I progetti di ricerca possono raccomandare l'uso di plugin o applicazioni. L'uso dell'applicazione può richiedere il consenso dell'utente agli professionisti sanitari o ai team per visualizzare i loro dati.</target>
-                </trans-unit>
                 <trans-unit resname="debug_btn" id="manageapp.debug_btn">
                     <source>API Tester Sandbox</source>
                 </trans-unit>
-                <trans-unit resname="linkedStudy" id="manageapp.linkedStudy">
-                    <source>Project linked to App (Code)</source>
-                    <target>Studio collegato con link all'applicazione (Codice)</target>
+                <trans-unit resname="appreviews_btn" id="manageapp.appreviews_btn">
+                    <source>Reviews</source>
                 </trans-unit>
-                <trans-unit resname="mustParticipateInStudy" id="manageapp.mustParticipateInStudy">
-                    <source>Research Project Participation Required</source>
-                    <target>Richiesta la partecipazione allo studio</target>
+                <trans-unit resname="appreviews_help" id="manageapp.appreviews_help">
+                    <source>Reviews conducted for this application</source>
                 </trans-unit>
-                <trans-unit resname="pleaseLogout2" id="manageapp.pleaseLogout2">
-                    <source>Disconnect from research projects</source>
-                    <target>Disconnetta dagli studi</target>
+                <trans-unit resname="applicence_btn" id="manageapp.applicence_btn">
+                    <source>Licence</source>
                 </trans-unit>
-                <group resname="info" id="manageapp.info">
-                    <trans-unit resname="filename" id="manageapp.info.filename">
-                        <source>This name is internally used to identify your application. Should be a valid identifier (a-z, A-Z, 0-9, _).</source>
-                        <target>Questo nome è utilizzato internamente per identificare la propria applicazione. Deve essere un identificatore valido (a-z, A-Z, 0-9, _).</target>
-                    </trans-unit>
-                    <trans-unit resname="type" id="manageapp.info.type">
-                        <source>Choose 'Plugin' if your application will run on the MIDATA portal. Choose 'Application (Smartphone, Web)' for an external application. Choose 'Service' for a server-side only script. Choose 'OAuth1 Import' or 'OAuth2 Import' if you need to connect to an external server using OAuth1 or OAuth2.</source>
-                        <target>Scegliere 'Plugin' se la propria applicazione sarà eseguita sul portale MIDATA. Scegliere 'Mobile App' per un'applicazione esterna. Scegliere 'Servizio' per uno script solo lato server. Scegliere 'OAuth1 Import' o 'OAuth2 Import' se è necessario collegarsi a un server esterno utilizzando OAuth1 o OAuth2.</target>
-                    </trans-unit>
-                    <trans-unit resname="name" id="manageapp.info.name">
-                        <source>The name of your application that will be presented to the end user.</source>
-                        <target>Il nome, della propria applicazione o plugin, che sarà presentato all'utente finale.</target>
-                    </trans-unit>
-                    <trans-unit resname="description" id="manageapp.info.description">
-                        <source>A description of your application that will also be shown on the marked place.</source>
-                        <target>La descrizione del proprio plugin che sarà visualizzata anche nel punto contrassegnato.</target>
-                    </trans-unit>
-                    <trans-unit resname="resharesData" id="manageapp.info.resharesData">
-                        <source>Application is allowed to reshare data it has access to to 3rd party.</source>
-                        <target>L'applicazione è autorizzata a ricondividere con terzi i dati a cui accede.</target>
-                    </trans-unit>
-                    <trans-unit resname="allowsUserSearch" id="manageapp.info.allowsUserSearch">
-                        <source>Users of the application are allowed to search for other users of the same application.</source>
-                        <target>Gli utenti dell'applicazione sono autorizzati a cercare altri utenti della stessa applicazione.</target>
-                    </trans-unit>
-                    <trans-unit resname="url" id="manageapp.info.url">
-                        <source>URL of your plugins main page. If you use the template from MIDATA it is 'dist/index.html#!?authToken=:authToken''</source>
-                        <target>La pagina iniziale con l'URL dei propri plugin. Se si utilizza il modello di MIDATA è 'dist/index.html#!?authToken=:authToken''</target>
-                    </trans-unit>
-                    <trans-unit resname="mustParticipateInStudy" id="manageapp.info.mustParticipateInStudy">
-                        <source>User must participate in research project in order to use application.</source>
-                        <target>L'utente deve partecipare allo studio per utilizzare l'applicazione.</target>
-                    </trans-unit>
-                </group>
-                <trans-unit resname="nostudy" id="manageapp.nostudy">
-                    <source>Not linked to a research project</source>
-                    <target>Non collegato a uno studio</target>
+                <trans-unit resname="applicence_help" id="manageapp.applicence_help">
+                    <source>Does the user require a licence to use this application?</source>
+                </trans-unit>
+                <trans-unit resname="not_reviewed" id="manageapp.not_reviewed">
+                    <source>Not reviewed yet</source>
+                </trans-unit>
+                <trans-unit resname="ACCEPTED" id="manageapp.ACCEPTED">
+                    <source>Reviewed</source>
+                </trans-unit>
+                <trans-unit resname="NEEDS_FIXING" id="manageapp.NEEDS_FIXING">
+                    <source>Needs Fixing</source>
                 </trans-unit>
                 <trans-unit resname="access_query_json" id="manageapp.access_query_json">
                     <source>Data Access Filter</source>
                 </trans-unit>
-                <trans-unit resname="researchwarning" id="manageapp.researchwarning">
-                    <source>Changing the application definition will unlink this research application from all projects!</source>
-                    <target>La modifica della definizione dell'applicazione dissocia questa applicazione di ricerca da tutti gli studi!</target>
+                <trans-unit resname="publisher" id="manageapp.publisher">
+                    <source>Publisher</source>
+                </trans-unit>
+                <trans-unit resname="reviews" id="manageapp.reviews">
+                    <source>Reviews</source>
                 </trans-unit>
             </group>
             <group resname="appdebug" id="appdebug">
@@ -354,12 +236,11 @@
                 <trans-unit resname="portal_password" id="appdebug.portal_password">
                     <source>Password</source>
                 </trans-unit>
+                <trans-unit resname="portal_role" id="appdebug.portal_role">
+                    <source>Role</source>
+                </trans-unit>
             </group>
             <group resname="appicon" id="appicon">
-                <trans-unit resname="name" id="appicon.name">
-                    <source>Application Name</source>
-                    <target>Nome plugin/applicazione</target>
-                </trans-unit>
                 <group resname="type" id="appicon.type">
                     <trans-unit resname="image/jpeg" id="appicon.type.image/jpeg">
                         <source>JPEG</source>
@@ -373,32 +254,8 @@
                 </group>
             </group>
             <group resname="applink" id="applink">
-                <trans-unit resname="title" id="applink.title">
-                    <source>Links with research projects or health professionals</source>
-                    <target>Collegamenti con progetti di ricerca o professionisti sanitari</target>
-                </trans-unit>
-                <trans-unit resname="add_research_btn" id="applink.add_research_btn">
-                    <source>Link to research project</source>
-                    <target>Collegare con progetto di ricerca</target>
-                </trans-unit>
-                <trans-unit resname="add_provider_btn" id="applink.add_provider_btn">
-                    <source>Link to health professional</source>
-                    <target>Collegare con operatore sanitario</target>
-                </trans-unit>
                 <trans-unit resname="target" id="applink.target">
                     <source>Target</source>
-                </trans-unit>
-                <trans-unit resname="provider" id="applink.provider">
-                    <source>Health professional (login)</source>
-                    <target>Operatore sanitario (login)</target>
-                </trans-unit>
-                <trans-unit resname="terms_of_use_hint" id="applink.terms_of_use_hint">
-                    <source>If special terms of use have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the identifier you need to enter here.</source>
-                    <target>Se l'utente deve leggere e accettare condizioni d'uso speciali, si prega di inviare il testo a MIDATA. Caricheremo il testo nel formato corretto e vi forniremo l'identificatore da inserire qui.</target>
-                </trans-unit>
-                <trans-unit resname="show_terms" id="applink.show_terms">
-                    <source>View terms of use</source>
-                    <target>Vedi le condizioni d'uso</target>
                 </trans-unit>
             </group>
             <group resname="appsubscriptions" id="appsubscriptions">
@@ -409,311 +266,111 @@
                     <source>FHIR Resource</source>
                 </trans-unit>
             </group>
+            <group resname="appreviews" id="appreviews">
+                <trans-unit resname="review_btn" id="appreviews.review_btn">
+                    <source>Review</source>
+                </trans-unit>
+                <trans-unit resname="title" id="appreviews.title">
+                    <source>Application Reviews</source>
+                </trans-unit>
+                <trans-unit resname="name" id="appreviews.name">
+                    <source>Application Name</source>
+                </trans-unit>
+                <trans-unit resname="check" id="appreviews.check">
+                    <source>Review Type</source>
+                </trans-unit>
+                <trans-unit resname="date" id="appreviews.date">
+                    <source>Date</source>
+                </trans-unit>
+                <trans-unit resname="userLogin" id="appreviews.userLogin">
+                    <source>Signed by</source>
+                </trans-unit>
+                <trans-unit resname="comment" id="appreviews.comment">
+                    <source>Comment</source>
+                </trans-unit>
+                <trans-unit resname="status" id="appreviews.status">
+                    <source>Status</source>
+                </trans-unit>
+                <trans-unit resname="noreviews" id="appreviews.noreviews">
+                    <source>No reviews have been done yet on this instance.</source>
+                </trans-unit>
+                <trans-unit resname="CONCEPT" id="appreviews.CONCEPT">
+                    <source>Application Concept</source>
+                </trans-unit>
+                <trans-unit resname="DATA_MODEL" id="appreviews.DATA_MODEL">
+                    <source>Data Model</source>
+                </trans-unit>
+                <trans-unit resname="ACCESS_FILTER" id="appreviews.ACCESS_FILTER">
+                    <source>Access Filter</source>
+                </trans-unit>
+                <trans-unit resname="QUERIES" id="appreviews.QUERIES">
+                    <source>Queries</source>
+                </trans-unit>
+                <trans-unit resname="DESCRIPTION" id="appreviews.DESCRIPTION">
+                    <source>Description</source>
+                </trans-unit>
+                <trans-unit resname="ICONS" id="appreviews.ICONS">
+                    <source>Icons</source>
+                </trans-unit>
+                <trans-unit resname="MAILS" id="appreviews.MAILS">
+                    <source>Mail Texts</source>
+                </trans-unit>
+                <trans-unit resname="PROJECTS" id="appreviews.PROJECTS">
+                    <source>Projects</source>
+                </trans-unit>
+                <trans-unit resname="CODE_REVIEW" id="appreviews.CODE_REVIEW">
+                    <source>Code Review</source>
+                </trans-unit>
+                <trans-unit resname="TEST_CONCEPT" id="appreviews.TEST_CONCEPT">
+                    <source>Test Concept</source>
+                </trans-unit>
+                <trans-unit resname="TEST_PROTOKOLL" id="appreviews.TEST_PROTOKOLL">
+                    <source>Test Protokoll</source>
+                </trans-unit>
+                <trans-unit resname="CONTRACT" id="appreviews.CONTRACT">
+                    <source>Contract</source>
+                </trans-unit>
+                <trans-unit resname="ACCEPTED" id="appreviews.ACCEPTED">
+                    <source>Passed</source>
+                </trans-unit>
+                <trans-unit resname="NEEDS_FIXING" id="appreviews.NEEDS_FIXING">
+                    <source>Needs fixing</source>
+                </trans-unit>
+                <trans-unit resname="OBSOLETE" id="appreviews.OBSOLETE">
+                    <source>Obsolete</source>
+                </trans-unit>
+            </group>
+            <group resname="applicence" id="applicence">
+                <trans-unit resname="title" id="applicence.title">
+                    <source>Licence</source>
+                </trans-unit>
+                <trans-unit resname="required" id="applicence.required">
+                    <source>Licence required?</source>
+                </trans-unit>
+                <trans-unit resname="allowedEntities" id="applicence.allowedEntities">
+                    <source>Allowed entities</source>
+                </trans-unit>
+            </group>
         </body>
     </file>
     <file source-language="en" target-language="it" datatype="winres" original="researchers_it.json">
         <body>
-            <group resname="researcher_navbar" id="researcher_navbar">
-                <trans-unit resname="studies" id="researcher_navbar.studies">
-                    <source>Projects</source>
-                    <target>Studi</target>
-                </trans-unit>
-            </group>
-            <group resname="researcher_organization" id="researcher_organization">
-                <trans-unit resname="master_user" id="researcher_organization.master_user">
-                    <source>You must be master user to update your organization or register new users for the organization. Please contact the MIDATA support if you think you should have master user permissions.</source>
-                    <target>Devi essere un utente master per aggiornare la propria organizzazione o iscrivere nuovi utenti per l'organizzazione. Si prega di contattare il supporto MIDATA se si pensa che si dovrebbero avere le autorizzazioni di utente master.</target>
-                </trans-unit>
-            </group>
-            <group resname="createstudy" id="createstudy">
-                <trans-unit resname="title" id="createstudy.title">
-                    <source>Create new research project</source>
-                    <target>Crea un nuovo studio</target>
-                </trans-unit>
-                <trans-unit resname="title2" id="createstudy.title2">
-                    <source>Change project description</source>
-                    <target>Modifica la descrizione dello studio</target>
-                </trans-unit>
-                <trans-unit resname="study_name" id="createstudy.study_name">
-                    <source>Project name</source>
-                    <target>Nome studio</target>
-                </trans-unit>
-                <trans-unit resname="study_description" id="createstudy.study_description">
-                    <source>Project description</source>
-                    <target>Descrizione studio</target>
-                </trans-unit>
-            </group>
             <group resname="studynav" id="studynav">
                 <trans-unit resname="team" id="studynav.team">
                     <source>Team</source>
                 </trans-unit>
-            </group>
-            <group resname="studies" id="studies">
-                <trans-unit resname="title" id="studies.title">
-                    <source>Research Projects</source>
-                    <target>Studi</target>
-                </trans-unit>
-                <trans-unit resname="empty" id="studies.empty">
-                    <source>No research projects have been created yet for your organisation.</source>
-                    <target>Non è stato ancora creato alcuno studio per la tua organizzazione.</target>
-                </trans-unit>
-                <trans-unit resname="create_btn" id="studies.create_btn">
-                    <source>Create new project</source>
-                    <target>Crea un nuovo studio</target>
-                </trans-unit>
-            </group>
-            <group resname="studyactions" id="studyactions">
-                <trans-unit resname="related_apps" id="studyactions.related_apps">
-                    <source>Applications related to the project</source>
-                    <target>Plugins relativi allo studio</target>
-                </trans-unit>
-                <trans-unit resname="empty" id="studyactions.empty">
-                    <source>No applications are linked to the project</source>
-                    <target>Nessuna applicazione o plugin è collegata allo studio</target>
-                </trans-unit>
-                <trans-unit resname="aggregator_apps" id="studyactions.aggregator_apps">
-                    <source>Add research application to be used with YOUR account</source>
-                    <target>Aggiungiate un'applicazione di ricerca da utilizzare con il VOSTRO account</target>
-                </trans-unit>
-                <trans-unit resname="datalink" id="studyactions.datalink">
-                    <source>Aggregators, Analysis and Interpretation Applications</source>
-                    <target>Aggregatori, applicazioni di analisi e interpretazione</target>
-                </trans-unit>
-                <trans-unit resname="description" id="studyactions.description">
-                    <source>After the research project has been validated, you can link applications like plugins and external data processing services to it. These applications must connect to MIDATA using the credentials of one of the members of the research team with sufficient rights.</source>
-                    <target>Una volta convalidato lo studio, è possibile collegarlo con link a plugin e servizi di elaborazione dati esterni. Tali plugin o servizi devono collegarsi a MIDATA utilizzando le credenziali di uno dei membri del team di ricerca avente i diritti pertinenti.</target>
-                </trans-unit>
-                <group resname="status" id="studyactions.status">
-                    <trans-unit resname="study_wrong_status" id="studyactions.status.study_wrong_status">
-                        <source>Not active due to research project status</source>
-                        <target>Non attivo a causa dello stato dello studio</target>
-                    </trans-unit>
-                    <trans-unit resname="study_no_app_participation" id="studyactions.status.study_no_app_participation">
-                        <source>Research project does not allow to join using an application</source>
-                        <target>Lo studio non consente di aderire utilizzando un'applicazione</target>
-                    </trans-unit>
-                </group>
-                <trans-unit resname="study" id="studyactions.study">
-                    <source>Research Project</source>
-                    <target>Studio</target>
-                </trans-unit>
-                <group resname="types" id="studyactions.types">
-                    <trans-unit resname="OFFER_P" id="studyactions.types.OFFER_P">
-                        <source>Application offers project participation upon login/start</source>
-                        <target>L'applicazione o il plugin offre la partecipazione allo studio al momento del accedi/avvio</target>
-                    </trans-unit>
-                    <trans-unit resname="REQUIRE_P" id="studyactions.types.REQUIRE_P">
-                        <source>Project participation is required to use the application</source>
-                        <target>La partecipazione allo studio è necessaria per utilizzare l'applicazione o il plugin</target>
-                    </trans-unit>
-                    <trans-unit resname="RECOMMEND_A" id="studyactions.types.RECOMMEND_A">
-                        <source>Application is recommended by project</source>
-                        <target>L'applicazione o il plugin è raccomandato dallo studio</target>
-                    </trans-unit>
-                    <trans-unit resname="AUTOADD_A" id="studyactions.types.AUTOADD_A">
-                        <source>Plugin is automatically added on project participation</source>
-                        <target>Il plugin viene aggiunto automaticamente alla partecipazione allo studio</target>
-                    </trans-unit>
-                    <trans-unit resname="DATALINK" id="studyactions.types.DATALINK">
-                        <source>Application shares data to project participants</source>
-                        <target>L'applicazione condivide i dati con i partecipanti allo studio</target>
-                    </trans-unit>
-                </group>
-                <group resname="use_periods" id="studyactions.use_periods">
-                    <trans-unit resname="PRE" id="studyactions.use_periods.PRE">
-                        <source>Before the project has started</source>
-                        <target>Prima dell'inizio dello studio</target>
-                    </trans-unit>
-                    <trans-unit resname="RUNNING" id="studyactions.use_periods.RUNNING">
-                        <source>During the execution of the project</source>
-                        <target>Durante l'esecuzione dello studio</target>
-                    </trans-unit>
-                    <trans-unit resname="FINISHED" id="studyactions.use_periods.FINISHED">
-                        <source>After the project is finished</source>
-                        <target>Dopo la fine dello studio</target>
-                    </trans-unit>
-                    <trans-unit resname="ABORTED" id="studyactions.use_periods.ABORTED">
-                        <source>When the project is aborted</source>
-                        <target>Quando lo studio è interrotto</target>
-                    </trans-unit>
-                </group>
-            </group>
-            <group resname="studyfields" id="studyfields">
-                <trans-unit resname="no_change_warning" id="studyfields.no_change_warning">
-                    <source>This setup cannot be changed anymore after the project has been validated.</source>
-                    <target>Una volta convalidato lo studio, questa configurazione non potrà più essere modificata.</target>
-                </trans-unit>
-            </group>
-            <group resname="studyoverview" id="studyoverview">
-                <trans-unit resname="start_validation_btn" id="studyoverview.start_validation_btn">
-                    <source>Request Project Validation</source>
-                    <target>Richiedi convalida dello studio</target>
-                </trans-unit>
-                <trans-unit resname="start_study_execution_btn" id="studyoverview.start_study_execution_btn">
-                    <source>Start Project Execution</source>
-                    <target>Inizia l'esecuzione dello studio</target>
-                </trans-unit>
-                <trans-unit resname="finish_study_btn" id="studyoverview.finish_study_btn">
-                    <source>Finish Project</source>
-                    <target>Termina studio</target>
-                </trans-unit>
-                <trans-unit resname="delete_study_btn" id="studyoverview.delete_study_btn">
-                    <source>Delete Project</source>
-                    <target>Elimina studio</target>
-                </trans-unit>
-                <trans-unit resname="abort_study_btn" id="studyoverview.abort_study_btn">
-                    <source>Abort Project</source>
-                    <target>Interrompi studio</target>
-                </trans-unit>
-                <group resname="confirm" id="studyoverview.confirm">
-                    <trans-unit resname="finish_execution" id="studyoverview.confirm.finish_execution">
-                        <source>All project data will be frozen at this moment.</source>
-                        <target>Tutti i dati dello studio saranno congelati in questo momento.</target>
-                    </trans-unit>
-                    <trans-unit resname="abort" id="studyoverview.confirm.abort">
-                        <source>All project data will be frozen at this moment. This project will be marked as failed.</source>
-                        <target>Tutti i dati dello studio saranno congelati in questo momento. Questo progetto sarà contrassegnato come fallito.</target>
-                    </trans-unit>
-                </group>
-            </group>
-            <group resname="studyparticipants" id="studyparticipants">
-                <trans-unit resname="empty" id="studyparticipants.empty">
-                    <source>This research project does not have any participants matching your search criteria yet.</source>
-                    <target>Questo studio non ha ancora alcun partecipante che corrisponda ai tuoi criteri di ricerca.</target>
-                </trans-unit>
-                <trans-unit resname="autojoin2" id="studyparticipants.autojoin2">
-                    <source>Accept all participation requests and assign new participants to the selected group as soon as the research application linked to this project connects.</source>
-                    <target>Accetta tutte le richieste di partecipazione e assegna nuovi partecipanti al gruppo selezionato non appena si connette l'applicazione di ricerca collegata tramite link a questo studio.</target>
-                </trans-unit>
-            </group>
-            <group resname="studyrecords" id="studyrecords">
-                <trans-unit resname="wrongrole" id="studyrecords.wrongrole">
-                    <source>You need to have the 'export' permission to export data!</source>
+                <trans-unit resname="sharing" id="studynav.sharing">
+                    <source>Published Records</source>
                 </trans-unit>
             </group>
             <group resname="studyrules" id="studyrules">
-                <trans-unit resname="title" id="studyrules.title">
-                    <source>Project Rules</source>
-                    <target>Regole dello studio</target>
-                </trans-unit>
-                <trans-unit resname="no_change_warning" id="studyrules.no_change_warning">
-                    <source>This setup cannot be changed anymore after the project has been validated.</source>
-                    <target>Una volta convalidato lo studio, questa configurazione non potrà più essere modificata.</target>
-                </trans-unit>
                 <trans-unit resname="sharing_query" id="studyrules.sharing_query">
                     <source>Data Access Filter</source>
                 </trans-unit>
-                <trans-unit resname="terms_of_use_hint" id="studyrules.terms_of_use_hint">
-                    <source>If the projects General Terms and Conditions have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the ID you need to enter here.</source>
-                    <target>Se i Condizioni generali di contratto dello studio devono essere letti e accettati dall'utente, inviare il testo a MIDATA. Caricheremo il testo nel formato corretto e ti forniremo l'ID necessario da inserire qui.</target>
-                </trans-unit>
-            </group>
-            <group resname="addparticipant" id="addparticipant">
-                <trans-unit resname="study" id="addparticipant.study">
-                    <source>Project</source>
-                    <target>Studio</target>
-                </trans-unit>
-                <trans-unit resname="success" id="addparticipant.success">
-                    <source>A new participant has been added to your project.</source>
-                    <target>Un nuovo partecipante è stato aggiunto al tuo studio.</target>
-                </trans-unit>
-            </group>
-            <group resname="studyteam" id="studyteam">
-                <group resname="right" id="studyteam.right">
-                    <trans-unit resname="setup" id="studyteam.right.setup">
-                        <source>Setup Project</source>
-                        <target>Configura studio</target>
-                    </trans-unit>
-                </group>
-            </group>
-            <group resname="study_checklist" id="study_checklist">
-                <trans-unit resname="name" id="study_checklist.name">
-                    <source>Project name and description defined</source>
-                    <target>Nome e descrizione studio definiti</target>
-                </trans-unit>
-                <trans-unit resname="name_help" id="study_checklist.name_help">
-                    <source>The project name will be shown to participants. The description will be available on the portal and during app login.</source>
-                    <target>Il nome dello studio sarà mostrato ai partecipanti. La descrizione sarà disponibile sul portale durante l'accesso all'applicazione.</target>
-                </trans-unit>
-                <trans-unit resname="teamsetup_help" id="study_checklist.teamsetup_help">
-                    <source>If more people are involved in carrying out the project, provide all involved persons and their role. As long as you have not added more people, you can change your own role by adding yourself again with another role.</source>
-                    <target>Se più persone sono coinvolte nello svolgimento dello studio, indicare tutte le persone coinvolte e il loro ruolo. Finché non si aggiungono altre persone, è possibile cambiare il proprio ruolo aggiungendo nuovamente sé stessi con un altro ruolo.</target>
-                </trans-unit>
-                <trans-unit resname="groups_help" id="study_checklist.groups_help">
-                    <source>Your project may have one or multiple groups of participants. Please define the list of participant groups.</source>
-                    <target>Il tuo studio può avere uno o più gruppi di partecipanti. Definisci l'elenco dei gruppi di partecipanti.</target>
-                </trans-unit>
-                <trans-unit resname="sharingQuery_help" id="study_checklist.sharingQuery_help">
-                    <source>Your project has to explicitely state which data of the participants it will access. The Data Access Filter cannot be changed after the project has been validated.</source>
-                    <target>Il tuo studio deve dichiarare in modo esplicito a quali dati dei partecipanti accederà. Il filtro di accesso ai dati (Data Access Filter) non può essere modificato dopo la convalida dello studio.</target>
-                </trans-unit>
-                <trans-unit resname="dates_help" id="study_checklist.dates_help">
-                    <source>Start and end date will be shown to the participants. No data will flow into the project from the moment the data is frozen.</source>
-                    <target>Le date di inizio e fine saranno mostrate ai partecipanti. Nessun dato sarà inserito nello studio dal momento in cui i dati vengono congelati.</target>
-                </trans-unit>
-                <trans-unit resname="terms_help" id="study_checklist.terms_help">
-                    <source>If the projects General Terms and Conditions have to be confirmed online by the participants, please contact MIDATA.</source>
-                    <target>Se i Condizioni generali di contratto dello studio devono essere confermati online dai partecipanti, contattare MIDATA.</target>
-                </trans-unit>
-                <trans-unit resname="validation" id="study_checklist.validation">
-                    <source>Project validation requested</source>
-                    <target>Convalida dello studio richiesta</target>
-                </trans-unit>
-                <trans-unit resname="validation_help" id="study_checklist.validation_help">
-                    <source>Validation will be done by MIDATA after it has been requested. The project may no longer be changed after validation has been requested.</source>
-                    <target>Una volta richiesta, la convalida sarà eseguita da MIDATA. Lo studio non potrà più essere modificato dopo la richiesta di convalida.</target>
-                </trans-unit>
-                <trans-unit resname="validation_passed" id="study_checklist.validation_passed">
-                    <source>Project validated by MIDATA</source>
-                    <target>Studio convalidato da MIDATA</target>
-                </trans-unit>
-                <trans-unit resname="validation_passed_help" id="study_checklist.validation_passed_help">
-                    <source>Please wait until project has been validated.</source>
-                    <target>Attendere finché lo studio non è stato convalidato.</target>
-                </trans-unit>
-                <trans-unit resname="applications_help" id="study_checklist.applications_help">
-                    <source>You can link applications like plugins and external data processing services to your project. These may read the participants' data and/or share aggregated data back to the participants. These applications must connect to MIDATA using the credentials of one of the members of the research team with sufficient rights.</source>
-                    <target>È possibile collegare con link al proprio studio i plugin e i servizi di elaborazione dei dati esterni. I plugin e servizi possono leggere i dati dei partecipanti e/o ri-condividere con loro dei dati aggregati. Plugin e servizi devono collegarsi a MIDATA utilizzando le credenziali di uno dei membri del team di ricerca avente i diritti pertinenti.</target>
-                </trans-unit>
-                <trans-unit resname="applinked" id="study_checklist.applinked">
-                    <source>Application has been linked with project</source>
-                    <target>L'applicazione è stata collegata con link al proprio studio</target>
-                </trans-unit>
-                <trans-unit resname="applinked_help" id="study_checklist.applinked_help">
-                    <source>To link an application to your project, please send to MIDATA the code of your project and the name of the application you want to have linked.</source>
-                    <target>Per collegare con link un'applicazione al proprio studio, inviare a MIDATA il codice dello studio e il nome dell'applicazione che si desidera collegare con link.</target>
-                </trans-unit>
-                <trans-unit resname="partsearchstart_help" id="study_checklist.partsearchstart_help">
-                    <source>As long as participant search is not started it is not possible to participate to the project. Applications which require project participation may not be used.</source>
-                    <target>Fino a quando non inizia la ricerca del partecipante, non è possibile partecipare allo studio. Le applicazioni che richiedono la partecipazione allo studio non possono essere utilizzate.</target>
-                </trans-unit>
-                <trans-unit resname="executionstart_help" id="study_checklist.executionstart_help">
-                    <source>Marks this project as officially started.</source>
-                    <target>Contrassegna questo studio come iniziato ufficialmente.</target>
-                </trans-unit>
-                <trans-unit resname="execend" id="study_checklist.execend">
-                    <source>Project ended</source>
-                    <target>Studio concluso</target>
-                </trans-unit>
-                <trans-unit resname="execend_help" id="study_checklist.execend_help">
-                    <source>When the project is ended data are immediately frozen. The data stay available for download.</source>
-                    <target>Quando lo studio è terminato, i dati vengono immediatamente congelati. I dati restano disponibili per il download.</target>
-                </trans-unit>
-                <trans-unit resname="exportdata_help" id="study_checklist.exportdata_help">
-                    <source>Export the project data as FHIR JSON Bundle (separate for each participant group).</source>
-                    <target>Esportare i dati dello studio come Bundle FHIR JSON (separati per ciascun gruppo di partecipanti).</target>
-                </trans-unit>
-            </group>
-            <group resname="studyinfo" id="studyinfo">
-                <trans-unit resname="introduction" id="studyinfo.introduction">
-                    <source>Give additional information about the research project. You can provide public information, additional instructions and contact information only visible to the participants and information for other researchers and administration. Texts are only meant as additional information and may be edited by you at any time.</source>
-                    <target>Dare ulteriori informazioni sullo studio. È possibile fornire informazioni pubbliche, istruzioni aggiuntive e informazioni di contatto visibili solo ai partecipanti e informazioni per altri ricercatori e per l'amministrazione. I testi sono da intendersi solo come informazioni aggiuntive e possono essere modificati in qualsiasi momento.</target>
-                </trans-unit>
             </group>
             <group resname="researcher_sharing" id="researcher_sharing">
-                <trans-unit resname="studyGroup" id="researcher_sharing.studyGroup">
-                    <source>Project Group</source>
-                    <target>Gruppo di studio</target>
+                <trans-unit resname="description" id="researcher_sharing.description">
+                    <source>Share or unshare records from your account with groups of study participants</source>
                 </trans-unit>
             </group>
         </body>
@@ -721,252 +378,50 @@
     <file source-language="en" target-language="it" datatype="winres" original="shared_it.json">
         <body>
             <group resname="footer" id="footer">
-                <trans-unit resname="copyright" id="footer.copyright">
-                    <source>©{{now}} ETH Zürich</source>
-                    <target>©{{now}} ETH Zurigo</target>
-                </trans-unit>
                 <trans-unit resname="impressum" id="footer.impressum">
                     <source>Impressum</source>
                 </trans-unit>
             </group>
             <group resname="navbar" id="navbar">
-                <trans-unit resname="study_count" id="navbar.study_count">
-                    <source>Project enrollments</source>
-                    <target>Iscrizioni agli studi</target>
-                </trans-unit>
                 <trans-unit resname="me" id="navbar.me">
                     <source>Timeline</source>
                 </trans-unit>
-                <trans-unit resname="apps" id="navbar.apps">
-                    <source>Applications</source>
-                    <target>Applicazioni</target>
-                </trans-unit>
             </group>
             <group resname="error" id="error">
-                <group resname="notauthorized" id="error.notauthorized">
-                    <trans-unit resname="study" id="error.notauthorized.study">
-                        <source>You are not authorized to access this research project</source>
-                        <target>Non si è autorizzati ad accedere a questo studio</target>
-                    </trans-unit>
-                    <trans-unit resname="not_plugin_owner" id="error.notauthorized.not_plugin_owner">
-                        <source>This is not your application</source>
-                        <target>Questo non è il suo plugin</target>
-                    </trans-unit>
-                    <trans-unit resname="no_debug" id="error.notauthorized.no_debug">
-                        <source>Debugging is only available for applications during development or beta phase on non productive instances.</source>
-                        <target>Il debug è disponibile solo per i plugin durante lo sviluppo o la fase beta su istanze non produttive.</target>
-                    </trans-unit>
-                </group>
                 <group resname="invalid" id="error.invalid">
-                    <trans-unit resname="code" id="error.invalid.code">
-                        <source>Unknown code for research project.</source>
-                        <target>Codice sconosciuto per lo studio.</target>
-                    </trans-unit>
-                    <trans-unit resname="plugin" id="error.invalid.plugin">
-                        <source>Application is intended for a different role</source>
-                        <target>Il plugin è destinato a un ruolo diverso</target>
-                    </trans-unit>
-                    <trans-unit resname="sharing" id="error.invalid.sharing">
-                        <source>The Data Access Filter contains data types that are excluded by the project configuration.</source>
-                        <target>Il filtro di accesso dati (Data Access Filter) contiene tipi di dati esclusi dalla configurazione dello studio.</target>
-                    </trans-unit>
-                    <trans-unit resname="anonymous" id="error.invalid.anonymous">
-                        <source>Research project can only be anonymous if no one is allowed to access unpseudonymized data.</source>
-                        <target>Lo studio può essere anonimo soltanto se non è autorizzato nessuno ad accedere a dati presentati senza pseudonimi.</target>
+                    <trans-unit resname="entity_type" id="error.invalid.entity_type">
+                        <source>Invalid entity type</source>
                     </trans-unit>
                 </group>
                 <group resname="missing" id="error.missing">
-                    <trans-unit resname="study_accept" id="error.missing.study_accept">
-                        <source>Project participation must be accepted.</source>
-                        <target>La partecipazione allo studio deve essere accettata.</target>
+                    <trans-unit resname="licence" id="error.missing.licence">
+                        <source>A valid licence is required to use this application.</source>
                     </trans-unit>
                 </group>
                 <group resname="unknown" id="error.unknown">
-                    <trans-unit resname="study" id="error.unknown.study">
-                        <source>Research project does not exist.</source>
-                        <target>Lo studio non esiste.</target>
-                    </trans-unit>
-                    <trans-unit resname="participation" id="error.unknown.participation">
-                        <source>Research project participation not found.</source>
-                        <target>Partecipazione allo studio non trovata.</target>
+                    <trans-unit resname="organization" id="error.unknown.organization">
+                        <source>Organization does not exist.</source>
                     </trans-unit>
                 </group>
-                <group resname="exists" id="error.exists">
-                    <trans-unit resname="plugin" id="error.exists.plugin">
-                        <source>An application with the same name already exists.</source>
-                        <target>Un plugin con lo stesso nome esiste già.</target>
-                    </trans-unit>
-                    <trans-unit resname="study" id="error.exists.study">
-                        <source>A research project with this name already exists.</source>
-                        <target>Uno studio con questo nome esiste già.</target>
+                <group resname="tooshort" id="error.tooshort">
+                    <trans-unit resname="password" id="error.tooshort.password">
+                        <source>Passwords must be at least 8 characters long and should contain upper/lower case letters, numbers and special characters.</source>
+                        <target>Le password devono essere composte da almeno 8 caratteri.</target>
                     </trans-unit>
                 </group>
-                <group resname="blocked" id="error.blocked">
-                    <trans-unit resname="participation" id="error.blocked.participation">
-                        <source>Account holder is not allowed to participate in research project.</source>
-                        <target>Il titolare dell'account non è autorizzato a partecipare allo studio.</target>
-                    </trans-unit>
-                </group>
-                <group resname="closed" id="error.closed">
-                    <trans-unit resname="study" id="error.closed.study">
-                        <source>Research project not searching for participants.</source>
-                        <target>Lo studio non sta cercando partecipanti.</target>
-                    </trans-unit>
-                </group>
-                <group resname="notvalidated" id="error.notvalidated">
-                    <trans-unit resname="study" id="error.notvalidated.study">
-                        <source>Research project must be validated before.</source>
-                        <target>Lo studio deve essere dapprima convalidato.</target>
-                    </trans-unit>
-                </group>
-                <group resname="no_alter" id="error.no_alter">
-                    <trans-unit resname="consent" id="error.no_alter.consent">
-                        <source>Consents for research projects may not be altered.</source>
-                        <target>I consensi per gli studi non possono essere modificati.</target>
-                    </trans-unit>
-                    <trans-unit resname="study" id="error.no_alter.study">
-                        <source>Setup can only be changed as long as research project is in draft phase.</source>
-                        <target>La configurazione può essere modificata solamente fintanto che lo studio è nella fase bozza.</target>
-                    </trans-unit>
-                    <trans-unit resname="group" id="error.no_alter.group">
-                        <source>Group of participant can only be changed if research project is not running or no participant accepted yet.</source>
-                        <target>Un gruppo di partecipanti può essere modificato solamente se lo studio non è attivato o se nessun partecipante ha ancora accettato.</target>
+                <group resname="notrequired" id="error.notrequired">
+                    <trans-unit resname="licence" id="error.notrequired.licence">
+                        <source>No licence is required for this application</source>
                     </trans-unit>
                 </group>
             </group>
             <group resname="enum" id="enum">
                 <group resname="eventtype" id="enum.eventtype">
-                    <trans-unit resname="STUDY_VALIDATED" id="enum.eventtype.STUDY_VALIDATED">
-                        <source>Research project validated</source>
-                        <target>Studio convalidato</target>
+                    <trans-unit resname="user-status-change-active" id="enum.eventtype.user-status-change-active">
+                        <source>User account unlocked</source>
                     </trans-unit>
-                    <trans-unit resname="STUDY_REJECTED" id="enum.eventtype.STUDY_REJECTED">
-                        <source>Research project rejected</source>
-                        <target>Studio rifiutato</target>
-                    </trans-unit>
-                    <trans-unit resname="STUDY_STARTED" id="enum.eventtype.STUDY_STARTED">
-                        <source>Research project started</source>
-                        <target>Studio iniziato</target>
-                    </trans-unit>
-                    <trans-unit resname="STUDY_FINISHED" id="enum.eventtype.STUDY_FINISHED">
-                        <source>Research project finished</source>
-                        <target>Studio terminato</target>
-                    </trans-unit>
-                    <trans-unit resname="STUDY_ABORTED" id="enum.eventtype.STUDY_ABORTED">
-                        <source>Research project aborted</source>
-                        <target>Studio interrotto</target>
-                    </trans-unit>
-                    <trans-unit resname="STUDY_SETUP_CHANGED" id="enum.eventtype.STUDY_SETUP_CHANGED">
-                        <source>Project setup changed</source>
-                        <target>Configurazione studio modificata</target>
-                    </trans-unit>
-                    <trans-unit resname="study-participation-requested" id="enum.eventtype.study-participation-requested">
-                        <source>Project participation requested</source>
-                        <target>Partecipazione allo studio richiesta</target>
-                    </trans-unit>
-                    <trans-unit resname="study-participation-member-rejected" id="enum.eventtype.study-participation-member-rejected">
-                        <source>Project participation rejected by member</source>
-                        <target>Partecipazione allo studio rifiutata dal membro</target>
-                    </trans-unit>
-                    <trans-unit resname="study-participation-research-rejected" id="enum.eventtype.study-participation-research-rejected">
-                        <source>Project participation rejected by researcher</source>
-                        <target>Partecipazione allo studio rifiutata dal ricercatore</target>
-                    </trans-unit>
-                    <trans-unit resname="study-participation-member-retreat" id="enum.eventtype.study-participation-member-retreat">
-                        <source>Account holder retreated from project participation</source>
-                        <target>Il titolare di account si è ritirato dalla partecipazione allo studio</target>
-                    </trans-unit>
-                    <trans-unit resname="study-participation-approved" id="enum.eventtype.study-participation-approved">
-                        <source>Project participation approved</source>
-                        <target>Partecipazione allo studio approvata</target>
-                    </trans-unit>
-                    <trans-unit resname="study-participation-group-assigned" id="enum.eventtype.study-participation-group-assigned">
-                        <source>Project participation group assigned</source>
-                        <target>Gruppo di partecipazione allo studio assegnato</target>
-                    </trans-unit>
-                    <trans-unit resname="study-validation-requested" id="enum.eventtype.study-validation-requested">
-                        <source>Project validation requested</source>
-                        <target>Convalida dello studio richiesta</target>
-                    </trans-unit>
-                    <trans-unit resname="study-validated" id="enum.eventtype.study-validated">
-                        <source>Research project validated</source>
-                        <target>Studio convalidato</target>
-                    </trans-unit>
-                    <trans-unit resname="study-rejected" id="enum.eventtype.study-rejected">
-                        <source>Research project rejected</source>
-                        <target>Studio rifiutato</target>
-                    </trans-unit>
-                    <trans-unit resname="study-participant-search-started" id="enum.eventtype.study-participant-search-started">
-                        <source>Project participant search started</source>
-                        <target>Ricerca del partecipante allo studio iniziata</target>
-                    </trans-unit>
-                    <trans-unit resname="study-participant-search-closed" id="enum.eventtype.study-participant-search-closed">
-                        <source>Project participant search closed</source>
-                        <target>Ricerca del partecipante allo studio chiusa</target>
-                    </trans-unit>
-                    <trans-unit resname="study-started" id="enum.eventtype.study-started">
-                        <source>Research project started</source>
-                        <target>Studio iniziato</target>
-                    </trans-unit>
-                    <trans-unit resname="study-finished" id="enum.eventtype.study-finished">
-                        <source>Research project finished</source>
-                        <target>Studio terminato</target>
-                    </trans-unit>
-                    <trans-unit resname="study-aborted" id="enum.eventtype.study-aborted">
-                        <source>Research project aborted</source>
-                        <target>Studio interrotto</target>
-                    </trans-unit>
-                    <trans-unit resname="110105" id="enum.eventtype.110105">
-                        <source>Entire project deleted</source>
-                        <target>Intero studio eliminato</target>
-                    </trans-unit>
-                    <trans-unit resname="study-setup-changed" id="enum.eventtype.study-setup-changed">
-                        <source>Research project changed</source>
-                        <target>Studio modificato</target>
-                    </trans-unit>
-                </group>
-                <group resname="consenttype" id="enum.consenttype">
-                    <trans-unit resname="STUDYPARTICIPATION" id="enum.consenttype.STUDYPARTICIPATION">
-                        <source>Research project</source>
-                        <target>Studio</target>
-                    </trans-unit>
-                    <trans-unit resname="STUDYRELATED" id="enum.consenttype.STUDYRELATED">
-                        <source>Research project information</source>
-                        <target>Informazioni sullo studio</target>
-                    </trans-unit>
-                </group>
-                <group resname="joinmethod" id="enum.joinmethod">
-                    <trans-unit resname="APP" id="enum.joinmethod.APP">
-                        <source>Participant uses linked application</source>
-                        <target>Il partecipante utilizza un'applicazione o un software collegato</target>
-                    </trans-unit>
-                    <trans-unit resname="TRANSFER" id="enum.joinmethod.TRANSFER">
-                        <source>Data is transferred from another research project (not supported)</source>
-                        <target>I dati vengono trasferiti da un altro studio (non supportato)</target>
-                    </trans-unit>
-                </group>
-                <group resname="studyvalidationstatus" id="enum.studyvalidationstatus">
-                    <trans-unit resname="REJECTED" id="enum.studyvalidationstatus.REJECTED">
-                        <source>Project rejected by MIDATA</source>
-                        <target>Studio rifiutato da MIDATA</target>
-                    </trans-unit>
-                    <trans-unit resname="VALIDATED" id="enum.studyvalidationstatus.VALIDATED">
-                        <source>Project has been validated</source>
-                        <target>Lo studio è stato convalidato</target>
-                    </trans-unit>
-                </group>
-                <group resname="subuserrole" id="enum.subuserrole">
-                    <trans-unit resname="STUDYADMIN" id="enum.subuserrole.STUDYADMIN">
-                        <source>Project Admin</source>
-                        <target>Ammin. studio</target>
-                    </trans-unit>
-                    <trans-unit resname="PLUGINADMIN" id="enum.subuserrole.PLUGINADMIN">
-                        <source>Application Admin</source>
-                        <target>Ammin plugin</target>
-                    </trans-unit>
-                    <trans-unit resname="STUDYPARTICIPANT" id="enum.subuserrole.STUDYPARTICIPANT">
-                        <source>Project Participant</source>
-                        <target>Partecipante allo studio</target>
+                    <trans-unit resname="user-status-change-blocked" id="enum.eventtype.user-status-change-blocked">
+                        <source>User account blocked</source>
                     </trans-unit>
                 </group>
                 <group resname="researcherrole" id="enum.researcherrole">
@@ -999,14 +454,15 @@
                         <source>OAuth 2</source>
                     </trans-unit>
                 </group>
-                <group resname="infos" id="enum.infos">
-                    <trans-unit resname="DESCRIPTION" id="enum.infos.DESCRIPTION">
-                        <source>What is this research project doing?</source>
-                        <target>Che cosa fa questo studio?</target>
+                <group resname="entitytype" id="enum.entitytype">
+                    <trans-unit resname="USER" id="enum.entitytype.USER">
+                        <source>User</source>
                     </trans-unit>
-                    <trans-unit resname="LOCATION" id="enum.infos.LOCATION">
-                        <source>At which state or region is this project taking place?</source>
-                        <target>In quale stato o regione si svolge questo progetto?</target>
+                    <trans-unit resname="USERGROUP" id="enum.entitytype.USERGROUP">
+                        <source>Team</source>
+                    </trans-unit>
+                    <trans-unit resname="ORGANIZATION" id="enum.entitytype.ORGANIZATION">
+                        <source>Organization</source>
                     </trans-unit>
                 </group>
             </group>
@@ -1017,78 +473,49 @@
                     </trans-unit>
                 </group>
             </group>
-            <group resname="instance" id="instance">
-                <group resname="test" id="instance.test">
-                    <trans-unit resname="purpose" id="instance.test.purpose">
-                        <source>This instance may be used to develop and test new applications for MIDATA in a safe environment. It is also used to test new versions of the portal and the backend before the other instances are updated.</source>
-                        <target>Questa istanza può essere utilizzata per sviluppare e testare nuove applicazioni e plugin per MIDATA in un ambiente sicuro. È inoltre utilizzata per testare nuove versioni del portale e il backend prima che altre istanze siano aggiornate.</target>
-                    </trans-unit>
-                </group>
-            </group>
             <group resname="registration" id="registration">
                 <trans-unit resname="password" id="registration.password">
                     <source>Password</source>
-                </trans-unit>
-                <trans-unit resname="study_agb" id="registration.study_agb">
-                    <source>Project Terms</source>
-                    <target>Condizioni dello studio</target>
                 </trans-unit>
             </group>
             <group resname="login" id="login">
                 <trans-unit resname="password" id="login.password">
                     <source>Password</source>
                 </trans-unit>
-                <trans-unit resname="study" id="login.study">
-                    <source>Project</source>
-                    <target>Studio</target>
-                </trans-unit>
-                <trans-unit resname="info1" id="login.info1">
-                    <source>Dear project participant</source>
-                    <target>Caro partecipante allo studio</target>
-                </trans-unit>
-                <trans-unit resname="info3" id="login.info3">
-                    <source>Your personal account gives you an overview of your project participation.</source>
-                    <target>Il tuo account personale ti fornisce una panoramica della partecipazione allo studio.</target>
-                </trans-unit>
-                <trans-unit resname="info5" id="login.info5">
-                    <source>You do not yet have a MIDATA account and do not participate in a research project?</source>
-                    <target>Non hai ancora un account MIDATA e non partecipi ad uno studio?</target>
-                </trans-unit>
                 <trans-unit resname="info6b" id="login.info6b">
                     <source>Ally Science</source>
                 </trans-unit>
             </group>
-            <group resname="studydetails" id="studydetails">
-                <trans-unit resname="study" id="studydetails.study">
-                    <source>Research project</source>
-                    <target>Studio</target>
-                </trans-unit>
-                <trans-unit resname="providers_monitoring" id="studydetails.providers_monitoring">
-                    <source>Healthcare Providers monitoring the research</source>
-                    <target>Fornitori di prestazioni sanitarie che monitorano lo studio</target>
-                </trans-unit>
-                <trans-unit resname="records_from_app" id="studydetails.records_from_app">
-                    <source>Records created by application:</source>
-                    <target>Record create dall'applicazione:</target>
-                </trans-unit>
+            <group resname="postregister" id="postregister">
+                <group resname="licence" id="postregister.licence">
+                    <trans-unit resname="intro" id="postregister.licence.intro">
+                        <source>A licence is required to use this application.</source>
+                    </trans-unit>
+                    <trans-unit resname="text" id="postregister.licence.text">
+                        <source>Please contact support@midata.coop to obtain a valid licence.</source>
+                    </trans-unit>
+                </group>
             </group>
             <group resname="user" id="user">
                 <trans-unit resname="midataID" id="user.midataID">
                     <source>MIDATA ID:</source>
                 </trans-unit>
             </group>
+            <group resname="visualization" id="visualization">
+                <trans-unit resname="publisher" id="visualization.publisher">
+                    <source>Publisher:</source>
+                </trans-unit>
+            </group>
             <group resname="editconsent" id="editconsent">
-                <trans-unit resname="type_studyparticipation" id="editconsent.type_studyparticipation">
-                    <source>This consent shares data with research for use in a research project.</source>
-                    <target>Questo consenso condivide con la ricerca dati da utilizzare in uno studio.</target>
+                <trans-unit resname="shares_records" id="editconsent.shares_records">
+                    <source>This consent shares currently {{count}} records.</source>
+                    <target>Questo consenso condivide {{count}} record.</target>
                 </trans-unit>
-                <trans-unit resname="type_studyrelated" id="editconsent.type_studyrelated">
-                    <source>This consent shares research data to a project participant.</source>
-                    <target>Questo consenso condivide dati di ricerca con un partecipante allo studio.</target>
+                <trans-unit resname="you" id="editconsent.you">
+                    <source>You</source>
                 </trans-unit>
-                <trans-unit resname="type_externalservice" id="editconsent.type_externalservice">
-                    <source>This consent shares data with an application.</source>
-                    <target>Questo consenso condivide dati con una applicazione o servizio esterno mobile.</target>
+                <trans-unit resname="restrictions" id="editconsent.restrictions">
+                    <source>Further restrictions?</source>
                 </trans-unit>
             </group>
             <group resname="editconsent2" id="editconsent2">
@@ -1097,78 +524,18 @@
                 </trans-unit>
             </group>
             <group resname="records" id="records">
-                <trans-unit resname="back_to_plugin" id="records.back_to_plugin">
-                    <source>Back</source>
-                    <target>Torna alla visualizzazione</target>
-                </trans-unit>
-                <trans-unit resname="study" id="records.study">
-                    <source>Project: {{name}}</source>
-                    <target>Studio: {{name}}</target>
-                </trans-unit>
                 <trans-unit resname="just_name" id="records.just_name">
                     <source>{{name}}</source>
-                </trans-unit>
-            </group>
-            <group resname="oauth2" id="oauth2">
-                <trans-unit resname="reshares_data" id="oauth2.reshares_data">
-                    <source>Application may share data it has access to to third parties.</source>
-                    <target>L'applicazione può condividere i dati a cui ha accesso con terzi.</target>
-                </trans-unit>
-                <trans-unit resname="confirm_provider_opt" id="oauth2.confirm_provider_opt">
-                    <source>I accept to share data with this external provider (optional)</source>
-                    <target>Accetto di condividere i dati con questo fornitore esterno (optionale)</target>
-                </trans-unit>
-                <trans-unit resname="confirm_study" id="oauth2.confirm_study">
-                    <source>I accept the terms of use of the application and to participate in the project</source>
-                    <target>Accetto le condizioni d'uso della domanda e di partecipare allo studio</target>
-                </trans-unit>
-                <trans-unit resname="confirm_study_opt" id="oauth2.confirm_study_opt">
-                    <source>I accept to participate in the project</source>
-                    <target>Accetto di partecipare allo studio</target>
                 </trans-unit>
             </group>
             <group resname="dashboard" id="dashboard">
                 <trans-unit resname="social" id="dashboard.social">
                     <source>Social</source>
                 </trans-unit>
-                <trans-unit resname="research_text" id="dashboard.research_text">
-                    <source>Participate in research projects. Inform yourself about current research.</source>
-                    <target>Partecipa agli studi. Informati sulla ricerca corrente.</target>
-                </trans-unit>
-                <trans-unit resname="yourstudies" id="dashboard.yourstudies">
-                    <source>Research projects you are involved:</source>
-                    <target>Studi in cui sei coinvolto:</target>
-                </trans-unit>
-                <trans-unit resname="studies_teaser" id="dashboard.studies_teaser">
-                    <source>If you want to participate in research, configure your research settings. You will be contacted in this tile if you match a projects requirements.</source>
-                    <target>Se desideri partecipare alla ricerca, configura le tue impostazioni. Se corrispondi ai requisiti di uno studio sarai contattato/a in questo riquadro.</target>
-                </trans-unit>
-                <trans-unit resname="newstudies" id="dashboard.newstudies">
-                    <source>New Research Projects</source>
-                    <target>Nuovi studi</target>
-                </trans-unit>
-                <trans-unit resname="smallstudies" id="dashboard.smallstudies">
-                    <source>Research Projects</source>
-                    <target>Studi</target>
-                </trans-unit>
-            </group>
-            <group resname="flexiblestudies" id="flexiblestudies">
-                <trans-unit resname="studies_found" id="flexiblestudies.studies_found">
-                    <source>Research projects found:</source>
-                    <target>Studi trovati:</target>
-                </trans-unit>
             </group>
             <group resname="auditlog" id="auditlog">
                 <trans-unit resname="via" id="auditlog.via">
                     <source>via</source>
-                </trans-unit>
-                <trans-unit resname="ResearchStudy" id="auditlog.ResearchStudy">
-                    <source>Research Project</source>
-                    <target>Studio</target>
-                </trans-unit>
-                <trans-unit resname="EXTERNALSERVICE" id="auditlog.EXTERNALSERVICE">
-                    <source>Application</source>
-                    <target>Applicazione</target>
                 </trans-unit>
                 <trans-unit resname="MEMBER" id="auditlog.MEMBER">
                     <source>Account</source>
@@ -1179,43 +546,15 @@
                     <source>MIDATA ID</source>
                 </trans-unit>
             </group>
-            <group resname="member_user" id="member_user">
-                <trans-unit resname="studyparticipant" id="member_user.studyparticipant">
-                    <source>Your account has been set up for participation in a project. Functionality is limited. You may upgrade your user account to a full account.</source>
-                    <target>Il tuo account è stato configurato per la partecipazione a uno studio. Le funzionalità sono limitate. Puoi aggiornare il tuo account utente a un account completo.</target>
-                </trans-unit>
-            </group>
             <group resname="accountwipe" id="accountwipe">
-                <trans-unit resname="point2" id="accountwipe.point2">
-                    <source>Data already included in research projects will continue to be available in the project.</source>
-                    <target>I dati già inclusi negli studi continueranno ad essere disponibili nello studio.</target>
-                </trans-unit>
                 <trans-unit resname="password" id="accountwipe.password">
                     <source>Password</source>
                 </trans-unit>
             </group>
             <group resname="queryeditor" id="queryeditor">
-                <trans-unit resname="study" id="queryeditor.study">
-                    <source>Research Project</source>
-                    <target>Studio</target>
-                </trans-unit>
                 <trans-unit resname="access_query" id="queryeditor.access_query">
                     <source>Data Access Filter</source>
                 </trans-unit>
-                <trans-unit resname="owner_all" id="queryeditor.owner_all">
-                    <source>Use also shared data (from projects, friends, patients)</source>
-                    <target>Utilizza anche dati condivisi (studi, amici, pazienti)</target>
-                </trans-unit>
-                <group resname="ask" id="queryeditor.ask">
-                    <trans-unit resname="Group" id="queryeditor.ask.Group">
-                        <source>Access to group definitions (either teams of health providers or researchers or groups defined as part of research project results generation)</source>
-                        <target>Accesso alle definizioni dei gruppi (gruppi di operatori sanitari o di ricercatori o gruppi definiti come parte della generazione dei risultati dello studio)</target>
-                    </trans-unit>
-                    <trans-unit resname="PseudonymizedPatient" id="queryeditor.ask.PseudonymizedPatient">
-                        <source>Patient Records: pseudonym, year of birth, country of research project participants</source>
-                        <target>Dati paziente: pseudonimo, anno di nascita, paese di provenienza dei partecipanti allo studio</target>
-                    </trans-unit>
-                </group>
             </group>
             <group resname="timeline" id="timeline">
                 <trans-unit resname="spaces" id="timeline.spaces">
@@ -1226,6 +565,20 @@
                 </trans-unit>
                 <trans-unit resname="fitness" id="timeline.fitness">
                     <source>Fitness</source>
+                </trans-unit>
+            </group>
+            <group resname="changelog" id="changelog">
+                <trans-unit resname="F" id="changelog.F">
+                    <source>New Feature</source>
+                </trans-unit>
+                <trans-unit resname="B" id="changelog.B">
+                    <source>Bugfix</source>
+                </trans-unit>
+                <trans-unit resname="I" id="changelog.I">
+                    <source>Improvement</source>
+                </trans-unit>
+                <trans-unit resname="S" id="changelog.S">
+                    <source>Bugfix</source>
                 </trans-unit>
             </group>
         </body>

@@ -45,7 +45,8 @@
         "participants" : "Teilnehmer",
         "records" : "Einträge",
         "results" : "Ergebnisse",
-        "team" : "Team"
+        "team" : "Team",
+        "sharing" : "Veröffentlichte Datensätze"
     },
 
     "studies" : {
@@ -330,6 +331,7 @@
     },
 
     "researcher_sharing" : {
+        "description" : "Datensätze von Ihrem Konto mit Gruppen von Projektteilnehmern teilen oder nicht mehr teilen",
         "format" : "Ressourcentyp",
         "content" : "Inhaltstyp",
         "app" : "Applikation",

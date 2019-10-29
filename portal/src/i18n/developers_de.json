@@ -34,6 +34,7 @@
         "empty" : "Sie haben noch keine Applikation registriert.",
         "register" : "Neue Applikation registrieren",
         "name" : "Name",
+        "filename" : "Intern",
         "type" : "Typ",
         "role" : "Zielrolle",
         "manage_btn" : " verwalten",
@@ -103,6 +104,10 @@
         "stats_help" : "Hier finden Sie Statistiken und Hinweise zur Verbesserung der verschiedenen Arten von API-Aufrufen, die Ihre Applikation an den Server sendet.",
         "debug_btn" : "API Tester Sandbox",
         "debug_help" : "Melden Sie sich als Applikation an und testen Sie Abfragen gegen das MIDATA-Backend.",
+        "appreviews_btn" : "Überprüfungen",
+        "appreviews_help" : "Überprüfungen, die für diese Applikation durchgeführt wurden",
+        "applicence_btn" : "Lizenz",
+        "applicence_help" : "Benötigt der Nutzer eine Lizenz zur Nutzung dieser Applikation?",
         "linkedStudy" : "Mit der Applikation verknüpftes Projekt (Code)",
         "mustParticipateInStudy" : "Teilnahme am Forschungsprojekt erforderlich",
         "admin_only" : "Nur ein MIDATA Administrator darf diesen Abschnitt ändern. Bitte fordern Sie bei Bedarf Änderungen an.",
@@ -116,7 +121,9 @@
         "logout_required" : "[ erforderlich ]",
         "logout_explain" : "Änderungen an den mit !! gekennzeichneten Feldern erfordern die Abmeldung aller Benutzer dieser Applikation.",
         "send_reports" : "Fehlerberichte senden",
-
+        "not_reviewed" : "Noch nicht überprüft",
+        "ACCEPTED" : "Überprüft",
+        "NEEDS_FIXING" : "Korrektur erforderlich",
         "info" : {
             "filename" : "Dieser Name wird intern für die Kennung Ihrer Applikation verwendet. Es sollte ein gültiger Identifikator sein (a-z, A-Z, 0-9, _).",
             "targetUserRole" : "Ist Ihre Applikation nur für eine spezifische Rolle bestimmt? Wenn nicht, wählen Sie 'Alle Rollen'.",
@@ -159,7 +166,9 @@
         "logoutwarning" : "Bei einer Änderung der Applikationsdefinition, werden alle Benutzer von dieser Applikation getrennt. Sie müssen die Verwendung der Applikation bei der nächsten Anmeldung erneut bestätigen.",
         "researchwarning" : "Eine Änderung der Applikationsdefinition entkoppelt diese Forschungsapplikation von allen Projekten!",
         "creator" : "Ersteller",
-        "organization" : "Organisation"
+        "organization" : "Organisation",
+        "publisher" : "Herausgeber",
+        "reviews" : "Überprüfungen"
     },
 
     "appstats" : {
@@ -190,6 +199,7 @@
         "backend_services" : "Serverseitige Skripte",
         "portal_username" : "Benutzername",
         "portal_password" : "Passwort",
+        "portal_role" : "Rolle",
         "portal_login" : "Plugin-Instanz verwenden:",
         "portal_login_btn" : "Portal-Login + Token erhalten"
     },
@@ -259,5 +269,38 @@
             "cmd_to_run" : "Befehl zur Ausführung auf Ihrem Computer:"
         }
 
+    },
+
+    "appreviews" : {
+        "review_btn" : "Überprüfen",
+        "title" : "Applikationsüberprüfungen",
+        "name" : "Applikationsname",
+        "check" : "Überprüfungstyp",
+        "date" : "Datum",
+        "userLogin" : "Überprüft durch",
+        "comment" : "Bemerkung",
+        "status" : "Status",
+        "noreviews" : "Auf dieser Instanz wurden noch keine Überprüfungen vorgenommen.",
+        "CONCEPT" : "Applikationskonzept",
+        "DATA_MODEL" : "Datenmodell",
+        "ACCESS_FILTER" : "Access Filter",
+        "QUERIES" : "Queries",
+        "DESCRIPTION" : "Beschreibung",
+        "ICONS" : "Icons",
+        "MAILS" : "E-Mail-Texte",
+        "PROJECTS" : "Projekte",
+        "CODE_REVIEW" : "Code-Review",
+        "TEST_CONCEPT" : "Testkonzept",
+        "TEST_PROTOKOLL" : "Testprotokoll",
+        "CONTRACT" : "Vertrag",
+        "ACCEPTED" : "Akzeptiert",
+        "NEEDS_FIXING" : "Korrektur erforderlich",
+        "OBSOLETE" : "Obsolet"
+    },
+
+    "applicence" : {
+        "title" : "Lizenz",
+        "required" : "Lizenz erforderlich?",
+        "allowedEntities" : "Zulässige Entitäten"
     }
 }

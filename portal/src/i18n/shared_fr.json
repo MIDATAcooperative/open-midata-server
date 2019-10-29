@@ -83,7 +83,8 @@
             "sharing" : "Le filtre d'accès aux données (Data Access Filter) contient des types de données qui sont exclus par la configuration du projet.",
             "anonymous" : "Un projet de recherche ne peut être anonyme que si personne n'est autorisé à accéder à des données non pseudonymisées.",
             "url" : "URL invalide",
-            "consent_members" : "Ce consentement ne pourra être confirmé que lorsque toutes les personnes externes auront rejoint MIDATA."
+            "consent_members" : "Ce consentement ne pourra être confirmé que lorsque toutes les personnes externes auront rejoint MIDATA.",
+            "entity_type" : "Type d'entité non valide"
         },
 
         "missing" : {
@@ -103,7 +104,8 @@
             "file" : "Aucun fichier à télécharger sélectionné",
             "access_query" : "Aucune données sélectionnées",
             "plugin" : "Ce plugin n'existe pas dans votre compte.",
-            "auth_type" : "Une authentification à deux facteurs est requise pour votre type de compte."
+            "auth_type" : "Une authentification à deux facteurs est requise pour votre type de compte.",
+            "licence" : "Une licence valide est requise pour utiliser cette application."
         },
 
         "unknown" : {
@@ -117,7 +119,8 @@
             "code" : "Code inconnu",
             "record" : "Enregistrement inconnu",
             "user" : "Utilisateur inexistant",
-            "participation" : "Participation au projet de recherche introuvable."
+            "participation" : "Participation au projet de recherche introuvable.",
+            "organization" : "L'organisation n'existe pas."
         },
 
         "exists" : {
@@ -149,12 +152,12 @@
         },
 
         "tooshort" : {
-            "password" : "Les mots de passe doivent comporter au moins 8 caractères.",
+            "password" : "Le mot de passe doit comporter au moins 8 caractères et contenir une lettre et un chiffre.",
             "passphrase" : "Les phrases secrètes doivent contenir au moins 8 caractères."
         },
 
         "tooweak" : {
-            "password" : "Les mots de passe doivent contenir des lettres majuscules/minuscules, des chiffres et des caractères spéciaux.",
+            "password" : "Le mot de passe doit contenir au moins une lettre et un chiffre.",
             "passphrase" : "Les phrases secrètes doivent contenir des lettres majuscules ou minuscules, des chiffres et des caractères spéciaux."
         },
 
@@ -181,6 +184,10 @@
 
         "too_large" : {
             "file" : "Le fichier est trop gros (maximum 1 MB)."
+        },
+
+        "notrequired" : {
+            "licence" : "Aucune licence n'est requise pour cette application"
         }
 
     },
@@ -232,7 +239,8 @@
             "user-settings-change" : "Paramètres de l'utilisateur modifiés",
             "user-email-change" : "Adresse e-mail modifiée",
             "user-birthday-change" : "Date de naissance de l'utilisateur modifiée",
-            "user-status-change" : "État du compte de l'utilisateur modifié",
+            "user-status-change-active" : "Compte utilisateur débloqué",
+            "user-status-change-blocked" : "Compte utilisateur bloqué",
             "user-email-confirmed" : "E-mail confirmé par l'utilisateur",
             "user-email-rejected" : "E-mail rejeté par l'utilisateur",
             "user-account-change-by-admin" : "Compte utilisateur modifié par un administrateur",
@@ -473,6 +481,11 @@
         "accountnotifications" : {
             "NONE" : "Aucune notification de connexion",
             "LOGIN" : "Envoyer un email à chaque connexion"
+        },
+        "entitytype" : {
+            "USER" : "Utilisateur",
+            "USERGROUP" : "Team",
+            "ORGANIZATION" : "Organisation"
         }
     },
 
@@ -553,7 +566,7 @@
     "registration" : {
         "sign_up" : "S'inscrire",
         "mandantory_fields" : "Veuillez remplir les informations ci-dessous, les champs marqués d'un astérisque (*) sont obligatoires.",
-        "password_policy" : "Le mot de passe doit avoir au moins 8 caractères (lettres et chiffres).",
+        "password_policy" : "Le mot de passe doit comporter au moins 8 caractères et contenir une lettre et un chiffre.",
         "email" : "E-mail",
         "password" : "Mot de passe",
         "password_repetition" : "Répéter le mot de passe",
@@ -691,6 +704,10 @@
             "way2" : "Vous êtes-vous déjà connecté à l'aide d'un navigateur? Si oui, essayez d'ouvrir une session en utilisant le même navigateur et le même appareil.",
             "way3" : "Vous vous souvenez à nouveau de votre ancien mot de passe? Si oui, essayez de vous connecter en utilisant votre ancien mot de passe.",
             "way4" : "Attendez que les employés de MIDATA effectuent une récupération manuelle de la clé. MIDATA vous enverra un e-mail lorsque la récupération sera terminée. Veuillez patienter jusqu'à cinq jours ouvrables pour que la récupération soit terminée."
+        },
+        "licence" : {
+            "intro" : "Une licence est requise pour utiliser cette application.",
+            "text" : "Veuillez contacter support@midata.coop pour obtenir une licence valide."
         }
     },
 
@@ -832,6 +849,7 @@
         "success" : "Vous avez installé avec succès un nouveau plugin.",
         "created_by" : "Créé par:",
         "orgName" : "Organisation:",
+        "publisher" : "Éditeur:",
         "description" : "Description:",
         "tile_name" : "Nom de la tuile:",
         "install_location" : "Emplacement:",
@@ -910,7 +928,7 @@
         "status_expired" : "Ce consentement a expiré. Les données ne sont plus partagées.",
         "status_unconfirmed" : "Ce consentement nécessite une confirmation par son propriétaire.",
         "status_rejected" : "Ce consentement a été rejeté par son propriétaire.",
-        "shares_records" : "Ce consentement partage {{count}} enregistrements.",
+        "shares_records" : "Ce consentement partage actuellement {{count}} enregistrements.",
         "shares_group" : "Partage tous les enregistrements appartenant au groupe : {{ group }}",
         "excludes_group" : "Les enregistrements appartenant au groupe {{ group }} sont exclus",
         "view_change_selection_btn" : "Voir/changer la selection des données",
@@ -919,7 +937,9 @@
         "delete_btn" : "Supprimer ce consentement",
         "please_review1" : "Consentement à examiner",
         "please_review2a" : "Veuillez examiner ce consentement. Cliquez sur 'Confirmer ce consentement' si vous êtes d'accord. Cliquez sur 'Rejeter ce consentement' si vous n'êtes pas d'accord.",
-        "please_review2b" : "Veuillez examiner ce consentement existant. Cliquez sur le bouton 'Ignorer (aucune modification)' pour quitter cette page sans aucun changement. Cliquez sur 'Rejeter ce consentement' si vous n'êtes plus d'accord."
+        "please_review2b" : "Veuillez examiner ce consentement existant. Cliquez sur le bouton 'Ignorer (aucune modification)' pour quitter cette page sans aucun changement. Cliquez sur 'Rejeter ce consentement' si vous n'êtes plus d'accord.",
+        "you" : "Vous",
+        "restrictions" : "Autres restrictions?"
     },
 
     "editconsent2" : {
@@ -1320,6 +1340,13 @@
         "fitness" : "Fitness",
         "health" : "Données médicales",
         "analyze" : "Analyse de données"
+    },
+
+    "changelog" : {
+        "F" : "Nouvelle fonctionnalité",
+        "B" : "Correction",
+        "I" : "Amélioration",
+        "S" : "Correction"
     },
 
     "-1" : "inconnu"

@@ -34,6 +34,7 @@
         "empty" : "Non hai ancora registrato nessun applicazione.",
         "register" : "Registra una nuova applicazione",
         "name" : "Nome",
+        "filename" : "Interno",
         "type" : "Tipo",
         "role" : "Ruolo target",
         "manage_btn" : "maneggiare",
@@ -103,6 +104,10 @@
         "stats_help" : "Visualizzare le statistiche e i suggerimenti per miglioramenti riguardanti le diverse tipologie di chiamate API che la propria applicazione invia al server.",
         "debug_btn" : "API Tester Sandbox",
         "debug_help" : "Accedere come interrogazioni di applicazione e test nei confronti del backend MIDATA.",
+        "appreviews_btn" : "Recensioni",
+        "appreviews_help" : "Recensioni condotte per questa applicazione",
+        "applicence_btn" : "Licenza",
+        "applicence_help" : "L'utente richiede una licenza per utilizzare questa applicazione?",
         "linkedStudy" : "Progetto collegato con link all'applicazione (codice)",
         "mustParticipateInStudy" : "Richiesta la partecipazione al progetto di ricerca",
         "admin_only" : "Solo un amministratore MIDATA può modificare questa sezione. Richiedere le modifiche se necessarie.",
@@ -116,7 +121,9 @@
         "logout_required" : "[ richiesto ]",
         "logout_explain" : "Le modifiche ai campi contrassegnati con !! richiedono il logout di tutti gli utenti di quell'applicazione.",
         "send_reports" : "Inviare i rapporti di errore",
-
+        "not_reviewed" : "Non ancora recensito",
+        "ACCEPTED" : "Recensito",
+        "NEEDS_FIXING" : "Necessità di correzione",
         "info" : {
             "filename" : "Questo nome è utilizzato internamente per identificare la propria applicazione. Deve essere un identificatore valido (a-z, A-Z, 0-9, _).",
             "targetUserRole" : "La propria applicazione è destinata esclusivamente a un ruolo specifico? In caso contrario scegliere 'Qualsiasi ruolo'.",
@@ -159,7 +166,9 @@
         "logoutwarning" : "La modifica della definizione dell'applicazione comporta la disconnessione di tutti gli utenti dall'applicazione stessa. Dovranno confermare nuovamente l'utilizzo dell'applicazione al prossimo accedi.",
         "researchwarning" : "La modifica della definizione dell'applicazione dissocia questa applicazione di ricerca da tutti gli progetti!",
         "creator" : "Creatore",
-        "organization" : "Organizzazione"
+        "organization" : "Organizzazione",
+        "publisher" : "Editore",
+        "reviews" : "Recensioni"
     },
 
     "appstats" : {
@@ -190,6 +199,7 @@
         "backend_services" : "Scripts lato server",
         "portal_username" : "Nome utente",
         "portal_password" : "Password",
+        "portal_role" : "Ruolo",
         "portal_login" : "Utilizza l'istanza del plugin:",
         "portal_login_btn" : "Login al portale + ottenere token"
     },
@@ -259,5 +269,38 @@
             "cmd_to_run" : "Comando da eseguire sul computer:"
         }
 
+    },
+
+    "appreviews" : {
+        "review_btn" : "Recensione",
+        "title" : "Recensioni di applicazioni",
+        "name" : "Nome dell'applicazione",
+        "check" : "Tipo di recensione",
+        "date" : "Data",
+        "userLogin" : "Recensito da",
+        "comment" : "Commento",
+        "status" : "Stato",
+        "noreviews" : "Non sono ancora state fatte recensioni su questo istanza.",
+        "CONCEPT" : "Concetto dell'applicazione",
+        "DATA_MODEL" : "Data Model",
+        "ACCESS_FILTER" : "Access Filter",
+        "QUERIES" : "Queries",
+        "DESCRIPTION" : "Descrizione",
+        "ICONS" : "Icone",
+        "MAILS" : "Testi di e-mails",
+        "PROJECTS" : "Progetti",
+        "CODE_REVIEW" : "Revisione del codice",
+        "TEST_CONCEPT" : "Concetto di test",
+        "TEST_PROTOKOLL" : "Protocolo di test",
+        "CONTRACT" : "Contratto",
+        "ACCEPTED" : "Accettate",
+        "NEEDS_FIXING" : "Correzione richiesta",
+        "OBSOLETE" : "Obsolete"
+    },
+
+    "applicence" : {
+        "title" : "Licenza",
+        "required" : "È richiesta una licenza?",
+        "allowedEntities" : "Entità permesse"
     }
 }
