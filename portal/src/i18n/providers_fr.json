@@ -44,10 +44,6 @@
         "email" : "e-mail",
         "or" : "ou",
         "midataid" : "MIDATA ID",
-
-        // TODO CHANGED
-        // OLD: Birthday
-        // NEW: Date of birth
         "birthday" : "Date de naissance",
         "searching" : "Recherche...",
         "address" : "Adresse",

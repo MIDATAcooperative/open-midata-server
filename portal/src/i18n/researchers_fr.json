@@ -56,10 +56,6 @@
         "participants" : "Participants",
         "execution" : "Déroulement",
         "creation_date" : "Créée",
-
-        // TODO CHANGED
-        // OLD: No research projects have been created yet for your organisation.
-        // NEW: No research projects have been created yet for your organization.
         "empty" : "Aucun projet de recherche a été créé pour votre organisation.",
         "create_btn" : "Créer un nouveau projet"
     },
@@ -122,27 +118,11 @@
         "required_data" : "Données requises",
         "no_change_warning" : "Cette configuration ne peut plus être modifiée une fois le projet validé.",
         "member_identity" : "Identité du membre",
-
-        // TODO CHANGED
-        // OLD: Pseudonymized Participation
-        // NEW: Pseudonymized participation
         "pseudonymous1" : "Participation pseudonymisée",
         "pseudonymous2" : ", les données exportées révèlent l'identité pseudonyme, l'année de naissance, le sexe et le pays. Certains chercheurs, comme telles les study nurses, peuvent avoir accès à des données personnelles complètes.",
         "anonymous" : "Participation anonyme",
-
-        // TODO CHANGED
-        // OLD: , exported data reveals the spseudonymized identity, year of birth, gender and country. The pseudonymization mapping may not be accessed.
-        // NEW: , exported data reveals the pseudonymized identity, year of birth, gender and country. The pseudonymization mapping may not be accessed.
         "anonymous2" : ", les données exportées révèlent l'identité pseudonyme, l'année de naissance, le sexe et le pays. La cartographie de pseudonymisation n'est pas accessible.",
-
-        // TODO CHANGED
-        // OLD: Not Pseudonymized
-        // NEW: Not pseudonymized
         "not_anonymous1" : "Pas pseudonymisé",
-
-        // TODO CHANGED
-        // OLD: , requests member to share full name, birthday and contact Information (address, phone, email)
-        // NEW: , requests member to share full name, date of birth and contact Information (address, phone, email)
         "not_anonymous2" : ", requière que le membre partage son nom complet, date de naissance et informations de contact (adresse, téléphone, e-mail)",
         "assistance" : "Assistance",
         "no_assistance1" : "Aucune",
@@ -202,10 +182,6 @@
     "studyparticipant" : {
         "participant" : "Participant:",
         "gender" : "Sexe:",
-
-        // TODO CHANGED
-        // OLD: Year of Birth:
-        // NEW: Year of birth:
         "year" : "Année de naissance:",
         "country" : "Pays:",
         "status" : "État:",
@@ -355,10 +331,6 @@
     },
 
     "researcher_sharing" : {
-
-        // TODO CHANGED
-        // OLD: Share or unshare records from your account with groups of study participants
-        // NEW: Share or unshare records from your account with groups of project participants
         "description" : "Partager ou supprimer le partage d'enregistrements de votre compte avec des groupes de participants au projet",
         "format" : "Type de ressource",
         "content" : "Type de contenu",

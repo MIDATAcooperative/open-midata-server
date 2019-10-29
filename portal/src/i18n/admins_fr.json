@@ -104,10 +104,6 @@
         "title" : "Applications",
         "developer" : "Filtrer par développeur",
         "name" : "Filtrer par application",
-
-        // TODO CHANGED
-        // OLD: Filter by Organisation
-        // NEW: Filter by organization
         "organisation" : "Filtrer par organisation",
         "empty" : "Il n'existe encore aucune application.",
         "plugin_name" : "Nom",
@@ -219,10 +215,6 @@
         "myid" : "Mon id de récupération",
         "instr1" : "Cliquez sur un share pour copier le share crypté dans le presse-papiers.",
         "instr2" : "Décrypter le share sous UBUNTU: (cliquez sur la ligne pour la copier dans le presse-papiers)",
-
-        // TODO CHANGED
-        // OLD: Decrypt share on MAC: (click line to copy it to clipboard)
-        // NEW: Decrypt share on MAC OS: (click line to copy it to clipboard)
         "instr3" : "Décrypter le share sous MAC OS: (cliquez sur la ligne pour la copier dans le presse-papiers)"
     },
 
@@ -236,15 +228,7 @@
     },
 
     "admin_addlicence" : {
-
-        // TODO CHANGED
-        // OLD: New Licence
-        // NEW: New License
         "title1" : "Nouvelle licence",
-
-        // TODO CHANGED
-        // OLD: Edit Licence
-        // NEW: Edit License
         "title2" : "Modifier la licence",
         "app" : "Application",
         "licenseeType" : "Type de titulaire",
