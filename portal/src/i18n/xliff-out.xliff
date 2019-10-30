@@ -1,13 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1" xml:lang="en">
+    <file source-language="en" target-language="it" datatype="winres" original="providers_it.json">
+        <body>
+            <group resname="provider_navbar" id="provider_navbar">
+                <trans-unit resname="market" id="provider_navbar.market">
+                    <source>MIDATA Store</source>
+                </trans-unit>
+            </group>
+            <group resname="provider_patientsearch" id="provider_patientsearch">
+                <trans-unit resname="midataid" id="provider_patientsearch.midataid">
+                    <source>MIDATA ID</source>
+                </trans-unit>
+                <trans-unit resname="birthday" id="provider_patientsearch.birthday">
+                    <source>Date of birth</source>
+                    <target>Data di nascita</target>
+                </trans-unit>
+            </group>
+            <group resname="provider_usergroups" id="provider_usergroups">
+                <trans-unit resname="name" id="provider_usergroups.name">
+                    <source>Team</source>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
     <file source-language="en" target-language="it" datatype="winres" original="admins_it.json">
         <body>
             <group resname="admin_navbar" id="admin_navbar">
                 <trans-unit resname="admin" id="admin_navbar.admin">
                     <source>Admin</source>
-                </trans-unit>
-                <trans-unit resname="licenses" id="admin_navbar.licenses">
-                    <source>Licenses</source>
                 </trans-unit>
             </group>
             <group resname="admin_members" id="admin_members">
@@ -21,6 +41,10 @@
                 </trans-unit>
             </group>
             <group resname="admin_plugins" id="admin_plugins">
+                <trans-unit resname="organisation" id="admin_plugins.organisation">
+                    <source>Filter by organization</source>
+                    <target>Filtra per organizzazione</target>
+                </trans-unit>
                 <trans-unit resname="plugin_market" id="admin_plugins.plugin_market">
                     <source>MIDATA Store</source>
                 </trans-unit>
@@ -42,55 +66,19 @@
                 <trans-unit resname="share" id="admin_pwrecover.share">
                     <source>Share</source>
                 </trans-unit>
-                <trans-unit resname="instr2" id="admin_pwrecover.instr2">
-                    <source>Decrypt share on UBUNTU: (click line to copy it to clipboard)</source>
-                    <target>Decriptare il share su Ubuntu: (cliccare sulla linea per copiarla negli appunti)</target>
-                </trans-unit>
                 <trans-unit resname="instr3" id="admin_pwrecover.instr3">
-                    <source>Decrypt share on MAC: (click line to copy it to clipboard)</source>
-                </trans-unit>
-            </group>
-            <group resname="admin_licenses" id="admin_licenses">
-                <trans-unit resname="title" id="admin_licenses.title">
-                    <source>Licenses</source>
-                </trans-unit>
-                <trans-unit resname="appName" id="admin_licenses.appName">
-                    <source>Application</source>
-                </trans-unit>
-                <trans-unit resname="licenseeType" id="admin_licenses.licenseeType">
-                    <source>Licensee Type</source>
-                </trans-unit>
-                <trans-unit resname="licenseeName" id="admin_licenses.licenseeName">
-                    <source>Licensee</source>
-                </trans-unit>
-                <trans-unit resname="expireDate" id="admin_licenses.expireDate">
-                    <source>Expires</source>
-                </trans-unit>
-                <trans-unit resname="empty" id="admin_licenses.empty">
-                    <source>No matching licenses found.</source>
+                    <source>Decrypt share on MAC OS: (click line to copy it to clipboard)</source>
+                    <target>Decriptare il share su MAC OS: (cliccare sulla linea per copiarla negli appunti)</target>
                 </trans-unit>
             </group>
             <group resname="admin_addlicence" id="admin_addlicence">
                 <trans-unit resname="title1" id="admin_addlicence.title1">
-                    <source>New Licence</source>
+                    <source>New License</source>
+                    <target>Nuova licenza</target>
                 </trans-unit>
                 <trans-unit resname="title2" id="admin_addlicence.title2">
-                    <source>Edit Licence</source>
-                </trans-unit>
-                <trans-unit resname="app" id="admin_addlicence.app">
-                    <source>Application</source>
-                </trans-unit>
-                <trans-unit resname="licenseeType" id="admin_addlicence.licenseeType">
-                    <source>Licensee Type</source>
-                </trans-unit>
-                <trans-unit resname="role" id="admin_addlicence.role">
-                    <source>User Role</source>
-                </trans-unit>
-                <trans-unit resname="licensee" id="admin_addlicence.licensee">
-                    <source>Licensee</source>
-                </trans-unit>
-                <trans-unit resname="expireDate" id="admin_addlicence.expireDate">
-                    <source>Date of expiration</source>
+                    <source>Edit License</source>
+                    <target>Modifica licenza</target>
                 </trans-unit>
             </group>
             <group resname="usagestats" id="usagestats">
@@ -121,38 +109,6 @@
             </group>
         </body>
     </file>
-    <file source-language="en" target-language="it" datatype="winres" original="providers_it.json">
-        <body>
-            <group resname="provider_registration" id="provider_registration">
-                <trans-unit resname="description" id="provider_registration.description">
-                    <source>Description</source>
-                </trans-unit>
-                <trans-unit resname="url" id="provider_registration.url">
-                    <source>Homepage URL</source>
-                </trans-unit>
-            </group>
-            <group resname="provider_navbar" id="provider_navbar">
-                <trans-unit resname="market" id="provider_navbar.market">
-                    <source>MIDATA Store</source>
-                </trans-unit>
-            </group>
-            <group resname="provider_organization" id="provider_organization">
-                <trans-unit resname="url" id="provider_organization.url">
-                    <source>Homepage URL</source>
-                </trans-unit>
-            </group>
-            <group resname="provider_patientsearch" id="provider_patientsearch">
-                <trans-unit resname="midataid" id="provider_patientsearch.midataid">
-                    <source>MIDATA ID</source>
-                </trans-unit>
-            </group>
-            <group resname="provider_usergroups" id="provider_usergroups">
-                <trans-unit resname="name" id="provider_usergroups.name">
-                    <source>Team</source>
-                </trans-unit>
-            </group>
-        </body>
-    </file>
     <file source-language="en" target-language="it" datatype="winres" original="members_it.json">
         <body>
             <group resname="help_welcome" id="help_welcome">
@@ -171,6 +127,12 @@
                     <source>Withings</source>
                 </trans-unit>
             </group>
+            <group resname="accountdata" id="accountdata">
+                <trans-unit resname="birthday" id="accountdata.birthday">
+                    <source>Date of birth:</source>
+                    <target>Compleanno:</target>
+                </trans-unit>
+            </group>
         </body>
     </file>
     <file source-language="en" target-language="it" datatype="winres" original="developers_it.json">
@@ -180,44 +142,20 @@
                     <source>Sandbox</source>
                 </trans-unit>
             </group>
-            <group resname="developer_yourapps" id="developer_yourapps">
-                <trans-unit resname="filename" id="developer_yourapps.filename">
-                    <source>Internal</source>
-                </trans-unit>
-            </group>
             <group resname="manageapp" id="manageapp">
                 <trans-unit resname="debug_btn" id="manageapp.debug_btn">
                     <source>API Tester Sandbox</source>
                 </trans-unit>
-                <trans-unit resname="appreviews_btn" id="manageapp.appreviews_btn">
-                    <source>Reviews</source>
-                </trans-unit>
-                <trans-unit resname="appreviews_help" id="manageapp.appreviews_help">
-                    <source>Reviews conducted for this application</source>
-                </trans-unit>
                 <trans-unit resname="applicence_btn" id="manageapp.applicence_btn">
-                    <source>Licence</source>
+                    <source>License</source>
+                    <target>Licenza</target>
                 </trans-unit>
                 <trans-unit resname="applicence_help" id="manageapp.applicence_help">
-                    <source>Does the user require a licence to use this application?</source>
-                </trans-unit>
-                <trans-unit resname="not_reviewed" id="manageapp.not_reviewed">
-                    <source>Not reviewed yet</source>
-                </trans-unit>
-                <trans-unit resname="ACCEPTED" id="manageapp.ACCEPTED">
-                    <source>Reviewed</source>
-                </trans-unit>
-                <trans-unit resname="NEEDS_FIXING" id="manageapp.NEEDS_FIXING">
-                    <source>Needs Fixing</source>
+                    <source>Does the user require a license to use this application?</source>
+                    <target>L'utente richiede una licenza per utilizzare questa applicazione?</target>
                 </trans-unit>
                 <trans-unit resname="access_query_json" id="manageapp.access_query_json">
                     <source>Data Access Filter</source>
-                </trans-unit>
-                <trans-unit resname="publisher" id="manageapp.publisher">
-                    <source>Publisher</source>
-                </trans-unit>
-                <trans-unit resname="reviews" id="manageapp.reviews">
-                    <source>Reviews</source>
                 </trans-unit>
             </group>
             <group resname="appdebug" id="appdebug">
@@ -235,9 +173,6 @@
                 </trans-unit>
                 <trans-unit resname="portal_password" id="appdebug.portal_password">
                     <source>Password</source>
-                </trans-unit>
-                <trans-unit resname="portal_role" id="appdebug.portal_role">
-                    <source>Role</source>
                 </trans-unit>
             </group>
             <group resname="appicon" id="appicon">
@@ -267,35 +202,9 @@
                 </trans-unit>
             </group>
             <group resname="appreviews" id="appreviews">
-                <trans-unit resname="review_btn" id="appreviews.review_btn">
-                    <source>Review</source>
-                </trans-unit>
-                <trans-unit resname="title" id="appreviews.title">
-                    <source>Application Reviews</source>
-                </trans-unit>
-                <trans-unit resname="name" id="appreviews.name">
-                    <source>Application Name</source>
-                </trans-unit>
-                <trans-unit resname="check" id="appreviews.check">
-                    <source>Review Type</source>
-                </trans-unit>
-                <trans-unit resname="date" id="appreviews.date">
-                    <source>Date</source>
-                </trans-unit>
                 <trans-unit resname="userLogin" id="appreviews.userLogin">
-                    <source>Signed by</source>
-                </trans-unit>
-                <trans-unit resname="comment" id="appreviews.comment">
-                    <source>Comment</source>
-                </trans-unit>
-                <trans-unit resname="status" id="appreviews.status">
-                    <source>Status</source>
-                </trans-unit>
-                <trans-unit resname="noreviews" id="appreviews.noreviews">
-                    <source>No reviews have been done yet on this instance.</source>
-                </trans-unit>
-                <trans-unit resname="CONCEPT" id="appreviews.CONCEPT">
-                    <source>Application Concept</source>
+                    <source>Reviewed by</source>
+                    <target>Recensito da</target>
                 </trans-unit>
                 <trans-unit resname="DATA_MODEL" id="appreviews.DATA_MODEL">
                     <source>Data Model</source>
@@ -306,35 +215,13 @@
                 <trans-unit resname="QUERIES" id="appreviews.QUERIES">
                     <source>Queries</source>
                 </trans-unit>
-                <trans-unit resname="DESCRIPTION" id="appreviews.DESCRIPTION">
-                    <source>Description</source>
-                </trans-unit>
-                <trans-unit resname="ICONS" id="appreviews.ICONS">
-                    <source>Icons</source>
-                </trans-unit>
-                <trans-unit resname="MAILS" id="appreviews.MAILS">
-                    <source>Mail Texts</source>
-                </trans-unit>
-                <trans-unit resname="PROJECTS" id="appreviews.PROJECTS">
-                    <source>Projects</source>
-                </trans-unit>
-                <trans-unit resname="CODE_REVIEW" id="appreviews.CODE_REVIEW">
-                    <source>Code Review</source>
-                </trans-unit>
-                <trans-unit resname="TEST_CONCEPT" id="appreviews.TEST_CONCEPT">
-                    <source>Test Concept</source>
-                </trans-unit>
                 <trans-unit resname="TEST_PROTOKOLL" id="appreviews.TEST_PROTOKOLL">
-                    <source>Test Protokoll</source>
-                </trans-unit>
-                <trans-unit resname="CONTRACT" id="appreviews.CONTRACT">
-                    <source>Contract</source>
+                    <source>Test Protocol</source>
+                    <target>Protocolo di test</target>
                 </trans-unit>
                 <trans-unit resname="ACCEPTED" id="appreviews.ACCEPTED">
-                    <source>Passed</source>
-                </trans-unit>
-                <trans-unit resname="NEEDS_FIXING" id="appreviews.NEEDS_FIXING">
-                    <source>Needs fixing</source>
+                    <source>Accepted</source>
+                    <target>Accettate</target>
                 </trans-unit>
                 <trans-unit resname="OBSOLETE" id="appreviews.OBSOLETE">
                     <source>Obsolete</source>
@@ -342,13 +229,12 @@
             </group>
             <group resname="applicence" id="applicence">
                 <trans-unit resname="title" id="applicence.title">
-                    <source>Licence</source>
+                    <source>License</source>
+                    <target>Licenza</target>
                 </trans-unit>
                 <trans-unit resname="required" id="applicence.required">
-                    <source>Licence required?</source>
-                </trans-unit>
-                <trans-unit resname="allowedEntities" id="applicence.allowedEntities">
-                    <source>Allowed entities</source>
+                    <source>License required?</source>
+                    <target>È richiesta una licenza?</target>
                 </trans-unit>
             </group>
         </body>
@@ -359,8 +245,35 @@
                 <trans-unit resname="team" id="studynav.team">
                     <source>Team</source>
                 </trans-unit>
-                <trans-unit resname="sharing" id="studynav.sharing">
-                    <source>Published Records</source>
+            </group>
+            <group resname="studies" id="studies">
+                <trans-unit resname="empty" id="studies.empty">
+                    <source>No research projects have been created yet for your organization.</source>
+                    <target>Non è stato ancora creato alcun progetto di ricerca per la tua organizzazione.</target>
+                </trans-unit>
+            </group>
+            <group resname="studyfields" id="studyfields">
+                <trans-unit resname="pseudonymous1" id="studyfields.pseudonymous1">
+                    <source>Pseudonymized participation</source>
+                    <target>Partecipazione pseudonimizzata</target>
+                </trans-unit>
+                <trans-unit resname="anonymous2" id="studyfields.anonymous2">
+                    <source>, exported data reveals the pseudonymized identity, year of birth, gender and country. The pseudonymization mapping may not be accessed.</source>
+                    <target>, i dati esportati rivelano l'identità pseudonimizzata, l'anno di nascita, il sesso e il paese. La mappatura della pseudonimizzazione non è accessibile.</target>
+                </trans-unit>
+                <trans-unit resname="not_anonymous1" id="studyfields.not_anonymous1">
+                    <source>Not pseudonymized</source>
+                    <target>Senza pseudonimo</target>
+                </trans-unit>
+                <trans-unit resname="not_anonymous2" id="studyfields.not_anonymous2">
+                    <source>, requests member to share full name, date of birth and contact Information (address, phone, email)</source>
+                    <target>, richiede al membro di condividere il nome completo, la data di nascita e le informazioni di contatto (indirizzo, telefono, e-mail)</target>
+                </trans-unit>
+            </group>
+            <group resname="studyparticipant" id="studyparticipant">
+                <trans-unit resname="year" id="studyparticipant.year">
+                    <source>Year of birth:</source>
+                    <target>Anno di nascita:</target>
                 </trans-unit>
             </group>
             <group resname="studyrules" id="studyrules">
@@ -370,7 +283,8 @@
             </group>
             <group resname="researcher_sharing" id="researcher_sharing">
                 <trans-unit resname="description" id="researcher_sharing.description">
-                    <source>Share or unshare records from your account with groups of study participants</source>
+                    <source>Share or unshare records from your account with groups of project participants</source>
+                    <target>Condividi o non condividi i record del vostro account con gruppi di partecipanti al progetto</target>
                 </trans-unit>
             </group>
         </body>
@@ -388,40 +302,42 @@
                 </trans-unit>
             </group>
             <group resname="error" id="error">
-                <group resname="invalid" id="error.invalid">
-                    <trans-unit resname="entity_type" id="error.invalid.entity_type">
-                        <source>Invalid entity type</source>
-                    </trans-unit>
-                </group>
                 <group resname="missing" id="error.missing">
                     <trans-unit resname="licence" id="error.missing.licence">
-                        <source>A valid licence is required to use this application.</source>
+                        <source>A valid license is required to use this application.</source>
+                        <target>Per utilizzare questa applicazione è necessaria una licenza valida.</target>
                     </trans-unit>
                 </group>
-                <group resname="unknown" id="error.unknown">
-                    <trans-unit resname="organization" id="error.unknown.organization">
-                        <source>Organization does not exist.</source>
+                <group resname="exists" id="error.exists">
+                    <trans-unit resname="research" id="error.exists.research">
+                        <source>A research organization with this name already exists.</source>
+                        <target>Un'organizzazione di ricerca con questo nome esiste già.</target>
                     </trans-unit>
                 </group>
                 <group resname="tooshort" id="error.tooshort">
                     <trans-unit resname="password" id="error.tooshort.password">
-                        <source>Passwords must be at least 8 characters long and should contain upper/lower case letters, numbers and special characters.</source>
-                        <target>Le password devono essere composte da almeno 8 caratteri.</target>
+                        <source>The password must be at least 8 characters long and contain one letter and one digit.</source>
+                        <target>La password deve essere lunga almeno 8 caratteri e contenere una lettera e una cifra.</target>
+                    </trans-unit>
+                </group>
+                <group resname="tooweak" id="error.tooweak">
+                    <trans-unit resname="password" id="error.tooweak.password">
+                        <source>The password must contain at least one letter and one digit.</source>
+                        <target>La password deve contenere almeno una lettera e una cifra.</target>
                     </trans-unit>
                 </group>
                 <group resname="notrequired" id="error.notrequired">
                     <trans-unit resname="licence" id="error.notrequired.licence">
-                        <source>No licence is required for this application</source>
+                        <source>No license is required for this application</source>
+                        <target>Non è richiesta alcuna licenza per questa applicazione</target>
                     </trans-unit>
                 </group>
             </group>
             <group resname="enum" id="enum">
                 <group resname="eventtype" id="enum.eventtype">
-                    <trans-unit resname="user-status-change-active" id="enum.eventtype.user-status-change-active">
-                        <source>User account unlocked</source>
-                    </trans-unit>
-                    <trans-unit resname="user-status-change-blocked" id="enum.eventtype.user-status-change-blocked">
-                        <source>User account blocked</source>
+                    <trans-unit resname="user-birthday-change" id="enum.eventtype.user-birthday-change">
+                        <source>User's date of birth changed</source>
+                        <target>Data di nascita dell'utente modificata</target>
                     </trans-unit>
                 </group>
                 <group resname="researcherrole" id="enum.researcherrole">
@@ -455,14 +371,8 @@
                     </trans-unit>
                 </group>
                 <group resname="entitytype" id="enum.entitytype">
-                    <trans-unit resname="USER" id="enum.entitytype.USER">
-                        <source>User</source>
-                    </trans-unit>
                     <trans-unit resname="USERGROUP" id="enum.entitytype.USERGROUP">
                         <source>Team</source>
-                    </trans-unit>
-                    <trans-unit resname="ORGANIZATION" id="enum.entitytype.ORGANIZATION">
-                        <source>Organization</source>
                     </trans-unit>
                 </group>
             </group>
@@ -474,8 +384,20 @@
                 </group>
             </group>
             <group resname="registration" id="registration">
+                <trans-unit resname="password_policy" id="registration.password_policy">
+                    <source>The password must be at least 8 characters long and contain one letter and one digit.</source>
+                    <target>La password deve essere lunga almeno 8 caratteri e contenere una lettera e una cifra.</target>
+                </trans-unit>
                 <trans-unit resname="password" id="registration.password">
                     <source>Password</source>
+                </trans-unit>
+                <trans-unit resname="birthday" id="registration.birthday">
+                    <source>Date of birth</source>
+                    <target>Data di nascita</target>
+                </trans-unit>
+                <trans-unit resname="birthday2" id="registration.birthday2">
+                    <source>Date of birth (format: 31.12.1999)</source>
+                    <target>Data di nascita (formato: 31.12.1999)</target>
                 </trans-unit>
             </group>
             <group resname="login" id="login">
@@ -489,33 +411,28 @@
             <group resname="postregister" id="postregister">
                 <group resname="licence" id="postregister.licence">
                     <trans-unit resname="intro" id="postregister.licence.intro">
-                        <source>A licence is required to use this application.</source>
+                        <source>A license is required to use this application.</source>
+                        <target>Per utilizzare questa applicazione è necessaria una licenza.</target>
                     </trans-unit>
                     <trans-unit resname="text" id="postregister.licence.text">
-                        <source>Please contact support@midata.coop to obtain a valid licence.</source>
+                        <source>Please contact support@midata.coop to obtain a valid license.</source>
+                        <target>Si prega di contattare support@midata.coop per ottenere una licenza valida.</target>
                     </trans-unit>
                 </group>
             </group>
+            <group resname="studydetails" id="studydetails">
+                <trans-unit resname="information_demographic" id="studydetails.information_demographic">
+                    <source>Your complete demographic data (name, date of birth, address, ...)</source>
+                    <target>I propri dati demografici completi (nome, data di nascita, indirizzo, ...)</target>
+                </trans-unit>
+            </group>
             <group resname="user" id="user">
+                <trans-unit resname="birthday" id="user.birthday">
+                    <source>Date of birth:</source>
+                    <target>Data di nascita:</target>
+                </trans-unit>
                 <trans-unit resname="midataID" id="user.midataID">
                     <source>MIDATA ID:</source>
-                </trans-unit>
-            </group>
-            <group resname="visualization" id="visualization">
-                <trans-unit resname="publisher" id="visualization.publisher">
-                    <source>Publisher:</source>
-                </trans-unit>
-            </group>
-            <group resname="editconsent" id="editconsent">
-                <trans-unit resname="shares_records" id="editconsent.shares_records">
-                    <source>This consent shares currently {{count}} records.</source>
-                    <target>Questo consenso condivide {{count}} record.</target>
-                </trans-unit>
-                <trans-unit resname="you" id="editconsent.you">
-                    <source>You</source>
-                </trans-unit>
-                <trans-unit resname="restrictions" id="editconsent.restrictions">
-                    <source>Further restrictions?</source>
                 </trans-unit>
             </group>
             <group resname="editconsent2" id="editconsent2">
@@ -568,14 +485,8 @@
                 </trans-unit>
             </group>
             <group resname="changelog" id="changelog">
-                <trans-unit resname="F" id="changelog.F">
-                    <source>New Feature</source>
-                </trans-unit>
                 <trans-unit resname="B" id="changelog.B">
                     <source>Bugfix</source>
-                </trans-unit>
-                <trans-unit resname="I" id="changelog.I">
-                    <source>Improvement</source>
                 </trans-unit>
                 <trans-unit resname="S" id="changelog.S">
                     <source>Bugfix</source>

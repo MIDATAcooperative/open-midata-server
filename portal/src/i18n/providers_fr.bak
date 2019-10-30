@@ -43,7 +43,7 @@
      "email" : "email",
      "or" : "or",
      "midataid" : "MIDATA ID",
-     "birthday" : "Birthday",
+     "birthday" : "Date of birth",
      "searching" : "Searching...",
      "address" : "Address",
      "show_patient_btn" : "Show Patient",

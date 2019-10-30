@@ -220,7 +220,7 @@
 
     "admin_licenses" : {
         "title" : "Lizenzen",
-       "appName" : "Applikation",
+        "appName" : "Applikation",
         "licenseeType" : "Lizenznehmer-Typ",
         "licenseeName" : "Lizenznehmer",
         "expireDate" : "Läuft ab",
