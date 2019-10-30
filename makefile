@@ -47,7 +47,7 @@ stop-mongo:
 	@echo 'Shutting down MongoDB...'
 	if [ -e switches/local-mongo ]; then pkill mongod; fi
 
-update: tasks/check-config start-mongo tasks/build-mongodb tasks/build-portal tasks/build-platform tasks/setup-nginx start
+update: tasks/check-config tasks/install-packages start-mongo tasks/build-mongodb tasks/build-portal tasks/build-platform tasks/setup-nginx start
 
 .PHONY: stop
 stop: stop-platform stop-mongo
@@ -101,7 +101,10 @@ tasks/install-packages: trigger/install-packages
 	$(info ------------------------------)
 	$(info Installing Packages... )
 	$(info ------------------------------)
-	sudo apt-get install git curl openssl openjdk-8-jdk nginx mcrypt unzip ruby-sass	
+	sudo apt-get install git curl openssl openjdk-8-jdk mcrypt unzip ruby-sass software-properties-common
+	sudo add-apt-repository ppa:nginx/stable
+	sudo apt-get update
+	sudo apt-get install nginx	
 	touch tasks/install-packages
 	
 tasks/install-node: tasks/install-packages trigger/install-node

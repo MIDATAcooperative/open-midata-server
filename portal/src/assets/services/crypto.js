@@ -196,6 +196,8 @@ angular.module('services')
 	
 	service.isValidPassword = function(pw) {
 		if (!pw || !pw.length || pw.length < 8) return false;
+		if (! /[0-9]/.test(pw)) return false;
+		if (! /[a-zA-Z]/.test(pw)) return false;
 		return true;
 	};
 	

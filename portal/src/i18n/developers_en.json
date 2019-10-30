@@ -105,8 +105,8 @@
     "debug_help" : "Login as application and test queries against the MIDATA backend.",
     "appreviews_btn" : "Reviews",
     "appreviews_help" : "Reviews conducted for this application",
-    "applicence_btn" : "Licence",
-    "applicence_help" : "Does the user require a licence to use this application?",
+    "applicence_btn" : "License",
+    "applicence_help" : "Does the user require a license to use this application?",
     "linkedStudy" : "Project linked to the application (code)",
     "mustParticipateInStudy" : "Research Project Participation Required",
     "admin_only" : "Only a MIDATA administrator may change this section. Please request changes if required.",
@@ -276,7 +276,7 @@
     "name" : "Application Name",
     "check" : "Review Type",
     "date" : "Date", 
-    "userLogin" : "Signed by",
+    "userLogin" : "Reviewed by",
     "comment" : "Comment",
     "status" : "Status",
     "noreviews" : "No reviews have been done yet on this instance.",
@@ -290,16 +290,16 @@
     "PROJECTS" : "Projects",
     "CODE_REVIEW" : "Code Review",
     "TEST_CONCEPT" : "Test Concept",
-    "TEST_PROTOKOLL" : "Test Protokoll",
+    "TEST_PROTOKOLL" : "Test Protocol",
     "CONTRACT" : "Contract",
-    "ACCEPTED" : "Passed",
+    "ACCEPTED" : "Accepted",
     "NEEDS_FIXING" : "Needs fixing",
     "OBSOLETE" : "Obsolete"
   },
   
   "applicence" : {
-    "title" : "Licence",
-    "required" : "Licence required?",
+    "title" : "License",
+    "required" : "License required?",
     "allowedEntities" : "Allowed entities"
   }
 }

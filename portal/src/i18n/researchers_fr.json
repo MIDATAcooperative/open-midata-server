@@ -45,7 +45,8 @@
         "participants" : "Participants",
         "records" : "Enregistrements",
         "results" : "Résultats",
-        "team" : "Team"
+        "team" : "Team",
+        "sharing" : "Enregistrements publiés"
     },
 
     "studies" : {
@@ -330,6 +331,7 @@
     },
 
     "researcher_sharing" : {
+        "description" : "Partager ou supprimer le partage d'enregistrements de votre compte avec des groupes de participants au projet",
         "format" : "Type de ressource",
         "content" : "Type de contenu",
         "app" : "Application",

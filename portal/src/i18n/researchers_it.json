@@ -45,7 +45,8 @@
         "participants" : "Partecipanti",
         "records" : "Record",
         "results" : "Risultati",
-        "team" : "Team"
+        "team" : "Team",
+        "sharing" : "Record pubblicati"
     },
 
     "studies" : {
@@ -194,13 +195,13 @@
         "partName" : "Con pseudonimo",
         "group" : "Gruppo",
         "status" : "Stato",
-        "total" : "Trovati {{count}} consensi corrispondenti ai tuoi criteri.",
+        "total" : "Trovati {{count}} consensi corrispondenti ai vostri criteri.",
         "only_first_shown" : "Sono visualizzati solo i primi 1000 consensi corrispondenti.",
         "recruiter" : "Reclutatore",
         "accept_btn" : "Accetta",
         "reject_btn" : "Rifiuta",
         "add_participant_btn" : "Aggiungi partecipante",
-        "empty" : "Questo progetto di ricerca non ha ancora alcun partecipante che corrisponda ai tuoi criteri di ricerca.",
+        "empty" : "Questo progetto di ricerca non ha ancora alcun partecipante che corrisponda ai vostri criteri di ricerca.",
         "search_type" : "Cerca",
         "all" : "Tutti i partecipanti",
         "request" : "Candidati in attesa di una decisione",
@@ -247,7 +248,7 @@
         "sign_up" : "Registrazione partecipante",
         "study" : "Progetto",
         "hasaccepted" : "Il partecipante ha accettato",
-        "success" : "Un nuovo partecipante è stato aggiunto al tuo progetto."
+        "success" : "Un nuovo partecipante è stato aggiunto al vostro progetto."
     },
 
     "studyteam" : {
@@ -255,7 +256,7 @@
         "role" : "Ruolo",
         "rolehint" : "Ruolo (per i dettagli fare clic sulla riga qui sotto)",
         "roleName" : "Nome ruolo",
-        "defineself" : "Puoi modificare i tuoi diritti aggiungendoti al team con diritti differenti. Puoi compiere quest'operazione fino a quando sei l'unico membro del team. Non puoi privarti dei diritti di gestione del team.",
+        "defineself" : "Puoi modificare i vostri diritti aggiungendoti al team con diritti differenti. Puoi compiere quest'operazione fino a quando sei l'unico membro del team. Non puoi privarti dei diritti di gestione del team.",
         "addperson_btn" : "Aggiungi persona",
         "rights" : "Diritti",
         "right" : {
@@ -280,9 +281,9 @@
         "information" : "Informazioni pubbliche sulla vostra ricerca",
         "information_help" : "Le informazioni pubbliche aiuteranno i titolari di account MIDATA a valutare se la vostra ricerca è rilevante per loro.",
         "groups" : "Gruppi di partecipanti definiti",
-        "groups_help" : "Il tuo progetto può avere uno o più gruppi di partecipanti. Definisci l'elenco dei gruppi di partecipanti.",
+        "groups_help" : "Il vostro progetto può avere uno o più gruppi di partecipanti. Definisci l'elenco dei gruppi di partecipanti.",
         "sharingQuery" : "Data Access Filter definito",
-        "sharingQuery_help" : "Il tuo progetto deve dichiarare in modo esplicito a quali dati dei partecipanti accederà. Il filtro di accesso ai dati (Data Access Filter) non può essere modificato dopo la convalida del progetto.",
+        "sharingQuery_help" : "Il vostro progetto deve dichiarare in modo esplicito a quali dati dei partecipanti accederà. Il filtro di accesso ai dati (Data Access Filter) non può essere modificato dopo la convalida del progetto.",
         "dates" : "Date di inizio e fine impostate",
         "dates_help" : "Le date di inizio e fine saranno mostrate ai partecipanti.  Nessun dato aggiuntivo confluirà nel progetto dal momento in cui i dati vengono congelati.",
         "terms" : "Condizioni generali di contratto forniti",
@@ -319,7 +320,7 @@
     "studyinfo" : {
         "title" : "Informazioni",
         "introduction" : "Dare ulteriori informazioni sul progetto di ricerca. È possibile fornire informazioni pubbliche, istruzioni aggiuntive e informazioni di contatto visibili solo ai partecipanti e informazioni per altri ricercatori e per l'amministrazione. I testi sono da intendersi solo come informazioni aggiuntive e possono essere modificati in qualsiasi momento.",
-        "introduction2" : "Tutte le informazioni sono facoltative. Dovresti dare informazioni solo su argomenti che hanno senso nel tuo contesto di ricerca.",
+        "introduction2" : "Tutte le informazioni sono facoltative. Dovresti dare informazioni solo su argomenti che hanno senso nel vostro contesto di ricerca.",
         "visibility" : "Informazioni visibili a",
         "visibilities" : {
             "ALL" : "tutti",
@@ -330,6 +331,7 @@
     },
 
     "researcher_sharing" : {
+        "description" : "Condividi o non condividi i record del vostro account con gruppi di partecipanti al progetto",
         "format" : "Tipo di risorsa",
         "content" : "Tipo di contenuto",
         "app" : "Applicazione",

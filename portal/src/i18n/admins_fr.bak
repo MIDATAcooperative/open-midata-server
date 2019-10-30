@@ -9,6 +9,7 @@
 	"content" : "Content Types",
 	"studies" : "Projects",
 	"terms" : "General Terms and Conditions",
+	"licenses" : "Licenses",
 	"registration" : "Register an Administrator",
 	"user_admin" : "User Administration",
 	"plugin_admin" : "Applications & Data",
@@ -102,7 +103,7 @@
     "title" : "Applications",
     "developer" : "Filter by Developer",
     "name" : "Filter by Application",
-    "organisation" : "Filter by Organisation",
+    "organisation" : "Filter by organization",
     "empty" : "There are no applications yet.",
     "plugin_name" : "Name",
     "plugin_developer" : "Developer",
@@ -212,7 +213,27 @@
      "decrypted" : "Decrypted share",
      "myid" : "My recovery id",
      "instr1" : "Click on a share to copy the encrypted share into the clipboard.",
-     "instr2" : "Decrypt share on Ubuntu: (click line to copy it to clipboard)"     
+     "instr2" : "Decrypt share on UBUNTU: (click line to copy it to clipboard)",
+     "instr3" : "Decrypt share on MAC OS: (click line to copy it to clipboard)"     
+   },
+   
+   "admin_licenses" : {
+     "title" : "Licenses", 
+     "appName" : "Application",
+     "licenseeType" : "Licensee Type",     
+     "licenseeName" : "Licensee",
+     "expireDate" : "Expires",
+     "empty" : "No matching licenses found."     
+   },
+   
+   "admin_addlicence" : {
+     "title1" : "New License",
+     "title2" : "Edit License",
+     "app" : "Application",
+     "licenseeType" : "Licensee Type",
+     "role" : "User Role",
+     "licensee" : "Licensee",
+     "expireDate" : "Date of expiration"
    },
    
    "usagestats" : {
