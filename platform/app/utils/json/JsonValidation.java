@@ -97,8 +97,12 @@ public class JsonValidation {
 	public static String getPassword(JsonNode json, String field) throws JsonValidationException {
 		String pw = json.path(field).asText();
 		if (pw.length() < 8) throw new JsonValidationException("error.tooshort.password", field, "tooshort", "Password is too weak. It must be 8 characters at minimum.");
-		if (!NUMBER.matcher(pw).find()) throw new JsonValidationException("error.tooweak.password", field, "tooweak", "Password is too weak. It must container numbers and a mix of upper/lowercase letters.");
-		if (!LC.matcher(pw).find() && !UC.matcher(pw).find()) throw new JsonValidationException("error.tooweak.password", field, "tooweak", "Password is too weak. It must container numbers and a mix of upper/lowercase letters.");
+		
+		// Do not check for hashes
+		if (pw.length() < 12) {
+			if (!NUMBER.matcher(pw).find()) throw new JsonValidationException("error.tooweak.password", field, "tooweak", "Password is too weak. It must container numbers and a mix of upper/lowercase letters.");
+			if (!LC.matcher(pw).find() && !UC.matcher(pw).find()) throw new JsonValidationException("error.tooweak.password", field, "tooweak", "Password is too weak. It must container numbers and a mix of upper/lowercase letters.");
+		}
 		//if (!UC.matcher(pw).find()) throw new JsonValidationException("error.tooweak.password", field, "tooweak", "Password is too weak. It must container numbers and a mix of upper/lowercase letters.");
 		//if (!OC.matcher(pw).find()) throw new JsonValidationException("error.tooweak.password", field, "tooweak", "Password is too weak. It must container numbers and a mix of upper/lowercase letters.");
 		return pw;
