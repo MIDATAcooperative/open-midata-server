@@ -47,7 +47,7 @@ stop-mongo:
 	@echo 'Shutting down MongoDB...'
 	if [ -e switches/local-mongo ]; then pkill mongod; fi
 
-update: tasks/check-config start-mongo tasks/build-mongodb tasks/build-portal tasks/build-platform tasks/setup-nginx start
+update: tasks/check-config tasks/install-packages start-mongo tasks/build-mongodb tasks/build-portal tasks/build-platform tasks/setup-nginx start
 
 .PHONY: stop
 stop: stop-platform stop-mongo
