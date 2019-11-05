@@ -17,6 +17,7 @@ import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
+import utils.exceptions.PluginException;
 
 /**
  * allows access permission sets not only to have a list of records but also a link to another
@@ -273,8 +274,9 @@ public class Feature_QueryRedirect extends Feature {
 	 * @param in
 	 * @return
 	 */
-    public static Map<String, Object> simplifyAccessFilter(Map<String, Object> in) {
+    public static Map<String, Object> simplifyAccessFilter(MidataId pluginId, Map<String, Object> in) throws AppException {
     	//AccessLog.log("simplifyAccessFilter");
+    	if (in == null) throw new PluginException(pluginId, "error.plugin", "No access filter defined for plugin.");
     	if (!in.containsKey("$or")) return in;
     	Map<String, Object> out = new HashMap<String, Object>();
     	Set<String> ignore = Sets.create("code","content");

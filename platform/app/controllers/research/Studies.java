@@ -1342,7 +1342,7 @@ public class Studies extends APIController {
 			Space space = null;
 			space = Spaces.add(userId, plugin.defaultSpaceName, plugin._id, plugin.type, study.code + ":" + (group != null ? group : ""), licence);
 
-			Map<String, Object> query = new HashMap<String, Object>(Feature_QueryRedirect.simplifyAccessFilter(plugin.defaultQuery));
+			Map<String, Object> query = new HashMap<String, Object>(Feature_QueryRedirect.simplifyAccessFilter(plugin._id, plugin.defaultQuery));
 			query.put("study", studyId.toString());
 			if (restrictRead && group != null)
 				query.put("study-group", group);

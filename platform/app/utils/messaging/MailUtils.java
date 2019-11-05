@@ -47,12 +47,14 @@ public class MailUtils {
 
 	public void sendEmail(String email, String fullname, String subject, Object content) {
 		System.out.println("Start send mail to "+email+" at "+new Date().toString());
+		
+		if (email==null) return;
+		
 		Email mail = new Email();
 		    
-		fullname = fullname.replace(">", "").replace("<", "").replace("\"", "").replace("\\", "").replace("'", "");
-		
+		if (fullname!=null) fullname = fullname.replace(">", "").replace("<", "").replace("\"", "").replace("\\", "").replace("'", "");		
 		mail.setSubject(subject);
-		mail.addTo(fullname +"<" + email + ">");
+		if (fullname != null) mail.addTo(fullname +"<" + email + ">"); else mail.addTo(email);
 		mail.setFrom(config.getString("smtp.from"));	
 		mail.setBodyText(content.toString());
 		    

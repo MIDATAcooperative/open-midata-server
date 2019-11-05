@@ -14,4 +14,6 @@ id0012	23.10.2019	a.kreutz	I	Account unlocked/locked status changes are recorded
 id0013	24.10.2019	a.kreutz	I	Improved layout on mobile devices	Menu bar closes automatically on click. No shadows around views.
 id0014	24.10.2019	a.kreutz	I	Simplified consent screen	Simplified mobile version. Removed unnecessary buttons.
 id0015	30.10.2019	a.kreutz	S	Added client side check for password strength
+id0016	05.11.2019	a.kreutz	B	Do now allow empty access filter for apps and plugins
+id0017	05.11.2019	a.kreutz	B	Fixed email sending if receiver name unknown
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 
