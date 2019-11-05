@@ -258,7 +258,7 @@ public class Plugins extends APIController {
 			space = Spaces.add(userId, spaceName, visualizationId, visualization.type, context, licence);
 
 			if (space != null) {
-				Map<String, Object> query = new HashMap<String, Object>(Feature_QueryRedirect.simplifyAccessFilter(visualization.defaultQuery));
+				Map<String, Object> query = new HashMap<String, Object>(Feature_QueryRedirect.simplifyAccessFilter(visualization._id, visualization.defaultQuery));
 				if (study != null) {
 					query.put("link-study", study.toString());
 					query.put("study", study.toString());
