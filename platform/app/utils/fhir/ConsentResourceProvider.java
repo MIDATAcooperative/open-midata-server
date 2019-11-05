@@ -504,7 +504,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		Map<String, Object> query = new HashMap<String, Object>();
 		Set<String> contents = new HashSet<String>();
 		provisionComponent ec = theResource.getProvision();
-		if (ec.getType() == org.hl7.fhir.r4.model.Consent.ConsentProvisionType.PERMIT) {
+		if (ec.getType() != org.hl7.fhir.r4.model.Consent.ConsentProvisionType.DENY) {
 			for (Coding coding : ec.getClass_()) {
 				String system = coding.getSystem();
 				if (system.equals("http://midata.coop/codesystems/content")) {
