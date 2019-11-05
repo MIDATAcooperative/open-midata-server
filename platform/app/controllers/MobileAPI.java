@@ -385,7 +385,7 @@ public class MobileAPI extends Controller {
 		RecordManager.instance.setMeta(executor, appInstance._id, "_app", meta);
 		
 		if (app.defaultQuery != null && !app.defaultQuery.isEmpty()) {			
-		    RecordManager.instance.shareByQuery(executor, member._id, appInstance._id, Feature_QueryRedirect.simplifyAccessFilter(app.defaultQuery));
+		    RecordManager.instance.shareByQuery(executor, member._id, appInstance._id, Feature_QueryRedirect.simplifyAccessFilter(app._id, app.defaultQuery));
 		}
 		
 		MobileAPI.confirmMobileConsent(executor, appInstance._id);
@@ -453,7 +453,7 @@ public class MobileAPI extends Controller {
 			
 		    Feature_FormatGroups.convertQueryToContents(app.defaultQuery);
 		    
-		    appInstance.sharingQuery = Feature_QueryRedirect.simplifyAccessFilter(app.defaultQuery);						   
+		    appInstance.sharingQuery = Feature_QueryRedirect.simplifyAccessFilter(app._id, app.defaultQuery);						   
 		}
     	    	    	
     	MobileAppInstance.add(appInstance);	
