@@ -2,7 +2,7 @@ angular.module('portal')
 .config(["$stateProvider", function($stateProvider) {
 	   $stateProvider
 	    .state('public.registration', {
-	      url: '/registration?action',
+	      url: '/registration?action&login',
 	      templateUrl: 'views/members/public/registration/registration.html' 
 	    })
 	    .state('public.registration_new', {
