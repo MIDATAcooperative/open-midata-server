@@ -16,4 +16,5 @@ id0014	24.10.2019	a.kreutz	I	Simplified consent screen	Simplified mobile version
 id0015	30.10.2019	a.kreutz	S	Added client side check for password strength
 id0016	05.11.2019	a.kreutz	B	Do now allow empty access filter for apps and plugins
 id0017	05.11.2019	a.kreutz	B	Fixed email sending if receiver name unknown
+id0018	06.11.2019	a.kreutz	I	Registration link for invitation emails	Consent creation notifications for non Midata users may now contain a link to the registration page. 
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 

@@ -27,7 +27,12 @@ angular.module('portal')
 			actions.push({ ac : "leave" });
 		}
 		params.action=JSON.stringify(actions);
-		$state.go("public.login", params);		
+
+		if ($state.params.isnew) {
+          $state.go("public.registration", params);
+		} else {
+		  $state.go("public.login", params);
+		}		
 	};
 	
 	
