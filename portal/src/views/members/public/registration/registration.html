@@ -14,13 +14,15 @@
 	                        <p ng-show="offline" class="alert alert-danger" translate="error.offline"></p>
 	                        <div class="row">
 	                        <p class="col-sm-offset-4 col-sm-8" translate="registration.mandantory_fields"></p>
-	                        </div>					
+													</div>		
+									
 							<form name="myform" novalidate class="css-form form-horizontal" ng-submit="register()" role="form">
 							  <div class="required">								  
 							  <formrow myid="email" label="registration.email">
-							    <input type="email" class="form-control" id="email" name="email" translate translate-attr-placeholder="registration.email" ng-model="registration.email" required>
+									<input type="email" class="form-control" id="email" name="email" translate translate-attr-placeholder="registration.email" ng-model="registration.email" required>									
 							    <formerror myid="email" type="email" message="error.invalid.email" ></formerror> 
-							    <formerror myid="email" type="exists" message="error.exists.member"></formerror> 
+									<formerror myid="email" type="exists" message="error.exists.member"></formerror> 
+									<a ng-show="isNew" ui-sref="^.login({action:action, login:login})" translate="registration.already_have_account"></a>
 							  </formrow>
 							  <formrow myid="password" label="registration.password"> 
 							    <input type="password" class="form-control" id="password" name="password" translate translate-attr-placeholder="registration.password" ng-model="registration.password1" required>

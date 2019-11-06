@@ -217,6 +217,10 @@ angular.module('portal')
 		
 	};
 
-	if ($state.params.login) $scope.registration.email = $state.params.login;
-	
+	if ($state.params.login) {
+		$scope.registration.email = $state.params.login;
+		$scope.action = $state.params.action;
+		$scope.login = $state.params.login;
+		$scope.isNew = true;
+	}
 }]);
