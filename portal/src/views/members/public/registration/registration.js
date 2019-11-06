@@ -216,5 +216,7 @@ angular.module('portal')
 		}
 		
 	};
+
+	if ($state.params.login) $scope.registration.email = $state.params.login;
 	
 }]);

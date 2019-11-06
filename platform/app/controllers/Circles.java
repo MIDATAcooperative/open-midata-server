@@ -832,7 +832,7 @@ public class Circles extends APIController {
 				replacements.put("grantor-firstname", "");
 				replacements.put("grantor-lastname", "");
 				replacements.put("grantor-email", consent.externalOwner);
-				replacements.put("confirm-url", InstanceConfig.getInstance().getServiceURL()+"?consent="+consent._id+"&login="+URLEncoder.encode(consent.externalOwner, "UTF-8"));
+				replacements.put("confirm-url", InstanceConfig.getInstance().getServiceURL()+"?consent="+consent._id+"&isnew=true&login="+URLEncoder.encode(consent.externalOwner, "UTF-8"));
 			}
 			replacements.put("consent-name", consent.name);		
 					
