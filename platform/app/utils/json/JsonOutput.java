@@ -35,7 +35,7 @@ public class JsonOutput {
 	      String json = mapper.writer(fProvider).writeValueAsString(o);
 	      return json;
 	    } catch (JsonProcessingException e) {
-	    	throw new InternalServerException("error.internal", e);
+	    	throw new InternalServerException("error.internal", "Json error:"+e.getMessage());
 	    }
 	}
 	
@@ -57,7 +57,7 @@ public class JsonOutput {
 	      String json = mapper.writer(fProvider).writeValueAsString(o);
 	      return json;
 	    } catch (JsonProcessingException e) {
-	    	throw new InternalServerException("error.internal", e);
+	    	throw new InternalServerException("error.internal", "Json error:"+e.getMessage());
 	    }
 	}
 	

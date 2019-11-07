@@ -91,6 +91,7 @@ public class Developers extends APIController {
 		
 		user.apps = new HashSet<MidataId>();	
 		user.visualizations = new HashSet<MidataId>();
+		Terms.addAgreedToDefaultTerms(user);
 		//user.authType = SecondaryAuthType.SMS;
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);

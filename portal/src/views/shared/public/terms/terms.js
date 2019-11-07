@@ -8,9 +8,10 @@ angular.module('portal')
 		$scope.version = version;
 		
 		terms.get(name, version,language)
-		.then(function(result) {
-			console.log(result.data);
+		.then(function(result) {			
 			$scope.terms = result.data;
+		}, function() {
+			$scope.terms = { title : "Not found", "text" : "The requested terms and conditions are not available."};
 		});
 	};
 	

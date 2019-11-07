@@ -327,9 +327,9 @@ public class User extends Model implements Comparable<User> {
 			if (givenPassword == null || savedPassword == null) return false;
 			return PasswordHash.validatePassword(givenPassword, savedPassword);
 		} catch (NoSuchAlgorithmException e) {
-			throw new InternalServerException("error.internal", e);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		} catch (InvalidKeySpecException e) {
-			throw new InternalServerException("error.internal", e);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		}
 	}
 	
@@ -367,9 +367,9 @@ public class User extends Model implements Comparable<User> {
 			
 			return valid;
 		} catch (NoSuchAlgorithmException e) {
-			throw new InternalServerException("error.internal", e);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		} catch (InvalidKeySpecException e) {
-			throw new InternalServerException("error.internal", e);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		}
 	}
 	
@@ -378,9 +378,9 @@ public class User extends Model implements Comparable<User> {
 		try {
 			return PasswordHash.createHash(password);
 		} catch (NoSuchAlgorithmException e) {
-			throw new InternalServerException("error.internal", e);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		} catch (InvalidKeySpecException e) {
-			throw new InternalServerException("error.internal", e);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		}
 	}
 	

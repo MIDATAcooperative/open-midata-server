@@ -134,7 +134,7 @@ public class Transactions {
 		   throw e2;
 	   } catch (Exception e) {
 		   ErrorReporter.report("FHIR Transaction", null, e);
-		   throw new InternalErrorException(e);
+		   throw new InternalErrorException(e.getMessage());
 		   
 	   }
 	}

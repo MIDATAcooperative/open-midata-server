@@ -45,7 +45,7 @@ public class CreateTransactionStep extends TransactionStep {
 				try {
 					((ReadWriteResourceProvider) provider).createExecute(record, resource);
 				} catch (AppException e) {
-				  throw new InternalErrorException(e);
+				  throw new InternalErrorException(e.getMessage());
 				}
 				result = new BundleEntryComponent();
 				BundleEntryResponseComponent response = new BundleEntryResponseComponent();

@@ -1,5 +1,5 @@
 	<div class="container" ng-controller="ProviderRegistrationCtrl" ng-cloak>
-		<div class="row">
+		<div class="row" ng-hide="view.active">
 			<!-- Registration -->
 			<div class="col-sm-12">
 				<div class="panel-container" style="max-width:630px; padding-top:30px; margin:0 auto;">
@@ -48,10 +48,24 @@
 							  <formrow myid="city" label="registration.city"><input type="text" class="form-control" id="city" name="city" translate translate-attr-placeholder="registration.city" ng-model="registration.city" required></formrow>
 							  <formrow myid="zip" label="registration.zip"><input type="text" class="form-control" id="zip" name="zip" translate translate-attr-placeholder="registration.zip" ng-model="registration.zip" required></formrow>
 							  
-							  <formrow myid="country" label="registration.country"><select class="form-control" id="country" name="country" ng-model="registration.country" required ng-options="country as ('enum.country.'+country)|translate for country in countries"></select></formrow>
+								<formrow myid="country" label="registration.country"><select class="form-control" id="country" name="country" ng-model="registration.country" required ng-options="country as ('enum.country.'+country)|translate for country in countries"></select></formrow>
+																 
                              </div>
                               <formrow myid="phone" label="registration.phone"><input type="text" class="form-control" id="phone" name="phone" translate translate-attr-placeholder="registration.phone" ng-model="registration.phone"></formrow>
-                              <formrow myid="mobile" label="registration.mobile_phone"><input type="text" class="form-control" id="mobile" name="mobile" translate translate-attr-placeholder="registration.mobile_phone" ng-model="registration.mobile"></formrow>
+							  <formrow myid="mobile" label="registration.mobile_phone"><input type="text" class="form-control" id="mobile" name="mobile" translate translate-attr-placeholder="registration.mobile_phone" ng-model="registration.mobile"></formrow>
+															
+							<formrow myid="agb" label="registration.agb">
+                                 <div class="form-check">
+                                   <label class="form-check-label">
+                                     <input class="form-check-input" type="checkbox" id="agb" name="agb" ng-model="registration.agb">
+                                     <span translate="registration.agb2"></span>
+                                        <a ng-click="terms({which : currentTerms.provider.termsOfUse });" href="javascript:" translate="registration.agb3"></a>
+                                        <span translate="registration.privacypolicy2"></span>
+                                        <a ng-click="terms({which : currentTerms.provider.privacyPolicy });" href="javascript:" translate="registration.privacypolicy3"></a>
+                                   </label>
+                                 </div>
+                                <formerror myid="agb" type="mustaccept" message="error.missing.agb"></formerror>
+                  </formrow>
                              
                              <button type="submit" ng-disabled="status.action=='register'" class="btn btn-lg btn-primary btn-block" translate="registration.sign_up_btn"></button>
                             </form>
@@ -60,4 +74,9 @@
 				</div>
 			</div>
 		</div>
+
+		 <div ng-show="view.active">      
+	     <div ng-include="'/views/shared/public/terms/terms-modal.html'"></div>	    	  
+		 </div>
+		 
 	</div>

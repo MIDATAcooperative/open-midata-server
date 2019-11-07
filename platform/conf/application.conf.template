@@ -21,6 +21,8 @@ default.language=DEFAULT_LANGUAGE
 
 versions.midata-terms-of-use=1.1
 versions.midata-privacy-policy=1.1
+versions.midata-terms-of-use-hp=1.0
+versions.midata-privacy-policy-hp=1.0
 
 sms.provider="SMS_PROVIDER"
 sms.token="SMS_OAUTH_TOKEN"

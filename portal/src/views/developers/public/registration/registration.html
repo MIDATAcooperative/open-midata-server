@@ -1,6 +1,6 @@
 
 	<div class="container" ng-controller="DeveloperRegistrationCtrl" ng-cloak>
-		<div class="row">
+		<div class="row" ng-hide="view.active">
 			<!-- Registration -->
 			<div class="col-sm-12">
 				<div class="panel-container" style="max-width:630px; padding-top:30px; margin:0 auto;">
@@ -58,7 +58,18 @@
                                 <textarea class="form-control" rows="5" id="reason" name="reason" ng-model="registration.reason" ng-required="true"></textarea>
                                 <p class="form-text text-muted" translate="developer_registration.reason_fillout"></p>
                               </formrow>
-                                                                                         
+                              <formrow myid="agb" label="registration.agb">
+                                 <div class="form-check">
+                                   <label class="form-check-label">
+                                     <input class="form-check-input" type="checkbox" id="agb" name="agb" ng-model="registration.agb">
+                                     <span translate="registration.agb2"></span>
+                                        <a ng-click="terms({which : currentTerms.developer.termsOfUse});" href="javascript:" translate="registration.agb3"></a>
+                                        <span translate="registration.privacypolicy2"></span>
+                                        <a ng-click="terms({which : currentTerms.developer.privacyPolicy});" href="javascript:" translate="registration.privacypolicy3"></a>
+                                   </label>
+                                 </div>
+                                <formerror myid="agb" type="mustaccept" message="error.missing.agb"></formerror>
+                  </formrow>                                                           
                               
                              <button type="submit" ng-disabled="status.action=='register'" class="btn btn-lg btn-primary btn-block" translate="developer_registration.sign_up_btn"></button>
                             </form>
@@ -67,5 +78,9 @@
 				</div>
 			</div>
 		</div>
+		
+		<div ng-show="view.active">      
+	    <div ng-include="'/views/shared/public/terms/terms-modal.html'"></div>	    	  
+  	    </div>
 	</div>
 	

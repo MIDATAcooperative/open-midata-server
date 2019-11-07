@@ -128,10 +128,10 @@
 					<fieldset class="mi-at-input__fieldset mi-at-input--checkbox mi-at-input--checkbox-white">
 						<input id="agb" name="agb" ng-model="registration.agb" class="mi-at-input mi-at-input--checkbox" type="checkbox" value=""
 							floating-label /> <label for="agb" class="mi-at-text"> <span translate="registration.agb2"></span><a
-							class="mi-at-input--checkbox-link" ng-click="terms({which : 'midata-terms-of-use'});" href="javascript:"><span
+							class="mi-at-input--checkbox-link" ng-click="terms({which : currentTerms.member.termsOfUse});" href="javascript:"><span
 								class="mi-at-text mi-at-text--white mi-at-text--highlighted" translate="registration.agb3"></span> </a> <span
 							translate="registration.privacypolicy2"></span><a class="mi-at-input--checkbox-link"
-							ng-click="terms({which : 'midata-privacy-policy'});" href="javascript:"><span
+							ng-click="terms({which : currentTerms.member.privacyPolicy});" href="javascript:"><span
 								class="mi-at-text mi-at-text--white mi-at-text--highlighted" translate="registration.privacypolicy3"></span> </a>
 						</label>
 

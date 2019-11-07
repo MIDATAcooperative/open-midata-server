@@ -644,6 +644,8 @@ public class Application extends APIController {
 		for (UserFeature feature : missing) ar.add(feature.toString());
 		obj.put("confirmationCode", user.confirmedAt != null);
 		obj.put("role", user.role.toString().toLowerCase());
+		obj.put("termsOfUse", InstanceConfig.getInstance().getTermsOfUse(user.role));
+		obj.put("privacyPolicy", InstanceConfig.getInstance().getPrivacyPolicy(user.role));
 		obj.put("userId", user._id.toString());
 		if (token.is2FAVerified(user)) {
 		  obj.set("user", JsonOutput.toJsonNode(user, "User", User.ALL_USER));
@@ -665,7 +667,7 @@ public class Application extends APIController {
 		}*/
 					
 		AuditManager.instance.success();
-		return ok(obj);
+		return ok(obj).as("application/json");
 	}
 	
 	public static Result loginChallenge(PortalSessionToken token, User user) throws InternalServerException {
@@ -682,7 +684,7 @@ public class Application extends APIController {
 		obj.put("userid", user._id.toString());
 		if (token != null) obj.put("sessionToken", token.encrypt());
 		
-		return ok(obj);
+		return ok(obj).as("application/json");
 	}
 					
 	
@@ -697,7 +699,7 @@ public class Application extends APIController {
 		token.setTimeout(1000 * 10);
 		obj.put("token", token.encrypt());
 		
-		return ok(obj);
+		return ok(obj).as("application/json");
 	}
 	
 	/**
@@ -1123,6 +1125,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.Terms.search(),
 				controllers.routes.javascript.Terms.add(),
 				controllers.routes.javascript.Terms.agreedToTerms(),
+				controllers.routes.javascript.Terms.currentTerms(),
 				
 		        // Portal
 		        controllers.routes.javascript.PortalConfig.getConfig(),

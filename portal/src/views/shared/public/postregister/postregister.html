@@ -74,17 +74,17 @@
 						<div ng-show="progress.NEWEST_TERMS_AGREED">
 						  <p translate="postregister.terms_agreed"></p>
 						  
-						  <a ng-click="terms({which : 'midata-terms-of-use'});" href="javascript:" translate="registration.agb3"></a>
+						  <a ng-click="terms({which : progress.termsOfUse});" href="javascript:" translate="registration.agb3"></a>
 						  <div class="extraspace"></div>
-						  <button class="btn btn-primary btn-block" ng-disabled="status.action=='terms'" ng-click="agreedToTerms('midata-terms-of-use');" translate="postregister.agree_btn"></button>
+						  <button class="btn btn-primary btn-block" ng-disabled="status.action=='terms'" ng-click="agreedToTerms(progress.termsOfUse);" translate="postregister.agree_btn"></button>
 						  <p ng-show="error" class="alert alert-danger" translate="{{ error.code || error }}"></p>						
 						</div>
 						
 						<div ng-show="progress.NEWEST_PRIVACY_POLICY_AGREED && !progress.NEWEST_TERMS_AGREED">
 						  <p translate="postregister.privacy_policy_agreed"></p>
-						  <a ng-click="terms({which : 'midata-privacy-policy'});" href="javascript:" translate="registration.privacypolicy3"></a>
+						  <a ng-click="terms({which : progress.privacyPolicy});" href="javascript:" translate="registration.privacypolicy3"></a>
 						  <div class="extraspace"></div>
-						  <button class="btn btn-primary btn-block" ng-disabled="status.action=='terms'" ng-click="agreedToTerms('midata-privacy-policy');" translate="postregister.agree_btn"></button>
+						  <button class="btn btn-primary btn-block" ng-disabled="status.action=='terms'" ng-click="agreedToTerms(progress.privacyPolicy);" translate="postregister.agree_btn"></button>
 						  <p ng-show="error" class="alert alert-danger" translate="{{ error.code || error }}"></p>
 						</div>
 						

@@ -396,10 +396,10 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 			throw new InvalidRequestException(e2.getMessage());
 		} catch (InternalServerException e3) {
 			ErrorReporter.report("FHIR (update resource)", null, e3);
-			throw new InternalErrorException(e3);
+			throw new InternalErrorException(e3.getMessage());
 		} catch (Exception e4) {
 			ErrorReporter.report("FHIR (update resource)", null, e4);
-			throw new InternalErrorException(e4);
+			throw new InternalErrorException("internal error during resource update");
 		}	
 	}
 				
