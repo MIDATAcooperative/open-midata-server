@@ -89,7 +89,10 @@ public class APICallAction extends Action<APICall> {
     	} catch (InternalServerException e4) {	
 			ErrorReporter.report("Portal", ctx, e4);
 			AuditManager.instance.fail(500, e4.getMessage(), null);
-			return CompletableFuture.completedFuture((Result) internalServerError(""+e4.getMessage()));		
+			return CompletableFuture.completedFuture((Result) internalServerError(
+				    Json.newObject()
+                    .put("code", e4.getLocaleKey())
+                    .put("message", e4.getMessage())));					
 		} catch (Exception e2) {	
 			ErrorReporter.report("Portal", ctx, e2);
 			AuditManager.instance.fail(500, e2.getMessage(), null);

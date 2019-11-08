@@ -45,9 +45,9 @@ public class User extends Model implements Comparable<User> {
 	protected static final @NotMaterialized String collection = "users";
 	public static final @NotMaterialized Set<String> NON_DELETED = Collections.unmodifiableSet(Sets.create(UserStatus.ACTIVE.toString(), UserStatus.NEW.toString(), UserStatus.BLOCKED.toString(), UserStatus.TIMEOUT.toString()));
 	public static final @NotMaterialized Set<String> ALL_USER = Collections.unmodifiableSet(Sets.create("_id", "email", "emailLC", "name", "role", "subroles", "accountVersion", "registeredAt",  "status", "contractStatus", "agbStatus", "emailStatus", "mobileStatus", "confirmedAt", "firstname", "lastname",	"gender", "city", "zip", "country", "address1", "address2", "phone", "mobile", "language", "searchable", "developer", "midataID", "termsAgreed", "security", "notifications"));
-	public static final @NotMaterialized Set<String> ALL_USER_INTERNAL = Collections.unmodifiableSet(Sets.create("email", "emailLC", "name", "role", "subroles", "accountVersion", "registeredAt",  "status", "contractStatus", "agbStatus", "emailStatus", "mobileStatus", "confirmedAt", "firstname", "lastname",	"gender", "city", "zip", "country", "address1", "address2", "phone", "mobile", "language", "searchable", "developer", "initialApp", "password", "apps", "midataID", "failedLogins", "lastFailed", "termsAgreed", "publicExtKey", "recoverKey", "flags", "security", "authType", "notifications"));
+	public static final @NotMaterialized Set<String> ALL_USER_INTERNAL = Collections.unmodifiableSet(Sets.create("email", "emailLC", "name", "role", "subroles", "accountVersion", "registeredAt",  "status", "contractStatus", "agbStatus", "emailStatus", "mobileStatus", "confirmedAt", "firstname", "lastname",	"gender", "city", "zip", "country", "address1", "address2", "phone", "mobile", "language", "searchable", "developer", "initialApp", "password", "apps", "midataID", "failedLogins", "lastFailed", "termsAgreed", "publicExtKey", "recoverKey", "flags", "security", "authType", "notifications", "passwordAge"));
 	public static final @NotMaterialized Set<String> PUBLIC = Collections.unmodifiableSet(Sets.create("email", "role", "status", "firstname", "lastname", "gender", "midataID"));
-	public static final @NotMaterialized Set<String> FOR_LOGIN = Collections.unmodifiableSet(Sets.create("firstname", "lastname", "email", "role", "password", "status", "contractStatus", "agbStatus", "emailStatus", "mobileStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "failedLogins", "lastFailed", "flags", "resettoken", "termsAgreed", "publicExtKey", "recoverKey", "security", "phone", "mobile", "authType", "apps", "notifications", "confirmedAt", "birthday", "zip", "address1", "country", "city"));
+	public static final @NotMaterialized Set<String> FOR_LOGIN = Collections.unmodifiableSet(Sets.create("firstname", "lastname", "email", "role", "password", "status", "contractStatus", "agbStatus", "emailStatus", "mobileStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "failedLogins", "lastFailed", "flags", "resettoken", "termsAgreed", "publicExtKey", "recoverKey", "security", "phone", "mobile", "authType", "apps", "notifications", "confirmedAt", "birthday", "zip", "address1", "country", "city", "passwordAge"));
 	
 			
 	/**
@@ -80,6 +80,11 @@ public class User extends Model implements Comparable<User> {
 	 * Only a salted hash of the password is stored in the database.
 	 */
 	public String password;
+	
+	/**
+	 * When was this password set
+	 */
+	public long passwordAge;
 	
 	/**
 	 * The role of the user
@@ -333,6 +338,12 @@ public class User extends Model implements Comparable<User> {
 		}
 	}
 	
+	public void tempBlockAccount() throws AppException {
+		if (this.failedLogins < 5) this.failedLogins = 5;
+		this.lastFailed = new Date();
+		setMultiple(collection, Sets.create("failedLogins", "lastFailed"));
+	}
+	
 	public boolean authenticationValid(String givenPassword) throws AppException {
 		try {
 			if (givenPassword == null || this.password == null) return false;
@@ -523,7 +534,8 @@ public class User extends Model implements Comparable<User> {
 	}
 	
 	public void updatePassword() throws AppException {
-		this.setMultiple(collection, Sets.create("password", "publicExtKey", "security", "recoverKey"));
+		this.passwordAge = System.currentTimeMillis();
+		this.setMultiple(collection, Sets.create("password", "publicExtKey", "security", "recoverKey", "passwordAge"));
 	}
 	
 }

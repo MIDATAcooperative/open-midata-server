@@ -17,5 +17,7 @@ id0015	30.10.2019	a.kreutz	S	Added client side check for password strength
 id0016	05.11.2019	a.kreutz	B	Do now allow empty access filter for apps and plugins
 id0017	05.11.2019	a.kreutz	B	Fixed email sending if receiver name unknown
 id0018	06.11.2019	a.kreutz	I	Registration link for invitation emails	Consent creation notifications for non Midata users may now contain a link to the registration page.
-id0019	07.11.2019	a.kreutz	I	Each user role may have own terms and conditions 
+id0019	07.11.2019	a.kreutz	I	Each user role may have own terms and conditions
+id0020	08.11.2019	a.kreutz	F	Added Virusscan for file uploads	All files uploaded to the platform are now checked for viruses. If a virus is detected the file is removed from the platform.
+id0021	08.11.2019	a.kreutz	I	Only files with a recognized file extension may be uploaded.	Executable files and scripts will be rejected. 
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 

@@ -11,6 +11,13 @@
 					</div>
 					<div class="panel-body">
 							
+						<div ng-show="progress.RELOGIN">
+						  <p ng-show="error" translate="{{ error.code || error }}"></p>
+						  <div class="extraspace">&nbsp;</div>
+						  <p translate="error.relogin"></p>
+						  <!-- <button class="btn btn-default" ng-click="retry()" translate="postregister.retry_btn"></button>  -->
+						</div>
+							
 						<div ng-show="progress.KEYRECOVERY">
 						  <p translate="postregister.keyrecovery.intro"></p>
 						  <ul>
@@ -35,9 +42,9 @@
 							  </formrow>							  
 							  <div class="extraspace"></div>
 							  <button type="submit" ng-disabled="status.action=='token'" class="btn btn-primary btn-block" translate="postregister.securityToken_btn"></button>
+							  <div class="extraspace"></div>
 							  <p ng-show="error" class="alert alert-danger" translate="{{ error.code || error }}"></p>
-							  <div ng-show="progress.PHONE_VERIFIED">							   
-							    <div class="extraspace"></div>
+							  <div ng-show="progress.PHONE_VERIFIED">							   							  
 							    <p translate="postregister.no_token"></p>
 							    <button ng-click="noSecurityToken()" type="button" ng-disabled="status.action=='token'" class="btn btn-default btn-block" translate="postregister.no_token_btn"></button>
 							  </div>
