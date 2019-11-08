@@ -308,9 +308,9 @@ public class PWRecovery extends APIController {
 	    		} else throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");
 	    	}
     	} catch (NoSuchAlgorithmException e) {
-			throw new InternalServerException("error.internal", e);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		} catch (InvalidKeySpecException e) {
-			throw new InternalServerException("error.internal", e);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		}
     }
     

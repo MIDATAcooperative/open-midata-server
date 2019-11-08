@@ -1076,7 +1076,7 @@ public class OAuth2 extends Controller {
 			User.set(user._id, "login", new Date());			    
 			AuditManager.instance.success();
 			
-			return ok(obj);
+			return ok(obj).as("application/json");
 		}
 	}
 	

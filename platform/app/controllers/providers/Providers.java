@@ -16,6 +16,7 @@ import controllers.Application;
 import controllers.Circles;
 import controllers.OAuth2;
 import controllers.PWRecovery;
+import controllers.Terms;
 import models.Consent;
 import models.HCRelated;
 import models.HPUser;
@@ -120,6 +121,7 @@ public class Providers extends APIController {
 		//user.authType = SecondaryAuthType.SMS;
 		
 		Application.developerRegisteredAccountCheck(user, json);
+		Terms.addAgreedToDefaultTerms(user);
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);
 		

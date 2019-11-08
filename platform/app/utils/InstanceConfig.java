@@ -156,6 +156,7 @@ public class InstanceConfig {
 	 * @return
 	 */
 	public String getTermsOfUse(UserRole role) {	
+	  //if (role == UserRole.PROVIDER) return "midata-terms-of-use-hp--" + (config.hasPath("versions.midata-terms-of-use-hp") ? config.getString("versions.midata-terms-of-use-hp") : "1.0");
 	  return "midata-terms-of-use--" + (config.hasPath("versions.midata-terms-of-use") ? config.getString("versions.midata-terms-of-use") : "1.0");
 	}
 	
@@ -164,6 +165,7 @@ public class InstanceConfig {
 	 * @return
 	 */
 	public String getPrivacyPolicy(UserRole role) {
+	   //if (role == UserRole.PROVIDER) return "midata-privacy-policy-hp--" + (config.hasPath("versions.midata-privacy-policy-hp") ? config.getString("versions.midata-privacy-policy-hp") : "1.0");
 	   return "midata-privacy-policy--" + (config.hasPath("versions.midata-privacy-policy") ? config.getString("versions.midata-privacy-policy") : "1.0");		
 	}
 }

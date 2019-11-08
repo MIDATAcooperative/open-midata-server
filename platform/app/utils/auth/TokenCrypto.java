@@ -43,9 +43,9 @@ public class TokenCrypto {
 		    mac.update(encrypted, off2 ,len2);
 		    return mac.doFinal();
 		} catch (NoSuchAlgorithmException e) {
-			throw new InternalServerException("error.internal", e);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		} catch (InvalidKeyException e2) {
-			throw new InternalServerException("error.internal", e2);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		}
 	}
 	
@@ -56,9 +56,9 @@ public class TokenCrypto {
 			byte[] digest = md.digest();
 			return Base64.encodeBase64URLSafeString(digest);
 		} catch (NoSuchAlgorithmException e) {
-			throw new InternalServerException("error.internal", e);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		} catch (UnsupportedEncodingException e7) {
-			throw new InternalServerException("error.internal", e7);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		}
 	}
 	
@@ -69,9 +69,9 @@ public class TokenCrypto {
 			byte[] digest = md.digest();
 			return BaseEncoding.base16().lowerCase().encode(digest);
 		} catch (NoSuchAlgorithmException e) {
-			throw new InternalServerException("error.internal", e);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		} catch (UnsupportedEncodingException e7) {
-			throw new InternalServerException("error.internal", e7);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		}
 	}
 	
@@ -97,17 +97,17 @@ public class TokenCrypto {
 									
 			return Base64.encodeBase64URLSafeString(result);			
 	    } catch (BadPaddingException e) {
-			throw new InternalServerException("error.internal", e);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		} catch (IllegalBlockSizeException e2) {
-			throw new InternalServerException("error.internal", e2);	 
+			throw new InternalServerException("error.internal", "Cryptography error");	 
 		} catch (NoSuchPaddingException e4) {
-			throw new InternalServerException("error.internal", e4);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		} catch (NoSuchAlgorithmException e5) {
-			throw new InternalServerException("error.internal", e5);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		} catch (InvalidKeyException e6) {
-			throw new InternalServerException("error.internal", e6);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		} catch (UnsupportedEncodingException e7) {
-			throw new InternalServerException("error.internal", e7);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		}
 		
 		
@@ -133,19 +133,19 @@ public class TokenCrypto {
 			byte[] unencrypted = c.doFinal(encrypted,IV_LENGTH,encrypted.length - IV_LENGTH - HMAC_LENGTH);			
 			return new String(unencrypted, "utf-8");
 		} catch (BadPaddingException e) {
-			throw new InternalServerException("error.internal", e);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		} catch (IllegalBlockSizeException e2) {
-			throw new InternalServerException("error.internal", e2);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		} catch (InvalidAlgorithmParameterException e3) {
-			throw new InternalServerException("error.internal", e3);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		} catch (NoSuchPaddingException e4) {
-			throw new InternalServerException("error.internal", e4);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		} catch (NoSuchAlgorithmException e5) {
-			throw new InternalServerException("error.internal", e5);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		} catch (InvalidKeyException e6) {
-			throw new InternalServerException("error.internal", e6);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		} catch (UnsupportedEncodingException e7) {
-			throw new InternalServerException("error.internal", e7);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		} catch (IllegalArgumentException e8) {
 			throw new BadRequestException("error.invalid.token", "Invalid token");
 		}

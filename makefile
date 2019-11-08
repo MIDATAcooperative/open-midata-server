@@ -101,10 +101,14 @@ tasks/install-packages: trigger/install-packages
 	$(info ------------------------------)
 	$(info Installing Packages... )
 	$(info ------------------------------)
-	sudo apt-get install git curl openssl openjdk-8-jdk mcrypt unzip ruby-sass software-properties-common
+	sudo apt-get install git curl openssl openjdk-8-jdk mcrypt unzip ruby-sass software-properties-common clamav-daemon
 	sudo add-apt-repository ppa:nginx/stable
 	sudo apt-get update
-	sudo apt-get install nginx	
+	sudo apt-get install nginx
+	sudo service clamav-daemon stop
+	sudo cp config/clamd.conf /etc/clamav/clamd.conf
+	sudo chmod ugo-wx /etc/clamav/clamd.conf
+	sudo service clamav-daemon start	
 	touch tasks/install-packages
 	
 tasks/install-node: tasks/install-packages trigger/install-node

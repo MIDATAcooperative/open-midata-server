@@ -19,7 +19,7 @@ public class SecurityToken extends Model {
 	private static final String collection = "securitytokens";
 	
 	@NotMaterialized
-	private static final Set<String> ALL = Sets.create("token", "created");
+	private static final Set<String> ALL = Sets.create("token", "created", "failedAttempts");
 	
 	/**
 	 * the token
@@ -31,6 +31,11 @@ public class SecurityToken extends Model {
 	 */
 	public long created;
 	
+	/**
+	 * Number of failed input attempts
+	 */
+	public int failedAttempts;
+	
 	public void add() throws InternalServerException {
 		Model.upsert(collection, this);
 	}
@@ -41,5 +46,10 @@ public class SecurityToken extends Model {
 	
 	public static void delete(MidataId id) throws InternalServerException {
 		Model.delete(SecurityToken.class, collection, CMaps.map("_id", id));
+	}
+	
+	public void failedAttempt() throws InternalServerException {
+		this.failedAttempts++;
+		Model.set(SecurityToken.class, collection, this._id, "failedAttempts", this.failedAttempts);
 	}
 }

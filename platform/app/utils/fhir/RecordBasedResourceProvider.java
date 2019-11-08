@@ -216,10 +216,10 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 			return record;
 		} catch (AppException e) {
 			ErrorReporter.report("FHIR (fetch current record)", null, e);	 
-			throw new InternalErrorException(e);
+			throw new InternalErrorException(e.getMessage());
 		} catch (NullPointerException e2) {
 			ErrorReporter.report("FHIR (fetch current record)", null, e2);	 
-			throw new InternalErrorException(e2);
+			throw new InternalErrorException("internal error during fetch current record");
 		}
 	}
 	

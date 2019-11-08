@@ -12,6 +12,7 @@ import controllers.APIController;
 import controllers.Application;
 import controllers.OAuth2;
 import controllers.PWRecovery;
+import controllers.Terms;
 import models.Member;
 import models.MidataId;
 import models.Research;
@@ -111,7 +112,7 @@ public class Researchers extends APIController {
 				
 		user.apps = new HashSet<MidataId>();	
 		user.visualizations = new HashSet<MidataId>();
-		
+		Terms.addAgreedToDefaultTerms(user);
 				
 		String pub = JsonValidation.getString(json, "pub");
 		String pk = JsonValidation.getString(json, "priv_pw");

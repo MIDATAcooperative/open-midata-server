@@ -5,12 +5,14 @@ import java.util.Map;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.typesafe.config.Config;
 
 import actions.APICall;
 import models.MidataId;
 import models.TermsOfUse;
 import models.User;
+import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
@@ -64,7 +66,7 @@ public class Terms extends APIController {
 	
 	@BodyParser.Of(BodyParser.Json.class)		
 	@APICall
-	public Result get() throws JsonValidationException, InternalServerException {
+	public Result get() throws JsonValidationException, AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		
@@ -82,7 +84,23 @@ public class Terms extends APIController {
 		
         if (result == null) result = TermsOfUse.getByNameVersionLanguage(name, version, InstanceConfig.getInstance().getDefaultLanguage());
         
-		return ok(Json.toJson(result));
+        if (result == null) throw new BadRequestException("error.missing.terms", "Requested terms not found.");
+        
+		return ok(Json.toJson(result)).as("application/json");
+	}
+			
+	@APICall
+	public Result currentTerms()  {
+		
+		ObjectNode obj = Json.newObject();	
+        
+		for (UserRole role : UserRole.values()) {
+			ObjectNode terms = Json.newObject();
+			terms.put("termsOfUse", InstanceConfig.getInstance().getTermsOfUse(role));
+			terms.put("privacyPolicy", InstanceConfig.getInstance().getPrivacyPolicy(role));
+			obj.set(role.toString().toLowerCase(), terms);
+		}		
+		return ok(obj).as("application/json");
 	}
 	
 	public static void addAgreedToDefaultTerms(User user) throws AppException {
@@ -109,10 +127,9 @@ public class Terms extends APIController {
 		User user = User.getById(userId, Sets.create(User.FOR_LOGIN));
 		if (user == null) throw new InternalServerException("error.internal", "Session user does not exist.");
 		
-		if (terms.equals("midata-privacy-policy")) terms = InstanceConfig.getInstance().getPrivacyPolicy(user.role);
-		else if (terms.equals("midata-terms-of-use")) terms = InstanceConfig.getInstance().getTermsOfUse(user.role);
-		
-		
+		//if (terms.equals("midata-privacy-policy-*")) terms = InstanceConfig.getInstance().getPrivacyPolicy(user.role);
+		//else if (terms.equals("midata-terms-of-use-*")) terms = InstanceConfig.getInstance().getTermsOfUse(user.role);
+				
 		user.agreedToTerms(terms, app);
 		
 		return OAuth2.loginHelper();	
@@ -132,7 +149,7 @@ public class Terms extends APIController {
 				
         Set<TermsOfUse> result = TermsOfUse.getAll(properties, fields);
 		                
-		return ok(Json.toJson(result));
+		return ok(Json.toJson(result)).as("application/json");
 	}
 
 }
