@@ -551,7 +551,7 @@ public class PluginsAPI extends APIController {
 		
 		//MidataId targetAPS = targetConsent != null ? targetConsent : inf.targetAPS;
 		
-		if (fileData != null) {
+		if (fileData != null) {			 
 			  RecordManager.instance.addRecord(context, record, context.getTargetAps(), fileData, fileName, contentType);
 		} else {
 			  RecordManager.instance.addRecord(context, record, context.getTargetAps());

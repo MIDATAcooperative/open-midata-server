@@ -247,7 +247,7 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 		   return null;
 	    } catch (NullPointerException e2) {
 			ErrorReporter.report("FHIR (search)", null, e2);	 
-			throw new InternalErrorException(e2);
+			throw new InternalErrorException("internal error during FHIR search");
 		}
      }
 	

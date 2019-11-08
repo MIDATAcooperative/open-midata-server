@@ -331,9 +331,9 @@ public class Circles extends APIController {
 					throw new BadRequestException("error.exists.passcode", "Please choose a different passcode!");
 				}
 			}  catch (NoSuchAlgorithmException e) {
-				throw new InternalServerException("error.internal", e);
+				throw new InternalServerException("error.internal", "Cryptography error");
 			} catch (InvalidKeySpecException e) {
-				throw new InternalServerException("error.internal", e);
+				throw new InternalServerException("error.internal", "Cryptography error");
 			}
 		}
 					
@@ -529,9 +529,9 @@ public class Circles extends APIController {
 		
 		   return ok(JsonOutput.toJson(consent, "Consent", Sets.create("_id", "authorized"))).as("application/json");
 		} catch (NoSuchAlgorithmException e) {
-	    	throw new InternalServerException("error.internal", e);
+	    	throw new InternalServerException("error.internal", "Cryptography error");
 	    } catch (InvalidKeySpecException e) {
-	    	throw new InternalServerException("error.internal", e);
+	    	throw new InternalServerException("error.internal", "Cryptography error");
 	    }
 	}
 

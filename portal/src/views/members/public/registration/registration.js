@@ -12,6 +12,8 @@ angular.module('portal')
 	$scope.offline = (window.jsRoutes === undefined) || (window.jsRoutes.controllers === undefined);
 	
 	$scope.view = views.getView("terms");
+	
+	server.get(jsRoutes.controllers.Terms.currentTerms().url).then(function(result) { $scope.currentTerms = result.data; });
 				
 	// register new user
 	$scope.register = function() {		

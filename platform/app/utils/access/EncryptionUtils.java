@@ -96,15 +96,15 @@ public class EncryptionUtils {
 	    	return obj;
 	    			    	
 		} catch (InvalidKeyException e) {
-			throw new InternalServerException("error.internal.cryptography", e);
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		} catch (NoSuchPaddingException e2) {
-			throw new InternalServerException("error.internal.cryptography",e2);
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		} catch (NoSuchAlgorithmException e3) {
-			throw new InternalServerException("error.internal.cryptography",e3);
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		} catch (BadPaddingException e4) {
-			throw new InternalServerException("error.internal.cryptography",e4);
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		} catch (IllegalBlockSizeException e5) {
-			throw new InternalServerException("error.internal.cryptography",e5);
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		} 
 
 	}
@@ -122,15 +122,15 @@ public class EncryptionUtils {
 							
 	    	return cipherText;
 		} catch (InvalidKeyException e) {
-			throw new InternalServerException("error.internal.cryptography", e);
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		} catch (NoSuchPaddingException e2) {
-			throw new InternalServerException("error.internal.cryptography", e2);
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		} catch (NoSuchAlgorithmException e3) {
-			throw new InternalServerException("error.internal.cryptography", e3);
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		} catch (BadPaddingException e4) {
-			throw new InternalServerException("error.internal.cryptography", e4);
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		} catch (IllegalBlockSizeException e5) {
-			throw new InternalServerException("error.internal.cryptography", e5);
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		} 
 	
 	}
@@ -146,15 +146,15 @@ public class EncryptionUtils {
 			return EncryptionUtils.derandomize(c.doFinal(cipherText));		   													    	
 	    			    	
 		} catch (InvalidKeyException e) {
-			throw new InternalServerException("error.internal.cryptography", e);
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		} catch (NoSuchPaddingException e2) {
-			throw new InternalServerException("error.internal.cryptography",e2);
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		} catch (NoSuchAlgorithmException e3) {
-			throw new InternalServerException("error.internal.cryptography",e3);
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		} catch (BadPaddingException e4) {
-			throw new InternalServerException("error.internal.cryptography",e4);
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		} catch (IllegalBlockSizeException e5) {
-			throw new InternalServerException("error.internal.cryptography",e5);
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		} 
 
 	}
@@ -171,15 +171,15 @@ public class EncryptionUtils {
 							
 	    	return cipherText;
 		} catch (InvalidKeyException e) {
-			throw new InternalServerException("error.internal.cryptography", e);
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		} catch (NoSuchPaddingException e2) {
-			throw new InternalServerException("error.internal.cryptography", e2);
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		} catch (NoSuchAlgorithmException e3) {
-			throw new InternalServerException("error.internal.cryptography", e3);
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		} catch (BadPaddingException e4) {
-			throw new InternalServerException("error.internal.cryptography", e4);
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		} catch (IllegalBlockSizeException e5) {
-			throw new InternalServerException("error.internal.cryptography", e5);
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		} 
 	
 	}
@@ -195,11 +195,11 @@ public class EncryptionUtils {
 		    return new CipherInputStream(in, c);
 								    	
 		} catch (InvalidKeyException e) {
-			throw new InternalServerException("error.internal.cryptography", e);
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		} catch (NoSuchPaddingException e2) {
-			throw new InternalServerException("error.internal.cryptography", e2);
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		} catch (NoSuchAlgorithmException e3) {
-			throw new InternalServerException("error.internal.cryptography", e3);
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		}
 	
 	}
@@ -215,11 +215,11 @@ public class EncryptionUtils {
 		    return new CipherInputStream(in, c);
 								    	
 		} catch (InvalidKeyException e) {
-			throw new InternalServerException("error.internal.cryptography", e);
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		} catch (NoSuchPaddingException e2) {
-			throw new InternalServerException("error.internal.cryptography", e2);
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		} catch (NoSuchAlgorithmException e3) {
-			throw new InternalServerException("error.internal.cryptography", e3);
+			throw new InternalServerException("error.internal.cryptography", "Cryptography error");
 		}
 	
 	}

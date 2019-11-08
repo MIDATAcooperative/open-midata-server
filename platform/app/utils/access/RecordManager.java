@@ -50,6 +50,8 @@ import utils.db.FileStorage.FileData;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.viruscheck.FileTypeScanner;
+import utils.viruscheck.VirusScanner;
 
 /**
  * Access to records. Manages authorizations using access permission sets.
@@ -611,6 +613,10 @@ public class RecordManager {
 	 * @throws AppException
 	 */
 	public void addRecord(AccessContext context, Record record, MidataId alternateAps, EncryptedFileHandle data, String fileName, String contentType) throws AppException {
+		
+		String virus = checkVirusFree(data);
+	    if (virus != null) throw new BadRequestException("error.virus", "A virus has been detected: "+virus);
+	
 		DBRecord dbrecord = RecordConversion.instance.toDB(record);
 		dbrecord.meta.append("file", data.getId().toObjectId());
 		dbrecord.meta.append("file-key", data.getKey());
@@ -653,6 +659,22 @@ public class RecordManager {
 		System.out.println("EXIT UPLOAD");
 		return new EncryptedFileHandle(id, kdata, countInput.getByteCount());
 		//createAndShareDependend(executingPerson, dbrecord, record.dependencies, kdata);
+	}
+	
+	public String checkVirusFree(EncryptedFileHandle handle) throws AppException {
+
+		FileData fileData = FileStorage.retrieve(handle.getId(), 0);
+		if (fileData == null) throw new InternalServerException("error.internal", "Internal file not found");		
+		
+		// Do not check files larger than 100MB
+		if (handle.getLength() >= 1024l * 1024l * 100l) return null;
+		
+		FileTypeScanner.getInstance().isValidFile(fileData.filename, fileData.contentType);
+		
+		InputStream inputStream = EncryptionUtils.decryptStream(handle.getKey(), fileData.inputStream);
+		
+		VirusScanner vscan = new VirusScanner();
+		return vscan.scan(inputStream);
 	}
 	
 	/**

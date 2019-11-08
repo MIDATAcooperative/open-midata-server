@@ -17,6 +17,7 @@ import utils.ServerTools;
 import utils.audit.AuditManager;
 import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
+import utils.exceptions.InternalServerException;
 import utils.exceptions.PluginException;
 import utils.json.JsonValidation.JsonValidationException;
 
@@ -85,10 +86,17 @@ public class APICallAction extends Action<APICall> {
 				    Json.newObject()
                     .put("code", e3.getLocaleKey())
                     .put("message", e3.getMessage())));
+    	} catch (InternalServerException e4) {	
+			ErrorReporter.report("Portal", ctx, e4);
+			AuditManager.instance.fail(500, e4.getMessage(), null);
+			return CompletableFuture.completedFuture((Result) internalServerError(
+				    Json.newObject()
+                    .put("code", e4.getLocaleKey())
+                    .put("message", e4.getMessage())));					
 		} catch (Exception e2) {	
 			ErrorReporter.report("Portal", ctx, e2);
 			AuditManager.instance.fail(500, e2.getMessage(), null);
-			return CompletableFuture.completedFuture((Result) internalServerError(""+e2.getMessage()));			
+			return CompletableFuture.completedFuture((Result) internalServerError("an internal error occured"));			
 		} finally {
 			long endTime = System.currentTimeMillis();
 			if (endTime - startTime > 1000l * 4l) {

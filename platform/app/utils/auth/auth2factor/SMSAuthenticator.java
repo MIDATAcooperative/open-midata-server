@@ -3,7 +3,9 @@ package utils.auth.auth2factor;
 import models.MidataId;
 import models.User;
 import utils.auth.CodeGenerator;
+import utils.auth.KeyManager;
 import utils.exceptions.AppException;
+import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.messaging.Messager;
 import utils.messaging.SMSUtils;
@@ -18,7 +20,12 @@ public class SMSAuthenticator implements Authenticator {
 	/**
 	 * Lifetime of SMS tokens
 	 */
-	public static final long TOKEN_EXPIRE_TIME = 1000l * 60l * 15l;
+	public static final long TOKEN_EXPIRE_TIME = 1000l * 60l * 10l;
+	
+	/**
+	 * Maximum number of failed attempts before token is invalid
+	 */
+	public static final int MAX_FAILED_ATTEMPTS = 3;
 	
 	/**
 	 * start new SMS authentication
@@ -53,10 +60,22 @@ public class SMSAuthenticator implements Authenticator {
 	public boolean checkAuthentication(MidataId executor, User user, String code) throws AppException {
 		SecurityToken token = SecurityToken.getById(executor);
 		if (token == null) throw new BadRequestException("error.expired.securitytoken", "Token does not exist.");
-		if (token.created < System.currentTimeMillis() - TOKEN_EXPIRE_TIME) throw new BadRequestException("error.expired.token", "Token expired.");
+		if (token.created < System.currentTimeMillis() - TOKEN_EXPIRE_TIME) throw new BadRequestException("error.expired.securitytoken", "Token expired.");
+		if (token.failedAttempts >= MAX_FAILED_ATTEMPTS) {
+			KeyManager.instance.logout();
+			throw new BadRequestException("error.expired.securitytoken", "Token expired.");
+		}
 		String tk1 = token.token.toUpperCase().replaceAll("0", "O");
 		String tk2 = code.toUpperCase().replaceAll("0", "O");
-		if (!tk1.equals(tk2)) throw new BadRequestException("error.invalid.securitytoken", "Token not correct.");
+		if (!tk1.equals(tk2)) {
+			token.failedAttempt();
+			if (token.failedAttempts >= MAX_FAILED_ATTEMPTS) {
+			  KeyManager.instance.logout();
+			  throw new BadRequestException("error.expired.securitytoken", "Token expired.");
+			} else {
+			  throw new BadRequestException("error.invalid.securitytoken", "Token not correct.");
+			}
+		}
 		return true;
 	}
 	

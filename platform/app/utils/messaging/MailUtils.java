@@ -52,7 +52,7 @@ public class MailUtils {
 		
 		Email mail = new Email();
 		    
-		if (fullname!=null) fullname = fullname.replace(">", "").replace("<", "").replace("\"", "").replace("\\", "").replace("'", "");		
+		if (fullname!=null) fullname = fullname.replace(">", "").replace("<", "").replace("\"", "").replace("\\", "").replace("'", "").replace(",", " ").replace(";", " ");		
 		mail.setSubject(subject);
 		if (fullname != null) mail.addTo(fullname +"<" + email + ">"); else mail.addTo(email);
 		mail.setFrom(config.getString("smtp.from"));	

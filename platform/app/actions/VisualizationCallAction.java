@@ -15,6 +15,7 @@ import utils.InstanceConfig;
 import utils.ServerTools;
 import utils.audit.AuditManager;
 import utils.exceptions.BadRequestException;
+import utils.exceptions.InternalServerException;
 import utils.exceptions.PluginException;
 import utils.exceptions.RequestTooLargeException;
 import utils.json.JsonValidation.JsonValidationException;
@@ -76,11 +77,16 @@ public class VisualizationCallAction extends Action<VisualizationCall> {
     		if (Stats.enabled) Stats.finishRequest(ctx.request(), "400");
     		AuditManager.instance.fail(400, e4.getMessage(), e4.getLocaleKey());
     		return CompletableFuture.completedFuture((Result) badRequest(e4.getMessage()));
+    	} catch (InternalServerException e5) {					
+			ErrorReporter.report("Plugin API", ctx, e5);
+			if (Stats.enabled) Stats.finishRequest(ctx.request(), "500");
+			AuditManager.instance.fail(500, e5.getMessage(), null);
+			return CompletableFuture.completedFuture((Result) internalServerError("err:"+e5.getMessage()));	
 		} catch (Exception e2) {					
 			ErrorReporter.report("Plugin API", ctx, e2);
 			if (Stats.enabled) Stats.finishRequest(ctx.request(), "500");
 			AuditManager.instance.fail(500, e2.getMessage(), null);
-			return CompletableFuture.completedFuture((Result) internalServerError("err:"+e2.getMessage()));			
+			return CompletableFuture.completedFuture((Result) internalServerError("an internal error occured"));			
 		} finally {
 			long endTime = System.currentTimeMillis();
 			if (endTime - startTime > 1000l * 4l) {

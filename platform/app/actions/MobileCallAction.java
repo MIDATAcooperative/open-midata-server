@@ -13,6 +13,7 @@ import utils.ErrorReporter;
 import utils.ServerTools;
 import utils.audit.AuditManager;
 import utils.exceptions.BadRequestException;
+import utils.exceptions.InternalServerException;
 import utils.exceptions.PluginException;
 import utils.exceptions.RequestTooLargeException;
 import utils.json.JsonValidation.JsonValidationException;
@@ -63,11 +64,16 @@ public class MobileCallAction extends Action<MobileCall> {
     		if (Stats.enabled) Stats.finishRequest(ctx.request(), "400");
 			AuditManager.instance.fail(400, e5.getMessage(), e5.getLocaleKey());
 			return CompletableFuture.completedFuture((Result) status(400, e5.getMessage()));
+    	} catch (InternalServerException e4) {			
+			ErrorReporter.report("Mobile API", ctx, e4);
+			if (Stats.enabled) Stats.finishRequest(ctx.request(), "500");
+			AuditManager.instance.fail(500, e4.getMessage(), null);
+			return CompletableFuture.completedFuture((Result) internalServerError("err:"+e4.getMessage()));		
 		} catch (Exception e2) {			
 			ErrorReporter.report("Mobile API", ctx, e2);
 			if (Stats.enabled) Stats.finishRequest(ctx.request(), "500");
 			AuditManager.instance.fail(500, e2.getMessage(), null);
-			return CompletableFuture.completedFuture((Result) internalServerError("err:"+e2.getMessage()));			
+			return CompletableFuture.completedFuture((Result) internalServerError("an internal error occured"));			
 		} finally {
 			try {
 				long endTime = System.currentTimeMillis();

@@ -152,17 +152,17 @@ public class KeyManager implements KeySession {
 			System.arraycopy(cipherText, 0, result, 4, cipherText.length);
 			return result;
 		} catch (NoSuchAlgorithmException e) {
-			throw new InternalServerException("error.internal", e);		
+			throw new InternalServerException("error.internal", "Cryptography error");		
 		} catch (NoSuchPaddingException e2) {
-			throw new InternalServerException("error.internal", e2);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		} catch (InvalidKeyException e3) {
-			throw new InternalServerException("error.internal", e3);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		} catch (InvalidKeySpecException e4) {
-			throw new InternalServerException("error.internal", e4);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		} catch (BadPaddingException e5) {
-			throw new InternalServerException("error.internal", e5);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		} catch (IllegalBlockSizeException e6) {
-			throw new InternalServerException("error.internal", e6);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		} 
 	}
 	
@@ -214,7 +214,7 @@ public class KeyManager implements KeySession {
 		   
 		   return pub.getEncoded();
 		} catch (NoSuchAlgorithmException e) {
-			throw new InternalServerException("error.internal", e);
+			throw new InternalServerException("error.internal", "Cryptography error");
 		}
 	}
 	
@@ -442,17 +442,17 @@ public class KeyManager implements KeySession {
 							
 				return EncryptionUtils.derandomize(cipherText);
 			} catch (NoSuchAlgorithmException e) {
-				throw new InternalServerException("error.internal", e);		
+				throw new InternalServerException("error.internal", "Cryptography error");		
 			} catch (NoSuchPaddingException e2) {
-				throw new InternalServerException("error.internal", e2);
+				throw new InternalServerException("error.internal", "Cryptography error");
 			} catch (InvalidKeyException e3) {
-				throw new InternalServerException("error.internal", e3);
+				throw new InternalServerException("error.internal", "Cryptography error");
 			} catch (InvalidKeySpecException e4) {
-				throw new InternalServerException("error.internal", e4);
+				throw new InternalServerException("error.internal", "Cryptography error");
 			} catch (BadPaddingException e5) {
-				throw new InternalServerException("error.internal", e5);
+				throw new InternalServerException("error.internal", "Cryptography error");
 			} catch (IllegalBlockSizeException e6) {
-				throw new InternalServerException("error.internal", e6);
+				throw new InternalServerException("error.internal", "Cryptography error");
 			} 
 		}
 		
@@ -659,7 +659,7 @@ public class KeyManager implements KeySession {
 			   
 			   return pub.getEncoded();
 			} catch (NoSuchAlgorithmException e) {
-				throw new InternalServerException("error.internal", e);
+				throw new InternalServerException("error.internal", "Cryptography error");
 			}
 		}
 

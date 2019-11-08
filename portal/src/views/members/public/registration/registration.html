@@ -90,9 +90,9 @@
                                    <label class="form-check-label">
                                      <input class="form-check-input" type="checkbox" id="agb" name="agb" ng-model="registration.agb">
                                      <span translate="registration.agb2"></span>
-                                        <a ng-click="terms({which : 'midata-terms-of-use'});" href="javascript:" translate="registration.agb3"></a>
+                                        <a ng-click="terms({which : currentTerms.member.termsOfUse});" href="javascript:" translate="registration.agb3"></a>
                                         <span translate="registration.privacypolicy2"></span>
-                                        <a ng-click="terms({which : 'midata-privacy-policy'});" href="javascript:" translate="registration.privacypolicy3"></a>
+                                        <a ng-click="terms({which : currentTerms.member.privacyPolicy});" href="javascript:" translate="registration.privacypolicy3"></a>
                                    </label>
                                  </div>
                                 <formerror myid="agb" type="mustaccept" message="error.missing.agb"></formerror>

@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('ProviderRegistrationCtrl', ['$scope', '$state', 'server', 'status' , 'session', '$translate', 'languages', '$stateParams', '$document', 'crypto', function($scope, $state, server, status, session, $translate, languages, $stateParams, $document, crypto) {
+.controller('ProviderRegistrationCtrl', ['$scope', '$state', 'server', 'status' , 'session', '$translate', 'languages', '$stateParams', '$document', 'crypto', 'views', function($scope, $state, server, status, session, $translate, languages, $stateParams, $document, crypto, views) {
 	
 	$scope.registration = { language : $translate.use() };
 	$scope.languages = languages.all;
@@ -9,6 +9,10 @@ angular.module('portal')
 	
 	$scope.offline = (window.jsRoutes === undefined) || (window.jsRoutes.controllers === undefined);
 	$scope.status = new status(true, $scope);
+
+	$scope.view = views.getView("terms");
+	
+	server.get(jsRoutes.controllers.Terms.currentTerms().url).then(function(result) { $scope.currentTerms = result.data; });
 	
 	// register new user
 	$scope.register = function() {
@@ -22,6 +26,13 @@ angular.module('portal')
         
 		$scope.myform.password.$setValidity('compare', $scope.registration.password1 ==  $scope.registration.password2);
 		
+        $scope.myform.agb.$setValidity('mustaccept', $scope.registration.agb);        
+        if (!$scope.registration.agb) {
+        	
+        	$scope.myform.agb.$invalid = true;
+        	$scope.myform.agb.$error = { 'mustaccept' : true };
+        }
+
 		$scope.submitted = true;	
 		if ($scope.error && $scope.error.field && $scope.error.type) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
 		$scope.error = null;
@@ -54,6 +65,10 @@ angular.module('portal')
 	
 	$scope.changeLanguage = function(lang) {
 		$translate.use(lang);
+	};
+
+	$scope.terms = function(def) {		
+		views.setView("terms", def, "Terms");
 	};
 	
 }]);

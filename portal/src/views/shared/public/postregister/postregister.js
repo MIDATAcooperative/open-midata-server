@@ -229,7 +229,12 @@ angular.module('portal')
 	    		  if (result.data.istatus === "ACTIVE") oauth.postLogin(result);
 	    		  else session.postLogin(result, $state);
 	    	  }, function(err) {
+	    		  $scope.setpw = {};
 	    		  $scope.error = err.data;
+	    		  
+	    		  if (err.data && err.data.code == "error.expired.securitytoken") {
+	    			  $scope.progress = { RELOGIN : true };
+	    		  }
 	    	  });
 	      }
 	    }
