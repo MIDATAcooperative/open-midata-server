@@ -1,58 +1,72 @@
-<div class="colored">
-	<!-- Navbar -->
-	<header id="navbar" class="navbar navbar-expand-lg navbar-light bg-light" role="navigation" ng-controller="NavbarCtrl">
-	  
-		<div class="container">
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-ex1-collapse" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="fas fa-list"></span>
-             </button>
-			<a class="navbar-brand" ui-sref="admin.stats">
-	        <span class="midata" id="logotype"><img src="/images/logo.png" style="height: 36px;"></span>
-	         </a>
-		
-		<nav class="collapse navbar-collapse navbar-ex1-collapse">
-			<ul class="nav navbar-nav mr-auto">   
-			    <li ui-sref-active="active" class="nav-item dropdown"><a href="javascript:" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
-						aria-haspopup="true" aria-expanded="false"><span translate="admin_navbar.admin"></span><span class="caret"></span></a>
-						<div class="dropdown-menu">	
-						    <div class="dropdown-header" ng-show="hasSubRole('USERADMIN') || hasSubRole('SUPERADMIN')" translate="admin_navbar.user_admin"></div>						
-							<a class="dropdown-item" ng-show="hasSubRole('USERADMIN')" ui-sref="admin.members" translate="admin_navbar.members"></a>				
-							<a class="dropdown-item" ng-show="hasSubRole('USERADMIN')" ui-sref="admin.pwrecover" translate="admin_pwrecover.menu"></a>
-				            <a class="dropdown-item" ng-show="hasSubRole('USERADMIN')" ui-sref="admin.auditlog" translate="admin_navbar.auditlog"></a>
-				            <a class="dropdown-item" ng-show="hasSubRole('SUPERADMIN')" ui-sref="admin.registration" translate="admin_navbar.registration"></a>
-				            <div role="separator" class="dropdown-divider" ng-show="hasSubRole('USERADMIN') || hasSubRole('SUPERADMIN')"></div>
-				            <div class="dropdown-header" ng-show="hasSubRole('PLUGINADMIN') || hasSubRole('CONTENTADMIN')" translate="admin_navbar.plugin_admin"></div>
-				            <a class="dropdown-item" ng-show="hasSubRole('PLUGINADMIN')" ui-sref="admin.yourapps" translate="admin_navbar.plugins"></a>
-				            <a class="dropdown-item" ng-show="hasSubRole('PLUGINADMIN')" ui-sref="admin.usagestats" translate="admin_navbar.usagestats"></a>				            
-				            <a class="dropdown-item" ng-show="hasSubRole('CONTENTADMIN')" ui-sref="admin.content" translate="admin_navbar.content"></a>
-				            <a class="dropdown-item" ng-show="hasSubRole('PLUGINADMIN')" ui-sref="admin.viewterms" translate="admin_navbar.terms"></a>
-				            <a class="dropdown-item" ng-show="hasSubRole('PLUGINADMIN')" ui-sref="admin.licenses" translate="admin_navbar.licenses"></a>
-				            <div role="separator" class="dropdown-divider" ng-show="hasSubRole('PLUGINADMIN') || hasSubRole('CONTENTADMIN')"></div>
-				            <div class="dropdown-header" translate="admin_navbar.research_admin" ng-show="hasSubRole('STUDYADMIN') || hasSubRole('NEWSADMIN')"></div>
-				            <a class="dropdown-item" ng-show="hasSubRole('STUDYADMIN')" ui-sref="admin.studies" translate="admin_navbar.studies"></a>
-				            <a class="dropdown-item" ng-show="hasSubRole('NEWSWRITER')" ui-sref="admin.news" translate="admin_navbar.news"></a>				            				            				            				            
-						</div>
-				</li>         	
-				<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="admin.yourapps2" translate="developer_navbar.yourapps"></a></li>
-				<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="admin.sandbox" translate="developer_navbar.sandbox"></a></li>
-				<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="admin.records" translate="developer_navbar.records"></a></li>
-				<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="admin.testusers" translate="developer_navbar.testusers"></a></li>
-				
-				
-				
-			</ul>
-			<ul class="nav navbar-nav" ng-cloak>
-				<li class="nav-item"><a class="nav-link" ui-sref=".user({ userId : user._id})">{{user.name}}</a></li>
-				<li class="nav-item"><a class="nav-link" ng-click="logout()" href="javascript:">
-					<span class="fas fa-power-off"></span> <span translate="navbar.sign_out"></span>
-				</a></li>
-		    </ul>
-	    </nav>	  
-	    </div>  
-	  
-	</header>
+<div id="maincontent">
+	<div class="colored">
+		<!-- Navbar -->
+		<header id="navbar" class="navbar navbar-expand-lg navbar-light bg-light" role="navigation" ng-controller="NavbarCtrl">
+
+			<div class="container">
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-ex1-collapse"
+					aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="fas fa-list"></span>
+				</button>
+				<a class="navbar-brand" ui-sref="admin.stats"> <span class="midata" id="logotype"><img src="/images/logo.png"
+						style="height: 36px;"></span>
+				</a>
+
+				<nav class="collapse navbar-collapse navbar-ex1-collapse">
+					<ul class="nav navbar-nav mr-auto">
+						<li ui-sref-active="active" class="nav-item dropdown"><a href="javascript:" class="nav-link dropdown-toggle"
+							data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span translate="admin_navbar.admin"></span><span
+								class="caret"></span></a>
+							<div class="dropdown-menu">
+								<div class="dropdown-header" ng-show="hasSubRole('USERADMIN') || hasSubRole('SUPERADMIN')" translate="admin_navbar.user_admin"></div>
+								<a class="dropdown-item" ng-show="hasSubRole('USERADMIN')" ui-sref="admin.members" translate="admin_navbar.members"></a> <a
+									class="dropdown-item" ng-show="hasSubRole('USERADMIN')" ui-sref="admin.pwrecover" translate="admin_pwrecover.menu"></a> <a
+									class="dropdown-item" ng-show="hasSubRole('USERADMIN')" ui-sref="admin.auditlog" translate="admin_navbar.auditlog"></a> <a
+									class="dropdown-item" ng-show="hasSubRole('SUPERADMIN')" ui-sref="admin.registration" translate="admin_navbar.registration"></a>
+								<div role="separator" class="dropdown-divider" ng-show="hasSubRole('USERADMIN') || hasSubRole('SUPERADMIN')"></div>
+								<div class="dropdown-header" ng-show="hasSubRole('PLUGINADMIN') || hasSubRole('CONTENTADMIN')" translate="admin_navbar.plugin_admin"></div>
+								<a class="dropdown-item" ng-show="hasSubRole('PLUGINADMIN')" ui-sref="admin.yourapps" translate="admin_navbar.plugins"></a> <a
+									class="dropdown-item" ng-show="hasSubRole('PLUGINADMIN')" ui-sref="admin.usagestats" translate="admin_navbar.usagestats"></a> <a
+									class="dropdown-item" ng-show="hasSubRole('CONTENTADMIN')" ui-sref="admin.content" translate="admin_navbar.content"></a> <a
+									class="dropdown-item" ng-show="hasSubRole('PLUGINADMIN')" ui-sref="admin.viewterms" translate="admin_navbar.terms"></a> <a
+									class="dropdown-item" ng-show="hasSubRole('PLUGINADMIN')" ui-sref="admin.licenses" translate="admin_navbar.licenses"></a>
+								<div role="separator" class="dropdown-divider" ng-show="hasSubRole('PLUGINADMIN') || hasSubRole('CONTENTADMIN')"></div>
+								<div class="dropdown-header" translate="admin_navbar.research_admin" ng-show="hasSubRole('STUDYADMIN') || hasSubRole('NEWSADMIN')"></div>
+								<a class="dropdown-item" ng-show="hasSubRole('STUDYADMIN')" ui-sref="admin.studies" translate="admin_navbar.studies"></a> <a
+									class="dropdown-item" ng-show="hasSubRole('NEWSWRITER')" ui-sref="admin.news" translate="admin_navbar.news"></a>
+							</div></li>
+						<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="admin.yourapps2" translate="developer_navbar.yourapps"></a></li>
+						<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="admin.sandbox" translate="developer_navbar.sandbox"></a></li>
+						<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="admin.records" translate="developer_navbar.records"></a></li>
+						<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="admin.testusers" translate="developer_navbar.testusers"></a></li>
+
+
+
+					</ul>
+					<ul class="nav navbar-nav" ng-cloak>
+						<li class="nav-item"><a class="nav-link" ui-sref=".user({ userId : user._id})">{{user.name}}</a></li>
+						<li class="nav-item"><a class="nav-link" ng-click="logout()" href="javascript:"> <span class="fas fa-power-off"></span> <span
+								translate="navbar.sign_out"></span>
+						</a></li>
+					</ul>
+				</nav>
+			</div>
+
+		</header>
 	</div>
 	<div class="container mainpart">
 		<div ui-view></div>
 	</div>
-	
+</div>
+<footer id="footer">
+	<div class="container">
+		<p translate="footer.copyright" translate-value-now="{{ currentDate | date:'yyyy' }}">(c) ETH Zürich</p>
+
+		<ul>
+			<li><a href="https://www.midata.coop" translate="footer.homepage">MIDATA Homepage</a></li>
+			<li><a ui-sref=".terms({which : 'midata-terms-of-use'})" translate="registration.agb3">Terms of Use</a></li>
+			<li><a ui-sref=".terms({which : 'midata-privacy-policy'})" translate="registration.privacypolicy3">Privacy Policy</a></li>
+
+		</ul>
+	</div>
+</footer>
