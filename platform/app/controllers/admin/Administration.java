@@ -121,6 +121,9 @@ public class Administration extends APIController {
 		if (user == null) throw new BadRequestException("error.unknown.user", "Unknown user");
 		
 		UserStatus oldstatus = user.status;
+		
+		//if (status == UserStatus.PRECREATED && oldstatus != UserStatus.PRECREATED) throw new BadRequestException("error.invalid.status_transition", "Invalid status change");
+		
 		user.status = status;
 		User.set(user._id, "status", user.status);
 		

@@ -685,6 +685,19 @@ public class OAuth2 extends Controller {
 		
 	}
 	
+	/*private static final void handlePrecreation(ExtendedSessionToken token, User user) throws AppException {
+		if (user.status == UserStatus.PRECREATED) {
+			user.status = UserStatus.ACTIVE;
+			user.set("status", user.status);
+			user.addFlag(AccountActionFlags.CHANGE_PASSWORD);
+			user.addFlag(AccountActionFlags.UPDATE_FHIR);
+			MidataId appId = token.appId;
+			if (appId == null) appId = RuntimeConstants.instance.portalPlugin;
+			Application.sendWelcomeMail(appId, user, null);
+			Circles.fetchExistingConsents(user._id, user.emailLC);
+		}
+	}*/
+	
 	/**
 	 * non portal apps require study selection for researchers
 	 * @param token
@@ -982,7 +995,8 @@ public class OAuth2 extends Controller {
 		User user = identifyUserForLogin(token, json);		
 		Result pw = checkPasswordAuthentication(token, json, user);
 		if (pw != null) return pw;
-						        				
+		//handlePrecreation(token, user);				    
+		
 		Result studySelectionRequired = checkStudySelectionRequired(token, json);
 		if (studySelectionRequired != null) return studySelectionRequired;
 					

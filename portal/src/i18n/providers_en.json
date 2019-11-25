@@ -38,6 +38,12 @@
     "success" : "User successfully registered"
   },
   
+  "addpatient" : {
+    "sign_up" : "Register patient",
+    "success" : "User successfully registered",   
+    "initialPassword" : "Initial Password"
+  },
+  
   "provider_patientsearch" : {
      "title" : "Patient Search",
      "email" : "email",
@@ -51,7 +57,8 @@
      "add_new_consent" : "Add new consent",
      "usergroup" : "Team (optional)",
      "passcode" : "Access Code (optional)",
-     "add_new_consent_btn" : "Add new consent"
+     "add_new_consent_btn" : "Add new consent",
+     "add_new_account_btn" : "Create patient account"
   },
   
   "provider_patients" : {

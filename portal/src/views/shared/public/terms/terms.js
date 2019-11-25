@@ -16,7 +16,7 @@ angular.module('portal')
 		$scope.name = name;
 		$scope.version = version;
 		
-		if (name == "midata-privacy-policy" || name == "midata-terms-of-use") {
+		if ($state.current.termsRole && (name == "midata-privacy-policy" || name == "midata-terms-of-use")) {
 			server.get(jsRoutes.controllers.Terms.currentTerms().url).then(function(result) {
 				 let w = "--";
 			  	 if (name == "midata-terms-of-use") {

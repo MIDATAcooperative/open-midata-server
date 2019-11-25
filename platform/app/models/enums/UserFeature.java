@@ -109,7 +109,7 @@ public enum UserFeature {
 			case PASSPORT_VERIFIED: return false;
 			case MIDATA_COOPERATIVE_MEMBER: return user.contractStatus.equals(ContractStatus.SIGNED);
 			case ADMIN_VERIFIED: return user.status.equals(UserStatus.ACTIVE);
-			case PASSWORD_SET: return user.password != null;
+			case PASSWORD_SET: return user.password != null && (user.flags==null || !user.flags.contains(AccountActionFlags.CHANGE_PASSWORD));
 			case BIRTHDAY_SET: 
 				if (!(user instanceof Member)) return true;
 				Member member = (Member) user;

@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('PatientsCtrl', ['$scope', '$state', 'server', 'status', function($scope, $state, server, status) {
+.controller('PatientsCtrl', ['$scope', '$state', 'fhir', 'status', 'server', function($scope, $state, fhir, status, server) {
 	
 	$scope.criteria = {};
 	$scope.member = null;
@@ -8,15 +8,19 @@ angular.module('portal')
 	
 	$scope.dosearch = function() {
 		
-		
-		$scope.status.doBusy(server.post(jsRoutes.controllers.providers.Providers.list().url, $scope.criteria)).
-		then(function(result) { 				
-		    $scope.patients = result.data;			 		    		  
+		/*$scope.status.doBusy(server.post(jsRoutes.controllers.providers.Providers.list().url, $scope.criteria)).
+		then(function(result) { 			
+			$scope.patients = result.data;
+		});*/
+								
+		$scope.status.doBusy(fhir.search("Patient", {})).
+		then(function(result) { 			
+		   $scope.patients = result; 			 		    		  
 		});
 	};
 	
 	$scope.selectPatient = function(patient) {
-		$state.go('^.memberdetails', { user : patient._id });		
+		$state.go('^.memberdetails', { user : patient.id });		
 	};
 	
     $scope.dosearch();	

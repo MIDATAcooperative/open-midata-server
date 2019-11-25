@@ -145,7 +145,7 @@ public class QuickRegistration extends APIController {
 		//user.ssn = JsonValidation.getString(json, "ssn");
 		//user.authType = InstanceConfig.getInstance().getInstanceType().is2FAMandatory(user.role) ? SecondaryAuthType.SMS : SecondaryAuthType.NONE;
 		
-        Application.registerSetDefaultFields(user);		
+        Application.registerSetDefaultFields(user, true);		
 		
 		if (study != null) {
 		  user.subroles = EnumSet.of(SubUserRole.STUDYPARTICIPANT);
@@ -161,6 +161,7 @@ public class QuickRegistration extends APIController {
 		user.agreedToTerms(app.termsOfUse, user.initialApp);
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user, app._id);
+		//Application.handlePreCreated(user);
 		String handle;
 		if (json.has("priv_pw")) {
 			  String pub = JsonValidation.getString(json, "pub");

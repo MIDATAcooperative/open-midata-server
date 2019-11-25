@@ -40,6 +40,11 @@ angular.module('portal')
 	      url: '/terms/:which?lang',
 	      templateUrl: 'views/shared/public/terms/terms.html',
 	      termsRole : "research"	      
+	    })
+	     .state('provider.terms', {
+	      url: '/terms/:which?lang',
+	      templateUrl: 'views/shared/public/terms/terms.html',
+	      termsRole : "provider"	      
 	    });	    
 	   
 }]);
