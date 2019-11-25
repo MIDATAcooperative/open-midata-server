@@ -260,3 +260,43 @@ input[type=radio] {
 			}
 		}
 	}
+
+.form-check input[type=checkbox] {
+		appearance: none;
+		width: 20px;
+		height: 20px;
+		position: relative;
+		left: 0px;
+		border: solid 1px #ffffff;
+
+		&:after {
+			content: '';
+			width: 8px;
+			height: 8px;
+			position: absolute;
+			top: 4px;
+			left: 4px;
+			border: 5px solid #ffffff;
+
+			background: transparent;
+			opacity: 0;
+			
+		}
+
+		&:hover {
+			&::after {
+				opacity: 0.5;
+			}
+
+			~ label {
+				cursor: pointer;
+				color: $color-brand-white;
+			}
+		}
+
+		&:checked {
+			&::after {
+				opacity: 1;
+			}
+		}
+	}

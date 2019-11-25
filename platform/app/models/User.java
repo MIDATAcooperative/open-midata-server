@@ -43,7 +43,8 @@ import utils.exceptions.InternalServerException;
 public class User extends Model implements Comparable<User> {
 
 	protected static final @NotMaterialized String collection = "users";
-	public static final @NotMaterialized Set<String> NON_DELETED = Collections.unmodifiableSet(Sets.create(UserStatus.ACTIVE.toString(), UserStatus.NEW.toString(), UserStatus.BLOCKED.toString(), UserStatus.TIMEOUT.toString()));
+	public static final @NotMaterialized Set<String> NON_DELETED = Collections.unmodifiableSet(Sets.create(UserStatus.ACTIVE.toString(), UserStatus.NEW.toString(), UserStatus.BLOCKED.toString(), UserStatus.TIMEOUT.toString()));	
+	
 	public static final @NotMaterialized Set<String> ALL_USER = Collections.unmodifiableSet(Sets.create("_id", "email", "emailLC", "name", "role", "subroles", "accountVersion", "registeredAt",  "status", "contractStatus", "agbStatus", "emailStatus", "mobileStatus", "confirmedAt", "firstname", "lastname",	"gender", "city", "zip", "country", "address1", "address2", "phone", "mobile", "language", "searchable", "developer", "midataID", "termsAgreed", "security", "notifications"));
 	public static final @NotMaterialized Set<String> ALL_USER_INTERNAL = Collections.unmodifiableSet(Sets.create("email", "emailLC", "name", "role", "subroles", "accountVersion", "registeredAt",  "status", "contractStatus", "agbStatus", "emailStatus", "mobileStatus", "confirmedAt", "firstname", "lastname",	"gender", "city", "zip", "country", "address1", "address2", "phone", "mobile", "language", "searchable", "developer", "initialApp", "password", "apps", "midataID", "failedLogins", "lastFailed", "termsAgreed", "publicExtKey", "recoverKey", "flags", "security", "authType", "notifications", "passwordAge"));
 	public static final @NotMaterialized Set<String> PUBLIC = Collections.unmodifiableSet(Sets.create("email", "role", "status", "firstname", "lastname", "gender", "midataID"));
@@ -529,13 +530,13 @@ public class User extends Model implements Comparable<User> {
 	
 	public void removeFlag(AccountActionFlags flag) throws AppException {
 		if (this.flags == null) return;
-		this.flags.remove(flag);
-		User.set(_id, "flags", flags);
+		if (this.flags.remove(flag)) User.set(_id, "flags", flags);
 	}
 	
 	public void updatePassword() throws AppException {
-		this.passwordAge = System.currentTimeMillis();
-		this.setMultiple(collection, Sets.create("password", "publicExtKey", "security", "recoverKey", "passwordAge"));
+		this.passwordAge = System.currentTimeMillis();		
+		this.setMultiple(collection, Sets.create("password", "publicExtKey", "security", "recoverKey", "passwordAge", "flags"));
+		this.removeFlag(AccountActionFlags.CHANGE_PASSWORD);
 	}
 	
 }

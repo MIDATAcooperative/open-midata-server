@@ -1,18 +1,35 @@
 angular.module('portal')
-.controller('TermsCtrl', ['$scope', '$rootScope', 'terms', '$translate', '$stateParams', '$sce', 'views', function($scope, $rootScope, terms, $translate, $stateParams, $sce, views) {
+.controller('TermsCtrl', ['$scope', '$rootScope', 'terms', '$translate', '$stateParams', '$sce', 'views', 'server', '$state', function($scope, $rootScope, terms, $translate, $stateParams, $sce, views, server, $state) {
   
 	$scope.view = views.getView("terms");
 	
-	$scope.init = function(name, version, language) {
-		$scope.name = name;
-		$scope.version = version;
-		
+	$scope.loadTerms = function(name, version, language) {
 		terms.get(name, version,language)
 		.then(function(result) {			
 			$scope.terms = result.data;
 		}, function() {
 			$scope.terms = { title : "Not found", "text" : "The requested terms and conditions are not available."};
 		});
+	};
+	
+	$scope.init = function(name, version, language) {
+		$scope.name = name;
+		$scope.version = version;
+		
+		if ($state.current.termsRole && (name == "midata-privacy-policy" || name == "midata-terms-of-use")) {
+			server.get(jsRoutes.controllers.Terms.currentTerms().url).then(function(result) {
+				 let w = "--";
+			  	 if (name == "midata-terms-of-use") {
+			  		w = result.data[$state.current.termsRole].termsOfUse.split("--");;			  		
+			  	 } else if (name == "midata-privacy-policy") {
+			  		w = result.data[$state.current.termsRole].privacyPolicy.split("--");;
+			  	 }
+			  	name = w[0];
+		  		version = w[1];			  	
+			  	$scope.loadTerms(name, version, language);
+			});	
+		} else $scope.loadTerms(name, version, language);
+		
 	};
 	
 	$scope.close = function() {

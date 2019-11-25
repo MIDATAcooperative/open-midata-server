@@ -75,6 +75,7 @@ import models.Study;
 import models.StudyAppLink;
 import models.StudyParticipation;
 import models.User;
+import models.enums.AccountActionFlags;
 import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
@@ -457,6 +458,11 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		p.setId(member._id.toString());
 		p.addName().setFamily(member.lastname).addGiven(member.firstname);
 		p.setBirthDate(member.birthday);
+		if (member.status == UserStatus.ACTIVE || member.status == UserStatus.NEW || member.status == UserStatus.BLOCKED) {
+			p.setActive(true);
+		} else {
+			p.setActive(false);
+		}
 		p.addIdentifier().setSystem("http://midata.coop/identifier/midata-id").setValue(member.midataID);
 		if (member.email != null)
 			p.addIdentifier().setSystem("http://midata.coop/identifier/patient-login").setValue(member.emailLC);
@@ -502,7 +508,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			patientProvider.setExecutionInfo(inf);
 		}
 
-		Member member = Member.getById(who, Sets.create("firstname", "lastname", "birthday", "midataID", "gender", "email", "phone", "city", "country", "zip", "address1", "address2", "emailLC", "language", "role"));
+		Member member = Member.getById(who, Sets.create(User.ALL_USER, "firstname", "lastname", "birthday", "midataID", "gender", "email", "phone", "city", "country", "zip", "address1", "address2", "emailLC", "language", "role"));
 		patientProvider.updatePatientForAccount(member);
 	}
 
@@ -625,6 +631,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		if (!thePatient.hasBirthDate()) throw new UnprocessableEntityException("Birth date required for patient");
 		if (!thePatient.hasAddress()) throw new UnprocessableEntityException("Country required for patient");
 		
+		/*
 		Config config = InstanceConfig.getInstance().getConfig();
 		String terms = "midata-terms-of-use--" + (config.hasPath("versions.midata-terms-of-use") ? config.getString("versions.midata-terms-of-use") : "1.0");
 		String ppolicy = "midata-privacy-policy--" + (config.hasPath("versions.midata-privacy-policy") ? config.getString("versions.midata-privacy-policy") : "1.0");
@@ -641,7 +648,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 		if (!termsOk || !ppolicyOk)
 			throw new UnprocessableEntityException("Patient must approve terms of use and privacy policy");
-
+       */
 		
 		super.createPrepare(record, thePatient);
 	}
@@ -783,17 +790,32 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 		if (existing == null) {
 
-			Application.registerSetDefaultFields(user);
+			Application.registerSetDefaultFields(user, false);
+						
+			//if (thePatient.getActive()) {
+			  user.status = UserStatus.ACTIVE;
+			//} else {
+			//  user.status = UserStatus.PRECREATED;
+			//}
+			
+			user.emailStatus = (user.email != null && user.status == UserStatus.ACTIVE) ? EMailStatus.EXTERN_VALIDATED : EMailStatus.UNVALIDATED;
 
-			user.emailStatus = user.emailStatus != null ? EMailStatus.EXTERN_VALIDATED : EMailStatus.UNVALIDATED;
-			user.status = UserStatus.ACTIVE;
+			user.emailStatus = user.emailStatus != null ? EMailStatus.EXTERN_VALIDATED : EMailStatus.UNVALIDATED;			
 
+			user.flags = EnumSet.of(AccountActionFlags.CHANGE_PASSWORD);
+			
 			thePatient.setId(user._id.toString());
 			AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, info().pluginId, info().ownerId, user);
 
 			user.security = AccountSecurityLevel.KEY;
 			user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);
 			Member.add(user);
+			
+			for (Extension ext : thePatient.getExtensionsByUrl("http://midata.coop/extensions/terms-agreed")) {
+				String agreed = ext.getValue().primitiveValue();
+				user.agreedToTerms(agreed, info.pluginId);
+			}
+						
 			KeyManager.instance.unlock(user._id, null);
 
 			RecordManager.instance.clearCache();
@@ -828,9 +850,9 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 				if (prov != null)
 					consentName = prov.name;
 			}
-		}
+		/*}
 
-		if (plugin.targetUserRole.equals(UserRole.PROVIDER)) {
+		if (plugin.targetUserRole.equals(UserRole.PROVIDER)) {*/
 			Consent consent = new MemberKey();
 			consent.writes = WritePermissionType.WRITE_ANY;
 			consent.owner = user._id;
@@ -872,7 +894,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		if (existing == null) {
 			User executorUser = info().cache.getUserById(info().ownerId);
 			RecordManager.instance.clearCache();
-			Application.sendWelcomeMail(info().pluginId, user, executorUser);
+			if (user.status == UserStatus.ACTIVE) Application.sendWelcomeMail(info().pluginId, user, executorUser);
 			// if
 			// (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister()
 			// && user.developer == null)

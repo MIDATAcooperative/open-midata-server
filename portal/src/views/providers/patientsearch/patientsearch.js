@@ -40,6 +40,12 @@ angular.module('portal')
 		
 	};
 	
+	$scope.changedCriteria = function() {
+		$scope.member = null;
+		$scope.consents = null;				
+		$scope.error = null;	
+	};
+	
 	$scope.selectPatient = function() {
 		$state.go('^.memberdetails', { user : $scope.member._id });		
 	};
@@ -70,6 +76,8 @@ angular.module('portal')
     	});
 	};
 	
-	
+	if ($state.params.email) {
+		$scope.criteria.email = $state.params.email;
+	}
 	
 }]);

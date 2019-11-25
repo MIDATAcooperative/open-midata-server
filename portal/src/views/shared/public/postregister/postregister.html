@@ -61,6 +61,7 @@
 							  <formrow myid="passwordnew" label="setpw.new_password_repeat">								
 								<input type="password" class="form-control" floating-label ng-model="setpw.passwordRepeat" style="margin-bottom:5px;">
 							  </formrow>
+							  <div class="dynheight">
 							   <formrow myid="secure" label="registration.secure">
 							    <div class="form-check">
 							      <label class="form-check-label">
@@ -69,10 +70,11 @@
 							      </label>
 							    </div>
 							  </formrow>
+							  </div>
 							  <div class="extraspace"></div>
 							  <button type="submit" ng-disabled="status.action=='setpw'" class="btn btn-primary btn-block" translate="setpw.set_new_btn"></button>
 							  <div class="extraspace"></div>
-							  <p ng-show="error" class="alert alert-danger" translate="{{ error.code || error }}"></p>
+							  <p ng-show="error && !tokenIncluded" class="alert alert-danger" translate="{{ error.code || error }}"></p>
 						   </form>
 						</div>
 						
@@ -81,7 +83,9 @@
 						<div ng-show="progress.NEWEST_TERMS_AGREED">
 						  <p translate="postregister.terms_agreed"></p>
 						  
-						  <a ng-click="terms({which : progress.termsOfUse});" href="javascript:" translate="registration.agb3"></a>
+						  <p class="mi-at-link">
+						  <a class="mi-at-text--white" ng-click="terms({which : progress.termsOfUse});" href="javascript:" translate="registration.agb3"></a>
+						  </p>
 						  <div class="extraspace"></div>
 						  <button class="btn btn-primary btn-block" ng-disabled="status.action=='terms'" ng-click="agreedToTerms(progress.termsOfUse);" translate="postregister.agree_btn"></button>
 						  <p ng-show="error" class="alert alert-danger" translate="{{ error.code || error }}"></p>						
@@ -89,7 +93,10 @@
 						
 						<div ng-show="progress.NEWEST_PRIVACY_POLICY_AGREED && !progress.NEWEST_TERMS_AGREED">
 						  <p translate="postregister.privacy_policy_agreed"></p>
-						  <a ng-click="terms({which : progress.privacyPolicy});" href="javascript:" translate="registration.privacypolicy3"></a>
+						  
+						  <p class="mi-at-link">
+						  <a class="mi-at-link mi-at-text--white" ng-click="terms({which : progress.privacyPolicy});" href="javascript:" translate="registration.privacypolicy3"></a>
+						  </p>
 						  <div class="extraspace"></div>
 						  <button class="btn btn-primary btn-block" ng-disabled="status.action=='terms'" ng-click="agreedToTerms(progress.privacyPolicy);" translate="postregister.agree_btn"></button>
 						  <p ng-show="error" class="alert alert-danger" translate="{{ error.code || error }}"></p>
@@ -100,6 +107,7 @@
 						<div ng-show="progress.EMAIL_VERIFIED">
 							<p translate="postregister.email_instructions"></p>
 							<button class="btn btn-default" ng-click="resend()" translate="postregister.resend_btn"></button>
+							<div class="extraspace"></div>
 							<p ng-show="resentSuccess" class="alert alert-success" translate="postregister.resent_success"></p>
 							<button class="btn btn-default" ng-click="retry()" translate="postregister.retry_btn"></button>
 							<hr>

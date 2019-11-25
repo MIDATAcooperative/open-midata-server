@@ -68,8 +68,7 @@ $study-content-margin-left: 35px;
 		}
 
 		@include media($tablet-breakpoint) {
-			top: 50%;
-			transform: translate(-50%, -50%);
+			top: 30px;			
 		}
 
 		&::before {

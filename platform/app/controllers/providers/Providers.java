@@ -27,6 +27,7 @@ import models.MidataId;
 import models.User;
 import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
+import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
@@ -291,8 +292,18 @@ public class Providers extends APIController {
 		
 		//MemberKeys.getOrCreate(hpuser, result);
 		Collection<Consent> memberKeys = Circles.getConsentsAuthorized(userId, CMaps.map("type", ConsentType.HEALTHCARE).map("owner", result._id), Consent.ALL);
-		if (memberKeys.isEmpty() && removeIfNoConsents) return ok();
+		//if (memberKeys.isEmpty() && removeIfNoConsents) return ok();
 				
+		boolean activeConsent = false;
+		for (Consent consent : memberKeys) {
+			if (consent.status == ConsentStatus.ACTIVE || consent.status == ConsentStatus.FROZEN) activeConsent = true;
+		}
+		
+		memberFields = activeConsent 
+				   ? memberFields
+				   : Sets.create("_id", "email");
+		
+		
 		ObjectNode obj = Json.newObject();
 		obj.set("member", JsonOutput.toJsonNode(result, "User", memberFields));
 		obj.set("consents", JsonOutput.toJsonNode(memberKeys, "Consent", Consent.ALL));
@@ -332,21 +343,28 @@ public class Providers extends APIController {
 	@APICall
 	public Result getMember(String id) throws JsonValidationException, AppException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-		MidataId memberId = new MidataId(id);
+		MidataId memberId = MidataId.from(id);
 		
 		Collection<Consent> memberKeys = Circles.getConsentsAuthorized(userId, CMaps.map("type", ConsentType.HEALTHCARE).map("owner", memberId), Consent.ALL);		
 		if (memberKeys.isEmpty()) throw new BadRequestException("error.notauthorized.account", "You are not authorized.");
 		
 		Set<HCRelated> backconsent = HCRelated.getByAuthorizedAndOwner(memberId,  userId);
 		
-		Set<String> memberFields = Sets.create("_id", "firstname","birthday", "lastname","city","zip","country","email","phone","mobile","ssn","address1","address2");
+		boolean activeConsent = false;
+		for (Consent consent : memberKeys) {
+			if (consent.status == ConsentStatus.ACTIVE || consent.status == ConsentStatus.FROZEN) activeConsent = true;
+		}
+		
+		Set<String> memberFields = activeConsent 
+				   ? Sets.create("_id", "firstname","birthday", "lastname","city","zip","country","email","phone","mobile","ssn","address1","address2")
+				   : Sets.create("_id", "email");
 		Member result = Member.getById(memberId, memberFields);
 		if (result==null) throw new BadRequestException("error.unknown.user", "Member does not exist.");
 		
 		ObjectNode obj = Json.newObject();
-		obj.put("member", JsonOutput.toJsonNode(result, "User", memberFields));
-		obj.put("consents", JsonOutput.toJsonNode(memberKeys, "Consent", Consent.ALL));
-		obj.put("backwards", JsonOutput.toJsonNode(backconsent, "Consent", Sets.create("_id", "name", "owner") ));
+		obj.set("member", JsonOutput.toJsonNode(result, "User", memberFields));
+		obj.set("consents", JsonOutput.toJsonNode(memberKeys, "Consent", Consent.ALL));
+		obj.set("backwards", JsonOutput.toJsonNode(backconsent, "Consent", Sets.create("_id", "name", "owner") ));
 		return ok(obj);
 	}
 	
