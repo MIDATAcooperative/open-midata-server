@@ -221,6 +221,7 @@ public class Plugins extends APIController {
 			context = visualization.defaultSpaceContext;
 
 		User user = User.getById(userId, Sets.create("visualizations", "apps", "role", "developer"));
+		if (user == null) throw new BadRequestException("error.unknown.user", "Unknown user");
 
 		boolean testing = visualization.creator != null && (visualization.creator.equals(user._id) || (user.developer != null && visualization.creator.equals(user.developer)));
 

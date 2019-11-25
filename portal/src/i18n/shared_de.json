@@ -571,7 +571,7 @@
         "password" : "Passwort",
         "password_repetition" : "Passwort wiederholen",
         "secure" : "Schutz des Kontos",
-        "secure2" : "Schutz meiner Daten mit einer zusätzlichen Sicherheitsstufe erhöhen. Warnung: sollte ich mein Passwort vergessen, kann es einige Tage dauern bis ich es neu setzten kann.",
+        "secure2" : "Schutz meiner Daten mit einer zusätzlichen Sicherheitsstufe erhöhen. Warnung: sollte ich mein Passwort vergessen, kann es einige Tage dauern bis ich es neu setzen kann.",
         "firstname" : "Vorname",
         "lastname" : "Name",
         "gender" : "Geschlecht",

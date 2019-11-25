@@ -260,7 +260,7 @@ public class Application extends APIController {
 		String password = json.has("password") ? JsonValidation.getPassword(json, "password") : null;
 		
 		MidataId userId;
-		String token;
+		String token = null;
 		String role;
 		String handle = null;
 		
@@ -282,18 +282,29 @@ public class Application extends APIController {
 			stoken.set();
 			
 		} else {
+			
+			PortalSessionToken tk = PortalSessionToken.decrypt(request());
+			
+			/*
 			JsonValidation.validate(json, "userId", "code", "role");
 			userId = JsonValidation.getMidataId(json, "userId");
 			token = JsonValidation.getString(json, "code");
 			role = JsonValidation.getString(json, "role").toUpperCase();
+			*/
 			
-			PortalSessionToken tk = PortalSessionToken.decrypt(request());
-		    
 		    if (tk != null) {
 			    try {
 			      KeyManager.instance.continueSession(tk.getHandle());
 			      handle = tk.getHandle();
 			    } catch (AppException e) { return unauthorized(); }
+			    			    
+			    userId = tk.ownerId;
+			    role = tk.userRole.toString().toUpperCase();
+			    
+			    if (json.has("code")) {
+			    	token = JsonValidation.getString(json, "code");
+			    }
+			    
 		    } else {
 		    	return unauthorized();
 		    }
@@ -302,12 +313,17 @@ public class Application extends APIController {
 		
 		User user = User.getById(userId, Sets.create(User.FOR_LOGIN, "resettoken", "resettokenTs", "registeredAt", "confirmedAt", "previousEMail"));
 		if (user == null)  throw new BadRequestException("error.unknown.user", "User not found");
-		
+				
 		if (user!=null && password != null) {				
 			 AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE, userId);
-		       if (user.resettoken != null 		    		    
+			 
+			 boolean tokenOk = (token != null && user.resettoken != null 		    		    
 		    		   && user.resettoken.equals(token)
-		    		   && System.currentTimeMillis() - user.resettokenTs < EMAIL_TOKEN_LIFETIME) {	   
+		    		   && System.currentTimeMillis() - user.resettokenTs < EMAIL_TOKEN_LIFETIME);
+			 boolean ok = tokenOk;
+			 if (!ok && user.flags != null && user.flags.contains(AccountActionFlags.CHANGE_PASSWORD)) ok = true;
+			 
+		       if (ok) {	   
 			   
 		    	   if (handle == null) {
 		    		   handle = KeyManager.instance.login(PortalSessionToken.LIFETIME, true);		    	   
@@ -323,14 +339,14 @@ public class Application extends APIController {
 		               }
 		    	   } else PWRecovery.changePassword(user, json);
 		    	   		
-		    	   if (user.emailStatus == EMailStatus.UNVALIDATED && wanted == null) {
+		    	   if (user.emailStatus == EMailStatus.UNVALIDATED && wanted == null && tokenOk) {
 		    		   // Implicit confirmation of email address by having received password reset mail
 		    		   AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_CONFIRMED, user);			       		    	   		         
 		               user.emailStatus = EMailStatus.VALIDATED;
 			           user.set("emailStatus", EMailStatus.VALIDATED);		 
 		    	   }
 		    	   
-		    	   user.set("resettoken", null);	
+		    	   if (tokenOk) user.set("resettoken", null);	
 		       } else throw new BadRequestException("error.expired.token", "Password reset token has already expired.");
 		}
 		
@@ -779,11 +795,11 @@ public class Application extends APIController {
 		//user.ssn = JsonValidation.getString(json, "ssn");										
 		//user.authType = SecondaryAuthType.NONE;	
 		
-		registerSetDefaultFields(user);				
+		registerSetDefaultFields(user, true);				
 		developerRegisteredAccountCheck(user, json);
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);
-		
+		//handlePreCreated(user);
 		String handle;
 		if (json.has("priv_pw")) {
 		  String pub = JsonValidation.getString(json, "pub");
@@ -820,12 +836,20 @@ public class Application extends APIController {
 		return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle), json, null, user._id);				
 	}
 	
+	/*public static void handlePreCreated(Member user) throws AppException {
+		Member other = Member.getByEmailAlsoPrecreated(user.email, User.ALL_USER_INTERNAL);
+		if (other != null) {
+			other.status = UserStatus.DELETED;
+			other.set("status", other.status);
+		}
+	}*/
+	
 	/**
 	 * Sets fields for a new account holder user account
 	 * @param user the new user
 	 * @throws AppException
 	 */
-	public static void registerSetDefaultFields(Member user) throws AppException {
+	public static void registerSetDefaultFields(Member user, boolean termsAgreed) throws AppException {
 		user._id = new MidataId();
 		do {
 			  user.midataID = CodeGenerator.nextUniqueCode();
@@ -847,7 +871,7 @@ public class Application extends APIController {
 		user.login = new Date();
 		user.news = new HashSet<MidataId>();
 				
-		Terms.addAgreedToDefaultTerms(user);
+		if (termsAgreed) Terms.addAgreedToDefaultTerms(user);
 	}
 	
 	/**

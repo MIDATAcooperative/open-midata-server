@@ -17,7 +17,9 @@ angular.module('portal')
 				$scope.consents = data.consents;
 				$scope.backwards = data.backwards;
 			
-				$scope.memberkey = data.memberkey;
+				$scope.activeFound = false;
+				angular.forEach($scope.consents, function(consent) { if (consent.status=="ACTIVE" || consent.status=="FROZEN") $scope.activeFound = true; });
+				
 				if (data.memberkey) {
 				  views.setView("patient_records", { aps : $scope.memberkey._id, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd: false, type : "memberkeys"});
 				} else {
@@ -30,7 +32,7 @@ angular.module('portal')
 		$scope.hideAdd = false;
 		$scope.consent = consent;
 		
-		if ($scope.consent != null) {
+		if ($scope.consent != null && ($scope.consent.status=="ACTIVE" || $scope.consent.status=="FROZEN")) {
 			views.setView("patient_records", { aps : $scope.consent._id, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd : false, type : "memberkeys" });			
 		} else {
 			views.disableView("patient_records");

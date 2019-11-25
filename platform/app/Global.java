@@ -140,10 +140,11 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 		System.out.println("Auto-Run");
 		AutoRun.init();
 		
+		/* (Not needed anymore; Done on all instances)
 		try {
 		   AccountPatches.fixFhirConsents();
 		} catch (AppException e) { e.printStackTrace(); }
-				
+		*/		
 		lifecycle.addStopHook(() -> {
 			//AutoRun.shutdown();
 		    

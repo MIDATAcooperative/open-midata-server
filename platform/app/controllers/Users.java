@@ -304,10 +304,10 @@ public class Users extends APIController {
 			  user.gender = JsonValidation.getEnum(json, "gender", Gender.class);
 			}
 		}
-		if (json.has("phone")) {
-		  
-		  user.phone = JsonValidation.getString(json, "phone");
-		  String mobile = JsonValidation.getString(json, "mobile");
+		if (json.has("phone") || json.has("mobile")) {
+		  if (user.mobile != null) JsonValidation.validate(json, "mobile");
+		  user.phone = JsonValidation.getStringOrNull(json, "phone");
+		  String mobile = JsonValidation.getStringOrNull(json, "mobile");
 		  if (!mobile.equals(user.mobile)) {
 			  user.mobileStatus = EMailStatus.UNVALIDATED;
 			  user.mobile = mobile;  

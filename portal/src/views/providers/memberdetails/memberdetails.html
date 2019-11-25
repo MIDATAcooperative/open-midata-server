@@ -34,12 +34,12 @@
     
       </div>
       
-    
+    <div ng-if="activeFound">
     <div ng-include="'/views/shared/dashboard/dashboard.html'"></div>
     <div ng-include="'/views/shared/timeline/timeline.html'"></div>
-       
+    </div>       
                      
-    <a ui-sref="^.patientsearch" class="btn btn-default" translate="common.back_btn">Back</a>
+    <a ui-sref="^.patientsearch({ email : member.email })" class="btn btn-default" translate="common.back_btn">Back</a>
     
             
 </div>

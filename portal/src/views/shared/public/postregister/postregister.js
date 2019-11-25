@@ -76,7 +76,7 @@ angular.module('portal')
 		$scope.error = null;
 		
 		if (! $scope.myform.$valid) return;
-		
+		//console.log($scope.registration);
 		$scope.registration.user = $scope.registration._id;									
 		$scope.status.doAction("changeAddress", users.updateAddress($scope.registration)).
 		then(function(data) { 
@@ -103,7 +103,7 @@ angular.module('portal')
 		} else {
 			if (dparts[2].length==2) dparts[2] = "19"+dparts[2];
 			$scope.registration.birthday = dparts[2]+"-"+pad(dparts[1])+"-"+pad(dparts[0]);
-			console.log($scope.registration.birthday);
+			//console.log($scope.registration.birthday);
 		}					
 		
 		if (! $scope.myformb.$valid) return;
@@ -166,6 +166,13 @@ angular.module('portal')
 			$scope.error = { code : "error.invalid.password_repetition" };
 			return;
 		}
+		var pwvalid = crypto.isValidPassword($scope.setpw.password); 
+        
+        if (!pwvalid) {
+        	$scope.error = { code : "error.tooshort.password" };
+        	return;
+        }
+		
 		$scope.error = null;
 		// send the request
 		

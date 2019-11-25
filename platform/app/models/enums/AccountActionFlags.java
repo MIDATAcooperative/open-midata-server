@@ -15,5 +15,10 @@ public enum AccountActionFlags {
 	 * Recovery of account private key
 	 */
 	KEY_RECOVERY,
+	
+	/**
+	 * User must change password
+	 */
+	CHANGE_PASSWORD
 		
 }

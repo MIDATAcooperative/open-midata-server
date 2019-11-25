@@ -1,3 +1,4 @@
+<div id="maincontent">
 <div class="colored">
 	<!-- Navbar -->
 	<header id="navbar" class="navbar navbar-expand-lg navbar-light bg-light" role="navigation" ng-controller="NavbarCtrl">
@@ -31,4 +32,16 @@
 	<div class="container mainpart">
 		<div ui-view></div>
 	</div>
-	
+</div>
+<footer id="footer">
+	<div class="container">
+		<p translate="footer.copyright" translate-value-now="{{ currentDate | date:'yyyy' }}">(c) ETH Zürich</p>
+
+		<ul>
+			<li><a href="https://www.midata.coop" translate="footer.homepage">MIDATA Homepage</a></li>
+			<li><a ui-sref=".terms({which : 'midata-terms-of-use'})"><span translate="registration.agb3">Terms of Use</span> (<span translate="enum.userrole.DEVELOPER"></span>)</a></li>
+			<li><a ui-sref=".terms({which : 'midata-privacy-policy'})"><span translate="registration.privacypolicy3">Privacy Policy</span> (<span translate="enum.userrole.DEVELOPER"></span>)</a></li>
+
+		</ul>
+	</div>
+</footer>
