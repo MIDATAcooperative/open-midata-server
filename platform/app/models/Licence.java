@@ -22,7 +22,7 @@ public class Licence extends Model {
 	private static final String collection = "licenses";
 	
 	@NotMaterialized
-	public static Set<String> ALL = Collections.unmodifiableSet(Sets.create("_id", "appId", "appName", "granteeId", "licenseeName", "licenseeType", "expireDate", "creationDate", "status"));
+	public static Set<String> ALL = Collections.unmodifiableSet(Sets.create("_id", "appId", "appName", "licenseeId", "licenseeName", "licenseeType", "expireDate", "creationDate", "status", "grantedBy", "grantedByLogin"));
 	
 	/**
 	 * For which application is a licence granted
