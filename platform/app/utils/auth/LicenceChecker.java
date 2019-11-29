@@ -13,6 +13,7 @@ import models.UserGroupMember;
 import models.enums.ConsentStatus;
 import models.enums.EntityType;
 import utils.AccessLog;
+import utils.ErrorReporter;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -46,11 +47,16 @@ public class LicenceChecker {
 	}
 	
 	public static boolean licenceRequired(Plugin plugin) {
+		AccessLog.log("licence required: "+(plugin.licenceDef != null));
 		return plugin.licenceDef != null;
 	}
 	
 	public static MidataId hasValidLicence(MidataId userId, Plugin plugin, MidataId licenceId) throws AppException {
-		if (plugin.licenceDef == null) return null;
+		if (plugin.licenceDef == null) {
+			AccessLog.log("No plugin licence definition");
+			ErrorReporter.report("licence check", null, null);
+			return null;
+		}
 				
 		if (licenceId != null) {
 		  AccessLog.log("check stored licence id="+licenceId);
@@ -75,11 +81,12 @@ public class LicenceChecker {
 			AccessLog.log("check usergroup licence");
 			Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByMember(userId);
 			for (UserGroupMember ugm : ugms) {
-				Licence lic = Licence.getActiveLicenceByLicenseeAndApp(ugm.userGroup, EntityType.USERGROUP, plugin._id);
+				Licence lic = Licence.getActiveLicenceByLicenseeAndApp(ugm.userGroup, EntityType.USERGROUP, plugin._id);				
 				if (isValid(userId, lic)) return lic._id;
 			}			
 		}
 		AccessLog.log("no valid licence found user="+userId+" plugin="+plugin._id);
+		ErrorReporter.report("licence check", null, null);
 		return null;
 	}
 	
