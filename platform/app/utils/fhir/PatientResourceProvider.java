@@ -82,6 +82,7 @@ import models.enums.ConsentStatus;
 import models.enums.EMailStatus;
 import models.enums.Gender;
 import models.enums.JoinMethod;
+import models.enums.LinkTargetType;
 import models.enums.StudyAppLinkType;
 import models.enums.SubUserRole;
 import models.enums.UserFeature;
@@ -132,7 +133,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			return null;
 
 		Record record = allRecs.get(0);
-
+		convertToR4(record, record.data);
 		IParser parser = ctx().newJsonParser();
 		Patient p = parser.parseResource(getResourceType(), record.data.toString());
 		processResource(record, p);
@@ -565,7 +566,10 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		}
 				
 		if (info().ownerId.equals(record.owner) && info().pluginId != null) {
-		  Plugin plugin = Plugin.getById(info().pluginId);	
+		  List<Study> studies = determineStudyIdentifiers();
+		  populateIdentifiers(record.owner, resource, studies);
+		  
+		  /*Plugin plugin = Plugin.getById(info().pluginId);	
 		  Set<StudyAppLink> links = StudyAppLink.getByApp(plugin._id);
 		  for (StudyAppLink sal : links) {
 			  if (sal.isConfirmed() && (sal.type.contains(StudyAppLinkType.REQUIRE_P) || sal.type.contains(StudyAppLinkType.OFFER_P))) {
@@ -575,7 +579,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 					  resource.addIdentifier(new Identifier().setValue(part._id.toString()).setSystem("http://midata.coop/identifier/participant-id"));
 				  }  
 			  }
-		  }
+		  }*/
 		}
 		
 		// resource.setId(record.owner.toString());
@@ -911,6 +915,31 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		}
 		
 		AuditManager.instance.success();
+	}
+	
+	protected void populateIdentifiers(MidataId owner, Patient thePatient, List<Study> studies) throws AppException {
+		if (studies == null || studies.isEmpty()) return;
+		for (Study study : studies) {
+			StudyParticipation sp = StudyParticipation.getByStudyAndMember(study._id, owner, Sets.create("status", "pstatus", "ownerName"));
+			if (sp != null) {
+				thePatient.addIdentifier().setSystem("http://midata.coop/identifier/participant-name").setValue(sp.getOwnerName()).setType(new CodeableConcept(new Coding("http://midata.coop/codesystems/study-code",study.code, study.name)));
+				thePatient.addIdentifier().setSystem("http://midata.coop/identifier/participant-id").setValue(sp._id.toString()).setType(new CodeableConcept(new Coding("http://midata.coop/codesystems/study-code",study.code, study.name)));
+			}
+		}
+	}
+	
+	protected List<Study> determineStudyIdentifiers() throws AppException {
+		MidataId pluginId = info().pluginId;
+		if (pluginId == null) return null;
+		Set<StudyAppLink> sals = StudyAppLink.getByApp(pluginId);
+		if (sals.isEmpty()) return null;
+		List<Study> studies = new ArrayList<Study>();
+		for (StudyAppLink sal : sals) {
+			if (sal.isConfirmed() && sal.active && sal.linkTargetType == LinkTargetType.STUDY && (sal.type.contains(StudyAppLinkType.REQUIRE_P) || sal.type.contains(StudyAppLinkType.OFFER_P))) {
+				studies.add(Study.getById(sal.studyId, Sets.create("_id","code","name")));
+			}
+		}
+		return studies;
 	}
 
 	@Override
