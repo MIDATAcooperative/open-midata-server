@@ -225,4 +225,21 @@ angular.module('portal')
 		$scope.login = $state.params.login;
 		$scope.isNew = true;
 	}
+	if ($state.params.given) $scope.registration.firstname = $state.params.given;	
+	if ($state.params.family) $scope.registration.lastname = $state.params.family;
+	if ($state.params.gender) $scope.registration.gender = $state.params.gender;
+	if ($state.params.country) $scope.registration.country = $state.params.country;
+	if ($state.params.language) {
+		$scope.registration.language = $state.params.language;
+		$scope.changeLanguage($state.params.language);
+	}
+	if ($state.params.birthdate) {
+		var d = new Date($state.params.birthdate);
+		$scope.registration.birthdayDate = d.getDate()+"."+(1+d.getMonth())+"."+d.getFullYear();
+		/*$scope.registration.birthdayDay = d.getDate();
+		$scope.registration.birthdayMonth = $scope.months[d.getMonth()];
+		console.log("DATE:"+$scope.registration.birthdayMonth);
+		$scope.registration.birthdayYear = d.getFullYear();*/
+	}
+	
 }]);
