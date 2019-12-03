@@ -22,5 +22,6 @@ id0020	08.11.2019	a.kreutz	F	Added Virusscan for file uploads	All files uploaded
 id0021	08.11.2019	a.kreutz	I	Only files with a recognized file extension may be uploaded.	Executable files and scripts will be rejected.
 id0022	12.11.2019	a.kreutz	I	Links to terms and conditions and privacy policy on page footer are now role specific
 id0023	25.11.2019	a.kreutz	F	Patient registration for HP	Healthcare providers may now register patient accounts.
-id0024	29.11.2019	a.kreutz	B	Fixed: Licence checker could not check team licences correctly. 
+id0024	29.11.2019	a.kreutz	B	Fixed: Licence checker could not check team licences correctly.
+id0025	02.12.2019	a.kreutz	I	Added study code and name as type to participant identifiers.(FHIR R4) 
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 

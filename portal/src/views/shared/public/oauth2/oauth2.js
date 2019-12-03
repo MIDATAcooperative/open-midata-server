@@ -26,6 +26,10 @@ angular.module('portal')
 		$scope.login.email = $scope.params.email;
 	}
 	
+	if ($scope.params.login) {
+		$scope.login.email = $scope.params.login;
+	}
+	
 	$scope.prepare = function() {
 		$scope.status.doBusy(apps.getAppInfo($scope.params.client_id))
 		.then(function(results) {
@@ -151,7 +155,8 @@ angular.module('portal')
 	};
 	
 	$scope.showRegister = function() {
-		$state.go("public.registration_new");
+		$scope.params.login = $scope.params.email;
+		$state.go("public.registration_new", $scope.params);
 	};
 	
 	$scope.lostpw = function() {
