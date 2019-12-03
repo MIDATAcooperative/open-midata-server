@@ -60,7 +60,7 @@
 			<tr>
 			  <td ng-click="go('^.appquery')">				    
 				<div class="float-left"><img width="80" class="img-responsive" src="/images/question.jpg"></div>														   
-				<div><b translate="manageapp.query_btn"></b><span class="badge" style="margin-left:10px" ng-show="hasCount(app.defaultQuery)">1 <span translate="manageapp.defined"></span></span><span class="badge" style="margin-left:10px" ng-hide="hasCount(app.defaultQuery)">0 <span translate="manageapp.defined"></span></span> <span class="badge" ng-class="{ 'badge-success' : reviews.ACCESS_FILTER=='ACCEPTED', 'badge-danger' : reviews.ACCESS_FILTER=='NEEDS_FIXING', 'badge-light' : !reviews.ACCESS_FILTER }" style="margin-left:10px"><span ng-show="reviews.ACCESS_FILTER" translate="{{'manageapp.'+reviews.ACCESS_FILTER}}"></span><span ng-hide="reviews.ACCESS_FILTER" translate="manageapp.not_reviewed"></span></span></div>
+				<div><b translate="manageapp.query_btn"></b><span class="badge" style="margin-left:10px" ng-show="hasCount(app.defaultQuery)">1 <span translate="manageapp.defined"></span></span><span class="badge badge-danger" style="margin-left:10px" ng-hide="hasCount(app.defaultQuery)">0 <span translate="manageapp.defined"></span></span> <span class="badge" ng-class="{ 'badge-success' : reviews.ACCESS_FILTER=='ACCEPTED', 'badge-danger' : reviews.ACCESS_FILTER=='NEEDS_FIXING', 'badge-light' : !reviews.ACCESS_FILTER }" style="margin-left:10px"><span ng-show="reviews.ACCESS_FILTER" translate="{{'manageapp.'+reviews.ACCESS_FILTER}}"></span><span ng-hide="reviews.ACCESS_FILTER" translate="manageapp.not_reviewed"></span></span></div>
 				<div translate="manageapp.query_help"></div>																
 			  </td>
 			</tr>

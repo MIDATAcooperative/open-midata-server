@@ -7,8 +7,10 @@ angular.module('portal')
 		var actions = [];
 		var params = {};
 		
-		if ($state.params.login) {
-			params.login = $state.params.login;
+		var copy = ["login","family","given","country","language","birthdate"];
+		for (var i=0;i<copy.length;i++)
+		if ($state.params[copy[i]]) {
+			params[copy[i]] = $state.params[copy[i]];
 		}
 		
 		if ($state.params.pluginName) {
