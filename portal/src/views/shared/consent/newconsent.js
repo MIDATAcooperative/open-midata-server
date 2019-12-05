@@ -365,7 +365,8 @@ angular.module('portal')
 	$scope.mayDelete = function() {		
 		if (! $scope.consent) return false;
 		if ($scope.consent.owner !== $scope.userId) return false;
-		return ($scope.consent.status == 'ACTIVE' || $scope.consent.status == 'REJECTED') && $scope.consent.type != 'STUDYPARTICIPATION';
+		
+		return ($scope.consent.status == 'ACTIVE' || $scope.consent.status == 'REJECTED') && ($scope.consent.type != 'STUDYPARTICIPATION' && $scope.consent.type != 'HEALTHCARE');
 	};
 	
 	$scope.mayChangeUsers = function() {

@@ -414,12 +414,14 @@ public class Studies extends APIController {
 						String format = rec.format.startsWith("fhir/") ? rec.format.substring("fhir/".length()) : "Basic";
 
 						ResourceProvider<DomainResource, Model> prov = FHIRServlet.myProviders.get(format);
+						
 						DomainResource r = prov.parse(rec, prov.getResourceType());
 						//System.out.println("got parsed:"+(r != null));
 						//AccessLog.log("got parsed:"+(r != null));
 						
 						String location = FHIRServlet.getBaseUrl() + "/" + prov.getResourceType().getSimpleName() + "/" + rec._id.toString() + "/_history/" + rec.version;
 						if (r != null) {
+							
 							String ser = prov.serialize(r);
 							int attpos = ser.indexOf(FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING);
 							//System.out.println("binary pos:"+attpos);
