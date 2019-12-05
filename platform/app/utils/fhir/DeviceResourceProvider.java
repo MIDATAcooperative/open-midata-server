@@ -235,7 +235,7 @@ public class DeviceResourceProvider extends RecordBasedResourceProvider<Device> 
 	protected void convertToR4(Object in) {
 		FHIRVersionConvert.rename(in, "udi", "udiCarrier");
 		FHIRVersionConvert.rename(in, "model", "modelNumber");
-		
+		FHIRVersionConvert.nest(in, "version", "version", "value");
 	}
 
 }
