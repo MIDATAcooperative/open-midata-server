@@ -640,7 +640,7 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 
 	@Override
 	protected void convertToR4(Object in) {
-		FHIRVersionConvert.rename(in, FHIRVersionConvert.MODE_STRING_TO_ANNOTATIONS, "comment", "note");
+		FHIRVersionConvert.nest(in, "comment", "note", "text");
 		FHIRVersionConvert.convertRelated(in);		
 	}
 	

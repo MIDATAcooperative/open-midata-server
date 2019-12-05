@@ -1,13 +1,14 @@
 package utils.fhir;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
-import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
 
 import models.MidataId;
-import utils.access.op.Condition;
 
 public class FHIRVersionConvert {
 
@@ -25,13 +26,19 @@ public class FHIRVersionConvert {
 	}
 	
 	public static void rename(Object in, String oldName, String newName, String...path) {
-	  change(in, path, 0, oldName.split("\\."), newName, MODE_RENAME);	
+	  String old[] = oldName.split("\\.");
+	  for (BasicBSONObject obj : select(in, path)) {
+		 rename(obj, old, newName); 
+	  }	  
 	}
 			
-	public static void rename(Object in, int mode, String oldName, String newName, String...path) {
-		  change(in, path, 0, oldName.split("\\."), newName, mode);	
+	public static void nest(Object in, String oldName, String newName, String nested, String...path) {
+		String old[] = oldName.split("\\.");
+		for (BasicBSONObject obj : select(in, path)) {
+		   stringToComplex(obj, old, newName, nested); 
+		}	
 	}
-	
+		
 	protected static Object read(Object obj, String path) {		
 		return read(obj, new String[] { path });
 	}
@@ -55,11 +62,11 @@ public class FHIRVersionConvert {
 			Object array = ((BasicBSONObject) obj).get(name);
 			if (array != null && array instanceof BasicBSONList) {
 				((BasicBSONList) array).add(content);
-			}
-		} else {
-			BasicBSONList lst = new BasicBSONList();
-			lst.add(content);
-			((BasicBSONList) obj).put(name, lst);
+			} else {
+				BasicBSONList lst = new BasicBSONList();
+				lst.add(content);
+				((BasicBSONObject) obj).put(name, lst);
+		    }
 		}
 	}
 	
@@ -72,14 +79,66 @@ public class FHIRVersionConvert {
 	}
 	
 	protected static BasicBSONList getList(Object obj, String name) {
-		if (obj instanceof BasicBSONList) {
-			Object target = ((BasicBSONList) obj).get(name);
+		if (obj instanceof BasicBSONObject) {
+			Object target = ((BasicBSONObject) obj).get(name);
 			if (target != null && target instanceof BasicBSONList) return (BasicBSONList) target;
 		}
 		return null;
 	}
 	
-	public static void change(Object in, String[] path, int idx, String oldName[], String newName, int mode) {
+	protected static List<BasicBSONObject> select(Object in, String[] path) {
+		return select(in, path, 0);
+	}
+	
+	protected static List<BasicBSONObject> select(Object in, String[] path, int idx) {
+		List<BasicBSONObject> result = Collections.emptyList();
+		if (in == null) return result;
+		
+		if (in instanceof BasicBSONList) {
+		  	BasicBSONList list = ((BasicBSONList) in);
+		  	for (Object member : list) {
+		  		List<BasicBSONObject> part = select(member, path, idx);
+		  		if (result.isEmpty()) result = part; 
+		  		else if (!part.isEmpty()) result.addAll(part);
+		  	}
+		}
+		
+		if (in instanceof BasicBSONObject) {
+			BasicBSONObject obj = ((BasicBSONObject) in);
+		    if (idx < path.length) {
+			   Object target = obj.get(path[idx]);
+			   List<BasicBSONObject> part = select(target, path, idx+1);
+			   if (result.isEmpty()) result = part;
+			   else if (!part.isEmpty()) result.addAll(part);			   
+		    } else {
+		    	if (result.isEmpty()) result = new ArrayList<BasicBSONObject>();
+		    	result.add(obj);
+		    			    	
+		    }
+		}
+		
+		return result;		    			
+	}
+	
+	public static void rename(BasicBSONObject obj, String oldName[], String newName) {
+		Object old = read(obj, oldName);
+		if (old != null) {
+    		obj.put(newName, old);
+			obj.removeField(oldName[0]);
+		}
+	}
+	
+	public static void stringToComplex(BasicBSONObject obj, String[] oldName, String newName, String nestedName) {
+		Object old_string = read(obj, oldName);
+		if (old_string != null && old_string instanceof String) {
+			obj.removeField(oldName[0]);		    			
+			BasicBSONObject entry = new BasicBSONObject();		    			
+			entry.append(nestedName, old_string);		    			
+			addToArray(obj, newName, entry);
+		}
+	}
+	
+	/*public static void change(Object in, String[] path, int idx, String oldName[], String newName, int mode) {
 		if (in == null) return;
 		
 		if (in instanceof BasicBSONList) {
@@ -116,17 +175,16 @@ public class FHIRVersionConvert {
 				
 			}
 		}
-	}
+	}*/
 		
-	public static void convertRelated(Object in) {
-		
-		if (in instanceof BasicBSONObject) {
+	public static void convertRelated(Object in) {		
+		if (in instanceof BasicBSONObject) {		
 			BasicBSONObject obj = ((BasicBSONObject) in);
 		  
 		  	BasicBSONList related = getList(obj, "related");
-		  	if (related != null) {
+		  	if (related != null) {		  		
 		  		for (Object elem : related) {
-		  			if (has(elem, "type", "has-member")) {
+		  			if (has(elem, "type", "has-member")) {		  			
 		  				addToArray(obj, "hasMember", read(elem, "target"));
 		  			}
 		  			if (has(elem, "type", "derived-from")) {

@@ -13,12 +13,12 @@ angular.module('services')
 	
 	service.search = function(resource, properties) {	
 		var p = $httpParamSerializer(properties);
-		return server.get("/fhir/"+resource+(p?("?"+p):"")).then(function(result) {
+		return server.getR4("/fhir/"+resource+(p?("?"+p):"")).then(function(result) {
 			return service.unwrap(result);
 		});
 	};	
 	
-	service.post = function(resource, data) {
+	service.postR4 = function(resource, data) {
 		return server.post("/fhir/"+resource, JSON.stringify(data));
 	};
 		
