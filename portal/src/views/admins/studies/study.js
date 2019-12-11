@@ -22,6 +22,7 @@ angular.module('portal')
 			$scope.status.doBusy(usergroups.listUserGroupMembers($scope.studyid))
 			.then(function(data) {
 				$scope.members = data.data;
+				angular.forEach($scope.members, function(member) { member.role.unpseudo = !member.role.pseudo; });
 			});
 			
 			$scope.status.doBusy(server.get(jsRoutes.controllers.Market.getStudyAppLinks("study", $scope.studyid).url))
