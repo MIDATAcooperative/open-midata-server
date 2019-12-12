@@ -19,7 +19,8 @@ public class IndexKey implements Comparable<IndexKey>, Serializable {
 	protected MidataId value;
 	
 	public IndexKey(Comparable[] key, MidataId id, MidataId value) {
-		this.key = key;
+		this.key = new Comparable[key.length]; 
+		System.arraycopy(key, 0, this.key, 0, key.length);
 		this.id = id;
 		this.value = value;
 	}
@@ -92,5 +93,13 @@ public class IndexKey implements Comparable<IndexKey>, Serializable {
 		value = MidataId.from(s.readUTF());
 		key = (Comparable[]) s.readObject();
 	}
+
+	/*
+	@Override
+	public String toString() {
+		return "("+key[0].toString()+","+id.toString()+","+value.toString()+")";
+	}
+	*/
+	
 	
 }
