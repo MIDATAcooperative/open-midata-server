@@ -306,3 +306,7 @@
 {"_id":{"$oid":"5d0c8f25aed645119c75fa51"},"system":"http://loinc.org","code":"21008-8","display":"HIV 1 RNA [#/​volume] (viral load) in Serum or Plasma by Probe","content":"loinc/21008-8"}
 {"_id":{"$oid":"5d6d1deeaed6452211ffe428"},"system":"http://midata.coop","code":"MSMotTestLinePrepDetails","display":"MS Motoriktest Linie nachzeichnen Probelauf - Details pro Linie","content":"MSMotTestLinePrepDetails"}
 {"_id":{"$oid":"5d6d1e48aed6452211ffe42a"},"system":"http://midata.coop","code":"MSMotTestLinePrepRun","display":"MS Motoriktest Linie nachzeichnen Probelauf - Ergebnis pro Hand und Methode","content":"MSMotTestLinePrepRun"}
+{"_id":{"$oid":"5df732e9aed64510d0861a04"},"system":"http://loinc.org","code":"2344-0","display":"Glucose [Mass/volume] in Body fluid","content":"loinc/2344-0"}
+{"_id":{"$oid":"5df732e9aed64510d0861a05"},"system":"http://loinc.org","code":"14745-4","display":"Glucose [Moles/volume] in Body fluid","content":"loinc/2344-0"}
+{"_id":{"$oid":"5df733b4aed64510d0861a07"},"system":"http://loinc.org","code":"2345-7","display":"Glucose [Mass/volume] in Serum or Plasma","content":"loinc/2345-7"}
+{"_id":{"$oid":"5df733b4aed64510d0861a08"},"system":"http://loinc.org","code":"14749-6","display":"Glucose [Moles/volume] in Serum or Plasma","content":"loinc/2345-7"}
