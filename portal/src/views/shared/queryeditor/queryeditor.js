@@ -14,7 +14,7 @@ angular.module('portal')
  	  	 formatYear: 'yy',
  	  	 startingDay: 1,
  	  	  
-    };	
+    };	 
     
     $translatePartialLoader.addPart("developers");
     
@@ -61,6 +61,7 @@ angular.module('portal')
 	$scope.resourceOptions = {
 	  "fhir/AuditEvent" : ["noapp", "noowner", "notime", "nopublic"], 
 	  "fhir/Consent" : ["noapp", "noowner", "notime", "nopublic"],
+	  "fhir/ValueSet" : ["noapp","noowner", "notime","initpublic"],
 	  "fhir/Group" : ["noowner"],
 	  "fhir/Patient" : ["noapp", "notime", "nopublic"],
 	  "fhir/Person" : ["noapp", "noowner", "notime", "nopublic"],
@@ -389,13 +390,14 @@ angular.module('portal')
 		console.log(block);
 		$scope.currentBlock = block;
 		
-		$scope.currentBlock.flags = {};
-		
+		$scope.currentBlock.flags = {};		
 		var ro = $scope.resourceOptions[block.format];
-		if (ro) {
+		if (ro) {			
 			angular.forEach(ro, function(r) { $scope.currentBlock.flags[r] = true; });
 		}
 		
+		if ($scope.currentBlock.flags.initpublic && block.isnew) block.public = "only";
+
 		if (!$scope.currentBlock.flags.notime) {
 		   $scope.timeModes = ["created-after", "updated-after" ];
 		} else $scope.timeModes = undefined;
