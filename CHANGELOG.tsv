@@ -25,4 +25,5 @@ id0023	25.11.2019	a.kreutz	F	Patient registration for HP	Healthcare providers ma
 id0024	29.11.2019	a.kreutz	B	Fixed: Licence checker could not check team licences correctly.
 id0025	02.12.2019	a.kreutz	I	Added study code and name as type to participant identifiers.(FHIR R4) 
 id0026	05.12.2019	a.kreutz	B	Fixed bugs in STU3 to R4 conversion
+id0027	19.12.2019	a.kreutz	F	Added FHIR ValueSet Resource for R4
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 
