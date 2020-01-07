@@ -411,9 +411,9 @@ public class CompositionResourceProvider extends RecordBasedResourceProvider<Com
 	
 	private void processSections(Bundle retVal, List<SectionComponent> sections) throws AppException {
 		for (SectionComponent component : sections) {
-			if (component.hasSection()) {
-				List<Reference> refs = component.getEntry();
-				addReferences(retVal, refs);
+			List<Reference> refs = component.getEntry();
+			addReferences(retVal, refs);
+			if (component.hasSection()) {				
 				processSections(retVal, component.getSection());
 			}
 		}
