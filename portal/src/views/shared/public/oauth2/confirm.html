@@ -1,0 +1,103 @@
+<div ng-controller="OAuth2ConfirmLoginCtrl" ng-cloak>
+
+	<div id="x" ng-hide="view.active">
+		<div class="mi-or-auth" ng-show="pleaseConfirm">
+			<div class="mi-or-auth__content">
+
+				<section class="mi-or-auth__section">
+					<p class="mi-at-text mi-at-text--white mi-at-text--highlighted" translate="oauth2.please_confirm" translate-value-consent="{{ consent }}"></p>			
+			    </section>
+			</div>
+		</div>
+		
+		<div class="mi-or-auth">
+			<div class="mi-or-auth__content">
+
+
+				<section class="mi-or-auth__section mi-or-auth__section--app">
+					<span class="mi-at-text mi-at-text--highlighted mi-at-text--white">{{ app.i18n[translate.use()].name || app.name }}</span> <span class="mi-at-text mi-at-text--white" translate="oauth2.requesting_app"></span>
+
+					<div class="mi-or-auth__app_description">
+						<span class="mi-at-text mi-at-text--smaller mi-at-text--white">{{ app.i18n[translate.use()].description || app.description }}</span>
+
+					</div>
+										
+				</section>
+				
+				<section class="mi-or-auth__section required" ng-if="app.unlockCode">
+						
+									<label class="mi-at-text mi-at-text--white" for="unlockCode" translate="registration.unlock_code"></label> <input type="text" class="mi-at-input mi-at-input--text" id="unlockCode"
+										name="unlockCode" translate translate-attr-placeholder="registration.unlock_code" ng-model="login.unlockCode" required>
+									</formrow>
+			    </section>
+				
+				<section class="mi-or-auth__section mi-or-auth__section--required_data">
+					<span class="mi-at-text mi-at-text--highlighted mi-at-text--white" translate="oauth2.requests_access"></span>
+
+                    <ul>
+						<li ng-repeat="label in labels"><span class="mi-at-text mi-at-text--smaller mi-at-text--white">{{ label }}</span></li>						
+                    </ul>
+					<p class="mi-at-text mi-at-text--white" translate="oauth2.reshares_data" ng-show="app.resharesData"></p>
+					<p class="mi-at-text mi-at-text--white" translate="oauth2.allows_user_search" ng-show="app.allowsUserSearch"></p>
+                    
+				</section>
+				
+				<section class="mi-or-auth__section mi-or-auth__section--study" ng-show="app.termsOfUse">
+					<fieldset class="mi-at-input__fieldset mi-at-input--checkbox mi-at-input--checkbox-white">
+						<input id="appAgb" name="appAgb" class="mi-at-input mi-at-input--checkbox" type="checkbox" value="" ng-model="login.appAgb"
+							floating-label />
+							
+						<label for="mi-at-input-checkbox" class="mi-at-text mi-at-text--white">
+						   <span translate="registration.app_agb2"></span>
+						   <a class="mi-at-text--white mi-at-input--checkbox-link" ng-click="terms({which : app.termsOfUse })" href="javascript:" translate="registration.app_agb3"></a>
+						 </label>							 					
+						 
+					</fieldset>
+					
+				</section>
+				
+				
+				<section class="mi-or-auth__section mi-or-auth__section--study" ng-repeat="link in links">
+					<fieldset style="height:70px" class="mi-at-input__fieldset mi-at-input--checkbox mi-at-input--checkbox-white">
+						<input id="mi-at-input-" class="mi-at-input mi-at-input--checkbox" type="checkbox" value="" ng-checked="login.confirmStudy.indexOf(link.studyId || link.userId)>=0" ng-click="toggle(login.confirmStudy, link.studyId || link.userId);"
+							floating-label  /> 
+						<label for="mi-at-input-checkbox" class="mi-at-text mi-at-text--white">
+						  <span translate="{{ getLinkLabel(link) }}"></span>
+						  <a class="mi-at-text--white mi-at-input--checkbox-link" ng-show="link.termsOfUse" ng-click="terms({which : link.termsOfUse })" href="javascript:">{{ link.study.name }} {{ link.provider.name }}</a>
+						 </label>
+					</fieldset>
+
+					<div class="mi-or-auth__study_title" ng-hide="link.termsOfUse">
+						<span class="mi-at-text mi-at-text--highlighted mi-at-text--white">{{ link.study.name }} {{ link.provider.name }}</span>
+
+					</div>
+					<div class="mi-or-auth__study_description" ng-hide="link.termsOfUse">
+						<span class="mi-at-text mi-at-text--smaller mi-at-text--white">{{ link.study.description }}</span>
+                      
+					</div>
+				</section>
+				<div class="mi-or-auth__fields_checkboxes"></div>
+               
+				
+				  <div class="mi-or-login__error" ng-show="error">
+                       <span class="mi-at-text mi-at-text--smallest mi-at-text--white mi-at-text--highlighted"  translate="{{ error.code || error }}"></span>
+                    </div>
+						
+						
+				<button class="mi-mo-flat_button mi-mo-flat_button--rounded" ng-disabled="status.action=='login' || doneLock || (app.termsOfUse && !login.appAgb)" type="button" ng-click="confirm();">
+					<span class="mi-at-text" translate="oauth2.confirm_btn"></span>
+
+				</button>
+
+
+             </div>
+			<!--  <pre>{{ params | json }}</pre>  -->
+		</div>
+
+	</div>
+
+	<div class="mi-or-signup" ng-show="view.active">	
+		<div ng-include="'/views/shared/public/terms/terms-modal.html'"></div>			
+	</div>
+
+</div>
