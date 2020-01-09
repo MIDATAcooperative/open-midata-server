@@ -59,7 +59,8 @@ public class QuickRegistration extends APIController {
 		String appName = JsonValidation.getString(json, "app");
 		String studyName = null;
 		Study study = null;
-		Set<MidataId> confirmStudy =  JsonExtraction.extractMidataIdSet(json.get("confirmStudy"));
+		// Disabled for two page reg.
+		//Set<MidataId> confirmStudy =  JsonExtraction.extractMidataIdSet(json.get("confirmStudy"));
 		
 		if (json.has("study")) { studyName = JsonValidation.getString(json, "study"); }
 						
@@ -74,6 +75,8 @@ public class QuickRegistration extends APIController {
 		Set<UserFeature> requirements = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(UserRole.MEMBER);
 		if (app.requirements != null) requirements.addAll(app.requirements);
 		
+		// Disabled for two page reg.
+		/*
 		Set<StudyAppLink> links = StudyAppLink.getByApp(app._id);
 		for (StudyAppLink sal : links) {
 			if (sal.isConfirmed() && sal.active && (sal.type.contains(StudyAppLinkType.OFFER_P) || sal.type.contains(StudyAppLinkType.REQUIRE_P))) {
@@ -86,7 +89,7 @@ public class QuickRegistration extends APIController {
 					if (studyReq != null) requirements.addAll(studyReq);
 				}
 			}
-		}
+		}*/
 				
 		if (studyName != null) {
 			study = Study.getByCodeFromMember(studyName, Study.ALL);
@@ -158,7 +161,8 @@ public class QuickRegistration extends APIController {
 									
 		user.status = UserStatus.NEW;	
 		
-		user.agreedToTerms(app.termsOfUse, user.initialApp);
+		//Disabled for two page registration
+		//user.agreedToTerms(app.termsOfUse, user.initialApp);
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user, app._id);
 		//Application.handlePreCreated(user);
@@ -198,14 +202,14 @@ public class QuickRegistration extends APIController {
 		
 			if (study != null) controllers.members.Studies.requestParticipation(new ExecutionInfo(user._id, user.role), user._id, study._id, user.initialApp, JoinMethod.RESEARCHER);
 			
-			if (device != null) {
+			/*if (device != null) {
 			   MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, device, true, confirmStudy);
 			   return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withAppInstance(appInstance), json, app, user._id);
-			}
+			}*/
 					
-			return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withConfirmations(confirmStudy), json, app, user._id);
+			return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device), json, app, user._id);
 		} else {
-			return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withConfirmations(confirmStudy), json, app, user._id);
+			return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device), json, app, user._id);
 		}
 	}
 	
