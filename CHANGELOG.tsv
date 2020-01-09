@@ -27,4 +27,5 @@ id0025	02.12.2019	a.kreutz	I	Added study code and name as type to participant id
 id0026	05.12.2019	a.kreutz	B	Fixed bugs in STU3 to R4 conversion
 id0027	19.12.2019	a.kreutz	F	Added FHIR ValueSet Resource for R4
 id0028	07.01.2020	a.kreutz	B	Fixed $document operator	The composition resources $document operator did not return all linked resources.
+id0029	09.01.2020	a.kreutz	I	Splitted Midata Registration and App Confirmation
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 

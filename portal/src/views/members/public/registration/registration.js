@@ -1,7 +1,7 @@
 angular.module('portal')
 .controller('RegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', '$translate', 'languages', '$stateParams', 'oauth', '$document', 'views', 'dateService', '$window', 'crypto', function($scope, $state, server, status, session, $translate, languages, $stateParams, oauth, $document, views, dateService, $window, crypto) {
 	
-	$scope.registration = { language : $translate.use(), confirmStudy:[] };
+	$scope.registration = { language : $translate.use(), confirmStudy : [] };
 	$scope.languages = languages.all;
 	$scope.countries = languages.countries;
 	$scope.error = null;
@@ -17,7 +17,7 @@ angular.module('portal')
 				
 	// register new user
 	$scope.register = function() {		
-		console.log("A");
+		
         $scope.myform.password.$setValidity('compare', $scope.registration.password1 ==  $scope.registration.password2);
         $scope.myform.agb.$setValidity('mustaccept', $scope.registration.agb);        
         if (!$scope.registration.agb) {
@@ -31,14 +31,15 @@ angular.module('portal')
           $scope.myform.birthday.$setValidity('date', dateService.isValidDate($scope.registration.birthdayDay, $scope.registration.birthdayMonth, $scope.registration.birthdayYear));
         }
         
-     
+        /*
         if ($scope.app && $scope.app.termsOfUse) {
         	$scope.myform.appAgb.$setValidity('mustaccept', $scope.registration.appAgb);
             if (!$scope.registration.appAgb) {        	
 	        	$scope.myform.appAgb.$invalid = true;
 	        	$scope.myform.appAgb.$error = { 'mustaccept' : true };
             }
-        }
+		}
+		*/
         
         var pwvalid = crypto.isValidPassword($scope.registration.password1); 
         $scope.myform.password.$setValidity('tooshort', pwvalid);
@@ -47,7 +48,7 @@ angular.module('portal')
         	$scope.myform.password.$error = { 'tooshort' : true };
         }
         
-        
+        /*
         if ($scope.links) {
 	        for (var i=0;i<$scope.links.length;i++) {
 				console.log($scope.links[i]);
@@ -60,22 +61,21 @@ angular.module('portal')
 					return;
 				}
 			}
-        }
-        console.log("B"); 
+		}
+		*/
+       
 
 		$scope.submitted = true;	
 		if ($scope.error && $scope.error.field && $scope.error.type && $scope.myform[$scope.error.field]) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
 		$scope.error = null;
 		if (! $scope.myform.$valid) {
 			var elem = $document[0].querySelector('input.ng-invalid');
-			if (elem && elem.focus) elem.focus();
-			console.log("OUT");
+			if (elem && elem.focus) elem.focus();			
 			return;
 		}
 		
 		if ($scope.registration.password1 !=  $scope.registration.password2) {
-			$scope.error = { code : "error.invalid.password_repetition" };
-			console.log("OUT2");
+			$scope.error = { code : "error.invalid.password_repetition" };			
 			return;
 		}		
 				
@@ -92,8 +92,7 @@ angular.module('portal')
 			  return;
 			} else {
 				if (dparts[2].length==2) dparts[2] = "19"+dparts[2];
-				$scope.registration.birthday = dparts[2]+"-"+pad(dparts[1])+"-"+pad(dparts[0]);
-				console.log($scope.registration.birthday);
+				$scope.registration.birthday = dparts[2]+"-"+pad(dparts[1])+"-"+pad(dparts[0]);				
 			}
 			
 			//$scope.registration.birthday = d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
@@ -152,9 +151,11 @@ angular.module('portal')
 	};
 	
 	$scope.confirmWelcome = function() {
-		$scope.status.doAction("register", oauth.login(true, $scope.registration.confirmStudy)) 
-	    .then(function(result) {
-			  //$scope.welcomemsg = false;
+		$scope.status.doAction("register", oauth.login(false)) 
+	    .then(function(result) {			 
+			  if (result === "CONFIRM" || result === "CONFIRM-STUDYOK") {
+				$state.go("^.oauthconfirm", $state.params);
+			  }
 			  if (result !== "ACTIVE") { session.postLogin({ data : result}, $state);}
 		});			
 	};
@@ -172,8 +173,7 @@ angular.module('portal')
 		return $scope.app && $scope.app.requirements && ($scope.app.requirements.indexOf('PHONE_ENTERED') >= 0 ||  $scope.app.requirements.indexOf('PHONE_VERIFIED') >=0 );
 	};
 	
-	$scope.terms = function(def) {
-		console.log("TERMS");
+	$scope.terms = function(def) {		
 		views.setView("terms", def, "Terms");
 	};
 	
@@ -201,7 +201,7 @@ angular.module('portal')
 	$scope.back = function() {
 		$window.history.back();
 	};
-	
+	/*
 	$scope.getLinkLabel = function(link) {
 		if (link.linkTargetType == "ORGANIZATION") {
 			if (link.type.indexOf("REQUIRE_P") >= 0) return "oauth2.confirm_provider";
@@ -218,7 +218,7 @@ angular.module('portal')
 		}
 		
 	};
-
+    */
 	if ($state.params.login) {
 		$scope.registration.email = $state.params.login;
 		$scope.action = $state.params.action;

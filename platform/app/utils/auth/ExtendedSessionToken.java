@@ -192,7 +192,8 @@ public class ExtendedSessionToken extends PortalSessionToken {
     public ExtendedSessionToken withApp(MidataId appId, String device) {    	
     	this.appId = appId;
     	this.device = device;
-    	setAppConfirmed();
+		//Disabled for two page registration
+		//setAppConfirmed();
     	return this;
     }
     
