@@ -310,3 +310,8 @@
 {"_id":{"$oid":"5df732e9aed64510d0861a05"},"system":"http://loinc.org","code":"14745-4","display":"Glucose [Moles/volume] in Body fluid","content":"loinc/2344-0"}
 {"_id":{"$oid":"5df733b4aed64510d0861a07"},"system":"http://loinc.org","code":"2345-7","display":"Glucose [Mass/volume] in Serum or Plasma","content":"loinc/2345-7"}
 {"_id":{"$oid":"5df733b4aed64510d0861a08"},"system":"http://loinc.org","code":"14749-6","display":"Glucose [Moles/volume] in Serum or Plasma","content":"loinc/2345-7"}
+{"_id":{"$oid":"5e185815aed6450cb19b1b07"},"system":"http://midata.coop","code":"activities/average-speed","display":"Average Speed","content":"activities/average-speed"}
+{"_id":{"$oid":"5e185815aed6450cb19b1b09"},"system":"http://midata.coop","code":"activities/max-speed","display":"Maximum Speed","content":"activities/max-speed"}
+{"_id":{"$oid":"5e18589daed6450cb19b1b0d"},"system":"http://midata.coop","code":"activities/moving-time","display":"Moving Time","content":"activities/moving-time"}
+{"_id":{"$oid":"5e18589daed6450cb19b1b0e"},"system":"http://midata.coop","code":"activities/elapsed-time","display":"Elapsed Time","content":"activities/elapsed-time"}
+{"_id":{"$oid":"5e186f3eaed6450cb19b1b11"},"system":"http://midata.coop","code":"activities/photo-count","display":"Photos posted","content":"activities/photo-count"}
