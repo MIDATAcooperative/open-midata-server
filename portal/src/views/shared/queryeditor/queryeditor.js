@@ -86,7 +86,7 @@ angular.module('portal')
 		};
 		
 		var addgroup = function(dat) {
-			var grp = { key : "grp "+dat.name, group : dat.name, system : dat.system, display : dat.label[$translate.use()], contents:[] };
+			var grp = { key : "grp "+dat.name, group : dat.name, system : dat.system, display : dat.label[$translate.use()] || dat.label.en || dat.name, contents:[] };
 			var addgrp = function(what) {				
 				grp.contents.push(what); 
 			};
@@ -129,7 +129,7 @@ angular.module('portal')
 				var dat = result.data[i];
 				for (var lang in dat.label) {
 				  if (dat.label[lang].toLowerCase().indexOf(what) >= 0) {					 
-				    lookupCodes({ key : dat.content, content : dat.content, display : dat.label[$translate.use()], format : dat.resourceType })
+				    lookupCodes({ key : dat.content, content : dat.content, display : dat.label[$translate.use()] || dat.label.en || dat.content, format : dat.resourceType })
 				    .then(add);					
 				  }
 				}
@@ -179,7 +179,7 @@ angular.module('portal')
 	var lookupContent = function(name) {
 		return formats.searchContents({ content : name }, ["content", "label", "resourceType"])
 		.then(function(result) {
-			if (result.data.length == 1) return { key : result.data[0].content, format : result.data[0].resourceType, content : result.data[0].content, display : result.data[0].label[$translate.use()] };
+			if (result.data.length == 1) return { key : result.data[0].content, format : result.data[0].resourceType, content : result.data[0].content, display : result.data[0].label[$translate.use()] || result.data[0].label.en || result.data[0].content };
 		});
 	};
 	
