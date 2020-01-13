@@ -22,7 +22,6 @@ import org.apache.commons.codec.binary.Base64InputStream;
 import org.hl7.fhir.r4.model.DomainResource;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonValueFormat;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 
@@ -51,6 +50,7 @@ import models.Plugin;
 import models.Record;
 import models.RecordsInfo;
 import models.ResearchUser;
+import models.ServiceInstance;
 import models.Space;
 import models.Study;
 import models.StudyAppLink;
@@ -1284,83 +1284,98 @@ public class Studies extends APIController {
 		User researcher = User.getById(userId, Sets.create("apps", "password", "firstname", "lastname", "email", "language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode",
 				"accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));
 
-		if (shareBack) {
-
-			if (group == null) {
-				for (StudyGroup grp : study.groups) {
-					Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudy(userId, grp.name, study._id, Sets.create("authorized"));
-
-					if (consents.isEmpty()) {
-						Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyId, grp.name, Sets.create());
-						joinSharing(userId, userId, study, grp.name, false, new ArrayList<StudyParticipation>(parts));
-					}
-				}
-
-			} else {
-				Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudy(userId, group, study._id, Sets.create("authorized"));
-
-				if (consents.isEmpty()) {
-					Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyId, group, Sets.create());
-					joinSharing(userId, userId, study, group, false, new ArrayList<StudyParticipation>(parts));
-				}
-
-			}
-
-		}
-
-		if (plugin.type.equals("mobile") || plugin.type.equals("service")) {
-			String device;
-			if (plugin.type.equals("mobile")) {
-			  JsonValidation.validate(json, "device");
-			  device = JsonValidation.getString(json, "device");
-			  if (device != null && device.length()<4) throw new BadRequestException("error.illegal.device", "Value for device is too short.");
-			} else {
-			  device = "service";	
-			}
-
-			MobileAppInstance appInstance = MobileAPI.installApp(userId, plugin._id, researcher, device, false, Collections.emptySet());
-			KeyManager.instance.changePassphrase(appInstance._id, device);
-			Map<String, Object> query = appInstance.sharingQuery;
-			query.put("study", studyId.toString());
-			if (restrictRead && group != null)
-				query.put("study-group", group);
-
-			if (shareBack) {
-				query.put("target-study", studyId.toString());
-				if (group != null)
-					query.put("target-study-group", group);
-			}
-			query.put("link-study", studyId.toString());
-			if (group != null)
-				query.put("link-study-group", group);
-
-			appInstance.set(appInstance._id, "sharingQuery", query);
-
-			HealthProvider.confirmConsent(appInstance.owner, appInstance._id);
-			appInstance.status = ConsentStatus.ACTIVE;
+		if (plugin.type.equals("analyzer")) {
+		
+			ServiceInstance si = new ServiceInstance();
+			si._id = new MidataId();
+			si.linkedStudy = studyId;
+			si.linkedStudyGroup = group;
+			si.managerAccount = studyId;
+			si.status = UserStatus.ACTIVE;
+			si.executorAccount = si._id;
+			si.name = study.name + (group != null ? (" - " + group) : "");
+			si.add();
 
 		} else {
-
-			Space space = null;
-			space = Spaces.add(userId, plugin.defaultSpaceName, plugin._id, plugin.type, study.code + ":" + (group != null ? group : ""), licence);
-
-			Map<String, Object> query = new HashMap<String, Object>(Feature_QueryRedirect.simplifyAccessFilter(plugin._id, plugin.defaultQuery));
-			query.put("study", studyId.toString());
-			if (restrictRead && group != null)
-				query.put("study-group", group);
-
 			if (shareBack) {
-				query.put("target-study", studyId.toString());
-				if (group != null)
-					query.put("target-study-group", group);
+
+				if (group == null) {
+					for (StudyGroup grp : study.groups) {
+						Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudy(userId, grp.name, study._id, Sets.create("authorized"));
+
+						if (consents.isEmpty()) {
+							Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyId, grp.name, Sets.create());
+							joinSharing(userId, userId, study, grp.name, false, new ArrayList<StudyParticipation>(parts));
+						}
+					}
+
+				} else {
+					Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudy(userId, group, study._id, Sets.create("authorized"));
+
+					if (consents.isEmpty()) {
+						Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyId, group, Sets.create());
+						joinSharing(userId, userId, study, group, false, new ArrayList<StudyParticipation>(parts));
+					}
+
+				}
+
 			}
-			query.put("link-study", studyId.toString());
-			if (group != null)
-				query.put("link-study-group", group);
 
-			RecordManager.instance.shareByQuery(userId, userId, space._id, query);
+			if (plugin.type.equals("mobile") || plugin.type.equals("service")) {
+				String device;
+				if (plugin.type.equals("mobile")) {
+				JsonValidation.validate(json, "device");
+				device = JsonValidation.getString(json, "device");
+				if (device != null && device.length()<4) throw new BadRequestException("error.illegal.device", "Value for device is too short.");
+				} else {
+				device = "service";	
+				}
 
-		}
+				MobileAppInstance appInstance = MobileAPI.installApp(userId, plugin._id, researcher, device, false, Collections.emptySet());
+				KeyManager.instance.changePassphrase(appInstance._id, device);
+				Map<String, Object> query = appInstance.sharingQuery;
+				query.put("study", studyId.toString());
+				if (restrictRead && group != null)
+					query.put("study-group", group);
+
+				if (shareBack) {
+					query.put("target-study", studyId.toString());
+					if (group != null)
+						query.put("target-study-group", group);
+				}
+				query.put("link-study", studyId.toString());
+				if (group != null)
+					query.put("link-study-group", group);
+
+				appInstance.set(appInstance._id, "sharingQuery", query);
+
+				HealthProvider.confirmConsent(appInstance.owner, appInstance._id);
+				appInstance.status = ConsentStatus.ACTIVE;
+
+			} else {
+
+				Space space = null;
+				space = Spaces.add(userId, plugin.defaultSpaceName, plugin._id, plugin.type, study.code + ":" + (group != null ? group : ""), licence);
+
+				Map<String, Object> query = new HashMap<String, Object>(Feature_QueryRedirect.simplifyAccessFilter(plugin._id, plugin.defaultQuery));
+				query.put("study", studyId.toString());
+				if (restrictRead && group != null)
+					query.put("study-group", group);
+
+				if (shareBack) {
+					query.put("target-study", studyId.toString());
+					if (group != null)
+						query.put("target-study-group", group);
+				}
+				query.put("link-study", studyId.toString());
+				if (group != null)
+					query.put("link-study-group", group);
+
+				RecordManager.instance.shareByQuery(userId, userId, space._id, query);
+
+			}
+
+	    }
 		AuditManager.instance.success();
 		return ok();
 	}

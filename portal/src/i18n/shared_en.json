@@ -453,10 +453,12 @@
 	 },
 	 "plugintype" : {
 	   "visualization" : "Plugin",
-	   "service" : "Service",
+	   "service" : "Internal Service",
 	   "oauth1" : "OAuth 1",
 	   "oauth2" : "OAuth 2",
-	   "mobile" : "Application (Smartphone, Web)"
+     "mobile" : "Application (Smartphone, Web)",
+     "external": "External Service",
+     "analyzer" : "Project analyzer"
 	 },
 	 "infos" : {
 	   "SUMMARY" : "Short Summary",

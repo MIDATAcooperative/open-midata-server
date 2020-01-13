@@ -29,7 +29,9 @@ angular.module('portal')
 	    { value : "service", label : "Service" },
 	    { value : "oauth1", label : "OAuth 1 Import" },
 	    { value : "oauth2", label : "OAuth 2 Import" },
-	    { value : "mobile", label : "Mobile App" }
+		{ value : "mobile", label : "Mobile App" },
+		{ value : "external", label : "External Service" },
+		{ value : "analyzer", label : "Project analyzer" }
 	];
 	$scope.tags = [
 	    "Analysis", "Import", "Planning", "Protocol"

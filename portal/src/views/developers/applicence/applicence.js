@@ -8,6 +8,7 @@ angular.module('portal')
 	$scope.entities = ["USER","USERGROUP","ORGANIZATION"];
 				
 	$scope.loadApp = function(appId) {
+		$scope.appId = appId;
 		$scope.status.doBusy(apps.getApps({ "_id" : appId }, ["_id", "version", "creator", "filename", "name", "description", "licenceDef"]))
 		.then(function(data) { 
 			$scope.app = data.data[0];

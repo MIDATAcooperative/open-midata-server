@@ -19,7 +19,6 @@ import java.util.Set;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
-import org.bson.BSONObject;
 import org.bson.types.ObjectId;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -47,7 +46,6 @@ import models.SoftwareChangeLog;
 import models.Space;
 import models.Study;
 import models.StudyAppLink;
-import models.StudyParticipation;
 import models.SubscriptionData;
 import models.TestPluginCall;
 import models.User;
@@ -57,7 +55,6 @@ import models.enums.AppReviewChecklist;
 import models.enums.ConsentStatus;
 import models.enums.EntityType;
 import models.enums.IconUse;
-import models.enums.JoinMethod;
 import models.enums.LinkTargetType;
 import models.enums.MessageReason;
 import models.enums.ParticipantSearchStatus;
@@ -84,7 +81,6 @@ import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
 import utils.auth.DeveloperSecured;
 import utils.auth.KeyManager;
-import utils.auth.Rights;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.LostUpdateException;
@@ -98,7 +94,6 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-import utils.messaging.SubscriptionManager;
 
 /**
  * functions for controlling the "market" of plugins
@@ -172,6 +167,7 @@ public class Market extends APIController {
 				app.type = JsonValidation.getString(json, "type");
 				app.requirements = JsonExtraction.extractEnumSet(json, "requirements", UserFeature.class);
 				app.targetUserRole = JsonValidation.getEnum(json, "targetUserRole", UserRole.class);
+				if (app.type.equals("analyzer")) app.targetUserRole = UserRole.RESEARCH;
 				app.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
 				app.resharesData = JsonValidation.getBoolean(json, "resharesData");
 				app.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
@@ -509,6 +505,10 @@ public class Market extends APIController {
 			JsonValidation.validate(json, "filename", "name", "description", "secret");
 		} else if (type.equals("visualization")) {
 			JsonValidation.validate(json, "filename", "name", "description", "url");
+		} else if (type.equals("external")) {
+			JsonValidation.validate(json, "filename", "name", "description");
+		} else if (type.equals("analyzer")) {
+			JsonValidation.validate(json, "filename", "name", "description");
 		} else {
 			throw new BadRequestException("error.internal", "Unknown app type.");
 		}
@@ -553,6 +553,7 @@ public class Market extends APIController {
 		plugin.tags = JsonExtraction.extractStringSet(json.get("tags"));
 		plugin.requirements = JsonExtraction.extractEnumSet(json, "requirements", UserFeature.class);
 		plugin.targetUserRole = JsonValidation.getEnum(json, "targetUserRole", UserRole.class);
+		if (plugin.type.equals("analyzer")) plugin.targetUserRole = UserRole.RESEARCH;
 		plugin.defaultSpaceName = JsonValidation.getStringOrNull(json, "defaultSpaceName");
 		plugin.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");
 		plugin.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));

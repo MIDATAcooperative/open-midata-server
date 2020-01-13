@@ -137,7 +137,7 @@ angular.module('portal')
 						
 		});
 		
-		apps.getApps({ "targetUserRole" : "RESEARCH" }, ["filename", "name","type"])
+		apps.getApps({ "targetUserRole" : "RESEARCH", type : ["analyzer","visualization","mobile"] }, ["filename", "name","type"])
 		.then(function(data) {
 			$scope.plugins = data.data;
 		});

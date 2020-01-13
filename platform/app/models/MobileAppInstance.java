@@ -3,8 +3,6 @@ package models;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
-
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import utils.collections.CMaps;
@@ -35,6 +33,11 @@ public class MobileAppInstance extends Consent {
 	 * Licence
 	 */
 	public MidataId licence;
+
+	/**
+	 * Id of Service Instance (optional)
+	 */
+	public MidataId serviceId;
 		
 	
 	public MobileAppInstance() {
