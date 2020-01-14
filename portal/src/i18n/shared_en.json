@@ -459,7 +459,8 @@
 	   "mobile" : "Application (Smartphone, Web)"
 	 },
 	 "infos" : {
-	   "SUMMARY" : "Short Summary",
+     "SUMMARY" : "Short Summary",
+     "ONBOARDING" : "App Onboarding Text",
 	   "DESCRIPTION" : "What is this research project doing?",
 	   "HOMEPAGE" : "Link to project homepage",
 	   "CONTACT" : "Contact information",

@@ -1011,7 +1011,7 @@ public class Market extends APIController {
 			result = StudyAppLink.getByApp(MidataId.from(idStr));
 			for (StudyAppLink sal : result) {
 				if (sal.linkTargetType == null || sal.linkTargetType == LinkTargetType.STUDY) {
-				  Study study = Study.getById(sal.studyId, Sets.create("_id", "code","name", "type", "description", "termsOfUse", "executionStatus","validationStatus","participantSearchStatus", "joinMethods"));
+				  Study study = Study.getById(sal.studyId, Sets.create("_id", "code","name", "type", "description", "termsOfUse", "executionStatus","validationStatus","participantSearchStatus", "joinMethods", "infos"));
 				  sal.study = study;
 				  sal.termsOfUse = study.termsOfUse;
 				} else {					
@@ -1042,7 +1042,7 @@ public class Market extends APIController {
 		Map<String, Set<String>> mapping = new HashMap<String, Set<String>>();
 		mapping.put("Plugin", Plugin.ALL_PUBLIC);
 		mapping.put("HealthcareProvider", HealthcareProvider.ALL);
-		mapping.put("Study", Sets.create("_id", "code","name","type", "description", "termsOfUse", "executionStatus", "validationStatus", "participantSearchStatus", "joinMethods"));
+		mapping.put("Study", Sets.create("_id", "code","name","type", "description", "termsOfUse", "executionStatus", "validationStatus", "participantSearchStatus", "joinMethods", "infos"));
 		mapping.put("StudyAppLink", StudyAppLink.ALL);
 		
 		return ok(JsonOutput.toJson(result, mapping)).as("application/json");
