@@ -8,6 +8,7 @@ angular.module('portal')
 	$scope.params = $location.search();
 	$scope.translate = $translate;
 	$scope.labels = [];
+	$scope.extra = [];
 		
 	$scope.view = views.getView("terms");
 		
@@ -25,8 +26,19 @@ angular.module('portal')
 			.then(function(data) {		    	
 				$scope.links = [];
 				for (var l=0;l<data.data.length;l++) {
-					var link = data.data[l];
-					if (link.type.indexOf("OFFER_P")>=0) $scope.links.push(link);
+					var link = data.data[l];				
+					if (link.type.indexOf("OFFER_P")>=0) {
+						if (link.study && link.study.infos) {							
+							angular.forEach(link.study.infos, function(info) {
+								if (info.type=="ONBOARDING") {
+									var v = info.value[$translate.use()] || info.value.int || "";
+									link.study.formatted = v.split(/\s\s/);
+									$scope.extra.push(link);
+								}
+							});
+						}
+						$scope.links.push(link);						
+					}
 				}
 								
 				oauth.links = $scope.links;
