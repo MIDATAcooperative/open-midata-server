@@ -41,6 +41,17 @@
 					<p class="mi-at-text mi-at-text--white" translate="oauth2.allows_user_search" ng-show="app.allowsUserSearch"></p>
                     
 				</section>
+
+				<section class="mi-or-auth__section mi-or-auth__section--app" ng-repeat="link in extra">
+					<span class="mi-at-text mi-at-text--highlighted mi-at-text--white">{{ link.study.name }}</span></span>
+
+					<div class="mi-or-auth__app_description" ng-repeat="line in link.study.formatted">
+						<span class="mi-at-text mi-at-text--smaller mi-at-text--white">{{ line }}</span>
+
+					</div>
+										
+				</section>
+
 				
 				<section class="mi-or-auth__section mi-or-auth__section--study" ng-show="app.termsOfUse">
 					<fieldset class="mi-at-input__fieldset mi-at-input--checkbox mi-at-input--checkbox-white">
