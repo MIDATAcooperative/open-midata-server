@@ -40,15 +40,9 @@
     },
 
     "addpatient" : {
-
-        // TODO NEW: Register patient
-        "sign_up" : "Register patient",
-
-        // TODO NEW: User successfully registered
-        "success" : "User successfully registered",
-
-        // TODO NEW: Initial Password
-        "initialPassword" : "Initial Password"
+        "sign_up" : "Inscrire le patient",
+        "success" : "Utilisateur inscrit avec succès",
+        "initialPassword" : "Mot de passe initial"
     },
 
     "provider_patientsearch" : {
@@ -65,9 +59,7 @@
         "usergroup" : "Team (optionnel)",
         "passcode" : "Code d'accès (optionnel)",
         "add_new_consent_btn" : "Ajouter un nouveau consentement",
-
-        // TODO NEW: Create patient account
-        "add_new_account_btn" : "Create patient account"
+        "add_new_account_btn" : "Créer un compte patient"
     },
 
     "provider_patients" : {
