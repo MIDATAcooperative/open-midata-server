@@ -137,7 +137,8 @@
        "password1" : "Too many missed login attempts. Please wait 1 minute before next attempt.",
        "password5" : "Too many missed login attempts. Please wait 5 minutes before next attempt.",
        "password60" : "Too many missed login attempts. Please wait 1 hour before next attempt.",
-       "participation" : "Account holder is not allowed to participate in research project.",
+       "participation" : "Account holder is not allowed to participate in research project.",       
+       "projectconsent" : "Account holder has retreated from a project which is required for application use.",       
        "consent" : "The consent for using this application has been revoked. To reenable the application, delete the rejected or expired consent on the MIDATA portal.",
        "app" : "You are allowed to use this application on a maximum of 10 devices. Please delete unused consents on the MIDATA portal." 
      },
@@ -406,7 +407,7 @@
 	   "ACTIVE" : "Active",
 	   "BLOCKED" : "Blocked",
 	   "DELETED" : "Deleted",
-	   "NEW" : "New"	   
+	   "NEW" : "New"
 	 },
 	 "frequency" : {
 	   "ONCE" : "Once",
@@ -459,7 +460,8 @@
 	   "mobile" : "Application (Smartphone, Web)"
 	 },
 	 "infos" : {
-	   "SUMMARY" : "Short Summary",
+     "SUMMARY" : "Short Summary",
+     "ONBOARDING" : "App Onboarding Text",
 	   "DESCRIPTION" : "What is this research project doing?",
 	   "HOMEPAGE" : "Link to project homepage",
 	   "CONTACT" : "Contact information",
@@ -1045,7 +1047,9 @@
     "device" : "Device: {{ device}}",
     "please_confirm" : "Please confirm the activation of the application using the MIDATA portal, then retry. Consent title is: {{ consent }}",
     "confirm_btn" : "Confirm Access",
-    "requests_access" : "Requested Access:",
+    "continue_btn" : "Continue",
+    "requests_access" : "Requested access by app:",
+    "requests_sharing" : "Data that will be shared with the project:",
     "shares_group" : "Group: {{ group }}",
     "shares_format" : "Format: {{ format }}",
     "shares_content" : "Content: {{ content }}",

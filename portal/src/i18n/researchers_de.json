@@ -92,7 +92,9 @@
         "no_valid_app" : "Keine Applikation ausgewählt",
         "type" : "Wie sind sie verknüpft?",
         "types" : {
-            "OFFER_P" : "Die Applikation bietet Projektteilnahme beim Anmelden/Start an",
+            "OFFER_P" : "Onboarding: Die Applikation bietet die Projektteilnahme beim Anmelden/Start an",
+            "OFFER_EXTRA_PAGE" : "Onboarding: Die Projektteilnahme wird auf einer zusätzliche Seite beschrieben",
+            "OFFER_INLINE_AGB" : "Onboarding: Die Nutzungsbedingungen als Projektbeschreibung verwenden",
             "REQUIRE_P" : "Die Teilnahme am Forschungsprojekt ist zwingend für die Nutzung der Applikation",
             "RECOMMEND_A" : "Die Applikation wird vom Forschungsprojekt empfohlen",
             "AUTOADD_A" : "Das Plugin wird bei Projektteilnahme automatisch hinzugefügt",
@@ -100,6 +102,8 @@
         },
         "types_short" : {
             "OFFER_P" : "Teilnahme vorschlagen",
+            "OFFER_EXTRA_PAGE" : "Zusätzliche Projektseite",
+            "OFFER_INLINE_AGB" : "Nutzungsbedingungen als Beschreibung",
             "REQUIRE_P" : "Teilnahme erforderlich",
             "RECOMMEND_A" : "Empfohlen",
             "AUTOADD_A" : "Automatisch hinzufügen",

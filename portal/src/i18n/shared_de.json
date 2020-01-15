@@ -134,11 +134,12 @@
         },
 
         "blocked" : {
-            "user" : "Dieser Benutzer ist nicht berechtigt sich anzumelden. Für Hilfe kontaktieren Sie bitte support@midata.coop.",
+            "user" : "Der Benutzer ist nicht berechtigt sich anzumelden. Für Hilfe kontaktieren Sie bitte support@midata.coop.",
             "password1" : "Zu viele falsche Anmeldeversuche. Bitte warten Sie 1 Minute vor dem nächsten Versuch.",
             "password5" : "Zu viele falsche Anmeldeversuche. Bitte warten Sie 5 Minuten vor dem nächsten Versuch.",
             "password60" : "Zu viele falsche Anmeldeversuche. Bitte warten Sie 1 Stunde vor dem nächsten Versuch.",
-            "participation" : "Dieser Kontoinhabende ist nicht berechtigt, an einem Forschungsprojekt teilzunehmen.",
+            "participation" : "Der Kontoinhabende ist nicht berechtigt, an einem Forschungsprojekt teilzunehmen.",
+            "projectconsent" : "Der Kontoinhabende hat sich von einem Projekt zurückgezogen, dessen Teilnahme für die Nutzung der Applikation erforderlich ist.",
             "consent" : "Die Zustimmung, diese Applikation zu nutzen, wurde widerrufen. Falls Sie diese Applikation wieder nutzen möchten, müssen Sie die zurückgewiesene oder abgelaufene Zustimmung auf dem MIDATA-Portal löschen.",
             "app" : "Sie dürfen diese Applikation auf maximal 10 Geräten nutzen. Löschen Sie bitte nicht mehr genutzte Zustimmungen auf dem MIDATA-Portal."
         },
@@ -461,6 +462,7 @@
         },
         "infos" : {
             "SUMMARY" : "Kurze Zusammenfassung",
+            "ONBOARDING" : "Onboarding-Text der Applikation",
             "DESCRIPTION" : "Was bewirkt dieses Forschungsprojekt?",
             "HOMEPAGE" : "Link zur Projekthomepage",
             "CONTACT" : "Kontaktinformationen",
@@ -1046,7 +1048,9 @@
         "device" : "Gerät: {{ device}}",
         "please_confirm" : "Bestätigen Sie bitte die Aktivierung der Applikation auf dem MIDATA Portal, dann versuchen Sie es erneut. Zustimmungsbezeichnung: {{ consent }}",
         "confirm_btn" : "Zugriff bestätigen",
-        "requests_access" : "Angeforderter Zugriff:",
+        "continue_btn" : "Weiter",
+        "requests_access" : "Von der Applikation angeforderter Zugang:",
+        "requests_sharing" : "Mit dem Projekt geteilte Daten:",
         "shares_group" : "Gruppe: {{ group }}",
         "shares_format" : "Format: {{ format }}",
         "shares_content" : "Inhalt: {{ content }}",
