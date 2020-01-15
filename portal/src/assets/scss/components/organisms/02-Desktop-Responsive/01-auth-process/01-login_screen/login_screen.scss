@@ -70,6 +70,7 @@ $desktop-image-size: 95px;
 		@include fluid-props(width, $fluid-min, $fluid-max, $login-min-width, $login-max-width);
 		left: 50%;
 		transform: translateX(-50%);
+		margin-top: $login-logo-margin-bottom;
 
 		@include fluid-props(margin-bottom, $fluid-min, $fluid-max, $login-margin-bottom-min, $login-margin-bottom-max);
 
@@ -87,10 +88,10 @@ $desktop-image-size: 95px;
 			background-color: white;
 			left: 50%;
 			transform: translateX(-50%);
-			margin-top: $login-app-image-vertical-margin;
+			margin-top: $login-app-image-vertical-margin - $login-logo-margin-bottom;
+			margin-bottom: $login-app-image-vertical-margin;
 
-			@include media($tablet-breakpoint) {
-				margin-bottom: $login-app-image-vertical-margin;
+			@include media($tablet-breakpoint) {				
 				@include mi-x-badge-size($mobile-image-size);
 			}
 

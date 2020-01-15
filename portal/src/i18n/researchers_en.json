@@ -91,7 +91,9 @@
     "no_valid_app" : "No application selected",
     "type" : "How are they linked?",
     "types" : {
-       "OFFER_P" : "Application offers project participation upon login/start",
+       "OFFER_P" : "Onboarding: Application offers project participation upon login/start",
+       "OFFER_EXTRA_PAGE" : "Onboarding: Project participation is described on extra page",
+       "OFFER_INLINE_AGB" : "Onboarding: Use terms as project description",
        "REQUIRE_P" : "Project participation is required to use the application",
        "RECOMMEND_A" : "Application is recommended by project",
        "AUTOADD_A" : "Plugin is automatically added on project participation",
@@ -99,6 +101,8 @@
     },
     "types_short" : {
        "OFFER_P" : "Suggest participation",
+       "OFFER_EXTRA_PAGE" : "Extra project page",
+       "OFFER_INLINE_AGB" : "Terms as description",
        "REQUIRE_P" : "Require participation",
        "RECOMMEND_A" : "Recommended",
        "AUTOADD_A" : "Add automatically",
