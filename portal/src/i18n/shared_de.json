@@ -139,6 +139,9 @@
             "password5" : "Zu viele falsche Anmeldeversuche. Bitte warten Sie 5 Minuten vor dem nächsten Versuch.",
             "password60" : "Zu viele falsche Anmeldeversuche. Bitte warten Sie 1 Stunde vor dem nächsten Versuch.",
             "participation" : "Dieser Kontoinhabende ist nicht berechtigt, an einem Forschungsprojekt teilzunehmen.",
+
+            // TODO NEW: Account holder has retreated from a project which is required for application use.
+            "projectconsent" : "Account holder has retreated from a project which is required for application use.",
             "consent" : "Die Zustimmung, diese Applikation zu nutzen, wurde widerrufen. Falls Sie diese Applikation wieder nutzen möchten, müssen Sie die zurückgewiesene oder abgelaufene Zustimmung auf dem MIDATA-Portal löschen.",
             "app" : "Sie dürfen diese Applikation auf maximal 10 Geräten nutzen. Löschen Sie bitte nicht mehr genutzte Zustimmungen auf dem MIDATA-Portal."
         },
@@ -461,6 +464,9 @@
         },
         "infos" : {
             "SUMMARY" : "Kurze Zusammenfassung",
+
+            // TODO NEW: App Onboarding Text
+            "ONBOARDING" : "App Onboarding Text",
             "DESCRIPTION" : "Was bewirkt dieses Forschungsprojekt?",
             "HOMEPAGE" : "Link zur Projekthomepage",
             "CONTACT" : "Kontaktinformationen",
@@ -1046,7 +1052,17 @@
         "device" : "Gerät: {{ device}}",
         "please_confirm" : "Bestätigen Sie bitte die Aktivierung der Applikation auf dem MIDATA Portal, dann versuchen Sie es erneut. Zustimmungsbezeichnung: {{ consent }}",
         "confirm_btn" : "Zugriff bestätigen",
+
+        // TODO NEW: Continue
+        "continue_btn" : "Continue",
+
+        // TODO CHANGED
+        // OLD: Requested Access:
+        // NEW: Requested access by app:
         "requests_access" : "Angeforderter Zugriff:",
+
+        // TODO NEW: Data that will be shared with the project:
+        "requests_sharing" : "Data that will be shared with the project:",
         "shares_group" : "Gruppe: {{ group }}",
         "shares_format" : "Format: {{ format }}",
         "shares_content" : "Inhalt: {{ content }}",

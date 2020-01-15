@@ -92,7 +92,17 @@
         "no_valid_app" : "Nessuna applicazione selezionata",
         "type" : "Come sono collegati?",
         "types" : {
+
+            // TODO CHANGED
+            // OLD: Application offers project participation upon login/start
+            // NEW: Onboarding: Application offers project participation upon login/start
             "OFFER_P" : "L'applicazione offre la partecipazione al progetto al momento del accedi/avvio",
+
+            // TODO NEW: Onboarding: Project participation is described on extra page
+            "OFFER_EXTRA_PAGE" : "Onboarding: Project participation is described on extra page",
+
+            // TODO NEW: Onboarding: Use terms as project description
+            "OFFER_INLINE_AGB" : "Onboarding: Use terms as project description",
             "REQUIRE_P" : "La partecipazione al progetto è necessaria per utilizzare l'applicazione",
             "RECOMMEND_A" : "L'applicazione è raccomandato dal progetto",
             "AUTOADD_A" : "Il plugin viene aggiunto automaticamente alla partecipazione al progetto",
@@ -100,6 +110,12 @@
         },
         "types_short" : {
             "OFFER_P" : "Suggerire la partecipazione",
+
+            // TODO NEW: Extra project page
+            "OFFER_EXTRA_PAGE" : "Extra project page",
+
+            // TODO NEW: Terms as description
+            "OFFER_INLINE_AGB" : "Terms as description",
             "REQUIRE_P" : "Richiedere la partecipazione",
             "RECOMMEND_A" : "Raccomandato",
             "AUTOADD_A" : "Aggiungere automaticamente",

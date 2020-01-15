@@ -1,5 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1" xml:lang="en">
+    <file source-language="en" target-language="it" datatype="winres" original="members_it.json">
+        <body>
+            <group resname="help_welcome" id="help_welcome">
+                <trans-unit resname="menu_config" id="help_welcome.menu_config">
+                    <source>Config</source>
+                </trans-unit>
+            </group>
+            <group resname="help_setup" id="help_setup">
+                <trans-unit resname="question_devices_answer1" id="help_setup.question_devices_answer1">
+                    <source>Fitbit</source>
+                </trans-unit>
+                <trans-unit resname="question_devices_answer2" id="help_setup.question_devices_answer2">
+                    <source>Jawbone</source>
+                </trans-unit>
+                <trans-unit resname="question_devices_answer3" id="help_setup.question_devices_answer3">
+                    <source>Withings</source>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
     <file source-language="en" target-language="it" datatype="winres" original="providers_it.json">
         <body>
             <group resname="provider_navbar" id="provider_navbar">
@@ -7,23 +27,9 @@
                     <source>MIDATA Store</source>
                 </trans-unit>
             </group>
-            <group resname="addpatient" id="addpatient">
-                <trans-unit resname="sign_up" id="addpatient.sign_up">
-                    <source>Register patient</source>
-                </trans-unit>
-                <trans-unit resname="success" id="addpatient.success">
-                    <source>User successfully registered</source>
-                </trans-unit>
-                <trans-unit resname="initialPassword" id="addpatient.initialPassword">
-                    <source>Initial Password</source>
-                </trans-unit>
-            </group>
             <group resname="provider_patientsearch" id="provider_patientsearch">
                 <trans-unit resname="midataid" id="provider_patientsearch.midataid">
                     <source>MIDATA ID</source>
-                </trans-unit>
-                <trans-unit resname="add_new_account_btn" id="provider_patientsearch.add_new_account_btn">
-                    <source>Create patient account</source>
                 </trans-unit>
             </group>
             <group resname="provider_usergroups" id="provider_usergroups">
@@ -97,26 +103,6 @@
                 </trans-unit>
                 <trans-unit resname="DELETE" id="usagestats.DELETE">
                     <source>Delete</source>
-                </trans-unit>
-            </group>
-        </body>
-    </file>
-    <file source-language="en" target-language="it" datatype="winres" original="members_it.json">
-        <body>
-            <group resname="help_welcome" id="help_welcome">
-                <trans-unit resname="menu_config" id="help_welcome.menu_config">
-                    <source>Config</source>
-                </trans-unit>
-            </group>
-            <group resname="help_setup" id="help_setup">
-                <trans-unit resname="question_devices_answer1" id="help_setup.question_devices_answer1">
-                    <source>Fitbit</source>
-                </trans-unit>
-                <trans-unit resname="question_devices_answer2" id="help_setup.question_devices_answer2">
-                    <source>Jawbone</source>
-                </trans-unit>
-                <trans-unit resname="question_devices_answer3" id="help_setup.question_devices_answer3">
-                    <source>Withings</source>
                 </trans-unit>
             </group>
         </body>
@@ -202,6 +188,28 @@
                     <source>Team</source>
                 </trans-unit>
             </group>
+            <group resname="studyactions" id="studyactions">
+                <group resname="types" id="studyactions.types">
+                    <trans-unit resname="OFFER_P" id="studyactions.types.OFFER_P">
+                        <source>Onboarding: Application offers project participation upon login/start</source>
+                        <target>L'applicazione offre la partecipazione al progetto al momento del accedi/avvio</target>
+                    </trans-unit>
+                    <trans-unit resname="OFFER_EXTRA_PAGE" id="studyactions.types.OFFER_EXTRA_PAGE">
+                        <source>Onboarding: Project participation is described on extra page</source>
+                    </trans-unit>
+                    <trans-unit resname="OFFER_INLINE_AGB" id="studyactions.types.OFFER_INLINE_AGB">
+                        <source>Onboarding: Use terms as project description</source>
+                    </trans-unit>
+                </group>
+                <group resname="types_short" id="studyactions.types_short">
+                    <trans-unit resname="OFFER_EXTRA_PAGE" id="studyactions.types_short.OFFER_EXTRA_PAGE">
+                        <source>Extra project page</source>
+                    </trans-unit>
+                    <trans-unit resname="OFFER_INLINE_AGB" id="studyactions.types_short.OFFER_INLINE_AGB">
+                        <source>Terms as description</source>
+                    </trans-unit>
+                </group>
+            </group>
             <group resname="studyrules" id="studyrules">
                 <trans-unit resname="sharing_query" id="studyrules.sharing_query">
                     <source>Data Access Filter</source>
@@ -220,6 +228,13 @@
                 <trans-unit resname="me" id="navbar.me">
                     <source>Timeline</source>
                 </trans-unit>
+            </group>
+            <group resname="error" id="error">
+                <group resname="blocked" id="error.blocked">
+                    <trans-unit resname="projectconsent" id="error.blocked.projectconsent">
+                        <source>Account holder has retreated from a project which is required for application use.</source>
+                    </trans-unit>
+                </group>
             </group>
             <group resname="enum" id="enum">
                 <group resname="researcherrole" id="enum.researcherrole">
@@ -250,6 +265,11 @@
                     </trans-unit>
                     <trans-unit resname="oauth2" id="enum.plugintype.oauth2">
                         <source>OAuth 2</source>
+                    </trans-unit>
+                </group>
+                <group resname="infos" id="enum.infos">
+                    <trans-unit resname="ONBOARDING" id="enum.infos.ONBOARDING">
+                        <source>App Onboarding Text</source>
                     </trans-unit>
                 </group>
                 <group resname="entitytype" id="enum.entitytype">
@@ -291,6 +311,18 @@
             <group resname="records" id="records">
                 <trans-unit resname="just_name" id="records.just_name">
                     <source>{{name}}</source>
+                </trans-unit>
+            </group>
+            <group resname="oauth2" id="oauth2">
+                <trans-unit resname="continue_btn" id="oauth2.continue_btn">
+                    <source>Continue</source>
+                </trans-unit>
+                <trans-unit resname="requests_access" id="oauth2.requests_access">
+                    <source>Requested access by app:</source>
+                    <target>Accesso richiesto:</target>
+                </trans-unit>
+                <trans-unit resname="requests_sharing" id="oauth2.requests_sharing">
+                    <source>Data that will be shared with the project:</source>
                 </trans-unit>
             </group>
             <group resname="dashboard" id="dashboard">
