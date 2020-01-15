@@ -139,9 +139,7 @@
             "password5" : "Trop d'essais de connexion manqués. Veuillez attendre 5 minutes avant la prochaine tentative.",
             "password60" : "Trop d'essais de connexion manqués. Veuillez attendre 1 heure avant la prochaine tentative.",
             "participation" : "Le titulaire du compte n'est pas autorisé à participer au projet de recherche.",
-
-            // TODO NEW: Account holder has retreated from a project which is required for application use.
-            "projectconsent" : "Account holder has retreated from a project which is required for application use.",
+            "projectconsent" : "Le titulaire du compte s'est retiré d'un projet, dont la participation est requise pour utiliser l'application.",
             "consent" : "Le consentement pour l'utilisation de cette application a été révoqué. Si vous désirez utiliser cette application à nouveau, veuillez supprimer le consentement rejeté ou expiré sur le portail web.",
             "app" : "Vous pouvez utiliser cette application sur 10 appareils au maximum. Veuillez effacer les consentements non utilisés sur le portail MIDATA."
         },
@@ -464,9 +462,7 @@
         },
         "infos" : {
             "SUMMARY" : "Résumé sommaire",
-
-            // TODO NEW: App Onboarding Text
-            "ONBOARDING" : "App Onboarding Text",
+            "ONBOARDING" : "Texte d'onboarding de l'application",
             "DESCRIPTION" : "Que fait cet projet de recherche?",
             "HOMEPAGE" : "Lien vers la page d'accueil du projet",
             "CONTACT" : "Coordonnées de contact",
@@ -1052,17 +1048,9 @@
         "device" : "Appareil : {{ device}}",
         "please_confirm" : "Veuillez confirmer l'activation de l'application sur le portail MIDATA, puis réessayez. Libellé du consentement: {{ consent }}",
         "confirm_btn" : "Confirmer l'accès",
-
-        // TODO NEW: Continue
-        "continue_btn" : "Continue",
-
-        // TODO CHANGED
-        // OLD: Requested Access:
-        // NEW: Requested access by app:
-        "requests_access" : "Accès demandé:",
-
-        // TODO NEW: Data that will be shared with the project:
-        "requests_sharing" : "Data that will be shared with the project:",
+        "continue_btn" : "Continuer",
+        "requests_access" : "Accès demandé par l'application:",
+        "requests_sharing" : "Données partagées avec le projet:",
         "shares_group" : "Groupe: {{ group }}",
         "shares_format" : "Format: {{ format }}",
         "shares_content" : "Contenu: {{ content }}",
@@ -1230,7 +1218,8 @@
         "description" : "Applications autorisées",
         "count" : "Vous avez {{count}} apps autorisées:",
         "services" : "Services",
-        "connect_btn" : "Autoriser"
+        "connect_btn" : "Autoriser",
+        "use_btn" : "Utiliser"
     },
 
     "changeemail" : {
