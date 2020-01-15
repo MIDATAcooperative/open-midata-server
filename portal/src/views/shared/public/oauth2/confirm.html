@@ -1,6 +1,6 @@
 <div ng-controller="OAuth2ConfirmLoginCtrl" ng-cloak>
 
-	<div id="x" ng-hide="view.active && !inlineTerms">
+	<div id="x" ng-hide="(view.active && !inlineTerms) || !allLoaded">
 		<div class="mi-or-auth" ng-show="pleaseConfirm">
 			<div class="mi-or-auth__content">
 
@@ -44,7 +44,7 @@
 			    </div>
 
 				<div ng-repeat="link in extra">
-					<section class="mi-or-auth__section mi-or-auth__section--app" ng-show="link.formatted.length && !link.inlineTerms">
+					<section class="mi-or-auth__section mi-or-auth__section--app" ng-show="link.formatted.length && !(link.inlineTerms)">
 						<span class="mi-at-text mi-at-text--white" translate="{{ 'enum.studytype.'+link.study.type }}"></span><br>
 						<span class="mi-at-text mi-at-text--highlighted mi-at-text--white">{{ link.study.name }} {{ link.provider.name }}</span>
 
@@ -58,7 +58,7 @@
 						<div ng-include="'/views/shared/public/terms/terms-inline.html'"></div>																										
 					</section>
 
-					<section class="mi-or-auth__section mi-or-auth__section--required_data" ng-if="link.labels.length">
+					<section class="mi-or-auth__section mi-or-auth__section--required_data" ng-if="link.labels.length && !(link.inlineTerms)">
 						<span class="mi-at-text mi-at-text--highlighted mi-at-text--white" translate="oauth2.requests_sharing"></span>
 	
 						<ul>
@@ -90,8 +90,8 @@
 							floating-label  /> 
 						<label for="mi-at-input-checkbox" class="mi-at-text mi-at-text--white">
 						  <span translate="{{ getLinkLabel(link) }}"></span>
-						  <a class="mi-at-text--white mi-at-input--checkbox-link" ng-show="link.termsOfUse && !link.inlineTerms" ng-click="terms({which : link.termsOfUse })" href="javascript:">{{ link.study.name }} {{ link.provider.name }}</a>
-						  <span ng-hide="link.termsOfUse && !link.inlineTerms">{{ link.study.name }} {{ link.provider.name }}</span>
+						  <a class="mi-at-text--white mi-at-input--checkbox-link" ng-show="link.termsOfUse && !(link.inlineTerms)" ng-click="terms({which : link.termsOfUse })" href="javascript:">{{ link.study.name }} {{ link.provider.name }}</a>
+						  <span ng-hide="link.termsOfUse && !(link.inlineTerms)">{{ link.study.name }} {{ link.provider.name }}</span>
 						 </label>
 					</fieldset>
 
@@ -112,7 +112,7 @@
                     </div>
 						
 						
-				<button class="mi-mo-flat_button mi-mo-flat_button--rounded" ng-disabled="status.action=='login' || doneLock || (app.termsOfUse && !login.appAgb)" type="button" ng-click="confirm();">
+				<button class="mi-mo-flat_button mi-mo-flat_button--rounded" ng-disabled="status.action=='login' || doneLock || (app.termsOfUse && !(login.appAgb))" type="button" ng-click="confirm();">
 					<span class="mi-at-text" ng-show="showApp" translate="oauth2.confirm_btn"></span>
 					<span class="mi-at-text" ng-hide="showApp" translate="oauth2.continue_btn"></span>
 				</button>

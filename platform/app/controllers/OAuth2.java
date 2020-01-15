@@ -131,12 +131,14 @@ public class OAuth2 extends Controller {
 	               		MobileAPI.removeAppInstance(appInstance);
 	                   	return false;
 	               	}
-	               	if ( 
-	               		sp.pstatus.equals(ParticipationStatus.MEMBER_RETREATED) || 
-	               		sp.pstatus.equals(ParticipationStatus.MEMBER_REJECTED) || 
-	               		sp.pstatus.equals(ParticipationStatus.RESEARCH_REJECTED)) {
-	               		throw new BadRequestException("error.blocked.consent", "Research consent expired or blocked.");
-	               	}
+				    if ( 
+						sp.pstatus.equals(ParticipationStatus.MEMBER_RETREATED) || 
+						sp.pstatus.equals(ParticipationStatus.MEMBER_REJECTED)) {
+							throw new BadRequestException("error.blocked.projectconsent", "Research consent expired or blocked.");
+					}
+				    if (sp.pstatus.equals(ParticipationStatus.RESEARCH_REJECTED)) {
+							throw new BadRequestException("error.blocked.participation", "Research consent expired or blocked.");
+					}
       		   }
         		
         	}
