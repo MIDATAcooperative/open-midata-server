@@ -1217,7 +1217,8 @@
     "description" : "Authorized Apps",
     "count" : "You have {{count}} authorized apps:",
     "services" : "Services",
-    "connect_btn" : "Authorize"       
+    "connect_btn" : "Authorize",
+    "use_btn" : "Use"
   },
   
   "changeemail" : {
