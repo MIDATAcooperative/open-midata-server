@@ -38,9 +38,6 @@
 					<span ng-show="needs('RESTRICTED')" translate="studydetails.information_restricted"></span>
 					<span ng-show="needs('DEMOGRAPHIC')" translate="studydetails.information_demographic"></span>
 
-					
-
-
 				</div>
 			</div>
 
@@ -116,7 +113,7 @@
 				    		
 					<p ng-hide="study.infos.length">{{ study.description }}</p>
 															
-					<div ng-repeat="info in study.infos | filter : { 'type' : '!SUMMARY' }">
+					<div ng-repeat="info in study.infos | filter : { 'type' : '!SUMMARY' } | filter : { 'type' : '!ONBOARDING' }">
 					  <h4 ng-hide="info.type=='DESCRIPTION'" translate="{{ 'enum.infos.'+info.type }}"></h4>
 					  <p>{{ info.value[lang] || info.value.int }}</p>
 					</div>

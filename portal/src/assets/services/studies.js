@@ -4,7 +4,7 @@ angular.module('services')
 	
 	service.studytypes = ["CLINICAL", "CITIZENSCIENCE", "COMMUNITY"];
 	service.joinmethods = ["APP", "PORTAL", "RESEARCHER", "API", "ALGORITHM", "CODE", "TRANSFER"];
-	service.linktypes = ["OFFER_P", "REQUIRE_P", "RECOMMEND_A", "AUTOADD_A"];
+	service.linktypes = ["OFFER_P", "OFFER_EXTRA_PAGE", "OFFER_INLINE_AGB", "REQUIRE_P", "RECOMMEND_A", "AUTOADD_A"];
 	service.executionStati = ["PRE", "RUNNING", "FINISHED", "ABORTED"];
 	
 	service.roles = [

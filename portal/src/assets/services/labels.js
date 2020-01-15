@@ -57,12 +57,13 @@ angular.module('services')
 		} else return $q.when(existing);
 	};
 	
-	service.simplifyQuery = function(query) {
+	service.simplifyQuery = function(query, removeRestrictedByAppName) {
 	  if (query.$or) {
 		  
 	     var result = { content : [], group : [], format : [] };
 		 angular.forEach(query.$or, function(part) {
 			 if (part["public"]=="only") return;
+			 if (part.app && part.app.length==1 && part.app[0] === removeRestrictedByAppName) return;
 			 if (part.content) result.content.push.apply(result.content, part.content);
 			 if (part.format) result.format.push.apply(result.format, part.format);
 			 if (part.group) result.group.push.apply(result.group, part.group);

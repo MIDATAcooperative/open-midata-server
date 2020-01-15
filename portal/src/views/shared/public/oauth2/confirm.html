@@ -1,6 +1,6 @@
 <div ng-controller="OAuth2ConfirmLoginCtrl" ng-cloak>
 
-	<div id="x" ng-hide="view.active">
+	<div id="x" ng-hide="view.active && !inlineTerms">
 		<div class="mi-or-auth" ng-show="pleaseConfirm">
 			<div class="mi-or-auth__content">
 
@@ -13,7 +13,7 @@
 		<div class="mi-or-auth">
 			<div class="mi-or-auth__content">
 
-
+                <div ng-show="showApp">
 				<section class="mi-or-auth__section mi-or-auth__section--app">
 					<span class="mi-at-text mi-at-text--highlighted mi-at-text--white">{{ app.i18n[translate.use()].name || app.name }}</span> <span class="mi-at-text mi-at-text--white" translate="oauth2.requesting_app"></span>
 
@@ -31,7 +31,7 @@
 									</formrow>
 			    </section>
 				
-				<section class="mi-or-auth__section mi-or-auth__section--required_data">
+				<section class="mi-or-auth__section mi-or-auth__section--required_data" ng-if="labels.length">
 					<span class="mi-at-text mi-at-text--highlighted mi-at-text--white" translate="oauth2.requests_access"></span>
 
                     <ul>
@@ -41,19 +41,35 @@
 					<p class="mi-at-text mi-at-text--white" translate="oauth2.allows_user_search" ng-show="app.allowsUserSearch"></p>
                     
 				</section>
+			    </div>
 
-				<section class="mi-or-auth__section mi-or-auth__section--app" ng-repeat="link in extra">
-					<span class="mi-at-text mi-at-text--highlighted mi-at-text--white">{{ link.study.name }}</span></span>
+				<div ng-repeat="link in extra">
+					<section class="mi-or-auth__section mi-or-auth__section--app" ng-show="link.formatted.length && !link.inlineTerms">
+						<span class="mi-at-text mi-at-text--white" translate="{{ 'enum.studytype.'+link.study.type }}"></span><br>
+						<span class="mi-at-text mi-at-text--highlighted mi-at-text--white">{{ link.study.name }} {{ link.provider.name }}</span>
 
-					<div class="mi-or-auth__app_description" ng-repeat="line in link.study.formatted">
-						<span class="mi-at-text mi-at-text--smaller mi-at-text--white">{{ line }}</span>
+						<div class="mi-or-auth__app_description" ng-repeat="line in link.formatted">
+							<span class="mi-at-text mi-at-text--smaller mi-at-text--white">{{ line }}</span>
 
-					</div>
-										
-				</section>
+						</div>																	
+					</section>
 
+					<section class="mi-or-auth__section mi-or-auth__section--app" ng-show="link.inlineTerms">											
+						<div ng-include="'/views/shared/public/terms/terms-inline.html'"></div>																										
+					</section>
+
+					<section class="mi-or-auth__section mi-or-auth__section--required_data" ng-if="link.labels.length">
+						<span class="mi-at-text mi-at-text--highlighted mi-at-text--white" translate="oauth2.requests_sharing"></span>
+	
+						<ul>
+							<li ng-repeat="label in link.labels"><span class="mi-at-text mi-at-text--smaller mi-at-text--white">{{ label }}</span></li>						
+						</ul>						
+						
+					</section>
+				</div>
+			
 				
-				<section class="mi-or-auth__section mi-or-auth__section--study" ng-show="app.termsOfUse">
+				<section class="mi-or-auth__section mi-or-auth__section--study" ng-show="app.termsOfUse && showApp">
 					<fieldset class="mi-at-input__fieldset mi-at-input--checkbox mi-at-input--checkbox-white">
 						<input id="appAgb" name="appAgb" class="mi-at-input mi-at-input--checkbox" type="checkbox" value="" ng-model="login.appAgb"
 							floating-label />
@@ -68,24 +84,25 @@
 				</section>
 				
 				
-				<section class="mi-or-auth__section mi-or-auth__section--study" ng-repeat="link in links">
-					<fieldset style="height:70px" class="mi-at-input__fieldset mi-at-input--checkbox mi-at-input--checkbox-white">
+				<section class="mi-or-auth__section mi-or-auth__section--study" ng-repeat="link in extra">
+					<fieldset  class="mi-at-input__fieldset mi-at-input--checkbox mi-at-input--checkbox-white">
 						<input id="mi-at-input-" class="mi-at-input mi-at-input--checkbox" type="checkbox" value="" ng-checked="login.confirmStudy.indexOf(link.studyId || link.userId)>=0" ng-click="toggle(login.confirmStudy, link.studyId || link.userId);"
 							floating-label  /> 
 						<label for="mi-at-input-checkbox" class="mi-at-text mi-at-text--white">
 						  <span translate="{{ getLinkLabel(link) }}"></span>
-						  <a class="mi-at-text--white mi-at-input--checkbox-link" ng-show="link.termsOfUse" ng-click="terms({which : link.termsOfUse })" href="javascript:">{{ link.study.name }} {{ link.provider.name }}</a>
+						  <a class="mi-at-text--white mi-at-input--checkbox-link" ng-show="link.termsOfUse && !link.inlineTerms" ng-click="terms({which : link.termsOfUse })" href="javascript:">{{ link.study.name }} {{ link.provider.name }}</a>
+						  <span ng-hide="link.termsOfUse && !link.inlineTerms">{{ link.study.name }} {{ link.provider.name }}</span>
 						 </label>
 					</fieldset>
 
-					<div class="mi-or-auth__study_title" ng-hide="link.termsOfUse">
+					<!-- <div class="mi-or-auth__study_title" ng-hide="link.termsOfUse">
 						<span class="mi-at-text mi-at-text--highlighted mi-at-text--white">{{ link.study.name }} {{ link.provider.name }}</span>
 
-					</div>
-					<div class="mi-or-auth__study_description" ng-hide="link.termsOfUse">
+					</div> -->
+					<!--<div class="mi-or-auth__study_description" ng-hide="link.termsOfUse">
 						<span class="mi-at-text mi-at-text--smaller mi-at-text--white">{{ link.study.description }}</span>
                       
-					</div>
+					</div> -->
 				</section>
 				<div class="mi-or-auth__fields_checkboxes"></div>
                
@@ -96,18 +113,18 @@
 						
 						
 				<button class="mi-mo-flat_button mi-mo-flat_button--rounded" ng-disabled="status.action=='login' || doneLock || (app.termsOfUse && !login.appAgb)" type="button" ng-click="confirm();">
-					<span class="mi-at-text" translate="oauth2.confirm_btn"></span>
-
+					<span class="mi-at-text" ng-show="showApp" translate="oauth2.confirm_btn"></span>
+					<span class="mi-at-text" ng-hide="showApp" translate="oauth2.continue_btn"></span>
 				</button>
 
 
-             </div>
-			<!--  <pre>{{ params | json }}</pre>  -->
+			</div>
+			
 		</div>
 
 	</div>
 
-	<div class="mi-or-signup" ng-show="view.active">	
+	<div class="mi-or-signup" ng-show="view.active" ng-if="!inlineTerms">	
 		<div ng-include="'/views/shared/public/terms/terms-modal.html'"></div>			
 	</div>
 

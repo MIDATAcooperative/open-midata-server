@@ -13,11 +13,14 @@
 
 		<div class="mi-or-login welcome">
 			<div class="mi-or-login__content">
-			    <div ng-if="hasIcon()" class="mi-or-login__app_image" ng-style="getIconUrlBG()">
-					
-				</div>
+			    
 			
 				<img src="/img/logo-midata--white.svg" alt="" class="mi-or-login__logo">
+
+				<div ng-if="hasIcon()" class="mi-or-login__app_image" ng-style="getIconUrlBG()">
+					
+				</div>
+
 				<div class="mi-or-login__app">
 					<span class="mi-at-text mi-at-text--smaller mi-at-text--white mi-at-text--highlighted">{{ app.i18n[translate.use()].name ||
 						app.name }}</span> <span class="mi-at-text mi-at-text--smaller mi-at-text--white" translate="oauth2.requests_permission"></span>
