@@ -137,7 +137,8 @@
        "password1" : "Too many missed login attempts. Please wait 1 minute before next attempt.",
        "password5" : "Too many missed login attempts. Please wait 5 minutes before next attempt.",
        "password60" : "Too many missed login attempts. Please wait 1 hour before next attempt.",
-       "participation" : "Account holder is not allowed to participate in research project.",
+       "participation" : "Account holder is not allowed to participate in research project.",       
+       "projectconsent" : "Account holder has retreated from a project which is required for application use.",       
        "consent" : "The consent for using this application has been revoked. To reenable the application, delete the rejected or expired consent on the MIDATA portal.",
        "app" : "You are allowed to use this application on a maximum of 10 devices. Please delete unused consents on the MIDATA portal." 
      },

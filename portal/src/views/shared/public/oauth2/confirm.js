@@ -13,6 +13,7 @@ angular.module('portal')
 	$scope.inlineTerms = false;
 	$scope.pages = [];
 	$scope.project = 0;
+	$scope.allLoaded = false;
 		
 	$scope.view = views.getView("terms");
 		
@@ -116,7 +117,11 @@ angular.module('portal')
 	$scope.prepareConfirm = function() {				
 		$scope.labels = [];
 		$scope.prepareQuery($scope.app.defaultQuery, $scope.app.filename, $scope.labels).then(function() {
-			if ($scope.showApp && $scope.labels.length == 0 && !$scope.app.terms && $scope.extra.length==0) $scope.confirm();
+			if ($scope.showApp && $scope.labels.length == 0 && !$scope.app.terms && $scope.extra.length==0) {
+				$scope.confirm();
+			} else  {
+				$scope.allLoaded = true;
+			}
 		});
 		
 	};
@@ -140,7 +145,7 @@ angular.module('portal')
 	   $scope.extra = [ $scope.pages[$scope.project] ];
 	   $scope.inlineTerms = $scope.extra[0].inlineTerms;
 	   if ($scope.inlineTerms) $scope.terms({ which : $scope.extra[0].termsOfUse });
-
+	   $scope.allLoaded = true;
 	   $scope.project++;
 	   return true;
 	};
