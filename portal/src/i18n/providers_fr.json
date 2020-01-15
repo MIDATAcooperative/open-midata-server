@@ -39,6 +39,12 @@
         "success" : "Utilisateur inscrit avec succès"
     },
 
+    "addpatient" : {
+        "sign_up" : "Inscrire le patient",
+        "success" : "Utilisateur inscrit avec succès",
+        "initialPassword" : "Mot de passe initial"
+    },
+
     "provider_patientsearch" : {
         "title" : "Rechercher un patient",
         "email" : "e-mail",
@@ -52,7 +58,8 @@
         "add_new_consent" : "Ajouter un nouveau consentement",
         "usergroup" : "Team (optionnel)",
         "passcode" : "Code d'accès (optionnel)",
-        "add_new_consent_btn" : "Ajouter un nouveau consentement"
+        "add_new_consent_btn" : "Ajouter un nouveau consentement",
+        "add_new_account_btn" : "Créer un compte patient"
     },
 
     "provider_patients" : {

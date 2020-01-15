@@ -407,7 +407,7 @@
 	   "ACTIVE" : "Active",
 	   "BLOCKED" : "Blocked",
 	   "DELETED" : "Deleted",
-	   "NEW" : "New"	   
+	   "NEW" : "New"
 	 },
 	 "frequency" : {
 	   "ONCE" : "Once",
