@@ -92,7 +92,9 @@
         "no_valid_app" : "Nessuna applicazione selezionata",
         "type" : "Come sono collegati?",
         "types" : {
-            "OFFER_P" : "L'applicazione offre la partecipazione al progetto al momento del accedi/avvio",
+            "OFFER_P" : "Onboarding: L'applicazione offre la partecipazione al progetto al momento del accedi/avvio",
+            "OFFER_EXTRA_PAGE" : "Onboarding: La partecipazione al progetto è descritta in una pagina extra",
+            "OFFER_INLINE_AGB" : "Onboarding: Utilizzare i condizioni d'uso come descrizione del progetto",
             "REQUIRE_P" : "La partecipazione al progetto è necessaria per utilizzare l'applicazione",
             "RECOMMEND_A" : "L'applicazione è raccomandato dal progetto",
             "AUTOADD_A" : "Il plugin viene aggiunto automaticamente alla partecipazione al progetto",
@@ -100,6 +102,8 @@
         },
         "types_short" : {
             "OFFER_P" : "Suggerire la partecipazione",
+            "OFFER_EXTRA_PAGE" : "Pagina extra del progetto",
+            "OFFER_INLINE_AGB" : "Condizioni d'uso come descrizione",
             "REQUIRE_P" : "Richiedere la partecipazione",
             "RECOMMEND_A" : "Raccomandato",
             "AUTOADD_A" : "Aggiungere automaticamente",

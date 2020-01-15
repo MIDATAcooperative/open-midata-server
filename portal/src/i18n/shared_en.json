@@ -138,6 +138,7 @@
        "password5" : "Too many missed login attempts. Please wait 5 minutes before next attempt.",
        "password60" : "Too many missed login attempts. Please wait 1 hour before next attempt.",
        "participation" : "Account holder is not allowed to participate in research project.",
+       "projectconsent" : "Account holder has withdrawn from a project, whose participation is required to use the application.",
        "consent" : "The consent for using this application has been revoked. To reenable the application, delete the rejected or expired consent on the MIDATA portal.",
        "app" : "You are allowed to use this application on a maximum of 10 devices. Please delete unused consents on the MIDATA portal." 
      },
@@ -406,7 +407,7 @@
 	   "ACTIVE" : "Active",
 	   "BLOCKED" : "Blocked",
 	   "DELETED" : "Deleted",
-	   "NEW" : "New"	   
+	   "NEW" : "New"
 	 },
 	 "frequency" : {
 	   "ONCE" : "Once",
@@ -459,8 +460,8 @@
 	   "mobile" : "Application (Smartphone, Web)"
 	 },
 	 "infos" : {
-     "SUMMARY" : "Short Summary",
-     "ONBOARDING" : "App Onboarding Text",
+	   "SUMMARY" : "Short Summary",
+	   "ONBOARDING" : "Application Onboarding Text",
 	   "DESCRIPTION" : "What is this research project doing?",
 	   "HOMEPAGE" : "Link to project homepage",
 	   "CONTACT" : "Contact information",
@@ -470,7 +471,7 @@
 	   "LOCATION" : "At which state or region is this project taking place?",
 	   "PHASE" : "What is the state of progression of the research taking place?",
 	   "SPONSOR" : "Who is initiator of the research and who is legally responsible?",
-	   "SITE" : "At which site are activities beeing conducted?",
+	   "SITE" : "At which site are activities being conducted?",
 	   "DEVICES" : "Is there any special equipment required by a participant?",
 	   "COMMENT" : "Additional notes"
 	 },
@@ -1047,8 +1048,8 @@
     "please_confirm" : "Please confirm the activation of the application using the MIDATA portal, then retry. Consent title is: {{ consent }}",
     "confirm_btn" : "Confirm Access",
     "continue_btn" : "Continue",
-    "requests_access" : "Requested access by app:",
-    "requests_sharing" : "Data that will be shared with the project:",
+    "requests_access" : "Access requested by the application:",
+    "requests_sharing" : "Data shared with the project:",
     "shares_group" : "Group: {{ group }}",
     "shares_format" : "Format: {{ format }}",
     "shares_content" : "Content: {{ content }}",
@@ -1216,7 +1217,8 @@
     "description" : "Authorized Apps",
     "count" : "You have {{count}} authorized apps:",
     "services" : "Services",
-    "connect_btn" : "Authorize"       
+    "connect_btn" : "Authorize",
+    "use_btn" : "Use"
   },
   
   "changeemail" : {
