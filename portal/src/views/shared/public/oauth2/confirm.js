@@ -26,7 +26,7 @@ angular.module('portal')
 		$scope.consent = "App: "+$scope.app.name+" (Device: "+$scope.device+")";
 		$scope.showApp = true;
 		$scope.inlineTerms = false;
-		$scope.view.active = false;		
+		views.disableView("terms");
 		$scope.links = [];
 		var waitFor = [];
 		if (!$state.params.nostudies) {
@@ -138,7 +138,9 @@ angular.module('portal')
 				return true;
 			}
 		}
-	   
+
+	   views.disableView("terms");
+
 	   if ($scope.project >= $scope.pages.length) return false;
 
 	   $scope.showApp = false;
