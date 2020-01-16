@@ -138,9 +138,9 @@
             "password1" : "Trop d'essais de connexion manqués. Veuillez attendre 1 minute avant la prochaine tentative.",
             "password5" : "Trop d'essais de connexion manqués. Veuillez attendre 5 minutes avant la prochaine tentative.",
             "password60" : "Trop d'essais de connexion manqués. Veuillez attendre 1 heure avant la prochaine tentative.",
-            "participation" : "Le titulaire du compte n'est pas autorisé à participer au projet de recherche.",
-            "projectconsent" : "Le titulaire du compte s'est retiré d'un projet, dont la participation est requise pour utiliser l'application.",
-            "consent" : "Le consentement pour l'utilisation de cette application a été révoqué. Si vous désirez utiliser cette application à nouveau, veuillez supprimer le consentement rejeté ou expiré sur le portail web.",
+            "participation" : "Vous n'êtes pas autorisé à participer à ce projet de recherche et ne pouvez donc pas utiliser cette application.",
+            "projectconsent" : "Vous avez retiré votre participation à ce projet de recherche et ne pouvez donc plus utiliser cette application.",
+            "consent" : "Vous avez défini dans le portail MIDATA que cette application ne peut plus accéder à vos données. Si vous voulez utiliser à nouveau cette application, vous devez la ré-autoriser dans le portail MIDATA.",
             "app" : "Vous pouvez utiliser cette application sur 10 appareils au maximum. Veuillez effacer les consentements non utilisés sur le portail MIDATA."
         },
 
@@ -802,7 +802,7 @@
         "do_not_participate_help" : "Si vous ne voulez PAS participer, vous pouvez cliquer ici. Vous ne serez pas invité à nouveau et aucune donnée ne sera partagée.",
         "do_not_participate_btn" : "Ne participez pas",
         "retreat_help" : "Vous participez actuellement à ce projet de recherche. Si vous ne voulez plus participer, vous pouvez vous retirer. Vos données partagées seront gelées au moment de la retraite et aucune nouvelle donnée ne sera partagée. Une fois retraité, vous ne pourrez plus participer.",
-        "retreat_btn" : "Participation rétractée",
+        "retreat_btn" : "Retrait de la participation",
         "status" : "État",
         "recommended_apps" : "Applications recommandées",
         "use_app" : "Utiliser maintenant",
@@ -1213,10 +1213,10 @@
     },
 
     "apps" : {
-        "greeting" : "Connectez vos apps pour collecter des données",
+        "greeting" : "Connectez vos applications pour collecter des données",
         "title" : "Applications",
         "description" : "Applications autorisées",
-        "count" : "Vous avez {{count}} apps autorisées:",
+        "count" : "Vous avez {{count}} applications autorisées:",
         "services" : "Services",
         "connect_btn" : "Autoriser",
         "use_btn" : "Utiliser"

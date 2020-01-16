@@ -138,10 +138,10 @@
             "password1" : "Zu viele falsche Anmeldeversuche. Bitte warten Sie 1 Minute vor dem nächsten Versuch.",
             "password5" : "Zu viele falsche Anmeldeversuche. Bitte warten Sie 5 Minuten vor dem nächsten Versuch.",
             "password60" : "Zu viele falsche Anmeldeversuche. Bitte warten Sie 1 Stunde vor dem nächsten Versuch.",
-            "participation" : "Der Kontoinhabende ist nicht berechtigt, an einem Forschungsprojekt teilzunehmen.",
-            "projectconsent" : "Der Kontoinhabende hat sich von einem Projekt zurückgezogen, dessen Teilnahme für die Nutzung der Applikation erforderlich ist.",
-            "consent" : "Die Zustimmung, diese Applikation zu nutzen, wurde widerrufen. Falls Sie diese Applikation wieder nutzen möchten, müssen Sie die zurückgewiesene oder abgelaufene Zustimmung auf dem MIDATA-Portal löschen.",
-            "app" : "Sie dürfen diese Applikation auf maximal 10 Geräten nutzen. Löschen Sie bitte nicht mehr genutzte Zustimmungen auf dem MIDATA-Portal."
+            "participation" : "Sie sind nicht berechtigt, an diesem Forschungsprojekt teilzunehmen und können deshalb diese Applikation nicht benutzen.",
+            "projectconsent" : "Sie haben Ihre Teilnahme an diesem Forschungsprojekt zurückgezogen und können deshalb diese Applikation nicht mehr benutzen.",
+            "consent" : "Sie haben im MIDATA-Portal eingestellt, dass diese Applikation nicht mehr auf Ihre Daten zugreifen darf. Falls Sie diese Applikation wieder nutzen möchten, müssen Sie sie im MIDATA-Portal neu autorisieren.",
+            "app" : "Sie dürfen diese Applikation auf maximal 10 Geräten nutzen. Löschen Sie bitte nicht mehr genutzte Zustimmungen im MIDATA-Portal."
         },
 
         "closed" : {
@@ -802,7 +802,7 @@
         "do_not_participate_help" : "Wenn Sie NICHT teilnehmen möchten, können Sie hier klicken. Sie werden nicht erneut gefragt und es werden keine Daten weitergegeben.",
         "do_not_participate_btn" : "Nicht teilnehmen",
         "retreat_help" : "Sie nehmen an dieser Forschung derzeit teil. Wenn Sie nicht mehr teilnehmen möchten, können Sie sich von der Teilnahme zurückziehen. Ihre geteilten Daten werden zum Zeitpunkt des Rückzugs eingefroren und es werden keine neuen Daten weitergegeben. Einmal zurückgezogen, können Sie nicht mehr teilnehmen.",
-        "retreat_btn" : "Teilnahme zurückgezogen",
+        "retreat_btn" : "Teilnahme zurückziehen",
         "status" : "Status",
         "recommended_apps" : "Empfohlene Applikationen",
         "use_app" : "Jetzt verwenden",
@@ -1213,10 +1213,10 @@
     },
 
     "apps" : {
-        "greeting" : "Verknüpfen Sie Ihre Apps, um Daten zu sammeln",
-        "title" : "Apps",
-        "description" : "Autorisierte Apps",
-        "count" : "Sie haben {{count}} autorisierte Apps:",
+        "greeting" : "Verknüpfen Sie Ihre Applikationen, um Daten zu sammeln",
+        "title" : "Applikationen",
+        "description" : "Autorisierte Applikationen",
+        "count" : "Sie haben {{count}} autorisierte Applikationen:",
         "services" : "Services",
         "connect_btn" : "Autorisieren"
     },

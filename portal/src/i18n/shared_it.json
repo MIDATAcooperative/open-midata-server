@@ -138,9 +138,9 @@
             "password1" : "Troppi tentativi di mancato accesso. Attendere 1 minuto prima di tentare nuovamente.",
             "password5" : "Troppi tentativi di mancato accesso. Attendere 5 minuti prima di tentare nuovamente.",
             "password60" : "Troppi tentativi di mancato accesso. Attendere 1 ora prima di tentare nuovamente.",
-            "participation" : "Il titolare dell'account non è autorizzato a partecipare al progetto di ricerca.",
-            "projectconsent" : "Il titolare dell'account ha prelevato da un progetto, la cui partecipazione è richiesta per poter utilizzare l'applicazione.",
-            "consent" : "Il consenso per utilizzare questa applicazione è stato revocato. Per riattivare l'applicazione, eliminare il consenso rifiutato o scaduto sul portale MIDATA.",
+            "participation" : "Non siete autorizzati a partecipare a questo progetto di ricerca e quindi non potete utilizzare questa applicazione.",
+            "projectconsent" : "Avete ritirato la vostra partecipazione a questo progetto di ricerca e non potete quindi più utilizzare questa applicazione.",
+            "consent" : "Avete impostato nel portale MIDATA che questa applicazione non può più accedere ai vostri dati. Se si desidera utilizzare nuovamente questa applicazione, è necessario riautorizzarla nel portale MIDATA.",
             "app" : "Si è autorizzati a utilizzare questa applicazione su un numero massimo di 10 dispositivi. Eliminare i consensi non utilizzati sul portale MIDATA."
         },
 
@@ -802,7 +802,7 @@
         "do_not_participate_help" : "Se NON vuoi partecipare puoi cliccare qui. Non ti verrà chiesto di nuovo e nessun dato verrà condiviso.",
         "do_not_participate_btn" : "Non partecipare",
         "retreat_help" : "Attualmente stai partecipando a questa ricerca. Se non vuoi più partecipare puoi ritirarti dalla partecipazione. I vostri dati condivisi saranno congelati al momento del ritiro e non verranno condivisi nuovi dati. Una volta ritirato non sarai in grado di partecipare di nuovo.",
-        "retreat_btn" : "Ritirarsi dalla partecipazione",
+        "retreat_btn" : "Ritiro della partecipazione",
         "status" : "Stato",
         "recommended_apps" : "Applicazioni consigliate",
         "use_app" : "Utilizzare ora",
