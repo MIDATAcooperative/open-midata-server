@@ -26,6 +26,12 @@
 		  <formrow myid="text" label="admin_manageterms.text">
 		    <textarea rows="10" id="text" class="form-control" ng-model="newTerms.text"></textarea>
 		  </formrow>		  		  
+
+		  <formrow myid="text" label="admin_manageterms.replace">
+			  <div class="form-check">
+			    <input type="checkbox" class="form-check-input" ng-model="newTerms.replace"></input>
+			  </div>
+		  </formrow>
 		  		
 		  <formrow myid="x" label="">
 		    <button type="submit" ng-disabled="status.action=='submit'" class="btn btn-primary" translate="common.submit_btn"></button>		    		  
