@@ -78,4 +78,8 @@ public class TermsOfUse extends Model {
 		Model.insert(collection, this);		
 	}
 
+	public void upsert() throws InternalServerException {
+		Model.upsert(collection, this);		
+	}
+
 }
