@@ -55,6 +55,10 @@ public class ServiceInstance extends Model {
                          
 	public static ServiceInstance getById(MidataId id, Set<String> fields) throws InternalServerException {
 		return Model.get(ServiceInstance.class, collection, CMaps.map("_id", id), fields);
+    }
+    
+    public static Set<ServiceInstance> getByManager(MidataId managerId, Set<String> fields) throws InternalServerException {
+		return Model.getAll(ServiceInstance.class, collection, CMaps.map("managerAccount", managerId), fields);
 	}
 		
 	public void add() throws InternalServerException {

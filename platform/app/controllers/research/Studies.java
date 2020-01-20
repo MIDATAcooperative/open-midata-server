@@ -218,7 +218,7 @@ public class Studies extends APIController {
 		AuditManager.instance.addAuditEvent(AuditEventType.ADDED_AS_TEAM_MEMBER, null, userId, userId, null, study._id);
 		AuditManager.instance.success();
 
-		return ok(JsonOutput.toJson(study, "Study", Study.ALL));
+		return ok(JsonOutput.toJson(study, "Study", Study.ALL)).as("application/json");
 	}
 
 	/**
@@ -2209,7 +2209,7 @@ public class Studies extends APIController {
 
 		AuditManager.instance.success();
 		
-		return ok(JsonOutput.toJson(study, "Study", Study.ALL));
+		return ok(JsonOutput.toJson(study, "Study", Study.ALL)).as("application/json");
 	}
 
 }
