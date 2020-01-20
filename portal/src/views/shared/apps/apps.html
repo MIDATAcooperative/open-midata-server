@@ -37,7 +37,7 @@
 		          </td>
 		          <td class="status-column">
 		            <span  class="icon fas fa-check-circle" ng-show="pluginToSpace[visualization._id]"></span>
-		            <button class="btn btn-sm btn-default" ng-hide="pluginToSpace[visualization._id]" translate="apps.connect_btn"></button>
+		            <button class="btn btn-sm btn-default" ng-hide="pluginToSpace[visualization._id]" translate="{{visualization.type=='visualization'?'apps.use_btn':'apps.connect_btn'}}"></button>
 		          </td>
 		        </tr>
 		      </table>		      

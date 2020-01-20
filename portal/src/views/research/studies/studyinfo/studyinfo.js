@@ -4,10 +4,10 @@ angular.module('portal')
    $scope.studyid = $state.params.studyId;
    $scope.status = new status(true);
    $scope.languages = languages.all;
-   $scope.sections = ["SUMMARY", "DESCRIPTION", "HOMEPAGE", "CONTACT", "INSTRUCTIONS", "PURPOSE", "AUDIENCE", "LOCATION", "PHASE", "SPONSOR", "SITE", "DEVICES", "COMMENT"];
+   $scope.sections = ["SUMMARY", "ONBOARDING", "DESCRIPTION", "HOMEPAGE", "CONTACT", "INSTRUCTIONS", "PURPOSE", "AUDIENCE", "LOCATION", "PHASE", "SPONSOR", "SITE", "DEVICES", "COMMENT"];
    
    $scope.allsections = {
-		   "ALL" : ["SUMMARY", "DESCRIPTION", "HOMEPAGE", "CONTACT", "INSTRUCTIONS", "PURPOSE", "AUDIENCE", "LOCATION", "PHASE", "SPONSOR", "SITE", "DEVICES", "COMMENT"],
+		   "ALL" : ["SUMMARY", "ONBOARDING", "DESCRIPTION", "HOMEPAGE", "CONTACT", "INSTRUCTIONS", "PURPOSE", "AUDIENCE", "LOCATION", "PHASE", "SPONSOR", "SITE", "DEVICES", "COMMENT"],
 		   "PARTICIPANTS" : ["CONTACT", "INSTRUCTIONS", "DEVICES", "COMMENT"],
 		   "INTERNAL" : ["PURPOSE", "PHASE", "COMMENT"]
    }

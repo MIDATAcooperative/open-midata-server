@@ -92,7 +92,9 @@
         "no_valid_app" : "Aucune application sélectionnée",
         "type" : "Comment sont-elles liées?",
         "types" : {
-            "OFFER_P" : "L'application offre la participation au projet lors de la connexion/du démarrage",
+            "OFFER_P" : "Onboarding: L'application propose la participation au projet lors de la connexion/du démarrage",
+            "OFFER_EXTRA_PAGE" : "Onboarding: La participation au projet est décrite sur une page supplémentaire",
+            "OFFER_INLINE_AGB" : "Onboarding: Utiliser les conditions d'utilisation comme description du projet",
             "REQUIRE_P" : "La participation au projet est requise pour utiliser l'application",
             "RECOMMEND_A" : "L'application est recommandée par le projet",
             "AUTOADD_A" : "Le plugin est automatiquement ajouté lors de la participation au projet",
@@ -100,6 +102,8 @@
         },
         "types_short" : {
             "OFFER_P" : "Suggérer la participation",
+            "OFFER_EXTRA_PAGE" : "Page de projet supplémentaire",
+            "OFFER_INLINE_AGB" : "Conditions d'utilisation comme description",
             "REQUIRE_P" : "Exiger la participation",
             "RECOMMEND_A" : "Recommandé",
             "AUTOADD_A" : "Ajouter automatiquement",

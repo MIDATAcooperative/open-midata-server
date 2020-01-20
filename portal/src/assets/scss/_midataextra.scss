@@ -19,6 +19,13 @@ html, body { height:100% }
 
 .old { display:none; }
 
+.terms--white {
+   color:#ffffff;
+   p {
+     color:#ffffff;
+   }
+}
+
 .terms > ol > li {
    font-weight:bold;
 }

@@ -137,8 +137,9 @@
        "password1" : "Too many missed login attempts. Please wait 1 minute before next attempt.",
        "password5" : "Too many missed login attempts. Please wait 5 minutes before next attempt.",
        "password60" : "Too many missed login attempts. Please wait 1 hour before next attempt.",
-       "participation" : "Account holder is not allowed to participate in research project.",
-       "consent" : "The consent for using this application has been revoked. To reenable the application, delete the rejected or expired consent on the MIDATA portal.",
+       "participation" : "You are not authorized to participate in this research project and therefore cannot use this application.",
+       "projectconsent" : "You have withdrawn your participation in this research project and can therefore no longer use this application.",
+       "consent" : "You have set in the MIDATA portal that this application may no longer access your data. If you want to use this application again, you must reauthorize it in the MIDATA portal.",
        "app" : "You are allowed to use this application on a maximum of 10 devices. Please delete unused consents on the MIDATA portal." 
      },
 
@@ -406,7 +407,7 @@
 	   "ACTIVE" : "Active",
 	   "BLOCKED" : "Blocked",
 	   "DELETED" : "Deleted",
-	   "NEW" : "New"	   
+	   "NEW" : "New"
 	 },
 	 "frequency" : {
 	   "ONCE" : "Once",
@@ -462,6 +463,7 @@
 	 },
 	 "infos" : {
 	   "SUMMARY" : "Short Summary",
+	   "ONBOARDING" : "Application Onboarding Text",
 	   "DESCRIPTION" : "What is this research project doing?",
 	   "HOMEPAGE" : "Link to project homepage",
 	   "CONTACT" : "Contact information",
@@ -471,7 +473,7 @@
 	   "LOCATION" : "At which state or region is this project taking place?",
 	   "PHASE" : "What is the state of progression of the research taking place?",
 	   "SPONSOR" : "Who is initiator of the research and who is legally responsible?",
-	   "SITE" : "At which site are activities beeing conducted?",
+	   "SITE" : "At which site are activities being conducted?",
 	   "DEVICES" : "Is there any special equipment required by a participant?",
 	   "COMMENT" : "Additional notes"
 	 },
@@ -801,7 +803,7 @@
 	"do_not_participate_help" : "If you do NOT want to participate you can click here. You will not be asked again and no data will be shared.",
 	"do_not_participate_btn" : "Do not participate",
 	"retreat_help" : "You are currently participating to this research. If you no longer want to participate you may retreat from participation. Your shared data will be frozen at the moment of retreat and no new data will be shared. Once retreated you are not able to participate again.",
-	"retreat_btn" : "Retreat from participation",
+	"retreat_btn" : "Withdraw participation",
 	"status" : "Status",
 	"recommended_apps" : "Recommended Apps",
 	"use_app" : "Use now",
@@ -1047,7 +1049,9 @@
     "device" : "Device: {{ device}}",
     "please_confirm" : "Please confirm the activation of the application using the MIDATA portal, then retry. Consent title is: {{ consent }}",
     "confirm_btn" : "Confirm Access",
-    "requests_access" : "Requested Access:",
+    "continue_btn" : "Continue",
+    "requests_access" : "Access requested by the application:",
+    "requests_sharing" : "Data shared with the project:",
     "shares_group" : "Group: {{ group }}",
     "shares_format" : "Format: {{ format }}",
     "shares_content" : "Content: {{ content }}",
@@ -1210,12 +1214,13 @@
   },
   
   "apps" : {
-    "greeting" : "Connect your apps to collect data",
-    "title" : "Apps",
-    "description" : "Authorized Apps",
-    "count" : "You have {{count}} authorized apps:",
+    "greeting" : "Connect your applications to collect data",
+    "title" : "Applications",
+    "description" : "Authorized Applicationss",
+    "count" : "You have {{count}} authorized applications:",
     "services" : "Services",
-    "connect_btn" : "Authorize"       
+    "connect_btn" : "Authorize",
+    "use_btn" : "Use"
   },
   
   "changeemail" : {

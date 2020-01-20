@@ -7,6 +7,10 @@ package models.enums;
 public enum StudyAppLinkType {
 
 	OFFER_P,
+
+	OFFER_EXTRA_PAGE,
+
+	OFFER_INLINE_AGB,
 	
 	REQUIRE_P,
 	

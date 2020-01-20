@@ -56,9 +56,16 @@ public class Terms extends APIController {
 		terms.title = JsonValidation.getString(json, "title");
 		terms.version = JsonValidation.getString(json, "version");
 
+		boolean replace = JsonValidation.getBoolean(json, "replace");
+
 		TermsOfUse result = TermsOfUse.getByNameVersionLanguage(terms.name, terms.version, terms.language);
-		if (result != null) throw new BadRequestException("error.exists.terms", "Terms with this name,version and language already exist.");
-		
+		if (result != null) {
+		    if (replace) {
+				terms._id = result._id;
+				terms.upsert();
+				return ok();
+			} else throw new BadRequestException("error.exists.terms", "Terms with this name,version and language already exist.");
+		}
 		terms.add();
 		
 		return ok();

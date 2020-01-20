@@ -15,6 +15,11 @@ public enum InfoType {
     * What is this study doing?
     */
    DESCRIPTION,
+
+   /**
+    * Text for App onboarding
+    */
+   ONBOARDING,
    
    /**
 	 * Link to project homepage

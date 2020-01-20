@@ -134,13 +134,14 @@
         },
 
         "blocked" : {
-            "user" : "Dieser Benutzer ist nicht berechtigt sich anzumelden. Für Hilfe kontaktieren Sie bitte support@midata.coop.",
+            "user" : "Der Benutzer ist nicht berechtigt sich anzumelden. Für Hilfe kontaktieren Sie bitte support@midata.coop.",
             "password1" : "Zu viele falsche Anmeldeversuche. Bitte warten Sie 1 Minute vor dem nächsten Versuch.",
             "password5" : "Zu viele falsche Anmeldeversuche. Bitte warten Sie 5 Minuten vor dem nächsten Versuch.",
             "password60" : "Zu viele falsche Anmeldeversuche. Bitte warten Sie 1 Stunde vor dem nächsten Versuch.",
-            "participation" : "Dieser Kontoinhabende ist nicht berechtigt, an einem Forschungsprojekt teilzunehmen.",
-            "consent" : "Die Zustimmung, diese Applikation zu nutzen, wurde widerrufen. Falls Sie diese Applikation wieder nutzen möchten, müssen Sie die zurückgewiesene oder abgelaufene Zustimmung auf dem MIDATA-Portal löschen.",
-            "app" : "Sie dürfen diese Applikation auf maximal 10 Geräten nutzen. Löschen Sie bitte nicht mehr genutzte Zustimmungen auf dem MIDATA-Portal."
+            "participation" : "Sie sind nicht berechtigt, an diesem Forschungsprojekt teilzunehmen und können deshalb diese Applikation nicht benutzen.",
+            "projectconsent" : "Sie haben Ihre Teilnahme an diesem Forschungsprojekt zurückgezogen und können deshalb diese Applikation nicht mehr benutzen.",
+            "consent" : "Sie haben im MIDATA-Portal eingestellt, dass diese Applikation nicht mehr auf Ihre Daten zugreifen darf. Falls Sie diese Applikation wieder nutzen möchten, müssen Sie sie im MIDATA-Portal neu autorisieren.",
+            "app" : "Sie dürfen diese Applikation auf maximal 10 Geräten nutzen. Löschen Sie bitte nicht mehr genutzte Zustimmungen im MIDATA-Portal."
         },
 
         "closed" : {
@@ -461,6 +462,7 @@
         },
         "infos" : {
             "SUMMARY" : "Kurze Zusammenfassung",
+            "ONBOARDING" : "Onboarding-Text der Applikation",
             "DESCRIPTION" : "Was bewirkt dieses Forschungsprojekt?",
             "HOMEPAGE" : "Link zur Projekthomepage",
             "CONTACT" : "Kontaktinformationen",
@@ -800,7 +802,7 @@
         "do_not_participate_help" : "Wenn Sie NICHT teilnehmen möchten, können Sie hier klicken. Sie werden nicht erneut gefragt und es werden keine Daten weitergegeben.",
         "do_not_participate_btn" : "Nicht teilnehmen",
         "retreat_help" : "Sie nehmen an dieser Forschung derzeit teil. Wenn Sie nicht mehr teilnehmen möchten, können Sie sich von der Teilnahme zurückziehen. Ihre geteilten Daten werden zum Zeitpunkt des Rückzugs eingefroren und es werden keine neuen Daten weitergegeben. Einmal zurückgezogen, können Sie nicht mehr teilnehmen.",
-        "retreat_btn" : "Teilnahme zurückgezogen",
+        "retreat_btn" : "Teilnahme zurückziehen",
         "status" : "Status",
         "recommended_apps" : "Empfohlene Applikationen",
         "use_app" : "Jetzt verwenden",
@@ -1046,7 +1048,9 @@
         "device" : "Gerät: {{ device}}",
         "please_confirm" : "Bestätigen Sie bitte die Aktivierung der Applikation auf dem MIDATA Portal, dann versuchen Sie es erneut. Zustimmungsbezeichnung: {{ consent }}",
         "confirm_btn" : "Zugriff bestätigen",
-        "requests_access" : "Angeforderter Zugriff:",
+        "continue_btn" : "Weiter",
+        "requests_access" : "Von der Applikation angeforderter Zugang:",
+        "requests_sharing" : "Mit dem Projekt geteilte Daten:",
         "shares_group" : "Gruppe: {{ group }}",
         "shares_format" : "Format: {{ format }}",
         "shares_content" : "Inhalt: {{ content }}",
@@ -1209,12 +1213,13 @@
     },
 
     "apps" : {
-        "greeting" : "Verknüpfen Sie Ihre Apps, um Daten zu sammeln",
-        "title" : "Apps",
-        "description" : "Autorisierte Apps",
-        "count" : "Sie haben {{count}} autorisierte Apps:",
+        "greeting" : "Verknüpfen Sie Ihre Applikationen, um Daten zu sammeln",
+        "title" : "Applikationen",
+        "description" : "Autorisierte Applikationen",
+        "count" : "Sie haben {{count}} autorisierte Applikationen:",
         "services" : "Services",
-        "connect_btn" : "Autorisieren"
+        "connect_btn" : "Autorisieren",
+        "use_btn" : "Verwenden"
     },
 
     "changeemail" : {
