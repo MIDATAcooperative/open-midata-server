@@ -315,3 +315,4 @@
 {"_id":{"$oid":"5e18589daed6450cb19b1b0d"},"system":"http://midata.coop","code":"activities/moving-time","display":"Moving Time","content":"activities/moving-time"}
 {"_id":{"$oid":"5e18589daed6450cb19b1b0e"},"system":"http://midata.coop","code":"activities/elapsed-time","display":"Elapsed Time","content":"activities/elapsed-time"}
 {"_id":{"$oid":"5e186f3eaed6450cb19b1b11"},"system":"http://midata.coop","code":"activities/photo-count","display":"Photos posted","content":"activities/photo-count"}
+{"_id":{"$oid":"5e2e9000aed64524b3709d31"},"system":"http://midata.coop","code":"activities/route","display":"Route","content":"activities/route"}
