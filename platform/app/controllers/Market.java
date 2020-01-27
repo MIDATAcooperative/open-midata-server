@@ -42,6 +42,7 @@ import models.Plugin;
 import models.PluginIcon;
 import models.PluginReview;
 import models.Plugin_i18n;
+import models.ServiceInstance;
 import models.SoftwareChangeLog;
 import models.Space;
 import models.Study;
@@ -74,6 +75,7 @@ import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
+import utils.ApplicationTools;
 import utils.InstanceConfig;
 import utils.access.Query;
 import utils.auth.AdminSecured;
@@ -182,6 +184,14 @@ public class Market extends APIController {
 				
 				if (app.defaultQuery != null && !app.defaultQuery.equals(oldDefaultQuery)) {
 					markReviewObsolete(app._id, AppReviewChecklist.ACCESS_FILTER);
+				}
+
+				if (app.type.equals("external")) {
+					Set<ServiceInstance> si = ServiceInstance.getByApp(app._id, ServiceInstance.ALL);
+					if (si.isEmpty() && userId.equals(app.creator)) {
+						ApplicationTools.createServiceInstance(userId, app, userId);
+					}
+					//for (ServiceInstance)
 				}
 			}
 			
@@ -603,6 +613,10 @@ public class Market extends APIController {
 		
 			
 		Plugin.add(plugin);
+
+		if (plugin.type.equals("service")) {
+			ApplicationTools.createServiceInstance(userId, plugin, userId);
+		}
 		
 		return ok(JsonOutput.toJson(plugin, "Plugin", Plugin.ALL_DEVELOPER)).as("application/json");
 	}

@@ -36,11 +36,13 @@ public class Messager {
 		smsSender = system.actorOf(Props.create(SMSSender.class), "smsSender");
 	}
 	
-	public static void sendTextMail(String email, String fullname, String subject, String content) {		
+	public static void sendTextMail(String email, String fullname, String subject, String content) {	
+		AccessLog.log("trigger send text mail to="+email);
 		mailSender.tell(new Message(email, fullname, subject, content), ActorRef.noSender());
 	}
 	
 	public static void sendSMS(String phone, String text) {
+		AccessLog.log("trigger send SMS to="+phone);
 		smsSender.tell(new SMS(phone, text), ActorRef.noSender());
 	}
 

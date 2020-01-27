@@ -167,7 +167,8 @@
     "creator" : "Creator",
     "organization" : "Organization",
     "publisher" : "Publisher",
-    "reviews" : "Reviews"		    
+    "reviews" : "Reviews",
+    "manageyourkeys" : "Manage your API keys"
   },
   
   "appstats" : {

@@ -44,6 +44,7 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
+import utils.ApplicationTools;
 import utils.ErrorReporter;
 import utils.ServerTools;
 import utils.access.Feature_QueryRedirect;
@@ -189,7 +190,10 @@ public class Plugins extends APIController {
 
 		if (visualization.type.equals("service")) {
 			User user = User.getById(userId, User.ALL_USER_INTERNAL);
-			MobileAPI.installApp(userId, visualization._id, user, "-----", true, Collections.emptySet());
+			ApplicationTools.installApp(userId, visualization._id, user, "-----", true, Collections.emptySet());
+		} else if (visualization.type.equals("external")) {
+			User user = User.getById(userId, User.ALL_USER_INTERNAL);
+			ApplicationTools.installApp(userId, visualization._id, user, "-----", true, Collections.emptySet());
 		} else {
 			String spaceName = JsonValidation.getString(json, "spaceName");
 			

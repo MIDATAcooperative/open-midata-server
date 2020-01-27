@@ -6,11 +6,20 @@
             <loader busy="status.isBusy !== false">
                 <div ng-repeat="service in services">
                     <div class="row">
-                        <div class="col-6">{{ service.name }}</div>
-                        <div class="col-6">
+                        <div class="col-8">{{ service.name }}</div>
+                        <div class="col-4">
                             <button type="button" class="btn btn-default btn-sm" translate="apikeys.add_btn" ng-click="addKey(service)"></button>
-                            <button type="button" class="btn btn-default btn-sm" translate="apikeys.show_btn"></button>
-                            <button type="button" class="btn btn-danger btn-sm" translate="apikeys.delete_btn"></button>
+                            <button type="button" class="btn btn-default btn-sm" translate="apikeys.show_btn" ng-click="showKeys(service)"></button>
+                            <button type="button" class="btn btn-danger btn-sm" translate="apikeys.delete_btn" ng-click="deleteService(service);"></button>
+                        </div>
+                    </div>
+                    <div class="row" ng-repeat="key in service.keys">
+                        <div class="col-1">-</div>
+                        <div class="col-7">
+                            {{ key.dateOfCreation | date }}
+                        </div>
+                        <div class="col-4">
+                            <button type="button" class="btn btn-danger btn-sm" translate="apikeys.revoke_btn" ng-click="deleteKey(service, key);"></button>
                         </div>
                     </div>
                 </div>                

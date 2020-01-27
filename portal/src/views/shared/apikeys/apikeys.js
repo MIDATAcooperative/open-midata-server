@@ -3,7 +3,7 @@ angular.module('portal')
 
 	$scope.status = new status(true);
 			
-	loadServices = function(userId, studyId) {	
+	loadServices = function(studyId) {	
         
         if (studyId) {
             $scope.status.doBusy(services.listByStudy(studyId))
@@ -27,8 +27,29 @@ angular.module('portal')
             views.setView("apikey", { key : result.data }, "API Keys");
         });
     };
-			
-	session.currentUser.then(function(userId) { loadServices(userId, $state.params.studyId); });
+
+    $scope.showKeys = function(service) {
+        $scope.status.doAction("add", services.listKeys(service._id))
+        .then(function(result) {
+            service.keys = result.data;
+        });
+    };
+
+    $scope.deleteService = function(service, key) {
+        $scope.status.doAction("add", services.removeService(service._id))
+        .then(function() {
+            loadServices($state.params.studyId);
+        });
+    };
+
+    $scope.deleteKey = function(service, key) {
+        $scope.status.doAction("add", services.removeApiKey(service._id, key._id))
+        .then(function() {
+            loadServices($state.params.studyId);
+        });
+    };
+
+	session.currentUser.then(function(userId) { loadServices($state.params.studyId); });
 	
 
 }]);

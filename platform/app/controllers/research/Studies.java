@@ -33,7 +33,6 @@ import akka.util.ByteString;
 import controllers.APIController;
 import controllers.Circles;
 import controllers.Market;
-import controllers.MobileAPI;
 import controllers.Spaces;
 import controllers.members.HealthProvider;
 import models.AccessPermissionSet;
@@ -86,6 +85,7 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
+import utils.ApplicationTools;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.ServerTools;
@@ -1286,15 +1286,33 @@ public class Studies extends APIController {
 
 		if (plugin.type.equals("analyzer")) {
 		
-			ServiceInstance si = new ServiceInstance();
-			si._id = new MidataId();
-			si.linkedStudy = studyId;
-			si.linkedStudyGroup = group;
-			si.managerAccount = studyId;
-			si.status = UserStatus.ACTIVE;
-			si.executorAccount = si._id;
-			si.name = study.name + (group != null ? (" - " + group) : "");
-			si.add();
+					
+			if (shareBack) {
+
+				if (group == null) {
+					for (StudyGroup grp : study.groups) {
+						Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudy(study._id, grp.name, study._id, Sets.create("authorized"));
+
+						if (consents.isEmpty()) {
+							Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyId, grp.name, Sets.create());
+							joinSharing(userId, study._id, study, grp.name, false, new ArrayList<StudyParticipation>(parts));
+						}
+					}
+
+				} else {
+					Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudy(study._id, group, study._id, Sets.create("authorized"));
+
+					if (consents.isEmpty()) {
+						Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyId, group, Sets.create());
+						joinSharing(userId, study._id, study, group, false, new ArrayList<StudyParticipation>(parts));
+					}
+
+				}
+
+			}
+
+			ServiceInstance si = ApplicationTools.createServiceInstance(plugin, study, group);	
+
 
 		} else {
 			if (shareBack) {
@@ -1331,7 +1349,7 @@ public class Studies extends APIController {
 				device = "service";	
 				}
 
-				MobileAppInstance appInstance = MobileAPI.installApp(userId, plugin._id, researcher, device, false, Collections.emptySet());
+				MobileAppInstance appInstance = ApplicationTools.installApp(userId, plugin._id, researcher, device, false, Collections.emptySet());
 				KeyManager.instance.changePassphrase(appInstance._id, device);
 				Map<String, Object> query = appInstance.sharingQuery;
 				query.put("study", studyId.toString());

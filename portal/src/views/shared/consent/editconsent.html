@@ -99,6 +99,14 @@
               <strong translate="editconsent2.external"></strong>
             </div>
             </div>
+		  </div>
+		  <div  ng-show="consent.type=='API'">
+            <div class="card-body">
+            <img ng-src="{{getIconRole('app')}}" class="consenticon float-left">
+            <div class="iconspace">
+              <strong translate="editconsent2.external"></strong>
+            </div>
+            </div>
           </div>
           <div  ng-show="consent.type=='STUDYRELATED'">
             <div class="card-body">
@@ -108,7 +116,7 @@
             </div>
             </div>
           </div>
-         <div  ng-repeat="person in authpersons">
+         <div  ng-repeat="person in authpersons" ng-show="consent.type != 'EXTERNALSERVICE' && consent.type != 'API'">
            <div class="card-body">
 		  <button type="button" ng-click="removePerson(person)" class="close" aria-label="Delete" ng-show="mayChangeUsers()"><span aria-hidden="true">&times;</span></button>
 		  <img ng-src="{{getIconRole(person)}}" class="float-left consenticon">

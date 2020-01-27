@@ -16,12 +16,17 @@ public class ServiceInstance extends Model {
 	private static final String collection = "serviceinstances";
 	
 	public @NotMaterialized final static Set<String> ALL = 
-			 Sets.create("_id", "name", "executorAccount", "linkedStudy", "linkedStudyGroup", "managerAccount", "publicKey");
+			 Sets.create("_id", "name", "appId", "executorAccount", "linkedStudy", "linkedStudyGroup", "managerAccount", "publicKey");
     
     /** 
      * name of service
     */
     public String name;
+
+    /**
+     * id of service application
+     */
+    public MidataId appId;
     
     /**
      * id of executor. (optional)
@@ -57,8 +62,12 @@ public class ServiceInstance extends Model {
 		return Model.get(ServiceInstance.class, collection, CMaps.map("_id", id), fields);
     }
     
-    public static Set<ServiceInstance> getByManager(MidataId managerId, Set<String> fields) throws InternalServerException {
+  public static Set<ServiceInstance> getByManager(MidataId managerId, Set<String> fields) throws InternalServerException {
 		return Model.getAll(ServiceInstance.class, collection, CMaps.map("managerAccount", managerId), fields);
+  }
+  
+  public static Set<ServiceInstance> getByApp(MidataId appId, Set<String> fields) throws InternalServerException {
+		return Model.getAll(ServiceInstance.class, collection, CMaps.map("appId", appId), fields);
 	}
 		
 	public void add() throws InternalServerException {

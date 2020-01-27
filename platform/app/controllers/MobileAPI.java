@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.bson.BSONObject;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -18,7 +18,6 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.util.JSONParseException;
 
 import actions.MobileCall;
-import controllers.members.HealthProvider;
 import models.Consent;
 import models.ContentInfo;
 import models.HPUser;
@@ -38,9 +37,7 @@ import models.User;
 import models.enums.AggregationType;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
-import models.enums.JoinMethod;
 import models.enums.LinkTargetType;
-import models.enums.MessageReason;
 import models.enums.ParticipationStatus;
 import models.enums.StudyAppLinkType;
 import models.enums.UsageAction;
@@ -49,17 +46,15 @@ import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
-import play.mvc.Http;
 import play.mvc.Result;
 import utils.AccessLog;
+import utils.ApplicationTools;
 import utils.InstanceConfig;
 import utils.LinkTools;
 import utils.QueryTagTools;
 import utils.access.AccessContext;
 import utils.access.AppAccessContext;
 import utils.access.EncryptionUtils;
-import utils.access.Feature_FormatGroups;
-import utils.access.Feature_QueryRedirect;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.ExecutionInfo;
@@ -80,8 +75,6 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-import utils.messaging.Messager;
-import utils.messaging.SubscriptionManager;
 import utils.stats.Stats;
 import utils.stats.UsageStatsRecorder;
 
@@ -104,17 +97,6 @@ public class MobileAPI extends Controller {
 		return ok();
 	}
 
-	/**
-	 * accessToken expired result
-	 * @return
-	 * @throws BadRequestException
-	 */
-	public static Result invalidToken() throws BadRequestException {
-		throw new BadRequestException("error.invalid.token", "Invalid or expired authToken.", Http.Status.UNAUTHORIZED);
-	}
-		
-		
-	
 	private static boolean verifyAppInstance(MobileAppInstance appInstance, MidataId ownerId, MidataId applicationId) throws AppException {
 		if (appInstance == null) return false;
         if (!appInstance.owner.equals(ownerId)) return false;
@@ -128,7 +110,7 @@ public class MobileAPI extends Controller {
         AccessLog.log("app-instance:"+appInstance.appVersion+" vs plugin:"+app.pluginVersion);
         
         if (appInstance.appVersion != app.pluginVersion) {      
-        	MobileAPI.removeAppInstance(appInstance);
+        	ApplicationTools.removeAppInstance(appInstance.owner, appInstance);
         	return false;
         }
         
@@ -139,14 +121,14 @@ public class MobileAPI extends Controller {
         		   if (sal.linkTargetType == LinkTargetType.ORGANIZATION) {
         			  Consent c = LinkTools.findConsentForAppLink(appInstance.owner, sal);
         			  if (c == null) {
-        				  MobileAPI.removeAppInstance(appInstance);
+        				  ApplicationTools.removeAppInstance(appInstance.owner, appInstance);
 		                  return false;
         			  }
         		   } else {
 	        		   StudyParticipation sp = StudyParticipation.getByStudyAndMember(sal.studyId, appInstance.owner, Sets.create("status", "pstatus"));
 	        		   
 	        		   if (sp == null) {
-		               		MobileAPI.removeAppInstance(appInstance);
+		               		ApplicationTools.removeAppInstance(appInstance.owner, appInstance);
 		                   	return false;
 		               	}
 		               	if ( 
@@ -197,21 +179,31 @@ public class MobileAPI extends Controller {
 		String phrase = null;
 		Map<String, Object> meta = null;
 		UserRole role = null;
+		
 		Plugin app = null;
 		boolean deprecated = false;
 		KeyManager.instance.login(60000l, false);
 		if (json.has("refreshToken")) {
-			OAuthRefreshToken refreshToken = OAuthRefreshToken.decrypt(JsonValidation.getString(json, "refreshToken"));
-			if (refreshToken.created + MobileAPI.DEFAULT_REFRESHTOKEN_EXPIRATION_TIME < System.currentTimeMillis()) return MobileAPI.invalidToken();
-			appInstanceId = refreshToken.appInstanceId;
+			String refresh_token = JsonValidation.getString(json, "refreshToken");
+
+			Pair<User, MobileAppInstance> pair = OAuth2.useRefreshToken(refresh_token);
+			User user = pair.getLeft();
+			appInstance = pair.getRight();
+			role = user.role;
+
+			/*
+			OAuthRefreshToken refreshToken = OAuthRefreshToken.decrypt();
 			
+			if (refreshToken.created + MobileAPI.DEFAULT_REFRESHTOKEN_EXPIRATION_TIME < System.currentTimeMillis()) return OAuth2.invalidToken();
+			appInstanceId = refreshToken.appInstanceId;
+
 			appInstance = MobileAppInstance.getById(appInstanceId, Sets.create("owner", "applicationId", "status", "appVersion", "writes", "sharingQuery"));
 			if (!verifyAppInstance(appInstance, refreshToken.ownerId, refreshToken.appId)) throw new BadRequestException("error.invalid.token", "Bad refresh token.");
 			
 			app = Plugin.getById(appInstance.applicationId, Sets.create("type", "name", "secret", "status", "targetUserRole"));
 			if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");
 			
-			if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
+			if (!app.type.equals("mobile") && !app.type.equals("analyzer") && !app.type.equals("external")) throw new InternalServerException("error.internal", "Wrong app type");
 			
             if (!refreshToken.appId.equals(app._id)) throw new BadRequestException("error.invalid.token", "Bad refresh token.");
             User user = User.getById(appInstance.owner, User.ALL_USER_INTERNAL);
@@ -227,11 +219,11 @@ public class MobileAPI extends Controller {
                         
             if (refreshToken.created != ((Long) meta.get("created")).longValue()) {
             	return status(UNAUTHORIZED);
-            }
+            }*/
             
             phrase = KeyManager.instance.newAESKey(appInstance._id);
             
-            UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.REFRESH);
+            //UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.REFRESH);
 		} else {
 			deprecated = true;
 			String name = JsonValidation.getString(json, "appname");
@@ -288,7 +280,7 @@ public class MobileAPI extends Controller {
 				executor = autoConfirm ? user._id : null;
 				AccessLog.log("REINSTALL");
 				if (!autoConfirm && app.targetUserRole.equals(UserRole.RESEARCH)) throw new BadRequestException("error.invalid.study", "The research app is not properly linked to a study! Please log in as researcher and link the app properly.");
-				appInstance = installApp(executor, app._id, user, phrase, autoConfirm, Collections.emptySet());
+				appInstance = ApplicationTools.installApp(executor, app._id, user, phrase, autoConfirm, Collections.emptySet());
 				KeyManager.instance.changePassphrase(appInstance._id, phrase);
 				if (executor != null) RecordManager.instance.clearCache();
 				executor = appInstance._id;
@@ -303,6 +295,10 @@ public class MobileAPI extends Controller {
 			UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.LOGIN);							
 			role = user.role;
 			
+			if (app.targetUserRole.equals(UserRole.RESEARCH)) {						
+				BSONObject q = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_query");
+				if (!q.containsField("link-study")) throw new BadRequestException("error.invalid.study", "The research app is not properly linked to a study! Please log in as researcher and link the app properly.");
+			}
 			//phrase = KeyManager.instance.newAESKey(appInstance._id);	
 			
 			//throw new InternalServerException("error.notimplemented", "This feature is not implemented.");
@@ -310,27 +306,11 @@ public class MobileAPI extends Controller {
 				
 		//if (!phrase.equals(meta.get("phrase"))) return internalServerError("Internal error while validating consent");
 				
-		if (app.targetUserRole.equals(UserRole.RESEARCH)) {			
-			
-		  BSONObject q = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_query");
-          if (!q.containsField("link-study")) throw new BadRequestException("error.invalid.study", "The research app is not properly linked to a study! Please log in as researcher and link the app properly.");
-		}
+		
 		
 		AuditManager.instance.success();
 		
-		return authResult(executor, role, appInstance, meta, phrase, deprecated);
-	}
-	
-	public static void removeAppInstance(MobileAppInstance appInstance) throws AppException {
-		AccessLog.logBegin("start remove app instance");
-		// Device or password changed, regenerates consent				
-		Circles.consentStatusChange(appInstance.owner, appInstance, ConsentStatus.EXPIRED);
-		Plugin app = Plugin.getById(appInstance.applicationId);
-		if (app!=null) SubscriptionManager.deactivateSubscriptions(appInstance.owner, app, appInstance._id);
-		RecordManager.instance.deleteAPS(appInstance._id, appInstance.owner);									
-		Circles.removeQueries(appInstance.owner, appInstance._id);										
-		MobileAppInstance.delete(appInstance.owner, appInstance._id);
-		AccessLog.logEnd("end remove app instance");
+		return authResult(executor, role, appInstance, phrase, deprecated);
 	}
 	
 	/**
@@ -341,13 +321,10 @@ public class MobileAPI extends Controller {
 	 * @return
 	 * @throws AppException
 	 */
-	public static Result authResult(MidataId executor, UserRole role, MobileAppInstance appInstance, Map<String, Object> meta, String phrase, boolean deprecated) throws AppException {
+	public static Result authResult(MidataId executor, UserRole role, MobileAppInstance appInstance, String phrase, boolean deprecated) throws AppException {
 		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, phrase, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME, role); 
-        OAuthRefreshToken refresh = new OAuthRefreshToken(appInstance.applicationId, appInstance._id, appInstance.owner, phrase, System.currentTimeMillis());
-		
-        meta.put("created", refresh.created);
-        RecordManager.instance.setMeta(executor, appInstance._id, "_app", meta);
-        
+        OAuthRefreshToken refresh = OAuth2.createRefreshToken(executor, appInstance, phrase);
+		        
         BSONObject q = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_query");
         if (q.containsField("link-study")) {
         	MidataId studyId = MidataId.from(q.get("link-study"));
@@ -366,155 +343,9 @@ public class MobileAPI extends Controller {
 		return ok(obj);
 	}
 
-	public static MobileAppInstance refreshApp(MobileAppInstance appInstance, MidataId executor, MidataId appId, User member, String phrase) throws AppException {
-		Plugin app = Plugin.getById(appId, Sets.create("name", "type", "pluginVersion", "defaultQuery", "predefinedMessages", "termsOfUse", "writes", "defaultSubscriptions"));
-							
-		appInstance = MobileAppInstance.getById(appInstance._id, Sets.create(Consent.ALL, "publicKey", "applicationId", "appVersion", "licence"));
-		
-        appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(appInstance._id, null);    	
-    	appInstance.passcode = Member.encrypt(phrase);     	
-    	appInstance.lastUpdated = new Date();
-    	
-    	    	    	
-    	MobileAppInstance.upsert(appInstance);	
-
-        RecordManager.instance.deleteAPS(appInstance._id, executor);
-		RecordManager.instance.createAnonymizedAPS(member._id, appInstance._id, appInstance._id, true);
-				
-		Map<String, Object> meta = new HashMap<String, Object>();
-		meta.put("phrase", phrase);
-		if (executor == null) executor = appInstance._id;
-		RecordManager.instance.setMeta(executor, appInstance._id, "_app", meta);
-		
-		if (app.defaultQuery != null && !app.defaultQuery.isEmpty()) {			
-		    RecordManager.instance.shareByQuery(executor, member._id, appInstance._id, Feature_QueryRedirect.simplifyAccessFilter(app._id, app.defaultQuery));
-		}
-		
-		MobileAPI.confirmMobileConsent(executor, appInstance._id);
-									
-		AuditManager.instance.success();
-		return appInstance;
-
-	}
-	
-	public static MobileAppInstance installApp(MidataId executor, MidataId appId, User member, String phrase, boolean autoConfirm, Set<MidataId> studyConfirm) throws AppException {
-		Plugin app = Plugin.getById(appId, Sets.create("name", "type", "pluginVersion", "defaultQuery", "predefinedMessages", "termsOfUse", "writes", "defaultSubscriptions"));
-       
-		Set<StudyAppLink> links = StudyAppLink.getByApp(appId);
-		if (studyConfirm==null) studyConfirm = Collections.emptySet();
-		
-		for (StudyAppLink sal : links) {
-			if (sal.isConfirmed()) {
-												
-				if (!sal.active) sal.type = Collections.emptySet();
-				
-				if (sal.linkTargetType == LinkTargetType.ORGANIZATION) {
-					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) && sal.type.contains(StudyAppLinkType.OFFER_P) && !studyConfirm.contains(sal.userId)) {
-						Consent consent = LinkTools.findConsentForAppLink(member._id, sal);						
-						if (consent==null) throw new BadRequestException("error.missing.consent_accept", "Consent belonging to app must be accepted.");
-					}
-				} else {
-				
-					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) && sal.type.contains(StudyAppLinkType.OFFER_P) && !studyConfirm.contains(sal.studyId)) {
-						StudyParticipation sp = StudyParticipation.getByStudyAndMember(sal.studyId, member._id, Sets.create("status", "pstatus"));
-			        	if (sp == null || 
-			        		sp.pstatus.equals(ParticipationStatus.MEMBER_RETREATED) || 
-			        		sp.pstatus.equals(ParticipationStatus.MEMBER_REJECTED) || 
-			        		sp.pstatus.equals(ParticipationStatus.RESEARCH_REJECTED)) {
-			        		throw new BadRequestException("error.missing.study_accept", "Study belonging to app must be accepted.");        		
-			        	}
-					}
-					
-					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.studyId))) {
-						controllers.members.Studies.precheckRequestParticipation(member._id, sal.studyId);
-					}
-				}
-			}
-		}
-							
-		MobileAppInstance appInstance = new MobileAppInstance();
-		appInstance._id = new MidataId();
-		appInstance.owner = member._id;
-		if (app.type.equals("service")) {
-			appInstance.name = "Service: "+ app.name;
-		} else {
-		    appInstance.name = "App: "+ app.name+" (Device: "+phrase.substring(0, 3)+")";
-		}
-		appInstance.applicationId = app._id;	
-		appInstance.appVersion = app.pluginVersion;
-		
-		AuditManager.instance.addAuditEvent(AuditEventType.APP_FIRST_USE, app._id, member, null, appInstance, null, null);
-		
-        appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(appInstance._id, null);    	
-    	appInstance.passcode = Member.encrypt(phrase); 
-    	appInstance.dateOfCreation = new Date();
-    	appInstance.lastUpdated = appInstance.dateOfCreation;
-    	appInstance.writes = app.writes;
-		
-    	if (app.defaultQuery != null && !app.defaultQuery.isEmpty()) {
-			
-		    Feature_FormatGroups.convertQueryToContents(app.defaultQuery);
-		    
-		    appInstance.sharingQuery = Feature_QueryRedirect.simplifyAccessFilter(app._id, app.defaultQuery);						   
-		}
-    	    	    	
-    	MobileAppInstance.add(appInstance);	
-
-        // SubscriptionManager.activateSubscriptions(appInstance.owner, app, appInstance._id);
-		// KeyManager.instance.unlock(appInstance._id, phrase);	   		    
-
-		RecordManager.instance.createAnonymizedAPS(member._id, appInstance._id, appInstance._id, true);
-				
-		Map<String, Object> meta = new HashMap<String, Object>();
-		meta.put("phrase", phrase);
-		if (executor == null) executor = appInstance._id;
-		RecordManager.instance.setMeta(executor, appInstance._id, "_app", meta);
-		
-		if (app.defaultQuery != null && !app.defaultQuery.isEmpty()) {			
-		    RecordManager.instance.shareByQuery(executor, member._id, appInstance._id, appInstance.sharingQuery);
-		}
-				
-		for (StudyAppLink sal : links) {
-			if (sal.isConfirmed()) {	
-				if (sal.linkTargetType == LinkTargetType.ORGANIZATION) {
-					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.userId))) {					
-						RecordManager.instance.clearCache();
-						LinkTools.createConsentForAppLink(member._id, sal);
-					}
-				} else
-				if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.studyId))) {
-					RecordManager.instance.clearCache();
-			        controllers.members.Studies.requestParticipation(new ExecutionInfo(executor, member.getRole()), member._id, sal.studyId, app._id, JoinMethod.APP);
-				}
-			}
-		}
-		
-		if (autoConfirm) {
-		   HealthProvider.confirmConsent(appInstance.owner, appInstance._id);
-		   appInstance.status = ConsentStatus.ACTIVE;
-		}
-		
-		if (!member.apps.contains(app._id)) {
-			member.apps.add(app._id);
-			User.set(member._id, "apps", member.apps);
-		}
-		
-		if (app.termsOfUse != null) member.agreedToTerms(app.termsOfUse, app._id);					
-		
-		if (app.predefinedMessages!=null) {
-			if (!app._id.equals(member.initialApp)) {
-				Messager.sendMessage(app._id, MessageReason.FIRSTUSE_EXISTINGUSER, null, Collections.singleton(member._id), member.language, new HashMap<String, String>());	
-			} 
-			Messager.sendMessage(app._id, MessageReason.FIRSTUSE_ANYUSER, null, Collections.singleton(member._id), member.language, new HashMap<String, String>());								
-		}
-        UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.INSTALL);			
-		AuditManager.instance.success();
-		return appInstance;
-	}
-	
 	protected static MidataId prepareMobileExecutor(MobileAppInstance appInstance, MobileAppSessionToken tk) throws AppException {
 		KeyManager.instance.login(1000l*60l, false);
-		if (KeyManager.instance.unlock(tk.appInstanceId, tk.aeskey) == KeyManager.KEYPROTECTION_FAIL) { MobileAPI.invalidToken(); }
+		if (KeyManager.instance.unlock(tk.appInstanceId, tk.aeskey) == KeyManager.KEYPROTECTION_FAIL) { OAuth2.invalidToken(); }
 		Map<String, Object> appobj = RecordManager.instance.getMeta(tk.appInstanceId, tk.appInstanceId, "_app").toMap();
 		if (appobj.containsKey("aliaskey") && appobj.containsKey("alias")) {
 			MidataId alias = new MidataId(appobj.get("alias").toString());
@@ -528,16 +359,6 @@ public class MobileAPI extends Controller {
 		return tk.appInstanceId;
 	}
 	
-	public static void confirmMobileConsent(MidataId userId, MidataId consentId) throws AppException {
-		BSONObject meta = RecordManager.instance.getMeta(userId, consentId, "_app");
-		if (meta == null) throw new InternalServerException("error.internal", "_app object not found,");
-		MidataId alias = new MidataId();
-		byte[] key = KeyManager.instance.generateAlias(userId, alias);
-		meta.put("alias", alias.toString());
-		meta.put("aliaskey", key);
-		RecordManager.instance.setMeta(userId, consentId, "_app", meta.toMap());
-	}
-
 	/**
 	 * retrieve records current mobile app has access to matching some criteria
 	 * @return list of Records
@@ -560,7 +381,7 @@ public class MobileAPI extends Controller {
 
 		// decrypt authToken
 		ExecutionInfo inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), true);		
-		if (inf == null) return invalidToken(); 
+		if (inf == null) OAuth2.invalidToken(); 
 							
         Stats.setPlugin(inf.pluginId);
         UsageStatsRecorder.protokoll(inf.pluginId, UsageAction.GET);
@@ -866,11 +687,11 @@ public class MobileAPI extends Controller {
 		
 		// decrypt authToken 
 		MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(json.get("authToken").asText());
-		if (authToken == null) return invalidToken(); 
+		if (authToken == null) OAuth2.invalidToken(); 
 	
 					
 		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare", "status"));
-        if (appInstance == null) return invalidToken(); 
+        if (appInstance == null) OAuth2.invalidToken(); 
 
         if (!appInstance.status.equals(ConsentStatus.ACTIVE)) {
         	return ok(Json.toJson(Collections.EMPTY_LIST));
@@ -903,10 +724,10 @@ public class MobileAPI extends Controller {
 
 		// decrypt authToken
 		MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(json.get("authToken").asText());
-		if (authToken == null) return invalidToken(); 
+		if (authToken == null) OAuth2.invalidToken(); 
 					
 		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "status"));
-        if (appInstance == null) return invalidToken(); 
+        if (appInstance == null) OAuth2.invalidToken(); 
 		
         if (!appInstance.status.equals(ConsentStatus.ACTIVE)) {
         	return ok(JsonOutput.toJson(Collections.EMPTY_LIST, "Consent", fields)).as("application/json");

@@ -18,7 +18,11 @@
 		    </tr>
 		    <tr>
 		      <td translate="manageapp.type"></td>
-		      <td><b translate="{{ 'enum.plugintype.' + app.type }}"></b></td>
+			  <td><b translate="{{ 'enum.plugintype.' + app.type }}"></b>
+			  <span ng-show="app.type=='external'"> - 
+			  <a href="javascript:" ui-sref="^.servicekeys" translate="manageapp.manageyourkeys"></a>
+			  </span>
+			  </td>
 		    </tr><tr>
 		      <td translate="manageapp.targetUserRole"></td>
               <td><b translate="{{ 'enum.userrole.'+app.targetUserRole }}"></b></td>
@@ -136,6 +140,7 @@
 				<div translate="manageapp.applicence_help"></div>																
 			  </td>
 			</tr>
+			
 			
 			<tr ng-show="allowExport">
 			  <td ng-click="exportPlugin()">				    

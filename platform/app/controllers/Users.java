@@ -511,7 +511,7 @@ public class Users extends APIController {
 			Space.delete(userId, space._id);
 		}
 		
-		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map("type", Sets.createEnum(ConsentType.CIRCLE, ConsentType.EXTERNALSERVICE, ConsentType.HCRELATED, ConsentType.HEALTHCARE)), Consent.ALL, Integer.MAX_VALUE);
+		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map("type", Sets.createEnum(ConsentType.CIRCLE, ConsentType.EXTERNALSERVICE, ConsentType.HCRELATED, ConsentType.HEALTHCARE, ConsentType.API)), Consent.ALL, Integer.MAX_VALUE);
 		for (Consent consent : consents) {
 			RecordManager.instance.deleteAPS(consent._id, userId);
 			Circle.delete(userId, consent._id);
