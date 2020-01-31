@@ -19,5 +19,10 @@ public enum EntityType {
 	/**
 	 * Organizations
 	 */
-	ORGANIZATION
+	ORGANIZATION,
+
+	/**
+	 * Services
+	 */
+	SERVICES
 }

@@ -465,7 +465,7 @@ public class PluginsAPI extends APIController {
 		}
 		record.app = authToken.pluginId;
 		record.owner = authToken.ownerId;
-		record.creator = authToken.executorId;
+		record.creator = authToken.context.getNewRecordCreator();
 		record.created = record._id.getCreationDate();
 		
 		/*if (json.has("created-override")) {
@@ -699,7 +699,7 @@ public class PluginsAPI extends APIController {
 		 		
 		//record.app = authToken.pluginId;
 		//record.owner = authToken.ownerId;
-		record.creator = authToken.executorId;
+		record.creator = authToken.context.getNewRecordCreator();
 		record.lastUpdated = new Date();		
 							
 		try {
@@ -840,7 +840,7 @@ public class PluginsAPI extends APIController {
 			record._id = new MidataId();
 			record.app = authToken.pluginId;
 			record.owner = authToken.ownerId;
-			record.creator = authToken.executorId;
+			record.creator = authToken.context.getNewRecordCreator();
 			record.created = record._id.getCreationDate();
 			record.name = metaData.get("name")[0];
 			record.description = metaData.containsKey("description") ? metaData.get("description")[0] : null;

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 
@@ -49,9 +50,12 @@ import models.enums.UserStatus;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
+import play.mvc.Http;
+import play.mvc.Http.Status;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
+import utils.ApplicationTools;
 import utils.InstanceConfig;
 import utils.LinkTools;
 import utils.RuntimeConstants;
@@ -98,7 +102,7 @@ public class OAuth2 extends Controller {
 	public static long OAUTH_CODE_LIFETIME = 1000l * 60l * 5l;
 			
 	
-	private static boolean verifyAppInstance(MobileAppInstance appInstance, MidataId ownerId, MidataId applicationId) throws AppException {
+	public static boolean verifyAppInstance(MobileAppInstance appInstance, MidataId ownerId, MidataId applicationId) throws AppException {
 		if (appInstance == null) return false;
         if (!appInstance.owner.equals(ownerId)) throw new InternalServerException("error.invalid.token", "Wrong app instance owner!");
         if (!appInstance.applicationId.equals(applicationId)) throw new InternalServerException("error.invalid.token", "Wrong app for app instance!");
@@ -110,7 +114,7 @@ public class OAuth2 extends Controller {
         
         AccessLog.log("app-instance:"+appInstance.appVersion+" vs plugin:"+app.pluginVersion);
         if (appInstance.appVersion != app.pluginVersion) {
-        	MobileAPI.removeAppInstance(appInstance);
+        	ApplicationTools.removeAppInstance(appInstance.owner, appInstance);
         	return false;
         }
         
@@ -118,17 +122,17 @@ public class OAuth2 extends Controller {
         for (StudyAppLink sal : links) {
         	if (sal.isConfirmed() && sal.active && sal.type.contains(StudyAppLinkType.REQUIRE_P)) {
         		
-        		if (sal.linkTargetType == LinkTargetType.ORGANIZATION) {
+        		if (sal.linkTargetType == LinkTargetType.ORGANIZATION || sal.linkTargetType == LinkTargetType.SERVICE) {
       			  Consent c = LinkTools.findConsentForAppLink(appInstance.owner, sal);
       			  if (c == null) {
-      				  MobileAPI.removeAppInstance(appInstance);
+      				  ApplicationTools.removeAppInstance(appInstance.owner, appInstance);
 		                  return false;
       			  }
       		   } else {
         		   StudyParticipation sp = StudyParticipation.getByStudyAndMember(sal.studyId, appInstance.owner, Sets.create("status", "pstatus"));
         		   
         		   if (sp == null) {
-	               		MobileAPI.removeAppInstance(appInstance);
+	               		ApplicationTools.removeAppInstance(appInstance.owner, appInstance);
 	                   	return false;
 	               	}
 				    if ( 
@@ -146,249 +150,36 @@ public class OAuth2 extends Controller {
         return true;
 	}
 	
-	/*
-	@BodyParser.Of(BodyParser.Json.class)
-	@APICall
-	public Result login() throws AppException {
-			
-        JsonNode json = request().body().asJson();		
-        JsonValidation.validate(json, "appname", "username", "password", "device", "state", "redirectUri");
-
-        UserRole role = json.has("role") ? JsonValidation.getEnum(json, "role", UserRole.class) : UserRole.MEMBER;
-        
-        String name = JsonValidation.getString(json, "appname");
-		String state = JsonValidation.getString(json, "state");
-		String redirectUri = JsonValidation.getString(json, "redirectUri"); 
-		String device = JsonValidation.getString(json, "device");
-			
-		String code_challenge = JsonValidation.getStringOrNull(json, "code_challenge");
-	    String code_challenge_method = JsonValidation.getStringOrNull(json, "code_challenge_method");
-	    boolean confirmed = JsonValidation.getBoolean(json, "confirm");
-	    Set<MidataId> confirmStudy = JsonExtraction.extractMidataIdSet(json.get("confirmStudy"));
-	   					
-	    // Validate Mobile App	
-		Plugin app = Plugin.getByFilename(name, Sets.create("type", "name", "redirectUri", "requirements", "termsOfUse", "unlockCode"));
-		if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");		
-		if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
-		if (redirectUri==null || redirectUri.length()==0) throw new BadRequestException("error.internal", "Missing redirectUri in request.");
-		if (app.redirectUri==null && !redirectUri.startsWith(InstanceConfig.getInstance().getPortalOriginUrl()+"/#/")) throw new InternalServerException("error.internal", "No redirect URI set for app.");		
-		if (!redirectUri.equals(app.redirectUri) && !redirectUri.startsWith(InstanceConfig.getInstance().getPortalOriginUrl()+"/#/")) {
-			String[] multiple = app.redirectUri.split(" ");
-			boolean found = false;
-			// if length is 1 the URL has already been tested
-			if (multiple.length > 1) {
-				for (String rUri : multiple) {
-					if (rUri.equals(redirectUri)) {
-						found = true;					
-					}
-				}
-			}
-			if (!found) throw new InternalServerException("error.internal", "Wrong redirect uri");
-		}
-		
-		
-		
-		Set<UserFeature> requirements = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(role);
-		if (app.requirements != null) requirements.addAll(app.requirements);
-		
-		Set<StudyAppLink> links = StudyAppLink.getByApp(app._id);
-		for (StudyAppLink sal : links) {
-			if (sal.isConfirmed() && sal.active && ((sal.type.contains(StudyAppLinkType.OFFER_P) && confirmStudy.contains(sal.studyId)) || sal.type.contains(StudyAppLinkType.REQUIRE_P))) {
-				Study study = Study.getById(sal.studyId, Sets.create("requirements", "executionStatus"));				
-				if (study.requirements != null) requirements.addAll(study.requirements);				
-			}
-		}
-		
-				
-		MobileAppInstance appInstance = null;		
-		Map<String, Object> meta = null;
-		
-		
-		String username = JsonValidation.getEMail(json, "username");
-		String password = JsonValidation.getString(json, "password");
-		String sessionToken = JsonValidation.getStringOrNull(json, "sessionToken");
-		
-		String phrase = device;
-					
-		User user = null;
-		switch (role) {
-		case MEMBER : user = Member.getByEmail(username, User.ALL_USER_INTERNAL);break;
-		case PROVIDER : user = HPUser.getByEmail(username, User.ALL_USER_INTERNAL);break; 
-		case RESEARCH : user = ResearchUser.getByEmail(username, User.ALL_USER_INTERNAL);break; 
-		}
-		if (user == null) throw new BadRequestException("error.invalid.credentials", "Unknown user or bad password");
-		
-		if (user.publicExtKey == null) {
-			if (!json.has("nonHashed")) return ok("compatibility-mode");
-			password = JsonValidation.getString(json, "nonHashed");
-		}
-		
-		Result reccheck = PWRecovery.checkAuthentication(user, password, sessionToken);
-		if (reccheck != null) return reccheck;
-		
-        boolean authenticationValid =  true;   
-		MidataId studyContext = null;
-		if (role.equals(UserRole.RESEARCH) && authenticationValid) {
-			studyContext = json.has("studyLink") ? JsonValidation.getMidataId(json, "studyLink") : null;
-			
-			if (studyContext == null) {
-			  Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByMember(user._id);
-			  if (ugms.size() == 1) studyContext = ugms.iterator().next().userGroup;
-			  else if (ugms.size() > 1) {
-				  
-				  Set<MidataId> ids = new HashSet<MidataId>();
-				  for (UserGroupMember ugm : ugms) ids.add(ugm.userGroup);	
-				
-				  				  
-				  Set<Study> studies = Study.getAll(null, CMaps.map("_id", ids), Sets.create("_id", "name"));
-				  ObjectNode obj = Json.newObject();								
-				  obj.put("studies", JsonOutput.toJsonNode(studies, "Study", Sets.create("_id", "name")));					
-			   
-				  return ok(obj);
-			  }
-			}
-		}
-		
-		
-		if (sessionToken != null || !user.security.equals(AccountSecurityLevel.KEY_EXT_PASSWORD)) {
-		  AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user, app._id);
-		}
-		
-		if (!authenticationValid) {
-			throw new BadRequestException("error.invalid.credentials",  "Unknown user or bad password");
-		}
-		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, requirements);
-		
-		
-		appInstance = MobileAPI.getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode", "appVersion"));		
-		
-		KeyManager.instance.login(60000l, false);
-		MidataId executor = null;
-		boolean alreadyUnlocked = false;
-		if (appInstance != null) {
-			if (verifyAppInstance(appInstance, user._id, app._id)) {
-				confirmed = true;
-				alreadyUnlocked = true;
-			} else appInstance = null;
-			
-		}
-		
-		//if (appInstance == null) {		
-			if (!confirmed) {
-				AuditManager.instance.fail(0, "Confirmation required", "error.missing.confirmation");
-				boolean allRequired = true;
-				for (StudyAppLink sal : links) {
-					if (sal.isConfirmed() && sal.active && (sal.type.contains(StudyAppLinkType.REQUIRE_P) || sal.type.contains(StudyAppLinkType.OFFER_P))) {
-						allRequired = allRequired && checkAlreadyParticipatesInStudy(sal.studyId, user._id);
-					}
-				}
-				return allRequired ? ok("CONFIRM-STUDYOK") : ok("CONFIRM");				
-			}
-			
-			if (app.unlockCode != null && !alreadyUnlocked) {				
-				String code = JsonValidation.getStringOrNull(json, "unlockCode");
-				if (code == null || !app.unlockCode.toUpperCase().equals(code.toUpperCase())) throw new JsonValidationException("error.invalid.unlock_code", "unlockCode", "invalid", "Invalid unlock code");
-			}			
-			
-			if (notok != null) {
-			  return Application.loginHelperResult(user, notok);
-			}
-			
-			if (sessionToken == null && user.security.equals(AccountSecurityLevel.KEY_EXT_PASSWORD)) return Application.loginChallenge(user);
-			boolean autoConfirm = KeyManager.instance.unlock(user._id, sessionToken, user.publicExtKey) == KeyManager.KEYPROTECTION_NONE;
-			executor = autoConfirm ? user._id : null;
-			
-			if (appInstance != null && autoConfirm) {
-			  MobileAPI.refreshApp(appInstance, executor, app._id, user, phrase);	
-			} else {						
-			  appInstance = MobileAPI.installApp(executor, app._id, user, phrase, autoConfirm, confirmStudy);
-			}
-			if (executor == null) executor = appInstance._id;
-   		    meta = RecordManager.instance.getMeta(executor, appInstance._id, "_app").toMap();
-	
-									
-		if (!phrase.equals(meta.get("phrase"))) throw new InternalServerException("error.internal", "Internal error while validating consent");
-		
-		if (role.equals(UserRole.RESEARCH) && studyContext != null) {
-			BasicBSONObject m = (BasicBSONObject) RecordManager.instance.getMeta(executor, appInstance._id, "_query");
-			String old = m.getString("link-study");
-			if (old != null && old.equals(studyContext.toString())) { }
-			else {
-			  m.put("link-study", studyContext.toString());
-			  RecordManager.instance.setMeta(executor, appInstance._id, "_query", m.toMap());
-			}
-		}
-		
-		String aeskey = KeyManager.instance.newAESKey(appInstance._id);
-		OAuthCodeToken tk = new OAuthCodeToken(appInstance._id, phrase, aeskey, System.currentTimeMillis(), state, code_challenge, code_challenge_method);
-									
-		ObjectNode obj = Json.newObject();								
-		obj.put("code", tk.encrypt());
-		obj.put("istatus", appInstance.status.toString());
-		
-		AuditManager.instance.success();
-				
-		return ok(obj);
-	}*/
-
 	@BodyParser.Of(BodyParser.FormUrlEncoded.class)
 	@MobileCall
 	public Result authenticate() throws AppException {
 				
         Map<String, String[]> data = request().body().asFormUrlEncoded();
-        MidataId appInstanceId = null;
+       
         MobileAppInstance appInstance = null;
         Map<String, Object> meta = null;
         
         String aeskey = null;
         ObjectNode obj = Json.newObject();	      
-        
+        User user = null;
         KeyManager.instance.login(60000l, false);
         
         if (data==null) throw new BadRequestException("error.internal", "Missing request body of type form/urlencoded.");
         if (!data.containsKey("grant_type")) throw new BadRequestException("error.internal", "Missing grant_type");
-        User user = null;
+        
         String grant_type = data.get("grant_type")[0];
         if (grant_type.equals("refresh_token")) {
         	if (!data.containsKey("refresh_token")) throw new BadRequestException("error.internal", "Missing refresh_token");
         	String refresh_token = data.get("refresh_token")[0];
-        	
-        	OAuthRefreshToken refreshToken = OAuthRefreshToken.decrypt(refresh_token);
-        	if (refreshToken == null) throw new BadRequestException("error.internal", "Bad refresh_token.");
-        	if (refreshToken.created + MobileAPI.DEFAULT_REFRESHTOKEN_EXPIRATION_TIME < System.currentTimeMillis()) return MobileAPI.invalidToken();
-			appInstanceId = refreshToken.appInstanceId;
 			
-			appInstance = MobileAppInstance.getById(appInstanceId, Sets.create("owner", "appVersion", "applicationId", "status", "licence"));
-			if (!verifyAppInstance(appInstance, refreshToken.ownerId, refreshToken.appId)) throw new BadRequestException("error.internal", "Bad refresh token.");
-			
-			Plugin app = Plugin.getById(appInstance.applicationId);
-			user = User.getById(appInstance.owner, User.ALL_USER_INTERNAL);
-			if (user == null) return status(UNAUTHORIZED);
-			
-			if (!LicenceChecker.checkAppInstance(user._id, app, appInstance)) {
-				return status(UNAUTHORIZED);
-			}
-						
-			Set<UserFeature> req = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(user.role);
-			if (app.requirements != null) req.addAll(app.requirements);
-			Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, req);
-			if (notok != null) {
-				return status(UNAUTHORIZED);
-			}                       
-			
-            
-            if (KeyManager.instance.unlock(appInstance._id, refreshToken.phrase) == KeyManager.KEYPROTECTION_FAIL) return status(UNAUTHORIZED); 
-            meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
-                        
-            if (refreshToken.created != ((Long) meta.get("created")).longValue()) {
-            	return status(UNAUTHORIZED);
-            }
+			Pair<User, MobileAppInstance> pair = useRefreshToken(refresh_token);
+			user = pair.getLeft();
+			appInstance = pair.getRight();
             
             aeskey = KeyManager.instance.newAESKey(appInstance._id);
-    		
-            UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.REFRESH);
-            
+    		                        
         } else if (grant_type.equals("authorization_code")) {
+			
         	if (!data.containsKey("redirect_uri")) throw new BadRequestException("error.internal", "Missing redirect_uri");
             
             if (!data.containsKey("code")) throw new BadRequestException("error.internal", "Missing code");
@@ -454,10 +245,7 @@ public class OAuth2 extends Controller {
         } else throw new BadRequestException("error.internal", "Unknown grant_type");
                											
 		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, aeskey, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME, user.role); 
-        OAuthRefreshToken refresh = new OAuthRefreshToken(appInstance.applicationId, appInstance._id, appInstance.owner, aeskey, System.currentTimeMillis());
-		
-        meta.put("created", refresh.created);
-        RecordManager.instance.setMeta(appInstance._id, appInstance._id, "_app", meta);
+        OAuthRefreshToken refresh = createRefreshToken(appInstance._id, appInstance, aeskey);
         
         BSONObject q = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_query");
         if (q.containsField("link-study")) {
@@ -489,6 +277,56 @@ public class OAuth2 extends Controller {
 		response().setHeader("Pragma", "no-cache"); 
 		
 		return ok(obj);
+	}
+
+	public static Pair<User, MobileAppInstance> useRefreshToken(String refresh_token) throws AppException {
+		OAuthRefreshToken refreshToken = OAuthRefreshToken.decrypt(refresh_token);
+		if (refreshToken == null) throw new BadRequestException("error.internal", "Bad refresh_token.");
+		if (refreshToken.created + MobileAPI.DEFAULT_REFRESHTOKEN_EXPIRATION_TIME < System.currentTimeMillis()) OAuth2.invalidToken();
+		MidataId appInstanceId = refreshToken.appInstanceId;
+		
+		MobileAppInstance appInstance = MobileAppInstance.getById(appInstanceId, Sets.create("owner", "appVersion", "applicationId", "status", "licence"));
+		if (!verifyAppInstance(appInstance, refreshToken.ownerId, refreshToken.appId)) throw new BadRequestException("error.internal", "Bad refresh token.");
+		
+		Plugin app = Plugin.getById(appInstance.applicationId);
+		if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");			
+		if (!app.type.equals("mobile") && !app.type.equals("analyzer") && !app.type.equals("external")) throw new InternalServerException("error.internal", "Wrong app type");
+	
+		User user = User.getById(appInstance.owner, User.ALL_USER_INTERNAL);
+		if (user == null) invalidToken();
+		
+		if (!LicenceChecker.checkAppInstance(user._id, app, appInstance)) {
+			invalidToken();
+		}
+					
+		Set<UserFeature> req = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(user.role);
+		if (app.requirements != null) req.addAll(app.requirements);
+		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, req);
+		if (notok != null) {
+			invalidToken();
+		}                       
+		
+		
+		if (KeyManager.instance.unlock(appInstance._id, refreshToken.phrase) == KeyManager.KEYPROTECTION_FAIL) invalidToken(); 
+		Map<String, Object> meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
+					
+		if (refreshToken.created != ((Long) meta.get("created")).longValue()) {
+			invalidToken();
+		}
+
+		UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.REFRESH);
+
+		return Pair.of(user, appInstance);
+	}
+
+	public static OAuthRefreshToken createRefreshToken(MidataId executorId, MobileAppInstance appInstance, String aeskey)
+			throws AppException {
+		OAuthRefreshToken refresh = new OAuthRefreshToken(appInstance.applicationId, appInstance._id, appInstance.owner, aeskey, System.currentTimeMillis());
+		
+		Map<String, Object> meta = RecordManager.instance.getMeta(executorId, appInstance._id, "_app").toMap();
+        meta.put("created", refresh.created);
+        RecordManager.instance.setMeta(executorId, appInstance._id, "_app", meta);
+		return refresh;
 	}
 	
 	private static boolean checkAlreadyParticipatesInStudy(MidataId linkedStudy, MidataId owner) throws InternalServerException {
@@ -685,20 +523,7 @@ public class OAuth2 extends Controller {
 		token.ownerId = user._id;		
 		return null;
 		
-	}
-	
-	/*private static final void handlePrecreation(ExtendedSessionToken token, User user) throws AppException {
-		if (user.status == UserStatus.PRECREATED) {
-			user.status = UserStatus.ACTIVE;
-			user.set("status", user.status);
-			user.addFlag(AccountActionFlags.CHANGE_PASSWORD);
-			user.addFlag(AccountActionFlags.UPDATE_FHIR);
-			MidataId appId = token.appId;
-			if (appId == null) appId = RuntimeConstants.instance.portalPlugin;
-			Application.sendWelcomeMail(appId, user, null);
-			Circles.fetchExistingConsents(user._id, user.emailLC);
-		}
-	}*/
+	}		
 	
 	/**
 	 * non portal apps require study selection for researchers
@@ -860,7 +685,7 @@ public class OAuth2 extends Controller {
 			boolean allRequired = true;
 			for (StudyAppLink sal : links) {
 				if (sal.isConfirmed() && sal.active && (sal.type.contains(StudyAppLinkType.REQUIRE_P) || sal.type.contains(StudyAppLinkType.OFFER_P))) {
-					if (sal.linkTargetType == LinkTargetType.ORGANIZATION) {
+					if (sal.linkTargetType == LinkTargetType.ORGANIZATION || sal.linkTargetType == LinkTargetType.SERVICE) {
 					  Consent existingConsent = LinkTools.findConsentForAppLink(token.ownerId, sal);
 					  allRequired = allRequired && (existingConsent != null);
 					} else {
@@ -876,9 +701,9 @@ public class OAuth2 extends Controller {
 			
 	private static MobileAppInstance loginAppInstance(ExtendedSessionToken token, MobileAppInstance appInstance, User user, boolean autoConfirm) throws AppException {
 		if (appInstance != null && autoConfirm) {
-			  MobileAPI.refreshApp(appInstance, token.currentExecutor, token.appId, user, token.device);	
+			  ApplicationTools.refreshApp(appInstance, token.currentExecutor, token.appId, user, token.device);	
 		} else {				  
-			  appInstance = MobileAPI.installApp(token.currentExecutor, token.appId, user, token.device, autoConfirm, token.confirmations);
+			  appInstance = ApplicationTools.installApp(token.currentExecutor, token.appId, user, token.device, autoConfirm, token.confirmations);
 		}
 		if (token.currentExecutor == null) token.currentExecutor = appInstance._id;
 		Map<String, Object> meta = RecordManager.instance.getMeta(token.currentExecutor, appInstance._id, "_app").toMap();
@@ -953,6 +778,15 @@ public class OAuth2 extends Controller {
         return loginHelper(token, json, app, null);
 	}
 	
+	/**
+	 * accessToken expired result
+	 * @return
+	 * @throws BadRequestException
+	 */
+	public static void invalidToken() throws BadRequestException {
+		throw new BadRequestException("error.invalid.token", "Invalid or expired authToken.", Http.Status.UNAUTHORIZED);
+	}
+
 	public static Result loginHelper() throws AppException {
 		PortalSessionToken tk = PortalSessionToken.session();
 		if (tk instanceof ExtendedSessionToken) {

@@ -30,6 +30,7 @@ import models.KeyInfoExtern;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.PersistedSession;
+import models.ServiceInstance;
 import models.User;
 import models.UserGroup;
 import utils.AccessLog;
@@ -122,6 +123,12 @@ public class KeyManager implements KeySession {
 			if (ug != null) {
 				if (ug.publicKey == null) throw new EncryptionNotSupportedException("No public key");			
 				return encryptKey(ug.publicKey , keyToEncrypt);
+			}
+
+			ServiceInstance si = ServiceInstance.getById(target, Sets.create("publicKey"));
+			if (si != null) {
+				if (si.publicKey == null) throw new EncryptionNotSupportedException("No public key");			
+				return encryptKey(si.publicKey , keyToEncrypt);
 			}
 			
 			throw new EncryptionNotSupportedException("No public key");	
@@ -422,7 +429,10 @@ public class KeyManager implements KeySession {
 				
 				byte key[] = pks.getKey(target.toString());
 							
-				if (key == null) throw new AuthException("error.relogin", "Authorization Failure");
+				if (key == null) {
+					AccessLog.log("no key in memory for user="+target);
+					throw new AuthException("error.relogin", "Authorization Failure");
+				}
 				
 				PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(key);
 				
@@ -442,16 +452,22 @@ public class KeyManager implements KeySession {
 							
 				return EncryptionUtils.derandomize(cipherText);
 			} catch (NoSuchAlgorithmException e) {
+				AccessLog.log("decrypt key error: key user="+target);
 				throw new InternalServerException("error.internal", "Cryptography error");		
 			} catch (NoSuchPaddingException e2) {
+				AccessLog.log("decrypt key error: key user="+target);
 				throw new InternalServerException("error.internal", "Cryptography error");
 			} catch (InvalidKeyException e3) {
+				AccessLog.log("decrypt key error: key user="+target);
 				throw new InternalServerException("error.internal", "Cryptography error");
 			} catch (InvalidKeySpecException e4) {
+				AccessLog.log("decrypt key error: key user="+target);
 				throw new InternalServerException("error.internal", "Cryptography error");
 			} catch (BadPaddingException e5) {
+				AccessLog.log("decrypt key error: key user="+target);
 				throw new InternalServerException("error.internal", "Cryptography error");
 			} catch (IllegalBlockSizeException e6) {
+				AccessLog.log("decrypt key error: key user="+target);
 				throw new InternalServerException("error.internal", "Cryptography error");
 			} 
 		}

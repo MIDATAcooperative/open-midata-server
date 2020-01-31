@@ -91,4 +91,10 @@ public class AppAccessContext extends AccessContext {
 	public boolean mayContainRecordsFromMultipleOwners() {		
 		return true;
 	}
+
+	public MidataId getNewRecordCreator() {
+		
+		if (plugin.type.equals("external")) return plugin._id;		
+		return cache.getExecutor();
+	}
 }

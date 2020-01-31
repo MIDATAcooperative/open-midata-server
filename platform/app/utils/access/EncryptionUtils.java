@@ -225,14 +225,18 @@ public class EncryptionUtils {
 	}
 	
 	public static void addKey(MidataId target, EncryptedAPS eaps) throws AppException {
+		addKey(target, eaps, false);
+	}
+
+	public static void addKey(MidataId target, EncryptedAPS eaps, boolean noAnonymousOwner) throws AppException {
 		if (eaps.getSecurityLevel().equals(APSSecurityLevel.NONE) || eaps.getAPSKey() == null) {
-			if (target.equals(eaps.getOwner())) {
+			if (!noAnonymousOwner && target.equals(eaps.getOwner())) {
 				eaps.setKey("owner", eaps.getOwner().toByteArray());
 			} else {
 				eaps.setKey(target.toString(), null);
 			}
 		} else {
-		   if (target.equals(eaps.getOwner())) {
+		   if (!noAnonymousOwner && target.equals(eaps.getOwner())) {
 			   eaps.setKey("owner", KeyManager.instance.encryptKey(target, eaps.getAPSKey()));
 		   } else {
 			   eaps.setKey(target.toString(), KeyManager.instance.encryptKey(target, eaps.getAPSKey()));	

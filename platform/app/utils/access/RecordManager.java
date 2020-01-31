@@ -152,17 +152,26 @@ public class RecordManager {
 	 */
 	public MidataId createAnonymizedAPS(MidataId owner, MidataId other,
 			MidataId proposedId, boolean consent) throws AppException {
+				return createAnonymizedAPS(owner, other, proposedId, consent, true, false);
+	}
+
+	public MidataId createAnonymizedAPS(MidataId owner, MidataId other,
+			MidataId proposedId, boolean consent, boolean history, boolean otherNotOwner) throws AppException {
         AccessLog.logBegin("begin createAnonymizedAPS owner="+owner.toString()+" other="+other.toString()+" id="+proposedId.toString());
 		EncryptedAPS eaps = new EncryptedAPS(proposedId, owner, owner, APSSecurityLevel.HIGH, consent);
 		EncryptionUtils.addKey(owner, eaps);
-		EncryptionUtils.addKey(other, eaps);	
-		eaps.getPermissions().put("_history", new BasicBSONList()); // Init with history
+		EncryptionUtils.addKey(other, eaps, otherNotOwner);	
+		if (history) eaps.getPermissions().put("_history", new BasicBSONList()); // Init with history
 		eaps.create();
- 
+		APSCache current = apsCache.get();
+		if (current != null) current.addAPS(new APSImplementation(new EncryptedAPS(eaps.getId(), current.getExecutor(), eaps.getAPSKey(), eaps.getOwner())));
+       
 		AccessLog.logEnd("end createAnonymizedAPS");
 		return eaps.getId();
 
 	}
+
+	
 
 	/**
 	 * create an APS for a record.
@@ -197,6 +206,7 @@ public class RecordManager {
 	 */
 	public void shareAPS(MidataId apsId, MidataId executorId,
 			Set<MidataId> targetUsers) throws AppException {
+		if (targetUsers==null || targetUsers.isEmpty()) return;
 		AccessLog.logBegin("begin shareAPS aps="+apsId.toString()+" executor="+executorId.toString()+" #targetUsers="+targetUsers.size());
 		getCache(executorId).getAPS(apsId).addAccess(targetUsers);
 		AccessLog.logEnd("end shareAPS");
@@ -1046,7 +1056,7 @@ public class RecordManager {
 		if (record.isStream) {
 		
 			Member member = Member.getById(userId, Sets.create("queries"));
-			if (member.queries!=null) {
+			if (member != null && member.queries!=null) {
 				for (String key : member.queries.keySet()) {
 					try {
 					Map<String, Object> query = member.queries.get(key);
@@ -1068,7 +1078,7 @@ public class RecordManager {
 		} else {
 			
 			Member member = Member.getById(userId, Sets.create("rqueries"));
-			if (member.rqueries!=null) {
+			if (member != null && member.rqueries!=null) {
 				for (String key : member.rqueries.keySet()) {
 					try {
 					Map<String, Object> query = member.rqueries.get(key);

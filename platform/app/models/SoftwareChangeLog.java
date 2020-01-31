@@ -1,6 +1,7 @@
 package models;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -58,7 +59,9 @@ public class SoftwareChangeLog extends Model {
 	 */
 	public static List<SoftwareChangeLog> getAll() throws AppException {
 		List<SoftwareChangeLog> result = Model.getAllList(SoftwareChangeLog.class, collection, CMaps.map(), ALL, 100, "_id", -1);
-		for (SoftwareChangeLog entry : result) {
+		for (Iterator<SoftwareChangeLog> it=result.iterator();it.hasNext();) {
+			SoftwareChangeLog entry = it.next();
+			if (entry.type==null) it.remove();
 			entry.published = entry._id.getCreationDate();
 			if (entry.type != null && entry.type.equals("S")) {
 				entry.title = "Fixed issue '"+entry.changeId+"'";

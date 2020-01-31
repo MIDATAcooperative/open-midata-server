@@ -131,17 +131,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	/**
 	 * Users of app are allowed to search each other
 	 */
-	public boolean allowsUserSearch;
-	
-	/**
-	 * Directly link app to study
-	 */
-	//public MidataId linkedStudy;
-	
-	/**
-	 * Study participation required for app use
-	 */
-	//public boolean mustParticipateInStudy;
+	public boolean allowsUserSearch;		
 		
 	/**
 	 * set of tags that determine for which categories this plugin should be displayed in the market
@@ -205,7 +195,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	/**
 	 * the type of the plugin
 	 * 
-	 * type can be one of: visualization, service, oauth1, oauth2, mobile
+	 * type can be one of: visualization, service, oauth1, oauth2, mobile, external, analyzer
 	 */
 	public String type;
 	

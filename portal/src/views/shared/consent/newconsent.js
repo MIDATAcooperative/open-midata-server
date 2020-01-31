@@ -5,7 +5,8 @@ angular.module('portal')
 	                { value : "CIRCLE", label : "enum.consenttype.CIRCLE"},
 	                { value : "HEALTHCARE", label : "enum.consenttype.HEALTHCARE" },
 	                { value : "STUDYPARTICIPATION", label : "enum.consenttype.STUDYPARTICIPATION" },
-	                { value : "EXTERNALSERVICE", label : "enum.consenttype.EXTERNALSERVICE" }
+					{ value : "EXTERNALSERVICE", label : "enum.consenttype.EXTERNALSERVICE" },
+					{ value : "API", label : "enum.consenttype.API" },
 	               ];
 			
 	
@@ -86,7 +87,7 @@ angular.module('portal')
 					.then(function(result) { console.log(result);$scope.owner = result.data[0]; });
 				}
 				
-				$scope.writeProtect = ($scope.consent.owner !== userId && $scope.consent.status !== "UNCONFIRMED") || $scope.consent.type === "EXTERNALSERVICE" || $scope.consent.type === "STUDYPARTICIPATION" || $scope.consent.status === "EXPIRED" || $scope.consent.status === "REJECTED";
+				$scope.writeProtect = ($scope.consent.owner !== userId && $scope.consent.status !== "UNCONFIRMED") || $scope.consent.type === "EXTERNALSERVICE" || $scope.consent.type === "API" || $scope.consent.type === "STUDYPARTICIPATION" || $scope.consent.status === "EXPIRED" || $scope.consent.status === "REJECTED";
 			
 				$scope.status.doBusy(server.get(jsRoutes.controllers.Records.getSharingDetails($state.params.consentId).url)).
 				then(function(results) {				
@@ -330,7 +331,7 @@ angular.module('portal')
 		circles.unconfirmed = 0;
 		server.delete(jsRoutes.controllers.Circles["delete"]($scope.consent._id).url).
 		then(function() {
-			if (session.user.role == "MEMBER" && $scope.consent.type == "EXTERNALSERVICE") {
+			if (session.user.role == "MEMBER" && ($scope.consent.type == "EXTERNALSERVICE" || $scope.consent.type == "API")) {
 				$state.go("^.apps");
 			} else if (session.user.role == "MEMBER" && $scope.consent.type == "STUDYPARTICIPATION") {
 			    $state.go("^.studies");				
@@ -380,6 +381,7 @@ angular.module('portal')
 	$scope.mayAddPeople = function() {
 		if (! $scope.consent) return false;	
 		if ($scope.consent.type == "EXTERNALSERVICE") return false;
+		if ($scope.consent.type == "API") return false;
 		if ($scope.consent.type == "STUDYRELATED") return false;
 		if ($scope.consent.type == "IMPLICIT") return false;
 		if ($scope.isSimple) return false;

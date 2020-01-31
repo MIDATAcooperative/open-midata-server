@@ -45,8 +45,8 @@
 
 				<div ng-repeat="link in extra">
 					<section class="mi-or-auth__section mi-or-auth__section--app" ng-show="link.formatted.length && !(link.inlineTerms)">
-						<span class="mi-at-text mi-at-text--white" translate="{{ 'enum.studytype.'+link.study.type }}"></span><br>
-						<span class="mi-at-text mi-at-text--highlighted mi-at-text--white">{{ link.study.name }} {{ link.provider.name }}</span>
+						<span class="mi-at-text mi-at-text--white" ng-show="link.study" translate="{{ 'enum.studytype.'+link.study.type }}"></span><br>
+						<span class="mi-at-text mi-at-text--highlighted mi-at-text--white">{{ getLinkName(link) }}</span>
 
 						<div class="mi-or-auth__app_description" ng-repeat="line in link.formatted">
 							<span class="mi-at-text mi-at-text--smaller mi-at-text--white">{{ line }}</span>
@@ -59,7 +59,8 @@
 					</section>
 
 					<section class="mi-or-auth__section mi-or-auth__section--required_data" ng-if="link.labels.length && !(link.inlineTerms)">
-						<span class="mi-at-text mi-at-text--highlighted mi-at-text--white" translate="oauth2.requests_sharing"></span>
+						<span class="mi-at-text mi-at-text--highlighted mi-at-text--white" ng-show="link.study" translate="oauth2.requests_sharing"></span>
+						<span class="mi-at-text mi-at-text--highlighted mi-at-text--white" ng-show="link.serviceApp" translate="oauth2.requests_sharing_service"></span>
 	
 						<ul>
 							<li ng-repeat="label in link.labels"><span class="mi-at-text mi-at-text--smaller mi-at-text--white">{{ label }}</span></li>						
@@ -86,12 +87,12 @@
 				
 				<section class="mi-or-auth__section mi-or-auth__section--study" ng-repeat="link in extra">
 					<fieldset  class="mi-at-input__fieldset mi-at-input--checkbox mi-at-input--checkbox-white">
-						<input id="mi-at-input-" class="mi-at-input mi-at-input--checkbox" type="checkbox" value="" ng-checked="login.confirmStudy.indexOf(link.studyId || link.userId)>=0" ng-click="toggle(login.confirmStudy, link.studyId || link.userId);"
+						<input id="mi-at-input-" class="mi-at-input mi-at-input--checkbox" type="checkbox" value="" ng-checked="login.confirmStudy.indexOf(link.studyId || link.userId)>=0" ng-click="toggle(login.confirmStudy, link.studyId || link.userId || link.serviceAppId);"
 							floating-label  /> 
 						<label for="mi-at-input-checkbox" class="mi-at-text mi-at-text--white">
-						  <span translate="{{ getLinkLabel(link) }}"></span>
-						  <a class="mi-at-text--white mi-at-input--checkbox-link" ng-show="link.termsOfUse && !(link.inlineTerms)" ng-click="terms({which : link.termsOfUse })" href="javascript:">{{ link.study.name }} {{ link.provider.name }}</a>
-						  <span ng-hide="link.termsOfUse && !(link.inlineTerms)">{{ link.study.name }} {{ link.provider.name }}</span>
+						  <span translate="{{ getLinkLabel(link) }}"></span>:
+						  <a class="mi-at-text--white mi-at-input--checkbox-link" ng-show="link.termsOfUse && !(link.inlineTerms)" ng-click="terms({which : link.termsOfUse })" href="javascript:">{{ link.study.name }} {{ link.provider.name }} {{ link.serviceApp.name }}</a>
+						  <span ng-hide="link.termsOfUse && !(link.inlineTerms)">{{ getLinkName(link) }}</span>
 						 </label>
 					</fieldset>
 
@@ -112,7 +113,7 @@
                     </div>
 						
 						
-				<button class="mi-mo-flat_button mi-mo-flat_button--rounded" ng-disabled="status.action=='login' || doneLock || (app.termsOfUse && !(login.appAgb))" type="button" ng-click="confirm();">
+				<button class="mi-mo-flat_button mi-mo-flat_button--rounded" ng-disabled="status.action=='login' || doneLock" type="button" ng-click="confirm();">
 					<span class="mi-at-text" ng-show="showApp" translate="oauth2.confirm_btn"></span>
 					<span class="mi-at-text" ng-hide="showApp" translate="oauth2.continue_btn"></span>
 				</button>

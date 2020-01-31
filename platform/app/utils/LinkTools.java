@@ -11,10 +11,12 @@ import controllers.Circles;
 import models.Consent;
 import models.MemberKey;
 import models.MidataId;
+import models.MobileAppInstance;
 import models.Plugin;
 import models.StudyAppLink;
 import models.enums.ConsentStatus;
 import models.enums.EntityType;
+import models.enums.LinkTargetType;
 import models.enums.WritePermissionType;
 import utils.access.Feature_FormatGroups;
 import utils.access.Query;
@@ -29,9 +31,15 @@ import utils.json.JsonValidation;
 public class LinkTools {
 
 	public static Consent findConsentForAppLink(MidataId targetUser, StudyAppLink link) throws InternalServerException {
-		Set<Consent> consents = Consent.getAllByAuthorized(link.userId, CMaps.map("status",  Sets.createEnum(ConsentStatus.ACTIVE, ConsentStatus.FROZEN)).map("owner", targetUser).map("categoryCode", link.identifier), Consent.ALL);
-		if (consents.isEmpty()) return null;
-		return consents.iterator().next();
+		if (link.linkTargetType == LinkTargetType.SERVICE) {
+			Set<MobileAppInstance> inst = MobileAppInstance.getActiveByApplicationAndOwner(link.serviceAppId, targetUser, MobileAppInstance.APPINSTANCE_ALL);
+			if (inst.isEmpty()) return null;
+			return inst.iterator().next();
+		} else {
+			Set<Consent> consents = Consent.getAllByAuthorized(link.userId, CMaps.map("status",  Sets.createEnum(ConsentStatus.ACTIVE, ConsentStatus.FROZEN)).map("owner", targetUser).map("categoryCode", link.identifier), Consent.ALL);
+			if (consents.isEmpty()) return null;
+			return consents.iterator().next();
+		}
 	}
 	
 	public static void createConsentForAppLink(MidataId targetUser, StudyAppLink link) throws AppException {

@@ -259,6 +259,14 @@ GET     /api/plugins/:id/installed      controllers.Plugins.isInstalled(id: Stri
 GET     /api/plugins/:id/authorized     controllers.Plugins.isAuthorized(id: String)
 GET     /api/plugins/:id/url            controllers.Plugins.getUrl(id: String)
 
+# Services
+GET     /api/servicesproject/:studyId   controllers.Services.listServiceInstancesStudy(studyId: String)
+GET     /api/services                   controllers.Services.listServiceInstances()
+DELETE  /api/services/:instanceId       controllers.Services.removeServiceInstance(instanceId: String)
+GET     /api/services/:serviceId        controllers.Services.listApiKeys(serviceId: String)
+POST    /api/services/:serviceId        controllers.Services.addApiKey(serviceId: String)
+DELETE  /api/services/:serviceId/:keyId    controllers.Services.removeApiKey(serviceId: String, keyId: String)
+
 
 #Portal
 GET     /api/portal/config              controllers.PortalConfig.getConfig()

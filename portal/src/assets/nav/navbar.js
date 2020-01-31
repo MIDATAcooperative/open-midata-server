@@ -38,7 +38,7 @@ angular.module('portal')
 				circles.unconfirmed = 0;
 				for (var i=0;i<l;i++) {
 					var c = results.data[i];
-					if (c.type == "EXTERNALSERVICE") circles.apps++;
+					if (c.type == "EXTERNALSERVICE" || c.type == "API") circles.apps++;
 					else if (c.type == "STUDYPARTICIPATION") circles.studies++;
 					else if (c.status == "UNCONFIRMED") circles.unconfirmed++;
 				}

@@ -125,7 +125,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	
 	@Override
 	public void updatePrepare(Record record, T theResource) throws AppException {
-		record.creator = info().executorId;
+		record.creator = info().context.getNewRecordCreator();
 		prepare(record, theResource);	
 		prepareTags(record, theResource);
 	}
@@ -185,7 +185,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	public static Record newRecord(String format) {
 		Record record = new Record();
 		record._id = new MidataId();
-		record.creator = info().executorId;
+		record.creator = info().context.getNewRecordCreator();
 		record.format = format;
 		record.app = info().pluginId;
 		record.created = record._id.getCreationDate();

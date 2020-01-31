@@ -5,7 +5,7 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import controllers.Circles;
-import controllers.MobileAPI;
+import controllers.OAuth2;
 import models.Consent;
 import models.Member;
 import models.MidataId;
@@ -128,7 +128,7 @@ public class ExecutionInfo {
 			
 		} else if (authToken.autoimport) {
 			MobileAppInstance appInstance = MobileAppInstance.getById(authToken.spaceId, Sets.create("owner", "applicationId", "autoShare", "status", "sharingQuery", "writes"));
-			if (appInstance == null) MobileAPI.invalidToken(); 
+			if (appInstance == null) OAuth2.invalidToken(); 
 
 		    if (!appInstance.status.equals(ConsentStatus.ACTIVE)) throw new BadRequestException("error.noconsent", "Consent needs to be confirmed before creating records!");
 		        
@@ -151,25 +151,25 @@ public class ExecutionInfo {
 	
 	public static ExecutionInfo checkMobileToken(String token, boolean allowInactive) throws AppException {		
 		MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(token);
-		if (authToken == null) MobileAPI.invalidToken(); 
+		if (authToken == null) OAuth2.invalidToken(); 
 				
 		return checkMobileToken(authToken, allowInactive);		
 	}
 	
 	public static ExecutionInfo checkMobileToken(MobileAppSessionToken authToken, boolean allowInactive) throws AppException {		
-		if (authToken == null) MobileAPI.invalidToken();				
+		if (authToken == null) OAuth2.invalidToken();				
 		
 		AccessLog.logBegin("begin check 'mobile' type session token");
 		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare", "status", "sharingQuery", "writes"));
-        if (appInstance == null) MobileAPI.invalidToken(); 
-        if (appInstance.status.equals(ConsentStatus.REJECTED) || appInstance.status.equals(ConsentStatus.EXPIRED) || appInstance.status.equals(ConsentStatus.FROZEN)) MobileAPI.invalidToken();
+        if (appInstance == null) OAuth2.invalidToken(); 
+        if (appInstance.status.equals(ConsentStatus.REJECTED) || appInstance.status.equals(ConsentStatus.EXPIRED) || appInstance.status.equals(ConsentStatus.FROZEN)) OAuth2.invalidToken();
         
         if (!allowInactive && !appInstance.status.equals(ConsentStatus.ACTIVE)) throw new BadRequestException("error.noconsent", "Consent needs to be confirmed before creating records!");
         
         
         KeyManager.instance.login(60000l, false);
         if (KeyManager.instance.unlock(appInstance._id, authToken.aeskey) == KeyManager.KEYPROTECTION_FAIL) {
-        	MobileAPI.invalidToken(); 
+        	OAuth2.invalidToken(); 
         }
         
         ExecutionInfo result = new ExecutionInfo();
@@ -184,9 +184,11 @@ public class ExecutionInfo {
 		if (appobj.containsKey("aliaskey") && appobj.containsKey("alias")) {
 			MidataId alias = new MidataId(appobj.get("alias").toString());
 			byte[] key = (byte[]) appobj.get("aliaskey");
-			KeyManager.instance.unlock(appInstance.owner, alias, key);			
-			RecordManager.instance.clearCache();
-			result.executorId = appInstance.owner;
+			if (appobj.containsKey("targetAccount")) {
+				result.executorId = MidataId.from(appobj.get("targetAccount").toString());
+			} else result.executorId = appInstance.owner;
+			KeyManager.instance.unlock(result.executorId, alias, key);			
+			RecordManager.instance.clearCache();			
 		} else {
 			RecordManager.instance.setAccountOwner(appInstance._id, appInstance.owner);
 		}

@@ -1,8 +1,5 @@
 package controllers;
 
-import java.security.KeyFactory;
-import java.security.interfaces.RSAPublicKey;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
@@ -72,11 +69,9 @@ import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.messaging.Messager;
-import utils.messaging.SMSUtils;
 import utils.stats.UsageStatsRecorder;
 import views.txt.mails.adminnotify;
 import views.txt.mails.lostpwmail;
-import utils.auth.auth2factor.Authenticator;
 
 /**
  * Member login, registration and password reset functions 
@@ -1135,6 +1130,14 @@ public class Application extends APIController {
 				controllers.routes.javascript.Market.updateLicence(),
 				controllers.routes.javascript.Market.addLicence(),
 				controllers.routes.javascript.Market.searchLicenses(),
+
+				// Services
+				controllers.routes.javascript.Services.listServiceInstancesStudy(),
+				controllers.routes.javascript.Services.listServiceInstances(),
+				controllers.routes.javascript.Services.removeServiceInstance(),
+				controllers.routes.javascript.Services.listApiKeys(),
+				controllers.routes.javascript.Services.addApiKey(),
+				controllers.routes.javascript.Services.removeApiKey(),
 								
 				// UserGroups
 				controllers.routes.javascript.UserGroups.search(),

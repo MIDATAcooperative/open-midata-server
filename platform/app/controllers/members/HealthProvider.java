@@ -14,7 +14,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import actions.APICall;
 import controllers.APIController;
 import controllers.Circles;
-import controllers.MobileAPI;
 import models.Consent;
 import models.HPUser;
 import models.MemberKey;
@@ -31,6 +30,7 @@ import models.enums.UserStatus;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.ApplicationTools;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
@@ -159,7 +159,7 @@ public class HealthProvider extends APIController {
 		
 		if (target.status.equals(ConsentStatus.UNCONFIRMED)) {
 			if (target.type.equals(ConsentType.EXTERNALSERVICE)) {
-				MobileAPI.confirmMobileConsent(userId, consentId);
+				ApplicationTools.linkMobileConsentWithExecutorAccount(userId, userId, consentId);
 				
 				MobileAppInstance mai = MobileAppInstance.getById(target._id, Sets.create("applicationId"));
 				Plugin plugin = Plugin.getById(mai.applicationId);

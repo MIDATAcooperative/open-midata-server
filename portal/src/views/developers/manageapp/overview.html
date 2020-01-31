@@ -18,7 +18,11 @@
 		    </tr>
 		    <tr>
 		      <td translate="manageapp.type"></td>
-		      <td><b translate="{{ 'enum.plugintype.' + app.type }}"></b></td>
+			  <td><b translate="{{ 'enum.plugintype.' + app.type }}"></b>
+			  <span ng-show="app.type=='external'"> - 
+			  <a href="javascript:" ui-sref="^.servicekeys" translate="manageapp.manageyourkeys"></a>
+			  </span>
+			  </td>
 		    </tr><tr>
 		      <td translate="manageapp.targetUserRole"></td>
               <td><b translate="{{ 'enum.userrole.'+app.targetUserRole }}"></b></td>
@@ -71,21 +75,21 @@
 				<div translate="manageapp.subscriptions_help"></div>																
 			  </td>
 			</tr>
-			<tr ng-hide="app.type == 'mobile' || allowExport">
+			<tr ng-show="app.type == 'visualization' || app.type == 'oauth1' || app.type == 'oauth2'">
 			  <td ng-click="doInstall()">				    
 				<div class="float-left"><img width="80" class="img-responsive" src="/images/testfromlocal.jpg"></div>														   
 				<div><b translate="manageapp.testfromlocal_btn"></b></div>
 				<div translate="manageapp.testfromlocal_help"></div>																
 			  </td>
 			</tr>
-			<tr ng-show="(app.type == 'oauth1' || app.type == 'oauth2') && !allowExport">
+			<tr ng-show="(app.type == 'oauth1' || app.type == 'oauth2')">
 			  <td ng-click="go('^.autoimport')">				    
 				<div class="float-left"><img width="80" class="img-responsive" src="/images/serverimport.jpg"></div>														   
 				<div><b translate="manageapp.serverimport_btn"></b></div>
 				<div translate="manageapp.serverimport_help"></div>																
 			  </td>
 			</tr>
-			<tr>
+			<tr ng-hide="app.type=='analyzer' || app.type=='external'">
 			  <td ng-click="go('^.applink')">				    
 				<div class="float-left"><img width="80" class="img-responsive" src="/images/link.jpg"></div>														   
 				<div><b translate="manageapp.link_btn"></b> <span class="badge" ng-class="{ 'badge-success' : reviews.PROJECTS=='ACCEPTED', 'badge-danger' : reviews.PROJECTS=='NEEDS_FIXING', 'badge-light' : !reviews.PROJECTS }" style="margin-left:10px"><span ng-show="reviews.PROJECTS" translate="{{'manageapp.'+reviews.PROJECTS}}"></span><span ng-hide="reviews.PROJECTS" translate="manageapp.not_reviewed"></span></span></div>
@@ -100,7 +104,7 @@
 																	
 			  </td>
 			</tr>
-			<tr>
+			<tr  ng-hide="app.type=='analyzer' || app.type=='external'">
 			  <td ng-click="go('^.appmessages')">				    
 				<div class="float-left"><img width="80" class="img-responsive" src="/images/mail.jpg"></div>														   
 				<div><b translate="manageapp.messages_btn"></b><span class="badge" style="margin-left:10px">{{ keyCount(app.predefinedMessages) }} <span translate="manageapp.defined"></span></span> <span class="badge" ng-class="{ 'badge-success' : reviews.MAILS=='ACCEPTED', 'badge-danger' : reviews.MAILS=='NEEDS_FIXING', 'badge-light' : !reviews.MAILS }" style="margin-left:10px"><span ng-show="reviews.MAILS" translate="{{'manageapp.'+reviews.MAILS}}"></span><span ng-hide="reviews.MAILS" translate="manageapp.not_reviewed"></span></span></div>
@@ -136,6 +140,7 @@
 				<div translate="manageapp.applicence_help"></div>																
 			  </td>
 			</tr>
+			
 			
 			<tr ng-show="allowExport">
 			  <td ng-click="exportPlugin()">				    

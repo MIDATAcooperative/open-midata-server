@@ -3,11 +3,11 @@ package models;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
-
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import utils.collections.CMaps;
+import utils.collections.Sets;
+import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
 
 /**
@@ -16,6 +16,8 @@ import utils.exceptions.InternalServerException;
  */
 public class MobileAppInstance extends Consent {
 
+	public @NotMaterialized final static Set<String> APPINSTANCE_ALL = Sets.create(Consent.ALL, "applicationId", "appVersion","licence","serviceId");
+	
 	/**
 	 * public key of the application instance
 	 */
@@ -35,6 +37,11 @@ public class MobileAppInstance extends Consent {
 	 * Licence
 	 */
 	public MidataId licence;
+
+	/**
+	 * Id of Service Instance (optional)
+	 */
+	public MidataId serviceId;
 		
 	
 	public MobileAppInstance() {
@@ -52,18 +59,26 @@ public class MobileAppInstance extends Consent {
 	}
 	
 	public static MobileAppInstance getById(MidataId id, Set<String> fields) throws InternalServerException {
-		return Model.get(MobileAppInstance.class, collection, CMaps.map("_id", id).map("type", ConsentType.EXTERNALSERVICE), fields);
+		return Model.get(MobileAppInstance.class, collection, CMaps.map("_id", id).map("type", Sets.createEnum(ConsentType.EXTERNALSERVICE, ConsentType.API)), fields);
 	}
 	
 	public static Set<MobileAppInstance> getByApplicationAndOwner(MidataId applicationId, MidataId owner, Set<String> fields) throws InternalServerException {
 		return Model.getAll(MobileAppInstance.class, collection, CMaps.map("applicationId", applicationId).map("owner", owner), fields);
 	}
+
+	public static Set<MobileAppInstance> getActiveByApplicationAndOwner(MidataId applicationId, MidataId owner, Set<String> fields) throws InternalServerException {
+		return Model.getAll(MobileAppInstance.class, collection, CMaps.map("applicationId", applicationId).map("owner", owner).map("status", ConsentStatus.ACTIVE), fields);
+	}
 	
 	public static Set<MobileAppInstance> getByOwner(MidataId owner, Set<String> fields) throws InternalServerException {
-		return Model.getAll(MobileAppInstance.class, collection, CMaps.map("owner", owner).map("type", ConsentType.EXTERNALSERVICE), fields);
+		return Model.getAll(MobileAppInstance.class, collection, CMaps.map("owner", owner).map("type", Sets.createEnum(ConsentType.EXTERNALSERVICE, ConsentType.API)), fields);
 	}
 	
 	public static Set<MobileAppInstance> getByApplication(MidataId applicationId, Set<String> fields) throws InternalServerException {
 		return Model.getAll(MobileAppInstance.class, collection, CMaps.map("applicationId", applicationId), fields);
+	}
+
+	public static Set<MobileAppInstance> getByService(MidataId serviceId, Set<String> fields) throws InternalServerException {
+		return Model.getAll(MobileAppInstance.class, collection, CMaps.map("serviceId", serviceId), fields);
 	}
 }

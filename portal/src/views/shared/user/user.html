@@ -56,6 +56,7 @@
 	<a class="dropdown-item" href="javascript:" ui-sref="^.delete_records" translate="user.delete_records_btn"></a>
 	<a class="dropdown-item" href="javascript:" ng-click="exportAccount()" translate="user.export_btn"></a>
 	<a class="dropdown-item" href="javascript:" ng-show="beta" ng-click="metrics()" translate="user.metrics_btn"></a>
+	<a class="dropdown-item" href="javascript:" ng-show="user.role!='MEMBER'" ui-sref="^.servicekeys" translate="user.servicekeys_btn"></a>
 	<a class="dropdown-item" href="javascript:" ng-show="user.role!='ADMIN'" ui-sref="^.accountwipe" translate="user.wipe_account_btn"></a>
   </div>
 </div>

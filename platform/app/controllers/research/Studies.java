@@ -22,7 +22,6 @@ import org.apache.commons.codec.binary.Base64InputStream;
 import org.hl7.fhir.r4.model.DomainResource;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonValueFormat;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 
@@ -34,7 +33,6 @@ import akka.util.ByteString;
 import controllers.APIController;
 import controllers.Circles;
 import controllers.Market;
-import controllers.MobileAPI;
 import controllers.Spaces;
 import controllers.members.HealthProvider;
 import models.AccessPermissionSet;
@@ -51,6 +49,7 @@ import models.Plugin;
 import models.Record;
 import models.RecordsInfo;
 import models.ResearchUser;
+import models.ServiceInstance;
 import models.Space;
 import models.Study;
 import models.StudyAppLink;
@@ -86,8 +85,10 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
+import utils.ApplicationTools;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
+import utils.ProjectTools;
 import utils.ServerTools;
 import utils.access.DBIterator;
 import utils.access.Feature_FormatGroups;
@@ -218,7 +219,7 @@ public class Studies extends APIController {
 		AuditManager.instance.addAuditEvent(AuditEventType.ADDED_AS_TEAM_MEMBER, null, userId, userId, null, study._id);
 		AuditManager.instance.success();
 
-		return ok(JsonOutput.toJson(study, "Study", Study.ALL));
+		return ok(JsonOutput.toJson(study, "Study", Study.ALL)).as("application/json");
 	}
 
 	/**
@@ -1082,9 +1083,9 @@ public class Studies extends APIController {
 			consent.status = ConsentStatus.ACTIVE;
 			consent.writes = WritePermissionType.UPDATE_EXISTING;
 
-			RecordManager.instance.createAnonymizedAPS(ownerId, ownerId, consent._id, true);
+			RecordManager.instance.createAnonymizedAPS(ownerId, executor, consent._id, true, true, true);
 			Circles.prepareConsent(consent, true);			
-			Circles.addUsers(ownerId, EntityType.USERGROUP, consent, Collections.singleton(study._id));
+			Circles.addUsers(executor,ownerId, EntityType.USERGROUP, consent, Collections.singleton(study._id));
 
 			reference = consent;
 		}
@@ -1107,7 +1108,7 @@ public class Studies extends APIController {
 		consent.status = ConsentStatus.ACTIVE;
 		consent.writes = WritePermissionType.NONE;
 
-		RecordManager.instance.createAnonymizedAPS(ownerId, study._id, consent._id, true);
+		RecordManager.instance.createAnonymizedAPS(ownerId, study._id, consent._id, true, true, true);
 		Circles.prepareConsent(consent, true);
 		
 		RecordManager.instance.copyAPS(executor, reference._id, consent._id, ownerId);
@@ -1120,7 +1121,7 @@ public class Studies extends APIController {
 			return;
 
 		for (StudyRelated sr : consents) {
-			if (sr.entityType.equals(EntityType.USER)) {
+			if (sr.entityType != null && sr.entityType.equals(EntityType.USER)) {
 				StudyRelated.delete(researcher, sr._id);
 				AccessPermissionSet.delete(sr._id);
 			}
@@ -1284,83 +1285,116 @@ public class Studies extends APIController {
 		User researcher = User.getById(userId, Sets.create("apps", "password", "firstname", "lastname", "email", "language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode",
 				"accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));
 
-		if (shareBack) {
+		if (plugin.type.equals("analyzer")) {
+		
+			ServiceInstance si = ApplicationTools.createServiceInstance(userId, plugin, study, group);	
+			if (shareBack) {
 
-			if (group == null) {
-				for (StudyGroup grp : study.groups) {
-					Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudy(userId, grp.name, study._id, Sets.create("authorized"));
+				if (group == null) {
+					for (StudyGroup grp : study.groups) {
+						Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudy(study._id, grp.name, study._id, Sets.create("authorized"));
+
+						if (consents.isEmpty()) {
+							Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyId, grp.name, Sets.create());
+							joinSharing(userId, si.executorAccount, study, grp.name, false, new ArrayList<StudyParticipation>(parts));
+						}
+					}
+
+				} else {
+					Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudy(study._id, group, study._id, Sets.create("authorized"));
 
 					if (consents.isEmpty()) {
-						Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyId, grp.name, Sets.create());
-						joinSharing(userId, userId, study, grp.name, false, new ArrayList<StudyParticipation>(parts));
+						Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyId, group, Sets.create());
+						joinSharing(userId, si.executorAccount, study, group, false, new ArrayList<StudyParticipation>(parts));
 					}
-				}
 
-			} else {
-				Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudy(userId, group, study._id, Sets.create("authorized"));
-
-				if (consents.isEmpty()) {
-					Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyId, group, Sets.create());
-					joinSharing(userId, userId, study, group, false, new ArrayList<StudyParticipation>(parts));
 				}
 
 			}
 
-		}
+				
 
-		if (plugin.type.equals("mobile") || plugin.type.equals("service")) {
-			String device;
-			if (plugin.type.equals("mobile")) {
-			  JsonValidation.validate(json, "device");
-			  device = JsonValidation.getString(json, "device");
-			  if (device != null && device.length()<4) throw new BadRequestException("error.illegal.device", "Value for device is too short.");
-			} else {
-			  device = "service";	
-			}
-
-			MobileAppInstance appInstance = MobileAPI.installApp(userId, plugin._id, researcher, device, false, Collections.emptySet());
-			KeyManager.instance.changePassphrase(appInstance._id, device);
-			Map<String, Object> query = appInstance.sharingQuery;
-			query.put("study", studyId.toString());
-			if (restrictRead && group != null)
-				query.put("study-group", group);
-
-			if (shareBack) {
-				query.put("target-study", studyId.toString());
-				if (group != null)
-					query.put("target-study-group", group);
-			}
-			query.put("link-study", studyId.toString());
-			if (group != null)
-				query.put("link-study-group", group);
-
-			appInstance.set(appInstance._id, "sharingQuery", query);
-
-			HealthProvider.confirmConsent(appInstance.owner, appInstance._id);
-			appInstance.status = ConsentStatus.ACTIVE;
 
 		} else {
-
-			Space space = null;
-			space = Spaces.add(userId, plugin.defaultSpaceName, plugin._id, plugin.type, study.code + ":" + (group != null ? group : ""), licence);
-
-			Map<String, Object> query = new HashMap<String, Object>(Feature_QueryRedirect.simplifyAccessFilter(plugin._id, plugin.defaultQuery));
-			query.put("study", studyId.toString());
-			if (restrictRead && group != null)
-				query.put("study-group", group);
-
 			if (shareBack) {
-				query.put("target-study", studyId.toString());
-				if (group != null)
-					query.put("target-study-group", group);
+
+				if (group == null) {
+					for (StudyGroup grp : study.groups) {
+						Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudy(userId, grp.name, study._id, Sets.create("authorized"));
+
+						if (consents.isEmpty()) {
+							Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyId, grp.name, Sets.create());
+							joinSharing(userId, userId, study, grp.name, false, new ArrayList<StudyParticipation>(parts));
+						}
+					}
+
+				} else {
+					Set<StudyRelated> consents = StudyRelated.getActiveByOwnerGroupAndStudy(userId, group, study._id, Sets.create("authorized"));
+
+					if (consents.isEmpty()) {
+						Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyId, group, Sets.create());
+						joinSharing(userId, userId, study, group, false, new ArrayList<StudyParticipation>(parts));
+					}
+
+				}
+
 			}
-			query.put("link-study", studyId.toString());
-			if (group != null)
-				query.put("link-study-group", group);
 
-			RecordManager.instance.shareByQuery(userId, userId, space._id, query);
+			if (plugin.type.equals("mobile") || plugin.type.equals("service")) {
+				String device;
+				if (plugin.type.equals("mobile")) {
+				JsonValidation.validate(json, "device");
+				device = JsonValidation.getString(json, "device");
+				if (device != null && device.length()<4) throw new BadRequestException("error.illegal.device", "Value for device is too short.");
+				} else {
+				device = "service";	
+				}
 
-		}
+				MobileAppInstance appInstance = ApplicationTools.installApp(userId, plugin._id, researcher, device, false, Collections.emptySet());
+				KeyManager.instance.changePassphrase(appInstance._id, device);
+				Map<String, Object> query = appInstance.sharingQuery;
+				query.put("study", studyId.toString());
+				if (restrictRead && group != null)
+					query.put("study-group", group);
+
+				if (shareBack) {
+					query.put("target-study", studyId.toString());
+					if (group != null)
+						query.put("target-study-group", group);
+				}
+				query.put("link-study", studyId.toString());
+				if (group != null)
+					query.put("link-study-group", group);
+
+				appInstance.set(appInstance._id, "sharingQuery", query);
+
+				HealthProvider.confirmConsent(appInstance.owner, appInstance._id);
+				appInstance.status = ConsentStatus.ACTIVE;
+
+			} else {
+
+				Space space = null;
+				space = Spaces.add(userId, plugin.defaultSpaceName, plugin._id, plugin.type, study.code + ":" + (group != null ? group : ""), licence);
+
+				Map<String, Object> query = new HashMap<String, Object>(Feature_QueryRedirect.simplifyAccessFilter(plugin._id, plugin.defaultQuery));
+				query.put("study", studyId.toString());
+				if (restrictRead && group != null)
+					query.put("study-group", group);
+
+				if (shareBack) {
+					query.put("target-study", studyId.toString());
+					if (group != null)
+						query.put("target-study-group", group);
+				}
+				query.put("link-study", studyId.toString());
+				if (group != null)
+					query.put("link-study-group", group);
+
+				RecordManager.instance.shareByQuery(userId, userId, space._id, query);
+
+			}
+
+	    }
 		AuditManager.instance.success();
 		return ok();
 	}
@@ -1635,6 +1669,7 @@ public class Studies extends APIController {
 		List<List<StudyParticipation>> parts = Lists.partition(participants1, 1000);
 		for (List<StudyParticipation> participants : parts) {
 
+			controllers.research.Studies.joinSharing(userId, study._id, study, group, true, participants);
 			for (UserGroupMember ugm : ugms) {
 				if (ugm.role.manageParticipants()) {
 					controllers.research.Studies.joinSharing(userId, ugm.member, study, group, true, participants);
@@ -2156,18 +2191,8 @@ public class Studies extends APIController {
 		
 		Set<UserGroupMember> members = UserGroupMember.getAllActiveByGroup(oldGroup);
 		
-		for (UserGroupMember member : members) {
-			member._id = new MidataId();
-			member.userGroup = userGroup._id;
-			member.startDate = new Date();
-			member.status = ConsentStatus.ACTIVE;
-			
-			Map<String, Object> accessData = new HashMap<String, Object>();
-			accessData.put("aliaskey", KeyManager.instance.generateAlias(userGroup._id, member._id));
-			RecordManager.instance.createPrivateAPS(userId, member._id);
-			RecordManager.instance.setMeta(userId, member._id, "_usergroup", accessData);
-			member.add();
-			AuditManager.instance.addAuditEvent(AuditEventType.ADDED_AS_TEAM_MEMBER, null, userId, member.member, null, study._id);			
+		for (UserGroupMember member : members) {			
+			ProjectTools.addToUserGroup(userId, member.role, userGroup._id, member.member);			
 		}
 						
 		RecordManager.instance.createPrivateAPS(userGroup._id, userGroup._id);
@@ -2194,7 +2219,7 @@ public class Studies extends APIController {
 
 		AuditManager.instance.success();
 		
-		return ok(JsonOutput.toJson(study, "Study", Study.ALL));
+		return ok(JsonOutput.toJson(study, "Study", Study.ALL)).as("application/json");
 	}
 
 }
