@@ -163,7 +163,9 @@ public class RecordManager {
 		EncryptionUtils.addKey(other, eaps, otherNotOwner);	
 		if (history) eaps.getPermissions().put("_history", new BasicBSONList()); // Init with history
 		eaps.create();
- 
+		APSCache current = apsCache.get();
+		if (current != null) current.addAPS(new APSImplementation(new EncryptedAPS(eaps.getId(), current.getExecutor(), eaps.getAPSKey(), eaps.getOwner())));
+       
 		AccessLog.logEnd("end createAnonymizedAPS");
 		return eaps.getId();
 

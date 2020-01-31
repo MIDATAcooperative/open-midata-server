@@ -1,6 +1,7 @@
 package controllers;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -68,7 +69,11 @@ public class Services extends APIController {
     public Result listServiceInstances() throws AppException {
 
         MidataId managerId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));     
-        Set<ServiceInstance> instances = ServiceInstance.getByManager(managerId, ServiceInstance.ALL);
+        Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByMember(managerId);
+        Set<MidataId> managers = new HashSet<MidataId>();
+        managers.add(managerId);
+        for (UserGroupMember ugm : ugms) managers.add(ugm.userGroup);
+        Set<ServiceInstance> instances = ServiceInstance.getByManager(managers, ServiceInstance.ALL);
         return ok(JsonOutput.toJson(instances, "ServiceInstance", ServiceInstance.ALL)).as("application/json");
     }
     
@@ -81,18 +86,11 @@ public class Services extends APIController {
         
         ServiceInstance instance = ApplicationTools.checkServiceInstanceOwner(managerId, instanceId);        
 
-        Set<MobileAppInstance> appInstances = MobileAppInstance.getByService(instance._id, MobileAppInstance.ALL);
-        for (MobileAppInstance appInstance : appInstances) {
-            try {
-              ApplicationTools.removeAppInstance(managerId, appInstance);            
-            } catch (Exception e) {
-                MobileAppInstance.delete(instance.executorAccount, appInstance._id);
-            }
-        }
-
-        ServiceInstance.delete(instance._id);
+        ApplicationTools.deleteServiceInstance(managerId, instance);
         return ok();
     }
+
+    
     
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)

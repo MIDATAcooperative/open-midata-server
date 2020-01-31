@@ -9,12 +9,19 @@
 		<div class="body">
 		
 		<form name="myform" novalidate role="form" class="form-horizontal" ng-submit="updateLicence()">
-		  <p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
+		  <p ng-show="error && !error.field" translate="{{ error.code || error }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
 	      </p>	
 	      
 		  <formrow myid="appId" label="admin_addlicence.app">		     
 	          <input type="text" class="form-control" ng-change="appselection(licence.appName, 'appId');" autocomplete="off" typeahead-on-select="appselection(licence.appName, 'appId')" ng-model-options="{ debounce: 500 }" ng-model="licence.appName" uib-typeahead="app.filename for app in apps | filter:$viewValue | limitTo:8" required>	          	          
 	          <p class="form-text text-muted">{{ app.name }} {{ app.orgName }}</p>
+		  </formrow>
+
+		  <formrow myid="si" label="admin_addlicence.service">			  
+			  <label class="form-check-label">
+		        <input class="form-check-label" type="checkbox" ng-disabled="app.type!='external'" ng-model="licence.service">
+		        <span translate="admin_addlicence.service2"></span>
+		      </label>
 		  </formrow>
 		  
 		  <formrow myid="licenseeType" label="admin_addlicence.licenseeType">

@@ -234,7 +234,9 @@
      "licenseeType" : "Licensee Type",
      "role" : "User Role",
      "licensee" : "Licensee",
-     "expireDate" : "Date of expiration"
+     "expireDate" : "Date of expiration",
+     "service" : "External Service",
+     "service2" : "Transfer API key management"
    },
    
    "usagestats" : {

@@ -220,7 +220,7 @@ public class ApplicationTools {
 		si.name = app.name;
 		si.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(si._id, null);
 		si.add();
-
+		RecordManager.instance.getMeta(executor, executor, "_");
 		// Create service instance APS and store key
 		RecordManager.instance.createAnonymizedAPS(si._id, managerId, si._id, false, false, true);
 		MidataId keyId = new MidataId();
@@ -460,6 +460,19 @@ public class ApplicationTools {
 		MobileAppInstance.delete(appInstance.owner, appInstance._id);
 		AccessLog.logEnd("end remove app instance");
 	}
+
+	public static void deleteServiceInstance(MidataId executorId, ServiceInstance instance) throws InternalServerException {
+        Set<MobileAppInstance> appInstances = MobileAppInstance.getByService(instance._id, MobileAppInstance.ALL);
+        for (MobileAppInstance appInstance : appInstances) {
+            try {
+              ApplicationTools.removeAppInstance(executorId, appInstance);            
+            } catch (Exception e) {
+                MobileAppInstance.delete(instance.executorAccount, appInstance._id);
+            }
+        }
+
+        ServiceInstance.delete(instance._id);
+    }
 
     
 }

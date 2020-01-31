@@ -1372,11 +1372,14 @@ public class Market extends APIController {
 		licence.licenseeId = JsonValidation.getMidataId(json, "licenseeId");
 		licence.licenseeType = JsonValidation.getEnum(json, "licenseeType", EntityType.class);
 		licence.expireDate = JsonValidation.getDate(json, "expireDate");
+
+		boolean service = JsonValidation.getBoolean(json, "service");
+
 		
 		Plugin plugin = Plugin.getById(licence.appId, Plugin.ALL_DEVELOPER);
 		if (plugin == null) throw new BadRequestException("error.unknown.plugin", "Plugin does not exist");
-		if (plugin.licenceDef == null) throw new BadRequestException("error.notrequired.licence", "No licence required.");
-		if (!plugin.licenceDef.allowedEntities.contains(licence.licenseeType)) throw new BadRequestException("error.invalid.entity_type", "Licensee Type not allowed");
+		if (plugin.licenceDef == null && !service) throw new BadRequestException("error.notrequired.licence", "No licence required.");
+		if (!service && !plugin.licenceDef.allowedEntities.contains(licence.licenseeType)) throw new BadRequestException("error.invalid.entity_type", "Licensee Type not allowed");
 		licence.appName = plugin.name;
 		
 		switch (licence.licenseeType) {
@@ -1403,8 +1406,15 @@ public class Market extends APIController {
 		licence.grantedBy = userId;
 		licence.grantedByLogin = me.email;
 		licence.creationDate = new Date(System.currentTimeMillis());
+
+		if (service) {
+			for (ServiceInstance inst :  ServiceInstance.getByApp(plugin._id, ServiceInstance.ALL)) {
+				ApplicationTools.deleteServiceInstance(userId, inst);
+			}
 			
-		licence.add();
+			ApplicationTools.createServiceInstance(userId, plugin, licence.licenseeId);
+			
+		} else licence.add();
 		
 		return ok();
 	}
