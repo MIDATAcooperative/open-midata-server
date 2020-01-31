@@ -89,6 +89,14 @@
               <strong translate="editconsent2.external"></strong>
             </div>
             </div>
+		  </div>
+		  <div  ng-show="consent.type=='API'">
+            <div class="card-body">
+            <img ng-src="{{getIconRole('app')}}" class="consenticon float-left">
+            <div class="iconspace">
+              <strong translate="editconsent2.external"></strong>
+            </div>
+            </div>
           </div>
           <div  ng-show="consent.type=='STUDYRELATED'">
             <div class="card-body">

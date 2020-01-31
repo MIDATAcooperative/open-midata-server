@@ -99,6 +99,7 @@
        "study_accept" : "Project participation must be accepted.",
        "study_group" : "Participant must first be assigned to a group.",
        "consent_accept" : "Consent must be given to continue",
+       "service_accept" : "Service use must be accepted to continue",
        "confirmation" : "Confirmation by user required first.",
        "file" : "No file for upload selected",
        "access_query" : "No data selected",
@@ -310,7 +311,8 @@
 	 },
 	 "consenttype" : {
 	   "CIRCLE" : "Other Account Holders",
-	   "EXTERNALSERVICE" : "External Application",
+     "EXTERNALSERVICE" : "External Application",
+     "API" : "External Service",
 	   "HCRELATED" : "Healthcare",
 	   "HEALTHCARE" : "Doctor / Hospital",
 	   "STUDYPARTICIPATION" : "Research project",
@@ -454,10 +456,12 @@
 	 },
 	 "plugintype" : {
 	   "visualization" : "Plugin",
-	   "service" : "Service",
+	   "service" : "Internal Service",
 	   "oauth1" : "OAuth 1",
 	   "oauth2" : "OAuth 2",
-	   "mobile" : "Application (Smartphone, Web)"
+     "mobile" : "Application (Smartphone, Web)",
+     "external": "External Service",
+     "analyzer" : "Project analyzer"
 	 },
 	 "infos" : {
 	   "SUMMARY" : "Short Summary",
@@ -827,7 +831,8 @@
 	"export_btn" : "Export your data",
 	"delete_records_btn" : "Delete Records",
 	"wipe_account_btn" : "Delete Account",
-	"metrics_btn" : "Calculate Account Metrics",
+  "metrics_btn" : "Calculate Account Metrics",
+  "servicekeys_btn" : "Manage API Keys",
 	"account_repaired" : "Your account has been repaired.",
 	"spaces_resetted" : "Your configuration has been resetted.",
 	"settings" : "Settings",	
@@ -846,7 +851,7 @@
   },
 
   "visualization" : {
-    "title" : "Plugin Information",
+    "title" : "Application Information",
     "success" : "You have successfully installed a new plugin.",
     "created_by" : "Created by:",
     "orgName" : "Organization:",
@@ -855,7 +860,8 @@
     "tile_name" : "Tile Name:",
     "install_location" : "Location:",
     "grant_access" : "Grant this plugin access to:",
-    "install_btn" : "Add Plugin",
+    "terms" : "Terms",
+    "install_btn" : "Confirm Access",
     "location" : {
       "workspace" : "Workspace",
       "mobile" : "MIDATA Mobile App",
@@ -924,6 +930,7 @@
     "type_studyparticipation" : "This consent shares data with a research project.",
     "type_studyrelated" : "This consent shares data with a project participant.",
     "type_externalservice" : "This consent shares data with an application.",
+    "type_api" : "This consent shares data with an external service.",
     "type_implicit" : "This implicitely created consent shares messages with their receivers.",
     "status_active" : "This consent is active.",
     "status_expired" : "This consent is expired. Data is no longer shared.",
@@ -1050,11 +1057,14 @@
     "continue_btn" : "Continue",
     "requests_access" : "Access requested by the application:",
     "requests_sharing" : "Data shared with the project:",
+    "requests_sharing_service" : "Data shared with the external service:",
     "shares_group" : "Group: {{ group }}",
     "shares_format" : "Format: {{ format }}",
     "shares_content" : "Content: {{ content }}",
     "confirm_provider" : "I accept to share data with this external provider",
     "confirm_provider_opt" : "I accept to share data with this external provider (optional)",
+    "confirm_service" : "I accept to share data with this external service",
+    "confirm_service_opt" : "I accept to share data with this external service (optional)",
     "confirm_study" : "I accept the terms of use of the application and to participate in the project",
     "confirm_study_opt" : "I accept to participate in the project",
     "confirm_citizen_science" : "I accept to participate in the citizen science project",
@@ -1201,6 +1211,7 @@
     "CIRCLE" : "Consent",
     "ResearchStudy" : "Research Project",
     "EXTERNALSERVICE" : "Application",
+    "API" : "Service",
     "STUDYPARTICIPATION" : "Participation",
     "HEALTHCARE" : "Consent (Health Provider)",
     "MEMBER" : "Account",
@@ -1351,6 +1362,22 @@
     "B" : "Bugfix",
     "I" : "Improvement",
     "S" : "Bugfix" 
+  },
+
+  "apikeys" : {
+    "title" : "API Key Management",
+    "empty" : "This account does not manage any services with API keys.",
+    "add_btn" : "Add Key",
+    "delete_btn" : "Remove Service",
+    "show_btn" : "Show Keys",  
+    "revoke_btn" : "Revoke this key",
+    "instructions" : "Please copy these keys somewhere safe. They are displayed only once.",
+    "key" : "API Key for direct use",
+    "instructions_key" : "Use this key directly in the Authorization header of the service as bearer token.",
+    "refresh" : "Refresh-Token for OAuth",
+    "instructions_refresh" : "For improved security exchange this refresh token against a new pair of access token and refresh token.",
+    "ACTIVE" : "Active",
+    "FROZEN" : "Old version"
   },
   
   "-1" : "unknown"

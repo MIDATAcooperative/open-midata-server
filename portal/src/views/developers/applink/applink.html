@@ -18,7 +18,7 @@
 	              <th></th>
 	            </tr>
 	            <tr ng-repeat="link in links">
-	              <td ng-click="select(link);">{{ link.study.code }} {{ link.study.name }} {{ link.provider.name }} <span ng-show="link.userLogin">({{ link.userLogin }})</span></td>
+	              <td ng-click="select(link);">{{ link.study.code }} {{ link.study.name }} {{ link.provider.name }} {{ link.serviceApp.name }}<span ng-show="link.userLogin">({{ link.userLogin }})</span></td>
 	              <td>
 	                <div ng-repeat="type in link.type" translate="{{ 'studyactions.types_short.'+type }}"></span>
 	              </td>
@@ -58,7 +58,8 @@
 	            </tr>
 	          </table>
 	          <a href="javascript:" ui-sref="^.manageapp({appId:app._id})" class="btn btn-default" translate="common.back_btn"></a>
-	          <button type="button" class="btn btn-primary" translate="applink.add_research_btn" ng-click="addNewResearch()"></button>
+			  <button type="button" class="btn btn-primary" translate="applink.add_research_btn" ng-click="addNewResearch()"></button>
+			  <button type="button" class="btn btn-primary" translate="applink.add_service_btn" ng-click="addNewService()"></button>
 	          <button type="button" class="btn btn-primary" translate="applink.add_provider_btn" ng-click="addNewProvider()"></button>
 	         </div>
 	         <div ng-show="selection.linkTargetType=='STUDY'">
@@ -99,9 +100,9 @@
 	           </div>
 	           
 	           
-	           <div ng-show="selection.linkTargetType=='ORGANIZATION'">
-	            <formrow myid="provider" label="applink.provider">	              
-	               <input type="text" class="form-control" ng-model="selection.userLogin">	              	              
+	           <div ng-if="selection.linkTargetType=='ORGANIZATION'">
+	            <formrow myid="provider" label="applink.provider">	  				   
+				   <input type="text" class="form-control" ng-model="selection.userLogin">	              	                  
 	            </formrow> 	          
 	            <formrow myid="app" label="studyactions.app">
 	               <p class="form-control-plaintext">{{ app.filename }}</p>	               
@@ -114,6 +115,29 @@
 	                  <p class="form-text text-muted" ng-show="selection.termsOfUse"><a ui-sref="^.terms({ which:selection.termsOfUse })" translate="applink.show_terms"></a></p>
 	                  <p class="form-text text-muted" translate="applink.terms_of_use_hint"></p> 
 	            </formrow>	            
+	            <formrow myid="type" label="studyactions.type">
+	              <div ng-repeat="type in types2" class="form-check">
+	                <label class="form-check-label">
+	                  <input class="form-check-input" type="checkbox" ng-disabled="checkType(app, type)" ng-checked="selection.type.indexOf(type)>=0" ng-click="toggle(selection.type, type);formChange();" >
+	                  <span translate="{{ 'applink.types.'+type }}"></span>
+	                </label>
+	              </div>
+	            </formrow>
+	           	       
+	             <formrow myid="x" label="">
+	               <button class="btn btn-primary" type="submit" translate="common.submit_btn"></button>
+	               <button class="btn btn-default" type="button" translate="common.cancel_btn" ng-click="cancel();"></button>
+	             </formrow>
+			   </div>
+			   
+			   <div ng-if="selection.linkTargetType=='SERVICE'">
+	            <formrow myid="serviceApp" label="applink.service_app">	   
+				   <input type="text" class="form-control" ng-change="serviceappselection()" autocomplete="off" typeahead-on-select="serviceappselection()" ng-model-options="{ debounce: 500 }" ng-model="selection.serviceApp.filename" uib-typeahead="app.filename for app in apps | filter:$viewValue | limitTo:8">                       
+	               
+	            </formrow> 	          
+	            <formrow myid="app" label="studyactions.app">
+	               <p class="form-control-plaintext">{{ app.filename }}</p>	               
+	            </formrow>	       	                  
 	            <formrow myid="type" label="studyactions.type">
 	              <div ng-repeat="type in types2" class="form-check">
 	                <label class="form-check-label">

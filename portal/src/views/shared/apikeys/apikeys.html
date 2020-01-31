@@ -1,0 +1,50 @@
+<div ng-controller="ApiKeysCtrl">
+
+	<div class="panel panel-primary">
+		<div class="panel-heading" translate="apikeys.title"></div>
+		<div class="body">
+            <loader busy="status.isBusy !== false">
+                <p ng-show="services.length===0" translate="apikeys.empty"></p>
+                <div ng-repeat="service in services">
+                    <div class="row">
+                        <div class="col-8">{{ service.name }}</div>
+                        <div class="col-4">
+                            <button type="button" class="btn btn-default btn-sm" translate="apikeys.add_btn" ng-click="addKey(service)"></button>
+                            <button type="button" class="btn btn-default btn-sm" translate="apikeys.show_btn" ng-click="showKeys(service)"></button>
+                            <button type="button" class="btn btn-danger btn-sm" translate="apikeys.delete_btn" ng-click="deleteService(service);"></button>
+                        </div>
+                    </div>
+                    <div class="row" ng-repeat="key in service.keys">                        
+                        <div class="col-5">
+                            - {{ key._id }}
+                        </div>
+                        <div class="col-3">
+                            {{ key.dateOfCreation | date }}
+                        </div>
+                        <div class="col-2">
+                            <span translate="{{ 'apikeys.'+key.status }}"></span>
+                        </div>
+                        <div class="col-2">
+                            <button type="button" class="btn btn-danger btn-sm" translate="apikeys.revoke_btn" ng-click="deleteKey(service, key);"></button>
+                        </div>
+                    </div>
+                    <hr>
+                </div>                
+			</loader>
+		</div>
+    </div>
+    
+    <modal viewid="apikey">
+        <div>
+            <div translate="apikeys.instructions"></div>
+            <hr>
+            <div><b translate="apikeys.key"></b></div>
+            <div translate="apikeys.instructions_key"></div>
+            <input type="text" class="form-control" readonly ng-click="copyToClip($event)" ng-model="showkey.access_token">
+            <hr>
+            <div><b translate="apikeys.refresh"></b></div>
+            <div translate="apikeys.instructions_refresh"></div>
+            <input type="text" class="form-control" readonly ng-click="copyToClip($event)" ng-model="showkey.refresh_token">
+        </div>
+    </modal>
+</div>

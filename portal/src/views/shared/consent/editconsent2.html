@@ -19,7 +19,8 @@
       <p class="form-control-plaintext" ng-show="consent.type == 'HEALTHCARE'" translate="editconsent.type_healthcare"></p>
       <p class="form-control-plaintext" ng-show="consent.type == 'STUDYPARTICIPATION'" translate="editconsent.type_studyparticipation"></p>    
       <p class="form-control-plaintext" ng-show="consent.type == 'STUDYRELATED'" translate="editconsent.type_studyrelated"></p>
-      <p class="form-control-plaintext" ng-show="consent.type == 'EXTERNALSERVICE'" translate="editconsent.type_externalservice"></p>
+	  <p class="form-control-plaintext" ng-show="consent.type == 'EXTERNALSERVICE'" translate="editconsent.type_externalservice"></p>
+	  <p class="form-control-plaintext" ng-show="consent.type == 'API'" translate="editconsent.type_api"></p>
       <p class="form-control-plaintext" ng-show="consent.type == 'IMPLICIT'" translate="editconsent.type_implicit"></p>
     </formrow>
     <formrow id="status" label="editconsent.status">
@@ -51,7 +52,7 @@
 		</div>				
 	</formrow>
     
-   <formrow id="share" label="editconsent.people" ng-show="consent.type != 'EXTERNALSERVICE'">
+   <formrow id="share" label="editconsent.people" ng-show="consent.type != 'EXTERNALSERVICE' && consent.type != 'API'">
 		<div class="card" ng-repeat="person in authpersons">
 		  <div class="card-body">
 		  <button type="button" ng-click="removePerson(person)" class="close" aria-label="Delete" ng-show="mayChangeUsers()"><span aria-hidden="true">&times;</span></button>	

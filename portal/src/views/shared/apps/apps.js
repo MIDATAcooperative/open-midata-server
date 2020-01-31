@@ -56,8 +56,14 @@ angular.module('portal')
     	});
 	});
 	
-	$scope.install = function(app) {
+	$scope.install = function(app) {		
 		  if ($scope.pluginToSpace[app._id] === true) return;
+
+		  if (app.type == "external" || app.termsOfUse) {
+			  $state.go("^.visualization", { visualizationId : app._id });
+			  return;
+		  }
+
 		  spaces.get({ "owner": $scope.userId, "visualization" : app._id }, ["_id", "type"])
 		  .then(function(spaceresult) {
 			 if (spaceresult.data.length > 0) {

@@ -8,12 +8,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 
 import models.MidataId;
 import models.StudyParticipation;
 import models.UserGroupMember;
 import models.enums.ResearcherRole;
+import utils.AccessLog;
 import utils.RuntimeConstants;
 import utils.auth.KeyManager;
 import utils.collections.Sets;
@@ -171,6 +173,8 @@ public class Feature_UserGroups extends Feature {
 				if (target.hasAccess(ugm.userGroup)) return ugm;
 			}				
 		}
+		
+		AccessLog.log("no suitable cache: targetAps="+targetAps+" executor="+cache.getExecutor());
 		return null;
 	}
 	
@@ -188,6 +192,12 @@ public class Feature_UserGroups extends Feature {
 		BasicBSONObject obj = cache.getAPS(ugm._id, ugm.member).getMeta("_usergroup");
 		if (!cache.hasSubCache(ugm.userGroup)) KeyManager.instance.unlock(ugm.userGroup, ugm._id, (byte[]) obj.get("aliaskey"));		
 		return cache.getSubCache(ugm.userGroup);				
+	}
+
+	public static void loadKey(UserGroupMember ugm) throws AppException {				
+		
+		BSONObject obj = RecordManager.instance.getMeta(ugm.member, ugm._id, "_usergroup");
+		KeyManager.instance.unlock(ugm.userGroup, ugm._id, (byte[]) obj.get("aliaskey"));				
 	}
 		
 }

@@ -37,7 +37,7 @@ angular.module('portal')
 				
 				for (var l=0;l<data.data.length;l++) {
 					var link = data.data[l];	
-					
+					console.log(link);
 					if (link.type.indexOf("OFFER_P")>=0) {
 						link.labels = [];							
 						link.formatted = [];					
@@ -60,8 +60,16 @@ angular.module('portal')
 								link.formatted = [];
 							} else {
 								link.inlineTerms = false;
-								if (link.formatted.length==0) {								
-									link.formatted  = [ link.study.description ];									
+								if (link.formatted.length==0) {	
+									if (link.study)	{
+									  link.formatted  = [ link.study.description ];
+									 } else {
+										 if (link.serviceApp.i18n[$translate.use()]) {
+											link.formatted  = [ link.serviceApp.i18n[$translate.use()].description ];
+										 } else {
+											link.formatted  = [ link.serviceApp.description ];
+										 }
+									 }
 								}
 							}
 							
@@ -70,8 +78,8 @@ angular.module('portal')
 					    } else {
 							$scope.extra.push(link);
 						}
-						
-						r.push($scope.prepareQuery(link.study.recordQuery, null, link.labels, link.study.requiredInformation));	
+						let recordQuery = link.study ? link.study.recordQuery : link.serviceApp ? link.serviceApp.defaultQuery : {};
+						r.push($scope.prepareQuery(recordQuery, null, link.labels, link.study ? link.study.requiredInformation : null));	
 					}
 				}
 								
@@ -125,18 +133,29 @@ angular.module('portal')
 		});
 		
 	};
+
+	$scope.checkConfirmed = function(link) {
+		if (link.type.indexOf("OFFER_P") >=0 && link.type.indexOf("REQUIRE_P")>=0 && $scope.login.confirmStudy.indexOf(link.studyId || link.userId || link.serviceAppId) < 0) {
+			if (link.linkTargetType == "ORGANIZATION") {
+			  $scope.error = { code : "error.missing.consent_accept" };
+			} else if (link.linkTargetType == "SERVICE") {
+				$scope.error = { code : "error.missing.service_accept" };
+			} else {
+			  $scope.error = { code : "error.missing.study_accept" };
+			}
+			return false;
+		}
+		return true;
+	};
 	
 	$scope.nextPage = function() {
+		if ($scope.app.termsOfUse && !($scope.login.appAgb)) {
+			$scope.error = { code : "error.missing.agb" };
+			return true;
+		}
+
 		for (var i=0;i<$scope.extra.length;i++) {
-			
-			if ($scope.extra[i].type.indexOf("OFFER_P") >=0 && $scope.extra[i].type.indexOf("REQUIRE_P")>=0 && $scope.login.confirmStudy.indexOf($scope.extra[i].studyId || $scope.extra[i].userId) < 0) {
-				if ($scope.extra[i].linkTargetType == "ORGANIZATION") {
-				  $scope.error = { code : "error.missing.consent_accept" };
-				} else {
-				  $scope.error = { code : "error.missing.study_accept" };
-				}
-				return true;
-			}
+			if (!$scope.checkConfirmed($scope.extra[i])) return true;			
 		}
 
 	   views.disableView("terms");
@@ -159,15 +178,7 @@ angular.module('portal')
 		
 		if ($scope.nextPage()) return;				  
 		for (var i=0;i<$scope.links.length;i++) {
-			
-			if ($scope.links[i].type.indexOf("OFFER_P") >=0 && $scope.links[i].type.indexOf("REQUIRE_P")>=0 && $scope.login.confirmStudy.indexOf($scope.links[i].studyId || $scope.links[i].userId) < 0) {
-				if ($scope.links[i].linkTargetType == "ORGANIZATION") {
-				  $scope.error = { code : "error.missing.consent_accept" };
-				} else {
-				  $scope.error = { code : "error.missing.study_accept" };
-				}
-				return;
-			}
+			if (!$scope.checkConfirmed($scope.links[i])) return;			
 		}
 		
 		$scope.status.doAction("login", oauth.login(true, $scope.login.confirmStudy))
@@ -216,6 +227,10 @@ angular.module('portal')
 			if (link.type.indexOf("REQUIRE_P") >= 0) return "oauth2.confirm_provider";
 			return "oauth2.confirm_provider_opt";
 		} 
+		if (link.linkTargetType == "SERVICE") {
+			if (link.type.indexOf("REQUIRE_P") >= 0) return "oauth2.confirm_service";
+			return "oauth2.confirm_service_opt";
+		} 
 		if (link.study.type == "CLINICAL") {
 			if (link.type.indexOf("REQUIRE_P") >= 0 && !(link.type.indexOf("OFFER_EXTRA_PAGE") >=0)) return "oauth2.confirm_study";
 			return "oauth2.confirm_study_opt";
@@ -226,6 +241,14 @@ angular.module('portal')
 			return "oauth2.confirm_community_opt";
 		}
 		
+	};
+
+	$scope.getLinkName = function(link) {
+		if (link.study) return link.study.name;
+		if (link.provider) return link.provider.name;
+		if (link.serviceApp) 
+			return link.serviceApp.i18n[$translate.use()] ? link.serviceApp.i18n[$translate.use()].name : link.serviceApp.name;
+		return "???";
 	};
 		
     if (oauth.app) {		

@@ -19,7 +19,6 @@ import java.util.Set;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
-import org.bson.BSONObject;
 import org.bson.types.ObjectId;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -43,11 +42,11 @@ import models.Plugin;
 import models.PluginIcon;
 import models.PluginReview;
 import models.Plugin_i18n;
+import models.ServiceInstance;
 import models.SoftwareChangeLog;
 import models.Space;
 import models.Study;
 import models.StudyAppLink;
-import models.StudyParticipation;
 import models.SubscriptionData;
 import models.TestPluginCall;
 import models.User;
@@ -57,7 +56,6 @@ import models.enums.AppReviewChecklist;
 import models.enums.ConsentStatus;
 import models.enums.EntityType;
 import models.enums.IconUse;
-import models.enums.JoinMethod;
 import models.enums.LinkTargetType;
 import models.enums.MessageReason;
 import models.enums.ParticipantSearchStatus;
@@ -77,6 +75,7 @@ import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
+import utils.ApplicationTools;
 import utils.InstanceConfig;
 import utils.access.Query;
 import utils.auth.AdminSecured;
@@ -84,7 +83,6 @@ import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
 import utils.auth.DeveloperSecured;
 import utils.auth.KeyManager;
-import utils.auth.Rights;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.LostUpdateException;
@@ -98,7 +96,6 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-import utils.messaging.SubscriptionManager;
 
 /**
  * functions for controlling the "market" of plugins
@@ -172,6 +169,7 @@ public class Market extends APIController {
 				app.type = JsonValidation.getString(json, "type");
 				app.requirements = JsonExtraction.extractEnumSet(json, "requirements", UserFeature.class);
 				app.targetUserRole = JsonValidation.getEnum(json, "targetUserRole", UserRole.class);
+				if (app.type.equals("analyzer")) app.targetUserRole = UserRole.RESEARCH;
 				app.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
 				app.resharesData = JsonValidation.getBoolean(json, "resharesData");
 				app.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
@@ -186,6 +184,14 @@ public class Market extends APIController {
 				
 				if (app.defaultQuery != null && !app.defaultQuery.equals(oldDefaultQuery)) {
 					markReviewObsolete(app._id, AppReviewChecklist.ACCESS_FILTER);
+				}
+
+				if (app.type.equals("external")) {
+					Set<ServiceInstance> si = ServiceInstance.getByApp(app._id, ServiceInstance.ALL);
+					if (si.isEmpty() && userId.equals(app.creator)) {
+						ApplicationTools.createServiceInstance(userId, app, userId);
+					}
+					//for (ServiceInstance)
 				}
 			}
 			
@@ -509,6 +515,10 @@ public class Market extends APIController {
 			JsonValidation.validate(json, "filename", "name", "description", "secret");
 		} else if (type.equals("visualization")) {
 			JsonValidation.validate(json, "filename", "name", "description", "url");
+		} else if (type.equals("external")) {
+			JsonValidation.validate(json, "filename", "name", "description");
+		} else if (type.equals("analyzer")) {
+			JsonValidation.validate(json, "filename", "name", "description");
 		} else {
 			throw new BadRequestException("error.internal", "Unknown app type.");
 		}
@@ -553,6 +563,7 @@ public class Market extends APIController {
 		plugin.tags = JsonExtraction.extractStringSet(json.get("tags"));
 		plugin.requirements = JsonExtraction.extractEnumSet(json, "requirements", UserFeature.class);
 		plugin.targetUserRole = JsonValidation.getEnum(json, "targetUserRole", UserRole.class);
+		if (plugin.type.equals("analyzer")) plugin.targetUserRole = UserRole.RESEARCH;
 		plugin.defaultSpaceName = JsonValidation.getStringOrNull(json, "defaultSpaceName");
 		plugin.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");
 		plugin.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
@@ -602,6 +613,10 @@ public class Market extends APIController {
 		
 			
 		Plugin.add(plugin);
+
+		if (plugin.type.equals("service")) {
+			ApplicationTools.createServiceInstance(userId, plugin, userId);
+		}
 		
 		return ok(JsonOutput.toJson(plugin, "Plugin", Plugin.ALL_DEVELOPER)).as("application/json");
 	}
@@ -1014,6 +1029,9 @@ public class Market extends APIController {
 				  Study study = Study.getById(sal.studyId, Sets.create("_id", "code","name", "type", "description", "termsOfUse", "executionStatus","validationStatus","participantSearchStatus", "joinMethods", "infos", "recordQuery", "requiredInformation"));
 				  sal.study = study;
 				  sal.termsOfUse = study.termsOfUse;
+				} else if (sal.linkTargetType == LinkTargetType.SERVICE) {
+				  sal.serviceApp = Plugin.getById(sal.serviceAppId);
+				  sal.termsOfUse = sal.serviceApp.termsOfUse;
 				} else {					
 				  HealthcareProvider prov = HealthcareProvider.getById(sal.providerId, HealthcareProvider.ALL);
 				  sal.provider = prov;
@@ -1027,7 +1045,7 @@ public class Market extends APIController {
 				Iterator<StudyAppLink> sal_it = result.iterator();
 				while (sal_it.hasNext()) {
 					StudyAppLink sal = sal_it.next();	
-					if (sal.linkTargetType == LinkTargetType.ORGANIZATION) {
+					if (sal.linkTargetType == LinkTargetType.ORGANIZATION || sal.linkTargetType == LinkTargetType.SERVICE) {
 						if (!sal.isConfirmed()) sal_it.remove();
 					} else {
 						if (!sal.isConfirmed() || !sal.usePeriod.contains(sal.study.executionStatus)) sal_it.remove();
@@ -1055,7 +1073,8 @@ public class Market extends APIController {
         JsonNode json = request().body().asJson();	
         
         LinkTargetType lt = JsonValidation.getEnum(json, "linkTargetType", LinkTargetType.class);
-        if (lt != null && lt.equals(LinkTargetType.ORGANIZATION)) return insertAppLink();
+		if (lt != null && lt.equals(LinkTargetType.ORGANIZATION)) return insertAppLink();
+		if (lt != null && lt.equals(LinkTargetType.SERVICE)) return insertAppLink();
         
 		JsonValidation.validate(json, "studyId", "appId", "type", "usePeriod");
 
@@ -1089,24 +1108,33 @@ public class Market extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public Result insertAppLink() throws AppException {
         JsonNode json = request().body().asJson();		
-		JsonValidation.validate(json, "userLogin", "appId", "type");
+		JsonValidation.validate(json, "linkTargetType", "appId", "type");
 
 		
 		StudyAppLink link = new StudyAppLink();
 									
 		link._id = new MidataId();
-		link.linkTargetType = LinkTargetType.ORGANIZATION;
+		link.linkTargetType = JsonValidation.getEnum(json, "linkTargetType", LinkTargetType.class);
 		link.appId = JsonValidation.getMidataId(json, "appId");				
 		link.type = JsonValidation.getEnumSet(json, "type", StudyAppLinkType.class);
 		link.identifier = JsonValidation.getString(json, "identifier");
 		link.termsOfUse = JsonValidation.getStringOrNull(json, "termsOfUse");
 		
-		HPUser user = HPUser.getByEmail(JsonValidation.getString(json, "userLogin"), Sets.create("status","provider"));
-		if (user == null || user.status != UserStatus.ACTIVE) throw new JsonValidationException("error.invalid.user", "User not found or not active");
-		HealthcareProvider prov = HealthcareProvider.getById(user.provider, HealthcareProvider.ALL);
-		if (prov == null) throw new JsonValidationException("error.invalid.user", "User not found or not active");
-		link.providerId = prov._id;
-		link.userId = user._id;
+		if (link.linkTargetType == LinkTargetType.ORGANIZATION) {
+			JsonValidation.validate(json, "userLogin");
+			HPUser user = HPUser.getByEmail(JsonValidation.getString(json, "userLogin"), Sets.create("status","provider"));
+			if (user == null || user.status != UserStatus.ACTIVE) throw new JsonValidationException("error.invalid.user", "User not found or not active");
+			HealthcareProvider prov = HealthcareProvider.getById(user.provider, HealthcareProvider.ALL);
+			if (prov == null) throw new JsonValidationException("error.invalid.user", "User not found or not active");
+			link.providerId = prov._id;
+			link.userId = user._id;
+		} else {
+			JsonValidation.validate(json, "serviceAppId");
+			link.serviceAppId = JsonValidation.getMidataId(json, "serviceAppId");
+			Plugin plugin = Plugin.getById(link.serviceAppId);
+			if (plugin == null) throw new JsonValidationException("error.invalid.plugin", "Plugin not found or not active");
+			if (!plugin.type.equals("external") ) throw new JsonValidationException("error.invalid.plugin", "Wrong type");
+		}
 				
 		link.validationResearch = StudyValidationStatus.VALIDATION;
 		link.validationDeveloper = StudyValidationStatus.VALIDATION;
@@ -1198,6 +1226,9 @@ public class Market extends APIController {
         	autoValidResearcher = false;
         }
         if (link.linkTargetType == LinkTargetType.ORGANIZATION) {
+        	autoValidResearcher = true;
+		}
+		if (link.linkTargetType == LinkTargetType.SERVICE) {
         	autoValidResearcher = true;
         }
         if (autoValidDeveloper) link.validationDeveloper = StudyValidationStatus.VALIDATED;
@@ -1341,11 +1372,14 @@ public class Market extends APIController {
 		licence.licenseeId = JsonValidation.getMidataId(json, "licenseeId");
 		licence.licenseeType = JsonValidation.getEnum(json, "licenseeType", EntityType.class);
 		licence.expireDate = JsonValidation.getDate(json, "expireDate");
+
+		boolean service = JsonValidation.getBoolean(json, "service");
+
 		
 		Plugin plugin = Plugin.getById(licence.appId, Plugin.ALL_DEVELOPER);
 		if (plugin == null) throw new BadRequestException("error.unknown.plugin", "Plugin does not exist");
-		if (plugin.licenceDef == null) throw new BadRequestException("error.notrequired.licence", "No licence required.");
-		if (!plugin.licenceDef.allowedEntities.contains(licence.licenseeType)) throw new BadRequestException("error.invalid.entity_type", "Licensee Type not allowed");
+		if (plugin.licenceDef == null && !service) throw new BadRequestException("error.notrequired.licence", "No licence required.");
+		if (!service && !plugin.licenceDef.allowedEntities.contains(licence.licenseeType)) throw new BadRequestException("error.invalid.entity_type", "Licensee Type not allowed");
 		licence.appName = plugin.name;
 		
 		switch (licence.licenseeType) {
@@ -1372,8 +1406,15 @@ public class Market extends APIController {
 		licence.grantedBy = userId;
 		licence.grantedByLogin = me.email;
 		licence.creationDate = new Date(System.currentTimeMillis());
+
+		if (service) {
+			for (ServiceInstance inst :  ServiceInstance.getByApp(plugin._id, ServiceInstance.ALL)) {
+				ApplicationTools.deleteServiceInstance(userId, inst);
+			}
 			
-		licence.add();
+			ApplicationTools.createServiceInstance(userId, plugin, licence.licenseeId);
+			
+		} else licence.add();
 		
 		return ok();
 	}

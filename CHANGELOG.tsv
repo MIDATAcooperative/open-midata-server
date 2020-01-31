@@ -29,4 +29,8 @@ id0027	19.12.2019	a.kreutz	F	Added FHIR ValueSet Resource for R4
 id0028	07.01.2020	a.kreutz	B	Fixed $document operator	The composition resources $document operator did not return all linked resources.
 id0029	09.01.2020	a.kreutz	I	Splitted Midata Registration and App Confirmation
 id0030	14.01.2020	a.kreutz	F	Projects may contain App Onboarding Text	A new field in the project information screen allows you to write an onboarding text that will be displayed on linked app login screens.
+id0031	31.01.2020	a.kreutz	F	New application type: Project Analyzer	The new app. type may be connected to a research project. The researcher team may manage API keys that can be used by the application to connect to the projects data.
+id0032	31.01.2020	a.kreutz	F	New application type: External Service	An external service may access all user accounts that have subscribed to the service. The service connects using API keys which may be managed by a 3rd party.
+id0033	31.01.2020	a.kreutz	B	Fixed bug in 'copy project' function	Previous versions created non working access keys for all project team members except the one who copied the project.
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 
+

@@ -553,10 +553,11 @@ public class Circles extends APIController {
 		if (consent == null) {
 			throw new BadRequestException("error.unknown.consent", "No consent with this id exists.");
 		}
-		if (consent.type != ConsentType.CIRCLE && consent.type != ConsentType.EXTERNALSERVICE && consent.type != ConsentType.IMPLICIT) throw new BadRequestException("error.unsupported", "Operation not supported");
+		if (consent.type != ConsentType.CIRCLE && consent.type != ConsentType.EXTERNALSERVICE && consent.type != ConsentType.API && consent.type != ConsentType.IMPLICIT) throw new BadRequestException("error.unsupported", "Operation not supported");
 				
 		switch (consent.type) {
 		case EXTERNALSERVICE:
+		case API:
 			AuditManager.instance.addAuditEvent(AuditEventType.APP_DELETED, userId, consent);break;
 		default: AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_DELETE, userId, consent);break;
 		}
@@ -570,6 +571,7 @@ public class Circles extends APIController {
 		// delete circle		
 		switch (consent.type) {
 		case CIRCLE: Circle.delete(userId, circleId);break;
+		case API:
 		case EXTERNALSERVICE: Circle.delete(userId, circleId);break;
 		case IMPLICIT: Consent.delete(userId, circleId);break;
 		//case STUDYRELATED : StudyRelated.delete(userId, circleId);break;
@@ -734,8 +736,8 @@ public class Circles extends APIController {
 		} else if (!active && wasActive) {
 			Set<MidataId> auth = consent.authorized;
 			if (auth.contains(consent.owner)) { auth.remove(consent.owner); }
-			RecordManager.instance.unshareAPSRecursive(consent._id, consent.owner, consent.authorized);
-			Circles.removeQueries(consent.owner, consent._id);
+			RecordManager.instance.unshareAPSRecursive(consent._id, executor, consent.authorized);
+			
 			if (consent.type.equals(ConsentType.EXTERNALSERVICE)) {
 				Plugin app;
 				if (consent instanceof MobileAppInstance) {
@@ -746,7 +748,9 @@ public class Circles extends APIController {
 				}
 				
 				SubscriptionManager.deactivateSubscriptions(consent.owner, app, consent._id);
-			}
+				//Circles.removeQueries(consent.owner, consent._id);
+
+			} else Circles.removeQueries(consent.owner, consent._id);
 		}
 		if (newStatus != null && newStatus.equals(ConsentStatus.FROZEN)) {
 			Date now = new Date();
@@ -930,8 +934,10 @@ public class Circles extends APIController {
 	 * @param targetaps ID of content
 	 * @throws InternalServerException
 	 */
-	protected static void removeQueries(MidataId userId, MidataId targetaps) throws InternalServerException {
-        Member member = Member.getById(userId, Sets.create("queries", "rqueries"));
+	public static void removeQueries(MidataId userId, MidataId targetaps) throws InternalServerException {
+		Member member = Member.getById(userId, Sets.create("queries", "rqueries"));
+		if (member == null) return;
+
         String key = targetaps.toString();
         
 		if (member.queries != null) {		 	
