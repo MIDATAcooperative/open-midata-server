@@ -225,18 +225,22 @@
   },
   
   "applink" : {
-    "title" : "Links with research projects or health professionals",
+    "title" : "Links with research projects, external services or health professionals",
     "add_research_btn" : "Link to research project",
     "add_provider_btn" : "Link to health professional",
+    "add_service_btn" : "Link to external service",
     "target" : "Target",
     "provider" : "Health professional (login)",
+    "service_app" : "External service",
     "identifier" : "Identifier for this link",
     "terms_of_use" : "Terms of use",
     "terms_of_use_hint" : "If special terms of use have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the identifier you need to enter here.",
     "show_terms" : "View terms of use",
     "types" : {
       "REQUIRE_P" : "Consent must be accepted",
-      "OFFER_P" : "Consent is offered upon login/registration"
+      "OFFER_P" : "Consent is offered upon login/registration",
+      "OFFER_EXTRA_PAGE" : "Onboarding: Consent is offered on a separate page.",
+      "OFFER_INLINE_AGB" : "Onboarding: Use terms as description."
     }
   },
   

@@ -22,6 +22,7 @@ import com.typesafe.config.Config;
 import actions.APICall;
 import models.Member;
 import models.MidataId;
+import models.MobileAppInstance;
 import models.Plugin;
 import models.Space;
 import models.StudyAppLink;
@@ -189,11 +190,15 @@ public class Plugins extends APIController {
 		if (visualization.type.equals("mobile")) throw new BadRequestException("error.invalid.plugin", "Wrong app type.");
 
 		if (visualization.type.equals("service")) {
-			User user = User.getById(userId, User.ALL_USER_INTERNAL);
-			ApplicationTools.installApp(userId, visualization._id, user, "-----", true, Collections.emptySet());
+			
+				User user = User.getById(userId, User.ALL_USER_INTERNAL);
+				ApplicationTools.installApp(userId, visualization._id, user, "-----", true, Collections.emptySet());
+			
 		} else if (visualization.type.equals("external")) {
-			User user = User.getById(userId, User.ALL_USER_INTERNAL);
-			ApplicationTools.installApp(userId, visualization._id, user, "-----", true, Collections.emptySet());
+			if (MobileAppInstance.getActiveByApplicationAndOwner(visualization._id, userId, Sets.create("_id")).isEmpty()) {
+				User user = User.getById(userId, User.ALL_USER_INTERNAL);
+				ApplicationTools.installApp(userId, visualization._id, user, "-----", true, Collections.emptySet());
+			}
 		} else {
 			String spaceName = JsonValidation.getString(json, "spaceName");
 			

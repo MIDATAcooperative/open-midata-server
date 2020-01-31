@@ -99,6 +99,7 @@
        "study_accept" : "Project participation must be accepted.",
        "study_group" : "Participant must first be assigned to a group.",
        "consent_accept" : "Consent must be given to continue",
+       "service_accept" : "Service use must be accepted to continue",
        "confirmation" : "Confirmation by user required first.",
        "file" : "No file for upload selected",
        "access_query" : "No data selected",
@@ -849,7 +850,7 @@
   },
 
   "visualization" : {
-    "title" : "Plugin Information",
+    "title" : "Application Information",
     "success" : "You have successfully installed a new plugin.",
     "created_by" : "Created by:",
     "orgName" : "Organization:",
@@ -858,7 +859,8 @@
     "tile_name" : "Tile Name:",
     "install_location" : "Location:",
     "grant_access" : "Grant this plugin access to:",
-    "install_btn" : "Add Plugin",
+    "terms" : "Terms",
+    "install_btn" : "Confirm Access",
     "location" : {
       "workspace" : "Workspace",
       "mobile" : "MIDATA Mobile App",
@@ -1054,11 +1056,14 @@
     "continue_btn" : "Continue",
     "requests_access" : "Access requested by the application:",
     "requests_sharing" : "Data shared with the project:",
+    "requests_sharing_service" : "Data shared with the external service:",
     "shares_group" : "Group: {{ group }}",
     "shares_format" : "Format: {{ format }}",
     "shares_content" : "Content: {{ content }}",
     "confirm_provider" : "I accept to share data with this external provider",
     "confirm_provider_opt" : "I accept to share data with this external provider (optional)",
+    "confirm_service" : "I accept to share data with this external service",
+    "confirm_service_opt" : "I accept to share data with this external service (optional)",
     "confirm_study" : "I accept the terms of use of the application and to participate in the project",
     "confirm_study_opt" : "I accept to participate in the project",
     "confirm_citizen_science" : "I accept to participate in the citizen science project",
@@ -1360,6 +1365,7 @@
 
   "apikeys" : {
     "title" : "API Key Management",
+    "empty" : "This account does not manage any services with API keys.",
     "add_btn" : "Add Key",
     "delete_btn" : "Remove Service",
     "show_btn" : "Show Keys",  
@@ -1368,7 +1374,9 @@
     "key" : "API Key for direct use",
     "instructions_key" : "Use this key directly in the Authorization header of the service as bearer token.",
     "refresh" : "Refresh-Token for OAuth",
-    "instructions_refresh" : "For improved security exchange this refresh token against a new pair of access token and refresh token."
+    "instructions_refresh" : "For improved security exchange this refresh token against a new pair of access token and refresh token.",
+    "ACTIVE" : "Active",
+    "FROZEN" : "Old version"
   },
   
   "-1" : "unknown"

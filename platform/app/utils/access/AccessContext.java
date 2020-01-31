@@ -53,4 +53,9 @@ public abstract class AccessContext {
 	public APSCache getCache() {
 		return cache;
 	}
+
+	public MidataId getNewRecordCreator() {
+		if (parent != null) return parent.getNewRecordCreator();
+		return cache.getExecutor();
+	}
 }

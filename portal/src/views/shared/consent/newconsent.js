@@ -331,7 +331,7 @@ angular.module('portal')
 		circles.unconfirmed = 0;
 		server.delete(jsRoutes.controllers.Circles["delete"]($scope.consent._id).url).
 		then(function() {
-			if (session.user.role == "MEMBER" && $scope.consent.type == "EXTERNALSERVICE" && $scope.consent.type == "API") {
+			if (session.user.role == "MEMBER" && ($scope.consent.type == "EXTERNALSERVICE" || $scope.consent.type == "API")) {
 				$state.go("^.apps");
 			} else if (session.user.role == "MEMBER" && $scope.consent.type == "STUDYPARTICIPATION") {
 			    $state.go("^.studies");				

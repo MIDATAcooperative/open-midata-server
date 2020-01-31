@@ -10,6 +10,7 @@ import actions.APICall;
 import models.Circle;
 import models.MidataId;
 import models.MobileAppInstance;
+import models.Plugin;
 import models.ServiceInstance;
 import models.Study;
 import models.UserGroupMember;
@@ -100,8 +101,12 @@ public class Services extends APIController {
         MidataId instanceId = MidataId.from(serviceIdStr);
         
         ServiceInstance instance = ApplicationTools.checkServiceInstanceOwner(managerId, instanceId);        
+        Plugin app = Plugin.getById(instance.appId);
         
         Set<MobileAppInstance> instances = MobileAppInstance.getByService(instance._id, MobileAppInstance.APPINSTANCE_ALL);
+        for (MobileAppInstance inst : instances) {
+            if (inst.appVersion != app.pluginVersion) inst.status = ConsentStatus.FROZEN;
+        }
         return ok(JsonOutput.toJson(new ArrayList(instances), "Consent", MobileAppInstance.APPINSTANCE_ALL)).as("application/json");
     }
     

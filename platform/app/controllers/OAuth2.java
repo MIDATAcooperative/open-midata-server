@@ -102,7 +102,7 @@ public class OAuth2 extends Controller {
 	public static long OAUTH_CODE_LIFETIME = 1000l * 60l * 5l;
 			
 	
-	private static boolean verifyAppInstance(MobileAppInstance appInstance, MidataId ownerId, MidataId applicationId) throws AppException {
+	public static boolean verifyAppInstance(MobileAppInstance appInstance, MidataId ownerId, MidataId applicationId) throws AppException {
 		if (appInstance == null) return false;
         if (!appInstance.owner.equals(ownerId)) throw new InternalServerException("error.invalid.token", "Wrong app instance owner!");
         if (!appInstance.applicationId.equals(applicationId)) throw new InternalServerException("error.invalid.token", "Wrong app for app instance!");
@@ -122,7 +122,7 @@ public class OAuth2 extends Controller {
         for (StudyAppLink sal : links) {
         	if (sal.isConfirmed() && sal.active && sal.type.contains(StudyAppLinkType.REQUIRE_P)) {
         		
-        		if (sal.linkTargetType == LinkTargetType.ORGANIZATION) {
+        		if (sal.linkTargetType == LinkTargetType.ORGANIZATION || sal.linkTargetType == LinkTargetType.SERVICE) {
       			  Consent c = LinkTools.findConsentForAppLink(appInstance.owner, sal);
       			  if (c == null) {
       				  ApplicationTools.removeAppInstance(appInstance.owner, appInstance);
@@ -685,7 +685,7 @@ public class OAuth2 extends Controller {
 			boolean allRequired = true;
 			for (StudyAppLink sal : links) {
 				if (sal.isConfirmed() && sal.active && (sal.type.contains(StudyAppLinkType.REQUIRE_P) || sal.type.contains(StudyAppLinkType.OFFER_P))) {
-					if (sal.linkTargetType == LinkTargetType.ORGANIZATION) {
+					if (sal.linkTargetType == LinkTargetType.ORGANIZATION || sal.linkTargetType == LinkTargetType.SERVICE) {
 					  Consent existingConsent = LinkTools.findConsentForAppLink(token.ownerId, sal);
 					  allRequired = allRequired && (existingConsent != null);
 					} else {

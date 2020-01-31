@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('ApiKeysCtrl', ['$scope', '$state', 'session', 'status', 'services', 'views', function($scope, $state, session, status, services, views) {
+.controller('ApiKeysCtrl', ['$scope', '$state', 'session', 'status', 'services', 'views', '$window', function($scope, $state, session, status, services, views, $window) {
 
 	$scope.status = new status(true);
 			
@@ -48,6 +48,14 @@ angular.module('portal')
             loadServices($state.params.studyId);
         });
     };
+
+    $scope.copyToClip = function(elem) {
+		elem = elem.currentTarget;
+		elem.focus();
+		elem.select();
+		
+		$window.document.execCommand("copy");
+	};
 
 	session.currentUser.then(function(userId) { loadServices($state.params.studyId); });
 	

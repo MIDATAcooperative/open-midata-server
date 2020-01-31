@@ -1029,6 +1029,9 @@ public class Market extends APIController {
 				  Study study = Study.getById(sal.studyId, Sets.create("_id", "code","name", "type", "description", "termsOfUse", "executionStatus","validationStatus","participantSearchStatus", "joinMethods", "infos", "recordQuery", "requiredInformation"));
 				  sal.study = study;
 				  sal.termsOfUse = study.termsOfUse;
+				} else if (sal.linkTargetType == LinkTargetType.SERVICE) {
+				  sal.serviceApp = Plugin.getById(sal.serviceAppId);
+				  sal.termsOfUse = sal.serviceApp.termsOfUse;
 				} else {					
 				  HealthcareProvider prov = HealthcareProvider.getById(sal.providerId, HealthcareProvider.ALL);
 				  sal.provider = prov;
@@ -1042,7 +1045,7 @@ public class Market extends APIController {
 				Iterator<StudyAppLink> sal_it = result.iterator();
 				while (sal_it.hasNext()) {
 					StudyAppLink sal = sal_it.next();	
-					if (sal.linkTargetType == LinkTargetType.ORGANIZATION) {
+					if (sal.linkTargetType == LinkTargetType.ORGANIZATION || sal.linkTargetType == LinkTargetType.SERVICE) {
 						if (!sal.isConfirmed()) sal_it.remove();
 					} else {
 						if (!sal.isConfirmed() || !sal.usePeriod.contains(sal.study.executionStatus)) sal_it.remove();
@@ -1070,7 +1073,8 @@ public class Market extends APIController {
         JsonNode json = request().body().asJson();	
         
         LinkTargetType lt = JsonValidation.getEnum(json, "linkTargetType", LinkTargetType.class);
-        if (lt != null && lt.equals(LinkTargetType.ORGANIZATION)) return insertAppLink();
+		if (lt != null && lt.equals(LinkTargetType.ORGANIZATION)) return insertAppLink();
+		if (lt != null && lt.equals(LinkTargetType.SERVICE)) return insertAppLink();
         
 		JsonValidation.validate(json, "studyId", "appId", "type", "usePeriod");
 
@@ -1104,24 +1108,33 @@ public class Market extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public Result insertAppLink() throws AppException {
         JsonNode json = request().body().asJson();		
-		JsonValidation.validate(json, "userLogin", "appId", "type");
+		JsonValidation.validate(json, "linkTargetType", "appId", "type");
 
 		
 		StudyAppLink link = new StudyAppLink();
 									
 		link._id = new MidataId();
-		link.linkTargetType = LinkTargetType.ORGANIZATION;
+		link.linkTargetType = JsonValidation.getEnum(json, "linkTargetType", LinkTargetType.class);
 		link.appId = JsonValidation.getMidataId(json, "appId");				
 		link.type = JsonValidation.getEnumSet(json, "type", StudyAppLinkType.class);
 		link.identifier = JsonValidation.getString(json, "identifier");
 		link.termsOfUse = JsonValidation.getStringOrNull(json, "termsOfUse");
 		
-		HPUser user = HPUser.getByEmail(JsonValidation.getString(json, "userLogin"), Sets.create("status","provider"));
-		if (user == null || user.status != UserStatus.ACTIVE) throw new JsonValidationException("error.invalid.user", "User not found or not active");
-		HealthcareProvider prov = HealthcareProvider.getById(user.provider, HealthcareProvider.ALL);
-		if (prov == null) throw new JsonValidationException("error.invalid.user", "User not found or not active");
-		link.providerId = prov._id;
-		link.userId = user._id;
+		if (link.linkTargetType == LinkTargetType.ORGANIZATION) {
+			JsonValidation.validate(json, "userLogin");
+			HPUser user = HPUser.getByEmail(JsonValidation.getString(json, "userLogin"), Sets.create("status","provider"));
+			if (user == null || user.status != UserStatus.ACTIVE) throw new JsonValidationException("error.invalid.user", "User not found or not active");
+			HealthcareProvider prov = HealthcareProvider.getById(user.provider, HealthcareProvider.ALL);
+			if (prov == null) throw new JsonValidationException("error.invalid.user", "User not found or not active");
+			link.providerId = prov._id;
+			link.userId = user._id;
+		} else {
+			JsonValidation.validate(json, "serviceAppId");
+			link.serviceAppId = JsonValidation.getMidataId(json, "serviceAppId");
+			Plugin plugin = Plugin.getById(link.serviceAppId);
+			if (plugin == null) throw new JsonValidationException("error.invalid.plugin", "Plugin not found or not active");
+			if (!plugin.type.equals("external") ) throw new JsonValidationException("error.invalid.plugin", "Wrong type");
+		}
 				
 		link.validationResearch = StudyValidationStatus.VALIDATION;
 		link.validationDeveloper = StudyValidationStatus.VALIDATION;
@@ -1213,6 +1226,9 @@ public class Market extends APIController {
         	autoValidResearcher = false;
         }
         if (link.linkTargetType == LinkTargetType.ORGANIZATION) {
+        	autoValidResearcher = true;
+		}
+		if (link.linkTargetType == LinkTargetType.SERVICE) {
         	autoValidResearcher = true;
         }
         if (autoValidDeveloper) link.validationDeveloper = StudyValidationStatus.VALIDATED;

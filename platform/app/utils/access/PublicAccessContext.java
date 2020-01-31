@@ -25,7 +25,8 @@ public class PublicAccessContext extends AccessContext {
 	@Override
 	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) {		
 		return newVersion.tags != null && newVersion.tags.contains("security:public") &&
-			   newVersion.creator != null && newVersion.creator.toString().equals(stored.meta.getString("creator"));
+			   (newVersion.creator != null && newVersion.creator.toString().equals(stored.meta.getString("creator"))
+			   || (newVersion.app != null && newVersion.app.toString().equals(stored.meta.getString("app"))));
 	}
 
 	@Override

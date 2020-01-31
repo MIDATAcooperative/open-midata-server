@@ -134,7 +134,7 @@ angular.module('portal')
 			$scope.study = data.data;	
 			
 			$scope.updateConsents();
-						
+			$scope.showKeys = true;		
 		});
 		
 		apps.getApps({ "targetUserRole" : "RESEARCH", type : ["analyzer","visualization","mobile"] }, ["filename", "name","type"])
@@ -189,7 +189,8 @@ angular.module('portal')
 	$scope.addApplication = function(myform) {	
 	    console.log("ADDNOW");
 	    $scope.myform = myform;
-		$scope.submitted = true;	
+		$scope.submitted = true;
+		$scope.showKeys = false;	
 		if ($scope.error && $scope.error.field && $scope.error.type && myform[$scope.error.field]) myform[$scope.error.field].$setValidity($scope.error.type, true);
 		$scope.error = null;
 		if (! myform.$valid) return;
@@ -197,8 +198,9 @@ angular.module('portal')
       var c = $scope.crit;		
 	  $scope.status.doAction("addapplication", server.post(jsRoutes.controllers.research.Studies.addApplication($scope.studyId, $scope.group).url, { plugin : c.plugin._id, restrictread : c.restrictread, shareback : c.shareback, device : c.device }))
 		.then(function(result) {
-			$scope.submitted = false;
+			$scope.submitted = false;			
 			$scope.updateConsents();
+			$scope.showKeys = true;
 		});
 	};
 	

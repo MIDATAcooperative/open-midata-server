@@ -152,15 +152,15 @@ public class RecordManager {
 	 */
 	public MidataId createAnonymizedAPS(MidataId owner, MidataId other,
 			MidataId proposedId, boolean consent) throws AppException {
-				return createAnonymizedAPS(owner, other, proposedId, consent, true);
+				return createAnonymizedAPS(owner, other, proposedId, consent, true, false);
 	}
 
 	public MidataId createAnonymizedAPS(MidataId owner, MidataId other,
-			MidataId proposedId, boolean consent, boolean history) throws AppException {
+			MidataId proposedId, boolean consent, boolean history, boolean otherNotOwner) throws AppException {
         AccessLog.logBegin("begin createAnonymizedAPS owner="+owner.toString()+" other="+other.toString()+" id="+proposedId.toString());
 		EncryptedAPS eaps = new EncryptedAPS(proposedId, owner, owner, APSSecurityLevel.HIGH, consent);
 		EncryptionUtils.addKey(owner, eaps);
-		EncryptionUtils.addKey(other, eaps);	
+		EncryptionUtils.addKey(other, eaps, otherNotOwner);	
 		if (history) eaps.getPermissions().put("_history", new BasicBSONList()); // Init with history
 		eaps.create();
  
@@ -168,6 +168,8 @@ public class RecordManager {
 		return eaps.getId();
 
 	}
+
+	
 
 	/**
 	 * create an APS for a record.

@@ -169,7 +169,7 @@ public class ApplicationTools {
 		return appInstance;
 	}
 
-	public static ServiceInstance createServiceInstance(Plugin app, Study study, String group) throws AppException {
+	public static ServiceInstance createServiceInstance(MidataId executor, Plugin app, Study study, String group) throws AppException {
 		AccessLog.log("create service instance");
 
 		if (!app.type.equals("analyzer")) throw new InternalServerException("error.internal", "Wrong app type");
@@ -186,6 +186,15 @@ public class ApplicationTools {
 		si.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(si._id, null);
 		si.add();
 
+		// Create service instance APS and store key
+		RecordManager.instance.createAnonymizedAPS(si.executorAccount, si.managerAccount, si._id, false, false, true);
+		MidataId keyId = new MidataId();
+		byte[] splitKey = KeyManager.instance.generateAlias(si._id, keyId);
+		Map<String, Object> obj = new HashMap<String, Object>();
+		obj.put("key", splitKey);
+		obj.put("id", keyId.toString());
+		RecordManager.instance.setMeta(executor, si._id, "_si", obj);
+		
 		// app first use audit entry
 		//AuditManager.instance.addAuditEvent(AuditEventType.APP_FIRST_USE, app._id, member, null, appInstance, null, null);		    	    	
 		
@@ -213,7 +222,7 @@ public class ApplicationTools {
 		si.add();
 
 		// Create service instance APS and store key
-		RecordManager.instance.createAnonymizedAPS(si._id, managerId, si._id, false, false);
+		RecordManager.instance.createAnonymizedAPS(si._id, managerId, si._id, false, false, true);
 		MidataId keyId = new MidataId();
 		byte[] splitKey = KeyManager.instance.generateAlias(si._id, keyId);
 		Map<String, Object> obj = new HashMap<String, Object>();
@@ -342,6 +351,11 @@ public class ApplicationTools {
 						RecordManager.instance.clearCache();
 						LinkTools.createConsentForAppLink(member._id, sal);
 					}
+				} else if (sal.linkTargetType == LinkTargetType.SERVICE) {
+					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.userId))) {					
+						RecordManager.instance.clearCache();
+						ApplicationTools.installApp(executor, sal.serviceAppId, member, null, true, studyConfirm);						
+					}
 				} else
 				if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.studyId))) {
 					RecordManager.instance.clearCache();
@@ -363,6 +377,11 @@ public class ApplicationTools {
 						Consent consent = LinkTools.findConsentForAppLink(member._id, sal);						
 						if (consent==null) throw new BadRequestException("error.missing.consent_accept", "Consent belonging to app must be accepted.");
 					}
+				} else if (sal.linkTargetType == LinkTargetType.SERVICE) {
+						if (sal.type.contains(StudyAppLinkType.REQUIRE_P) && sal.type.contains(StudyAppLinkType.OFFER_P) && !studyConfirm.contains(sal.serviceAppId)) {
+							Consent consent = LinkTools.findConsentForAppLink(member._id, sal);						
+							if (consent==null) throw new BadRequestException("error.missing.consent_accept", "Consent belonging to app must be accepted.");
+						}									
 				} else {
 				
 					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) && sal.type.contains(StudyAppLinkType.OFFER_P) && !studyConfirm.contains(sal.studyId)) {

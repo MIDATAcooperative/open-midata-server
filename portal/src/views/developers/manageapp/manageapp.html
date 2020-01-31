@@ -197,7 +197,7 @@
 		    </div>  		  
 		  </formrow>
 		  
-		  <div ng-show="app.type == 'mobile' && app.targetUserRole != 'RESEARCH'">
+		  <div ng-show="(app.type == 'mobile' || app.type == 'external') && app.targetUserRole != 'RESEARCH'">
 		  <hr ng-show="app.type == 'mobile'">
 		  <p class="alert alert-info" ng-show="app.type == 'mobile'" translate="manageapp.admin_only"></p>
 		  <formrow myid="termsOfUse" label="manageapp.terms_of_use" class="danger-change">

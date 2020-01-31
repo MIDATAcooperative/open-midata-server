@@ -6,7 +6,7 @@ angular.module('portal')
 	$scope.status = new status(true, $scope);
 	
 	$scope.types = studies.linktypes;
-	$scope.types2 = ["OFFER_P", "REQUIRE_P"];
+	$scope.types2 = ["OFFER_P", "REQUIRE_P", "OFFER_EXTRA_PAGE", "OFFER_INLINE_AGB"];
 	$scope.periods = studies.executionStati;
 	$scope.selection = undefined;
 	
@@ -35,6 +35,11 @@ angular.module('portal')
 		.then(function(data) {
 			$scope.studies = data.data;
 		});
+
+		$scope.status.doBusy(apps.getApps({ type : "external" }, ["_id", "filename", "name", "orgName", "publisher", "type", "targetUserRole"]))
+		.then(function(data) {
+			$scope.apps = data.data;
+		});
 	};
 	
 	$scope.addNewResearch = function() {
@@ -43,6 +48,10 @@ angular.module('portal')
 	
 	$scope.addNewProvider = function() {
 		$scope.selection = { linkTargetType : "ORGANIZATION", app : {}, provider:{}, type:[] };
+	};
+
+	$scope.addNewService = function() {
+		$scope.selection = { linkTargetType : "SERVICE", app : {}, serviceApp:{}, type:[] };
 	};
 	
 	$scope.formChange = function() {
@@ -81,6 +90,16 @@ angular.module('portal')
 			}
 		});
    };
+
+   $scope.serviceappselection = function() {
+	$scope.status.doBusy(apps.getApps({ filename : $scope.selection.serviceApp.filename }, ["_id", "filename", "name", "orgName", "publisher", "type", "targetUserRole"]))
+	 .then(function(data) {
+		 if (data.data && data.data.length == 1) {
+		   $scope.selection.serviceAppId = data.data[0]._id;
+		   $scope.selection.serviceApp = data.data[0];
+		 }
+	 });
+};
    
    /*$scope.userselection = function() {
 	   $scope.status.doBusy(users.getMembers({ email : $scope.selection.userLogin, role : "PROVIDER" }, ["_id", "email", "name", "provider" ]))

@@ -88,6 +88,7 @@ import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
+import utils.ProjectTools;
 import utils.ServerTools;
 import utils.access.DBIterator;
 import utils.access.Feature_FormatGroups;
@@ -1082,9 +1083,9 @@ public class Studies extends APIController {
 			consent.status = ConsentStatus.ACTIVE;
 			consent.writes = WritePermissionType.UPDATE_EXISTING;
 
-			RecordManager.instance.createAnonymizedAPS(ownerId, ownerId, consent._id, true);
+			RecordManager.instance.createAnonymizedAPS(ownerId, executor, consent._id, true, true, true);
 			Circles.prepareConsent(consent, true);			
-			Circles.addUsers(ownerId, EntityType.USERGROUP, consent, Collections.singleton(study._id));
+			Circles.addUsers(executor,ownerId, EntityType.USERGROUP, consent, Collections.singleton(study._id));
 
 			reference = consent;
 		}
@@ -1107,7 +1108,7 @@ public class Studies extends APIController {
 		consent.status = ConsentStatus.ACTIVE;
 		consent.writes = WritePermissionType.NONE;
 
-		RecordManager.instance.createAnonymizedAPS(ownerId, study._id, consent._id, true);
+		RecordManager.instance.createAnonymizedAPS(ownerId, study._id, consent._id, true, true, true);
 		Circles.prepareConsent(consent, true);
 		
 		RecordManager.instance.copyAPS(executor, reference._id, consent._id, ownerId);
@@ -1120,7 +1121,7 @@ public class Studies extends APIController {
 			return;
 
 		for (StudyRelated sr : consents) {
-			if (sr.entityType.equals(EntityType.USER)) {
+			if (sr.entityType != null && sr.entityType.equals(EntityType.USER)) {
 				StudyRelated.delete(researcher, sr._id);
 				AccessPermissionSet.delete(sr._id);
 			}
@@ -1286,7 +1287,7 @@ public class Studies extends APIController {
 
 		if (plugin.type.equals("analyzer")) {
 		
-					
+			ServiceInstance si = ApplicationTools.createServiceInstance(userId, plugin, study, group);	
 			if (shareBack) {
 
 				if (group == null) {
@@ -1295,7 +1296,7 @@ public class Studies extends APIController {
 
 						if (consents.isEmpty()) {
 							Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyId, grp.name, Sets.create());
-							joinSharing(userId, study._id, study, grp.name, false, new ArrayList<StudyParticipation>(parts));
+							joinSharing(userId, si.executorAccount, study, grp.name, false, new ArrayList<StudyParticipation>(parts));
 						}
 					}
 
@@ -1304,14 +1305,14 @@ public class Studies extends APIController {
 
 					if (consents.isEmpty()) {
 						Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyId, group, Sets.create());
-						joinSharing(userId, study._id, study, group, false, new ArrayList<StudyParticipation>(parts));
+						joinSharing(userId, si.executorAccount, study, group, false, new ArrayList<StudyParticipation>(parts));
 					}
 
 				}
 
 			}
 
-			ServiceInstance si = ApplicationTools.createServiceInstance(plugin, study, group);	
+				
 
 
 		} else {
@@ -1668,6 +1669,7 @@ public class Studies extends APIController {
 		List<List<StudyParticipation>> parts = Lists.partition(participants1, 1000);
 		for (List<StudyParticipation> participants : parts) {
 
+			controllers.research.Studies.joinSharing(userId, study._id, study, group, true, participants);
 			for (UserGroupMember ugm : ugms) {
 				if (ugm.role.manageParticipants()) {
 					controllers.research.Studies.joinSharing(userId, ugm.member, study, group, true, participants);
@@ -2189,18 +2191,8 @@ public class Studies extends APIController {
 		
 		Set<UserGroupMember> members = UserGroupMember.getAllActiveByGroup(oldGroup);
 		
-		for (UserGroupMember member : members) {
-			member._id = new MidataId();
-			member.userGroup = userGroup._id;
-			member.startDate = new Date();
-			member.status = ConsentStatus.ACTIVE;
-			
-			Map<String, Object> accessData = new HashMap<String, Object>();
-			accessData.put("aliaskey", KeyManager.instance.generateAlias(userGroup._id, member._id));
-			RecordManager.instance.createPrivateAPS(userId, member._id);
-			RecordManager.instance.setMeta(userId, member._id, "_usergroup", accessData);
-			member.add();
-			AuditManager.instance.addAuditEvent(AuditEventType.ADDED_AS_TEAM_MEMBER, null, userId, member.member, null, study._id);			
+		for (UserGroupMember member : members) {			
+			ProjectTools.addToUserGroup(userId, member.role, userGroup._id, member.member);			
 		}
 						
 		RecordManager.instance.createPrivateAPS(userGroup._id, userGroup._id);

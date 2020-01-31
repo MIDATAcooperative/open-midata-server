@@ -82,7 +82,10 @@ angular.module('portal')
 	};
 	
 	$scope.install = function(app) {
-		
+	  if (app.type == "external" || app.termsOfUse) {
+		$state.go("^.visualization", { visualizationId : app._id, context : $state.params.context, next : $state.params.next, study : $state.params.study, user : $state.params.user }); 
+		return;
+	  }
 		
 	  spaces.get({ "owner": $scope.userId, "visualization" : app._id, "context" : $state.params.context }, ["_id", "type"])
 	  .then(function(spaceresult) {
@@ -97,14 +100,20 @@ angular.module('portal')
 			$scope.status.doAction("install", apps.installPlugin(app._id, { applyRules : true, context : $state.params.context, study : $state.params.study }))
 			.then(function(result) {				
 				session.login();
+				console.log(result);
 				if (result.data && result.data._id) {
+					console.log("NAV");
 				  if (app.type === "oauth1" || app.type === "oauth2") {
 					 $state.go("^.importrecords", { "spaceId" : result.data._id, params : JSON.stringify(data.params) });
 				  } else { 
 				     $state.go('^.spaces', { spaceId : result.data._id, user : $state.params.user, study : $state.params.study });
 				  }
 				} else {
-				  $state.go('^.dashboard', { dashId : $scope.options.context });
+				  if (app.type === "external") {
+					$state.go('^.apps');
+				  } else {					
+					$state.go('^.timeline'); //, { dashId : $state.params.context || "me" });
+				  }
 				}
 			});
 		 }

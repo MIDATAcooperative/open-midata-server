@@ -24,9 +24,9 @@ public class StudyAppLink extends Model {
 	
 	private @NotMaterialized static final String collection = "studyapplink";
 	
-	public @NotMaterialized static final Set<String> ALL_MATERIALIZED = Collections.unmodifiableSet(Sets.create("_id", "linkTargetType", "studyId", "appId", "type", "validationResearch", "validationDeveloper", "usePeriod", "shareToStudy" ,"restrictRead", "studyGroup", "userId", "providerId", "active", "what", "identifier", "termsOfUse"));
+	public @NotMaterialized static final Set<String> ALL_MATERIALIZED = Collections.unmodifiableSet(Sets.create("_id", "linkTargetType", "studyId", "appId", "type", "validationResearch", "validationDeveloper", "usePeriod", "shareToStudy" ,"restrictRead", "studyGroup", "userId", "providerId", "active", "what", "identifier", "termsOfUse", "serviceAppId"));
 	
-	public @NotMaterialized static final Set<String> ALL = Collections.unmodifiableSet(Sets.create("_id", "linkTargetType", "studyId", "appId", "type", "validationResearch", "validationDeveloper", "usePeriod", "shareToStudy" ,"restrictRead", "studyGroup", "study", "app", "userId", "userLogin", "providerId", "provider", "active", "what", "identifier", "termsOfUse"));
+	public @NotMaterialized static final Set<String> ALL = Collections.unmodifiableSet(Sets.create("_id", "linkTargetType", "studyId", "appId", "type", "validationResearch", "validationDeveloper", "usePeriod", "shareToStudy" ,"restrictRead", "studyGroup", "study", "app", "userId", "userLogin", "providerId", "provider", "active", "what", "identifier", "termsOfUse", "serviceApp", "serviceAppId"));
 	
 	/**
 	 * Type of link
@@ -99,6 +99,16 @@ public class StudyAppLink extends Model {
 	 */	
 	public @NotMaterialized String userLogin;
 	
+	/**
+	 * which service is linked (may be null)
+	 */
+	public MidataId serviceAppId;
+
+	/**
+	 * service that is linked (may be null)
+	 */
+	public Plugin serviceApp;
+
 	/**
 	 * which provider is linked (may be null)
 	 */

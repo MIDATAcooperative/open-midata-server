@@ -97,55 +97,6 @@ public class MobileAPI extends Controller {
 		return ok();
 	}
 
-	private static boolean verifyAppInstance(MobileAppInstance appInstance, MidataId ownerId, MidataId applicationId) throws AppException {
-		if (appInstance == null) return false;
-        if (!appInstance.owner.equals(ownerId)) return false;
-        if (!appInstance.applicationId.equals(applicationId)) return false;
-        
-        if (appInstance.status.equals(ConsentStatus.REJECTED)) throw new BadRequestException("error.invalid.token", "Rejected");        
-        if (appInstance.status.equals(ConsentStatus.EXPIRED)) return false;
-        
-        Plugin app = Plugin.getById(appInstance.applicationId);
-        
-        AccessLog.log("app-instance:"+appInstance.appVersion+" vs plugin:"+app.pluginVersion);
-        
-        if (appInstance.appVersion != app.pluginVersion) {      
-        	ApplicationTools.removeAppInstance(appInstance.owner, appInstance);
-        	return false;
-        }
-        
-        Set<StudyAppLink> links = StudyAppLink.getByApp(app._id);
-        for (StudyAppLink sal : links) {
-        	if (sal.isConfirmed() && sal.type.contains(StudyAppLinkType.REQUIRE_P) && sal.active) {
-        		
-        		   if (sal.linkTargetType == LinkTargetType.ORGANIZATION) {
-        			  Consent c = LinkTools.findConsentForAppLink(appInstance.owner, sal);
-        			  if (c == null) {
-        				  ApplicationTools.removeAppInstance(appInstance.owner, appInstance);
-		                  return false;
-        			  }
-        		   } else {
-	        		   StudyParticipation sp = StudyParticipation.getByStudyAndMember(sal.studyId, appInstance.owner, Sets.create("status", "pstatus"));
-	        		   
-	        		   if (sp == null) {
-		               		ApplicationTools.removeAppInstance(appInstance.owner, appInstance);
-		                   	return false;
-		               	}
-		               	if ( 
-		               		sp.pstatus.equals(ParticipationStatus.MEMBER_RETREATED) || 
-		               		sp.pstatus.equals(ParticipationStatus.MEMBER_REJECTED)) {
-		               		    throw new BadRequestException("error.blocked.projectconsent", "Research consent expired or blocked.");
-						    }
-						if (sp.pstatus.equals(ParticipationStatus.RESEARCH_REJECTED)) {
-		               		    throw new BadRequestException("error.blocked.participation", "Research consent expired or blocked.");
-		               	}
-        		   }        		
-        	}
-        }                  
-        
-        return true;
-	}
-	
 	public static MobileAppInstance getAppInstance(String phrase, MidataId applicationId, MidataId owner, Set<String> fields) throws AppException {
 		Set<MobileAppInstance> candidates = MobileAppInstance.getByApplicationAndOwner(applicationId, owner, fields);
 		AccessLog.log("CS:"+candidates.size());
@@ -269,7 +220,7 @@ public class MobileAPI extends Controller {
 			appInstance= getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode", "appVersion"));
 			
 			
-			if (appInstance != null && !verifyAppInstance(appInstance, user._id, app._id)) {
+			if (appInstance != null && !OAuth2.verifyAppInstance(appInstance, user._id, app._id)) {
 				AccessLog.log("CSCLEAR");
 				appInstance = null;
 				RecordManager.instance.clearCache();
@@ -482,7 +433,7 @@ public class MobileAPI extends Controller {
 		record._id = new MidataId();
 		record.app = inf.pluginId;
 		record.owner = owner;
-		record.creator = inf.ownerId;
+		record.creator = inf.context.getNewRecordCreator();
 		record.created = record._id.getCreationDate();
 		
 		/*if (json.has("created-override")) {
@@ -538,7 +489,7 @@ public class MobileAPI extends Controller {
 		record._id = JsonValidation.getMidataId(json, "_id");	
 		record.version = JsonValidation.getStringOrNull(json, "version");
 		 				
-		record.creator = inf.executorId;
+		record.creator = inf.context.getNewRecordCreator();
 		record.lastUpdated = new Date();		
 							
 		try {

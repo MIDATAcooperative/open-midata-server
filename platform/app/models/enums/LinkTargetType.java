@@ -4,5 +4,7 @@ public enum LinkTargetType {
 
 	STUDY,
 	
-	ORGANIZATION
+	ORGANIZATION,
+
+	SERVICE
 }
