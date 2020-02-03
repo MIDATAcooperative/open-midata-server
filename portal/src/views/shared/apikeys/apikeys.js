@@ -8,12 +8,14 @@ angular.module('portal')
         if (studyId) {
             $scope.status.doBusy(services.listByStudy(studyId))
 		    .then(function(data) {
-		        $scope.services = data.data;						
+                $scope.services = data.data;
+                angular.forEach($scope.services, $scope.showKeys);
 		    });
         } else {
             $scope.status.doBusy(services.list())
 		    .then(function(data) {
-		        $scope.services = data.data;						
+                $scope.services = data.data;						
+                angular.forEach($scope.services, $scope.showKeys);
 		    });
         }
 				
@@ -25,6 +27,7 @@ angular.module('portal')
             $scope.showkey = result.data;
 
             views.setView("apikey", { key : result.data }, "API Keys");
+            $scope.showKeys(service);
         });
     };
 

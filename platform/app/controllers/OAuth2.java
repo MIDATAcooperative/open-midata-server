@@ -176,7 +176,8 @@ public class OAuth2 extends Controller {
 			user = pair.getLeft();
 			appInstance = pair.getRight();
             
-            aeskey = KeyManager.instance.newAESKey(appInstance._id);
+			aeskey = KeyManager.instance.newAESKey(appInstance._id);
+			meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
     		                        
         } else if (grant_type.equals("authorization_code")) {
 			
