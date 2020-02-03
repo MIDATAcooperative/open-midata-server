@@ -1368,7 +1368,7 @@
     "title" : "API Key Management",
     "empty" : "This account does not manage any services with API keys.",
     "add_btn" : "Add Key",
-    "delete_btn" : "Remove Service",
+    "delete_btn" : "Remove Analyzer",
     "show_btn" : "Show Keys",  
     "revoke_btn" : "Revoke this key",
     "instructions" : "Please copy these keys somewhere safe. They are displayed only once.",
@@ -1376,6 +1376,8 @@
     "instructions_key" : "Use this key directly in the Authorization header of the service as bearer token.",
     "refresh" : "Refresh-Token for OAuth",
     "instructions_refresh" : "For improved security exchange this refresh token against a new pair of access token and refresh token.",
+    "date" : "Date of creation",
+    "status" : "Status",
     "ACTIVE" : "Active",
     "FROZEN" : "Old version"
   },
