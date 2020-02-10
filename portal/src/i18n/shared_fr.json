@@ -100,9 +100,7 @@
             "study_accept" : "La participation au projet doit être acceptée.",
             "study_group" : "Le participant doit d'abord être assigné à un groupe.",
             "consent_accept" : "Le consentement doit être donné pour continuer",
-
-            // TODO NEW: Service use must be accepted to continue
-            "service_accept" : "Service use must be accepted to continue",
+            "service_accept" : "L'utilisation du service doit être acceptée pour continuer",
             "confirmation" : "Confirmation par l'utilisateur requise en premier.",
             "file" : "Aucun fichier à télécharger sélectionné",
             "access_query" : "Aucune données sélectionnées",
@@ -141,20 +139,8 @@
             "password1" : "Trop d'essais de connexion manqués. Veuillez attendre 1 minute avant la prochaine tentative.",
             "password5" : "Trop d'essais de connexion manqués. Veuillez attendre 5 minutes avant la prochaine tentative.",
             "password60" : "Trop d'essais de connexion manqués. Veuillez attendre 1 heure avant la prochaine tentative.",
-
-            // TODO CHANGED
-            // OLD: Account holder is not allowed to participate in research project.
-            // NEW: You are not authorized to participate in this research project and therefore cannot use this application.
             "participation" : "Vous n'êtes pas autorisé à participer à ce projet de recherche et ne pouvez donc pas utiliser cette application.",
-
-            // TODO CHANGED
-            // OLD: Account holder has retreated from a project which is required for application use.
-            // NEW: You have withdrawn your participation in this research project and can therefore no longer use this application.
             "projectconsent" : "Vous avez retiré votre participation à ce projet de recherche et ne pouvez donc plus utiliser cette application.",
-
-            // TODO CHANGED
-            // OLD: The consent for using this application has been revoked. To reenable the application, delete the rejected or expired consent on the MIDATA portal.
-            // NEW: You have set in the MIDATA portal that this application may no longer access your data. If you want to use this application again, you must reauthorize it in the MIDATA portal.
             "consent" : "Vous avez défini dans le portail MIDATA que cette application ne peut plus accéder à vos données. Si vous voulez utiliser à nouveau cette application, vous devez la ré-autoriser dans le portail MIDATA.",
             "app" : "Vous pouvez utiliser cette application sur 10 appareils au maximum. Veuillez effacer les consentements non utilisés sur le portail MIDATA."
         },
@@ -327,9 +313,7 @@
         "consenttype" : {
             "CIRCLE" : "Autres détenteurs de compte",
             "EXTERNALSERVICE" : "Application externe",
-
-            // TODO NEW: External Service
-            "API" : "External Service",
+            "API" : "Service externe",
             "HCRELATED" : "Système de santé",
             "HEALTHCARE" : "Médecin / Hôpital",
             "STUDYPARTICIPATION" : "Projet de recherche",
@@ -473,27 +457,15 @@
         },
         "plugintype" : {
             "visualization" : "Plugin",
-
-            // TODO CHANGED
-            // OLD: Service
-            // NEW: Internal Service
-            "service" : "Service",
+            "service" : "Service interne",
             "oauth1" : "OAuth 1",
             "oauth2" : "OAuth 2",
             "mobile" : "Application (Smartphone, Web)",
-
-            // TODO NEW: External Service
-            "external" : "External Service",
-
-            // TODO NEW: Project analyzer
-            "analyzer" : "Project analyzer"
+            "external" : "Service externe",
+            "analyzer" : "Analyseur de projet"
         },
         "infos" : {
             "SUMMARY" : "Résumé sommaire",
-
-            // TODO CHANGED
-            // OLD: App Onboarding Text
-            // NEW: Application Onboarding Text
             "ONBOARDING" : "Texte d'onboarding de l'application",
             "DESCRIPTION" : "Que fait cet projet de recherche?",
             "HOMEPAGE" : "Lien vers la page d'accueil du projet",
@@ -504,10 +476,6 @@
             "LOCATION" : "Dans quel état ou région ce projet se déroule-t-il?",
             "PHASE" : "Quel est l'état d'avancement du projet?",
             "SPONSOR" : "Qui est l'initiateur du projet et qui est légalement responsable?",
-
-            // TODO CHANGED
-            // OLD: At which site are activities beeing conducted?
-            // NEW: At which site are activities being conducted?
             "SITE" : "Sur quel site se déroulent les activités?",
             "DEVICES" : "Un participant a-t-il besoin d'un équipement spécial?",
             "COMMENT" : "Notes complémentaires"
@@ -838,10 +806,6 @@
         "do_not_participate_help" : "Si vous ne voulez PAS participer, vous pouvez cliquer ici. Vous ne serez pas invité à nouveau et aucune donnée ne sera partagée.",
         "do_not_participate_btn" : "Ne participez pas",
         "retreat_help" : "Vous participez actuellement à ce projet de recherche. Si vous ne voulez plus participer, vous pouvez vous retirer. Vos données partagées seront gelées au moment de la retraite et aucune nouvelle donnée ne sera partagée. Une fois retraité, vous ne pourrez plus participer.",
-
-        // TODO CHANGED
-        // OLD: Retreat from participation
-        // NEW: Withdraw participation
         "retreat_btn" : "Retrait de la participation",
         "status" : "État",
         "recommended_apps" : "Applications recommandées",
@@ -869,9 +833,7 @@
         "delete_records_btn" : "Supprimer les enregistrements",
         "wipe_account_btn" : "Supprimer le compte",
         "metrics_btn" : "Calculer les métriques du compte",
-
-        // TODO NEW: Manage API Keys
-        "servicekeys_btn" : "Manage API Keys",
+        "servicekeys_btn" : "Gérer les clés API",
         "account_repaired" : "Votre compte a été réparé.",
         "spaces_resetted" : "Votre configuration a été réinitialisée.",
         "settings" : "Paramètres",
@@ -890,11 +852,7 @@
     },
 
     "visualization" : {
-
-        // TODO CHANGED
-        // OLD: Plugin Information
-        // NEW: Application Information
-        "title" : "Informations sur les plugins",
+        "title" : "Informations sur l'application'",
         "success" : "Vous avez installé avec succès un nouveau plugin.",
         "created_by" : "Créé par:",
         "orgName" : "Organisation:",
@@ -903,14 +861,8 @@
         "tile_name" : "Nom de la tuile:",
         "install_location" : "Emplacement:",
         "grant_access" : "Autoriser ce plugin à accèder à:",
-
-        // TODO NEW: Terms
-        "terms" : "Terms",
-
-        // TODO CHANGED
-        // OLD: Add Plugin
-        // NEW: Confirm Access
-        "install_btn" : "Ajouter un plugin",
+        "terms" : "Conditions d'utilisation",
+        "install_btn" : "Confirmer l'accès",
         "location" : {
             "workspace" : "Espace de travail",
             "mobile" : "MIDATA Mobile App",
@@ -979,9 +931,7 @@
         "type_studyparticipation" : "Ce consentement partage des données avec un projet de recherche.",
         "type_studyrelated" : "Ce consentement partage des données avec un participant d'un projet.",
         "type_externalservice" : "Ce consentement partage des données avec une application.",
-
-        // TODO NEW: This consent shares data with an external service.
-        "type_api" : "This consent shares data with an external service.",
+        "type_api" : "Ce consentement partage des données avec un service externe.",
         "type_implicit" : "Ce consentement créé implicitement permet aux destinataires de lire les messages les concernant.",
         "status_active" : "Ce consentement est actif.",
         "status_expired" : "Ce consentement a expiré. Les données ne sont plus partagées.",
@@ -1106,30 +1056,16 @@
         "please_confirm" : "Veuillez confirmer l'activation de l'application sur le portail MIDATA, puis réessayez. Libellé du consentement: {{ consent }}",
         "confirm_btn" : "Confirmer l'accès",
         "continue_btn" : "Continuer",
-
-        // TODO CHANGED
-        // OLD: Requested access by app:
-        // NEW: Access requested by the application:
         "requests_access" : "Accès demandé par l'application:",
-
-        // TODO CHANGED
-        // OLD: Data that will be shared with the project:
-        // NEW: Data shared with the project:
         "requests_sharing" : "Données partagées avec le projet:",
-
-        // TODO NEW: Data shared with the external service:
-        "requests_sharing_service" : "Data shared with the external service:",
+        "requests_sharing_service" : "Données partagées avec le service externe:",
         "shares_group" : "Groupe: {{ group }}",
         "shares_format" : "Format: {{ format }}",
         "shares_content" : "Contenu: {{ content }}",
         "confirm_provider" : "J'accepte de partager mes données avec ce fournisseur externe",
         "confirm_provider_opt" : "J'accepte de partager mes données avec ce fournisseur externe (facultatif)",
-
-        // TODO NEW: I accept to share data with this external service
-        "confirm_service" : "I accept to share data with this external service",
-
-        // TODO NEW: I accept to share data with this external service (optional)
-        "confirm_service_opt" : "I accept to share data with this external service (optional)",
+        "confirm_service" : "J'accepte de partager des données avec ce service externe",
+        "confirm_service_opt" : "J'accepte de partager des données avec ce service externe (facultatif)",
         "confirm_study" : "J’accepte les conditions d’utilisation de l’application et de participer au projet",
         "confirm_study_opt" : "J'accepte de participer au projet",
         "confirm_citizen_science" : "J'accepte de participer au projet de sciences citoyennes",
@@ -1276,8 +1212,6 @@
         "CIRCLE" : "Consentement",
         "ResearchStudy" : "Projet de recherche",
         "EXTERNALSERVICE" : "Application",
-
-        // TODO NEW: Service
         "API" : "Service",
         "STUDYPARTICIPATION" : "Participation",
         "HEALTHCARE" : "Consentement (Professionnel de la santé)",
@@ -1290,32 +1224,12 @@
     },
 
     "apps" : {
-
-        // TODO CHANGED
-        // OLD: Connect your apps to collect data
-        // NEW: Connect your applications to collect data
         "greeting" : "Connectez vos applications pour collecter des données",
-
-        // TODO CHANGED
-        // OLD: Apps
-        // NEW: Applications
         "title" : "Applications",
-
-        // TODO CHANGED
-        // OLD: Authorized Apps
-        // NEW: Authorized Applicationss
         "description" : "Applications autorisées",
-
-        // TODO CHANGED
-        // OLD: You have {{count}} authorized apps:
-        // NEW: You have {{count}} authorized applications:
         "count" : "Vous avez {{count}} applications autorisées:",
         "services" : "Services",
         "connect_btn" : "Autoriser",
-
-        // TODO CHANGED
-        // OLD: undefined
-        // NEW: Use
         "use_btn" : "Utiliser"
     },
 
@@ -1452,51 +1366,21 @@
     },
 
     "apikeys" : {
-
-        // TODO NEW: API Key Management
-        "title" : "API Key Management",
-
-        // TODO NEW: This account does not manage any services with API keys.
-        "empty" : "This account does not manage any services with API keys.",
-
-        // TODO NEW: Add Key
-        "add_btn" : "Add Key",
-
-        // TODO NEW: Remove Analyzer
-        "delete_btn" : "Remove Analyzer",
-
-        // TODO NEW: Show Keys
-        "show_btn" : "Show Keys",
-
-        // TODO NEW: Revoke this key
-        "revoke_btn" : "Revoke this key",
-
-        // TODO NEW: Please copy these keys somewhere safe. They are displayed only once.
-        "instructions" : "Please copy these keys somewhere safe. They are displayed only once.",
-
-        // TODO NEW: API Key for direct use
-        "key" : "API Key for direct use",
-
-        // TODO NEW: Use this key directly in the Authorization header of the service as bearer token.
-        "instructions_key" : "Use this key directly in the Authorization header of the service as bearer token.",
-
-        // TODO NEW: Refresh-Token for OAuth
-        "refresh" : "Refresh-Token for OAuth",
-
-        // TODO NEW: For improved security exchange this refresh token against a new pair of access token and refresh token.
-        "instructions_refresh" : "For improved security exchange this refresh token against a new pair of access token and refresh token.",
-
-        // TODO NEW: Date of creation
-        "date" : "Date of creation",
-
-        // TODO NEW: Status
-        "status" : "Status",
-
-        // TODO NEW: Active
+        "title" : "Gestion des clés API",
+        "empty" : "Ce compte ne gère aucun service avec des clés API.",
+        "add_btn" : "Ajouter une clé",
+        "delete_btn" : "Supprimer l'analyseur",
+        "show_btn" : "Afficher les clés",
+        "revoke_btn" : "Révoquer cette clé",
+        "instructions" : "Veuillez copier ces clés dans un endroit sûr. Elles ne sont affichées qu'une seule fois.",
+        "key" : "Clé API pour une utilisation directe",
+        "instructions_key" : "Utilisez cette clé directement dans l'en-tête d'autorisation du service comme bearer token.",
+        "refresh" : "Refresh token pour OAuth",
+        "instructions_refresh" : "Pour améliorer la sécurité, échangez ce refresh token contre une nouvelle paire d'access token et refresh token.",
+        "date" : "Date de création",
+        "status" : "État",
         "ACTIVE" : "Active",
-
-        // TODO NEW: Old version
-        "FROZEN" : "Old version"
+        "FROZEN" : "Ancienne version"
     },
 
     "-1" : "inconnu"

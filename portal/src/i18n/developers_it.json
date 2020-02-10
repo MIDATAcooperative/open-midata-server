@@ -169,9 +169,7 @@
         "organization" : "Organizzazione",
         "publisher" : "Editore",
         "reviews" : "Recensioni",
-
-        // TODO NEW: Manage your API keys
-        "manageyourkeys" : "Manage your API keys"
+        "manageyourkeys" : "Gestire le vostre chiavi API"
     },
 
     "appstats" : {
@@ -228,21 +226,13 @@
     },
 
     "applink" : {
-
-        // TODO CHANGED
-        // OLD: Links with research projects or health professionals
-        // NEW: Links with research projects, external services or health professionals
-        "title" : "Collegamenti con progetti di ricerca o professionisti sanitari",
-        "add_research_btn" : "Collegare con progetto di ricerca",
-        "add_provider_btn" : "Collegare con professionista sanitario",
-
-        // TODO NEW: Link to external service
-        "add_service_btn" : "Link to external service",
+        "title" : "Collegamenti con progetti di ricerca, servizi esterni o professionisti sanitari",
+        "add_research_btn" : "Collegare a un progetto di ricerca",
+        "add_provider_btn" : "Collegare a un professionista sanitario",
+        "add_service_btn" : "Collegare a un servizio esterno",
         "target" : "Target",
         "provider" : "Professionista sanitario (login)",
-
-        // TODO NEW: External service
-        "service_app" : "External service",
+        "service_app" : "Servizio esterno",
         "identifier" : "Identificatore per questo link",
         "terms_of_use" : "Condizioni d'uso",
         "terms_of_use_hint" : "Se l'utente deve leggere e accettare condizioni d'uso speciali, si prega di inviare il testo a MIDATA. Caricheremo il testo nel formato corretto e vi forniremo l'identificatore da inserire qui.",
@@ -250,12 +240,8 @@
         "types" : {
             "REQUIRE_P" : "Il consenso deve essere accettato",
             "OFFER_P" : "Il consenso viene proposto al momento del accesso/iscrizione",
-
-            // TODO NEW: Onboarding: Consent is offered on a separate page.
-            "OFFER_EXTRA_PAGE" : "Onboarding: Consent is offered on a separate page.",
-
-            // TODO NEW: Onboarding: Use terms as description.
-            "OFFER_INLINE_AGB" : "Onboarding: Use terms as description."
+            "OFFER_EXTRA_PAGE" : "Onboarding: Il consenso viene proposto su una pagina separata.",
+            "OFFER_INLINE_AGB" : "Onboarding: utilizzare i termini d'uso come descrizione."
         }
     },
 

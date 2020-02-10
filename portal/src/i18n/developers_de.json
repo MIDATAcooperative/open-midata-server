@@ -169,9 +169,7 @@
         "organization" : "Organisation",
         "publisher" : "Herausgeber",
         "reviews" : "Überprüfungen",
-
-        // TODO NEW: Manage your API keys
-        "manageyourkeys" : "Manage your API keys"
+        "manageyourkeys" : "Verwalten Sie Ihre API-Schlüssel"
     },
 
     "appstats" : {
@@ -228,21 +226,13 @@
     },
 
     "applink" : {
-
-        // TODO CHANGED
-        // OLD: Links with research projects or health professionals
-        // NEW: Links with research projects, external services or health professionals
-        "title" : "Verknüpfungen mit Forschungsprojekten und Gesundheitsfachpersonen",
+        "title" : "Verknüpfungen mit Forschungsprojekten, externen Diensten und Gesundheitsfachpersonen",
         "add_research_btn" : "Verknüpfen mit Forschungsprojekt",
         "add_provider_btn" : "Verknüpfen mit Gesundheitsfachperson",
-
-        // TODO NEW: Link to external service
-        "add_service_btn" : "Link to external service",
+        "add_service_btn" : "Verknüpfen mit externem Dienst",
         "target" : "Ziel",
         "provider" : "Gesundheitsfachperson (Anmeldung)",
-
-        // TODO NEW: External service
-        "service_app" : "External service",
+        "service_app" : "Externer Dienst",
         "identifier" : "Identifikator für diesen Link",
         "terms_of_use" : "Nutzungsbedingungen",
         "terms_of_use_hint" : "Wenn besondere Nutzungsbedingungen gelesen und vom Nutzer akzeptiert werden müssen, senden Sie den Text bitte an MIDATA. Wir werden den Text im richtigen Format hochladen und Ihnen den Identifikator mitteilen, den Sie hier eingeben müssen.",
@@ -250,12 +240,8 @@
         "types" : {
             "REQUIRE_P" : "Die Zustimmung muss akzeptiert werden",
             "OFFER_P" : "Die Zustimmung wird bei der Anmeldung/Registrierung erteilt",
-
-            // TODO NEW: Onboarding: Consent is offered on a separate page.
-            "OFFER_EXTRA_PAGE" : "Onboarding: Consent is offered on a separate page.",
-
-            // TODO NEW: Onboarding: Use terms as description.
-            "OFFER_INLINE_AGB" : "Onboarding: Use terms as description."
+            "OFFER_EXTRA_PAGE" : "Onboarding: Die Zustimmung wird auf einer separaten Seite angeboten.",
+            "OFFER_INLINE_AGB" : "Onboarding: Nutzungsbedingungen als Beschreibung verwenden."
         }
     },
 

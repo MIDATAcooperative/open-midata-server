@@ -144,9 +144,7 @@
         "language" : "Lingua",
         "title" : "Titolo (pubblico)",
         "text" : "Contenuti (HTML)",
-
-        // TODO NEW: Replace existing
-        "replace" : "Replace existing"
+        "replace" : "Sostituire la versione attuale"
     },
 
     "admin_study" : {
@@ -238,12 +236,8 @@
         "role" : "Ruolo dell'utente",
         "licensee" : "Licenziatario",
         "expireDate" : "Data di scadenza",
-
-        // TODO NEW: External Service
-        "service" : "External Service",
-
-        // TODO NEW: Transfer API key management
-        "service2" : "Transfer API key management"
+        "service" : "Servizio esterno",
+        "service2" : "Trasferire la gestione delle chiavi API"
     },
 
     "usagestats" : {
