@@ -322,6 +322,7 @@ public class OAuth2 extends Controller {
 
 	public static OAuthRefreshToken createRefreshToken(MidataId executorId, MobileAppInstance appInstance, String aeskey)
 			throws AppException {
+		if (executorId == null) executorId = appInstance._id;
 		OAuthRefreshToken refresh = new OAuthRefreshToken(appInstance.applicationId, appInstance._id, appInstance.owner, aeskey, System.currentTimeMillis());
 		
 		Map<String, Object> meta = RecordManager.instance.getMeta(executorId, appInstance._id, "_app").toMap();
