@@ -143,7 +143,10 @@
         "version" : "Version",
         "language" : "Langue",
         "title" : "Intitulé (public)",
-        "text" : "Contenu (HTML)"
+        "text" : "Contenu (HTML)",
+
+        // TODO NEW: Replace existing
+        "replace" : "Replace existing"
     },
 
     "admin_study" : {
@@ -234,7 +237,13 @@
         "licenseeType" : "Type de titulaire",
         "role" : "Rôle de l'utilisateur",
         "licensee" : "Titulaire",
-        "expireDate" : "Date d'expiration"
+        "expireDate" : "Date d'expiration",
+
+        // TODO NEW: External Service
+        "service" : "External Service",
+
+        // TODO NEW: Transfer API key management
+        "service2" : "Transfer API key management"
     },
 
     "usagestats" : {

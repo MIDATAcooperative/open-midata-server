@@ -92,8 +92,20 @@
         "no_valid_app" : "Aucune application sélectionnée",
         "type" : "Comment sont-elles liées?",
         "types" : {
+
+            // TODO CHANGED
+            // OLD: Onboarding: Application offers project participation upon login/start
+            // NEW: Onboarding: The application offers project participation upon login/start
             "OFFER_P" : "Onboarding: L'application propose la participation au projet lors de la connexion/du démarrage",
+
+            // TODO CHANGED
+            // OLD: Onboarding: Project participation is described on extra page
+            // NEW: Onboarding: The project participation is described on an extra page
             "OFFER_EXTRA_PAGE" : "Onboarding: La participation au projet est décrite sur une page supplémentaire",
+
+            // TODO CHANGED
+            // OLD: Onboarding: Use terms as project description
+            // NEW: Onboarding: Use the terms of use as project description
             "OFFER_INLINE_AGB" : "Onboarding: Utiliser les conditions d'utilisation comme description du projet",
             "REQUIRE_P" : "La participation au projet est requise pour utiliser l'application",
             "RECOMMEND_A" : "L'application est recommandée par le projet",
@@ -103,6 +115,10 @@
         "types_short" : {
             "OFFER_P" : "Suggérer la participation",
             "OFFER_EXTRA_PAGE" : "Page de projet supplémentaire",
+
+            // TODO CHANGED
+            // OLD: Terms as description
+            // NEW: Terms of use as description
             "OFFER_INLINE_AGB" : "Conditions d'utilisation comme description",
             "REQUIRE_P" : "Exiger la participation",
             "RECOMMEND_A" : "Recommandé",

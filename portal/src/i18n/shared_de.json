@@ -100,6 +100,9 @@
             "study_accept" : "Die Projektteilnahme muss akzeptiert werden.",
             "study_group" : "Der Teilnehmer muss zuerst zu einer Gruppe zugeordnet werden.",
             "consent_accept" : "Die Zustimmung muss erteilt werden, um fortzufahren",
+
+            // TODO NEW: Service use must be accepted to continue
+            "service_accept" : "Service use must be accepted to continue",
             "confirmation" : "Bestätigung durch Benutzer zuerst erforderlich.",
             "file" : "Keine Datei zum Hochladen ausgewählt",
             "access_query" : "Keine Daten ausgewählt",
@@ -138,8 +141,20 @@
             "password1" : "Zu viele falsche Anmeldeversuche. Bitte warten Sie 1 Minute vor dem nächsten Versuch.",
             "password5" : "Zu viele falsche Anmeldeversuche. Bitte warten Sie 5 Minuten vor dem nächsten Versuch.",
             "password60" : "Zu viele falsche Anmeldeversuche. Bitte warten Sie 1 Stunde vor dem nächsten Versuch.",
+
+            // TODO CHANGED
+            // OLD: Account holder is not allowed to participate in research project.
+            // NEW: You are not authorized to participate in this research project and therefore cannot use this application.
             "participation" : "Sie sind nicht berechtigt, an diesem Forschungsprojekt teilzunehmen und können deshalb diese Applikation nicht benutzen.",
+
+            // TODO CHANGED
+            // OLD: Account holder has retreated from a project which is required for application use.
+            // NEW: You have withdrawn your participation in this research project and can therefore no longer use this application.
             "projectconsent" : "Sie haben Ihre Teilnahme an diesem Forschungsprojekt zurückgezogen und können deshalb diese Applikation nicht mehr benutzen.",
+
+            // TODO CHANGED
+            // OLD: The consent for using this application has been revoked. To reenable the application, delete the rejected or expired consent on the MIDATA portal.
+            // NEW: You have set in the MIDATA portal that this application may no longer access your data. If you want to use this application again, you must reauthorize it in the MIDATA portal.
             "consent" : "Sie haben im MIDATA-Portal eingestellt, dass diese Applikation nicht mehr auf Ihre Daten zugreifen darf. Falls Sie diese Applikation wieder nutzen möchten, müssen Sie sie im MIDATA-Portal neu autorisieren.",
             "app" : "Sie dürfen diese Applikation auf maximal 10 Geräten nutzen. Löschen Sie bitte nicht mehr genutzte Zustimmungen im MIDATA-Portal."
         },
@@ -312,6 +327,9 @@
         "consenttype" : {
             "CIRCLE" : "Andere MIDATA Kontoinhabende",
             "EXTERNALSERVICE" : "Externe Applikation",
+
+            // TODO NEW: External Service
+            "API" : "External Service",
             "HCRELATED" : "Gesundheitswesen",
             "HEALTHCARE" : "Arzt / Spital",
             "STUDYPARTICIPATION" : "Forschungsprojekt",
@@ -455,13 +473,27 @@
         },
         "plugintype" : {
             "visualization" : "Plugin",
+
+            // TODO CHANGED
+            // OLD: Service
+            // NEW: Internal Service
             "service" : "Dienst",
             "oauth1" : "OAuth 1",
             "oauth2" : "OAuth 2",
-            "mobile" : "Applikation (Smartphone, Web)"
+            "mobile" : "Applikation (Smartphone, Web)",
+
+            // TODO NEW: External Service
+            "external" : "External Service",
+
+            // TODO NEW: Project analyzer
+            "analyzer" : "Project analyzer"
         },
         "infos" : {
             "SUMMARY" : "Kurze Zusammenfassung",
+
+            // TODO CHANGED
+            // OLD: App Onboarding Text
+            // NEW: Application Onboarding Text
             "ONBOARDING" : "Onboarding-Text der Applikation",
             "DESCRIPTION" : "Was bewirkt dieses Forschungsprojekt?",
             "HOMEPAGE" : "Link zur Projekthomepage",
@@ -472,6 +504,10 @@
             "LOCATION" : "In welchem Staat oder welcher Region findet dieses Projekt statt?",
             "PHASE" : "Wie ist der Stand des Projektes?",
             "SPONSOR" : "Wer ist Initiator des Projektes und wer ist rechtlich verantwortlich?",
+
+            // TODO CHANGED
+            // OLD: At which site are activities beeing conducted?
+            // NEW: At which site are activities being conducted?
             "SITE" : "An welchem Standort werden Aktivitäten durchgeführt?",
             "DEVICES" : "Gibt es eine spezielle Ausrüstung, die ein Teilnehmer benötigt?",
             "COMMENT" : "Zusätzliche Anmerkungen"
@@ -802,6 +838,10 @@
         "do_not_participate_help" : "Wenn Sie NICHT teilnehmen möchten, können Sie hier klicken. Sie werden nicht erneut gefragt und es werden keine Daten weitergegeben.",
         "do_not_participate_btn" : "Nicht teilnehmen",
         "retreat_help" : "Sie nehmen an dieser Forschung derzeit teil. Wenn Sie nicht mehr teilnehmen möchten, können Sie sich von der Teilnahme zurückziehen. Ihre geteilten Daten werden zum Zeitpunkt des Rückzugs eingefroren und es werden keine neuen Daten weitergegeben. Einmal zurückgezogen, können Sie nicht mehr teilnehmen.",
+
+        // TODO CHANGED
+        // OLD: Retreat from participation
+        // NEW: Withdraw participation
         "retreat_btn" : "Teilnahme zurückziehen",
         "status" : "Status",
         "recommended_apps" : "Empfohlene Applikationen",
@@ -829,6 +869,9 @@
         "delete_records_btn" : "Datensätze löschen",
         "wipe_account_btn" : "Konto löschen",
         "metrics_btn" : "Account-Metriken berechnen",
+
+        // TODO NEW: Manage API Keys
+        "servicekeys_btn" : "Manage API Keys",
         "account_repaired" : "Ihr Konto wurde repariert.",
         "spaces_resetted" : "Ihre Konfiguration wurde zurückgesetzt.",
         "settings" : "Einstellungen",
@@ -847,6 +890,10 @@
     },
 
     "visualization" : {
+
+        // TODO CHANGED
+        // OLD: Plugin Information
+        // NEW: Application Information
         "title" : "Informationen zum Plugin",
         "success" : "Ein neus Plugin wurde erfolgreich installiert.",
         "created_by" : "Erstellt durch:",
@@ -856,6 +903,13 @@
         "tile_name" : "Name der Kachel:",
         "install_location" : "Standort:",
         "grant_access" : "Diesem Plugin Zugriff erteilen auf:",
+
+        // TODO NEW: Terms
+        "terms" : "Terms",
+
+        // TODO CHANGED
+        // OLD: Add Plugin
+        // NEW: Confirm Access
         "install_btn" : "Plugin hinzufügen",
         "location" : {
             "workspace" : "Workspace",
@@ -925,6 +979,9 @@
         "type_studyparticipation" : "Diese Zustimmung teilt Daten mit einem Forschungsprojekt.",
         "type_studyrelated" : "Diese Zustimmung teilt Daten mit einem Projektteilnehmer.",
         "type_externalservice" : "Diese Zustimmung teilt Daten mit einer Applikation.",
+
+        // TODO NEW: This consent shares data with an external service.
+        "type_api" : "This consent shares data with an external service.",
         "type_implicit" : "Diese implizit erstellte Zustimmung erteilt den Empfängern Zugriff auf die für sie bestimmten Meldungen.",
         "status_active" : "Diese Zustimmung ist aktiv.",
         "status_expired" : "Diese Zustimmung ist abgelaufen. Daten werden nicht mehr geteilt.",
@@ -1049,13 +1106,30 @@
         "please_confirm" : "Bestätigen Sie bitte die Aktivierung der Applikation auf dem MIDATA Portal, dann versuchen Sie es erneut. Zustimmungsbezeichnung: {{ consent }}",
         "confirm_btn" : "Zugriff bestätigen",
         "continue_btn" : "Weiter",
+
+        // TODO CHANGED
+        // OLD: Requested access by app:
+        // NEW: Access requested by the application:
         "requests_access" : "Von der Applikation angeforderter Zugang:",
+
+        // TODO CHANGED
+        // OLD: Data that will be shared with the project:
+        // NEW: Data shared with the project:
         "requests_sharing" : "Mit dem Projekt geteilte Daten:",
+
+        // TODO NEW: Data shared with the external service:
+        "requests_sharing_service" : "Data shared with the external service:",
         "shares_group" : "Gruppe: {{ group }}",
         "shares_format" : "Format: {{ format }}",
         "shares_content" : "Inhalt: {{ content }}",
         "confirm_provider" : "Ich akzeptiere die Weitergabe von Daten an diesen externen Anbieter",
         "confirm_provider_opt" : "Ich akzeptiere die Weitergabe von Daten an diesen externen Anbieter (optional)",
+
+        // TODO NEW: I accept to share data with this external service
+        "confirm_service" : "I accept to share data with this external service",
+
+        // TODO NEW: I accept to share data with this external service (optional)
+        "confirm_service_opt" : "I accept to share data with this external service (optional)",
         "confirm_study" : "Ich akzeptiere die Nutzungsbedingungen der Applikation und die Teilnahme am Projekt",
         "confirm_study_opt" : "Ich akzeptiere die Teilnahme am Projekt",
         "confirm_citizen_science" : "Ich akzeptiere die Teilnahme am Citizen Science Projekt",
@@ -1202,6 +1276,9 @@
         "CIRCLE" : "Zustimmung",
         "ResearchStudy" : "Forschungsprojekt",
         "EXTERNALSERVICE" : "Applikation",
+
+        // TODO NEW: Service
+        "API" : "Service",
         "STUDYPARTICIPATION" : "Teilnahme",
         "HEALTHCARE" : "Zustimmung (Gesundheitsfachperson)",
         "MEMBER" : "Account",
@@ -1213,12 +1290,32 @@
     },
 
     "apps" : {
+
+        // TODO CHANGED
+        // OLD: Connect your apps to collect data
+        // NEW: Connect your applications to collect data
         "greeting" : "Verknüpfen Sie Ihre Applikationen, um Daten zu sammeln",
+
+        // TODO CHANGED
+        // OLD: Apps
+        // NEW: Applications
         "title" : "Applikationen",
+
+        // TODO CHANGED
+        // OLD: Authorized Apps
+        // NEW: Authorized Applicationss
         "description" : "Autorisierte Applikationen",
+
+        // TODO CHANGED
+        // OLD: You have {{count}} authorized apps:
+        // NEW: You have {{count}} authorized applications:
         "count" : "Sie haben {{count}} autorisierte Applikationen:",
         "services" : "Services",
         "connect_btn" : "Autorisieren",
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: Use
         "use_btn" : "Verwenden"
     },
 
@@ -1352,6 +1449,54 @@
         "B" : "Bugfix",
         "I" : "Verbesserung",
         "S" : "Bugfix"
+    },
+
+    "apikeys" : {
+
+        // TODO NEW: API Key Management
+        "title" : "API Key Management",
+
+        // TODO NEW: This account does not manage any services with API keys.
+        "empty" : "This account does not manage any services with API keys.",
+
+        // TODO NEW: Add Key
+        "add_btn" : "Add Key",
+
+        // TODO NEW: Remove Analyzer
+        "delete_btn" : "Remove Analyzer",
+
+        // TODO NEW: Show Keys
+        "show_btn" : "Show Keys",
+
+        // TODO NEW: Revoke this key
+        "revoke_btn" : "Revoke this key",
+
+        // TODO NEW: Please copy these keys somewhere safe. They are displayed only once.
+        "instructions" : "Please copy these keys somewhere safe. They are displayed only once.",
+
+        // TODO NEW: API Key for direct use
+        "key" : "API Key for direct use",
+
+        // TODO NEW: Use this key directly in the Authorization header of the service as bearer token.
+        "instructions_key" : "Use this key directly in the Authorization header of the service as bearer token.",
+
+        // TODO NEW: Refresh-Token for OAuth
+        "refresh" : "Refresh-Token for OAuth",
+
+        // TODO NEW: For improved security exchange this refresh token against a new pair of access token and refresh token.
+        "instructions_refresh" : "For improved security exchange this refresh token against a new pair of access token and refresh token.",
+
+        // TODO NEW: Date of creation
+        "date" : "Date of creation",
+
+        // TODO NEW: Status
+        "status" : "Status",
+
+        // TODO NEW: Active
+        "ACTIVE" : "Active",
+
+        // TODO NEW: Old version
+        "FROZEN" : "Old version"
     },
 
     "-1" : "unbekannt"
