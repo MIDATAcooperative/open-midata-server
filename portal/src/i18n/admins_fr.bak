@@ -142,7 +142,8 @@
     "version" : "Version",
     "language" : "Language",
     "title" : "Title (public)",
-    "text" : "Content (HTML)"
+    "text" : "Content (HTML)",
+    "replace" : "Replace existing"
   },
   
   "admin_study" : {
@@ -233,7 +234,9 @@
      "licenseeType" : "Licensee Type",
      "role" : "User Role",
      "licensee" : "Licensee",
-     "expireDate" : "Date of expiration"
+     "expireDate" : "Date of expiration",
+     "service" : "External Service",
+     "service2" : "Transfer API key management"
    },
    
    "usagestats" : {

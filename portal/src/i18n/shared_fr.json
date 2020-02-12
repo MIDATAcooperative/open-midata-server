@@ -100,6 +100,7 @@
             "study_accept" : "La participation au projet doit être acceptée.",
             "study_group" : "Le participant doit d'abord être assigné à un groupe.",
             "consent_accept" : "Le consentement doit être donné pour continuer",
+            "service_accept" : "L'utilisation du service doit être acceptée pour continuer",
             "confirmation" : "Confirmation par l'utilisateur requise en premier.",
             "file" : "Aucun fichier à télécharger sélectionné",
             "access_query" : "Aucune données sélectionnées",
@@ -312,6 +313,7 @@
         "consenttype" : {
             "CIRCLE" : "Autres détenteurs de compte",
             "EXTERNALSERVICE" : "Application externe",
+            "API" : "Service externe",
             "HCRELATED" : "Système de santé",
             "HEALTHCARE" : "Médecin / Hôpital",
             "STUDYPARTICIPATION" : "Projet de recherche",
@@ -455,10 +457,12 @@
         },
         "plugintype" : {
             "visualization" : "Plugin",
-            "service" : "Service",
+            "service" : "Service interne",
             "oauth1" : "OAuth 1",
             "oauth2" : "OAuth 2",
-            "mobile" : "Application (Smartphone, Web)"
+            "mobile" : "Application (Smartphone, Web)",
+            "external" : "Service externe",
+            "analyzer" : "Analyseur de projet"
         },
         "infos" : {
             "SUMMARY" : "Résumé sommaire",
@@ -829,6 +833,7 @@
         "delete_records_btn" : "Supprimer les enregistrements",
         "wipe_account_btn" : "Supprimer le compte",
         "metrics_btn" : "Calculer les métriques du compte",
+        "servicekeys_btn" : "Gérer les clés API",
         "account_repaired" : "Votre compte a été réparé.",
         "spaces_resetted" : "Votre configuration a été réinitialisée.",
         "settings" : "Paramètres",
@@ -847,7 +852,7 @@
     },
 
     "visualization" : {
-        "title" : "Informations sur les plugins",
+        "title" : "Informations sur l'application'",
         "success" : "Vous avez installé avec succès un nouveau plugin.",
         "created_by" : "Créé par:",
         "orgName" : "Organisation:",
@@ -856,7 +861,8 @@
         "tile_name" : "Nom de la tuile:",
         "install_location" : "Emplacement:",
         "grant_access" : "Autoriser ce plugin à accèder à:",
-        "install_btn" : "Ajouter un plugin",
+        "terms" : "Conditions d'utilisation",
+        "install_btn" : "Confirmer l'accès",
         "location" : {
             "workspace" : "Espace de travail",
             "mobile" : "MIDATA Mobile App",
@@ -925,6 +931,7 @@
         "type_studyparticipation" : "Ce consentement partage des données avec un projet de recherche.",
         "type_studyrelated" : "Ce consentement partage des données avec un participant d'un projet.",
         "type_externalservice" : "Ce consentement partage des données avec une application.",
+        "type_api" : "Ce consentement partage des données avec un service externe.",
         "type_implicit" : "Ce consentement créé implicitement permet aux destinataires de lire les messages les concernant.",
         "status_active" : "Ce consentement est actif.",
         "status_expired" : "Ce consentement a expiré. Les données ne sont plus partagées.",
@@ -1051,11 +1058,14 @@
         "continue_btn" : "Continuer",
         "requests_access" : "Accès demandé par l'application:",
         "requests_sharing" : "Données partagées avec le projet:",
+        "requests_sharing_service" : "Données partagées avec le service externe:",
         "shares_group" : "Groupe: {{ group }}",
         "shares_format" : "Format: {{ format }}",
         "shares_content" : "Contenu: {{ content }}",
         "confirm_provider" : "J'accepte de partager mes données avec ce fournisseur externe",
         "confirm_provider_opt" : "J'accepte de partager mes données avec ce fournisseur externe (facultatif)",
+        "confirm_service" : "J'accepte de partager des données avec ce service externe",
+        "confirm_service_opt" : "J'accepte de partager des données avec ce service externe (facultatif)",
         "confirm_study" : "J’accepte les conditions d’utilisation de l’application et de participer au projet",
         "confirm_study_opt" : "J'accepte de participer au projet",
         "confirm_citizen_science" : "J'accepte de participer au projet de sciences citoyennes",
@@ -1202,6 +1212,7 @@
         "CIRCLE" : "Consentement",
         "ResearchStudy" : "Projet de recherche",
         "EXTERNALSERVICE" : "Application",
+        "API" : "Service",
         "STUDYPARTICIPATION" : "Participation",
         "HEALTHCARE" : "Consentement (Professionnel de la santé)",
         "MEMBER" : "Compte",
@@ -1352,6 +1363,24 @@
         "B" : "Correction",
         "I" : "Amélioration",
         "S" : "Correction"
+    },
+
+    "apikeys" : {
+        "title" : "Gestion des clés API",
+        "empty" : "Ce compte ne gère aucun service avec des clés API.",
+        "add_btn" : "Ajouter une clé",
+        "delete_btn" : "Supprimer l'analyseur",
+        "show_btn" : "Afficher les clés",
+        "revoke_btn" : "Révoquer cette clé",
+        "instructions" : "Veuillez copier ces clés dans un endroit sûr. Elles ne sont affichées qu'une seule fois.",
+        "key" : "Clé API pour une utilisation directe",
+        "instructions_key" : "Utilisez cette clé directement dans l'en-tête d'autorisation du service comme bearer token.",
+        "refresh" : "Refresh token pour OAuth",
+        "instructions_refresh" : "Pour améliorer la sécurité, échangez ce refresh token contre une nouvelle paire d'access token et refresh token.",
+        "date" : "Date de création",
+        "status" : "État",
+        "ACTIVE" : "Active",
+        "FROZEN" : "Ancienne version"
     },
 
     "-1" : "inconnu"

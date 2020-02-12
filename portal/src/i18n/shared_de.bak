@@ -99,6 +99,7 @@
        "study_accept" : "Project participation must be accepted.",
        "study_group" : "Participant must first be assigned to a group.",
        "consent_accept" : "Consent must be given to continue",
+       "service_accept" : "Service use must be accepted to continue",
        "confirmation" : "Confirmation by user required first.",
        "file" : "No file for upload selected",
        "access_query" : "No data selected",
@@ -137,9 +138,9 @@
        "password1" : "Too many missed login attempts. Please wait 1 minute before next attempt.",
        "password5" : "Too many missed login attempts. Please wait 5 minutes before next attempt.",
        "password60" : "Too many missed login attempts. Please wait 1 hour before next attempt.",
-       "participation" : "Account holder is not allowed to participate in research project.",       
-       "projectconsent" : "Account holder has retreated from a project which is required for application use.",       
-       "consent" : "The consent for using this application has been revoked. To reenable the application, delete the rejected or expired consent on the MIDATA portal.",
+       "participation" : "You are not authorized to participate in this research project and therefore cannot use this application.",
+       "projectconsent" : "You have withdrawn your participation in this research project and can therefore no longer use this application.",
+       "consent" : "You have set in the MIDATA portal that this application may no longer access your data. If you want to use this application again, you must reauthorize it in the MIDATA portal.",
        "app" : "You are allowed to use this application on a maximum of 10 devices. Please delete unused consents on the MIDATA portal." 
      },
 
@@ -310,7 +311,8 @@
 	 },
 	 "consenttype" : {
 	   "CIRCLE" : "Other Account Holders",
-	   "EXTERNALSERVICE" : "External Application",
+     "EXTERNALSERVICE" : "External Application",
+     "API" : "External Service",
 	   "HCRELATED" : "Healthcare",
 	   "HEALTHCARE" : "Doctor / Hospital",
 	   "STUDYPARTICIPATION" : "Research project",
@@ -454,14 +456,16 @@
 	 },
 	 "plugintype" : {
 	   "visualization" : "Plugin",
-	   "service" : "Service",
+	   "service" : "Internal Service",
 	   "oauth1" : "OAuth 1",
 	   "oauth2" : "OAuth 2",
-	   "mobile" : "Application (Smartphone, Web)"
+     "mobile" : "Application (Smartphone, Web)",
+     "external": "External Service",
+     "analyzer" : "Project analyzer"
 	 },
 	 "infos" : {
-     "SUMMARY" : "Short Summary",
-     "ONBOARDING" : "App Onboarding Text",
+	   "SUMMARY" : "Short Summary",
+	   "ONBOARDING" : "Application Onboarding Text",
 	   "DESCRIPTION" : "What is this research project doing?",
 	   "HOMEPAGE" : "Link to project homepage",
 	   "CONTACT" : "Contact information",
@@ -471,7 +475,7 @@
 	   "LOCATION" : "At which state or region is this project taking place?",
 	   "PHASE" : "What is the state of progression of the research taking place?",
 	   "SPONSOR" : "Who is initiator of the research and who is legally responsible?",
-	   "SITE" : "At which site are activities beeing conducted?",
+	   "SITE" : "At which site are activities being conducted?",
 	   "DEVICES" : "Is there any special equipment required by a participant?",
 	   "COMMENT" : "Additional notes"
 	 },
@@ -801,7 +805,7 @@
 	"do_not_participate_help" : "If you do NOT want to participate you can click here. You will not be asked again and no data will be shared.",
 	"do_not_participate_btn" : "Do not participate",
 	"retreat_help" : "You are currently participating to this research. If you no longer want to participate you may retreat from participation. Your shared data will be frozen at the moment of retreat and no new data will be shared. Once retreated you are not able to participate again.",
-	"retreat_btn" : "Retreat from participation",
+	"retreat_btn" : "Withdraw participation",
 	"status" : "Status",
 	"recommended_apps" : "Recommended Apps",
 	"use_app" : "Use now",
@@ -827,7 +831,8 @@
 	"export_btn" : "Export your data",
 	"delete_records_btn" : "Delete Records",
 	"wipe_account_btn" : "Delete Account",
-	"metrics_btn" : "Calculate Account Metrics",
+  "metrics_btn" : "Calculate Account Metrics",
+  "servicekeys_btn" : "Manage API Keys",
 	"account_repaired" : "Your account has been repaired.",
 	"spaces_resetted" : "Your configuration has been resetted.",
 	"settings" : "Settings",	
@@ -846,7 +851,7 @@
   },
 
   "visualization" : {
-    "title" : "Plugin Information",
+    "title" : "Application Information",
     "success" : "You have successfully installed a new plugin.",
     "created_by" : "Created by:",
     "orgName" : "Organization:",
@@ -855,7 +860,8 @@
     "tile_name" : "Tile Name:",
     "install_location" : "Location:",
     "grant_access" : "Grant this plugin access to:",
-    "install_btn" : "Add Plugin",
+    "terms" : "Terms",
+    "install_btn" : "Confirm Access",
     "location" : {
       "workspace" : "Workspace",
       "mobile" : "MIDATA Mobile App",
@@ -924,6 +930,7 @@
     "type_studyparticipation" : "This consent shares data with a research project.",
     "type_studyrelated" : "This consent shares data with a project participant.",
     "type_externalservice" : "This consent shares data with an application.",
+    "type_api" : "This consent shares data with an external service.",
     "type_implicit" : "This implicitely created consent shares messages with their receivers.",
     "status_active" : "This consent is active.",
     "status_expired" : "This consent is expired. Data is no longer shared.",
@@ -1048,13 +1055,16 @@
     "please_confirm" : "Please confirm the activation of the application using the MIDATA portal, then retry. Consent title is: {{ consent }}",
     "confirm_btn" : "Confirm Access",
     "continue_btn" : "Continue",
-    "requests_access" : "Requested access by app:",
-    "requests_sharing" : "Data that will be shared with the project:",
+    "requests_access" : "Access requested by the application:",
+    "requests_sharing" : "Data shared with the project:",
+    "requests_sharing_service" : "Data shared with the external service:",
     "shares_group" : "Group: {{ group }}",
     "shares_format" : "Format: {{ format }}",
     "shares_content" : "Content: {{ content }}",
     "confirm_provider" : "I accept to share data with this external provider",
     "confirm_provider_opt" : "I accept to share data with this external provider (optional)",
+    "confirm_service" : "I accept to share data with this external service",
+    "confirm_service_opt" : "I accept to share data with this external service (optional)",
     "confirm_study" : "I accept the terms of use of the application and to participate in the project",
     "confirm_study_opt" : "I accept to participate in the project",
     "confirm_citizen_science" : "I accept to participate in the citizen science project",
@@ -1201,6 +1211,7 @@
     "CIRCLE" : "Consent",
     "ResearchStudy" : "Research Project",
     "EXTERNALSERVICE" : "Application",
+    "API" : "Service",
     "STUDYPARTICIPATION" : "Participation",
     "HEALTHCARE" : "Consent (Health Provider)",
     "MEMBER" : "Account",
@@ -1212,12 +1223,13 @@
   },
   
   "apps" : {
-    "greeting" : "Connect your apps to collect data",
-    "title" : "Apps",
-    "description" : "Authorized Apps",
-    "count" : "You have {{count}} authorized apps:",
+    "greeting" : "Connect your applications to collect data",
+    "title" : "Applications",
+    "description" : "Authorized Applicationss",
+    "count" : "You have {{count}} authorized applications:",
     "services" : "Services",
-    "connect_btn" : "Authorize"       
+    "connect_btn" : "Authorize",
+    "use_btn" : "Use"
   },
   
   "changeemail" : {
@@ -1350,6 +1362,24 @@
     "B" : "Bugfix",
     "I" : "Improvement",
     "S" : "Bugfix" 
+  },
+
+  "apikeys" : {
+    "title" : "API Key Management",
+    "empty" : "This account does not manage any services with API keys.",
+    "add_btn" : "Add Key",
+    "delete_btn" : "Remove Analyzer",
+    "show_btn" : "Show Keys",  
+    "revoke_btn" : "Revoke this key",
+    "instructions" : "Please copy these keys somewhere safe. They are displayed only once.",
+    "key" : "API Key for direct use",
+    "instructions_key" : "Use this key directly in the Authorization header of the service as bearer token.",
+    "refresh" : "Refresh-Token for OAuth",
+    "instructions_refresh" : "For improved security exchange this refresh token against a new pair of access token and refresh token.",
+    "date" : "Date of creation",
+    "status" : "Status",
+    "ACTIVE" : "Active",
+    "FROZEN" : "Old version"
   },
   
   "-1" : "unknown"

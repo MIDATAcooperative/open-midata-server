@@ -240,7 +240,7 @@
       "REQUIRE_P" : "Consent must be accepted",
       "OFFER_P" : "Consent is offered upon login/registration",
       "OFFER_EXTRA_PAGE" : "Onboarding: Consent is offered on a separate page.",
-      "OFFER_INLINE_AGB" : "Onboarding: Use terms as description."
+      "OFFER_INLINE_AGB" : "Onboarding: Use terms of use as description."
     }
   },
   

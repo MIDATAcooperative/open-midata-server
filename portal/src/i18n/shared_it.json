@@ -100,6 +100,7 @@
             "study_accept" : "La partecipazione al progetto deve essere accettata.",
             "study_group" : "Il partecipante deve dapprima essere assegnato a un gruppo.",
             "consent_accept" : "Il consenso deve essere dato per continuare",
+            "service_accept" : "L'utilizzo del servizio deve essere accettato per continuare",
             "confirmation" : "Per prima cosa è richiesta la conferma dell'utente.",
             "file" : "Nessun file selezionato per il caricamento",
             "access_query" : "Nessun dati selezionato",
@@ -312,6 +313,7 @@
         "consenttype" : {
             "CIRCLE" : "Altri titolari di account",
             "EXTERNALSERVICE" : "Applicazione esterna",
+            "API" : "Servizio esterno",
             "HCRELATED" : "Prestazioni sanitarie",
             "HEALTHCARE" : "Dottore/ssa / Ospedale",
             "STUDYPARTICIPATION" : "Progetto di ricerca",
@@ -455,10 +457,12 @@
         },
         "plugintype" : {
             "visualization" : "Plugin",
-            "service" : "Servizio",
+            "service" : "Servizio interno",
             "oauth1" : "OAuth 1",
             "oauth2" : "OAuth 2",
-            "mobile" : "Applicazione (Smartphone, Web)"
+            "mobile" : "Applicazione (Smartphone, Web)",
+            "external" : "Servizio esterno",
+            "analyzer" : "Analizzatore di progetto"
         },
         "infos" : {
             "SUMMARY" : "Breve riassunto",
@@ -829,6 +833,7 @@
         "delete_records_btn" : "Elimina record",
         "wipe_account_btn" : "Cancella account",
         "metrics_btn" : "Calcolare le metriche del conto",
+        "servicekeys_btn" : "Gestire le chiavi API",
         "account_repaired" : "Il tuo account è stato riparato.",
         "spaces_resetted" : "La tua configurazione è stata ripristinata.",
         "settings" : "Impostazioni",
@@ -847,7 +852,7 @@
     },
 
     "visualization" : {
-        "title" : "Informazioni del plugin",
+        "title" : "Informazioni sull'applicazione",
         "success" : "Il nuovo plugin è stato installato con successo.",
         "created_by" : "Creato da:",
         "orgName" : "Organizzazione:",
@@ -856,7 +861,8 @@
         "tile_name" : "Nome riquadro:",
         "install_location" : "Posizione:",
         "grant_access" : "Autorizzare al plugin l'accesso a:",
-        "install_btn" : "Aggiungi plugin",
+        "terms" : "Condizioni d'uso",
+        "install_btn" : "Confermare l'accesso",
         "location" : {
             "workspace" : "Spazio di lavoro",
             "mobile" : "Applicazione mobile di MIDATA",
@@ -925,7 +931,8 @@
         "type_studyparticipation" : "Questo consenso condivide dati con un progetto di ricerca.",
         "type_studyrelated" : "Questo consenso condivide dati con un partecipante al progetto.",
         "type_externalservice" : "Questo consenso condivide dati con una applicazione.",
-        "type_implicit" : "Questo consenso creato implicitamente condivide i messaggi con i rispettivi destinatari.",
+        "type_api" : "Questo consenso condivide dati con un servizio esterno.",
+        "type_implicit" : "Questo consenso creato implicitamente condivide i messaggi su se stessi.",
         "status_active" : "Questo consenso è attivo.",
         "status_expired" : "Questo è scaduto. I dati non sono più condivisi.",
         "status_unconfirmed" : "Questo consenso richiede la conferma del rispettivo titolare.",
@@ -1051,11 +1058,14 @@
         "continue_btn" : "Continua",
         "requests_access" : "Accesso richiesto dall'applicazione:",
         "requests_sharing" : "Dati condivisi con il progetto:",
+        "requests_sharing_service" : "Dati condivisi con il servizio esterno:",
         "shares_group" : "Gruppo: {{ group }}",
         "shares_format" : "Formato: {{ format }}",
         "shares_content" : "Contenuti: {{ content }}",
         "confirm_provider" : "Accetto di condividere i dati con questo fornitore esterno",
         "confirm_provider_opt" : "Accetto di condividere i dati con questo fornitore esterno (optionale)",
+        "confirm_service" : "Accetto di condividere i dati con questo servizio esterno",
+        "confirm_service_opt" : "Accetto di condividere i dati con questo servizio esterno (optionale)",
         "confirm_study" : "Accetto le condizioni d'uso della domanda e di partecipare al progetto",
         "confirm_study_opt" : "Accetto di partecipare al progetto",
         "confirm_citizen_science" : "Accetto di partecipare al progetto scienza cittadina",
@@ -1202,6 +1212,7 @@
         "CIRCLE" : "Consenso",
         "ResearchStudy" : "Progetto di ricerca",
         "EXTERNALSERVICE" : "Applicazione",
+        "API" : "Servizio",
         "STUDYPARTICIPATION" : "Partecipazione",
         "HEALTHCARE" : "Consenso (Fornitore di prestazioni sanitarie)",
         "MEMBER" : "Account",
@@ -1352,6 +1363,24 @@
         "B" : "Bugfix",
         "I" : "Miglioramento",
         "S" : "Bugfix"
+    },
+
+    "apikeys" : {
+        "title" : "Gestione delle chiavi API",
+        "empty" : "Questo account non gestisce alcun servizio con chiavi API.",
+        "add_btn" : "Aggiungi chiave",
+        "delete_btn" : "Rimuovere l'analizzatore",
+        "show_btn" : "Mostra i chiavi",
+        "revoke_btn" : "Revocare questa chiave",
+        "instructions" : "Si prega di copiare queste chiavi in un luogo sicuro. Vengono visualizzate una sola volta.",
+        "key" : "Chiave API per uso diretto",
+        "instructions_key" : "Utilizzare questa chiave direttamente nell'header dell'autorizzazione del servizio come bearer token.",
+        "refresh" : "Refresh token per OAuth",
+        "instructions_refresh" : "Per una maggiore sicurezza, scambiare questo refresh token con un nuovo paio di access token e refresh token.",
+        "date" : "Data di creazione",
+        "status" : "Stato",
+        "ACTIVE" : "Attiva",
+        "FROZEN" : "Vecchia versione"
     },
 
     "-1" : "sconosciuto"

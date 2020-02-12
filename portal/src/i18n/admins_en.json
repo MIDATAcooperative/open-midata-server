@@ -143,7 +143,7 @@
     "language" : "Language",
     "title" : "Title (public)",
     "text" : "Content (HTML)",
-    "replace" : "Replace existing"
+    "replace" : "Replace the current version"
   },
   
   "admin_study" : {
