@@ -297,3 +297,4 @@
 {"_id":{"$oid":"5e18589daed6450cb19b1b0c"},"content":"activities/elapsed-time","defaultCode":"http://midata.coop activities/elapsed-time","security":"MEDIUM","label":{"de":"Verstrichene Zeit","en":"Elapsed Time"},"resourceType":"fhir/Observation","category":"fitness"}
 {"_id":{"$oid":"5e186f3eaed6450cb19b1b10"},"content":"activities/photo-count","defaultCode":"http://midata.coop activities/photo-count","security":"MEDIUM","label":{"de":"gepostete Fotos","en":"Photos posted"}}
 {"_id":{"$oid":"5e2e9000aed64524b3709d30"},"content":"activities/route","defaultCode":"http://midata.coop activities/route","security":"MEDIUM","label":{"en":"Route"}}
+{"_id":{"$oid":"5e43b800aed6450f3e833019"},"content":"activities/overview","defaultCode":"http://midata.coop activities/overview","security":"MEDIUM","label":{"en":"Activity Overview"}}
