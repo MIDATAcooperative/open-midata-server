@@ -143,7 +143,8 @@
         "version" : "Version",
         "language" : "Sprache",
         "title" : "Überschrift (öffentlich)",
-        "text" : "Inhalt (HTML)"
+        "text" : "Inhalt (HTML)",
+        "replace" : "Aktuelle Version ersetzen"
     },
 
     "admin_study" : {
@@ -234,7 +235,9 @@
         "licenseeType" : "Typ des Lizenznehmers",
         "role" : "Benutzerrolle",
         "licensee" : "Lizenznehmer",
-        "expireDate" : "Ablaufdatum"
+        "expireDate" : "Ablaufdatum",
+        "service" : "Externer Dienst",
+        "service2" : "API-Schlüsselverwaltung übertragen"
     },
 
     "usagestats" : {
