@@ -15,6 +15,42 @@ b { font-weight: bold; }
 
 html, body { height:100% }
 
+body.localhost .mi-or-login__instance::after {
+    content : 'Instance: localhost';    
+    @extend .mi-or-login__app;
+    font-size: 12px;
+    letter-spacing: .5px;
+    color: white;
+    font-family: "Roboto Book";
+    -webkit-font-smoothing: antialiased;    
+    margin-top:0px;
+    margin-bottom:0px;
+}
+
+body.test .mi-or-login__instance::after {
+  content : 'Instance: test.midata.coop';    
+  @extend .mi-or-login__app;
+  font-size: 12px;
+  letter-spacing: .5px;
+  color: white;
+  font-family: "Roboto Book";
+  -webkit-font-smoothing: antialiased;    
+  margin-top:0px;
+  margin-bottom:0px;
+}
+
+body.demo .mi-or-login__instance::after {
+  content : 'Instance: demo.midata.coop';    
+  @extend .mi-or-login__app;
+  font-size: 12px;
+  letter-spacing: .5px;
+  color: white;
+  font-family: "Roboto Book";
+  -webkit-font-smoothing: antialiased;    
+  margin-top:0px;
+  margin-bottom:0px;
+}
+
 .required label::after {
   content : " *"
 }

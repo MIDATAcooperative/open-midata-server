@@ -68,8 +68,8 @@ angular.module('portal')
 	$scope.checkGroupValid = function(grp) {
 		var hasChildGroups = false;
 		angular.forEach($scope.groups, function(g) { if (g.parent == grp.name) hasChildGroups = true; });
-		if (hasChildGroups && grp.contentEntries && grp.contentEntries.length > 0) grp.problem = "double";
-		else if (!hasChildGroups && (grp.contentEntries.length === 0)) grp.problem = "empty";
+		/*if (hasChildGroups && grp.contentEntries && grp.contentEntries.length > 0) grp.problem = "double";
+		else*/ if (!hasChildGroups && (grp.contentEntries.length === 0)) grp.problem = "empty";
 		else grp.problem = null;
 	};
 	
