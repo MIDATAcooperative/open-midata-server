@@ -18,6 +18,7 @@ import models.Member;
 import models.MidataId;
 import models.Plugin;
 import models.Space;
+import models.SubscriptionData;
 import models.enums.UserFeature;
 import play.libs.Json;
 import play.mvc.BodyParser;
@@ -79,6 +80,15 @@ public class Spaces extends APIController {
 			for (Space space : spaces) {
 				BSONObject q = RecordManager.instance.getMeta(userId, space._id, "_query");
 				if (q != null) space.query = q.toMap();
+			}
+		}
+		if (fields.contains("autoImport")) {
+			for (Space space : spaces) {	
+				if (space.autoImport) continue;
+				List<SubscriptionData> subs = SubscriptionData.getByOwnerAndFormatAndInstance(userId, "time", space._id, SubscriptionData.ALL);
+				for (SubscriptionData subData : subs) {
+					if (subData.active) space.autoImport = true;
+				}
 			}
 		}
 		Collections.sort(spaces);

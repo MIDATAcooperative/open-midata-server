@@ -1400,7 +1400,7 @@ public class RecordManager {
 		for (Record stream : result) {
 			try {
 			  AccessLog.log("reset stream:"+stream._id.toString());
-			  getCache(who).getAPS(stream._id, stream.owner).removeMeta("_info");
+			  Feature_UserGroups.findApsCacheToUse(getCache(who), stream._id).getAPS(stream._id, stream.owner).removeMeta("_info");			  
 			} catch (APSNotExistingException e) {}
 		}
 		AccessLog.logEnd("end reset info user="+who.toString());
