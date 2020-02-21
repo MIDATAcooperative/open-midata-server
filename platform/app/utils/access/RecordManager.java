@@ -1396,12 +1396,15 @@ public class RecordManager {
 	 */
 	private void resetInfo(MidataId who) throws AppException {
 		AccessLog.logBegin("start reset info user="+who.toString());
-		List<Record> result = list(who, UserRole.ANY, RecordManager.instance.createContextFromAccount(who), RecordManager.STREAMS_ONLY, Sets.create("_id", "owner"));
+		List<Record> result = list(who, UserRole.ANY, RecordManager.instance.createContextFromAccount(who), CMaps.map("streams", "only").map("flat", "true"), Sets.create("_id", "owner"));
 		for (Record stream : result) {
 			try {
 			  AccessLog.log("reset stream:"+stream._id.toString());
 			  Feature_UserGroups.findApsCacheToUse(getCache(who), stream._id).getAPS(stream._id, stream.owner).removeMeta("_info");			  
 			} catch (APSNotExistingException e) {}
+			catch (InternalServerException e2) {
+				AccessLog.log("Stream access error: "+stream._id+" ow="+stream.owner.toString());
+			}
 		}
 		AccessLog.logEnd("end reset info user="+who.toString());
 	}

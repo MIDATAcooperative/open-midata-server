@@ -1,0 +1,75 @@
+
+	<div  ng-controller="ManageMailsCtrl">
+		
+		<div class="panel panel-primary">
+		<div class="panel-heading">
+		  	<p ng-hide="mailItem._id" translate="admin_managemails.title1"></p>
+			<p ng-show="mailItem._id" translate="admin_managemails.title2"></p>
+		</div>
+		<div class="body">
+		
+		<form name="myform" novalidate role="form" class="form-horizontal" ng-submit="updateMail()">
+		  <p ng-show="error && !error.field" translate="{{ error.code || error }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
+	      </p>	
+		
+		  <formrow myid="title" label="admin_managemails.name">
+		    <input type="text" id="title" class="form-control" ng-change="change()" ng-readonly="!editable" ng-model="mailItem.name" autofocus>
+		  </formrow>
+		  
+		  <formrow myid="title" label="admin_managemails.status">
+		    <p class="form-control-plaintext" translate="{{'admin_mails.stati.'+mailItem.status}}"></p>
+		  </formrow>
+		  
+		  <formrow myid="studyId" label="admin_managemails.studyId">
+	          <div class="row">
+	             <div class="col-sm-3">
+	               <input type="text" class="form-control" ng-readonly="!editable" ng-change="studyselection(mailItem.studyCode);" autocomplete="off" typeahead-on-select="studyselection(mailItem.studyCode)" ng-model-options="{ debounce: 500 }" ng-model="mailItem.studyCode" uib-typeahead="study.code for study in studies | filter:$viewValue | limitTo:8" required>
+	             </div>
+	             <div class="col-sm-9">
+	                 <p class="form-control-plaintext">{{ mailItem.studyName }}</p>	                 
+	             </div>
+	          </div>
+	          <formerror myid="studyId" type="unknown" message="error.unknown.study"></formerror>
+	      </formrow> 
+		   	
+		  <formrow myid="lang" label="admin_managemails.lang">
+		    <select id="lang" name="lang" class="form-control" ng-model="sel.lang" ng-options="lang for lang in languages"></select>		    
+		  </formrow>
+		  
+		  
+		  <formrow myid="title" label="admin_managemails.title">		    
+		    <input type="text" id="title" name="title" class="form-control" ng-readonly="!editable" ng-change="change()" ng-model="mailItem.title[sel.lang]">
+		  </formrow>
+		  
+		  <formrow myid="content" label="admin_managemails.content">
+		    <textarea rows="5" id="text" name="text" class="form-control" ng-readonly="!editable" ng-change="change()" ng-model="mailItem.content[sel.lang]"></textarea>		  
+		  </formrow>
+		  <div >		  				  
+		  <formrow myid="title" label="admin_managemails.created" ng-show="mailItem.created != null">
+		    <p class="form-control-plaintext">{{ mailItem.created | date : 'dd.MM.yyyy HH:mm' }}</p>
+		  </formrow>
+		  </div>	  		
+		  
+		  <formrow myid="title" label="admin_managemails.started" ng-show="mailItem.started">
+		    <p class="form-control-plaintext">{{ mailItem.started | date : 'dd.MM.yyyy HH:mm' }}</p>
+		  </formrow>
+		  
+		  <formrow myid="title" label="admin_managemails.finished" ng-show="mailItem.finished">
+		    <p class="form-control-plaintext">{{ mailItem.finished | date : 'dd.MM.yyyy HH:mm' }}</p>
+		  </formrow>
+		  
+		  <formrow myid="title" label="admin_managemails.progressCount" ng-show="mailItem.progressCount">
+		    <p class="form-control-plaintext">{{ mailItem.progressCount }}</p>
+		  </formrow>
+	
+		  <formrow myid="x" label="">
+		    <button type="submit" ng-disabled="status.action=='submit'" ng-show="editable" class="btn btn-primary" translate="common.submit_btn"></button>		    
+		    <button type="button" class="btn btn-primary" ng-show="allowSend" ng-click="send()" ng-disabled="status.action=='send'" translate="admin_managemails.send_btn"></button>
+		    <button type="button" class="btn btn-danger" ng-show="allowDelete" ng-click="doDelete()" ng-disabled="status.action=='delete'" translate="common.delete_btn"></button>
+		    <a ui-sref="^.mails" class="btn btn-default" translate="common.back_btn"></a>
+		  </formrow>
+	     </form>	  
+		  
+		
+	</div>
+	</div></div>

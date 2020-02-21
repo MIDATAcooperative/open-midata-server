@@ -1,0 +1,36 @@
+
+<div ng-controller="AdminMailsCtrl">
+		
+ 	<div class="panel panel-primary">
+		<div class="panel-heading" translate="admin_mails.title"></div>
+		<div class="body">
+      <loader busy="status.isBusy !== false">
+      <table class="table" ng-show="mails.length > 0">
+        <tr>
+          <th translate="admin_mails.created"></th>
+          <th translate="admin_mails.name"></th>
+          <th translate="admin_mails.status"></th>
+          <th translate="admin_mails.progressCount"></th>
+          <th translate="admin_mails.studyName"></th>
+          <th translate="admin_mails.creatorName"></th>              
+        </tr>
+        <tr ng-repeat="item in mails">
+          <td>{{ item.created | date : 'dd.MM.yy'}}</td>
+          <td><a ui-sref="^.managemails({ mailId : item._id })">{{ item.name }}</a></td>
+          <td><span translate="{{'admin_mails.stati.'+item.status}}"></span></td>
+          <td>{{ item.progressCount }}</td>
+          <td>{{ item.studyName }}</td>
+          <td>{{ item.creatorName }}</td>                   
+        </tr>
+      </table>
+      <p ng-show="mails.length == 0" translate="admin_mails.empty"></p>
+      
+      <a class="btn btn-primary" translate="common.add_btn" ui-sref="^.newmail"></a> 
+            
+      </loader>		
+    </div>
+  </div>		
+
+		  	
+</div>
+	

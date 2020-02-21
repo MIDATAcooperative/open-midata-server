@@ -1154,6 +1154,12 @@ public class Application extends APIController {
 				controllers.routes.javascript.Terms.agreedToTerms(),
 				controllers.routes.javascript.Terms.currentTerms(),
 				
+				controllers.routes.javascript.BulkMails.get(),
+				controllers.routes.javascript.BulkMails.add(),
+				controllers.routes.javascript.BulkMails.update(),
+				controllers.routes.javascript.BulkMails.delete(),
+				controllers.routes.javascript.BulkMails.send(),
+				
 		        // Portal
 		        controllers.routes.javascript.PortalConfig.getConfig(),
 		        controllers.routes.javascript.PortalConfig.setConfig())).as("text/javascript");

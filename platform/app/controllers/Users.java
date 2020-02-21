@@ -308,7 +308,7 @@ public class Users extends APIController {
 		  if (user.mobile != null) JsonValidation.validate(json, "mobile");
 		  user.phone = JsonValidation.getStringOrNull(json, "phone");
 		  String mobile = JsonValidation.getStringOrNull(json, "mobile");
-		  if (!mobile.equals(user.mobile)) {
+		  if (mobile==null || !mobile.equals(user.mobile)) {
 			  user.mobileStatus = EMailStatus.UNVALIDATED;
 			  user.mobile = mobile;  
 		  }
