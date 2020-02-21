@@ -9,8 +9,7 @@ angular.module('portal', [ 'ngCookies', 'ui.router', 'ui.bootstrap', 'services',
    $locationProvider.hashPrefix('');
        
    $translateProvider
-     .useSanitizeValueStrategy('escape')
-     .useLocalStorage()
+     .useSanitizeValueStrategy('escape')     
      .useLoader('$translatePartialLoader', {
         urlTemplate: '/i18n/{part}_{lang}.json'
       })   
@@ -22,6 +21,7 @@ angular.module('portal', [ 'ngCookies', 'ui.router', 'ui.bootstrap', 'services',
      })
      .fallbackLanguage('en')
      .determinePreferredLanguage();
+   $translateProvider.useLocalStorage();
    
    $stateProvider
     .state('public', {
@@ -88,6 +88,8 @@ angular.module('portal', [ 'ngCookies', 'ui.router', 'ui.bootstrap', 'services',
        $rootScope.greeting = {};
    });
    
+   //This is a workaround that prevents angular translate using a different language than reported by $translate.use() 
+   $translate("-1");
 }])
 .config(['$compileProvider', function ($compileProvider) {
   $compileProvider.debugInfoEnabled(false);

@@ -41,6 +41,9 @@ angular.module('portal', [ 'ngCookies', 'ui.router', 'services', 'views', 'confi
    });
    $rootScope.currentDate = new Date();
    $translatePartialLoader.addPart("shared");
+   
+   //This is a workaround that prevents angular translate using a different language than reported by $translate.use() 
+   $translate("-1");
 }])
 .config(['$compileProvider', function ($compileProvider) {
   $compileProvider.debugInfoEnabled(false);
