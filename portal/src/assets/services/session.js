@@ -1,5 +1,5 @@
 angular.module('services')
-.factory('session', ['$q', 'server', 'crypto', 'actions', function($q, server, crypto, actions) {
+.factory('session', ['$q', 'server', 'crypto', 'actions', '$translate', function($q, server, crypto, actions, $translate) {
 	
 	var _states = {};
 	
@@ -99,11 +99,12 @@ angular.module('services')
 				//$cookies.put("session", userId);
 				//session.storedCookie = userId;
 				//userId = { "$oid" : userId };			
-				var data = {"properties": { "_id" : userId }, "fields": ["email", "firstname", "lastname", "visualizations", "apps", "midataID", "name", "role", "subroles", "developer", "security"] };
+				var data = {"properties": { "_id" : userId }, "fields": ["email", "firstname", "lastname", "visualizations", "apps", "midataID", "name", "role", "subroles", "developer", "security", "language"] };
 				session.org = result.org;
 				server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data))
 				.then(function(data) {
-				   session.user = data.data[0];				 
+				   session.user = data.data[0];	
+				   //if (session.user.language) $translate.use(session.user.language);
 				   def.resolve(userId);
 				});																					
 			}, function() { document.location.href="/#/public/login"; });		

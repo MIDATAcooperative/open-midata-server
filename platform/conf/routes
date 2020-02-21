@@ -47,6 +47,11 @@ OPTIONS /v1/news/get                                     controllers.PluginsAPI.
 POST    /v1/news/get                                     controllers.News.getPublic()
 POST    /api/admin/news/update                           controllers.News.update()
 POST    /api/admin/news/delete/:id                       controllers.News.delete(id: String)
+POST    /api/admin/mails/get                             controllers.BulkMails.get()
+POST	/api/admin/mails/add							 controllers.BulkMails.add()
+POST	/api/admin/mails/update							 controllers.BulkMails.update()
+POST    /api/admin/mails/delete/:id	   					 controllers.BulkMails.delete(id: String)
+POST    /api/admin/mails/send/:id                        controllers.BulkMails.send(id: String)
 
 
 # Records

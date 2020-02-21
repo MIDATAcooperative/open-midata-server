@@ -41,7 +41,7 @@ import utils.fhir.PatientResourceProvider;
 
 public class AccountPatches {
 
-	public static final int currentAccountVersion = 20190206;
+	public static final int currentAccountVersion = 20200221;
 	
 	public static boolean check(User user) throws AppException {
 		boolean isold = user.accountVersion < currentAccountVersion;
@@ -52,6 +52,7 @@ public class AccountPatches {
 		if (user.accountVersion < 20161205) { formatPatch20161205(user); }
 		if (user.accountVersion < 20171206) { formatPatch20171206(user); }
 		if (user.accountVersion < 20190206) { formatPatch20190206(user); }
+		if (user.accountVersion < 20200221) { formatPatch20200221(user); }
 		//if (user.accountVersion < 20180130) { formatPatch20180130(user); }
 		//if (user.accountVersion < 20170206) { formatPatch20170206(user); }
 		
@@ -234,6 +235,8 @@ public class AccountPatches {
 			}
 			makeCurrent(user, 20190206);
 		}
+		
+		AccessLog.logEnd("end patch 2019 02 06");
 	}
 	
 	/*public static void formatPatch20180130(User user) throws AppException {
@@ -291,5 +294,15 @@ public class AccountPatches {
 		}
 	}
 	
+	public static void formatPatch20200221(User user) throws AppException {
+		AccessLog.logBegin("start patch 2020 02 21");
+		
+		if (user.role.equals(UserRole.MEMBER)) {
+		  PatientResourceProvider.updatePatientForAccount(user._id);
+		}
+							
+		makeCurrent(user, 20200221);
+		AccessLog.logEnd("end patch 2020 02 21");
+	}
 	
 }
