@@ -283,7 +283,7 @@ public class ProcessingTools {
 
 		@Override
 		public boolean contained(DBRecord record) {
-			if (noPostfilterStreams && record.isStream)
+			if (noPostfilterStreams && record.isStream!=null)
 				return true;
 			return values.contains(record.meta.get(property));
 		}
@@ -310,7 +310,7 @@ public class ProcessingTools {
 
 		@Override
 		public boolean contained(DBRecord record) {
-			if (record.isStream) return true;
+			if (record.isStream!=null) return true;
 			Collection tags = (Collection) record.meta.get("tags");
 			if (must_be_present) return tags != null && tags.contains(tag);
 			return tags == null || !tags.contains(tag);
@@ -334,7 +334,7 @@ public class ProcessingTools {
 
 		@Override
 		public boolean contained(DBRecord record) {
-			if (record.isStream) return true;
+			if (record.isStream!=null) return true;
 			BasicBSONList tags = (BasicBSONList) record.meta.get("tags");
 			if (tags == null || !tags.contains("security:hidden")) return true;
 			record.data = new BasicBSONObject();
@@ -416,7 +416,7 @@ public class ProcessingTools {
 
 		@Override
 		public boolean contained(DBRecord record) {
-			if (noPostfilterStreams && record.isStream)
+			if (noPostfilterStreams && record.isStream!=null)
 				return true;
 			
 			Object v = record.meta.get(property);			

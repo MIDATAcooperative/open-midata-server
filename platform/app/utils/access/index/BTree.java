@@ -5,20 +5,20 @@ import java.util.Stack;
 import utils.db.LostUpdateException;
 import utils.exceptions.InternalServerException;
 
-public class BTree
+public class BTree<A extends BaseIndexKey<A,B>,B>
   {
       public final static int     REBALANCE_FOR_LEAF_NODE         =   1;
       public final static int     REBALANCE_FOR_INTERNAL_NODE     =   2;
   
-      private IndexPage mRoot = null;
-      private IndexRoot root;
+      private IndexPage<A,B> mRoot = null;
+      private BaseIndexRoot<A,B> root;
       private long  mSize = 0L;
-      private IndexPage mIntermediateInternalNode = null;
+      private IndexPage<A,B> mIntermediateInternalNode = null;
       private int mNodeIdx = 0;
       private final Stack<StackInfo> mStackTracer = new Stack<StackInfo>();
     
   
-      public BTree(IndexRoot root, IndexPage mroot) {
+      public BTree(BaseIndexRoot<A,B> root, IndexPage<A,B> mroot) {
     	  this.mRoot = mroot;
     	  this.root = root;
       }
@@ -26,7 +26,7 @@ public class BTree
       //
       // Get the root node
       //
-      public IndexPage getRootNode() {
+      public IndexPage<A,B> getRootNode() {
           return mRoot;
       }
   
@@ -51,9 +51,9 @@ public class BTree
       //
       // Create a node with default values
       //
-      private IndexPage createNode() throws InternalServerException {
-          IndexPage btNode;
-          btNode = new IndexPage(mRoot.key, root);
+      private IndexPage<A,B> createNode() throws InternalServerException {
+          IndexPage<A,B> btNode;
+          btNode = new IndexPage<A,B>(mRoot.key, root);
           btNode.mIsLeaf = true;
           btNode.mCurrentKeyNum = 0;
           root.loadedPages.put(btNode.getId(), btNode);
@@ -64,19 +64,19 @@ public class BTree
      //
       // Search value for a specified key of the tree
       //
-      public IndexKey search(IndexKey key) throws InternalServerException, LostUpdateException {
-          IndexPage currentNode = mRoot;
-          IndexKey currentKey;
+      public A search(A key) throws InternalServerException, LostUpdateException {
+          IndexPage<A,B> currentNode = mRoot;
+          A currentKey;
           int i, numberOfKeys;
           
           while (currentNode != null) {
               numberOfKeys = currentNode.mCurrentKeyNum;
               i = 0;
-              currentKey = currentNode.mKeys[i];
+              currentKey = (A) currentNode.mKeys[i];
               while ((i < numberOfKeys) && (key.compareTo(currentKey) > 0)) {
                   ++i;
                   if (i < numberOfKeys) {
-                      currentKey = currentNode.mKeys[i];
+                      currentKey = (A) currentNode.mKeys[i];
                   }
                   else {
                       --i;
@@ -96,10 +96,10 @@ public class BTree
               */
   
               if (key.compareTo(currentKey) > 0) {
-                  currentNode = IndexRoot.getRightChildAtIndex(currentNode, i);
+                  currentNode = BaseIndexRoot.getRightChildAtIndex(currentNode, i);
               }
               else {
-                  currentNode = IndexRoot.getLeftChildAtIndex(currentNode, i);
+                  currentNode = BaseIndexRoot.getLeftChildAtIndex(currentNode, i);
               }
           }
   
@@ -110,15 +110,15 @@ public class BTree
       //
       // Insert key and its value into the tree
       //
-      public BTree insert(IndexKey key) throws InternalServerException, LostUpdateException {
+      public BTree insert(A key) throws InternalServerException, LostUpdateException {
           if (mRoot == null) {
               mRoot = createNode();
           }
   
           ++mSize;
-          if (mRoot.mCurrentKeyNum == IndexRoot.UPPER_BOUND_KEYNUM) {
+          if (mRoot.mCurrentKeyNum == BaseIndexRoot.UPPER_BOUND_KEYNUM) {
               // The root is full, split it
-              IndexPage btNode = createNode();
+              IndexPage<A,B> btNode = createNode();
               btNode.copyFrom(mRoot);                            
               mRoot.initNonLeaf();                            
               mRoot.mChildren[0] = btNode.getId();
@@ -134,7 +134,7 @@ public class BTree
       //
       // Insert key and its value to the specified root
       //
-      private void insertKeyAtNode(IndexPage rootNode, IndexKey key) throws InternalServerException, LostUpdateException {
+      private void insertKeyAtNode(IndexPage<A,B> rootNode, A key) throws InternalServerException, LostUpdateException {
           int i;
           int currentKeyNum = rootNode.mCurrentKeyNum;
   
@@ -158,7 +158,7 @@ public class BTree
               }
   
               i = currentKeyNum - 1;
-              IndexKey existingKeyVal = rootNode.mKeys[i];
+              A existingKeyVal = rootNode.mKeys[i];
               while ((i > -1) && (key.compareTo(existingKeyVal) < 0)) {
                   rootNode.mKeys[i + 1] = existingKeyVal;
                   --i;
@@ -168,7 +168,7 @@ public class BTree
               }
   
               i = i + 1;
-              rootNode.mKeys[i] = new IndexKey(key);
+              rootNode.mKeys[i] = key.copy();
               rootNode.changed = true;
               ++(rootNode.mCurrentKeyNum);
               return;
@@ -178,7 +178,7 @@ public class BTree
           // So let find the child node where the key is supposed to belong
           i = 0;
           int numberOfKeys = rootNode.mCurrentKeyNum;
-          IndexKey currentKey = rootNode.mKeys[i];
+          A currentKey = rootNode.mKeys[i];
           while ((i < numberOfKeys) && (key.compareTo(currentKey) > 0)) {
               ++i;
               if (i < numberOfKeys) {
@@ -192,26 +192,26 @@ public class BTree
   
           if ((i < numberOfKeys) && (key.compareTo(currentKey) == 0)) {
               // The key already existed so replace its value and done with it
-              currentKey.value = key.value;
+              currentKey.fetchValue(key);
               --mSize;
               return;
           }
   
-          IndexPage btNode;
+          IndexPage<A,B> btNode;
           if (key.compareTo(currentKey) > 0) {
-              btNode = IndexRoot.getRightChildAtIndex(rootNode, i);
+              btNode = BaseIndexRoot.getRightChildAtIndex(rootNode, i);
               i = i + 1;
           }
           else {
               if ((i - 1 >= 0) && (key.compareTo(rootNode.mKeys[i - 1]) > 0)) {
-                  btNode = IndexRoot.getRightChildAtIndex(rootNode, i - 1);
+                  btNode = BaseIndexRoot.getRightChildAtIndex(rootNode, i - 1);
               }
               else {
-                  btNode = IndexRoot.getLeftChildAtIndex(rootNode, i);
+                  btNode = BaseIndexRoot.getLeftChildAtIndex(rootNode, i);
               }
           }
   
-          if (btNode.mCurrentKeyNum == IndexRoot.UPPER_BOUND_KEYNUM) {
+          if (btNode.mCurrentKeyNum == BaseIndexRoot.UPPER_BOUND_KEYNUM) {
               // If the child node is a full node then handle it by splitting out
               // then insert key starting at the root node after splitting node
               splitNode(rootNode, i, btNode);
@@ -226,10 +226,10 @@ public class BTree
       //
       // Split a child with respect to its parent at a specified node
       //
-      private void splitNode(IndexPage parentNode, int nodeIdx, IndexPage btNode) throws InternalServerException {
+      private void splitNode(IndexPage<A,B> parentNode, int nodeIdx, IndexPage<A,B> btNode) throws InternalServerException {
           int i;
   
-          IndexPage newNode = createNode();
+          IndexPage<A,B> newNode = createNode();
           parentNode.changed = true;
           btNode.changed = true;
   
@@ -237,26 +237,26 @@ public class BTree
   
           // Since the node is full,
           // new node must share LOWER_BOUND_KEYNUM (aka t - 1) keys from the node
-          newNode.mCurrentKeyNum = IndexRoot.LOWER_BOUND_KEYNUM;
+          newNode.mCurrentKeyNum = BaseIndexRoot.LOWER_BOUND_KEYNUM;
   
           // Copy right half of the keys from the node to the new node
-          for (i = 0; i < IndexRoot.LOWER_BOUND_KEYNUM; ++i) {
-              newNode.mKeys[i] = btNode.mKeys[i + IndexRoot.MIN_DEGREE];
-              btNode.mKeys[i + IndexRoot.MIN_DEGREE] = null;
+          for (i = 0; i < BaseIndexRoot.LOWER_BOUND_KEYNUM; ++i) {
+              newNode.mKeys[i] = btNode.mKeys[i + BaseIndexRoot.MIN_DEGREE];
+              btNode.mKeys[i + BaseIndexRoot.MIN_DEGREE] = null;
           }
   
           // If the node is an internal node (not a leaf),
           // copy the its child pointers at the half right as well
           if (!btNode.mIsLeaf) {
-              for (i = 0; i < IndexRoot.MIN_DEGREE; ++i) {
-                  newNode.mChildren[i] = btNode.mChildren[i + IndexRoot.MIN_DEGREE];
-                  btNode.mChildren[i + IndexRoot.MIN_DEGREE] = null;
+              for (i = 0; i < BaseIndexRoot.MIN_DEGREE; ++i) {
+                  newNode.mChildren[i] = btNode.mChildren[i + BaseIndexRoot.MIN_DEGREE];
+                  btNode.mChildren[i + BaseIndexRoot.MIN_DEGREE] = null;
               }
           }
   
           // The node at this point should have LOWER_BOUND_KEYNUM (aka min degree - 1) keys at this point.
           // We will move its right-most key to its parent node later.
-          btNode.mCurrentKeyNum = IndexRoot.LOWER_BOUND_KEYNUM;
+          btNode.mCurrentKeyNum = BaseIndexRoot.LOWER_BOUND_KEYNUM;
   
           // Do the right shift for relevant child pointers of the parent node
           // so that we can put the new node as its new child pointer
@@ -272,8 +272,8 @@ public class BTree
               parentNode.mKeys[i + 1] = parentNode.mKeys[i];
               parentNode.mKeys[i] = null;
           }
-          parentNode.mKeys[nodeIdx] = btNode.mKeys[IndexRoot.LOWER_BOUND_KEYNUM];
-          btNode.mKeys[IndexRoot.LOWER_BOUND_KEYNUM] = null;
+          parentNode.mKeys[nodeIdx] = btNode.mKeys[BaseIndexRoot.LOWER_BOUND_KEYNUM];
+          btNode.mKeys[BaseIndexRoot.LOWER_BOUND_KEYNUM] = null;
           ++(parentNode.mCurrentKeyNum);
       }
   
@@ -281,14 +281,14 @@ public class BTree
       //
       // Find the predecessor node for a specified node
       //
-      private IndexPage findPredecessor(IndexPage btNode, int nodeIdx) throws InternalServerException, LostUpdateException {
+      private IndexPage<A,B> findPredecessor(IndexPage<A,B> btNode, int nodeIdx) throws InternalServerException, LostUpdateException {
           if (btNode.mIsLeaf) {
               return btNode;
           }
   
-          IndexPage predecessorNode;
+          IndexPage<A,B> predecessorNode;
           if (nodeIdx > -1) {
-              predecessorNode = IndexRoot.getLeftChildAtIndex(btNode, nodeIdx);
+              predecessorNode = BaseIndexRoot.getLeftChildAtIndex(btNode, nodeIdx);
               if (predecessorNode != null) {
                   mIntermediateInternalNode = btNode;
                   mNodeIdx = nodeIdx;
@@ -298,7 +298,7 @@ public class BTree
               return btNode;
           }
   
-          predecessorNode = IndexRoot.getRightChildAtIndex(btNode, btNode.mCurrentKeyNum - 1);
+          predecessorNode = BaseIndexRoot.getRightChildAtIndex(btNode, btNode.mCurrentKeyNum - 1);
           if (predecessorNode != null) {
               mIntermediateInternalNode = btNode;
               mNodeIdx = btNode.mCurrentKeyNum;
@@ -312,11 +312,11 @@ public class BTree
       //
       // Find predecessor node of a specified node
       //
-      private IndexPage findPredecessorForNode(IndexPage btNode, int keyIdx) throws InternalServerException, LostUpdateException {
-          IndexPage predecessorNode;
-          IndexPage originalNode = btNode;
+      private IndexPage<A,B> findPredecessorForNode(IndexPage<A,B> btNode, int keyIdx) throws InternalServerException, LostUpdateException {
+          IndexPage<A,B> predecessorNode;
+          IndexPage<A,B> originalNode = btNode;
           if (keyIdx > -1) {
-              predecessorNode = IndexRoot.getLeftChildAtIndex(btNode, keyIdx);
+              predecessorNode = BaseIndexRoot.getLeftChildAtIndex(btNode, keyIdx);
               if (predecessorNode != null) {
                   btNode = findPredecessorForNode(predecessorNode, -1);
                   rebalanceTreeAtNode(originalNode, predecessorNode, keyIdx, REBALANCE_FOR_LEAF_NODE);
@@ -325,7 +325,7 @@ public class BTree
               return btNode;
           }
   
-          predecessorNode = IndexRoot.getRightChildAtIndex(btNode, btNode.mCurrentKeyNum - 1);
+          predecessorNode = BaseIndexRoot.getRightChildAtIndex(btNode, btNode.mCurrentKeyNum - 1);
           if (predecessorNode != null) {
               btNode = findPredecessorForNode(predecessorNode, -1);
               rebalanceTreeAtNode(originalNode, predecessorNode, keyIdx, REBALANCE_FOR_LEAF_NODE);
@@ -338,7 +338,7 @@ public class BTree
       //
       // Do the left rotation
       //
-      private void performLeftRotation(IndexPage btNode, int nodeIdx, IndexPage parentNode, IndexPage rightSiblingNode) throws InternalServerException  {
+      private void performLeftRotation(IndexPage<A,B> btNode, int nodeIdx, IndexPage<A,B> parentNode, IndexPage<A,B> rightSiblingNode) throws InternalServerException  {
           int parentKeyIdx = nodeIdx;
   
           parentNode.changed = true;
@@ -372,7 +372,7 @@ public class BTree
       //
       // Do the right rotation
       //
-      private void performRightRotation(IndexPage btNode, int nodeIdx, IndexPage parentNode, IndexPage leftSiblingNode) {
+      private void performRightRotation(IndexPage<A,B> btNode, int nodeIdx, IndexPage<A,B> parentNode, IndexPage<A,B> leftSiblingNode) {
           int parentKeyIdx = nodeIdx;
           if (nodeIdx >= parentNode.mCurrentKeyNum) {
               // This shouldn't happen
@@ -408,7 +408,7 @@ public class BTree
       // Return true if it should continue further
       // Return false if it is done
       //
-      private boolean performMergeWithLeftSibling(IndexPage btNode, int nodeIdx, IndexPage parentNode, IndexPage leftSiblingNode) {
+      private boolean performMergeWithLeftSibling(IndexPage<A,B> btNode, int nodeIdx, IndexPage<A,B> parentNode, IndexPage<A,B> leftSiblingNode) {
     	  btNode.changed = true;
     	  parentNode.changed = true;
     	  leftSiblingNode.changed = true;
@@ -468,7 +468,7 @@ public class BTree
       // Return true if it should continue further
       // Return false if it is done
       //
-      private boolean performMergeWithRightSibling(IndexPage btNode, int nodeIdx, IndexPage parentNode, IndexPage rightSiblingNode) {
+      private boolean performMergeWithRightSibling(IndexPage<A,B> btNode, int nodeIdx, IndexPage<A,B> parentNode, IndexPage<A,B> rightSiblingNode) {
     	  
     	  btNode.changed = true;
     	  parentNode.changed = true;
@@ -516,7 +516,7 @@ public class BTree
       // Return index of the keys if it finds
       // Return -1 otherwise
       //
-      private int searchKey(IndexPage btNode, IndexKey key) {
+      private int searchKey(IndexPage<A,B> btNode, A key) {
           for (int i = 0; i < btNode.mCurrentKeyNum; ++i) {
               if (key.compareTo(btNode.mKeys[i]) == 0) {
                   return i;
@@ -530,62 +530,15 @@ public class BTree
       }
   
   
-      //
-      // List all the items in the tree
-      //
-      /*public void list(BTIteratorIF<K, V> iterImpl) {
-          if (mSize < 1) {
-              return;
-          }
-  
-          if (iterImpl == null) {
-              return;
-          }
-  
-          listEntriesInOrder(mRoot, iterImpl);
-      }*/
-  
-  
-      //
-      // Recursively loop to the tree and list out the keys and their values
-      // Return true if it should continues listing out futher
-      // Return false if it is done
-      //
-      /*private boolean listEntriesInOrder(IndexPage treeNode, BTIteratorIF<K, V> iterImpl) {
-          if ((treeNode == null) ||
-              (treeNode.mCurrentKeyNum == 0)) {
-              return false;
-          }
-  
-          boolean bStatus;
-          BTKeyValue<K, V> keyVal;
-          int currentKeyNum = treeNode.mCurrentKeyNum;
-          for (int i = 0; i < currentKeyNum; ++i) {
-              listEntriesInOrder(BTNode.getLeftChildAtIndex(treeNode, i), iterImpl);
-  
-              keyVal = treeNode.mKeys[i];
-              bStatus = iterImpl.item(keyVal.mKey, keyVal.mValue);
-              if (!bStatus) {
-                  return false;
-              }
-  
-              if (i == currentKeyNum - 1) {
-                  listEntriesInOrder(BTNode.getRightChildAtIndex(treeNode, i), iterImpl);
-              }
-          }
-  
-          return true;
-      }
-  */
   
       //
       // Delete a key from the tree
       // Return value if it finds the key and delete it
       // Return null if it cannot find the key
       //
-      public IndexKey delete(IndexKey key) throws InternalServerException, LostUpdateException {
+      public A delete(A key) throws InternalServerException, LostUpdateException {
           mIntermediateInternalNode = null;
-          IndexKey keyVal = deleteKey(null, mRoot, key, 0);
+          A keyVal = deleteKey(null, mRoot, key, 0);
           if (keyVal == null) {
               return null;
           }
@@ -597,10 +550,10 @@ public class BTree
       //
       // Delete a key from a tree node
       //
-      private IndexKey deleteKey(IndexPage parentNode, IndexPage btNode, IndexKey key, int nodeIdx) throws InternalServerException, LostUpdateException {
+      private A deleteKey(IndexPage<A,B> parentNode, IndexPage<A,B> btNode, A key, int nodeIdx) throws InternalServerException, LostUpdateException {
           int i;
           int nIdx;
-          IndexKey retVal;
+          A retVal;
   
           if (btNode == null) {
               // The tree is empty
@@ -616,7 +569,7 @@ public class BTree
   
               retVal = btNode.mKeys[nIdx];
   
-              if ((btNode.mCurrentKeyNum > IndexRoot.LOWER_BOUND_KEYNUM) || (parentNode == null)) {
+              if ((btNode.mCurrentKeyNum > BaseIndexRoot.LOWER_BOUND_KEYNUM) || (parentNode == null)) {
                   // Remove it from the node
                   for (i = nIdx; i < btNode.mCurrentKeyNum - 1; ++i) {
                       btNode.mKeys[i] = btNode.mKeys[i + 1];
@@ -634,15 +587,15 @@ public class BTree
               }
   
               // Find the left sibling
-              IndexPage rightSibling;
-              IndexPage leftSibling = IndexRoot.getLeftSiblingAtIndex(parentNode, nodeIdx);
-              if ((leftSibling != null) && (leftSibling.mCurrentKeyNum > IndexRoot.LOWER_BOUND_KEYNUM)) {
+              IndexPage<A,B> rightSibling;
+              IndexPage<A,B> leftSibling = BaseIndexRoot.getLeftSiblingAtIndex(parentNode, nodeIdx);
+              if ((leftSibling != null) && (leftSibling.mCurrentKeyNum > BaseIndexRoot.LOWER_BOUND_KEYNUM)) {
                   // Remove the key and borrow a key from the left sibling
                   moveLeftLeafSiblingKeyWithKeyRemoval(btNode, nodeIdx, nIdx, parentNode, leftSibling);
               }
               else {
-                  rightSibling = IndexRoot.getRightSiblingAtIndex(parentNode, nodeIdx);
-                  if ((rightSibling != null) && (rightSibling.mCurrentKeyNum > IndexRoot.LOWER_BOUND_KEYNUM)) {
+                  rightSibling = BaseIndexRoot.getRightSiblingAtIndex(parentNode, nodeIdx);
+                  if ((rightSibling != null) && (rightSibling.mCurrentKeyNum > BaseIndexRoot.LOWER_BOUND_KEYNUM)) {
                       // Remove a key and borrow a key the right sibling
                       moveRightLeafSiblingKeyWithKeyRemoval(btNode, nodeIdx, nIdx, parentNode, rightSibling);
                   }
@@ -656,7 +609,7 @@ public class BTree
                           if (!bStatus) {
                               isRebalanceNeeded = false;
                           }
-                          else if (parentNode.mCurrentKeyNum < IndexRoot.LOWER_BOUND_KEYNUM) {
+                          else if (parentNode.mCurrentKeyNum < BaseIndexRoot.LOWER_BOUND_KEYNUM) {
                               // Need to rebalance the tree
                               isRebalanceNeeded = true;
                           }
@@ -667,7 +620,7 @@ public class BTree
                           if (!bStatus) {
                               isRebalanceNeeded = false;
                           }
-                          else if (parentNode.mCurrentKeyNum < IndexRoot.LOWER_BOUND_KEYNUM) {
+                          else if (parentNode.mCurrentKeyNum < BaseIndexRoot.LOWER_BOUND_KEYNUM) {
                               // Need to rebalance the tree
                               isRebalanceNeeded = true;
                           }
@@ -693,11 +646,11 @@ public class BTree
               // Find its predecessor
               mIntermediateInternalNode = btNode;
               mNodeIdx = nIdx;
-              IndexPage predecessorNode =  findPredecessor(btNode, nIdx);
-              IndexKey predecessorKey = predecessorNode.mKeys[predecessorNode.mCurrentKeyNum - 1];
+              IndexPage<A,B> predecessorNode =  findPredecessor(btNode, nIdx);
+              A predecessorKey = predecessorNode.mKeys[predecessorNode.mCurrentKeyNum - 1];
   
               // Swap the data of the deleted key and its predecessor (in the leaf node)
-              IndexKey deletedKey = btNode.mKeys[nIdx];
+              A deletedKey = btNode.mKeys[nIdx];
               btNode.mKeys[nIdx] = predecessorKey;
               predecessorNode.mKeys[predecessorNode.mCurrentKeyNum - 1] = deletedKey;
   
@@ -711,7 +664,7 @@ public class BTree
           // Find the child subtree (node) that contains the key
           //
           i = 0;
-          IndexKey currentKey = btNode.mKeys[0];
+          A currentKey = btNode.mKeys[0];
           while ((i < btNode.mCurrentKeyNum) && (key.compareTo(currentKey) > 0)) {
               ++i;
               if (i < btNode.mCurrentKeyNum) {
@@ -723,16 +676,16 @@ public class BTree
               }
           }
   
-          IndexPage childNode;
+          IndexPage<A,B> childNode;
           if (key.compareTo(currentKey) > 0) {
-              childNode = IndexRoot.getRightChildAtIndex(btNode, i);
+              childNode = BaseIndexRoot.getRightChildAtIndex(btNode, i);
               if (childNode.mKeys[0].compareTo(btNode.mKeys[btNode.mCurrentKeyNum - 1]) > 0) {
                   // The right-most side of the node
                   i = i + 1;
               }
           }
           else {
-              childNode = IndexRoot.getLeftChildAtIndex(btNode, i);
+              childNode = BaseIndexRoot.getLeftChildAtIndex(btNode, i);
           }
   
           return deleteKey(btNode, childNode, key, i);
@@ -743,11 +696,11 @@ public class BTree
       // Remove the specified key and move a key from the right leaf sibling to the node
       // Note: The node and its sibling must be leaves
       //
-      private void moveRightLeafSiblingKeyWithKeyRemoval(IndexPage btNode,
+      private void moveRightLeafSiblingKeyWithKeyRemoval(IndexPage<A,B> btNode,
                                                          int nodeIdx,
                                                          int keyIdx,
-                                                         IndexPage parentNode,
-                                                         IndexPage rightSiblingNode) {
+                                                         IndexPage<A,B> parentNode,
+                                                         IndexPage<A,B> rightSiblingNode) {
           btNode.changed = true;
           parentNode.changed = true;
           rightSiblingNode.changed = true;
@@ -772,11 +725,11 @@ public class BTree
       // Remove the specified key and move a key from the left leaf sibling to the node
       // Note: The node and its sibling must be leaves
       //
-      private void moveLeftLeafSiblingKeyWithKeyRemoval(IndexPage btNode,
+      private void moveLeftLeafSiblingKeyWithKeyRemoval(IndexPage<A,B> btNode,
                                                         int nodeIdx,
                                                         int keyIdx,
-                                                        IndexPage parentNode,
-                                                        IndexPage leftSiblingNode) {
+                                                        IndexPage<A,B> parentNode,
+                                                        IndexPage<A,B> leftSiblingNode) {
     	  
     	  btNode.changed = true;
     	  leftSiblingNode.changed = true;
@@ -801,11 +754,11 @@ public class BTree
       // Return true if we need to perform futher re-balancing action
       // Return false if we reach and update the root hence we don't need to go futher for re-balancing the tree
       //
-      private boolean doLeafSiblingMergeWithKeyRemoval(IndexPage btNode,
+      private boolean doLeafSiblingMergeWithKeyRemoval(IndexPage<A,B> btNode,
                                                        int nodeIdx,
                                                        int keyIdx,
-                                                       IndexPage parentNode,
-                                                       IndexPage siblingNode,
+                                                       IndexPage<A,B> parentNode,
+                                                       IndexPage<A,B> siblingNode,
                                                        boolean isRightSibling) throws InternalServerException, LostUpdateException {
           int i;
           
@@ -903,7 +856,7 @@ public class BTree
       // true if it needs to continue rebalancing further
       // false if further rebalancing is no longer needed
       //
-      private boolean rebalanceTreeAtNode(IndexPage parentNode, IndexPage btNode, int nodeIdx, int balanceType) throws InternalServerException, LostUpdateException {
+      private boolean rebalanceTreeAtNode(IndexPage<A,B> parentNode, IndexPage<A,B> btNode, int nodeIdx, int balanceType) throws InternalServerException, LostUpdateException {
           if (balanceType == REBALANCE_FOR_LEAF_NODE) {
               if ((btNode == null) || (btNode == mRoot)) {
                   return false;
@@ -916,20 +869,20 @@ public class BTree
               }
           }
   
-          if (btNode.mCurrentKeyNum >= IndexRoot.LOWER_BOUND_KEYNUM) {
+          if (btNode.mCurrentKeyNum >= BaseIndexRoot.LOWER_BOUND_KEYNUM) {
               // The node doesn't need to rebalance
               return false;
           }
   
-          IndexPage rightSiblingNode;
-          IndexPage leftSiblingNode = IndexRoot.getLeftSiblingAtIndex(parentNode, nodeIdx);
-          if ((leftSiblingNode != null) && (leftSiblingNode.mCurrentKeyNum > IndexRoot.LOWER_BOUND_KEYNUM)) {
+          IndexPage<A,B> rightSiblingNode;
+          IndexPage<A,B> leftSiblingNode = BaseIndexRoot.getLeftSiblingAtIndex(parentNode, nodeIdx);
+          if ((leftSiblingNode != null) && (leftSiblingNode.mCurrentKeyNum > BaseIndexRoot.LOWER_BOUND_KEYNUM)) {
               // Do right rotate
               performRightRotation(btNode, nodeIdx, parentNode, leftSiblingNode);
           }
           else {
-              rightSiblingNode = IndexRoot.getRightSiblingAtIndex(parentNode, nodeIdx);
-              if ((rightSiblingNode != null) && (rightSiblingNode.mCurrentKeyNum > IndexRoot.LOWER_BOUND_KEYNUM)) {
+              rightSiblingNode = BaseIndexRoot.getRightSiblingAtIndex(parentNode, nodeIdx);
+              if ((rightSiblingNode != null) && (rightSiblingNode.mCurrentKeyNum > BaseIndexRoot.LOWER_BOUND_KEYNUM)) {
                   // Do left rotate
                   performLeftRotation(btNode, nodeIdx, parentNode, rightSiblingNode);
               }
@@ -956,15 +909,15 @@ public class BTree
       //
       // Re-balance the tree upward from the lower node to the upper node
       //
-      private void rebalanceTree(IndexPage upperNode, IndexPage lowerNode, IndexKey key) throws InternalServerException, LostUpdateException {
+      private void rebalanceTree(IndexPage<A,B> upperNode, IndexPage<A,B> lowerNode, A key) throws InternalServerException, LostUpdateException {
           mStackTracer.clear();
           mStackTracer.add(new StackInfo(null, upperNode, 0));
   
           //
           // Find the child subtree (node) that contains the key
           //
-          IndexPage parentNode, childNode;
-          IndexKey currentKey;
+          IndexPage<A,B> parentNode, childNode;
+          A currentKey;
           int i;
           parentNode = upperNode;
           while ((parentNode != lowerNode) && !parentNode.mIsLeaf) {
@@ -982,14 +935,14 @@ public class BTree
               }
   
               if (key.compareTo(currentKey) > 0) {
-                  childNode = IndexRoot.getRightChildAtIndex(parentNode, i);
+                  childNode = BaseIndexRoot.getRightChildAtIndex(parentNode, i);
                   if (childNode.mKeys[0].compareTo(parentNode.mKeys[parentNode.mCurrentKeyNum - 1]) > 0) {
                       // The right-most side of the node
                       i = i + 1;
                   }
               }
               else {
-                  childNode = IndexRoot.getLeftChildAtIndex(parentNode, i);
+                  childNode = BaseIndexRoot.getLeftChildAtIndex(parentNode, i);
               }
   
               if (childNode == null) {
@@ -1026,11 +979,11 @@ public class BTree
        * Structure contains parent node and node index
        */
       public class StackInfo {
-          public IndexPage mParent = null;
-          public IndexPage mNode = null;
+          public IndexPage<A,B> mParent = null;
+          public IndexPage<A,B> mNode = null;
           public int mNodeIdx = -1;
   
-          public StackInfo(IndexPage parent, IndexPage node, int nodeIdx) {
+          public StackInfo(IndexPage<A,B> parent, IndexPage<A,B> node, int nodeIdx) {
               mParent = parent;
               mNode = node;
               mNodeIdx = nodeIdx;

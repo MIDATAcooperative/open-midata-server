@@ -14,6 +14,7 @@ import models.Consent;
 import models.MidataId;
 import models.StudyRelated;
 import models.UserGroupMember;
+import models.enums.APSSecurityLevel;
 import utils.AccessLog;
 import utils.auth.EncryptionNotSupportedException;
 import utils.buffer.WatchesChangeBuffer;
@@ -192,7 +193,7 @@ public class APSCache {
 			int end = 0;
 			Map<MidataId, DBRecord> ids = new HashMap<MidataId, DBRecord>(streams.size());
 			for (DBRecord rec : streams) {	
-			  if (rec.isStream) {
+			  if (rec.isStream == APSSecurityLevel.HIGH) {
 				  if (!cache.containsKey(rec._id.toString())) {
 					  ids.put(rec._id, rec);
 				  }	else {

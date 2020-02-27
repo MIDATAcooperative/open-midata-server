@@ -165,7 +165,7 @@ class QueryEngine {
 		
 		
 		for (DBRecord record : recs) {
-			if (record.isStream) {				
+			if (record.isStream!=null) {				
 				q.getCache().getAPS(record._id, record.key, record.owner); // Called to make sure stream is accessible
 				
 				Collection<RecordsInfo> streaminfo = infoQuery(new Query(q, CMaps.map("stream", record._id).map("owner", record.owner)), record._id, !doNotCacheInStreams, aggrType, record.owner);
@@ -224,10 +224,10 @@ class QueryEngine {
     		AccessLog.log("with usergroup");
     		properties = new HashMap<String, Object>(properties);
     		properties.put("usergroup", userGroup);
-    		qm = new Feature_Pagination(new Feature_Sort(new Feature_Or(new Feature_ContextRestrictions(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(false, new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))))))))))));
+    		qm = new Feature_Pagination(new Feature_Sort(new Feature_Or(new Feature_ContextRestrictions(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(false, new Feature_Indexes(new Feature_StreamIndex(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams()))))))))))))));
     	} else {    	
     	   APS target = cache.getAPS(aps);    	
-    	   qm = new Feature_Pagination(new Feature_Sort(new Feature_Or(new Feature_ContextRestrictions(new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_Prefetch(true, new Feature_PublicData(new Feature_UserGroups(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))))))))))))))));
+    	   qm = new Feature_Pagination(new Feature_Sort(new Feature_Or(new Feature_ContextRestrictions(new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_Prefetch(true, new Feature_PublicData(new Feature_UserGroups(new Feature_Indexes(new Feature_StreamIndex(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams()))))))))))))))))));
     	}
     	Query q = new Query(properties, fields, cache, aps, context);
     	AccessLog.logQuery(q.getApsId(), q.getProperties(), q.getFields());
@@ -590,7 +590,7 @@ class QueryEngine {
     	AccessLog.log("filter by meta-set: "+property);
     	List<DBRecord> filteredResult = new ArrayList<DBRecord>(input.size());
     	for (DBRecord record : input) {
-    		if (!noPostfilterStreams || !record.isStream) {
+    		if (!noPostfilterStreams || record.isStream==null) {
 	    		if (!values.contains(record.meta.get(property))) {    			
 	    			continue;    		    		
 	    		}

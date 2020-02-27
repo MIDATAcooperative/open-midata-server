@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 import models.MidataId;
 
-public class IndexKey implements Comparable<IndexKey>, Serializable {
+public class IndexKey extends BaseIndexKey<IndexKey,IndexMatch> implements Comparable<IndexKey> {
 
 	/**
 	 * 
@@ -30,6 +30,9 @@ public class IndexKey implements Comparable<IndexKey>, Serializable {
 		this.id = other.id;
 		this.value = other.value;
 	}
+	
+	// For deserialization
+	public IndexKey() {}
 
 	@Override
 	public int compareTo(IndexKey arg0) {
@@ -82,16 +85,51 @@ public class IndexKey implements Comparable<IndexKey>, Serializable {
 		return value;
 	}
 	
-	private void writeObject(ObjectOutputStream s) throws IOException {
+	public void writeObject(ObjectOutputStream s, IndexKey last) throws IOException {
+		int writeout = 0;
+		if (last!=null) {
+		  for (int i=0;i<key.length;i++) {
+			  if (key[i]==null || !key[i].equals(last.key[i])) writeout |= (2 << i);
+		  }
+		} else {
+           writeout = (2 << key.length) - 1;					
+		}
+		s.writeByte(key.length);
+		s.writeInt(writeout);
 	    s.writeUTF(id.toString());
 	    s.writeUTF(value.toString());
-	    s.writeObject(key);
+	    for (int i=0;i<key.length;i++) if ((writeout & (2<<i))>0) s.writeObject(key[i]);
 	}
 		 
-	private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
+	public void readObject(ObjectInputStream s, IndexKey last) throws IOException, ClassNotFoundException {
+		int len = s.readByte();
+		key = new Comparable[len];
+		int writeout = s.readInt();		
 		id = MidataId.from(s.readUTF());
 		value = MidataId.from(s.readUTF());
-		key = (Comparable[]) s.readObject();
+		for (int i=0;i<len;i++) if ((writeout & (2<<i))>0) key[i] = (Comparable) s.readObject(); else key[i] = last.key[i];				
+	}
+
+	@Override
+	public IndexMatch toMatch() {
+		return new IndexMatch(id, value);
+	}
+
+	@Override
+	public IndexKey copy() {
+		return new IndexKey(key,id,value);
+	}
+	
+	
+
+	@Override
+	public void fetchValue(IndexKey otherKey) {
+		this.value = otherKey.value;		
+	}
+
+	@Override
+	public boolean matches(IndexMatch match) {
+		return match.recordId.equals(id) && match.apsId.equals(value);
 	}
 
 	/*

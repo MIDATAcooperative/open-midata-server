@@ -44,7 +44,7 @@ public class Feature_Consents extends Feature {
 			
 				boolean onlyStreams = qnt.isStreamOnlyQuery();
 				for (DBRecord r : recs) {
-					if (r.isStream) {
+					if (r.isStream!=null) {
 						Query q2 = new Query(q, CMaps.map("stream", r._id));
 						List<DBRecord> subresult = QueryEngine.onlyWithKey(next.query(q2));
 						for (DBRecord r2 : subresult) {

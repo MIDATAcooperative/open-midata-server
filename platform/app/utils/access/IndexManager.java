@@ -2,6 +2,7 @@ package utils.access;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,11 +24,14 @@ import akka.cluster.singleton.ClusterSingletonProxySettings;
 import models.Consent;
 import models.MidataId;
 import utils.AccessLog;
+import utils.access.index.BaseIndexRoot;
 import utils.access.index.IndexDefinition;
 import utils.access.index.IndexMatch;
 import utils.access.index.IndexRemoveMsg;
 import utils.access.index.IndexRoot;
 import utils.access.index.IndexUpdateMsg;
+import utils.access.index.Lookup;
+import utils.access.index.StreamIndexRoot;
 import utils.access.op.Condition;
 import utils.auth.KeyManager;
 import utils.collections.CMaps;
@@ -82,6 +86,41 @@ public class IndexManager {
 		}
 		
 		return new IndexPseudonym(obj.get("name").toString(), ((APSImplementation) aps).eaps.getAPSKey());
+	}
+	
+	public StreamIndexRoot getStreamIndex(APSCache cache, MidataId user) throws AppException {
+		IndexPseudonym pseudo = getIndexPseudonym(cache, user, user, true);
+		APS aps = cache.getAPS(user);
+		BSONObject obj = aps.getMeta("_streamindex");
+		
+		MidataId id = null;
+							
+		if (obj == null) {
+			id = new MidataId();
+		    obj = new BasicBSONObject();
+		    obj.put("index", id.toString());
+		    aps.setMeta("_streamindex", obj.toMap());			
+		} else {
+			id = MidataId.from(obj.get("index"));
+		}
+		
+		IndexDefinition def = IndexDefinition.getById(id);
+		if (def==null) {
+			def = new IndexDefinition();
+			def._id = id;			
+			def.owner = pseudo.getPseudonym();
+			def.formats = Collections.singletonList("_streamIndex");
+			def.lockTime = System.currentTimeMillis();
+									
+			StreamIndexRoot root = new StreamIndexRoot(pseudo.getKey(), def, true);
+			
+			root.prepareToCreate();
+			IndexDefinition.add(def);				
+			def.lockTime = 0;
+			return root;
+		} else {
+			return new StreamIndexRoot(pseudo.getKey(), def,false);
+		}
 	}
 
 	/**
@@ -173,6 +212,15 @@ public class IndexManager {
 		AccessLog.logEnd("end remove entries from index");
 		
 	}
+
+	
+	public void indexUpdate(APSCache cache, BaseIndexRoot index, MidataId executor, Set<MidataId> targetAps) throws AppException {
+		if (index instanceof IndexRoot) {
+			indexUpdate(cache, (IndexRoot) index, executor, targetAps);
+		} else if (index instanceof StreamIndexRoot) {
+			indexUpdate(cache, (StreamIndexRoot) index, executor);
+		}
+	}
 	
 	public void indexUpdate(APSCache cache, IndexRoot index, MidataId executor, Set<MidataId> targetAps) throws AppException {
 						
@@ -235,6 +283,69 @@ public class IndexManager {
 		}
 		AccessLog.logEnd("end index update time= "+(System.currentTimeMillis() - startUpdate)+" ms");
 	}
+	
+	public void indexUpdate(APSCache cache, StreamIndexRoot index, MidataId executor) throws AppException {
+		
+		AccessLog.logBegin("start index update");
+		long startUpdate = System.currentTimeMillis();
+		try {
+			index.checkLock();
+						    
+	    	long updateAllTs = System.currentTimeMillis() - 2000;	    	
+	    	Set<Consent> consents = Consent.getAllActiveByAuthorized(executor, index.getAllVersion());	
+	    	cache.prefetch(consents, null);
+	    	Set<MidataId> targetAps = new HashSet<MidataId>();
+			targetAps.add(executor);
+			for (Consent consent : consents) targetAps.add(consent._id);				
+	    
+		    
+		    AccessLog.log("number of aps to update = "+targetAps.size());
+			int modCount = 0;
+			for (MidataId aps : targetAps) {
+				if (index.getModCount() > 5000) index.flush();
+				
+				Map<String, Object> restrictions = new HashMap<String, Object>();
+				restrictions.put("streams", "true");
+				restrictions.put("flat", "true");
+				if (aps.equals(executor)) restrictions.put("owner", "self");
+				
+			    AccessLog.log("Checking aps:"+aps.toString());
+				// Records that have been updated or created
+			    long v = index.getVersion(aps);
+			    //AccessLog.log("v="+v);
+				Date limit = v>0 ? new Date(v - UPDATE_TIME) : null;
+				long now = System.currentTimeMillis();
+				 
+				if (limit != null) restrictions.put("shared-after", limit);								
+				List<DBRecord> recs = QueryEngine.listInternal(cache, aps, null, restrictions, Sets.create("_id","format","content","app","owner"));
+				for (DBRecord r : recs) {
+					index.addEntry(aps, r);
+				}
+				boolean updateTs = recs.size() > 0 || limit == null || (now-v) > UPDATE_UNUSED;
+				// Records that have been freshly shared				
+				
+				if (updateTs) index.setVersion(aps, now);
+				AccessLog.log("Add index: from updated="+recs.size());
+				
+				modCount += index.getModCount();
+				
+				
+			}
+			
+			AccessLog.log("updateAllTs="+updateAllTs+" modCount="+modCount+" ts="+targetAps.size());
+			if (updateAllTs != 0 && (modCount>0 || targetAps.size() > 3)) index.setAllVersion(updateAllTs);
+			index.flush();
+		} catch (LostUpdateException e) {
+			try {
+			  Stats.reportConflict();
+			  Thread.sleep(50);
+			} catch (InterruptedException e2) {}
+			index.reload(); //XXXX
+			indexUpdate(cache, index, executor);
+		}
+		AccessLog.logEnd("end index update time= "+(System.currentTimeMillis() - startUpdate)+" ms");
+	}
+
 
 	/**
 	 * update index: search all aps(consents) if version newer than index root
@@ -262,13 +373,13 @@ public class IndexManager {
 	 * @return
 	 */
 	public Collection<IndexMatch> queryIndex(IndexRoot root, Condition[] values) throws AppException {						
-		Collection<IndexMatch> matches = root.lookup(values);
+		Collection<IndexMatch> matches = root.lookup(new Lookup(values));
 		if (matches == null) matches = new ArrayList<IndexMatch>();
 		return matches;		
 	}
 	
 	public Collection<IndexMatch> queryIndex(IndexRoot root, Condition[] values, MidataId targetAps) throws AppException {						
-		Collection<IndexMatch> matches = root.lookup(values, targetAps);
+		Collection<IndexMatch> matches = root.lookup(new Lookup(values), targetAps);
 		if (matches == null) matches = new ArrayList<IndexMatch>();
 		return matches;		
 	}
@@ -352,7 +463,7 @@ public class IndexManager {
 		while (again) {
 			again = false;
 			try {				
-				root.removeOutdated(records, cond);
+				root.removeOutdated(records, new Lookup(cond));
 				root.flush();		
 			} catch (LostUpdateException e) {
 				root.reload();
@@ -388,5 +499,4 @@ public class IndexManager {
 		AccessLog.logEnd("end removing records from indexes");
 	}
 			
-	
 }

@@ -840,7 +840,7 @@ public class RecordManager {
 		cache.getAPS(executingPerson, executingPerson).removePermission(recs);
 		
 		for (DBRecord record : recs) {
-			if (record.isStream) {
+			if (record.isStream!=null) {
 				AccessPermissionSet.delete(record._id);
 			}
 		}
@@ -1053,7 +1053,7 @@ public class RecordManager {
 	
 	protected void applyQueries(AccessContext context, MidataId userId, DBRecord record, MidataId useAps) throws AppException {
 		AccessLog.logBegin("start applying queries for targetUser="+userId.toString());
-		if (record.isStream) {
+		if (record.isStream!=null) {
 		
 			Member member = Member.getById(userId, Sets.create("queries"));
 			if (member != null && member.queries!=null) {

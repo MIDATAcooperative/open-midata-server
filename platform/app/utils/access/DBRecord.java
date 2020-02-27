@@ -137,7 +137,7 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 	 * This field is neither stored in the database nor contained in the encrypted part of the record.
 	 * This field is only internally used.
 	 */
-	public @NotMaterialized boolean isStream;
+	public @NotMaterialized APSSecurityLevel isStream;
 	
 	/**
 	 * Level of security applied to this record

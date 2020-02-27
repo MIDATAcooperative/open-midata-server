@@ -21,20 +21,10 @@ import utils.stats.Stats;
  * Manages one index
  *
  */
-public class IndexRoot {
+public class IndexRoot extends BaseIndexRoot<IndexKey,IndexMatch> {
 
 	private IndexDefinition model;
-	private IndexPage rootPage;
-	private BTree btree;
-	private byte[] key;
-	private boolean locked;
-	private int modCount = 0;
-	protected int maxDepth = 0;
-	protected Map<MidataId, IndexPage> loadedPages;
 	
-	public final static int MIN_DEGREE          =   100;
-	public final static int UPPER_BOUND_KEYNUM  =   (MIN_DEGREE * 2) - 1;
-	public final static int LOWER_BOUND_KEYNUM  =   MIN_DEGREE - 1;	
 	
 	public IndexRoot(byte[] key, IndexDefinition def, boolean isnew) throws InternalServerException {
 		this.key = key;
@@ -45,7 +35,7 @@ public class IndexRoot {
 			this.rootPage.initAsRootPage();
 		}
 		this.btree = new BTree(this, this.rootPage);
-		this.loadedPages = new HashMap<MidataId, IndexPage>();
+		this.loadedPages = new HashMap<MidataId, IndexPage<IndexKey,IndexMatch>>();
 	}
 	
 	
@@ -55,17 +45,7 @@ public class IndexRoot {
 	}
     	
 
-	public int getModCount() {
-		return modCount;
-	}
-
-    public int getMaxDepth() {
-    	return maxDepth;
-    }
-
-	public long getVersion() {
-		return rootPage.getVersion();
-	}
+	
 	
 	public long getVersion(MidataId aps) {		
 		Long result = rootPage.ts.get(aps.toString());
@@ -89,68 +69,9 @@ public class IndexRoot {
 		rootPage.ts.put("all", now);			
 	}
 	
-	public void flush() throws InternalServerException, LostUpdateException {
-		
-		int modified = 0;		
-		for (IndexPage page : loadedPages.values()) if (page.changed) modified++;
-		if (rootPage.changed) modified += 1;
-		
-		AccessLog.log("Flushing index root, modifiedPages="+modified+" modCount="+modCount);
-		
-		if (modified > 1) lockIndex();
-		
-		if (locked) {
-			for (IndexPage page : loadedPages.values()) {
-				if (page.changed) page.model.updateLock();
-			}
-		}
-		
-		for (IndexPage page : loadedPages.values()) {
-            if (locked) page.model.lockTime = System.currentTimeMillis();			
-			page.flush();		
-		}
-		rootPage.model.lockTime = 0;
-		if (!rootPage.flush() && locked) {
-			rootPage.model.updateLock();
-		}
-				
-		locked = false;
-		modCount = 0;
-	}
 	
-	public void prepareToCreate() throws InternalServerException {
-		rootPage.encrypt();
-		rootPage.changed = false;
-	}
 	
-	public void lockIndex() throws InternalServerException, LostUpdateException {
-		if (!locked) {
-			AccessLog.log("lock index");
-			rootPage.model.lockTime = System.currentTimeMillis();
-			rootPage.model.updateLock();
-			locked = true;
-		}
-	}
 	
-	public void checkLock() throws InternalServerException {
-		if (locked) return;
-		while (rootPage.model.lockTime > System.currentTimeMillis() - 1000l * 60l) {
-			AccessLog.log("waiting for lock release");
-			try {
-			  Stats.reportConflict();
-			  Thread.sleep(50);
-			} catch (InterruptedException e) {}
-			rootPage.reload();
-		}
-	}
-			
-	public void reload() throws InternalServerException {
-		loadedPages.clear();
-		rootPage.reload();
-		
-		locked = false;
-		modCount = 0;
-	}
 		
 
 	public List<String> getFormats() {		
@@ -263,92 +184,14 @@ public class IndexRoot {
 			}
 		}
 	}
-	
-	public Collection<IndexMatch> lookup(Condition[] key) throws InternalServerException {
-		try {
-		  return rootPage.lookup(key);
-		} catch (LostUpdateException e) {
-			try {
-			   Thread.sleep(20);
-			} catch (InterruptedException e2) {}
-			rootPage.reload();
-			return lookup(key);
-		}
+
+
+
+	@Override
+	public IndexKey createKey() {
+		return new IndexKey();
 	}
 	
-	public Collection<IndexMatch> lookup(Condition[] key, MidataId targetAps) throws InternalServerException {
-		try {
-		  return rootPage.lookup(key, targetAps);
-		} catch (LostUpdateException e) {
-			try {
-			   Thread.sleep(20);
-			} catch (InterruptedException e2) {}
-			rootPage.reload();
-			return lookup(key);
-		}
-	}
 	
-	public int getEstimatedIndexCoverage(Condition[] key) {
-		return rootPage.getEstimatedIndexCoverage(key);
-	}
-
-	protected static IndexPage getRightSiblingAtIndex(IndexPage parentNode, int keyIdx) throws InternalServerException, LostUpdateException  {
-	    return getChildNodeAtIndex(parentNode, keyIdx, 1);
-	}
-
-	protected static IndexPage getLeftSiblingAtIndex(IndexPage parentNode, int keyIdx) throws InternalServerException, LostUpdateException  {
-	    return getChildNodeAtIndex(parentNode, keyIdx, -1);
-	}
-
-	protected static IndexPage getRightChildAtIndex(IndexPage btNode, int keyIdx) throws InternalServerException, LostUpdateException  {
-	    return getChildNodeAtIndex(btNode, keyIdx, 1);
-	}
-
-	protected static IndexPage getLeftChildAtIndex(IndexPage btNode, int keyIdx) throws InternalServerException, LostUpdateException  {
-	    return getChildNodeAtIndex(btNode, keyIdx, 0);
-	}
-
-	protected static IndexPage getChildNodeAtIndex(IndexPage btNode, int keyIdx, int nDirection) throws InternalServerException, LostUpdateException  {
-	    if (btNode.mIsLeaf) {
-	        return null;
-	    }
-	
-	    keyIdx += nDirection;
-	    if ((keyIdx < 0) || (keyIdx > btNode.mCurrentKeyNum)) {
-	        return null;
-	    }
-	
-	    return btNode.getChild(keyIdx);
-	}
-
-
-
-	public void removeOutdated(List<IndexMatch> records, Condition[] cond) throws InternalServerException, LostUpdateException {
-        Collection<IndexKey> matches = rootPage.findEntries(cond);
-		
-        for (IndexMatch rec : records) {
-			for (IndexKey match : matches) {
-				if (match.id.equals(rec.recordId) && match.value.equals(rec.apsId)) {
-					btree.delete(match);
-					modCount++;
-				}
-			}
-        }
-								
-	}
-
-	/*
-	public void removeRecords(Condition[] key, Set<IndexMatch> ids) throws InternalServerException {
-		for (IndexMatch m : ids) {
-			btree.delete(new IndexKey(key, m.recordId, m.apsId))
-		}
-		Collection<IndexKey> entries = rootPage.findEntries(key);
-		for (IndexKey k : entries) {
-			if (ids.contains(new IndexMatch(MidataId.from(k.getId()), MidataId.from(k.getValue())) {
-				
-			}
-		}			
-	}
-*/
 	
 }

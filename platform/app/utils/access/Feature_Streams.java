@@ -33,140 +33,30 @@ import utils.exceptions.InternalServerException;
  */
 public class Feature_Streams extends Feature {
 
+	private APS next1;
 	
+	public Feature_Streams() {		
+	}
 	
-	public Feature_Streams() {
-		
+	public Feature_Streams(APS next) {
+		this.next1 = next;
 	}
 		
+	
 	
 	public final static Set<String> streamFields = Sets.create("content", "format", "app");
 	
 	private final static Set<String> streamQueryFields = Sets.create("_id", "key", "owner");
 	
-	/*
-	@Override
-	protected List<DBRecord> query(Query q) throws AppException {		
-		APS next = q.getCache().getAPS(q.getApsId());
-		List<DBRecord> records = Collections.emptyList();
-		boolean restrictedByStream = q.restrictedBy("stream");
-		
-		if (restrictedByStream) {
-			  
-			 
-			  // optimization for record lookup queries 
-			  if (q.restrictedBy("quick")) {				  				  				  
-			      records = next.query(q);			    
-			      if (records.size() > 0) return records; 
-			  }
-			  
-			  AccessLog.logBegin("begin single stream query");
-			  
-			  List<DBRecord> streams = next.query(new Query(CMaps.map(q.getProperties()).map("_id", q.getProperties().get("stream")).removeKey("quick"), streamQueryFields, q.getCache(), q.getApsId(), q.getContext() ));
-				
-			  for (DBRecord r : streams) {
-				  if (r.isStream) {
-					  
-					  try {
-						  APS myAps = q.getCache().getAPS(r._id, r.key, r.owner);						 
-						  List<DBRecord> rs = myAps.query(q);
-						  for (DBRecord r2 : rs) { r2.owner = r.owner;r2.stream = r._id; }
-					      records = QueryEngine.combine(records, rs);
-					      
-					      if (myAps.getSecurityLevel().equals(APSSecurityLevel.MEDIUM)) {
-					    	  for (DBRecord r2 : records) {
-					    		fromStream(r, r2, true);						    	
-					    	  }
-					      }
-					      
-					  } catch (EncryptionNotSupportedException e) { throw new InternalServerException("error.internal", "Encryption not supported."); }
-					  catch (APSNotExistingException e2) {
-						  next.removePermission(r);
-					  }
-				  } 
-			  }				
-			  			  			  
-			  AccessLog.logEnd("end single stream query");
-			  return records;
-		}
-        		
-		AccessLog.logBegin("start query on target APS");
-		List<DBRecord> recs = next.query(q);
-		
-		AccessLog.logEnd("end query on target APS #res="+recs.size());
-		if (recs.isEmpty()) return recs;
-		boolean includeStreams = q.includeStreams();
-		boolean streamsOnly = q.isStreamOnlyQuery();
-		if (streamsOnly) {
-			records = recs;
-			List<DBRecord> filtered = new ArrayList<DBRecord>(records.size());
-			if (q.restrictedBy("writeable") && q.getProperties().get("writeable").equals("true")) {
-				for (DBRecord r : records) {
-				  if (r.isStream && !r.isReadOnly) filtered.add(r);
-				}
-			} else {
-				for (DBRecord r : records) {
-				  if (r.isStream) filtered.add(r);
-				}
-			}
-			return filtered;
-		} else
-		if (q.deepQuery()) {
-			records = recs;
-			List<DBRecord> filtered = new ArrayList<DBRecord>(records.size());
-			List<DBRecord> streams = new ArrayList<DBRecord>();
-			Map<MidataId, DBRecord> streamsToFetch = new HashMap<MidataId, DBRecord>();
-			
-			for (DBRecord r : records) {
-				if (r.isStream) {
-					if (!q.getCache().hasAPS(r._id)) streamsToFetch.put(r._id, r);
-					else streams.add(r);
-				} else filtered.add(r);
-			}
-			
-			if (!streamsToFetch.isEmpty()) {
-				NChainedMap<String, Object> restriction = CMaps.map("_id", streamsToFetch.keySet());
-				if (q.getMinCreatedTimestamp() > 0) restriction = restriction.map("version", CMaps.map("$gt", q.getMinCreatedTimestamp()));
-				if (q.getMinUpdatedTimestamp() > 0) restriction = restriction.map("version", CMaps.map("$gt", q.getMinUpdatedTimestamp()));
-				
-				Set<AccessPermissionSet> rsets = AccessPermissionSet.getAll(restriction, AccessPermissionSet.ALL_FIELDS);
-				for (AccessPermissionSet set : rsets) {
-					DBRecord r = streamsToFetch.get(set._id);
-					streams.add(r);
-					q.getCache().getAPS(r._id, r.key, r.owner, set, true);
-				}
-			}
-				
-			for (DBRecord r : streams) {										
-				try {
-				  APS streamaps = q.getCache().getAPS(r._id, r.key, r.owner);
-				  boolean medium = streamaps.getSecurityLevel().equals(APSSecurityLevel.MEDIUM);
-				  if (q.getMinUpdatedTimestamp() <= streamaps.getLastChanged() && q.getMinCreatedTimestamp() <= streamaps.getLastChanged()) {
-					AccessLog.logBegin("start query on stream APS:"+streamaps.getId());
-				    for (DBRecord r2 : streamaps.query(q)) {
-				    	fromStream(r, r2, medium);				    	
-				    	filtered.add(r2);
-				    }
-				    if (includeStreams) filtered.add(r);
-				    AccessLog.logEnd("end query on stream APS");
-				  }
-				} catch (EncryptionNotSupportedException e) { throw new InternalServerException("error.internal", "Encryption not supported."); }					 	
-			 				
-			}
-			records = filtered;
-		} else if (!includeStreams) {
-			records = recs;
-			List<DBRecord> filtered = new ArrayList<DBRecord>(records.size());
-			for (DBRecord record : records) {
-				if (!record.isStream) filtered.add(record);
-			}
-			records = filtered;
-		} else return recs;
-							
-		return records;
-		
+	protected static boolean isMediumStream(DBRecord r) {
+		return r.isStream == APSSecurityLevel.MEDIUM;
+		/*try {
+			ContentInfo inf = ContentInfo.getByName(content);
+			if (inf.security == APSSecurityLevel.MEDIUM) return true;
+		} catch (Exception e) {}
+		return false;*/		
 	}
-	*/
+
 	static class StreamCombineIterator extends Feature.MultiSource<DBRecord> {
 
 		private APS next;
@@ -181,11 +71,12 @@ public class Feature_Streams extends Feature {
 		  	this.query = query;		  
             this.limit = Math.max(query.getMinUpdatedTimestamp(), query.getMinCreatedTimestamp());
             this.limit = Math.max(this.limit, query.getMinSharedTimestamp());
+            this.owner = next.getStoredOwner();
 		  	if (direct != null && !direct.isEmpty()) {		  		
 		  		current = ProcessingTools.dbiterator("direct()", direct.iterator());
 		  		chain = streams;
 		  		thisrecord = next;
-		  		owner = next.getStoredOwner();
+		  		
 		  		size = direct.size();
 		  	}
 		  	else init(streams);
@@ -194,11 +85,16 @@ public class Feature_Streams extends Feature {
 		@Override
 		public DBIterator<DBRecord> advance(DBRecord r) throws AppException {
 			
-			if (r.isStream) {
+			if (r.isStream!=null) {
 				  
 				
 				try {
-					  APS streamaps = query.getCache().getAPS(r._id, r.key, r.owner);
+					APS streamaps = null;
+					if (limit <= 0 && isMediumStream(r)) {
+					  streamaps = new MediumStreamAPS(r._id, r.owner, r.key);
+					} else {
+					  streamaps = query.getCache().getAPS(r._id, r.key, r.owner);
+				    }
 					  thisrecord = streamaps;
 					  owner = thisrecord.getStoredOwner();
 					  boolean medium = streamaps.getSecurityLevel().equals(APSSecurityLevel.MEDIUM);
@@ -228,15 +124,17 @@ public class Feature_Streams extends Feature {
 		@Override
 		public String toString() {
 			if (thisrecord == null) return "access-streams()";
+			AccessLog.log("thisrec="+thisrecord+" ow="+owner+" next="+next);
 			return "access-streams("+next.getId().toString()+", aps({ow:"+owner.toString()+", id:"+thisrecord.getId().toString()+", size:"+size+" }))";
 		}
 		
 		
 	}
+		
 	
 	@Override
 	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
-		APS next = q.getCache().getAPS(q.getApsId());
+		APS next = next1 != null ? next1 : q.getCache().getAPS(q.getApsId());
 		//Iterator<DBRecord> records = Collections.emptyIterator();
 		boolean restrictedByStream = q.restrictedBy("stream");
 		
@@ -268,11 +166,11 @@ public class Feature_Streams extends Feature {
 			List<DBRecord> filtered = new ArrayList<DBRecord>(recs.size());
 			if (q.restrictedBy("writeable") && q.getProperties().get("writeable").equals("true")) {
 				for (DBRecord r : recs) {
-				  if (r.isStream && !r.isReadOnly) filtered.add(r);
+				  if (r.isStream!=null && !r.isReadOnly) filtered.add(r);
 				}
 			} else {
 				for (DBRecord r : recs) {
-				  if (r.isStream) filtered.add(r);
+				  if (r.isStream!=null) filtered.add(r);
 				}
 			}
 			return ProcessingTools.dbiterator("", filtered.iterator());
@@ -282,10 +180,11 @@ public class Feature_Streams extends Feature {
 			List<DBRecord> filtered = new ArrayList<DBRecord>(recs.size());
 			List<DBRecord> streams = new ArrayList<DBRecord>();
 			Map<MidataId, DBRecord> streamsToFetch = new HashMap<MidataId, DBRecord>();
-			
+			long limit = Math.max(q.getMinUpdatedTimestamp(), q.getMinCreatedTimestamp());
+            limit = Math.max(limit, q.getMinSharedTimestamp());
 			for (DBRecord r : recs) {
-				if (r.isStream) {
-					if (!q.getCache().hasAPS(r._id)) streamsToFetch.put(r._id, r);
+				if (r.isStream!=null) {
+					if (!q.getCache().hasAPS(r._id) && (limit>0 || !isMediumStream(r))) streamsToFetch.put(r._id, r);
 					else streams.add(r);
 				} else filtered.add(r);
 			}
@@ -314,7 +213,7 @@ public class Feature_Streams extends Feature {
 			
 			List<DBRecord> filtered = new ArrayList<DBRecord>(recs.size());
 			for (DBRecord record : recs) {
-				if (!record.isStream) filtered.add(record);
+				if (record.isStream==null) filtered.add(record);
 			}
 			return ProcessingTools.dbiterator("", filtered.iterator());
 		} else return ProcessingTools.dbiterator("", recs.iterator());
@@ -369,7 +268,7 @@ public class Feature_Streams extends Feature {
 		Object app = result.meta.get("app");
 		if (app != null) result.meta.put("app", MidataId.from(app).toDb());
 		
-		result.isStream = true;
+		result.isStream = direct ? APSSecurityLevel.MEDIUM : APSSecurityLevel.HIGH;
 		result.meta.put("created", new Date());
 		result.data = new BasicDBObject();
 		result.time = 0;		
