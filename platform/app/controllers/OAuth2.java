@@ -245,7 +245,7 @@ public class OAuth2 extends Controller {
     		UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.LOGIN);
         } else throw new BadRequestException("error.internal", "Unknown grant_type");
                											
-		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, aeskey, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME, user.role); 
+		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, aeskey, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME, user != null ? user.role : UserRole.ANY); 
         OAuthRefreshToken refresh = createRefreshToken(appInstance._id, appInstance, aeskey);
         
         BSONObject q = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_query");
@@ -260,7 +260,7 @@ public class OAuth2 extends Controller {
 			byte[] key = (byte[]) meta.get("aliaskey");
 			KeyManager.instance.unlock(appInstance.owner, alias, key);			
 			RecordManager.instance.clearCache();
-			PostLoginActions.check(user);												
+			if (user != null) PostLoginActions.check(user);												
         } else {
 			RecordManager.instance.setAccountOwner(appInstance._id, appInstance.owner);			
 		}                
@@ -293,20 +293,22 @@ public class OAuth2 extends Controller {
 		if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");			
 		if (!app.type.equals("mobile") && !app.type.equals("analyzer") && !app.type.equals("external")) throw new InternalServerException("error.internal", "Wrong app type");
 	
-		User user = User.getById(appInstance.owner, User.ALL_USER_INTERNAL);
-		if (user == null) invalidToken();
-		
-		if (!LicenceChecker.checkAppInstance(user._id, app, appInstance)) {
-			invalidToken();
+		User user = null;
+		if (!app.type.equals("external") && !app.type.equals("analyzer")) {
+			user = User.getById(appInstance.owner, User.ALL_USER_INTERNAL);
+			if (user == null) invalidToken();
+			
+			if (!LicenceChecker.checkAppInstance(user._id, app, appInstance)) {
+				invalidToken();
+			}
+								
+			Set<UserFeature> req = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(user.role);
+			if (app.requirements != null) req.addAll(app.requirements);
+			Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, req);
+			if (notok != null) {
+				invalidToken();
+			}                       
 		}
-					
-		Set<UserFeature> req = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(user.role);
-		if (app.requirements != null) req.addAll(app.requirements);
-		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, req);
-		if (notok != null) {
-			invalidToken();
-		}                       
-		
 		
 		if (KeyManager.instance.unlock(appInstance._id, refreshToken.phrase) == KeyManager.KEYPROTECTION_FAIL) invalidToken(); 
 		Map<String, Object> meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();

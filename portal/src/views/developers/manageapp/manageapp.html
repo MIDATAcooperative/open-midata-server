@@ -19,7 +19,7 @@
 		    <select id="type" name="type" class="form-control" ng-model="app.type" ng-change="requireLogout();" ng-options="type.value as ('enum.plugintype.'+type.value) | translate for type in types" required></select>
 		    <p class="form-text text-muted" translate="manageapp.info.type"></p>
 		  </formrow>
-		  <formrow myid="targetUserRole" label="manageapp.targetUserRole" class="danger-change" ng-hide="app.type=='analyzer'">
+		  <formrow myid="targetUserRole" label="manageapp.targetUserRole" class="danger-change" ng-if="app.type!='analyzer'">
 		    <select id="targetUserRole" name="targetUserRole" class="form-control" ng-change="requireLogout();" ng-model="app.targetUserRole" ng-options="role.value as ('enum.userrole.'+role.value) | translate for role in targetUserRoles" required></select>
 		    <p class="form-text text-muted" translate="manageapp.info.targetUserRole"></p>
 		  </formrow>		  
@@ -40,7 +40,7 @@
 		    <textarea rows="5" id="description" name="description" class="form-control" placeholder="Description" ng-model="app.description" required></textarea>
 		    <p class="form-text text-muted" translate="manageapp.info.description"></p>
 		  </formrow>
-		  <formrow myid="defaultSpaceName" label="Tile Name" ng-show="app.type == 'visualization' || app.type == 'oauth1' || app.type == 'oauth2'">
+		  <formrow myid="defaultSpaceName" label="Tile Name" ng-if="app.type == 'visualization' || app.type == 'oauth1' || app.type == 'oauth2'">
 		    <input type="text" id="defaultSpaceName" name="defaultSpaceName" class="form-control" placeholder="Tile Name" ng-model="app.defaultSpaceName">
 		    <p class="form-text text-muted" translate="manageapp.info.defaultSpaceName"></p>
 		  </formrow>
@@ -69,7 +69,7 @@
 		  <formrow myid="description_i18n" label="I18n Description">
 		    <textarea rows="5" id="description_i18n" name="description_i18n" class="form-control" placeholder="Description" ng-model="app.i18n[sel.lang].description"></textarea>
 		  </formrow>
-		  <formrow myid="defaultSpaceName_i18n" label="I18n Tile Name" ng-show="app.type == 'visualization' || app.type == 'oauth1' || app.type == 'oauth2'">		    
+		  <formrow myid="defaultSpaceName_i18n" label="I18n Tile Name" ng-if="app.type == 'visualization' || app.type == 'oauth1' || app.type == 'oauth2'">		    
 		    <input type="text" id="defaultSpaceName_i18n" name="defaultSpaceName_i18n" class="form-control" placeholder="Tile Name" ng-model="app.i18n[sel.lang].defaultSpaceName">
 		  </formrow>
 		  <hr>		  
@@ -83,16 +83,16 @@
 		    <p class="form-text text-muted" translate="manageapp.info.tags"></p>
 		  </formrow>  		
 		
-		  <formrow myid="url" label="URL" ng-show="app.type == 'visualization' || app.type == 'oauth1' || app.type == 'oauth2'">
+		  <formrow myid="url" label="URL" ng-if="app.type == 'visualization' || app.type == 'oauth1' || app.type == 'oauth2'">
 		    <input type="text" id="url" name="url" class="form-control" placeholder="URL (must include &quot;:authToken&quot;)" ng-model="app.url">
 		    <formerror myid="url" type="authToken" message="Url must contain ':authToken' to receive the authorization token required to create records." ></formerror>
 		    <p class="form-text text-muted" translate="manageapp.info.url"></p>
 		  </formrow>
-		  <formrow myid="previewUrl" label="Dashboard Tile URL" ng-show="app.type == 'visualization' || app.type == 'oauth1' || app.type == 'oauth2'">
+		  <formrow myid="previewUrl" label="Dashboard Tile URL" ng-if="app.type == 'visualization' || app.type == 'oauth1' || app.type == 'oauth2'">
 		    <input type="text" id="previewUrl" name="previewUrl" class="form-control" placeholder="URL (must include &quot;:authToken&quot;)" ng-model="app.previewUrl">
 		    <p class="form-text text-muted" translate="manageapp.info.previewUrl"></p>
 		  </formrow>		 
-		  <formrow myid="defaultSpaceContext" label="Default Dashboard" ng-show="app.type == 'visualization' || app.type == 'oauth1' || app.type == 'oauth2'">
+		  <formrow myid="defaultSpaceContext" label="Default Dashboard" ng-if="app.type == 'visualization' || app.type == 'oauth1' || app.type == 'oauth2'">
 		    <input type="text" id="defaultSpaceContext" name="defaultSpaceContext" class="form-control" placeholder="Dashboard Name" ng-model="app.defaultSpaceContext">
 		    <p class="form-text text-muted" translate="manageapp.info.defaultSpaceContext"></p>
 		  </formrow>		 
@@ -103,7 +103,7 @@
 		  <formrow myid="writes" label="manageapp.write_mode" class="danger-change">
 		    <select class="form-control" name="writes" ng-model="app.writes" ng-change="requireLogout();" ng-options="mode as ('enum.writepermissiontype.'+mode)|translate for mode in writemodes"></select>
 		  </formrow>
-		   <formrow myid="noUpdateHistory" label="manageapp.no_update_history" ng-show="app.targetUserRole=='RESEARCH'">
+		   <formrow myid="noUpdateHistory" label="manageapp.no_update_history" ng-if="app.targetUserRole=='RESEARCH'">
 		    <div class="form-check">
 		    <label class="form-check-label">
 		      <input class="form-check-input" type="checkbox" id="noUpdateHistory" name="noUpdateHistory" ng-model="app.noUpdateHistory" value="true">
@@ -130,44 +130,44 @@
 		  
 		
 		  
-		  <formrow myid="apiUrl" label="API Base URL" ng-show="app.type == 'oauth1' || app.type == 'oauth2'">
+		  <formrow myid="apiUrl" label="API Base URL" ng-if="app.type == 'oauth1' || app.type == 'oauth2'">
 		    <input type="text" id="apiUrl" name="apiUrl" class="form-control" placeholder="API Base URL" ng-model="app.apiUrl">
 		    <formerror myid="apiUrl" type="invalid" message="error.invalid.url"></formerror>
 		  </formrow>	 
-		  <formrow myid="authorizationUrl" label="Authorization URL" ng-show="app.type == 'oauth1' || app.type == 'oauth2'">
+		  <formrow myid="authorizationUrl" label="Authorization URL" ng-if="app.type == 'oauth1' || app.type == 'oauth2'">
 		    <input type="text" id="authorizationUrl" name="authorizationUrl" class="form-control" placeholder="Authorization URL" ng-model="app.authorizationUrl">
 		  </formrow>
-		  <formrow myid="accessTokenUrl" label="Access Token URL" ng-show="app.type == 'oauth1' || app.type == 'oauth2'">
+		  <formrow myid="accessTokenUrl" label="Access Token URL" ng-if="app.type == 'oauth1' || app.type == 'oauth2'">
 		    <input type="text" id="accessTokenUrl" name="accessTokenUrl" class="form-control" placeholder="Access token URL" ng-model="app.accessTokenUrl">
 		  </formrow>
-		  <formrow myid="tokenExchangeParams" label="manageapp.tokenExchangeParams" ng-show="app.type == 'oauth2'">
+		  <formrow myid="tokenExchangeParams" label="manageapp.tokenExchangeParams" ng-if="app.type == 'oauth2'">
 		    <input type="text" id="tokenExchangeParams" name="tokenExchangeParams" class="form-control" ng-model="app.tokenExchangeParams">
 		    <p class="form-text text-muted" translate="manageapp.info.tokenExchangeParams"></p>
 		  </formrow>
-		  <formrow myid="consumerKey" label="Consumer Key" ng-show="app.type == 'oauth1' || app.type == 'oauth2'">
+		  <formrow myid="consumerKey" label="Consumer Key" ng-if="app.type == 'oauth1' || app.type == 'oauth2'">
 		    <input type="text" id="consumerKey" name="consumerKey" class="form-control" placeholder="Consumer key" ng-model="app.consumerKey">
 		  </formrow>
-		  <formrow myid="consumerSecret" label="Consumer Secret" ng-show="app.type == 'oauth1' || app.type == 'oauth2'">
+		  <formrow myid="consumerSecret" label="Consumer Secret" ng-if="app.type == 'oauth1' || app.type == 'oauth2'">
 		    <input type="text" id="consumerSecret" name="consumerSecret" class="form-control" placeholder="Consumer secret" ng-model="app.consumerSecret">
 		  </formrow>
-		  <formrow myid="requestTokenUrl" label="Request Token URL" ng-show="app.type == 'oauth1'">
+		  <formrow myid="requestTokenUrl" label="Request Token URL" ng-if="app.type == 'oauth1'">
 		    <input type="text" id="requestTokenUrl" name="requestTokenUrl" class="form-control" placeholder="Request token URL" ng-model="app.requestTokenUrl">
 		  </formrow>
-		  <formrow myid="scopeParameters" label="Scope Parameters" ng-show="app.type == 'oauth2'">
+		  <formrow myid="scopeParameters" label="Scope Parameters" ng-if="app.type == 'oauth2'">
 		    <input type="text" id="scopeParameters" name="scopeParameters" class="form-control" placeholder="Scope parameters" ng-model="app.scopeParameters">
 		  </formrow>
-		  <formrow myid="secret" label="Application Secret" ng-show="app.type == 'mobile' || app.type == 'service'">
+		  <formrow myid="secret" label="Application Secret" ng-if="app.type == 'mobile' || app.type == 'service'">
 		    <input type="text" id="secret" name="secret" class="form-control" placeholder="Secret" ng-model="app.secret">
 		    <p class="form-text text-muted" translate="manageapp.info.secret"></p>
 		  </formrow>
-		  <formrow myid="redirectUri" label="Redirect URI (optional, required for OAuth2 login)" ng-show="app.type == 'mobile'">
+		  <formrow myid="redirectUri" label="Redirect URI (optional, required for OAuth2 login)" ng-if="app.type == 'mobile'">
 		    <input type="text" id="redirectUri" name="redirectUri" class="form-control" placeholder="Redirect URI" ng-model="app.redirectUri">
 		    <p class="form-text text-muted" translate="manageapp.info.redirectUri"></p>
 		  </formrow>
 		   <formrow myid="developmentServer" label="Development Server" ng-hide="app.type == 'mobile' || app.type == 'service' || !app.developmentServer">
 		    <p class="form-control-plaintext">{{ app.developmentServer }}</p>
 		  </formrow>
-		   <formrow myid="unlockCode" label="manageapp.unlock_code" ng-show="app.type == 'mobile'">
+		   <formrow myid="unlockCode" label="manageapp.unlock_code" ng-if="app.type == 'mobile'">
 		    <input type="text" id="unlockCode" name="unlockCode" class="form-control" ng-model="app.unlockCode">
 		    <p class="form-text text-muted" translate="manageapp.info.unlock_code"></p>
 		  </formrow>
