@@ -123,8 +123,7 @@ public class Feature_Streams extends Feature {
 
 		@Override
 		public String toString() {
-			if (thisrecord == null) return "access-streams()";
-			AccessLog.log("thisrec="+thisrecord+" ow="+owner+" next="+next);
+			if (thisrecord == null) return "access-streams()";			
 			return "access-streams("+next.getId().toString()+", aps({ow:"+owner.toString()+", id:"+thisrecord.getId().toString()+", size:"+size+" }))";
 		}
 		

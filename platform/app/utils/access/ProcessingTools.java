@@ -109,7 +109,7 @@ public class ProcessingTools {
 			result.add(input.next());
 			// fail++; if (fail > 1000) return result; // XXXXXXX
 		}		
-		AccessLog.log("collected "+result.size()+" records");
+		AccessLog.log("collected "+result.size()+" records from "+input.toString());
 		return result;
 	}
 

@@ -105,6 +105,30 @@ class QueryEngine {
 		Map<String, RecordsInfo> result = new HashMap<String, RecordsInfo>();
 		
 		APS myaps = q.getCache().getAPS(aps);
+		
+		Feature qm = new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_Pseudonymization(new Feature_PublicData(new Feature_UserGroups(new Feature_Stats(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))))))));						 
+		List<DBRecord> recs = ProcessingTools.collect(qm.iterator(q));		
+		
+		for (DBRecord record : recs) {
+			RecordsInfo inf = (RecordsInfo) record.attached;			
+			String k = getInfoKey(aggrType, inf.groups.iterator().next(), inf.contents.iterator().next(), inf.formats.iterator().next(), record.owner, inf.apps.isEmpty() ? "empty" : inf.apps.iterator().next().toString());
+			RecordsInfo here = result.get(k);					
+			if (here == null) {
+				result.put(k, inf);
+			} else {
+				here.merge(inf);						
+			}								
+		}
+				
+		return result.values();
+	}
+	
+	/*public static Collection<RecordsInfo> infoQuery(Query q, MidataId aps, boolean cached, AggregationType aggrType, MidataId owner) throws AppException {
+		long t = System.currentTimeMillis();
+		AccessLog.logBegin("begin infoQuery aps="+aps+" cached="+cached);
+		Map<String, RecordsInfo> result = new HashMap<String, RecordsInfo>();
+		
+		APS myaps = q.getCache().getAPS(aps);
 		boolean doNotCacheInStreams = myaps.getMeta("_exclude") != null;
 		boolean doNotQueryPerStream = myaps.getMeta("_exclude") != null;
 		
@@ -112,10 +136,7 @@ class QueryEngine {
 		  BasicBSONObject query = myaps.getMeta(APS.QUERY);
 		  if (query != null) {
 			  Map<String, Object> queryMap = query.toMap();
-			  /*if (queryMap.containsKey("app")) {
-				  doNotCacheInStreams = true;
-				  doNotQueryPerStream = true;
-			  }*/
+			 
 		  }
 		}
 		
@@ -212,12 +233,12 @@ class QueryEngine {
 			}
 		}
 		return result.values();
-	}
+	}*/
 	
-    public static DBIterator<DBRecord> fullQuery(Map<String, Object> properties, Set<String> fields, MidataId aps, AccessContext context, APSCache cache) throws AppException {
-    	AccessLog.logBegin("begin full query on aps="+aps.toString());
+    public static DBIterator<DBRecord> fullQuery(Map<String, Object> properties, Set<String> fields, MidataId aps, AccessContext context, APSCache cache) throws AppException {    	
     	long queryStart = System.currentTimeMillis();
     	if (context == null) context = new DummyAccessContext(cache);
+    	AccessLog.logBegin("begin full query: aps="+aps.toString()+" content="+context.toString());
     	Feature qm = null;
     	MidataId userGroup = Feature_UserGroups.identifyUserGroup(cache, aps);
     	if (userGroup != null) {
@@ -237,7 +258,7 @@ class QueryEngine {
 			AccessLog.log("NULL result");
 		}
 		
-		AccessLog.log("fullQuery="+result.toString());
+		//AccessLog.log("fullQuery="+result.toString());
 							
 		AccessLog.logEnd("end full query time= "+(System.currentTimeMillis() - queryStart)+" ms");
 		
@@ -321,7 +342,8 @@ class QueryEngine {
       	  if (comb != null) {
       		query = new Query(comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext());
     	
-      	    Collection<Map<String, Object>> col = (Collection<Map<String, Object>>) properties.get("$or");        	  
+      	    Collection<Map<String, Object>> col = (Collection<Map<String, Object>>) properties.get("$or");
+      	    AccessLog.log("$or: #pathes="+col.size());
       	    return ProcessingTools.multiQuery(qm, query, ProcessingTools.dbiterator("", col.iterator()));
       	  } else return ProcessingTools.empty();
       	        	
@@ -681,12 +703,18 @@ class QueryEngine {
 			return DBRecord.getAllList(query, queryFields);		
     }
         
-    public final static List<DBRecord> combine(List<DBRecord> list1, List<DBRecord> list2) {
-    	if (list1 == null || list1.isEmpty()) return list2;
-    	if (list2 == null || list2.isEmpty()) return list1;
+    public final static List<DBRecord> combine(Collection<DBRecord> list1, Collection<DBRecord> list2) {
+    	if (list1 == null || list1.isEmpty()) {
+    		if (list2 == null || list2 instanceof List) return (List<DBRecord>) list2;
+    		return new ArrayList<DBRecord>(list2);
+    	}
+    	if (list2 == null || list2.isEmpty()) {
+    		if (list1 instanceof List) return (List<DBRecord>) list1;
+    		return new ArrayList(list1);
+    	}
     	if (list1 instanceof ArrayList) {
     		list1.addAll(list2);
-    		return list1;
+    		return (List<DBRecord>) list1;
     	}
     	ArrayList<DBRecord> result = new ArrayList<DBRecord>();
     	result.addAll(list1);

@@ -31,6 +31,7 @@ import utils.access.index.IndexRemoveMsg;
 import utils.access.index.IndexRoot;
 import utils.access.index.IndexUpdateMsg;
 import utils.access.index.Lookup;
+import utils.access.index.StatsIndexRoot;
 import utils.access.index.StreamIndexRoot;
 import utils.access.op.Condition;
 import utils.auth.KeyManager;
@@ -115,11 +116,58 @@ public class IndexManager {
 			StreamIndexRoot root = new StreamIndexRoot(pseudo.getKey(), def, true);
 			
 			root.prepareToCreate();
-			IndexDefinition.add(def);				
+			try {
+			  IndexDefinition.add(def);
+			} catch (Exception e) {
+			  def = IndexDefinition.getById(id);
+			  if (def==null) throw new NullPointerException();
+			}
 			def.lockTime = 0;
+			triggerUpdate(pseudo, cache, user, def, null);
 			return root;
 		} else {
 			return new StreamIndexRoot(pseudo.getKey(), def,false);
+		}
+	}
+	
+	public StatsIndexRoot getStatsIndex(APSCache cache, MidataId user) throws AppException {
+		IndexPseudonym pseudo = getIndexPseudonym(cache, user, user, true);
+		APS aps = cache.getAPS(user);
+		BSONObject obj = aps.getMeta("_statsindex");
+		
+		MidataId id = null;
+							
+		if (obj == null) {
+			id = new MidataId();
+		    obj = new BasicBSONObject();
+		    obj.put("index", id.toString());
+		    aps.setMeta("_statsindex", obj.toMap());			
+		} else {
+			id = MidataId.from(obj.get("index"));
+		}
+		
+		IndexDefinition def = IndexDefinition.getById(id);
+		if (def==null) {
+			def = new IndexDefinition();
+			def._id = id;			
+			def.owner = pseudo.getPseudonym();
+			def.formats = Collections.singletonList("_statsIndex");
+			def.lockTime = System.currentTimeMillis();
+									
+			StatsIndexRoot root = new StatsIndexRoot(pseudo.getKey(), def, true);
+			
+			root.prepareToCreate();
+			try {
+			  IndexDefinition.add(def);
+			} catch (Exception e) {
+			  def = IndexDefinition.getById(id);
+			  if (def==null) throw new NullPointerException();
+			}
+			def.lockTime = 0;
+			//triggerUpdate(pseudo, cache, user, def, null);
+			return root;
+		} else {
+			return new StatsIndexRoot(pseudo.getKey(), def,false);
 		}
 	}
 
@@ -385,7 +433,7 @@ public class IndexManager {
 	}
 	
 	public void triggerUpdate(IndexPseudonym pseudo, APSCache cache, MidataId user, IndexDefinition idx, Set<MidataId> targetAps) throws AppException {
-		//AccessLog.log("TRIGGER UPDATE "+user+" aps="+(targetAps!=null?targetAps.toString():"null"));
+		AccessLog.log("TRIGGER UPDATE "+user+" aps="+(targetAps!=null?targetAps.toString():"null"));
 		indexSupervisor.tell(new IndexUpdateMsg(idx._id, user, pseudo, KeyManager.instance.currentHandle(user), targetAps), null);		
 	}
 	

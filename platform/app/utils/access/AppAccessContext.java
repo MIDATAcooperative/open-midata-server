@@ -97,4 +97,9 @@ public class AppAccessContext extends AccessContext {
 		if (plugin.type.equals("external")) return plugin._id;		
 		return cache.getExecutor();
 	}
+	
+	@Override
+	public String toString() {
+		return "app("+instance._id+" "+parentString()+")";
+	}
 }

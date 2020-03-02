@@ -75,7 +75,7 @@ public class Feature_Indexes extends Feature {
 				}
 			}
 
-			AccessLog.logBegin("start index query");
+			AccessLog.logBeginPath("index query");
 			long startTime = System.currentTimeMillis();
 
 			Object indexQueryUnparsed = q.getProperties().get("index");
@@ -96,7 +96,7 @@ public class Feature_Indexes extends Feature {
 			List<DBRecord> result = Collections.emptyList();
 
 			if (targetAps != null && targetAps.isEmpty()) {
-				AccessLog.logEnd("end index query no target APS");
+				AccessLog.logEndPath("no target APS");
 				return ProcessingTools.empty();
 			}
 
@@ -121,7 +121,7 @@ public class Feature_Indexes extends Feature {
 
 			Map<MidataId, List<DBRecord>> newRecords = new HashMap<MidataId, List<DBRecord>>();
 
-			AccessLog.logBegin("start to look for new entries");
+			AccessLog.logBeginPath("new entries");
 			Feature nextWithProcessing = new Feature_ProcessFilters(next);
 			
 			if (targetAps != null) {
@@ -165,7 +165,7 @@ public class Feature_Indexes extends Feature {
 					}
 				}
 			}
-			AccessLog.logEnd("end to look for new entries");
+			AccessLog.logEndPath(null);
 			long endTime2 = System.currentTimeMillis();
 
 			if (allAps.size() > Feature_AccountQuery.MIN_FOR_ACCELERATION) {
@@ -180,12 +180,11 @@ public class Feature_Indexes extends Feature {
 					contexts.add(context);
 			}
 			Collections.sort(contexts, new ContextComparator());
-			AccessLog.log("index matches "+contexts.size()+" contexts");
 
 			Set<String> queryFields = Sets.create("stream", "time", "document", "part", "direct", "encryptedData");
 			queryFields.addAll(q.getFieldsFromDB());
 
-			AccessLog.logEnd("end index query");
+			AccessLog.logEndPath("index matches "+contexts.size()+" contexts");
 			if (contexts.isEmpty()) return ProcessingTools.empty();
 			return ProcessingTools.noDuplicates(new IndexIterator(q, myAccess, contexts, newRecords, filterMatches));				
 

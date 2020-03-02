@@ -47,6 +47,8 @@ public class Feature_Prefetch extends Feature {
 		
 
 	protected static List<DBRecord> lookup(Query q, List<DBRecord> prefetched, Feature next, boolean withUserGroup) throws AppException {
+		if (true) return Feature_StreamIndex.lookup(q, prefetched, next);
+		
 		AccessLog.logBegin("start lookup #recs="+prefetched.size()+" withGroups="+withUserGroup);
 		long time = System.currentTimeMillis();
 		List<DBRecord> results = null;

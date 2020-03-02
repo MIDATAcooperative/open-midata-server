@@ -93,8 +93,7 @@ public class Feature_AccountQuery extends Feature {
     			if (!q.restrictedBy("consent-limit")) {
     				if (consents.size() > MAX_CONSENTS_IN_QUERY) throw new RequestTooLargeException("error.toomany.consents", "Too many consents in query #="+consents.size());
     			}*/
-            	if (consents.isEmpty()) ProcessingTools.empty();
-    									            	
+            	if (consents.isEmpty()) return ProcessingTools.empty();    									            
             	
             	return ProcessingTools.noDuplicates(new ConsentIterator(next, query, consents));
     						
@@ -168,18 +167,18 @@ public class Feature_AccountQuery extends Feature {
 		
 		ConsentIterator(Feature next, Query q, List<Consent> consents) throws AppException {	
 			this.next = next;
-			this.query = q;
-			AccessLog.log("INIT Consent Iterator fromrec="+q.getFromRecord());			
+			this.query = q;					
 			if (q.getFromRecord() != null) {
+				
 				DBRecord r = q.getFromRecord();
 				if (r.owner != null) {
-					AccessLog.log("has owner");
+				  AccessLog.log("ConsentIterator: fromRecord="+r._id+" owner="+r.owner);
 				  int pos = 0;
 				  Iterator<Consent> it = consents.iterator();
 				  while (it.hasNext()) {					  
 					  Consent c = it.next();
 					  if (c.owner.equals(r.owner) || c._id.equals(r.owner)) {						  
-						  AccessLog.log("found, skipping "+pos+" consents");
+						  AccessLog.log("ConsentIterator: skipping "+pos+" consents");
 						  init(new BlockwiseConsentPrefetch(q, consents, 105, pos));
 						  return;
 					  }
@@ -187,7 +186,7 @@ public class Feature_AccountQuery extends Feature {
 				  }
 				  init(ProcessingTools.dbiterator("", it));
 				  return;
-				}
+				} else AccessLog.log("ConsentIterator: fromRecord!=null owner==null");
 			}
 			init(new BlockwiseConsentPrefetch(q, consents, 105));
 		}
@@ -202,7 +201,7 @@ public class Feature_AccountQuery extends Feature {
 
 		@Override
 		public String toString() {
-			if (thisconsent==null) return "consent(null)";
+			if (thisconsent==null) return "consent(done)";
 			return "consent(["+passed+"] "+thisconsent._id.toString()+","+current.toString()+")";
 		}
 		

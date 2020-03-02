@@ -32,10 +32,10 @@ public class Feature_StreamIndex extends Feature {
 	@Override
 	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
 		if (q.getApsId().equals(q.getCache().getAccountOwner()) &&
-			!q.isRestrictedOnTime() &&
-			(Feature_AccountQuery.allApsIncluded(q) || q.restrictedBy("_id"))) {	
+			(!q.isRestrictedOnTime() &&
+			Feature_AccountQuery.allApsIncluded(q)) || (!q.deepQuery() && q.restrictedBy("_id"))) {	
 		
-			AccessLog.logBegin("start stream index query");
+			AccessLog.logBeginPath("stream-index");
 			long startTime = System.currentTimeMillis();
 			
 			//Set<MidataId> targetAps = Feature_Indexes.determineTargetAps(q);
@@ -46,41 +46,38 @@ public class Feature_StreamIndex extends Feature {
 				AccessLog.logEnd("end stream index query no target APS");
 				return ProcessingTools.empty();
 			}*/
-	
-			StreamIndexRoot index = IndexManager.instance.getStreamIndex(q.getCache(), q.getCache().getAccountOwner());
+	       
+			StreamIndexRoot index = q.getCache().getStreamIndexRoot(); 
 					
 			StreamIndexLookup lookup = new StreamIndexLookup();			
 			if (q.restrictedBy("app")) lookup.setApp(q.getMidataIdRestriction("app"));
 			if (q.restrictedBy("owner")) lookup.setOwner(q.getMidataIdRestriction("owner")); 
 			if (q.restrictedBy("content")) lookup.setContent(q.getRestriction("content"));
 			if (q.restrictedBy("format")) lookup.setFormat(q.getRestriction("format"));
-			AccessLog.log(lookup.toString());
 			
+			boolean allfound = false;
 			Collection<DBRecord> matches = null;
 			if (q.restrictedBy("_id")) {
-				List<DBRecord> prefetched = QueryEngine.lookupRecordsById(q);
-				matches = new ArrayList<DBRecord>(prefetched.size());
-				for (DBRecord r : prefetched) {
-					lookup.setId(r._id);
+				allfound = true;
+				/*List<DBRecord> prefetched = null;
+				if (q.restrictedBy("quick")) {					
+					DBRecord record = (DBRecord) q.getProperties().get("quick");
+					if (record.stream != null) prefetched = Collections.singletonList(record);
+				}
+				if (prefetched == null) prefetched = QueryEngine.lookupRecordsById(q);
+				matches = new ArrayList<DBRecord>(prefetched.size());*/
+				for (MidataId id : q.getMidataIdRestriction("_id")) {
+					lookup.setId(id);
 					Collection<DBRecord> match = index.lookup(lookup);
-					if (match.isEmpty() && r.stream != null) {
-						lookup.setId(r.stream);
-						match = index.lookup(lookup);
-					}
-					if (!match.isEmpty()) {
-						matches.addAll(match);
-					}
+					if (match==null || match.isEmpty()) allfound = false;
+					matches = QueryEngine.combine(matches,  match);					
 				}
 				
 			} else {
 				matches = index.lookup(lookup);
-			}			
-					
-				
-			IndexPseudonym pseudo = IndexManager.instance.getIndexPseudonym(q.getCache(), q.getCache().getExecutor(), q.getApsId(), true);
-			IndexManager.instance.triggerUpdate(pseudo, q.getCache(), q.getCache().getExecutor(), index.getModel(), null);
+			}								           
 			
-	        AccessLog.log("index matches: "+matches.size());
+	        //AccessLog.log("index matches: "+matches.size());
 			Set<MidataId> allAps = new HashSet<MidataId>();
 	
 			Map<MidataId, Set<DBRecord>> filterMatches = new HashMap<MidataId, Set<DBRecord>>();
@@ -97,52 +94,62 @@ public class Feature_StreamIndex extends Feature {
 			}
 			
 			Map<MidataId, List<DBRecord>> newRecords = new HashMap<MidataId, List<DBRecord>>();
-	
-			AccessLog.logBegin("start to look for new entries");
-			Feature nextWithProcessing = new Feature_ProcessFilters(next);
-			
-			/*if (targetAps != null) {
-				for (MidataId id : targetAps) {
-					long v = index.getVersion(id);
-					result = null;
-					AccessContext context = Feature_Indexes.getContextForAps(q, id);
-					if (context != null) {
-						if (context instanceof ConsentAccessContext && ((ConsentAccessContext) context).getConsent().dataupdate <= v) {
-							continue;
-						} 
-	
-						List<DBRecord> add;
-						Query updQuery = new Query(q, CMaps.mapPositive("shared-after", v).map("owner", "self").map("streams","true").map("flat","true"), id, context);
-						add = nextWithProcessing.query(updQuery);
-						AccessLog.log("found new updated entries aps=" + id + ": " + add.size());
-						result = QueryEngine.combine(result, add);						
-						if (result != null) {
-							newRecords.put(id, result);
-							allAps.add(id);
+	        if (!allfound) {
+			    AccessLog.logBeginPath("new-entries");
+				Feature nextWithProcessing = new Feature_ProcessFilters(next);
+				
+				/*if (targetAps != null) {
+					for (MidataId id : targetAps) {
+						long v = index.getVersion(id);
+						result = null;
+						AccessContext context = Feature_Indexes.getContextForAps(q, id);
+						if (context != null) {
+							if (context instanceof ConsentAccessContext && ((ConsentAccessContext) context).getConsent().dataupdate <= v) {
+								continue;
+							} 
+		
+							List<DBRecord> add;
+							Query updQuery = new Query(q, CMaps.mapPositive("shared-after", v).map("owner", "self").map("streams","true").map("flat","true"), id, context);
+							add = nextWithProcessing.query(updQuery);
+							AccessLog.log("found new updated entries aps=" + id + ": " + add.size());
+							result = QueryEngine.combine(result, add);						
+							if (result != null) {
+								newRecords.put(id, result);
+								allAps.add(id);
+							}
 						}
 					}
-				}
-			} else {*/
-				long v = index.getAllVersion();
-				// AccessLog.log("vx="+v);
-				List<DBRecord> add;
-				add = nextWithProcessing.query(new Query(q, CMaps.mapPositive("shared-after", v).map("consent-limit",1000).map("streams","true").map("flat","true")));
-				AccessLog.log("found new updated entries: " + add.size());
-				result = QueryEngine.combine(result, add);				
-				if (result != null && !result.isEmpty()) {
-					for (DBRecord record : result) {
-						MidataId id = record.context.getTargetAps();
-						List<DBRecord> recs = newRecords.get(id);
-						if (recs == null) {
-							recs = new ArrayList<DBRecord>();
-							newRecords.put(id, recs);
-							allAps.add(id);
-						}
-						recs.add(record);
+				} else {*/
+					long v = index.getAllVersion();
+					// AccessLog.log("vx="+v);
+					List<DBRecord> add;
+					add = nextWithProcessing.query(new Query(q, CMaps.mapPositive("shared-after", v).map("consent-limit",1000).map("streams","true").map("flat","true")));
+					//AccessLog.log("found new updated entries: " + add.size());
+					for (DBRecord r : add) {
+						AccessLog.log(" id="+r._id+" aps="+r.consentAps+" ow="+r.owner+" str="+r.isStream);
+						AccessLog.log(r.context.toString());
 					}
-				}
-			//}
-			AccessLog.logEnd("end to look for new entries");
+					if (add.size()>0) {
+						IndexPseudonym pseudo = IndexManager.instance.getIndexPseudonym(q.getCache(), q.getCache().getExecutor(), q.getApsId(), true);
+						IndexManager.instance.triggerUpdate(pseudo, q.getCache(), q.getCache().getExecutor(), index.getModel(), null);		        
+					}
+					
+					result = QueryEngine.combine(result, add);				
+					if (result != null && !result.isEmpty()) {
+						for (DBRecord record : result) {
+							MidataId id = record.context.getTargetAps();
+							List<DBRecord> recs = newRecords.get(id);
+							if (recs == null) {
+								recs = new ArrayList<DBRecord>();
+								newRecords.put(id, recs);
+								allAps.add(id);
+							}
+							recs.add(record);
+						}
+					}
+				//}
+				AccessLog.logEndPath("new="+add.size());
+	        }
 			long endTime2 = System.currentTimeMillis();
 	
 			if (allAps.size() > Feature_AccountQuery.MIN_FOR_ACCELERATION) {
@@ -157,12 +164,12 @@ public class Feature_StreamIndex extends Feature {
 					contexts.add(context);
 			}
 			Collections.sort(contexts, new Feature_Indexes.ContextComparator());
-			AccessLog.log("index matches "+contexts.size()+" contexts");
+			//AccessLog.log("index matches "+contexts.size()+" contexts");
 	
 			//Set<String> queryFields = Sets.create("stream", "time", "document", "part", "direct", "encryptedData");
 			//queryFields.addAll(q.getFieldsFromDB());
 	
-			AccessLog.logEnd("end index query");
+			AccessLog.logEndPath("matches="+matches.size()+" #contexts="+contexts.size());
 			if (contexts.isEmpty()) return ProcessingTools.empty();
 			return ProcessingTools.noDuplicates(new StreamIndexIterator(q, lookup, contexts, newRecords, filterMatches));
 		} else return next.iterator(q);
@@ -177,9 +184,11 @@ public class Feature_StreamIndex extends Feature {
 		private StreamIndexLookup lookup;
 		private AccessContext currentContext;
 		private int size;
+		private String path;
 
 		StreamIndexIterator(Query q, StreamIndexLookup lookup, List<AccessContext> contexts, Map<MidataId, List<DBRecord>> newRecords, Map<MidataId, Set<DBRecord>> matches) throws AppException {
 			this.q = q;
+			this.path = AccessLog.lp()+"/stream-index";
 			this.query = q;
 			this.lookup = lookup;
 			queryFields = Sets.create("stream", "time", "document", "part", "direct", "encryptedData");
@@ -213,7 +222,7 @@ public class Feature_StreamIndex extends Feature {
 			List<DBRecord> result = newRecords.get(aps);
 			if (result == null)
 				result = new ArrayList<DBRecord>();
-			AccessLog.log("Now processing aps:" + aps.toString());
+			AccessLog.log("now "+path+": aps=" + aps.toString());
 
 			Set<DBRecord> ids = matches.get(aps);
 			if (ids != null) result.addAll(ids);            							           
@@ -238,4 +247,49 @@ public class Feature_StreamIndex extends Feature {
 
 	}
 	
+	protected static List<DBRecord> lookup(Query q, List<DBRecord> prefetched, Feature next) throws AppException {
+		
+		//AccessLog.logBegin("start lookup #recs="+prefetched.size());
+		AccessLog.logBeginPath("lookup("+prefetched.size()+")");
+		List<DBRecord> results = null;
+		for (DBRecord record : prefetched) {
+			List<DBRecord> partResult = null;
+			if (record.stream != null) {
+				//AccessLog.log("STREAMS");
+				List<DBRecord> streamRec = next.query(new Query(q,CMaps.map("_id", record.stream).map("streams","only").map("flat",true)));
+				if (streamRec != null && !streamRec.isEmpty()) {
+					//AccessLog.log("STREAMS V1");
+					DBRecord stream = streamRec.get(0);
+					partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("stream", record.stream).mapNotEmpty("owner", stream.owner).map("quick", record), next);
+				} else {
+					AccessLog.logPath("no stream found");
+					partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("flat", true).map("quick", record), next);
+				}
+				if (partResult.isEmpty()) partResult = null;
+				if (partResult == null) {
+					AccessLog.logPath("trying public branch");
+					streamRec = next.query(new Query(q,CMaps.map("_id", record.stream).map("streams","only").map("flat",true).map("public","only")));
+					if (streamRec != null && !streamRec.isEmpty()) {
+						DBRecord stream = streamRec.get(0);
+						partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("stream", record.stream).mapNotEmpty("owner", stream.owner).map("public","only").map("quick", record), next);
+						if (partResult.isEmpty()) partResult = null;
+					} 
+				}
+			}
+			if (partResult == null) {
+				AccessLog.logPath("have nothing");
+			  partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).mapNotEmpty("stream", record.stream).map("quick",  record), next);
+			}
+			  // Keep sharedAt from input if we got one
+			if (record.sharedAt != null && partResult != null) {
+				  for (DBRecord r : partResult) r.sharedAt = record.sharedAt;
+			}
+			  
+			results = QueryEngine.combine(results,  partResult);						
+		}
+		if (results==null) results = Collections.emptyList();
+		AccessLog.logEndPath("found="+results.size());
+		//AccessLog.logEnd("end lookup");
+		return results;
+	}
 }

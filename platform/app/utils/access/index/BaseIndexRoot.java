@@ -105,6 +105,7 @@ public abstract class BaseIndexRoot<A extends BaseIndexKey<A,B>,B> {
 	}
 	
 	public Collection<B> lookup(BaseLookup<A> key) throws InternalServerException {
+		AccessLog.log("index lookup: "+key.toString());
 		try {
 		  return rootPage.lookup(key);
 		} catch (LostUpdateException e) {

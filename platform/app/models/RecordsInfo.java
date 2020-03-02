@@ -71,6 +71,7 @@ public class RecordsInfo {
 	
 	public Record newestRecordContent;
 
+	public MidataId aps;
 	
     public RecordsInfo() {
     	formats = new HashSet<String>();

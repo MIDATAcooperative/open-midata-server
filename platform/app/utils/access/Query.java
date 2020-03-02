@@ -56,7 +56,7 @@ public class Query {
 		this.cache = cache;
 		this.apsId = apsId;
 		this.context = context;
-		AccessLog.logQuery(apsId, properties, fields);
+		//AccessLog.logQuery(apsId, properties, fields);
 		process();
 		
 	}

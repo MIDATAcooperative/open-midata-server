@@ -37,9 +37,8 @@ public class Feature_Consents extends Feature {
 			
 			List<DBRecord> recs = q.getCache().getAPS(q.getApsId()).historyQuery(after.getTime(), false);			
 			
-			recs = Feature_Prefetch.lookup(qnt, recs, next, false);
-			List<DBRecord> result = Collections.emptyList();
-			AccessLog.log("found "+recs.size()+" history entries");
+			if (!recs.isEmpty()) recs = Feature_Prefetch.lookup(qnt, recs, next, false);
+			List<DBRecord> result = Collections.emptyList();			
 			if (recs.size() > 0) {				
 			
 				boolean onlyStreams = qnt.isStreamOnlyQuery();
@@ -55,8 +54,8 @@ public class Feature_Consents extends Feature {
 				}
 			}
 			
-			AccessLog.logEnd("ended history query with size="+result.size());
-			
+			AccessLog.logEnd("ended history query entries="+recs.size()+" results="+result.size());
+			if (result.isEmpty()) return next.iterator(q);
 			return ProcessingTools.noDuplicates(new SharedThenNormal(result, next, q));
 		} 
 		return next.iterator(q);	
