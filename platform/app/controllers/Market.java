@@ -171,7 +171,7 @@ public class Market extends APIController {
 				app.targetUserRole = JsonValidation.getEnum(json, "targetUserRole", UserRole.class);
 				if (app.type.equals("analyzer")) app.targetUserRole = UserRole.RESEARCH;
 				app.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
-				app.resharesData = JsonValidation.getBoolean(json, "resharesData");
+				app.resharesData = JsonValidation.getBoolean(json, "resharesData");				
 				app.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
 				app.writes = JsonValidation.getEnum(json, "writes", WritePermissionType.class);
 				app.pluginVersion = System.currentTimeMillis();
@@ -196,6 +196,9 @@ public class Market extends APIController {
 			}
 			
 			app.noUpdateHistory = JsonValidation.getBoolean(json, "noUpdateHistory");
+			if (app.type.equals("analyzer")) {
+				  app.pseudonymize = JsonValidation.getBoolean(json, "pseudonymize");
+			} else app.pseudonymize = false;
 			app.orgName = JsonValidation.getStringOrNull(json, "orgName");
 			app.publisher = JsonValidation.getStringOrNull(json, "publisher");
 			app.description = JsonValidation.getStringOrNull(json, "description");				
@@ -574,6 +577,9 @@ public class Market extends APIController {
 		plugin.predefinedMessages = parseMessages(json);
 		plugin.pluginVersion = System.currentTimeMillis();
 		plugin.noUpdateHistory = JsonValidation.getBoolean(json, "noUpdateHistory");
+		if (plugin.type.equals("analyzer")) {
+			plugin.pseudonymize = JsonValidation.getBoolean(json, "pseudonymize");
+		} else plugin.pseudonymize = false;
 		
 		try {
 		    Query.validate(plugin.defaultQuery, plugin.type.equals("mobile") || plugin.type.equals("service"));
@@ -672,6 +678,10 @@ public class Market extends APIController {
 		app.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
 		app.unlockCode = JsonValidation.getStringOrNull(json, "unlockCode");
 		app.noUpdateHistory = JsonValidation.getBoolean(json, "noUpdateHistory");
+		if (app.type.equals("analyzer")) {
+			  app.pseudonymize = JsonValidation.getBoolean(json, "pseudonymize");
+		} else app.pseudonymize = false;
+		
 		app.writes = JsonValidation.getEnum(json, "writes", WritePermissionType.class);
 		app.i18n = new HashMap<String, Plugin_i18n>();
 		app.pluginVersion = System.currentTimeMillis();	

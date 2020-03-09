@@ -110,7 +110,15 @@
 		      <span translate="manageapp.info.no_update_history"></span>
 		    </label>
 		    </div>
-		  </formrow>	
+		  </formrow>
+		   <formrow myid="pseudonymize" label="manageapp.pseudonymize" ng-if="app.type=='analyzer'">
+		    <div class="form-check">
+		    <label class="form-check-label">
+		      <input class="form-check-input" type="checkbox" id="pseudonymize" name="pseudonymize" ng-model="app.pseudonymize" value="true">
+		      <span translate="manageapp.info.pseudonymize"></span>
+		    </label>
+		    </div>
+		  </formrow>		
 		  <formrow myid="resharesData" label="Resharing" class="danger-change">
 		    <div class="form-check">
 		    <label class="form-check-label">

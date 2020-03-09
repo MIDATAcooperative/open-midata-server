@@ -39,7 +39,7 @@ public class AppAccessContext extends AccessContext {
 
 	@Override
 	public boolean mustPseudonymize() {		
-		return false;
+		return plugin.pseudonymize;
 	}
 
 	@Override
