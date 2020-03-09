@@ -35,5 +35,6 @@ id0033	31.01.2020	a.kreutz	B	Fixed bug in 'copy project' function	Previous versi
 id0034	21.02.2020	a.kreutz	F	Added function to send email to project participants.	Currently only admins may send emails to all active participants of a project. The user must have validated his email before.
 id0035	21.02.2020	a.kreutz	B	No more mixed languages after page reload	Sometimes after reloading the page in the browser the language used was no longer consistent.
 id0036	02.03.2020	a.kreutz	B	Researcher name no longer shown for project shared data
-id0037	02.03.2020	a.kreutz	B	Project Analyzer creation page fixed	Application could not be created after page was filled out.  
+id0037	02.03.2020	a.kreutz	B	Project Analyzer creation page fixed	Application could not be created after page was filled out.
+id0038	09.03.2020	a.kreutz	F	Project Analyzer setup extended	For a project analyzer the developer may now select if it needs pseudonymized data or not.  
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 
