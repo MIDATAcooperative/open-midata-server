@@ -119,7 +119,9 @@ angular.module('portal')
 		if ($scope.app.targetUserRole!="RESEARCH") $scope.app.noUpdateHistory=false;
 		if ($scope.app.type!="analyzer") $scope.app.pseudonymize=false;
 		
-		$scope.app.developerTeamLogins = $scope.app.developerTeamLoginsStr.split(/[ ,]+/);
+		if ($scope.app.developerTeamLoginsStr) {
+		  $scope.app.developerTeamLogins = $scope.app.developerTeamLoginsStr.split(/[ ,]+/);
+		} else $scope.app.developerTeamLogins = [];
 		
 		if ($scope.error && $scope.error.field && $scope.error.type) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
 		$scope.error = null;
