@@ -74,6 +74,15 @@
 		    <div class="iconspace"><div>&nbsp;</div><strong translate="editconsent.you"></strong></div>
 		  </div>
 		</div>
+		<div  ng-show="consent.type=='STUDYRELATED'">
+		  <div class="card-body">
+		  <img ng-src="{{getIconRole('research')}}" class="float-left consenticon">
+          <div class="iconspace">
+		    <div translate="editconsent.project"></div>
+		    <div><strong>{{ consent.ownerName }}</strong></div>
+		  </div>
+		  </div>
+		</div>
 		<div  ng-show="consent.externalOwner">
 		  <div class="card-body">
 		  <img ng-src="/images/question.jpeg" class="float-left consenticon">

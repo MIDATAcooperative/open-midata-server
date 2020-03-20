@@ -47,7 +47,7 @@ angular.module('portal')
 			$scope.isSimple = true;
 			$scope.consentId = $state.params.consentId;
 			
-			$scope.status.doBusy(circles.listConsents({ "_id" : $state.params.consentId }, ["name", "type", "status", "owner", "authorized", "entityType", "createdBefore", "validUntil", "externalOwner", "externalAuthorized", "sharingQuery", "dateOfCreation", "writes" ]))
+			$scope.status.doBusy(circles.listConsents({ "_id" : $state.params.consentId }, ["name", "type", "status", "owner", "ownerName", "authorized", "entityType", "createdBefore", "validUntil", "externalOwner", "externalAuthorized", "sharingQuery", "dateOfCreation", "writes" ]))
 			.then(function(data) {
 				if (!data.data || !data.data.length) {
 					$scope.consent = null;
@@ -81,8 +81,9 @@ angular.module('portal')
 						}));
 					});		
 				}
+								
 				
-				if ($scope.consent.owner) {
+				if ($scope.consent.owner && $scope.content.type!="STUDYRELATED") {
 					users.getMembers({ "_id" : $scope.consent.owner }, [ "firstname", "lastname", "email", "role"])
 					.then(function(result) { console.log(result);$scope.owner = result.data[0]; });
 				}
@@ -442,7 +443,7 @@ angular.module('portal')
 		if (item == "reshare") return "/images/community.jpeg";
 		if (session.user && item._id == session.user._id) return "/images/account.jpg";
 		if (item=="member" || item.role == "MEMBER") return "/images/account.jpg";
-		if (item.role == "RESEARCH") return "/images/research2.jpeg";
+		if (item=="research" || item.role == "RESEARCH") return "/images/research2.jpeg";
 		if (item=="provider" || item.role == "PROVIDER") return "/images/doctor.jpeg";
 		return "";
 	};
