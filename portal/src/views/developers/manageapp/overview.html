@@ -37,7 +37,7 @@
                 <span ng-if="!hasSubRole('USERADMIN')"><b>{{ app.creatorLogin }}</b></span>
               </td>
             </tr>
-            <tr ng-if="app.developerTeamLogins">
+            <tr ng-if="app.developerTeamLogins.length">
               <td translate="manageapp.developerTeam"></td>
               <td>
                 <div ng-repeat="login in app.developerTeamLogins">
