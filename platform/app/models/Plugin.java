@@ -40,7 +40,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	 * constant containing all fields visible to a developer
 	 */
 	public @NotMaterialized final static Set<String> ALL_DEVELOPER = 
-			 Sets.create("_id", "version", "creator", "creatorLogin", "filename", "name", "description", "tags", 
+			 Sets.create("_id", "version", "creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", 
 	                     "targetUserRole", "spotlighted", "url", "addDataUrl", "previewUrl", "defaultSpaceName",
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "accessTokenUrl", "consumerKey", "consumerSecret","tokenExchangeParams",
@@ -51,7 +51,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	 * constant containing all fields visible to anyone
 	 */
 	public @NotMaterialized final static Set<String> ALL_PUBLIC = 
-			 Sets.create("_id", "version", "creator", "creatorLogin", "filename", "name", "description", "tags", 
+			 Sets.create("_id", "version", "creator", "creatorLogin", "developerTeam", "filename", "name", "description", "tags", 
 	                     "targetUserRole", "spotlighted", "url", "addDataUrl", "previewUrl", "defaultSpaceName",
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "consumerKey", "scopeParameters", "status", "i18n", "lang", "predefinedMessages", "resharesData", "pluginVersion",
@@ -81,6 +81,17 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	 * the login of the creator of the plugin
 	 */
 	public String creatorLogin;
+	
+	/**
+	 * other developers of the plugin
+	 */
+	public List<MidataId> developerTeam;
+	
+	/**
+	 * login names of developers of the plugin
+	 */
+	@NotMaterialized
+	public List<String> developerTeamLogins;
 	
 	/**
 	 * Name of organization developing plugin
@@ -346,7 +357,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	
 	public void update() throws InternalServerException, LostUpdateException {		
 		try {
-		   DBLayer.secureUpdate(this, collection, "version", "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status", "i18n", "predefinedMessages", "resharesData", "allowsUserSearch", "pluginVersion", "termsOfUse", "requirements", "orgName", "publisher", "unlockCode", "writes", "apiUrl", "noUpdateHistory", "sendReports", "pseudonymize" );
+		   DBLayer.secureUpdate(this, collection, "version", "creator", "developerTeam", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status", "i18n", "predefinedMessages", "resharesData", "allowsUserSearch", "pluginVersion", "termsOfUse", "requirements", "orgName", "publisher", "unlockCode", "writes", "apiUrl", "noUpdateHistory", "sendReports", "pseudonymize" );
 		   Instances.cacheClear("plugin",  _id);
 		} catch (DatabaseException e) {
 			throw new InternalServerException("error.internal_db", e);
@@ -400,5 +411,12 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	
 	public static long count() throws AppException {
 		return Model.count(Plugin.class, collection, CMaps.map("status", Plugin.NOT_DELETED));
+	}
+	
+	public boolean isDeveloper(MidataId user) {
+		if (user==null) return false;
+		if (this.creator != null && this.creator.equals(user)) return true;
+		if (this.developerTeam != null && this.developerTeam.contains(user)) return true;
+		return false;
 	}
 }

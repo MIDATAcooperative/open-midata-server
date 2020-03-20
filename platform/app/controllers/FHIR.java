@@ -1,11 +1,19 @@
 package controllers;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Optional;
 
 import javax.servlet.ServletException;
 
+import org.bson.BSONObject;
+
 import actions.MobileCall;
+import ca.uhn.fhir.rest.param.DateAndListParam;
+import ca.uhn.fhir.rest.param.DateParam;
+import ca.uhn.fhir.rest.param.ParamPrefixEnum;
+import models.MidataId;
+import models.Plugin;
 import models.enums.UsageAction;
 import models.enums.UserRole;
 import play.mvc.BodyParser;
@@ -13,11 +21,13 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.access.EncryptedFileHandle;
+import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
 import utils.auth.PortalSessionToken;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
+import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.fhir.FHIRServlet;
 import utils.fhir.ResourceProvider;
@@ -84,7 +94,50 @@ public class FHIR extends Controller {
 	@MobileCall
 	@BodyParser.Of(BodyParser.Raw.class) 
 	public Result getRoot() throws AppException, IOException, ServletException {
+		
+		//Stats.startRequest(request());
+		PlayHttpServletRequest req = new PlayHttpServletRequest(request());
+		PlayHttpServletResponse res = new PlayHttpServletResponse(response());				
+		ExecutionInfo info = getExecutionInfo(req);
+        if (info != null && info.pluginId != null) {
+		
+        BSONObject query = RecordManager.instance.getMeta(info.executorId, info.targetAPS, "_query");
+        if (query != null) {
+        	MidataId studyId = MidataId.from(query.get("study"));
+        	String studyGroup = (String) query.get("study-group");
+        	Plugin plug = Plugin.getById(info.pluginId);
+        	if (plug == null || !plug.type.equals("analyzer")) throw new BadRequestException("error.invalid.plugin", "Wrong plugin type");
+        	String mode = plug.pseudonymize ? "pseudonymized" : "original";
+        	String handle = KeyManager.instance.currentHandle(info.executorId);
+        	
+        	Date from = null;
+        	Date to = null;
+        	try {
+        	String[] dates = req.getParameterValues("_lastUpdated");
+        	if (dates != null && dates.length>0) {
+        		for (int i=0;i<dates.length;i++) {
+        		  DateParam dal = new DateParam(dates[i]);
+        		  ParamPrefixEnum prefix = dal.getPrefix();
+        		  if (prefix == ParamPrefixEnum.GREATERTHAN_OR_EQUALS) {
+        			  from = dal.getValueAsDateTimeDt().getValue();
+        		  } else if (prefix == ParamPrefixEnum.LESSTHAN) {
+        			  to = dal.getValueAsDateTimeDt().getValue();
+        		  } else throw new BadRequestException("error.invalid", "Only 'ge' and 'lt' supported on _lastUpdated");
+        		}
+        	}
+        	} catch (ca.uhn.fhir.parser.DataFormatException e) {
+        		throw new BadRequestException("error.invalid", e.getMessage());
+        	}
+        	return controllers.research.Studies.downloadFHIR(info.executorId, handle, studyId, info.role, from, to, studyGroup, mode);
+        }
+		
+		//Stats.finishRequest(request(), String.valueOf(res.getStatus()));
+		
+        }
 		return get("/");
+		
+		
+		
 	}
 	
 	

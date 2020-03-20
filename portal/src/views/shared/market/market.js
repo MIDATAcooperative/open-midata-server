@@ -37,7 +37,7 @@ angular.module('portal')
 				$scope.visualizations.spotlighted = apps.data;	
 				
 				if (session.user.developer) {
-					properties = { "type" : ["visualization", "oauth1", "oauth2"], "creator" : session.user.developer, "status" : ["ACTIVE", "BETA", "DEVELOPMENT"]  };
+					properties = { "type" : ["visualization", "oauth1", "oauth2"], "developerTeam" : session.user.developer, "status" : ["ACTIVE", "BETA", "DEVELOPMENT"]  };
 					data = { "properties": properties, "fields": fields};
 					
 					$scope.status.doBusy(server.post(jsRoutes.controllers.Plugins.get().url, JSON.stringify(data))).

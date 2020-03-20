@@ -37,6 +37,15 @@
                 <span ng-if="!hasSubRole('USERADMIN')"><b>{{ app.creatorLogin }}</b></span>
               </td>
             </tr>
+            <tr ng-if="app.developerTeamLogins">
+              <td translate="manageapp.developerTeam"></td>
+              <td>
+                <div ng-repeat="login in app.developerTeamLogins">
+                <span ng-if="hasSubRole('USERADMIN')"><a ui-sref="^.address({userId : app.developerTeam[$index] })"><b>{{ login }}</b></a></span>
+                <span ng-if="!hasSubRole('USERADMIN')"><b>{{ login }}</b></span>
+                </div>
+              </td>
+            </tr>
             <tr>
               <td translate="manageapp.organization"></td>
               <td><b>{{ app.orgName || "-" }}</b></td>
