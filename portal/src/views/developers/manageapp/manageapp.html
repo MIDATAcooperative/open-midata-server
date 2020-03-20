@@ -50,7 +50,11 @@
 		  <formrow myid="publisher" label="Publisher">
 		    <input type="text" id="publisher" name="publisher" class="form-control" ng-model="app.publisher">		 
 		  </formrow>
-		 
+		  <formrow myid="developerTeamLogins" label="manageapp.developerTeam">
+		    <input type="text" id="developerTeamLogins" name="developerTeamLogins" class="form-control" ng-model="app.developerTeamLoginsStr">
+		    <formerror myid="developerTeamLogins" type="unknown" message="error.unknown.user"></formerror>
+		    <p class="form-text text-muted" translate="manageapp.info.developerTeam"></p>
+		  </formrow>
 		 
 		  <hr>
 		  <formrow myid="x" label="Multi Language Support">

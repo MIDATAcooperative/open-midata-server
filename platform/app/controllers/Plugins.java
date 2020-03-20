@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.typesafe.config.Config;
 
 import actions.APICall;
+import models.Developer;
 import models.Member;
 import models.MidataId;
 import models.MobileAppInstance;
@@ -131,13 +132,32 @@ public class Plugins extends APIController {
 		if (!properties.containsKey("status")) {
 			properties.put("status", EnumSet.of(PluginStatus.DEVELOPMENT, PluginStatus.BETA, PluginStatus.ACTIVE, PluginStatus.DEPRECATED));
 		}
-		ObjectIdConversion.convertMidataIds(properties, "_id", "creator", "recommendedPlugins");
+		ObjectIdConversion.convertMidataIds(properties, "_id", "creator", "recommendedPlugins", "developerTeam");
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 
 		Rights.chk("Plugins.get", getRole(), properties, fields);
-		List<Plugin> visualizations = new ArrayList<Plugin>(Plugin.getAll(properties, fields));
+		Set<Plugin> vis = Plugin.getAll(properties, fields);
+		if (properties.containsKey("developerTeam")) {
+			properties.put("creator", properties.get("developerTeam"));
+			properties.remove("developerTeam");
+			vis.addAll(Plugin.getAll(properties, fields));
+		}
+		List<Plugin> visualizations = new ArrayList<Plugin>(vis);
 
 		Collections.sort(visualizations);
+		
+		if (fields.contains("developerTeamLogins")) {
+			for (Plugin plugin : visualizations) {
+				if (plugin.developerTeam != null) {
+					plugin.developerTeamLogins = new ArrayList<String>(plugin.developerTeam.size());
+					for (MidataId devId : plugin.developerTeam) {
+						User developer = User.getById(devId, Sets.create("email"));
+						if (developer!=null) plugin.developerTeamLogins.add(developer.email);
+						else plugin.developerTeamLogins.add("unknown");
+					}
+				}
+			}
+		}
 		return ok(JsonOutput.toJson(visualizations, "Plugin", fields)).as("application/json");
 	}
 
@@ -232,7 +252,7 @@ public class Plugins extends APIController {
 		User user = User.getById(userId, Sets.create("visualizations", "apps", "role", "developer"));
 		if (user == null) throw new BadRequestException("error.unknown.user", "Unknown user");
 
-		boolean testing = visualization.creator != null && (visualization.creator.equals(user._id) || (user.developer != null && visualization.creator.equals(user.developer)));
+		boolean testing = visualization.isDeveloper(user._id) || (user.developer != null && visualization.isDeveloper(user.developer));
 
 		if (!user.role.equals(visualization.targetUserRole) && !visualization.targetUserRole.equals(UserRole.ANY) && !testing) {
 			throw new BadRequestException("error.invalid.plugin", "Visualization is for a different role. Your role:" + user.role);

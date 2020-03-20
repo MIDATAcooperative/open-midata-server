@@ -4,7 +4,7 @@ angular.module('portal')
 	$scope.status = new status(true);
 	
 	$scope.init = function(userId) {		
-		  $scope.status.doBusy(apps.getApps({ creator : userId }, [ "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type"]))
+		  $scope.status.doBusy(apps.getApps({ developerTeam : userId }, [ "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type"]))
 		  .then(function(data) { $scope.apps = data.data; });		  		  
 	};
 	

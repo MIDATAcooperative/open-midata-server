@@ -38,7 +38,7 @@ angular.module('portal')
     ];
 			
 	$scope.loadApp = function(appId) {
-		$scope.status.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports"]))
+		$scope.status.doBusy(apps.getApps({ "_id" : appId }, ["creator", "creatorLogin", "developerTeam", "developerTeamLogins", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "tokenExchangeParams", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "pluginVersion", "requirements", "termsOfUse", "orgName", "publisher", "unlockCode", "writes", "icons", "apiUrl", "noUpdateHistory", "pseudonymize", "predefinedMessages", "defaultSubscriptions", "sendReports"]))
 		.then(function(data) { 
 			$scope.app = data.data[0];			
 			if ($scope.app.status == "DEVELOPMENT" || $scope.app.status == "BETA") {
@@ -48,6 +48,7 @@ angular.module('portal')
 			}
 			if (!$scope.app.i18n) { $scope.app.i18n = {}; }
 			if (!$scope.app.requirements) { $scope.app.requirements = []; }
+			if ($scope.app.developerTeamLogins) $scope.app.developerTeamLoginsStr = $scope.app.developerTeamLogins.join(", "); 
 			if ($scope.app.type === "oauth2" && ! ($scope.app.tokenExchangeParams) ) $scope.app.tokenExchangeParams = "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>";
 			$scope.app.defaultQueryStr = JSON.stringify($scope.app.defaultQuery);
 			//$scope.updateQuery();
@@ -117,6 +118,8 @@ angular.module('portal')
 		
 		if ($scope.app.targetUserRole!="RESEARCH") $scope.app.noUpdateHistory=false;
 		if ($scope.app.type!="analyzer") $scope.app.pseudonymize=false;
+		
+		$scope.app.developerTeamLogins = $scope.app.developerTeamLoginsStr.split(/[ ,]+/);
 		
 		if ($scope.error && $scope.error.field && $scope.error.type) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
 		$scope.error = null;

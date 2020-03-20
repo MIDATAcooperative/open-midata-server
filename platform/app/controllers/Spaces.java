@@ -288,7 +288,7 @@ public class Spaces extends APIController {
 		
 		Plugin visualization = Plugin.getById(space.visualization, Sets.create("type", "name", "filename", "url", "previewUrl", "creator", "developmentServer", "accessTokenUrl", "authorizationUrl", "consumerKey", "scopeParameters","licenceDef"));
 
-		boolean testing = visualization.creator != null && (visualization.creator.equals(PortalSessionToken.session().getDeveloperId()) || visualization.creator.equals(userId)) && visualization.developmentServer != null && visualization.developmentServer.length()> 0; 
+		boolean testing = visualization.isDeveloper(PortalSessionToken.session().getDeveloperId()) || visualization.isDeveloper(userId); 
 
 		if (!testing && LicenceChecker.licenceRequired(visualization)) {
 			LicenceChecker.checkSpace(userId, visualization, space);

@@ -310,31 +310,41 @@ public class Studies extends APIController {
 		MidataId owner = PortalSessionToken.session().getOrgId();
 		final MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
         final UserRole role = getRole();
-		final Study study = Study.getById(studyid, Sets.create("name", "type", "executionStatus", "participantSearchStatus", "validationStatus", "owner", "groups", "createdBy", "code"));
-
-		if (study == null)
-			throw new BadRequestException("error.unknown.study", "Unknown Study");
-
+		
 		Map<String, String[]> params = request().queryString();
 						
 		final Date startDate = params.containsKey("startDate")? new Date(Long.parseLong(params.get("startDate")[0])) : null;
 		final Date endDate   = params.containsKey("endDate") ? new Date(Long.parseLong(params.get("endDate")[0])) : null;
 		
-		AuditManager.instance.addAuditEvent(AuditEventType.DATA_EXPORT, executorId, null, study);
-
 		UserGroupMember self = UserGroupMember.getByGroupAndActiveMember(studyid, executorId);
 		if (self == null)
 			throw new AuthException("error.notauthorized.action", "User not member of study group");
 		if (!self.role.mayExportData())
 			throw new BadRequestException("error.notauthorized.action", "User is not allowed to export data.");
 
+		final String handle = PortalSessionToken.session().handle;
+		
+		return downloadFHIR(executorId, handle, studyid, role, startDate, endDate, studyGroup, mode);
+	}
+	
+	public static Result downloadFHIR(final MidataId executorId, final String handle, final MidataId studyid, final UserRole role, final Date startDate, final Date endDate, final String studyGroup, final String mode) throws AppException, IOException {
+		final Study study = Study.getById(studyid, Sets.create("name", "type", "executionStatus", "participantSearchStatus", "validationStatus", "owner", "groups", "createdBy", "code"));
+
+		if (study == null)
+			throw new BadRequestException("error.unknown.study", "Unknown Study");
+
+		
+		AuditManager.instance.addAuditEvent(AuditEventType.DATA_EXPORT, executorId, null, study);
+
+		
 		setAttachmentContentDisposition("study.json");
 
-		final String handle = PortalSessionToken.session().handle;
+		
 
 		StringBuffer out = new StringBuffer();
 
-		KeyManager.instance.continueSession(handle);
+		AccessLog.log("exeId="+executorId);
+		KeyManager.instance.continueSession(handle, executorId);
 		ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId, role));
 		out.append("{ \"resourceType\" : \"Bundle\", \"type\" : \"searchset\", \"entry\" : [ ");
 
@@ -361,7 +371,7 @@ public class Studies extends APIController {
 			@Override
 			public Iterator<ByteString> create() throws Exception {
 				try {
-					KeyManager.instance.continueSession(handle);
+					KeyManager.instance.continueSession(handle, executorId);
 					ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId, role));
 					DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, role, RecordManager.instance.createContextFromAccount(executorId), CMaps.map("export", mode).map("study", study._id).map("study-group", studyGroup).mapNotEmpty("shared-after",  startDate).mapNotEmpty("updated-before", endDate),
 							RecordManager.COMPLETE_DATA);
@@ -399,7 +409,7 @@ public class Studies extends APIController {
 						//System.out.println("start study export next record");
 						//AccessLog.log("start study export next record");
 						StringBuffer out = new StringBuffer();
-						KeyManager.instance.continueSession(handle);
+						KeyManager.instance.continueSession(handle, executorId);
 						//System.out.println("set exe");
 						ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId, role));
 						//System.out.println("call next");
