@@ -623,7 +623,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		if (lang != null && !lang.equals(user.language)) {			
 			user.language = lang;
 			User.set(user._id, "language", user.language);
-			updatePatientForAccount(user);
+			updatePatientForAccount(user._id);			
 		}
 		AuditManager.instance.success();
 	}

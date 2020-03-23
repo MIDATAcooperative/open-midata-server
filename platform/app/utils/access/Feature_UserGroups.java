@@ -134,17 +134,7 @@ public class Feature_UserGroups extends Feature {
 		if (!ugm.role.mayReadData()) return ProcessingTools.empty();
 		
 		if (ugm.role.pseudonymizedAccess()) {
-			
-			 if (q.restrictedBy("owner")) {
-				   Set<StudyParticipation> parts = StudyParticipation.getActiveOrRetreatedParticipantsByStudyAndGroupsAndIds(q.restrictedBy("study") ? q.getMidataIdRestriction("study") : null, q.getRestrictionOrNull("study-group"), group, q.getMidataIdRestriction("owner"), Sets.create("name", "order", "owner", "ownerName", "type"));
-				   Set<String> owners = new HashSet<String>();
-				   for (StudyParticipation part : parts) {
-					  owners.add(part.owner.toString());
-				   }
-				   newprops.put("owner", owners);
-				   if (owners.isEmpty()) return ProcessingTools.empty();
-		    }		
-			
+			 if (!Feature_Pseudonymization.pseudonymizedIdRestrictions(q, group, newprops)) return ProcessingTools.empty();			
 		}
 		
 		// AK : Removed instanceof DummyAccessContext : Does not work correctly when listing study participants records on portal		 

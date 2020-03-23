@@ -1,10 +1,18 @@
 package utils.access;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import models.MidataId;
+import models.StudyParticipation;
 import utils.AccessLog;
 import utils.access.ProcessingTools.BlockwiseLoad;
 import utils.collections.CMaps;
+import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
 
 public class Feature_Pseudonymization extends Feature {
 
@@ -22,6 +30,13 @@ public class Feature_Pseudonymization extends Feature {
 			MidataId study = q.getMidataIdRestriction("study").iterator().next();
 
 			q.getProperties().put("usergroup", study);
+			
+			if (q.getContext().mustPseudonymize()) {
+				Map<String, Object> newprops = new HashMap<String, Object>();
+				newprops.putAll(q.getProperties());
+				if (!pseudonymizedIdRestrictions(q, q.getCache().getAccountOwner(), newprops)) return ProcessingTools.empty();
+				q = new Query(q, newprops);
+			}
 
 		}				
 
@@ -34,6 +49,19 @@ public class Feature_Pseudonymization extends Feature {
 		}*/
 
 		return result;
+	}
+	
+	public static boolean pseudonymizedIdRestrictions(Query q, MidataId group, Map<String,Object> newprops) throws AppException {
+		if (q.restrictedBy("owner")) {
+			   Set<StudyParticipation> parts = StudyParticipation.getActiveOrRetreatedParticipantsByStudyAndGroupsAndIds(q.restrictedBy("study") ? q.getMidataIdRestriction("study") : null, q.getRestrictionOrNull("study-group"), group, q.getMidataIdRestriction("owner"), Sets.create("name", "order", "owner", "ownerName", "type"));
+			   Set<String> owners = new HashSet<String>();
+			   for (StudyParticipation part : parts) {
+				  owners.add(part.owner.toString());
+			   }
+			   newprops.put("owner", owners);
+			   if (owners.isEmpty()) return false;//return ProcessingTools.empty();
+	    }		
+		return true;
 	}
 	
 	public static class PseudonymIterator implements DBIterator<DBRecord> {

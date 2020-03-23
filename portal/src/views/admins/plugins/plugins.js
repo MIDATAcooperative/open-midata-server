@@ -17,7 +17,7 @@ angular.module('portal')
 	
 	$scope.reload = function() {
 	   if ($scope.search.criteria.creatorLogin === "") $scope.search.criteria.creatorLogin = undefined;
-	   $scope.status.doBusy(apps.getApps( $scope.search.criteria, [ "creator", "creatorLogin", "filename", "version", "name", "description", "tags", "targetUserRole", "spotlighted", "type", "status", "orgName", "publisher"]))
+	   $scope.status.doBusy(apps.getApps( $scope.search.criteria, [ "creator", "creatorLogin", "developerTeam", "filename", "version", "name", "description", "tags", "targetUserRole", "spotlighted", "type", "status", "orgName", "publisher"]))
 	   .then(function(data) { $scope.apps = data.data; });
 	};
 	

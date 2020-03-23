@@ -131,6 +131,7 @@
        "description" : "The description of your application that will be shown on the Marketplace.",
        "tokenExchangeParams" : "Default is client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> but some services also require client_secret=<client_secret> or no client_id",
        "no_update_history" : "FHIR resource updates done by this application produce no history entries. Use only if application does many and frequent updates.",
+       "pseudonymize" : "Read pseudonymized data. Does not update records from participants.",
        "resharesData" : "Application is allowed to reshare data it has access to to 3rd party.",
        "allowsUserSearch" : "Users of the application are allowed to search for other users of the same application.",
        "defaultSpaceName" : "Title of the tile for your plugin on the dashboard.",
@@ -142,7 +143,8 @@
        "secret" : "Your application will need this 'secret' during login. Choose whatever you like.",
        "mustParticipateInStudy" : "Users must participate in research project in order to use this application.",
        "unlock_code" : "If filled out, this code must be entered by the user in order to sign up or log in the first time to MIDATA using the application. The code is not case sensitive.",
-       "send_reports" : "Notify developer ({{user}}) by email on errors caused by this application."        
+       "send_reports" : "Notify developer ({{user}}) by email on errors caused by this application.",
+       "developerTeam" : "Enter comma separated list of email addresses of other developers on Midata that develop this appliation."        
     },
     "status" : {
       "title" : "Application Status",
@@ -157,6 +159,7 @@
     "access_query_json" : "Data Access Filter",
     "queryeditor_btn" : "Go to the Data Access Filter editor",
     "no_update_history" : "No FHIR Resource History",
+    "pseudonymize" : "Read Pseudonymized",
     "usagestats_btn" : "Usage Statistics",
     "usagestats_help" : "Analyze the usage frequency of the application.",
     "export_btn" : "Export Application Definition",
@@ -167,6 +170,7 @@
     "creator" : "Creator",
     "organization" : "Organization",
     "publisher" : "Publisher",
+    "developerTeam" : "Developer Team",
     "reviews" : "Reviews",
     "manageyourkeys" : "Manage your API keys"
   },

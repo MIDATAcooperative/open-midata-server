@@ -115,7 +115,7 @@ angular.module('portal')
 
 		
 	
-	$scope.status.doBusy(apps.getApps({  }, ["creator", "filename", "name", "description", "type", "targetUserRole" ]))
+	$scope.status.doBusy(apps.getApps({  }, ["creator", "developerTeam", "filename", "name", "description", "type", "targetUserRole" ]))
 	.then(function(data) { 
 		$scope.apps = data.data;			
 	});
