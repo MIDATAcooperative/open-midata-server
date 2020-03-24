@@ -140,8 +140,8 @@ public class Feature_UserGroups extends Feature {
 		// AK : Removed instanceof DummyAccessContext : Does not work correctly when listing study participants records on portal		 
 		MidataId aps = (q.getApsId().equals(ugm.member) /*|| q.getContext() instanceof DummyAccessContext */) ? group : q.getApsId();
 		
-		AccessLog.logBeginPath("ug("+ugm.userGroup+")");
-		Query qnew = new Query(newprops, q.getFields(), subcache, aps, new UserGroupAccessContext(ugm, subcache, q.getContext())).setFromRecord(q.getFromRecord());
+		AccessLog.logBeginPath("ug("+ugm.userGroup+")", null);
+		Query qnew = new Query(q.getPath()+"/ug","ug="+ugm.userGroup,newprops, q.getFields(), subcache, aps, new UserGroupAccessContext(ugm, subcache, q.getContext())).setFromRecord(q.getFromRecord());
 		DBIterator<DBRecord> result = next.iterator(qnew);
 		//AccessLog.logEnd("end user group query for group="+group.toString());
 		AccessLog.logEndPath("inited hasNext="+result.hasNext());

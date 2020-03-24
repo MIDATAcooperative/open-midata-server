@@ -168,7 +168,7 @@ public class Studies extends APIController {
 		MidataId memberId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		
 		
-		StudyParticipation part = StudyParticipation.getByStudyAndMember(studyId, memberId, Sets.create("providers", "authorized"));
+		StudyParticipation part = StudyParticipation.getByStudyAndMember(studyId, memberId, Sets.create(Consent.SMALL, "providers", "authorized"));
 		if (part == null) throw new BadRequestException("error.unknown.participation", "Study Participation not found.");
 		
 		JsonNode add = json.get("add");
@@ -182,7 +182,7 @@ public class Studies extends APIController {
 				part.providers.add(providerId);	
 				part.authorized.add(providerId);
 			}
-			RecordManager.instance.shareAPS(part._id, memberId, newProviders);
+			RecordManager.instance.shareAPS(part._id, RecordManager.instance.createContextFromConsent(memberId, part), memberId, newProviders);
 			
 			StudyParticipation.set(part._id, "providers", part.providers);
 			StudyParticipation.set(part._id, "authorized", part.authorized);

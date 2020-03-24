@@ -194,7 +194,7 @@ public class Feature_AccountQuery extends Feature {
 		@Override
 		public DBIterator<DBRecord> advance(Consent circle) throws AppException {
 			ConsentAccessContext context = new ConsentAccessContext(circle, query.getContext());
-			DBIterator<DBRecord> consentRecords = next.iterator(new Query(query.getProperties(), query.getFields(), query.getCache(), circle._id, context));
+			DBIterator<DBRecord> consentRecords = next.iterator(new Query(query.getPath()+"/consent","consent="+circle._id,query.getProperties(), query.getFields(), query.getCache(), circle._id, context));
 			thisconsent = circle;
 			return new IdAndConsentFieldIterator(consentRecords, context, circle._id, query.returns("id"));
 		}

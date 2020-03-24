@@ -216,5 +216,10 @@ public class MediumStreamAPS extends APS {
 	   return true;
 	}
 
+	@Override
+	public Set<MidataId> getAccess() throws AppException {
+		throw new NullPointerException();
+	}
+
 
 }

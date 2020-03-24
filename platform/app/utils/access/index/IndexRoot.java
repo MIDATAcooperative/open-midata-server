@@ -21,12 +21,14 @@ import utils.stats.Stats;
  * Manages one index
  *
  */
-public class IndexRoot extends BaseIndexRoot<IndexKey,IndexMatch> {
+public class IndexRoot extends TsBaseIndexRoot<IndexKey,IndexMatch> {
 
 	private IndexDefinition model;
 	
 	
+	
 	public IndexRoot(byte[] key, IndexDefinition def, boolean isnew) throws InternalServerException {
+		super(key,def,isnew);
 		this.key = key;
 		this.model = def;
 		this.rootPage = new IndexPage(this.key, def, this, 1);		
@@ -35,7 +37,7 @@ public class IndexRoot extends BaseIndexRoot<IndexKey,IndexMatch> {
 			this.rootPage.initAsRootPage();
 		}
 		this.btree = new BTree(this, this.rootPage);
-		this.loadedPages = new HashMap<MidataId, IndexPage<IndexKey,IndexMatch>>();
+		this.loadedPages = new HashMap<MidataId, IndexPage<IndexKey,IndexMatch>>();		
 	}
 	
 	
@@ -43,41 +45,13 @@ public class IndexRoot extends BaseIndexRoot<IndexKey,IndexMatch> {
 	public IndexDefinition getModel() {
 		return model;
 	}
-    	
-
+    		
 	
 	
-	public long getVersion(MidataId aps) {		
-		Long result = rootPage.ts.get(aps.toString());
-		return result == null ? 0 : result;
-	}
-	
-	public void setVersion(MidataId aps, long now) {
-		rootPage.changed = true;
-		rootPage.ts.put(aps.toString(), now);
-		
-	}
-	
-	public long getAllVersion() {
-		Long result = rootPage.ts.get("all");
-		return result == null ? 0 : result;
-	}
-	
-	public void setAllVersion(long now) {
-		AccessLog.log("setAllVersion="+now);
-		rootPage.changed = true;
-		rootPage.ts.put("all", now);			
-	}
-	
-	
-	
-	
-		
-
+					
 	public List<String> getFormats() {		
 		return model.formats;
 	}
-	
 	
 	class EntryInfo {
 		MidataId aps;

@@ -75,7 +75,7 @@ public class Feature_Indexes extends Feature {
 				}
 			}
 
-			AccessLog.logBeginPath("index query");
+			AccessLog.logBeginPath("index query", null);
 			long startTime = System.currentTimeMillis();
 
 			Object indexQueryUnparsed = q.getProperties().get("index");
@@ -121,7 +121,7 @@ public class Feature_Indexes extends Feature {
 
 			Map<MidataId, List<DBRecord>> newRecords = new HashMap<MidataId, List<DBRecord>>();
 
-			AccessLog.logBeginPath("new entries");
+			AccessLog.logBeginPath("new entries", null);
 			Feature nextWithProcessing = new Feature_ProcessFilters(next);
 			
 			if (targetAps != null) {
@@ -135,7 +135,7 @@ public class Feature_Indexes extends Feature {
 						} 
 						//if (context instanceof ConsentAccessContext) AccessLog.log("TIMESTAMP "+((ConsentAccessContext) context).getConsent().dataupdate+" vs "+v);
 						List<DBRecord> add;
-						Query updQuery = new Query(q, CMaps.mapPositive("shared-after", v).map("owner", "self"), id, context);
+						Query updQuery = new Query(q, "index-shared-after", CMaps.mapPositive("shared-after", v).map("owner", "self"), id, context);
 						add = QueryEngine.filterByDataQuery(nextWithProcessing.query(updQuery), indexQueryParsed, null);
 						AccessLog.log("found new updated entries aps=" + id + ": " + add.size());
 						result = QueryEngine.combine(result, add);						
@@ -149,7 +149,7 @@ public class Feature_Indexes extends Feature {
 				long v = myAccess.version(null);
 				// AccessLog.log("vx="+v);
 				List<DBRecord> add;
-				add = QueryEngine.filterByDataQuery(nextWithProcessing.query(new Query(q, CMaps.mapPositive("shared-after", v).map("consent-limit",1000))), indexQueryParsed, null);
+				add = QueryEngine.filterByDataQuery(nextWithProcessing.query(new Query(q, "index-shared-after", CMaps.mapPositive("shared-after", v).map("consent-limit",1000))), indexQueryParsed, null);
 				AccessLog.log("found new updated entries: " + add.size());
 				result = QueryEngine.combine(result, add);				
 				if (result != null && !result.isEmpty()) {
@@ -263,7 +263,7 @@ public class Feature_Indexes extends Feature {
 			Set<MidataId> ids = matches.get(aps);
             if (ids != null && !ids.isEmpty()) {
 			if (ids.size() > INDEX_REVERSE_USE) {
-				Query q4 = new Query(q, CMaps.map(), aps, context);
+				Query q4 = new Query(q, "index-reverse", CMaps.map(), aps, context);
 				List<DBRecord> unindexed = next.query(q4);
 				int size = unindexed.size();
 				if (size > 0) {
@@ -285,7 +285,7 @@ public class Feature_Indexes extends Feature {
 					props.putAll(q.getProperties());
 					props.put("streams", "only");
 					props.put("owner", "self");
-					List<DBRecord> matchStreams = next.query(new Query(props, Sets.create("_id"), q.getCache(), aps, context));
+					List<DBRecord> matchStreams = next.query(new Query(q.getPath()+"/index-read-streams",props, Sets.create("_id"), q.getCache(), aps, context));
 					//AccessLog.log("index query streams " + matchStreams.size() + " matches.");
 					if (matchStreams.isEmpty())
 						directQuery = false;
@@ -308,7 +308,7 @@ public class Feature_Indexes extends Feature {
 					List<DBRecord> partresult = DBRecord.getAllList(readRecs, queryFields);
 					//AccessLog.log("db time:" + (System.currentTimeMillis() - time));
 
-					Query q3 = new Query(q, CMaps.map("strict", "true"), aps, context);
+					Query q3 = new Query(q, "index-lookup", CMaps.map("strict", "true"), aps, context);
 					partresult = Feature_Prefetch.lookup(q3, partresult, next, false);
 					for (DBRecord record : partresult)
 						record.consentAps = aps;
@@ -317,7 +317,7 @@ public class Feature_Indexes extends Feature {
 				}
 
 				if (add) {
-					Query q2 = new Query(q, CMaps.map(q.getProperties()).map("_id", ids), aps, context);
+					Query q2 = new Query(q, "index-lookup", CMaps.map(q.getProperties()).map("_id", ids), aps, context);
 					List<DBRecord> additional = next.query(q2);
 					for (DBRecord record : additional)
 						record.consentAps = aps;
@@ -375,7 +375,7 @@ public class Feature_Indexes extends Feature {
 
 		void revalidate(MidataId executor, List<DBRecord> result) throws AppException;
 
-		long version(MidataId aps);
+		long version(MidataId aps) throws InternalServerException;
 	}
 
 	class IndexAccess implements IndexUse {
@@ -473,7 +473,7 @@ public class Feature_Indexes extends Feature {
 			IndexManager.instance.revalidate(result, executor, pseudo, root, revalidationQuery, condition);
 		}
 
-		public long version(MidataId aps) {
+		public long version(MidataId aps) throws InternalServerException {
 			if (root != null && index != null) {
 				if (aps == null)
 					return root.getAllVersion();
@@ -533,7 +533,7 @@ public class Feature_Indexes extends Feature {
 				part.revalidate(executor, result); 
 		}
 
-		public long version(MidataId aps) {
+		public long version(MidataId aps) throws InternalServerException {
 			long r = -1;
 			for (IndexUse part : parts) {
 				long v = part.version(aps);
@@ -574,7 +574,7 @@ public class Feature_Indexes extends Feature {
 			// for (IndexUse part : parts) part.revalidate(result);
 		}
 
-		public long version(MidataId aps) {
+		public long version(MidataId aps) throws InternalServerException {
 			long r = -1;
 			for (IndexUse part : parts) {
 				long v = part.version(aps);

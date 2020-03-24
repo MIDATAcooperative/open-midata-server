@@ -143,15 +143,16 @@ public class AccessLog {
 		ident.set(ident.get() + 2);
 	}
 	
-	public static void logBeginPath(String path) {		
+	public static void logBeginPath(String path, String extra) {				
+		logBegin("start "+path.toUpperCase()+" on "+logpath.get()+(extra!=null?(": "+extra):""));
 		logpath.set(logpath.get()+"/"+path);		
-		logBegin("START "+logpath.get());
 	}
 	
 	public static void logEndPath(String result) {		
 		String lp = logpath.get();
-		logpath.set(lp.substring(0, lp.lastIndexOf('/')));
-		logEnd("END "+lp+(result!=null?(" with "+result):""));
+		int i = lp.lastIndexOf('/');
+		logpath.set(lp.substring(0, i));
+		logEnd("end "+lp.substring(i+1).toUpperCase()+" on "+lp+(result!=null?(" with "+result):""));
 	}
 	
 	public static void logPath(String result) {		

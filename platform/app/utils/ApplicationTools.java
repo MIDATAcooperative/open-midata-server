@@ -126,7 +126,7 @@ public class ApplicationTools {
 		targetUsers.add(serviceInstance.managerAccount);
 		targetUsers.add(serviceInstance.executorAccount);
 		targetUsers.add(appInstance._id);
-		RecordManager.instance.shareAPS(appInstance._id, executor, targetUsers);			
+		RecordManager.instance.shareAPS(appInstance._id, null, executor, targetUsers);			
 		
 		// Write phrase into APS *
 		Map<String, Object> meta = new HashMap<String, Object>();

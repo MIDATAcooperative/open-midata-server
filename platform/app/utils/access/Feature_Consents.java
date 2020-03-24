@@ -13,7 +13,9 @@ import org.bson.BasicBSONObject;
 
 import models.MidataId;
 import utils.AccessLog;
+import utils.RuntimeConstants;
 import utils.collections.CMaps;
+import utils.collections.NChainedMap;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
@@ -32,19 +34,19 @@ public class Feature_Consents extends Feature {
 	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
 		if (q.restrictedBy("shared-after")) {			
 			Date after = q.getDateRestriction("shared-after");
-			AccessLog.logBegin("start history query after="+after.toString());
+			AccessLog.logBeginPath("history-after("+after.toString()+")", null);
 			Query qnt = q.withoutTime();
 			
 			List<DBRecord> recs = q.getCache().getAPS(q.getApsId()).historyQuery(after.getTime(), false);			
 			
-			if (!recs.isEmpty()) recs = Feature_Prefetch.lookup(qnt, recs, next, false);
+			if (!recs.isEmpty()) recs = lookup(qnt, recs, next);
 			List<DBRecord> result = Collections.emptyList();			
 			if (recs.size() > 0) {				
 			
 				boolean onlyStreams = qnt.isStreamOnlyQuery();
 				for (DBRecord r : recs) {
 					if (r.isStream!=null) {
-						Query q2 = new Query(q, CMaps.map("stream", r._id));
+						Query q2 = new Query(q, "history-after", CMaps.map("stream", r._id));
 						List<DBRecord> subresult = QueryEngine.onlyWithKey(next.query(q2));
 						for (DBRecord r2 : subresult) {
 							r2.sharedAt = r.sharedAt; 							
@@ -54,11 +56,35 @@ public class Feature_Consents extends Feature {
 				}
 			}
 			
-			AccessLog.logEnd("ended history query entries="+recs.size()+" results="+result.size());
+			AccessLog.logEndPath("entries="+recs.size()+" results="+result.size());
 			if (result.isEmpty()) return next.iterator(q);
 			return ProcessingTools.noDuplicates(new SharedThenNormal(result, next, q));
 		} 
 		return next.iterator(q);	
+	}
+	
+	protected static List<DBRecord> lookup(Query q, List<DBRecord> prefetched, Feature next) throws AppException {
+	
+		AccessLog.logBeginPath("simple-lookup("+prefetched.size()+")", null);
+		long time = System.currentTimeMillis();
+		List<DBRecord> results = null;
+	
+		Query q2 = new Query(q, "simple-lookup", CMaps.map("_id", q.getApsId()).map("flat", "true").map("streams", "true"));
+		for (DBRecord record : prefetched) {
+			  q2.getProperties().put("_id", record._id);
+		      List<DBRecord> partResult = next.query(q2);	
+					 				 		  
+		      // Keep sharedAt from input if we got one
+		      if (record.sharedAt != null && partResult != null) {
+			    for (DBRecord r : partResult) r.sharedAt = record.sharedAt;
+		      }
+		  
+		      results = QueryEngine.combine(results,  partResult);
+		}
+		if (results==null) results = Collections.emptyList();
+																			
+		AccessLog.logEndPath("#found="+results.size()+" time="+(System.currentTimeMillis() - time));
+		return results;
 	}
 
 	static class SharedThenNormal extends Feature.MultiSource<Integer> {

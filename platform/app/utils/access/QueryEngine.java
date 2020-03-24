@@ -52,16 +52,16 @@ class QueryEngine {
 	}
 	
 	public static Collection<RecordsInfo> info(APSCache cache, MidataId aps, AccessContext context, Map<String, Object> properties, AggregationType aggrType) throws AppException {		
-		return infoQuery(new Query(properties, Sets.create("group", "content", "format", "owner", "app"), Feature_UserGroups.findApsCacheToUse(cache,aps), aps, context != null ? context : new DummyAccessContext(cache)), aps, false, aggrType, null);
+		return infoQuery(new Query("info-query",properties, Sets.create("group", "content", "format", "owner", "app"), Feature_UserGroups.findApsCacheToUse(cache,aps), aps, context != null ? context : new DummyAccessContext(cache)), aps, false, aggrType, null);
 	}
 	
 	public static List<DBRecord> isContainedInAps(APSCache cache, MidataId aps, List<DBRecord> candidates) throws AppException {
 		
 		if (!cache.getAPS(aps).isAccessible()) return new ArrayList<DBRecord>();
 
-		if (AccessLog.detailedLog) AccessLog.logBegin("Begin check contained in aps #recs="+candidates.size());
-		List<DBRecord> result = Feature_Prefetch.lookup(new Query(CMaps.map(RecordManager.FULLAPS_WITHSTREAMS).map("strict", true), Sets.create("_id"), cache, aps, null), candidates, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_AccountQuery(new Feature_Streams()))), false);
-		if (AccessLog.detailedLog) AccessLog.logEnd("End check contained in aps #recs="+result.size());
+		if (AccessLog.detailedLog) AccessLog.logBeginPath("contained-in-aps(recs="+candidates.size()+")",null);
+		List<DBRecord> result = Feature_Prefetch.lookup(new Query("contained-in-aps",CMaps.map(RecordManager.FULLAPS_WITHSTREAMS).map("strict", true), Sets.create("_id"), cache, aps, null), candidates, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_AccountQuery(new Feature_Streams()))), false);
+		if (AccessLog.detailedLog) AccessLog.logEndPath("#recs="+result.size());
 		
 		return result;						
 	}
@@ -73,9 +73,9 @@ class QueryEngine {
 	}
 	
 	public static List<DBRecord> listFromMemory(AccessContext context, Map<String, Object> properties, List<DBRecord> records) throws AppException {
-		if (AccessLog.detailedLog) AccessLog.logBegin("Begin list from memory #recs="+records.size());
+		if (AccessLog.detailedLog) AccessLog.logBeginPath("memory-query(recs="+records.size()+")",null);
 		List<DBRecord> result = ProcessingTools.collect(listFromMemoryIterator(context,properties,records));		
-		if (AccessLog.detailedLog) AccessLog.logEnd("End list from memory #recs="+result.size());
+		if (AccessLog.detailedLog) AccessLog.logEndPath("#recs="+result.size());
 		return result;
 	}
 	
@@ -83,7 +83,7 @@ class QueryEngine {
 		APS inMemory = new Feature_InMemoryQuery(records);
 		context.getCache().addAPS(inMemory);
 		Feature qm = new Feature_Or(new Feature_ContextRestrictions(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_ContentFilter(inMemory)))));		
-		DBIterator<DBRecord> recs = qm.iterator(new Query(properties, Sets.create("_id"), context.getCache(), inMemory.getId(),context));							
+		DBIterator<DBRecord> recs = qm.iterator(new Query("list-from-memory",properties, Sets.create("_id"), context.getCache(), inMemory.getId(),context));							
 		return recs;
 	}
 	
@@ -99,6 +99,7 @@ class QueryEngine {
 		}
 	}
 	
+	/*
 	public static Collection<RecordsInfo> infoQuery(Query q, MidataId aps, boolean cached, AggregationType aggrType, MidataId owner) throws AppException {
 		long t = System.currentTimeMillis();
 		AccessLog.logBegin("begin infoQuery aps="+aps+" cached="+cached);
@@ -106,7 +107,7 @@ class QueryEngine {
 		
 		APS myaps = q.getCache().getAPS(aps);
 		
-		Feature qm = new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_Pseudonymization(new Feature_PublicData(new Feature_UserGroups(new Feature_Stats(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))))))));						 
+		Feature qm = new Feature_QueryRedirect(new Feature_Pseudonymization(new Feature_PublicData(new Feature_UserGroups(new Feature_Stats(new Feature_FormatGroups(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))))))));						 
 		List<DBRecord> recs = ProcessingTools.collect(qm.iterator(q));		
 		
 		for (DBRecord record : recs) {
@@ -122,10 +123,11 @@ class QueryEngine {
 				
 		return result.values();
 	}
+	*/
 	
-	/*public static Collection<RecordsInfo> infoQuery(Query q, MidataId aps, boolean cached, AggregationType aggrType, MidataId owner) throws AppException {
+	public static Collection<RecordsInfo> infoQuery(Query q, MidataId aps, boolean cached, AggregationType aggrType, MidataId owner) throws AppException {
 		long t = System.currentTimeMillis();
-		AccessLog.logBegin("begin infoQuery aps="+aps+" cached="+cached);
+		AccessLog.logBeginPath("info-query(aps="+aps+")"," cached="+cached);
 		Map<String, RecordsInfo> result = new HashMap<String, RecordsInfo>();
 		
 		APS myaps = q.getCache().getAPS(aps);
@@ -165,13 +167,13 @@ class QueryEngine {
 				
 				result.put(k, inf);
 				Date from = inf.calculated != null && (inf.calculated.getTime() - 1000 > inf.newest.getTime() + 1) ? new Date(inf.calculated.getTime() - 1000) : new Date(inf.newest.getTime() + 1);
-				q = new Query(q, CMaps.map("created-after", from));
+				q = new Query(q, "info-query-after", CMaps.map("created-after", from));
 			
 				long diff = myaps.getLastChanged() - from.getTime();
 				AccessLog.log("DIFF:"+diff);
 				
 				if (diff < 1200) {
-					AccessLog.logEnd("end infoQuery from cache");
+					AccessLog.logEndPath("cache");
 					return result.values();
 				}
 			}
@@ -189,7 +191,7 @@ class QueryEngine {
 			if (record.isStream!=null) {				
 				q.getCache().getAPS(record._id, record.key, record.owner); // Called to make sure stream is accessible
 				
-				Collection<RecordsInfo> streaminfo = infoQuery(new Query(q, CMaps.map("stream", record._id).map("owner", record.owner)), record._id, !doNotCacheInStreams, aggrType, record.owner);
+				Collection<RecordsInfo> streaminfo = infoQuery(new Query(q, "info-query-stream", CMaps.map("stream", record._id).map("owner", record.owner)), record._id, !doNotCacheInStreams, aggrType, record.owner);
 				
 				for (RecordsInfo inf : streaminfo) {
 					if (record.owner != null) inf.owners.add(record.owner.toString());
@@ -216,7 +218,7 @@ class QueryEngine {
 						
 		}
 		
-		AccessLog.logEnd("end infoQuery result: cached="+cached+" records="+recs.size()+" result="+result.size()+" time="+(System.currentTimeMillis() - t));
+		AccessLog.logEndPath("result: cached="+cached+" records="+recs.size()+" result="+result.size()+" time="+(System.currentTimeMillis() - t));
 		if (cached && recs.size()>0 && result.size() == 1) {
 			RecordsInfo inf = result.values().iterator().next();
 			if (inf.apps.size() == 1) {
@@ -233,24 +235,24 @@ class QueryEngine {
 			}
 		}
 		return result.values();
-	}*/
+	}
 	
     public static DBIterator<DBRecord> fullQuery(Map<String, Object> properties, Set<String> fields, MidataId aps, AccessContext context, APSCache cache) throws AppException {    	
     	long queryStart = System.currentTimeMillis();
     	if (context == null) context = new DummyAccessContext(cache);
-    	AccessLog.logBegin("begin full query: aps="+aps.toString()+" content="+context.toString());
+    	AccessLog.logBeginPath("full-query(aps="+aps.toString()+")"," context="+context.toString());
     	Feature qm = null;
     	MidataId userGroup = Feature_UserGroups.identifyUserGroup(cache, aps);
     	if (userGroup != null) {
     		AccessLog.log("with usergroup");
     		properties = new HashMap<String, Object>(properties);
     		properties.put("usergroup", userGroup);
-    		qm = new Feature_Pagination(new Feature_Sort(new Feature_Or(new Feature_ContextRestrictions(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(false, new Feature_Indexes(new Feature_StreamIndex(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams()))))))))))))));
+    		qm = new Feature_Pagination(new Feature_Sort(new Feature_Or(new Feature_ContextRestrictions(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(false, new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))))))))))));
     	} else {    	
     	   APS target = cache.getAPS(aps);    	
-    	   qm = new Feature_Pagination(new Feature_Sort(new Feature_Or(new Feature_ContextRestrictions(new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_Prefetch(true, new Feature_PublicData(new Feature_UserGroups(new Feature_Indexes(new Feature_StreamIndex(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams()))))))))))))))))));
+    	   qm = new Feature_Pagination(new Feature_Sort(new Feature_Or(new Feature_ContextRestrictions(new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_Prefetch(true, new Feature_PublicData(new Feature_UserGroups(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))))))))))))))));
     	}
-    	Query q = new Query(properties, fields, cache, aps, context);
+    	Query q = new Query("full-query",properties, fields, cache, aps, context);
     	AccessLog.logQuery(q.getApsId(), q.getProperties(), q.getFields());
     	DBIterator<DBRecord> result = qm.iterator(q);
     	    	    	
@@ -260,7 +262,7 @@ class QueryEngine {
 		
 		//AccessLog.log("fullQuery="+result.toString());
 							
-		AccessLog.logEnd("end full query time= "+(System.currentTimeMillis() - queryStart)+" ms");
+		AccessLog.logEndPath("time= "+(System.currentTimeMillis() - queryStart)+" ms");
 		
 		return result;
 	}
@@ -296,8 +298,8 @@ class QueryEngine {
       }
       */  
     
-    protected static List<DBRecord> combine(Query query, Map<String, Object> properties, Feature qm) throws AppException {
-    	return ProcessingTools.collect(combineIterator(query, properties, qm));
+    protected static List<DBRecord> combine(Query query, String path, Map<String, Object> properties, Feature qm) throws AppException {
+    	return ProcessingTools.collect(combineIterator(query, path, properties, qm));
     	/*if (properties.containsKey("$or")) {
       	  Collection<Map<String, Object>> col = (Collection<Map<String, Object>>) properties.get("$or");
       	  List<DBRecord> result = Collections.emptyList();
@@ -319,7 +321,7 @@ class QueryEngine {
         }*/
     }
     
-    protected static DBIterator<DBRecord> combineIterator(Query query, Map<String, Object> properties, Feature qm) throws AppException {
+    protected static DBIterator<DBRecord> combineIterator(Query query, String path, Map<String, Object> properties, Feature qm) throws AppException {
     	if (properties.containsKey("$or")) {
     	  boolean nosplit = query.restrictedBy("_id");
     	  
@@ -328,19 +330,19 @@ class QueryEngine {
     		  
     		  if (results.isEmpty()) return ProcessingTools.empty();
     		  
-    		  Query query_no_id = new Query(query, Collections.emptyMap());
+    		  Query query_no_id = new Query(query, "combine-no-id", Collections.emptyMap());
     		  query_no_id.getProperties().remove("_id");
     		  
     		  APS inMemory = new Feature_InMemoryQuery(results);
     		  query.getCache().addAPS(inMemory);
     		  Feature qmm = new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_ContentFilter(inMemory)));		
     		      		  
-    		  return combineIterator(query_no_id, properties, qmm);
+    		  return combineIterator(query_no_id, path, properties, qmm);
     	  }
     		    		    		
     	  Map<String, Object> comb = Feature_QueryRedirect.combineQuery(properties, query.getProperties(), query.getContext());
       	  if (comb != null) {
-      		query = new Query(comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext());
+      		query = new Query(query.getPath()+"/"+path,properties.toString(),comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext());
     	
       	    Collection<Map<String, Object>> col = (Collection<Map<String, Object>>) properties.get("$or");
       	    AccessLog.log("$or: #pathes="+col.size());
@@ -350,7 +352,7 @@ class QueryEngine {
         } else {
           Map<String, Object> comb = Feature_QueryRedirect.combineQuery(properties, query.getProperties(), query.getContext());
     	  if (comb != null) {
-    		  return qm.iterator(new Query(comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext()).setFromRecord(query.getFromRecord()));
+    		  return qm.iterator(new Query(query.getPath()+"/"+path,properties.toString(),comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext()).setFromRecord(query.getFromRecord()));
     	  } else {
     		  AccessLog.log("empty combine");
     	  }

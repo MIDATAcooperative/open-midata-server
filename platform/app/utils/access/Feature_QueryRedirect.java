@@ -111,7 +111,7 @@ public class Feature_QueryRedirect extends Feature {
             	redirect = true;
             	if (!query.restrictedBy("ignore-redirect")) {
             		Object targetAPSId = requery.get("aps");
-            		return QueryEngine.combineIterator(new Query(query, CMaps.map(), MidataId.from(targetAPSId), new AccountAccessContext(query.getCache(), query.getContext())).setFromRecord(query.getFromRecord()), requery.toMap(), next);            				    			
+            		return QueryEngine.combineIterator(new Query(query, "redirect-base", CMaps.map(), MidataId.from(targetAPSId), new AccountAccessContext(query.getCache(), query.getContext())).setFromRecord(query.getFromRecord()), "redirect", requery.toMap(), next);            				    			
     			}
             	return ProcessingTools.empty();
             }

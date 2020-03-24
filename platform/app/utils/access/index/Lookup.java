@@ -26,4 +26,8 @@ public class Lookup extends BaseLookup<IndexKey> {
 		}		
 		return true;
 	}
+	
+	public String toString() {
+		return condition.toString();
+	}
 }

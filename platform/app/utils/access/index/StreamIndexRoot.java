@@ -10,12 +10,13 @@ import utils.access.DBRecord;
 import utils.db.LostUpdateException;
 import utils.exceptions.InternalServerException;
 
-public class StreamIndexRoot extends BaseIndexRoot<StreamIndexKey,DBRecord> {
+public class StreamIndexRoot extends TsBaseIndexRoot<StreamIndexKey,DBRecord> {
 
 	private IndexDefinition model;
 	
 	
 	public StreamIndexRoot(byte[] key, IndexDefinition def, boolean isnew) throws InternalServerException {
+		super(key,def,isnew);
 		this.key = key;
 		this.model = def;
 		this.rootPage = new IndexPage(this.key, def, this, 1);		
@@ -32,29 +33,7 @@ public class StreamIndexRoot extends BaseIndexRoot<StreamIndexKey,DBRecord> {
 	public IndexDefinition getModel() {
 		return model;
 	}
-    	
-		
-	public long getVersion(MidataId aps) {		
-		Long result = rootPage.ts.get(aps.toString());
-		return result == null ? 0 : result;
-	}
-	
-	public void setVersion(MidataId aps, long now) {
-		rootPage.changed = true;
-		rootPage.ts.put(aps.toString(), now);
-		
-	}
-	
-	public long getAllVersion() {
-		Long result = rootPage.ts.get("all");
-		return result == null ? 0 : result;
-	}
-	
-	public void setAllVersion(long now) {
-		AccessLog.log("setAllVersion="+now);
-		rootPage.changed = true;
-		rootPage.ts.put("all", now);			
-	}
+    				
 	
 	
 	public List<String> getFormats() {		

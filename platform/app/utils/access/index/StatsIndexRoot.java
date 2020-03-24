@@ -4,15 +4,17 @@ import java.util.HashMap;
 
 import models.MidataId;
 import models.RecordsInfo;
+import utils.AccessLog;
 import utils.db.LostUpdateException;
 import utils.exceptions.InternalServerException;
 
-public class StatsIndexRoot extends BaseIndexRoot<StatsIndexKey,StatsIndexKey> {
+public class StatsIndexRoot extends TsBaseIndexRoot<StatsIndexKey,StatsIndexKey> {
 
 	private IndexDefinition model;
 	
 	
 	public StatsIndexRoot(byte[] key, IndexDefinition def, boolean isnew) throws InternalServerException {
+		super(key,def,isnew);
 		this.key = key;
 		this.model = def;
 		this.rootPage = new IndexPage(this.key, def, this, 1);		
@@ -53,7 +55,6 @@ public class StatsIndexRoot extends BaseIndexRoot<StatsIndexKey,StatsIndexKey> {
 	public StatsIndexKey createKey() {
 		return new StatsIndexKey();
 	}
-	
 	
 	
 }

@@ -16,6 +16,7 @@ import utils.access.index.IndexMsg;
 import utils.access.index.IndexRemoveMsg;
 import utils.access.index.IndexRoot;
 import utils.access.index.IndexUpdateMsg;
+import utils.access.index.StatsIndexRoot;
 import utils.access.index.StreamIndexRoot;
 import utils.access.index.TerminateMsg;
 import utils.auth.KeyManager;
@@ -83,6 +84,8 @@ public class IndexWorker extends AbstractActor {
 				if (root == null) {
 					if (idx.formats.contains("_streamIndex")) {
 					   root = new StreamIndexRoot(pseudo.getKey(), idx, false);
+					} else if (idx.formats.contains("_statsIndex")) {
+					   root = new StatsIndexRoot(pseudo.getKey(), idx, false);
 					} else {
 					   root = new IndexRoot(pseudo.getKey(), idx, false);
 					}

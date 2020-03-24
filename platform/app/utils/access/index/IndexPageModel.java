@@ -17,7 +17,7 @@ import utils.exceptions.InternalServerException;
  * Data model for an index page
  *
  */
-public class IndexPageModel extends Model {
+public class IndexPageModel extends Model implements BaseIndexPageModel {
 
 	protected @NotMaterialized static final String collection = "indexes";
 	private final static Set<String> ALL_PAGE = Sets.create("version", "enc", "lockTime");
@@ -42,14 +42,39 @@ public class IndexPageModel extends Model {
 	 */
 	//public @NotMaterialized BSONObject unencrypted;
 	
-	
-	
-	
-		
+					
 	public static void add(IndexPageModel def) throws InternalServerException {
 		Model.insert(collection, def);				
 	}
 	
+	public MidataId getId() {
+		return _id;
+	}
+	
+	public long getVersion() {
+		return version;
+	}
+
+	public void setVersion(long version) {
+		this.version = version;
+	}
+
+	public long getLockTime() {
+		return lockTime;
+	}
+
+	public void setLockTime(long lockTime) {
+		this.lockTime = lockTime;
+	}
+
+	public byte[] getEnc() {
+		return enc;
+	}
+
+	public void setEnc(byte[] enc) {
+		this.enc = enc;
+	}
+
 	public static IndexPageModel getById(MidataId pageId) throws InternalServerException {
 		return Model.get(IndexPageModel.class, collection, CMaps.map("_id", pageId), ALL_PAGE);
 	}
@@ -76,6 +101,10 @@ public class IndexPageModel extends Model {
 	
 	public static long count() throws AppException {
 		return Model.count(IndexPageModel.class, collection, CMaps.map());
+	}
+	
+	public BaseIndexPageModel reload() throws InternalServerException {
+		return getById(_id);
 	}
 	
 	// array of { key : array , entries : [ { rec :   , consent :  } ] or page : IndexPageId } 

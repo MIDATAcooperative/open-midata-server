@@ -26,7 +26,7 @@ import utils.exceptions.InternalServerException;
  */
 public class IndexPage<A extends BaseIndexKey<A,B>,B> {
 
-	protected IndexPageModel model;
+	protected BaseIndexPageModel model;
 	protected BaseIndexRoot<A,B> root;
 	protected byte[] key;
 	protected boolean changed;
@@ -36,33 +36,33 @@ public class IndexPage<A extends BaseIndexKey<A,B>,B> {
     protected int mCurrentKeyNum;
     protected A mKeys[];  
     protected MidataId mChildren[];
-    protected Map<String, Long> ts;
+    //protected Map<String, Long> ts;
     protected int depth;
     	
 	
 	protected IndexPage() {}
 	
-	public IndexPage(byte[] key, IndexPageModel model, BaseIndexRoot<A,B> root, int depth) throws InternalServerException {
+	public IndexPage(byte[] key, BaseIndexPageModel model, BaseIndexRoot<A,B> root, int depth) throws InternalServerException {
 		this.key = key;
 		this.model = model;
 		this.root = root;
 		this.depth = depth;
 		if (root.maxDepth < depth) root.maxDepth = depth;
-		if (model.enc != null) decrypt();
+		if (model.getEnc() != null) decrypt();
 	}
 	
 	
 	public IndexPage(byte[] key, BaseIndexRoot<A,B> root) throws InternalServerException {
 		this.key = key;
 		this.model = new IndexPageModel();
-		this.model._id = new MidataId();
+		((IndexPageModel) this.model)._id = new MidataId();
 		this.root = root;
 		this.depth = 1;
 		if (root.maxDepth < depth) root.maxDepth = depth;
 		init();				
 		encrypt();
 		
-		IndexPageModel.add(this.model);
+		IndexPageModel.add((IndexPageModel) this.model);
 	}
 	
 	public void copyFrom(IndexPage<A,B> other) {
@@ -82,7 +82,7 @@ public class IndexPage<A extends BaseIndexKey<A,B>,B> {
 		if (loaded != null) return loaded;
 				
 		loaded = new IndexPage(this.key, IndexPageModel.getById(child), root, this.depth + 1);
-		if (loaded.model.lockTime > root.getVersion()) throw new LostUpdateException();
+		if (loaded.model.getLockTime() > root.getVersion()) throw new LostUpdateException();
 		root.loadedPages.put(child, loaded);
 		
 		return loaded;
@@ -100,13 +100,13 @@ public class IndexPage<A extends BaseIndexKey<A,B>,B> {
 		Set<IndexPageModel> result = IndexPageModel.getMultipleById(toload);
 		for (IndexPageModel r : result) {
 			IndexPage<A,B> loaded = new IndexPage<A,B>(this.key, r, root, this.depth + 1);
-			if (loaded.model.lockTime > root.getVersion()) throw new LostUpdateException();
+			if (loaded.model.getLockTime() > root.getVersion()) throw new LostUpdateException();
 			root.loadedPages.put(r._id, loaded);		
 		}
 	}
 	
 	public MidataId getId() {
-		return model._id;
+		return model.getId();
 	}
 		
 	/*
@@ -117,7 +117,7 @@ public class IndexPage<A extends BaseIndexKey<A,B>,B> {
 	*/
 	
 	public long getVersion() {
-		return model.version;
+		return model.getVersion();
 	}
 		
 	
@@ -160,7 +160,7 @@ public class IndexPage<A extends BaseIndexKey<A,B>,B> {
 	}
 	
 	public void reload() throws InternalServerException {
-		model = IndexPageModel.getById(model._id);
+		model = IndexPageModel.getById(model.getId());
 		decrypt();
 		
 	}
@@ -177,7 +177,7 @@ public class IndexPage<A extends BaseIndexKey<A,B>,B> {
 	
 	public void initAsRootPage() {
 		init();
-		this.ts = new HashMap<String, Long>();
+		//this.ts = new HashMap<String, Long>();
 	}
 	
 	public void initNonLeaf() {		
@@ -205,16 +205,16 @@ public class IndexPage<A extends BaseIndexKey<A,B>,B> {
 					oos.writeUTF(mChildren[i].toString());
 				}
 			}			
-			oos.writeObject(ts);
+			//oos.writeObject(ts);
 			oos.close();
 		} catch (IOException e) {
 			
 		}
-		model.enc = EncryptionUtils.encrypt(key, bos.toByteArray());
+		model.setEnc(EncryptionUtils.encrypt(key, bos.toByteArray()));
 	}
 	
 	protected void decrypt() throws InternalServerException {
-		byte[] data = EncryptionUtils.decrypt(key, model.enc);
+		byte[] data = EncryptionUtils.decrypt(key, model.getEnc());
 		try {
 			ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(data));
 			mIsLeaf = in.readBoolean();
@@ -234,7 +234,7 @@ public class IndexPage<A extends BaseIndexKey<A,B>,B> {
 				}
 			}
 			
-			this.ts = (Map<String, Long>) in.readObject();
+			//this.ts = (Map<String, Long>) in.readObject();
 			
 			//AccessLog.log("decrypt:"+mIsLeaf+" "+mCurrentKeyNum);//+" ts="+ts);
 		} catch (IOException e) {

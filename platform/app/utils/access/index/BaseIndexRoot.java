@@ -53,10 +53,10 @@ public abstract class BaseIndexRoot<A extends BaseIndexKey<A,B>,B> {
 		}
 		
 		for (IndexPage<A,B> page : loadedPages.values()) {
-            if (locked) page.model.lockTime = System.currentTimeMillis();			
+            if (locked) page.model.setLockTime(System.currentTimeMillis());			
 			page.flush();		
 		}
-		rootPage.model.lockTime = 0;
+		rootPage.model.setLockTime(0);
 		if (!rootPage.flush() && locked) {
 			rootPage.model.updateLock();
 		}
@@ -68,7 +68,7 @@ public abstract class BaseIndexRoot<A extends BaseIndexKey<A,B>,B> {
     public void lockIndex() throws InternalServerException, LostUpdateException {
 		if (!locked) {
 			AccessLog.log("lock index");
-			rootPage.model.lockTime = System.currentTimeMillis();
+			rootPage.model.setLockTime(System.currentTimeMillis());
 			rootPage.model.updateLock();
 			locked = true;
 		}
@@ -76,7 +76,7 @@ public abstract class BaseIndexRoot<A extends BaseIndexKey<A,B>,B> {
 	
 	public void checkLock() throws InternalServerException {
 		if (locked) return;
-		while (rootPage.model.lockTime > System.currentTimeMillis() - 1000l * 60l) {
+		while (rootPage.model.getLockTime() > System.currentTimeMillis() - 1000l * 60l) {
 			AccessLog.log("waiting for lock release");
 			try {
 			  Stats.reportConflict();

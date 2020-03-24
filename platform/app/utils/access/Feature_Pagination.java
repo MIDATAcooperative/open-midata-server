@@ -28,14 +28,16 @@ public class Feature_Pagination extends Feature {
 			Map<String, Object> props = new HashMap<String, Object>(q.getProperties());			
 			props.put("limit", null);
 			
-			List<DBRecord> findFrom = next.query(new Query(q, CMaps.map("_id", from).mapNotEmpty("owner", fromOwner)));
+			List<DBRecord> findFrom = next.query(new Query(q, "pagination-from", CMaps.map("_id", from).mapNotEmpty("owner", fromOwner)));
 			DBRecord fromRecord = null;
 			if (findFrom.size() == 1) {
 				fromRecord = findFrom.get(0);				
 			} else return ProcessingTools.empty();
 			
-			DBIterator<DBRecord> result = next.iterator(new Query(q, props).setFromRecord(fromRecord));
+			//AccessLog.logBeginPath("skip-until", "fromRecord="+fromRecord._id);
+			DBIterator<DBRecord> result = next.iterator(new Query(q, "pagination-skip", props).setFromRecord(fromRecord));
 			boolean foundFrom = false;
+			
 			while (!foundFrom && result.hasNext()) { DBRecord rec = result.next();if (rec._id.equals(from)) foundFrom = true; }
 			
 			AccessLog.log("foundFrom="+foundFrom);
@@ -48,15 +50,13 @@ public class Feature_Pagination extends Feature {
 		if (q.restrictedBy("skip")) {
 			int skip = (Integer) q.getProperties().get("skip");
 			
+			//AccessLog.logBeginPath("skip("+skip+")", null);
 			Map<String, Object> props = new HashMap<String, Object>(q.getProperties());
-			props.put("skip", null);
-			
-			
-			
-			DBIterator<DBRecord> result = next.iterator(new Query(q, props));
+			props.put("skip", null);									
+			DBIterator<DBRecord> result = next.iterator(new Query(q, "pagination-skip", props));
 			int current = 0;
 			while ( current < skip && result.hasNext()) { result.next();current++; }
-			
+			//AccessLog.logEndPath(null);
 			if (!result.hasNext()) return ProcessingTools.empty();
 			
 			return ProcessingTools.limit(q.getProperties(), result);

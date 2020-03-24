@@ -114,7 +114,7 @@ public class Feature_InMemoryQuery extends APS {
 	
 	@Override
 	public void addPermission(DBRecord record, boolean withOwner) throws AppException {
-		throw new NotImplementedError();
+		//throw new NotImplementedError();
 		
 	}
 
@@ -167,6 +167,11 @@ public class Feature_InMemoryQuery extends APS {
 	@Override
 	public boolean isUsable() throws AppException {
 		return true;
+	}
+
+	@Override
+	public Set<MidataId> getAccess() throws AppException {		
+		return null;
 	}
 	
 	

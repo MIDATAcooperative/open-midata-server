@@ -65,6 +65,8 @@ public class BTree<A extends BaseIndexKey<A,B>,B>
       // Search value for a specified key of the tree
       //
       public A search(A key) throws InternalServerException, LostUpdateException {
+    	  if (mRoot.mCurrentKeyNum == 0) return null;
+    	  
           IndexPage<A,B> currentNode = mRoot;
           A currentKey;
           int i, numberOfKeys;

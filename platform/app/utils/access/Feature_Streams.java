@@ -64,11 +64,13 @@ public class Feature_Streams extends Feature {
 		private MidataId owner;
 		private int size;
 		private long limit;
+		private boolean noStreamOptimize = false;
 		private List<DBRecord> direct;
 		
 		StreamCombineIterator(APS next, Query query, DBIterator<DBRecord> streams, List<DBRecord> direct) throws AppException {
 		  	this.next = next;		  			  
-		  	this.query = query;		  
+		  	this.query = query;	
+		  	if (query.restrictedBy("load-medium-streams")) noStreamOptimize = true;
             this.limit = Math.max(query.getMinUpdatedTimestamp(), query.getMinCreatedTimestamp());
             this.limit = Math.max(this.limit, query.getMinSharedTimestamp());
             this.owner = next.getStoredOwner();
@@ -90,10 +92,14 @@ public class Feature_Streams extends Feature {
 				
 				try {
 					APS streamaps = null;
-					if (limit <= 0 && isMediumStream(r)) {
-					  streamaps = new MediumStreamAPS(r._id, r.owner, r.key);
+					if (!noStreamOptimize && limit <= 0 && isMediumStream(r)) {
+					  streamaps = new MediumStreamAPS(r._id, r.owner != null ? r.owner : next.getStoredOwner() , r.key);
 					} else {
 					  streamaps = query.getCache().getAPS(r._id, r.key, r.owner);
+					  if (r.isStream == APSSecurityLevel.HIGH && streamaps.getSecurityLevel() == APSSecurityLevel.MEDIUM) {
+						  r.isStream = APSSecurityLevel.MEDIUM;
+						  next.addPermission(r, false);						  
+					  }
 				    }
 					  thisrecord = streamaps;
 					  owner = thisrecord.getStoredOwner();
@@ -147,7 +153,7 @@ public class Feature_Streams extends Feature {
 			  
 			  //AccessLog.logBegin("begin single stream query");
 			  
-			  DBIterator<DBRecord> streams = next.iterator(new Query(CMaps.map(q.getProperties()).map("_id", q.getProperties().get("stream")).removeKey("quick"), streamQueryFields, q.getCache(), q.getApsId(), q.getContext() ));				
+			  DBIterator<DBRecord> streams = next.iterator(new Query(q.getPath()+"/single-stream", q.getProperties().get("stream").toString(), CMaps.map(q.getProperties()).map("_id", q.getProperties().get("stream")).removeKey("quick"), streamQueryFields, q.getCache(), q.getApsId(), q.getContext() ));				
 			  return new StreamCombineIterator(next, q, streams, null);
 			  
 		}
@@ -200,7 +206,7 @@ public class Feature_Streams extends Feature {
 					DBRecord r = streamsToFetch.get(set._id);
 					streams.add(r);
 					if (includeStreams) filtered.add(r);
-					q.getCache().getAPS(r._id, r.key, r.owner, set, true);
+					q.getCache().getAPS(r._id, r.key, r.owner, set, true);					
 				}
 			}
 			Collections.sort(streams);	

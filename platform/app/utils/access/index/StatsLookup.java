@@ -108,5 +108,13 @@ public class StatsLookup extends BaseLookup<StatsIndexKey>{
 		} 
 		return true;
 	}
+	
+	private String nonull(String what, Object in) {
+		return in!=null ? ("what: "+in.toString()) : "";
+	}
+	
+	public String toString() {
+		return "{ statslookup "+nonull("owner",owner)+nonull("format", format)+nonull("content", content)+nonull("group",group)+nonull("app",app)+nonull("aps",aps)+" }";
+	}
 
 }

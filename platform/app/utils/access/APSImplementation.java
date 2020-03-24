@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -160,7 +161,22 @@ class APSImplementation extends APS {
 			eaps.reload();
 			addAccess(target, publickey);
 		}
-	}		
+	}	
+	
+	public Set<MidataId> getAccess() throws AppException {
+		merge();
+		Set<String> keyNames = eaps.keyNames();
+		Set<MidataId> result = new HashSet<MidataId>(keyNames.size());
+		for (String k : keyNames) {
+			if (k.equals("owner")) result.add(getStoredOwner());
+			else {
+			  MidataId id = new MidataId(k);
+			  // No access for public key consents
+			  if (!id.equals(getId())) result.add(id);			  
+			}
+		}
+		return result;
+	}
 
 	public void removeAccess(Set<MidataId> targets) throws InternalServerException {
 		try {
@@ -397,6 +413,18 @@ class APSImplementation extends APS {
 		// resolve Format
 		BasicBSONObject obj = APSEntry.findMatchingRowForRecord(eaps.getPermissions(), record, true);
 		obj = APSEntry.getEntries(obj);
+				
+		BasicBSONObject existing = (BasicBSONObject) obj.get(record._id.toString());
+		if (existing != null) {
+			if (record.isStream == APSSecurityLevel.MEDIUM) {
+				if (existing.getBoolean("s")) {
+					existing.put("sm", true);
+					AccessLog.log("changed APS entry for stream="+record._id+" in aps "+getId());
+				}
+			}
+			return;
+		}
+		
 		// add entry
 		BasicBSONObject entry = new BasicDBObject();
 		entry.put("key", record.key);
@@ -421,7 +449,7 @@ class APSImplementation extends APS {
 		obj.put(record._id.toString(), entry);
 		addHistory(record._id, record.isStream, false);
 
-	}
+	}		
 
 	public void addPermission(DBRecord record, boolean withOwner) throws AppException {
 		try {

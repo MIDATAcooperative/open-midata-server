@@ -35,7 +35,7 @@ public class Feature_StreamIndex extends Feature {
 			(!q.isRestrictedOnTime() &&
 			Feature_AccountQuery.allApsIncluded(q)) || (!q.deepQuery() && q.restrictedBy("_id"))) {	
 		
-			AccessLog.logBeginPath("stream-index");
+			AccessLog.logBeginPath("stream-index", null);
 			long startTime = System.currentTimeMillis();
 			
 			//Set<MidataId> targetAps = Feature_Indexes.determineTargetAps(q);
@@ -95,7 +95,7 @@ public class Feature_StreamIndex extends Feature {
 			
 			Map<MidataId, List<DBRecord>> newRecords = new HashMap<MidataId, List<DBRecord>>();
 	        if (!allfound) {
-			    AccessLog.logBeginPath("new-entries");
+			    AccessLog.logBeginPath("new-entries", null);
 				Feature nextWithProcessing = new Feature_ProcessFilters(next);
 				
 				/*if (targetAps != null) {
@@ -123,7 +123,7 @@ public class Feature_StreamIndex extends Feature {
 					long v = index.getAllVersion();
 					// AccessLog.log("vx="+v);
 					List<DBRecord> add;
-					add = nextWithProcessing.query(new Query(q, CMaps.mapPositive("shared-after", v).map("consent-limit",1000).map("streams","true").map("flat","true")));
+					add = nextWithProcessing.query(new Query(q, "streamindex-shared-after", CMaps.mapPositive("shared-after", v).map("consent-limit",1000).map("streams","true").map("flat","true")));
 					//AccessLog.log("found new updated entries: " + add.size());
 					for (DBRecord r : add) {
 						AccessLog.log(" id="+r._id+" aps="+r.consentAps+" ow="+r.owner+" str="+r.isStream);
@@ -250,35 +250,35 @@ public class Feature_StreamIndex extends Feature {
 	protected static List<DBRecord> lookup(Query q, List<DBRecord> prefetched, Feature next) throws AppException {
 		
 		//AccessLog.logBegin("start lookup #recs="+prefetched.size());
-		AccessLog.logBeginPath("lookup("+prefetched.size()+")");
+		AccessLog.logBeginPath("lookup("+prefetched.size()+")", null);
 		List<DBRecord> results = null;
 		for (DBRecord record : prefetched) {
 			List<DBRecord> partResult = null;
 			if (record.stream != null) {
 				//AccessLog.log("STREAMS");
-				List<DBRecord> streamRec = next.query(new Query(q,CMaps.map("_id", record.stream).map("streams","only").map("flat",true)));
+				List<DBRecord> streamRec = next.query(new Query(q,"streamindex-lookup",CMaps.map("_id", record.stream).map("streams","only").map("flat",true)));
 				if (streamRec != null && !streamRec.isEmpty()) {
 					//AccessLog.log("STREAMS V1");
 					DBRecord stream = streamRec.get(0);
-					partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("stream", record.stream).mapNotEmpty("owner", stream.owner).map("quick", record), next);
+					partResult = QueryEngine.combine(q, "si-lookup", CMaps.map("_id", record._id).map("stream", record.stream).mapNotEmpty("owner", stream.owner).map("quick", record), next);
 				} else {
 					AccessLog.logPath("no stream found");
-					partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("flat", true).map("quick", record), next);
+					partResult = QueryEngine.combine(q, "si-lookup-nostream", CMaps.map("_id", record._id).map("flat", true).map("quick", record), next);
 				}
 				if (partResult.isEmpty()) partResult = null;
 				if (partResult == null) {
 					AccessLog.logPath("trying public branch");
-					streamRec = next.query(new Query(q,CMaps.map("_id", record.stream).map("streams","only").map("flat",true).map("public","only")));
+					streamRec = next.query(new Query(q,"si-public-lookup-stream",CMaps.map("_id", record.stream).map("streams","only").map("flat",true).map("public","only")));
 					if (streamRec != null && !streamRec.isEmpty()) {
 						DBRecord stream = streamRec.get(0);
-						partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("stream", record.stream).mapNotEmpty("owner", stream.owner).map("public","only").map("quick", record), next);
+						partResult = QueryEngine.combine(q, "si-public-lookup",CMaps.map("_id", record._id).map("stream", record.stream).mapNotEmpty("owner", stream.owner).map("public","only").map("quick", record), next);
 						if (partResult.isEmpty()) partResult = null;
 					} 
 				}
 			}
 			if (partResult == null) {
 				AccessLog.logPath("have nothing");
-			  partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).mapNotEmpty("stream", record.stream).map("quick",  record), next);
+			  partResult = QueryEngine.combine(q, "si-lookup-bad", CMaps.map("_id", record._id).mapNotEmpty("stream", record.stream).map("quick",  record), next);
 			}
 			  // Keep sharedAt from input if we got one
 			if (record.sharedAt != null && partResult != null) {

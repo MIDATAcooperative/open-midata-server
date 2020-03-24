@@ -131,7 +131,7 @@ public class ProcessingTools {
 		public DBIterator<DBRecord> advance(Map<String, Object> next) throws AppException {
 			Map<String, Object> comb = Feature_QueryRedirect.combineQuery(next, query.getProperties(), query.getContext());
 			if (comb != null) {
-				return ProcessingTools.limit(comb, fchain.iterator(new Query(comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext()).setFromRecord(query.getFromRecord())));
+				return ProcessingTools.limit(comb, fchain.iterator(new Query(query.getPath()+"/or",next.toString(), comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext()).setFromRecord(query.getFromRecord())));
 			} else
 				return ProcessingTools.empty();
 		}
