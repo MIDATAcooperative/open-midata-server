@@ -29,7 +29,7 @@ public class Feature_PublicData extends Feature {
 			String mode = q.getStringRestriction("public");
 			
 			// TODO Please remove once ally science is setup correctly
-			//if (mode.equals("only")) mode = "also";
+			if (mode.equals("only")) mode = "also";
 			// END Remove
 			
 			if (mode.equals("only")) return doQueryAsPublic(q);
