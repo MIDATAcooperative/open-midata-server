@@ -9,6 +9,9 @@ import models.MidataId;
 import models.Model;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.db.DBLayer;
+import utils.db.DatabaseException;
+import utils.db.LostUpdateException;
 import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
 
@@ -17,7 +20,7 @@ import utils.exceptions.InternalServerException;
  *
  */
 public class IndexDefinition extends IndexPageModel {
-    public @NotMaterialized static final Set<String> ALL = Sets.create("owner", "formats", "fields", "enc", "version");
+    public @NotMaterialized static final Set<String> ALL = Sets.create("owner", "formats", "fields", "enc", "encTs", "version");
 	
 	
 	public String owner;
@@ -32,6 +35,8 @@ public class IndexDefinition extends IndexPageModel {
 	 * Which fields are included in the index?
 	 */
 	public List<String> fields;
+	
+	public byte[] encTs;
 	
 	private @NotMaterialized List<String[]> fieldsSplit;
 	
@@ -53,6 +58,14 @@ public class IndexDefinition extends IndexPageModel {
 	
 	public static IndexDefinition getById(MidataId pageId) throws InternalServerException {
 		return Model.get(IndexDefinition.class, collection, CMaps.map("_id", pageId), ALL);
+	}
+	
+	public void updateTs() throws InternalServerException, LostUpdateException {
+		try {
+		   DBLayer.secureUpdate(this, collection, "version", "lockTime", "encTs");
+		} catch (DatabaseException e) {
+			throw new InternalServerException("error.internal.db", e);
+		}
 	}
 		
 }

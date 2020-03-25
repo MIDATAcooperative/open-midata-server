@@ -51,6 +51,7 @@ import utils.InstanceConfig;
 import utils.PasswordHash;
 import utils.RuntimeConstants;
 import utils.access.APS;
+import utils.access.AccessContext;
 import utils.access.Feature_Streams;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
@@ -410,7 +411,7 @@ public class Circles extends APIController {
 			
 			if (passcode != null) {			  
 				  byte[] pubkey = KeyManager.instance.generateKeypairAndReturnPublicKey(consent._id, passcode);
-			      RecordManager.instance.shareAPS(consent._id, consent.owner, consent._id, pubkey);
+			      RecordManager.instance.shareAPS(consent._id, consent.owner, pubkey);
 			      RecordManager.instance.setMeta(executorId, consent._id, "_config", CMaps.map("passcode", passcode));			  		
 			}
 		}
@@ -511,14 +512,14 @@ public class Circles extends APIController {
 		try {
 		   String hpasscode = PasswordHash.createHashGivenSalt(passcode.toCharArray(), ownerId.toByteArray());
 		   
-		   Consent consent = Consent.getByOwnerAndPasscode(ownerId, hpasscode, Sets.create("name","authorized"));
+		   Consent consent = Consent.getByOwnerAndPasscode(ownerId, hpasscode, Consent.SMALL);
 		   if (consent == null) throw new BadRequestException("error.invalid.passcode", "Bad passcode");
 		   
 		   KeyManager.instance.unlock(consent._id, passcode);
 		   
 		   
 		   
-		   RecordManager.instance.shareAPS(consent._id, consent._id, Collections.singleton(groupExecutorId));		   
+		   RecordManager.instance.shareAPS(consent._id, RecordManager.instance.createContextFromConsent(executorId, consent),consent._id, Collections.singleton(groupExecutorId));		   
 		   consent.authorized.add(groupExecutorId);
 		   if (!groupExecutorId.equals(executorId)) {
 		     consent.entityType = EntityType.USERGROUP;
@@ -642,7 +643,8 @@ public class Circles extends APIController {
 		Consent.set(consent._id, "lastUpdated", new Date());
 		
 		if (consent.status == ConsentStatus.ACTIVE) {
-		  RecordManager.instance.reshareAPS(consent._id, personExecutor, userGroupExecutor, newMemberIds);
+		  AccessContext context = RecordManager.instance.createContextFromConsent(personExecutor, consent);
+		  RecordManager.instance.reshareAPS(consent._id, context, personExecutor, userGroupExecutor, newMemberIds);
 		}
 		
 		AuditManager.instance.success();
@@ -718,7 +720,7 @@ public class Circles extends APIController {
 		}
 		
 		if (active && !wasActive) {
-			RecordManager.instance.shareAPS(consent._id, executor, consent.authorized);
+			RecordManager.instance.shareAPS(consent._id, RecordManager.instance.createContextFromConsent(executor, consent), executor, consent.authorized);
 			consentSettingChange(executor, consent);
 			
 			Map<String, Object> query = consent.sharingQuery;

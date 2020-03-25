@@ -54,7 +54,7 @@ public class RecordConversion {
 		record.ownerName = (String) dbrecord.meta.get("ownerName");						
 		record.group = dbrecord.group;
 		record.id = dbrecord.id;
-		record.isStream = dbrecord.isStream;
+		record.isStream = dbrecord.isStream!=null;
 		record.stream = dbrecord.stream;
 		
 		if (dbrecord.data != null) record.data = dbrecord.data;

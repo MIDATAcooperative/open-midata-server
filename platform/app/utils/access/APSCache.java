@@ -14,7 +14,10 @@ import models.Consent;
 import models.MidataId;
 import models.StudyRelated;
 import models.UserGroupMember;
+import models.enums.APSSecurityLevel;
 import utils.AccessLog;
+import utils.access.index.ConsentToKeyIndexRoot;
+import utils.access.index.StreamIndexRoot;
 import utils.auth.EncryptionNotSupportedException;
 import utils.buffer.WatchesChangeBuffer;
 import utils.exceptions.AppException;
@@ -39,6 +42,8 @@ public class APSCache {
 	private Set<MidataId> touchedConsents = null;
 	private Set<MidataId> touchedAPS = null;
 	private WatchesChangeBuffer changedPermissions = null;
+	private StreamIndexRoot streamIndexRoot = null;
+	private ConsentToKeyIndexRoot consentKeysRoot = null;
 	
 	private long consentLimit;
 	private Set<UserGroupMember> userGroupMember;
@@ -192,7 +197,7 @@ public class APSCache {
 			int end = 0;
 			Map<MidataId, DBRecord> ids = new HashMap<MidataId, DBRecord>(streams.size());
 			for (DBRecord rec : streams) {	
-			  if (rec.isStream) {
+			  if (rec.isStream == APSSecurityLevel.HIGH) {
 				  if (!cache.containsKey(rec._id.toString())) {
 					  ids.put(rec._id, rec);
 				  }	else {
@@ -343,5 +348,17 @@ public class APSCache {
 	public DBRecord lookupRecordInCache(MidataId id) {
 		if (newRecordCache == null) return null;
 		return newRecordCache.get(id);
+	}
+	
+	public StreamIndexRoot getStreamIndexRoot() throws AppException {
+		if (streamIndexRoot != null) return streamIndexRoot;
+		streamIndexRoot = IndexManager.instance.getStreamIndex(this, getAccountOwner());
+		return streamIndexRoot;
+	}
+	
+	public ConsentToKeyIndexRoot getConsentKeyIndexRoot(MidataId id) throws AppException {
+		if (consentKeysRoot != null) return consentKeysRoot;
+		consentKeysRoot = IndexManager.instance.getConsentToKey(this, getAccountOwner(), id);
+		return consentKeysRoot;
 	}
 }

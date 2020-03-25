@@ -11,7 +11,10 @@ import org.bson.BasicBSONObject;
 import models.Consent;
 import models.MidataId;
 import utils.AccessLog;
+import utils.access.index.ConsentToKeyIndexKey;
+import utils.access.index.ConsentToKeyIndexRoot;
 import utils.collections.CMaps;
+import utils.db.LostUpdateException;
 import utils.exceptions.AppException;
 
 public class FasterDecryptTool {
@@ -20,45 +23,48 @@ public class FasterDecryptTool {
 		AccessLog.logBegin("start accelerate consent access");
 		MidataId owner = q.getCache().getAccountOwner();
 		APS main = q.getCache().getAPS(owner);
-		APS map = null;
+		
 		BasicBSONObject obj = main.getMeta("_consents");
+		MidataId idxId = null;
 		if (obj == null) {
-			MidataId apsId = new MidataId();
-			RecordManager.instance.createPrivateAPS(owner, apsId);
-			main.setMeta("_consents", CMaps.map("id", apsId.toString()));			
-			map = q.getCache().getAPS(apsId, owner);
+			idxId = new MidataId();														
+			main.setMeta("_consents", CMaps.map("id", idxId.toString()));						
 		} else {
-			MidataId apsId = MidataId.from(obj.getString("id"));
-			map = q.getCache().getAPS(apsId, owner);
+			idxId = MidataId.from(obj.getString("id"));			
 		}
 		
-		BasicBSONObject bs = map.getMeta("consents");
-		Map<String, Object> entries = bs != null ? bs.toMap() : new HashMap<String, Object>(consents.size());
+		ConsentToKeyIndexRoot root = q.getCache().getConsentKeyIndexRoot(idxId);
+						
 		Map<MidataId, byte[]> keys = new HashMap<MidataId, byte[]>(consents.size());
 		Set<Consent> missing = new HashSet<Consent>();
-		for (Consent c : consents) {
-			byte[] key = (byte[]) entries.get(c._id.toString());
-			if (key != null) {
-				keys.put(c._id, key);
-			} else {
-				missing.add(c);
-			}
-			
+		for (Consent c : consents) {	
+			try {
+				byte[] key = root.getKey(c._id);
+				if (key != null) {
+					keys.put(c._id, key);
+				} else {
+					missing.add(c);
+				}
+			} catch (LostUpdateException e) {
+				root.reload();
+			}			
 		}
 		q.getCache().prefetch(consents, keys);
 		
 		AccessLog.logEnd("end accelerate consent access");
 		if (missing.isEmpty()) return;
 		AccessLog.logBegin("start add missing acceleration keys size="+missing.size());
-		for (Consent c : missing) {
-		  APS targetAPS = q.getCache().getAPS(c._id);
-		  if (targetAPS.isAccessible()) {
-			  byte[] newkey = ((APSImplementation) targetAPS).eaps.getAPSKey();
-			  entries.put(c._id.toString(), newkey);
-		  }
-		}
-		
-		map.setMeta("consents", entries);
+		try {
+			for (Consent c : missing) {
+			  APS targetAPS = q.getCache().getAPS(c._id);
+			  if (targetAPS.isAccessible()) {
+				  byte[] newkey = ((APSImplementation) targetAPS).eaps.getAPSKey();
+				  root.addEntry(new ConsentToKeyIndexKey(c._id, newkey));			  
+			  }
+			}
+			root.flush();
+		} catch (LostUpdateException e) {}
+
 		AccessLog.logEnd("end add missing acceleration keys");
 	}
 }

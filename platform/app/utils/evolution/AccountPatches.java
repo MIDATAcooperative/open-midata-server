@@ -202,7 +202,7 @@ public class AccountPatches {
 							part.authorized.remove(ru._id);
 							StudyParticipation.set(part._id, "authorized", part.authorized);
 							if (part.status == ConsentStatus.ACTIVE) {
-							  RecordManager.instance.shareAPS(part._id, ru._id, Collections.singleton(study._id));
+							  RecordManager.instance.shareAPS(part._id, null, ru._id, Collections.singleton(study._id));
 							  RecordManager.instance.unshareAPS(part._id, ru._id, Collections.singleton(ru._id));
 						    }
 						}

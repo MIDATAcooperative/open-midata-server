@@ -23,8 +23,14 @@ public class Feature_InMemoryQuery extends APS {
 	
 	private List<DBRecord> contents;
 	private MidataId me = new MidataId();
+	private MidataId storedOwner;
 	
 	public Feature_InMemoryQuery(List<DBRecord> contents) {
+		this.contents = contents;
+	}
+	
+	public Feature_InMemoryQuery(MidataId storedOwner, List<DBRecord> contents) {
+		this.storedOwner = storedOwner;
 		this.contents = contents;
 	}
 				
@@ -108,7 +114,7 @@ public class Feature_InMemoryQuery extends APS {
 	
 	@Override
 	public void addPermission(DBRecord record, boolean withOwner) throws AppException {
-		throw new NotImplementedError();
+		//throw new NotImplementedError();
 		
 	}
 
@@ -139,7 +145,8 @@ public class Feature_InMemoryQuery extends APS {
 	}
 
 	@Override
-	public MidataId getStoredOwner() throws AppException {		
+	public MidataId getStoredOwner() throws AppException {	
+		if (this.storedOwner != null) return this.storedOwner;
 		throw new NotImplementedError();	
 	}
 
@@ -160,6 +167,11 @@ public class Feature_InMemoryQuery extends APS {
 	@Override
 	public boolean isUsable() throws AppException {
 		return true;
+	}
+
+	@Override
+	public Set<MidataId> getAccess() throws AppException {		
+		return null;
 	}
 	
 	

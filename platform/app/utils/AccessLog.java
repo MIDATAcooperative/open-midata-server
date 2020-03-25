@@ -41,7 +41,7 @@ public class AccessLog {
 	 */
 	public static void log(String txt) {
 		String msg = "                                            ".substring(0,ident.get())+txt;
-		if (logToFile)	Logger.debug(msg);
+		//if (logToFile)	Logger.debug(msg);
 		if (logForMail) msgs.get().println(msg);
 	}
 	
@@ -80,8 +80,8 @@ public class AccessLog {
 		   s.append(" ");
 	   }
 	   s.append(")");
-	   String msg = "                                            ".substring(0,ident.get())+"Query:"+s.toString();	   
-	   log(msg);
+	   //String msg = "                                            ".substring(0,ident.get())+"Query:"+s.toString();	   
+	   log("Query:"+s.toString());
 	}
 	
 	/**
@@ -89,13 +89,19 @@ public class AccessLog {
 	 * @param msg the message to be logged
 	 */
 	public static void logDB(String msg) {
-	   String msg1 = "                                            ".substring(0,ident.get())+"DB:"+msg; 	   
-	   log(msg1);
+	   //String msg1 = "                                            ".substring(0,ident.get())+"DB:"+msg; 	   
+	   log("DB:"+msg);
 	}
 	
 	private static ThreadLocal<Integer> ident = new ThreadLocal<Integer>() {
         @Override protected Integer initialValue() {
             return 0;
+        }
+	};
+	
+	private static ThreadLocal<String> logpath = new ThreadLocal<String>() {
+        @Override protected String initialValue() {
+            return "";
         }
 	};
 	
@@ -137,13 +143,34 @@ public class AccessLog {
 		ident.set(ident.get() + 2);
 	}
 	
+	public static void logBeginPath(String path, String extra) {				
+		logBegin("start "+path.toUpperCase()+" on "+logpath.get()+(extra!=null?(": "+extra):""));
+		logpath.set(logpath.get()+"/"+path);		
+	}
+	
+	public static void logEndPath(String result) {		
+		String lp = logpath.get();
+		int i = lp.lastIndexOf('/');
+		logpath.set(lp.substring(0, i));
+		logEnd("end "+lp.substring(i+1).toUpperCase()+" on "+lp+(result!=null?(" with "+result):""));
+	}
+	
+	public static void logPath(String result) {		
+		String lp = logpath.get();		
+		log(lp+": "+result);
+	}
+	
+	public static String lp() {
+		return logpath.get();
+	}
+	
 	/**
 	 * log the end of an operation that was started using logBegin()
 	 * @param txt a message to be logged
 	 */
 	public static void logEnd(String txt) {
 		ident.set(ident.get() - 2);
-		if (ident.get() < 0) ident.set(0);
+		if (ident.get() < 0) ident.set(0);		
 		log(txt);			
 	}
 	

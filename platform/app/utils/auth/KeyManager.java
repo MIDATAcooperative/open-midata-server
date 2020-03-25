@@ -289,7 +289,7 @@ public class KeyManager implements KeySession {
 	}
 	
 	public void continueSession(String fhandle, MidataId user) throws AppException {		
-		AccessLog.log("Key-Ring: continue session");
+		//AccessLog.log("Key-Ring: continue session");
 		
 		int p = fhandle.indexOf(";");
 		String handle = p > 0 ? fhandle.substring(0, p) : fhandle;

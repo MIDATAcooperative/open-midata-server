@@ -17,7 +17,7 @@ public class Feature_ContextRestrictions extends Feature {
 	protected DBIterator<DBRecord> iterator(Query q) throws AppException {		
 		Map<String, Object> restrictions = q.getContext().getQueryRestrictions();
 		if (restrictions != null) {
-			return QueryEngine.combineIterator(q, restrictions, next);		
+			return QueryEngine.combineIterator(q, "context-restrictions", restrictions, next);		
 		} else return next.iterator(q);
 	}
 

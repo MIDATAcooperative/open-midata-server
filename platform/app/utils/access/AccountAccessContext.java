@@ -68,4 +68,11 @@ public class AccountAccessContext extends AccessContext {
 		return false;
 	}
 
+	@Override
+	public String toString() {
+		return "account("+getOwner()+" "+parentString()+")";
+	}
+	
+	
+
 }

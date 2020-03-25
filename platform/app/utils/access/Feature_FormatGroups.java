@@ -214,7 +214,7 @@ public class Feature_FormatGroups extends Feature {
 		Set<String> contents = prepareFilter(q);
 		DBIterator<DBRecord> result = null;
 		if (contents != null) {
-		  	result = QueryEngine.combineIterator(q, CMaps.map("content", contents), next);					
+		  	result = QueryEngine.combineIterator(q, "format-groups", CMaps.map("content", contents), next);					
 		} else {
 		   result = next.iterator(q);
 		}

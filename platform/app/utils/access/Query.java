@@ -49,47 +49,64 @@ public class Query {
 	private APSCache cache;
 	private MidataId apsId;		
 	private AccessContext context;
-		
-	public Query(Map<String, Object> properties, Set<String> fields, APSCache cache, MidataId apsId, AccessContext context) throws AppException {
+	private String path;
+
+	public Query(String path, Map<String, Object> properties, Set<String> fields, APSCache cache, MidataId apsId, AccessContext context) throws AppException {
+		this(path, null, properties,fields,cache,apsId,context);
+	}
+	public Query(String path, String extra, Map<String, Object> properties, Set<String> fields, APSCache cache, MidataId apsId, AccessContext context) throws AppException {
+		this.path = path;
 		this.properties = new HashMap<String, Object>(properties);
 		this.fields = fields;
 		this.cache = cache;
 		this.apsId = apsId;
 		this.context = context;
-		AccessLog.logQuery(apsId, properties, fields);
+		if (extra != null) {
+		  AccessLog.log(path+" : "+extra);
+		} else {
+		  AccessLog.log(path);
+		}
+		//AccessLog.logQuery(apsId, properties, fields);
 		process();
 		
 	}
 	
+	// Internal use withoutTime
 	public Query(Map<String, Object> properties, Set<String> fields, APSCache cache, MidataId apsId, AccessContext context, boolean noinit)  {
 		this.properties = new HashMap<String, Object>(properties);
 		this.fields = fields;
 		this.cache = cache;
 		this.apsId = apsId;
-		this.context = context;	
-		
+		this.context = context;			
 	}
 	
-	public Query(Query q, Map<String, Object> properties) throws AppException {
-		this(q, properties, q.getApsId(), q.getContext());
+	public Query(Query q, String path, Map<String, Object> properties) throws AppException {
+		this(q, path, properties, q.getApsId(), q.getContext());
 	}
 	
-	public Query(Query q, Map<String, Object> properties, MidataId aps, AccessContext context) throws AppException {
+	public Query(Query q, String path, Map<String, Object> properties, MidataId aps, AccessContext context) throws AppException {
 		this.properties = new HashMap<String, Object>(q.getProperties());
 		this.properties.putAll(properties);
 		this.fields = q.getFields();
 		this.cache = q.getCache();
 		this.apsId = aps;			
 		this.context = context;
+		this.path = q.path+"/"+path;
 		process();
+		AccessLog.log(this.path+" : "+properties.toString());
 		//AccessLog.logQuery(apsId, properties, fields);
 	}	
 	
 	public Query withoutTime() throws AppException {
 		Query r = new Query(properties, fields, cache, apsId, context, true);
+		r.path = this.path;
 		r.properties.remove("shared-after");
 		r.process();
 		return r;
+	}
+	
+	public String getPath() {
+		return path;
 	}
 	
 	public Map<String, Object> getProperties() {
@@ -164,7 +181,10 @@ public class Query {
 			Set<String> results = new HashSet<String>();
 			for (Object val : (Collection) v) { results.add(val.toString()); }			
 			return results;											
-		} else throw new InternalServerException("error.internal","Bad Restriction 1: "+name);
+		} else {
+			AccessLog.log("Restriction on "+name+" : "+(v!=null ? (v.toString()+" of class "+v.getClass().getName()) : "null"));
+			throw new InternalServerException("error.internal","Bad Restriction 1: "+name);
+		}
 	}
 	
 	public static Set<String> getAnyRestrictionFromQuery(Map<String, Object> properties, String name) throws AppException {
@@ -505,7 +525,7 @@ public class Query {
 			 properties.put("study", resolved);
 		 }
 		 
-		 if (properties.containsKey("owner")) {
+		 if (properties.get("owner")!=null) {
 			 Set<String> owners = getRestriction(properties.get("owner"), "owner");
 			 Set<Object> resolved = new HashSet<Object>();
 			 for (Object owner : owners) {
