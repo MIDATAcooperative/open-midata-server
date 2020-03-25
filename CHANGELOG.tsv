@@ -38,5 +38,6 @@ id0036	02.03.2020	a.kreutz	B	Researcher name no longer shown for project shared 
 id0037	02.03.2020	a.kreutz	B	Project Analyzer creation page fixed	Application could not be created after page was filled out.
 id0038	09.03.2020	a.kreutz	F	Project Analyzer setup extended	For a project analyzer the developer may now select if it needs pseudonymized data or not.
 id0039	20.03.2020	a.kreutz	F	Developer teams for applications	On the application settings page there is now a new field where you can enter a comma separated list of other developers working on your application.
-id0040	20.03.2020	a.kreutz	F	Study export is now available on base FHIR url	A project analyzer may now use the FHIR base url to read all project data at once. There is support for restriction on _lastUpdated. In opposition to normal FHIR queries there is no limit on the number of records returned by the export query.  
+id0040	20.03.2020	a.kreutz	F	Study export is now available on base FHIR url	A project analyzer may now use the FHIR base url to read all project data at once. There is support for restriction on _lastUpdated. In opposition to normal FHIR queries there is no limit on the number of records returned by the export query.
+id0041	25.03.2020	a.kreutz	I	Performance Update  
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 
