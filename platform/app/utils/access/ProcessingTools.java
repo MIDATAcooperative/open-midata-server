@@ -109,7 +109,7 @@ public class ProcessingTools {
 			result.add(input.next());
 			// fail++; if (fail > 1000) return result; // XXXXXXX
 		}		
-		AccessLog.log("collected "+result.size()+" records");
+		AccessLog.log("collected "+result.size()+" records from "+input.toString());
 		return result;
 	}
 
@@ -131,7 +131,7 @@ public class ProcessingTools {
 		public DBIterator<DBRecord> advance(Map<String, Object> next) throws AppException {
 			Map<String, Object> comb = Feature_QueryRedirect.combineQuery(next, query.getProperties(), query.getContext());
 			if (comb != null) {
-				return ProcessingTools.limit(comb, fchain.iterator(new Query(comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext()).setFromRecord(query.getFromRecord())));
+				return ProcessingTools.limit(comb, fchain.iterator(new Query(query.getPath()+"/or",next.toString(), comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext()).setFromRecord(query.getFromRecord())));
 			} else
 				return ProcessingTools.empty();
 		}
@@ -283,7 +283,7 @@ public class ProcessingTools {
 
 		@Override
 		public boolean contained(DBRecord record) {
-			if (noPostfilterStreams && record.isStream)
+			if (noPostfilterStreams && record.isStream!=null)
 				return true;
 			return values.contains(record.meta.get(property));
 		}
@@ -310,7 +310,7 @@ public class ProcessingTools {
 
 		@Override
 		public boolean contained(DBRecord record) {
-			if (record.isStream) return true;
+			if (record.isStream!=null) return true;
 			Collection tags = (Collection) record.meta.get("tags");
 			if (must_be_present) return tags != null && tags.contains(tag);
 			return tags == null || !tags.contains(tag);
@@ -334,7 +334,7 @@ public class ProcessingTools {
 
 		@Override
 		public boolean contained(DBRecord record) {
-			if (record.isStream) return true;
+			if (record.isStream!=null) return true;
 			BasicBSONList tags = (BasicBSONList) record.meta.get("tags");
 			if (tags == null || !tags.contains("security:hidden")) return true;
 			record.data = new BasicBSONObject();
@@ -416,7 +416,7 @@ public class ProcessingTools {
 
 		@Override
 		public boolean contained(DBRecord record) {
-			if (noPostfilterStreams && record.isStream)
+			if (noPostfilterStreams && record.isStream!=null)
 				return true;
 			
 			Object v = record.meta.get(property);			

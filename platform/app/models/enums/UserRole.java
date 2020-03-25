@@ -38,8 +38,7 @@ public enum UserRole {
     */
    ANY;
    
-   public static UserRole fromShortString(String r) {
-	   AccessLog.log("from short string="+r);
+   public static UserRole fromShortString(String r) {	   
 	   if (r == null || r.equals("m")) return UserRole.MEMBER;
 	   if (r.equals("r")) return UserRole.RESEARCH;
 	   else if (r.equals("d")) return UserRole.DEVELOPER;

@@ -64,5 +64,10 @@ public class PublicAccessContext extends AccessContext {
 	public boolean mayContainRecordsFromMultipleOwners() {		
 		return false;
 	}
+	
+	@Override
+	public String toString() {
+		return "public("+parentString()+")";
+	}
 
 }

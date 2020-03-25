@@ -51,12 +51,11 @@ public class Feature_PublicData extends Feature {
 		
 		@Override
 		public DBIterator<DBRecord> advance(Integer step) throws AppException {
-			if (step == 1) {
-				AccessLog.log("Starting NON public branch");
+			if (step == 1) {				
 				ispublic = false;
 				return next.iterator(query);
 			} else if (step == 2) {
-				AccessLog.log("Starting public branch");
+				
 				ispublic = true;
 				return doQueryAsPublic(query);	
 			}
@@ -71,7 +70,7 @@ public class Feature_PublicData extends Feature {
 	}
 
 	protected DBIterator<DBRecord> doQueryAsPublic(Query q) throws AppException {		
-		
+		AccessLog.logBeginPath("do-public", null);
 		if (q.restrictedBy("owner")) {
 			Set<String> owner = q.getRestriction("owner");			
 		    if (!owner.contains("all") && !owner.contains(RuntimeConstants.instance.publicUser.toString())) {
@@ -89,9 +88,9 @@ public class Feature_PublicData extends Feature {
 		newprops.remove("study-group");
 		newprops.put("owner", RuntimeConstants.instance.publicUser);
 		
-		Query qnew = new Query(newprops, q.getFields(), subcache, RuntimeConstants.instance.publicUser, new PublicAccessContext(subcache, q.getContext())).setFromRecord(q.getFromRecord());
+		Query qnew = new Query(q.getPath()+"/public",newprops, q.getFields(), subcache, RuntimeConstants.instance.publicUser, new PublicAccessContext(subcache, q.getContext())).setFromRecord(q.getFromRecord());
 		DBIterator<DBRecord> result = next.iterator(qnew);
-		
+		AccessLog.logEndPath(null);
 		return result;	
 	}
 	

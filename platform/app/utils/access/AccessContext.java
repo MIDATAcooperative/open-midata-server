@@ -58,4 +58,9 @@ public abstract class AccessContext {
 		if (parent != null) return parent.getNewRecordCreator();
 		return cache.getExecutor();
 	}
+	
+	protected String parentString() {
+		if (parent==null) return "";
+		return parent.toString();
+	}
 }

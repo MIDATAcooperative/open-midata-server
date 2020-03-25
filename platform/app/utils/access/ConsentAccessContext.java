@@ -129,5 +129,10 @@ public class ConsentAccessContext extends AccessContext{
 	public boolean mayContainRecordsFromMultipleOwners() {		
 		return consent.type == ConsentType.EXTERNALSERVICE;
 	}
+	
+	@Override
+	public String toString() {
+		return "consent("+consent._id+" "+parentString()+")";
+	}
 
 }

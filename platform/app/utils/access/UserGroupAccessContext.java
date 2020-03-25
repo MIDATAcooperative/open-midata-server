@@ -63,5 +63,10 @@ public class UserGroupAccessContext extends AccessContext {
 	public boolean mayContainRecordsFromMultipleOwners() {		
 		return false;
 	}
+	
+	@Override
+	public String toString() {
+		return "usergroup("+ugm.userGroup+" "+parentString()+")";
+	}
 
 }

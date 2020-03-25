@@ -74,4 +74,11 @@ public class DummyAccessContext extends AccessContext {
 		return false;
 	}
 
+	@Override
+	public String toString() {
+		return "dummy("+selfUser+")";
+	}
+	
+	
+
 }

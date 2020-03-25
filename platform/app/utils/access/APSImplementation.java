@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -160,7 +161,22 @@ class APSImplementation extends APS {
 			eaps.reload();
 			addAccess(target, publickey);
 		}
-	}		
+	}	
+	
+	public Set<MidataId> getAccess() throws AppException {
+		merge();
+		Set<String> keyNames = eaps.keyNames();
+		Set<MidataId> result = new HashSet<MidataId>(keyNames.size());
+		for (String k : keyNames) {
+			if (k.equals("owner")) result.add(getStoredOwner());
+			else {
+			  MidataId id = new MidataId(k);
+			  // No access for public key consents
+			  if (!id.equals(getId())) result.add(id);			  
+			}
+		}
+		return result;
+	}
 
 	public void removeAccess(Set<MidataId> targets) throws InternalServerException {
 		try {
@@ -366,7 +382,7 @@ class APSImplementation extends APS {
 		
 		record._id = new MidataId(id);		
 		APSEntry.populateRecord(row, record);
-		record.isStream = entry.getBoolean("s");
+		record.isStream = entry.getBoolean("s") ? ( entry.getBoolean("sm") ? APSSecurityLevel.MEDIUM : APSSecurityLevel.HIGH) : null;
 		record.isReadOnly = entry.getBoolean("ro");
 
 		if (entry.get("key") instanceof String) {
@@ -377,7 +393,7 @@ class APSImplementation extends APS {
 			record.security = record.key != null ? getSecurityLevel() : APSSecurityLevel.NONE;
 		}
 
-		if (withOwner || record.isStream) {
+		if (withOwner || record.isStream!=null) {
 			String owner = entry.getString("owner");
 			if (owner != null)
 				record.owner = new MidataId(owner);
@@ -397,20 +413,35 @@ class APSImplementation extends APS {
 		// resolve Format
 		BasicBSONObject obj = APSEntry.findMatchingRowForRecord(eaps.getPermissions(), record, true);
 		obj = APSEntry.getEntries(obj);
+				
+		BasicBSONObject existing = (BasicBSONObject) obj.get(record._id.toString());
+		if (existing != null) {
+			if (record.isStream == APSSecurityLevel.MEDIUM) {
+				if (existing.getBoolean("s")) {
+					existing.put("sm", true);
+					AccessLog.log("changed APS entry for stream="+record._id+" in aps "+getId());
+				}
+			}
+			return;
+		}
+		
 		// add entry
 		BasicBSONObject entry = new BasicDBObject();
 		entry.put("key", record.key);
-		if (record.isStream) {
+		if (record.isStream==APSSecurityLevel.HIGH) {
 			entry.put("s", true);
+		} else if (record.isStream==APSSecurityLevel.MEDIUM) {
+			entry.put("s", true);
+			entry.put("sm", true);
 		}
-		if (record.isReadOnly && !record.isStream) throw new InternalServerException("error.internal", "readonly only supported for streams!!");
+		if (record.isReadOnly && record.isStream==null) throw new InternalServerException("error.internal", "readonly only supported for streams!!");
 		if (record.isReadOnly) { 
 			entry.put("ro", true);
 		}
 		if (record.owner != null && withOwner) {
 			entry.put("owner", record.owner.toString());
 		}
-		if (!record.isStream) {
+		if (record.isStream==null) {
 			entry.put("created", record.meta.get("created"));
 		}
 		// if (record.format.equals(Query.STREAM_TYPE)) entry.put("name",
@@ -418,7 +449,7 @@ class APSImplementation extends APS {
 		obj.put(record._id.toString(), entry);
 		addHistory(record._id, record.isStream, false);
 
-	}
+	}		
 
 	public void addPermission(DBRecord record, boolean withOwner) throws AppException {
 		try {
@@ -569,7 +600,7 @@ class APSImplementation extends APS {
 		return eaps.isLoaded();
 	}
 	
-	private void addHistory(MidataId recordId, boolean isStream, boolean isRemove) throws AppException {
+	private void addHistory(MidataId recordId, APSSecurityLevel isStream, boolean isRemove) throws AppException {
 		BasicBSONList history = (BasicBSONList) eaps.getPermissions().get("_history");
 		if (history != null) {
 			
@@ -585,7 +616,8 @@ class APSImplementation extends APS {
 			} else {			
 				BasicBSONObject newEntry = new BasicBSONObject();
 				newEntry.put("r", recordId.toString());
-				if (isStream) newEntry.put("s", isStream);
+				if (isStream!=null) newEntry.put("s", true);
+				if (isStream==APSSecurityLevel.MEDIUM) newEntry.put("sm", true);
 				newEntry.put("ts", System.currentTimeMillis());
 				//if (isRemove) newEntry.put("d", true);
 				history.add(newEntry);
@@ -611,7 +643,7 @@ class APSImplementation extends APS {
 			if (ts >= minUpd && (entry.containsField("d") == removes)) {
 				DBRecord r = new DBRecord();
 				r._id = new MidataId(entry.getString("r"));
-				r.isStream = entry.containsField("s");	
+				r.isStream = entry.containsField("s") ? (entry.containsField("sm") ? APSSecurityLevel.MEDIUM : APSSecurityLevel.HIGH) : null;	
 				r.sharedAt = new Date(ts);				
 				result.add(r);
 			}

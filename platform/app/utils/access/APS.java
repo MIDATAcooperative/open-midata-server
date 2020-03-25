@@ -45,6 +45,8 @@ public abstract class APS extends Feature {
 	
 	public abstract boolean hasAccess(MidataId target) throws InternalServerException;
 	
+	public abstract Set<MidataId> getAccess() throws AppException;		
+	
 	public abstract void setMeta(String key, Map<String, Object> data) throws AppException;
 	
 	public abstract void removeMeta(String key) throws AppException;

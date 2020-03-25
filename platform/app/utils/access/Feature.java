@@ -58,7 +58,7 @@ public abstract class Feature {
 		  if (chain.hasNext()) {
 			  B next = chain.next();
 			  current = advance(next);
-			  AccessLog.log("init:"+this.toString());
+			  //AccessLog.log("init:"+this.toString());
 		  } else current = ProcessingTools.empty();
 		  advance();
 		}
@@ -70,7 +70,7 @@ public abstract class Feature {
 		public void init(B first, DBIterator<B> init) throws AppException {
 			  this.chain = init;
 			  current = advance(first);
-			  AccessLog.log("init:"+this.toString());			  
+			  //AccessLog.log("init:"+this.toString());			  
 			  advance();
 		}
 		
@@ -78,7 +78,7 @@ public abstract class Feature {
 			while (!current.hasNext() && chain.hasNext()) {				
 				B next = chain.next();
 				current = advance(next);
-				if (current.hasNext()) AccessLog.log("advance:"+this.toString());
+				//if (current.hasNext()) AccessLog.log("advance:"+this.toString());
 			}  			
 		}
 		

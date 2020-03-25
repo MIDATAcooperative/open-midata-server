@@ -91,5 +91,10 @@ public class SpaceAccessContext extends AccessContext {
 	public boolean mayContainRecordsFromMultipleOwners() {		
 		return true;
 	}
+	
+	@Override
+	public String toString() {
+		return "space("+space._id+" "+parentString()+")";
+	}
 
 }

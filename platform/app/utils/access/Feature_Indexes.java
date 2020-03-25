@@ -18,6 +18,7 @@ import utils.RuntimeConstants;
 import utils.access.index.IndexDefinition;
 import utils.access.index.IndexMatch;
 import utils.access.index.IndexRoot;
+import utils.access.index.Lookup;
 import utils.access.op.AlternativeFieldAccess;
 import utils.access.op.AndCondition;
 import utils.access.op.Condition;
@@ -41,7 +42,7 @@ public class Feature_Indexes extends Feature {
 	public final static int AUTOCREATE_INDEX_COUNT = 30;
 	public final static int NO_SECOND_INDEX_COUNT = 30;
 
-	private AccessContext getContextForAps(Query q, MidataId aps) throws AppException {
+	protected static AccessContext getContextForAps(Query q, MidataId aps) throws AppException {
 		if (!q.getCache().getAPS(aps).isUsable())
 			return null;
 		if (q.getApsId().equals(aps))
@@ -74,7 +75,7 @@ public class Feature_Indexes extends Feature {
 				}
 			}
 
-			AccessLog.logBegin("start index query");
+			AccessLog.logBeginPath("index query", null);
 			long startTime = System.currentTimeMillis();
 
 			Object indexQueryUnparsed = q.getProperties().get("index");
@@ -90,29 +91,12 @@ public class Feature_Indexes extends Feature {
 
 			AccessLog.log("Index query: " + indexQueryParsed.toString());
 
-			Set<MidataId> targetAps;
-
-			if (!q.getApsId().equals(q.getCache().getAccountOwner())) {
-				targetAps = Collections.singleton(q.getApsId());
-			} else {
-				boolean allTarget = Feature_AccountQuery.allApsIncluded(q);
-
-				if (allTarget) {
-					targetAps = null;
-				} else {
-					List<Consent> consents = Feature_AccountQuery.getConsentsForQuery(q, true);
-					targetAps = new HashSet<MidataId>();
-					if (Feature_AccountQuery.mainApsIncluded(q))
-						targetAps.add(q.getApsId());
-					for (Consent consent : consents)
-						targetAps.add(consent._id);
-				}
-			}
+			Set<MidataId> targetAps = determineTargetAps(q);
 
 			List<DBRecord> result = Collections.emptyList();
 
 			if (targetAps != null && targetAps.isEmpty()) {
-				AccessLog.logEnd("end index query no target APS");
+				AccessLog.logEndPath("no target APS");
 				return ProcessingTools.empty();
 			}
 
@@ -137,7 +121,7 @@ public class Feature_Indexes extends Feature {
 
 			Map<MidataId, List<DBRecord>> newRecords = new HashMap<MidataId, List<DBRecord>>();
 
-			AccessLog.logBegin("start to look for new entries");
+			AccessLog.logBeginPath("new entries", null);
 			Feature nextWithProcessing = new Feature_ProcessFilters(next);
 			
 			if (targetAps != null) {
@@ -151,7 +135,7 @@ public class Feature_Indexes extends Feature {
 						} 
 						//if (context instanceof ConsentAccessContext) AccessLog.log("TIMESTAMP "+((ConsentAccessContext) context).getConsent().dataupdate+" vs "+v);
 						List<DBRecord> add;
-						Query updQuery = new Query(q, CMaps.mapPositive("shared-after", v).map("owner", "self"), id, context);
+						Query updQuery = new Query(q, "index-shared-after", CMaps.mapPositive("shared-after", v).map("owner", "self"), id, context);
 						add = QueryEngine.filterByDataQuery(nextWithProcessing.query(updQuery), indexQueryParsed, null);
 						AccessLog.log("found new updated entries aps=" + id + ": " + add.size());
 						result = QueryEngine.combine(result, add);						
@@ -165,7 +149,7 @@ public class Feature_Indexes extends Feature {
 				long v = myAccess.version(null);
 				// AccessLog.log("vx="+v);
 				List<DBRecord> add;
-				add = QueryEngine.filterByDataQuery(nextWithProcessing.query(new Query(q, CMaps.mapPositive("shared-after", v).map("consent-limit",1000))), indexQueryParsed, null);
+				add = QueryEngine.filterByDataQuery(nextWithProcessing.query(new Query(q, "index-shared-after", CMaps.mapPositive("shared-after", v).map("consent-limit",1000))), indexQueryParsed, null);
 				AccessLog.log("found new updated entries: " + add.size());
 				result = QueryEngine.combine(result, add);				
 				if (result != null && !result.isEmpty()) {
@@ -181,7 +165,7 @@ public class Feature_Indexes extends Feature {
 					}
 				}
 			}
-			AccessLog.logEnd("end to look for new entries");
+			AccessLog.logEndPath(null);
 			long endTime2 = System.currentTimeMillis();
 
 			if (allAps.size() > Feature_AccountQuery.MIN_FOR_ACCELERATION) {
@@ -196,17 +180,38 @@ public class Feature_Indexes extends Feature {
 					contexts.add(context);
 			}
 			Collections.sort(contexts, new ContextComparator());
-			AccessLog.log("index matches "+contexts.size()+" contexts");
 
 			Set<String> queryFields = Sets.create("stream", "time", "document", "part", "direct", "encryptedData");
 			queryFields.addAll(q.getFieldsFromDB());
 
-			AccessLog.logEnd("end index query");
+			AccessLog.logEndPath("index matches "+contexts.size()+" contexts");
 			if (contexts.isEmpty()) return ProcessingTools.empty();
 			return ProcessingTools.noDuplicates(new IndexIterator(q, myAccess, contexts, newRecords, filterMatches));				
 
 		} else
 			return next.iterator(q);
+	}
+
+	public static Set<MidataId> determineTargetAps(Query q) throws BadRequestException, AppException {
+		Set<MidataId> targetAps;
+
+		if (!q.getApsId().equals(q.getCache().getAccountOwner())) {
+			targetAps = Collections.singleton(q.getApsId());
+		} else {
+			boolean allTarget = Feature_AccountQuery.allApsIncluded(q);
+
+			if (allTarget) {
+				targetAps = null;
+			} else {
+				List<Consent> consents = Feature_AccountQuery.getConsentsForQuery(q, true);
+				targetAps = new HashSet<MidataId>();
+				if (Feature_AccountQuery.mainApsIncluded(q))
+					targetAps.add(q.getApsId());
+				for (Consent consent : consents)
+					targetAps.add(consent._id);
+			}
+		}
+		return targetAps;
 	}
 	
 	public class IndexIterator extends Feature.MultiSource<AccessContext> {
@@ -258,7 +263,7 @@ public class Feature_Indexes extends Feature {
 			Set<MidataId> ids = matches.get(aps);
             if (ids != null && !ids.isEmpty()) {
 			if (ids.size() > INDEX_REVERSE_USE) {
-				Query q4 = new Query(q, CMaps.map(), aps, context);
+				Query q4 = new Query(q, "index-reverse", CMaps.map(), aps, context);
 				List<DBRecord> unindexed = next.query(q4);
 				int size = unindexed.size();
 				if (size > 0) {
@@ -280,7 +285,7 @@ public class Feature_Indexes extends Feature {
 					props.putAll(q.getProperties());
 					props.put("streams", "only");
 					props.put("owner", "self");
-					List<DBRecord> matchStreams = next.query(new Query(props, Sets.create("_id"), q.getCache(), aps, context));
+					List<DBRecord> matchStreams = next.query(new Query(q.getPath()+"/index-read-streams",props, Sets.create("_id"), q.getCache(), aps, context));
 					//AccessLog.log("index query streams " + matchStreams.size() + " matches.");
 					if (matchStreams.isEmpty())
 						directQuery = false;
@@ -303,7 +308,7 @@ public class Feature_Indexes extends Feature {
 					List<DBRecord> partresult = DBRecord.getAllList(readRecs, queryFields);
 					//AccessLog.log("db time:" + (System.currentTimeMillis() - time));
 
-					Query q3 = new Query(q, CMaps.map("strict", "true"), aps, context);
+					Query q3 = new Query(q, "index-lookup", CMaps.map("strict", "true"), aps, context);
 					partresult = Feature_Prefetch.lookup(q3, partresult, next, false);
 					for (DBRecord record : partresult)
 						record.consentAps = aps;
@@ -312,7 +317,7 @@ public class Feature_Indexes extends Feature {
 				}
 
 				if (add) {
-					Query q2 = new Query(q, CMaps.map(q.getProperties()).map("_id", ids), aps, context);
+					Query q2 = new Query(q, "index-lookup", CMaps.map(q.getProperties()).map("_id", ids), aps, context);
 					List<DBRecord> additional = next.query(q2);
 					for (DBRecord record : additional)
 						record.consentAps = aps;
@@ -340,173 +345,7 @@ public class Feature_Indexes extends Feature {
 		
 
 	}
-
-	/*
-	 * @Override protected List<DBRecord> query(Query q) throws AppException {
-	 * if (q.restrictedBy("index") && !q.restrictedBy("_id")) {
-	 * 
-	 * if (!q.restrictedBy("format")) throw new
-	 * BadRequestException("error.invalid.query",
-	 * "Queries using an index must be restricted by format!");
-	 * 
-	 * IndexPseudonym pseudo =
-	 * IndexManager.instance.getIndexPseudonym(q.getCache(),
-	 * q.getCache().getExecutor(), q.getApsId(), false);
-	 * 
-	 * if (pseudo == null) { List<DBRecord> recs = next.query(q); if
-	 * (recs.size() > AUTOCREATE_INDEX_COUNT) { pseudo =
-	 * IndexManager.instance.getIndexPseudonym(q.getCache(),
-	 * q.getCache().getExecutor(), q.getApsId(), true); } else { return recs; }
-	 * }
-	 * 
-	 * AccessLog.logBegin("start index query"); long startTime =
-	 * System.currentTimeMillis();
-	 * 
-	 * Object indexQueryUnparsed = q.getProperties().get("index"); Condition
-	 * indexQueryParsed = null;
-	 * 
-	 * if (indexQueryUnparsed instanceof Condition) { indexQueryParsed =
-	 * (Condition) indexQueryUnparsed; } else { indexQueryParsed =
-	 * AndCondition.parseRemaining(indexQueryUnparsed).optimize();
-	 * AccessLog.log("Optimized query: "+indexQueryParsed.toString());
-	 * indexQueryParsed = indexQueryParsed.indexExpression(); }
-	 * 
-	 * AccessLog.log("Index query: "+indexQueryParsed.toString());
-	 * 
-	 * 
-	 * Set<MidataId> targetAps;
-	 * 
-	 * if (!q.getApsId().equals(q.getCache().getAccountOwner())) { targetAps =
-	 * Collections.singleton(q.getApsId()); } else { boolean allTarget =
-	 * Feature_AccountQuery.allApsIncluded(q);
-	 * 
-	 * if (allTarget) { targetAps = null; } else { List<Consent> consents =
-	 * Feature_AccountQuery.getConsentsForQuery(q); targetAps = new
-	 * HashSet<MidataId>(); if (Feature_AccountQuery.mainApsIncluded(q))
-	 * targetAps.add(q.getApsId()); for (Consent consent : consents)
-	 * targetAps.add(consent._id); } }
-	 * 
-	 * List<DBRecord> result = Collections.emptyList();
-	 * 
-	 * if (targetAps != null && targetAps.isEmpty()) {
-	 * AccessLog.logEnd("end index query no target APS"); return result; }
-	 * 
-	 * 
-	 * IndexUse myAccess = parse(pseudo, q.getRestriction("format"),
-	 * indexQueryParsed);
-	 * 
-	 * long afterPrepareTime = System.currentTimeMillis();
-	 * 
-	 * Collection<IndexMatch> matches = myAccess.query(q, targetAps);
-	 * 
-	 * long afterQuery = System.currentTimeMillis();
-	 * 
-	 * Map<MidataId, Set<MidataId>> filterMatches = new HashMap<MidataId,
-	 * Set<MidataId>>(); for (IndexMatch match : matches) { if (targetAps ==
-	 * null || targetAps.contains(match.apsId)) { Set<MidataId> ids =
-	 * filterMatches.get(match.apsId); if (ids == null) { ids = new
-	 * HashSet<MidataId>(); filterMatches.put(match.apsId, ids); }
-	 * ids.add(match.recordId); } }
-	 * 
-	 * Set<String> queryFields = Sets.create("stream", "time", "document",
-	 * "part", "direct", "encryptedData");
-	 * queryFields.addAll(q.getFieldsFromDB());
-	 * 
-	 * for (Map.Entry<MidataId, Set<MidataId>> entry : filterMatches.entrySet())
-	 * { MidataId aps = entry.getKey();
-	 * AccessLog.log("Now processing aps:"+aps.toString());
-	 * 
-	 * AccessContext context = getContextForAps(q, aps); if (context != null) {
-	 * 
-	 * Set<MidataId> ids = entry.getValue();
-	 * 
-	 * if (ids.size() > INDEX_REVERSE_USE) { Query q4 = new Query(q,
-	 * CMaps.map(), aps, context); List<DBRecord> unindexed = next.query(q4);
-	 * int size = unindexed.size(); if (size > 0) { result =
-	 * QueryEngine.modifyable(result); for (DBRecord candidate : unindexed) {
-	 * candidate.consentAps = aps; if (ids.contains(candidate._id))
-	 * result.add(candidate); } }
-	 * AccessLog.log("add unindexed ="+unindexed.size());
-	 * //result.addAll(unindexed); } else { Map<String, Object> readRecs = new
-	 * HashMap<String, Object>(); boolean add = false; boolean directQuery =
-	 * true; if (ids.size() > 5) { Map<String, Object> props = new
-	 * HashMap<String, Object>(); props.putAll(q.getProperties());
-	 * props.put("streams", "only"); props.put("owner", "self"); List<DBRecord>
-	 * matchStreams = next.query(new Query(props, Sets.create("_id"),
-	 * q.getCache(), aps, context));
-	 * AccessLog.log("index query streams "+matchStreams.size()+" matches."); if
-	 * (matchStreams.isEmpty()) directQuery = false; else { Set<MidataId>
-	 * streams = new HashSet<MidataId>(); for (DBRecord r : matchStreams)
-	 * streams.add(r._id); readRecs.put("stream", streams); } if
-	 * (!aps.equals(q.getCache().getAccountOwner())) add = true; }
-	 * readRecs.put("_id", ids); //Deleted records may be needed if history
-	 * version is queried! //readRecs.put("encryptedData", QueryEngine.NOTNULL);
-	 * 
-	 * int directSize = 0; if (directQuery) { long time =
-	 * System.currentTimeMillis(); List<DBRecord> partresult =
-	 * DBRecord.getAllList(readRecs, queryFields);
-	 * AccessLog.log("db time:"+(System.currentTimeMillis() - time));
-	 * 
-	 * Query q3 = new Query(q, CMaps.map("strict", "true"), aps, context);
-	 * partresult = Feature_Prefetch.lookup(q3, partresult, next); for (DBRecord
-	 * record : partresult) record.consentAps = aps; result =
-	 * QueryEngine.combine(result, partresult); directSize = partresult.size();
-	 * }
-	 * 
-	 * if (add) { Query q2 = new Query(q,
-	 * CMaps.map(q.getProperties()).map("_id", ids), aps, context);
-	 * List<DBRecord> additional = next.query(q2); for (DBRecord record :
-	 * additional) record.consentAps = aps; result = QueryEngine.combine(result,
-	 * additional);
-	 * AccessLog.log("looked up directly="+directSize+" additionally="
-	 * +additional.size()); } else {
-	 * AccessLog.log("looked up directly="+directSize); }
-	 * 
-	 * } } } long endTime = System.currentTimeMillis();
-	 * 
-	 * AccessLog.log("index query found "+matches.size()+" matches, "+result.
-	 * size()+" in correct aps.");
-	 * 
-	 * myAccess.revalidate(q.getCache().getExecutor(), result);
-	 * 
-	 * long afterRevalidateTime = System.currentTimeMillis();
-	 * 
-	 * AccessLog.logBegin("start to look for new entries"); if (targetAps !=
-	 * null) { for (MidataId id : targetAps) { long v = myAccess.version(id);
-	 * 
-	 * AccessContext context = getContextForAps(q, id); if (context != null) {
-	 * if (context instanceof ConsentAccessContext && ((ConsentAccessContext)
-	 * context).getConsent().dataupdate <= v) continue; List<DBRecord> add; add
-	 * = QueryEngine.filterByDataQuery(next.query(new Query(q,
-	 * CMaps.mapPositive("updated-after", v), id, context)), indexQueryParsed,
-	 * null);
-	 * AccessLog.log("found new updated entries aps="+id+": "+add.size());
-	 * result = QueryEngine.combine(result, add); if (v>0) { add =
-	 * QueryEngine.filterByDataQuery(next.query(new Query(q,
-	 * CMaps.mapPositive("shared-after", v), id, context)), indexQueryParsed,
-	 * null); AccessLog.log("found new shared entries aps="+id+": "+add.size());
-	 * result = QueryEngine.combine(result, add); } } } } else { long v =
-	 * myAccess.version(null); //AccessLog.log("vx="+v); List<DBRecord> add; add
-	 * = QueryEngine.filterByDataQuery(next.query(new Query(q,
-	 * CMaps.mapPositive("updated-after", v ))), indexQueryParsed, null);
-	 * AccessLog.log("found new updated entries: "+add.size()); result =
-	 * QueryEngine.combine(result, add); if (v > 0) { add =
-	 * QueryEngine.filterByDataQuery(next.query(new Query(q,
-	 * CMaps.mapPositive("shared-after", v))), indexQueryParsed, null);
-	 * AccessLog.log("found new shared entries: "+add.size()); result =
-	 * QueryEngine.combine(result, add); } }
-	 * AccessLog.logEnd("end to look for new entries"); long endTime2 =
-	 * System.currentTimeMillis();
-	 * 
-	 * AccessLog.logEnd("end index query "+result.size()
-	 * +" matches. timePrepare="+(afterPrepareTime-startTime)+" exec="+(
-	 * afterQuery-afterPrepareTime)+" postLookup="+(endTime-afterQuery)
-	 * +" revalid="+(afterRevalidateTime-endTime)+" old="+(endTime2-
-	 * afterRevalidateTime)); return result;
-	 * 
-	 * 
-	 * } else return next.query(q); }
-	 */
+	
 
 	IndexUse parse(IndexPseudonym pseudo, Set<String> format, Condition indexQuery) throws InternalServerException {
 		if (indexQuery instanceof AndCondition) {
@@ -536,7 +375,7 @@ public class Feature_Indexes extends Feature {
 
 		void revalidate(MidataId executor, List<DBRecord> result) throws AppException;
 
-		long version(MidataId aps);
+		long version(MidataId aps) throws InternalServerException;
 	}
 
 	class IndexAccess implements IndexUse {
@@ -595,7 +434,7 @@ public class Feature_Indexes extends Feature {
 		
 		public int getCoverage() throws AppException {
 			if (index == null) prepare();
-			return root.getEstimatedIndexCoverage(condition);
+			return root.getEstimatedIndexCoverage(new Lookup(condition));
 		}
 		
 		public void dontuse() {
@@ -634,7 +473,7 @@ public class Feature_Indexes extends Feature {
 			IndexManager.instance.revalidate(result, executor, pseudo, root, revalidationQuery, condition);
 		}
 
-		public long version(MidataId aps) {
+		public long version(MidataId aps) throws InternalServerException {
 			if (root != null && index != null) {
 				if (aps == null)
 					return root.getAllVersion();
@@ -694,7 +533,7 @@ public class Feature_Indexes extends Feature {
 				part.revalidate(executor, result); 
 		}
 
-		public long version(MidataId aps) {
+		public long version(MidataId aps) throws InternalServerException {
 			long r = -1;
 			for (IndexUse part : parts) {
 				long v = part.version(aps);
@@ -735,7 +574,7 @@ public class Feature_Indexes extends Feature {
 			// for (IndexUse part : parts) part.revalidate(result);
 		}
 
-		public long version(MidataId aps) {
+		public long version(MidataId aps) throws InternalServerException {
 			long r = -1;
 			for (IndexUse part : parts) {
 				long v = part.version(aps);
@@ -748,7 +587,7 @@ public class Feature_Indexes extends Feature {
 		}
 	}
 
-	class ContextComparator implements Comparator<AccessContext> {
+	static class ContextComparator implements Comparator<AccessContext> {
 
 		@Override
 		public int compare(AccessContext o1, AccessContext o2) {
