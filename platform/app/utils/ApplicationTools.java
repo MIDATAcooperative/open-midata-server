@@ -159,7 +159,7 @@ public class ApplicationTools {
 		linkMobileConsentWithExecutorAccount(executor, serviceInstance.executorAccount, appInstance._id);
 
 		//appInstance.status = ConsentStatus.ACTIVE;		
-				
+		SubscriptionManager.activateSubscriptions(serviceInstance.executorAccount, app, appInstance._id, true);	
 		// protokoll app installation
 		UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.INSTALL);
 		
