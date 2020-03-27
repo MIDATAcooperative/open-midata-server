@@ -129,7 +129,7 @@ public class SubscriptionData extends Model {
 		Model.set(SubscriptionData.class, collection, id, "active", false);
 	}
 	
-	public void disable() throws InternalServerException { 
+	public void disable() throws InternalServerException {		
 		setOff(this._id);
 	}
 	

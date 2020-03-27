@@ -151,7 +151,7 @@ public class SubscriptionManager {
 	
 	public static void deactivateSubscriptions(MidataId userId, Plugin app, MidataId currentlyDeactivating) throws AppException {
 	  AccessLog.log("deactiveSubscription: user="+userId+" plugin="+app._id+" instance="+currentlyDeactivating);
-	  if (app.type.equals("mobile") || app.type.equals("service")) {
+	  if (app.type.equals("mobile") || app.type.equals("service") || app.type.equals("analyzer") || app.type.equals("external")) {
 	    Set<MobileAppInstance> mais = MobileAppInstance.getByApplicationAndOwner(app._id, userId, Sets.create("_id", "status"));
 	    for (MobileAppInstance mai : mais) {
 		    if (mai.status.equals(ConsentStatus.ACTIVE) && !mai._id.equals(currentlyDeactivating)) return;

@@ -217,6 +217,15 @@ public class AutoRun extends APIController {
 		
 	}
 	
+	public static class StartIntradayImport implements Serializable {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 9140583433375781798L;
+		
+	}
+	
 	public static class SendEndReport implements Serializable {
 
 		/**
@@ -357,6 +366,7 @@ public class AutoRun extends APIController {
 		private int numberSuccess = 0;
 		private int numberFailure = 0;
 		private static Cancellable importer;
+		private static Cancellable intradayImporter;
 		private static Cancellable endReport;
 		private static Cancellable speedControl;
 		
@@ -408,6 +418,7 @@ public class AutoRun extends APIController {
 			super.postStop();
 			
 			importer.cancel();
+			intradayImporter.cancel();
 			if (speedControl != null) speedControl.cancel();
 			if (endReport != null) endReport.cancel();
 		}
@@ -423,7 +434,12 @@ public class AutoRun extends APIController {
 	                Duration.ofHours(24),
 	                manager, new StartImport(),
 	                Instances.system().dispatcher(), null);
-						
+				
+			intradayImporter = getContext().system().scheduler().schedule(
+	                Duration.ofSeconds(nextExecution30InSeconds()),
+	                Duration.ofMinutes(30),
+	                manager, new StartIntradayImport(),
+	                Instances.system().dispatcher(), null);
 		}
 
 
@@ -431,6 +447,7 @@ public class AutoRun extends APIController {
 		public Receive createReceive() {
 		    return receiveBuilder()
 		      .match(StartImport.class, this::startImport)
+		      .match(StartIntradayImport.class, this::startIntradayImport)
 		      .match(ImportResult.class, this::processResult)
 		      .match(MessageResponse.class, this::processResultNew)
 		      .match(SendEndReport.class, this::reportEnd)
@@ -441,6 +458,11 @@ public class AutoRun extends APIController {
 		public void startImport(StartImport message) throws Exception {
 			
 			if (!reportSend) reportEnd();
+			
+			if (speedControl != null) {
+				speedControl.cancel();
+				speedControl = null;
+			}
 			
 			startTime = 0;
 			startRemoveUnlinkedFiles = 0;
@@ -541,6 +563,59 @@ public class AutoRun extends APIController {
 
 		}
 		
+public void startIntradayImport(StartIntradayImport message) throws Exception {
+			if (autoImportsIt != null || datasIt != null) return;
+						
+			startTime = 0;
+			startRemoveUnlinkedFiles = 0;
+			startCreateDatabaseStats = 0;
+			startAutoimport = 0;
+			endScheduling = 0;
+			countUnlinkedFiles = 0;
+			errorCount = 0;
+			countOldImports = 0;
+			countNewImports = 0;
+			openRecoveries = 0;
+			numberSuccess = 0;
+			numberFailure = 0;
+			isSlow = false;
+			countSlow = 0;
+			reportSend = true;
+			handle = null;
+			datas = null;
+			datasIt = null;
+			autoImports = null;
+			autoImportsIt = null;
+		    done = null;
+			errors = new StringBuffer();
+			
+			try {
+								
+				datas = SubscriptionData.getAllActiveFormat("time/30", SubscriptionData.ALL);
+				datasIt = datas.iterator();
+				done = new HashSet<MidataId>();
+				countNewImports = datas.size();
+								
+				speedControl = getContext().system().scheduler().schedule(Duration.ofSeconds(10),
+		                Duration.ofSeconds(10),
+		                manager, new ImportTick(),
+		                Instances.system().dispatcher(), null);	
+				
+				for (int i=0;i<PARALLEL;i++) {
+					importTick();
+				}
+				
+				AccessLog.log("Done scheduling new autoimport size="+datas.size());
+									
+			} catch (Exception e) {
+				ErrorReporter.report("Autorun-Service", null, e);	
+				throw e;
+			} finally {
+				ServerTools.endRequest();				
+			}
+
+		}
+		
 		public void importTick(ImportTick msg) {
 						
 			if (!isSlow) { isSlow = true;return; }				
@@ -555,7 +630,7 @@ public class AutoRun extends APIController {
 		
 		public boolean importTick() {
 			boolean foundone = false;
-			if (autoImportsIt.hasNext()) {
+			if (autoImportsIt != null && autoImportsIt.hasNext()) {
 				Space space = autoImportsIt.next();
 				MidataId autorunner = RuntimeConstants.instance.autorunService;
 				
@@ -656,6 +731,13 @@ public class AutoRun extends APIController {
 				nextExecution(hour, minute)
 				).getSeconds();
 	}
+	
+	public static int nextExecution30InSeconds(){
+		return Seconds.secondsBetween(
+				new DateTime(),
+				nextExecution30()
+				).getSeconds();
+	}
 
 	private static DateTime nextExecution(int hour, int minute){
 		DateTime next = new DateTime()
@@ -667,5 +749,16 @@ public class AutoRun extends APIController {
 		return (next.isBeforeNow())
 				? next.plusHours(24)
 						: next;
+	}
+	
+	private static DateTime nextExecution30(){
+		DateTime next = new DateTime()		
+		.withMinuteOfHour(15)
+		.withSecondOfMinute(0)
+		.withMillisOfSecond(0);
+
+		return (next.isBeforeNow())
+				? (next.plusMinutes(30).isBeforeNow() ? next.plusMinutes(60) : next.plusMinutes(30) ) 
+				: next;
 	}
 }
