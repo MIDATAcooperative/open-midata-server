@@ -123,7 +123,8 @@ angular.module('portal')
 		
 		if (! $scope.myform2.$valid) return;
 		
-		$scope.registration.user = $scope.registration._id;									
+		$scope.registration.user = $scope.registration._id;
+		if ($scope.registration.mobile === "") $scope.registration.mobile = undefined;
 		$scope.status.doAction("changeAddress", users.updateAddress({ user : $scope.registration._id, authType : $scope.registration.authType, mobile : $scope.registration.mobile, emailnotify : $scope.registration.emailnotify })).
 		then(function(data) { 
 			$scope.retry();

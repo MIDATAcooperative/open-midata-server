@@ -116,7 +116,8 @@ public class AccessLog {
 	 */
 	public static void newRequest() {
 		if (logToFile) {
-		  Logger.debug(getReport());
+		  String report = getReport();
+		  if (report.length()>0) Logger.debug(report);
 		}
 		ident.set(0);
 		LogContext context = msgs.get();

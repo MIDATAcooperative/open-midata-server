@@ -37,6 +37,7 @@ import models.enums.ConsentStatus;
 import models.enums.MessageChannel;
 import models.enums.MessageReason;
 import models.enums.PluginStatus;
+import models.enums.UserRole;
 import models.enums.UserStatus;
 import play.libs.ws.WSRequest;
 import play.libs.ws.WSResponse;
@@ -223,16 +224,22 @@ public class SubscriptionProcessor extends AbstractActor {
 			return true;
 		}
 		
-		User user = User.getById(subscription.owner, Sets.create("status", "role", "language", "developer"));
-		//System.out.println("prcApp4");
-		if (user==null || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.BLOCKED)) {
-			subscription.disable();
-			return false;
+		User user = null;
+		
+		if (!plugin.type.equals("analyzer") && !plugin.type.equals("external")) {
+			user = User.getById(subscription.owner, Sets.create("status", "role", "language", "developer"));
+			//System.out.println("prcApp4");
+			if (user==null || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.BLOCKED)) {
+				subscription.disable();
+				return false;
+			}
 		}
         final ActorRef sender = getSender();						
 		SpaceToken tk = null;
-		if (plugin.type.equals("mobile") || plugin.type.equals("service")) {
-			Set<MobileAppInstance> mais = MobileAppInstance.getByApplicationAndOwner(plugin._id, user._id, Sets.create("status"));
+		if (plugin.type.equals("mobile") || plugin.type.equals("service") || plugin.type.equals("analyzer") || plugin.type.equals("external")) {
+			AccessLog.log("RIGHT PATH");
+			System.out.println("RIGHT PATH "+plugin.name);
+			Set<MobileAppInstance> mais = MobileAppInstance.getByApplicationAndOwner(plugin._id, subscription.owner, Sets.create("status"));
 			if (mais.isEmpty()) return false;
 			MidataId appInstanceId = null;
 			for (MobileAppInstance mai : mais) {
@@ -242,8 +249,8 @@ public class SubscriptionProcessor extends AbstractActor {
 			//AccessLog.log("HANDLE="+handle);
 
 			if (subscription.app == null) throw new NullPointerException(); 
-			tk = new SpaceToken(handle, appInstanceId, subscription.owner, user.getRole(), null, subscription.app, subscription.owner);			
-			//AccessLog.log("HANDLEPOST="+tk.handle+" space="+tk.spaceId.toString()+" app="+tk.pluginId);
+			tk = new SpaceToken(handle, appInstanceId, subscription.owner, user != null ? user.getRole() : UserRole.ANY, null, subscription.app, subscription.owner);			
+			AccessLog.log("HANDLEPOST="+tk.handle+" space="+tk.spaceId.toString()+" app="+tk.pluginId);
 			
 			runProcess(getSender(), plugin, triggered, subscription, user, tk.encrypt(), endpoint);
 		} else if (plugin.type.equals("oauth2")) {
@@ -259,11 +266,12 @@ public class SubscriptionProcessor extends AbstractActor {
 						final String token = tk.encrypt();
 						System.out.println("NEW OAUTH2 - 3");
 						Plugin plugin2 = Plugin.getById(plugin._id, Sets.create("type", "filename", "name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret", "tokenExchangeParams"));
+						final User user1 = user;
 						Plugins.requestAccessTokenOAuth2FromRefreshToken(handle, subscription.owner, plugin2, subscription.instance.toString(), oauthmeta.toMap()).thenAcceptAsync(success1 -> {
 							    boolean success = (Boolean) success1;
 								if (success) {
-									System.out.println("NEW OAUTH2 - 4");
-									runProcess(sender, plugin, triggered, subscription, user, token, endpoint);
+									System.out.println("NEW OAUTH2 - 4");							
+									runProcess(sender, plugin, triggered, subscription, user1, token, endpoint);
 								} else {
 									System.out.println("NEW OAUTH2 - 4B");
 									sender.tell(new MessageResponse("OAuth 2 failed",-1, plugin.filename), getSelf());	
@@ -293,7 +301,7 @@ public class SubscriptionProcessor extends AbstractActor {
 		try {
 		String cmd = endpoint.substring("node://".length());
 		String visPath =  InstanceConfig.getInstance().getConfig().getString("visualizations.path")+"/"+plugin.filename+"/"+cmd;
-		final String lang = user.language != null ? user.language : InstanceConfig.getInstance().getDefaultLanguage();
+		final String lang = (user != null && user.language != null) ? user.language : InstanceConfig.getInstance().getDefaultLanguage();
 		final String id = triggered.getResourceId() != null ? triggered.getResourceId().toString() : "-";
 		final String nodepath = InstanceConfig.getInstance().getConfig().getString("node.path");
 		boolean testing = InstanceConfig.getInstance().getInstanceType().getDebugFunctionsAvailable() && (plugin.status.equals(PluginStatus.DEVELOPMENT) || plugin.status.equals(PluginStatus.BETA));

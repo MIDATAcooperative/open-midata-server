@@ -317,3 +317,18 @@
 {"_id":{"$oid":"5e186f3eaed6450cb19b1b11"},"system":"http://midata.coop","code":"activities/photo-count","display":"Photos posted","content":"activities/photo-count"}
 {"_id":{"$oid":"5e2e9000aed64524b3709d31"},"system":"http://midata.coop","code":"activities/route","display":"Route","content":"activities/route"}
 {"_id":{"$oid":"5e43b800aed6450f3e83301a"},"system":"http://midata.coop","code":"activities/overview","display":"Activity Overview","content":"activities/overview"}
+{"_id":{"$oid":"5e7dc556aed6451109138bc5"},"system":"http://snomed.info/sct","code":"49727002","display":"Cough (finding)","content":"snomed/49727002"}
+{"_id":{"$oid":"5e7dc556aed6451109138bc6"},"system":"http://snomed.info/sct","code":"62315008","display":"Diarrhea (finding)","content":"snomed/62315008"}
+{"_id":{"$oid":"5e7dc556aed6451109138bc7"},"system":"http://snomed.info/sct","code":"84229001","display":"Fatigue (finding)","content":"snomed/84229001"}
+{"_id":{"$oid":"5e7dc622aed6451109138bcb"},"system":"http://snomed.info/sct","code":"25064002","display":"Headache (finding)","content":"snomed/25064002"}
+{"_id":{"$oid":"5e7dc622aed6451109138bcc"},"system":"http://snomed.info/sct","code":"44169009","display":"Loss of sense of smell (finding)","content":"snomed/44169009"}
+{"_id":{"$oid":"5e7dc622aed6451109138bcd"},"system":"http://snomed.info/sct","code":"422587007","display":"Nausea (finding)","content":"snomed/422587007"}
+{"_id":{"$oid":"5e7dc687aed6451109138bd0"},"system":"http://snomed.info/sct","code":"162397003","display":"Pain in throat (finding)","content":"snomed/162397003"}
+{"_id":{"$oid":"5e7dc687aed6451109138bd1"},"system":"http://snomed.info/sct","code":"161941007","display":"Dyspnea at rest (finding)","content":"snomed/161941007"}
+{"_id":{"$oid":"5e7e14fcaed64522b6270143"},"system":"http://midata.coop","code":"project-findings-reported","display":"Project Findings Reported","content":"project-findings-reported"}
+{"_id":{"$oid":"5e7e1539aed64522b6270145"},"system":"http://midata.coop","code":"project-panels-reported","display":"Project Panels Reported","content":"project-panels-reported"}
+{"_id":{"$oid":"5e7e1565aed64522b6270147"},"system":"http://midata.coop","code":"project-participant-count","display":"Project Participant Count","content":"project-participant-count"}
+{"_id":{"$oid":"5e7e26e3aed64522b627017a"},"system":"http://snomed.info/sct","code":"90834002","display":"Pain in limb (finding)","content":"snomed/90834002"}
+{"_id":{"$oid":"5e7e271daed64522b627017c"},"system":"http://snomed.info/sct","code":"267036007","display":"Dyspnea (finding)","content":"snomed/267036007"}
+{"_id":{"$oid":"5e7e2815aed64522b627017d"},"system":"http://snomed.info/sct","code":"60845006","display":"Dyspnea on exertion (finding)","content":"snomed/267036007"}
+{"_id":{"$oid":"5e7e2885aed64522b627017f"},"system":"http://loinc.org","code":"89196-0","display":"Patient reported outcome measure panel","content":"loinc/89196-0"}

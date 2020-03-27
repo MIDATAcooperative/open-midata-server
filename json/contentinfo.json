@@ -298,3 +298,17 @@
 {"_id":{"$oid":"5e186f3eaed6450cb19b1b10"},"content":"activities/photo-count","defaultCode":"http://midata.coop activities/photo-count","security":"MEDIUM","label":{"de":"gepostete Fotos","en":"Photos posted"}}
 {"_id":{"$oid":"5e2e9000aed64524b3709d30"},"content":"activities/route","defaultCode":"http://midata.coop activities/route","security":"MEDIUM","label":{"en":"Route"}}
 {"_id":{"$oid":"5e43b800aed6450f3e833019"},"content":"activities/overview","defaultCode":"http://midata.coop activities/overview","security":"MEDIUM","label":{"en":"Activity Overview"}}
+{"_id":{"$oid":"5e7dc556aed6451109138bc2"},"content":"snomed/49727002","defaultCode":"http://snomed.info/sct 49727002","security":"MEDIUM","label":{"en":"Cough"},"resourceType":"fhir/Observation"}
+{"_id":{"$oid":"5e7dc556aed6451109138bc3"},"content":"snomed/62315008","defaultCode":"http://snomed.info/sct 62315008","security":"MEDIUM","label":{"en":"Diarrhea"},"resourceType":"fhir/Observation"}
+{"_id":{"$oid":"5e7dc556aed6451109138bc4"},"content":"snomed/84229001","defaultCode":"http://snomed.info/sct 84229001","security":"MEDIUM","label":{"en":"Fatigue"},"resourceType":"fhir/Observation"}
+{"_id":{"$oid":"5e7dc622aed6451109138bc8"},"content":"snomed/25064002","defaultCode":"http://snomed.info/sct 25064002","security":"MEDIUM","label":{"en":"Headache"},"resourceType":"fhir/Observation"}
+{"_id":{"$oid":"5e7dc622aed6451109138bc9"},"content":"snomed/44169009","defaultCode":"http://snomed.info/sct 44169009","security":"MEDIUM","label":{"en":"Loss of sense of smell"},"resourceType":"fhir/Observation"}
+{"_id":{"$oid":"5e7dc622aed6451109138bca"},"content":"snomed/422587007","defaultCode":"http://snomed.info/sct 422587007","security":"MEDIUM","label":{"en":"Nausea"},"resourceType":"fhir/Observation"}
+{"_id":{"$oid":"5e7dc687aed6451109138bce"},"content":"snomed/162397003","defaultCode":"http://snomed.info/sct 162397003","security":"MEDIUM","label":{"en":"Pain in throat"},"resourceType":"fhir/Observation"}
+{"_id":{"$oid":"5e7dc687aed6451109138bcf"},"content":"snomed/161941007","defaultCode":"http://snomed.info/sct 161941007","security":"MEDIUM","label":{"en":"Dyspnea at rest"},"resourceType":"fhir/Observation"}
+{"_id":{"$oid":"5e7e14fbaed64522b6270142"},"content":"project-findings-reported","defaultCode":"http://midata.coop project-findings-reported","security":"MEDIUM","label":{"en":"Project Findings Reported"},"resourceType":"fhir/Observation"}
+{"_id":{"$oid":"5e7e1539aed64522b6270144"},"content":"project-panels-reported","defaultCode":"http://midata.coop project-panels-reported","security":"MEDIUM","label":{"en":"Project Panels Reported"},"resourceType":"fhir/Observation"}
+{"_id":{"$oid":"5e7e1564aed64522b6270146"},"content":"project-participant-count","defaultCode":"http://midata.coop project-participant-count","security":"MEDIUM","label":{"en":"Project Participant Count"},"resourceType":"fhir/Observation"}
+{"_id":{"$oid":"5e7e26e3aed64522b6270179"},"content":"snomed/90834002","defaultCode":"http://snomed.info/sct 90834002","security":"MEDIUM","label":{"en":"Pain in limb"},"resourceType":"fhir/Observation"}
+{"_id":{"$oid":"5e7e271daed64522b627017b"},"content":"snomed/267036007","defaultCode":"http://snomed.info/sct 267036007","security":"MEDIUM","label":{"en":"Dyspnea"},"resourceType":"fhir/Observation"}
+{"_id":{"$oid":"5e7e2885aed64522b627017e"},"content":"loinc/89196-0","defaultCode":"http://loinc.org 89196-0","security":"MEDIUM","label":{"en":"Patient reported outcome measure panel"},"resourceType":"fhir/Composition"}
