@@ -126,6 +126,9 @@ public class ApplicationTools {
 		targetUsers.add(serviceInstance.managerAccount);
 		targetUsers.add(serviceInstance.executorAccount);
 		targetUsers.add(appInstance._id);
+		if (serviceInstance.endpoint != null && serviceInstance.endpoint.length()>0) {
+			targetUsers.add(RuntimeConstants.instance.publicUser);
+		}
 		RecordManager.instance.shareAPS(appInstance._id, null, executor, targetUsers);			
 		
 		// Write phrase into APS *
@@ -139,7 +142,9 @@ public class ApplicationTools {
 		
 		if (serviceInstance.linkedStudy != null) query.put("target-study", serviceInstance.linkedStudy.toString());
 		if (serviceInstance.linkedStudyGroup != null) query.put("target-study-group", serviceInstance.linkedStudyGroup);			
-		if (serviceInstance.linkedStudy != null) query.put("link-study", serviceInstance.linkedStudy.toString());		
+		if (serviceInstance.linkedStudy != null) query.put("link-study", serviceInstance.linkedStudy.toString());
+		
+		if (serviceInstance.studyRelatedOnly) query.put("study-related", "true");
 
 		appInstance.set(appInstance._id, "sharingQuery", query);
 		RecordManager.instance.shareByQuery(executor, serviceInstance._id, appInstance._id, appInstance.sharingQuery);
@@ -158,8 +163,10 @@ public class ApplicationTools {
 		// Link with executor account
 		linkMobileConsentWithExecutorAccount(executor, serviceInstance.executorAccount, appInstance._id);
 
-		//appInstance.status = ConsentStatus.ACTIVE;		
-		SubscriptionManager.activateSubscriptions(serviceInstance.executorAccount, app, appInstance._id, true);	
+		//appInstance.status = ConsentStatus.ACTIVE;	
+		if (!app.type.equals("endpoint")) {
+		  SubscriptionManager.activateSubscriptions(serviceInstance.executorAccount, app, appInstance._id, true);
+		}
 		// protokoll app installation
 		UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.INSTALL);
 		
@@ -169,20 +176,33 @@ public class ApplicationTools {
 		return appInstance;
 	}
 
-	public static ServiceInstance createServiceInstance(MidataId executor, Plugin app, Study study, String group) throws AppException {
+	public static ServiceInstance createServiceInstance(MidataId executor, Plugin app, Study study, String group, String endpoint, boolean studyRelatedOnly) throws AppException {
 		AccessLog.log("create service instance");
 
-		if (!app.type.equals("analyzer")) throw new InternalServerException("error.internal", "Wrong app type");
-
+		if (!app.type.equals("analyzer") && !app.type.equals("endpoint")) throw new InternalServerException("error.internal", "Wrong app type");
+        if (study.anonymous && !app.pseudonymize) throw new BadRequestException("error.invalid.anonymous", "Aggregator may read unpseudonymized data");
+		
+        if (app.type.equals("endpoint")) {
+        	if (endpoint == null || endpoint.trim().length()==0) throw new BadRequestException("error.missing.endpoint", "Endpoint missing");
+        	ServiceInstance old = ServiceInstance.getByEndpoint(endpoint, ServiceInstance.ALL);
+        	if (old != null) throw new BadRequestException("error.exists.endpoint", "Endpoint already exists.");
+        }
+        
 		ServiceInstance si = new ServiceInstance();
 		si._id = new MidataId();
 		si.appId = app._id;
+		si.endpoint = endpoint;
+		si.studyRelatedOnly = studyRelatedOnly;
 		si.linkedStudy = study._id;
 		si.linkedStudyGroup = group;
 		si.managerAccount = study._id;
 		si.status = UserStatus.ACTIVE;
 		si.executorAccount = study._id;
-		si.name = study.name + (group != null ? (" - " + group) : "");
+		if (app.type.equals("endpoint")) {
+		  si.name = study.name + (group != null ? (" - " + group) : "")+" -> /opendata/"+endpoint+"/fhir";
+		} else {
+		  si.name = study.name + (group != null ? (" - " + group) : "");
+		}
 		si.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(si._id, null);
 		si.add();
 

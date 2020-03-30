@@ -31,7 +31,8 @@ angular.module('portal')
 	    { value : "oauth2", label : "OAuth 2 Import" },
 		{ value : "mobile", label : "Mobile App" },
 		{ value : "external", label : "External Service" },
-		{ value : "analyzer", label : "Project analyzer" }
+		{ value : "analyzer", label : "Project analyzer" },
+		{ value : "endpoint", label : "FHIR endpoint" }
 	];
 	$scope.tags = [
 	    "Analysis", "Import", "Planning", "Protocol"
@@ -117,7 +118,7 @@ angular.module('portal')
 		}
 		
 		if ($scope.app.targetUserRole!="RESEARCH") $scope.app.noUpdateHistory=false;
-		if ($scope.app.type!="analyzer") $scope.app.pseudonymize=false;
+		if ($scope.app.type!="analyzer" && $scope.app.type!="endpoint") $scope.app.pseudonymize=false;
 		
 		if ($scope.app.developerTeamLoginsStr) {
 		  $scope.app.developerTeamLogins = $scope.app.developerTeamLoginsStr.split(/[ ,]+/);

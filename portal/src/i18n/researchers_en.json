@@ -69,6 +69,8 @@
     "allgroups" : "<All Groups>",
     "plugin" : "Research Application",
     "device" : "Device Code",
+    "endpoint" : "Endpoint name",
+    "only_aggregated" : "Restrict to aggregated data",
     "restrict" : "Restrict read to this group",
     "shareback" : "Application shares data with participant group(s)",
     "add_application_btn" : "Add Research Application",

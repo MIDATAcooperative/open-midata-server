@@ -49,6 +49,8 @@ public class ExecutionInfo {
 	
 	public AccessContext context = null;
 	
+	public String overrideBaseUrl = null;
+	
 	public ExecutionInfo() {}
 	
 	public ExecutionInfo(MidataId executor, UserRole role) throws InternalServerException {
