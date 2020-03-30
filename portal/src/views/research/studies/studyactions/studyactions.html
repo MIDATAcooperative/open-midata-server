@@ -130,7 +130,7 @@
 	       <div ng-show="study.validationStatus == 'VALIDATED'">
 	       <p class="lead" translate="studyactions.aggregator_apps"></p>  
 	       <form name="myform" role="form" class="css-form form-horizontal" novalidate ng-submit="addApplication(myform)">
-	         <p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
+	         <p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert"></p>
 	       
 	         <formrow myid="group" label="Group">
 	           <select ng-model="crit.group" class="form-control" ng-change="changedGroup()" ng-options="group.name as group.name for group in study.groups">
