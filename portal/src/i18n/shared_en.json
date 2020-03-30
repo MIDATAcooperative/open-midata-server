@@ -79,7 +79,7 @@
        "plugin" : "Application is intended for another role",
        "unlock_code" : "Incorrect unlock code",
        "access_query" : "The Data Access Filter must restrict by 'content' or 'group'!",
-       "sharing" : "The Data Access Filter contains data types that are excluded by the project configuration.",
+       "sharing" : "The Data Access Filter may not contain Patient resource. Correct Patient resource is shared automatically.",
        "anonymous" : "A research project can only be anonymous if no one is allowed to access unpseudonymized data.",
        "url" : "Invalid URL",
        "consent_members" : "This consent may only be confirmed once all external persons have joined MIDATA.",
@@ -130,7 +130,8 @@
        "research" : "A research organization with this name already exists.",
        "passcode" : "Please choose a different passcode!",
        "plugin" : "An application with the same name already exists.",
-       "study" : "A research project with this name already exists."
+       "study" : "A research project with this name already exists.",
+       "endpoint" : "An endpoint with this URL already exists"
      },
 
      "blocked" : {
@@ -461,7 +462,8 @@
 	   "oauth2" : "OAuth 2",
 	   "mobile" : "Application (Smartphone, Web)",
 	   "external": "External Service",
-	   "analyzer" : "Project analyzer"
+	   "analyzer" : "Project analyzer",
+	   "endpoint" : "FHIR endpoint"
 	 },
 	 "infos" : {
 	   "SUMMARY" : "Short Summary",

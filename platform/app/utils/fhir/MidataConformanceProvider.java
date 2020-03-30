@@ -16,6 +16,7 @@ public class MidataConformanceProvider  extends ServerCapabilityStatementProvide
 	@Override
 	@Metadata
 	public CapabilityStatement  getServerConformance(HttpServletRequest arg0) {
+		setPublisher("midata.coop");		
 		CapabilityStatement  conformance = super.getServerConformance(arg0);
 				
 		if (doadd) {

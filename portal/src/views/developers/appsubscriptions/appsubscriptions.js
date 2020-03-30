@@ -4,7 +4,7 @@ angular.module('portal')
 	// init
 	$scope.error = null;
 	
-	$scope.triggers = ["fhir_Consent", "fhir_MessageHeader", "fhir_Resource", "time", "init"];
+	$scope.triggers = ["fhir_Consent", "fhir_MessageHeader", "fhir_Resource", "time", "init","time/30m"];
 	$scope.actions = ["rest-hook", "email", "nodejs"];
 	
 	$scope.status = new status(false, $scope);
@@ -25,6 +25,8 @@ angular.module('portal')
 						subscription.trigger = "fhir_Consent";
 					} else if (subscription.format === "time") {
 						subscription.trigger = "time";
+					} else if (subscription.format === "time/30m") {
+						subscription.trigger = "time/30m";
 					} else if (subscription.format === "init") {
 						subscription.trigger = "init";
 					} else {
@@ -74,6 +76,9 @@ angular.module('portal')
                 break;
     		case "time":
     			criteria = "time";
+    			break;
+    		case "time/30m":
+    			criteria = "time/30m";
     			break;
     		case "init":
     			criteria = "init";

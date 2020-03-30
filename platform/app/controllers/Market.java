@@ -169,7 +169,7 @@ public class Market extends APIController {
 				app.type = JsonValidation.getString(json, "type");
 				app.requirements = JsonExtraction.extractEnumSet(json, "requirements", UserFeature.class);
 				app.targetUserRole = JsonValidation.getEnum(json, "targetUserRole", UserRole.class);
-				if (app.type.equals("analyzer")) app.targetUserRole = UserRole.RESEARCH;
+				if (app.type.equals("analyzer") || app.type.equals("endpoint") ) app.targetUserRole = UserRole.RESEARCH;
 				app.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
 				app.resharesData = JsonValidation.getBoolean(json, "resharesData");				
 				app.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
@@ -196,7 +196,7 @@ public class Market extends APIController {
 			}
 			
 			app.noUpdateHistory = JsonValidation.getBoolean(json, "noUpdateHistory");
-			if (app.type.equals("analyzer")) {
+			if (app.type.equals("analyzer") || app.type.equals("endpoint")) {
 				  app.pseudonymize = JsonValidation.getBoolean(json, "pseudonymize");
 			} else app.pseudonymize = false;
 			app.orgName = JsonValidation.getStringOrNull(json, "orgName");
@@ -531,7 +531,7 @@ public class Market extends APIController {
 			JsonValidation.validate(json, "filename", "name", "description", "url");
 		} else if (type.equals("external")) {
 			JsonValidation.validate(json, "filename", "name", "description");
-		} else if (type.equals("analyzer")) {
+		} else if (type.equals("analyzer") || type.equals("endpoint")) {
 			JsonValidation.validate(json, "filename", "name", "description");
 		} else {
 			throw new BadRequestException("error.internal", "Unknown app type.");
@@ -578,7 +578,7 @@ public class Market extends APIController {
 		plugin.tags = JsonExtraction.extractStringSet(json.get("tags"));
 		plugin.requirements = JsonExtraction.extractEnumSet(json, "requirements", UserFeature.class);
 		plugin.targetUserRole = JsonValidation.getEnum(json, "targetUserRole", UserRole.class);
-		if (plugin.type.equals("analyzer")) plugin.targetUserRole = UserRole.RESEARCH;
+		if (plugin.type.equals("analyzer") || plugin.type.equals("endpoint")) plugin.targetUserRole = UserRole.RESEARCH;
 		plugin.defaultSpaceName = JsonValidation.getStringOrNull(json, "defaultSpaceName");
 		plugin.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");
 		plugin.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
@@ -589,7 +589,7 @@ public class Market extends APIController {
 		plugin.predefinedMessages = parseMessages(json);
 		plugin.pluginVersion = System.currentTimeMillis();
 		plugin.noUpdateHistory = JsonValidation.getBoolean(json, "noUpdateHistory");
-		if (plugin.type.equals("analyzer")) {
+		if (plugin.type.equals("analyzer") || plugin.type.equals("endpoint")) {
 			plugin.pseudonymize = JsonValidation.getBoolean(json, "pseudonymize");
 		} else plugin.pseudonymize = false;
 		
@@ -690,7 +690,7 @@ public class Market extends APIController {
 		app.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
 		app.unlockCode = JsonValidation.getStringOrNull(json, "unlockCode");
 		app.noUpdateHistory = JsonValidation.getBoolean(json, "noUpdateHistory");
-		if (app.type.equals("analyzer")) {
+		if (app.type.equals("analyzer") || app.type.equals("endpoint")) {
 			  app.pseudonymize = JsonValidation.getBoolean(json, "pseudonymize");
 		} else app.pseudonymize = false;
 		

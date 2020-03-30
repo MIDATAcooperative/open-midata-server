@@ -44,13 +44,20 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 
 	private Http.Request request;
 	private Map<String, Object> attribs = new HashMap<String, Object>();
+	private String basePath;
 	
 	/**
 	 * Create HttpServletRequest from Play Http.Request
 	 * @param request the play Http.Request
 	 */
-	public PlayHttpServletRequest(Http.Request request) {
+	public PlayHttpServletRequest(Http.Request request, String basePath) {
 	   this.request = request;	
+	   this.basePath = basePath;
+	}
+	
+	public PlayHttpServletRequest(Http.Request request) {
+		this.request = request;	
+		this.basePath = "/fhir";
 	}
 	
 	@Override
@@ -381,7 +388,7 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public String getServletPath() {
-		return "/fhir";//request.uri();
+		return this.basePath;
 	}
 
 	@Override

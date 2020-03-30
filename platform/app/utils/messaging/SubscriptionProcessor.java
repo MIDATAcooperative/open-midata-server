@@ -226,7 +226,7 @@ public class SubscriptionProcessor extends AbstractActor {
 		
 		User user = null;
 		
-		if (!plugin.type.equals("analyzer") && !plugin.type.equals("external")) {
+		if (!plugin.type.equals("analyzer") && !plugin.type.equals("external") && !plugin.type.equals("endpoint")) {
 			user = User.getById(subscription.owner, Sets.create("status", "role", "language", "developer"));
 			//System.out.println("prcApp4");
 			if (user==null || user.status.equals(UserStatus.DELETED) || user.status.equals(UserStatus.BLOCKED)) {

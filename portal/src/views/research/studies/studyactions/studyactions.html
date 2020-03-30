@@ -130,6 +130,8 @@
 	       <div ng-show="study.validationStatus == 'VALIDATED'">
 	       <p class="lead" translate="studyactions.aggregator_apps"></p>  
 	       <form name="myform" role="form" class="css-form form-horizontal" novalidate ng-submit="addApplication(myform)">
+	         <p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
+	       
 	         <formrow myid="group" label="Group">
 	           <select ng-model="crit.group" class="form-control" ng-change="changedGroup()" ng-options="group.name as group.name for group in study.groups">
 	             <option value="" translate="studyactions.allgroups"></option>
@@ -142,6 +144,14 @@
              </formrow>
              <formrow myid="device" label="studyactions.device" ng-if ="crit.plugin.type=='mobile'">
                <input type="text" id="device" name="device"  ng-model="crit.device" class="form-control" required>
+             </formrow>
+             <formrow myid="endpoint" label="studyactions.endpoint" ng-if ="crit.plugin.type=='endpoint'">
+               <input type="text" id="endpoint" name="endpoint"  ng-model="crit.endpoint" class="form-control" required>
+             </formrow>
+              <formrow myid="onlyAggregated" label="studyactions.only_aggregated" ng-if ="crit.plugin.type=='endpoint'">
+               <div class="form-check">                
+                   <input class="form-check-input" type="checkbox" name="onlyAggregated" id="onlyAggregated" ng-model="crit.onlyAggregated">               
+               </div>
              </formrow>
               <formrow myid="shareback" label="studyactions.shareback">
                <div class="form-check">

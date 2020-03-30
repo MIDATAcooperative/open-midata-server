@@ -16,12 +16,17 @@ public class ServiceInstance extends Model {
 	private static final String collection = "serviceinstances";
 	
 	public @NotMaterialized final static Set<String> ALL = 
-			 Sets.create("_id", "name", "appId", "executorAccount", "linkedStudy", "linkedStudyGroup", "managerAccount", "publicKey");
+			 Sets.create("_id", "name", "endpoint", "appId", "executorAccount", "linkedStudy", "linkedStudyGroup", "managerAccount", "publicKey", "studyRelatedOnly", "status");
     
     /** 
      * name of service
     */
     public String name;
+    
+    /**
+     * pubish fhir endpoint 
+     */
+    public String endpoint;
 
     /**
      * id of service application
@@ -42,7 +47,10 @@ public class ServiceInstance extends Model {
      * Name of linked study group
      */
     public String linkedStudyGroup;
-
+    
+    
+    public boolean studyRelatedOnly;
+        
     /**
      * if of user who manages this service instance
      */
@@ -60,6 +68,10 @@ public class ServiceInstance extends Model {
                          
 	public static ServiceInstance getById(MidataId id, Set<String> fields) throws InternalServerException {
 		return Model.get(ServiceInstance.class, collection, CMaps.map("_id", id), fields);
+    }
+	
+	public static ServiceInstance getByEndpoint(String endpoint, Set<String> fields) throws InternalServerException {
+		return Model.get(ServiceInstance.class, collection, CMaps.map("endpoint", endpoint), fields);
     }
     
   public static Set<ServiceInstance> getByManager(MidataId managerId, Set<String> fields) throws InternalServerException {

@@ -19,11 +19,11 @@
 		    <select id="type" name="type" class="form-control" ng-model="app.type" ng-change="requireLogout();" ng-options="type.value as ('enum.plugintype.'+type.value) | translate for type in types" required></select>
 		    <p class="form-text text-muted" translate="manageapp.info.type"></p>
 		  </formrow>
-		  <formrow myid="targetUserRole" label="manageapp.targetUserRole" class="danger-change" ng-if="app.type!='analyzer'">
+		  <formrow myid="targetUserRole" label="manageapp.targetUserRole" class="danger-change" ng-if="app.type!='analyzer' && app.type!='endpoint'">
 		    <select id="targetUserRole" name="targetUserRole" class="form-control" ng-change="requireLogout();" ng-model="app.targetUserRole" ng-options="role.value as ('enum.userrole.'+role.value) | translate for role in targetUserRoles" required></select>
 		    <p class="form-text text-muted" translate="manageapp.info.targetUserRole"></p>
 		  </formrow>		  
-		  <formrow myid="requirements" label="Requirements" class="danger-change" ng-if="app.type!='analyzer'">
+		  <formrow myid="requirements" label="Requirements" class="danger-change" ng-if="app.type!='analyzer' && app.type!='endpoint'">
 		    <div class="form-check" ng-repeat="req in requirements">
 		      <label class="form-check-label">
 		        <input class="form-check-label" type="checkbox" ng-checked="app.requirements.indexOf(req)>=0" ng-click="toggle(app.requirements, req);requireLogout();">
@@ -57,6 +57,7 @@
 		  </formrow>
 		 
 		  <hr>
+		  <div ng-if="app.type!='endpoint' && app.type!='analyzer'">
 		  <formrow myid="x" label="Multi Language Support">
 		    <div class="form-text text-muted">
 		    <span ng-repeat="l in languages">
@@ -77,7 +78,8 @@
 		    <input type="text" id="defaultSpaceName_i18n" name="defaultSpaceName_i18n" class="form-control" placeholder="Tile Name" ng-model="app.i18n[sel.lang].defaultSpaceName">
 		  </formrow>
 		  <hr>		  
-		  <formrow myid="tags" label="Tags" ng-if="app.type!='analyzer'">
+		  </div>
+		  <formrow myid="tags" label="Tags" ng-if="app.type!='analyzer' && app.type!='endpoint'">
 		    <div class="form-check" ng-repeat="tagdef in tags">
 		      <label class="form-check-label">
 		        <input class="form-check-input" type="checkbox" ng-checked="app.tags.indexOf(tagdef)>=0" ng-click="toggle(app.tags, tagdef)">
@@ -115,7 +117,7 @@
 		    </label>
 		    </div>
 		  </formrow>
-		   <formrow myid="pseudonymize" label="manageapp.pseudonymize" ng-if="app.type=='analyzer'">
+		   <formrow myid="pseudonymize" label="manageapp.pseudonymize" ng-if="app.type=='analyzer' || app.type=='endpoint'">
 		    <div class="form-check">
 		    <label class="form-check-label">
 		      <input class="form-check-input" type="checkbox" id="pseudonymize" name="pseudonymize" ng-model="app.pseudonymize" value="true">
@@ -123,7 +125,7 @@
 		    </label>
 		    </div>
 		  </formrow>		
-		  <formrow myid="resharesData" label="Resharing" class="danger-change">
+		  <formrow myid="resharesData" label="Resharing" class="danger-change" ng-if="app.type!='endpoint'">
 		    <div class="form-check">
 		    <label class="form-check-label">
 		      <input class="form-check-input" type="checkbox" id="resharesData" name="resharesData" ng-change="requireLogout();" ng-model="app.resharesData" value="true">
@@ -131,7 +133,7 @@
 		    </label>
 		    </div>
 		  </formrow>
-		   <formrow myid="allowsUserSearch" label="User Search" ng-hide="app.type == 'visualization' || app.type == 'oauth1' || app.type == 'oauth2' || app.type=='analyzer'" class="danger-change">
+		   <formrow myid="allowsUserSearch" label="User Search" ng-hide="app.type == 'visualization' || app.type == 'oauth1' || app.type == 'oauth2' || app.type=='analyzer' || app.type=='endpoint'" class="danger-change">
 		    <div class="form-check">
 		    <label class="form-check-label">
 		      <input class="form-check-input" type="checkbox" id="allowsUserSearch" name="allowsUserSearch" ng-change="requireLogout();" ng-model="app.allowsUserSearch" value="true">
