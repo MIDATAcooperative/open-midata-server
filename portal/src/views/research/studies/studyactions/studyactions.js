@@ -121,7 +121,7 @@ angular.module('portal')
 	
 	$scope.studyId = $state.params.studyId;
 	$scope.crit = { group : "" };
-	$scope.status = new status(true);
+	$scope.status = new status(false, $scope);
 	views.reset();
 	
 	$scope.error = null;
@@ -137,7 +137,7 @@ angular.module('portal')
 			$scope.showKeys = true;		
 		});
 		
-		apps.getApps({ "targetUserRole" : "RESEARCH", type : ["analyzer","visualization","mobile"] }, ["filename", "name","type"])
+		apps.getApps({ "targetUserRole" : "RESEARCH", type : ["analyzer","visualization","mobile","endpoint"] }, ["filename", "name","type"])
 		.then(function(data) {
 			$scope.plugins = data.data;
 		});
@@ -196,7 +196,7 @@ angular.module('portal')
 		if (! myform.$valid) return;
 		
       var c = $scope.crit;		
-	  $scope.status.doAction("addapplication", server.post(jsRoutes.controllers.research.Studies.addApplication($scope.studyId, $scope.group).url, { plugin : c.plugin._id, restrictread : c.restrictread, shareback : c.shareback, device : c.device }))
+	  $scope.status.doAction("addapplication", server.post(jsRoutes.controllers.research.Studies.addApplication($scope.studyId, $scope.group).url, { plugin : c.plugin._id, restrictread : c.restrictread, shareback : c.shareback, device : c.device, onlyAggregated : c.onlyAggregated, endpoint : c.endpoint }))
 		.then(function(result) {
 			$scope.submitted = false;			
 			$scope.updateConsents();

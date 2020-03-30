@@ -20,6 +20,11 @@ PUT     /fhir                                            controllers.FHIR.putRoo
 DELETE  /fhir                                            controllers.FHIR.deleteRoot()
 GET     /test/autorun                                    controllers.AutoRun.run()
 
+OPTIONS /opendata/:project/fhir/*all                     controllers.FHIR.checkPreflightProject(project: String, all)
+GET     /opendata/:project/fhir/*all                     controllers.FHIR.getWithEndpoint(project: String, all)
+OPTIONS /opendata/:project/fhir                          controllers.FHIR.checkPreflightProject(project: String, all="/")
+GET     /opendata/:project/fhir                          controllers.FHIR.getWithEndpoint(project: String, all="/")
+
 # Home page
 
 POST     /api/logout                                          controllers.Application.logout()

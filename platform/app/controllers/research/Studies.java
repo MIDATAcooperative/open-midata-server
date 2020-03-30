@@ -1277,6 +1277,8 @@ public class Studies extends APIController {
 		MidataId pluginId = JsonValidation.getMidataId(json, "plugin");
 		boolean restrictRead = JsonValidation.getBoolean(json, "restrictread");
 		boolean shareBack = JsonValidation.getBoolean(json, "shareback");
+		boolean onlyAggregated = JsonValidation.getBoolean(json, "onlyAggregated");
+		String endpoint = JsonValidation.getStringOrNull(json, "endpoint");
 
 		Plugin plugin = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
 		if (plugin == null)
@@ -1295,9 +1297,9 @@ public class Studies extends APIController {
 		User researcher = User.getById(userId, Sets.create("apps", "password", "firstname", "lastname", "email", "language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode",
 				"accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));
 
-		if (plugin.type.equals("analyzer")) {
+		if (plugin.type.equals("analyzer") || plugin.type.equals("endpoint")) {
 		
-			ServiceInstance si = ApplicationTools.createServiceInstance(userId, plugin, study, group);	
+			ServiceInstance si = ApplicationTools.createServiceInstance(userId, plugin, study, group, endpoint, onlyAggregated);	
 			if (shareBack) {
 
 				if (group == null) {

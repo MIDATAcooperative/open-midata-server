@@ -2,7 +2,9 @@ package controllers;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 
@@ -13,18 +15,24 @@ import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.param.ParamPrefixEnum;
 import models.MidataId;
+import models.MobileAppInstance;
 import models.Plugin;
+import models.ServiceInstance;
+import models.enums.ConsentStatus;
 import models.enums.UsageAction;
 import models.enums.UserRole;
+import models.enums.UserStatus;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import utils.AccessLog;
+import utils.RuntimeConstants;
 import utils.access.EncryptedFileHandle;
 import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
 import utils.auth.PortalSessionToken;
+import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
@@ -57,6 +65,11 @@ public class FHIR extends Controller {
 	 */
 	@MobileCall
 	public Result checkPreflight(String all) {		
+		return ok();
+	}
+	
+	@MobileCall
+	public Result checkPreflightProject(String project, String all) {		
 		return ok();
 	}
 	
@@ -106,7 +119,7 @@ public class FHIR extends Controller {
         	MidataId studyId = MidataId.from(query.get("study"));
         	String studyGroup = (String) query.get("study-group");
         	Plugin plug = Plugin.getById(info.pluginId);
-        	if (plug == null || !plug.type.equals("analyzer")) throw new BadRequestException("error.invalid.plugin", "Wrong plugin type");
+        	if (plug == null || !plug.type.equals("endpoint")) throw new BadRequestException("error.invalid.plugin", "Wrong plugin type");
         	String mode = plug.pseudonymize ? "pseudonymized" : "original";
         	String handle = KeyManager.instance.currentHandle(info.executorId);
         	
@@ -196,6 +209,85 @@ public class FHIR extends Controller {
 		AccessLog.logEnd("end FHIR get request");
 			
 		
+		Stats.finishRequest(request(), String.valueOf(res.getStatus()));
+		if (res.getContentType() != null && res.getResponseWriter() != null) {
+			return status(res.getStatus(), res.getResponseWriter().toString()).as(res.getContentType());		
+		}
+		
+		if (res.getContentType() != null && res.getResponseStream() != null) {		
+			return status(res.getStatus(), res.getResponseStream().toByteArray()).as(res.getContentType());
+		}
+						
+		return status(res.getStatus());
+	}
+	
+	@MobileCall
+	@BodyParser.Of(BodyParser.Raw.class) 
+	public Result getRootWithEndpoint(String endpoint, String all) throws AppException, IOException, ServletException {
+		return getWithEndpoint(endpoint, "/");
+	}
+	
+	@MobileCall
+	@BodyParser.Of(BodyParser.Raw.class) 
+	public Result getWithEndpoint(String endpoint, String all) throws AppException, IOException, ServletException {
+		Stats.startRequest(request());
+		
+		ServiceInstance si = ServiceInstance.getByEndpoint(endpoint, ServiceInstance.ALL);
+		if (si == null || si.status != UserStatus.ACTIVE) return notFound();
+					
+		Set<MobileAppInstance> mi = MobileAppInstance.getByService(si._id, MobileAppInstance.APPINSTANCE_ALL);
+		MobileAppInstance instance = null;
+		for (MobileAppInstance inst : mi) {
+			if (inst.status == ConsentStatus.ACTIVE) instance = inst;
+		}
+		if (instance == null) return notFound();
+		
+		String baseURL = "/opendata/"+si.endpoint+"/fhir";
+		PlayHttpServletRequest req = new PlayHttpServletRequest(request(), baseURL);
+		PlayHttpServletResponse res = new PlayHttpServletResponse(response());
+				
+		ExecutionInfo info = new ExecutionInfo();
+				        
+        KeyManager.instance.login(60000l, false);
+        KeyManager.instance.unlock(RuntimeConstants.instance.publicUser, null);
+        
+		info.executorId = instance._id;
+		info.role = UserRole.ANY;
+		info.overrideBaseUrl = baseURL;
+        
+		if (instance.sharingQuery == null) {
+			instance.sharingQuery = RecordManager.instance.getMeta(RuntimeConstants.instance.publicUser, instance._id, "_query").toMap();
+		}
+		
+		Map<String, Object> appobj = RecordManager.instance.getMeta(RuntimeConstants.instance.publicUser, instance._id, "_app").toMap();
+		if (appobj.containsKey("aliaskey") && appobj.containsKey("alias")) {
+			MidataId alias = new MidataId(appobj.get("alias").toString());
+			byte[] key = (byte[]) appobj.get("aliaskey");
+			if (appobj.containsKey("targetAccount")) {
+				info.executorId = MidataId.from(appobj.get("targetAccount").toString());
+			} else info.executorId = instance.owner;
+			KeyManager.instance.unlock(info.executorId, alias, key);			
+			RecordManager.instance.clearCache();			
+		} else {
+			RecordManager.instance.setAccountOwner(instance._id, instance.owner);
+		}
+		                                                
+		info.ownerId = instance.owner;
+		info.pluginId = instance.applicationId;
+		info.targetAPS = instance._id;
+		info.context = RecordManager.instance.createContextFromApp(info.executorId, instance);
+		ResourceProvider.setExecutionInfo(info);
+										
+        if (info != null && info.pluginId != null) UsageStatsRecorder.protokoll(info.pluginId, UsageAction.GET);		        
+		AccessLog.logBegin("begin FHIR get request: "+req.getRequestURI());
+		switch(getFhirVersion()) {
+		  case 3:servlet_stu3.doGet(req, res);break;
+		  case 4:
+		  default:
+			  servlet_r4.doGet(req, res);break;
+		}
+		AccessLog.logEnd("end FHIR get request");
+					
 		Stats.finishRequest(request(), String.valueOf(res.getStatus()));
 		if (res.getContentType() != null && res.getResponseWriter() != null) {
 			return status(res.getStatus(), res.getResponseWriter().toString()).as(res.getContentType());		

@@ -16,6 +16,7 @@ import ca.uhn.fhir.rest.server.HardcodedServerAddressStrategy;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.RestfulServer;
 import utils.InstanceConfig;
+import utils.auth.ExecutionInfo;
 
 // https://demo.careevolution.com/PDemo/PDemo.html?iss=https://localhost:9000/fhir
 // https://demo.careevolution.com/PDemo/PDemo.html?iss=https://test.midata.coop:9000/fhir
@@ -31,6 +32,9 @@ public class FHIRServlet extends RestfulServer {
     public static Map<String, ResourceProvider> myProviders;
    
     public static String getBaseUrl() {
+    	ExecutionInfo inf = ResourceProvider.info();
+    	if (inf!=null && inf.overrideBaseUrl!=null) return "https://"+InstanceConfig.getInstance().getPlatformServer()+inf.overrideBaseUrl;
+    	
     	return "https://"+InstanceConfig.getInstance().getPlatformServer()+"/fhir";
     }
     /**
@@ -41,8 +45,9 @@ public class FHIRServlet extends RestfulServer {
    @Override
    protected void initialize() throws ServletException {
 	   System.out.println("FHIR Servlet init");
-	   String serverBaseUrl = getBaseUrl();	   
-       setServerAddressStrategy(new HardcodedServerAddressStrategy(serverBaseUrl));
+	   //String serverBaseUrl = getBaseUrl();	
+	   
+       setServerAddressStrategy(new ServerAddressStrategy());
        this.setServerConformanceProvider(new MidataConformanceProvider());
        ResourceProvider.ctx.setNarrativeGenerator(new DefaultThymeleafNarrativeGenerator());       
        

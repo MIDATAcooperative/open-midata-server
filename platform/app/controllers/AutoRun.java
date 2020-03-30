@@ -591,7 +591,7 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 			
 			try {
 								
-				datas = SubscriptionData.getAllActiveFormat("time/30", SubscriptionData.ALL);
+				datas = SubscriptionData.getAllActiveFormat("time/30m", SubscriptionData.ALL);
 				datasIt = datas.iterator();
 				done = new HashSet<MidataId>();
 				countNewImports = datas.size();
@@ -644,7 +644,7 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 					  done.add(data.owner);
 					  foundone = true;
 					  isSlow = false;
-					  processor.tell(new SubscriptionTriggered(data.owner, data.app, "time", null, null, null), getSelf());
+					  processor.tell(new SubscriptionTriggered(data.owner, data.app, data.format, null, null, null), getSelf());
 					  return true;
 				}
 			}			

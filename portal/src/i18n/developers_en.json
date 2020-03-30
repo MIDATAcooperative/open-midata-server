@@ -260,6 +260,7 @@
       "fhir_MessageHeader" : "FHIR message",
       "fhir_Resource" : "Resource changes",
       "time" : "Daily",
+      "time/30m" : "Each 30 minutes",
       "init" : "When added"
     },
     "actions" : {

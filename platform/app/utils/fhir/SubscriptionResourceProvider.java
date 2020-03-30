@@ -375,7 +375,7 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	        	else throw new InvalidRequestException("Not supported subscription criteria.");
 	        } else {
 	        	if (crit.startsWith("time") || crit.startsWith("init")) {
-		          subscriptionData.format=crit.substring(0,4);
+		          subscriptionData.format=crit;
 		          subscriptionData.content = null;
 		        } else {
 	              subscriptionData.format = "fhir/"+crit;
