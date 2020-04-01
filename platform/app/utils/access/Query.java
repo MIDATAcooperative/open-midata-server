@@ -50,12 +50,14 @@ public class Query {
 	private MidataId apsId;		
 	private AccessContext context;
 	private String path;
+	private Query prev;
 
-	public Query(String path, Map<String, Object> properties, Set<String> fields, APSCache cache, MidataId apsId, AccessContext context) throws AppException {
-		this(path, null, properties,fields,cache,apsId,context);
+	public Query(String path, Map<String, Object> properties, Set<String> fields, APSCache cache, MidataId apsId, AccessContext context, Query prev) throws AppException {
+		this(path, null, properties,fields,cache,apsId,context,prev);
 	}
-	public Query(String path, String extra, Map<String, Object> properties, Set<String> fields, APSCache cache, MidataId apsId, AccessContext context) throws AppException {
+	public Query(String path, String extra, Map<String, Object> properties, Set<String> fields, APSCache cache, MidataId apsId, AccessContext context, Query prev) throws AppException {
 		this.path = path;
+		this.prev = prev;
 		this.properties = new HashMap<String, Object>(properties);
 		this.fields = fields;
 		this.cache = cache;
@@ -91,9 +93,14 @@ public class Query {
 		this.cache = q.getCache();
 		this.apsId = aps;			
 		this.context = context;
-		this.path = q.path+"/"+path;
+		this.prev = q;
+		this.path = path;
 		process();
-		AccessLog.log(this.path+" : "+properties.toString());
+		StringBuilder sb = new StringBuilder();
+		getPath(sb);
+		sb.append(" : ");
+		sb.append(properties.toString());
+		AccessLog.log(sb.toString());
 		//AccessLog.logQuery(apsId, properties, fields);
 	}	
 	
@@ -105,8 +112,12 @@ public class Query {
 		return r;
 	}
 	
-	public String getPath() {
-		return path;
+	public void getPath(StringBuilder str) {
+		if (prev != null) {
+			prev.getPath(str);
+			str.append('/');
+		}
+		str.append(path);		
 	}
 	
 	public Map<String, Object> getProperties() {

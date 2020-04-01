@@ -19,10 +19,10 @@ import utils.exceptions.AppException;
 
 public class FasterDecryptTool {
 
-	public static void accelerate(Query q, List<Consent> consents) throws AppException {
+	public static void accelerate(APSCache cache, List<Consent> consents) throws AppException {
 		AccessLog.logBegin("start accelerate consent access");
-		MidataId owner = q.getCache().getAccountOwner();
-		APS main = q.getCache().getAPS(owner);
+		MidataId owner = cache.getAccountOwner();
+		APS main = cache.getAPS(owner);
 		
 		BasicBSONObject obj = main.getMeta("_consents");
 		MidataId idxId = null;
@@ -33,7 +33,7 @@ public class FasterDecryptTool {
 			idxId = MidataId.from(obj.getString("id"));			
 		}
 		
-		ConsentToKeyIndexRoot root = q.getCache().getConsentKeyIndexRoot(idxId);
+		ConsentToKeyIndexRoot root = cache.getConsentKeyIndexRoot(idxId);
 						
 		Map<MidataId, byte[]> keys = new HashMap<MidataId, byte[]>(consents.size());
 		Set<Consent> missing = new HashSet<Consent>();
@@ -49,14 +49,14 @@ public class FasterDecryptTool {
 				root.reload();
 			}			
 		}
-		q.getCache().prefetch(consents, keys);
+		cache.prefetch(consents, keys);
 		
 		AccessLog.logEnd("end accelerate consent access");
 		if (missing.isEmpty()) return;
 		AccessLog.logBegin("start add missing acceleration keys size="+missing.size());
 		try {
 			for (Consent c : missing) {
-			  APS targetAPS = q.getCache().getAPS(c._id);
+			  APS targetAPS = cache.getAPS(c._id);
 			  if (targetAPS.isAccessible()) {
 				  byte[] newkey = ((APSImplementation) targetAPS).eaps.getAPSKey();
 				  root.addEntry(new ConsentToKeyIndexKey(c._id, newkey));			  

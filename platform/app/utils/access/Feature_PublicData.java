@@ -70,14 +70,14 @@ public class Feature_PublicData extends Feature {
 	}
 
 	protected DBIterator<DBRecord> doQueryAsPublic(Query q) throws AppException {		
-		AccessLog.logBeginPath("do-public", null);
+		
 		if (q.restrictedBy("owner")) {
 			Set<String> owner = q.getRestriction("owner");			
 		    if (!owner.contains("all") && !owner.contains(RuntimeConstants.instance.publicUser.toString())) {
 			  return ProcessingTools.empty();
 		    }
 		}
-		
+		AccessLog.logBeginPath("do-public", null);
 		APSCache subcache = getPublicAPSCache(q.getCache());
 		
 		Map<String, Object> newprops = new HashMap<String, Object>();
@@ -88,7 +88,7 @@ public class Feature_PublicData extends Feature {
 		newprops.remove("study-group");
 		newprops.put("owner", RuntimeConstants.instance.publicUser);
 		
-		Query qnew = new Query(q.getPath()+"/public",newprops, q.getFields(), subcache, RuntimeConstants.instance.publicUser, new PublicAccessContext(subcache, q.getContext())).setFromRecord(q.getFromRecord());
+		Query qnew = new Query("public",newprops, q.getFields(), subcache, RuntimeConstants.instance.publicUser, new PublicAccessContext(subcache, q.getContext()),q).setFromRecord(q.getFromRecord());
 		DBIterator<DBRecord> result = next.iterator(qnew);
 		AccessLog.logEndPath(null);
 		return result;	

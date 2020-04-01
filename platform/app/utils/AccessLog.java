@@ -44,6 +44,7 @@ public class AccessLog {
 		//if (logToFile)	Logger.debug(msg);
 		if (logForMail) msgs.get().println(msg);
 	}
+		
 	
 	/**
 	 * log an access to an APS
@@ -227,7 +228,7 @@ public class AccessLog {
 					writer = new PrintWriter(tail);
 					len = 0;
 				} else {
-					cleared++;
+					cleared++;					
 					tail = new StringWriter();					
 					writer = new PrintWriter(tail);
 					len = 0;

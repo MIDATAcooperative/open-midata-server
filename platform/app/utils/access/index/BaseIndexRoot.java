@@ -24,6 +24,8 @@ public abstract class BaseIndexRoot<A extends BaseIndexKey<A,B>,B> {
 	public final static int UPPER_BOUND_KEYNUM  =   (MIN_DEGREE * 2) - 1;
 	public final static int LOWER_BOUND_KEYNUM  =   MIN_DEGREE - 1;	
 	
+	public final static int MAX_LOADED_PAGES = 100;
+	
 	public int getModCount() {
 		return modCount;
 	}
@@ -61,6 +63,8 @@ public abstract class BaseIndexRoot<A extends BaseIndexKey<A,B>,B> {
 			rootPage.model.updateLock();
 		}
 				
+		if (loadedPages.size() > MAX_LOADED_PAGES) loadedPages.clear();
+		
 		locked = false;
 		modCount = 0;
 	}

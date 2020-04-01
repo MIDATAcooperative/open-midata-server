@@ -171,7 +171,7 @@ public class Feature_Indexes extends Feature {
 			if (allAps.size() > Feature_AccountQuery.MIN_FOR_ACCELERATION) {
 			  List<Consent> prefetched = new ArrayList<Consent>(Consent.getAllByAuthorized(q.getCache().getAccountOwner(), CMaps.map("_id", allAps), Consent.SMALL));
 			  q.getCache().cache(prefetched);
-			  FasterDecryptTool.accelerate(q, prefetched);
+			  FasterDecryptTool.accelerate(q.getCache(), prefetched);
 			}
 			List<AccessContext> contexts = new ArrayList<AccessContext>(allAps.size());
 			for (MidataId aps : allAps) {
@@ -203,7 +203,7 @@ public class Feature_Indexes extends Feature {
 			if (allTarget) {
 				targetAps = null;
 			} else {
-				List<Consent> consents = Feature_AccountQuery.getConsentsForQuery(q, true);
+				List<Consent> consents = Feature_AccountQuery.getConsentsForQuery(q, true, false);
 				targetAps = new HashSet<MidataId>();
 				if (Feature_AccountQuery.mainApsIncluded(q))
 					targetAps.add(q.getApsId());
@@ -285,7 +285,7 @@ public class Feature_Indexes extends Feature {
 					props.putAll(q.getProperties());
 					props.put("streams", "only");
 					props.put("owner", "self");
-					List<DBRecord> matchStreams = next.query(new Query(q.getPath()+"/index-read-streams",props, Sets.create("_id"), q.getCache(), aps, context));
+					List<DBRecord> matchStreams = next.query(new Query("index-read-streams",props, Sets.create("_id"), q.getCache(), aps, context, q));
 					//AccessLog.log("index query streams " + matchStreams.size() + " matches.");
 					if (matchStreams.isEmpty())
 						directQuery = false;
