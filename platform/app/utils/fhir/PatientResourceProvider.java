@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.bson.BSONObject;
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.Bundle;
@@ -94,8 +95,10 @@ import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
 import utils.access.DBIterator;
+import utils.access.Feature_Pseudonymization;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
+import utils.auth.CodeGenerator;
 import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
 import utils.collections.CMaps;
@@ -513,7 +516,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		patientProvider.updatePatientForAccount(member);
 	}
 
-	public static Patient generatePatientForStudyParticipation(StudyParticipation part, Member member) {
+	public static Patient generatePatientForStudyParticipation(MidataId pseudo, String ownerName, Member member) {
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(member.birthday);
@@ -524,14 +527,13 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.MILLISECOND, 0);
 
-		Patient p = new Patient();
-		p.setId(part._id.toString());
-		p.addName().setText(part.ownerName);
+		Patient p = new Patient();		
+		p.addName().setText(ownerName);
 		p.setBirthDate(cal.getTime());
 		p.setGender(AdministrativeGender.valueOf(member.gender.toString()));
 
-		p.addIdentifier(new Identifier().setValue(part.ownerName).setSystem("http://midata.coop/identifier/participant-name"));
-		p.addIdentifier(new Identifier().setValue(part._id.toString()).setSystem("http://midata.coop/identifier/participant-id"));
+		p.addIdentifier(new Identifier().setValue(ownerName).setSystem("http://midata.coop/identifier/participant-name"));
+		p.addIdentifier(new Identifier().setValue(pseudo.toString()).setSystem("http://midata.coop/identifier/participant-id"));
 
 		return p;
 	}
@@ -540,13 +542,15 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 
 		PatientResourceProvider patientProvider = (PatientResourceProvider) FHIRServlet.myProviders.get("Patient");
 		PatientResourceProvider.setExecutionInfo(inf);
-
-		Patient patient = generatePatientForStudyParticipation(part, member);
+		String userName = "P-" + CodeGenerator.nextUniqueCode();			
 		Record record = PatientResourceProvider.newRecord("fhir/Patient");
+		Patient patient = generatePatientForStudyParticipation(record._id, userName, member);
+		patient.setId(record._id.toString());
 		patientProvider.prepare(record, patient);
 		record.content = "PseudonymizedPatient";
 		patientProvider.insertRecord(record, patient);
 
+		Feature_Pseudonymization.addPseudonymization(inf.executorId, part._id, record._id, userName);
 		RecordManager.instance.share(inf.executorId, member._id, part._id, Collections.singleton(record._id), false);
 	}
 
@@ -561,7 +565,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		IdType old = resource.getIdElement();
 		super.processResource(record, resource);
 		resource.setIdElement(old);
-		if (record.ownerName != null) {
+		if (record.ownerName != null && record.content.equals("Patient")) {
 			resource.addIdentifier(new Identifier().setValue(record.ownerName).setSystem("http://midata.coop/identifier/participant-name"));
 		}
 				
@@ -906,11 +910,12 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		}
 
 		thePatient.setId(user._id.toString());
-
+		
 		if (part != null) {
 			if (part.ownerName != null) {
-				thePatient.addIdentifier(new Identifier().setValue(part.ownerName).setSystem("http://midata.coop/identifier/participant-name"));
-				thePatient.addIdentifier(new Identifier().setValue(part._id.toString()).setSystem("http://midata.coop/identifier/participant-id"));
+				Pair<MidataId, String> pseudo = Feature_Pseudonymization.pseudonymizeUser(info().executorId, part);
+				thePatient.addIdentifier().setSystem("http://midata.coop/identifier/participant-name").setValue(pseudo.getRight());
+				thePatient.addIdentifier().setSystem("http://midata.coop/identifier/participant-id").setValue(pseudo.getLeft().toString());				
 			}
 		}
 		
@@ -922,8 +927,9 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		for (Study study : studies) {
 			StudyParticipation sp = StudyParticipation.getByStudyAndMember(study._id, owner, Sets.create("status", "pstatus", "ownerName"));
 			if (sp != null) {
-				thePatient.addIdentifier().setSystem("http://midata.coop/identifier/participant-name").setValue(sp.getOwnerName()).setType(new CodeableConcept(new Coding("http://midata.coop/codesystems/study-code",study.code, study.name)));
-				thePatient.addIdentifier().setSystem("http://midata.coop/identifier/participant-id").setValue(sp._id.toString()).setType(new CodeableConcept(new Coding("http://midata.coop/codesystems/study-code",study.code, study.name)));
+				Pair<MidataId, String> pseudo = Feature_Pseudonymization.pseudonymizeUser(owner, sp);
+				thePatient.addIdentifier().setSystem("http://midata.coop/identifier/participant-name").setValue(pseudo.getRight()).setType(new CodeableConcept(new Coding("http://midata.coop/codesystems/study-code",study.code, study.name)));
+				thePatient.addIdentifier().setSystem("http://midata.coop/identifier/participant-id").setValue(pseudo.getLeft().toString()).setType(new CodeableConcept(new Coding("http://midata.coop/codesystems/study-code",study.code, study.name)));
 			}
 		}
 	}

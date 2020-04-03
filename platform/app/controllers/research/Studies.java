@@ -92,6 +92,7 @@ import utils.ProjectTools;
 import utils.ServerTools;
 import utils.access.DBIterator;
 import utils.access.Feature_FormatGroups;
+import utils.access.Feature_Pseudonymization;
 import utils.access.Feature_QueryRedirect;
 import utils.access.Query;
 import utils.access.RecordManager;
@@ -263,10 +264,10 @@ public class Studies extends APIController {
 
 		Writer output = new OutputStreamWriter(zos);
 		for (StudyGroup group : study.groups) {
-			Set<StudyParticipation> parts = StudyParticipation.getActiveOrRetreatedParticipantsByStudyAndGroup(study._id, group.name, Sets.create("ownerName", "yearOfBirth", "country", "gender", "group"));
+			Set<StudyParticipation> parts = StudyParticipation.getActiveOrRetreatedParticipantsByStudyAndGroup(study._id, group.name, Sets.create("ownerName", "group"));
 
 			// for (StudyParticipation part : parts) {
-			output.append(JsonOutput.toJson(parts, "Consent", Sets.create("ownerName", "yearOfBirth", "country", "gender", "group")));
+			output.append(JsonOutput.toJson(parts, "Consent", Sets.create("ownerName", "group")));
 			// }
 		}
 		output.flush();
@@ -1482,7 +1483,7 @@ public class Studies extends APIController {
 		MidataId studyid = new MidataId(id);
 		JsonNode json = request().body().asJson();
 
-		Study study = Study.getById(studyid, Sets.create("owner", "type", "executionStatus", "participantSearchStatus", "validationStatus"));
+		Study study = Study.getById(studyid, Sets.create("owner", "type", "executionStatus", "participantSearchStatus", "validationStatus", "requiredInformation"));
 		if (study == null)
 			throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 
@@ -1490,12 +1491,12 @@ public class Studies extends APIController {
 		if (ugm == null)
 			throw new BadRequestException("error.notauthorized.study", "Not member of study team");
 
-		Set<String> fields = Sets.create("owner", "ownerName", "group", "recruiter", "recruiterName", "pstatus", "gender", "country", "yearOfBirth", "partName");
+		Set<String> fields = Sets.create("owner", "ownerName", "group", "recruiter", "recruiterName", "pstatus", "partName");
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		List<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(studyid, properties, fields, 1000);
-		if (!ugm.role.pseudonymizedAccess()) {
+		if (!ugm.role.pseudonymizedAccess() && study.requiredInformation==InformationType.RESTRICTED) {
 			for (StudyParticipation part : participants) {
-				part.partName = part.ownerName;
+				part.partName = Feature_Pseudonymization.pseudonymizeUser(userId, part).getRight();
 				part.ownerName = null;
 			}
 		}
@@ -1564,7 +1565,7 @@ public class Studies extends APIController {
 		if (ugm == null)
 			throw new BadRequestException("error.notauthorized.study", "Not member of study team");
 
-		Set<String> participationFields = Sets.create("pstatus", "status", "group", "ownerName", "gender", "country", "yearOfBirth", "owner", "partName", "records");
+		Set<String> participationFields = Sets.create("pstatus", "status", "group", "ownerName", "owner", "partName", "records");
 		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, participationFields);
 
 		if (participation == null)
@@ -1572,8 +1573,8 @@ public class Studies extends APIController {
 		if (participation.pstatus == ParticipationStatus.CODE || participation.pstatus == ParticipationStatus.MATCH || participation.pstatus == ParticipationStatus.MEMBER_REJECTED)
 			throw new BadRequestException("error.unknown.participant", "Member does not participate in study");
 
-		if (!ugm.role.pseudonymizedAccess()) {
-			participation.partName = participation.ownerName;
+		if (!ugm.role.pseudonymizedAccess() && study.requiredInformation==InformationType.RESTRICTED) {
+			participation.partName = Feature_Pseudonymization.pseudonymizeUser(userId, participation).getRight();
 			participation.ownerName = null;
 		}
 		ReferenceTool.resolveOwners(Collections.singleton(participation), true);
@@ -1655,7 +1656,7 @@ public class Studies extends APIController {
 	}
 
 	public static void autoApprove(MidataId app, Study study, MidataId userId, String group) throws AppException {
-		Set<String> fields = Sets.create("owner", "ownerName", "group", "recruiter", "recruiterName", "pstatus", "gender", "country", "yearOfBirth", "partName");
+		Set<String> fields = Sets.create("owner", "ownerName", "group", "recruiter", "recruiterName", "pstatus", "partName");
 		List<StudyParticipation> participants1 = StudyParticipation.getParticipantsByStudy(study._id, CMaps.map("pstatus", ParticipationStatus.REQUEST), fields, 0);
 
 		autoApprove(app, study, userId, group, participants1);

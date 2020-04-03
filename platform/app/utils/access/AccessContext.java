@@ -38,9 +38,9 @@ public abstract class AccessContext {
 	
 	public abstract MidataId getOwner();
 	
-	public abstract MidataId getOwnerPseudonymized();
+	public abstract MidataId getOwnerPseudonymized() throws AppException;
 	
-	public abstract String getOwnerName();
+	public abstract String getOwnerName() throws AppException;
 	
 	public Map<String, Object> getQueryRestrictions() {
 		if (parent != null) return parent.getQueryRestrictions(); else return null;

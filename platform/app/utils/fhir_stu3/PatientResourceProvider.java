@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.bson.BSONObject;
 import org.hl7.fhir.dstu3.model.Address;
 import org.hl7.fhir.dstu3.model.Bundle;
@@ -93,6 +94,7 @@ import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
 import utils.access.DBIterator;
+import utils.access.Feature_Pseudonymization;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.ExecutionInfo;
@@ -570,9 +572,11 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		  for (StudyAppLink sal : links) {
 			  if (sal.isConfirmed() && (sal.type.contains(StudyAppLinkType.REQUIRE_P) || sal.type.contains(StudyAppLinkType.OFFER_P))) {
 				  StudyParticipation part = StudyParticipation.getByStudyAndMember(sal.studyId, record.owner, Sets.create("_id", "ownerName"));			  
-				  if (part != null && part.getOwnerName() != null) {
-					  resource.addIdentifier(new Identifier().setValue(part.getOwnerName()).setSystem("http://midata.coop/identifier/participant-name"));
-					  resource.addIdentifier(new Identifier().setValue(part._id.toString()).setSystem("http://midata.coop/identifier/participant-id"));
+				  if (part != null && part.getOwnerName() != null) {					  					  
+					 Pair<MidataId, String> pseudo = Feature_Pseudonymization.pseudonymizeUser(record.owner, part);
+					  
+					 resource.addIdentifier(new Identifier().setValue(pseudo.getRight()).setSystem("http://midata.coop/identifier/participant-name"));
+					 resource.addIdentifier(new Identifier().setValue(pseudo.getLeft().toString()).setSystem("http://midata.coop/identifier/participant-id"));
 				  }  
 			  }
 		  }

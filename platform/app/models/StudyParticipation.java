@@ -27,13 +27,13 @@ public class StudyParticipation extends Consent {
 	public String group; // If study has multiple separate groups of participants
 	public MidataId recruiter; // if member has been recruited through someone (by entering a participation code)
 	public String recruiterName; // replication of recruiter name
-	public Set<MidataId> providers; // (Optional) List of healthcare providers monitoring the member for this study.	
+	public Set<MidataId> providers; // (Optional) List of healthcare providers monitoring the member for this study.
 	
 	public JoinMethod joinMethod;
 	
-	public int yearOfBirth;
-	public String country;
-	public Gender gender;
+	//public int yearOfBirth;
+	//public String country;
+	//public Gender gender;
 	
 	public @NotMaterialized String partName;
 			

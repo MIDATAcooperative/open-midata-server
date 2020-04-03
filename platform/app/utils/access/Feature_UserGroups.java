@@ -133,15 +133,21 @@ public class Feature_UserGroups extends Feature {
 		
 		if (!ugm.role.mayReadData()) return ProcessingTools.empty();
 		
-		if (ugm.role.pseudonymizedAccess()) {
-			 if (!Feature_Pseudonymization.pseudonymizedIdRestrictions(q, group, newprops)) return ProcessingTools.empty();			
-		}
+		
 		
 		// AK : Removed instanceof DummyAccessContext : Does not work correctly when listing study participants records on portal		 
 		MidataId aps = (q.getApsId().equals(ugm.member) /*|| q.getContext() instanceof DummyAccessContext */) ? group : q.getApsId();
 		
 		AccessLog.logBeginPath("ug("+ugm.userGroup+")", null);
 		Query qnew = new Query("ug","ug="+ugm.userGroup,newprops, q.getFields(), subcache, aps, new UserGroupAccessContext(ugm, subcache, q.getContext()),q).setFromRecord(q.getFromRecord());
+		if (ugm.role.pseudonymizedAccess()) {
+			 if (!Feature_Pseudonymization.pseudonymizedIdRestrictions(qnew, next, group, newprops)) {
+				 AccessLog.logEndPath("cannot unpseudonymize");
+				 return ProcessingTools.empty();
+			 }
+			 qnew = new Query(qnew, "unpseudonymized", newprops);
+		}
+		
 		DBIterator<DBRecord> result = next.iterator(qnew);
 		//AccessLog.logEnd("end user group query for group="+group.toString());
 		AccessLog.logEndPath("inited hasNext="+result.hasNext());

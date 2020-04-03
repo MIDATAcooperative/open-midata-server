@@ -39,7 +39,7 @@ public class UserGroupAccessContext extends AccessContext {
 	}
 	
 	@Override
-	public String getOwnerName() {		
+	public String getOwnerName() throws AppException {		
 		return parent.getOwnerName();
 	}
 	@Override
@@ -47,7 +47,7 @@ public class UserGroupAccessContext extends AccessContext {
 		return parent.getOwner();
 	}
 	@Override
-	public MidataId getOwnerPseudonymized() {
+	public MidataId getOwnerPseudonymized() throws AppException {
 		return parent.getOwnerPseudonymized();
 	}
 	@Override
