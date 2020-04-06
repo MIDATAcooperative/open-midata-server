@@ -62,6 +62,10 @@ angular.module('portal')
 		
 	};
 	
+	$scope.mayViewParticipants = function() {
+		   return $scope.study && $scope.study.myRole.participants && !$scope.study.myRole.pseudo;		
+	};
+	
     $scope.mayRejectParticipation = function(participation) {
       return $scope.study && $scope.study.myRole.participants && participation.pstatus == "REQUEST";
 	};

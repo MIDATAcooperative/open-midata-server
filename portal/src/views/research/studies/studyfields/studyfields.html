@@ -32,9 +32,18 @@
   	       </label>
   	    </div>
   	    
+  	    <div class="form-check">
+  	       <label class="form-check-label">
+  	        <input class="form-check-input" type="radio" ng-disabled="studyLocked()" ng-change="requiredDataChange()" name="identity" value="NONE" ng-model="information.identity">
+  	       <div class="margin-left">
+  	         <strong translate="studyfields.pseudonymous1b"></strong><span translate="studyfields.pseudonymous2b"></span>
+  	         </div>
+  	       </label>
+  	    </div>
+  	    
   	     <div class="form-check">
   	       <label class="form-check-label">
-  	        <input class="form-check-input" type="radio" ng-disabled="studyLocked()" ng-change="requiredDataChange()" name="identity" value="ANONYMOUS" ng-model="information.identity">
+  	        <input class="form-check-input" type="checkbox" ng-disabled="studyLocked()" ng-change="requiredDataChange()" ng-model="information.anonymous">
   	        <div class="margin-left">
   	         <strong translate="studyfields.anonymous"></strong><span translate="studyfields.anonymous2"></span>
   	        </div>

@@ -121,57 +121,59 @@ public class Feature_Indexes extends Feature {
 
 			Map<MidataId, List<DBRecord>> newRecords = new HashMap<MidataId, List<DBRecord>>();
 
-			AccessLog.logBeginPath("new entries", null);
-			Feature nextWithProcessing = new Feature_ProcessFilters(next);
-			
-			if (targetAps != null) {
-				for (MidataId id : targetAps) {
-					long v = myAccess.version(id);
-					result = null;
-					AccessContext context = getContextForAps(q, id);
-					if (context != null) {
-						if (context instanceof ConsentAccessContext && ((ConsentAccessContext) context).getConsent().dataupdate <= v) {
-							continue;
-						} 
-						//if (context instanceof ConsentAccessContext) AccessLog.log("TIMESTAMP "+((ConsentAccessContext) context).getConsent().dataupdate+" vs "+v);
-						List<DBRecord> add;
-						Query updQuery = new Query(q, "index-shared-after", CMaps.mapPositive("shared-after", v).map("owner", "self"), id, context);
-						add = QueryEngine.filterByDataQuery(nextWithProcessing.query(updQuery), indexQueryParsed, null);
-						AccessLog.log("found new updated entries aps=" + id + ": " + add.size());
-						result = QueryEngine.combine(result, add);						
-						if (result != null) {
-							newRecords.put(id, result);
-							allAps.add(id);
+			if (!q.restrictedBy("fast-index") || matches.size()==0) {
+				AccessLog.logBeginPath("new entries", null);
+				Feature nextWithProcessing = new Feature_ProcessFilters(next);
+				
+				if (targetAps != null) {
+					for (MidataId id : targetAps) {
+						long v = myAccess.version(id);
+						result = null;
+						AccessContext context = getContextForAps(q, id);
+						if (context != null) {
+							if (context instanceof ConsentAccessContext && ((ConsentAccessContext) context).getConsent().dataupdate <= v) {
+								continue;
+							} 
+							//if (context instanceof ConsentAccessContext) AccessLog.log("TIMESTAMP "+((ConsentAccessContext) context).getConsent().dataupdate+" vs "+v);
+							List<DBRecord> add;
+							Query updQuery = new Query(q, "index-shared-after", CMaps.mapPositive("shared-after", v).map("owner", "self"), id, context);
+							add = QueryEngine.filterByDataQuery(nextWithProcessing.query(updQuery), indexQueryParsed, null);
+							AccessLog.log("found new updated entries aps=" + id + ": " + add.size());
+							result = QueryEngine.combine(result, add);						
+							if (result != null) {
+								newRecords.put(id, result);
+								allAps.add(id);
+							}
+						}
+					}
+				} else {
+					long v = myAccess.version(null);
+					// AccessLog.log("vx="+v);
+					List<DBRecord> add;
+					add = QueryEngine.filterByDataQuery(nextWithProcessing.query(new Query(q, "index-shared-after", CMaps.mapPositive("shared-after", v).map("consent-limit",1000))), indexQueryParsed, null);
+					AccessLog.log("found new updated entries: " + add.size());
+					result = QueryEngine.combine(result, add);				
+					if (result != null && !result.isEmpty()) {
+						for (DBRecord record : result) {
+							MidataId id = record.context.getTargetAps();
+							List<DBRecord> recs = newRecords.get(id);
+							if (recs == null) {
+								recs = new ArrayList<DBRecord>();
+								newRecords.put(id, recs);
+								allAps.add(id);
+							}
+							recs.add(record);
 						}
 					}
 				}
-			} else {
-				long v = myAccess.version(null);
-				// AccessLog.log("vx="+v);
-				List<DBRecord> add;
-				add = QueryEngine.filterByDataQuery(nextWithProcessing.query(new Query(q, "index-shared-after", CMaps.mapPositive("shared-after", v).map("consent-limit",1000))), indexQueryParsed, null);
-				AccessLog.log("found new updated entries: " + add.size());
-				result = QueryEngine.combine(result, add);				
-				if (result != null && !result.isEmpty()) {
-					for (DBRecord record : result) {
-						MidataId id = record.context.getTargetAps();
-						List<DBRecord> recs = newRecords.get(id);
-						if (recs == null) {
-							recs = new ArrayList<DBRecord>();
-							newRecords.put(id, recs);
-							allAps.add(id);
-						}
-						recs.add(record);
-					}
-				}
+				AccessLog.logEndPath(null);
 			}
-			AccessLog.logEndPath(null);
 			long endTime2 = System.currentTimeMillis();
 
 			if (allAps.size() > Feature_AccountQuery.MIN_FOR_ACCELERATION) {
 			  List<Consent> prefetched = new ArrayList<Consent>(Consent.getAllByAuthorized(q.getCache().getAccountOwner(), CMaps.map("_id", allAps), Consent.SMALL));
 			  q.getCache().cache(prefetched);
-			  FasterDecryptTool.accelerate(q, prefetched);
+			  FasterDecryptTool.accelerate(q.getCache(), prefetched);
 			}
 			List<AccessContext> contexts = new ArrayList<AccessContext>(allAps.size());
 			for (MidataId aps : allAps) {
@@ -203,7 +205,7 @@ public class Feature_Indexes extends Feature {
 			if (allTarget) {
 				targetAps = null;
 			} else {
-				List<Consent> consents = Feature_AccountQuery.getConsentsForQuery(q, true);
+				List<Consent> consents = Feature_AccountQuery.getConsentsForQuery(q, true, false);
 				targetAps = new HashSet<MidataId>();
 				if (Feature_AccountQuery.mainApsIncluded(q))
 					targetAps.add(q.getApsId());
@@ -285,7 +287,7 @@ public class Feature_Indexes extends Feature {
 					props.putAll(q.getProperties());
 					props.put("streams", "only");
 					props.put("owner", "self");
-					List<DBRecord> matchStreams = next.query(new Query(q.getPath()+"/index-read-streams",props, Sets.create("_id"), q.getCache(), aps, context));
+					List<DBRecord> matchStreams = next.query(new Query("index-read-streams",props, Sets.create("_id"), q.getCache(), aps, context, q));
 					//AccessLog.log("index query streams " + matchStreams.size() + " matches.");
 					if (matchStreams.isEmpty())
 						directQuery = false;

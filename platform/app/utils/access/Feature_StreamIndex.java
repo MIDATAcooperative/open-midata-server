@@ -155,7 +155,7 @@ public class Feature_StreamIndex extends Feature {
 			if (allAps.size() > Feature_AccountQuery.MIN_FOR_ACCELERATION) {
 			  List<Consent> prefetched = new ArrayList<Consent>(Consent.getAllByAuthorized(q.getCache().getAccountOwner(), CMaps.map("_id", allAps), Consent.SMALL));
 			  q.getCache().cache(prefetched);
-			  FasterDecryptTool.accelerate(q, prefetched);
+			  FasterDecryptTool.accelerate(q.getCache(), prefetched);
 			}
 			List<AccessContext> contexts = new ArrayList<AccessContext>(allAps.size());
 			for (MidataId aps : allAps) {

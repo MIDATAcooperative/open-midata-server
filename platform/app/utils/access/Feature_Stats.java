@@ -33,11 +33,11 @@ public class Feature_Stats extends Feature {
 		return r.content+"/"+r.app+"/"+r.format+"/"+r.owner;
 	}
 	
-	public static  String getKey(DBRecord r) {
+	public static  String getKey(DBRecord r) throws AppException {
 		return getKey(fromRecord(r));
 	}
 	
-	public static StatsIndexKey fromRecord(DBRecord r) {
+	public static StatsIndexKey fromRecord(DBRecord r) throws AppException {
 		StatsIndexKey result = new StatsIndexKey();
 		
 		result.aps=r.consentAps;	

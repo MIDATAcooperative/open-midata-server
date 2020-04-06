@@ -290,7 +290,9 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 		
 		MidataId anonymize = null;
 		if (affectedConsent != null && affectedConsent.type.equals(ConsentType.STUDYPARTICIPATION) && affectedConsent.getOwnerName() != null) {
-			anonymize = affectedConsent.owner;			
+			//if (study==null || study.anonymous) {		
+		    	anonymize = affectedConsent.owner;
+			//}
 		}
 		
 		if (actorUser != null) {
@@ -301,7 +303,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 			if (anonymize != null && actorUser._id.equals(anonymize)) {
 				actor.setName(affectedConsent.getOwnerName());
 				actor.setWho(new Reference("Patient/"+affectedConsent._id.toString()));
-			} else {			
+			} else {
 				if (actorUser.role.equals(UserRole.MEMBER)) {
 					actor.setWho(new Reference("Patient/"+actorUser._id.toString()));
 				} else if (actorUser.role.equals(UserRole.PROVIDER)) {
@@ -336,7 +338,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 			aeec.setType(new Coding().setSystem("http://midata.coop/codesystems/consent-type").setCode(affectedConsent.type.toString()));			
 			aeec.setWhat(new Reference("Consent/"+affectedConsent._id.toString()));
 			if (affectedConsent.type.equals(ConsentType.STUDYPARTICIPATION) && affectedConsent.getOwnerName() != null) {
-			   aeec.setName(affectedConsent.getOwnerName());
+			   //aeec.setName(affectedConsent.getOwnerName());
 			} else {
 			   aeec.setName(affectedConsent.name);
 			}
@@ -464,6 +466,10 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent, Mid
 		if (params.getFrom() != null) {
 			properties.put("_id", CMaps.map("$lte", MidataId.from(params.getFrom()).toObjectId()));
 		}
+		
+		/*if (current.role.equals(UserRole.ADMIN)) {
+			properties.put("noAdminView", CMaps.map("$ne", true));
+		}*/
 		
 		List<MidataAuditEvent> events = MidataAuditEvent.getAll(properties, MidataAuditEvent.ALL, limit);
 		AccessLog.log("RETURNED");

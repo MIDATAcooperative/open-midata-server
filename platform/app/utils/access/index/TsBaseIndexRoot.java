@@ -8,10 +8,17 @@ import utils.exceptions.InternalServerException;
 public abstract class TsBaseIndexRoot<A extends BaseIndexKey<A,B>,B> extends BaseIndexRoot<A,B> {
 
 	private TimestampIndexRoot ts;
+	protected IndexDefinition model;
 	
 	public TsBaseIndexRoot(byte[] key, IndexDefinition def, boolean isnew) throws InternalServerException {
+		this.model = def;
 		this.ts = new TimestampIndexRoot(key, def, isnew);
 	}
+	
+	public IndexDefinition getModel() {
+		return model;
+	}
+    	
 	
 	public long getVersion(MidataId aps) throws InternalServerException {
 		try {
@@ -58,8 +65,9 @@ public abstract class TsBaseIndexRoot<A extends BaseIndexKey<A,B>,B> extends Bas
 				
 	public void reload() throws InternalServerException {
 		loadedPages.clear();
-		rootPage.reload();
-		ts.reload();
+		model = IndexDefinition.getById(model._id);
+		rootPage = new IndexPage(this.key, model, this, 1);	
+		ts = new TimestampIndexRoot(key, model, false);		
 		locked = false;
 		modCount = 0;
 	}

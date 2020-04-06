@@ -2,6 +2,8 @@ package utils.access;
 
 import java.util.Collections;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import controllers.Circles;
 import models.Consent;
 import models.MidataId;
@@ -14,6 +16,8 @@ public class ConsentAccessContext extends AccessContext{
 
 	private Consent consent;
 	private boolean sharingQuery;
+	private String ownerName;
+	private MidataId ownerpseudoId;
 	//private final Set<String> reqfields = Sets.create("sharingQuery", "createdBefore", "validUntil");
 	
 	public ConsentAccessContext(Consent consent, APSCache cache, AccessContext parent) throws AppException {
@@ -96,8 +100,15 @@ public class ConsentAccessContext extends AccessContext{
 		return consent;
 	}
 
-	public String getOwnerName() {
-		return consent.ownerName;
+	public String getOwnerName() throws AppException {
+		if (ownerName!=null) return ownerName;		
+		Pair<MidataId,String> p = Feature_Pseudonymization.pseudonymizeUser(getCache(), consent);
+		if (p!=null) {
+		  ownerName = p.getRight();
+		  ownerpseudoId = p.getLeft();
+		}
+		return ownerName;
+		
 	}
 
 	@Override
@@ -106,8 +117,14 @@ public class ConsentAccessContext extends AccessContext{
 	}
 
 	@Override
-	public MidataId getOwnerPseudonymized() {
-		return consent._id;
+	public MidataId getOwnerPseudonymized() throws AppException {
+		if (ownerpseudoId!=null) return ownerpseudoId;
+		Pair<MidataId,String> p = Feature_Pseudonymization.pseudonymizeUser(getCache(), consent);
+		if (p!=null) {
+		   ownerName = p.getRight();
+		   ownerpseudoId = p.getLeft();
+		}
+		return ownerpseudoId;				
 	}
 
 	@Override

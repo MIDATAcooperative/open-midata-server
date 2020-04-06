@@ -41,5 +41,6 @@ id0039	20.03.2020	a.kreutz	F	Developer teams for applications	On the application
 id0040	20.03.2020	a.kreutz	F	Study export is now available on base FHIR url	A project analyzer may now use the FHIR base url to read all project data at once. There is support for restriction on _lastUpdated. In opposition to normal FHIR queries there is no limit on the number of records returned by the export query.
 id0041	25.03.2020	a.kreutz	I	Performance Update  
 id0042	30.03.2020	a.kreutz	F	Public FHIR endpoints	Projects may now publish (parts of) their project data as public FHIR endpoint.
-id0043	30.03.2020	a.kreutz	F	Every 30 minute subscriptions	When defining subscriptions you can now add a new criteria that triggers every 30 minutes. 
+id0043	30.03.2020	a.kreutz	F	Every 30 minute subscriptions	When defining subscriptions you can now add a new criteria that triggers every 30 minutes.
+id0044	06.04.2020	a.kreutz	F	Projects without sharing year of birth/gender/country	It is now possible to create research projects that are pseudonymized or anonymous and do not require year of birth, gender and country.  
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 

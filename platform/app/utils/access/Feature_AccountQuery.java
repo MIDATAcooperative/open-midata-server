@@ -78,7 +78,7 @@ public class Feature_AccountQuery extends Feature {
             
             	account = false;
             	
-            	List<Consent> consents = getConsentsForQuery(query, false);
+            	List<Consent> consents = getConsentsForQuery(query, false, true);
     			
             	if (query.restrictedBy("consent-limit")) {
             		
@@ -112,32 +112,43 @@ public class Feature_AccountQuery extends Feature {
 
 		private int blocksize;
 		private int pos;
-		private int maxsize;
-		protected List<Consent> all;
+		//private int maxsize;
+		protected Iterator<Consent> all;
 		protected Iterator<Consent> cache;	
-		private Query q;
+		private APSCache apscache;
+		private boolean freemem = false;
 
 		public BlockwiseConsentPrefetch(Query q, List<Consent> consents, int blocksize) {
-			this.all = consents;
+			this.all = consents.iterator();
 			this.blocksize = blocksize;			
-			this.q = q;
+			this.apscache = q.getCache();
 			this.cache = Collections.emptyIterator();
-			this.maxsize = consents.size();
+			//this.maxsize = consents.size();
 			this.pos = 0;		
 		}
 		
-		public BlockwiseConsentPrefetch(Query q, List<Consent> consents, int blocksize, int startpos) {
+		public BlockwiseConsentPrefetch(APSCache cache, Iterator<Consent> consents, int blocksize) {
 			this.all = consents;
 			this.blocksize = blocksize;			
-			this.q = q;
+			this.apscache = cache;
 			this.cache = Collections.emptyIterator();
-			this.maxsize = consents.size();
+			//this.maxsize = consents.size();
+			this.pos = 0;		
+			this.freemem = true;
+		}
+		
+		public BlockwiseConsentPrefetch(Query q, List<Consent> consents, int blocksize, int startpos) {
+			this.all = consents.subList(startpos, consents.size()).iterator();
+			this.blocksize = blocksize;			
+			this.apscache = q.getCache();
+			this.cache = Collections.emptyIterator();
+			//this.maxsize = consents.size();
 			this.pos = startpos;		
 		}
 
 		@Override
 		public boolean hasNext() {
-			return cache.hasNext() || pos < maxsize;
+			return cache.hasNext() || all.hasNext();
 		}
 				
 		@Override
@@ -145,14 +156,17 @@ public class Feature_AccountQuery extends Feature {
 			if (cache.hasNext())
 				return cache.next();
 
-			int end = pos + blocksize;
-			if (end > maxsize) end = maxsize;
-			List<Consent> sublist = all.subList(pos, end);
+			int end = 0;
 			
-			FasterDecryptTool.accelerate(q, sublist);
+			if (freemem) apscache.resetConsentCache();
 			
-			AccessLog.log("get consent "+pos+" - "+end);
-			pos = end;
+			List<Consent> sublist = new ArrayList<Consent>(blocksize);
+			while (all.hasNext() && end<blocksize) { sublist.add(all.next());end++; }
+			
+			FasterDecryptTool.accelerate(apscache, sublist);
+			
+			AccessLog.log("get consent "+pos+" - "+(pos+end));
+			pos = pos+end;
 			cache = sublist.iterator();			         
 			return cache.next();
 
@@ -194,7 +208,7 @@ public class Feature_AccountQuery extends Feature {
 		@Override
 		public DBIterator<DBRecord> advance(Consent circle) throws AppException {
 			ConsentAccessContext context = new ConsentAccessContext(circle, query.getContext());
-			DBIterator<DBRecord> consentRecords = next.iterator(new Query(query.getPath()+"/consent","consent="+circle._id,query.getProperties(), query.getFields(), query.getCache(), circle._id, context));
+			DBIterator<DBRecord> consentRecords = next.iterator(new Query("consent","consent="+circle._id,query.getProperties(), query.getFields(), query.getCache(), circle._id, context, query));
 			thisconsent = circle;
 			return new IdAndConsentFieldIterator(consentRecords, context, circle._id, query.returns("id"));
 		}
@@ -353,7 +367,7 @@ public class Feature_AccountQuery extends Feature {
 		return false;
 	}
 	
-	protected static List<Consent> getConsentsForQuery(Query q, boolean prefetch) throws AppException {
+	protected static List<Consent> getConsentsForQuery(Query q, boolean prefetch, boolean withLimit) throws AppException {
 		List<Consent> consents = Collections.emptyList();
 		Set<String> sets = q.restrictedBy("owner") ? q.getRestriction("owner") : Collections.singleton("all");
 		Set<MidataId> studies = q.restrictedBy("study") ? q.getMidataIdRestriction("study") : null;
@@ -381,17 +395,21 @@ public class Feature_AccountQuery extends Feature {
 			if (q.restrictedBy("created-after")) limit = q.getMinCreatedTimestamp();
 			if (q.restrictedBy("updated-after")) limit = Math.max(limit, q.getMinUpdatedTimestamp());				
 			if (q.restrictedBy("shared-after")) limit = Math.max(limit,  q.getMinSharedTimestamp());
-	    		    		
+	    		   
+			if (withLimit) {
+				if (q.restrictedBy("consent-after") || q.restrictedBy("consent-type-exclude") || q.restrictedBy("updatable")) withLimit = false;
+			}
+			
 			if (q.restrictedBy("study-related")) {				
 				consents = new ArrayList<Consent>(StudyRelated.getActiveByAuthorizedGroupAndStudy(q.getCache().getAccountOwner(), studyGroups, studies, sets.contains("all") ? null : owners, Consent.SMALL, limit));
 			} else if (q.restrictedBy("participant-related")) {
-				consents =  new ArrayList<Consent>(StudyParticipation.getActiveOrRetreatedParticipantsByStudyAndGroupsAndParticipant(studies, studyGroups, q.getCache().getAccountOwner(), sets.contains("all") ? null : owners, Consent.SMALL, true, limit));		    	
+				consents =  new ArrayList<Consent>(StudyParticipation.getActiveOrRetreatedParticipantsByStudyAndGroupsAndParticipant(studies, studyGroups, q.getCache().getAccountOwner(), sets.contains("all") ? null : owners, Consent.SMALL, true, limit, withLimit ? (10+MAX_CONSENTS_IN_QUERY) : Integer.MAX_VALUE));		    	
 			} else {
-		    	consents =  new ArrayList<Consent>(StudyParticipation.getActiveOrRetreatedParticipantsByStudyAndGroupsAndParticipant(studies, studyGroups, q.getCache().getAccountOwner(), sets.contains("all") ? null : owners, Consent.SMALL, true, limit));
+		    	consents =  new ArrayList<Consent>(StudyParticipation.getActiveOrRetreatedParticipantsByStudyAndGroupsAndParticipant(studies, studyGroups, q.getCache().getAccountOwner(), sets.contains("all") ? null : owners, Consent.SMALL, true, limit, withLimit ? (10+MAX_CONSENTS_IN_QUERY) : Integer.MAX_VALUE));
 		    	AccessLog.log("found consents (participants): "+consents.size());
 		    	consents.addAll(StudyRelated.getActiveByAuthorizedGroupAndStudy(q.getCache().getAccountOwner(), studyGroups, studies, sets.contains("all") ? null : owners, Consent.SMALL, limit));
 			}
-	    	consents = applyLimit(consents, limit);
+	    	// consents = applyLimit(consents, limit); Alread done by read query
             q.getCache().cache(consents);	    		    
 	    	AccessLog.log("found consents (total): "+consents.size());
 	    } else if (sets.contains("all") || sets.contains("other") || sets.contains("shared")) {			
@@ -429,7 +447,7 @@ public class Feature_AccountQuery extends Feature {
 		consents = applyTypeFilters(q, consents);
 		if (prefetch) {
 			if (consents.size() > MIN_FOR_ACCELERATION) {
-				FasterDecryptTool.accelerate(q, consents);
+				FasterDecryptTool.accelerate(q.getCache(), consents);
 			} else if (consents.size() < MAX_CONSENTS_IN_QUERY) q.getCache().prefetch(consents, null);
 		}
 		consents = applyWriteFilters(q, consents);

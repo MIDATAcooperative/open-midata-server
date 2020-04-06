@@ -3,6 +3,9 @@ package utils.auth;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
+import models.UsedCode;
+import utils.exceptions.InternalServerException;
+
 /**
  * generate public, human readable IDs (like MIDATA ID)
  *
@@ -31,11 +34,13 @@ public class CodeGenerator {
 	
 	/**
 	 * Generates a 8 digit code with a "-" after the 4th character
-	 * Uniqueness is not garanteed and must be check by the caller
+	 * Uniqueness is garanteed and must be check by the caller
 	 * @return the generated code
 	 */
-	public static String nextUniqueCode() {
-		return nextCode();
+	public static String nextUniqueCode() throws InternalServerException {
+		String code = nextCode();
+		while (!UsedCode.use(code)) { code = nextCode(); }
+		return code;
 	}
 	
 	/**

@@ -226,19 +226,12 @@ public class Studies extends APIController {
 		part.owner = member._id;
 		part.dateOfCreation = new Date();
 		part.lastUpdated = part.dateOfCreation;
-		part.dataupdate = System.currentTimeMillis();
-		
-		String userName;
-		
-		if (study.requiredInformation == InformationType.DEMOGRAPHIC) {
-			userName = null; //member.lastname+", "+member.firstname;	
-		} else {
-			do {
-			  userName = "P-" + CodeGenerator.nextUniqueCode();
-			} while (StudyParticipation.existsByStudyAndMemberName(study._id, userName));
-		}
+		part.dataupdate = System.currentTimeMillis();				
 				
-		part.setOwnerName(userName);
+		if (study.requiredInformation != InformationType.DEMOGRAPHIC) {
+			part.ownerName = "?";
+		}
+		
 		part.status = ConsentStatus.UNCONFIRMED;
 		part.writes = WritePermissionType.UPDATE_AND_CREATE;
 		part.createdBefore = study.dataCreatedBefore;
@@ -257,9 +250,9 @@ public class Studies extends APIController {
 		
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(member.birthday);
-		part.yearOfBirth = cal.get(Calendar.YEAR);
-		part.gender = member.gender;
-		part.country = member.country;
+		//part.yearOfBirth = cal.get(Calendar.YEAR);
+		//part.gender = member.gender;
+		//part.country = member.country;
 			
 		part.providers = new HashSet<MidataId>();
 		part.entityType = EntityType.USERGROUP;
@@ -354,14 +347,11 @@ public class Studies extends APIController {
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
 		
-		
+        
 		if (participation == null) {
-			if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new JsonValidationException("error.closed.study", "code", "notsearching", "Study is not searching for participants.");
-			
-			if (study.joinMethods != null && !study.joinMethods.contains(joinMethod)) throw new JsonValidationException("error.closed.study", "code", "notsearching", "Study is not searching for participants using this channel."); 
-			
-			participation = createStudyParticipation(inf.executorId, study, user, null);
-										
+			if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new JsonValidationException("error.closed.study", "code", "notsearching", "Study is not searching for participants.");			
+			if (study.joinMethods != null && !study.joinMethods.contains(joinMethod)) throw new JsonValidationException("error.closed.study", "code", "notsearching", "Study is not searching for participants using this channel."); 			
+			participation = createStudyParticipation(inf.executorId, study, user, null);									
 		}
 				
 		if (participation.pstatus == ParticipationStatus.ACCEPTED || participation.pstatus == ParticipationStatus.REQUEST) return participation;
@@ -374,8 +364,8 @@ public class Studies extends APIController {
 		
 		//participation.addHistory(new History(EventType.PARTICIPATION_REQUESTED, participation, user, null));
 		if (study.termsOfUse != null) user.agreedToTerms(study.termsOfUse, usingApp);		
-		if (study.requiredInformation.equals(InformationType.RESTRICTED)) {
-			PatientResourceProvider.createPatientForStudyParticipation(inf, participation, user);
+		if (study.requiredInformation.equals(InformationType.RESTRICTED) || study.requiredInformation.equals(InformationType.NONE)) {						
+			PatientResourceProvider.createPatientForStudyParticipation(inf, study, participation, user);
 			Circles.autosharePatientRecord(inf.executorId, participation);
 		} else {
 			Circles.autosharePatientRecord(inf.executorId, participation);

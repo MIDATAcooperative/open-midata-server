@@ -44,7 +44,7 @@ private static ActorSystem system;
   
     
     public static void approve(MidataId executor, Study theStudy, MidataId participant, MidataId app, String group) throws AppException {    	
-	    Set<String> fields = Sets.create("owner", "ownerName", "group", "recruiter", "recruiterName", "pstatus", "gender", "country", "yearOfBirth", "partName");	    
+	    Set<String> fields = Sets.create("owner", "ownerName", "group", "recruiter", "recruiterName", "pstatus", "partName");	    
 		List<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(theStudy._id, CMaps.map("pstatus", ParticipationStatus.REQUEST).map("owner", participant), fields, 0);
 		
 		Studies.autoApprove(app, theStudy, executor, theStudy.autoJoinGroup, participants);			

@@ -169,6 +169,7 @@ public class APSCache {
 	public void prefetch(Collection<? extends Consent> consents, Map<MidataId, byte[]> keys) throws AppException {	
 		if (consents.size() > 1) {
 			if (cache.size() > CACHE_LIMIT) {
+			   AccessLog.log("APS Cache clear (cache size)");
 			   cache.clear();
 			}
 			
@@ -268,6 +269,7 @@ public class APSCache {
 	}
 	
 	public void resetConsentCache() {
+		AccessLog.log("resetConsentCache");
 		consentLimit = -1;
 		ownerToConsent = null;
 		consentCache.clear();

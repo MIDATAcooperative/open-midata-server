@@ -23,14 +23,10 @@ import utils.stats.Stats;
  */
 public class IndexRoot extends TsBaseIndexRoot<IndexKey,IndexMatch> {
 
-	private IndexDefinition model;
-	
-	
-	
+				
 	public IndexRoot(byte[] key, IndexDefinition def, boolean isnew) throws InternalServerException {
 		super(key,def,isnew);
-		this.key = key;
-		this.model = def;
+		this.key = key;		
 		this.rootPage = new IndexPage(this.key, def, this, 1);		
 		if (isnew) {
 			locked = true;
@@ -39,15 +35,6 @@ public class IndexRoot extends TsBaseIndexRoot<IndexKey,IndexMatch> {
 		this.btree = new BTree(this, this.rootPage);
 		this.loadedPages = new HashMap<MidataId, IndexPage<IndexKey,IndexMatch>>();		
 	}
-	
-	
-	
-	public IndexDefinition getModel() {
-		return model;
-	}
-    		
-	
-	
 					
 	public List<String> getFormats() {		
 		return model.formats;
