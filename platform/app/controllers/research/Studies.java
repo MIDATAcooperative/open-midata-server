@@ -726,7 +726,7 @@ public class Studies extends APIController {
 		Map<String, Object> properties = new HashMap<String, Object>(study.recordQuery);
 		Feature_FormatGroups.convertQueryToContents(properties);
 		
-		if (study.requiredInformation.equals(InformationType.RESTRICTED)) {
+		if (!study.requiredInformation.equals(InformationType.DEMOGRAPHIC)) {
 				
 			if (Query.getAnyRestrictionFromQuery(properties, "content").contains("Patient"))
 				throw new BadRequestException("error.invalid.sharing", "Restricted study may not share Patient records.");
@@ -1491,10 +1491,13 @@ public class Studies extends APIController {
 		if (ugm == null)
 			throw new BadRequestException("error.notauthorized.study", "Not member of study team");
 
+		if (study.requiredInformation!=InformationType.DEMOGRAPHIC && ugm.role.pseudonymizedAccess()) {
+			return ok(JsonOutput.toJson(Collections.emptyList(), "Consent", Sets.create()));
+		}
 		Set<String> fields = Sets.create("owner", "ownerName", "group", "recruiter", "recruiterName", "pstatus", "partName");
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		List<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(studyid, properties, fields, 1000);
-		if (!ugm.role.pseudonymizedAccess() && study.requiredInformation==InformationType.RESTRICTED) {
+		if (!ugm.role.pseudonymizedAccess() && study.requiredInformation!=InformationType.DEMOGRAPHIC) {
 			for (StudyParticipation part : participants) {
 				part.partName = Feature_Pseudonymization.pseudonymizeUser(userId, part).getRight();
 				part.ownerName = null;
@@ -1573,7 +1576,7 @@ public class Studies extends APIController {
 		if (participation.pstatus == ParticipationStatus.CODE || participation.pstatus == ParticipationStatus.MATCH || participation.pstatus == ParticipationStatus.MEMBER_REJECTED)
 			throw new BadRequestException("error.unknown.participant", "Member does not participate in study");
 
-		if (!ugm.role.pseudonymizedAccess() && study.requiredInformation==InformationType.RESTRICTED) {
+		if (!ugm.role.pseudonymizedAccess() && study.requiredInformation!=InformationType.DEMOGRAPHIC) {
 			participation.partName = Feature_Pseudonymization.pseudonymizeUser(userId, participation).getRight();
 			participation.ownerName = null;
 		}

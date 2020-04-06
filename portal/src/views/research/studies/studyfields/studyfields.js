@@ -11,7 +11,7 @@ angular.module('portal')
 		.then(function(data) { 								
 			$scope.information = data.data;	
 			
-			if ($scope.information.anonymous) $scope.information.identity="ANONYMOUS";
+			//if ($scope.information.anonymous) $scope.information.identity="ANONYMOUS";
 		});
 	   
 	   $scope.status.doBusy(server.get(jsRoutes.controllers.research.Studies.get($scope.studyid).url))
@@ -23,12 +23,12 @@ angular.module('portal')
    
    $scope.setRequiredInformation = function() {
 	   var params = JSON.parse(JSON.stringify($scope.information));
-	   if (params.identity == "ANONYMOUS") {
-		   params.identity = "RESTRICTED";
+	   /*if (params.identity == "ANONYMOUS") {
+		   params.identity = "NONE";
 		   params.anonymous = true;
 	   } else {
 		   params.anonymous = false;
-	   }
+	   }*/
 	   		   
 	   server.post(jsRoutes.controllers.research.Studies.setRequiredInformationSetup($scope.studyid).url, params).
 		then(function(data) { 				

@@ -364,8 +364,8 @@ public class Studies extends APIController {
 		
 		//participation.addHistory(new History(EventType.PARTICIPATION_REQUESTED, participation, user, null));
 		if (study.termsOfUse != null) user.agreedToTerms(study.termsOfUse, usingApp);		
-		if (study.requiredInformation.equals(InformationType.RESTRICTED)) {						
-			PatientResourceProvider.createPatientForStudyParticipation(inf, participation, user);
+		if (study.requiredInformation.equals(InformationType.RESTRICTED) || study.requiredInformation.equals(InformationType.NONE)) {						
+			PatientResourceProvider.createPatientForStudyParticipation(inf, study, participation, user);
 			Circles.autosharePatientRecord(inf.executorId, participation);
 		} else {
 			Circles.autosharePatientRecord(inf.executorId, participation);

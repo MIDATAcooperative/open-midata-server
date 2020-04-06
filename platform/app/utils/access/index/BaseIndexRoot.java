@@ -37,6 +37,7 @@ public abstract class BaseIndexRoot<A extends BaseIndexKey<A,B>,B> {
 	public long getVersion() {
 		return rootPage.getVersion();
 	}
+		
 	
     public void flush() throws InternalServerException, LostUpdateException {
 		

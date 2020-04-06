@@ -47,8 +47,10 @@
 	  </tbody>
 	</table>
 	</div>
-	<p ng-show="results.length == 0" translate="studyparticipants.empty">	  
+	<p ng-show="results.length == 0 && mayViewParticipants()" translate="studyparticipants.empty">	  
 	</p>	
+	<p ng-show="!mayViewParticipants()" translate="studyparticipants.not_allowed">	  
+	</p>
 	<button ng-show="mayAddParticipants()" ui-sref="^.addparticipant"  class="btn btn-default" translate="studyparticipants.add_participant_btn"></button>
 	</div></div>
 		

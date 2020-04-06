@@ -100,6 +100,7 @@ angular.module('portal')
 		}
 		if (reqInf == 'RESTRICTED') result.push($translate("studydetails.information_restricted").then(function(l) { genLabels.push(l); }));
 		if (reqInf == 'DEMOGRAPHIC') result.push($translate("studydetails.information_demographic").then(function(l) { genLabels.push(l); }));
+		if (reqInf == 'NONE') result.push($translate("studydetails.information_none").then(function(l) { genLabels.push(l); }));
 		return $q.all(result);
 				
 	};

@@ -15,16 +15,18 @@
 			    <div ng-show="entry.extension[0].valueString">{{ entry.extension[0].valueString | translate }}</div>	      			    			   
 			  </div>
 			  <div class="col-sm-6 col-md-4">
-			    <div>{{ entry.agent[0].name }} <span ng-show="entry.agent[0].role[0].coding[0].code != 'MEMBER'" class="badge badge-info" translate="{{ 'enum.userrole.'+entry.agent[0].role[0].coding[0].code }}"></span></div>
+			    <div><span ng-hide="entry.agent[0].name=='?'">{{ entry.agent[0].name }}</span><span ng-show="entry.agent[0].name=='?'" translate="auditlog.anonymous"></span> <span ng-show="entry.agent[0].role[0].coding[0].code != 'MEMBER'" class="badge badge-info" translate="{{ 'enum.userrole.'+entry.agent[0].role[0].coding[0].code }}"></span></div>
 			    <div class="text-primary">{{ entry.agent[0].altId }}</div>
 			    <div ng-show="entry.agent.length>1"><i><span translate="auditlog.via"></span> {{ entry.agent[1].name }}</i></div>  
 			  </div>			  
 			  
 			  <div class="col-sm-6 col-md-3">
 			     <div ng-repeat="entity in entry.entity">
+			       <div ng-if="entity.name">
 			       <b ng-show="entity.type.code"><span translate="{{ 'auditlog.'+entity.type.code }}">{{ entity.type.code }}</span>:</b>
 			       <div>{{ entity.name }}</div>
 			       <div class="text-primary">{{ entity.what.display }}</div>
+			       </div>
 			     </div>
 			  </div>
 			  </div>			  			  

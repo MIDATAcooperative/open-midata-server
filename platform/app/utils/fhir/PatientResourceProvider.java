@@ -82,6 +82,7 @@ import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.EMailStatus;
 import models.enums.Gender;
+import models.enums.InformationType;
 import models.enums.JoinMethod;
 import models.enums.LinkTargetType;
 import models.enums.StudyAppLinkType;
@@ -516,21 +517,28 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		patientProvider.updatePatientForAccount(member);
 	}
 
-	public static Patient generatePatientForStudyParticipation(MidataId pseudo, String ownerName, Member member) {
+	public static Patient generatePatientForStudyParticipation(MidataId pseudo, String ownerName, Member member, Study study) {
 
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(member.birthday);
-		cal.set(Calendar.MONTH, 0);
-		cal.set(Calendar.DAY_OF_MONTH, 1);
-		cal.set(Calendar.HOUR_OF_DAY, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
+	
 
 		Patient p = new Patient();		
 		p.addName().setText(ownerName);
-		p.setBirthDate(cal.getTime());
-		p.setGender(AdministrativeGender.valueOf(member.gender.toString()));
+		
+		if (study.requiredInformation != InformationType.NONE) {
+			if (member.birthday != null) {
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(member.birthday);
+				cal.set(Calendar.MONTH, 0);
+				cal.set(Calendar.DAY_OF_MONTH, 1);
+				cal.set(Calendar.HOUR_OF_DAY, 0);
+				cal.set(Calendar.MINUTE, 0);
+				cal.set(Calendar.SECOND, 0);
+				cal.set(Calendar.MILLISECOND, 0);
+				
+				p.setBirthDate(cal.getTime());
+			}
+			if (member.gender != null) p.setGender(AdministrativeGender.valueOf(member.gender.toString()));
+		}
 
 		p.addIdentifier(new Identifier().setValue(ownerName).setSystem("http://midata.coop/identifier/participant-name"));
 		p.addIdentifier(new Identifier().setValue(pseudo.toString()).setSystem("http://midata.coop/identifier/participant-id"));
@@ -538,13 +546,13 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		return p;
 	}
 
-	public static void createPatientForStudyParticipation(ExecutionInfo inf, StudyParticipation part, Member member) throws AppException {
+	public static void createPatientForStudyParticipation(ExecutionInfo inf, Study study, StudyParticipation part, Member member) throws AppException {
 
 		PatientResourceProvider patientProvider = (PatientResourceProvider) FHIRServlet.myProviders.get("Patient");
 		PatientResourceProvider.setExecutionInfo(inf);
 		String userName = "P-" + CodeGenerator.nextUniqueCode();			
 		Record record = PatientResourceProvider.newRecord("fhir/Patient");
-		Patient patient = generatePatientForStudyParticipation(record._id, userName, member);
+		Patient patient = generatePatientForStudyParticipation(record._id, userName, member, study);
 		patient.setId(record._id.toString());
 		patientProvider.prepare(record, patient);
 		record.content = "PseudonymizedPatient";

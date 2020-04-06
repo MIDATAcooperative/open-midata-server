@@ -53,6 +53,7 @@ public class MidataAuditEvent extends Model {
 	 * authorized users or organizations
 	 */
 	public Set<MidataId> authorized;
+			
 	
 	/**
 	 * id of entity this record is about
