@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -310,48 +311,27 @@ public class IndexManager {
 			index.checkLock();
 			
 			long updateAllTs = 0;
+			int modCount = 0;
 		    if (targetAps == null) {
 		    	updateAllTs = System.currentTimeMillis() - 2000;
 		    	long limit = index.getAllVersion();
 		    	Set<Consent> consents = Consent.getAllActiveByAuthorized(executor, limit);	
-		    	cache.prefetch(consents, null);
-				targetAps = new HashSet<MidataId>();
-				targetAps.add(executor);
-				for (Consent consent : consents) targetAps.add(consent._id);				
+		    	
+		    	DBIterator<Consent> consentIt = new Feature_AccountQuery.BlockwiseConsentPrefetch(cache, consents.iterator(), 200);
+		    	while (consentIt.hasNext()) {
+		    		indexUpdatePart(index, executor, consentIt.next()._id, cache);
+		    		modCount += index.getModCount();
+		    	}		    			    				
+		    } else {		    
+			    AccessLog.log("number of aps to update = "+targetAps.size());				
+				for (MidataId aps : targetAps) {				
+					indexUpdatePart(index,executor,aps,cache);				
+					modCount += index.getModCount();								
+				}
 		    }
-		    
-		    AccessLog.log("number of aps to update = "+targetAps.size());
-			int modCount = 0;
-			for (MidataId aps : targetAps) {
-				if (index.getModCount() > 5000) index.flush();
-				
-				Map<String, Object> restrictions = new HashMap<String, Object>();
-				restrictions.put("format", index.getFormats());				
-				if (aps.equals(executor)) restrictions.put("owner", "self");
-				
-			    AccessLog.log("Checking aps:"+aps.toString());
-				// Records that have been updated or created
-			    long v = index.getVersion(aps);
-			    //AccessLog.log("v="+v);
-				Date limit = v>0 ? new Date(v - UPDATE_TIME) : null;
-				long now = System.currentTimeMillis();
-				 
-				if (limit != null) restrictions.put("shared-after", limit);								
-				List<DBRecord> recs = QueryEngine.listInternal(cache, aps, null, restrictions, Sets.create("_id"));
-				addRecords(index, aps, recs);
-				boolean updateTs = recs.size() > 0 || limit == null || (now-v) > UPDATE_UNUSED;
-				// Records that have been freshly shared				
-				
-				if (updateTs) index.setVersion(aps, now);
-				AccessLog.log("Add index: from updated="+recs.size());
-				
-				modCount += index.getModCount();
-				
-				
-			}
 			
-			AccessLog.log("updateAllTs="+updateAllTs+" modCount="+modCount+" ts="+targetAps.size());
-			if (updateAllTs != 0 && (modCount>0 || targetAps.size() > 3)) index.setAllVersion(updateAllTs);
+			AccessLog.log("updateAllTs="+updateAllTs+" modCount="+modCount+" ts="+(targetAps!=null?targetAps.size():"all"));
+			if (updateAllTs != 0 && (modCount>0 || targetAps==null || targetAps.size() > 3)) index.setAllVersion(updateAllTs);
 			index.flush();
 		} catch (LostUpdateException e) {
 			try {
@@ -362,6 +342,31 @@ public class IndexManager {
 			indexUpdate(cache, index, executor, targetAps);
 		}
 		AccessLog.logEnd("end index update time= "+(System.currentTimeMillis() - startUpdate)+" ms");
+	}
+	
+	private void indexUpdatePart(IndexRoot index, MidataId executor, MidataId aps, APSCache cache) throws AppException, LostUpdateException {
+		if (index.getModCount() > 5000) index.flush();
+		
+		Map<String, Object> restrictions = new HashMap<String, Object>();
+		restrictions.put("format", index.getFormats());				
+		if (aps.equals(executor)) restrictions.put("owner", "self");
+		
+	    AccessLog.log("Checking aps:"+aps.toString());
+		// Records that have been updated or created
+	    long v = index.getVersion(aps);
+	    //AccessLog.log("v="+v);
+		Date limit = v>0 ? new Date(v - UPDATE_TIME) : null;
+		long now = System.currentTimeMillis();
+		 
+		if (limit != null) restrictions.put("shared-after", limit);								
+		List<DBRecord> recs = QueryEngine.listInternal(cache, aps, null, restrictions, Sets.create("_id"));
+		addRecords(index, aps, recs);
+		boolean updateTs = recs.size() > 0 || limit == null || (now-v) > UPDATE_UNUSED;
+		// Records that have been freshly shared				
+		
+		if (updateTs) index.setVersion(aps, now);
+		AccessLog.log("Add index: from updated="+recs.size());
+		
 	}
 	
 	public void indexUpdate(APSCache cache, StreamIndexRoot index, MidataId executor) throws AppException {
@@ -474,9 +479,9 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 					   AccessLog.log("key:"+key+" exists:"+(inf!=null));
 					   List<DBRecord> newRecs;
 					   if (inf != null) {
-					      newRecs = nextWithProcessing.query(new Query("index-update",CMaps.map("owner",r.owner).map("stream",r._id).map("created-after", inf.calculated), Sets.create("_id"), cache, aps , new DummyAccessContext(cache)));
+					      newRecs = nextWithProcessing.query(new Query("index-update",CMaps.map("owner",r.owner).map("stream",r._id).map("created-after", inf.calculated), Sets.create("_id"), cache, aps , new DummyAccessContext(cache),null));
 					   } else {
-						  newRecs = nextWithProcessing.query(new Query("index-update",CMaps.map("owner",r.owner).map("stream",r._id), Sets.create("_id"), cache, aps, new DummyAccessContext(cache)));
+						  newRecs = nextWithProcessing.query(new Query("index-update",CMaps.map("owner",r.owner).map("stream",r._id), Sets.create("_id"), cache, aps, new DummyAccessContext(cache),null));
 					   }
 					   
 					   if (!newRecs.isEmpty()) {

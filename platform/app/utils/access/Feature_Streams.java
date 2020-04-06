@@ -153,7 +153,7 @@ public class Feature_Streams extends Feature {
 			  
 			  //AccessLog.logBegin("begin single stream query");
 			  
-			  DBIterator<DBRecord> streams = next.iterator(new Query(q.getPath()+"/single-stream", q.getProperties().get("stream").toString(), CMaps.map(q.getProperties()).map("_id", q.getProperties().get("stream")).removeKey("quick"), streamQueryFields, q.getCache(), q.getApsId(), q.getContext() ));				
+			  DBIterator<DBRecord> streams = next.iterator(new Query("single-stream", q.getProperties().get("stream").toString(), CMaps.map(q.getProperties()).map("_id", q.getProperties().get("stream")).removeKey("quick"), streamQueryFields, q.getCache(), q.getApsId(), q.getContext(),q ));				
 			  return new StreamCombineIterator(next, q, streams, null);
 			  
 		}

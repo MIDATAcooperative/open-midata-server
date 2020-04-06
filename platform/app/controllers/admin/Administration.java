@@ -516,11 +516,10 @@ public class Administration extends APIController {
 		Rights.chk("MidataAuditEvent.search", getRole(), properties, fields);
 		
 		List<MidataAuditEvent> events = null;
-	
+	    //properties.put("noAdminView", CMaps.map("$ne", true));
 		
 		events = MidataAuditEvent.getAll(properties, fields, 1000);
-							
-		
+									
 		//Collections.sort(circles);
 		return ok(JsonOutput.toJson(events, "MidataAuditEvent", fields));
 	}

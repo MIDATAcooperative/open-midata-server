@@ -478,7 +478,7 @@ public class Circles extends APIController {
 	 * @param consent consent with which the patient record should be shared
 	 * @throws AppException
 	 */
-	public static void autosharePatientRecord(MidataId executorId, Consent consent) throws AppException {		
+	public static void autosharePatientRecord(MidataId executorId, Consent consent) throws AppException {			
 		int recs = RecordManager.instance.share(executorId, consent.owner, consent._id, consent.owner, CMaps.map("owner", consent.owner).map("format", "fhir/Patient").map("data", CMaps.map("id", consent.owner.toString())), true);
 		if (recs == 0) throw new InternalServerException("error.internal", "Patient Record not found!");
 	}

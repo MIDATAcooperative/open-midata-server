@@ -46,7 +46,7 @@ public class AccountCreationAccessContext extends AccessContext {
 	}
 
 	@Override
-	public MidataId getOwnerPseudonymized() {		
+	public MidataId getOwnerPseudonymized() throws AppException  {		
 		return parent.getOwnerPseudonymized();
 	}
 

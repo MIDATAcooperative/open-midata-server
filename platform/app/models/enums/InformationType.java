@@ -14,5 +14,10 @@ public enum InformationType {
 	/**
 	 * All demographic information of the participant. (Non anonymous study)
 	 */
-	DEMOGRAPHIC
+	DEMOGRAPHIC,
+	
+	/**
+	 * No account information included
+	 */
+	NONE
 }

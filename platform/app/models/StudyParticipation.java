@@ -27,13 +27,13 @@ public class StudyParticipation extends Consent {
 	public String group; // If study has multiple separate groups of participants
 	public MidataId recruiter; // if member has been recruited through someone (by entering a participation code)
 	public String recruiterName; // replication of recruiter name
-	public Set<MidataId> providers; // (Optional) List of healthcare providers monitoring the member for this study.	
+	public Set<MidataId> providers; // (Optional) List of healthcare providers monitoring the member for this study.
 	
 	public JoinMethod joinMethod;
 	
-	public int yearOfBirth;
-	public String country;
-	public Gender gender;
+	//public int yearOfBirth;
+	//public String country;
+	//public Gender gender;
 	
 	public @NotMaterialized String partName;
 			
@@ -81,10 +81,10 @@ public class StudyParticipation extends Consent {
 		return Model.getAll(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("study", study).map("group", group).map("pstatus", Sets.createEnum(ParticipationStatus.ACCEPTED, ParticipationStatus.REQUEST, ParticipationStatus.MEMBER_RETREATED)), fields);
 	}
 	
-	public static Set<StudyParticipation> getActiveOrRetreatedParticipantsByStudyAndGroupsAndParticipant(Set<MidataId> study, Set<String> group, MidataId member, Set<MidataId> owners, Set<String> fields, boolean alsoPseudonymized, long since) throws InternalServerException {
+	public static List<StudyParticipation> getActiveOrRetreatedParticipantsByStudyAndGroupsAndParticipant(Set<MidataId> study, Set<String> group, MidataId member, Set<MidataId> owners, Set<String> fields, boolean alsoPseudonymized, long since, int maxReturn) throws InternalServerException {
 		Map<String, Object> m = CMaps.map("type", ConsentType.STUDYPARTICIPATION).mapNotEmpty("study", study).mapNotEmpty("group", group).map("pstatus", Sets.createEnum(ParticipationStatus.ACCEPTED, ParticipationStatus.REQUEST, ParticipationStatus.MEMBER_RETREATED)).map("authorized", member).mapNotEmpty("owner", owners).map("dataupdate", CMaps.map("$gte", since)).map("status",  Sets.createEnum(ConsentStatus.ACTIVE, ConsentStatus.FROZEN));
 		if (!alsoPseudonymized) m.put("ownerName", CMaps.map("$exists", false));
-		return Model.getAll(StudyParticipation.class, collection, m, fields);
+		return Model.getAllList(StudyParticipation.class, collection, m, fields, maxReturn);
 	}
 	
 	public static Set<StudyParticipation> getActiveOrRetreatedParticipantsByStudyAndGroupsAndIds(Set<MidataId> study, Set<String> group, MidataId member, Set<MidataId> owners, Set<String> fields) throws InternalServerException {

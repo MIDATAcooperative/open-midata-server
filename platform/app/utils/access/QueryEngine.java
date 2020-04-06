@@ -52,7 +52,7 @@ class QueryEngine {
 	}
 	
 	public static Collection<RecordsInfo> info(APSCache cache, MidataId aps, AccessContext context, Map<String, Object> properties, AggregationType aggrType) throws AppException {		
-		return infoQuery(new Query("info-query",properties, Sets.create("group", "content", "format", "owner", "app"), Feature_UserGroups.findApsCacheToUse(cache,aps), aps, context != null ? context : new DummyAccessContext(cache)), aps, false, aggrType, null);
+		return infoQuery(new Query("info-query",properties, Sets.create("group", "content", "format", "owner", "app"), Feature_UserGroups.findApsCacheToUse(cache,aps), aps, context != null ? context : new DummyAccessContext(cache), null), aps, false, aggrType, null);
 	}
 	
 	public static List<DBRecord> isContainedInAps(APSCache cache, MidataId aps, List<DBRecord> candidates) throws AppException {
@@ -60,7 +60,7 @@ class QueryEngine {
 		if (!cache.getAPS(aps).isAccessible()) return new ArrayList<DBRecord>();
 
 		if (AccessLog.detailedLog) AccessLog.logBeginPath("contained-in-aps(recs="+candidates.size()+")",null);
-		List<DBRecord> result = Feature_Prefetch.lookup(new Query("contained-in-aps",CMaps.map(RecordManager.FULLAPS_WITHSTREAMS).map("strict", true), Sets.create("_id"), cache, aps, null), candidates, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_AccountQuery(new Feature_Streams()))), false);
+		List<DBRecord> result = Feature_Prefetch.lookup(new Query("contained-in-aps",CMaps.map(RecordManager.FULLAPS_WITHSTREAMS).map("strict", true), Sets.create("_id"), cache, aps, null, null), candidates, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_AccountQuery(new Feature_Streams()))), false);
 		if (AccessLog.detailedLog) AccessLog.logEndPath("#recs="+result.size());
 		
 		return result;						
@@ -83,7 +83,7 @@ class QueryEngine {
 		APS inMemory = new Feature_InMemoryQuery(records);
 		context.getCache().addAPS(inMemory);
 		Feature qm = new Feature_Or(new Feature_ContextRestrictions(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_ContentFilter(inMemory)))));		
-		DBIterator<DBRecord> recs = qm.iterator(new Query("list-from-memory",properties, Sets.create("_id"), context.getCache(), inMemory.getId(),context));							
+		DBIterator<DBRecord> recs = qm.iterator(new Query("list-from-memory",properties, Sets.create("_id"), context.getCache(), inMemory.getId(),context, null));							
 		return recs;
 	}
 	
@@ -252,7 +252,7 @@ class QueryEngine {
     	   APS target = cache.getAPS(aps);    	
     	   qm = new Feature_Pagination(new Feature_Sort(new Feature_Or(new Feature_ContextRestrictions(new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_Prefetch(true, new Feature_PublicData(new Feature_UserGroups(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))))))))))))))));
     	}
-    	Query q = new Query("full-query",properties, fields, cache, aps, context);
+    	Query q = new Query("full-query",properties, fields, cache, aps, context, null);
     	AccessLog.logQuery(q.getApsId(), q.getProperties(), q.getFields());
     	DBIterator<DBRecord> result = qm.iterator(q);
     	    	    	
@@ -342,7 +342,7 @@ class QueryEngine {
     		    		    		
     	  Map<String, Object> comb = Feature_QueryRedirect.combineQuery(properties, query.getProperties(), query.getContext());
       	  if (comb != null) {
-      		query = new Query(query.getPath()+"/"+path,properties.toString(),comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext());
+      		query = new Query(path,properties.toString(),comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext(), query);
     	
       	    Collection<Map<String, Object>> col = (Collection<Map<String, Object>>) properties.get("$or");
       	    AccessLog.log("$or: #pathes="+col.size());
@@ -352,7 +352,7 @@ class QueryEngine {
         } else {
           Map<String, Object> comb = Feature_QueryRedirect.combineQuery(properties, query.getProperties(), query.getContext());
     	  if (comb != null) {
-    		  return qm.iterator(new Query(query.getPath()+"/"+path,properties.toString(),comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext()).setFromRecord(query.getFromRecord()));
+    		  return qm.iterator(new Query(path,properties.toString(),comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext(), query).setFromRecord(query.getFromRecord()));
     	  } else {
     		  AccessLog.log("empty combine");
     	  }

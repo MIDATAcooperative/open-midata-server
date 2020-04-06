@@ -1,14 +1,24 @@
 package utils.access;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.Pair;
+import org.bson.BasicBSONObject;
+
+import models.Consent;
 import models.MidataId;
 import models.StudyParticipation;
 import utils.AccessLog;
 import utils.access.ProcessingTools.BlockwiseLoad;
+import utils.access.op.CompareCaseInsensitive;
+import utils.access.op.CompareCondition;
+import utils.access.op.Condition;
+import utils.access.op.FieldAccess;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -34,7 +44,7 @@ public class Feature_Pseudonymization extends Feature {
 			if (q.getContext().mustPseudonymize()) {
 				Map<String, Object> newprops = new HashMap<String, Object>();
 				newprops.putAll(q.getProperties());
-				if (!pseudonymizedIdRestrictions(q, q.getCache().getAccountOwner(), newprops)) return ProcessingTools.empty();
+				if (!pseudonymizedIdRestrictions(q, next, q.getCache().getAccountOwner(), newprops)) return ProcessingTools.empty();
 				q = new Query(q, "pseudonym", newprops);
 			}
 
@@ -51,15 +61,19 @@ public class Feature_Pseudonymization extends Feature {
 		return result;
 	}
 	
-	public static boolean pseudonymizedIdRestrictions(Query q, MidataId group, Map<String,Object> newprops) throws AppException {
+	public static boolean pseudonymizedIdRestrictions(Query q, Feature next, MidataId group, Map<String,Object> newprops) throws AppException {
 		if (q.restrictedBy("owner")) {
-			   Set<StudyParticipation> parts = StudyParticipation.getActiveOrRetreatedParticipantsByStudyAndGroupsAndIds(q.restrictedBy("study") ? q.getMidataIdRestriction("study") : null, q.getRestrictionOrNull("study-group"), group, q.getMidataIdRestriction("owner"), Sets.create("name", "order", "owner", "ownerName", "type"));
-			   Set<String> owners = new HashSet<String>();
-			   for (StudyParticipation part : parts) {
-				  owners.add(part.owner.toString());
-			   }
-			   newprops.put("owner", owners);
-			   if (owners.isEmpty()) return false;//return ProcessingTools.empty();
+			Set<MidataId> ids = q.getMidataIdRestriction("owner");
+			Set<String> owners = new HashSet<String>(ids.size());
+			for (MidataId id : ids) {
+				MidataId targetId = Feature_Pseudonymization.unpseudonymizeUser(q, next, id);
+				if (targetId!=null) {
+					AccessLog.log("UNPSEUDONYMIZE "+id+" to "+targetId);
+					owners.add(targetId.toString());
+				}
+			}			  
+			newprops.put("owner", owners);
+			if (owners.isEmpty()) return false;//return ProcessingTools.empty();
 	    }		
 		return true;
 	}
@@ -122,5 +136,49 @@ public class Feature_Pseudonymization extends Feature {
 		
 	}	
 	
+	private final static Set<String> FIELDS_FOR_PSEUDONYMIZATION = Collections.unmodifiableSet(Sets.create("_id","format"));
+	
+	public static Pair<MidataId,String> pseudonymizeUser(MidataId executor, Consent consent) throws AppException {
+		if (consent.getOwnerName() != null && !consent.getOwnerName().equals("?")) return Pair.of(consent._id,consent.ownerName);
+		BasicBSONObject patient = (BasicBSONObject) RecordManager.instance.getMeta(executor, consent._id, "_patient");
+		if (patient != null) {
+			MidataId pseudoId = new MidataId(patient.getString("id"));
+			String pseudoName = patient.getString("name");
+			return Pair.of(pseudoId, pseudoName);
+		}
+		
+		throw new InternalServerException("error.internal", "Cannot pseudonymize");
+	}
+	
+	public static Pair<MidataId,String> pseudonymizeUser(APSCache cache, Consent consent) throws AppException {
+		if (consent.getOwnerName() != null && !consent.getOwnerName().equals("?")) return Pair.of(consent._id,consent.ownerName);
+		BasicBSONObject patient = Feature_UserGroups.findApsCacheToUse(cache, consent._id).getAPS(consent._id, consent.owner).getMeta("_patient");
+		if (patient != null) {
+			MidataId pseudoId = new MidataId(patient.getString("id"));
+			String pseudoName = patient.getString("name");
+			return Pair.of(pseudoId, pseudoName);
+		}
+		
+		throw new InternalServerException("error.internal", "Cannot pseudonymize");
+	}
+	
+	public static MidataId unpseudonymizeUser(Query q, Feature next, MidataId pseudonymizedUser) throws AppException {
+		if (q.getCache().getAccountOwner().equals(pseudonymizedUser)) return pseudonymizedUser;
+		AccessLog.logBeginPath("unpseudonymize", "user="+pseudonymizedUser);
+		Condition cnd = FieldAccess.path("id", new CompareCaseInsensitive((Comparable) pseudonymizedUser.toString(), CompareCaseInsensitive.CompareCaseInsensitiveOperator.EQUALS)).optimize();
+	    Object study = q.getProperties().get("study");	   
+		List<DBRecord> rec = ProcessingTools.collect(new Feature_ProcessFilters(next).iterator(new Query("unpseudonymize",CMaps.mapNotEmpty("study", study).map("format","fhir/Patient").map("content","PseudonymizedPatient").map("data", cnd).map("index", cnd.indexExpression()).map("fast-index","true"), Sets.create("_id"),q.getCache(),q.getApsId(),q.getContext(),q)));
+		AccessLog.logEndPath("#found="+rec.size());
+		if (rec.size()==1) {
+			return rec.get(0).context.getOwner();
+		}
+		if (rec.size()==0) return null;		
+		AccessLog.log("FOUND USER RECORDS="+rec.size());		
+		throw new InternalServerException("error.internal", "Cannot unpseudonymize");
+	}
+	
+	public static void addPseudonymization(MidataId executorId, MidataId consentId, MidataId pseudoId, String pseudoName) throws AppException {
+		RecordManager.instance.setMeta(executorId, consentId, "_patient", CMaps.map("id", pseudoId.toString()).map("name", pseudoName));		
+	}
 
 }
