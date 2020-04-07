@@ -647,7 +647,9 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 					  processor.tell(new SubscriptionTriggered(data.owner, data.app, data.format, null, null, null), getSelf());
 					  return true;
 				}
-			}			
+			}		
+			autoImportsIt = null;
+			datasIt = null;
 			return false;
 		}
 		

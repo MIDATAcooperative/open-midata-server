@@ -68,14 +68,14 @@ angular.module('portal')
 						angular.forEach(sq.content, function(r) {
 						  if (r === "Patient" || r === "Group" || r === "Person" || r === "Practitioner") return;
 						  labels.getContentLabel($translate.use(), r).then(function(lab) {
-							 $scope.labels.push(lab); 
+							 if ($scope.labels.indexOf(lab)<0) $scope.labels.push(lab); 
 						  });
 						});
 					}
 					if (sq.group) {
 						angular.forEach(sq.group, function(r) {
 							  labels.getGroupLabel($translate.use(), r).then(function(lab) {
-								 $scope.labels.push(lab); 
+								  if ($scope.labels.indexOf(lab)<0) $scope.labels.push(lab); 
 							  });
 						});
 					}
