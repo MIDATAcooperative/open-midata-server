@@ -638,7 +638,7 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 				workerRouter.route(new ImportRequest(handle, autorunner, space), getSelf());
 				
 				return true;
-			} else while (datasIt.hasNext() && !foundone) {
+			} else while (datasIt!=null && datasIt.hasNext() && !foundone) {
 				SubscriptionData data = datasIt.next();
 				if (!done.contains(data.owner)) {
 					  done.add(data.owner);
