@@ -86,14 +86,14 @@ angular.module('portal')
 				angular.forEach(sq.content, function(r) {
 				  if (r === "Patient" || r === "Group" || r === "Person" || r === "Practitioner" || r === "ValueSet") return;
 				  result.push(labels.getContentLabel($translate.use(), r).then(function(lab) {
-					genLabels.push(lab); 
+					if (genLabels.indexOf(lab)<0) genLabels.push(lab); 
 				  }));
 				});
 			}
 			if (sq.group) {
 				angular.forEach(sq.group, function(r) {
 					  result.push(labels.getGroupLabel($translate.use(), sq["group-system"], r).then(function(lab) {
-						genLabels.push(lab); 
+						  if (genLabels.indexOf(lab)<0) genLabels.push(lab); 
 					  }));
 				});
 			}			

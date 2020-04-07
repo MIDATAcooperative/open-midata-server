@@ -178,14 +178,14 @@ angular.module('portal')
 				angular.forEach(sq.content, function(r) {
 				  if (r === "Patient" || r === "Group" || r === "Person" || r === "Practitioner") return;
 				  labels.getContentLabel($translate.use(), r).then(function(lab) {
-					 $scope.groupLabels.push(lab); 
+					  if ($scope.groupLabels.indexOf(lab)<0) $scope.groupLabels.push(lab); 
 				  });
 				});
 			}
 			if (sq.group) {
 				angular.forEach(sq.group, function(r) {
 					  labels.getGroupLabel($translate.use(), sq["group-system"], r).then(function(lab) {
-						 $scope.groupLabels.push(lab); 
+						  if ($scope.groupLabels.indexOf(lab)<0) $scope.groupLabels.push(lab); 
 					  });
 				});
 			}
