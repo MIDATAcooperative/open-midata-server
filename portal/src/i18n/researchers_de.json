@@ -70,6 +70,12 @@
         "allgroups" : "<Alle Gruppen>",
         "plugin" : "Forschungsapplikation",
         "device" : "Code des Gerätes",
+
+        // TODO NEW: Endpoint name
+        "endpoint" : "Endpoint name",
+
+        // TODO NEW: Restrict to aggregated data
+        "only_aggregated" : "Restrict to aggregated data",
         "restrict" : "Lesen auf diese Gruppe beschränken",
         "shareback" : "Die Applikation teilt Daten mit Teilnehmergruppe(n)",
         "add_application_btn" : "Forschungsapplikation hinzufügen",
@@ -122,9 +128,23 @@
         "required_data" : "Erforderliche Daten",
         "no_change_warning" : "Diese Konfiguration kann nicht mehr geändert werden, sobald das Projekt validiert wurde.",
         "member_identity" : "Identität des Mitglieds",
+
+        // TODO CHANGED
+        // OLD: Pseudonymized participation
+        // NEW: Pseudonymized participation (year of birth/gender/country)
         "pseudonymous1" : "Pseudonymisierte Teilnahme",
         "pseudonymous2" : ", exportierte Daten zeigen die pseudonymisierte Identität, das Geburtsjahr, Geschlecht und Land. Einige Forscher wie z.B. Study Nurses haben möglicherweise Zugang zu vollständigen persönlichen Daten.",
+
+        // TODO NEW: Pseudonymized participation (no additional info)
+        "pseudonymous1b" : "Pseudonymized participation (no additional info)",
+
+        // TODO NEW: , exported data reveals the pseudonymized identity. Some researchers like study nurses may have access to full personal data.
+        "pseudonymous2b" : ", exported data reveals the pseudonymized identity. Some researchers like study nurses may have access to full personal data.",
         "anonymous" : "Anonyme Teilnahme",
+
+        // TODO CHANGED
+        // OLD: , exported data reveals the pseudonymized identity, year of birth, gender and country. The pseudonymization mapping may not be accessed.
+        // NEW: , The pseudonymization mapping may not be accessed.
         "anonymous2" : ", exportierte Daten zeigen die pseudonymisierte Identität, das Geburtsjahr, Geschlecht und Land. Das Pseudonymisierungs-Mapping ist nicht zugänglich.",
         "not_anonymous1" : "Nicht pseudonymisiert",
         "not_anonymous2" : ", bedingt, dass das Mitglied seinen vollständigen Namen, Geburtsdatum und Kontaktinformationen (Adresse, Telefon, E-Mail) teilt",
@@ -213,7 +233,10 @@
         "retreated" : "Teilnehmer, welche sich zurückgezogen haben",
         "acceptall" : "Alle Anfragen annehmen und die neuen Teilnehmer zuordnen an der Teilnehmergruppe",
         "autojoin" : "Automatische Annahme",
-        "autojoin2" : "Alle Teilnahmewünsche annehmen und neue Teilnehmer der ausgewählten Gruppe zuweisen, sobald sich die Forschungsapplikation verbindet, die mit diesem Projekt verknüpft ist."
+        "autojoin2" : "Alle Teilnahmewünsche annehmen und neue Teilnehmer der ausgewählten Gruppe zuweisen, sobald sich die Forschungsapplikation verbindet, die mit diesem Projekt verknüpft ist.",
+
+        // TODO NEW: You are not allowed to view the participant list.
+        "not_allowed" : "You are not allowed to view the participant list."
     },
 
     "studyrecords" : {

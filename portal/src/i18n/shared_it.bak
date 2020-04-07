@@ -79,7 +79,7 @@
        "plugin" : "Application is intended for another role",
        "unlock_code" : "Incorrect unlock code",
        "access_query" : "The Data Access Filter must restrict by 'content' or 'group'!",
-       "sharing" : "The Data Access Filter contains data types that are excluded by the project configuration.",
+       "sharing" : "The Data Access Filter may not contain Patient resource. Correct Patient resource is shared automatically.",
        "anonymous" : "A research project can only be anonymous if no one is allowed to access unpseudonymized data.",
        "url" : "Invalid URL",
        "consent_members" : "This consent may only be confirmed once all external persons have joined MIDATA.",
@@ -130,7 +130,8 @@
        "research" : "A research organization with this name already exists.",
        "passcode" : "Please choose a different passcode!",
        "plugin" : "An application with the same name already exists.",
-       "study" : "A research project with this name already exists."
+       "study" : "A research project with this name already exists.",
+       "endpoint" : "An endpoint with this URL already exists"
      },
 
      "blocked" : {
@@ -311,8 +312,8 @@
 	 },
 	 "consenttype" : {
 	   "CIRCLE" : "Other Account Holders",
-     "EXTERNALSERVICE" : "External Application",
-     "API" : "External Service",
+	   "EXTERNALSERVICE" : "External Application",
+	   "API" : "External Service",
 	   "HCRELATED" : "Healthcare",
 	   "HEALTHCARE" : "Doctor / Hospital",
 	   "STUDYPARTICIPATION" : "Research project",
@@ -459,9 +460,10 @@
 	   "service" : "Internal Service",
 	   "oauth1" : "OAuth 1",
 	   "oauth2" : "OAuth 2",
-     "mobile" : "Application (Smartphone, Web)",
-     "external": "External Service",
-     "analyzer" : "Project analyzer"
+	   "mobile" : "Application (Smartphone, Web)",
+	   "external": "External Service",
+	   "analyzer" : "Project analyzer",
+	   "endpoint" : "FHIR endpoint"
 	 },
 	 "infos" : {
 	   "SUMMARY" : "Short Summary",
@@ -788,6 +790,7 @@
     "duration" : "Duration",
     "information_that_needs_sharing" : "Required data",
     "information_restricted" : "Your gender, year of birth and country of residence",
+    "information_none" : "A pseudonym",
     "information_demographic" : "Your complete demographic data (name, date of birth, address, ...)",
     "records_with_format" : "Records that have format:",
     "records_with_content" : "Records that have content:",
@@ -831,8 +834,8 @@
 	"export_btn" : "Export your data",
 	"delete_records_btn" : "Delete Records",
 	"wipe_account_btn" : "Delete Account",
-  "metrics_btn" : "Calculate Account Metrics",
-  "servicekeys_btn" : "Manage API Keys",
+	"metrics_btn" : "Calculate Account Metrics",
+	"servicekeys_btn" : "Manage API Keys",
 	"account_repaired" : "Your account has been repaired.",
 	"spaces_resetted" : "Your configuration has been resetted.",
 	"settings" : "Settings",	
@@ -860,7 +863,7 @@
     "tile_name" : "Tile Name:",
     "install_location" : "Location:",
     "grant_access" : "Grant this plugin access to:",
-    "terms" : "Terms",
+    "terms" : "Terms of use",
     "install_btn" : "Confirm Access",
     "location" : {
       "workspace" : "Workspace",
@@ -947,7 +950,8 @@
     "please_review2a" : "Please review this consent. Click on 'Confirm this Consent' if you agree. Click on 'Reject this Consent' if you do not agree.",
     "please_review2b" : "Please review this existing consent. Click on 'Skip (No change)' button to leave this page without any changes. Click on 'Reject this Consent' if you do not agree any longer.",
     "you" : "You",
-    "restrictions" : "Further restrictions?"
+    "restrictions" : "Further restrictions?",
+    "project" : "Project"
   },
   
   "editconsent2" : {
@@ -1205,6 +1209,7 @@
     "recorded" : "Time",
     "outcome" : "Outcome",
     "empty" : "No entry yet.",
+    "anonymous" : "Pseudonymized User",
     "title" : "Audit Log",
     "refresh_btn" : "Refresh",
     "via" : "via",
@@ -1373,9 +1378,9 @@
     "revoke_btn" : "Revoke this key",
     "instructions" : "Please copy these keys somewhere safe. They are displayed only once.",
     "key" : "API Key for direct use",
-    "instructions_key" : "Use this key directly in the Authorization header of the service as bearer token.",
-    "refresh" : "Refresh-Token for OAuth",
-    "instructions_refresh" : "For improved security exchange this refresh token against a new pair of access token and refresh token.",
+    "instructions_key" : "Use this key directly in the authorization header of the service as bearer token.",
+    "refresh" : "Refresh token for OAuth",
+    "instructions_refresh" : "For improved security, exchange this refresh token against a new pair of access token and refresh token.",
     "date" : "Date of creation",
     "status" : "Status",
     "ACTIVE" : "Active",

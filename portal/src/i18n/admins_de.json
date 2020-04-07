@@ -5,6 +5,9 @@
         "members" : "Mitglieder",
         "auditlog" : "Audit",
         "news" : "News",
+
+        // TODO NEW: Mails
+        "mails" : "Mails",
         "plugins" : "Applikationen",
         "usagestats" : "Statistik der Applikationsnutzung",
         "content" : "Inhaltstypen",
@@ -144,6 +147,10 @@
         "language" : "Sprache",
         "title" : "Überschrift (öffentlich)",
         "text" : "Inhalt (HTML)",
+
+        // TODO CHANGED
+        // OLD: Replace existing
+        // NEW: Replace the current version
         "replace" : "Aktuelle Version ersetzen"
     },
 
@@ -252,5 +259,94 @@
         "POST" : "Write",
         "PUT" : "Update",
         "DELETE" : "Delete"
+    },
+
+    "admin_mails" : {
+
+        // TODO NEW: Bulk Mails
+        "title" : "Bulk Mails",
+
+        // TODO NEW: Created
+        "created" : "Created",
+
+        // TODO NEW: Name
+        "name" : "Name",
+
+        // TODO NEW: Status
+        "status" : "Status",
+
+        // TODO NEW: Project
+        "studyName" : "Project",
+
+        // TODO NEW: Creator
+        "creatorName" : "Creator",
+
+        // TODO NEW: # Sent
+        "progressCount" : "# Sent",
+
+        // TODO NEW: No bulk emails have been created yet.
+        "empty" : "No bulk emails have been created yet.",
+        "stati" : {
+
+            // TODO NEW: Draft
+            "DRAFT" : "Draft",
+
+            // TODO NEW: Scheduled for sending
+            "STARTED" : "Scheduled for sending",
+
+            // TODO NEW: Sending in progress
+            "IN_PROGRESS" : "Sending in progress",
+
+            // TODO NEW: Finished
+            "FINISHED" : "Finished",
+
+            // TODO NEW: Cancelled
+            "CANCELLED" : "Cancelled",
+
+            // TODO NEW: Paused
+            "PAUSED" : "Paused"
+        }
+    },
+
+    "admin_managemails" : {
+
+        // TODO NEW: New Bulk Mail
+        "title1" : "New Bulk Mail",
+
+        // TODO NEW: Edit Bulk Mail
+        "title2" : "Edit Bulk Mail",
+
+        // TODO NEW: Internal Title for Mail
+        "name" : "Internal Title for Mail",
+
+        // TODO NEW: Status
+        "status" : "Status",
+
+        // TODO NEW: Time of creation
+        "created" : "Time of creation",
+
+        // TODO NEW: Sending started at
+        "started" : "Sending started at",
+
+        // TODO NEW: Sending completed at
+        "finished" : "Sending completed at",
+
+        // TODO NEW: # Sent
+        "progressCount" : "# Sent",
+
+        // TODO NEW: Research Project
+        "studyId" : "Research Project",
+
+        // TODO NEW: Language
+        "lang" : "Language",
+
+        // TODO NEW: Mail Title
+        "title" : "Mail Title",
+
+        // TODO NEW: Mail Content
+        "content" : "Mail Content",
+
+        // TODO NEW: Send
+        "send_btn" : "Send"
     }
 }

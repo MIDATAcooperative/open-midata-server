@@ -80,6 +80,10 @@
             "plugin" : "Questa applicazione è destinata ad un altro ruolo",
             "unlock_code" : "Codice di sblocco errato",
             "access_query" : "Il filtro di accesso dati (Data Access Filter) deve essere ristretto a 'contenuto' o 'gruppo'!",
+
+            // TODO CHANGED
+            // OLD: The Data Access Filter contains data types that are excluded by the project configuration.
+            // NEW: The Data Access Filter may not contain Patient resource. Correct Patient resource is shared automatically.
             "sharing" : "Il filtro di accesso dati (Data Access Filter) contiene tipi di dati esclusi dalla configurazione del progetto.",
             "anonymous" : "Lo progetto di ricerca può essere anonimo soltanto se non è autorizzato nessuno ad accedere a dati presentati senza pseudonimi.",
             "url" : "URL non valido",
@@ -131,7 +135,10 @@
             "research" : "Un'organizzazione di ricerca con questo nome esiste già.",
             "passcode" : "Scegliere un codice password diverso!",
             "plugin" : "Esiste già un'applicazione con lo stesso nome.",
-            "study" : "Esiste già un progetto di ricerca con questo nome."
+            "study" : "Esiste già un progetto di ricerca con questo nome.",
+
+            // TODO NEW: An endpoint with this URL already exists
+            "endpoint" : "An endpoint with this URL already exists"
         },
 
         "blocked" : {
@@ -462,7 +469,10 @@
             "oauth2" : "OAuth 2",
             "mobile" : "Applicazione (Smartphone, Web)",
             "external" : "Servizio esterno",
-            "analyzer" : "Analizzatore di progetto"
+            "analyzer" : "Analizzatore di progetto",
+
+            // TODO NEW: FHIR endpoint
+            "endpoint" : "FHIR endpoint"
         },
         "infos" : {
             "SUMMARY" : "Breve riassunto",
@@ -789,6 +799,9 @@
         "duration" : "Durata",
         "information_that_needs_sharing" : "Dati richiesti",
         "information_restricted" : "Indicare sesso, anno di nascita e nazione di residenza",
+
+        // TODO NEW: A pseudonym
+        "information_none" : "A pseudonym",
         "information_demographic" : "I propri dati demografici completi (nome, data di nascita, indirizzo, ...)",
         "records_with_format" : "Record con il formato:",
         "records_with_content" : "Record con i contenuti:",
@@ -861,6 +874,10 @@
         "tile_name" : "Nome riquadro:",
         "install_location" : "Posizione:",
         "grant_access" : "Autorizzare al plugin l'accesso a:",
+
+        // TODO CHANGED
+        // OLD: Terms
+        // NEW: Terms of use
         "terms" : "Condizioni d'uso",
         "install_btn" : "Confermare l'accesso",
         "location" : {
@@ -948,7 +965,10 @@
         "please_review2a" : "Si prega di rivedere questo consenso. Clicca su 'Conferma questo consenso' se si è d'accordo. Clicca su 'Rifiuta questo consenso' se non sei d'accordo.",
         "please_review2b" : "Si prega di rivedere il consenso esistente. Clicca su 'Salta (nessuna modifica)' per lasciare questa pagina senza modifiche. Clicca su 'Rifiuta questo consenso' se non sei più d'accordo.",
         "you" : "Voi",
-        "restrictions" : "Altre restrizioni?"
+        "restrictions" : "Altre restrizioni?",
+
+        // TODO NEW: Project
+        "project" : "Project"
     },
 
     "editconsent2" : {
@@ -1206,6 +1226,9 @@
         "recorded" : "Ora",
         "outcome" : "Esito",
         "empty" : "Non è stato ancora immesso alcun dato.",
+
+        // TODO NEW: Pseudonymized User
+        "anonymous" : "Pseudonymized User",
         "title" : "Registro di revisione",
         "refresh_btn" : "Aggiorna",
         "via" : "via",
@@ -1374,8 +1397,20 @@
         "revoke_btn" : "Revocare questa chiave",
         "instructions" : "Si prega di copiare queste chiavi in un luogo sicuro. Vengono visualizzate una sola volta.",
         "key" : "Chiave API per uso diretto",
+
+        // TODO CHANGED
+        // OLD: Use this key directly in the Authorization header of the service as bearer token.
+        // NEW: Use this key directly in the authorization header of the service as bearer token.
         "instructions_key" : "Utilizzare questa chiave direttamente nell'header dell'autorizzazione del servizio come bearer token.",
+
+        // TODO CHANGED
+        // OLD: Refresh-Token for OAuth
+        // NEW: Refresh token for OAuth
         "refresh" : "Refresh token per OAuth",
+
+        // TODO CHANGED
+        // OLD: For improved security exchange this refresh token against a new pair of access token and refresh token.
+        // NEW: For improved security, exchange this refresh token against a new pair of access token and refresh token.
         "instructions_refresh" : "Per una maggiore sicurezza, scambiare questo refresh token con un nuovo paio di access token e refresh token.",
         "date" : "Data di creazione",
         "status" : "Stato",

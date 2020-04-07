@@ -69,6 +69,8 @@
     "allgroups" : "<All Groups>",
     "plugin" : "Research Application",
     "device" : "Device Code",
+    "endpoint" : "Endpoint name",
+    "only_aggregated" : "Restrict to aggregated data",
     "restrict" : "Restrict read to this group",
     "shareback" : "Application shares data with participant group(s)",
     "add_application_btn" : "Add Research Application",
@@ -121,10 +123,12 @@
     "required_data" : "Required data",
     "no_change_warning" : "This setup cannot be changed anymore after the project has been validated.",
     "member_identity" : "Member Identity",
-    "pseudonymous1" : "Pseudonymized participation",
+    "pseudonymous1" : "Pseudonymized participation (year of birth/gender/country)",
     "pseudonymous2" : ", exported data reveals the pseudonymized identity, year of birth, gender and country. Some researchers like study nurses may have access to full personal data.",
+    "pseudonymous1b" : "Pseudonymized participation (no additional info)",
+    "pseudonymous2b" : ", exported data reveals the pseudonymized identity. Some researchers like study nurses may have access to full personal data.",
     "anonymous" : "Anonymous Participation",
-    "anonymous2" : ", exported data reveals the pseudonymized identity, year of birth, gender and country. The pseudonymization mapping may not be accessed.",
+    "anonymous2" : ", The pseudonymization mapping may not be accessed.",
     "not_anonymous1" : "Not pseudonymized",
     "not_anonymous2" : ", requests member to share full name, date of birth and contact Information (address, phone, email)",
     "assistance" : "Assistance",
@@ -212,7 +216,8 @@
     "retreated" : "Participants that have retreated",
     "acceptall" : "Accept all requests and assign new participants to participant group",
     "autojoin" : "Auto-Accept",
-    "autojoin2" : "Accept all participation requests and assign new participants to the selected group as soon as the research application linked to this project connects."
+    "autojoin2" : "Accept all participation requests and assign new participants to the selected group as soon as the research application linked to this project connects.",
+    "not_allowed" : "You are not allowed to view the participant list."
   },
   
   "studyrecords" : {

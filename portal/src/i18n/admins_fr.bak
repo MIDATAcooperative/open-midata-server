@@ -4,6 +4,7 @@
     "members" : "Members",
     "auditlog" : "Audit",
     "news" : "News",
+    "mails" : "Mails",
     "plugins" : "Applications",
     "usagestats" : "Application usage statistics",
 	"content" : "Content Types",
@@ -143,7 +144,7 @@
     "language" : "Language",
     "title" : "Title (public)",
     "text" : "Content (HTML)",
-    "replace" : "Replace existing"
+    "replace" : "Replace the current version"
   },
   
   "admin_study" : {
@@ -251,5 +252,41 @@
       "POST" : "Write",
       "PUT" : "Update",
       "DELETE" : "Delete"
+   },
+   
+   "admin_mails" : {
+      "title" : "Bulk Mails",
+      "created" : "Created",
+      "name" : "Name",
+      "status" : "Status",
+      "studyName" : "Project",
+      "creatorName" : "Creator",
+      "progressCount" : "# Sent",
+      "empty" : "No bulk emails have been created yet.",
+      "stati" : {
+        "DRAFT" : "Draft",
+        "STARTED" : "Scheduled for sending",
+        "IN_PROGRESS" : "Sending in progress",
+        "FINISHED" : "Finished",
+        "CANCELLED" : "Cancelled",
+        "PAUSED" : "Paused"
+      }
+   },
+   
+   "admin_managemails" : {
+     "title1" : "New Bulk Mail",
+     "title2" : "Edit Bulk Mail",
+     "name" : "Internal Title for Mail",
+     "status" : "Status",
+     "created" : "Time of creation",
+     "started" : "Sending started at",
+     "finished" : "Sending completed at",
+     "progressCount" : "# Sent",
+     "studyId" : "Research Project",
+     "lang" : "Language",
+     "title" : "Mail Title",
+     "content" : "Mail Content",
+     "send_btn" : "Send"
    }
+    
 }

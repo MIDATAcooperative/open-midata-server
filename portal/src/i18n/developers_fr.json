@@ -132,6 +132,9 @@
             "description" : "La description de votre application qui sera affichée sur la Marketplace.",
             "tokenExchangeParams" : "La valeur par défaut est client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> mais certains services nécessitent également client_secret=<client_secret> ou pas de client_id",
             "no_update_history" : "Les mises à jour des ressources FHIR effectuées par cette application ne produisent aucune entrée d'historique. N'utiliser que si l'application fait de nombreuses et fréquentes mises à jour.",
+
+            // TODO NEW: Read pseudonymized data. Does not update records from participants.
+            "pseudonymize" : "Read pseudonymized data. Does not update records from participants.",
             "resharesData" : "L'application est autorisée à transmettre les données auxquelles elle a accès à des tierces parties.",
             "allowsUserSearch" : "Les utilisateurs de l'application sont autorisés à rechercher d'autres utilisateurs de la même application.",
             "defaultSpaceName" : "Titre de la tuile du plugin sur le tableau de bord.",
@@ -143,7 +146,10 @@
             "secret" : "Votre application aura besoin de ce 'secret' pour se connecter. Choisissez le librement.",
             "mustParticipateInStudy" : "Les utilisateurs doivent participer au projet de recherche afin de pouvoir utiliser l'application.",
             "unlock_code" : "Si renseigné, ce code doit être saisi par l'utilisateur lors de l'inscription ou lors de la première connexion à MIDATA par cette app. Le code n'est pas sensible à la casse.",
-            "send_reports" : "Avertir le développeur ({{utilisateur}}) par e-mail des erreurs causées par cette application."
+            "send_reports" : "Avertir le développeur ({{utilisateur}}) par e-mail des erreurs causées par cette application.",
+
+            // TODO NEW: Enter comma separated list of email addresses of other developers on Midata that develop this appliation.
+            "developerTeam" : "Enter comma separated list of email addresses of other developers on Midata that develop this appliation."
         },
         "status" : {
             "title" : "État de l'application",
@@ -158,6 +164,9 @@
         "access_query_json" : "Data Access Filter",
         "queryeditor_btn" : "Aller à l'éditeur du Data Access Filter",
         "no_update_history" : "Pas d'historique des ressources FHIR",
+
+        // TODO NEW: Read Pseudonymized
+        "pseudonymize" : "Read Pseudonymized",
         "usagestats_btn" : "Statistiques d'utilisation",
         "usagestats_help" : "Analyser la fréquence d'utilisation de l'application.",
         "export_btn" : "Exporter la définition de l'application",
@@ -168,6 +177,9 @@
         "creator" : "Créateur",
         "organization" : "Organisation",
         "publisher" : "Éditeur",
+
+        // TODO NEW: Developer Team
+        "developerTeam" : "Developer Team",
         "reviews" : "Revues",
         "manageyourkeys" : "Gérer vos clés API"
     },
@@ -241,6 +253,10 @@
             "REQUIRE_P" : "Le consentement doit être accepté",
             "OFFER_P" : "Le consentement est proposé au moment de la connexion ou de l'inscription",
             "OFFER_EXTRA_PAGE" : "Onboarding: le consentement est proposé sur une page séparée.",
+
+            // TODO CHANGED
+            // OLD: Onboarding: Use terms as description.
+            // NEW: Onboarding: Use terms of use as description.
             "OFFER_INLINE_AGB" : "Onboarding: utiliser les conditions d'utilisation comme description."
         }
     },
@@ -257,6 +273,9 @@
             "fhir_MessageHeader" : "Message FHIR",
             "fhir_Resource" : "Modifications de ressource",
             "time" : "Quotidien",
+
+            // TODO NEW: Each 30 minutes
+            "time/30m" : "Each 30 minutes",
             "init" : "Lors de l'ajout"
         },
         "actions" : {
