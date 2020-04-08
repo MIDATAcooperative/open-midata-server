@@ -80,11 +80,7 @@
             "plugin" : "Diese Applikation ist nur für eine andere Rolle vorgesehen",
             "unlock_code" : "Falscher Freischaltcode",
             "access_query" : "Der Datenzugriffsfilter (Data Access Filter) muss nach 'content' oder 'group' einschränken!",
-
-            // TODO CHANGED
-            // OLD: The Data Access Filter contains data types that are excluded by the project configuration.
-            // NEW: The Data Access Filter may not contain Patient resource. Correct Patient resource is shared automatically.
-            "sharing" : "Der Datenzugriffsfilter (Data Access Filter) beinhaltet Datentypen, die von der Projektkonfiguration ausgeschlossen sind.",
+            "sharing" : "Der Datenzugriffsfilter (Data Access Filter) darf die Ressource Patient nicht enthalten. Die passende Ressource Patient wird automatisch geteilt.",
             "anonymous" : "Ein Forschungsprojekt kann nur dann anonym sein, wenn niemand auf unpseudonymisierte Daten zugreifen darf.",
             "url" : "Ungültige URL",
             "consent_members" : "Diese Zustimmung kann erst bestätigt werden, wenn alle externen Personen MIDATA beigetreten sind.",
@@ -136,9 +132,7 @@
             "passcode" : "Wählen Sie bitte einen anderen Zugangscode!",
             "plugin" : "Eine Applikation mit diesem Namen existiert bereits.",
             "study" : "Ein Forschungsprojekt mit diesem Namen existiert bereits.",
-
-            // TODO NEW: An endpoint with this URL already exists
-            "endpoint" : "An endpoint with this URL already exists"
+            "endpoint" : "Ein Endpoint mit dieser URL existiert bereits"
         },
 
         "blocked" : {
@@ -383,7 +377,7 @@
             "ADMIN" : "Administrator",
             "ANY" : "Jede Rolle",
             "DEVELOPER" : "Entwickler",
-            "MEMBER" : "Kontoinhabende",
+            "MEMBER" : "Kontoinhaber",
             "PROVIDER" : "Gesundheitsfachperson",
             "RESEARCH" : "Forscher"
         },
@@ -470,8 +464,6 @@
             "mobile" : "Applikation (Smartphone, Web)",
             "external" : "Externer Dienst",
             "analyzer" : "Projekt-Analysator",
-
-            // TODO NEW: FHIR endpoint
             "endpoint" : "FHIR endpoint"
         },
         "infos" : {
@@ -799,9 +791,7 @@
         "duration" : "Dauer",
         "information_that_needs_sharing" : "Geforderte Daten",
         "information_restricted" : "Ihr Geschlecht, Geburtsjahr und Wohnsitzland",
-
-        // TODO NEW: A pseudonym
-        "information_none" : "A pseudonym",
+        "information_none" : "Ein Pseudonym",
         "information_demographic" : "Ihre kompletten demographischen Daten (Name, Geburtsdatum, Adresse, ...)",
         "records_with_format" : "Datensätze im Format:",
         "records_with_content" : "Datensätze mit Inhalt:",
@@ -874,10 +864,6 @@
         "tile_name" : "Name der Kachel:",
         "install_location" : "Standort:",
         "grant_access" : "Diesem Plugin Zugriff erteilen auf:",
-
-        // TODO CHANGED
-        // OLD: Terms
-        // NEW: Terms of use
         "terms" : "Nutzungsbedingungen",
         "install_btn" : "Zugriff bestätigen",
         "location" : {
@@ -966,9 +952,7 @@
         "please_review2b" : "Bitte überprüfen Sie diese bestehende Zustimmung. Klicken Sie auf die Schaltfläche 'Überspringen (Keine Änderung)', um diese Seite ohne Änderungen zu verlassen. Klicken Sie auf 'Diese Zustimmung ablehnen', wenn Sie nicht mehr einverstanden sind.",
         "you" : "Sie",
         "restrictions" : "Weitere Einschränkungen?",
-
-        // TODO NEW: Project
-        "project" : "Project"
+        "project" : "Projekt"
     },
 
     "editconsent2" : {
@@ -1226,9 +1210,7 @@
         "recorded" : "Zeit",
         "outcome" : "Ergebnis",
         "empty" : "Noch keinen Eintrag.",
-
-        // TODO NEW: Pseudonymized User
-        "anonymous" : "Pseudonymized User",
+        "anonymous" : "Pseudonymisierter Benutzer",
         "title" : "Audit Log",
         "refresh_btn" : "Aktualisieren",
         "via" : "durch",
@@ -1397,20 +1379,8 @@
         "revoke_btn" : "Diesen Schlüssel widerrufen",
         "instructions" : "Bitte kopieren Sie diese Schlüssel an einen sicheren Ort. Sie werden nur einmal angezeigt.",
         "key" : "API-Schlüssel zur direkten Verwendung",
-
-        // TODO CHANGED
-        // OLD: Use this key directly in the Authorization header of the service as bearer token.
-        // NEW: Use this key directly in the authorization header of the service as bearer token.
         "instructions_key" : "Verwenden Sie diesen Schlüssel direkt im Autorisierungs-Header des Dienstes als bearer token.",
-
-        // TODO CHANGED
-        // OLD: Refresh-Token for OAuth
-        // NEW: Refresh token for OAuth
         "refresh" : "Refresh token für OAuth",
-
-        // TODO CHANGED
-        // OLD: For improved security exchange this refresh token against a new pair of access token and refresh token.
-        // NEW: For improved security, exchange this refresh token against a new pair of access token and refresh token.
         "instructions_refresh" : "Um die Sicherheit zu erhöhen, tauschen Sie dieses refresh token gegen ein neues Paar aus access token und refresh token aus.",
         "date" : "Erstellungsdatum",
         "status" : "Status",

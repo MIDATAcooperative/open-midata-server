@@ -2,12 +2,10 @@
 
     "admin_navbar" : {
         "admin" : "Admin",
-        "members" : "Membri",
+        "members" : "Utenti",
         "auditlog" : "Revisione",
         "news" : "Notizie",
-
-        // TODO NEW: Mails
-        "mails" : "Mails",
+        "mails" : "E-Mail",
         "plugins" : "Applicazioni",
         "usagestats" : "Statistiche sull'uso dell'applicazione",
         "content" : "Tipi di contenuto",
@@ -21,7 +19,7 @@
     },
 
     "admin_members" : {
-        "title" : "Elenco membri",
+        "title" : "Repertorio utenti",
         "search_type" : "Cerca",
         "contract_required" : "Il contratto deve essere inviato",
         "contract_confirm_required" : "Il contratto firmato deve essere confermato",
@@ -37,7 +35,7 @@
     },
 
     "admin_address" : {
-        "title" : "Profilo del membro",
+        "title" : "Profilo utente",
         "show_apps_created" : "Mostra le applicazioni create da questo sviluppatore",
         "midata_id" : "MIDATA ID",
         "role" : "Ruolo",
@@ -147,10 +145,6 @@
         "language" : "Lingua",
         "title" : "Titolo (pubblico)",
         "text" : "Contenuti (HTML)",
-
-        // TODO CHANGED
-        // OLD: Replace existing
-        // NEW: Replace the current version
         "replace" : "Sostituire la versione attuale"
     },
 
@@ -262,91 +256,37 @@
     },
 
     "admin_mails" : {
-
-        // TODO NEW: Bulk Mails
-        "title" : "Bulk Mails",
-
-        // TODO NEW: Created
-        "created" : "Created",
-
-        // TODO NEW: Name
-        "name" : "Name",
-
-        // TODO NEW: Status
-        "status" : "Status",
-
-        // TODO NEW: Project
-        "studyName" : "Project",
-
-        // TODO NEW: Creator
-        "creatorName" : "Creator",
-
-        // TODO NEW: # Sent
-        "progressCount" : "# Sent",
-
-        // TODO NEW: No bulk emails have been created yet.
-        "empty" : "No bulk emails have been created yet.",
+        "title" : "E-mail di massa",
+        "created" : "Creato",
+        "name" : "Nome",
+        "status" : "Stato",
+        "studyName" : "Progetto",
+        "creatorName" : "Autore",
+        "progressCount" : "# inviate",
+        "empty" : "Non sono ancora state create e-mail di massa.",
         "stati" : {
-
-            // TODO NEW: Draft
-            "DRAFT" : "Draft",
-
-            // TODO NEW: Scheduled for sending
-            "STARTED" : "Scheduled for sending",
-
-            // TODO NEW: Sending in progress
-            "IN_PROGRESS" : "Sending in progress",
-
-            // TODO NEW: Finished
-            "FINISHED" : "Finished",
-
-            // TODO NEW: Cancelled
-            "CANCELLED" : "Cancelled",
-
-            // TODO NEW: Paused
-            "PAUSED" : "Paused"
+            "DRAFT" : "Bozza",
+            "STARTED" : "Pianificato per l'invio",
+            "IN_PROGRESS" : "Invio in corso",
+            "FINISHED" : "Terminato",
+            "CANCELLED" : "Annullato",
+            "PAUSED" : "In pausa"
         }
     },
 
     "admin_managemails" : {
-
-        // TODO NEW: New Bulk Mail
-        "title1" : "New Bulk Mail",
-
-        // TODO NEW: Edit Bulk Mail
-        "title2" : "Edit Bulk Mail",
-
-        // TODO NEW: Internal Title for Mail
-        "name" : "Internal Title for Mail",
-
-        // TODO NEW: Status
-        "status" : "Status",
-
-        // TODO NEW: Time of creation
-        "created" : "Time of creation",
-
-        // TODO NEW: Sending started at
-        "started" : "Sending started at",
-
-        // TODO NEW: Sending completed at
-        "finished" : "Sending completed at",
-
-        // TODO NEW: # Sent
-        "progressCount" : "# Sent",
-
-        // TODO NEW: Research Project
-        "studyId" : "Research Project",
-
-        // TODO NEW: Language
-        "lang" : "Language",
-
-        // TODO NEW: Mail Title
-        "title" : "Mail Title",
-
-        // TODO NEW: Mail Content
-        "content" : "Mail Content",
-
-        // TODO NEW: Send
-        "send_btn" : "Send"
+        "title1" : "Nuova e-mail di massa",
+        "title2" : "Modifica e-mail di massa",
+        "name" : "Titolo interno e-mail",
+        "status" : "Stato",
+        "created" : "Tempo di creazione",
+        "started" : "Invio iniziato a",
+        "finished" : "Invio completato a",
+        "progressCount" : "# inviate",
+        "studyId" : "Progetto di ricerca",
+        "lang" : "Lingua",
+        "title" : "Titolo e-mail",
+        "content" : "Contenuto e-mail",
+        "send_btn" : "Spedire"
     }
 }

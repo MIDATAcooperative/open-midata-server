@@ -70,13 +70,9 @@
         "allgroups" : "<Tous les groupes>",
         "plugin" : "Application vouée à la recherche",
         "device" : "Code de l'appareil",
-
-        // TODO NEW: Endpoint name
-        "endpoint" : "Endpoint name",
-
-        // TODO NEW: Restrict to aggregated data
-        "only_aggregated" : "Restrict to aggregated data",
-        "restrict" : "Restreindre la lecture à ce groupe",
+        "endpoint" : "Nom de l'endpoint",
+        "only_aggregated" : "Limiter aux données agrégées",
+        "restrict" : "Limiter la lecture à ce groupe",
         "shareback" : "L'application partage des données avec le(s) groupe(s) de participants",
         "add_application_btn" : "Ajouter une application vouée à la recherche",
         "linked_apps" : "Consentements pour les applications",
@@ -128,24 +124,12 @@
         "required_data" : "Données requises",
         "no_change_warning" : "Cette configuration ne peut plus être modifiée une fois le projet validé.",
         "member_identity" : "Identité du membre",
-
-        // TODO CHANGED
-        // OLD: Pseudonymized participation
-        // NEW: Pseudonymized participation (year of birth/gender/country)
-        "pseudonymous1" : "Participation pseudonymisée",
-        "pseudonymous2" : ", les données exportées révèlent l'identité pseudonyme, l'année de naissance, le sexe et le pays. Certains chercheurs, comme telles les study nurses, peuvent avoir accès à des données personnelles complètes.",
-
-        // TODO NEW: Pseudonymized participation (no additional info)
-        "pseudonymous1b" : "Pseudonymized participation (no additional info)",
-
-        // TODO NEW: , exported data reveals the pseudonymized identity. Some researchers like study nurses may have access to full personal data.
-        "pseudonymous2b" : ", exported data reveals the pseudonymized identity. Some researchers like study nurses may have access to full personal data.",
+        "pseudonymous1" : "Participation pseudonymisée (année de naissance/sexe/pays)",
+        "pseudonymous2" : ", les données exportées révèlent l'identité pseudonyme, l'année de naissance, le sexe et le pays. Certains chercheurs, telles les study nurses, peuvent avoir accès à l'intégralité des données personnelles.",
+        "pseudonymous1b" : "Participation pseudonymisée (pas d'informations supplémentaires)",
+        "pseudonymous2b" : ", les données exportées révèlent l'identité pseudonymisée. Certains chercheurs, telles les study nurses, peuvent avoir accès à l'intégralité des données personnelles.",
         "anonymous" : "Participation anonyme",
-
-        // TODO CHANGED
-        // OLD: , exported data reveals the pseudonymized identity, year of birth, gender and country. The pseudonymization mapping may not be accessed.
-        // NEW: , The pseudonymization mapping may not be accessed.
-        "anonymous2" : ", les données exportées révèlent l'identité pseudonyme, l'année de naissance, le sexe et le pays. La cartographie de pseudonymisation n'est pas accessible.",
+        "anonymous2" : ", la cartographie de pseudonymisation n'est pas accessible.",
         "not_anonymous1" : "Pas pseudonymisé",
         "not_anonymous2" : ", requière que le membre partage son nom complet, date de naissance et informations de contact (adresse, téléphone, e-mail)",
         "assistance" : "Assistance",
@@ -234,9 +218,7 @@
         "acceptall" : "Accepter toutes les demandes et affecter les nouveaux participants au groupe de participants",
         "autojoin" : "Acceptation automatique",
         "autojoin2" : "Accepter toutes les demandes de participation et assigner les nouveaux participants au groupe sélectionné dès que l'application de recherche associée à ce projet se connecte.",
-
-        // TODO NEW: You are not allowed to view the participant list.
-        "not_allowed" : "You are not allowed to view the participant list."
+        "not_allowed" : "Vous n'êtes pas autorisé à consulter la liste des participants."
     },
 
     "studyrecords" : {
