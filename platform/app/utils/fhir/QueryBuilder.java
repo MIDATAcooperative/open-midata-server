@@ -510,7 +510,7 @@ public class QueryBuilder {
 					hPath = path;
 				} else if (type.equals(TYPE_PERIOD)) {
 					lPath = path+".start|null";
-					lPath = path+".end|null";
+					hPath = path+".end|null";
 				} else if (type.equals(TYPE_DATETIME_OR_PERIOD)) {
 					lPath = path+"DateTime|"+path+"Period.start|null";
 					hPath = path+"DateTime|"+path+"Period.end|null";
