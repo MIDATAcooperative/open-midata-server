@@ -119,7 +119,7 @@ public class FHIR extends Controller {
         	MidataId studyId = MidataId.from(query.get("study"));
         	String studyGroup = (String) query.get("study-group");
         	Plugin plug = Plugin.getById(info.pluginId);
-        	if (plug == null || !plug.type.equals("endpoint")) throw new BadRequestException("error.invalid.plugin", "Wrong plugin type");
+        	if (plug == null || !plug.type.equals("analyzer")) throw new BadRequestException("error.invalid.plugin", "Wrong plugin type");
         	String mode = plug.pseudonymize ? "pseudonymized" : "original";
         	String handle = KeyManager.instance.currentHandle(info.executorId);
         	

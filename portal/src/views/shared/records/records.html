@@ -109,7 +109,7 @@
 					<span class="badge badge-info">{{record.created | date : 'dd.MM.yy'}}</span>
 					<span ng-show="record.owner != userId" class="badge badge-info">{{ record.ownerName }}</span>
 					<a href="javascript:;" ng-click="showDetails(record)">{{record.name}}</a>
-                    <button ng-show="allowDelete && isOwnRecord(record)" ng-dblclick="deleteRecord(record, selectedData)" class="btn btn-danger btn-sm" translate="records.delete"></button>
+                    <button ng-show="(allowDelete && isOwnRecord(record)) || (allowDeletePublic && isPublicRecord(record))" ng-dblclick="deleteRecord(record, selectedData)" class="btn btn-danger btn-sm" translate="records.delete"></button>
                     <div class="float-right" ng-hide="selectedAps==null">					   
 						<button class="btn btn-sm btn-primary" ng-disabled="status.isBusy" ng-click="unshare(record, selectedData);" ng-show="isShared(record)">
 							<span class="fas fa-picture"></span><span translate="records.unshare"></span>

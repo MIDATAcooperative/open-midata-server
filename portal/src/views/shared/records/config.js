@@ -41,6 +41,7 @@ angular.module('portal')
 	      url: '/records-delete',
 		  templateUrl: 'views/shared/records/records.html',
 		  allowDelete : true,
+		  allowDeletePublic : true
 		})
 	    .state('admin.records', {
 	      url: '/records',

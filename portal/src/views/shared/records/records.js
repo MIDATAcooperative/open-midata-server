@@ -14,6 +14,7 @@ angular.module('portal')
 	$scope.selectedAps = null;
 	$scope.status = new status(true);
 	$scope.allowDelete = $state.current.allowDelete;
+	$scope.allowDeletePublic = $state.current.allowDeletePublic;
 	$scope.open = {};
 	$scope.treeMode = "group";
 	$scope.tooManyConsents = false;
@@ -442,6 +443,10 @@ angular.module('portal')
 	// check whether the user is the owner of the record
 	$scope.isOwnRecord = function(record) {
 		return $scope.userId === record.owner;
+	};
+	
+	$scope.isPublicRecord = function(record) {
+		return record.ownerName=="-";
 	};
 	
 	$scope.loadShared = function() {
