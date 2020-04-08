@@ -900,13 +900,27 @@ public class RecordManager {
 		query.put("owner", "self");
 		List<DBRecord> recs = QueryEngine.listInternal(cache, executingPerson, null, query, COMPLETE_META);
 		
-		delete(executingPerson, recs);				
+		delete(cache, executingPerson, recs);				
 		
 		AccessLog.logEnd("end deleteRecord");
 	}
 	
-	private void delete(MidataId executingPerson, List<DBRecord> recs) throws AppException {
-		APSCache cache = getCache(executingPerson);
+	public void deleteFromPublic(MidataId executingPerson, Map<String, Object> query) throws AppException {
+		AccessLog.logBegin("begin deleteFromPublic executor="+executingPerson.toString());
+					
+		query.put("public", "only");
+		query.put("public-strict", true);
+		
+		List<DBRecord> recs = QueryEngine.listInternal(getCache(executingPerson), executingPerson, null, query, COMPLETE_META);
+		
+		APSCache cache = Feature_PublicData.getPublicAPSCache(getCache(executingPerson));
+		delete(cache, RuntimeConstants.instance.publicUser, recs);				
+		
+		AccessLog.logEnd("end deleteFromPublic");
+	}
+	
+	private void delete(APSCache cache, MidataId executingPerson, List<DBRecord> recs) throws AppException {
+		
 		if (recs.size() == 0) return;
 		
 		AccessLog.logBegin("begin delete #records="+recs.size());
@@ -952,12 +966,12 @@ public class RecordManager {
 						
 			VersionedDBRecord.add(vrec);
 		    DBRecord.upsert(record); 	  			    
-		    RecordLifecycle.notifyOfChange(clone, getCache(executingPerson));									
+		    RecordLifecycle.notifyOfChange(clone, cache);									
 		}
 				
 		for (MidataId streamId : streams) {
 			try {
-				getCache(executingPerson).getAPS(streamId).removeMeta("_info");
+				cache.getAPS(streamId).removeMeta("_info");
 														
 			} catch (APSNotExistingException e) {}
 		}

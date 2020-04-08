@@ -315,6 +315,7 @@ public class Records extends APIController {
 			RecordToken tk = getRecordTokenFromString(id);
 			AuditManager.instance.addAuditEvent(AuditEventType.DATA_DELETION, null, userId, null, "id=" + tk.recordId);
 			RecordManager.instance.delete(userId, CMaps.map("_id", tk.recordId));
+			if (getRole().equals(UserRole.ADMIN)) RecordManager.instance.deleteFromPublic(userId, CMaps.map("_id", tk.recordId));
 		} else if (json.has("group") || json.has("content") || json.has("app")) {
 
 			Map<String, Object> properties = new HashMap<String, Object>();
@@ -331,6 +332,7 @@ public class Records extends APIController {
 
 			AuditManager.instance.addAuditEvent(AuditEventType.DATA_DELETION, null, userId, null, message);
 			RecordManager.instance.delete(userId, properties);
+			if (getRole().equals(UserRole.ADMIN)) RecordManager.instance.deleteFromPublic(userId, properties);
 		}
 		AuditManager.instance.success();
 

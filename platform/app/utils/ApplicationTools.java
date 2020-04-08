@@ -199,9 +199,9 @@ public class ApplicationTools {
 		si.status = UserStatus.ACTIVE;
 		si.executorAccount = study._id;
 		if (app.type.equals("endpoint")) {
-		  si.name = study.name + (group != null ? (" - " + group) : "")+" -> /opendata/"+endpoint+"/fhir";
+		  si.name = app.name+": "+study.name + (group != null ? (" - " + group) : "")+" -> /opendata/"+endpoint+"/fhir";
 		} else {
-		  si.name = study.name + (group != null ? (" - " + group) : "");
+		  si.name = app.name+": "+study.name + (group != null ? (" - " + group) : "");
 		}
 		si.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(si._id, null);
 		si.add();
