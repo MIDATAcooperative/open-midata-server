@@ -132,6 +132,7 @@
             "description" : "La description de votre application qui sera affichée sur la Marketplace.",
             "tokenExchangeParams" : "La valeur par défaut est client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> mais certains services nécessitent également client_secret=<client_secret> ou pas de client_id",
             "no_update_history" : "Les mises à jour des ressources FHIR effectuées par cette application ne produisent aucune entrée d'historique. N'utiliser que si l'application fait de nombreuses et fréquentes mises à jour.",
+            "pseudonymize" : "Lire les données pseudonymisées. Ne met pas à jour les enregistrements des participants.",
             "resharesData" : "L'application est autorisée à transmettre les données auxquelles elle a accès à des tierces parties.",
             "allowsUserSearch" : "Les utilisateurs de l'application sont autorisés à rechercher d'autres utilisateurs de la même application.",
             "defaultSpaceName" : "Titre de la tuile du plugin sur le tableau de bord.",
@@ -143,7 +144,8 @@
             "secret" : "Votre application aura besoin de ce 'secret' pour se connecter. Choisissez le librement.",
             "mustParticipateInStudy" : "Les utilisateurs doivent participer au projet de recherche afin de pouvoir utiliser l'application.",
             "unlock_code" : "Si renseigné, ce code doit être saisi par l'utilisateur lors de l'inscription ou lors de la première connexion à MIDATA par cette app. Le code n'est pas sensible à la casse.",
-            "send_reports" : "Avertir le développeur ({{utilisateur}}) par e-mail des erreurs causées par cette application."
+            "send_reports" : "Avertir le développeur ({{utilisateur}}) par e-mail des erreurs causées par cette application.",
+            "developerTeam" : "Entrez la liste, séparée par des virgules, des adresses e-mail d'autres développeurs sur MIDATA qui développent cette application."
         },
         "status" : {
             "title" : "État de l'application",
@@ -158,6 +160,7 @@
         "access_query_json" : "Data Access Filter",
         "queryeditor_btn" : "Aller à l'éditeur du Data Access Filter",
         "no_update_history" : "Pas d'historique des ressources FHIR",
+        "pseudonymize" : "Lire pseudonymisé",
         "usagestats_btn" : "Statistiques d'utilisation",
         "usagestats_help" : "Analyser la fréquence d'utilisation de l'application.",
         "export_btn" : "Exporter la définition de l'application",
@@ -168,6 +171,7 @@
         "creator" : "Créateur",
         "organization" : "Organisation",
         "publisher" : "Éditeur",
+        "developerTeam" : "Équipe de développement",
         "reviews" : "Revues",
         "manageyourkeys" : "Gérer vos clés API"
     },
@@ -257,6 +261,7 @@
             "fhir_MessageHeader" : "Message FHIR",
             "fhir_Resource" : "Modifications de ressource",
             "time" : "Quotidien",
+            "time/30m" : "Toutes les 30 minutes",
             "init" : "Lors de l'ajout"
         },
         "actions" : {

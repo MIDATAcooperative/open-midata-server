@@ -332,3 +332,4 @@
 {"_id":{"$oid":"5e7e271daed64522b627017c"},"system":"http://snomed.info/sct","code":"267036007","display":"Dyspnea (finding)","content":"snomed/267036007"}
 {"_id":{"$oid":"5e7e2815aed64522b627017d"},"system":"http://snomed.info/sct","code":"60845006","display":"Dyspnea on exertion (finding)","content":"snomed/267036007"}
 {"_id":{"$oid":"5e7e2885aed64522b627017f"},"system":"http://loinc.org","code":"89196-0","display":"Patient reported outcome measure panel","content":"loinc/89196-0"}
+{"_id":{"$oid":"5e8ef835aed6452871e492a4"},"system":"http://loinc.org","code":"46251-5","display":"Age Group","content":"loinc/46251-5"}
