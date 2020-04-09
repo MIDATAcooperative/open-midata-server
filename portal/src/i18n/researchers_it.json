@@ -70,6 +70,8 @@
         "allgroups" : "<Tutti i gruppi>",
         "plugin" : "Applicazione di ricerca",
         "device" : "Codice dispositivo",
+        "endpoint" : "Nome dell'endpoint",
+        "only_aggregated" : "Limitare ai dati aggregati",
         "restrict" : "Limita lettura al questo gruppo",
         "shareback" : "L'applicazione condivide i dati con il gruppo/i del partecipante",
         "add_application_btn" : "Aggiungi applicazione di ricerca",
@@ -122,10 +124,12 @@
         "required_data" : "Dati richiesti",
         "no_change_warning" : "Una volta convalidato lo progetto, questa configurazione non potrà più essere modificata.",
         "member_identity" : "Identità del membro",
-        "pseudonymous1" : "Partecipazione pseudonimizzata",
-        "pseudonymous2" : ", i dati esportati rivelano l'identità pseudonimizzati, l'anno di nascita, il sesso e il paese. Alcuni ricercatori, come gli study nurses, possono avere accesso a dati personali completi.",
+        "pseudonymous1" : "Partecipazione pseudonimizzata (anno di nascita/genere/paese)",
+        "pseudonymous2" : ", i dati esportati rivelano l'identità pseudonimizzati, l'anno di nascita, il sesso e il paese. Alcuni ricercatori, come gli study nurses, possono avere accesso a tutti dati personali.",
+        "pseudonymous1b" : "Partecipazione pseudonimizzata (nessuna informazione supplementare)",
+        "pseudonymous2b" : ", i dati esportati rivelano l'identità pseudonimizzata. Alcuni ricercatori, come gli study nurses, possono avere accesso a tutti i dati personali.",
         "anonymous" : "Partecipazione anonima",
-        "anonymous2" : ", i dati esportati rivelano l'identità pseudonimizzata, l'anno di nascita, il sesso e il paese. La mappatura della pseudonimizzazione non è accessibile.",
+        "anonymous2" : ", la mappatura della pseudonimizzazione non è accessibile.",
         "not_anonymous1" : "Senza pseudonimo",
         "not_anonymous2" : ", richiede al membro di condividere il nome completo, la data di nascita e le informazioni di contatto (indirizzo, telefono, e-mail)",
         "assistance" : "Assistenza",
@@ -213,7 +217,8 @@
         "retreated" : "Partecipanti che si sono ritirati",
         "acceptall" : "Accetta tutte le richieste e assegna nuovi partecipanti al gruppo di partecipanti",
         "autojoin" : "Accetta automaticamente",
-        "autojoin2" : "Accetta tutte le richieste di partecipazione e assegna nuovi partecipanti al gruppo selezionato non appena si connette l'applicazione di ricerca collegata tramite link a questo progetto."
+        "autojoin2" : "Accetta tutte le richieste di partecipazione e assegna nuovi partecipanti al gruppo selezionato non appena si connette l'applicazione di ricerca collegata tramite link a questo progetto.",
+        "not_allowed" : "Non è autorizzato a visualizzare l'elenco dei partecipanti."
     },
 
     "studyrecords" : {

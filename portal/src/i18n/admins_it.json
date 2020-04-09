@@ -2,9 +2,10 @@
 
     "admin_navbar" : {
         "admin" : "Admin",
-        "members" : "Membri",
+        "members" : "Utenti",
         "auditlog" : "Revisione",
         "news" : "Notizie",
+        "mails" : "E-Mail",
         "plugins" : "Applicazioni",
         "usagestats" : "Statistiche sull'uso dell'applicazione",
         "content" : "Tipi di contenuto",
@@ -18,7 +19,7 @@
     },
 
     "admin_members" : {
-        "title" : "Elenco membri",
+        "title" : "Repertorio utenti",
         "search_type" : "Cerca",
         "contract_required" : "Il contratto deve essere inviato",
         "contract_confirm_required" : "Il contratto firmato deve essere confermato",
@@ -34,7 +35,7 @@
     },
 
     "admin_address" : {
-        "title" : "Profilo del membro",
+        "title" : "Profilo utente",
         "show_apps_created" : "Mostra le applicazioni create da questo sviluppatore",
         "midata_id" : "MIDATA ID",
         "role" : "Ruolo",
@@ -252,5 +253,40 @@
         "POST" : "Write",
         "PUT" : "Update",
         "DELETE" : "Delete"
+    },
+
+    "admin_mails" : {
+        "title" : "E-mail di massa",
+        "created" : "Creato",
+        "name" : "Nome",
+        "status" : "Stato",
+        "studyName" : "Progetto",
+        "creatorName" : "Autore",
+        "progressCount" : "# inviate",
+        "empty" : "Non sono ancora state create e-mail di massa.",
+        "stati" : {
+            "DRAFT" : "Bozza",
+            "STARTED" : "Pianificato per l'invio",
+            "IN_PROGRESS" : "Invio in corso",
+            "FINISHED" : "Terminato",
+            "CANCELLED" : "Annullato",
+            "PAUSED" : "In pausa"
+        }
+    },
+
+    "admin_managemails" : {
+        "title1" : "Nuova e-mail di massa",
+        "title2" : "Modifica e-mail di massa",
+        "name" : "Titolo interno e-mail",
+        "status" : "Stato",
+        "created" : "Tempo di creazione",
+        "started" : "Invio iniziato a",
+        "finished" : "Invio completato a",
+        "progressCount" : "# inviate",
+        "studyId" : "Progetto di ricerca",
+        "lang" : "Lingua",
+        "title" : "Titolo e-mail",
+        "content" : "Contenuto e-mail",
+        "send_btn" : "Spedire"
     }
 }
