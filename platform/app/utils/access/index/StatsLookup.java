@@ -107,13 +107,14 @@ public class StatsLookup extends BaseLookup<StatsIndexKey>{
 		if (content != null && !content.contains(inkey.content)) return false;
 		if (group != null && !group.contains(inkey.group)) return false;
 		if (app != null && !app.contains(inkey.app)) return false;
+		if (studyGroup != null && (inkey.studyGroup==null || !studyGroup.contains(inkey.studyGroup))) return false;
 		return true;
 	}
 
 	@Override
 	public boolean conditionCompare(StatsIndexKey lk, StatsIndexKey hk) {
 		if (aps != null) {
-			if (aps.compareTo(lk.aps) >= 0 && aps.compareTo(hk.aps) <= 0) return true;
+			if ((lk==null || aps.compareTo(lk.aps) >= 0) && (hk==null || aps.compareTo(hk.aps) <= 0)) return true;
 			return false;
 		} 
 		return true;

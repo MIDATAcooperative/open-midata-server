@@ -161,7 +161,7 @@ public class IndexManager {
 		}
 	}
 	
-	public StatsIndexRoot getStatsIndex(APSCache cache, MidataId user) throws AppException {
+	public StatsIndexRoot getStatsIndex(APSCache cache, MidataId user, boolean create) throws AppException {
 		IndexPseudonym pseudo = getIndexPseudonym(cache, user, user, true);
 		APS aps = cache.getAPS(user);
 		BSONObject obj = aps.getMeta("_statsindex");
@@ -169,6 +169,7 @@ public class IndexManager {
 		MidataId id = null;
 							
 		if (obj == null) {
+			if (!create) return null;
 			id = new MidataId();
 		    obj = new BasicBSONObject();
 		    obj.put("index", id.toString());
@@ -179,6 +180,7 @@ public class IndexManager {
 		
 		IndexDefinition def = IndexDefinition.getById(id);
 		if (def==null) {
+			if (!create) return null;
 			def = new IndexDefinition();
 			def._id = id;			
 			def.owner = pseudo.getPseudonym();
@@ -452,13 +454,23 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 			for (MidataId aps : targetAps) {
 				if (index.getModCount() > 5000) index.flush();
 				
-				Map<String, Object> restrictions = new HashMap<String, Object>();
-				restrictions.put("streams", "true");
-				restrictions.put("flat", "true");
+				StatsLookup lookup = new StatsLookup();
+				lookup.setAps(aps);
+				
+				Collection<StatsIndexKey> old = index.lookup(lookup);
+				for (StatsIndexKey k : old) index.removeEntry(k);
+				
+				Map<String, Object> restrictions = new HashMap<String, Object>();				
 				restrictions.put("no-postfilter-steams", "true");
 				restrictions.put("group-system", "v1");
-				if (aps.equals(executor)) restrictions.put("owner", "self");
+				//if (aps.equals(executor)) restrictions.put("owner", "self");
+								
+				Query q = new Query(restrictions, Sets.create("app","content","format","owner","ownerName","stream"), cache, executor, new DummyAccessContext(cache), false);
 				
+				Collection<StatsIndexKey> keys = Feature_Stats.countConsent(q, nextWithProcessing, Feature_Indexes.getContextForAps(q, aps));
+				for (StatsIndexKey k : keys) index.addEntry(k);
+				
+				/*
 			    AccessLog.log("Checking aps:"+aps.toString());
 				// Records that have been updated or created
 			    long v = index.getVersion(aps);
@@ -520,9 +532,9 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 				   }			   				  
 				   
 				}
-																		
+								*/										
 				
-				if (updateTs) index.setVersion(aps, now);				
+				//if (updateTs) index.setVersion(aps, now);				
 				
 				modCount += index.getModCount();
 				

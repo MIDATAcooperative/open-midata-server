@@ -27,6 +27,7 @@ import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.LostUpdateException;
 import utils.exceptions.AppException;
+import utils.exceptions.RequestTooLargeException;
 
 public class Feature_Stats extends Feature {
 
@@ -87,39 +88,54 @@ public class Feature_Stats extends Feature {
 			
 			AccessLog.logBeginPath("stats", null);
 			long startTime = System.currentTimeMillis();
-			List<DBRecord> result = new ArrayList<DBRecord>();
+			
 			//try {	
+			Query qnew = q;
+			       
+			StatsIndexRoot index = IndexManager.instance.getStatsIndex(q.getCache(), q.getCache().getAccountOwner(), false) ;
+			HashMap<String, StatsIndexKey> map = new HashMap<String, StatsIndexKey>();
+			//IndexPseudonym pseudo = IndexManager.instance.getIndexPseudonym(q.getCache(), q.getCache().getExecutor(), q.getApsId(), true);
+			//IndexManager.instance.triggerUpdate(pseudo, q.getCache(), q.getCache().getExecutor(), index.getModel(), null);
+			if (index != null) {
+				long oldest = index.getAllVersion();
+				StatsLookup lookup = new StatsLookup();			
+				if (q.restrictedBy("app")) lookup.setApp(q.getRestriction("app"));
+				if (q.restrictedBy("owner")) lookup.setOwner(q.getRestriction("owner")); 
+				if (q.restrictedBy("content")) lookup.setContent(q.getRestriction("content"));
+				if (q.restrictedBy("format")) lookup.setFormat(q.getRestriction("format"));
+				if (q.restrictedBy("study-group")) lookup.setStudyGroup(q.getRestriction("study-group"));				
+				Collection<StatsIndexKey> matches = index.lookup(lookup);										
+				
+				for (StatsIndexKey inf : matches) {				
+					map.put(getKey(inf), inf);
+				}
+				
+				if (oldest > 0) qnew = new Query(q, "info-shared-after", CMaps.map("shared-after", oldest));
+			}
 			
-			/*	       
-			StatsIndexRoot index = IndexManager.instance.getStatsIndex(q.getCache(), q.getCache().getAccountOwner()) ;
-			
-			IndexPseudonym pseudo = IndexManager.instance.getIndexPseudonym(q.getCache(), q.getCache().getExecutor(), q.getApsId(), true);
-			IndexManager.instance.triggerUpdate(pseudo, q.getCache(), q.getCache().getExecutor(), index.getModel(), null);
-			
-			
-			StatsLookup lookup = new StatsLookup();			
-			if (q.restrictedBy("app")) lookup.setApp(q.getRestriction("app"));
-			if (q.restrictedBy("owner")) lookup.setOwner(q.getRestriction("owner")); 
-			if (q.restrictedBy("content")) lookup.setContent(q.getRestriction("content"));
-			if (q.restrictedBy("format")) lookup.setFormat(q.getRestriction("format"));
-			
-			Collection<StatsIndexKey> matches = index.lookup(lookup);
-			HashMap<String, StatsIndexKey> map = new HashMap<String, StatsIndexKey>();			
-			
-			long oldest = index.getAllVersion();
-			for (StatsIndexKey inf : matches) {				
+			for (StatsIndexKey inf : countConsent(q, next, Feature_Indexes.getContextForAps(q, q.getApsId()))) {
 				map.put(getKey(inf), inf);
 			}
-			*/
-			
-			List<StatsIndexKey> matches = new ArrayList<StatsIndexKey>();
-			
-			matches.addAll(countConsent(q, next, Feature_Indexes.getContextForAps(q, q.getApsId())));	
-			
+						
 			if (q.getApsId().equals(q.getCache().getAccountOwner())) {				
-				List<Consent> consents = Feature_AccountQuery.getConsentsForQuery(q, true, true);
+				List<Consent> consents = Feature_AccountQuery.getConsentsForQuery(qnew, true, true);
+				
+				if (consents.size() > 100) {
+					if (index==null) {
+						index = IndexManager.instance.getStatsIndex(q.getCache(), q.getCache().getAccountOwner(), true);
+					}
+					IndexPseudonym pseudo = IndexManager.instance.getIndexPseudonym(q.getCache(), q.getCache().getExecutor(), q.getApsId(), true);
+					IndexManager.instance.triggerUpdate(pseudo, q.getCache(), q.getCache().getExecutor(), index.getModel(), null);
+				}
+				
+				if (consents.size() >= Feature_AccountQuery.MAX_CONSENTS_IN_QUERY) {
+					throw new RequestTooLargeException("error.toomany.consents", "Too many consents in query #="+consents.size());
+				}
+				
 				for (Consent consent : consents) {
-					matches.addAll(countConsent(q, next, Feature_Indexes.getContextForAps(q, consent._id)));
+					for (StatsIndexKey inf : countConsent(q, next, Feature_Indexes.getContextForAps(q, consent._id))) {
+					  map.put(getKey(inf), inf);
+					}
 				}
 			}
 			
@@ -180,8 +196,8 @@ public class Feature_Stats extends Feature {
 			   
 			}
 			*/
-	
-			for (StatsIndexKey inf : matches) {
+			List<DBRecord> result = new ArrayList<DBRecord>(map.size());
+			for (StatsIndexKey inf : map.values()) {
 				DBRecord r = new DBRecord();
 				r._id = inf.newestRecord;
 				r.attached = toRecordInfo(inf);
@@ -192,7 +208,7 @@ public class Feature_Stats extends Feature {
 			/*} catch (LostUpdateException e) {
 				
 			}*/
-			AccessLog.logEndPath("# matches="+matches.size());
+			AccessLog.logEndPath("# matches="+result.size());
 			return ProcessingTools.dbiterator("stats", result.iterator());
 	
 	}
@@ -255,15 +271,18 @@ public class Feature_Stats extends Feature {
 	public static Collection<StatsIndexKey> countConsent(Query q, Feature qm, AccessContext context) throws AppException {
 		q = new Query(q, "info-consent", CMaps.map(), context.getTargetAps(), context);
 		
-		Query q2 = new Query(q, "info-streams", CMaps.map("flat",true).map("streams","also").map("owner","self"));
+		Query q2 = new Query(q, "info-streams", CMaps.map("flat",true).map("streams","true").map("owner","self"));
 		//List<DBRecord> recs = ProcessingTools.collect(ProcessingTools.noDuplicates(new IdAndConsentFieldIterator(qm.iterator(q2), q.getContext(), q.getApsId(), q.returns("id"))));
 		
 		//AccessLog.log("COUNT CONSENT :"+context.toString()+" RECS="+recs.size());
 		
 		HashMap<String, StatsIndexKey> map = new HashMap<String, StatsIndexKey>();		
 		List<DBRecord> toupdate = qm.query(q2);
+		AccessLog.log(context.toString());
+		AccessLog.logQuery(q2.getApsId(), q2.getProperties(), q2.getFields());
+		AccessLog.log("XXX #="+toupdate.size());
 		q.getCache().prefetch(toupdate);
-		for (DBRecord r : toupdate) {
+		for (DBRecord r : toupdate) {		   
 		   boolean isnew = false;
 		   StatsIndexKey inf;
 		   if (r.isStream != null) {
