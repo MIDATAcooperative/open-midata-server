@@ -145,10 +145,6 @@
             "mustParticipateInStudy" : "Benutzer müssen am Forschungsprojekt teilnehmen, um diese Applikation benutzen zu können.",
             "unlock_code" : "Wenn ausgefüllt, muss dieser Code vom Benutzer bei der Registrierung oder ersten Anmeldung bei MIDATA über die Applikation eingegeben werden. Der Code ist nicht 'case sensitiv'.",
             "send_reports" : "Den Entwickler ({{user}}) per E-Mail über Fehler benachrichtigen, die durch diese Applikation verursacht werden.",
-
-            // TODO CHANGED
-            // OLD: Enter comma separated list of email addresses of other developers on Midata that develop this appliation.
-            // NEW: Enter comma separated list of email addresses of other developers on MIDATA that develop this application.
             "developerTeam" : "Geben Sie eine durch Kommata getrennte Liste von E-Mail-Adressen anderer Entwickler auf MIDATA ein, die diese Anwendung entwickeln."
         },
         "status" : {

@@ -80,10 +80,6 @@
             "plugin" : "Questa applicazione è destinata ad un altro ruolo",
             "unlock_code" : "Codice di sblocco errato",
             "access_query" : "Il filtro di accesso ai dati (Data Access Filter) deve essere ristretto a 'contenuto' o 'gruppo'!",
-
-            // TODO CHANGED
-            // OLD: The Data Access Filter may not contain Patient resource. Correct Patient resource is shared automatically.
-            // NEW: The Data Access Filter may not contain the Patient resource. The correct Patient resource is shared automatically.
             "sharing" : "Il filtro di accesso ai dati  (Data Access Filter) potrebbe non contenere la risorsa Patient. La risorsa Patient corretta viene condivisa automaticamente.",
             "anonymous" : "Lo progetto di ricerca può essere anonimo soltanto se non è autorizzato nessuno ad accedere a dati presentati senza pseudonimi.",
             "url" : "URL non valido",
@@ -983,15 +979,7 @@
         "ownerName" : "Titolare",
         "type" : "Tipo",
         "status" : "Stato",
-
-        // TODO CHANGED
-        // OLD: # People
-        // NEW: # persons
         "number_of_people" : "# persone",
-
-        // TODO CHANGED
-        // OLD: # Records
-        // NEW: # records
         "number_of_records" : "# record",
         "date_of_creation" : "Data di creazione",
         "add_new_btn" : "Aggiungi nuovo consenso"

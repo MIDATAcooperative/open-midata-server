@@ -2,17 +2,9 @@
 
     "admin_navbar" : {
         "admin" : "Admin",
-
-        // TODO CHANGED
-        // OLD: Members
-        // NEW: Users
         "members" : "Benutzer",
         "auditlog" : "Audit",
         "news" : "News",
-
-        // TODO CHANGED
-        // OLD: Mails
-        // NEW: E-Mails
         "mails" : "E-Mails",
         "plugins" : "Applikationen",
         "usagestats" : "Statistik der Applikationsnutzung",
@@ -27,10 +19,6 @@
     },
 
     "admin_members" : {
-
-        // TODO CHANGED
-        // OLD: Member List
-        // NEW: User directory
         "title" : "Benutzerverzeichnis",
         "search_type" : "Suche",
         "contract_required" : "Der Vertrag muss versandt werden",
@@ -47,10 +35,6 @@
     },
 
     "admin_address" : {
-
-        // TODO CHANGED
-        // OLD: Member Profile
-        // NEW: User profile
         "title" : "Benutzerprofil",
         "show_apps_created" : "Von diesem Entwickler erstellten Applikationen anzeigen",
         "midata_id" : "MIDATA ID",
@@ -277,20 +261,8 @@
         "name" : "Name",
         "status" : "Status",
         "studyName" : "Projekt",
-
-        // TODO CHANGED
-        // OLD: Creator
-        // NEW: Author
         "creatorName" : "Autor",
-
-        // TODO CHANGED
-        // OLD: # Sent
-        // NEW: # sent
         "progressCount" : "# versendet",
-
-        // TODO CHANGED
-        // OLD: No bulk emails have been created yet.
-        // NEW: No bulk mails have been created yet.
         "empty" : "Es wurden noch keine Massen-E-Mails erstellt.",
         "stati" : {
             "DRAFT" : "Entwurf",
@@ -305,19 +277,11 @@
     "admin_managemails" : {
         "title1" : "Neues Massen-E-Mail",
         "title2" : "Massen-E-Mail bearbeiten",
-
-        // TODO CHANGED
-        // OLD: Internal Title for Mail
-        // NEW: Internal Mail Title
         "name" : "Interner Titel des E-Mails",
         "status" : "Status",
         "created" : "Erstellungsdatum",
         "started" : "Versand gestartet am",
         "finished" : "Versand abgeschlossen am",
-
-        // TODO CHANGED
-        // OLD: # Sent
-        // NEW: # sent
         "progressCount" : "# versendet",
         "studyId" : "Forschungsprojekt",
         "lang" : "Sprache",

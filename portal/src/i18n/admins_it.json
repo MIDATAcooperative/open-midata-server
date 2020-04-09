@@ -2,17 +2,9 @@
 
     "admin_navbar" : {
         "admin" : "Admin",
-
-        // TODO CHANGED
-        // OLD: Members
-        // NEW: Users
         "members" : "Utenti",
         "auditlog" : "Revisione",
         "news" : "Notizie",
-
-        // TODO CHANGED
-        // OLD: Mails
-        // NEW: E-Mails
         "mails" : "E-Mail",
         "plugins" : "Applicazioni",
         "usagestats" : "Statistiche sull'uso dell'applicazione",
@@ -27,10 +19,6 @@
     },
 
     "admin_members" : {
-
-        // TODO CHANGED
-        // OLD: Member List
-        // NEW: User directory
         "title" : "Repertorio utenti",
         "search_type" : "Cerca",
         "contract_required" : "Il contratto deve essere inviato",
@@ -47,10 +35,6 @@
     },
 
     "admin_address" : {
-
-        // TODO CHANGED
-        // OLD: Member Profile
-        // NEW: User profile
         "title" : "Profilo utente",
         "show_apps_created" : "Mostra le applicazioni create da questo sviluppatore",
         "midata_id" : "MIDATA ID",
@@ -277,20 +261,8 @@
         "name" : "Nome",
         "status" : "Stato",
         "studyName" : "Progetto",
-
-        // TODO CHANGED
-        // OLD: Creator
-        // NEW: Author
         "creatorName" : "Autore",
-
-        // TODO CHANGED
-        // OLD: # Sent
-        // NEW: # sent
         "progressCount" : "# inviate",
-
-        // TODO CHANGED
-        // OLD: No bulk emails have been created yet.
-        // NEW: No bulk mails have been created yet.
         "empty" : "Non sono ancora state create e-mail di massa.",
         "stati" : {
             "DRAFT" : "Bozza",
@@ -305,19 +277,11 @@
     "admin_managemails" : {
         "title1" : "Nuova e-mail di massa",
         "title2" : "Modifica e-mail di massa",
-
-        // TODO CHANGED
-        // OLD: Internal Title for Mail
-        // NEW: Internal Mail Title
         "name" : "Titolo interno e-mail",
         "status" : "Stato",
         "created" : "Tempo di creazione",
         "started" : "Invio iniziato a",
         "finished" : "Invio completato a",
-
-        // TODO CHANGED
-        // OLD: # Sent
-        // NEW: # sent
         "progressCount" : "# inviate",
         "studyId" : "Progetto di ricerca",
         "lang" : "Lingua",
