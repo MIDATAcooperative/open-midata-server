@@ -70,6 +70,8 @@
         "allgroups" : "<Alle Gruppen>",
         "plugin" : "Forschungsapplikation",
         "device" : "Code des Gerätes",
+        "endpoint" : "Names des Endpoints",
+        "only_aggregated" : "Beschränken auf aggregierte Daten",
         "restrict" : "Lesen auf diese Gruppe beschränken",
         "shareback" : "Die Applikation teilt Daten mit Teilnehmergruppe(n)",
         "add_application_btn" : "Forschungsapplikation hinzufügen",
@@ -122,10 +124,12 @@
         "required_data" : "Erforderliche Daten",
         "no_change_warning" : "Diese Konfiguration kann nicht mehr geändert werden, sobald das Projekt validiert wurde.",
         "member_identity" : "Identität des Mitglieds",
-        "pseudonymous1" : "Pseudonymisierte Teilnahme",
-        "pseudonymous2" : ", exportierte Daten zeigen die pseudonymisierte Identität, das Geburtsjahr, Geschlecht und Land. Einige Forscher wie z.B. Study Nurses haben möglicherweise Zugang zu vollständigen persönlichen Daten.",
+        "pseudonymous1" : "Pseudonymisierte Teilnahme (Geburtsjahr/Geschlecht/Land)",
+        "pseudonymous2" : ", exportierte Daten zeigen die pseudonymisierte Identität, das Geburtsjahr, Geschlecht und Land. Einige Forscher, wie z.B. Study Nurses, haben möglicherweise Zugang zu den vollständigen persönlichen Daten.",
+        "pseudonymous1b" : "Pseudonymisierte Teilnahme (keine zusätzlichen Informationen)",
+        "pseudonymous2b" : ", exportierte Daten zeigen die pseudonymisierte Identität. Einige Forscher, wie z.B. Study Nurses, haben möglicherweise Zugang zu den vollständigen persönlichen Daten.",
         "anonymous" : "Anonyme Teilnahme",
-        "anonymous2" : ", exportierte Daten zeigen die pseudonymisierte Identität, das Geburtsjahr, Geschlecht und Land. Das Pseudonymisierungs-Mapping ist nicht zugänglich.",
+        "anonymous2" : ", das Pseudonymisierungs-Mapping ist nicht zugänglich.",
         "not_anonymous1" : "Nicht pseudonymisiert",
         "not_anonymous2" : ", bedingt, dass das Mitglied seinen vollständigen Namen, Geburtsdatum und Kontaktinformationen (Adresse, Telefon, E-Mail) teilt",
         "assistance" : "Unterstützung",
@@ -213,7 +217,8 @@
         "retreated" : "Teilnehmer, welche sich zurückgezogen haben",
         "acceptall" : "Alle Anfragen annehmen und die neuen Teilnehmer zuordnen an der Teilnehmergruppe",
         "autojoin" : "Automatische Annahme",
-        "autojoin2" : "Alle Teilnahmewünsche annehmen und neue Teilnehmer der ausgewählten Gruppe zuweisen, sobald sich die Forschungsapplikation verbindet, die mit diesem Projekt verknüpft ist."
+        "autojoin2" : "Alle Teilnahmewünsche annehmen und neue Teilnehmer der ausgewählten Gruppe zuweisen, sobald sich die Forschungsapplikation verbindet, die mit diesem Projekt verknüpft ist.",
+        "not_allowed" : "Sie sind nicht berechtigt, die Teilnehmerliste einzusehen."
     },
 
     "studyrecords" : {

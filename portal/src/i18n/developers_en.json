@@ -144,7 +144,7 @@
        "mustParticipateInStudy" : "Users must participate in research project in order to use this application.",
        "unlock_code" : "If filled out, this code must be entered by the user in order to sign up or log in the first time to MIDATA using the application. The code is not case sensitive.",
        "send_reports" : "Notify developer ({{user}}) by email on errors caused by this application.",
-       "developerTeam" : "Enter comma separated list of email addresses of other developers on Midata that develop this appliation."        
+       "developerTeam" : "Enter comma separated list of email addresses of other developers on MIDATA that develop this application."        
     },
     "status" : {
       "title" : "Application Status",

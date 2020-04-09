@@ -80,7 +80,7 @@
             "plugin" : "Cette application est prévue pour un autre rôle",
             "unlock_code" : "Code d'activation incorrect",
             "access_query" : "Le filtre d'accès aux données (Data Access Filter) doit être limité par 'contenu' ou 'groupe'!",
-            "sharing" : "Le filtre d'accès aux données (Data Access Filter) contient des types de données qui sont exclus par la configuration du projet.",
+            "sharing" : "Le filtre d'accès aux données (Data Access Filter) ne peut pas contenir la ressource Patient. La ressource Patient correcte est partagée automatiquement.",
             "anonymous" : "Un projet de recherche ne peut être anonyme que si personne n'est autorisé à accéder à des données non pseudonymisées.",
             "url" : "URL invalide",
             "consent_members" : "Ce consentement ne pourra être confirmé que lorsque toutes les personnes externes auront rejoint MIDATA.",
@@ -131,7 +131,8 @@
             "research" : "Une organisation de recherche portant ce nom exite déjà.",
             "passcode" : "Veuillez choisir un autre NIP!",
             "plugin" : "Une application du même nom existe déjà.",
-            "study" : "Un projet de recherche du même nom existe déjà."
+            "study" : "Un projet de recherche du même nom existe déjà.",
+            "endpoint" : "Un endpoint avec cette URL existe déjà"
         },
 
         "blocked" : {
@@ -376,7 +377,7 @@
             "ADMIN" : "Administrateur",
             "ANY" : "Tous les rôles",
             "DEVELOPER" : "Développeur",
-            "MEMBER" : "Membre MIDATA",
+            "MEMBER" : "Utilisateur",
             "PROVIDER" : "Professionnel de la santé",
             "RESEARCH" : "Chercheur"
         },
@@ -462,7 +463,8 @@
             "oauth2" : "OAuth 2",
             "mobile" : "Application (Smartphone, Web)",
             "external" : "Service externe",
-            "analyzer" : "Analyseur de projet"
+            "analyzer" : "Analyseur de projet",
+            "endpoint" : "FHIR endpoint"
         },
         "infos" : {
             "SUMMARY" : "Résumé sommaire",
@@ -789,6 +791,7 @@
         "duration" : "Durée",
         "information_that_needs_sharing" : "Données requises",
         "information_restricted" : "Votre sexe, année de naissance et pays de résidence",
+        "information_none" : "Un pseudonyme",
         "information_demographic" : "L'ensemble de vos données démographiques (nom, date de naissance, adresse, ...)",
         "records_with_format" : "Enregistrements au format:",
         "records_with_content" : "Enregistrements avec contenu:",
@@ -948,7 +951,8 @@
         "please_review2a" : "Veuillez examiner ce consentement. Cliquez sur 'Confirmer ce consentement' si vous êtes d'accord. Cliquez sur 'Rejeter ce consentement' si vous n'êtes pas d'accord.",
         "please_review2b" : "Veuillez examiner ce consentement existant. Cliquez sur le bouton 'Ignorer (aucune modification)' pour quitter cette page sans aucun changement. Cliquez sur 'Rejeter ce consentement' si vous n'êtes plus d'accord.",
         "you" : "Vous",
-        "restrictions" : "Autres restrictions?"
+        "restrictions" : "Autres restrictions?",
+        "project" : "Projet"
     },
 
     "editconsent2" : {
@@ -1206,6 +1210,7 @@
         "recorded" : "Heure",
         "outcome" : "Résultat",
         "empty" : "Aucun enregistrement.",
+        "anonymous" : "Utilisateur pseudonymisé",
         "title" : "Audit Log",
         "refresh_btn" : "Actualiser",
         "via" : "par",

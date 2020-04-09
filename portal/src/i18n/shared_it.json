@@ -79,8 +79,8 @@
             "passcode" : "Codice password errato",
             "plugin" : "Questa applicazione è destinata ad un altro ruolo",
             "unlock_code" : "Codice di sblocco errato",
-            "access_query" : "Il filtro di accesso dati (Data Access Filter) deve essere ristretto a 'contenuto' o 'gruppo'!",
-            "sharing" : "Il filtro di accesso dati (Data Access Filter) contiene tipi di dati esclusi dalla configurazione del progetto.",
+            "access_query" : "Il filtro di accesso ai dati (Data Access Filter) deve essere ristretto a 'contenuto' o 'gruppo'!",
+            "sharing" : "Il filtro di accesso ai dati  (Data Access Filter) potrebbe non contenere la risorsa Patient. La risorsa Patient corretta viene condivisa automaticamente.",
             "anonymous" : "Lo progetto di ricerca può essere anonimo soltanto se non è autorizzato nessuno ad accedere a dati presentati senza pseudonimi.",
             "url" : "URL non valido",
             "consent_members" : "Questo consenso può essere confermato solo dopo che tutte le persone esterne hanno aderito a MIDATA.",
@@ -131,7 +131,8 @@
             "research" : "Un'organizzazione di ricerca con questo nome esiste già.",
             "passcode" : "Scegliere un codice password diverso!",
             "plugin" : "Esiste già un'applicazione con lo stesso nome.",
-            "study" : "Esiste già un progetto di ricerca con questo nome."
+            "study" : "Esiste già un progetto di ricerca con questo nome.",
+            "endpoint" : "Esiste già un endpoint con questo URL"
         },
 
         "blocked" : {
@@ -462,7 +463,8 @@
             "oauth2" : "OAuth 2",
             "mobile" : "Applicazione (Smartphone, Web)",
             "external" : "Servizio esterno",
-            "analyzer" : "Analizzatore di progetto"
+            "analyzer" : "Analizzatore di progetto",
+            "endpoint" : "FHIR endpoint"
         },
         "infos" : {
             "SUMMARY" : "Breve riassunto",
@@ -789,6 +791,7 @@
         "duration" : "Durata",
         "information_that_needs_sharing" : "Dati richiesti",
         "information_restricted" : "Indicare sesso, anno di nascita e nazione di residenza",
+        "information_none" : "Uno pseudonimo",
         "information_demographic" : "I propri dati demografici completi (nome, data di nascita, indirizzo, ...)",
         "records_with_format" : "Record con il formato:",
         "records_with_content" : "Record con i contenuti:",
@@ -948,7 +951,8 @@
         "please_review2a" : "Si prega di rivedere questo consenso. Clicca su 'Conferma questo consenso' se si è d'accordo. Clicca su 'Rifiuta questo consenso' se non sei d'accordo.",
         "please_review2b" : "Si prega di rivedere il consenso esistente. Clicca su 'Salta (nessuna modifica)' per lasciare questa pagina senza modifiche. Clicca su 'Rifiuta questo consenso' se non sei più d'accordo.",
         "you" : "Voi",
-        "restrictions" : "Altre restrizioni?"
+        "restrictions" : "Altre restrizioni?",
+        "project" : "Progetto"
     },
 
     "editconsent2" : {
@@ -975,7 +979,7 @@
         "ownerName" : "Titolare",
         "type" : "Tipo",
         "status" : "Stato",
-        "number_of_people" : "# Persone",
+        "number_of_people" : "# persone",
         "number_of_records" : "# record",
         "date_of_creation" : "Data di creazione",
         "add_new_btn" : "Aggiungi nuovo consenso"
@@ -1206,6 +1210,7 @@
         "recorded" : "Ora",
         "outcome" : "Esito",
         "empty" : "Non è stato ancora immesso alcun dato.",
+        "anonymous" : "Utente pseudonimizzato",
         "title" : "Registro di revisione",
         "refresh_btn" : "Aggiorna",
         "via" : "via",
