@@ -312,3 +312,4 @@
 {"_id":{"$oid":"5e7e26e3aed64522b6270179"},"content":"snomed/90834002","defaultCode":"http://snomed.info/sct 90834002","security":"MEDIUM","label":{"en":"Pain in limb"},"resourceType":"fhir/Observation"}
 {"_id":{"$oid":"5e7e271daed64522b627017b"},"content":"snomed/267036007","defaultCode":"http://snomed.info/sct 267036007","security":"MEDIUM","label":{"en":"Dyspnea"},"resourceType":"fhir/Observation"}
 {"_id":{"$oid":"5e7e2885aed64522b627017e"},"content":"loinc/89196-0","defaultCode":"http://loinc.org 89196-0","security":"MEDIUM","label":{"en":"Patient reported outcome measure panel"},"resourceType":"fhir/Composition"}
+{"_id":{"$oid":"5e8ef835aed6452871e492a3"},"content":"loinc/46251-5","defaultCode":"http://loinc.org 46251-5","security":"MEDIUM","label":{"en":"Age Group"},"resourceType":"fhir/Observation"}
