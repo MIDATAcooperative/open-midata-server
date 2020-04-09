@@ -1,10 +1,10 @@
 {
   "admin_navbar" : {
     "admin" : "Admin",
-    "members" : "Members",
+    "members" : "Users",
     "auditlog" : "Audit",
     "news" : "News",
-    "mails" : "Mails",
+    "mails" : "E-Mails",
     "plugins" : "Applications",
     "usagestats" : "Application usage statistics",
 	"content" : "Content Types",
@@ -18,7 +18,7 @@
   },
   
   "admin_members" : {
-    "title" : "Member List",
+    "title" : "User directory",
     "search_type" : "Search",
     "contract_required" : "Contract needs to be sent",
     "contract_confirm_required" : "Signed contract needs to be confirmed",
@@ -34,7 +34,7 @@
   },
 
   "admin_address" : {
-    "title" : "Member Profile",
+    "title" : "User profile",
     "show_apps_created" : "Show the applications created by this developer",
     "midata_id" : "MIDATA ID",
     "role" : "Role",
@@ -260,9 +260,9 @@
       "name" : "Name",
       "status" : "Status",
       "studyName" : "Project",
-      "creatorName" : "Creator",
-      "progressCount" : "# Sent",
-      "empty" : "No bulk emails have been created yet.",
+      "creatorName" : "Author",
+      "progressCount" : "# sent",
+      "empty" : "No bulk mails have been created yet.",
       "stati" : {
         "DRAFT" : "Draft",
         "STARTED" : "Scheduled for sending",
@@ -276,12 +276,12 @@
    "admin_managemails" : {
      "title1" : "New Bulk Mail",
      "title2" : "Edit Bulk Mail",
-     "name" : "Internal Title for Mail",
+     "name" : "Internal Mail Title",
      "status" : "Status",
      "created" : "Time of creation",
      "started" : "Sending started at",
      "finished" : "Sending completed at",
-     "progressCount" : "# Sent",
+     "progressCount" : "# sent",
      "studyId" : "Research Project",
      "lang" : "Language",
      "title" : "Mail Title",

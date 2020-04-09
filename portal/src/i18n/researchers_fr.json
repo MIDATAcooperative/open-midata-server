@@ -125,10 +125,22 @@
         "no_change_warning" : "Cette configuration ne peut plus être modifiée une fois le projet validé.",
         "member_identity" : "Identité du membre",
         "pseudonymous1" : "Participation pseudonymisée (année de naissance/sexe/pays)",
+
+        // TODO CHANGED
+        // OLD: , exported data reveals the pseudonymized identity, year of birth, gender and country. Some researchers like study nurses may have access to full personal data.
+        // NEW: , exported data reveals the pseudonymized identity, year of birth, gender and country. Some researchers, like study nurses, may have access to full personal data.
         "pseudonymous2" : ", les données exportées révèlent l'identité pseudonyme, l'année de naissance, le sexe et le pays. Certains chercheurs, telles les study nurses, peuvent avoir accès à l'intégralité des données personnelles.",
         "pseudonymous1b" : "Participation pseudonymisée (pas d'informations supplémentaires)",
+
+        // TODO CHANGED
+        // OLD: , exported data reveals the pseudonymized identity. Some researchers like study nurses may have access to full personal data.
+        // NEW: , exported data reveals the pseudonymized identity. Some researchers, like study nurses, may have access to full personal data.
         "pseudonymous2b" : ", les données exportées révèlent l'identité pseudonymisée. Certains chercheurs, telles les study nurses, peuvent avoir accès à l'intégralité des données personnelles.",
         "anonymous" : "Participation anonyme",
+
+        // TODO CHANGED
+        // OLD: , The pseudonymization mapping may not be accessed.
+        // NEW: , the pseudonymization mapping may not be accessed.
         "anonymous2" : ", la cartographie de pseudonymisation n'est pas accessible.",
         "not_anonymous1" : "Pas pseudonymisé",
         "not_anonymous2" : ", requière que le membre partage son nom complet, date de naissance et informations de contact (adresse, téléphone, e-mail)",

@@ -80,6 +80,10 @@
             "plugin" : "Diese Applikation ist nur für eine andere Rolle vorgesehen",
             "unlock_code" : "Falscher Freischaltcode",
             "access_query" : "Der Datenzugriffsfilter (Data Access Filter) muss nach 'content' oder 'group' einschränken!",
+
+            // TODO CHANGED
+            // OLD: The Data Access Filter may not contain Patient resource. Correct Patient resource is shared automatically.
+            // NEW: The Data Access Filter may not contain the Patient resource. The correct Patient resource is shared automatically.
             "sharing" : "Der Datenzugriffsfilter (Data Access Filter) darf die Ressource Patient nicht enthalten. Die passende Ressource Patient wird automatisch geteilt.",
             "anonymous" : "Ein Forschungsprojekt kann nur dann anonym sein, wenn niemand auf unpseudonymisierte Daten zugreifen darf.",
             "url" : "Ungültige URL",
@@ -979,7 +983,15 @@
         "ownerName" : "Besitzer",
         "type" : "Typ",
         "status" : "Status",
+
+        // TODO CHANGED
+        // OLD: # People
+        // NEW: # persons
         "number_of_people" : "# Personen",
+
+        // TODO CHANGED
+        // OLD: # Records
+        // NEW: # records
         "number_of_records" : "# Einträge",
         "date_of_creation" : "Erstellungsdatum",
         "add_new_btn" : "Neue Zustimmung hinzufügen"
