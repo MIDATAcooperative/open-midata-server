@@ -15,6 +15,7 @@ import utils.access.DBRecord;
 public class StatsIndexKey extends BaseIndexKey<StatsIndexKey,StatsIndexKey> implements Comparable<StatsIndexKey> {
 
     public MidataId aps;	
+    public MidataId stream;
 	public String format;		
 	public String content;
 	public String group;
@@ -32,6 +33,8 @@ public class StatsIndexKey extends BaseIndexKey<StatsIndexKey,StatsIndexKey> imp
 	@Override
 	public int compareTo(StatsIndexKey other) {
 		int b = aps.compareTo(other.aps);
+		if (b!=0) return b;
+		b = stream.compareTo(other.stream);
 		if (b!=0) return b;
 		b = group.compareTo(other.group);
 		if (b!=0) return b;
@@ -75,6 +78,7 @@ public class StatsIndexKey extends BaseIndexKey<StatsIndexKey,StatsIndexKey> imp
 	public StatsIndexKey copy() {
 		StatsIndexKey result = new StatsIndexKey();
 		result.aps = this.aps;	
+		result.stream = this.stream;
 		result.format = this.format;		
 		result.content = this.content;
 		result.group = this.group;
@@ -108,7 +112,8 @@ public class StatsIndexKey extends BaseIndexKey<StatsIndexKey,StatsIndexKey> imp
 
 	@Override
 	public void writeObject(ObjectOutputStream s, StatsIndexKey last) throws IOException {
-		s.writeUTF(aps.toString());	
+		s.writeUTF(aps.toString());
+		s.writeUTF(stream.toString());
 		s.writeUTF(format);		
 		s.writeUTF(content);
 		s.writeUTF(group);
@@ -125,7 +130,8 @@ public class StatsIndexKey extends BaseIndexKey<StatsIndexKey,StatsIndexKey> imp
 
 	@Override
 	public void readObject(ObjectInputStream s, StatsIndexKey last) throws IOException, ClassNotFoundException {
-		aps = new MidataId(s.readUTF());	
+		aps = new MidataId(s.readUTF());
+		stream = new MidataId(s.readUTF());
 		format = s.readUTF();		
 		content = s.readUTF();
 		group = s.readUTF();

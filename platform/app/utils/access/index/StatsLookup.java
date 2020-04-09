@@ -18,6 +18,7 @@ public class StatsLookup extends BaseLookup<StatsIndexKey>{
 	private Set<String> group;
 	private Set<String> app;
 	private MidataId aps;
+	private MidataId stream;
 	
 	public StatsLookup() {}
 	
@@ -39,6 +40,14 @@ public class StatsLookup extends BaseLookup<StatsIndexKey>{
 
 	public void setAps(MidataId aps) {
 		this.aps = aps;
+	}
+	
+	public MidataId getStream() {
+		return stream;
+	}
+
+	public void setStream(MidataId stream) {
+		this.stream = stream;
 	}
 
 	public Set<String> getOwner() {
@@ -92,6 +101,7 @@ public class StatsLookup extends BaseLookup<StatsIndexKey>{
 	@Override
 	public boolean conditionCompare(StatsIndexKey inkey) {
 		if (aps != null && !aps.equals(inkey.aps)) return false;
+		if (stream != null && !stream.equals(inkey.stream)) return false;
 		if (owner != null && !owner.contains(inkey.owner)) return false;
 		if (format != null && !format.contains(inkey.format)) return false;
 		if (content != null && !content.contains(inkey.content)) return false;
@@ -114,7 +124,7 @@ public class StatsLookup extends BaseLookup<StatsIndexKey>{
 	}
 	
 	public String toString() {
-		return "{ statslookup "+nonull("owner",owner)+nonull("format", format)+nonull("content", content)+nonull("group",group)+nonull("app",app)+nonull("aps",aps)+" }";
+		return "{ statslookup "+nonull("owner",owner)+nonull("format", format)+nonull("content", content)+nonull("group",group)+nonull("app",app)+nonull("aps",aps)+nonull("stream",stream)+" }";
 	}
 
 }

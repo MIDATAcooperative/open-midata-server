@@ -99,19 +99,22 @@ class QueryEngine {
 		}
 	}
 	
-	/*
+	
 	public static Collection<RecordsInfo> infoQuery(Query q, MidataId aps, boolean cached, AggregationType aggrType, MidataId owner) throws AppException {
 		long t = System.currentTimeMillis();
 		AccessLog.logBegin("begin infoQuery aps="+aps+" cached="+cached);
 		Map<String, RecordsInfo> result = new HashMap<String, RecordsInfo>();
 		
-		APS myaps = q.getCache().getAPS(aps);
+		//APS myaps = q.getCache().getAPS(aps);
 		
 		Feature qm = new Feature_QueryRedirect(new Feature_Pseudonymization(new Feature_PublicData(new Feature_UserGroups(new Feature_Stats(new Feature_FormatGroups(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))))))));						 
 		List<DBRecord> recs = ProcessingTools.collect(qm.iterator(q));		
 		
 		for (DBRecord record : recs) {
-			RecordsInfo inf = (RecordsInfo) record.attached;			
+			RecordsInfo inf = (RecordsInfo) record.attached;	
+			if (inf==null) {
+				AccessLog.log("ERROR RECORD="+record);
+			}
 			String k = getInfoKey(aggrType, inf.groups.iterator().next(), inf.contents.iterator().next(), inf.formats.iterator().next(), record.owner, inf.apps.isEmpty() ? "empty" : inf.apps.iterator().next().toString());
 			RecordsInfo here = result.get(k);					
 			if (here == null) {
@@ -123,8 +126,8 @@ class QueryEngine {
 				
 		return result.values();
 	}
-	*/
 	
+	/*
 	public static Collection<RecordsInfo> infoQuery(Query q, MidataId aps, boolean cached, AggregationType aggrType, MidataId owner) throws AppException {
 		long t = System.currentTimeMillis();
 		AccessLog.logBeginPath("info-query(aps="+aps+")"," cached="+cached);
@@ -235,7 +238,7 @@ class QueryEngine {
 			}
 		}
 		return result.values();
-	}
+	}*/
 	
     public static DBIterator<DBRecord> fullQuery(Map<String, Object> properties, Set<String> fields, MidataId aps, AccessContext context, APSCache cache) throws AppException {    	
     	long queryStart = System.currentTimeMillis();
