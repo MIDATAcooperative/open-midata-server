@@ -1,25 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1" xml:lang="en">
-    <file source-language="en" target-language="it" datatype="winres" original="members_it.json">
-        <body>
-            <group resname="help_welcome" id="help_welcome">
-                <trans-unit resname="menu_config" id="help_welcome.menu_config">
-                    <source>Config</source>
-                </trans-unit>
-            </group>
-            <group resname="help_setup" id="help_setup">
-                <trans-unit resname="question_devices_answer1" id="help_setup.question_devices_answer1">
-                    <source>Fitbit</source>
-                </trans-unit>
-                <trans-unit resname="question_devices_answer2" id="help_setup.question_devices_answer2">
-                    <source>Jawbone</source>
-                </trans-unit>
-                <trans-unit resname="question_devices_answer3" id="help_setup.question_devices_answer3">
-                    <source>Withings</source>
-                </trans-unit>
-            </group>
-        </body>
-    </file>
     <file source-language="en" target-language="it" datatype="winres" original="providers_it.json">
         <body>
             <group resname="provider_navbar" id="provider_navbar">
@@ -45,13 +25,29 @@
                 <trans-unit resname="admin" id="admin_navbar.admin">
                     <source>Admin</source>
                 </trans-unit>
+                <trans-unit resname="members" id="admin_navbar.members">
+                    <source>Users</source>
+                    <target>Utenti</target>
+                </trans-unit>
+                <trans-unit resname="mails" id="admin_navbar.mails">
+                    <source>E-Mails</source>
+                    <target>E-Mail</target>
+                </trans-unit>
             </group>
             <group resname="admin_members" id="admin_members">
+                <trans-unit resname="title" id="admin_members.title">
+                    <source>User directory</source>
+                    <target>Repertorio utenti</target>
+                </trans-unit>
                 <trans-unit resname="midata_id" id="admin_members.midata_id">
                     <source>MIDATA ID</source>
                 </trans-unit>
             </group>
             <group resname="admin_address" id="admin_address">
+                <trans-unit resname="title" id="admin_address.title">
+                    <source>User profile</source>
+                    <target>Profilo utente</target>
+                </trans-unit>
                 <trans-unit resname="midata_id" id="admin_address.midata_id">
                     <source>MIDATA ID</source>
                 </trans-unit>
@@ -105,6 +101,50 @@
                     <source>Delete</source>
                 </trans-unit>
             </group>
+            <group resname="admin_mails" id="admin_mails">
+                <trans-unit resname="creatorName" id="admin_mails.creatorName">
+                    <source>Author</source>
+                    <target>Autore</target>
+                </trans-unit>
+                <trans-unit resname="progressCount" id="admin_mails.progressCount">
+                    <source># sent</source>
+                    <target># inviate</target>
+                </trans-unit>
+                <trans-unit resname="empty" id="admin_mails.empty">
+                    <source>No bulk mails have been created yet.</source>
+                    <target>Non sono ancora state create e-mail di massa.</target>
+                </trans-unit>
+            </group>
+            <group resname="admin_managemails" id="admin_managemails">
+                <trans-unit resname="name" id="admin_managemails.name">
+                    <source>Internal Mail Title</source>
+                    <target>Titolo interno e-mail</target>
+                </trans-unit>
+                <trans-unit resname="progressCount" id="admin_managemails.progressCount">
+                    <source># sent</source>
+                    <target># inviate</target>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+    <file source-language="en" target-language="it" datatype="winres" original="members_it.json">
+        <body>
+            <group resname="help_welcome" id="help_welcome">
+                <trans-unit resname="menu_config" id="help_welcome.menu_config">
+                    <source>Config</source>
+                </trans-unit>
+            </group>
+            <group resname="help_setup" id="help_setup">
+                <trans-unit resname="question_devices_answer1" id="help_setup.question_devices_answer1">
+                    <source>Fitbit</source>
+                </trans-unit>
+                <trans-unit resname="question_devices_answer2" id="help_setup.question_devices_answer2">
+                    <source>Jawbone</source>
+                </trans-unit>
+                <trans-unit resname="question_devices_answer3" id="help_setup.question_devices_answer3">
+                    <source>Withings</source>
+                </trans-unit>
+            </group>
         </body>
     </file>
     <file source-language="en" target-language="it" datatype="winres" original="developers_it.json">
@@ -118,6 +158,12 @@
                 <trans-unit resname="debug_btn" id="manageapp.debug_btn">
                     <source>API Tester Sandbox</source>
                 </trans-unit>
+                <group resname="info" id="manageapp.info">
+                    <trans-unit resname="developerTeam" id="manageapp.info.developerTeam">
+                        <source>Enter comma separated list of email addresses of other developers on MIDATA that develop this application.</source>
+                        <target>Inserire una lista separata da virgole di indirizzi e-mail di altri sviluppatori su MIDATA che sviluppano questa applicazione.</target>
+                    </trans-unit>
+                </group>
                 <trans-unit resname="access_query_json" id="manageapp.access_query_json">
                     <source>Data Access Filter</source>
                 </trans-unit>
@@ -188,27 +234,19 @@
                     <source>Team</source>
                 </trans-unit>
             </group>
-            <group resname="studyactions" id="studyactions">
-                <group resname="types" id="studyactions.types">
-                    <trans-unit resname="OFFER_P" id="studyactions.types.OFFER_P">
-                        <source>Onboarding: Application offers project participation upon login/start</source>
-                        <target>L'applicazione offre la partecipazione al progetto al momento del accedi/avvio</target>
-                    </trans-unit>
-                    <trans-unit resname="OFFER_EXTRA_PAGE" id="studyactions.types.OFFER_EXTRA_PAGE">
-                        <source>Onboarding: Project participation is described on extra page</source>
-                    </trans-unit>
-                    <trans-unit resname="OFFER_INLINE_AGB" id="studyactions.types.OFFER_INLINE_AGB">
-                        <source>Onboarding: Use terms as project description</source>
-                    </trans-unit>
-                </group>
-                <group resname="types_short" id="studyactions.types_short">
-                    <trans-unit resname="OFFER_EXTRA_PAGE" id="studyactions.types_short.OFFER_EXTRA_PAGE">
-                        <source>Extra project page</source>
-                    </trans-unit>
-                    <trans-unit resname="OFFER_INLINE_AGB" id="studyactions.types_short.OFFER_INLINE_AGB">
-                        <source>Terms as description</source>
-                    </trans-unit>
-                </group>
+            <group resname="studyfields" id="studyfields">
+                <trans-unit resname="pseudonymous2" id="studyfields.pseudonymous2">
+                    <source>, exported data reveals the pseudonymized identity, year of birth, gender and country. Some researchers, like study nurses, may have access to full personal data.</source>
+                    <target>, i dati esportati rivelano l'identità pseudonimizzati, l'anno di nascita, il sesso e il paese. Alcuni ricercatori, come gli study nurses, possono avere accesso a tutti dati personali.</target>
+                </trans-unit>
+                <trans-unit resname="pseudonymous2b" id="studyfields.pseudonymous2b">
+                    <source>, exported data reveals the pseudonymized identity. Some researchers, like study nurses, may have access to full personal data.</source>
+                    <target>, i dati esportati rivelano l'identità pseudonimizzata. Alcuni ricercatori, come gli study nurses, possono avere accesso a tutti i dati personali.</target>
+                </trans-unit>
+                <trans-unit resname="anonymous2" id="studyfields.anonymous2">
+                    <source>, the pseudonymization mapping may not be accessed.</source>
+                    <target>, la mappatura della pseudonimizzazione non è accessibile.</target>
+                </trans-unit>
             </group>
             <group resname="studyrules" id="studyrules">
                 <trans-unit resname="sharing_query" id="studyrules.sharing_query">
@@ -230,9 +268,10 @@
                 </trans-unit>
             </group>
             <group resname="error" id="error">
-                <group resname="blocked" id="error.blocked">
-                    <trans-unit resname="projectconsent" id="error.blocked.projectconsent">
-                        <source>Account holder has retreated from a project which is required for application use.</source>
+                <group resname="invalid" id="error.invalid">
+                    <trans-unit resname="sharing" id="error.invalid.sharing">
+                        <source>The Data Access Filter may not contain the Patient resource. The correct Patient resource is shared automatically.</source>
+                        <target>Il filtro di accesso ai dati  (Data Access Filter) potrebbe non contenere la risorsa Patient. La risorsa Patient corretta viene condivisa automaticamente.</target>
                     </trans-unit>
                 </group>
             </group>
@@ -266,10 +305,8 @@
                     <trans-unit resname="oauth2" id="enum.plugintype.oauth2">
                         <source>OAuth 2</source>
                     </trans-unit>
-                </group>
-                <group resname="infos" id="enum.infos">
-                    <trans-unit resname="ONBOARDING" id="enum.infos.ONBOARDING">
-                        <source>App Onboarding Text</source>
+                    <trans-unit resname="endpoint" id="enum.plugintype.endpoint">
+                        <source>FHIR endpoint</source>
                     </trans-unit>
                 </group>
                 <group resname="entitytype" id="enum.entitytype">
@@ -308,21 +345,19 @@
                     <source>Team</source>
                 </trans-unit>
             </group>
+            <group resname="consents" id="consents">
+                <trans-unit resname="number_of_people" id="consents.number_of_people">
+                    <source># persons</source>
+                    <target># persone</target>
+                </trans-unit>
+                <trans-unit resname="number_of_records" id="consents.number_of_records">
+                    <source># records</source>
+                    <target># record</target>
+                </trans-unit>
+            </group>
             <group resname="records" id="records">
                 <trans-unit resname="just_name" id="records.just_name">
                     <source>{{name}}</source>
-                </trans-unit>
-            </group>
-            <group resname="oauth2" id="oauth2">
-                <trans-unit resname="continue_btn" id="oauth2.continue_btn">
-                    <source>Continue</source>
-                </trans-unit>
-                <trans-unit resname="requests_access" id="oauth2.requests_access">
-                    <source>Requested access by app:</source>
-                    <target>Accesso richiesto:</target>
-                </trans-unit>
-                <trans-unit resname="requests_sharing" id="oauth2.requests_sharing">
-                    <source>Data that will be shared with the project:</source>
                 </trans-unit>
             </group>
             <group resname="dashboard" id="dashboard">
