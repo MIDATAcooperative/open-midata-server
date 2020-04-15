@@ -5,11 +5,12 @@ angular.module('portal')
 	$scope.crit = { };
 	$scope.status = new status(true, $scope);
 	$scope.timeCrits = ["created-after","created-before", "updated-after","updated-before"];
+	$scope.sources = ["me", "project"];
 	$scope.ids = [];
 	
 	$scope.reload = function(userId) {
 		$scope.userId = userId;
-		$scope.status.doBusy(records.getInfos(userId, { "owner" : "self" }, "ALL")).
+		$scope.status.doBusy(records.getInfos(userId, { }, "ALL")).
 		then(function(results) {
 			$scope.tooManyConsents = results.status == 202;
 			$scope.infos = results.data;
@@ -33,8 +34,14 @@ angular.module('portal')
 	});	
 	
 	var buildQuery = function() {
-		var properties = { owner : "self" };
+		var properties = {  };		
 		var crit = $scope.crit;
+		if (crit.source=="me") properties.owner="self";
+		else {
+			properties.usergroup = $scope.studyId;
+			properties["force-local"] = true;
+			//properties["study-related"] = true;
+		}
 		if (crit.content) properties.content = crit.content;
 		if (crit.format) properties.format = crit.format;
 		if (crit.app) properties.app = crit.app;
@@ -47,6 +54,7 @@ angular.module('portal')
 	
 	var sharedQuery = function() {
 		var properties = buildQuery();
+		properties["force-local"] = undefined;
 		properties.study = $scope.studyId;
 		properties["study-group"] = $scope.crit.studyGroup;
 		properties["study-related"] = true;

@@ -7,6 +7,7 @@ import java.util.Set;
 import utils.RuntimeConstants;
 import utils.access.DBRecord;
 import utils.access.RecordConversion;
+import utils.access.index.StatsIndexKey;
 
 /**
  * result of a summary query.
@@ -126,6 +127,24 @@ public class RecordsInfo {
 		this.formats.addAll(item.formats);
 		this.owners.addAll(item.owners);
 		this.apps.addAll(item.apps);
+		
+
+	}
+	
+	public void merge(StatsIndexKey item) {
+		this.count += item.count;
+		if (item.newest > this.newest.getTime()) {
+			this.newest = new Date(item.newest);
+			this.newestRecord = item.newestRecord;
+		}
+		if (item.oldest < this.oldest.getTime()) {
+			this.oldest = new Date(item.oldest);
+		}
+		this.groups.add(item.group);
+		this.contents.add(item.content);
+		this.formats.add(item.format);
+		if (item.owner != null) this.owners.add(item.owner.toString());
+		this.apps.add(item.app);
 		
 
 	}

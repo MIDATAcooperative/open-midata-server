@@ -40,23 +40,23 @@ public class MemberKey extends Consent {
 	}
 	
 	public static MemberKey getById(MidataId id) throws InternalServerException {
-		return Model.get(MemberKey.class, collection, CMaps.map("_id", id), ALL);
+		return Model.get(MemberKey.class, collection, CMaps.map("_id", id).map("status", NOT_DELETED), ALL);
 	}
 	
 	public static Set<MemberKey> getByOwnerAndAuthorizedPerson(MidataId ownerId, MidataId authorizedId) throws InternalServerException {
-		return Model.getAll(MemberKey.class, collection, CMaps.map("owner", ownerId).map("authorized", authorizedId).map("type",  ConsentType.HEALTHCARE), ALL);
+		return Model.getAll(MemberKey.class, collection, CMaps.map("owner", ownerId).map("authorized", authorizedId).map("type",  ConsentType.HEALTHCARE).map("status", NOT_DELETED), ALL);
 	}
 	
 	public static Set<MemberKey> getByAuthorizedPerson(MidataId authorizedId, Set<String> fields, int limit) throws InternalServerException {
-		return Model.getAll(MemberKey.class, collection, CMaps.map("authorized", authorizedId).map("type", ConsentType.HEALTHCARE), fields, limit);
+		return Model.getAll(MemberKey.class, collection, CMaps.map("authorized", authorizedId).map("type", ConsentType.HEALTHCARE).map("status", NOT_DELETED), fields, limit);
 	}
 	
 	public static Set<MemberKey> getByOwner(MidataId ownerId) throws InternalServerException {
-		return Model.getAll(MemberKey.class, collection, CMaps.map("owner", ownerId).map("type",  ConsentType.HEALTHCARE), ALL);
+		return Model.getAll(MemberKey.class, collection, CMaps.map("owner", ownerId).map("type",  ConsentType.HEALTHCARE).map("status", NOT_DELETED), ALL);
 	}
 	
 	public static MemberKey getByIdAndOwner(MidataId consentId, MidataId ownerId, Set<String> fields) throws InternalServerException {
-		return Model.get(MemberKey.class, collection, CMaps.map("_id", consentId).map("owner", ownerId), fields);
+		return Model.get(MemberKey.class, collection, CMaps.map("_id", consentId).map("owner", ownerId).map("status", NOT_DELETED), fields);
 	}
 	
 	public void add() throws InternalServerException {

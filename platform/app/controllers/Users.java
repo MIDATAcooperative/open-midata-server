@@ -229,7 +229,7 @@ public class Users extends APIController {
 		Set<MidataId> contactIds = new HashSet<MidataId>();
 		Set<Member> contacts;
 	
-		Set<Circle> circles = Circle.getAll(CMaps.map("owner", userId).map("type",Sets.createEnum(ConsentType.CIRCLE, ConsentType.HEALTHCARE)), Sets.create("authorized"));
+		Set<Circle> circles = Circle.getAll(CMaps.map("owner", userId).map("type",Sets.createEnum(ConsentType.CIRCLE, ConsentType.HEALTHCARE)).map("status",Consent.NOT_DELETED), Sets.create("authorized"));
 		for (Circle circle : circles) {
 			contactIds.addAll(circle.authorized);
 		}

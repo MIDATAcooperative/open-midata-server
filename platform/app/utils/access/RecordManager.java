@@ -352,6 +352,12 @@ public class RecordManager {
 			Map<String, Object> query, boolean withOwnerInformation) throws AppException {
 		
 		APSCache cache = getCache(who);
+		if (!who.equals(fromAPS)) {
+			UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(fromAPS, who);
+			if (ugm!=null) {
+				cache = Feature_UserGroups.findApsCacheToUse(cache, ugm);
+			}
+		}
 		APS apswrapper = cache.getAPS(toAPS, toAPSOwner);
 		List<DBRecord> recordEntries = QueryEngine.listInternal(cache, fromAPS, null,
 				CMaps.map(query).map("owner", fromAPS),	RecordManager.SHARING_FIELDS);
@@ -532,7 +538,7 @@ public class RecordManager {
 		if (records.size() == 0) return;
 		
         AccessLog.logBegin("begin unshare who="+who.toString()+" aps="+apsId.toString()+" #recs="+records.size());
-        APSCache cache = getCache(who);
+        APSCache cache = Feature_UserGroups.findApsCacheToUse(getCache(who), apsId);
 		APS apswrapper = cache.getAPS(apsId);
 		List<DBRecord> recordEntries = QueryEngine.listInternal(getCache(who), apsId, null,
 				CMaps.map("_id", records), Sets.create("_id", "format", "content", "watches"));		

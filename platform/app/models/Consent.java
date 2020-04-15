@@ -1,5 +1,6 @@
 package models;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
@@ -42,6 +43,7 @@ public class Consent extends Model implements Comparable<Consent> {
 	 */
 	public @NotMaterialized final static Set<String> FHIR = Sets.create("owner", "ownerName", "name", "authorized", "entityType", "type", "status", "categoryCode", "creatorApp", "fhirConsent", "validUntil", "createdBefore", "dateOfCreation", "sharingQuery", "externalOwner", "externalAuthorized", "writes");
 	
+	public @NotMaterialized final static Set<ConsentStatus> NOT_DELETED = Collections.unmodifiableSet(EnumSet.of(ConsentStatus.ACTIVE, ConsentStatus.DRAFT, ConsentStatus.EXPIRED, ConsentStatus.FROZEN, ConsentStatus.REJECTED, ConsentStatus.UNCONFIRMED));
 	/**
 	 * When this consent was created
 	 */
@@ -150,19 +152,19 @@ public class Consent extends Model implements Comparable<Consent> {
 	public long dataupdate;
 	
 	public static Consent getByIdUnchecked(MidataId consentId, Set<String> fields) throws InternalServerException {
-		return Model.get(Consent.class, collection, CMaps.map("_id", consentId), fields);
+		return Model.get(Consent.class, collection, CMaps.map("_id", consentId).map("status", NOT_DELETED), fields);
 	}
 	
 	public static Consent getByIdAndOwner(MidataId consentId, MidataId ownerId, Set<String> fields) throws InternalServerException {
-		return Model.get(Consent.class, collection, CMaps.map("_id", consentId).map("owner", ownerId), fields);
+		return Model.get(Consent.class, collection, CMaps.map("_id", consentId).map("owner", ownerId).map("status", NOT_DELETED), fields);
 	}
 	
 	public static Consent getByIdAndAuthorized(MidataId consentId, MidataId executorId, Set<String> fields) throws InternalServerException {
-		return Model.get(Consent.class, collection, CMaps.map("_id", consentId).map("authorized", executorId), fields);
+		return Model.get(Consent.class, collection, CMaps.map("_id", consentId).map("authorized", executorId).map("status", NOT_DELETED), fields);
 	}
 	
 	public static Set<Consent> getByIdsAndAuthorized(Set<MidataId> consentIds, MidataId executorId, Set<String> fields) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map("_id", consentIds).map("authorized", executorId), fields);
+		return Model.getAll(Consent.class, collection, CMaps.map("_id", consentIds).map("authorized", executorId).map("status", NOT_DELETED), fields);
 	}
 	
 	public static Set<Consent> getActiveByIdsAndOwner(Set<MidataId> consentIds, MidataId executorId, Set<String> fields) throws InternalServerException {
@@ -170,11 +172,11 @@ public class Consent extends Model implements Comparable<Consent> {
 	}
 	
 	public static Consent getByOwnerAndPasscode(MidataId ownerId, String passcode, Set<String> fields) throws InternalServerException {
-		return Model.get(Consent.class, collection, CMaps.map("owner", ownerId).map("passcode", passcode), fields);
+		return Model.get(Consent.class, collection, CMaps.map("owner", ownerId).map("passcode", passcode).map("status", NOT_DELETED), fields);
 	}
 	
 	public static Set<Consent> getAllByOwner(MidataId owner, Map<String, Object> properties,  Set<String> fields, int limit) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map(properties).map("owner", owner), fields, limit);
+		return Model.getAll(Consent.class, collection, CMaps.map(properties).map("owner", owner).map("status", NOT_DELETED), fields, limit);
 	}
 	
 	public static Set<Consent> getAllActiveByAuthorized(MidataId member) throws InternalServerException {
@@ -186,15 +188,15 @@ public class Consent extends Model implements Comparable<Consent> {
 	}
 	
 	public static Set<Consent> getAllByAuthorized(MidataId member, Map<String, Object> properties, Set<String> fields) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map(properties).map("authorized", member), fields);
+		return Model.getAll(Consent.class, collection, CMaps.map(properties).map("authorized", member).map("status", NOT_DELETED), fields);
 	}
 	
 	public static Set<Consent> getAllByAuthorized(Set<MidataId> member, Map<String, Object> properties, Set<String> fields, int limit) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map(properties).map("authorized", member), fields, limit);
+		return Model.getAll(Consent.class, collection, CMaps.map(properties).map("authorized", member).map("status", NOT_DELETED), fields, limit);
 	}
 	
 	public static Set<Consent> getAllByAuthorized(MidataId member) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member), Consent.SMALL);
+		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("status", NOT_DELETED), Consent.SMALL);
 	}
 	
 	public static Set<Consent> getAllActiveByAuthorizedAndOwners(MidataId member, Set<MidataId> owners) throws InternalServerException {
@@ -206,11 +208,11 @@ public class Consent extends Model implements Comparable<Consent> {
 	}
 	
 	public static Set<Consent> getByExternalEmail(String emailLC) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map("externalAuthorized", emailLC), FHIR);
+		return Model.getAll(Consent.class, collection, CMaps.map("externalAuthorized", emailLC).map("status", NOT_DELETED), FHIR);
 	}
 	
 	public static Set<Consent> getByExternalOwnerEmail(String emailLC) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map("externalOwner", emailLC), FHIR);
+		return Model.getAll(Consent.class, collection, CMaps.map("externalOwner", emailLC).map("status", NOT_DELETED), FHIR);
 	}
 	
 	public static Consent getMessagingActiveByAuthorizedAndOwner(MidataId member, MidataId owner) throws InternalServerException {
@@ -226,7 +228,7 @@ public class Consent extends Model implements Comparable<Consent> {
 	}
 	
 	public static boolean existsByOwnerAndName(MidataId owner, String name) throws InternalServerException {
-		return Model.exists(Consent.class, collection, CMaps.map("owner", owner).map("name", name));
+		return Model.exists(Consent.class, collection, CMaps.map("owner", owner).map("name", name).map("status", NOT_DELETED));
 	}
 	
 	public void setStatus(ConsentStatus status) throws InternalServerException {

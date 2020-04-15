@@ -204,12 +204,12 @@ public class QuestionnaireResourceProvider extends RecordBasedResourceProvider<Q
 						
 		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
 		builder.restriction("code", true, QueryBuilder.TYPE_CODING, "item.code");
-		builder.restriction("context", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "usecontext.valueCodeableConcept");
-		builder.restriction("context-quantity", true, QueryBuilder.TYPE_QUANTITY_OR_RANGE, "usecontext.value");
-		builder.restriction("context-type", true, QueryBuilder.TYPE_CODE, "usecontext.code");
+		builder.restriction("context", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "useContext.valueCodeableConcept");
+		builder.restriction("context-quantity", true, QueryBuilder.TYPE_QUANTITY_OR_RANGE, "useContext.value");
+		builder.restriction("context-type", true, QueryBuilder.TYPE_CODE, "useContext.code");
 		
-		builder.restriction("context-type-quantity", "usecontext.code", "usecontext.value", QueryBuilder.TYPE_CODE, QueryBuilder.TYPE_QUANTITY_OR_RANGE);		
-		builder.restriction("context-type-value", "usecontext.code", "usecontext.valueCodeableConcept", QueryBuilder.TYPE_CODE, QueryBuilder.TYPE_CODEABLE_CONCEPT);
+		builder.restriction("context-type-quantity", "useContext.code", "useContext.value", QueryBuilder.TYPE_CODE, QueryBuilder.TYPE_QUANTITY_OR_RANGE);		
+		builder.restriction("context-type-value", "useContext.code", "useContext.valueCodeableConcept", QueryBuilder.TYPE_CODE, QueryBuilder.TYPE_CODEABLE_CONCEPT);
 		
 		builder.restriction("date", true, QueryBuilder.TYPE_DATETIME, "date");	
 		builder.restriction("definition", true, QueryBuilder.TYPE_URI, "item.definition");

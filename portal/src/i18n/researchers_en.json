@@ -340,6 +340,9 @@
    
    "researcher_sharing" : {
      "description" : "Share or unshare records from your account with groups of project participants",
+     "source" : "Source",
+     "me" : "Data from my account",
+     "project" : "Data from analyzer",
      "format" : "Resource Type",
      "content" : "Content Type",
      "app" : "Application",

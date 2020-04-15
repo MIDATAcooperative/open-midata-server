@@ -31,6 +31,8 @@ public class StudyParticipation extends Consent {
 	
 	public JoinMethod joinMethod;
 	
+	public @NotMaterialized final static Set<String> SMALL_WITH_GROUP = Sets.create(Consent.SMALL, "group");
+	
 	//public int yearOfBirth;
 	//public String country;
 	//public Gender gender;
@@ -46,7 +48,7 @@ public class StudyParticipation extends Consent {
 	}
 	
 	public static Set<StudyParticipation> getAllByMember(MidataId member, Set<String> fields) throws InternalServerException {
-		return Model.getAll(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("owner", member), fields);
+		return Model.getAll(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("owner", member).map("status", NOT_DELETED), fields);
 	}
 	
 	public static Set<StudyParticipation> getAllActiveByMember(MidataId member, Set<String> fields) throws InternalServerException {
@@ -58,11 +60,11 @@ public class StudyParticipation extends Consent {
 	}
 	
 	public static List<StudyParticipation> getParticipantsByStudy(MidataId study, Map<String, Object> properties, Set<String> fields, int limit) throws InternalServerException {
-		return Model.getAllList(StudyParticipation.class, collection, CMaps.map(properties).map("type", ConsentType.STUDYPARTICIPATION).map("study", study), fields, limit);
+		return Model.getAllList(StudyParticipation.class, collection, CMaps.map(properties).map("type", ConsentType.STUDYPARTICIPATION).map("study", study).map("status", NOT_DELETED), fields, limit);
 	}
 	
 	public static long countParticipantsByStudy(MidataId study, Map<String, Object> properties) throws InternalServerException {
-		return Model.count(StudyParticipation.class, collection, CMaps.map(properties).map("type", ConsentType.STUDYPARTICIPATION).map("study", study));
+		return Model.count(StudyParticipation.class, collection, CMaps.map(properties).map("type", ConsentType.STUDYPARTICIPATION).map("study", study).map("status", NOT_DELETED));
 	}
 	
 	public static Set<StudyParticipation> getParticipantsByStudyAndGroup(MidataId study, String group, Set<String> fields) throws InternalServerException {
@@ -92,19 +94,23 @@ public class StudyParticipation extends Consent {
 	}
 	
 	public static StudyParticipation getById(MidataId id, Set<String> fields) throws InternalServerException {
-		return Model.get(StudyParticipation.class, collection, CMaps.map("_id", id), fields);
+		return Model.get(StudyParticipation.class, collection, CMaps.map("_id", id).map("status", NOT_DELETED), fields);
 	}
 	
 	public static StudyParticipation getByStudyAndMember(MidataId study, MidataId member, Set<String> fields) throws InternalServerException {
-		return Model.get(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("study", study).map("owner", member), fields);
+		return Model.get(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("study", study).map("owner", member).map("status", NOT_DELETED), fields);
 	}
 	
 	public static boolean existsByStudyAndMemberName(MidataId study, String name) throws InternalServerException {
-		return Model.exists(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("study", study).map("ownerName", name));
+		return Model.exists(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("study", study).map("ownerName", name).map("status", NOT_DELETED));
 	}
 	
 	public static StudyParticipation getByStudyAndId(MidataId study, MidataId id, Set<String> fields) throws InternalServerException {
-		return Model.get(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("_id", id).map("study", study), fields);
+		return Model.get(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("_id", id).map("study", study).map("status", NOT_DELETED), fields);
+	}
+	
+	public static Set<StudyParticipation> getAllAuthorizedWithGroup(MidataId member, long since) throws InternalServerException {
+		return Model.getAll(StudyParticipation.class, collection, CMaps.map("authorized", member).map("dataupdate", CMaps.map("$gte", since)), StudyParticipation.SMALL_WITH_GROUP);
 	}
 	
 	public void setPStatus(ParticipationStatus newstatus) throws InternalServerException {

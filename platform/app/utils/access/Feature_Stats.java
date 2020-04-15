@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,6 +42,7 @@ public class Feature_Stats extends Feature {
 		return r.content+"/"+r.app+"/"+r.format+"/"+r.owner+"/"+r.stream;
 	}
 	
+	
 	public static  String getKey(DBRecord r) throws AppException {
 		return getKey(fromRecord(r));
 	}
@@ -66,7 +68,7 @@ public class Feature_Stats extends Feature {
 		return result;
 	}
 	
-	private RecordsInfo toRecordInfo(StatsIndexKey key) {
+	public static RecordsInfo toRecordInfo(StatsIndexKey key) {
         RecordsInfo res = new RecordsInfo();
         res.ownerNames = new HashSet<String>();
 		res.formats.add(key.format);	
@@ -92,24 +94,12 @@ public class Feature_Stats extends Feature {
 			//try {	
 			Query qnew = q;
 			       
-			StatsIndexRoot index = IndexManager.instance.getStatsIndex(q.getCache(), q.getCache().getAccountOwner(), false) ;
+			StatsIndexRoot index = q.getCache().getStatsIndexRoot();
 			HashMap<String, StatsIndexKey> map = new HashMap<String, StatsIndexKey>();
 			//IndexPseudonym pseudo = IndexManager.instance.getIndexPseudonym(q.getCache(), q.getCache().getExecutor(), q.getApsId(), true);
 			//IndexManager.instance.triggerUpdate(pseudo, q.getCache(), q.getCache().getExecutor(), index.getModel(), null);
 			if (index != null) {
-				long oldest = index.getAllVersion();
-				StatsLookup lookup = new StatsLookup();			
-				if (q.restrictedBy("app")) lookup.setApp(q.getRestriction("app"));
-				if (q.restrictedBy("owner")) lookup.setOwner(q.getRestriction("owner")); 
-				if (q.restrictedBy("content")) lookup.setContent(q.getRestriction("content"));
-				if (q.restrictedBy("format")) lookup.setFormat(q.getRestriction("format"));
-				if (q.restrictedBy("study-group")) lookup.setStudyGroup(q.getRestriction("study-group"));				
-				Collection<StatsIndexKey> matches = index.lookup(lookup);										
-				
-				for (StatsIndexKey inf : matches) {				
-					map.put(getKey(inf), inf);
-				}
-				
+				long oldest = index.getAllVersion();								
 				if (oldest > 0) qnew = new Query(q, "info-shared-after", CMaps.map("shared-after", oldest));
 			}
 			
@@ -139,84 +129,61 @@ public class Feature_Stats extends Feature {
 				}
 			}
 			
-			
-			/*
-			Feature nextWithProcessing = new Feature_ProcessFilters(next);
-			
-			List<DBRecord> toupdate = next.query(new Query(q,CMaps.map("shared-after", oldest)));
-			lookup = new StatsLookup();
-			for (DBRecord r : toupdate) {
-			   boolean isnew = false;
-			   StatsIndexKey inf;
-			   if (r.isStream != null) {
-				   String key = getKey(r);				   
-				   inf = map.get(key);
-				   AccessLog.log("key:"+key+" exists:"+(inf!=null));
-				   List<DBRecord> newRecs;
-				   if (inf != null) {
-				      newRecs = nextWithProcessing.query(new Query(CMaps.map("owner",r.owner).map("stream",r._id).map("created-after", inf.calculated), Sets.create("_id"), q.getCache(), q.getApsId(), q.getContext()));
-				   } else {
-					  newRecs = nextWithProcessing.query(new Query(CMaps.map("owner",r.owner).map("stream",r._id), Sets.create("_id"), q.getCache(), q.getApsId(), q.getContext()));
-				   }
-				   
-				   if (!newRecs.isEmpty()) {
-				       if (inf == null) { inf = fromRecord(r);isnew = true; }				       
-					   inf.count += newRecs.size();
-					   for (DBRecord rec : newRecs) {
-						   long created = rec._id.getCreationDate().getTime();
-						   if (created > inf.newest) {
-							   inf.newest = created;
-							   inf.newestRecord = rec._id;
-						   }
-						   if (created < inf.oldest) {
-							   inf.oldest = created;
-						   }
-					   }
-				   }
-				   
-			   } else {
-				   inf = map.get(getKey(r));
-				   if (inf == null) { inf = fromRecord(r);isnew = true; }
-				   inf.count++;
-				   long created = r._id.getCreationDate().getTime();
-				   if (created > inf.newest) {
-					   inf.newest = created;
-					   inf.newestRecord = r._id;
-				   }
-				   if (created < inf.oldest) {
-					   inf.oldest = created;
-				   }
-			   }
-			   
-			   if (isnew) {
-				   map.put(getKey(inf), inf);
-				   index.addEntry(inf);
-				   matches.add(inf);
-			   }			   				  
-			   
-			}
-			*/
-			List<DBRecord> result = new ArrayList<DBRecord>(map.size());
-			for (StatsIndexKey inf : map.values()) {
-				DBRecord r = new DBRecord();
-				r._id = inf.newestRecord;
-				r.attached = toRecordInfo(inf);
-				result.add(r);
-			}
-			
-			//index.flush();
-			/*} catch (LostUpdateException e) {
+			if (index != null) {
 				
-			}*/
-			AccessLog.logEndPath("# matches="+result.size());
-			return ProcessingTools.dbiterator("stats", result.iterator());
+				StatsLookup lookup = new StatsLookup();			
+				if (q.restrictedBy("app")) lookup.setApp(q.getRestriction("app"));
+				if (q.restrictedBy("owner")) lookup.setOwner(q.getRestriction("owner")); 
+				if (q.restrictedBy("content")) lookup.setContent(q.getRestriction("content"));
+				if (q.restrictedBy("format")) lookup.setFormat(q.getRestriction("format"));
+				if (q.restrictedBy("study-group")) lookup.setStudyGroup(q.getRestriction("study-group"));	
+				if (!q.getApsId().equals(q.getCache().getAccountOwner())) lookup.setAps(q.getApsId());
+				Collection<StatsIndexKey> matches = index.lookup(lookup);										
+				
+				for (StatsIndexKey inf : matches) {									
+					map.putIfAbsent(getKey(inf), inf);
+				}
+								
+			}
+				
+			AccessLog.logEndPath("# matches="+map.size());
+			return new StatsIterator(map.values().iterator());
 	
+	}
+	
+	public static class StatsIterator implements DBIterator<DBRecord> {
+
+		private Iterator<StatsIndexKey> iterator;
+		
+		public StatsIterator(Iterator<StatsIndexKey> iterator) {
+			this.iterator = iterator;			
+		}
+		
+		@Override
+		public DBRecord next() throws AppException {
+			StatsIndexKey inf = iterator.next();
+			DBRecord r = new DBRecord();
+			r._id = inf.newestRecord;
+			r.attached = inf;
+			return r;
+		}
+
+		@Override
+		public boolean hasNext() throws AppException {
+			return iterator.hasNext();
+		}
+
+		@Override
+		public String toString() {
+			return "stats-iterator";
+		}						
 	}
 	
 	public static StatsIndexKey countStream(Query q, MidataId stream, MidataId owner, Feature qm, StatsIndexKey inf, boolean cached) throws AppException {
 		
 		String groupSystem = q.getStringRestriction("group-system");
-		APS myaps = q.getCache().getAPS(stream);
+		APS myaps = q.getCache().getAPS(stream, owner);
+		if (!myaps.isAccessible()) return null;
 		BasicBSONObject obj = myaps.getMeta("_info");		
 		if (cached && obj != null && obj.containsField("apps")) { // Check for apps for compatibility with old versions 						
 			inf.count = obj.getInt("count");				
@@ -270,17 +237,16 @@ public class Feature_Stats extends Feature {
 	
 	public static Collection<StatsIndexKey> countConsent(Query q, Feature qm, AccessContext context) throws AppException {
 		q = new Query(q, "info-consent", CMaps.map(), context.getTargetAps(), context);
+	
+		boolean hasFilter = Feature_ConsentRestrictions.hasFilter(q);
 		
-		Query q2 = new Query(q, "info-streams", CMaps.map("flat",true).map("streams","true").map("owner","self"));
-		//List<DBRecord> recs = ProcessingTools.collect(ProcessingTools.noDuplicates(new IdAndConsentFieldIterator(qm.iterator(q2), q.getContext(), q.getApsId(), q.returns("id"))));
-		
-		//AccessLog.log("COUNT CONSENT :"+context.toString()+" RECS="+recs.size());
+		Query q2 = hasFilter 
+				   ? new Query(q, "info-streams", CMaps.map("owner","self"))
+				   : new Query(q, "info-streams", CMaps.map("flat",true).map("streams","true").map("owner","self"));
 		
 		HashMap<String, StatsIndexKey> map = new HashMap<String, StatsIndexKey>();		
 		List<DBRecord> toupdate = qm.query(q2);
-		AccessLog.log(context.toString());
-		AccessLog.logQuery(q2.getApsId(), q2.getProperties(), q2.getFields());
-		AccessLog.log("XXX #="+toupdate.size());
+		
 		q.getCache().prefetch(toupdate);
 		for (DBRecord r : toupdate) {		   
 		   boolean isnew = false;
@@ -305,22 +271,10 @@ public class Feature_Stats extends Feature {
 		   }
 		   
 		   if (isnew) {
-			   map.put(getKey(inf), inf);
-			   //index.addEntry(inf);
-			   //matches.add(inf);
+			   map.put(getKey(inf), inf);			  
 		   }			   				  		   
 		}		
 		return map.values();
 	}
-	/*
-	public static 
-	long limit = index.getAllVersion();
-	Set<Consent> consents = Consent.getAllActiveByAuthorized(executor, limit);	
-	
-	DBIterator<Consent> consentIt = new Feature_AccountQuery.BlockwiseConsentPrefetch(cache, consents.iterator(), 200);
-	while (consentIt.hasNext()) {
-		indexUpdatePart(index, executor, consentIt.next()._id, cache);
-		modCount += index.getModCount();
-	}		
-	*/
+
 }

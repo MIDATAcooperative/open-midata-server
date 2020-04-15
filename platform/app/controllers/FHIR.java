@@ -84,18 +84,20 @@ public class FHIR extends Controller {
 	
 	/**
 	 * Determine FHIR Version to be used by looking at content-type and accept headers
-	 * @return fhir version as integer (3 or 4)
+	 * @return fhir version as integer (3 or 4) or 0 for unknown
 	 */
 	public int getFhirVersion() {
 		Optional<String> contentType = request().header("Content-Type");
 		if (contentType.isPresent()) {
 			if (contentType.get().indexOf("fhirVersion=4.")>0) return 4;
+			if (contentType.get().indexOf("fhirVersion=3.")>0) return 3;
 		}
 		Optional<String> accept = request().header("Accept");
 		if (accept.isPresent()) {
 			if (accept.get().indexOf("fhirVersion=4.")>0) return 4;
+			if (accept.get().indexOf("fhirVersion=3.")>0) return 3;
 		}
-		return 3;
+		return 0;
 	}
 	/**
 	 * GET Action on root path

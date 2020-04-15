@@ -23,6 +23,6 @@ public class HCRelated extends Consent {
 	}
 	
 	public static Set<HCRelated> getByAuthorizedAndOwner(MidataId memberId, MidataId hcId) throws InternalServerException {
-		return Model.getAll(HCRelated.class, collection, CMaps.map("authorized", memberId).map("owner", hcId).map("type", ConsentType.HCRELATED), Sets.create("name", "owner"));
+		return Model.getAll(HCRelated.class, collection, CMaps.map("authorized", memberId).map("owner", hcId).map("type", ConsentType.HCRELATED).map("status", NOT_DELETED), Sets.create("name", "owner"));
 	}
 }

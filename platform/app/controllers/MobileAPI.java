@@ -34,6 +34,7 @@ import models.StudyAppLink;
 import models.StudyParticipation;
 import models.StudyRelated;
 import models.User;
+import models.UserGroupMember;
 import models.enums.AggregationType;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
@@ -559,11 +560,16 @@ public class MobileAPI extends Controller {
 	}
     
     public static int unshareRecord(ExecutionInfo inf, MidataId studyId, String group, Map<String, Object> properties) throws AppException, JsonValidationException {
-				
+		
+    	UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(studyId, inf.executorId);
+    	if (ugm == null) throw new BadRequestException("error.invalid.study", "You are now allowed to do that");
+    	
 		if (properties.get("format") == null) throw new BadRequestException("error.internal", "No format");		
 		Set<StudyRelated> srs = StudyRelated.getActiveByOwnerGroupAndStudy(inf.executorId, group, studyId, Sets.create("_id"));		
+		srs.addAll(StudyRelated.getActiveByOwnerGroupAndStudy(studyId, group, studyId, Sets.create("_id")));
+		properties.put("force-local", true);
 		List<Record> recs = RecordManager.instance.list(inf.executorId, inf.role, inf.context, properties, Sets.create("_id"));
-		
+		AccessLog.log("unshareRecord: srs="+srs.size()+" recs="+recs.size());
 		if (!srs.isEmpty()) {
 			for (StudyRelated sr : srs ) {
 			  RecordManager.instance.unshare(inf.executorId, sr._id, recs);
@@ -598,26 +604,28 @@ public class MobileAPI extends Controller {
     public static int shareRecord(ExecutionInfo inf, MidataId studyId, String group, Map<String, Object> properties) throws AppException, JsonValidationException {
 										
 		if (properties.get("format") == null) throw new BadRequestException("error.internal", "No format");
-							
-		Set<StudyRelated> srs = StudyRelated.getActiveByOwnerGroupAndStudy(inf.executorId, group, studyId, Sets.create("_id"));
+		MidataId sharer = properties.get("usergroup") != null ? studyId : inf.executorId; 	
+		//properties.remove("usergroup");
 		
-		List<Record> recs = RecordManager.instance.list(inf.executorId, inf.role, inf.context, properties, Sets.create("_id"));
+		Set<StudyRelated> srs = StudyRelated.getActiveByOwnerGroupAndStudy(sharer, group, studyId, Sets.create("_id"));
 		
-		if (!recs.isEmpty()) {
+		//List<Record> recs = RecordManager.instance.list(inf.executorId, inf.role, inf.context, properties, Sets.create("_id"));
+		int count = 0;
+		//if (!recs.isEmpty()) {
 			
 			if (srs.isEmpty()) {				
 				Study study = Study.getById(studyId, Study.ALL);
 				Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyId, group, Sets.create());
-				controllers.research.Studies.joinSharing(inf.executorId, inf.executorId, study, group, false, new ArrayList<StudyParticipation>(parts));
-				srs = StudyRelated.getActiveByOwnerGroupAndStudy(inf.executorId, group, studyId, Sets.create("_id"));
+				controllers.research.Studies.joinSharing(inf.executorId, sharer, study, group, false, new ArrayList<StudyParticipation>(parts));
+				srs = StudyRelated.getActiveByOwnerGroupAndStudy(sharer, group, studyId, Sets.create("_id"));
 			}
 			
 			for (StudyRelated sr : srs ) {
-			  RecordManager.instance.share(inf.executorId, inf.executorId, sr._id, sr.owner, properties, false);
+			  count = RecordManager.instance.share(inf.executorId, sharer, sr._id, sr.owner, properties, false);
 			}
-		}								
+		//}								
 								
-		return recs.size();
+		return count;
 	}
 			
 	

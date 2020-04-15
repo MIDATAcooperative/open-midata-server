@@ -115,16 +115,16 @@ public class StatsIndexKey extends BaseIndexKey<StatsIndexKey,StatsIndexKey> imp
 
 	@Override
 	public void writeObject(ObjectOutputStream s, StatsIndexKey last) throws IOException {
-		s.writeUTF(aps.toString());
-		s.writeUTF(stream != null ? stream.toString() : null);
-		s.writeUTF(studyGroup);
-		s.writeUTF(format);		
-		s.writeUTF(content);
-		s.writeUTF(group);
-		s.writeUTF(app.toString());		
-		s.writeUTF(owner.toString());
-		s.writeUTF(ownerName);
-		s.writeUTF(newestRecord.toString());	
+		s.writeObject(aps.toString());
+		s.writeObject(stream != null ? stream.toString() : null);
+		s.writeObject(studyGroup);
+		s.writeObject(format);		
+		s.writeObject(content);
+		s.writeObject(group);
+		s.writeObject(app.toString());		
+		s.writeObject(owner.toString());
+		s.writeObject(ownerName);
+		s.writeObject(newestRecord.toString());	
 		s.writeInt(count);	
 		s.writeLong(oldest);		
 		s.writeLong(newest);		
@@ -134,16 +134,16 @@ public class StatsIndexKey extends BaseIndexKey<StatsIndexKey,StatsIndexKey> imp
 
 	@Override
 	public void readObject(ObjectInputStream s, StatsIndexKey last) throws IOException, ClassNotFoundException {
-		aps = new MidataId(s.readUTF());
-		stream = new MidataId(s.readUTF());
-		studyGroup = s.readUTF();
-		format = s.readUTF();		
-		content = s.readUTF();
-		group = s.readUTF();
-		app = new MidataId(s.readUTF());		
-		owner = new MidataId(s.readUTF());
-		ownerName = s.readUTF();
-		newestRecord = new MidataId(s.readUTF());	
+		aps = MidataId.from((String) s.readObject());
+		stream = MidataId.from((String) s.readObject());
+		studyGroup = (String) s.readObject();
+		format = (String) s.readObject();		
+		content = (String) s.readObject();
+		group = (String) s.readObject();
+		app = MidataId.from((String) s.readObject());		
+		owner = MidataId.from((String) s.readObject());
+		ownerName = (String) s.readObject();
+		newestRecord = MidataId.from((String) s.readObject());	
 		count = s.readInt();	
 		oldest = s.readLong();		
 		newest = s.readLong();		
