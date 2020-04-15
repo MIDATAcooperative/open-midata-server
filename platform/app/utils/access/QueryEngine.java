@@ -108,7 +108,7 @@ class QueryEngine {
 		
 		//APS myaps = q.getCache().getAPS(aps);
 		
-		Feature qm = new Feature_QueryRedirect(new Feature_Pseudonymization(new Feature_PublicData(new Feature_UserGroups(new Feature_Stats(new Feature_FormatGroups(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))))))));						 
+		Feature qm = new Feature_QueryRedirect(new Feature_Pseudonymization(new Feature_PublicData(new Feature_UserGroups(new Feature_Stats(new Feature_ProcessFilters(new Feature_FormatGroups(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams()))))))))));						 
 		DBIterator<DBRecord> recs = qm.iterator(q);		
 		
 		while (recs.hasNext()) {
