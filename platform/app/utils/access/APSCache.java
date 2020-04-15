@@ -17,6 +17,7 @@ import models.UserGroupMember;
 import models.enums.APSSecurityLevel;
 import utils.AccessLog;
 import utils.access.index.ConsentToKeyIndexRoot;
+import utils.access.index.StatsIndexRoot;
 import utils.access.index.StreamIndexRoot;
 import utils.auth.EncryptionNotSupportedException;
 import utils.buffer.WatchesChangeBuffer;
@@ -43,6 +44,7 @@ public class APSCache {
 	private Set<MidataId> touchedAPS = null;
 	private WatchesChangeBuffer changedPermissions = null;
 	private StreamIndexRoot streamIndexRoot = null;
+	private StatsIndexRoot statsIndexRoot = null;
 	private ConsentToKeyIndexRoot consentKeysRoot = null;
 	
 	private long consentLimit;
@@ -356,6 +358,12 @@ public class APSCache {
 		if (streamIndexRoot != null) return streamIndexRoot;
 		streamIndexRoot = IndexManager.instance.getStreamIndex(this, getAccountOwner());
 		return streamIndexRoot;
+	}
+	
+	public StatsIndexRoot getStatsIndexRoot() throws AppException {
+		if (statsIndexRoot != null) return statsIndexRoot;
+		statsIndexRoot = IndexManager.instance.getStatsIndex(this, getAccountOwner(), false);
+		return statsIndexRoot;
 	}
 	
 	public ConsentToKeyIndexRoot getConsentKeyIndexRoot(MidataId id) throws AppException {

@@ -16,6 +16,22 @@ public class Feature_ConsentRestrictions extends Feature {
 		this.next = next;
 	}
 
+	public static boolean hasFilter(Query q) throws AppException {
+		BasicBSONObject filter = q.getCache().getAPS(q.getApsId()).getMeta("_filter");
+		if (filter != null) {			
+		  if (filter.containsField("valid-until")) {
+			  Date until = filter.getDate("valid-until");
+			  if (until.before(new Date(System.currentTimeMillis()))) {
+				  return true;
+			  }
+		  }
+		  Date historyDate = filter.getDate("history-date");
+		  if (historyDate != null && historyDate.after(new Date())) filter.remove("history-date");
+		  if (!filter.isEmpty())  return true;
+			 		
+		}
+		return false;
+	}
 	
 
 	@Override

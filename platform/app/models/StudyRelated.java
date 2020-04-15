@@ -26,7 +26,7 @@ public class StudyRelated extends Consent {
 	}
 	
 	public static Set<StudyRelated> getActiveByOwnerGroupAndStudy(MidataId owner, String group, MidataId studyId, Set<String> fields) throws InternalServerException {
-		return Model.getAll(StudyRelated.class, collection, CMaps.map("owner", owner).map("type", ConsentType.STUDYRELATED).mapNotEmpty("group", group).map("study", studyId).map("status", ConsentStatus.ACTIVE), fields);
+		return Model.getAll(StudyRelated.class, collection, CMaps.mapNotEmpty("owner", owner).map("type", ConsentType.STUDYRELATED).mapNotEmpty("group", group).map("study", studyId).map("status", ConsentStatus.ACTIVE), fields);
 	}
 	
 	public static Set<StudyRelated> getActiveByAuthorizedGroupAndStudy(MidataId authorized, Set<String> group, Set<MidataId> studyId, Set<MidataId> owners, Set<String> fields, long since) throws InternalServerException {
@@ -38,7 +38,7 @@ public class StudyRelated extends Consent {
 	}
 	
 	public static Set<StudyRelated> getByStudy(MidataId studyId, Set<String> fields) throws InternalServerException {
-		return Model.getAll(StudyRelated.class, collection, CMaps.map("type", ConsentType.STUDYRELATED).map("study", studyId), fields);
+		return Model.getAll(StudyRelated.class, collection, CMaps.map("type", ConsentType.STUDYRELATED).map("study", studyId).map("status", NOT_DELETED), fields);
 	}
 	
 	public static void deleteByStudyAndParticipant(MidataId studyId, MidataId partId) throws InternalServerException {	

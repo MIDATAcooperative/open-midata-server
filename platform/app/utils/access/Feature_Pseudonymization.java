@@ -152,13 +152,14 @@ public class Feature_Pseudonymization extends Feature {
 	
 	public static Pair<MidataId,String> pseudonymizeUser(APSCache cache, Consent consent) throws AppException {
 		if (consent.getOwnerName() != null && !consent.getOwnerName().equals("?")) return Pair.of(consent._id,consent.ownerName);
+		if (consent.getOwnerName() == null) return Pair.of(consent.owner, null);
 		BasicBSONObject patient = Feature_UserGroups.findApsCacheToUse(cache, consent._id).getAPS(consent._id, consent.owner).getMeta("_patient");
 		if (patient != null) {
 			MidataId pseudoId = new MidataId(patient.getString("id"));
 			String pseudoName = patient.getString("name");
 			return Pair.of(pseudoId, pseudoName);
 		}
-		
+		AccessLog.log(consent._id+" ow="+consent.owner+" executor="+cache.getExecutor()+" acowner="+cache.getAccountOwner());
 		throw new InternalServerException("error.internal", "Cannot pseudonymize");
 	}
 	

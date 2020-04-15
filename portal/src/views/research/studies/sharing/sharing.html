@@ -6,6 +6,9 @@
 	    <form name="myform" novalidate class="css-form form-horizontal" ng-submit="dosearch()" role="form">
 	        <p ng-show="error && !error.field" translate="{{ error.code || error }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
 	        </p>	
+	          <formrow myid="source" label="researcher_sharing.source"> 
+				  <select class="form-control" id="source" name="source" ng-change="change()" ng-model="crit.source" ng-options="source as ('researcher_sharing.'+source)|translate for source in sources" ng-required="true"></select>
+			  </formrow>
 	          <formrow myid="format" label="researcher_sharing.format"> 
 				  <select class="form-control" id="format" name="format" ng-change="change()" ng-model="crit.format" ng-options="format for format in formats" ng-required="true"></select>
 			  </formrow>

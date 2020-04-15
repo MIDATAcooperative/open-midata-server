@@ -573,8 +573,8 @@ public class Circles extends APIController {
 		switch (consent.type) {
 		case CIRCLE: Circle.delete(userId, circleId);break;
 		case API:
-		case EXTERNALSERVICE: Circle.delete(userId, circleId);break;
-		case IMPLICIT: Consent.delete(userId, circleId);break;
+		case EXTERNALSERVICE: Consent.delete(userId, circleId);break;
+		case IMPLICIT: consent.setStatus(ConsentStatus.DELETED);break;
 		//case STUDYRELATED : StudyRelated.delete(userId, circleId);break;
 		default:break;
 		}

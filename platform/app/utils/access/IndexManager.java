@@ -24,6 +24,8 @@ import akka.cluster.singleton.ClusterSingletonProxy;
 import akka.cluster.singleton.ClusterSingletonProxySettings;
 import models.Consent;
 import models.MidataId;
+import models.StudyParticipation;
+import models.enums.ConsentStatus;
 import utils.AccessLog;
 import utils.access.index.BaseIndexRoot;
 import utils.access.index.ConsentToKeyIndexRoot;
@@ -161,7 +163,7 @@ public class IndexManager {
 		}
 	}
 	
-	public StatsIndexRoot getStatsIndex(APSCache cache, MidataId user) throws AppException {
+	public StatsIndexRoot getStatsIndex(APSCache cache, MidataId user, boolean create) throws AppException {
 		IndexPseudonym pseudo = getIndexPseudonym(cache, user, user, true);
 		APS aps = cache.getAPS(user);
 		BSONObject obj = aps.getMeta("_statsindex");
@@ -169,6 +171,7 @@ public class IndexManager {
 		MidataId id = null;
 							
 		if (obj == null) {
+			if (!create) return null;
 			id = new MidataId();
 		    obj = new BasicBSONObject();
 		    obj.put("index", id.toString());
@@ -179,6 +182,7 @@ public class IndexManager {
 		
 		IndexDefinition def = IndexDefinition.getById(id);
 		if (def==null) {
+			if (!create) return null;
 			def = new IndexDefinition();
 			def._id = id;			
 			def.owner = pseudo.getPseudonym();
@@ -438,99 +442,46 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 		try {
 			index.checkLock();
 						    
-	    	long updateAllTs = System.currentTimeMillis() - 2000;	    	
-	    	Set<Consent> consents = Consent.getAllActiveByAuthorized(executor, index.getAllVersion());	
-	    	cache.prefetch(consents, null);
-	    	Set<MidataId> targetAps = new HashSet<MidataId>();
-			targetAps.add(executor);
-			for (Consent consent : consents) targetAps.add(consent._id);				
-	    
-			boolean updateTs = false;
-			Feature nextWithProcessing = new Feature_ProcessFilters(new Feature_FormatGroups(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))));
-		    AccessLog.log("number of aps to update = "+targetAps.size());
-			int modCount = 0;
-			for (MidataId aps : targetAps) {
-				if (index.getModCount() > 5000) index.flush();
-				
-				Map<String, Object> restrictions = new HashMap<String, Object>();
-				restrictions.put("streams", "true");
-				restrictions.put("flat", "true");
-				restrictions.put("no-postfilter-steams", "true");
-				restrictions.put("group-system", "v1");
-				if (aps.equals(executor)) restrictions.put("owner", "self");
-				
-			    AccessLog.log("Checking aps:"+aps.toString());
-				// Records that have been updated or created
-			    long v = index.getVersion(aps);
-			    //AccessLog.log("v="+v);
-				Date limit = v>0 ? new Date(v - UPDATE_TIME) : null;
-				long now = System.currentTimeMillis();
-				 
-				if (limit != null) restrictions.put("shared-after", limit);								
-				List<DBRecord> toupdate = QueryEngine.listInternal(cache, aps, null, restrictions, Sets.create("_id","group","format","content","app","owner"));
-				HashMap<String, StatsIndexKey> map = new HashMap<String, StatsIndexKey>();	
+	    	long updateAllTs = System.currentTimeMillis() - 2000;	    
+	    	
+	    	Feature nextWithProcessing = new Feature_ProcessFilters(new Feature_FormatGroups(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))));
+	    	
+	    	long limit = index.getAllVersion();
+	    	int modCount = 0;
+	    	List<Consent> consents = new ArrayList<Consent>(StudyParticipation.getAllAuthorizedWithGroup(executor, limit));	
+	    	
+	    	DBIterator<Consent> consentIt = new Feature_AccountQuery.BlockwiseConsentPrefetch(cache, consents.iterator(), 200);
+	    	while (consentIt.hasNext()) {
+	    			    		
+                if (index.getModCount() > 5000) index.flush();
+				StudyParticipation consent = (StudyParticipation) consentIt.next();
+				MidataId aps = consent._id;
 				StatsLookup lookup = new StatsLookup();
-				for (DBRecord r : toupdate) {
-				   boolean isnew = false;
-				   StatsIndexKey inf;
-				   if (r.isStream != null) {
-					   String key = Feature_Stats.getKey(r);				   
-					   inf = map.get(key);
-					   AccessLog.log("key:"+key+" exists:"+(inf!=null));
-					   List<DBRecord> newRecs;
-					   if (inf != null) {
-					      newRecs = nextWithProcessing.query(new Query("index-update",CMaps.map("owner",r.owner).map("stream",r._id).map("created-after", inf.calculated), Sets.create("_id"), cache, aps , new DummyAccessContext(cache),null));
-					   } else {
-						  newRecs = nextWithProcessing.query(new Query("index-update",CMaps.map("owner",r.owner).map("stream",r._id), Sets.create("_id"), cache, aps, new DummyAccessContext(cache),null));
-					   }
-					   
-					   if (!newRecs.isEmpty()) {
-					       if (inf == null) { inf = Feature_Stats.fromRecord(r);isnew = true; }				       
-						   inf.count += newRecs.size();
-						   for (DBRecord rec : newRecs) {
-							   long created = rec._id.getCreationDate().getTime();
-							   if (created > inf.newest) {
-								   inf.newest = created;
-								   inf.newestRecord = rec._id;
-							   }
-							   if (created < inf.oldest) {
-								   inf.oldest = created;
-							   }
-						   }
-					   }
-					   
-				   } else {
-					   inf = map.get(Feature_Stats.getKey(r));
-					   if (inf == null) { inf = Feature_Stats.fromRecord(r);isnew = true; }
-					   inf.count++;
-					   updateTs = true;
-					   long created = r._id.getCreationDate().getTime();
-					   if (created > inf.newest) {
-						   inf.newest = created;
-						   inf.newestRecord = r._id;
-					   }
-					   if (created < inf.oldest) {
-						   inf.oldest = created;
-					   }
-				   }
-				   
-				   if (isnew) {
-					   map.put(Feature_Stats.getKey(inf), inf);
-					   index.addEntry(inf);					   
-				   }			   				  
-				   
+				lookup.setAps(aps);
+				
+				Collection<StatsIndexKey> old = index.lookup(lookup);
+				for (StatsIndexKey k : old) index.removeEntry(k);
+				
+				if (consent.status == ConsentStatus.ACTIVE || consent.status == ConsentStatus.FROZEN) {
+					Map<String, Object> restrictions = new HashMap<String, Object>();				
+					restrictions.put("no-postfilter-steams", "true");
+					restrictions.put("group-system", "v1");
+					//if (aps.equals(executor)) restrictions.put("owner", "self");
+									
+					Query q = new Query(restrictions, Sets.create("app","content","format","owner","ownerName","stream","group"), cache, executor, new DummyAccessContext(cache), false);
+					
+					Collection<StatsIndexKey> keys = Feature_Stats.countConsent(q, nextWithProcessing, Feature_Indexes.getContextForAps(q, aps));
+					for (StatsIndexKey k : keys) {
+						k.studyGroup = consent.group;
+						index.addEntry(k);
+					}
 				}
-																		
-				
-				if (updateTs) index.setVersion(aps, now);				
-				
-				modCount += index.getModCount();
-				
-				
-			}
+	    			    			    			    		
+	    		modCount += index.getModCount();
+	    			    			    		
+	    	}		   	    			  			
 			
-			AccessLog.log("updateAllTs="+updateAllTs+" modCount="+modCount+" ts="+targetAps.size());
-			if (updateAllTs != 0 && (modCount>0 || targetAps.size() > 3)) index.setAllVersion(updateAllTs);
+			if (modCount>0) index.setAllVersion(updateAllTs);
 			index.flush();
 		} catch (LostUpdateException e) {
 			try {
@@ -617,6 +568,7 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 			IndexDefinition.delete(def._id);
 		}
 				
+		cache.getAPS(user).removeMeta("_statsindex");
 		cache.getAPS(user).removeMeta("_pseudo");
 		AccessLog.logEnd("end clear indexes");
 	}

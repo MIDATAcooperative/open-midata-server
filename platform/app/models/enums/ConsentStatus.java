@@ -34,5 +34,10 @@ public enum ConsentStatus {
    /**
     * the consents data is frozen
     */
-   FROZEN
+   FROZEN,
+   
+   /**
+    * the consent has been deleted
+    */
+   DELETED
 }

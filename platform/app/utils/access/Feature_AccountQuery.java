@@ -39,7 +39,7 @@ public class Feature_AccountQuery extends Feature {
 	@Override
 	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
 
-		if (q.getApsId().equals(q.getCache().getAccountOwner())) {			
+		if (q.getApsId().equals(q.getCache().getAccountOwner()) && !q.restrictedBy("force-local")) {			
 			return new AccountThenConsents(next, q);
 		} else {		
 			DBIterator<DBRecord> result = next.iterator(q);
@@ -69,7 +69,7 @@ public class Feature_AccountQuery extends Feature {
             	account = true;
             	Set<String> sets = query.restrictedBy("owner") ? query.getRestriction("owner") : Collections.singleton("all");    			    		
 
-    			if ((sets.contains("self") || sets.contains("all") || sets.contains(query.getApsId().toString())) && !query.restrictedBy("consent-after") && !query.restrictedBy("usergroup") && !query.restrictedBy("study")) {
+    			if (((sets.contains("self") || sets.contains("all") || sets.contains(query.getApsId().toString())) && !query.restrictedBy("consent-after") && !query.restrictedBy("usergroup") && !query.restrictedBy("study"))) {
     				return new IdAndConsentFieldIterator(next.iterator(query), query.getContext(), query.getApsId(), query.returns("id"));						
     			} else {
     				return ProcessingTools.empty();

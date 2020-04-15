@@ -35,18 +35,18 @@ public class Circle extends Consent {
 	public Circle() {
 		this.type = ConsentType.CIRCLE;
 	}
-
+/*
 	public static boolean exists(Map<String, ? extends Object> properties) throws InternalServerException {
 		return Model.exists(Circle.class, collection, properties);
 	}
-		
-
+	*/	
+/*
 	public static Circle get(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
 		return Model.get(Circle.class, collection, properties, fields);
 	}
-	
+	*/
 	public static Circle getByIdAndOwner(MidataId circleId, MidataId ownerId, Set<String> fields) throws InternalServerException {
-		return Model.get(Circle.class, collection, CMaps.map("_id", circleId).map("owner", ownerId), fields);
+		return Model.get(Circle.class, collection, CMaps.map("_id", circleId).map("owner", ownerId).map("status", NOT_DELETED), fields);
 	}
 
 
@@ -55,11 +55,11 @@ public class Circle extends Consent {
 	}
 	
 	public static Set<Circle> getAllByOwner(MidataId owner) throws InternalServerException {
-		return Model.getAll(Circle.class, collection, CMaps.map("owner", owner).map("type",  ConsentType.CIRCLE), Consent.ALL);
+		return Model.getAll(Circle.class, collection, CMaps.map("owner", owner).map("type",  ConsentType.CIRCLE).map("status", NOT_DELETED), Consent.ALL);
 	}
 	
 	public static Set<Circle> getAllByMember(MidataId member) throws InternalServerException {
-		return Model.getAll(Circle.class, collection, CMaps.map("authorized", member).map("type",  ConsentType.CIRCLE), Consent.ALL);
+		return Model.getAll(Circle.class, collection, CMaps.map("authorized", member).map("type",  ConsentType.CIRCLE).map("status", NOT_DELETED), Consent.ALL);
 	}
 	
 	public static Set<Circle> getAllActiveByMember(MidataId member) throws InternalServerException {
@@ -84,7 +84,7 @@ public class Circle extends Consent {
 	public static void delete(MidataId ownerId, MidataId circleId) throws InternalServerException {
 		// find order first
 		
-		Circle circle = Circle.getByIdAndOwner(circleId, ownerId, Sets.create("order"));
+		Circle circle = Circle.getByIdAndOwner(circleId, ownerId, Sets.create("order","dataupdate","status"));
 
         if (circle != null) {
 			// decrement all order fields greater than the removed circle
@@ -94,8 +94,9 @@ public class Circle extends Consent {
 				throw new InternalServerException("error.internal", e);
 			}
         }
-			
-		Model.delete(Circle.class, collection, CMaps.map("owner", ownerId).map("_id", circleId));
+		
+        circle.setStatus(ConsentStatus.DELETED);
+		//Model.delete(Circle.class, collection, CMaps.map("owner", ownerId).map("_id", circleId));
 	}
 
 	public static int getMaxOrder(MidataId ownerId) {

@@ -10,6 +10,7 @@ import org.bson.BasicBSONObject;
 
 import models.Consent;
 import models.MidataId;
+import models.enums.ConsentStatus;
 import utils.AccessLog;
 import utils.access.index.ConsentToKeyIndexKey;
 import utils.access.index.ConsentToKeyIndexRoot;
@@ -43,7 +44,7 @@ public class FasterDecryptTool {
 				if (key != null) {
 					keys.put(c._id, key);
 				} else {
-					missing.add(c);
+					if (c.status==ConsentStatus.ACTIVE && c.status==ConsentStatus.FROZEN) missing.add(c);
 				}
 			} catch (LostUpdateException e) {
 				root.reload();

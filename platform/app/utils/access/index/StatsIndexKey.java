@@ -15,6 +15,8 @@ import utils.access.DBRecord;
 public class StatsIndexKey extends BaseIndexKey<StatsIndexKey,StatsIndexKey> implements Comparable<StatsIndexKey> {
 
     public MidataId aps;	
+    public MidataId stream;
+    public String studyGroup;
 	public String format;		
 	public String content;
 	public String group;
@@ -32,6 +34,8 @@ public class StatsIndexKey extends BaseIndexKey<StatsIndexKey,StatsIndexKey> imp
 	@Override
 	public int compareTo(StatsIndexKey other) {
 		int b = aps.compareTo(other.aps);
+		if (b!=0) return b;		
+		b = (stream==null) ? (other.stream==null? 0 : 1) : (other.stream==null ? -1 : stream.compareTo(other.stream));
 		if (b!=0) return b;
 		b = group.compareTo(other.group);
 		if (b!=0) return b;
@@ -75,6 +79,8 @@ public class StatsIndexKey extends BaseIndexKey<StatsIndexKey,StatsIndexKey> imp
 	public StatsIndexKey copy() {
 		StatsIndexKey result = new StatsIndexKey();
 		result.aps = this.aps;	
+		result.stream = this.stream;
+		result.studyGroup = this.studyGroup;
 		result.format = this.format;		
 		result.content = this.content;
 		result.group = this.group;
@@ -97,6 +103,7 @@ public class StatsIndexKey extends BaseIndexKey<StatsIndexKey,StatsIndexKey> imp
 		this.oldest = otherKey.oldest;
 		this.newest = otherKey.newest;
 		this.calculated = otherKey.calculated;		
+		this.studyGroup = otherKey.studyGroup;
 	}
 
 
@@ -108,14 +115,16 @@ public class StatsIndexKey extends BaseIndexKey<StatsIndexKey,StatsIndexKey> imp
 
 	@Override
 	public void writeObject(ObjectOutputStream s, StatsIndexKey last) throws IOException {
-		s.writeUTF(aps.toString());	
-		s.writeUTF(format);		
-		s.writeUTF(content);
-		s.writeUTF(group);
-		s.writeUTF(app.toString());		
-		s.writeUTF(owner.toString());
-		s.writeUTF(ownerName);
-		s.writeUTF(newestRecord.toString());	
+		s.writeObject(aps.toString());
+		s.writeObject(stream != null ? stream.toString() : null);
+		s.writeObject(studyGroup);
+		s.writeObject(format);		
+		s.writeObject(content);
+		s.writeObject(group);
+		s.writeObject(app.toString());		
+		s.writeObject(owner.toString());
+		s.writeObject(ownerName);
+		s.writeObject(newestRecord.toString());	
 		s.writeInt(count);	
 		s.writeLong(oldest);		
 		s.writeLong(newest);		
@@ -125,14 +134,16 @@ public class StatsIndexKey extends BaseIndexKey<StatsIndexKey,StatsIndexKey> imp
 
 	@Override
 	public void readObject(ObjectInputStream s, StatsIndexKey last) throws IOException, ClassNotFoundException {
-		aps = new MidataId(s.readUTF());	
-		format = s.readUTF();		
-		content = s.readUTF();
-		group = s.readUTF();
-		app = new MidataId(s.readUTF());		
-		owner = new MidataId(s.readUTF());
-		ownerName = s.readUTF();
-		newestRecord = new MidataId(s.readUTF());	
+		aps = MidataId.from((String) s.readObject());
+		stream = MidataId.from((String) s.readObject());
+		studyGroup = (String) s.readObject();
+		format = (String) s.readObject();		
+		content = (String) s.readObject();
+		group = (String) s.readObject();
+		app = MidataId.from((String) s.readObject());		
+		owner = MidataId.from((String) s.readObject());
+		ownerName = (String) s.readObject();
+		newestRecord = MidataId.from((String) s.readObject());	
 		count = s.readInt();	
 		oldest = s.readLong();		
 		newest = s.readLong();		
