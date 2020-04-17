@@ -78,7 +78,7 @@ public class Feature_AccountQuery extends Feature {
             
             	account = false;
             	
-            	List<Consent> consents = getConsentsForQuery(query, false, true);
+            	List<Consent> consents = getConsentsForQuery(query, false, query.restrictedBy("consent-limit"));
     			
             	if (query.restrictedBy("consent-limit")) {
             		
@@ -164,7 +164,9 @@ public class Feature_AccountQuery extends Feature {
 			while (all.hasNext() && end<blocksize) { sublist.add(all.next());end++; }
 			
 			FasterDecryptTool.accelerate(apscache, sublist);
-			
+			// REMOVE REMOVE
+			//if (pos > 100) throw new NullPointerException();
+			// END
 			AccessLog.log("get consent "+pos+" - "+(pos+end));
 			pos = pos+end;
 			cache = sublist.iterator();			         
@@ -182,16 +184,18 @@ public class Feature_AccountQuery extends Feature {
 		ConsentIterator(Feature next, Query q, List<Consent> consents) throws AppException {	
 			this.next = next;
 			this.query = q;					
+			AccessLog.log("CONSENT ITERATOR from="+q.getFromRecord());
 			if (q.getFromRecord() != null) {
 				
 				DBRecord r = q.getFromRecord();
-				if (r.owner != null) {
-				  AccessLog.log("ConsentIterator: fromRecord="+r._id+" owner="+r.owner);
+				if (r.context.getOwner() != null) {
+				  MidataId targetOwner = r.context.getOwner();
+				  //AccessLog.log("ConsentIterator: fromRecord="+r._id+" owner="+targetOwner);
 				  int pos = 0;
 				  Iterator<Consent> it = consents.iterator();
 				  while (it.hasNext()) {					  
 					  Consent c = it.next();
-					  if (c.owner.equals(r.owner) || c._id.equals(r.owner)) {						  
+					  if (c.owner.equals(targetOwner)) {						  
 						  AccessLog.log("ConsentIterator: skipping "+pos+" consents");
 						  init(new BlockwiseConsentPrefetch(q, consents, 105, pos));
 						  return;
