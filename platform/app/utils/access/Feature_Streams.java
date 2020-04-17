@@ -161,7 +161,7 @@ public class Feature_Streams extends Feature {
 		//AccessLog.logBegin("start query on target APS");
 		List<DBRecord> recs = next.query(q);
 		
-		//AccessLog.logEnd("end query on target APS #res="+recs.size());
+		//AccessLog.log("query on target APS #res="+recs.size());
 		if (recs.isEmpty()) return ProcessingTools.empty();
 		
 		boolean includeStreams = q.includeStreams();
@@ -187,7 +187,7 @@ public class Feature_Streams extends Feature {
 			Map<MidataId, DBRecord> streamsToFetch = new HashMap<MidataId, DBRecord>();
 			long limit = Math.max(q.getMinUpdatedTimestamp(), q.getMinCreatedTimestamp());
             limit = Math.max(limit, q.getMinSharedTimestamp());
-			for (DBRecord r : recs) {
+			for (DBRecord r : recs) {				
 				if (r.isStream!=null) {
 					if (!q.getCache().hasAPS(r._id) && (limit>0 || !isMediumStream(r))) streamsToFetch.put(r._id, r);
 					else streams.add(r);
@@ -209,8 +209,7 @@ public class Feature_Streams extends Feature {
 					q.getCache().getAPS(r._id, r.key, r.owner, set, true);					
 				}
 			}
-			Collections.sort(streams);	
-			
+			Collections.sort(streams);				
 			
 			return new StreamCombineIterator(next, q, ProcessingTools.dbiterator("", streams.iterator()), filtered);
 			

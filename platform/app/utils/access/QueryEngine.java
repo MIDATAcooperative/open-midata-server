@@ -335,11 +335,18 @@ class QueryEngine {
     	  boolean nosplit = query.restrictedBy("_id");
     	  
     	  if (nosplit) {
-    		  List<DBRecord> results = qm.query(query);
+    		  
+    		  Map<String, Object> comb = Feature_QueryRedirect.combineQuery(properties, query.getProperties(), query.getContext());
+          	  if (comb == null) return ProcessingTools.empty();
+          		  
+          	  comb.remove("$or");
+          	  Query query2 = new Query(path,properties.toString(),comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext(), query).setFromRecord(query.getFromRecord());
+            		  
+    		  List<DBRecord> results = qm.query(query2);
     		  
     		  if (results.isEmpty()) return ProcessingTools.empty();
     		  
-    		  Query query_no_id = new Query(query, "combine-no-id", Collections.emptyMap());
+    		  Query query_no_id = new Query(query, "combine-no-id", Collections.emptyMap()).setFromRecord(query.getFromRecord());
     		  query_no_id.getProperties().remove("_id");
     		  
     		  APS inMemory = new Feature_InMemoryQuery(results);
@@ -351,7 +358,7 @@ class QueryEngine {
     		    		    		
     	  Map<String, Object> comb = Feature_QueryRedirect.combineQuery(properties, query.getProperties(), query.getContext());
       	  if (comb != null) {
-      		query = new Query(path,properties.toString(),comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext(), query);
+      		query = new Query(path,properties.toString(),comb, query.getFields(), query.getCache(), query.getApsId(), query.getContext(), query).setFromRecord(query.getFromRecord());
     	
       	    Collection<Map<String, Object>> col = (Collection<Map<String, Object>>) properties.get("$or");
       	    AccessLog.log("$or: #pathes="+col.size());

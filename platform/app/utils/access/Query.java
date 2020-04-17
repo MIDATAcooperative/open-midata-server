@@ -117,7 +117,8 @@ public class Query {
 			prev.getPath(str);
 			str.append('/');
 		}
-		str.append(path);		
+		str.append(path);	
+		if (fromRecord!=null) str.append("*");
 	}
 	
 	public Map<String, Object> getProperties() {

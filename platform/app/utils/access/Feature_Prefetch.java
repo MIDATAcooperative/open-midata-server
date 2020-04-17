@@ -38,7 +38,7 @@ public class Feature_Prefetch extends Feature {
 		if (q.restrictedBy("_id")) {									
 			if (setUserGroup && q.restrictedBy("usergroup")) {
 			  return new Feature_UserGroups(new Feature_Prefetch(false, next)).iterator(q);
-			} else {
+			} else {				
 			  List<DBRecord> prefetched = QueryEngine.lookupRecordsById(q);
 			  return new LookupIterator(lookup(q, prefetched, next, !q.restrictedBy("usergroup")));
 			}

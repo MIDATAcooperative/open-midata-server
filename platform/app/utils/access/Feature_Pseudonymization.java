@@ -45,7 +45,7 @@ public class Feature_Pseudonymization extends Feature {
 				Map<String, Object> newprops = new HashMap<String, Object>();
 				newprops.putAll(q.getProperties());
 				if (!pseudonymizedIdRestrictions(q, next, q.getCache().getAccountOwner(), newprops)) return ProcessingTools.empty();
-				q = new Query(q, "pseudonym", newprops);
+				q = new Query(q, "pseudonym", newprops).setFromRecord(q.getFromRecord());
 			}
 
 		}				

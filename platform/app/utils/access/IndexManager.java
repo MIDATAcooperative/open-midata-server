@@ -533,7 +533,8 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 	}
 	
 	public void triggerUpdate(IndexPseudonym pseudo, APSCache cache, MidataId user, IndexDefinition idx, Set<MidataId> targetAps) throws AppException {
-		AccessLog.log("TRIGGER UPDATE "+user+" aps="+(targetAps!=null?targetAps.toString():"null"));
+		if (targetAps != null && targetAps.size() > 10) targetAps = null;
+		AccessLog.log("TRIGGER UPDATE "+user+" aps="+(targetAps!=null?targetAps.toString():"null"));		
 		indexSupervisor.tell(new IndexUpdateMsg(idx._id, user, pseudo, KeyManager.instance.currentHandle(user), targetAps), null);		
 	}
 	
