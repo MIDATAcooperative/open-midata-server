@@ -565,7 +565,12 @@ public class AutoRun extends APIController {
 		
 public void startIntradayImport(StartIntradayImport message) throws Exception {
 			if (autoImportsIt != null || datasIt != null) return;
-						
+				
+			if (speedControl != null) {
+				speedControl.cancel();
+				speedControl = null;
+			}
+			
 			startTime = 0;
 			startRemoveUnlinkedFiles = 0;
 			startCreateDatabaseStats = 0;
@@ -595,6 +600,8 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 				datasIt = datas.iterator();
 				done = new HashSet<MidataId>();
 				countNewImports = datas.size();
+				
+				
 								
 				speedControl = getContext().system().scheduler().schedule(Duration.ofSeconds(10),
 		                Duration.ofSeconds(10),
@@ -663,13 +670,14 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 			reportEnd();
 		}
 		
-		public void reportEnd() {
-			if (reportSend) return;
+		public void reportEnd() {			
 			
 			if (speedControl != null) {
 				speedControl.cancel();
 				speedControl = null;
 			}
+			
+			if (reportSend) return;
 			
 			reportSend = true;
 			long end = System.currentTimeMillis();
