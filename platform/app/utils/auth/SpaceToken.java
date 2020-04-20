@@ -157,6 +157,7 @@ public class SpaceToken {
 	
 	public static SpaceToken decryptAndSession(Request request, String unsafeSecret) throws AppException {
 		SpaceToken res = decrypt(request, unsafeSecret);
+		if (res == null) return null;
 		KeyManager.instance.continueSession(res.handle, res.executorId);
 		return res;
 	}

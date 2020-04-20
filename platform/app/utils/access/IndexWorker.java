@@ -34,6 +34,7 @@ public class IndexWorker extends AbstractActor {
 	private APSCache cache;
 	private IndexDefinition idx;
 	private BaseIndexRoot root;
+	private long lastFullUpdate = 0;
 	
 	public IndexWorker(MidataId executor, IndexPseudonym pseudo, MidataId indexId, String handle) {
 		this.executor = executor;
@@ -92,7 +93,10 @@ public class IndexWorker extends AbstractActor {
 				}
 			
 			  IndexUpdateMsg msg = (IndexUpdateMsg) message;
-			  IndexManager.instance.indexUpdate(cache, root, executor, msg.getAps());									
+			  if (msg.getAps() != null || System.currentTimeMillis() > lastFullUpdate + 1000l* 60l) {
+				  IndexManager.instance.indexUpdate(cache, root, executor, msg.getAps());	
+				  if (msg.getAps()==null) lastFullUpdate = System.currentTimeMillis();
+			  }
 							
 		} catch (Exception e) {
 			ErrorReporter.report("Messager", null, e);	

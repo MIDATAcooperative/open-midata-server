@@ -24,8 +24,7 @@ public abstract class TsBaseIndexRoot<A extends BaseIndexKey<A,B>,B> extends Bas
 		try {
 		  return ts.getValue(aps.toString());
 		} catch (LostUpdateException e) {
-			reload();
-			ts.reload();
+			reload();			
 			return getVersion(aps);
 		}
 	}
@@ -39,8 +38,7 @@ public abstract class TsBaseIndexRoot<A extends BaseIndexKey<A,B>,B> extends Bas
 		try {
 		  return ts.getValue("all");
 		} catch (LostUpdateException e) {
-			reload();
-			ts.reload();
+			reload();			
 			return getAllVersion();
 		}
 	}
