@@ -1,5 +1,7 @@
 package utils.access;
 
+import java.util.Optional;
+
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
@@ -21,13 +23,13 @@ public class IndexSupervisor extends AbstractActor {
 	public void indexMessage(IndexMsg msg) throws Exception {
 		try {						
 			
-			  ActorRef ref = getContext().getChild(msg.getIndexId().toString());
+			  Optional<ActorRef> ref = getContext().findChild(msg.getIndexId().toString());
 				
-			  if (ref == null) {
-				ref = getContext().actorOf(Props.create(IndexWorker.class, msg.getExecutor(), msg.getPseudo(), msg.getIndexId(), msg.getHandle()), msg.getIndexId().toString());  
+			  if (!ref.isPresent()) {
+				ref = Optional.of(getContext().actorOf(Props.create(IndexWorker.class, msg.getExecutor(), msg.getPseudo(), msg.getIndexId(), msg.getHandle()), msg.getIndexId().toString()));  
 			  }
 			  
-			  ref.forward(msg, getContext());			
+			  ref.get().forward(msg, getContext());			
 		} catch (Exception e) {
 			ErrorReporter.report("Messager", null, e);	
 			throw e;

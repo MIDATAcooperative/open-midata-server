@@ -391,7 +391,7 @@ public class AutoRun extends APIController {
 		Set<MidataId> done;
 		
 		private int countSlow = 0;
-		private boolean isSlow = false;
+		private int isSlow = 0;
 		
 		/**
 		 * Constructor
@@ -476,7 +476,7 @@ public class AutoRun extends APIController {
 			openRecoveries = 0;
 			numberSuccess = 0;
 			numberFailure = 0;
-			isSlow = false;
+			isSlow = 0;
 			countSlow = 0;
 			reportSend = false;
 			handle = null;
@@ -578,7 +578,7 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 			openRecoveries = 0;
 			numberSuccess = 0;
 			numberFailure = 0;
-			isSlow = false;
+			isSlow = 0;
 			countSlow = 0;
 			reportSend = true;
 			handle = null;
@@ -618,14 +618,18 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 		
 		public void importTick(ImportTick msg) {
 						
-			if (!isSlow) { isSlow = true;return; }				
+			if (isSlow<2) { isSlow++;return; }				
 									
 			boolean startedSome = false;
 			for (int i=0;i<PARALLEL;i++) {
 				if (importTick()) startedSome = true;
 			}
 			
-			if (startedSome) countSlow++;
+			if (startedSome) {
+				AccessLog.log("autoimport slow="+countSlow);
+				countSlow++;
+				ServerTools.endRequest();
+			}
 		}
 		
 		public boolean importTick() {
@@ -634,7 +638,7 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 				Space space = autoImportsIt.next();
 				MidataId autorunner = RuntimeConstants.instance.autorunService;
 				
-				isSlow = false;
+				isSlow = 0;
 				workerRouter.route(new ImportRequest(handle, autorunner, space), getSelf());
 				
 				return true;
@@ -643,13 +647,15 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 				if (!done.contains(data.owner)) {
 					  done.add(data.owner);
 					  foundone = true;
-					  isSlow = false;
+					  isSlow = 0;
 					  processor.tell(new SubscriptionTriggered(data.owner, data.app, data.format, null, null, null), getSelf());
 					  return true;
 				}
 			}		
 			autoImportsIt = null;
 			datasIt = null;
+			AccessLog.log("autoimport nothing to start left slow="+countSlow);
+			ServerTools.endRequest();
 			return false;
 		}
 		
