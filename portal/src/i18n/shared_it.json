@@ -637,10 +637,14 @@
         "info2" : "Hai già un account MIDATA, accedi con il tuo indirizzo email e la tua password.",
         "info3" : "Il tuo account personale ti fornisce una panoramica della partecipazione al progetto.",
         "info4" : "Caro visitatore",
-        "info5" : "Non hai ancora un account MIDATA e non partecipi ad un progetto di ricerca?",
-        "info6" : "Partecipa al progetto",
-        "info6b" : "Ally Science",
-        "info6c" : "!"
+        "info5" : "Non hai ancora un account MIDATA e non partecipi ad alcun progetto?",
+        "info6" : "Partecipa a",
+        "info6b" : "Corona Science",
+        "info6b_link" : "https://coronascience.ch/it/",
+        "info6c" : "o a uno degli altri",
+        "info6d" : "progetti MIDATA",
+        "info6d_link" : "https://www.midata.coop/it/offerta/",
+        "info6e" : "!"
     },
 
     "lostpw" : {
