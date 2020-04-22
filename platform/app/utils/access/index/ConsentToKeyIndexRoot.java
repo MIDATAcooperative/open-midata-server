@@ -9,11 +9,14 @@ import utils.exceptions.InternalServerException;
 public class ConsentToKeyIndexRoot extends BaseIndexRoot<ConsentToKeyIndexKey,ConsentToKeyIndexKey> {
 
 	private IndexDefinition model;
+	
+	public int MIN_DEGREE() { return 10000; };
 		
 	public ConsentToKeyIndexRoot(byte[] key, IndexDefinition def, boolean isnew) throws InternalServerException {
 		
 		this.key = key;
 		this.model = def;
+		this.created = def.creation;
 		this.rootPage = new IndexPage(this.key, def, this, 1);		
 		if (isnew) {
 			locked = true;

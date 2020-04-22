@@ -1,6 +1,7 @@
 package controllers;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
@@ -117,11 +118,13 @@ public class FHIR extends Controller {
         if (info != null && info.pluginId != null) {
 		
         BSONObject query = RecordManager.instance.getMeta(info.executorId, info.targetAPS, "_query");
-        if (query != null) {
-        	MidataId studyId = MidataId.from(query.get("study"));
+        if (query != null) {        	
+        	Object st = query.get("study");
+        	if (st instanceof Collection) st = ((Collection) st).iterator().next(); 
+        	MidataId studyId = MidataId.from(st);        	
         	String studyGroup = (String) query.get("study-group");
         	Plugin plug = Plugin.getById(info.pluginId);
-        	if (plug == null || !plug.type.equals("analyzer")) throw new BadRequestException("error.invalid.plugin", "Wrong plugin type");
+        	if (plug == null || (!plug.type.equals("analyzer") && !plug.type.equals("endpoint"))) throw new BadRequestException("error.invalid.plugin", "Wrong plugin type");
         	String mode = plug.pseudonymize ? "pseudonymized" : "original";
         	String handle = KeyManager.instance.currentHandle(info.executorId);
         	
@@ -143,7 +146,7 @@ public class FHIR extends Controller {
         	} catch (ca.uhn.fhir.parser.DataFormatException e) {
         		throw new BadRequestException("error.invalid", e.getMessage());
         	}
-        	return controllers.research.Studies.downloadFHIR(info.executorId, handle, studyId, info.role, from, to, studyGroup, mode);
+        	return controllers.research.Studies.downloadFHIR(info, handle, studyId, info.role, from, to, studyGroup, mode);
         }
 		
 		//Stats.finishRequest(request(), String.valueOf(res.getStatus()));

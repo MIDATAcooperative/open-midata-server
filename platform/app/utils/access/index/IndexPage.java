@@ -54,8 +54,11 @@ public class IndexPage<A extends BaseIndexKey<A,B>,B> {
 	
 	public IndexPage(byte[] key, BaseIndexRoot<A,B> root) throws InternalServerException {
 		this.key = key;
-		this.model = new IndexPageModel();
-		((IndexPageModel) this.model)._id = new MidataId();
+		IndexPageModel page = new IndexPageModel();
+		page._id = new MidataId();
+		page.rev = root.getRev();
+		page.creation = root.getCreated();
+		this.model = page;		
 		this.root = root;
 		this.depth = 1;
 		if (root.maxDepth < depth) root.maxDepth = depth;
@@ -169,8 +172,8 @@ public class IndexPage<A extends BaseIndexKey<A,B>,B> {
 		if (mKeys == null) {
 		  mIsLeaf = true;
           mCurrentKeyNum = 0;
-          mKeys = (A[]) new BaseIndexKey[BaseIndexRoot.UPPER_BOUND_KEYNUM];
-          mChildren = new MidataId[BaseIndexRoot.UPPER_BOUND_KEYNUM + 1];        
+          mKeys = (A[]) new BaseIndexKey[root.UPPER_BOUND_KEYNUM()];
+          mChildren = new MidataId[root.UPPER_BOUND_KEYNUM() + 1];        
 		  changed = true;
 		}
 	}
@@ -183,8 +186,8 @@ public class IndexPage<A extends BaseIndexKey<A,B>,B> {
 	public void initNonLeaf() {		
 		mIsLeaf = false;
         mCurrentKeyNum = 0;
-        mKeys = (A[]) new BaseIndexKey[BaseIndexRoot.UPPER_BOUND_KEYNUM];
-        mChildren = new MidataId[BaseIndexRoot.UPPER_BOUND_KEYNUM + 1];        
+        mKeys = (A[]) new BaseIndexKey[root.UPPER_BOUND_KEYNUM()];
+        mChildren = new MidataId[root.UPPER_BOUND_KEYNUM() + 1];        
 		changed = true;		
 	}
 	
@@ -219,8 +222,8 @@ public class IndexPage<A extends BaseIndexKey<A,B>,B> {
 			ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(data));
 			mIsLeaf = in.readBoolean();
 			mCurrentKeyNum = in.readInt();
-			mKeys = (A[]) new BaseIndexKey[BaseIndexRoot.UPPER_BOUND_KEYNUM];
-	        mChildren = new MidataId[BaseIndexRoot.UPPER_BOUND_KEYNUM + 1];       
+			mKeys = (A[]) new BaseIndexKey[root.UPPER_BOUND_KEYNUM()];
+	        mChildren = new MidataId[root.UPPER_BOUND_KEYNUM() + 1];       
 			A last = null;
 			for (int i=0;i<mCurrentKeyNum;i++) {
 				mKeys[i] = root.createKey();

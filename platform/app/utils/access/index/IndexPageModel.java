@@ -20,7 +20,7 @@ import utils.exceptions.InternalServerException;
 public class IndexPageModel extends Model implements BaseIndexPageModel {
 
 	protected @NotMaterialized static final String collection = "indexes";
-	private final static Set<String> ALL_PAGE = Sets.create("version", "enc", "lockTime");
+	private final static Set<String> ALL_PAGE = Sets.create("version", "enc", "lockTime", "creation", "rev");
 	
 	/**
 	 * Last updated version number to prevent lost updates
@@ -31,6 +31,16 @@ public class IndexPageModel extends Model implements BaseIndexPageModel {
 	 * Timestamp that is set to lock the index for longer index operations
 	 */
 	public long lockTime;
+	
+	/**
+	 * software revision number
+	 */
+	public int rev;
+	
+	/**
+	 * time of creation of index (rounded)
+	 */
+	public long creation;
 	
 	/**
 	 * encrypted data

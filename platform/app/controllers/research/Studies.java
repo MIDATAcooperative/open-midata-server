@@ -325,10 +325,11 @@ public class Studies extends APIController {
 
 		final String handle = PortalSessionToken.session().handle;
 		
-		return downloadFHIR(executorId, handle, studyid, role, startDate, endDate, studyGroup, mode);
+		return downloadFHIR(new ExecutionInfo(executorId, role), handle, studyid, role, startDate, endDate, studyGroup, mode);
 	}
 	
-	public static Result downloadFHIR(final MidataId executorId, final String handle, final MidataId studyid, final UserRole role, final Date startDate, final Date endDate, final String studyGroup, final String mode) throws AppException, IOException {
+	public static Result downloadFHIR(ExecutionInfo initialInf, final String handle, final MidataId studyid, final UserRole role, final Date startDate, final Date endDate, final String studyGroup, final String mode) throws AppException, IOException {
+		final MidataId executorId = initialInf.executorId;
 		final Study study = Study.getById(studyid, Sets.create("name", "type", "executionStatus", "participantSearchStatus", "validationStatus", "owner", "groups", "createdBy", "code"));
 
 		if (study == null)
@@ -351,19 +352,23 @@ public class Studies extends APIController {
 
 		boolean first = true;
 
-		Set<UserGroupMember> ugms = UserGroupMember.getAllByGroup(study._id);
-		Map<MidataId, UserGroupMember> idmap = new HashMap<MidataId, UserGroupMember>();
-		for (UserGroupMember member : ugms)
-			idmap.put(member.member, member);
-		Set<User> users = User.getAllUser(CMaps.map("_id", idmap.keySet()), User.ALL_USER);
-
-		ResourceProvider<DomainResource, Model> pprov = FHIRServlet.myProviders.get("Practitioner");
-		for (User user : users) {
-			String location = FHIRServlet.getBaseUrl() + "/" + pprov.getResourceType().getSimpleName() + "/" + user._id.toString();
-			String ser = pprov.serialize(PractitionerResourceProvider.practitionerFromMidataUser(user));
-			out.append((first ? "" : ",") + "{ \"fullUrl\" : \"" + location + "\", \"resource\" : " + ser + " } ");
-			first = false;
+		if (initialInf.context.mayAccess("Practitioner", "fhir/Practitioner")) {
+			Set<UserGroupMember> ugms = UserGroupMember.getAllByGroup(study._id);
+			Map<MidataId, UserGroupMember> idmap = new HashMap<MidataId, UserGroupMember>();
+			for (UserGroupMember member : ugms)
+				idmap.put(member.member, member);
+			Set<User> users = User.getAllUser(CMaps.map("_id", idmap.keySet()), User.ALL_USER);
+	
+			ResourceProvider<DomainResource, Model> pprov = FHIRServlet.myProviders.get("Practitioner");
+			for (User user : users) {
+				String location = FHIRServlet.getBaseUrl() + "/" + pprov.getResourceType().getSimpleName() + "/" + user._id.toString();
+				String ser = pprov.serialize(PractitionerResourceProvider.practitionerFromMidataUser(user));
+				out.append((first ? "" : ",") + "{ \"fullUrl\" : \"" + location + "\", \"resource\" : " + ser + " } ");
+				first = false;
+			}
 		}
+		
+		final boolean firstWritten = first;
 
 		final akka.japi.function.Creator<Iterator<ByteString>> creator = new akka.japi.function.Creator<Iterator<ByteString>>() {
 
@@ -374,7 +379,7 @@ public class Studies extends APIController {
 				try {
 					KeyManager.instance.continueSession(handle, executorId);
 					ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId, role));
-					DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, role, RecordManager.instance.createContextFromAccount(executorId), CMaps.map("export", mode).map("study", study._id).map("study-group", studyGroup).mapNotEmpty("shared-after",  startDate).mapNotEmpty("updated-before", endDate),
+					DBIterator<Record> allRecords = RecordManager.instance.listIterator(executorId, role, initialInf.context, CMaps.map("export", mode).map("study", study._id).map("study-group", studyGroup).mapNotEmpty("shared-after",  startDate).mapNotEmpty("updated-before", endDate),
 							RecordManager.COMPLETE_DATA);
 					System.out.println("study export start!");
 					return new RecIterator(allRecords);
@@ -386,6 +391,7 @@ public class Studies extends APIController {
 			class RecIterator implements Iterator<ByteString> {
 
 				private DBIterator<Record> it;
+				private boolean first = firstWritten;
 
 				RecIterator(DBIterator it) {
 					this.it = it;
@@ -439,7 +445,7 @@ public class Studies extends APIController {
 							//System.out.println("binary pos:"+attpos);
 							//AccessLog.log("binary pos:"+attpos);
 							if (attpos > 0) {
-								out.append("," + "{ \"fullUrl\" : \"" + location + "\", \"resource\" : " + ser.substring(0, attpos));
+								out.append((first?"":",") + "{ \"fullUrl\" : \"" + location + "\", \"resource\" : " + ser.substring(0, attpos));
 								FileData fileData = RecordManager.instance.fetchFile(executorId, new RecordToken(rec._id.toString(), rec.stream.toString()));
 
 								int BUFFER_SIZE = 3 * 1024;
@@ -456,11 +462,11 @@ public class Studies extends APIController {
 
 								out.append(ser.substring(attpos + FHIRTools.BASE64_PLACEHOLDER_FOR_STREAMING.length()) + " } ");
 							} else
-								out.append((",") + "{ \"fullUrl\" : \"" + location + "\", \"resource\" : " + ser + " } ");
+								out.append((first?"":",") + "{ \"fullUrl\" : \"" + location + "\", \"resource\" : " + ser + " } ");
 						} else {
-							out.append((",") + "{ \"fullUrl\" : \"" + location + "\" } ");
+							out.append((first?"":",") + "{ \"fullUrl\" : \"" + location + "\" } ");
 						}
-						// first = false;
+						first = false;
 						//System.out.println("done record");
 						//AccessLog.log("done record");
 						return ByteString.fromString(out.toString());
