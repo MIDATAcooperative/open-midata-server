@@ -11,10 +11,12 @@ public class TimestampIndexRoot extends BaseIndexRoot<TimestampIndexKey,Timestam
 
 	private IndexDefinition model;
 	
+	public int MIN_DEGREE() { return 10000; };
 	
 	public TimestampIndexRoot(byte[] key, IndexDefinition def, boolean isnew) throws InternalServerException {
 		this.key = key;
 		this.model = def;
+		this.created = def.creation;
 		this.rootPage = new IndexPage(this.key, new TimestampIndexPageModel(def), this, 1);		
 		if (isnew) {
 			locked = true;

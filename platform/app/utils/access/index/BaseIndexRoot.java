@@ -19,10 +19,19 @@ public abstract class BaseIndexRoot<A extends BaseIndexKey<A,B>,B> {
 	protected int modCount = 0;
 	protected int maxDepth = 0;
 	protected Map<MidataId, IndexPage<A,B>> loadedPages;
+	protected long created;
 	
-	public final static int MIN_DEGREE          =   100;
-	public final static int UPPER_BOUND_KEYNUM  =   (MIN_DEGREE * 2) - 1;
-	public final static int LOWER_BOUND_KEYNUM  =   MIN_DEGREE - 1;	
+	public int MIN_DEGREE() { return 100; };
+	public int UPPER_BOUND_KEYNUM() { return (MIN_DEGREE() * 2) - 1; }
+	public int LOWER_BOUND_KEYNUM() { return MIN_DEGREE() - 1; }	
+	
+	public int getRev() {
+		return 1;
+	}
+	
+	public long getCreated() {
+		return created;
+	}
 	
 	public final static int MAX_LOADED_PAGES = 100;
 	

@@ -601,15 +601,16 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 				done = new HashSet<MidataId>();
 				countNewImports = datas.size();
 				
-				
+				if (countNewImports > 0) {
 								
-				speedControl = getContext().system().scheduler().schedule(Duration.ofSeconds(10),
-		                Duration.ofSeconds(10),
-		                manager, new ImportTick(),
-		                Instances.system().dispatcher(), null);	
-				
-				for (int i=0;i<PARALLEL;i++) {
-					importTick();
+					speedControl = getContext().system().scheduler().schedule(Duration.ofSeconds(10),
+			                Duration.ofSeconds(10),
+			                manager, new ImportTick(),
+			                Instances.system().dispatcher(), null);	
+					
+					for (int i=0;i<PARALLEL;i++) {
+						importTick();
+					}
 				}
 				
 				AccessLog.log("Done scheduling new autoimport size="+datas.size());
@@ -661,7 +662,8 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 			}		
 			autoImportsIt = null;
 			datasIt = null;
-			AccessLog.log("autoimport nothing to start left slow="+countSlow);
+			AccessLog.log("autoimport nothing to start left slow="+countSlow);						
+			
 			ServerTools.endRequest();
 			return false;
 		}

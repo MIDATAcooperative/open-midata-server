@@ -12,6 +12,7 @@ public abstract class TsBaseIndexRoot<A extends BaseIndexKey<A,B>,B> extends Bas
 	
 	public TsBaseIndexRoot(byte[] key, IndexDefinition def, boolean isnew) throws InternalServerException {
 		this.model = def;
+		this.created = def.creation;
 		this.ts = new TimestampIndexRoot(key, def, isnew);
 	}
 	

@@ -118,6 +118,8 @@ public class IndexManager {
 			def.owner = pseudo.getPseudonym();
 			def.formats = Collections.singletonList("_streamIndex");
 			def.lockTime = System.currentTimeMillis();
+			def.rev = 1;
+			def.creation = currentCreationTime();
 									
 			StreamIndexRoot root = new StreamIndexRoot(pseudo.getKey(), def, true);
 			
@@ -145,7 +147,9 @@ public class IndexManager {
 			def.owner = pseudo.getPseudonym();
 			def.formats = Collections.singletonList("_consentKey");
 			def.lockTime = System.currentTimeMillis();
-									
+			def.rev = 1;
+			def.creation = currentCreationTime();	
+			
 			ConsentToKeyIndexRoot root = new ConsentToKeyIndexRoot(pseudo.getKey(), def, true);
 			
 			root.prepareToCreate();
@@ -188,7 +192,9 @@ public class IndexManager {
 			def.owner = pseudo.getPseudonym();
 			def.formats = Collections.singletonList("_statsIndex");
 			def.lockTime = System.currentTimeMillis();
-									
+			def.rev = 1;
+			def.creation = currentCreationTime();	
+			
 			StatsIndexRoot root = new StatsIndexRoot(pseudo.getKey(), def, true);
 			
 			root.prepareToCreate();
@@ -224,6 +230,8 @@ public class IndexManager {
 		indexDef.formats = new ArrayList<String>(formats);
 		indexDef.owner = pseudo.getPseudonym();
 		indexDef.lockTime = System.currentTimeMillis();
+		indexDef.rev = 1;
+		indexDef.creation = currentCreationTime();
 								
 		IndexRoot root = new IndexRoot(pseudo.getKey(), indexDef, true);
 		
@@ -232,6 +240,11 @@ public class IndexManager {
 			
 		indexDef.lockTime = 0;
 		return indexDef;
+	}
+	
+	protected long currentCreationTime() {
+		// Creation time with about month precision
+		return System.currentTimeMillis() / 1000l / 60l / 60l / 24l / 30l;
 	}
 			
 	protected void addRecords(IndexRoot index, MidataId aps, List<DBRecord> records) throws AppException, LostUpdateException {

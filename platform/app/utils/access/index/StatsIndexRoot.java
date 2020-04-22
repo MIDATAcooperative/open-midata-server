@@ -12,6 +12,8 @@ public class StatsIndexRoot extends TsBaseIndexRoot<StatsIndexKey,StatsIndexKey>
 
 	private IndexDefinition model;
 	
+	public int MIN_DEGREE() { return 1000; };
+	
 	
 	public StatsIndexRoot(byte[] key, IndexDefinition def, boolean isnew) throws InternalServerException {
 		super(key,def,isnew);

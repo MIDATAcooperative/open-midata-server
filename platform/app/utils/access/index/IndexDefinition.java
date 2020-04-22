@@ -20,7 +20,7 @@ import utils.exceptions.InternalServerException;
  *
  */
 public class IndexDefinition extends IndexPageModel {
-    public @NotMaterialized static final Set<String> ALL = Sets.create("owner", "formats", "fields", "enc", "encTs", "version");
+    public @NotMaterialized static final Set<String> ALL = Sets.create("owner", "formats", "fields", "enc", "encTs", "version", "rev", "created");
 	
 	
 	public String owner;
