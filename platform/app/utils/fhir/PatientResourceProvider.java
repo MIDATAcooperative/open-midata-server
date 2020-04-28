@@ -552,13 +552,14 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		PatientResourceProvider.setExecutionInfo(inf);
 		String userName = "P-" + CodeGenerator.nextUniqueCode();			
 		Record record = PatientResourceProvider.newRecord("fhir/Patient");
-		Patient patient = generatePatientForStudyParticipation(record._id, userName, member, study);
-		patient.setId(record._id.toString());
+		MidataId pseudo = CodeGenerator.nextMidataId();
+		Patient patient = generatePatientForStudyParticipation(pseudo, userName, member, study);
+		patient.setId(pseudo.toString());
 		patientProvider.prepare(record, patient);
 		record.content = "PseudonymizedPatient";
 		patientProvider.insertRecord(record, patient);
 
-		Feature_Pseudonymization.addPseudonymization(inf.executorId, part._id, record._id, userName);
+		Feature_Pseudonymization.addPseudonymization(inf.executorId, part._id, pseudo, userName);
 		RecordManager.instance.share(inf.executorId, member._id, part._id, Collections.singleton(record._id), false);
 	}
 

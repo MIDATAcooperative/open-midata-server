@@ -11,7 +11,7 @@ import org.bson.types.ObjectId;
  */
 public class MidataId implements Comparable<MidataId>, Serializable {
 
-	private static final long serialVersionUID = 5402993258205599040L;
+	private static final long serialVersionUID = 5402993258205599040L;	
 	
 	private String id;
 	private ObjectId objId;
@@ -136,6 +136,6 @@ public class MidataId implements Comparable<MidataId>, Serializable {
 		if (o instanceof ObjectId) return new MidataId((ObjectId) o);
 		if (o instanceof MidataId) return (MidataId) o;
 		return new MidataId(o.toString());
-	}
+	}		
 		
 }
