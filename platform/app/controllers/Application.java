@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import actions.APICall;
+import models.AccessPermissionSet;
 import models.Admin;
 import models.Developer;
 import models.HPUser;
@@ -46,6 +47,7 @@ import play.routing.JavaScriptReverseRouter;
 import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
+import utils.access.DBRecord;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
@@ -387,6 +389,7 @@ public class Application extends APIController {
 			       
 			       
 			} else if (user != null) {
+				if (user.status == UserStatus.BLOCKED) throw new BadRequestException("error.blocked.user", "Account blocked");
 				throw new BadRequestException("error.already_done.email_verification", "E-Mail has already been verified.");
 			}
 		}
@@ -845,7 +848,10 @@ public class Application extends APIController {
 	 * @throws AppException
 	 */
 	public static void registerSetDefaultFields(Member user, boolean termsAgreed) throws AppException {
-		user._id = new MidataId();
+		do {
+			user._id = CodeGenerator.nextMidataId();	
+		} while (AccessPermissionSet.getById(user._id) != null || DBRecord.getById(user._id, Sets.create("_id")) != null);
+		
 		do {
 			  user.midataID = CodeGenerator.nextUniqueCode();
 		} while (Member.existsByMidataID(user.midataID));

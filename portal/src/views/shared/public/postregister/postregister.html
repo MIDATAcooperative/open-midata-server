@@ -11,6 +11,15 @@
 					</div>
 					<div class="panel-body">
 							
+						<div ng-show="progress.REJECT">
+						  <p translate="postregister.reject.intro1"></p>
+						  <p translate="postregister.reject.intro2"></p>
+						  <button class="btn btn-danger" translate="postregister.reject.reject_btn" ng-click="confirm(false)"></button>
+						  <hr>
+						  <p translate="postregister.reject.intro3"></p>
+						  <button class="btn btn-default" translate="postregister.reject.confirm_btn" ng-click="confirm(true)"></button>
+						  <div class="extraspace"></div>
+						</div>
 						<div ng-show="progress.RELOGIN">
 						  <p ng-show="error" translate="{{ error.code || error }}"></p>
 						  <div class="extraspace">&nbsp;</div>

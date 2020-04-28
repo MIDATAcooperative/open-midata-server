@@ -131,10 +131,11 @@ angular.module('portal')
 		});
 	};
 	
-	$scope.confirm = function() {
+	$scope.confirm = function(forceConfirm) {
 		$scope.error = null;
 		$scope.resentSuccess = $scope.codeSuccess = $scope.mailSuccess = false;
 		var data = { token : $stateParams.token, mode : $state.current.data.mode };
+		if (forceConfirm) data.mode = "VALIDATED";
 	    $scope.status.doAction('email', server.post(jsRoutes.controllers.Application.confirmAccountEmail().url, JSON.stringify(data) ))
 	    .then(function(result) {
 	    	$scope.progress = result.data;	 
@@ -292,7 +293,9 @@ angular.module('portal')
 	
 	if ($stateParams.token && $state.current.data.mode) {
 		$scope.tokenIncluded = true;
-		$scope.confirm();
+		if ($state.current.data.mode=="REJECTED") {
+		   $scope.progress = { REJECT : true };
+		} else $scope.confirm();
 	}
 	
 	if (oauth.getAppname()) { $scope.isoauth = true; }

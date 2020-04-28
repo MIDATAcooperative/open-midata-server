@@ -2,7 +2,11 @@ package utils.auth;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.Date;
 
+import org.bson.types.ObjectId;
+
+import models.MidataId;
 import models.UsedCode;
 import utils.exceptions.InternalServerException;
 
@@ -30,6 +34,15 @@ public class CodeGenerator {
 	    code = code.toUpperCase();
 	    code = code.substring(0,6);
 	    return code;
+	}
+	
+	/**
+	 * Generates a MidataId which does NOT contain the creation time
+	 * @return
+	 */
+	public static MidataId nextMidataId() {
+		ObjectId id = new ObjectId(new Date(1000l * (800000000+random.nextInt(700000000))), random.nextInt(16777215));
+		return MidataId.from(id);
 	}
 	
 	/**
