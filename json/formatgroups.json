@@ -1,5 +1,5 @@
 {"_id":{"$oid":"55ae5a08f351efda91eadc7c"},"system":"v1","name":"all","label":{"de":"Persönliche Daten","en":"Personal Data","fr":"Données personnelles"}}
-{"_id":{"$oid":"55ae5a08f351efda91eadc7d"},"system":"v1","name":"lifestyle","label":{"de":"Lifestyle","en":"Lifestyle","fr":"Mode de vie"},"parent":"all", "contents" : ["loinc/46251-5"]}
+{"_id":{"$oid":"55ae5a08f351efda91eadc7d"},"system":"v1","name":"lifestyle","label":{"de":"Lifestyle","en":"Lifestyle","fr":"Mode de vie"},"parent":"all","contents":["loinc/46251-5"]}
 {"_id":{"$oid":"55ae5a08f351efda91eadc7e"},"system":"v1","name":"nutrition","label":{"de":"Ernährung","en":"Nutrition","fr":"Nutrition"},"parent":"lifestyle","contents":["food/water","food/calories-in"]}
 {"_id":{"$oid":"55ae5a08f351efda91eadc7f"},"system":"v1","name":"mood","label":{"de":"Stimmung","en":"Mood","fr":"Humeur"},"parent":"lifestyle","contents":["subjective-condition","pain/77570-0","pain/77565-0","survey/pain-severity","snomed/24672009","pain/77572-6","pain/77566-8","pain/77567-6","pain/77571-8","pain/77568-4","pain/77569-2","quality-of-life","pain/410720000"]}
 {"_id":{"$oid":"55ae5a08f351efda91eadc80"},"system":"v1","name":"qself","label":{"de":"Quantified Self","en":"Quantified self","fr":"Quantified Self"},"parent":"lifestyle","contents":[]}
@@ -13,7 +13,7 @@
 {"_id":{"$oid":"55ae5a08f351efda91eadc8a"},"system":"v1","name":"other","label":{"de":"Andere","en":"Other","fr":"Autre"},"parent":"all","contents":[]}
 {"_id":{"$oid":"55ae5a08f351efda91eadc8b"},"system":"v1","name":"calendar","label":{"de":"Kalender","en":"Calendar","fr":"Agenda"},"parent":"other","contents":["Appointment","AppointmentResponse","Schedule","Slot"]}
 {"_id":{"$oid":"55ae5a08f351efda91eadc8c"},"system":"v1","name":"diary","label":{"de":"Tagebuch","en":"Diary","fr":"Journal"},"parent":"other","contents":["diary"]}
-{"_id":{"$oid":"55ae5a08f351efda91eadc8d"},"system":"v1","name":"account","label":{"de":"Externe Konten","en":"External Accounts","fr":"Compte"},"parent":"other","contents":["account/credentials"]}
+{"_id":{"$oid":"55ae5a08f351efda91eadc8d"},"system":"v1","name":"account","label":{"de":"Externe Konten","en":"External Accounts","fr":"Compte"},"parent":"other","contents":["research-id","research-id-hash","account/credentials"]}
 {"_id":{"$oid":"569915fc6281a61a232ecdca"},"system":"v1","name":"otherhealth","label":{"de":"Andere Gesundheitsdaten","en":"Other Health-related","fr":"Divers"},"parent":"health","contents":["RiskAssessment","Specimen","DeviceComponent","Device","Substance","DeviceMetric","observation/cardio","BodySite"]}
 {"_id":{"$oid":"569915fc6281a61a232ecdcb"},"system":"v1","name":"care","label":{"de":"Pflege","en":"Care","fr":"Soins"},"parent":"health","contents":["ReferralRequest","CarePlan","NutritionOrder","VisionPrescription","ProcedureRequest"]}
 {"_id":{"$oid":"569915fc6281a61a232ecdcc"},"system":"v1","name":"billing","label":{"de":"Rechnungen","en":"Billing","fr":"Facturation"},"parent":"other","contents":["PaymentNotice","EnrollmentRequest","ClaimResponse","EligibilityRequest","EligibilityResponse","Coverage","EnrollmentResponse","ExplanationOfBenefit","Claim","PaymentReconciliation"]}

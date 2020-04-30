@@ -313,3 +313,5 @@
 {"_id":{"$oid":"5e7e271daed64522b627017b"},"content":"snomed/267036007","defaultCode":"http://snomed.info/sct 267036007","security":"MEDIUM","label":{"en":"Dyspnea"},"resourceType":"fhir/Observation"}
 {"_id":{"$oid":"5e7e2885aed64522b627017e"},"content":"loinc/89196-0","defaultCode":"http://loinc.org 89196-0","security":"MEDIUM","label":{"en":"Patient reported outcome measure panel"},"resourceType":"fhir/Composition"}
 {"_id":{"$oid":"5e8ef835aed6452871e492a3"},"content":"loinc/46251-5","defaultCode":"http://loinc.org 46251-5","security":"MEDIUM","label":{"en":"Age Group"},"resourceType":"fhir/Observation"}
+{"_id":{"$oid":"5eaae668aed6451a78833023"},"content":"research-id","defaultCode":"http://midata.coop research-id","security":"HIGH","label":{"en":"Research ID"}}
+{"_id":{"$oid":"5eaae668aed6451a78833024"},"content":"research-id-hash","defaultCode":"http://midata.coop research-id-hash","security":"HIGH","label":{"en":"Research ID Hash"}}
