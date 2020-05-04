@@ -46,6 +46,7 @@ import utils.ErrorReporter;
 import utils.access.VersionedDBRecord;
 import utils.auth.ExecutionInfo;
 import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.exceptions.RequestTooLargeException;
 
@@ -242,9 +243,12 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 
 		} catch (RequestTooLargeException e2) {
 			throw e2;
+		} catch (InternalServerException e3) {
+		   ErrorReporter.report("FHIR (search)", null, e3);
+		   throw new InternalErrorException("Internal error during search");
 	    } catch (AppException e) {
-	       ErrorReporter.report("FHIR (search)", null, e);	       
-		   return null;
+	       ErrorReporter.report("FHIR (search)", null, e);	      
+		   throw new InvalidRequestException(e.getMessage());
 	    } catch (NullPointerException e2) {
 			ErrorReporter.report("FHIR (search)", null, e2);	 
 			throw new InternalErrorException("internal error during FHIR search");
