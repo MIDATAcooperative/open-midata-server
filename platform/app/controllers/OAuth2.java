@@ -431,7 +431,7 @@ public class OAuth2 extends Controller {
 		for (StudyAppLink sal : links) {
 			if (sal.isConfirmed() && sal.active && ((sal.type.contains(StudyAppLinkType.OFFER_P) && confirmStudy.contains(sal.studyId)) || sal.type.contains(StudyAppLinkType.REQUIRE_P))) {
 				if (sal.linkTargetType == null || sal.linkTargetType == LinkTargetType.STUDY) {
-					Study study = Study.getById(sal.studyId, Sets.create("requirements", "executionStatus"));				
+					Study study = sal.getStudy();				
 					if (study.requirements != null) requirements.addAll(study.requirements);		
 				}
 			}
@@ -695,7 +695,13 @@ public class OAuth2 extends Controller {
 					  Consent existingConsent = LinkTools.findConsentForAppLink(token.ownerId, sal);
 					  allRequired = allRequired && (existingConsent != null);
 					} else {
-					  allRequired = allRequired && checkAlreadyParticipatesInStudy(sal.studyId, token.ownerId);
+					  if (allRequired) {
+					     allRequired = checkAlreadyParticipatesInStudy(sal.studyId, token.ownerId);
+					     if (!allRequired && sal.type.contains(StudyAppLinkType.REQUIRE_P) && token.joinCode==null) {
+					    	Study study = sal.getStudy();
+					    	if (!study.joinMethods.contains(token.appId != null ? JoinMethod.APP : JoinMethod.PORTAL)) throw new JsonValidationException("error.blocked.joinmethod", "code", "joinmethod", "Study is not searching for participants using this channel.");
+					     }
+					  }
 					}
 				}
 			}
@@ -712,7 +718,7 @@ public class OAuth2 extends Controller {
 		for (StudyAppLink sal : links) {
 			if (sal.isConfirmed() && sal.active && (sal.linkTargetType == null || sal.linkTargetType == LinkTargetType.STUDY)) {
 							
-				Study study = Study.getById(sal.studyId, Sets.create("joinMethods"));							
+				Study study = sal.getStudy();							
 				if (study.joinMethods.contains(JoinMethod.APP_CODE)) {	
 					RecordManager.instance.clearCache();
 				    controllers.members.Studies.requestParticipation(new ExecutionInfo(token.ownerId, token.userRole), token.ownerId, sal.studyId, token.appId, JoinMethod.APP_CODE, token.joinCode);

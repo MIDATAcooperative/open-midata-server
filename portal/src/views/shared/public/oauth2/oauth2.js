@@ -5,6 +5,7 @@ angular.module('portal')
 	$scope.login = { role : "MEMBER", confirmStudy:[] };	
 	$scope.error = null;
 	$scope.status = new status(false);
+	$scope.hideRegistration = false;
 	$scope.params = $location.search();
 	$scope.translate = $translate;
 	$scope.labels = [];
@@ -41,6 +42,8 @@ angular.module('portal')
 			
 			oauth.app = $scope.app;
 			
+			if ($state.params.isnew=="true") $scope.showRegister();
+			if ($state.params.isnew=="never") $scope.hideRegistration = true;
 		});
 	};
 	
@@ -73,7 +76,10 @@ angular.module('portal')
 			  }
 		  } else { $scope.doneLock = true; }
 		})
-		.catch(function(err) { $scope.error = err.data; });
+		.catch(function(err) { 
+			$scope.error = err.data;
+			session.failurePage($state, err.data);
+		});
 	};	
 	
 	

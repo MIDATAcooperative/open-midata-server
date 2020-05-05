@@ -185,6 +185,20 @@ angular.module('services')
         
         hasSubRole : function(subRole) {	
     		return session.user && session.user.subroles && session.user.subroles.indexOf(subRole) >= 0;
+    	},
+    	
+    	failurePage : function($state, error) {
+    		var reason = null;
+    		
+    		if (error && error.code) {
+    			if (error.code == "error.blocked.joinmethod") reason = "joinmethod";
+    			else if (error.code == "error.blocked.projectconsent") reason = "withdrawn";
+    		}
+    		
+    		if (!reason) return;
+    	    var p = JSON.parse(JSON.stringify($state.params));
+    	    p.reason = reason;
+    		$state.go("^.failure", p);
     	}
     };
 	

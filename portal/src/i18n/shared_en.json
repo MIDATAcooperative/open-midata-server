@@ -375,6 +375,13 @@
 	   "VALIDATED" : "Project has been validated",
 	   "VALIDATION" : "Validation running"
 	 },
+	 "pcodestatus" : {
+	    "UNUSED" : "Not used",
+	    "SHARED" : "Given away",
+	    "USED" : "Used",
+	    "BLOCKED" : "Blocked",
+	    "REUSEABLE" : "Reusable"
+	 },
 	 "userrole" : {
 	   "ADMIN" : "Administrator",
 	   "ANY" : "Any Role",
@@ -1399,6 +1406,16 @@
     "status" : "Status",
     "ACTIVE" : "Active",
     "FROZEN" : "Old version"
+  },
+  
+  "failure" : {
+    "title" : "Login not allowed",
+    "intro" : "You are not allowed to log in for the following reason:",
+    "withdrawn1" : "You have withdrawn participation from a project that is mandantory for this application.",
+    "withdrawn2" : "You will not be able to use the application again with your Midata account.",
+    "joinmethod1" : "The access to the research project is restricted.",
+    "joinmethod2" : "Please get in touch with the research responsible.. Please read the terms of use for this application for more information.",
+    "loginpage_btn" : "Return to Login"
   },
   
   "-1" : "unknown"

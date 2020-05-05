@@ -3,7 +3,7 @@ angular.module('portal')
 	
 	$scope.studyid = $state.params.studyId;
 	$scope.codes = null;
-	$scope.newcodes = { count:1, reuseable:true, group:"" };
+	$scope.newcodes = { count:1, reuseable:"true", manually:"false", group:"" };
 	$scope.status = new status(false, $scope);   
 	$scope.createnew = false;
 	$scope.blocked = false;
@@ -46,6 +46,25 @@ angular.module('portal')
 				$scope.newcodes.error = err.data;
 				if (err.field && err.type) $scope.myform[err.field].$setValidity(err.type, false);			
 			});
+	};
+	
+	$scope.showcreatenew = function() {		
+		$scope.createnew = true;
+	};
+	
+	$scope.updateCodeCount = function() {
+		if ($scope.newcodes.manually=="true") {
+			if ($scope.newcodes.codes === undefined) {
+				$scope.newcodes.codes = [];
+				for (var i=0;i<$scope.newcodes.count;i++) $scope.newcodes.codes.push("");
+			} else {
+				while ($scope.newcodes.codes.length<$scope.newcodes.count) $scope.newcodes.codes.push("x");
+				if ($scope.newcodes.codes.length > $scope.newcodes.count) {
+					let diff = $scope.newcodes.codes.length - $scope.newcodes.count;
+					$scope.newcodes.codes.splice($scope.newcodes.count, diff);
+				}
+			}
+		} else $scope.newcodes.codes = undefined;
 	};
 	
 	$scope.reload();
