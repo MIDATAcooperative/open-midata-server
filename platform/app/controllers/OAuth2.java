@@ -37,6 +37,7 @@ import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.EMailStatus;
+import models.enums.JoinMethod;
 import models.enums.LinkTargetType;
 import models.enums.MessageReason;
 import models.enums.ParticipationStatus;
@@ -68,6 +69,7 @@ import utils.auth.OAuthRefreshToken;
 import utils.auth.PortalSessionToken;
 import utils.auth.PreLoginSecured;
 import utils.auth.OAuthCodeToken;
+import utils.auth.ExecutionInfo;
 import utils.auth.ExtendedSessionToken;
 import utils.auth.TokenCrypto;
 import utils.auth.auth2factor.Authenticator;
@@ -702,6 +704,23 @@ public class OAuth2 extends Controller {
 
 		return null;
 	}
+	
+	private static final void checkJoinWithCode(ExtendedSessionToken token, Set<StudyAppLink> links) throws AppException {
+		if (token.joinCode == null) return;
+		if (links == null || links.isEmpty()) return;
+		
+		for (StudyAppLink sal : links) {
+			if (sal.isConfirmed() && sal.active && (sal.linkTargetType == null || sal.linkTargetType == LinkTargetType.STUDY)) {
+							
+				Study study = Study.getById(sal.studyId, Sets.create("joinMethods"));							
+				if (study.joinMethods.contains(JoinMethod.APP_CODE)) {	
+					RecordManager.instance.clearCache();
+				    controllers.members.Studies.requestParticipation(new ExecutionInfo(token.ownerId, token.userRole), token.ownerId, sal.studyId, token.appId, JoinMethod.APP_CODE, token.joinCode);
+				    RecordManager.instance.clearCache();
+				}
+			}
+		}
+	}
 			
 	private static MobileAppInstance loginAppInstance(ExtendedSessionToken token, MobileAppInstance appInstance, User user, boolean autoConfirm) throws AppException {
 		if (appInstance != null && autoConfirm) {
@@ -746,6 +765,7 @@ public class OAuth2 extends Controller {
         token.userRole = json.has("role") ? JsonValidation.getEnum(json, "role", UserRole.class) : UserRole.MEMBER;                
 		token.state = JsonValidation.getString(json, "state");
 		token.device = JsonValidation.getString(json, "device");
+		token.joinCode = JsonValidation.getStringOrNull(json, "joinCode");
 			
 		if (token.device != null && token.device.length()<4) throw new BadRequestException("error.illegal.device", "Value for device is too short.");
 	    // Validate Mobile App	
@@ -885,7 +905,7 @@ public class OAuth2 extends Controller {
 		  return Application.loginHelperResult(token, user, notok);
 		}
 			
-		
+		checkJoinWithCode(token, links);
 		
 		if (app != null) {
 			token.currentExecutor = keyType == KeyManager.KEYPROTECTION_NONE ? user._id : null;

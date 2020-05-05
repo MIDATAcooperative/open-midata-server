@@ -78,10 +78,14 @@ angular.module('services')
 		return cred.device.substr(0,3);
 	};
 	
+	service.setJoinCode = function(joinCode) {
+		cred.joinCode = joinCode;
+	};
+	
 	service.login = function(confirm, confirmStudy) {	    	
 		cred.confirm = confirm || false;
 		cred.confirmStudy = confirmStudy || (confirm && cred.confirmStudy);
-				
+       		
 		var pw = cred.password;
 		
 		var cred2 = JSON.parse(JSON.stringify(cred));

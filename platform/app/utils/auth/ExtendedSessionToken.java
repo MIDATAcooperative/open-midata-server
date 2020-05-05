@@ -60,6 +60,8 @@ public class ExtendedSessionToken extends PortalSessionToken {
 	
 	public MidataId currentExecutor;
 	
+	public String joinCode;
+	
 	public ExtendedSessionToken() {
 		
 	}
@@ -111,6 +113,8 @@ public class ExtendedSessionToken extends PortalSessionToken {
 			for (MidataId id : confirmations) conf.add(id.toString());
 			map.put("co", conf);
 		}
+		
+		if (joinCode != null) map.put("jc", joinCode);
 
 	}
 	
@@ -135,6 +139,7 @@ public class ExtendedSessionToken extends PortalSessionToken {
 	    this.securityToken = getstr(json, "t");
 		this.codeChallenge = getstr(json, "cs");
 		this.codeChallengeMethod = getstr(json, "csm");
+		this.joinCode = getstr(json,"jc");
 		String flags = getstr(json, "f");
 		if (flags != null) this.flags = Integer.parseInt(flags);
 		if (json.has("co")) {

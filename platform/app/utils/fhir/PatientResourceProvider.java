@@ -901,7 +901,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			Set<UserFeature> studyReq = controllers.members.Studies.precheckRequestParticipation(null, studyId);
 			AccessLog.log("request part");
 			if (existing == null) {
-				part = controllers.members.Studies.requestParticipation(info, user._id, studyId, plugin._id, info().pluginId.equals(RuntimeConstants.instance.portalPlugin) ? JoinMethod.RESEARCHER : JoinMethod.APP);
+				part = controllers.members.Studies.requestParticipation(info, user._id, studyId, plugin._id, info().pluginId.equals(RuntimeConstants.instance.portalPlugin) ? JoinMethod.RESEARCHER : JoinMethod.APP, null);
 			} else {
 				part = controllers.members.Studies.match(executorId, user._id, studyId, plugin._id);
 			}

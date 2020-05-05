@@ -152,6 +152,27 @@ public class Studies extends APIController {
 		return ok(result);
 	}
 	
+	private static ParticipationCode checkCode(Study study, JoinMethod method, String codestr) throws AppException {
+		if (method != JoinMethod.APP_CODE && method != JoinMethod.CODE) return null;
+		if (codestr==null) throw new BadRequestException("error.missing.joincode", "Invalid participation code");
+		
+		ParticipationCode code = ParticipationCode.getByCode(codestr);
+		if (code == null) throw new BadRequestException("error.invalid.joincode", "Invalid participation code");
+		
+		if (code.status != ParticipationCodeStatus.UNUSED && 
+				code.status != ParticipationCodeStatus.SHARED && 
+				code.status != ParticipationCodeStatus.REUSEABLE) throw new BadRequestException("error.invalid.joincode", "Invalid participation code");
+		
+		return code;		
+	}
+	
+	private static void consumeCode(Study study, ParticipationCode code) throws AppException {
+		if (code == null) return;
+		if (code.status != ParticipationCodeStatus.REUSEABLE) {
+			   code.setStatus(ParticipationCodeStatus.USED);
+		}
+	}
+	
 	/**
 	 * change study participation of current member. add or remove a health professional to the study participation.
 	 * @param id ID of study
@@ -334,24 +355,25 @@ public class Studies extends APIController {
 		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, requirements);
 		if (notok != null && !notok.isEmpty()) requireUserFeature(notok.iterator().next());
 		
-		requestParticipation(new ExecutionInfo(userId, getRole()), userId, studyId, null, JoinMethod.PORTAL);		
+		requestParticipation(new ExecutionInfo(userId, getRole()), userId, studyId, null, JoinMethod.PORTAL, null);		
 		return ok();
 	}
 	
-	public static StudyParticipation requestParticipation(ExecutionInfo inf, MidataId userId, MidataId studyId, MidataId usingApp, JoinMethod joinMethod) throws AppException {
+	public static StudyParticipation requestParticipation(ExecutionInfo inf, MidataId userId, MidataId studyId, MidataId usingApp, JoinMethod joinMethod, String joinCode) throws AppException {
 		
 		
 		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country"));		
 		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "pstatus", "ownerName", "owner", "authorized", "sharingQuery", "validUntil", "createdBefore"));		
 		Study study = Study.getById(studyId, Sets.create("name", "joinMethods", "executionStatus", "participantSearchStatus", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "termsOfUse", "code", "autoJoinGroup", "type"));
-		
+		ParticipationCode code = null;
 		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
-		
-        
+		        
 		if (participation == null) {
 			if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new JsonValidationException("error.closed.study", "code", "notsearching", "Study is not searching for participants.");			
-			if (study.joinMethods != null && !study.joinMethods.contains(joinMethod)) throw new JsonValidationException("error.closed.study", "code", "notsearching", "Study is not searching for participants using this channel."); 			
-			participation = createStudyParticipation(inf.executorId, study, user, null);									
+			if (study.joinMethods != null && !study.joinMethods.contains(joinMethod)) throw new JsonValidationException("error.blocked.joinmethod", "code", "joinmethod", "Study is not searching for participants using this channel.");
+			code = checkCode(study, joinMethod, joinCode);			
+			participation = createStudyParticipation(inf.executorId, study, user, code);	
+			consumeCode(study, code);
 		}
 				
 		if (participation.pstatus == ParticipationStatus.ACCEPTED || participation.pstatus == ParticipationStatus.REQUEST) return participation;

@@ -627,17 +627,23 @@ public class Studies extends APIController {
 		boolean reuseable = JsonValidation.getBoolean(json, "reuseable");
 		Date now = new Date();
 
-		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner", "executionStatus", "participantSearchStatus", "validationStatus"));
+		Study study = Study.getById(studyid, Sets.create("owner", "executionStatus", "participantSearchStatus", "validationStatus"));
 		if (study == null)
 			throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
-		if (study.validationStatus != StudyValidationStatus.VALIDATED)
-			throw new BadRequestException("error.notvalidated.study", "Study must be validated before.");
+		
+		UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(studyid, userId);
+		if (ugm == null)
+			throw new BadRequestException("error.notauthorized.study", "Not member of study team");
+				
+		//if (study.validationStatus != StudyValidationStatus.VALIDATED)
+		//	throw new BadRequestException("error.notvalidated.study", "Study must be validated before.");
 		if (study.participantSearchStatus == ParticipantSearchStatus.CLOSED)
 			throw new BadRequestException("error.closed.study", "Study participant search already closed.");
 
 		for (int num = 1; num <= count; num++) {
-			ParticipationCode code = new ParticipationCode();
-			code.code = CodeGenerator.nextCode(); // TODO UNIQUENESS?
+			ParticipationCode code = new ParticipationCode();			
+			code._id = new MidataId();
+			code.code = CodeGenerator.nextUniqueCode();
 			code.study = studyid;
 			code.group = group;
 			code.recruiter = userId;
@@ -650,11 +656,11 @@ public class Studies extends APIController {
 			}
 			ParticipationCode.add(code);
 		}
-		String comment = count + " codes";
+		/*String comment = count + " codes";
 		if (reuseable)
 			comment += ", reuseable";
 		if (group != null && !"".equals(group))
-			comment += ", group=" + group;
+			comment += ", group=" + group;*/
 		// study.addHistory(new History(EventType.CODES_GENERATED, user,
 		// comment));
 
@@ -676,11 +682,17 @@ public class Studies extends APIController {
 		MidataId owner = PortalSessionToken.session().getOrgId();
 		MidataId studyid = new MidataId(id);
 
-		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner", "executionStatus", "participantSearchStatus", "validationStatus"));
+		Study study = Study.getById(studyid, Sets.create("owner", "executionStatus", "participantSearchStatus", "validationStatus"));
 		if (study == null)
-			throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
-		if (study.validationStatus != StudyValidationStatus.VALIDATED)
-			return statusWarning("study_not_validated", "Study must be validated before.");
+			throw new BadRequestException("error.notauthorized.study", "Study does not exist.");
+		
+		UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(studyid, userId);
+		if (ugm == null)
+			throw new BadRequestException("error.notauthorized.study", "Not member of study team");
+		
+		//if (study.validationStatus != StudyValidationStatus.VALIDATED)
+		//	return statusWarning("study_not_validated", "Study must be validated before.");
+		
 		if (study.participantSearchStatus == ParticipantSearchStatus.CLOSED)
 			return statusWarning("participant_search_closed", "Study participant search already closed.");
 

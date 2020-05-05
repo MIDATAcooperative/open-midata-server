@@ -47,7 +47,7 @@ public class CodeGenerator {
 	
 	/**
 	 * Generates a 8 digit code with a "-" after the 4th character
-	 * Uniqueness is garanteed and must be check by the caller
+	 * Uniqueness is garanteed 
 	 * @return the generated code
 	 */
 	public static String nextUniqueCode() throws InternalServerException {

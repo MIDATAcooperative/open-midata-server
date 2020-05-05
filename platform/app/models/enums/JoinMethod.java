@@ -37,6 +37,11 @@ public enum JoinMethod {
 	CODE,
 	
 	/**
+	 * Participant joined by app provided participation code
+	 */
+	APP_CODE,
+	
+	/**
 	 * Data is transferred from another study
 	 */
 	TRANSFER

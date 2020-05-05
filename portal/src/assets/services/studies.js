@@ -3,7 +3,7 @@ angular.module('services')
 	var service = {};
 	
 	service.studytypes = ["CLINICAL", "CITIZENSCIENCE", "COMMUNITY"];
-	service.joinmethods = ["APP", "PORTAL", "RESEARCHER", "API", "ALGORITHM", "CODE", "TRANSFER"];
+	service.joinmethods = ["APP", "PORTAL", "RESEARCHER", "API", "APP_CODE", "ALGORITHM", "CODE", "TRANSFER"];
 	service.linktypes = ["OFFER_P", "OFFER_EXTRA_PAGE", "OFFER_INLINE_AGB", "REQUIRE_P", "RECOMMEND_A", "AUTOADD_A"];
 	service.executionStati = ["PRE", "RUNNING", "FINISHED", "ABORTED"];
 	

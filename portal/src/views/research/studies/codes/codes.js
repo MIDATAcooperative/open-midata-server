@@ -1,10 +1,10 @@
 angular.module('portal')
-.controller('CodesCtrl', ['$scope', '$state', 'server', function($scope, $state, server) {
+.controller('CodesCtrl', ['$scope', '$state', 'server', 'status', function($scope, $state, server, status) {
 	
 	$scope.studyid = $state.params.studyId;
 	$scope.codes = null;
 	$scope.newcodes = { count:1, reuseable:true, group:"" };
-	$scope.loading = true;
+	$scope.status = new status(false, $scope);   
 	$scope.createnew = false;
 	$scope.blocked = false;
 	$scope.submitted = false;
@@ -12,14 +12,19 @@ angular.module('portal')
 		
 	$scope.reload = function() {
 			
-		server.get(jsRoutes.controllers.research.Studies.listCodes($scope.studyid).url).
+		$scope.status.doBusy(server.get(jsRoutes.controllers.research.Studies.get($scope.studyid).url))
+		.then(function(data) { 				
+			$scope.study = data.data;			
+		});
+		
+		$scope.status.doBusy(server.get(jsRoutes.controllers.research.Studies.listCodes($scope.studyid).url)).
 			then(function(data) { 				
 				$scope.codes = data.data;
 				$scope.loading = false;
 				$scope.createnew = false;
 				$scope.error = null;
 			}, function(err) {
-				$scope.error = err;
+				$scope.error = err.data.type;
 				$scope.blocked = true;
 				$scope.createnew = false;
 			});
