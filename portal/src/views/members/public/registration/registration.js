@@ -114,6 +114,7 @@ angular.module('portal')
 			  data.app = oauth.getAppname();
 			  data.device = oauth.getDevice();
 			  if ($scope.registration.unlockCode) oauth.setUnlockCode($scope.registration.unlockCode);
+			  if ($state.params.joincode) oauth.setJoinCode($state.params.joincode);
 			  
 			  $scope.status.doAction("register", server.post(jsRoutes.controllers.QuickRegistration.register().url, JSON.stringify(data))).
 			  then(function(datax) { 			 

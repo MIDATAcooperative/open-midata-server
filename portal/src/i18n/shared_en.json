@@ -83,7 +83,8 @@
        "anonymous" : "A research project can only be anonymous if no one is allowed to access unpseudonymized data.",
        "url" : "Invalid URL",
        "consent_members" : "This consent may only be confirmed once all external persons have joined MIDATA.",
-       "entity_type" : "Invalid entity type"       
+       "entity_type" : "Invalid entity type",
+       "joincode" : "Provided participation code is not accepted."       
      },
 
      "missing" : {
@@ -142,7 +143,8 @@
        "participation" : "You are not authorized to participate in this research project and therefore cannot use this application.",
        "projectconsent" : "You have withdrawn your participation in this research project and can therefore no longer use this application.",
        "consent" : "You have set in the MIDATA portal that this application may no longer access your data. If you want to use this application again, you must reauthorize it in the MIDATA portal.",
-       "app" : "You are allowed to use this application on a maximum of 10 devices. Please delete unused consents on the MIDATA portal." 
+       "app" : "You are allowed to use this application on a maximum of 10 devices. Please delete unused consents on the MIDATA portal.",
+       "joinmethod" : "Project does not accept joining using this method." 
      },
 
      "closed" : {
@@ -358,6 +360,7 @@
 	   "API" : "Participant is registered by external software",
 	   "ALGORITHM" : "Participant has been proposed by an algorithm (not supported)",
 	   "CODE" : "Participant may join by entering a code (not supported)",
+	   "APP_CODE" : "Participant may join through application provided code",
 	   "TRANSFER" : "Data is transferred from another research project (not supported)"	
 	 },
 	 "studyexecutionstatus" : {
