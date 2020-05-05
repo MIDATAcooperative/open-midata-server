@@ -190,7 +190,11 @@ angular.module('portal')
 			  }
 		  }
 		})
-		.catch(function(err) { $scope.allLoaded = true;$scope.error = err.data; });
+		.catch(function(err) { 
+			$scope.allLoaded = true;
+			$scope.error = err.data;
+			session.failurePage($state, err.data);
+		});
 	};
 	
 	$scope.showRegister = function() {

@@ -640,10 +640,18 @@ public class Studies extends APIController {
 		if (study.participantSearchStatus == ParticipantSearchStatus.CLOSED)
 			throw new BadRequestException("error.closed.study", "Study participant search already closed.");
 
+		boolean manual = JsonValidation.getBoolean(json, "manually");
+		List codes = manual ? JsonExtraction.extractList(json.get("codes")) : null;
+		
 		for (int num = 1; num <= count; num++) {
 			ParticipationCode code = new ParticipationCode();			
 			code._id = new MidataId();
-			code.code = CodeGenerator.nextUniqueCode();
+			if (manual) {
+			  code.code = codes.get(num-1).toString().trim();	
+			  if (code.code==null || code.code.trim().length()==0 || ParticipationCode.getByCode(code.code)!=null) throw new BadRequestException("error.existing.code", "A provided code already exists.");
+			} else {
+			  code.code = CodeGenerator.nextUniqueCode();
+			}
 			code.study = studyid;
 			code.group = group;
 			code.recruiter = userId;

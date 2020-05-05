@@ -158,6 +158,10 @@ angular.module('portal')
 				$state.go("^.oauthconfirm", $state.params);
 			  }
 			  if (result !== "ACTIVE") { session.postLogin({ data : result}, $state);}
+		})
+		.catch(function(err) { 
+			$scope.error = err.data;
+			session.failurePage($state, err.data);
 		});			
 	};
 	

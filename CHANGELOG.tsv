@@ -44,5 +44,6 @@ id0042	30.03.2020	a.kreutz	F	Public FHIR endpoints	Projects may now publish (par
 id0043	30.03.2020	a.kreutz	F	Every 30 minute subscriptions	When defining subscriptions you can now add a new criteria that triggers every 30 minutes.
 id0044	06.04.2020	a.kreutz	F	Projects without sharing year of birth/gender/country	It is now possible to create research projects that are pseudonymized or anonymous and do not require year of birth, gender and country.
 id0045	15.04.2020	a.kreutz	I	Larger Record-Trees possible	Display of record tree or record count estimation was limited to 1000 consents.
-id0046	15.04.2020	a.kreutz	B	Searches on Questionnaire	Some possible searches on the questionnaire resource have been fixed.     
+id0046	15.04.2020	a.kreutz	B	Searches on Questionnaire	Some possible searches on the questionnaire resource have been fixed.
+id0047	05.05.2020	a.kreutz	F	Participation Codes	Researchers are now able to generate participation codes for research projects.     
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 

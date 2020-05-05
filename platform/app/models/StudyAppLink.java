@@ -143,6 +143,13 @@ public class StudyAppLink extends Model {
 		Instances.cacheClear("studyapplink",  _id);
 	}
 	
+	public Study getStudy() throws InternalServerException {
+		if (this.study != null) return this.study;
+		if (this.studyId == null) return null;
+		this.study = Study.getById(this.studyId, Study.LINK_FIELDS);
+		return this.study;
+	}
+	
 	public static StudyAppLink getById(MidataId id) throws AppException {
 		return Model.get(StudyAppLink.class, collection, CMaps.map("_id", id), ALL_MATERIALIZED);
 	}

@@ -2,9 +2,11 @@
    
 	<div class="tab-content">
 	<div class="tab-pane active">
-	<p ng-show="blocked">
+	<p translate="codes.intro">
 	  Participation codes may be used to recruit participants for the study.<br>
 	</p>
+	
+	
 	<p ng-show="error && !error.field" translate="{{error.code || error }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	   
 	</p>
 	
@@ -13,63 +15,82 @@
 	<table class="table table-hover">
 	  <thead>
 	    <tr>
-	      <th>Code</th>
-	      <th>Group</th>
-	      <th>Recruiter</th>
-	      <th>Status</th>
-	      <th>Created At</th>	      
+	      <th translate="codes.code">Code</th>
+	      <th translate="codes.group">Group</th>
+	      <!-- <th translate="codes.recruiter">Recruiter</th>  -->
+	      <th translate="codes.status">Status</th>
+	      <th translate="codes.created_at">Created At</th>	      
 	    </tr>
 	  </thead>
 	  <tbody>
 	    <tr ng-repeat="code in codes">
 	      <td>{{ code.code }}</td>	  
 	      <td>{{ code.group }}</td>
-	      <td>{{ code.recruiterName }}</td>
-	      <td>{{ code.status }}</td>
+	      <!-- <td>{{ code.recruiterName }}</td>  -->
+	      <td><span translate="{{ 'enum.pcodestatus.'+code.status }}"></span></td>
 	      <td>{{ code.createdAt | date : 'dd.MM.yy'}}</td>	         
 	    </tr>
 	  </tbody>
 	</table>
 	</div>
-	<p ng-show="codes.length == 0">
+	<p ng-show="codes.length === 0" translate="codes.empty">
 	  No participation codes have been generated.
 	</p>
 		<div ng-hide="blocked">
-		  <button class="btn btn-primary" ng-click="createnew = true;">Generate new codes</button>
+		  <button class="btn btn-primary" ng-click="showcreatenew()" translate="codes.showcreate_btn">Generate new codes</button>
 		</div>
+		
 	</div>
 	</div></div>
 	<div ng-show="createnew" class="panel panel-primary">
-	<div class="panel-heading">Create New Codes</div>
+	<div class="panel-heading" translate="codes.new_title">Create New Codes</div>
 	<div class="panel-body">
 	<p ng-show="newcodes.error" ng-class="{ 'alert-warning' : newcodes.error.level == 'warning', 'alert-danger' : !newcodes.error.level }" class="alert">
 	  {{ newcodes.error.message || newcodes.error }}
 	  </p>
 	<form name="myform" novalidate class="css-form form-horizontal" ng-submit="generate()" role="form">
 	
-		<formrow myid="count" label="Number of Codes"> 
-			<input type="number" class="form-control" id="count" name="count" placeholder="1" ng-model="newcodes.count" ng-required="true">
+		<formrow myid="count" label="codes.number_of_codes"> 
+			<input type="number" class="form-control" id="count" name="count" placeholder="1" ng-change="updateCodeCount()" ng-model="newcodes.count" ng-required="true">
 		    <formerror myid="count" type="toolow" message="Please enter a positive number."></formerror>
 		    <formerror myid="count" type="toohigh" message="Please enter a lower number."></formerror> 
   	    </formrow>
-  	    <formrow myid="group" label="Group">  	            	        
+  	    <formrow myid="group" label="codes.group">  	            	        
 	       <select ng-model="newcodes.group" class="form-control" ng-options="group.name as group.name for group in study.groups"></select>
 	    </formrow>
   	          	          	 
-  	    <formrow myid="reuseable" label="Codes are reuseable?">
+  	    <formrow myid="reuseable" label="codes.reuseable">
   	       <label class="radio-inline">
   	         <input type="radio" id="reuseable" name="reuseable" value="true" ng-model="newcodes.reuseable">
-  	         yes
+  	         <span translate="codes.yes"></span>
   	       </label>
   	       <label class="radio-inline">
   	         <input type="radio" name="reuseable" value="false" ng-model="newcodes.reuseable">
-  	         no
+  	         <span translate="codes.no"></span>
+  	       </label>
+        </formrow>  	
+         <formrow myid="manually" label="codes.type_of_creation">
+  	       <label class="radio-inline">
+  	         <input type="radio" id="manually" name="manually" value="true" ng-change="updateCodeCount()" ng-model="newcodes.manually">
+  	         <span translate="codes.manually"></span>
+  	       </label>
+  	       <label class="radio-inline">
+  	         <input type="radio" name="generate" value="false" ng-change="updateCodeCount()" ng-model="newcodes.manually">
+  	         <span translate="codes.generated"></span>
   	       </label>
         </formrow>  	    
+        <formrow myid="codes" label="codes.codes" ng-if="newcodes.manually=='true'"> 
+          <div ng-repeat="code in newcodes.codes track by $index">
+			<input type="text" class="form-control" ng-model="newcodes.codes[$index]" ng-required="true">
+		  </div>		    
+  	    </formrow>
+        
 		<formrow myid="x" label="">
-          <button type="submit" class="btn btn-primary">Generate</button>
+          <button type="submit" class="btn btn-primary" translate="codes.add_btn">Generate</button>
         </formrow>
    </form>
+   
+   
    </div>
    </div>   
 </div>
