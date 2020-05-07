@@ -10,6 +10,8 @@ angular.module('portal')
 	$scope.editable = true;
 	$scope.languages = languages.array;	
 	$scope.sel = { lang: "int" };
+	$scope.types = ["MARKETING", "PROJECT"];
+	$scope.countries = languages.countries;
       
 		
     $scope.languages = [];
@@ -83,6 +85,11 @@ angular.module('portal')
 	$scope.send = function() {
 		$scope.status.doAction('send', server.post(jsRoutes.controllers.BulkMails.send($scope.mailItem._id).url))
 		.then(function(data) { $state.go("^.mails"); });
+	};
+	
+	$scope.test = function() {
+		console.log("DO IT!");
+		$scope.status.doAction('send', server.post(jsRoutes.controllers.BulkMails.test($scope.mailItem._id).url));		
 	};
 	
 }]);

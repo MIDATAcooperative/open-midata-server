@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import models.enums.CommunicationChannelUseStatus;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.Gender;
@@ -30,6 +31,7 @@ public class StudyParticipation extends Consent {
 	public Set<MidataId> providers; // (Optional) List of healthcare providers monitoring the member for this study.
 	
 	public JoinMethod joinMethod;
+	public CommunicationChannelUseStatus projectEmails;
 	
 	public @NotMaterialized final static Set<String> SMALL_WITH_GROUP = Sets.create(Consent.SMALL, "group");
 	

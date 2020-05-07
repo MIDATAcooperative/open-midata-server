@@ -140,6 +140,14 @@ public enum InstanceType {
 	}
 	
 	/**
+	 * send mass mails only to @midata.coop domain users
+	 * @return
+	 */
+	public boolean restrictBulkMails() {
+		return this != PROD;
+	}
+	
+	/**
 	 * Do not protect the background service key
 	 * @return
 	 */

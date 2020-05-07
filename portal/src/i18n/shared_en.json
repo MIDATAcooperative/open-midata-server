@@ -177,7 +177,8 @@
      },
 
      "already_done" : {
-       "email_verification" : "Email has already been verified."
+       "email_verification" : "Email has already been verified.",
+       "unsubscribed" : "You have already unsubscribed from this channel."
      },
 
      "no_alter" : {
@@ -284,7 +285,9 @@
        "audit-log-used" : "Audit Log consulted",	   
 	   "added-as-team-member" : "Added as team member",
 	   "updated-role-in-team" :  "Updated role in team",
-	   "removed-from-team" : "Removed from team"	   
+	   "removed-from-team" : "Removed from team",
+	   "communication-rejected" : "Unsubscribed from communication channel",
+	   "communication-approved" : "Subscribed to communication channel"	   
 	 },
 	 "userfeature" : {
 	   "EMAIL_ENTERED" : "Email address of user must be known to the platform",
@@ -503,6 +506,15 @@
 	   "USER" : "User",
 	   "USERGROUP" : "Team",
 	   "ORGANIZATION" : "Organization"
+	 },
+	 "bulkmailtype" : {
+	   "MARKETING" : "Marketing - Account Holders",
+	   "PROJECT" : "Project specific"
+	 },
+	 "channeluse" : {
+	   "ALLOWED" : "Allowed",
+	   "FORBIDDEN" : "Forbidden",
+	   "NULL" : "Undefined"
 	 }
    },
 
@@ -1416,6 +1428,12 @@
     "joinmethod1" : "The access to the research project is restricted.",
     "joinmethod2" : "Please get in touch with the research responsible.. Please read the terms of use for this application for more information.",
     "loginpage_btn" : "Return to Login"
+  },
+  
+  "unsubscribe" : {
+    "title" : "Unsubscribe",
+    "success" : "Unsubscribe operation successful.",
+    "back_to_login" : "Go to login page"
   },
   
   "-1" : "unknown"

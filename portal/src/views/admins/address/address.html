@@ -54,6 +54,8 @@
 			  </tr><tr>
 			  <td translate="admin_address.mobile_status"></td><td><span translate="{{ 'enum.emailstatus.'+(member.mobileStatus || 'UNVALIDATED') }}"></span></td>
 			  </tr><tr>
+			  <td translate="admin_address.marketing_email"></td><td><span translate="{{ 'enum.channeluse.'+(member.marketingEmail || 'NULL') }}"></span></td>
+			  </tr><tr>
 			  <td translate="admin_address.confirmation_code"></td><td><b>{{ member.confirmationCode }}</b></td>
 			  </tr><tr>
 			  <td translate="admin_address.confirmation_date"></td><td>{{ member.confirmedAt | date : 'dd.MM.yy' }}</td>

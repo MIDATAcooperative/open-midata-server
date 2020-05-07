@@ -406,8 +406,13 @@ public class QueryBuilder {
 			} else if (param instanceof ReferenceParam) {
 				ReferenceParam referenceParam = (ReferenceParam) param;
 				
-				if (type != null && type.equals(QueryBuilder.TYPE_CANONICAL)) {				
-					bld.addEq(path, referenceParam.getValue());
+				if (type != null && type.equals(QueryBuilder.TYPE_CANONICAL)) {
+					String qualifier = referenceParam.getQueryParameterQualifier();
+					if (qualifier!=null && qualifier.equals(":below")) {
+					  bld.addEq(path, referenceParam.getValue(), CompareCaseInsensitiveOperator.STARTSWITH);
+					} else {
+					  bld.addEq(path, referenceParam.getValue());
+					}
 				} else {
 				
 					if (referenceParam.getChain() != null) {

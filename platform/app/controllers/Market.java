@@ -589,6 +589,7 @@ public class Market extends APIController {
 		plugin.predefinedMessages = parseMessages(json);
 		plugin.pluginVersion = System.currentTimeMillis();
 		plugin.noUpdateHistory = JsonValidation.getBoolean(json, "noUpdateHistory");
+		plugin.sendReports = JsonValidation.getBoolean(json, "sendReports");
 		if (plugin.type.equals("analyzer") || plugin.type.equals("endpoint")) {
 			plugin.pseudonymize = JsonValidation.getBoolean(json, "pseudonymize");
 		} else plugin.pseudonymize = false;

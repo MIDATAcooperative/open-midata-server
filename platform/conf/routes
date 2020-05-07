@@ -57,6 +57,8 @@ POST	/api/admin/mails/add							 controllers.BulkMails.add()
 POST	/api/admin/mails/update							 controllers.BulkMails.update()
 POST    /api/admin/mails/delete/:id	   					 controllers.BulkMails.delete(id: String)
 POST    /api/admin/mails/send/:id                        controllers.BulkMails.send(id: String)
+POST    /api/admin/mails/test/:id                        controllers.BulkMails.test(id: String) 
+POST    /api/members/mail/unsubscribe                    controllers.BulkMails.unsubscribe()
 
 
 # Records

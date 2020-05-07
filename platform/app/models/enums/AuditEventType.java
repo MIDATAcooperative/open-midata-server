@@ -65,6 +65,11 @@ public enum AuditEventType {
 	CONSENT_REJECTED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "consent-rejected", "Consent rejected"), AuditEventAction.U),
 	
 	CONSENT_DELETE(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "consent-deleted", "Consent deleted"), AuditEventAction.D),
+	
+    COMMUNICATION_APPROVED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "communication-approved", "Communication approved"), AuditEventAction.U),
+	
+	COMMUNICATION_REJECTED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "communication-rejected", "Communication rejected"), AuditEventAction.U),
+	
 			
 	/**
 	 * user requested participation to a study

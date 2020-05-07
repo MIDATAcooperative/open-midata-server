@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import models.enums.BulkMailStatus;
+import models.enums.BulkMailType;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.Sets;
@@ -16,8 +17,18 @@ public class BulkMail extends Model implements Comparable<BulkMail> {
 	private static final String collection = "bulkmails";
 	
 	@NotMaterialized
-	public final static Set<String> ALL = Sets.create("creator", "creatorName", "created", "started", "finished", "name", "status", "title", "content", "studyId", "studyName", "studyCode", "studyGroup", "progressId", "progressCount", "lastProgress");
+	public final static Set<String> ALL = Sets.create("type", "country", "creator", "creatorName", "created", "started", "finished", "name", "status", "title", "content", "studyId", "studyName", "studyCode", "studyGroup", "progressId", "progressCount", "lastProgress");
 
+	/**
+	 * type of bulk mail
+	 */
+	public BulkMailType type;
+	
+	/**
+	 * target country
+	 */
+	public String country;
+	
 	/**
 	 * the creator of the bulk mail
 	 */
