@@ -51,8 +51,13 @@
 		  </formrow>
 		  
 		  <formrow myid="content" label="admin_managemails.content">
-		    <textarea rows="5" id="text" name="text" class="form-control" ng-readonly="!editable" ng-change="change()" ng-model="mailItem.content[sel.lang]"></textarea>		  
+		    <textarea rows="5" id="text" name="text" class="form-control" ng-readonly="!editable" ng-change="change()" ng-model="mailItem.content[sel.lang]"></textarea>
+   	        <div class="form-text text-muted">
+		      <span translate="appmessages.available_tags"></span>:
+		      <code>&lt;unsubscribe&gt;</code>
+		    </div>		  
 		  </formrow>
+		  		  		  
 		  <div >		  				  
 		  <formrow myid="title" label="admin_managemails.created" ng-show="mailItem.created != null">
 		    <p class="form-control-plaintext">{{ mailItem.created | date : 'dd.MM.yyyy HH:mm' }}</p>
