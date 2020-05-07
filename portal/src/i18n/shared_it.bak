@@ -1,6 +1,6 @@
 {
    "footer" : {
-     "copyright" : "©{{now}} ETH Zürich",
+     "copyright" : " ",
      "homepage" : "MIDATA Homepage",
      "impressum" : "Impressum",
      "portals" : "Midata Portals:",
@@ -83,7 +83,8 @@
        "anonymous" : "A research project can only be anonymous if no one is allowed to access unpseudonymized data.",
        "url" : "Invalid URL",
        "consent_members" : "This consent may only be confirmed once all external persons have joined MIDATA.",
-       "entity_type" : "Invalid entity type"       
+       "entity_type" : "Invalid entity type",
+       "joincode" : "Provided participation code is not accepted."       
      },
 
      "missing" : {
@@ -135,14 +136,15 @@
      },
 
      "blocked" : {
-       "user" : "User is not allowed to log in. Contact support@midata.coop for help.",
+       "user" : "This account has been blocked. Your email address is blocked for further registration unless you contact support@midata.coop.",
        "password1" : "Too many missed login attempts. Please wait 1 minute before next attempt.",
        "password5" : "Too many missed login attempts. Please wait 5 minutes before next attempt.",
        "password60" : "Too many missed login attempts. Please wait 1 hour before next attempt.",
        "participation" : "You are not authorized to participate in this research project and therefore cannot use this application.",
        "projectconsent" : "You have withdrawn your participation in this research project and can therefore no longer use this application.",
        "consent" : "You have set in the MIDATA portal that this application may no longer access your data. If you want to use this application again, you must reauthorize it in the MIDATA portal.",
-       "app" : "You are allowed to use this application on a maximum of 10 devices. Please delete unused consents on the MIDATA portal." 
+       "app" : "You are allowed to use this application on a maximum of 10 devices. Please delete unused consents on the MIDATA portal.",
+       "joinmethod" : "Project does not accept joining using this method." 
      },
 
      "closed" : {
@@ -175,7 +177,8 @@
      },
 
      "already_done" : {
-       "email_verification" : "Email has already been verified."
+       "email_verification" : "Email has already been verified.",
+       "unsubscribed" : "You have already unsubscribed from this channel."
      },
 
      "no_alter" : {
@@ -282,7 +285,9 @@
        "audit-log-used" : "Audit Log consulted",	   
 	   "added-as-team-member" : "Added as team member",
 	   "updated-role-in-team" :  "Updated role in team",
-	   "removed-from-team" : "Removed from team"	   
+	   "removed-from-team" : "Removed from team",
+	   "communication-rejected" : "Unsubscribed from communication channel",
+	   "communication-approved" : "Subscribed to communication channel"	   
 	 },
 	 "userfeature" : {
 	   "EMAIL_ENTERED" : "Email address of user must be known to the platform",
@@ -358,6 +363,7 @@
 	   "API" : "Participant is registered by external software",
 	   "ALGORITHM" : "Participant has been proposed by an algorithm (not supported)",
 	   "CODE" : "Participant may join by entering a code (not supported)",
+	   "APP_CODE" : "Participant may join through application provided code",
 	   "TRANSFER" : "Data is transferred from another research project (not supported)"	
 	 },
 	 "studyexecutionstatus" : {
@@ -371,6 +377,13 @@
 	   "REJECTED" : "Project rejected by MIDATA",
 	   "VALIDATED" : "Project has been validated",
 	   "VALIDATION" : "Validation running"
+	 },
+	 "pcodestatus" : {
+	    "UNUSED" : "Not used",
+	    "SHARED" : "Given away",
+	    "USED" : "Used",
+	    "BLOCKED" : "Blocked",
+	    "REUSEABLE" : "Reusable"
 	 },
 	 "userrole" : {
 	   "ADMIN" : "Administrator",
@@ -493,6 +506,15 @@
 	   "USER" : "User",
 	   "USERGROUP" : "Team",
 	   "ORGANIZATION" : "Organization"
+	 },
+	 "bulkmailtype" : {
+	   "MARKETING" : "Marketing - Account Holders",
+	   "PROJECT" : "Project specific"
+	 },
+	 "channeluse" : {
+	   "ALLOWED" : "Allowed",
+	   "FORBIDDEN" : "Forbidden",
+	   "NULL" : "Undefined"
 	 }
    },
 
@@ -636,10 +658,14 @@
     "info2" : "You already have a MIDATA account, log in with your email address and password.",
     "info3" : "Your personal account gives you an overview of your project participation.",
     "info4" : "Dear visitor",
-    "info5" : "You do not yet have a MIDATA account and do not participate in any research project?",
+    "info5" : "You do not yet have a MIDATA account and do not participate in any project?",
     "info6" : "Join the",
-    "info6b" : "Ally Science",
-    "info6c" : "project!"
+    "info6b" : "Corona Science",
+    "info6b_link" : "https://coronascience.ch/en/",
+    "info6c" : "project or one of the other",
+    "info6d" : "MIDATA projects",
+    "info6d_link" : "https://www.midata.coop/en/offers/",
+    "info6e" : "!"
   },
 
   "lostpw" : {
@@ -715,6 +741,13 @@
     "licence" : {
       "intro" : "A license is required to use this application.",
       "text" : "Please contact support@midata.coop to obtain a valid license."
+    },
+    "reject" : {
+      "intro1" : "You have clicked on the account REJECTION link in the account confirmation mail.",
+      "intro2" : "Please confirm that you do NOT want to create an account on MIDATA. Your email address will be blocked for further registration attempts unless you contact support@midata.coop.",
+      "reject_btn" : "Reject account",
+      "intro3" : "If you clicked the wrong link and want to CONFIRM your email address instead, click here:",
+      "confirm_btn" : "Confirm account"
     }
   },
 
@@ -1385,6 +1418,22 @@
     "status" : "Status",
     "ACTIVE" : "Active",
     "FROZEN" : "Old version"
+  },
+  
+  "failure" : {
+    "title" : "Login not allowed",
+    "intro" : "You are not allowed to log in for the following reason:",
+    "withdrawn1" : "You have withdrawn participation from a project that is mandantory for this application.",
+    "withdrawn2" : "You will not be able to use the application again with your Midata account.",
+    "joinmethod1" : "The access to the research project is restricted.",
+    "joinmethod2" : "Please get in touch with the research responsible.. Please read the terms of use for this application for more information.",
+    "loginpage_btn" : "Return to Login"
+  },
+  
+  "unsubscribe" : {
+    "title" : "Unsubscribe",
+    "success" : "Unsubscribe operation successful.",
+    "back_to_login" : "Go to login page"
   },
   
   "-1" : "unknown"

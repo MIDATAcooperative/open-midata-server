@@ -1,6 +1,10 @@
 {
 
     "footer" : {
+
+        // TODO CHANGED
+        // OLD: ©{{now}} ETH Zürich
+        // NEW:  
         "copyright" : " ",
         "homepage" : "MIDATA Homepage",
         "impressum" : "Impressum",
@@ -84,7 +88,10 @@
             "anonymous" : "Ein Forschungsprojekt kann nur dann anonym sein, wenn niemand auf unpseudonymisierte Daten zugreifen darf.",
             "url" : "Ungültige URL",
             "consent_members" : "Diese Zustimmung kann erst bestätigt werden, wenn alle externen Personen MIDATA beigetreten sind.",
-            "entity_type" : "Ungültiger Entitätstyp"
+            "entity_type" : "Ungültiger Entitätstyp",
+
+            // TODO NEW: Provided participation code is not accepted.
+            "joincode" : "Provided participation code is not accepted."
         },
 
         "missing" : {
@@ -136,6 +143,10 @@
         },
 
         "blocked" : {
+
+            // TODO CHANGED
+            // OLD: User is not allowed to log in. Contact support@midata.coop for help.
+            // NEW: This account has been blocked. Your email address is blocked for further registration unless you contact support@midata.coop.
             "user" : "Der Benutzer ist nicht berechtigt sich anzumelden. Für Hilfe kontaktieren Sie bitte support@midata.coop.",
             "password1" : "Zu viele falsche Anmeldeversuche. Bitte warten Sie 1 Minute vor dem nächsten Versuch.",
             "password5" : "Zu viele falsche Anmeldeversuche. Bitte warten Sie 5 Minuten vor dem nächsten Versuch.",
@@ -143,7 +154,10 @@
             "participation" : "Sie sind nicht berechtigt, an diesem Forschungsprojekt teilzunehmen und können deshalb diese Applikation nicht benutzen.",
             "projectconsent" : "Sie haben Ihre Teilnahme an diesem Forschungsprojekt zurückgezogen und können deshalb diese Applikation nicht mehr benutzen.",
             "consent" : "Sie haben im MIDATA-Portal eingestellt, dass diese Applikation nicht mehr auf Ihre Daten zugreifen darf. Falls Sie diese Applikation wieder nutzen möchten, müssen Sie sie im MIDATA-Portal neu autorisieren.",
-            "app" : "Sie dürfen diese Applikation auf maximal 10 Geräten nutzen. Löschen Sie bitte nicht mehr genutzte Zustimmungen im MIDATA-Portal."
+            "app" : "Sie dürfen diese Applikation auf maximal 10 Geräten nutzen. Löschen Sie bitte nicht mehr genutzte Zustimmungen im MIDATA-Portal.",
+
+            // TODO NEW: Project does not accept joining using this method.
+            "joinmethod" : "Project does not accept joining using this method."
         },
 
         "closed" : {
@@ -176,7 +190,10 @@
         },
 
         "already_done" : {
-            "email_verification" : "Die E-Mail-Adresse wurde bereits verifiziert."
+            "email_verification" : "Die E-Mail-Adresse wurde bereits verifiziert.",
+
+            // TODO NEW: You have already unsubscribed from this channel.
+            "unsubscribed" : "You have already unsubscribed from this channel."
         },
 
         "no_alter" : {
@@ -283,7 +300,13 @@
             "audit-log-used" : "Audit Log angeschaut",
             "added-as-team-member" : "Hinzugefügt als Teammitglied",
             "updated-role-in-team" : "Rolle im Team aktualisiert",
-            "removed-from-team" : "Aus Team entfernt"
+            "removed-from-team" : "Aus Team entfernt",
+
+            // TODO NEW: Unsubscribed from communication channel
+            "communication-rejected" : "Unsubscribed from communication channel",
+
+            // TODO NEW: Subscribed to communication channel
+            "communication-approved" : "Subscribed to communication channel"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "Die E-Mail-Adresse des Benutzers muss der Plattform bekannt sein",
@@ -359,6 +382,9 @@
             "API" : "Der Teilnehmer wird durch externe Software registriert",
             "ALGORITHM" : "Der Teilnehmer wurde von einem Algorithmus vorgeschlagen (nicht unterstützt)",
             "CODE" : "Der Teilnehmer kann durch Eingabe eines Codes beitreten (nicht unterstützt)",
+
+            // TODO NEW: Participant may join through application provided code
+            "APP_CODE" : "Participant may join through application provided code",
             "TRANSFER" : "Die Daten werden aus einem anderen Forschungsprojekt übernommen (nicht unterstützt)"
         },
         "studyexecutionstatus" : {
@@ -372,6 +398,23 @@
             "REJECTED" : "Projekt durch MIDATA abgelehnt",
             "VALIDATED" : "Projekt wurde validiert",
             "VALIDATION" : "Validierung am Laufen"
+        },
+        "pcodestatus" : {
+
+            // TODO NEW: Not used
+            "UNUSED" : "Not used",
+
+            // TODO NEW: Given away
+            "SHARED" : "Given away",
+
+            // TODO NEW: Used
+            "USED" : "Used",
+
+            // TODO NEW: Blocked
+            "BLOCKED" : "Blocked",
+
+            // TODO NEW: Reusable
+            "REUSEABLE" : "Reusable"
         },
         "userrole" : {
             "ADMIN" : "Administrator",
@@ -494,6 +537,25 @@
             "USER" : "Benutzer",
             "USERGROUP" : "Team",
             "ORGANIZATION" : "Organisation"
+        },
+        "bulkmailtype" : {
+
+            // TODO NEW: Marketing - Account Holders
+            "MARKETING" : "Marketing - Account Holders",
+
+            // TODO NEW: Project specific
+            "PROJECT" : "Project specific"
+        },
+        "channeluse" : {
+
+            // TODO NEW: Allowed
+            "ALLOWED" : "Allowed",
+
+            // TODO NEW: Forbidden
+            "FORBIDDEN" : "Forbidden",
+
+            // TODO NEW: Undefined
+            "NULL" : "Undefined"
         }
     },
 
@@ -637,13 +699,41 @@
         "info2" : "Sie haben bereits ein MIDATA-Konto, melden Sie sich mit Ihrer E-Mail-Adresse und ihrem Passwort an.",
         "info3" : "Ihr persönliches Konto gibt Ihnen einen Überblick über Ihre Projektteilnahme.",
         "info4" : "Liebe Besucherin, lieber Besucher",
+
+        // TODO CHANGED
+        // OLD: You do not yet have a MIDATA account and do not participate in any research project?
+        // NEW: You do not yet have a MIDATA account and do not participate in any project?
         "info5" : "Sie haben noch kein MIDATA-Konto und nehmen an keinem Projekt teil?",
         "info6" : "Machen Sie bei",
+
+        // TODO CHANGED
+        // OLD: Ally Science
+        // NEW: Corona Science
         "info6b" : "Corona Science",
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: https://coronascience.ch/en/
         "info6b_link" : "https://coronascience.ch/de/",
+
+        // TODO CHANGED
+        // OLD: project!
+        // NEW: project or one of the other
         "info6c" : "oder an einem unserer anderen",
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: MIDATA projects
         "info6d" : "Projekte",
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: https://www.midata.coop/en/offers/
         "info6d_link" : "https://www.midata.coop/angebote/",
+
+        // TODO CHANGED
+        // OLD: undefined
+        // NEW: !
         "info6e" : " mit!"
     },
 
@@ -720,6 +810,23 @@
         "licence" : {
             "intro" : "Für die Nutzung dieser Applikation ist eine Lizenz erforderlich.",
             "text" : "Bitte kontaktieren Sie support@midata.coop, um eine gültige Lizenz zu erhalten."
+        },
+        "reject" : {
+
+            // TODO NEW: You have clicked on the account REJECTION link in the account confirmation mail.
+            "intro1" : "You have clicked on the account REJECTION link in the account confirmation mail.",
+
+            // TODO NEW: Please confirm that you do NOT want to create an account on MIDATA. Your email address will be blocked for further registration attempts unless you contact support@midata.coop.
+            "intro2" : "Please confirm that you do NOT want to create an account on MIDATA. Your email address will be blocked for further registration attempts unless you contact support@midata.coop.",
+
+            // TODO NEW: Reject account
+            "reject_btn" : "Reject account",
+
+            // TODO NEW: If you clicked the wrong link and want to CONFIRM your email address instead, click here:
+            "intro3" : "If you clicked the wrong link and want to CONFIRM your email address instead, click here:",
+
+            // TODO NEW: Confirm account
+            "confirm_btn" : "Confirm account"
         }
     },
 
@@ -1390,6 +1497,42 @@
         "status" : "Status",
         "ACTIVE" : "Aktiv",
         "FROZEN" : "Alte Version"
+    },
+
+    "failure" : {
+
+        // TODO NEW: Login not allowed
+        "title" : "Login not allowed",
+
+        // TODO NEW: You are not allowed to log in for the following reason:
+        "intro" : "You are not allowed to log in for the following reason:",
+
+        // TODO NEW: You have withdrawn participation from a project that is mandantory for this application.
+        "withdrawn1" : "You have withdrawn participation from a project that is mandantory for this application.",
+
+        // TODO NEW: You will not be able to use the application again with your Midata account.
+        "withdrawn2" : "You will not be able to use the application again with your Midata account.",
+
+        // TODO NEW: The access to the research project is restricted.
+        "joinmethod1" : "The access to the research project is restricted.",
+
+        // TODO NEW: Please get in touch with the research responsible.. Please read the terms of use for this application for more information.
+        "joinmethod2" : "Please get in touch with the research responsible.. Please read the terms of use for this application for more information.",
+
+        // TODO NEW: Return to Login
+        "loginpage_btn" : "Return to Login"
+    },
+
+    "unsubscribe" : {
+
+        // TODO NEW: Unsubscribe
+        "title" : "Unsubscribe",
+
+        // TODO NEW: Unsubscribe operation successful.
+        "success" : "Unsubscribe operation successful.",
+
+        // TODO NEW: Go to login page
+        "back_to_login" : "Go to login page"
     },
 
     "-1" : "unbekannt"
