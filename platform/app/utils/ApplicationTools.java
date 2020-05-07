@@ -38,6 +38,7 @@ import utils.access.Feature_FormatGroups;
 import utils.access.Feature_QueryRedirect;
 import utils.access.Feature_UserGroups;
 import utils.access.RecordManager;
+import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
 import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
@@ -79,7 +80,7 @@ public class ApplicationTools {
 		} else appInstance = createAppInstance(member._id, phrase, app, null);	
 
 		// app first use audit entry
-		AuditManager.instance.addAuditEvent(AuditEventType.APP_FIRST_USE, app._id, member, null, appInstance, null, null);		    	    	
+		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.APP_FIRST_USE).withApp(app._id).withActorUser(member).withConsent(appInstance));		    	    	
 		
 		// Create consents for project (moved from before confirm)
 		createConsentsForProjects(executor, member, studyConfirm, app, links);

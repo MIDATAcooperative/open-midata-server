@@ -18,20 +18,19 @@ public class AuditManager {
 	
 	private ThreadLocal<MidataAuditEvent> running = new ThreadLocal<MidataAuditEvent>();
 
-	public void addAuditEvent(AuditEventType type, MidataId who) throws AppException {
-		User executingUser = User.getById(who, User.ALL_USER);
-		addAuditEvent(type, null, executingUser, null, null, null, null);
+	public void addAuditEvent(AuditEventType type, MidataId who) throws AppException {		
+		addAuditEvent(AuditEventBuilder.withType(type).withActorUser(who));
 	}
 	
 	public void addAuditEvent(AuditEventType type, User who) throws AppException {
-		addAuditEvent(type, null, who, null, null, null, null);
+		addAuditEvent(AuditEventBuilder.withType(type).withActorUser(who));
 	}
 	
 	/*public void addAuditEvent(AuditEventType type, User who, String message) throws AppException {
 		addAuditEvent(type, who, message, null, null, null);
 	}*/
 	public void addAuditEvent(AuditEventType type, User who, MidataId app) throws AppException {
-		addAuditEvent(type, app, who, null, null, null, null);
+		addAuditEvent(AuditEventBuilder.withType(type).withActorUser(who).withApp(app));		
 	}
 	
 	public void addAuditEvent(AuditEventType type, MidataId app, MidataId who, User modifiedUser) throws AppException {
@@ -64,6 +63,10 @@ public class AuditManager {
 		User modifiedUserObj = User.getById(modifiedUser, User.ALL_USER);
 		Study study = Study.getById(userGroupId, Study.ALL);		
 		addAuditEvent(type, app, executingUser, modifiedUserObj, null, message, study);
+	}
+	
+	public void addAuditEvent(AuditEventBuilder builder) throws AppException {
+		addAuditEvent(builder.getType(), builder.getApp(), builder.getActorUser(), builder.getModifiedUser(), builder.getConsent(), builder.getMessage(), builder.getStudy());
 	}
 	
 	public void addAuditEvent(AuditEventType type, MidataId app, User who, User modifiedUser, Consent consent, String message, Study study) throws AppException {

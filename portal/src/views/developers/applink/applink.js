@@ -43,7 +43,7 @@ angular.module('portal')
 	};
 	
 	$scope.addNewResearch = function() {
-		$scope.selection = { linkTargetType : "STUDY", app : {}, study:{}, type:[], usePeriod:[] };
+		$scope.selection = { linkTargetType : "STUDY", app : {}, study:{}, type:[], usePeriod:["PRE", "RUNNING"] };
 	};
 	
 	$scope.addNewProvider = function() {

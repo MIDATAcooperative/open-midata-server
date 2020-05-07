@@ -44,7 +44,7 @@
 	                  <span class="fas fa-times text-danger"></span>
 	                  <span translate="error.closed.study"></span>
 	                </div>
-	                <div ng-show="(link.type.indexOf('REQUIRE_P')>=0 || link.type.indexOf('OFFER_P')>=0) && link.study.joinMethods.indexOf('APP') < 0">
+	                <div ng-show="(link.type.indexOf('REQUIRE_P')>=0 || link.type.indexOf('OFFER_P')>=0) && link.study.joinMethods.indexOf('APP') < 0 && link.study.joinMethods.indexOf('APP_CODE') < 0">
 	                  <span class="fas fa-times text-danger"></span>
 	                  <span translate="studyactions.status.study_no_app_participation"></span>
 	                </div>

@@ -3,7 +3,7 @@ angular.module('portal')
 	
 	// init
 	$scope.error = null;
-	$scope.app = { version:0, tags:[], i18n : {}, redirectUri : "http://localhost", targetUserRole : "ANY", requirements:[], defaultQuery:{ content:[] }, tokenExchangeParams : "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>"  };
+	$scope.app = { version:0, tags:[], i18n : {}, sendReports:true, redirectUri : "http://localhost", targetUserRole : "ANY", requirements:[], defaultQuery:{ content:[] }, tokenExchangeParams : "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>"  };
 	$scope.status = new status(false, $scope);
 	$scope.allowDelete = $state.current.allowDelete;
 	$scope.allowExport = $state.current.allowExport;

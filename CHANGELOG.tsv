@@ -45,5 +45,8 @@ id0043	30.03.2020	a.kreutz	F	Every 30 minute subscriptions	When defining subscri
 id0044	06.04.2020	a.kreutz	F	Projects without sharing year of birth/gender/country	It is now possible to create research projects that are pseudonymized or anonymous and do not require year of birth, gender and country.
 id0045	15.04.2020	a.kreutz	I	Larger Record-Trees possible	Display of record tree or record count estimation was limited to 1000 consents.
 id0046	15.04.2020	a.kreutz	B	Searches on Questionnaire	Some possible searches on the questionnaire resource have been fixed.
-id0047	05.05.2020	a.kreutz	F	Participation Codes	Researchers are now able to generate participation codes for research projects.     
+id0047	05.05.2020	a.kreutz	F	Participation Codes	Researchers are now able to generate participation codes for research projects.
+id0048	07.05.2020	a.kreutz	I	'below'-modifier supported	FHIR searches on canoncial references now support the :below search modifier.
+id0049	07.05.2020	a.kreutz	F	Service mail feature	Mails to project participants or all account holders are possible.
+id0050	07.05.2020	a.kreutz	F	Unsubscribe by email	Users may now unsubscribe from communication channels     
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 

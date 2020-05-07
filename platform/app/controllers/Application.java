@@ -1165,6 +1165,8 @@ public class Application extends APIController {
 				controllers.routes.javascript.BulkMails.update(),
 				controllers.routes.javascript.BulkMails.delete(),
 				controllers.routes.javascript.BulkMails.send(),
+				controllers.routes.javascript.BulkMails.test(),
+				controllers.routes.javascript.BulkMails.unsubscribe(),
 				
 		        // Portal
 		        controllers.routes.javascript.PortalConfig.getConfig(),
