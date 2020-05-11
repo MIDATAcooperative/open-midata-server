@@ -1,10 +1,6 @@
 {
 
     "footer" : {
-
-        // TODO CHANGED
-        // OLD: ©{{now}} ETH Zürich
-        // NEW:  
         "copyright" : " ",
         "homepage" : "Homepage MIDATA",
         "impressum" : "Impressum",
@@ -89,9 +85,7 @@
             "url" : "URL invalide",
             "consent_members" : "Ce consentement ne pourra être confirmé que lorsque toutes les personnes externes auront rejoint MIDATA.",
             "entity_type" : "Type d'entité non valide",
-
-            // TODO NEW: Provided participation code is not accepted.
-            "joincode" : "Provided participation code is not accepted."
+            "joincode" : "Le code de participation fourni n'est pas accepté."
         },
 
         "missing" : {
@@ -143,11 +137,7 @@
         },
 
         "blocked" : {
-
-            // TODO CHANGED
-            // OLD: User is not allowed to log in. Contact support@midata.coop for help.
-            // NEW: This account has been blocked. Your email address is blocked for further registration unless you contact support@midata.coop.
-            "user" : "L'utilisateur n'est pas autorisé à se connecter. Contactez support@midata.coop pour obtenir de l'aide.",
+            "user" : "Ce compte a été bloqué. Votre adresse électronique est bloquée pour toute inscription ultérieure. Contactez support@midata.coop pour obtenir de l'aide.",
             "password1" : "Trop d'essais de connexion manqués. Veuillez attendre 1 minute avant la prochaine tentative.",
             "password5" : "Trop d'essais de connexion manqués. Veuillez attendre 5 minutes avant la prochaine tentative.",
             "password60" : "Trop d'essais de connexion manqués. Veuillez attendre 1 heure avant la prochaine tentative.",
@@ -155,14 +145,12 @@
             "projectconsent" : "Vous avez retiré votre participation à ce projet de recherche et ne pouvez donc plus utiliser cette application.",
             "consent" : "Vous avez défini dans le portail MIDATA que cette application ne peut plus accéder à vos données. Si vous voulez utiliser à nouveau cette application, vous devez la ré-autoriser dans le portail MIDATA.",
             "app" : "Vous pouvez utiliser cette application sur 10 appareils au maximum. Veuillez effacer les consentements non utilisés sur le portail MIDATA.",
-
-            // TODO NEW: Project does not accept joining using this method.
-            "joinmethod" : "Project does not accept joining using this method."
         },
+            "joinmethod" : "Il n'est pas permis d'adhérer au projet par cette méthode."
 
         "closed" : {
-            "study" : "Le projet de recherche n'est pas à la recherche de participants"
         },
+            "study" : "Le projet de recherche n'est pas à la recherche de participants"
 
         "notvalidated" : {
             "study" : "Le projet de recherche doit d'abord être validé."
@@ -191,9 +179,7 @@
 
         "already_done" : {
             "email_verification" : "L'adresse e-mail a déjà été vérifié.",
-
-            // TODO NEW: You have already unsubscribed from this channel.
-            "unsubscribed" : "You have already unsubscribed from this channel."
+            "unsubscribed" : "Vous vous êtes déjà désabonné de ce canal de communication."
         },
 
         "no_alter" : {
@@ -301,12 +287,8 @@
             "added-as-team-member" : "Ajouté comme membre d'un team",
             "updated-role-in-team" : "Rôle dans le team modifié",
             "removed-from-team" : "Supprimé du team",
-
-            // TODO NEW: Unsubscribed from communication channel
-            "communication-rejected" : "Unsubscribed from communication channel",
-
-            // TODO NEW: Subscribed to communication channel
-            "communication-approved" : "Subscribed to communication channel"
+            "communication-rejected" : "Désabonné du canal de communication",
+            "communication-approved" : "Abonné au canal de communication"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "L'adresse e-mail de l'utilisateur doit être renseigné sur la plateforme",
@@ -379,12 +361,10 @@
             "APP" : "Le participant utilise l'application liée",
             "PORTAL" : "Le participant s'inscrit sur le portail MIDATA",
             "RESEARCHER" : "Le participant est enrôlé manuellement par un membre de l'équipe de recherche",
-            "API" : "Le participant est inscrit par un logiciel externe",
+            "API" : "Le participant est enrôlé par un logiciel externe",
             "ALGORITHM" : "Le participant a été proposé par un algorithme (non supporté)",
-            "CODE" : "Le participant peut s'inscrire en entrant un code (non supporté)",
-
-            // TODO NEW: Participant may join through application provided code
-            "APP_CODE" : "Participant may join through application provided code",
+            "CODE" : "Le participant peut s'inscrire en saisissant un code (non supporté)",
+            "APP_CODE" : "Le participant peut s'inscrire par le biais d'un code fourni par l'application",
             "TRANSFER" : "Les données sont transférées à partir d'un autre projet (non supporté)"
         },
         "studyexecutionstatus" : {
@@ -400,21 +380,11 @@
             "VALIDATION" : "En cours de validation"
         },
         "pcodestatus" : {
-
-            // TODO NEW: Not used
-            "UNUSED" : "Not used",
-
-            // TODO NEW: Given away
-            "SHARED" : "Given away",
-
-            // TODO NEW: Used
-            "USED" : "Used",
-
-            // TODO NEW: Blocked
-            "BLOCKED" : "Blocked",
-
-            // TODO NEW: Reusable
-            "REUSEABLE" : "Reusable"
+            "UNUSED" : "Non utilisé",
+            "SHARED" : "Remis",
+            "USED" : "Utilisé",
+            "BLOCKED" : "Bloqué",
+            "REUSEABLE" : "Réutilisable"
         },
         "userrole" : {
             "ADMIN" : "Administrateur",
@@ -539,23 +509,13 @@
             "ORGANIZATION" : "Organisation"
         },
         "bulkmailtype" : {
-
-            // TODO NEW: Marketing - Account Holders
-            "MARKETING" : "Marketing - Account Holders",
-
-            // TODO NEW: Project specific
-            "PROJECT" : "Project specific"
+            "MARKETING" : "Marketing - Titulaires de comptes",
+            "PROJECT" : "Spécifique au projet"
         },
         "channeluse" : {
-
-            // TODO NEW: Allowed
-            "ALLOWED" : "Allowed",
-
-            // TODO NEW: Forbidden
-            "FORBIDDEN" : "Forbidden",
-
-            // TODO NEW: Undefined
-            "NULL" : "Undefined"
+            "ALLOWED" : "Autorisé",
+            "FORBIDDEN" : "Pas autorisé",
+            "NULL" : "Indéterminé"
         }
     },
 
@@ -699,41 +659,13 @@
         "info2" : "Vous avez déjà un compte MIDATA, connectez-vous avec votre adresse email et votre mot de passe.",
         "info3" : "Votre compte personnel vous donne un aperçu de votre participation aux projets.",
         "info4" : "Cher visiteur",
-
-        // TODO CHANGED
-        // OLD: You do not yet have a MIDATA account and do not participate in any research project?
-        // NEW: You do not yet have a MIDATA account and do not participate in any project?
         "info5" : "Vous n'avez pas encore de compte MIDATA et ne participez à aucun projet?",
         "info6" : "Rejoignez",
-
-        // TODO CHANGED
-        // OLD: Ally Science
-        // NEW: Corona Science
         "info6b" : "Corona Science",
-
-        // TODO CHANGED
-        // OLD: undefined
-        // NEW: https://coronascience.ch/en/
         "info6b_link" : "https://coronascience.ch/fr/",
-
-        // TODO CHANGED
-        // OLD: project!
-        // NEW: project or one of the other
         "info6c" : "ou un des autres",
-
-        // TODO CHANGED
-        // OLD: undefined
-        // NEW: MIDATA projects
         "info6d" : "projets MIDATA",
-
-        // TODO CHANGED
-        // OLD: undefined
-        // NEW: https://www.midata.coop/en/offers/
         "info6d_link" : "https://www.midata.coop/fr/offres/",
-
-        // TODO CHANGED
-        // OLD: undefined
-        // NEW: !
         "info6e" : "!"
     },
 
@@ -812,21 +744,11 @@
             "text" : "Veuillez contacter support@midata.coop pour obtenir une licence valide."
         },
         "reject" : {
-
-            // TODO NEW: You have clicked on the account REJECTION link in the account confirmation mail.
-            "intro1" : "You have clicked on the account REJECTION link in the account confirmation mail.",
-
-            // TODO NEW: Please confirm that you do NOT want to create an account on MIDATA. Your email address will be blocked for further registration attempts unless you contact support@midata.coop.
-            "intro2" : "Please confirm that you do NOT want to create an account on MIDATA. Your email address will be blocked for further registration attempts unless you contact support@midata.coop.",
-
-            // TODO NEW: Reject account
-            "reject_btn" : "Reject account",
-
-            // TODO NEW: If you clicked the wrong link and want to CONFIRM your email address instead, click here:
-            "intro3" : "If you clicked the wrong link and want to CONFIRM your email address instead, click here:",
-
-            // TODO NEW: Confirm account
-            "confirm_btn" : "Confirm account"
+            "intro1" : "Vous avez cliqué sur le lien REJECTION de compte dans l'e-mail de confirmation du compte.",
+            "intro2" : "Veuillez confirmer que vous ne souhaitez pas créer un compte sur MIDATA. Votre adresse électronique sera bloquée pour toute nouvelle tentative d'inscription jusqu'à ce que vous contactiez support@midata.coop.",
+            "reject_btn" : "Refuser la création du compte",
+            "intro3" : "Si vous avez cliqué sur le mauvais lien et que vous souhaitez plutôt CONFIRMER votre adresse électronique, cliquez ici:",
+            "confirm_btn" : "Confirmer la création du compte"
         }
     },
 
@@ -1500,39 +1422,19 @@
     },
 
     "failure" : {
-
-        // TODO NEW: Login not allowed
-        "title" : "Login not allowed",
-
-        // TODO NEW: You are not allowed to log in for the following reason:
-        "intro" : "You are not allowed to log in for the following reason:",
-
-        // TODO NEW: You have withdrawn participation from a project that is mandantory for this application.
-        "withdrawn1" : "You have withdrawn participation from a project that is mandantory for this application.",
-
-        // TODO NEW: You will not be able to use the application again with your Midata account.
-        "withdrawn2" : "You will not be able to use the application again with your Midata account.",
-
-        // TODO NEW: The access to the research project is restricted.
-        "joinmethod1" : "The access to the research project is restricted.",
-
-        // TODO NEW: Please get in touch with the research responsible.. Please read the terms of use for this application for more information.
-        "joinmethod2" : "Please get in touch with the research responsible.. Please read the terms of use for this application for more information.",
-
-        // TODO NEW: Return to Login
-        "loginpage_btn" : "Return to Login"
+        "title" : "Connexion non autorisée",
+        "intro" : "Vous n'êtes pas autorisé à vous connecter pour la raison suivante:",
+        "withdrawn1" : "Vous avez retiré votre participation à un projet. La participation est obligatoire pour pouvoir utiliser cette application.",
+        "withdrawn2" : "Vous ne pourrez plus utiliser l'application avec votre compte MIDATA.",
+        "joinmethod1" : "L'accès au projet de recherche est restreint.",
+        "joinmethod2" : "Veuillez prendre contact avec le team responsable du projet. Pour plus d'informations, lisez les conditions d'utilisation de l'application.",
+        "loginpage_btn" : "Retour à la page de connexion"
     },
 
     "unsubscribe" : {
-
-        // TODO NEW: Unsubscribe
-        "title" : "Unsubscribe",
-
-        // TODO NEW: Unsubscribe operation successful.
-        "success" : "Unsubscribe operation successful.",
-
-        // TODO NEW: Go to login page
-        "back_to_login" : "Go to login page"
+        "title" : "Se désabonner",
+        "success" : "Désabonnement réussi.",
+        "back_to_login" : "Aller à la page d'accueil"
     },
 
     "-1" : "inconnu"

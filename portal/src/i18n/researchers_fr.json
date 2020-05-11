@@ -43,8 +43,6 @@
         "rules" : "Règles",
         "actions" : "Applications",
         "participants" : "Participants",
-
-        // TODO NEW: Codes
         "codes" : "Codes",
         "records" : "Enregistrements",
         "results" : "Résultats",
@@ -344,15 +342,9 @@
 
     "researcher_sharing" : {
         "description" : "Partager ou supprimer le partage d'enregistrements de votre compte avec des groupes de participants au projet",
-
-        // TODO NEW: Source
         "source" : "Source",
-
-        // TODO NEW: Data from my account
-        "me" : "Data from my account",
-
-        // TODO NEW: Data from analyzer
-        "project" : "Data from analyzer",
+        "me" : "Données de mon compte",
+        "project" : "Données de l'analyseur",
         "format" : "Type de ressource",
         "content" : "Type de contenu",
         "app" : "Application",
@@ -364,59 +356,23 @@
     },
 
     "codes" : {
-
-        // TODO NEW: Participation codes may be used to recruit participants for the study.
-        "intro" : "Participation codes may be used to recruit participants for the study.",
-
-        // TODO NEW: Code
+        "intro" : "Les codes de participation peuvent être utilisés pour recruter des participants à l'étude.",
         "code" : "Code",
-
-        // TODO NEW: Group
-        "group" : "Group",
-
-        // TODO NEW: Recruiter
-        "recruiter" : "Recruiter",
-
-        // TODO NEW: Status
-        "status" : "Status",
-
-        // TODO NEW: Created At
-        "created_at" : "Created At",
-
-        // TODO NEW: No participation codes have been generated.
-        "empty" : "No participation codes have been generated.",
-
-        // TODO NEW: Add new codes
-        "showcreate_btn" : "Add new codes",
-
-        // TODO NEW: Create New Codes
-        "new_title" : "Create New Codes",
-
-        // TODO NEW: Number of codes
-        "number_of_codes" : "Number of codes",
-
-        // TODO NEW: Codes are reusable
-        "reuseable" : "Codes are reusable",
-
-        // TODO NEW: Yes
-        "yes" : "Yes",
-
-        // TODO NEW: No
-        "no" : "No",
-
-        // TODO NEW: Type of creation
-        "type_of_creation" : "Type of creation",
-
-        // TODO NEW: Manual entry
-        "manually" : "Manual entry",
-
-        // TODO NEW: Generated
-        "generated" : "Generated",
-
-        // TODO NEW: New codes
-        "codes" : "New codes",
-
-        // TODO NEW: Add now
-        "add_btn" : "Add now"
+        "group" : "Groupe",
+        "recruiter" : "Recruteur",
+        "status" : "État",
+        "created_at" : "Crée le",
+        "empty" : "Aucun code de participation n'a été généré.",
+        "showcreate_btn" : "Ajouter de nouveaux codes",
+        "new_title" : "Créer de nouveaux codes",
+        "number_of_codes" : "Nombre de codes",
+        "reuseable" : "Codes réutilisables",
+        "yes" : "Oui",
+        "no" : "Non",
+        "type_of_creation" : "Mode de création",
+        "manually" : "Saisie manuelle",
+        "generated" : "Généré",
+        "codes" : "Nouveaux codes",
+        "add_btn" : "Ajouter maintenant"
     }
 }
