@@ -46,6 +46,10 @@
         "contract_status" : "État du contrat:",
         "email_status" : "État de l'e-mail:",
         "mobile_status" : "État du n° de téléphone mobile:",
+
+        // TODO CHANGED
+        // OLD: Allow info mails
+        // NEW: Allow information emails
         "marketing_email" : "Autoriser les e-mails d'information",
         "confirmation_code" : "Code de confirmation:",
         "registration_date" : "Date de l'inscription:",
@@ -291,6 +295,10 @@
         "lang" : "Langue",
         "title" : "Titre de l'e-mail",
         "content" : "Contenu de l'e-mail",
+
+        // TODO CHANGED
+        // OLD: Test:send to yourself
+        // NEW: Test: send to yourself
         "test_btn" : "Test: envoyez à vous-même",
         "save_btn" : "Enregistrer l'e-mail",
         "send_btn" : "Envoyer"

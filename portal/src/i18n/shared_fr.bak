@@ -84,7 +84,7 @@
        "url" : "Invalid URL",
        "consent_members" : "This consent may only be confirmed once all external persons have joined MIDATA.",
        "entity_type" : "Invalid entity type",
-       "joincode" : "Provided participation code is not accepted."       
+       "joincode" : "The provided participation code is not accepted."       
      },
 
      "missing" : {
@@ -136,7 +136,7 @@
      },
 
      "blocked" : {
-       "user" : "This account has been blocked. Your email address is blocked for further registration unless you contact support@midata.coop.",
+       "user" : "This account has been blocked. Your email address is blocked for further registration. Contact support@midata.coop for assistance.",
        "password1" : "Too many missed login attempts. Please wait 1 minute before next attempt.",
        "password5" : "Too many missed login attempts. Please wait 5 minutes before next attempt.",
        "password60" : "Too many missed login attempts. Please wait 1 hour before next attempt.",
@@ -144,7 +144,7 @@
        "projectconsent" : "You have withdrawn your participation in this research project and can therefore no longer use this application.",
        "consent" : "You have set in the MIDATA portal that this application may no longer access your data. If you want to use this application again, you must reauthorize it in the MIDATA portal.",
        "app" : "You are allowed to use this application on a maximum of 10 devices. Please delete unused consents on the MIDATA portal.",
-       "joinmethod" : "Project does not accept joining using this method." 
+       "joinmethod" : "It is not allowed to join the project by this method." 
      },
 
      "closed" : {
@@ -178,7 +178,7 @@
 
      "already_done" : {
        "email_verification" : "Email has already been verified.",
-       "unsubscribed" : "You have already unsubscribed from this channel."
+       "unsubscribed" : "You have already unsubscribed from this communication channel."
      },
 
      "no_alter" : {
@@ -744,10 +744,10 @@
     },
     "reject" : {
       "intro1" : "You have clicked on the account REJECTION link in the account confirmation mail.",
-      "intro2" : "Please confirm that you do NOT want to create an account on MIDATA. Your email address will be blocked for further registration attempts unless you contact support@midata.coop.",
-      "reject_btn" : "Reject account",
+      "intro2" : "Please confirm that you do NOT want to create an account on MIDATA. Your email address will be blocked for further registration attempts until you contact support@midata.coop.",
+      "reject_btn" : "Reject account creation",
       "intro3" : "If you clicked the wrong link and want to CONFIRM your email address instead, click here:",
-      "confirm_btn" : "Confirm account"
+      "confirm_btn" : "Confirm account creation"
     }
   },
 
@@ -1423,16 +1423,16 @@
   "failure" : {
     "title" : "Login not allowed",
     "intro" : "You are not allowed to log in for the following reason:",
-    "withdrawn1" : "You have withdrawn participation from a project that is mandantory for this application.",
-    "withdrawn2" : "You will not be able to use the application again with your Midata account.",
+    "withdrawn1" : "You have withdrawn your participation in a project. The participation is mandantory in order to use this application.",
+    "withdrawn2" : "You will not be able to use the application again with your MIDATA account.",
     "joinmethod1" : "The access to the research project is restricted.",
-    "joinmethod2" : "Please get in touch with the research responsible.. Please read the terms of use for this application for more information.",
-    "loginpage_btn" : "Return to Login"
+    "joinmethod2" : "Please contact the team responsible for the project. For more information, read the terms of use of the application.",
+    "loginpage_btn" : "Return to login"
   },
   
   "unsubscribe" : {
     "title" : "Unsubscribe",
-    "success" : "Unsubscribe operation successful.",
+    "success" : "Unsubscription successful.",
     "back_to_login" : "Go to login page"
   },
   

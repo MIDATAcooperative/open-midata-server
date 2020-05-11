@@ -45,7 +45,7 @@
     "contract_status" : "Status Contract:",
     "email_status" : "Status Email:",
     "mobile_status" : "Status Mobile Phone Number:",
-    "marketing_email" : "Allow info mails",
+    "marketing_email" : "Allow information emails",
     "confirmation_code" : "Confirmation Code:",
     "registration_date" : "Registration Date:",
     "confirmation_date" : "Confirmation Date:",
@@ -290,7 +290,7 @@
      "lang" : "Language",
      "title" : "Mail Title",
      "content" : "Mail Content",
-     "test_btn" : "Test:send to yourself",
+     "test_btn" : "Test: send to yourself",
      "save_btn" : "Store Mail",
      "send_btn" : "Send"
    }
