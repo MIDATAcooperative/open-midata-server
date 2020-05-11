@@ -369,10 +369,6 @@
         "reuseable" : "Codici riutilizzabili",
         "yes" : "Si",
         "no" : "No",
-
-        // TODO CHANGED
-        // OLD: Type of creation
-        // NEW: Mode of creation
         "type_of_creation" : "Modo di creazione",
         "manually" : "Inserimento manuale",
         "generated" : "Generato",
