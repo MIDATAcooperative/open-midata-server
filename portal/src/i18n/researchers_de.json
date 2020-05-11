@@ -43,6 +43,7 @@
         "rules" : "Regeln",
         "actions" : "Applikationen",
         "participants" : "Teilnehmer",
+        "codes" : "Codes",
         "records" : "Einträge",
         "results" : "Ergebnisse",
         "team" : "Team",
@@ -341,6 +342,9 @@
 
     "researcher_sharing" : {
         "description" : "Datensätze von Ihrem Konto mit Gruppen von Projektteilnehmern teilen oder nicht mehr teilen",
+        "source" : "Quelle",
+        "me" : "Daten aus meinem Konto",
+        "project" : "Daten vom Analysator",
         "format" : "Ressourcentyp",
         "content" : "Inhaltstyp",
         "app" : "Applikation",
@@ -349,5 +353,30 @@
         "share_btn" : "Teilen",
         "unshare_btn" : "Nicht mehr teilen",
         "search_btn" : "Suchen"
+    },
+
+    "codes" : {
+        "intro" : "Teilnahme-Codes können verwendet werden, um Teilnehmer für die Studie zu rekrutieren.",
+        "code" : "Code",
+        "group" : "Gruppe",
+        "recruiter" : "Rekrutierer",
+        "status" : "Status",
+        "created_at" : "Erstellt am",
+        "empty" : "Es wurden keine Teilnahme-Codes generiert.",
+        "showcreate_btn" : "Neue Codes hinzufügen",
+        "new_title" : "Neue Codes erstellen",
+        "number_of_codes" : "Anzahl von Codes",
+        "reuseable" : "Codes wiederverwendbar",
+        "yes" : "Ja",
+        "no" : "Nein",
+
+        // TODO CHANGED
+        // OLD: Type of creation
+        // NEW: Mode of creation
+        "type_of_creation" : "Erstellungsmodus",
+        "manually" : "Manuelle Eingabe",
+        "generated" : "Generiert",
+        "codes" : "Neue Codes",
+        "add_btn" : "Jetzt hinzufügen"
     }
 }

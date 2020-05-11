@@ -46,6 +46,11 @@
         "contract_status" : "Status Vertrag:",
         "email_status" : "Status E-Mail:",
         "mobile_status" : "Status Mobiltelefonnummer:",
+
+        // TODO CHANGED
+        // OLD: Allow info mails
+        // NEW: Allow information emails
+        "marketing_email" : "Informations-E-Mails zulassen",
         "confirmation_code" : "Bestätigungscode:",
         "registration_date" : "Registrierungsdatum:",
         "confirmation_date" : "Bestätigungsdatum:",
@@ -279,14 +284,23 @@
         "title2" : "Massen-E-Mail bearbeiten",
         "name" : "Interner Titel des E-Mails",
         "status" : "Status",
+        "type" : "Typ",
+        "country" : "Zielland",
         "created" : "Erstellungsdatum",
         "started" : "Versand gestartet am",
         "finished" : "Versand abgeschlossen am",
         "progressCount" : "# versendet",
         "studyId" : "Forschungsprojekt",
+        "studyExclude" : "Projektteilnehmer ausschliessen",
         "lang" : "Sprache",
         "title" : "E-Mail Titel",
         "content" : "E-Mail Inhalt",
+
+        // TODO CHANGED
+        // OLD: Test:send to yourself
+        // NEW: Test: send to yourself
+        "test_btn" : "Test: an sich selbst schicken",
+        "save_btn" : "E-Mail speichern",
         "send_btn" : "Senden"
     }
 }

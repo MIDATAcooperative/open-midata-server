@@ -84,7 +84,12 @@
             "anonymous" : "Un projet de recherche ne peut être anonyme que si personne n'est autorisé à accéder à des données non pseudonymisées.",
             "url" : "URL invalide",
             "consent_members" : "Ce consentement ne pourra être confirmé que lorsque toutes les personnes externes auront rejoint MIDATA.",
-            "entity_type" : "Type d'entité non valide"
+            "entity_type" : "Type d'entité non valide",
+
+            // TODO CHANGED
+            // OLD: Provided participation code is not accepted.
+            // NEW: The provided participation code is not accepted.
+            "joincode" : "Le code de participation fourni n'est pas accepté."
         },
 
         "missing" : {
@@ -136,14 +141,23 @@
         },
 
         "blocked" : {
-            "user" : "L'utilisateur n'est pas autorisé à se connecter. Contactez support@midata.coop pour obtenir de l'aide.",
+
+            // TODO CHANGED
+            // OLD: This account has been blocked. Your email address is blocked for further registration unless you contact support@midata.coop.
+            // NEW: This account has been blocked. Your email address is blocked for further registration. Contact support@midata.coop for assistance.
+            "user" : "Ce compte a été bloqué. Votre adresse électronique est bloquée pour toute inscription ultérieure. Contactez support@midata.coop pour obtenir de l'aide.",
             "password1" : "Trop d'essais de connexion manqués. Veuillez attendre 1 minute avant la prochaine tentative.",
             "password5" : "Trop d'essais de connexion manqués. Veuillez attendre 5 minutes avant la prochaine tentative.",
             "password60" : "Trop d'essais de connexion manqués. Veuillez attendre 1 heure avant la prochaine tentative.",
             "participation" : "Vous n'êtes pas autorisé à participer à ce projet de recherche et ne pouvez donc pas utiliser cette application.",
             "projectconsent" : "Vous avez retiré votre participation à ce projet de recherche et ne pouvez donc plus utiliser cette application.",
             "consent" : "Vous avez défini dans le portail MIDATA que cette application ne peut plus accéder à vos données. Si vous voulez utiliser à nouveau cette application, vous devez la ré-autoriser dans le portail MIDATA.",
-            "app" : "Vous pouvez utiliser cette application sur 10 appareils au maximum. Veuillez effacer les consentements non utilisés sur le portail MIDATA."
+            "app" : "Vous pouvez utiliser cette application sur 10 appareils au maximum. Veuillez effacer les consentements non utilisés sur le portail MIDATA.",
+
+            // TODO CHANGED
+            // OLD: Project does not accept joining using this method.
+            // NEW: It is not allowed to join the project by this method.
+            "joinmethod" : "Il n'est pas permis d'adhérer au projet par cette méthode."
         },
 
         "closed" : {
@@ -176,7 +190,12 @@
         },
 
         "already_done" : {
-            "email_verification" : "L'adresse e-mail a déjà été vérifié."
+            "email_verification" : "L'adresse e-mail a déjà été vérifié.",
+
+            // TODO CHANGED
+            // OLD: You have already unsubscribed from this channel.
+            // NEW: You have already unsubscribed from this communication channel.
+            "unsubscribed" : "Vous vous êtes déjà désabonné de ce canal de communication."
         },
 
         "no_alter" : {
@@ -283,7 +302,9 @@
             "audit-log-used" : "Audit Log consulté",
             "added-as-team-member" : "Ajouté comme membre d'un team",
             "updated-role-in-team" : "Rôle dans le team modifié",
-            "removed-from-team" : "Supprimé du team"
+            "removed-from-team" : "Supprimé du team",
+            "communication-rejected" : "Désabonné du canal de communication",
+            "communication-approved" : "Abonné au canal de communication"
         },
         "userfeature" : {
             "EMAIL_ENTERED" : "L'adresse e-mail de l'utilisateur doit être renseigné sur la plateforme",
@@ -356,9 +377,10 @@
             "APP" : "Le participant utilise l'application liée",
             "PORTAL" : "Le participant s'inscrit sur le portail MIDATA",
             "RESEARCHER" : "Le participant est enrôlé manuellement par un membre de l'équipe de recherche",
-            "API" : "Le participant est inscrit par un logiciel externe",
+            "API" : "Le participant est enrôlé par un logiciel externe",
             "ALGORITHM" : "Le participant a été proposé par un algorithme (non supporté)",
-            "CODE" : "Le participant peut s'inscrire en entrant un code (non supporté)",
+            "CODE" : "Le participant peut s'inscrire en saisissant un code (non supporté)",
+            "APP_CODE" : "Le participant peut s'inscrire par le biais d'un code fourni par l'application",
             "TRANSFER" : "Les données sont transférées à partir d'un autre projet (non supporté)"
         },
         "studyexecutionstatus" : {
@@ -372,6 +394,13 @@
             "REJECTED" : "Projet rejeté par MIDATA",
             "VALIDATED" : "Le projet a été validé",
             "VALIDATION" : "En cours de validation"
+        },
+        "pcodestatus" : {
+            "UNUSED" : "Non utilisé",
+            "SHARED" : "Remis",
+            "USED" : "Utilisé",
+            "BLOCKED" : "Bloqué",
+            "REUSEABLE" : "Réutilisable"
         },
         "userrole" : {
             "ADMIN" : "Administrateur",
@@ -494,6 +523,15 @@
             "USER" : "Utilisateur",
             "USERGROUP" : "Team",
             "ORGANIZATION" : "Organisation"
+        },
+        "bulkmailtype" : {
+            "MARKETING" : "Marketing - Titulaires de comptes",
+            "PROJECT" : "Spécifique au projet"
+        },
+        "channeluse" : {
+            "ALLOWED" : "Autorisé",
+            "FORBIDDEN" : "Pas autorisé",
+            "NULL" : "Indéterminé"
         }
     },
 
@@ -720,6 +758,25 @@
         "licence" : {
             "intro" : "Une licence est requise pour utiliser cette application.",
             "text" : "Veuillez contacter support@midata.coop pour obtenir une licence valide."
+        },
+        "reject" : {
+            "intro1" : "Vous avez cliqué sur le lien REJECTION de compte dans l'e-mail de confirmation du compte.",
+
+            // TODO CHANGED
+            // OLD: Please confirm that you do NOT want to create an account on MIDATA. Your email address will be blocked for further registration attempts unless you contact support@midata.coop.
+            // NEW: Please confirm that you do NOT want to create an account on MIDATA. Your email address will be blocked for further registration attempts until you contact support@midata.coop.
+            "intro2" : "Veuillez confirmer que vous ne souhaitez pas créer un compte sur MIDATA. Votre adresse électronique sera bloquée pour toute nouvelle tentative d'inscription jusqu'à ce que vous contactiez support@midata.coop.",
+
+            // TODO CHANGED
+            // OLD: Reject account
+            // NEW: Reject account creation
+            "reject_btn" : "Refuser la création du compte",
+            "intro3" : "Si vous avez cliqué sur le mauvais lien et que vous souhaitez plutôt CONFIRMER votre adresse électronique, cliquez ici:",
+
+            // TODO CHANGED
+            // OLD: Confirm account
+            // NEW: Confirm account creation
+            "confirm_btn" : "Confirmer la création du compte"
         }
     },
 
@@ -1390,6 +1447,42 @@
         "status" : "État",
         "ACTIVE" : "Active",
         "FROZEN" : "Ancienne version"
+    },
+
+    "failure" : {
+        "title" : "Connexion non autorisée",
+        "intro" : "Vous n'êtes pas autorisé à vous connecter pour la raison suivante:",
+
+        // TODO CHANGED
+        // OLD: You have withdrawn participation from a project that is mandantory for this application.
+        // NEW: You have withdrawn your participation in a project. The participation is mandantory in order to use this application.
+        "withdrawn1" : "Vous avez retiré votre participation à un projet. La participation est obligatoire pour pouvoir utiliser cette application.",
+
+        // TODO CHANGED
+        // OLD: You will not be able to use the application again with your Midata account.
+        // NEW: You will not be able to use the application again with your MIDATA account.
+        "withdrawn2" : "Vous ne pourrez plus utiliser l'application avec votre compte MIDATA.",
+        "joinmethod1" : "L'accès au projet de recherche est restreint.",
+
+        // TODO CHANGED
+        // OLD: Please get in touch with the research responsible.. Please read the terms of use for this application for more information.
+        // NEW: Please contact the team responsible for the project. For more information, read the terms of use of the application.
+        "joinmethod2" : "Veuillez prendre contact avec le team responsable du projet. Pour plus d'informations, lisez les conditions d'utilisation de l'application.",
+
+        // TODO CHANGED
+        // OLD: Return to Login
+        // NEW: Return to login
+        "loginpage_btn" : "Retour à la page de connexion"
+    },
+
+    "unsubscribe" : {
+        "title" : "Se désabonner",
+
+        // TODO CHANGED
+        // OLD: Unsubscribe operation successful.
+        // NEW: Unsubscription successful.
+        "success" : "Désabonnement réussi.",
+        "back_to_login" : "Aller à la page d'accueil"
     },
 
     "-1" : "inconnu"

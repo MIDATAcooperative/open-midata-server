@@ -45,6 +45,7 @@
     "contract_status" : "Status Contract:",
     "email_status" : "Status Email:",
     "mobile_status" : "Status Mobile Phone Number:",
+    "marketing_email" : "Allow information emails",
     "confirmation_code" : "Confirmation Code:",
     "registration_date" : "Registration Date:",
     "confirmation_date" : "Confirmation Date:",
@@ -278,14 +279,19 @@
      "title2" : "Edit Bulk Mail",
      "name" : "Internal Mail Title",
      "status" : "Status",
+     "type" : "Type",
+     "country" : "Target country",
      "created" : "Time of creation",
      "started" : "Sending started at",
      "finished" : "Sending completed at",
      "progressCount" : "# sent",
      "studyId" : "Research Project",
+     "studyExclude" : "Exclude project participants",
      "lang" : "Language",
      "title" : "Mail Title",
      "content" : "Mail Content",
+     "test_btn" : "Test: send to yourself",
+     "save_btn" : "Store Mail",
      "send_btn" : "Send"
    }
     

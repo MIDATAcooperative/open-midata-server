@@ -43,6 +43,7 @@
         "rules" : "Regole",
         "actions" : "Applicazioni",
         "participants" : "Partecipanti",
+        "codes" : "Codici",
         "records" : "Record",
         "results" : "Risultati",
         "team" : "Team",
@@ -341,6 +342,9 @@
 
     "researcher_sharing" : {
         "description" : "Condividi o non condividi i record del vostro account con gruppi di partecipanti al progetto",
+        "source" : "Fonte",
+        "me" : "Dati del mio conto",
+        "project" : "Dati dall'analizzatore",
         "format" : "Tipo di risorsa",
         "content" : "Tipo di contenuto",
         "app" : "Applicazione",
@@ -349,5 +353,30 @@
         "share_btn" : "Condividere",
         "unshare_btn" : "Non condividere più",
         "search_btn" : "Ricerca"
+    },
+
+    "codes" : {
+        "intro" : "I codici di partecipazione possono essere utilizzati per reclutare i partecipanti allo studio.",
+        "code" : "Codice",
+        "group" : "Gruppo",
+        "recruiter" : "Reclutatore",
+        "status" : "Stato",
+        "created_at" : "Creato alle",
+        "empty" : "Non sono stati generati codici di partecipazione.",
+        "showcreate_btn" : "Aggiungere nuovi codici",
+        "new_title" : "Creare nuovi codici",
+        "number_of_codes" : "Numero di codici",
+        "reuseable" : "Codici riutilizzabili",
+        "yes" : "Si",
+        "no" : "No",
+
+        // TODO CHANGED
+        // OLD: Type of creation
+        // NEW: Mode of creation
+        "type_of_creation" : "Modo di creazione",
+        "manually" : "Inserimento manuale",
+        "generated" : "Generato",
+        "codes" : "Nuovi codici",
+        "add_btn" : "Aggiungi ora"
     }
 }

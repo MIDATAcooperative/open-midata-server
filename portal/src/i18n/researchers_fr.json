@@ -43,6 +43,7 @@
         "rules" : "Règles",
         "actions" : "Applications",
         "participants" : "Participants",
+        "codes" : "Codes",
         "records" : "Enregistrements",
         "results" : "Résultats",
         "team" : "Team",
@@ -341,6 +342,9 @@
 
     "researcher_sharing" : {
         "description" : "Partager ou supprimer le partage d'enregistrements de votre compte avec des groupes de participants au projet",
+        "source" : "Source",
+        "me" : "Données de mon compte",
+        "project" : "Données de l'analyseur",
         "format" : "Type de ressource",
         "content" : "Type de contenu",
         "app" : "Application",
@@ -349,5 +353,30 @@
         "share_btn" : "Partager",
         "unshare_btn" : "Ne plus partager",
         "search_btn" : "Rechercher"
+    },
+
+    "codes" : {
+        "intro" : "Les codes de participation peuvent être utilisés pour recruter des participants à l'étude.",
+        "code" : "Code",
+        "group" : "Groupe",
+        "recruiter" : "Recruteur",
+        "status" : "État",
+        "created_at" : "Crée le",
+        "empty" : "Aucun code de participation n'a été généré.",
+        "showcreate_btn" : "Ajouter de nouveaux codes",
+        "new_title" : "Créer de nouveaux codes",
+        "number_of_codes" : "Nombre de codes",
+        "reuseable" : "Codes réutilisables",
+        "yes" : "Oui",
+        "no" : "Non",
+
+        // TODO CHANGED
+        // OLD: Type of creation
+        // NEW: Mode of creation
+        "type_of_creation" : "Mode de création",
+        "manually" : "Saisie manuelle",
+        "generated" : "Généré",
+        "codes" : "Nouveaux codes",
+        "add_btn" : "Ajouter maintenant"
     }
 }

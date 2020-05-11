@@ -1,5 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1" xml:lang="en">
+    <file source-language="en" target-language="it" datatype="winres" original="members_it.json">
+        <body>
+            <group resname="help_welcome" id="help_welcome">
+                <trans-unit resname="menu_config" id="help_welcome.menu_config">
+                    <source>Config</source>
+                </trans-unit>
+            </group>
+            <group resname="help_setup" id="help_setup">
+                <trans-unit resname="question_devices_answer1" id="help_setup.question_devices_answer1">
+                    <source>Fitbit</source>
+                </trans-unit>
+                <trans-unit resname="question_devices_answer2" id="help_setup.question_devices_answer2">
+                    <source>Jawbone</source>
+                </trans-unit>
+                <trans-unit resname="question_devices_answer3" id="help_setup.question_devices_answer3">
+                    <source>Withings</source>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
     <file source-language="en" target-language="it" datatype="winres" original="providers_it.json">
         <body>
             <group resname="provider_navbar" id="provider_navbar">
@@ -25,31 +45,18 @@
                 <trans-unit resname="admin" id="admin_navbar.admin">
                     <source>Admin</source>
                 </trans-unit>
-                <trans-unit resname="members" id="admin_navbar.members">
-                    <source>Users</source>
-                    <target>Utenti</target>
-                </trans-unit>
-                <trans-unit resname="mails" id="admin_navbar.mails">
-                    <source>E-Mails</source>
-                    <target>E-Mail</target>
-                </trans-unit>
             </group>
             <group resname="admin_members" id="admin_members">
-                <trans-unit resname="title" id="admin_members.title">
-                    <source>User directory</source>
-                    <target>Repertorio utenti</target>
-                </trans-unit>
                 <trans-unit resname="midata_id" id="admin_members.midata_id">
                     <source>MIDATA ID</source>
                 </trans-unit>
             </group>
             <group resname="admin_address" id="admin_address">
-                <trans-unit resname="title" id="admin_address.title">
-                    <source>User profile</source>
-                    <target>Profilo utente</target>
-                </trans-unit>
                 <trans-unit resname="midata_id" id="admin_address.midata_id">
                     <source>MIDATA ID</source>
+                </trans-unit>
+                <trans-unit resname="marketing_email" id="admin_address.marketing_email">
+                    <source>Allow info mails</source>
                 </trans-unit>
             </group>
             <group resname="admin_plugins" id="admin_plugins">
@@ -101,48 +108,21 @@
                     <source>Delete</source>
                 </trans-unit>
             </group>
-            <group resname="admin_mails" id="admin_mails">
-                <trans-unit resname="creatorName" id="admin_mails.creatorName">
-                    <source>Author</source>
-                    <target>Autore</target>
-                </trans-unit>
-                <trans-unit resname="progressCount" id="admin_mails.progressCount">
-                    <source># sent</source>
-                    <target># inviate</target>
-                </trans-unit>
-                <trans-unit resname="empty" id="admin_mails.empty">
-                    <source>No bulk mails have been created yet.</source>
-                    <target>Non sono ancora state create e-mail di massa.</target>
-                </trans-unit>
-            </group>
             <group resname="admin_managemails" id="admin_managemails">
-                <trans-unit resname="name" id="admin_managemails.name">
-                    <source>Internal Mail Title</source>
-                    <target>Titolo interno e-mail</target>
+                <trans-unit resname="type" id="admin_managemails.type">
+                    <source>Type</source>
                 </trans-unit>
-                <trans-unit resname="progressCount" id="admin_managemails.progressCount">
-                    <source># sent</source>
-                    <target># inviate</target>
+                <trans-unit resname="country" id="admin_managemails.country">
+                    <source>Target country</source>
                 </trans-unit>
-            </group>
-        </body>
-    </file>
-    <file source-language="en" target-language="it" datatype="winres" original="members_it.json">
-        <body>
-            <group resname="help_welcome" id="help_welcome">
-                <trans-unit resname="menu_config" id="help_welcome.menu_config">
-                    <source>Config</source>
+                <trans-unit resname="studyExclude" id="admin_managemails.studyExclude">
+                    <source>Exclude project participants</source>
                 </trans-unit>
-            </group>
-            <group resname="help_setup" id="help_setup">
-                <trans-unit resname="question_devices_answer1" id="help_setup.question_devices_answer1">
-                    <source>Fitbit</source>
+                <trans-unit resname="test_btn" id="admin_managemails.test_btn">
+                    <source>Test:send to yourself</source>
                 </trans-unit>
-                <trans-unit resname="question_devices_answer2" id="help_setup.question_devices_answer2">
-                    <source>Jawbone</source>
-                </trans-unit>
-                <trans-unit resname="question_devices_answer3" id="help_setup.question_devices_answer3">
-                    <source>Withings</source>
+                <trans-unit resname="save_btn" id="admin_managemails.save_btn">
+                    <source>Store Mail</source>
                 </trans-unit>
             </group>
         </body>
@@ -158,12 +138,6 @@
                 <trans-unit resname="debug_btn" id="manageapp.debug_btn">
                     <source>API Tester Sandbox</source>
                 </trans-unit>
-                <group resname="info" id="manageapp.info">
-                    <trans-unit resname="developerTeam" id="manageapp.info.developerTeam">
-                        <source>Enter comma separated list of email addresses of other developers on MIDATA that develop this application.</source>
-                        <target>Inserire una lista separata da virgole di indirizzi e-mail di altri sviluppatori su MIDATA che sviluppano questa applicazione.</target>
-                    </trans-unit>
-                </group>
                 <trans-unit resname="access_query_json" id="manageapp.access_query_json">
                     <source>Data Access Filter</source>
                 </trans-unit>
@@ -230,22 +204,11 @@
     <file source-language="en" target-language="it" datatype="winres" original="researchers_it.json">
         <body>
             <group resname="studynav" id="studynav">
+                <trans-unit resname="codes" id="studynav.codes">
+                    <source>Codes</source>
+                </trans-unit>
                 <trans-unit resname="team" id="studynav.team">
                     <source>Team</source>
-                </trans-unit>
-            </group>
-            <group resname="studyfields" id="studyfields">
-                <trans-unit resname="pseudonymous2" id="studyfields.pseudonymous2">
-                    <source>, exported data reveals the pseudonymized identity, year of birth, gender and country. Some researchers, like study nurses, may have access to full personal data.</source>
-                    <target>, i dati esportati rivelano l'identità pseudonimizzati, l'anno di nascita, il sesso e il paese. Alcuni ricercatori, come gli study nurses, possono avere accesso a tutti dati personali.</target>
-                </trans-unit>
-                <trans-unit resname="pseudonymous2b" id="studyfields.pseudonymous2b">
-                    <source>, exported data reveals the pseudonymized identity. Some researchers, like study nurses, may have access to full personal data.</source>
-                    <target>, i dati esportati rivelano l'identità pseudonimizzata. Alcuni ricercatori, come gli study nurses, possono avere accesso a tutti i dati personali.</target>
-                </trans-unit>
-                <trans-unit resname="anonymous2" id="studyfields.anonymous2">
-                    <source>, the pseudonymization mapping may not be accessed.</source>
-                    <target>, la mappatura della pseudonimizzazione non è accessibile.</target>
                 </trans-unit>
             </group>
             <group resname="studyrules" id="studyrules">
@@ -253,11 +216,82 @@
                     <source>Data Access Filter</source>
                 </trans-unit>
             </group>
+            <group resname="researcher_sharing" id="researcher_sharing">
+                <trans-unit resname="source" id="researcher_sharing.source">
+                    <source>Source</source>
+                </trans-unit>
+                <trans-unit resname="me" id="researcher_sharing.me">
+                    <source>Data from my account</source>
+                </trans-unit>
+                <trans-unit resname="project" id="researcher_sharing.project">
+                    <source>Data from analyzer</source>
+                </trans-unit>
+            </group>
+            <group resname="codes" id="codes">
+                <trans-unit resname="intro" id="codes.intro">
+                    <source>Participation codes may be used to recruit participants for the study.</source>
+                </trans-unit>
+                <trans-unit resname="code" id="codes.code">
+                    <source>Code</source>
+                </trans-unit>
+                <trans-unit resname="group" id="codes.group">
+                    <source>Group</source>
+                </trans-unit>
+                <trans-unit resname="recruiter" id="codes.recruiter">
+                    <source>Recruiter</source>
+                </trans-unit>
+                <trans-unit resname="status" id="codes.status">
+                    <source>Status</source>
+                </trans-unit>
+                <trans-unit resname="created_at" id="codes.created_at">
+                    <source>Created At</source>
+                </trans-unit>
+                <trans-unit resname="empty" id="codes.empty">
+                    <source>No participation codes have been generated.</source>
+                </trans-unit>
+                <trans-unit resname="showcreate_btn" id="codes.showcreate_btn">
+                    <source>Add new codes</source>
+                </trans-unit>
+                <trans-unit resname="new_title" id="codes.new_title">
+                    <source>Create New Codes</source>
+                </trans-unit>
+                <trans-unit resname="number_of_codes" id="codes.number_of_codes">
+                    <source>Number of codes</source>
+                </trans-unit>
+                <trans-unit resname="reuseable" id="codes.reuseable">
+                    <source>Codes are reusable</source>
+                </trans-unit>
+                <trans-unit resname="yes" id="codes.yes">
+                    <source>Yes</source>
+                </trans-unit>
+                <trans-unit resname="no" id="codes.no">
+                    <source>No</source>
+                </trans-unit>
+                <trans-unit resname="type_of_creation" id="codes.type_of_creation">
+                    <source>Type of creation</source>
+                </trans-unit>
+                <trans-unit resname="manually" id="codes.manually">
+                    <source>Manual entry</source>
+                </trans-unit>
+                <trans-unit resname="generated" id="codes.generated">
+                    <source>Generated</source>
+                </trans-unit>
+                <trans-unit resname="codes" id="codes.codes">
+                    <source>New codes</source>
+                </trans-unit>
+                <trans-unit resname="add_btn" id="codes.add_btn">
+                    <source>Add now</source>
+                </trans-unit>
+            </group>
         </body>
     </file>
     <file source-language="en" target-language="it" datatype="winres" original="shared_it.json">
         <body>
             <group resname="footer" id="footer">
+                <trans-unit resname="copyright" id="footer.copyright">
+                    <source> </source>
+                    <target> </target>
+                </trans-unit>
                 <trans-unit resname="impressum" id="footer.impressum">
                     <source>Impressum</source>
                 </trans-unit>
@@ -269,13 +303,56 @@
             </group>
             <group resname="error" id="error">
                 <group resname="invalid" id="error.invalid">
-                    <trans-unit resname="sharing" id="error.invalid.sharing">
-                        <source>The Data Access Filter may not contain the Patient resource. The correct Patient resource is shared automatically.</source>
-                        <target>Il filtro di accesso ai dati  (Data Access Filter) potrebbe non contenere la risorsa Patient. La risorsa Patient corretta viene condivisa automaticamente.</target>
+                    <trans-unit resname="joincode" id="error.invalid.joincode">
+                        <source>Provided participation code is not accepted.</source>
+                    </trans-unit>
+                </group>
+                <group resname="blocked" id="error.blocked">
+                    <trans-unit resname="user" id="error.blocked.user">
+                        <source>This account has been blocked. Your email address is blocked for further registration unless you contact support@midata.coop.</source>
+                        <target>L'utente non è autorizzato ad accedere. Contattare support@midata.coop per ottenere assistenza.</target>
+                    </trans-unit>
+                    <trans-unit resname="joinmethod" id="error.blocked.joinmethod">
+                        <source>Project does not accept joining using this method.</source>
+                    </trans-unit>
+                </group>
+                <group resname="already_done" id="error.already_done">
+                    <trans-unit resname="unsubscribed" id="error.already_done.unsubscribed">
+                        <source>You have already unsubscribed from this channel.</source>
                     </trans-unit>
                 </group>
             </group>
             <group resname="enum" id="enum">
+                <group resname="eventtype" id="enum.eventtype">
+                    <trans-unit resname="communication-rejected" id="enum.eventtype.communication-rejected">
+                        <source>Unsubscribed from communication channel</source>
+                    </trans-unit>
+                    <trans-unit resname="communication-approved" id="enum.eventtype.communication-approved">
+                        <source>Subscribed to communication channel</source>
+                    </trans-unit>
+                </group>
+                <group resname="joinmethod" id="enum.joinmethod">
+                    <trans-unit resname="APP_CODE" id="enum.joinmethod.APP_CODE">
+                        <source>Participant may join through application provided code</source>
+                    </trans-unit>
+                </group>
+                <group resname="pcodestatus" id="enum.pcodestatus">
+                    <trans-unit resname="UNUSED" id="enum.pcodestatus.UNUSED">
+                        <source>Not used</source>
+                    </trans-unit>
+                    <trans-unit resname="SHARED" id="enum.pcodestatus.SHARED">
+                        <source>Given away</source>
+                    </trans-unit>
+                    <trans-unit resname="USED" id="enum.pcodestatus.USED">
+                        <source>Used</source>
+                    </trans-unit>
+                    <trans-unit resname="BLOCKED" id="enum.pcodestatus.BLOCKED">
+                        <source>Blocked</source>
+                    </trans-unit>
+                    <trans-unit resname="REUSEABLE" id="enum.pcodestatus.REUSEABLE">
+                        <source>Reusable</source>
+                    </trans-unit>
+                </group>
                 <group resname="researcherrole" id="enum.researcherrole">
                     <trans-unit resname="SPONSOR" id="enum.researcherrole.SPONSOR">
                         <source>Sponsor</source>
@@ -314,6 +391,25 @@
                         <source>Team</source>
                     </trans-unit>
                 </group>
+                <group resname="bulkmailtype" id="enum.bulkmailtype">
+                    <trans-unit resname="MARKETING" id="enum.bulkmailtype.MARKETING">
+                        <source>Marketing - Account Holders</source>
+                    </trans-unit>
+                    <trans-unit resname="PROJECT" id="enum.bulkmailtype.PROJECT">
+                        <source>Project specific</source>
+                    </trans-unit>
+                </group>
+                <group resname="channeluse" id="enum.channeluse">
+                    <trans-unit resname="ALLOWED" id="enum.channeluse.ALLOWED">
+                        <source>Allowed</source>
+                    </trans-unit>
+                    <trans-unit resname="FORBIDDEN" id="enum.channeluse.FORBIDDEN">
+                        <source>Forbidden</source>
+                    </trans-unit>
+                    <trans-unit resname="NULL" id="enum.channeluse.NULL">
+                        <source>Undefined</source>
+                    </trans-unit>
+                </group>
             </group>
             <group resname="common" id="common">
                 <group resname="yesno" id="common.yesno">
@@ -331,9 +427,53 @@
                 <trans-unit resname="password" id="login.password">
                     <source>Password</source>
                 </trans-unit>
-                <trans-unit resname="info6b" id="login.info6b">
-                    <source>Ally Science</source>
+                <trans-unit resname="info5" id="login.info5">
+                    <source>You do not yet have a MIDATA account and do not participate in any project?</source>
+                    <target>Non hai ancora un account MIDATA e non partecipi ad alcun progetto?</target>
                 </trans-unit>
+                <trans-unit resname="info6b" id="login.info6b">
+                    <source>Corona Science</source>
+                    <target>Corona Science</target>
+                </trans-unit>
+                <trans-unit resname="info6b_link" id="login.info6b_link">
+                    <source>https://coronascience.ch/en/</source>
+                    <target>https://coronascience.ch/it/</target>
+                </trans-unit>
+                <trans-unit resname="info6c" id="login.info6c">
+                    <source>project or one of the other</source>
+                    <target>o a uno degli altri</target>
+                </trans-unit>
+                <trans-unit resname="info6d" id="login.info6d">
+                    <source>MIDATA projects</source>
+                    <target>progetti MIDATA</target>
+                </trans-unit>
+                <trans-unit resname="info6d_link" id="login.info6d_link">
+                    <source>https://www.midata.coop/en/offers/</source>
+                    <target>https://www.midata.coop/it/offerta/</target>
+                </trans-unit>
+                <trans-unit resname="info6e" id="login.info6e">
+                    <source>!</source>
+                    <target>!</target>
+                </trans-unit>
+            </group>
+            <group resname="postregister" id="postregister">
+                <group resname="reject" id="postregister.reject">
+                    <trans-unit resname="intro1" id="postregister.reject.intro1">
+                        <source>You have clicked on the account REJECTION link in the account confirmation mail.</source>
+                    </trans-unit>
+                    <trans-unit resname="intro2" id="postregister.reject.intro2">
+                        <source>Please confirm that you do NOT want to create an account on MIDATA. Your email address will be blocked for further registration attempts unless you contact support@midata.coop.</source>
+                    </trans-unit>
+                    <trans-unit resname="reject_btn" id="postregister.reject.reject_btn">
+                        <source>Reject account</source>
+                    </trans-unit>
+                    <trans-unit resname="intro3" id="postregister.reject.intro3">
+                        <source>If you clicked the wrong link and want to CONFIRM your email address instead, click here:</source>
+                    </trans-unit>
+                    <trans-unit resname="confirm_btn" id="postregister.reject.confirm_btn">
+                        <source>Confirm account</source>
+                    </trans-unit>
+                </group>
             </group>
             <group resname="user" id="user">
                 <trans-unit resname="midataID" id="user.midataID">
@@ -343,16 +483,6 @@
             <group resname="editconsent2" id="editconsent2">
                 <trans-unit resname="team" id="editconsent2.team">
                     <source>Team</source>
-                </trans-unit>
-            </group>
-            <group resname="consents" id="consents">
-                <trans-unit resname="number_of_people" id="consents.number_of_people">
-                    <source># persons</source>
-                    <target># persone</target>
-                </trans-unit>
-                <trans-unit resname="number_of_records" id="consents.number_of_records">
-                    <source># records</source>
-                    <target># record</target>
                 </trans-unit>
             </group>
             <group resname="records" id="records">
@@ -405,6 +535,40 @@
                 </trans-unit>
                 <trans-unit resname="S" id="changelog.S">
                     <source>Bugfix</source>
+                </trans-unit>
+            </group>
+            <group resname="failure" id="failure">
+                <trans-unit resname="title" id="failure.title">
+                    <source>Login not allowed</source>
+                </trans-unit>
+                <trans-unit resname="intro" id="failure.intro">
+                    <source>You are not allowed to log in for the following reason:</source>
+                </trans-unit>
+                <trans-unit resname="withdrawn1" id="failure.withdrawn1">
+                    <source>You have withdrawn participation from a project that is mandantory for this application.</source>
+                </trans-unit>
+                <trans-unit resname="withdrawn2" id="failure.withdrawn2">
+                    <source>You will not be able to use the application again with your Midata account.</source>
+                </trans-unit>
+                <trans-unit resname="joinmethod1" id="failure.joinmethod1">
+                    <source>The access to the research project is restricted.</source>
+                </trans-unit>
+                <trans-unit resname="joinmethod2" id="failure.joinmethod2">
+                    <source>Please get in touch with the research responsible.. Please read the terms of use for this application for more information.</source>
+                </trans-unit>
+                <trans-unit resname="loginpage_btn" id="failure.loginpage_btn">
+                    <source>Return to Login</source>
+                </trans-unit>
+            </group>
+            <group resname="unsubscribe" id="unsubscribe">
+                <trans-unit resname="title" id="unsubscribe.title">
+                    <source>Unsubscribe</source>
+                </trans-unit>
+                <trans-unit resname="success" id="unsubscribe.success">
+                    <source>Unsubscribe operation successful.</source>
+                </trans-unit>
+                <trans-unit resname="back_to_login" id="unsubscribe.back_to_login">
+                    <source>Go to login page</source>
                 </trans-unit>
             </group>
         </body>

@@ -42,6 +42,7 @@
     "rules" : "Rules",
     "actions" : "Applications",
     "participants" : "Participants",
+    "codes" : "Codes",
     "records" : "Records",
     "results" : "Results",
     "team" : "Team",
@@ -324,7 +325,7 @@
     "exportdata_help" : "Export the project data as FHIR JSON Bundle (separate for each participant group).",
     "optional" : "(optional)" 
    },
-   
+
    "studyinfo" : {
      "title" : "Information",
      "introduction" : "Give additional information about the research project. You can provide public information, additional instructions and contact information only visible to the participants and information for other researchers and administration. Texts are only meant as additional information and may be edited by you at any time.",
@@ -337,9 +338,12 @@
      },
      "showlanguages" : "Languages to edit"
    },
-   
+
    "researcher_sharing" : {
      "description" : "Share or unshare records from your account with groups of project participants",
+     "source" : "Source",
+     "me" : "Data from my account",
+     "project" : "Data from analyzer",
      "format" : "Resource Type",
      "content" : "Content Type",
      "app" : "Application",
@@ -348,5 +352,26 @@
      "share_btn" : "Share",
      "unshare_btn" : "Unshare",
      "search_btn" : "Search"  
+   },
+
+   "codes" : {
+     "intro" : "Participation codes may be used to recruit participants for the study.",
+     "code" : "Code",
+     "group" : "Group",
+     "recruiter" : "Recruiter",
+     "status" : "Status",
+     "created_at" : "Created At",
+     "empty" : "No participation codes have been generated.",
+     "showcreate_btn" : "Add new codes",
+     "new_title" : "Create New Codes",
+     "number_of_codes" : "Number of codes",
+     "reuseable" : "Codes are reusable",
+     "yes" : "Yes",
+     "no" : "No",
+     "type_of_creation" : "Mode of creation",
+     "manually" : "Manual entry",
+     "generated" : "Generated",
+     "codes" : "New codes",
+     "add_btn" : "Add now"
    }
 }
