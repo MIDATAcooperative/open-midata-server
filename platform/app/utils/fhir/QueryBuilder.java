@@ -394,11 +394,12 @@ public class QueryBuilder {
 			  } else if (type.equals(TYPE_STRING)) {
 				bld.addEq(path, tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
 			  } else if (type.equals(TYPE_CANONICAL)) {
-					TokenParamModifier qualifier = tokenParam.getModifier();					
-					if (qualifier!=null && qualifier.equals("below")) {					
-					  bld.addEq(path, tokenParam.getValue(), CompareCaseInsensitiveOperator.STARTSWITH);
+					TokenParamModifier qualifier = tokenParam.getModifier();	
+					String value = system!=null ? (system + "|" + val) : val;					
+					if (qualifier!=null && qualifier.equals(TokenParamModifier.BELOW)) {					
+					  bld.addEq(path, value, CompareCaseInsensitiveOperator.STARTSWITH);
 					} else {						
-					  bld.addEq(path, tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
+					  bld.addEq(path, value, CompareCaseInsensitiveOperator.EQUALS);
 					}
 			  }
 			} else if (param instanceof StringParam) {
