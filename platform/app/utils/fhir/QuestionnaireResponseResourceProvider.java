@@ -116,8 +116,8 @@ public class QuestionnaireResponseResourceProvider extends RecordBasedResourcePr
   			ReferenceAndListParam thePatient, 
     
   			@Description(shortDefinition="The questionnaire the answers are provided for")
-  			@OptionalParam(name="questionnaire", targetTypes={  } )
-  			ReferenceAndListParam theQuestionnaire, 
+  			@OptionalParam(name="questionnaire" )
+  			TokenAndListParam theQuestionnaire, 
     
  			@Description(shortDefinition="The individual providing the information reflected in the questionnaire respose")
  			@OptionalParam(name="source", targetTypes={  } )

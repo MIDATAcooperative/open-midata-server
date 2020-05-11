@@ -332,6 +332,7 @@ public class IndexManager {
 		    if (targetAps == null) {
 		    	updateAllTs = System.currentTimeMillis() - 2000;
 		    	long limit = index.getAllVersion();
+		    	indexUpdatePart(index, executor, executor, cache);
 		    	Set<Consent> consents = Consent.getAllActiveByAuthorized(executor, limit);	
 		    	
 		    	DBIterator<Consent> consentIt = new Feature_AccountQuery.BlockwiseConsentPrefetch(cache, consents.iterator(), 200);
@@ -492,8 +493,33 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 	    			    			    			    		
 	    		modCount += index.getModCount();
 	    			    			    		
-	    	}		   	    			  			
+	    	}	
+	    		    		    		    			    	
+            if (index.getModCount() > 5000) index.flush();
 			
+			MidataId aps = executor;
+			StatsLookup lookup = new StatsLookup();
+			lookup.setAps(aps);
+			
+			Collection<StatsIndexKey> old = index.lookup(lookup);
+			for (StatsIndexKey k : old) index.removeEntry(k);
+			
+			
+			Map<String, Object> restrictions = new HashMap<String, Object>();				
+			restrictions.put("no-postfilter-steams", "true");
+			restrictions.put("group-system", "v1");
+			//if (aps.equals(executor)) restrictions.put("owner", "self");
+								
+			Query q = new Query(restrictions, Sets.create("app","content","format","owner","ownerName","stream","group"), cache, executor, new DummyAccessContext(cache), false);
+				
+			Collection<StatsIndexKey> keys = Feature_Stats.countConsent(q, nextWithProcessing, Feature_Indexes.getContextForAps(q, aps));
+			for (StatsIndexKey k : keys) {
+				k.studyGroup = null;
+				index.addEntry(k);					
+			}
+    			    			    			    		
+    		modCount += index.getModCount();
+    			    			    		    		    		    			
 			if (modCount>0) index.setAllVersion(updateAllTs);
 			index.flush();
 		} catch (LostUpdateException e) {

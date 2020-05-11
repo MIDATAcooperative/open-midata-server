@@ -23,6 +23,7 @@ import ca.uhn.fhir.rest.param.QuantityParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenParam;
+import ca.uhn.fhir.rest.param.TokenParamModifier;
 import ca.uhn.fhir.rest.param.UriParam;
 import ca.uhn.fhir.rest.param.UriParamQualifierEnum;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
@@ -392,7 +393,14 @@ public class QueryBuilder {
 				bld.addEq(path, tokenParam.getValue().equals("true"));
 			  } else if (type.equals(TYPE_STRING)) {
 				bld.addEq(path, tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
-			  } 
+			  } else if (type.equals(TYPE_CANONICAL)) {
+					TokenParamModifier qualifier = tokenParam.getModifier();					
+					if (qualifier!=null && qualifier.equals("below")) {					
+					  bld.addEq(path, tokenParam.getValue(), CompareCaseInsensitiveOperator.STARTSWITH);
+					} else {						
+					  bld.addEq(path, tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
+					}
+			  }
 			} else if (param instanceof StringParam) {
 			  StringParam stringParam = (StringParam) param;
 			  
@@ -406,13 +414,8 @@ public class QueryBuilder {
 			} else if (param instanceof ReferenceParam) {
 				ReferenceParam referenceParam = (ReferenceParam) param;
 				
-				if (type != null && type.equals(QueryBuilder.TYPE_CANONICAL)) {
-					String qualifier = referenceParam.getQueryParameterQualifier();
-					if (qualifier!=null && qualifier.equals(":below")) {
-					  bld.addEq(path, referenceParam.getValue(), CompareCaseInsensitiveOperator.STARTSWITH);
-					} else {
-					  bld.addEq(path, referenceParam.getValue());
-					}
+				if (type != null && type.equals(QueryBuilder.TYPE_CANONICAL)) {					
+					bld.addEq(path, referenceParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);					
 				} else {
 				
 					if (referenceParam.getChain() != null) {
@@ -463,7 +466,9 @@ public class QueryBuilder {
 				Date hDate = null;
 				
 				Calendar cal = dateParam.getValueAsDateTimeDt().getValueAsCalendar();
-				//cal.setTime(comp);
+				//NEWER HAPI: Calendar cal = Calendar.getInstance();
+				//NEWER HAPI: cal.setTime(dateParam.getValue());
+
 				if (cal == null) throw new UnprocessableEntityException("Invalid date in date restriction");
 				switch (precision) {					  
 				case SECOND: 
