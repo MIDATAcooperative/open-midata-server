@@ -20,7 +20,7 @@ angular.module('portal')
         
     
 	$scope.loadMail = function(mailId) {
-		$scope.status.doBusy(server.post(jsRoutes.controllers.BulkMails.get().url, JSON.stringify({ properties : { "_id" : mailId }, fields:["creator", "creatorName", "created", "started", "finished", "name", "status", "title", "content", "studyId", "studyName", "studyCode", "studyGroup", "progressId", "progressCount"]})))
+		$scope.status.doBusy(server.post(jsRoutes.controllers.BulkMails.get().url, JSON.stringify({ properties : { "_id" : mailId }, fields:["creator", "creatorName", "created", "started", "finished", "name", "status", "title", "content", "studyId", "studyName", "studyCode", "studyGroup", "progressId", "progressCount", "progressFailed"]})))
 		.then(function(data) { 
 			$scope.mailItem = data.data[0];	
 			if ($scope.mailItem.status == "DRAFT" || $scope.mailItem.status == "PAUSED") {
