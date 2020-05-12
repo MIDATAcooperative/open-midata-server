@@ -301,7 +301,18 @@ public class BulkMails extends Controller {
 			//System.out.println(user.email+" "+user.firstname+" "+user.lastname+" "+title+" "+content);
 			if (!restricted || (user.emailLC.endsWith("@midata.coop") || user.role==UserRole.ADMIN)) {
 			  if (restricted) title="(Restricted Test): "+title;
-			  MailUtils.sendTextMail(user.email, user.firstname+" "+user.lastname, title, content);
+			  try {
+			    MailUtils.sendTextMail(user.email, user.firstname+" "+user.lastname, title, content);
+			  } catch (Exception e) {
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e2) {}
+				try {
+				    MailUtils.sendTextMail(user.email, user.firstname+" "+user.lastname, title, content);
+				} catch (Exception e3) {
+				    mailItem.progressFailed++;
+				}
+			  }
 			}
 			return true;
 		}

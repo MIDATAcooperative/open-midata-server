@@ -17,7 +17,7 @@ public class BulkMail extends Model implements Comparable<BulkMail> {
 	private static final String collection = "bulkmails";
 	
 	@NotMaterialized
-	public final static Set<String> ALL = Sets.create("type", "country", "creator", "creatorName", "created", "started", "finished", "name", "status", "title", "content", "studyId", "studyName", "studyCode", "studyGroup", "progressId", "progressCount", "lastProgress");
+	public final static Set<String> ALL = Sets.create("type", "country", "creator", "creatorName", "created", "started", "finished", "name", "status", "title", "content", "studyId", "studyName", "studyCode", "studyGroup", "progressId", "progressCount", "progressFailed", "lastProgress");
 
 	/**
 	 * type of bulk mail
@@ -96,6 +96,8 @@ public class BulkMail extends Model implements Comparable<BulkMail> {
 	 */
 	public int progressCount;
 	
+	public int progressFailed;
+	
 	public long lastProgress;
 		
 	@Override
@@ -121,7 +123,7 @@ public class BulkMail extends Model implements Comparable<BulkMail> {
 	}
 
 	public void setProgress() throws InternalServerException {
-		this.setMultiple(collection, Sets.create("started", "finished", "status", "progressId", "progressCount", "lastProgress"));
+		this.setMultiple(collection, Sets.create("started", "finished", "status", "progressId", "progressCount", "progressFailed", "lastProgress"));
 	}
 
 	public static void add(BulkMail mailCampaign) throws InternalServerException {
