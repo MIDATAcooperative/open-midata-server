@@ -239,7 +239,7 @@ public class BulkMails extends Controller {
 			} else for (User user : users) if (user.marketingEmail!=CommunicationChannelUseStatus.FORBIDDEN) ids.add(user._id);
 			if (mailItem.studyId!=null) {
 				if (mailItem.studyGroup != null && mailItem.studyGroup.trim().length()==0) mailItem.studyGroup = null;
-				Set<StudyParticipation> parts = StudyParticipation.getParticipantsByStudyAndGroup(mailItem.studyId, mailItem.studyGroup, Sets.create("owner","projectEmails"));
+				Set<StudyParticipation> parts = StudyParticipation.getParticipantsByStudy(mailItem.studyId, Sets.create("owner","projectEmails"));
 				for (StudyParticipation part : parts) ids.remove(part.owner);
 			}
 			List<MidataId> result = new ArrayList<MidataId>(ids);
