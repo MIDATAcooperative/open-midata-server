@@ -108,6 +108,7 @@ public class Query {
 		Query r = new Query(properties, fields, cache, apsId, context, true);
 		r.path = this.path;
 		r.properties.remove("shared-after");
+		r.properties.remove("index-ts-provider");
 		r.process();
 		return r;
 	}

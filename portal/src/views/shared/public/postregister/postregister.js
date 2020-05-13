@@ -223,7 +223,7 @@ angular.module('portal')
 	  			  $scope.error = error.data;
 	  		  });
 		} else*/ if (funcresult) {
-		   if (funcresult.data.istatus === "ACTIVE") oauth.postLogin(result);
+		   if (funcresult.data.istatus === "ACTIVE") oauth.postLogin(funcresult);
 		   else session.postLogin(funcresult, $state);		
 	    } else {
 	      var r = session.retryLogin(params);
