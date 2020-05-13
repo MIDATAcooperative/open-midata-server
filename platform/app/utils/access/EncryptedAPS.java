@@ -189,6 +189,7 @@ public class EncryptedAPS {
 			create(); 
 		} else {
 		    aps.updateKeys();
+		    if (aps.consent) Consent.touch(apsId, aps.version);
 		}
 	}
 	
