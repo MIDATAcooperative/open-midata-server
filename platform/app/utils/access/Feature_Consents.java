@@ -14,6 +14,7 @@ import org.bson.BasicBSONObject;
 import models.MidataId;
 import utils.AccessLog;
 import utils.RuntimeConstants;
+import utils.access.Feature_Indexes.IndexUse;
 import utils.collections.CMaps;
 import utils.collections.NChainedMap;
 import utils.exceptions.AppException;
@@ -32,7 +33,16 @@ public class Feature_Consents extends Feature {
 	
 	@Override
 	protected DBIterator<DBRecord> iterator(Query q) throws AppException {
-		if (q.restrictedBy("shared-after")) {			
+		if (q.restrictedBy("shared-after")) {	
+			
+			IndexUse iuse = (IndexUse) q.getProperties().get("index-ts-provider");
+			if (iuse != null) {
+				long v = iuse.version(q.getApsId());
+				if (v<=0) {
+					AccessLog.log("shared-after: new aps: "+q.getApsId());
+					return new SetSharedDateIterator(new Date(q.getCache().getAPS(q.getApsId()).getLastChanged()), next.iterator(q.withoutTime()));
+				}
+			} 
 			Date after = q.getDateRestriction("shared-after");
 			AccessLog.logBeginPath("history-after("+after.toString()+")", null);
 			Query qnt = q.withoutTime();
@@ -125,6 +135,28 @@ public class Feature_Consents extends Feature {
 		
 	}
 
-	
+	static class SetSharedDateIterator implements DBIterator<DBRecord> {
+		Date sharedAt;
+		DBIterator<DBRecord> it;
+		
+		public SetSharedDateIterator(Date sharedAt, DBIterator<DBRecord> it) {
+			this.sharedAt = sharedAt;
+			this.it = it;
+		}
+
+		@Override
+		public DBRecord next() throws AppException {
+			DBRecord r = it.next();
+			r.sharedAt = sharedAt;
+			return r;
+		}
+
+		@Override
+		public boolean hasNext() throws AppException {
+			return it.hasNext();
+		}
+		
+		
+	}
 	
 }

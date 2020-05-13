@@ -150,7 +150,7 @@ public class Feature_Indexes extends Feature {
 					long v = myAccess.version(null);
 					// AccessLog.log("vx="+v);
 					List<DBRecord> add;
-					add = QueryEngine.filterByDataQuery(nextWithProcessing.query(new Query(q, "index-shared-after", CMaps.mapPositive("shared-after", v).map("consent-limit",1000))), indexQueryParsed, null);
+					add = QueryEngine.filterByDataQuery(nextWithProcessing.query(new Query(q, "index-shared-after", CMaps.mapPositive("shared-after", v).map("consent-limit",1000).map("index-ts-provider", myAccess))), indexQueryParsed, null);
 					AccessLog.log("found new updated entries: " + add.size());
 					result = QueryEngine.combine(result, add);				
 					if (result != null && !result.isEmpty()) {
