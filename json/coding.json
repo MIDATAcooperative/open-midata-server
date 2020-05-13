@@ -335,3 +335,7 @@
 {"_id":{"$oid":"5e8ef835aed6452871e492a4"},"system":"http://loinc.org","code":"46251-5","display":"Age Group","content":"loinc/46251-5"}
 {"_id":{"$oid":"5eaae669aed6451a78833025"},"system":"http://midata.coop","code":"research-id","display":"Research ID","content":"research-id"}
 {"_id":{"$oid":"5eaae669aed6451a78833026"},"system":"http://midata.coop","code":"research-id-hash","display":"Research ID Hash","content":"research-id-hash"}
+{"_id":{"$oid":"5ebc0ff8aed6453267473717"},"system":"http://snomed.info/sct","code":"13791008","display":"Lassitude","content":"snomed/13791008"}
+{"_id":{"$oid":"5ebc1038aed6453267473719"},"system":"http://snomed.info/sct","code":"193462001","display":"Insomnia","content":"snomed/193462001"}
+{"_id":{"$oid":"5ebc106baed645326747371b"},"system":"http://snomed.info/sct","code":"404640003","display":"Dizziness","content":"snomed/404640003"}
+{"_id":{"$oid":"5ebc10b6aed645326747371d"},"system":"http://snomed.info/sct","code":"60119000","display":"Exhaustion","content":"snomed/60119000"}
