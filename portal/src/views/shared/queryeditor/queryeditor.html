@@ -17,8 +17,8 @@
 		<div ng-show="blocks.length && !currentBlock && !target.askresources && !expertmode">
 		<p translate="queryeditor.summary"></p>
 		<div class="list-group">
-		  <div ng-repeat="block in blocks" class="list-group-item" href="javascript:" ng-click="selectBlock(block);">
-		    <b>{{ block.display }}</b>
+		  <div ng-repeat="block in blocks" ng-class="{'list-group-item-light':isFiltered(block) }" class="list-group-item" href="javascript:" ng-click="selectBlock(block);">
+		    <b>{{ block.display }}</b> <span ng-show="block.format" class="text-muted">- {{ resourceName(block.format) }}</span>
 		    <div ng-show="block.code">{{ block.code }}</div>
 		    <div>
 		      <span class="text-success" ng-show="mode=='app' && block.owner && block.owner != 'all' && (!block.public || block.public=='no')" translate="{{ 'queryeditor.short_owner_'+block.owner }}"></span>		      

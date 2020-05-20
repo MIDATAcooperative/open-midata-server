@@ -46,6 +46,10 @@ angular.module('portal')
 		}
 	};
 	
+	$scope.isFiltered = function(block) {
+		return labels.isFiltered(block, $scope.app.filename, true);
+	};
+	
 	$scope.basicAppResources = function() {
 		var toadd = [ "Patient", "PseudonymizedPatient","Practitioner", "AuditEvent", "Consent", "Group", "Subscription"];
 	    $scope.target.askresources = [];
@@ -55,6 +59,11 @@ angular.module('portal')
 	    		$translate("queryeditor.ask."+y.content).then(function(v) { if (v && v!=y.content) y.text = v;});
 	    	});
 	    });
+	};
+	
+	$scope.resourceName = function(format) {
+		if (format.startsWith("fhir/")) return format.substr(5);
+		return format;
 	};
 	
 	
