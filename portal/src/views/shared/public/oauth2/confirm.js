@@ -97,7 +97,7 @@ angular.module('portal')
 	};	
 
 	$scope.prepareQuery = function(defaultQuery, appName, genLabels, reqInf) {
-		var sq = labels.simplifyQuery(defaultQuery, appName);
+		var sq = labels.simplifyQuery(defaultQuery, appName, true);
 		var result = [];		
 		if (sq) {
 			if (sq.content) {

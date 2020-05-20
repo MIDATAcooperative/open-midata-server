@@ -57,13 +57,18 @@ angular.module('services')
 		} else return $q.when(existing);
 	};
 	
-	service.simplifyQuery = function(query, removeRestrictedByAppName) {
+	service.isUncriticalFormat = function(format) {
+		var fmts = { "fhir/Patient" : true, "fhir/Group" : true, "fhir/Person" : true, "fhir/Practitioner" : true, "fhir/ValueSet" : true, "fhir/Questionnaire" : true };
+		return fmts[format];
+	};
+	
+	service.simplifyQuery = function(query, removeRestrictedByAppName, removeUncritical) {
 	  if (query.$or) {
 		  
 	     var result = { content : [], group : [], format : [] };
 		 angular.forEach(query.$or, function(part) {
-			 if (part["public"]=="only") return;
-			 if (part.app && part.app.length==1 && part.app[0] === removeRestrictedByAppName) return;
+			 if (service.isFiltered(part, removeRestrictedByAppName, removeUncritical)) return;
+			 
 			 if (part.content) result.content.push.apply(result.content, part.content);
 			 if (part.format) result.format.push.apply(result.format, part.format);
 			 if (part.group) result.group.push.apply(result.group, part.group);
@@ -71,6 +76,15 @@ angular.module('services')
 		 });
 		 return result;
 	  } else return query;
+	};
+	
+	service.isFiltered = function(part, removeRestrictedByAppName, removeUncritical) {
+	  if (part["public"]=="only") return true;
+	  console.log("appn:"+removeRestrictedByAppName);
+	  console.log(part);
+	  if (part.app && (part.app==="self" || (part.app.length==1 && part.app[0] === removeRestrictedByAppName))) return true;
+	  if (removeUncritical && part.format && service.isUncriticalFormat(part.format)) return true;
+	  return false;
 	};
 	
 	service.parseAccessQuery = function(lang, query, outerquery, rarray) {

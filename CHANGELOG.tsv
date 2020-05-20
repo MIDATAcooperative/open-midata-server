@@ -48,5 +48,6 @@ id0046	15.04.2020	a.kreutz	B	Searches on Questionnaire	Some possible searches on
 id0047	05.05.2020	a.kreutz	F	Participation Codes	Researchers are now able to generate participation codes for research projects.
 id0048	07.05.2020	a.kreutz	I	'below'-modifier supported	FHIR searches on canoncial references now support the :below search modifier.
 id0049	07.05.2020	a.kreutz	F	Service mail feature	Mails to project participants or all account holders are possible.
-id0050	07.05.2020	a.kreutz	F	Unsubscribe by email	Users may now unsubscribe from communication channels     
+id0050	07.05.2020	a.kreutz	F	Unsubscribe by email	Users may now unsubscribe from communication channels
+id0051	20.05.2020	a.kreutz	I	Access Filter editor improved	Data types that will not be displayed upon login/participation are marked in grey. Resource types are now also shown in list.     
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 
