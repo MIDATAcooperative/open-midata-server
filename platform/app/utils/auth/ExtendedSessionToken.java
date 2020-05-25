@@ -202,6 +202,11 @@ public class ExtendedSessionToken extends PortalSessionToken {
     	return this;
     }
     
+    public ExtendedSessionToken withJoinCode(String joinCode) {
+    	this.joinCode = joinCode;
+    	return this;
+    }
+    
     public ExtendedSessionToken withAppInstance(MobileAppInstance appInstance) {
     	this.appInstanceId = appInstance._id;
     	this.appId = appInstance.applicationId;    	
