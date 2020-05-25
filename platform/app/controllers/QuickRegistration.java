@@ -197,7 +197,9 @@ public class QuickRegistration extends APIController {
 		Circles.fetchExistingConsents(user._id, user.emailLC);
 		Application.sendWelcomeMail(app._id, user, null);
 		UsageStatsRecorder.protokoll(app._id, app.filename, UsageAction.REGISTRATION);
-		
+	
+		String joinCode = JsonValidation.getStringOrNull(json, "joinCode");
+					
 		if (notok == null || notok.isEmpty()) {
 		
 			if (study != null) controllers.members.Studies.requestParticipation(new ExecutionInfo(user._id, user.role), user._id, study._id, user.initialApp, JoinMethod.RESEARCHER, null);
@@ -207,9 +209,9 @@ public class QuickRegistration extends APIController {
 			   return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withAppInstance(appInstance), json, app, user._id);
 			}*/
 					
-			return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device), json, app, user._id);
+			return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withJoinCode(joinCode), json, app, user._id);
 		} else {
-			return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device), json, app, user._id);
+			return OAuth2.loginHelper(new ExtendedSessionToken().forUser(user).withSession(handle).withApp(app._id, device).withJoinCode(joinCode), json, app, user._id);
 		}
 	}
 	

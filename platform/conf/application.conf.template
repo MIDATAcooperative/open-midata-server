@@ -37,7 +37,7 @@ play.filters.enabled=[]
 
 play.mailer {
   host=MAIL_SMTP_SERVER
-  port=25
+  port=587
   ssl=false
   tls=true
   user="MAIL_SENDER"
