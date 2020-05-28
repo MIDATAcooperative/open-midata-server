@@ -385,9 +385,11 @@ public class Feature_AccountQuery extends Feature {
 				for (String owner : sets) {
 					if (MidataId.isValid(owner)) {
 						MidataId id = new MidataId(owner);
-						if (!id.equals(q.getCache().getAccountOwner())) owners.add(id);
+						// removed condition: if (!id.equals(q.getCache().getAccountOwner()))*/
+						// prevents get by id for resources of project analyzer
+						owners.add(id);
 					}
-				}
+				}				
 	    	}
 	    	
 	    	if (q.restrictedBy("study-group")) {
