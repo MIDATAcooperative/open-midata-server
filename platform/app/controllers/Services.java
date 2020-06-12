@@ -130,6 +130,7 @@ public class Services extends APIController {
         obj.put("access_token", session.encrypt());		
 		obj.put("expires_in", MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME / 1000l);		
 		obj.put("refresh_token", refresh.encrypt());
+		obj.put("cn", appInstance._id+"."+aeskey);
 				
 		response().setHeader("Cache-Control", "no-store");
 		response().setHeader("Pragma", "no-cache"); 
