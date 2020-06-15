@@ -319,3 +319,4 @@
 {"_id":{"$oid":"5ebc1038aed6453267473718"},"content":"snomed/193462001","defaultCode":"http://snomed.info/sct 193462001","security":"MEDIUM","label":{"de":"Schlaflosigkeit","en":"Insomnia","fr":"Insomnie"},"resourceType":"fhir/Condition"}
 {"_id":{"$oid":"5ebc106baed645326747371a"},"content":"snomed/404640003","defaultCode":"http://snomed.info/sct 404640003","security":"MEDIUM","label":{"de":"Schwindel","en":"Dizziness","fr":"Vertiges"},"resourceType":"fhir/Condition"}
 {"_id":{"$oid":"5ebc10b6aed645326747371c"},"content":"snomed/60119000","defaultCode":"http://snomed.info/sct 60119000","security":"MEDIUM","label":{"de":"Erschöpfung","en":"Exhaustion","fr":"Épuisement"},"resourceType":"fhir/Condition"}
+{"_id":{"$oid":"5ee7398faed64514ac528de7"},"content":"ResearchStudy","defaultCode":"http://midata.coop ResearchStudy","security":"MEDIUM","label":{"en":"Research Study"},"resourceType":"fhir/ResearchStudy"}
