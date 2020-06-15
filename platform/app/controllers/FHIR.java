@@ -137,9 +137,9 @@ public class FHIR extends Controller {
         		  DateParam dal = new DateParam(dates[i]);
         		  ParamPrefixEnum prefix = dal.getPrefix();
         		  if (prefix == ParamPrefixEnum.GREATERTHAN_OR_EQUALS) {
-        			  from = dal.getValueAsDateTimeDt().getValue();
+        			  from = dal.getValue();
         		  } else if (prefix == ParamPrefixEnum.LESSTHAN) {
-        			  to = dal.getValueAsDateTimeDt().getValue();
+        			  to = dal.getValue();
         		  } else throw new BadRequestException("error.invalid", "Only 'ge' and 'lt' supported on _lastUpdated");
         		}
         	}

@@ -369,7 +369,7 @@ public class CompositionResourceProvider extends RecordBasedResourceProvider<Com
 	@Operation(name="$document", idempotent=true)
 	public Bundle document(				  
 		 @IdParam IIdType theId,
-		 @OptionalParam(name="persist") TokenParam thePersist
+		 @OperationParam(name="persist") TokenParam thePersist
 	   ) throws AppException {
 		Bundle retVal = new Bundle();
 		retVal.setType(BundleType.DOCUMENT);

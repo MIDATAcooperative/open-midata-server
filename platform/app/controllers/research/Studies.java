@@ -118,6 +118,7 @@ import utils.fhir.FHIRServlet;
 import utils.fhir.FHIRTools;
 import utils.fhir.GroupResourceProvider;
 import utils.fhir.PractitionerResourceProvider;
+import utils.fhir.ResearchStudyResourceProvider;
 import utils.fhir.ResourceProvider;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
@@ -216,6 +217,8 @@ public class Studies extends APIController {
 		RecordManager.instance.createPrivateAPS(userGroup._id, userGroup._id);
 
 		Study.add(study);
+		
+		ResearchStudyResourceProvider.updateFromStudy(userId, study);
 
 		AuditManager.instance.addAuditEvent(AuditEventType.ADDED_AS_TEAM_MEMBER, null, userId, userId, null, study._id);
 		AuditManager.instance.success();
@@ -766,6 +769,9 @@ public class Studies extends APIController {
 		// study.addHistory(new History(EventType.VALIDATION_REQUESTED, user,
 		// null));
 		study.setValidationStatus(StudyValidationStatus.VALIDATION);
+		
+		ResearchStudyResourceProvider.updateFromStudy(userId, study._id);
+		
 		AuditManager.instance.success();
 
 		if (InstanceConfig.getInstance().getInstanceType().getStudiesValidateAutomatically()) {
@@ -825,6 +831,7 @@ public class Studies extends APIController {
 
 		// study.addHistory(new History(EventType.STUDY_VALIDATED, user, null));
 		study.setValidationStatus(StudyValidationStatus.VALIDATED);
+		ResearchStudyResourceProvider.updateFromStudy(userId, study._id);
 		AuditManager.instance.success();
 
 		return ok();
@@ -857,6 +864,7 @@ public class Studies extends APIController {
 		// study.addHistory(new History(EventType.STUDY_REJECTED, user, "Reset
 		// to draft mode"));
 		study.setValidationStatus(StudyValidationStatus.DRAFT);
+		ResearchStudyResourceProvider.updateFromStudy(userId, study._id);
 
 		AuditManager.instance.success();
 
@@ -902,6 +910,8 @@ public class Studies extends APIController {
 		// study.addHistory(new History(EventType.PARTICIPANT_SEARCH_STARTED,
 		// user, null));
 		study.setParticipantSearchStatus(ParticipantSearchStatus.SEARCHING);
+		ResearchStudyResourceProvider.updateFromStudy(userId, study._id);
+		
 		AuditManager.instance.success();
 
 		return ok();
@@ -944,6 +954,8 @@ public class Studies extends APIController {
 		// study.addHistory(new History(EventType.PARTICIPANT_SEARCH_CLOSED,
 		// user, null));
 		study.setParticipantSearchStatus(ParticipantSearchStatus.CLOSED);
+		ResearchStudyResourceProvider.updateFromStudy(userId, study._id);
+		
 		AuditManager.instance.success();
 
 		return ok();
@@ -987,6 +999,7 @@ public class Studies extends APIController {
 
 		// study.addHistory(new History(EventType.STUDY_STARTED, user, null));
 		study.setExecutionStatus(StudyExecutionStatus.RUNNING);
+		ResearchStudyResourceProvider.updateFromStudy(userId, study._id);
 		Market.updateActiveStatus(study);
 		AuditManager.instance.success();
 
@@ -1030,7 +1043,7 @@ public class Studies extends APIController {
 		closeStudy(userId, study);
 		// study.addHistory(new History(EventType.STUDY_FINISHED, user, null));
 		study.setExecutionStatus(StudyExecutionStatus.FINISHED);
-		
+		ResearchStudyResourceProvider.updateFromStudy(userId, study._id);
 		Market.updateActiveStatus(study);
 		
 		AuditManager.instance.success();
@@ -1091,7 +1104,7 @@ public class Studies extends APIController {
 
 		// study.addHistory(new History(EventType.STUDY_ABORTED, user, null));
 		study.setExecutionStatus(StudyExecutionStatus.ABORTED);
-		
+		ResearchStudyResourceProvider.updateFromStudy(userId, study._id);
 		Market.updateActiveStatus(study);
 
 		AuditManager.instance.success();
@@ -1925,7 +1938,7 @@ public class Studies extends APIController {
 		study.setRequiredInformation(inf);
 		study.setAnonymous(anonymous);
 		study.setAssistance(assist);
-
+		ResearchStudyResourceProvider.updateFromStudy(userId, study._id);
 		AuditManager.instance.success();
 		return ok();
 	}
@@ -2017,7 +2030,7 @@ public class Studies extends APIController {
 		if (json.has("joinMethods")) {
 			study.setJoinMethods(JsonValidation.getEnumSet(json, "joinMethods", JoinMethod.class));
 		}
-
+		ResearchStudyResourceProvider.updateFromStudy(userId, study._id);
 		AuditManager.instance.success();
 		return ok();
 	}
@@ -2108,7 +2121,7 @@ public class Studies extends APIController {
 			
 			study.setInfosInternal(result);
 		}
-
+		ResearchStudyResourceProvider.updateFromStudy(userId, study._id);
 
 		return ok();
 	}
@@ -2177,7 +2190,7 @@ public class Studies extends APIController {
 
 		Set<StudyAppLink> links = StudyAppLink.getByStudy(studyId);
 		for (StudyAppLink link : links) link.delete();
-		
+		ResearchStudyResourceProvider.updateFromStudy(userId, study._id);
 		Study.delete(studyId);
 
 		AuditManager.instance.success();
@@ -2240,6 +2253,7 @@ public class Studies extends APIController {
 		RecordManager.instance.createPrivateAPS(userGroup._id, userGroup._id);
 
 		Study.add(study);
+		ResearchStudyResourceProvider.updateFromStudy(userId, study);
 		
 		Set<StudyAppLink> sals = StudyAppLink.getByStudy(oldGroup);
 		for (StudyAppLink sal : sals) {

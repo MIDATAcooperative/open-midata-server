@@ -8,6 +8,7 @@ import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.UriType;
 
 import ca.uhn.fhir.rest.annotation.Metadata;
+import ca.uhn.fhir.rest.api.server.RequestDetails;
 import utils.InstanceConfig;
 
 public class MidataConformanceProvider  extends ServerCapabilityStatementProvider  {
@@ -15,8 +16,8 @@ public class MidataConformanceProvider  extends ServerCapabilityStatementProvide
 	private boolean doadd = true;
 	@Override
 	@Metadata
-	public CapabilityStatement  getServerConformance(HttpServletRequest arg0) {
-		CapabilityStatement  conformance = super.getServerConformance(arg0);
+	public CapabilityStatement  getServerConformance(HttpServletRequest arg0, RequestDetails arg1) {
+		CapabilityStatement  conformance = super.getServerConformance(arg0, arg1);
 				
 		if (doadd) {
 			Extension dt = conformance.getRest().get(0).getSecurity().addExtension().setUrl("http://fhir-registry.smarthealthit.org/StructureDefinition/oauth-uris");

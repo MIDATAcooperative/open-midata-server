@@ -26,7 +26,7 @@ public class MessageProcessor {
 		@Operation(name="$process-message")
 		public Bundle processMessage(				  
 		   @OperationParam(name="content") Bundle content,
-		   @OptionalParam(name="async") TokenParam async
+		   @OperationParam(name="async") TokenParam async
 		) {
 			
 			BundleEntryComponent bec = content.getEntryFirstRep();

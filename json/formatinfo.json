@@ -39,3 +39,4 @@
 {"_id":{"$oid":"5ec4dc762492c13cbf7baebb"},"format":"fhir/Questionnaire","comment":"FHIR Questionnaire Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"5ec4dc762492c13cbf7baebd"},"format":"fhir/Group","comment":"FHIR Group Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"5ec4dc762492c13cbf7baebf"},"format":"fhir/Practitioner","comment":"FHIR Practitioner Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"5ee73a0796fcbad0c74aa0e1"},"format":"fhir/ResearchStudy","comment":"FHIR ResearchStudy Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
