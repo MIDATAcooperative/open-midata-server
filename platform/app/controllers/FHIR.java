@@ -162,12 +162,15 @@ public class FHIR extends Controller {
 	
 	private ExecutionInfo getExecutionInfo(PlayHttpServletRequest req) throws AppException {
 		
-		String valid = req.getHeader("X-Client-Valid");
+		boolean cert_direct = false;
+		String valid = req.getHeader("X-Client-Valid-LB");
+		if (valid == null) {
+			valid = req.getHeader("X-Client-Valid");
+			cert_direct = true;
+		}
 		if (valid != null && valid.equals("SUCCESS")) {
-		   String serial = req.getHeader("X-Client-Serial");
-  		   AccessLog.log("VALID="+valid);
-		   AccessLog.log("SERIAL="+serial);
-
+		   String serial = cert_direct ? req.getHeader("X-Client-Serial") : req.getHeader("X-Client-Serial-LB");
+  		  
 		   if (serial!=null) {
 			   String[] serial2 = serial.split(",");
 			   MidataId instance;

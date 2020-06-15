@@ -26,7 +26,7 @@ install-from-servertools: lock tasks/install-packages tasks/install-node tasks/b
 	touch switches/use-hotdeploy
 	touch tasks/check-config	
 
-install-local: tasks/install-packages tasks/install-node tasks/bugfixes tasks/prepare-local tasks/check-config $(CERTIFICATE_DIR)/selfsign.crt $(CERTIFICATE_DIR)/dhparams.pem tasks/install-localmongo platform/conf/secret.conf.gz.nc tasks/precompile 
+install-local: tasks/install-packages tasks/install-node tasks/bugfixes tasks/prepare-local tasks/check-config $(CERTIFICATE_DIR)/selfsign.crt $(CERTIFICATE_DIR)/dhparams.pem $(CERTIFICATE_DIR)/clientca.pem tasks/install-localmongo platform/conf/secret.conf.gz.nc tasks/precompile 
 	touch switches/local-mongo
 	$(info Please run "make update" to build)
 	touch switches/local-mongo
@@ -292,6 +292,7 @@ nginx/sites-available/%: nginx/templates/% conf/setup.conf conf/pathes.conf conf
 	sed -i 's|DOMAIN|$(DOMAIN)|' nginx/sites-available/$*
 	sed -i 's|CERTIFICATE_PEM|$(CERTIFICATE_PEM)|' nginx/sites-available/$*
 	sed -i 's|CERTIFICATE_KEY|$(CERTIFICATE_KEY)|' nginx/sites-available/$*
+	sed -i 's|CERTIFICATE_CLIENT|$(CERTIFICATE_CLIENT)|' nginx/sites-available/$*
 	sed -i 's|DHPARAMS|$(CERTIFICATE_DIR)/dhparams.pem|' nginx/sites-available/$*
 	sed -i 's|PLATFORM_INTERNAL_PORT|9001|' nginx/sites-available/$*
 	sed -i 's|ROOTDIR|$(abspath .)|' nginx/sites-available/$*
@@ -316,6 +317,13 @@ $(CERTIFICATE_DIR)/selfsign.crt:
 	$(info ------------------------------)
 	mkdir -p $(CERTIFICATE_DIR)
 	openssl req -x509 -nodes -newkey rsa:2048 -keyout $(CERTIFICATE_DIR)/selfsign.key -out $(CERTIFICATE_DIR)/selfsign.crt -days 365
+
+$(CERTIFICATE_DIR)/clientca.pem:
+	$(info ------------------------------)
+	$(info Create Certificate Authority... )
+	$(info ------------------------------)
+	mkdir -p $(CERTIFICATE_DIR)
+	openssl req -new -nodes -x509 -newkey rsa:4096 -days 3650 -keyout $(CERTIFICATE_DIR)/clientca.key -out $(CERTIFICATE_DIR)/clientca.pem
 
 order-certificate:
 	$(info ---------------------------------------------)
