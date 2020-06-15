@@ -70,6 +70,7 @@ angular.module('portal')
 	$scope.resourceOptions = {
 	  "fhir/AuditEvent" : ["noapp", "noowner", "notime", "nopublic"], 
 	  "fhir/Consent" : ["noapp", "noowner", "notime", "nopublic"],
+	  "fhir/ResearchStudy" : ["noapp","noowner","initpublic","notime","nopublic"],
 	  "fhir/ValueSet" : ["noapp","noowner", "notime","initpublic"],
 	  "fhir/Group" : ["noowner"],
 	  "fhir/Patient" : ["noapp", "notime", "nopublic"],

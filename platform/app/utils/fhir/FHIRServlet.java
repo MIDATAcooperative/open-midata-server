@@ -11,7 +11,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ca.uhn.fhir.narrative.DefaultThymeleafNarrativeGenerator;
 import ca.uhn.fhir.rest.server.HardcodedServerAddressStrategy;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.RestfulServer;
@@ -49,7 +48,7 @@ public class FHIRServlet extends RestfulServer {
 	   
        setServerAddressStrategy(new ServerAddressStrategy());
        this.setServerConformanceProvider(new MidataConformanceProvider());
-       ResourceProvider.ctx.setNarrativeGenerator(new DefaultThymeleafNarrativeGenerator());       
+       // ResourceProvider.ctx.setNarrativeGenerator(new DefaultThymeleafNarrativeGenerator());       
        
       /*
        * The servlet defines any number of resource providers, and
@@ -98,6 +97,7 @@ public class FHIRServlet extends RestfulServer {
       myProviders.put("Specimen", new SpecimenResourceProvider());
       myProviders.put("Location", new LocationResourceProvider());
       myProviders.put("ValueSet", new ValueSetResourceProvider());
+      myProviders.put("ResearchStudy", new ResearchStudyResourceProvider());
       
       resourceProviders.addAll(myProviders.values());
       
