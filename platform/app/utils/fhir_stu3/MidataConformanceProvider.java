@@ -17,6 +17,7 @@ public class MidataConformanceProvider  extends ServerCapabilityStatementProvide
 	@Override
 	@Metadata
 	public CapabilityStatement  getServerConformance(HttpServletRequest arg0, RequestDetails arg1) {
+		setPublisher("midata.coop");	
 		CapabilityStatement  conformance = super.getServerConformance(arg0, arg1);
 				
 		if (doadd) {
@@ -25,7 +26,7 @@ public class MidataConformanceProvider  extends ServerCapabilityStatementProvide
 			dt.addExtension(new Extension("token", new UriType(tokenUrl)));
 			String authUrl = InstanceConfig.getInstance().getPortalOriginUrl()+"/authservice";		
 			dt.addExtension(new Extension("authorize", new UriType(authUrl)));
-			doadd = false;
+			// Not required for newer HAPI versions: doadd = false;
 		}
 		
 		return conformance;

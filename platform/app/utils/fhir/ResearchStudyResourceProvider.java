@@ -1,6 +1,7 @@
 package utils.fhir;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -265,6 +266,7 @@ public class ResearchStudyResourceProvider extends RecordBasedResourceProvider<R
 		String display = theResearchStudy.getTitle();	
 		record.name = display;		
 	    record.content = "ResearchStudy";
+	    record.code = Collections.singleton("http://midata.coop ResearchStudy");
 		record.owner = RuntimeConstants.instance.publicUser;	
 		record._id = MidataId.from(theResearchStudy.getId());
 		// Other cleaning tasks: Remove _id from FHIR representation and remove "meta" section
