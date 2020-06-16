@@ -6,6 +6,9 @@ server {
         ssl on;
         ssl_certificate CERTIFICATE_PEM;
         ssl_certificate_key CERTIFICATE_KEY;
+        
+        ssl_client_certificate CERTIFICATE_CLIENT;
+        ssl_verify_client optional;
 
         ssl_stapling on;
         ssl_stapling_verify on;
@@ -64,6 +67,8 @@ server {
            proxy_pass http://localhost:PLATFORM_INTERNAL_PORT;
            proxy_set_header Host $host;
            proxy_set_header X-Real-IP $remote_addr;
+           proxy_set_header X-Client-Valid $ssl_client_verify;
+           proxy_set_header X-Client-Serial $ssl_client_s_dn;
            proxy_http_version 1.1;
            proxy_cookie_path / "/; secure; HttpOnly";
            client_max_body_size 100M;
@@ -72,7 +77,7 @@ server {
            add_header 'Strict-Transport-Security' "max-age=31536000; preload" always;             
            add_header 'Content-Security-Policy' "default-src 'none';" always;
            add_header 'X-Content-Security-Policy' "default-src 'none';" always;
-           add_header 'X-WebKit-CSP' "default-src 'none';" always;
+           add_header 'X-WebKit-CSP' "default-src 'none';" always;                      
         }
         
         location /opendata {                      

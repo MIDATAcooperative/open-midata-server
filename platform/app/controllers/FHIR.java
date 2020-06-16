@@ -32,6 +32,7 @@ import utils.access.EncryptedFileHandle;
 import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
+import utils.auth.MobileAppSessionToken;
 import utils.auth.PortalSessionToken;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -160,6 +161,34 @@ public class FHIR extends Controller {
 	
 	
 	private ExecutionInfo getExecutionInfo(PlayHttpServletRequest req) throws AppException {
+		
+		boolean cert_direct = false;
+		String valid = req.getHeader("X-Client-Valid-LB");
+		if (valid == null) {
+			valid = req.getHeader("X-Client-Valid");
+			cert_direct = true;
+		}
+		if (valid != null && valid.equals("SUCCESS")) {
+		   String serial = cert_direct ? req.getHeader("X-Client-Serial") : req.getHeader("X-Client-Serial-LB");
+  		  
+		   if (serial!=null) {
+			   String[] serial2 = serial.split(",");
+			   MidataId instance;
+			   for (String k : serial2) if (k.startsWith("CN=")) {
+				   int p = k.indexOf(".");
+				   if (p<0) break;
+				   instance = MidataId.from(k.substring(3,p));
+				   if (instance == null) break;
+				   String key = k.substring(p+1);
+				   MobileAppSessionToken tk = new MobileAppSessionToken(instance, key, System.currentTimeMillis()+60000, UserRole.ANY);
+				   ExecutionInfo inf = ExecutionInfo.checkMobileToken(tk, false);
+				   Stats.setPlugin(inf.pluginId);
+			       ResourceProvider.setExecutionInfo(inf);
+			       return inf;
+			   }
+		   }
+		}
+		
 		String param = req.getHeader("Authorization");
 		
 		if (param != null && param.startsWith("Bearer ")) {

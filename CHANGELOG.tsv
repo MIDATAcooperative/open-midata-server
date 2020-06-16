@@ -50,5 +50,6 @@ id0048	07.05.2020	a.kreutz	I	'below'-modifier supported	FHIR searches on canonci
 id0049	07.05.2020	a.kreutz	F	Service mail feature	Mails to project participants or all account holders are possible.
 id0050	07.05.2020	a.kreutz	F	Unsubscribe by email	Users may now unsubscribe from communication channels
 id0051	20.05.2020	a.kreutz	I	Access Filter editor improved	Data types that will not be displayed upon login/participation are marked in grey. Resource types are now also shown in list.
-id0052	15.06.2020	a.kreutz	F	New FHIR ResearchStudy resource	MIDATA projects may now be accessed as ResearchStudy FHIR resources.      
+id0052	15.06.2020	a.kreutz	F	New FHIR ResearchStudy resource	MIDATA projects may now be accessed as ResearchStudy FHIR resources.
+id0053	16.06.2020	a.kreutz	F	Client Certificates	Project analyzers and external services may now authenticate using client certificates.      
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 
