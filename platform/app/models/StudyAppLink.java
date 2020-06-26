@@ -1,6 +1,7 @@
 package models;
 
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -164,6 +165,19 @@ public class StudyAppLink extends Model {
 	
 	public boolean isConfirmed() {
 		return validationDeveloper.equals(StudyValidationStatus.VALIDATED) && validationResearch.equals(StudyValidationStatus.VALIDATED);
+	}
+	
+	public StudyAppLink() {}
+	
+	public StudyAppLink(MidataId studyId, MidataId appId) {		
+		this.active = true;
+		this.appId = appId;
+		this.studyId = studyId;
+		this.linkTargetType=LinkTargetType.STUDY;
+		this.type=EnumSet.of(StudyAppLinkType.OFFER_P, StudyAppLinkType.OFFER_EXTRA_PAGE, StudyAppLinkType.REQUIRE_P, StudyAppLinkType.OFFER_INLINE_AGB);
+		this.usePeriod=EnumSet.allOf(StudyExecutionStatus.class);	
+		this.validationDeveloper=StudyValidationStatus.VALIDATED;
+		this.validationResearch=StudyValidationStatus.VALIDATED;
 	}
 		
 }

@@ -22,10 +22,18 @@ angular.module('portal')
 			$scope.study = data.data;	
 			if (!$scope.study.requirements) $scope.study.requirements = [];
 			if (!$scope.study.joinMethods) $scope.study.joinMethods = [];
-			
+			if ($scope.study.consentObserverNames && $scope.study.consentObserverNames.length) {
+				$scope.study.consentObserverStr = $scope.study.consentObserverNames.join(",");
+			}
 			$scope.study.recordQueryStr = JSON.stringify($scope.study.recordQuery);
 			//if ($scope.study.recordQueryStr === "{}") $scope.study.recordQueryStr = "{ \"content\" : [] }";
 			//$scope.updateQuery();
+		});
+	   
+	   $scope.status.doBusy(apps.getApps({ type : "external", consentObserving : true }, ["_id", "filename", "name", "orgName", "publisher", "type", "targetUserRole"]))
+		.then(function(data) {
+			$scope.observers = data.data;
+			console.log($scope.observers);
 		});
    };
    
@@ -40,13 +48,20 @@ angular.module('portal')
 		if ($scope.error && $scope.error.field && $scope.error.type) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
 		$scope.error = null;
 		
+		var observersStr = $scope.study.consentObserverStr;
+		var observers = [];
+		if (observersStr) {
+			var plugins = observersStr.split(",");			
+			$scope.study.consentObserverNames = plugins;
+		} else $scope.study.consentObserverNames = [];
+		
 		if (! $scope.myform.$valid) {
 			var elem = $document[0].querySelector('input.ng-invalid');
 			if (elem && elem.focus) elem.focus();
 			return;
 		}
    	   	   
-	   var data = { joinMethods : $scope.study.joinMethods, termsOfUse : $scope.study.termsOfUse, requirements: $scope.study.requirements, startDate : $scope.study.startDate, endDate : $scope.study.endDate, dataCreatedBefore : $scope.study.dataCreatedBefore };
+	   var data = { joinMethods : $scope.study.joinMethods, termsOfUse : $scope.study.termsOfUse, requirements: $scope.study.requirements, startDate : $scope.study.startDate, endDate : $scope.study.endDate, dataCreatedBefore : $scope.study.dataCreatedBefore, consentObserverNames : $scope.study.consentObserverNames };
 	   $scope.status.doAction("update", server.put(jsRoutes.controllers.research.Studies.update($scope.studyid).url, JSON.stringify(data)))
 	  .then(function(data) { 				
 		    $scope.reload();

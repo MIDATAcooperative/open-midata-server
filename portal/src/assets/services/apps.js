@@ -4,7 +4,7 @@ angular.module('services')
 
 	service.userfeatures = ['EMAIL_ENTERED', 'EMAIL_VERIFIED', 'PHONE_ENTERED', 'PHONE_VERIFIED', 'AUTH2FACTOR', 'ADDRESS_ENTERED' ,'ADDRESS_VERIFIED', 'BIRTHDAY_SET', 'PASSPORT_VERIFIED', 'MIDATA_COOPERATIVE_MEMBER', 'ADMIN_VERIFIED'];
 	
-	service.writemodes = ['NONE', 'UPDATE_EXISTING', 'UPDATE_AND_CREATE', 'WRITE_ANY'];
+	service.writemodes = ['NONE', 'UPDATE_EXISTING', 'UPDATE_AND_CREATE' /*, 'WRITE_ANY' */];
 	
     service.getApps = function(properties, fields) {
    	   var data = {"properties": properties, "fields": fields};

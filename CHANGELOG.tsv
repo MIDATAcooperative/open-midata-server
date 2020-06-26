@@ -51,5 +51,9 @@ id0049	07.05.2020	a.kreutz	F	Service mail feature	Mails to project participants 
 id0050	07.05.2020	a.kreutz	F	Unsubscribe by email	Users may now unsubscribe from communication channels
 id0051	20.05.2020	a.kreutz	I	Access Filter editor improved	Data types that will not be displayed upon login/participation are marked in grey. Resource types are now also shown in list.
 id0052	15.06.2020	a.kreutz	F	New FHIR ResearchStudy resource	MIDATA projects may now be accessed as ResearchStudy FHIR resources.
-id0053	16.06.2020	a.kreutz	F	Client Certificates	Project analyzers and external services may now authenticate using client certificates.      
+id0053	16.06.2020	a.kreutz	F	Client Certificates	Project analyzers and external services may now authenticate using client certificates.
+id0054	26.06.2020	a.kreutz	F	Consent Resources updateable via API
+id0055	26.06.2020	a.kreutz	F	Versioned Consent Resources	Consents have now history like the other FHIR resources.
+id0056	26.06.2020	a.kreutz	F	Consent observing services	An external service may now react to consent changes with projects and apps that are linked to the service.
+id0057	26.06.2020	a.kreutz	F	Mails to all app users	An admin may send a mail to all users of an application.      
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 

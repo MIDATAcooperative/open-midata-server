@@ -14,7 +14,9 @@ import actions.APICall;
 import models.BulkMail;
 import models.Consent;
 import models.MidataId;
+import models.MobileAppInstance;
 import models.NewsItem;
+import models.Plugin;
 import models.Study;
 import models.StudyParticipation;
 import models.User;
@@ -63,7 +65,7 @@ public class BulkMails extends Controller {
 		// get news items
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 				
-		ObjectIdConversion.convertMidataIds(properties, "_id", "creator", "studyId");		
+		ObjectIdConversion.convertMidataIds(properties, "_id", "creator", "studyId", "appId");		
 		List<BulkMail> mailItems;
 		
 		mailItems = new ArrayList<BulkMail>(BulkMail.getAll(properties, BulkMail.ALL));
@@ -131,7 +133,9 @@ public class BulkMails extends Controller {
 		item.country = JsonValidation.getStringOrNull(json, "country");
 		item.studyGroup = JsonValidation.getStringOrNull(json, "studyGroup");
 		item.studyId = json.has("studyId") ? JsonValidation.getMidataId(json, "studyId") : null;
+		item.appId = json.has("appId") ? JsonValidation.getMidataId(json, "appId") : null;
 		if (item.type == BulkMailType.PROJECT && item.studyId==null) throw new JsonValidationException("error.unknown.study", "studyId", "unknown", "Unknown project");
+		if (item.type == BulkMailType.APP && item.appId==null) throw new JsonValidationException("error.unknown.app", "appId", "unknown", "Unknown App");
 		if (item.studyId!=null) {
 		  Study study = Study.getById(item.studyId, Sets.create("name", "code"));
 		  if (study == null) throw new JsonValidationException("error.unknown.study", "studyId", "unknown", "Unknown project");
@@ -140,7 +144,12 @@ public class BulkMails extends Controller {
 		} else {
 		  item.studyName = null;
 		  item.studyCode = null;
-		}				
+		}
+		if (item.appId != null) {
+			Plugin plugin = Plugin.getById(item.appId);
+			if (plugin == null) throw new JsonValidationException("error.unknown.app", "appId", "unknown", "Unknown application");
+			item.appName = plugin.name;
+		}
 	}
 	
 	/**
@@ -231,6 +240,14 @@ public class BulkMails extends Controller {
 			} else for (StudyParticipation part : parts) if (part.projectEmails!=CommunicationChannelUseStatus.FORBIDDEN) ids.add(part.owner);
 	        Collections.sort(ids);		
 			return ids;
+		} else if (mailItem.type == BulkMailType.APP) {				
+			Set<MobileAppInstance> parts = MobileAppInstance.getByApplication(mailItem.appId, Sets.create("owner"));
+			List<MidataId> ids = new ArrayList<MidataId>();
+			if (mailItem.progressId != null) {
+				for (MobileAppInstance part : parts) if (part.owner.compareTo(mailItem.progressId) > 0) ids.add(part.owner);
+			} else for (MobileAppInstance part : parts) ids.add(part.owner);
+		    Collections.sort(ids);		
+			return ids;			
 		} else {
 			Set<User> users = User.getAllUser(CMaps.map("role",UserRole.MEMBER).map("status",User.NON_DELETED).mapNotEmpty("country", mailItem.country), Sets.create("_id","marketingEmail"));
 			Set<MidataId> ids = new HashSet<MidataId>(users.size());

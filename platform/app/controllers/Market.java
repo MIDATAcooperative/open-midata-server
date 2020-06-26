@@ -77,6 +77,7 @@ import play.mvc.Security;
 import utils.AccessLog;
 import utils.ApplicationTools;
 import utils.InstanceConfig;
+import utils.access.Feature_FormatGroups;
 import utils.access.Query;
 import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
@@ -171,6 +172,7 @@ public class Market extends APIController {
 				app.targetUserRole = JsonValidation.getEnum(json, "targetUserRole", UserRole.class);
 				if (app.type.equals("analyzer") || app.type.equals("endpoint") ) app.targetUserRole = UserRole.RESEARCH;
 				app.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
+												
 				app.resharesData = JsonValidation.getBoolean(json, "resharesData");				
 				app.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
 				app.writes = JsonValidation.getEnum(json, "writes", WritePermissionType.class);
@@ -185,6 +187,8 @@ public class Market extends APIController {
 				if (app.defaultQuery != null && !app.defaultQuery.equals(oldDefaultQuery)) {
 					markReviewObsolete(app._id, AppReviewChecklist.ACCESS_FILTER);
 				}
+				
+				app.consentObserving = app.type.equals("external") && Feature_FormatGroups.mayAccess(app.defaultQuery, "Consent", "fhir/Consent");
 
 				if (app.type.equals("external")) {
 					Set<ServiceInstance> si = ServiceInstance.getByApp(app._id, ServiceInstance.ALL);
@@ -599,6 +603,9 @@ public class Market extends APIController {
 		} catch (BadRequestException e) {
 			throw new JsonValidationException(e.getLocaleKey(), "defaultQuery", "invalid", e.getMessage());
 		}
+		
+		plugin.consentObserving = plugin.type.equals("external") && Feature_FormatGroups.mayAccess(plugin.defaultQuery, "Consent", "fhir/Consent");
+		
 		plugin.status = PluginStatus.DEVELOPMENT;
 		plugin.i18n = new HashMap<String, Plugin_i18n>();
 		Map<String,Object> i18n = JsonExtraction.extractMap(json.get("i18n"));
@@ -688,6 +695,7 @@ public class Market extends APIController {
 		app.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");
 		app.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
 		app.resharesData = JsonValidation.getBoolean(json, "resharesData");
+		app.consentObserving = JsonValidation.getBoolean(json, "consentObserving");
 		app.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
 		app.unlockCode = JsonValidation.getStringOrNull(json, "unlockCode");
 		app.noUpdateHistory = JsonValidation.getBoolean(json, "noUpdateHistory");
@@ -1029,6 +1037,9 @@ public class Market extends APIController {
 	
 	@APICall
 	public Result getStudyAppLinks(String type, String idStr) throws AppException {
+		
+		String project = request().getQueryString("project");
+		
 		Set<StudyAppLink> result = Collections.emptySet();
 		if (type.equals("study") || type.equals("study-use")) {
 			result = StudyAppLink.getByStudy(MidataId.from(idStr));
@@ -1046,7 +1057,15 @@ public class Market extends APIController {
 			}
 			
 		} else if (type.equals("app") || type.equals("app-use")) {
-			result = StudyAppLink.getByApp(MidataId.from(idStr));
+			MidataId appId = MidataId.from(idStr);
+			result = StudyAppLink.getByApp(appId);
+			
+			if (project != null) {
+			  Study study = Study.getByCodeFromMember(project, Study.ALL);
+			  if (study == null) throw new BadRequestException("error.unknown.study", "Study not found.");
+			  result.add(new StudyAppLink(study._id, appId));	
+			}
+			
 			for (StudyAppLink sal : result) {
 				if (sal.linkTargetType == null || sal.linkTargetType == LinkTargetType.STUDY) {
 				  Study study = Study.getById(sal.studyId, Sets.create("_id", "code","name", "type", "description", "termsOfUse", "executionStatus","validationStatus","participantSearchStatus", "joinMethods", "infos", "recordQuery", "requiredInformation"));

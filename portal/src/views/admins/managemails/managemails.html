@@ -28,7 +28,7 @@
 		     <select class="form-control" id="country" name="country" ng-readonly="!editable" ng-model="mailItem.country" ng-options="country as ('enum.country.'+country)|translate for country in countries"></select>
 		  </formrow>
 		  
-		  <formrow myid="studyId" label="admin_managemails.studyId">
+		  <formrow myid="studyId" label="admin_managemails.studyId" ng-hide="mailItem.type=='APP'">
 	          <div class="row">
 	             <div class="col-sm-3">
 	               <input type="text" class="form-control" ng-readonly="!editable" ng-change="studyselection(mailItem.studyCode);" autocomplete="off" typeahead-on-select="studyselection(mailItem.studyCode)" ng-model-options="{ debounce: 500 }" ng-model="mailItem.studyCode" uib-typeahead="study.code for study in studies | filter:$viewValue | limitTo:8" ng-required="mailItem.type=='PROJECT'">
@@ -39,6 +39,18 @@
 	          </div>
 	          <formerror myid="studyId" type="unknown" message="error.unknown.study"></formerror>
 	          <div class="form-text text-muted" ng-show="mailItem.type=='MARKETING'"><span translate="admin_managemails.studyExclude"></span></div>
+	      </formrow> 
+	      
+	      <formrow myid="appId" label="admin_managemails.appId" ng-show="mailItem.type=='APP'">
+	          <div class="row">
+	             <div class="col-sm-3">
+	               <input id="appId" name="appId" type="text" class="form-control" ng-readonly="!editable" ng-change="appselection(mailItem.appName);" autocomplete="off" typeahead-on-select="appselection(mailItem.appName)" ng-model-options="{ debounce: 500 }" ng-model="mailItem.appName" uib-typeahead="app.name for app in apps | filter:$viewValue | limitTo:8" ng-required="mailItem.type=='APP'">
+	             </div>
+	             <div class="col-sm-9">
+	                 <p class="form-control-plaintext">{{ app.orgName }} {{ app.type }} {{ app.targetUserRole }}</p>	                 
+	             </div>
+	          </div>
+	          <formerror myid="appId" type="unknown" message="error.unknown.app"></formerror>	          
 	      </formrow> 
 		   	
 		  <formrow myid="lang" label="admin_managemails.lang">

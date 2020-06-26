@@ -34,6 +34,7 @@ public class StudyParticipation extends Consent {
 	public CommunicationChannelUseStatus projectEmails;
 	
 	public @NotMaterialized final static Set<String> SMALL_WITH_GROUP = Sets.create(Consent.SMALL, "group");
+	public @NotMaterialized final static Set<String> STUDY_EXTRA = Sets.create(Consent.ALL, "ownerName","study","studyName","pstatus","group","joinMethod","projectEmails");
 	
 	//public int yearOfBirth;
 	//public String country;
@@ -117,6 +118,7 @@ public class StudyParticipation extends Consent {
 	
 	public void setPStatus(ParticipationStatus newstatus) throws InternalServerException {
 		Model.set(StudyParticipation.class, collection, this._id, "pstatus", newstatus);
+		pstatus = newstatus;
 	}
 	
 	public void setPStatus(ParticipationStatus newstatus, JoinMethod joinMethod) throws InternalServerException {

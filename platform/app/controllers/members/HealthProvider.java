@@ -149,7 +149,7 @@ public class HealthProvider extends APIController {
 	
     public static void confirmConsent(MidataId userId, MidataId consentId) throws AppException, JsonValidationException {
 										
-		MemberKey target = MemberKey.getByIdAndOwner(consentId, userId, Consent.ALL);
+		MemberKey target = MemberKey.getByIdAndOwner(consentId, userId, Consent.FHIR);
 		
 		if (target.type.equals(ConsentType.EXTERNALSERVICE)) {
 			   //AuditManager.instance.addAuditEvent(AuditEventType.APP_, userId, target);
@@ -200,7 +200,7 @@ public class HealthProvider extends APIController {
 	
     public static void rejectConsent(MidataId userId, MidataId consentId) throws AppException, JsonValidationException {
 		
-		MemberKey target = MemberKey.getByIdAndOwner(consentId, userId, Consent.ALL);
+		MemberKey target = MemberKey.getByIdAndOwner(consentId, userId, Consent.FHIR);
 			
 		if (target==null) {
 			rejectConsentAsAuthorized(userId, consentId);
@@ -223,7 +223,7 @@ public class HealthProvider extends APIController {
 	}
     
     public static void rejectConsentAsAuthorized(MidataId userId, MidataId consentId) throws AppException, JsonValidationException {
-	   Consent consent = Circles.getConsentById(userId, consentId, Consent.ALL);
+	   Consent consent = Circles.getConsentById(userId, consentId, Consent.FHIR);
 	   if (consent == null) throw new BadRequestException("error.notfound.consent", "Consent not found");
 	   
 	   if (consent.status != ConsentStatus.ACTIVE) return;

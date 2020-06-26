@@ -53,6 +53,10 @@
 	    <p class="form-text text-muted" ng-show="study.termsOfUse"><a ui-sref="research.terms({ which:study.termsOfUse })" translate="studyrules.show_terms"></a></p>
 	    <p class="form-text text-muted" translate="studyrules.terms_of_use_hint"></p> 
 	  </formrow>
+	  
+	  <formrow myid="consentObserver" label="studyrules.consent_observers" >	    
+	    <input id="consentObserver" type="text" name="consentObserver" class="form-control" ng-change="formChange()" ng-disabled="studyLocked()" ng-model="study.consentObserverStr" autocomplete="off" uib-typeahead="app.filename as (app.filename+' - '+app.name) for app in observers | filter:{name:$viewValue}">		    	    
+	  </formrow>
        
        <formrow myid="joinMethods" label="studyrules.join_methods">
 		 <div class="form-check" ng-repeat="method in joinmethods">

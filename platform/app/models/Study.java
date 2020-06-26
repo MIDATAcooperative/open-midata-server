@@ -34,7 +34,7 @@ public class Study extends Model {
 	/**
 	 * constant set containing all fields
 	 */
-	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "type", "joinMethods", "owner", "createdBy", "createdAt", "description", "infos", "infosPart", "infosInternal", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "anonymous");
+	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "type", "joinMethods", "owner", "createdBy", "createdAt", "description", "infos", "infosPart", "infosInternal", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "anonymous", "consentObserver");
 	
 	public @NotMaterialized static final Set<String> LINK_FIELDS = Sets.create("_id", "name", "code", "type", "joinMethods", "description", "infos", "infosPart", "infosInternal", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse", "startDate", "endDate", "dataCreatedBefore", "processFlags", "autoJoinGroup", "anonymous");
 	
@@ -183,6 +183,13 @@ public class Study extends Model {
     
     public MidataId autoJoinExecutor;
     
+    /**
+     * set of external services that monitor consent changes of this project
+     */
+    public Set<MidataId> consentObserver;
+    
+    public @NotMaterialized Set<String> consentObserverNames;
+    
     public static void add(Study study) throws InternalServerException {
 		Model.insert(collection, study);
 	 }
@@ -292,6 +299,11 @@ public class Study extends Model {
     public void setJoinMethods(Set<JoinMethod> joinMethods) throws InternalServerException {
     	this.joinMethods = joinMethods;
     	Model.set(Study.class, collection, this._id, "joinMethods", joinMethods);
+    }
+    
+    public void setconsentObserver(Set<MidataId> consentObserver) throws InternalServerException {
+    	this.consentObserver = consentObserver;
+    	Model.set(Study.class, collection, this._id, "consentObserver", consentObserver);
     }
     
     public void setAutoJoinGroup(String autoJoinGroup, MidataId executor, byte[] key) throws InternalServerException {

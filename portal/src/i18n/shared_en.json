@@ -509,7 +509,8 @@
 	 },
 	 "bulkmailtype" : {
 	   "MARKETING" : "Marketing - Account Holders",
-	   "PROJECT" : "Project specific"
+	   "PROJECT" : "Project specific",
+	   "APP" : "App specific"
 	 },
 	 "channeluse" : {
 	   "ALLOWED" : "Allowed",

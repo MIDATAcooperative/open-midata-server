@@ -2,6 +2,7 @@ package controllers;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -40,10 +41,13 @@ import models.enums.EMailStatus;
 import models.enums.JoinMethod;
 import models.enums.LinkTargetType;
 import models.enums.MessageReason;
+import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationStatus;
 import models.enums.PluginStatus;
 import models.enums.SecondaryAuthType;
 import models.enums.StudyAppLinkType;
+import models.enums.StudyExecutionStatus;
+import models.enums.StudyValidationStatus;
 import models.enums.UsageAction;
 import models.enums.UserFeature;
 import models.enums.UserRole;
@@ -104,7 +108,7 @@ public class OAuth2 extends Controller {
 	public static long OAUTH_CODE_LIFETIME = 1000l * 60l * 5l;
 			
 	
-	public static boolean verifyAppInstance(MobileAppInstance appInstance, MidataId ownerId, MidataId applicationId) throws AppException {
+	public static boolean verifyAppInstance(MobileAppInstance appInstance, MidataId ownerId, MidataId applicationId, Set<StudyAppLink> links) throws AppException {
 		if (appInstance == null) return false;
         if (!appInstance.owner.equals(ownerId)) throw new InternalServerException("error.invalid.token", "Wrong app instance owner!");
         if (!appInstance.applicationId.equals(applicationId)) throw new InternalServerException("error.invalid.token", "Wrong app for app instance!");
@@ -120,7 +124,7 @@ public class OAuth2 extends Controller {
         	return false;
         }
         
-        Set<StudyAppLink> links = StudyAppLink.getByApp(app._id);
+        if (links == null) links = StudyAppLink.getByApp(app._id);
         for (StudyAppLink sal : links) {
         	if (sal.isConfirmed() && sal.active && sal.type.contains(StudyAppLinkType.REQUIRE_P)) {
         		
@@ -289,7 +293,7 @@ public class OAuth2 extends Controller {
 		MidataId appInstanceId = refreshToken.appInstanceId;
 		
 		MobileAppInstance appInstance = MobileAppInstance.getById(appInstanceId, Sets.create("owner", "appVersion", "applicationId", "status", "licence"));
-		if (!verifyAppInstance(appInstance, refreshToken.ownerId, refreshToken.appId)) throw new BadRequestException("error.internal", "Bad refresh token.");
+		if (!verifyAppInstance(appInstance, refreshToken.ownerId, refreshToken.appId, null)) throw new BadRequestException("error.internal", "Bad refresh token.");
 		
 		Plugin app = Plugin.getById(appInstance.applicationId);
 		if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");			
@@ -658,7 +662,7 @@ public class OAuth2 extends Controller {
 		}
 	}
 	
-	private static final MobileAppInstance checkExistingAppInstance(ExtendedSessionToken token, JsonNode json) throws AppException {
+	private static final MobileAppInstance checkExistingAppInstance(ExtendedSessionToken token, JsonNode json, Set<StudyAppLink> links) throws AppException {
 		// Portal
 		if (token.appId == null) return null;
 		
@@ -669,7 +673,7 @@ public class OAuth2 extends Controller {
 		//KeyManager.instance.login(60000l, false);		
 		
 		if (appInstance != null) {
-			if (verifyAppInstance(appInstance, token.ownerId, token.appId)) {
+			if (verifyAppInstance(appInstance, token.ownerId, token.appId, links)) {
 				token.appInstanceId = appInstance._id;
 				token.setAppUnlockedWithCode();
 				token.setAppConfirmed();
@@ -728,11 +732,11 @@ public class OAuth2 extends Controller {
 		}
 	}
 			
-	private static MobileAppInstance loginAppInstance(ExtendedSessionToken token, MobileAppInstance appInstance, User user, boolean autoConfirm) throws AppException {
+	private static MobileAppInstance loginAppInstance(ExtendedSessionToken token, MobileAppInstance appInstance, User user, boolean autoConfirm, Set<StudyAppLink> links) throws AppException {
 		if (appInstance != null && autoConfirm) {
 			  ApplicationTools.refreshApp(appInstance, token.currentExecutor, token.appId, user, token.device);	
 		} else {				  
-			  appInstance = ApplicationTools.installApp(token.currentExecutor, token.appId, user, token.device, autoConfirm, token.confirmations);
+			  appInstance = ApplicationTools.installApp(token.currentExecutor, token.appId, user, token.device, autoConfirm, token.confirmations, links);
 		}
 		if (token.currentExecutor == null) token.currentExecutor = appInstance._id;
 		Map<String, Object> meta = RecordManager.instance.getMeta(token.currentExecutor, appInstance._id, "_app").toMap();
@@ -853,8 +857,21 @@ public class OAuth2 extends Controller {
 			Set<MidataId> confirmStudy = json.has("confirmStudy") ? JsonExtraction.extractMidataIdSet(json.get("confirmStudy")) : null;
 			if (confirmStudy != null) token.confirmations = confirmStudy;
 		} else token.setPortal();						 
+
+		if (json.has("project") && token.studyId == null) {
+			Study study = Study.getByCodeFromMember(JsonValidation.getString(json, "project"), Study.ALL);
+			if (study != null && study.participantSearchStatus.equals(ParticipantSearchStatus.SEARCHING)) {
+			  token.studyId = study._id;
+			}
+		}
+		Set<StudyAppLink> links = token.appId != null ? StudyAppLink.getByApp(token.appId) : null;
 		
-		Set<StudyAppLink> links = token.appId != null ? StudyAppLink.getByApp(token.appId) : null;		
+		if (token.studyId != null && token.getRole() == UserRole.MEMBER) {			
+			StudyAppLink dynLink = new StudyAppLink(token.studyId, token.appId);			
+			if (links == null) links = new HashSet<StudyAppLink>();
+			links.add(dynLink);
+		}
+		
 		Set<UserFeature> requirements = determineRequirements(token, app, links, token.confirmations);
 					
 																		
@@ -882,7 +899,7 @@ public class OAuth2 extends Controller {
 			keyType = KeyManager.instance.unlock(user._id, sessionToken, user.publicExtKey); 
 		}		
 		
-		MobileAppInstance appInstance = checkExistingAppInstance(token, json);	
+		MobileAppInstance appInstance = checkExistingAppInstance(token, json, links);	
 	
 		Result recheck = checkAppConfirmationRequired(token, json, links);
 		if (recheck != null) {
@@ -916,7 +933,7 @@ public class OAuth2 extends Controller {
 		if (app != null) {
 			token.currentExecutor = keyType == KeyManager.KEYPROTECTION_NONE ? user._id : null;
 				
-			appInstance = loginAppInstance(token, appInstance, user, keyType == KeyManager.KEYPROTECTION_NONE);
+			appInstance = loginAppInstance(token, appInstance, user, keyType == KeyManager.KEYPROTECTION_NONE, links);
 			
 			selectStudyContext(token);
 							

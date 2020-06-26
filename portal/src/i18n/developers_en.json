@@ -134,6 +134,7 @@
        "pseudonymize" : "Read pseudonymized data. Does not update records from participants.",
        "resharesData" : "Application is allowed to reshare data it has access to to 3rd party.",
        "allowsUserSearch" : "Users of the application are allowed to search for other users of the same application.",
+       "consentObserving" : "Does this service monitor user consents? Add to 'Consents on Midata' to access filter in order to activate.",
        "defaultSpaceName" : "Title of the tile for your plugin on the dashboard.",
        "tags" : "Categories on MIDATA Store for which your plugin should be listed.",
        "url" : "URL of your plugins main page. If you use the template from MIDATA it is 'dist/index.html#!?authToken=:authToken''",

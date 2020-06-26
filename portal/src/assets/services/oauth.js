@@ -82,6 +82,12 @@ angular.module('services')
 		cred.joinCode = joinCode;
 	};
 	
+	service.setProject = function(project) {
+		cred.project = project;
+	};
+	
+	service.getProject = function() { return cred.project; };
+	
 	service.login = function(confirm, confirmStudy) {	    	
 		cred.confirm = confirm || false;
 		cred.confirmStudy = confirmStudy || (confirm && cred.confirmStudy);

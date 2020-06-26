@@ -441,7 +441,7 @@ public class CompositionResourceProvider extends RecordBasedResourceProvider<Com
 	private void addBundle(Bundle retVal, Resource resource) {
 		BundleEntryComponent entry = retVal.addEntry();
 		entry.setResource(resource);
-		entry.setFullUrl(FHIRServlet.getBaseUrl()+"/"+resource.getId());
+		entry.setFullUrl(getResourceUrl(FHIRServlet.getBaseUrl(), resource));
 	}
 
 	@Override
