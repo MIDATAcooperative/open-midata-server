@@ -288,7 +288,7 @@ public class AccountPatches {
 		    List<Consent> consents = Consent.getBroken();
 		    if (consents.size() == 0) foundSome = false;
 			for (Consent consent : consents) {				
-				ConsentResourceProvider.updateMidataConsent(consent);		
+				ConsentResourceProvider.updateMidataConsent(consent, null);		
 				Consent.set(consent._id, "fhirConsent", consent.fhirConsent);
 			}
 		}

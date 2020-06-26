@@ -10,7 +10,7 @@ angular.module('portal')
 	$scope.editable = true;
 	$scope.languages = languages.array;	
 	$scope.sel = { lang: "int" };
-	$scope.types = ["MARKETING", "PROJECT"];
+	$scope.types = ["MARKETING", "PROJECT","APP"];
 	$scope.countries = languages.countries;
       
 		
@@ -75,11 +75,27 @@ angular.module('portal')
 				}
 			});
 	};
+	
+	$scope.appselection = function(app) {		 
+		   $scope.status.doBusy(apps.getApps({ name : app }, ["_id", "filename", "name", "orgName", "type", "targetUserRole"]))
+			.then(function(data) {
+				if (data.data && data.data.length == 1) {
+				  $scope.mailItem.appId = data.data[0]._id;
+				  $scope.mailItem.appName = data.data[0].name;
+				  $scope.app = data.data[0];	
+				}
+			});
+	};
 		
 	
 	$scope.status.doBusy(studies.search({ validationStatus : "VALIDATED" }, ["_id", "code", "name" ]))
 	.then(function(data) {
 		$scope.studies = data.data;
+	});
+	
+	$scope.status.doBusy(apps.getApps({  }, ["creator", "developerTeam", "filename", "name", "description", "type", "targetUserRole" ]))
+	.then(function(data) { 
+		$scope.apps = data.data;			
 	});
 	
 	$scope.send = function() {

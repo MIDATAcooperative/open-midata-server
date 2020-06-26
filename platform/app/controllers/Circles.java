@@ -252,6 +252,10 @@ public class Circles extends APIController {
 	}
 	
 	public static Consent getConsentById(MidataId user, MidataId consentId, Set<String> fields) throws AppException {
+		return getConsentById(user, consentId, null, fields); 
+	}
+	
+	public static Consent getConsentById(MidataId user, MidataId consentId, MidataId observerId, Set<String> fields) throws AppException {
 		fields.add("owner");
 		fields.add("authorized");
 		Consent consent;
@@ -260,6 +264,7 @@ public class Circles extends APIController {
 		if (consent == null) return null;
 		if (consent.owner != null && consent.owner.equals(user)) return consent;
 		if (consent.authorized.contains(user)) return consent;
+		if (observerId != null && consent.observers != null && consent.observers.contains(observerId)) return consent;
 		Set<UserGroupMember> groups = UserGroupMember.getAllActiveByMember(user);
 		for (UserGroupMember group : groups) if (consent.authorized.contains(group.userGroup)) return consent;
 		return null;							
@@ -691,7 +696,7 @@ public class Circles extends APIController {
 	}
 	
 	public static void consentExpired(MidataId executor, MidataId consentId) throws AppException {
-		Consent consent = getConsentById(executor, consentId, Consent.ALL);
+		Consent consent = getConsentById(executor, consentId, Consent.FHIR);
 		if (consent != null && !consent.status.equals(ConsentStatus.EXPIRED)) {			
 			consentStatusChange(executor, consent, ConsentStatus.EXPIRED);
 			
@@ -799,7 +804,7 @@ public class Circles extends APIController {
 	 * @throws AppException
 	 */
 	public static void prepareConsent(Consent consent, boolean isNew) throws AppException {
-		ConsentResourceProvider.updateMidataConsent(consent);		
+		ConsentResourceProvider.updateMidataConsent(consent, null);		
 		if (consent.authorized == null && consent.type != ConsentType.EXTERNALSERVICE) throw new InternalServerException("error.internal", "Missing authorized");
 		if (isNew) {
 			consent.add();
@@ -892,7 +897,7 @@ public class Circles extends APIController {
 	 */
 	public static Map<String, Object> getQueries(MidataId userId, MidataId apsId) throws InternalServerException {
 		Member member = Member.getById(userId, Sets.create("queries"));
-		if (member.queries!=null) return member.queries.get(apsId.toString());
+		if (member!=null && member.queries!=null) return member.queries.get(apsId.toString());
 		return null;
 	}
 	

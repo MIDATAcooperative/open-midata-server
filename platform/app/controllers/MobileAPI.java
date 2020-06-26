@@ -221,7 +221,7 @@ public class MobileAPI extends Controller {
 			appInstance= getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode", "appVersion"));
 			
 			
-			if (appInstance != null && !OAuth2.verifyAppInstance(appInstance, user._id, app._id)) {
+			if (appInstance != null && !OAuth2.verifyAppInstance(appInstance, user._id, app._id, null)) {
 				AccessLog.log("CSCLEAR");
 				appInstance = null;
 				RecordManager.instance.clearCache();
@@ -232,7 +232,7 @@ public class MobileAPI extends Controller {
 				executor = autoConfirm ? user._id : null;
 				AccessLog.log("REINSTALL");
 				if (!autoConfirm && app.targetUserRole.equals(UserRole.RESEARCH)) throw new BadRequestException("error.invalid.study", "The research app is not properly linked to a study! Please log in as researcher and link the app properly.");
-				appInstance = ApplicationTools.installApp(executor, app._id, user, phrase, autoConfirm, Collections.emptySet());
+				appInstance = ApplicationTools.installApp(executor, app._id, user, phrase, autoConfirm, Collections.emptySet(), null);
 				KeyManager.instance.changePassphrase(appInstance._id, phrase);
 				if (executor != null) RecordManager.instance.clearCache();
 				executor = appInstance._id;

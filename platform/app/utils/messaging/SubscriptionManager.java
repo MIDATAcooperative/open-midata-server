@@ -37,6 +37,7 @@ import models.MobileAppInstance;
 import models.Model;
 import models.Plugin;
 import models.Record;
+import models.ServiceInstance;
 import models.Space;
 import models.SubscriptionData;
 import models.User;
@@ -330,6 +331,15 @@ class SubscriptionChecker extends AbstractActor {
 					
 			if (consent.owner != null) affected.add(consent.owner);
 			if (consent.authorized != null) affected.addAll(consent.authorized);
+			if (consent.observers != null) {
+				for (MidataId appId : consent.observers) {
+					try {
+					  Set<ServiceInstance> instances = ServiceInstance.getByApp(appId, Sets.create("_id","executorAccount","status"));
+					  for (ServiceInstance instance : instances) if (instance.status == UserStatus.ACTIVE) affected.add(instance.executorAccount);
+					} catch (InternalServerException e) {}
+				}
+								
+			}
 			
 			resource = consent.fhirConsent.toString();
 			content = "Consent";

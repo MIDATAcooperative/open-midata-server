@@ -34,14 +34,14 @@ public class Consent extends Model implements Comparable<Consent> {
 	/**
 	 * constant for all fields of a consent
 	 */
-	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "ownerName", "name", "authorized", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "dateOfCreation", "sharingQuery", "externalOwner", "externalAuthorized", "writes", "dataupdate", "lastUpdated");
+	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "ownerName", "name", "authorized", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "dateOfCreation", "sharingQuery", "externalOwner", "externalAuthorized", "writes", "dataupdate", "lastUpdated", "observers");
 	
 	public @NotMaterialized final static Set<String> SMALL = Sets.create("owner", "ownerName", "name", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "dateOfCreation", "sharingQuery", "externalOwner", "writes", "dataupdate");
 	
 	/**
 	 * constant for all FHIR fields of a consent
 	 */
-	public @NotMaterialized final static Set<String> FHIR = Sets.create("owner", "ownerName", "name", "authorized", "entityType", "type", "status", "categoryCode", "creatorApp", "fhirConsent", "validUntil", "createdBefore", "dateOfCreation", "sharingQuery", "externalOwner", "externalAuthorized", "writes");
+	public @NotMaterialized final static Set<String> FHIR = Sets.create(ALL, "fhirConsent");
 	
 	public @NotMaterialized final static Set<ConsentStatus> NOT_DELETED = Collections.unmodifiableSet(EnumSet.of(ConsentStatus.ACTIVE, ConsentStatus.DRAFT, ConsentStatus.EXPIRED, ConsentStatus.FROZEN, ConsentStatus.REJECTED, ConsentStatus.UNCONFIRMED));
 	/**
@@ -79,6 +79,11 @@ public class Consent extends Model implements Comparable<Consent> {
 	 * a set containing the ids of all entities that are authorized to access the data shared with this consent.
 	 */
 	public Set<MidataId> authorized;
+	
+	/**
+	 * a set containing all ids of external service type apps having access to this consent
+	 */
+	public Set<MidataId> observers;
 	
 	/**
 	 * a set containing the emails of external (non midata) entities that are authorized by this consent.
@@ -144,6 +149,8 @@ public class Consent extends Model implements Comparable<Consent> {
 	 * Type of write permission
 	 */
 	public WritePermissionType writes;
+	
+	
 		
 	
 	/**
@@ -177,6 +184,10 @@ public class Consent extends Model implements Comparable<Consent> {
 	
 	public static Set<Consent> getAllByOwner(MidataId owner, Map<String, Object> properties,  Set<String> fields, int limit) throws InternalServerException {
 		return Model.getAll(Consent.class, collection, CMaps.map(properties).map("owner", owner).map("status", NOT_DELETED), fields, limit);
+	}
+	
+	public static Set<Consent> getAllByObserver(MidataId observer, Map<String, Object> properties,  Set<String> fields, int limit) throws InternalServerException {
+		return Model.getAll(Consent.class, collection, CMaps.map(properties).map("observers", observer).map("status", NOT_DELETED), fields, limit);
 	}
 	
 	public static Set<Consent> getAllActiveByAuthorized(MidataId member) throws InternalServerException {
@@ -283,6 +294,6 @@ public class Consent extends Model implements Comparable<Consent> {
 	}
 	
 	public static List<Consent> getBroken() throws AppException {
-		return Model.getAllList(Consent.class, collection, CMaps.map("fhirConsent", CMaps.map("$exists", false)), ALL, 1000);
+		return Model.getAllList(Consent.class, collection, CMaps.map("fhirConsent", CMaps.map("$exists", false)), FHIR, 1000);
 	}
 }

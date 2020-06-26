@@ -4,5 +4,7 @@ public enum BulkMailType {
 
 	MARKETING,
 	
-	PROJECT
+	PROJECT,
+	
+	APP 
 }

@@ -17,7 +17,7 @@ public class BulkMail extends Model implements Comparable<BulkMail> {
 	private static final String collection = "bulkmails";
 	
 	@NotMaterialized
-	public final static Set<String> ALL = Sets.create("type", "country", "creator", "creatorName", "created", "started", "finished", "name", "status", "title", "content", "studyId", "studyName", "studyCode", "studyGroup", "progressId", "progressCount", "progressFailed", "lastProgress");
+	public final static Set<String> ALL = Sets.create("type", "country", "creator", "creatorName", "created", "started", "finished", "name", "status", "title", "content", "studyId", "studyName", "studyCode", "studyGroup", "appId", "appName", "progressId", "progressCount", "progressFailed", "lastProgress");
 
 	/**
 	 * type of bulk mail
@@ -84,8 +84,11 @@ public class BulkMail extends Model implements Comparable<BulkMail> {
 	public String studyCode;
 	
 	public String studyGroup;
-		
 	
+	public MidataId appId;
+	
+	public String appName;
+			
 	/**
 	 * if of last user to whom the mail has been send
 	 */

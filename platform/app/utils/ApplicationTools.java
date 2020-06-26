@@ -31,6 +31,7 @@ import models.enums.JoinMethod;
 import models.enums.LinkTargetType;
 import models.enums.MessageReason;
 import models.enums.ParticipationStatus;
+import models.enums.PluginStatus;
 import models.enums.StudyAppLinkType;
 import models.enums.UsageAction;
 import models.enums.UserStatus;
@@ -56,13 +57,13 @@ import utils.stats.UsageStatsRecorder;
  */
 public class ApplicationTools {
 
-	public static MobileAppInstance installApp(MidataId executor, MidataId appId, User member, String phrase, boolean autoConfirm, Set<MidataId> studyConfirm) throws AppException {
+	public static MobileAppInstance installApp(MidataId executor, MidataId appId, User member, String phrase, boolean autoConfirm, Set<MidataId> studyConfirm, Set<StudyAppLink> links) throws AppException {
 		AccessLog.logBegin("beginn install app id="+appId);
 		Plugin app = Plugin.getById(appId, Sets.create("name", "type", "pluginVersion", "defaultQuery", "predefinedMessages", "termsOfUse", "writes", "defaultSubscriptions"));
 		if (app == null) throw new InternalServerException("error.internal", "App not found");
 
 		// Get project links
-		Set<StudyAppLink> links = StudyAppLink.getByApp(appId);
+		if (links == null) links = StudyAppLink.getByApp(appId);
 		if (studyConfirm==null) studyConfirm = Collections.emptySet();
 		
 		// check consents accepted
@@ -71,13 +72,15 @@ public class ApplicationTools {
 		// Create app instance *
 		MobileAppInstance appInstance = null;
 		
+		Set<MidataId> observers = getObserversForApp(links);		
+		
 		if (app.type.equals("external")) {
 			Set<ServiceInstance> instances = ServiceInstance.getByApp(appId, ServiceInstance.ALL);
 			if (instances.size() == 1) {
 				appInstance = createServiceUseInstance(member._id, app, instances.iterator().next());
 			} else throw new InternalServerException("error.internal", "No service instance");
 			
-		} else appInstance = createAppInstance(member._id, phrase, app, null);	
+		} else appInstance = createAppInstance(member._id, phrase, app, null, observers);	
 
 		// app first use audit entry
 		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.APP_FIRST_USE).withApp(app._id).withActorUser(member).withConsent(appInstance));		    	    	
@@ -109,6 +112,26 @@ public class ApplicationTools {
 		AccessLog.logEnd("end install app");
 		return appInstance;
 	}
+	
+	public static Set<MidataId> getObserversForApp(Set<StudyAppLink> links) throws InternalServerException {
+		if (links == null) return null;
+		Set<MidataId> observers = null;
+		for (StudyAppLink link : links) {
+			if (link.linkTargetType == LinkTargetType.SERVICE && link.isConfirmed() && link.active) {
+				Plugin target = Plugin.getById(link.serviceAppId);
+				if (target.consentObserving && target.status != PluginStatus.DELETED) {
+					if (observers==null) observers = new HashSet<MidataId>();
+					observers.add(target._id);
+				}
+			}
+		}
+		return observers;
+	}
+	
+    public static Set<MidataId> getObserversForApp(MidataId appId) throws AppException {
+    	if (appId == null) return null;
+		return getObserversForApp(StudyAppLink.getByApp(appId));
+	}
 
 	public static MobileAppInstance createServiceApiKey(MidataId executor, ServiceInstance serviceInstance) throws AppException {
 		AccessLog.logBegin("begin create service api key");
@@ -118,7 +141,7 @@ public class ApplicationTools {
 		String phrase = serviceInstance.name+serviceInstance._id;								
 
 		// Create app instance *
-		MobileAppInstance appInstance = createAppInstance(serviceInstance.executorAccount, phrase, app, serviceInstance._id);	
+		MobileAppInstance appInstance = createAppInstance(serviceInstance.executorAccount, phrase, app, serviceInstance._id, null);	
 		
 		// Create APS for AppInstance *
 		// create APS *						
@@ -276,7 +299,7 @@ public class ApplicationTools {
 		throw new BadRequestException("error.unknown.service", "Service Instance does not exist");
 	}
 
-	private static MobileAppInstance createAppInstance(MidataId owner, String phrase, Plugin app, MidataId serviceId)
+	private static MobileAppInstance createAppInstance(MidataId owner, String phrase, Plugin app, MidataId serviceId, Set<MidataId> observers)
 			throws InternalServerException, BadRequestException, AppException {
 		MobileAppInstance appInstance = new MobileAppInstance();
 		appInstance._id = new MidataId();
@@ -289,7 +312,8 @@ public class ApplicationTools {
 		}
 		appInstance.applicationId = app._id;	
 		appInstance.serviceId = serviceId;
-		appInstance.appVersion = app.pluginVersion;								
+		appInstance.appVersion = app.pluginVersion;
+		appInstance.observers = observers;
 		appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(appInstance._id, null);    			
 		appInstance.passcode = Member.encrypt(phrase); 
 		appInstance.dateOfCreation = new Date();
@@ -368,14 +392,17 @@ public class ApplicationTools {
         for (StudyAppLink sal : links) {
 			if (sal.isConfirmed()) {	
 				if (sal.linkTargetType == LinkTargetType.ORGANIZATION) {
-					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.userId))) {					
-						RecordManager.instance.clearCache();
-						LinkTools.createConsentForAppLink(member._id, sal);
+					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.userId))) {
+						
+						if (LinkTools.findConsentForAppLink(executor,sal)==null) {
+							RecordManager.instance.clearCache();
+							LinkTools.createConsentForAppLink(member._id, sal);
+						}
 					}
 				} else if (sal.linkTargetType == LinkTargetType.SERVICE) {
 					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.userId))) {					
 						RecordManager.instance.clearCache();
-						ApplicationTools.installApp(executor, sal.serviceAppId, member, null, true, studyConfirm);						
+						ApplicationTools.installApp(executor, sal.serviceAppId, member, null, true, studyConfirm, null);						
 					}
 				} else
 				if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.studyId))) {

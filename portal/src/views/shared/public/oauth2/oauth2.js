@@ -58,7 +58,8 @@ angular.module('portal')
 		}
 		
 		oauth.setUser($scope.login.email, $scope.login.password, $scope.login.role, $scope.login.studyLink);
-		if ($state.params.joincode) oauth.setJoinCode($state.params.joincode);		
+		if ($state.params.joincode) oauth.setJoinCode($state.params.joincode);
+		if ($state.params.project) oauth.setProject($state.params.project);
 		
 		$scope.status.doAction("login", oauth.login(false))
 		.then(function(result) {

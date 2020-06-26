@@ -30,7 +30,10 @@ angular.module('portal')
 		$scope.links = [];
 		var waitFor = [];
 		if (!$state.params.nostudies) {
-			waitFor.push($scope.status.doBusy(server.get(jsRoutes.controllers.Market.getStudyAppLinks("app-use", $scope.app._id).url))
+			var project = oauth.getProject();
+			var addToUrl = "";
+			if (project) addToUrl = "?project="+encodeURIComponent(project);
+			waitFor.push($scope.status.doBusy(server.get(jsRoutes.controllers.Market.getStudyAppLinks("app-use", $scope.app._id).url+addToUrl))
 			.then(function(data) {		    	
 				$scope.links = [];
 				var r = [];

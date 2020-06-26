@@ -564,9 +564,17 @@ public class Studies extends APIController {
 
 		Set<String> fields = Sets.create("createdAt", "createdBy", "description", "executionStatus", "name", "participantSearchStatus", "validationStatus", "infos", "infosPart", "infosInternal", "owner", "participantRules",
 				"recordQuery", "studyKeywords", "code", "groups", "requiredInformation", "anonymous", "assistance", "termsOfUse", "requirements", "startDate", "endDate", "dataCreatedBefore", "myRole",
-				"processFlags", "autoJoinGroup", "type", "joinMethods");
+				"processFlags", "autoJoinGroup", "type", "joinMethods", "consentObserver", "consentObserverNames");
 		Study study = Study.getById(studyid, fields);
 
+		if (study!=null && study.consentObserver != null) {
+			study.consentObserverNames = new HashSet<String>();
+			for (MidataId observerId : study.consentObserver) {
+				Plugin plug = Plugin.getById(observerId);
+				if (plug != null) study.consentObserverNames.add(plug.filename);
+			}
+		}
+		
 		UserGroupMember ugm = UserGroupMember.getByGroupAndActiveMember(studyid, userid);
 		if (ugm != null)
 			study.myRole = ugm.role;
@@ -592,9 +600,17 @@ public class Studies extends APIController {
 		MidataId studyid = new MidataId(id);
 
 		Set<String> fields = Sets.create("createdAt", "createdBy", "description", "executionStatus", "name", "participantSearchStatus", "validationStatus", "infos", "infosPart", "infosInternal", "owner", "participantRules",
-				"recordQuery", "studyKeywords", "code", "groups", "requiredInformation", "anonymous", "assistance", "termsOfUse", "requirements", "startDate", "endDate", "dataCreatedBefore", "type", "joinMethods");
+				"recordQuery", "studyKeywords", "code", "groups", "requiredInformation", "anonymous", "assistance", "termsOfUse", "requirements", "startDate", "endDate", "dataCreatedBefore", "type", "joinMethods",  "consentObserver", "consentObserverNames");
 		Study study = Study.getById(studyid, fields);
 
+		if (study!=null && study.consentObserver != null) {
+			study.consentObserverNames = new HashSet<String>();
+			for (MidataId observerId : study.consentObserver) {
+				Plugin plug = Plugin.getById(observerId);
+				if (plug != null) study.consentObserverNames.add(plug.filename);
+			}
+		}
+		
 		ObjectNode result = Json.newObject();
 		result.put("study", JsonOutput.toJsonNode(study, "Study", fields));
 
@@ -1057,7 +1073,7 @@ public class Studies extends APIController {
 			return;
 		study.dataCreatedBefore = now;
 
-		Set<StudyParticipation> participants = StudyParticipation.getActiveParticipantsByStudy(study._id, Consent.ALL);
+		Set<StudyParticipation> participants = StudyParticipation.getActiveParticipantsByStudy(study._id, Consent.FHIR);
 		for (StudyParticipation participant : participants) {
 			if (participant.status.equals(ConsentStatus.ACTIVE)) {
 				Circles.consentStatusChange(executor, participant, ConsentStatus.FROZEN);
@@ -1402,7 +1418,7 @@ public class Studies extends APIController {
 				device = "service";	
 				}
 
-				MobileAppInstance appInstance = ApplicationTools.installApp(userId, plugin._id, researcher, device, false, Collections.emptySet());
+				MobileAppInstance appInstance = ApplicationTools.installApp(userId, plugin._id, researcher, device, false, Collections.emptySet(), null);
 				KeyManager.instance.changePassphrase(appInstance._id, device);
 				Map<String, Object> query = appInstance.sharingQuery;
 				query.put("study", studyId.toString());
@@ -1792,7 +1808,7 @@ public class Studies extends APIController {
 		String comment = JsonValidation.getString(json, "comment");
 
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
-		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, Sets.create(Consent.ALL, "pstatus", "ownerName", "owner", "authorized"));
+		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, Sets.create(Consent.FHIR, "pstatus", "ownerName", "owner", "authorized"));
 		Study study = Study.getById(studyId, Sets.create("name", "type", "executionStatus", "participantSearchStatus", "createdBy", "code"));
 
 		if (study == null)
@@ -2030,6 +2046,18 @@ public class Studies extends APIController {
 		if (json.has("joinMethods")) {
 			study.setJoinMethods(JsonValidation.getEnumSet(json, "joinMethods", JoinMethod.class));
 		}
+		if (json.has("consentObserverNames")) {
+			Set<String> observerNames = JsonExtraction.extractStringSet(json.get("consentObserverNames"));
+			study.consentObserver = new HashSet<MidataId>();
+			for (String observerName : observerNames) {
+				Plugin plugin = Plugin.getByFilename(observerName, Sets.create("filename","type","consentObserving","status"));
+				if (plugin != null && plugin.type.equals("external") && plugin.consentObserving && plugin.status != PluginStatus.DELETED) {
+					study.consentObserver.add(plugin._id);
+				}
+			}	
+			study.setconsentObserver(study.consentObserver);
+		}
+		
 		ResearchStudyResourceProvider.updateFromStudy(userId, study._id);
 		AuditManager.instance.success();
 		return ok();

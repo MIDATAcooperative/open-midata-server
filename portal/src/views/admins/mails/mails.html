@@ -19,7 +19,7 @@
           <td><a ui-sref="^.managemails({ mailId : item._id })">{{ item.name }}</a></td>
           <td><span translate="{{'admin_mails.stati.'+item.status}}"></span></td>
           <td>{{ item.progressCount }}</td>
-          <td>{{ item.studyName }}</td>
+          <td>{{ item.studyName }}{{ item.appName }}</td>
           <td>{{ item.creatorName }}</td>                   
         </tr>
       </table>

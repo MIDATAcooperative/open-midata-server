@@ -244,6 +244,7 @@
     "queryeditor_btn" : "Edit",    
     "terms_of_use" : "General Terms and Conditions",
     "terms_of_use_hint" : "If the projects General Terms and Conditions have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the ID you need to enter here.",
+    "consent_observers" : "External Consent Observers",
     "show_terms" : "Show General Terms and Conditions",
     "requirements" : "Requirements"
   },

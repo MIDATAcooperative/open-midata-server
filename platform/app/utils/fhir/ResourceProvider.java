@@ -120,13 +120,16 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 	
 	public abstract T getResourceById(@IdParam IIdType theId) throws AppException;
 	
+	public String getResourceUrl(String baseUrl, IBaseResource r) {
+		return baseUrl+"/"+r.getIdElement().toString()+"/_history/"+r.getMeta().getVersionId();
+	}
 	
 	public Bundle searchBundle(SearchParameterMap params, RequestDetails theDetails) {
 		Bundle result = new Bundle();
 		try {
 			List<IBaseResource> res = search(params);
-			for (IBaseResource r : res) {
-				result.addEntry().setResource((Resource) r).setFullUrl(theDetails.getFhirServerBase()+"/"+r.getIdElement().toString());
+			for (IBaseResource r : res) {					
+				result.addEntry().setResource((Resource) r);//.setFullUrl(getResourceUrl(theDetails.getFhirServerBase(), r));
 			}
 			
 			if (params.getFrom() != null) {

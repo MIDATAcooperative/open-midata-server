@@ -160,6 +160,7 @@
      "startDate" : "Start Date",
      "endDate" : "End Date",
      "dataCreatedBefore" : "Data freeze date",
+     "consent_observers" : "Consent Observers",
      
      "infos" : "Public information",
      "infos_part" : "Information for participants",
@@ -287,6 +288,7 @@
      "progressCount" : "# sent",
      "studyId" : "Research Project",
      "studyExclude" : "Exclude project participants",
+     "appId": "Application",
      "lang" : "Language",
      "title" : "Mail Title",
      "content" : "Mail Content",

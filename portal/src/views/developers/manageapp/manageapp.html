@@ -140,7 +140,15 @@
 		      <span translate="manageapp.info.allowsUserSearch"></span>
 		    </label>
 		    </div>
-		  </formrow>	
+		  </formrow>
+		   <formrow myid="consentObserving" label="Consent Observing" ng-show="app.type == 'external'">
+		    <div class="form-check">
+		    <label class="form-check-label">
+		      <input class="form-check-input" type="checkbox" id="consentObserving" name="consentObserving" ng-model="app.consentObserving" value="true" disabled>
+		      <span translate="manageapp.info.consentObserving"></span>
+		    </label>
+		    </div>
+		  </formrow>		
 		  
 		
 		  
