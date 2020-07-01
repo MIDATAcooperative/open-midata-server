@@ -2,7 +2,7 @@ angular.module('portal')
 .config(["$stateProvider", function($stateProvider) {
 	   $stateProvider
 	    .state('public.service', {
-	      url: '/service?app&consent&login&callback&isnew&email&given&family&gender&country&birthdate&language',
+	      url: '/service?app&consent&project&login&callback&isnew&email&given&family&gender&country&birthdate&language',
 	      templateUrl: 'views/shared/public/service/service.html' 
 	    })
 	    .state('goplugin', {

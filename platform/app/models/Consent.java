@@ -199,11 +199,11 @@ public class Consent extends Model implements Comparable<Consent> {
 	}
 	
 	public static Set<Consent> getAllByAuthorized(MidataId member, Map<String, Object> properties, Set<String> fields) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map(properties).map("authorized", member).map("status", NOT_DELETED), fields);
+		return Model.getAll(Consent.class, collection, CMaps.map("status", NOT_DELETED).map(properties).map("authorized", member), fields);
 	}
 	
 	public static Set<Consent> getAllByAuthorized(Set<MidataId> member, Map<String, Object> properties, Set<String> fields, int limit) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map(properties).map("authorized", member).map("status", NOT_DELETED), fields, limit);
+		return Model.getAll(Consent.class, collection, CMaps.map("status", NOT_DELETED).map(properties).map("authorized", member), fields, limit);
 	}
 	
 	public static Set<Consent> getAllByAuthorized(MidataId member) throws InternalServerException {

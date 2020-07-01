@@ -3,10 +3,13 @@ package utils.fhir;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.hl7.fhir.r4.model.codesystems.ResearchStudyStatus;
 import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.CodeType;
+import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Location;
@@ -18,6 +21,7 @@ import org.hl7.fhir.r4.model.PractitionerRole;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.ResearchStudy;
 import org.hl7.fhir.r4.model.ResearchStudy.ResearchStudyArmComponent;
+import org.hl7.fhir.r4.model.StringType;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
@@ -36,11 +40,13 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.AuthenticationException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
+import models.Info;
 import models.MidataId;
 import models.Record;
 import models.Research;
 import models.Study;
 import models.StudyGroup;
+import models.enums.InfoType;
 import models.enums.StudyValidationStatus;
 import models.enums.UserRole;
 import utils.RuntimeConstants;
@@ -324,6 +330,24 @@ public class ResearchStudyResourceProvider extends RecordBasedResourceProvider<R
 		if (!doupdate) researchStudy.addIdentifier().setSystem("http://midata.coop/codesystems/study-code").setValue(study.code);
 		researchStudy.setTitle(study.name);
 		researchStudy.setDescription(study.description);
+		
+		researchStudy.getDescriptionElement().removeExtension("http://hl7.org/fhir/StructureDefinition/translation");
+		if (study.infos != null) {
+			for (Info info : study.infos) {
+				if (info.type == InfoType.SUMMARY) {
+					for (Map.Entry<String,String> entry : info.value.entrySet()) {
+						if (entry.getKey().equals("int")) {
+							researchStudy.setDescription(entry.getValue());
+						} else {
+							Extension ext = researchStudy.getDescriptionElement().addExtension();
+							ext.setUrl("http://hl7.org/fhir/StructureDefinition/translation");
+							ext.addExtension("lang", new CodeType(entry.getKey()));
+							ext.addExtension("content", new StringType(entry.getValue()));
+						}
+					}
+				}
+			}
+		}
 		
 		switch(study.validationStatus) {	
 		case DRAFT:

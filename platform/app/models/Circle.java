@@ -1,5 +1,6 @@
 package models;
 
+import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -63,7 +64,7 @@ public class Circle extends Consent {
 	}
 	
 	public static Set<Circle> getAllActiveByMember(MidataId member) throws InternalServerException {
-		return Model.getAll(Circle.class, collection, CMaps.map("authorized", member).map("type",  ConsentType.CIRCLE).map("status", ConsentStatus.ACTIVE), Consent.SMALL);
+		return Model.getAll(Circle.class, collection, CMaps.map("authorized", member).map("type",  ConsentType.CIRCLE).map("status", EnumSet.of(ConsentStatus.ACTIVE, ConsentStatus.FROZEN)), Consent.SMALL);
 	}
 
 	public static void set(MidataId circleId, String field, Object value) throws InternalServerException {
