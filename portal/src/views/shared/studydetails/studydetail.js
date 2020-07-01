@@ -24,6 +24,7 @@ angular.module('portal')
 		server.get(jsRoutes.controllers.members.Studies.get($scope.studyid).url).
 			then(function(data1) {
 				var data = data1.data;
+				$scope.studyid = data._id;
 				$scope.study = data.study;
 				delete $scope.study.recordQuery["group-system"];
 				$scope.participation = data.participation;

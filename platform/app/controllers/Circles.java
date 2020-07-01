@@ -104,7 +104,11 @@ public class Circles extends APIController {
 			circles = new ArrayList<Circle>(Circle.getAllByOwner(owner));
 		} else if (json.has("member")) {
 			MidataId member = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
-			circles = new ArrayList<Circle>(Circle.getAllByMember(member));
+			if (json.has("status")) {
+			  circles = new ArrayList<Circle>(Circle.getAllActiveByMember(member));
+			} else {
+			  circles = new ArrayList<Circle>(Circle.getAllByMember(member));
+			}
 			ReferenceTool.resolveOwners(circles, true);
 		} else JsonValidation.validate(json, "owner");
 		Collections.sort(circles);

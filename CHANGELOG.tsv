@@ -55,5 +55,6 @@ id0053	16.06.2020	a.kreutz	F	Client Certificates	Project analyzers and external 
 id0054	26.06.2020	a.kreutz	F	Consent Resources updateable via API
 id0055	26.06.2020	a.kreutz	F	Versioned Consent Resources	Consents have now history like the other FHIR resources.
 id0056	26.06.2020	a.kreutz	F	Consent observing services	An external service may now react to consent changes with projects and apps that are linked to the service.
-id0057	26.06.2020	a.kreutz	F	Mails to all app users	An admin may send a mail to all users of an application.      
+id0057	26.06.2020	a.kreutz	F	Mails to all app users	An admin may send a mail to all users of an application.
+id0058	26.06.2020	a.kreutz	I	Support for STU3 Consents dropped      
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 

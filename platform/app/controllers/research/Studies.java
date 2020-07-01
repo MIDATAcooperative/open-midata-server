@@ -1685,7 +1685,7 @@ public class Studies extends APIController {
 		String comment = JsonValidation.getString(json, "comment");
 
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
-		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, Sets.create("name", "pstatus", "owner", "ownerName", "group"));
+		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, StudyParticipation.STUDY_EXTRA);
 		Study study = Study.getById(studyId, Sets.create("name", "executionStatus", "participantSearchStatus", "createdBy", "owner", "code", "type"));
 
 		if (study == null)

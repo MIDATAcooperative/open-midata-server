@@ -19,9 +19,15 @@ angular.module('portal')
 		
 		if ($state.params.consent) {
 			actions.push({ ac : "confirm", c : $state.params.consent });
+		} else if ($state.params.project) {
+			var prjs = $state.params.project.split(",");
+			for (var j=0;j<prjs.length;j++) {
+				actions.push({ ac : "study", s : prjs[j] });		
+			}					
 		} else {
 			actions.push({ ac : "unconfirmed" });
 		}
+		
 		
 		if ($state.params.callback) {
 			actions.push({ ac : "leave", c : $state.params.callback });

@@ -288,6 +288,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		if (consentToConvert.dateOfCreation != null) {
 		  c.setDateTime(consentToConvert.dateOfCreation);
 		}
+	    c.getPolicy().clear();
 		c.addPolicy().setUri("http://hl7.org/fhir/ConsentPolicy/opt-in");
 		c.getProvision().setPurpose(new ArrayList<Coding>());
 		c.getProvision().addPurpose(new Coding("http://midata.coop/codesystems/consent-type", consentToConvert.type.toString(), null));
@@ -685,9 +686,11 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 	@Override
 	public void updateExecute(Consent consent, org.hl7.fhir.r4.model.Consent theResource) throws AppException {
 		
+		ConsentState state = theResource.getStatus();
 		ConsentResourceProvider.updateMidataConsent(consent, theResource);				
 		Consent.set(consent._id, "fhirConsent", consent.fhirConsent);		
 		SubscriptionManager.resourceChange(consent);
+		theResource.setStatus(state);
 						
 		switch(consent.status) {
 		case UNCONFIRMED:
