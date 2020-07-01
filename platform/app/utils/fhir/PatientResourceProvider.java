@@ -557,7 +557,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		patient.setId(pseudo.toString());
 		patientProvider.prepare(record, patient);
 		record.content = "PseudonymizedPatient";
-		patientProvider.insertRecord(record, patient);
+		patientProvider.insertRecord(record, patient, RecordManager.instance.createContextFromAccount(part.owner));
 
 		Feature_Pseudonymization.addPseudonymization(inf.executorId, part._id, pseudo, userName);
 		RecordManager.instance.share(inf.executorId, member._id, part._id, Collections.singleton(record._id), false);

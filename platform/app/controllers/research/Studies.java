@@ -1764,6 +1764,13 @@ public class Studies extends APIController {
 			}
 
 			StudyParticipation.setManyStatus(ids, ParticipationStatus.ACCEPTED);
+			
+			/*for (StudyParticipation participation : participants) {
+				if (!participation.pstatus.equals(ParticipationStatus.ACCEPTED)) {
+					participation.pstatus =	ParticipationStatus.ACCEPTED;	
+					Circles.prepareConsent(participation, false);
+				}
+			}*/
 
 			AuditManager.instance.success();
 		}
@@ -1808,7 +1815,7 @@ public class Studies extends APIController {
 		String comment = JsonValidation.getString(json, "comment");
 
 		User user = ResearchUser.getById(userId, Sets.create("firstname", "lastname"));
-		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, Sets.create(Consent.FHIR, "pstatus", "ownerName", "owner", "authorized"));
+		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, StudyParticipation.STUDY_EXTRA);
 		Study study = Study.getById(studyId, Sets.create("name", "type", "executionStatus", "participantSearchStatus", "createdBy", "code"));
 
 		if (study == null)
@@ -1830,6 +1837,7 @@ public class Studies extends APIController {
 
 		// participation.addHistory(new
 		// History(EventType.PARTICIPATION_REJECTED, user, comment));
+		participation.pstatus = ParticipationStatus.RESEARCH_REJECTED;
 		Circles.consentStatusChange(userId, participation, ConsentStatus.REJECTED);
 		leaveSharing(userId, studyId, partId);
 		participation.setPStatus(ParticipationStatus.RESEARCH_REJECTED);
@@ -2257,7 +2265,7 @@ public class Studies extends APIController {
 		} while (Study.existsByCode(study.code));
 		study.createdAt = new Date();
 		study.createdBy = userId;
-		study.processFlags = new HashSet<String>();
+		study.processFlags = new HashSet<String>();		
 		
 		UserGroup userGroup = new UserGroup();
 		userGroup.name = study.name;

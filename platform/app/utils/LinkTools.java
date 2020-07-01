@@ -42,7 +42,7 @@ public class LinkTools {
 		}
 	}
 	
-	public static void createConsentForAppLink(MidataId targetUser, StudyAppLink link) throws AppException {
+	public static void createConsentForAppLink(MidataId targetUser, StudyAppLink link, Set<MidataId> observers) throws AppException {
 	   MemberKey consent = new MemberKey();
 	   consent.owner = targetUser;
 	   consent.categoryCode = link.identifier;
@@ -55,6 +55,7 @@ public class LinkTools {
 	   consent.writes =WritePermissionType.UPDATE_AND_CREATE;	
 	   consent.creatorApp = link.appId;
 	   consent.organization =link.providerId;
+	   consent.observers = observers;
 	   if (link.what != null) {
 	      consent.sharingQuery = link.what;
 	   } else {
