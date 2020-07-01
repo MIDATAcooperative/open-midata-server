@@ -396,7 +396,8 @@ public class ApplicationTools {
 						
 						if (LinkTools.findConsentForAppLink(executor,sal)==null) {
 							RecordManager.instance.clearCache();
-							LinkTools.createConsentForAppLink(member._id, sal);
+							Set<MidataId> observers = ApplicationTools.getObserversForApp(links);
+							LinkTools.createConsentForAppLink(member._id, sal, observers);
 						}
 					}
 				} else if (sal.linkTargetType == LinkTargetType.SERVICE) {
