@@ -56,6 +56,7 @@ import models.enums.AppReviewChecklist;
 import models.enums.ConsentStatus;
 import models.enums.EntityType;
 import models.enums.IconUse;
+import models.enums.JoinMethod;
 import models.enums.LinkTargetType;
 import models.enums.MessageReason;
 import models.enums.ParticipantSearchStatus;
@@ -1063,7 +1064,7 @@ public class Market extends APIController {
 			if (project != null) {
 			  Study study = Study.getByCodeFromMember(project, Study.ALL);
 			  if (study == null) throw new BadRequestException("error.unknown.study", "Study not found.");
-			  result.add(new StudyAppLink(study._id, appId));	
+			  if (study.joinMethods.contains(JoinMethod.API) || study.joinMethods.contains(JoinMethod.APP_CODE)) result.add(new StudyAppLink(study._id, appId));	
 			}
 			
 			for (StudyAppLink sal : result) {
