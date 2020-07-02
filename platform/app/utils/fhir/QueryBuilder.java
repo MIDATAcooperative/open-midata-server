@@ -52,6 +52,7 @@ import utils.stats.Stats;
 public class QueryBuilder {
 
 	public final static String TYPE_DATE = "date";
+	public final static String TYPE_INSTANT = "Instant";
 	public final static String TYPE_DATETIME = "DateTime";
 	public final static String TYPE_PERIOD = "Period";
 	public final static String TYPE_DATETIME_OR_PERIOD = "DateTime|Period";
@@ -270,6 +271,8 @@ public class QueryBuilder {
 		} else if (t.equals(TYPE_DATE)) {
 			return p;
 		} else if (t.equals(TYPE_DATETIME)) {
+			return p;
+		} else if (t.equals(TYPE_INSTANT)) {
 			return p;
 		} else if (t.equals(TYPE_IDENTIFIER)) {
 			return p+".value";
@@ -516,7 +519,7 @@ public class QueryBuilder {
                     hDate = cal.getTime();
                     break;
 				}
-				if (type.equals(TYPE_DATETIME) || type.equals(TYPE_DATE)) {
+				if (type.equals(TYPE_DATETIME) || type.equals(TYPE_DATE) || type.equals(TYPE_INSTANT)) {
 					lPath = path;
 					hPath = path;
 				} else if (type.equals(TYPE_PERIOD)) {

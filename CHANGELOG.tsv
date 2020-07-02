@@ -56,5 +56,6 @@ id0054	26.06.2020	a.kreutz	F	Consent Resources updateable via API
 id0055	26.06.2020	a.kreutz	F	Versioned Consent Resources	Consents have now history like the other FHIR resources.
 id0056	26.06.2020	a.kreutz	F	Consent observing services	An external service may now react to consent changes with projects and apps that are linked to the service.
 id0057	26.06.2020	a.kreutz	F	Mails to all app users	An admin may send a mail to all users of an application.
-id0058	26.06.2020	a.kreutz	I	Support for STU3 Consents dropped      
+id0058	26.06.2020	a.kreutz	I	Support for STU3 Consents dropped  
+id0059	26.06.2020	a.kreutz	F	Provenance Resource	A minimal implementation of the FHIR provenance resource is available.    
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 
