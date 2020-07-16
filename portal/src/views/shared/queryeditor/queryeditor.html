@@ -40,6 +40,9 @@
 		    <div ng-show="block.customFilter">
 		      <span>Extra Filter: </span><span>{{ block.customFilterPath }}</span>: {{ block.customFilterValue }}
 		    </div>
+		    <div ng-show="block.observer">
+		      {{ block.observer }}
+		    </div>
 		  </div>
 		</div>
 		<div ng-if="mode=='app'">
@@ -141,6 +144,12 @@
 		    </div><div class="form-check">
 		      <label class="form-check-label"><input class="form-check-input"  type="radio" ng-model="currentBlock.app" value="other"><span translate="queryeditor.app_other"></span><input type="text" ng-model="currentBlock.appName"></label>
 		    </div>
+		  </formrow>
+		  <formrow id="observer" label="queryeditor.observer" ng-show="currentBlock.flags.observer">
+		    <input type="text" class="form-control" ng-model="currentBlock.observer"></label>		    
+		  </formrow>
+		  <formrow id="observer" label="queryeditor.category" ng-show="currentBlock.flags.category">
+		    <input type="text" class="form-control" ng-model="currentBlock.category"></label>		    
 		  </formrow>
 		  <div ng-show="mode=='study'">
 		  <formrow id="restrictions" label="queryeditor.restrictions" ng-show="timeModes.length || dataPeriodModes.length || currentBlock.flags.custom">

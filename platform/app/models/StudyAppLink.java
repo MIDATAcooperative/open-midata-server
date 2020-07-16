@@ -129,6 +129,11 @@ public class StudyAppLink extends Model {
 	 * Terms of use (if not taken from research project)
 	 */
 	public String termsOfUse;
+	
+	/**
+	 * Has been dynamically added during login
+	 */
+	public @NotMaterialized boolean dynamic;
 		
 	public void add() throws InternalServerException {
 		Model.insert(collection, this);	
@@ -171,6 +176,7 @@ public class StudyAppLink extends Model {
 	
 	public StudyAppLink(MidataId studyId, MidataId appId) {		
 		this.active = true;
+		this.dynamic = true;
 		this.appId = appId;
 		this.studyId = studyId;
 		this.linkTargetType=LinkTargetType.STUDY;

@@ -408,7 +408,7 @@ public class ApplicationTools {
 				} else
 				if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.studyId))) {
 					RecordManager.instance.clearCache();
-			        controllers.members.Studies.requestParticipation(new ExecutionInfo(executor, member.getRole()), member._id, sal.studyId, app._id, JoinMethod.APP, null);
+			        controllers.members.Studies.requestParticipation(new ExecutionInfo(executor, member.getRole()), member._id, sal.studyId, app._id, sal.dynamic ? JoinMethod.API : JoinMethod.APP, null);
 				}
 			}
 		}

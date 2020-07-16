@@ -903,7 +903,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			if (existing == null) {
 				part = controllers.members.Studies.requestParticipation(info, user._id, studyId, plugin._id, info().pluginId.equals(RuntimeConstants.instance.portalPlugin) ? JoinMethod.RESEARCHER : JoinMethod.APP, null);
 			} else {
-				part = controllers.members.Studies.match(executorId, user._id, studyId, plugin._id);
+				part = controllers.members.Studies.match(executorId, user._id, studyId, plugin._id, info().pluginId.equals(RuntimeConstants.instance.portalPlugin) ? JoinMethod.RESEARCHER : JoinMethod.APP);
 			}
 			AccessLog.log("end request part");
 		}

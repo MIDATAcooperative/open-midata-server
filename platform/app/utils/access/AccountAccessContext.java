@@ -72,6 +72,11 @@ public class AccountAccessContext extends AccessContext {
 	public String toString() {
 		return "account("+getOwner()+" "+parentString()+")";
 	}
+
+	@Override
+	public Object getAccessRestriction(String content, String format, String field) throws AppException {		
+		return null;
+	}
 	
 	
 

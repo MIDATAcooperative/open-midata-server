@@ -70,4 +70,9 @@ public class PublicAccessContext extends AccessContext {
 		return "public("+parentString()+")";
 	}
 
+	@Override
+	public Object getAccessRestriction(String content, String format, String field) throws AppException {		
+		return null;
+	}
+
 }

@@ -97,4 +97,9 @@ public class SpaceAccessContext extends AccessContext {
 		return "space("+space._id+" "+parentString()+")";
 	}
 
+	@Override
+	public Object getAccessRestriction(String content, String format, String field) throws AppException {
+		return Feature_FormatGroups.getAccessRestriction(space.query, content, format, field);
+	}
+
 }

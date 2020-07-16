@@ -90,6 +90,8 @@ public class ProvenanceResourceProvider extends RecordBasedResourceProvider<Prov
 			
 		// Use name of @Search function as last parameter
 		registerSearches("Provenance", getClass(), "getProvenance");
+		
+		addPathWithVersion("Provenance.target");
 	}
 	
 	@Read(version=false)

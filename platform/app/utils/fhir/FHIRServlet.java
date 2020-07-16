@@ -2,6 +2,7 @@ package utils.fhir;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -113,6 +114,9 @@ public class FHIRServlet extends RestfulServer {
       
       setPlainProviders(plainProviders);
       //setPagingProvider(new VirtualPaging());
+      ResourceProvider.addPathWithVersion("Bundle.entry.fullUrl");
+      ResourceProvider.addPathWithVersion("Bundle.entry.response.location");
+      getFhirContext().getParserOptions().setDontStripVersionsFromReferencesAtPaths(ResourceProvider.pathesWithVersion);
       
       System.out.println("FHIR Servlet init end");
    }

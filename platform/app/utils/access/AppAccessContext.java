@@ -78,6 +78,11 @@ public class AppAccessContext extends AccessContext {
 		return Feature_FormatGroups.mayAccess(instance.sharingQuery, content, format);		
 	}
 	
+	@Override
+	public Object getAccessRestriction(String content, String format, String field) throws AppException {
+		return Feature_FormatGroups.getAccessRestriction(instance.sharingQuery, content, format, field);
+	}
+	
     public MobileAppInstance getAppInstance() {
     	return instance;
     }
@@ -102,4 +107,6 @@ public class AppAccessContext extends AccessContext {
 	public String toString() {
 		return "app("+instance._id+" "+parentString()+")";
 	}
+
+	
 }

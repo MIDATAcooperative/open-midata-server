@@ -299,6 +299,10 @@ public class ResearchStudyResourceProvider extends RecordBasedResourceProvider<R
 		updateFromStudy(executor, study);
 	}
 	
+	public static void deleteStudy(MidataId executor, MidataId studyId) throws AppException {        
+		RecordManager.instance.deleteFromPublic(executor, CMaps.map("_id",studyId).map("format","fhir/ResearchStudy").map("public","only").map("content","ResearchStudy"));		
+	}
+	
 	public static void updateFromStudy(MidataId executor, Study study) throws AppException {
 		if (study.validationStatus == StudyValidationStatus.DRAFT) return;
 		try {

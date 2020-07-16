@@ -152,4 +152,10 @@ public class ConsentAccessContext extends AccessContext{
 		return "consent("+consent._id+" "+parentString()+")";
 	}
 
+	@Override
+	public Object getAccessRestriction(String content, String format, String field) throws AppException {
+		return Feature_FormatGroups.getAccessRestriction(consent.sharingQuery, content, format, field);
+		
+	}
+
 }
