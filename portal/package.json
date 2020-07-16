@@ -1,6 +1,6 @@
 {
   "name": "MIDATA_portal",
-  "version": "0.8.4",
+  "version": "0.8.5",
   "description": "portal of MIDATA",
   "private": true,
   "devDependencies": {

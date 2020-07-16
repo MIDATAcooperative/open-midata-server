@@ -2226,7 +2226,7 @@ public class Studies extends APIController {
 
 		Set<StudyAppLink> links = StudyAppLink.getByStudy(studyId);
 		for (StudyAppLink link : links) link.delete();
-		ResearchStudyResourceProvider.updateFromStudy(userId, study._id);
+		ResearchStudyResourceProvider.deleteStudy(userId, study._id);
 		Study.delete(studyId);
 
 		AuditManager.instance.success();

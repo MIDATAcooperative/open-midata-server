@@ -69,7 +69,7 @@ angular.module('portal')
 	
 	$scope.resourceOptions = {
 	  "fhir/AuditEvent" : ["noapp", "noowner", "notime", "nopublic"], 
-	  "fhir/Consent" : ["noapp", "noowner", "notime", "nopublic"],
+	  "fhir/Consent" : ["noapp", "noowner", "notime", "nopublic", "observer", "category"],
 	  "fhir/ResearchStudy" : ["noapp","noowner","initpublic","notime","nopublic"],
 	  "fhir/ValueSet" : ["noapp","noowner", "notime","initpublic"],
 	  "fhir/Group" : ["noowner"],
@@ -209,6 +209,12 @@ angular.module('portal')
 				}
 				else fb.app = [ block.appName ];
 			}
+			if (block.observer && block.observer != "") {
+				fb.observer = [ block.observer ];
+			}
+			if (block.category && block.category != "") {
+				fb.category = [ block.category ];
+			}
 			if (block.timeRestriction && block.timeRestrictionMode) {
 				fb[block.timeRestrictionMode] = block.timeRestrictionDate;
 			}
@@ -328,6 +334,12 @@ angular.module('portal')
 			}
 			if (ac("app")) {
 				nblock.app = ac("app");
+			}
+			if (ac("observer")) {
+				nblock.observer = noarray(ac("observer"));
+			}
+			if (ac("category")) {
+				nblock.category = noarray(ac("category"));
 			}
 			if (ac("owner")) {
 				nblock.owner = noarray(ac("owner"));

@@ -68,5 +68,9 @@ public class UserGroupAccessContext extends AccessContext {
 	public String toString() {
 		return "usergroup("+ugm.userGroup+" "+parentString()+")";
 	}
+	@Override
+	public Object getAccessRestriction(String content, String format, String field) throws AppException {		
+		return null;
+	}
 
 }

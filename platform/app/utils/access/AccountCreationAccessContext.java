@@ -65,4 +65,9 @@ public class AccountCreationAccessContext extends AccessContext {
 		return false;
 	}
 
+	@Override
+	public Object getAccessRestriction(String content, String format, String field) throws AppException {		
+		return null;
+	}
+
 }

@@ -1365,6 +1365,8 @@
     "created-after" : "Created after",
     "updated-after" : "Last updated after",
     "effective" : "Effective date or period",
+    "observer" : "Only with this observer (optional)",
+    "category" : "Category (optional)",
     "custom_filter" : "User Defined Filter (JSON)",
     "remove_btn" : "Remove",
     "apply_btn" : "Apply",

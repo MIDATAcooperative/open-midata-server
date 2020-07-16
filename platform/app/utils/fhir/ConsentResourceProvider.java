@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.CodeType;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
@@ -70,6 +71,7 @@ import models.ConsentVersion;
 import models.MidataId;
 import models.Plugin;
 import models.Record;
+import models.Research;
 import models.Study;
 import models.StudyParticipation;
 import models.TypedMidataId;
@@ -162,7 +164,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		}
 		IParser parser = ctx().newJsonParser();
 		AccessLog.log(consentToConvert.fhirConsent.toString());
-		org.hl7.fhir.r4.model.Consent p = parser.parseResource(getResourceType(), consentToConvert.fhirConsent.toString());
+		org.hl7.fhir.r4.model.Consent p = parser.parseResource(getResourceType(), consentToConvert.fhirConsent.toString());		
 		
 		if (consentToConvert.sharingQuery == null) Circles.fillConsentFields(info().executorId, Collections.singleton(consentToConvert), Sets.create("sharingQuery"));
 		
@@ -178,10 +180,10 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 	}
 	
 	public void addActorsToConsent(Consent consentToConvert, org.hl7.fhir.r4.model.Consent p) throws AppException {
-		p.getProvision().getActor().clear();
+		p.getProvision().getActor().removeIf(actor -> { return actor.hasRole() && ("GRANTEE".equals(actor.getRole().getCodingFirstRep().getCode())); });
 		if (EntityType.USERGROUP.equals(consentToConvert.entityType)) {
 			for (MidataId auth : consentToConvert.authorized) {
-			   p.getProvision().addActor().setReference(new Reference("Group/"+auth.toString()));
+			   p.getProvision().addActor().setRole(new CodeableConcept().addCoding(new Coding().setSystem("http://hl7.org/fhir/v3/RoleCode").setCode("GRANTEE"))).setReference(new Reference("Group/"+auth.toString()));
 			}			
 		} else {
 			for (MidataId auth : consentToConvert.authorized) {
@@ -296,13 +298,17 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		
 		StudyParticipation part = null;
 		Study study = null;
+		Research org = null;
 		if (consentToConvert.type == ConsentType.STUDYPARTICIPATION) {
 			if (consentToConvert instanceof StudyParticipation) {
 				part = (StudyParticipation) consentToConvert;
 			} else {
 				part = StudyParticipation.getById(consentToConvert._id, StudyParticipation.STUDY_EXTRA);
 			}
-			study = Study.getById(part.study, Sets.create("code","name"));
+			study = Study.getById(part.study, Sets.create("code","name","owner"));
+			if (study!=null) {
+				org = Research.getById(study.owner, Sets.create("name"));
+			}
 		}
 		
 		org.hl7.fhir.r4.model.Consent c = newversion;
@@ -325,13 +331,14 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		}
 		 
 		c.setId(consentToConvert._id.toString());
+		c.getProvision().getActor().clear();
 		
 		switch (consentToConvert.status) {
-		case ACTIVE:c.setStatus(org.hl7.fhir.r4.model.Consent.ConsentState.ACTIVE);break;
-		case UNCONFIRMED:c.setStatus(org.hl7.fhir.r4.model.Consent.ConsentState.PROPOSED);break;
-		case REJECTED:c.setStatus(org.hl7.fhir.r4.model.Consent.ConsentState.REJECTED);break;
-		case EXPIRED:c.setStatus(org.hl7.fhir.r4.model.Consent.ConsentState.INACTIVE);break;
-		case FROZEN:c.setStatus(org.hl7.fhir.r4.model.Consent.ConsentState.INACTIVE);break;
+		case ACTIVE:c.setStatus(ConsentState.ACTIVE);break;
+		case UNCONFIRMED:c.setStatus(ConsentState.PROPOSED);break;
+		case REJECTED:c.setStatus(ConsentState.REJECTED);break;
+		case EXPIRED:c.setStatus(ConsentState.INACTIVE);break;
+		case FROZEN:c.setStatus(ConsentState.INACTIVE);break;
 		}
 		
 		String categoryCode = consentToConvert.categoryCode;
@@ -341,6 +348,9 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 
 		if (study != null) {
 			c.addCategory().addCoding().setCode(study.code).setSystem("http://midata.coop/codesystems/project-code").setDisplay(study.name);
+			if (org != null) {
+			   c.getProvision().addActor().setRole(new CodeableConcept(new Coding().setSystem("http://terminology.hl7.org/CodeSystem/v3-ParticipationType").setCode("IRCP"))).setReference(new Reference("Organization/"+study.owner.toString()).setDisplay(org.name));
+			}
 		}
 		
 		if (consentToConvert.owner != null) {
@@ -379,7 +389,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 	}
 			
 	   @Search()
-	    public List<IBaseResource> getConsent(
+	    public Bundle getConsent(
 	    		@Description(shortDefinition="The resource identity")
 	    		@OptionalParam(name="_id")
 	    		StringAndListParam theId, 
@@ -507,7 +517,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 	    	paramMap.setElements(theElements);
 	    	paramMap.setSummary(theSummary);
 	    	    		    	
-	    	return search(paramMap);    	    	    	
+	    	return searchBundle(paramMap, theDetails);    	    	    	
 	    }
 	
 	@Override
@@ -519,10 +529,15 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 			
 		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient", null);
-		builder.restriction("category", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "fhirConsent.category");
+		builder.restriction("identifier", false, QueryBuilder.TYPE_IDENTIFIER, "fhirConsent.identifier");
+		builder.restriction("action", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "fhirConsent.provision.action");
+		builder.restriction("consentor", false, null, "fhirConsent.performer");
+		builder.restriction("organization", false, "Organization", "fhirConsent.organization");
+		builder.restriction("category", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "fhirConsent.category");		
 		builder.restriction("date", false, QueryBuilder.TYPE_DATETIME, "fhirConsent.dateTime");
 		builder.restriction("period", false, QueryBuilder.TYPE_DATETIME, "fhirConsent.period");
 		builder.restriction("status", false, QueryBuilder.TYPE_CODE, "fhirConsent.status");
+		builder.restriction("purpose", false, QueryBuilder.TYPE_CODING, "fhirConsent.provision.purpose");
 				
 		builder.restriction("_lastUpdated", false, QueryBuilder.TYPE_DATETIME, "lastUpdated");
 		
@@ -530,7 +545,9 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		if (params.containsKey("actor")) {
 			List<ReferenceParam> actors = builder.resolveReferences("actor", null);
 			if (actors != null) {
-				authorized = FHIRTools.referencesToIds(actors);				
+				if (FHIRTools.areAllOfType(actors, Sets.create("Patient","Group"))) {
+				  authorized = FHIRTools.referencesToIds(actors);				
+				} else builder.restriction("actor", false, null, "fhirConsent.provision.actor.reference");
 			}
 		}
 								
@@ -542,7 +559,26 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 		
 		if (!info.context.mayAccess("Consent", "fhir/Consent")) properties.put("_id", info.context.getTargetAps());
 		
-		ObjectIdConversion.convertMidataIds(properties, "_id", "owner", "authorized");
+		Object category = info.context.getAccessRestriction("Consent", "fhir/Consent", "category");
+		if (category != null) properties.put("categoryCode", category);
+		Object observer = info.context.getAccessRestriction("Consent", "fhir/Consent", "observer");
+		if (observer != null) {
+			 Set<Object> apps;
+			 if (observer instanceof Collection) apps = new HashSet<Object>((Collection) observer);
+			 else apps = Collections.singleton(observer);
+			 Set<MidataId> resolved = new HashSet<MidataId>();
+			 for (Object app : apps) {
+				 if (!MidataId.isValid(app.toString())) {
+					 Plugin p = Plugin.getByFilename(app.toString(), Sets.create("_id"));					 
+					 if (p!=null) resolved.add(p._id);
+					 else throw new BadRequestException("error.internal", "Queried for unknown app.");
+				 } else resolved.add(MidataId.from(app));
+			 }
+			 
+			 properties.put("observers", resolved);
+		}
+		
+		ObjectIdConversion.convertMidataIds(properties, "_id", "owner", "authorized", "observers");
 		
 		Set<models.Consent> consents = new HashSet<models.Consent>();						
 		if (authorized == null || authorized.contains(info().ownerId.toString())) consents.addAll(Consent.getAllByAuthorized(info().ownerId, properties, Consent.FHIR));
@@ -734,7 +770,7 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 			if (consent.status == ConsentStatus.ACTIVE) {
 			   part = controllers.members.Studies.requestParticipation(info(), consent.owner, studyId, info().pluginId, JoinMethod.API, joinCode);
 			} else {
-			   part = controllers.members.Studies.match(info().executorId, consent.owner, studyId, info().pluginId);				
+			   part = controllers.members.Studies.match(info().executorId, consent.owner, studyId, info().pluginId, JoinMethod.API);				
 			}
 			ConsentResourceProvider.updateMidataConsent(part, theResource);
 			Consent.set(part._id, "fhirConsent", part.fhirConsent);

@@ -42,6 +42,7 @@ import models.MidataId;
 import models.Model;
 import models.Record;
 import models.enums.UserRole;
+import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.access.VersionedDBRecord;
 import utils.auth.ExecutionInfo;
@@ -121,7 +122,8 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 	public abstract T getResourceById(@IdParam IIdType theId) throws AppException;
 	
 	public String getResourceUrl(String baseUrl, IBaseResource r) {
-		return baseUrl+"/"+r.getIdElement().toString()+"/_history/"+r.getMeta().getVersionId();
+		String res = baseUrl+"/"+r.getIdElement().toString();//+"/_history/"+r.getMeta().getVersionId();		
+		return res;
 	}
 	
 	public Bundle searchBundle(SearchParameterMap params, RequestDetails theDetails) {
@@ -129,7 +131,7 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 		try {
 			List<IBaseResource> res = search(params);
 			for (IBaseResource r : res) {					
-				result.addEntry().setResource((Resource) r);//.setFullUrl(getResourceUrl(theDetails.getFhirServerBase(), r));
+				result.addEntry().setResource((Resource) r).setFullUrl(getResourceUrl(theDetails.getFhirServerBase(), r));				
 			}
 			
 			if (params.getFrom() != null) {
@@ -262,6 +264,7 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 	protected static Map<String,String> searchParamNameToPathMap = new HashMap<String,String>();
 	protected static Map<String,Set<String>> searchParamNameToTypeMap = new HashMap<String,Set<String>>();
 	protected static Map<String,String> searchParamNameToTokenMap = new HashMap<String,String>();
+	protected static Set<String> pathesWithVersion = new HashSet<String>();
 	
 	public static IQueryParameterType asQueryParameter(String resourceType, String searchParam, ReferenceParam param) {
 		String type = searchParamNameToTokenMap.get(resourceType+"."+searchParam);
@@ -285,6 +288,10 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 				}
 			}
 		}
+	}
+	
+	public static void addPathWithVersion(String path) {
+		pathesWithVersion.add(path);
 	}
 	
 	public static Set<String> tokensToStrings(TokenOrListParam params) {
@@ -370,6 +377,6 @@ public  abstract class ResourceProvider<T extends DomainResource, M extends Mode
 	}
 	
 	protected abstract void convertToR4(Object in);
-					
+	
 
 }

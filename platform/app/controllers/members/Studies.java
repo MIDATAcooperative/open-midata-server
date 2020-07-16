@@ -142,7 +142,7 @@ public class Studies extends APIController {
 				
 		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) return inputerror("code", "notsearching", "Study is not searching for participants.");
 		
-		StudyParticipation part = createStudyParticipation(userId, study, user, code, null);
+		StudyParticipation part = createStudyParticipation(userId, study, user, code, null, JoinMethod.CODE);
 				
 		if (code.status != ParticipationCodeStatus.REUSEABLE) {
 		   code.setStatus(ParticipationCodeStatus.USED);
@@ -239,7 +239,7 @@ public class Studies extends APIController {
 	 * @throws InternalServerException
 	 */
 	
-	public static StudyParticipation createStudyParticipation(MidataId executor, Study study, Member member, ParticipationCode code, Set<MidataId> observers) throws AppException {
+	public static StudyParticipation createStudyParticipation(MidataId executor, Study study, Member member, ParticipationCode code, Set<MidataId> observers, JoinMethod method) throws AppException {
 		StudyParticipation part = new StudyParticipation();
 		part._id = new MidataId();
 		part.study = study._id;
@@ -275,7 +275,7 @@ public class Studies extends APIController {
 			part.joinMethod = JoinMethod.CODE;
 		} else {
 			part.pstatus = ParticipationStatus.MATCH;
-			part.joinMethod = JoinMethod.ALGORITHM;
+			part.joinMethod = method;
 		}
 		
 		//PatientResourceProvider.generatePatientForStudyParticipation(part, member);
@@ -393,7 +393,7 @@ public class Studies extends APIController {
 			if (study.joinMethods != null && !study.joinMethods.contains(joinMethod)) throw new JsonValidationException("error.blocked.joinmethod", "code", "joinmethod", "Study is not searching for participants using this channel.");
 			code = checkCode(study, joinMethod, joinCode);
 			Set<MidataId> observers = ApplicationTools.getObserversForApp(usingApp);
-			participation = createStudyParticipation(inf.executorId, study, user, code, observers);
+			participation = createStudyParticipation(inf.executorId, study, user, code, observers, joinMethod);
 		}
 				
 		if (participation.pstatus == ParticipationStatus.ACCEPTED || participation.pstatus == ParticipationStatus.REQUEST) return participation;
@@ -426,7 +426,7 @@ public class Studies extends APIController {
 	
 	
 	
-    public static StudyParticipation match(MidataId executor, MidataId userId, MidataId studyId, MidataId usingApp) throws AppException {
+    public static StudyParticipation match(MidataId executor, MidataId userId, MidataId studyId, MidataId usingApp, JoinMethod method) throws AppException {
 		
 		
 		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "email", "birthday", "gender", "country"));		
@@ -439,7 +439,7 @@ public class Studies extends APIController {
 		if (participation == null) {
 			if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new JsonValidationException("error.closed.study", "code", "notsearching", "Study is not searching for participants.");
 			
-			participation = createStudyParticipation(executor, study, user, null, null);
+			participation = createStudyParticipation(executor, study, user, null, null, method);
 										
 		}		
 		

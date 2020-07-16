@@ -28,6 +28,8 @@ public abstract class AccessContext {
 	
 	public abstract boolean mayAccess(String content, String format) throws AppException;
 	
+	public abstract Object getAccessRestriction(String content, String format, String field) throws AppException; 
+	
 	public boolean produceHistory() {
 		return true;
 	}

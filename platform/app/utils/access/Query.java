@@ -524,6 +524,18 @@ public class Query {
 			 }
 			 properties.put("app", resolved);
 		 }
+		 if (properties.containsKey("observer")) {
+			 Set<String> apps = getRestriction(properties.get("observer"), "observer");
+			 Set<String> resolved = new HashSet<String>();
+			 for (Object app : apps) {
+				 if (!MidataId.isValid(app.toString())) {
+					 Plugin p = Plugin.getByFilename(app.toString(), Sets.create("_id"));					 
+					 if (p!=null) resolved.add(p._id.toString());
+					 else throw new BadRequestException("error.internal", "Queried for unknown app.");
+				 } else resolved.add(app.toString());
+			 }
+			 properties.put("observer", resolved);
+		 }
 		 
 		 if (properties.containsKey("study")) {
 			 Set<String> studies = getRestriction(properties.get("study"), "study");
