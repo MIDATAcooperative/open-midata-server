@@ -775,15 +775,17 @@ public class ConsentResourceProvider extends ReadWriteResourceProvider<org.hl7.f
 			ConsentResourceProvider.updateMidataConsent(part, theResource);
 			Consent.set(part._id, "fhirConsent", part.fhirConsent);
 			SubscriptionManager.resourceChange(part);
+			processDataSharing(part, theResource);
 		} else {
 		
 			String encoded = ctx.newJsonParser().encodeResourceToString(theResource);		
 			consent.fhirConsent = BasicDBObject.parse(encoded);		 
 	        Circles.addConsent(info().executorId, consent, true, null, false);        
 			theResource.setDateTime(consent.dateOfCreation);
+			processDataSharing(consent, theResource);
 		}
 		
-		processDataSharing(consent, theResource);
+		
 	}
 	
 	private Study getStudyForConsent(org.hl7.fhir.r4.model.Consent theResource) throws AppException {
