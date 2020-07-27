@@ -43,6 +43,7 @@ import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.fhir.OrganizationResourceProvider;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
@@ -214,6 +215,7 @@ public class Researchers extends APIController {
 		if (research != null) {
 		  Research.add(research);
 		  user.organization = research._id;
+		  OrganizationResourceProvider.updateFromResearch(executingUser._id, research);
 		}
 		ResearchUser.add(user);
 					
@@ -265,6 +267,7 @@ public class Researchers extends APIController {
 	@Security.Authenticated(ResearchSecured.class)
 	public Result updateOrganization(String id) throws AppException {
 		requireSubUserRole(SubUserRole.MASTER);
+		MidataId executorId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		
 		JsonNode json = request().body().asJson();
 		
@@ -288,6 +291,7 @@ public class Researchers extends APIController {
 		research.set("name", research.name);
 		research.set("description", research.description);						
 		
+		OrganizationResourceProvider.updateFromResearch(executorId, research);
 		return ok();		
 	}
 		
