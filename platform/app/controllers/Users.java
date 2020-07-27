@@ -21,11 +21,13 @@ import models.Circle;
 import models.Consent;
 import models.Developer;
 import models.HPUser;
+import models.HealthcareProvider;
 import models.KeyInfoExtern;
 import models.KeyRecoveryData;
 import models.KeyRecoveryProcess;
 import models.Member;
 import models.MidataId;
+import models.Research;
 import models.ResearchUser;
 import models.Space;
 import models.StudyParticipation;
@@ -66,6 +68,7 @@ import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.fhir.OrganizationResourceProvider;
 import utils.fhir.PatientResourceProvider;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
@@ -503,24 +506,43 @@ public class Users extends APIController {
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_ACCOUNT_DELETED, userId);
 		
-		SubscriptionData.deleteByOwner(user._id);
+		doAccountWipe(userId, userId);
+			
+		AuditManager.instance.success();
+		
+		if (reason != null) {
+			Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), "Midata Admin", "["+InstanceConfig.getInstance().getPortalServerDomain()+"]: Account Deletion", "Reason given by user: "+reason);
+		}
+		
+		return ok();
+	}
+	
+	public static void doAccountWipe(MidataId executorId, MidataId userId) throws AppException {
+        SubscriptionData.deleteByOwner(userId);
 		
 		Set<Space> spaces = Space.getAllByOwner(userId, Space.ALL);
 		for (Space space : spaces) {
-			RecordManager.instance.deleteAPS(space._id, userId);
+			if (executorId.equals(userId)) {
+			  RecordManager.instance.deleteAPS(space._id, userId);
+			} else AccessPermissionSet.delete(space._id);		
+			
 			Space.delete(userId, space._id);
 		}
 		
 		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map("type", Sets.createEnum(ConsentType.CIRCLE, ConsentType.EXTERNALSERVICE, ConsentType.HCRELATED, ConsentType.HEALTHCARE, ConsentType.API)), Consent.ALL, Integer.MAX_VALUE);
 		for (Consent consent : consents) {
+			if (executorId.equals(userId)) {
 			RecordManager.instance.deleteAPS(consent._id, userId);
+			} else AccessPermissionSet.delete(consent._id);
 			Circle.delete(userId, consent._id);
 		}
 		
 		Set<StudyParticipation> studies = StudyParticipation.getAllByMember(userId, Sets.create("_id", "study", "status", "pstatus"));
 		for (StudyParticipation study : studies) {
 			if (study.pstatus == ParticipationStatus.MEMBER_REJECTED || study.pstatus == ParticipationStatus.MEMBER_RETREATED || study.pstatus == ParticipationStatus.RESEARCH_REJECTED) continue;
-			controllers.members.Studies.retreatParticipation(userId, userId, study.study);
+			try {
+			  controllers.members.Studies.retreatParticipation(executorId, userId, study.study);
+			} catch (Exception e) {}			
 		}
 		
 		Set<Consent> consents2 = Consent.getAllByAuthorized(userId);
@@ -537,27 +559,37 @@ public class Users extends APIController {
 			ug.delete();
 		}
 		
-		RecordManager.instance.clearIndexes(userId);
-		
-		//RecordManager.instance.wipe(userId, CMaps.map("owner", "self"));
-		//RecordManager.instance.wipe(userId, CMaps.map("owner", "self").map("streams", "true"));
+		if (executorId.equals(userId)) {
+		  RecordManager.instance.clearIndexes(userId);
+		}
+				
         KeyRecoveryProcess.delete(userId);
         KeyRecoveryData.delete(userId);
         FutureLogin.delete(userId);
 		KeyManager.instance.deleteKey(userId);
 		KeyInfoExtern.delete(userId);
 		AccessPermissionSet.delete(userId);
+						
+		User user = User.getById(userId, User.ALL_USER_INTERNAL);
+		if (user.role == UserRole.PROVIDER) {
+			HPUser hp = HPUser.getById(userId, Sets.create("provider"));
+			user.delete();
+			if (!User.exists(CMaps.map("provider", hp.provider).map("status", User.NON_DELETED))) {
+				OrganizationResourceProvider.deleteOrganization(executorId, hp.provider);
+				HealthcareProvider.delete(hp.provider);
+			}			
+		} else
+		if (user.role == UserRole.RESEARCH) {
+			ResearchUser ru = ResearchUser.getById(userId, Sets.create("organization"));
+			user.delete();
+			if (!User.exists(CMaps.map("organization", ru.organization).map("status", User.NON_DELETED))) {
+			  OrganizationResourceProvider.deleteOrganization(executorId, ru.organization);
+			  Research.delete(ru.organization);	
+			}
+		} else {
+			user.delete();
+		} 						
 		
-		user = User.getById(userId, User.ALL_USER_INTERNAL);
-		user.delete();
-		
-		AuditManager.instance.success();
-		
-		if (reason != null) {
-			Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), "Midata Admin", "["+InstanceConfig.getInstance().getPortalServerDomain()+"]: Account Deletion", "Reason given by user: "+reason);
-		}
-		
-		return ok();
 	}
 	
 	@Security.Authenticated(AnyRoleSecured.class)

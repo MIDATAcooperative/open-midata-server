@@ -71,6 +71,7 @@ angular.module('portal')
 	  "fhir/AuditEvent" : ["noapp", "noowner", "notime", "nopublic"], 
 	  "fhir/Consent" : ["noapp", "noowner", "notime", "nopublic", "observer", "category"],
 	  "fhir/ResearchStudy" : ["noapp","noowner","initpublic","notime","nopublic"],
+	  "fhir/Organization" : ["noapp","noowner","initpublic","notime","nopublic"],
 	  "fhir/ValueSet" : ["noapp","noowner", "notime","initpublic"],
 	  "fhir/Group" : ["noowner"],
 	  "fhir/Patient" : ["noapp", "notime", "nopublic"],

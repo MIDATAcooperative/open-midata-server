@@ -17,6 +17,7 @@ import akka.cluster.Cluster;
 import akka.cluster.ClusterEvent.CurrentClusterState;
 import controllers.APIController;
 import controllers.Application;
+import controllers.Users;
 import models.AccessPermissionSet;
 import models.Admin;
 import models.Circle;
@@ -63,6 +64,7 @@ import utils.access.DBRecord;
 import utils.access.RecordManager;
 import utils.access.VersionedDBRecord;
 import utils.access.index.IndexPageModel;
+import utils.audit.AuditEventBuilder;
 import utils.audit.AuditManager;
 import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
@@ -446,56 +448,13 @@ public class Administration extends APIController {
 		User selected = User.getByIdAlsoDeleted(userId, User.ALL_USER);
 		if (!selected.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.invalid.status",  "User must have status deleted to be wiped.");
 		
-		SubscriptionData.deleteByOwner(selected._id);
+		AuditManager.instance.addAuditEvent(AuditEventBuilder.withType(AuditEventType.USER_ACCOUNT_DELETED).withActorUser(executorId).withModifiedUser(selected));
 		
-		Set<Space> spaces = Space.getAllByOwner(userId, Space.ALL);
-		for (Space space : spaces) {
-			AccessPermissionSet.delete(space._id);			
-			Space.delete(userId, space._id);
-		}
+		Users.doAccountWipe(executorId, userId);
 		
-		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map("type", Sets.createEnum(ConsentType.CIRCLE, ConsentType.EXTERNALSERVICE, ConsentType.HCRELATED, ConsentType.HEALTHCARE, ConsentType.API)), Consent.ALL, Integer.MAX_VALUE);
-		for (Consent consent : consents) {			
-			AccessPermissionSet.delete(consent._id);
-			Circle.delete(userId, consent._id);
-		}
+		AuditManager.instance.success();
 		
-		Set<StudyParticipation> studies = StudyParticipation.getAllByMember(userId, Sets.create("_id", "study","pstatus"));
-		for (StudyParticipation study : studies) {
-			if (study.pstatus == ParticipationStatus.MEMBER_REJECTED || study.pstatus == ParticipationStatus.MEMBER_RETREATED || study.pstatus == ParticipationStatus.RESEARCH_REJECTED) continue;
-			try {
-			  controllers.members.Studies.retreatParticipation(executorId, userId, study.study);
-			} catch (Exception e) {}
-		}
-		
-		Set<Consent> consents2 = Consent.getAllByAuthorized(userId);
-		for (Consent consent : consents2) {
-			consent = Consent.getByIdAndAuthorized(consent._id, userId, Sets.create("authorized"));
-			consent.authorized.remove(userId);
-			Consent.set(consent._id, "authorized", consent.authorized);		
-			Consent.set(consent._id, "lastUpdated", new Date());
-		}
-		
-		Set<UserGroupMember> ugs = UserGroupMember.getAllByMember(userId);
-		for (UserGroupMember ug : ugs) {
-			AccessPermissionSet.delete(ug._id);
-			ug.delete();
-		}
-							
-		if (getRole().equals(UserRole.PROVIDER)) {
-			HealthcareProvider.delete(PortalSessionToken.session().orgId);
-		}
-		
-		KeyRecoveryProcess.delete(userId);
-        KeyRecoveryData.delete(userId);
-        FutureLogin.delete(userId);
-		KeyManager.instance.deleteKey(userId);
-		KeyInfoExtern.delete(userId);
-		AccessPermissionSet.delete(userId);
-		
-		selected.delete();
-		
-		/*if (!User.exists(CMaps.map("organization", PortalSessionToken.session().org))) {
+			/*if (!User.exists(CMaps.map("organization", PortalSessionToken.session().org))) {
 			  Research.delete(PortalSessionToken.session().org);			
 		}*/
 		

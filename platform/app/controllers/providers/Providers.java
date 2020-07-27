@@ -54,6 +54,7 @@ import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.fhir.OrganizationResourceProvider;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
@@ -138,7 +139,7 @@ public class Providers extends APIController {
 		user.security = AccountSecurityLevel.KEY_EXT_PASSWORD;		
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(user._id, null);								
 		
-		HealthcareProvider.add(provider);
+		HealthcareProvider.add(provider);		
 		user.provider = provider._id;
 		HPUser.add(user);
 			  
@@ -146,7 +147,9 @@ public class Providers extends APIController {
 		PWRecovery.storeRecoveryData(user._id, recover);
 				
 		RecordManager.instance.createPrivateAPS(user._id, user._id);		
-				
+		
+		OrganizationResourceProvider.updateFromHP(user._id, provider);
+		
 		Application.sendWelcomeMail(user, null);
 		if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) Application.sendAdminNotificationMail(user);
 		
@@ -180,6 +183,7 @@ public class Providers extends APIController {
 		if (provider != null) {
 			HealthcareProvider.add(provider);
 		    user.provider = provider._id;
+		    OrganizationResourceProvider.updateFromHP(user._id, provider);
 		}
 		HPUser.add(user);
 					
@@ -410,6 +414,7 @@ public class Providers extends APIController {
 	@Security.Authenticated(ProviderSecured.class)
 	public Result updateOrganization(String id) throws AppException {
 		requireSubUserRole(SubUserRole.MASTER);
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 		
 		JsonNode json = request().body().asJson();
 		
@@ -432,7 +437,8 @@ public class Providers extends APIController {
 		provider.description = JsonValidation.getStringOrNull(json, "description");
 		provider.url = JsonValidation.getStringOrNull(json, "url");
 		provider.setMultiple(Sets.create("name", "description", "url"));
-							
+		OrganizationResourceProvider.updateFromHP(userId, provider);		
+		
 		return ok();		
 	}
 	
