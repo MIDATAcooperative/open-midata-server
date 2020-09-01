@@ -567,9 +567,12 @@ public class RecordManager {
 	 */
 	public BSONObject getMeta(MidataId who, MidataId apsId, String key) throws AppException {
 		AccessLog.logBegin("begin getMeta who="+who.toString()+" aps="+apsId.toString()+" key="+key);
-		BSONObject result = Feature_UserGroups.findApsCacheToUse(getCache(who), apsId).getAPS(apsId).getMeta(key);
-		AccessLog.logEnd("end getMeta");
-		return result;
+		try {
+		  BSONObject result = Feature_UserGroups.findApsCacheToUse(getCache(who), apsId).getAPS(apsId).getMeta(key);
+		  return result;
+		} finally {
+		  AccessLog.logEnd("end getMeta");
+		}		
 	}
 	
 	/**
@@ -1311,7 +1314,7 @@ public class RecordManager {
 		    
 		    return result;
 		} catch (APSNotExistingException e) {
-			checkRecordsInAPS(who, aps, false);
+			checkRecordsInAPS(who, aps, false, "", new ArrayList<String>());
 			//fixAccount(who);
 			throw e;
 		}
@@ -1436,19 +1439,22 @@ public class RecordManager {
 	 * @param who
 	 * @throws AppException
 	 */
-	private void resetInfo(MidataId who) throws AppException {
+	private int resetInfo(MidataId who) throws AppException {
 		AccessLog.logBegin("start reset info user="+who.toString());
+		int count = 0;
 		List<Record> result = list(who, UserRole.ANY, RecordManager.instance.createContextFromAccount(who), CMaps.map("streams", "only").map("flat", "true"), Sets.create("_id", "owner"));
 		for (Record stream : result) {
 			try {
 			  AccessLog.log("reset stream:"+stream._id.toString());
-			  Feature_UserGroups.findApsCacheToUse(getCache(who), stream._id).getAPS(stream._id, stream.owner).removeMeta("_info");			  
+			  Feature_UserGroups.findApsCacheToUse(getCache(who), stream._id).getAPS(stream._id, stream.owner).removeMeta("_info");
+			  count++;
 			} catch (APSNotExistingException e) {}
 			catch (InternalServerException e2) {
 				AccessLog.log("Stream access error: "+stream._id+" ow="+stream.owner.toString());
 			}
 		}
 		AccessLog.logEnd("end reset info user="+who.toString());
+		return count;
 	}
 
 	/**
@@ -1456,16 +1462,32 @@ public class RecordManager {
 	 * @param userId id of user
 	 * @throws AppException
 	 */
-	public void fixAccount(MidataId userId) throws AppException {
+	public List<String> fixAccount(MidataId userId) throws AppException {
 				
-		IndexManager.instance.clearIndexes(getCache(userId), userId);
+		List<String> msgs = new ArrayList<String>();
+		msgs.add(IndexManager.instance.clearIndexes(getCache(userId), userId));
 		
 		APSCache cache = getCache(userId);
 				
 		
 		AccessLog.logBegin("start search for missing records");
-		checkRecordsInAPS(userId, userId, true);		
+		checkRecordsInAPS(userId, userId, true, "account:", msgs);		
 		AccessLog.logEnd("end search for missing records");
+		
+		AccessLog.logBegin("start search for broken user groups");
+		Set<UserGroupMember> ugms = UserGroupMember.getAllActiveByMember(userId);
+		for (UserGroupMember ugm : ugms) {
+			try {
+			  Feature_UserGroups.loadKey(ugm);
+			} catch (Exception e) {
+				msgs.add("disabled usergroup "+ugm.userGroup.toString());
+				ugm.status = ConsentStatus.EXPIRED;
+				UserGroupMember.set(ugm._id, "status", ugm.status);
+				clearCache();
+				cache = getCache(userId);
+			}
+		}
+		AccessLog.logEnd("end search for broken user groups");
 		
 		AccessLog.logBegin("start searching for missing records in consents");
 		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map(), Sets.create("_id"), Integer.MAX_VALUE);
@@ -1476,21 +1498,21 @@ public class RecordManager {
 				Consent.delete(userId, consent._id);
 				continue;
 			}
-			checkRecordsInAPS(userId, consent._id, true);
+			checkRecordsInAPS(userId, consent._id, true, "owned consent "+consent._id.toString()+": ",msgs);
 		}
 		AccessLog.logEnd("end searching for missing records in consents");
 		
 		AccessLog.logBegin("start searching for missing records in authorized consents");		
 		consents = Consent.getAllActiveByAuthorized(userId);
 		for (Consent consent : consents) {
-			checkRecordsInAPS(userId, consent._id, false);
+			checkRecordsInAPS(userId, consent._id, false, "consent "+consent._id.toString()+": ",msgs);
 		}
 		AccessLog.logEnd("end searching for missing records in authorized consents");
 						
 		AccessLog.logBegin("start searching for missing records in spaces");
 		Set<Space> spaces = Space.getAllByOwner(userId, Sets.create("_id"));
 		for (Space space : spaces) {			
-			checkRecordsInAPS(userId,space._id, true);
+			checkRecordsInAPS(userId,space._id, true, "space "+space._id.toString()+": ", msgs);
 		}
 		AccessLog.logEnd("end searching for missing records in spaces");
 		
@@ -1510,16 +1532,22 @@ public class RecordManager {
 		}
 		if (emptyStreams.size() > 0) {
 			wipe(userId, emptyStreams);
+			msgs.add("Wiped "+emptyStreams.size()+" empty streams");
 		}
 		
 		AccessLog.logEnd("end searching for empty streams");
 		
-		resetInfo(userId);
+		int statsCleared = resetInfo(userId);
+		msgs.add("Cleared statistics from "+statsCleared+" streams.");
 		
-		Feature_Streams.streamJoin(createContextFromAccount(userId));
+		Feature_Streams.streamJoin(createContextFromAccount(userId), msgs);
+		
+		for (String msg : msgs) AccessLog.log(msg);
+		
+		return msgs;
 	}
 	
-	public void checkRecordsInAPS(MidataId userId, MidataId apsId, boolean instreams) throws AppException {
+	public void checkRecordsInAPS(MidataId userId, MidataId apsId, boolean instreams, String prefix, List<String> results) throws AppException {		
 		APSCache cache = getCache(userId);
 		AccessLog.logBegin("check records in APS:"+apsId.toString());
 		List<DBRecord> recs = QueryEngine.listInternal(cache, apsId, null, CMaps.map("owner", "self").map("streams", "only").map("flat", "true"), Sets.create("_id"));
@@ -1527,11 +1555,13 @@ public class RecordManager {
 		for (DBRecord rec : recs) {
 			if (DBRecord.getById(rec._id, idOnly) == null) {				
 				cache.getAPS(apsId).removePermission(rec);
+				results.add(prefix+"removed permission for non existing stream "+rec._id.toString()+" from "+apsId.toString());
 			} else {
 				try {
 				  cache.getAPS(rec._id, rec.owner).getStoredOwner();
 				} catch (Exception e) {
 				  cache.getAPS(apsId).removePermission(rec);
+				  results.add(prefix+"removed permission for unacessable stream "+rec._id.toString()+" from "+apsId.toString());
 				}
 			}			
 		}
@@ -1541,6 +1571,7 @@ public class RecordManager {
 			if (DBRecord.getById(rec._id, idOnly) == null) {
 				if (instreams && rec.stream != null) cache.getAPS(rec.stream, userId).removePermission(rec);
 				cache.getAPS(apsId).removePermission(rec);
+				results.add(prefix+"removed permission for non existing record "+rec._id.toString()+" from "+apsId.toString());
 			} 			
 		}
 		AccessLog.logEnd("end check records in APS:"+apsId.toString());

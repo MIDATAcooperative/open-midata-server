@@ -4,5 +4,14 @@ angular.module('portal')
 	    .state('research.study.fields', {
 	      url: '/fields',
 	      templateUrl: 'views/research/studies/studyfields/studyfields.html'
-	    });
+	    })
+	     .state('developer.study.fields', {
+	      url: '/fields',
+	      templateUrl: 'views/research/studies/studyfields/studyfields.html'
+	    })
+	     .state('admin.study.fields', {
+	      url: '/fields',
+	      templateUrl: 'views/research/studies/studyfields/studyfields.html'
+	    })
+	   ;
 }]);

@@ -1,6 +1,7 @@
 package setup;
 
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -236,6 +237,22 @@ public class MinimalSetup {
 			common.creator = Developer.getByEmail("developers@midata.coop", Sets.create("_id"))._id;
 			common.creatorLogin = "developers@midata.coop";
 			common.defaultQuery=new HashMap<String, Object>();
+			Plugin.add(common);
+		}
+		
+		if (Plugin.getByFilename("midata_autoapprover", Sets.create("_id")) == null ) {
+			Plugin common = new Plugin();
+			common._id = new MidataId();
+			common.filename = "midata_autoapprover";
+			common.name = "Midata Project Auto-Approver";
+			common.targetUserRole = UserRole.RESEARCH;
+			common.status = PluginStatus.ACTIVE;
+			common.type = "analyzer";
+			common.description = "Internal 'analyzer' that automatically assigns project participants to groups and approves the participation.";
+			common.creator = Developer.getByEmail("developers@midata.coop", Sets.create("_id"))._id;
+			common.creatorLogin = "developers@midata.coop";
+			common.defaultQuery=new HashMap<String, Object>();
+			common.defaultQuery.put("content", Collections.emptySet());
 			Plugin.add(common);
 		}
 	}

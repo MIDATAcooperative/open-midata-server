@@ -86,7 +86,7 @@ public class AuditManager {
 			mae.authorized.add(study._id);
 			if (consent==null || consent.getOwnerName()==null) {
 				mae.authorized.add(study.createdBy);				
-				mae.authorized.add(study.owner);
+				if (study.owner != null) mae.authorized.add(study.owner);
 			}
 		}
 		if (consent != null) {

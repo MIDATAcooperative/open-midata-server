@@ -77,6 +77,8 @@ public class Rights {
 		
 		action("Circles.listConsents");
 		role(UserRole.RESEARCH, "_id", "owner", "name", "authorized", "entityType", "type", "status", "ownerName", "member", "records", "passcode", "createdBefore", "validUntil", "sharingQuery", "externalOwner", "externalAuthorized", "dateOfCreation", "sharingQuery.link-study", "sharingQuery.link-study-group", "writes");
+		role(UserRole.DEVELOPER, "_id", "owner", "name", "authorized", "entityType", "type", "status", "ownerName", "member", "records", "passcode", "createdBefore", "validUntil", "sharingQuery", "externalOwner", "externalAuthorized", "dateOfCreation", "sharingQuery.link-study", "sharingQuery.link-study-group", "writes");
+		role(UserRole.ADMIN, "_id", "owner", "name", "authorized", "entityType", "type", "status", "ownerName", "member", "records", "passcode", "createdBefore", "validUntil", "sharingQuery", "externalOwner", "externalAuthorized", "dateOfCreation", "sharingQuery.link-study", "sharingQuery.link-study-group", "writes");
 		role(UserRole.ANY, "_id", "owner", "name", "authorized", "entityType", "type", "status", "ownerName", "member", "records", "passcode", "createdBefore", "validUntil", "sharingQuery", "externalOwner", "externalAuthorized", "dateOfCreation", "writes", "applicationId");		
 		
 		action("Plugins.get");

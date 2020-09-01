@@ -32,11 +32,12 @@
 									class="dropdown-item" ng-show="hasSubRole('PLUGINADMIN')" ui-sref="admin.licenses" translate="admin_navbar.licenses"></a>
 								<div role="separator" class="dropdown-divider" ng-show="hasSubRole('PLUGINADMIN') || hasSubRole('CONTENTADMIN')"></div>
 								<div class="dropdown-header" translate="admin_navbar.research_admin" ng-show="hasSubRole('STUDYADMIN') || hasSubRole('NEWSADMIN')"></div>
-								<a class="dropdown-item" ng-show="hasSubRole('STUDYADMIN')" ui-sref="admin.studies" translate="admin_navbar.studies"></a> 
+								<a class="dropdown-item" ng-show="hasSubRole('STUDYADMIN')" ui-sref="admin.astudies" translate="admin_navbar.studies"></a> 
 								<a class="dropdown-item" ng-show="hasSubRole('NEWSWRITER')" ui-sref="admin.news" translate="admin_navbar.news"></a>
 								<a class="dropdown-item" ng-show="hasSubRole('NEWSWRITER')" ui-sref="admin.mails" translate="admin_navbar.mails"></a>
 							</div></li>
 						<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="admin.yourapps2" translate="developer_navbar.yourapps"></a></li>
+						<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="admin.studies" translate="researcher_navbar.studies"></a></li>
 						<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="admin.sandbox" translate="developer_navbar.sandbox"></a></li>
 						<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="admin.records" translate="developer_navbar.records"></a></li>
 						<li class="nav-item" ui-sref-active="active"><a class="nav-link" ui-sref="admin.testusers" translate="developer_navbar.testusers"></a></li>

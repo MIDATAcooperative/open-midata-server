@@ -19,6 +19,7 @@ public class RuntimeConstants {
 	
 	public final MidataId portalPlugin = Plugin.getByFilename("portal", Sets.create("_id"))._id;
 	public final MidataId commonPlugin = Plugin.getByFilename("common", Sets.create("_id"))._id;
+	public final MidataId autojoinerPlugin = Plugin.getByFilename("midata_autoapprover", Sets.create("_id"))._id;
 	public final MidataId autorunService = Admin.getByEmail(AUTORUN_USERNAME, Sets.create("_id"))._id;
 	public final MidataId backendService = Admin.getByEmail(BACKEND_SERVICE, Sets.create("_id"))._id;
 	public final MidataId publicUser = Member.getByEmail(PUBLIC_USER, Sets.create("_id"))._id;

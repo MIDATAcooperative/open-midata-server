@@ -1,9 +1,11 @@
 angular.module('portal')
-.controller('ResearchListStudiesCtrl', ['$scope', 'server', 'status', function($scope, server, status) {
+.controller('ResearchListStudiesCtrl', ['$scope', '$state', 'server', 'status', function($scope, $state, server, status) {
 	
 	$scope.results =[];
 	$scope.status = new status(true);
-	$scope.sortby="-createdAt";   
+	$scope.sortby="-createdAt";  
+	$scope.nav = $state.$current.name.split(".")[0];
+	console.log($scope.nav);
 	
 	$scope.reload = function() {
 			

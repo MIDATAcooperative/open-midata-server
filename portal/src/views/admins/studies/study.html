@@ -230,9 +230,10 @@
     </div>
     
   
-    <a class="btn btn-default" ui-sref="admin.studies" translate="common.back_btn">Back</a> 
+    <a class="btn btn-default" ui-sref="admin.astudies" translate="common.back_btn">Back</a> 
     <button ng-show="study.validationStatus == 'VALIDATION'" class="btn btn-primary" ng-click="finishValidation()" translate="admin_study.end_validation_btn"></button>    
     <button ng-show="study.validationStatus == 'VALIDATION'" class="btn btn-default" ng-click="backToDraft()" translate="admin_study.back_to_draft_btn"></button>
+    <button ng-show="study.validationStatus != 'DRAFT'" class="btn btn-default" ng-click="exportStudy()" translate="admin_study.export_btn"></button>
     <button ng-show="readyForDelete()" class="btn btn-danger" ng-click="delete()" translate="admin_study.delete_study_btn"></button>
     
 </div>

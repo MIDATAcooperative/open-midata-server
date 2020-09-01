@@ -159,7 +159,7 @@ angular.module('portal')
 		$timeout(1000).then(function() {
 			server.post(jsRoutes.controllers.research.Studies.cloneToNew($scope.studyid).url).
 			then(function(data) { 				
-			    $state.go("research.study.description", { studyId : data.data._id });
+			    $state.go($state.$current.name.split(".")[0]+".study.description", { studyId : data.data._id });
 			}, function(err) {
 				$scope.error = err.data;			
 			});
@@ -279,6 +279,13 @@ angular.module('portal')
 	
 	$scope.cancel = function() {
 		views.disableView("confirm");
+	};
+	
+	$scope.exportStudy = function() {
+		$scope.status.doAction("download", server.token())
+		.then(function(response) {
+		  document.location.href = ENV.apiurl + jsRoutes.controllers.research.Studies.exportStudy($scope.studyid).url + "?token=" + encodeURIComponent(response.data.token);
+		});
 	};
 	
 	$scope.reload();

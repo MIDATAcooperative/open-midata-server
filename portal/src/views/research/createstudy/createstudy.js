@@ -7,7 +7,7 @@ angular.module('portal')
 	$scope.submitted = false;
 	$scope.status = new status(true, $scope);
 	$scope.studytypes = studies.studytypes;
-	
+	$scope.nav = $state.$current.name.split(".")[0];
 	
 	$scope.reload = function() {
 		
@@ -35,12 +35,12 @@ angular.module('portal')
 		
 			   data = { name : $scope.study.name, description : $scope.study.description, type : $scope.study.type };
 			   $scope.status.doAction("update", server.put(jsRoutes.controllers.research.Studies.update($scope.studyId).url, JSON.stringify(data)))
-			   .then(function(result) { $state.go('research.study.overview', { studyId : $scope.studyId }); });
+			   .then(function(result) { $state.go($state.$current.name.split(".")[0]+'.study.overview', { studyId : $scope.studyId }); });
 		
 		} else {
 			data = $scope.study;		
 			$scope.status.doAction("submit", server.post(jsRoutes.controllers.research.Studies.create().url, JSON.stringify(data)))
-			.then(function(result) { $state.go('research.study.overview', { studyId : result.data._id }); });
+			.then(function(result) { $state.go($state.$current.name.split(".")[0]+'.study.overview', { studyId : result.data._id }); });
 			
 		}
 	};

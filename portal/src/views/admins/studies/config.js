@@ -2,12 +2,12 @@ angular.module('portal')
 .config(["$stateProvider", function($stateProvider) {
 	   $stateProvider
 	    
-	    .state('admin.studies', {
-	      url: '/studies',
+	    .state('admin.astudies', {
+	      url: '/astudies',
 	      templateUrl: 'views/admins/studies/studies.html'
 	    })
-	    .state('admin.study', {
-	      url: '/study/:studyId',
+	    .state('admin.astudy', {
+	      url: '/astudy/:studyId',
 	      templateUrl: 'views/admins/studies/study.html'
 	    });
 }]);

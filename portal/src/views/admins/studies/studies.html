@@ -21,13 +21,16 @@
 	  </thead>
 	  <tbody>
 	    <tr ng-repeat="study in results | orderBy : 'createdAt' : true">
-	      <td><a ui-sref="^.study({ studyId : study._id})">{{ study.name }}</a></td>	  
+	      <td><a ui-sref="^.astudy({ studyId : study._id})">{{ study.name }}</a></td>	  
 	      <td>{{ 'enum.studytype.' + study.type | translate }}</td>
 	      <td>{{ study.createdAt | date : 'dd.MM.yy' }}</td>	         
 	    </tr>
 	  </tbody>
 	</table>
-	<p ng-hide="results.length" translate="admin_studies.empty"></p>	
+	<p ng-hide="results.length" translate="admin_studies.empty"></p>
+	
+	 <a href="javascript:" ui-sref="^.definestudy" class="btn btn-default" translate="admin_studies.add_definition_btn"></a>
+		
 	</loader>
 	</div>
 	</div>
