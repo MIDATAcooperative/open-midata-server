@@ -50,6 +50,7 @@ public class Research extends Model {
 	 }
 	 
 	 public static Research getById(MidataId researchid, Set<String> fields) throws InternalServerException {
+		    if (researchid==null) return null; // There may be projects with no organization set yet.
 			return Model.get(Research.class, collection, CMaps.map("_id", researchid), fields);
 	 }
 	 

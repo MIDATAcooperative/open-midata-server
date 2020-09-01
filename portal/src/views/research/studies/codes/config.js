@@ -4,5 +4,13 @@ angular.module('portal')
 	    .state('research.study.codes', {
 	      url: '/codes',
 	      templateUrl: 'views/research/studies/codes/codes.html'
+	    })
+	    .state('developer.study.codes', {
+	      url: '/codes',
+	      templateUrl: 'views/research/studies/codes/codes.html'
+	    })
+	    .state('admin.study.codes', {
+	      url: '/codes',
+	      templateUrl: 'views/research/studies/codes/codes.html'
 	    });
 }]);

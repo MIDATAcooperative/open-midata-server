@@ -137,7 +137,9 @@ angular.module('portal')
 			$scope.showKeys = true;		
 		});
 		
-		apps.getApps({ "targetUserRole" : "RESEARCH", type : ["analyzer","visualization","mobile","endpoint"] }, ["filename", "name","type"])
+		var apptypes = $state.current.allowPersonalApps ? ["analyzer","visualization","mobile","endpoint"] : ["analyzer", "endpoint"]; 
+		
+		apps.getApps({ "targetUserRole" : "RESEARCH", type : apptypes }, ["filename", "name","type"])
 		.then(function(data) {
 			$scope.plugins = data.data;
 		});

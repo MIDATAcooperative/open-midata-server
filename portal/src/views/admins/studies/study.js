@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('AdminStudyCtrl', ['$scope', '$state', 'server', 'status', 'users', 'usergroups', '$translatePartialLoader', function($scope, $state, server, status, users, usergroups, $translatePartialLoader) {
+.controller('AdminStudyCtrl', ['$scope', '$state', 'server', 'status', 'users', 'usergroups', '$translatePartialLoader', 'ENV', function($scope, $state, server, status, users, usergroups, $translatePartialLoader, ENV) {
 	
 	$scope.studyid = $state.params.studyId;
 	$scope.study = {};
@@ -40,7 +40,7 @@ angular.module('portal')
 		
 		server.post(jsRoutes.controllers.research.Studies.endValidation($scope.studyid).url).
 		then(function(data) { 				
-			$state.go("admin.studies");
+			$state.go("admin.astudies");
 		}, function(err) {
 			$scope.error = err.data;			
 		});
@@ -51,7 +51,7 @@ angular.module('portal')
 		
 		server.post(jsRoutes.controllers.research.Studies.backToDraft($scope.studyid).url).
 		then(function(data) { 				
-			$state.go("admin.studies");
+			$state.go("admin.astudies");
 		}, function(err) {
 			$scope.error = err.data;			
 		});
@@ -63,7 +63,7 @@ angular.module('portal')
 		
 		server.post(jsRoutes.controllers.admin.Administration.deleteStudy($scope.studyid).url).
 		then(function(data) { 				
-		    $state.go("admin.studies");
+		    $state.go("admin.astudies");
 		}, function(err) {
 			$scope.error = err.data;			
 		});
@@ -103,6 +103,13 @@ angular.module('portal')
 		  .then(function() {
 			  $scope.reload();
 		  });
+	};
+	
+	$scope.exportStudy = function() {
+		$scope.status.doAction("download", server.token())
+		.then(function(response) {
+		  document.location.href = ENV.apiurl + jsRoutes.controllers.research.Studies.exportStudy($scope.studyid).url + "?token=" + encodeURIComponent(response.data.token);
+		});
 	};
 	
 	$scope.reload();

@@ -33,6 +33,8 @@ public class ServiceInstance extends Model {
      */
     public MidataId appId;
     
+    public @NotMaterialized Plugin app;
+    
     /**
      * id of executor. (optional)
      */
@@ -77,6 +79,10 @@ public class ServiceInstance extends Model {
   public static Set<ServiceInstance> getByManager(MidataId managerId, Set<String> fields) throws InternalServerException {
 		return Model.getAll(ServiceInstance.class, collection, CMaps.map("managerAccount", managerId), fields);
   }
+  
+  public static Set<ServiceInstance> getByManagerAndApp(MidataId managerId, MidataId appId, Set<String> fields) throws InternalServerException {
+		return Model.getAll(ServiceInstance.class, collection, CMaps.map("managerAccount", managerId).map("appId", appId), fields);
+}
 
   public static Set<ServiceInstance> getByManager(Set<MidataId> managerId, Set<String> fields) throws InternalServerException {
 		return Model.getAll(ServiceInstance.class, collection, CMaps.map("managerAccount", managerId), fields);

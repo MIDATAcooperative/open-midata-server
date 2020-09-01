@@ -188,6 +188,8 @@ POST    /api/members/studies/:study/freeze              controllers.members.Stud
 POST    /api/research/studies/:study/update              controllers.research.Studies.updateParticipation(study: String)
 POST    /api/research/studies/:study/share/:group        controllers.research.Studies.shareWithGroup(study: String, group:String)
 POST    /api/research/studies/:study/addapp/:group       controllers.research.Studies.addApplication(study: String, group:String)
+GET     /api/admins/studies/:study/export                 controllers.research.Studies.exportStudy(study: String)
+POST    /api/admins/studies                               controllers.research.Studies.importStudy()
 
 POST    /api/common/studies                              controllers.Studies.search()
 GET     /api/common/groups                               controllers.FormatAPI.listGroups()

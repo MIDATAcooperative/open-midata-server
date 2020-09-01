@@ -7,6 +7,23 @@ angular.module('portal')
 	    })
 	    .state('research.study', {
 	      url: '/study/:studyId',
-	      templateUrl: 'views/research/studies/studynav.html'
+	      templateUrl: 'views/research/studies/studynav.html',
+	      allowExecution : true
+	    })
+	    .state('developer.studies', {
+	      url: '/studies',
+	      templateUrl: 'views/research/studies/studies.html'
+	    })
+	    .state('developer.study', {
+	      url: '/study/:studyId',
+	      templateUrl: 'views/research/studies/studynav_simple.html'
+	    })
+	    .state('admin.studies', {
+	      url: '/studies',
+	      templateUrl: 'views/research/studies/studies.html'
+	    })
+	    .state('admin.study', {
+	      url: '/study/:studyId',
+	      templateUrl: 'views/research/studies/studynav_simple.html'
 	    });
 }]);

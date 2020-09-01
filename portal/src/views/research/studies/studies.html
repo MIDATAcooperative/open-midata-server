@@ -17,7 +17,7 @@
 	  </thead>
 	  <tbody>
 	    <tr ng-repeat="study in results | orderBy : sortby">
-	      <td><a ui-sref="research.study.overview({ studyId : study._id})">{{ study.name }}</a></td>	  
+	      <td><a ui-sref="{{ nav+'.study.overview({ studyId : study._id})' }}">{{ study.name }}</a></td>	  
 	      <td translate="{{ 'enum.studyvalidationstatus.'+study.validationStatus }}"></td>
 	      <td translate="{{ 'enum.participantsearchstatus.'+study.participantSearchStatus }}"></td>
 	      <td translate="{{ 'enum.studyexecutionstatus.'+study.executionStatus }}"></td>
@@ -26,7 +26,7 @@
 	  </tbody>
 	</table>
 	<p ng-hide="results.length" translate="studies.empty"></p>
-	<a class="btn btn-primary" ui-sref="research.createstudy" translate="studies.create_btn"></a>
+	<a class="btn btn-primary" ui-sref="^.createstudy" translate="studies.create_btn"></a>
 	<div class="extraspace"></div>
 	</loader>
 	</div>

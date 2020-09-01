@@ -18,6 +18,7 @@ import org.bson.BSONObject;
 import org.hl7.fhir.r4.model.DomainResource;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import actions.APICall;
@@ -56,6 +57,7 @@ import utils.auth.KeyManager;
 import utils.auth.MemberSecured;
 import utils.auth.PortalSessionToken;
 import utils.auth.RecordToken;
+import utils.auth.ResearchOrDeveloperSecured;
 import utils.auth.ResearchSecured;
 import utils.auth.SpaceToken;
 import utils.collections.CMaps;
@@ -558,9 +560,11 @@ public class Records extends APIController {
 	public Result fixAccount() throws AppException {
 		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
 
-		RecordManager.instance.fixAccount(userId);
+		List<String> messages = RecordManager.instance.fixAccount(userId);
 
-		return ok();
+		ArrayNode result = Json.newArray();
+		for (String msg : messages) result.add(msg);
+		return ok(result).as("application/json");
 	}
 
 	@APICall
@@ -681,7 +685,7 @@ public class Records extends APIController {
 	}
 	
 	@APICall
-	@Security.Authenticated(ResearchSecured.class)
+	@Security.Authenticated(ResearchOrDeveloperSecured.class)
     public Result unshareRecord() throws AppException, JsonValidationException {
 				
 		// check whether the request is complete
@@ -704,7 +708,7 @@ public class Records extends APIController {
 	}
 	
 	@APICall
-	@Security.Authenticated(ResearchSecured.class)
+	@Security.Authenticated(ResearchOrDeveloperSecured.class)
     public Result shareRecord() throws AppException, JsonValidationException {
 				
 		// check whether the request is complete

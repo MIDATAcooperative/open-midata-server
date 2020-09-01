@@ -127,7 +127,7 @@
 	       <loader busy="status.isBusy !== false">	     
 	       <p class="alert alert-info" translate="studyactions.description"></p>  	
 	          	       
-	       <div ng-show="study.validationStatus == 'VALIDATED'">
+	       <div>
 	       <p class="lead" translate="studyactions.aggregator_apps"></p>  
 	       <form name="myform" role="form" class="css-form form-horizontal" novalidate ng-submit="addApplication(myform)">
 	         <p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert"></p>
@@ -153,7 +153,7 @@
                    <input class="form-check-input" type="checkbox" name="onlyAggregated" id="onlyAggregated" ng-model="crit.onlyAggregated">               
                </div>
              </formrow>
-              <formrow myid="shareback" label="studyactions.shareback">
+              <formrow myid="shareback" label="studyactions.shareback" ng-if ="crit.plugin.type!='endpoint'">
                <div class="form-check">
                 
                    <input class="form-check-input" type="checkbox" name="shareback" id="shareback" ng-model="crit.shareback">

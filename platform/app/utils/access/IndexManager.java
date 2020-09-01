@@ -598,19 +598,24 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 		return res;
 	}
 	
-	public void clearIndexes(APSCache cache, MidataId user) throws AppException {
+	public String clearIndexes(APSCache cache, MidataId user) throws AppException {
 		AccessLog.logBegin("start clear indexes");
 		IndexPseudonym pseudo = getIndexPseudonym(cache, user, user, false);
-		
-		Set<IndexDefinition> defs = IndexDefinition.getAll(CMaps.map("owner", pseudo.getPseudonym()), Sets.create("_id"));
-		
-		for (IndexDefinition def : defs) {
-			IndexDefinition.delete(def._id);
+		int removeIdx = 0;
+		if (pseudo != null) {
+			Set<IndexDefinition> defs = IndexDefinition.getAll(CMaps.map("owner", pseudo.getPseudonym()), Sets.create("_id"));
+			
+			for (IndexDefinition def : defs) {
+				IndexDefinition.delete(def._id);
+				removeIdx++;
+			}
 		}
 				
 		cache.getAPS(user).removeMeta("_statsindex");
 		cache.getAPS(user).removeMeta("_pseudo");
 		AccessLog.logEnd("end clear indexes");
+		
+		return "Cleared "+removeIdx+" indexes.";
 	}
 
 	public void revalidate(List<DBRecord> validatedResult, MidataId executor,  IndexPseudonym pseudo, IndexRoot root, Object indexQuery, Condition[] cond) throws AppException {		

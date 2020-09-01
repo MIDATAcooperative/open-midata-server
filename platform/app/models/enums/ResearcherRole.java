@@ -61,6 +61,20 @@ public class ResearcherRole implements JsonSerializable {
 		return result;
 	}
 	
+	public static ResearcherRole DEVELOPER() {
+		ResearcherRole result = new ResearcherRole();
+		result.changeTeam = true;
+		result.auditLog = true;
+		result.readData = false;
+		result.pseudo = true;
+		result.export = false;
+		result.participants = false;
+		result.setup = true;
+		result.roleName = "Developer";
+		result.id = "DEVELOPER";
+		return result;
+	}
+	
 	public static ResearcherRole HC() {
 		ResearcherRole result = new ResearcherRole();
 		result.changeTeam = true;

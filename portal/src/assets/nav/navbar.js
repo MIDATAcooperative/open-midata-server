@@ -7,8 +7,14 @@ angular.module('portal')
 	$rootScope.greeting = {};
 		
 		
-	$translatePartialLoader.addPart($state.current.data.locales);	
-	if ($state.current.data.locales == "admins") $translatePartialLoader.addPart("developers");
+	$translatePartialLoader.addPart($state.current.data.locales);
+	if ($state.current.data.locales == "developers") {
+		$translatePartialLoader.addPart("researchers");
+	}
+	if ($state.current.data.locales == "admins") {
+		$translatePartialLoader.addPart("developers");
+		$translatePartialLoader.addPart("researchers");
+	}
 	
 	session.viewHeight = "600px";	
 	session.login($state.current.data.role);

@@ -122,10 +122,17 @@
     "definition" : "Definition (JSON)"  
   },
   
+  "admin_definestudy" : {
+    "title" : "Import Project Definition",
+    "definition" : "Definition (JSON)",
+    "researcher" : "New owner (Researcher Account)"  
+  },
+  
   "admin_studies" : {
     "title" : "Research Projects",
     "criteria" : "Search criteria",
-    "empty" : "No matching projects found."
+    "empty" : "No matching projects found.",
+    "add_definition_btn" : "Import Project Definition"
   },
   
   "admin_terms" : {
@@ -180,7 +187,8 @@
      "links" : "Linked Applications",
      "end_validation_btn" : "Complete Validation",
      "back_to_draft_btn" : "Back to Draft",
-     "delete_study_btn" : "Delete Project"    
+     "delete_study_btn" : "Delete Project",
+     "export_btn" : "Export"    
   },
   
   "admin_stats" : {

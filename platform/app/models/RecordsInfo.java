@@ -144,7 +144,7 @@ public class RecordsInfo {
 		this.contents.add(item.content);
 		this.formats.add(item.format);
 		if (item.owner != null) this.owners.add(item.owner.toString());
-		this.apps.add(item.app);
+		if (item.app != null) this.apps.add(item.app);
 		
 
 	}

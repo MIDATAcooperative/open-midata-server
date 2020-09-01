@@ -6,6 +6,16 @@ angular.module('portal')
 	      templateUrl: 'views/shared/queryeditor/queryeditor.html',
 	      data : { mode: 'study' }
 	    })
+	    .state('developer.study.queryeditor', {
+	      url: '/query',
+	      templateUrl: 'views/shared/queryeditor/queryeditor.html',
+	      data : { mode: 'study' }
+	    })
+	     .state('admin.study.queryeditor', {
+	      url: '/query',
+	      templateUrl: 'views/shared/queryeditor/queryeditor.html',
+	      data : { mode: 'study' }
+	    })
 	    .state('developer.appquery', {
 	      url: '/app/:appId/query',
 	      templateUrl: 'views/shared/queryeditor/queryeditor.html',

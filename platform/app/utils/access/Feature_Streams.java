@@ -361,7 +361,7 @@ public class Feature_Streams extends Feature {
 		}
 	}
 	
-	public static void streamJoin(AccessContext context) throws AppException {
+	public static void streamJoin(AccessContext context, List<String> results) throws AppException {
 		AccessLog.logBegin("start streams optimization");
 		List<DBRecord> streams = QueryEngine.listInternal(context.getCache(), context.getTargetAps(), context, CMaps.map("owner", "self").map("streams","only"), Sets.create(streamFields));
 		Map<String, List<DBRecord>> ordered = new HashMap<String, List<DBRecord>>();
@@ -400,7 +400,7 @@ public class Feature_Streams extends Feature {
 					AccessLog.logEnd("end optimize streams :"+key+" (too many entries)");
 					continue;
 				}
-				
+				results.add("stream optimization for "+key);
 				DBRecord newstream = createStream(context, context.getOwner(), context.getTargetAps(), props, false);
 				APS newstreamaps = context.getCache().getAPS(newstream._id, context.getOwner());
 				newstreamaps.addPermission(recs, false);

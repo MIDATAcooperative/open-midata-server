@@ -46,7 +46,7 @@ angular.module('portal')
 	$scope.fixAccount = function() {
 		$scope.msg = "Please wait...";
 		server.post(jsRoutes.controllers.Records.fixAccount().url)
-		.then(function() { $scope.msg = "user.account_repaired"; });
+		.then(function(results) { $scope.msg = "user.account_repaired";$scope.repair=results.data; });
 	};
 	
 	$scope.resetSpaces = function() {
