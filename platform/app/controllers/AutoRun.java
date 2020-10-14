@@ -53,6 +53,7 @@ import utils.collections.Sets;
 import utils.db.FileStorage;
 import utils.exceptions.AppException;
 import utils.largerequests.UnlinkedBinary;
+import utils.messaging.MailSenderType;
 import utils.messaging.MailUtils;
 import utils.messaging.MessageResponse;
 import utils.messaging.ServiceHandler;
@@ -710,7 +711,7 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 			String email = InstanceConfig.getInstance().getConfig().getString("errorreports.targetemail");
 			String fullname = InstanceConfig.getInstance().getConfig().getString("errorreports.targetname");
 			String server = InstanceConfig.getInstance().getPlatformServer();
-			MailUtils.sendTextMail(email, fullname, "Autoimport "+server, report);									
+			MailUtils.sendTextMail(MailSenderType.STATUS, email, fullname, "Autoimport "+server, report);									
 			
 			if (endReport != null) {
 				endReport.cancel();

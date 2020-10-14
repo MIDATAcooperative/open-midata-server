@@ -94,7 +94,8 @@ $(CERTIFICATE_DIR)/dhparams.pem:
 
 tasks/prepare-local:
 	touch switches/use-run
-	touch switches/local-mongo		
+	touch switches/local-mongo
+	cp -n conf/setup.conf.template conf/setup.conf		
 	touch tasks/prepare-local
 		
 tasks/install-packages: trigger/install-packages
@@ -208,8 +209,12 @@ platform/conf/application.conf: platform/conf/application.conf.template conf/set
 	sed -i 's|PLATFORM_HOSTNAME|$(HOSTNAME)|' platform/conf/application.conf
 	sed -i 's|CLUSTER_SERVER|$(CLUSTERX)|' platform/conf/application.conf
 	sed -i 's|INSTANCETYPE|$(INSTANCE_TYPE)|' platform/conf/application.conf
-	sed -i 's|MAIL_PASSWORD|$(MAIL_PASSWORD)|' platform/conf/application.conf
-	sed -i 's|MAIL_SENDER|$(MAIL_SENDER)|' platform/conf/application.conf
+	sed -i 's|USER_MAIL_PASSWORD|$(USER_MAIL_PASSWORD)|' platform/conf/application.conf
+	sed -i 's|STATUS_MAIL_PASSWORD|$(STATUS_MAIL_PASSWORD)|' platform/conf/application.conf
+	sed -i 's|BULK_MAIL_PASSWORD|$(BULK_MAIL_PASSWORD)|' platform/conf/application.conf
+	sed -i 's|USER_MAIL_SENDER|$(USER_MAIL_SENDER)|' platform/conf/application.conf
+	sed -i 's|STATUS_MAIL_SENDER|$(STATUS_MAIL_SENDER)|' platform/conf/application.conf
+	sed -i 's|BULK_MAIL_SENDER|$(BULK_MAIL_SENDER)|' platform/conf/application.conf
 	sed -i 's|MAIL_SMTP_SERVER|$(MAIL_SMTP_SERVER)|' platform/conf/application.conf
 	sed -i 's|MAIL_SECURITY_TARGET|$(MAIL_SECURITY_TARGET)|' platform/conf/application.conf
 	sed -i 's|MAIL_ADMIN|$(MAIL_ADMIN)|' platform/conf/application.conf

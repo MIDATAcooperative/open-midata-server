@@ -49,6 +49,7 @@ import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.messaging.MailSenderType;
 import utils.messaging.MailUtils;
 
 public class BulkMails extends Controller {
@@ -319,13 +320,13 @@ public class BulkMails extends Controller {
 			if (!restricted || (user.emailLC.endsWith("@midata.coop") || user.role==UserRole.ADMIN)) {
 			  if (restricted) title="(Restricted Test): "+title;
 			  try {
-			    MailUtils.sendTextMail(user.email, user.firstname+" "+user.lastname, title, content);
+			    MailUtils.sendTextMail(MailSenderType.BULK, user.email, user.firstname+" "+user.lastname, title, content);
 			  } catch (Exception e) {
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e2) {}
 				try {
-				    MailUtils.sendTextMail(user.email, user.firstname+" "+user.lastname, title, content);
+				    MailUtils.sendTextMail(MailSenderType.BULK, user.email, user.firstname+" "+user.lastname, title, content);
 				} catch (Exception e3) {
 				    mailItem.progressFailed++;
 				}

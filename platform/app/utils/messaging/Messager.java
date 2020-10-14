@@ -186,7 +186,7 @@ class MailSender extends AbstractActor {
 	public void receiveMessage(Message msg) throws Exception {
 		try {		
 			if (!InstanceConfig.getInstance().getInstanceType().disableMessaging()) {			  
-			  MailUtils.sendTextMail(msg.getReceiverEmail(), msg.getReceiverName(), msg.getSubject(), msg.getText());
+			  MailUtils.sendTextMail(MailSenderType.USER, msg.getReceiverEmail(), msg.getReceiverName(), msg.getSubject(), msg.getText());
 			}			
 		} catch (Exception e) {
 			ErrorReporter.report("Messager (EMail)", null, e);	

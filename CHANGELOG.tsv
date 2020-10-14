@@ -65,4 +65,5 @@ id0063	27.07.2020	a.kreutz	F	Minimal implementation of organization resource
 id0064	01.09.2020	a.kreutz	F	Developers may create projects	Developers may precreate projects for researchers. Still only researchers may start projects.
 id0065	01.09.2020	a.kreutz	F	Projects may be exported and imported	Projects may now be transferred from one instance to another including linked applications
 id0066	01.09.2020	a.kreutz	I	Repair account function shows modifications done
+id0067	14.10.2020	a.kreutz	I	Support for multiple sender email adresses
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 
