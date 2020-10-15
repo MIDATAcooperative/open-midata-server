@@ -98,6 +98,9 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.plugins.DeploymentManager;
+import utils.plugins.DeploymentReport;
+import utils.plugins.PluginDeployment;
 
 /**
  * functions for controlling the "market" of plugins
@@ -1479,5 +1482,49 @@ public class Market extends APIController {
 
 		//Collections.sort(licences);
 		return ok(JsonOutput.toJson(licences, "Licence", fields)).as("application/json");
+	}
+	
+	@APICall
+	@Security.Authenticated(DeveloperSecured.class)
+	@BodyParser.Of(BodyParser.Json.class)
+	public Result updateFromRepository(String pluginIdStr) throws AppException {
+		JsonNode json = request().body().asJson();
+		JsonValidation.validate(json, "_id", "repositoryUrl");
+		
+		String repo = JsonValidation.getString(json, "repositoryUrl");
+		String token = JsonValidation.getStringOrNull(json, "repositoryToken");
+		
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId pluginId = new MidataId(pluginIdStr);
+		
+		Plugin app = Plugin.getById(pluginId, Sets.create(Plugin.ALL_DEVELOPER, "repositoryToken", "repositoryDate", "repositoryUrl"));
+		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
+		
+		if (!getRole().equals(UserRole.ADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.not_authorized.not_plugin_owner", "Not your plugin!");
+
+		app.repositoryUrl = repo;
+	    if (token != null) app.repositoryToken = token;
+	    app.updateRepo();
+	    	 
+	    DeploymentReport report = DeploymentManager.deploy(app._id, userId, JsonValidation.getBoolean(json, "doDelete"));
+		
+	    return ok(JsonOutput.toJson(report, "DeploymentReport", DeploymentReport.ALL)).as("application/json");
+		
+	}
+	
+	@APICall
+	@Security.Authenticated(DeveloperSecured.class)
+	public Result getDeployStatus(String pluginIdStr) throws AppException {
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId pluginId = new MidataId(pluginIdStr);
+		
+		Plugin app = Plugin.getById(pluginId, Sets.create(Plugin.ALL_DEVELOPER, "repositoryToken", "repositoryDate", "repositoryUrl"));
+		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
+		
+		if (!getRole().equals(UserRole.ADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.not_authorized.not_plugin_owner", "Not your plugin!");
+
+		DeploymentReport report = DeploymentReport.getById(pluginId);
+		
+		return ok(JsonOutput.toJson(report, "DeploymentReport", DeploymentReport.ALL)).as("application/json");
 	}
 }

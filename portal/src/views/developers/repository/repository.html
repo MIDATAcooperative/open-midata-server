@@ -1,0 +1,91 @@
+
+	<div  ng-controller="RepositoryCtrl">
+		
+		<div class="panel panel-primary">
+		<div class="panel-heading">
+		  	<p translate="repository.title"></p>			
+		</div>
+		<div class="body">
+		
+		<form name="myform" novalidate role="form" class="form-horizontal" ng-class="{ 'mark-danger' : app._id }" ng-submit="submit()">
+		  <p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
+	      </p>	
+		  <formrow myid="filename" label="manageapp.filename">
+		    <input type="text" id="filename" name="filename" class="form-control"  ng-model="app.filename" readonly>		    
+		  </formrow>
+		  
+		  <formrow myid="repository" label="repository.repository_url">
+		    <input type="text" id="repository" name="repository" class="form-control"  ng-model="app.repositoryUrl" required>		    
+		  </formrow>
+	  
+	  	  <formrow myid="repository_token" label="repository.repository_token">
+		    <input type="text" id="repository_token" name="repository_token" class="form-control"  ng-model="app.repositoryToken">		    
+		  </formrow>
+
+		  <formrow myid="filename" label="repository.repository_date">
+		    <p ng-show="app.repositoryDate" class="form-control-plaintext">{{ app.repositoryDate | date : 'dd.MM.yy HH:mm' }}</p>		    		   
+		    <p ng-hide="app.repositoryDate" class="form-control-plaintext" translate="repository.never"></p>
+		  </formrow>
+	  
+	      <formrow myid="status" label="repository.status">
+	         <ul class="list-group">
+  <li class="list-group-item" translate="repository.phase_provided" ng-class="{ 'list-group-item-success' : report }"></li>
+  <li class="list-group-item" translate="repository.phase_sceduled" ng-class="style('SCEDULED','CHECKOUT')"></li>
+  <li class="list-group-item" translate="repository.phase_checkout" ng-class="style('CHECKOUT','INSTALL')"></li>
+  <li class="list-group-item" translate="repository.phase_install" ng-class="style('INSTALL','AUDIT')"></li>
+  <li class="list-group-item" translate="repository.phase_audit" ng-class="style('AUDIT','COMPILE')"></li>
+  <li class="list-group-item" translate="repository.phase_build" ng-class="style('COMPILE','FINISHED')"></li>
+  <li class="list-group-item" translate="repository.phase_complete" ng-class="style('FINISHED','XXX')"></li>
+</ul>
+	      </formrow>
+	    
+	  
+		  <formrow myid="x" label="">
+		    <a href="javascript:" ui-sref="^.manageapp({appId:app._id})" class="btn btn-default" translate="common.back_btn"></a>
+		    <button type="button" class="btn btn-danger" ng-click="doDelete()" ng-disabled="!report" translate="common.delete_btn"></button>		    
+		    <button type="submit" ng-disabled="status.action=='submit'" class="btn btn-primary" translate="repository.submit_btn">Submit</button>		    		    
+		  </formrow>
+		  
+		  		  
+	     </form>	  
+	
+	</div>
+	</div>	 
+		  
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+		  	<span translate="repository.log"></span>	
+		  	- {{ report.sceduled | date : 'dd.MM.yy HH:mm:ss' }} 		
+		</div>
+		<div class="body">
+		  
+		  
+		  <b translate="repository.server"></b>:
+		  <select class="form-control" ng-model="crit.sel" ng-options="dot(node) as node for node in report.clusterNodes"></select>
+		  <hr>
+		  <div ng-show="report.checkoutReport[crit.sel]">
+		  <b translate="repository.checkout"></b>
+		  <pre>{{ report.checkoutReport[crit.sel] }}</pre>
+		  </div>
+		  
+		  <div ng-show="report.installReport[crit.sel]">
+		  <b translate="repository.install"></b>
+		  <pre>{{ report.installReport[crit.sel] }}</pre>
+		  </div>
+		  
+		  <div ng-show="report.auditReport[crit.sel]">
+		  <b translate="repository.audit"></b>
+		  <pre>{{ report.auditReport[crit.sel] }}</pre>
+		  </div>
+		  
+		  <div ng-show="report.buildReport[crit.sel]">
+		  <b translate="repository.build"></b>
+		  <pre>{{ report.buildReport[crit.sel] }}</pre>
+		  </div>
+		  		  		 
+		
+	</div>
+	</div>	 
+	
+	
+	</div>

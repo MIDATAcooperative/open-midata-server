@@ -40,6 +40,7 @@ import utils.messaging.SMSAPIProvider;
 import utils.messaging.SMSUtils;
 import utils.messaging.ServiceHandler;
 import utils.messaging.SubscriptionManager;
+import utils.plugins.DeploymentManager;
 import utils.servlet.PlayHttpServletConfig;
 import utils.stats.Stats;
 import utils.stats.UsageStatsRecorder;
@@ -102,6 +103,10 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 		  
 		  System.out.println("Subscription Manager");
 		  SubscriptionManager.init(Instances.system(), ws);
+		  
+		  System.out.println("Deployment Manager");
+		  DeploymentManager.init(Instances.system());
+		  
 		  
 		  System.out.println("Minimal Setup");
 		  MinimalSetup.dosetup();
