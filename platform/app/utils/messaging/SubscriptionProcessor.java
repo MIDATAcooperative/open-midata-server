@@ -300,7 +300,8 @@ public class SubscriptionProcessor extends AbstractActor {
 	private void runProcess(ActorRef sender, Plugin plugin, SubscriptionTriggered triggered, SubscriptionData subscription, User user, String token, String endpoint) {
 		try {
 		String cmd = endpoint.substring("node://".length());
-		String visPath =  InstanceConfig.getInstance().getConfig().getString("visualizations.path")+"/"+plugin.filename+"/"+cmd;
+		String visDir = InstanceConfig.getInstance().getConfig().getString("visualizations.path")+"/"+plugin.filename;
+		String visPath =  visDir+"/"+cmd;
 		final String lang = (user != null && user.language != null) ? user.language : InstanceConfig.getInstance().getDefaultLanguage();
 		final String id = triggered.getResourceId() != null ? triggered.getResourceId().toString() : "-";
 		final String nodepath = InstanceConfig.getInstance().getConfig().getString("node.path");
@@ -332,7 +333,7 @@ public class SubscriptionProcessor extends AbstractActor {
 		//System.out.println("prcApp6");
 		
 		  System.out.println("Build process...");		  
-		  Process p = new ProcessBuilder(nodepath, visPath, token, lang, "http://localhost:9001", subscription.owner.toString(), id).redirectError(Redirect.INHERIT).start();
+		  Process p = new ProcessBuilder("/usr/bin/firejail","--quiet","--whitelist="+visDir,nodepath, visPath, token, lang, "http://localhost:9001", subscription.owner.toString(), id).redirectError(Redirect.INHERIT).start();
 		  //System.out.println("Output...");
 		  PrintWriter out = new PrintWriter(new OutputStreamWriter(p.getOutputStream()));		  
 		  out.println(triggered.resource);

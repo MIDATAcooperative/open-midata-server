@@ -90,21 +90,27 @@ public class PluginDeployment extends AbstractActor {
 	
 	public Pair<Boolean, String> doInstall(File targetDir) {
 		List<String> cmd = new ArrayList<String>();
-		cmd.add("/usr/local/bin/npm");
+		cmd.add("/usr/bin/firejail");
+		cmd.add("--quiet");
+		cmd.add("--whitelist="+targetDir.getAbsolutePath());		
+		cmd.add("npm");
 		cmd.add("ci");		
 		return process(targetDir, cmd);
 	}
 	
 	public Pair<Boolean, String> doAudit(File targetDir) {
 		List<String> cmd = new ArrayList<String>();
-		cmd.add("/usr/local/bin/npm");
+		cmd.add("/usr/bin/npm");
 		cmd.add("audit");		
 		return process(targetDir, cmd);
 	}
 	
 	public Pair<Boolean, String> doBuild(File targetDir) {
 		List<String> cmd = new ArrayList<String>();
-		cmd.add("/usr/local/bin/npm");
+		cmd.add("/usr/bin/firejail");
+		cmd.add("--quiet");
+		cmd.add("--whitelist="+targetDir.getAbsolutePath());		
+		cmd.add("npm");
 		cmd.add("run");
 		cmd.add("prod:build");
 		return process(targetDir, cmd);

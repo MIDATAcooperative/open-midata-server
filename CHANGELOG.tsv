@@ -66,4 +66,6 @@ id0064	01.09.2020	a.kreutz	F	Developers may create projects	Developers may precr
 id0065	01.09.2020	a.kreutz	F	Projects may be exported and imported	Projects may now be transferred from one instance to another including linked applications
 id0066	01.09.2020	a.kreutz	I	Repair account function shows modifications done
 id0067	14.10.2020	a.kreutz	I	Support for multiple sender email adresses
+id0068	16.10.2020	a.kreutz	F	Install plugins from external Git repositories
+id0069	16.10.2020	a.kreutz	S	Execute plugins in a sandbox
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 
