@@ -30,7 +30,7 @@ public class UsageStatsRecorder {
 
 	public static void init(ActorSystem system1) {
 		system = system1;
-		statsRecorder = system.actorOf(Props.create(UsageStatsActor.class), "usageStatsActor");
+		statsRecorder = system.actorOf(Props.create(UsageStatsActor.class).withDispatcher("medium-work-dispatcher"), "usageStatsActor");
 	}
 
 	public static void protokoll(MidataId object, String objectName, UsageAction action) {

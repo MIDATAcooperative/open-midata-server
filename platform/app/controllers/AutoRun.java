@@ -82,13 +82,13 @@ public class AutoRun extends APIController {
 		final ClusterSingletonManagerSettings settings =
 				  ClusterSingletonManagerSettings.create(Instances.system());
 		
-		managerSingleton = Instances.system().actorOf(ClusterSingletonManager.props(Props.create(ImportManager.class), PoisonPill.getInstance(), settings), "autoimport");
+		managerSingleton = Instances.system().actorOf(ClusterSingletonManager.props(Props.create(ImportManager.class).withDispatcher("medium-work-dispatcher"), PoisonPill.getInstance(), settings), "autoimport");
 		
 		final ClusterSingletonProxySettings proxySettings =
 			    ClusterSingletonProxySettings.create(Instances.system());
 
 		
-		manager = Instances.system().actorOf(ClusterSingletonProxy.props("user/autoimport", proxySettings), "autoimportProxy");
+		manager = Instances.system().actorOf(ClusterSingletonProxy.props("user/autoimport", proxySettings).withDispatcher("medium-work-dispatcher"), "autoimportProxy");
 		
 		
 	}
@@ -402,13 +402,13 @@ public class AutoRun extends APIController {
 			
 		    List<Routee> routees = new ArrayList<Routee>();
 		    for (int i = 0; i < nrOfWorkers; i++) {
-		      ActorRef r = getContext().actorOf(Props.create(Importer.class));
+		      ActorRef r = getContext().actorOf(Props.create(Importer.class).withDispatcher("slow-work-dispatcher"));
 		      getContext().watch(r);
 		      routees.add(new ActorRefRoutee(r));
 		    }
 		    workerRouter = new Router(new RoundRobinRoutingLogic(), routees);	
 		    		    
-		    processor = this.context().actorOf(new RoundRobinPool(PARALLEL).props(Props.create(SubscriptionProcessor.class)), "subscriptionProcessor");
+		    processor = this.context().actorOf(new RoundRobinPool(PARALLEL).props(Props.create(SubscriptionProcessor.class).withDispatcher("slow-work-dispatcher")), "subscriptionProcessor");
 		}
 		
 		

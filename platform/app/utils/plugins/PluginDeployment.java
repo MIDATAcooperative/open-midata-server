@@ -120,6 +120,11 @@ public class PluginDeployment extends AbstractActor {
 		List<String> cmd = new ArrayList<String>();
 		cmd.add("/bin/rm");
 		cmd.add("-rf");
+		cmd.add("../plugin_active/"+filename);
+		process(baseDir, cmd);
+		cmd.clear();
+		cmd.add("/bin/rm");
+		cmd.add("-rf");
 		cmd.add(filename);
 		return process(baseDir, cmd);
 	}
@@ -174,7 +179,7 @@ public class PluginDeployment extends AbstractActor {
 		System.out.println("failed");
 	}
 	
-	public void deploy(DeployAction action) throws AppException {
+	public void deploy(DeployAction action) throws AppException {		
 		MidataId pluginId = action.pluginId;
 		System.out.println(action.status+" DEPLOY "+pluginId);
 		

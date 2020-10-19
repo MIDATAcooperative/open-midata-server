@@ -31,18 +31,18 @@ angular.module('portal')
 		return x!=null ? x.replaceAll(".","[dot]") : "";
 	};
 	
-	$scope.style = function(c,n) {
+	$scope.style = function(p,c,n) {
 		if (!$scope.report || !$scope.report.status) return "list-group-item-light";
 		if ($scope.report.status.indexOf(c)>=0) {
-			if ($scope.report.status.indexOf(n)>=0) {
-			   return "list-group-item-success";
-			} else if ($scope.report.status.indexOf("FAILED")>=0) {
+			if ($scope.report.status.indexOf("FAILED")>=0 && $scope.report.status.indexOf(n)<0) {
 			   return "list-group-item-danger";
 			} else {
-			   return "active";
+			   return "list-group-item-success";
 			}
+		} else if ($scope.report.status.indexOf(p)>=0 && $scope.report.status.indexOf("FAILED")<0) {
+		  return "active"; 
 		} else {
-		   return "list-group-item-light";
+		  return "list-group-item-light";
 		}
 	}
 	

@@ -47,17 +47,17 @@ public class Instances {
 	public static void init() {
 		actorSystem = ActorSystem.create("midata", InstanceConfig.getInstance().getConfig().getConfig("midata").withFallback(InstanceConfig.getInstance().getConfig()));
 		//instanceURIs = Play.application().configuration().getStringList("servers");
-		actorSystem.actorOf(Props.create(InstanceSync.class), "instanceSync");	
+		actorSystem.actorOf(Props.create(InstanceSync.class).withDispatcher("quick-work-dispatcher"), "instanceSync");	
 				
-		actorSystem.actorOf(Props.create(ClusterMonitor.class), "midataClusterMonitor");
+		actorSystem.actorOf(Props.create(ClusterMonitor.class).withDispatcher("quick-work-dispatcher"), "midataClusterMonitor");
 		
 		Iterable<String> routeesPaths = Collections.singletonList("/user/instanceSync");				
 		broadcast = actorSystem.actorOf(
 		    new ClusterRouterGroup(new BroadcastGroup(routeesPaths),
 		        new ClusterRouterGroupSettings(Integer.MAX_VALUE, routeesPaths,
-		            true, Sets.create())).props(), "broadcast");
+		            true, Sets.create())).props().withDispatcher("quick-work-dispatcher"), "broadcast");
 		
-		selfName = Cluster.get(actorSystem).selfAddress().toString();
+		selfName = Cluster.get(actorSystem).selfAddress().host().get();
 	}
 	
 	public static ActorSystem system() {

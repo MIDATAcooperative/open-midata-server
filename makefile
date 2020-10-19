@@ -124,7 +124,7 @@ tasks/install-node: tasks/install-packages trigger/install-node
 	sudo chmod -R ugo+rx /usr/lib/node_modules
 	touch tasks/install-node
 
-tasks/config-firejail: config/firejail-node.conf config/firejail-npm.conf
+tasks/config-firejail: config/firejail-node.profile config/firejail-npm.profile
 	$(info ------------------------------)
 	$(info Configure Firejail )
 	$(info ------------------------------)
