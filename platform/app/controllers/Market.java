@@ -98,6 +98,9 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.plugins.DeploymentManager;
+import utils.plugins.DeploymentReport;
+import utils.plugins.PluginDeployment;
 
 /**
  * functions for controlling the "market" of plugins
@@ -149,6 +152,8 @@ public class Market extends APIController {
 					if (Plugin.exists(CMaps.map("filename", filename).map("status", EnumSet.of(PluginStatus.ACTIVE, PluginStatus.BETA, PluginStatus.DEPRECATED, PluginStatus.DEVELOPMENT)))) {
 						throw new BadRequestException("error.exists.plugin", "A plugin with the same filename already exists.");
 					}
+					
+					if (DeploymentManager.hasUserDeployment(pluginId)) throw new BadRequestException("error.not_authorized.remove_first", "Remove existing deployment first.");
 					
 					app.filename = filename; 
 				}
@@ -397,7 +402,7 @@ public class Market extends APIController {
 		// validate request		
 		MidataId pluginId = new MidataId(pluginIdStr);
 		
-		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
+		Plugin app = Plugin.getById(pluginId, Sets.create(Plugin.ALL_DEVELOPER, "repositoryToken"));
 		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
 				
 		Set<PluginIcon> icons = PluginIcon.getByPlugin(app.filename);
@@ -406,7 +411,7 @@ public class Market extends APIController {
 		mixed.add(app);
 		mixed.addAll(icons);
 		Map<String, Set<String>> mapping = new HashMap<String, Set<String>>();
-		mapping.put("Plugin", Plugin.ALL_DEVELOPER);
+		mapping.put("Plugin",  Sets.create(Plugin.ALL_DEVELOPER, "repositoryToken"));
 		mapping.put("PluginIcon", PluginIcon.FIELDS);
 		mapping.put("SubscriptionData", SubscriptionData.ALL);
 		
@@ -458,6 +463,9 @@ public class Market extends APIController {
 		}
 		app.name = JsonValidation.getStringOrNull(pluginJson, "name");
 		parsePlugin(app, pluginJson);
+		app.repositoryUrl = JsonValidation.getStringOrNull(pluginJson, "repositoryUrl");
+		app.repositoryToken = JsonValidation.getStringOrNull(pluginJson, "repositoryToken");
+		app.repositoryDate = 0;
 		
 		try {
 		List<PluginIcon> icons = new ArrayList<PluginIcon>();
@@ -480,6 +488,7 @@ public class Market extends APIController {
 			for (PluginIcon icon : icons) PluginIcon.add(icon);
 		} else {
 			try {
+			  app.updateRepo();
 			  app.update();
 			  app.updateIcons(app.icons);
 			  PluginIcon.delete(app.filename);
@@ -803,6 +812,8 @@ public class Market extends APIController {
 		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
 		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
 
+		if (DeploymentManager.hasUserDeployment(pluginId)) throw new BadRequestException("error.not_authorized.remove_first", "Remove existing deployment first.");
+		
 		if (app.type.equals("mobile") || app.type.equals("service")) {
 			Set<MobileAppInstance> installations =  MobileAppInstance.getByApplication(pluginId, Sets.create("_id", "owner"));
 			for (MobileAppInstance inst : installations) {				
@@ -1479,5 +1490,55 @@ public class Market extends APIController {
 
 		//Collections.sort(licences);
 		return ok(JsonOutput.toJson(licences, "Licence", fields)).as("application/json");
+	}
+	
+	@APICall
+	@Security.Authenticated(DeveloperSecured.class)
+	@BodyParser.Of(BodyParser.Json.class)
+	public Result updateFromRepository(String pluginIdStr) throws AppException {
+		JsonNode json = request().body().asJson();
+		JsonValidation.validate(json, "_id", "repositoryUrl");
+		
+		String repo = JsonValidation.getString(json, "repositoryUrl");
+		String token = JsonValidation.getStringOrNull(json, "repositoryToken");
+		
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId pluginId = new MidataId(pluginIdStr);
+		boolean doDelete = JsonValidation.getBoolean(json, "doDelete");
+		
+		Plugin app = Plugin.getById(pluginId, Sets.create(Plugin.ALL_DEVELOPER, "repositoryToken", "repositoryDate", "repositoryUrl"));
+		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
+		
+		if (!getRole().equals(UserRole.ADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.not_authorized.not_plugin_owner", "Not your plugin!");
+
+		if (app.repositoryUrl != null && !app.repositoryUrl.equals(repo) && !doDelete) {
+			if (DeploymentManager.hasUserDeployment(pluginId)) throw new BadRequestException("error.not_authorized.remove_first", "Remove existing deployment first.");
+		}
+		if (!doDelete) {
+			app.repositoryUrl = repo;
+		    if (token != null) app.repositoryToken = token;
+		    app.updateRepo();
+		}
+	    	 
+	    DeploymentReport report = DeploymentManager.deploy(app._id, userId, doDelete);
+		
+	    return ok(JsonOutput.toJson(report, "DeploymentReport", DeploymentReport.ALL)).as("application/json");
+		
+	}
+	
+	@APICall
+	@Security.Authenticated(DeveloperSecured.class)
+	public Result getDeployStatus(String pluginIdStr) throws AppException {
+		MidataId userId = new MidataId(request().attrs().get(play.mvc.Security.USERNAME));
+		MidataId pluginId = new MidataId(pluginIdStr);
+		
+		Plugin app = Plugin.getById(pluginId, Sets.create(Plugin.ALL_DEVELOPER, "repositoryToken", "repositoryDate", "repositoryUrl"));
+		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
+		
+		if (!getRole().equals(UserRole.ADMIN) && !app.isDeveloper(userId)) throw new BadRequestException("error.not_authorized.not_plugin_owner", "Not your plugin!");
+
+		DeploymentReport report = DeploymentReport.getById(pluginId);
+		
+		return ok(JsonOutput.toJson(report, "DeploymentReport", DeploymentReport.ALL)).as("application/json");
 	}
 }

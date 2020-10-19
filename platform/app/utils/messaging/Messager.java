@@ -32,8 +32,8 @@ public class Messager {
 	
 	public static void init(ActorSystem system1) {
 		system = system1;
-		mailSender = system.actorOf(Props.create(MailSender.class), "mailSender");
-		smsSender = system.actorOf(Props.create(SMSSender.class), "smsSender");
+		mailSender = system.actorOf(Props.create(MailSender.class).withDispatcher("medium-work-dispatcher"), "mailSender");
+		smsSender = system.actorOf(Props.create(SMSSender.class).withDispatcher("medium-work-dispatcher"), "smsSender");
 	}
 	
 	public static void sendTextMail(String email, String fullname, String subject, String content) {	
@@ -186,7 +186,7 @@ class MailSender extends AbstractActor {
 	public void receiveMessage(Message msg) throws Exception {
 		try {		
 			if (!InstanceConfig.getInstance().getInstanceType().disableMessaging()) {			  
-			  MailUtils.sendTextMail(msg.getReceiverEmail(), msg.getReceiverName(), msg.getSubject(), msg.getText());
+			  MailUtils.sendTextMail(MailSenderType.USER, msg.getReceiverEmail(), msg.getReceiverName(), msg.getSubject(), msg.getText());
 			}			
 		} catch (Exception e) {
 			ErrorReporter.report("Messager (EMail)", null, e);	

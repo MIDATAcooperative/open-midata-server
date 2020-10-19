@@ -26,7 +26,7 @@ public class IndexSupervisor extends AbstractActor {
 			  Optional<ActorRef> ref = getContext().findChild(msg.getIndexId().toString());
 				
 			  if (!ref.isPresent()) {
-				ref = Optional.of(getContext().actorOf(Props.create(IndexWorker.class, msg.getExecutor(), msg.getPseudo(), msg.getIndexId(), msg.getHandle()), msg.getIndexId().toString()));  
+				ref = Optional.of(getContext().actorOf(Props.create(IndexWorker.class, msg.getExecutor(), msg.getPseudo(), msg.getIndexId(), msg.getHandle()).withDispatcher("slow-work-dispatcher"), msg.getIndexId().toString()));  
 			  }
 			  
 			  ref.get().forward(msg, getContext());			

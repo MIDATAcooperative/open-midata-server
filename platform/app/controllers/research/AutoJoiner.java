@@ -34,7 +34,7 @@ private static ActorSystem system;
 	
 	public static void init(ActorSystem system1) {
 		system = system1;
-		autoJoiner = system.actorOf(Props.create(AutoJoinerActor.class), "autoJoiner");
+		autoJoiner = system.actorOf(Props.create(AutoJoinerActor.class).withDispatcher("medium-work-dispatcher"), "autoJoiner");
 	}
 	
 	public static void autoJoin(MidataId app, MidataId user, MidataId study) {		

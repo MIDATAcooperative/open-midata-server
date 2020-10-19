@@ -13,6 +13,7 @@ import akka.actor.ActorSystem;
 import akka.actor.CoordinatedShutdown;
 import akka.actor.Props;
 import akka.actor.Terminated;
+import akka.cluster.Cluster;
 import akka.cluster.routing.ClusterRouterGroup;
 import akka.cluster.routing.ClusterRouterGroupSettings;
 import akka.routing.BroadcastGroup;
@@ -26,6 +27,8 @@ import utils.InstanceConfig;
 import utils.collections.Sets;
 import utils.messaging.ServiceHandler;
 import utils.messaging.SubscriptionManager;
+import utils.plugins.DeployAction;
+import utils.plugins.DeploymentManager;
 
 /**
  * Synchronization between multiple application servers for changes on cached data like plugins or content type definitions
@@ -36,6 +39,7 @@ public class Instances {
 	private static ActorSystem actorSystem;
 	private static List<String> instanceURIs;
 	private static ActorRef broadcast;
+	private static String selfName;
 					
 	/**
 	 * Initialize synchronization
@@ -43,19 +47,25 @@ public class Instances {
 	public static void init() {
 		actorSystem = ActorSystem.create("midata", InstanceConfig.getInstance().getConfig().getConfig("midata").withFallback(InstanceConfig.getInstance().getConfig()));
 		//instanceURIs = Play.application().configuration().getStringList("servers");
-		actorSystem.actorOf(Props.create(InstanceSync.class), "instanceSync");	
+		actorSystem.actorOf(Props.create(InstanceSync.class).withDispatcher("quick-work-dispatcher"), "instanceSync");	
 				
-		actorSystem.actorOf(Props.create(ClusterMonitor.class), "midataClusterMonitor");
+		actorSystem.actorOf(Props.create(ClusterMonitor.class).withDispatcher("quick-work-dispatcher"), "midataClusterMonitor");
 		
 		Iterable<String> routeesPaths = Collections.singletonList("/user/instanceSync");				
 		broadcast = actorSystem.actorOf(
 		    new ClusterRouterGroup(new BroadcastGroup(routeesPaths),
 		        new ClusterRouterGroupSettings(Integer.MAX_VALUE, routeesPaths,
-		            true, Sets.create())).props(), "broadcast");
+		            true, Sets.create())).props().withDispatcher("quick-work-dispatcher"), "broadcast");
+		
+		selfName = Cluster.get(actorSystem).selfAddress().host().get();
 	}
 	
 	public static ActorSystem system() {
 		return actorSystem;
+	}
+	
+	public static String getClusterInstanceName() {
+		return selfName;
 	}
 	
 	/**
@@ -88,6 +98,10 @@ public class Instances {
 
 	public static void sendKey(byte[] aeskey) {
 		getBroadcast().tell(new KeyMessage(aeskey), ActorRef.noSender());
+	}
+	
+	public static void sendDeploy(DeployAction deployAction, ActorRef source) { 
+		getBroadcast().tell(deployAction, source);
 	}
 }
 
@@ -137,6 +151,7 @@ class InstanceSync extends AbstractActor {
 	    return receiveBuilder()
 	      .match(ReloadMessage.class, this::reload)	
 	      .match(KeyMessage.class, this::setKey)
+	      .match(DeployAction.class, this::deploy)
 	      .build();
 	}
 	
@@ -166,6 +181,10 @@ class InstanceSync extends AbstractActor {
 	
 	public void setKey(KeyMessage msg) {
 		ServiceHandler.setKey(msg.aeskey);
+	}
+	
+	public void deploy(DeployAction deploy) {
+		DeploymentManager.deploy(deploy, getSender());
 	}
 	
 }

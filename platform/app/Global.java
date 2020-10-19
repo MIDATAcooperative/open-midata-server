@@ -40,6 +40,7 @@ import utils.messaging.SMSAPIProvider;
 import utils.messaging.SMSUtils;
 import utils.messaging.ServiceHandler;
 import utils.messaging.SubscriptionManager;
+import utils.plugins.DeploymentManager;
 import utils.servlet.PlayHttpServletConfig;
 import utils.stats.Stats;
 import utils.stats.UsageStatsRecorder;
@@ -53,14 +54,14 @@ import utils.sync.Instances;
 public class Global  {
 
 @Inject
-public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle, MailerClient mailerClient, WSClient ws) {
+public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle, WSClient ws) {
 	    System.out.println("----------------------------------------------------------------");
 	    System.out.println("Starting UP");
 		// Connect to production database
 	    InstanceConfig.setInstance(new InstanceConfig(config));
 	    
 	    System.out.println("EMails");
-	    MailUtils.setInstance(new MailUtils(mailerClient, config));
+	    MailUtils.setInstance(new MailUtils(config));
 	    
 	    System.out.println("SMS");
 	    
@@ -102,6 +103,10 @@ public Global(ActorSystem system, Config config, ApplicationLifecycle lifecycle,
 		  
 		  System.out.println("Subscription Manager");
 		  SubscriptionManager.init(Instances.system(), ws);
+		  
+		  System.out.println("Deployment Manager");
+		  DeploymentManager.init(Instances.system());
+		  
 		  
 		  System.out.println("Minimal Setup");
 		  MinimalSetup.dosetup();

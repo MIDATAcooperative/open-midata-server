@@ -53,6 +53,7 @@ import utils.collections.Sets;
 import utils.db.FileStorage;
 import utils.exceptions.AppException;
 import utils.largerequests.UnlinkedBinary;
+import utils.messaging.MailSenderType;
 import utils.messaging.MailUtils;
 import utils.messaging.MessageResponse;
 import utils.messaging.ServiceHandler;
@@ -81,13 +82,13 @@ public class AutoRun extends APIController {
 		final ClusterSingletonManagerSettings settings =
 				  ClusterSingletonManagerSettings.create(Instances.system());
 		
-		managerSingleton = Instances.system().actorOf(ClusterSingletonManager.props(Props.create(ImportManager.class), PoisonPill.getInstance(), settings), "autoimport");
+		managerSingleton = Instances.system().actorOf(ClusterSingletonManager.props(Props.create(ImportManager.class).withDispatcher("medium-work-dispatcher"), PoisonPill.getInstance(), settings), "autoimport");
 		
 		final ClusterSingletonProxySettings proxySettings =
 			    ClusterSingletonProxySettings.create(Instances.system());
 
 		
-		manager = Instances.system().actorOf(ClusterSingletonProxy.props("user/autoimport", proxySettings), "autoimportProxy");
+		manager = Instances.system().actorOf(ClusterSingletonProxy.props("user/autoimport", proxySettings).withDispatcher("medium-work-dispatcher"), "autoimportProxy");
 		
 		
 	}
@@ -401,13 +402,13 @@ public class AutoRun extends APIController {
 			
 		    List<Routee> routees = new ArrayList<Routee>();
 		    for (int i = 0; i < nrOfWorkers; i++) {
-		      ActorRef r = getContext().actorOf(Props.create(Importer.class));
+		      ActorRef r = getContext().actorOf(Props.create(Importer.class).withDispatcher("slow-work-dispatcher"));
 		      getContext().watch(r);
 		      routees.add(new ActorRefRoutee(r));
 		    }
 		    workerRouter = new Router(new RoundRobinRoutingLogic(), routees);	
 		    		    
-		    processor = this.context().actorOf(new RoundRobinPool(PARALLEL).props(Props.create(SubscriptionProcessor.class)), "subscriptionProcessor");
+		    processor = this.context().actorOf(new RoundRobinPool(PARALLEL).props(Props.create(SubscriptionProcessor.class).withDispatcher("slow-work-dispatcher")), "subscriptionProcessor");
 		}
 		
 		
@@ -710,7 +711,7 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 			String email = InstanceConfig.getInstance().getConfig().getString("errorreports.targetemail");
 			String fullname = InstanceConfig.getInstance().getConfig().getString("errorreports.targetname");
 			String server = InstanceConfig.getInstance().getPlatformServer();
-			MailUtils.sendTextMail(email, fullname, "Autoimport "+server, report);									
+			MailUtils.sendTextMail(MailSenderType.STATUS, email, fullname, "Autoimport "+server, report);									
 			
 			if (endReport != null) {
 				endReport.cancel();

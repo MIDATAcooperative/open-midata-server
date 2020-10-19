@@ -95,6 +95,8 @@
     "serverimport_help" : "If your plugin offers automatic import, you can test the script of your plugin that is normally run on the server on your local computer.",
     "link_btn" : "Links with research projects or external parties",
     "link_help" : "Applications may suggest or require participation in a research project. Research projects may recommend the use of applications. Use of the application may require a user's consent to healthcare professionals or teams to view their data.",
+    "repository_btn" : "Code Repository",
+    "repository_help" : "Checkout the newest version of your code",
     "icon_btn" : "Application Icons and Images",
     "icon_help" : "Upload and manage the icons and images to be used with your application. Provide images for the login screen, the consent acceptation screen, the MIDATA Store, etc.",
     "messages_btn" : "Application email Messages",
@@ -312,5 +314,29 @@
     "title" : "License",
     "required" : "License required?",
     "allowedEntities" : "Allowed entities"
+  },
+  
+  "repository" : {
+    "title" : "Code Repository",
+    "repository_url" : "Repository URL",
+    "repository_token" : "Access Token",
+    "repository_date" : "Last deployed at",
+    "never" : "Never",
+    "refresh_btn" : "Refresh",
+    "submit_btn" : "Checkout now",
+    "status" : "Deployment Status",
+    "phase_provided" : "Repository needs to be provided",
+    "phase_sceduled" : "Deployment sceduled",
+    "phase_checkout" : "Check out",
+    "phase_audit" : "Security Audit",
+    "phase_install" : "Install packages",
+    "phase_build" : "Build",
+    "phase_complete" : "Deployed",
+    "log" : "Log",
+    "server" : "Reporting Server",
+    "checkout" : "Checkout from repository",
+    "install" : "Package installation",
+    "audit" : "Security Audit",
+    "build" : "Build process"
   }
 }

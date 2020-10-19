@@ -22,11 +22,11 @@ space +=
 komma :=,
 join-with = $(subst $(space),$1,$(strip $2))
 
-install-from-servertools: lock tasks/install-packages tasks/install-node tasks/bugfixes tasks/install-localmongo $(CERTIFICATE_DIR)/dhparams.pem /etc/ssl/certs/ssl-cert-snakeoil.pem tasks/precompile
+install-from-servertools: lock tasks/install-packages tasks/config-firejail tasks/install-node tasks/bugfixes tasks/install-localmongo $(CERTIFICATE_DIR)/dhparams.pem /etc/ssl/certs/ssl-cert-snakeoil.pem tasks/precompile
 	touch switches/use-hotdeploy
 	touch tasks/check-config	
 
-install-local: tasks/install-packages tasks/install-node tasks/bugfixes tasks/prepare-local tasks/check-config $(CERTIFICATE_DIR)/selfsign.crt $(CERTIFICATE_DIR)/dhparams.pem $(CERTIFICATE_DIR)/clientca.pem tasks/install-localmongo platform/conf/secret.conf.gz.nc tasks/precompile 
+install-local: tasks/install-packages tasks/config-firejail tasks/install-node tasks/bugfixes tasks/prepare-local tasks/check-config $(CERTIFICATE_DIR)/selfsign.crt $(CERTIFICATE_DIR)/dhparams.pem $(CERTIFICATE_DIR)/clientca.pem tasks/install-localmongo platform/conf/secret.conf.gz.nc tasks/precompile 
 	touch switches/local-mongo
 	$(info Please run "make update" to build)
 	touch switches/local-mongo
@@ -47,7 +47,7 @@ stop-mongo:
 	@echo 'Shutting down MongoDB...'
 	if [ -e switches/local-mongo ]; then pkill mongod; fi
 
-update: tasks/check-config tasks/install-packages start-mongo tasks/build-mongodb tasks/build-portal tasks/build-platform tasks/setup-nginx start
+update: tasks/check-config tasks/install-packages tasks/config-firejail start-mongo tasks/build-mongodb tasks/build-portal tasks/build-platform tasks/setup-nginx start
 
 .PHONY: stop
 stop: stop-platform stop-mongo
@@ -94,14 +94,15 @@ $(CERTIFICATE_DIR)/dhparams.pem:
 
 tasks/prepare-local:
 	touch switches/use-run
-	touch switches/local-mongo		
+	touch switches/local-mongo
+	cp -n conf/setup.conf.template conf/setup.conf		
 	touch tasks/prepare-local
 		
 tasks/install-packages: trigger/install-packages
 	$(info ------------------------------)
 	$(info Installing Packages... )
 	$(info ------------------------------)
-	sudo apt-get install git curl openssl openjdk-8-jdk mcrypt unzip ruby-sass software-properties-common clamav-daemon
+	sudo apt-get install git curl openssl openjdk-8-jdk mcrypt unzip ruby-sass software-properties-common clamav-daemon firejail
 	sudo add-apt-repository ppa:nginx/stable
 	sudo apt-get update
 	sudo apt-get install nginx
@@ -122,6 +123,16 @@ tasks/install-node: tasks/install-packages trigger/install-node
 	sudo apt-get install -y nodejs	
 	sudo chmod -R ugo+rx /usr/lib/node_modules
 	touch tasks/install-node
+
+tasks/config-firejail: config/firejail-node.profile config/firejail-npm.profile
+	$(info ------------------------------)
+	$(info Configure Firejail )
+	$(info ------------------------------)
+	sudo apt-get install firejail
+	mkdir -p ~/.config/firejail
+	cp config/firejail-node.profile ~/.config/firejail/node.profile
+	cp config/firejail-npm.profile ~/.config/firejail/npm.profile
+	touch tasks/config-firejail	
 
 tasks/check-config: trigger/check-config
 	nano conf/setup.conf
@@ -208,8 +219,12 @@ platform/conf/application.conf: platform/conf/application.conf.template conf/set
 	sed -i 's|PLATFORM_HOSTNAME|$(HOSTNAME)|' platform/conf/application.conf
 	sed -i 's|CLUSTER_SERVER|$(CLUSTERX)|' platform/conf/application.conf
 	sed -i 's|INSTANCETYPE|$(INSTANCE_TYPE)|' platform/conf/application.conf
-	sed -i 's|MAIL_PASSWORD|$(MAIL_PASSWORD)|' platform/conf/application.conf
-	sed -i 's|MAIL_SENDER|$(MAIL_SENDER)|' platform/conf/application.conf
+	sed -i 's|USER_MAIL_PASSWORD|$(USER_MAIL_PASSWORD)|' platform/conf/application.conf
+	sed -i 's|STATUS_MAIL_PASSWORD|$(STATUS_MAIL_PASSWORD)|' platform/conf/application.conf
+	sed -i 's|BULK_MAIL_PASSWORD|$(BULK_MAIL_PASSWORD)|' platform/conf/application.conf
+	sed -i 's|USER_MAIL_SENDER|$(USER_MAIL_SENDER)|' platform/conf/application.conf
+	sed -i 's|STATUS_MAIL_SENDER|$(STATUS_MAIL_SENDER)|' platform/conf/application.conf
+	sed -i 's|BULK_MAIL_SENDER|$(BULK_MAIL_SENDER)|' platform/conf/application.conf
 	sed -i 's|MAIL_SMTP_SERVER|$(MAIL_SMTP_SERVER)|' platform/conf/application.conf
 	sed -i 's|MAIL_SECURITY_TARGET|$(MAIL_SECURITY_TARGET)|' platform/conf/application.conf
 	sed -i 's|MAIL_ADMIN|$(MAIL_ADMIN)|' platform/conf/application.conf

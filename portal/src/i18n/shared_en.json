@@ -51,7 +51,8 @@
        "account" : "You are not authorized to access this account",
        "study" : "You are not authorized to access this research project",
        "not_plugin_owner" : "This is not your application",
-       "no_debug" : "Application debugging is only available during development or beta phase on non productive instances."       
+       "no_debug" : "Application debugging is only available during development or beta phase on non productive instances.",
+       "remove_first" : "Please remove deployment before performing this operation."       
      },
 
      "invalid" : {

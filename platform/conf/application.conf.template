@@ -13,7 +13,7 @@ visualizations.path="ROOTDIR/visualizations"
 node.server="DOMAIN:5000"
 node.path="/usr/bin/node"
 
-errorreports.targetemail="security@midata.coop"
+errorreports.targetemail="MAIL_SECURITY_TARGET"
 errorreports.targetname="Security Officer"
 
 instanceType=INSTANCETYPE
@@ -35,16 +35,40 @@ play.http.parser.maxDiskBuffer=100MB
 
 play.filters.enabled=[]
 
-play.mailer {
+play.mailer.user {
   host=MAIL_SMTP_SERVER
   port=587
   ssl=false
   tls=true
-  user="MAIL_SENDER"
-  password="MAIL_PASSWORD"
+  user="USER_MAIL_SENDER"
+  password="USER_MAIL_PASSWORD"
   debug=false  
+  from="USER_MAIL_SENDER"
 }
-smtp.from="MAIL_SENDER"
+
+play.mailer.status {
+  host=MAIL_SMTP_SERVER
+  port=587
+  ssl=false
+  tls=true
+  user="STATUS_MAIL_SENDER"
+  password="STATUS_MAIL_PASSWORD"
+  debug=false  
+  from="STATUS_MAIL_SENDER"
+}
+
+play.mailer.bulk {
+  host=MAIL_SMTP_SERVER
+  port=587
+  ssl=false
+  tls=true
+  user="BULK_MAIL_SENDER"
+  password="BULK_MAIL_PASSWORD"
+  debug=false  
+  from="BULK_MAIL_SENDER"
+}
+
+
 emails.admin="MAIL_ADMIN"
 
 my-thread-pool-dispatcher {
@@ -70,6 +94,42 @@ my-thread-pool-dispatcher {
 	  # Set to 1 for as fair as possible.
 	  throughput = 1
 }
+
+pinned-dispatcher {
+  executor = "thread-pool-executor"
+  type = PinnedDispatcher
+}
+
+slow-work-dispatcher {
+  type = Dispatcher
+  executor = "thread-pool-executor"
+  thread-pool-executor {
+    fixed-pool-size = 32
+  }
+  throughput = 1
+}
+
+medium-work-dispatcher {
+  type = Dispatcher
+  executor = "thread-pool-executor"
+  thread-pool-executor {
+    fixed-pool-size = 32
+  }
+  throughput = 1
+}
+
+
+quick-work-dispatcher {  
+  type = Dispatcher
+  executor = "fork-join-executor"
+  fork-join-executor {    
+    parallelism-min = 2    
+    parallelism-factor = 2.0    
+    parallelism-max = 10
+  }  
+  throughput = 10
+}
+
 
 play {
    

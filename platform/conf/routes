@@ -124,6 +124,8 @@ GET      /api/admins/exportplugin/:appId                 controllers.Market.expo
 
 POST     /api/developers/plugins/:appId/icon             controllers.Market.uploadIcon(appId: String)
 DELETE   /api/developers/plugins/:appId/icon/:use        controllers.Market.deleteIcon(appId: String, use: String)
+POST     /api/developers/plugins/:appId/repo             controllers.Market.updateFromRepository(appId: String)
+GET     /api/developers/plugins/:appId/repo              controllers.Market.getDeployStatus(appId: String)
 GET      /api/shared/icon/:use/:id                       controllers.Market.getIcon(use:String, id:String)
 GET      /api/debug/getopencalls/:handle                 controllers.Market.getOpenDebugCalls(handle: String)
 POST     /api/debug/getopencalls/:handle                 controllers.Market.answerDebugCall(handle: String)

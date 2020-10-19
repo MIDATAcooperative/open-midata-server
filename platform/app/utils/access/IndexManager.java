@@ -70,13 +70,13 @@ public class IndexManager {
 				  ClusterSingletonManagerSettings.create(Instances.system());
 	
 		
-		indexSupervisorSingleton = Instances.system().actorOf(ClusterSingletonManager.props(Props.create(IndexSupervisor.class), PoisonPill.getInstance(),
+		indexSupervisorSingleton = Instances.system().actorOf(ClusterSingletonManager.props(Props.create(IndexSupervisor.class).withDispatcher("medium-work-dispatcher"), PoisonPill.getInstance(),
 				settings), "indexSupervisor");
 		
 		final ClusterSingletonProxySettings proxySettings =
 			    ClusterSingletonProxySettings.create(Instances.system());
 		
-		indexSupervisor = Instances.system().actorOf(ClusterSingletonProxy.props("/user/indexSupervisor", proxySettings), "indexSupervisor-Consumer");			
+		indexSupervisor = Instances.system().actorOf(ClusterSingletonProxy.props("/user/indexSupervisor", proxySettings).withDispatcher("medium-work-dispatcher"), "indexSupervisor-Consumer");			
 	}
 
 	public IndexPseudonym getIndexPseudonym(APSCache cache, MidataId user, MidataId targetAPS, boolean create) throws AppException {		

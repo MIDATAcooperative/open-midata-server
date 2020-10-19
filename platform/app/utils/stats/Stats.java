@@ -32,7 +32,7 @@ public class Stats {
 	
 	public static void init(ActorSystem system1) {
 		system = system1;
-		statsRecorder = system.actorOf(Props.create(StatsRecorder.class), "statsRecorder");
+		statsRecorder = system.actorOf(Props.create(StatsRecorder.class).withDispatcher("medium-work-dispatcher"), "statsRecorder");
 	}
 	
 	public static void startRequest() {

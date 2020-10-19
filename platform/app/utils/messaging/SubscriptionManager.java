@@ -79,7 +79,7 @@ public class SubscriptionManager {
 		system = system1;
 	   	ws = ws1;
 	   	
-	   	subscriptionChecker = system.actorOf(Props.create(SubscriptionChecker.class), "subscriptionChecker");
+	   	subscriptionChecker = system.actorOf(Props.create(SubscriptionChecker.class).withDispatcher("medium-work-dispatcher"), "subscriptionChecker");
 	}
 	
 	
@@ -318,7 +318,7 @@ class SubscriptionChecker extends AbstractActor {
 		//appWithSubscription = new HashSet<MidataId>();
 		//for (SubscriptionData sub : allsubsriptions) if (sub.app != null) appWithSubscription.add(sub.app);
 		
-		processor = this.context().actorOf(new RoundRobinPool(5).props(Props.create(SubscriptionProcessor.class)), "subscriptionProcessor");
+		processor = this.context().actorOf(new RoundRobinPool(5).props(Props.create(SubscriptionProcessor.class).withDispatcher("slow-work-dispatcher")), "subscriptionProcessor");
 	}
 
 	void resourceChange(ResourceChange change) {		
