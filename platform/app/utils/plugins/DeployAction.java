@@ -6,6 +6,11 @@ import models.MidataId;
 
 public class DeployAction implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1795201835146962857L;
+
 	public final MidataId pluginId;
 	
 	public final MidataId userId;
