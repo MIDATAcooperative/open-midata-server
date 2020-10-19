@@ -1,10 +1,21 @@
 # Firejail profile for NPM
 
 # Persistent global definitions
-include /etc/firejail/globals.local
+
 include /etc/firejail/disable-common.inc
-include /etc/firejail/disable-passwdmgr.inc
-include /etc/firejail/disable-programs.inc
+
+blacklist /etc/shadow
+blacklist /etc/gshadow
+blacklist /etc/passwd-
+blacklist /etc/group-
+blacklist /etc/shadow-
+blacklist /etc/gshadow-
+blacklist /etc/passwd+
+blacklist /etc/group+
+blacklist /etc/shadow+
+blacklist /etc/gshadow+
+blacklist /etc/ssh
+blacklist /var/backup
 
 caps.drop all
 ipc-namespace
