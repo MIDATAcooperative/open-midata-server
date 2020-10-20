@@ -300,8 +300,8 @@ public class SubscriptionProcessor extends AbstractActor {
 	private void runProcess(ActorRef sender, Plugin plugin, SubscriptionTriggered triggered, SubscriptionData subscription, User user, String token, String endpoint) {
 		try {
 		String cmd = endpoint.substring("node://".length());
-		String visDir = InstanceConfig.getInstance().getConfig().getString("visualizations.path")+"/"+plugin.filename;
-		String visPath =  visDir+"/"+cmd;
+		String visDir = InstanceConfig.getInstance().getConfig().getString("visualizations.path");
+		String visPath =  visDir+"/"+plugin.filename+"/"+cmd;
 		final String lang = (user != null && user.language != null) ? user.language : InstanceConfig.getInstance().getDefaultLanguage();
 		final String id = triggered.getResourceId() != null ? triggered.getResourceId().toString() : "-";
 		final String nodepath = InstanceConfig.getInstance().getConfig().getString("node.path");
