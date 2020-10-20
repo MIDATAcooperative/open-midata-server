@@ -1,13 +1,12 @@
-MIDATA COOP 
+Open MIDATA Platform solution
 =============================
 
 Manage, understand, and leverage your health data.
 
-This repository contains the MIDATA application server.
-For a full installation you will need to checkout the "server-tools" repository instead.
+This repository contains the Open MIDATA Platform application server.
+If you want to use the server in production please provide a secure environment for running the system.
 
-
-Development Installation (localhost)
+Installation (localhost)
 ===========================
 
 Install git and make:
@@ -15,23 +14,20 @@ Install git and make:
 sudo apt-get install git make
 ```
 
-Clone the MIDATA plugins repository into a directory of your choice
-
 Then clone this repository into a directory of your choice. 
 ```
-git clone https://github.com/MIDATAcooperative/midata-plugins
 git clone https://github.com/MIDATAcooperative/platform-private
 cd platform-private
 ```
 
 Run the installation:
 ```
-make install-local
+make install
 ```
 An editor will open where you can configure the instance.
 
 Afterwards a second editor will open where you have to configure two pathes:
-- PLUGINS_DIR : Where is the MIDATA plugins directory checked out?
+- PLUGINS_DIR : Where will MIDATA plugins be located?
 - CERTIFICATE_DIR : Where should certificates be placed?
 
 Starting the instance in development mode:
@@ -51,7 +47,7 @@ npm run dev:server
 
 The local server will be at address: https://localhost:9002
 On the developer login page you can log in as "admin@midata.coop" with initial password "secret".
-
+Please use this account to register new administrator accounts. When done set the status of the "admin@midata.coop" user to "BLOCKED".
 
 Folder structure
 ----------------

@@ -3,19 +3,8 @@
 # Persistent global definitions
 
 include /etc/firejail/disable-common.inc
-
-blacklist /etc/shadow
-blacklist /etc/gshadow
-blacklist /etc/passwd-
-blacklist /etc/group-
-blacklist /etc/shadow-
-blacklist /etc/gshadow-
-blacklist /etc/passwd+
-blacklist /etc/group+
-blacklist /etc/shadow+
-blacklist /etc/gshadow+
-blacklist /etc/ssh
-blacklist /var/backup
+include /etc/firejail/disable-passwdmgr.inc
+include /etc/firejail/disable-programs.inc
 
 caps.drop all
 ipc-namespace

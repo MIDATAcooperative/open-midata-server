@@ -6,7 +6,7 @@ info:
 	$(info Welcome to MIDATA)
 	$(info ------------------------------)
 	$(info   )	
-	$(info install-local : Install a localhost instance)
+	$(info install : Install a localhost instance)
 	$(info   )
 	$(info configure-connection : Reconfigure database connection)
 	$(info   )	
@@ -26,7 +26,7 @@ install-from-servertools: lock tasks/install-packages tasks/config-firejail task
 	touch switches/use-hotdeploy
 	touch tasks/check-config	
 
-install-local: tasks/install-packages tasks/config-firejail tasks/install-node tasks/bugfixes tasks/prepare-local tasks/check-config $(CERTIFICATE_DIR)/selfsign.crt $(CERTIFICATE_DIR)/dhparams.pem $(CERTIFICATE_DIR)/clientca.pem tasks/install-localmongo platform/conf/secret.conf.gz.nc tasks/precompile 
+install: tasks/install-packages tasks/config-firejail tasks/install-node tasks/bugfixes tasks/prepare-local tasks/check-config $(CERTIFICATE_DIR)/selfsign.crt $(CERTIFICATE_DIR)/dhparams.pem $(CERTIFICATE_DIR)/clientca.pem tasks/install-localmongo platform/conf/secret.conf.gz.nc tasks/precompile 
 	touch switches/local-mongo
 	$(info Please run "make update" to build)
 	touch switches/local-mongo
@@ -124,11 +124,18 @@ tasks/install-node: tasks/install-packages trigger/install-node
 	sudo chmod -R ugo+rx /usr/lib/node_modules
 	touch tasks/install-node
 
-tasks/config-firejail: config/firejail-node.profile config/firejail-npm.profile
+tasks/install-firejail:
+	$(info ------------------------------)
+	$(info Install Firejail )
+	$(info ------------------------------)
+	sudo add-apt-repository ppa:deki/firejail
+	sudo apt-get install firejail
+	touch tasks/install-firejail
+
+tasks/config-firejail: tasks/install-firejail config/firejail-node.profile config/firejail-npm.profile
 	$(info ------------------------------)
 	$(info Configure Firejail )
 	$(info ------------------------------)
-	sudo apt-get install firejail
 	mkdir -p ~/.config/firejail
 	cp config/firejail-node.profile ~/.config/firejail/node.profile
 	cp config/firejail-npm.profile ~/.config/firejail/npm.profile

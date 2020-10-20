@@ -56,6 +56,8 @@ angular.module('portal')
 								});
 						 }
 					  });
+				  } else {
+					  $state.go("^.overview2");
 				  }
 			});				
 			
@@ -66,8 +68,7 @@ angular.module('portal')
 		console.log(space);
 		$scope.space = space;
 		$scope.status.doBusy(spaces.getUrl(space._id, $state.params.user))
-		.then(function(result) {   
-			console.log("YESW!!!");
+		.then(function(result) {   			
 			$scope.title = result.data.name;
 			var url = spaces.mainUrl(result.data, $translate.use(), $scope.params);			
 			space.trustedUrl = $sce.trustAsResourceUrl(url);
