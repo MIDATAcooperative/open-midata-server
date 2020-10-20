@@ -129,6 +129,7 @@ tasks/install-firejail:
 	$(info Install Firejail )
 	$(info ------------------------------)
 	sudo add-apt-repository ppa:deki/firejail
+	sudo apt-get update
 	sudo apt-get install firejail
 	touch tasks/install-firejail
 
