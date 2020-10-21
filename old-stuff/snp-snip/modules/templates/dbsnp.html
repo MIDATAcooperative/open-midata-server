@@ -1,9 +1,0 @@
-<div>
-    <h4>Basic information about the SNP <font size="1">(Data taken from <a href="http://www.ncbi.nlm.nih.gov/SNP/">dbSNP</a>)</font> <a href="" popover="blablabla blubb blablub" popover-trigger="mouseenter">?</a></h4>
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <div ng-show="data[rs].dbsnp">SNP {{rs}} is on gene <a href="http://www.ncbi.nlm.nih.gov/gene?cmd=Retrieve&dopt=Graphics&list_uids={{data[rs].dbsnpGeneId}}">{{data[rs].dbsnpSymbol}}</a>.</div>
-            <div ng-show="!data[rs].dbsnp">N/A</div>
-        </div>
-    </div>
-</div>
