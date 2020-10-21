@@ -18,10 +18,15 @@ switches/
 ssl-certificate/
 portal/node_modules
 portal/dest
+portal/.sass-cache
 platform/conf/application.conf
 platform/conf/secret.conf.gz.nc
 .classpath
 .project
 nginx/sites-available/*
 portal/.tmp/*
-
+platform/.gradle/*
+visualizations
+config/instance.json
+conf/setup.conf
+conf/recoverykeys.json
