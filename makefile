@@ -249,6 +249,9 @@ config/instance.json: config/instance-template.json conf/pathes.conf conf/setup.
 	cp config/instance-template.json config/instance.json
 	sed -i 's|PORTAL_ORIGIN|$(PORTAL_ORIGIN)|' config/instance.json
 	sed -i 's|DOMAIN|$(DOMAIN)|' config/instance.json
+	sed -i 's|PLATFORM_NAME|$(PLATFORM_NAME)|' config/instance.json
+	sed -i 's|OPERATOR_NAME|$(OPERATOR_NAME)|' config/instance.json
+	sed -i 's|OFFICIAL_SUPPORT_MAIL|$(OFFICIAL_SUPPORT_MAIL)|' config/instance.json
 	sed -i 's|INSTANCE_TYPE|$(INSTANCE_TYPE)|' config/instance.json
 	sed -i 's|INSTANCE|$(INSTANCE)|' config/instance.json
 	sed -i 's|LANGUAGES|$(LANGUAGES)|' config/instance.json

@@ -17,7 +17,7 @@
     "patients" : "Patients",
     "research" : "Research",
     "workspace" : "Workspace",
-    "market" : "MIDATA Store",
+    "market" : "Store",
     "org" : "Enterprise",
     "organization" : "Organization",    
 	"usergroups" : "Teams"
@@ -30,7 +30,7 @@
     "url" : "Homepage URL",
     "members" : "All members of your organization",
     "addprovider" : "Register New Member",
-    "master_user" : "You must be master user to update your organization or register new users for the organization. Please contact the MIDATA support if you think you should have master user permissions."
+    "master_user" : "You must be master user to update your organization or register new users for the organization. Please contact support if you think you should have master user permissions."
   },
   
   "addprovider" : {
@@ -96,7 +96,7 @@
    },
    
    "help_welcome" : {
-     "starts" : "Some ideas to start with MIDATA:"
+     "starts" : "Some ideas to start:"
    }  
   
 }

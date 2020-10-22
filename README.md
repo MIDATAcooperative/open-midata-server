@@ -1,10 +1,11 @@
-Open MIDATA Platform solution
-=============================
+Open MIDATA Platform
+====================
 
 Manage, understand, and leverage your health data.
 
 This repository contains the Open MIDATA Platform application server.
-If you want to use the server in production please provide a secure environment for running the system.
+The instructions provided are for setting up a development instance.
+If you want to use the server in production please provide a secure environment and setup for operating the platform.
 
 Installation (localhost)
 ===========================
@@ -16,8 +17,8 @@ sudo apt-get install git make
 
 Then clone this repository into a directory of your choice. 
 ```
-git clone https://github.com/MIDATAcooperative/platform-private
-cd platform-private
+git clone https://github.com/MIDATAcooperative/open-platform
+cd open-platform
 ```
 
 Run the installation:
@@ -41,18 +42,19 @@ make update
 
 Terminal 2: (after Terminal 1 is ready)
 ```
-cd platform-private/portal
+cd open-platform/portal
 npm run dev:server
 ```
 
 The local server will be at address: https://localhost:9002
 On the developer login page you can log in as "admin@midata.coop" with initial password "secret".
-Please use this account to register new administrator accounts. When done set the status of the "admin@midata.coop" user to "BLOCKED".
+Please use this account to register new administrator accounts. 
+When done set the status of the "admin@midata.coop" user to "BLOCKED".
 
 Folder structure
 ----------------
 
 - conf: Config files used by the platform.
 - logs (created by script): Logs of all products except web application (whose log is in platform -> logs).
-- platform: Code for the MIDATA platform.
+- platform: Code for the open MIDATA platform.
 - json: JSON data and scripts for the database.

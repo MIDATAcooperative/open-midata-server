@@ -1,5 +1,8 @@
 {
   "name" : "INSTANCE",
+  "platform" : "PLATFORM_NAME",
+  "operator" : "OPERATOR_NAME",
+  "support" : "OFFICIAL_SUPPORT_MAIL",
   "domain" : "DOMAIN",
   "instanceType" : "INSTANCE_TYPE",  
   "portal" : {

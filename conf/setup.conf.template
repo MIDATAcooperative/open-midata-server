@@ -1,3 +1,12 @@
+# Name of platform as seen on the portal
+PLATFORM_NAME=My Health Platform
+
+# Name of company or cooperative operating the platform
+OPERATOR_NAME=
+
+# Official support email address
+OFFICIAL_SUPPORT_MAIL=
+
 # The domain for your instance (example: test.midata.coop )
 DOMAIN=localhost
  
@@ -47,10 +56,10 @@ STATUS_MAIL_SENDER=
 STATUS_MAIL_PASSWORD=
 
 # SMTP Server for sending emails
-MAIL_SMTP_SERVER=asmtp.mail.hostpoint.ch
+MAIL_SMTP_SERVER=
 
 # Target email address of security emails
-MAIL_SECURITY_TARGET=security@midata.coop
+MAIL_SECURITY_TARGET=
 
 # Target email for admin mails (account management)
-MAIL_ADMIN=security@midata.coop
+MAIL_ADMIN=
