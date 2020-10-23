@@ -1,3 +1,20 @@
+#
+# This file is part of the Open MIDATA Platform.
+#
+# The Open MIDATA platform is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# any later version.
+#
+# The Open MIDATA Platform is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with the Open MIDATA platform.  If not, see <http://www.gnu.org/licenses/>.
+#
+
 include /dev/shm/db.conf
 
 info:
@@ -101,8 +118,7 @@ reimport:
 	$(mongoimport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c formatgroups --file formatgroups.json --drop --upsertFields _id
 	$(mongoimport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c contentinfo --file contentinfo.json --drop --upsertFields _id
 	$(mongoimport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c formatinfo --file formatinfo.json --drop --upsertFields _id
-	$(mongoimport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c coding --file coding.json --drop --upsertFields _id
-	$(mongoimport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c loinc --type csv --file loinc.csv --drop --headerline 
+	$(mongoimport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c coding --file coding.json --drop --upsertFields _id	 
 	
 changelog:
 	$(mongoimport) -h $(user.db) -d $(mongo.user.database) $(user.pw) -c changelog --type tsv --file ../CHANGELOG.tsv --headerline --upsertFields changeId

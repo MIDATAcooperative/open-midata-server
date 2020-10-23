@@ -24,7 +24,7 @@
     "name" : "Name",
     "description" : "Description",
     "researchers" : "All researchers of your organization",
-    "master_user" : "You must be master user to update your organization or register new users for the organization. Please contact the MIDATA support if you think you should have master user permissions."
+    "master_user" : "You must be master user to update your organization or register new users for the organization. Please contact support if you think you should have master user permissions."
   },
   
   "createstudy" : {
@@ -65,7 +65,7 @@
     "empty" : "No applications are linked to the project",
     "aggregator_apps" : "Add research application to be used with YOUR account",
     "datalink" : "Aggregators, Analysis and Interpretation Applications",
-    "description" : "After the research project has been validated, you can link applications like plugins and external data processing services to it. These applications must connect to MIDATA using the credentials of one of the members of the research team with sufficient rights.",
+    "description" : "After the research project has been validated, you can link applications like plugins and external data processing services to it. These applications must connect to the platform using the credentials of one of the members of the research team with sufficient rights.",
     "select_group_btn" : "Select Group",
     "allgroups" : "<All Groups>",
     "plugin" : "Research Application",
@@ -134,9 +134,9 @@
     "not_anonymous2" : ", requests member to share full name, date of birth and contact Information (address, phone, email)",
     "assistance" : "Assistance",
     "no_assistance1" : "None",
-    "no_assistance2" : " - the MIDATA member participates alone.",
+    "no_assistance2" : " - the account holder participates alone.",
     "assistance1" : "Health Professional",
-    "assistance2" : " - the MIDATA member needs assistance of a health professional.",
+    "assistance2" : " - the account holder needs assistance of a health professional.",
     "groups" : "Participant Groups",
     "groups_empty" : "No groups of participants have been defined yet.",
     "group_name" : "Group Name",
@@ -177,7 +177,7 @@
     "lastdone" : "Last step worked on",
     "nextstep" : "Next step to do",
     "confirm" : {
-      "validation" : "Setup cannot be changed anymore. Validation process by MIDATA will be started.",
+      "validation" : "Setup cannot be changed anymore. Validation process will be started.",
       "end_participant_search" : "No additional users will be able to participate anymore.",      
       "finish_execution" : "All project data will be frozen at this moment.",
       "delete" : "The research project will be completely wiped from the platform.",
@@ -243,7 +243,7 @@
     "join_methods" : "Allowed Participation Procedures",
     "queryeditor_btn" : "Edit",    
     "terms_of_use" : "General Terms and Conditions",
-    "terms_of_use_hint" : "If the projects General Terms and Conditions have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the ID you need to enter here.",
+    "terms_of_use_hint" : "If the projects General Terms and Conditions have to be read and accepted by the user, please send the text to a platform administrator. We will upload the text in the correct format and provide you with the ID you need to enter here.",
     "consent_observers" : "External Consent Observers",
     "show_terms" : "Show General Terms and Conditions",
     "requirements" : "Requirements"
@@ -289,7 +289,7 @@
     "teamsetup" : "Researcher team setup",
     "teamsetup_help" : "If more people are involved in carrying out the project, provide all involved persons and their role. As long as you have not added more people, you can change your own role by adding yourself again with another role.",
     "information" : "Public information about your research",
-    "information_help" : "Public information will help MIDATA account holders to evaluate if your research is relevant for them.",
+    "information_help" : "Public information will help account holders to evaluate if your research is relevant for them.",
     "groups" : "Participant groups defined",
     "groups_help" : "Your project may have one or multiple groups of participants. Please define the list of participant groups.",
     "sharingQuery" : "Data Access Filter defined",
@@ -297,17 +297,17 @@
     "dates" : "Start and end dates set",
     "dates_help" : "Start and end date will be shown to the participants. No additional data will flow into the project from the moment the data is frozen.",
     "terms" : "General Terms and Conditions provided",
-    "terms_help" : "If the projects General Terms and Conditions have to be confirmed online by the participants, please contact MIDATA.",
+    "terms_help" : "If the projects General Terms and Conditions have to be confirmed online by the participants, please contact a platform administrator.",
     "validation" : "Project validation requested",
-    "validation_help" : "Validation will be done by MIDATA after it has been requested. The project may no longer be changed after validation has been requested.",
-    "validation_passed" : "Project validated by MIDATA",
+    "validation_help" : "Validation will be done by after it has been requested. The project may no longer be changed after validation has been requested.",
+    "validation_passed" : "Project has been validated",
     "validation_passed_help" : "Please wait until project has been validated.",
     "phase2" : "Phase 2 : Preparation",
     "phase2_help" : "Preparation",
     "applications" : "Research application added",
-    "applications_help" : "You can link applications like plugins and external data processing services to your project. These may read the participants' data and/or share aggregated data back to the participants. These applications must connect to MIDATA using the credentials of one of the members of the research team with sufficient rights.",    
+    "applications_help" : "You can link applications like plugins and external data processing services to your project. These may read the participants' data and/or share aggregated data back to the participants. These applications must connect to the platform using the credentials of one of the members of the research team with sufficient rights.",    
     "applinked" : "Application has been linked with project",
-    "applinked_help" : "To link an application to your project, please send to MIDATA the code of your project and the name of the application you want to have linked.",
+    "applinked_help" : "To link an application to your project, please send the code of your project and the name of the application you want to have linked to an administrator of the platform.",
     "partsearchstart" : "Started to search for participants",
     "partsearchstart_help" : "As long as participant search is not started it is not possible to participate to the project. Applications which require project participation may not be used.",
     "phase3" : "Phase 3 : Execution",
@@ -335,7 +335,7 @@
      "visibilities" : {
        "ALL" : "everybody",
        "PARTICIPANTS" : "all participants",
-       "INTERNAL" : "only researchers and MIDATA"
+       "INTERNAL" : "only researchers and administrators"
      },
      "showlanguages" : "Languages to edit"
    },
