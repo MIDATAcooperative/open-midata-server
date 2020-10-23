@@ -1,9 +1,9 @@
 {
    "footer" : {
-     "copyright" : " ",
-     "homepage" : "MIDATA Homepage",
+     "copyright" : "",
+     "homepage" : "@OPERATOR Homepage",
      "impressum" : "Impressum",
-     "portals" : "Midata Portals:",
+     "portals" : "@PLATFORM Portals:",
      "for_members" : "For Account Holders",
 	 "for_researchers" : "For Research Organizations",
 	 "for_providers" : "For Healthcare Providers",
@@ -34,17 +34,17 @@
    },
 
    "error" : {
-     "offline" : "The backend is currently offline! Please contact support if the problem persists.",
-     "internal" : "An internal error occured. Please contact support if the problem persists.",
-     "internal_db" : "An internal database error occured. Please contact support if the problem persists.",
-     "plugin" : "An application specific error occured. Please contact the application developer or support if the problem persists.",
+     "offline" : "The backend is currently offline! Please contact @SUPPORT if the problem persists.",
+     "internal" : "An internal error occured. Please contact @SUPPORT if the problem persists.",
+     "internal_db" : "An internal database error occured. Please contact @SUPPORT if the problem persists.",
+     "plugin" : "An application specific error occured. Please contact the application developer or @SUPPORT if the problem persists.",
      "relogin" : "Please relogin",
      "noconsent" : "No active consent that allows to add data for target person.",
      "unsupported" : "Operation not supported",
      "notrialuser_title" : "Full membership required!",
-     "notrialuser_detail" : "In order to use this feature you need to complete your registration. Request a written copy of the General Terms and Conditions and send it signed back to MIDATA. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
-     "mustbemember_title" : "MIDATA cooperative membership required!",
-     "mustbemember_detail" : "In order to use this feature you must be member of the MIDATA cooperative. Click on your username on the top right and check the 'Account Status' section for more information.",
+     "notrialuser_detail" : "In order to use this feature you need to complete your registration. Request a written copy of the General Terms and Conditions and send it signed back to @OPERATOR. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
+     "mustbemember_title" : "@OPERATOR membership required!",
+     "mustbemember_detail" : "In order to use this feature you must be member of the cooperative. Click on your username on the top right and check the 'Account Status' section for more information.",
      "notauthorized" : {
        "action" : "You are not authorized to do this action",
        "fields" : "You are not authorized to query the provided fields",
@@ -137,14 +137,14 @@
      },
 
      "blocked" : {
-       "user" : "This account has been blocked. Your email address is blocked for further registration. Contact support for assistance.",
+       "user" : "This account has been blocked. Your email address is blocked for further registration. Contact @SUPPORT for assistance.",
        "password1" : "Too many missed login attempts. Please wait 1 minute before next attempt.",
        "password5" : "Too many missed login attempts. Please wait 5 minutes before next attempt.",
        "password60" : "Too many missed login attempts. Please wait 1 hour before next attempt.",
        "participation" : "You are not authorized to participate in this research project and therefore cannot use this application.",
        "projectconsent" : "You have withdrawn your participation in this research project and can therefore no longer use this application.",
-       "consent" : "You have set in the MIDATA portal that this application may no longer access your data. If you want to use this application again, you must reauthorize it in the MIDATA portal.",
-       "app" : "You are allowed to use this application on a maximum of 10 devices. Please delete unused consents on the MIDATA portal.",
+       "consent" : "You have set in the @PLATFORM portal that this application may no longer access your data. If you want to use this application again, you must reauthorize it in the @PLATFORM portal.",
+       "app" : "You are allowed to use this application on a maximum of 10 devices. Please delete unused consents on the @PLATFORM portal.",
        "joinmethod" : "It is not allowed to join the project by this method." 
      },
 
@@ -300,7 +300,7 @@
 	   "ADDRESS_VERIFIED" : "Post address of user must have been verified",
 	   "PASSPORT_VERIFIED" : "ID card of users must have been verified",
 	   "MIDATA_COOPERATIVE_MEMBER" : "User must be member of the cooperative",
-	   "ADMIN_VERIFIED" : "Account must have been unlocked by a MIDATA administrator",
+	   "ADMIN_VERIFIED" : "Account must have been unlocked by an administrator",
 	   "BIRTHDAY_SET" : "The date of birth of the user must be known"
 	 },
 	 "writepermissiontype" : {
@@ -359,7 +359,7 @@
 	 },
 	 "joinmethod" : {
 	   "APP" : "Participant uses the linked application",
-	   "PORTAL" : "Participant applies on MIDATA portal",
+	   "PORTAL" : "Participant applies on @PLATFORM portal",
 	   "RESEARCHER" : "Participant is manually registered by research team member",
 	   "API" : "Participant is registered by external software",
 	   "ALGORITHM" : "Participant has been proposed by an algorithm (not supported)",
@@ -375,7 +375,7 @@
 	 },
 	 "studyvalidationstatus" : {
 	   "DRAFT" : "Draft (Not Validated)",
-	   "REJECTED" : "Project rejected by MIDATA",
+	   "REJECTED" : "Project rejected by @OPERATOR",
 	   "VALIDATED" : "Project has been validated",
 	   "VALIDATION" : "Validation running"
 	 },
@@ -550,44 +550,44 @@
   },
 
   "instance" : {
-     "purpose" : "Purpose of this MIDATA instance",
-     "access" : "Access to this MIDATA instance",
+     "purpose" : "Purpose of this @PLATFORM instance",
+     "access" : "Access to this @PLATFORM instance",
      "uptime" : "Availability and downtimes",
-     "data" : "Data stored in this MIDATA instance",
+     "data" : "Data stored in this @PLATFORM instance",
      "start" : "Choose one of the portal from the top of the page to start. Each portal has its own LOGIN and SIGN UP page.",
 
      "localhost" : {
         "name" : "Local Instance (localhost)",
-        "intro": "This is a local installation of the MIDATA platform, only available from your PC.",
-        "purpose" : "A local installation may be used in order to contribute to the MIDATA platform and for testing purposes.",
-        "access" : "You may register user accounts for all four portals. Accounts do not need to be validated by a MIDATA administrator. You may register and use your own admin accounts.",
+        "intro": "This is a local installation of the @PLATFORM, only available from your PC.",
+        "purpose" : "A local installation may be used in order to contribute to the platform and for testing purposes.",
+        "access" : "You may register user accounts for all four portals. Accounts do not need to be validated by an administrator. You may register and use your own admin accounts.",
         "uptime" : "Whenever you run it, its available only for you :-)",
         "data" : "Data stored in this instance will only be available on your local PC."
      },
 
      "test" : {
-        "name" : "Test Instance (test.midata.coop)",
-        "intro": "This is a test instance of the MIDATA platform.",
-        "purpose" : "This instance may be used to develop and test new applications for MIDATA in a safe environment. It is also used to test new versions of the portal and the backend before the other instances are updated.",
-        "access" : "Register your own developer account. After validation by a MIDATA administrator, you may register test users, researchers and health providers without additional validation.",
+        "name" : "Test Instance",
+        "intro": "This is a test instance of @PLATFORM.",
+        "purpose" : "This instance may be used to develop and test new applications in a safe environment. It is also used to test new versions of the portal and the backend before the other instances are updated.",
+        "access" : "Register your own developer account. After validation by an administrator, you may register test users, researchers and health providers without additional validation.",
         "uptime" : "There is no guarantee on availability. Expect updates of the instance to happen as needed. If possible, updates are done between 12:00 and 13:00 central european time, but may occur more than once a day if problems occur.",
         "data" : "Store only test data on this instance. Data may be wiped, accounts may be deleted if necessary. Records may become corrupted by bugs. There is no backup of the data."
      },
 
      "demo" : {
-        "name" : "Demo Instance (demo.midata.coop)",
-        "intro": "This is a demonstration instance of the MIDATA platform.",
+        "name" : "Demo Instance",
+        "intro": "This is a demonstration instance of @PLATFORM.",
         "purpose" : "This instance may be used for demonstration purposes and training.",
-        "access" : "You may register user accounts for all four portals. Accounts must be validated by a MIDATA administrator, before they are unlocked.",
-        "uptime" : "This instance is updated less frequently than the test.midata.coop instance. Expected downtime is once a week on Monday between 12:00 and 14:00 central european time.",
+        "access" : "You may register user accounts for all four portals. Accounts must be validated by an administrator, before they are unlocked.",
+        "uptime" : "This instance is updated less frequently than the test instance. Expected downtime is once a week on Monday between 12:00 and 14:00 central european time.",
         "data" : "Store only demonstration data on this instance. There is no backup of the data."
      },
 
      "ch" : {
-        "name" : "MIDATA Switzerland (ch.midata.coop)",
-        "intro": "This is the MIDATA platform for Switzerland.",
-        "purpose" : "This is the productive MIDATA platform for storing health data in Switzerland.",
-        "access" : "New user accounts have feature restrictions. Healthprovider, research and development accounts can only be used after validation by MIDATA. Fake or test accounts are not allowed and will be blocked.",
+        "name" : "@PLATFORM Switzerland",
+        "intro": "This is the @PLATFORM for Switzerland.",
+        "purpose" : "This is the productive @PLATFORM for storing health data in Switzerland.",
+        "access" : "New user accounts have feature restrictions. Healthprovider, research and development accounts can only be used after validation by @OPERATOR. Fake or test accounts are not allowed and will be blocked.",
         "uptime" : "Downtimes will be announced.",
         "data" : "This instance is for storing real data about real people. Data is backed up on a daily basis."
      }
@@ -620,9 +620,9 @@
     "country" : "Country",
     "phone" : "Phone",
     "mobile_phone" : "Mobile Phone",
-    "coach" : "Contact person MIDATA",
+    "coach" : "Contact person @OPERATOR",
     "reason" : "Purpose of Registration*",
-    "agb" : "MIDATA Terms",     
+    "agb" : "Terms",     
     "study" : "Research",    
     "agb2" : "I accept the",
     "agb3" : "General Terms and Conditions",
@@ -639,7 +639,7 @@
     "generous" : "I'm feeling generous today, show me the fields!",
     "hide_optional" : "Hide optional fields",
     "welcome_title" : "Welcome",
-    "welcome_text1" : "Your MIDATA account has just been created. A confirmation email has been sent to you.",
+    "welcome_text1" : "Your @PLATFORM account has just been created. A confirmation email has been sent to you.",
     "welcome_text2" : "Please click on the link in the email within 24 hours to complete your registration.",
     "welcome_text3" : "If you should not receive the email within the next 30 minutes, please check your spam filter.",
     "welcome_btn" : "Go on" 
@@ -655,19 +655,10 @@
     "login_btn" : "Log in",
     "service_login" : "Login for Confirmation Request",
     "service_login2" : "At your next login, you will be asked for confirmation of consents and/or participation with research projects.",
-    "no_account" : "I do not have a MIDATA account yet.",
+    "no_account" : "I do not have a @PLATFORM account yet.",
     "info1" : "Dear project participant",
-    "info2" : "You already have a MIDATA account, log in with your email address and password.",
-    "info3" : "Your personal account gives you an overview of your project participation.",
-    "info4" : "Dear visitor",
-    "info5" : "You do not yet have a MIDATA account and do not participate in any project?",
-    "info6" : "Join the",
-    "info6b" : "Corona Science",
-    "info6b_link" : "https://coronascience.ch/en/",
-    "info6c" : "project or one of the other",
-    "info6d" : "MIDATA projects",
-    "info6d_link" : "https://www.midata.coop/en/offers/",
-    "info6e" : "!"
+    "info2" : "You already have a @PLATFORM account, log in with your email address and password.",
+    "info3" : "Your personal account gives you an overview of your project participation."
   },
 
   "lostpw" : {
@@ -693,11 +684,11 @@
     "description" : "Your account is protected with a passphrase.",
     "passphrase" : "Passphrase",
     "continue_btn" : "Continue",
-    "if_lost" : "If you lost your passphrase contact support@midata.coop"
+    "if_lost" : "If you lost your passphrase contact @SUPPORT"
   },
 
   "postregister" : {
-    "title" : "Welcome to MIDATA",    
+    "title" : "Welcome to @PLATFORM",    
     "email_confirmed" : "Email confirmed?",
     "contract_signed" : "Contract signed and sent back?",
     "resent_success" : "Welcome email has been resent.",
@@ -708,18 +699,18 @@
     "code" : "Code",
     "resend_btn" : "Resend email",
     "retry_btn" : "Retry login",
-    "contract_instructions" : "A contract has been sent to your postal address. Please return it signed to MIDATA.",
-    "pilot_phase" : "A MIDATA administrator will verify and unlock your account. You will be notified when your account has been unlocked.",
+    "contract_instructions" : "A contract has been sent to your postal address. Please return it signed to @OPERATOR.",
+    "pilot_phase" : "An administrator will verify and unlock your account. You will be notified when your account has been unlocked.",
     "code_intructions" : "A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.",
-    "code_done" : "You have provided the confirmation code. You may login after the signed contract has arrived at MIDATA.",
+    "code_done" : "You have provided the confirmation code. You may login after the signed contract has arrived at @OPERATOR.",
     "enter_now_btn" : "Enter now",
     "email_success" : "Thank you for confirming your email address.",
     "address_entered" : "Your postal address is required to use this service, please provide it.",
     "phone_entered" : "A mobile phone number is required to use this service, please provide it.",
     "birthday_entered" : "A valid date of birth is required to use this service. Please add your date of birth to your account information. (Format example: 31.12.1999)",
-    "admin_verified" : "Your account must be unlocked by a MIDATA administrator. Please retry later. If your account has not been unlocked for more than 24 hours, please contact MIDATA.",
-    "terms_agreed" : "The MIDATA General Terms and Conditions have been updated. Please confirm that you agree to the new version.",
-    "privacy_policy_agreed" : "The MIDATA Privacy Policy has been updated. Please confirm that you agree to the new version.",
+    "admin_verified" : "Your account must be unlocked by an administrator. Please retry later. If your account has not been unlocked for more than 24 hours, please contact @SUPPORT.",
+    "terms_agreed" : "The General Terms and Conditions have been updated. Please confirm that you agree to the new version.",
+    "privacy_policy_agreed" : "The Privacy Policy has been updated. Please confirm that you agree to the new version.",
     "auth2factor" : "An authorization code has been send to your phone. Please enter it.",
     "securityToken" : "Code",
     "securityToken_btn" : "Send",
@@ -731,22 +722,22 @@
     "auth_type_none" : "I do not want to use two factor authentication.",
     "auth_type_sms" : "I want to use two factor authentication using SMS codes. Please send a code to my mobile phone at login.",
     "emailnotify" : "Notifications",
-    "emailnotify2" : "Please send me an email everytime I log into the MIDATA portal at {{domain}}.",
+    "emailnotify2" : "Please send me an email everytime I log into the @PLATFORM portal at {{domain}}.",
     "agree_btn" : "I agree",
     "keyrecovery" : {
       "intro" : "The private key that is used to encrypt your data needs to be recovered. In order to recover your key, try one of these options:",
-      "way1" : "Do you have any application using MIDATA where you are still logged in? If yes, open that application and your key will be recovered. Try to login again afterwards.",
+      "way1" : "Do you have any application using @PLATFORM where you are still logged in? If yes, open that application and your key will be recovered. Try to login again afterwards.",
       "way2" : "Have you logged in using a browser before? If yes try to log in using the same browser and device.",
       "way3" : "Remember your old password again? If yes try to log in using your old password.",
-      "way4" : "Wait for MIDATA employees to do a manual key recovery. MIDATA will send you an email when the recovery has been done. Please wait up to five working days for the recovery to be completed."
+      "way4" : "Wait for @OPERATOR employees to do a manual key recovery. @OPERATOR will send you an email when the recovery has been done. Please wait up to five working days for the recovery to be completed."
     },
     "licence" : {
       "intro" : "A license is required to use this application.",
-      "text" : "Please contact support@midata.coop to obtain a valid license."
+      "text" : "Please contact @SUPPORT to obtain a valid license."
     },
     "reject" : {
       "intro1" : "You have clicked on the account REJECTION link in the account confirmation mail.",
-      "intro2" : "Please confirm that you do NOT want to create an account on MIDATA. Your email address will be blocked for further registration attempts until you contact support@midata.coop.",
+      "intro2" : "Please confirm that you do NOT want to create an account on @PLATFORM. Your email address will be blocked for further registration attempts until you contact @SUPPORT.",
       "reject_btn" : "Reject account creation",
       "intro3" : "If you clicked the wrong link and want to CONFIRM your email address instead, click here:",
       "confirm_btn" : "Confirm account creation"
@@ -902,7 +893,7 @@
     "install_btn" : "Confirm Access",
     "location" : {
       "workspace" : "Workspace",
-      "mobile" : "MIDATA Mobile App",
+      "mobile" : "Mobile App",
       "research" : "Research Dashboard",
       "sandbox" : "Workspace",
       "me" : "Personal Dashboard",
@@ -918,7 +909,7 @@
     "title" : "Create a new consent",
     "name" : "How should this consent be named?",
     "type" : "What type of consent do you want to create?",
-    "share_with_members" : "I want to share data with other MIDATA account holders.",
+    "share_with_members" : "I want to share data with other account holders.",
     "share_with_provider" : "I want to share data with a health professional.",
     "select" : "Select",
     "use_passcode" : "Include a passcode?",
@@ -953,7 +944,7 @@
     "type" : "Type of Consent",
     "status" : "Status of Consent",
     "people" : "With which persons(s) do you want to share data?",
-    "external" : "Non MIDATA account holder",
+    "external" : "Non @PLATFORM account holder",
     "add_people_btn" : "Add More People",
     "add_usergroup_btn" : "Add a Team",
     "reshare" : "@:newconsent.reshare",
@@ -963,7 +954,7 @@
     "created_before" : "Does not share data created after:",
     "what_is_shared" : "What data is shared?",
     "consent_empty" : "This consent does not share any data at the moment.",
-    "type_circle" : "This consent shares data with other MIDATA account holders.",
+    "type_circle" : "This consent shares data with other @PLATFORM account holders.",
     "type_healthcare" : "This consent shares data with healthcare professionals.",
     "type_studyparticipation" : "This consent shares data with a research project.",
     "type_studyrelated" : "This consent shares data with a project participant.",
@@ -1030,7 +1021,7 @@
   },
 
   "spaces" : {
-    "title" : "MIDATA Plugin",
+    "title" : "@PLATFORM Plugin",
     "delete_btn" : "Delete this space",
     "used_btn" : "Used records...",
     "share_btn" : "Share...",
@@ -1080,18 +1071,18 @@
   },
 
   "oauth2" : {
-    "requests_permission" : "stores your personal data in your MIDATA account.",
+    "requests_permission" : "stores your personal data in your @PLATFORM account.",
     "no_account" : "You don't have an account?", 
-    "have_account" : "You have a MIDATA account?",
+    "have_account" : "You have a @PLATFORM account?",
     "have_account2" : "Perfect, log in here",
     "sign_up_btn" : "Sign up",
     "reshares_data" : "Application may share data it has access to to third parties.",
     "allows_user_search" : "Your name and email address may be searched by other people using this app.",
     "requesting_app" : "needs access to your data.",
-    "sign_in" : "MIDATA login for:",
+    "sign_in" : "@PLATFORM login for:",
     "sign_in_btn" : "Log in",
     "device" : "Device: {{ device}}",
-    "please_confirm" : "Please confirm the activation of the application using the MIDATA portal, then retry. Consent title is: {{ consent }}",
+    "please_confirm" : "Please confirm the activation of the application using the @PLATFORM portal, then retry. Consent title is: {{ consent }}",
     "confirm_btn" : "Confirm Access",
     "continue_btn" : "Continue",
     "requests_access" : "Access requested by the application:",
@@ -1112,7 +1103,7 @@
   },
 
   "dashboard" : {
-    "help_welcome" : "Welcome to MIDATA",
+    "help_welcome" : "Welcome to @PLATFORM",
     "myviews" : "My Views",
     "mydata" : "My personal data",
     "mydata_text" : "Manage your health data. Enter new data and visualize existing data.",
@@ -1123,14 +1114,14 @@
     "health" : "Health",
  	"health_text" : "Share data with your doctor. Search for health professionals.",
     "help" : "Help",
-    "help_text" : "Get help about MIDATA functions",
+    "help_text" : "Get help about functions",
 	"training" : "Training",
 	"training_text" : "Manage your personal training!",
 	"newrecords" : "Newest records added this month:",
 	"newrecords_teaser" : "There are no new records. Visit the records page to browser all of your records.",
 	"myaccount" : "My Account Data",
     "newsharedrecords" : "New records shared with you",
-    "newsharedrecords_teaser" :  "Other MIDATA account holders may share their data with you.",
+    "newsharedrecords_teaser" :  "Other @PLATFORM account holders may share their data with you.",
     "circles" : "Member of Circles",
     "circles_teaser" : "Ask others to add you to their circles.",
 	"circles2" : "Your Circles",
@@ -1287,10 +1278,10 @@
     "account_status" : "Account Status",
 	"studyparticipant" : "Your account has been set up for participation in a project. Functionality is limited. You may upgrade your user account to a full account.",
 	"appuser" : "Your account has been registered by an external application. Functionality is limited. You may upgrade your user account to a full account.",
-	"memberofcooperative" : "You are a member of the MIDATA cooperative.",
-	"nonmemberuser" : "You have a full user account but you are no member of the MIDATA cooperative.",
+	"memberofcooperative" : "You are a member of the cooperative.",
+	"nonmemberuser" : "You have a full user account but you are no member of the cooperative.",
 	"agb_not_requested" : "By clicking on the 'Request Contract' button, the General Terms and Conditions (T&Cs) and the contract will be sent to you by letter. Please return the signed T&Cs to convert this trial account into a full account.",
-	"agb_requested" : "You have requested the General Terms and Conditions and the contract. Your request is being processed by the MIDATA cooperative.",
+	"agb_requested" : "You have requested the General Terms and Conditions and the contract. Your request is being processed by the cooperative.",
 	"agb_printed" : "The General Terms and Conditions and contract you have asked for should arrive in the next days.",
 	"agb_signed" : "You have signed the General Terms and Conditions.",
 	"confirmed" : "Your postal address has been confirmed.",
@@ -1300,22 +1291,22 @@
   },
   
   "accountwipe" : {
-    "title" : "Close and Delete MIDATA Account",
+    "title" : "Close and Delete @PLATFORM Account",
     "hello" : "Dear {{name}},",
     "hello_m" : "Dear {{name}},",
     "hello_w" : "Dear {{name}},",
-    "paragraph1" : "You would like to delete your MIDATA account irrevocably? That is of course possible.",
+    "paragraph1" : "You would like to delete your @PLATFORM account irrevocably? That is of course possible.",
     "paragraph2" : "Please read the following information first:",
-    "point1" : "If you delete your MIDATA account your personal data will no longer be available.",
+    "point1" : "If you delete your @PLATFORM account your personal data will no longer be available.",
     "point2" : "Data already included in research projects will continue to be available in these projects.",
-    "point3" : "MIDATA is not able to recover your deleted account.",    
+    "point3" : "@OPERATOR is not able to recover your deleted account.",    
     "warning" : "Warning",
     "final" : "This action cannot be undone.",
-    "paragraph3" : "If you really want to delete your MIDATA account enter your password for confirmation.",
+    "paragraph3" : "If you really want to delete your @PLATFORM account enter your password for confirmation.",
     "password" : "Password",
     "reason" : "Reason (optional)",
-    "reason2" : "We would be grateful if you could tell us why you are deleting your account. We are continually trying to improve the MIDATA platform.",
-    "wipe_btn" : "Close and Delete MIDATA Account",
+    "reason2" : "We would be grateful if you could tell us why you are deleting your account. We are continually trying to improve the @PLATFORM.",
+    "wipe_btn" : "Close and Delete @PLATFORM Account",
     "error" : "Password not correct. The account has not been deleted."
   },
   
@@ -1384,7 +1375,7 @@
       "AuditEvent" : "Access to the audit event log",
       "Consent" : "Access to consents of the application user with other users or applications",
       "Group" : "Access to group definitions (teams of health professionals or researchers as well as project-specific groups)",
-      "Patient" : "Patient Records: name, email, address of MIDATA account holders",
+      "Patient" : "Patient Records: name, email, address of account holders",
       "PseudonymizedPatient" : "Patient Records: pseudonym, year of birth, country of research project participants",
       "Practitioner" : "Practitioner Resource: search for health professionals or researchers",
       "Subscription" : "Access and manage subscriptions to external systems"
@@ -1419,7 +1410,7 @@
     "refresh" : "Refresh token for OAuth",
     "instructions_refresh" : "For improved security, exchange this refresh token against a new pair of access token and refresh token.",
     "common_name" : "CN (common name) for CSR (certificate request)",
-    "instructions_common_name" : "For certificate based authentication create a CSR with the given CN field. Send the CSR to support@midata.coop",
+    "instructions_common_name" : "For certificate based authentication create a CSR with the given CN field. Send the CSR to @SUPPORT",
     "date" : "Date of creation",
     "status" : "Status",
     "ACTIVE" : "Active",
@@ -1430,7 +1421,7 @@
     "title" : "Login not allowed",
     "intro" : "You are not allowed to log in for the following reason:",
     "withdrawn1" : "You have withdrawn your participation in a project. The participation is mandantory in order to use this application.",
-    "withdrawn2" : "You will not be able to use the application again with your MIDATA account.",
+    "withdrawn2" : "You will not be able to use the application again with your @PLATFORM account.",
     "joinmethod1" : "The access to the research project is restricted.",
     "joinmethod2" : "Please contact the team responsible for the project. For more information, read the terms of use of the application.",
     "loginpage_btn" : "Return to login"

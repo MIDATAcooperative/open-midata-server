@@ -15,13 +15,13 @@
     "less": "^3.10.3",
     "less-loader": "^5.0.0",
     "mini-css-extract-plugin": "^0.8.0",
-    "node-sass": "^4.13.1",
-    "postcss-loader": "^3.0.0",
+    "node-sass": "^4.14.1",
+    "postcss-loader": "^3.0.0",    
     "sass-loader": "^8.0.0",
     "style-loader": "^1.0.0",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.9",
-    "webpack-dev-server": "^3.8.2"
+    "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
     "@uirouter/angularjs": "~1.0.23",
@@ -36,9 +36,9 @@
     "angular-ui-bootstrap": "~2.5.0",
     "angular-utils-pagination": "~0.11.1",
     "bootstrap": "~4.3.1",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.1",
     "jsonminify": "~0.4.1",
-    "node-forge": "^0.9.1",
+    "node-forge": "^0.10.0",
     "popper.js": "^1.16.0",
     "underscore": "~1.9.1"
   },
