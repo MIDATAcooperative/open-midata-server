@@ -57,7 +57,8 @@
 		            <button class="btn btn-sm btn-default" ng-hide="pluginToSpace[visualization._id]" translate="{{visualization.type=='visualization'?'apps.use_btn':'apps.connect_btn'}}"></button>
 		          </td>
 		        </tr>
-		      </table>		      
+		      </table>	
+		      <p ng-show="services.length===0" translate="apps.empty"></p>	      
 	       </loader>
 		</div>
 	</div>

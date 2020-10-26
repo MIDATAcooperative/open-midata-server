@@ -49,11 +49,19 @@ var My_Plugins = [
     new CopyWebpackPlugin([
         { from: path.resolve(CLIENT_DIR, '**/*.html'), to: DIST_DIR, ignore: [ 'src/index.html', 'src/oauth.html' ], context: 'src/', transform : My_Definitions.jsonReplacer },
         { from: path.resolve(CLIENT_DIR, 'auth.js'), to: path.resolve(DIST_DIR, 'auth.js') },
-        { from: CLIENT_IMAGES, to: DIST_IMAGES },
+        { from: CLIENT_IMAGES, to: DIST_IMAGES },       
         { from: CLIENT_IMG, to: DIST_IMG },
         { from: path.resolve(CLIENT_DIR, 'assets', 'fonts'), to:  path.resolve(DIST_DIR, 'fonts')},
         { from: path.resolve(CLIENT_DIR, 'i18n', '*.json'), to:  path.resolve(DIST_DIR, 'i18n'), context: 'src/i18n/',        	
-          transform : My_Definitions.jsonReplacer}
+          transform : My_Definitions.jsonReplacer
+        }
+    ]),
+    new CopyWebpackPlugin([        
+        { from: path.resolve(CLIENT_DIR, "override", "images"), to: DIST_IMAGES, force : true },
+        { from: path.resolve(CLIENT_DIR, "override", "img"), to: DIST_IMG, force : true },    
+        { from: path.resolve(CLIENT_DIR, 'override', '*.json'), to:  path.resolve(DIST_DIR, 'i18n'), context: 'src/override/',
+        	transform : My_Definitions.jsonReplacer, force : true
+        }
     ]),
     new MiniCssExtractPlugin({
         filename: "[name].[contenthash].css",
@@ -72,6 +80,7 @@ for (let i = 0; i < My_Definitions.html_files_to_add.length; i++) {
             excludeChunks: _definition.exclude,
             BACKEND: instance.portal.backend,
             HOMEPAGE: instance.homepage,
+            PLATFORM: instance.platform,
             NAME: instance.portal.backend.substring(8).split(/[\.\:]/)[0]
         }))
 }

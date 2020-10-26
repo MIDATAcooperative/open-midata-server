@@ -588,25 +588,26 @@ public class Users extends APIController {
 		AccessPermissionSet.delete(userId);
 						
 		User user = User.getById(userId, User.ALL_USER_INTERNAL);
-		if (user.role == UserRole.PROVIDER) {
-			HPUser hp = HPUser.getById(userId, Sets.create("provider"));
-			user.delete();
-			if (!User.exists(CMaps.map("provider", hp.provider).map("status", User.NON_DELETED))) {
-				OrganizationResourceProvider.deleteOrganization(executorId, hp.provider);
-				HealthcareProvider.delete(hp.provider);
-			}			
-		} else
-		if (user.role == UserRole.RESEARCH) {
-			ResearchUser ru = ResearchUser.getById(userId, Sets.create("organization"));
-			user.delete();
-			if (!User.exists(CMaps.map("organization", ru.organization).map("status", User.NON_DELETED))) {
-			  OrganizationResourceProvider.deleteOrganization(executorId, ru.organization);
-			  Research.delete(ru.organization);	
-			}
-		} else {
-			user.delete();
-		} 						
-		
+		if (user != null) {
+			if (user.role == UserRole.PROVIDER) {
+				HPUser hp = HPUser.getById(userId, Sets.create("provider"));
+				user.delete();
+				if (!User.exists(CMaps.map("provider", hp.provider).map("status", User.NON_DELETED))) {
+					OrganizationResourceProvider.deleteOrganization(executorId, hp.provider);
+					HealthcareProvider.delete(hp.provider);
+				}			
+			} else
+			if (user.role == UserRole.RESEARCH) {
+				ResearchUser ru = ResearchUser.getById(userId, Sets.create("organization"));
+				user.delete();
+				if (!User.exists(CMaps.map("organization", ru.organization).map("status", User.NON_DELETED))) {
+				  OrganizationResourceProvider.deleteOrganization(executorId, ru.organization);
+				  Research.delete(ru.organization);	
+				}
+			} else {
+				user.delete();
+			} 						
+		}
 	}
 	
 	@Security.Authenticated(AnyRoleSecured.class)

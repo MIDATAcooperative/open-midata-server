@@ -99,6 +99,7 @@ angular.module('portal', [ 'ngCookies', 'ui.router', 'ui.bootstrap', 'services',
    });
    $rootScope.currentDate = new Date();
    $translatePartialLoader.addPart("shared");
+   $translatePartialLoader.addPart("branding");
    
    $rootScope.greeting = {};
    $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options){ 
