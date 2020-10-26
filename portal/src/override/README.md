@@ -1,0 +1,1 @@
+Put your specific language resources here and your specific logos into image folder.

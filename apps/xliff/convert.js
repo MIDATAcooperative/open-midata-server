@@ -20,7 +20,7 @@ jsonminify = require("jsonminify");
 convert = require("xml-js");
 assert = require("assert");
 
-var files = ["shared", "admins", "developers", "members", "providers", "researchers"];
+var files = ["shared", "admins", "developers", "members", "providers", "researchers", "branding"];
 
 var xliffout = [];
 var res = [];

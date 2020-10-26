@@ -7,6 +7,9 @@ OPERATOR_NAME=
 # Official support email address
 OFFICIAL_SUPPORT_MAIL=
 
+# Official homepage 
+OFFICIAL_HOMEPAGE=
+
 # The domain for your instance (example: test.midata.coop )
 DOMAIN=localhost
  

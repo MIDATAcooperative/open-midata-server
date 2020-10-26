@@ -111,7 +111,7 @@
     "plugin_developer" : "Developer",
     "plugin_type" : "Type",
     "plugin_role" : "Target Role",
-    "plugin_market" : "MIDATA Store",
+    "plugin_market" : "Store",
     "plugin_stats" : "Stats",
     "plugin_status" : "Status",
     "add_definition_btn" : "Import Application Definition"
