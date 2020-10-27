@@ -32,7 +32,9 @@ import akka.actor.AbstractActor;
 import akka.actor.AbstractActor.Receive;
 import models.MidataId;
 import models.Plugin;
+import utils.AccessLog;
 import utils.InstanceConfig;
+import utils.ServerTools;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.messaging.InputStreamCollector;
@@ -61,9 +63,8 @@ public class PluginDeployment extends AbstractActor {
 	}
 	
 	public Pair<Boolean, String> process(File targetDir, List<String> command) {
-		 System.out.println("Execute command...");
-		 for (String str : command) System.out.print(str);
-		 System.out.println();
+		 AccessLog.log("Execute command "+command.toString());
+		 
 		 try {
 			  Process p = new ProcessBuilder(command).directory(targetDir).redirectErrorStream(true).start();
 			  //System.out.println("Output...");
@@ -77,10 +78,10 @@ public class PluginDeployment extends AbstractActor {
 			  p.waitFor();
 			  //System.out.println("Wait for finished...");
 			  result.join();
-			  System.out.println("Wait for input...");
-			  System.out.println(result.getResult());	
+			  AccessLog.log("Wait for input...");
+			  AccessLog.log(result.getResult());	
 			  int exit = p.exitValue();
-			  System.out.println("EXIT VALUE = "+exit);
+			  AccessLog.log("EXIT VALUE = "+exit);
 			  return Pair.of(exit==0, result.getResult());
 		 } catch (IOException e) {
 			 return Pair.of(false, "IO Exception");
@@ -182,7 +183,7 @@ public class PluginDeployment extends AbstractActor {
 	}
 	
 	private void finished(Plugin plugin) {
-		System.out.println("finished");
+		AccessLog.log("finished");
 	}
 	
 	private void checkFail(DeployAction action, DeployStatus status) throws AppException {
@@ -198,7 +199,8 @@ public class PluginDeployment extends AbstractActor {
 	
 	public void deploy(DeployAction action) throws AppException {		
 		MidataId pluginId = action.pluginId;
-		System.out.println(action.status+" DEPLOY "+pluginId);
+		try {
+		AccessLog.logStart("jobs", "DEPLOY "+action.status+" "+pluginId);
 		
 		Plugin plugin = Plugin.getById(pluginId, Sets.create("filename", "repositoryUrl","repositoryToken"));		
 		if (plugin.filename.indexOf(".")>=0 || plugin.filename.indexOf("/") >=0 || plugin.filename.indexOf("\\")>=0) return;
@@ -309,7 +311,9 @@ public class PluginDeployment extends AbstractActor {
             checkFail(action, status);
 			break;		
 		}
-		
+		} finally {
+			ServerTools.endRequest();
+		}
 	}
 }
 

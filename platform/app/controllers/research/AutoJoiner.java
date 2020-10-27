@@ -84,7 +84,7 @@ class AutoJoinerActor extends AbstractActor {
 		
 	public void join(JoinMessage message) throws Exception {
 		try {
-		
+		    AccessLog.logStart("jobs", message.toString());
 			
 			Study theStudy = Study.getById(message.getStudy(), Sets.create("_id", "participantSearchStatus", "executionStatus", "autoJoinGroup", "autoJoinExecutor", "autoJoinKey", "name", "code", "type"));				
 			if (theStudy != null && theStudy.autoJoinGroup != null && theStudy.autoJoinExecutor != null && theStudy.autoJoinKey != null) {
@@ -114,7 +114,7 @@ class AutoJoinerActor extends AbstractActor {
 						} finally {
 							
 						    KeyManager.instance.logout();
-						    ServerTools.endRequest();
+						    //ServerTools.endRequest();
 						}
 					
 					

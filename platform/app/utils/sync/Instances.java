@@ -181,10 +181,8 @@ class InstanceSync extends AbstractActor {
 		   } else if (msg.collection.equals("content")) {
 			   RecordGroup.load();
 			   ContentCode.reset();
-		   } else if (msg.collection.equals("SubscriptionData")) {
-			   System.out.println("A");
-			   SubscriptionManager.subscriptionChangeLocal(msg.entry);
-			   System.out.println("B");
+		   } else if (msg.collection.equals("SubscriptionData")) {			 
+			   SubscriptionManager.subscriptionChangeLocal(msg.entry);			  
 		   } else if (msg.collection.equals("aeskey")) {
 			   ServiceHandler.shareKey();
 		   }

@@ -169,6 +169,10 @@ public class AutoRun extends APIController {
 		public String getHandle() {
 			return handle;
 		}
+		
+		public String toString() {
+			return "import space="+space._id;
+		}
 	}
 	
 	/**
@@ -277,7 +281,8 @@ public class AutoRun extends APIController {
 		}
 				
 		public void doImport(ImportRequest request) throws Exception {		    
-		    	try {			    	
+		    	try {	
+		    		AccessLog.logStart("jobs", request.toString());
 			    	KeyManager.instance.continueSession(request.handle);
 			    	MidataId autorunner = request.autorunner;
 			    	Space space = request.space;
@@ -511,6 +516,7 @@ public class AutoRun extends APIController {
 	                Instances.system().dispatcher(), null);	
 			
 			try {
+				AccessLog.logStart("jobs", "start import");
 			    startTime = System.currentTimeMillis();
 				AccessLog.log("Removing expired sessions...");
 				PersistedSession.deleteExpired();
@@ -613,7 +619,7 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 			errors = new StringBuffer();
 			
 			try {
-								
+				AccessLog.logStart("jobs", "start intraday import");								
 				datas = SubscriptionData.getAllActiveFormat("time/30m", SubscriptionData.ALL);
 				datasIt = datas.iterator();
 				done = new HashSet<MidataId>();
@@ -652,13 +658,14 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 			}
 			
 			if (startedSome) {
-				AccessLog.log("autoimport slow="+countSlow);
+				AccessLog.logStart("jobs", "import tick slow="+countSlow);				
 				countSlow++;
 				ServerTools.endRequest();
 			}
 		}
 		
 		public boolean importTick() {
+			AccessLog.logStart("jobs", "import tick");
 			boolean foundone = false;
 			if (autoImportsIt != null && autoImportsIt.hasNext()) {
 				Space space = autoImportsIt.next();
@@ -692,12 +699,17 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 		
 		public void reportEnd() {			
 			
+			AccessLog.logStart("jobs", "report auto-import end");
+			
 			if (speedControl != null) {
 				speedControl.cancel();
 				speedControl = null;
 			}
 			
-			if (reportSend) return;
+			if (reportSend) {
+				ServerTools.endRequest();		
+				return;
+			}
 			
 			reportSend = true;
 			long end = System.currentTimeMillis();
@@ -734,9 +746,12 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 				endReport.cancel();
 				endReport = null;				
 			}
+			
+			ServerTools.endRequest();		
 		}
 		
-		public void processResult(ImportResult result) throws Exception {							
+		public void processResult(ImportResult result) throws Exception {	
+			    AccessLog.logStart("jobs", "received auto import result (old)");
 				if (result.exitCode == 0) numberSuccess++; else {
 					numberFailure++;
 					String msg = (result.getMessage() != null && result.getMessage().length()<1024) ? result.getMessage() : "error";
@@ -748,7 +763,8 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 				else importTick();
 		}
 		
-		public void processResultNew(MessageResponse result) throws Exception {							
+		public void processResultNew(MessageResponse result) throws Exception {
+			AccessLog.logStart("jobs", "received auto import result");
 			if (result.getErrorcode() == 0) numberSuccess++; else {
 				numberFailure++;
 				String msg = (result.getResponse() != null && result.getResponse().length()<1024) ? result.getResponse() : "error (new)";

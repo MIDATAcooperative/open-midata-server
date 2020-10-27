@@ -79,6 +79,8 @@ import utils.sync.Instances;
  */
 public class SubscriptionProcessor extends AbstractActor {
 
+	private Object object;
+	private Object object2;
 	public final static String TRIGGER = "EVENT";
 	@Override
 	public Receive createReceive() {
@@ -90,6 +92,7 @@ public class SubscriptionProcessor extends AbstractActor {
 	
 	void processSubscription(SubscriptionTriggered triggered) {
 		try {		
+			AccessLog.logStart("jobs", triggered.toString());
 			List<SubscriptionData> allMatching = null;
 		
 			allMatching = SubscriptionData.getByOwnerAndFormat(triggered.affected, triggered.type, SubscriptionData.ALL);
@@ -97,7 +100,7 @@ public class SubscriptionProcessor extends AbstractActor {
 			boolean anyAnswered = false;
 			
 			for (SubscriptionData subscription : allMatching) {	
-				System.out.println("ok:"+subscription.active+" "+subscription.content+" "+triggered.getEventCode());
+				AccessLog.log("ok:"+subscription.active+" "+subscription.content+" "+triggered.getEventCode());
 				boolean answered = false;
 				if (subscription.active && (subscription.content == null || subscription.content.equals("MessageHeader") || subscription.content.equals(triggered.getEventCode())) && checkNotExpired(subscription)) {
 					if (triggered.getType().equals("fhir/MessageHeader") && (!triggered.getApp().equals(subscription.app))) continue;
@@ -149,7 +152,9 @@ public class SubscriptionProcessor extends AbstractActor {
 			ErrorReporter.report("Subscriptions", null, e);
 			getSender().tell(new MessageResponse("Exception: "+e.toString(),-1, null), getSelf());
 			
-		}		
+		} finally {
+			ServerTools.endRequest();
+		}
 	}
 	
 	boolean checkNotExpired(SubscriptionData data) throws AppException {
@@ -169,10 +174,10 @@ public class SubscriptionProcessor extends AbstractActor {
 		   int p = str.indexOf(':');
 		   if (p > 0) request.addHeader(str.substring(0, p).trim(), str.substring(p+1));
 	   }
-	   System.out.println("CALLING REST HOOK!");
+	   AccessLog.log("Calling Rest Hook");
 	   CompletionStage<WSResponse> response = request.execute("POST");
 	   response.whenComplete((out, exception) -> {
-		   //System.out.println("COMPLETE REST HOOK");
+		   
 		   String error = null;
 		   if (out != null && out.getStatus() >= 400) {
 			   error = "status "+out.getStatus();
@@ -181,13 +186,15 @@ public class SubscriptionProcessor extends AbstractActor {
 			   if (exception instanceof CompletionException) exception = exception.getCause();
 			   error = exception.toString();
 		   }
-		   //System.out.println("A");
+		   
 		   if (error != null) {
 			   try {
 				   SubscriptionData.setError(subscription, new Date().toString()+": "+error);
 			   } catch (Exception e) {
-				   System.out.println("ERROR");
+				   AccessLog.logException("Error during Subscription.setError", e);				   
 				   ErrorReporter.report("SubscriptionManager", null, e);
+			   } finally {
+				   ServerTools.endRequest();
 			   }
 		   }		   
 	   });
@@ -195,7 +202,7 @@ public class SubscriptionProcessor extends AbstractActor {
 	
 	void processEmail(SubscriptionData subscription, SubscriptionTriggered triggered, SubscriptionChannelComponent channel) throws AppException {
 		Map<String,String> replacements = new HashMap<String, String>();
-		System.out.println("process email type="+triggered.getType()+"  "+triggered.getEventCode());
+		AccessLog.log("process email type="+triggered.getType()+"  "+triggered.getEventCode());
 		if (triggered.getType().equals("fhir/MessageHeader")) {
 		  Messager.sendMessage(subscription.app, MessageReason.PROCESS_MESSAGE, triggered.getEventCode(), Collections.singleton(subscription.owner), null, replacements);			
 		} else {
@@ -206,7 +213,7 @@ public class SubscriptionProcessor extends AbstractActor {
 	
 	void processSMS(SubscriptionData subscription, SubscriptionTriggered triggered, SubscriptionChannelComponent channel) throws AppException {
 		Map<String,String> replacements = new HashMap<String, String>();
-		System.out.println("process sms type="+triggered.getType()+"  "+triggered.getEventCode());
+		AccessLog.log("process sms type="+triggered.getType()+"  "+triggered.getEventCode());
 		if (triggered.getType().equals("fhir/MessageHeader")) {
 		  Messager.sendMessage(subscription.app, MessageReason.PROCESS_MESSAGE, triggered.getEventCode(), Collections.singleton(subscription.owner), null, replacements, MessageChannel.SMS);			
 		} else {
@@ -216,8 +223,8 @@ public class SubscriptionProcessor extends AbstractActor {
 	}
 	
 	boolean processApplication(SubscriptionData subscription, SubscriptionTriggered triggered, SubscriptionChannelComponent channel) throws AppException {
-		System.out.println("prcApp app="+subscription.app);
-		
+		AccessLog.log("prcApp app="+subscription.app);
+		try {
 		Plugin plugin = Plugin.getById(subscription.app);
 		if (plugin == null) {
 			subscription.disable();
@@ -303,15 +310,16 @@ public class SubscriptionProcessor extends AbstractActor {
 			} catch (APSNotExistingException e) {
 				subscription.disable();
 				sender.tell(new MessageResponse("Space no longer existing - disabled",-1, plugin.filename), getSelf());
-			} finally {
-				ServerTools.endRequest();
-			}
+			} 
 		} else {
 			//AccessLog.log("BPART HANDLE="+handle);
 			tk = new SpaceToken(handle, subscription.instance, subscription.owner, user.getRole(), null, null, subscription.owner);
 			runProcess(getSender(), plugin, triggered, subscription, user, tk.encrypt(), endpoint);
 		}
 		return true;
+		} finally {
+			ServerTools.endRequest();
+		}
 	}	
 	
 	private void runProcess(ActorRef sender, Plugin plugin, SubscriptionTriggered triggered, SubscriptionData subscription, User user, String token, String endpoint) {
@@ -349,7 +357,7 @@ public class SubscriptionProcessor extends AbstractActor {
 		}				
 		//System.out.println("prcApp6");
 		
-		  System.out.println("Build process...");		  
+		  AccessLog.log("Build process...");		  
 		  Process p = new ProcessBuilder("/usr/bin/firejail","--quiet","--whitelist="+visDir,nodepath, visPath, token, lang, "http://localhost:9001", subscription.owner.toString(), id).redirectError(Redirect.INHERIT).start();
 		  //System.out.println("Output...");
 		  PrintWriter out = new PrintWriter(new OutputStreamWriter(p.getOutputStream()));		  
@@ -362,8 +370,8 @@ public class SubscriptionProcessor extends AbstractActor {
 		  p.waitFor();
 		  //System.out.println("Wait for finished...");
 		  result.join();
-		  System.out.println("Wait for input...");
-		  System.out.println(result.getResult());
+		  AccessLog.log("Wait for input...");
+		  AccessLog.log(result.getResult());
 		  String r = result.getResult();
 		  
 		  Stats.finishRequest(TRIGGER, triggered.getDescription(), null, ""+p.exitValue(), Collections.emptySet());
@@ -374,13 +382,14 @@ public class SubscriptionProcessor extends AbstractActor {
 			 sender.tell(new MessageResponse(null, p.exitValue(), plugin.filename), getSelf());
 		  } 
 		  		    
-		  System.out.println("Response sended");		 		  
+		  AccessLog.log("Response sended");		 		  
 		} catch (Exception e) {			
 			sender.tell(new MessageResponse("Failed: "+e.toString(),-1, plugin.filename), getSelf());	
 		} 				
 	}
 	
 	void answerDebugCall(RecheckMessage msg) {
+		AccessLog.logStart("jobs", "debug recheck");
 		try {
 			TestPluginCall call = TestPluginCall.getById(msg.id);
 			if (call != null) {
@@ -397,6 +406,9 @@ public class SubscriptionProcessor extends AbstractActor {
 				}
 			}
 		} catch (Exception e) {}
+		finally {
+			ServerTools.endRequest();
+		}
 	}
 }
 

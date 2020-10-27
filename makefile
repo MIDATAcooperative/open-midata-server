@@ -437,6 +437,8 @@ conf/recoverykeys.json:
 	sudo mkdir -p /var/log/midata
 	sudo chown $$USER:$$GROUP /var/log/midata
 	touch /var/log/midata/application.log
+	touch /var/log/midata/index.log
+	touch /var/log/midata/jobs.log
 
 clear-secrets:
 	@echo "Removing decrypted config files..."

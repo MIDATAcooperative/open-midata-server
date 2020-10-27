@@ -26,6 +26,7 @@ import play.libs.Json;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
+import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.ServerTools;
 import utils.audit.AuditManager;
@@ -55,6 +56,7 @@ public class MobileCallAction extends Action<MobileCall> {
     	  ctx.response().setHeader("Pragma", "no-cache");
     	  ctx.response().setHeader("Cache-Control", "no-cache, no-store");
     	  try {
+    		  AccessLog.logStart("api", "(Mobile) ["+ctx.request().method()+"] "+ctx.request().path());
               return delegate.call(ctx);
       	  } catch (RuntimeException ex) {
       		  if (ex.getCause() != null) throw (Exception) ex.getCause(); else throw ex;
