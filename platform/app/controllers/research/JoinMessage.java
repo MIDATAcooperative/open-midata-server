@@ -43,5 +43,9 @@ public class JoinMessage {
 		return study;
 	}
 	
+	public String toString() {
+		return "join user="+user+" app="+app+" project="+study;
+	}
+	
 	
 }

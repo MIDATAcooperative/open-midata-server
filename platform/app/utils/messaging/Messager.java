@@ -202,6 +202,7 @@ class MailSender extends AbstractActor {
 		
 	public void receiveMessage(Message msg) throws Exception {
 		try {		
+		    AccessLog.logStart("jobs", "send email");
 			if (!InstanceConfig.getInstance().getInstanceType().disableMessaging()) {			  
 			  MailUtils.sendTextMail(MailSenderType.USER, msg.getReceiverEmail(), msg.getReceiverName(), msg.getSubject(), msg.getText());
 			}			
@@ -228,7 +229,8 @@ class SMSSender extends AbstractActor {
 	}
 		
 	public void sendSMS(SMS msg) throws Exception {
-		try {		
+		try {	
+			AccessLog.logStart("jobs", "send SMS");
 			if (!InstanceConfig.getInstance().getInstanceType().disableMessaging()) {			  
 			   SMSUtils.sendSMS(msg.getPhone(), msg.getText());
 			}			

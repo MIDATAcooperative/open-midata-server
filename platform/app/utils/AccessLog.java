@@ -27,6 +27,7 @@ import java.util.Set;
 import models.MidataId;
 import models.enums.APSSecurityLevel;
 import play.Logger;
+import play.Logger.ALogger;
 import utils.exceptions.AuthException;
 
 /**
@@ -52,13 +53,16 @@ public class AccessLog {
 	
 	private static int LOGSIZELIMIT = 1024 * 100;
 	
+	private static final ALogger application = Logger.of("application");
+	private static final ALogger index = Logger.of("index");
+	private static final ALogger jobs = Logger.of("jobs");
+	
 	/**
 	 * add a line of text to the log
 	 * @param txt the line to be logged
 	 */
 	public static void log(String txt) {
-		String msg = "                                            ".substring(0,ident.get())+txt;
-		//if (logToFile)	Logger.debug(msg);
+		String msg = "                                            ".substring(0,ident.get())+txt;	
 		if (logForMail) msgs.get().println(msg);
 	}
 		
@@ -97,8 +101,7 @@ public class AccessLog {
 		   s.append(key);
 		   s.append(" ");
 	   }
-	   s.append(")");
-	   //String msg = "                                            ".substring(0,ident.get())+"Query:"+s.toString();	   
+	   s.append(")");	  	   
 	   log("Query:"+s.toString());
 	}
 	
@@ -106,8 +109,7 @@ public class AccessLog {
 	 * log an DB access
 	 * @param msg the message to be logged
 	 */
-	public static void logDB(String msg) {
-	   //String msg1 = "                                            ".substring(0,ident.get())+"DB:"+msg; 	   
+	public static void logDB(String msg) { 	   
 	   log("DB:"+msg);
 	}
 	
@@ -133,12 +135,12 @@ public class AccessLog {
 	 * start a new quest. Clears the currently stored information.
 	 */
 	public static void newRequest() {
-		if (logToFile) {
-		  String report = getReport();
-		  if (report.length()>0) Logger.debug(report);
-		}
-		ident.set(0);
 		LogContext context = msgs.get();
+		if (context != null && logToFile) {		  
+		  String report = context.toString();
+		  if (report.length()>0) context.context.debug(report);
+		}
+		ident.set(0);		
 		if (context != null) {
 			context.writer.close();
 			try {
@@ -151,6 +153,15 @@ public class AccessLog {
 			context.tail = null;
 		}
 		msgs.set(new LogContext());
+	}
+	
+	public static void logStart(String context, String operation) {
+		LogContext ctx = msgs.get();
+		if ("index".equals(context)) ctx.context = index;
+		else if ("jobs".equals(context)) ctx.context = jobs;
+		else ctx.context = application;
+		
+		ctx.println(operation);
 	}
 	
 	/**
@@ -203,7 +214,7 @@ public class AccessLog {
 			msgs.get().writer.println(msg);
 			e.printStackTrace(msgs.get().writer);
 		}
-		if (logToFile) Logger.error(msg, e);
+		if (logToFile) msgs.get().context.error(msg, e);
 	}
 	
     /**
@@ -221,7 +232,7 @@ public class AccessLog {
 	public static void decryptFailure(AuthException e) {		
 		 log("APS Access failure");
 		 if (logForMail) e.printStackTrace(msgs.get().writer);
-		 if (logToFile) Logger.error("", e);
+		 if (logToFile) msgs.get().context.error("", e);
 	}
 	
 	private static class LogContext {
@@ -230,6 +241,7 @@ public class AccessLog {
 		StringWriter tail;
 		int len = 0;
 		int cleared = 0;
+		ALogger context = jobs;
 		
 		LogContext() {
 			head = new StringWriter();		

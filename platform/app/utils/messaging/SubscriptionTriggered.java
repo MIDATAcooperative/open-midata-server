@@ -91,5 +91,9 @@ public class SubscriptionTriggered {
 		if (eventCode != null) return type+" ["+eventCode+"]";
 		return type;
 	}
+	
+	public String toString() {
+		return "trigger user="+affected+" type="+type;
+	}
 			
 }

@@ -21,13 +21,17 @@ package actions;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
+import org.springframework.context.annotation.ConditionContext;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import akka.actor.ActorSystem;
 import play.libs.Json;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
+import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.ServerTools;
@@ -60,6 +64,7 @@ public class APICallAction extends Action<APICall> {
     	  ctx.response().setHeader("Pragma", "no-cache");
     	  ctx.response().setHeader("Cache-Control", "no-cache, no-store");
     	  try {
+    		AccessLog.logStart("api", "(Portal) ["+ctx.request().method()+"] "+ctx.request().path());    	
             return delegate.call(ctx);
     	  } catch (RuntimeException ex) {
     		  if (ex.getCause() != null) throw (Exception) ex.getCause(); else throw ex;

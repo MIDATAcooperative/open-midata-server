@@ -121,7 +121,7 @@ slow-work-dispatcher {
   type = Dispatcher
   executor = "thread-pool-executor"
   thread-pool-executor {
-    fixed-pool-size = 32
+    fixed-pool-size = 4
   }
   throughput = 1
 }
@@ -130,7 +130,7 @@ medium-work-dispatcher {
   type = Dispatcher
   executor = "thread-pool-executor"
   thread-pool-executor {
-    fixed-pool-size = 32
+    fixed-pool-size = 6
   }
   throughput = 1
 }
@@ -147,21 +147,25 @@ quick-work-dispatcher {
   throughput = 10
 }
 
+akka {   
+  actor {
+                
+      default-dispatcher = {
+         type = Dispatcher
+         executor = "thread-pool-executor"
+         thread-pool-executor {
+            fixed-pool-size = 8
+         }
+         throughput = 1
+      }    
+   }
+}
 
 play {
    
   akka {
     event-handlers = ["akka.event.slf4j.Slf4jEventHandler"]
-    loglevel = WARNING
-    actor {
-                
-      default-dispatcher = {
-        fork-join-executor {
-          parallelism-min = 300
-          parallelism-max = 300
-        }
-      }
-    }
+    loglevel = WARNING   
   }
     
 }

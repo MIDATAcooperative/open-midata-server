@@ -90,8 +90,8 @@ public class IndexWorker extends AbstractActor {
 		
 	public void indexUpdate(IndexUpdateMsg message) throws Exception {
 		try {
-			AccessLog.logBegin("START INDEX UPDATE:");
-			AccessLog.log("in:"+message.toString());
+			AccessLog.logStart("index", message.toString());
+			AccessLog.logBegin("START INDEX UPDATE:");			
 			
 				this.handle = ((IndexMsg) message).getHandle();
 			
@@ -126,8 +126,8 @@ public class IndexWorker extends AbstractActor {
 		
 	public void indexRemove(IndexRemoveMsg message) throws Exception {
 		try {
-			AccessLog.logBegin("START INDEX UPDATE:");
-			AccessLog.log("in:"+message.toString());
+			AccessLog.logStart("index", message.toString());
+			AccessLog.logBegin("START INDEX UPDATE:");			
 			
 				this.handle = ((IndexMsg) message).getHandle();
 			

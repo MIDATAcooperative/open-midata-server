@@ -134,8 +134,9 @@ class UsageStatsActor extends AbstractActor {
 		flush();
 	}
 
-	public void flush() {
+	public void flush() {		
 		Collection<UsageStats> toWrite = cache.values();
+		if (!toWrite.isEmpty()) AccessLog.logStart("jobs", "flush statistics");
 		cache = new HashMap<String, UsageStats>();
 		modcount = 0;
 		for (UsageStats stat : toWrite) {

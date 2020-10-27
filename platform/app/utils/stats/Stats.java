@@ -32,6 +32,7 @@ import akka.actor.Props;
 import models.MidataId;
 import models.stats.PluginDevStats;
 import play.mvc.Http.Request;
+import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.ServerTools;
@@ -184,7 +185,7 @@ class StatsRecorder extends AbstractActor {
 		
 	public void updateStats(StatsMessage msg) throws Exception {
 		try {
-					
+			AccessLog.logStart("jobs", "update stats");		
 			PluginDevStats stats = PluginDevStats.getByRequest(MidataId.from(msg.plugin), msg.action, msg.params);
 			if (stats == null) {
 			  stats = new PluginDevStats();
