@@ -67,13 +67,12 @@ Starting the instance in development mode:
 Open two terminals.
 Terminal 1:
 ```
-cd platform-private
 make update
 ```
 
 Terminal 2: (after Terminal 1 is ready)
 ```
-cd open-platform/portal
+cd portal
 npm run dev:server
 ```
 
