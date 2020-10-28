@@ -4,8 +4,11 @@ Open MIDATA Platform
 Manage, understand, and leverage your health data.
 
 This repository contains the Open MIDATA Platform application server.
+
 The instructions provided are for setting up a development instance.
-If you want to use the server in production please provide a secure environment and setup for operating the platform.
+
+If you want to use the server in production please provide a secure environment 
+and setup for operating the platform. 
 
 Installation (localhost)
 ===========================
@@ -55,6 +58,13 @@ Folder structure
 ----------------
 
 - conf: Config files used by the platform.
+- config: Config files for external components
 - logs (created by script): Logs of all products except web application (whose log is in platform -> logs).
 - platform: Code for the open MIDATA platform.
+- portal: Code for the portal of the open MIDATA platform
 - json: JSON data and scripts for the database.
+- nginx: Templates for nginx configuration
+- apps: some additional tools for the platform
+
+- switches: Used by build process
+- tasks: Used by build process
