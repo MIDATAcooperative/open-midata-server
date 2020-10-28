@@ -51,6 +51,7 @@ install: tasks/install-packages tasks/check-plugins tasks/config-firejail tasks/
 
 .PHONY: config
 config:
+	cp -n conf/setup.conf.template conf/setup.conf
 	nano conf/setup.conf
 	nano conf/pathes.conf
 	touch tasks/check-config
