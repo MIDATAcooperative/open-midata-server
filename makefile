@@ -22,7 +22,8 @@ info:
 	$(info -----------------------------------)
 	$(info Welcome to the Open MIDATA Platform)
 	$(info -----------------------------------)
-	$(info   )	
+	$(info   )
+	$(info config : Configure a localhost instance (run pre installation))	
 	$(info install : Install a localhost instance)
 	$(info   )
 	$(info configure-connection : Reconfigure database connection)
@@ -43,11 +44,17 @@ install-from-servertools: lock tasks/install-packages tasks/config-firejail task
 	touch switches/use-hotdeploy
 	touch tasks/check-config	
 
-install: tasks/install-packages tasks/config-firejail tasks/install-node tasks/bugfixes tasks/prepare-local tasks/check-config $(CERTIFICATE_DIR)/selfsign.crt $(CERTIFICATE_DIR)/dhparams.pem $(CERTIFICATE_DIR)/clientca.pem tasks/install-localmongo platform/conf/secret.conf.gz.nc tasks/precompile 
+install: tasks/install-packages tasks/check-plugins tasks/config-firejail tasks/install-node tasks/bugfixes tasks/prepare-local tasks/check-config $(CERTIFICATE_DIR)/selfsign.crt $(CERTIFICATE_DIR)/dhparams.pem $(CERTIFICATE_DIR)/clientca.pem tasks/install-localmongo platform/conf/secret.conf.gz.nc tasks/precompile 
 	touch switches/local-mongo
 	$(info Please run "make update" to build)
 	touch switches/local-mongo
 
+.PHONY: config
+config:
+	nano conf/setup.conf
+	nano conf/pathes.conf
+	touch tasks/check-config
+	
 .PHONY: pull
 pull:
 	git pull
@@ -108,6 +115,17 @@ $(CERTIFICATE_DIR)/dhparams.pem:
 	$(info ------------------------------)
 	mkdir -p $(CERTIFICATE_DIR)
 	openssl dhparam -out $(CERTIFICATE_DIR)/dhparams.pem 2048	
+
+tasks/check-plugins: $(PLUGINS_DIR)/plugins $(PLUGINS_DIR)/plugin_active visualizations
+
+$(PLUGINS_DIR)/plugins:
+	mkdir -p $(PLUGINS_DIR)/plugins
+
+$(PLUGINS_DIR)/plugin_active:
+	mkdir -p $(PLUGINS_DIR)/plugin_active
+
+visualizations:
+	ln -s $(PLUGINS_DIR)/plugins visualizations 		
 
 tasks/prepare-local:
 	touch switches/use-run
