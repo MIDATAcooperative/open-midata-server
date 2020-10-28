@@ -1,7 +1,6 @@
 {
 
     "member_login" : {
-        "teaser" : "Meine Daten - Unsere Gesundheit!",
         "register_now" : "Jetzt registrieren",
         "sign_in" : "Anmeldung"
     },
@@ -20,13 +19,25 @@
         "menu_me" : "Dashboard",
         "menu_me_text" : "Ihr persönliches Dashboard, wo Sie Ihre Favoriten platzieren können.",
         "menu_overview" : "Übersicht",
+
+        // TODO CHANGED
+        // OLD: An overview over all functions provided by the MIDATA platform.
+        // NEW: An overview over all functions provided by the platform.
         "menu_overview_text" : "Eine Übersicht über alle Funktionen, die die MIDATA-Plattform anbietet.",
         "menu_config" : "Konfiguration",
         "menu_config_text" : "Konfigurieren Sie Ihr Dashboard und die Datenimports.",
         "menu_research" : "News",
+
+        // TODO CHANGED
+        // OLD: News and announcements about MIDATA, the platform and research projects
+        // NEW: News and announcements about the platform and research projects
         "menu_research_text" : "Neuigkeiten und Ankündigungen über MIDATA, die Plattform und Forschungsprojekte",
         "menu_consents" : "Teilen",
         "menu_consents_text" : "Verwaltung der mit anderen Benutzern geteilten Daten.",
+
+        // TODO CHANGED
+        // OLD: Some ideas to start with MIDATA:
+        // NEW: Some ideas to start:
         "starts" : "Ein paar Ideen zum Starten mit MIDATA:",
         "answer_questions" : "Zum Starten empfehlen wir Ihnen einige Fragen zu beantworten. Ihr Konto wird an Hand Ihrer Antworten vorkonfiguriert.",
         "answered_questions" : "Danke, dass Sie die Konfigurationsfragen beantwortet haben! Sie können nun Ihr Dashboard betrachten oder die Konfiguration ggf. nochmals durchführen.",
@@ -61,6 +72,10 @@
 
     "member_othercircles" : {
         "number_available" : "Verfügbare Kreise:",
+
+        // TODO CHANGED
+        // OLD: No MIDATA members share data with you.
+        // NEW: No account holders share data with you.
         "empty" : "Kein MIDATA-Mitglied teilt Daten mit Ihnen."
     },
 

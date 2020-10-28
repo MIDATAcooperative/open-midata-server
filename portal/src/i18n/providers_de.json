@@ -18,6 +18,10 @@
         "patients" : "Patienten",
         "research" : "Forschung",
         "workspace" : "Workspace",
+
+        // TODO CHANGED
+        // OLD: MIDATA Store
+        // NEW: Store
         "market" : "MIDATA Store",
         "org" : "Unternehmen",
         "organization" : "Organisation",
@@ -31,6 +35,10 @@
         "url" : "Homepage URL",
         "members" : "Alle Mitglieder Ihrer Organisation",
         "addprovider" : "Neues Mitglied registrieren",
+
+        // TODO CHANGED
+        // OLD: You must be master user to update your organization or register new users for the organization. Please contact the MIDATA support if you think you should have master user permissions.
+        // NEW: You must be master user to update your organization or register new users for the organization. Please contact @SUPPORT if you think you should have master user permissions.
         "master_user" : "Sie müssen Master-Benutzer sein, um Ihre Organisation zu aktualisieren oder neue Benutzer für die Organisation zu registrieren. Bitte wenden Sie sich an den MIDATA-Support, wenn Sie der Meinung sind, dass Sie über Master-Benutzerberechtigungen verfügen sollten."
     },
 
@@ -97,6 +105,10 @@
     },
 
     "help_welcome" : {
+
+        // TODO CHANGED
+        // OLD: Some ideas to start with MIDATA:
+        // NEW: Some ideas to start:
         "starts" : "Einige Ideen, um mit MIDATA zu beginnen:"
     }
 }

@@ -1,7 +1,6 @@
 {
 
     "member_login" : {
-        "teaser" : "I miei dati - La nostra salute e sanità",
         "register_now" : "Iscriviti ora",
         "sign_in" : "Accesso"
     },
@@ -20,13 +19,25 @@
         "menu_me" : "Pannello",
         "menu_me_text" : "Il proprio pannello di controllo personale, in cui è possibile inserire tutte le funzionalità più utili.",
         "menu_overview" : "Panoramica",
+
+        // TODO CHANGED
+        // OLD: An overview over all functions provided by the MIDATA platform.
+        // NEW: An overview over all functions provided by the platform.
         "menu_overview_text" : "Una panoramica di tutte le funzioni fornite dalla piattaforma MIDATA.",
         "menu_config" : "Config",
         "menu_config_text" : "Configurare il proprio pannello di controllo e l'importazione di dati.",
         "menu_research" : "Notizie",
+
+        // TODO CHANGED
+        // OLD: News and announcements about MIDATA, the platform and research projects
+        // NEW: News and announcements about the platform and research projects
         "menu_research_text" : "Notizie e annunci su MIDATA, la piattaforma e i progetti di ricerca",
         "menu_consents" : "Condivisione",
         "menu_consents_text" : "Gestire la condivisione dei dati con altri.",
+
+        // TODO CHANGED
+        // OLD: Some ideas to start with MIDATA:
+        // NEW: Some ideas to start:
         "starts" : "Alcune idee per iniziare con MIDATA:",
         "answer_questions" : "Per iniziare ti consigliamo di rispondere ad alcune domande. Preconfigureremo il tuo account sulla base delle tue risposte.",
         "answered_questions" : "Grazie per avere risposto alle domande sulla configurazione! Visita il tuo pannello di controllo ora oppure modifica le risposte, se necessario.",
@@ -61,6 +72,10 @@
 
     "member_othercircles" : {
         "number_available" : "Cerchie disponibili:",
+
+        // TODO CHANGED
+        // OLD: No MIDATA members share data with you.
+        // NEW: No account holders share data with you.
         "empty" : "Nessun membro di MIDATA condivide dati con te."
     },
 

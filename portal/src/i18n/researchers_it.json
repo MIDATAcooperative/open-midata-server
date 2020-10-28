@@ -25,6 +25,10 @@
         "name" : "Nome",
         "description" : "Descrizione",
         "researchers" : "Tutti i ricercatori dell vostro istituto",
+
+        // TODO CHANGED
+        // OLD: You must be master user to update your organization or register new users for the organization. Please contact the MIDATA support if you think you should have master user permissions.
+        // NEW: You must be master user to update your organization or register new users for the organization. Please contact @SUPPORT if you think you should have master user permissions.
         "master_user" : "Devi essere un utente master per aggiornare la propria organizzazione o iscrivere nuovi utenti per l'organizzazione. Si prega di contattare il supporto MIDATA se si pensa che si dovrebbero avere le autorizzazioni di utente master."
     },
 
@@ -66,6 +70,10 @@
         "empty" : "Nessuna applicazione è collegata al progetto",
         "aggregator_apps" : "Aggiungiate un'applicazione di ricerca da utilizzare con il VOSTRO account",
         "datalink" : "Aggregatori, applicazioni di analisi e interpretazione",
+
+        // TODO CHANGED
+        // OLD: After the research project has been validated, you can link applications like plugins and external data processing services to it. These applications must connect to MIDATA using the credentials of one of the members of the research team with sufficient rights.
+        // NEW: After the research project has been validated, you can link applications like plugins and external data processing services to it. These applications must connect to the platform using the credentials of one of the members of the research team with sufficient rights.
         "description" : "Dopo che il progetto di ricerca è stato convalidato, è possibile collegare ad esso applicazioni come plugin e servizi esterni di elaborazione dati. Queste applicazioni devono connettersi a MIDATA utilizzando le credenziali di uno dei membri del team di ricerca con sufficienti diritti.",
         "select_group_btn" : "Seleziona gruppo",
         "allgroups" : "<Tutti i gruppi>",
@@ -135,8 +143,16 @@
         "not_anonymous2" : ", richiede al membro di condividere il nome completo, la data di nascita e le informazioni di contatto (indirizzo, telefono, e-mail)",
         "assistance" : "Assistenza",
         "no_assistance1" : "Nessuno",
+
+        // TODO CHANGED
+        // OLD:  - the MIDATA member participates alone.
+        // NEW:  - the account holder participates alone.
         "no_assistance2" : " - il membro MIDATA partecipa in modo autonomo.",
         "assistance1" : "Professionista sanitario",
+
+        // TODO CHANGED
+        // OLD:  - the MIDATA member needs assistance of a health professional.
+        // NEW:  - the account holder needs assistance of a health professional.
         "assistance2" : " - il membro MIDATA necessita di assistenza da parte di un professionista sanitario.",
         "groups" : "Gruppi di partecipanti",
         "groups_empty" : "Non è ancora stato definito alcun gruppo di partecipanti.",
@@ -178,6 +194,10 @@
         "lastdone" : "Ultima fase su cui si è lavorato",
         "nextstep" : "Prossima fase da eseguire",
         "confirm" : {
+
+            // TODO CHANGED
+            // OLD: Setup cannot be changed anymore. Validation process by MIDATA will be started.
+            // NEW: Setup cannot be changed anymore. Validation process will be started.
             "validation" : "La configurazione non può più essere modificata. Verrà avviato il processo di convalida da parte di MIDATA.",
             "end_participant_search" : "Nessun altro utente potrà più partecipare.",
             "finish_execution" : "Tutti i dati del progetto saranno congelati in questo momento.",
@@ -244,7 +264,14 @@
         "join_methods" : "Procedure di partecipazione ammesse",
         "queryeditor_btn" : "Modifica",
         "terms_of_use" : "Condizioni generali di contratto",
+
+        // TODO CHANGED
+        // OLD: If the projects General Terms and Conditions have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the ID you need to enter here.
+        // NEW: If the projects General Terms and Conditions have to be read and accepted by the user, please send the text to a platform administrator. We will upload the text in the correct format and provide you with the ID you need to enter here.
         "terms_of_use_hint" : "Se i Condizioni generali di contratto del progetto devono essere letti e accettati dall'utente, inviare il testo a MIDATA. Caricheremo il testo nel formato corretto e ti forniremo l'ID necessario da inserire qui.",
+
+        // TODO NEW: External Consent Observers
+        "consent_observers" : "External Consent Observers",
         "show_terms" : "Mostra Condizioni generali di contratto",
         "requirements" : "Requisiti"
     },
@@ -289,6 +316,10 @@
         "teamsetup" : "Configurazione del team ricercatore",
         "teamsetup_help" : "Se più persone sono coinvolte nello svolgimento del progetto, indicare tutte le persone coinvolte e il loro ruolo. Finché non si aggiungono altre persone, è possibile cambiare il proprio ruolo aggiungendo nuovamente sé stessi con un altro ruolo.",
         "information" : "Informazioni pubbliche sulla vostra ricerca",
+
+        // TODO CHANGED
+        // OLD: Public information will help MIDATA account holders to evaluate if your research is relevant for them.
+        // NEW: Public information will help account holders to evaluate if your research is relevant for them.
         "information_help" : "Le informazioni pubbliche aiuteranno i titolari di account MIDATA a valutare se la vostra ricerca è rilevante per loro.",
         "groups" : "Gruppi di partecipanti definiti",
         "groups_help" : "Il vostro progetto può avere uno o più gruppi di partecipanti. Definisci l'elenco dei gruppi di partecipanti.",
@@ -297,16 +328,36 @@
         "dates" : "Date di inizio e fine impostate",
         "dates_help" : "Le date di inizio e fine saranno mostrate ai partecipanti.  Nessun dato aggiuntivo confluirà nel progetto dal momento in cui i dati vengono congelati.",
         "terms" : "Condizioni generali di contratto forniti",
+
+        // TODO CHANGED
+        // OLD: If the projects General Terms and Conditions have to be confirmed online by the participants, please contact MIDATA.
+        // NEW: If the projects General Terms and Conditions have to be confirmed online by the participants, please contact a platform administrator.
         "terms_help" : "Se i Condizioni generali di contratto del progetto devono essere confermati online dai partecipanti, contattare MIDATA.",
         "validation" : "Convalida del progetto richiesta",
+
+        // TODO CHANGED
+        // OLD: Validation will be done by MIDATA after it has been requested. The project may no longer be changed after validation has been requested.
+        // NEW: Validation will be done by after it has been requested. The project may no longer be changed after validation has been requested.
         "validation_help" : "Una volta richiesta, la convalida sarà eseguita da MIDATA. Lo progetto non potrà più essere modificato dopo la richiesta di convalida.",
+
+        // TODO CHANGED
+        // OLD: Project validated by MIDATA
+        // NEW: Project has been validated
         "validation_passed" : "Progetto convalidato da MIDATA",
         "validation_passed_help" : "Attendere finché lo progetto non è stato convalidato.",
         "phase2" : "Fase 2: preparazione",
         "phase2_help" : "Preparazione",
         "applications" : "Applicazione di ricerca aggiunta",
+
+        // TODO CHANGED
+        // OLD: You can link applications like plugins and external data processing services to your project. These may read the participants' data and/or share aggregated data back to the participants. These applications must connect to MIDATA using the credentials of one of the members of the research team with sufficient rights.
+        // NEW: You can link applications like plugins and external data processing services to your project. These may read the participants' data and/or share aggregated data back to the participants. These applications must connect to the platform using the credentials of one of the members of the research team with sufficient rights.
         "applications_help" : "Potete collegare al vostro progetto applicazioni come plugin e servizi esterni di elaborazione dati. Questi possono leggere i dati dei partecipanti e/o condividere dati aggregati con i partecipanti. Queste applicazioni devono connettersi a MIDATA utilizzando le credenziali di uno dei membri del team di ricerca con sufficienti diritti.",
         "applinked" : "L'applicazione è stata collegata al progetto",
+
+        // TODO CHANGED
+        // OLD: To link an application to your project, please send to MIDATA the code of your project and the name of the application you want to have linked.
+        // NEW: To link an application to your project, please send the code of your project and the name of the application you want to have linked to an administrator of the platform.
         "applinked_help" : "Per collegare un'applicazione al vostro progetto, inviare a MIDATA il codice del progetto e il nome dell'applicazione che si desidera collegare.",
         "partsearchstart" : "La ricerca dei partecipanti è iniziata",
         "partsearchstart_help" : "Fino a quando non inizia la ricerca del partecipante, non è possibile partecipare al progetto. Le applicazioni che richiedono la partecipazione al progetto non possono essere utilizzate.",
@@ -335,6 +386,10 @@
         "visibilities" : {
             "ALL" : "tutti",
             "PARTICIPANTS" : "tutti i partecipanti",
+
+            // TODO CHANGED
+            // OLD: only researchers and MIDATA
+            // NEW: only researchers and administrators
             "INTERNAL" : "solo ricercatori e MIDATA"
         },
         "showlanguages" : "Lingue da editare"

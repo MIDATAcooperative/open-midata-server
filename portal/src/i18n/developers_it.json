@@ -88,6 +88,10 @@
         "query_help" : "Definisce i tipi di dati ai quali l'applicazione può accedere.",
         "write_mode" : "Accesso in scrittura",
         "subscriptions_btn" : "Cambia abbonamenti (Subscriptions) predefiniti",
+
+        // TODO CHANGED
+        // OLD: Define triggers that cause an action on the MIDATA server
+        // NEW: Define triggers that cause an action on the @PLATFORM server
         "subscriptions_help" : "Definire i trigger che causano un'azione sul server MIDATA",
         "tokenExchangeParams" : "Parametri OAuth 2 per lo scambio di token",
         "testfromlocal_btn" : "Testa il tuo plugin da localhost",
@@ -96,13 +100,27 @@
         "serverimport_help" : "Se il proprio plugin offre l'importazione automatica, è possibile testare nel proprio computer locale lo script del plugin che è normalmente eseguito sul server.",
         "link_btn" : "Collegamenti con progetti di ricerca o parti esterne",
         "link_help" : "Le applicazioni possono suggerire o richiedere la partecipazione a un progetto di ricerca. I progetti di ricerca possono raccomandare l'uso di applicazioni. L'uso dell'applicazione può richiedere il consenso dell'utente agli professionisti sanitari o ai team per visualizzare i loro dati.",
+
+        // TODO NEW: Code Repository
+        "repository_btn" : "Code Repository",
+
+        // TODO NEW: Checkout the newest version of your code
+        "repository_help" : "Checkout the newest version of your code",
         "icon_btn" : "Icone e immagini dell'applicazione",
+
+        // TODO CHANGED
+        // OLD: Upload and manage the icons and images to be used with your application. Provide images for the login screen, the consent acceptation screen, the MIDATA Store, etc.
+        // NEW: Upload and manage the icons and images to be used with your application. Provide images for the login screen, the consent acceptation screen, the store, etc.
         "icon_help" : "Caricare e gestire le icone e le immagini da utilizzare con la tua applicazione. Fornire immagini per la schermata di login, la schermata di accettazione del consenso, il MIDATA Store, ecc.",
         "messages_btn" : "Messaggi e-mail dell'applicazione",
         "messages_help" : "Inserisci i tuoi testi personali per l'e-mail da inviare ai nuovi account utente, in occasione del primo utilizzo dell'applicazione, per accettare consensi e altro ancora.",
         "stats_btn" : "Statistiche di errore e prestazioni",
         "stats_help" : "Visualizzare le statistiche e i suggerimenti per miglioramenti riguardanti le diverse tipologie di chiamate API che la propria applicazione invia al server.",
         "debug_btn" : "API Tester Sandbox",
+
+        // TODO CHANGED
+        // OLD: Login as application and test queries against the MIDATA backend.
+        // NEW: Login as application and test queries against the @PLATFORM backend.
         "debug_help" : "Accedere come interrogazioni di applicazione e test nei confronti del backend MIDATA.",
         "appreviews_btn" : "Recensioni",
         "appreviews_help" : "Recensioni condotte per questa applicazione",
@@ -110,6 +128,10 @@
         "applicence_help" : "L'utente richiede una licenza per utilizzare questa applicazione?",
         "linkedStudy" : "Progetto collegato con link all'applicazione (codice)",
         "mustParticipateInStudy" : "Richiesta la partecipazione al progetto di ricerca",
+
+        // TODO CHANGED
+        // OLD: Only a MIDATA administrator may change this section. Please request changes if required.
+        // NEW: Only an administrator may change this section. Please request changes if required.
         "admin_only" : "Solo un amministratore MIDATA può modificare questa sezione. Richiedere le modifiche se necessarie.",
         "terms_of_use" : "Condizioni generali di contratto",
         "show_terms" : "Mostra Condizioni generali di contratto",
@@ -127,6 +149,10 @@
         "info" : {
             "filename" : "Questo nome è utilizzato internamente per identificare la propria applicazione. Deve essere un identificatore valido (a-z, A-Z, 0-9, _).",
             "targetUserRole" : "La propria applicazione è destinata esclusivamente a un ruolo specifico? In caso contrario scegliere 'Qualsiasi ruolo'.",
+
+            // TODO CHANGED
+            // OLD: Choose 'Plugin' if your application will run on the MIDATA portal. Choose 'Application (Smartphone, Web)' for an external application. Choose 'Service' for a server-side only script. Choose 'OAuth 1' or 'OAuth 2' if you need to connect to an external server using OAuth 1 or OAuth 2.
+            // NEW: Choose 'Plugin' if your application will run on the @PLATFORM portal. Choose 'Application (Smartphone, Web)' for an external application. Choose 'Service' for a server-side only script. Choose 'OAuth 1' or 'OAuth 2' if you need to connect to an external server using OAuth 1 or OAuth 2.
             "type" : "Scegliere 'Plugin' se la propria applicazione sarà eseguita sul portale MIDATA. Scegliere 'Applicazione (Smartphone, Web)' per un'applicazione esterna. Scegliere 'Servizio' per uno script solo lato server. Scegliere 'OAuth 1' o 'OAuth 2' se è necessario collegarsi a un server esterno utilizzando OAuth 1 o OAuth 2.",
             "name" : "Il nome, della propria applicazione, che sarà presentato all'utente finale.",
             "description" : "La descrizione del proprio applicazione che sarà mostrata sul Marketplace.",
@@ -135,7 +161,14 @@
             "pseudonymize" : "Leggere i dati pseudonimizzati. Non aggiorna i dati dei partecipanti.",
             "resharesData" : "L'applicazione è autorizzata a ricondividere con terzi i dati a cui accede.",
             "allowsUserSearch" : "Gli utenti dell'applicazione sono autorizzati a cercare altri utenti della stessa applicazione.",
+
+            // TODO NEW: Does this service monitor user consents? Add 'Consents' to access filter in order to activate.
+            "consentObserving" : "Does this service monitor user consents? Add 'Consents' to access filter in order to activate.",
             "defaultSpaceName" : "Il titolo del riquadro del proprio plugin sul pannello di controllo.",
+
+            // TODO CHANGED
+            // OLD: Categories on MIDATA Store for which your plugin should be listed.
+            // NEW: Categories on store for which your plugin should be listed.
             "tags" : "Categorie su MIDATA Store per le quali il proprio plugin deve essere elencato.",
             "url" : "La pagina iniziale con l'URL dei propri plugin. Se si utilizza il modello di MIDATA è 'dist/index.html#!?authToken=:authToken''",
             "previewUrl" : "Sezione del pannello di controllo con l'URL dei propri plugin. Lasciare vuoto se non si include questo riquadro.",
@@ -143,8 +176,16 @@
             "redirectUri" : "È possibile specificare più URI possibili per il reindirizzamento separandoli con uno spazio.",
             "secret" : "La propria applicazione necessiterà di questo 'segreto' durante l'accesso. Scegliere un qualsiasi elemento desiderato.",
             "mustParticipateInStudy" : "Gli utenti devono partecipare al progetto di ricerca per utilizzare l'applicazione.",
+
+            // TODO CHANGED
+            // OLD: If filled out, this code must be entered by the user in order to sign up or log in the first time to MIDATA using the application. The code is not case sensitive.
+            // NEW: If filled out, this code must be entered by the user in order to sign up or log in the first time to the @PLATFORM using the application. The code is not case sensitive.
             "unlock_code" : "Se compilato, questo codice deve essere inserito dall'utente per registrarsi o accedere per la prima volta a MIDATA tramite l'applicazione. Il codice non è sensibile ai caratteri maiuscoli/minuscoli.",
             "send_reports" : "Notificare lo sviluppatore ({{utente}}}) via e-mail sulle cause di errore di questa applicazione.",
+
+            // TODO CHANGED
+            // OLD: Enter comma separated list of email addresses of other developers on MIDATA that develop this application.
+            // NEW: Enter comma separated list of email addresses of other developers on @PLATFORM that develop this application.
             "developerTeam" : "Inserire una lista separata da virgole di indirizzi e-mail di altri sviluppatori su MIDATA che sviluppano questa applicazione."
         },
         "status" : {
@@ -239,6 +280,10 @@
         "service_app" : "Servizio esterno",
         "identifier" : "Identificatore per questo link",
         "terms_of_use" : "Condizioni d'uso",
+
+        // TODO CHANGED
+        // OLD: If special terms of use have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the identifier you need to enter here.
+        // NEW: If special terms of use have to be read and accepted by the user, please send the text to @OPERATOR. We will upload the text in the correct format and provide you with the identifier you need to enter here.
         "terms_of_use_hint" : "Se l'utente deve leggere e accettare condizioni d'uso speciali, si prega di inviare il testo a MIDATA. Caricheremo il testo nel formato corretto e vi forniremo l'identificatore da inserire qui.",
         "show_terms" : "Vedi le condizioni d'uso",
         "types" : {
@@ -312,5 +357,71 @@
         "title" : "Licenza",
         "required" : "È richiesta una licenza?",
         "allowedEntities" : "Entità permesse"
+    },
+
+    "repository" : {
+
+        // TODO NEW: Code Repository
+        "title" : "Code Repository",
+
+        // TODO NEW: Repository URL
+        "repository_url" : "Repository URL",
+
+        // TODO NEW: Access Token
+        "repository_token" : "Access Token",
+
+        // TODO NEW: Last deployed at
+        "repository_date" : "Last deployed at",
+
+        // TODO NEW: Never
+        "never" : "Never",
+
+        // TODO NEW: Refresh
+        "refresh_btn" : "Refresh",
+
+        // TODO NEW: Checkout now
+        "submit_btn" : "Checkout now",
+
+        // TODO NEW: Deployment Status
+        "status" : "Deployment Status",
+
+        // TODO NEW: Repository needs to be provided
+        "phase_provided" : "Repository needs to be provided",
+
+        // TODO NEW: Deployment sceduled
+        "phase_sceduled" : "Deployment sceduled",
+
+        // TODO NEW: Check out
+        "phase_checkout" : "Check out",
+
+        // TODO NEW: Security Audit
+        "phase_audit" : "Security Audit",
+
+        // TODO NEW: Install packages
+        "phase_install" : "Install packages",
+
+        // TODO NEW: Build
+        "phase_build" : "Build",
+
+        // TODO NEW: Deployed
+        "phase_complete" : "Deployed",
+
+        // TODO NEW: Log
+        "log" : "Log",
+
+        // TODO NEW: Reporting Server
+        "server" : "Reporting Server",
+
+        // TODO NEW: Checkout from repository
+        "checkout" : "Checkout from repository",
+
+        // TODO NEW: Package installation
+        "install" : "Package installation",
+
+        // TODO NEW: Security Audit
+        "audit" : "Security Audit",
+
+        // TODO NEW: Build process
+        "build" : "Build process"
     }
 }

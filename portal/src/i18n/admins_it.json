@@ -112,6 +112,10 @@
         "plugin_developer" : "Sviluppatore",
         "plugin_type" : "Tipo",
         "plugin_role" : "Ruolo di destinazione",
+
+        // TODO CHANGED
+        // OLD: MIDATA Store
+        // NEW: Store
         "plugin_market" : "MIDATA Store",
         "plugin_stats" : "Statist.",
         "plugin_status" : "Stato",
@@ -123,10 +127,25 @@
         "definition" : "Definizione (JSON)"
     },
 
+    "admin_definestudy" : {
+
+        // TODO NEW: Import Project Definition
+        "title" : "Import Project Definition",
+
+        // TODO NEW: Definition (JSON)
+        "definition" : "Definition (JSON)",
+
+        // TODO NEW: New owner (Researcher Account)
+        "researcher" : "New owner (Researcher Account)"
+    },
+
     "admin_studies" : {
         "title" : "Progetti di ricerca",
         "criteria" : "Criteri di ricerca",
-        "empty" : "Non è stato trovato alcun progetto corrispondente."
+        "empty" : "Non è stato trovato alcun progetto corrispondente.",
+
+        // TODO NEW: Import Project Definition
+        "add_definition_btn" : "Import Project Definition"
     },
 
     "admin_terms" : {
@@ -162,6 +181,9 @@
         "endDate" : "Data di fine",
         "dataCreatedBefore" : "Data di congelamento dei dati",
 
+        // TODO NEW: Consent Observers
+        "consent_observers" : "Consent Observers",
+
         "infos" : "Informazioni pubbliche",
         "infos_part" : "Informazioni per i partecipanti",
         "infos_internal" : "Informazioni interne",
@@ -180,7 +202,10 @@
         "links" : "Applicazioni collegate",
         "end_validation_btn" : "Convalida completa",
         "back_to_draft_btn" : "Torna alla bozza",
-        "delete_study_btn" : "Elimina progetto"
+        "delete_study_btn" : "Elimina progetto",
+
+        // TODO NEW: Export
+        "export_btn" : "Export"
     },
 
     "admin_stats" : {
@@ -288,6 +313,9 @@
         "progressCount" : "# inviate",
         "studyId" : "Progetto di ricerca",
         "studyExclude" : "Escludere i partecipanti al progetto",
+
+        // TODO NEW: Application
+        "appId" : "Application",
         "lang" : "Lingua",
         "title" : "Titolo e-mail",
         "content" : "Contenuto e-mail",
