@@ -1,14 +1,27 @@
 Open MIDATA Platform
 ====================
 
-Manage, understand, and leverage your health data.
+The Open MIDATA platform was developed by ETH Zurich and Bern University of Applied Sciences BFH. 
+
+The platform allows citizens to collect their health data and to freely decide upon data use in 
+research and data projects.
 
 This repository contains the Open MIDATA Platform application server.
 
-The instructions provided are for setting up a development instance.
+Please refer to the instructions provided for setting up a development instance.
 
-If you want to use the server in production please provide a secure environment 
-and setup for operating the platform. 
+Disclaimer
+==========
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY 
+EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
+OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT 
+SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT 
+OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR 
+TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Installation (localhost)
 ===========================
