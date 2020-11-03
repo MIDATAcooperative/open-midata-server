@@ -24,7 +24,7 @@
         "role" : "Rôle",
         "resetpw" : "Nouveau mot de passe",
         "description" : "A l'aide de ces boutons, vous pouvez créer des utilisateurs additionnels afin de tester vos applications. Pour ces utilisateurs, les plugins sont exécutés localement (depuis 'localhost') et non pas sur le serveur.",
-        "register_member_btn" : "Créer un compte personnel",
+        "register_member_btn" : "Créer un titulaire de compte",
         "register_hp_btn" : "Créer un compte professionnel de la santé",
         "register_researcher_btn" : "Créer un compte chercheur"
     },
@@ -88,11 +88,7 @@
         "query_help" : "Définissez les types de données auxquelles votre application peut accéder.",
         "write_mode" : "Accès en écriture",
         "subscriptions_btn" : "Modifier les abonnements (Subscriptions) par défaut",
-
-        // TODO CHANGED
-        // OLD: Define triggers that cause an action on the MIDATA server
-        // NEW: Define triggers that cause an action on the @PLATFORM server
-        "subscriptions_help" : "Définir les triggers qui provoquent une action sur le serveur MIDATA",
+        "subscriptions_help" : "Définir les triggers qui provoquent une action sur le serveur @PLATFORM",
         "tokenExchangeParams" : "Paramètres OAuth 2 pour l'échange du token",
         "testfromlocal_btn" : "Testez votre plugin depuis localhost",
         "testfromlocal_help" : "Pendant le développement, vous pouvez tester le code du plugin stocké sur votre ordinateur local sur cette instance.",
@@ -100,39 +96,23 @@
         "serverimport_help" : "Si votre plugin offre l'importation automatique, vous pouvez tester le script de votre plugin, qui est normalement exécuté sur le serveur, sur votre ordinateur local.",
         "link_btn" : "Liens avec des projets de recherche ou des parties externes",
         "link_help" : "Les applications peuvent proposer ou nécessiter la participation à un projet de recherche. Les projets de recherche peuvent recommander l'utilisation d'applications. L'utilisation de l'application peut nécessiter le consentement de l'utilisateur à ce que des professionnels de la santé ou des teams consultent ses données.",
-
-        // TODO NEW: Code Repository
         "repository_btn" : "Code Repository",
-
-        // TODO NEW: Checkout the newest version of your code
-        "repository_help" : "Checkout the newest version of your code",
+        "repository_help" : "Checkout de la dernière version de votre code",
         "icon_btn" : "Icônes et images de l'application",
-
-        // TODO CHANGED
-        // OLD: Upload and manage the icons and images to be used with your application. Provide images for the login screen, the consent acceptation screen, the MIDATA Store, etc.
-        // NEW: Upload and manage the icons and images to be used with your application. Provide images for the login screen, the consent acceptation screen, the store, etc.
-        "icon_help" : "Téléchargez et gérez les icônes et les images à utiliser avec votre application. Fournissez des images pour l'écran de connexion, l'écran d'acceptation des consentements, le MIDATA Store, etc.",
+        "icon_help" : "Téléchargez et gérez les icônes et les images à utiliser avec votre application. Fournissez des images pour l'écran de connexion, l'écran d'acceptation des consentements, le Store, etc.",
         "messages_btn" : "Messages e-mail de l'application",
         "messages_help" : "Fournissez vos propres textes d'e-mails envoyés aux nouveaux comptes d'utilisateurs, dès la première utilisation de votre application, pour accepter les consentements et plus encore.",
         "stats_btn" : "Statistiques sur les erreurs et les performances",
         "stats_help" : "Consultez des statistiques et des conseils pour améliorer les différents types d'appels API envoyés par votre application au serveur.",
         "debug_btn" : "API Tester Sandbox",
-
-        // TODO CHANGED
-        // OLD: Login as application and test queries against the MIDATA backend.
-        // NEW: Login as application and test queries against the @PLATFORM backend.
-        "debug_help" : "Connectez-vous en tant qu'application et testez les requêtes contre le backend MIDATA",
+        "debug_help" : "Connectez-vous en tant qu'application et testez les requêtes contre le backend @PLATFORM",
         "appreviews_btn" : "Revues",
         "appreviews_help" : "Revues effectuées pour cette application",
         "applicence_btn" : "Licence",
         "applicence_help" : "L'utilisateur a-t-il besoin d'une licence pour utiliser cette application?",
         "linkedStudy" : "Projet lié à l'application (code)",
         "mustParticipateInStudy" : "Participation au projet de recherche requise",
-
-        // TODO CHANGED
-        // OLD: Only a MIDATA administrator may change this section. Please request changes if required.
-        // NEW: Only an administrator may change this section. Please request changes if required.
-        "admin_only" : "Seul un administrateur MIDATA peut modifier cette section. Veuillez faire une demande de changement si nécessaire.",
+        "admin_only" : "Seul un administrateur peut modifier cette section. Veuillez faire une demande de changement si nécessaire.",
         "terms_of_use" : "Conditions Générales",
         "show_terms" : "Afficher les Conditions Générales",
         "unlock_code" : "Code d'activation",
@@ -149,11 +129,7 @@
         "info" : {
             "filename" : "Ce nom est utilisé (en interne) pour identifier votre application. Il doit s'agir d'un identificateur valide (a-z, A-Z, 0-9, _).",
             "targetUserRole" : "Votre application est-elle destinée à un rôle spécifique? Sinon, veuillez choisir 'Tous les rôles'.",
-
-            // TODO CHANGED
-            // OLD: Choose 'Plugin' if your application will run on the MIDATA portal. Choose 'Application (Smartphone, Web)' for an external application. Choose 'Service' for a server-side only script. Choose 'OAuth 1' or 'OAuth 2' if you need to connect to an external server using OAuth 1 or OAuth 2.
-            // NEW: Choose 'Plugin' if your application will run on the @PLATFORM portal. Choose 'Application (Smartphone, Web)' for an external application. Choose 'Service' for a server-side only script. Choose 'OAuth 1' or 'OAuth 2' if you need to connect to an external server using OAuth 1 or OAuth 2.
-            "type" : "Choisissez 'Plugin' si votre application sera exécutée sur le portail MIDATA. Choisissez 'Application (Smartphone, Web)' pour une application externe. Choisissez 'Service' pour un script exécuté côté serveur uniquement. Choisissez 'OAuth 1' ou 'OAuth 2' si vous vous connectez à un serveur externe par OAuth 1 ou OAuth 2.",
+            "type" : "Choisissez 'Plugin' si votre application sera exécutée sur le portail @PLATFORM. Choisissez 'Application (Smartphone, Web)' pour une application externe. Choisissez 'Service' pour un script exécuté côté serveur uniquement. Choisissez 'OAuth 1' ou 'OAuth 2' si vous vous connectez à un serveur externe par OAuth 1 ou OAuth 2.",
             "name" : "Le nom de votre application tel qu'il est affiché pour les utilisateurs finaux.",
             "description" : "La description de votre application qui sera affichée sur la Marketplace.",
             "tokenExchangeParams" : "La valeur par défaut est client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri> mais certains services nécessitent également client_secret=<client_secret> ou pas de client_id",
@@ -161,32 +137,18 @@
             "pseudonymize" : "Lire les données pseudonymisées. Ne met pas à jour les enregistrements des participants.",
             "resharesData" : "L'application est autorisée à transmettre les données auxquelles elle a accès à des tierces parties.",
             "allowsUserSearch" : "Les utilisateurs de l'application sont autorisés à rechercher d'autres utilisateurs de la même application.",
-
-            // TODO NEW: Does this service monitor user consents? Add 'Consents' to access filter in order to activate.
-            "consentObserving" : "Does this service monitor user consents? Add 'Consents' to access filter in order to activate.",
+            "consentObserving" : "Ce service surveille-t-il les consentements des utilisateurs ? Ajoutez 'Consentements' à l'Access Filter afin de l'activer.",
             "defaultSpaceName" : "Titre de la tuile du plugin sur le tableau de bord.",
-
-            // TODO CHANGED
-            // OLD: Categories on MIDATA Store for which your plugin should be listed.
-            // NEW: Categories on store for which your plugin should be listed.
-            "tags" : "Catégories sous lesquelles le plugin sera listé dans le MIDATA Store.",
-            "url" : "URL de la page principale du plugin. Si vous utilisez le modèle MIDATA, c'est 'dist/index.html#!?authToken=:authToken''",
+            "tags" : "Catégories sous lesquelles le plugin sera listé dans le Store.",
+            "url" : "URL de la page principale du plugin. Si vous utilisez le modèle @PLATFORM, c'est 'dist/index.html#!?authToken=:authToken''",
             "previewUrl" : "URL de la tuile du tableau de bord du plugin. Laisser vide si une telle tuile n'est pas fournie.",
             "defaultSpaceContext" : "Choisissez 'Tableau de bord' pour le tableau de bord standard. Choisissez 'Configuration' pour un plugin d'importation.",
             "redirectUri" : "Vous pouvez spécifier plusieurs URIs de redirection possibles en séparant les URIs avec un espace.",
             "secret" : "Votre application aura besoin de ce 'secret' pour se connecter. Choisissez le librement.",
             "mustParticipateInStudy" : "Les utilisateurs doivent participer au projet de recherche afin de pouvoir utiliser l'application.",
-
-            // TODO CHANGED
-            // OLD: If filled out, this code must be entered by the user in order to sign up or log in the first time to MIDATA using the application. The code is not case sensitive.
-            // NEW: If filled out, this code must be entered by the user in order to sign up or log in the first time to the @PLATFORM using the application. The code is not case sensitive.
-            "unlock_code" : "Si renseigné, ce code doit être saisi par l'utilisateur lors de l'inscription ou lors de la première connexion à MIDATA par cette app. Le code n'est pas sensible à la casse.",
+            "unlock_code" : "Si renseigné, ce code doit être saisi par l'utilisateur lors de l'inscription ou lors de la première connexion à @PLATFORM par cette app. Le code n'est pas sensible à la casse.",
             "send_reports" : "Avertir le développeur ({{utilisateur}}) par e-mail des erreurs causées par cette application.",
-
-            // TODO CHANGED
-            // OLD: Enter comma separated list of email addresses of other developers on MIDATA that develop this application.
-            // NEW: Enter comma separated list of email addresses of other developers on @PLATFORM that develop this application.
-            "developerTeam" : "Entrez la liste, séparée par des virgules, des adresses e-mail d'autres développeurs sur MIDATA qui développent cette application."
+            "developerTeam" : "Entrez la liste, séparée par des virgules, des adresses e-mail d'autres développeurs sur @PLATFORM qui développent cette application."
         },
         "status" : {
             "title" : "État de l'application",
@@ -280,11 +242,7 @@
         "service_app" : "Service externe",
         "identifier" : "Identifiant pour ce lien",
         "terms_of_use" : "Conditions d'utilisation",
-
-        // TODO CHANGED
-        // OLD: If special terms of use have to be read and accepted by the user, please send the text to MIDATA. We will upload the text in the correct format and provide you with the identifier you need to enter here.
-        // NEW: If special terms of use have to be read and accepted by the user, please send the text to @OPERATOR. We will upload the text in the correct format and provide you with the identifier you need to enter here.
-        "terms_of_use_hint" : "Si des conditions d'utilisation particulières doivent être lues et acceptées par l'utilisateur, veuillez envoyer le texte à MIDATA. Nous téléchargerons le texte au bon format et vous fournirons l'identifiant que vous devez entrer ici.",
+        "terms_of_use_hint" : "Si des conditions d'utilisation particulières doivent être lues et acceptées par l'utilisateur, veuillez envoyer le texte à @OPERATOR. Nous téléchargerons le texte au bon format et vous fournirons l'identifiant que vous devez entrer ici.",
         "show_terms" : "Afficher les conditions d'utilisation",
         "types" : {
             "REQUIRE_P" : "Le consentement doit être accepté",
@@ -360,68 +318,26 @@
     },
 
     "repository" : {
-
-        // TODO NEW: Code Repository
         "title" : "Code Repository",
-
-        // TODO NEW: Repository URL
-        "repository_url" : "Repository URL",
-
-        // TODO NEW: Access Token
+        "repository_url" : "URL du repository",
         "repository_token" : "Access Token",
-
-        // TODO NEW: Last deployed at
-        "repository_date" : "Last deployed at",
-
-        // TODO NEW: Never
-        "never" : "Never",
-
-        // TODO NEW: Refresh
-        "refresh_btn" : "Refresh",
-
-        // TODO NEW: Checkout now
-        "submit_btn" : "Checkout now",
-
-        // TODO NEW: Deployment Status
-        "status" : "Deployment Status",
-
-        // TODO NEW: Repository needs to be provided
-        "phase_provided" : "Repository needs to be provided",
-
-        // TODO NEW: Deployment sceduled
-        "phase_sceduled" : "Deployment sceduled",
-
-        // TODO NEW: Check out
+        "repository_date" : "Dernier déploiement le",
+        "never" : "Jamais",
+        "refresh_btn" : "Actualiser",
+        "submit_btn" : "Checkout maintenant",
+        "status" : "État du déploiement",
+        "phase_provided" : "Le repository doit être indiqué",
+        "phase_sceduled" : "Déploiement programmé",
         "phase_checkout" : "Check out",
-
-        // TODO NEW: Security Audit
-        "phase_audit" : "Security Audit",
-
-        // TODO NEW: Install packages
-        "phase_install" : "Install packages",
-
-        // TODO NEW: Build
+        "phase_audit" : "Audit de sécurité",
+        "phase_install" : "Installer les packages",
         "phase_build" : "Build",
-
-        // TODO NEW: Deployed
-        "phase_complete" : "Deployed",
-
-        // TODO NEW: Log
+        "phase_complete" : "Déployé",
         "log" : "Log",
-
-        // TODO NEW: Reporting Server
-        "server" : "Reporting Server",
-
-        // TODO NEW: Checkout from repository
-        "checkout" : "Checkout from repository",
-
-        // TODO NEW: Package installation
-        "install" : "Package installation",
-
-        // TODO NEW: Security Audit
-        "audit" : "Security Audit",
-
-        // TODO NEW: Build process
-        "build" : "Build process"
+        "server" : "Serveur de reporting",
+        "checkout" : "Checkout à partir du repository",
+        "install" : "Installation des packages",
+        "audit" : "Audit de sécurité",
+        "build" : "Processus de build"
     }
 }

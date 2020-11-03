@@ -112,11 +112,7 @@
         "plugin_developer" : "Entwickler",
         "plugin_type" : "Typ",
         "plugin_role" : "Zielrolle",
-
-        // TODO CHANGED
-        // OLD: MIDATA Store
-        // NEW: Store
-        "plugin_market" : "MIDATA Store",
+        "plugin_market" : "Store",
         "plugin_stats" : "Statistiken",
         "plugin_status" : "Status",
         "add_definition_btn" : "Applikationsdefinition importieren"
@@ -128,24 +124,16 @@
     },
 
     "admin_definestudy" : {
-
-        // TODO NEW: Import Project Definition
-        "title" : "Import Project Definition",
-
-        // TODO NEW: Definition (JSON)
+        "title" : "Projektdefinition importieren",
         "definition" : "Definition (JSON)",
-
-        // TODO NEW: New owner (Researcher Account)
-        "researcher" : "New owner (Researcher Account)"
+        "researcher" : "Neuer Eigentümer (Forscherkonto)"
     },
 
     "admin_studies" : {
         "title" : "Forschungsprojekte",
         "criteria" : "Suchkriterien",
         "empty" : "Kein passendes Projekt gefunden.",
-
-        // TODO NEW: Import Project Definition
-        "add_definition_btn" : "Import Project Definition"
+        "add_definition_btn" : "Projektdefinition importieren"
     },
 
     "admin_terms" : {
@@ -180,10 +168,7 @@
         "startDate" : "Startdatum",
         "endDate" : "Enddatum",
         "dataCreatedBefore" : "Datenbestand eingefroren ab dem",
-
-        // TODO NEW: Consent Observers
-        "consent_observers" : "Consent Observers",
-
+        "consent_observers" : "Zustimmungs-Observers",
         "infos" : "Öffentliche Informationen",
         "infos_part" : "Informationen für die Teilnehmer",
         "infos_internal" : "Interne Informationen",
@@ -203,9 +188,7 @@
         "end_validation_btn" : "Validierung abschliessen",
         "back_to_draft_btn" : "Zurück zum Entwurf",
         "delete_study_btn" : "Projekt löschen",
-
-        // TODO NEW: Export
-        "export_btn" : "Export"
+        "export_btn" : "Exportieren"
     },
 
     "admin_stats" : {
@@ -313,9 +296,7 @@
         "progressCount" : "# versendet",
         "studyId" : "Forschungsprojekt",
         "studyExclude" : "Projektteilnehmer ausschliessen",
-
-        // TODO NEW: Application
-        "appId" : "Application",
+        "appId" : "Applikation",
         "lang" : "Sprache",
         "title" : "E-Mail Titel",
         "content" : "E-Mail Inhalt",

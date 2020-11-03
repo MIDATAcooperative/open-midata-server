@@ -19,26 +19,14 @@
         "menu_me" : "Tableau de bord",
         "menu_me_text" : "Votre tableau de bord personnel, où vous pouvez placer vos favoris.",
         "menu_overview" : "Vue d'ensemble",
-
-        // TODO CHANGED
-        // OLD: An overview over all functions provided by the MIDATA platform.
-        // NEW: An overview over all functions provided by the platform.
-        "menu_overview_text" : "Une vue d'ensemble de toutes les fonctionnalités proposées par la plateforme MIDATA.",
+        "menu_overview_text" : "Vue d'ensemble de toutes les fonctionnalités proposées par la plateforme.",
         "menu_config" : "Configuration",
         "menu_config_text" : "Configurez votre tableau de bord et l'importation de données.",
         "menu_research" : "News",
-
-        // TODO CHANGED
-        // OLD: News and announcements about MIDATA, the platform and research projects
-        // NEW: News and announcements about the platform and research projects
-        "menu_research_text" : "Nouveautés et announces à propos de MIDATA, de la plateforme et de projets de recherche",
+        "menu_research_text" : "Nouveautés et announces au sujet de la plateforme et de projets de recherche",
         "menu_consents" : "Partage",
         "menu_consents_text" : "Gérez les données que vous partagez avec d'autres utilisateurs.",
-
-        // TODO CHANGED
-        // OLD: Some ideas to start with MIDATA:
-        // NEW: Some ideas to start:
-        "starts" : "Quelques idées pour débuter avec MIDATA:",
+        "starts" : "Quelques idées pour débuter:",
         "answer_questions" : "Pour commencer, nous vous recommandons de répondre à quelques questions. Votre compte sera préconfiguré d'après vos réponses.",
         "answered_questions" : "Merci d'avoir répondu aux questions de configuration! Vous pouvez maintenant consulter votre tableau de bord et le reconfigurer le cas échéant.",
         "answer_btn" : "Répondre aux questions de configuration maintenant",
@@ -72,11 +60,7 @@
 
     "member_othercircles" : {
         "number_available" : "Cercles disponibles:",
-
-        // TODO CHANGED
-        // OLD: No MIDATA members share data with you.
-        // NEW: No account holders share data with you.
-        "empty" : "Aucun membre MIDATA ne partage des données avec vous."
+        "empty" : "Aucun titulaire de compte ne partage de données avec vous."
     },
 
     "yourstudies" : {

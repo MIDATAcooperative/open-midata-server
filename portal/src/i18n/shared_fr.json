@@ -31,45 +31,17 @@
     },
 
     "error" : {
-
-        // TODO CHANGED
-        // OLD: The backend is currently offline! Please contact support@midata.coop if the problem persists.
-        // NEW: The backend is currently offline! Please contact @SUPPORT if the problem persists.
-        "offline" : "La plateforme est actuellement indisponible! Veuilez contacter support@midata.coop si le problème persiste.",
-
-        // TODO CHANGED
-        // OLD: An internal error occured. Please contact support@midata.coop if the problem persists.
-        // NEW: An internal error occured. Please contact @SUPPORT if the problem persists.
-        "internal" : "Une erreur interne est survenue. Veuilez contacter support@midata.coop si le problème persiste.",
-
-        // TODO CHANGED
-        // OLD: An internal database error occured. Please contact support@midata.coop if the problem persists.
-        // NEW: An internal database error occured. Please contact @SUPPORT if the problem persists.
-        "internal_db" : "Une erreur interne lié à la base de donnée est survenue. Veuilez contacter support@midata.coop si le problème persiste.",
-
-        // TODO CHANGED
-        // OLD: An application specific error occured. Please contact the application developer or support@midata.coop if the problem persists.
-        // NEW: An application specific error occured. Please contact the application developer or @SUPPORT if the problem persists.
-        "plugin" : "Une erreur spécifique à l'application s'est produite. Veuillez contacter le développeur de l'application ou support@midata.coop si le problème persiste.",
+        "offline" : "La plateforme est actuellement indisponible! Veuillez contacter @SUPPORT si le problème persiste.",
+        "internal" : "Une erreur interne est survenue. Veuillez contacter @SUPPORT si le problème persiste.",
+        "internal_db" : "Une erreur interne lié à la base de donnée est survenue. Veuillez contacter @SUPPORT si le problème persiste.",
+        "plugin" : "Une erreur spécifique à l'application s'est produite. Veuillez contacter le développeur de l'application ou @SUPPORT si le problème persiste.",
         "relogin" : "Veuillez vous reconnecter",
         "noconsent" : "Il n'y a pas de consentement actif permettant l'ajout de donnée à cette personne.",
         "unsupported" : "Opération non supportée",
         "notrialuser_title" : "Inscription requise!",
-
-        // TODO CHANGED
-        // OLD: In order to use this feature you need to complete your registration. Request a written copy of the General Terms and Conditions and send it signed back to MIDATA. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.
-        // NEW: In order to use this feature you need to complete your registration. Request a written copy of the General Terms and Conditions and send it signed back to @OPERATOR. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.
-        "notrialuser_detail" : "Pour utiliser cette fonctionnalité, vous devez compléter votre inscription. Veuillez demander une copie écrite des conditions générales et la renvoyer signée à MIDATA. Vous recevrez également un code d'activation permettant de vérifier votre adresse postale. Si vous désirez vérifier le status de votre compte, cliquez sur votre nom d'utilisateur en haut à droite et rendez-vous à la section 'Etat du compte'.",
-
-        // TODO CHANGED
-        // OLD: MIDATA cooperative membership required!
-        // NEW: @OPERATOR membership required!
-        "mustbemember_title" : "Inscription à la copperative MIDATA requise!",
-
-        // TODO CHANGED
-        // OLD: In order to use this feature you must be member of the MIDATA cooperative. Click on your username on the top right and check the 'Account Status' section for more information.
-        // NEW: In order to use this feature you must be member of the cooperative. Click on your username on the top right and check the 'Account Status' section for more information.
-        "mustbemember_detail" : "Pour utiliser cette fonctionnalité, vous devez être membre de la coopérative MIDATA. Cliquez sur votre nom d'utilisateur en haut à droite et rendez-vous à la section 'Etat du compte' pour plus d'informations.",
+        "notrialuser_detail" : "Pour utiliser cette fonctionnalité, vous devez compléter votre inscription. Veuillez demander une copie écrite des conditions générales et la renvoyer signée à @OPERATOR. Vous recevrez également un code d'activation permettant de vérifier votre adresse postale. Si vous désirez vérifier le status de votre compte, cliquez sur votre nom d'utilisateur en haut à droite et rendez-vous à la section 'État du compte'.",
+        "mustbemember_title" : "Adhésion à @OPERATOR requise!",
+        "mustbemember_detail" : "Pour utiliser cette fonctionnalité, vous devez être membre de la coopérative. Cliquez sur votre nom d'utilisateur en haut à droite et rendez-vous à la section 'Etat du compte' pour plus d'informations.",
         "notauthorized" : {
             "action" : "Vous n'êtes pas autorisé à entreprendre cette action",
             "fields" : "Vous n'êtes pas autorisé à consulter les champs demandés",
@@ -77,15 +49,13 @@
             "study" : "Vous n'êtes pas autorisé à accéder à ce projet",
             "not_plugin_owner" : "Ce n'est pas votre application",
             "no_debug" : "Le débogage d'applications n'est disponible qu'en phase de développement ou en phase bêta sur les instances non productives.",
-
-            // TODO NEW: Please remove deployment before performing this operation.
-            "remove_first" : "Please remove deployment before performing this operation."
+            "remove_first" : "Veuillez effacer le déploiement avant d'effectuer cette opération."
         },
 
         "invalid" : {
             "email" : "Veuillez entrer une adresse e-mail valide",
             "credentials" : "Adresse e-mail ou mot de passe invalide.",
-            "credentials_hint" : "Adresse e-mail ou mot de passe invalide. Vous essayez de vous connecter avec un compte personnel. Êtes-vous ",
+            "credentials_hint" : "Adresse e-mail ou mot de passe invalide. Vous essayez de vous connecter en temps que titulaire de compte personnel. Êtes-vous ",
             "password_repetition" : "La répétition du mot de passe ne concorde pas avec le mot de passe entré!",
             "passphrase_repetition" : "La répétition de la phrase secrète ne concorde pas avec la phrase secrète entrée!",
             "passphrase_old" : "Ancienne phrase secrète incorrecte.",
@@ -110,11 +80,7 @@
             "sharing" : "Le filtre d'accès aux données (Data Access Filter) ne peut pas contenir la ressource Patient. La ressource Patient correcte est partagée automatiquement.",
             "anonymous" : "Un projet de recherche ne peut être anonyme que si personne n'est autorisé à accéder à des données non pseudonymisées.",
             "url" : "URL invalide",
-
-            // TODO CHANGED
-            // OLD: This consent may only be confirmed once all external persons have joined MIDATA.
-            // NEW: This consent may only be confirmed once all external persons have joined the platform.
-            "consent_members" : "Ce consentement ne pourra être confirmé que lorsque toutes les personnes externes auront rejoint MIDATA.",
+            "consent_members" : "Ce consentement ne pourra être confirmé que lorsque toutes les personnes externes auront rejoint la plateforme.",
             "entity_type" : "Type d'entité non valide",
             "joincode" : "Le code de participation fourni n'est pas accepté."
         },
@@ -147,7 +113,7 @@
             "space" : "L'espace requis n'existe plus.",
             "consent" : "Consentement non trouvé",
             "study" : "Le projet n'existe pas.",
-            "content" : "Le type de contenu de l'enregistrement n'est pas enregistré dans plate-forme.",
+            "content" : "Le type de contenu de l'enregistrement n'est pas enregistré dans plateforme.",
             "group" : "Nom du groupe inconnu",
             "code" : "Code inconnu",
             "record" : "Enregistrement inconnu",
@@ -168,26 +134,14 @@
         },
 
         "blocked" : {
-
-            // TODO CHANGED
-            // OLD: This account has been blocked. Your email address is blocked for further registration. Contact support@midata.coop for assistance.
-            // NEW: This account has been blocked. Your email address is blocked for further registration. Contact @SUPPORT for assistance.
-            "user" : "Ce compte a été bloqué. Votre adresse électronique est bloquée pour toute inscription ultérieure. Contactez support@midata.coop pour obtenir de l'aide.",
+            "user" : "Ce compte a été bloqué. Votre adresse électronique est bloquée pour toute inscription ultérieure. Contactez @SUPPORT pour obtenir de l'aide.",
             "password1" : "Trop d'essais de connexion manqués. Veuillez attendre 1 minute avant la prochaine tentative.",
             "password5" : "Trop d'essais de connexion manqués. Veuillez attendre 5 minutes avant la prochaine tentative.",
             "password60" : "Trop d'essais de connexion manqués. Veuillez attendre 1 heure avant la prochaine tentative.",
             "participation" : "Vous n'êtes pas autorisé à participer à ce projet de recherche et ne pouvez donc pas utiliser cette application.",
             "projectconsent" : "Vous avez retiré votre participation à ce projet de recherche et ne pouvez donc plus utiliser cette application.",
-
-            // TODO CHANGED
-            // OLD: You have set in the MIDATA portal that this application may no longer access your data. If you want to use this application again, you must reauthorize it in the MIDATA portal.
-            // NEW: You have set in the @PLATFORM portal that this application may no longer access your data. If you want to use this application again, you must reauthorize it in the @PLATFORM portal.
-            "consent" : "Vous avez défini dans le portail MIDATA que cette application ne peut plus accéder à vos données. Si vous voulez utiliser à nouveau cette application, vous devez la ré-autoriser dans le portail MIDATA.",
-
-            // TODO CHANGED
-            // OLD: You are allowed to use this application on a maximum of 10 devices. Please delete unused consents on the MIDATA portal.
-            // NEW: You are allowed to use this application on a maximum of 10 devices. Please delete unused consents on the @PLATFORM portal.
-            "app" : "Vous pouvez utiliser cette application sur 10 appareils au maximum. Veuillez effacer les consentements non utilisés sur le portail MIDATA.",
+            "consent" : "Vous avez défini dans le portail @PLATFORM que cette application ne peut plus accéder à vos données. Si vous voulez utiliser à nouveau cette application, vous devez la ré-autoriser dans le portail @PLATFORM.",
+            "app" : "Vous pouvez utiliser cette application sur 10 appareils au maximum. Veuillez effacer les consentements non utilisés sur le portail @PLATFORM.",
             "joinmethod" : "Il n'est pas permis d'adhérer au projet par cette méthode."
         },
 
@@ -343,11 +297,7 @@
             "ADDRESS_VERIFIED" : "L'adresse postale de l'utilisateur doit avoir été vérifiée",
             "PASSPORT_VERIFIED" : "La carte d'identité de l'utilisateur doit avoir été vérifiée.",
             "MIDATA_COOPERATIVE_MEMBER" : "L'utilisateur doit être membre de la cooperative.",
-
-            // TODO CHANGED
-            // OLD: Account must have been unlocked by a MIDATA administrator
-            // NEW: Account must have been unlocked by an administrator
-            "ADMIN_VERIFIED" : "Le compte doit avoir été validé par un administrateur MIDATA",
+            "ADMIN_VERIFIED" : "Le compte doit avoir été validé par un administrateur",
             "BIRTHDAY_SET" : "La date de naissance de l'utilisateur doit être connue"
         },
         "writepermissiontype" : {
@@ -364,7 +314,7 @@
             "FROZEN" : "Gelé"
         },
         "consenttype" : {
-            "CIRCLE" : "Autres détenteurs de compte",
+            "CIRCLE" : "Autres titulaires de compte",
             "EXTERNALSERVICE" : "Application externe",
             "API" : "Service externe",
             "HCRELATED" : "Système de santé",
@@ -406,11 +356,7 @@
         },
         "joinmethod" : {
             "APP" : "Le participant utilise l'application liée",
-
-            // TODO CHANGED
-            // OLD: Participant applies on MIDATA portal
-            // NEW: Participant applies on @PLATFORM portal
-            "PORTAL" : "Le participant s'inscrit sur le portail MIDATA",
+            "PORTAL" : "Le participant s'inscrit sur le portail @PLATFORM",
             "RESEARCHER" : "Le participant est enrôlé manuellement par un membre de l'équipe de recherche",
             "API" : "Le participant est enrôlé par un logiciel externe",
             "ALGORITHM" : "Le participant a été proposé par un algorithme (non supporté)",
@@ -426,11 +372,7 @@
         },
         "studyvalidationstatus" : {
             "DRAFT" : "Ébauche (non validée)",
-
-            // TODO CHANGED
-            // OLD: Project rejected by MIDATA
-            // NEW: Project rejected by @OPERATOR
-            "REJECTED" : "Projet rejeté par MIDATA",
+            "REJECTED" : "Projet rejeté par @OPERATOR",
             "VALIDATED" : "Le projet a été validé",
             "VALIDATION" : "En cours de validation"
         },
@@ -566,9 +508,7 @@
         "bulkmailtype" : {
             "MARKETING" : "Marketing - Titulaires de comptes",
             "PROJECT" : "Spécifique au projet",
-
-            // TODO NEW: App specific
-            "APP" : "App specific"
+            "APP" : "Spécifique à l'application"
         },
         "channeluse" : {
             "ALLOWED" : "Autorisé",
@@ -632,17 +572,9 @@
         "country" : "Pays",
         "phone" : "Numéro de téléphone",
         "mobile_phone" : "Numéro mobile",
-
-        // TODO CHANGED
-        // OLD: Contact person MIDATA
-        // NEW: Contact person @OPERATOR
-        "coach" : "Personne de contact MIDATA",
+        "coach" : "Personne de contact @OPERATOR",
         "reason" : "Motivation de l'inscription*",
-
-        // TODO CHANGED
-        // OLD: MIDATA Terms
-        // NEW: Terms
-        "agb" : "Conditions MIDATA",
+        "agb" : "Conditions",
         "study" : "Recherche",
         "agb2" : "J'accepte les",
         "agb3" : "Conditions générales",
@@ -659,11 +591,7 @@
         "generous" : "Je me sens généreux aujourd'hui, montrez-moi les champs!",
         "hide_optional" : "Masquer les champs facultatifs",
         "welcome_title" : "Bienvenue",
-
-        // TODO CHANGED
-        // OLD: Your MIDATA account has just been created. A confirmation email has been sent to you.
-        // NEW: Your @PLATFORM account has just been created. A confirmation email has been sent to you.
-        "welcome_text1" : "Votre compte MIDATA vient d'être créé. Un e-mail de confirmation vous a été envoyé.",
+        "welcome_text1" : "Votre compte @PLATFORM vient d'être créé. Un e-mail de confirmation vous a été envoyé.",
         "welcome_text2" : "Veuillez cliquer le lien contenu dans l'e-mail dans les 24 heures pour terminer votre inscription.",
         "welcome_text3" : "Si vous ne recevez pas l'e-mail dans les 30 prochaines minutes, veuillez vérifier votre filtre anti-spam.",
         "welcome_btn" : "Continuer"
@@ -679,11 +607,7 @@
         "login_btn" : "Se connecter",
         "service_login" : "Connexion pour demande de confirmation",
         "service_login2" : "Lors votre prochaine connexion, on vous demandera de confirmer votre consentement et/ou votre participation à des projets de recherche.",
-
-        // TODO CHANGED
-        // OLD: I do not have a MIDATA account yet.
-        // NEW: I do not have a @PLATFORM account yet.
-        "no_account" : "Je n'ai pas encore de compte MIDATA."
+        "no_account" : "Je n'ai pas encore de compte @PLATFORM."
     },
 
     "lostpw" : {
@@ -709,19 +633,11 @@
         "description" : "Votre compte est protégé par une phrase secrète.",
         "passphrase" : "Phrase secrète",
         "continue_btn" : "Continuer",
-
-        // TODO CHANGED
-        // OLD: If you lost your passphrase contact support@midata.coop
-        // NEW: If you lost your passphrase contact @SUPPORT
-        "if_lost" : "En cas de perte de votre phrase secrète, veuillez contacter support@midata.coop"
+        "if_lost" : "En cas de perte de votre phrase secrète, veuillez contacter @SUPPORT"
     },
 
     "postregister" : {
-
-        // TODO CHANGED
-        // OLD: Welcome to MIDATA
-        // NEW: Welcome to @PLATFORM
-        "title" : "Bienvenue sur MIDATA",
+        "title" : "Bienvenue sur @PLATFORM",
         "email_confirmed" : "E-mail confirmé?",
         "contract_signed" : "Contrat signé et renvoyé?",
         "resent_success" : "Le courrier de bienvenue a été renvoyé.",
@@ -732,42 +648,18 @@
         "code" : "Code",
         "resend_btn" : "Renvoyer l'e-mail",
         "retry_btn" : "Veuillez vous authentifier à nouveau",
-
-        // TODO CHANGED
-        // OLD: A contract has been sent to your postal address. Please return it signed to MIDATA.
-        // NEW: A contract has been sent to your postal address. Please return it signed to @OPERATOR.
-        "contract_instructions" : "Un contrat vous a été adressé par la poste. Veuillez le signer et le renvoyer à MIDATA.",
-
-        // TODO CHANGED
-        // OLD: A MIDATA administrator will verify and unlock your account. You will be notified when your account has been unlocked.
-        // NEW: An administrator will verify and unlock your account. You will be notified when your account has been unlocked.
-        "pilot_phase" : "Un administrateur MIDATA verifiera et validera votre compte. Vous serez averti, lorsque votre compte aure été validé.",
+        "contract_instructions" : "Un contrat vous a été adressé par la poste. Veuillez le signer et le renvoyer à @OPERATOR.",
+        "pilot_phase" : "Un administrateur vérifiera et validera votre compte. Vous serez averti, lorsque votre compte aure été validé.",
         "code_intructions" : "Une lettre contenant un code de confirmation vous a été adressée par la poste. Veuillez saisir ce code de confirmation pour pouvoir accéder à la plateforme.",
-
-        // TODO CHANGED
-        // OLD: You have provided the confirmation code. You may login after the signed contract has arrived at MIDATA.
-        // NEW: You have provided the confirmation code. You may login after the signed contract has arrived at @OPERATOR.
-        "code_done" : "Vous avez saisi le code de confirmation. Vous pourrez vous connecter dès que le contrat signé sera parvenu à MIDATA.",
+        "code_done" : "Vous avez saisi le code de confirmation. Vous pourrez vous connecter dès que le contrat signé sera parvenu à @OPERATOR.",
         "enter_now_btn" : "Entrer maintenant",
         "email_success" : "Merci d’avoir confirmé votre adresse e-mail.",
         "address_entered" : "Votre adresse postale est requise pour utiliser ce service, veuillez la saisir.",
         "phone_entered" : "Un numéro de téléphone mobile est requis pour utiliser ce service, veuillez le saisir.",
         "birthday_entered" : "Une date de naissance valide est requise pour utiliser ce service. Veuillez ajouter votre date de naissance aux informations de votre compte. (Exemple de format : 31.12.1999)",
-
-        // TODO CHANGED
-        // OLD: Your account must be unlocked by a MIDATA administrator. Please retry later. If your account has not been unlocked for more than 24 hours, please contact MIDATA.
-        // NEW: Your account must be unlocked by an administrator. Please retry later. If your account has not been unlocked for more than 24 hours, please contact @SUPPORT.
-        "admin_verified" : "Votre compte doit être validé par un administrateur MIDATA. Veuillez réessayer plus tard. Si votre compte n'a pas été validé sous 24 heures, veuillez contacter MIDATA.",
-
-        // TODO CHANGED
-        // OLD: The MIDATA General Terms and Conditions have been updated. Please confirm that you agree to the new version.
-        // NEW: The General Terms and Conditions have been updated. Please confirm that you agree to the new version.
-        "terms_agreed" : "Les Conditions Générales de MIDATA ont été mises à jour. Veuillez confirmer que vous acceptez la nouvelle version.",
-
-        // TODO CHANGED
-        // OLD: The MIDATA Privacy Policy has been updated. Please confirm that you agree to the new version.
-        // NEW: The Privacy Policy has been updated. Please confirm that you agree to the new version.
-        "privacy_policy_agreed" : "La Déclaration de protection des données de MIDATA a été mise à jour. Veuillez confirmer que vous acceptez la nouvelle version.",
+        "admin_verified" : "Votre compte doit être validé par un administrateur. Veuillez réessayer plus tard. Si votre compte n'a pas été validé sous 24 heures, veuillez contacter @SUPPORT.",
+        "terms_agreed" : "Les Conditions Générales ont été mises à jour. Veuillez confirmer que vous acceptez la nouvelle version.",
+        "privacy_policy_agreed" : "La Déclaration de protection des données a été mise à jour. Veuillez confirmer que vous acceptez la nouvelle version.",
         "auth2factor" : "Un code d'autorisation a été envoyé sur votre téléphone. Veuillez l'entrer.",
         "securityToken" : "Code",
         "securityToken_btn" : "Envoyer",
@@ -779,42 +671,22 @@
         "auth_type_none" : "Je ne veux pas utiliser l'authentification à deux facteurs.",
         "auth_type_sms" : "Je veux utiliser l'authentification à deux facteurs par codes SMS. Veuillez m'envoyer un code sur mon téléphone portable lorsque je me connecte.",
         "emailnotify" : "Notifications",
-
-        // TODO CHANGED
-        // OLD: Please send me an email everytime I log into the MIDATA portal at {{domain}}.
-        // NEW: Please send me an email everytime I log into the @PLATFORM portal at {{domain}}.
-        "emailnotify2" : "Veuillez m'envoyer un e-mail chaque fois que je me connecte au portail MIDATA à {{domain}}.",
+        "emailnotify2" : "Veuillez m'envoyer un e-mail chaque fois que je me connecte au portail @PLATFORM à {{domain}}.",
         "agree_btn" : "Je suis d'accord",
         "keyrecovery" : {
             "intro" : "La clé privée utilisée pour crypter vos données doit être récupérée. Pour récupérer votre clé, essayez l'une des options suivantes:",
-
-            // TODO CHANGED
-            // OLD: Do you have any application using MIDATA where you are still logged in? If yes, open that application and your key will be recovered. Try to login again afterwards.
-            // NEW: Do you have any application using @PLATFORM where you are still logged in? If yes, open that application and your key will be recovered. Try to login again afterwards.
-            "way1" : "Avez-vous une application utilisant MIDATA où vous êtes encore connecté? Si oui, ouvrez cette application et votre clé sera récupérée. Essayez de vous connecter à nouveau par la suite.",
+            "way1" : "Avez-vous une application utilisant @PLATFORM où vous êtes encore connecté? Si oui, ouvrez cette application et votre clé sera récupérée. Essayez de vous connecter à nouveau par la suite.",
             "way2" : "Vous êtes-vous déjà connecté à l'aide d'un navigateur? Si oui, essayez d'ouvrir une session en utilisant le même navigateur et le même appareil.",
             "way3" : "Vous vous souvenez à nouveau de votre ancien mot de passe? Si oui, essayez de vous connecter en utilisant votre ancien mot de passe.",
-
-            // TODO CHANGED
-            // OLD: Wait for MIDATA employees to do a manual key recovery. MIDATA will send you an email when the recovery has been done. Please wait up to five working days for the recovery to be completed.
-            // NEW: Wait for @OPERATOR employees to do a manual key recovery. @OPERATOR will send you an email when the recovery has been done. Please wait up to five working days for the recovery to be completed.
-            "way4" : "Attendez que les employés de MIDATA effectuent une récupération manuelle de la clé. MIDATA vous enverra un e-mail lorsque la récupération sera terminée. Veuillez patienter jusqu'à cinq jours ouvrables pour que la récupération soit terminée."
+            "way4" : "Attendez que les employés de @OPERATOR effectuent une récupération manuelle de la clé. @OPERATOR vous enverra un e-mail lorsque la récupération sera terminée. Veuillez patienter jusqu'à cinq jours ouvrables pour que la récupération soit terminée."
         },
         "licence" : {
             "intro" : "Une licence est requise pour utiliser cette application.",
-
-            // TODO CHANGED
-            // OLD: Please contact support@midata.coop to obtain a valid license.
-            // NEW: Please contact @SUPPORT to obtain a valid license.
-            "text" : "Veuillez contacter support@midata.coop pour obtenir une licence valide."
+            "text" : "Veuillez contacter @SUPPORT pour obtenir une licence valide."
         },
         "reject" : {
             "intro1" : "Vous avez cliqué sur le lien REJECTION de compte dans l'e-mail de confirmation du compte.",
-
-            // TODO CHANGED
-            // OLD: Please confirm that you do NOT want to create an account on MIDATA. Your email address will be blocked for further registration attempts until you contact support@midata.coop.
-            // NEW: Please confirm that you do NOT want to create an account on @PLATFORM. Your email address will be blocked for further registration attempts until you contact @SUPPORT.
-            "intro2" : "Veuillez confirmer que vous ne souhaitez pas créer un compte sur MIDATA. Votre adresse électronique sera bloquée pour toute nouvelle tentative d'inscription jusqu'à ce que vous contactiez support@midata.coop.",
+            "intro2" : "Veuillez confirmer que vous ne souhaitez pas créer un compte sur @PLATFORM. Votre adresse électronique sera bloquée pour toute nouvelle tentative d'inscription jusqu'à ce que vous contactiez @SUPPORT.",
             "reject_btn" : "Refuser la création du compte",
             "intro3" : "Si vous avez cliqué sur le mauvais lien et que vous souhaitez plutôt CONFIRMER votre adresse électronique, cliquez ici:",
             "confirm_btn" : "Confirmer la création du compte"
@@ -970,11 +842,7 @@
         "install_btn" : "Confirmer l'accès",
         "location" : {
             "workspace" : "Espace de travail",
-
-            // TODO CHANGED
-            // OLD: MIDATA Mobile App
-            // NEW: Mobile App
-            "mobile" : "MIDATA Mobile App",
+            "mobile" : "Application mobile",
             "research" : "Tableau de bord de recherche",
             "sandbox" : "Espace de travail",
             "me" : "Tableau de bord personnel",
@@ -990,11 +858,7 @@
         "title" : "Créer un nouveau consentement",
         "name" : "Quel est le libellé de ce consentement?",
         "type" : "Quel type de consentement souhaitez-vous créer?",
-
-        // TODO CHANGED
-        // OLD: I want to share data with other MIDATA account holders.
-        // NEW: I want to share data with other account holders.
-        "share_with_members" : "Je veux partager des données avec d'autres membres MIDATA.",
+        "share_with_members" : "Je veux partager des données avec d'autres titulaires de compte.",
         "share_with_provider" : "Je veux partager des données avec un professionnel de la santé.",
         "select" : "Sélectionnez",
         "use_passcode" : "Inclure un code d'accès?",
@@ -1029,11 +893,7 @@
         "type" : "Type de consentement",
         "status" : "État du consentement",
         "people" : "Avec quelle(s) personne(s) désirez-vous partager des données?",
-
-        // TODO CHANGED
-        // OLD: Non MIDATA account holder
-        // NEW: Non @PLATFORM account holder
-        "external" : "Personnes sans compte MIDATA",
+        "external" : "Personnes sans compte @PLATFORM",
         "add_people_btn" : "Ajouter d'autres personnes",
         "add_usergroup_btn" : "Ajouter une équipe",
         "reshare" : "@:newconsent.reshare",
@@ -1043,11 +903,7 @@
         "created_before" : "Ne partager que les données créées avant le:",
         "what_is_shared" : "Quelles données sont-elles partagées?",
         "consent_empty" : "Ce consentement ne partage actuellement aucunes données.",
-
-        // TODO CHANGED
-        // OLD: This consent shares data with other MIDATA account holders.
-        // NEW: This consent shares data with other @PLATFORM account holders.
-        "type_circle" : "Ce consentement partage des données avec d'autres membres MIDATA.",
+        "type_circle" : "Ce consentement partage des données avec d'autres titulaires de comptes @PLATFORM.",
         "type_healthcare" : "Ce consentement partage des données avec des professionnels de la santé.",
         "type_studyparticipation" : "Ce consentement partage des données avec un projet de recherche.",
         "type_studyrelated" : "Ce consentement partage des données avec un participant d'un projet.",
@@ -1114,11 +970,7 @@
     },
 
     "spaces" : {
-
-        // TODO CHANGED
-        // OLD: MIDATA Plugin
-        // NEW: @PLATFORM Plugin
-        "title" : "Plugin MIDATA",
+        "title" : "Plugin @PLATFORM",
         "delete_btn" : "Supprimez cet espace",
         "used_btn" : "Enregistrements utilisés ...",
         "share_btn" : "Partager...",
@@ -1168,34 +1020,18 @@
     },
 
     "oauth2" : {
-
-        // TODO CHANGED
-        // OLD: stores your personal data in your MIDATA account.
-        // NEW: stores your personal data in your @PLATFORM account.
-        "requests_permission" : "enregistre vos données personnelles dans votre compte MIDATA.",
+        "requests_permission" : "enregistre vos données personnelles dans votre compte @PLATFORM.",
         "no_account" : "Vous n'avez pas encore de compte?",
-
-        // TODO CHANGED
-        // OLD: You have a MIDATA account?
-        // NEW: You have a @PLATFORM account?
-        "have_account" : "Avez-vous un compte MIDATA?",
+        "have_account" : "Avez-vous un compte @PLATFORM?",
         "have_account2" : "Parfait, connectez-vous.",
         "sign_up_btn" : "S'inscrire",
         "reshares_data" : "L'application peut partager les données auxquelles elle a accès avec des tiers.",
         "allows_user_search" : "Vos nom et adresse e-mail peuvent être consultés par d'autres personnes utilisant cette application.",
         "requesting_app" : "désire accéder à vos données.",
-
-        // TODO CHANGED
-        // OLD: MIDATA login for:
-        // NEW: @PLATFORM login for:
-        "sign_in" : "Connexion à MIDATA pour:",
+        "sign_in" : "Connexion à @PLATFORM pour:",
         "sign_in_btn" : "Se connecter",
         "device" : "Appareil : {{ device}}",
-
-        // TODO CHANGED
-        // OLD: Please confirm the activation of the application using the MIDATA portal, then retry. Consent title is: {{ consent }}
-        // NEW: Please confirm the activation of the application using the @PLATFORM portal, then retry. Consent title is: {{ consent }}
-        "please_confirm" : "Veuillez confirmer l'activation de l'application sur le portail MIDATA, puis réessayez. Libellé du consentement: {{ consent }}",
+        "please_confirm" : "Veuillez confirmer l'activation de l'application sur le portail @PLATFORM, puis réessayez. Libellé du consentement: {{ consent }}",
         "confirm_btn" : "Confirmer l'accès",
         "continue_btn" : "Continuer",
         "requests_access" : "Accès demandé par l'application:",
@@ -1216,11 +1052,7 @@
     },
 
     "dashboard" : {
-
-        // TODO CHANGED
-        // OLD: Welcome to MIDATA
-        // NEW: Welcome to @PLATFORM
-        "help_welcome" : "Bienvenue sur MIDATA",
+        "help_welcome" : "Bienvenue sur @PLATFORM",
         "myviews" : "Mes aperçus",
         "mydata" : "Mes données personelles",
         "mydata_text" : "Gérez vos données de santé. Saisissez en de nouvelles et visualisez les.",
@@ -1231,22 +1063,14 @@
         "health" : "Santé",
         "health_text" : "Partagez des données avec votre médecin. Rechercher des professionnels de la santé.",
         "help" : "Aide",
-
-        // TODO CHANGED
-        // OLD: Get help about MIDATA functions
-        // NEW: Get help about functions
-        "help_text" : "Obtenir de l'aide à propos des fonctions MIDATA",
+        "help_text" : "Obtenir de l'aide à propos de la fonctionalité",
         "training" : "Entraînement",
         "training_text" : "Gérez votre entraînement personnel!",
         "newrecords" : "Nouveaux enregistrements ce mois:",
         "newrecords_teaser" : "Il n'y a pas de nouveaux enregistrements. Consultez la page 'Mes données' pour voir toutes vos données.",
         "myaccount" : "Données de mon compte",
         "newsharedrecords" : "Nouveaux enregistrement partagés avec vous",
-
-        // TODO CHANGED
-        // OLD: Other MIDATA account holders may share their data with you.
-        // NEW: Other @PLATFORM account holders may share their data with you.
-        "newsharedrecords_teaser" : "D'autres utilisateurs MIDATA peuvent partager leurs données avec vous.",
+        "newsharedrecords_teaser" : "D'autres utilisateurs @PLATFORM peuvent partager leurs données avec vous.",
         "circles" : "Membre des Cercles",
         "circles_teaser" : "Demandez à d'autres utilisateurs de vous accueillir dans leurs Cercles.",
         "circles2" : "Vos Cercles",
@@ -1382,15 +1206,9 @@
         "greeting" : "Connectez vos applications pour collecter des données",
         "title" : "Applications",
         "description" : "Applications autorisées",
-
-        // TODO CHANGED
-        // OLD: You have {{count}} authorized applications:
-        // NEW: You have {{count}} authorized applications.
-        "count" : "Vous avez {{count}} applications autorisées:",
+        "count" : "Vous avez {{count}} applications autorisées.",
         "services" : "Services",
-
-        // TODO NEW: There are no services available yet.
-        "empty" : "There are no services available yet.",
+        "empty" : "Il n'y a pas encore de services disponibles.",
         "connect_btn" : "Autoriser",
         "use_btn" : "Utiliser"
     },
@@ -1410,22 +1228,10 @@
         "account_status" : "État du compte",
         "studyparticipant" : "Votre compte a été configuré pour participer à un projet. Sa fonctionnalité est limitée. Vous pouvez le faire évoluer vers un compte à part entière.",
         "appuser" : "Votre compte a été créé par une application externe. Sa fonctionnalité est limitée. Vous pouvez le faire évoluer vers un compte à part entière.",
-
-        // TODO CHANGED
-        // OLD: You are a member of the MIDATA cooperative.
-        // NEW: You are a member of the cooperative.
-        "memberofcooperative" : "Vous êtes membre de la coopérative MIDATA.",
-
-        // TODO CHANGED
-        // OLD: You have a full user account but you are no member of the MIDATA cooperative.
-        // NEW: You have a full user account but you are no member of the cooperative.
-        "nonmemberuser" : "Vous possédez un compte à part entière mais vous n'êtes pas membre de la coopérative MIDATA.",
+        "memberofcooperative" : "Vous êtes membre de la coopérative.",
+        "nonmemberuser" : "Vous possédez un compte à part entière mais vous n'êtes pas membre de la coopérative.",
         "agb_not_requested" : "En cliquant sur 'Demander un contrat', les conditions générales (CG) ainsi que le contrat vous seront envoyés par la poste. Veuillez renvoyer les CG signées pour faire évoluer votre compte de test vers un compte à part entière.",
-
-        // TODO CHANGED
-        // OLD: You have requested the General Terms and Conditions and the contract. Your request is being processed by the MIDATA cooperative.
-        // NEW: You have requested the General Terms and Conditions and the contract. Your request is being processed by the cooperative.
-        "agb_requested" : "Vous avez fait une demande pour les conditions générales et le contrat. Votre demande est en cours de traitement à la coopérative MIDATA.",
+        "agb_requested" : "Vous avez fait une demande pour les conditions générales et le contrat. Votre demande est en cours de traitement à la coopérative.",
         "agb_printed" : "Les conditions générales et le contrat que vous avez demandés devraient vous être livrés dans les prochains jours.",
         "agb_signed" : "Vous avez signé les conditions générales.",
         "confirmed" : "Votre adresse postale a été confirmée.",
@@ -1435,50 +1241,22 @@
     },
 
     "accountwipe" : {
-
-        // TODO CHANGED
-        // OLD: Close and Delete MIDATA Account
-        // NEW: Close and Delete @PLATFORM Account
-        "title" : "Fermer et supprimer le compte MIDATA",
+        "title" : "Fermer et supprimer le compte @PLATFORM",
         "hello" : "Chère/cher {{name}},",
         "hello_m" : "Cher {{name}},",
         "hello_w" : "Chère {{name}},",
-
-        // TODO CHANGED
-        // OLD: You would like to delete your MIDATA account irrevocably? That is of course possible.
-        // NEW: You would like to delete your @PLATFORM account irrevocably? That is of course possible.
-        "paragraph1" : "Vous souhaitez supprimer votre compte MIDATA irrévocablement? C'est bien sûr possible.",
+        "paragraph1" : "Vous souhaitez supprimer votre compte @PLATFORM irrévocablement? C'est bien sûr possible.",
         "paragraph2" : "Veuillez d'abord lire les informations suivantes :",
-
-        // TODO CHANGED
-        // OLD: If you delete your MIDATA account your personal data will no longer be available.
-        // NEW: If you delete your @PLATFORM account your personal data will no longer be available.
-        "point1" : "Si vous supprimez votre compte MIDATA, vos données personnelles ne seront plus disponibles.",
+        "point1" : "Si vous supprimez votre compte @PLATFORM, vos données personnelles ne seront plus disponibles.",
         "point2" : "Les données qui ont déjà été partagées avec des projets de recherche continueront d'être disponibles dans ces projets.",
-
-        // TODO CHANGED
-        // OLD: MIDATA is not able to recover your deleted account.
-        // NEW: @OPERATOR is not able to recover your deleted account.
-        "point3" : "MIDATA n'est pas en mesure de récupérer votre compte supprimé.",
+        "point3" : "@OPERATOR n'est pas en mesure de récupérer votre compte supprimé.",
         "warning" : "Avertissement",
         "final" : "Cette action ne peut être annulée.",
-
-        // TODO CHANGED
-        // OLD: If you really want to delete your MIDATA account enter your password for confirmation.
-        // NEW: If you really want to delete your @PLATFORM account enter your password for confirmation.
-        "paragraph3" : "Si vous voulez vraiment supprimer votre compte MIDATA, entrez votre mot de passe pour confirmation.",
+        "paragraph3" : "Si vous voulez vraiment supprimer votre compte @PLATFORM, entrez votre mot de passe pour confirmation.",
         "password" : "Mot de passe",
         "reason" : "Motif (facultatif)",
-
-        // TODO CHANGED
-        // OLD: We would be grateful if you could tell us why you are deleting your account. We are continually trying to improve the MIDATA platform.
-        // NEW: We would be grateful if you could tell us why you are deleting your account. We are continually trying to improve the @PLATFORM.
-        "reason2" : "Nous vous serions reconnaissants de nous indiquer le motif pour lequel vous supprimez votre compte. Nous essayons continuellement d'améliorer la plateforme MIDATA.",
-
-        // TODO CHANGED
-        // OLD: Close and Delete MIDATA Account
-        // NEW: Close and Delete @PLATFORM Account
-        "wipe_btn" : "Fermer et supprimer le compte MIDATA",
+        "reason2" : "Nous vous serions reconnaissants de nous indiquer le motif pour lequel vous supprimez votre compte. Nous essayons continuellement d'améliorer @PLATFORM.",
+        "wipe_btn" : "Fermer et supprimer le compte @PLATFORM",
         "error" : "Mot de passe incorrect. Le compte n'a pas été supprimé."
     },
 
@@ -1529,12 +1307,8 @@
         "created-after" : "Créé après",
         "updated-after" : "Mis à jour après",
         "effective" : "Date ou période effective",
-
-        // TODO NEW: Only with this observer (optional)
-        "observer" : "Only with this observer (optional)",
-
-        // TODO NEW: Category (optional)
-        "category" : "Category (optional)",
+        "observer" : "Uniquement avec cet observer (optionnel)",
+        "category" : "Catégorie (optionnelle)",
         "custom_filter" : "Filtre personnalisé (JSON)",
         "remove_btn" : "Supprimer",
         "apply_btn" : "Appliquer",
@@ -1551,11 +1325,7 @@
             "AuditEvent" : "Accès au journal des événements d'audit",
             "Consent" : "Accès aux consentements de l'utilisateur de l'application avec d'autres utilisateurs ou applications",
             "Group" : "Accès aux définitions des groupes (équipes de professionnels de la santé ou de chercheurs ainsi que groupes propres aux projets)",
-
-            // TODO CHANGED
-            // OLD: Patient Records: name, email, address of MIDATA account holders
-            // NEW: Patient Records: name, email, address of account holders
-            "Patient" : "Données patients: nom, courriel, adresse électronique, adresse des titulaires de comptes MIDATA",
+            "Patient" : "Données patients: nom, courriel, adresse électronique, adresse des titulaires de comptes",
             "PseudonymizedPatient" : "Données patients: pseudonyme, année de naissance, pays des participants au projet de recherche",
             "Practitioner" : "Ressource Practitioner: recherche de professionnels de la santé ou de chercheurs",
             "Subscription" : "Accéder et gérer les abonnements au système externe"
@@ -1589,12 +1359,8 @@
         "instructions_key" : "Utilisez cette clé directement dans l'en-tête d'autorisation du service comme bearer token.",
         "refresh" : "Refresh token pour OAuth",
         "instructions_refresh" : "Pour améliorer la sécurité, échangez ce refresh token contre une nouvelle paire d'access token et refresh token.",
-
-        // TODO NEW: CN (common name) for CSR (certificate request)
-        "common_name" : "CN (common name) for CSR (certificate request)",
-
-        // TODO NEW: For certificate based authentication create a CSR with the given CN field. Send the CSR to @SUPPORT
-        "instructions_common_name" : "For certificate based authentication create a CSR with the given CN field. Send the CSR to @SUPPORT",
+        "common_name" : "CN (common name) pour CSR (certificate request)",
+        "instructions_common_name" : "Pour une authentification basée sur un certificat, créez un CSR avec le champ CN donné. Envoyez le CSR à @SUPPORT",
         "date" : "Date de création",
         "status" : "État",
         "ACTIVE" : "Active",
@@ -1605,11 +1371,7 @@
         "title" : "Connexion non autorisée",
         "intro" : "Vous n'êtes pas autorisé à vous connecter pour la raison suivante:",
         "withdrawn1" : "Vous avez retiré votre participation à un projet. La participation est obligatoire pour pouvoir utiliser cette application.",
-
-        // TODO CHANGED
-        // OLD: You will not be able to use the application again with your MIDATA account.
-        // NEW: You will not be able to use the application again with your @PLATFORM account.
-        "withdrawn2" : "Vous ne pourrez plus utiliser l'application avec votre compte MIDATA.",
+        "withdrawn2" : "Vous ne pourrez plus utiliser l'application avec votre compte @PLATFORM.",
         "joinmethod1" : "L'accès au projet de recherche est restreint.",
         "joinmethod2" : "Veuillez prendre contact avec le team responsable du projet. Pour plus d'informations, lisez les conditions d'utilisation de l'application.",
         "loginpage_btn" : "Retour à la page de connexion"

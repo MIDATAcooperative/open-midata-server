@@ -18,11 +18,7 @@
         "patients" : "Pazienti",
         "research" : "Ricerca",
         "workspace" : "Spazio di lavoro",
-
-        // TODO CHANGED
-        // OLD: MIDATA Store
-        // NEW: Store
-        "market" : "MIDATA Store",
+        "market" : "Store",
         "org" : "Impresa",
         "organization" : "Organizzazione",
         "usergroups" : "Team"
@@ -35,11 +31,7 @@
         "url" : "URL della homepage",
         "members" : "Tutti i membri della vostra organizzazione",
         "addprovider" : "Iscrivere nuovo membro",
-
-        // TODO CHANGED
-        // OLD: You must be master user to update your organization or register new users for the organization. Please contact the MIDATA support if you think you should have master user permissions.
-        // NEW: You must be master user to update your organization or register new users for the organization. Please contact @SUPPORT if you think you should have master user permissions.
-        "master_user" : "Devi essere un utente master per aggiornare la propria organizzazione o iscrivere nuovi utenti per l'organizzazione. Si prega di contattare il supporto MIDATA se si pensa che si dovrebbero avere le autorizzazioni di utente master."
+        "master_user" : "Devi essere un utente master per aggiornare la propria organizzazione o iscrivere nuovi utenti per l'organizzazione. Si prega di contattare @SUPPORT se si pensa che si dovrebbero avere le autorizzazioni di utente master."
     },
 
     "addprovider" : {
@@ -93,7 +85,7 @@
         "former_members" : "Membri precedenti",
         "name" : "Nome del team",
         "status" : "Stato",
-        "searchable" : "Trovabile dai titolari di account",
+        "searchable" : "Trovabile dai titolari di un account",
         "startDate" : "Membro da",
         "endDate" : "Membro fino a"
     },
@@ -105,10 +97,6 @@
     },
 
     "help_welcome" : {
-
-        // TODO CHANGED
-        // OLD: Some ideas to start with MIDATA:
-        // NEW: Some ideas to start:
-        "starts" : "Alcune idee per iniziare con MIDATA:"
+        "starts" : "Alcune idee per cominciare:"
     }
 }

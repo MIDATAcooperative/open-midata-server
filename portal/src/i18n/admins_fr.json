@@ -112,11 +112,7 @@
         "plugin_developer" : "Dévelopeur",
         "plugin_type" : "Type",
         "plugin_role" : "Rôle cible",
-
-        // TODO CHANGED
-        // OLD: MIDATA Store
-        // NEW: Store
-        "plugin_market" : "MIDATA Store",
+        "plugin_market" : "Store",
         "plugin_stats" : "Statistiques",
         "plugin_status" : "État",
         "add_definition_btn" : "Importer la définition d'une application"
@@ -128,24 +124,16 @@
     },
 
     "admin_definestudy" : {
-
-        // TODO NEW: Import Project Definition
-        "title" : "Import Project Definition",
-
-        // TODO NEW: Definition (JSON)
-        "definition" : "Definition (JSON)",
-
-        // TODO NEW: New owner (Researcher Account)
-        "researcher" : "New owner (Researcher Account)"
+        "title" : "Importer la définition d'un project",
+        "definition" : "Définition (JSON)",
+        "researcher" : "Nouveau propriétaire (compte chercheur)"
     },
 
     "admin_studies" : {
         "title" : "Projets de recherche",
         "criteria" : "Critère de recherche",
         "empty" : "Aucun projet correspondant trouvé.",
-
-        // TODO NEW: Import Project Definition
-        "add_definition_btn" : "Import Project Definition"
+        "add_definition_btn" : "Importer la définition d'un project"
     },
 
     "admin_terms" : {
@@ -180,10 +168,7 @@
         "startDate" : "Date de début",
         "endDate" : "Date de fin",
         "dataCreatedBefore" : "Données figées dès le",
-
-        // TODO NEW: Consent Observers
-        "consent_observers" : "Consent Observers",
-
+        "consent_observers" : "Observers de consentements",
         "infos" : "Informations publiques",
         "infos_part" : "Informations pour les participants",
         "infos_internal" : "Informations internes",
@@ -203,9 +188,7 @@
         "end_validation_btn" : "Finaliser la validation",
         "back_to_draft_btn" : "Revenir à l'ébauche",
         "delete_study_btn" : "Effacer le projet",
-
-        // TODO NEW: Export
-        "export_btn" : "Export"
+        "export_btn" : "Exporter"
     },
 
     "admin_stats" : {
@@ -313,8 +296,6 @@
         "progressCount" : "# envoyés",
         "studyId" : "Projet de recherche",
         "studyExclude" : "Exclure les participants au projet",
-
-        // TODO NEW: Application
         "appId" : "Application",
         "lang" : "Langue",
         "title" : "Titre de l'e-mail",
