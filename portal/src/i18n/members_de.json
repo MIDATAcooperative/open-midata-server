@@ -1,7 +1,6 @@
 {
 
     "member_login" : {
-        "teaser" : "Meine Daten - Unsere Gesundheit!",
         "register_now" : "Jetzt registrieren",
         "sign_in" : "Anmeldung"
     },
@@ -20,14 +19,14 @@
         "menu_me" : "Dashboard",
         "menu_me_text" : "Ihr persönliches Dashboard, wo Sie Ihre Favoriten platzieren können.",
         "menu_overview" : "Übersicht",
-        "menu_overview_text" : "Eine Übersicht über alle Funktionen, die die MIDATA-Plattform anbietet.",
+        "menu_overview_text" : "Übersicht über alle Funktionen, die die Plattform anbietet.",
         "menu_config" : "Konfiguration",
         "menu_config_text" : "Konfigurieren Sie Ihr Dashboard und die Datenimports.",
         "menu_research" : "News",
-        "menu_research_text" : "Neuigkeiten und Ankündigungen über MIDATA, die Plattform und Forschungsprojekte",
+        "menu_research_text" : "Neuigkeiten und Ankündigungen über die Plattform und Forschungsprojekte",
         "menu_consents" : "Teilen",
         "menu_consents_text" : "Verwaltung der mit anderen Benutzern geteilten Daten.",
-        "starts" : "Ein paar Ideen zum Starten mit MIDATA:",
+        "starts" : "Ein paar Ideen zum Beginnen:",
         "answer_questions" : "Zum Starten empfehlen wir Ihnen einige Fragen zu beantworten. Ihr Konto wird an Hand Ihrer Antworten vorkonfiguriert.",
         "answered_questions" : "Danke, dass Sie die Konfigurationsfragen beantwortet haben! Sie können nun Ihr Dashboard betrachten oder die Konfiguration ggf. nochmals durchführen.",
         "answer_btn" : "Konfigurationsfragen jetzt beantworten",
@@ -61,7 +60,7 @@
 
     "member_othercircles" : {
         "number_available" : "Verfügbare Kreise:",
-        "empty" : "Kein MIDATA-Mitglied teilt Daten mit Ihnen."
+        "empty" : "Keine Kontoinhabende teilen Daten mit Ihnen."
     },
 
     "yourstudies" : {

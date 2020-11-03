@@ -25,7 +25,7 @@
         "name" : "Nom",
         "description" : "Description",
         "researchers" : "Tous les chercheurs de votre institut",
-        "master_user" : "Vous devez être un utilisateur maître pour mettre à jour votre organisation ou inscrire de nouveaux utilisateurs pour l'organisation. Veuillez contacter le support MIDATA si vous pensez que vous devriez avoir les permissions de l'utilisateur maître."
+        "master_user" : "Vous devez être un utilisateur maître pour mettre à jour votre organisation ou inscrire de nouveaux utilisateurs pour l'organisation. Veuillez contacter @SUPPORT si vous pensez que vous devriez avoir les permissions de l'utilisateur maître."
     },
 
     "createstudy" : {
@@ -66,7 +66,7 @@
         "empty" : "Aucune application n'est liée au projet",
         "aggregator_apps" : "Ajouter une application de recherche à utiliser avec VOTRE compte",
         "datalink" : "Agrégateurs, applications d'analyse et d'interprétation",
-        "description" : "Une fois le projet validé, vous pouvez y associer des applications telles que des plugins et des services externes de traitement de données. Ces applications doivent se connecter à MIDATA en utilisant les identifiants d'un des membres de l'équipe de recherche ayant des droits suffisants.",
+        "description" : "Une fois le projet validé, vous pouvez y associer des applications telles que des plugins et des services externes de traitement de données. Ces applications doivent se connecter à la plateforme en utilisant les identifiants d'un des membres de l'équipe de recherche ayant des droits suffisants.",
         "select_group_btn" : "Sélectionnez un groupe",
         "allgroups" : "<Tous les groupes>",
         "plugin" : "Application vouée à la recherche",
@@ -135,9 +135,9 @@
         "not_anonymous2" : ", requière que le membre partage son nom complet, date de naissance et informations de contact (adresse, téléphone, e-mail)",
         "assistance" : "Assistance",
         "no_assistance1" : "Aucune",
-        "no_assistance2" : " - le membre MIDATA participate de façon autonome.",
+        "no_assistance2" : " - le titulaire de compte participe de façon autonome.",
         "assistance1" : "Professionnel de la santé",
-        "assistance2" : " - le membre MIDATA a besoin de l'assistance d'un professionnel de la santé.",
+        "assistance2" : " - le titulaire de compte a besoin de l'assistance d'un professionnel de la santé.",
         "groups" : "Groupes de participants",
         "groups_empty" : "Aucun groupe de participants n'a été défini.",
         "group_name" : "Nom du groupe",
@@ -178,10 +178,10 @@
         "lastdone" : "Dernière étape traitée",
         "nextstep" : "Prochaine étape à effectuer",
         "confirm" : {
-            "validation" : "La configuration ne peut plus être modifiée. Le processus de validation par MIDATA sera lancé.",
+            "validation" : "La configuration ne peut plus être modifiée. Le processus de validation sera lancé.",
             "end_participant_search" : "Aucun utilisateur supplémentaire ne pourra plus participer.",
             "finish_execution" : "Toutes les données du projet seront gelées à ce moment.",
-            "delete" : "Le projet de recherche sera complètement effacé de la plate-forme.",
+            "delete" : "Le projet de recherche sera complètement effacé de la plateforme.",
             "abort" : "Toutes les données du projet seront gelées à ce moment. Ce projet sera marqué comme ayant échoué.",
             "clone" : "Cela clonera les paramètres du projet dans un nouveau projet de recherche. Le flux de travail du nouveau projet sera réinitialisé. Aucun participant ne sera transféré au nouveau projet. Ce projet restera inchangé.",
             "are_you_sure" : "Cette opération ne peut pas être annulée. Êtes-vous sûr?"
@@ -244,7 +244,8 @@
         "join_methods" : "Procédures de participation autorisées",
         "queryeditor_btn" : "Modifier",
         "terms_of_use" : "Conditions générales",
-        "terms_of_use_hint" : "Si les conditions générales du projet doivent être lues et acceptées par l'utilisateur, veuillez envoyer le texte à MIDATA. Nous téléchargerons le texte au bon format et vous fournirons l'ID que vous devez saisir ici.",
+        "terms_of_use_hint" : "Si les conditions générales du projet doivent être lues et acceptées par l'utilisateur, veuillez envoyer le texte à un administrateur de la plateforme. Nous téléchargerons le texte au bon format et vous fournirons l'ID que vous devez saisir ici.",
+        "consent_observers" : "Observers externes de consentements",
         "show_terms" : "Afficher les conditions générales",
         "requirements" : "Exigences"
     },
@@ -289,7 +290,7 @@
         "teamsetup" : "Configuration de l'équipe de chercheurs",
         "teamsetup_help" : "Si davantage de personnes participent à la réalisation du projet, indiquez toutes les personnes concernées et leur rôle. Tant que vous n'avez pas ajouté d'autres personnes, vous pouvez changer votre propre rôle en vous ajoutant à nouveau avec un autre rôle.",
         "information" : "Informations publiques sur vos recherches",
-        "information_help" : "L'information publique aidera les titulaires de comptes MIDATA à évaluer si vos recherches sont pertinentes pour eux.",
+        "information_help" : "L'information publique aidera les titulaires de comptes à évaluer si vos recherches sont pertinentes pour eux.",
         "groups" : "Groupes de participants définis",
         "groups_help" : "Votre projet peut comprendre un ou plusieurs groupes de participants. Veuillez définir la liste des groupes de participants.",
         "sharingQuery" : "Data Access Filter défini",
@@ -297,17 +298,17 @@
         "dates" : "Dates de début et de fin fixées",
         "dates_help" : "Les dates de début et de fin seront affichées aux participants. Aucunes données supplémentaires ne seront transmise au projet à partir du moment où les données sont gelées.",
         "terms" : "Conditions générales fournies",
-        "terms_help" : "Si les conditions générales du projet doivent être confirmées en ligne par les participants, veuillez contacter MIDATA.",
+        "terms_help" : "Si les conditions générales du projet doivent être confirmées en ligne par les participants, veuillez contacter un administrateur de la plateforme.",
         "validation" : "Validation du projet demandée",
-        "validation_help" : "La validation sera effectuée par MIDATA après sa demande. Le projet ne peut plus être modifié après la demande de validation.",
-        "validation_passed" : "Projet validé par MIDATA",
+        "validation_help" : "La validation sera effectuée après qu'elle ait été demandée. Le projet ne peut plus être modifié après la demande de validation.",
+        "validation_passed" : "Projet validé",
         "validation_passed_help" : "Veuillez attendre que le projet ait été validé.",
         "phase2" : "Phase 2 : Préparation",
         "phase2_help" : "Préparation",
         "applications" : "Application de recherche associée",
-        "applications_help" : "Vous pouvez lier des applications telles que des plugins et des services externes de traitement de données à votre projet. Celles-ci peuvent lire les données des participants et/ou partager des données agrégées avec les participants. Ces applications doivent se connecter à MIDATA en utilisant les identifiants d'un des membres de l'équipe de recherche ayant des droits suffisants.",
+        "applications_help" : "Vous pouvez lier des applications telles que des plugins et des services externes de traitement de données à votre projet. Celles-ci peuvent lire les données des participants et/ou partager des données agrégées avec les participants. Ces applications doivent se connecter à la plateforme en utilisant les identifiants d'un des membres de l'équipe de recherche ayant des droits suffisants.",
         "applinked" : "Une application a été liée au projet",
-        "applinked_help" : "Afin de lier une application à votre projet, veuillez envoyer à MIDATA le code de votre projet et le nom de l'application que vous souhaitez lier.",
+        "applinked_help" : "Afin de lier une application à votre projet, veuillez envoyer le code de votre projet et le nom de l'application que vous souhaitez lier à un administrateur de la plateforme.",
         "partsearchstart" : "Recherche de participants lancée",
         "partsearchstart_help" : "Tant que la recherche de participants n'est pas lancée, il est impossible de participer au projet. Les applications nécessitant une participation au projet ne peuvent pas être utilisées.",
         "phase3" : "Phase 3 : Exécution",
@@ -335,7 +336,7 @@
         "visibilities" : {
             "ALL" : "tout le monde",
             "PARTICIPANTS" : "tous les participants",
-            "INTERNAL" : "uniquement les chercheurs et MIDATA"
+            "INTERNAL" : "uniquement les chercheurs et les administrateurs"
         },
         "showlanguages" : "Langues à éditer"
     },

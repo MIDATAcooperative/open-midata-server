@@ -112,7 +112,7 @@
         "plugin_developer" : "Dévelopeur",
         "plugin_type" : "Type",
         "plugin_role" : "Rôle cible",
-        "plugin_market" : "MIDATA Store",
+        "plugin_market" : "Store",
         "plugin_stats" : "Statistiques",
         "plugin_status" : "État",
         "add_definition_btn" : "Importer la définition d'une application"
@@ -123,10 +123,17 @@
         "definition" : "Définition (JSON)"
     },
 
+    "admin_definestudy" : {
+        "title" : "Importer la définition d'un project",
+        "definition" : "Définition (JSON)",
+        "researcher" : "Nouveau propriétaire (compte chercheur)"
+    },
+
     "admin_studies" : {
         "title" : "Projets de recherche",
         "criteria" : "Critère de recherche",
-        "empty" : "Aucun projet correspondant trouvé."
+        "empty" : "Aucun projet correspondant trouvé.",
+        "add_definition_btn" : "Importer la définition d'un project"
     },
 
     "admin_terms" : {
@@ -161,7 +168,7 @@
         "startDate" : "Date de début",
         "endDate" : "Date de fin",
         "dataCreatedBefore" : "Données figées dès le",
-
+        "consent_observers" : "Observers de consentements",
         "infos" : "Informations publiques",
         "infos_part" : "Informations pour les participants",
         "infos_internal" : "Informations internes",
@@ -180,7 +187,8 @@
         "links" : "Applications liées",
         "end_validation_btn" : "Finaliser la validation",
         "back_to_draft_btn" : "Revenir à l'ébauche",
-        "delete_study_btn" : "Effacer le projet"
+        "delete_study_btn" : "Effacer le projet",
+        "export_btn" : "Exporter"
     },
 
     "admin_stats" : {
@@ -288,6 +296,7 @@
         "progressCount" : "# envoyés",
         "studyId" : "Projet de recherche",
         "studyExclude" : "Exclure les participants au projet",
+        "appId" : "Application",
         "lang" : "Langue",
         "title" : "Titre de l'e-mail",
         "content" : "Contenu de l'e-mail",

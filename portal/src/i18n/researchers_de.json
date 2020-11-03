@@ -25,7 +25,7 @@
         "name" : "Name",
         "description" : "Beschreibung",
         "researchers" : "Alle Forscher Ihrer Einrichtung",
-        "master_user" : "Sie müssen Master-Benutzer sein, um Ihre Organisation zu aktualisieren oder neue Benutzer für die Organisation zu registrieren. Bitte wenden Sie sich an den MIDATA-Support, wenn Sie der Meinung sind, dass Sie über Master-Benutzerberechtigungen verfügen sollten."
+        "master_user" : "Sie müssen Master-Benutzer sein, um Ihre Organisation zu aktualisieren oder neue Benutzer für die Organisation zu registrieren. Bitte wenden Sie sich an @SUPPORT, wenn Sie der Meinung sind, dass Sie über Master-Benutzerberechtigungen verfügen sollten."
     },
 
     "createstudy" : {
@@ -66,7 +66,7 @@
         "empty" : "Keine Applikation ist mit dem Projekt verknüpft",
         "aggregator_apps" : "Fügen Sie eine Forschungs-Applikation hinzu, die IHR Konto verwendet",
         "datalink" : "Aggregatoren, Analyse- und Interpretations-Applikationen",
-        "description" : "Nach der Validierung des Forschungsprojektes können Sie Applikationen wie Plugins und externe Datenverarbeitungsdienste mit dem Projekt verknüpfen. Diese Applikationen müssen sich mit den Zugangsdaten eines Mitglieds des Forschungsteams an MIDATA anmelden, das über ausreichende Rechte verfügt.",
+        "description" : "Nach der Validierung des Forschungsprojektes können Sie Applikationen wie Plugins und externe Datenverarbeitungsdienste mit dem Projekt verknüpfen. Diese Applikationen müssen sich mit den Zugangsdaten eines Mitglieds des Forschungsteams mit der Plattform verbinden, das über ausreichende Rechte verfügt.",
         "select_group_btn" : "Gruppe auswählen",
         "allgroups" : "<Alle Gruppen>",
         "plugin" : "Forschungsapplikation",
@@ -135,9 +135,9 @@
         "not_anonymous2" : ", bedingt, dass das Mitglied seinen vollständigen Namen, Geburtsdatum und Kontaktinformationen (Adresse, Telefon, E-Mail) teilt",
         "assistance" : "Unterstützung",
         "no_assistance1" : "Keine",
-        "no_assistance2" : " - das MIDATA-Mitglied nimmt alleine teil.",
+        "no_assistance2" : " - der Kontoinhaber nimmt alleine teil.",
         "assistance1" : "Gesundheitsfachperson",
-        "assistance2" : " - das MIDATA-Mitglied benötigt Unterstützung durch eine Gesundheitsfachperson.",
+        "assistance2" : " - der Kontoinhaber benötigt Unterstützung durch eine Gesundheitsfachperson.",
         "groups" : "Teilnehmergruppen",
         "groups_empty" : "Es wurden noch keine Teilnehmergruppen definiert.",
         "group_name" : "Name der Gruppe",
@@ -178,7 +178,7 @@
         "lastdone" : "Letzter ausgeführter Schritt",
         "nextstep" : "Nächster Schritt",
         "confirm" : {
-            "validation" : "Das Setup kann nicht mehr geändert werden. Der Validierungsprozess durch MIDATA wird gestartet.",
+            "validation" : "Das Setup kann nicht mehr geändert werden. Der Validierungsprozess wird gestartet.",
             "end_participant_search" : "Es werden keine weiteren Benutzer mehr teilnehmen können.",
             "finish_execution" : "Alle Projektdaten werden zu diesem Zeitpunkt eingefroren.",
             "delete" : "Das Forschungsprojekt wird vollständig von der Plattform gestrichen.",
@@ -244,7 +244,8 @@
         "join_methods" : "Erlaubte Teilnahmeverfahren",
         "queryeditor_btn" : "Ändern",
         "terms_of_use" : "Allgemeine Geschäftsbedingungen",
-        "terms_of_use_hint" : "Wenn die Allgemeine Geschäftsbedingungen des Projektes vom Benutzer gelesen und akzeptiert werden müssen, senden Sie den Text bitte an MIDATA. Wir werden den Text im richtigen Format hochladen und Ihnen die ID mitteilen, die Sie hier eingeben müssen.",
+        "terms_of_use_hint" : "Wenn die Allgemeine Geschäftsbedingungen des Projektes vom Benutzer gelesen und akzeptiert werden müssen, bitte senden Sie den Text an einen Plattformadministrator. Wir werden den Text im richtigen Format hochladen und Ihnen die ID mitteilen, die Sie hier eingeben müssen.",
+        "consent_observers" : "Externe Zustimmungs-Observers",
         "show_terms" : "Allgemeine Geschäftsbedingungen anzeigen",
         "requirements" : "Anforderungen"
     },
@@ -289,7 +290,7 @@
         "teamsetup" : "Einrichtung des Forschungsteams",
         "teamsetup_help" : "Wenn weitere Personen an der Projektdurchführung beteiligt sind, geben Sie alle involvierten Personen und deren Rolle an. Solange Sie keine weitere Personen hinzugefügt haben, können Sie Ihre Rolle ändern, indem Sie sich nochmal mit einer anderen Rolle hinzufügen.",
         "information" : "Öffentliche Informationen über Ihre Forschung",
-        "information_help" : "Öffentliche Informationen werden den Inhabern von MIDATA-Konten helfen zu beurteilen, ob Ihre Forschung für sie relevant ist.",
+        "information_help" : "Öffentliche Informationen werden den Kontoinhabenden helfen zu beurteilen, ob Ihre Forschung für sie relevant ist.",
         "groups" : "Teilnehmergruppen definiert",
         "groups_help" : "Ihr Projekt kann eine oder mehrere Teilnehmergruppen umfassen. Bitte definieren Sie die Liste der Teilnehmergruppen.",
         "sharingQuery" : "Data Access Filter definiert",
@@ -297,17 +298,17 @@
         "dates" : "Start- und Enddatum gesetzt",
         "dates_help" : "Start- und Enddatum werden den Teilnehmern angezeigt. Ab dem Zeitpunkt wo der Datenbestand eingefroren wird, fliessen keine weitere Daten mehr im Projekt.",
         "terms" : "Allgemeine Geschäftsbedingungen geliefert",
-        "terms_help" : "Sollten die Allgemeinen Geschäftsbedingungen des Projektes von den Teilnehmern online bestätigt werden müssen, wenden Sie sich bitte an MIDATA.",
+        "terms_help" : "Sollten die Allgemeinen Geschäftsbedingungen des Projektes von den Teilnehmern online bestätigt werden müssen, wenden Sie sich bitte an einen Plattformadministrator.",
         "validation" : "Projektvalidierung angefordert",
-        "validation_help" : "Die Validierung wird durch MIDATA erfolgen, nachdem sie angefordert wurde. Das Projekt kann nach der Anforderung zur Validierung nicht mehr geändert werden.",
-        "validation_passed" : "Projekt validiert durch MIDATA",
+        "validation_help" : "Die Validierung wird durchgeführt, nachdem sie angefordert wurde. Das Projekt kann nach der Anforderung zur Validierung nicht mehr geändert werden.",
+        "validation_passed" : "Projekt validiert",
         "validation_passed_help" : "Warten Sie bitte, bis das Projekt validiert wurde.",
         "phase2" : "Phase 2 : Vorbereitung",
         "phase2_help" : "Vorbereitung",
         "applications" : "Forschungsapplikation hinzugefügt",
-        "applications_help" : "Sie können Applikationen wie Plugins und externe Datenverarbeitungsdienste mit Ihrem Projekt verknüpfen. Diese können die Daten der Teilnehmer lesen und/oder aggregierte Daten an die Teilnehmer zurückgeben. Diese Applikationen müssen sich mit den Zugangsdaten eines Mitglieds des Forschungsteams an MIDATA anmelden, das über ausreichende Rechte verfügt.",
+        "applications_help" : "Sie können Applikationen wie Plugins und externe Datenverarbeitungsdienste mit Ihrem Projekt verknüpfen. Diese können die Daten der Teilnehmer lesen und/oder aggregierte Daten an die Teilnehmer zurückgeben. Diese Applikationen müssen sich mit den Zugangsdaten eines Mitglieds des Forschungsteams mit der Plattform verbinden, das über ausreichende Rechte verfügt.",
         "applinked" : "Eine Applikation wurde mit dem Projekt verknüpft",
-        "applinked_help" : "Um eine Applikation mit Ihrem Projekt zu verknüpfen, senden Sie bitte den Code Ihres Projektes und den Namen Ihrer Applikation, die Sie verknüpft haben möchten, an MIDATA.",
+        "applinked_help" : "Um eine Applikation mit Ihrem Projekt zu verknüpfen, senden Sie bitte den Code Ihres Projektes und den Namen Ihrer Applikation, die Sie verknüpft haben möchten, an einen Plattformadministrator.",
         "partsearchstart" : "Suche nach Teilnehmer gestartet",
         "partsearchstart_help" : "Solange die Teilnehmersuche nicht gestartet wird, ist es nicht möglich, am Projekt teilzunehmen. Applikationen, die eine Projektteilnahme erfordern, dürfen nicht verwendet werden.",
         "phase3" : "Phase 3 : Durchführung",
@@ -335,7 +336,7 @@
         "visibilities" : {
             "ALL" : "alle",
             "PARTICIPANTS" : "alle Teilnehmer",
-            "INTERNAL" : "nur die Forscher und MIDATA"
+            "INTERNAL" : "nur Forscher und Administratoren"
         },
         "showlanguages" : "Zu editierende Sprachen"
     },

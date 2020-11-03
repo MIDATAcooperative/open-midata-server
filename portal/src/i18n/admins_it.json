@@ -50,7 +50,7 @@
         "confirmation_code" : "Codice di conferma:",
         "registration_date" : "Data di registrazione:",
         "confirmation_date" : "Data di conferma:",
-        "security" : "Protezione del conto",
+        "security" : "Protezione del account",
         "auth_type" : "Metodo 2FA",
         "security_type" : {
             "KEY" : "Chiave privata sul server",
@@ -112,21 +112,28 @@
         "plugin_developer" : "Sviluppatore",
         "plugin_type" : "Tipo",
         "plugin_role" : "Ruolo di destinazione",
-        "plugin_market" : "MIDATA Store",
+        "plugin_market" : "Store",
         "plugin_stats" : "Statist.",
         "plugin_status" : "Stato",
-        "add_definition_btn" : "Importa definizione applicazione"
+        "add_definition_btn" : "Importare la definizione di un'applicazione"
     },
 
     "admin_defineplugin" : {
-        "title" : "Importa definizione applicazione",
+        "title" : "Importare la definizione di un'applicazione",
         "definition" : "Definizione (JSON)"
+    },
+
+    "admin_definestudy" : {
+        "title" : "Importare la definizione di un progetto",
+        "definition" : "Definizione (JSON)",
+        "researcher" : "Nuovo proprietario (account ricercatore)"
     },
 
     "admin_studies" : {
         "title" : "Progetti di ricerca",
         "criteria" : "Criteri di ricerca",
-        "empty" : "Non è stato trovato alcun progetto corrispondente."
+        "empty" : "Non è stato trovato alcun progetto corrispondente.",
+        "add_definition_btn" : "Importare la definizione di un progetto"
     },
 
     "admin_terms" : {
@@ -161,7 +168,7 @@
         "startDate" : "Data di inizio",
         "endDate" : "Data di fine",
         "dataCreatedBefore" : "Data di congelamento dei dati",
-
+        "consent_observers" : "Observers di consenso",
         "infos" : "Informazioni pubbliche",
         "infos_part" : "Informazioni per i partecipanti",
         "infos_internal" : "Informazioni interne",
@@ -180,7 +187,8 @@
         "links" : "Applicazioni collegate",
         "end_validation_btn" : "Convalida completa",
         "back_to_draft_btn" : "Torna alla bozza",
-        "delete_study_btn" : "Elimina progetto"
+        "delete_study_btn" : "Elimina progetto",
+        "export_btn" : "Esportare"
     },
 
     "admin_stats" : {
@@ -288,6 +296,7 @@
         "progressCount" : "# inviate",
         "studyId" : "Progetto di ricerca",
         "studyExclude" : "Escludere i partecipanti al progetto",
+        "appId" : "Applicazione",
         "lang" : "Lingua",
         "title" : "Titolo e-mail",
         "content" : "Contenuto e-mail",

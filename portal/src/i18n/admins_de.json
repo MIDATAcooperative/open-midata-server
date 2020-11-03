@@ -112,7 +112,7 @@
         "plugin_developer" : "Entwickler",
         "plugin_type" : "Typ",
         "plugin_role" : "Zielrolle",
-        "plugin_market" : "MIDATA Store",
+        "plugin_market" : "Store",
         "plugin_stats" : "Statistiken",
         "plugin_status" : "Status",
         "add_definition_btn" : "Applikationsdefinition importieren"
@@ -123,10 +123,17 @@
         "definition" : "Definition (JSON)"
     },
 
+    "admin_definestudy" : {
+        "title" : "Projektdefinition importieren",
+        "definition" : "Definition (JSON)",
+        "researcher" : "Neuer Eigentümer (Forscherkonto)"
+    },
+
     "admin_studies" : {
         "title" : "Forschungsprojekte",
         "criteria" : "Suchkriterien",
-        "empty" : "Kein passendes Projekt gefunden."
+        "empty" : "Kein passendes Projekt gefunden.",
+        "add_definition_btn" : "Projektdefinition importieren"
     },
 
     "admin_terms" : {
@@ -161,7 +168,7 @@
         "startDate" : "Startdatum",
         "endDate" : "Enddatum",
         "dataCreatedBefore" : "Datenbestand eingefroren ab dem",
-
+        "consent_observers" : "Zustimmungs-Observers",
         "infos" : "Öffentliche Informationen",
         "infos_part" : "Informationen für die Teilnehmer",
         "infos_internal" : "Interne Informationen",
@@ -180,7 +187,8 @@
         "links" : "Verknüpfte Applikationen",
         "end_validation_btn" : "Validierung abschliessen",
         "back_to_draft_btn" : "Zurück zum Entwurf",
-        "delete_study_btn" : "Projekt löschen"
+        "delete_study_btn" : "Projekt löschen",
+        "export_btn" : "Exportieren"
     },
 
     "admin_stats" : {
@@ -288,6 +296,7 @@
         "progressCount" : "# versendet",
         "studyId" : "Forschungsprojekt",
         "studyExclude" : "Projektteilnehmer ausschliessen",
+        "appId" : "Applikation",
         "lang" : "Sprache",
         "title" : "E-Mail Titel",
         "content" : "E-Mail Inhalt",

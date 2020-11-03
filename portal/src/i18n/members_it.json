@@ -1,7 +1,6 @@
 {
 
     "member_login" : {
-        "teaser" : "I miei dati - La nostra salute e sanità",
         "register_now" : "Iscriviti ora",
         "sign_in" : "Accesso"
     },
@@ -20,14 +19,14 @@
         "menu_me" : "Pannello",
         "menu_me_text" : "Il proprio pannello di controllo personale, in cui è possibile inserire tutte le funzionalità più utili.",
         "menu_overview" : "Panoramica",
-        "menu_overview_text" : "Una panoramica di tutte le funzioni fornite dalla piattaforma MIDATA.",
+        "menu_overview_text" : "Panoramica di tutte le funzioni fornite dalla piattaforma.",
         "menu_config" : "Config",
         "menu_config_text" : "Configurare il proprio pannello di controllo e l'importazione di dati.",
         "menu_research" : "Notizie",
-        "menu_research_text" : "Notizie e annunci su MIDATA, la piattaforma e i progetti di ricerca",
+        "menu_research_text" : "Notizie e annunci su la piattaforma e i progetti di ricerca",
         "menu_consents" : "Condivisione",
         "menu_consents_text" : "Gestire la condivisione dei dati con altri.",
-        "starts" : "Alcune idee per iniziare con MIDATA:",
+        "starts" : "Alcune idee per cominciare:",
         "answer_questions" : "Per iniziare ti consigliamo di rispondere ad alcune domande. Preconfigureremo il tuo account sulla base delle tue risposte.",
         "answered_questions" : "Grazie per avere risposto alle domande sulla configurazione! Visita il tuo pannello di controllo ora oppure modifica le risposte, se necessario.",
         "answer_btn" : "Rispondere ora alle domande sulla configurazione",
@@ -61,7 +60,7 @@
 
     "member_othercircles" : {
         "number_available" : "Cerchie disponibili:",
-        "empty" : "Nessun membro di MIDATA condivide dati con te."
+        "empty" : "Nessun titolare di un account condivide dati con te."
     },
 
     "yourstudies" : {

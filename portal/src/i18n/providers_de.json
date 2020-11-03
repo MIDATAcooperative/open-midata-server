@@ -18,7 +18,7 @@
         "patients" : "Patienten",
         "research" : "Forschung",
         "workspace" : "Workspace",
-        "market" : "MIDATA Store",
+        "market" : "Store",
         "org" : "Unternehmen",
         "organization" : "Organisation",
         "usergroups" : "Teams"
@@ -31,7 +31,7 @@
         "url" : "Homepage URL",
         "members" : "Alle Mitglieder Ihrer Organisation",
         "addprovider" : "Neues Mitglied registrieren",
-        "master_user" : "Sie müssen Master-Benutzer sein, um Ihre Organisation zu aktualisieren oder neue Benutzer für die Organisation zu registrieren. Bitte wenden Sie sich an den MIDATA-Support, wenn Sie der Meinung sind, dass Sie über Master-Benutzerberechtigungen verfügen sollten."
+        "master_user" : "Sie müssen Master-Benutzer sein, um Ihre Organisation zu aktualisieren oder neue Benutzer für die Organisation zu registrieren. Bitte wenden Sie sich an @SUPPORT, wenn Sie der Meinung sind, dass Sie über Master-Benutzerberechtigungen verfügen sollten."
     },
 
     "addprovider" : {
@@ -97,6 +97,6 @@
     },
 
     "help_welcome" : {
-        "starts" : "Einige Ideen, um mit MIDATA zu beginnen:"
+        "starts" : "Ein paar Ideen zum Beginnen:"
     }
 }

@@ -1,51 +1,52 @@
 {
-   "footer" : {
-     "copyright" : "",
-     "homepage" : "@OPERATOR Homepage",
-     "impressum" : "Impressum",
-     "portals" : "@PLATFORM Portals:"    
-   },
-   
-   "member_login" : {
-     "teaser": "Your Slogan",
-     "info1" : "Teaser line 1",
-     "info2" : "Teaser line 2",
-     "info3" : "Teaser line 3"    
-  },
-  
-  "instance" : {
-     "purpose" : "Purpose of this @PLATFORM instance",
-     "access" : "Access to this @PLATFORM instance",
-     "uptime" : "Availability and downtimes",
-     "data" : "Data stored in this @PLATFORM instance",
-     "start" : "Choose one of the portal from the top of the page to start. Each portal has its own LOGIN and SIGN UP page.",
 
-     "localhost" : {
-        "name" : "Local Instance (localhost)",
-        "intro": "This is a local installation of the @PLATFORM, only available from your PC.",
-        "purpose" : "A local installation may be used in order to contribute to the platform and for testing purposes.",
-        "access" : "You may register user accounts for all four portals. Accounts do not need to be validated by an administrator. You may register and use your own admin accounts.",
-        "uptime" : "Whenever you run it, its available only for you :-)",
-        "data" : "Data stored in this instance will only be available on your local PC."
-     },
+    "footer" : {
+        "copyright" : "",
+        "homepage" : "@OPERATOR homepage",
+        "impressum" : "Impressum",
+        "portals" : "Portali @PLATFORM:"
+    },
 
-     "test" : {
-        "name" : "Test Instance",
-        "intro": "This is a test instance of @PLATFORM.",
-        "purpose" : "This instance may be used to develop and test new applications in a safe environment. It is also used to test new versions of the portal and the backend before the other instances are updated.",
-        "access" : "Register your own developer account. After validation by an administrator, you may register test users, researchers and health providers without additional validation.",
-        "uptime" : "There is no guarantee on availability. Expect updates of the instance to happen as needed. If possible, updates are done between 12:00 and 13:00 central european time, but may occur more than once a day if problems occur.",
-        "data" : "Store only test data on this instance. Data may be wiped, accounts may be deleted if necessary. Records may become corrupted by bugs. There is no backup of the data."
-     },
+    "member_login" : {
+        "teaser" : "Il vostro slogan",
+        "info1" : "Teaser linea 1",
+        "info2" : "Teaser linea 2",
+        "info3" : "Teaser linea 3"
+    },
 
-     "demo" : {
-        "name" : "Demo Instance",
-        "intro": "This is a demonstration instance of @PLATFORM.",
-        "purpose" : "This instance may be used for demonstration purposes and training.",
-        "access" : "You may register user accounts for all four portals. Accounts must be validated by an administrator, before they are unlocked.",
-        "uptime" : "This instance is updated less frequently than the test instance. Expected downtime is once a week on Monday between 12:00 and 14:00 central european time.",
-        "data" : "Store only demonstration data on this instance. There is no backup of the data."
-     }
+    "instance" : {
+        "purpose" : "Scopo di questa istanza @PLATFORM",
+        "access" : "Accesso a questa istanza @PLATFORM",
+        "uptime" : "Disponibilità e tempi di inattività",
+        "data" : "Dati memorizzati in questa istanza @PLATFORM",
+        "start" : "Scegliete uno dei portali dalla parte superiore della pagina per cominciare. Ogni portale ha la propria pagina ISCRIZIONE e ACCESSO.",
 
-  }
+        "localhost" : {
+            "name" : "Istanza locale (localhost)",
+            "intro" : "Questa è un'installazione locale di @PLATFORM, disponibile solamente dal proprio PC.",
+            "purpose" : "Un'installazione locale può essere utilizzata per contribuire alla piattaforma e a scopo di test.",
+            "access" : "È possibile registrare gli account utente per tutti i quattro portali. Gli account non richiedono la convalida da parte di un amministratore. È possibile registrare e utilizzare i propri account ammin.",
+            "uptime" : "Ogniqualvolta lo esegui, è disponibile solo per te :-)",
+            "data" : "I dati memorizzati in questa istanza saranno disponibili solamente sul proprio PC locale."
+        },
+
+        "test" : {
+            "name" : "Istanza di test",
+            "intro" : "Questa è un'istanza di test di @PLATFORM.",
+            "purpose" : "Questa istanza può essere utilizzata per sviluppare e testare nuove applicazioni in un ambiente sicuro. È inoltre utilizzata per testare nuove versioni del portale e il backend prima che altre istanze siano aggiornate.",
+            "access" : "Registrare il proprio account di sviluppatore. Dopo la convalida di un amministratore, è possibile registrare utenti di test, ricercatori e fornitori di prestazioni sanitarie senza un'ulteriore convalida.",
+            "uptime" : "La disponibilità non è garantita. Attendere che gli aggiornamenti dell'istanza avvengano secondo le esigenze. Ove possibile, gli aggiornamenti sono eseguiti tra le 12:00 e le 13:00 ora dell'Europa centrale, tuttavia potrebbero avvenire più di una volta al giorno se si verificano dei problemi.",
+            "data" : "Su questa istanza memorizzare solo dati di test. Se necessario, i dati possono essere rimossi e gli account eliminati. I record potrebbero danneggiarsi a causa di anomalie. Non esiste un backup dei dati."
+        },
+
+        "demo" : {
+            "name" : "Istanza di demo",
+            "intro" : "Questa è un'istanza demo di @PLATFORM.",
+            "purpose" : "Questa istanza può essere utilizzata a scopo dimostrativo e formativo.",
+            "access" : "È possibile registrare gli account utente per tutti i quattro portali. Gli account devono essere convalidati da un amministratore, prima che siano sbloccati.",
+            "uptime" : "Questa istanza è aggiornata meno frequentemente dell'istanza. Il tempo di inattività atteso è una volta la settimana il lunedì tra le 12:00 e le 14:00 ora dell'Europa centrale.",
+            "data" : "Su questa istanza memorizzare solo dati dimostrativi. Non esiste un backup dei dati."
+        }
+
+    }
 }
