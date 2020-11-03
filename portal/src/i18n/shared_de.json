@@ -49,10 +49,6 @@
             "study" : "Sie sind nicht berechtigt dieses Forschungsprojektes einzusehen",
             "not_plugin_owner" : "Dies ist nicht Ihre Applikation",
             "no_debug" : "Applikations-Debugging ist nur während der Entwicklungs- oder Beta-Phase auf nicht produktiven Instanzen verfügbar.",
-
-            // TODO CHANGED
-            // OLD: Please remove deployment before performing this operation.
-            // NEW: Please remove the deployment before performing this operation.
             "remove_first" : "Bitte entfernen Sie das Deployment, bevor Sie diesen Vorgang durchführen."
         },
 
@@ -512,10 +508,6 @@
         "bulkmailtype" : {
             "MARKETING" : "Marketing - Kontoinhabende",
             "PROJECT" : "Projektspezifisch",
-
-            // TODO CHANGED
-            // OLD: App specific
-            // NEW: Application specific
             "APP" : "Applikationsspezifisch"
         },
         "channeluse" : {
@@ -1071,10 +1063,6 @@
         "health" : "Gesundheit",
         "health_text" : "Teilen Sie Daten mit Ihrem Arzt. Suche nach Gesundheitsfachperson.",
         "help" : "Hilfe",
-
-        // TODO CHANGED
-        // OLD: Get help about functions
-        // NEW: Get help about the functionality
         "help_text" : "Erhalten Sie Hilfe über die Funktionalität",
         "training" : "Training",
         "training_text" : "Verwalten Sie Ihr persönliches Training!",

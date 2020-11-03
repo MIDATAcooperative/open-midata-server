@@ -19,10 +19,6 @@
         "menu_me" : "Pannello",
         "menu_me_text" : "Il proprio pannello di controllo personale, in cui è possibile inserire tutte le funzionalità più utili.",
         "menu_overview" : "Panoramica",
-
-        // TODO CHANGED
-        // OLD: An overview over all functions provided by the platform.
-        // NEW: Overview over all functions provided by the platform.
         "menu_overview_text" : "Panoramica di tutte le funzioni fornite dalla piattaforma.",
         "menu_config" : "Config",
         "menu_config_text" : "Configurare il proprio pannello di controllo e l'importazione di dati.",

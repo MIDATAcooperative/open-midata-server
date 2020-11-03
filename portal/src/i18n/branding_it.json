@@ -1,8 +1,6 @@
 {
 
     "footer" : {
-
-        // TODO NEW: 
         "copyright" : "",
         "homepage" : "@OPERATOR homepage",
         "impressum" : "Impressum",
@@ -21,18 +19,10 @@
         "access" : "Accesso a questa istanza @PLATFORM",
         "uptime" : "Disponibilità e tempi di inattività",
         "data" : "Dati memorizzati in questa istanza @PLATFORM",
-
-        // TODO CHANGED
-        // OLD: Choose one of the portal from the top of the page to start. Each portal has its own LOGIN and SIGN UP page.
-        // NEW: Choose one of the portal from the top of the page to start. Each portal has its own REGISTRATION and LOGIN page.
         "start" : "Scegliete uno dei portali dalla parte superiore della pagina per cominciare. Ogni portale ha la propria pagina ISCRIZIONE e ACCESSO.",
 
         "localhost" : {
             "name" : "Istanza locale (localhost)",
-
-            // TODO CHANGED
-            // OLD: This is a local installation of the @PLATFORM, only available from your PC.
-            // NEW: This is a local installation of @PLATFORM, only available from your PC.
             "intro" : "Questa è un'installazione locale di @PLATFORM, disponibile solamente dal proprio PC.",
             "purpose" : "Un'installazione locale può essere utilizzata per contribuire alla piattaforma e a scopo di test.",
             "access" : "È possibile registrare gli account utente per tutti i quattro portali. Gli account non richiedono la convalida da parte di un amministratore. È possibile registrare e utilizzare i propri account ammin.",

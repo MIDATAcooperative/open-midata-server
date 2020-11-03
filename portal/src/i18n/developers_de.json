@@ -137,22 +137,10 @@
             "pseudonymize" : "Pseudonymisierte Daten lesen. Aktualisiert keine Datensätze von Teilnehmern.",
             "resharesData" : "Die Applikation darf Daten, auf die sie Zugriff hat, an Drittparteien weitergeben.",
             "allowsUserSearch" : "Benutzer dieser Applikation dürfen nach anderen Benutzern der gleichen Applikation suchen.",
-
-            // TODO CHANGED
-            // OLD: Does this service monitor user consents? Add 'Consents' to access filter in order to activate.
-            // NEW: Does this service monitor user consents? Add 'Consents' to the Access Filter in order to activate.
             "consentObserving" : "Überwacht dieser Dienst die Einwilligungen der Benutzer? Fügen Sie 'Zustimmungen' zum Access Filter hinzu, um es zu aktivieren.",
             "defaultSpaceName" : "Titel der Kachel des Plugins auf dem Dashboard.",
-
-            // TODO CHANGED
-            // OLD: Categories on store for which your plugin should be listed.
-            // NEW: Categories on the Store for which your plugin should be listed.
             "tags" : "Kategorien unter welchen das Plugin im Store erscheinen wird.",
-
-            // TODO CHANGED
-            // OLD: URL of your plugins main page. If you use the template from MIDATA it is 'dist/index.html#!?authToken=:authToken''
-            // NEW: URL of your plugins main page. If you use the template from @PLATFORM it is 'dist/index.html#!?authToken=:authToken''
-            "url" : "URL der Hauptseite des Plugins. Wenn Sie das @PLATFORM-Template verwenden ist es 'dist/index.html#!?authToken=:authToken''",
+            "url" : "URL der Hauptseite des Plugins. Wenn Sie das @PLATFORM Template verwenden ist es 'dist/index.html#!?authToken=:authToken''",
             "previewUrl" : "URL der Dashboard-Kachel des Plugins. Leer lassen falls keine solche Kachel angeboten wird.",
             "defaultSpaceContext" : "Wählen Sie 'Dashboard' für das Standard-Dashboard. Wählen Sie 'Konfiguration' für ein Import-Plugin.",
             "redirectUri" : "Sie können mehrere mögliche Redirect-URIs angeben, indem Sie die URIs durch ein Leerzeichen trennen.",
@@ -338,15 +326,7 @@
         "refresh_btn" : "Aktualisieren",
         "submit_btn" : "Jetzt auschecken",
         "status" : "Status des Deployment",
-
-        // TODO CHANGED
-        // OLD: Repository needs to be provided
-        // NEW: The repository needs to be provided
         "phase_provided" : "Das Repository muss angegeben werden",
-
-        // TODO CHANGED
-        // OLD: Deployment sceduled
-        // NEW: Deployment scheduled
         "phase_sceduled" : "Deployment geplant",
         "phase_checkout" : "Check out",
         "phase_audit" : "Sicherheitsaudit",

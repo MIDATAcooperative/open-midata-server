@@ -1,8 +1,6 @@
 {
 
     "footer" : {
-
-        // TODO NEW: 
         "copyright" : "",
         "homepage" : "Sie web @OPERATOR",
         "impressum" : "Impressum",
@@ -21,18 +19,10 @@
         "access" : "Accès à cette instance @PLATFORM",
         "uptime" : "Disponibilité et temps d'arrêt",
         "data" : "Données stockées dans cette instance @PLATFORM",
-
-        // TODO CHANGED
-        // OLD: Choose one of the portal from the top of the page to start. Each portal has its own LOGIN and SIGN UP page.
-        // NEW: Choose one of the portal from the top of the page to start. Each portal has its own REGISTRATION and LOGIN page.
         "start" : "Choisissez l'un des portails en haut de la page pour commencer. Chaque portail a sa propre page d'INSCRIPTION et de CONNEXION.",
 
         "localhost" : {
             "name" : "Instance locale (localhost)",
-
-            // TODO CHANGED
-            // OLD: This is a local installation of the @PLATFORM, only available from your PC.
-            // NEW: This is a local installation of @PLATFORM, only available from your PC.
             "intro" : "Ceci est une installation locale de @PLATFORM, uniquement disponible sur votre PC.",
             "purpose" : "Une installation locale peut être utilisée pour des contributions à la plateforme et pour des raisons de test.",
             "access" : "Vous pouvez créer des comptes utilisateurs pour les quatre portails. Les comptes ne doivent pas être validés par un administrateur. Vous pouvez créer et utiliser vos propres comptes administrateur.",

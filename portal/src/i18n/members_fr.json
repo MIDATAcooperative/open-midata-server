@@ -19,10 +19,6 @@
         "menu_me" : "Tableau de bord",
         "menu_me_text" : "Votre tableau de bord personnel, où vous pouvez placer vos favoris.",
         "menu_overview" : "Vue d'ensemble",
-
-        // TODO CHANGED
-        // OLD: An overview over all functions provided by the platform.
-        // NEW: Overview over all functions provided by the platform.
         "menu_overview_text" : "Vue d'ensemble de toutes les fonctionnalités proposées par la plateforme.",
         "menu_config" : "Configuration",
         "menu_config_text" : "Configurez votre tableau de bord et l'importation de données.",

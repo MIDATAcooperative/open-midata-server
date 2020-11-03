@@ -19,10 +19,6 @@
         "menu_me" : "Dashboard",
         "menu_me_text" : "Ihr persönliches Dashboard, wo Sie Ihre Favoriten platzieren können.",
         "menu_overview" : "Übersicht",
-
-        // TODO CHANGED
-        // OLD: An overview over all functions provided by the platform.
-        // NEW: Overview over all functions provided by the platform.
         "menu_overview_text" : "Übersicht über alle Funktionen, die die Plattform anbietet.",
         "menu_config" : "Konfiguration",
         "menu_config_text" : "Konfigurieren Sie Ihr Dashboard und die Datenimports.",
