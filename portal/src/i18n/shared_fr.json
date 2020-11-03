@@ -49,6 +49,10 @@
             "study" : "Vous n'êtes pas autorisé à accéder à ce projet",
             "not_plugin_owner" : "Ce n'est pas votre application",
             "no_debug" : "Le débogage d'applications n'est disponible qu'en phase de développement ou en phase bêta sur les instances non productives.",
+
+            // TODO CHANGED
+            // OLD: Please remove deployment before performing this operation.
+            // NEW: Please remove the deployment before performing this operation.
             "remove_first" : "Veuillez effacer le déploiement avant d'effectuer cette opération."
         },
 
@@ -508,6 +512,10 @@
         "bulkmailtype" : {
             "MARKETING" : "Marketing - Titulaires de comptes",
             "PROJECT" : "Spécifique au projet",
+
+            // TODO CHANGED
+            // OLD: App specific
+            // NEW: Application specific
             "APP" : "Spécifique à l'application"
         },
         "channeluse" : {
@@ -1063,6 +1071,10 @@
         "health" : "Santé",
         "health_text" : "Partagez des données avec votre médecin. Rechercher des professionnels de la santé.",
         "help" : "Aide",
+
+        // TODO CHANGED
+        // OLD: Get help about functions
+        // NEW: Get help about the functionality
         "help_text" : "Obtenir de l'aide à propos de la fonctionalité",
         "training" : "Entraînement",
         "training_text" : "Gérez votre entraînement personnel!",

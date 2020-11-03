@@ -137,9 +137,21 @@
             "pseudonymize" : "Leggere i dati pseudonimizzati. Non aggiorna i dati dei partecipanti.",
             "resharesData" : "L'applicazione è autorizzata a ricondividere con terzi i dati a cui accede.",
             "allowsUserSearch" : "Gli utenti dell'applicazione sono autorizzati a cercare altri utenti della stessa applicazione.",
+
+            // TODO CHANGED
+            // OLD: Does this service monitor user consents? Add 'Consents' to access filter in order to activate.
+            // NEW: Does this service monitor user consents? Add 'Consents' to the Access Filter in order to activate.
             "consentObserving" : "Questo servizio monitorizza il consenso dell'utente? Aggiungere 'Consenso' al Access Filter per attivarlo.",
             "defaultSpaceName" : "Il titolo del riquadro del proprio plugin sul pannello di controllo.",
+
+            // TODO CHANGED
+            // OLD: Categories on store for which your plugin should be listed.
+            // NEW: Categories on the Store for which your plugin should be listed.
             "tags" : "Categorie sul Store per le quali il proprio plugin deve essere elencato.",
+
+            // TODO CHANGED
+            // OLD: URL of your plugins main page. If you use the template from MIDATA it is 'dist/index.html#!?authToken=:authToken''
+            // NEW: URL of your plugins main page. If you use the template from @PLATFORM it is 'dist/index.html#!?authToken=:authToken''
             "url" : "La pagina iniziale con l'URL dei propri plugin. Se si utilizza il modello di @PLATFORM è 'dist/index.html#!?authToken=:authToken''",
             "previewUrl" : "Sezione del pannello di controllo con l'URL dei propri plugin. Lasciare vuoto se non si include questo riquadro.",
             "defaultSpaceContext" : "Scegliere 'Pannello' per il pannello di controllo predefinito. Scegliere 'Configurazione' se si scrive un plugin importato.",
@@ -326,7 +338,15 @@
         "refresh_btn" : "Aggiornare",
         "submit_btn" : "Checkout ora",
         "status" : "Stato di spiegamento",
+
+        // TODO CHANGED
+        // OLD: Repository needs to be provided
+        // NEW: The repository needs to be provided
         "phase_provided" : "Il repository deve essere fornito",
+
+        // TODO CHANGED
+        // OLD: Deployment sceduled
+        // NEW: Deployment scheduled
         "phase_sceduled" : "Spiegamento programmata",
         "phase_checkout" : "Check out",
         "phase_audit" : "Audit di sicurezza",

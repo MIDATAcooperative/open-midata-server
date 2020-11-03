@@ -168,7 +168,6 @@
      "endDate" : "End Date",
      "dataCreatedBefore" : "Data freeze date",
      "consent_observers" : "Consent Observers",
-     
      "infos" : "Public information",
      "infos_part" : "Information for participants",
      "infos_internal" : "Internal Information",     

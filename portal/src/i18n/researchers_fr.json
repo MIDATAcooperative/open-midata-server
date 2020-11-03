@@ -178,6 +178,10 @@
         "lastdone" : "Dernière étape traitée",
         "nextstep" : "Prochaine étape à effectuer",
         "confirm" : {
+
+            // TODO CHANGED
+            // OLD: Setup cannot be changed anymore. Validation process will be started.
+            // NEW: The setup cannot be changed anymore. The validation process will be started.
             "validation" : "La configuration ne peut plus être modifiée. Le processus de validation sera lancé.",
             "end_participant_search" : "Aucun utilisateur supplémentaire ne pourra plus participer.",
             "finish_execution" : "Toutes les données du projet seront gelées à ce moment.",
@@ -300,6 +304,10 @@
         "terms" : "Conditions générales fournies",
         "terms_help" : "Si les conditions générales du projet doivent être confirmées en ligne par les participants, veuillez contacter un administrateur de la plateforme.",
         "validation" : "Validation du projet demandée",
+
+        // TODO CHANGED
+        // OLD: Validation will be done by after it has been requested. The project may no longer be changed after validation has been requested.
+        // NEW: The validation will be done after it has been requested. The project may no longer be changed after validation has been requested.
         "validation_help" : "La validation sera effectuée après qu'elle ait été demandée. Le projet ne peut plus être modifié après la demande de validation.",
         "validation_passed" : "Projet validé",
         "validation_passed_help" : "Veuillez attendre que le projet ait été validé.",

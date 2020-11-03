@@ -178,6 +178,10 @@
         "lastdone" : "Ultima fase su cui si è lavorato",
         "nextstep" : "Prossima fase da eseguire",
         "confirm" : {
+
+            // TODO CHANGED
+            // OLD: Setup cannot be changed anymore. Validation process will be started.
+            // NEW: The setup cannot be changed anymore. The validation process will be started.
             "validation" : "La configurazione non può più essere modificata. Il processo di convalida verrà avviato.",
             "end_participant_search" : "Nessun altro utente potrà più partecipare.",
             "finish_execution" : "Tutti i dati del progetto saranno congelati in questo momento.",
@@ -300,6 +304,10 @@
         "terms" : "Condizioni generali di contratto forniti",
         "terms_help" : "Se i Condizioni generali di contratto del progetto devono essere confermati online dai partecipanti, si prega di contattare un amministratore della piattaforma.",
         "validation" : "Convalida del progetto richiesta",
+
+        // TODO CHANGED
+        // OLD: Validation will be done by after it has been requested. The project may no longer be changed after validation has been requested.
+        // NEW: The validation will be done after it has been requested. The project may no longer be changed after validation has been requested.
         "validation_help" : "La convalida sarà effettuata dopo che sarà stata richiesta. Lo progetto non potrà più essere modificato dopo la richiesta di convalida.",
         "validation_passed" : "Progetto convalidato",
         "validation_passed_help" : "Attendere finché lo progetto non è stato convalidato.",

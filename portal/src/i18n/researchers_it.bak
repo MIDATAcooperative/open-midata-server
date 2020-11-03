@@ -177,7 +177,7 @@
     "lastdone" : "Last step worked on",
     "nextstep" : "Next step to do",
     "confirm" : {
-      "validation" : "Setup cannot be changed anymore. Validation process will be started.",
+      "validation" : "The setup cannot be changed anymore. The validation process will be started.",
       "end_participant_search" : "No additional users will be able to participate anymore.",      
       "finish_execution" : "All project data will be frozen at this moment.",
       "delete" : "The research project will be completely wiped from the platform.",
@@ -299,7 +299,7 @@
     "terms" : "General Terms and Conditions provided",
     "terms_help" : "If the projects General Terms and Conditions have to be confirmed online by the participants, please contact a platform administrator.",
     "validation" : "Project validation requested",
-    "validation_help" : "Validation will be done by after it has been requested. The project may no longer be changed after validation has been requested.",
+    "validation_help" : "The validation will be done after it has been requested. The project may no longer be changed after validation has been requested.",
     "validation_passed" : "Project has been validated",
     "validation_passed_help" : "Please wait until project has been validated.",
     "phase2" : "Phase 2 : Preparation",
