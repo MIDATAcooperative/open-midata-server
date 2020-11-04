@@ -27,6 +27,7 @@ import org.hl7.fhir.r4.model.CanonicalType;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.DateTimeType;
+import org.hl7.fhir.r4.model.DateType;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Period;
 import org.hl7.fhir.r4.model.Reference;
@@ -57,6 +58,7 @@ public class FHIRTools {
 	public final static String BASE64_PLACEHOLDER_FOR_STREAMING = "RKNS56'LP";
 	
 	private static DateTimeFormatter titleTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+	private static DateTimeFormatter titleDateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 	
 /*
 	public static Person getPersonRecordOfUser(String id) throws InternalServerException {
@@ -252,6 +254,11 @@ public class FHIRTools {
                .atZone(ZoneId.systemDefault())
                .format(titleTimeFormatter);
     	}
+    	if (date instanceof DateType) {
+        	return ((DateType) date).getValue().toInstant()
+                   .atZone(ZoneId.systemDefault())
+                   .format(titleDateFormatter);
+        	}
     	return "";
     }
     

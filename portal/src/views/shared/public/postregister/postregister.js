@@ -32,6 +32,26 @@ angular.module('portal')
 	$scope.view = views.getView("terms");
 	$scope.ENV = ENV;
     	
+	$scope.addressNeeded = function() {
+		return $scope.progress.requirements && ($scope.progress.requirements.indexOf('ADDRESS_ENTERED') >= 0  );
+	};
+	
+	$scope.phoneNeeded = function() {
+		return $scope.progress.requirements && ($scope.progress.requirements.indexOf('PHONE_ENTERED') >= 0  );
+	};
+	
+	$scope.addAddressParams = function() {
+		if ($scope.addressNeeded()) {
+			if ($state.params.street) $scope.registration.address1 = $state.params.street;
+			if ($state.params.city) $scope.registration.city = $state.params.city;
+			if ($state.params.zip) $scope.registration.zip = $state.params.zip;
+		}
+		if ($scope.phoneNeeded()) {
+			if ($state.params.phone) $scope.registration.phone = $state.params.phone;
+			if ($state.params.mobile) $scope.registration.mobile = $state.params.mobile;
+		}
+	};
+	
 	$scope.init = function() {
 	if ($stateParams.feature) {
 		$scope.progress = { requirements : [ $stateParams.feature ] };
@@ -43,6 +63,7 @@ angular.module('portal')
 				$scope.progress.emailStatus = $scope.registration.emailStatus;
 				$scope.progress.agbStatus = $scope.registration.agbStatus;
 				$scope.progress.contractStatus = $scope.registration.contractStatus;
+				$scope.addAddressParams();
 			});
 		});
 	}
@@ -55,6 +76,7 @@ angular.module('portal')
 			$scope.progress[$scope.progress.requirements[i]] = true;
 		}
 		$scope.registration = $scope.progress.user;
+		$scope.addAddressParams();
 	}
 	};
 	$scope.setFlags();
@@ -275,13 +297,7 @@ angular.module('portal')
 		$scope.retry(null, { securityToken : "_FAIL" });
 	};
 	
-	$scope.addressNeeded = function() {
-		return $scope.progress.requirements && ($scope.progress.requirements.indexOf('ADDRESS_ENTERED') >= 0  );
-	};
 	
-	$scope.phoneNeeded = function() {
-		return $scope.progress.requirements && ($scope.progress.requirements.indexOf('PHONE_ENTERED') >= 0  );
-	};
 	
 	$scope.requestMembership = function() {
 		$scope.error = null;
@@ -307,6 +323,8 @@ angular.module('portal')
 	    	$scope.retry(result);	    	
 	    });	
 	};
+	
+	
 	
 	if ($stateParams.token && $state.current.data.mode) {
 		$scope.tokenIncluded = true;

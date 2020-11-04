@@ -41,7 +41,8 @@ angular.module('portal')
        $scope.roles = [
    		{ value : "MEMBER", name : "enum.userrole.MEMBER" },
    		{ value : "PROVIDER" , name : "enum.userrole.PROVIDER"},
-   		{ value : "RESEARCH" , name : "enum.userrole.RESEARCH"}   		
+   		{ value : "RESEARCH" , name : "enum.userrole.RESEARCH"},   		
+   		{ value : "DEVELOPER" , name : "enum.userrole.DEVELOPER"}
        ];
        
        //if ($scope.extra == null) $scope.extra = "";

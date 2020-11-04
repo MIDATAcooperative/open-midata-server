@@ -89,6 +89,7 @@ public class QueryBuilder {
 	public final static String TYPE_URI = "uri";
 	
 	public final static String TYPE_CANONICAL = "canonical";
+	public final static String TYPE_VERSIONED_REFERENCE = "versioned";
 	
 	public final static String TYPE_QUANTITY = "Quantity";
 	public final static String TYPE_RANGE = "Range";
@@ -343,6 +344,34 @@ public class QueryBuilder {
 		} 
 	}
 	
+	private void addReferenceConstraint(ReferenceParam rp, PredicateBuilder bld, String path, boolean versioned, boolean or) {
+		
+			   
+		String id = rp.getIdPart();
+		String resType = rp.getResourceType();
+		
+		if (id != null) {
+			if (versioned) {
+				if (resType != null) {
+					bld.addEq(path+".reference", resType+"/"+id, CompareCaseInsensitiveOperator.STARTSWITH);
+					if (or) bld.or();
+				} else {
+					bld.addEq(path+".reference", "/"+id, CompareCaseInsensitiveOperator.CONTAINS);
+					if (or) bld.or();
+				}
+			} else {
+				if (resType != null) {
+					bld.addEq(path+".reference", resType+"/"+id);
+					if (or) bld.or();
+				} else {
+					bld.addEq(path+".reference", "/"+id, CompareCaseInsensitiveOperator.ENDSWITH);
+					if (or) bld.or();
+				}	
+			}
+		}
+				
+	}
+	
 	private void handleRestriction(IQueryParameterType param, String path, String type, PredicateBuilder bld) {
 		if (param.getMissing() != null) {
 			boolean exist = !param.getMissing().booleanValue();
@@ -438,40 +467,18 @@ public class QueryBuilder {
 				if (type != null && type.equals(QueryBuilder.TYPE_CANONICAL)) {					
 					bld.addEq(path, referenceParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);					
 				} else {
-				
+				    boolean withVersion = (type != null && type.equals(QueryBuilder.TYPE_VERSIONED_REFERENCE));
 					if (referenceParam.getChain() != null) {
 						List<ReferenceParam> resolved = followChain(referenceParam, type);
 						if (resolved.isEmpty()) {
 							bld.addEq(path+".reference", "__false");
-						} else {
-						
-						for (ReferenceParam rp : resolved) {
-						   
-							String id = rp.getIdPart();
-							String resType = rp.getResourceType();					
-							if (id != null) {
-								if (resType != null) {
-									bld.addEq(path+".reference", resType+"/"+id);
-									bld.or();
-								} else {
-									bld.addEq(path+".reference", "/"+id, CompareCaseInsensitiveOperator.ENDSWITH);
-									bld.or();
-								}
+						} else {						
+							for (ReferenceParam rp : resolved) {
+								addReferenceConstraint(rp, bld, path, withVersion, true);									
 							}
-						
-						}
 						}
 					} else {
-					
-						String id = referenceParam.getIdPart();
-						String resType = referenceParam.getResourceType();					
-						if (id != null) {
-							if (resType != null) {
-								bld.addEq(path+".reference", resType+"/"+id);
-							} else {
-								bld.addEq(path+".reference", "/"+id, CompareCaseInsensitiveOperator.ENDSWITH);
-							}
-						} 
+						addReferenceConstraint(referenceParam, bld, path, withVersion, false);						 
 					}
 				}
 			} else if (param instanceof DateParam) {

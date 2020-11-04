@@ -19,7 +19,7 @@ angular.module('portal')
 .config(["$stateProvider", function($stateProvider) {
 	   $stateProvider
 	    .state('public.postregister', {
-	      url: '/postregister?callback&consent&action',
+	      url: '/postregister?callback&consent&action&city&street&zip&phone&mobile',
 	      templateUrl: 'views/shared/public/postregister/postregister.html',
 	      data : { role : "member", keep : true },
 	      params : { progress : null }
@@ -67,22 +67,22 @@ angular.module('portal')
 		      url: '/upgrade?role&feature&pluginId',
 		      templateUrl: 'views/shared/public/postregister/postregister.html' 
 	   }).state('public.failure', {
-	      url: '/failure?reason&action&language&email&login&client_id&redirect_uri&state&code_challenge&code_challenge_method&device_id&role&given&family&gender&country&birthdate&joincode&isnew',
+	      url: '/failure?reason&action&language&email&login&client_id&redirect_uri&state&code_challenge&code_challenge_method&device_id&role&given&family&gender&country&birthdate&joincode&isnew&city&street&zip&phone&mobile',
 	      templateUrl: 'views/shared/public/postregister/failure.html',
 	      data : { role : "member", keep : true }
 	    })
 	    .state('public_provider.failure', {
-	      url: '/failure?reason&action&language&email&login&client_id&redirect_uri&state&code_challenge&code_challenge_method&device_id&role&given&family&gender&country&birthdate&joincode&isnew',
+	      url: '/failure?reason&action&language&email&login&client_id&redirect_uri&state&code_challenge&code_challenge_method&device_id&role&given&family&gender&country&birthdate&joincode&isnew&city&street&zip&phone&mobile',
 	      templateUrl: 'views/shared/public/postregister/failure.html',
 	      data : { role : "hpuser", keep : true }
 	    })
 	    .state('public_research.failure', {
-	      url: '/failure?reason&action&language&email&login&client_id&redirect_uri&state&code_challenge&code_challenge_method&device_id&role&given&family&gender&country&birthdate&joincode&isnew',
+	      url: '/failure?reason&action&language&email&login&client_id&redirect_uri&state&code_challenge&code_challenge_method&device_id&role&given&family&gender&country&birthdate&joincode&isnew&city&street&zip&phone&mobile',
 	      templateUrl: 'views/shared/public/postregister/failure.html',
 		  data : { role : "research", keep : true }
 	    })
 	    .state('public_developer.failure', {
-	      url: '/failure?reason&action&language&email&login&client_id&redirect_uri&state&code_challenge&code_challenge_method&device_id&role&given&family&gender&country&birthdate&joincode&isnew',
+	      url: '/failure?reason&action&language&email&login&client_id&redirect_uri&state&code_challenge&code_challenge_method&device_id&role&given&family&gender&country&birthdate&joincode&isnew&city&street&zip&phone&mobile',
 	      templateUrl: 'views/shared/public/postregister/failure.html',
 		  data : { role : "developer", keep : true }
 	    })
