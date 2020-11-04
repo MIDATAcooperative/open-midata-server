@@ -68,4 +68,6 @@ id0066	01.09.2020	a.kreutz	I	Repair account function shows modifications done
 id0067	14.10.2020	a.kreutz	I	Support for multiple sender email adresses
 id0068	16.10.2020	a.kreutz	F	Install plugins from external Git repositories
 id0069	16.10.2020	a.kreutz	S	Execute plugins in a sandbox
+id0070	03.11.2020	a.kreutz	I	FHIR Basic Resource in now writable
+id0071	04.11.2020	a.kreutz	B	Search for references with version fixed.	The Provenance resource may contain versioned references. Search via FHIR API has been fixed.
 # PLEASE LEAVE AS LAST LINE. HAVE YOU UPDATED PORTAL VERSION?? 

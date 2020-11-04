@@ -254,6 +254,7 @@ angular.module('portal')
 	if ($state.params.family) $scope.registration.lastname = $state.params.family;
 	if ($state.params.gender) $scope.registration.gender = $state.params.gender;
 	if ($state.params.country) $scope.registration.country = $state.params.country;
+	
 	if ($state.params.language) {
 		$scope.registration.language = $state.params.language;
 		$scope.changeLanguage($state.params.language);
@@ -265,6 +266,15 @@ angular.module('portal')
 		$scope.registration.birthdayMonth = $scope.months[d.getMonth()];
 		console.log("DATE:"+$scope.registration.birthdayMonth);
 		$scope.registration.birthdayYear = d.getFullYear();*/
+	}
+	if ($scope.addressNeeded()) {
+		if ($state.params.city) $scope.registration.city = $state.params.city;
+		if ($state.params.zip) $scope.registration.zip = $state.params.zip;
+		if ($state.params.street) $scope.registration.address1 = $state.params.street;
+	}
+	if ($scope.addressNeeded() || $scope.phoneNeeded()) {
+		if ($state.params.phone) $scope.registration.phone = $state.params.phone;
+		if ($state.params.mobile) $scope.registration.mobile = $state.params.mobile;
 	}
 	
 }]);

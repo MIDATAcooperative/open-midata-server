@@ -17,3 +17,4 @@ dist
 /bin
 /data
 /conf/generated.keystore
+/.gradle/

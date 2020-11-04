@@ -61,7 +61,13 @@ angular.module('services')
 				console.log("Session started");
 			}
 			if (result.data.status) {
-				  $state.go("public.postregister", { progress : result.data, action : $state.params.action }, { location : false });			
+				  let postregParams = { progress : result.data, action : $state.params.action };
+				  for (let param of ['street','zip','city','phone','mobile']) {
+					  if ($state.params[param]) {
+						  postregParams[param] = $state.params[param];
+					  }
+				  }
+				  $state.go("public.postregister", postregParams , { location : false });			
 			} else if (result.data.role == "admin") {
 				if (result.data.keyType == 1) {
 					$state.go('public_developer.passphrase_admin', $state.params);

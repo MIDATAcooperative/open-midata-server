@@ -28,22 +28,29 @@ import org.hl7.fhir.r4.model.Basic;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
+import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.instance.model.api.IIdType;
 
+import ca.uhn.fhir.model.api.IQueryParameterType;
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.parser.DataFormatException;
 import ca.uhn.fhir.parser.IParser;
+import ca.uhn.fhir.rest.annotation.Create;
 import ca.uhn.fhir.rest.annotation.History;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.IncludeParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
 import ca.uhn.fhir.rest.annotation.Read;
+import ca.uhn.fhir.rest.annotation.ResourceParam;
 import ca.uhn.fhir.rest.annotation.Search;
 import ca.uhn.fhir.rest.annotation.Sort;
+import ca.uhn.fhir.rest.annotation.Update;
+import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.param.DateRangeParam;
@@ -53,6 +60,7 @@ import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
+import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.MidataId;
 import models.Record;
 import utils.access.RecordManager;
@@ -205,12 +213,10 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
     		@Description(shortDefinition="")
     		@OptionalParam(name="author", targetTypes={  } )
     		ReferenceAndListParam theAuthor, 
-    		  
-    		/*
+    		      		
     		@Description(shortDefinition="")
     		@OptionalParam(name="identifier")
-    		TokenAndListParam theIdentifier, 
-    		*/ 
+    		TokenAndListParam theIdentifier,     		 
     		 
     		@IncludeParam(reverse=true)
     		Set<Include> theRevIncludes,
@@ -248,6 +254,7 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
     	paramMap.add("code", theCode);
     	paramMap.add("patient", thePatient);
     	paramMap.add("author", theAuthor);
+    	paramMap.add("identifier", theIdentifier);
     	
     	
     	paramMap.setRevIncludes(theRevIncludes);
@@ -264,9 +271,11 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
     @Override
     public List<Record> searchRaw(SearchParameterMap params) throws AppException {
 		ExecutionInfo info = info();
-
+		
+		List<List<? extends IQueryParameterType>> ids = params.get("identifier");
+		
 		Query query = new Query();		
-		QueryBuilder builder = new QueryBuilder(params, query, null);
+		QueryBuilder builder = new QueryBuilder(params, query, (ids != null && !ids.isEmpty()) ? "fhir/Basic" : null);
 
 		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient", "subject");
@@ -277,6 +286,8 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
 		if (codes != null) {
 			query.putAccount("code", codes);			
 		} 
+		
+		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
 			
 		return query.execute(info);
 	}
@@ -286,10 +297,17 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
     	
     	record.code = new HashSet<String>(); 
 		String display = setRecordCodeByCodeableConcept(record, theBasic.getCode(), "Basic");
-		
-		String date = theBasic.getCreatedElement().toHumanDisplay();
-		
-		record.name = display != null ? (display + " / " + date) : date;    	    	
+					
+		String date = "No time";		
+		if (theBasic.hasCreated()) {
+			try {
+				date = FHIRTools.stringFromDateTime(theBasic.getCreatedElement());
+			} catch (Exception e) {
+				throw new UnprocessableEntityException("Cannot process created");
+			}
+		}
+		record.name = display != null ? (display + " / " + date) : date;		
+						    
     }
     
     public void processResource(Record record, Basic resource) throws AppException {
@@ -311,6 +329,18 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
 	protected void convertToR4(Object in) {
 		// Nothing to do		
 	}
-   
+	
+	@Create
+	@Override
+	public MethodOutcome createResource(@ResourceParam Basic theBasic) {
+		return super.createResource(theBasic);
+	}
+						
+	@Update
+	@Override
+	public MethodOutcome updateResource(@IdParam IdType theId, @ResourceParam Basic theBasic) {
+		return super.updateResource(theId, theBasic);
+	}		
 
+	   
 }

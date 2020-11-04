@@ -253,8 +253,8 @@ public class ProvenanceResourceProvider extends RecordBasedResourceProvider<Prov
 		// Add handling for search on the field that determines the MIDATA content type used.
         //builder.recordCodeRestriction("code", "code");
 		
-		builder.restriction("target", true, null, "target");
-		builder.restriction("patient", true, null, "target");
+		builder.restriction("target", true, QueryBuilder.TYPE_VERSIONED_REFERENCE, "target");
+		builder.restriction("patient", true, QueryBuilder.TYPE_VERSIONED_REFERENCE, "target");
 		builder.restriction("recorded", true, QueryBuilder.TYPE_INSTANT, "recorded");
 		builder.restriction("when", true, QueryBuilder.TYPE_DATETIME, "occurredDateTime");
 		builder.restriction("entity", true, null, "entity.what");

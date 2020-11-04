@@ -23,7 +23,7 @@ angular.module('portal')
 	      templateUrl: 'views/members/public/registration/registration.html' 
 	    })
 	    .state('public.registration_new', {
-	      url: '/registration2?action&language&email&login&client_id&redirect_uri&state&code_challenge&code_challenge_method&device_id&role&given&family&gender&country&birthdate&joincode',
+	      url: '/registration2?action&language&email&login&client_id&redirect_uri&state&code_challenge&code_challenge_method&device_id&role&given&family&gender&country&birthdate&joincode&city&street&zip&phone&mobile',
 	      templateUrl: 'views/members/public/registration/registration_new.html' 
 	    })
 	    .state('developer.member_registration', {
