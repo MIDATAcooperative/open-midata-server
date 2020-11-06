@@ -105,7 +105,7 @@ public class Instances {
 	 * send a clear cache message to all application servers
 	 */
 	public static void cacheClear(String collection, MidataId entry) {	
-		AccessLog.log("broadcast reload message");
+		AccessLog.log("broadcast reload collection="+collection);
 		getBroadcast().tell(new ReloadMessage(collection, entry), ActorRef.noSender());
 	}
 	

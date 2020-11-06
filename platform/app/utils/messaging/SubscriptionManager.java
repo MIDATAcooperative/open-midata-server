@@ -70,6 +70,7 @@ import play.libs.ws.WSResponse;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
+import utils.ServerTools;
 import utils.access.RecordManager;
 import utils.auth.KeyManager;
 import utils.auth.SpaceToken;
@@ -238,7 +239,11 @@ class ResourceChange {
 
 	public Model getResource() {
 		return resource;
-	}			
+	}	
+	
+	public String toString() {
+		return type;
+	}
 }
 
 /**
@@ -301,6 +306,9 @@ class SubscriptionChange {
 		return owner;
 	}
 		
+	public String toString() {
+		return owner.toString();
+	}
 }
 
 
@@ -338,7 +346,9 @@ class SubscriptionChecker extends AbstractActor {
 		processor = this.context().actorOf(new RoundRobinPool(5).props(Props.create(SubscriptionProcessor.class).withDispatcher("slow-work-dispatcher")), "subscriptionProcessor");
 	}
 
-	void resourceChange(ResourceChange change) {		
+	void resourceChange(ResourceChange change) {	
+		AccessLog.logStart("jobs", "resource change: "+change);
+		try {
 		Set<MidataId> affected = new HashSet<MidataId>();
 		String resource = null;
 		MidataId resourceId = null;
@@ -399,6 +409,9 @@ class SubscriptionChecker extends AbstractActor {
 				processor.tell(trigger, getSelf());
 			}
 		}
+		} finally {
+			ServerTools.endRequest();
+		}
 	}
 	
 	void processMessage(ProcessMessage message) {
@@ -412,6 +425,7 @@ class SubscriptionChecker extends AbstractActor {
 	}
 	
 	void subscriptionChange(SubscriptionChange change) {
+		AccessLog.logStart("jobs", "subscription change: "+change);
 		try {
 			MidataId owner = change.getOwner();
 			if (SubscriptionData.existsActiveByOwner(owner)) {
@@ -421,6 +435,8 @@ class SubscriptionChecker extends AbstractActor {
 			}
 		} catch (Exception e) {
 			ErrorReporter.report("SubscriptionChecker", null, e);
+		} finally {
+			ServerTools.endRequest();
 		}
 	}
 	

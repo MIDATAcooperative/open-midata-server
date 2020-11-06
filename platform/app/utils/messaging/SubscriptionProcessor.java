@@ -263,11 +263,17 @@ public class SubscriptionProcessor extends AbstractActor {
 		if (plugin.type.equals("mobile") || plugin.type.equals("service") || plugin.type.equals("analyzer") || plugin.type.equals("external")) {
 			AccessLog.log("RIGHT PATH");
 			System.out.println("RIGHT PATH "+plugin.name);
-			Set<MobileAppInstance> mais = MobileAppInstance.getByApplicationAndOwner(plugin._id, subscription.owner, Sets.create("status"));
+			Set<MobileAppInstance> mais = MobileAppInstance.getByApplicationAndOwner(plugin._id, subscription.owner, Sets.create("status", "dateOfCreation"));
 			if (mais.isEmpty()) return false;
 			MidataId appInstanceId = null;
+			Date best = null;
 			for (MobileAppInstance mai : mais) {
-				if (mai.status.equals(ConsentStatus.ACTIVE)) { appInstanceId = mai._id; break; }
+				if (mai.status.equals(ConsentStatus.ACTIVE)) {
+					if (appInstanceId == null || (mai.dateOfCreation != null && mai.dateOfCreation.after(best))) {
+					  appInstanceId = mai._id;
+					  best = mai.dateOfCreation;
+					}
+				}
 			}
 			if (appInstanceId == null) return false;	
 			//AccessLog.log("HANDLE="+handle);
