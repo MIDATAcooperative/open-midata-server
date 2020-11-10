@@ -75,6 +75,7 @@ import models.RecordsInfo;
 import models.enums.AggregationType;
 import utils.AccessLog;
 import utils.access.RecordManager;
+import utils.access.pseudo.FhirPseudonymizer;
 import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -97,6 +98,10 @@ public class FlagResourceProvider extends RecordBasedResourceProvider<Flag> impl
 		searchParamNameToTypeMap.put("Flag:subject", Sets.create("Practitioner", "Group", "Organization", "Medication", "Patient", "PlanDefinition", "Procedure", "Location"));
 
 		registerSearches("Flag", getClass(), "getFlag");
+		
+		FhirPseudonymizer.forSTU3()
+		  .reset("Flag")		
+		  .pseudonymizeReference("Flag", "author");
 	}
 
 	@Override

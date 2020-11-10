@@ -52,6 +52,7 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import models.Record;
+import utils.access.pseudo.FhirPseudonymizer;
 import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -70,6 +71,11 @@ public class QuestionnaireResponseResourceProvider extends RecordBasedResourcePr
 		searchParamNameToPathMap.put("QuestionnaireResponse:subject", "subject");	
 		
 		registerSearches("QuestionnaireResponse", getClass(), "getQuestionnaireResponse");
+		
+		FhirPseudonymizer.forSTU3()
+		  .reset("QuestionnaireResponse")
+		  .pseudonymizeReference("QuestionnaireResponse", "source")
+		  .pseudonymizeReference("QuestionnaireResponse", "author");
 	}
 	
 	@Override

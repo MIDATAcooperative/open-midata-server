@@ -49,6 +49,7 @@ import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.Record;
+import utils.access.pseudo.FhirPseudonymizer;
 import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -74,6 +75,11 @@ public class ImagingStudyResourceProvider extends RecordBasedResourceProvider<Im
 		searchParamNameToTypeMap.put("ImagingStudy:performer", Sets.create("Practitioner"));
 
 		registerSearches("ImagingStudy", getClass(), "getImagingStudy");
+		
+		FhirPseudonymizer.forSTU3()
+		  .reset("ImagingStudy")		
+		  .pseudonymizeReference("ImagingStudy", "series", "performer")
+		  .pseudonymizeReference("ImagingStudy", "note", "authorReference");
 	}
 
 	@Override

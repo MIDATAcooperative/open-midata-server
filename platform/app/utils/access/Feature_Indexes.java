@@ -117,7 +117,7 @@ public class Feature_Indexes extends Feature {
 				return ProcessingTools.empty();
 			}
 
-			IndexUse myAccess = parse(pseudo, q.getRestriction("format"), indexQueryParsed);
+			IndexUse myAccess = parse(pseudo, q.getRestriction("format"), indexQueryParsed, q.getContext().mustPseudonymize());
 
 			Collection<IndexMatch> matches = myAccess.query(q, targetAps);		
             AccessLog.log("index matches: "+matches.size());
@@ -366,23 +366,23 @@ public class Feature_Indexes extends Feature {
 	}
 	
 
-	IndexUse parse(IndexPseudonym pseudo, Set<String> format, Condition indexQuery) throws InternalServerException {
+	IndexUse parse(IndexPseudonym pseudo, Set<String> format, Condition indexQuery, boolean pseudonymize) throws InternalServerException {
 		if (indexQuery instanceof AndCondition) {
 			List<IndexUse> uses = new ArrayList<IndexUse>();
 			for (Condition check : ((AndCondition) indexQuery).getParts()) {
-				uses.add(parse(pseudo, format, check));
+				uses.add(parse(pseudo, format, check, pseudonymize));
 			}
 			return new IndexAnd(uses);
 		} else if (indexQuery instanceof OrCondition) {
 			List<IndexUse> uses = new ArrayList<IndexUse>();
 			for (Condition check : ((OrCondition) indexQuery).getParts()) {
-				uses.add(parse(pseudo, format, check));
+				uses.add(parse(pseudo, format, check, pseudonymize));
 			}
 			return new IndexOr(uses);
 		} else if (indexQuery instanceof FieldAccess) {
-			return new IndexAccess(pseudo, format, indexQuery);
+			return new IndexAccess(pseudo, format, indexQuery, pseudonymize);
 		} else if (indexQuery instanceof AlternativeFieldAccess) {
-			return new IndexAccess(pseudo, format, indexQuery);
+			return new IndexAccess(pseudo, format, indexQuery, pseudonymize);
 		} else
 			throw new InternalServerException("error.internal", "Bad index query expression");
 	}
@@ -402,6 +402,7 @@ public class Feature_Indexes extends Feature {
 
 		IndexPseudonym pseudo;
 		Set<String> format;
+		boolean pseudonymize;
 
 		Condition revalidationQuery;
 
@@ -412,9 +413,10 @@ public class Feature_Indexes extends Feature {
 		IndexRoot root;
 		boolean doupdate = false;
 
-		IndexAccess(IndexPseudonym pseudo, Set<String> format, Condition indexQuery) throws InternalServerException {
+		IndexAccess(IndexPseudonym pseudo, Set<String> format, Condition indexQuery, boolean pseudonymize) throws InternalServerException {
 			this.pseudo = pseudo;
 			this.format = format;
+			this.pseudonymize = pseudonymize;
 			this.revalidationQuery = indexQuery;
 
 			int idx = 0;
@@ -436,7 +438,7 @@ public class Feature_Indexes extends Feature {
 		}
 
 		public void prepare() throws AppException {
-			index = IndexManager.instance.findIndex(pseudo, format, pathes);
+			index = IndexManager.instance.findIndex(pseudo, format, pathes, pseudonymize);
 			if (index == null) {
 				AccessLog.logBegin("start index creation");
 				index = IndexManager.instance.createIndex(pseudo, format, pathes);

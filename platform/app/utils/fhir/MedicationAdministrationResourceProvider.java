@@ -49,6 +49,7 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.Record;
+import utils.access.pseudo.FhirPseudonymizer;
 import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -70,7 +71,7 @@ public class MedicationAdministrationResourceProvider extends RecordBasedResourc
 		searchParamNameToPathMap.put("MedicationAdministration:patient", "subject");
 		searchParamNameToTypeMap.put("MedicationAdministration:patient", Sets.create("Patient"));
 
-		searchParamNameToPathMap.put("MedicationAdministration:performer", "performer.action");
+		searchParamNameToPathMap.put("MedicationAdministration:performer", "performer.actor");
 		searchParamNameToTypeMap.put("MedicationAdministration:performer",
 				Sets.create("Practitioner", "Device", "Patient", "RelatedPerson", "PractitionerRole"));
 
@@ -81,6 +82,11 @@ public class MedicationAdministrationResourceProvider extends RecordBasedResourc
 		searchParamNameToTypeMap.put("MedicationAdministration:subject", Sets.create("Group", "Patient"));
 
 		registerSearches("MedicationAdministration", getClass(), "getMedicationAdministration");
+		
+		FhirPseudonymizer.forR4()
+		  .reset("MedicationAdministration")		
+		  .pseudonymizeReference("MedicationAdministration", "performer", "actor")
+		  .pseudonymizeReference("MedicationAdministration", "note", "authorReference");		  
 	}
 
 	@Override

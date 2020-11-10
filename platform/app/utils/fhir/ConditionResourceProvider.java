@@ -47,6 +47,7 @@ import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import models.Record;
+import utils.access.pseudo.FhirPseudonymizer;
 import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -63,6 +64,11 @@ public class ConditionResourceProvider extends RecordBasedResourceProvider<Condi
 		searchParamNameToPathMap.put("Condition:subject", "subject");	
 		
 		registerSearches("Condition", getClass(), "getCondition");
+		
+		FhirPseudonymizer.forR4()
+		  .reset("Condition")
+		  .pseudonymizeReference("Condition", "asserter")
+		  .pseudonymizeReference("Condition", "note", "authorReference");		  
 	}
 	
 	@Override

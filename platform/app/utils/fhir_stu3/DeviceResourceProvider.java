@@ -46,6 +46,7 @@ import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import models.ContentInfo;
 import models.Record;
+import utils.access.pseudo.FhirPseudonymizer;
 import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -61,6 +62,10 @@ public class DeviceResourceProvider extends RecordBasedResourceProvider<Device> 
 		searchParamNameToTypeMap.put("Device:patient", Sets.create("Patient"));		
 		
 		registerSearches("Device", getClass(), "getDevice");
+		
+		FhirPseudonymizer.forSTU3()
+		  .reset("Device")		  
+		  .pseudonymizeReference("Device", "note", "authorReference");
 	}
 	
 	@Override

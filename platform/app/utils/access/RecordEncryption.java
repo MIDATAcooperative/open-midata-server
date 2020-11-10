@@ -83,6 +83,7 @@ class RecordEncryption {
 		if (record.encryptedData != null) {
 			try {
 			record.data = EncryptionUtils.decryptBSON(record.key, record.encryptedData);
+			Feature_Pseudonymization.pseudonymize(record);
 			} catch (InternalServerException e) {
 				AccessLog.log("Error decrypting data of record: id="+record._id.toString());
 				//throw e;

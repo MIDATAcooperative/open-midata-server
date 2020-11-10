@@ -74,6 +74,7 @@ import models.Record;
 import models.RecordsInfo;
 import models.enums.AggregationType;
 import utils.access.RecordManager;
+import utils.access.pseudo.FhirPseudonymizer;
 import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -100,6 +101,12 @@ public class ListResourceProvider extends RecordBasedResourceProvider<ListResour
 		
 		// Use name of @Search function as last parameter
 		registerSearches("List", getClass(), "getListResource");
+		
+		FhirPseudonymizer.forR4()
+		  .reset("List")		
+		  .pseudonymizeReference("List", "source")
+		  .pseudonymizeReference("List", "entry", "item")
+		  .pseudonymizeReference("List", "note", "authorReference");
 	}
 	
 	// Return corresponding FHIR class

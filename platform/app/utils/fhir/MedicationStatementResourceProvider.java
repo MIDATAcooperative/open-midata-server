@@ -47,6 +47,7 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.Record;
+import utils.access.pseudo.FhirPseudonymizer;
 import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -65,6 +66,11 @@ public class MedicationStatementResourceProvider extends RecordBasedResourceProv
 		searchParamNameToPathMap.put("MedicationStatement:subject", "subject");				
 						
 		registerSearches("MedicationStatement", getClass(), "getMedicationStatement");
+		
+		FhirPseudonymizer.forR4()
+		  .reset("MedicationStatement")		
+		  .pseudonymizeReference("MedicationStatement", "informationSource")
+		  .pseudonymizeReference("MedicationStatement", "note", "authorReference");		  
 	}
 	
 	@Override

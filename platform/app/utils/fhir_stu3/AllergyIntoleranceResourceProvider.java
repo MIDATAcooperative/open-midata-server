@@ -46,6 +46,7 @@ import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import models.Record;
+import utils.access.pseudo.FhirPseudonymizer;
 import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -61,6 +62,12 @@ public class AllergyIntoleranceResourceProvider extends RecordBasedResourceProvi
 		searchParamNameToTypeMap.put("AllergyIntolerance:patient", Sets.create("Patient"));
 		
 		registerSearches("AllergyIntolerance", getClass(), "getAllergyIntolerance");
+		
+		FhirPseudonymizer.forSTU3()
+		  .reset("AllergyIntolerance")
+		  .pseudonymizeReference("AllergyIntolerance", "asserter")
+		  .pseudonymizeReference("AllergyIntolerance", "recorder")
+		  .pseudonymizeReference("AllergyIntolerance", "reaction", "note", "authorReference");
 	}
 	
 	@Override

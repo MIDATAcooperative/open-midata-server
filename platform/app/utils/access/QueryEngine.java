@@ -456,7 +456,7 @@ class QueryEngine {
 	    	}
     	}
     	for (DBRecord rec : records) {    		
-		   RecordEncryption.decryptRecord(rec);
+		   RecordEncryption.decryptRecord(rec);		   
     	}		
     }
     

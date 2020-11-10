@@ -64,6 +64,7 @@ import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.MidataId;
 import models.Record;
 import utils.access.RecordManager;
+import utils.access.pseudo.FhirPseudonymizer;
 import utils.auth.ExecutionInfo;
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -82,6 +83,10 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
     	searchParamNameToPathMap.put("Basic:subject", "subject");	
     	
     	registerSearches("Basic", getClass(), "getBasic");
+    	
+    	FhirPseudonymizer.forR4()
+		  .reset("Basic")
+		  .pseudonymizeReference("Basic", "author");		  
     }
 	
     /**

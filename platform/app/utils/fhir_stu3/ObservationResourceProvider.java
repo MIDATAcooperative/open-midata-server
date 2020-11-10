@@ -73,6 +73,7 @@ import models.Record;
 import models.RecordsInfo;
 import models.enums.AggregationType;
 import utils.access.RecordManager;
+import utils.access.pseudo.FhirPseudonymizer;
 import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -116,6 +117,12 @@ public class ObservationResourceProvider extends RecordBasedResourceProvider<Obs
 		
 		// Use name of @Search function as last parameter
 		registerSearches("Observation", getClass(), "getObservation");
+		
+		FhirPseudonymizer.forSTU3()
+		  .reset("Observation")		
+		  .pseudonymizeReference("Observation", "performer")
+		  .pseudonymizeReference("Observation", "note", "authorReference")
+		  ;		  
 	}
 	
 	// Return corresponding FHIR class

@@ -74,6 +74,7 @@ import models.Record;
 import models.RecordsInfo;
 import models.enums.AggregationType;
 import utils.access.RecordManager;
+import utils.access.pseudo.FhirPseudonymizer;
 import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -100,6 +101,10 @@ public class SpecimenResourceProvider extends RecordBasedResourceProvider<Specim
 								
 		// Use name of @Search function as last parameter
 		registerSearches("Specimen", getClass(), "getSpecimen");
+		
+		FhirPseudonymizer.forR4()
+		  .reset("Specimen")				 
+		  .pseudonymizeReference("Specimen", "note", "authorReference");
 	}
 	
 	// Return corresponding FHIR class

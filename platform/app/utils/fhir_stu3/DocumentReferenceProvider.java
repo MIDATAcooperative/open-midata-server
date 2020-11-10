@@ -55,6 +55,7 @@ import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import models.Record;
 import utils.InstanceConfig;
+import utils.access.pseudo.FhirPseudonymizer;
 import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -73,6 +74,11 @@ public class DocumentReferenceProvider extends RecordBasedResourceProvider<Docum
 		searchParamNameToPathMap.put("DocumentReference:subject", "subject");	
 		
 		registerSearches("DocumentReference", getClass(), "getDocumentReference");
+		
+		FhirPseudonymizer.forSTU3()
+		  .reset("DocumentReference")		
+		  .pseudonymizeReference("DocumentReference", "author")
+		  .pseudonymizeReference("DocumentReference", "context", "sourcePatientInfo");
 	}
 	
 	@Override
