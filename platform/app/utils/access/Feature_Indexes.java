@@ -117,7 +117,7 @@ public class Feature_Indexes extends Feature {
 				return ProcessingTools.empty();
 			}
 
-			IndexUse myAccess = parse(pseudo, q.getRestriction("format"), indexQueryParsed, q.getContext().parent.mustPseudonymize());
+			IndexUse myAccess = parse(pseudo, q.getRestriction("format"), indexQueryParsed, q.getContext().mustPseudonymize());
 
 			Collection<IndexMatch> matches = myAccess.query(q, targetAps);		
             AccessLog.log("index matches: "+matches.size());
