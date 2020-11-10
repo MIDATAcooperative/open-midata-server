@@ -46,6 +46,7 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.Record;
+import utils.access.pseudo.FhirPseudonymizer;
 import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -74,6 +75,13 @@ public class ProcedureResourceProvider extends RecordBasedResourceProvider<Proce
 		searchParamNameToTypeMap.put("Procedure:subject" , Sets.create("Patient", "Group"));
 		
 		registerSearches("Procedure", getClass(), "getProcedure");
+		
+		FhirPseudonymizer.forSTU3()
+		  .reset("Procedure")		
+		  .pseudonymizeReference("Procedure", "recorder")
+		  .pseudonymizeReference("Procedure", "asserter")
+		  .pseudonymizeReference("Procedure", "performer", "actor")
+		  .pseudonymizeReference("Procedure", "note", "authorReference");
 	}
 	
 	@Override

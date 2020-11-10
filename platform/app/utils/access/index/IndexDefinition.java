@@ -37,7 +37,7 @@ import utils.exceptions.InternalServerException;
  *
  */
 public class IndexDefinition extends IndexPageModel {
-    public @NotMaterialized static final Set<String> ALL = Sets.create("owner", "formats", "fields", "enc", "encTs", "version", "rev", "created");
+    public @NotMaterialized static final Set<String> ALL = Sets.create("owner", "formats", "fields", "pseudonymize", "enc", "encTs", "version", "rev", "created");
 	
 	
 	public String owner;
@@ -52,6 +52,8 @@ public class IndexDefinition extends IndexPageModel {
 	 * Which fields are included in the index?
 	 */
 	public List<String> fields;
+	
+	public boolean pseudonymize;
 	
 	public byte[] encTs;
 	

@@ -45,6 +45,7 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import models.Record;
 import utils.InstanceConfig;
+import utils.access.pseudo.FhirPseudonymizer;
 import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -58,6 +59,11 @@ public class MediaResourceProvider extends RecordBasedResourceProvider<Media> im
 		searchParamNameToPathMap.put("Media:subject", "subject");
 		
 		registerSearches("Media", getClass(), "getMedia");
+		
+		FhirPseudonymizer.forSTU3()
+		  .reset("Media")		
+		  .pseudonymizeReference("Media", "operator")
+		  .pseudonymizeReference("Media", "note", "authorReference");	
 	}
 	
 	@Override

@@ -52,6 +52,7 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import models.ContentInfo;
 import models.Record;
+import utils.access.pseudo.FhirPseudonymizer;
 import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -73,6 +74,10 @@ public class AppointmentResourceProvider extends RecordBasedResourceProvider<App
 		searchParamNameToPathMap.put("Appointment:slot", "slot");
 		searchParamNameToTypeMap.put("Appointment:slot", Sets.create("Slot"));
 		registerSearches("Appointment", getClass(), "getAppointment");
+		
+		FhirPseudonymizer.forR4()
+		  .reset("Appointment")
+		  .pseudonymizeReference("Appointment", "participant", "actor");
 	}
 	
 	@Override

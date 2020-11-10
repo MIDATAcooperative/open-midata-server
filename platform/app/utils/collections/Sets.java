@@ -28,6 +28,12 @@ public class Sets {
 		return result;
 	}
 	
+	public static Set<Object> create(Object... contents) {
+		HashSet<Object> result = new HashSet<Object>();
+		for (Object entry : contents) result.add(entry);
+		return result;
+	}
+	
 	public static Set<String> create(Set<String> base, String... contents) {
 		HashSet<String> result = new HashSet<String>();
 		result.addAll(base);

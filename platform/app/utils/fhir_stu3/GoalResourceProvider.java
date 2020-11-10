@@ -46,6 +46,7 @@ import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import models.Record;
+import utils.access.pseudo.FhirPseudonymizer;
 import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -58,6 +59,11 @@ public class GoalResourceProvider extends RecordBasedResourceProvider<Goal> impl
 		searchParamNameToPathMap.put("Goal:subject", "subject");	
 		
 		registerSearches("Goal", getClass(), "getGoal");
+		
+		FhirPseudonymizer.forSTU3()
+		  .reset("Goal")	
+		  .pseudonymizeReference("Goal", "expressedBy")
+		  .pseudonymizeReference("Goal", "note", "authorReference");
 	}
 	
 	@Override

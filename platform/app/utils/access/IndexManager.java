@@ -394,7 +394,7 @@ public class IndexManager {
 		long now = System.currentTimeMillis();
 		 
 		if (limit != null) restrictions.put("shared-after", limit);								
-		List<DBRecord> recs = QueryEngine.listInternal(cache, aps, null, restrictions, Sets.create("_id"));
+		List<DBRecord> recs = QueryEngine.listInternal(cache, aps, new IndexAccessContext(cache, index.getModel().pseudonymize), restrictions, Sets.create("_id"));
 		addRecords(index, aps, recs);
 		boolean updateTs = recs.size() > 0 || limit == null || (now-v) > UPDATE_UNUSED;
 		// Records that have been freshly shared				
@@ -437,7 +437,7 @@ public class IndexManager {
 				long now = System.currentTimeMillis();
 				 
 				if (limit != null) restrictions.put("shared-after", limit);								
-				List<DBRecord> recs = QueryEngine.listInternal(cache, aps, null, restrictions, Sets.create("_id","format","content","app","owner"));
+				List<DBRecord> recs = QueryEngine.listInternal(cache, aps, new IndexAccessContext(cache, false), restrictions, Sets.create("_id","format","content","app","owner"));
 				for (DBRecord r : recs) {
 					index.addEntry(aps, r);
 				}
@@ -598,8 +598,8 @@ public void indexUpdate(APSCache cache, StatsIndexRoot index, MidataId executor)
 		return new IndexRoot(pseudo.getKey(), idx, false);							
 	}
 	
-	public IndexDefinition findIndex(IndexPseudonym pseudo, Set<String> format, List<String> pathes) throws AppException {		
-		Set<IndexDefinition> res = IndexDefinition.getAll(CMaps.map("owner", pseudo.getPseudonym()).map("formats", CMaps.map("$all", format)).map("fields", CMaps.map("$all", pathes)), IndexDefinition.ALL);
+	public IndexDefinition findIndex(IndexPseudonym pseudo, Set<String> format, List<String> pathes, boolean pseudonymize) throws AppException {		
+		Set<IndexDefinition> res = IndexDefinition.getAll(CMaps.map("owner", pseudo.getPseudonym()).map("formats", CMaps.map("$all", format)).map("pseudonymize",pseudonymize ? true : Sets.create(false, null)).map("fields", CMaps.map("$all", pathes)), IndexDefinition.ALL);
 		if (res.size() >= 1) return res.iterator().next();
 		return null;
 	}

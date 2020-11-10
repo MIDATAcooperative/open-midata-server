@@ -56,6 +56,7 @@ import models.MidataId;
 import models.Record;
 import models.TypedMidataId;
 import utils.access.RecordManager;
+import utils.access.pseudo.FhirPseudonymizer;
 import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -72,6 +73,13 @@ public class CommunicationResourceProvider extends RecordBasedResourceProvider<C
 		searchParamNameToPathMap.put("Communication:subject", "subject");		
 		
 		registerSearches("Communication", getClass(), "getCommunication");
+		
+		FhirPseudonymizer.forSTU3()
+		  .reset("Communication")
+		  .pseudonymizeReference("Communication", "recipient")
+		  .pseudonymizeReference("Communication", "sender")
+		  .pseudonymizeReference("Communication", "note", "authorReference")
+		  .pseudonymizeReference("Communication", "subject");
 	}
 	
 	@Override

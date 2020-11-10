@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.bson.BasicBSONObject;
+import org.bson.types.BasicBSONList;
 
 import models.Consent;
 import models.MidataId;
@@ -36,6 +37,7 @@ import utils.access.op.CompareCaseInsensitive;
 import utils.access.op.CompareCondition;
 import utils.access.op.Condition;
 import utils.access.op.FieldAccess;
+import utils.access.pseudo.FhirPseudonymizer;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -95,6 +97,18 @@ public class Feature_Pseudonymization extends Feature {
 		return true;
 	}
 	
+	public static void pseudonymize(DBRecord r) throws AppException {
+		if (r.data != null && r.meta != null && r.context.mustPseudonymize()) {
+			BasicBSONList tags = (BasicBSONList) r.meta.get("tags");
+			boolean r4 = false;
+			if (tags != null) {		
+				r4 = tags.contains("fhir:r4");							
+			}
+			if (r4) FhirPseudonymizer.forR4().pseudonymize(r);
+			else FhirPseudonymizer.forSTU3().pseudonymize(r);
+		}
+	}
+	
 	public static class PseudonymIterator implements DBIterator<DBRecord> {
 
 		private DBIterator<DBRecord> chain;
@@ -136,6 +150,9 @@ public class Feature_Pseudonymization extends Feature {
 						if (ct.equals("Patient"))
 							r.meta = null;
 					}
+					
+					// Not needed. Is always done immediately on decryption.
+					// pseudonymize(r);					
 				} else {		
 					if (!r.context.mayContainRecordsFromMultipleOwners() || r.owner==null) {
 					  r.owner = r.context.getOwner();

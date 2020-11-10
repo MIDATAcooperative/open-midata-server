@@ -50,6 +50,7 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import models.MidataId;
 import models.Record;
+import utils.access.pseudo.FhirPseudonymizer;
 import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -65,6 +66,15 @@ public class TaskResourceProvider extends RecordBasedResourceProvider<Task> impl
 		searchParamNameToPathMap.put("Task:requester", "requester");	
 		
 		registerSearches("Task", getClass(), "getTask");
+		
+		FhirPseudonymizer.forSTU3()
+		  .reset("Task")
+		  .pseudonymizeReference("Task", "for")
+		  .pseudonymizeReference("Task", "focus")
+		  .pseudonymizeReference("Task", "requester", "agent")
+		  .pseudonymizeReference("Task", "owner")
+		  .pseudonymizeReference("Task", "restriction", "recipient")
+		  .pseudonymizeReference("Task", "note", "authorReference");
 	}
 	
 	@Override

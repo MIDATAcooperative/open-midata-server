@@ -82,6 +82,7 @@ import models.RecordsInfo;
 import models.enums.AggregationType;
 import utils.AccessLog;
 import utils.access.RecordManager;
+import utils.access.pseudo.FhirPseudonymizer;
 import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -109,6 +110,11 @@ public class ProvenanceResourceProvider extends RecordBasedResourceProvider<Prov
 		registerSearches("Provenance", getClass(), "getProvenance");
 		
 		addPathWithVersion("Provenance.target");
+		
+		FhirPseudonymizer.forR4()
+		  .reset("Provenance")		
+		  .pseudonymizeReference("Provenance", "target")
+		  .pseudonymizeReference("Provenance", "entry", "item");
 	}
 	
 	@Read(version=false)

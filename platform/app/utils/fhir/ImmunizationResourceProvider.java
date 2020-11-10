@@ -49,6 +49,7 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.Record;
+import utils.access.pseudo.FhirPseudonymizer;
 import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -78,6 +79,10 @@ public class ImmunizationResourceProvider extends RecordBasedResourceProvider<Im
 		searchParamNameToTypeMap.put("Immunization:reason-reference", Sets.create("Condition", "Observation", "DiagnosticReport"));
 
 		registerSearches("Immunization", getClass(), "getImmunization");
+		
+		FhirPseudonymizer.forR4()
+		  .reset("Immunization")			  
+		  .pseudonymizeReference("Immunization", "note", "authorReference");
 	}
 
 	@Override

@@ -48,6 +48,7 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.Record;
+import utils.access.pseudo.FhirPseudonymizer;
 import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -96,6 +97,12 @@ public class CarePlanResourceProvider extends RecordBasedResourceProvider<CarePl
 		searchParamNameToTypeMap.put("CarePlan:subject", Sets.create("Group", "Patient"));
 
 		registerSearches("CarePlan", getClass(), "getCarePlan");
+		
+		FhirPseudonymizer.forSTU3()
+		  .reset("CarePlan")
+		  .pseudonymizeReference("CarePlan", "author")		
+		  .pseudonymizeReference("CarePlan", "note", "authorReference")
+		  .pseudonymizeReference("CarePlan", "activity", "detail", "performer");	
 	}
 
 	@Override
