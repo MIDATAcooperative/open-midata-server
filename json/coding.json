@@ -340,3 +340,4 @@
 {"_id":{"$oid":"5ebc106baed645326747371b"},"system":"http://snomed.info/sct","code":"404640003","display":"Dizziness","content":"snomed/404640003"}
 {"_id":{"$oid":"5ebc10b6aed645326747371d"},"system":"http://snomed.info/sct","code":"60119000","display":"Exhaustion","content":"snomed/60119000"}
 {"_id":{"$oid":"5ee7398faed64514ac528de8"},"system":"http://midata.coop","code":"ResearchStudy","display":"Research Study","content":"ResearchStudy"}
+{"_id":{"$oid":"5fac0700aed6452079bc3352"},"system":"http://loinc.org","code":"10197-2","display":"Physical findings of Eye Narrative","content":"loinc/10197-2"}

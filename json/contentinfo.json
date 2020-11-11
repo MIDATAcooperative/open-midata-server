@@ -320,3 +320,4 @@
 {"_id":{"$oid":"5ebc106baed645326747371a"},"content":"snomed/404640003","defaultCode":"http://snomed.info/sct 404640003","security":"MEDIUM","label":{"de":"Schwindel","en":"Dizziness","fr":"Vertiges"},"resourceType":"fhir/Condition"}
 {"_id":{"$oid":"5ebc10b6aed645326747371c"},"content":"snomed/60119000","defaultCode":"http://snomed.info/sct 60119000","security":"MEDIUM","label":{"de":"Erschöpfung","en":"Exhaustion","fr":"Épuisement"},"resourceType":"fhir/Condition"}
 {"_id":{"$oid":"5ee7398faed64514ac528de7"},"content":"ResearchStudy","defaultCode":"http://midata.coop ResearchStudy","security":"MEDIUM","label":{"en":"Research Study"},"resourceType":"fhir/ResearchStudy"}
+{"_id":{"$oid":"5fac0700aed6452079bc3351"},"content":"loinc/10197-2","defaultCode":"http://loinc.org 10197-2","security":"MEDIUM","label":{"en":"Physical findings of Eye Narrative"},"resourceType":"fhir/DiagnosticReport"}
