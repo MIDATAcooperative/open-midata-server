@@ -44,7 +44,12 @@ public class UserGroupAccessContext extends AccessContext {
 	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) {
 		return ugm.getRole().mayWriteData() && parent.mayUpdateRecord(stored, newVersion);
 	}
-
+	
+	@Override
+	public String getAccessInfo(DBRecord rec) throws AppException {
+		return "[ allowWrite="+ugm.getRole().mayWriteData()+" ]";
+	}
+	
 	@Override
 	public boolean mustPseudonymize() {
 		return ugm.getRole().pseudonymizedAccess();
@@ -88,6 +93,10 @@ public class UserGroupAccessContext extends AccessContext {
 	@Override
 	public Object getAccessRestriction(String content, String format, String field) throws AppException {		
 		return null;
+	}
+	@Override
+	public String getContextName() {
+		return "User Group/Project";
 	}
 
 }

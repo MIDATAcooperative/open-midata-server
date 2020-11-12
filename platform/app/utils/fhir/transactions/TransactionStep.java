@@ -87,7 +87,7 @@ public abstract class TransactionStep {
 	/**
 	 * execute this action
 	 */
-	public void execute() {}
+	public void execute() throws AppException {}
 	
 	/**
 	 * Returns the response to this transaction step

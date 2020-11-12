@@ -97,5 +97,10 @@ public class IndexAccessContext extends AccessContext {
 	public Object getAccessRestriction(String content, String format, String field) throws AppException {	
 		return null;
 	}
+
+	@Override
+	public String getContextName() {
+		return "Index Access";
+	}
 	
 }

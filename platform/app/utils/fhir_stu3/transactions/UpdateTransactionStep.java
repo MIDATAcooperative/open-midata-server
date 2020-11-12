@@ -59,9 +59,9 @@ public class UpdateTransactionStep extends TransactionStep {
 	}
 	
 	@Override
-	public void execute() {
+	public void execute() throws AppException {
 		
-		try {
+		
 		if (result == null) {
 			((ReadWriteResourceProvider) provider).updateExecute(record, resource);
 			result = new BundleEntryComponent();
@@ -71,9 +71,7 @@ public class UpdateTransactionStep extends TransactionStep {
 			response.setLocation(FHIRServlet.getBaseUrl()+"/"+provider.getResourceType().getSimpleName()+"/"+record._id.toString()+"/_history/"+((ReadWriteResourceProvider) provider).getVersion(record));
 			result.setResponse(response);
 		}
-		} catch (Exception e) {
-			setResultBasedOnException(e);
-		}
+		
 		
 	}
 		

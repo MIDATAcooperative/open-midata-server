@@ -23,6 +23,7 @@ import models.MidataId;
 import models.MobileAppInstance;
 import models.Plugin;
 import models.Record;
+import models.enums.WritePermissionType;
 import utils.exceptions.AppException;
 
 public class AppAccessContext extends AccessContext {
@@ -52,6 +53,16 @@ public class AppAccessContext extends AccessContext {
 		if (!instance.writes.isUpdateAllowed()) return false;
 		if (parent != null) return parent.mayUpdateRecord(stored, newVersion);
 		return true;
+	}
+	
+	
+
+	@Override
+	public String getAccessInfo(DBRecord rec) throws AppException {
+		WritePermissionType wt = instance.writes;
+		if (wt==null) wt = WritePermissionType.WRITE_ANY;
+		boolean inFilter = !QueryEngine.listFromMemory(this, instance.sharingQuery, Collections.singletonList(rec)).isEmpty();
+		return "[ recordPassesFilter="+inFilter+" allowCreate="+wt.isCreateAllowed()+" allowUpdate="+wt.isUpdateAllowed()+" ]";
 	}
 
 	@Override
@@ -123,6 +134,22 @@ public class AppAccessContext extends AccessContext {
 	@Override
 	public String toString() {
 		return "app("+instance._id+" "+parentString()+")";
+	}
+
+	@Override
+	public String getContextName() {
+		String result = plugin.type;
+		switch (plugin.type) {
+		case "visualization": result="Plugin";break;
+		case "service": result="Internal service";break;
+		case "oauth1" : result="Importer (OAuth 1)";break;
+		case "oauth2" : result="Importer";break;
+		case "mobile" : result="Application";break;
+		case "external" : result="External Service";break;
+		case "analyzer" : result="Project Aggregator";break;
+		}
+		result += " '"+plugin.name+"'";
+		return result;
 	}
 
 	

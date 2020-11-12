@@ -92,4 +92,9 @@ public class PublicAccessContext extends AccessContext {
 		return null;
 	}
 
+	@Override
+	public String getContextName() {
+		return "Public Data Access";
+	}
+
 }

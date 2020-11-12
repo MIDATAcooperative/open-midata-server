@@ -87,4 +87,9 @@ public class AccountCreationAccessContext extends AccessContext {
 		return null;
 	}
 
+	@Override
+	public String getContextName() {
+		return "New account";
+	}
+
 }

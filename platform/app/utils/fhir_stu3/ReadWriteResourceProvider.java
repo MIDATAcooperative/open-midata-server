@@ -35,6 +35,7 @@ import utils.ErrorReporter;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.exceptions.PluginException;
 
 public abstract class ReadWriteResourceProvider<T extends DomainResource, M extends Model> extends ResourceProvider<T,M> {
 
@@ -51,6 +52,9 @@ public abstract class ReadWriteResourceProvider<T extends DomainResource, M exte
 			throw e;
 		} catch (BadRequestException e2) {
 			throw new InvalidRequestException(e2.getMessage());
+		} catch (PluginException e4) {
+			ErrorReporter.reportPluginProblem("FHIR (create resource)", null, e4);
+			throw new InternalErrorException(e4);
 		} catch (InternalServerException e3) {
 			ErrorReporter.report("FHIR (create resource)", null, e3);
 			throw new InternalErrorException(e3);
@@ -79,6 +83,9 @@ public abstract class ReadWriteResourceProvider<T extends DomainResource, M exte
 		} catch (InternalServerException e3) {
 			ErrorReporter.report("FHIR (update resource)", null, e3);
 			throw new InternalErrorException(e3);
+		} catch (PluginException e4) {
+			ErrorReporter.reportPluginProblem("FHIR (update resource)", null, e4);
+			throw new InternalErrorException(e4);
 		} catch (Exception e4) {
 			ErrorReporter.report("FHIR (update resource)", null, e4);
 			throw new InternalErrorException(e4);

@@ -26,6 +26,7 @@ import models.Consent;
 import models.MidataId;
 import models.Record;
 import models.enums.ConsentType;
+import models.enums.WritePermissionType;
 import utils.AccessLog;
 import utils.exceptions.AppException;
 
@@ -74,19 +75,25 @@ public class ConsentAccessContext extends AccessContext{
 
 	@Override
 	public boolean mayUpdateRecord(DBRecord stored, Record newVersion) {
-		AccessLog.log("called");
+		
 		if (consent.writes == null) return false;
 		if (!consent.writes.isUpdateAllowed()) return false;
-		AccessLog.log("called 2");
-		if (consent.type.equals(ConsentType.STUDYRELATED)) {
-			AccessLog.log("called 3");
-			if (parent != null && parent instanceof UserGroupAccessContext && parent.parent != null) {
-				AccessLog.log("called 4");
+		
+		if (consent.type.equals(ConsentType.STUDYRELATED)) {			
+			if (parent != null && parent instanceof UserGroupAccessContext && parent.parent != null) {				
 				return parent.parent.mayUpdateRecord(stored, newVersion);
 			}
 		}
 		if (parent != null) return parent.mayUpdateRecord(stored, newVersion);
 		return true;
+	}
+	
+	@Override
+	public String getAccessInfo(DBRecord rec) throws AppException {
+		WritePermissionType wt = consent.writes;
+		if (wt==null) wt = WritePermissionType.NONE;
+		boolean inFilter = consent.sharingQuery != null && !QueryEngine.listFromMemory(this, consent.sharingQuery, Collections.singletonList(rec)).isEmpty();
+		return "[ recordPassesFilter="+inFilter+" allowCreate="+wt.isCreateAllowed()+" allowUpdate="+wt.isUpdateAllowed()+" ]";
 	}
 
 	@Override
@@ -173,6 +180,18 @@ public class ConsentAccessContext extends AccessContext{
 	public Object getAccessRestriction(String content, String format, String field) throws AppException {
 		return Feature_FormatGroups.getAccessRestriction(consent.sharingQuery, content, format, field);
 		
+	}
+
+	@Override
+	public String getContextName() {
+		String result = consent.type.toString();
+		result = result.substring(0,1).toUpperCase()+result.substring(1).toLowerCase();
+		switch (consent.type) {
+		case STUDYRELATED : result = "Project backchannel";break;
+		case HCRELATED : result = "Healthcare provider backchannel";break;
+		case API: result = "External service use";break;		
+		}
+		return "Consent of type '"+result+"'";
 	}
 
 }

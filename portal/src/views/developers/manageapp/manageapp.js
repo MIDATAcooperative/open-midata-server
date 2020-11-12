@@ -148,10 +148,10 @@ angular.module('portal')
 		
 		if ($scope.app._id == null) {
 			$scope.status.doAction('submit', apps.registerPlugin($scope.app))
-			.then(function(data) { $state.go("^.yourapps"); });
+			.then(function(data) { $state.go("^.manageapp", { appId : data.data._id }); });
 		} else {			
 		    $scope.status.doAction('submit', apps.updatePlugin($scope.app))
-		    .then(function() { $state.go("^.yourapps"); });
+		    .then(function() { $state.go("^.manageapp", { appId : $state.params.appId }); });
 		}
 	};
 	

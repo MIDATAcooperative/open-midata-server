@@ -147,7 +147,17 @@ public class OAuth2 extends Controller {
         		
         		if (sal.linkTargetType == LinkTargetType.ORGANIZATION || sal.linkTargetType == LinkTargetType.SERVICE) {
       			  Consent c = LinkTools.findConsentForAppLink(appInstance.owner, sal);
+      			  if (c instanceof MobileAppInstance) {
+      				MobileAppInstance mai = (MobileAppInstance) c;
+      				Plugin checkedPlugin = Plugin.getById(mai.applicationId); 
+      				if (checkedPlugin == null || mai.appVersion != checkedPlugin.pluginVersion) {
+      					AccessLog.log("linked service outdated: "+checkedPlugin.filename);
+      					ApplicationTools.removeAppInstance(mai.owner, mai);
+      					c = null;
+      				}
+      			  }
       			  if (c == null) {
+      				  AccessLog.log("remove instance due to missing linked service: "+sal.serviceAppId);
       				  ApplicationTools.removeAppInstance(appInstance.owner, appInstance);
 		                  return false;
       			  }
@@ -155,6 +165,7 @@ public class OAuth2 extends Controller {
         		   StudyParticipation sp = StudyParticipation.getByStudyAndMember(sal.studyId, appInstance.owner, Sets.create("status", "pstatus"));
         		   
         		   if (sp == null) {
+        			    AccessLog.log("remove instance due to missing project: "+sal.studyId);
 	               		ApplicationTools.removeAppInstance(appInstance.owner, appInstance);
 	                   	return false;
 	               	}
