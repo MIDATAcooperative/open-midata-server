@@ -67,6 +67,7 @@ import utils.db.FileStorage.FileData;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.exceptions.PluginException;
 import utils.viruscheck.FileTypeScanner;
 import utils.viruscheck.VirusScanner;
 
@@ -762,7 +763,7 @@ public class RecordManager {
 	 * @throws AppException
 	 * @return the new version string of the record
 	 */
-	public String updateRecord(MidataId executingPerson, AccessContext context, Record record) throws AppException {
+	public String updateRecord(MidataId executingPerson, MidataId pluginId, AccessContext context, Record record) throws AppException {
 		AccessLog.logBegin("begin updateRecord executor="+executingPerson.toString()+" aps="+context.getTargetAps().toString()+" record="+record._id.toString());
 		try {
 			List<DBRecord> result = QueryEngine.listInternal(getCache(executingPerson), context.getTargetAps(),context, CMaps.map("_id", record._id).map("updatable", true), RecordManager.COMPLETE_DATA_WITH_WATCHES);	
@@ -771,22 +772,23 @@ public class RecordManager {
 				if (resultx.isEmpty()) {
 				  throw new InternalServerException("error.internal.notfound", "Unknown Record");
 				} else {
-				  throw new InternalServerException("error.internal", "Record may not be updated!");	
+				  throw new PluginException(pluginId, "error.plugin", record.getErrorInfo()+" may not be updated!\n\nRecord is only available read-only");	
 				}
 			}
 			if (record.data == null) throw new BadRequestException("error.internal", "Missing data");		
 			
 			DBRecord rec = result.get(0);
-			if (!rec.context.mayUpdateRecord(rec, record)) throw new InternalServerException("error.internal", "Record may not be updated!");
+			if (!rec.context.mayUpdateRecord(rec, record)) throw new PluginException(pluginId, "error.plugin", record.getErrorInfo()+" may not be updated!\n\nUpdate permission chain:\n"+rec.context.getMayUpdateReport(rec, record));
+			if (rec.context.mustPseudonymize())  throw new PluginException(pluginId, "error.plugin", "Pseudonymized record may not be updated!\n\nUpdate permission chain:\\n"+rec.context.getMayUpdateReport(rec, record));
 			
 			String storedVersion = rec.meta.getString("version");
 			if (storedVersion == null) storedVersion = VersionedDBRecord.INITIAL_VERSION;
 			String providedVersion = record.version != null ? record.version : VersionedDBRecord.INITIAL_VERSION; 
 			if (!providedVersion.equals(storedVersion)) throw new BadRequestException("error.concurrent.update", "Concurrent update", Http.Status.CONFLICT);
 			
-			if (record.format != null && !rec.meta.getString("format").equals(record.format)) throw new InternalServerException("error.invalid.request", "Tried to change record format during update.");
-			if (record.content != null && !rec.meta.getString("content").equals(record.content)) throw new InternalServerException("error.invalid.request", "Tried to change record content type during update.");
-			if (record.owner != null && !rec.owner.equals(record.owner)) throw new InternalServerException("error.invalid.request", "Tried to change record owner during update! new="+record.owner.toString()+" old="+rec.owner.toString());
+			if (record.format != null && !rec.meta.getString("format").equals(record.format)) throw new PluginException(pluginId, "error.invalid.request", "Tried to change record format during update.");
+			if (record.content != null && !rec.meta.getString("content").equals(record.content)) throw new PluginException(pluginId, "error.invalid.request", "Tried to change record content type during update.");
+			if (record.owner != null && !rec.owner.equals(record.owner)) throw new PluginException(pluginId, "error.invalid.request", "Tried to change record owner during update! new="+record.owner.toString()+" old="+rec.owner.toString());
 			
 			VersionedDBRecord vrec = null;
 			

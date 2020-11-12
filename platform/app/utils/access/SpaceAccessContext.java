@@ -119,4 +119,9 @@ public class SpaceAccessContext extends AccessContext {
 		return Feature_FormatGroups.getAccessRestriction(space.query, content, format, field);
 	}
 
+	@Override
+	public String getContextName() {
+		return "Plugin-Space '"+space.name+"'";
+	}
+
 }

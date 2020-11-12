@@ -82,4 +82,27 @@ public abstract class AccessContext {
 		if (parent==null) return "";
 		return parent.toString();
 	}
+	
+	public abstract String getContextName();
+	
+	public String getAccessInfo(DBRecord rec) throws AppException {
+		return "";
+	}
+	
+	
+	
+	public String getMayUpdateReport(DBRecord stored, Record newVersion) throws AppException {
+		boolean result = mayUpdateRecord(stored, newVersion);
+		String report = getContextName()+" "+getAccessInfo(stored)+": result mayUpdate="+result;
+		if (parent != null) return parent.getMayUpdateReport(stored, newVersion)+"\n"+report;
+		return report;
+	}
+	
+	public String getMayCreateRecordReport(DBRecord record) throws AppException {
+		boolean result = mayCreateRecord(record);
+		String report = getContextName()+" "+getAccessInfo(record)+": result mayCreate="+result;
+		if (parent != null) return parent.getMayCreateRecordReport(record)+"\n"+report;
+		return report;
+	}
+	
 }

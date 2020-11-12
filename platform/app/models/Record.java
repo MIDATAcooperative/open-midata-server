@@ -216,6 +216,8 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 		this.tags.add(tag);
 	}
 	
-	
+	public String getErrorInfo() {
+		return "Record('"+format+"','"+content+"')";
+	}
 
 }

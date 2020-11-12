@@ -33,7 +33,7 @@
 		    <p class="form-text text-muted" translate="manageapp.info.filename"></p>
 		  </formrow>
 		  <formrow myid="type" label="manageapp.type" class="danger-change">
-		    <select id="type" name="type" class="form-control" ng-model="app.type" ng-change="requireLogout();" ng-options="type.value as ('enum.plugintype.'+type.value) | translate for type in types" required></select>
+		    <select id="type" name="type" class="form-control" ng-model="app.type" ng-disabled="app._id" ng-change="requireLogout();" ng-options="type.value as ('enum.plugintype.'+type.value) | translate for type in types" required></select>
 		    <p class="form-text text-muted" translate="manageapp.info.type"></p>
 		  </formrow>
 		  <formrow myid="targetUserRole" label="manageapp.targetUserRole" class="danger-change" ng-if="app.type!='analyzer' && app.type!='endpoint'">

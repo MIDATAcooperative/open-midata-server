@@ -256,5 +256,12 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 	public static long count() throws AppException {
 		return Model.count(DBRecord.class, collection, CMaps.map());
 	}
+	
+	public String getErrorInfo() {
+		if (meta == null) return "Record with no meta info";
+		String format = meta.getString("format");
+		String content = meta.getString("content");
+		return "Record('"+format+"','"+content+"')";
+	}
 
 }

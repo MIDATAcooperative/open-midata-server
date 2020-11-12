@@ -115,6 +115,7 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.messaging.Messager;
 import utils.plugins.DeploymentManager;
 import utils.plugins.DeploymentReport;
 import utils.plugins.PluginDeployment;
@@ -190,7 +191,7 @@ public class Market extends APIController {
 			if (withLogout) {
 				Map<String, Object> oldDefaultQuery = app.defaultQuery;
 				
-				app.type = JsonValidation.getString(json, "type");
+				//app.type = JsonValidation.getString(json, "type");
 				app.requirements = JsonExtraction.extractEnumSet(json, "requirements", UserFeature.class);
 				app.targetUserRole = JsonValidation.getEnum(json, "targetUserRole", UserRole.class);
 				if (app.type.equals("analyzer") || app.type.equals("endpoint") ) app.targetUserRole = UserRole.RESEARCH;
@@ -214,11 +215,22 @@ public class Market extends APIController {
 				app.consentObserving = app.type.equals("external") && Feature_FormatGroups.mayAccess(app.defaultQuery, "Consent", "fhir/Consent");
 
 				if (app.type.equals("external")) {
+															
 					Set<ServiceInstance> si = ServiceInstance.getByApp(app._id, ServiceInstance.ALL);
 					if (si.isEmpty() && userId.equals(app.creator)) {
 						ApplicationTools.createServiceInstance(userId, app, userId);
 					}
-					//for (ServiceInstance)
+					for (ServiceInstance instance : si) {
+						User manager = User.getById(instance.managerAccount, User.ALL_USER);
+						if (manager != null) {
+							Set<MobileAppInstance> appInstances = MobileAppInstance.getByService(instance._id, MobileAppInstance.ALL);
+							if (!appInstances.isEmpty()) {
+								String subject = InstanceConfig.getInstance().getPortalServerDomain()+": API Keys expired";
+								String content = "Dear "+manager.firstname+" "+manager.lastname+",\n\nthe definition for the service '"+app.name+"' has been updated. The existing API keys for that service have expired. You are managing at least one API keys for this service.\n\nPlease generate a new API key if required.\n\nThis is an automated mail.";
+								Messager.sendTextMail(manager.email, manager.firstname+" "+manager.lastname, subject, content);
+							}
+						}
+					}
 				}
 			}
 			

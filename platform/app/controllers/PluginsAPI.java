@@ -75,6 +75,7 @@ import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.InstanceConfig;
 import utils.QueryTagTools;
 import utils.RuntimeConstants;
 import utils.ServerTools;
@@ -550,21 +551,35 @@ public class PluginsAPI extends APIController {
 			    consent = Consent.getHealthcareOrResearchActiveByAuthorizedAndOwner(inf.executorId, record.owner);
 			}
 									
-			if (consent == null || consent.isEmpty()) throw new BadRequestException("error.noconsent", "No active consent that allows to add data for target person.");
+			if (consent == null || consent.isEmpty()) {
+				if (InstanceConfig.getInstance().getInstanceType().doExtendedDeveloperReports()) {
+				   throw new PluginException(inf.pluginId, "error.noconsent", "No active consent that allows to add data for target person.");					
+				} else {
+				   throw new BadRequestException("error.noconsent", "No active consent that allows to add data for target person.");
+				}
+			}
 			AccessContext contextWithConsent = null;
+			AccessContext lastTried = null;
 			for (Consent c : consent) {
 				ConsentAccessContext cac = new ConsentAccessContext(c, context);
 				
 				if (cac.mayCreateRecord(dbrecord)) {				
 					contextWithConsent = cac;
 					break;
+				} else lastTried = cac;
+			}
+			if (contextWithConsent == null) {
+				if (InstanceConfig.getInstance().getInstanceType().doExtendedDeveloperReports()) {
+				   throw new PluginException(inf.pluginId, "error.noconsent", "None of the "+consent.size()+" possible consents allow to write "+dbrecord.getErrorInfo()+" for target person.\n\nLast tried create permission chain:\n"+lastTried.getMayCreateRecordReport(dbrecord));
+				} else {
+				   throw new InternalServerException("error.internal", "Record may not be created!");
 				}
 			}
-			if (contextWithConsent == null) throw new InternalServerException("error.internal", "Record may not be created!");
 			context = contextWithConsent;
 		} else if (!context.mayCreateRecord(dbrecord)) {
-			throw new PluginException(inf.pluginId, "error.plugin", "Record may not be created. Please check access filter and permissions in developer portal.");					
+			throw new PluginException(inf.pluginId, "error.plugin", dbrecord.getErrorInfo()+" may not be created. Please check access filter and permissions in developer portal.\n\nCreate permission chain:\n"+context.getMayCreateRecordReport(dbrecord));					
 		}
+		if (context.mustPseudonymize()) throw new PluginException(inf.pluginId, "error.plugin", dbrecord.getErrorInfo()+" may not be created. Access is pseudonymized! \n\nCreate permisssion chain:\n"+context.getMayCreateRecordReport(dbrecord));
 		
 		//MidataId targetAPS = targetConsent != null ? targetConsent : inf.targetAPS;
 		
@@ -739,7 +754,7 @@ public class PluginsAPI extends APIController {
 	 * @return the new version string of the record
 	 */
 	public static String updateRecord(ExecutionInfo inf, Record record) throws AppException  {
-		return RecordManager.instance.updateRecord(inf.executorId, inf.context, record);				
+		return RecordManager.instance.updateRecord(inf.executorId, inf.pluginId, inf.context, record);				
 	}
 	
 	/**

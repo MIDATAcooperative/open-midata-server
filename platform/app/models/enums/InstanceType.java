@@ -133,6 +133,14 @@ public enum InstanceType {
 	}
 	
 	/**
+	 * Send plugin error messages for errors that are not 100% a plugin problem  
+	 * @return
+	 */
+	public boolean doExtendedDeveloperReports() {
+		return this == LOCAL || this == TEST || this == DEMO || this == PERFTEST;
+	}
+	
+	/**
 	 * Disable cross site scripting protection.
 	 * @return
 	 */

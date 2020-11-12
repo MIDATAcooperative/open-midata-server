@@ -56,8 +56,8 @@ public class CreateTransactionStep extends TransactionStep {
 	}
 	
 	@Override
-	public void execute() {
-		try {
+	public void execute() throws AppException {
+		
 			if (result == null) {
 				try {
 					((ReadWriteResourceProvider) provider).createExecute(record, resource);
@@ -71,9 +71,7 @@ public class CreateTransactionStep extends TransactionStep {
 				response.setLocation(FHIRServlet.getBaseUrl()+"/"+provider.getResourceType().getSimpleName()+"/"+record._id.toString()+"/_history/0");
 				result.setResponse(response);
 			}
-		} catch (Exception e) {
-			setResultBasedOnException(e);			
-		} 
+		 
 	}
 
 	
