@@ -184,8 +184,11 @@ class APSImplementation extends APS {
 		merge();
 		Set<String> keyNames = eaps.keyNames();
 		Set<MidataId> result = new HashSet<MidataId>(keyNames.size());
+		
+		MidataId storedOwner = isAccessible() ? getStoredOwner() : eaps.getOwner();
+		
 		for (String k : keyNames) {
-			if (k.equals("owner")) result.add(getStoredOwner());
+			if (k.equals("owner")) result.add(storedOwner);
 			else {
 			  MidataId id = new MidataId(k);
 			  // No access for public key consents
@@ -246,7 +249,7 @@ class APSImplementation extends APS {
 		return (BasicBSONObject) eaps.getPermissions().get(key);
 	}
 	
-	public MidataId getStoredOwner() throws AppException {
+	public MidataId getStoredOwner() throws AppException {		
 		String ownerStr = (String) eaps.getPermissions().get("owner");
 		if (ownerStr != null) return new MidataId(ownerStr); else return null;
 	}
