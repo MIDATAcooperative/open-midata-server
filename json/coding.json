@@ -341,3 +341,10 @@
 {"_id":{"$oid":"5ebc10b6aed645326747371d"},"system":"http://snomed.info/sct","code":"60119000","display":"Exhaustion","content":"snomed/60119000"}
 {"_id":{"$oid":"5ee7398faed64514ac528de8"},"system":"http://midata.coop","code":"ResearchStudy","display":"Research Study","content":"ResearchStudy"}
 {"_id":{"$oid":"5fac0700aed6452079bc3352"},"system":"http://loinc.org","code":"10197-2","display":"Physical findings of Eye Narrative","content":"loinc/10197-2"}
+{"_id":{"$oid":"5fb39da4aed64513b2abccd0"},"system":"http://midata.coop","code":"bodysway-test","display":"Bodysway Test","content":"bodysway-test"}
+{"_id":{"$oid":"5fb39e25aed64513b2abccd2"},"system":"http://midata.coop","code":"fear-of-falls-one-question","display":"Fear of falls (One Question)","content":"fear-of-falls"}
+{"_id":{"$oid":"5fb39e25aed64513b2abccd3"},"system":"http://midata.coop","code":"fear-of-falls-fes-i","display":"Fear of falls (FES I)","content":"fear-of-falls"}
+{"_id":{"$oid":"5fb39e6caed64513b2abccd5"},"system":"http://midata.coop","code":"five-time-sit-to-stand","display":"Five time sit to stand","content":"five-time-sit-to-stand"}
+{"_id":{"$oid":"5fb39ebdaed64513b2abccd7"},"system":"http://midata.coop","code":"forward-reach-test","display":"Forward Reach Test","content":"forward-reach-test"}
+{"_id":{"$oid":"5fb39f02aed64513b2abccd9"},"system":"http://midata.coop","code":"timed-up-and-go","display":"Timed up and go","content":"timed-up-and-go"}
+{"_id":{"$oid":"5fb3a144aed64513b2abccdb"},"system":"http://midata.coop","code":"walking-speed","display":"Walking Speed","content":"walking-speed"}
