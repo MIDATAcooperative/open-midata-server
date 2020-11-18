@@ -49,6 +49,7 @@ public class VersionedDBRecord extends DBRecord {
 		this.owner = rec.owner;
 		this.key = rec.key;
 		this.security = rec.security;
+		this.context = rec.context;
 		this.version = rec.meta.getString("version");
 		if (this.version == null) this.version = INITIAL_VERSION;
 	}

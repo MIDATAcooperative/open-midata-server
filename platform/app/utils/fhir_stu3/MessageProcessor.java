@@ -17,12 +17,17 @@
 
 package utils.fhir_stu3;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Resource;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.dstu3.model.Enumerations.ResourceType;
 import org.hl7.fhir.dstu3.model.MessageHeader;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
+import org.hl7.fhir.dstu3.model.Parameters;
+import org.hl7.fhir.dstu3.model.Parameters.ParametersParameterComponent;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 
 import ca.uhn.fhir.rest.annotation.Operation;
@@ -54,12 +59,25 @@ public class MessageProcessor {
 			
 			MessageHeader mhr = (MessageHeader) mh;
 			String eventCode = mhr.getEvent().getCode();
+			String destination = mhr.hasDestination() ? mhr.getDestinationFirstRep().getEndpoint() : null;
 			
 			String inputBundle = ResourceProvider.ctx.newJsonParser().encodeResourceToString(content);
 			
+			Map<String, String> params = null;
+			if (content.getEntry().size()>=2) {
+				Resource r = content.getEntry().get(1).getResource();
+				if (r instanceof Parameters) {
+					Parameters parameters = (Parameters) r;
+					params = new HashMap<String, String>();
+					for (ParametersParameterComponent entry : parameters.getParameter()) {
+						params.put(entry.getName(), entry.getValue().primitiveValue());
+					}
+				}
+			}
+			
 			boolean doasync = async != null && async.getValue() != null && async.getValue().equals("true");
 			ExecutionInfo inf = ResourceProvider.info();
-			String result = SubscriptionManager.messageToProcess(inf.executorId, inf.pluginId, eventCode, inputBundle, doasync);
+			String result = SubscriptionManager.messageToProcess(inf.executorId, inf.pluginId, eventCode, destination, "3.0", inputBundle, params, doasync);
 			
 			if (doasync) {			
 				Bundle resultBundle = new Bundle();				

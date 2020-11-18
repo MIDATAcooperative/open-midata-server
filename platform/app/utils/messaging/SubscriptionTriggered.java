@@ -17,6 +17,8 @@
 
 package utils.messaging;
 
+import java.util.Map;
+
 import models.MidataId;
 
 /**
@@ -54,13 +56,25 @@ public class SubscriptionTriggered {
 	 */
 	final String eventCode;
 	
-	public SubscriptionTriggered(MidataId affected, MidataId app, String type, String eventCode, String resource, MidataId resourceId) {
+	/**
+	 * Parameters of trigger
+	 */
+    final Map<String, String> params;
+            
+    /**
+     * FHIR version of resource
+     */
+    final String fhirVersion;
+	
+	public SubscriptionTriggered(MidataId affected, MidataId app, String type, String eventCode, String fhirVersion, String resource, MidataId resourceId, Map<String, String> params) {
 		this.affected = affected;
 		this.app = app;
 		this.type = type;
+		this.fhirVersion = fhirVersion;
 		this.resource = resource;
 		this.eventCode = eventCode;
 		this.resourceId = resourceId;
+		this.params = params;
 	}
 
 	public MidataId getAffected() {
@@ -91,7 +105,15 @@ public class SubscriptionTriggered {
 		if (eventCode != null) return type+" ["+eventCode+"]";
 		return type;
 	}
-	
+		
+	public Map<String, String> getParams() {
+		return params;
+	}
+
+	public String getFhirVersion() {
+		return fhirVersion;
+	}
+
 	public String toString() {
 		return "trigger user="+affected+" type="+type;
 	}

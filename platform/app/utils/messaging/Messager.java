@@ -111,7 +111,7 @@ public class Messager {
 		}
 	}
 	
-	public static void sendMessage(MessageDefinition messageDefinition, Map<String, String> footers, User member, Map<String, String> replacements, MessageChannel channel) {				
+	public static void sendMessage(MessageDefinition messageDefinition, Map<String, String> footers, User member, Map<String, String> replacements, MessageChannel channel) {		
 		String email = member.email;
 		if (email == null) return;
 		String fullname = member.firstname+" "+member.lastname;

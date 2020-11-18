@@ -255,7 +255,15 @@ class APSImplementation extends APS {
 	}
 
 	@Override
-	public List<DBRecord> query(Query q) throws AppException {		
+	public List<DBRecord> query(Query q) throws AppException {
+		List<DBRecord> recs = queryInternal(q);
+		AccessContext c = q.getContext();
+		for (DBRecord r : recs) r.context = c;
+		return recs;
+	}
+	
+	
+	private List<DBRecord> queryInternal(Query q) throws AppException {		
 		merge();		 
 		// AccessLog.logLocalQuery(eaps.getId(), q.getProperties(),
 		// q.getFields() );

@@ -78,9 +78,7 @@ import utils.sync.Instances;
  *
  */
 public class SubscriptionProcessor extends AbstractActor {
-
-	private Object object;
-	private Object object2;
+	
 	public final static String TRIGGER = "EVENT";
 	@Override
 	public Receive createReceive() {
@@ -100,13 +98,11 @@ public class SubscriptionProcessor extends AbstractActor {
 			boolean anyAnswered = false;
 			
 			for (SubscriptionData subscription : allMatching) {	
-				AccessLog.log("ok:"+subscription.active+" "+subscription.content+" "+triggered.getEventCode());
+				AccessLog.log("ok:"+subscription.active+" "+subscription.content+" "+triggered.getEventCode());				
 				boolean answered = false;
 				if (subscription.active && (subscription.content == null || subscription.content.equals("MessageHeader") || subscription.content.equals(triggered.getEventCode())) && checkNotExpired(subscription)) {
 					if (triggered.getType().equals("fhir/MessageHeader") && (!triggered.getApp().equals(subscription.app))) continue;
-					
-					
-					//System.out.println("ok3");
+									
 					Subscription fhirSubscription = SubscriptionResourceProvider.subscription(subscription);
 					SubscriptionChannelComponent channel = fhirSubscription.getChannel();
 					
@@ -202,9 +198,13 @@ public class SubscriptionProcessor extends AbstractActor {
 	
 	void processEmail(SubscriptionData subscription, SubscriptionTriggered triggered, SubscriptionChannelComponent channel) throws AppException {
 		Map<String,String> replacements = new HashMap<String, String>();
+		if (triggered.getParams()!=null) replacements.putAll(triggered.getParams());
 		AccessLog.log("process email type="+triggered.getType()+"  "+triggered.getEventCode());
 		if (triggered.getType().equals("fhir/MessageHeader")) {
-		  Messager.sendMessage(subscription.app, MessageReason.PROCESS_MESSAGE, triggered.getEventCode(), Collections.singleton(subscription.owner), null, replacements);			
+		  String ev = triggered.getEventCode();
+		  if (ev.indexOf(":")>=0) ev = ev.substring(0,ev.indexOf(":"));
+		  AccessLog.log("send ev="+ev+" ow="+subscription.owner+" app="+subscription.app);
+		  Messager.sendMessage(subscription.app, MessageReason.PROCESS_MESSAGE, ev, Collections.singleton(subscription.owner), null, replacements);			
 		} else {
 		  Messager.sendMessage(subscription.app, MessageReason.RESOURCE_CHANGE, triggered.getType(), Collections.singleton(subscription.owner), null, replacements);
 		}
@@ -213,9 +213,12 @@ public class SubscriptionProcessor extends AbstractActor {
 	
 	void processSMS(SubscriptionData subscription, SubscriptionTriggered triggered, SubscriptionChannelComponent channel) throws AppException {
 		Map<String,String> replacements = new HashMap<String, String>();
+		if (triggered.getParams()!=null) replacements.putAll(triggered.getParams());
 		AccessLog.log("process sms type="+triggered.getType()+"  "+triggered.getEventCode());
 		if (triggered.getType().equals("fhir/MessageHeader")) {
-		  Messager.sendMessage(subscription.app, MessageReason.PROCESS_MESSAGE, triggered.getEventCode(), Collections.singleton(subscription.owner), null, replacements, MessageChannel.SMS);			
+		  String ev = triggered.getEventCode();
+		  if (ev.indexOf(":")>=0) ev = ev.substring(0,ev.indexOf(":"));
+		  Messager.sendMessage(subscription.app, MessageReason.PROCESS_MESSAGE, ev, Collections.singleton(subscription.owner), null, replacements, MessageChannel.SMS);			
 		} else {
 		  Messager.sendMessage(subscription.app, MessageReason.RESOURCE_CHANGE, triggered.getType(), Collections.singleton(subscription.owner), null, replacements, MessageChannel.SMS);
 		}

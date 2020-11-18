@@ -264,11 +264,14 @@
       "fhir_Resource" : "Resource changes",
       "time" : "Daily",
       "time/30m" : "Each 30 minutes",
-      "init" : "When added"
+      "init" : "When added",
+      "forwarded" : "FHIR message (forwarded)"
     },
     "actions" : {
       "rest-hook" : "Call REST hook",
       "email": "Send email",
+      "sms" : "Send SMS",
+      "app" : "Forward to other application",
       "nodejs": "Call Node.js script"
     },
     "debug" : {
