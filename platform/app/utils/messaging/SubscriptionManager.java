@@ -33,10 +33,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 
-import org.hl7.fhir.dstu3.model.StringType;
-import org.hl7.fhir.dstu3.model.Subscription;
-import org.hl7.fhir.dstu3.model.Subscription.SubscriptionChannelComponent;
-import org.hl7.fhir.dstu3.model.Subscription.SubscriptionChannelType;
+import org.hl7.fhir.r4.model.Subscription;
+import org.hl7.fhir.r4.model.Subscription.SubscriptionChannelType;
 
 import akka.actor.AbstractActor;
 import akka.actor.ActorPath;
@@ -49,6 +47,8 @@ import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import static akka.pattern.PatternsCS.ask;
 import controllers.AutoRun.ImportResult;
 import models.Consent;
+import models.HPUser;
+import models.Member;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.Model;
@@ -111,13 +111,13 @@ public class SubscriptionManager {
 		subscriptionChecker.tell(new ResourceChange(record.format, record), ActorRef.noSender());							
 	}
 	
-	public static String messageToProcess(MidataId executor, MidataId app, String eventCode, String bundleJSON, boolean doasync) {
+	public static String messageToProcess(MidataId executor, MidataId app, String eventCode, String destination, String fhirVersion, String bundleJSON, Map<String,String> params, boolean doasync) {
 		AccessLog.log("Process Message: user="+executor.toString()+" app="+app.toString()+" async="+doasync);
 		if (doasync) {
-			subscriptionChecker.tell(new ProcessMessage(executor, app, eventCode, bundleJSON), ActorRef.noSender());
+			subscriptionChecker.tell(new ProcessMessage(executor, app, eventCode, destination, fhirVersion, bundleJSON, params), ActorRef.noSender());
 			return null;
 		} else {
-			CompletableFuture<Object> answer = ask(subscriptionChecker, new ProcessMessage(executor, app, eventCode, bundleJSON), 1000*60).toCompletableFuture();
+			CompletableFuture<Object> answer = ask(subscriptionChecker, new ProcessMessage(executor, app, eventCode, destination, fhirVersion, bundleJSON, params), 1000*60).toCompletableFuture();
 			Object obj = answer.join();
 			if (obj instanceof MessageResponse) {
 				MessageResponse res = (MessageResponse) obj;
@@ -160,7 +160,7 @@ public class SubscriptionManager {
 	    			newdata.add();
 	    			SubscriptionManager.subscriptionChange(newdata);
 	    			if (newdata.format.equals("init")) { 
-	    				subscriptionChecker.tell(new SubscriptionTriggered(userId, plugin._id, "init", "init", null, null), ActorRef.noSender());
+	    				subscriptionChecker.tell(new SubscriptionTriggered(userId, plugin._id, "init", "init", null, null, null, null), ActorRef.noSender());
 	    			}
 	    		//}
 	    	}
@@ -261,11 +261,20 @@ class ProcessMessage {
 	
 	final String eventCode;
 	
-	ProcessMessage(MidataId executor, MidataId app, String eventCode, String message) {
+	final String fhirVersion;
+	
+	final Map<String, String> params;
+	
+	final String destination;
+	
+	ProcessMessage(MidataId executor, MidataId app, String eventCode, String destination, String message, String fhirVersion, Map<String, String> params) {
 		this.app = app;
 		this.executor = executor;
 		this.message = message;
 		this.eventCode = eventCode;
+		this.fhirVersion = fhirVersion;
+		this.params = params;
+		this.destination = destination;
 	}
 
 	public String getMessage() {
@@ -283,8 +292,19 @@ class ProcessMessage {
 	public String getEventCode() {
 		return eventCode;
 	}
-	
-	
+
+	public String getFhirVersion() {
+		return fhirVersion;
+	}
+
+	public Map<String, String> getParams() {
+		return params;
+	}
+
+	public String getDestination() {
+		return destination;
+	}			
+		
 }
 
 /**
@@ -405,7 +425,7 @@ class SubscriptionChecker extends AbstractActor {
 		for (MidataId affectedUser : affected) {
 			if (withSubscription.contains(affectedUser)) {
 				
-				SubscriptionTriggered trigger = new SubscriptionTriggered(affectedUser, null, change.type, content, resource, resourceId);				
+				SubscriptionTriggered trigger = new SubscriptionTriggered(affectedUser, null, change.type, content, null, resource, resourceId, null);				
 				processor.tell(trigger, getSelf());
 			}
 		}
@@ -415,9 +435,69 @@ class SubscriptionChecker extends AbstractActor {
 	}
 	
 	void processMessage(ProcessMessage message) {
-		System.out.println("Recieve and forward message");
-		SubscriptionTriggered trigger = new SubscriptionTriggered(message.executor, message.getApp(), "fhir/MessageHeader", message.getEventCode(), message.getMessage(), null);				
-		processor.forward(trigger, getContext());
+				
+		if (message.getDestination() != null) {		
+			AccessLog.logStart("jobs", "message with destination: "+message);
+			try {
+			  Plugin sender = Plugin.getById(message.getApp());
+			  MidataId targetApp = getTargetApp(message);			  
+			  if (targetApp == null) {
+				  AccessLog.log("App not found");
+				  messageResponse(new MessageResponse("Target app not found.", 400, null));
+				  return;
+			  }
+			  User targetUser = getTargetUser(message);			  
+			  if (targetUser == null) {
+				  AccessLog.log("User not found");
+				  messageResponse(new MessageResponse("User not found.", 400, null));
+				  return;
+			  }			  
+			  SubscriptionTriggered trigger = new SubscriptionTriggered(targetUser._id, targetApp, "fhir/MessageHeader", message.getEventCode()+":"+sender.filename, message.getFhirVersion(), message.getMessage(), null, message.getParams());
+			  processor.forward(trigger, getContext());
+			} catch (AppException e) {
+				messageResponse(new MessageResponse("Error", 500, null));
+			} finally {
+				ServerTools.endRequest();
+			}
+		} else {
+		  SubscriptionTriggered trigger = new SubscriptionTriggered(message.executor, message.getApp(), "fhir/MessageHeader", message.getEventCode(), message.getFhirVersion(), message.getMessage(), null, message.getParams());
+		  processor.forward(trigger, getContext());
+		}
+	}
+	
+	private User getTargetUser(ProcessMessage message) throws AppException {
+		String dest = message.getDestination();
+		if (dest.startsWith("patient://")) {
+		   User user = Member.getByEmail(dest.substring("patient://".length()), Sets.create("_id"));
+		   return user;
+		} else if (dest.startsWith("practitioner://")) {
+			User user = HPUser.getByEmail(dest.substring("practitioner://".length()), Sets.create("_id"));
+			return user;
+		} else if (dest.startsWith("Patient/")) {
+			User user = Member.getById(MidataId.from(dest.substring("Patient/".length())), Sets.create("_id"));
+			return user;
+		} else if (dest.startsWith("Practitioner/")) {
+			User user = HPUser.getById(MidataId.from(dest.substring("Practitioner/".length())), Sets.create("_id"));
+			return user;
+		}
+		return null;
+	}
+	
+	private MidataId getTargetApp(ProcessMessage message) throws AppException {
+		Plugin pl = Plugin.getById(message.getApp());		
+		if (pl == null || pl.defaultSubscriptions == null) return null;		
+		List<SubscriptionData> def = pl.defaultSubscriptions;
+		for (SubscriptionData data : def) {			
+			if (data.format.equals("fhir/MessageHeader") && data.content.equals(message.eventCode)) {				
+				Subscription fhirSubscription = SubscriptionResourceProvider.subscription(data);				
+				if (fhirSubscription.getChannel().getType().equals(SubscriptionChannelType.MESSAGE) && fhirSubscription.getChannel().getEndpoint().startsWith("app://")) {					
+					String appname = fhirSubscription.getChannel().getEndpoint().substring("app://".length());
+					Plugin target = Plugin.getByFilename(appname, Sets.create("_id","status"));
+					if (target != null) return target._id;
+				}
+			}
+		}
+		return null;
 	}
 	
 	void messageResponse(MessageResponse message) {

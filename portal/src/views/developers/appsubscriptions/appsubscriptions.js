@@ -22,7 +22,7 @@ angular.module('portal')
 	$scope.error = null;
 	
 	$scope.triggers = ["fhir_Consent", "fhir_MessageHeader", "fhir_Resource", "time", "init","time/30m"];
-	$scope.actions = ["rest-hook", "email", "nodejs"];
+	$scope.actions = ["rest-hook", "email", "sms", "nodejs", "app"];
 	
 	$scope.status = new status(false, $scope);
 	$scope.ENV = ENV;
@@ -38,6 +38,9 @@ angular.module('portal')
 				angular.forEach(subscriptions, function(subscription) {
 					if (subscription.format === "fhir/MessageHeader") {
 						subscription.trigger = "fhir_MessageHeader";
+						var p = subscription.fhirSubscription.criteria.indexOf("?event=");
+		    			var criteria = p > 0 ? subscription.fhirSubscription.criteria.substr(p+7) : subscription.fhirSubscription.criteria;
+						subscription.criteria = criteria;
 					} else if (subscription.format === "fhir/Consent") {
 						subscription.trigger = "fhir_Consent";
 					} else if (subscription.format === "time") {
@@ -45,7 +48,7 @@ angular.module('portal')
 					} else if (subscription.format === "time/30m") {
 						subscription.trigger = "time/30m";
 					} else if (subscription.format === "init") {
-						subscription.trigger = "init";
+						subscription.trigger = "init";					
 					} else {
 						subscription.trigger = "fhir_Resource";
 						subscription.criteria = subscription.fhirSubscription.criteria;
@@ -61,6 +64,10 @@ angular.module('portal')
 						if (endpoint && endpoint.startsWith("node://")) {
 							subscription.action = "nodejs";
 							subscription.parameter = endpoint.substr("node://".length);
+						}
+						else if (endpoint && endpoint.startsWith("app://")) {
+							subscription.action = "app";
+							subscription.parameter = endpoint.substr("app://".length);
 						}
 					}
 				});
@@ -86,7 +93,11 @@ angular.module('portal')
     			criteria = "Consent";    			
     			break;
     		case "fhir_MessageHeader":
-    			criteria = "MessageHeader";
+    			if (subscription.criteria) {
+    			    criteria = "MessageHeader?event="+subscription.criteria;
+    			} else {
+    				criteria = "MessageHeader";
+    			}
     			break;
     		case "fhir_Resource":
                 criteria = subscription.criteria;
@@ -118,6 +129,10 @@ angular.module('portal')
     		case "nodejs":
     			subscription.fhirSubscription.channel.type = "message";
     			subscription.fhirSubscription.channel.endpoint = "node://"+subscription.parameter;
+    			break;
+    		case "app":
+    			subscription.fhirSubscription.channel.type = "message";
+    			subscription.fhirSubscription.channel.endpoint = "app://"+subscription.parameter;
     			break;
     		}
     	});

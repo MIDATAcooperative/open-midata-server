@@ -381,9 +381,12 @@ public class SubscriptionResourceProvider extends ReadWriteResourceProvider<Subs
 	        if (p>0) {
 	        	
 	        	subscriptionData.format = "fhir/"+crit.substring(0, p);
-	        	
+	        		        		        	
 	        	String q = crit.substring(p+1);
-	        	if (q.startsWith("code=")) {
+	        	if (q.startsWith("event=")) {
+	        		String cnt = q.substring("event=".length());	        		
+	        		subscriptionData.content = cnt;
+	        	} else if (q.startsWith("code=")) {
 	        		String cnt = q.substring("code=".length());
 	        		String content = ContentCode.getContentForSystemCode(cnt.replace('|', ' '));
 	        		if (content != null) subscriptionData.content = content;
