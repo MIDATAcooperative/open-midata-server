@@ -105,3 +105,4 @@ Folder structure
 
 - switches: Used by build process
 - tasks: Used by build process
+
