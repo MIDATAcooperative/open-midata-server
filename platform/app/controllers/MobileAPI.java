@@ -1,18 +1,18 @@
 /*
- * This file is part of the Open MIDATA Platform.
+ * This file is part of the Open MIDATA Server.
  *
- * The Open MIDATA platform is free software: you can redistribute it and/or modify
+ * The Open MIDATA Server is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * any later version.
  *
- * The Open MIDATA Platform is distributed in the hope that it will be useful,
+ * The Open MIDATA Server is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with the Open MIDATA platform.  If not, see <http://www.gnu.org/licenses/>.
+ * along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package controllers;
@@ -119,7 +119,15 @@ public class MobileAPI extends Controller {
 		Set<MobileAppInstance> candidates = MobileAppInstance.getByApplicationAndOwner(applicationId, owner, fields);
 		AccessLog.log("CS:"+candidates.size());
 		if (candidates.isEmpty()) return null;
-		if (candidates.size() >= 10) throw new BadRequestException("error.blocked.app", "Maximum number of consents reached for this app. Please cleanup using the MIDATA portal.");
+		if (candidates.size() >= 10) {
+			if (InstanceConfig.getInstance().getInstanceType().getDebugFunctionsAvailable()) {
+				for (MobileAppInstance mai : candidates) {
+					ApplicationTools.removeAppInstance(owner, mai);
+				}
+				throw new BadRequestException("error.blocked.app_test", "Maximum number of consents reached for this app. Please cleanup using the MIDATA portal.");
+			} else 
+			throw new BadRequestException("error.blocked.app", "Maximum number of consents reached for this app. Please cleanup using the MIDATA portal.");
+		}
 		for (MobileAppInstance instance : candidates) {
 		  if (User.phraseValid(phrase, instance.passcode)) return instance;
 		}

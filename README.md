@@ -1,12 +1,10 @@
-Open MIDATA Platform
-====================
+Open MIDATA Server
+==================
 
-The Open MIDATA platform was developed by ETH Zurich and Bern University of Applied Sciences BFH. 
+The Open MIDATA Server was developed by ETH Zurich and Bern University of Applied Sciences BFH. 
 
 The platform allows citizens to collect their health data and to freely decide upon data use in 
 research and data projects.
-
-This repository contains the Open MIDATA Platform application server.
 
 Please refer to the instructions provided for setting up a development instance.
 
@@ -33,8 +31,8 @@ sudo apt-get install git make
 
 Then clone this repository into a directory of your choice. 
 ```
-git clone https://github.com/MIDATAcooperative/open-platform
-cd open-platform
+git clone https://github.com/MIDATAcooperative/open-midata-server
+cd open-midata-server
 ```
 
 Prepare an empty directory where you want to have the plugins
@@ -99,12 +97,11 @@ Folder structure
 
 - conf: Config files used by the platform.
 - config: Config files for external components
-- logs (created by script): Logs of all products except web application (whose log is in platform -> logs).
-- platform: Code for the open MIDATA platform.
-- portal: Code for the portal of the open MIDATA platform
+- platform: Code for the open MIDATA server.
+- portal: Code for the portal of the open MIDATA server
 - json: JSON data and scripts for the database.
 - nginx: Templates for nginx configuration
-- apps: some additional tools for the platform
+- apps: some additional tools for the server
 
 - switches: Used by build process
 - tasks: Used by build process

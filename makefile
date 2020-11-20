@@ -1,18 +1,18 @@
 #
-# This file is part of the Open MIDATA Platform.
+# This file is part of the Open MIDATA Server.
 #
-# The Open MIDATA platform is free software: you can redistribute it and/or modify
+# The Open MIDATA Server is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # any later version.
 #
-# The Open MIDATA Platform is distributed in the hope that it will be useful,
+# The Open MIDATA Server is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with the Open MIDATA platform.  If not, see <http://www.gnu.org/licenses/>.
+# along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
 #
 
 include conf/*.conf
@@ -20,7 +20,7 @@ include conf/*.conf
 .PHONY: info
 info:
 	$(info -----------------------------------)
-	$(info Welcome to the Open MIDATA Platform)
+	$(info Welcome to the Open MIDATA Server)
 	$(info -----------------------------------)
 	$(info   )
 	$(info config : Configure a localhost instance (run pre installation))	

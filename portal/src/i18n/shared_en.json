@@ -141,6 +141,7 @@
        "projectconsent" : "You have withdrawn your participation in this research project and can therefore no longer use this application.",
        "consent" : "You have set in the @PLATFORM portal that this application may no longer access your data. If you want to use this application again, you must reauthorize it in the @PLATFORM portal.",
        "app" : "You are allowed to use this application on a maximum of 10 devices. Please delete unused consents on the @PLATFORM portal.",
+       "app_test" : "You are allowed to use this application on a maximum of 10 devices. On this TEST instance consents have been reset for you. Please retry.",
        "joinmethod" : "It is not allowed to join the project by this method." 
      },
 
@@ -463,6 +464,7 @@
 	   "Planning" : "Planning",
 	   "Tools" : "Tools",
 	   "Protocol" : "Protocol",
+	   "Expert" : "Expert Plugins",
 	   "Available" : "Available Plugins"
 	 },
 	 "plugintype" : {
@@ -803,6 +805,7 @@
  	"change_passphrase_btn" : "Change Passphrase",
  	"auditlog_btn" : "View Audit Log",
 	"change_email_btn" : "Change Email Address",
+	"expert_tools_btn" : "Show Expert Plugins",
 	"repair_account_btn" : "Repair Account",
 	"reset_spaces_btn" : "Reset Portal",
 	"export_btn" : "Export your data",
