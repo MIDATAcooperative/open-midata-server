@@ -99,7 +99,7 @@ angular.module('portal')
 	};
 	
 	$scope.install = function(app) {
-	  if (app.type == "external" || app.termsOfUse) {
+	  if (app.type == "external" || app.termsOfUse || app.type == "service") {
 		$state.go("^.visualization", { visualizationId : app._id, context : $state.params.context, next : $state.params.next, study : $state.params.study, user : $state.params.user }); 
 		return;
 	  }

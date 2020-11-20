@@ -76,7 +76,7 @@ angular.module('portal')
 	$scope.install = function(app) {		
 		  if ($scope.pluginToSpace[app._id] === true) return;
 
-		  if (app.type == "external" || app.termsOfUse) {
+		  if (app.type == "external" || app.termsOfUse || app.type == "service") {
 			  $state.go("^.visualization", { visualizationId : app._id });
 			  return;
 		  }

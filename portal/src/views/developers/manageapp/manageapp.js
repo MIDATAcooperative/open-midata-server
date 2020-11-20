@@ -52,7 +52,7 @@ angular.module('portal')
 		{ value : "endpoint", label : "FHIR endpoint" }
 	];
 	$scope.tags = [
-	    "Analysis", "Import", "Planning", "Protocol"
+	    "Analysis", "Import", "Planning", "Protocol", "Expert"
     ];
 			
 	$scope.loadApp = function(appId) {

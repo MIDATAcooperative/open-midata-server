@@ -135,7 +135,7 @@ angular.module('portal')
 				      $state.go('^.spaces', { spaceId : result.data._id, params : $scope.params.params });
 					}
 				} else {
-					if ($scope.visualization.type == "external") {
+					if ($scope.visualization.type == "external" || $scope.visualization.type == "service") {
 						$state.go('^.apps');
 					} else $state.go('^.dashboard', { dashId : $scope.options.context });
 				}

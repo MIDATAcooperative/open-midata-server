@@ -119,7 +119,15 @@ public class MobileAPI extends Controller {
 		Set<MobileAppInstance> candidates = MobileAppInstance.getByApplicationAndOwner(applicationId, owner, fields);
 		AccessLog.log("CS:"+candidates.size());
 		if (candidates.isEmpty()) return null;
-		if (candidates.size() >= 10) throw new BadRequestException("error.blocked.app", "Maximum number of consents reached for this app. Please cleanup using the MIDATA portal.");
+		if (candidates.size() >= 10) {
+			if (InstanceConfig.getInstance().getInstanceType().getDebugFunctionsAvailable()) {
+				for (MobileAppInstance mai : candidates) {
+					ApplicationTools.removeAppInstance(owner, mai);
+				}
+				throw new BadRequestException("error.blocked.app_test", "Maximum number of consents reached for this app. Please cleanup using the MIDATA portal.");
+			} else 
+			throw new BadRequestException("error.blocked.app", "Maximum number of consents reached for this app. Please cleanup using the MIDATA portal.");
+		}
 		for (MobileAppInstance instance : candidates) {
 		  if (User.phraseValid(phrase, instance.passcode)) return instance;
 		}
