@@ -60,7 +60,7 @@ jobs:
     #    uses a compiled language
 
     - run: |
-       make test
+       cp conf/setup.conf.template conf/setup.conf;make test
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
