@@ -74,6 +74,8 @@ stop-mongo:
 
 update: tasks/check-config tasks/install-packages tasks/config-firejail start-mongo tasks/build-mongodb tasks/build-portal tasks/build-platform tasks/setup-nginx start
 
+test: tasks/build-portal tasks/build-platform
+	
 .PHONY: stop
 stop: stop-platform stop-mongo
 
