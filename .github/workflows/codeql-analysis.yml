@@ -60,7 +60,7 @@ jobs:
     #    uses a compiled language
 
     - run: |
-       cd platform;./sbt dist;cd ../portal;npm ci;npm run prod:build;
+       cp conf/setup.conf.template conf/setup.conf;cd platform;./sbt dist;cd ../portal;npm ci;npm run prod:build;
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
