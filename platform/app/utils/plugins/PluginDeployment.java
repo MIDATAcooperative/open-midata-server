@@ -156,7 +156,7 @@ public class PluginDeployment extends AbstractActor {
 		cmd.add("/bin/cp");
 		cmd.add("-r");
 		cmd.add(filename+"/dist");
-		cmd.add("../plugin_active/"+filename);
+		cmd.add("../plugin_active/"+filename+"/dist");
 		process(baseDir, cmd);
 		cmd.clear();
 		cmd.add("/bin/chmod");
