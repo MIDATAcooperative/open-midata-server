@@ -30,17 +30,19 @@ import javax.crypto.spec.PBEKeySpec;
  * Author: havoc AT defuse.ca
  * www: http://crackstation.net/hashing-security.htm
  */
-public class PasswordHash {
-	public static final String PBKDF2_ALGORITHM = "PBKDF2WithHmacSHA1";
+public class PasswordHash {	
+	public static final String[] PBKDF2_ALGORITHM = new String[] { "PBKDF2WithHmacSHA1", "PBKDF2WithHmacSHA512"  };
+	public static final int DEFAULT_HASH_ALGORITHM = 1;
 
 	// The following constants may be changed without breaking existing hashes.
-	public static final int SALT_BYTE_SIZE = 24;
-	public static final int HASH_BYTE_SIZE = 24;
-	public static final int PBKDF2_ITERATIONS = 10000;
+	public static final int SALT_BYTE_SIZE = 512;
+	public static final int HASH_BYTE_SIZE = 512;
+	public static final int PBKDF2_ITERATIONS = 65536;
 
 	public static final int ITERATION_INDEX = 0;
 	public static final int SALT_INDEX = 1;
 	public static final int PBKDF2_INDEX = 2;
+	public static final int ALGORITHM_INDEX = 3;
 
 	/**
 	 * Returns a salted PBKDF2 hash of the password.
@@ -65,15 +67,15 @@ public class PasswordHash {
 		random.nextBytes(salt);
 
 		// Hash the password
-		byte[] hash = pbkdf2(password, salt, PBKDF2_ITERATIONS, HASH_BYTE_SIZE);
-		// format iterations:salt:hash
-		return PBKDF2_ITERATIONS + ":" + toHex(salt) + ":" + toHex(hash);
+		byte[] hash = pbkdf2(DEFAULT_HASH_ALGORITHM, password, salt, PBKDF2_ITERATIONS, HASH_BYTE_SIZE);
+		// format iterations:salt:hash[:alg]
+		return PBKDF2_ITERATIONS + ":" + toHex(salt) + ":" + toHex(hash)+":"+DEFAULT_HASH_ALGORITHM;
 	}
 	
 	public static String createHashGivenSalt(char[] password, byte[] salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		
 		// Hash the password
-		byte[] hash = pbkdf2(password, salt, PBKDF2_ITERATIONS, HASH_BYTE_SIZE);
+		byte[] hash = pbkdf2(0, password, salt, PBKDF2_ITERATIONS, HASH_BYTE_SIZE);
 		// format iterations:salt:hash
 		return PBKDF2_ITERATIONS + ":" + toHex(salt) + ":" + toHex(hash);
 	}
@@ -104,12 +106,22 @@ public class PasswordHash {
 		int iterations = Integer.parseInt(params[ITERATION_INDEX]);
 		byte[] salt = fromHex(params[SALT_INDEX]);
 		byte[] hash = fromHex(params[PBKDF2_INDEX]);
+		int algorithm = (params.length <= ALGORITHM_INDEX) ? 0 : Integer.parseInt(params[ALGORITHM_INDEX]);
 		// Compute the hash of the provided password, using the same salt,
 		// iteration count, and hash length
-		byte[] testHash = pbkdf2(password, salt, iterations, hash.length);
+		byte[] testHash = pbkdf2(algorithm, password, salt, iterations, hash.length);
 		// Compare the hashes in constant time. The password is correct if
 		// both hashes match.
 		return slowEquals(hash, testHash);
+	}
+	
+	/**
+	 * Does this hash use the newest hashing function?
+	 * @param hash
+	 * @return
+	 */
+	public static boolean needsUpgrade(String hash) {
+		return !hash.endsWith(":"+DEFAULT_HASH_ALGORITHM);
 	}
 
 	/**
@@ -136,10 +148,10 @@ public class PasswordHash {
 	 * @param bytes the length of the hash to compute in bytes
 	 * @return the PBDKF2 hash of the password
 	 */
-	private static byte[] pbkdf2(char[] password, byte[] salt, int iterations, int bytes)
+	private static byte[] pbkdf2(int algorithm, char[] password, byte[] salt, int iterations, int bytes)
 			throws NoSuchAlgorithmException, InvalidKeySpecException {
 		PBEKeySpec spec = new PBEKeySpec(password, salt, iterations, bytes * 8);
-		SecretKeyFactory skf = SecretKeyFactory.getInstance(PBKDF2_ALGORITHM);
+		SecretKeyFactory skf = SecretKeyFactory.getInstance(PBKDF2_ALGORITHM[algorithm]);
 		return skf.generateSecret(spec).getEncoded();
 	}
 

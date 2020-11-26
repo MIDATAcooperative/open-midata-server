@@ -219,15 +219,17 @@ angular.module('portal')
 		
 		crypto.generateKeys($scope.setpw.password).then(function(keys) {
 				
-			if ($scope.registration.secure) {
-				  $scope.registration.password = keys.pw_hash;	
-				  $scope.registration.pub = keys.pub;
-				  $scope.registration.priv_pw = keys.priv_pw;
-				  $scope.registration.recoverKey = keys.recoverKey;
-				  $scope.registration.recovery = keys.recovery;
-			} else {
-				  $scope.registration.password = $scope.registration.password1;
-			};	
+			if ($scope.registration) {
+				if ($scope.registration.secure) {
+					  $scope.registration.password = keys.pw_hash;	
+					  $scope.registration.pub = keys.pub;
+					  $scope.registration.priv_pw = keys.priv_pw;
+					  $scope.registration.recoverKey = keys.recoverKey;
+					  $scope.registration.recovery = keys.recovery;
+				} else {
+					  $scope.registration.password = $scope.registration.password1;
+				};	
+			}
 						
 			var data = { token : $stateParams.token, mode : $state.current.data.mode };	
 			if ($scope.setpw.secure) {
