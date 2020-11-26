@@ -1,0 +1,4 @@
+name: "CodeQL config"
+
+paths-ignore:
+  - 'platform/target/scala-2.12/api/lib/**'
