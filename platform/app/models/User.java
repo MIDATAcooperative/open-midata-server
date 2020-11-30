@@ -395,9 +395,15 @@ public class User extends Model implements Comparable<User> {
 				this.failedLogins ++;
 				this.lastFailed = new Date();
 				setMultiple(collection, Sets.create("failedLogins", "lastFailed"));
-			} else if (this.failedLogins > 0){
-				this.failedLogins = 0;
-				set("failedLogins", this.failedLogins);
+			} else {
+				if (this.failedLogins > 0){			
+					this.failedLogins = 0;
+					set("failedLogins", this.failedLogins);								
+				}
+				if (PasswordHash.needsUpgrade(this.password)) {
+					this.password = PasswordHash.createHash(givenPassword);
+					set("password", this.password);
+				}
 			}
 			
 			return valid;

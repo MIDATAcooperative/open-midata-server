@@ -228,7 +228,7 @@ public class QueryBuilder {
 		if (sortOrder != null) addSort(name, sortOrder, t1, p1, t2, p2, t3, p3);
 		
 		List<List<? extends IQueryParameterType>> paramsAnd = params.get(name);
-		if (paramsAnd == null) return;
+		if (paramsAnd == null || paramsAnd.isEmpty()) return;
 		
 		PredicateBuilder bld = new PredicateBuilder();
 		for (List<? extends IQueryParameterType> paramsOr : paramsAnd) {
