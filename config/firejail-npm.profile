@@ -17,7 +17,7 @@ noroot
 nosound
 notv
 novideo
-protocol unix,inet,inet6
+protocol unix,inet,inet6,netlink,packet
 seccomp
 shell none
 disable-mnt

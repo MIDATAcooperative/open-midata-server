@@ -148,14 +148,20 @@ public class PluginDeployment extends AbstractActor {
 	}
 	
 	public Pair<Boolean, String> doActivate(File baseDir, String filename) {
-		File dest = new File(baseDir+"/plugin_active/"+filename);
+		File dest = new File(baseDir+"/../plugin_active/"+filename);
 		if (!dest.exists()) dest.mkdir();
-		File dist = new File(baseDir+"/plugin_active/"+filename+"/dist");
+		File dist = new File(baseDir+"/../plugin_active/"+filename+"/dist");
 		if (!dist.exists()) dist.mkdir();
 		List<String> cmd = new ArrayList<String>();
 		cmd.add("/bin/cp");
 		cmd.add("-r");
 		cmd.add(filename+"/dist");
+		cmd.add("../plugin_active/"+filename);
+		process(baseDir, cmd);
+		cmd.clear();
+		cmd.add("/bin/chmod");
+		cmd.add("-R");
+		cmd.add("755");		
 		cmd.add("../plugin_active/"+filename);
 		return process(baseDir, cmd);	
 	}
