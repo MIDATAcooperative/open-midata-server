@@ -55,6 +55,11 @@ public class DummyAccessContext extends AccessContext {
 	public boolean mustPseudonymize() {		
 		return false;
 	}
+	
+	@Override
+	public boolean mustRename() {		
+		return false;
+	}
 
 	@Override
 	public MidataId getTargetAps() {
