@@ -98,8 +98,12 @@ public class ConsentAccessContext extends AccessContext{
 
 	@Override
 	public boolean mustPseudonymize() {
-		return (consent.type.equals(ConsentType.STUDYPARTICIPATION) && consent.ownerName != null && (parent == null || parent.mustPseudonymize()))
-				|| (consent.type.equals(ConsentType.STUDYRELATED) && consent.ownerName != null);		
+		return (consent.type.equals(ConsentType.STUDYPARTICIPATION) && consent.ownerName != null && (parent == null || parent.mustPseudonymize()));
+	}
+	
+	@Override
+	public boolean mustRename() {
+		return (consent.type.equals(ConsentType.STUDYRELATED) && consent.ownerName != null);		
 	}
 
 	@Override

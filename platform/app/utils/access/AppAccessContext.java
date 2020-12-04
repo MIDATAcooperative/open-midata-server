@@ -69,6 +69,11 @@ public class AppAccessContext extends AccessContext {
 	public boolean mustPseudonymize() {		
 		return plugin.pseudonymize;
 	}
+	
+	@Override
+	public boolean mustRename() {		
+		return false;
+	}
 
 	@Override
 	public MidataId getTargetAps() {

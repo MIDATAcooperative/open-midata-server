@@ -54,6 +54,11 @@ public class UserGroupAccessContext extends AccessContext {
 	public boolean mustPseudonymize() {
 		return ugm.getRole().pseudonymizedAccess();
 	}
+	
+	@Override
+	public boolean mustRename() {
+		return false;
+	}
 
 	@Override
 	public MidataId getTargetAps() {

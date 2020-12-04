@@ -60,7 +60,7 @@ public class Feature_Pseudonymization extends Feature {
 
 			q.getProperties().put("usergroup", study);
 			
-			if (q.getContext().mustPseudonymize()) {
+			if (q.getContext().mustPseudonymize() || q.getContext().mustRename()) {
 				Map<String, Object> newprops = new HashMap<String, Object>();
 				newprops.putAll(q.getProperties());
 				if (!pseudonymizedIdRestrictions(q, next, q.getCache().getAccountOwner(), newprops)) return ProcessingTools.empty();
@@ -130,7 +130,7 @@ public class Feature_Pseudonymization extends Feature {
 		public DBRecord next() throws AppException {
 			DBRecord r = chain.next();
 			if (r.context != null) {
-				if (r.context.mustPseudonymize()) {
+				if (r.context.mustPseudonymize() || r.context.mustRename()) {
 					if (r.meta != null) {
 						r.owner = r.context.getOwnerPseudonymized();
 		
