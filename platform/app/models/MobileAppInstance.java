@@ -33,7 +33,7 @@ import utils.exceptions.InternalServerException;
  */
 public class MobileAppInstance extends Consent {
 
-	public @NotMaterialized final static Set<String> APPINSTANCE_ALL = Sets.create(Consent.ALL, "applicationId", "appVersion","licence","serviceId");
+	public @NotMaterialized final static Set<String> APPINSTANCE_ALL = Sets.create(Consent.ALL, "applicationId", "appVersion","licence","serviceId","deviceId");
 	
 	/**
 	 * public key of the application instance
@@ -59,6 +59,11 @@ public class MobileAppInstance extends Consent {
 	 * Id of Service Instance (optional)
 	 */
 	public MidataId serviceId;
+	
+	/**
+	 * First 3 characters of device string
+	 */
+	public String deviceId;
 		
 	
 	public MobileAppInstance() {

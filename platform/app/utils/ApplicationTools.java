@@ -322,6 +322,7 @@ public class ApplicationTools {
 		appInstance._id = new MidataId();
 		AccessLog.log("create new app instance id="+appInstance._id);
 		appInstance.owner = owner;
+		appInstance.deviceId = phrase.substring(0,3);
 		if (app.type.equals("service")) {
 			appInstance.name = "Service: "+ app.name;		
 		} else {
@@ -484,7 +485,7 @@ public class ApplicationTools {
 		AccessLog.logBegin("start refresh app id="+appInstance._id);
 		Plugin app = Plugin.getById(appId, Sets.create("name", "type", "pluginVersion", "defaultQuery", "predefinedMessages", "termsOfUse", "writes", "defaultSubscriptions"));
 							
-		appInstance = MobileAppInstance.getById(appInstance._id, Sets.create(Consent.ALL, "publicKey", "applicationId", "appVersion", "licence"));
+		appInstance = MobileAppInstance.getById(appInstance._id, MobileAppInstance.APPINSTANCE_ALL);
 		
 	    appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(appInstance._id, null);    	
 		appInstance.passcode = Member.encrypt(phrase);     	

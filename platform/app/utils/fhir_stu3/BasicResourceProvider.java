@@ -60,6 +60,7 @@ import utils.auth.ExecutionInfo;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.json.JsonOutput;
 
 /**
  * Base class for FHIR resource providers. There is one provider subclass for each FHIR resource type.
@@ -116,7 +117,7 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
 	    for (Record rec : result) {
 	      if (rec.format.equals("fhir/Basic")) {
 			  try {
-				Basic p = parser.parseResource(resultClass, rec.data.toString());
+				Basic p = parser.parseResource(resultClass, JsonOutput.toJsonString(rec.data));
 		        processResource(rec, p);											
 				parsed.add(p);
 		  	  } catch (DataFormatException e) {

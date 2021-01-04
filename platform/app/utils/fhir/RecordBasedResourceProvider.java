@@ -36,13 +36,11 @@ import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.DomainResource;
 import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.IdType;
-import org.bson.BasicBSONObject;
+import org.bson.BSONObject;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
 
 import ca.uhn.fhir.parser.DataFormatException;
 import ca.uhn.fhir.parser.IParser;
@@ -73,6 +71,7 @@ import utils.collections.CMaps;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 import utils.exceptions.PluginException;
+import utils.json.JsonOutput;
 import utils.largerequests.UnlinkedBinary;
 
 public abstract class RecordBasedResourceProvider<T extends DomainResource> extends ReadWriteResourceProvider<T, Record> {
@@ -102,10 +101,10 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		}
 		if (record == null || record.data == null || !record.data.containsField("resourceType")) throw new ResourceNotFoundException(theId);
 		
-		Object data = record.data;
+		BSONObject data = (BSONObject) record.data;
 		convertToR4(record, data);
-		IParser parser = ctx().newJsonParser();
-		T p = parser.parseResource(getResourceType(), data.toString());
+		IParser parser = ctx().newJsonParser();		
+		T p = parser.parseResource(getResourceType(), JsonOutput.toJsonString(data));
 		processResource(record, p);		
 		return p;
 	}
@@ -121,7 +120,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		    if (record.data == null || !record.data.containsField("resourceType")) continue;
 		    Object data = record.data;
 			convertToR4(record, data);
-			T p = parser.parseResource(getResourceType(), data.toString());
+			T p = parser.parseResource(getResourceType(), JsonOutput.toJsonString(data));
 			processResource(record, p);
 			result.add(p);
 	   }
@@ -189,7 +188,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	    	if (rec.data != null) {
 	    		try {	    			
 	    			convertToR4(rec, rec.data);
-	    			T p = parser.parseResource(resultClass, rec.data.toString());
+	    			T p = parser.parseResource(resultClass, JsonOutput.toJsonString(rec.data));
 	    			processResource(rec, p);											
 	    			parsed.add(p);
 	    		} catch (DataFormatException e) {

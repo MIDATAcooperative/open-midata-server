@@ -39,6 +39,7 @@ import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
@@ -71,6 +72,7 @@ import utils.collections.CMaps;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 import utils.exceptions.PluginException;
+import utils.json.JsonOutput;
 import utils.largerequests.UnlinkedBinary;
 
 public abstract class RecordBasedResourceProvider<T extends DomainResource> extends ReadWriteResourceProvider<T, Record> {
@@ -100,7 +102,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 		}
 		if (record == null || record.data == null || !record.data.containsField("resourceType")) throw new ResourceNotFoundException(theId);					
 		IParser parser = ctx().newJsonParser();
-		T p = parser.parseResource(getResourceType(), record.data.toString());
+		T p = parser.parseResource(getResourceType(), JsonOutput.toJsonString(record.data));
 		processResource(record, p);		
 		return p;
 	}
@@ -114,7 +116,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	   IParser parser = ctx().newJsonParser();
 	   for (Record record : records) {	
 		    if (record.data == null || !record.data.containsField("resourceType")) continue;
-			T p = parser.parseResource(getResourceType(), record.data.toString());
+			T p = parser.parseResource(getResourceType(), JsonOutput.toJsonString(record.data));
 			processResource(record, p);
 			result.add(p);
 	   }
@@ -181,7 +183,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	    for (Record rec : result) {
 	    	if (rec.data != null) {
 	    		try {
-	    			T p = parser.parseResource(resultClass, rec.data.toString());
+	    			T p = parser.parseResource(resultClass, JsonOutput.toJsonString(rec.data));
 	    			processResource(rec, p);											
 	    			parsed.add(p);
 	    		} catch (DataFormatException e) {
@@ -243,7 +245,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	public static void insertRecord(ExecutionInfo info, Record record, IBaseResource resource, AccessContext targetConsent) throws AppException {
 		AccessLog.logBegin("begin insert FHIR record");		    
 			String encoded = ctx.newJsonParser().encodeResourceToString(resource);			
-			record.data = (DBObject) JSON.parse(encoded);	
+			record.data = BasicDBObject.parse(encoded);	
 			try {
 			  PluginsAPI.createRecord(info, record, targetConsent);			
 			} finally {
@@ -308,7 +310,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 			attachment.setUrl(null);
 			
 			String encoded = ctx.newJsonParser().encodeResourceToString(resource);
-			record.data = (DBObject) JSON.parse(encoded);
+			record.data = BasicDBObject.parse(encoded);
 			
 			if (data != null) {
 			   handle = RecordManager.instance.addFile(data, fileName, contentType);
@@ -322,7 +324,7 @@ public abstract class RecordBasedResourceProvider<T extends DomainResource> exte
 	public void updateRecord(Record record, IBaseResource resource) throws AppException {
 		if (resource.getMeta() != null && resource.getMeta().getVersionId() != null && !record.version.equals(resource.getMeta().getVersionId())) throw new ResourceVersionConflictException("Wrong resource version supplied!") ;
 		String encoded = ctx.newJsonParser().encodeResourceToString(resource);
-		record.data = (DBObject) JSON.parse(encoded);	
+		record.data = BasicDBObject.parse(encoded);	
 		record.version = resource.getMeta().getVersionId();
 		record.version = RecordManager.instance.updateRecord(info().executorId, info().pluginId, info().context, record);
 	
