@@ -91,5 +91,13 @@ public class JsonOutput {
 	    
 	    return mapper.valueToTree(o);	    	      	   
 	}
+	
+	public static String toJsonString(Object data) throws InternalServerException {
+		try {
+		   return CustomObjectMapper.me.writer().writeValueAsString(data);
+		} catch (JsonProcessingException e) {
+		   throw new InternalServerException("error.internal", "Error parsing object");
+		}
+	}
 
 }

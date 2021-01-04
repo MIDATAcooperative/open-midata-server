@@ -28,7 +28,7 @@ libraryDependencies += guice
 
 libraryDependencies ++= Seq(
     ws,
-    "org.mongodb" % "mongo-java-driver" % "3.6.3",
+    "org.mongodb" % "mongo-java-driver" % "3.12.7",
     "ca.uhn.hapi.fhir" % "hapi-fhir-base" % "5.0.2",
     "ca.uhn.hapi.fhir" % "hapi-fhir-structures-dstu3" % "5.0.2",
     "ca.uhn.hapi.fhir" % "hapi-fhir-structures-r4" % "5.0.2",  	    

@@ -69,6 +69,7 @@ import utils.auth.ExecutionInfo;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.json.JsonOutput;
 
 /**
  * Base class for FHIR resource providers. There is one provider subclass for each FHIR resource type.
@@ -129,7 +130,7 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
 	    for (Record rec : result) {
 	      if (rec.format.equals("fhir/Basic")) {
 			  try {
-				Basic p = parser.parseResource(resultClass, rec.data.toString());
+				Basic p = parser.parseResource(resultClass, JsonOutput.toJsonString(rec.data));
 		        processResource(rec, p);											
 				parsed.add(p);
 		  	  } catch (DataFormatException e) {
@@ -154,7 +155,7 @@ public class BasicResourceProvider extends RecordBasedResourceProvider<Basic> im
 	    	  basic.setAuthor(new Reference("Patient/"+rec.creator.toString()));
 	    	  basic.setSubject(new Reference("Patient/"+rec.owner.toString()));
 	    	  
-	    	  basic.addExtension().setUrl("http://midata.coop/extensions/format-codes/"+rec.format).setValue(new StringType(rec.data.toString()));
+	    	  basic.addExtension().setUrl("http://midata.coop/extensions/format-codes/"+rec.format).setValue(new StringType(JsonOutput.toJsonString(rec.data)));
 	    	  parsed.add(basic);
 	      }
 	    }

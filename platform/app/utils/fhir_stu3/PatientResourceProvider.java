@@ -120,6 +120,7 @@ import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
+import utils.json.JsonOutput;
 
 public class PatientResourceProvider extends RecordBasedResourceProvider<Patient> implements IResourceProvider {
 
@@ -153,7 +154,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		Record record = allRecs.get(0);
 
 		IParser parser = ctx().newJsonParser();
-		Patient p = parser.parseResource(getResourceType(), record.data.toString());
+		Patient p = parser.parseResource(getResourceType(), JsonOutput.toJsonString(record.data));
 		processResource(record, p);
 		return p;
 	}
@@ -211,7 +212,7 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 		List<Patient> result = new ArrayList<Patient>(records.size());
 		IParser parser = ctx().newJsonParser();
 		for (Record record : records) {
-			Patient p = parser.parseResource(getResourceType(), record.data.toString());
+			Patient p = parser.parseResource(getResourceType(), JsonOutput.toJsonString(record.data));
 			processResource(record, p);
 			result.add(p);
 		}

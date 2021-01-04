@@ -696,7 +696,7 @@ public class OAuth2 extends Controller {
 		
 		if (token.device == null || token.appId == null || token.ownerId == null) throw new NullPointerException();
 		
-        MobileAppInstance appInstance = MobileAPI.getAppInstance(token.device, token.appId, token.ownerId, Sets.create("owner", "applicationId", "status", "passcode", "appVersion", "licence"));		
+        MobileAppInstance appInstance = MobileAPI.getAppInstance(token.device, token.appId, token.ownerId, Sets.create("owner", "applicationId", "status", "passcode", "appVersion", "licence", "deviceId"));		
 		
 		//KeyManager.instance.login(60000l, false);		
 		
