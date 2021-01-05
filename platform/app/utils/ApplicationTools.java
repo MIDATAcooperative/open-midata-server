@@ -483,12 +483,16 @@ public class ApplicationTools {
 
 	public static MobileAppInstance refreshApp(MobileAppInstance appInstance, MidataId executor, MidataId appId, User member, String phrase) throws AppException {
 		AccessLog.logBegin("start refresh app id="+appInstance._id);
+		long tStart = System.currentTimeMillis();
 		Plugin app = Plugin.getById(appId, Sets.create("name", "type", "pluginVersion", "defaultQuery", "predefinedMessages", "termsOfUse", "writes", "defaultSubscriptions"));
 							
 		appInstance = MobileAppInstance.getById(appInstance._id, MobileAppInstance.APPINSTANCE_ALL);
 		
-	    appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(appInstance._id, null);    	
-		appInstance.passcode = Member.encrypt(phrase);     	
+	    appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(appInstance._id, null);
+	    if (appInstance.deviceId == null || !appInstance.deviceId.equals(phrase.substring(0,3))) {
+	      AccessLog.log("create passcode");
+		  appInstance.passcode = Member.encrypt(phrase);     	
+	    }
 		appInstance.lastUpdated = new Date();
 		
 		    	    	
@@ -509,7 +513,7 @@ public class ApplicationTools {
 		linkMobileConsentWithExecutorAccount(executor, executor, appInstance._id);
 									
 		AuditManager.instance.success();
-		AccessLog.logEnd("end refresh app");
+		AccessLog.logEnd("end refresh app time="+(System.currentTimeMillis()-tStart));
 		return appInstance;
 	
 	}

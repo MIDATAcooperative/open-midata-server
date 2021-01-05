@@ -690,7 +690,9 @@ public class OAuth2 extends Controller {
 		}
 	}
 	
-	private static final MobileAppInstance checkExistingAppInstance(ExtendedSessionToken token, JsonNode json, Set<StudyAppLink> links) throws AppException {
+	private static final MobileAppInstance checkExistingAppInstance(ExtendedSessionToken token, JsonNode json, Set<StudyAppLink> links) throws AppException {		
+		long tStart = System.currentTimeMillis();
+
 		// Portal
 		if (token.appId == null) return null;
 		
@@ -712,6 +714,7 @@ public class OAuth2 extends Controller {
 			
 		}
 	
+		AccessLog.log("checkExistingAppInstance time="+(System.currentTimeMillis()-tStart));
 		return appInstance;
 	}
 	
