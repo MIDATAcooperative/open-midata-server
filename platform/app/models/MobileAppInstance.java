@@ -33,7 +33,7 @@ import utils.exceptions.InternalServerException;
  */
 public class MobileAppInstance extends Consent {
 
-	public @NotMaterialized final static Set<String> APPINSTANCE_ALL = Sets.create(Consent.ALL, "applicationId", "appVersion","licence","serviceId","deviceId");
+	public @NotMaterialized final static Set<String> APPINSTANCE_ALL = Sets.create(Consent.ALL, "applicationId", "appVersion", "licence", "serviceId", "deviceId", "passcode");
 	
 	/**
 	 * public key of the application instance
