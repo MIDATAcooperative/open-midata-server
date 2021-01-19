@@ -4,23 +4,23 @@
 {"_id":{"$oid":"55ae59d0f351efda91eadc75"},"format":"demo-card/part1","comment":"Demo only. Do not use!","visName":"Demo kardiologische Risikoauswertung"}
 {"_id":{"$oid":"55ae59d0f351efda91eadc76"},"format":"demo-card/part2","comment":"Demo only. Do not use!","visName":"Demo kardiologische Risikoauswertung"}
 {"_id":{"$oid":"55ae59d0f351efda91eadc77"},"format":"fhir/Observation","comment":"FHIR Observation Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"55ae59d0f351efda91eadc78"},"format":"jawbone/summary","comment":"Deprecated. Do not use.","visName":"Jawbone Activity Clock"}
+{"_id":{"$oid":"55ae59d0f351efda91eadc79"},"format":"jawbone/ticks","comment":"Deprecated. Do not use.","visName":"Jawbone Activity Clock"}
+{"_id":{"$oid":"55ae59d0f351efda91eadc7b"},"format":"training-app","comment":"Demo only. Do not use.","visName":"Training Editor","visualization":{"$oid":"554c867de4b08413ff37d6f5"}}
 {"_id":{"$oid":"57c935873f4bb36b8d99794a"},"format":"fhir/Patient","comment":"FHIR Patient Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"57c935873f4bb36b8d99794b"},"format":"fhir/DocumentReference","comment":"FHIR DocumentReference Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"57c935873f4bb36b8d99794c"},"format":"fhir/MedicationStatement","comment":"FHIR MedicationStatement Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
-{"_id":{"$oid":"58765a8620230b512be8859c"},"format":"fhir/Goal","comment":"FHIR Goal Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
-{"_id":{"$oid":"58765a8620230b512be8859d"},"format":"fhir/Condition","comment":"FHIR Condition Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"57fb683a6b17c4a12238e597"},"format":"fhir/Media","comment":"FHIR Media Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"5800fd960834cb6453433e8e"},"format":"fhir/Communication","comment":"FHIR Communication Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"5800fd960834cb6453433e8f"},"format":"fhir/QuestionnaireResponse","comment":"FHIR QuestionnaireResponse Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"583d6a6350214afeeb296918"},"format":"fhir/Task","comment":"FHIR Task Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"583dae4eea22922db7561fed"},"format":"fhir/Appointment","comment":"FHIR Appointment Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"58765a8620230b512be8859c"},"format":"fhir/Goal","comment":"FHIR Goal Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"58765a8620230b512be8859d"},"format":"fhir/Condition","comment":"FHIR Condition Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"58ca6a188d4500b518e62bb6"},"format":"fhir/Device","comment":"FHIR Device Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
-{"_id":{"$oid":"5a4b92c8222d3cc8f2ee17b8"},"format":"fhir/AllergyIntolerance","comment":"FHIR Allergy Intolerance","visName":"Data Viewer","visualization":"fhir-viewer"}
-{"_id":{"$oid":"55ae59d0f351efda91eadc78"},"format":"jawbone/summary","comment":"Deprecated. Do not use.","visName":"Jawbone Activity Clock"}
-{"_id":{"$oid":"55ae59d0f351efda91eadc79"},"format":"jawbone/ticks","comment":"Deprecated. Do not use.","visName":"Jawbone Activity Clock"}
-{"_id":{"$oid":"55ae59d0f351efda91eadc7b"},"format":"training-app","comment":"Demo only. Do not use.","visName":"Training Editor","visualization":{"$oid":"554c867de4b08413ff37d6f5"}}
 {"_id":{"$oid":"59fb36eaffe9fb139ff977e3"},"format":"fhir/EpisodeOfCare","comment":"FHIR Episode Of Care Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"59fb36eaffe9fb139ff977e4"},"format":"fhir/Procedure","comment":"FHIR Procedure Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
+{"_id":{"$oid":"5a4b92c8222d3cc8f2ee17b8"},"format":"fhir/AllergyIntolerance","comment":"FHIR Allergy Intolerance","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"5b4df7656adfdcdde8e3247e"},"format":"fhir/Subscription","comment":"FHIR Subscription Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"5b4df7656adfdcdde8e3247f"},"format":"fhir/Consent","comment":"FHIR Consent Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
 {"_id":{"$oid":"5b4df7656adfdcdde8e32480"},"format":"fhir/AuditLog","comment":"FHIR Audit Log Resource","visName":"Data Viewer","visualization":"fhir-viewer"}
