@@ -16,7 +16,7 @@
  */
 
 import { nextTick, ref } from 'vue'
-import { createI18n } from 'vue-i18n'
+import { setI18n } from 'vue-composable'
 
 function replaceInstr(where) {
     for (let k in where) {
@@ -54,17 +54,20 @@ async function loadLocaleMessages(file, locale) {
 } 
 
 async function setLocaleMessages(locale) {
-  i18n.global.setLocaleMessage(locale, messages)
-  return nextTick()
+  i18n.i18n.value = messages;
+  //i18n.removeLocale(locale);
+  //console.log(i18n.i18n);
+  //i18n.addLocale(locale, messages);
+  return nextTick();
 }
 
 export const SUPPORT_LOCALES = ['en', 'de', 'fr', 'it']
 
-export function setupI18n(options = { locale: 'en' }) {
-  i18n = createI18n(options)
+export function setupI18n(options = { locale: 'en', messages:{} }) {
+  i18n = setI18n(options)
   bundles.add("shared");
   setLocale(options.locale)
-  return i18n
+  return i18n;
 }
 
 export async function addBundle(bundlename) {
@@ -78,11 +81,12 @@ export async function setLocale(locale) {
   if (locale != myLocale.value) messages = {};
   myLocale.value = locale;
 
-  if (i18n.mode === 'legacy') {
+  i18n.locale.value = locale;
+  /*if (i18n.mode === 'legacy') {
     i18n.global.locale = locale
   } else {
     i18n.global.locale.value = locale
-  }
+  }*/
 
   for (let bundle of bundles) await loadLocaleMessages(bundle, locale);
 
