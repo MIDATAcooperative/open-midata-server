@@ -27,20 +27,20 @@ require('bootstrap/dist/js/bootstrap.bundle');
 
 const i18n = setupI18n({
     locale: "en",
-    fallback: "en"
+    fallback: "en",
+    messages : { en : { dummy : "test" } } 
 });
 
 
 const app = createApp(App);   
 app.config.globalProperties.$filters = Filters;
-
-/*console.log(i18n.locale);
 app.config.globalProperties.$t = i18n.$ts;
+
 app.directive('t', {
-  mounted(el, binding) {    
+  mounted(el, binding) { 	 
     el.innerText = i18n.$ts(binding.value);    
   }
-});*/
+});
 
 app.directive('floating', {
   
@@ -107,7 +107,7 @@ app.directive('submit', {
 });
 app.directive("pluginframe", PluginFrame);
 
-app.use(router).use(i18n);
+app.use(router);
 
 document.addEventListener("DOMContentLoaded", function(){      
     router.isReady().then(      
