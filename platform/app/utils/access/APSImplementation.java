@@ -162,10 +162,11 @@ class APSImplementation extends APS {
 					changed = true;
 				}
 			} else {
-				if (eaps.getKey(target.toString()) == null) {
+				// Not checking for existing key anymore; public key might have changed for apps
+				//if (eaps.getKey(target.toString()) == null) {
 					eaps.setKey(target.toString(), KeyManager.instance.encryptKey(publickey, eaps.getAPSKey()));
 					changed = true;
-				}
+				//}
 			}
 			if (changed)
 				eaps.updateKeys();

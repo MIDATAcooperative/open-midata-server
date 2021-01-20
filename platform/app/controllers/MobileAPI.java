@@ -134,14 +134,19 @@ public class MobileAPI extends Controller {
 		      if (User.phraseValid(phrase, instance.passcode)) return instance;		      
 			}
 		}
+		boolean cleanJunk = candidates.size() > 2;
 		
 		// Upgrade old entries
 		for (MobileAppInstance instance : candidates) {
-			if (instance.deviceId==null && User.phraseValid(phrase, instance.passcode)) {		    	  		    	  
-		    	instance.deviceId = deviceId;
-		    	MobileAppInstance.set(instance._id,"deviceId",instance.deviceId);
-		    	AccessLog.log("getAppInstance: Set missing device id");
-		    	return instance;		      
+			if (instance.deviceId==null) {
+				if (User.phraseValid(phrase, instance.passcode)) {		    	  		    	  
+					instance.deviceId = deviceId;
+					MobileAppInstance.set(instance._id,"deviceId",instance.deviceId);
+					AccessLog.log("getAppInstance: Set missing device id");
+					return instance;
+				} else if (cleanJunk) {
+					ApplicationTools.removeAppInstance(owner, instance);
+				}
 			}
 		}
 		

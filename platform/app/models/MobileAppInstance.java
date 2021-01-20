@@ -17,11 +17,14 @@
 
 package models;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.HashSet;
 import java.util.Set;
 
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
+import utils.PasswordHash;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
@@ -102,5 +105,15 @@ public class MobileAppInstance extends Consent {
 
 	public static Set<MobileAppInstance> getByService(MidataId serviceId, Set<String> fields) throws InternalServerException {
 		return Model.getAll(MobileAppInstance.class, collection, CMaps.map("serviceId", serviceId).map("status", NOT_DELETED), fields);
+	}
+	
+	public static String hashDeviceId(String deviceId) throws InternalServerException {
+		try {
+			return PasswordHash.createInsecureQuickHash(deviceId);
+		} catch (NoSuchAlgorithmException e) {
+			throw new InternalServerException("error.internal", "Cryptography error");
+		} catch (InvalidKeySpecException e) {
+			throw new InternalServerException("error.internal", "Cryptography error");
+		}
 	}
 }
