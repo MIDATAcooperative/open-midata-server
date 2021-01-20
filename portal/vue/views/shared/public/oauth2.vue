@@ -28,8 +28,10 @@
 
 					
 					<div>			    			
-						<img src="/img/logo-midata--white.svg" alt="">
-						<div v-if="hasIcon()" class="mi-or-login__app_image" :style="getIconUrlBG()">					
+						<div class="midatalogo">
+						  <img src="/images/logo.png" style="height: 36px;" alt="">
+						</div>
+						<div v-if="hasIcon()" class="appicon" :style="getIconUrlBG()">					
 					</div>
                 	<div class="mi-or-login__instance"></div>
 					<p>
@@ -253,4 +255,32 @@ export default {
 	font-size: 12px;
     top: -20px;
  }
+ 
+ body.localhost .mi-or-login__instance::after {
+    content : 'Instance: localhost';    
+ }
+
+  body.test .mi-or-login__instance::after {
+    content : 'Instance: test.midata.coop';      
+  }
+
+  body.demo .mi-or-login__instance::after {
+    content : 'Instance: demo.midata.coop';    
+  }
+  
+  .appicon {
+    width:90px;
+    height:90px;
+    background-size: 95px,95px,cover;    
+    position: relative;
+    border-radius: 18px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: white;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+    margin-top: -10px;
+    margin-bottom: 10px;
+  }
 </style>

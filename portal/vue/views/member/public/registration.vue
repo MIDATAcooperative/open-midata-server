@@ -23,7 +23,9 @@
 		<!-- Registration -->
 		<panel style="max-width:630px; padding-top:30px; margin:0 auto;" :title="$t('registration.sign_up')" :busy="isBusy">
 			
-			<img src="/img/logo-midata--white.svg" alt="" class="mi-or-login__logo">
+			<div class="midatalogo">
+				<img src="/images/logo.png" style="height: 36px;" alt="">
+			</div>
 
             <error-box :error="error"></error-box>
             <p v-if="offline" class="alert alert-danger" v-t="'error.offline'"></p>

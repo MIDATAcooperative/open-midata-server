@@ -54,6 +54,7 @@ async function loadLocaleMessages(file, locale) {
 } 
 
 async function setLocaleMessages(locale) {
+  
   i18n.i18n.value = messages;
   //i18n.removeLocale(locale);
   //console.log(i18n.i18n);

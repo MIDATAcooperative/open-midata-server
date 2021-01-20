@@ -15,7 +15,7 @@
  * along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { createApp } from 'vue'
+import { createApp, watch } from 'vue'
 
 import App from './App.vue';
 import router from './router';
@@ -38,7 +38,9 @@ app.config.globalProperties.$t = i18n.$ts;
 
 app.directive('t', {
   mounted(el, binding) { 	 
-    el.innerText = i18n.$ts(binding.value);    
+	let v = i18n.$t(binding.value);
+    el.innerText = v.value;    
+    watch(v, (x) => { el.innerText = x;});
   }
 });
 
