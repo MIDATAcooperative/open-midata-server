@@ -333,7 +333,7 @@ public class ApplicationTools {
 		appInstance.appVersion = app.pluginVersion;
 		appInstance.observers = observers;
 		appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(appInstance._id, null);    			
-		appInstance.passcode = Member.encrypt(phrase); 
+		appInstance.passcode = MobileAppInstance.hashDeviceId(phrase); 
 		appInstance.dateOfCreation = new Date();
 		appInstance.lastUpdated = appInstance.dateOfCreation;
 		appInstance.writes = app.writes;
@@ -488,16 +488,19 @@ public class ApplicationTools {
 							
 		appInstance = MobileAppInstance.getById(appInstance._id, MobileAppInstance.APPINSTANCE_ALL);
 		
+		//RecordManager.instance.unshareAPS(appInstance._id, executor, Collections.singleton(appInstance._id));
+		
 	    appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(appInstance._id, null);
 	    if (appInstance.deviceId == null || !appInstance.deviceId.equals(phrase.substring(0,3))) {
 	      AccessLog.log("create passcode");
-		  appInstance.passcode = Member.encrypt(phrase);     	
+		  appInstance.passcode = MobileAppInstance.hashDeviceId(phrase);     	
 	    }
 		appInstance.lastUpdated = new Date();
 		
-		    	    	
-		MobileAppInstance.upsert(appInstance);	
-	
+		RecordManager.instance.shareAPS(appInstance._id, executor, appInstance.publicKey);
+		MobileAppInstance.upsert(appInstance);
+		
+	/*
 	    RecordManager.instance.deleteAPS(appInstance._id, executor);
 		RecordManager.instance.createAnonymizedAPS(member._id, appInstance._id, appInstance._id, true);
 				
@@ -511,7 +514,7 @@ public class ApplicationTools {
 		}
 		
 		linkMobileConsentWithExecutorAccount(executor, executor, appInstance._id);
-									
+		*/							
 		AuditManager.instance.success();
 		AccessLog.logEnd("end refresh app time="+(System.currentTimeMillis()-tStart));
 		return appInstance;
