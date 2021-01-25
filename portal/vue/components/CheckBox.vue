@@ -17,7 +17,7 @@
  
 <template>  
   <div class="form-check">
-    <input class="form-check-input" type="checkbox" :id="name" :name="name" :value="modelValue" @input="$emit('update:modelValue', $event.target.checked)" v-validate>
+    <input class="form-check-input" type="checkbox" :id="name" :name="name" :checked="modelValue" @input="$emit('update:modelValue', $event.target.checked)" v-validate>
     <label class="form-check-label" :for="name">
       <slot></slot>
     </label>

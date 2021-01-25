@@ -80,9 +80,12 @@ $fa-font-path:                "/fonts";
     color: inherit;
 }
 
+
 .midata-label {
-   text-align: right;
-   font-weight: bold;   
+  @include media-breakpoint-up(lg) {
+    text-align: right;
+  }
+  font-weight: bold;   
 }
 
 .mark-danger .midata-label {

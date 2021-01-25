@@ -70,6 +70,7 @@ import actions from './actions';
 						  postregParams[param] = $route.query[param];
 					  }
 				  }
+				  postregParams.ts = Date.now();
 				  $router.push({ path : "./postregister", query : postregParams , location : false });			
 			} else if (result.data.role == "admin") {
 				if (result.data.keyType == 1) {

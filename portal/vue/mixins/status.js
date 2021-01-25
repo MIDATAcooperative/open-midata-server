@@ -21,7 +21,8 @@ export default {
         errors : { _custom : [] },
         loading : 0,
 		isBusy : true,
-        action : null,        
+		action : null,  
+		finished : null      
     }),
 
     methods : {
@@ -29,18 +30,28 @@ export default {
             this.$data.loading++; this.$data.isBusy = true; if (this.$data.loading==1) this.$data.error = null; 
         },
 		loadEnd() { 
-            this.$data.loading--; if (this.$data.loading<=0) { this.$data.isBusy = false; this.$data.action=null; } 
+			this.$data.loading--; 
+			if (this.$data.loading<=0) { 
+				this.$data.isBusy = false; 
+				this.$data.finished = this.$data.action;
+				this.$data.action=null; 
+			} 
 		},
 		ready() {
 			this.loadEnd();
 		},
 		loadStartAction(action) { 
-            this.$data.loading++; this.$data.action = action; if (this.$data.loading==1) this.$data.error = null; 
+            this.$data.loading++; this.$data.action = action; if (this.$data.loading==1) {
+				this.$data.error = null; 
+				this.$data.finished = null;
+			}
         },
 		loadFailure(msg, noerror) { 
 			   console.log(msg);
 			   this.$data.loading--; 
-			   if (!noerror) this.$data.error = msg.data.code || msg.data; 
+			   if (!noerror) {
+				   if (msg && msg.data) this.$data.error = msg.data.code || msg.data; else this.$data.error = msg;
+			   }
 			   if (this.$data.loading<=0) { this.$data.isBusy = false;this.$data.action=null; }
 			   if (msg.status == 403 || msg.status == 401) {
 				   // Now handeled by http interceptor
@@ -63,7 +74,7 @@ export default {
             if (this.$refs.myform) this.$refs.myform.classList.remove("was-validated");
 		   	me.loadStartAction(action);
 		   	return call.then(function(result) { me.loadEnd();return result; }, function(err) { 		 
-                let response = err.response;
+                let response = err.response || err;
                 
 		   		if (response.data && response.data.field && response.data.type && me.$refs.myform) {		   			
 					me.setError(response.data.field, response.data.code)                       
@@ -75,12 +86,14 @@ export default {
 		   		return Promise.reject(err); 
 		    });		     
 		},
-		doSilent(call) {
-			var me = this;
+		doSilent(call) {			
+			const { $data } = this, me = this;	
+			$data.finished = null;
 			return call.then(function(result) { return result; }, function(err) { me.loadFailure(err);return Promise.reject(err); });
 		},
 		setError(field, msg) {
 			const { $data } = this;	
+			$data.finished = null;
 			let myform = this.$refs.myform;
 			if (myform) {
 				myform.classList.remove("was-validated");

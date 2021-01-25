@@ -15,6 +15,7 @@
  * along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
  */
 import server from './server';
+import { getLocale } from './lang';
 
 	var service = {};
 	
@@ -188,6 +189,35 @@ import server from './server';
 			}
 		}
 		return result;
+	};
+
+	service.prepareQuery = function($t, defaultQuery, appName, genLabels, reqInf) {
+				
+		var sq = service.simplifyQuery(defaultQuery, appName, true);
+		
+		var result = [];		
+		if (sq) {
+			if (sq.content) {
+				for (let r of sq.content) {
+				  if (r === "Patient" || r === "Group" || r === "Person" || r === "Practitioner" || r === "ValueSet") return;
+				  result.push(service.getContentLabel(getLocale(), r).then(function(lab) {
+					if (genLabels.indexOf(lab)<0) genLabels.push(lab); 
+				  }));
+				}
+			}
+			if (sq.group) {
+				for (let r of sq.group) {
+					  result.push(service.getGroupLabel(getLocale(), sq["group-system"], r).then(function(lab) {
+						  if (genLabels.indexOf(lab)<0) genLabels.push(lab); 
+					  }));
+				}
+			}			
+		}
+		if (reqInf == 'RESTRICTED') genLabels.push($t("studydetails.information_restricted"));
+		if (reqInf == 'DEMOGRAPHIC') genLabels.push($t("studydetails.information_demographic"));
+		if (reqInf == 'NONE') genLabels.push($t("studydetails.information_none"));
+		return Promise.all(result);
+				
 	};
 		
 	export default service;

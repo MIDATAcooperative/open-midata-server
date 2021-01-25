@@ -61,26 +61,21 @@
 					</ul>
 
 					<ul class="d-xs-none nav navbar-nav">
-						<li class="nav-item"><a class="nav-link" href="javascript:" tabindex="0" uib-popover-template="'userinfo.html'"
-							popover-trigger="'focus'" popover-popup-close-delay="500" popover-animation="false" popover-append-to-body="false"
-							popover-placement="auto bottom-left">{{user.name}}</a></li>
-					</ul>
-					<div class="d-md-none d-sm-none d-lg-none">
-
-						<div class="popoverbox"><div style="padding:10px;">
-        					<div><b>{{ user.firstname }} {{ user.lastname }}</b></div>
-        					<div>{{ user.email }}</div>
-        					<hr>
-        					<div><b style="min-width:40px;display:inline-block;">{{circles.apps}}</b><span v-t="'navbar.app_count'"></span></div>
-        					<div><b style="min-width:40px;display:inline-block;">{{circles.studies}}</b><span v-t="'navbar.study_count'"></span></div>
-        					<div class="extraspace"></div>
-        					<router-link data-toggle="collapse" data-target=".navbar-collapse.show" :to="{ name : 'member.user', query : { userId : user._id}}" class="btn btn-sm btn-default"><span class="fas fa-pencil-alt"></span> <span v-t="'navbar.edit_profile'"></span></router-link>
-        					<a href="javascript:" data-toggle="collapse" data-target=".navbar-collapse.show" @click="logout()" class="btn btn-sm btn-default"><span class="fas fa-power-off"></span> <span v-t="'navbar.sign_out'"></span></a>
-       					</div></div>
-						
-						<hr>
-					</div>
-
+						<li class="nav-item dropdown"><a class="nav-link" href="javascript:" tabindex="0" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{user.name}}</a>
+						<div class="dropdown-menu" style="right:0px;left:auto;min-width:200px;">
+							<div style="padding:10px;">
+								<div><b>{{ user.firstname }} {{ user.lastname }}</b></div>
+								<div>{{ user.email }}</div>
+								<hr>
+								<div><b style="min-width:40px;display:inline-block;">{{circles.apps}}</b><span v-t="'navbar.app_count'"></span></div>
+								<div><b style="min-width:40px;display:inline-block;">{{circles.studies}}</b><span v-t="'navbar.study_count'"></span></div>
+								<div class="extraspace"></div>
+								<router-link data-toggle="collapse" data-target=".navbar-collapse.show" :to="{ name : 'member.user', query : { userId : user._id}}" class="btn btn-sm btn-default"><span class="fas fa-pencil-alt"></span> <span v-t="'navbar.edit_profile'"></span></router-link>&nbsp;
+								<a href="javascript:" data-toggle="collapse" data-target=".navbar-collapse.show" @click="logout()" class="btn btn-sm btn-default"><span class="fas fa-power-off"></span> <span v-t="'navbar.sign_out'"></span></a>
+       						</div>
+						</div>
+						</li>
+					</ul>					
 
 				</div>
 				<!--/.nav-collapse -->

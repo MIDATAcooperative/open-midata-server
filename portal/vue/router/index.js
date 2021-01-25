@@ -17,6 +17,8 @@
 
 import { createRouter, createWebHashHistory } from 'vue-router';
 
+import ChangePassword from 'views/shared/changepassword.vue';
+
 const Timeline = () => import(/* webpackChunkName: "shared" */ 'views/shared/timeline.vue');
 const postRegister = () => import(/* webpackChunkName: "oauth" */ 'views/shared/public/postregister.vue');
 const PublicNav = () => import(/* webpackChunkName: "public" */ 'views/nav/public.vue');
@@ -171,12 +173,52 @@ const routes = [
   {
     base : ["member", "developer", "admin", "research", "provider"],
     path : "apps",
-    component: Timeline
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/apps.vue')
   },
   {
     base : ["member", "developer", "admin", "research", "provider"],
     path : "user",
-    component: Timeline
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/user.vue')
+  },
+  {
+    base : ["member", "developer", "admin", "research", "provider"],
+    path : "accountwipe",
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/accountwipe.vue')
+  },
+  {
+    base : ["member", "developer", "admin", "research", "provider"],
+    path : "changeaddress",
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/changeaddress.vue')
+  },
+  {
+    base : ["member", "developer", "admin", "research", "provider"],
+    path : "changepassword",
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/changepassword.vue')
+  },
+  {
+    base : ["member", "developer", "admin", "research", "provider"],
+    path : "changeemail",
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/changeemail.vue')
+  },
+  {
+    base : ["member", "developer", "admin", "research", "provider"],
+    path : "market",
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/market.vue')
+  },
+  {
+    base : ["member", "developer", "admin", "research", "provider"],
+    path : "visualization",
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/visualization.vue')
+  },
+  {
+    base : ["member", "developer", "admin", "research", "provider"],
+    path : "circles",
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/consents.vue'),
+    member : {
+      meta : {
+        types : ['CIRCLE','HEALTHCARE']
+      }
+    }
   }
 
  

@@ -57,6 +57,7 @@
 			    </div>
 
 				<div v-for="link in extra" :key="link._id">
+					<hr>
 					<section v-if="link.formatted.length && !(link.inlineTerms)">
 						<span v-if="link.study" v-t="'enum.studytype.'+link.study.type"></span><br>
 						<strong>{{ getLinkName(link) }}</strong>
@@ -98,14 +99,14 @@
 				
 				
 				<section v-for="link in extra" :key="link._id">
-					<fieldset>
-						<input type="checkbox" value="" :checked="login.confirmStudy.indexOf(link.studyId || link.userId)>=0" :click="toggle(login.confirmStudy, link.studyId || link.userId || link.serviceAppId)" /> 
-						<label for="mi-at-input-checkbox">
+					<div class="form-check">
+						<input type="checkbox" class="form-check-input" :id="link._id" :name="link._id" value="" :checked="login.confirmStudy.indexOf(link.studyId || link.userId)>=0" @click="toggle(login.confirmStudy, link.studyId || link.userId || link.serviceAppId)" /> 
+						<label :for="link._id" class="form-check-label">
 						  <span>{{ $t(getLinkLabel(link)) }}</span>:
 						  <a v-if="link.termsOfUse && !(link.inlineTerms)" @click="terms({which : link.termsOfUse })" href="javascript:">{{ link.study.name }} {{ link.provider.name }} {{ link.serviceApp.name }}</a>
 						  <span v-if="!(link.termsOfUse && !(link.inlineTerms))">{{ getLinkName(link) }}</span>
 						 </label>
-					</fieldset>					
+					</div>					
 				</section>
 								
 				<error-box :error="error" />
@@ -133,12 +134,10 @@
 <script>
 import server from "services/server.js";
 import session from "services/session.js";
-import apps from "services/apps.js";
 import labels from "services/labels.js";
 import oauth from "services/oauth.js";
 import status from "mixins/status.js";
 import ENV from "config";
-import crypto from "services/crypto.js";
 import FormGroup from 'components/FormGroup.vue';
 import ErrorBox from 'components/ErrorBox.vue';
 import TermsModal from 'components/TermsModal.vue';
@@ -242,7 +241,7 @@ export default {
         const { $router, $route } = this;
 		let params = JSON.parse(JSON.stringify($route.query));
 		params.login = params.email;
-		$router.push({ name : "public.registration_new", query : params }); 	
+		$router.push({ path : "./registration", query : params }); 	
     },
     
     confirm() {
@@ -325,34 +324,7 @@ export default {
     },
     
     prepareQuery(defaultQuery, appName, genLabels, reqInf) {
-		const { $data, $t } = this;
-		console.log(defaultQuery);
-		var sq = labels.simplifyQuery(defaultQuery, appName, true);
-		console.log("PREPARE QUERY");
-		console.log(sq);
-		var result = [];		
-		if (sq) {
-			if (sq.content) {
-				for (let r of sq.content) {
-				  if (r === "Patient" || r === "Group" || r === "Person" || r === "Practitioner" || r === "ValueSet") return;
-				  result.push(labels.getContentLabel(getLocale(), r).then(function(lab) {
-					if (genLabels.indexOf(lab)<0) genLabels.push(lab); 
-				  }));
-				}
-			}
-			if (sq.group) {
-				for (let r of sq.group) {
-					  result.push(labels.getGroupLabel(getLocale(), sq["group-system"], r).then(function(lab) {
-						  if (genLabels.indexOf(lab)<0) genLabels.push(lab); 
-					  }));
-				}
-			}			
-		}
-		if (reqInf == 'RESTRICTED') genLabels.push($t("studydetails.information_restricted"));
-		if (reqInf == 'DEMOGRAPHIC') genLabels.push($t("studydetails.information_demographic"));
-		console.log("WAITING="+result.length);
-		return Promise.all(result);
-				
+		return labels.prepareQuery(this.$t, defaultQuery, appName, genLabels, reqInf);
 	},
 
 	terms(def) {
@@ -366,7 +338,7 @@ export default {
      const { $data, $route, $router } = this;
      const me = this;
      if (!oauth.app || !oauth.app.targetUserRole) {		
-        $router.push({ name : "public.oauth2", query : $route.query });		
+        $router.push({ name : "oauth.oauth2", query : $route.query });		
 	 } else {		
         $data.app = oauth.app;
 							
@@ -381,9 +353,9 @@ export default {
 			var project = oauth.getProject();
 			var addToUrl = "";
 			if (project) addToUrl = "?project="+encodeURIComponent(project);
-			waitFor.push(me.doBusy(server.get(jsRoutes.controllers.Market.getStudyAppLinks("app-use", $data.app._id).url+addToUrl))
+			waitFor.push(me.doBusy(server.get(jsRoutes.controllers.Market.getStudyAppLinks("app-use", $data.app._id).url+addToUrl)
 			.then(function(data) {		    	
-				$data.links = [];
+				let links = [];
 				var r = [];
 				
 				for (var l=0;l<data.data.length;l++) {
@@ -402,7 +374,7 @@ export default {
 								}
 							}
 						}
-						$data.links.push(link);
+						links.push(link);
 						
 						if (link.type.indexOf("OFFER_EXTRA_PAGE")>=0) {
 
@@ -434,9 +406,9 @@ export default {
 					}
 				}
 								
-				oauth.links = $data.links;
+				$data.links = oauth.links = links;
 				return Promise.all(r);
-			}));							
+			})));							
 		}
 
 		Promise.all(waitFor).then(me.prepareConfirm);
