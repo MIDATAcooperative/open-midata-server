@@ -17,7 +17,7 @@
 
 <template>  
   <div class="form-check">
-    <input class="form-check-input" type="radio" :id="name+value" :name="name" :value="value" :selected="modelValue" @input="$emit('update:modelValue', value)" required v-validate>
+    <input class="form-check-input" type="radio" :id="name+value" :name="name" :value="value" :checked="(modelValue==value)" @input="$emit('update:modelValue', value)" required v-validate>
     <label class="form-check-label" :for="name+value">
       <slot></slot>
     </label>

@@ -64,7 +64,7 @@ app.directive('validate', {
       if (binding.value) {
         el.setCustomValidity(binding.value.call(binding.instance, el.value));
       }
-      
+      vm.finished = null;
       vm.errors = Object.assign({}, vm.errors, {
         [el.name]: e.target.validationMessage
       });

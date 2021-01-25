@@ -54,7 +54,7 @@
 				</div>
 						
 				<div v-if="progress.AUTH2FACTOR || progress.PHONE_VERIFIED">
-					<p v-t="'postregister.auth2factor'"></p>
+					<p v-t="'postregister.auth2factor'"></p>					
 					<form ref="myform" @submit.prevent="setSecurityToken()" role="form" class="form form-horizontal" novalidate>
 						<form-group name="securityToken" label="postregister.securityToken" :path="errors.securityToken">
 							<input type="text" class="form-control" name="securityToken" v-model="setpw.securityToken" style="margin-bottom:5px;" required v-validate autofocus>
@@ -390,19 +390,19 @@ export default {
 		},
 
 		retry(funcresult, params) {
-			const { $data, $route, $router } = this;
+			const { $data, $route, $router } = this, me = this;
 	    	if (funcresult) {
 		   		if (funcresult.data.istatus === "ACTIVE") oauth.postLogin(funcresult);
 		   		else session.postLogin(funcresult, $router, $route);		
 	    	} else {
-				let r = session.retryLogin(params);
-				if (!r) {	    	
+				let r = me.doAction("login",session.retryLogin(params));
+				/*if (!r) {	    	
 				try {
 					$router.push({ path : "./user", query : { userId:$data.registration._id } });
 				} catch(e) {
 					$router.push({ path : "./login" });
 				}
-				} else {
+				} else {*/
 				r.then(function(result) {
 					if (result.data.istatus === "ACTIVE") oauth.postLogin(result);
 					else session.postLogin(result, $router, $route);
@@ -413,7 +413,7 @@ export default {
 						$data.progress = { RELOGIN : true };
 					}
 				});
-				}
+				//}
 			}
 		},
 
@@ -609,7 +609,7 @@ export default {
 		},
 
 		prepare() {
-			const { $data, $route }	= this;
+			const { $data, $route, $router }	= this;
 			$data.progress = session.progress || {};
 	
 			this.init();			
@@ -624,6 +624,9 @@ export default {
 	
 			if (oauth.getAppname()) { $data.isoauth = true; }
 			if (!$route.query.feature) this.loadEnd();		
+			if (Object.keys($data.progress).length==0) {
+				$router.go(-1);
+			}
 		}
 	
 	},

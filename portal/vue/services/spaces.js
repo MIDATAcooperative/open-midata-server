@@ -81,59 +81,69 @@ import server from "./server";
 	};
 	
 	service.openAppLink = function($router, $route, userId, data) {
-		  if (data.app === "market") {
+		if (data.app === "market") {
 			  if (data.params.appId) {
 				  $router.push({ path : "./visualization", query : { visualizationId : data.params.appId } });
 			  } else $router.push({ path : "./market", query : { tag : data.params.tag, context : (data.params.context || "me") } });
-		  } else if (data.app === "newconsent") {
+		} else if (data.app === "newconsent") {
 			  $router.push("./newconsent", { query : { share : data.params.share } });
-		  } else if (data.app === "profile") {
+		} else if (data.app === "profile") {
 			  $router.push({ path : "./user",  query : { userId : userId } });			  
-		  } else if (data.app === "consent") {
+		} else if (data.app === "consent") {
 			  $router.push({ path : "./consent", query : { consentId : data.params.consentId } });
-		  } else if (data.app === "apps") {
+		} else if (data.app === "apps") {
 			  //if (data.params.studyId) $state.go("^.studydetails", { studyId : data.params.studyId });
 			  $router.push({ path : "./apps" });
-		  } else if (data.app === "studies") {
+		} else if (data.app === "studies") {
 			  if (data.params.studyId) $router.push({ path : "./studydetails", query : { studyId : data.params.studyId } });
 			  else $router.push({ path : "./studies"  });
-		  } else if (data.app === "newrequest") {
+		} else if (data.app === "newrequest") {
 			  $router.push({ path : "./newconsent", query : { share : data.params.share, request : true } });
-		  } else {
-			  server.post(jsRoutes.controllers.Plugins.get().url, { "properties" : { "filename" : data.app }, "fields": ["_id", "type"] })
-			  .then(function(result) {				
-				  if (result.data.length == 1) {
-					  var app = result.data[0];
-					  service.get({ "owner": userId, "visualization" : result.data[0]._id,  "context" : data.context }, ["_id"])
-					  .then(function(spaceresult) {
-						 if (spaceresult.data.length > 0) {
-							 var target = spaceresult.data[0];
-							 if (result.data[0].type === "oauth1" || result.data[0].type === "oauth2") {
-							   $router.push({ path : "./importrecords", query : { "spaceId" : target._id, "params" : JSON.stringify(data.params) } });
-							 } else {
-							   $router.push({ path : "./spaces", query : { spaceId : target._id, params : JSON.stringify(data.params), user : data.user } });
-							 }
-						 } else {
-							 
-							 
-							 apps.installPlugin(app._id, { applyRules : true, context : data.context, study : data.study })
-								.then(function(result) {				
-									//session.login();
-									if (result.data && result.data._id) {
-									  if (app.type === "oauth1" || app.type === "oauth2") {
-										 $router.push({ path : "./importrecords", query : { "spaceId" : result.data._id, params : JSON.stringify(data.params) } });
-									  } else { 
-									     $router.push({ path : './spaces', query : { spaceId : result.data._id, params : JSON.stringify(data.params), user : data.user } });
-									  }
-									} else {
-									  $router.push({ path : './dashboard', query : { dashId : $scope.options.context } });
-									}
-								});							 							 				
-						 }
-					  });
-				  } 
-			  });
-			  }
-	};
+		} else {
+			let p = null;
+			if (data.app) {
+				p = server.post(jsRoutes.controllers.Plugins.get().url, { "properties" : { "filename" : data.app }, "fields": ["_id", "type"] })
+			  	.then(function(result) {				
+					if (result.data.length == 1) {
+						return result.data[0];
+				  	} else return null;
+				});
+			} else if (data.plugin) p = Promise.resolve(data.plugin);
+			if (!p)	return Promise.resolve();
+			return p.then(function(app) { 
+				return service.get({ "owner": userId, "visualization" : app._id,  "context" : data.context }, ["_id"])
+			    .then(function(spaceresult) {
+					if (spaceresult.data.length > 0) {
+						var target = spaceresult.data[0];
+						if (app.type === "oauth1" || app.type === "oauth2") {
+							$router.push({ path : "./importrecords", query : { "spaceId" : target._id, "params" : JSON.stringify(data.params) } });
+						} else {
+							$router.push({ path : "./spaces", query : { spaceId : target._id, params : JSON.stringify(data.params), user : data.user } });
+						}
+					} else {														
+						return apps.installPlugin(app._id, { applyRules : true, context : data.context, study : data.study })
+						.then(function(result) {				
+							//session.login();
+							if (result.data && result.data._id) {
+								if (app.type === "oauth1" || app.type === "oauth2") {
+									$router.push({ path : "./importrecords", query : { "spaceId" : result.data._id, params : JSON.stringify(data.params) } });
+								} else { 
+									$router.push({ path : './spaces', query : { spaceId : result.data._id, params : JSON.stringify(data.params), user : data.user } });
+								}
+							} else {
+								if (app.type === "external" || app.type === "service") {
+									$router.push({ path : './apps' });
+								} else {					
+									$router.push({ path : "./timeline" });                         
+								}
+								//$router.push({ path : './dashboard', query : { dashId : $scope.options.context } });
+							}
+						});							 							 				
+					}
+				});
+			});
+		}
+		return Promise.resolve();
+	}
 	
 	export default service;

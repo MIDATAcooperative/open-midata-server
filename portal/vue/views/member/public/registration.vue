@@ -238,8 +238,7 @@ export default {
 	},
 	
 	showTerms(def) {		
-        const { $data } = this;
-        console.log(def);
+        const { $data } = this;       
         $data.terms = { which : def, active : true };		
 	},
 	

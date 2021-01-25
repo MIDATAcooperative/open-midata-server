@@ -16,7 +16,7 @@
 -->
 
 <template>
-   <th @click="setSort(sortby)" class="clickable sort" :class="{ 'asc': modelValue==sortby , 'desc':modelValue=='-'+sortby }"><slot/></th>
+   <th @click="setSort(sortby)" class="clickable sort" :class="{ 'asc': modelValue.sort==sortby , 'desc':modelValue.sort=='-'+sortby }"><slot/></th>
 </template>
 <style>
 tr .sort::after {
@@ -46,8 +46,8 @@ export default {
 
   methods : {
       setSort(key) {                      
-        if (this.modelValue==key) this.$emit('update:modelValue', "-"+key);
-        else { this.$emit('update:modelValue', key); }        
+        if (this.modelValue.sort==key) { this.modelValue.sort = "-"+key; /*this.$emit('update:modelValue', "-"+key */ }
+        else { this.modelValue.sort = key; /*$emit('update:modelValue', key);*/ }                
       },
 
       sort(what,key) {

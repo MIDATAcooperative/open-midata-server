@@ -19,7 +19,9 @@
   	<div class="panel-container" :style="style">
 		<div class="panel panel-primary">
             <div class="panel-heading" v-if="title">
-		    	<h3 class="panel-title">{{ title }}</h3>
+		    	<h3 class="panel-title">{{ title }} 
+                    <a v-if="$attrs.onClose" @click="$emit('close')" href="javascript:" class="close-icon float-right"><span class="fas fa-times"></span></a>
+                </h3>                
 		    </div>					
 			<div class="panel-body">
                 <div v-if="busy" class="loader">
@@ -35,6 +37,7 @@
 
 <script>
 export default {    
+  inheritAttrs : false,
   props: ['style', 'title', 'busy' ]
 }
 </script>
