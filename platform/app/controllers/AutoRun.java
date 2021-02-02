@@ -411,7 +411,7 @@ public class AutoRun extends APIController {
 		Iterator<SubscriptionData> datasIt;
 		List<Space> autoImports;
 		Iterator<Space> autoImportsIt;
-		Set<MidataId> done;
+		//Set<MidataId> done;
 		
 		private int countSlow = 0;
 		private int isSlow = 0;
@@ -507,7 +507,7 @@ public class AutoRun extends APIController {
 			datasIt = null;
 			autoImports = null;
 			autoImportsIt = null;
-		    done = null;
+		    //done = null;
 			errors = new StringBuffer();
 			
 			endReport = getContext().system().scheduler().scheduleOnce(
@@ -561,7 +561,7 @@ public class AutoRun extends APIController {
 				
 				datas = SubscriptionData.getAllActiveFormat("time", SubscriptionData.ALL);
 				datasIt = datas.iterator();
-				done = new HashSet<MidataId>();
+				//done = new HashSet<MidataId>();
 				countNewImports = datas.size();
 				
 				
@@ -595,6 +595,10 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 				speedControl = null;
 			}
 			
+			if (!reportSend) {
+				reportEnd();
+			}
+			
 			startTime = 0;
 			startRemoveUnlinkedFiles = 0;
 			startCreateDatabaseStats = 0;
@@ -615,14 +619,14 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 			datasIt = null;
 			autoImports = null;
 			autoImportsIt = null;
-		    done = null;
+		    //done = null;
 			errors = new StringBuffer();
 			
 			try {
 				AccessLog.logStart("jobs", "start intraday import");								
 				datas = SubscriptionData.getAllActiveFormat("time/30m", SubscriptionData.ALL);
 				datasIt = datas.iterator();
-				done = new HashSet<MidataId>();
+				//done = new HashSet<MidataId>();
 				countNewImports = datas.size();
 				
 				if (countNewImports > 0) {
@@ -666,7 +670,7 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 		
 		public boolean importTick() {
 			AccessLog.logStart("jobs", "import tick");
-			boolean foundone = false;
+			//boolean foundone = false;
 			if (autoImportsIt != null && autoImportsIt.hasNext()) {
 				Space space = autoImportsIt.next();
 				MidataId autorunner = RuntimeConstants.instance.autorunService;
@@ -675,15 +679,15 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 				workerRouter.route(new ImportRequest(handle, autorunner, space), getSelf());
 				
 				return true;
-			} else while (datasIt!=null && datasIt.hasNext() && !foundone) {
+			} else while (datasIt!=null && datasIt.hasNext()) {
 				SubscriptionData data = datasIt.next();
-				if (!done.contains(data.owner)) {
-					  done.add(data.owner);
-					  foundone = true;
+				//if (!done.contains(data.owner)) {
+				//	  done.add(data.owner);
+					  //foundone = true;
 					  isSlow = 0;
-					  processor.tell(new SubscriptionTriggered(data.owner, data.app, data.format, null, null, null, null, null), getSelf());
+					  processor.tell(new SubscriptionTriggered(data._id, data.owner, data.app, data.format, null, null, null, null, null), getSelf());
 					  return true;
-				}
+				//}
 			}		
 			autoImportsIt = null;
 			datasIt = null;
@@ -735,7 +739,7 @@ public void startIntradayImport(StartIntradayImport message) throws Exception {
 			datasIt = null;
 			autoImports = null;
 			autoImportsIt = null;
-		    done = null;
+		    //done = null;
 			
 			String email = InstanceConfig.getInstance().getConfig().getString("errorreports.targetemail");
 			String fullname = InstanceConfig.getInstance().getConfig().getString("errorreports.targetname");

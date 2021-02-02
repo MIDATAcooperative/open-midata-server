@@ -192,6 +192,10 @@ midata {
           seed-nodes = [
             CLUSTER_SERVER
           ]
+          
+          failure-detector {
+            threshold = 20s
+          }
            
         }
     }
