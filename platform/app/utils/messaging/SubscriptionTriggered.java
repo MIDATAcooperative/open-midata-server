@@ -37,6 +37,11 @@ public class SubscriptionTriggered {
 	final MidataId app;
 	
 	/**
+	 * optional for autoimport: _id of triggered subscription
+	 */
+	final MidataId byId;
+	
+	/**
 	 * Type of resource that has changed
 	 */
 	final String type;
@@ -75,6 +80,19 @@ public class SubscriptionTriggered {
 		this.eventCode = eventCode;
 		this.resourceId = resourceId;
 		this.params = params;
+		this.byId = null;
+	}
+	
+	public SubscriptionTriggered(MidataId id, MidataId affected, MidataId app, String type, String eventCode, String fhirVersion, String resource, MidataId resourceId, Map<String, String> params) {
+		this.affected = affected;
+		this.app = app;
+		this.type = type;
+		this.fhirVersion = fhirVersion;
+		this.resource = resource;
+		this.eventCode = eventCode;
+		this.resourceId = resourceId;
+		this.params = params;
+		this.byId = id;
 	}
 
 	public MidataId getAffected() {
@@ -83,6 +101,10 @@ public class SubscriptionTriggered {
 		
 	public MidataId getApp() {
 		return app;
+	}
+	
+	public MidataId getById() {
+		return byId;
 	}
 
 	public String getType() {
