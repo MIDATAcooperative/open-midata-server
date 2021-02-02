@@ -168,7 +168,7 @@ public class PluginDeployment extends AbstractActor {
 	
 	private DeployStatus getDeployStatus(MidataId plugin, boolean create) {
 		DeployStatus result = statusMap.get(plugin);		
-		if (result == null && create) {
+		if (create) {
 			result = new DeployStatus();
 			statusMap.put(plugin, result);
 		}
@@ -274,6 +274,7 @@ public class PluginDeployment extends AbstractActor {
 			status = getDeployStatus(pluginId, false);
 			status.numStarted++;
 			status.report.clusterNodes.add(action.clusterNode);
+			AccessLog.log("STARTED: numStarted="+status.numStarted+" numReady="+status.numReady+" numFailed="+status.numFailed+" numFinished="+status.numFinished);
 			break;
 		case REPORT_CHECKOUT:
 			status = getDeployStatus(pluginId, false);	
@@ -298,15 +299,29 @@ public class PluginDeployment extends AbstractActor {
 			status.report.status.add(DeployPhase.COMPILE);
 			status.report.buildReport.put(action.clusterNode, action.report);
 			checkFail(action, status);
-			if (action.success) status.numReady++;
+			if (action.success) {
+				status.numReady++;
+				AccessLog.log("COMPILE_SUCCESS: numStarted="+status.numStarted+" numReady="+status.numReady+" numFailed="+status.numFailed+" numFinished="+status.numFinished);
+			} else {
+				AccessLog.log("COMPILE_NO_SUCCESS: numStarted="+status.numStarted+" numReady="+status.numReady+" numFailed="+status.numFailed+" numFinished="+status.numFinished);
+			}
 			if (status.numReady >= status.numStarted) {
+				AccessLog.log("DO-PUBLISH!");
 				broadcast(action, DeployPhase.PUBLISH);
+			} else {
+				AccessLog.log("DO NOT-PUBLISH!");
 			}
 			break;		
 		case FINISHED:
 			status = getDeployStatus(pluginId, false);
-			if (action.success) status.numFinished++;			
+			if (action.success) {
+				status.numFinished++;
+				AccessLog.log("FINISHED_SUCCESS: numStarted="+status.numStarted+" numReady="+status.numReady+" numFailed="+status.numFailed+" numFinished="+status.numFinished);
+			} else {
+				AccessLog.log("FINISHED_NO_SUCCESS: numStarted="+status.numStarted+" numReady="+status.numReady+" numFailed="+status.numFailed+" numFinished="+status.numFinished);
+			}
             if (status.numFinished >= status.numStarted) {
+            	AccessLog.log("ALL OK");
             	status.report.status.add(DeployPhase.FINISHED);
 				status.report.finsihed = System.currentTimeMillis();
 				status.report.add();
