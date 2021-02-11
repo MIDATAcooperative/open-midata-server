@@ -441,7 +441,7 @@ public class Feature_Indexes extends Feature {
 			index = IndexManager.instance.findIndex(pseudo, format, pathes, pseudonymize);
 			if (index == null) {
 				AccessLog.logBegin("start index creation");
-				index = IndexManager.instance.createIndex(pseudo, format, pathes);
+				index = IndexManager.instance.createIndex(pseudo, format, pathes, pseudonymize);
 				AccessLog.logEnd("end index creation");
 			}
 			root = cachedIndexRoots.get(index._id);
