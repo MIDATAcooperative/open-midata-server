@@ -48,6 +48,7 @@ export default {
         },
 		loadFailure(msg, noerror) { 
 			   console.log(msg);
+			   if (msg.response) msg = msg.response;
 			   this.$data.loading--; 
 			   if (!noerror) {
 				   if (msg && msg.data) this.$data.error = msg.data.code || msg.data; else this.$data.error = msg;

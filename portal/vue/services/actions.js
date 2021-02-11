@@ -47,8 +47,8 @@ import circles from './circles';
 	
 	service.showAction = function($router, $route, role, override) {
 				
-		role = role || $state.current.data.role.toLowerCase();
-		acarray = override || getActions($state) || acarray;
+		role = role || $route.meta.role.toLowerCase();
+		acarray = override || getActions($route) || acarray;
 		if (!hasActions(acarray)) return false;
 			
 		

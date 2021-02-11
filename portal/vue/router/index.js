@@ -17,7 +17,8 @@
 
 import { createRouter, createWebHashHistory } from 'vue-router';
 
-import ChangePassword from 'views/shared/changepassword.vue';
+import Newconsent from 'views/shared/newconsent.vue';
+import Studydetails from 'views/shared/studydetails.vue';
 
 const Timeline = () => import(/* webpackChunkName: "shared" */ 'views/shared/timeline.vue');
 const postRegister = () => import(/* webpackChunkName: "oauth" */ 'views/shared/public/postregister.vue');
@@ -104,7 +105,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "public" */ 'views/shared/public/info.vue')
   },
   {
-    base : ['public', "public_provider", "public_research", "public_developer"],
+    base : ['public', "public_provider", "public_research", "public_developer", "member", "provider", "research", "developer", "admin"],
     path : 'terms',
     component: () => import(/* webpackChunkName: "public" */ 'views/shared/public/termsPage.vue')
   },
@@ -143,6 +144,11 @@ const routes = [
     base : ["member", "developer", "admin", "research", "provider", "project"],
     path : "spaces",
     component: () => import(/* webpackChunkName: "shared" */ 'views/shared/space.vue')
+  },
+  {
+    base : ["member", "developer", "admin", "research", "provider", "project"],
+    path : "importrecords",
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/importrecords.vue')
   },
   {
     base : ["oauth", "public", "public_research", "public_provider", "public_developer"],
@@ -219,9 +225,72 @@ const routes = [
         types : ['CIRCLE','HEALTHCARE']
       }
     }
-  }
-
- 
+  },
+  {
+    base : ["member", "developer", "admin", "research", "provider"],
+    path : "revconsents",
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/revconsents.vue')
+  },
+  {
+    base : ["member", "developer", "admin", "research", "provider"],
+    path : "newconsent",
+    component: Newconsent // () => import(/* webpackChunkName: "shared" */ 'views/shared/newconsent.vue')
+  },
+  {
+    base : ["public"],
+    path : "service",
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/public/service.vue')
+  },
+  {
+    base : ["public"],
+    path : "/public/apps/:pluginName",
+    name : "goplugin",
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/public/service.vue')
+  },
+  {
+    base : ["member", "provider", "research", "developer", "admin"],
+    path : "serviceleave",
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/public/serviceleave.vue')
+  },
+  {
+    base : ["member", "provider", "research", "developer", "admin"],
+    path : "auditlog",
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/audit.vue')
+  },
+  {
+    base : ["member", "provider", "research", "developer", "admin"],
+    path : "records",
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/records.vue')
+  },
+  {
+    base : ["member", "provider", "research", "developer", "admin"],
+    path : "records-delete",
+    meta : {
+      allowDelete : true  
+    },
+    admin : {
+      meta : {
+        allowDelete : true,
+        allowDeletePublic : true
+      }
+    },
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/records.vue')
+  },
+  {
+    base : ["member", "provider", "research", "developer", "admin"],
+    path : "recorddetail",
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/recorddetail.vue')
+  },
+  {
+    base : ["member"],
+    path : "studies",
+    component: () => import(/* webpackChunkName: "shared" */ 'views/member/smallstudies.vue')
+  },
+  {
+    base : ["member", "provider"],
+    path : "studydetails",
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/studydetails.vue')
+  }  
 ]
 
 function processRoutes(baseRoutes, routes) {

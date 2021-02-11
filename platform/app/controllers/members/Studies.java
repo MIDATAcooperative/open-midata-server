@@ -354,6 +354,7 @@ public class Studies extends APIController {
 	   } else {
 	       studyId = MidataId.from(id);
 	       study = Study.getById(studyId, studyFields);
+	       if (study==null) return notFound();
 	   }
 	 	   	   
 	   StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, consentFields);

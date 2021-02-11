@@ -55,8 +55,7 @@ app.directive('floating', {
 });
 
 app.directive('validate', {
-  mounted(el, binding) {
-    console.log("USE");
+  mounted(el, binding) {    
     // We don't care about binding here.
     el.addEventListener('input', (e) => {
       const vm = binding.instance; // this is the Vue instance.   
@@ -81,16 +80,14 @@ app.directive('validate', {
 });
 
 app.directive('submit', {
-  mounted(el2, binding) {
-    console.log("FORM");
+  mounted(el2, binding) {   
     // We don't care about binding here.
     let el = el2.form;
     el2.addEventListener('click', (e) => {
                
         if (!el.checkValidity()) {
           e.preventDefault();
-          e.stopPropagation();
-          console.log("STOPPED");
+          e.stopPropagation();        
         }
 
         const vm = binding.instance;
@@ -111,6 +108,10 @@ app.directive("pluginframe", PluginFrame);
 
 app.use(router);
 
+let domain = document.location.hostname;
+if (domain.indexOf("ch.midata.coop")>=0) {
+  document.location.href="https://ch.midata.coop/#/portal/login";
+} else {
 document.addEventListener("DOMContentLoaded", function(){      
     router.isReady().then(      
       () => {
@@ -120,6 +121,5 @@ document.addEventListener("DOMContentLoaded", function(){
       }
     );
 });
+}
 
-
-console.log("EXECUTED!");

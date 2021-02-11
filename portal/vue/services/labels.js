@@ -70,7 +70,7 @@ import { getLocale } from './lang';
 		}
 		var existing = group_translations[system+":"+name];
 		if (!existing) {			
-			return undefined;
+			return Promise.resolve(undefined);
 		} else return Promise.resolve(existing);
 	};
 	
