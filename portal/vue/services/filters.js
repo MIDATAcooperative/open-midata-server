@@ -19,7 +19,23 @@ export default {
     date(dat) {
         if (!dat) return "";
         if (typeof dat == "number" || typeof dat == "string") dat = new Date(dat);
-        if (dat.getDay) return dat.getDate()+"."+(1+dat.getMonth())+"."+dat.getFullYear();
+        if (dat.getDay) return dat.toLocaleDateString("de-DE", { year: 'numeric', month: '2-digit', day: '2-digit' });//getDate()+"."+(1+dat.getMonth())+"."+dat.getFullYear();
+        return dat;
+    },
+
+    dateTime(dat) {
+        if (!dat) return "";
+        if (typeof dat == "number" || typeof dat == "string") dat = new Date(dat);
+        if (dat.getDay) return dat.toLocaleString("de-DE", { year: 'numeric', month: '2-digit', day: '2-digit', hour:"2-digit", minute:"2-digit", seconds:"2-digit" }); //dat.getDate()+"."+(1+dat.getMonth())+"."+dat.getFullYear();
+        return dat;
+    },
+
+    usDate(dat) {
+        if (!dat) return "";
+        if (typeof dat == "number" || typeof dat == "string") dat = new Date(dat);
+        if (dat.getDay) return dat.toLocaleDateString("en-CA", { year: 'numeric', month: '2-digit', day: '2-digit'}); //dat.getDate()+"."+(1+dat.getMonth())+"."+dat.getFullYear();
         return dat;
     }
+
+
 }

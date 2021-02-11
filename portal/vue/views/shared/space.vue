@@ -30,7 +30,6 @@ import ErrorBox from 'components/ErrorBox.vue';
 import Panel from 'components/Panel.vue';
 import { getLocale } from 'services/lang.js';
 import spaces from 'services/spaces.js';
-import server from 'services/server.js';
 import session from 'services/session.js';
 import status from 'mixins/status.js';
 
@@ -98,16 +97,6 @@ export default {
 			}
 		},
 	
-		// reload the iframe displaying the visualization
-		/*reloadIframe = function(space) {
-			space.trustedUrl = $sce.trustAsResourceUrl(space.completedUrl);
-
-		
-			var iframe = $("#iframe").detach();
-		
-			iframe.attr("src", space.trustedUrl);
-			$("#iframe-placeholder").append(iframe);
-		}*/
 		init() {
 			const { $data, $route } = this, me = this;
 			$data.spaceId = $route.query.spaceId;		

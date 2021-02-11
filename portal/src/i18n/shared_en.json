@@ -519,6 +519,8 @@
    },
 
   "common" : {
+    "empty" : " ",
+    "done_btn" : "Done",
     "back_btn" : "Back",
     "search_btn" : "Search",
     "add_btn" : "Add",
