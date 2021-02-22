@@ -99,6 +99,7 @@
 <script>
 import ENV from "config";
 import { setLocale, addBundle } from "services/lang.js";
+import session from "services/session.js"
 
 /*
 	
@@ -132,7 +133,11 @@ export default {
 	 $data.action = $route.query.action;
 	 $data.hideCookieBar = localStorage.hideCookieBar;
 
-	 if (!$route.meta || $route.meta.keep) session.logout();
+	 if (!$route.meta || !$route.meta.keep) {
+		 console.log("LOGOUT FROM PUBLIC MENU");
+		 console.log($route);
+		 session.logout();
+	 }
 
 	 addBundle("members");
 	 addBundle("branding");

@@ -1,11 +1,18 @@
 <template>
 	<div>
-    <panel :title="$t('newconsent.title')" >
+    <panel :title="getTitle()" :busy="isBusy">
     
-        <div class="alert alert-info" v-if="pleaseReview">
+        <div class="alert alert-info" v-if="pleaseReview && !consentId">
             <h4 class="alert-heading" v-t="'newconsent.please_review1'"></h4>
             <p v-t="'newconsent.please_review2'"></p>
         </div>
+
+		<div class="alert alert-info d-none d-md-block" v-if="pleaseReview && consentId">
+    		<h4 class="alert-heading" v-t="'editconsent.please_review1'"></h4>
+    		<p v-if="consent.status=='UNCONFIRMED'" v-t="'editconsent.please_review2a'"></p>
+    		<p v-else v-t="'editconsent.please_review2b'"></p>
+  		</div>
+
         <form name="myform" ref="myform" class="css-form form-horizontal" @submit.prevent="create()" novalidate role="form">
             <error-box :error="error"></error-box>
     
@@ -30,126 +37,169 @@
                     </div>
                 </div>
             </div>
+			<div v-else>
+				<div class="row extraspace" v-if="consentId">  
+                      
+      				<div class="col-md-6">      
+        				<div><small v-t="'editconsent2.status'"></small></div>
+        
+      
+        				<span class="lead text-success" v-if="consent.status == 'ACTIVE'" v-t="'editconsent2.status_active'"></span>
+        				<span class="lead text-danger" v-if="consent.status == 'EXPIRED'" v-t="'editconsent2.status_expired'"></span>
+        				<span class="lead text-warning" v-if="consent.status == 'UNCONFIRMED'" v-t="'editconsent2.status_unconfirmed'"></span>    
+        				<span class="lead text-danger" v-if="consent.status == 'REJECTED'" v-t="'editconsent2.status_rejected'"></span>
+        			</div>
+              
+        			<div class="col-md-6">
+        				<div><small v-t="'editconsent2.duration'"></small></div>
+           				<div class="lead">							       
+         					{{ $filters.date(consent.dateOfCreation) }}      
+       						-      
+       						<span v-if="consent.validUntil"> 
+       							{{ $filters.date(consent.validUntil) }}      
+      						</span>      
+         				</div>                
+      				</div>					
+     			</div>	      
     
-            <div class="row" v-else >
-                <div class="col-sm-5"> 
-                    <p><b v-t="'newconsent.who_is_owner'"></b></p>
-          
-                    <div class="" v-if="owner">
-                        <div class="card-body">
-                            <img :src="getIconRole(owner)" class="float-left consenticon">
-                            <div class="iconspace">
-                                <div>{{ $t('enum.userrole.'+owner.role)}}</div>		  	
-		                        <address>
-			                        <strong>{{ owner.firstname }} {{ owner.lastname }}</strong>
-			                        <div v-if="owner.email">{{ owner.email }}<br></div>
-			                        <span v-if="owner.address1 || owner.city || owner.country"><br>{{ owner.address1 }}<br>
-			                            {{ owner.address2 }}<br>
-			                            {{ owner.country }} {{ owner.zip }} {{ owner.city }}			
-			                        </span>			
-		                        </address>
-		                    </div>
-		                </div>		 		   				  
-		            </div>
-		            <div class="" v-if="consent.externalOwner">
-		                <div class="card-body">
-		                <img src="/images/question.jpeg" class="float-left consenticon">
-                        <div class="iconspace">
-		                    <div v-t="editconsent.external"></div>
-		                    <div><strong>{{ consent.externalOwner }}</strong></div>
-		                </div>
-		            </div>
-		        </div>
-		        <div class="margin-top">
-		            <button v-if="!(owner || consent.externalOwner)" type="button" class="btn btn-default" @click="setOwner();" v-t="'newconsent.set_owner_btn'"></button>
-		        </div>
-                        
-            </div>
-            <div class="col-sm-1">
-                <div style="margin-top:60px" class="text-center">
-                    <span style="font-size:40px" class="fas fa-arrow-right"></span>
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <p><b v-t="'editconsent.people'"></b></p>
-                <div  v-if="consent.type=='EXTERNALSERVICE'">
-                    <div class="card-body">
-                        <img :src="getIconRole('app')" class="consenticon float-left">
-                        <div class="iconspace">
-                            <strong v-t="'editconsent2.external'"></strong>
-                        </div>
-                    </div>
-		        </div>
-		        <div v-if="consent.type=='API'">
-                    <div class="card-body">
-                        <img :src="getIconRole('app')" class="consenticon float-left">
-                        <div class="iconspace">
-                            <strong v-t="'editconsent2.external'"></strong>
-                        </div>
-                    </div>
-                </div>
-                <div v-if="consent.type=='STUDYRELATED'">
-                    <div class="card-body">
-                        <img :src="getIconRole('community')" class="consenticon float-left">
-                        <div class="iconspace">
-                            <strong v-t="'editconsent2.community'"></strong>
-                        </div>
-                    </div>
-                </div>
-                <div v-for="person in authpersons" :key="person._id">
-                    <div class="card-body">
-		                <button type="button" @click="removePerson(person)" class="close" aria-label="Delete" v-if="mayChangeUsers()"><span aria-hidden="true">&times;</span></button>
-		                <img :src="getIconRole(person)" class="float-left consenticon">
-		                <div class="iconspace">
-		                    <div>{{$t('enum.userrole.'+person.role)}}</div>		
-		                    <address>
-			                    <strong>{{ person.firstname }} {{ person.lastname }}</strong>
-			                    <div v-if="person.email">{{ person.email }}<br></div>
-			                    <span v-if="person.address1 || person.city || person.country"><br>
-			                        {{ person.address1 }}<br>
-			                        {{ person.address2 }}<br>
-			                        {{ person.country }} {{ person.zip }} {{ person.city }}	
-			                    </span>			
-		                    </address>
-		                </div>
-		            </div>
-		        </div>
-		        <div v-for="usergroup in authteams" :key="usergroup._id">
-		            <div class="card-body">
-		                <button type="button" v-if="mayChangeUsers()" @click="removePerson(usergroup)" class="close" aria-label="Delete"><span aria-hidden="true">&times;</span></button>
-		                <img :src="getIconRole('team')" class="float-left consenticon">
-		                <div class="iconspace">
-		                    <div v-t="'editconsent2.team'"></div>	
-		                    <strong>{{ usergroup.name }}</strong>
-		                </div>
-		            </div>
-		        </div>
-		        <div v-for="person in consent.externalAuthorized" :key="person">
-		            <div class="card-body">
-		                <img :src="getIconRole('external')" class="float-left consenticon">
-		                <div class="iconspace">
-		                    <div v-t="'editconsent.external'"></div>
-		                    <strong>{{ person }}</strong>
-		                </div>
-		            </div>
-		        </div>
-		        <div v-if="consent.reshare">
-		            <div class="card-body">
-		                <img :src="getIconRole('reshare')" class="float-left consenticon">
-		                <div class="iconspace">
-		                    <span v-t="'newconsent.reshare'"></span>
-		                </div>
-		            </div>
-		        </div>
-		
-		        <div class="margin-top">
-		            <button type="button" class="btn btn-default" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.owner != userId && consent.authorized.indexOf(userId)<0" @click="addYourself();" v-t="'newconsent.add_yourself_btn'"></button>
-		            <button type="button" class="btn btn-default" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.entityType!='USERGROUP'" @click="addPeople();" v-t="'newconsent.add_person_btn'"></button>
-		            <button type="button" class="btn btn-default" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.entityType!='USER' && consent.type!='CIRCLE'" @click="addUserGroup();" v-t="'newconsent.add_usergroup_btn'"></button>
-	            </div>
-	            <div class="extraspace"></div>
-		
-            </div>
+				<div class="row" >					
+					<div class="col-md-5" :class="{ 'd-none d-md-block' : (consentId && owner && owner._id == userId) }"> 
+						<p><b v-t="'newconsent.who_is_owner'"></b></p>
+			
+						<div class="" v-if="owner && owner._id != userId">
+							<div class="card-body">
+								<img :src="getIconRole(owner)" class="float-left consenticon">
+								<div class="iconspace">
+									<div>{{ $t('enum.userrole.'+owner.role)}}</div>		  	
+									<address>
+										<strong>{{ owner.firstname }} {{ owner.lastname }}</strong>
+										<div v-if="owner.email">{{ owner.email }}<br></div>
+										<span v-if="owner.address1 || owner.city || owner.country"><br>{{ owner.address1 }}<br>
+											{{ owner.address2 }}<br>
+											{{ owner.country }} {{ owner.zip }} {{ owner.city }}			
+										</span>			
+									</address>
+								</div>
+							</div>		 		   				  
+						</div>
+						<div v-if="owner && owner._id == userId">
+		  					<div class="card-body">
+		    					<img :src="getIconRole(owner)" class="float-left consenticon">
+		    					<div class="iconspace"><div>&nbsp;</div><strong v-t="'editconsent.you'"></strong></div>
+		  					</div>
+						</div>
+						<div v-if="consent.type=='STUDYRELATED'">
+		  					<div class="card-body">
+		  						<img :src="getIconRole('research')" class="float-left consenticon">
+          						<div class="iconspace">
+		    						<div v-t="'editconsent.project'"></div>
+		    						<div><strong>{{ consent.ownerName }}</strong></div>
+		  						</div>
+		  					</div>
+						</div>
+						<div class="" v-if="consent.externalOwner">
+							<div class="card-body">
+							<img src="/images/question.jpeg" class="float-left consenticon">
+							<div class="iconspace">
+								<div v-t="editconsent.external"></div>
+								<div><strong>{{ consent.externalOwner }}</strong></div>
+							</div>
+						</div>
+					</div>
+					<div class="margin-top">
+						<button v-if="!(owner || consent.externalOwner)" type="button" class="btn btn-default" @click="setOwner();" :disabled="action!=null" v-t="'newconsent.set_owner_btn'"></button>
+					</div>
+							
+				</div>
+				<div class="col-md-1 d-none d-md-block">
+					<div style="margin-top:60px" class="text-center">
+						<span style="font-size:40px" class="fas fa-arrow-right"></span>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<p><b v-t="'editconsent.people'"></b></p>
+					<div  v-if="consent.type=='EXTERNALSERVICE'">
+						<div class="card-body">
+							<img :src="getIconRole('app')" class="consenticon float-left">
+							<div class="iconspace">
+								<strong v-t="'editconsent2.external'"></strong>
+							</div>
+						</div>
+					</div>
+					<div v-if="consent.type=='API'">
+						<div class="card-body">
+							<img :src="getIconRole('app')" class="consenticon float-left">
+							<div class="iconspace">
+								<strong v-t="'editconsent2.external'"></strong>
+							</div>
+						</div>
+					</div>
+					<div v-if="consent.type=='STUDYRELATED'">
+						<div class="card-body">
+							<img :src="getIconRole('community')" class="consenticon float-left">
+							<div class="iconspace">
+								<strong v-t="'editconsent2.community'"></strong>
+							</div>
+						</div>
+					</div>
+					
+					<div v-if="consent.type != 'EXTERNALSERVICE' && consent.type != 'API'">
+						<div v-for="person in authpersons" :key="person._id">
+							<div class="card-body">
+								<button type="button" @click="removePerson(person)" :disabled="action!=null" class="close" aria-label="Delete" v-if="mayChangeUsers()"><span aria-hidden="true">&times;</span></button>
+								<img :src="getIconRole(person)" class="float-left consenticon">
+								<div class="iconspace">
+									<div>{{$t('enum.userrole.'+person.role)}}</div>		
+									<address>
+										<strong>{{ person.firstname }} {{ person.lastname }}</strong>
+										<div v-if="person.email">{{ person.email }}<br></div>
+										<span v-if="person.address1 || person.city || person.country"><br>
+											{{ person.address1 }}<br>
+											{{ person.address2 }}<br>
+											{{ person.country }} {{ person.zip }} {{ person.city }}	
+										</span>			
+									</address>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div v-for="usergroup in authteams" :key="usergroup._id">
+						<div class="card-body">
+							<button type="button" :disabled="action!=null" v-if="mayChangeUsers()" @click="removePerson(usergroup)" class="close" aria-label="Delete"><span aria-hidden="true">&times;</span></button>
+							<img :src="getIconRole('team')" class="float-left consenticon">
+							<div class="iconspace">
+								<div v-t="'editconsent2.team'"></div>	
+								<strong>{{ usergroup.name }}</strong>
+							</div>
+						</div>
+					</div>
+					<div v-for="person in consent.externalAuthorized" :key="person">
+						<div class="card-body">
+							<img :src="getIconRole('external')" class="float-left consenticon">
+							<div class="iconspace">
+								<div v-t="'editconsent.external'"></div>
+								<strong>{{ person }}</strong>
+							</div>
+						</div>
+					</div>
+					<div v-if="consent.reshare">
+						<div class="card-body">
+							<img :src="getIconRole('reshare')" class="float-left consenticon">
+							<div class="iconspace">
+								<span v-t="'newconsent.reshare'"></span>
+							</div>
+						</div>
+					</div>
+			
+					<div class="margin-top" v-if="mayAddPeople()">
+						<button type="button" :disabled="action!=null" class="btn btn-default" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.owner != userId && consent.authorized.indexOf(userId)<0" @click="addYourself();" v-t="'newconsent.add_yourself_btn'"></button>
+						<button type="button" :disabled="action!=null" class="btn btn-default" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.entityType!='USERGROUP'" @click="addPeople();" v-t="'newconsent.add_person_btn'"></button>
+						<button type="button" :disabled="action!=null" class="btn btn-default" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.entityType!='USER' && consent.type!='CIRCLE'" @click="addUserGroup();" v-t="'newconsent.add_usergroup_btn'"></button>
+					</div>
+					<div class="extraspace"></div>
+			
+				</div>
+			</div>
         </div>
     
         
@@ -158,10 +208,10 @@
         
             <p><b v-t="'editconsent.what_is_shared'"></b></p>
         <!-- <div v-if="groupLabels.length && groupLabels.length < 5">{{ groupLabels.join(", ") }}</div>  -->
-                <ul v-if="groupLabels.length">
+                <ul v-if="groupLabels && groupLabels.length">
                     <li v-for="label in groupLabels" :key="label">{{ label }}</li>
                 </ul>
-                <div v-if="groupExcludeLabels.length">
+                <div v-if="groupExcludeLabels && groupExcludeLabels.length">
                     <span v-t="'editconsent2.exclude'"></span>: {{ groupExcludeLabels.join(", ") }}
                 </div>
         
@@ -196,7 +246,7 @@
                 </check-box>    
             </form-group>
 
-            <form-group name="passcode2" label="newconsent.choose_passcode" ng-if="consent.usepasscode">	      
+            <form-group name="passcode2" label="newconsent.choose_passcode" v-if="consent.usepasscode">	      
                 <input  id="passcode2" name="passcode2" type="text" class="form-control" v-validate v-model="consent.passcode" required>     
             </form-group>    
             
@@ -213,21 +263,48 @@
             </form-group>
         </div>
             
-        <div v-if="consent.type" class="margin-top">
-            <button type="button" @click="skip();" v-if="maySkip()" class="btn btn-default" v-t="'common.skip_btn'"></button>
+        <div v-if="!consentId && consent.type" class="margin-top">
+            <button type="button" :disabled="action!=null" @click="skip();" v-if="maySkip()" class="btn btn-default" v-t="'common.skip_btn'"></button>
             <span v-if="!consent.query">
                 <span v-if="!pleaseReview">
-                    <button v-if="consent.authorized.length || consent.usepasscode || consent.externalAuthorized" type="submit" v-submit class="btn btn-primary" v-t="'newconsent.create_btn'"></button>
+                    <button :disabled="action!=null" v-if="consent.authorized.length || consent.usepasscode || consent.externalAuthorized" type="submit" v-submit class="btn btn-primary" v-t="'newconsent.create_btn'"></button>
                 </span>
                 <span v-if="pleaseReview">
-                    <button v-if="consent.authorized.length || consent.usepasscode || consent.externalAuthorized" type="submit" v-submit class="btn btn-primary" v-t="'newconsent.create2_btn'"></button>
+                    <button :disabled="action!=null" v-if="consent.authorized.length || consent.usepasscode || consent.externalAuthorized" type="submit" v-submit class="btn btn-primary" v-t="'newconsent.create2_btn'"></button>
                 </span>
             </span>
             <span v-if="consent.query">
-                <button v-if="consent.authorized.length || consent.usepasscode" type="submit" v-submit class="btn btn-primary" v-t="'newconsent.create2_btn'"></button>
+                <button :disabled="action!=null" v-if="consent.authorized.length || consent.usepasscode" type="submit" v-submit class="btn btn-primary" v-t="'newconsent.create2_btn'"></button>
             </span>     
-            <button type="button" class="btn btn-link" v-if="!options.advanced" @click="options.advanced=true;" v-t="'newconsent.extended_btn'"></button>
+            <button :disabled="action!=null" type="button" class="btn btn-link" v-if="!options.advanced" @click="options.advanced=true;" v-t="'newconsent.extended_btn'"></button>
         </div>
+
+		<div v-if="consentId">
+			<div v-if="mayChangeData()" class="extraspace">
+				<router-link class="btn btn-default"  :to="{ path : './records', query : { selected : consentId, selectedType : 'circles' }}" v-t="'editconsent.view_change_selection_btn'"></router-link>
+			</div>
+    		<div class="d-block d-md-none">	
+    			<div v-if="pleaseReview">
+    				<hr>    
+    				<p v-if="consent.status=='UNCONFIRMED'" v-t="'editconsent.please_review2a'"></p>
+    				<p v-else v-t="'editconsent.please_review2b'"></p>
+    			</div>
+    
+				<button type="button" :disabled="action!=null" @click="confirmConsent();" v-if="mayConfirm()" class="btn btn-primary btn-lg btn-block" v-t="'editconsent.confirm_btn'"></button>
+				<button type="button" :disabled="action!=null" @click="rejectConsent();" v-if="mayReject()" class="btn btn-danger btn-block" v-t="'editconsent.reject_btn'"></button>
+    			<button type="button" :disabled="action!=null" @click="deleteConsent();" v-if="mayDelete()" class="btn btn-danger btn-block" v-t="'editconsent.delete_btn'"></button>
+    			<router-link :to="{ path : './circles' }" class="btn btn-default btn-block" v-if="mayBack()" v-t="'common.back_btn'"></router-link>
+				<button type="button" :disabled="action!=null" @click="skip();" v-if="maySkip()" class="btn btn-default btn-block" v-t="'common.skip_btn'"></button>
+    		</div>
+    		<div class="d-none d-md-block">
+				<router-link :to="{ path : './circles' }" class="btn btn-default space" v-if="mayBack()" v-t="'common.back_btn'"></router-link>    
+				<button type="button" :disabled="action!=null" @click="skip();" v-if="maySkip()" class="btn btn-default space" v-t="'common.skip_btn'"></button>
+				<button type="button" :disabled="action!=null" @click="confirmConsent();" v-if="mayConfirm()" class="btn btn-primary space" v-t="'editconsent.confirm_btn'"></button>
+				<button type="button" :disabled="action!=null" @click="rejectConsent();" v-if="mayReject()" class="btn btn-danger space" v-t="'editconsent.reject_btn'"></button>
+    			<button type="button" :disabled="action!=null" @click="deleteConsent();" v-if="mayDelete()" class="btn btn-danger" v-t="'editconsent.delete_btn'"></button>
+    		</div>
+		</div>
+
           
         </form>
     </panel>
@@ -236,11 +313,11 @@
 	   <provider-search :setup="setupProvidersearch" @add="addPerson"></provider-search>
 	</modal>
 	
-	<modal @close="setupAdduser=null" v-if="setupAdduser" :title="$t('addusers.title')">
+	<modal @close="setupAdduser=null" v-if="setupAdduser" :title="$t('dashboard.addusers')">
 	  <add-users :setup="setupAdduser" @close="setupAdduser=null" @add="addPerson"></add-users>
 	</modal>
 
-	<modal @close="setupAddowner=null" v-if="setupAddowner" :title="$t('addusers.title')">
+	<modal @close="setupAddowner=null" v-if="setupAddowner" :title="$t('dashboard.addusers')">
 	  <add-users :setup="setupAddowner" @close="setupAddowner=null" @add="setOwnerPerson"></add-users>
 	</modal>
 
@@ -261,6 +338,8 @@ import server from 'services/server';
 import circles from 'services/circles';
 import session from 'services/session';
 import actions from 'services/actions';
+import labels from 'services/labels';
+import usergroups from 'services/usergroups';
 import users from 'services/users';
 import hc from 'services/hc';
 import { getLocale } from 'services/lang';
@@ -307,6 +386,12 @@ export default {
 
     methods : {
 
+		getTitle() {
+			const { $t, $data } = this;
+			if ($data.consentId) return $t('editconsent.title')+": "+$data.consent.name;
+			return $t('newconsent.title');
+		},
+
         getName(obj) {		
 		    var dt = this.$filters.date(new Date());
 		    if (obj.name) return obj.name+" "+dt;
@@ -324,7 +409,7 @@ export default {
 			$data.isSimple = true;
 			$data.consentId = $route.query.consentId;
 			
-			me.doBusy(circles.listConsents({ "_id" : $route.query.consentId }, ["name", "type", "status", "owner", "ownerName", "authorized", "entityType", "createdBefore", "validUntil", "externalOwner", "externalAuthorized", "sharingQuery", "dateOfCreation", "writes" ]))
+			me.doBusy(circles.listConsents({ "_id" : $route.query.consentId }, ["name", "type", "status", "owner", "ownerName", "authorized", "entityType", "createdBefore", "validUntil", "externalOwner", "externalAuthorized", "sharingQuery", "dateOfCreation", "writes" ])
 			.then(function(data) {
 				if (!data.data || !data.data.length) {
 					$data.consent = null;
@@ -332,8 +417,8 @@ export default {
 				}								
 				
 				$data.consent = data.data[0];
-				
-				if ($data.consent.type === "CIRCLE") $data.isSimple = false;
+				console.log(data.data[0]);
+				if ($data.consent.type == "CIRCLE") $data.isSimple = false;
 				
 				if ($data.consent.status === "ACTIVE" || $data.consent.owner === $data.userId) {
 				  //views.setView("records_shared", { aps : $route.query.consentId, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowRemove : false, allowAdd : false, type : "circles" });
@@ -349,7 +434,7 @@ export default {
 						}
 					});
 				} else {
-	                var role = ($data.consent.type === "HEALTHCARE") ? "PROVIDER" : null;				
+	                var role = ($data.consent.type == "HEALTHCARE") ? "PROVIDER" : null;				
 					for (let p of $data.consent.authorized) {					
 						$data.authpersons.push(session.resolve(p, function() {
 							var res = { "_id" : p };
@@ -358,11 +443,11 @@ export default {
 						}));
 					}
 				}
-								
+				console.log("HERE");
 				
-				if ($data.consent.owner && $data.content.type!="STUDYRELATED") {
-					users.getMembers({ "_id" : $data.consent.owner }, [ "firstname", "lastname", "email", "role"])
-					.then(function(result) { console.log(result);$data.owner = result.data[0]; });
+				if ($data.consent.owner && $data.consent.type!="STUDYRELATED") {
+					me.doBusy(users.getMembers({ "_id" : $data.consent.owner }, [ "firstname", "lastname", "email", "role"])
+					.then(function(result) { console.log(result);$data.owner = result.data[0]; }));
 				}
 				
 				$data.writeProtect = ($data.consent.owner !== userId && $data.consent.status !== "UNCONFIRMED") || $data.consent.type === "EXTERNALSERVICE" || $data.consent.type === "API" || $data.consent.type === "STUDYPARTICIPATION" || $data.consent.status === "EXPIRED" || $data.consent.status === "REJECTED";
@@ -375,10 +460,12 @@ export default {
 				    	$data.sharing.query = labels.simplifyQuery($data.sharing.query);				    	
 				    	if ($data.sharing.query["group-exclude"] && !Array.isArray($data.sharing.query["group-exclude"])) { $data.sharing.query["group-exclude"] = [ $data.sharing.query["group-exclude"] ]; }
 				    	if ($data.sharing.query.group && !Array.isArray($data.sharing.query.group)) { $data.sharing.query.group = [ $data.sharing.query.group ]; }
-				    	$data.updateSharingLabels();
+				    	me.updateSharingLabels();
 				    }
 				});
-			});
+
+				console.log("HERE2");
+			}));
 			
 		} else {
 			$data.isSimple = false;
@@ -411,9 +498,9 @@ export default {
 			}
 			
 			if ($data.consent.owner) {				
-				users.getMembers({ "_id" : $data.consent.owner }, [ "firstname", "lastname", "city", "address1", "address2", "country", "role"])
-				.then(function(result) { $data.owner = result.data[0]; });
-			}
+				me.doBusy(users.getMembers({ "_id" : $data.consent.owner }, [ "firstname", "lastname", "city", "address1", "address2", "country", "role"])
+				.then(function(result) { $data.owner = result.data[0]; }));
+			} else me.ready();
 			
 			$data.writeProtect = false;
 		}
@@ -455,23 +542,23 @@ export default {
 			if (sq.content) {
 				for (let r of sq.content) {
 				  if (r === "Patient" || r === "Group" || r === "Person" || r === "Practitioner") return;
-				  labels.getContentLabel(getLocale(), r).then(function(lab) {
+				  me.doBusy(labels.getContentLabel(getLocale(), r).then(function(lab) {
 					  if ($data.groupLabels.indexOf(lab)<0) $data.groupLabels.push(lab); 
-				  });
+				  }));
 				}
 			}
 			if (sq.group) {
 				for (let r of sq.group) {
-					  labels.getGroupLabel(getLocale(), sq["group-system"], r).then(function(lab) {
+					  me.doBusy(labels.getGroupLabel(getLocale(), sq["group-system"], r).then(function(lab) {
 						  if ($data.groupLabels.indexOf(lab)<0) $data.groupLabels.push(lab); 
-					  });
+					  }));
 				}
 			}
 			
 			
 			if ($data.sharing.query["group-exclude"]) {
 				for (let grp of $data.sharing.query["group-exclude"]) { 
-					labels.getGroupLabel($data.lang, $data.sharing.query["group-system"] || "v1", grp).then(function(label) { $data.groupExcludeLabels.push(label); });
+					me.doBusy(labels.getGroupLabel($data.lang, $data.sharing.query["group-system"] || "v1", grp).then(function(label) { $data.groupExcludeLabels.push(label); }));
 				}
 			}
 		}
@@ -486,12 +573,12 @@ export default {
 		.then(function(result) {
 			$data.consent = result.data;
 			if ($data.sharing && $data.sharing.query) {
-			   records.share(result.data._id, null, $data.consent.type, $data.sharing.query)
+			   me.doAction("create", records.share(result.data._id, null, $data.consent.type, $data.sharing.query)
 			   .then(function() { 
 				   if (!actions.showAction($router, $route)) {
 				     $router.push({ path : "./records", query : { selectedType : "circles", selected : result.data._id }});
 				   }
-			   });
+			   }));
 			} else {
 			  if (!actions.showAction($router, $route)) {
 			    $router.push({ path : "./records", query : { selectedType : "circles", selected : result.data._id }});
@@ -561,7 +648,7 @@ export default {
 		    }
 		}
 		if ($data.consentId) {
-			circles.addUsers($data.consentId, $data.consent.authorized, isTeam ? "USERGROUP" : "USER" );
+			me.doAction("add", circles.addUsers($data.consentId, $data.consent.authorized, isTeam ? "USERGROUP" : "USER" ));
 		}
 				
 	},
@@ -591,11 +678,13 @@ export default {
 		} else if (person != null) {
 			$data.consent.externalOwner = person;
 		}
+
+		$data.setupAddowner = null;
 	},
 	
 	setOwner() {	
         const { $data, $route, $router } = this, me = this;	
-		//views.setView("addusers", { consent : $data.consent, callback : setOwnerPerson });			
+		$data.setupAddowner = { consent : $data.consent };		
 	},
 	
 	addUserGroup() {
@@ -609,14 +698,14 @@ export default {
         const { $data, $route, $router } = this, me = this;
 		$data.consent.authorized.push(session.user._id);
 		$data.consent.entityType = "USER";
-		users.getMembers({ "_id" : session.user._id }, [ "firstname", "lastname", "city", "address1", "address2", "country", "role"])
-		.then(function(result) { $data.authpersons.push(result.data[0]); });		
+		me.doAction("add", users.getMembers({ "_id" : session.user._id }, [ "firstname", "lastname", "city", "address1", "address2", "country", "role"])
+		.then(function(result) { $data.authpersons.push(result.data[0]); }));		
 	},
 	
 	deleteConsent() {
         const { $data, $route, $router } = this, me = this;
 		circles.unconfirmed = 0;
-		server.delete(jsRoutes.controllers.Circles["delete"]($data.consent._id).url).
+		me.doAction("delete", server.delete(jsRoutes.controllers.Circles["delete"]($data.consent._id).url).
 		then(function() {
 			if (session.user.role == "MEMBER" && ($data.consent.type == "EXTERNALSERVICE" || $data.consent.type == "API")) {
 				$router.push({ path : "./apps" });
@@ -625,19 +714,19 @@ export default {
 			} else {
 			    $router.push({ path : "./circles" });
 			}
-		});
+		}));
 	},
 	
 	rejectConsent() {
         const { $data, $route, $router } = this, me = this;
 		circles.unconfirmed = 0;
-		hc.reject($data.consent._id).then(function() { me.reinit(); });
+		me.doAction("reject", hc.reject($data.consent._id).then(function() { me.reinit(); }));
 	},
 	
 	confirmConsent() {
         const { $data, $route, $router } = this, me = this;
 		circles.unconfirmed = 0;
-		hc.confirm($data.consent._id).then(function() { $data.reinit(); });	
+		me.doAction("confirm", hc.confirm($data.consent._id).then(function() { $data.reinit(); }));	
 	},
 	
 	mayReject() {
@@ -648,6 +737,7 @@ export default {
 	},
 	
 	mayConfirm() {
+		const { $data, $route, $router } = this, me = this;
 		if (! $data.consent) return false;
 		if ($data.consent.owner !== $data.userId) return false;
 		return $data.consent.status == 'UNCONFIRMED';

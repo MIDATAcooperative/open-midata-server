@@ -11,7 +11,7 @@
 				</form-group>
 				
 				<form-group name="x" label="common.empty"> 
-				   <button type="submit" v-submit :disabled="status!=null" class="btn btn-default" v-t="'common.search_btn'"></button>
+				   <button type="submit" v-submit :disabled="action!=null" class="btn btn-default" v-t="'common.search_btn'"></button>
 				</form-group>
 			</form>
 
@@ -111,7 +111,7 @@ export default {
 	methods : {
 		dosearch(crit) {
             const { $data } = this, me = this;
-    	    me.doBusy(usergroups.search(crit, ["name"])
+    	    me.doAction("search", usergroups.search(crit, ["name"])
     	    .then(function(data) {    
 				let work = [];
     		    for (let usergroup of data.data) {    			
@@ -121,9 +121,9 @@ export default {
     				    usergroup.members = result.data;
     			    }));
                 }
-				Promise.all(work).then(function() {
+				return Promise.all(work).then(function() {
 					$data.usergroups = me.process(data.data);
-				})				
+				});				
     		}));
     	},
 

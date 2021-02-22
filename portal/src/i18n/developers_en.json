@@ -75,6 +75,8 @@
   },
   
   "manageapp" : {
+    "title_new" : "Register a new application",
+    "title_edit" : "Manage application",
     "overview" : "Application Overview",
     "choose" : "Functions to manage your application",
     "defined" : "defined",

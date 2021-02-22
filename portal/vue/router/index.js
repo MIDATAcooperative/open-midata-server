@@ -61,6 +61,18 @@ const baseRoutes = [
     meta : { role : "member", keep : true }
   },
   {
+    path : '/research',
+    name: 'research',
+    component: () => import(/* webpackChunkName: "research" */ 'views/nav/research.vue'),
+    meta : { role : "research", keep : true }
+  },
+  {
+    path : '/admin',
+    name: 'admin',
+    component: () => import(/* webpackChunkName: "member" */ 'views/nav/admin.vue'),
+    meta : { role : "admin", keep : true }
+  },
+  {
     path : '/',
     redirect : '/public/info'
   }
@@ -98,12 +110,7 @@ const routes = [
     base : ['public'],
     path : 'info',
     component: () => import(/* webpackChunkName: "public" */ 'views/shared/public/info.vue')
-  },      
-  {
-    base : ['public'],
-    path : 'info',    
-    component: () => import(/* webpackChunkName: "public" */ 'views/shared/public/info.vue')
-  },
+  },       
   {
     base : ['public', "public_provider", "public_research", "public_developer", "member", "provider", "research", "developer", "admin"],
     path : 'terms',
@@ -169,13 +176,7 @@ const routes = [
     base : ["member", "developer", "admin", "research", "provider"],
     path : "circles",
     component: Timeline
-  },
-
-  {
-    base : ["member", "developer", "admin", "research", "provider"],
-    path : "studies",
-    component: Timeline
-  },
+  },  
   {
     base : ["member", "developer", "admin", "research", "provider"],
     path : "apps",
@@ -237,6 +238,11 @@ const routes = [
     component: Newconsent // () => import(/* webpackChunkName: "shared" */ 'views/shared/newconsent.vue')
   },
   {
+    base : ["member", "developer", "admin", "research", "provider"],
+    path : "editconsent",
+    component: Newconsent // () => import(/* webpackChunkName: "shared" */ 'views/shared/newconsent.vue')
+  },
+  {
     base : ["public"],
     path : "service",
     component: () => import(/* webpackChunkName: "shared" */ 'views/shared/public/service.vue')
@@ -287,10 +293,147 @@ const routes = [
     component: () => import(/* webpackChunkName: "shared" */ 'views/member/smallstudies.vue')
   },
   {
+    base : ["research"],
+    path : "studies",
+    component: () => import(/* webpackChunkName: "research" */ 'views/research/studies.vue')
+  },
+  {
+    base : ["research"],
+    path : "organization",
+    component: () => import(/* webpackChunkName: "research" */ 'views/research/organization.vue')
+  },
+  {
+    base : ["research"],
+    path : "addresearcher",
+    component: () => import(/* webpackChunkName: "research" */ 'views/shared/registerother.vue')
+  },
+  {
+    base : ["research", "developer", "admin"],
+    path : "createstudy",
+    component: () => import(/* webpackChunkName: "research" */ 'views/research/createstudy.vue')
+  },
+  {
+    base : ["research", "developer", "admin"],
+    path : "study.overview",
+    component: () => import(/* webpackChunkName: "research" */ 'views/research/studyoverview.vue')
+  },
+  {
+    base : ["research", "developer", "admin"],
+    path : "study.info",
+    component: () => import(/* webpackChunkName: "research" */ 'views/research/studyinfo.vue')
+  },
+  {
+    base : ["research", "developer", "admin"],
+    path : "study.team",
+    component: () => import(/* webpackChunkName: "research" */ 'views/research/studyteam.vue')
+  },
+  {
+    base : ["research", "developer", "admin"],
+    path : "study.fields",
+    component: () => import(/* webpackChunkName: "research" */ 'views/research/studyfields.vue')
+  },
+  {
+    base : ["research", "developer", "admin"],
+    path : "study.rules",
+    component: () => import(/* webpackChunkName: "research" */ 'views/research/studyrules.vue')
+  },
+  {
     base : ["member", "provider"],
     path : "studydetails",
     component: () => import(/* webpackChunkName: "shared" */ 'views/shared/studydetails.vue')
-  }  
+  },
+  {
+    base : ["admin"],
+    path : "stats",
+    component: () => import(/* webpackChunkName: "admin" */ 'views/admin/stats.vue')
+  },
+  {
+    base : ["admin"],
+    path : "usagestats",
+    component: () => import(/* webpackChunkName: "admin" */ 'views/admin/usagestats.vue')
+  },
+  {
+    base : ["admin"],
+    path : "members",
+    component: () => import(/* webpackChunkName: "admin" */ 'views/admin/members.vue')
+  },
+  {
+    base : ["admin"],
+    path : "address",
+    component: () => import(/* webpackChunkName: "admin" */ 'views/admin/address.vue')
+  },
+  {
+    base : ["admin"],
+    path : "pwrecover",
+    component: () => import(/* webpackChunkName: "admin" */ 'views/admin/pwrecover.vue')
+  },
+  {
+    base : ["admin"],
+    path : "yourapps",
+    component: () => import(/* webpackChunkName: "admin" */ 'views/admin/plugins.vue')
+  },
+  {
+    base : ["admin", "developer"],
+    path : "yourapps2",
+    component: () => import(/* webpackChunkName: "developer" */ 'views/developer/yourapps.vue')
+  },
+  {
+    base : ["admin", "developer"],
+    path : "manageapp",
+    component: () => import(/* webpackChunkName: "developer" */ 'views/developer/overview.vue'),
+    developer : {
+      meta : {
+        allowDelete : false,
+        allowStudyConfig : false,
+        allowExport : false
+      }
+    },
+    admin : {
+      meta : {
+        allowDelete : true,
+        allowStudyConfig : true,
+        allowExport : true
+      }
+    }
+  },
+  {
+    base : ["admin", "developer"],
+    path : "editapp",
+    component: () => import(/* webpackChunkName: "developer" */ 'views/developer/manageapp.vue'),
+    developer : {
+      meta : {
+        allowDelete : false,
+        allowStudyConfig : false,
+        allowExport : false
+      }
+    },
+    admin : {
+      meta : {
+        allowDelete : true,
+        allowStudyConfig : true,
+        allowExport : true
+      }
+    }
+  },
+  {
+    base : ["admin", "developer"],
+    path : "registerapp",
+    component: () => import(/* webpackChunkName: "developer" */ 'views/developer/manageapp.vue'),
+    developer : {
+      meta : {
+        allowDelete : false,
+        allowStudyConfig : false,
+        allowExport : false
+      }
+    },
+    admin : {
+      meta : {
+        allowDelete : true,
+        allowStudyConfig : true,
+        allowExport : true
+      }
+    }
+  }
 ]
 
 function processRoutes(baseRoutes, routes) {

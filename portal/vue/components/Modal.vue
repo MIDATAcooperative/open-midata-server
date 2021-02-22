@@ -6,7 +6,8 @@
                     <h4 class="modal-title">{{ title }}</h4>
                     <button type="button" class="close" @click="$emit('close')" aria-hidden="true">&times;</button>
                 </div>
-            <div class="modal-body"><slot></slot></div>
+                <slot></slot>
+                <div class="modal-footer" v-if="$slots.footer"><slot name="footer"></slot></div>
             </div>
         </div>        
     </div>

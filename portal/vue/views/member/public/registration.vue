@@ -36,9 +36,8 @@
                  <div class="required">								  
 				    <form-group name="email" label="registration.email" :path="errors.email">
 						<input type="email" class="form-control" id="email" name="email" :placeholder="$t('registration.email')" v-model="registration.email" required v-validate>									
-							    <formerror myid="email" type="email" message="error.invalid.email" ></formerror> 
-									<formerror myid="email" type="exists" message="error.exists.member"></formerror> 
-									<a ng-show="isNew" ui-sref="^.login({action:action, login:login})" translate="registration.already_have_account"></a>
+							    
+						<router-link v-if="isNew" :to="{ path : './login', query : {action:action, login:login} }" v-t="'registration.already_have_account'"></router-link>
 					</form-group>
 					<form-group name="password" label="registration.password" :path="errors.password"> 
 						<input type="password" class="form-control" id="password" name="password" :placeholder="$t('registration.password')" v-model="registration.password1" required v-validate>							  

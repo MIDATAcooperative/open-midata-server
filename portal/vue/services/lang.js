@@ -43,11 +43,20 @@ function mergeLocales(t, s) {
 }
 
 async function loadLocaleMessages(file, locale) {
-  console.log("load: "+file+" "+locale);
-  // load locale messages with dynami import
-  const msgs = await import(
-    /* webpackChunkName: "locale-[request]" */ `./../../src/i18n/${file}_${locale}.json`
-  )  
+  console.log("loadA: "+file+" "+locale);
+  let msgs = undefined;
+  if (file=="branding") {
+    try {
+    msgs = await import(
+      /* webpackChunkName: "locale-[request]" */ `override/branding_${locale}.json`
+    )    
+    } catch (e) {}
+  }
+  if (!msgs) {  
+    msgs = await import(
+      /* webpackChunkName: "locale-[request]" */ `i18n/${file}_${locale}.json`
+    )  
+  }
   replaceInstr(msgs.default);
   mergeLocales(messages, msgs.default);
     

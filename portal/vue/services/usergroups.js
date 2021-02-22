@@ -46,7 +46,7 @@ import server from "./server";
 	
 	service.addMembersToUserGroup = function(group, members, role) {
 		var data = {"group": group, "members" : members };
-		if (role) data.role = role;
+		if (role) for (let prop in role) data[prop] = role[prop];
 		return server.post(jsRoutes.controllers.UserGroups.addMembersToUserGroup().url, data);
 	};
 

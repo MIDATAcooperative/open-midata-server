@@ -62,15 +62,9 @@
         </div>
 			
 		<div class="panel-body" v-if="tree.length === 0" v-t="'records.empty'"></div>
-						
-	    <div id="recdetailmodal" class="modal" style="display:block" v-if="selectedData && selectedData.allRecords"> 
-            <div class="modal-dialog modal-lg"> 
-                <div class="modal-content"> 
-                    <div class="modal-header">                
-                        <h4 class="modal-title">{{selectedData.fullLabel.fullLabel}}</h4>
-                        <button type="button" class="close" @click="selectedData=null" aria-hidden="true">&times;</button> 
-                    </div>
-                    
+
+        <modal :title="selectedData.fullLabel.fullLabel" v-if="selectedData && selectedData.allRecords" @close="selectedData=null">
+	        
                     <pagination v-model="selectedData.allRecords" search="search"></pagination>
                     
 
@@ -91,12 +85,11 @@
 				        </li>
 			        </ul>
 			        <div class="container" v-if="selectedData.allRecords.filtered.length === 0" v-t="'records.empty'"></div>
-			        <div class="modal-footer">			  
-			            <button class="btn btn-default" @click="selectedData=null" v-t="'records.close_btn'"></button>
-			        </div> 
-                </div>           
-            </div> 
-        </div>		
+           
+            <template v-slot:footer>
+			    <button class="btn btn-default" @click="selectedData=null" v-t="'records.close_btn'"></button>
+            </template>
+        </modal>
     </panel>
 </template>
 <script>
@@ -104,6 +97,7 @@ import status from 'mixins/status'
 import rl from 'mixins/resultlist'
 import server from "services/server"
 import Panel from "components/Panel.vue"
+import Modal from "components/Modal.vue"
 import ErrorBox from "components/ErrorBox.vue"
 import RecordTreeNode from "components/RecordTreeNode.vue"
 import dateService from "services/date"
@@ -289,7 +283,7 @@ export default {
         selectedData : null
 	}),	
     
-    components: { Panel, RecordTreeNode, ErrorBox },
+    components: { Panel, RecordTreeNode, ErrorBox, Modal },
 
     mixins : [ status, rl ],
 

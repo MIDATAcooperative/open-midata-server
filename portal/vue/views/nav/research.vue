@@ -1,20 +1,3 @@
-<!--
- This file is part of the Open MIDATA Server.
- 
- The Open MIDATA Server is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- any later version.
- 
- The Open MIDATA Server is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
- 
- You should have received a copy of the GNU General Public License
- along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
--->
-
 <template>
 <div><div id="maincontent">
 	<!-- Navbar -->
@@ -26,56 +9,31 @@
 						aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="fas fa-list"></span>
 					</button>
-					<a class="navbar-brand" ng-click="home('member.overview');" href="javascript:"> <span class="midata" id="logotype"><img
+					<a class="navbar-brand" @click="home('studies');" href="javascript:"> <span class="midata" id="logotype"><img
 							src="/images/logo.png" style="height: 36px;"></span>
 					</a>
 				</div>
 				<div class="collapse navbar-collapse navbar-ex1-collapse">
 
-					<ul class="nav navbar-nav mr-auto" :class="{'vishidden d-none d-md-flex':locked()}">
+					<ul class="nav navbar-nav mr-auto" :class="{'vishidden':locked()}">
 						<li class="nav-item" ui-sref-active="active"><router-link class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show"
-							:to="{ name : 'member.overview' }" v-t="'navbar.me'"></router-link></li>
-
-						
-						<li class="nav-item" v-if="beta" ui-sref-active="active"><router-link class="nav-link" data-toggle="collapse"
-							data-target=".navbar-collapse.show" :to="{ name : 'member.records' }" v-t="'navbar.my_data'"></router-link></li>
-						<li class="nav-item" ui-sref-active="active"><router-link class="nav-link" data-toggle="collapse"
-							data-target=".navbar-collapse.show" :to="{ name : 'member.circles' }"><span v-t="'navbar.consents'"></span> <span
-								v-if="circles.unconfirmed" class="badge badge-info">{{circles.unconfirmed}}</span></router-link></li>
+							:to="{ path : './studies' }" v-t="'researcher_navbar.studies'"></router-link></li>
 						<li class="nav-item" ui-sref-active="active"><router-link class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show"
-							:to="{ name : 'member.studies' }" v-t="'navbar.research'"></router-link></li>
+							:to="{ path : './circles' }" v-t="'navbar.consents'"></router-link></li>
 						<li class="nav-item" ui-sref-active="active"><router-link class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show"
-							:to="{ name : 'member.apps' }"><span v-t="'navbar.apps'"></span></router-link></li>
-						
-
-						<li class="nav-item dropdown" ui-sref-active="active"><a href="javascript:" class="dropdown-toggle nav-link"
-							data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></a>
-							<div class="dropdown-menu">
-								<a class="dropdown-item" href="javascript:" data-toggle="collapse" data-target=".navbar-collapse.show"
-									@click="showApp('fhir-observation');" v-t="'dashboard.observations'"></a> <a class="dropdown-item" href="javascript:"
-									data-toggle="collapse" data-target=".navbar-collapse.show" @click="showApp('calendar');" v-t="'dashboard.calendar'"></a> <a
-									v-for="entry in me_menu" :key="entry._id" class="dropdown-item" href="javascript:" data-toggle="collapse" data-target=".navbar-collapse.show"
-									@click="showSpace(entry)" v-t="entry.name"></a>
-
-							</div></li>
+							:to="{ path : './dashboard', query : { dashId : 'workspace' }}" v-t="'researcher_navbar.workspace'"></router-link></li>
+						<li class="nav-item" ui-sref-active="active"><router-link class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show"
+							:to="{ path : './records' }" v-t="'researcher_navbar.data'"></router-link></li>
+						<li class="nav-item" ui-sref-active="active"><router-link class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show"
+							:to="{ path : './organization' }" v-t="'researcher_navbar.organization'"></router-link></li>
 					</ul>
 
-					<ul class="d-xs-none nav navbar-nav">
-						<li class="nav-item dropdown"><a class="nav-link" href="javascript:" tabindex="0" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{user.name}}</a>
-						<div class="dropdown-menu" style="right:0px;left:auto;min-width:200px;">
-							<div style="padding:10px;">
-								<div><b>{{ user.firstname }} {{ user.lastname }}</b></div>
-								<div>{{ user.email }}</div>
-								<hr>
-								<div><b style="min-width:40px;display:inline-block;">{{circles.apps}}</b><span v-t="'navbar.app_count'"></span></div>
-								<div><b style="min-width:40px;display:inline-block;">{{circles.studies}}</b><span v-t="'navbar.study_count'"></span></div>
-								<div class="extraspace"></div>
-								<router-link data-toggle="collapse" data-target=".navbar-collapse.show" :to="{ name : 'member.user', query : { userId : user._id}}" class="btn btn-sm btn-default"><span class="fas fa-pencil-alt"></span> <span v-t="'navbar.edit_profile'"></span></router-link>&nbsp;
-								<a href="javascript:" data-toggle="collapse" data-target=".navbar-collapse.show" @click="logout()" class="btn btn-sm btn-default"><span class="fas fa-power-off"></span> <span v-t="'navbar.sign_out'"></span></a>
-       						</div>
-						</div>
-						</li>
-					</ul>					
+					<ul class="nav navbar-nav">
+						<li class="nav-item"><router-link class="nav-link" :to="{ name : 'research.user', query : { userId : user._id}}">{{user.name}}</router-link></li>
+						<li class="nav-item"><a class="nav-link" @click="logout()" href="javascript:"> <span class="fas fa-power-off"></span> <span
+								v-t="'navbar.sign_out'"></span>
+						</a></li>
+					</ul>				
 
 				</div>
 				<!--/.nav-collapse -->
@@ -202,8 +160,8 @@ export default {
 		$data.action = $route.query.action;
 		$data.hideCookieBar = localStorage.hideCookieBar;
 
-		//if (!$route.meta || $route.meta.keep) session.logout();
-		addBundle("members");
+		//if (!$route.meta || $route.meta.keep) session.logout();		
+		addBundle("researchers");
 		addBundle("branding");
 
 		session.login($route.meta.role);		

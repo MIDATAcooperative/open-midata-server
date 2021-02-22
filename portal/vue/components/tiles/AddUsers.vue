@@ -3,7 +3,7 @@
         <div class="body" v-if="!isBusy">
 			
 		
-	        <div v-if="contacts.all.length > 0">
+	        <div v-if="contacts.all && contacts.all.length > 0">
 	            <p v-t="'addusers.contacts'"></p>
 				<pagination v-model="contacts"></pagination>
 		        <div class="form-check" v-for="contact in contacts.filtered" :key="contact._id">
@@ -12,7 +12,7 @@
                         <span class="margin-left">{{contact.firstname}} {{contact.lastname}} &lt;{{contact.email}}&gt;</span>
 			        </label>
 		        </div>
-		        <p v-if="filteredContacts.length === 0" v-t="'addusers.no_contacts_to_add'"></p>
+		        <p v-if="contacts.filtered.length === 0" v-t="'addusers.no_contacts_to_add'"></p>
 	        </div>
 	        <hr>
 	        <form class="form-horizontal" @submit.prevent="searchUsers()">
@@ -22,7 +22,7 @@
 				        <input type="text" class="form-control" :placeholder="$t('addusers.search_user')" v-model="crit.userQuery" required v-validate>
 			        </div>
 			        <div class="col-2">
-				        <button type="submit" :disabled="status!=null" class="btn btn-primary form-control" v-t="'common.search_btn'"></button>
+				        <button type="submit" :disabled="action!=null" class="btn btn-primary form-control" v-t="'common.search_btn'"></button>
 			        </div>
 		        </div>
 	        </form>
@@ -77,7 +77,7 @@ export default {
 			me.doBusy(server.get(jsRoutes.controllers.Users.loadContacts().url).
 			then(function(result) {	
 				var f = [];
-				for (let contact in result.data) {
+				for (let contact of result.data) {
 					if (me.isntMember(contact)) f.push(contact);
 				}
 				$data.contacts = me.process(f);
@@ -90,7 +90,7 @@ export default {
 			if (!me.setup) return true;
 			let activeCircle = me.setup.consent;
 			let memberIds = _.map(activeCircle.authorized, function(member) { return member; });
-			return !_.contains(memberIds, user._id);
+			return !_.includes(memberIds, user._id);
 		},
 	
 	

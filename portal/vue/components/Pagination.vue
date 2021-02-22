@@ -16,15 +16,15 @@
 -->
 
 <template>
-    <nav class="nav" aria-label="Page navigation" v-if="modelValue.all && modelValue.all.length > modelValue.pagesize">
+    <nav class="nav" aria-label="Page navigation" v-if="modelValue.all && modelValue.all.length > modelValue.pagesize" style="margin-top:10px">        
         <ul class="pagination mr-auto">
             <li class="page-item" :class="{ disabled : modelValue.current <= 1 }">
                 <a class="page-link"  href="javascript:" @click="prev()" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
-            <li v-for="page in modelValue.pages" :key="page" class="page-item" :class="{ active : modelValue.current == page }"><a class="page-link" @click="setPage(page)" href="javascript:">{{ page }}</a></li>    
-            <li class="page-item" :class="{ disabled : modelValue.current >= modelValue.pages.length }">
+            <li v-for="page in modelValue.pages" :key="page.nr" class="page-item" :class="{ active : modelValue.current == page.nr }"><a class="page-link" @click="setPage(page.nr)" href="javascript:">{{ page.label }}</a></li>    
+            <li class="page-item" :class="{ disabled : modelValue.current >= modelValue.pageCount }">
                 <a class="page-link"  href="javascript:" @click="next()" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
