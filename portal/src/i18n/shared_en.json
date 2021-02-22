@@ -1346,6 +1346,7 @@
   },
   
   "changelog" : {
+    "title" : "Server Change Log",
     "F" : "New Feature",
     "B" : "Bugfix",
     "I" : "Improvement",
@@ -1381,7 +1382,7 @@
     "joinmethod2" : "Please contact the team responsible for the project. For more information, read the terms of use of the application.",
     "loginpage_btn" : "Return to login"
   },
-  
+
   "unsubscribe" : {
     "title" : "Unsubscribe",
     "success" : "Unsubscription successful.",

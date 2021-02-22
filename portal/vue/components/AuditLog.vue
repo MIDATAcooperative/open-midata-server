@@ -8,7 +8,7 @@
 		    <div class="col-sm-6 col-md-2" style="color:#707070">{{ $filters.dateTime(entry.recorded)  }}</div>
 		    <div class="col-sm-6 col-md-3">
    			    
-			    <span class="fas" :class="{ 'fa-wrench text-danger' : entry.outcome == 12, 'fa-exclamation-triangle text-danger' : entry.outcome == 8, 'fa-times text-warning' : entry.outcome == 4, 'fa-check text-success' : entry.outcome == 0 }"></span> <b><span>{{ $t('enum.eventtype.'+entry.subtype[0].code) }}</span></b>			    
+			    <span class="fas" :class="{ 'fa-wrench text-danger' : entry.outcome == 12, 'fa-exclamation-triangle text-danger' : entry.outcome == 8, 'fa-times text-warning' : entry.outcome == 4, 'fa-check text-success' : entry.outcome == 0 }"></span> <b v-if="entry.subtype && entry.subtype.length"><span>{{ $t('enum.eventtype.'+entry.subtype[0].code) }}</span></b>			    
 			    <div v-if="entry.extension && entry.extension.length && entry.extension[0].valueString">{{ $t(entry.extension[0].valueString) }}</div>	      			    			   
                 <div v-else>{{ entry.outcomeDesc }}</div>		
 			</div>
@@ -25,9 +25,9 @@
 			<div class="col-sm-6 col-md-3">
 			    <div v-for="entity in entry.entity" :key="entity._id">
 			        <div v-if="entity.name">
-			            <b v-if="entity.type.code"><span>{{ $t('auditlog.'+entity.type.code) }}</span>:</b>
+			            <b v-if="entity.type && entity.type.code"><span>{{ $t('auditlog.'+entity.type.code) }}</span>:</b>
 			            <div>{{ entity.name }}</div>
-			            <div class="text-primary">{{ entity.what.display }}</div>
+			            <div v-if="entity.what" class="text-primary">{{ entity.what.display }}</div>
 			       </div>
 			    </div>
 			</div>

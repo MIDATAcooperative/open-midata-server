@@ -142,6 +142,7 @@ import actions from './actions';
 		
 		logout : function() {
 			console.log("Session ended");
+						
 			session.progress = null;	
 			session.currentUser = null;
 			sessionStorage.token = null;
@@ -149,6 +150,7 @@ import actions from './actions';
 			session.cache = {};
 			actions.logout();
 			_states = {};			
+			
 		},
 		 
 		debugReturn : function() {		

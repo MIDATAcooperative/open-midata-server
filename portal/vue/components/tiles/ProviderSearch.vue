@@ -14,7 +14,7 @@
                 </check-box>
 			</form-group>
 			<form-group name="" label="common.empty">
-				<button type="submit" v-submit class="btn btn-default" v-t="'common.search_btn'"></button>
+				<button type="submit" :disabled="action!=null" v-submit class="btn btn-default" v-t="'common.search_btn'"></button>
 			</form-group>
 		</form>
 		<div v-if="providers.filtered">
@@ -22,11 +22,11 @@
 
 			<table class="table" v-if="providers.filtered.length">
 				<tr>
-					<th v-t="'common.user.lastname'">Surname</th>
-					<th v-t="'common.user.firstname'">Firstname</th>
-					<th v-t="'common.user.zip'">ZIP</th>
-					<th v-t="'common.user.city'">City</th>
-					<th v-t="'common.user.street'">Street</th>
+					<Sorter sortby="lastname" v-model="providers" v-t="'common.user.lastname'">Surname</Sorter>
+					<Sorter sortby="firstname" v-model="providers" v-t="'common.user.firstname'">Firstname</Sorter>
+					<Sorter sortby="zip" v-model="providers" v-t="'common.user.zip'">ZIP</Sorter>
+					<Sorter sortby="city" v-model="providers"  v-t="'common.user.city'">City</Sorter>
+					<Sorter sortby="address1" v-model="providers" v-t="'common.user.street'">Street</Sorter>
 					<th>-</th>
 				</tr>
 				<tr v-for="provider in providers.filtered" :key="provider._id">

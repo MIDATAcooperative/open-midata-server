@@ -176,7 +176,8 @@ module.exports = {
         modules: [
           'node_modules',
           path.resolve(__dirname + '/vue'),
-          path.resolve(__dirname + '/node_modules')
+          path.resolve(__dirname + '/node_modules'),
+          path.resolve(__dirname + '/src')
         ]
     }
 };
