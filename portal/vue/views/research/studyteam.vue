@@ -1,59 +1,58 @@
 <template>
-<div v-if="!isBusy">
+<div>
     <study-nav page="study.team"></study-nav>
-	<div class="tab-content" >	
-	    <div class="tab-pane active">
-            <error-box :error="error"></error-box>
-	        <p v-if="members.all.length < 2" v-t="'studyteam.defineself'" class="alert alert-info"></p>
-            <pagination v-model="members"></pagination>
-			<table class="table table-striped table-hover">
-			    <tr>
-			      <Sorter v-t="'common.user.firstname'" sortby="user.firstname" v-model="members"></Sorter>
-			      <Sorter sortby="user.lastname" v-model="members" v-t="'common.user.lastname'"></Sorter>
-			      <Sorter v-t="'common.user.email'" sortby="user.email" v-model="members"></Sorter>
-			      <Sorter colspan="3" v-t="'studyteam.rolehint'" sortby="role.roleName" v-model="members"></Sorter>			      
-			    </tr>
-				<tr class="clickable" @click="select(member)" v-for="member in members.filtered" :key="member._id">
-				    <td>{{ member.user.firstname }}</td>
-					<td>{{ member.user.lastname }}</td>
-					<td>{{ member.user.email }}</td>
-					<td>{{ member.role.roleName }}</td>
-					<td>
-					  {{ matrix(member.role) }}
-					</td>
-					<td>
-						<button type="button" v-if="member.member != user._id && study.myRole.changeTeam" @click="removePerson(member)" :disabled="action!=null" class="close" aria-label="Delete">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</td>
-				</tr>				
-			</table>
-			
-			<form name="myform" ref="myform" novalidate class="css-form form-horizontal" @submit.prevent="addPerson()" role="form">
-			    <form-group name="person" label="studyteam.person" :path="errors.person">
-  			        <input type="text" class="form-control" id="person" :disabled="lockChanges" name="person" autocomplete="off" v-validate v-model="add.personemail" uib-typeahead="person.email for person in persons | filter:{email:$viewValue}" required>
-			    </form-group>
-			    <form-group name="role" label="studyteam.role">
-			        <select name="role" id="role" class="form-control" :disabled="lockChanges" v-validate v-model="add.roleTemplate" @change="updateRole();" required>
-                        <option v-for="role in roles" :key="role.id" :value="role.id">{{ $t('enum.researcherrole.'+role.id) }}</option>
-                    </select>			    			    
-			    </form-group>
-			    <div v-if="add.roleTemplate == 'OTHER'">
-				    <form-group name="roleName" label="studyteam.roleName" :path="errors.roleName">			    
-				        <input type="text" class="form-control" id="roleName" :disabled="lockChanges" name="roleName" v-validate v-model="add.role.roleName">			    
-				    </form-group>
-			    </div>
-			    <form-group name="rights" label="studyteam.rights" :path="errors.rights">
-			        <check-box v-for="req in rights" :name="req" :key="req" v-model="add.role[req]" :disabled="add.roleTemplate != 'OTHER' || lockChanges">
-                        <span>{{ $t('studyteam.right.'+req) }}</span>
-                    </check-box>		 
-			    </form-group>
-			    <button :disabled="action != null || !study.myRole.changeTeam" type="submit" v-submit class="btn btn-primary" v-t="'studyteam.addperson_btn'"></button>
-                <success :finished="finished" action="change" msg="common.save_ok"></success>              
-			</form>						
-			                        
-	    </div>
-    </div>
+    <tab-panel :busy="isBusy">
+	
+        <error-box :error="error"></error-box>
+        <p v-if="members.all.length < 2" v-t="'studyteam.defineself'" class="alert alert-info"></p>
+        <pagination v-model="members"></pagination>
+        <table class="table table-striped table-hover">
+            <tr>
+                <Sorter v-t="'common.user.firstname'" sortby="user.firstname" v-model="members"></Sorter>
+                <Sorter sortby="user.lastname" v-model="members" v-t="'common.user.lastname'"></Sorter>
+                <Sorter v-t="'common.user.email'" sortby="user.email" v-model="members"></Sorter>
+                <Sorter colspan="3" v-t="'studyteam.rolehint'" sortby="role.roleName" v-model="members"></Sorter>			      
+            </tr>
+            <tr class="clickable" @click="select(member)" v-for="member in members.filtered" :key="member._id">
+                <td>{{ member.user.firstname }}</td>
+                <td>{{ member.user.lastname }}</td>
+                <td>{{ member.user.email }}</td>
+                <td>{{ member.role.roleName }}</td>
+                <td>
+                    {{ matrix(member.role) }}
+                </td>
+                <td>
+                    <button type="button" v-if="member.member != user._id && study.myRole.changeTeam" @click="removePerson(member)" :disabled="action!=null" class="close" aria-label="Delete">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </td>
+            </tr>				
+        </table>
+        
+        <form name="myform" ref="myform" novalidate class="css-form form-horizontal" @submit.prevent="addPerson()" role="form">
+            <form-group name="person" label="studyteam.person" :path="errors.person">
+                <input type="text" class="form-control" id="person" :disabled="lockChanges" name="person" autocomplete="off" v-validate v-model="add.personemail" uib-typeahead="person.email for person in persons | filter:{email:$viewValue}" required>
+            </form-group>
+            <form-group name="role" label="studyteam.role">
+                <select name="role" id="role" class="form-control" :disabled="lockChanges" v-validate v-model="add.roleTemplate" @change="updateRole();" required>
+                    <option v-for="role in roles" :key="role.id" :value="role.id">{{ $t('enum.researcherrole.'+role.id) }}</option>
+                </select>			    			    
+            </form-group>
+            <div v-if="add.roleTemplate == 'OTHER'">
+                <form-group name="roleName" label="studyteam.roleName" :path="errors.roleName">			    
+                    <input type="text" class="form-control" id="roleName" :disabled="lockChanges" name="roleName" v-validate v-model="add.role.roleName">			    
+                </form-group>
+            </div>
+            <form-group name="rights" label="studyteam.rights" :path="errors.rights">
+                <check-box v-for="req in rights" :name="req" :key="req" v-model="add.role[req]" :disabled="add.roleTemplate != 'OTHER' || lockChanges">
+                    <span>{{ $t('studyteam.right.'+req) }}</span>
+                </check-box>		 
+            </form-group>
+            <button :disabled="action != null || !study.myRole.changeTeam" type="submit" v-submit class="btn btn-primary" v-t="'studyteam.addperson_btn'"></button>
+            <success :finished="finished" action="change" msg="common.save_ok"></success>              
+        </form>						
+                                
+    </tab-panel>    
 </div>
    
 </template>
@@ -62,6 +61,7 @@
 import ErrorBox from "components/ErrorBox.vue"
 import Success from "components/Success.vue"
 import Panel from "components/Panel.vue"
+import TabPanel from "components/TabPanel.vue"
 import CheckBox from "components/CheckBox.vue"
 import FormGroup from "components/FormGroup.vue"
 import StudyNav from "components/tiles/StudyNav.vue"
@@ -87,7 +87,7 @@ export default {
         add : { role:{} }       
     }),
 
-    components: {  Panel, ErrorBox, FormGroup, StudyNav, Success, CheckBox },
+    components: {  TabPanel, Panel, ErrorBox, FormGroup, StudyNav, Success, CheckBox },
 
     mixins : [ status, rl ],
 

@@ -51,7 +51,10 @@ export default {
 			   if (msg.response) msg = msg.response;
 			   this.$data.loading--; 
 			   if (!noerror) {
-				   if (msg && msg.data) this.$data.error = msg.data.code || msg.data; else this.$data.error = msg;
+				   if (msg && msg.data) {
+					   if (msg.data.issue && msg.data.issue.length) this.$data.error = msg.data.issue[0].diagnostics;
+					   else this.$data.error = msg.data.code || msg.data; 
+				   } else this.$data.error = msg;
 			   }
 			   if (this.$data.loading<=0) { this.$data.isBusy = false;this.$data.action=null; }
 			   if (msg.status == 403 || msg.status == 401) {

@@ -1,7 +1,7 @@
 <template>
     <panel :titel="$t('studies.title')" :busy="isBusy">
 		<error-box :error="error"></error-box>
-        <pagination v-model="results"></pagination>
+        <pagination v-model="results" search="name"></pagination>
 	    <table v-if="results.filtered.length" class="table table-hover">
 	        <thead>
 	            <tr>
@@ -49,7 +49,7 @@ export default {
 			const { $data } = this, me = this;
 		    me.doBusy(server.get(jsRoutes.controllers.research.Studies.list().url)
 		    .then(function(data) { 				
-				$data.results = me.process(data.data);	
+				$data.results = me.process(data.data, { filter : { name : "" }});	
 		    }));
 	    }
     },

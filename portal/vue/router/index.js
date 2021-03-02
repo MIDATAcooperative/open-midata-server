@@ -18,7 +18,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 
 import Newconsent from 'views/shared/newconsent.vue';
-import Studydetails from 'views/shared/studydetails.vue';
+import QueryEditor from 'views/shared/queryeditor.vue';
 
 const Timeline = () => import(/* webpackChunkName: "shared" */ 'views/shared/timeline.vue');
 const postRegister = () => import(/* webpackChunkName: "oauth" */ 'views/shared/public/postregister.vue');
@@ -166,16 +166,11 @@ const routes = [
     base : ["member", "developer", "admin", "research", "provider"],
     path : "overview",
     component: Timeline
-  },
+  },  
   {
     base : ["member", "developer", "admin", "research", "provider"],
-    path : "records",
-    component: Timeline
-  },
-  {
-    base : ["member", "developer", "admin", "research", "provider"],
-    path : "circles",
-    component: Timeline
+    path : "dashboard",
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/dashboard.vue')
   },  
   {
     base : ["member", "developer", "admin", "research", "provider"],
@@ -288,6 +283,27 @@ const routes = [
     component: () => import(/* webpackChunkName: "shared" */ 'views/shared/recorddetail.vue')
   },
   {
+    base : ["member", "provider", "research", "developer", "admin"],
+    path : "servicekeys",
+    component: () => import(/* webpackChunkName: "research" */ 'views/shared/apikeys.vue')
+  },
+  {
+    base : ["developer", "admin"],
+    path : "query",
+    component: () => import(/* webpackChunkName: "research" */ 'views/shared/queryeditor.vue'),
+    meta : {
+       mode : "app"
+    }
+  },
+  {
+    base : ["research", "developer", "admin"],
+    path : "study.query",
+    component: QueryEditor, //() => import(/* webpackChunkName: "research" */ 'views/shared/queryeditor.vue'),
+    meta : {
+      mode : "study"
+    }
+  },
+  {
     base : ["member"],
     path : "studies",
     component: () => import(/* webpackChunkName: "shared" */ 'views/member/smallstudies.vue')
@@ -305,7 +321,18 @@ const routes = [
   {
     base : ["research"],
     path : "addresearcher",
-    component: () => import(/* webpackChunkName: "research" */ 'views/shared/registerother.vue')
+    component: () => import(/* webpackChunkName: "research" */ 'views/shared/registerother.vue'),
+    meta : {
+      mode : "researcher"
+    }
+  },
+  {
+    base : ["research"],
+    path : "study.addparticipant",
+    component: () => import(/* webpackChunkName: "research" */ 'views/shared/registerother.vue'),
+    meta : {
+      mode : "participant"
+    }
   },
   {
     base : ["research", "developer", "admin"],
@@ -336,6 +363,41 @@ const routes = [
     base : ["research", "developer", "admin"],
     path : "study.rules",
     component: () => import(/* webpackChunkName: "research" */ 'views/research/studyrules.vue')
+  },
+  {
+    base : ["research"],
+    path : "study.participants",
+    component: () => import(/* webpackChunkName: "research" */ 'views/research/studyparticipants.vue')
+  },
+  {
+    base : ["research"],
+    path : "study.participant",
+    component: () => import(/* webpackChunkName: "research" */ 'views/research/studyparticipant.vue')
+  },
+  {
+    base : ["research"],
+    path : "study.records",
+    component: () => import(/* webpackChunkName: "research" */ 'views/research/studyrecords.vue')
+  },
+  {
+    base : ["research", "developer", "admin"],
+    path : "study.codes",
+    component: () => import(/* webpackChunkName: "research" */ 'views/research/codes.vue')
+  },
+  {
+    base : ["research", "developer", "admin"],
+    path : "study.sharing",
+    component: () => import(/* webpackChunkName: "research" */ 'views/research/sharing.vue')
+  },
+  {
+    base : ["research", "developer", "admin"],
+    path : "study.actions",
+    component: () => import(/* webpackChunkName: "research" */ 'views/research/studyactions.vue'),
+    research : {
+      meta : {
+        allowPersonalApps : true
+      }
+    }
   },
   {
     base : ["member", "provider"],

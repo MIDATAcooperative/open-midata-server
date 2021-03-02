@@ -38,7 +38,7 @@ const querystring = require('querystring');
 	};	
 	
 	service.postR4 = function(resource, data) {
-		return server.post("/fhir/"+resource, JSON.stringify(data));
+		return server.post("/fhir/"+resource, data);
 	};
 		
 	export default service;
