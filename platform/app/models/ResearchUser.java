@@ -55,7 +55,7 @@ public class ResearchUser extends User {
 	}
 	
 	public static ResearchUser getById(MidataId id, Set<String> fields) throws InternalServerException {
-		return Model.get(ResearchUser.class, collection, CMaps.map("_id", id), fields);
+		return Model.get(ResearchUser.class, collection, CMaps.map("_id", id).map("role", UserRole.RESEARCH), fields);
 	}
 	
 	public static Set<ResearchUser> getAll(Map<String, ? extends Object> properties, Set<String> fields, int limit) throws InternalServerException {

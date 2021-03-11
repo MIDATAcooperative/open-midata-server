@@ -16,29 +16,15 @@
  */
 
 import server from "./server";
-const querystring = require('querystring');
 
 	var service = {};
 	
-	service.unwrap = function(result) {
-		var res = [];
-		if (result && result.data && result.data.entry && result.data.entry.length)
-		for (let entry of result.data.entry) {
-			res.push(entry.resource);
-		}
-		return res;
+	service.search = function(criteria) {
+	    return server.post(jsRoutes.controllers.providers.Providers.search().url, criteria);
 	};
 	
-	service.search = function(resource, params) {			
-		var p = querystring.stringify(params);
-
-		return server.getR4("/fhir/"+resource+(p?("?"+p):"")).then(function(result) {
-			return service.unwrap(result);
-		});
-	};	
-	
-	service.postR4 = function(resource, data) {
-		return server.post("/fhir/"+resource, data);
+	service.getMember = function(id) {
+		return server.post(jsRoutes.controllers.providers.Providers.getMember(id).url);
 	};
-		
+	
 	export default service;

@@ -29,6 +29,11 @@ public enum ConsentType {
   CIRCLE,
   
   /**
+   * a consent where one MIDATA member gives full control over his account to another MIDATA member
+   */
+  REPRESENTATIVE,
+  
+  /**
    * a consent where one MIDATA member shares records with a study
    */
   STUDYPARTICIPATION,

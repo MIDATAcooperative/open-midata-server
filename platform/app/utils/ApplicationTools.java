@@ -480,6 +480,17 @@ public class ApplicationTools {
 		meta.put("targetAccount", targetAccountId.toString());
 		RecordManager.instance.setMeta(executorId, consentId, "_app", meta.toMap());
 	}
+	
+	public static void linkRepresentativeConsentWithExecutorAccount(MidataId executorId, MidataId targetAccountId, MidataId consentId) throws AppException {
+		AccessLog.log("link representative consent to account from="+consentId+" to="+targetAccountId);
+		Map<String, Object> meta = new HashMap<String, Object>();
+		MidataId alias = new MidataId();
+		byte[] key = KeyManager.instance.generateAlias(targetAccountId, alias);
+		meta.put("alias", alias.toString());
+		meta.put("aliaskey", key);
+		meta.put("targetAccount", targetAccountId.toString());
+		RecordManager.instance.setMeta(executorId, consentId, "_representative", meta);
+	}
 
 	public static MobileAppInstance refreshApp(MobileAppInstance appInstance, MidataId executor, MidataId appId, User member, String phrase) throws AppException {
 		AccessLog.logBegin("start refresh app id="+appInstance._id);

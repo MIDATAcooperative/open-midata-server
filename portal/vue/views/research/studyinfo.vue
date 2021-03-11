@@ -1,58 +1,57 @@
 <template>
-<div v-if="!isBusy">
+<div>
     <study-nav page="study.info"></study-nav>
-	<div class="tab-content" >	
-	    <div class="tab-pane active">
-            <error-box :error="error"></error-box>
+    <tab-panel :busy="isBusy">
 	
-            <p v-t="'studyinfo.introduction'"></p>
+        <error-box :error="error"></error-box>
+
+        <p v-t="'studyinfo.introduction'"></p>
+        
+        <form name="myform" ref="myform" novalidate class="css-form form-horizontal" @submit.prevent="submit()" role="form">
+            <form-group name="visibility" label="studyinfo.visibility" :path="errors.visibility">
+                <select v-validate v-model="selection.visibility" @change="changevisible" class="form-control">
+                    <option v-for="vis in visibilities" :key="vis" :value="vis">{{ $t('studyinfo.visibilities.'+vis) }}</option>
+                </select>
+            </form-group>
             
-            <form name="myform" ref="myform" novalidate class="css-form form-horizontal" @submit.prevent="submit()" role="form">
-                <form-group name="visibility" label="studyinfo.visibility" :path="errors.visibility">
-                    <select v-validate v-model="selection.visibility" @change="changevisible" class="form-control">
-                        <option v-for="vis in visibilities" :key="vis" :value="vis">{{ $t('studyinfo.visibilities.'+vis) }}</option>
-                    </select>
-                </form-group>
-                
-                <form-group name="languages" label="studyinfo.showlanguages" :path="errors.languages">
-                    <div class="checkbox col-sm-12">
-                        <label>
-                            <input type="checkbox" disabled :checked="selection.langs.indexOf('int')>=0">
-                            <span v-t="'enum.language.INT'"></span>
-                        </label>
-                    </div>
-                    <div v-for="language in languages" :key="language.value" class="checkbox col-sm-3">
-                        <label>
-                            <input type="checkbox" :checked="selection.langs.indexOf(language.value)>=0" @click="toggle(selection.langs, language.value);">
-                            <span v-t="language.name"></span>
-                        </label>
-                    </div>
-                </form-group>
-                    
-                <p v-t="'studyinfo.introduction2'"></p>	  	  	
-            
-                <div v-for="section in infosFiltered" :key="section.id">
-                
-                    <p><b>{{ $t('enum.infos.'+section.type) }}</b></p>
-            
-                    <div class="extraspace" v-for="lang in selection.langs" :key="lang">
-                        <div class="text-muted"><span>{{ $t('enum.language.'+lang.toUpperCase()) }}</span>:</div>
-                        <textarea class="form-control" :disabled="studyLocked()" v-validate v-model="section.value[lang]">
-                        </textarea>	        
-                    </div>
-            
-                    <hr>
+            <form-group name="languages" label="studyinfo.showlanguages" :path="errors.languages">
+                <div class="checkbox col-sm-12">
+                    <label>
+                        <input type="checkbox" disabled :checked="selection.langs.indexOf('int')>=0">
+                        <span v-t="'enum.language.INT'"></span>
+                    </label>
                 </div>
+                <div v-for="language in languages" :key="language.value" class="checkbox col-sm-3">
+                    <label>
+                        <input type="checkbox" :checked="selection.langs.indexOf(language.value)>=0" @click="toggle(selection.langs, language.value);">
+                        <span v-t="language.name"></span>
+                    </label>
+                </div>
+            </form-group>
+                
+            <p v-t="'studyinfo.introduction2'"></p>	  	  	
+        
+            <div v-for="section in infosFiltered" :key="section.id">
             
-                <div class="extraspace"></div>
-                <button type="submit" class="btn btn-primary" v-submit :disabled="studyLocked() || action!=null" v-t="'common.change_btn'"></button>
-                <success :finished="finished" action="change" msg="common.save_ok"></success>        
-            
-            </form>
-            
-            
-	    </div>
-    </div>
+                <p><b>{{ $t('enum.infos.'+section.type) }}</b></p>
+        
+                <div class="extraspace" v-for="lang in selection.langs" :key="lang">
+                    <div class="text-muted"><span>{{ $t('enum.language.'+lang.toUpperCase()) }}</span>:</div>
+                    <textarea class="form-control" :disabled="studyLocked()" v-validate v-model="section.value[lang]">
+                    </textarea>	        
+                </div>
+        
+                <hr>
+            </div>
+        
+            <div class="extraspace"></div>
+            <button type="submit" class="btn btn-primary" v-submit :disabled="studyLocked() || action!=null" v-t="'common.change_btn'"></button>
+            <success :finished="finished" action="change" msg="common.save_ok"></success>        
+        
+        </form>
+        
+        
+    </tab-panel>    
 </div>
    
 </template>
@@ -61,6 +60,7 @@
 import ErrorBox from "components/ErrorBox.vue"
 import Success from "components/Success.vue"
 import Panel from "components/Panel.vue"
+import TabPanel from "components/TabPanel.vue"
 import FormGroup from "components/FormGroup.vue"
 import StudyNav from "components/tiles/StudyNav.vue"
 import server from "services/server.js"
@@ -85,7 +85,7 @@ export default {
         infosFiltered : []
     }),
 
-    components: {  Panel, ErrorBox, FormGroup, StudyNav, Success },
+    components: {  TabPanel, Panel, ErrorBox, FormGroup, StudyNav, Success },
 
     mixins : [ status ],
 

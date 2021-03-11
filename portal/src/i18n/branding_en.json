@@ -1,13 +1,13 @@
 {
    "footer" : {
-     "copyright" : "",
+     "copyright" : " ",
      "homepage" : "@OPERATOR Homepage",
      "impressum" : "Impressum",
      "portals" : "@PLATFORM Portals:"    
    },
    
    "member_login" : {
-     "teaser": "Your Slogan",
+     "teaser": "Your Slogan?",
      "info1" : "Teaser line 1",
      "info2" : "Teaser line 2",
      "info3" : "Teaser line 3"    

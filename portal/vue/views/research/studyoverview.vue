@@ -1,73 +1,72 @@
 <template>
-<div v-if="!isBusy && study">
+<div>
     <study-nav page="study.overview"></study-nav>
-	<div class="tab-content" >	
-	    <div class="tab-pane active">
-            <error-box :error="error"></error-box>
+    <tab-panel :busy="isBusy || study==null">
 	
-	        <div class="alert alert-info">
-	            <p><strong v-t="'studyoverview.workflow'"></strong></p>
- 	            <div v-if="lastCheck"> 	  
-                    <p>
-                        <span v-t="'studyoverview.lastdone'"></span>: <a href="javascript:" @click="go(lastCheck.page);" class="alert-link" v-t="lastCheck.title"></a>
-                    </p>
-                    <p><i>{{ $t(lastCheck.title + '_help') }}</i></p> 	                   
- 	            </div>
-                <div v-if="primaryCheck">
-                    <p><span v-t="'studyoverview.nextstep'"></span>: <a href="javascript:" @click="go(primaryCheck.page);" class="alert-link" v-t="primaryCheck.title"></a></p>
-                    <p><i>{{ $t(primaryCheck.title + '_help') }}</i></p>
-                    <a v-if="primaryCheck.page != '.'" href="javascript:" @click="go(primaryCheck.page);" class="btn btn-default" v-t="'studyoverview.visitnow_btn'" ></a>               
-                    <button v-if="primaryCheck.flag && !primaryCheck.done" @click="addProcessTag(primaryCheck.flag)" class="btn btn-default" v-t="'studyoverview.markdone_btn'"></button>
-                    <button @click="primaryCheck.action()" class="btn btn-default" v-if="primaryCheck.action && primaryCheck.check()" v-t="'studyoverview.donow_btn'"></button>
-                </div>
-      
-            </div>
-	
-            <table class="table">
-                <tr>
-                    <td v-t="'studyoverview.name'"></td>
-                    <td>{{ study.name }}
-                        <a v-if="readyForValidation()" class="btn btn-default btn-sm" @click="go('description')" v-t="'studyoverview.edit_description_btn'"></a>
-                    </td>
-                </tr>
-                <tr>
-                    <td v-t="'studyoverview.type'"></td>
-                    <td>{{ $t('enum.studytype.'+study.type) }}</td>
-                </tr>
-                <tr>
-                    <td v-t="'studyoverview.created_at'"></td>
-                    <td>{{ $filters.date(study.createdAt) }}</td>
-                </tr>
-                <tr>
-                    <td v-t="'studyoverview.created_by'"></td>
-                    <td>{{ study.creatorName }}</td>
-                </tr>
-                <tr>
-                    <td v-t="'studyoverview.description'"></td>
-                    <td>{{ study.description }}
-                        <a v-if="readyForValidation()" class="btn btn-default btn-sm" @click="go('description')" v-t="'studyoverview.edit_description_btn'"></a>
-                    </td>
-                </tr>      
-                <tr>
-                    <td v-t="'studyoverview.code'"></td>
-                    <td>{{ study.code }}</td>
-                </tr>
-                <tr>
-                    <td v-t="'studyoverview.validation_status'"></td>
-                    <td>{{ $t('enum.studyvalidationstatus.'+study.validationStatus) }}</td>
-                </tr>
-                <tr>
-                    <td v-t="'studyoverview.participant_search_status'"></td>
-                    <td>{{ $t('enum.participantsearchstatus.'+study.participantSearchStatus) }}</td>
-                </tr>
-                <tr>
-                    <td v-t="'studyoverview.execution_status'"></td>
-                    <td>{{ $t('enum.studyexecutionstatus.'+study.executionStatus) }}</td>
-                </tr>
-            </table>
-        </div>
-    </div>	
+        <error-box :error="error"></error-box>
 
+        <div class="alert alert-info">
+            <p><strong v-t="'studyoverview.workflow'"></strong></p>
+            <div v-if="lastCheck"> 	  
+                <p>
+                    <span v-t="'studyoverview.lastdone'"></span>: <a href="javascript:" @click="go(lastCheck.page);" class="alert-link" v-t="lastCheck.title"></a>
+                </p>
+                <p><i>{{ $t(lastCheck.title + '_help') }}</i></p> 	                   
+            </div>
+            <div v-if="primaryCheck">
+                <p><span v-t="'studyoverview.nextstep'"></span>: <a href="javascript:" @click="go(primaryCheck.page);" class="alert-link" v-t="primaryCheck.title"></a></p>
+                <p><i>{{ $t(primaryCheck.title + '_help') }}</i></p>
+                <a v-if="primaryCheck.page != '.'" href="javascript:" @click="go(primaryCheck.page);" class="btn btn-default" v-t="'studyoverview.visitnow_btn'" ></a>               
+                <button v-if="primaryCheck.flag && !primaryCheck.done" @click="addProcessTag(primaryCheck.flag)" class="btn btn-default" v-t="'studyoverview.markdone_btn'"></button>
+                <button @click="primaryCheck.action()" class="btn btn-default" v-if="primaryCheck.action && primaryCheck.check()" v-t="'studyoverview.donow_btn'"></button>
+            </div>
+    
+        </div>
+
+        <table class="table">
+            <tr>
+                <td v-t="'studyoverview.name'"></td>
+                <td>{{ study.name }}
+                    <a v-if="readyForValidation()" class="btn btn-default btn-sm" @click="go('description')" v-t="'studyoverview.edit_description_btn'"></a>
+                </td>
+            </tr>
+            <tr>
+                <td v-t="'studyoverview.type'"></td>
+                <td>{{ $t('enum.studytype.'+study.type) }}</td>
+            </tr>
+            <tr>
+                <td v-t="'studyoverview.created_at'"></td>
+                <td>{{ $filters.date(study.createdAt) }}</td>
+            </tr>
+            <tr>
+                <td v-t="'studyoverview.created_by'"></td>
+                <td>{{ study.creatorName }}</td>
+            </tr>
+            <tr>
+                <td v-t="'studyoverview.description'"></td>
+                <td>{{ study.description }}
+                    <a v-if="readyForValidation()" class="btn btn-default btn-sm" @click="go('description')" v-t="'studyoverview.edit_description_btn'"></a>
+                </td>
+            </tr>      
+            <tr>
+                <td v-t="'studyoverview.code'"></td>
+                <td>{{ study.code }}</td>
+            </tr>
+            <tr>
+                <td v-t="'studyoverview.validation_status'"></td>
+                <td>{{ $t('enum.studyvalidationstatus.'+study.validationStatus) }}</td>
+            </tr>
+            <tr>
+                <td v-t="'studyoverview.participant_search_status'"></td>
+                <td>{{ $t('enum.participantsearchstatus.'+study.participantSearchStatus) }}</td>
+            </tr>
+            <tr>
+                <td v-t="'studyoverview.execution_status'"></td>
+                <td>{{ $t('enum.studyexecutionstatus.'+study.executionStatus) }}</td>
+            </tr>
+        </table>
+    </tab-panel>
+    
     <panel :title="$t('studyoverview.checklist')" :busy="isBusy">
         <table class="table table-hover">
             <tr class="clickable" v-for="item in checklist" :key="item.title" :class="{ 'table-success' : item.done, 'table-danger' : item.required && !item.done, 'table-warning' : !item.required && !item.done && !item.heading, 'table-heading' : item.heading }">
@@ -84,20 +83,21 @@
         </table>
     </panel>
 
-    <panel :title="$t('studyoverview.history')" :busy="isBusy">
+    <panel :title="$t('studyoverview.history')" :busy="isBusy || study==null">
         <auditlog :entity="study._id"></auditlog>  
     </panel>
 
-
-    <router-link class="btn btn-default space" :to="{ path : './studies' }" v-t="'common.back_btn'"></router-link>
-    <button class="btn btn-default space" @click="clone(false)" v-t="'studyoverview.clone_study_btn'"></button>
-    <button v-if="readyForValidation()" class="btn btn-primary space" @click="startValidation()" v-t="'studyoverview.start_validation_btn'"></button>
-    <button v-if="readyForParticipantSearch()" class="btn btn-primary space" @click="startParticipantSearch()" v-t="'studyoverview.start_participant_search_btn'"></button>
-    <button v-if="readyForEndParticipantSearch()" class="btn btn-primary space" @click="endParticipantSearch()" v-t="'studyoverview.end_participant_search_btn'"></button>
-    <button v-if="readyForStartExecution()" class="btn btn-primary space" @click="startExecution()" v-t="'studyoverview.start_study_execution_btn'"></button>
-    <button v-if="readyForFinishExecution()" class="btn btn-primary space" @click="finishExecution()" v-t="'studyoverview.finish_study_btn'"></button>
-    <button v-if="readyForDelete()" class="btn btn-danger space" @click="dodelete()" v-t="'studyoverview.delete_study_btn'"></button>
-    <button v-if="readyForAbort()" class="btn btn-danger space" @click="abortExecution()" v-t="'studyoverview.abort_study_btn'"></button>   
+    <div v-if="!isBusy && study!=null">
+        <router-link class="btn btn-default space" :to="{ path : './studies' }" v-t="'common.back_btn'"></router-link>
+        <button class="btn btn-default space" @click="clone(false)" v-t="'studyoverview.clone_study_btn'"></button>
+        <button v-if="readyForValidation()" class="btn btn-primary space" @click="startValidation()" v-t="'studyoverview.start_validation_btn'"></button>
+        <button v-if="readyForParticipantSearch()" class="btn btn-primary space" @click="startParticipantSearch()" v-t="'studyoverview.start_participant_search_btn'"></button>
+        <button v-if="readyForEndParticipantSearch()" class="btn btn-primary space" @click="endParticipantSearch()" v-t="'studyoverview.end_participant_search_btn'"></button>
+        <button v-if="readyForStartExecution()" class="btn btn-primary space" @click="startExecution()" v-t="'studyoverview.start_study_execution_btn'"></button>
+        <button v-if="readyForFinishExecution()" class="btn btn-primary space" @click="finishExecution()" v-t="'studyoverview.finish_study_btn'"></button>
+        <button v-if="readyForDelete()" class="btn btn-danger space" @click="dodelete()" v-t="'studyoverview.delete_study_btn'"></button>
+        <button v-if="readyForAbort()" class="btn btn-danger space" @click="abortExecution()" v-t="'studyoverview.abort_study_btn'"></button>   
+    </div>
                                 
     <modal v-if="confirm" @close="cancel()" :title="study.name">
         <div class="body">
@@ -123,6 +123,7 @@
 
 import ErrorBox from "components/ErrorBox.vue"
 import Panel from "components/Panel.vue"
+import TabPanel from "components/TabPanel.vue"
 import Modal from "components/Modal.vue"
 import Auditlog from "components/AuditLog.vue"
 import StudyNav from "components/tiles/StudyNav.vue"
@@ -142,7 +143,7 @@ export default {
         primaryCheck : null
     }),
 
-    components: {  Panel, ErrorBox, Modal, Auditlog, StudyNav },
+    components: {  TabPanel, Panel, ErrorBox, Modal, Auditlog, StudyNav },
 
     mixins : [ status ],
 

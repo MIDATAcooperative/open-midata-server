@@ -16,18 +16,23 @@
  */
 
 import { nextTick, ref } from 'vue'
-import { setI18n } from 'vue-composable'
+import { setI18n, VueComposableDevtools } from 'vue-composable'
+import ENV from 'config'
 
 function replaceInstr(where) {
+    console.log(ENV);
     for (let k in where) {
         let v = where[k];
         if (typeof v === "object") replaceInstr(v);
         else {
             v = v.replace(/\{\{/,"{");
             v = v.replace(/\}\}/,"}");
-            v = v.replace(/@PLATFORM/, "Midata");
-            v = v.replace(/@OPERATOR/, "Midata");
-            where[k] = v;
+            v = v.replace(/@PLATFORM/, ENV.platform);
+            v = v.replace(/@OPERATOR/, ENV.operator);
+            v = v.replace(/@SUPPORT/, ENV.support);
+            v = v.replace(/@HOMEPAGE/, ENV.homepage);
+            v = v.replace(/@DOMAIN/, ENV.domain);
+            where[k] = v;    
         }
     }
 }

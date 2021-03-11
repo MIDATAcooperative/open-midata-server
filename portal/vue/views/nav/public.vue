@@ -88,7 +88,7 @@
 		<p>{{ $t('footer.copyright', { now : currentYear }) }}</p>
 
 		<ul>
-			<li><a href="@HOMEPAGE" v-t="'footer.homepage'"></a></li>			
+			<li><a :href="homepage" v-t="'footer.homepage'"></a></li>			
 			<li><router-link :to="{ path : './terms', query : {which : 'midata-terms-of-use'} }" v-t="'registration.agb3'">Terms of Use</router-link></li>
 			<li><router-link :to="{ path : './terms' ,query : {which : 'midata-privacy-policy'} }" v-t="'registration.privacypolicy3'">Privacy Policy</router-link></li>
 
@@ -101,17 +101,14 @@ import ENV from "config";
 import { setLocale, addBundle } from "services/lang.js";
 import session from "services/session.js"
 
-/*
-	
-	$translatePartialLoader.addPart($state.current.data.locales);		
-*/
 export default {
 	
   data: () => ({
 	hideCookieBar : false,
 	notPublic : false,
 	now : "",
-	action : null
+	action : null,
+	homepage : ENV.homepage
   }),
       
   methods : {
@@ -133,9 +130,7 @@ export default {
 	 $data.action = $route.query.action;
 	 $data.hideCookieBar = localStorage.hideCookieBar;
 
-	 if (!$route.meta || !$route.meta.keep) {
-		 console.log("LOGOUT FROM PUBLIC MENU");
-		 console.log($route);
+	 if (!$route.meta || !$route.meta.keep) {	
 		 session.logout();
 	 }
 

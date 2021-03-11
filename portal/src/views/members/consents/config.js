@@ -22,7 +22,7 @@ angular.module('portal')
 	      url: '/circles?circleId',
 	      templateUrl: 'views/members/consents/consents.html',	      
 	      dashId : 'circles',
-	      types : ['CIRCLE','HEALTHCARE']
+	      types : ['CIRCLE','HEALTHCARE','REPRESENTATIVE']
 	    })
 	    .state('provider.circles', {
 	      url: '/circles?circleId',

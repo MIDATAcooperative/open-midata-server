@@ -249,7 +249,7 @@ public class Users extends APIController {
 		Set<MidataId> contactIds = new HashSet<MidataId>();
 		Set<Member> contacts;
 	
-		Set<Circle> circles = Circle.getAll(CMaps.map("owner", userId).map("type",Sets.createEnum(ConsentType.CIRCLE, ConsentType.HEALTHCARE)).map("status",Consent.NOT_DELETED), Sets.create("authorized"));
+		Set<Circle> circles = Circle.getAll(CMaps.map("owner", userId).map("type",Sets.createEnum(ConsentType.CIRCLE, ConsentType.HEALTHCARE, ConsentType.REPRESENTATIVE)).map("status",Consent.NOT_DELETED), Sets.create("authorized"));
 		for (Circle circle : circles) {
 			contactIds.addAll(circle.authorized);
 		}
@@ -546,7 +546,7 @@ public class Users extends APIController {
 			Space.delete(userId, space._id);
 		}
 		
-		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map("type", Sets.createEnum(ConsentType.CIRCLE, ConsentType.EXTERNALSERVICE, ConsentType.HCRELATED, ConsentType.HEALTHCARE, ConsentType.API)), Consent.ALL, Integer.MAX_VALUE);
+		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map("type", Sets.createEnum(ConsentType.CIRCLE, ConsentType.EXTERNALSERVICE, ConsentType.HCRELATED, ConsentType.HEALTHCARE, ConsentType.API, ConsentType.REPRESENTATIVE)), Consent.ALL, Integer.MAX_VALUE);
 		for (Consent consent : consents) {
 			if (executorId.equals(userId)) {
 			RecordManager.instance.deleteAPS(consent._id, userId);

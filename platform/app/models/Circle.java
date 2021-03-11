@@ -73,15 +73,15 @@ public class Circle extends Consent {
 	}
 	
 	public static Set<Circle> getAllByOwner(MidataId owner) throws InternalServerException {
-		return Model.getAll(Circle.class, collection, CMaps.map("owner", owner).map("type",  ConsentType.CIRCLE).map("status", NOT_DELETED), Consent.ALL);
+		return Model.getAll(Circle.class, collection, CMaps.map("owner", owner).map("type",  Sets.create(ConsentType.CIRCLE, ConsentType.REPRESENTATIVE)).map("status", NOT_DELETED), Consent.ALL);
 	}
 	
 	public static Set<Circle> getAllByMember(MidataId member) throws InternalServerException {
-		return Model.getAll(Circle.class, collection, CMaps.map("authorized", member).map("type",  ConsentType.CIRCLE).map("status", NOT_DELETED), Consent.ALL);
+		return Model.getAll(Circle.class, collection, CMaps.map("authorized", member).map("type",  Sets.create(ConsentType.CIRCLE, ConsentType.REPRESENTATIVE)).map("status", NOT_DELETED), Consent.ALL);
 	}
 	
 	public static Set<Circle> getAllActiveByMember(MidataId member) throws InternalServerException {
-		return Model.getAll(Circle.class, collection, CMaps.map("authorized", member).map("type",  ConsentType.CIRCLE).map("status", EnumSet.of(ConsentStatus.ACTIVE, ConsentStatus.FROZEN)), Consent.SMALL);
+		return Model.getAll(Circle.class, collection, CMaps.map("authorized", member).map("type",  Sets.create(ConsentType.CIRCLE, ConsentType.REPRESENTATIVE)).map("status", EnumSet.of(ConsentStatus.ACTIVE, ConsentStatus.FROZEN)), Consent.SMALL);
 	}
 
 	public static void set(MidataId circleId, String field, Object value) throws InternalServerException {

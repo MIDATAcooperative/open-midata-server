@@ -19,7 +19,9 @@
 		  	<div class="float-right col-sm-4" v-if="displayAps.owner && compare!=null">
 			    <label for="selectedAps" v-t="'records.shared_with'"></label>
 			    <select class="form-control" id="selectedAps" v-model="selectedApsId" @change="setSelectedAps()">
-                    <option v-for="c in compare" :key="c._id" :value="c._id">{{ $t(c.i18n, { name : c.name })}}</option>
+                    <optgroup v-for="(list,label) in compareGrouped" :label="$t('enum.consenttype.'+label)" :key="label">
+                      <option v-for="c in list" :key="c._id" :value="c._id">{{ $t(c.i18n, { name : c.name })}}</option>
+                    </optgroup>
                 </select>
 	        </div>	
 	        <div class="float-right col-sm-4" v-if="compare==null && selectedAps!=null && selectedType=='spaces'">
@@ -30,7 +32,9 @@
 	        <div class="col-sm-4">
 	            <label for="owner" @dblclick="showDebug()" v-t="'records.show'"></label>
 	            <select class="form-control" id="owner" v-model="displayAps" @change="selectSet()">
-                    <option v-for="c in availableAps" :key="c._id" :value="c">{{ $t(c.i18n, { name : c.name })}}</option>
+                    <optgroup v-for="(list,label) in availableApsGrouped" :label="$t('records.type_'+label)" :key="label">
+                      <option v-for="c in list" :key="c._id" :value="c">{{ $t(c.i18n, { name : c.name })}}</option>
+                    </optgroup>
                 </select>
 	        </div>			
        
@@ -153,7 +157,7 @@ let doLoadPlugins = false;
 	var getOrCreatePlugin = function($data, plugin) {
 	   	if (plugins[plugin] != null) return plugins[plugin];
 	  
-	   	var newplugin = { id : "_"+plugin, plugin:plugin, parent:$data.tree[0] };
+	   	var newplugin = { id : "_"+plugin, plugin:plugin, _parent:$data.tree[0], parent:$data.tree[0] };
 	   
 	   	newplugin.children = [];
 	   	newplugin.contents = {};
@@ -183,7 +187,7 @@ let doLoadPlugins = false;
 	   	if (groups["cnt:"+format] != null) return groups["cnt:"+format];
 	   
 	   	var grp = getOrCreateGroup($data, group);
-	   	var newfmt = { name : "cnt:"+format, content:format, type:"group", fullLabel: { fullLabel : "Content: "+format }, parent:group, children:[], records:[] };
+	   	var newfmt = { name : "cnt:"+format, content:format, type:"group", fullLabel: { fullLabel : "Content: "+format }, parent:group, _parent:grp, children:[], records:[] };
 	   	
 	   	if (contentLabels[format]) {
 	   		newfmt.fullLabel.fullLabel = contentLabels[format];
@@ -282,6 +286,15 @@ export default {
         gi : null,
         selectedData : null
 	}),	
+
+    computed : {
+        compareGrouped() {
+            return _.chain(this.compare).orderBy(['name'],['asc']).groupBy("type").value();
+        },
+        availableApsGrouped() {
+            return _.chain(this.availableAps).orderBy(['name'],['asc']).groupBy("type").value();
+        }
+    },
     
     components: { Panel, RecordTreeNode, ErrorBox, Modal },
 

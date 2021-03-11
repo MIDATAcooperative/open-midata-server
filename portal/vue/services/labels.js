@@ -105,90 +105,105 @@ import { getLocale } from './lang';
 	};
 	
 	service.parseAccessQuery = function(lang, query, outerquery, rarray) {
-		console.log("IN:"+JSON.stringify(query));
-		var ac = function(path) {
-			if (query[path] !== undefined) return query[path];
-			if (outerquery && outerquery[path] !== undefined) return outerquery[path];
-			return undefined;
-		};
-		var unwrap = function(arr, field) {
-			var out = [];
-			for (let elem of arr) {
-				if (elem[field]) {
-					if (Array.isArray(elem[field])) {						
-						if (elem[field].length == 1) {
-							var copy = JSON.parse(JSON.stringify(elem));
-							copy[field] = copy[field][0];
-							out.push(copy);
-						} else {
-							for (let v of elem[field]) {
-								var copy1 = JSON.parse(JSON.stringify(elem));
-								copy1[field] = v;
-								out.push(copy1);
+		return new Promise((resolve, reject) => {
+			console.log("IN:"+lang+":"+JSON.stringify(query));
+			let waitFor = [];
+			var ac = function(path) {
+				if (query[path] !== undefined) return query[path];
+				if (outerquery && outerquery[path] !== undefined) return outerquery[path];
+				return undefined;
+			};
+			var unwrap = function(arr, field) {
+				var out = [];
+				for (let elem of arr) {
+					if (elem[field]) {
+						if (Array.isArray(elem[field])) {						
+							if (elem[field].length == 1) {
+								var copy = JSON.parse(JSON.stringify(elem));
+								copy[field] = copy[field][0];
+								out.push(copy);
+							} else {
+								for (let v of elem[field]) {
+									var copy1 = JSON.parse(JSON.stringify(elem));
+									copy1[field] = v;
+									out.push(copy1);
+								}
 							}
-						}
+						} else out.push(elem);
 					} else out.push(elem);
-				} else out.push(elem);
-			}
-			return out;
-		};
-		var noarray = function(a) {
-			if (Array.isArray(a) && a.length) return a[0];
-			return a;
-		};
-	    
-		var result = rarray || [];
-		
-		if (query.$or) {
-			for (var i = 0;i<query.$or.length;i++) service.parseAccessQuery(lang, query.$or[i], query, result);
-		} else {
-		    if (Object.keys(query).length === 0) return [];
-			var nblock = {};
-			if (ac("format")) nblock.format = ac("format");
-			if (ac("content")) nblock.content = ac("content");
-			if (ac("code")) nblock.code = ac("code");			
-			if (ac("group")) nblock.group = ac("group");
-			if (ac("group-system")) nblock.system = ac("group-system");
-			if (ac("public")) nblock["public"] = ac("public");
-			if (ac("created-after")) {
-				nblock.timeRestrictionMode = "created-after";
-				nblock.timeRestrictionDate = ac("created-after");
-			}
-			if (ac("updated-after")) {
-				nblock.timeRestrictionMode = "updated-after";
-				nblock.timeRestrictionDate = ac("updated-after");
-			}
-			/*if (ac("data")) {
-				var p = ac("data");
-				nblock.customFilterPath = Objects.keys(p)[0];
-				nblock.customFilterValue = p[nblock.customFilterPath];
-			}*/
-			if (ac("app")) {
-				nblock.app = ac("app");
-			}
-			if (ac("owner")) {
-				nblock.owner = noarray(ac("owner"));
-			}
-			console.log(nblock);			
-			for (r of unwrap(unwrap(unwrap(unwrap(unwrap([ nblock ],"group"),"code"),"content"),"app"),"format")) {
-				if (!r.app) r.app = "all";
-				else if (r.app !== "all") { r.appName = r.app; r.app = "other"; }
-				if (!r.owner) r.owner = "all";
-				
-				var c = r.content;
-				if (c === "Patient" || c === "Group" || c === "Person" || c === "Practitioner") return;	
-				console.log("PRE LOOPUP:"+r);
-				if (r.content) {
-					service.getContentLabel(lang, r.content).then(function(v) { r.display = v; });
-				} else if (r.group) {
-					service.getGroupLabel(lang, r["group-system"] || "v1", r.group).then(function(v) { r.display = v; });
-				} else if (r.format) {
-					r.display = r.format;
 				}
-				result.push(r); 
+				return out;
+			};
+			var noarray = function(a) {
+				if (Array.isArray(a) && a.length) return a[0];
+				return a;
+			};
+			
+			var result = rarray || [];
+			
+			if (query.$or) {
+				for (var i = 0;i<query.$or.length;i++) waitFor.push(service.parseAccessQuery(lang, query.$or[i], query, result));
+			} else {
+				if (Object.keys(query).length === 0) return [];
+				var nblock = {};
+				if (ac("format")) nblock.format = ac("format");
+				if (ac("content")) nblock.content = ac("content");
+				if (ac("code")) nblock.code = ac("code");			
+				if (ac("group")) nblock.group = ac("group");
+				if (ac("group-system")) nblock.system = ac("group-system");
+				if (ac("public")) nblock["public"] = ac("public");
+				if (ac("created-after")) {
+					nblock.timeRestrictionMode = "created-after";
+					nblock.timeRestrictionDate = ac("created-after");
+				}
+				if (ac("updated-after")) {
+					nblock.timeRestrictionMode = "updated-after";
+					nblock.timeRestrictionDate = ac("updated-after");
+				}
+				/*if (ac("data")) {
+					var p = ac("data");
+					nblock.customFilterPath = Objects.keys(p)[0];
+					nblock.customFilterValue = p[nblock.customFilterPath];
+				}*/
+				if (ac("app")) {
+					nblock.app = ac("app");
+				}
+				if (ac("owner")) {
+					nblock.owner = noarray(ac("owner"));
+				}
+				console.log(nblock);			
+				for (let r of unwrap(unwrap(unwrap(unwrap(unwrap([ nblock ],"group"),"code"),"content"),"app"),"format")) {
+					if (!r.app) r.app = "all";
+					else if (r.app !== "all") { r.appName = r.app; r.app = "other"; }
+					if (!r.owner) r.owner = "all";
+					
+					var c = r.content;
+					if (c === "Patient" || c === "Group" || c === "Person" || c === "Practitioner") return;	
+					console.log("PRE LOOPUP:");
+					console.log(r);
+					if (r.content) {
+						r.display = "x";
+						let test = function(r2) {
+							waitFor.push(service.getContentLabel(lang, r2.content).then(function(v) { 
+								console.log("RESOLVE:"+v);
+								r2.display = v; 
+							})); 
+						}(r);
+					} else if (r.group) {
+						r.display = "x";
+						let test = function(r2) {
+							waitFor.push(service.getGroupLabel(lang, r2["group-system"] || "v1", r2.group).then(function(v) { r2.display = v; }));
+						}(r);
+					} else if (r.format) {
+						r.display = r.format;
+					}
+					result.push(r); 
+				}
 			}
-		}
-		return result;
+			console.log("OUT");
+			console.log(result);
+			Promise.all(waitFor).then(() => resolve(result));			
+		});
 	};
 
 	service.prepareQuery = function($t, defaultQuery, appName, genLabels, reqInf) {

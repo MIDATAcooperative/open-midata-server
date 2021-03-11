@@ -82,7 +82,7 @@
 				        <span class="margin-left" v-t="'user.searchable_yes'"></span>
                     </radio-box>
                     <radio-box v-model="user.searchable" :value="false" name="searchable" :path="errors.searchable">				
-				        <span class="margin-left" v-t="'user.searchable_yes'"></span>
+				        <span class="margin-left" v-t="'user.searchable_no'"></span>
                     </radio-box>                				  
 				    <span class="form-text text-muted" v-t="'user.searchable_info'"></span>
                 </form-group>

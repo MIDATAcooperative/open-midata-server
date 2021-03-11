@@ -1,60 +1,58 @@
 <template>
-<div v-if="!isBusy">
+<div>
     <study-nav page="study.rules"></study-nav>
-	<div class="tab-content" >	
-	    <div class="tab-pane active">
-            
-	        <form name="myform" ref="myform" novalidate class="css-form form-horizontal" @submit.prevent="submit()" role="form">		
-	            <h2 v-t="'studyrules.title'"></h2>
-	            <p class="alert alert-info" v-if="!error" v-t="'studyrules.no_change_warning'"></p>
-	            <error-box :error="error"></error-box>
-	            <form-group name="recordQuery" label="studyrules.sharing_query">
-	                <accessquery query="study.recordQuery" details="true"></accessquery>	  
-	                <div class="margin-top">   
-	                    <router-link :to="{ path : './queryeditor' }" class="btn btn-default" v-t="'studyrules.queryeditor_btn'"></router-link>
-	                </div>
-                </form-group>
+    <tab-panel :busy="isBusy">
+	        
+        <form name="myform" ref="myform" novalidate class="css-form form-horizontal" @submit.prevent="submit()" role="form">		
+            <h2 v-t="'studyrules.title'"></h2>
+            <p class="alert alert-info" v-if="!error" v-t="'studyrules.no_change_warning'"></p>
+            <error-box :error="error"></error-box>
+            <form-group name="recordQuery" label="studyrules.sharing_query">
+                <access-query :query="study.recordQuery" details="true"></access-query>	  
+                <div class="margin-top">   
+                    <router-link :to="{ path : './study.query', query : { studyId : studyid } }" class="btn btn-default" v-t="'studyrules.queryeditor_btn'"></router-link>
+                </div>
+            </form-group>
+
+            <form-group name="startDate" label="studyrules.startDate" :path="errors.startDate">	    
+                <input id="startDate" name="startDate" type="date" class="form-control" :disabled="studyLocked()" v-validate v-model="study.startDate"  />                 
+            </form-group>
     
-                <form-group name="startDate" label="studyrules.startDate" :path="errors.startDate">	    
-                    <input id="startDate" name="startDate" type="date" class="form-control" :disabled="studyLocked()" v-validate v-model="study.startDate"  />                 
-	            </form-group>
-	  
-	            <form-group name="endDate" label="studyrules.endDate" :path="errors.endDate">	    
-                    <input id="endDate" name="endDate" type="date" class="form-control" :disabled="studyLocked()" v-validate v-model="study.endDate" />                  
-	            </form-group>
-	  
-	            <form-group name="dataCreatedBefore" label="studyrules.dataCreatedBefore" :path="errors.dataCreatedBefore">	    
-                    <input id="dataCreatedBefore" name="dataCreatedBefore" type="date" class="form-control" :disabled="studyLocked()" v-validate v-model="study.dataCreatedBefore"/>        
-	            </form-group>
-          
-                <form-group name="termsOfUse" label="studyrules.terms_of_use" :path="errors.termsOfUse">	    
-	                <input id="termsOfUse" type="text" name="termsOfUse" class="form-control" :disabled="studyLocked()" v-validate v-model="study.termsOfUse" autocomplete="off" uib-typeahead="term.id as term.fullname for term in terms | filter:{fullname:$viewValue}">		    
-	                <p class="form-text text-muted" v-if="study.termsOfUse"><router-link :to="{ path : './terms', query :  { which:study.termsOfUse }}" v-t="'studyrules.show_terms'"></router-link></p>
-	                <p class="form-text text-muted" v-t="'studyrules.terms_of_use_hint'"></p> 
-	            </form-group>
-	  
-	            <form-group name="consentObserver" label="studyrules.consent_observers" :path="errors.consentObserver">	    
-	                <input id="consentObserver" type="text" name="consentObserver" class="form-control" :disabled="studyLocked()" v-validate v-model="study.consentObserverStr" autocomplete="off" uib-typeahead="app.filename as (app.filename+' - '+app.name) for app in observers | filter:{name:$viewValue}">		    	    
-	            </form-group>
-       
-                <form-group name="joinMethods" label="studyrules.join_methods" :path="errors.joinMethods">
-                    <check-box v-for="method in joinmethods" :key="method" :disabled="studyLocked()" :checked="study.joinMethods.indexOf(method)>=0" @click="toggle(study.joinMethods, method);">
-		                <span class="margin-left" v-t="'enum.joinmethod.'+method"></span>
-                    </check-box>		 
-	            </form-group>
-       
-                <form-group name="requirements" label="studyrules.requirements" :path="errors.requirements">
-                    <check-box v-for="req in requirements" :key="req" :disabled="studyLocked()" :checked="study.requirements.indexOf(req)>=0" @click="toggle(study.requirements, req);">
-		                <span class="margin-left" v-t="'enum.userfeature.'+req"></span>
-                    </check-box>		 
-	            </form-group>
-                <form-group label="common.empty">
-                    <button type="submit" :disabled="action !=null || studyLocked()" class="btn btn-primary" v-t="'common.change_btn'"></button>
-                    <success :finished="finished" action="change" msg="common.save_ok"></success>        
-                </form-group>        
-            </form>
-        </div>
-    </div>	
+            <form-group name="endDate" label="studyrules.endDate" :path="errors.endDate">	    
+                <input id="endDate" name="endDate" type="date" class="form-control" :disabled="studyLocked()" v-validate v-model="study.endDate" />                  
+            </form-group>
+    
+            <form-group name="dataCreatedBefore" label="studyrules.dataCreatedBefore" :path="errors.dataCreatedBefore">	    
+                <input id="dataCreatedBefore" name="dataCreatedBefore" type="date" class="form-control" :disabled="studyLocked()" v-validate v-model="study.dataCreatedBefore"/>        
+            </form-group>
+        
+            <form-group name="termsOfUse" label="studyrules.terms_of_use" :path="errors.termsOfUse">	    
+                <input id="termsOfUse" type="text" name="termsOfUse" class="form-control" :disabled="studyLocked()" v-validate v-model="study.termsOfUse" autocomplete="off" uib-typeahead="term.id as term.fullname for term in terms | filter:{fullname:$viewValue}">		    
+                <p class="form-text text-muted" v-if="study.termsOfUse"><router-link :to="{ path : './terms', query :  { which:study.termsOfUse }}" v-t="'studyrules.show_terms'"></router-link></p>
+                <p class="form-text text-muted" v-t="'studyrules.terms_of_use_hint'"></p> 
+            </form-group>
+    
+            <form-group name="consentObserver" label="studyrules.consent_observers" :path="errors.consentObserver">	    
+                <input id="consentObserver" type="text" name="consentObserver" class="form-control" :disabled="studyLocked()" v-validate v-model="study.consentObserverStr" autocomplete="off" uib-typeahead="app.filename as (app.filename+' - '+app.name) for app in observers | filter:{name:$viewValue}">		    	    
+            </form-group>
+    
+            <form-group name="joinMethods" label="studyrules.join_methods" :path="errors.joinMethods">
+                <check-box v-for="method in joinmethods" :key="method" :disabled="studyLocked()" :checked="study.joinMethods.indexOf(method)>=0" @click="toggle(study.joinMethods, method);">
+                    <span class="margin-left" v-t="'enum.joinmethod.'+method"></span>
+                </check-box>		 
+            </form-group>
+    
+            <form-group name="requirements" label="studyrules.requirements" :path="errors.requirements">
+                <check-box v-for="req in requirements" :key="req" :disabled="studyLocked()" :checked="study.requirements.indexOf(req)>=0" @click="toggle(study.requirements, req);">
+                    <span class="margin-left" v-t="'enum.userfeature.'+req"></span>
+                </check-box>		 
+            </form-group>
+            <form-group label="common.empty">
+                <button type="submit" :disabled="action !=null || studyLocked()" class="btn btn-primary" v-t="'common.change_btn'"></button>
+                <success :finished="finished" action="change" msg="common.save_ok"></success>        
+            </form-group>        
+        </form>
+    </tab-panel>    
 </div>
                
 </template>
@@ -63,10 +61,12 @@
 import ErrorBox from "components/ErrorBox.vue"
 import Success from "components/Success.vue"
 import Panel from "components/Panel.vue"
+import TabPanel from "components/TabPanel.vue"
 import CheckBox from "components/CheckBox.vue"
 import RadioBox from "components/RadioBox.vue"
 import FormGroup from "components/FormGroup.vue"
 import StudyNav from "components/tiles/StudyNav.vue"
+import AccessQuery from "components/tiles/AccessQuery.vue"
 import server from "services/server.js"
 import studies from "services/studies.js"
 import terms from "services/terms.js"
@@ -87,7 +87,7 @@ export default {
         observers : null
     }),
 
-    components: {  Panel, ErrorBox, FormGroup, StudyNav, Success, CheckBox, RadioBox },
+    components: {  TabPanel, Panel, ErrorBox, FormGroup, StudyNav, Success, CheckBox, RadioBox, AccessQuery },
 
     mixins : [ status ],
 

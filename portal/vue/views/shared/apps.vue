@@ -13,7 +13,7 @@
 				<td class="status-column">
 					<span class="icon fas fa-check-circle" v-show="app.status == 'ACTIVE'"></span>
 	                <span class="icon fas fa-question-circle" v-show="app.status == 'UNCONFIRMED'"></span>
-	                <span class="icon fas fa-times-circle" v-show="study.status == 'REJECTED'"></span>
+	                <span class="icon fas fa-times-circle" v-show="app.status == 'REJECTED'"></span>
 	    
 				</td>
 					
@@ -73,13 +73,13 @@ export default {
 
         loadConsents(userId) {	
             const { $data } = this, me = this;
-		    me.doBusy(apps.listUserApps([ "name", "authorized", "type", "status", "applicationId"]))
+		    me.doBusy(apps.listUserApps([ "name", "authorized", "type", "status", "applicationId"])
 		    .then(function(data) {
                 $data.apps = data.data;
                 let pluginToSpace = $data.pluginToSpace;
                 for (let app of $data.apps) pluginToSpace[app.applicationId] = true;                
                 $data.pluginToSpace = Object.assign({}, $data.pluginToSpace);
-			});
+			}));
 		},
 	
         editConsent(consent) {
@@ -107,6 +107,8 @@ export default {
 	        let fields = ["name", "type", "description", "tags"];
 	        let data = {"properties": properties, "fields": fields};
 			
+			me.loadConsents();
+
 	        me.doBusy(session.currentUser.then(function(userId) {
 			    $data.userId = userId;
 			

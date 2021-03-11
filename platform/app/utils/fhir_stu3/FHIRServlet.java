@@ -32,6 +32,7 @@ import ca.uhn.fhir.rest.server.HardcodedServerAddressStrategy;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.RestfulServer;
 import utils.InstanceConfig;
+import utils.stats.Stats;
 
 // https://demo.careevolution.com/PDemo/PDemo.html?iss=https://localhost:9000/fhir
 // https://demo.careevolution.com/PDemo/PDemo.html?iss=https://test.midata.coop:9000/fhir
@@ -127,22 +128,26 @@ public class FHIRServlet extends RestfulServer {
    }
 
 	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {		
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Stats.addComment("Deprecated STU-3 API used");
 		super.doGet(request, response);
 	}
 	
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {		
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Stats.addComment("Deprecated STU-3 API used");
 		super.doPost(request, response);
 	}
 	
 	@Override
-	public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {		
+	public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Stats.addComment("Deprecated STU-3 API used");
 		super.doPut(request, response);
 	}
 	
 	@Override
-	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {		
+	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Stats.addComment("Deprecated STU-3 API used");
 		super.doDelete(request, response);
 	}
    

@@ -33,6 +33,33 @@
 			    <span v-t="'registration.mandantory_fields'"></span>
 				<span v-t="'registration.password_policy'"></span>
  
+				<div v-if="role=='research'">
+					<h3 v-t="'researcher_registration.research_organization'"></h3>
+					<div class="required">
+						<form-group name="name" label="researcher_registration.name" :path="errors.name"> 
+							<input type="text" class="form-control" name="name" :placeholder="$t('researcher_registration.name')" v-validate v-model="registration.name" required>
+						</form-group>
+						<form-group name="description" label="researcher_registration.description" :path="errors.description">
+							<textarea class="form-control" name="description" rows="5" v-validate v-model="registration.description" required></textarea> 
+						</form-group>
+						<h3 v-t="'researcher_registration.research_user'">Research User</h3>
+					</div>
+				</div>
+				<div v-if="role=='provider'">
+					<h3 v-t="'provider_registration.provider'"></h3>
+					<div class="required">
+						<form-group name="name" label="provider_registration.name" :path="errors.name"> 
+							<input type="text" class="form-control" name="name" :placeholder="$t('provider_registration.name')" v-validate v-model="registration.name" required>							    
+						</form-group>	
+					</div>
+					<form-group name="description" label="provider_registration.description" :path="errors.description">
+						<textarea class="form-control" name="description" rows="5" v-validate v-model="registration.description"></textarea>
+					</form-group>
+					<form-group name="url" label="provider_registration.url" :path="errors.url">
+						<input type="text" class="form-control" name="url" placeholder="https://www.example.com" v-validate v-model="registration.url">
+					</form-group>  						  
+					<h3 v-t="'provider_registration.user'"></h3>
+				</div>
                  <div class="required">								  
 				    <form-group name="email" label="registration.email" :path="errors.email">
 						<input type="email" class="form-control" id="email" name="email" :placeholder="$t('registration.email')" v-model="registration.email" required v-validate>									
@@ -46,7 +73,7 @@
                         <input type="password" class="form-control" id="password2" name="password2" :placeholder="$t('registration.password')" v-model="registration.password2" required v-validate>
                     </form-group>
                 </div>
-                <form-group name="secure" label="registration.secure">
+                <form-group name="secure" label="registration.secure" v-if="secureChoice()">
                     <div class="form-check">
                         <label class="form-check-label">
                             <input class="form-check-input" type="checkbox" v-model="registration.secure">
@@ -86,7 +113,7 @@
                     <form-group name="address1" label="registration.address" :path="errors.address">
                         <input type="text" class="form-control" id="address1" name="address1" :placeholder="$t('registration.address_line1')" v-model="registration.address1" required v-validate>
                     </form-group>
-                    <form-group name="address2" label="">
+                    <form-group name="address2" label="common.empty">
                         <input type="text" class="form-control" id="address2" name="address2" :placeholder="$t('registration.address_line2')" v-model="registration.address2" v-validate>
                     </form-group>
                                 
@@ -163,7 +190,7 @@ import languages from "services/languages.js";
 import status from "mixins/status.js";
 import session from "services/session.js";
 import ENV from "config";
-import { getLocale, setLocale } from "services/lang.js";
+import { getLocale, setLocale, addBundle } from "services/lang.js";
 import FormGroup from 'components/FormGroup.vue';
 import ErrorBox from 'components/ErrorBox.vue';
 import Panel from 'components/Panel.vue';
@@ -183,7 +210,8 @@ export default {
     welcomemsg : false,
 
     action : null,
-    login : null
+    login : null,
+	role : "user"
   }),
 
   components : {
@@ -213,11 +241,13 @@ export default {
 
 	addressNeeded() {
         const { $data } = this;
+		if ($data.role == "research" || $data.role == "provider" ) return true;
 		return $data.app && $data.app.requirements && ($data.app.requirements.indexOf('ADDRESS_ENTERED') >= 0 ||  $data.app.requirements.indexOf('ADDRESS_VERIFIED') >=0 );
 	},
 	
 	phoneNeeded() {
         const { $data } = this;
+		if ($data.role == "research" || $data.role == "provider") return true;
 		return $data.app && $data.app.requirements && ($data.app.requirements.indexOf('PHONE_ENTERED') >= 0 ||  $data.app.requirements.indexOf('PHONE_VERIFIED') >=0 );
 	},
 
@@ -234,6 +264,12 @@ export default {
 	languageNeeded() {
 		const { $data, $route } = this;
 		return !$route.query.lang;
+	},
+
+	secureChoice() {
+		const { $data } = this;
+		if ($data.role == "research" || $data.role == "provider") return false;
+		return true;
 	},
 	
 	showTerms(def) {		
@@ -327,11 +363,15 @@ export default {
 					  me.confirmWelcome(); 
 				  }
 			  });
-			  
-			} else {
-			
-			  me.doAction("register", server.post(jsRoutes.controllers.Application.register().url, data)).
-			  then(function(data) { session.postLogin(data, $router, $route); });
+			} else if ($data.role == "research") {
+				me.doAction("register", server.post(jsRoutes.controllers.research.Researchers.register().url, data))
+		        .then(function(data) { session.postLogin(data, $router, $route); });
+			} else if ($data.role == "provider") {
+				me.doAction("register", server.post(jsRoutes.controllers.providers.Providers.register().url, data))
+		        .then(function(data) { session.postLogin(data, $router, $route); });			
+			} else {			
+				me.doAction("register", server.post(jsRoutes.controllers.Application.register().url, data)).
+				then(function(data) { session.postLogin(data, $router, $route); });
 			}
 			
 		};
@@ -358,7 +398,14 @@ export default {
   created() {    
      const { $data, $route } = this, me = this;
      $data.offline = (window.jsRoutes === undefined) || (window.jsRoutes.controllers === undefined);
-
+	 $data.role = $route.meta.role;
+	 if ($data.role == "research") {
+		 addBundle("researchers");
+		 $data.registration.secure = true;
+	 } else if ($data.role == "provider") {
+		 addBundle("providers");
+		 $data.registration.secure = true;
+	 }
      this.doBusy(server.get(jsRoutes.controllers.Terms.currentTerms().url).then(function(result) { $data.currentTerms = result.data; }));
 
      $data.days = [];

@@ -25,5 +25,10 @@ export default {
     instanceType : instance.instanceType,
     languages : instance.portal.languages,
     countries : instance.portal.countries,
-    build : require('../package.json').version
+    build : require('../package.json').version,
+    platform: instance.platform,
+    operator: instance.operator,
+    support: instance.support,
+    homepage: instance.homepage,
+    domain: instance.domain
 };
