@@ -37,15 +37,29 @@
 					<h3 v-t="'researcher_registration.research_organization'"></h3>
 					<div class="required">
 						<form-group name="name" label="researcher_registration.name" :path="errors.name"> 
-							<input type="text" class="form-control" name="name" :placeholder="$t('researcher_registration.name')" v-model="registration.name" required>
+							<input type="text" class="form-control" name="name" :placeholder="$t('researcher_registration.name')" v-validate v-model="registration.name" required>
 						</form-group>
 						<form-group name="description" label="researcher_registration.description" :path="errors.description">
-							<textarea class="form-control" name="description" rows="5" v-model="registration.description" required></textarea> 
+							<textarea class="form-control" name="description" rows="5" v-validate v-model="registration.description" required></textarea> 
 						</form-group>
 						<h3 v-t="'researcher_registration.research_user'">Research User</h3>
 					</div>
 				</div>
-
+				<div v-if="role=='provider'">
+					<h3 v-t="'provider_registration.provider'"></h3>
+					<div class="required">
+						<form-group name="name" label="provider_registration.name" :path="errors.name"> 
+							<input type="text" class="form-control" name="name" :placeholder="$t('provider_registration.name')" v-validate v-model="registration.name" required>							    
+						</form-group>	
+					</div>
+					<form-group name="description" label="provider_registration.description" :path="errors.description">
+						<textarea class="form-control" name="description" rows="5" v-validate v-model="registration.description"></textarea>
+					</form-group>
+					<form-group name="url" label="provider_registration.url" :path="errors.url">
+						<input type="text" class="form-control" name="url" placeholder="https://www.example.com" v-validate v-model="registration.url">
+					</form-group>  						  
+					<h3 v-t="'provider_registration.user'"></h3>
+				</div>
                  <div class="required">								  
 				    <form-group name="email" label="registration.email" :path="errors.email">
 						<input type="email" class="form-control" id="email" name="email" :placeholder="$t('registration.email')" v-model="registration.email" required v-validate>									
@@ -227,13 +241,13 @@ export default {
 
 	addressNeeded() {
         const { $data } = this;
-		if ($data.role == "research") return true;
+		if ($data.role == "research" || $data.role == "provider" ) return true;
 		return $data.app && $data.app.requirements && ($data.app.requirements.indexOf('ADDRESS_ENTERED') >= 0 ||  $data.app.requirements.indexOf('ADDRESS_VERIFIED') >=0 );
 	},
 	
 	phoneNeeded() {
         const { $data } = this;
-		if ($data.role == "research") return true;
+		if ($data.role == "research" || $data.role == "provider") return true;
 		return $data.app && $data.app.requirements && ($data.app.requirements.indexOf('PHONE_ENTERED') >= 0 ||  $data.app.requirements.indexOf('PHONE_VERIFIED') >=0 );
 	},
 
@@ -254,7 +268,7 @@ export default {
 
 	secureChoice() {
 		const { $data } = this;
-		if ($data.role == "research") return false;
+		if ($data.role == "research" || $data.role == "provider") return false;
 		return true;
 	},
 	
@@ -351,9 +365,11 @@ export default {
 			  });
 			} else if ($data.role == "research") {
 				me.doAction("register", server.post(jsRoutes.controllers.research.Researchers.register().url, data))
+		        .then(function(data) { session.postLogin(data, $router, $route); });
+			} else if ($data.role == "provider") {
+				me.doAction("register", server.post(jsRoutes.controllers.providers.Providers.register().url, data))
 		        .then(function(data) { session.postLogin(data, $router, $route); });			
-			} else {
-			
+			} else {			
 				me.doAction("register", server.post(jsRoutes.controllers.Application.register().url, data)).
 				then(function(data) { session.postLogin(data, $router, $route); });
 			}
@@ -385,6 +401,9 @@ export default {
 	 $data.role = $route.meta.role;
 	 if ($data.role == "research") {
 		 addBundle("researchers");
+		 $data.registration.secure = true;
+	 } else if ($data.role == "provider") {
+		 addBundle("providers");
 		 $data.registration.secure = true;
 	 }
      this.doBusy(server.get(jsRoutes.controllers.Terms.currentTerms().url).then(function(result) { $data.currentTerms = result.data; }));

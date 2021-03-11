@@ -81,6 +81,7 @@ import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import controllers.Application;
 import controllers.Circles;
+import models.Circle;
 import models.Consent;
 import models.HPUser;
 import models.HealthcareProvider;
@@ -97,6 +98,7 @@ import models.enums.AccountActionFlags;
 import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
+import models.enums.ConsentType;
 import models.enums.EMailStatus;
 import models.enums.Gender;
 import models.enums.InformationType;
@@ -907,6 +909,30 @@ public class PatientResourceProvider extends RecordBasedResourceProvider<Patient
 			      String serviceUrl = InstanceConfig.getInstance().getServiceURL()+"?consent="+consent._id+"&login="+URLEncoder.encode(user.email, "UTF-8");
 			      thePatient.addExtension(new Extension("http://midata.coop/extensions/service-url", new UriType(serviceUrl)));
 				} catch (UnsupportedEncodingException e) {}
+			}
+		} else {
+			User executorUser = info().cache.getUserById(info().ownerId);
+			if (executorUser.getRole()==UserRole.MEMBER) {
+				Consent consent = new Circle();
+				consent.type = ConsentType.REPRESENTATIVE;
+				consent.owner = user._id;
+				consent.name = executorUser.getPublicIdentifier();
+				consent.creatorApp = info.pluginId;
+				consent.authorized = new HashSet<MidataId>();
+				consent.status = existing == null ? ConsentStatus.ACTIVE : ConsentStatus.UNCONFIRMED;
+				consent.authorized.add(info().ownerId);
+				consent.writes=WritePermissionType.UPDATE_AND_CREATE;
+				consent.sharingQuery = new HashMap<String, Object>();
+				consent.sharingQuery.put("group", "all");
+				consent.sharingQuery.put("group-system", "v1");
+			
+				Circles.addConsent(executorId, consent, false, null, true);
+				if (consent.status == ConsentStatus.UNCONFIRMED) {
+					try {
+				      String serviceUrl = InstanceConfig.getInstance().getServiceURL()+"?consent="+consent._id+"&login="+URLEncoder.encode(user.email, "UTF-8");
+				      thePatient.addExtension(new Extension("http://midata.coop/extensions/service-url", new UriType(serviceUrl)));
+					} catch (UnsupportedEncodingException e) {}
+				}
 			}
 		}
 

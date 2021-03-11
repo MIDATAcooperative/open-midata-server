@@ -36,8 +36,22 @@
                         </div>
                     </div>
                 </div>
+
+				<div class="col-sm-3">
+                    <div class="card"  @click="consent.type='REPRESENTATIVE';consent.writesBool=true;consent.query={group:'all'};">
+                        <img :src="getIconRole('representative')" class="card-img-top">
+                        <div class="card-body">                
+                            <span class="card-text" v-t="'newconsent.share_representative'"></span>  
+                            <a href="javascript:" class="card-link" v-t="'newconsent.select'"></a>     
+                        </div>
+                    </div>
+                </div>
             </div>
 			<div v-else>
+				<div class="row extraspace" v-if="consent && consent.type=='REPRESENTATIVE'">
+					<div class="col-12"><div class="alert alert-warning" v-t="'editconsent.type_representative'"></div></div>
+				</div>
+
 				<div class="row extraspace" v-if="consentId">  
                       
       				<div class="col-md-6">      
@@ -101,7 +115,7 @@
 							<div class="card-body">
 							<img src="/images/question.jpeg" class="float-left consenticon">
 							<div class="iconspace">
-								<div v-t="editconsent.external"></div>
+								<div v-t="'editconsent.external'"></div>
 								<div><strong>{{ consent.externalOwner }}</strong></div>
 							</div>
 						</div>
@@ -194,7 +208,7 @@
 					<div class="margin-top" v-if="mayAddPeople()">
 						<button type="button" :disabled="action!=null" class="btn btn-default" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.owner != userId && consent.authorized.indexOf(userId)<0" @click="addYourself();" v-t="'newconsent.add_yourself_btn'"></button>
 						<button type="button" :disabled="action!=null" class="btn btn-default" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.entityType!='USERGROUP'" @click="addPeople();" v-t="'newconsent.add_person_btn'"></button>
-						<button type="button" :disabled="action!=null" class="btn btn-default" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.entityType!='USER' && consent.type!='CIRCLE'" @click="addUserGroup();" v-t="'newconsent.add_usergroup_btn'"></button>
+						<button type="button" :disabled="action!=null" class="btn btn-default" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.entityType!='USER' && consent.type!='CIRCLE' && consent.type!='REPRESENTATIVE'" @click="addUserGroup();" v-t="'newconsent.add_usergroup_btn'"></button>
 					</div>
 					<div class="extraspace"></div>
 			
@@ -208,15 +222,18 @@
         
             <p><b v-t="'editconsent.what_is_shared'"></b></p>
         <!-- <div v-if="groupLabels.length && groupLabels.length < 5">{{ groupLabels.join(", ") }}</div>  -->
-                <ul v-if="groupLabels && groupLabels.length">
-                    <li v-for="label in groupLabels" :key="label">{{ label }}</li>
-                </ul>
-                <div v-if="groupExcludeLabels && groupExcludeLabels.length">
-                    <span v-t="'editconsent2.exclude'"></span>: {{ groupExcludeLabels.join(", ") }}
-                </div>
-        
+		        <p v-if="consent.type=='REPRESENTATIVE'" v-t="'editconsent.type_representative'"></p>
+				<div v-else>
+					<ul v-if="groupLabels && groupLabels.length">
+						<li v-for="label in groupLabels" :key="label">{{ label }}</li>
+					</ul>
+					<div v-if="groupExcludeLabels && groupExcludeLabels.length">
+						<span v-t="'editconsent2.exclude'"></span>: {{ groupExcludeLabels.join(", ") }}
+					</div>
+				</div>
                 <p v-if="sharing.records.length == 0 && !sharing.query.group.length" v-t="'editconsent.consent_empty'"></p>
                 <p v-if="sharing.records.length">{{ $t('editconsent.shares_records', { count : sharing.records.length }) }}</p>
+				
                 <div class="extraspace"></div>
                 <p><b v-t="'editconsent.restrictions'"></b></p>
                 <p>{{ $t('enum.writepermissiontype.'+(consent.writes || 'NONE')) }}</p>
@@ -352,6 +369,7 @@ export default {
 	data: () => ({
         types : [
 	        { value : "CIRCLE", label : "enum.consenttype.CIRCLE"},
+			{ value : "REPRESENTATIVE", label : "enum.consenttype.REPRESENTATIVE"},
 	        { value : "HEALTHCARE", label : "enum.consenttype.HEALTHCARE" },
 	        { value : "STUDYPARTICIPATION", label : "enum.consenttype.STUDYPARTICIPATION" },
 			{ value : "EXTERNALSERVICE", label : "enum.consenttype.EXTERNALSERVICE" },
@@ -581,7 +599,11 @@ export default {
 			   }));
 			} else {
 			  if (!actions.showAction($router, $route)) {
-			    $router.push({ path : "./records", query : { selectedType : "circles", selected : result.data._id }});
+				  if ($data.consent.type=='REPRESENTATIVE') {
+                    $router.push({ path : "./editconsent", query : { consentId : $data.consent._id }});
+				  } else {
+			        $router.push({ path : "./records", query : { selectedType : "circles", selected : result.data._id }});
+				  }
 			  }
 			}
 		});
@@ -660,7 +682,7 @@ export default {
 	
 	addPeople() {
         const { $data, $route, $router } = this, me = this;
-		if ($data.consent.type != "CIRCLE") {
+		if ($data.consent.type != "CIRCLE" && $data.consent.type != "REPRESENTATIVE") {
 		  $data.setupProvidersearch = {}; //views.setView("providersearch", { callback : addPerson });	
 		} else {
 		  $data.setupAdduser = { consent : $data.consent };
@@ -829,6 +851,7 @@ export default {
 		if (item == "community") return "/images/community.jpeg";
 		if (item == "external") return "/images/question.jpeg";
 		if (item == "reshare") return "/images/community.jpeg";
+		if (item == "representative") return "/images/contract.jpeg";
 		if (session.user && item._id == session.user._id) return "/images/account.jpg";
 		if (item=="member" || item.role == "MEMBER") return "/images/account.jpg";
 		if (item=="research" || item.role == "RESEARCH") return "/images/research2.jpeg";

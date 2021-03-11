@@ -15,23 +15,16 @@
  * along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-angular.module('portal')
-.config(["$stateProvider", function($stateProvider) {
-	   $stateProvider
-	    .state('member.circles', {
-	      url: '/circles?circleId',
-	      templateUrl: 'views/members/consents/consents.html',	      
-	      dashId : 'circles',
-	      types : ['CIRCLE','HEALTHCARE','REPRESENTATIVE']
-	    })
-	    .state('provider.circles', {
-	      url: '/circles?circleId',
-	      templateUrl: 'views/members/consents/consents.html',	      
-	      dashId : 'circles'
-	    })
-	    .state('research.circles', {
-	      url: '/circles?circleId',
-	      templateUrl: 'views/members/consents/consents.html',	      
-	      dashId : 'circles'
-	    });
-}]);
+import server from "./server";
+
+	var service = {};
+	
+	service.search = function(criteria) {
+	    return server.post(jsRoutes.controllers.providers.Providers.search().url, criteria);
+	};
+	
+	service.getMember = function(id) {
+		return server.post(jsRoutes.controllers.providers.Providers.getMember(id).url);
+	};
+	
+	export default service;

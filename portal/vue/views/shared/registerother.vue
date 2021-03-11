@@ -111,6 +111,7 @@ export default {
    	getTitle() {
         const { $data, $t } = this;
         if ($data.mode=="researcher") return $t('addresearcher.sign_up');
+        if ($data.mode=="provider") return $t('addprovider.sign_up');
         return $t('addparticipant.sign_up');
     },
 
@@ -149,6 +150,8 @@ export default {
 		var data = $data.registration;			        	
         if ($route.meta.mode == "researcher") {
 		    me.doAction("register", server.post(jsRoutes.controllers.research.Researchers.registerOther().url, data));						
+        } else if ($route.meta.mode == "provider") {
+		    me.doAction("register", server.post(jsRoutes.controllers.providers.Providers.registerOther().url, data));						
         } else if ($route.meta.mode == "participant") {
             
                                              		

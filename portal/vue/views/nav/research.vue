@@ -51,7 +51,7 @@
 		<p>{{ $t('footer.copyright', { now : currentYear }) }}</p>
 
 		<ul>
-			<li><a href="@HOMEPAGE" v-t="'footer.homepage'"></a></li>			
+			<li><a :href="homepage" v-t="'footer.homepage'"></a></li>			
 			<li><router-link :to="{ path : './terms', query : {which : 'midata-terms-of-use'} }" v-t="'registration.agb3'">Terms of Use</router-link></li>
 			<li><router-link :to="{ path : './terms' ,query : {which : 'midata-privacy-policy'} }" v-t="'registration.privacypolicy3'">Privacy Policy</router-link></li>
 
@@ -75,7 +75,8 @@ export default {
 	user : { subroles:[] },
 	circles : { unconfirmed : 0, apps : 0, studies : 0 },
 	beta : ENV.beta,
-	me_menu : []
+	me_menu : [],
+	homepage : ENV.homepage
   }),
       
     methods : {

@@ -63,6 +63,7 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
+import utils.ApplicationTools;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.PasswordHash;
@@ -337,6 +338,13 @@ public class Circles extends APIController {
 			patientRecord = true;
 			consent.writes = WritePermissionType.NONE;
 			break;
+		case REPRESENTATIVE:
+			consent = new Circle();
+			consent.type = ConsentType.REPRESENTATIVE;
+			if (userId!=null) ((Circle) consent).order = Circle.getMaxOrder(userId) + 1;
+			patientRecord = true;
+			consent.writes = WritePermissionType.UPDATE_AND_CREATE;
+			break;
 		case HEALTHCARE :
 			consent = new MemberKey();
 			patientRecord = true;
@@ -580,7 +588,7 @@ public class Circles extends APIController {
 		if (consent == null) {
 			throw new BadRequestException("error.unknown.consent", "No consent with this id exists.");
 		}
-		if (consent.type != ConsentType.CIRCLE && consent.type != ConsentType.EXTERNALSERVICE && consent.type != ConsentType.API && consent.type != ConsentType.IMPLICIT) throw new BadRequestException("error.unsupported", "Operation not supported");
+		if (consent.type != ConsentType.REPRESENTATIVE && consent.type != ConsentType.CIRCLE && consent.type != ConsentType.EXTERNALSERVICE && consent.type != ConsentType.API && consent.type != ConsentType.IMPLICIT) throw new BadRequestException("error.unsupported", "Operation not supported");
 				
 		switch (consent.type) {
 		case EXTERNALSERVICE:
@@ -750,6 +758,10 @@ public class Circles extends APIController {
 			consentSettingChange(executor, consent);
 			
 			Map<String, Object> query = consent.sharingQuery;
+			if (consent.type.equals(ConsentType.REPRESENTATIVE)) {
+				query = CMaps.map("group","all").map("group-system","v1");
+			}			
+			
 			if (query == null) query = Circles.getQueries(consent.owner, consent._id);			
 			if (query!=null) {
 				if (consent.type.equals(ConsentType.EXTERNALSERVICE)) {
@@ -760,8 +772,16 @@ public class Circles extends APIController {
 				}
 			}
 			
-			if (patientRecord && (consent.type.equals(ConsentType.CIRCLE) || consent.type.equals(ConsentType.HEALTHCARE) || consent.type.equals(ConsentType.STUDYPARTICIPATION))) autosharePatientRecord(executor, consent);
+			if (patientRecord && (consent.type.equals(ConsentType.REPRESENTATIVE) || consent.type.equals(ConsentType.CIRCLE) || consent.type.equals(ConsentType.HEALTHCARE) || consent.type.equals(ConsentType.STUDYPARTICIPATION))) autosharePatientRecord(executor, consent);
+			
+			if (consent.type.equals(ConsentType.REPRESENTATIVE)) {
+				ApplicationTools.linkRepresentativeConsentWithExecutorAccount(executor, consent.owner, consent._id);
+			}
 		} else if (!active && wasActive) {
+			if (consent.type.equals(ConsentType.REPRESENTATIVE)) {
+				RecordManager.instance.removeMeta(executor, consent._id, "_representative");
+			}
+			
 			Set<MidataId> auth = consent.authorized;
 			if (auth.contains(consent.owner)) { auth.remove(consent.owner); }
 			RecordManager.instance.unshareAPSRecursive(consent._id, executor, consent.authorized);

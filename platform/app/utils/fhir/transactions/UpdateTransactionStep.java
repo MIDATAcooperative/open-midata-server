@@ -45,9 +45,15 @@ public class UpdateTransactionStep extends TransactionStep {
 		this.resource = resource;
 	}
 	
+	public UpdateTransactionStep(ResourceProvider<DomainResource, Model> provider, DomainResource resource, Model existing) {
+		this.provider = provider;
+		this.resource = resource;
+		this.record = existing;
+	}
+	
 	@Override
     public void init() throws AppException {
-    	record = provider.fetchCurrent(resource.getIdElement());
+		if (record == null) record = provider.fetchCurrent(resource.getIdElement());
     }
 	
 	@Override
