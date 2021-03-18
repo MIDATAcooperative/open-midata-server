@@ -105,7 +105,7 @@ public class FhirPseudonymizer {
 					for (int i=0;i<lst.size();i++) {
 						Object entry = lst.get(i);
 						if (entry instanceof BSONObject) {
-							lst.put(i, replaceReference(rec, (BasicBSONObject) v));
+							lst.put(i, replaceReference(rec, (BasicBSONObject) entry));
 						}
 					}	
 				}
