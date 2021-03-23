@@ -1,3 +1,19 @@
+<!--
+ This file is part of the Open MIDATA Server.
+ 
+ The Open MIDATA Server is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ any later version.
+ 
+ The Open MIDATA Server is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <template>
 <div class="ignore autosize" v-if="!isBusy">
     <div v-if="records && records.all && records.all.length" class="body"><span class="dashnumber">{{ records.all.length }}</span> <span v-t="'flexiblerecords.records_available'"></span></div>
@@ -30,10 +46,8 @@
 </template>
 <script>
 
-import status from "mixins/status"
-import rl from "mixins/resultlist"
+import { status,rl, ErrorBox } from 'basic-vue3-components'
 import records from "services/records";
-import ErrorBox from "components/ErrorBox.vue";
 
 export default {
     props: [ "setup" ],

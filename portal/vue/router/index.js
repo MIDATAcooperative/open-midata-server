@@ -19,7 +19,6 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 
 import PatientSearch from 'views/provider/patientsearch.vue';
 
-
 const postRegister = () => import(/* webpackChunkName: "oauth" */ 'views/shared/public/postregister.vue');
 const PublicNav = () => import(/* webpackChunkName: "public" */ 'views/nav/public.vue');
 

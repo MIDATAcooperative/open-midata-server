@@ -1,3 +1,19 @@
+<!--
+ This file is part of the Open MIDATA Server.
+ 
+ The Open MIDATA Server is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ any later version.
+ 
+ The Open MIDATA Server is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <template>
     <panel :title="$t('records.title')" :busy="isBusy">
 		
@@ -67,7 +83,7 @@
 			
 		<div class="panel-body" v-if="tree.length === 0" v-t="'records.empty'"></div>
 
-        <modal :title="selectedData.fullLabel.fullLabel" v-if="selectedData && selectedData.allRecords" @close="selectedData=null">
+        <modal :title="((selectedData || {}).fullLabel || {}).fullLabel" :open="selectedData && selectedData.allRecords" @close="selectedData=null" full-width="true" id="details">
 	        
                     <pagination v-model="selectedData.allRecords" search="search"></pagination>
                     
@@ -97,12 +113,9 @@
     </panel>
 </template>
 <script>
-import status from 'mixins/status'
-import rl from 'mixins/resultlist'
+import { status, rl, Modal, ErrorBox } from 'basic-vue3-components';
 import server from "services/server"
 import Panel from "components/Panel.vue"
-import Modal from "components/Modal.vue"
-import ErrorBox from "components/ErrorBox.vue"
 import RecordTreeNode from "components/RecordTreeNode.vue"
 import dateService from "services/date"
 import { getLocale } from "services/lang"

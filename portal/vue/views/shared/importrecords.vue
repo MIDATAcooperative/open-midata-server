@@ -1,4 +1,6 @@
 <!--
+ This file is part of the Open MIDATA Server.
+ 
  The Open MIDATA Server is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
@@ -37,13 +39,12 @@
     </div>
 </template>
 <script>
-import ErrorBox from 'components/ErrorBox.vue';
 import Panel from 'components/Panel.vue';
 import { getLocale } from 'services/lang.js';
 import spaces from 'services/spaces.js';
 import server from 'services/server.js';
 import session from 'services/session.js';
-import status from 'mixins/status.js';
+import { status, ErrorBox } from 'basic-vue3-components';
 import _ from "lodash";
 
 let app = {};

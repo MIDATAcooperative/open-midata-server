@@ -1,3 +1,19 @@
+<!--
+ This file is part of the Open MIDATA Server.
+ 
+ The Open MIDATA Server is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ any later version.
+ 
+ The Open MIDATA Server is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <template>
 <div>
     <study-nav page="study.overview"></study-nav>
@@ -99,7 +115,7 @@
         <button v-if="readyForAbort()" class="btn btn-danger space" @click="abortExecution()" v-t="'studyoverview.abort_study_btn'"></button>   
     </div>
                                 
-    <modal v-if="confirm" @close="cancel()" :title="study.name">
+    <modal id ="studyinf" full-width="true" :open="confirm" @close="cancel()" :title="(study || {}).name">
         <div class="body">
             <p><span v-t="'studyoverview.name'"></span>: <b>{{ study.name }}</b></p>	          
             <p>{{ $t('studyoverview.confirm.'+confirm.id) }}</p>
@@ -121,15 +137,13 @@
 </template>
 <script>
 
-import ErrorBox from "components/ErrorBox.vue"
 import Panel from "components/Panel.vue"
 import TabPanel from "components/TabPanel.vue"
-import Modal from "components/Modal.vue"
 import Auditlog from "components/AuditLog.vue"
 import StudyNav from "components/tiles/StudyNav.vue"
 import server from "services/server.js"
 import usergroups from "services/usergroups.js"
-import status from 'mixins/status.js'
+import { status, ErrorBox, Modal } from 'basic-vue3-components'
 import ENV from 'config';
 
 export default {

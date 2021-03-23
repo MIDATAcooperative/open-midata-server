@@ -26,12 +26,11 @@
     </div>
 </template>
 <script>
-import ErrorBox from 'components/ErrorBox.vue';
 import Panel from 'components/Panel.vue';
 import { getLocale } from 'services/lang.js';
 import spaces from 'services/spaces.js';
 import session from 'services/session.js';
-import status from 'mixins/status.js';
+import { status, ErrorBox } from 'basic-vue3-components';
 
 /*	
 	$scope.goBack = function() {

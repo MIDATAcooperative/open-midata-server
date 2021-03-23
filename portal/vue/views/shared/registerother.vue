@@ -1,3 +1,19 @@
+<!--
+ This file is part of the Open MIDATA Server.
+ 
+ The Open MIDATA Server is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ any later version.
+ 
+ The Open MIDATA Server is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <template>
 
 	
@@ -81,13 +97,9 @@
 import server from "services/server.js";
 import languages from "services/languages.js";
 import fhir from "services/fhir.js";
-import status from "mixins/status.js";
+import { status, FormGroup, ErrorBox, Success, CheckBox } from 'basic-vue3-components';
 import { getLocale } from "services/lang.js";
-import FormGroup from 'components/FormGroup.vue';
-import ErrorBox from 'components/ErrorBox.vue';
-import Success from 'components/Success.vue';
 import Panel from 'components/Panel.vue';
-import CheckBox from 'components/CheckBox.vue';
 import dateService from "services/date.js";
 
 export default {
