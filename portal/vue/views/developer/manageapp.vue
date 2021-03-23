@@ -1,3 +1,19 @@
+<!--
+ This file is part of the Open MIDATA Server.
+ 
+ The Open MIDATA Server is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ any later version.
+ 
+ The Open MIDATA Server is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <template>
     <panel :title="getTitle()" :busy="isBusy">		  	
 
@@ -217,17 +233,14 @@
 </template>
 <script>
 
-import ErrorBox from "components/ErrorBox.vue"
-import CheckBox from "components/CheckBox.vue"
 import Panel from "components/Panel.vue"
-import FormGroup from "components/FormGroup.vue"
 import server from "services/server.js"
 import terms from "services/terms.js"
 import formats from "services/formats.js"
 import session from "services/session.js"
 import languages from "services/languages.js"
 import apps from "services/apps.js"
-import status from 'mixins/status.js'
+import { status, ErrorBox, CheckBox, FormGroup } from 'basic-vue3-components'
 import ENV from 'config';
 
 export default {

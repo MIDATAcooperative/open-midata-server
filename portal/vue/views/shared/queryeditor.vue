@@ -250,8 +250,6 @@
     </div>
 </template>
 <script>
-import ErrorBox from 'components/ErrorBox.vue';
-import FormGroup from 'components/FormGroup.vue';
 import Panel from 'components/Panel.vue';
 import { getLocale } from 'services/lang.js';
 import server from 'services/server.js';
@@ -259,7 +257,7 @@ import apps from 'services/apps.js';
 import session from 'services/session.js';
 import formats from 'services/formats.js';
 import labels from 'services/labels.js';
-import status from 'mixins/status.js';
+import { status, ErrorBox, FormGroup } from 'basic-vue3-components';
 
 var lookupCodes = function(entry) {
 		entry.codes = [];

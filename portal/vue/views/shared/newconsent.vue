@@ -1,3 +1,19 @@
+<!--
+ This file is part of the Open MIDATA Server.
+ 
+ The Open MIDATA Server is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ any later version.
+ 
+ The Open MIDATA Server is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <template>
 	<div>
     <panel :title="getTitle()" :busy="isBusy">
@@ -326,31 +342,26 @@
         </form>
     </panel>
 	
-	<modal @close="setupProvidersearch=null" v-if="setupProvidersearch" :title="$t('providersearch.title')">
+	<modal id="provSearch" full-width="true" @close="setupProvidersearch=null" :open="setupProvidersearch!=null" :title="$t('providersearch.title')">
 	   <provider-search :setup="setupProvidersearch" @add="addPerson"></provider-search>
 	</modal>
 	
-	<modal @close="setupAdduser=null" v-if="setupAdduser" :title="$t('dashboard.addusers')">
+	<modal id="setupUser" full-width="true" @close="setupAdduser=null" :open="setupAdduser!=null" :title="$t('dashboard.addusers')">
 	  <add-users :setup="setupAdduser" @close="setupAdduser=null" @add="addPerson"></add-users>
 	</modal>
 
-	<modal @close="setupAddowner=null" v-if="setupAddowner" :title="$t('dashboard.addusers')">
+	<modal id="addOwner" full-width="true" @close="setupAddowner=null" :open="setupAddowner!=null" :title="$t('dashboard.addusers')">
 	  <add-users :setup="setupAddowner" @close="setupAddowner=null" @add="setOwnerPerson"></add-users>
 	</modal>
 
-	<modal @close="setupSearchGroup=null" v-if="setupSearchGroup" :title="$t('usergroupsearch.title')">
+	<modal id="searchGroup" full-width="true" @close="setupSearchGroup=null" :open="setupSearchGroup!=null" :title="$t('usergroupsearch.title')">
 	  <user-group-search :setup="setupSearchGroup" @close="setupSearchGroup=null" @add="addPerson"></user-group-search>
 	</modal>
 
 	</div>
 </template>
 <script>
-import CheckBox from 'components/CheckBox.vue'
-import Panel from 'components/Panel.vue'
-import ErrorBox from 'components/ErrorBox.vue'
-import FormGroup from 'components/FormGroup.vue'
-import Modal from 'components/Modal.vue'
-import status from 'mixins/status'
+import { status, CheckBox, ErrorBox, FormGroup, Modal } from 'basic-vue3-components';
 import server from 'services/server';
 import circles from 'services/circles';
 import session from 'services/session';
@@ -361,6 +372,7 @@ import users from 'services/users';
 import hc from 'services/hc';
 import { getLocale } from 'services/lang';
 import ProviderSearch from "components/tiles/ProviderSearch.vue"
+import Panel from "components/Panel.vue"
 import AddUsers from "components/tiles/AddUsers.vue"
 import UserGroupSearch from "components/tiles/UserGroupSearch.vue"
 

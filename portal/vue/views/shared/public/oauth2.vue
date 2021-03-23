@@ -108,12 +108,10 @@
 
 import server from "services/server.js";
 import oauth from "services/oauth.js";
-import status from "mixins/status.js";
+import { status, FormGroup, ErrorBox } from 'basic-vue3-components';
 import session from "services/session.js";
 import ENV from "config";
 import { getLocale, setLocale } from "services/lang.js";
-import FormGroup from 'components/FormGroup.vue';
-import ErrorBox from 'components/ErrorBox.vue';
 import Panel from 'components/Panel.vue';
 
 function getAppInfo(name, type) {

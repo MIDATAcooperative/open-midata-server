@@ -52,24 +52,19 @@
                         </div>											
                     </div>
                 </div>							 				
-            
-            <modal>
-            <div ng-include="def.template"></div>
-            </modal>
-            
-            
+                       
+                        
             </div>
 	    </div>
     </div>
 </template>
 <script>
-import ErrorBox from 'components/ErrorBox.vue';
 import { getLocale } from 'services/lang.js';
 import spaces from 'services/spaces.js';
 import server from 'services/server.js';
 import apps from 'services/apps.js';
 import session from 'services/session.js';
-import status from 'mixins/status.js';
+import { status, ErrorBox } from 'basic-vue3-components';
 import ENV from "config";
 
 /*

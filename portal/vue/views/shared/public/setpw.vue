@@ -51,10 +51,8 @@
 </template>
 <script>
 import server from "services/server.js";
-import status from "mixins/status.js";
+import { status, FormGroup, ErrorBox } from 'basic-vue3-components';
 import crypto from "services/crypto.js";
-import FormGroup from 'components/FormGroup.vue'
-import ErrorBox from 'components/ErrorBox.vue'
 
 export default {
   data: () => ({

@@ -50,9 +50,7 @@
 </template>
 <script>
 import server from "services/server.js";
-import status from "mixins/status.js";
-import FormGroup from 'components/FormGroup.vue'
-import ErrorBox from 'components/ErrorBox.vue'
+import { status, FormGroup, ErrorBox } from 'basic-vue3-components';
 
 export default {
   data: () => ({

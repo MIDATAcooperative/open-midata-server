@@ -298,10 +298,6 @@
 </div>    
 </template>
 <script>
-import CheckBox from 'components/CheckBox.vue'
-import RadioBox from 'components/RadioBox.vue'
-import ErrorBox from 'components/ErrorBox.vue'
-import FormGroup from 'components/FormGroup.vue'
 import Panel from 'components/Panel.vue'
 import TermsModal from 'components/TermsModal.vue'
 
@@ -311,7 +307,7 @@ import users from "services/users.js";
 import oauth from "services/oauth.js";
 import dateService from "services/date.js";
 import languages from "services/languages.js";
-import status from "mixins/status.js";
+import { status, CheckBox, RadioBox, ErrorBox, FormGroup } from 'basic-vue3-components';
 import session from "services/session.js";
 import ENV from "config";
 

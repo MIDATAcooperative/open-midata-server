@@ -61,9 +61,8 @@
 					<h3 v-t="'provider_registration.user'"></h3>
 				</div>
                  <div class="required">								  
-				    <form-group name="email" label="registration.email" :path="errors.email">
-						<input type="email" class="form-control" id="email" name="email" :placeholder="$t('registration.email')" v-model="registration.email" required v-validate>									
-							    
+				    <form-group name="email" label="registration.email" :path="errors.email">						
+						<input type="email" class="form-control" id="email" name="email" :placeholder="$t('registration.email')" v-model="registration.email" required v-validate>																    
 						<router-link v-if="isNew" :to="{ path : './login', query : {action:action, login:login} }" v-t="'registration.already_have_account'"></router-link>
 					</form-group>
 					<form-group name="password" label="registration.password" :path="errors.password"> 
@@ -187,15 +186,13 @@ import crypto from "services/crypto.js";
 import oauth from "services/oauth.js";
 import dateService from "services/date.js";
 import languages from "services/languages.js";
-import status from "mixins/status.js";
+import { status, FormGroup, ErrorBox, CheckBox } from 'basic-vue3-components';
 import session from "services/session.js";
 import ENV from "config";
 import { getLocale, setLocale, addBundle } from "services/lang.js";
-import FormGroup from 'components/FormGroup.vue';
-import ErrorBox from 'components/ErrorBox.vue';
 import Panel from 'components/Panel.vue';
 import TermsModal from 'components/TermsModal.vue';
-import CheckBox from 'components/CheckBox.vue';
+
 
 export default {
   data: () => ({

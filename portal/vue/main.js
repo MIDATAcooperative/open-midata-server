@@ -20,7 +20,7 @@ import { createApp, watch } from 'vue'
 import App from './App.vue';
 import router from './router';
 import { setupI18n, loadLocaleMessages } from "services/lang.js";
-import Filters from 'services/filters.js';
+import { Filters } from 'basic-vue3-components';
 import PluginFrame from "directives/pluginframe.js";
 
 require('bootstrap/dist/js/bootstrap.bundle');
