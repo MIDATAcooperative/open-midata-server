@@ -317,10 +317,24 @@ public class OAuth2 extends Controller {
 	public static Pair<User, MobileAppInstance> useRefreshToken(String refresh_token) throws AppException {
 		OAuthRefreshToken refreshToken = OAuthRefreshToken.decrypt(refresh_token);
 		if (refreshToken == null) throw new BadRequestException("error.internal", "Bad refresh_token.");
-		if (refreshToken.created + MobileAPI.DEFAULT_REFRESHTOKEN_EXPIRATION_TIME < System.currentTimeMillis()) OAuth2.invalidToken();
+		
 		MidataId appInstanceId = refreshToken.appInstanceId;
 		
 		MobileAppInstance appInstance = MobileAppInstance.getById(appInstanceId, Sets.create("owner", "appVersion", "applicationId", "status", "licence"));
+		
+		if (refreshToken.created + MobileAPI.DEFAULT_REFRESHTOKEN_EXPIRATION_TIME < System.currentTimeMillis()) {
+			// Begin: Allow expired refresh tokens for key recovery
+		    boolean isInvalid = true;
+			if (appInstance != null && appInstance.owner != null) {
+			  User checkuser = User.getById(appInstance.owner, User.ALL_USER_INTERNAL);
+			  if (checkuser != null && checkuser.flags != null && checkuser.flags.contains(AccountActionFlags.KEY_RECOVERY)) {
+				  isInvalid = false;
+			  }
+			}
+			// End: Allow expired refresh tokens for key recovery
+			if (isInvalid) OAuth2.invalidToken();
+		}
+		
 		if (!verifyAppInstance(appInstance, refreshToken.ownerId, refreshToken.appId, null)) throw new BadRequestException("error.internal", "Bad refresh token.");
 		
 		Plugin app = Plugin.getById(appInstance.applicationId);
