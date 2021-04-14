@@ -77,7 +77,7 @@ import server from './server.js';
 	};
 	
 	service.setUnlockCode = function(code) {
-		console.log("set:"+code);
+		
 		cred.unlockCode = code;
 	};
 	

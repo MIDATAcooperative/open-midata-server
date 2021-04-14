@@ -42,9 +42,7 @@
         if (year <= 1900 || year > 3000) return false;
         month = month - 1; // Zero based in javascript
         var composedDate = new Date(year, month, day);
-        console.log(composedDate);
-        console.log(day);
-        console.log(composedDate.getDate());
+      
         return composedDate.getDate() == day &&
                 composedDate.getMonth() == month &&
                 composedDate.getFullYear() == year;

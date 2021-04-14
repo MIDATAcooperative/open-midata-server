@@ -94,7 +94,7 @@ export default {
 		    me.doBusy(circles.listConsents(prop, [ "name", "authorized", "type", "status", "records", "dateOfCreation" ])
 		    .then(function(data) {
                 $data.consents = me.process(data.data, { filter : { name : "" } });						
-                console.log($data.consents.all.length);
+               
 		    }));
 	    },
 	

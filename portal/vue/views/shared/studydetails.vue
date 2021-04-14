@@ -334,7 +334,7 @@ export default {
 
 	    terms(def) {
             const { $data, $route, $router } = this, me = this;
-            console.log("TERMS");
+           
             views.setView("terms", { which : def }, "Terms");
 		},
 		

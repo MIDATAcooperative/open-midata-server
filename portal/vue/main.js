@@ -20,7 +20,7 @@ import { createApp, watch } from 'vue'
 import App from './App.vue';
 import router from './router';
 import { setupI18n, loadLocaleMessages } from "services/lang.js";
-import { Filters } from 'basic-vue3-components';
+import Vue3Components, { Filters } from 'basic-vue3-components';
 import PluginFrame from "directives/pluginframe.js";
 
 require('bootstrap/dist/js/bootstrap.bundle');
@@ -35,7 +35,7 @@ const i18n = setupI18n({
 const app = createApp(App);   
 app.config.globalProperties.$filters = Filters;
 app.config.globalProperties.$t = i18n.$ts;
-
+app.use(Vue3Components);
 app.directive('t', {
   mounted(el, binding) { 	 
 	let v = i18n.$t(binding.value);
@@ -47,63 +47,14 @@ app.directive('t', {
 app.directive('floating', {
   
     mounted: function( elem, binding ) {
-        console.log(elem);
+       
         elem.addEventListener('keyup', function() { if (elem.value) elem.classList.add("mi-x-has_value"); else elem.classList.remove("mi-x-has_value"); /*setAttribute('value', elem.value);*/ });
         elem.addEventListener('change', function() { if (elem.value) elem.classList.add("mi-x-has_value"); else elem.classList.remove("mi-x-has_value"); /*setAttribute('value', elem.value);*/ });          
         if (elem.value!="") elem.classList.add("mi-x-has_value");
     }
 });
 
-app.directive('validate', {
-  mounted(el, binding) {    
-    // We don't care about binding here.
-    el.addEventListener('input', (e) => {
-      const vm = binding.instance; // this is the Vue instance.   
-      
-      if (binding.value) {
-        el.setCustomValidity(binding.value.call(binding.instance, el.value));
-      }
-      vm.finished = null;
-      vm.errors = Object.assign({}, vm.errors, {
-        [el.name]: e.target.validationMessage
-      });
-     
-    });
-    el.addEventListener('invalid', (e) => {
-      const vm = binding.instance; // this is the Vue instance.              
-      vm.errors = Object.assign({}, vm.errors, {
-        [el.name]: e.target.validationMessage
-      });
-     
-    });
-  },
-});
 
-app.directive('submit', {
-  mounted(el2, binding) {   
-    // We don't care about binding here.
-    let el = el2.form;
-    el2.addEventListener('click', (e) => {
-               
-        if (!el.checkValidity()) {
-          e.preventDefault();
-          e.stopPropagation();        
-        }
-
-        const vm = binding.instance;
-        vm.error = null;
-        for (let field of vm.errors._custom) {
-          el[field].classList.remove("is-invalid");
-        }
-        vm.errors = Object.assign({}, vm.errors, {
-          "_custom": []
-        });
-
-        el.classList.add('was-validated')
-      }, true);
-    
-  }
-});
 app.directive("pluginframe", PluginFrame);
 
 app.use(router);

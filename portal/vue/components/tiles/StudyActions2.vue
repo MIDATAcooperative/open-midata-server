@@ -89,7 +89,9 @@
 		</tr>
 	</table>
 </panel>
+<div v-if="showKeys">
 <apikeys></apikeys>
+</div>
 </template>
 <script>
 

@@ -42,8 +42,8 @@
 	            </form-group>
 	           
 	            <form-group name="password" label="accountwipe.password" :path="errors.password">
-				    <input type="password" class="form-control" id="password" name="password" v-model="user.password" v-validate
-					required autocomplete="off">
+				    <password class="form-control" id="password" name="password" v-model="user.password" 
+					required autocomplete="off" />
 				</form-group>
 				
 				<form-group name="reason" label="accountwipe.reason" :path="errors.reason">
@@ -69,7 +69,7 @@ import users from "services/users.js"
 import languages from "services/languages.js"
 import ENV from "config"
 import { setLocale } from 'services/lang.js';
-import { status, CheckBox, ErrorBox, FormGroup, RadioBox } from 'basic-vue3-components'
+import { status, CheckBox, ErrorBox, FormGroup, RadioBox, Password } from 'basic-vue3-components'
 
 export default {
   
@@ -78,7 +78,7 @@ export default {
         isSelf : false        
 	}),	
 
-    components: { RadioBox, Panel, FormGroup, ErrorBox },
+    components: { RadioBox, Panel, FormGroup, ErrorBox, Password },
 
     mixins : [ status ],
   

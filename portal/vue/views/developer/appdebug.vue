@@ -17,11 +17,8 @@
 <template>
     
 		
-	<div class="panel panel-primary">
-		<div class="panel-heading"><span v-t="'appdebug.title'"></span>: <b>{{ app.name }}</b> ({{ app.filename }})		  	
-		</div>
-		<div class="body">
-        
+	<panel :title="getTitle()" :busy="isBusy">
+		
         <form class="form">
         
         <div v-if="saved.length">
@@ -59,7 +56,7 @@
          
          <div class="col-3">
            <label v-t="'appdebug.portal_password'">Password:</label>
-           <input type="password" class="form-control" v-validate v-model="portal.password">
+           <password class="form-control" v-model="portal.password"></password>
          </div>
          <div class="col-3">
            <label v-t="'appdebug.portal_role'">Role:</label>
@@ -141,38 +138,24 @@
       </div>
       </div>
       
-		</div>
-    </div>
-
+	</panel>
 </template>
 <script>
-/*
-angular.module('portal')
-.controller('AppDebugCtrl', ['$scope', '$state', 'session', 'server', 'status', '$translatePartialLoader', 'apps', '$http', 'ENV', 'crypto', '$window', function($scope, $state, session, server, status, $translatePartialLoader, apps, $http, ENV, crypto, $window) {
-	
-	
-	
-
-	
-	
-
-	$translatePartialLoader.addPart("developers");
-	
-	
-}]);
-*/
-
 
 import ChangeLog from "components/tiles/ChangeLog.vue"
 import Panel from "components/Panel.vue"
 import session from "services/session.js"
+import server from "services/server.js"
 import apps from "services/apps.js"
-import { rl, status, ErrorBox, FormGroup } from 'basic-vue3-components'
+import { rl, status, ErrorBox, FormGroup, Password } from 'basic-vue3-components'
+import ENV from "config";
+import Axios from "axios";
 
 export default {
 
     data: () => ({	        
         server : ENV.apiurl,
+        app : null,
         url : "/fhir/Patient",
         type : "GET",
         authheader : "",
@@ -194,109 +177,121 @@ export default {
         ]
     }),
 
-    components: {  Panel, ErrorBox, FormGroup, ChangeLog },
+    components: {  Panel, ErrorBox, FormGroup, ChangeLog, Password },
 
     mixins : [ status, rl ],
 
     methods : {
+        getTitle() {
+            const { $data, $t } = this, me = this;
+            if (!$data.app) return $t('appdebug.title');
+            return $t('appdebug.title')+": "+$data.app.name+" "+$data.app.filename;
+        },
         dosubmit() {
-    	 if (!$data.url.startsWith("/")) {
-    		 $data.results = "Invalid URL: No '/' at beginning of path.";
-    		 return;
-    	 }  
-    	   
-         var url = $data.server + $data.url;
-                         
-         var body = "";
-         
-         if ($data.type !== "GET") {
-         try {
-        	 body = JSON.parse($data.body);
-         } catch (e) {
-        	 $data.results = "Error processing body: \n"+e;
-        	 return;
-         }
-         }
-         
-         var call = { method: $data.type, url: url, data : body, headers:{} }; 
-         if ($data.authheader) call.headers = { "Authorization" : $data.authheader, "Prefer" : "return=representation" };
-         call.headers.Accept = "application/fhir+json; "+$data.fhirRelease;
-         
-         $data.results = "Processing request...";
-        
-         
-         //for (var count = 0;count < Number($data.count); count++) {
-        //	 console.log(count);
-	         $http(call)
-	         .then(function(data1) {
-	        	 var data  = data1.data;
-	        	 if ($data.url === "/v1/auth" && data.authToken) {
-	        		 $data.authheader = "Bearer " + data.authToken;
-	        	 } 
-	        	 $data.results = JSON.stringify(data, null, 2); 
-	          }, function(x) { $data.results = x.status + ":" + JSON.stringify(x.data, null, 2); });
-         //}
+          const { $data, $route } = this, me = this;
+            if (!$data.url.startsWith("/")) {
+              $data.results = "Invalid URL: No '/' at beginning of path.";
+              return;
+            }  
+          
+          var url = $data.server + $data.url;
+                          
+          var body = "";
+          
+          if ($data.type !== "GET") {
+          try {
+            body = JSON.parse($data.body);
+          } catch (e) {
+            $data.results = "Error processing body: \n"+e;
+            return;
+          }
+          }
+          
+          var call = { method: $data.type, url: url, data : body, headers:{} }; 
+          if ($data.authheader) call.headers = { "Authorization" : $data.authheader, "Prefer" : "return=representation" };
+          call.headers.Accept = "application/fhir+json; "+$data.fhirRelease;
+          
+          $data.results = "Processing request...";
+                          
+            Axios(call)
+            .then(function(data1) {
+              var data  = data1.data;
+              if ($data.url === "/v1/auth" && data.authToken) {
+                $data.authheader = "Bearer " + data.authToken;
+              } 
+              $data.results = JSON.stringify(data, null, 2); 
+              }, function(x) { $data.results = x.status + ":" + JSON.stringify(x.data, null, 2); });
+          
         },
 
         dosave() {
-         $data.saved.push({ type : $data.type, url : $data.url, body : ($data.type != "GET" ? $data.body : "") } );
-         window.localStorage.urls = JSON.stringify($data.saved);
+          const { $data, $route } = this, me = this;
+          $data.saved.push({ type : $data.type, url : $data.url, body : ($data.type != "GET" ? $data.body : "") } );
+          window.localStorage.urls = JSON.stringify($data.saved);
         },
 
         doload(e) {
-         $data.url = e.url;
-         $data.body = e.body;
-         $data.type = e.type;
+          const { $data, $route } = this, me = this;
+          $data.url = e.url;
+          $data.body = e.body;
+          $data.type = e.type;
         },
 
         dodelete(e) {
-         $data.saved.splice($data.saved.indexOf(e), 1);
-         window.localStorage.urls = JSON.stringify($data.saved);
+          const { $data, $route } = this, me = this;
+          $data.saved.splice($data.saved.indexOf(e), 1);
+          window.localStorage.urls = JSON.stringify($data.saved);
         },
 
         init(userId, appId) {
-		$data.userId = userId;
-		$data.appId = appId;
-			    
-	    me.doBusy(apps.getApps({ "_id" : appId }, ["filename", "name", "targetUserRole", "secret", "redirectUri", "debugHandle", "type", "defaultSubscriptions"]))
-		.then(function(data) { 
-			$data.app = data.data[0];
-			//sessionStorage.returnTo = document.location.href;
-			//$data.body = "{\n    \"appname\":\""+$data.app.filename+"\",\n    \"device\" : \"debug\",\n    \"secret\" : \""+$data.app.secret+"\",\n    \"username\" : \"FILLOUT\",\n    \"password\" : \"FILLOUT\",\n    \"role\" : \""+$data.app.targetUserRole+"\"\n}";
-			
-			if ($route.query.code) {
-				requestAccessToken($route.query.code);
-			}
-		});
+          const { $data, $route } = this, me = this;
+          $data.userId = userId;
+          $data.appId = appId;
+                
+          me.doBusy(apps.getApps({ "_id" : appId }, ["filename", "name", "targetUserRole", "secret", "redirectUri", "debugHandle", "type", "defaultSubscriptions"])
+          .then(function(data) { 
+              $data.app = data.data[0];
+              //sessionStorage.returnTo = document.location.href;
+              //$data.body = "{\n    \"appname\":\""+$data.app.filename+"\",\n    \"device\" : \"debug\",\n    \"secret\" : \""+$data.app.secret+"\",\n    \"username\" : \"FILLOUT\",\n    \"password\" : \"FILLOUT\",\n    \"role\" : \""+$data.app.targetUserRole+"\"\n}";
+              
+              if ($route.query.code) {
+                requestAccessToken($route.query.code);
+              }
+          }));
 	    },
 	
 	    reload() {
+        const { $data, $route } = this, me = this;
 		    me.init($data.userId, $data.appId);
 	    },
 	
 	    getOAuthLogin() {
-		if (!$data.app) return "";
-		var back = document.location.href;				
-		if (back.indexOf("?") > 0) back = back.substr(0, back.indexOf("?"));
-		return "/oauth.html#/portal/oauth2?response_type=code&client_id="+encodeURIComponent($data.app.filename)+"&redirect_uri="+encodeURIComponent(back)+"&device_id="+encodeURIComponent($data.device);
+        const { $data, $route } = this, me = this;
+        if (!$data.app) return "";
+        var back = document.location.href;				
+        if (back.indexOf("?") > 0) back = back.substr(0, back.indexOf("?"));
+        return "/oauth.html#/portal/oauth2?response_type=code&client_id="+encodeURIComponent($data.app.filename)+"&redirect_uri="+encodeURIComponent(back)+"&device_id="+encodeURIComponent($data.device);
 	    },
 	
 	    doOauthLogin() {
-		sessionStorage.oldToken = sessionStorage.token;
-		sessionStorage.oldDevice = $data.device;
-		sessionStorage.oldFhirRelease = $data.fhirRelease;
-		$window.document.location.href = me.getOAuthLogin();
+        const { $data, $route } = this, me = this;
+        sessionStorage.oldToken = sessionStorage.token;
+        sessionStorage.oldDevice = $data.device;
+        sessionStorage.oldFhirRelease = $data.fhirRelease;
+        window.document.location.href = me.getOAuthLogin();
 	    },
 	
 	    startDebug() {
+        const { $data, $route } = this, me = this;
 	    	var data = { plugin : $data.app._id, action : "start" };
-	        me.doAction("debug", server.post(jsRoutes.controllers.Market.setSubscriptionDebug().url, JSON.stringify(data)))
+	        me.doAction("debug", server.post(jsRoutes.controllers.Market.setSubscriptionDebug().url, data))
 	        .then(function(result) {
 	     	   $data.app.debugHandle = result.data.debugHandle;
 	        });
 	    },
 	    
 	    stopDebug() {
+        const { $data, $route } = this, me = this;
 	       var data = { plugin : $data.app._id, action : "stop" };
 	       me.doAction("debug", server.post(jsRoutes.controllers.Market.setSubscriptionDebug().url, data))
 	       .then(function(result) {
@@ -305,39 +300,40 @@ export default {
 	    },
 	 
 	    portalLogin() {
-		 $data.error = null;
-		 var data = {"email": $data.portal.username, "password": crypto.getHash($data.portal.password), "role":$data.portal.role };
-		 var func = function(data) {
-				return server.post(jsRoutes.controllers.Application.authenticate().url, JSON.stringify(data));
-		 };
-			
-		 session.performLogin(func, data, $data.portal.password)
-		 .then(function(result) {
-			 if (result.data.sessionToken) {
-				 var properties = {"visualization": $data.app._id};
-			       var fields = ["name", "visualization", "type", "owner", "order"];
-			       var data = {"properties": properties, "fields": fields};
-			       return $http.post(ENV.apiurl + jsRoutes.controllers.Spaces.get().url, JSON.stringify(data), { headers : { "X-Session-Token" : result.data.sessionToken, "Prefer" : "return=representation" } })
-			         .then(function(r2) {
-			        	if (r2.data.length>0) {
-			        		var spaceId = r2.data[0]._id;
-			        		return $http.get(ENV.apiurl + jsRoutes.controllers.Spaces.getUrl(spaceId, r2.data[0].owner).url, { headers : { "X-Session-Token" : result.data.sessionToken, "Prefer" : "return=representation" } })
-			        		.then(function(r3) {
-			        			$data.authheader = "Bearer "+r3.data.token;
-			        			//console.log(r3.data);
-			        		});
-			        	} else { $data.error = "error.missing.plugin"; } 
-			         });			       
-			       
-			 }
-		 }).catch(function(err) { $data.error = err.data; });
+        const { $data, $route } = this, me = this;
+        $data.error = null;
+        var data = {"email": $data.portal.username, "password": crypto.getHash($data.portal.password), "role":$data.portal.role };
+        var func = function(data) {
+            return server.post(jsRoutes.controllers.Application.authenticate().url, data);
+        };
+          
+        session.performLogin(func, data, $data.portal.password)
+        .then(function(result) {
+          if (result.data.sessionToken) {
+            var properties = {"visualization": $data.app._id};
+                var fields = ["name", "visualization", "type", "owner", "order"];
+                var data = {"properties": properties, "fields": fields};
+                return Axios.post(ENV.apiurl + jsRoutes.controllers.Spaces.get().url, data, { headers : { "X-Session-Token" : result.data.sessionToken, "Prefer" : "return=representation" } })
+                  .then(function(r2) {
+                    if (r2.data.length>0) {
+                      var spaceId = r2.data[0]._id;
+                      return Axios.get(ENV.apiurl + jsRoutes.controllers.Spaces.getUrl(spaceId, r2.data[0].owner).url, { headers : { "X-Session-Token" : result.data.sessionToken, "Prefer" : "return=representation" } })
+                      .then(function(r3) {
+                        $data.authheader = "Bearer "+r3.data.token;
+                        //console.log(r3.data);
+                      });
+                    } else { $data.error = "error.missing.plugin"; } 
+                  });			       
+                
+          }
+        }).catch(function(err) { $data.error = err.data; });
 	    },
-
-        requestAccessToken(code) {
-            
+        
+      requestAccessToken(code) {
+        const { $data, $route } = this, me = this;   
             //console.log("CODE: "+code);
             var body = "grant_type=authorization_code&redirect_uri=x&client_id="+encodeURIComponent($data.app.filename)+"&code="+encodeURIComponent(code);	    
-            $http.post(ENV.apiurl+"/v1/token", body, { headers : { 'Content-Type': 'application/x-www-form-urlencoded' } }).then(function(result) {
+            Axios.post(ENV.apiurl+"/v1/token", body, { headers : { 'Content-Type': 'application/x-www-form-urlencoded' } }).then(function(result) {
             //console.log(result.data);
             
             $data.authheader = "Bearer " + result.data.access_token;
@@ -346,8 +342,8 @@ export default {
             }); 
 	    },
 	
-        onAuthorized(url) {
-
+      onAuthorized(url) {
+        const { $data, $route } = this, me = this;
             var message = null;
             var error = null;
 
@@ -377,15 +373,16 @@ export default {
             }
         
             //authWindow.close();
-        }	
+      }	
 		
     },
 
     created() {
+      const { $data, $route } = this, me = this;
         if (window.localStorage.urls) {
-         $data.saved = JSON.parse(window.localStorage.urls);
-         if (!$data.saved) $data.saved = [];         
-         //console.log($data.saved);
+          $data.saved = JSON.parse(window.localStorage.urls);
+          if (!$data.saved) $data.saved = [];         
+          //console.log($data.saved);
         }
         session.currentUser.then(function(userId) { me.init(userId, $route.query.appId); });	
     }

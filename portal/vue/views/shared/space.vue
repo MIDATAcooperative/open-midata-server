@@ -85,13 +85,13 @@ export default {
 		
 		getAuthToken(space) {
 			const { $data, $route } = this;
-			console.log(space);
+			
 			if (space) {
 				this.doBusy(spaces.getUrl(space, $route.query.user)
 				.then(function(result) {   
 					$data.title = result.data.name;
 					$data.url = spaces.mainUrl(result.data, getLocale(), $data.params);	
-					console.log($data.url);
+					
 				}));
 			}
 		},

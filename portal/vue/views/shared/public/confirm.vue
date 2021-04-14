@@ -358,7 +358,7 @@ export default {
 				
 				for (var l=0;l<data.data.length;l++) {
 					var link = data.data[l];	
-					console.log(link);
+					
 					if (link.type.indexOf("OFFER_P")>=0) {
 						link.labels = [];							
 						link.formatted = [];					

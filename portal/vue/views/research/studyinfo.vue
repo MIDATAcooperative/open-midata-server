@@ -151,7 +151,7 @@ export default {
             const { $data } = this;
 	        //$data.sections = $data.allsections[$data.selection.visibility];  
             $data.infosFiltered = _.filter($data.infos, (x) => x.visibility == $data.selection.visibility );
-	        console.log("DONE");
+	      
         },
    
         submit() {

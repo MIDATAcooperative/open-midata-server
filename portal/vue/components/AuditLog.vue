@@ -90,7 +90,7 @@ angular.module('portal')
     			
     			if (!$scope.all && !$scope.patient && !$scope.entity && !$scope.from && !$scope.to) return;
     			crit._count=1001;
-    			console.log(crit);    		    
+    					    
     			$scope.status.doBusy(fhir.search("AuditEvent", crit))
     			.then(function(log) {
     				//if (!comeback) paginationService.setCurrentPage("membertable", 1); // Reset view to first page
@@ -170,7 +170,7 @@ export default {
     },
 
     watch : {
-        range() { console.log("RE!");this.reload(); }
+        range() { this.reload(); }
     },
 
     mounted() {

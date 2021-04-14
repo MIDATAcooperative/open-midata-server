@@ -589,12 +589,12 @@ export default {
 			
 			$data.query.json = me.buildAccessQuery();
 			$data.query.queryStr = JSON.stringify($data.query.json);
-			console.log($data.query.queryStr);
+			
 		},
 	
 		selectBlock(block) {
 			const { $data, $route, $router } = this, me = this;
-			console.log(block);
+			
 			$data.currentBlock = block;
 			
 			$data.currentBlock.flags = {};		
@@ -791,7 +791,7 @@ export default {
 					if (ac("owner")) {
 						nblock.owner = noarray(ac("owner"));
 					}
-					console.log(nblock);
+				
 					for (let r of unwrap(unwrap(unwrap(unwrap(unwrap([ nblock ],"group"),"code"),"content"),"app"),"format")) {
 						(function(r) {
 						if (!r.app) r.app = "all";

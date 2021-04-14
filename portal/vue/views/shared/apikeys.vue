@@ -79,6 +79,7 @@
 <script>
 
 import session from "services/session.js"
+import Panel from "components/Panel.vue"
 import services from "services/services.js"
 import { status, rl, ErrorBox, Modal } from 'basic-vue3-components'
 

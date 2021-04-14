@@ -48,7 +48,7 @@ import { getLocale } from './lang';
 		if (!existing) {
 			return server.post(jsRoutes.controllers.FormatAPI.searchContents().url, { "properties" : { "content" : name } , "fields" : ["content", "label"] })
 			.then(function(result) {
-				console.log(result.data);
+				
 				if (! result.data || ! result.data.length) return "? ("+name+")";
 				var content = result.data[0];
 				content_translations[content.content] = content.label[lang] || content.label.en || content.content;
@@ -97,8 +97,7 @@ import { getLocale } from './lang';
 	
 	service.isFiltered = function(part, removeRestrictedByAppName, removeUncritical) {
 	  if (part["public"]=="only") return true;
-	  console.log("appn:"+removeRestrictedByAppName);
-	  console.log(part);
+	 
 	  if (part.app && (part.app==="self" || (part.app.length==1 && part.app[0] === removeRestrictedByAppName))) return true;
 	  if (removeUncritical && part.format && service.isUncriticalFormat(part.format)) return true;
 	  return false;
@@ -106,7 +105,7 @@ import { getLocale } from './lang';
 	
 	service.parseAccessQuery = function(lang, query, outerquery, rarray) {
 		return new Promise((resolve, reject) => {
-			console.log("IN:"+lang+":"+JSON.stringify(query));
+			//console.log("IN:"+lang+":"+JSON.stringify(query));
 			let waitFor = [];
 			var ac = function(path) {
 				if (query[path] !== undefined) return query[path];
@@ -171,7 +170,7 @@ import { getLocale } from './lang';
 				if (ac("owner")) {
 					nblock.owner = noarray(ac("owner"));
 				}
-				console.log(nblock);			
+						
 				for (let r of unwrap(unwrap(unwrap(unwrap(unwrap([ nblock ],"group"),"code"),"content"),"app"),"format")) {
 					if (!r.app) r.app = "all";
 					else if (r.app !== "all") { r.appName = r.app; r.app = "other"; }
@@ -179,13 +178,12 @@ import { getLocale } from './lang';
 					
 					var c = r.content;
 					if (c === "Patient" || c === "Group" || c === "Person" || c === "Practitioner") return;	
-					console.log("PRE LOOPUP:");
-					console.log(r);
+					
 					if (r.content) {
 						r.display = "x";
 						let test = function(r2) {
 							waitFor.push(service.getContentLabel(lang, r2.content).then(function(v) { 
-								console.log("RESOLVE:"+v);
+								
 								r2.display = v; 
 							})); 
 						}(r);
@@ -200,8 +198,7 @@ import { getLocale } from './lang';
 					result.push(r); 
 				}
 			}
-			console.log("OUT");
-			console.log(result);
+			
 			Promise.all(waitFor).then(() => resolve(result));			
 		});
 	};

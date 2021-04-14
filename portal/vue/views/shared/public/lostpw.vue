@@ -74,7 +74,7 @@ export default {
     
     submit() {	
         const { $data, $route }	= this;
-        console.log(this);
+       
 		// send the request
 		var data = { "email": $data.lostpw.email, "role" : this.role };
 		this.doAction("pw",server.post(jsRoutes.controllers.Application.requestPasswordResetToken().url, data)).

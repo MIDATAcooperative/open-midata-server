@@ -113,7 +113,7 @@
 		  </form-group>		 
 		  <form-group name="defaultQuery" label="manageapp.access_query_json" class="danger-change" v-if="app._id">
 		    <accessquery query="app.defaultQuery" details="true" isapp="true"></accessquery>		    
-		    <a href="javascript:" @click="go('^.appquery')" v-t="'manageapp.queryeditor_btn'"></a>
+		    <a href="javascript:" @click="go('./query')" v-t="'manageapp.queryeditor_btn'"></a>
 		  </form-group>
 		  <form-group name="writes" label="manageapp.write_mode" class="danger-change" :path="errors.writes">
 		    <select class="form-control" name="writes" v-validate v-model="app.writes" @change="requireLogout();">
@@ -268,7 +268,7 @@ export default {
 	    tags : [
 	        "Analysis", "Import", "Planning", "Protocol", "Expert"
         ],
-		app : { version:0, tags:[], i18n : {}, sendReports:true, redirectUri : "http://localhost", targetUserRole : "ANY", requirements:[], defaultQuery:{ content:[] }, tokenExchangeParams : "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>"  },
+		app : { version:0, tags:[], i18n : {}, sendReports:true, withLogout:true, redirectUri : "http://localhost", targetUserRole : "ANY", requirements:[], defaultQuery:{ content:[] }, tokenExchangeParams : "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>"  },
 		allowDelete : false,
 		allowExport : false,
 		allowStudyConfig : false,
@@ -384,8 +384,7 @@ export default {
 	    },
 
         toggle(array,itm) {
-			const { $data, $route, $router } = this, me = this;
-            console.log(array);
+			const { $data, $route, $router } = this, me = this;            
             var pos = array.indexOf(itm);
             if (pos < 0) array.push(itm); else array.splice(pos, 1);
 	    },
@@ -453,7 +452,7 @@ export default {
 			$data.terms = result.data;
 			if ($route.query.appId != null) { me.loadApp($route.query.appId); }
 			else {
-				let app = { version:0, tags:[], i18n : {}, defaultSubscriptions:[], icons:[], sendReports:true, redirectUri : "http://localhost", targetUserRole : "ANY", requirements:[], defaultQuery:{ content:[] }, tokenExchangeParams : "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>"  };
+				let app = { version:0, tags:[], i18n : {}, defaultSubscriptions:[], icons:[], sendReports:true, withLogout:true, redirectUri : "http://localhost", targetUserRole : "ANY", requirements:[], defaultQuery:{ content:[] }, tokenExchangeParams : "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>"  };
 				for (let lang of $data.languages) {
 					if (!app.i18n[lang]) app.i18n[lang] = { name:null, description:null, defaultSpaceName:null };
 				}

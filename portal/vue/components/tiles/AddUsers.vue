@@ -86,7 +86,7 @@ export default {
 	methods : {
 		reload() {
 			const { $data } = this, me = this;
-			console.log("RELOAD!");
+			
 			me.doBusy(server.get(jsRoutes.controllers.Users.loadContacts().url).
 			then(function(result) {	
 				var f = [];
@@ -128,7 +128,7 @@ export default {
 			var usersToAdd = _.union(contactsToAdd, foundUsersToAdd);
 			var userIds = _.map(usersToAdd, function(user) { return user._id; });
 			userIds = _.uniq(userIds, false, function(userId) { return userId; });
-			console.log(usersToAdd);		
+				
 
 			if (usersToAdd.length === 0) return;
 			$emit("add", usersToAdd);

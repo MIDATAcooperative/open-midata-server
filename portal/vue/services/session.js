@@ -28,14 +28,14 @@ import actions from './actions';
 		cache : {},
 			
 		performLogin : function(func, params, pw) {
-			console.log("performLogin");			
+						
 			return func(params).then(function(result) {
-				console.log("performLogin A");
+				
 				if (result.data == "compatibility-mode") {
 					params.nonHashed = pw;
 					return func(params);
 				} else if (result.data.challenge) {
-					console.log("performLogin C");
+					
 					if (result.data.tryrecover) {
 						params.sessionToken = crypto.keyChallengeLocal(result.data.userid, result.data.recoverKey, result.data.challenge);
 						if (!params.sessionToken) return { data : { requirements : ["KEYRECOVERY"] , status : "BLOCKED" } };
@@ -52,7 +52,7 @@ import actions from './actions';
 		},
 		
 		retryLogin : function(params) {
-			console.log("retryLogin");
+			
 			return server.post("/v1/continue", params || {});
 		},
 		
@@ -112,7 +112,7 @@ import actions from './actions';
 		},
 		
 		login : function(requiredRole) {
-			console.log("login");	
+			
 			session.progress = null;	
 			var def  = new Promise((resolve, reject) => {
 				server.get(jsRoutes.controllers.Users.getCurrentUser().url).
@@ -136,7 +136,7 @@ import actions from './actions';
 					});																					
 				}, function() { document.location.href="/#/public/login"; });		
 			});
-			console.log("SET");
+		
 			session.currentUser = def;
 		},
 		

@@ -64,9 +64,9 @@ export default {
         recalc() {
             const { $data } = this;
             $data.criteria.from = new Date($data.criteria.to);
-            console.log($data.criteria.from);
+         
             $data.criteria.from.setDate(new Date($data.criteria.to).getDate() - $data.criteria.days);
-            console.log($data.criteria);
+           
         }
 
         

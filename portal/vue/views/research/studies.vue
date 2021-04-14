@@ -68,7 +68,7 @@ export default {
     },
 
     created() {
-        console.log("VIEW REACHED");
+       
         this.reload();       
     }
     

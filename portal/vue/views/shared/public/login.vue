@@ -59,7 +59,7 @@
 					<form name="myform" ref="myform" class="form" @submit.prevent="dologin()" role="form" v-if="!offline">
 						<div class="form-group">
 							<input type="email" class="form-control" :placeholder="$t('login.email_address')" required v-validate v-model="login.email" style="margin-bottom:5px;" autofocus>
-							<input type="password" class="form-control" :placeholder="$t('login.password')" required v-validate v-model="login.password" style="margin-bottom:5px;">								
+							<password class="form-control" :placeholder="$t('login.password')" required v-model="login.password" style="margin-bottom:5px;"></password>
 							<select class="form-control" v-model="login.role" v-validate required>
                                 <option v-for="role in roles" :key="role.value" :value="role.value">{{ $t(role.name) }}</option>
                             </select>
@@ -81,7 +81,7 @@
 </template>
 <script>
 
-import { status, ErrorBox } from 'basic-vue3-components';
+import { status, ErrorBox, Password } from 'basic-vue3-components';
 import server from "services/server";
 import session from "services/session";
 import crypto from "services/crypto";
@@ -106,7 +106,7 @@ export default {
         app : null			
     }),
 
-    components : { ErrorBox, Panel },
+    components : { ErrorBox, Panel, Password },
 
     mixins : [ status ],
 

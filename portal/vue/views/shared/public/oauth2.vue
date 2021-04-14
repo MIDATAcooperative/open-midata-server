@@ -59,8 +59,8 @@
 						</FormGroup>
 
 						<FormGroup label="login.password" :path="errors.password">
-							<input required  name="password" :disabled="studies" v-validate v-model="login.password" class="form-control"
-								type="password"/>
+							<password required  name="password" :disabled="studies" v-model="login.password" class="form-control"
+								/>
 						</FormGroup>
 
 						<FormGroup label="oauth2.role" v-if="app.targetUserRole=='ANY'">
@@ -108,7 +108,7 @@
 
 import server from "services/server.js";
 import oauth from "services/oauth.js";
-import { status, FormGroup, ErrorBox } from 'basic-vue3-components';
+import { status, FormGroup, ErrorBox, Password } from 'basic-vue3-components';
 import session from "services/session.js";
 import ENV from "config";
 import { getLocale, setLocale } from "services/lang.js";
@@ -142,7 +142,7 @@ export default {
   }),
 
   components : {
-     FormGroup, ErrorBox, Panel
+     FormGroup, ErrorBox, Panel, Password
   },
 
   mixins : [ status ],
@@ -195,7 +195,7 @@ export default {
 		  if (result === "CONFIRM" || result === "CONFIRM-STUDYOK") {
 			  let params = JSON.parse(JSON.stringify($route.query)) || {};
 			  if (result === "CONFIRM-STUDYOK") params.nostudies = true;
-			  console.log(params);
+			  
 			  $router.push({ path : "./oauthconfirm", query : params });
 			  
 		  } else if (result !== "ACTIVE") {

@@ -25,16 +25,16 @@
         <input type="password" style="display: none" id="fakePassword" name="fakePassword" value="" />
 	
 		<form-group name="oldPassword" label="changepassword.old_password" :path="errors.oldPassword">
-			<input type="password" class="form-control" id="oldPassword" name="oldPassword" :placeholder="$t('changepassword.old_password')" v-model="pw.oldPassword"
-					required v-validate autocomplete="off">
+			<password class="form-control" id="oldPassword" name="oldPassword" :placeholder="$t('changepassword.old_password')" v-model="pw.oldPassword"
+					required autocomplete="off" />
         </form-group>
 		<form-group name="password" label="changepassword.new_password" :path="errors.password">
-			<input type="password" class="form-control" id="password" name="password"
-					:placeholder="$t('changepassword.new_password')" v-model="pw.password" required v-validate autocomplete="off">				   
+			<password class="form-control" id="password" name="password"
+					:placeholder="$t('changepassword.new_password')" v-model="pw.password" required autocomplete="off" />				   
 		</form-group>
 		<form-group name="password2" label="changepassword.repeat_password" :path="errors.password2">
-			<input type="password" class="form-control" id="password2" name="password2" :placeholder="$t('changepassword.new_password')" v-model="pw.password2"
-					required v-validate autocomplete="off">
+			<password class="form-control" id="password2" name="password2" :placeholder="$t('changepassword.new_password')" v-model="pw.password2"
+					required autocomplete="off" />
         </form-group>
 		<form-group name="secure" label="registration.secure">
             <check-box name="secure" v-model="pw.secure" :path="errors.secure">
@@ -54,7 +54,7 @@ import Panel from "components/Panel.vue"
 import server from "services/server.js"
 import session from "services/session.js"
 import crypto from "services/crypto.js"
-import { status, ErrorBox, FormGroup, CheckBox, Success } from 'basic-vue3-components'
+import { status, ErrorBox, FormGroup, CheckBox, Success, Password } from 'basic-vue3-components'
 
 export default {
   
@@ -62,7 +62,7 @@ export default {
         pw : { oldPassword:"", password:"", password2:"", secure : false }
 	}),	
 
-    components: {  Panel, FormGroup, ErrorBox, Success, CheckBox },
+    components: {  Panel, FormGroup, ErrorBox, Success, CheckBox, Password },
 
     mixins : [ status ],
   
