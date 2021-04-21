@@ -52,6 +52,7 @@ $fa-font-path:                "/fonts";
  
 .was-validated.has-error .form-control:valid { @extend .form-control.is-invalid } 
 .has-error .invalid-feedback { display:block; }
+.has-feedback .invalid-feedback { display:block; }
 .vishidden { visibility:hidden; } 
  
 

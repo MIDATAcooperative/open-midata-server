@@ -135,7 +135,7 @@ export default {
         reload(searchName, comeback) {
             const { $data } = this, me = this;
             if (searchName) $data.search = _.filter($data.searches, (x) => x.name == searchName)[0];
-            console.log($data.search);
+          
             me.doBusy(server.get(jsRoutes.controllers.research.Studies.get($data.studyid).url)
             .then(function(data) { 				
                 $data.study = data.data;

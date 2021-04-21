@@ -100,7 +100,7 @@
 				
 				<section v-for="link in extra" :key="link._id">
 					<div class="form-check">
-						<input type="checkbox" class="form-check-input" :id="link._id" :name="link._id" value="" :checked="login.confirmStudy.indexOf(link.studyId || link.userId)>=0" @click="toggle(login.confirmStudy, link.studyId || link.userId || link.serviceAppId)" /> 
+						<input type="checkbox" class="form-check-input" :id="link._id" :name="link._id" value="" :checked="login.confirmStudy.indexOf(link.studyId || link.userId || link.serviceAppId)>=0" @click="toggle(login.confirmStudy, link.studyId || link.userId || link.serviceAppId)" /> 
 						<label :for="link._id" class="form-check-label">
 						  <span>{{ $t(getLinkLabel(link)) }}</span>:
 						  <a v-if="link.termsOfUse && !(link.inlineTerms)" @click="terms({which : link.termsOfUse })" href="javascript:">{{ link.study.name }} {{ link.provider.name }} {{ link.serviceApp.name }}</a>
@@ -358,7 +358,7 @@ export default {
 				
 				for (var l=0;l<data.data.length;l++) {
 					var link = data.data[l];	
-					console.log(link);
+					
 					if (link.type.indexOf("OFFER_P")>=0) {
 						link.labels = [];							
 						link.formatted = [];					

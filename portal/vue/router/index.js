@@ -18,6 +18,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 
 import PatientSearch from 'views/provider/patientsearch.vue';
+import SA from 'views/developer/appsubscriptions.vue';
 
 const postRegister = () => import(/* webpackChunkName: "oauth" */ 'views/shared/public/postregister.vue');
 const PublicNav = () => import(/* webpackChunkName: "public" */ 'views/nav/public.vue');
@@ -61,7 +62,7 @@ const baseRoutes = [
   {
     path : '/provider',
     name: 'provider',
-    component: () => import(/* webpackChunkName: "research" */ 'views/nav/provider.vue'),
+    component: () => import(/* webpackChunkName: "provider" */ 'views/nav/provider.vue'),
     meta : { role : "provider", keep : true }
   },
   {
@@ -71,9 +72,15 @@ const baseRoutes = [
     meta : { role : "research", keep : true }
   },
   {
+    path : '/developer',
+    name: 'developer',
+    component: () => import(/* webpackChunkName: "developer" */ 'views/nav/developer.vue'),
+    meta : { role : "developer", keep : true }
+  },
+  {
     path : '/admin',
     name: 'admin',
-    component: () => import(/* webpackChunkName: "member" */ 'views/nav/admin.vue'),
+    component: () => import(/* webpackChunkName: "admin" */ 'views/nav/admin.vue'),
     meta : { role : "admin", keep : true }
   },
   {
@@ -313,7 +320,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "shared" */ 'views/member/smallstudies.vue')
   },
   {
-    base : ["research"],
+    base : ["research", "developer"],
     path : "studies",
     component: () => import(/* webpackChunkName: "research" */ 'views/research/studies.vue')
   },
@@ -467,9 +474,69 @@ const routes = [
     component: () => import(/* webpackChunkName: "admin" */ 'views/admin/plugins.vue')
   },
   {
-    base : ["admin", "developer"],
+    base : ["admin"],
     path : "yourapps2",
     component: () => import(/* webpackChunkName: "developer" */ 'views/developer/yourapps.vue')
+  },
+  {
+    base : ["developer"],
+    path : "yourapps",
+    component: () => import(/* webpackChunkName: "developer" */ 'views/developer/yourapps.vue')
+  },
+  {
+    base : ["admin", "developer"],
+    path : "appsubscriptions",
+    component: SA //() => import(/* webpackChunkName: "developer" */ 'views/developer/appsubscriptions.vue')
+  },
+  {
+    base : ["admin", "developer"],
+    path : "applink",
+    component: () => import(/* webpackChunkName: "developer" */ 'views/developer/applink.vue')
+  },
+  {
+    base : ["admin", "developer"],
+    path : "appicon",
+    component: () => import(/* webpackChunkName: "developer" */ 'views/developer/appicon.vue')
+  },
+  {
+    base : ["admin", "developer"],
+    path : "appmessages",
+    component: () => import(/* webpackChunkName: "developer" */ 'views/developer/appmessages.vue')
+  },
+  {
+    base : ["admin", "developer"],
+    path : "applicence",
+    component: () => import(/* webpackChunkName: "developer" */ 'views/developer/applicence.vue')
+  },
+  {
+    base : ["admin", "developer"],
+    path : "repository",
+    component: () => import(/* webpackChunkName: "developer" */ 'views/developer/repository.vue')
+  },
+  {
+    base : ["admin", "developer"],
+    path : "appstats",
+    component: () => import(/* webpackChunkName: "developer" */ 'views/developer/appstats.vue')
+  },
+  {
+    base : ["admin", "developer"],
+    path : "appdebug",
+    component: () => import(/* webpackChunkName: "developer" */ 'views/developer/appdebug.vue')
+  },
+  {
+    base : ["admin", "developer"],
+    path : "appreviews",
+    component: () => import(/* webpackChunkName: "developer" */ 'views/developer/appdebug.vue'),
+    developer : {
+      meta : {
+        allowReview : false        
+      }
+    },
+    admin : {
+      meta : {
+        allowReview : true
+      }
+    }
   },
   {
     base : ["admin", "developer"],

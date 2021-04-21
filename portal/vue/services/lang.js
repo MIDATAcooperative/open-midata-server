@@ -20,7 +20,7 @@ import { setI18n, VueComposableDevtools } from 'vue-composable'
 import ENV from 'config'
 
 function replaceInstr(where) {
-    console.log(ENV);
+   
     for (let k in where) {
         let v = where[k];
         if (typeof v === "object") replaceInstr(v);
@@ -48,7 +48,7 @@ function mergeLocales(t, s) {
 }
 
 async function loadLocaleMessages(file, locale) {
-  console.log("loadA: "+file+" "+locale);
+ 
   let msgs = undefined;
   if (file=="branding") {
     try {

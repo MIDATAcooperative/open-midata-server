@@ -89,7 +89,7 @@ export default {
 		    me.doBusy(circles.listConsents({ member : true }, [ "name", "authorized", "type", "status", "records", "owner", "ownerName", "externalOwner" ])
 		    .then(function(data) {
                 $data.consents = me.process(data.data, { filter : { name : "" } });						
-                console.log($data.consents.all.length);
+               
 		    }));
 	    },
 	

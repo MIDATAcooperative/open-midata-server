@@ -76,10 +76,10 @@
 					<p v-t="'setpw.enter_new'"></p>
 					<form ref="myform" @submit.prevent="pwsubmit()" role="form" class="form form-horizontal" novalidate>
 						<form-group name="password" label="setpw.new_password" :path="errors.password">
-							<input type="password" class="form-control" v-model="setpw.password" style="margin-bottom:5px;" autofocus required v-validate>
+							<password class="form-control" v-model="setpw.password" style="margin-bottom:5px;" autofocus required />
 						</form-group>
 						<form-group name="passwordnew" label="setpw.new_password_repeat" :path="errors.passwordnew">
-							<input type="password" class="form-control" v-model="setpw.passwordRepeat" style="margin-bottom:5px;" required v-validate>
+							<password class="form-control" v-model="setpw.passwordRepeat" style="margin-bottom:5px;" required />
 						</form-group>
 						<div class="dynheight">
 							<form-group name="secure" label="registration.secure">
@@ -307,7 +307,7 @@ import users from "services/users.js";
 import oauth from "services/oauth.js";
 import dateService from "services/date.js";
 import languages from "services/languages.js";
-import { status, CheckBox, RadioBox, ErrorBox, FormGroup } from 'basic-vue3-components';
+import { status, CheckBox, RadioBox, ErrorBox, FormGroup, Password } from 'basic-vue3-components';
 import session from "services/session.js";
 import ENV from "config";
 
@@ -327,7 +327,7 @@ export default {
 		tokenIncluded : false
 	}),
 
-	components: { CheckBox, RadioBox, ErrorBox, FormGroup, Panel, TermsModal },
+	components: { CheckBox, RadioBox, ErrorBox, FormGroup, Panel, TermsModal, Password },
 
 	mixins : [ status ],
 

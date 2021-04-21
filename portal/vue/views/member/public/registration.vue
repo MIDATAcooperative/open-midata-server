@@ -66,10 +66,10 @@
 						<router-link v-if="isNew" :to="{ path : './login', query : {action:action, login:login} }" v-t="'registration.already_have_account'"></router-link>
 					</form-group>
 					<form-group name="password" label="registration.password" :path="errors.password"> 
-						<input type="password" class="form-control" id="password" name="password" :placeholder="$t('registration.password')" v-model="registration.password1" required v-validate>							  
+						<password class="form-control" id="password" name="password" :placeholder="$t('registration.password')" v-model="registration.password1" required></password>							  
 				    </form-group>
 					<form-group name="password2" label="registration.password_repetition" :path="errors.password2">
-                        <input type="password" class="form-control" id="password2" name="password2" :placeholder="$t('registration.password')" v-model="registration.password2" required v-validate>
+                        <password class="form-control" id="password2" name="password2" :placeholder="$t('registration.password')" v-model="registration.password2" required></password>
                     </form-group>
                 </div>
                 <form-group name="secure" label="registration.secure" v-if="secureChoice()">
@@ -186,7 +186,7 @@ import crypto from "services/crypto.js";
 import oauth from "services/oauth.js";
 import dateService from "services/date.js";
 import languages from "services/languages.js";
-import { status, FormGroup, ErrorBox, CheckBox } from 'basic-vue3-components';
+import { status, FormGroup, ErrorBox, CheckBox, Password } from 'basic-vue3-components';
 import session from "services/session.js";
 import ENV from "config";
 import { getLocale, setLocale, addBundle } from "services/lang.js";
@@ -212,7 +212,7 @@ export default {
   }),
 
   components : {
-     FormGroup, ErrorBox, Panel, TermsModal, CheckBox 
+     FormGroup, ErrorBox, Panel, TermsModal, CheckBox, Password 
   },
 
   mixins : [ status ],
@@ -294,7 +294,7 @@ export default {
 
     register() {		        
 		const { $data, $router, $route, $t } = this, me = this;
-		console.log($data.registration.agb);
+		
 
 		if ($data.registration.password1 != $data.registration.password2) {
 			this.setError("password", $t("error.invalid.password_repetition"));

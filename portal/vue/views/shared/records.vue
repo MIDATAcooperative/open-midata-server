@@ -448,9 +448,9 @@ export default {
         
         setSelectedAps() {
             const { $data, $route } = this, me = this;
-            console.log("RUN");
+          
             $data.selectedAps = _.filter($data.compare, (x) => (x._id==$data.selectedApsId))[0];            
-            console.log($data.selectedAps);
+           
             me.loadSharingDetails();
         },
 	
@@ -669,7 +669,7 @@ export default {
                 for (let t of $data.tree) { countShared(t); }
                 
                 me.loadContentLabels();
-                console.log(sharing);
+             
                 $data.sharing = sharing;
             });
 	    },

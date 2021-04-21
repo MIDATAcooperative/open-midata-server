@@ -447,7 +447,7 @@ export default {
 				}								
 				
 				$data.consent = data.data[0];
-				console.log(data.data[0]);
+				
 				if ($data.consent.type == "CIRCLE") $data.isSimple = false;
 				
 				if ($data.consent.status === "ACTIVE" || $data.consent.owner === $data.userId) {
@@ -473,11 +473,11 @@ export default {
 						}));
 					}
 				}
-				console.log("HERE");
+				
 				
 				if ($data.consent.owner && $data.consent.type!="STUDYRELATED") {
 					me.doBusy(users.getMembers({ "_id" : $data.consent.owner }, [ "firstname", "lastname", "email", "role"])
-					.then(function(result) { console.log(result);$data.owner = result.data[0]; }));
+					.then(function(result) { $data.owner = result.data[0]; }));
 				}
 				
 				$data.writeProtect = ($data.consent.owner !== userId && $data.consent.status !== "UNCONFIRMED") || $data.consent.type === "EXTERNALSERVICE" || $data.consent.type === "API" || $data.consent.type === "STUDYPARTICIPATION" || $data.consent.status === "EXPIRED" || $data.consent.status === "REJECTED";
@@ -494,7 +494,7 @@ export default {
 				    }
 				});
 
-				console.log("HERE2");
+				
 			}));
 			
 		} else {
@@ -649,7 +649,7 @@ export default {
 	
 	addPerson(person, isTeam) {	
 		const { $data, $route, $router } = this, me = this;
-		console.log(person);
+		
 		if (person.members) isTeam = true;
 		$data.setupProvidersearch = null;
 		$data.setupAdduser = null;

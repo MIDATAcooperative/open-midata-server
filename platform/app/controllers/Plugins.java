@@ -229,13 +229,13 @@ public class Plugins extends APIController {
 		if (visualization.type.equals("service")) {
 			
 				User user = User.getById(userId, User.ALL_USER_INTERNAL);
-				ApplicationTools.installApp(userId, visualization._id, user, "-----", true, Collections.emptySet(), null);
+				ApplicationTools.refreshOrInstallService(userId, visualization._id, user, Collections.emptySet());
 			
 		} else if (visualization.type.equals("external")) {
-			if (MobileAppInstance.getActiveByApplicationAndOwner(visualization._id, userId, Sets.create("_id")).isEmpty()) {
+			
 				User user = User.getById(userId, User.ALL_USER_INTERNAL);
-				ApplicationTools.installApp(userId, visualization._id, user, "-----", true, Collections.emptySet(), null);
-			}
+				ApplicationTools.refreshOrInstallService(userId, visualization._id, user, Collections.emptySet());
+			
 		} else {
 			String spaceName = JsonValidation.getString(json, "spaceName");
 			

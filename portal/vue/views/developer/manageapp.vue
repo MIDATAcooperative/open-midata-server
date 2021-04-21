@@ -113,7 +113,7 @@
 		  </form-group>		 
 		  <form-group name="defaultQuery" label="manageapp.access_query_json" class="danger-change" v-if="app._id">
 		    <accessquery query="app.defaultQuery" details="true" isapp="true"></accessquery>		    
-		    <a href="javascript:" @click="go('^.appquery')" v-t="'manageapp.queryeditor_btn'"></a>
+		    <a href="javascript:" @click="go('./query')" v-t="'manageapp.queryeditor_btn'"></a>
 		  </form-group>
 		  <form-group name="writes" label="manageapp.write_mode" class="danger-change" :path="errors.writes">
 		    <select class="form-control" name="writes" v-validate v-model="app.writes" @change="requireLogout();">
@@ -268,7 +268,7 @@ export default {
 	    tags : [
 	        "Analysis", "Import", "Planning", "Protocol", "Expert"
         ],
-		app : { version:0, tags:[], i18n : {}, sendReports:true, redirectUri : "http://localhost", targetUserRole : "ANY", requirements:[], defaultQuery:{ content:[] }, tokenExchangeParams : "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>"  },
+		app : { version:0, tags:[], i18n : {}, sendReports:true, withLogout:true, redirectUri : "http://localhost", targetUserRole : "ANY", requirements:[], defaultQuery:{ content:[] }, tokenExchangeParams : "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>"  },
 		allowDelete : false,
 		allowExport : false,
 		allowStudyConfig : false,
@@ -305,7 +305,7 @@ export default {
                 }
                 if (!app.i18n) { app.i18n = {}; }
 				for (let lang of $data.languages) {
-					if (!app.i18n[lang]) app.i18n[lang] = { name:null, description:null, defaultSpaceName:null };
+					if (!app.i18n[lang]) app.i18n[lang] = { name:"", description:"", defaultSpaceName:null };
 				}
                 if (!app.requirements) { app.requirements = []; }
 				if (!app.defaultSubscriptions) app.defaultSubscriptions = [];
@@ -384,8 +384,7 @@ export default {
 	    },
 
         toggle(array,itm) {
-			const { $data, $route, $router } = this, me = this;
-            console.log(array);
+			const { $data, $route, $router } = this, me = this;            
             var pos = array.indexOf(itm);
             if (pos < 0) array.push(itm); else array.splice(pos, 1);
 	    },
@@ -410,11 +409,13 @@ export default {
 		
 			const { $data, $route, $router } = this, me = this;
 		
+			let i18n = $data.app.i18n;
 			for (let lang of $data.languages) {			
-				if ($data.app.i18n[lang] && $data.app.i18n[lang].name == "") {
-					delete $data.app.i18n[lang];
+				if (i18n[lang] && i18n[lang].name == "") {
+					delete i18n[lang];
 				} 
 			}
+			$data.app.i18n = i18n;
 			
 			// check whether url contains ":authToken"
 			if ($data.app.type && $data.app.type !== "mobile" && $data.app.type !== "service" && $data.app.url && $data.app.url.indexOf(":authToken") < 0) {
@@ -453,9 +454,9 @@ export default {
 			$data.terms = result.data;
 			if ($route.query.appId != null) { me.loadApp($route.query.appId); }
 			else {
-				let app = { version:0, tags:[], i18n : {}, defaultSubscriptions:[], icons:[], sendReports:true, redirectUri : "http://localhost", targetUserRole : "ANY", requirements:[], defaultQuery:{ content:[] }, tokenExchangeParams : "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>"  };
+				let app = { version:0, tags:[], i18n : {}, defaultSubscriptions:[], icons:[], sendReports:true, withLogout:true, redirectUri : "http://localhost", targetUserRole : "ANY", requirements:[], defaultQuery:{ content:[] }, tokenExchangeParams : "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>"  };
 				for (let lang of $data.languages) {
-					if (!app.i18n[lang]) app.i18n[lang] = { name:null, description:null, defaultSpaceName:null };
+					if (!app.i18n[lang]) app.i18n[lang] = { name:"", description:"", defaultSpaceName:null };
 				}
 				app.defaultQueryStr = JSON.stringify(app.defaultQuery);
 				$data.app = app;

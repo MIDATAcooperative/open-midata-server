@@ -36,8 +36,8 @@
 								<p v-t="'setpw.enter_new'"></p>
 								<p v-t="'registration.password_policy'"></p>
 								<form @submit.prevent="submit()" role="form" novalidate>
-									<input type="password" class="form-control" :placeholder="$t('setpw.new_password')" v-model="setpw.password" required v-validate style="margin-bottom:5px;" autofocus>								
-									<input type="password" class="form-control" :placeholder="$t('setpw.new_password_repeat')" v-model="setpw.passwordRepeat" required v-validate style="margin-bottom:5px;">
+									<password class="form-control" :placeholder="$t('setpw.new_password')" v-model="setpw.password" required style="margin-bottom:5px;" autofocus />								
+									<password class="form-control" :placeholder="$t('setpw.new_password_repeat')" v-model="setpw.passwordRepeat" required style="margin-bottom:5px;" />
 									<button type="submit" :disabled="action!=null" class="btn btn-primary btn-block" v-submit v-t="'setpw.set_new_btn'">Set New Password</button>
 								</form>
 							</div>
@@ -51,7 +51,7 @@
 </template>
 <script>
 import server from "services/server.js";
-import { status, FormGroup, ErrorBox } from 'basic-vue3-components';
+import { status, FormGroup, ErrorBox, Password } from 'basic-vue3-components';
 import crypto from "services/crypto.js";
 
 export default {
@@ -67,7 +67,7 @@ export default {
   }),
 
   components : {
-     FormGroup, ErrorBox
+     FormGroup, ErrorBox, Password
   },
 
   mixins : [ status ],

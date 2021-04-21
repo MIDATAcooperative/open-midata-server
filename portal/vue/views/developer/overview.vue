@@ -86,7 +86,7 @@
 			  </td>
 			</tr>
 			<tr>
-			  <td @click="go('appquery')">				    
+			  <td @click="go('query')">				    
 				<div class="float-left"><img width="80" class="img-responsive" src="/images/question.jpg"></div>														   
 				<div><b v-t="'manageapp.query_btn'"></b><span class="badge" style="margin-left:10px" v-if="hasCount(app.defaultQuery)">1 <span v-t="'manageapp.defined'"></span></span><span class="badge badge-danger" style="margin-left:10px" v-if="!hasCount(app.defaultQuery)">0 <span v-t="'manageapp.defined'"></span></span> <span class="badge" :class="{ 'badge-success' : reviews.ACCESS_FILTER=='ACCEPTED', 'badge-danger' : reviews.ACCESS_FILTER=='NEEDS_FIXING', 'badge-light' : !reviews.ACCESS_FILTER }" style="margin-left:10px"><span v-if="reviews.ACCESS_FILTER">{{ $t('manageapp.'+reviews.ACCESS_FILTER) }}</span><span v-if="!reviews.ACCESS_FILTER" v-t="'manageapp.not_reviewed'"></span></span></div>
 				<div v-t="'manageapp.query_help'"></div>																
@@ -353,8 +353,7 @@ export default {
 	    },
 
         toggle(array,itm) {
-			const { $data, $route, $router } = this, me = this;
-            console.log(array);
+			const { $data, $route, $router } = this, me = this;            
             var pos = array.indexOf(itm);
             if (pos < 0) array.push(itm); else array.splice(pos, 1);
 	    },
