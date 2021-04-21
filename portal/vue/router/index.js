@@ -505,6 +505,11 @@ const routes = [
   },
   {
     base : ["admin", "developer"],
+    path : "applicence",
+    component: () => import(/* webpackChunkName: "developer" */ 'views/developer/applicence.vue')
+  },
+  {
+    base : ["admin", "developer"],
     path : "repository",
     component: () => import(/* webpackChunkName: "developer" */ 'views/developer/repository.vue')
   },
@@ -517,6 +522,21 @@ const routes = [
     base : ["admin", "developer"],
     path : "appdebug",
     component: () => import(/* webpackChunkName: "developer" */ 'views/developer/appdebug.vue')
+  },
+  {
+    base : ["admin", "developer"],
+    path : "appreviews",
+    component: () => import(/* webpackChunkName: "developer" */ 'views/developer/appdebug.vue'),
+    developer : {
+      meta : {
+        allowReview : false        
+      }
+    },
+    admin : {
+      meta : {
+        allowReview : true
+      }
+    }
   },
   {
     base : ["admin", "developer"],

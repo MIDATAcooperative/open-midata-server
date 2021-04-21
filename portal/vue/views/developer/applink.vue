@@ -34,7 +34,7 @@
                         <th></th>
                     </tr>
                     <tr v-for="link in links" :key="link._id">
-                        <td @click="select(link);">{{ link.study.code }} {{ link.study.name }} {{ link.provider.name }} {{ link.serviceApp.name }}<span v-if="link.userLogin">({{ link.userLogin }})</span></td>
+                        <td @click="select(link);">{{ (link.study || {}).code }} {{ (link.study || {}).name }} {{ (link.provider || {}).name }} {{ (link.serviceApp || {}).name }}<span v-if="link.userLogin">({{ link.userLogin }})</span></td>
                         <td>
                             <div v-for="type in link.type" :key="type">{{ $t('studyactions.types_short.'+type) }}</div>
                         </td>
@@ -51,15 +51,15 @@
                                 <span class="fas fa-check text-success mr-1"></span>
                                 <span v-t="'studyactions.status.validated'"></span>
                             </div>
-                            <div v-if="link.usePeriod.indexOf(study.executionStatus)<0">
+                            <div v-if="link.study && link.usePeriod.indexOf(link.study.executionStatus)<0">
                                 <span class="fas fa-times text-danger mr-1"></span>
                                 <span v-t="'studyactions.status.study_wrong_status'"></span>
                             </div>
-                            <div v-if="link.type.indexOf('REQUIRE_P')>=0 && study.participantSearchStatus != 'SEARCHING'">
+                            <div v-if="link.study && link.type.indexOf('REQUIRE_P')>=0 && link.study.participantSearchStatus != 'SEARCHING'">
                                 <span class="fas fa-times text-danger mr-1"></span>
                                 <span v-t="'error.closed.study'"></span>
                             </div>
-                            <div v-if="(link.type.indexOf('REQUIRE_P')>=0 || link.type.indexOf('OFFER_P')>=0) && link.study.joinMethods.indexOf('APP') < 0 && link.study.joinMethods.indexOf('APP_CODE') < 0">
+                            <div v-if="link.study && (link.type.indexOf('REQUIRE_P')>=0 || link.type.indexOf('OFFER_P')>=0) && link.study.joinMethods.indexOf('APP') < 0 && link.study.joinMethods.indexOf('APP_CODE') < 0">
                                 <span class="fas fa-times text-danger mr-1"></span>
                                 <span v-t="'studyactions.status.study_no_app_participation'"></span>
                             </div>	                

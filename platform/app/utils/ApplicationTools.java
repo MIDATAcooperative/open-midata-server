@@ -27,6 +27,7 @@ import java.util.Set;
 import org.bson.BSONObject;
 
 import controllers.Circles;
+import controllers.OAuth2;
 import controllers.members.HealthProvider;
 import controllers.members.Studies;
 import models.Consent;
@@ -128,6 +129,33 @@ public class ApplicationTools {
 
 		AccessLog.logEnd("end install app");
 		return appInstance;
+	}
+	
+	/**
+	 * install an internal or external service (for an account holder; not the external service owner)
+	 * @param executor
+	 * @param serviceAppId
+	 * @param member
+	 * @param studyConfirm
+	 * @return
+	 * @throws AppException
+	 */
+	public static MobileAppInstance refreshOrInstallService(MidataId executor, MidataId serviceAppId, User member,  Set<MidataId> studyConfirm) throws AppException {
+		Set<MobileAppInstance> insts = MobileAppInstance.getActiveByApplicationAndOwner(serviceAppId, member._id, MobileAppInstance.APPINSTANCE_ALL);
+		MobileAppInstance result = null;
+		boolean foundValid = false;
+		for (MobileAppInstance inst : insts) {
+			if (foundValid) {
+				removeAppInstance(executor, inst);
+			} else if (OAuth2.verifyAppInstance(inst, member._id, serviceAppId, null)) {
+				foundValid = true;
+				result = inst;
+			}
+		}
+		if (!foundValid) {
+			result = installApp(executor, serviceAppId, member, null, true, studyConfirm, null);
+		}
+		return result;
 	}
 	
 	public static Set<MidataId> getObserversForApp(Set<StudyAppLink> links) throws InternalServerException {
@@ -419,9 +447,9 @@ public class ApplicationTools {
 						}
 					}
 				} else if (sal.linkTargetType == LinkTargetType.SERVICE) {
-					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.userId))) {					
+					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.serviceAppId))) {					
 						RecordManager.instance.clearCache();
-						ApplicationTools.installApp(executor, sal.serviceAppId, member, null, true, studyConfirm, null);						
+						refreshOrInstallService(executor, sal.serviceAppId, member, studyConfirm);											
 					}
 				} else
 				if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.studyId))) {

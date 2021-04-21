@@ -77,7 +77,7 @@
          </div>
        </div>
        
-       <div class="row extraspace" v-if="app.defaultSubscriptions.length">
+       <div class="row extraspace" v-if="app.defaultSubscriptions && app.defaultSubscriptions.length">
          <div class="col-2">
           <label v-t="'appdebug.backend_services'">Backend Services:</label>
         
@@ -123,9 +123,9 @@
         
         <div class="row">
         <div class="col-12 extraspace">
-        <router-link :to="{ path : './manageapp', query : {appId:appId}}" class="btn btn-default" v-t="'common.back_btn'"></router-link>
-        <button class="btn btn-primary" type="button" @click="dosubmit();">submit</button> 
-        <button class="btn btn-default" type="button" @click="dosave();">save</button>
+        <router-link :to="{ path : './manageapp', query : {appId:appId}}" class="btn btn-default mr-1" v-t="'common.back_btn'"></router-link>
+        <button class="btn btn-primary mr-1" type="button" @click="dosubmit();">submit</button> 
+        <button class="btn btn-default mr-1" type="button" @click="dosave();">save</button>
         </div>
         </div>
        

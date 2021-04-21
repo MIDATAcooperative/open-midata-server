@@ -305,7 +305,7 @@ export default {
                 }
                 if (!app.i18n) { app.i18n = {}; }
 				for (let lang of $data.languages) {
-					if (!app.i18n[lang]) app.i18n[lang] = { name:null, description:null, defaultSpaceName:null };
+					if (!app.i18n[lang]) app.i18n[lang] = { name:"", description:"", defaultSpaceName:null };
 				}
                 if (!app.requirements) { app.requirements = []; }
 				if (!app.defaultSubscriptions) app.defaultSubscriptions = [];
@@ -409,11 +409,13 @@ export default {
 		
 			const { $data, $route, $router } = this, me = this;
 		
+			let i18n = $data.app.i18n;
 			for (let lang of $data.languages) {			
-				if ($data.app.i18n[lang] && $data.app.i18n[lang].name == "") {
-					delete $data.app.i18n[lang];
+				if (i18n[lang] && i18n[lang].name == "") {
+					delete i18n[lang];
 				} 
 			}
+			$data.app.i18n = i18n;
 			
 			// check whether url contains ":authToken"
 			if ($data.app.type && $data.app.type !== "mobile" && $data.app.type !== "service" && $data.app.url && $data.app.url.indexOf(":authToken") < 0) {
@@ -454,7 +456,7 @@ export default {
 			else {
 				let app = { version:0, tags:[], i18n : {}, defaultSubscriptions:[], icons:[], sendReports:true, withLogout:true, redirectUri : "http://localhost", targetUserRole : "ANY", requirements:[], defaultQuery:{ content:[] }, tokenExchangeParams : "client_id=<client_id>&grant_type=<grant_type>&code=<code>&redirect_uri=<redirect_uri>"  };
 				for (let lang of $data.languages) {
-					if (!app.i18n[lang]) app.i18n[lang] = { name:null, description:null, defaultSpaceName:null };
+					if (!app.i18n[lang]) app.i18n[lang] = { name:"", description:"", defaultSpaceName:null };
 				}
 				app.defaultQueryStr = JSON.stringify(app.defaultQuery);
 				$data.app = app;

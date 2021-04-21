@@ -104,7 +104,7 @@
 				
 				<section class="mi-or-auth__section mi-or-auth__section--study" ng-repeat="link in extra">
 					<fieldset  class="mi-at-input__fieldset mi-at-input--checkbox mi-at-input--checkbox-white">
-						<input id="mi-at-input-" class="mi-at-input mi-at-input--checkbox" type="checkbox" value="" ng-checked="login.confirmStudy.indexOf(link.studyId || link.userId)>=0" ng-click="toggle(login.confirmStudy, link.studyId || link.userId || link.serviceAppId);"
+						<input id="mi-at-input-" class="mi-at-input mi-at-input--checkbox" type="checkbox" value="" ng-checked="login.confirmStudy.indexOf(link.studyId || link.userId || link.serviceAppId)>=0" ng-click="toggle(login.confirmStudy, link.studyId || link.userId || link.serviceAppId);"
 							floating-label  /> 
 						<label for="mi-at-input-checkbox" class="mi-at-text mi-at-text--white">
 						  <span translate="{{ getLinkLabel(link) }}"></span>:
