@@ -298,6 +298,7 @@
     "comment" : "Comment",
     "status" : "Status",
     "noreviews" : "No reviews have been done yet on this instance.",
+    "success" : "Review has been added.",
     "CONCEPT" : "Application Concept",
     "DATA_MODEL" : "Data Model",
     "ACCESS_FILTER" : "Access Filter",
@@ -318,7 +319,8 @@
   "applicence" : {
     "title" : "License",
     "required" : "License required?",
-    "allowedEntities" : "Allowed entities"
+    "allowedEntities" : "Allowed entities",
+    "success" : "Licence requirements have been updated."
   },
   
   "repository" : {

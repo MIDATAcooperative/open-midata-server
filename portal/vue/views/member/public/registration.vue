@@ -395,7 +395,7 @@ export default {
   created() {    
      const { $data, $route } = this, me = this;
      $data.offline = (window.jsRoutes === undefined) || (window.jsRoutes.controllers === undefined);
-	 $data.role = $route.meta.role;
+	 $data.role = $route.query.role || $route.meta.role;
 	 if ($data.role == "research") {
 		 addBundle("researchers");
 		 $data.registration.secure = true;
