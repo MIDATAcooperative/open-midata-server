@@ -23,7 +23,7 @@ import circles from './circles';
 	var acarray = null;
 	
 	var getActions = function($route) {
-        var ac = $route.query.action;
+        var ac = $route.query.actions;
         if (!ac) return undefined;
 		var acarray = JSON.parse(ac);
 		if (!Array.isArray(acarray)) acarray = [ acarray ];
@@ -59,16 +59,16 @@ import circles from './circles';
 		
 		if (action == "consent") {			
 		    var what = current.s.split(",");
-			$router.push({ name : role+".newconsent", query : { share : JSON.stringify({"group":what}), authorize : current.a, action : JSON.stringify(acarray.slice(1)) } });
+			$router.push({ name : role+".newconsent", query : { share : JSON.stringify({"group":what}), authorize : current.a, actions : JSON.stringify(acarray.slice(1)) } });
 			return true;
 		} else if (action == "confirm") {
-			$router.push({ name : role+".service_consent", query : { consentId : current.c, action : JSON.stringify(acarray.slice(1)) } })
+			$router.push({ name : role+".editconsent", query : { consentId : current.c, actions : JSON.stringify(acarray.slice(1)) } })
 			return true;
 		} else if (action == "study") {
-			$router.push({ name : role+".studydetails", query : { studyId : current.s, action : JSON.stringify(acarray.slice(1)) } });
+			$router.push({ name : role+".studydetails", query : { studyId : current.s, actions : JSON.stringify(acarray.slice(1)) } });
 			return true;
 		} else if (action == "use") {
-			$router.push({ name : role+".spaces", query : { app : current.c, action : JSON.stringify(acarray.slice(1)) } });			
+			$router.push({ name : role+".spaces", query : { app : current.c, actions : JSON.stringify(acarray.slice(1)) } });			
 		    return true;
 		} else if (action == "leave") {
 			$router.push({ name : role+".serviceleave", query : { callback : current.c } });
@@ -79,8 +79,15 @@ import circles from './circles';
 		   if (current.consent) props._id = current.consent;
 		   		
 		   circles.listConsents(props  , ["_id"]).then(function(result) {
-				 if (result.data.length > 0) {				
-					 $router.push({ name : role+".service_consent", query : { consentId : result.data[0]._id, action : JSON.stringify(acarray)  } });					 
+				 if (result.data.length > 0) {		
+					 let acarray_new = [];
+					 let consentId = null;
+					 for (let c of result.data)	{
+						 if (!consentId) consentId = c._id;
+						 else acarray_new.push({ ac : "confirm", c : c._id });
+					 }					 
+					 acarray_new.push.apply(acarray_new, acarray.slice(1));
+					 $router.push({ name : role+".editconsent", query : { consentId : consentId, actions : JSON.stringify(acarray_new)  } });					 
 				 } else {
 					 acarray.splice(0,1);
 				     service.showAction($router, $route, role, acarray);	 

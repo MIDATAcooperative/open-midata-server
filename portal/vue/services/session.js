@@ -64,7 +64,7 @@ import actions from './actions';
 			}
 			if (result.data.status) {
 				session.progress = result.data;
-				  let postregParams = { action : $route.query.action };
+				  let postregParams = { actions : $route.query.actions };
 				  for (let param of ['street','zip','city','phone','mobile']) {
 					  if ($route.query[param]) {
 						  postregParams[param] = $route.query[param];
@@ -88,8 +88,8 @@ import actions from './actions';
 				if (result.data.keyType == 1) {
 				  $router.push({ name : 'public.passphrase', query : $route.query });
 				} else {					
-				  if ($route.query.action) {
-					  if (actions.showAction($state, "member")) return;
+				  if ($route.query.actions) {
+					  if (actions.showAction($router, $route, "member")) return;
 				  }				 
 				  $router.push({ name :'member.overview' });
 				}
@@ -97,8 +97,8 @@ import actions from './actions';
 				if (result.data.keyType == 1) {
 				  $router.push({ name :'public_provider.passphrase', query :$route.query });
 				} else {
-				  if ($route.query.action) {
-					  if (actions.showAction($state, "provider")) return;
+				  if ($route.query.actions) {
+					  if (actions.showAction($router, $route, "provider")) return;
 				  }	
 				  $router.push({ name :'provider.patientsearch' });
 				}

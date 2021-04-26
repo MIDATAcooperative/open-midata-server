@@ -58,21 +58,6 @@
 	</div>
 </template>
 <script>
-/*
-angular.module('portal')
-.controller('RecordCtrl', ['$scope', '$state', '$translate', 'server', '$sce', 'records', 'status', 'ENV', '$window','spaces', function($scope, $state, $translate, server, $sce, records, status, ENV, $window, spaces) {
-	// init
-	$scope.error = null;
-	$scope.record = {};
-	$scope.status = new status(true);
-	
-	var recordId = $state.params.recordId;
-	var data = {"_id": recordId };
-	
-
-	
-}]);
-*/
 
 import Panel from 'components/Panel.vue';
 import spaces from 'services/spaces.js';

@@ -16,14 +16,14 @@
 -->
 <template>
 <div class="ignore autosize" v-if="!isBusy">
-    <div v-if="records && records.all && records.all.length" class="body"><span class="dashnumber">{{ records.all.length }}</span> <span v-t="'flexiblerecords.records_available'"></span></div>
+    <div v-if="recs && recs.all && recs.all.length" class="body"><span class="dashnumber">{{ recs.all.length }}</span> <span v-t="'flexiblerecords.records_available'"></span></div>
     <div class="body text-center" v-else v-t="'flexiblerecords.empty'"></div>
     
     <error-box :error="error"></error-box>
-    <pagination v-model="records" search="search"></pagination>
+    <pagination v-model="recs" search="search"></pagination>
 
-    <ul class="list-group" v-if="records && records.filtered && records.filtered.length > 0">
-		<li class="list-group-item rotate truncate" v-for="record in records.filtered" :key="record._id">
+    <ul class="list-group" v-if="recs && recs.filtered && recs.filtered.length">
+		<li class="list-group-item rotate truncate" v-for="record in recs.filtered" :key="record._id">
 		    <div class="float-right" v-if="setup.allowRemove">
 		        <button type="button" class="btn btn-sm btn-danger" @click="removeRecord(record)" :disabled="action!=null">
 				    <span class="fas fa-times"></span>
@@ -38,7 +38,7 @@
 	</ul>
 	
 	<div class="footer" v-if="setup.allowBrowse || setup.allowAdd || setup.allowShare">
-	    <a ui-sref="^.records" v-if="setup.allowBrowse" class="btn btn-default" v-t="'flexiblerecords.browse_btn'"></a>
+	    <router-link :to="{ path : './records' }" v-if="setup.allowBrowse" class="btn btn-default" v-t="'flexiblerecords.browse_btn'"></router-link>
 	    <button @click="addRecords()" v-if="setup.allowAdd" class="btn btn-primary" v-t="'flexiblerecords.add_btn'"></button>
 	    <button @click="shareRecords()" v-if="setup.allowShare" class="btn btn-primary" v-t="'flexiblerecords.share_btn'"></button>
 	</div>	
@@ -46,7 +46,7 @@
 </template>
 <script>
 
-import { status,rl, ErrorBox } from 'basic-vue3-components'
+import { status, rl, ErrorBox } from 'basic-vue3-components'
 import records from "services/records";
 
 export default {
@@ -54,7 +54,8 @@ export default {
 	emits : [ "close" ],
 
     data : ()=>({      
-        records : {}
+        recs : null,
+        all : null
     }),
 	
 	components: { ErrorBox },
@@ -66,13 +67,15 @@ export default {
     },
 
 	methods : {
-        reload() {		                        
+        reload() {		
+            console.log("RELOAD");
             const { $data, $filters } = this, me = this;
-            me.doBusy(records.getRecords(me.setup.aps, me.setup.properties, me.setup.fields)).
+            me.doBusy(records.getRecords(me.setup.aps, me.setup.properties, me.setup.fields).
             then(function (result) { 
                 for (let record of result.data) record.search=record.name+" "+record.ownerName+" "+record.name+" "+$filters.date(record.created);
-                $data.records = me.process(result.data, { filter : { search : ""}});
-            });
+                $data.all = result.data;
+                $data.recs = me.process(result.data, { filter : { search : ""}});
+            }));
 	    },
 	
 	    showDetails(record) {
@@ -82,12 +85,12 @@ export default {
 	    removeRecord(record) {
             const { $data } = this, me = this;
             me.doSilent(records.unshare(me.setup.aps, record._id, me.setup.type));
-            $data.records.splice($data.records.indexOf(record), 1);
+            $data.all.splice($data.all.indexOf(record), 1);
 	    },
 	
 	    shareRecords() {
             const me = this;
-            var selection = _.filter($scope.records, function(rec) { return rec.marked; });
+            var selection = _.filter($data.all, function(rec) { return rec.marked; });
             selection = _.chain(selection).pluck('_id').value();
             me.doAction("share", records.share(me.setup.targetAps, selection, me.setup.type))
             .then(function () {

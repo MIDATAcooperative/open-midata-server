@@ -29,7 +29,7 @@
                     <div v-t="'member_login.info2'"></div>
                     <div v-t="'member_login.info3'"></div>             
                 </div>
-			    <router-link :to="{ path : './registration', query : {action:action} }" style="margin-top:10px;margin-bottom:40px;" class="btn btn-primary" v-show="!(offline||notPublic)" v-t="'member_login.register_now'"></router-link> 
+			    <router-link :to="{ path : './registration', query : {actions:actions} }" style="margin-top:10px;margin-bottom:40px;" class="btn btn-primary" v-show="!(offline||notPublic)" v-t="'member_login.register_now'"></router-link> 
 			</div>
 		</div></div>
 		</div><div class="container"><div class="row">
@@ -71,7 +71,7 @@
 						</div>
 						<div class="margin-top" v-if="serviceLogin">
 							<hr>
-							<router-link class="btn btn-primary btn-block" :to="{ path : './registration', query : { action : action } }"  v-t="'login.no_account'"></router-link>
+							<router-link class="btn btn-primary btn-block" :to="{ path : './registration', query : { actions : actions } }"  v-t="'login.no_account'"></router-link>
 						</div>
 					</form>
                 </panel>
@@ -93,7 +93,7 @@ import ENV from "config";
 export default {
     data: () => ({
         login : { role : "MEMBER" },
-        action : null,
+        actions : null,
         offline : false,
         notPublic : ENV.instanceType == "prod",
         serviceLogin : false,
@@ -115,7 +115,7 @@ export default {
             const { $data } = this;
 		    $data.error = err;
 		    $data.serviceLogin = false;
-		    $data.action="login";
+		    $data.actions=null;
 	    },
     
         hasIcon() {
@@ -160,9 +160,9 @@ export default {
 
     created() {
         const { $data, $route } = this, me = this;
-        $data.action = $route.query.action;
+        $data.actions = $route.query.actions;
 	    $data.offline = (window.jsRoutes === undefined) || (window.jsRoutes.controllers === undefined);	
-        $data.serviceLogin = ($route.query.action != null);	
+        $data.serviceLogin = ($route.query.actions != null);	
         $data.login.role = $route.meta.role.toUpperCase();
 
         if ($route.query.login) {

@@ -100,9 +100,10 @@ import forge from 'node-forge';
 	
 	service.dorecover = function(recovery, challenge) {
 		var rec = [];
-		angular.forEach(recovery, function(v,k) {
+		for (let k in recovery) {
+			let v = recovery[k];		
 			if (k!="encrypted" && k!="iv") rec.push(v);
-		});	
+		}	
 		var combined = ssss.combine(rec);
 		recovery.key = forge.util.hexToBytes(combined);
 		var pkstr = service.decryptPK_AES(recovery);

@@ -17,7 +17,7 @@
 
 <template>
     <div  class="midata-overlay borderless">
-        <panel :title="$t('dashboard.title')" :busy="isBusy">
+        <panel :title="$t('visualization.location.'+dashId)" :busy="isBusy">
 		        
                 <div class="row">
                     <div v-if="role=='MEMBER'" class="col-6 col-md-3 col-lg-2 spacesiconbar" style="position:relative">
@@ -25,15 +25,15 @@
                         <div class="position:relative"><a href="javascript:" @click="use('fitness')" v-t="'timeline.fitness'">Fitness</a></div>
                     </div>
                     <div class="col-6 col-md-3 col-lg-2 spacesiconbar" style="position:relative">
-                        <router-link :to="{ path : './market', query : { tag : 'Protocol', user : targetUser } }"><img class="img-responsive" src="/images/papers.jpg"></router-link>
-                        <div class="position:relative"><router-link :to="{ path : './market', query : { tag : 'Protocol', user : targetUser } }" v-t="'timeline.health'">Health Documentation</router-link></div>
+                        <router-link :to="{ path : './market', query : { tag : 'Protocol', context : dashId,user : targetUser } }"><img class="img-responsive" src="/images/papers.jpg"></router-link>
+                        <div class="position:relative"><router-link :to="{ path : './market', query : { tag : 'Protocol', context : dashId, user : targetUser } }" v-t="'timeline.health'">Health Documentation</router-link></div>
                     </div>
                     <div class="col-6 col-md-3 col-lg-2 spacesiconbar" style="position:relative">
-                        <router-link :to="{ path : './market', query : { tag : 'Analysis', user : targetUser } }"><img class="img-responsive" src="/images/question.jpeg"></router-link>
-                        <div class="position:relative"><router-link :to="{ path : './market', query : { tag : 'Analysis', user : targetUser } }" v-t="'timeline.analyze'">Analyze your Data</router-link></div>
+                        <router-link :to="{ path : './market', query : { tag : 'Analysis', context : dashId, user : targetUser } }"><img class="img-responsive" src="/images/question.jpeg"></router-link>
+                        <div class="position:relative"><router-link :to="{ path : './market', query : { tag : 'Analysis', context : dashId, user : targetUser } }" v-t="'timeline.analyze'">Analyze your Data</router-link></div>
                     </div>
                     <div class="col-6 col-md-3 col-lg-2 spacesiconbar" v-for="space in spaces" :key="space._id" style="position:relative">
-                        <router-link :to="{ path : './spaces', query : { spaceId : space._id, user : targetUser }}"><img class="img-responsive" :src="getIconUrl(space)"></router-link>
+                        <router-link :to="{ path : './spaces', query : { spaceId : space._id, context : dashId, user : targetUser  }}"><img class="img-responsive" :src="getIconUrl(space)"></router-link>
                         <div class="position:relative">
                             <div style="position:absolute;right:16px;"><a href="javascript:" @click="deleteSpace(space);"><span class="fas fa-times-circle"></span></a></div>
                             <router-link :to="{ path : './spaces', query : { spaceId : space._id } }">{{ space.name}}</router-link>
@@ -63,7 +63,7 @@ export default {
         dashId : "me",
         role : null,
 	    params : null,
-        targetUser : null,
+        targetUser : "",
 		spaces : [],
 		url : null
 	}),				
@@ -82,7 +82,7 @@ export default {
         
         use(view) {
             const { $data, $route, $router } = this;
-		    spaces.openAppLink($router, $route, $data.userId, { app : view, user : $data.targetUser });
+		    spaces.openAppLink($router, $route, $data.userId, { app : view, user : $data.targetUser, context : $data.dashId });
 	    },
 	
 	    getIconUrl(space) {
@@ -104,7 +104,8 @@ export default {
         $data.role = $route.meta.role.toUpperCase();
         if ($route.query.params) $data.params = JSON.parse($route.query.params); else $data.params = null;
         if ($route.query.user) $data.targetUser = $route.query.user;        
-        if ($route.query.dashId) $data.dashId = $route.query.dashId;        
+        if ($route.meta.dashId) $data.dashId = $route.meta.dashId;
+        else if ($route.query.dashId) $data.dashId = $route.query.dashId;        
 
         session.currentUser
 	    .then(function(userId) {

@@ -144,7 +144,7 @@ export default {
         
         locked() {
             const { $data, $route } = this;
-		    return $route.query.action != null || actions.hasMore();	
+		    return $route.query.s != null || actions.hasMore();	
 	    },
 
 		updateNav() {
@@ -184,7 +184,7 @@ export default {
 		const { $data, $route } = this;
 		$data.currentYear = new Date().getFullYear();
 		$data.notPublic = ENV.instanceType == "prod";
-		$data.action = $route.query.action;
+		$data.actions = $route.query.actions;
 		$data.hideCookieBar = localStorage.hideCookieBar;
 
 		//if (!$route.meta || $route.meta.keep) session.logout();		

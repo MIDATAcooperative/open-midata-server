@@ -214,7 +214,7 @@
 		  <hr v-if="app.type == 'mobile'">
 		  <p class="alert alert-info" v-if="app.type == 'mobile'" v-t="'manageapp.admin_only'"></p>
 		  <form-group name="termsOfUse" label="manageapp.terms_of_use" class="danger-change" :path="errors.termsOfUse">
-		    <input id="termsOfUse" type="text" :disabled="!allowStudyConfig" name="termsOfUse" class="form-control" @change="requireLogout();" v-validate v-model="app.termsOfUse" autocomplete="off" uib-typeahead="term.id as term.fullname for term in terms | filter:{fullname:$viewValue}">
+		    <typeahead id="termsOfUse" :disabled="!allowStudyConfig" name="termsOfUse" class="form-control" @selection="requireLogout();" v-model="app.termsOfUse" field="id" display="fullname" :suggestions="terms" />
 		    
 		     <p class="form-text text-muted" v-if="app.termsOfUse"><router-link :to="{ path : './terms', query :  { which:app.termsOfUse }}" v-t="'manageapp.show_terms'"></router-link></p> 
 		  </form-group>		  
@@ -240,7 +240,7 @@ import formats from "services/formats.js"
 import session from "services/session.js"
 import languages from "services/languages.js"
 import apps from "services/apps.js"
-import { status, ErrorBox, CheckBox, FormGroup } from 'basic-vue3-components'
+import { status, ErrorBox, CheckBox, FormGroup, Typeahead } from 'basic-vue3-components'
 import ENV from 'config';
 
 export default {
@@ -281,7 +281,7 @@ export default {
         logoutRequired : false
     }),
 
-    components: {  Panel, ErrorBox, FormGroup, CheckBox },
+    components: {  Panel, ErrorBox, FormGroup, CheckBox, Typeahead },
 
     mixins : [ status ],
 

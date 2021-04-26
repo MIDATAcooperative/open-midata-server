@@ -64,7 +64,6 @@ export default {
 
   mixins : [ status ],
 
-  props : [ "role"],
   
   methods : {
     back() {
@@ -76,7 +75,7 @@ export default {
         const { $data, $route }	= this;
        
 		// send the request
-		var data = { "email": $data.lostpw.email, "role" : this.role };
+		var data = { "email": $data.lostpw.email, "role" : $route.meta.role };
 		this.doAction("pw",server.post(jsRoutes.controllers.Application.requestPasswordResetToken().url, data)).
 		then(function() { 
 			$data.success = true; 

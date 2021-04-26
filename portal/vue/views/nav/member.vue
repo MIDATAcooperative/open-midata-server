@@ -26,7 +26,7 @@
 						aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="fas fa-list"></span>
 					</button>
-					<a class="navbar-brand" ng-click="home('member.overview');" href="javascript:"> <span class="midata" id="logotype"><img
+					<a class="navbar-brand" @click="home('./overview');" href="javascript:"> <span class="midata" id="logotype"><img
 							src="/images/logo.png" style="height: 36px;"></span>
 					</a>
 				</div>
@@ -160,7 +160,7 @@ export default {
         
         locked() {
             const { $data, $route } = this;
-		    return $route.query.action != null || actions.hasMore();	
+		    return $route.query.actions != null || actions.hasMore();	
 	    },
 
 		updateNav() {
@@ -200,7 +200,7 @@ export default {
 		const { $data, $route } = this;
 		$data.currentYear = new Date().getFullYear();
 		$data.notPublic = ENV.instanceType == "prod";
-		$data.action = $route.query.action;
+		$data.actions = $route.query.actions;
 		$data.hideCookieBar = localStorage.hideCookieBar;
 
 		//if (!$route.meta || $route.meta.keep) session.logout();

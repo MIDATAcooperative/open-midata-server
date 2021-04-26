@@ -24,7 +24,7 @@
 		            <span class="fas fa-check text-success" v-if="health.servicekey"></span>
 		            <span class="fas fa-times text-danger" v-else></span>
 		            {{ health.servicekey }}
-		            <button class="btn btn-primary btn-sm" v-t="'admin_stats.health.requestkey_btn'" :disabled="action=='key'" ng-click="requestKey()" ng-hide="health.servicekey"></button>
+		            <button class="btn btn-primary btn-sm" v-t="'admin_stats.health.requestkey_btn'" :disabled="action=='key'" @click="requestKey()" v-if="!health.servicekey"></button>
 		        </td>
 		    </tr>
 		    <tr>

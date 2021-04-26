@@ -131,20 +131,7 @@ export default {
 				
 
 			if (usersToAdd.length === 0) return;
-			$emit("add", usersToAdd);
-		/*
-		} else {
-		
-		var data = {"users": userIds};
-		server.post(jsRoutes.controllers.Circles.addUsers(circle._id).url, JSON.stringify(data)).
-			then(function() {
-				$scope.error = null;
-				$scope.foundUsers = [];
-				_.each($scope.contacts, function(contact) { contact.checked = false; });
-				_.each(userIds, function(userId) { circle.authorized.push(userId); });
-				//_.each(usersToAdd, function(user) { $scope.userNames[user._id] = user.name; });
-			},function(err) { $scope.error = "Failed to add users: " + err; });
-		}*/
+			$emit("add", usersToAdd);		
 		}
 		
 	},

@@ -63,7 +63,7 @@
                  <div class="required">								  
 				    <form-group name="email" label="registration.email" :path="errors.email">						
 						<input type="email" class="form-control" id="email" name="email" :placeholder="$t('registration.email')" v-model="registration.email" required v-validate>																    
-						<router-link v-if="isNew" :to="{ path : './login', query : {action:action, login:login} }" v-t="'registration.already_have_account'"></router-link>
+						<router-link v-if="isNew" :to="{ path : './login', query : {actions:actions, login:login} }" v-t="'registration.already_have_account'"></router-link>
 					</form-group>
 					<form-group name="password" label="registration.password" :path="errors.password"> 
 						<password class="form-control" id="password" name="password" :placeholder="$t('registration.password')" v-model="registration.password1" required></password>							  
@@ -206,7 +206,7 @@ export default {
     terms : { which : "", active : false },
     welcomemsg : false,
 
-    action : null,
+    actions : null,
     login : null,
 	role : "user"
   }),
@@ -395,7 +395,7 @@ export default {
   created() {    
      const { $data, $route } = this, me = this;
      $data.offline = (window.jsRoutes === undefined) || (window.jsRoutes.controllers === undefined);
-	 $data.role = $route.meta.role;
+	 $data.role = $route.query.role || $route.meta.role;
 	 if ($data.role == "research") {
 		 addBundle("researchers");
 		 $data.registration.secure = true;
@@ -421,7 +421,7 @@ export default {
 	if ($route.query.login) {
 		$data.registration.email = $route.query.login;
         
-        $data.action = $route.query.action;
+        $data.actions = $route.query.actions;
 		$data.login = $route.query.login;
 		$data.isNew = true;
 	}

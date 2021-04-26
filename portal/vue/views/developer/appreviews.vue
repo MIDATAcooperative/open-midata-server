@@ -25,16 +25,16 @@
 		    <form-group name="name" label="appreviews.name">
 		      <p class="form-control-plaintext">{{ app.name }}</p>
 		    </form-group>
-		
-		    <table v-if="reviews.length" class="table">
+		    <pagination v-model="reviews"></pagination>
+		    <table v-if="reviews.filtered.length" class="table">
 		      <tr>
-		        <th v-t="'appreviews.date'"></th>
-		        <th v-t="'appreviews.check'"></th>
-		        <th v-t="'appreviews.status'"></th>
-		        <th v-t="'appreviews.userLogin'"></th>
-		        <th v-t="'appreviews.comment'"></th>
+		        <Sorter v-model="reviews" sortby="timestamp" v-t="'appreviews.date'"></Sorter>
+		        <Sorter v-model="reviews" sortby="check" v-t="'appreviews.check'"></Sorter>
+		        <Sorter v-model="reviews" sortby="status" v-t="'appreviews.status'"></Sorter>
+		        <Sorter v-model="reviews" sortby="userLogin" v-t="'appreviews.userLogin'"></Sorter>
+		        <Sorter v-model="reviews" sortby="comment" v-t="'appreviews.comment'"></Sorter>
 		      </tr>
-		      <tr v-for="review in reviews" :key="review.timestamp">
+		      <tr v-for="review in reviews.filtered" :key="review.timestamp">
 		        <td>{{ $filters.date(review.timestamp) }}</td>
 		        <td>{{ $t('appreviews.'+review.check) }}</td>
 		        <td>{{ $t('appreviews.'+review.status) }}</td> 
@@ -61,8 +61,9 @@
                 </form-group>
 		    </div>
 		    <form-group  label="common.empty">
-		      <router-link :to="{ path : './manageapp', query :  {appId:appId} }" class="btn btn-default" v-t="'common.back_btn'"></router-link>
+		      <router-link :to="{ path : './manageapp', query :  {appId:appId} }" class="btn btn-default mr-1" v-t="'common.back_btn'"></router-link>
 		      <button v-if="allowReview" class="btn btn-primary" :disabled="action!=null" type="submit" v-t="'common.submit_btn'"></button>
+			  <success :finished="finished" msg="appreviews.success" action="submit"></success>
 		    </form-group>
 		   
 		  </form>
@@ -77,7 +78,7 @@
 import Panel from "components/Panel.vue"
 import server from "services/server.js"
 import apps from "services/apps.js"
-import { status, ErrorBox, Success, FormGroup } from 'basic-vue3-components'
+import { status, ErrorBox, Success, FormGroup, rl } from 'basic-vue3-components'
 
 export default {
     data: () => ({	
@@ -86,6 +87,7 @@ export default {
         app : null,
 
         newreview : null, 
+		reviews : [],
         checks : [ "CONCEPT", "DATA_MODEL", "ACCESS_FILTER", "QUERIES", "DESCRIPTION", "ICONS", "MAILS", "PROJECTS", "CODE_REVIEW", "TEST_CONCEPT", "TEST_PROTOKOLL", "CONTRACT" ],
 	    stati : ["ACCEPTED","NEEDS_FIXING"],
 	    allowReview : false
@@ -93,31 +95,32 @@ export default {
 
     components: {  Panel, ErrorBox, FormGroup, Success },
 
-    mixins : [ status ],
+    mixins : [ status, rl ],
 
     methods : {
         loadApp(appId) {
-		$scope.appId=appId;
-		$scope.status.doBusy(apps.getApps({ "_id" : appId }, ["creator", "filename", "name", "description", "icons" ]))
-		.then(function(data) { 
-			$scope.app = data.data[0];			
-		});
+			const { $data } = this, me = this;
+			$data.appId=appId;
+			me.doBusy(apps.getApps({ "_id" : appId }, ["creator", "filename", "name", "description", "icons" ])
+			.then(function(data) { 
+				$data.app = data.data[0];			
+			}));
+			
+			me.doBusy(server.get(jsRoutes.controllers.Market.getReviews(appId).url)
+			.then(function(reviews) {
+				$data.reviews = me.process(reviews.data);
+			}));
+			
 		
-		$scope.status.doBusy(server.get(jsRoutes.controllers.Market.getReviews(appId).url))
-		.then(function(reviews) {
-			$scope.reviews = reviews.data;
-		});
-		
-		$scope.submitted = false;
 	    },
 	
 	    submit() {
-		
-            me.doAction("upload", server.post(jsRoutes.controllers.Market.addReview().url, $data.newreview))
+			const { $data, $route } = this, me = this;
+            me.doAction("submit", server.post(jsRoutes.controllers.Market.addReview().url, $data.newreview)
             .then(function() {
                 $data.newreview = { pluginId : $route.query.appId };
                 me.loadApp($route.query.appId);
-            });
+            }));
 	    }
     
     },
@@ -128,8 +131,8 @@ export default {
         $data.allowReview = $route.meta.allowReview;
 	
         if ($route.query.check) {
-            $scope.newreview.check = $route.query.check;
-            $scope.newreview.status = "ACCEPTED";
+            $data.newreview.check = $route.query.check;
+            $data.newreview.status = "ACCEPTED";
         }
 
         me.loadApp($route.query.appId);        

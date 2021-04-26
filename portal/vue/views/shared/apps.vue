@@ -40,7 +40,7 @@
     </panel>
 
     <panel :title="$t('apps.services')" :busy="isBusy">
-        <table class="table table-hover clickable" ng-show="filtered.length">
+        <table class="table table-hover clickable" v-if="filtered.length">
 		    <tr v-for="visualization in filtered" :key="visualization._id" @click="install(visualization)">
 		        <td>
 		            {{ getName(visualization) }}

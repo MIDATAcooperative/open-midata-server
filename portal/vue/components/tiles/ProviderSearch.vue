@@ -103,9 +103,9 @@ export default {
     		if ($data.criteria.onlymine) {
     			me.doBusy(hc.list()).then(function(data) {
     				var ids = [];
-    				angular.forEach(data.data, function(x) {     			
-    					angular.forEach(x.authorized, function(a) { ids.push(a); });
-    				});    			
+    				for (let x of data.data) {     			
+    					for (let a of x.authorized) { ids.push(a); }
+    				}
     				crit._id = ids;
     				me.dosearch(crit);
     			});
@@ -115,20 +115,7 @@ export default {
     	},
     
     	addConsent(prov) {
-			this.$emit("add", prov);
-			/*
-			const me = this;
-    		if (me.setup && me.setup.studyId) {
-    	   		studies.updateParticipation(me.setup.studyId, { add : { providers : [ prov._id ]}})
-    	   		.then(function() {    	     
-    	     		//views.disableView($scope.view.id);
-    	   		});
-    		} else if ( $scope.view.setup && $scope.view.setup.callback ) {
-    		$scope.view.setup.callback(prov);
-    		views.disableView($scope.view.id);
-    	} else {
-    	   $state.go("^.newconsent", { authorize : prov._id });
-    	}*/
+			this.$emit("add", prov);			
 		},
 		
 		init() {

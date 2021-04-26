@@ -23,18 +23,27 @@
   <li class="nav-item"><a :class="{ 'active' : page=='study.rules' }" href="javascript:" class="nav-link" @click="go('study.rules')" v-t="'studynav.rules'">Rules</a></li>
   <li class="nav-item"><a :class="{ 'active' : page=='study.actions' }" href="javascript:" class="nav-link" @click="go('study.actions')" v-t="'studynav.actions'">Actions</a></li>
   <li class="nav-item"><a :class="{ 'active' : page=='study.codes' }" href="javascript:" class="nav-link" @click="go('study.codes')" v-t="'studynav.codes'">Codes</a></li>
-  <li class="nav-item"><a :class="{ 'active' : page=='study.participants' }" href="javascript:" class="nav-link" @click="go('study.participants')" v-t="'studynav.participants'">Participants</a></li>
+  <li v-if="fullMenu" class="nav-item"><a :class="{ 'active' : page=='study.participants' }" href="javascript:" class="nav-link" @click="go('study.participants')" v-t="'studynav.participants'">Participants</a></li>
   <li class="nav-item"><a :class="{ 'active' : page=='study.sharing' }" href="javascript:" class="nav-link" @click="go('study.sharing')" v-t="'studynav.sharing'">Sharing</a></li>
-  <li class="nav-item"><a :class="{ 'active' : page=='study.records' }" href="javascript:" class="nav-link" @click="go('study.records')" v-t="'studynav.records'">Records</a></li> 
+  <li v-if="fullMenu" class="nav-item"><a :class="{ 'active' : page=='study.records' }" href="javascript:" class="nav-link" @click="go('study.records')" v-t="'studynav.records'">Records</a></li> 
 </ul>
 </template>
 <script>
 export default {    
     props : ['page'],
+
+    data : ()=>({      
+        fullMenu : true
+    }),
+
     methods : {
         go(page) {
             this.$router.push({ path : './'+page, query : { studyId : this.$route.query.studyId} });
         }
+    },
+
+    created() {        
+        if (this.$route.meta.role != "research") this.$data.fullMenu = false;
     }
 }
 </script>

@@ -67,31 +67,7 @@ import session from 'services/session.js';
 import { status, ErrorBox } from 'basic-vue3-components';
 import ENV from "config";
 
-/*
-		
-	$scope.def = views.def( {                        
-		  id : "share",
-		  template : "/views/members/dashboardTiles/share/share.html",
-		  title : "Share With...",
-		  active : false,
-		  position : "modal"			 
-	} );
-	// get current user
-	
-			
-	
-	
-	$scope.goBack = function() {
-	   $window.history.back();
-	   //spaces.get({ "_id" :  $scope.spaceId }, ["context"]).
-	   //then(function(result) { $state.go('^.dashboard', { dashId : result.data[0].context }); });
-	};
-		
-	
-	
-	
-}]);
-*/
+
 export default {
     
     data: () => ({

@@ -132,7 +132,10 @@
     "title" : "Research Projects",
     "criteria" : "Search criteria",
     "empty" : "No matching projects found.",
-    "add_definition_btn" : "Import Project Definition"
+    "add_definition_btn" : "Import Project Definition",
+    "name" : "Project name",
+    "type" : "Type",
+    "created" : "Created At"
   },
   
   "admin_terms" : {

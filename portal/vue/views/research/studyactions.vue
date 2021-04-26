@@ -80,7 +80,7 @@
                     <p class="form-control-plaintext">{{ study.name }}</p>
                 </form-group> 
                 <form-group name="app" label="studyactions.app" :path="errors.app">
-                    <input type="text" class="form-control" @change="appselection()" autocomplete="off" typeahead-on-select="appselection()" v-validate v-model="selection.app.filename" uib-typeahead="app.filename for app in apps | filter:$viewValue | limitTo:8">
+                    <typeahead class="form-control" @selection="appselection()" v-model="selection.app.filename" field="filename" :suggestions="apps" />
                 </form-group>
                 <form-group name="apptype" label="common.empty" :path="errors.apptype">
                     <p class="form-control-plaintext" v-if="selection.app.type">
@@ -125,7 +125,7 @@ import StudyActions2 from "components/tiles/StudyActions2.vue"
 import server from "services/server.js"
 import apps from "services/apps.js"
 import studies from "services/studies.js"
-import { status, ErrorBox, Success, CheckBox, RadioBox, FormGroup } from 'basic-vue3-components'
+import { status, ErrorBox, Success, CheckBox, RadioBox, FormGroup, Typeahead } from 'basic-vue3-components'
 import _ from "lodash";
 
 export default {
@@ -137,7 +137,7 @@ export default {
 	    selection : undefined       
     }),
 
-    components: {  Panel, TabPanel, ErrorBox, FormGroup, StudyNav, Success, CheckBox, RadioBox, StudyActions2 },
+    components: {  Panel, TabPanel, ErrorBox, FormGroup, StudyNav, Success, CheckBox, RadioBox, StudyActions2, Typeahead },
 
     mixins : [ status ],
 
@@ -194,7 +194,7 @@ export default {
    
         appselection() {
             const { $data } = this, me = this;
-            me.doBusy(apps.getApps({ filename : $data.selection.app.filename }, ["_id", "filename", "name", "orgName", "publisher", "type", "targetUserRole"])
+            me.doSilent(apps.getApps({ filename : $data.selection.app.filename }, ["_id", "filename", "name", "orgName", "publisher", "type", "targetUserRole"])
             .then(function(data) {
                 if (data.data && data.data.length == 1) {
                 $data.selection.appId = data.data[0]._id;

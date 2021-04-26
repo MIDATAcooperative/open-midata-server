@@ -54,11 +54,12 @@ export default {
 
     methods: {
         init() {		
-            const { $data, $route } = this;
+            const { $data, $route } = this, me = this;
 		    actions.logout();
 		    if ($route.query.callback) {
 			    $data.callback = $route.query.callback;			
 		    }
+			me.ready();
 	    },
 	
 	    close() {

@@ -37,17 +37,15 @@
 		  </form-group>  
 		  
 		  <form-group name="allowedEntities" label="applicence.allowedEntities" v-if="licence.required">
-		    <div class="form-check" v-for="entity in entities" :key="entity">
-		      <input class="form-check-input" type="checkbox" :checked="licence.allowedEntities.indexOf(entity)>=0" @click="toggle(licence.allowedEntities, entity)">
-		      <label class="form-check-label">		       
-		        {{ $t('enum.entitytype.'+entity) }}
-		      </label>
-		    </div>		   
+		    <check-box v-for="entity in entities" :key="entity" :name="entity" :checked="licence.allowedEntities.indexOf(entity)>=0" @click="toggle(licence.allowedEntities, entity)">		      
+		        {{ $t('enum.entitytype.'+entity) }}		      
+		    </check-box>		   
 		  </form-group>  			  
 		  		    		  
 		  <form-group label="common.empty">
   		    <router-link :to="{ path : './manageapp' , query :  {appId:appId} }" class="btn btn-default mr-1" v-t="'common.back_btn'"></router-link>		      
-		    <button type="submit" v-submit :disabled="action!=null" class="btn btn-primary" v-t="'common.submit_btn'"></button>			    	    
+		      <button type="submit" v-submit :disabled="action!=null" class="btn btn-primary" v-t="'common.submit_btn'"></button>
+          <success :finished="finished" msg="applicence.success" action="submit"></success>
 		  </form-group>
 	    </form>	  
 		
@@ -59,7 +57,7 @@
 import Panel from "components/Panel.vue"
 import server from "services/server.js"
 import apps from "services/apps.js"
-import { status, ErrorBox, Success, FormGroup } from 'basic-vue3-components'
+import { status, ErrorBox, Success, FormGroup, CheckBox } from 'basic-vue3-components'
 
 export default {
     data: () => ({	
@@ -69,7 +67,7 @@ export default {
         licence : null
     }),
 
-    components: {  Panel, ErrorBox, FormGroup, Success },
+    components: {  Panel, ErrorBox, FormGroup, Success, CheckBox },
 
     mixins : [ status ],
 
@@ -81,26 +79,29 @@ export default {
         },
 
         loadApp(appId) {
+            const { $data} = this, me = this;
             $data.appId = appId;
-            me.doBusy(apps.getApps({ "_id" : appId }, ["_id", "version", "creator", "filename", "name", "description", "licenceDef"]))
+            me.doBusy(apps.getApps({ "_id" : appId }, ["_id", "version", "creator", "filename", "name", "description", "licenceDef"])
             .then(function(data) { 
                 $data.app = data.data[0];
                 if ($data.app.licenceDef) {
-                    $data.licence = $scope.app.licenceDef;
+                    $data.licence = $data.app.licenceDef;
                     $data.licence.required = true;
                 } else {
                     $data.licence = { required : false, allowedEntities : [] };
                 }
                 $data.licence.version = $data.app.version;
-            });
+            }));
 	    },
 	
 	
 	    updateApp() {		
-			const { $data } = this, me = this;	
-            $data.app.msgOnly = true;				
-            me.doAction('submit', server.post(jsRoutes.controllers.Market.updateLicence($data.app._id).url, $data.licence))
-            .then(function() { $scope.submitted = false;$state.go("^.manageapp", { appId : $scope.app._id });  });
+			  const { $data } = this, me = this;	
+        $data.app.msgOnly = true;				
+        me.doAction('submit', server.post(jsRoutes.controllers.Market.updateLicence($data.app._id).url, $data.licence)
+        .then(function() { 
+            me.loadApp($data.app._id);
+        }));
             
 	    },
 	

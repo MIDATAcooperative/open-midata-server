@@ -142,6 +142,7 @@ public class Application extends APIController {
 		}
 		if (user != null) {		
 		  AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE_REQUEST, user._id);
+		  if (user.status == UserStatus.BLOCKED) throw new BadRequestException("error.blocked.user", "Account blocked");
 		  PasswordResetToken token;
 		  if (user.resettoken != null && user.resettokenTs > 0 && System.currentTimeMillis() - user.resettokenTs < EMAIL_TOKEN_LIFETIME - 1000l * 60l * 60l) {
 			  token = new PasswordResetToken(user._id, role, user.resettoken);
@@ -183,7 +184,7 @@ public class Application extends APIController {
 		JsonValidation.validate(json, "userId");				
 		MidataId userId = JsonValidation.getMidataId(json, "userId");
 		User user = User.getById(userId, Sets.create("firstname", "lastname", "email", "emailStatus", "status", "role"));
-		
+		if (user != null && user.status == UserStatus.BLOCKED) throw new BadRequestException("error.blocked.user", "Account blocked");
 		if (user != null && (user.emailStatus.equals(EMailStatus.UNVALIDATED) || user.emailStatus.equals(EMailStatus.EXTERN_VALIDATED)) ) {							  
 		   sendWelcomeMail(user, null);
 		}
