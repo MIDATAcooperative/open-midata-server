@@ -195,22 +195,6 @@
     </panel>
 </template>
 <script>
-/*
-angular.module('portal')
-.controller('ManageAppCtrl', [ 'studies', 'languages', 'terms', 'labels', '$translate', 'formats', 'ENV', 'session', function($scope, $state, $translatePartialLoader, server, apps, status, studies, languages, terms, labels, $translate, formats, ENV, session) {
-
-	
-
-	// register app
-	
-	
-	
-	
-	
-
-	
-}]);
-*/
 
 import Panel from "components/Panel.vue"
 import server from "services/server.js"

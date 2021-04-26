@@ -81,7 +81,7 @@
 			<th v-t="'consents.number_of_records'"></th>
 			<th></th>
 		</tr>
-		<tr v-for="consent in consents" :key="consent._id" ng-repeat="consent in consents | orderBy : 'name'" :class="{ 'table-warning' : consent.status == 'UNCONFIRMED' }">
+		<tr v-for="consent in consents" :key="consent._id" :class="{ 'table-warning' : consent.status == 'UNCONFIRMED' }">
 			<td><a @click="editConsent(consent);" href="javascript:">{{ consent.name }}</a></td>					
 			<td>{{ $t('enum.consentstatus.'+consent.status) }}</td>					
 			<td>{{ consent.records }}</td>

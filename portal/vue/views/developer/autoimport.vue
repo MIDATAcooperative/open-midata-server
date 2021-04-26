@@ -28,7 +28,7 @@
 		  <li>Have your plugin save a configuration with autoimport enabled.</li>
 		  <li>Using a shell 'cd' into the directory where you develop your plugin and execute the command shown below.</li>
 		</ul>
-		<div class="alert alert-warning" ng-show="calls.length==0">Plugin is not yet installed in your sandbox!</div>		
+		<div class="alert alert-warning" v-if="calls.length==0">Plugin is not yet installed in your sandbox!</div>		
 		<div v-for="(call,idx) in calls" :key="idx">
 		  <hr>			
 		  <p>Installed Plugin: <b>{{ call.name }}</b></p>

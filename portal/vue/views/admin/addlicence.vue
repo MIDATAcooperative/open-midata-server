@@ -21,7 +21,7 @@
             <error-box :error="error"></error-box>
 	      
 		    <form-group name="appId" label="admin_addlicence.app" :path="errors.appId">		     
-	            <input type="text" name="appId" class="form-control" @change="appselection(licence.appName, 'appId');" autocomplete="off" v-validate v-model="licence.appName" required>	          	          
+	            <typeahead name="appId" class="form-control" :suggestions="apps" field="filename" @selection="appselection(licence.appName, 'appId');" v-model="licence.appName" required />	          	          
 	            <p v-if="app" class="form-text text-muted">{{ app.name }} {{ app.orgName }}</p>
 		    </form-group>
 
@@ -69,7 +69,7 @@ import server from "services/server.js"
 import apps from "services/apps.js"
 import usergroups from "services/usergroups.js"
 
-import { status, ErrorBox, FormGroup, CheckBox } from 'basic-vue3-components'
+import { status, ErrorBox, FormGroup, CheckBox, Typeahead } from 'basic-vue3-components'
 
 export default {
     data: () => ({	
@@ -82,7 +82,7 @@ export default {
         usergroup : null
     }),
 
-    components: {  Panel, ErrorBox, FormGroup, CheckBox },
+    components: {  Panel, ErrorBox, FormGroup, CheckBox, Typeahead },
 
     mixins : [ status ],
 
@@ -102,16 +102,16 @@ export default {
 	    },
 		
 	    updateLicence() {
-			const { $data } = this, me = this;
+			const { $data, $router } = this, me = this;
             if ($data.licence._id == null) {
                 me.doAction('submit', server.post(jsRoutes.controllers.Market.addLicence().url, $data.licence))
-                .then(function(data) { $state.go("^.licenses"); });
+                .then(function(data) { $router.push({ path : "./licenses" }); });
             } 
 	    },
 	
         appselection(app, field) {
             const { $data } = this, me = this;
-		    me.doBusy(apps.getApps({ filename : app }, ["_id", "filename", "name", "orgName", "type", "targetUserRole"]))
+		    me.doSilent(apps.getApps({ filename : app }, ["_id", "filename", "name", "orgName", "type", "targetUserRole"]))
 			.then(function(data) {
 				if (data.data && data.data.length == 1) {
 				    $data.licence[field] = data.data[0]._id;

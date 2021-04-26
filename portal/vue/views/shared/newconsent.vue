@@ -222,9 +222,9 @@
 					</div>
 			
 					<div class="margin-top" v-if="mayAddPeople()">
-						<button type="button" :disabled="action!=null" class="btn btn-default" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.owner != userId && consent.authorized.indexOf(userId)<0" @click="addYourself();" v-t="'newconsent.add_yourself_btn'"></button>
-						<button type="button" :disabled="action!=null" class="btn btn-default" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.entityType!='USERGROUP'" @click="addPeople();" v-t="'newconsent.add_person_btn'"></button>
-						<button type="button" :disabled="action!=null" class="btn btn-default" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.entityType!='USER' && consent.type!='CIRCLE' && consent.type!='REPRESENTATIVE'" @click="addUserGroup();" v-t="'newconsent.add_usergroup_btn'"></button>
+						<button type="button" :disabled="action!=null" class="btn btn-default mr-1" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.owner != userId && consent.authorized.indexOf(userId)<0" @click="addYourself();" v-t="'newconsent.add_yourself_btn'"></button>
+						<button type="button" :disabled="action!=null" class="btn btn-default mr-1" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.entityType!='USERGROUP'" @click="addPeople();" v-t="'newconsent.add_person_btn'"></button>
+						<button type="button" :disabled="action!=null" class="btn btn-default mr-1" :class="{ 'btn-sm' : consent.authorized.length }" v-show="consent.entityType!='USER' && consent.type!='CIRCLE' && consent.type!='REPRESENTATIVE'" @click="addUserGroup();" v-t="'newconsent.add_usergroup_btn'"></button>
 					</div>
 					<div class="extraspace"></div>
 			
@@ -418,7 +418,7 @@ export default {
 
 		getTitle() {
 			const { $t, $data } = this;
-			if ($data.consentId) return $t('editconsent.title')+": "+$data.consent.name;
+			if ($data.consentId && $data.consent) return $t('editconsent.title')+": "+$data.consent.name;
 			return $t('newconsent.title');
 		},
 
@@ -815,12 +815,12 @@ export default {
 	
 	maySkip() {
         const { $data, $route, $router } = this, me = this;
-		return $route.query.action != null && $data.consent && $data.consent.status != "UNCONFIRMED";
+		return $route.query.actions != null && $data.consent && $data.consent.status != "UNCONFIRMED";
 	},
 	
 	mayBack() {
         const { $data, $route, $router } = this, me = this;
-		return !$route.query.action;
+		return !$route.query.actions;
 	},
 	
 	skip() {
@@ -873,9 +873,18 @@ export default {
         
     },
 
+	watch:{
+		$route (){
+			const { $data, $route } = this, me = this;
+			session.currentUser.then(function(userId) {	
+            	me.init(userId);
+        	});
+		}
+	},
+
     created() {
         const { $data, $route } = this, me = this;
-        $data.pleaseReview = ($route.query.action != null);
+        $data.pleaseReview = ($route.query.actions != null);
         session.currentUser.then(function(userId) {	
             me.init(userId);
         });

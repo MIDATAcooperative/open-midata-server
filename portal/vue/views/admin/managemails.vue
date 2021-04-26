@@ -43,7 +43,7 @@
 		    <form-group name="studyId" label="admin_managemails.studyId" v-if="mailItem.type!='APP'" :path="errors.studyId">
 	            <div class="row">
 	                <div class="col-sm-3">
-	                    <input type="text" class="form-control" name="studyId" :readonly="!editable" @change="studyselection(mailItem.studyCode);" autocomplete="off" typeahead-on-select="studyselection(mailItem.studyCode)" v-validate v-model="mailItem.studyCode"  :required="mailItem.type=='PROJECT'">
+	                    <typeahead class="form-control" name="studyId" :readonly="!editable" @selection="studyselection(mailItem.studyCode);" v-model="mailItem.studyCode"  :required="mailItem.type=='PROJECT'" :suggestions="studies" field="code" />
 	                </div>
 	                <div class="col-sm-9">
 	                    <p class="form-control-plaintext">{{ mailItem.studyName }}</p>	                 
@@ -55,7 +55,7 @@
 	        <form-group name="appId" label="admin_managemails.appId" v-if="mailItem.type=='APP'" :path="errors.appId">
 	            <div class="row">
 	                <div class="col-sm-3">
-	                    <input id="appId" name="appId" type="text" class="form-control" :readonly="!editable" @change="appselection(mailItem.appName);" autocomplete="off" typeahead-on-select="appselection(mailItem.appName)" v-validate v-model="mailItem.appName" uib-typeahead="app.name for app in apps | filter:$viewValue | limitTo:8" :required="mailItem.type=='APP'">
+	                    <typeahead id="appId" name="appId" class="form-control" :readonly="!editable" @selection="appselection(mailItem.appName);" v-model="mailItem.appName" :required="mailItem.type=='APP'" :suggestions="apps" field="name" />
 	                </div>
 	                <div class="col-sm-9">
 	                    <p class="form-control-plaintext" v-if="app">{{ app.orgName }} {{ app.type }} {{ app.targetUserRole }}</p>	                 
@@ -117,7 +117,7 @@ import languages from "services/languages.js"
 import studies from "services/studies.js"
 import apps from "services/apps.js"
 
-import { status, ErrorBox, FormGroup } from 'basic-vue3-components'
+import { status, ErrorBox, FormGroup, Typeahead } from 'basic-vue3-components'
 
 export default {
     data: () => ({	
@@ -133,7 +133,7 @@ export default {
         apps : null
     }),
 
-    components: {  Panel, ErrorBox, FormGroup },
+    components: {  Panel, ErrorBox, FormGroup, Typeahead },
 
     mixins : [ status ],
 
@@ -168,10 +168,10 @@ export default {
             const { $data, $route, $router } = this, me = this;
             if ($data.mailItem._id == null) {
                 me.doAction('submit', server.post(jsRoutes.controllers.BulkMails.add().url, $data.mailItem)
-                .then(function(result) { $scope.loadMail(result.data._id); }));
+                .then(function(result) { me.loadMail(result.data._id); }));
             } else {			
                 me.doAction('submit', server.post(jsRoutes.controllers.BulkMails.update().url, $data.mailItem)
-                .then(function() { $scope.loadMail($scope.mailItem._id); }));
+                .then(function() { me.loadMail($data.mailItem._id); }));
             }
 	    },
 		
@@ -187,7 +187,7 @@ export default {
 	
 	    studyselection(study) {
             const { $data, $route, $router } = this, me = this;
-		    me.doBusy(studies.search({ code : study }, ["_id", "code", "name" ])
+		    me.doSilent(studies.search({ code : study }, ["_id", "code", "name" ])
 			.then(function(data) {
 				if (data.data && data.data.length == 1) {
 				  $data.mailItem.studyId = data.data[0]._id;
@@ -199,7 +199,7 @@ export default {
 	
 	    appselection(app) {		 
             const { $data, $route, $router } = this, me = this;
-		    me.doBusy(apps.getApps({ name : app }, ["_id", "filename", "name", "orgName", "type", "targetUserRole"])
+		    me.doSilent(apps.getApps({ name : app }, ["_id", "filename", "name", "orgName", "type", "targetUserRole"])
 			.then(function(data) {
 				if (data.data && data.data.length == 1) {
 				  $data.mailItem.appId = data.data[0]._id;

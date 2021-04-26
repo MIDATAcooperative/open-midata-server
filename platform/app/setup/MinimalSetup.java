@@ -54,10 +54,10 @@ public class MinimalSetup {
 	public static void dosetup() throws AppException {
 		System.out.println("Starting to create minimal setup for MIDATA platform.");
 		
-		if (Admin.getByEmail("admin@midata.coop", Sets.create("_id")) == null) {
+		if (Admin.getById(MidataId.from("5608f881e4b0f992a4e197b3"), Sets.create("_id")) == null && Admin.getByEmail("admin@example.com", Sets.create("_id")) == null) {
 			Admin admin = new Admin();
 			admin._id = new MidataId("5608f881e4b0f992a4e197b3");
-			admin.email = "admin@midata.coop";
+			admin.email = "admin@example.com";
 			admin.emailLC = admin.email;
 			admin.password = "1000:baef51f211e1d5c0df67ca748933a76ce9e6bb4f1d51813f:85a273f66396793a5bcc09fe1e8d8062c25b118f65651c7e";
 			admin.role = UserRole.ADMIN;
@@ -87,11 +87,11 @@ public class MinimalSetup {
 			developer._id = new MidataId("55eff624e4b0b767e88f92b9");
 			developer.email = "developers@midata.coop";
 			developer.emailLC = developer.email.toLowerCase();
-			developer.password = "1000:25156cb392d80c023e57290637e96b4bb6674fa50f329f6e:c27fd59cb2b9ce964cfa194655cb83930bc6a762ace15290";
+			developer.password = null;
 			developer.role = UserRole.DEVELOPER;
 			developer.registeredAt = new Date();
 			developer.resettokenTs = 0;
-			developer.status = UserStatus.ACTIVE;
+			developer.status = UserStatus.BLOCKED;
 			developer.contractStatus = ContractStatus.SIGNED;
 			developer.agbStatus = ContractStatus.SIGNED;
 			developer.confirmationCode = "Q8IV-EQBJ";

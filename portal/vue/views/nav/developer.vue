@@ -42,7 +42,7 @@
 					</ul>
 
 					<ul class="nav navbar-nav">
-						<li class="nav-item"><router-link class="nav-link" :to="{ name : 'admin.user', query : { userId : user._id}}">{{user.name}}</router-link></li>
+						<li class="nav-item"><router-link class="nav-link" :to="{ name : 'developer.user', query : { userId : user._id}}">{{user.name}}</router-link></li>
 						<li class="nav-item"><a class="nav-link" @click="logout()" href="javascript:"> <span class="fas fa-power-off"></span> <span
 								v-t="'navbar.sign_out'"></span>
 						</a></li>
@@ -131,7 +131,7 @@ export default {
         
         locked() {
             const { $data, $route } = this;
-		    return $route.query.action != null || actions.hasMore();	
+		    return $route.query.actions != null || actions.hasMore();	
 	    },
 
 		updateNav() {
@@ -171,7 +171,7 @@ export default {
 		const { $data, $route } = this;
 		$data.currentYear = new Date().getFullYear();
 		$data.notPublic = ENV.instanceType == "prod";
-		$data.action = $route.query.action;
+		$data.actions = $route.query.actions;
 		$data.hideCookieBar = localStorage.hideCookieBar;
 
 		//if (!$route.meta || $route.meta.keep) session.logout();		

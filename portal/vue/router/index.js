@@ -27,7 +27,8 @@ const baseRoutes = [
   {
     path : '/portal',
     name: 'oauth',
-    component: () => import(/* webpackChunkName: "oauth" */ 'views/nav/oauthnav.vue')
+    component: () => import(/* webpackChunkName: "oauth" */ 'views/nav/oauthnav.vue'),
+    meta : { role : "member" }
   },
   {
     path : '/public',
@@ -107,13 +108,12 @@ const routes = [
     component: () => import(/* webpackChunkName: "oauth" */ 'views/shared/public/confirm.vue')
   },
   {
-    base : ['public', 'oauth'],
+    base : ["public", "oauth", "public_provider", "public_research", "public_developer"],
     path : 'lostpw',
-    component: () => import(/* webpackChunkName: "password" */ 'views/shared/public/lostpw.vue'),
-    props : { "role" : "MEMBER" }
+    component: () => import(/* webpackChunkName: "password" */ 'views/shared/public/lostpw.vue')
   },
   {
-    base : ['public', 'oauth'],
+    base : ["public", "oauth", "public_provider", "public_research", "public_developer"],
     path : 'setpw',
     component: () => import(/* webpackChunkName: "password" */ 'views/shared/public/setpw.vue')
   },
@@ -182,6 +182,14 @@ const routes = [
     base : ["member", "developer", "admin", "research", "provider"],
     path : "dashboard",
     component: () => import(/* webpackChunkName: "shared" */ 'views/shared/dashboard.vue')
+  },  
+  {
+    base : ["member", "developer", "admin", "research", "provider"],
+    path : "sandbox",
+    component: () => import(/* webpackChunkName: "shared" */ 'views/shared/dashboard.vue'),
+    meta : {
+      dashId : "sandbox"
+    }
   },  
   {
     base : ["member", "developer", "admin", "research", "provider"],
@@ -320,7 +328,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "shared" */ 'views/member/smallstudies.vue')
   },
   {
-    base : ["research", "developer"],
+    base : ["research", "developer", "admin"],
     path : "studies",
     component: () => import(/* webpackChunkName: "research" */ 'views/research/studies.vue')
   },
@@ -354,6 +362,11 @@ const routes = [
     base : ["provider"],
     path : "usergroups",
     component: () => import(/* webpackChunkName: "provider" */ 'views/provider/usergroups.vue')    
+  },
+  {
+    base : ["provider"],
+    path : "memberdetails",
+    component: () => import(/* webpackChunkName: "provider" */ 'views/provider/memberdetails.vue')    
   },
   {
     base : ["research"],
@@ -517,6 +530,16 @@ const routes = [
     base : ["admin"],
     path : "viewterms",
     component: () => import(/* webpackChunkName: "admin" */ 'views/admin/terms.vue')
+  },
+  {
+    base : ["admin"],
+    path : "content",
+    component: () => import(/* webpackChunkName: "admin" */ 'views/admin/content.vue')
+  },
+  {
+    base : ["admin"],
+    path : "newterms",
+    component: () => import(/* webpackChunkName: "admin" */ 'views/admin/manageterms.vue')
   },
   {
     base : ["admin"],

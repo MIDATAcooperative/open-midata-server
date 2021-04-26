@@ -32,34 +32,6 @@ import spaces from 'services/spaces.js';
 import session from 'services/session.js';
 import { status, ErrorBox } from 'basic-vue3-components';
 
-/*	
-	$scope.goBack = function() {
-		if ($state.params.user) {
-			if ($state.current.data.role=="RESEARCH") {
-			  $state.go("research.study.participant", { participantId : $state.params.user, studyId : $state.params.study });
-			} else {
-			  $state.go("provider.memberdetails", { user : $state.params.user });
-			}
-		} else {
-		   spaces.get({ "_id" :  $scope.spaceId }, ["context"]).
-		   then(function(result) { 
-			   if (!result.data || result.data[0].context == "me" || result.data[0].context == "mydata") {
-				 $state.go("^.overview");
-			   } else {
-			     $state.go('^.dashboard', { dashId : result.data[0].context }); 
-			   }
-		   });
-		}
-	};
-	
-	
-	
-	$scope.notLocked = function() {
-		return !$state.params.app;
-	};
-	
-}]);
-*/
 
 export default {
 

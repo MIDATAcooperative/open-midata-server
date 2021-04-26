@@ -47,7 +47,7 @@
         
         <form name="myform" ref="myform" novalidate class="css-form form-horizontal" @submit.prevent="addPerson()" role="form">
             <form-group name="person" label="studyteam.person" :path="errors.person">
-                <input type="text" class="form-control" id="person" :disabled="lockChanges" name="person" autocomplete="off" v-validate v-model="add.personemail" uib-typeahead="person.email for person in persons | filter:{email:$viewValue}" required>
+                <typeahead class="form-control" id="person" :disabled="lockChanges" name="person" v-model="add.personemail" field="email" :suggestions="persons" required />
             </form-group>
             <form-group name="role" label="studyteam.role">
                 <select name="role" id="role" class="form-control" :disabled="lockChanges" v-validate v-model="add.roleTemplate" @change="updateRole();" required>
@@ -82,7 +82,7 @@ import usergroups from "services/usergroups.js"
 import studies from "services/studies.js"
 import session from "services/session.js"
 import users from "services/users.js"
-import { rl, status, ErrorBox, Success, CheckBox, FormGroup } from 'basic-vue3-components'
+import { rl, status, ErrorBox, Success, CheckBox, FormGroup, Typeahead } from 'basic-vue3-components'
 import _ from "lodash";
 
 export default {
@@ -98,7 +98,7 @@ export default {
         add : { role:{} }       
     }),
 
-    components: {  TabPanel, Panel, ErrorBox, FormGroup, StudyNav, Success, CheckBox },
+    components: {  TabPanel, Panel, ErrorBox, FormGroup, StudyNav, Success, CheckBox, Typeahead },
 
     mixins : [ status, rl ],
 
@@ -119,7 +119,7 @@ export default {
                 $data.members = me.process(data.data, { filter : { status : 'ACTIVE' }, sort : "user.lastname" });                
             }));
             
-            me.doBusy(users.getMembers({ role : "RESEARCH", organization : session.org }, users.MINIMAL )
+            me.doBusy(users.getMembers({ role : "RESEARCH", organization : session.org, status : ["ACTIVE", "NEW", "BLOCKED"] }, users.MINIMAL )
             .then(function(data) {
                 $data.persons = data.data;
             }));                                				

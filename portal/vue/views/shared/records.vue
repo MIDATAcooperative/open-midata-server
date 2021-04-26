@@ -84,7 +84,7 @@
 		<div class="panel-body" v-if="tree.length === 0" v-t="'records.empty'"></div>
 
         <modal :title="((selectedData || {}).fullLabel || {}).fullLabel" :open="selectedData && selectedData.allRecords" @close="selectedData=null" full-width="true" id="details">
-	        
+	        <div v-if="selectedData.allRecords && selectedData.allRecords.filtered">
                     <pagination v-model="selectedData.allRecords" search="search"></pagination>
                     
 
@@ -105,7 +105,7 @@
 				        </li>
 			        </ul>
 			        <div class="container" v-if="selectedData.allRecords.filtered.length === 0" v-t="'records.empty'"></div>
-           
+            </div>
             <template v-slot:footer>
 			    <button class="btn btn-default" @click="selectedData=null" v-t="'records.close_btn'"></button>
             </template>
@@ -612,6 +612,7 @@ export default {
         
         showRecords(group) {
             const { $data  } = this, me = this;
+            if (!group.allRecords) group.allRecords = null;
             $data.selectedData = group;
             if (!group.loaded) {
                 group.loaded = true;

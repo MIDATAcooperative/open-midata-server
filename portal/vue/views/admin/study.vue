@@ -216,16 +216,7 @@
        
 </template>
 <script>
-/*
-angular.module('portal')
-.controller('AdminStudyCtrl', ['$scope', '$state', 'server', 'status', 'users', 'usergroups', '$translatePartialLoader', 'ENV', function($scope, $state, server, status, users, usergroups, $translatePartialLoader, ENV) {
-	
-	
-	
-	$translatePartialLoader.addPart("researchers");
-		
-}]);
-*/
+
 import Panel from "components/Panel.vue"
 import AuditLog from "components/AuditLog.vue"
 import AccessQuery from "components/tiles/AccessQuery.vue"

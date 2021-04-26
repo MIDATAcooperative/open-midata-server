@@ -20,7 +20,7 @@
         <error-box :error="error"></error-box>
         <form class="css-form form-horizontal">		   
 		    <form-group name="developer" label="admin_plugins.developer">
-		        <input type="text" class="form-control" id="developer" autocomplete="off" typeahead-on-select="reload()" @change="reload();" v-model="search.criteria.creatorLogin" ng-model-options="{ debounce: 500 }" uib-typeahead="developer.email for developer in developers | filter:{email:$viewValue}">		      		      
+		        <typeahead class="form-control" id="developer" @selection="reload();" v-model="search.criteria.creatorLogin" :suggestions="developers" field="email"></typeahead>
 		    </form-group>
 		   <form-group name="name" label="admin_plugins.name">
 		        <restrict v-model="apps" name="search" label="common.empty"></restrict>
@@ -67,17 +67,18 @@ import Panel from "components/Panel.vue"
 import session from "services/session.js"
 import apps from "services/apps.js"
 import users from "services/users.js"
-import { status, rl, ErrorBox, FormGroup } from 'basic-vue3-components'
+import { status, rl, ErrorBox, FormGroup, Typeahead } from 'basic-vue3-components'
 
 export default {
 
     data: () => ({	
         pluginStati : ["DEVELOPMENT", "BETA", "ACTIVE", "DEPRECATED"],
-        apps : null,
-        search : { criteria : {} }
+        apps : { filtered : [], filter : {}, sort : {} },
+        search : { criteria : {} },
+        developers : []
     }),
 
-    components: {  Panel, ErrorBox, FormGroup },
+    components: {  Panel, ErrorBox, FormGroup, Typeahead },
 
     mixins : [ status, rl ],
 
@@ -85,17 +86,17 @@ export default {
         init(userId) {		
             const { $data } = this, me = this;
 		    me.reload();
-		    me.doBusy(users.getMembers({ role : "DEVELOPER" }, [ "firstname", "lastname", "email" ])
+		    me.doBusy(users.getMembers({ role : "DEVELOPER", status : ["NEW", "ACTIVE", "BLOCKED"] }, [ "firstname", "lastname", "email" ])
 		    .then(function(data) {                
 			    $data.developers = data.data;
-			    $data.developers.push({});
+			    //$data.developers.push({});
 		    }));
 	    },
 	
 	    reload() {
             const { $data } = this, me = this;
 	        if ($data.search.criteria.creatorLogin === "") $data.search.criteria.creatorLogin = undefined;
-	        me.doBusy(apps.getApps( $data.search.criteria, [ "creator", "creatorLogin", "developerTeam", "filename", "version", "name", "description", "tags", "targetUserRole", "spotlighted", "type", "status", "orgName", "publisher"]))
+	        me.doSilent(apps.getApps( $data.search.criteria, [ "creator", "creatorLogin", "developerTeam", "filename", "version", "name", "description", "tags", "targetUserRole", "spotlighted", "type", "status", "orgName", "publisher"]))
 	        .then(function(data) {
                 for (let app of data.data) { app.search = app.name.toLowerCase()+" "+app.filename.toLowerCase() }
                 $data.apps = me.process(data.data, { filter : { search:"", orgName:"" }}); 

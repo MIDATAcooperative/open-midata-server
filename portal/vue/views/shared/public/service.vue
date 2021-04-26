@@ -53,7 +53,7 @@ export default {
 		} else {
 			actions.push({ ac : "leave" });
 		}
-		params.action=JSON.stringify(actions);
+		params.actions=JSON.stringify(actions);
 
 		if ($route.query.isnew) {
           $router.push({ path : "./registration", query : params });

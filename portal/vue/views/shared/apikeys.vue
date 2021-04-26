@@ -30,7 +30,7 @@
                         <button type="button" class="btn btn-danger space" v-t="'apikeys.delete_btn'" v-if="service.linkedStudy" :disabled="action!=null" @click="deleteService(service);"></button>
                     </div>
                 </div>
-                <div ng-if="service.keys.length" class="row">
+                <div v-if="service.keys.length" class="row">
                     <div class="col-12">
                         <table class="table table-sm table-bordered">
                             <tr>

@@ -84,14 +84,14 @@ export default {
 			data = { name : $data.study.name, description : $data.study.description, type : $data.study.type };
 			me.doAction("update", server.put(jsRoutes.controllers.research.Studies.update($route.query.studyId).url, data))
 			.then(function(result) { 
-                $router.push({ path : './study.overview', query : { studyId : $scope.studyId }}); 
+                $router.push({ path : './study.overview', query : { studyId : $route.query.studyId }}); 
             });
 		
 		} else {
 			data = $data.study;		
 			me.doAction("submit", server.post(jsRoutes.controllers.research.Studies.create().url, data))
 			.then(function(result) { 
-                $router.push({ path : './study.overview', query : { studyId : $scope.studyId }});                 
+                $router.push({ path : './study.overview', query : { studyId : result.data._id }});                 
             });
 			
 		}

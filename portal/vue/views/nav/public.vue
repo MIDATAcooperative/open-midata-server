@@ -60,9 +60,9 @@
 					<div class="collapse navbar-collapse navbar-ex1-collapse">
 						<ul class="nav navbar-nav mr-auto">
 							<li class="nav-item"><router-link class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show"
-								:to="{ path : './login', query : {action:action} }" v-t="'navbar.login'"></router-link></li>
+								:to="{ path : './login', query : {actions:actions} }" v-t="'navbar.login'"></router-link></li>
 							<li class="nav-item"><router-link class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show" v-if="!notPublic"
-								:to="{ path : './registration', query : {action:action} }" v-t="'navbar.sign_up'"></router-link></li>
+								:to="{ path : './registration', query : {actions:actions} }" v-t="'navbar.sign_up'"></router-link></li>
 						</ul>
 						<ul class="nav navbar-nav">
 							<li class="nav-item"><a class="nav-link" data-toggle="collapse" data-target=".navbar-collapse.show"
@@ -107,7 +107,7 @@ export default {
 	hideCookieBar : false,
 	notPublic : false,
 	now : "",
-	action : null,
+	actions : null,
 	homepage : ENV.homepage
   }),
       
@@ -127,7 +127,7 @@ export default {
 	 const { $data, $route } = this;
 	 $data.now = new Date().getFullYear();
 	 $data.notPublic = ENV.instanceType == "prod";
-	 $data.action = $route.query.action;
+	 $data.actions = $route.query.actions;
 	 $data.hideCookieBar = localStorage.hideCookieBar;
 
 	 if (!$route.meta || !$route.meta.keep) {	

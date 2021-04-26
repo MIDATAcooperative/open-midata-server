@@ -58,7 +58,7 @@
 		    <form-group name="study" label="admin_managenews.studyId" :path="errors.study">
 	            <div class="row">
 	                <div class="col-sm-3">
-	                    <input type="text" class="form-control" @change="studyselection(selection.study, 'studyId');" v-validate v-model="selection.study.code">
+                        <typeahead class="form-control" :suggestions="studies" field="code" @selection="studyselection(selection.study, 'studyId');" v-model="selection.study.code"></typeahead>	                   
 	                </div>
 	                <div class="col-sm-9">
 	                    <p class="form-control-plaintext" v-if="selection && selection.study">{{ selection.study.name }}</p>
@@ -69,7 +69,7 @@
 		    <form-group name="appId" label="admin_managenews.appId" :path="errors.appId">
 	            <div class="row">
 	                <div class="col-sm-3">
-	                    <input type="text" class="form-control" @change="appselection(selection.app, 'appId');" v-validate v-model="selection.app.filename">
+	                    <typeahead class="form-control" @selection="appselection(selection.app, 'appId');" v-model="selection.app.filename" :suggestions="apps" field="filename" />
 	                </div>
 	                <div class="col-sm-9">
 	                    <p class="form-control-plaintext" v-if="selection && selection.app">{{ selection.app.name }} {{ selection.app.orgName }}</p>
@@ -96,7 +96,7 @@ import languages from "services/languages.js"
 import studies from "services/studies.js"
 import apps from "services/apps.js"
 
-import { status, ErrorBox, CheckBox, FormGroup } from 'basic-vue3-components'
+import { status, ErrorBox, CheckBox, FormGroup, Typeahead } from 'basic-vue3-components'
 
 export default {
 
@@ -110,7 +110,7 @@ export default {
         apps : null
     }),
 
-    components: {  Panel, ErrorBox, CheckBox, FormGroup },
+    components: {  Panel, ErrorBox, CheckBox, FormGroup, Typeahead },
 
     mixins : [ status ],
 
@@ -175,9 +175,9 @@ export default {
             });
 	    },
 
-        studyselection(study, field) {
+        studyselection(study, field) {            
             const { $data, $route, $router } = this, me = this;
-		    me.doBusy(studies.search({ code : study.code }, ["_id", "code", "name" ])
+		    me.doSilent(studies.search({ code : study.code }, ["_id", "code", "name" ])
 			.then(function(data) {
 				if (data.data && data.data.length == 1) {
 				  $data.newsItem[field] = data.data[0]._id;
@@ -189,7 +189,7 @@ export default {
 	
 	    appselection(app, field) {
             const { $data, $route, $router } = this, me = this;
-		    me.doBusy(apps.getApps({ filename : app.filename }, ["_id", "filename", "name", "orgName", "type", "targetUserRole"])
+		    me.doSilent(apps.getApps({ filename : app.filename }, ["_id", "filename", "name", "orgName", "type", "targetUserRole"])
 			.then(function(data) {
 				if (data.data && data.data.length == 1) {
 				  $data.newsItem[field] = data.data[0]._id;

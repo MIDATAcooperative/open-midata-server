@@ -43,13 +43,13 @@
             </form-group>
         
             <form-group name="termsOfUse" label="studyrules.terms_of_use" :path="errors.termsOfUse">	    
-                <input id="termsOfUse" type="text" name="termsOfUse" class="form-control" :disabled="studyLocked()" v-validate v-model="study.termsOfUse" autocomplete="off" uib-typeahead="term.id as term.fullname for term in terms | filter:{fullname:$viewValue}">		    
+                <typeahead id="termsOfUse" name="termsOfUse" class="form-control" :disabled="studyLocked()" v-model="study.termsOfUse" field="id" display="fullname" :suggestions="terms" />		    
                 <p class="form-text text-muted" v-if="study.termsOfUse"><router-link :to="{ path : './terms', query :  { which:study.termsOfUse }}" v-t="'studyrules.show_terms'"></router-link></p>
                 <p class="form-text text-muted" v-t="'studyrules.terms_of_use_hint'"></p> 
             </form-group>
     
             <form-group name="consentObserver" label="studyrules.consent_observers" :path="errors.consentObserver">	    
-                <input id="consentObserver" type="text" name="consentObserver" class="form-control" :disabled="studyLocked()" v-validate v-model="study.consentObserverStr" autocomplete="off" uib-typeahead="app.filename as (app.filename+' - '+app.name) for app in observers | filter:{name:$viewValue}">		    	    
+                <typeahead id="consentObserver" name="consentObserver" class="form-control" :disabled="studyLocked()" v-model="study.consentObserverStr" field="filename" display="name" :suggestions="observers" />		    	    
             </form-group>
     
             <form-group name="joinMethods" label="studyrules.join_methods" :path="errors.joinMethods">
@@ -83,7 +83,7 @@ import studies from "services/studies.js"
 import terms from "services/terms.js"
 import apps from "services/apps.js"
 import formats from "services/formats.js"
-import { status, ErrorBox, Success, CheckBox, RadioBox, FormGroup } from 'basic-vue3-components'
+import { status, ErrorBox, Success, CheckBox, RadioBox, FormGroup, Typeahead } from 'basic-vue3-components'
 import _ from "lodash";
 
 export default {
@@ -98,7 +98,7 @@ export default {
         observers : null
     }),
 
-    components: {  TabPanel, Panel, ErrorBox, FormGroup, StudyNav, Success, CheckBox, RadioBox, AccessQuery },
+    components: {  TabPanel, Panel, ErrorBox, FormGroup, StudyNav, Success, CheckBox, RadioBox, AccessQuery, Typeahead },
 
     mixins : [ status ],
 

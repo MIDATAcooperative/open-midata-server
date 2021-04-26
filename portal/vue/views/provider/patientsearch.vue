@@ -50,9 +50,9 @@
 				</form-group>				    									    					 						
 			</div>		
 			
-			<button type="submit" v-submit :disabled="action!=null" class="btn btn-primary" v-t="'common.search_btn'"></button>
-			<router-link v-if="searched && !member._id" :to="{ path : './addpatient', query : { email : criteria.email } }" class="btn btn-default" v-t="'provider_patientsearch.add_new_account_btn'"></router-link>
-			<button v-if="searched" @ng-click="addConsent();" :disabled="action!=null" class="btn btn-default" v-t="'provider_patientsearch.add_new_consent_btn'"></button>
+			<button type="submit" v-submit :disabled="action!=null" class="btn btn-primary mr-1" v-t="'common.search_btn'"></button>
+			<router-link v-if="searched && !member._id" :to="{ path : './addpatient', query : { email : criteria.email } }" class="btn btn-default mr-1" v-t="'provider_patientsearch.add_new_account_btn'"></router-link>
+			<button v-if="searched" @click="addConsent();" :disabled="action!=null" class="btn btn-default mr-1" v-t="'provider_patientsearch.add_new_consent_btn'"></button>
 				
 		</form>
 		
@@ -98,7 +98,8 @@ export default {
         criteria : {},
 	    newconsent : {},
 	    member : null,
-        consents : null
+        consents : null,
+		searched : false
     }),
 
     components: {  Panel, ErrorBox, FormGroup,  Success, CheckBox, RadioBox },
@@ -116,7 +117,8 @@ export default {
             me.doBusy(provideraccess.search($data.criteria)
             .then(function(data) { 				
                     $data.member = data.data.member;
-                    $data.consents = data.data.consents;                                  
+                    $data.consents = data.data.consents;     
+					$data.searched = true;                             
             }));            
             
 	    },
@@ -126,6 +128,7 @@ export default {
 		    $data.member = null;
 		    $data.consents = null;				
             $data.error = null;
+			$data.searched = false;
 	    },
 	
 	    selectPatient() {

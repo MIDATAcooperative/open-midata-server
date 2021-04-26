@@ -31,60 +31,60 @@
         <div class="row">
             <div class="col-sm-7">
                 <select class="form-control" @change="selectConsent(data.consent)" v-model="data.consent">
-                    <option v-for="consent in consents" :key="consent._id">{{ consent.name }}</option>
+                    <option v-for="consent in consents" :key="consent._id" :value="consent._id">{{ consent.name }}</option>
                 </select>
             </div>
             <div class="col-sm-5">
-                <button class="btn btn-default" @click="addData();" v-if="!hideAdd" v-t="'provider_memberdetails.share_btn'">Share Data With Patient</button>      
+                <button class="btn btn-default mr-1" @click="addData();" v-if="!hideAdd" v-t="'provider_memberdetails.share_btn'">Share Data With Patient</button>      
                 <router-link class="btn btn-default" :to="{ path : './newconsent', query : { owner : member._id } }" v-t="'provider_memberdetails.propose_consent'"></router-link>            
-            </div>
+            </div>           
+        </div>
+        <div v-if="setup">
+            <records :setup="setup"></records>        
         </div>
     </panel>
       
     <div v-if="activeFound">
-    <div ng-include="'/views/shared/dashboard/dashboard.html'"></div>
-    <div ng-include="'/views/shared/timeline/timeline.html'"></div>
+        <timeline></timeline>    
     </div>       
-                     
-    <router-link :to="{ path : './patientsearch', query :  { email : member.email }}" class="btn btn-default" v-t="'common.back_btn'">Back</router-link>    
+
+    <div v-if="member">
+        <router-link :to="{ path : './patientsearch', query :  { email : member.email }}" class="btn btn-default" v-t="'common.back_btn'">Back</router-link>    
+    </div>
 
 </template>
 <script>
 
 import Panel from "components/Panel.vue"
+import Records from "components/tiles/Records.vue"
+import Timeline from "views/shared/timeline.vue"
 
-import fhir from "services/fhir.js"
+import server from "services/server.js"
+import circles from "services/circles.js"
+import session from "services/session.js"
+import _ from "lodash"
 
-import { rl, status, ErrorBox } from 'basic-vue3-components'
+import { status, ErrorBox } from 'basic-vue3-components'
 
-/*
-angular.module('portal')
-.controller('MemberDetailsCtrl', ['$scope', '$state', 'server', 'views', 'circles', 'session', 'status', function($scope, $state, server, views, circles, session, status) {
-	
-		
-	views.reset();
-	views.link("patient_records", "record", "record");
-	
-		
-		
-	
-	
-					
-}]);*/
 
 export default {
     data: () => ({	
         member : null,
         memberid : null,
-        data : { consent : null }	
+        hideAdd : false,
+        activeFound : false,
+        consents : [],
+        data : { consent : null },
+        setup : null	
     }),
 
-    components: {  Panel, ErrorBox },
+    components: {  Panel, ErrorBox, Timeline, Records },
 
     mixins : [ status ],
 
     methods : {
         getTitle() {
+            const { $data } = this, me = this;
             if ($data.member) return $data.member.firstname+" "+$data.member.lastname;
             return " ";
         },
@@ -100,24 +100,26 @@ export default {
                 
                 $data.activeFound = false;
                 for (let consent of $data.consents) { if (consent.status=="ACTIVE" || consent.status=="FROZEN") $data.activeFound = true; }
-                    
+                
+                
                 if (data.memberkey) {
-                    views.setView("patient_records", { aps : $data.memberkey._id, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd: false, type : "memberkeys"});
+                    $data.setup = { aps : $data.memberkey._id, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd: false, type : "memberkeys"};
                 } else {
-                    views.disableView("patient_records");
+                    $data.setup = null;
                 }
+
             }));
 	    },
 	
 	    selectConsent(consent) {
             const { $data } = this, me = this;
             $data.hideAdd = false;
-            $data.consent = consent;
+            $data.consent = _.filter($data.consents, (x) => x._id == consent)[0];
             
             if ($data.consent != null && ($data.consent.status=="ACTIVE" || $data.consent.status=="FROZEN")) {
-                views.setView("patient_records", { aps : $data.consent._id, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd : false, type : "memberkeys" });			
+                $data.setup = { aps : $data.consent._id, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd : false, type : "memberkeys" };
             } else {
-                views.disableView("patient_records");
+                $data.setup = null;
             }
 	    },
 	
@@ -125,28 +127,29 @@ export default {
             const { $data } = this, me = this;
 		    $data.data.consent = $data.consent = null;
 		    $data.hideAdd = true;
-		    views.setView("patient_records", { aps : backConsent._id, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd : true, type : "hcrelated" });
+            $data.setup = { aps : backConsent._id, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd : true, type : "hcrelated" };
 	    },
 	
 	    addData() {
             const { $data } = this, me = this;
             if ($data.backwards.length > 0) {
                 var consent = $data.backwards[0];
-                addDataConsent(consent);
+                me.addDataConsent(consent);
             } else {
-                circles.createNew({ type : "HCRELATED", name : $data.member.firstname+" "+$data.member.lastname })
+                me.doAction("add", circles.createNew({ type : "HCRELATED", name : $data.member.firstname+" "+$data.member.lastname })
                 .then(function(data) {
-                    circles.addUsers(data.data._id, [ $data.memberid ])
+                    me.doAction("add", circles.addUsers(data.data._id, [ $data.memberid ])
                     .then(function(xdata) {
                         $data.backwards.push(data.data);
-                        addDataConsent(data.data);
-                    });
-                });
+                        me.addDataConsent(data.data);
+                    }));
+                }));
             }
 	    }
     },
 
-    created() {        
+    created() {  
+        const { $data, $route } = this, me = this;      
         $data.memberid = $route.query.user;
         this.reload();
     }

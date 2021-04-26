@@ -80,7 +80,7 @@
                 <form-group name="study" label="studyactions.study" :path="errors.study">
                     <div class="row">
 	                    <div class="col-sm-3">
-	                        <input type="text" class="form-control" @change="studyselection()" v-model="selection.study.code">
+	                        <typeahead class="form-control" @selection="studyselection()" v-model="selection.study.code" :suggestions="studies" field="code" />
 	                    </div>
 	                    <div class="col-sm-9">
 	                        <p class="form-control-plaintext">{{ selection.study.name }}</p>
@@ -126,7 +126,7 @@
 	               <input type="text" class="form-control" v-validate v-model="selection.identifier">
 	            </form-group>
 	            <form-group name="termsOfUse" label="applink.terms_of_use" >	    
-	               <input id="termsOfUse" type="text" name="termsOfUse" class="form-control" v-validate v-model="selection.termsOfUse">		    
+	               <typeahead id="termsOfUse" name="termsOfUse" class="form-control" v-model="selection.termsOfUse" :suggestions="terms" field="id" display="fullname" />		    
 	                  <p class="form-text text-muted" v-if="selection.termsOfUse"><router-link :to="{ path : './terms', query : { which:selection.termsOfUse }}" v-t="'applink.show_terms'"></router-link></p>
 	                  <p class="form-text text-muted" v-t="'applink.terms_of_use_hint'"></p> 
 	            </form-group>	            
@@ -147,7 +147,7 @@
 			   
 			<div v-if="selection && selection.linkTargetType=='SERVICE'">
 	            <form-group name="serviceApp" label="applink.service_app">	   
-				   <input type="text" class="form-control" @change="serviceappselection()" v-validate v-model="selection.serviceApp.filename">                       	               
+				   <typeahead class="form-control" @selection="serviceappselection()" v-model="selection.serviceApp.filename" :suggestions="apps" field="filename" />                       	               
 	            </form-group> 	          
 	            <form-group name="app" label="studyactions.app">
 	               <p class="form-control-plaintext">{{ app.filename }}</p>	               
@@ -179,7 +179,7 @@ import TabPanel from "components/TabPanel.vue"
 import server from "services/server.js"
 import apps from "services/apps.js"
 import studies from "services/studies.js"
-import { status, ErrorBox, Success, CheckBox, RadioBox, FormGroup } from 'basic-vue3-components'
+import { status, ErrorBox, Success, CheckBox, RadioBox, FormGroup, Typeahead } from 'basic-vue3-components'
 import _ from "lodash";
 
 export default {
@@ -195,7 +195,7 @@ export default {
         app : null
     }),
 
-    components: {  Panel, TabPanel, ErrorBox, FormGroup, Success, CheckBox, RadioBox },
+    components: {  Panel, TabPanel, ErrorBox, FormGroup, Success, CheckBox, RadioBox, Typeahead },
 
     mixins : [ status ],
 
@@ -268,7 +268,7 @@ export default {
           
         studyselection() {
             const { $data } = this, me = this;
-	        me.doBusy(studies.search({ code : $data.selection.study.code }, ["_id", "code", "name" ])
+	        me.doSilent(studies.search({ code : $data.selection.study.code }, ["_id", "code", "name" ])
 		    .then(function(data) {
 			    if (data.data && data.data.length == 1) {
 			        $data.selection.studyId = data.data[0]._id;
@@ -279,7 +279,7 @@ export default {
 
         serviceappselection() {
             const { $data } = this, me = this;
-	        me.doBusy(apps.getApps({ filename : $data.selection.serviceApp.filename }, ["_id", "filename", "name", "orgName", "publisher", "type", "targetUserRole"])
+	        me.doSilent(apps.getApps({ filename : $data.selection.serviceApp.filename }, ["_id", "filename", "name", "orgName", "publisher", "type", "targetUserRole"])
 	        .then(function(data) {
 		        if (data.data && data.data.length == 1) {
 		            $data.selection.serviceAppId = data.data[0]._id;

@@ -38,7 +38,7 @@
                 <thead>
                     <tr>
                         <th v-t="'studyparticipants.name'"></th>
-                        <th ng-hide="study.myRole.pseudo" v-t="'studyparticipants.partName'"></th>
+                        <th v-if="!study.myRole.pseudo" v-t="'studyparticipants.partName'"></th>
                         <th v-t="'studyparticipants.group'"></th>
                         <th v-t="'studyparticipants.status'"></th>
                         <th v-t="'studyparticipants.recruiter'"></th>
