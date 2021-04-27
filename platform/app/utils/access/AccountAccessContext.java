@@ -44,6 +44,12 @@ public class AccountAccessContext extends AccessContext {
 		if (parent != null) return parent.mustPseudonymize();
 		return false;
 	}
+	
+	@Override
+	public boolean mustRename() {
+		if (parent != null) return parent.mustRename();
+		return false;
+	}
 
 	@Override
 	public MidataId getTargetAps() {		

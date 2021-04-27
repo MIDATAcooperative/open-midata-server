@@ -131,11 +131,11 @@ public class UserGroups extends APIController {
 		Set<UserGroupMember> members = listUserGroupMembers(groupId);
 		Map<MidataId, UserGroupMember> idmap = new HashMap<MidataId, UserGroupMember>();
 		for (UserGroupMember member : members) idmap.put(member.member, member);
-		Set<User> users = User.getAllUser(CMaps.map("_id", idmap.keySet()), Sets.create("firstname", "lastname", "email"));
+		Set<User> users = User.getAllUser(CMaps.map("_id", idmap.keySet()), Sets.create("firstname", "lastname", "email", "role"));
 		for (User user : users) idmap.get(user._id).user = user;
 		Map<String, Set<String>> fieldMap = new HashMap<String, Set<String>>();
 		fieldMap.put("UserGroupMember", fields);
-		fieldMap.put("User", Sets.create("firstname", "lastname", "email"));
+		fieldMap.put("User", Sets.create("firstname", "lastname", "email", "role"));
 		return ok(JsonOutput.toJson(members, fieldMap)); 		
 	}
 	

@@ -88,9 +88,9 @@ npm run dev:server
 ```
 
 The local server will be at address: https://localhost:9002
-On the developer login page you can log in as "admin@midata.coop" with initial password "secret".
+On the developer login page you can log in as "admin@example.com" with initial password "secret".
 Please use this account to register new administrator accounts. 
-When done set the status of the "admin@midata.coop" user to "BLOCKED".
+When done set the status of the "admin@example.com" user to "BLOCKED" and never use it again.
 
 Folder structure
 ----------------

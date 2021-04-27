@@ -27,6 +27,7 @@ import java.util.Set;
 import org.bson.BSONObject;
 
 import controllers.Circles;
+import controllers.OAuth2;
 import controllers.members.HealthProvider;
 import controllers.members.Studies;
 import models.Consent;
@@ -128,6 +129,33 @@ public class ApplicationTools {
 
 		AccessLog.logEnd("end install app");
 		return appInstance;
+	}
+	
+	/**
+	 * install an internal or external service (for an account holder; not the external service owner)
+	 * @param executor
+	 * @param serviceAppId
+	 * @param member
+	 * @param studyConfirm
+	 * @return
+	 * @throws AppException
+	 */
+	public static MobileAppInstance refreshOrInstallService(MidataId executor, MidataId serviceAppId, User member,  Set<MidataId> studyConfirm) throws AppException {
+		Set<MobileAppInstance> insts = MobileAppInstance.getActiveByApplicationAndOwner(serviceAppId, member._id, MobileAppInstance.APPINSTANCE_ALL);
+		MobileAppInstance result = null;
+		boolean foundValid = false;
+		for (MobileAppInstance inst : insts) {
+			if (foundValid) {
+				removeAppInstance(executor, inst);
+			} else if (OAuth2.verifyAppInstance(inst, member._id, serviceAppId, null)) {
+				foundValid = true;
+				result = inst;
+			}
+		}
+		if (!foundValid) {
+			result = installApp(executor, serviceAppId, member, null, true, studyConfirm, null);
+		}
+		return result;
 	}
 	
 	public static Set<MidataId> getObserversForApp(Set<StudyAppLink> links) throws InternalServerException {
@@ -322,6 +350,7 @@ public class ApplicationTools {
 		appInstance._id = new MidataId();
 		AccessLog.log("create new app instance id="+appInstance._id);
 		appInstance.owner = owner;
+		appInstance.deviceId = phrase.substring(0,3);
 		if (app.type.equals("service")) {
 			appInstance.name = "Service: "+ app.name;		
 		} else {
@@ -332,7 +361,7 @@ public class ApplicationTools {
 		appInstance.appVersion = app.pluginVersion;
 		appInstance.observers = observers;
 		appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(appInstance._id, null);    			
-		appInstance.passcode = Member.encrypt(phrase); 
+		appInstance.passcode = MobileAppInstance.hashDeviceId(phrase); 
 		appInstance.dateOfCreation = new Date();
 		appInstance.lastUpdated = appInstance.dateOfCreation;
 		appInstance.writes = app.writes;
@@ -418,9 +447,9 @@ public class ApplicationTools {
 						}
 					}
 				} else if (sal.linkTargetType == LinkTargetType.SERVICE) {
-					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.userId))) {					
+					if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.serviceAppId))) {					
 						RecordManager.instance.clearCache();
-						ApplicationTools.installApp(executor, sal.serviceAppId, member, null, true, studyConfirm, null);						
+						refreshOrInstallService(executor, sal.serviceAppId, member, studyConfirm);											
 					}
 				} else
 				if (sal.type.contains(StudyAppLinkType.REQUIRE_P) || (sal.type.contains(StudyAppLinkType.OFFER_P) && studyConfirm.contains(sal.studyId))) {
@@ -479,20 +508,38 @@ public class ApplicationTools {
 		meta.put("targetAccount", targetAccountId.toString());
 		RecordManager.instance.setMeta(executorId, consentId, "_app", meta.toMap());
 	}
+	
+	public static void linkRepresentativeConsentWithExecutorAccount(MidataId executorId, MidataId targetAccountId, MidataId consentId) throws AppException {
+		AccessLog.log("link representative consent to account from="+consentId+" to="+targetAccountId);
+		Map<String, Object> meta = new HashMap<String, Object>();
+		MidataId alias = new MidataId();
+		byte[] key = KeyManager.instance.generateAlias(targetAccountId, alias);
+		meta.put("alias", alias.toString());
+		meta.put("aliaskey", key);
+		meta.put("targetAccount", targetAccountId.toString());
+		RecordManager.instance.setMeta(executorId, consentId, "_representative", meta);
+	}
 
 	public static MobileAppInstance refreshApp(MobileAppInstance appInstance, MidataId executor, MidataId appId, User member, String phrase) throws AppException {
 		AccessLog.logBegin("start refresh app id="+appInstance._id);
+		long tStart = System.currentTimeMillis();
 		Plugin app = Plugin.getById(appId, Sets.create("name", "type", "pluginVersion", "defaultQuery", "predefinedMessages", "termsOfUse", "writes", "defaultSubscriptions"));
 							
-		appInstance = MobileAppInstance.getById(appInstance._id, Sets.create(Consent.ALL, "publicKey", "applicationId", "appVersion", "licence"));
+		appInstance = MobileAppInstance.getById(appInstance._id, MobileAppInstance.APPINSTANCE_ALL);
 		
-	    appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(appInstance._id, null);    	
-		appInstance.passcode = Member.encrypt(phrase);     	
+		//RecordManager.instance.unshareAPS(appInstance._id, executor, Collections.singleton(appInstance._id));
+		
+	    appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(appInstance._id, null);
+	    if (appInstance.deviceId == null || !appInstance.deviceId.equals(phrase.substring(0,3))) {
+	      AccessLog.log("create passcode");
+		  appInstance.passcode = MobileAppInstance.hashDeviceId(phrase);     	
+	    }
 		appInstance.lastUpdated = new Date();
 		
-		    	    	
-		MobileAppInstance.upsert(appInstance);	
-	
+		RecordManager.instance.shareAPS(appInstance._id, executor, appInstance.publicKey);
+		MobileAppInstance.upsert(appInstance);
+		
+	/*
 	    RecordManager.instance.deleteAPS(appInstance._id, executor);
 		RecordManager.instance.createAnonymizedAPS(member._id, appInstance._id, appInstance._id, true);
 				
@@ -506,9 +553,9 @@ public class ApplicationTools {
 		}
 		
 		linkMobileConsentWithExecutorAccount(executor, executor, appInstance._id);
-									
+		*/							
 		AuditManager.instance.success();
-		AccessLog.logEnd("end refresh app");
+		AccessLog.logEnd("end refresh app time="+(System.currentTimeMillis()-tStart));
 		return appInstance;
 	
 	}

@@ -61,15 +61,23 @@ public class PasswordHash {
 	 * @return a salted PBKDF2 hash of the password
 	 */
 	public static String createHash(char[] password) throws NoSuchAlgorithmException, InvalidKeySpecException {
+		return createHash(password, DEFAULT_HASH_ALGORITHM, SALT_BYTE_SIZE, PBKDF2_ITERATIONS, HASH_BYTE_SIZE);
+	}
+	
+	public static String createInsecureQuickHash(String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
+		return createHash(password.toCharArray(), DEFAULT_HASH_ALGORITHM, 128, 10000, 128);
+	}
+	
+	public static String createHash(char[] password, int hashAlgorithm, int saltByteSize, int pbkdf2Iterations, int hashByteSize) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		// Generate a random salt
 		SecureRandom random = new SecureRandom();
-		byte[] salt = new byte[SALT_BYTE_SIZE];
+		byte[] salt = new byte[saltByteSize];
 		random.nextBytes(salt);
 
 		// Hash the password
-		byte[] hash = pbkdf2(DEFAULT_HASH_ALGORITHM, password, salt, PBKDF2_ITERATIONS, HASH_BYTE_SIZE);
+		byte[] hash = pbkdf2(hashAlgorithm, password, salt, pbkdf2Iterations, hashByteSize);
 		// format iterations:salt:hash[:alg]
-		return PBKDF2_ITERATIONS + ":" + toHex(salt) + ":" + toHex(hash)+":"+DEFAULT_HASH_ALGORITHM;
+		return pbkdf2Iterations + ":" + toHex(salt) + ":" + toHex(hash)+":"+hashAlgorithm;
 	}
 	
 	public static String createHashGivenSalt(char[] password, byte[] salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
@@ -100,7 +108,7 @@ public class PasswordHash {
 	 * @return true if the password is correct, false if not
 	 */
 	public static boolean validatePassword(char[] password, String correctHash) throws NoSuchAlgorithmException,
-			InvalidKeySpecException {
+			InvalidKeySpecException {		
 		// Decode the hash into its parameters
 		String[] params = correctHash.split(":");
 		int iterations = Integer.parseInt(params[ITERATION_INDEX]);
@@ -112,7 +120,9 @@ public class PasswordHash {
 		byte[] testHash = pbkdf2(algorithm, password, salt, iterations, hash.length);
 		// Compare the hashes in constant time. The password is correct if
 		// both hashes match.
-		return slowEquals(hash, testHash);
+		boolean result = slowEquals(hash, testHash);
+		AccessLog.log("password validation result="+result);
+		return result;
 	}
 	
 	/**

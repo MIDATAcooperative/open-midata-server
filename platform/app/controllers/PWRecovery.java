@@ -270,7 +270,11 @@ public class PWRecovery extends APIController {
 		process.shares = new HashMap<String, String>();
 		//process.shares.put("encrypted", krd.shares.get("encrypted"));
 		//process.shares.put("iv", krd.shares.get("iv"));
-		process.encShares = krd.shares;
+		if (krd != null) {
+		    process.encShares = krd.shares;
+		} else {
+			process.encShares = new HashMap<String, String>();
+		}
 		process.nextShares = recover;
 		process.intPart = fl.intPart;
 		process.challenge = Base64.getEncoder().encodeToString(Arrays.copyOfRange(fl.extPartEnc, 4, fl.extPartEnc.length));

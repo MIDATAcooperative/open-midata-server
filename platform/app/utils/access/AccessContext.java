@@ -41,6 +41,8 @@ public abstract class AccessContext {
 	
 	public abstract boolean mustPseudonymize();
 	
+	public abstract boolean mustRename();
+	
 	public abstract boolean mayContainRecordsFromMultipleOwners();
 	
 	public abstract boolean mayAccess(String content, String format) throws AppException;

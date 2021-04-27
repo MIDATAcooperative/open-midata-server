@@ -41,6 +41,8 @@ import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import ca.uhn.fhir.util.FhirTerser;
+import models.MidataId;
+import models.Model;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.auth.ExecutionInfo;
@@ -59,36 +61,61 @@ public class Transactions {
 	   try {
 	   BundleType type = theInput.getType();
 	   if (type == null) throw new UnprocessableEntityException("No type given for Bundle!");
-	   if (! (type.equals(BundleType.BATCH) || type.equals(BundleType.TRANSACTION))) {
+	   if (! (type.equals(BundleType.BATCH) || type.equals(BundleType.TRANSACTION) || type.equals(BundleType.DOCUMENT))) {
 		   throw new UnprocessableEntityException("Unknown transaction type");
 	   }
+	   boolean isDocument = type.equals(BundleType.DOCUMENT); 
 	   
 	   List<TransactionStep> steps = new ArrayList<TransactionStep>();
 	   for (BundleEntryComponent nextEntry : theInput.getEntry()) {
 	      
 		   BundleEntryRequestComponent req = nextEntry.getRequest();
-		   if (req == null) throw new UnprocessableEntityException("No request in bundle");
+		   HTTPVerb verb = null;
 		   
-		   HTTPVerb verb = req.getMethod();
-		   if (verb == null) throw new UnprocessableEntityException("Missing HTTP Verb in transaction");
-		   if (verb.equals(HTTPVerb.POST)) {		   
-		     Resource res = nextEntry.getResource();
-		     if (res == null || res.getResourceType() == null || res.getResourceType().name() == null) throw new UnprocessableEntityException("Missing Resource Type inside Bundle entry");
-		     ResourceProvider provider = FHIRServlet.myProviders.get(res.getResourceType().name());
-		     if (provider == null) throw new UnprocessableEntityException("Resource Type not supported: "+res.getResourceType().name());
-		     steps.add(new CreateTransactionStep(provider, (DomainResource) res));
-		   } else if (verb.equals(HTTPVerb.PUT)) {
-			 Resource res = nextEntry.getResource();
-			 if (res == null || res.getResourceType() == null || res.getResourceType().name() == null) throw new UnprocessableEntityException("Missing Resource Type inside Bundle entry");
-			 ResourceProvider provider = FHIRServlet.myProviders.get(res.getResourceType().name());
-			 if (provider == null) throw new UnprocessableEntityException("Resource Type not supported: "+res.getResourceType().name());
-			 steps.add(new UpdateTransactionStep(provider, (DomainResource) res));
-		   } else if (verb.equals(HTTPVerb.DELETE)) {
-			   throw new NotImplementedOperationException("Currently no support for DELETE");
-		   } else if (verb.equals(HTTPVerb.GET)) {
-			   throw new NotImplementedOperationException("Currently no support for GET");
+		   if (req == null || isDocument) {
+			   if (isDocument) {
+				 Resource res = nextEntry.getResource();				 
+				 if (res == null || res.getResourceType() == null || res.getResourceType().name() == null) throw new UnprocessableEntityException("Missing Resource Type inside Bundle entry");
+				 ResourceProvider provider = FHIRServlet.myProviders.get(res.getResourceType().name());
+				 if (provider == null) throw new UnprocessableEntityException("Resource Type not supported: "+res.getResourceType().name());
+				 String id = res.getId();
+				 Model existing = null;
+				 if (id != null && MidataId.isValid(id)) {
+					 try {
+					   existing = provider.fetchCurrent(res.getIdElement());
+					 } catch (AppException e) {
+					   existing = null;
+					 }					 
+				 }
+				 if (existing != null) {
+					 steps.add(new UpdateTransactionStep(provider, (DomainResource) res, existing));
+				 } else {
+					 steps.add(new CreateTransactionStep(provider, (DomainResource) res));
+				 }				   
+			   } else throw new UnprocessableEntityException("No request in bundle");
 		   } else {
-			   throw new UnprocessableEntityException("Unknown HTTP Verb in transaction");
+			   verb = req.getMethod();
+		   
+			   if (verb == null) throw new UnprocessableEntityException("Missing HTTP Verb in transaction");
+			   if (verb.equals(HTTPVerb.POST)) {		   
+			     Resource res = nextEntry.getResource();
+			     if (res == null || res.getResourceType() == null || res.getResourceType().name() == null) throw new UnprocessableEntityException("Missing Resource Type inside Bundle entry");
+			     ResourceProvider provider = FHIRServlet.myProviders.get(res.getResourceType().name());
+			     if (provider == null) throw new UnprocessableEntityException("Resource Type not supported: "+res.getResourceType().name());
+			     steps.add(new CreateTransactionStep(provider, (DomainResource) res));
+			   } else if (verb.equals(HTTPVerb.PUT)) {
+				 Resource res = nextEntry.getResource();
+				 if (res == null || res.getResourceType() == null || res.getResourceType().name() == null) throw new UnprocessableEntityException("Missing Resource Type inside Bundle entry");
+				 ResourceProvider provider = FHIRServlet.myProviders.get(res.getResourceType().name());
+				 if (provider == null) throw new UnprocessableEntityException("Resource Type not supported: "+res.getResourceType().name());
+				 steps.add(new UpdateTransactionStep(provider, (DomainResource) res));
+			   } else if (verb.equals(HTTPVerb.DELETE)) {
+				   throw new NotImplementedOperationException("Currently no support for DELETE");
+			   } else if (verb.equals(HTTPVerb.GET)) {
+				   throw new NotImplementedOperationException("Currently no support for GET");
+			   } else {
+				   throw new UnprocessableEntityException("Unknown HTTP Verb in transaction");
+			   }
 		   }
 		   
 	   }
@@ -97,7 +124,7 @@ public class Transactions {
 	   inf.cache.getStudyPublishBuffer().setLazy(true);
 	   
 	   try {
-		   if (type.equals(BundleType.TRANSACTION)) {
+		   if (isDocument || type.equals(BundleType.TRANSACTION)) {
 			   
 			   for (TransactionStep step : steps) step.init();
 			   resolveReferences(steps);

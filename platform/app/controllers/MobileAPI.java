@@ -117,7 +117,7 @@ public class MobileAPI extends Controller {
 
 	public static MobileAppInstance getAppInstance(String phrase, MidataId applicationId, MidataId owner, Set<String> fields) throws AppException {
 		Set<MobileAppInstance> candidates = MobileAppInstance.getByApplicationAndOwner(applicationId, owner, fields);
-		AccessLog.log("CS:"+candidates.size());
+		AccessLog.log("getAppInstance size="+candidates.size());
 		if (candidates.isEmpty()) return null;
 		if (candidates.size() >= 10) {
 			if (InstanceConfig.getInstance().getInstanceType().getDebugFunctionsAvailable()) {
@@ -128,10 +128,29 @@ public class MobileAPI extends Controller {
 			} else 
 			throw new BadRequestException("error.blocked.app", "Maximum number of consents reached for this app. Please cleanup using the MIDATA portal.");
 		}
+		String deviceId = phrase.substring(0,3);
 		for (MobileAppInstance instance : candidates) {
-		  if (User.phraseValid(phrase, instance.passcode)) return instance;
+			if (deviceId.equals(instance.deviceId)) {
+		      if (User.phraseValid(phrase, instance.passcode)) return instance;		      
+			}
 		}
-		AccessLog.log("CS:fail");
+		boolean cleanJunk = candidates.size() > 2;
+		
+		// Upgrade old entries
+		for (MobileAppInstance instance : candidates) {
+			if (instance.deviceId==null) {
+				if (User.phraseValid(phrase, instance.passcode)) {		    	  		    	  
+					instance.deviceId = deviceId;
+					MobileAppInstance.set(instance._id,"deviceId",instance.deviceId);
+					AccessLog.log("getAppInstance: Set missing device id");
+					return instance;
+				} else if (cleanJunk) {
+					ApplicationTools.removeAppInstance(owner, instance);
+				}
+			}
+		}
+		
+		AccessLog.log("getAppInstance: fail");
 		return null;
 	}
 	/**
@@ -243,7 +262,7 @@ public class MobileAPI extends Controller {
 			if (app.requirements != null) req.addAll(app.requirements);
 			if (Application.loginHelperPreconditionsFailed(user, req)!=null) throw new BadRequestException("error.invalid.credentials",  "Login preconditions failed.");
 			
-			appInstance= getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode", "appVersion"));
+			appInstance= getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode", "appVersion", "deviceId"));
 			
 			
 			if (appInstance != null && !OAuth2.verifyAppInstance(appInstance, user._id, app._id, null)) {

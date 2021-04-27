@@ -4,7 +4,6 @@
 
 include /etc/firejail/disable-common.inc
 include /etc/firejail/disable-passwdmgr.inc
-include /etc/firejail/disable-programs.inc
 
 caps.drop all
 ipc-namespace
@@ -27,6 +26,14 @@ rlimit-as 2147483648
 rlimit-cpu 600
 timeout 00:10:00
 
+ignore read-only ${HOME}/.npm-packages
+ignore read-only ${HOME}/.npmrc
+
+noblacklist ${HOME}/.node-gyp
+noblacklist ${HOME}/.npm
+noblacklist ${HOME}/.npmrc
+noblacklist ~/.config/configstore
+
 whitelist ~/.npm
 whitelist ~/.config/configstore
 whitelist ~/.npmrc
@@ -35,3 +42,5 @@ blacklist /var
 #private-bin node,npm,env
 # private-lib
 blacklist /usr/share
+
+include /etc/firejail/disable-programs.inc

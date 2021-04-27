@@ -20,6 +20,7 @@ angular.module('portal')
 	
 	$scope.types = [
 	                { value : "CIRCLE", label : "enum.consenttype.CIRCLE"},
+					{ value : "REPRESENTATIVE", label : "enum.consenttype.REPRESENTATIVE"},
 	                { value : "HEALTHCARE", label : "enum.consenttype.HEALTHCARE" },
 	                { value : "STUDYPARTICIPATION", label : "enum.consenttype.STUDYPARTICIPATION" },
 					{ value : "EXTERNALSERVICE", label : "enum.consenttype.EXTERNALSERVICE" },
@@ -308,7 +309,7 @@ angular.module('portal')
 	};
 	
 	$scope.addPeople = function() {
-		if ($scope.consent.type != "CIRCLE") {
+		if ($scope.consent.type != "CIRCLE" && $scope.consent.type != "REPRESENTATIVE") {
 		  views.setView("providersearch", { callback : addPerson });	
 		} else {
 		  views.setView("addusers", { consent : $scope.consent, callback : addPerson });

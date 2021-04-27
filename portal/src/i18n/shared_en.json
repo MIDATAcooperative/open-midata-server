@@ -315,6 +315,7 @@
 	 },
 	 "consenttype" : {
 	   "CIRCLE" : "Other Account Holders",
+     "REPRESENTATIVE" : "Power of attorney",
 	   "EXTERNALSERVICE" : "External Application",
 	   "API" : "External Service",
 	   "HCRELATED" : "Healthcare",
@@ -519,6 +520,8 @@
    },
 
   "common" : {
+    "empty" : " ",
+    "done_btn" : "Done",
     "back_btn" : "Back",
     "search_btn" : "Search",
     "add_btn" : "Add",
@@ -862,6 +865,7 @@
     "type" : "What type of consent do you want to create?",
     "share_with_members" : "I want to share data with other account holders.",
     "share_with_provider" : "I want to share data with a health professional.",
+    "share_representative" : "I would like to issue a power of attorney.",
     "select" : "Select",
     "use_passcode" : "Include a passcode?",
     "use_passcode2" : "I do not know yet to whom I want to share the data. Please add a passcode to this consent that I can give to a health professional.",
@@ -906,6 +910,7 @@
     "what_is_shared" : "What data is shared?",
     "consent_empty" : "This consent does not share any data at the moment.",
     "type_circle" : "This consent shares data with other @PLATFORM account holders.",
+    "type_representative" : "This power of attorney authorizes another person to use your account. All data of the grantor is shared with the grantee.",
     "type_healthcare" : "This consent shares data with healthcare professionals.",
     "type_studyparticipation" : "This consent shares data with a research project.",
     "type_studyrelated" : "This consent shares data with a project participant.",
@@ -1005,6 +1010,7 @@
 	"type_implicit" : "Implicit",
 	"type_healthcare" : "Doctor / Hospital",
 	"type_studyparticipation" : "Research",
+  "type_representative" : "Power of attorney",
 	"show" : "Show:",
 	"my_data" : "My Data",
 	"all_data" : "All Data",
@@ -1026,13 +1032,14 @@
     "no_account" : "You don't have an account?", 
     "have_account" : "You have a @PLATFORM account?",
     "have_account2" : "Perfect, log in here",
+    "role" : "Role",
     "sign_up_btn" : "Sign up",
     "reshares_data" : "Application may share data it has access to to third parties.",
     "allows_user_search" : "Your name and email address may be searched by other people using this app.",
     "requesting_app" : "needs access to your data.",
     "sign_in" : "@PLATFORM login for:",
     "sign_in_btn" : "Log in",
-    "device" : "Device: {{ device}}",
+    "device" : "Device: {{device}}",
     "please_confirm" : "Please confirm the activation of the application using the @PLATFORM portal, then retry. Consent title is: {{ consent }}",
     "confirm_btn" : "Confirm Access",
     "continue_btn" : "Continue",
@@ -1191,6 +1198,7 @@
     "refresh_btn" : "Refresh",
     "via" : "via",
     "CIRCLE" : "Consent",
+    "REPRESENTATIVE" : "Representative",
     "ResearchStudy" : "Research Project",
     "EXTERNALSERVICE" : "Application",
     "API" : "Service",
@@ -1343,6 +1351,7 @@
   },
   
   "changelog" : {
+    "title" : "Server Change Log",
     "F" : "New Feature",
     "B" : "Bugfix",
     "I" : "Improvement",
@@ -1378,7 +1387,7 @@
     "joinmethod2" : "Please contact the team responsible for the project. For more information, read the terms of use of the application.",
     "loginpage_btn" : "Return to login"
   },
-  
+
   "unsubscribe" : {
     "title" : "Unsubscribe",
     "success" : "Unsubscription successful.",

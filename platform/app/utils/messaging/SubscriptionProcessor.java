@@ -93,7 +93,11 @@ public class SubscriptionProcessor extends AbstractActor {
 			AccessLog.logStart("jobs", triggered.toString());
 			List<SubscriptionData> allMatching = null;
 		
-			allMatching = SubscriptionData.getByOwnerAndFormat(triggered.affected, triggered.type, SubscriptionData.ALL);
+			if (triggered.getById()!=null) {
+			  allMatching = Collections.singletonList(SubscriptionData.getById(triggered.getById(), SubscriptionData.ALL));
+			} else {
+			  allMatching = SubscriptionData.getByOwnerAndFormat(triggered.affected, triggered.type, SubscriptionData.ALL);
+			}
 				
 			boolean anyAnswered = false;
 			

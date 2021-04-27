@@ -52,6 +52,7 @@ $fa-font-path:                "/fonts";
  
 .was-validated.has-error .form-control:valid { @extend .form-control.is-invalid } 
 .has-error .invalid-feedback { display:block; }
+.has-feedback .invalid-feedback { display:block; }
 .vishidden { visibility:hidden; } 
  
 
@@ -80,9 +81,12 @@ $fa-font-path:                "/fonts";
     color: inherit;
 }
 
+
 .midata-label {
-   text-align: right;
-   font-weight: bold;   
+  @include media-breakpoint-up(lg) {
+    text-align: right;
+  }
+  font-weight: bold;   
 }
 
 .mark-danger .midata-label {
@@ -337,6 +341,7 @@ tr .asc::after {
 }
 
 .extraspace { margin-bottom: 10px; }
+.space { margin-right:0.5em; }
 
 .welcome h1 { color : #000000; }
 .welcome h2 { color : #000000; }
@@ -949,4 +954,11 @@ body.demo {
   .navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:focus, .navbar-default .navbar-nav>.open>a:hover {
     background-color: transparent;
   }
+}
+
+.midatalogo {
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 20px;
+	width: 213px;
 }

@@ -238,7 +238,7 @@ public class IndexManager {
 	 *            format of records stored in the index
 	 * @param fields
 	 */
-	public IndexDefinition createIndex(IndexPseudonym pseudo, Set<String> formats, List<String> fields) throws AppException {
+	public IndexDefinition createIndex(IndexPseudonym pseudo, Set<String> formats, List<String> fields, boolean pseudonymize) throws AppException {
 
 		IndexDefinition indexDef = new IndexDefinition();
 
@@ -249,6 +249,7 @@ public class IndexManager {
 		indexDef.lockTime = System.currentTimeMillis();
 		indexDef.rev = 1;
 		indexDef.creation = currentCreationTime();
+		indexDef.pseudonymize = pseudonymize;
 								
 		IndexRoot root = new IndexRoot(pseudo.getKey(), indexDef, true);
 		

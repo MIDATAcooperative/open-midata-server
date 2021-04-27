@@ -52,6 +52,11 @@ public class IndexAccessContext extends AccessContext {
 	public boolean mustPseudonymize() {		
 		return pseudonymize;
 	}
+	
+	@Override
+	public boolean mustRename() {		
+		return false;
+	}
 
 	@Override
 	public MidataId getTargetAps() {

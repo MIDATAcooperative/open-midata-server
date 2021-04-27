@@ -59,7 +59,7 @@ public class HPUser extends User {
 	}
 	
 	public static HPUser getById(MidataId id, Set<String> fields) throws InternalServerException {
-		return Model.get(HPUser.class, collection, CMaps.map("_id", id), fields);
+		return Model.get(HPUser.class, collection, CMaps.map("_id", id).map("role", UserRole.PROVIDER), fields);
 	}
 	
 	public static HPUser getByIdAndApp(MidataId id, MidataId appId, Set<String> fields) throws InternalServerException {

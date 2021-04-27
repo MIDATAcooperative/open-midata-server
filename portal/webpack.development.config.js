@@ -23,6 +23,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const My_Definitions = require('./webpack.definitions');
 const instance = require('./../config/instance.json');
 const autoprefixer = require('autoprefixer');
+const { VueLoaderPlugin } = require('vue-loader')
+const webpack = require('webpack');
 
 /**
  * Distribution mode:
@@ -47,8 +49,8 @@ var PUBLIC_PATH = '/';// + APP_NAME + '/dist/';
 /**
  * Prepare the plugins
  */
-var My_Plugins = [
-    new CleanWebpackPlugin(),
+var My_Plugins = [    
+    new CleanWebpackPlugin(),   
     new CopyWebpackPlugin({ patterns : [
         { from: path.resolve(CLIENT_DIR, '**/*.html'), to: DIST_DIR, globOptions: {
             ignore: [ 'src/index.html', 'src/oauth.html' ] } , context: 'src/', transform : My_Definitions.jsonReplacer },
@@ -70,14 +72,19 @@ var My_Plugins = [
     new MiniCssExtractPlugin({
         filename: "[name].css",
         chunkFilename: "[id].css"
-    })
+    }),
+    new webpack.DefinePlugin({
+       __VUE_OPTIONS_API__ : true,
+       __VUE_PROD_DEVTOOLS__ : false
+    }),
+    new VueLoaderPlugin()
 ];
 
 for (let i = 0; i < My_Definitions.html_files_to_add.length; i++) {
     const _definition = My_Definitions.html_files_to_add[i];
     My_Plugins.push(
         new HtmlWebpackPlugin({
-            template: path.resolve(CLIENT_DIR, _definition.page),
+            template: path.resolve(__dirname, _definition.page),
             output: DIST_DIR,
             inject: 'head',
             filename: _definition.page,
@@ -166,6 +173,10 @@ module.exports = {
                 use: [
                     'file-loader'
                 ]
+            },
+            {
+                test: /\.vue$/,
+                loader: 'vue-loader'
             }
         ]
     },
@@ -173,5 +184,14 @@ module.exports = {
     /**
      * PLUGINS
      */
-    plugins: My_Plugins
+    plugins: My_Plugins,
+
+    resolve: {
+        modules: [
+          'node_modules',
+          path.resolve(__dirname + '/vue'),
+          path.resolve(__dirname + '/node_modules'),
+          path.resolve(__dirname + '/src')          
+        ]
+    }
 };
