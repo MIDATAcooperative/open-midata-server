@@ -41,32 +41,32 @@ import server from './server.js';
 		return result;
 	};
 	
-	var getDeviceId = function() {
+	var getDeviceId = function(vuescope) {
 		var devid;
 		if (localStorage && localStorage.deviceId) {
 		   devid = localStorage.deviceId;
 		}
 		if (!devid) {
-			devid = $cookies.get("device");
+			devid = vuescope.$cookies.get("device");
 		}
 		if (!devid) {
 			devid = randomString();						
 		}
 		if (localStorage) localStorage.deviceId = devid;
-		$cookies.put("device", devid);
+		vuescope.$cookies.set("device", devid);
 		
 		return devid;
 	};
 	
 	service.createDeviceId = getDeviceId;
 	
-	service.init = function(client_id, redirect_uri, state, code_challenge, code_challenge_method, devId) {
+	service.init = function(vuescope, client_id, redirect_uri, state, code_challenge, code_challenge_method, devId) {
 	   cred.appname = client_id;
 	   cred.redirectUri = redirect_uri;
 	   cred.state = state || "none";
 	   cred.code_challenge = code_challenge;
 	   cred.code_challenge_method = code_challenge_method;
-	   cred.device = devId || getDeviceId();
+	   cred.device = devId || getDeviceId(vuescope);
 	};
 	
 	service.setUser = function(email, password, role, studyLink) {
