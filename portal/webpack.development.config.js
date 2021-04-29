@@ -53,7 +53,7 @@ var My_Plugins = [
     new CleanWebpackPlugin(),   
     new CopyWebpackPlugin({ patterns : [
         { from: path.resolve(CLIENT_DIR, '**/*.html'), to: DIST_DIR, globOptions: {
-            ignore: [ 'src/index.html', 'src/oauth.html' ] } , context: 'src/', transform : My_Definitions.jsonReplacer },
+            ignore: [ 'src/index_old.html', 'src/oauth_old.html' ] } , context: 'src/', transform : My_Definitions.jsonReplacer },
         { from: path.resolve(CLIENT_DIR, 'auth.js'), to: path.resolve(DIST_DIR, 'auth.js') },       
         { from: CLIENT_IMAGES, to: DIST_IMAGES },      
         { from: CLIENT_IMG, to: DIST_IMG },

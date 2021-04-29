@@ -51,18 +51,18 @@ my_exports.entry.maincss = my_exports.entry.maincss.concat(glob.sync('./src/view
 
 my_exports.html_files_to_add = [
     {
-        page:'index.html',
+        page:'index_old.html',
         exclude: ['miniportal', 'vueportal', 'vueminiportal', 'minicss']
     },
     {
-        page:'oauth.html',
+        page:'oauth_old.html',
         exclude: ['mainportal', 'vueportal', 'vueminiportal', 'maincss']
     },
     {
-        page:'oauth2.html',
+        page:'oauth.html',
         exclude: ['mainportal', 'miniportal', 'vueportal', 'minicss']
     },{
-        page:'portal.html',
+        page:'index.html',
         exclude: ['mainportal', 'miniportal', 'vueminiportal', 'minicss']
     }];
 

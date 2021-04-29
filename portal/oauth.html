@@ -15,10 +15,10 @@
  You should have received a copy of the GNU General Public License
  along with the Open MIDATA Server.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
-<html>
-	<head>
-		<title>MIDATA.coop</title>
+<html lang="en">
+<head>
+  <head>
+		<title><%= htmlWebpackPlugin.options.PLATFORM %></title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
 		<meta name="description" content="MIDATA">		
@@ -37,46 +37,11 @@
    <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96x96.png">
    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
    <link rel="manifest" href="/images/manifest.json">
-		<!-- Clear CSS defaults -->
-					
-		<!-- Application style sheet -->
-		<!-- build:css oauth.min.css -->	
-		<!-- FROM WEBPACK	
-		<link rel="stylesheet" href="/app2.css">
-		-->
-		<!-- endbuild -->
-		
-		<!--<script type="text/javascript" src="<!- - @echo BACKEND - ->/api/assets/javascripts/routes" defer></script>-->
-		<script type="text/javascript" src="<%= htmlWebpackPlugin.options.BACKEND %>/api/assets/javascripts/routes" ></script>								
-		<!-- <script type="text/javascript" src="components/jquery-ui/jquery-ui.js" defer></script>  -->  
-		
-		<!-- build:js oauth.min.js -->		
-		<!-- FROM WEBPACK			
-        <script type="text/javascript" src="components/angular/angular.js" defer></script>   
-        <script type="text/javascript" src="components/angular-sanitize/angular-sanitize.js" defer></script>             
-        <script type="text/javascript" src="components/angular-translate/angular-translate.js" defer></script>
-        <script type="text/javascript" src="components/angular-translate-loader-partial/angular-translate-loader-partial.js" defer></script>
-        <script type="text/javascript" src="components/angular-translate-storage-cookie/angular-translate-storage-cookie.js" defer></script>
-        <script type="text/javascript" src="components/angular-translate-storage-local/angular-translate-storage-local.js" defer></script>
-        <script type="text/javascript" src="components/angular-cookies/angular-cookies.js" defer></script>        
-        <script type="text/javascript" src="components/angular-ui-router/release/angular-ui-router.js" defer></script> 
-                                    		
-		<script type="text/javascript" src="oauthapp.js" defer></script>
-		-->
-		<!-- endbuild -->
+   <script type="text/javascript" src="<%= htmlWebpackPlugin.options.BACKEND %>/api/assets/javascripts/routes" ></script>
 	</head>
-	<!--<body ng-app="portal" ng-csp="no-unsafe-eval" class="<!- - @echo NAME - ->">-->
-<body ng-app="portal" ng-csp="no-unsafe-eval" class="<%= htmlWebpackPlugin.options.NAME %>">
-	
-	  <div ng-if="false" class="fullheight start-color">	 
-			<div style="position: relative;" class="fullheight">
-				<div id="loader">
-					<img src="/img/logo-midata--white.svg" width="180" alt="MIDATA"></div>
-			</div>
-
-	  </div>
-    <div id="wrapper">
-	  <div id="maincontent" ui-view ng-cloak></div>	 
-	 </div>
+	<body class="<%= htmlWebpackPlugin.options.NAME %>">    
+    <div id="app"></div>  
 	</body>
+
 </html>
+
