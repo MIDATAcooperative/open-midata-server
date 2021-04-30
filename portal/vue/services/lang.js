@@ -95,16 +95,9 @@ export async function addBundle(bundlename) {
 export async function setLocale(locale) {
   if (locale != myLocale.value) messages = {};
   myLocale.value = locale;
-
   i18n.locale.value = locale;
-  /*if (i18n.mode === 'legacy') {
-    i18n.global.locale = locale
-  } else {
-    i18n.global.locale.value = locale
-  }*/
-
+  
   for (let bundle of bundles) await loadLocaleMessages(bundle, locale);
-
   await setLocaleMessages(locale);
  
 }

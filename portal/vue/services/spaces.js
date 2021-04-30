@@ -81,6 +81,7 @@ import server from "./server";
 	};
 	
 	service.openAppLink = function($router, $route, userId, data) {
+		console.log("open app link");
 		if (data.app === "market") {
 			  if (data.params.appId) {
 				  $router.push({ path : "./visualization", query : { visualizationId : data.params.appId } });

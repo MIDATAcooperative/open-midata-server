@@ -385,32 +385,29 @@ export default {
 	    	});	
 		},
 
-		retry(funcresult, params) {
+		retry(funcresult, params) {			
 			const { $data, $route, $router } = this, me = this;
-	    	if (funcresult) {
+	    	if (funcresult) {				
 		   		if (funcresult.data.istatus === "ACTIVE") oauth.postLogin(funcresult);
 		   		else session.postLogin(funcresult, $router, $route);		
 	    	} else {
-				let r = me.doAction("login",session.retryLogin(params));
-				/*if (!r) {	    	
-				try {
-					$router.push({ path : "./user", query : { userId:$data.registration._id } });
-				} catch(e) {
-					$router.push({ path : "./login" });
-				}
-				} else {*/
-				r.then(function(result) {
-					if (result.data.istatus === "ACTIVE") oauth.postLogin(result);
-					else session.postLogin(result, $router, $route);
+				let r = me.doAction("login",session.retryLogin(params));				
+				r.then(function(result) {					
+					if (result.data.istatus === "ACTIVE") {
+						console.log("retry C-OA");
+						oauth.postLogin(result);
+					}
+					else {
+						session.postLogin(result, $router, $route);
+					}					
 				}, function(err) {
 					$data.setpw = {};
 									
 					if (err.response.data && err.response.data.code == "error.expired.securitytoken") {
 						$data.progress = { RELOGIN : true };
 					}
-				});
-				//}
-			}
+				});				
+			}			
 		},
 
 		
@@ -604,7 +601,7 @@ export default {
 			}
 		},
 
-		prepare() {
+		prepare() {			
 			const { $data, $route, $router }	= this;
 			$data.progress = session.progress || {};
 	
@@ -628,7 +625,10 @@ export default {
 	},
 
 	watch : {
-		$route() { this.prepare(); }
+		$route(to, from) { 						
+			if (to.path.indexOf("postregister") < 0 && to.path.indexOf("upgrade") < 0) return;
+			this.prepare(); 
+		}
 	},
 
 	created() {
