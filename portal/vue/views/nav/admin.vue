@@ -82,7 +82,7 @@
 </div>
 <footer id="footer">
 	<div class="container">
-		<p>{{ $t('footer.copyright', { now : currentYear }) }}</p>
+		<p>&nbsp;</p>
 
 		<ul>
 			<li><a :href="homepage" v-t="'footer.homepage'"></a></li>			
@@ -124,9 +124,9 @@ export default {
 		    server.post('/api/logout')
 		    .then(function() { 
 			    session.logout();
-			    if ($route.meta.role=="provider") document.location.href="/#/provider/login";
-			    else if ($route.meta.role=="research") document.location.href="/#/research/login";
-			    else if ($route.meta.role=="admin" || $route.meta.role=="developer")  document.location.href="/#/developer/login";
+		        if ($route.meta.role=="provider") document.location.href="/#/public_provider/login";
+			    else if ($route.meta.role=="research") document.location.href="/#/public_research/login";
+			    else if ($route.meta.role=="admin" || $route.meta.role=="developer")  document.location.href="/#/public_developer/login";
 			    else document.location.href="/#/public/login"; });
         },
 		
@@ -200,7 +200,7 @@ export default {
 		addBundle("developers");
 		addBundle("researchers");
 		addBundle("branding");
-
+	    console.log("admin menu"+$route.meta.role);
 		session.login($route.meta.role);		
 		this.updateNav();
 	

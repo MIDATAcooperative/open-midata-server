@@ -88,7 +88,7 @@
                 <error-box :error="error"></error-box>
 			
                 <form-group name="language" label="registration.language" :path="errors.language">
-                    <select v-model="user.language" class="form-control" v-validate>
+                    <select v-model="user.language" name="language" class="form-control" v-validate>
                         <option v-for="lang in languages" :key="lang.value" :value="lang.value">{{ $t(lang.name) }}</option>
                     </select>
                 </form-group>
