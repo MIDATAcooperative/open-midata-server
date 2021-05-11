@@ -305,6 +305,39 @@
      "test_btn" : "Test: send to yourself",
      "save_btn" : "Store Mail",
      "send_btn" : "Send"
+   },
+
+   "content" : {
+      "intro" : "Search for existing codes, content-types and groups.",
+      "createnew_btn" : "New Code",
+      "creategroup_btn" : "New Group",
+      "make_selection" : "Select the entity you want to edit or add a new code to",
+      "new_code" : "New Code to be added",
+      "edit_code" : "Edit existing code",
+      "edit_content" : "Edit existing Midata Content-Type",
+      "new_content" : "New Midata Content-Type to be added",
+      "edit_group" : "Edit existing Group in Record-Tree",
+      "new_group" : "New Group for Record-Tree",
+
+      "system" : "Code system",
+      "version" : "Version",
+      "code" : "Code",
+      "display" : "Display",
+      "content" : "Midata Content-Type",
+      "security" : "Record encryption keys",
+      "medium" : "Reuse keys for records of same type and person",
+      "high" : "Use a new key for each record",
+      "group" : "Group in Record-Tree",
+      "defaultCode" : "Default code",
+      "resource_type" : "Default FHIR resource type",
+      "delete_content_btn" : "Delete Code & Content-Type",
+      "delete_code_btn" : "Delete Code",
+      "group_name" : "Group Name",
+      "parent_group" : "Parent Group",
+      "group_system" : "Grouping System",
+      "save_group_btn" : "Save Group",
+      "delete_group_btn" : "Delete Group",
+      "save_btn" : "Save Code & Content-Type"
    }
     
 }

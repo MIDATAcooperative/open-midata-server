@@ -39,7 +39,7 @@ import utils.json.JsonValidation.JsonValidationException;
 public class ContentInfo extends Model {
 
 	private @NotMaterialized static final String collection = "contentinfo";
-	private @NotMaterialized static final Set<String> ALL = Sets.create("content", "defaultCode", "security","label", "comment", "source");
+	private @NotMaterialized static final Set<String> ALL = Sets.create("content", "defaultCode", "security","label", "resourceType", "comment", "source");
 	
 	/**
 	 * the name of the content type this class describes

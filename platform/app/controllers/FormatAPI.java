@@ -114,6 +114,7 @@ public class FormatAPI extends Controller {
 		cc._id = id != null ? id : new MidataId();		
 		cc.code = JsonValidation.getString(json, "code");
 		cc.content = JsonValidation.getString(json, "content");
+		cc.version = JsonValidation.getStringOrNull(json, "version");
 		cc.display = JsonValidation.getString(json, "display");
 		cc.system = JsonValidation.getString(json, "system");
 		
@@ -137,6 +138,7 @@ public class FormatAPI extends Controller {
 		cc._id = new MidataId(id);
 		cc.code = JsonValidation.getString(json, "code");
 		cc.content = JsonValidation.getString(json, "content");
+		cc.version = JsonValidation.getStringOrNull(json, "version");
 		cc.display = JsonValidation.getString(json, "display");
 		cc.system = JsonValidation.getString(json, "system");
 		
@@ -151,8 +153,7 @@ public class FormatAPI extends Controller {
 	 * @return
 	 * @throws AppException
 	 */
-	@APICall
-	@BodyParser.Of(BodyParser.Json.class)
+	@APICall	
 	@Security.Authenticated(AdminSecured.class)
 	public Result deleteCode(String id) throws AppException {
 		ContentCode.delete(new MidataId(id));				
@@ -223,8 +224,7 @@ public class FormatAPI extends Controller {
 	 * @return
 	 * @throws AppException
 	 */
-	@APICall
-	@BodyParser.Of(BodyParser.Json.class)
+	@APICall	
 	@Security.Authenticated(AdminSecured.class)
 	public Result deleteContent(String id) throws AppException {
 		ContentInfo.delete(new MidataId(id));				
@@ -269,8 +269,7 @@ public class FormatAPI extends Controller {
 		return ok();
 	}
 	
-	@APICall
-	@BodyParser.Of(BodyParser.Json.class)
+	@APICall	
 	@Security.Authenticated(AdminSecured.class)
 	public Result deleteGroup(String id) throws AppException {
 		RecordGroup.delete(new MidataId(id));	

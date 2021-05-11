@@ -47,7 +47,7 @@
                 <td>{{ $t('enum.plugintype.'+app.type) }}</td>
                 <td>{{ $t('enum.userrole.'+app.targetUserRole) }}</td>
                 <td><input class="form-check-input" type="checkbox" @change="changePlugin(app);" v-model="app.spotlighted"></td>
-                <td><router-link :to="{ path : './appstats', query : { appId : app._id }}" v-t="'common.show'"></router-link></td>
+                <td><router-link :to="{ path : './appstats', query : { appId : app._id }}" v-t="'common.view_btn'"></router-link></td>
                 <td>
                     <select class="form-control" v-model="app.status" @change="changePlugin(app);">
                         <option v-for="status in pluginStati" :key="status" :value="status">{{ status }}</option>
@@ -96,17 +96,17 @@ export default {
 	    reload() {
             const { $data } = this, me = this;
 	        if ($data.search.criteria.creatorLogin === "") $data.search.criteria.creatorLogin = undefined;
-	        me.doSilent(apps.getApps( $data.search.criteria, [ "creator", "creatorLogin", "developerTeam", "filename", "version", "name", "description", "tags", "targetUserRole", "spotlighted", "type", "status", "orgName", "publisher"]))
-	        .then(function(data) {
+	        me.doBusy(apps.getApps( $data.search.criteria, [ "creator", "creatorLogin", "developerTeam", "filename", "version", "name", "description", "tags", "targetUserRole", "spotlighted", "type", "status", "orgName", "publisher"])
+	        .then(function(data) {                
                 for (let app of data.data) { app.search = app.name.toLowerCase()+" "+app.filename.toLowerCase() }
                 $data.apps = me.process(data.data, { filter : { search:"", orgName:"" }}); 
-            });
+            }));
 	    },
 	
 	    changePlugin(plugin) {				
             const me = this;
-		    me.doAction(apps.updatePluginStatus(plugin))
-	        .then(function() { me.init(); });				
+		    me.doAction("change", apps.updatePluginStatus(plugin)
+	        .then(function() { me.init(); }));				
 	    }
     },
 
