@@ -41,7 +41,7 @@
 export default {
     props : ["data", "selectedAps","sharing" ,"action"],
     emits : ["show", "share","unshare", "deleteGroup" ],
-
+    name : "record-tree-node",
     methods : {
         isShared(record) {
             const { $data, $route } = this, me = this;
