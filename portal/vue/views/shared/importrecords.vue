@@ -180,7 +180,7 @@ export default {
             $data.authorized = true;
             $data.authorizing = false;
             $data.message = "Loading app...";
-            getAuthToken($data.spaceId, true);
+            me.getAuthToken($data.spaceId, true);
         }, function(err) {
             $data.error = "Requesting access token failed: " + err.data;
             $data.authorizing = false;
