@@ -793,7 +793,8 @@
 	"use_app" : "Use now",
 	"for_participants" : "Participation Info",
 	"please_review1" : "Decide about participation",
-    "please_review2" : "Please review this research project. Do you want to participate? Click on 'Skip (No change)' if you want to leave this page without any changes."	
+    "please_review2" : "Please review this research project. Do you want to participate? Click on 'Skip (No change)' if you want to leave this page without any changes."
+   
   },
 
   "user" : {
@@ -1044,6 +1045,7 @@
     "confirm_btn" : "Confirm Access",
     "continue_btn" : "Continue",
     "requests_access" : "Access requested by the application:",
+    "requests_access_short" : "Access requested",
     "requests_sharing" : "Data shared with the project:",
     "requests_sharing_service" : "Data shared with the external service:",
     "shares_group" : "Group: {{ group }}",
@@ -1051,13 +1053,37 @@
     "shares_content" : "Content: {{ content }}",
     "confirm_provider" : "I accept to share data with this external provider",
     "confirm_provider_opt" : "I accept to share data with this external provider (optional)",
-    "confirm_service" : "I accept to share data with this external service",
+    "confirm_service" : "I accept the terms of use of the application and to share data with the linked service",
     "confirm_service_opt" : "I accept to share data with this external service (optional)",
     "confirm_study" : "I accept the terms of use of the application and to participate in the project",
     "confirm_study_opt" : "I accept to participate in the project",
     "confirm_citizen_science" : "I accept to participate in the citizen science project",
     "confirm_community" : "I accept the terms of use of the application and community services",
-    "confirm_community_opt" : "I accept to share data with the community service"
+    "confirm_community_opt" : "I accept to share data with the community service",
+    "confirm_app" : "I accept the terms of use and to share data with ",
+    "and" : "and",    
+    "link_SERVICE_required" : "An additional service is required to use this application:",
+    "link_SERVICE_optional" : "You may additionally subscribe to use this service:", 
+    "link_ORGANIZATION_required" : "A third party needs access to your data to use this application:",
+    "link_ORGANIZATION_optional" : "You may share data with this 3rd party:", 
+    "link_CLINICAL_required" : "In order to use this application you need to participate in a clinical trial:",
+    "link_CLINICAL_optional" : "Additionally you may participate in a clinical trial:",
+    "link_CITIZENSCIENCE_required" : "In order to use this application you must participate in a citizen science project:",
+    "link_CITIZENSCIENCE_optional" : "Additionally you may participate in a citizen science project:",
+    "link_COMMUNITY_required" : "In order to use this application you must participate in a community project:",
+    "link_COMMUNITY_optional" : "Additionally you may participate in a community project:", 
+    "sharing_summary" : "Summary",
+    "all" : "All",
+    "both" : "Both",
+    "only" : "Only:",
+    "not" : "All but:", 
+    "short_app" : "App",
+    "short_service" : "Service",
+    "short_project" : "Project",
+    "short_clinical" : "Study",
+    "short_citizenscience" : "Project",
+    "short_community" : "Community",
+    "short_party" : "Party"
   },
 
   "dashboard" : {

@@ -231,5 +231,52 @@ import { getLocale } from './lang';
 		return Promise.all(result);
 				
 	};
+
+	// input: array of { system : String, labels:Array<String> }
+	// returns: array of { label : String, summary : String, checks:Array of Boolean }
+	service.joinQueries = function($t, input) {
+		let output = [];
+		let byLabel = {};		
+		let hasMultiple = input.length > 1;
+		for (let entry of input) {
+			for (let label of entry.labels) {
+				let row = byLabel[label];
+				if (!row) {
+					row = byLabel[label] = { label : label, checks : [], summary : "", count : 0 };
+					output.push(row);
+				}				
+			}
+		}
+		for (let entry of input) {
+			for (let row of output) {
+				if (entry.labels.indexOf(row.label)>=0) {
+					row.checks.push(true);
+					row.count++;					
+				 } else row.checks.push(false);
+			}
+		}
+		for (let row of output) {
+			if (input.length==1) {
+				row.summary = "";
+			} else if (row.count==input.length) {
+				if (input.length > 2) row.summary = $t("studydetails.all"); else row.summary = $t("studydetails.both");
+			} else if (row.count == 1) {
+				for (let i=0;i<row.checks.length;i++) {
+					if (row.checks[i]) row.summary = $t("studydetails.only")+" "+input[i].system;
+				}
+			} else if (row.count == input.length - 1) {
+				for (let i=0;i<row.checks.length;i++) {
+					if (!row.checks[i]) row.summary = $t("studydetails.not")+" "+input[i].system;
+				}
+			} else {
+				let sys = [];
+				for (let i=0;i<row.checks.length;i++) {
+					if (row.checks[i]) sys.push(input.system[i]);
+				}
+				row.summary = sys.join(", ");
+			}
+		}
+		return output;
+	};
 		
 	export default service;

@@ -278,6 +278,7 @@ export default {
         sessionStorage.oldToken = sessionStorage.token;
         sessionStorage.oldDevice = $data.device;
         sessionStorage.oldFhirRelease = $data.fhirRelease;
+        sessionStorage.oldApp = $data.app._id;
         window.document.location.href = me.getOAuthLogin();
 	    },
 	
@@ -384,7 +385,7 @@ export default {
           if (!$data.saved) $data.saved = [];         
           //console.log($data.saved);
         }
-        session.currentUser.then(function(userId) { me.init(userId, $route.query.appId); });	
+        session.currentUser.then(function(userId) { me.init(userId, $route.query.appId || sessionStorage.oldApp); });	
     }
 }
 </script>
