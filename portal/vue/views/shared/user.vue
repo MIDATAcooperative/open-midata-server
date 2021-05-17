@@ -63,7 +63,7 @@
                         <router-link class="dropdown-item" :to="{ path : './market', query : { tag : 'Expert' }}" v-t="'user.expert_tools_btn'"></router-link>
 	                    <a class="dropdown-item" href="javascript:" :disabled="msg!=null" @click="fixAccount();" v-t="'user.repair_account_btn'"></a>
 	                    <a class="dropdown-item" href="javascript:" :disabled="msg!=null" @click="resetSpaces();" v-t="'user.reset_spaces_btn'"></a>
-	                    <router-link class="dropdown-item" :to="{ path : './delete_records' }" v-t="'user.delete_records_btn'"></router-link>
+	                    <router-link class="dropdown-item" :to="{ path : './records-delete' }" v-t="'user.delete_records_btn'"></router-link>
 	                    <a class="dropdown-item" href="javascript:" @click="exportAccount()" v-t="'user.export_btn'"></a>
 	                    <a class="dropdown-item" href="javascript:" v-show="beta" @click="metrics()" v-t="'user.metrics_btn'"></a>
 	                    <router-link class="dropdown-item" v-show="user.role!='MEMBER'" :to="{ path : './servicekeys' }" v-t="'user.servicekeys_btn'"></router-link>
