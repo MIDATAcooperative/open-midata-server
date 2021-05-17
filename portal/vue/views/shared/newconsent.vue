@@ -874,11 +874,13 @@ export default {
     },
 
 	watch:{
-		$route (){
+		$route (to, from ){
 			const { $data, $route } = this, me = this;
-			session.currentUser.then(function(userId) {	
-            	me.init(userId);
-        	});
+			if (to.path.indexOf("consent")>=0) {
+				session.currentUser.then(function(userId) {	
+	            	me.init(userId);
+	        	});
+        	}
 		}
 	},
 
