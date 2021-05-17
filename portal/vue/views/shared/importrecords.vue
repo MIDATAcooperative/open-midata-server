@@ -31,7 +31,7 @@
 				    <div class="extraspace"></div>				
                 </div>
 				<p v-if="message" class="alert alert-info">{{message}}</p>
-				<div v-if="authorized">			      	
+				<div v-if="authorized && url != null">			      	
 				  <div id="iframe" style="min-height:200px;width:100%;" v-pluginframe="url"></div>								
 				</div>                
             </panel>
