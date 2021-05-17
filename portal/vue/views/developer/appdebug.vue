@@ -150,6 +150,7 @@ import apps from "services/apps.js"
 import { rl, status, ErrorBox, FormGroup, Password } from 'basic-vue3-components'
 import ENV from "config";
 import Axios from "axios";
+import _ from "lodash";
 
 export default {
 
@@ -351,7 +352,7 @@ export default {
             var arguments1 = url.split("&");
             var keys = _.map(arguments1, function(argument) { return argument.split("=")[0]; });
             var values = _.map(arguments1, function(argument) { return argument.split("=")[1]; });
-            var params = _.object(keys, values);
+            var params = _.zipObject(keys, values);
             
             if (_.has(params, "error")) {
                 error = "The following error occurred: " + params.error + ". Please try again.";

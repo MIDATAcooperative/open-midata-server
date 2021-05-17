@@ -143,7 +143,7 @@ export default {
 		var arguments1 = url.split("&");
 		var keys = _.map(arguments1, function(argument) { return argument.split("=")[0]; });
 		var values = _.map(arguments1, function(argument) { return argument.split("=")[1]; });
-		var params = _.object(keys, values);
+		var params = _.zipObject(keys, values);
 		
 		if (_.has(params, "error")) {
 			error = "The following error occurred: " + params.error + ". Please try again.";
@@ -201,7 +201,9 @@ export default {
     },
 
 	watch : {		
-		$route() { this.init(); }
+		$route(to, from) {
+		  if (to.path.indexOf("import")>=0) this.init(); 
+		}
 	},
 
     created() {

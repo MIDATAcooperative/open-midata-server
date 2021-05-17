@@ -84,7 +84,9 @@ export default {
     },
 
 	watch : {		
-		$route() { this.init(); }
+		$route(to, from) {
+		  if (to.path.indexOf("space")>=0) this.init(); 
+		}
 	},
 
     created() {
