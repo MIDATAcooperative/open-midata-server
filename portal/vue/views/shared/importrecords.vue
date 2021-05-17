@@ -136,7 +136,7 @@ export default {
 	},
 	
 	onAuthorized(url) {
-		
+		const { $data, $route } = this, me = this;
 		var message = null;
 		var error = null;
 
@@ -149,10 +149,10 @@ export default {
 			error = "The following error occurred: " + params.error + ". Please try again.";
 		} else if (_.has(params, "code")) {
 			message = "User authorization granted. Requesting access token...";
-			requestAccessToken(params.code);
+			me.requestAccessToken(params.code);
 		} else if (_.has(params, "oauth_verifier")) {
 			message = "User authorization granted. Requesting access token...";
-			requestAccessToken(params.oauth_verifier, params);
+			me.requestAccessToken(params.oauth_verifier, params);
 		} else {
 			error = "An unknown error occured while requesting authorization. Please try again.";
 		}
