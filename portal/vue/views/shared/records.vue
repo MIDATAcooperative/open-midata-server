@@ -93,7 +93,7 @@
                             <span class="badge badge-info">{{ $filters.date(record.created) }}</span>&nbsp;
                             <span v-if="record.owner != userId" class="badge badge-info">{{ record.ownerName }}</span>&nbsp;
                             <a href="javascript:;" @click="showDetails(record)">{{record.name}}</a>
-                            <button v-show="(allowDelete && isOwnRecord(record)) || (allowDeletePublic && isPublicRecord(record))" @dblclick="deleteRecord(record, selectedData)" class="btn btn-danger btn-sm" v-t="'records.delete'"></button>
+                            <button v-show="(allowDelete && isOwnRecord(record)) || (allowDeletePublic && isPublicRecord(record))" @dblclick="deleteRecord(record, selectedData)" class="btn btn-danger btn-sm ml-1" v-t="'records.delete'"></button>
                             <div class="float-right" v-if="selectedAps!=null">					   
                                 <button class="btn btn-sm btn-primary" :disabled="action!=null" @click="unshare(record, selectedData);" v-show="isShared(record)">
                                     <span class="fas fa-picture"></span><span v-t="'records.unshare'"></span>

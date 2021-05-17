@@ -471,7 +471,7 @@ export default {
 			})));							
 		}
 
-		Promise.all(waitFor).then(me.prepareConfirm);
+		Promise.all(waitFor).then(() => me.prepareConfirm);
         
 
 	 }
