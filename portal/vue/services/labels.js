@@ -206,12 +206,12 @@ import { getLocale } from './lang';
 	service.prepareQuery = function($t, defaultQuery, appName, genLabels, reqInf) {
 				
 		var sq = service.simplifyQuery(defaultQuery, appName, true);
-		
+		console.log(sq);
 		var result = [];		
 		if (sq) {
 			if (sq.content) {
 				for (let r of sq.content) {
-				  if (r === "Patient" || r === "Group" || r === "Person" || r === "Practitioner" || r === "ValueSet") return;
+				  if (r === "Patient" || r === "Group" || r === "Person" || r === "Practitioner" || r === "ValueSet") continue;
 				  result.push(service.getContentLabel(getLocale(), r).then(function(lab) {
 					if (genLabels.indexOf(lab)<0) genLabels.push(lab); 
 				  }));

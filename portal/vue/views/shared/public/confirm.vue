@@ -89,7 +89,7 @@
 							
 						<label for="appAgb" class="form-check-label">
 						   <span v-t="'registration.app_agb2'"></span>
-						   <a @click="terms({which : app.termsOfUse })" href="javascript:" v-t="'registration.app_agb3'"></a>
+						   <a @click="showTerms({which : app.termsOfUse })" href="javascript:" v-t="'registration.app_agb3'"></a>
 						 </label>							 					
 						 
 					</div>
@@ -109,7 +109,7 @@
 						<input type="checkbox" class="form-check-input" :id="link._id" :name="link._id" value="" :checked="login.confirmStudy.indexOf(link.studyId || link.userId || link.serviceAppId)>=0" @click="toggle(login.confirmStudy, link.studyId || link.userId || link.serviceAppId)" /> 
 						<label :for="link._id" class="form-check-label">
 						  <span>{{ $t(getLinkLabel(link)) }}</span>:
-						  <a v-if="link.termsOfUse && !(link.inlineTerms)" @click="terms({which : link.termsOfUse })" href="javascript:">{{ (link.study || {}).name }} {{ (link.provider || {}).name }} {{ (link.serviceApp || {}).name }}</a>
+						  <a v-if="link.termsOfUse && !(link.inlineTerms)" @click="showTerms({which : link.termsOfUse })" href="javascript:">{{ (link.study || {}).name }} {{ (link.provider || {}).name }} {{ (link.serviceApp || {}).name }}</a>
 						  <span v-if="!(link.termsOfUse && !(link.inlineTerms))">{{ getLinkName(link) }}</span>
 						 </label>
 					</div>					
@@ -308,7 +308,7 @@ export default {
 	   $data.showApp = false;
 	   $data.extra = [ $data.pages[$data.project] ];
 	   $data.inlineTerms = $data.extra[0].inlineTerms;
-	   if ($data.inlineTerms) this.terms({ which : $data.extra[0].termsOfUse });
+	   if ($data.inlineTerms) me.showTerms({ which : $data.extra[0].termsOfUse });
 	   $data.allLoaded = true;
 	   me.prepareQuerySummary();
 	   $data.project++;
@@ -348,7 +348,7 @@ export default {
 		return labels.prepareQuery(this.$t, defaultQuery, appName, genLabels, reqInf);
 	},
 
-	terms(def) {
+	showTerms(def) {
 		const { $data } = this;
 		$data.terms = { which : def, active : false };
 	},
@@ -461,7 +461,7 @@ export default {
 					    } else {
 							$data.extra.push(link);
 						}
-						let recordQuery = link.study ? link.study.recordQuery : link.serviceApp ? link.serviceApp.defaultQuery : {};
+						let recordQuery = link.study ? link.study.recordQuery : (link.serviceApp ? link.serviceApp.defaultQuery : {});
 						r.push(me.prepareQuery(recordQuery, null, link.labels, link.study ? link.study.requiredInformation : null));	
 					}
 				}
