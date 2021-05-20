@@ -587,7 +587,7 @@ public class Users extends APIController {
 		KeyInfoExtern.delete(userId);
 		AccessPermissionSet.delete(userId);
 						
-		User user = User.getById(userId, User.ALL_USER_INTERNAL);
+		User user = User.getByIdAlsoDeleted(userId, User.ALL_USER_INTERNAL);
 		if (user != null) {
 			if (user.role == UserRole.PROVIDER) {
 				HPUser hp = HPUser.getById(userId, Sets.create("provider"));

@@ -30,7 +30,7 @@
 
 							<div class="alert alert-success" v-if="success">
 								<p v-t="'setpw.success'"></p>
-								<p><router-link to="{ path : './login' }" v-t="'setpw.back_to_login'"></router-link></p>
+								<p><router-link :to="{ path : './login' }" v-t="'setpw.back_to_login'"></router-link></p>
 							</div>
 							<div v-if="!success">
 								<p v-t="'setpw.enter_new'"></p>

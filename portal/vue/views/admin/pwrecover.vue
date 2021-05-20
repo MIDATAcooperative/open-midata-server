@@ -48,7 +48,7 @@
                         <input type="text" class="form-control" v-model="member.shares[criteria.me]">
                     </td>
                     <td>
-                        <button @click="commit(member)" :disabled="member.success || action!=null" class="btn btn-sm btn-default">ok</button>
+                        <button type="button" @click="commit(member)" :disabled="member.success || action!=null" class="btn btn-sm btn-default">ok</button>
                         <span class="fas fa-check text-success" v-if="member.success"></span>
                         <span class="fas fa-times text-danger" v-if="member.fail"></span>
                         {{ member.success }}{{ member.fail }}
@@ -122,6 +122,7 @@ export default {
                 });
                 } catch (e) {
                     console.log(e);
+                    if (e.response) e = e.response;
                     user.success = null;
                     user.fail = e.message;
                 }

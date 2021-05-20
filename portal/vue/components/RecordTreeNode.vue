@@ -25,22 +25,22 @@
 	</div>	
     <h1>
         <span v-if="data.children && data.children.length">
-            <span @click="setOpen(data,true);" v-show="!data.open" class="treehandle fas fa-plus"></span>
-            <span v-show="data.open && !data.type" @click="setOpen(data,false);" class="treehandle fas fa-minus"></span>
+            <span @click="setOpen({ group : data, open : true });" v-show="!data.open" class="treehandle fas fa-plus"></span>
+            <span v-show="data.open && !data.type" @click="setOpen({ group : data, open : false });" class="treehandle fas fa-minus"></span>
         </span>
         <span v-else class="treehandle" style="padding:1px;padding-left:9px;">&nbsp;</span>
         <a href="javascript:" @click="$emit('show',data)" :class="{ 'text-success' : isSharedGroup(data), 'format': data.type == 'content', 'nodata' : data.count == 0 }">{{data.fullLabel.fullLabel}}</a> <small>(<span v-if="selectedAps">{{ data.countShared }} / </span>{{ data.count }})</small><button class="btn btn-sm btn-danger" v-show="allowDelete" @dblclick="deleteGroup(data)" v-t="'records.delete_all_btn'"></button>
     </h1>
     <div v-if="data.open">          
         <div class="subtree">
-            <record-tree-node v-for="data in data.children" :action="action" :key="data._id" :selectedAps="selectedAps" :data="data" :sharing="sharing" @show="show" @share="share" @unshare="unshare" @deleteGroup="deleteGroup"></record-tree-node>
+            <record-tree-node v-for="data in data.children" :action="action" :key="data._id" :selectedAps="selectedAps" :data="data" :sharing="sharing" @show="show" @share="share" @unshare="unshare" @deleteGroup="deleteGroup" @open="setOpen"></record-tree-node>
         </div>
     </div>    
 </template>
 <script>
 export default {
     props : ["data", "selectedAps","sharing" ,"action"],
-    emits : ["show", "share","unshare", "deleteGroup" ],
+    emits : ["show", "share","unshare", "deleteGroup", "open" ],
     name : "record-tree-node",
     methods : {
         isShared(record) {
@@ -73,9 +73,9 @@ export default {
             return r;
         },
         
-        setOpen(group, open) {
-            group.open = open;
-            //$data.open[group.id] = open;		
+        setOpen(p) {
+            p.group.open = p.open;
+            this.$emit("open", p);
         },
         
         show(data) {

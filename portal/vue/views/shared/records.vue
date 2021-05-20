@@ -78,7 +78,7 @@
         </div>
              		        
         <div class="tree" v-for="data in tree" :key="data._id">
-            <record-tree-node :selectedAps="selectedAps" :action="action" :data="data" :sharing="sharing" @share="shareGroup" @unshare="unshareGroup"  @show="showRecords" @deleteGroup="deleteGroup"></record-tree-node>
+            <record-tree-node :selectedAps="selectedAps" :action="action" :data="data" :sharing="sharing" @share="shareGroup" @unshare="unshareGroup"  @show="showRecords" @deleteGroup="deleteGroup" @open="setOpen"></record-tree-node>
         </div>
 			
 		<div class="panel-body" v-if="tree.length === 0" v-t="'records.empty'"></div>
@@ -297,7 +297,8 @@ export default {
         tooManyConsents : false,
         sharing : null,
         gi : null,
-        selectedData : null
+        selectedData : null,
+        n : null
 	}),	
 
     computed : {
@@ -322,8 +323,8 @@ export default {
                 $data.userId = userId;
                 $data.availableAps = [{ i18n : "records.my_data" , name : "My Data", aps:userId, owner : "self", type : "global"  }, { i18n:"records.all_data", name : "All Data", aps:userId, owner : "all", type : "global" }, { i18n:"records.public_data", name : "Public Data", aps:userId, "public" : "only", type : "global" }];
                 $data.displayAps = $data.availableAps[0];
-                var n = "RecordsCtrl_"+$route.name;
-                //session.load(n, $scope, ["open", "treeMode"]);
+                $data.n = "RecordsCtrl_"+$route.name;
+                session.load($data.n, me, ["open", "treeMode"]);
                 
                 if ($route.query.selected != null) {	
                     var selectedType = $route.query.selectedType;
@@ -410,9 +411,9 @@ export default {
             });
         },
         
-        setOpen(group, open) {
-            group.open = open;
-            $data.open[group.id] = open;		
+        setOpen(p) {            
+            p.group.open = p.open;
+            this.$data.open[p.group.id] = p.open;		
 	    },
 	
 	
@@ -794,6 +795,10 @@ export default {
         $data.allowDelete = $route.meta.allowDelete;
         $data.allowDeletePublic = $route.meta.allowDeletePublic;
         this.init();
+    },
+
+    unmounted() {
+        if (this.$data.n) session.save(this.$data.n, this, ["open", "treeMode"]);
     }
     
 }
