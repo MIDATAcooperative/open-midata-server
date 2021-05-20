@@ -320,7 +320,7 @@ export default {
         const me = this;
 		$data.labels = [];
 		this.prepareQuery($data.app.defaultQuery, null/*$data.app.filename*/, $data.labels).then(function() {
-			if ($data.showApp && $data.labels.length == 0 && !$data.app.terms && $data.extra.length==0) {
+			if ($data.showApp && !$data.app.terms && $data.extra.length==0 && $data.pages.length > 0) {
 				me.confirm();
 			} else  {
 				$data.allLoaded = true;
@@ -362,11 +362,11 @@ export default {
 		let input = [];
 		let req = [];	
 		$data.termsLabel = null;	
-		if ($data.showApp) {
+		//if ($data.showApp) {
 			input.push({ system : me.appname(), labels:$data.labels });
 			short.push($t('oauth2.short_app'));
 			req.push(me.appname());
-		}
+		//}
 		if ($data.extra.length > 1) idx++;
 		for (let link of $data.extra) {
 			input.push({ system : me.getLinkName(link), labels : link.labels });

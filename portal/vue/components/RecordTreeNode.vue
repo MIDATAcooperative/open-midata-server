@@ -33,13 +33,13 @@
     </h1>
     <div v-if="data.open">          
         <div class="subtree">
-            <record-tree-node v-for="data in data.children" :action="action" :key="data._id" :selectedAps="selectedAps" :data="data" :sharing="sharing" @show="show" @share="share" @unshare="unshare" @deleteGroup="deleteGroup" @open="setOpen"></record-tree-node>
+            <record-tree-node v-for="data in data.children" :action="action" :key="data._id" :selectedAps="selectedAps" :data="data" :sharing="sharing" @show="show" @share="share" @unshare="unshare" @deleteGroup="deleteGroup" @open="setOpen" :allowDelete="allowDelete"></record-tree-node>
         </div>
     </div>    
 </template>
 <script>
 export default {
-    props : ["data", "selectedAps","sharing" ,"action"],
+    props : ["data", "selectedAps","sharing" ,"action", "allowDelete"],
     emits : ["show", "share","unshare", "deleteGroup", "open" ],
     name : "record-tree-node",
     methods : {
