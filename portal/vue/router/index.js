@@ -85,6 +85,14 @@ const baseRoutes = [
     meta : { role : "admin", keep : true }
   },
   {
+    path : '/portal/confirm/:token',
+    redirect : to => ({ path : "/portal/confirm", query : { token : to.params.token }})
+  },
+  {
+    path : '/portal/reject/:token',
+    redirect : to => ({ path : "/portal/reject", query : { token : to.params.token }})
+  },
+  {
     path : '/',
     redirect : '/public/info'
   }
@@ -134,17 +142,17 @@ const routes = [
     component: postRegister
   },
   {
-    base : ["public"],
-    path : "confirm/:token",
+    base : ["public", "oauth"],
+    path : "confirm",
     name : "confirm",
-    meta : { mode : "VALIDATED" },
+    meta : { mode : "VALIDATED", keep : true },
     component: postRegister
   },
   {
-    base : ["public"],
-    path : "reject/:token",
+    base : ["public", "oauth"],
+    path : "reject",
     name : "reject",
-    meta : { mode : "REJECTED" },
+    meta : { mode : "REJECTED", keep : true },
     component: postRegister
   },
   {

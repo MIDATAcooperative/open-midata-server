@@ -188,28 +188,23 @@ import actions from './actions';
 		   return c;
 		},
 		
-		save : function(name, scope, fields){
+		save : function(name, component, fields){			
             if(!_states[name])
                 _states[name] = {};
             for(var i=0; i<fields.length; i++){
-                _states[name][fields[i]] = scope[fields[i]];
-            }
+                _states[name][fields[i]] = JSON.stringify(component.$data[fields[i]]);
+            }			
         },
     
-        load : function(name, scope, fields){
-        	
-        	scope.$on('$destroy', function() {
-        		console.log("save: "+name);
-                session.save(name, scope, fields);
-            });
-        	console.log("load: "+name);
+        load : function(name, component, fields){        	        	
             if(!_states[name])
-                return scope;
+                return component;
             for(var i=0; i<fields.length; i++){            	
-                if(typeof _states[name][fields[i]] !== 'undefined')
-                    scope[fields[i]] = _states[name][fields[i]];
+                if(typeof _states[name][fields[i]] !== 'undefined') {
+				  component.$data[fields[i]] = JSON.parse(_states[name][fields[i]]);				
+				}
             }
-            return scope;
+            return component;
         },
         
         map : function(array, name) {

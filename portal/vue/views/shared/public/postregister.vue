@@ -55,7 +55,7 @@
 						
 				<div v-if="progress.AUTH2FACTOR || progress.PHONE_VERIFIED">
 					<p v-t="'postregister.auth2factor'"></p>					
-					<form ref="myform" @submit.prevent="setSecurityToken()" role="form" class="form form-horizontal" novalidate>
+					<form ref="myform" name="myform" @submit.prevent="setSecurityToken()" role="form" class="form form-horizontal" novalidate>
 						<form-group name="securityToken" label="postregister.securityToken" :path="errors.securityToken">
 							<input type="text" class="form-control" name="securityToken" v-model="setpw.securityToken" style="margin-bottom:5px;" required v-validate autofocus>
 						</form-group>							  
@@ -74,12 +74,12 @@
 							
 				<div v-if="progress.PASSWORD_SET">
 					<p v-t="'setpw.enter_new'"></p>
-					<form ref="myform" @submit.prevent="pwsubmit()" role="form" class="form form-horizontal" novalidate>
+					<form ref="myform" name="myform" @submit.prevent="pwsubmit()" role="form" class="form form-horizontal" novalidate>
 						<form-group name="password" label="setpw.new_password" :path="errors.password">
-							<password class="form-control" v-model="setpw.password" style="margin-bottom:5px;" autofocus required />
+							<password class="form-control" name="password" v-model="setpw.password" style="margin-bottom:5px;" autofocus required />
 						</form-group>
 						<form-group name="passwordnew" label="setpw.new_password_repeat" :path="errors.passwordnew">
-							<password class="form-control" v-model="setpw.passwordRepeat" style="margin-bottom:5px;" required />
+							<password class="form-control" name="passwordnew" v-model="setpw.passwordRepeat" style="margin-bottom:5px;" required />
 						</form-group>
 						<div class="dynheight">
 							<form-group name="secure" label="registration.secure">
@@ -238,7 +238,7 @@
 							<div v-show="progress.PHONE_ENTERED" v-t="'postregister.phone_entered'"></div>
 							<div v-show="progress.MIDATA_COOPERATIVE_MEMBER" v-t="'postregister.midata_cooperative_member'"></div>
 							<div class="extraspace"></div>
-							<form name="myform" novalidate class="css-form form-horizontal" @submit.prevent="changeAddress()" role="form">
+							<form name="myform" ref="myform" novalidate class="css-form form-horizontal" @submit.prevent="changeAddress()" role="form">
 								<div v-if="addressNeeded()">
 									<div class="required">
 										<form-group mname="address1" label="registration.address" :path="errors.address1">
@@ -324,7 +324,8 @@ export default {
 		isoauth : false,
 		terms : { which : "", active : false },
 		ENV : ENV,
-		tokenIncluded : false
+		tokenIncluded : false,
+		mode : null
 	}),
 
 	components: { CheckBox, RadioBox, ErrorBox, FormGroup, Panel, TermsModal, Password },
@@ -365,15 +366,15 @@ export default {
 
 		requestMembership() {
 			const { $data } = this, me = this;			
-			this.doAction("requestmembership", users.requestMembership($data.user))
+			me.doAction("requestmembership", users.requestMembership($data.user))
 			.then(function() {
 		   		me.retry();
 			});
 		},
 		
-		showTerms(def) {
+		showTerms(def) {			
 			const { $data }	= this;
-			$data.terms = { which : def, active : true };
+			$data.terms = { which : def.which, active : true };
 		},
 	
 		agreedToTerms(terms) {
@@ -412,7 +413,7 @@ export default {
 
 		
 		pwsubmit() {
-			const { $data, $route } = this, me = this;
+			const { $data, $route, $t } = this, me = this;
 		
 			if (!$data.setpw.passwordRepeat || $data.setpw.passwordRepeat !== $data.setpw.password) {
 				this.setError("password", $t('error.invalid.password_repetition'));
@@ -439,7 +440,7 @@ export default {
 					};	
 				}
 							
-				var data = { token : $route.query.token, mode : $route.meta.mode };	
+				var data = { token : $route.query.token, mode : $data.mode };	
 				if ($data.setpw.secure) {
 				data.password = keys.pw_hash;
 				data.pub = keys.pub;
@@ -450,7 +451,7 @@ export default {
 					data.password = $data.setpw.password;
 				}
 					
-				this.doAction('setpw', server.post(jsRoutes.controllers.Application.confirmAccountEmail().url, data))
+				me.doAction('setpw', server.post(jsRoutes.controllers.Application.confirmAccountEmail().url, data))
 				.then(function(result) {
 					if (result.data.challenge) {
 					
@@ -465,7 +466,7 @@ export default {
 			const { $data } = this, me = this;
 			$data.registration.user = $data.registration._id;
 			if ($data.registration.mobile === "") $data.registration.mobile = undefined;
-			this.doAction("changeAddress", users.updateAddress({ user : $data.registration._id, authType : $data.registration.authType, mobile : $data.registration.mobile, emailnotify : $data.registration.emailnotify })).
+			me.doAction("changeAddress", users.updateAddress({ user : $data.registration._id, authType : $data.registration.authType, mobile : $data.registration.mobile, emailnotify : $data.registration.emailnotify })).
 			then(function(data) { 
 				me.retry();
 			});
@@ -477,9 +478,12 @@ export default {
 			$data.resentSuccess = false;
 			$data.codeSuccess = false;
 			$data.mailSuccess = false;
-			var data = { token : $route.query.token, mode : $route.meta.mode };
-			if (forceConfirm) data.mode = "VALIDATED";
-	    	this.doAction('email', server.post(jsRoutes.controllers.Application.confirmAccountEmail().url, data ))
+			var data = { token : $route.query.token, mode : $data.mode };
+			if (forceConfirm) {
+				data.mode = "VALIDATED";
+
+			}
+	    	me.doAction('email', server.post(jsRoutes.controllers.Application.confirmAccountEmail().url, data ))
 	    	.then(function(result) {
 	    		$data.progress = result.data;	 
 	    		if (result.data.emailStatus !== "UNVALIDATED" && (!result.data.requirements || result.data.requirements.indexOf("PASSWORD_SET") < 0)) {
@@ -497,14 +501,14 @@ export default {
 			$data.mailSuccess = false;
 
 			var data = { code : code, mode : "VALIDATED", userId : $data.progress.userId , role : $data.progress.role };
-	    	this.doAction('email', server.post(jsRoutes.controllers.Application.confirmAccountEmail().url, data ))
+	    	me.doAction('email', server.post(jsRoutes.controllers.Application.confirmAccountEmail().url, data ))
 	    	.then(function(result) {
 	    		me.retry(result);	    	
 	    	});	    
 		},
 
 		changeBirthday() {		
-			const { $data } = this, me = this;
+			const { $data, $t } = this, me = this;
 			
 		
         	let d = $data.registration.birthdayDate;
@@ -523,7 +527,7 @@ export default {
 				
 			let upd = { user : $data.registration._id, birthday : $data.registration.birthday};
 											
-			this.doAction("changeAddress", server.post(jsRoutes.controllers.admin.Administration.changeBirthday().url, upd)).
+			me.doAction("changeAddress", server.post(jsRoutes.controllers.admin.Administration.changeBirthday().url, upd)).
 			then(function(data) { 
 				me.retry();
 			});
@@ -537,7 +541,7 @@ export default {
 		
 			let data = { confirmationCode : $data.passphrase.passphrase };
 			if (data.confirmationCode && data.confirmationCode.length > 0) {
-	    		this.doAction('code', server.post(jsRoutes.controllers.Application.confirmAccountAddress().url, data ))
+	    		me.doAction('code', server.post(jsRoutes.controllers.Application.confirmAccountAddress().url, data ))
 	    		.then(function(result) { 
 	    			$data.codeSuccess = true;
 	    			$data.progress.confirmationCode = true;
@@ -555,18 +559,18 @@ export default {
         	$data.registration.authType = undefined;
 					
 			$data.registration.user = $data.registration._id;									
-			this.doAction("changeAddress", users.updateAddress($data.registration)).
+			me.doAction("changeAddress", users.updateAddress($data.registration)).
 			then(function(data) { 
 				me.retry();
 			});
 		},
 
 		resend() {	
-			const { $data } = this;
+			const { $data } = this, me = this;
 			$data.resentSuccess = false;
 			$data.codeSuccess = false;
 			$data.mailSuccess = false;
-			this.doAction('resent', server.post(jsRoutes.controllers.Application.requestWelcomeMail().url, { userId : $data.progress.userId }))
+			me.doAction('resent', server.post(jsRoutes.controllers.Application.requestWelcomeMail().url, { userId : $data.progress.userId }))
 	    	.then(function() {
 	    		$data.resentSuccess = true;	    		    	
 	    	});	    
@@ -606,13 +610,16 @@ export default {
 			$data.progress = session.progress || {};
 	
 			this.init();			
-			this.setFlags();
-		
+			this.setFlags();		   
 			if ($route.query.token && $route.meta.mode) {
+				if ($data.mode == null) $data.mode = $route.meta.mode;
 				$data.tokenIncluded = true;
-				if ($route.meta.mode=="REJECTED") {
+				if ($data.mode=="REJECTED") {
 		   			$data.progress = { REJECT : true };
-				} else this.confirm();
+				} else {
+					$data.progress = { CONFIRM : true };
+					this.confirm();					
+				}
 			}
 	
 			if (oauth.getAppname()) { $data.isoauth = true; }
