@@ -78,7 +78,7 @@
         </div>
              		        
         <div class="tree" v-for="data in tree" :key="data._id">
-            <record-tree-node :selectedAps="selectedAps" :action="action" :data="data" :sharing="sharing" @share="shareGroup" @unshare="unshareGroup"  @show="showRecords" @deleteGroup="deleteGroup" @open="setOpen"></record-tree-node>
+            <record-tree-node :selectedAps="selectedAps" :action="action" :data="data" :sharing="sharing" @share="shareGroup" @unshare="unshareGroup"  @show="showRecords" @deleteGroup="deleteGroup" @open="setOpen" :allowDelete="allowDelete"></record-tree-node>
         </div>
 			
 		<div class="panel-body" v-if="tree.length === 0" v-t="'records.empty'"></div>

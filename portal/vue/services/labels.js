@@ -143,7 +143,7 @@ import { getLocale } from './lang';
 			if (query.$or) {
 				for (var i = 0;i<query.$or.length;i++) waitFor.push(service.parseAccessQuery(lang, query.$or[i], query, result));
 			} else {
-				if (Object.keys(query).length === 0) return [];
+				if (Object.keys(query).length === 0) {resolve([]);return;}
 				var nblock = {};
 				if (ac("format")) nblock.format = ac("format");
 				if (ac("content")) nblock.content = ac("content");
@@ -177,7 +177,7 @@ import { getLocale } from './lang';
 					if (!r.owner) r.owner = "all";
 					
 					var c = r.content;
-					if (c === "Patient" || c === "Group" || c === "Person" || c === "Practitioner") return;	
+					if (c === "Patient" || c === "Group" || c === "Person" || c === "Practitioner") continue;	
 					
 					if (r.content) {
 						r.display = "x";
@@ -198,7 +198,7 @@ import { getLocale } from './lang';
 					result.push(r); 
 				}
 			}
-			
+		
 			Promise.all(waitFor).then(() => resolve(result));			
 		});
 	};

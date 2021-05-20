@@ -112,7 +112,7 @@
 		    <p class="form-text text-muted" v-t="'manageapp.info.defaultSpaceContext'"></p>
 		  </form-group>		 
 		  <form-group name="defaultQuery" label="manageapp.access_query_json" class="danger-change" v-if="app._id">
-		    <accessquery query="app.defaultQuery" details="true" isapp="true"></accessquery>		    
+		    <access-query :query="app.defaultQuery" details="true" isapp="true"></access-query>		    
 		    <a href="javascript:" @click="go('./query')" v-t="'manageapp.queryeditor_btn'"></a>
 		  </form-group>
 		  <form-group name="writes" label="manageapp.write_mode" class="danger-change" :path="errors.writes">
@@ -234,6 +234,7 @@
 <script>
 
 import Panel from "components/Panel.vue"
+import AccessQuery from "components/tiles/AccessQuery.vue"
 import server from "services/server.js"
 import terms from "services/terms.js"
 import formats from "services/formats.js"
@@ -281,7 +282,7 @@ export default {
         logoutRequired : false
     }),
 
-    components: {  Panel, ErrorBox, FormGroup, CheckBox, Typeahead },
+    components: {  Panel, ErrorBox, FormGroup, CheckBox, Typeahead, AccessQuery },
 
     mixins : [ status ],
 
