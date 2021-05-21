@@ -28,9 +28,9 @@
 		            	<div class="panel-body" v-if="!success">
 			            	
 							<p v-t="'lostpw.description'"></p>
-							<form name="form" @submit.prevent="submit()" role="form" class="form form-horizontal">							  
+							<form name="myform" ref="myform" @submit.prevent="submit()" role="form" class="form form-horizontal">							  
 								<form-group name="email" label="lostpw.email" :path="errors.email">
-								  <input type="text" class="form-control" v-model="lostpw.email" style="margin-bottom:5px;" autofocus required v-validate>
+								  <input type="text" class="form-control" name="email" v-model="lostpw.email" style="margin-bottom:5px;" autofocus required v-validate>
 								</form-group>
                                 <error-box :error="error"></error-box>								
 								<button type="submit" v-submit class="btn btn-primary btn-block" :disabled="action!=null" v-t="'lostpw.continue'"></button>

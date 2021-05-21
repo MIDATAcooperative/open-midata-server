@@ -223,6 +223,7 @@ import AccessQuery from "components/tiles/AccessQuery.vue"
 import server from "services/server.js"
 import users from "services/users.js"
 import usergroups from "services/usergroups.js"
+import ENV from "config"
 
 import { status, rl, ErrorBox } from 'basic-vue3-components'
 
@@ -247,7 +248,7 @@ export default {
             .then(function(data) { 				
                 $data.study = data.data.study;
                 
-                me.doBusy(users.getMembers({ _id : $data.study.createdBy, "role" : "RESEARCH" }, users.MINIMAL)
+                me.doBusy(users.getMembers({ _id : $data.study.createdBy, "role" : ["RESEARCH","DEVELOPER","ADMIN"] }, users.MINIMAL)
                 .then(function(data2) {
                     $data.creator = data2.data[0];
                 }));
