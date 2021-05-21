@@ -26,7 +26,7 @@
 						<p>{{ $t('oauth2.please_confirm', { consent }) }}</p>			
 					</section>			
 				</div>
-			
+						   
                 <div v-if="showApp">
 				<section>
 					<strong>{{ appname() }}</strong> <span v-t="'oauth2.requesting_app'"></span>
@@ -46,9 +46,11 @@
 				
 								
 				<div v-for="link in extra" :key="link._id">
-					<hr>
-					<div>{{ getLinkHeading(link) }}</div>
-					<strong>{{ getLinkName(link) }}</strong>					
+					<div v-if="!(link.inlineTerms)">
+						<hr>
+						<div>{{ getLinkHeading(link) }}</div>
+						<strong>{{ getLinkName(link) }}</strong>					
+					</div>
 					<section v-if="link.formatted.length && !(link.inlineTerms)">						
 						<div v-for="line in link.formatted" :key="line">
 							<span>{{ line }}</span>
@@ -145,6 +147,7 @@ import oauth from "services/oauth.js";
 import { status, FormGroup, ErrorBox } from 'basic-vue3-components';
 import ENV from "config";
 import TermsModal from 'components/TermsModal.vue';
+import Terms from 'components/Terms.vue';
 import Panel from 'components/Panel.vue';
 import { getLocale } from 'services/lang';
 //import { $ts } from 'vue-i18n';
@@ -170,7 +173,7 @@ export default {
   }),
 
   components : {
-     FormGroup, ErrorBox, TermsModal, Panel
+     FormGroup, ErrorBox, TermsModal, Panel, Terms
   },
 
   mixins : [ status ],

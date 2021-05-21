@@ -91,15 +91,15 @@
                     <p class="form-control-plaintext">{{ app.filename }}</p>	   
                 </form-group>
                 <form-group name="apptype" label="common.empty" :path="errors.apptype">
-                    <p class="form-control-plaintext" v-if="selection.app.type">
-                        <span>{{ $t('enum.plugintype.' + selection.app.type) }}</span>
+                    <p class="form-control-plaintext" v-if="app.type">
+                        <span>{{ $t('enum.plugintype.' + app.type) }}</span>
                         <span v-t="'studyactions.for'"></span>
-                        <span>{{ $t('enum.userrole.'+selection.app.targetUserRole) }}</span>	               
+                        <span>{{ $t('enum.userrole.'+app.targetUserRole) }}</span>	               
                     </p>
-                    <p class="form-control-plaintext" v-if="!selection.app.type" v-t="'studyactions.no_valid_app'"></p>
+                    <p class="form-control-plaintext" v-if="!app.type" v-t="'studyactions.no_valid_app'"></p>
                 </form-group>
                 <form-group name="type" label="studyactions.type" :path="errors.type">	                
-                    <check-box v-for="type in types" :key="type" :name="type" :disabled="checkType(selection.app, type)" :checked="selection.type.indexOf(type)>=0" @click="toggle(selection.type, type);" >
+                    <check-box v-for="type in types" :key="type" :name="type" :disabled="checkType(app, type)" :checked="selection.type.indexOf(type)>=0" @click="toggle(selection.type, type);" >
                         <span>{{ $t('studyactions.types.'+type) }}</span>
                     </check-box>                
                 </form-group>

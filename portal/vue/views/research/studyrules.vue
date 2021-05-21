@@ -53,13 +53,13 @@
             </form-group>
     
             <form-group name="joinMethods" label="studyrules.join_methods" :path="errors.joinMethods">
-                <check-box v-for="method in joinmethods" :key="method" :disabled="studyLocked()" :checked="study.joinMethods.indexOf(method)>=0" @click="toggle(study.joinMethods, method);">
+                <check-box v-for="method in joinmethods" :key="method" :name="method" :disabled="studyLocked()" :checked="study.joinMethods.indexOf(method)>=0" @click="toggle(study.joinMethods, method);">
                     <span class="margin-left" v-t="'enum.joinmethod.'+method"></span>
                 </check-box>		 
             </form-group>
     
             <form-group name="requirements" label="studyrules.requirements" :path="errors.requirements">
-                <check-box v-for="req in requirements" :key="req" :disabled="studyLocked()" :checked="study.requirements.indexOf(req)>=0" @click="toggle(study.requirements, req);">
+                <check-box v-for="req in requirements" :key="req" :name="req" :disabled="studyLocked()" :checked="study.requirements.indexOf(req)>=0" @click="toggle(study.requirements, req);">
                     <span class="margin-left" v-t="'enum.userfeature.'+req"></span>
                 </check-box>		 
             </form-group>
@@ -104,7 +104,7 @@ export default {
 
     methods : {
         reload() {
-            const { $data } = this, me = this;
+            const { $data, $filters } = this, me = this;
             me.doBusy(server.get(jsRoutes.controllers.research.Studies.get($data.studyid).url)
             .then(function(data) { 				
                 let study = data.data;	
@@ -113,6 +113,9 @@ export default {
                 if (study.consentObserverNames && study.consentObserverNames.length) {
                     study.consentObserverStr = study.consentObserverNames.join(",");
                 }
+                if (study.startDate) study.startDate = $filters.usDate(study.startDate);
+                if (study.endDate) study.endDate = $filters.usDate(study.endDate);
+                if (study.dataCreatedBefore) study.dataCreatedBefore = $filters.usDate(study.dataCreatedBefore);
                 study.recordQueryStr = JSON.stringify(study.recordQuery); 
                 
                 $data.study = study;	
@@ -134,7 +137,7 @@ export default {
             } else $data.study.consentObserverNames = [];
                         
             let data = { joinMethods : $data.study.joinMethods, termsOfUse : $data.study.termsOfUse, requirements: $data.study.requirements, startDate : $data.study.startDate, endDate : $data.study.endDate, dataCreatedBefore : $data.study.dataCreatedBefore, consentObserverNames : $data.study.consentObserverNames };
-            me.doAction("update", server.put(jsRoutes.controllers.research.Studies.update($data.studyid).url, data)
+            me.doAction("change", server.put(jsRoutes.controllers.research.Studies.update($data.studyid).url, data)
             .then(function(data) { 				
                 me.reload();            
             })); 
