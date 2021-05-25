@@ -271,7 +271,7 @@ import { getLocale } from './lang';
 			} else {
 				let sys = [];
 				for (let i=0;i<row.checks.length;i++) {
-					if (row.checks[i]) sys.push(input.system[i]);
+					if (row.checks[i]) sys.push(input[i].system);
 				}
 				row.summary = sys.join(", ");
 			}

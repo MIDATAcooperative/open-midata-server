@@ -345,5 +345,65 @@
     "install" : "Package installation",
     "audit" : "Security Audit",
     "build" : "Build process"
-  }
+  },
+
+  "workspace" : {
+     
+     "title" : "Workspace",
+     "browser" : "Users Browser",
+     "midata" : "Midata Backend",
+     "useraccount" : "User Account",
+     "newapp_btn" : "Add Application",
+     "newproject_btn" : "Add Project",
+     "reset_btn" : "Reset Workspace",
+     "issues" : "Issues",
+     "severity" : {
+       "severity" : "Severity",
+       "info" : "Info",
+       "warning" : "Warning",
+       "error" : "Error"
+     },
+     "component" : "Component",
+     "issue" : "Issue",
+     "param" : "Param",
+     "summary" : "Access Filter Summary",
+     "add_app" : "Add Application to Workspace",
+     "add_btn" : "Add",
+     "appname" : "Internal Application Name",
+     "projectname" : "Project Code",
+     "add_project" : "Add Project to Workspace",
+     "warning" : {
+        "app_deprecated" : "App is deprecated and should not be used.",
+        "no_orgname" : "No developer organization name specified in app definition.",
+        "no_publisher" : "No publisher specified in app definition.",
+        "no_app_description" : "App description is missing",
+        "not_spotlighted" : "Plugin is not available in Midata store. Ask an admin.",
+        "no_repository" : "No repository for code checkout-provided.",
+        "no_send_reports" : "Error report notifications (emails) are disabled for this app.",
+        "has_comments" : "Comments available in the error and performance statistics.",
+        "project_not_validated" : "Project has not been validated yet.",
+        "project_not_searching" : "Project not searching for participants."
+     },
+     "error" : {
+       "no_tags" : "No tags for app selected. Plugin cannot be added by user.",
+       "no_url" : "Plugin does not have initial URL",
+       "never_deployed" : "Plugin has repository information but had never been checked out successful.",
+       "no_access_filter" : "No access filter provided for application",
+       "no_join_method" : "Project has no join methods selected.",
+       "project_in_validation" : "Project is currently validated by an administrator.",
+       "project_rejected" : "Project has been rejected.",
+       "project_finished" : "Project is already finished.",
+       "project_aborted" : "Project has been aborted.",
+       "project_no_groups" : "No participant groups defined for project.",
+       "app_no_exist" : "Application does not exist.",
+       "project_no_exist" : "Project does not exist."
+     },
+     "info" : {
+        "no_requirements" : "No requirements selected for application.",
+        "no_icons" : "No icons uploaded for application.",
+        "project_not_running" : "Project has not been started yet.",
+        "project_no_requirements" : "No requirements selected for project.",
+        "app_in_development" : "Application is still in development"
+     }
+    }
 }
