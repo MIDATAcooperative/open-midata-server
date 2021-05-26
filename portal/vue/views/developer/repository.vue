@@ -150,7 +150,7 @@ export default {
 	    submit() {
 		    const { $data } = this, me = this;
             $data.app.doDelete = undefined;
-            me.doAction("submit", server.post(jsRoutes.controllers.Market.updateFromRepository($data.app._id).url, JSON.stringify($data.app))
+            me.doAction("submit", server.post(jsRoutes.controllers.Market.updateFromRepository($data.app._id).url, $data.app)
             .then(function(result) {
                 $data.report = result.data; 
             }));
@@ -160,7 +160,7 @@ export default {
         doDelete() {
 		    const { $data } = this, me = this;
             $data.app.doDelete = true; 							
-            me.doAction("submit", server.post(jsRoutes.controllers.Market.updateFromRepository($data.app._id).url, JSON.stringify($data.app)))
+            me.doAction("submit", server.post(jsRoutes.controllers.Market.updateFromRepository($data.app._id).url, $data.app))
             .then(function(result) {
                 $data.report = result.data; 
             });
