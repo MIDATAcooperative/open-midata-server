@@ -212,14 +212,14 @@ export default {
   },
 
   created: function () {
-	  const { $route, $data, $methods } = this, me = this;		  
+	  const { $route, $data } = this, me = this;		  
 	  $data.offline = (window.jsRoutes === undefined) || (window.jsRoutes.controllers === undefined);
 	
 	  $data.lang = getLocale();
 
-      if ($route.query.lang) {
-		  $data.lang = $route.query.lang;
-		  setLocale($route.query.lang);
+      if ($route.query.language) {
+		  $data.lang = $route.query.language;
+		  setLocale($route.query.language);
 	  }
 
 	  if ($route.query.email) {
@@ -241,7 +241,7 @@ export default {
 			$data.consent = "App: "+$data.app.name+" (Device: "+$data.device+")";			
 			oauth.app = $data.app;
 				
-			if ($route.query.isnew=="true") $methods.showRegister();
+			if ($route.query.isnew=="true") me.showRegister();
 			if ($route.query.isnew=="never") $data.hideRegistration = true;
 		
 		}));  

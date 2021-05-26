@@ -16,7 +16,7 @@
  */
 
 import { nextTick, ref } from 'vue'
-import { setI18n, VueComposableDevtools } from 'vue-composable'
+import { setI18n, addLocale, removeLocale, VueComposableDevtools } from 'vue-composable'
 import ENV from 'config'
 
 function replaceInstr(where) {
@@ -40,7 +40,7 @@ function replaceInstr(where) {
 let i18n;
 let myLocale = ref("en");
 let bundles = new Set();
-let messages = {};
+let messages = {}; // lang to bundle
 
 function mergeLocales(t, s) {
   for (let k in s) 
@@ -63,43 +63,49 @@ async function loadLocaleMessages(file, locale) {
     )  
   }
   replaceInstr(msgs.default);
-  mergeLocales(messages, msgs.default);
+  if (!messages[locale]) messages[locale] = { "common" : { "empty" : " " }};
+  mergeLocales(messages[locale], msgs.default);
     
 } 
 
 async function setLocaleMessages(locale) {
-  
-  i18n.i18n.value = messages;
-  //i18n.removeLocale(locale);
-  //console.log(i18n.i18n);
-  //i18n.addLocale(locale, messages);
+  //i18n.locale.value = "";
+  i18n.removeLocale(locale);
+  i18n.addLocale(locale, messages[locale]);
+  i18n.locale.value = locale;
+  //i18n.i18n.value = messages[locale];  
   return nextTick();
 }
 
 export const SUPPORT_LOCALES = ['en', 'de', 'fr', 'it']
 
 export function setupI18n(options = { locale: 'en', messages:{} }) {
-  i18n = setI18n(options)
+  i18n = setI18n({ locale: 'ch', messages:{} });
+  let lang = localStorage.language || navigator.language || navigator.userLanguage;
+  let startWith = "en";
+  for (let l of SUPPORT_LOCALES) if (lang.indexOf(l)>=0) startWith = l;
   bundles.add("shared");
-  setLocale(options.locale)
+  setLocale(startWith);
   return i18n;
 }
 
 export async function addBundle(bundlename) {
   if (bundles.has(bundlename)) return;
+  console.log("add bundle: "+bundlename);
   bundles.add(bundlename);
-  messages = {};
+  //messages = {};
   setLocale(myLocale.value);  
 }
 
 export async function setLocale(locale) {
-  if (locale != myLocale.value) messages = {};
+  //if (locale != myLocale.value) messages = {};
   myLocale.value = locale;
-  i18n.locale.value = locale;
+  localStorage.language = locale;
+  //i18n.locale.value = locale;
   
   for (let bundle of bundles) await loadLocaleMessages(bundle, locale);
   await setLocaleMessages(locale);
- 
+  console.log("changed to:"+locale);  
 }
 
 export function getLocale() {
