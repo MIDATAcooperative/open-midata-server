@@ -194,7 +194,10 @@ export default {
 			
 		  if (result === "CONFIRM" || result === "CONFIRM-STUDYOK") {
 			  let params = JSON.parse(JSON.stringify($route.query)) || {};
-			  if (result === "CONFIRM-STUDYOK") params.nostudies = true;
+			  if (result === "CONFIRM-STUDYOK") { 
+				  console.log("already confirmed studies");
+				  params.nostudies = true; 
+			  }
 			  
 			  $router.push({ path : "./oauthconfirm", query : params });
 			  

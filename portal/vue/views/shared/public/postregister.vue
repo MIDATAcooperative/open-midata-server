@@ -245,7 +245,7 @@
 											<input type="text" class="form-control" id="address1" name="address1" v-model="registration.address1" :required="addressNeeded()" v-validate>
 										</form-group>
 									</div>
-									<form-group name="address2" label="">
+									<form-group name="address2" label="common.empty">
 										<input type="text" class="form-control" id="address2" name="address2" v-model="registration.address2" v-validate>
 									</form-group>
 									<div class="required">
@@ -325,7 +325,8 @@ export default {
 		terms : { which : "", active : false },
 		ENV : ENV,
 		tokenIncluded : false,
-		mode : null
+		mode : null,
+		countries : languages.countries	
 	}),
 
 	components: { CheckBox, RadioBox, ErrorBox, FormGroup, Panel, TermsModal, Password },
